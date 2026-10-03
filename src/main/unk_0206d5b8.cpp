@@ -94,7 +94,7 @@ extern u16 gMainWaitingFrame;
 }
 
 extern "C" {
-extern u32 data_020cbb18;
+extern u32 gCommManager;
 }
 
 extern "C" {
@@ -134,19 +134,19 @@ s32 func_020a78a4(void *buf, const void *src, s32 len);
 }
 
 extern "C" {
-void func_0200212c(void *p);
+void Gfx2d_HideLayer(void *p);
 }
 
 extern "C" {
-void func_02002398(void *p, s32 v);
+void Gfx2d_SetLayerPriority(void *p, s32 v);
 }
 
 extern "C" {
-void func_0200226c(void *p, s32 a, s32 b, s32 c);
+void Gfx2d_SetLayerControl(void *p, s32 a, s32 b, s32 c);
 }
 
 extern "C" {
-void func_020021fc(void *p, s32 a, s32 b);
+void Gfx2d_SetLayerOffset(void *p, s32 a, s32 b);
 }
 
 extern "C" {
@@ -174,7 +174,7 @@ s32 func_02051348(void *p, s32 n);
 }
 
 extern "C" {
-void func_02002654(char *s, u32 a, u32 b);
+void Gfx2d_LoadScreenFile(char *s, u32 a, u32 b);
 }
 
 extern "C" {
@@ -258,19 +258,19 @@ void func_020af3a8(void);
 }
 
 extern "C" {
-void func_020ebb00(void);
+void Net_Update(void);
 }
 
 extern "C" {
-u32 _ZN12Unk_020cbb1813func_02072374Ev(u32 p);
+u32 _ZN11CommManager13getErrorFlagsEv(u32 p);
 }
 
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072398Ej(u32 p, u32 v);
+void _ZN11CommManager20setLatchedErrorFlagsEj(u32 p, u32 v);
 }
 
 extern "C" {
-u32 _ZN12Unk_020cbb1813func_0207238cEv(u32 p);
+u32 _ZN11CommManager20getLatchedErrorFlagsEv(u32 p);
 }
 
 extern "C" {
@@ -334,7 +334,7 @@ void func_020b8e44(void);
 }
 
 extern "C" {
-void func_0205b740(void);
+void HBlank_RunFrame(void);
 }
 
 extern "C" {
@@ -342,7 +342,7 @@ void Snd_Update(s32 v);
 }
 
 extern "C" {
-void func_020536dc(void);
+void Gfx_VBlankFlush(void);
 }
 
 extern "C" {
@@ -350,7 +350,7 @@ void func_02038128(void);
 }
 
 extern "C" {
-void func_020b8340(void);
+void VramQueue2d_Run(void);
 }
 
 extern "C" {
@@ -358,11 +358,11 @@ void func_020a5c2c(void);
 }
 
 extern "C" {
-void func_020733e4(u32 v);
+void Comm_Update(u32 v);
 }
 
 extern "C" {
-void func_02053730(void);
+void Gfx_PostTaskUpdate(void);
 }
 
 extern "C" {
@@ -370,11 +370,11 @@ void func_020af33c(void);
 }
 
 extern "C" {
-void func_02053754(void);
+void Gfx_PreTaskUpdate(void);
 }
 
 extern "C" {
-void func_020739b8(u32 v);
+void Comm_ProcessReceived(u32 v);
 }
 
 extern "C" {
@@ -390,7 +390,7 @@ void func_0209c390(void);
 }
 
 extern "C" {
-void func_0209cfc8(u32 v);
+void Clock_Update(u32 v);
 }
 
 extern "C" {
@@ -691,37 +691,37 @@ extern "C" void Main_WaitFrame(void) {
 
 extern "C" void Main_PreTaskUpdate(u32 r) {
     func_020af33c();
-    func_02053754();
+    Gfx_PreTaskUpdate();
     if (r != 0) {
-        func_020739b8(r);
+        Comm_ProcessReceived(r);
     }
     Touch_Update();
     Pad_Update();
     func_0209c390();
-    func_0209cfc8(r);
+    Clock_Update(r);
 }
 
 extern "C" void Main_PostTaskUpdate(u32 r) {
     if (r == 0) {
         func_020a5c2c();
     }
-    func_020733e4(r);
-    func_02053730();
+    Comm_Update(r);
+    Gfx_PostTaskUpdate();
     gFrameCounter++;
     *(volatile u32 *)0x4000540 = 3;
 }
 
 extern "C" void Main_PostFrameUpdate(void) {
-    func_020536dc();
+    Gfx_VBlankFlush();
     func_02038128();
-    func_020b8340();
+    VramQueue2d_Run();
 }
 
 extern "C" void Main_LateUpdate(u32 r) {
     TextLabel_FlushGroup0();
     func_020118a4();
     func_020b8e44();
-    func_0205b740();
+    HBlank_RunFrame();
     Snd_Update(r != 0 ? 1 : 0);
 }
 
@@ -739,12 +739,12 @@ extern "C" void Main_Loop(void) {
     GX_DispOn();
     *(volatile u32 *)0x4001000 |= 0x10000;
     func_020af3a8();
-    u32 v = data_020cbb18;
+    u32 v = gCommManager;
     u16 *flag = &gMainWaitingFrame;
     for (;;) {
-        func_020ebb00();
-        _ZN12Unk_020cbb1813func_02072398Ej(v, _ZN12Unk_020cbb1813func_02072374Ev(v));
-        r = _ZN12Unk_020cbb1813func_0207238cEv(v);
+        Net_Update();
+        _ZN11CommManager20setLatchedErrorFlagsEj(v, _ZN11CommManager13getErrorFlagsEv(v));
+        r = _ZN11CommManager20getLatchedErrorFlagsEv(v);
         Main_PreTaskUpdate(r);
         Main_PreTaskHook();
         if (r != 0) {

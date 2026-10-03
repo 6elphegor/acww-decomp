@@ -9,7 +9,7 @@ s32 Item_GetPrice(u16 *p);
 BOOL _ZN12Unk_0206555413func_02065578Ev(void *p);
 void func_02065c94(void *p);
 void func_02065388(void *p);
-s32 func_0209cd00(void *a, void *b);
+s32 Date_DaysBetween(void *a, void *b);
 void func_02097318(s32 v);
 void func_02097214(s32 v);
 void func_02097110(s32 v);
@@ -54,8 +54,8 @@ void func_020acf58(void *);
 void func_0203c638(void *);
 void _ZN12Unk_02096e2813func_02096e28Ev(void *);
 void _ZN12Unk_02096d1013func_02096e00Ev(void *);
-void func_02076c9c(void *);
-void func_02076db8(void *);
+void PlayerWifiData_Create(void *);
+void FriendList_Clear(void *);
 void func_02087c80(void *);
 void func_020877cc(void *);
 void func_02097418(void *);
@@ -71,8 +71,8 @@ void func_02087c84(void *);
 void func_020acf68(void *);
 void func_02087880(void *);
 void func_02097420(void *);
-void func_02076dd8(void *);
-void func_02076cc0(void *);
+void FriendList_Destruct(void *);
+void PlayerWifiData_Destruct(void *);
 void _ZN12Unk_02099e38D1Ev(void *);
 void func_02096e58(void *);
 void func_0203ca88(void *);
@@ -81,8 +81,8 @@ void func_0203c6a4(void *);
 void func_0203ca8c(void *);
 void func_02096e68(void *);
 void _ZN12Unk_02099e38C1Ev(void *);
-void func_02076cd4(void *);
-void func_02076df4(void *);
+void PlayerWifiData_Construct(void *);
+void FriendList_Construct(void *);
 void func_02097424(void *);
 void func_02087884(void *);
 void func_020acf78(void *);
@@ -121,7 +121,7 @@ BOOL _ZN12Unk_02098d2013func_02098e0cEv(void *p);
 void _ZN12Unk_02098d2013func_02098e30Ev(void *p);
 s32 func_02094048(...);
 BOOL _ZN8PlayerId13func_02094218Ev(...);
-void *func_0209cf88(...);
+void *Clock_GetDate(...);
 void *_ZN10PlayerData11getPlayerIdEv(...);
 }
 class PlayerInventory {
@@ -335,8 +335,8 @@ PlayerData::PlayerData() {
     func_0203ca8c(&unk_1c6b);
     func_02096e68(&unk_1c6c);
     _ZN12Unk_02099e38C1Ev(&unk_1d64);
-    func_02076cd4(&unk_1e10);
-    func_02076df4(&unk_1e60);
+    PlayerWifiData_Construct(&unk_1e10);
+    FriendList_Construct(&unk_1e60);
     func_02097424(&unk_21e4);
     func_02087884(&unk_21f0);
     func_020acf78(&unk_2208);
@@ -364,8 +364,8 @@ PlayerData::~PlayerData() {
     func_020acf68(&unk_2208);
     func_02087880(&unk_21f0);
     func_02097420(&unk_21e4);
-    func_02076dd8(&unk_1e60);
-    func_02076cc0(&unk_1e10);
+    FriendList_Destruct(&unk_1e60);
+    PlayerWifiData_Destruct(&unk_1e10);
     _ZN12Unk_02099e38D1Ev(&unk_1d64);
     func_02096e58(&unk_1c6c);
     func_0203ca88(&unk_1c6b);
@@ -407,8 +407,8 @@ void PlayerData::func_02098898(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 
     func_0203c638(&unk_1b48);
     _ZN12Unk_02096e2813func_02096e28Ev(&unk_1c6c);
     _ZN12Unk_02096d1013func_02096e00Ev(&unk_223e);
-    func_02076c9c(&unk_1e10);
-    func_02076db8(&unk_1e60);
+    PlayerWifiData_Create(&unk_1e10);
+    FriendList_Clear(&unk_1e60);
     unk_2212 = 0x3884;
     bits.a = 0;
     bits.b = 1;
@@ -424,7 +424,7 @@ void PlayerData::func_02098898(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 
     func_02097418(&unk_21e4);
     func_0203f0ec(&unk_21ec);
     ((Unk_02097ff4 *)this)->func_0209832c();
-    func_0209cf88();
+    Clock_GetDate();
     MI_CpuFill8(&unk_2254, 0xff, 8);
 }
 
@@ -694,9 +694,9 @@ extern "C" void func_020981f8()
     Unk_02097ff4 *p = (Unk_02097ff4 *)PlayerData_GetCurrent();
     if (p) {
         Unk_020981f8_Pos loc;
-        func_0209cf88(&loc);
+        Clock_GetDate(&loc);
         u8 *q = p->func_0209832c();
-        s32 r4 = func_0209cd00(&loc, q);
+        s32 r4 = Date_DaysBetween(&loc, q);
         s32 t = (loc.b - q[1]) + (loc.c - q[2]) * 12;
         func_02097318(t);
         func_02097214(r4);
@@ -719,7 +719,7 @@ extern "C" void func_020981f8()
             _ZN12Unk_020872fc13func_02087368Ev(((PlayerData *)p)->func_020986a4());
             _ZN12Unk_020872fc13func_02087368Ev(g + 0x15fca);
         }
-        func_0209cf88(p->func_0209832c());
+        Clock_GetDate(p->func_0209832c());
     }
 }
 

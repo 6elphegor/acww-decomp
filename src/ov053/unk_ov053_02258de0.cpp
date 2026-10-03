@@ -144,12 +144,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -272,7 +272,7 @@ public:
     s32 getDistanceToPlayer(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -423,7 +423,7 @@ Unk_ov053_0225a558 *func_ov053_0225a068();
 extern volatile u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 gTalkMsgIndexEnd[];
 
 s32 _ZN12Unk_0201985813func_020195c8Eiijtt(void *, s32, s32, s32, u32, s32);
@@ -448,14 +448,14 @@ void TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void *func_020b4934();
 s32 func_020b4bbc(void *, s32);
 void Camera_SetModeDefault();
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *g);
+BOOL _ZN11CommManager8isOnlineEv(void *g);
 void func_0202ffb0(s32 a);
 s32 func_020b50dc();
 void *func_020947f0(s32 a);
 s32 func_0202ff64(void *p);
 BOOL TalkRequest_IsTalking(void);
 s32 TalkRequest_AddPlayerTalk7(void *p, s32 a);
-void func_0204ee10(s32 *bx, s32 *by, void *pos);
+void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 void *PlayerData_GetCurrent();
 void *func_020850e0();
 s32 func_020851bc(void *p, s32 a);
@@ -603,14 +603,14 @@ BOOL Unk_ov053_0225a558::vfunc_00() {
     if (!Unk_020d8bc8::vfunc_00()) {
         return FALSE;
     }
-    void *g = data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(g) == 0) {
+    void *g = gCommManager;
+    if (_ZN11CommManager8isOnlineEv(g) == 0) {
         func_0202ffb0(0);
     }
     unk_718 = 0;
     unk_4cc.unk_1c |= 2;
     unk_715 = 0;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(g)) {
+    if (_ZN11CommManager8isOnlineEv(g)) {
         func_ov053_02259ee4(1);
         return TRUE;
     }
@@ -912,8 +912,8 @@ BOOL Unk_ov053_0225a558::func_ov053_022595f4() {
     Unk_ov053_02258e7c_Loc w;
     *(Unk_ov053_Vec *)&w = data_ov053_0225a194;
     s32 dx = w.x, dy = w.y, dz = w.z;
-    func_0204ee10(&bx2, &by2, &w);
-    func_0204ee10(&bx1, &by1, &v);
+    FieldPos_ToUnit(&bx2, &by2, &w);
+    FieldPos_ToUnit(&bx1, &by1, &v);
     switch (unk_714) {
     case 0:
         if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
@@ -1210,7 +1210,7 @@ BOOL Unk_ov053_0225a558::func_ov053_02258f18() {
     Unk_ov053_Vec *src = (Unk_ov053_Vec *)func_020947f0(4);
     *(Unk_ov053_Vec *)&v = *src;
     s32 bx = 0, by = 0;
-    func_0204ee10(&bx, &by, &v);
+    FieldPos_ToUnit(&bx, &by, &v);
     if ((PlayerActor_IsInAction(0x25, 4) || PlayerActor_IsInAction(0x28, 4)) && TalkRequest_AddPlayerTalk7(this, 0)) {
         s32 f = 0;
         s32 x = bx;

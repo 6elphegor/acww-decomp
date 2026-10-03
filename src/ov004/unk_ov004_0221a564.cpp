@@ -137,7 +137,7 @@ extern u8 data_021dfd8c[];
 extern u8 gTalkMsgIndexNone[];
 extern u8 gVec3Zero[];
 extern s32 data_020c6d1c;
-extern Unk_ov004_0221b1e8_Map *data_021c47c4;
+extern Unk_ov004_0221b1e8_Map *gSceneBlockMap;
 extern void *data_ov004_0224ca60[2];
 extern void *data_ov004_0224ca68[2];
 extern void *data_ov004_0224ca70[2];
@@ -207,7 +207,7 @@ s32 Unk_020d77a4_getPlayerActor(void *, s32);
 s32 func_02014220(void *);
 void *func_0207f55c(void *, void *);
 void func_02080ecc(void *, s32, s32, s32);
-s32 func_02037558(void *, s32, s32, s32);
+s32 MapBlock_GetItemPtr(void *, s32, s32, s32);
 s32 Item_IsFurnitureOrF031();
 void func_0203002c(s32, s32);
 void func_0201c574(void *, void *);
@@ -684,7 +684,7 @@ BOOL Unk_ov004_0224cb98::updateAct() {
 }
 
 void Unk_ov004_0224cb98::func_ov004_0221b1e8() {
-    Unk_ov004_0221b1e8_Map *m = data_021c47c4;
+    Unk_ov004_0221b1e8_Map *m = gSceneBlockMap;
     void *p;
     if (m->unk_04 > (u8 *)0 && m->unk_08 > (u8 *)0 && (p = m->unk_00) != 0) {
     } else {
@@ -694,7 +694,7 @@ void Unk_ov004_0224cb98::func_ov004_0221b1e8() {
     s32 z = 0;
     for (; y < 16; y++) {
         for (s32 x = 0; x < 16; x++) {
-            if (func_02037558(p, x, y, z)) {
+            if (MapBlock_GetItemPtr(p, x, y, z)) {
                 if (Item_IsFurnitureOrF031()) {
                     func_0203002c(x, y);
                 }

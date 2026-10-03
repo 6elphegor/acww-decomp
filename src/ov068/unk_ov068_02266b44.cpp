@@ -27,9 +27,9 @@ public:
     virtual ~ProcBase();
 };
 
-class Unk_ov068_0226fb80;
-class Unk_ov068_0226ff34;
-class Unk_ov068_0226fea4;
+class FieldVillager;
+class SpNpcNookIntro;
+class SpNpcNookIntroTalk;
 
 #define func_02015958 _ZN16ActorTalkRequest13func_02015958Eijiii
 #define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
@@ -137,12 +137,12 @@ extern u8 gTalkMsgIndexEnd[];
 extern u8 data_021e58a8[];
 extern u8 data_021d735c[];
 extern void *data_ov068_0226fcfc;
-extern const char *data_ov068_0226fd68[];
-extern const char *data_ov068_0226fd78[];
+extern const char *sNookModelPaths[];
+extern const char *sNookTexPaths[];
 }
 
 // Member object types of the scene object, named after their constructors.
-struct Unk_020dbd74 { Unk_020dbd74(); u32 pad[0x1b4 / 4]; };
+struct ThreeLayerAnimModel { ThreeLayerAnimModel(); u32 pad[0x1b4 / 4]; };
 struct Unk_0201ad3c { Unk_0201ad3c(); u32 pad[0xc / 4]; };
 struct Unk_02019dd8 { Unk_02019dd8(); u32 pad[0x88 / 4]; };
 struct Unk_02016350 { Unk_02016350(); u32 pad[0x1c / 4]; };
@@ -221,7 +221,7 @@ public:
 
     u16 pad_e0[5];
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -338,41 +338,41 @@ struct Unk_ov068_0226fea4_Flag {
     u8 pad[11];
 };
 
-class Unk_ov068_0226fea4 : public SpNpcTalkRequest {
+class SpNpcNookIntroTalk : public SpNpcTalkRequest {
 public:
-    Unk_ov068_0226fea4();
-    virtual ~Unk_ov068_0226fea4();
+    SpNpcNookIntroTalk();
+    virtual ~SpNpcNookIntroTalk();
     virtual void vfunc_14();
     virtual void vfunc_18();
     virtual void vfunc_78(Unk_ov068_02266f30_Out *out);
     virtual void vfunc_80();
     virtual void vfunc_84();
 
-    void func_ov068_02266bd0();
-    void func_ov068_02266d64(s32 a);
-    void func_ov068_02266f58(Unk_ov068_0226fb80 *o);
+    void runWalkScript();
+    void setScript(s32 a);
+    void attachOwner(FieldVillager *o);
 
     /* 0xac */ s32 unk_ac;
     /* 0xb0 */ u8 unk_b0;
     /* 0xb1 */ u8 pad_b1[3];
-    /* 0xb4 */ Unk_ov068_0226fb80 *unk_b4;
+    /* 0xb4 */ FieldVillager *unk_b4;
 };
 
-typedef BOOL (Unk_ov068_0226ff34::*Unk_ov068_02267238_Fn)();
+typedef BOOL (SpNpcNookIntro::*Unk_ov068_02267238_Fn)();
 struct Unk_ov068_02267238_Entry {
     Unk_ov068_02267238_Fn a;
     Unk_ov068_02267238_Fn b;
 };
-typedef void (Unk_ov068_0226fea4::*Unk_ov068_0226fea4_Fn)();
+typedef void (SpNpcNookIntroTalk::*Unk_ov068_0226fea4_Fn)();
 struct Unk_ov068_0226fea4_Ent {
     Unk_ov068_0226fea4_Fn fn;
     u8 flag;
     u8 pad[3];
 };
 
-class Unk_ov068_0226ff34 : public Unk_020d8bc8 {
+class SpNpcNookIntro : public Unk_020d8bc8 {
 public:
-    Unk_ov068_0226ff34() {}
+    SpNpcNookIntro() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_48();
@@ -381,21 +381,21 @@ public:
     virtual const char *getTexturePath();
     virtual const char *getModelPath();
 
-    BOOL func_ov068_02266fc4();
-    BOOL func_ov068_02266ff8();
-    BOOL func_ov068_02267008();
-    BOOL func_ov068_02267048();
-    BOOL func_ov068_022670c8();
-    BOOL func_ov068_022670f8();
-    BOOL func_ov068_0226712c();
-    BOOL func_ov068_0226716c();
-    BOOL func_ov068_022671a4();
-    BOOL func_ov068_022671dc();
-    BOOL func_ov068_02267214();
-    BOOL func_ov068_02267234();
-    void func_ov068_02267238(s32 state);
+    BOOL mainAct05();
+    BOOL setupAct05();
+    BOOL mainAct04();
+    BOOL setupAct04();
+    BOOL mainAct03();
+    BOOL setupAct03();
+    BOOL mainAct02();
+    BOOL setupAct02();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 state);
 
-    Unk_ov068_0226fea4 unk_658;
+    SpNpcNookIntroTalk unk_658;
     u16 unk_710;
     u8 pad_712[2];
     s32 unk_714;
@@ -405,24 +405,24 @@ public:
     u8 pad_721[3];
 };
 
-extern "C" Unk_ov068_0226ff34 *func_ov068_0226746c();
+extern "C" SpNpcNookIntro *SpNpcNookIntro_Create();
 #define data_ov068_0226fe1c ((Unk_ov068_0226fea4_Flag *)((u8 *)data_ov068_0226fe14 + 8))
 #define PMA(x) (*(Unk_ov068_0226fea4_Fn *)(x))
 #define PMB(x) (*(Unk_ov068_02267238_Fn *)(x))
 extern "C" {
-void _ZN18Unk_ov068_0226ff3419func_ov068_022670f8Ev();
-void _ZN18Unk_ov068_0226ff3419func_ov068_022671a4Ev();
-void _ZN18Unk_ov068_0226ff3419func_ov068_02267234Ev();
-void _ZN18Unk_ov068_0226ff3419func_ov068_02267214Ev();
-void _ZN18Unk_ov068_0226ff3419func_ov068_02267048Ev();
-void _ZN18Unk_ov068_0226ff3419func_ov068_022670c8Ev();
-void _ZN18Unk_ov068_0226fea419func_ov068_02266bd0Ev();
-void _ZN18Unk_ov068_0226ff3419func_ov068_02267008Ev();
-void _ZN18Unk_ov068_0226ff3419func_ov068_02266ff8Ev();
-void _ZN18Unk_ov068_0226ff3419func_ov068_0226712cEv();
-void _ZN18Unk_ov068_0226ff3419func_ov068_02266fc4Ev();
-void _ZN18Unk_ov068_0226ff3419func_ov068_022671dcEv();
-void _ZN18Unk_ov068_0226ff3419func_ov068_0226716cEv();
+void _ZN14SpNpcNookIntro10setupAct03Ev();
+void _ZN14SpNpcNookIntro9mainAct01Ev();
+void _ZN14SpNpcNookIntro10setupAct00Ev();
+void _ZN14SpNpcNookIntro9mainAct00Ev();
+void _ZN14SpNpcNookIntro10setupAct04Ev();
+void _ZN14SpNpcNookIntro9mainAct03Ev();
+void _ZN18SpNpcNookIntroTalk13runWalkScriptEv();
+void _ZN14SpNpcNookIntro9mainAct04Ev();
+void _ZN14SpNpcNookIntro10setupAct05Ev();
+void _ZN14SpNpcNookIntro9mainAct02Ev();
+void _ZN14SpNpcNookIntro9mainAct05Ev();
+void _ZN14SpNpcNookIntro10setupAct01Ev();
+void _ZN14SpNpcNookIntro10setupAct02Ev();
 extern void *data_ov068_0226fd00[2];
 extern void *data_ov068_0226fd08[2];
 extern void *data_ov068_0226fd10[2];
@@ -436,7 +436,7 @@ extern void *data_ov068_0226fd48[2];
 extern void *data_ov068_0226fd50[2];
 extern void *data_ov068_0226fd58[2];
 extern void *data_ov068_0226fd60[2];
-extern char data_ov068_0226fd88[0x14];
+extern char sNookIntroMsgFile[0x14];
 extern char data_ov068_0226fd9c[0x18];
 extern char data_ov068_0226fdb4[0x18];
 extern char data_ov068_0226fdcc[0x18];
@@ -446,19 +446,19 @@ extern char data_ov068_0226fe48[0x1c];
 extern char data_ov068_0226fe64[0x1c];
 extern char data_ov068_0226fe80[0x1c];
 extern Unk_ov068_0226fea4_Ent data_ov068_0226fe14[2];
-extern Unk_ov068_02267238_Entry data_ov068_02271018[6];
+extern Unk_ov068_02267238_Entry sSpNpcNookIntroActTable[6];
 }
 
 // data definitions before the function with the local static table (creation order)
 extern "C" char data_ov068_0226fe80[0x1c] = "npc_sp/model/rcd_tex.nsbtx";
 extern "C" Unk_ov068_0226fea4_Ent data_ov068_0226fe14[2] = {{0, 0}, {PMA(data_ov068_0226fd30), 1}};
-extern "C" void *data_ov068_0226fd30[2] = {(void *)_ZN18Unk_ov068_0226fea419func_ov068_02266bd0Ev, 0};
+extern "C" void *data_ov068_0226fd30[2] = {(void *)_ZN18SpNpcNookIntroTalk13runWalkScriptEv, 0};
 
-extern "C" Unk_ov068_0226ff34 *func_ov068_0226746c() {
-    return new Unk_ov068_0226ff34();
+extern "C" SpNpcNookIntro *SpNpcNookIntro_Create() {
+    return new SpNpcNookIntro();
 }
 
-BOOL Unk_ov068_0226ff34::vfunc_04() {
+BOOL SpNpcNookIntro::vfunc_04() {
     static ItemId tbl[4] = {
         ItemId(0xd019), ItemId(0xd01a),
         ItemId(0xd01b), ItemId(0xd01c)
@@ -468,18 +468,18 @@ BOOL Unk_ov068_0226ff34::vfunc_04() {
     }
     Unk_020d77a4_setNpcHandle(this, &tbl[func_020ae02c(&data_021ed104)].v);
     Unk_020d77a4_setTalkRequest(this, &unk_658);
-    unk_658.func_ov068_02266f58((Unk_ov068_0226fb80 *)this);
+    unk_658.attachOwner((FieldVillager *)this);
     func_0201a8d0(&unk_350, 2, 0x399, 0x133, 0x199);
     return TRUE;
 }
 
 // data definitions after the function with the local static table
-extern "C" const char *data_ov068_0226fd68[4] = {data_ov068_0226fd9c, data_ov068_0226fdb4, data_ov068_0226fdcc,
+extern "C" const char *sNookModelPaths[4] = {data_ov068_0226fd9c, data_ov068_0226fdb4, data_ov068_0226fdcc,
                                                  data_ov068_0226fde4};
 extern "C" char data_ov068_0226fd9c[0x18] = "npc_sp/model/rcn.nsbmd";
-extern "C" void *data_ov068_0226fd40[2] = {(void *)_ZN18Unk_ov068_0226ff3419func_ov068_02266ff8Ev, 0};
-extern "C" void *data_ov068_0226fd00[2] = {(void *)_ZN18Unk_ov068_0226ff3419func_ov068_022670f8Ev, 0};
-extern "C" Unk_ov068_02267238_Entry data_ov068_02271018[6] = {
+extern "C" void *data_ov068_0226fd40[2] = {(void *)_ZN14SpNpcNookIntro10setupAct05Ev, 0};
+extern "C" void *data_ov068_0226fd00[2] = {(void *)_ZN14SpNpcNookIntro10setupAct03Ev, 0};
+extern "C" Unk_ov068_02267238_Entry sSpNpcNookIntroActTable[6] = {
     {PMB(data_ov068_0226fd10), PMB(data_ov068_0226fd18)},
     {PMB(data_ov068_0226fd58), PMB(data_ov068_0226fd08)},
     {PMB(data_ov068_0226fd60), PMB(data_ov068_0226fd48)},
@@ -487,32 +487,32 @@ extern "C" Unk_ov068_02267238_Entry data_ov068_02271018[6] = {
     {PMB(data_ov068_0226fd20), PMB(data_ov068_0226fd38)},
     {PMB(data_ov068_0226fd40), PMB(data_ov068_0226fd50)}};
 extern "C" char data_ov068_0226fdb4[0x18] = "npc_sp/model/rcc.nsbmd";
-extern "C" void *data_ov068_0226fd08[2] = {(void *)_ZN18Unk_ov068_0226ff3419func_ov068_022671a4Ev, 0};
-extern "C" void *data_ov068_0226fd50[2] = {(void *)_ZN18Unk_ov068_0226ff3419func_ov068_02266fc4Ev, 0};
-extern "C" void *data_ov068_0226fd18[2] = {(void *)_ZN18Unk_ov068_0226ff3419func_ov068_02267214Ev, 0};
+extern "C" void *data_ov068_0226fd08[2] = {(void *)_ZN14SpNpcNookIntro9mainAct01Ev, 0};
+extern "C" void *data_ov068_0226fd50[2] = {(void *)_ZN14SpNpcNookIntro9mainAct05Ev, 0};
+extern "C" void *data_ov068_0226fd18[2] = {(void *)_ZN14SpNpcNookIntro9mainAct00Ev, 0};
 extern "C" char data_ov068_0226fde4[0x18] = "npc_sp/model/rcd.nsbmd";
-extern "C" void *data_ov068_0226fd58[2] = {(void *)_ZN18Unk_ov068_0226ff3419func_ov068_022671dcEv, 0};
-extern "C" void *data_ov068_0226fd48[2] = {(void *)_ZN18Unk_ov068_0226ff3419func_ov068_0226712cEv, 0};
+extern "C" void *data_ov068_0226fd58[2] = {(void *)_ZN14SpNpcNookIntro10setupAct01Ev, 0};
+extern "C" void *data_ov068_0226fd48[2] = {(void *)_ZN14SpNpcNookIntro9mainAct02Ev, 0};
 extern "C" char data_ov068_0226fe2c[0x1c] = "npc_sp/model/rcn_tex.nsbtx";
 extern "C" char data_ov068_0226fe48[0x1c] = "npc_sp/model/rcc_tex.nsbtx";
-extern "C" char data_ov068_0226fd88[0x14] = "sp_etc_sequence4";
-extern "C" void *data_ov068_0226fd10[2] = {(void *)_ZN18Unk_ov068_0226ff3419func_ov068_02267234Ev, 0};
-extern "C" void *data_ov068_0226fd38[2] = {(void *)_ZN18Unk_ov068_0226ff3419func_ov068_02267008Ev, 0};
+extern "C" char sNookIntroMsgFile[0x14] = "sp_etc_sequence4";
+extern "C" void *data_ov068_0226fd10[2] = {(void *)_ZN14SpNpcNookIntro10setupAct00Ev, 0};
+extern "C" void *data_ov068_0226fd38[2] = {(void *)_ZN14SpNpcNookIntro9mainAct04Ev, 0};
 extern "C" char data_ov068_0226fdcc[0x18] = "npc_sp/model/rcs.nsbmd";
-extern "C" const char *data_ov068_0226fd78[4] = {data_ov068_0226fe2c, data_ov068_0226fe48, data_ov068_0226fe64,
+extern "C" const char *sNookTexPaths[4] = {data_ov068_0226fe2c, data_ov068_0226fe48, data_ov068_0226fe64,
                                                  data_ov068_0226fe80};
-extern "C" void *data_ov068_0226fd60[2] = {(void *)_ZN18Unk_ov068_0226ff3419func_ov068_0226716cEv, 0};
-extern "C" void *data_ov068_0226fd28[2] = {(void *)_ZN18Unk_ov068_0226ff3419func_ov068_022670c8Ev, 0};
-extern "C" void *data_ov068_0226fcfc = data_ov068_0226fd88;
+extern "C" void *data_ov068_0226fd60[2] = {(void *)_ZN14SpNpcNookIntro10setupAct02Ev, 0};
+extern "C" void *data_ov068_0226fd28[2] = {(void *)_ZN14SpNpcNookIntro9mainAct03Ev, 0};
+extern "C" void *data_ov068_0226fcfc = sNookIntroMsgFile;
 extern "C" char data_ov068_0226fe64[0x1c] = "npc_sp/model/rcs_tex.nsbtx";
-extern "C" Unk_ov068_SceneEntry data_ov068_0226fdfc = {(void *(*)())func_ov068_0226746c, 0x7d, 0x81, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" void *data_ov068_0226fd20[2] = {(void *)_ZN18Unk_ov068_0226ff3419func_ov068_02267048Ev, 0};
+extern "C" Unk_ov068_SceneEntry sSpNpcNookIntroProfile = {(void *(*)())SpNpcNookIntro_Create, 0x7d, 0x81, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" void *data_ov068_0226fd20[2] = {(void *)_ZN14SpNpcNookIntro10setupAct04Ev, 0};
 
-BOOL Unk_ov068_0226ff34::vfunc_00() {
+BOOL SpNpcNookIntro::vfunc_00() {
     if (!Unk_020d8bc8::vfunc_00()) {
         return FALSE;
     }
-    func_ov068_02267238(0);
+    changeAct(0);
     unk_710 = unk_8e;
     unk_4cc.unk_1c |= 2;
     void *p = PlayerData_GetCurrent();
@@ -527,44 +527,44 @@ BOOL Unk_ov068_0226ff34::vfunc_00() {
     return TRUE;
 }
 
-const char *Unk_ov068_0226ff34::getTexturePath() {
-    return data_ov068_0226fd78[func_020ae02c(&data_021ed104)];
+const char *SpNpcNookIntro::getTexturePath() {
+    return sNookTexPaths[func_020ae02c(&data_021ed104)];
 }
 
-const char *Unk_ov068_0226ff34::getModelPath() {
-    return data_ov068_0226fd68[func_020ae02c(&data_021ed104)];
+const char *SpNpcNookIntro::getModelPath() {
+    return sNookModelPaths[func_020ae02c(&data_021ed104)];
 }
 
-BOOL Unk_ov068_0226ff34::updateAct() {
+BOOL SpNpcNookIntro::updateAct() {
     BOOL result = FALSE;
-    if (data_ov068_02271018[unk_654].b != NULL) {
-        result = (this->*data_ov068_02271018[unk_654].b)();
+    if (sSpNpcNookIntroActTable[unk_654].b != NULL) {
+        result = (this->*sSpNpcNookIntroActTable[unk_654].b)();
     }
     return result;
 }
 
-void Unk_ov068_0226ff34::func_ov068_02267238(s32 state) {
+void SpNpcNookIntro::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_ov068_02271018[state].a != NULL) {
-        ok = (this->*data_ov068_02271018[state].a)();
+    if (sSpNpcNookIntroActTable[state].a != NULL) {
+        ok = (this->*sSpNpcNookIntroActTable[state].a)();
     }
     if (ok) {
         unk_654 = state;
     }
 }
 
-BOOL Unk_ov068_0226ff34::func_ov068_02267234() {
+BOOL SpNpcNookIntro::setupAct00() {
     return TRUE;
 }
 
-BOOL Unk_ov068_0226ff34::func_ov068_02267214() {
+BOOL SpNpcNookIntro::mainAct00() {
     if (TalkRequest_AddPlayerTalk6(this, 0)) {
         func_02094f48(1, 4);
     }
     return TRUE;
 }
 
-BOOL Unk_ov068_0226ff34::func_ov068_022671dc() {
+BOOL SpNpcNookIntro::setupAct01() {
     u32 x;
     void *p = func_02015aac(&unk_658);
     x = 0;
@@ -575,17 +575,17 @@ BOOL Unk_ov068_0226ff34::func_ov068_022671dc() {
     return TRUE;
 }
 
-BOOL Unk_ov068_0226ff34::func_ov068_022671a4() {
+BOOL SpNpcNookIntro::mainAct01() {
     if (func_02014220(&unk_618) == 0) {
         Camera_SetModeDefault();
         func_02034dd0(0x13, 0x3c, 0);
         func_02034d84(0x47);
-        func_ov068_02267238(3);
+        changeAct(3);
     }
     return TRUE;
 }
 
-BOOL Unk_ov068_0226ff34::func_ov068_0226716c() {
+BOOL SpNpcNookIntro::setupAct02() {
     Unk_ov068_0226fd68_Vec v;
     Unk_ov068_0226fd68_Vec *p = (Unk_ov068_0226fd68_Vec *)func_020947f0(4);
     v.x = p->x;
@@ -596,30 +596,30 @@ BOOL Unk_ov068_0226ff34::func_ov068_0226716c() {
     return TRUE;
 }
 
-BOOL Unk_ov068_0226ff34::func_ov068_0226712c() {
+BOOL SpNpcNookIntro::mainAct02() {
     if (func_020951b8(4) == 0) {
         unk_658.vfunc_08();
         func_02015ab0(&unk_658, Unk_020d77a4_getPlayerActor(this, 4));
-        func_ov068_02267238(1);
+        changeAct(1);
     }
     return TRUE;
 }
 
-BOOL Unk_ov068_0226ff34::func_ov068_022670f8() {
+BOOL SpNpcNookIntro::setupAct03() {
     func_020196b4(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov068_0226ff34::func_ov068_022670c8() {
+BOOL SpNpcNookIntro::mainAct03() {
     if (func_020197a8(&unk_564) == 3) {
         if (func_02019790(&unk_564)) {
-            func_ov068_02267238(4);
+            changeAct(4);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov068_0226ff34::func_ov068_02267048() {
+BOOL SpNpcNookIntro::setupAct04() {
     unk_714 = unk_5c;
     unk_718 = unk_60;
     unk_71c = unk_64;
@@ -630,7 +630,7 @@ BOOL Unk_ov068_0226ff34::func_ov068_02267048() {
     return TRUE;
 }
 
-BOOL Unk_ov068_0226ff34::func_ov068_02267008() {
+BOOL SpNpcNookIntro::mainAct04() {
     if (func_02019790(&unk_564) != 0 || func_020e7518(&unk_720) == 0) {
         TalkRequest_EndTalkWith(this);
         if (PlayerData_GetCurrent()) {
@@ -640,12 +640,12 @@ BOOL Unk_ov068_0226ff34::func_ov068_02267008() {
     return TRUE;
 }
 
-BOOL Unk_ov068_0226ff34::func_ov068_02266ff8() {
+BOOL SpNpcNookIntro::setupAct05() {
     unk_720 = 10;
     return TRUE;
 }
 
-BOOL Unk_ov068_0226ff34::func_ov068_02266fc4() {
+BOOL SpNpcNookIntro::mainAct05() {
     if (func_020e7518(&unk_720) == 0) {
         func_02034d70(0x13);
         func_02034dd0(0x12, 5, 5);
@@ -654,17 +654,17 @@ BOOL Unk_ov068_0226ff34::func_ov068_02266fc4() {
     return TRUE;
 }
 
-Unk_ov068_0226fea4::Unk_ov068_0226fea4() {}
+SpNpcNookIntroTalk::SpNpcNookIntroTalk() {}
 
-Unk_ov068_0226fea4::~Unk_ov068_0226fea4() {
+SpNpcNookIntroTalk::~SpNpcNookIntroTalk() {
 }
 
-void Unk_ov068_0226fea4::func_ov068_02266f58(Unk_ov068_0226fb80 *o) {
+void SpNpcNookIntroTalk::attachOwner(FieldVillager *o) {
     vfunc_08();
     unk_b4 = o;
 }
 
-void Unk_ov068_0226fea4::vfunc_78(Unk_ov068_02266f30_Out *out) {
+void SpNpcNookIntroTalk::vfunc_78(Unk_ov068_02266f30_Out *out) {
     void *p = PlayerData_GetCurrent();
     if (p != 0) {
         func_02097ff4(p, 0x23);
@@ -673,7 +673,7 @@ void Unk_ov068_0226fea4::vfunc_78(Unk_ov068_02266f30_Out *out) {
     out->unk_04 = 0x22;
 }
 
-void Unk_ov068_0226fea4::vfunc_14() {
+void SpNpcNookIntroTalk::vfunc_14() {
     Unk_ov068_02266bd0_Scene *sc = unk_3c;
     volatile u8 buf = data_021edb68;
     buf = 0;
@@ -681,7 +681,7 @@ void Unk_ov068_0226fea4::vfunc_14() {
     case 0x22:
         TalkWindowState_setNextMessage(sc, gTalkMsgIndexEnd, 0);
         sc->unk_14 = 0;
-        func_ov068_02266d64(1);
+        setScript(1);
         break;
     case 10:
     case 13: {
@@ -722,10 +722,10 @@ void Unk_ov068_0226fea4::vfunc_14() {
     }
 }
 
-void Unk_ov068_0226fea4::vfunc_18() {
+void SpNpcNookIntroTalk::vfunc_18() {
 }
 
-void Unk_ov068_0226fea4::vfunc_80() {
+void SpNpcNookIntroTalk::vfunc_80() {
     if (data_ov068_0226fe1c[unk_ac].flag != 0) {
         if (data_ov068_0226fe14[unk_ac].fn) {
             (this->*data_ov068_0226fe14[unk_ac].fn)();
@@ -733,21 +733,21 @@ void Unk_ov068_0226fea4::vfunc_80() {
     }
 }
 
-void Unk_ov068_0226fea4::vfunc_84() {
+void SpNpcNookIntroTalk::vfunc_84() {
     if (data_ov068_0226fe1c[unk_ac].flag == 0) {
         if (data_ov068_0226fe14[unk_ac].fn) {
             (this->*data_ov068_0226fe14[unk_ac].fn)();
-            func_ov068_02266d64(0);
+            setScript(0);
         }
     }
 }
 
-void Unk_ov068_0226fea4::func_ov068_02266d64(s32 a) {
+void SpNpcNookIntroTalk::setScript(s32 a) {
     unk_ac = a;
     unk_b0 = 0;
 }
 
-void Unk_ov068_0226fea4::func_ov068_02266bd0() {
+void SpNpcNookIntroTalk::runWalkScript() {
     switch (unk_b0) {
     case 0:
         if (unk_3c->unk_04 == 5) {
@@ -801,7 +801,7 @@ void Unk_ov068_0226fea4::func_ov068_02266bd0() {
                 t.z = pt->z;
                 t.y += 0x2000;
                 Camera_FocusOnPoint(&t);
-                func_ov068_02266d64(0);
+                setScript(0);
             }
         }
         break;
@@ -809,7 +809,7 @@ void Unk_ov068_0226fea4::func_ov068_02266bd0() {
     }
 }
 
-BOOL Unk_ov068_0226ff34::vfunc_48() {
+BOOL SpNpcNookIntro::vfunc_48() {
     BOOL r = FALSE;
     if (unk_654 == 0) {
         r = TRUE;
@@ -817,13 +817,13 @@ BOOL Unk_ov068_0226ff34::vfunc_48() {
     return r;
 }
 
-void Unk_ov068_0226ff34::vfunc_4c(s32 a) {
+void SpNpcNookIntro::vfunc_4c(s32 a) {
     switch (a) {
     case 1:
-        func_ov068_02267238(2);
+        changeAct(2);
         break;
     case 8:
-        func_ov068_02267238(5);
+        changeAct(5);
         break;
     }
 }

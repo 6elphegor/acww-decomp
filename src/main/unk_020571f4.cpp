@@ -211,7 +211,7 @@ s32 func_020e9650(void *a, void *b);
 void func_020e761c(s32 *p, s32 target, s32 step);
 void func_020e93a0(Unk_020dc034_V *v, s32 angle);
 void VEC_Add(Unk_020dc034_V *a, Unk_020dc034_V *b, Unk_020dc034_V *out);
-void func_0204edd8(Unk_020dc034_V *a, Unk_020dc034_V *b);
+void FieldPos_SnapToUnitCenter(Unk_020dc034_V *a, Unk_020dc034_V *b);
 s32 func_020b50e8();
 s32 func_02003e70(void *p, u32 a, s32 b, s32 c);
 void func_020e9960(Unk_020dc034_V *out, Unk_020dc034_V *a, Unk_020dc034_V *b);
@@ -1089,7 +1089,7 @@ void Unk_020dc034::func_02057e48()
             } else {
                 func_020e93a0(&t2, unk_cc[0]->unk_8e);
                 VEC_Add(&t2, &unk_cc[0]->unk_5c, &t2);
-                func_0204edd8(&unk_6c, &t2);
+                FieldPos_SnapToUnitCenter(&unk_6c, &t2);
             }
             unk_6c.y = unk_6c.y + 0x1000;
             s32 m = data_021c5a2c[1];
@@ -1157,7 +1157,7 @@ void Unk_020dc034::func_02057be8()
     } else {
         func_020e93a0(&t, unk_cc[0]->unk_8e);
         VEC_Add(&t, &unk_cc[0]->unk_5c, &t);
-        func_0204edd8(&unk_6c, &t);
+        FieldPos_SnapToUnitCenter(&unk_6c, &t);
     }
     unk_6c.y = unk_6c.y + 0x1000;
     s32 a, b, c;

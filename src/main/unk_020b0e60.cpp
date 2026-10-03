@@ -6,10 +6,10 @@ extern "C" {
 extern u32 OVERLAY_0_ID[];
 extern u32 OVERLAY_68_ID[];
 extern u32 OVERLAY_69_ID[];
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 data_020e416c;
 extern s16 data_02135f44[];
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 extern u8 data_021dfd8c;
 extern u8 data_021e58a6;
 extern u8 data_021ed2e6[];
@@ -327,10 +327,10 @@ void MTX_RotZ33_(void *m, s32 sn, s32 cs);
 void MTX_Concat33(void *a, void *b, void *out);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-u32 func_020374b0(u8 *cell, u32 mask);
-BOOL func_020374f4(u8 *cell, u32 *a, u32 *b, ItemId *m, ItemId *c, u32 d);
-u16 *func_02037558(u8 *cell, s32 a, s32 b, s32 c);
-BOOL func_02037590(u8 *cell, u16 *t, u32 x, u32 y, u32 z);
+u32 MapBlock_HasAnyAttr(u8 *cell, u32 mask);
+BOOL MapBlock_FindItemInRange(u8 *cell, u32 *a, u32 *b, ItemId *m, ItemId *c, u32 d);
+u16 *MapBlock_GetItemPtr(u8 *cell, s32 a, s32 b, s32 c);
+BOOL MapBlock_SetItem(u8 *cell, u16 *t, u32 x, u32 y, u32 z);
 void func_02045ca8(u32 a);
 u16 Item_MakePlayerHouse(u32 a);
 BOOL Item_IsPlayerHouse(u16 *p);
@@ -341,14 +341,14 @@ BOOL Item_IsNookShop(u16 *p);
 u32 Item_MakeBuilding(u32 v);
 s32 Item_GetFurnitureIndex(const u16 *p);
 BOOL Item_IsFurniture(void);
-BOOL func_0204d9b4(Grid *g, u32 x, u32 y, u32 a, u32 b, Marker2 *m);
-BOOL func_0204d9ec(Map *m, s32 x, s32 y, s32 z);
-void func_0204d9fc(Map *m, u16 *p, s32 x, s32 y);
-Map *func_0204da0c(void);
-u16 *func_0204ebd8(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-u32 func_0204ec50(Map *m, s32 x, s32 y);
-void func_0204edf8(s32 *ox, s32 *oy, s32 x, s32 y, s32 a, s32 b);
-s32 _ZN12Unk_02056fd813func_02057110Ei(Ctx *c, const char *name);
+BOOL BlockMap_RemoveStructureAt(Grid *g, u32 x, u32 y, u32 a, u32 b, Marker2 *m);
+BOOL BlockMap_RemoveStructure(Map *m, s32 x, s32 y, s32 z);
+void BlockMap_PutStructure(Map *m, u16 *p, s32 x, s32 y);
+Map *TownBlockMap_Get(void);
+u16 *BlockMap_GetItemPtr(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+u32 BlockMap_GetBlockAttr(Map *m, s32 x, s32 y);
+void FieldUnit_FromBlockUnit(s32 *ox, s32 *oy, s32 x, s32 y, s32 a, s32 b);
+s32 _ZN12G3dResAccess10findMatIdxEi(Ctx *c, const char *name);
 void func_020639e8(char *buf, const char *fmt, ...);
 u32 func_02063b8c(...);
 void *File_LoadAlloc(const char *name, u32 a, u32 b, u32 c);
@@ -358,16 +358,16 @@ void func_02071a4c(void *p);
 void *func_02071a50(void *p);
 void _ZN12Unk_02071ae0D1Ev(void *p);
 void _ZN12Unk_02071ae0C1Ev(void *p);
-void _ZN12Unk_020cbb1813func_02072824Ejj(void *p, u32 a, u32 b);
-void _ZN12Unk_020cbb1813func_020728a4EPhj(void *p, void *q, u32 n);
-void _ZN12Unk_020cbb1813func_020728d4Ev(void *p);
-BOOL _ZN12Unk_020cbb1813func_020729ccEj(void *p, u32 a);
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
+void _ZN11CommManager9endRecordEjj(void *p, u32 a, u32 b);
+void _ZN11CommManager11writeRecordEPhj(void *p, void *q, u32 n);
+void _ZN11CommManager11beginRecordEv(void *p);
+BOOL _ZN11CommManager7isMyAidEj(void *p, u32 a);
+BOOL _ZN11CommManager8isOnlineEv(void *p);
 BOOL SaveVillagers_Get(void *a, u32 b);
 u32 func_0207e278(void);
 void func_02084ffc(void);
 void func_0208627c(void *a);
-void func_0209cf18(u8 *out);
+void Clock_GetMinuteHour(u8 *out);
 void _ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_(void *p, s32 a, s32 *b, s32 *c, s32 d, s32 e, s32 f, s32 g);
 void func_020b4934(void);
 s32 func_020b4ff0(void *a);
@@ -388,8 +388,8 @@ void NNSi_G3dModifyMatFlag(Pal *p, s32 a, s32 b);
 Obj *func_ov003_02218b40(u32 a);
 Obj *func_ov003_02218c60(u32 a);
 BOOL _ZN18Unk_ov003_02232c088vfunc_08EPiS0_S0_ii(void *p, s32 *a, s32 *b, s32 *c, s32 x, s32 y);
-u16 *_ZN18Unk_ov009_0225e29c19func_ov009_0225b98cEv(Obj *o);
-BOOL _ZN18Unk_ov009_0225e29c19func_ov009_0225d650Ev(void);
+u16 *_ZN13BuildingActor9getItemIdEv(Obj *o);
+BOOL _ZN13BuildingActor15getEntranceTypeEv(void);
 }
 
 
@@ -433,17 +433,17 @@ void func_020b1dc0(void);
 u8 func_020b1d80(u32 id);
 BOOL func_020b1d3c(u32 id, u8 val);
 u16 *func_020b1c8c(s32 *outX, s32 *outY);
-void func_020b1c18(u16 id);
-BOOL func_020b1b8c(u16 id);
-void func_020b1b7c(void);
-BOOL func_020b1b6c(void);
-void func_020b1b5c(void);
-BOOL func_020b1b4c(void);
-void func_020b1b3c(void);
-BOOL func_020b1b2c(void);
-void func_020b1b1c(void);
-BOOL func_020b1b0c(void);
-u32 func_020b1aa8(u8 *cell);
+void TownStructure_PlaceAtEventPlot(u16 id);
+BOOL TownStructure_RemoveFromEventPlot(u16 id);
+void Town_PlaceReddTent(void);
+BOOL Town_RemoveReddTent(void);
+void Town_PlaceKatrinaTent(void);
+BOOL Town_RemoveKatrinaTent(void);
+void Town_PlaceGracieCar(void);
+BOOL Town_RemoveGracieCar(void);
+void Town_PlaceCountdownSign(void);
+BOOL Town_RemoveCountdownSign(void);
+u32 MapBlock_CountSigns(u8 *cell);
 u32 func_020b1a18(u8 *cell, u32 target, u32 v);
 BOOL func_020b19ec(u8 *cell, u32 v);
 BOOL func_020b17e0(s32 *pos, BOOL flag);
@@ -773,13 +773,13 @@ Unk_020e3dcc::~Unk_020e3dcc() {}
 BOOL Unk_020e3dcc::vfunc_08(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32 y) {
     if (func_020b2768_is_flag()) {
         if (!_ZN18Unk_ov003_02232c088vfunc_08EPiS0_S0_ii(&data_021ee2b0, a, b, c, x, y)) {
-            void *m = data_021c47c4;
+            void *m = gSceneBlockMap;
             if (m != NULL) {
                 s32 lx = x;
                 s32 ly = y;
                 s32 xh = lx >> 4;
                 s32 yh = ly >> 4;
-                u16 *p = func_0204ebd8(m, xh, yh, lx - (xh << 4), ly - (yh << 4), 0);
+                u16 *p = BlockMap_GetItemPtr(m, xh, yh, lx - (xh << 4), ly - (yh << 4), 0);
                 if (p != NULL) {
                     if (*p == 0x500a) {
                         *a = 0xb33;
@@ -914,7 +914,7 @@ extern "C" void func_020b23a8(u8 *self)
     u8 *cell;
     Map *m;
     u16 *p;
-    m = func_0204da0c();
+    m = TownBlockMap_Get();
     for (u32 y = 1; y <= 4; y++) {
         for (u32 x = 1; x <= 4; x++) {
             if (x < m->w && y < m->h && m->data) {
@@ -925,11 +925,11 @@ extern "C" void func_020b23a8(u8 *self)
             if (cell) {
                 for (j = 0; j < 16; j++) {
                     for (i = 0; i < 16; i++) {
-                        p = func_02037558(cell, i, j, 0);
+                        p = MapBlock_GetItemPtr(cell, i, j, 0);
                         if (p && InRange(*p)) {
                             s32 ox, oy;
-                            func_0204edf8(&ox, &oy, x, y, i, j);
-                            func_0204d9fc(m, p, ox, oy);
+                            FieldUnit_FromBlockUnit(&ox, &oy, x, y, i, j);
+                            BlockMap_PutStructure(m, p, ox, oy);
                         }
                     }
                 }
@@ -1013,7 +1013,7 @@ DoorLight::DoorLight() { unk_00 = -1; }
 
 DoorLight::~DoorLight() {}
 
-void DoorLight::bindMaterial(Ctx *c) { unk_00 = _ZN12Unk_02056fd813func_02057110Ei(c, "m_door"); }
+void DoorLight::bindMaterial(Ctx *c) { unk_00 = _ZN12G3dResAccess10findMatIdxEi(c, "m_door"); }
 
 void DoorLight::apply(Ctx *c, s32 t)
 {
@@ -1026,7 +1026,7 @@ WindowLight::WindowLight() { unk_00 = -1; }
 
 WindowLight::~WindowLight() { unk_00 = -1; }
 
-void WindowLight::bindMaterial(Ctx *c) { unk_00 = _ZN12Unk_02056fd813func_02057110Ei(c, "m_window"); }
+void WindowLight::bindMaterial(Ctx *c) { unk_00 = _ZN12G3dResAccess10findMatIdxEi(c, "m_window"); }
 
 void WindowLight::apply(Ctx *c, s32 t)
 {
@@ -1048,7 +1048,7 @@ void LampLights::bindMaterials(Ctx *c)
 {
     for (u32 i = 0; i < 3; i++) {
         if (getMaterialName(i)) {
-            s32 r = _ZN12Unk_02056fd813func_02057110Ei(c, getMaterialName(i));
+            s32 r = _ZN12G3dResAccess10findMatIdxEi(c, getMaterialName(i));
             if (r != -1) {
                 unk_04[i] = r;
             } else {
@@ -1130,7 +1130,7 @@ void Unk_020b1ddc::func_020b1e74()
     Mtx33 tmp;
     u8 t[2];
     Mtx33 *m = &unk_b4->mtx;
-    func_0209cf18(t);
+    Clock_GetMinuteHour(t);
     if (data_021ee2ac != gFrameCounter) {
         s32 rem = t[1] % 0xc;
         s32 a = (s16)-(FX_Div(rem << 12, 0xc000) * 0xffff >> 12);
@@ -1154,7 +1154,7 @@ void Unk_020b1ddc::func_020b1ddc()
     Mtx33 tmp;
     u8 t[2];
     Mtx33 *m = &unk_b4->mtx;
-    func_0209cf18(t);
+    Clock_GetMinuteHour(t);
     s32 rem = t[0] % 0x3c;
     s32 a = -(FX_Div(rem << 12, 0x3c000) * 0xffff >> 12);
     s32 idx = (u16)(s16)a >> 4;
@@ -1215,7 +1215,7 @@ extern "C" BOOL func_020b1d3c(u32 id, u8 val)
 extern "C" u16 *func_020b1c8c(s32 *outX, s32 *outY)
 {
     s32 x, y;
-    Map *m = func_0204da0c();
+    Map *m = TownBlockMap_Get();
     s32 found = 0;
     *outX = 0;
     *outY = 0;
@@ -1224,7 +1224,7 @@ extern "C" u16 *func_020b1c8c(s32 *outX, s32 *outY)
         s32 h = m->h;
         for (y = 0; y < h; y++) {
             for (x = 0; x < w; x++) {
-                if (func_0204ec50(m, x, y) & 0x200) {
+                if (BlockMap_GetBlockAttr(m, x, y) & 0x200) {
                     found = 1;
                     break;
                 }
@@ -1235,21 +1235,21 @@ extern "C" u16 *func_020b1c8c(s32 *outX, s32 *outY)
         }
         if (found) {
             u8 *cell;
-            func_0204edf8(outX, outY, x, y, 10, 9);
+            FieldUnit_FromBlockUnit(outX, outY, x, y, 10, 9);
             if ((u32)x < m->w && (u32)y < m->h && m->data) {
                 cell = m->data + (x + y * m->w) * 0x28;
             } else {
                 cell = NULL;
             }
             if (cell) {
-                return func_02037558(cell, 10, 9, 0);
+                return MapBlock_GetItemPtr(cell, 10, 9, 0);
             }
         }
     }
     return NULL;
 }
 
-extern "C" void func_020b1c18(u16 id)
+extern "C" void TownStructure_PlaceAtEventPlot(u16 id)
 {
     u16 t[1];
     t[0] = id;
@@ -1257,18 +1257,18 @@ extern "C" void func_020b1c18(u16 id)
         s32 x, y;
         u16 *p = func_020b1c8c(&x, &y);
         if (p) {
-            Map *m = func_0204da0c();
+            Map *m = TownBlockMap_Get();
             if (m) {
                 if (InRange(*p)) {
-                    func_0204d9ec(m, x, y, 0);
+                    BlockMap_RemoveStructure(m, x, y, 0);
                 }
-                func_0204d9fc(m, t, x, y);
+                BlockMap_PutStructure(m, t, x, y);
             }
         }
     }
 }
 
-extern "C" BOOL func_020b1b8c(u16 id)
+extern "C" BOOL TownStructure_RemoveFromEventPlot(u16 id)
 {
     u16 t[2];
     t[0] = id;
@@ -1284,9 +1284,9 @@ extern "C" BOOL func_020b1b8c(u16 id)
                 eq = *p == id;
             }
             if (eq) {
-                Map *m = func_0204da0c();
+                Map *m = TownBlockMap_Get();
                 if (m) {
-                    return func_0204d9ec(m, x, y, 0);
+                    return BlockMap_RemoveStructure(m, x, y, 0);
                 }
             }
         }
@@ -1294,32 +1294,32 @@ extern "C" BOOL func_020b1b8c(u16 id)
     return FALSE;
 }
 
-extern "C" void func_020b1b7c(void) { func_020b1c18(0x5012); }
+extern "C" void Town_PlaceReddTent(void) { TownStructure_PlaceAtEventPlot(0x5012); }
 
-extern "C" BOOL func_020b1b6c(void) { return func_020b1b8c(0x5012); }
+extern "C" BOOL Town_RemoveReddTent(void) { return TownStructure_RemoveFromEventPlot(0x5012); }
 
-extern "C" void func_020b1b5c(void) { func_020b1c18(0x5013); }
+extern "C" void Town_PlaceKatrinaTent(void) { TownStructure_PlaceAtEventPlot(0x5013); }
 
-extern "C" BOOL func_020b1b4c(void) { return func_020b1b8c(0x5013); }
+extern "C" BOOL Town_RemoveKatrinaTent(void) { return TownStructure_RemoveFromEventPlot(0x5013); }
 
-extern "C" void func_020b1b3c(void) { func_020b1c18(0x5021); }
+extern "C" void Town_PlaceGracieCar(void) { TownStructure_PlaceAtEventPlot(0x5021); }
 
-extern "C" BOOL func_020b1b2c(void) { return func_020b1b8c(0x5021); }
+extern "C" BOOL Town_RemoveGracieCar(void) { return TownStructure_RemoveFromEventPlot(0x5021); }
 
-extern "C" void func_020b1b1c(void) { func_020b1c18(0x501e); }
+extern "C" void Town_PlaceCountdownSign(void) { TownStructure_PlaceAtEventPlot(0x501e); }
 
-extern "C" BOOL func_020b1b0c(void) { return func_020b1b8c(0x501e); }
+extern "C" BOOL Town_RemoveCountdownSign(void) { return TownStructure_RemoveFromEventPlot(0x501e); }
 
-extern "C" u32 func_020b1aa8(u8 *cell) {
+extern "C" u32 MapBlock_CountSigns(u8 *cell) {
     u32 count = 0;
     u32 x, y;
     if (cell) {
-        if (func_020374b0(cell, 0xe0) || func_020374b0(cell, 0x10)) {
+        if (MapBlock_HasAnyAttr(cell, 0xe0) || MapBlock_HasAnyAttr(cell, 0x10)) {
             return 0;
         }
         for (y = 0; y < 16; y++) {
             for (x = 0; x < 16; x++) {
-                u16 *p = func_02037558(cell, x, y, 0);
+                u16 *p = MapBlock_GetItemPtr(cell, x, y, 0);
                 if (p && *p == 0x500a) {
                     count++;
                 }
@@ -1333,16 +1333,16 @@ extern "C" u32 func_020b1a18(u8 *cell, u32 target, u32 v) {
     u32 count = 0;
     u32 y, x;
     if (cell) {
-        if (func_020374b0(cell, 0xe0) || func_020374b0(cell, 0x10)) {
+        if (MapBlock_HasAnyAttr(cell, 0xe0) || MapBlock_HasAnyAttr(cell, 0x10)) {
             return 0;
         }
         for (y = 0; y < 16; y++) {
             for (x = 0; x < 16; x++) {
-                u16 *p = func_02037558(cell, x, y, 0);
+                u16 *p = MapBlock_GetItemPtr(cell, x, y, 0);
                 if (p && *p == 0x500a) {
                     if (target == count) {
                         u16 t = v;
-                        if (func_02037590(cell, &t, x, y, 0)) {
+                        if (MapBlock_SetItem(cell, &t, x, y, 0)) {
                             return 1;
                         }
                     }
@@ -1355,14 +1355,14 @@ extern "C" u32 func_020b1a18(u8 *cell, u32 target, u32 v) {
 }
 
 extern "C" BOOL func_020b19ec(u8 *cell, u32 v) {
-    if (func_020b1aa8(cell)) {
+    if (MapBlock_CountSigns(cell)) {
         return func_020b1a18(cell, func_02063b8c(), v);
     }
     return 0;
 }
 
 extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
-    Grid *g = func_0204da0c();
+    Grid *g = TownBlockMap_Get();
     s32 x, y, i, j;
     if (g == NULL) {
         return FALSE;
@@ -1430,7 +1430,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
 
 
 extern "C" BOOL func_020b16e4(void) {
-    Grid *g = func_0204da0c();
+    Grid *g = TownBlockMap_Get();
     s32 y, x;
     if (g == NULL) {
         return FALSE;
@@ -1441,9 +1441,9 @@ extern "C" BOOL func_020b16e4(void) {
             u8 *cell = GetCell(g, x, y);
             if (cell) {
                 u32 a, b;
-                if (func_020374f4(cell, &a, &b, &m1, &m1, 0)) {
+                if (MapBlock_FindItemInRange(cell, &a, &b, &m1, &m1, 0)) {
                     static Marker2 m2(0x500a);
-                    if (func_0204d9b4(g, x, y, a, b, &m2)) {
+                    if (BlockMap_RemoveStructureAt(g, x, y, a, b, &m2)) {
                         func_02084ffc();
                         return TRUE;
                     }
@@ -1497,7 +1497,7 @@ extern "C" u32 func_020b1614(u32 a) {
     }
     o = func_ov003_02218c60(a);
     if (o) {
-        if (_ZN18Unk_ov009_0225e29c19func_ov009_0225d650Ev() == 1) {
+        if (_ZN13BuildingActor15getEntranceTypeEv() == 1) {
             u16 *i = o->vfunc_64();
             if (i) {
                 return i[2];
@@ -1534,10 +1534,10 @@ extern "C" u32 func_020b14f0(void) {
         x = func_020b4ff8(&data_021ef360);
         func_020b4934();
         y = func_020b4ff0(&data_021ef360);
-        if (data_021c47c4) {
+        if (gSceneBlockMap) {
             s32 xh = x >> 4;
             s32 yh = y >> 4;
-            p = func_0204ebd8(data_021c47c4, xh, yh, x - (xh << 4), y - (yh << 4), 0);
+            p = BlockMap_GetItemPtr(gSceneBlockMap, xh, yh, x - (xh << 4), y - (yh << 4), 0);
             if (p) {
                 BOOL in = FALSE;
                 u16 v = *p;
@@ -1573,16 +1573,16 @@ extern "C" u32 func_020b14f0(void) {
 extern "C" BOOL func_020b1454(Obj *o, s32 v) {
     if (IsEnabled()) {
         if (o->vfunc_6c(v)) {
-            if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+            if (_ZN11CommManager8isOnlineEv(gCommManager)) {
                 u16 f;
                 void *d;
-                f = (f & ~0x3f) | (_ZN18Unk_ov009_0225e29c19func_ov009_0225b98cEv(o)[0] & 0x3f);
+                f = (f & ~0x3f) | (_ZN13BuildingActor9getItemIdEv(o)[0] & 0x3f);
                 f = (f & ~0xfc0) | ((v & 0x3f) << 6);
                 f &= ~0xf000;
-                d = data_020cbb18;
-                _ZN12Unk_020cbb1813func_020728d4Ev(d);
-                _ZN12Unk_020cbb1813func_020728a4EPhj(d, &f, 2);
-                _ZN12Unk_020cbb1813func_02072824Ejj(d, 0x22, 4);
+                d = gCommManager;
+                _ZN11CommManager11beginRecordEv(d);
+                _ZN11CommManager11writeRecordEPhj(d, &f, 2);
+                _ZN11CommManager9endRecordEjj(d, 0x22, 4);
             }
             return TRUE;
         }
@@ -1672,10 +1672,10 @@ extern "C" void func_020b1260(Flags1 *p, s32 bit) {
         }
         pk = *p;
         pk.mode = e->hi;
-        d = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(d);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(d, &pk, 1);
-        _ZN12Unk_020cbb1813func_02072824Ejj(d, 0x23, bit);
+        d = gCommManager;
+        _ZN11CommManager11beginRecordEv(d);
+        _ZN11CommManager11writeRecordEPhj(d, &pk, 1);
+        _ZN11CommManager9endRecordEjj(d, 0x23, bit);
         func_020b16b8(&info);
     }
     }
@@ -1698,8 +1698,8 @@ extern "C" void func_020b10e0(u32 arg) {
     Bits bits;
     u16 buf[5];
     u32 idx = func_020b2bac(arg);
-    void *p = data_020cbb18;
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(p) || _ZN12Unk_020cbb1813func_020729ccEj(p, 0)) {
+    void *p = gCommManager;
+    if (!_ZN11CommManager8isOnlineEv(p) || _ZN11CommManager7isMyAidEj(p, 0)) {
         NibblePair *e = data_021ee330 + idx;
         u8 lo;
         u32 y, z;
@@ -1722,10 +1722,10 @@ extern "C" void func_020b10e0(u32 arg) {
         data_021ee330[idx].hi = 0;
         bits.a = 0;
         bits.b = idx;
-        p = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(p);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(p, &bits, 1);
-        _ZN12Unk_020cbb1813func_02072824Ejj(p, 0x23, 0);
+        p = gCommManager;
+        _ZN11CommManager11beginRecordEv(p);
+        _ZN11CommManager11writeRecordEPhj(p, &bits, 1);
+        _ZN11CommManager9endRecordEjj(p, 0x23, 0);
     }
 }
 
@@ -1735,15 +1735,15 @@ extern "C" u8 func_020b10c4(u32 a) {
 
 extern "C" void func_020b1040(u32 a, u32 b) {
     u32 i = func_020b2bac(a);
-    void *p = data_020cbb18;
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(p) || _ZN12Unk_020cbb1813func_020729ccEj(p, 0) || _ZN12Unk_020cbb1813func_020729ccEj(p, 4)) {
+    void *p = gCommManager;
+    if (!_ZN11CommManager8isOnlineEv(p) || _ZN11CommManager7isMyAidEj(p, 0) || _ZN11CommManager7isMyAidEj(p, 4)) {
         data_021ee330[i].lo &= ~(1 << b);
     } else {
         u8 x = i;
-        p = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(p);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(p, &x, 1);
-        _ZN12Unk_020cbb1813func_02072824Ejj(p, 0x24, 0);
+        p = gCommManager;
+        _ZN11CommManager11beginRecordEv(p);
+        _ZN11CommManager11writeRecordEPhj(p, &x, 1);
+        _ZN11CommManager9endRecordEjj(p, 0x24, 0);
     }
 }
 
@@ -1760,8 +1760,8 @@ extern "C" void func_020b101c(void) {
 }
 
 extern "C" u32 func_020b0fb0(u32 a) {
-    void *p = data_020cbb18;
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(p) || _ZN12Unk_020cbb1813func_020729ccEj(p, 0)) {
+    void *p = gCommManager;
+    if (!_ZN11CommManager8isOnlineEv(p) || _ZN11CommManager7isMyAidEj(p, 0)) {
         volatile u16 id = ((u16 *)data_020d0a14)[a];
         BOOL ok = FALSE;
         u16 v = id;

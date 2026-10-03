@@ -39,26 +39,26 @@ void MsgString_append(void *self, const void *s);
 void MsgString_appendString(void *self, void *src);
 void LabelButton_setLabelText(void *self, void *src);
 
-void func_020021b8(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
-void func_020021fc(s32 a, s32 b, s32 c);
+void Gfx2d_SetWindowRect(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
+void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
 void Snd_PlaySe(s32 a);
-void func_0206e020();
-BOOL func_0206e2f4();
-BOOL func_0206e308();
+void MenuScreen_ClearState();
+BOOL MenuScreen_IsClosed();
+BOOL MenuScreen_IsOpen();
 void MenuCtrl_SetButtons();
 void MenuCtrl_SetTouch();
 void MenuCtrl_RemoveOpenMenu(void *p);
 void MenuCtrl_AddOpenMenu(void *p);
-void func_02001564(s32 a);
-void func_02001750(s32 a);
-s32 func_02001580();
-void func_020016bc(s32 a);
-void func_020016cc(s32 a);
-void func_0200152c(s32 a);
-void func_02001724(s32 a, s32 b);
-void func_020016b0(s32 a);
-void func_0200151c(s32 a);
-void func_02001554(s32 a);
+void Gfx2d_EnableMainWindows(s32 a);
+void Gfx2d_SetMainWin0Planes(s32 a);
+s32 Gfx2d_GetMainWindows();
+void Gfx2d_RemoveMainWinOutPlanes(s32 a);
+void Gfx2d_SetMainWinOutPlanes(s32 a);
+void Gfx2d_EnableSubWindows(s32 a);
+void Gfx2d_SetSubWin0Planes(s32 a, s32 b);
+void Gfx2d_SetSubWinOutPlanes(s32 a);
+void Gfx2d_DisableSubWindows(s32 a);
+void Gfx2d_DisableMainWindows(s32 a);
 void *Heap_AllocTail(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 void *func_0212899c(void *p, s32 v, u32 n);
@@ -80,23 +80,23 @@ s32 SaveVillagers_IsOccupied(void *a, s32 b);
 void *SaveVillagers_Get(void *a, s32 b);
 s32 Villager_FindMemory(void *a, s32 b);
 BOOL MenuCtrl_IsButtons();
-void func_0200212c(s32 a);
-s32 func_0200273c(s32 a);
-s32 func_0200140c();
-s32 func_0200142c();
-void func_02002700(s32 a);
-void func_020013e0();
-s32 func_020013cc(s32 a);
-void func_020020b8(s32 a);
-void func_02002398(s32 a, u32 b);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_HideLayer(s32 a);
+s32 Gfx2d_GetLayerPlaneMask(s32 a);
+s32 Gfx2d_EndSubObjWinBrightness();
+s32 Gfx2d_BeginSubObjWinBrightness();
+void Gfx2d_GetLayerBlendMask(s32 a);
+void Gfx2d_ExcludeSubBrightnessPlanes();
+s32 Gfx2d_SetSubBrightness(s32 a);
+void Gfx2d_ShowLayer(s32 a);
+void Gfx2d_SetLayerPriority(s32 a, u32 b);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 u8 *File_LoadAlloc(const char *path, void *heap, s32 a, s32 b);
 void MIi_CpuCopy16(void *dst, void *src, s32 n);
 void MIi_CpuClear16(s32 v, void *dst, s32 n);
-void func_020024f0(void *buf, s32 a, s32 b, s32 c);
-void func_020026c4(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
-void func_0200261c(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
-void func_02002654(char *buf, void *h, s32 x);
+void Gfx2d_LoadScreen(void *buf, s32 a, s32 b, s32 c);
+void Gfx2d_LoadPaletteFile(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
+void Gfx2d_LoadCharFile(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
+void Gfx2d_LoadScreenFile(char *buf, void *h, s32 x);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void GXS_LoadOBJPltt(const void *p, u32 a, u32 b);
@@ -1083,7 +1083,7 @@ void Unk_ov002_02204558::func_ov002_02202200(LabelBalloon *p) {
 }
 
 void func_ov002_022021f4(Self *self, s32 x, s32 y) {
-    func_020021fc(self->unk_1a, x, y);
+    Gfx2d_SetLayerOffset(self->unk_1a, x, y);
 }
 
 void func_ov002_022021d8(Self *self, s32 x, s32 y) {
@@ -1104,14 +1104,14 @@ void func_ov002_02202190(Self *self, s32 x, s32 y) {
 
 void func_ov002_02202144(Self *self) {
     void *h = gCurrentHeap;
-    func_020026c4("menu/inventory/b_itm.bpl", h, self->unk_1a, 0, 3, 3);
-    func_0200261c("menu/inventory/b_choice.bch", h, self->unk_1a, 0x242, 0x242, 0x2d7);
+    Gfx2d_LoadPaletteFile("menu/inventory/b_itm.bpl", h, self->unk_1a, 0, 3, 3);
+    Gfx2d_LoadCharFile("menu/inventory/b_choice.bch", h, self->unk_1a, 0x242, 0x242, 0x2d7);
 }
 
 void func_ov002_022020fc(Self *self) {
     void *h = gCurrentHeap;
-    func_020026c4("menu/friend/bg1.bpl", h, self->unk_1a, 0xe, 0xe, 0xe);
-    func_0200261c("menu/friend/bg1.bch", h, self->unk_1a, 0x26e, 0x26e, 0x27d);
+    Gfx2d_LoadPaletteFile("menu/friend/bg1.bpl", h, self->unk_1a, 0xe, 0xe, 0xe);
+    Gfx2d_LoadCharFile("menu/friend/bg1.bch", h, self->unk_1a, 0x26e, 0x26e, 0x27d);
 }
 
 void func_ov002_022020cc(Self *self, Unk_ov002_022018e4_Arg a, s32 x) {
@@ -1122,7 +1122,7 @@ void func_ov002_022020cc(Self *self, Unk_ov002_022018e4_Arg a, s32 x) {
 
 void func_ov002_02202098(Self *self, s32 x) {
     self->unk_17 = 1;
-    func_0200212c(self->unk_1a);
+    Gfx2d_HideLayer(self->unk_1a);
     if (x != 0) {
         self->func_ov002_022013cc(2);
     }
@@ -1155,8 +1155,8 @@ void func_ov002_02202018(Self *self, u32 x) {
 }
 
 void func_ov002_02201f18(Self *self) {
-    func_02002398(self->unk_1a, self->unk_10);
-    func_0200226c(self->unk_1a, 0, 0, 0);
+    Gfx2d_SetLayerPriority(self->unk_1a, self->unk_10);
+    Gfx2d_SetLayerControl(self->unk_1a, 0, 0, 0);
     void *heap = gCurrentHeap;
     u8 *buf = File_LoadAlloc(self->unk_24, heap, -4, 0);
     u32 n = self->unk_1c;
@@ -1194,14 +1194,14 @@ void func_ov002_02201f18(Self *self) {
         }
         MIi_CpuCopy16(s - 2, d - 2, 0x1e);
     }
-    func_020024f0(buf, self->unk_1a, 0x800, 0);
+    Gfx2d_LoadScreen(buf, self->unk_1a, 0x800, 0);
     Heap_Free(heap, buf);
 }
 
 void func_ov002_02201ea4(Self *self) {
     if (self->unk_18 == 0) {
         func_ov002_02201f18(self);
-        func_020020b8(self->unk_1a);
+        Gfx2d_ShowLayer(self->unk_1a);
     }
     s32 d = data_ov002_02204544[self->unk_18];
     s32 x;
@@ -1236,7 +1236,7 @@ void func_ov002_02201e40(Self *self) {
         func_ov002_022021f4(self, x, self->unk_0c - 0xb);
         self->unk_18 = self->unk_18 + 1;
     } else {
-        func_0200212c(self->unk_1a);
+        Gfx2d_HideLayer(self->unk_1a);
         func_ov002_02202018(self, 0);
     }
 }
@@ -1251,13 +1251,13 @@ void func_ov002_02201df0(Self *self) {
 void func_ov002_02201d24(Self *self) {
     if (self->unk_18 == 0) {
         func_ov002_02201f18(self);
-        func_0200142c();
-        func_02002700(self->unk_1a);
-        func_020013e0();
-        func_020013cc(-6);
-        s32 r = func_0200273c(self->unk_1a);
+        Gfx2d_BeginSubObjWinBrightness();
+        Gfx2d_GetLayerBlendMask(self->unk_1a);
+        Gfx2d_ExcludeSubBrightnessPlanes();
+        Gfx2d_SetSubBrightness(-6);
+        s32 r = Gfx2d_GetLayerPlaneMask(self->unk_1a);
         ((Unk_ov002_02201194 *)&self->unk_2bc)->func_ov002_02200f18(r, 5, 0, 0x30);
-        func_020020b8(self->unk_1a);
+        Gfx2d_ShowLayer(self->unk_1a);
         self->func_ov002_022013cc(1);
         self->unk_21 = 2;
         func_ov002_02201df0(self);
@@ -1281,15 +1281,15 @@ void func_ov002_02201d24(Self *self) {
 
 void func_ov002_02201cb8(Self *self) {
     if (self->unk_18 == 0) {
-        s32 r = func_0200273c(self->unk_1a);
+        s32 r = Gfx2d_GetLayerPlaneMask(self->unk_1a);
         ((Unk_ov002_02201194 *)&self->unk_2bc)->func_ov002_02200edc(r, 3, 0, 0x30);
         func_ov002_02201df0(self);
         self->unk_18 = self->unk_18 + 1;
     }
     if (((Unk_ov002_02201194 *)&self->unk_2bc)->func_ov002_02200f54(0)) {
-        func_0200140c();
+        Gfx2d_EndSubObjWinBrightness();
         self->func_ov002_022013c4(1);
-        func_0200212c(self->unk_1a);
+        Gfx2d_HideLayer(self->unk_1a);
         func_ov002_02202018(self, 0);
     } else {
         func_ov002_02201df0(self);
@@ -1346,7 +1346,7 @@ void func_ov002_02201b58(Self *self) {
             self->unk_17 = 0;
             break;
         case 1:
-            func_0200212c(self->unk_1a);
+            Gfx2d_HideLayer(self->unk_1a);
             func_ov002_02202018(self, 0);
             self->unk_17 = 0;
             break;
@@ -1386,7 +1386,7 @@ void func_ov002_02201b28(Self *self) {
 void func_ov002_02201b04(Self *self) {
     self->unk_17 = 0;
     if (self->unk_16 != 0) {
-        func_0200212c(self->unk_1a);
+        Gfx2d_HideLayer(self->unk_1a);
         self->unk_16 = 0;
     }
     self->func_ov002_02201784();

@@ -46,13 +46,13 @@ s32 PlayerData_GetCurrent();
 s32 PlayerData_GetResident(void *p, s32 a);
 void func_02099a98();
 s32 func_020991fc();
-void func_020020b8(s32 a);
-void func_020021a0(s32 a);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_02002398(s32 a, s32 b);
-void func_0200261c(const char *a, u32 b, s32 c, s32 d, s32 e, s32 f);
-void func_02002654(const char *a, u32 b, s32 c);
-void func_020026c4(const char *a, u32 b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_ShowLayer(s32 a);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_LoadCharFile(const char *a, u32 b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_LoadScreenFile(const char *a, u32 b, s32 c);
+void Gfx2d_LoadPaletteFile(const char *a, u32 b, s32 c, s32 d, s32 e, s32 f);
 void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
 
@@ -127,16 +127,16 @@ public:
     u32 func_020655d0();
 };
 
-class Unk_020cbb18 {
+class CommManager {
 public:
-    void func_02072824(u32 a, u32 b);
-    void func_020728a4(u8 *buf, u32 n);
-    void func_020728d4();
-    BOOL func_02072e44();
+    void endRecord(u32 a, u32 b);
+    void writeRecord(u8 *buf, u32 n);
+    void beginRecord();
+    BOOL isOnline();
     u32 unk_00[0x64 / 4];
     u32 unk_64;
 };
-extern "C" Unk_020cbb18 *data_020cbb18;
+extern "C" CommManager *gCommManager;
 
 class TalkWindowState {
 public:
@@ -178,13 +178,13 @@ public:
     u32 unk_00[0x210 / 4];
 };
 
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    void func_020b87d0();
+    void cancel();
 };
-class Unk_020e4608 : public Unk_020e45f8 {
+class BgVramTaskPair : public BgVramTask {
 public:
-    Unk_020e4608();
+    BgVramTaskPair();
     u32 unk_00[0x38 / 4];
 };
 
@@ -562,7 +562,7 @@ public:
     /* 0xbf */ volatile u8 unk_bf;
     /* 0x0c0 */ Letter unk_c0;
     /* 0x1b4 */ Letter unk_1b4;
-    /* 0x2a8 */ Unk_020e4608 unk_2a8[1];
+    /* 0x2a8 */ BgVramTaskPair unk_2a8[1];
     /* 0x2e0 */ Unk_ov094_02294a50 unk_2e0;
     /* 0xd40 */ Unk_ov094_02294bd4 unk_d40;
     /* 0xd68 */ Unk_ov094_02292d6c unk_d68;
@@ -812,7 +812,7 @@ void Unk_ov104_02298170::func_ov104_022978ec() {
     func_ov094_02293d18(&unk_d40, unk_2b0c);
     func_ov104_022962c4();
     func_ov002_022008e0(8, 0, 0, 0x30);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(6);
     func_ov002_02200a50(2);
     func_ov104_02294e0c(1);
     func_ov104_02294e0c(2);
@@ -826,7 +826,7 @@ void Unk_ov104_02298170::func_ov104_0229788c() {
         func_ov104_022973b4(this);
         func_ov002_022008e0(2, 0, 2, 0x30);
         func_ov002_02200850(0xc0);
-        func_020020b8(4);
+        Gfx2d_ShowLayer(4);
         func_ov104_02294e0c(0x200);
         func_ov104_022975e0(this);
         func_ov002_02200a50(3);
@@ -854,7 +854,7 @@ void Unk_ov104_02298170::func_ov104_02297804() {
 
 void Unk_ov104_02298170::func_ov104_022977b4() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(4);
+        Gfx2d_ResetLayer(4);
         func_ov104_02294dfc(0x200);
         func_ov002_022008c4(8, 0, 0, 0x30);
         func_ov002_02200a50(6);
@@ -866,7 +866,7 @@ void Unk_ov104_02298170::func_ov104_022977b4() {
 
 void Unk_ov104_02298170::func_ov104_02297758() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
+        Gfx2d_ResetLayer(6);
         func_ov104_02294dfc(2);
         if (func_ov104_02294e1c(0x100)) {
             func_ov002_02200a50(7);
@@ -885,8 +885,8 @@ void Unk_ov104_02298170::func_ov104_022976e4() {
     func_02065af0((u32)t);
     unk_288c.func_0206d2e0((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
     func_ov002_022008e0(3, 0, 0, 0x30);
-    func_020020b8(3);
-    func_020020b8(4);
+    Gfx2d_ShowLayer(3);
+    Gfx2d_ShowLayer(4);
     func_ov104_02297620(this);
     func_ov002_02200a50(8);
     unk_2a9c.func_ov002_02203ec8(0x88);
@@ -914,8 +914,8 @@ void Unk_ov104_02298170::func_ov104_02297678() {
 
 void Unk_ov104_02298170::func_ov104_02297640() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(3);
-        func_020021a0(4);
+        Gfx2d_ResetLayer(3);
+        Gfx2d_ResetLayer(4);
         func_ov104_02294dfc(0x80);
         func_ov104_02297960();
     } else {
@@ -992,10 +992,10 @@ void func_ov104_02297450(S *s) {
 }
 
 void func_ov104_0229741c() {
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
-    func_02002398(4, 1);
-    func_0200226c(4, 0, 0, 0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 1);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
 }
 
 void func_ov104_02297408(S *s) {
@@ -1004,9 +1004,9 @@ void func_ov104_02297408(S *s) {
 
 void func_ov104_022973b4(S *s) {
     u32 t = gCurrentHeap;
-    func_020026c4("menu/inventory/b_itm_post.bpl", t, 4, 4, 4, 4);
-    func_02002654("menu/inventory/b_itm_bg_ltr2.bsc", t, 4);
-    func_0200261c("menu/inventory/b_itm_post.bch", t, 4, 0x1e2, 0x1e2, 0x227);
+    Gfx2d_LoadPaletteFile("menu/inventory/b_itm_post.bpl", t, 4, 4, 4, 4);
+    Gfx2d_LoadScreenFile("menu/inventory/b_itm_bg_ltr2.bsc", t, 4);
+    Gfx2d_LoadCharFile("menu/inventory/b_itm_post.bch", t, 4, 0x1e2, 0x1e2, 0x227);
 }
 
 void func_ov104_02297388(S *s) {
@@ -1565,7 +1565,7 @@ u8 Unk_ov104_02298170::func_ov104_02296534() {
 }
 
 void Unk_ov104_02298170::func_ov104_02296524() {
-    unk_2a8->func_020b87d0();
+    unk_2a8->cancel();
 }
 
 BOOL Unk_ov104_02298170::func_ov104_02296514(u32 i) {
@@ -2145,7 +2145,7 @@ void Unk_ov104_02298170::func_ov104_022954d8() {
     func_ov002_02200a58(0x1b);
     unk_8c = 4;
     func_ov104_02294dfc(0x100);
-    if (data_020cbb18->func_02072e44()) {
+    if (gCommManager->isOnline()) {
         func_ov104_02295008();
     }
 }
@@ -2346,8 +2346,8 @@ u32 Unk_ov104_02298170::func_ov104_022950f8(void *p) {
 }
 
 void Unk_ov104_02298170::func_ov104_02295008() {
-    Unk_020cbb18 *g = data_020cbb18;
-    if (g->func_02072e44()) {
+    CommManager *g = gCommManager;
+    if (g->isOnline()) {
         func_ov104_02294e0c(0x800);
         unk_b2 = 0;
         s32 n = func_020968e4(unk_2b0c, 10);
@@ -2434,10 +2434,10 @@ BOOL Unk_ov104_02298170::func_ov104_02294e30(void *p) {
     u8 *buf = (u8 *)Heap_AllocTail(heap, 0xf5);
     buf[0] = 8;
     MI_CpuCopy8(p, buf + 1, 0xf4);
-    Unk_020cbb18 *g = data_020cbb18;
-    g->func_020728d4();
-    g->func_020728a4(buf, 0xf5);
-    g->func_02072824(0x16, 0);
+    CommManager *g = gCommManager;
+    g->beginRecord();
+    g->writeRecord(buf, 0xf5);
+    g->endRecord(0x16, 0);
     Heap_Free(heap, buf);
     func_0206f638(8);
     return TRUE;

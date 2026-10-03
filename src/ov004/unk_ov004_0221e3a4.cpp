@@ -128,13 +128,13 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa0];
     s32 unk_a0;
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -256,7 +256,7 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -338,7 +338,7 @@ s32 func_02019790(void *self);
 void func_020196b4(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
 void func_020195c8(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
 s32 func_020e7518(void *self);
-s32 func_020a08a8();
+s32 SaveManager_IsIdle();
 }
 
 class Unk_ov004_0224d3f8 : public Unk_020d8bc8 {
@@ -426,7 +426,7 @@ BOOL Unk_ov004_0224d3f8::func_ov004_0221e528() {
 
 BOOL Unk_ov004_0224d3f8::func_ov004_0221e4dc() {
     if (((u32)unk_ec.unk_a4 << 4) >> 16 == (((u32)unk_ec.unk_a0 << 4) >> 16) - 1) {
-        if (func_020e7518(&unk_658) == 0 && func_020a08a8()) {
+        if (func_020e7518(&unk_658) == 0 && SaveManager_IsIdle()) {
             func_ov004_0221e56c(1);
         }
     }

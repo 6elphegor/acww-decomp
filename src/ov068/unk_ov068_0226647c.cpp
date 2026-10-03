@@ -5,7 +5,7 @@ struct Unk_ov068_02266680_Vec {
     s32 x, y, z;
 };
 
-class Unk_ov068_02266680;
+class CameraEventModes;
 
 struct Unk_ov068_02266ab8_Owner {
     u8 pad_00[0x5c];
@@ -25,7 +25,7 @@ struct Unk_ov068_022667c4_Ent {
     u16 lo, hi;
 };
 
-// Camera object (gCamera); fields used by func_ov068_0226647c and friends
+// Camera object (gCamera); fields used by Camera_UpdateSway and friends
 struct Unk_ov068_0226647c_Cam {
     /* 0x000 */ u8 pad_000[0x174];
     /* 0x174 */ s16 unk_174;
@@ -58,43 +58,43 @@ struct Unk_ov068_02266680_Color {
 
 extern "C" {
 extern Unk_ov068_02266680_Vec gVec3Zero;
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 extern Unk_ov068_0226647c_Row data_020c8d0c[];
 extern s16 data_02135f44[];
 extern s32 data_ov068_0226fc48;
 extern s32 data_ov068_0226fc40;
 extern s32 data_ov068_0226fc44;
-extern u16 data_ov068_0226fc94[];
+extern u16 sTownTourBuildings[];
 extern const u32 data_ov068_0226f18c[];
-extern void *data_ov068_0226fcb0[];
+extern void *sTownTourOffsets[];
 Unk_ov068_02266680_Vec *func_020947f0(s32 id);
 void Camera_StartBlend();
 void Camera_FinishBlend();
-void Camera_GetLookAtPoint(Unk_ov068_02266680_Vec *out, Unk_ov068_02266680 *self);
+void Camera_GetLookAtPoint(Unk_ov068_02266680_Vec *out, CameraEventModes *self);
 void VEC_Add(Unk_ov068_02266680_Vec *a, void *b, Unk_ov068_02266680_Vec *c);
 void func_020e759c(void *a, s32 b, s32 c);
 s32 func_020e7d4c(void *a, Unk_ov068_02266680_Vec *v, s32 c, s32 d, s32 e);
 s32 func_020e769c(void *a, s32 b, s32 c);
-s32 func_0204ea88(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
-void func_0204eda4(Unk_ov068_02266680_Vec *out, s32 a, s32 b, s32 c, s32 d);
+s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
+void FieldPos_FromBlockUnitCenter(Unk_ov068_02266680_Vec *out, s32 a, s32 b, s32 c, s32 d);
 s32 func_020e7500(void *);
 s32 func_01ffcb0c(s32, s32);
 s32 func_02063b8c(s32);
-s32 func_ov068_0226647c(Unk_ov068_0226647c_Cam *c);
-void func_ov068_022665c8(Unk_ov068_0226647c_Cam *c, s32 idx);
-void func_ov068_02266624(Unk_ov068_0226647c_Cam *c, s32 idx);
+s32 Camera_UpdateSway(Unk_ov068_0226647c_Cam *c);
+void Camera_SetSwayPattern2(Unk_ov068_0226647c_Cam *c, s32 idx);
+void Camera_SetSwayPattern(Unk_ov068_0226647c_Cam *c, s32 idx);
 }
 
-class Unk_ov068_02266680 {
+class CameraEventModes {
 public:
-    void func_ov068_02266680();
-    BOOL func_ov068_022666f4();
-    void func_ov068_0226673c();
-    BOOL func_ov068_022667ac();
-    void func_ov068_022667c4();
-    BOOL func_ov068_022669c8();
-    void func_ov068_02266ab8();
-    BOOL func_ov068_02266b24();
+    void updateModeSway();
+    BOOL initModeSway();
+    void updateMode13();
+    BOOL initMode13();
+    void updateModeTownTour();
+    BOOL initModeTownTour();
+    void updateModeFollowTarget();
+    BOOL initModeFollowTarget();
 
     u8 pad_00[0x110];
     s32 unk_110, unk_114, unk_118;
@@ -132,7 +132,7 @@ extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc58;
 extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc70;
 extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc7c;
 extern "C" s32 data_ov068_0226fc48 = 0x100;
-extern "C" void *data_ov068_0226fcb0[7] = {&data_ov068_0226fc64, data_ov068_0226fccc, &data_ov068_0226fc7c,
+extern "C" void *sTownTourOffsets[7] = {&data_ov068_0226fc64, data_ov068_0226fccc, &data_ov068_0226fc7c,
                                            &data_ov068_0226fc88, &data_ov068_0226fc4c, &data_ov068_0226fc58,
                                            &data_ov068_0226fc70};
 extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc7c = {-0xc00, 0, 0x1c00};
@@ -150,19 +150,19 @@ extern "C" Unk_ov068_02266680_Color data_ov068_02270fd8(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc4c = {-0xc00, 0, 0x2400};
 extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc64 = {0, 0, 0x1c00};
 extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc70 = {0x1000, 0, 0x1000};
-extern "C" u16 data_ov068_0226fc94[14] = {0x5014, 0x501a, 0x500d, 0x500d, 0x5001, 0x5001, 0x5011,
+extern "C" u16 sTownTourBuildings[14] = {0x5014, 0x501a, 0x500d, 0x500d, 0x5001, 0x5001, 0x5011,
                                           0x5011, 0x500c, 0x500c, 0x5000, 0x5000, 0x500b, 0x500b};
 extern "C" s32 data_ov068_0226fc40 = 1;
 extern "C" Unk_ov068_02266680_Color data_ov068_02270fcc(0x14, 0x18, 0x18, 0x1f);
 
-BOOL Unk_ov068_02266680::func_ov068_02266b24() {
+BOOL CameraEventModes::initModeFollowTarget() {
     _ZN12Unk_020d93b88loadPoseEiP10CameraPose(this, 0, 0);
     _ZN12Unk_020d93b814setBlendPresetEi(this, 0);
     Camera_FinishBlend();
     return TRUE;
 }
 
-void Unk_ov068_02266680::func_ov068_02266ab8() {
+void CameraEventModes::updateModeFollowTarget() {
     Unk_ov068_02266680_Vec d;
     Unk_ov068_02266ab8_Owner *o = *(Unk_ov068_02266ab8_Owner **)((u8 *)this + 0x21c);
     d.x = 0;
@@ -179,12 +179,12 @@ void Unk_ov068_02266680::func_ov068_02266ab8() {
     R_TAIL(v)
 }
 
-BOOL Unk_ov068_02266680::func_ov068_022669c8() {
+BOOL CameraEventModes::initModeTownTour() {
     u16 e[2];
     _ZN12Unk_020d93b88loadPoseEiP10CameraPose(this, 0, 0);
     _ZN12Unk_020d93b814setBlendPresetEi(this, 0);
     Camera_FinishBlend();
-    void *g = data_021c47c4;
+    void *g = gSceneBlockMap;
     s32 a = 0, b = 0, c = 0, d = 0;
     Unk_ov068_02266680_Sub *s = &unk_21c;
     s->unk_00 = 0x3c;
@@ -192,10 +192,10 @@ BOOL Unk_ov068_02266680::func_ov068_022669c8() {
     if (g) {
         e[0] = 0x5014;
         e[1] = 0x501a;
-        if (func_0204ea88(g, &a, &b, &c, &d, &e[0], &e[1], 1, 0) == 1) {
+        if (BlockMap_FindItemAllAttr(g, &a, &b, &c, &d, &e[0], &e[1], 1, 0) == 1) {
             Unk_ov068_02266680_Vec pos;
-            func_0204eda4(&pos, a, b, c, d);
-            s->unk_10 = (Unk_ov068_02266680_Vec *)data_ov068_0226fcb0[0];
+            FieldPos_FromBlockUnitCenter(&pos, a, b, c, d);
+            s->unk_10 = (Unk_ov068_02266680_Vec *)sTownTourOffsets[0];
             unk_110 = pos.x;
             unk_114 = pos.y;
             unk_118 = pos.z;
@@ -211,7 +211,7 @@ BOOL Unk_ov068_02266680::func_ov068_022669c8() {
     return TRUE;
 }
 
-void Unk_ov068_02266680::func_ov068_022667c4() {
+void CameraEventModes::updateModeTownTour() {
     Unk_ov068_02266680_Sub *s = &unk_21c;
     Unk_ov068_02266680_Vec v;
     v.x = s->unk_04;
@@ -225,12 +225,12 @@ void Unk_ov068_02266680::func_ov068_022667c4() {
             if (func_020e769c(&s->unk_02, 7, 1) != 0) {
                 s->unk_02 = 0;
             }
-            void *g = data_021c47c4;
+            void *g = gSceneBlockMap;
             s32 cnt = 0;
             struct { u16 a, b; } out;
             s32 a = 0, b = 0, c = 0, d = 0;
             if (g != 0) {
-                Unk_ov068_022667c4_Ent *tbl = (Unk_ov068_022667c4_Ent *)data_ov068_0226fc94;
+                Unk_ov068_022667c4_Ent *tbl = (Unk_ov068_022667c4_Ent *)sTownTourBuildings;
                 do {
                     Unk_ov068_022667c4_Ent *e = &tbl[s->unk_02];
                     u16 t = e->lo;
@@ -264,13 +264,13 @@ void Unk_ov068_02266680::func_ov068_022667c4() {
                     }
                     out.a = tbl[s->unk_02].lo;
                     out.b = tbl[s->unk_02].hi;
-                } while (func_0204ea88(g, &a, &b, &c, &d, &out.a, &out.b, data_ov068_0226f18c[s->unk_02], 0) == 0);
+                } while (BlockMap_FindItemAllAttr(g, &a, &b, &c, &d, &out.a, &out.b, data_ov068_0226f18c[s->unk_02], 0) == 0);
                 Unk_ov068_02266680_Vec pos;
-                func_0204eda4(&pos, a, b, c, d);
+                FieldPos_FromBlockUnitCenter(&pos, a, b, c, d);
                 s->unk_04 = pos.x;
                 s->unk_08 = pos.y;
                 s->unk_0c = pos.z;
-                u8 *bs = (u8 *)data_ov068_0226fcb0[s->unk_02];
+                u8 *bs = (u8 *)sTownTourOffsets[s->unk_02];
                 cnt = cnt * 12;
                 s->unk_10 = (Unk_ov068_02266680_Vec *)(bs + cnt);
                 s->unk_14 = 0;
@@ -281,13 +281,13 @@ void Unk_ov068_02266680::func_ov068_022667c4() {
     R_TAIL(vv)
 }
 
-BOOL Unk_ov068_02266680::func_ov068_022667ac() {
+BOOL CameraEventModes::initMode13() {
     _ZN12Unk_020d93b88loadPoseEiP10CameraPose(this, 0x1a, 0);
     Camera_FinishBlend();
     return TRUE;
 }
 
-void Unk_ov068_02266680::func_ov068_0226673c() {
+void CameraEventModes::updateMode13() {
     Unk_ov068_02266680_Vec d;
     d = gVec3Zero;
     Unk_ov068_02266680_Vec *p = func_020947f0(4);
@@ -299,7 +299,7 @@ void Unk_ov068_02266680::func_ov068_0226673c() {
     R_TAIL(v)
 }
 
-BOOL Unk_ov068_02266680::func_ov068_022666f4() {
+BOOL CameraEventModes::initModeSway() {
     _ZN12Unk_020d93b88loadPoseEiP10CameraPose(this, 0x10, 0);
     _ZN12Unk_020d93b814setBlendPresetEi(this, 0);
     if (unk_1fc == 2) {
@@ -308,20 +308,20 @@ BOOL Unk_ov068_02266680::func_ov068_022666f4() {
         Camera_FinishBlend();
     }
     _ZN12Unk_0203b3507setFovyEi(this, 0x1c71);
-    func_ov068_02266624((Unk_ov068_0226647c_Cam *)this, 0);
+    Camera_SetSwayPattern((Unk_ov068_0226647c_Cam *)this, 0);
     return TRUE;
 }
 
-void Unk_ov068_02266680::func_ov068_02266680() {
+void CameraEventModes::updateModeSway() {
     Unk_ov068_02266680_Vec v;
     unk_110 = gVec3Zero.x;
     unk_114 = gVec3Zero.y;
     unk_118 = gVec3Zero.z;
-    unk_114 += func_ov068_0226647c((Unk_ov068_0226647c_Cam *)this);
+    unk_114 += Camera_UpdateSway((Unk_ov068_0226647c_Cam *)this);
     R_TAIL(v)
 }
 
-extern "C" void func_ov068_02266624(Unk_ov068_0226647c_Cam *c, s32 idx) {
+extern "C" void Camera_SetSwayPattern(Unk_ov068_0226647c_Cam *c, s32 idx) {
     c->unk_224 = idx;
     if (c->unk_224 >= 4) {
         c->unk_224 = 0;
@@ -331,7 +331,7 @@ extern "C" void func_ov068_02266624(Unk_ov068_0226647c_Cam *c, s32 idx) {
     c->unk_21c = 0;
 }
 
-extern "C" void func_ov068_022665c8(Unk_ov068_0226647c_Cam *c, s32 idx) {
+extern "C" void Camera_SetSwayPattern2(Unk_ov068_0226647c_Cam *c, s32 idx) {
     c->unk_225 = idx;
     if (c->unk_225 >= 4) {
         c->unk_225 = 0;
@@ -341,7 +341,7 @@ extern "C" void func_ov068_022665c8(Unk_ov068_0226647c_Cam *c, s32 idx) {
     c->unk_21e = 0;
 }
 
-extern "C" s32 func_ov068_0226647c(Unk_ov068_0226647c_Cam *c) {
+extern "C" s32 Camera_UpdateSway(Unk_ov068_0226647c_Cam *c) {
     if (func_020e7500(&c->unk_220) == 0) {
         s16 a = c->unk_21c;
         if (a < 0) {
@@ -360,7 +360,7 @@ extern "C" s32 func_ov068_0226647c(Unk_ov068_0226647c_Cam *c) {
             } else {
                 c->unk_224 = 0;
             }
-            func_ov068_02266624(c, c->unk_224);
+            Camera_SetSwayPattern(c, c->unk_224);
         }
     }
     if (func_020e7500(&c->unk_222) == 0) {
@@ -377,7 +377,7 @@ extern "C" s32 func_ov068_0226647c(Unk_ov068_0226647c_Cam *c) {
             } else {
                 c->unk_225 = 0;
             }
-            func_ov068_022665c8(c, c->unk_225);
+            Camera_SetSwayPattern2(c, c->unk_225);
         }
     }
     s32 d = data_020c8d0c[c->unk_225].c;

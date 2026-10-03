@@ -15,7 +15,7 @@ struct Unk_0205ee34 {
 
 extern "C" {
 extern void *data_021c61b8;
-extern Unk_0205f6f8_Cfg *data_020cbb18;
+extern Unk_0205f6f8_Cfg *gCommManager;
 extern void func_0205bb64(void);
 extern s32 func_0205bb48(void);
 extern void func_020e885c(void *p);
@@ -50,7 +50,7 @@ Unk_0205eebc::~Unk_0205eebc() {}
 
 extern "C" void func_0205ee7c(u32 *tbl) {
     void *heap = data_021c61b8;
-    u32 n = data_020cbb18->unk_6c;
+    u32 n = gCommManager->unk_6c;
     u32 i;
     for (i = 0; i < n; i++) {
         tbl[i] = (u32)FrameHeap_Create(func_0205eec0(), heap);

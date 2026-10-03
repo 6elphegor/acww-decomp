@@ -13,7 +13,7 @@ extern u32 gMelodyEditPattern[];
 extern u32 data_021ed2f8[];
 extern u32 data_021dfd8c[];
 extern void *gCurrentHeap;
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 data_021eceac[];
 extern u8 data_021e7f8c[];
 extern u8 data_021ed210[];
@@ -33,16 +33,16 @@ void *Heap_AllocTail(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 s32 func_02096a50(void *obj, s32 v);
 BOOL func_02096880(void);
-void _ZN12Unk_020cbb1813func_020728d4Ev(void *p);
-void _ZN12Unk_020cbb1813func_020728a4EPhj(void *p, void *d, s32 n);
-void _ZN12Unk_020cbb1813func_02072824Ejj(void *p, s32 a, s32 b);
+void _ZN11CommManager11beginRecordEv(void *p);
+void _ZN11CommManager11writeRecordEPhj(void *p, void *d, s32 n);
+void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
 void func_02096f44(void *p);
 void func_02065c94();
 void *func_0208f158(void *p);
 void func_02065e70(void *p, void *q);
 void _ZN12Unk_0208f23813func_0208f168Ev(void *p);
 void _ZN12Unk_0208f23813func_0208f1a8Ej(void *p, s32 v);
-void func_02076a2c(void *a, void *b, void *c);
+void NetBuf_UnpackPair20(void *a, void *b, void *c);
 s32 func_ov003_022201bc(u8 a, u32 b, void *c);
 s32 func_ov003_02224d58(void *a, u8 b);
 u8 *func_02095204(u8 x);
@@ -107,7 +107,7 @@ extern "C" void func_0206f6fc(u8 *p, u32 id) {
     if (Unk_0206f6fc_IsZero(data_020e416c)) {
         u8 id8 = id;
         MI_CpuCopy8(p + 2, buf, 5);
-        func_02076a2c(buf, &pos.x, &pos.z);
+        NetBuf_UnpackPair20(buf, &pos.x, &pos.z);
         pos.y = data_020c7c1c;
         if (p[0] == 2) {
             u32 v = p[1];
@@ -159,10 +159,10 @@ extern "C" u8 func_0206f644() { return data_020de390; }
 extern "C" void func_0206f638(u8 v) { data_020de390 = v; }
 
 extern "C" void func_0206f604(u32 a, u32 b, ...) {
-    void *g = data_020cbb18;
-    _ZN12Unk_020cbb1813func_020728d4Ev(g);
-    _ZN12Unk_020cbb1813func_020728a4EPhj(g, &a, 1);
-    _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x16, b);
+    void *g = gCommManager;
+    _ZN11CommManager11beginRecordEv(g);
+    _ZN11CommManager11writeRecordEPhj(g, &a, 1);
+    _ZN11CommManager9endRecordEjj(g, 0x16, b);
 }
 
 extern "C" void func_0206f5ac(u8 *p, u32 code) {

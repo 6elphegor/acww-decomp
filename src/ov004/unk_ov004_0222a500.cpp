@@ -9,26 +9,26 @@
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
 #define func_02033914 _ZN12Unk_0203389c13func_02033914Ei
 #define func_0203398c _ZN12Unk_0203398c13func_0203398cEiiii
-#define func_02054584 _ZN12Unk_0205454c13func_02054584Ev
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
-#define func_02055488 _ZN5Model13func_02055488Eii
+#define BlendAnimModel_getAnmObj _ZN14BlendAnimModel9getAnmObjEv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
+#define Model_setInitCallback _ZN5Model15setInitCallbackEii
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define func_020555dc _ZN5Model13func_020555dcEv
+#define Model_clearResource _ZN5Model13clearResourceEv
 #define Model_setResourceAndBind _ZN5Model18setResourceAndBindEP16Unk_020553f8_Resj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
-#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define ModelAnim_init _ZN9ModelAnim4initEiiit
+#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define func_020567e4 _ZN12Unk_02056b7413func_020567e4Ev
-#define func_02056a78 _ZN12Unk_02056b7413func_02056a78EPhii
-#define func_02056ab0 _ZN12Unk_02056b7413func_02056ab0EPhPKcS2_
-#define func_02056b28 _ZN12Unk_02056b7413func_02056b28EPhPKc
-#define func_02056fcc _ZN12Unk_02056fd813func_02056fccEi
-#define func_02057110 _ZN12Unk_02056fd813func_02057110Ei
+#define MatTexBinder_getMaterial _ZN12MatTexBinder11getMaterialEv
+#define MatTexBinder_bindByIdx _ZN12MatTexBinder9bindByIdxEPhii
+#define MatTexBinder_bindByName _ZN12MatTexBinder10bindByNameEPhPKcS2_
+#define MatTexBinder_setMaterialByName _ZN12MatTexBinder17setMaterialByNameEPhPKc
+#define func_02056fcc _ZN12G3dResAccess13func_02056fccEi
+#define G3dResAccess_findMatIdx _ZN12G3dResAccess10findMatIdxEi
 #define func_0206052c _ZN9HouseData13func_0206052cEi
 #define func_020607e0 _ZN9HouseRoom13func_020607e0EPtj
 #define func_02060808 _ZN9HouseRoom13func_02060808EPtj
@@ -39,8 +39,8 @@
 #define func_020b1e74 _ZN12Unk_020b1ddc13func_020b1e74Ev
 #define func_020b6860 _ZN12Unk_020b696013func_020b6860EP12Unk_020b6a0cP4Vec3S3_S3_ih
 #define func_020b6890 _ZN12Unk_020b696013func_020b6890EP12Unk_020b6a0c
-#define func_020b8840 _ZN12Unk_020e45e013func_020b8840EPvjS0_jj
-#define func_020b8930 _ZN12Unk_020e45e013func_020b8930Ev
+#define MatTexVramTask_request _ZN14MatTexVramTask7requestEPvjS0_jj
+#define MatTexVramTask_cancel _ZN14MatTexVramTask6cancelEv
 
 // ---------------------------------------------------------------- library-side classes (real symbols)
 struct FxVec3 {
@@ -85,24 +85,24 @@ struct Unk_020b8d98 {
     }
 };
 
-class Unk_020e45e0 {
+class MatTexVramTask {
 public:
-    Unk_020e45e0();
+    MatTexVramTask();
     virtual BOOL vfunc_00();
     u8 pad_04[0x24];
 };
 
-struct Unk_02056b74 {
+struct MatTexBinder {
     u8 *unk_00;
     s8 unk_04;
 
-    Unk_02056b74();
-    ~Unk_02056b74();
+    MatTexBinder();
+    ~MatTexBinder();
 };
 
-struct Unk_020dbd54 {
-    Unk_020dbd54();
-    ~Unk_020dbd54();
+struct AnimModel {
+    AnimModel();
+    ~AnimModel();
     u8 pad[0x5c];
 };
 
@@ -130,7 +130,7 @@ struct Unk_020b6a0c {
     u8 pad[0x20];
 };
 
-struct Unk_02056fd8 {
+struct G3dResAccess {
     u8 pad[4];
 };
 
@@ -242,9 +242,9 @@ public:
     Unk_ov004_0222aed0();
     ~Unk_ov004_0222aed0();
     void func_ov004_0222aed0();
-    BOOL func_ov004_0222aedc(u16 *q, Unk_02056fd8 *a, s32 key);
+    BOOL func_ov004_0222aedc(u16 *q, G3dResAccess *a, s32 key);
     void func_ov004_0222b070(u16 *q, u32 key);
-    BOOL func_ov004_0222b0a4(u16 v, Unk_02056fd8 *a, s32 key);
+    BOOL func_ov004_0222b0a4(u16 v, G3dResAccess *a, s32 key);
     BOOL func_ov004_0222b0bc(u8 *buf, u8 *p);
     u32 func_ov004_0222b0f0();
     u16 *func_ov004_0222b0fc();
@@ -252,10 +252,10 @@ public:
 
     /* 0x0000 */ u16 unk_00;
     /* 0x0002 */ u16 unk_02;
-    /* 0x0004 */ Unk_020e45e0 unk_04;
+    /* 0x0004 */ MatTexVramTask unk_04;
     /* 0x002c */ Unk_0203c2cc unk_2c;
     /* 0x20f0 */ s32 unk_20f0;
-    /* 0x20f4 */ Unk_02056b74 unk_20f4;
+    /* 0x20f4 */ MatTexBinder unk_20f4;
     /* 0x20fc */ u8 *unk_20fc;
 };
 
@@ -273,10 +273,10 @@ public:
 
     /* 0x0000 */ u16 unk_00;
     /* 0x0002 */ u16 unk_02;
-    /* 0x0004 */ Unk_020e45e0 unk_04;
+    /* 0x0004 */ MatTexVramTask unk_04;
     /* 0x002c */ Unk_020b8d98 unk_2c;
     /* 0x10f0 */ s32 unk_10f0;
-    /* 0x10f4 */ Unk_02056b74 unk_10f4;
+    /* 0x10f4 */ MatTexBinder unk_10f4;
     /* 0x10fc */ u8 *unk_10fc;
 };
 
@@ -284,7 +284,7 @@ public:
 class Unk_ov004_0222b15c : public Unk_ov004_0222b3a8 {
 public:
     void func_ov004_0222b15c();
-    BOOL func_ov004_0222b168(u16 *q, Unk_02056fd8 *a, s32 key);
+    BOOL func_ov004_0222b168(u16 *q, G3dResAccess *a, s32 key);
 };
 
 // class Y (billboard/effect handle, base Unk_020b6a0c)
@@ -329,7 +329,7 @@ public:
     void func_ov004_0222b510();
     void func_ov004_0222b8a4();
 
-    /* 0x0050 */ Unk_020dbd54 unk_50;
+    /* 0x0050 */ AnimModel unk_50;
     /* 0x00ac */ u8 *unk_ac;
     /* 0x00b0 */ u32 unk_b0;
     /* 0x00b4 */ Unk_ov004_0222b430_Mtx unk_b4;
@@ -375,30 +375,30 @@ void func_0203411c(u32 a, u16 *p);
 void func_0203414c(u32 a, u16 *p);
 BOOL func_0203c23c(void *o, u16 *p);
 void *func_0203c234(void *o);
-BOOL func_020b8cf8(void *o, u16 *p);
-void *func_020b8cf0(void *o);
+BOOL Wallpaper_LoadTexture(void *o, u16 *p);
+void *Wallpaper_GetTex(void *o);
 void *func_0206052c(void *self, u32 idx);
 void func_020607e0(void *o, u16 *p, u32 k);
 s32 func_02060808(void *self, u16 *a, u32 b);
 BOOL func_020318cc(void *self);
 BOOL func_02031908(void *self, s32 a, s32 b, s32 c, void *p, s32 s, void *q);
-void func_020b8930(void *self);
-BOOL func_020b8840(void *self, void *a, u32 b, void *c, u32 d, u32 e);
-void func_02056a78(void *self, u8 *a, s32 b, s32 c);
-void func_02056ab0(void *self, u8 *a, const char *b, const char *c);
-void func_02056b28(void *self, u8 *a, const char *b);
-s32 func_020567e4(void *self);
+void MatTexVramTask_cancel(void *self);
+BOOL MatTexVramTask_request(void *self, void *a, u32 b, void *c, u32 d, u32 e);
+void MatTexBinder_bindByIdx(void *self, u8 *a, s32 b, s32 c);
+void MatTexBinder_bindByName(void *self, u8 *a, const char *b, const char *c);
+void MatTexBinder_setMaterialByName(void *self, u8 *a, const char *b);
+s32 MatTexBinder_getMaterial(void *self);
 s32 func_02056fcc(void *self, const char *s);
-s32 func_02057110(void *self, const char *s);
+s32 G3dResAccess_findMatIdx(void *self, const char *s);
 s32 FX_Div(s32 a, s32 b);
 void func_020e8388(void *m, s32 a, s32 b, s32 c);
-u32 func_02064f60();
+u32 SceneLights_GetMatLightMask2();
 s32 Model_setResourceAndBind(void *self, u32 a, u32 b);
-s32 func_02054800(void *self, u32 a);
-s32 func_02054720(void *self, u32 a, s32 b, s32 c, s32 d, s32 e);
-s32 func_02054710(void *self);
-s32 func_02055bcc(void *self, void *a, u32 b);
-s32 func_02055b38(void *self, u32 a, s32 b, s32 c, s32 d);
+s32 AnimModel_allocAnmObj(void *self, u32 a);
+s32 BlendAnimModel_initAnim(void *self, u32 a, s32 b, s32 c, s32 d, s32 e);
+s32 AnimModel_attachAnim(void *self);
+s32 ModelAnim_allocMatAnm(void *self, void *a, u32 b);
+s32 ModelAnim_init(void *self, u32 a, s32 b, s32 c, s32 d);
 u32 Model_getRenderObj(void *self);
 s32 ModelAnim_addToRenderObj(void *self, u32 a);
 u16 *func_02060850(void *self, s32 *i);
@@ -417,20 +417,20 @@ s32 func_020b51b8(s32 r);
 s32 func_020b51e8(s32 r);
 s32 func_020b5268(s32 r);
 s32 func_020b5298(s32 r);
-void func_020555dc(void *self);
+void Model_clearResource(void *self);
 void Unk_02003c30_callRelease(void *self);
-void func_020547cc(void *self, s32 a);
+void AnimModel_drawAnimated(void *self, s32 a);
 void func_020ac40c();
 void func_020abe28();
 void NNS_G3dMdlSetMdlDiff(void *a, s32 b, u32 c);
-s32 func_02054584(void *self);
-void func_020547e4(void *self);
+s32 BlendAnimModel_getAnmObj(void *self);
+void AnimModel_stepAnim(void *self);
 void AnimFrameCtrl_step(void *self);
 s32 func_ov004_02234ba8(s32 a);
 void func_ov004_022136d0(void *v, s32 a, s32 b, u32 c);
 void Unk_02003c40_callRequestSustained(void *self, u32 a);
 void Unk_02003c40_callUpdateRelative(void *self, Unk_ov004_0222b9a4_Vec *v);
-void func_02055488(void *self, void *fn, void *obj);
+void Model_setInitCallback(void *self, void *fn, void *obj);
 void Unk_02003c30_callReset(void *self);
 u16 *func_020b8fa4();
 u16 func_020baa04(u32 v);
@@ -440,8 +440,8 @@ extern u8 data_021dfd8c[];
 extern u8 data_021f47e0[];
 extern u8 data_0213b91c[];
 extern u32 data_020c8cc0;
-extern Unk_ov004_0222b510_Grid *data_021c47c4;
-extern u32 data_021c620c;
+extern Unk_ov004_0222b510_Grid *gSceneBlockMap;
+extern u32 gBgHeap;
 extern u32 data_021ce63c;
 
 // own functions (plain symbols), declared before their first use
@@ -509,16 +509,16 @@ BOOL Unk_ov004_0224e488::vfunc_00() {
     unk_3520 = func_02056fcc(unk_ac, "kh_j");
     unk_3521 = func_02056fcc(unk_ac, "km_j");
     unk_3523 = func_02056fcc(unk_ac, "hasu1");
-    unk_3540 = func_02057110(unk_ac, "wd");
-    func_02055488(&unk_50, (void *)func_ov004_0222a500, this);
+    unk_3540 = G3dResAccess_findMatIdx(unk_ac, "wd");
+    Model_setInitCallback(&unk_50, (void *)func_ov004_0222a500, this);
     func_ov004_0222a644(this);
     Unk_02003c30_callReset(&unk_3534);
     return TRUE;
 }
 
 BOOL Unk_ov004_0224e488::onExecute() {
-    if (func_02054584(&unk_50)) {
-        func_020547e4(&unk_50);
+    if (BlendAnimModel_getAnmObj(&unk_50)) {
+        AnimModel_stepAnim(&unk_50);
     }
     Unk_ov004_0224e478 *e = unk_108;
     if (func_ov004_0222ae7c((Unk_ov004_0222ae7c_Obj *)e)) {
@@ -547,7 +547,7 @@ BOOL Unk_ov004_0224e488::onDraw() {
         t.b = t.a;
         NNS_G3dMdlSetMdlDiff(unk_ac, unk_3540, t.b);
     }
-    func_020547cc(&unk_50, 0);
+    AnimModel_drawAnimated(&unk_50, 0);
     return TRUE;
 }
 
@@ -557,7 +557,7 @@ BOOL Unk_ov004_0224e488::vfunc_0c() {
     ((Unk_ov004_0222ae38 *)&unk_3460)->func_ov004_0222acdc();
     unk_1228.func_ov004_0222aed0();
     unk_3328.func_ov004_0222ad78();
-    func_020555dc(&unk_50);
+    Model_clearResource(&unk_50);
     data_ov004_022513bc = 0;
     Unk_02003c30_callRelease(&unk_3534);
     return TRUE;
@@ -651,7 +651,7 @@ static inline BOOL Unk_ov004_0222b510_Range(volatile u16 *p) {
 }
 
 void Unk_ov004_0224e488::func_ov004_0222b510() {
-    Unk_ov004_0222b510_Grid *g = data_021c47c4;
+    Unk_ov004_0222b510_Grid *g = gSceneBlockMap;
     Unk_ov004_0222b45c_Cell *c;
     if (g->unk_04 > (u8 *)0 && g->unk_08 > (u8 *)0 && g->unk_00 != NULL) {
         c = (Unk_ov004_0222b45c_Cell *)g->unk_00;
@@ -671,14 +671,14 @@ void Unk_ov004_0224e488::func_ov004_0222b510() {
         unk_128.func_ov004_0222b330(0x1124, unk_ac, w8);
     }
     if (Unk_ov004_0222b510_Range(&h[1])) {
-        unk_1228.func_ov004_0222b0a4(0x1182, (Unk_02056fd8 *)unk_ac, w12);
+        unk_1228.func_ov004_0222b0a4(0x1182, (G3dResAccess *)unk_ac, w12);
     }
-    ((Unk_ov004_0222b15c *)&unk_128)->func_ov004_0222b168((u16 *)&h[0], (Unk_02056fd8 *)unk_ac, w8);
-    unk_1228.func_ov004_0222aedc((u16 *)&h[1], (Unk_02056fd8 *)unk_ac, w12);
+    ((Unk_ov004_0222b15c *)&unk_128)->func_ov004_0222b168((u16 *)&h[0], (G3dResAccess *)unk_ac, w8);
+    unk_1228.func_ov004_0222aedc((u16 *)&h[1], (G3dResAccess *)unk_ac, w12);
 }
 
 void Unk_ov004_0224e488::func_ov004_0222b45c() {
-    Unk_ov004_0222b510_Grid *g = data_021c47c4;
+    Unk_ov004_0222b510_Grid *g = gSceneBlockMap;
     Unk_ov004_0222b45c_Cell *c;
     if (g->unk_04 > (u8 *)0 && g->unk_08 > (u8 *)0 && g->unk_00 != NULL) {
         c = (Unk_ov004_0222b45c_Cell *)g->unk_00;
@@ -688,14 +688,14 @@ void Unk_ov004_0224e488::func_ov004_0222b45c() {
     Unk_ov004_0222b45c_Res *r = (Unk_ov004_0222b45c_Res *)c->unk_20;
     Model_setResourceAndBind(&unk_50, r->unk_08, r->unk_20);
     if (r->unk_14 != 0) {
-        if (func_02054800(&unk_50, data_021c620c)) {
-            func_02054720(&unk_50, r->unk_14, 0, 0x1000, 0, 0);
-            func_02054710(&unk_50);
+        if (AnimModel_allocAnmObj(&unk_50, gBgHeap)) {
+            BlendAnimModel_initAnim(&unk_50, r->unk_14, 0, 0x1000, 0, 0);
+            AnimModel_attachAnim(&unk_50);
         }
     }
     if (r->unk_1c != 0) {
-        if (func_02055bcc(unk_108, unk_ac, data_021c620c)) {
-            func_02055b38(unk_108, r->unk_1c, 0, 0x1000, 0);
+        if (ModelAnim_allocMatAnm(unk_108, unk_ac, gBgHeap)) {
+            ModelAnim_init(unk_108, r->unk_1c, 0, 0x1000, 0);
             ModelAnim_addToRenderObj(unk_108, Model_getRenderObj(&unk_50));
         }
     }
@@ -719,7 +719,7 @@ void Unk_ov004_0224e488::func_ov004_0222b3e8(u8 *p) {
         Unk_ov004_0222b3e8_Ent *en = (Unk_ov004_0222b3e8_Ent *)e;
         if ((en->flags & 0xf) != 0) {
             en->flags &= ~0xf;
-            en->flags |= func_02064f60();
+            en->flags |= SceneLights_GetMatLightMask2();
         }
     }
 }
@@ -748,7 +748,7 @@ u32 Unk_ov004_0222b3a8::func_ov004_0222b37c() {
 
 BOOL Unk_ov004_0222b3a8::func_ov004_0222b348(u8 *a, u32 b) {
     if (b != 0) {
-        func_02056b28(&unk_10f4, a, data_ov004_0224e450);
+        MatTexBinder_setMaterialByName(&unk_10f4, a, data_ov004_0224e450);
         unk_10fc = (u8 *)b;
         return TRUE;
     }
@@ -757,7 +757,7 @@ BOOL Unk_ov004_0222b3a8::func_ov004_0222b348(u8 *a, u32 b) {
 
 void Unk_ov004_0222b3a8::func_ov004_0222b330(u16 v, void *a, s32 b) {
     u16 t = v;
-    ((Unk_ov004_0222b15c *)this)->func_ov004_0222b168(&t, (Unk_02056fd8 *)a, b);
+    ((Unk_ov004_0222b15c *)this)->func_ov004_0222b168(&t, (G3dResAccess *)a, b);
 }
 
 extern "C" void func_ov004_0222b2fc(void *self, u16 *a, u32 b) {
@@ -769,9 +769,9 @@ extern "C" void func_ov004_0222b2fc(void *self, u16 *a, u32 b) {
     }
 }
 
-BOOL Unk_ov004_0222b15c::func_ov004_0222b168(u16 *q, Unk_02056fd8 *a, s32 key) {
+BOOL Unk_ov004_0222b15c::func_ov004_0222b168(u16 *q, G3dResAccess *a, s32 key) {
     BOOL same;
-    if (func_02057110(a, data_ov004_0224e444) == -1) return FALSE;
+    if (G3dResAccess_findMatIdx(a, data_ov004_0224e444) == -1) return FALSE;
     if (Item_IsFurniture(&unk_02) != 0) {
         u32 x = Item_GetFurnitureIndex(&unk_02);
         u32 y = Item_GetFurnitureIndex(q);
@@ -789,12 +789,12 @@ BOOL Unk_ov004_0222b15c::func_ov004_0222b168(u16 *q, Unk_02056fd8 *a, s32 key) {
         u16 v = *q;
         if (v >= 0x1100 && v <= 0x1143) in = TRUE;
         if (in != FALSE) {
-            if (func_020b8cf8(&unk_2c, q) == 0) goto fail;
+            if (Wallpaper_LoadTexture(&unk_2c, q) == 0) goto fail;
             if (func_020b5254() == 0) {
-                func_02056ab0(&unk_10f4, unk_10fc, "dummy_wall", "dummy_wall_pl");
+                MatTexBinder_bindByName(&unk_10f4, unk_10fc, "dummy_wall", "dummy_wall_pl");
             }
-            void *r = func_020b8cf0(&unk_2c);
-            if (func_020b8840(&unk_04, a, (u32)data_ov004_0224e444, r, 0, 0) == 0) goto fail;
+            void *r = Wallpaper_GetTex(&unk_2c);
+            if (MatTexVramTask_request(&unk_04, a, (u32)data_ov004_0224e444, r, 0, 0) == 0) goto fail;
             unk_00 = unk_02;
             unk_02 = *q;
             func_ov004_0222b2fc(this, &unk_02, key);
@@ -805,7 +805,7 @@ BOOL Unk_ov004_0222b15c::func_ov004_0222b168(u16 *q, Unk_02056fd8 *a, s32 key) {
             u32 t8 = Item_GetDesignSlot(q);
             u32 h = func_020716cc();
             u8 *idx = func_020716e8(h, (u8)t7, (u8)t8);
-            func_02056a78(&unk_10f4, idx, 0, 0);
+            MatTexBinder_bindByIdx(&unk_10f4, idx, 0, 0);
             unk_00 = unk_02;
             unk_02 = *q;
             unk_10f0 = key;
@@ -826,7 +826,7 @@ done:
 }
 
 void Unk_ov004_0222b15c::func_ov004_0222b15c() {
-    func_020b8930(&unk_04);
+    MatTexVramTask_cancel(&unk_04);
 }
 
 // ---- dummy floor object (manager + 0x1228)
@@ -853,14 +853,14 @@ u32 Unk_ov004_0222aed0::func_ov004_0222b0f0() {
 
 BOOL Unk_ov004_0222aed0::func_ov004_0222b0bc(u8 *buf, u8 *p) {
     if (p != 0) {
-        func_02056b28(&unk_20f4, buf, data_ov004_0224e460);
+        MatTexBinder_setMaterialByName(&unk_20f4, buf, data_ov004_0224e460);
         unk_20fc = p;
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov004_0222aed0::func_ov004_0222b0a4(u16 v, Unk_02056fd8 *a, s32 key) {
+BOOL Unk_ov004_0222aed0::func_ov004_0222b0a4(u16 v, G3dResAccess *a, s32 key) {
     u16 t = v;
     return func_ov004_0222aedc(&t, a, key);
 }
@@ -875,9 +875,9 @@ void Unk_ov004_0222aed0::func_ov004_0222b070(u16 *q, u32 key) {
     }
 }
 
-BOOL Unk_ov004_0222aed0::func_ov004_0222aedc(u16 *q, Unk_02056fd8 *a, s32 key) {
+BOOL Unk_ov004_0222aed0::func_ov004_0222aedc(u16 *q, G3dResAccess *a, s32 key) {
     BOOL same;
-    if (func_02057110(a, data_ov004_0224e440) == -1) return FALSE;
+    if (G3dResAccess_findMatIdx(a, data_ov004_0224e440) == -1) return FALSE;
     if (Item_IsFurniture(&unk_02) != 0) {
         u32 x = Item_GetFurnitureIndex(&unk_02);
         u32 y = Item_GetFurnitureIndex(q);
@@ -897,10 +897,10 @@ BOOL Unk_ov004_0222aed0::func_ov004_0222aedc(u16 *q, Unk_02056fd8 *a, s32 key) {
         if (in != FALSE) {
             if (func_0203c23c(&unk_2c, q) == 0) goto fail;
             if (func_020b5254() == 0) {
-                func_02056ab0(&unk_20f4, unk_20fc, "dummy_floor", "dummy_floor_pl");
+                MatTexBinder_bindByName(&unk_20f4, unk_20fc, "dummy_floor", "dummy_floor_pl");
             }
             void *r = func_0203c234(&unk_2c);
-            if (func_020b8840(&unk_04, a, (u32)data_ov004_0224e440, r, 0, 0) == 0) goto fail;
+            if (MatTexVramTask_request(&unk_04, a, (u32)data_ov004_0224e440, r, 0, 0) == 0) goto fail;
             unk_00 = unk_02;
             unk_02 = *q;
             func_ov004_0222b070(&unk_02, key);
@@ -911,7 +911,7 @@ BOOL Unk_ov004_0222aed0::func_ov004_0222aedc(u16 *q, Unk_02056fd8 *a, s32 key) {
             u32 t8 = Item_GetDesignSlot(q);
             u32 h = func_020716cc();
             u8 *idx = func_020716e8(h, (u8)t7, (u8)t8);
-            func_02056a78(&unk_20f4, idx, 0, 0);
+            MatTexBinder_bindByIdx(&unk_20f4, idx, 0, 0);
             unk_00 = unk_02;
             unk_02 = *q;
             unk_20f0 = key;
@@ -932,7 +932,7 @@ done:
 }
 
 void Unk_ov004_0222aed0::func_ov004_0222aed0() {
-    func_020b8930(&unk_04);
+    MatTexVramTask_cancel(&unk_04);
 }
 
 // ---- element of the manager's 0x20-byte array
@@ -1057,7 +1057,7 @@ extern "C" u16 *func_ov004_0222ab80(u16 *p, s32 key, u32 flag) {
     if (r != FALSE || (*p >= 0x1188 && *p <= 0x11a7)) {
         Unk_ov004_0224e488 *g = data_ov004_022513bc;
         if (g != 0) {
-            if (((Unk_ov004_0222b15c *)&g->unk_128)->func_ov004_0222b168(p, (Unk_02056fd8 *)g->unk_ac, key) != 0) {
+            if (((Unk_ov004_0222b15c *)&g->unk_128)->func_ov004_0222b168(p, (G3dResAccess *)g->unk_ac, key) != 0) {
                 if (flag != 0) {
                     if (func_020b5254() != 0) Snd_PlaySe(0x50);
                 }
@@ -1075,7 +1075,7 @@ extern "C" u16 *func_ov004_0222aacc(u16 *p, s32 key, u32 flag) {
     if (r != FALSE || (*p >= 0x1188 && *p <= 0x11a7)) {
         Unk_ov004_0224e488 *g = data_ov004_022513bc;
         if (g != 0) {
-            if (g->unk_1228.func_ov004_0222aedc(p, (Unk_02056fd8 *)g->unk_ac, key) != 0) {
+            if (g->unk_1228.func_ov004_0222aedc(p, (G3dResAccess *)g->unk_ac, key) != 0) {
                 if (flag != 0) {
                     if (func_020b5254() != 0) Snd_PlaySe(0x50);
                 }
@@ -1164,12 +1164,12 @@ void Unk_ov004_0224e488::vfunc_4c(s32 idx, Unk_ov004_0222a6c0_Obj *o) {
     BOOL a;
     BOOL b;
     s32 v8, vc, v10;
-    if (idx == func_020567e4(&unk_128.unk_10f4)) {
+    if (idx == MatTexBinder_getMaterial(&unk_128.unk_10f4)) {
         a = TRUE;
     } else {
         a = FALSE;
     }
-    if (idx == func_020567e4(&unk_1228.unk_20f4)) {
+    if (idx == MatTexBinder_getMaterial(&unk_1228.unk_20f4)) {
         b = TRUE;
     } else {
         b = FALSE;
@@ -1275,7 +1275,7 @@ struct Unk_ov004_0222a644_V3 {
 };
 
 extern "C" void func_ov004_0222a644(void *self) {
-    Unk_ov004_0222a644_Grid *g = (Unk_ov004_0222a644_Grid *)data_021c47c4;
+    Unk_ov004_0222a644_Grid *g = (Unk_ov004_0222a644_Grid *)gSceneBlockMap;
     Unk_ov004_0222a644_Cell *c;
     if ((u8 *)g->unk_04 > (u8 *)0 && (u8 *)g->unk_08 > (u8 *)0 && g->unk_00 != 0) {
         c = g->unk_00;

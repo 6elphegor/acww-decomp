@@ -3,10 +3,10 @@
 
 extern "C" {
 void Oam_DrawCell(u32 a, u32 h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 func_020016a4(u32 a);
-s32 func_020016cc(u32 a);
-s32 func_02001564(u32 a);
-s32 func_02001554(u32 a);
+s32 Gfx2d_SetMainObjWinPlanes(u32 a);
+s32 Gfx2d_SetMainWinOutPlanes(u32 a);
+s32 Gfx2d_EnableMainWindows(u32 a);
+s32 Gfx2d_DisableMainWindows(u32 a);
 s32 Snd_StopSe(u32 a, u32 b);
 void func_02004008(u32 a);
 s32 func_0203d99c();
@@ -27,11 +27,11 @@ struct Unk_0208e9d4_Ptr {
 };
 extern "C" Unk_0208e9d4_Ptr *gActorDefaultParent;
 
-class Unk_020cbb18 {
+class CommManager {
 public:
-    BOOL func_02072e44();
+    BOOL isOnline();
 };
-extern "C" Unk_020cbb18 *data_020cbb18;
+extern "C" CommManager *gCommManager;
 
 struct SpriteAnimSeq;
 
@@ -268,8 +268,8 @@ void Unk_020e10dc::func_0208ec10() {
     unk_0c = 1;
     func_0208ebcc();
     if (unk_12 != 0) {
-        func_020016a4(0x10);
-        func_02001564(4);
+        Gfx2d_SetMainObjWinPlanes(0x10);
+        Gfx2d_EnableMainWindows(4);
     }
 }
 
@@ -277,7 +277,7 @@ void Unk_020e10dc::func_0208ebe8() {
     if (unk_13 == 0) {
         func_0208eb9c();
         if (unk_12 != 0) {
-            func_02001554(4);
+            Gfx2d_DisableMainWindows(4);
         }
         func_0208ec48();
     }
@@ -324,7 +324,7 @@ void Unk_020e10f8::vfunc_0c() {
 
 extern "C" void func_0208e9f4(u32 i) {
     u32 t = gActorDefaultParent->unk_0c;
-    BOOL e = data_020cbb18->func_02072e44();
+    BOOL e = gCommManager->isOnline();
     if (t != 5 && e) {
         data_021ceb38.unk_24 = data_020cf718[i];
     }
@@ -338,17 +338,17 @@ extern "C" void func_0208e9d4(u32 i) {
 
 extern "C" void func_0208e9a8() {
     if (data_021ceb38.unk_20 != 0) {
-        func_020016a4(0x10);
-        func_02001564(4);
+        Gfx2d_SetMainObjWinPlanes(0x10);
+        Gfx2d_EnableMainWindows(4);
     }
     data_021ceb38.unk_39 = 0;
 }
 
 extern "C" void func_0208e974() {
     if (data_021ceb38.unk_20 != 0) {
-        func_020016a4(0x10);
-        func_020016cc(4);
-        func_02001564(4);
+        Gfx2d_SetMainObjWinPlanes(0x10);
+        Gfx2d_SetMainWinOutPlanes(4);
+        Gfx2d_EnableMainWindows(4);
     }
     data_021ceb38.unk_39 = 0;
 }
@@ -398,8 +398,8 @@ void Unk_020e10f8::func_0208e8b0() {
 void Unk_020e10f8::func_0208e870() {
     unk_20 = 1;
     unk_28 = 0;
-    func_020016a4(0x10);
-    func_02001564(4);
+    Gfx2d_SetMainObjWinPlanes(0x10);
+    Gfx2d_EnableMainWindows(4);
     u64 t = OS_GetTick();
     unk_2c = 1;
     unk_30 = t + 0x1991b;
@@ -430,7 +430,7 @@ void Unk_020e10f8::func_0208e7c0() {
     if (unk_28 > 0) {
         unk_28--;
         if (unk_28 <= 0) {
-            func_02001554(4);
+            Gfx2d_DisableMainWindows(4);
             func_0208e8d0();
         }
     }

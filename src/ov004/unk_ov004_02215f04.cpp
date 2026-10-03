@@ -339,7 +339,7 @@ extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
 extern u8 gSaveData[];
 extern u8 data_021dfd8c[];
-extern Unk_0204e858_Grid *data_021c47c4;
+extern Unk_0204e858_Grid *gSceneBlockMap;
 Unk_ov004_0224c034 *func_ov004_02215eac(...);
 s32 func_020e9650(void *, void *);
 s32 func_020e96ec(void *, void *);
@@ -364,12 +364,12 @@ void *PlayerData_getPlayerId(void *);
 void *VillagerData_getVillagerId(void *);
 s32 func_02080a74(void *);
 void func_02080a98(void *);
-s32 func_02037558(void *, s32, s32, s32);
+s32 MapBlock_GetItemPtr(void *, s32, s32, s32);
 s32 Item_IsFurnitureOrF031();
 void func_0203002c(s32, s32);
 s32 func_02031154(s32, s32);
-void func_0204ed8c(void *, s32, s32);
-void func_0204ee10(s32 *, s32 *, void *);
+void FieldPos_FromUnitCenter(void *, s32, s32);
+void FieldPos_ToUnit(s32 *, s32 *, void *);
 void VillagerId_makeFileName(void *, void *, u32, u32);
 void *func_020b51d4();
 s32 SaveVillagers_IsOccupied(void *, void *);
@@ -489,7 +489,7 @@ extern "C" Unk_ov004_0224c228 *func_ov004_02216c84() {
 extern "C" s32 func_ov004_02216ba4(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *in, s32 angle) {
     s32 gx, gy;
     s32 count, y, x, z;
-    func_0204ee10(&gx, &gy, in);
+    FieldPos_ToUnit(&gx, &gy, in);
     count = 0;
     y = count;
     z = count;
@@ -516,7 +516,7 @@ extern "C" s32 func_ov004_02216ba4(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *in, s32 
                 if (x != gx && y != gy) {
                     if (func_02031154(x, y)) {
                         if (k == pick) {
-                            func_0204ed8c(out, x, y);
+                            FieldPos_FromUnitCenter(out, x, y);
                             s32 d = func_020e7b98(out->x - in->x, out->z - in->z);
                             if (func_020e780c(angle, d) < 0x2000) {
                                 d = angle;
@@ -581,7 +581,7 @@ BOOL Unk_ov004_0224c228::updateAct() {
 }
 
 void Unk_ov004_0224c228::func_ov004_02216a44() {
-    Unk_0204e858_Grid *g = data_021c47c4;
+    Unk_0204e858_Grid *g = gSceneBlockMap;
     void *c;
     s32 y, x;
     if ((u8 *)g->w > (u8 *)0 && (u8 *)g->h > (u8 *)0 && g->cells) {
@@ -593,7 +593,7 @@ void Unk_ov004_0224c228::func_ov004_02216a44() {
     volatile s32 z = 0;
     for (; y < 16; y++) {
         for (x = 0; x < 16; x++) {
-            if (func_02037558(c, x, y, z)) {
+            if (MapBlock_GetItemPtr(c, x, y, z)) {
                 if (Item_IsFurnitureOrF031()) {
                     func_0203002c(x, y);
                 }

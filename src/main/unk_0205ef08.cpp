@@ -33,7 +33,7 @@ public:
 
 extern "C" {
 extern void *data_021c61c8;
-extern u8 *data_020cbb18;
+extern u8 *gCommManager;
 extern s16 data_02135f44[];
 extern u8 data_021c7468[];
 
@@ -54,22 +54,22 @@ s32 func_0205bcb4();
 s32 func_0205bcd0();
 void func_0205efa8(u32 *a);
 void func_0205efd0(u32 *a);
-void func_02076964(void *p, s32 v);
-void func_02076b08(void *p, s32 a, u8 b);
+void NetBuf_WriteU16(void *p, s32 v);
+void CommRecord_PackSource(void *p, s32 a, u8 b);
 BOOL func_020a62a0();
-void _ZN12Unk_020cbb1813func_020728d4Ev(void *p);
-void _ZN12Unk_020cbb1813func_020728a4EPhj(void *p, void *q, s32 n);
-void _ZN12Unk_020cbb1813func_02072824Ejj(void *p, s32 a, s32 b);
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
+void _ZN11CommManager11beginRecordEv(void *p);
+void _ZN11CommManager11writeRecordEPhj(void *p, void *q, s32 n);
+void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
+BOOL _ZN11CommManager8isOnlineEv(void *p);
 BOOL func_020729cc(void *p, s32 h);
-u16 func_0207694c();
-void func_02076ae8(void *p, u8 *a, u8 *b);
+u16 NetBuf_ReadU16();
+void CommRecord_UnpackSource(void *p, u8 *a, u8 *b);
 BOOL func_020b5198(u32 v);
-void *func_0204da0c();
-void *func_0204d500(u32 v);
-void func_0204eb30(void *o, u16 *v, s32 a, s32 b, s32 c);
-void func_0204e978(void *o, s32 a, s32 b);
-void func_0204e914(void *o, s32 a, s32 b);
+void *TownBlockMap_Get();
+void *HouseRoomMaps_GetForScene(u32 v);
+void BlockMap_SetItemAtUnit(void *o, u16 *v, s32 a, s32 b, s32 c);
+void BlockMap_SetBuriedAtUnit(void *o, s32 a, s32 b);
+void BlockMap_ClearBuriedAtUnit(void *o, s32 a, s32 b);
 s32 _s32_div_f(s32 a, s32 b);
 s32 func_020e7870(s32 *dst, s32 src, s32 step, s32 target, s32 lim);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -162,28 +162,28 @@ extern "C" BOOL func_0205f144(u8 *p)
     void *o;
     BOOL r6;
     s32 x, y;
-    u16 id = func_0207694c();
-    func_02076ae8(p + 2, &l.t[0], &l.t[1]);
+    u16 id = NetBuf_ReadU16();
+    CommRecord_UnpackSource(p + 2, &l.t[0], &l.t[1]);
     r6 = l.t[1] ? TRUE : FALSE;
     x = *(s8 *)(p + 3);
     y = *(s8 *)(p + 4);
     if (func_020b5198(l.t[0])) {
-        o = func_0204da0c();
+        o = TownBlockMap_Get();
         if (o != 0) {
             l.h[0] = id;
-            func_0204eb30(o, &l.h[0], x, y, 0);
+            BlockMap_SetItemAtUnit(o, &l.h[0], x, y, 0);
             if (r6) {
-                func_0204e978(o, x, y);
+                BlockMap_SetBuriedAtUnit(o, x, y);
             } else {
-                func_0204e914(o, x, y);
+                BlockMap_ClearBuriedAtUnit(o, x, y);
             }
             return TRUE;
         }
     } else {
-        o = func_0204d500(l.t[0]);
+        o = HouseRoomMaps_GetForScene(l.t[0]);
         if (o != 0) {
             l.h[1] = id;
-            func_0204eb30(o, &l.h[1], x, y, 0);
+            BlockMap_SetItemAtUnit(o, &l.h[1], x, y, 0);
             return TRUE;
         }
     }
@@ -193,11 +193,11 @@ extern "C" BOOL func_0205f144(u8 *p)
 extern "C" void func_0205f100(u8 *p)
 {
     if (func_0205f144(p)) {
-        if (_ZN12Unk_020cbb1813func_02072e44Ev((void *)data_020cbb18)) {
-            void *q = (void *)data_020cbb18;
-            _ZN12Unk_020cbb1813func_020728d4Ev(q);
-            _ZN12Unk_020cbb1813func_020728a4EPhj(q, p, 5);
-            _ZN12Unk_020cbb1813func_02072824Ejj(q, 0x12, 4);
+        if (_ZN11CommManager8isOnlineEv((void *)gCommManager)) {
+            void *q = (void *)gCommManager;
+            _ZN11CommManager11beginRecordEv(q);
+            _ZN11CommManager11writeRecordEPhj(q, p, 5);
+            _ZN11CommManager9endRecordEjj(q, 0x12, 4);
         }
     }
 }
@@ -205,17 +205,17 @@ extern "C" void func_0205f100(u8 *p)
 extern "C" void func_0205f094(s32 a, s32 b, s32 c, s32 d, s32 e)
 {
     u8 buf[5];
-    func_02076964(buf, d);
-    func_02076b08(buf + 2, c, e ? 1 : 0);
+    NetBuf_WriteU16(buf, d);
+    CommRecord_PackSource(buf + 2, c, e ? 1 : 0);
     buf[3] = a;
     buf[4] = b;
     if (func_020a62a0()) {
         func_0205f100(buf);
     } else {
-        void *q = (void *)data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(q);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(q, buf, 5);
-        _ZN12Unk_020cbb1813func_02072824Ejj(q, 0x13, 6);
+        void *q = (void *)gCommManager;
+        _ZN11CommManager11beginRecordEv(q);
+        _ZN11CommManager11writeRecordEPhj(q, buf, 5);
+        _ZN11CommManager9endRecordEjj(q, 0x13, 6);
     }
 }
 
@@ -263,7 +263,7 @@ Unk_0205f014::~Unk_0205f014() {}
 extern "C" void func_0205efd0(u32 *out)
 {
     void *h = data_021c61c8;
-    u32 n = data_020cbb18[0x6c];
+    u32 n = gCommManager[0x6c];
     u32 i;
     for (i = 0; i < n; i++) {
         out[i] = (u32)Heap_AllocAligned(h, func_0205f018(), 4);

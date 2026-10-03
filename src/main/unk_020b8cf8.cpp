@@ -9,7 +9,7 @@ struct ItemId {
     ~ItemId();
 };
 
-extern "C" BOOL func_020b8cf8(void *dst, ItemId *p) {
+extern "C" BOOL Wallpaper_LoadTexture(void *dst, ItemId *p) {
     s32 idx;
     BOOL ok = FALSE;
     u16 v = p->unk_00;
@@ -30,5 +30,5 @@ extern "C" BOOL func_020b8cf8(void *dst, ItemId *p) {
         return FALSE;
     }
     static ItemId def;
-    return func_020b8cf8(dst, &def);
+    return Wallpaper_LoadTexture(dst, &def);
 }

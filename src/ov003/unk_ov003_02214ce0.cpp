@@ -2,7 +2,7 @@
 // ov003 TU06 (actor 02231168): .text 0x02214ce0-0x02214dfc
 #include "types.h"
 
-// shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 Unk_ov009_0225e29c).
+// shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
 // (do NOT include GameProc.h: the chain below is an own copy whose slot names are the real symbol names).
 //
@@ -18,21 +18,21 @@
 //     74 ov009::func_ov009_0225ca98   78..b0 ov009::vfunc_78..b0   b4 / b8 ov009::vfunc_b4/b8 (symbols: func_ov009_0225b884 /
 //     func_ov009_0225b880, ALIAS)
 // Aliases (zero-size labels, tools/pipeline/alias.py) the coordinator must add; <existing> -> <new>:
-//   ov009  _ZN18Unk_ov009_0225e29c10preExecuteEv           -> _ZN18Unk_ov009_0225e29c10preExecuteEv        (0x0225db04)
-//   ov009  _ZN18Unk_ov009_0225e29c7preDrawEj           -> _ZN18Unk_ov009_0225e29c8vfunc_20Ej        (0x0225da90)
-//   ov009  _ZN18Unk_ov009_0225e29c7preDrawEv           -> _ZN18Unk_ov009_0225e29c7preDrawEv        (0x0225d9e4)
-//   ov009  func_ov009_0225b884                           -> _ZN18Unk_ov009_0225e29c8vfunc_b4Ev        (0x0225b884)
-//   ov009  func_ov009_0225b880                           -> _ZN18Unk_ov009_0225e29c8vfunc_b8Ev        (0x0225b880)
+//   ov009  _ZN13BuildingActor10preExecuteEv           -> _ZN13BuildingActor10preExecuteEv        (0x0225db04)
+//   ov009  _ZN13BuildingActor7preDrawEj           -> _ZN13BuildingActor8vfunc_20Ej        (0x0225da90)
+//   ov009  _ZN13BuildingActor7preDrawEv           -> _ZN13BuildingActor7preDrawEv        (0x0225d9e4)
+//   ov009  func_ov009_0225b884                           -> _ZN13BuildingActor8vfunc_b4Ev        (0x0225b884)
+//   ov009  func_ov009_0225b880                           -> _ZN13BuildingActor8vfunc_b8Ev        (0x0225b880)
 //   main   TalkMsgRequest slots, one label each (the unit names them vfunc_sXX so that overrides in the primary chain
 //          cannot override them): _ZN14TalkMsgRequest9vfunc_sXXEv for XX = 08 0c 10 18 1c 20 24 28 2c 30 34 3c 40 44 48 4c 50 54 58
 //          5c 60 64 68 6c 70 74 (existing name _ZN14TalkMsgRequest8vfunc_XXEv) and _ZN14TalkMsgRequest9vfunc_s38Ej (existing
 //          _ZN14TalkMsgRequest8vfunc_38Ej).
-//   ov003  0x0221445c is _ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev, the thunk of ov009::vfunc_88 in slot 0x14 of the secondary
+//   ov003  0x0221445c is _ZThn236_N13BuildingActor8vfunc_88Ev, the thunk of ov009::vfunc_88 in slot 0x14 of the secondary
 //          vtable.  Every unit of the family names that slot vfunc_88, so each emits the thunk as a link-once function and
 //          the linker keeps the copy of the first unit in link order (unk_ov003_022141bc.cpp), as in the original.
 //          (No alias: the old label _ZN14TalkMsgRequest9vfunc_s14Ev is gone.)
 // Notes:
-//  * The ctor of a derived class calls Unk_ov009_0225e29c::Unk_ov009_0225e29c() (ov009 symbol C2 0x0225deec).
+//  * The ctor of a derived class calls BuildingActor::BuildingActor() (ov009 symbol C2 0x0225deec).
 //  * Names a derived class must not reuse for its own members: unk_130 .. unk_2a4 below.
 
 class ProcBase {
@@ -138,8 +138,8 @@ public:
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
-    // Slot 0x14 has the name of Unk_ov009_0225e29c::vfunc_88, which overrides it: the vtable then names the shared
-    // thunk _ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev (0x0221445c).  The compiler also emits a link-once copy of the
+    // Slot 0x14 has the name of BuildingActor::vfunc_88, which overrides it: the vtable then names the shared
+    // thunk _ZThn236_N13BuildingActor8vfunc_88Ev (0x0221445c).  The compiler also emits a link-once copy of the
     // thunk in this unit; the linker keeps the first one (unk_ov003_022141bc.cpp) and drops this one.
     virtual void vfunc_88();
     virtual void vfunc_s18();
@@ -188,10 +188,10 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
+class BuildingActor : public Character, public TalkMsgRequest {
 public:
-    Unk_ov009_0225e29c();
-    virtual ~Unk_ov009_0225e29c();
+    BuildingActor();
+    virtual ~BuildingActor();
     virtual BOOL vfunc_00();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
@@ -224,9 +224,9 @@ public:
     virtual void vfunc_b4();
     virtual BOOL vfunc_b8();
 
-    s32 func_ov009_0225d6b8(u32 a);
-    void func_ov009_0225d244();
-    void func_ov009_0225bc88();
+    s32 getBtaAnim(u32 a);
+    void getResources();
+    void updateMatrix();
 
     /* 0x130 */ u8 unk_130;
     /* 0x131 */ u8 pad_131;
@@ -263,14 +263,14 @@ struct Unk_ov003_02214890_Buf {
 };
 
 extern "C" {
-void func_0209d498(void *);
+void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, s32);
-s32 func_0203f2e0(u32, void *, u32);
+s32 Event_GetState(u32, void *, u32);
 s32 func_020b50e8();
 void Visitor_ScheduleLow(void *, s32, void *);
 }
 
-class Unk_ov003_02231168 : public Unk_ov009_0225e29c {
+class Unk_ov003_02231168 : public BuildingActor {
 public:
     Unk_ov003_02231168();
     virtual ~Unk_ov003_02231168();
@@ -290,7 +290,7 @@ extern "C" u32 data_ov003_02231144 = 0x6c;
 extern "C" Unk_ov003_SceneEntry data_ov003_02231148 = { func_ov003_02214da8, 0x29, 0x2f, 0, 0xc8000, 0x12c000, 0x258000 };
 
 static inline BOOL Unk_ov003_02214ce0_Chk(void *m) {
-    if (func_0203f2e0(0x40, m, 0)) {
+    if (Event_GetState(0x40, m, 0)) {
         return TRUE;
     }
     return FALSE;
@@ -311,7 +311,7 @@ BOOL Unk_ov003_02231168::vfunc_70() {
     Unk_ov003_02214890_Buf m;
     l.w0 = 0;
     l.w1 = 0;
-    func_0209d498(&l);
+    Clock_GetDateTime(&l);
     MI_CpuCopy8(&l, &m, 8);
     if (Unk_ov003_02214ce0_Chk(&m)) {
         Visitor_ScheduleLow(&data_ov003_02231144, func_020b50e8(), &unk_5c);

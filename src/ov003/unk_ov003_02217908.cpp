@@ -11,8 +11,8 @@ class Model {
 public:
     Model();
     virtual ~Model();
-    void func_0205553c(s32 *p);
-    void func_020555dc();
+    void drawScaled(s32 *p);
+    void clearResource();
 
     u8 pad_04[0x64 - 4];
     Unk_ov003_02215c7c_Blk unk_64;
@@ -96,16 +96,16 @@ struct Unk_ov003_02235460_Col {
 };
 
 extern "C" {
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 extern void *gCamera;
 extern s32 data_020c8cbc;
 extern u8 data_0213b91c[];
 extern u8 data_0213b938[];
 
 s32 func_020e9650(Unk_ov003_02217910_V3 *a, Unk_ov003_02217910_V3 *b);
-s32 func_02036c90();
+s32 BgMgt_GetCount();
 }
-Unk_ov003_022179b8_Ent func_02036c60(u8 *obj, s32 i);
+Unk_ov003_022179b8_Ent BgMgt_GetEntry(u8 *obj, s32 i);
 extern "C" {
 }
 
@@ -129,19 +129,19 @@ void *func_ov003_02217a9c(Unk_ov003_02217970_Rec *r, u32 x, u32 y);
 
 extern "C" BOOL func_ov003_02217aec(Model *p) {
     if (gCamera != 0) {
-        p->func_0205553c(0);
+        p->drawScaled(0);
         return TRUE;
     }
     return FALSE;
 }
 
 extern "C" BOOL func_ov003_02217adc(Model *p) {
-    p->func_020555dc();
+    p->clearResource();
     return TRUE;
 }
 
 extern "C" void *func_ov003_02217a9c(Unk_ov003_02217970_Rec *r, u32 x, u32 y) {
-    Unk_ov003_02217a9c_Grid *g = (Unk_ov003_02217a9c_Grid *)data_021c47c4;
+    Unk_ov003_02217a9c_Grid *g = (Unk_ov003_02217a9c_Grid *)gSceneBlockMap;
     if (g != 0) {
         Unk_ov003_02217a9c_Cell *c;
         if (x < g->w && y < g->h && g->cells != 0) {
@@ -180,9 +180,9 @@ extern "C" Unk_ov003_02217970_Rec *func_ov003_022179b8(Unk_ov003_02217970_Rec *o
             obj = (u8 *)func_ov003_02217a84(out, xx, cz + dy);
             if (obj != 0) {
                 u32 i;
-                n = func_02036c90();
+                n = BgMgt_GetCount();
                 for (i = 0; i < n; i++) {
-                    Unk_ov003_022179b8_Ent e = func_02036c60(obj, i);
+                    Unk_ov003_022179b8_Ent e = BgMgt_GetEntry(obj, i);
                     switch (e.kind) {
                     case 5:
                     case 15:

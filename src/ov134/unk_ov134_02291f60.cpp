@@ -38,14 +38,14 @@ public:
 };
 
 // 0x24 byte transfer object
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    Unk_020e45f8();
+    BgVramTask();
     virtual BOOL vfunc_00();
-    virtual void vfunc_04();
-    BOOL func_020b86c0(u32 a, u8 b, u32 c, u32 d);
-    void func_020b8670(u32 a, u8 b, u32 c);
-    void func_020b87d0();
+    virtual void clear();
+    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
+    void requestPalette(u32 a, u8 b, u32 c);
+    void cancel();
     u8 unk_04[0x20];
 };
 
@@ -142,9 +142,9 @@ public:
     /* 0xc8 */ Unk_ov134_Date8 unk_c8;
     /* 0xd0 */ Unk_ov134_Date8 unk_d0;
     /* 0xd8 */ Unk_020e0488 unk_d8[0x11];
-    /* 0x518 */ Unk_020e45f8 unk_518;
-    /* 0x53c */ Unk_020e45f8 unk_53c;
-    /* 0x560 */ Unk_020e45f8 unk_560;
+    /* 0x518 */ BgVramTask unk_518;
+    /* 0x53c */ BgVramTask unk_53c;
+    /* 0x560 */ BgVramTask unk_560;
     /* 0x584 */ u8 unk_584[0x800];
     /* 0xd84 */ u8 unk_d84[0x800];
     /* 0x1584 */ u8 unk_1584[0x800];
@@ -240,34 +240,34 @@ void func_ov134_02294a34(S *s, u32 a, u32 b, u32 c, u8 d);
 
 extern u16 gPad;
 extern s32 gCurrentHeap;
-void func_020021b8(u32 a, u32 b, u32 c, u32 d, u32 e);
-void func_020021fc(u32 a, s32 b, s32 c);
+void Gfx2d_SetWindowRect(u32 a, u32 b, u32 c, u32 d, u32 e);
+void Gfx2d_SetLayerOffset(u32 a, s32 b, s32 c);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 _s32_div_f(s32 a, s32 b);
 void func_0206ee80(void *map, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Snd_PlaySe(s32 a);
-void func_0200152c(u32 a);
-void func_0200151c(u32 a);
-void func_0200212c(u32 a);
-void func_020020b8(u32 a);
+void Gfx2d_EnableSubWindows(u32 a);
+void Gfx2d_DisableSubWindows(u32 a);
+void Gfx2d_HideLayer(u32 a);
+void Gfx2d_ShowLayer(u32 a);
 void func_02004008(s32 a);
 void Snd_StopSe(s32 a, s32 b);
-void func_02001724(u32 a, u32 b);
-u32 func_0200273c(u32 a);
-void func_020016b0(u32 a);
-s32 func_0209ce48(u32 a, u32 b);
-s32 func_0209ceac(u32 a, u32 b, u32 c);
+void Gfx2d_SetSubWin0Planes(u32 a, u32 b);
+u32 Gfx2d_GetLayerPlaneMask(u32 a);
+void Gfx2d_SetSubWinOutPlanes(u32 a);
+s32 Date_GetDaysInMonth(u32 a, u32 b);
+s32 Date_GetWeekday(u32 a, u32 b, u32 c);
 void func_020e761c(void *p, s32 a, s32 b);
-void func_0209d164(void *p, s32 a);
-void func_0209d2c0(void *p, s32 a);
-void func_0209d258(void *p, s32 a);
-void func_0209d0e4(void *p, s32 a);
-void func_0209d124(void *p, s32 a);
-void func_0209d28c(void *p, s32 a);
-s32 func_0209d3d0(void *a, void *b, s32 c);
-s32 func_0209d374(void *a, void *b);
-void func_0209d498(void *p);
+void DateTime_SubDays(void *p, s32 a);
+void DateTime_AddDays(void *p, s32 a);
+void DateTime_AddMinutes(void *p, s32 a);
+void DateTime_SubMinutes(void *p, s32 a);
+void DateTime_SubHours(void *p, s32 a);
+void DateTime_AddHours(void *p, s32 a);
+s32 DateTime_Compare(void *a, void *b, s32 c);
+s32 DateTime_DiffMinutes(void *a, void *b);
+void Clock_GetDateTime(void *p);
 s32 func_020e7b98(s32 a, s32 b);
 BOOL func_ov002_0220125c(u32 v);
 BOOL func_ov002_0220126c(u32 v);
@@ -281,11 +281,11 @@ void Oam_DrawCell(u32 a, const void *b, void *c, u32 d, s32 e, s32 f, s32 g, s32
 void func_0206f9c8(void *o, s32 a, s32 b, s32 c, s32 d, u8 e);
 void func_0206f9e4(void *a, const void *c, u32 v);
 void func_0206f9fc(void *a, u32 v);
-void func_02002438(void *a, s32 b, s32 c, s32 d, s32 e);
-void func_0200261c(const void *name, s32 h, s32 a, s32 b, s32 c, s32 d);
-void func_02002654(const void *name, s32 h, s32 a);
-void func_02002688(const void *name, s32 h, s32 a, s32 b, s32 c);
-void func_020026c4(const void *name, s32 h, s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_LoadCharRange(void *a, s32 b, s32 c, s32 d, s32 e);
+void Gfx2d_LoadCharFile(const void *name, s32 h, s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_LoadScreenFile(const void *name, s32 h, s32 a);
+void Gfx2d_LoadPaletteFileSlot(const void *name, s32 h, s32 a, s32 b, s32 c);
+void Gfx2d_LoadPaletteFile(const void *name, s32 h, s32 a, s32 b, s32 c, s32 d);
 void File_LoadToBuffer(const void *src, void *dst, s32 n);
 void *File_LoadAlloc(const void *a, s32 h, s32 b, u32 *out);
 void Heap_Free(s32 h, void *p);
@@ -402,14 +402,14 @@ extern "C" void func_ov134_02294a34(S *s, u32 a, u32 b, u32 c, u8 d) {
         s->unk_b8.b[4] = 1;
         s->unk_b8.b[3] = 1;
     } else {
-        func_0209d498(s->unk_b8.b);
+        Clock_GetDateTime(s->unk_b8.b);
         s->unk_b8.b[0] = 0;
         if (s->unk_a0 == 3) {
-            func_0209d2c0(s->unk_b8.b, 1);
+            DateTime_AddDays(s->unk_b8.b, 1);
         }
         MI_CpuCopy8(s->unk_b8.b, s->unk_c8.b, 8);
         MI_CpuCopy8(s->unk_b8.b, s->unk_d0.b, 8);
-        func_0209d28c(s->unk_d0.b, 0xc);
+        DateTime_AddHours(s->unk_d0.b, 0xc);
         s->unk_b2 = s->unk_c8.b[2];
         s->unk_b3 = s->unk_d0.b[2];
         s->unk_b4 = s->unk_c8.b[1];
@@ -423,17 +423,17 @@ extern "C" void func_ov134_02294a28(S *s) {
 
 extern "C" void func_ov134_022949ec(S *s) {
     func_ov134_02294334(s);
-    func_0200212c(s->unk_a4);
-    s->unk_518.func_020b87d0();
-    s->unk_53c.func_020b87d0();
-    s->unk_560.func_020b87d0();
+    Gfx2d_HideLayer(s->unk_a4);
+    s->unk_518.cancel();
+    s->unk_53c.cancel();
+    s->unk_560.cancel();
 }
 
 extern "C" void func_ov134_022949a8(S *s) {
     func_ov134_02294334(s);
-    s->unk_518.func_020b87d0();
-    s->unk_53c.func_020b87d0();
-    s->unk_560.func_020b87d0();
+    s->unk_518.cancel();
+    s->unk_53c.cancel();
+    s->unk_560.cancel();
     func_ov134_022932e0(s);
     s->unk_18.vfunc_0c();
 }
@@ -442,12 +442,12 @@ extern "C" void func_ov134_022948e4(S *s) {
     s->func_ov134_02292074();
     s->unk_18.func_ov002_02202ed0();
     if (s->func_ov134_02291f80(2)) {
-        if (s->unk_518.func_020b86c0((u32)s->unk_584, s->unk_a3, 0x800, 0)) {
+        if (s->unk_518.requestScreen((u32)s->unk_584, s->unk_a3, 0x800, 0)) {
             s->func_ov134_02291f60(2);
         }
     }
     if (s->func_ov134_02291f80(1)) {
-        if (s->unk_53c.func_020b86c0((u32)s->unk_1d84, s->unk_a4, 0x800, 0)) {
+        if (s->unk_53c.requestScreen((u32)s->unk_1d84, s->unk_a4, 0x800, 0)) {
             s->func_ov134_02291f60(1);
         }
     }
@@ -468,7 +468,7 @@ extern "C" void func_ov134_022948d8(S *s, void *src) {
 }
 
 extern "C" BOOL func_ov134_022948b8(S *s) {
-    if (func_0209d3d0(s->unk_c8.b, s->unk_b8.b, 0x3f) == 1) {
+    if (DateTime_Compare(s->unk_c8.b, s->unk_b8.b, 0x3f) == 1) {
         return TRUE;
     }
     return FALSE;
@@ -476,10 +476,10 @@ extern "C" BOOL func_ov134_022948b8(S *s) {
 
 extern "C" void func_ov134_022947e8(S *s) {
     s32 h = gCurrentHeap;
-    func_0200261c("menu/clock/b_tim_bg.bch", h, s->unk_a2, 0x10, 0x10, 0x80);
-    func_020026c4("menu/clock/b_tim_bg.bpl", h, s->unk_a2, 1, 1, 10);
-    func_020026c4((const void *)data_ov134_02294d64[s->unk_a0], h, s->unk_a2, 1, 1, 2);
-    func_02002654("menu/clock/bga.bsc", h, s->unk_a2);
+    Gfx2d_LoadCharFile("menu/clock/b_tim_bg.bch", h, s->unk_a2, 0x10, 0x10, 0x80);
+    Gfx2d_LoadPaletteFile("menu/clock/b_tim_bg.bpl", h, s->unk_a2, 1, 1, 10);
+    Gfx2d_LoadPaletteFile((const void *)data_ov134_02294d64[s->unk_a0], h, s->unk_a2, 1, 1, 2);
+    Gfx2d_LoadScreenFile("menu/clock/bga.bsc", h, s->unk_a2);
     File_LoadToBuffer((const void *)data_ov134_02294d94[s->unk_a0], s->unk_584, 0x800);
     func_ov134_02293320(s);
     File_LoadToBuffer("menu/clock/b_tim_b1_bg.bsc", s->unk_d84, 0x800);
@@ -493,8 +493,8 @@ extern "C" void func_ov134_022947b8(S *s, u8 a) {
 
 extern "C" void func_ov134_022946fc(S *s) {
     s32 h = gCurrentHeap;
-    func_020026c4("menu/clock/b_tim_obj.bpl", h, 8, 4, 4, 10);
-    func_0200261c("menu/clock/b_tim_obj.bch", h, 8, 0xc0, 0xc0, 0x1df);
+    Gfx2d_LoadPaletteFile("menu/clock/b_tim_obj.bpl", h, 8, 4, 4, 10);
+    Gfx2d_LoadCharFile("menu/clock/b_tim_obj.bch", h, 8, 0xc0, 0xc0, 0x1df);
     u32 v = s->unk_a1;
     u32 out;
     u8 *buf = (u8 *)File_LoadAlloc((const void *)data_ov134_02294d40[v >> 2], h, -4, &out);
@@ -502,17 +502,17 @@ extern "C" void func_ov134_022946fc(S *s) {
     s32 x = 0xc0;
     s32 i = 0;
     do {
-        func_02002438(p, 8, x, x, x + 7);
+        Gfx2d_LoadCharRange(p, 8, x, x, x + 7);
         p += 0x400;
         x += 0x20;
         i++;
     } while (i < 8);
     Heap_Free(h, buf);
-    func_02002688("menu/clock/b_tim_ten0_obj.bpl", h, 8, s->unk_a1, 4);
+    Gfx2d_LoadPaletteFileSlot("menu/clock/b_tim_ten0_obj.bpl", h, 8, s->unk_a1, 4);
 }
 
 extern "C" void func_ov134_022946b0(S *s) {
-    s32 i = func_0209ceac(s->unk_b8.b[5], s->unk_b8.b[4], s->unk_b8.b[3]);
+    s32 i = Date_GetWeekday(s->unk_b8.b[5], s->unk_b8.b[4], s->unk_b8.b[3]);
     func_ov134_022942bc(s, s->unk_a3, 0x1a8, 7, data_ov134_02294c68[i], 1, 0xf, 0);
 }
 
@@ -998,20 +998,20 @@ extern "C" void func_ov134_022936f4(Unk_ov134_02291f60 *self, s32 delta) {
     }
     buf[5] = 0;
     if (delta > 0) {
-        func_0209d258(self->unk_c0.b, delta);
+        DateTime_AddMinutes(self->unk_c0.b, delta);
     } else {
-        func_0209d0e4(self->unk_c0.b, -delta);
+        DateTime_SubMinutes(self->unk_c0.b, -delta);
     }
     r = TRUE;
     if (self->func_ov134_02291f80(0x40)) {
-        if (func_0209d3d0(self->unk_d0.b, self->unk_c0.b, 0x3f) == -1) {
-            v = func_0209d374(self->unk_d0.b, self->unk_c0.b);
+        if (DateTime_Compare(self->unk_d0.b, self->unk_c0.b, 0x3f) == -1) {
+            v = DateTime_DiffMinutes(self->unk_d0.b, self->unk_c0.b);
             r = FALSE;
             MI_CpuCopy8(self->unk_d0.b, self->unk_b8.b, 8);
             self->func_ov134_02291f70(0x10);
             pc = self->unk_c0.b;
             while (v >= 0x2d0) {
-                func_0209d124(pc, 0xc);
+                DateTime_SubHours(pc, 0xc);
                 v -= 0x2d0;
             }
         } else {
@@ -1019,14 +1019,14 @@ extern "C" void func_ov134_022936f4(Unk_ov134_02291f60 *self, s32 delta) {
         }
     }
     if (self->func_ov134_02291f80(0x80)) {
-        if (func_0209d3d0(self->unk_c8.b, self->unk_c0.b, 0x3f) == 1) {
-            v = func_0209d374(self->unk_c0.b, self->unk_c8.b);
+        if (DateTime_Compare(self->unk_c8.b, self->unk_c0.b, 0x3f) == 1) {
+            v = DateTime_DiffMinutes(self->unk_c0.b, self->unk_c8.b);
             r = FALSE;
             MI_CpuCopy8(self->unk_c8.b, self->unk_b8.b, 8);
             self->func_ov134_02291f70(0x20);
             pc = self->unk_c0.b;
             while (v >= 0x2d0) {
-                func_0209d28c(pc, 0xc);
+                DateTime_AddHours(pc, 0xc);
                 v -= 0x2d0;
             }
         } else {
@@ -1181,7 +1181,7 @@ extern "C" void func_ov134_022933a4(Unk_ov134_02291f60 *self, s32 idx, s32 x) {
         if (idx != 1 && idx != 2) return;
     }
     if (idx == 5 && x == 3) {
-        if (func_0209ceac(self->unk_b8.b[5], self->unk_b8.b[4], self->unk_b8.b[3]) == 0) {
+        if (Date_GetWeekday(self->unk_b8.b[5], self->unk_b8.b[4], self->unk_b8.b[3]) == 0) {
             x = 8;
             self->func_ov134_02291f70(x);
         } else {
@@ -1278,7 +1278,7 @@ extern "C" void func_ov134_02293024(Unk_ov134_02291f60 *self, s32 idx) {
     Snd_PlaySe(0x13);
     self->unk_a5 = idx;
     self->unk_a9 = 0;
-    func_0200212c(self->unk_a4);
+    Gfx2d_HideLayer(self->unk_a4);
     self->unk_a7 = func_ov134_022934e0(self, idx);
     self->unk_a8 = func_ov134_022934b0(self, idx);
     MIi_CpuCopy16(self->unk_d84, self->unk_1584, 0x800);
@@ -1298,7 +1298,7 @@ extern "C" void func_ov134_02293024(Unk_ov134_02291f60 *self, s32 idx) {
     self->unk_ab = 0x28;
     self->unk_ac = data_ov134_02294c60[idx];
     if (idx == 2) {
-        self->unk_ac = func_0209ce48(self->unk_b8.b[5], self->unk_b8.b[4]);
+        self->unk_ac = Date_GetDaysInMonth(self->unk_b8.b[5], self->unk_b8.b[4]);
     }
     self->unk_8c = (self->unk_ac - 8) << 4;
     for (i = 0; i < 0x10; i++) {
@@ -1327,9 +1327,9 @@ extern "C" void func_ov134_02293024(Unk_ov134_02291f60 *self, s32 idx) {
     self->unk_74 = (void *)data_ov134_02294f14[idx];
     self->unk_78 = data_ov134_02294f2c[idx];
     self->unk_af = 3;
-    func_0200151c(1);
-    func_02001724(0x1f, 1);
-    func_020016b0(~func_0200273c(self->unk_a4) & 0x1f);
+    Gfx2d_DisableSubWindows(1);
+    Gfx2d_SetSubWin0Planes(0x1f, 1);
+    Gfx2d_SetSubWinOutPlanes(~Gfx2d_GetLayerPlaneMask(self->unk_a4) & 0x1f);
     self->func_ov134_02291f94(0);
     self->unk_b0 = r6 + 1;
     self->unk_04 = 0;
@@ -1339,8 +1339,8 @@ extern "C" s32 func_ov134_02292f40(Unk_ov134_02291f60 *self) {
     switch (self->unk_a9) {
     case 0:
         self->unk_a9 = 1;
-        func_020020b8(self->unk_a4);
-        func_0200152c(1);
+        Gfx2d_ShowLayer(self->unk_a4);
+        Gfx2d_EnableSubWindows(1);
         self->unk_af = self->unk_af - 1;
         func_ov134_02292934(self);
         break;
@@ -1349,7 +1349,7 @@ extern "C" s32 func_ov134_02292f40(Unk_ov134_02291f60 *self) {
             self->unk_af = self->unk_af - 1;
             func_ov134_02292934(self);
         } else {
-            func_0200151c(1);
+            Gfx2d_DisableSubWindows(1);
             self->unk_a9 = 2;
             self->unk_af = 0;
             self->func_ov134_02291f70(4);
@@ -1413,9 +1413,9 @@ extern "C" void func_ov134_02292e40(Unk_ov134_02291f60 *self) {
     Snd_PlaySe(0x29);
     self->unk_a9 = 3;
     self->unk_af = 3;
-    func_0200151c(1);
-    func_02001724(0x1f, 1);
-    func_020016b0(~func_0200273c(self->unk_a4) & 0x1f);
+    Gfx2d_DisableSubWindows(1);
+    Gfx2d_SetSubWin0Planes(0x1f, 1);
+    Gfx2d_SetSubWinOutPlanes(~Gfx2d_GetLayerPlaneMask(self->unk_a4) & 0x1f);
     func_ov134_0229435c(self);
     self->unk_80 = self->unk_ab + (self->unk_ad << 4) - self->unk_00;
     self->func_ov134_02291f60(4);
@@ -1425,9 +1425,9 @@ extern "C" void func_ov134_02292df4(Unk_ov134_02291f60 *self) {
     Snd_PlaySe(0x2a);
     self->unk_a9 = 4;
     self->unk_af = 3;
-    func_0200151c(1);
-    func_02001724(0x1f, 1);
-    func_020016b0(~func_0200273c(self->unk_a4) & 0x1f);
+    Gfx2d_DisableSubWindows(1);
+    Gfx2d_SetSubWin0Planes(0x1f, 1);
+    Gfx2d_SetSubWinOutPlanes(~Gfx2d_GetLayerPlaneMask(self->unk_a4) & 0x1f);
     self->func_ov134_02291f60(4);
 }
 
@@ -1452,7 +1452,7 @@ extern "C" s32 func_ov134_02292cb0(Unk_ov134_02291f60 *self) {
             Snd_PlaySe(0x14);
             self->unk_a9 = 6;
             self->unk_af = 3;
-            func_0200152c(1);
+            Gfx2d_EnableSubWindows(1);
             self->unk_af = self->unk_af - 1;
             func_ov134_0229288c(self);
         }
@@ -1462,8 +1462,8 @@ extern "C" s32 func_ov134_02292cb0(Unk_ov134_02291f60 *self) {
             self->unk_af = self->unk_af - 1;
             func_ov134_0229288c(self);
         } else {
-            func_0200212c(self->unk_a4);
-            func_0200151c(1);
+            Gfx2d_HideLayer(self->unk_a4);
+            Gfx2d_DisableSubWindows(1);
             func_ov134_02293350(self, self->unk_a5, 3);
             self->unk_74 = 0;
             self->unk_78 = 0;
@@ -1520,7 +1520,7 @@ extern "C" void func_ov134_02292c3c(Unk_ov134_02291f60 *self, s32 a) {
 }
 
 extern "C" void func_ov134_02292c18(Unk_ov134_02291f60 *self) {
-    func_020021fc(self->unk_a4, -self->unk_aa, -(self->unk_ab - self->unk_00));
+    Gfx2d_SetLayerOffset(self->unk_a4, -self->unk_aa, -(self->unk_ab - self->unk_00));
 }
 
 extern "C" s32 func_ov134_02292990(Unk_ov134_02291f60 *self) {
@@ -1640,7 +1640,7 @@ extern "C" void func_ov134_02292934(Unk_ov134_02291f60 *self) {
         self->unk_b5 = 0x28;
         self->unk_b6 = 0xa8;
     }
-    func_020021b8(2, 0, self->unk_b5, 0xff, self->unk_b6);
+    Gfx2d_SetWindowRect(2, 0, self->unk_b5, 0xff, self->unk_b6);
 }
 
 extern "C" void func_ov134_0229288c(Unk_ov134_02291f60 *self) {
@@ -1651,7 +1651,7 @@ extern "C" void func_ov134_0229288c(Unk_ov134_02291f60 *self) {
         self->unk_b5 = self->unk_ae - 8;
         self->unk_b6 = self->unk_ae + 8;
     }
-    func_020021b8(2, 0, self->unk_b5, 0xff, self->unk_b6);
+    Gfx2d_SetWindowRect(2, 0, self->unk_b5, 0xff, self->unk_b6);
     s32 v = self->unk_b5;
     if (self->unk_80 < v) {
         self->unk_80 = v;
@@ -1667,7 +1667,7 @@ BOOL Unk_ov134_02291f60::func_ov134_022926d0() {
     u32 cur = func_ov134_0229462c(this, unk_a5);
     func_ov134_022945b0(this, unk_a5, unk_ad);
     m |= 1 << unk_a5;
-    s32 r = func_0209ce48(unk_b8.b[5], unk_b8.b[4]);
+    s32 r = Date_GetDaysInMonth(unk_b8.b[5], unk_b8.b[4]);
     if (r < unk_b8.b[3]) {
         unk_b8.b[3] = r;
         m |= 4;
@@ -1681,12 +1681,12 @@ BOOL Unk_ov134_02291f60::func_ov134_022926d0() {
         u8 lo = unk_b2;
         if (cur < lo) {
             if (unk_ad >= lo) {
-                func_0209d164(unk_b8.b, 1);
+                DateTime_SubDays(unk_b8.b, 1);
                 dir = -1;
             }
         } else {
             if (unk_ad < lo) {
-                func_0209d2c0(unk_b8.b, 1);
+                DateTime_AddDays(unk_b8.b, 1);
                 dir = 1;
             }
         }
@@ -1695,13 +1695,13 @@ BOOL Unk_ov134_02291f60::func_ov134_022926d0() {
         }
     }
     if (func_ov134_02291f80(0x80)) {
-        if (func_0209d3d0(unk_c8.b, unk_b8.b, 0x3f) == 1) {
+        if (DateTime_Compare(unk_c8.b, unk_b8.b, 0x3f) == 1) {
             MI_CpuCopy8(unk_c8.b, unk_b8.b, 8);
             m = 0xffff;
         }
     }
     if (func_ov134_02291f80(0x40)) {
-        if (func_0209d3d0(unk_d0.b, unk_b8.b, 0x3f) == -1) {
+        if (DateTime_Compare(unk_d0.b, unk_b8.b, 0x3f) == -1) {
             MI_CpuCopy8(unk_d0.b, unk_b8.b, 8);
             m = 0xffff;
         }
@@ -2078,7 +2078,7 @@ void Unk_ov134_02291f60::func_ov134_02291f94(s32 t) {
     g = ((u8)((c2 & 0x3e0) >> 5) * t + g * w) / 3;
     b = ((u8)((c2 & 0x7c00) >> 10) * t + b * w) / 3;
     *(u16 *)(p + 0x25c2) = r | (g << 5) | (b << 10);
-    ((Unk_020e45f8 *)(p + 0x560))->func_020b8670((u32)(p + 0x25a4), unk_a4, 9);
+    ((BgVramTask *)(p + 0x560))->requestPalette((u32)(p + 0x25a4), unk_a4, 9);
 }
 
 BOOL Unk_ov134_02291f60::func_ov134_02291f80(u32 m) {

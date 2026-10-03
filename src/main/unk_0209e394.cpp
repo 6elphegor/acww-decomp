@@ -136,12 +136,12 @@ Unk_0209e840_Ent sSaveMenuStates[6] = {
 };
 
 extern u8 gTalkMsgIndexEnd[];
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u16 gPad[];
-extern u8 data_021c3cc0;
+extern u8 gScreenTransition;
 extern u8 data_021ed3ac[];
-extern u8 data_021ed3a0;
-extern u8 data_021ed448[];
+extern u8 sAxBbsReceived;
+extern u8 sAxBbsBuf[];
 
 extern "C" {
 TalkWindowState *TalkWindow_Get(s32 v);
@@ -164,7 +164,7 @@ void _ZN10ChoiceList9loadTextsEv(void *h);
 }
 
 extern "C" {
-s32 func_02073204();
+s32 Comm_GetSyncState();
 }
 
 extern "C" {
@@ -184,11 +184,11 @@ void func_0209f230(s32 v);
 }
 
 extern "C" {
-s32 func_020731d4();
+s32 Comm_ClearSyncState();
 }
 
 extern "C" {
-s32 func_02073230(s32 v);
+s32 Comm_RequestSync(s32 v);
 }
 
 extern "C" {
@@ -200,7 +200,7 @@ void func_020b4f58(s32 a, s32 b, s32 c, s32 d);
 }
 
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
+s32 _ZN11CommManager8isOnlineEv(void *p);
 }
 
 extern "C" {
@@ -208,11 +208,11 @@ void func_020b4a08(s32 a, s32 b);
 }
 
 extern "C" {
-void func_020a08e8();
+void SaveManager_RequestAct1A();
 }
 
 extern "C" {
-s32 func_020a0984();
+s32 SaveManager_RequestAct01();
 }
 
 extern "C" {
@@ -252,7 +252,7 @@ s32 TalkRequest_IsActive();
 }
 
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_020729ccEj(void *p, s32 v);
+s32 _ZN11CommManager7isMyAidEj(void *p, s32 v);
 }
 
 extern "C" {
@@ -300,19 +300,19 @@ void func_02097ac4(s32 a, s32 b, s32 c);
 }
 
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 
 extern "C" {
-s32 func_0209d3d0(void *a, void *b, s32 c);
+s32 DateTime_Compare(void *a, void *b, s32 c);
 }
 
 extern "C" {
-void func_0209d2c0(void *a, s32 b);
+void DateTime_AddDays(void *a, s32 b);
 }
 
 extern "C" {
-void func_0209cf88(void *p);
+void Clock_GetDate(void *p);
 }
 
 extern "C" {
@@ -366,10 +366,10 @@ static inline BOOL Unk_0209e7b4_Is2(u8 v) {
 
 class SaveRecord4 {
 public:
-    BOOL func_0209ea50();
-    void func_0209ea60();
-    void func_0209eacc(void *src);
-    void func_0209eaf4();
+    BOOL isDateActive();
+    void expireDate();
+    void setDateToday(void *src);
+    void resetDate();
     u8 getStamp();
     void setStamp(u8 v);
     void newStamp();
@@ -392,39 +392,39 @@ extern "C" void func_0209eb08() {}
 
 extern "C" void func_0209eb04() {}
 
-void SaveRecord4::func_0209eaf4() {
+void SaveRecord4::resetDate() {
     unk_00 = 1;
     unk_01 = 1;
     unk_02 = 0;
     unk_03 = 0;
 }
 
-void SaveRecord4::func_0209eacc(void *src) {
+void SaveRecord4::setDateToday(void *src) {
     u8 buf[8];
     if (src == 0) {
-        func_0209cf88(buf);
+        Clock_GetDate(buf);
         src = buf;
     }
     MI_CpuCopy8(src, this, 4);
     unk_03 = 1;
 }
 
-void SaveRecord4::func_0209ea60() {
-    if (func_0209ea50() != 0) {
+void SaveRecord4::expireDate() {
+    if (isDateActive() != 0) {
         u32 w[4];
         w[0] = 0;
         w[1] = 0;
         w[2] = 0;
         w[3] = 0;
-        func_0209d498(w);
+        Clock_GetDateTime(w);
         ((u8 *)w)[0xd] = unk_02;
         ((u8 *)w)[0xc] = unk_01;
         ((u8 *)w)[0xb] = unk_00;
         ((u8 *)w)[0xa] = 0;
-        if (func_0209d3d0(&w[2], w, 0x3c) != 1) {
+        if (DateTime_Compare(&w[2], w, 0x3c) != 1) {
             ((u8 *)w)[0xa] = 6;
-            func_0209d2c0(&w[2], 1);
-            if (func_0209d3d0(&w[2], w, 0x3c) != 1) {
+            DateTime_AddDays(&w[2], 1);
+            if (DateTime_Compare(&w[2], w, 0x3c) != 1) {
                 unk_03 = 0;
             }
         } else {
@@ -433,7 +433,7 @@ void SaveRecord4::func_0209ea60() {
     }
 }
 
-BOOL SaveRecord4::func_0209ea50() {
+BOOL SaveRecord4::isDateActive() {
     if (unk_03 != 0) {
         return TRUE;
     }
@@ -534,10 +534,10 @@ void SaveMenu::updateIdle() {
         if (func_020b50e8() != 0x2d) {
             if (func_0203d978() == 0) {
                 if (func_0203d99c() == 0) {
-                    if (Unk_0209e7b4_Is2(data_021c3cc0) != 0) {
+                    if (Unk_0209e7b4_Is2(gScreenTransition) != 0) {
                         if (TalkRequest_IsActive() == 0) {
-                            void *g = data_020cbb18;
-                            if (_ZN12Unk_020cbb1813func_02072e44Ev(g) != 0 && _ZN12Unk_020cbb1813func_020729ccEj(g, 0) == 0) {
+                            void *g = gCommManager;
+                            if (_ZN11CommManager8isOnlineEv(g) != 0 && _ZN11CommManager7isMyAidEj(g, 0) == 0) {
                                 func_020387b4();
                             } else if (func_0203d884() != 0) {
                                 setState(1);
@@ -560,7 +560,7 @@ void SaveMenu::updateOpenTalk() {
         if (func_020a0318() != 0 || func_020a0304() != 0) {
             _ZN10MsgRequest11setFileNameEPKc(&unk_54, (u8 *)"sp_etc_sequence4");
             unk_54.unk_1e = 4;
-        } else if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) != 0) {
+        } else if (_ZN11CommManager8isOnlineEv(gCommManager) != 0) {
             _ZN10MsgRequest11setFileNameEPKc(&unk_54, (u8 *)"sp_etc_sequence2");
             unk_54.unk_1e = 4;
         } else {
@@ -593,23 +593,23 @@ void SaveMenu::updateQuitting() {
     if (o->unk_04 == 0) {
         o->detachRequest();
         func_020b4f58(func_020b4934(), 0x2e, 2, 3);
-        if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) != 0) {
+        if (_ZN11CommManager8isOnlineEv(gCommManager) != 0) {
             func_020b4a08(func_020b4934(), 0);
-            func_020a08e8();
+            SaveManager_RequestAct1A();
         } else {
-            func_020a0984();
+            SaveManager_RequestAct01();
         }
     }
 }
 
 void SaveMenu::enterSaveA() {
     unk_54.unk_48 = 200;
-    func_02073230(2);
+    Comm_RequestSync(2);
 }
 
 void SaveMenu::updateSaveA() {
     TalkWindowState *o = (TalkWindowState *)unk_54.unk_3c;
-    s32 r = func_02073204();
+    s32 r = Comm_GetSyncState();
     if (r == 5 || r == 6) {
         o->func_02067990();
         o->unlockAdvance();
@@ -625,20 +625,20 @@ void SaveMenu::updateSaveA() {
             o->setNextMessage(&b, (u8 *)"sp_etc_sequence2");
             setState(2);
         }
-        func_020731d4();
+        Comm_ClearSyncState();
     }
 }
 
 void SaveMenu::enterSaveB() {
     unk_54.unk_48 = 200;
-    func_02073230(3);
+    Comm_RequestSync(3);
 }
 
 // SaveMenu
 
 void SaveMenu::updateSaveB() {
     TalkWindowState *o = (TalkWindowState *)unk_54.unk_3c;
-    s32 r = func_02073204();
+    s32 r = Comm_GetSyncState();
     if (r == 5 || r == 6) {
         o->func_02067990();
         o->unlockAdvance();
@@ -654,7 +654,7 @@ void SaveMenu::updateSaveB() {
             o->setNextMessage(&b, (u8 *)"sp_etc_sequence2");
             setState(2);
         }
-        func_020731d4();
+        Comm_ClearSyncState();
     }
 }
 

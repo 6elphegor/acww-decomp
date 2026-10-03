@@ -154,10 +154,10 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
+class BuildingActor : public Character, public TalkMsgRequest {
 public:
-    Unk_ov009_0225e29c();
-    virtual ~Unk_ov009_0225e29c();
+    BuildingActor();
+    virtual ~BuildingActor();
     virtual BOOL vfunc_00();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
@@ -190,9 +190,9 @@ public:
     virtual void vfunc_b4();
     virtual BOOL vfunc_b8();
 
-    s32 func_ov009_0225d6b8(u32 a);
-    void func_ov009_0225d244();
-    void func_ov009_0225bc88();
+    s32 getBtaAnim(u32 a);
+    void getResources();
+    void updateMatrix();
 
     /* 0x130 */ u8 unk_130;
     /* 0x131 */ u8 pad_131;
@@ -270,17 +270,17 @@ extern u32 data_021c6204;
 void func_ov003_022150f0(void *p);
 void func_ov003_02215a04(void *p);
 s32 _ZN5Model12getRenderObjEv(void *p);
-void _ZN9ModelAnim13func_02055b00Eiiiit(void *m, s32 a, s32 b, s32 c, s32 d, u32 e);
-BOOL _ZN9ModelAnim13func_02055bccEjPv(void *m, s32 a, s32 b);
-void _ZN9ModelAnim13func_02055b38Eiiit(void *m, s32 a, s32 b, s32 c, s32 d);
+void _ZN9ModelAnim7replaceEiiiit(void *m, s32 a, s32 b, s32 c, s32 d, u32 e);
+BOOL _ZN9ModelAnim11allocMatAnmEjPv(void *m, s32 a, s32 b);
+void _ZN9ModelAnim4initEiiit(void *m, s32 a, s32 b, s32 c, s32 d);
 void _ZN9ModelAnim14addToRenderObjEj(void *m, s32 a);
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, void *c, u32 d, u32 e);
-void _ZN5Model13func_02055488Eii(void *m, void (*fn)(void *), void *self);
-s32 _ZN12Unk_02056fd813func_02057110Ei(s32 a, const char *s);
+void _ZN5Model15setInitCallbackEii(void *m, void (*fn)(void *), void *self);
+s32 _ZN12G3dResAccess10findMatIdxEi(s32 a, const char *s);
 void Snd_PlaySe(u32 a);
 void _ZN13AnimFrameCtrl4stepEv(void *m);
-void _ZN18Unk_ov009_0225e29c19func_ov009_0225bc88Ev(void *p);
+void _ZN13BuildingActor12updateMatrixEv(void *p);
 BOOL func_020b1d3c(u32 a, u32 b);
 void func_02094030(void *p);
 void func_02094018(void *p);
@@ -298,7 +298,7 @@ public:
 };
 
 // ---------------------------------------------------------------- DoorLight
-class Unk_ov003_022314d0 : public Unk_ov009_0225e29c {
+class Unk_ov003_022314d0 : public BuildingActor {
 public:
     virtual BOOL vfunc_b0();
     Unk_ov003_022314d0();
@@ -323,7 +323,7 @@ class Unk_ov003_02231614;
 typedef void (Unk_ov003_02231614::*Unk_02215614_Fn)();
 typedef BOOL (Unk_ov003_02231614::*Unk_02215680_Fn)();
 
-class Unk_ov003_02231614 : public Unk_ov009_0225e29c {
+class Unk_ov003_02231614 : public BuildingActor {
 public:
     Unk_ov003_02231614();
     virtual ~Unk_ov003_02231614();
@@ -350,7 +350,7 @@ public:
 };
 
 // ---------------------------------------------------------------- Z
-class Unk_ov003_0223177c : public Unk_ov009_0225e29c {
+class Unk_ov003_0223177c : public BuildingActor {
 public:
     virtual void vfunc_78();
     virtual BOOL vfunc_8c();
@@ -392,9 +392,9 @@ BOOL Unk_ov003_022314d0::vfunc_70() {
     unk_2b0 = data_ov003_02235270;
     unk_2b1 = 0;
     setCharId(unk_2b0);
-    if (_ZN9ModelAnim13func_02055bccEjPv(&unk_2b4, unk_194, data_021c6204)) {
-        s32 r1 = func_ov009_0225d6b8(0);
-        _ZN9ModelAnim13func_02055b38Eiiit(&unk_2b4, r1, 1, 0x1000, 0);
+    if (_ZN9ModelAnim11allocMatAnmEjPv(&unk_2b4, unk_194, data_021c6204)) {
+        s32 r1 = getBtaAnim(0);
+        _ZN9ModelAnim4initEiiit(&unk_2b4, r1, 1, 0x1000, 0);
         _ZN9ModelAnim14addToRenderObjEj(&unk_2b4, _ZN5Model12getRenderObjEv(unk_138));
     }
     unk_2d4 = 1;
@@ -402,7 +402,7 @@ BOOL Unk_ov003_022314d0::vfunc_70() {
     u32 tm[2];
     tm[0] = 0;
     tm[1] = 0;
-    func_0209d498(tm);
+    Clock_GetDateTime(tm);
     if (((u8 *)tm)[4] != 1) {
         switch (unk_2b0) {
         case 0:
@@ -442,7 +442,7 @@ extern "C" void func_ov003_022150f0(void *arg) {
         Unk_ov003_02214890_Buf l;
         l.w0 = 0;
         l.w1 = 0;
-        func_0209d498(&l);
+        Clock_GetDateTime(&l);
         if (((u8 *)&l)[4] == 1) {
             goto clr;
         }

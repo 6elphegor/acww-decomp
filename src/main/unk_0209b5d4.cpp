@@ -13,22 +13,22 @@ public:
 
 extern "C" {
 s32 func_02063b8c(s32);
-BOOL _ZN12Unk_0209c04013func_0209c040Ei(Unk_0209c060 *, s32);
+BOOL _ZN12TownAcreCell7setTypeEi(Unk_0209c060 *, s32);
 void *_ZN10RecordFile9getRecordEj(void *, s32);
 }
 
-class Unk_0209b5d4 {
+class TownAcreGrid {
 public:
     Unk_0209c060 cells[36];
     u32 unk_120[8];
 
-    void func_0209b5d4(s32 seed);
-    Unk_0209c060 *func_0209bc54(s32 x, s32 y);
+    void loadCandidate(s32 seed);
+    Unk_0209c060 *getCell(s32 x, s32 y);
 };
 
-s32 data_021d7128;
+s32 sTownGenCandidateIndex;
 
-void Unk_0209b5d4::func_0209b5d4(s32 seed) {
+void TownAcreGrid::loadCandidate(s32 seed) {
     u8 *p;
     u32 y, x;
     s32 v;
@@ -37,12 +37,12 @@ void Unk_0209b5d4::func_0209b5d4(s32 seed) {
     } else {
         v = (u32)seed % 0x20c;
     }
-    data_021d7128 = v;
+    sTownGenCandidateIndex = v;
     p = (u8 *)_ZN10RecordFile9getRecordEj(unk_120, v);
     if (p) {
         for (y = 1; y < 5; y++) {
             for (x = 1; x < 5; x++) {
-                _ZN12Unk_0209c04013func_0209c040Ei(func_0209bc54(x, y), *p++);
+                _ZN12TownAcreCell7setTypeEi(getCell(x, y), *p++);
             }
         }
     }

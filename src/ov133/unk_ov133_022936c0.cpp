@@ -25,39 +25,39 @@ extern u16 gPad[];
 void func_0206ee80(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 void Snd_PlaySe(s32 v);
 void Snd_PlayKeySe(u32 a);
-void *func_02076cf0(void *p);
-BOOL func_02076e38(void *a, u8 *buf);
+void *FriendEntry_GetFriendData(void *p);
+BOOL DwcFriendData_ToCodeDigits(void *a, u8 *buf);
 void *PlayerData_GetCurrent();
-void *func_02076c80(void *p);
-void func_02076f1c(void *p);
-BOOL func_02076e88(void *out, u8 *data, void *ctx);
+void *PlayerWifiData_GetDwcUserData(void *p);
+void DwcFriendData_Clear(void *p);
+BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, void *ctx);
 void func_0206ecf8(u32 v);
 s32 func_0206ed50();
-void func_02076cf4(void *p);
+void FriendEntry_Clear(void *p);
 void func_ov094_0229277c();
 s32 func_0206e5cc();
-s32 func_020eaf18();
+s32 Net_GetMode();
 s32 func_0206ed38();
-u32 func_02076e1c(void *p);
-BOOL func_020e9c78(u32 a, u32 b);
+u32 DwcFriendData_GetBytes(void *p);
+BOOL Net_WifiAddFriend(u32 a, u32 b);
 void *ProcBase_GetParent();
 BOOL func_ov002_0220126c(u32 v);
 BOOL func_ov002_0220125c(u32 v);
 BOOL func_ov002_0220128c(u32 v);
 BOOL func_ov002_0220127c(u32 v);
 u64 func_02076c94(void *p);
-void *func_02076db4(void *p);
-BOOL func_02076f04(void *p);
-BOOL func_02076f28(u32 a, void *p);
+void *FriendList_GetEntries(void *p);
+BOOL DwcFriendData_IsValid(void *p);
+BOOL DwcFriendData_Compare(u32 a, void *p);
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
 void ProcBase_RequestDelete(void *p);
 void func_0206f9fc(void *p, s32 a);
 void File_LoadToBuffer(void *a, void *b, s32 c);
-void func_02002398(s32 a, s32 b);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_020021a0(s32 a);
-void func_020020b8(s32 a);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ShowLayer(s32 a);
 void Snd_SetKeySeMode(s32 a);
 BOOL func_0206e61c();
 void func_0206e63c();
@@ -104,8 +104,8 @@ void _ZN18Unk_ov133_022952bc19func_ov133_02294940Ev();
 extern void *data_ov133_02295298[2];
 }
 
-struct Unk_020cbb18 {
-    s32 func_02072e88(s32 v);
+struct CommManager {
+    s32 isSlotActive(s32 v);
     u8 pad_00[0x64];
     s32 unk_64;
 };
@@ -129,7 +129,7 @@ public:
     s32 func_ov090_02291d2c();
     void func_ov090_02291d8c(u32 v);
 };
-extern "C" Unk_020cbb18 *data_020cbb18;
+extern "C" CommManager *gCommManager;
 
 // Vtable 0x022044e4
 class Unk_ov002_022044e4 : public GameProc {
@@ -193,13 +193,13 @@ public:
 };
 
 // Menu/message cursor buffer objects at +0x2b8 and +0x2dc (0x24 bytes each)
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    Unk_020e45f8();
+    BgVramTask();
     virtual BOOL vfunc_00();
-    virtual void vfunc_04();
-    BOOL func_020b86c0(u32 a, u8 b, u32 c, u32 d);
-    void func_020b87d0();
+    virtual void clear();
+    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
+    void cancel();
     u8 unk_04[0x20];
 };
 
@@ -275,10 +275,10 @@ public:
 };
 
 // Local object with empty out-of-line ctor/dtor (func_02076f74 / func_02076f70)
-class Unk_02076f70 {
+class DwcFriendData {
 public:
-    Unk_02076f70();
-    ~Unk_02076f70();
+    DwcFriendData();
+    ~DwcFriendData();
     u32 v[3];
 };
 
@@ -392,7 +392,7 @@ public:
     /* 0x0b0 */ Unk_020e0488 unk_b0[1];
     /* 0x0f0 */ Unk_ov002_02204614 unk_f0;
     /* 0x154 */ Unk_ov002_022046cc unk_154;
-    /* 0x2b8 */ Unk_020e45f8 unk_2b8[2];
+    /* 0x2b8 */ BgVramTask unk_2b8[2];
     /* 0x300 */ u16 unk_300[0x400];
     /* 0xb00 */ u16 unk_b00[0x400];
     /* 0x1300 */ Unk_ov002_022040ec unk_1300;
@@ -533,7 +533,7 @@ void Unk_ov133_022952bc::func_ov133_02294dd4() {
             func_ov002_02200a50(3);
             func_ov133_02294d88(7);
             if (func_0206ed50() == 0xe) {
-                func_02076cf4(func_ov133_02294110());
+                FriendEntry_Clear(func_ov133_02294110());
             }
             func_ov002_02200a60(1);
             break;
@@ -578,9 +578,9 @@ void Unk_ov133_022952bc::func_ov133_02294d50() {
 
 void Unk_ov133_022952bc::func_ov133_02294cf4() {
     func_ov002_022008e0(0xa, 0, 0, 0x30);
-    func_020020b8(4);
+    Gfx2d_ShowLayer(4);
     func_ov002_02200840(4, 0, 0);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(6);
     func_ov002_02200840(6, 0, 0);
     func_ov133_02293770(1);
     unk_94 = func_ov002_02200920();
@@ -608,8 +608,8 @@ void Unk_ov133_022952bc::func_ov133_02294c64() {
 
 void Unk_ov133_022952bc::func_ov133_02294c10() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(4);
-        func_020021a0(6);
+        Gfx2d_ResetLayer(4);
+        Gfx2d_ResetLayer(6);
         func_ov133_02293760(1);
         func_ov002_02200a60(5);
     } else {
@@ -636,15 +636,15 @@ void Unk_ov133_022952bc::func_ov133_02294bc4() {
 }
 
 void Unk_ov133_022952bc::func_ov133_02294b90() {
-    unk_2b8[0].func_020b87d0();
-    unk_2b8[1].func_020b87d0();
+    unk_2b8[0].cancel();
+    unk_2b8[1].cancel();
     func_ov133_02294538();
     unk_154.func_ov002_02203900();
 }
 
 void Unk_ov133_022952bc::func_ov133_02294b0c() {
-    unk_2b8[0].func_020b87d0();
-    unk_2b8[1].func_020b87d0();
+    unk_2b8[0].cancel();
+    unk_2b8[1].cancel();
     func_ov133_02294538();
     unk_154.func_ov002_02203900();
     if (unk_9e != 0) {
@@ -670,10 +670,10 @@ void Unk_ov133_022952bc::func_ov133_02294aec() {
 void Unk_ov133_022952bc::func_ov133_02294ae4() { func_ov133_02294b04(); }
 
 void Unk_ov133_022952bc::func_ov133_02294ab0() {
-    func_02002398(4, 2);
-    func_02002398(6, 2);
-    func_0200226c(4, 0, 0, 0);
-    func_0200226c(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 2);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
 void Unk_ov133_022952bc::func_ov133_02294a5c() {
@@ -873,8 +873,8 @@ void Unk_ov133_022952bc::func_ov133_02294614() {
 void Unk_ov133_022952bc::func_ov133_022945dc() {
     void *r = func_ov133_02294110();
     s32 idx = func_0206ed38();
-    u32 t = func_02076e1c(func_02076cf0(r));
-    if (func_020e9c78((u8)idx, t)) {
+    u32 t = DwcFriendData_GetBytes(FriendEntry_GetFriendData(r));
+    if (Net_WifiAddFriend((u8)idx, t)) {
         func_ov002_02200a58(10);
     }
 }
@@ -1087,17 +1087,17 @@ u32 Unk_ov133_022952bc::func_ov133_02294138(s32 x0, s32 y) {
 void *Unk_ov133_022952bc::func_ov133_02294110() {
     void *h = ((PlayerData *)PlayerData_GetCurrent())->getFriendList();
     s32 idx = func_0206ed38();
-    return (u8 *)func_02076db4(h) + idx * 0x1c;
+    return (u8 *)FriendList_GetEntries(h) + idx * 0x1c;
 }
 
 BOOL Unk_ov133_022952bc::func_ov133_022940b4(u32 a) {
     void *h = PlayerData_GetCurrent();
     s32 idx = func_0206ed38();
-    u8 *p = (u8 *)func_02076db4(((PlayerData *)h)->getFriendList());
+    u8 *p = (u8 *)FriendList_GetEntries(((PlayerData *)h)->getFriendList());
     s32 i;
     for (i = 0; i < 0x20; p += 0x1c, i++) {
-        if (func_02076f04(func_02076cf0(p)) && i != idx) {
-            if (func_02076f28(a, func_02076cf0(p))) {
+        if (DwcFriendData_IsValid(FriendEntry_GetFriendData(p)) && i != idx) {
+            if (DwcFriendData_Compare(a, FriendEntry_GetFriendData(p))) {
                 return TRUE;
             }
         }
@@ -1117,9 +1117,9 @@ BOOL Unk_ov133_022952bc::func_ov133_0229405c() {
 
 void Unk_ov133_022952bc::func_ov133_02293efc() {
     void *h = PlayerData_GetCurrent();
-    Unk_02076f70 l;
-    func_02076f1c(&l);
-    if (!func_02076e88(&l, unk_a4, func_02076c80(((PlayerData *)h)->getWifiUserData()))) {
+    DwcFriendData l;
+    DwcFriendData_Clear(&l);
+    if (!DwcFriendData_FromCodeDigits(&l, unk_a4, PlayerWifiData_GetDwcUserData(((PlayerData *)h)->getWifiUserData()))) {
         func_ov133_0229454c(0x19, 0);
         Snd_PlaySe(0x73);
         return;
@@ -1135,8 +1135,8 @@ void Unk_ov133_022952bc::func_ov133_02293efc() {
         return;
     }
     void *s = func_ov133_02294110();
-    void *t = func_02076cf0(s);
-    func_02076e88(t, unk_a4, func_02076c80(((PlayerData *)h)->getWifiUserData()));
+    void *t = FriendEntry_GetFriendData(s);
+    DwcFriendData_FromCodeDigits(t, unk_a4, PlayerWifiData_GetDwcUserData(((PlayerData *)h)->getWifiUserData()));
     func_0206ecf8(1);
     unk_154.func_ov002_022030ac(6);
     func_ov002_02200a50(3);
@@ -1148,13 +1148,13 @@ void Unk_ov133_022952bc::func_ov133_02293efc() {
         ((Unk_ov090_022921e0 *)((void *(*)(void *))ProcBase_GetParent)(this))->func_ov090_02291964();
         func_ov133_02294d88(6);
         func_0206e5cc();
-        if (data_020cbb18->func_02072e88(data_020cbb18->unk_64)) {
-            switch (func_020eaf18()) {
+        if (gCommManager->isSlotActive(gCommManager->unk_64)) {
+            switch (Net_GetMode()) {
             case 3:
             case 4: {
                 s32 pl = func_0206ed38();
-                u32 x = func_02076e1c(func_02076cf0(s));
-                if (!func_020e9c78((u8)pl, x)) {
+                u32 x = DwcFriendData_GetBytes(FriendEntry_GetFriendData(s));
+                if (!Net_WifiAddFriend((u8)pl, x)) {
                     func_ov002_02200a58(0xc);
                     return;
                 }
@@ -1171,7 +1171,7 @@ void Unk_ov133_022952bc::func_ov133_02293eac() {
     func_ov002_02200a58(10);
     func_ov133_02294d88(6);
     if (func_0206ed50() == 0xe) {
-        func_02076cf4(func_ov133_02294110());
+        FriendEntry_Clear(func_ov133_02294110());
     }
     Snd_PlaySe(0x28);
 }
@@ -1277,7 +1277,7 @@ void Unk_ov133_022952bc::func_ov133_02293cdc(s32 x) {
 }
 
 void Unk_ov133_022952bc::func_ov133_02293ca4() {
-    if (func_02076e38(func_02076cf0(func_ov133_02294110()), unk_a4)) {
+    if (DwcFriendData_ToCodeDigits(FriendEntry_GetFriendData(func_ov133_02294110()), unk_a4)) {
         func_ov133_02293d18(0);
         func_ov133_02293770(8);
     } else {
@@ -1435,12 +1435,12 @@ void Unk_ov133_022952bc::func_ov133_022938cc() {
         func_ov133_02293770(4);
     }
     if (func_ov133_02293780(2)) {
-        if (unk_2b8[0].func_020b86c0((u32)unk_300, 4, 0x800, 0)) {
+        if (unk_2b8[0].requestScreen((u32)unk_300, 4, 0x800, 0)) {
             func_ov133_02293760(2);
         }
     }
     if (func_ov133_02293780(4)) {
-        if (unk_2b8[1].func_020b86c0((u32)unk_b00, 6, 0x800, 0)) {
+        if (unk_2b8[1].requestScreen((u32)unk_b00, 6, 0x800, 0)) {
             func_ov133_02293760(4);
         }
     }

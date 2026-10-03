@@ -1,10 +1,10 @@
 #include "types.h"
 
 extern "C" {
-s32 func_0209cbd8(void *p);
-u32 func_0209cb9c(void *p, void *q);
-u16 func_0209cb74(void *p, void *q);
-void func_0209cfe4(void);
+s32 ClockOffset_Clear(void *p);
+u32 ClockOffset_CalcMinutes(void *p, void *q);
+u16 ClockOffset_CalcSeconds(void *p, void *q);
+void Clock_Init(void);
 void func_0206e8b8(void *);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
 }
@@ -162,21 +162,21 @@ typedef void (SaveData::*Unk_0209d70c_Fn)();
 
 // Data order: this unit is placed object by object (see object_order.txt).
 
-extern "C" void func_0209d7bc(u8 *p) {
+extern "C" void SaveData_SyncClockOffset(u8 *p) {
     u32 a[2];
     u32 b[2];
     u32 c[2];
-    func_0209cbd8(p + 0x15fb4);
+    ClockOffset_Clear(p + 0x15fb4);
     a[0] = 0;
     a[1] = 0;
     func_0206e8b8(a);
     MI_CpuCopy8(a, b, 8);
-    u32 r4 = func_0209cb9c(p + 0x15fb4, b);
+    u32 r4 = ClockOffset_CalcMinutes(p + 0x15fb4, b);
     MI_CpuCopy8(a, c, 8);
-    u16 r0 = func_0209cb74(p + 0x15fb4, c);
+    u16 r0 = ClockOffset_CalcSeconds(p + 0x15fb4, c);
     *(u32 *)(p + 0x15fb4) = r4;
     *(u16 *)(p + 0x15fb8) = r0;
-    func_0209cfe4();
+    Clock_Init();
 }
 
 extern "C" void SaveData_Setup(SaveData *p, u32 idx) {

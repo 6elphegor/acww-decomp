@@ -15,11 +15,11 @@ public:
     u8 unk_0b;
 };
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 pad_00[0x64];
     s32 unk_64;
-    u32 func_02072e88(s32 i);
-    BOOL func_02072e44();
+    u32 isSlotActive(s32 i);
+    BOOL isOnline();
 };
 
 
@@ -382,7 +382,7 @@ struct Unk_020781ec_Data {
     s32 unk_168;
     s8 unk_16c;
 };
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern void *data_021cc8b0[];
 extern void *data_021cc914[];
 extern void *data_021cc8e8[];
@@ -390,12 +390,12 @@ extern void *data_021c61a4;
 extern void *data_021c61a8;
 extern void *data_021c61ac;
 extern u8 data_020e416c;
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 extern void *gCurrentHeap;
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *);
-void _ZN12Unk_020cbb1813func_020728d4Ev(void *);
-void _ZN12Unk_020cbb1813func_020728a4EPhj(void *, void *, s32);
-void _ZN12Unk_020cbb1813func_02072824Ejj(void *, s32, s32);
+BOOL _ZN11CommManager8isOnlineEv(void *);
+void _ZN11CommManager11beginRecordEv(void *);
+void _ZN11CommManager11writeRecordEPhj(void *, void *, s32);
+void _ZN11CommManager9endRecordEjj(void *, s32, s32);
 void func_02077ab4(u8 *, s32, s32);
 void *func_02077c0c(void **, s32);
 void *func_02077cd4(void **, s32);
@@ -424,9 +424,9 @@ s32 func_020812f4();
 s32 func_020b50e8();
 s32 func_020b491c(s32);
 s32 func_020b4928(s32);
-void func_0204ee10(s32 *, s32 *, s32);
-void *func_0204ebd8(void *, s32, s32, s32, s32, s32);
-BOOL _ZN12Unk_0204e2f013func_0204e418Eii(void *, s32, s32);
+void FieldPos_ToUnit(s32 *, s32 *, s32);
+void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
+BOOL _ZN8BlockMap13func_0204e418Eii(void *, s32, s32);
 BOOL Item_IsNormalItem(void *);
 BOOL func_020780e4(s32, s32);
 s32 func_02078104(s32, s32);
@@ -707,16 +707,16 @@ struct Unk_02078864_T {
     s32 v[2];
 };
 extern u8 data_021dfd8c[];
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern Unk_02078400 data_021cc9e8;
-extern Unk_02078738_Grid *data_021c47c4;
+extern Unk_02078738_Grid *gSceneBlockMap;
 extern u8 data_020e416c;
 extern u8 data_020cbfe8[][2];
 extern u8 data_020cbfb8[][2];
 extern u8 data_020cc008[][4];
 extern u8 data_020cc084[][6];
-BOOL _ZN12Unk_020cbb1813func_02072e88Ei(void *o, u32 v);
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *o);
+BOOL _ZN11CommManager12isSlotActiveEi(void *o, u32 v);
+BOOL _ZN11CommManager8isOnlineEv(void *o);
 BOOL func_020b51a4();
 BOOL func_020b5184();
 void _ZN12Unk_0209ada413func_0209ad80Ev(void *p);
@@ -733,10 +733,10 @@ u32 VillagerId_GetPersonality(void *p);
 void *Villager_GetPlan(void *p);
 void *func_0209a610(void *p);
 BOOL _ZN12Unk_0209b3bc13func_0209b1e4EPv(void *a, void *b);
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 void func_0207cb68(void *o, u32 kind, s32 v);
 Unk_02078948_Obj *NpcRegistry_FindVillagerByHandle();
-BOOL func_020374cc(void *cell, s32 v);
+BOOL MapBlock_HasAllAttr(void *cell, s32 v);
 void _ZN12VillagerDataD1Ev(void *p);
 void _ZN12VillagerDataC1Ev(void *p);
 u8 *func_0207f948(void *p);
@@ -901,7 +901,7 @@ void func_020785e8(void *, s32);
 s32 SaveVillagers_IsValidIndex(s32);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *, void *, u32);
-void func_0209d498(void *);
+void Clock_GetDateTime(void *);
 s32 _ZN12VillagerData13getVillagerIdEv(void *);
 s32 _ZN10VillagerId7isValidEv(s32);
 s32 func_020812f4();
@@ -915,9 +915,9 @@ s32 func_0204bdb8();
 s32 SaveVillagers_GetUnk3830Index(s32);
 s32 func_0207c764(void *);
 s32 func_02063b8c(s32);
-s32 func_0209d020(void *);
-s32 func_0209d3d0(void *, void *, s32);
-s32 func_0209d374(void *, void *);
+s32 DateTime_IsInvalid(void *);
+s32 DateTime_Compare(void *, void *, s32);
+s32 DateTime_DiffMinutes(void *, void *);
 s32 _ZN8PlayerId13func_02094218Ev(s32);
 s32 Villager_FindMemory(void *, s32);
 s32 func_0207e278(void *);
@@ -1009,8 +1009,8 @@ void *SaveVillagers_Get(void *, s32);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
 s32 Villager_FindMemory(void *, void *);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
-s32 func_0209cdc0(void *, void *);
-s32 func_0209cd00(void *, void *);
+s32 Date_IsAfterOrEqual(void *, void *);
+s32 Date_DaysBetween(void *, void *);
 void func_0207824c(s32);
 s32 func_020b50e8();
 void *PlayerData_GetCurrent();
@@ -1019,7 +1019,7 @@ void *_ZN10PlayerData13func_02098750Ev(void *);
 s32 _ZN15PlayerInventory15findEmptyPocketEv(void *);
 void *_ZN10PlayerData11getPlayerIdEv(void *);
 u8 *_ZN12Unk_02097ff413func_02098308Ev(void *);
-void func_0209d498(void *);
+void Clock_GetDateTime(void *);
 s32 _ZN12Unk_02097ff413func_020982d0Ev(void *);
 s32 SaveVillagers_IsValidIndex(s32);
 void func_02079228(void *);
@@ -1043,7 +1043,7 @@ s32 func_02079b34(void *, s32);
 s32 func_0207f9e0(void *);
 s32 SaveVillagers_GetUnk3830Index(void *);
 void _ZN12Unk_020994cc13func_02099790Ev(void *);
-s32 func_0203f508(void *, void *);
+s32 EventSchedule_CollectDayAll(void *, void *);
 s32 func_020789cc(void *, s32, s32);
 void *PlayerData_GetResident(void *, s32);
 s32 func_0207fa50(void *, s32, void *);
@@ -1058,13 +1058,13 @@ s32 func_0205af28(void *, s32, u16 *, s32 *, s32 *, s32 *);
 void func_02079ce8(void *, s32);
 void func_02079da0(void *, void *);
 void func_02079edc(void *);
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *);
-s32 _ZN12Unk_020cbb1813func_02072e88Ei(void *, s32);
+s32 _ZN11CommManager8isOnlineEv(void *);
+s32 _ZN11CommManager12isSlotActiveEi(void *, s32);
 void func_0207c1e8(void *);
 s32 func_0207980c(void *, void *);
 s32 func_020798b8(void *);
 extern u8 data_021d735c[];
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 struct Unk_020795c4_Buf {
     u32 v[5];
     Unk_020795c4_Buf(void *p) { _ZN8PlayerIdC1ERKS_(this, p); }
@@ -1128,7 +1128,7 @@ struct Unk_0207a3b8_Item {
     u16 unk_00;
     u8 pad_02[10];
 };
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 extern u32 data_020cc0a8[];
 extern u16 data_020cc048[];
 extern u8 data_021d735c[];
@@ -1138,12 +1138,12 @@ extern u8 data_020cbfd8[];
 void *_ZN12VillagerData13getVillagerIdEv(void *p);
 void func_0207c1c8(void *p);
 void func_0207c354(void *p, void *q);
-void func_0209d498(void *d);
+void Clock_GetDateTime(void *d);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
-s32 func_0203f508(void *buf, void *d);
-s32 func_0209d2c0(void *d, s32 n);
-s32 func_0203f2e0(u32 a, void *d, s32 z);
+s32 EventSchedule_CollectDayAll(void *buf, void *d);
+s32 DateTime_AddDays(void *d, s32 n);
+s32 Event_GetState(u32 a, void *d, s32 z);
 u32 func_02040c70();
 void *func_0207e310(void *p);
 s32 func_02078580(void *p);
@@ -1151,14 +1151,14 @@ s32 func_02078578(void *p);
 s32 Random_PickSetBit(u32 mask, s32 cnt, s32 n);
 u8 *func_020783f8();
 s32 Villager_GetResidentStatus(void *p);
-void func_0209cf88(void *d);
-s32 func_0209cdc0(void *d, void *e);
+void Clock_GetDate(void *d);
+s32 Date_IsAfterOrEqual(void *d, void *e);
 void _ZN12Unk_020994cc13func_02099790Ev(void *p);
 s32 _ZN12Unk_020994cc13func_02099668Ev(void *p);
 s32 _ZN12Unk_020994cc13func_02099624EP17Unk_020994cc_Date(void *p, void *d);
-s32 func_0209cd00(void *d, void *e);
-s32 func_0209cffc(void *d, void *e, s32 a, s32 b, s32 c);
-s32 func_0209d164(void *d, s32 n);
+s32 Date_DaysBetween(void *d, void *e);
+s32 DateTime_Make(void *d, void *e, s32 a, s32 b, s32 c);
+s32 DateTime_SubDays(void *d, s32 n);
 BOOL func_0207a3a0(void *p);
 s32 func_0207a3b8(void *p, u32 idx);
 void *SaveVillagers_Get(void *p, s32 i);
@@ -1191,7 +1191,7 @@ BOOL _ZN8PlayerId13func_02094218Ev(s32 p);
 void *_ZN10PlayerData13func_0209865cEv(void *p);
 s32 _ZN12Unk_0209ada413func_0209ac64Ev(void *p);
 s32 func_0209ac44(void *p);
-s32 func_0209d3a4(void *p, s32 q);
+s32 DateTime_DiffDays(void *p, s32 q);
 void func_02099f1c(void *p);
 void _ZN12Unk_0209ada413func_0209abb4Eh(void *p, s32 v);
 BOOL func_020594dc(u32 a, s32 b, void *c);
@@ -1231,7 +1231,7 @@ void func_0207a63c(void *bb);
 namespace nF {
 extern "C" {
 
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 extern s32 data_020cbff8[4];
 extern u8 data_021cc9ac[];
 struct Unk_0207ae84_Mgr {
@@ -1279,24 +1279,24 @@ u8 *SaveVillagers_Get(u8 *self, s32 i);
 s32 func_020789cc(u8 *p, s32 a, s32 b);
 u32 func_02063b8c(u32 n);
 s32 func_02078c6c(u8 *p, s32 a, s32 b, s32 c);
-void *func_0204da0c(u8 *self);
+void *TownBlockMap_Get(u8 *self);
 s32 func_0208104c(Unk_0207ac60_Elem *e);
 void func_02081018(Unk_0207ac60_Elem *e, s32 *xy);
-u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 BOOL _ZN20VillagerDataItemView11hasHousePosEv(u8 *p);
 s32 func_0207adf0(Unk_0207ac60_Elem *arr, s32 n, u32 k);
 u16 Item_MakeNeighborHouse(s32 i);
-BOOL func_0204d9fc(void *g, u16 *v, u32 a, u32 b);
+BOOL BlockMap_PutStructure(void *g, u16 *v, u32 a, u32 b);
 void _ZN20VillagerDataItemView11setHousePosEPh(u8 *p, Unk_0207ac60_Elem *e);
 BOOL func_02081038(Unk_0207ac60_Elem *e);
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
 void _ZN17Unk_0207ac60_ElemD1Ev();
-void func_0209cffc(Unk_0207ae28_Buf *a, u8 *b, u32 c, u32 d, u32 e);
-void func_0209d498(Unk_0207ae28_Buf *a);
-s32 func_0209d3d0(Unk_0207ae28_Buf *a, u8 *b, u32 n);
-s32 func_0209d3a4(u8 *b, Unk_0207ae28_Buf *a);
+void DateTime_Make(Unk_0207ae28_Buf *a, u8 *b, u32 c, u32 d, u32 e);
+void Clock_GetDateTime(Unk_0207ae28_Buf *a);
+s32 DateTime_Compare(Unk_0207ae28_Buf *a, u8 *b, u32 n);
+s32 DateTime_DiffDays(u8 *b, Unk_0207ae28_Buf *a);
 void func_0207e684(u8 *p);
-void func_0209cf88(u8 *p);
+void Clock_GetDate(u8 *p);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 void func_0207a550(u8 *self, Unk_0207ae28_Buf *b);
 void func_0207afe0(u8 *self, Unk_0207ae28_Buf *b);
@@ -1391,11 +1391,11 @@ s32 Villager_IsMovingOut(void *);
 void *Villager_GetPlan();
 void *func_0209a610(void *);
 void *func_0209b010(void *);
-s32 func_0209d3d0(void *, void *, s32);
-s32 func_0209d3a4(void *, void *);
-s32 func_0209d020(void *);
-void func_0209d498(void *);
-void func_0209cf88(void *);
+s32 DateTime_Compare(void *, void *, s32);
+s32 DateTime_DiffDays(void *, void *);
+s32 DateTime_IsInvalid(void *);
+void Clock_GetDateTime(void *);
+void Clock_GetDate(void *);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *, const void *, u32);
 s32 memcmp(const void *, const void *, u32);
@@ -1612,7 +1612,7 @@ void *_ZN12Unk_02097ff413func_0209817cEv(void *);
 void *_ZN14VillagerMemory13getFriendshipEv(void *);
 s32 _ZN12Unk_02098d2013func_02098d20EPviS0_(void *, void *, void *, void *);
 s32 _ZN14VillagerMemory13func_02080978Ev(void);
-void func_0209d498(void *);
+void Clock_GetDateTime(void *);
 s32 func_02081288(u32, void *);
 void _ZN14VillagerMemory13func_02080a88Ev(void *);
 s32 _ZN20VillagerDataItemView21isValidFurnitureIndexEi(void *);
@@ -1652,11 +1652,11 @@ s32 func_0209b334(s32);
 void _ZN12Unk_0209ada413func_0209ad54EhPth(void *, s32, void *, s32);
 void *func_0209b00c(void *);
 void *func_0209b010(void *);
-s32 func_0209d020(void *);
-s32 func_0209d3d0(void *, void *, s32);
+s32 DateTime_IsInvalid(void *);
+s32 DateTime_Compare(void *, void *, s32);
 void *Villager_GetInfo3a(void *);
-s32 func_0209d374(void *, void *);
-void func_0209d2c0(void *, s32);
+s32 DateTime_DiffMinutes(void *, void *);
+void DateTime_AddDays(void *, s32);
 s32 _ZN12Unk_0209b3bc13func_0209b3a4Ev(void *);
 s32 _ZN12Unk_0209b3bc13func_0209b1e4EPv(void *, s32);
 s32 _ZN12Unk_0209b3bc13func_0209af4cEPs(void *, void *);
@@ -1736,7 +1736,7 @@ s32 func_0207e310(void *);
 s32 func_0207856c(s32);
 s32 _ZN14VillagerMemory13setImpressionEi(s32, s32);
 s32 _ZN8PlayerId9getGenderEv(s32);
-void func_0209d498(void *);
+void Clock_GetDateTime(void *);
 s32 _ZN6TownId13func_02094058Ev(s32);
 s32 func_020978a4(void *);
 s32 _ZN10PlayerData12getHairStyleEv(u32);
@@ -1851,10 +1851,10 @@ static inline BOOL Unk_0207dd24_Check(u16 *p) {
     }
     return f8;
 }
-void *func_0204ebd8(void *m, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
+void *BlockMap_GetItemPtr(void *m, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 static inline u16 *Unk_0207de6c_Cell(void *m, s32 x, s32 y) {
     s32 hx = x >> 4, hy = y >> 4;
-    return (u16 *)func_0204ebd8(m, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+    return (u16 *)BlockMap_GetItemPtr(m, hx, hy, x - (hx << 4), y - (hy << 4), 0);
 }
 s32 func_0207d674(s32 a, s32 b, s32 c);
 s32 func_0203c338(s32 a, s32 b, s32 c);
@@ -1865,7 +1865,7 @@ s32 func_0203c314(void);
 s32 func_0203c2f4(void);
 s32 _ZN10PlayerData13func_02098750Ev(void);
 s32 _ZN15PlayerInventory15findEmptyPocketEv(s32 a);
-s32 func_0209ccd0(void);
+s32 Clock_GetTimeOfDay(void);
 u16 *_ZN10PlayerData8getShirtEv(u32 a);
 s32 func_020b8fe8(void);
 u16 *_ZN10PlayerData11getHeldItemEv(u32 a);
@@ -1883,11 +1883,11 @@ s32 _ZN10VillagerId7isValidEv(void *a);
 s32 _ZN10VillagerId7getNameEj(void *a, u32 b);
 s32 func_02098778(u32 a, u32 b, u32 c);
 void *func_020947f0(u32 n);
-void func_0204ee10(s32 *x, s32 *y, void *pos);
-void *func_0204ebd8(void *m, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
+void FieldPos_ToUnit(s32 *x, s32 *y, void *pos);
+void *BlockMap_GetItemPtr(void *m, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 extern u8 data_021dfd8c[];
 extern u8 data_020e416c[];
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 BOOL func_0207d67c(void);
 s32 func_0207d6a4(void);
 BOOL func_0207d6ac(s32 a, s32 b, s32 c);
@@ -1935,7 +1935,7 @@ void Villager_GetEnemyName(u32 a, u32 b);
 namespace nL {
 extern "C" {
 
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 struct Unk_0207e268 {
     u8 pad_00[0x65c];
     u8 unk_65c[0x50];
@@ -2103,8 +2103,8 @@ void *VillagerId_GetSpecies(void *);
 s32 VillagerInfo_Get(void *);
 s32 _ZN12Unk_0209b3bc13func_0209b354Ev(void *);
 s32 _ZN12Unk_0209b3bc13func_0209b2e4Ev(void *);
-void *func_0204da0c(void);
-void func_0204d9ec(void *, u32, u32, u16 *);
+void *TownBlockMap_Get(void);
+void BlockMap_RemoveStructure(void *, u32, u32, u16 *);
 s32 func_02081038(u8 *);
 s32 func_0208104c(u8 *);
 void *Villager_FindMemory(void *, void *);
@@ -2169,8 +2169,8 @@ s32 func_02097740(u32, u32);
 s32 func_02063954(void *);
 s32 _ZN14VillagerMemory16isLetterReceivedEv(void *);
 void *func_02080ec8(void *);
-s32 func_0209d3d0(void *, void *, u32);
-s32 func_0209d374(void *, void *);
+s32 DateTime_Compare(void *, void *, u32);
+s32 DateTime_DiffMinutes(void *, void *);
 s32 _ZN8PlayerId13func_020941e8EPS_(u32, void *);
 void __register_global_object(void *, void *, void *);
 void _ZN8PlayerIdC1Ev();
@@ -2183,10 +2183,10 @@ u32 func_0207e334(u32);
 s32 Villager_GetResidentStatus(u32);
 u32 _ZN10PlayerData13func_0209865cEv(void *);
 s32 func_02099ed4(void *, u32);
-void func_0209d498(void *);
+void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
-s32 func_0203f508(void *, void *);
-void func_0209d2c0(void *, u32);
+s32 EventSchedule_CollectDayAll(void *, void *);
+void DateTime_AddDays(void *, u32);
 void MI_CpuFill8(void *, u32, u32);
 void _ZN15EncodedString106copyToEPvi(void *, void *, u32);
 void _ZN15EncodedString10C1Ev(void *);
@@ -2300,9 +2300,9 @@ s32 MailText_SetSlot(s32 a, void *b);
 s32 func_02059900(void *a, u32 b, void *c, void *d, void *e, s32 f);
 void *PlayerData_GetCurrent();
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *p, s32 a);
-s32 func_0209d498(void *p);
+s32 Clock_GetDateTime(void *p);
 s32 MI_CpuCopy8(void *a, void *b, s32 n);
-s32 func_0203f2e0(s32 a, void *b, s32 c);
+s32 Event_GetState(s32 a, void *b, s32 c);
 s32 _ZN14VillagerMemory13getFriendshipEv();
 s32 _ZN14VillagerMemory13func_0208098cEv(void *p);
 s32 _ZN14VillagerMemory13func_020809b4Ev(void *p);
@@ -2469,13 +2469,13 @@ extern u8 data_021dfd8c[];
 extern u8 sSpNpcInfoTable[];
 extern u8 sVillagerInfoTable[];
 extern u8 gNpcActorRegistry[];
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 void _ZN14VillagerMemory13addFriendshipEi(void *p, s32 v);
 void _ZN14VillagerMemory7setTimeEPx(void *p, void *q);
-s32 func_0209d020();
-s32 func_0209d3d0(void *a, void *b, s32 c);
-s32 func_0209d3a4(void *a, void *b);
-void func_0209d498(void *p);
+s32 DateTime_IsInvalid();
+s32 DateTime_Compare(void *a, void *b, s32 c);
+s32 DateTime_DiffDays(void *a, void *b);
+void Clock_GetDateTime(void *p);
 s32 _ZN8PlayerId13func_02094218Ev(void *p);
 void _ZN8PlayerId13func_020942b8EPv(void *self, void *p);
 void func_02063990(void *src, void *dst);
@@ -3586,8 +3586,8 @@ extern "C" u32 func_02081318(u8 *p) {
 
 namespace nQ {
 extern "C" u32 func_020812f4() {
-    Unk_020cbb18 *o = data_020cbb18;
-    if (o->func_02072e88(o->unk_64)) return 0;
+    CommManager *o = gCommManager;
+    if (o->isSlotActive(o->unk_64)) return 0;
     return 4;
 }
 }
@@ -3607,12 +3607,12 @@ extern "C" BOOL func_02081288(u32 idx, void *buf) {
     t.b = 0;
     ((u8 *)&t)[2] = e[0];
     ((u8 *)&t)[1] = e[1];
-    if (func_0209d3d0(buf, &t, 6) == 1) {
+    if (DateTime_Compare(buf, &t, 6) == 1) {
         s32 c;
         BOOL r;
         ((u8 *)&t)[2] = e[2];
         ((u8 *)&t)[1] = e[3];
-        c = func_0209d3d0(buf, &t, 6);
+        c = DateTime_Compare(buf, &t, 6);
         r = FALSE;
         if (c == -1) r = TRUE;
         return r;
@@ -3795,7 +3795,7 @@ extern "C" void func_02080ecc(Unk_02080e20_Obj *self, void *a, u8 *b, u8 *c) {
     if (a != 0 && _ZN8PlayerId13func_02094218Ev(a)) _ZN8PlayerId13func_020942b8EPv(self, a);
     if (b == 0) b = data_021d7352;
     if (c == 0) {
-        func_0209d498(buf);
+        Clock_GetDateTime(buf);
         c = (u8 *)buf;
     }
     if (func_02080e40(self, c)) func_02080e20(self);
@@ -3816,9 +3816,9 @@ extern "C" BOOL func_02080e40(Unk_02080e20_Obj *self, u8 *p) {
     u8 *q = func_02080ec8((u8 *)self);
     u16 v = 0;
     BOOL r = 0;
-    if (func_0209d020() == 0) {
-        if (func_0209d3d0(p, q, 0x3f) == 1) {
-            s32 t = func_0209d3a4(q, p);
+    if (DateTime_IsInvalid() == 0) {
+        if (DateTime_Compare(p, q, 0x3f) == 1) {
+            s32 t = DateTime_DiffDays(q, p);
             if (t == 0) {
                 v = self->lvl;
             } else {
@@ -4346,7 +4346,7 @@ extern "C" void func_020800b0(void *t, void *p, void *q) {
             u8 *r5 = (u8 *)_ZN12Unk_02097ff413func_02098308Ev(p);
             u32 ok = 0;
             if (q == 0) {
-                func_0209d498(buf);
+                Clock_GetDateTime(buf);
             } else {
                 MI_CpuCopy8(q, buf, 8);
             }
@@ -4411,12 +4411,12 @@ extern "C" void func_0207ff5c(void *t, void *p, void *q) {
             buf[0] = ok;
             buf[1] = ok;
             if (q == 0) {
-                func_0209d498(buf);
+                Clock_GetDateTime(buf);
             } else {
                 MI_CpuCopy8(q, buf, 8);
             }
             MI_CpuCopy8(buf, buf2, 8);
-            if (Unk_0207ff5c_B(func_0203f2e0(0x13, buf2, 0))) {
+            if (Unk_0207ff5c_B(Event_GetState(0x13, buf2, 0))) {
                 if (((u8 *)buf)[2] >= 6) {
                     ok = 1;
                 }
@@ -4704,20 +4704,20 @@ extern "C" s32 func_0207fa50(u32 a, s32 b, u8 *c) {
         v[0] = 0;
         v[1] = 0;
         if (c == NULL) {
-            func_0209d498(v);
+            Clock_GetDateTime(v);
         } else {
             MI_CpuCopy8(c, v, 8);
         }
         for (i = 0; i <= b; i++) {
             Unk_0207fa50_Rec *e = recs;
             MI_CpuCopy8(v, w, 8);
-            n = func_0203f508(recs, w);
+            n = EventSchedule_CollectDayAll(recs, w);
             for (j = 0; j < n; e++, j++) {
                 if (e->id == id) {
                     return ((u8 *)v)[5];
                 }
             }
-            func_0209d2c0(v, 1);
+            DateTime_AddDays(v, 1);
         }
     }
     return -1;
@@ -4913,14 +4913,14 @@ extern "C" s32 func_0207f728(Unk_0207f264_Entry *t, void *o) {
     for (; i < 8; t++, i++) {
         if (func_02080f94(t) != 0) {
             void *p = func_02080ec8(t);
-            s32 r = func_0209d3d0(o, p, 0x3f);
+            s32 r = DateTime_Compare(o, p, 0x3f);
             if (r == 1) {
-                s32 d = func_0209d374(p, o);
+                s32 d = DateTime_DiffMinutes(p, o);
                 if (d < best) {
                     best = d;
                 }
             } else if (r == -1) {
-                s32 d = func_0209d374(o, p);
+                s32 d = DateTime_DiffMinutes(o, p);
                 if (d < best) {
                     best = d;
                 }
@@ -4950,7 +4950,7 @@ extern "C" s32 func_0207f660(Unk_0207f264_Entry *t, s32 (*cb)(void *, void *, vo
                             } else if (_ZN14VillagerMemory13getFriendshipEv(best) == _ZN14VillagerMemory13getFriendshipEv(t)) {
                                 void *pa = func_02080ec8(best);
                                 void *pb = func_02080ec8(t);
-                                if (func_0209d3d0(pa, pb, 0x3f) == 1) {
+                                if (DateTime_Compare(pa, pb, 0x3f) == 1) {
                                     best = t;
                                     res = i;
                                 }
@@ -5278,12 +5278,12 @@ void VillagerDataItemView::setHousePos(u8 *p) {
 
 void VillagerDataItemView::placeHouseMarker() {
     using namespace nM;
-    void *r4 = func_0204da0c();
+    void *r4 = TownBlockMap_Get();
     if (r4 != 0) {
         if (hasHousePos() != 0) {
             u8 *r2 = getHousePos();
             u16 v = 0x500a;
-            func_0204d9ec(r4, r2[0], r2[1], &v);
+            BlockMap_RemoveStructure(r4, r2[0], r2[1], &v);
         }
     }
 }
@@ -5879,7 +5879,7 @@ extern "C" void func_0207e568(Unk_0207e268 *a, u16 *b) {
 
 namespace nL {
 extern "C" void func_0207e4f4(Unk_0207e268 *a) {
-    if (data_020cbb18->func_02072e88(data_020cbb18->unk_64) == 0) {
+    if (gCommManager->isSlotActive(gCommManager->unk_64) == 0) {
         if (_ZN12VillagerData13getVillagerIdEv(a)->isValid() != 0) {
             u16 *r4 = func_0207d074(a, 0);
             BOOL r6 = FALSE;
@@ -6006,7 +6006,7 @@ extern "C" s32 func_0207e278(Unk_0207e268 *a) {
     s32 r4 = 0;
     if (_ZN12VillagerData13getVillagerIdEv(a)->isValid() != 0) {
         r4 = func_0207e310(a);
-        if (data_020cbb18->func_02072e88(data_020cbb18->unk_64) != 0) {
+        if (gCommManager->isSlotActive(gCommManager->unk_64) != 0) {
             if (func_02078580(r4) == 2) r4 = 2;
             else r4 = 1;
         } else {
@@ -6183,13 +6183,13 @@ namespace nK {
 extern "C" s32 func_0207de6c(void) {
     void *tb = func_020947f0(4);
     if (Unk_0207dd24_IsZero(*data_020e416c) && tb) {
-        void *m = data_021c47c4;
+        void *m = gSceneBlockMap;
         if (m) {
             s32 cnt = 0;
             s32 xy[2];
             xy[0] = 0;
             xy[1] = 0;
-            func_0204ee10(&xy[0], &xy[1], tb);
+            FieldPos_ToUnit(&xy[0], &xy[1], tb);
             s32 x, y;
             for (y = xy[1] - 1; y <= xy[1] + 1; y++) {
                 for (x = xy[0] - 1; x <= xy[0] + 1; x++) {
@@ -6197,7 +6197,7 @@ extern "C" s32 func_0207de6c(void) {
                     long yy = y;
                     hx = x >> 4;
                     hy = yy >> 4;
-                    u16 *c = (u16 *)func_0204ebd8(m, hx, hy, x - (hx << 4), yy - (hy << 4), 0);
+                    u16 *c = (u16 *)BlockMap_GetItemPtr(m, hx, hy, x - (hx << 4), yy - (hy << 4), 0);
                     if (c) {
                         BOOL r = FALSE;
                         if (*c >= 0x21 && *c <= 0x24) r = TRUE;
@@ -6218,20 +6218,20 @@ namespace nK {
 extern "C" s32 func_0207dd24(void) {
     void *tb = func_020947f0(4);
     if (Unk_0207dd24_IsZero(*data_020e416c) && tb) {
-        void *m = data_021c47c4;
+        void *m = gSceneBlockMap;
         if (m) {
             s32 cnt = 0;
             s32 xy[2];
             xy[0] = 0;
             xy[1] = 0;
-            func_0204ee10(&xy[0], &xy[1], tb);
+            FieldPos_ToUnit(&xy[0], &xy[1], tb);
             s32 x, y, hx, hy;
             for (y = xy[1] - 1; y <= xy[1] + 1; y++) {
                 for (x = xy[0] - 1; x <= xy[0] + 1; x++) {
                     long yy = y;
                     hx = x >> 4;
                     hy = yy >> 4;
-                    u16 *c = (u16 *)func_0204ebd8(m, hx, hy, x - (hx << 4), yy - (hy << 4), 0);
+                    u16 *c = (u16 *)BlockMap_GetItemPtr(m, hx, hy, x - (hx << 4), yy - (hy << 4), 0);
                     if (c) {
                         if (Unk_0207dd24_Check(c)) {
                             cnt++;
@@ -6544,14 +6544,14 @@ extern "C" BOOL func_0207d774(u32 a) {
 
 namespace nK {
 extern "C" BOOL func_0207d75c(void) {
-    if (func_0209ccd0() == 0) return TRUE;
+    if (Clock_GetTimeOfDay() == 0) return TRUE;
     return FALSE;
 }
 }
 
 namespace nK {
 extern "C" BOOL func_0207d744(void) {
-    if (func_0209ccd0() == 3) return TRUE;
+    if (Clock_GetTimeOfDay() == 3) return TRUE;
     return FALSE;
 }
 }
@@ -6789,7 +6789,7 @@ extern "C" BOOL func_0207d20c() {
     u32 v;
     d.a = 0;
     d.b = 0;
-    func_0209d498(&d);
+    Clock_GetDateTime(&d);
     v = *(u8 *)&d.b;
     if (v == 12 || (v >= 1 && v <= 2)) {
         return TRUE;
@@ -6804,7 +6804,7 @@ extern "C" BOOL func_0207d1e4() {
     u32 v;
     d.a = 0;
     d.b = 0;
-    func_0209d498(&d);
+    Clock_GetDateTime(&d);
     v = *(u8 *)&d.b;
     if (v >= 9 && v <= 11) {
         return TRUE;
@@ -6819,7 +6819,7 @@ extern "C" BOOL func_0207d1bc() {
     u32 v;
     d.a = 0;
     d.b = 0;
-    func_0209d498(&d);
+    Clock_GetDateTime(&d);
     v = *(u8 *)&d.b;
     if (v >= 6 && v <= 8) {
         return TRUE;
@@ -7130,15 +7130,15 @@ extern "C" s32 func_0207cbe8(void *a, void *b) {
     if (_ZN10VillagerId7isValidEv(r5) && _ZN12Unk_0209b3bc13func_0209b394Ev(r4)) {
         u8 *r5b = (u8 *)func_020812e0(VillagerId_GetPersonality(r5));
         r4 = (u8 *)func_0209b010(r4);
-        if (func_0209d020(r4) == 0) {
+        if (DateTime_IsInvalid(r4) == 0) {
             u32 tmpw[2];
             tmpw[0] = 0;
             tmpw[1] = 0;
             MI_CpuCopy8(r4, ((u8 *)tmpw), 8);
             ((u8 *)tmpw)[2] = r5b[2];
             ((u8 *)tmpw)[1] = r5b[3];
-            if (r4[2] > r5b[2] || (r5b[2] == r4[2] && r5b[3] == r4[1])) func_0209d2c0(((u8 *)tmpw), 1);
-            if (func_0209d3d0(b, ((u8 *)tmpw), 0x3e) == 1) return TRUE;
+            if (r4[2] > r5b[2] || (r5b[2] == r4[2] && r5b[3] == r4[1])) DateTime_AddDays(((u8 *)tmpw), 1);
+            if (DateTime_Compare(b, ((u8 *)tmpw), 0x3e) == 1) return TRUE;
             return FALSE;
         }
     }
@@ -7173,8 +7173,8 @@ extern "C" void func_0207ca74(void *a, void *b) {
         s32 r4;
         s32 cnt;
         u32 tmp[2];
-        if (func_0209d020(r6) == 0 && r7 != 0) {
-            s32 d = func_0209d374(r6, b);
+        if (DateTime_IsInvalid(r6) == 0 && r7 != 0) {
+            s32 d = DateTime_DiffMinutes(r6, b);
             if (d < 0) d = -d;
             cnt = d / 0x5a0;
             if (cnt > 0) {
@@ -7183,11 +7183,11 @@ extern "C" void func_0207ca74(void *a, void *b) {
                     tmp[1] = 0;
                     r4 = cnt;
                     MI_CpuCopy8(func_0209b010(r5), tmp, 8);
-                    d = func_0209d374(tmp, r6);
+                    d = DateTime_DiffMinutes(tmp, r6);
                     if (d < 0) d = -d;
                     if (d / 0x5a0 < 7) {
-                        func_0209d2c0(tmp, 6);
-                        d = func_0209d374(tmp, b);
+                        DateTime_AddDays(tmp, 6);
+                        d = DateTime_DiffMinutes(tmp, b);
                         if (d < 0) d = -d;
                         r4 = d / 0x5a0;
                     }
@@ -7197,7 +7197,7 @@ extern "C" void func_0207ca74(void *a, void *b) {
                     }
                     _ZN12Unk_0209b3bc13func_0209afa4EPs(r5, r7);
                 }
-                func_0209d2c0(r6, cnt);
+                DateTime_AddDays(r6, cnt);
             }
         }
     }
@@ -7209,7 +7209,7 @@ extern "C" void func_0207ca18(void *a, void *b) {
     void *r4 = func_0209a610(Villager_GetPlan(a));
     if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(a)) && _ZN12Unk_0209b3bc13func_0209b394Ev(r4)) {
         r4 = func_0209b010(r4);
-        if (func_0209d020(r4) != 0 || func_0209d3d0(b, r4, 0x3f) == -1) MI_CpuCopy8(b, r4, 8);
+        if (DateTime_IsInvalid(r4) != 0 || DateTime_Compare(b, r4, 0x3f) == -1) MI_CpuCopy8(b, r4, 8);
     }
 }
 }
@@ -7219,7 +7219,7 @@ extern "C" void func_0207c9bc(void *a, void *b) {
     void *r4 = func_0209a610(Villager_GetPlan(a));
     if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(a)) && _ZN12Unk_0209b3bc13func_0209b394Ev(r4)) {
         r4 = func_0209b00c(r4);
-        if (func_0209d020(r4) != 0 || func_0209d3d0(b, r4, 0x3f) == -1) MI_CpuCopy8(b, r4, 8);
+        if (DateTime_IsInvalid(r4) != 0 || DateTime_Compare(b, r4, 0x3f) == -1) MI_CpuCopy8(b, r4, 8);
     }
 }
 }
@@ -7387,7 +7387,7 @@ extern "C" s32 func_0207c618(void *a, void *b) {
         v[0] = 0;
         v[1] = 0;
         if (b == 0) {
-            func_0209d498(v);
+            Clock_GetDateTime(v);
             b = v;
         }
         return func_02081288(VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(a)), b);
@@ -8102,9 +8102,9 @@ extern "C" void SaveVillagers_InitNewTown(Unk_0207b168 *self) {
             }
         }
     }
-    func_0209d498(self->unk_38c4);
+    Clock_GetDateTime(self->unk_38c4);
     func_02079230(self->unk_381c, self);
-    func_0209cf88(self->unk_38ee);
+    Clock_GetDate(self->unk_38ee);
     self->unk_38ea = -1;
 }
 }
@@ -8135,7 +8135,7 @@ extern "C" void SaveVillagers_UpdatePlans(Unk_0207b168 *self) {
     s32 i;
     buf.v[0] = 0;
     buf.v[1] = 0;
-    func_0209d498(&buf);
+    Clock_GetDateTime(&buf);
     for (i = 0; i < 8; p++, i++) {
         void *o = _ZN12VillagerData13getVillagerIdEv(p);
         if (((VillagerId *)o)->isValid() != 0) {
@@ -8153,17 +8153,17 @@ namespace nG {
 extern "C" s32 SaveVillagers_CanMoveIn(Unk_0207b168 *self, void *p) {
     if (SaveVillagers_Count(self) < 8) {
         if (*(s64 *)self->unk_38cc == 0) {
-            if (*(s64 *)self->unk_38c4 == 0 || func_0209d020(self->unk_38c4) != 0) {
+            if (*(s64 *)self->unk_38c4 == 0 || DateTime_IsInvalid(self->unk_38c4) != 0) {
                 return TRUE;
             }
-            if (func_0209d3d0(p, self->unk_38c4, 0x3f) == 1) {
-                if (func_0209d3a4(self->unk_38c4, p) >= 1) {
+            if (DateTime_Compare(p, self->unk_38c4, 0x3f) == 1) {
+                if (DateTime_DiffDays(self->unk_38c4, p) >= 1) {
                     return TRUE;
                 }
             }
         } else {
-            if (func_0209d3d0(p, self->unk_38cc, 0x3f) == 1) {
-                s32 n = func_0209d3a4(self->unk_38cc, p);
+            if (DateTime_Compare(p, self->unk_38cc, 0x3f) == 1) {
+                s32 n = DateTime_DiffDays(self->unk_38cc, p);
                 if (n > 0) {
                     BOOL t;
                     if (n >= 8) {
@@ -8382,12 +8382,12 @@ extern "C" s32 SaveVillagers_FindMovingOutDue(Unk_0207b168 *self, void *name) {
     s32 idx = SaveVillagers_FindMovingOut(self);
     if (SaveVillagers_Get(self, idx) != 0) {
         void *q = func_0209a610(Villager_GetPlan());
-        s32 r = func_0209d3d0(name, func_0209b010(q), 0x3f);
+        s32 r = DateTime_Compare(name, func_0209b010(q), 0x3f);
         s32 n = 0;
         if (r == 1) {
-            n = func_0209d3a4(func_0209b010(q), name);
+            n = DateTime_DiffDays(func_0209b010(q), name);
         } else if (r == -1) {
-            n = func_0209d3a4(name, func_0209b010(q));
+            n = DateTime_DiffDays(name, func_0209b010(q));
         }
         if (n >= 2) {
             return idx;
@@ -8415,8 +8415,8 @@ extern "C" BOOL func_0207b0f0(u8 *self, u8 *x) {
         s32 r6 = SaveVillagers_FindMovingOut(self);
         s32 r0 = SaveVillagers_FindJustMovedIn(self);
         if (r6 == -1 && r0 == -1) {
-            if (func_0209d3d0((Unk_0207ae28_Buf *)x, self + 0x38c4, 0x3f) == 1) {
-                s32 n = func_0209d3a4(self + 0x38c4, (Unk_0207ae28_Buf *)x);
+            if (DateTime_Compare((Unk_0207ae28_Buf *)x, self + 0x38c4, 0x3f) == 1) {
+                s32 n = DateTime_DiffDays(self + 0x38c4, (Unk_0207ae28_Buf *)x);
                 if (n > 0) {
                     BOOL t;
                     if (n >= 4) {
@@ -8508,11 +8508,11 @@ extern "C" void func_0207af88(u8 *self) {
 
 namespace nF {
 extern "C" void func_0207af34(u8 *self) {
-    if (!data_020cbb18->func_02072e88(data_020cbb18->unk_64)) {
+    if (!gCommManager->isSlotActive(gCommManager->unk_64)) {
         Unk_0207ae28_Buf b;
         b.v[0] = 0;
         b.v[1] = 0;
-        func_0209d498(&b);
+        Clock_GetDateTime(&b);
         s32 i = 0;
         u8 *p = self;
         Unk_0207ae28_Buf *pb = &b;
@@ -8531,8 +8531,8 @@ extern "C" void func_0207ae84(u8 *self, s32 flag) {
     Unk_0207ae28_Buf b;
     b.v[0] = 0;
     b.v[1] = 0;
-    func_0209d498(&b);
-    if (func_0209d3d0(&b, self + 0x38c4, 0x3f) == -1) {
+    Clock_GetDateTime(&b);
+    if (DateTime_Compare(&b, self + 0x38c4, 0x3f) == -1) {
         MI_CpuCopy8(&b, self + 0x38c4, 8);
         Unk_0207ae84_Mgr *m = (Unk_0207ae84_Mgr *)self;
         if (m->unk_38cc_64 != 0) {
@@ -8558,17 +8558,17 @@ namespace nF {
 extern "C" void func_0207ae28(u8 *self) {
     Unk_0207ae28_Buf a;
     Unk_0207ae28_Buf b;
-    func_0209cffc(&a, self + 0x38ee, 0, 0, 0);
+    DateTime_Make(&a, self + 0x38ee, 0, 0, 0);
     b.v[0] = 0;
     b.v[1] = 0;
-    func_0209d498(&b);
-    if (func_0209d3d0(&b, (u8 *)&a, 0x38)) {
+    Clock_GetDateTime(&b);
+    if (DateTime_Compare(&b, (u8 *)&a, 0x38)) {
         u8 *p = self;
         for (s32 i = 0; i < 8; i++) {
             func_0207e684(p);
             p += 0x700;
         }
-        func_0209cf88(self + 0x38ee);
+        Clock_GetDate(self + 0x38ee);
     }
 }
 }
@@ -8619,7 +8619,7 @@ const u8 data_020cc030[24] = {
 namespace nF {
 extern "C" void func_0207ac60(u8 *self) {
     s32 n;
-    void *g = func_0204da0c(self);
+    void *g = TownBlockMap_Get(self);
     static Unk_0207ac60_Elem arr[30];
     if (g != NULL) {
         n = 0;
@@ -8636,7 +8636,7 @@ extern "C" void func_0207ac60(u8 *self) {
         for (xy[1] = 0; xy[1] < h; xy[1]++) {
             for (xy[0] = 0; xy[0] < w; xy[0]++) {
                 struct Q { s32 x, y; };
-                struct L { static inline u16 *Cell(void *g, const Q &q) { s32 x = q.x; s32 y = q.y; s32 hx = x >> 4, hy = y >> 4; return func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0); } };
+                struct L { static inline u16 *Cell(void *g, const Q &q) { s32 x = q.x; s32 y = q.y; s32 hx = x >> 4, hy = y >> 4; return BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0); } };
                 u16 *t = L::Cell(g, *(Q *)xy);
                 if (t != NULL && *t == 0x500a) {
                     func_02081018(&arr[n], xy);
@@ -8652,7 +8652,7 @@ extern "C" void func_0207ac60(u8 *self) {
                     s32 idx = func_0207adf0(arr, 30, func_02063b8c(n));
                     v = Item_MakeNeighborHouse(i);
                     Unk_0207ac60_Elem *e = &arr[idx];
-                    if (func_0204d9fc(g, &v, arr[idx].unk_00, e->unk_01)) {
+                    if (BlockMap_PutStructure(g, &v, arr[idx].unk_00, e->unk_01)) {
                         _ZN20VillagerDataItemView11setHousePosEPh(p, e);
                     }
                     func_0208104c(e);
@@ -8695,7 +8695,7 @@ extern "C" s32 func_0207abd8(u8 *self, u8 *p1, u8 *p2) {
 
 namespace nF {
 extern "C" void func_0207ab90(u8 *self, u8 *a, u8 *b, s32 c) {
-    if (!data_020cbb18->func_02072e44()) {
+    if (!gCommManager->isOnline()) {
         s32 x = SaveVillagers_FindIndex(self, (VillagerId *)a);
         s32 y = SaveVillagers_FindIndex(self, (VillagerId *)b);
         func_02078c6c(self + 0x3800, x, y, c);
@@ -8830,7 +8830,7 @@ extern "C" s32 func_0207a8b8(u8 *self, u8 *p, u8 *r5) {
 
 namespace nF {
 extern "C" BOOL func_0207a834(u8 *self) {
-    if (data_020cbb18->func_02072e44()) {
+    if (gCommManager->isOnline()) {
         return FALSE;
     }
     u8 *p = self;
@@ -8983,9 +8983,9 @@ extern "C" void func_0207a550(s32 unused, s32 q) {
                     if (((VillagerId *)r4)->isValid()) {
                         u8 *r7 = r4 + 0x18;
                         if (_ZN12Unk_0209ada413func_0209abc4Ev((s32)r6) == 0) {
-                            if (func_0209d3a4((void *)func_0209ac44(r6), q) < 0) func_02099f1c(r4);
+                            if (DateTime_DiffDays((void *)func_0209ac44(r6), q) < 0) func_02099f1c(r4);
                         } else if (((Unk_0207a550_Rec *)r4)->unk_20 != 0) {
-                            r7 = (u8 *)func_0209d3a4(r7, q);
+                            r7 = (u8 *)DateTime_DiffDays(r7, q);
                             _ZN12Unk_0209ada413func_0209abb4Eh(r6, 4);
                             if (r7) {
                                 u32 bits = ((Unk_0207a550_Rec *)r4)->unk_20;
@@ -9054,7 +9054,7 @@ extern "C" s32 func_0207a3b8(void *pp, u32 idx) {
     u8 *p = b;
     s32 cnt = 0;
     s32 i;
-    func_0209d498(&d);
+    Clock_GetDateTime(&d);
     for (i = 0; i < 8; i++) {
         if (i != *(s8 *)(b + 0x38ea)) {
             if (((VillagerId *)_ZN12VillagerData13getVillagerIdEv(p))->isValid()) {
@@ -9116,9 +9116,9 @@ extern "C" void func_0207a104(u8 *b) {
     s32 v1, flag;
     s32 sel;
     sel = SaveVillagers_GetUnk3830Index(b);
-    func_0209cf88(&d);
+    Clock_GetDate(&d);
     if (sel != -1) {
-        if (func_0209cdc0(&d, b + 0x38b6) == 0) {
+        if (Date_IsAfterOrEqual(&d, b + 0x38b6) == 0) {
             _ZN12Unk_020994cc13func_02099790Ev(b + 0x3830);
             return;
         }
@@ -9126,14 +9126,14 @@ extern "C" void func_0207a104(u8 *b) {
             if (_ZN12Unk_020994cc13func_02099624EP17Unk_020994cc_Date(b + 0x3830, &d) == 0) _ZN12Unk_020994cc13func_02099790Ev(b + 0x3830);
             return;
         }
-        r7 = func_0209cd00(&d, b + 0x38ba);
+        r7 = Date_DaysBetween(&d, b + 0x38ba);
         if (r7 == 0) return;
         v1 = 0;
         r4 = 0;
         flag = 0;
         if (b[0x38b9] == 0) {
-            if (func_0209cd00(&d, b + 0x38b6) >= 10) {
-                s32 t = func_0209cd00(b + 0x38ba, b + 0x38b6);
+            if (Date_DaysBetween(&d, b + 0x38b6) >= 10) {
+                s32 t = Date_DaysBetween(b + 0x38ba, b + 0x38b6);
                 if (t >= 0 && t < 10) v1 = 9 - t;
                 flag = 1;
             }
@@ -9159,16 +9159,16 @@ extern "C" void func_0207a104(u8 *b) {
                 return;
             }
             if (r4 > 0) {
-                func_0209cffc(d.b + 4, b + 0x38ba, 0, 0, 0);
+                DateTime_Make(d.b + 4, b + 0x38ba, 0, 0, 0);
                 if (r7 > 0) {
-                    func_0209d2c0(d.b + 4, r4);
+                    DateTime_AddDays(d.b + 4, r4);
                     b[0x38bc] = d.b[9];
                     b[0x38bb] = d.b[8];
                     b[0x38ba] = d.b[7];
                 } else if (r6 > 0) {
                     _ZN12Unk_020994cc13func_02099790Ev(b + 0x3830);
                 } else {
-                    func_0209d164(d.b + 4, r4);
+                    DateTime_SubDays(d.b + 4, r4);
                     b[0x38bc] = d.b[9];
                     b[0x38bb] = d.b[8];
                     b[0x38ba] = d.b[7];
@@ -9249,12 +9249,12 @@ extern "C" s32 func_02079fd8() {
     s32 i;
     a.v[0] = 0;
     a.v[1] = 0;
-    func_0209d498(&a);
+    Clock_GetDateTime(&a);
     for (i = 0; i < 11; i++) {
         u32 v = *t;
         BOOL f;
         MI_CpuCopy8(&a, &b, 8);
-        if (func_0203f2e0(v, &b, 0)) f = TRUE; else f = FALSE;
+        if (Event_GetState(v, &b, 0)) f = TRUE; else f = FALSE;
         if (f) {
             if (v == func_02040c70()) return i;
         }
@@ -9273,7 +9273,7 @@ extern "C" s32 func_02079f54(u32 n, void *src) {
     a.v[0] = 0;
     a.v[1] = 0;
     if (src == NULL) {
-        func_0209d498(&a);
+        Clock_GetDateTime(&a);
     } else {
         MI_CpuCopy8(src, &a, 8);
     }
@@ -9282,7 +9282,7 @@ extern "C" s32 func_02079f54(u32 n, void *src) {
         Unk_0207a3b8_Item *e;
         e = buf;
         MI_CpuCopy8(&a, &b, 8);
-        cnt = func_0203f508(buf, &b);
+        cnt = EventSchedule_CollectDayAll(buf, &b);
         for (k = 0; k < cnt; k++) {
             s32 j;
             u32 *t = data_020cc0a8;
@@ -9292,7 +9292,7 @@ extern "C" s32 func_02079f54(u32 n, void *src) {
             }
             e++;
         }
-        func_0209d2c0(&a, 1);
+        DateTime_AddDays(&a, 1);
     }
     return 11;
 }
@@ -9313,7 +9313,7 @@ extern "C" void func_02079f1c(u8 *p, void *q) {
 namespace nE {
 extern "C" void func_02079edc(u8 *p) {
     s32 i;
-    if (data_020cbb18->func_02072e88(data_020cbb18->unk_64) == 0) {
+    if (gCommManager->isSlotActive(gCommManager->unk_64) == 0) {
         for (i = 0; i < 8; i++) {
             if (((VillagerId *)_ZN12VillagerData13getVillagerIdEv(p))->isValid()) {
                 func_0207c1c8(p);
@@ -9327,7 +9327,7 @@ extern "C" void func_02079edc(u8 *p) {
 namespace nD {
 extern "C" void func_02079e9c(void *self0) {
     u8 *self = (u8 *)self0;
-    if (_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64) == 0) {
+    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) == 0) {
         s32 i;
         for (i = 0; i < 8; self += 0x700, i++) {
             if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(self)) != 0) {
@@ -9390,10 +9390,10 @@ extern "C" void func_02079da0(void *self0, void *p) {
 
 namespace nD {
 extern "C" void func_02079d64(void *self, void *p) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
         func_02079da0(self, p);
     }
-    if (_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64) == 0) {
+    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) == 0) {
         func_02079edc(self);
     }
 }
@@ -9451,7 +9451,7 @@ extern "C" void func_02079bb4(u8 *self) {
     u32 buf[2];
     buf[0] = 0;
     buf[1] = 0;
-    func_0209d498(buf);
+    Clock_GetDateTime(buf);
     s32 i = 0;
     for (; i < 8; self += 0x700, i++) {
         void *o = _ZN12VillagerData13getVillagerIdEv(self);
@@ -9520,7 +9520,7 @@ extern "C" s32 func_02079ab0(void *self0, void *p0) {
     void *r0 = PlayerData_GetCurrent();
     if (r0 != NULL && _ZN12Unk_02097ff413func_02098044Ej(r0, 1) == 0 && p[2] >= 6) {
         MI_CpuCopy8(p, &b, 8);
-        s32 n = func_0203f508(out, &b);
+        s32 n = EventSchedule_CollectDayAll(out, &b);
         u32 i;
         for (i = 0; (s32)i < 8; self += 0x700, i++) {
             if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(self)) != 0) {
@@ -9546,7 +9546,7 @@ extern "C" void func_02079a0c(u8 *self) {
     buf[0] = 0;
     buf[1] = 0;
     s32 r6 = func_02078294();
-    func_0209d498(buf);
+    Clock_GetDateTime(buf);
     s32 r4 = func_02079ab0(self, buf);
     if (r4 == -1) {
         func_020782ac(-1);
@@ -9686,7 +9686,7 @@ extern "C" void func_02079748(u8 *self, void *p) {
                             Unk_02079748_B bb;
                             *(u32 *)&bb.b[0] = 0;
                             *(u32 *)&bb.b[4] = 0;
-                            func_0209d498(&bb);
+                            Clock_GetDateTime(&bb);
                             u32 r7 = bb.b[5];
                             s32 tt = _ZN12Unk_02097ff413func_020982d0Ev(p);
                             if (tt != r7) {
@@ -9715,12 +9715,12 @@ namespace nD {
 extern "C" BOOL func_020796f8(Unk_020796d4_Obj *self, void *p) {
     BOOL r = TRUE;
     if (self->unk_38c0[3] != 0) {
-        if (func_0209cdc0(p, self->unk_38c0) != 0) {
-            if (func_0209cd00(p, self->unk_38c0) < 14) {
+        if (Date_IsAfterOrEqual(p, self->unk_38c0) != 0) {
+            if (Date_DaysBetween(p, self->unk_38c0) < 14) {
                 r = FALSE;
             }
         } else {
-            if (func_0209cd00(self->unk_38c0, p) < 14) {
+            if (Date_DaysBetween(self->unk_38c0, p) < 14) {
                 r = FALSE;
             }
         }
@@ -9842,7 +9842,7 @@ extern "C" s32 func_020794ac() {
     s32 prev, i, n;
     t.lo = 0;
     t.hi = 0;
-    func_0209d498(&t);
+    Clock_GetDateTime(&t);
     e = (Unk_020794ac_Entry *)func_02060e24(((u8 *)&t)[4] - 1);
     if (e) {
         q = e->unk_00;
@@ -10066,15 +10066,15 @@ namespace nC {
 extern "C" BOOL func_020791c0(Unk_02078d6c_Self *self, void *out) {
     s32 r;
     s32 c;
-    if (*(u64 *)&self->unk_0c == 0 || func_0209d020(&self->unk_0c)) {
+    if (*(u64 *)&self->unk_0c == 0 || DateTime_IsInvalid(&self->unk_0c)) {
         return TRUE;
     }
     r = 0;
-    c = func_0209d3d0(out, &self->unk_0c, 0x3e);
+    c = DateTime_Compare(out, &self->unk_0c, 0x3e);
     if (c == ~r) {
-        r = func_0209d374(out, &self->unk_0c);
+        r = DateTime_DiffMinutes(out, &self->unk_0c);
     } else if (c == 1) {
-        r = func_0209d374(&self->unk_0c, out);
+        r = DateTime_DiffMinutes(&self->unk_0c, out);
     }
     if (r >= 0x3c) {
         return TRUE;
@@ -10302,7 +10302,7 @@ extern "C" void func_02078d6c(Unk_02078d6c_Self *self, u8 *p, s32 keep) {
     for (i = 0; i < 8; i++) {
         func_0207857c(&slots[i], 3);
     }
-    func_0209d498(&t);
+    Clock_GetDateTime(&t);
     if (func_020791c0(self, &t)) {
         func_02078e60(self, p);
         if (keep) {
@@ -10587,7 +10587,7 @@ extern "C" void func_02078864(u32 kind, Unk_02078738_Pos *p) {
             b[2] = p->z - 0x1a000;
             z1 = p->z + 0xa000;
         }
-        func_0209d498(&t);
+        Clock_GetDateTime(&t);
         for (i = 0; i < 8; i++) {
             void *o;
             b[3] = 1;
@@ -10613,7 +10613,7 @@ extern "C" void func_02078864(u32 kind, Unk_02078738_Pos *p) {
 
 namespace nB {
 extern "C" void func_02078840(Unk_02078738_Pos *p) {
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         func_02078864(1, p);
     }
 }
@@ -10621,7 +10621,7 @@ extern "C" void func_02078840(Unk_02078738_Pos *p) {
 
 namespace nB {
 extern "C" void func_0207881c(Unk_02078738_Pos *p) {
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         func_02078864(0, p);
     }
 }
@@ -10629,7 +10629,7 @@ extern "C" void func_0207881c(Unk_02078738_Pos *p) {
 
 namespace nB {
 extern "C" void func_020787f8(Unk_02078738_Pos *p) {
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         func_02078864(2, p);
     }
 }
@@ -10637,7 +10637,7 @@ extern "C" void func_020787f8(Unk_02078738_Pos *p) {
 
 namespace nB {
 extern "C" void func_020787d4() {
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         func_02078864(3, NULL);
     }
 }
@@ -10645,7 +10645,7 @@ extern "C" void func_020787d4() {
 
 namespace nB {
 extern "C" void func_020787b0() {
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         func_02078864(4, NULL);
     }
 }
@@ -10653,7 +10653,7 @@ extern "C" void func_020787b0() {
 
 namespace nB {
 extern "C" void func_0207878c(Unk_02078738_Pos *p) {
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         func_02078864(5, p);
     }
 }
@@ -10661,11 +10661,11 @@ extern "C" void func_0207878c(Unk_02078738_Pos *p) {
 
 namespace nB {
 extern "C" BOOL func_02078738(Unk_02078738_Pos *p) {
-    Unk_02078738_Grid *g = data_021c47c4;
+    Unk_02078738_Grid *g = gSceneBlockMap;
     if (g != NULL) {
         Unk_02078738_Cell *c = Unk_02078738_GetCell(g, p->x >> 17, p->z >> 17);
         if (c != NULL) {
-            if (func_020374cc(c, 8)) {
+            if (MapBlock_HasAllAttr(c, 8)) {
                 return TRUE;
             }
         }
@@ -10677,7 +10677,7 @@ extern "C" BOOL func_02078738(Unk_02078738_Pos *p) {
 
 namespace nB {
 extern "C" void func_0207870c(Unk_02078738_Pos *p) {
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         if (func_02078738(p)) {
             func_02078864(6, p);
         }
@@ -10687,7 +10687,7 @@ extern "C" void func_0207870c(Unk_02078738_Pos *p) {
 
 namespace nB {
 extern "C" void func_020786e8() {
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         func_02078864(7, NULL);
     }
 }
@@ -10696,7 +10696,7 @@ extern "C" void func_020786e8() {
 namespace nB {
 extern "C" void func_0207869c() {
     if (func_020b5184()) {
-        if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+        if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
             if (func_020783f8()->unk_168 > 0x4b0) {
                 func_020786e8();
             }
@@ -10742,8 +10742,8 @@ extern "C" void func_02078614(Unk_02078614 *e) {
 
 namespace nB {
 extern "C" u32 func_020785ec(Unk_02078614 *e) {
-    Unk_02078948_Obj *o = (Unk_02078948_Obj *)data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_02072e88Ei(o, o->unk_64) && e->unk_00 != 7) {
+    Unk_02078948_Obj *o = (Unk_02078948_Obj *)gCommManager;
+    if (_ZN11CommManager12isSlotActiveEi(o, o->unk_64) && e->unk_00 != 7) {
         return 0;
     }
     return e->unk_00;
@@ -10777,8 +10777,8 @@ extern "C" void func_020785a8(Unk_02078614 *e) {
 
 namespace nB {
 extern "C" u32 func_02078580(Unk_02078614 *e) {
-    Unk_02078948_Obj *o = (Unk_02078948_Obj *)data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_02072e88Ei(o, o->unk_64) && e->unk_01 == 0) {
+    Unk_02078948_Obj *o = (Unk_02078948_Obj *)gCommManager;
+    if (_ZN11CommManager12isSlotActiveEi(o, o->unk_64) && e->unk_01 == 0) {
         return 1;
     }
     return e->unk_01;
@@ -11139,7 +11139,7 @@ extern "C" s32 func_02078104(s32 x, s32 y) {
     for (i = 0; i < 4; i++) {
         void *o = func_020947f0(i);
         if (o != 0) {
-            func_0204ee10(&ax, &ay, (s32)o);
+            FieldPos_ToUnit(&ax, &ay, (s32)o);
             if (ax == x && ay == y) {
                 result = func_020951ec(i);
                 break;
@@ -11164,12 +11164,12 @@ namespace nA {
 extern "C" BOOL func_02077f68(s32 x, s32 y, void *grid) {
     BOOL result = FALSE;
     if (grid == 0) {
-        grid = data_021c47c4;
+        grid = gSceneBlockMap;
     }
-    if (grid != 0 && _ZN12Unk_0204e2f013func_0204e418Eii(grid, x, y)) {
+    if (grid != 0 && _ZN8BlockMap13func_0204e418Eii(grid, x, y)) {
         s32 hx = x >> 4;
         s32 hy = y >> 4;
-        u16 *c = (u16 *)func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+        u16 *c = (u16 *)BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (c != 0) {
             u32 v = *c;
             if (v == 0xfff1) goto yes;
@@ -11196,7 +11196,7 @@ namespace nA {
 extern "C" BOOL func_02077f40(s32 a, void *grid) {
     s32 x = 0;
     s32 y = 0;
-    func_0204ee10(&x, &y, a);
+    FieldPos_ToUnit(&x, &y, a);
     return func_02077f68(x, y, grid);
 }
 }
@@ -11204,7 +11204,7 @@ extern "C" BOOL func_02077f40(s32 a, void *grid) {
 namespace nA {
 extern "C" BOOL func_02077eb0(s32 x, s32 y, s32 h, s32 *px, s32 *py) {
     s32 i;
-    void *grid = data_021c47c4;
+    void *grid = gSceneBlockMap;
     if (grid != 0 && h >= 0) {
         for (i = 0; i <= h; i++) {
             s32 hx, hy, yy;
@@ -11214,7 +11214,7 @@ extern "C" BOOL func_02077eb0(s32 x, s32 y, s32 h, s32 *px, s32 *py) {
             xx = x;
             hx = xx >> 4;
             hy = yy >> 4;
-            c = (u16 *)func_0204ebd8(grid, hx, hy, xx - (hx << 4), yy - (hy << 4), 0);
+            c = (u16 *)BlockMap_GetItemPtr(grid, hx, hy, xx - (hx << 4), yy - (hy << 4), 0);
             if (c != 0) {
                 BOOL r = FALSE;
                 u32 v = *c;
@@ -11240,7 +11240,7 @@ namespace nA {
 extern "C" BOOL func_02077e7c(s32 a, s32 h, s32 *px, s32 *py) {
     s32 x = 0;
     s32 y = 0;
-    func_0204ee10(&x, &y, a);
+    FieldPos_ToUnit(&x, &y, a);
     return func_02077eb0(x, y, h, px, py);
 }
 }

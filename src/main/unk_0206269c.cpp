@@ -3,7 +3,7 @@
 extern "C" {
 u32 Random_NextBelow(void *st, u32 n);
 void Random_SetSeed(void *st, u32 v);
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 void *_ZN10PlayerData10getCatalogEv(void *p);
 BOOL Catalog_HasItem(void *base, u16 *p);
 BOOL Item_TestInfoFlag4(u16 *p);
@@ -275,7 +275,7 @@ u8 RandomSource::getYear() {
     u32 t[2];
     t[0] = 0;
     t[1] = 0;
-    func_0209d498(t);
+    Clock_GetDateTime(t);
     return ((u8 *)t)[5];
 }
 
@@ -283,7 +283,7 @@ u8 RandomSource::getMonth() {
     u32 t[2];
     t[0] = 0;
     t[1] = 0;
-    func_0209d498(t);
+    Clock_GetDateTime(t);
     return ((u8 *)t)[4];
 }
 
@@ -291,7 +291,7 @@ u8 RandomSource::getDay() {
     u32 t[2];
     t[0] = 0;
     t[1] = 0;
-    func_0209d498(t);
+    Clock_GetDateTime(t);
     return ((u8 *)t)[3];
 }
 
@@ -306,7 +306,7 @@ void DateSeededRandomSource::seedFromToday() {
     u32 t[2];
     t[0] = 0;
     t[1] = 0;
-    func_0209d498(t);
+    Clock_GetDateTime(t);
     seed(((u8 *)t)[5], ((u8 *)t)[4], ((u8 *)t)[3]);
 }
 

@@ -46,10 +46,10 @@ public:
     virtual u32 measureWidth();
 };
 
-class Unk_020e45ec {
+class TexVramTask {
 public:
-    Unk_020e45ec();
-    BOOL func_020b8a84(u32 a, u32 b, u32 c, u8 d);
+    TexVramTask();
+    BOOL requestTex(u32 a, u32 b, u32 c, u8 d);
 
     u32 unk_00[7];
 };
@@ -91,10 +91,10 @@ struct Unk_020dbd34_Mtx {
     s32 m[12];
 };
 
-class Unk_020dbd34 {
+class CachedModel {
 public:
-    Unk_020dbd34();
-    ~Unk_020dbd34();
+    CachedModel();
+    ~CachedModel();
 
     u8 pad_00[0x5c];
     /* 0x5c */ u8 *unk_5c;
@@ -104,17 +104,17 @@ public:
 };
 
 extern "C" {
-void _ZN5Model13func_0205553cEPi(void *self, void *p);
+void _ZN5Model10drawScaledEPi(void *self, void *p);
 void func_020af330();
 s32 Snd_VolumeOff();
-void func_02001504(u32 v);
-void func_020014cc(u32 v);
-void func_02001574(u32 v);
-void func_0200153c(u32 v);
-u32 func_02001510();
-u32 func_020014d8();
-u32 func_02001580();
-u32 func_02001548();
+void Gfx2d_SetMainPlanes(u32 v);
+void Gfx2d_SetSubPlanes(u32 v);
+void Gfx2d_SetMainWindows(u32 v);
+void Gfx2d_SetSubWindows(u32 v);
+u32 Gfx2d_GetMainPlanes();
+u32 Gfx2d_GetSubPlanes();
+u32 Gfx2d_GetMainWindows();
+u32 Gfx2d_GetSubWindows();
 char *Msg_SkipLines(char *p, u32 n);
 u32 func_020a7f94(MsgString *obj);
 u8 *func_020382c8();
@@ -125,21 +125,21 @@ MsgTextLabel *MsgTextLabel_CreateBuffer(void *a, s32 b, s32 c);
 void MsgTextLabel_Destroy(MsgTextLabel *obj);
 void *Mem_AllocTail(u32 size);
 void Mem_Free(void *p);
-void func_02001ea0(void *src, void *dst, s32 w, s32 h);
+void Gfx2d_TilesToLinear4bpp(void *src, void *dst, s32 w, s32 h);
 void MI_CpuFill8(void *p, u32 v, u32 n);
-u32 _ZN12Unk_0205712013func_0205713cEv(void *p);
+u32 _ZN10G3dMatData10getTexAddrEv(void *p);
 void func_020e8388(void *m, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, void *h);
 void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
 s32 func_01ffcb0c(s32 a, s32 b);
-void _ZN12Unk_020dbd3413func_02054b14Ev(void *p);
-void _ZN12Unk_020dbd3413func_02054c2cEPvS0_(void *p, u32 a, void *b);
+void _ZN11CachedModel7releaseEv(void *p);
+void _ZN11CachedModel10loadCachedEPvS0_(void *p, u32 a, void *b);
 void String_Load2d(void *o, u8 *p, u32 x);
 void func_020639e8(void *buf, void *fmt, u32 a);
 void func_020382f4(void *a, void *b);
 void func_0212a360(void *a, void *b);
-s32 func_020ea738();
-s32 func_020eaf18();
+s32 Net_GetLastErrorCode();
+s32 Net_GetMode();
 }
 
 extern u8 data_020d9010[];
@@ -213,8 +213,8 @@ public:
     void func_02037a20();
     void func_02037a28();
 
-    /* 0x004 */ Unk_020dbd34 unk_04;
-    /* 0x0a0 */ Unk_020e45ec unk_a0;
+    /* 0x004 */ CachedModel unk_04;
+    /* 0x0a0 */ TexVramTask unk_a0;
     /* 0x0bc */ s32 unk_bc;
     /* 0x0c0 */ s32 unk_c0;
     /* 0x0c4 */ s32 unk_c4;
@@ -244,19 +244,19 @@ extern Unk_020d906c data_021c2408;
 extern "C" {
 s32 func_020b50e8(void);
 void OS_ResetSystem(s32);
-s32 func_020eaf18(void);
-s32 _ZN12Unk_020cbb1813func_0207235cEv(void *);
-s32 func_020ea748(void);
-u32 _ZN12Unk_020cbb1813func_02072374Ev(void *);
-void _ZN12Unk_020cbb1813func_02072380Ej(void *, s32);
+s32 Net_GetMode(void);
+s32 _ZN11CommManager12getErrorModeEv(void *);
+s32 Net_GetError(void);
+u32 _ZN11CommManager13getErrorFlagsEv(void *);
+void _ZN11CommManager13setErrorFlagsEj(void *, s32);
 void func_020382fc(void);
 void Backup_CancelAndWait(void);
-void func_02073154(void);
-s32 _ZN12Unk_020cbb1813func_0207238cEv(void *);
+void Comm_Shutdown(void);
+s32 _ZN11CommManager20getLatchedErrorFlagsEv(void *);
 void _ZN9MsgString4copyEPS_(void *, void *);
 s32 _s32_div_f(s32, s32);
 }
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u16 gPad[];
@@ -279,9 +279,9 @@ static inline BOOL Unk_02038058_IsOne(u8 v) {
 }
 
 extern "C" void func_02038450() {
-    void *g = data_020cbb18;
-    u32 v = _ZN12Unk_020cbb1813func_02072374Ev(g) | 0x20;
-    _ZN12Unk_020cbb1813func_02072380Ej(g, v);
+    void *g = gCommManager;
+    u32 v = _ZN11CommManager13getErrorFlagsEv(g) | 0x20;
+    _ZN11CommManager13setErrorFlagsEj(g, v);
 }
 
 Unk_020d906c::Unk_020d906c() { clear(); }
@@ -321,9 +321,9 @@ u8 *Unk_020d9084::vfunc_0c() {
 }
 
 extern "C" void func_020382fc() {
-    data_021c2208 = func_020ea738();
+    data_021c2208 = Net_GetLastErrorCode();
     u8 f;
-    switch (func_020eaf18()) {
+    switch (Net_GetMode()) {
     case 3:
     case 4:
         f = 1;
@@ -412,7 +412,7 @@ void Unk_020d905c::func_02038058() {
     }
     func_02037b70();
     if (a || b) {
-        _ZN12Unk_020dbd3413func_02054c2cEPvS0_(&unk_04, 0x43617557, (void *)"caution/caution_window.nsbmd");
+        _ZN11CachedModel10loadCachedEPvS0_(&unk_04, 0x43617557, (void *)"caution/caution_window.nsbmd");
         func_02037e0c();
         unk_c4 = 0;
         unk_c8 = 0;
@@ -424,7 +424,7 @@ void Unk_020d905c::func_02038058() {
 
 void Unk_020d905c::func_02038038() {
     if (unk_bc != 0) {
-        _ZN12Unk_020dbd3413func_02054b14Ev(&unk_04);
+        _ZN11CachedModel7releaseEv(&unk_04);
         unk_bc = 0;
     }
 }
@@ -461,7 +461,7 @@ void Unk_020d905c::func_02037ea0() {
         d.x = r;
         d.y = r;
         d.z = 0x1000;
-        _ZN5Model13func_0205553cEPi(&unk_04, &d);
+        _ZN5Model10drawScaledEPi(&unk_04, &d);
     }
 }
 
@@ -489,8 +489,8 @@ void Unk_020d905c::func_02037dc8(s32 i) {
     u8 *b = (u8 *)unk_04.unk_5c;
     b += *(s32 *)(b + 8);
     u8 *c = b + *(u16 *)(b + 0xa);
-    u32 v = _ZN12Unk_0205712013func_0205713cEv(b + *(s32 *)(c + 8));
-    unk_a0.func_020b8a84((u32)unk_2e4, v + (i << 11), 0x800, 2);
+    u32 v = _ZN10G3dMatData10getTexAddrEv(b + *(s32 *)(c + 8));
+    unk_a0.requestTex((u32)unk_2e4, v + (i << 11), 0x800, 2);
 }
 
 void Unk_020d905c::func_02037d94() {
@@ -520,7 +520,7 @@ void Unk_020d905c::func_02037ce4() {
             if (unk_e4 >= 0 && unk_e0 != 0) {
                 func_02037c40(buf, w);
             }
-            func_02001ea0(buf, unk_2e4, 0x20, 2);
+            Gfx2d_TilesToLinear4bpp(buf, unk_2e4, 0x20, 2);
         }
         Mem_Free(buf);
     }
@@ -583,14 +583,14 @@ void Unk_020d905c::func_02037b70() {
 void Unk_020d905c::func_02037b10() {
     if (!unk_ca) {
         unk_ca = 1;
-        unk_d0 = func_02001510();
-        unk_d4 = func_020014d8();
-        unk_d8 = func_02001580();
-        unk_dc = func_02001548();
-        func_02001504(1);
-        func_020014cc(0);
-        func_02001574(0);
-        func_0200153c(0);
+        unk_d0 = Gfx2d_GetMainPlanes();
+        unk_d4 = Gfx2d_GetSubPlanes();
+        unk_d8 = Gfx2d_GetMainWindows();
+        unk_dc = Gfx2d_GetSubWindows();
+        Gfx2d_SetMainPlanes(1);
+        Gfx2d_SetSubPlanes(0);
+        Gfx2d_SetMainWindows(0);
+        Gfx2d_SetSubWindows(0);
         unk_cb = 1;
     }
 }
@@ -598,10 +598,10 @@ void Unk_020d905c::func_02037b10() {
 void Unk_020d905c::func_02037ac8() {
     if (unk_ca) {
         unk_ca = 0;
-        func_02001504(unk_d0);
-        func_020014cc(unk_d4);
-        func_02001574(unk_d8);
-        func_0200153c(unk_dc);
+        Gfx2d_SetMainPlanes(unk_d0);
+        Gfx2d_SetSubPlanes(unk_d4);
+        Gfx2d_SetMainWindows(unk_d8);
+        Gfx2d_SetSubWindows(unk_dc);
         unk_cb = 1;
     }
 }
@@ -612,15 +612,15 @@ void Unk_020d905c::func_02037ab4() {
 }
 
 void Unk_020d905c::func_02037a28() {
-    s32 s = func_020eaf18();
+    s32 s = Net_GetMode();
     if (s != 0 && s != 6) {
-        s32 r4 = _ZN12Unk_020cbb1813func_0207235cEv(data_020cbb18);
-        s32 v = func_020ea748();
+        s32 r4 = _ZN11CommManager12getErrorModeEv(gCommManager);
+        s32 v = Net_GetError();
         if ((r4 == 0 && v != 0 && v != 0x800c && v != 0x400b) ||
             (r4 == 1 && v != 0 && v != 0x80ff && v != 0x800c && v != 0x4006 && v != 0x400a && v != 0x400b)) {
-            void *o = data_020cbb18;
-            u32 f = _ZN12Unk_020cbb1813func_02072374Ev(o) | 0x10;
-            _ZN12Unk_020cbb1813func_02072380Ej(o, f);
+            void *o = gCommManager;
+            u32 f = _ZN11CommManager13getErrorFlagsEv(o) | 0x10;
+            _ZN11CommManager13setErrorFlagsEj(o, f);
         }
     }
 }
@@ -639,7 +639,7 @@ void Unk_020d905c::func_02037a04() {
 
 void Unk_020d905c::func_020379c8() {
     if (unk_c9 != 0) {
-        if ((_ZN12Unk_020cbb1813func_0207238cEv(data_020cbb18) & 0x7c) != 0) {
+        if ((_ZN11CommManager20getLatchedErrorFlagsEv(gCommManager) & 0x7c) != 0) {
             func_02037b10();
             func_02037810();
         } else {
@@ -723,7 +723,7 @@ void Unk_020d905c::func_02037810() {
     func_02037ab4();
     func_020382fc();
     Backup_CancelAndWait();
-    func_02073154();
+    Comm_Shutdown();
 }
 
 void Unk_020d905c::func_020377f4() {

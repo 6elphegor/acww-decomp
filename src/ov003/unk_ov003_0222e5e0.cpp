@@ -17,15 +17,15 @@ struct Unk_020cbb18_Ptr {
 };
 
 extern "C" {
-extern Unk_020cbb18_Ptr *data_020cbb18;
+extern Unk_020cbb18_Ptr *gCommManager;
 
 BOOL func_020a62a0();
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *g);
-u8 *_ZN12Unk_020cbb1813func_02072970Ej(void *self, u32 a);
-void func_02076a2c(void *p, s32 *a, s32 *b);
-void func_02076a6c(void *p, s32 a, s32 b);
-s32 func_020766e0(s32 a);
-s32 func_02076280(s32 a, s32 b, s32 c, s32 d);
+BOOL _ZN11CommManager8isOnlineEv(void *g);
+u8 *_ZN11CommManager10getSyncVarEj(void *self, u32 a);
+void NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
+void NetBuf_PackPair20(void *p, s32 a, s32 b);
+s32 CommSyncVar_GetVarSize(s32 a);
+s32 CommSyncVar_SetVar(s32 a, s32 b, s32 c, s32 d);
 void MI_CpuCopy8(void *, void *, s32);
 }
 
@@ -37,8 +37,8 @@ extern "C" void _ZN18Unk_ov003_0222e708D2Ev() {}
 
 extern "C" BOOL func_ov003_0222e694(s32 unused, s32 idx, s32 v, s32 *p, u8 e, s32 f) {
     if (func_020a62a0()) {
-        if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
-            func_02076280(idx + 0x18, (s32)&f, 0, 0);
+        if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+            CommSyncVar_SetVar(idx + 0x18, (s32)&f, 0, 0);
             s32 off = idx << 4;
             s8 *pd = &data_ov003_0225b468[0].d;
             u32 *pa = &data_ov003_0225b468[0].a;
@@ -63,19 +63,19 @@ extern "C" void func_ov003_0222e640(void *dst, s32 idx) {
     u32 *pc = &data_ov003_0225b468[0].c;
     s8 *pd = &data_ov003_0225b468[0].d;
     u8 *pe = &data_ov003_0225b468[0].e;
-    func_02076a6c(rec, *(s32 *)((u8 *)pa + off), *(s32 *)((u8 *)pc + off));
+    NetBuf_PackPair20(rec, *(s32 *)((u8 *)pa + off), *(s32 *)((u8 *)pc + off));
     rec[5] = pd[off];
     rec[6] = pe[off];
-    MI_CpuCopy8(rec, dst, func_020766e0(idx));
+    MI_CpuCopy8(rec, dst, CommSyncVar_GetVarSize(idx));
 }
 
 extern "C" BOOL func_ov003_0222e5e0(s32 a, s32 b, s8 *c, s32 *d, s32 *e, u8 *f) {
     if (!func_020a62a0()) {
-        Unk_020cbb18_Ptr *g = data_020cbb18;
-        if (_ZN12Unk_020cbb1813func_02072e44Ev(g)) {
-            s8 *r = (s8 *)_ZN12Unk_020cbb1813func_02072970Ej(g, b + 0x18);
+        Unk_020cbb18_Ptr *g = gCommManager;
+        if (_ZN11CommManager8isOnlineEv(g)) {
+            s8 *r = (s8 *)_ZN11CommManager10getSyncVarEj(g, b + 0x18);
             if (r != 0) {
-                func_02076a2c(r, d, e);
+                NetBuf_UnpackPair20(r, d, e);
                 if (*e > 0) {
                     *c = r[5];
                     *f = ((u8 *)r)[6];

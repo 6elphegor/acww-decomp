@@ -104,8 +104,8 @@ public:
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
-    // Slot 0x14 has the name of Unk_ov009_0225e29c::vfunc_88, which overrides it: the vtable then names the shared
-    // thunk _ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev (0x0221445c).  The compiler also emits a link-once copy of the
+    // Slot 0x14 has the name of BuildingActor::vfunc_88, which overrides it: the vtable then names the shared
+    // thunk _ZThn236_N13BuildingActor8vfunc_88Ev (0x0221445c).  The compiler also emits a link-once copy of the
     // thunk in this unit; the linker keeps the first one (unk_ov003_022141bc.cpp) and drops this one.
     virtual void vfunc_88();
     virtual void vfunc_s18();
@@ -152,10 +152,10 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
+class BuildingActor : public Character, public TalkMsgRequest {
 public:
-    Unk_ov009_0225e29c();
-    virtual ~Unk_ov009_0225e29c();
+    BuildingActor();
+    virtual ~BuildingActor();
     virtual BOOL vfunc_00();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
@@ -188,9 +188,9 @@ public:
     virtual void vfunc_b4();
     virtual BOOL vfunc_b8();
 
-    s32 func_ov009_0225d6b8(u32 a);
-    void func_ov009_0225d244();
-    void func_ov009_0225bc88();
+    s32 getBtaAnim(u32 a);
+    void getResources();
+    void updateMatrix();
 
     /* 0x130 */ u8 unk_130;
     /* 0x131 */ u8 pad_131;
@@ -236,7 +236,7 @@ struct Unk_ov003_SceneEntry {
 };
 
 // ============================================================ class Unk_ov003_022322a8
-class Unk_ov003_022322a8 : public Unk_ov009_0225e29c {
+class Unk_ov003_022322a8 : public BuildingActor {
 public:
     Unk_ov003_022322a8();
     virtual ~Unk_ov003_022322a8();

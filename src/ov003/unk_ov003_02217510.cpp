@@ -105,8 +105,8 @@ public:
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
-    // Slot 0x14 has the name of Unk_ov009_0225e29c::vfunc_88, which overrides it: the vtable then names the shared
-    // thunk _ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev (0x0221445c).  The compiler also emits a link-once copy of the
+    // Slot 0x14 has the name of BuildingActor::vfunc_88, which overrides it: the vtable then names the shared
+    // thunk _ZThn236_N13BuildingActor8vfunc_88Ev (0x0221445c).  The compiler also emits a link-once copy of the
     // thunk in this unit; the linker keeps the first one (unk_ov003_022141bc.cpp) and drops this one.
     virtual void vfunc_88();
     virtual void vfunc_s18();
@@ -153,10 +153,10 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
+class BuildingActor : public Character, public TalkMsgRequest {
 public:
-    Unk_ov009_0225e29c();
-    virtual ~Unk_ov009_0225e29c();
+    BuildingActor();
+    virtual ~BuildingActor();
     virtual BOOL vfunc_00();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
@@ -189,9 +189,9 @@ public:
     virtual void vfunc_b4();
     virtual BOOL vfunc_b8();
 
-    s32 func_ov009_0225d6b8(u32 a);
-    void func_ov009_0225d244();
-    void func_ov009_0225bc88();
+    s32 getBtaAnim(u32 a);
+    void getResources();
+    void updateMatrix();
 
     /* 0x130 */ u8 unk_130;
     /* 0x131 */ u8 pad_131;
@@ -227,8 +227,8 @@ extern u8 data_021ed104[];
 
 s32 Item_GetNookShopLevel(void *p);
 void *PlayerData_GetCurrent();
-void func_0209d498(void *p);
-void func_0209cf18(void *p);
+void Clock_GetDateTime(void *p);
+void Clock_GetMinuteHour(void *p);
 BOOL func_020a032c();
 #define func_02098044 _ZN12Unk_02097ff413func_02098044Ej
 BOOL func_02098044(void *p, s32 a);
@@ -248,7 +248,7 @@ struct Unk_ov003_SceneEntry {
 };
 
 // ============================================================ class Unk_ov003_02232114
-class Unk_ov003_02232114 : public Unk_ov009_0225e29c {
+class Unk_ov003_02232114 : public BuildingActor {
 public:
     Unk_ov003_02232114();
     virtual ~Unk_ov003_02232114();
@@ -282,15 +282,15 @@ BOOL Unk_ov003_02232114::vfunc_70() {
 }
 
 char *Unk_ov003_02232114::vfunc_a4() {
-    return Unk_ov009_0225e29c::vfunc_a4();
+    return BuildingActor::vfunc_a4();
 }
 
 char *Unk_ov003_02232114::vfunc_a8() {
-    return Unk_ov009_0225e29c::vfunc_a8();
+    return BuildingActor::vfunc_a8();
 }
 
 BOOL Unk_ov003_02232114::vfunc_ac() {
-    return Unk_ov009_0225e29c::vfunc_ac();
+    return BuildingActor::vfunc_ac();
 }
 
 void Unk_ov003_02232114::vfunc_78() {
@@ -322,7 +322,7 @@ void Unk_ov003_02232114::vfunc_78() {
             if (((u8 *)func_020aeac4(p))[3]) {
                 l.a = 0;
                 l.b = 0;
-                func_0209d498(&l.a);
+                Clock_GetDateTime(&l.a);
                 if (func_020ae8fc(p)) {
                     if (*((u8 *)&l + 10) > 0xc) {
                         k = TRUE;
@@ -346,7 +346,7 @@ BOOL Unk_ov003_02232114::vfunc_8c() {
     struct {
         u8 a, b, c, d;
     } d;
-    func_0209cf18(&d);
+    Clock_GetMinuteHour(&d);
     if (unk_2b0 == -1) {
         if (d.b >= 8 && d.b < 0x17) {
             return TRUE;
@@ -383,7 +383,7 @@ BOOL Unk_ov003_02232114::func_02217514() {
         } d;
         d.a = 0;
         d.b = 0;
-        func_0209d498(&d);
+        Clock_GetDateTime(&d);
         if (func_020ae964(data_021ed104, &d)) {
             return TRUE;
         }

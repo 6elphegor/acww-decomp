@@ -3,14 +3,14 @@
 // TU198: 0x020a6564-0x020a65fc. Dispatches received records to two handlers through a table in .rodata
 // (0x020d07a8-0x020d07b0).
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 pad_00[0x104];
     u8 *unk_104;
     u8 pad_108[8];
     u8 *unk_110;
 
-    void func_020724c4();
-    u32 func_020724d8();
+    void clearAuxLenA();
+    u32 getAuxBufA();
 };
 
 extern "C" {
@@ -19,7 +19,7 @@ s32 func_020b50e8();
 void func_02084040();
 }
 
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 
 struct Unk_020a647c_Buf {
     u16 total;
@@ -52,9 +52,9 @@ extern "C" void func_020a65c8(u8 *p) {
 }
 
 extern "C" void func_020a6564() {
-    Unk_020cbb18 *g = data_020cbb18;
-    Unk_020cbb18 *sg = g;
-    u8 *p = (u8 *)g->func_020724d8();
+    CommManager *g = gCommManager;
+    CommManager *sg = g;
+    u8 *p = (u8 *)g->getAuxBufA();
     Unk_020a647c_Buf b;
     u32 n;
     MI_CpuCopy8(p, &b.total, 2);
@@ -72,5 +72,5 @@ extern "C" void func_020a6564() {
         p += len;
         n += len;
     }
-    sg->func_020724c4();
+    sg->clearAuxLenA();
 }

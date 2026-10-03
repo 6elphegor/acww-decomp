@@ -212,7 +212,7 @@ struct Unk_ov068_02268608_Vec {
 
 extern "C" {
 extern s32 data_020c7c1c;
-extern u8 *data_021c47c4;
+extern u8 *gSceneBlockMap;
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void func_01ffd070(Unk_ov068_02268608_Vec *out, void *a, void *b);
@@ -229,9 +229,9 @@ s32 func_ov003_0221d0c8(void *a, void *b);
 s32 func_ov003_0221d118(void *a, void *b, s32 c);
 s32 func_ov003_0222d1dc(s32 a);
 s32 func_ov003_0222dec8(s32 a, void *b);
-void func_0204ee10(s32 *x, s32 *y, void *pos);
-u16 *func_0204ebd8(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
-s32 func_020494bc(void *cell);
+void FieldPos_ToUnit(s32 *x, s32 *y, void *pos);
+u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
+s32 Flower_GetSpecies(void *cell);
 s32 func_020e9650(void *a, void *b);
 void func_ov068_022689c8(s32 code, s32 *v);
 void *func_ov003_0222ead4(void *self);
@@ -247,8 +247,8 @@ void func_020af3fc();
 void func_020339bc(void *o, void *pos, s32 a, s32 b);
 s32 func_02033914(void *o, s32 f);
 void func_02033988(void *o);
-void func_0204edd8(void *out, void *in);
-u16 *func_0204eba0(void *grid, void *pos, u32 z);
+void FieldPos_SnapToUnitCenter(void *out, void *in);
+u16 *BlockMap_GetItemPtrAtPos(void *grid, void *pos, u32 z);
 extern u8 data_021ed2e6[];
 s32 func_ov003_0222d334(BObj *);
 s32 func_ov003_02229938(BObj *);
@@ -256,7 +256,7 @@ s32 VEC_Subtract(void *, void *, void *);
 s32 VEC_Add(void *, void *, void *);
 s32 func_ov003_0222ab68(void *, void *, s32);
 s32 func_02106020(s32, s32);
-s32 func_ov003_02212338(s32);
+s32 PlayerActor_LocalFaint(s32);
 s32 _ZN13AnimFrameCtrl5setupEihit(void *, s32, s32, s32, s32);
 s32 func_ov003_0222dd54(void *, s32, s32);
 s32 func_ov003_0222af48(BObj *, s32);
@@ -268,7 +268,7 @@ s32 func_ov068_02268ce8(BObj *, u32, u32, s16 *);
 s32 func_ov068_02268e8c(BObj *, u32, u32);
 s32 func_ov003_0222adc4(void *);
 s32 func_ov003_0222e2fc(void *);
-s32 func_ov003_0221227c();
+s32 PlayerActor_LocalBeeSting();
 void func_02043b90();
 void func_ov068_02269424(BVec *, BS50 *, s32);
 void func_ov068_022696e4(s32 *, s32);
@@ -277,7 +277,7 @@ s32 func_020e7870(s32 *, s32, s32, s32, s32);
 void func_ov003_0222d674(void *);
 s32 func_ov003_0222d720(void *);
 void func_ov003_0222d75c(void *, s32, s32, s32);
-s32 func_ov003_02212680(void *);
+s32 PlayerActor_IsLocalAct67HitAt(void *);
 void *func_ov003_0222eb10(s32);
 s32 func_ov003_022135e4(void *);
 s32 func_ov003_022135f0(void *, void *);
@@ -289,17 +289,17 @@ void func_02034d70(s32);
 void func_02034e10(s32, s32, s32, s32);
 void PlayerActor_SetSlotFlag(s32, s32);
 void func_02034dd0(s32, s32, s32);
-void _ZN12Unk_020dbd5413func_020547a4Ei(void *, s32);
+void _ZN9AnimModel8setFrameEi(void *, s32);
 s32 func_ov068_02268b70(BObj *, s16 *);
-void func_0204ed8c(void *, u32, u32);
+void FieldPos_FromUnitCenter(void *, u32, u32);
 u16 Item_MakeBuilding(u32);
 void *StrBSize_Get(u16 *);
 u32 _ZN12Unk_020b28ac13func_020b2b98Ev(void *);
 s32 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j(void *, s32 *, s32 *, u32);
 void *func_ov003_02218b40(u32);
-s32 _ZN18Unk_ov009_0225e29c19func_ov009_0225b964Ev(void *);
-s32 _ZN18Unk_ov009_0225e29c19func_ov009_0225b980Ev(void *);
-s32 _ZN18Unk_ov009_0225e29c19func_ov009_0225b974Ev(void *);
+s32 _ZN13BuildingActor9callIsLitEv(void *);
+s32 _ZN13BuildingActor8getGridXEv(void *);
+s32 _ZN13BuildingActor8getGridZEv(void *);
 void func_020e9960(void *, void *, void *);
 void func_020e93a0(void *, s32);
 void func_ov003_02225ec8(void *, s32);
@@ -415,8 +415,8 @@ s32 func_ov068_0226a4f0(DObj *o) {
     t = 0;
     x = 0;
     z = 0;
-    grid = data_021c47c4;
-    func_0204ee10(&x, &z, pos);
+    grid = gSceneBlockMap;
+    FieldPos_ToUnit(&x, &z, pos);
     lo = x - 1;
     if (lo < 0x10) {
         lo = 0x10;
@@ -443,7 +443,7 @@ s32 func_ov068_0226a4f0(DObj *o) {
     loop0:
         hx = i >> 4;
         hz = j >> 4;
-        cell = func_0204ebd8(grid, hx, hz, i - (hx << 4), j - (hz << 4), 0);
+        cell = BlockMap_GetItemPtr(grid, hx, hz, i - (hx << 4), j - (hz << 4), 0);
         if (cell != 0) {
             u32 v = *cell;
             if (v == 0x500a) {
@@ -452,7 +452,7 @@ s32 func_ov068_0226a4f0(DObj *o) {
                 t = 2;
             }
             if (t != 0) {
-                func_0204ed8c(v1e0, i, j);
+                FieldPos_FromUnitCenter(v1e0, i, j);
                 if (t == 1) {
                     v1e0->z = v1e0->z + 0x59a;
                 }
@@ -499,7 +499,7 @@ void func_ov068_0226a3d4(DObj *o, s16 *p) {
     o->unk_204.x = o->unk_204.x + func_01ffcb0c((*p * o->unk_257) << 12, w.x);
     pos->z = pos->z + func_01ffcb0c((*p * o->unk_257) << 12, w.z);
     *p = *p - 1;
-    func_0204ee10(&x, &z, pos);
+    FieldPos_ToUnit(&x, &z, pos);
     r = func_020312a8(x, z);
     if (r != 2 || pos->x < b1->x || pos->x > b2->x || pos->z > b1->z || pos->z < b2->z) {
         s32 base = -0x8000;
@@ -565,7 +565,7 @@ void func_ov068_0226a1a0(DObj *o) {
     s32 d;
     DVec *pos = &o->unk_204;
     DVec *v1e0 = &o->unk_1e0;
-    void *grid = data_021c47c4;
+    void *grid = gSceneBlockMap;
     s32 wx;
     s32 ang;
     s32 t;
@@ -580,12 +580,12 @@ void func_ov068_0226a1a0(DObj *o) {
     z = 0;
     d = func_020e9650(pos, v1e0);
     cnt = 0;
-    func_0204ee10(&x, &z, v1e0);
+    FieldPos_ToUnit(&x, &z, v1e0);
     wx = *(volatile s32 *)&x;
     s32 bz = *(volatile s32 *)&z;
     hx = wx >> 4;
     hz = bz >> 4;
-    cell = func_0204ebd8(grid, hx, hz, wx - (hx << 4), bz - (hz << 4), 0);
+    cell = BlockMap_GetItemPtr(grid, hx, hz, wx - (hx << 4), bz - (hz << 4), 0);
     if (cell != 0) {
         u32 v = *cell;
         if (v == 0x500a) {
@@ -732,7 +732,7 @@ s32 func_ov068_02269e54(DObj *o, DVec *out) {
     cur.x = 0;
     cur.y = 0;
     cur.z = 0;
-    func_0204ee10(&x, &z, &o->unk_204);
+    FieldPos_ToUnit(&x, &z, &o->unk_204);
     cur.x = x;
     cur.y = 0;
     cur.z = z;
@@ -747,12 +747,12 @@ s32 func_ov068_02269e54(DObj *o, DVec *out) {
                 if (q != 0) {
                     u32 j;
                     for (j = zj; j < cnt; j++) {
-                        if (_ZN12Unk_020b28ac13func_020b2ae0EPiS0_j(obj, &px, &pz, j) != 0 && _ZN18Unk_ov009_0225e29c19func_ov009_0225b964Ev(q) == 1) {
+                        if (_ZN12Unk_020b28ac13func_020b2ae0EPiS0_j(obj, &px, &pz, j) != 0 && _ZN13BuildingActor9callIsLitEv(q) == 1) {
                             DVec t;
                             Unk_ov068_02269e54_Pad pad;
                             s32 d;
-                            s32 tx = px + _ZN18Unk_ov009_0225e29c19func_ov009_0225b980Ev(q);
-                            s32 tz = pz + _ZN18Unk_ov009_0225e29c19func_ov009_0225b974Ev(q);
+                            s32 tx = px + _ZN13BuildingActor8getGridXEv(q);
+                            s32 tz = pz + _ZN13BuildingActor8getGridZEv(q);
                             t.x = tx;
                             t.y = zt;
                             t.z = tz;
@@ -769,7 +769,7 @@ s32 func_ov068_02269e54(DObj *o, DVec *out) {
         }
     }
     if (best >= 0) {
-        func_0204ed8c(&bv, bx, bz);
+        FieldPos_FromUnitCenter(&bv, bx, bz);
         out->x = bx;
         out->z = bz;
     }
@@ -869,12 +869,12 @@ void Unk_ov068_02268214::func_ov068_02269b20() {
         }
         if (func_ov003_022135f0(a, w) == 0) {
             unk_251 = 5;
-            _ZN12Unk_020dbd5413func_020547a4Ei((u8 *)this + 0x50, 0);
+            _ZN9AnimModel8setFrameEi((u8 *)this + 0x50, 0);
             unk_232 = func_02063b8c(0x14) + 0x28;
         }
     } else {
         unk_251 = 5;
-        _ZN12Unk_020dbd5413func_020547a4Ei((u8 *)this + 0x50, 0);
+        _ZN9AnimModel8setFrameEi((u8 *)this + 0x50, 0);
         unk_232 = func_02063b8c(0x14) + 0x28;
     }
 }
@@ -882,7 +882,7 @@ void Unk_ov068_02268214::func_ov068_02269b20() {
 
 BOOL Unk_ov068_02268214::func_ov068_02269aa4() {
     s32 *v = unk_204;
-    if (func_ov003_02212680(v) != 0) {
+    if (PlayerActor_IsLocalAct67HitAt(v) != 0) {
         u8 *p = (u8 *)func_02095204(4);
         if (p != 0) {
             if (v[0] < *(s32 *)(p + 0x5c)) {
@@ -1174,7 +1174,7 @@ void func_ov068_02269250(BObj *o) {
             func_ov068_02269424(&o->unk_210, &o->unk_50, c - buf);
         }
         if (*r7 == 0) {
-            if (func_ov003_0221227c()) {
+            if (PlayerActor_LocalBeeSting()) {
                 func_ov003_0222dd54(o, 1, 0);
                 *r7 = *r7 + 1;
             } else {
@@ -1350,7 +1350,7 @@ s32 func_ov068_02268ce8(BObj *o, u32 mode, u32 q, s16 *p) {
         if (mode == 3 || mode == 1) {
             if (func_020e9650((void *)q, v) < 0x1000) {
                 s16 *pp = &o->unk_23e;
-                if (func_ov003_02212338(o->unk_24d == 0x37 ? 1 : 0)) {
+                if (PlayerActor_LocalFaint(o->unk_24d == 0x37 ? 1 : 0)) {
                     o->unk_251 = 0x13;
                     o->unk_24c = 1;
                     _ZN13AnimFrameCtrl5setupEihit(&o->unk_50.unk_9c, 0, 2, 0x1000, (u32)(o->unk_50.unk_a4 << 4) >> 16);
@@ -1471,19 +1471,19 @@ BOOL Unk_ov068_02268214::func_ov068_02268a30(s16 *out, s32 *dist, s32 *pos) {
     if (ok != 0) {
     s32 gx = 0;
     s32 gy = 0;
-    func_0204ee10(&gx, &gy, pos);
+    FieldPos_ToUnit(&gx, &gy, pos);
     x = gx;
     u32 y = gy;
     s32 hx = (s32)x >> 4;
     s32 hy = (s32)y >> 4;
-    u16 *cell = func_0204ebd8(data_021c47c4, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+    u16 *cell = BlockMap_GetItemPtr(gSceneBlockMap, hx, hy, x - (hx << 4), y - (hy << 4), 0);
     if ((u8)(t + 0xfe) <= 1) {
         if (func_ov003_0222dec8((s8)t, cell) == 0) {
             return FALSE;
         }
     }
     if (t != 0x33) {
-        func_ov068_022689c8((s8)func_020494bc(cell), pos);
+        func_ov068_022689c8((s8)Flower_GetSpecies(cell), pos);
     } else {
         pos[0] += 0x1000;
         pos[1] = FX_Div(0xb000, 0x10000);

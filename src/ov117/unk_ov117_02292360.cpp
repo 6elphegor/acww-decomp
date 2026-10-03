@@ -58,12 +58,12 @@ void Mem_Free(void *p);
 void *Mem_Alloc(u32 n);
 void MI_CpuCopy8(void *a, void *b, u32 n);
 void func_02030598(s32 a);
-Unk_ov117_02292b54_Grid *func_0204da0c();
-s32 func_0204e9dc(void *m, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 g, s32 h);
-void func_0204edf8(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
-u16 *func_0204ebd8(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
+Unk_ov117_02292b54_Grid *TownBlockMap_Get();
+s32 BlockMap_FindItemAnyAttr(void *m, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 g, s32 h);
+void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
+u16 *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 void *StrBSize_Get(u16 *t);
-u32 func_020374e8(void *c);
+u32 MapBlock_GetAttr(void *c);
 s32 func_02030be4(s32 *a, s32 *b, s32 c, s32 d);
 BOOL func_02031098(u8 *out, s32 a, s32 b);
 void *SaveVillagers_Get(void *, s32);
@@ -154,10 +154,10 @@ extern "C" void func_ov117_02292b54(Unk_ov117_02292c88 *s) {
     Unk_ov117_02292b54_Grid *g;
     func_02030598(1);
     n = 0;
-    g = func_0204da0c();
+    g = TownBlockMap_Get();
     for (y = 1; y < 5; y++) {
         for (x = 1; x < 5; x++) {
-            if (func_020374e8(Unk_ov117_02292b54_GetCell(g, x, y)) & 4) {
+            if (MapBlock_GetAttr(Unk_ov117_02292b54_GetCell(g, x, y)) & 4) {
                 s32 px, py;
                 s32 t = func_02030be4(&px, &py, x, y);
                 if (t != 4) {
@@ -217,21 +217,21 @@ extern "C" void func_ov117_02292acc(Unk_ov117_02292c88 *s) {
 }
 
 extern "C" void func_ov117_022929f4(Unk_ov117_02292c88 *s) {
-    Unk_ov117_02292b54_Grid *g = func_0204da0c();
+    Unk_ov117_02292b54_Grid *g = TownBlockMap_Get();
     if (g != NULL) {
         ((HouseData *)data_021e58a8)->func_020604c4();
         u16 t[2];
         s32 x, z, a, b, c, d, o1, o2, o3, o4;
         t[0] = 0x5014;
         t[1] = 0x501a;
-        if (func_0204e9dc(g, &a, &b, &c, &d, &t[0], &t[1], 1, 0)) {
-            func_0204edf8(&x, &z, a, b, c, d);
+        if (BlockMap_FindItemAnyAttr(g, &a, &b, &c, &d, &t[0], &t[1], 1, 0)) {
+            FieldUnit_FromBlockUnit(&x, &z, a, b, c, d);
             u16 *cell;
             s32 bx = *(volatile s32 *)&x;
             s32 bz = *(volatile s32 *)&z;
             s32 hx = bx >> 4;
             s32 hz = bz >> 4;
-            cell = func_0204ebd8(g, hx, hz, bx - (hx << 4), bz - (hz << 4), 0);
+            cell = BlockMap_GetItemPtr(g, hx, hz, bx - (hx << 4), bz - (hz << 4), 0);
             x = x << 1;
             z = z << 1;
             x += 1;
@@ -248,12 +248,12 @@ extern "C" void func_ov117_022929f4(Unk_ov117_02292c88 *s) {
 }
 
 extern "C" void func_ov117_0229294c(Unk_ov117_02292c88 *s) {
-    Unk_ov117_02292b54_Grid *g = func_0204da0c();
+    Unk_ov117_02292b54_Grid *g = TownBlockMap_Get();
     if (g != NULL) {
         u16 t = 0x5011;
         s32 x, z, a, b, c, d, o1, o2, o3, o4;
-        if (func_0204e9dc(g, &a, &b, &c, &d, &t, &t, 0x800, 0)) {
-            func_0204edf8(&x, &z, a, b, c, d);
+        if (BlockMap_FindItemAnyAttr(g, &a, &b, &c, &d, &t, &t, 0x800, 0)) {
+            FieldUnit_FromBlockUnit(&x, &z, a, b, c, d);
             x = x << 1;
             z = z << 1;
             x += 1;
@@ -270,12 +270,12 @@ extern "C" void func_ov117_0229294c(Unk_ov117_02292c88 *s) {
 }
 
 extern "C" void func_ov117_022928a8(Unk_ov117_02292c88 *s) {
-    Unk_ov117_02292b54_Grid *g = func_0204da0c();
+    Unk_ov117_02292b54_Grid *g = TownBlockMap_Get();
     if (g != NULL) {
         u16 t = 0x500b;
         s32 x, z, a, b, c, d, o1, o2, o3, o4;
-        if (func_0204e9dc(g, &a, &b, &c, &d, &t, &t, 0, 0)) {
-            func_0204edf8(&x, &z, a, b, c, d);
+        if (BlockMap_FindItemAnyAttr(g, &a, &b, &c, &d, &t, &t, 0, 0)) {
+            FieldUnit_FromBlockUnit(&x, &z, a, b, c, d);
             x = x << 1;
             z = z << 1;
             x += 1;
@@ -292,12 +292,12 @@ extern "C" void func_ov117_022928a8(Unk_ov117_02292c88 *s) {
 }
 
 extern "C" void func_ov117_02292804(Unk_ov117_02292c88 *s) {
-    Unk_ov117_02292b54_Grid *g = func_0204da0c();
+    Unk_ov117_02292b54_Grid *g = TownBlockMap_Get();
     if (g != NULL) {
         u16 t = 0x500c;
         s32 x, z, a, b, c, d, o1, o2, o3, o4;
-        if (func_0204e9dc(g, &a, &b, &c, &d, &t, &t, 2, 0)) {
-            func_0204edf8(&x, &z, a, b, c, d);
+        if (BlockMap_FindItemAnyAttr(g, &a, &b, &c, &d, &t, &t, 2, 0)) {
+            FieldUnit_FromBlockUnit(&x, &z, a, b, c, d);
             x = x << 1;
             z = z << 1;
             x += 1;
@@ -314,12 +314,12 @@ extern "C" void func_ov117_02292804(Unk_ov117_02292c88 *s) {
 }
 
 extern "C" void func_ov117_0229275c(Unk_ov117_02292c88 *s) {
-    Unk_ov117_02292b54_Grid *g = func_0204da0c();
+    Unk_ov117_02292b54_Grid *g = TownBlockMap_Get();
     if (g != NULL) {
         u16 t = 0x5000;
         s32 x, z, a, b, c, d, o1, o2, o3, o4;
-        if (func_0204e9dc(g, &a, &b, &c, &d, &t, &t, 0x200, 0)) {
-            func_0204edf8(&x, &z, a, b, c, d);
+        if (BlockMap_FindItemAnyAttr(g, &a, &b, &c, &d, &t, &t, 0x200, 0)) {
+            FieldUnit_FromBlockUnit(&x, &z, a, b, c, d);
             x = x << 1;
             z = z << 1;
             x += 1;
@@ -336,20 +336,20 @@ extern "C" void func_ov117_0229275c(Unk_ov117_02292c88 *s) {
 }
 
 extern "C" void func_ov117_02292690(Unk_ov117_02292c88 *s) {
-    Unk_ov117_02292b54_Grid *g = func_0204da0c();
+    Unk_ov117_02292b54_Grid *g = TownBlockMap_Get();
     if (g != NULL) {
         u16 t[2];
         s32 x, z, a, b, c, d, o1, o2, o3, o4;
         t[0] = 0x500d;
         t[1] = 0x5010;
-        if (func_0204e9dc(g, &a, &b, &c, &d, &t[0], &t[1], 2, 0)) {
-            func_0204edf8(&x, &z, a, b, c, d);
+        if (BlockMap_FindItemAnyAttr(g, &a, &b, &c, &d, &t[0], &t[1], 2, 0)) {
+            FieldUnit_FromBlockUnit(&x, &z, a, b, c, d);
             u16 *cell;
             s32 bx = *(volatile s32 *)&x;
             s32 bz = *(volatile s32 *)&z;
             s32 hx = bx >> 4;
             s32 hz = bz >> 4;
-            cell = func_0204ebd8(g, hx, hz, bx - (hx << 4), bz - (hz << 4), 0);
+            cell = BlockMap_GetItemPtr(g, hx, hz, bx - (hx << 4), bz - (hz << 4), 0);
             x = x << 1;
             z = z << 1;
             x += 1;

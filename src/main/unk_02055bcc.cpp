@@ -15,7 +15,7 @@ class ModelAnim : public AnimFrameCtrl {
 public:
     ModelAnim();
     virtual ~ModelAnim();
-    BOOL func_02055bcc(u32 a, void *c);
+    BOOL allocMatAnm(u32 a, void *c);
 
     u32 unk_18;
     u32 unk_1c;
@@ -27,9 +27,9 @@ void *Heap_Alloc(void *h, u32 n);
 extern void *gCurrentHeap;
 }
 
-char data_020dbe40[4] = {'M', 0, 'A', 'T'};
+char sMatAnmHeader[4] = {'M', 0, 'A', 'T'};
 
-extern "C" void *func_02055c08(u32 a, const char *b, void *c) {
+extern "C" void *Gfx3d_AllocAnmObj(u32 a, const char *b, void *c) {
     if (a == 0) {
         return NULL;
     }
@@ -40,11 +40,11 @@ extern "C" void *func_02055c08(u32 a, const char *b, void *c) {
     return Heap_Alloc(c, n);
 }
 
-BOOL ModelAnim::func_02055bcc(u32 a, void *c) {
+BOOL ModelAnim::allocMatAnm(u32 a, void *c) {
     if (unk_18 != 0 || unk_1c != 0) {
         return FALSE;
     }
-    unk_18 = (u32)func_02055c08(a, data_020dbe40, c);
+    unk_18 = (u32)Gfx3d_AllocAnmObj(a, sMatAnmHeader, c);
     unk_1c = a;
     if (unk_18 != 0) {
         return TRUE;

@@ -85,7 +85,7 @@ void func_02063388(Unk_0202368c_Obj *o);
 void TalkRequest_EndTalkWith(void *p);
 void func_020947c0(u16 *out, void *p);
 void *func_02094348();
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 s32 func_02098eb0(u16 *p);
 s32 func_02098ffc();
 void func_02099064(s32 v);
@@ -101,7 +101,7 @@ s32 func_0202c908(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
 s32 SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
 void *_ZN12VillagerData13getVillagerIdEv();
 void _ZN12Unk_0208581013func_02085870EP16Unk_02085810_Rec(void *g, void *p);
-void func_02053848(void *p, s32 a, s32 b);
+void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 void _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 BOOL _ZN12Unk_02013b1013func_02014220Ev(void *self);
 void _ZN12Unk_02013b1013func_020141b4Essh(void *self, u32 a, u32 b, u32 c);
@@ -230,12 +230,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -354,7 +354,7 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -474,7 +474,7 @@ BOOL func_ov079_02271ebc(u16 *p, s32 x);
 }
 
 extern "C" {
-void func_0203ffa4(u32 a);
+void EventWeekSlots_MarkPlayer(u32 a);
 u32 func_02099048(s32 v);
 BOOL func_02099014(u16 *p, u32 a);
 void *_ZN10PlayerData13func_020986d4Ev(void *p);
@@ -513,7 +513,7 @@ BOOL _ZN12Unk_0201a8c413func_0201a968Ev(void *a);
 void _ZN12Unk_0201a8c413func_0201a8f0Ev(void *a);
 void func_0201a900(void *out, void *base, void *off, s32 ang);
 BOOL func_0201a834(void *pos);
-void func_0204edd8(void *a, void *b);
+void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL func_02077f40(void *v, s32 a);
 void _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(void *p, u32 a, u32 b, void *c, void *d, u32 e, u32 f, u32 g);
 BOOL func_02040c88();
@@ -682,7 +682,7 @@ BOOL Unk_ov079_02272ac4::func_ov079_02272454(s32 *px, s32 *pz) {
         v.x = t + unk_5c;
         t = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
         v.z = t + unk_64;
-        func_0204edd8(&v, &v);
+        FieldPos_SnapToUnitCenter(&v, &v);
         if (func_02077f40(&v, r)) {
             *px = v.x;
             *pz = v.z;
@@ -1168,7 +1168,7 @@ void Unk_ov079_02272a34::vfunc_14() {
             r = 9;
             _ZN16ActorTalkRequest13func_0201578cEjjj(this, &unk_c0, 0, 7);
         }
-        func_0203ffa4(0x41);
+        EventWeekSlots_MarkPlayer(0x41);
         break;
     case 14:
         _ZN12Unk_020d771013func_02015170Ejj(this, 0xa, 0);

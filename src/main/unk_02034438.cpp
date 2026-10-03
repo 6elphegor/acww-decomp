@@ -6,7 +6,7 @@ extern u8 data_020e416c;
 extern u8 data_021c1ad4[];
 extern u8 data_021c1a6c[];
 extern u8 data_021c1a44[];
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 data_021d735c[];
 void *func_ov004_0222aa74();
 void *func_ov004_0222aa1c();
@@ -21,7 +21,7 @@ s32 Item_SetDesign(u16 *out, s32 a, s32 b);
 BOOL PlayerData_GetCurrent();
 u32 func_0209888c();
 u32 func_02097740(void *a, u32 b);
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
+BOOL _ZN11CommManager8isOnlineEv(void *p);
 s32 func_020b50e8();
 void func_020728d4(void *p);
 void func_020728a4(void *p, void *q, s32 n);
@@ -57,21 +57,21 @@ void _ZN12Unk_020d8e1413func_02035284Ev(void *p);
 s32 _ZN12Unk_020d8e1413func_02035328Ev(s32 a);
 s32 _ZN12Unk_02036a6413func_02036a98Ev(s32 a);
 s32 func_02040c7c(void);
-void func_0209d498(void *);
+void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
-s32 func_0203f2e0(u32, void *, u32);
+s32 Event_GetState(u32, void *, u32);
 s32 func_020b0f30(void);
 s32 _ZN10PlayerData13func_0209865cEv(s32 a);
 s32 func_02099c1c(s32 a);
 extern u16 data_020c8b9c[];
 void func_02133ef8(void *, u32);
-s32 func_0209cf0c(void);
-void func_0209cfb8(u16 *);
-void func_0209cf18(u16 *);
-s32 func_0209cf00(void);
-void func_0205c170(void);
+s32 Clock_GetYear(void);
+void Clock_GetDayMonth(u16 *);
+void Clock_GetMinuteHour(u16 *);
+s32 Clock_GetSecond(void);
+void BgHeap_Destroy(void);
 void func_020639e8(void *buf, const void *fmt, ...);
-void *func_02037244(void *, void *);
+void *BgModel_LoadFile(void *, void *);
 void *File_LoadAlloc(void *, void *, s32, s32);
 s32 func_02101340(void *, const void *, void *);
 void func_02101310(void *);
@@ -86,8 +86,8 @@ void *func_02106670(void *, s32);
 void *func_02106690(void *);
 void *func_021066ac(void *, s32);
 void *NNS_G3dGetTex(void *);
-void func_02055724(void *, s32);
-void *func_0205588c(void *, void *);
+void Gfx3d_LoadTexAndPltt(void *, s32);
+void *Gfx3d_CopyTex(void *, void *);
 void Mem_Free(void *);
 void *Heap_Alloc(void *, u32);
 void *func_0204df64(void *);
@@ -95,12 +95,12 @@ extern u8 data_020d8ebc[], data_020d8ed0[], data_020d8ed4[], data_020d8ee4[], da
 extern u8 data_020d8f04[], data_020d8f14[], data_020d8f24[], data_020d8f34[], data_020d8f44[];
 extern u8 data_020d8f58[], data_020d8f68[], data_020d8f7c[], data_020d8f90[], data_020d8fa0[];
 extern u8 data_020d8fb4[], data_020d8fc4[], data_020d8fd8[];
-extern void *data_021c620c;
+extern void *gBgHeap;
 extern void *gCurrentHeap;
 extern u8 data_021e3680[];
-extern u8 data_021c1b90[];
-void *func_02036f24(s32 id, void *heap);
-s32 func_020370f8(void *);
+extern u8 gBgModelCache[];
+void *BgModel_LoadBcl(s32 id, void *heap);
+s32 BgModel_GetGrassType(void *);
 }
 // ---- unified class definitions of the unit (union of the views of the five source files) ----
 class Unk_02036bf8;
@@ -610,7 +610,7 @@ struct Unk_02036c60_Vec { s32 x, y, z; };
 
 struct Unk_02036c60_Ent { u8 a; u8 pad; s16 b; s16 c; };
 
-// ---- Unk_02036cec ----
+// ---- BgModelCache ----
 struct Unk_02036cec_Entry {
     s32 unk_00;
     void *unk_04;
@@ -631,7 +631,7 @@ struct Unk_02036cec_Small {
     void *unk_04;
 };
 
-struct Unk_02036cec {
+struct BgModelCache {
     Unk_02036cec_Entry unk_000[31];
     Unk_02036cec_Small unk_5d0[9];
     u8 unk_618;
@@ -646,18 +646,18 @@ struct Unk_02036cec {
     s32 unk_644;
     s32 unk_648;
 
-    s32 func_02036c98();
-    s32 func_02036ca4();
-    s32 func_02036cb0();
-    s32 func_02036cbc();
-    s32 func_02036cc8();
-    s32 func_02036cd4();
-    s32 func_02036ce0();
-    BOOL func_02036cec();
-    Unk_02036cec_Entry *func_02036d54(s32 id);
-    void *func_02036eb8(s32 id);
-    void func_02036fa4();
-    void func_02037074();
+    s32 getBeBPatTex();
+    s32 getBeBPatAnm();
+    s32 getRiverPatTex();
+    s32 getRiverPatAnm();
+    s32 getGroundTexSrtAnm();
+    s32 getGroundMatAnm();
+    s32 getGroundTex();
+    BOOL reset();
+    Unk_02036cec_Entry *getAcre(s32 id);
+    void *getAcreBcl(s32 id);
+    void loadGroundAnims();
+    void loadGroundTexture();
 };
 
 // extern declarations
@@ -666,7 +666,7 @@ extern u8 data_020e416c;
 extern u8 data_021c1ad4[];
 extern u8 data_021c1a6c[];
 extern u8 data_021c1a44[];
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 data_021d735c[];
 extern Unk_02034574_Fn data_020d8dac;
 void *func_ov004_0222aa74();
@@ -682,7 +682,7 @@ s32 Item_SetDesign(u16 *out, s32 a, s32 b);
 BOOL PlayerData_GetCurrent();
 u32 func_0209888c();
 u32 func_02097740(void *a, u32 b);
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
+BOOL _ZN11CommManager8isOnlineEv(void *p);
 s32 func_020b50e8();
 void func_020728d4(void *p);
 void func_020728a4(void *p, void *q, s32 n);
@@ -727,21 +727,21 @@ void _ZN12Unk_020d8e1413func_02035284Ev(void *p);
 s32 _ZN12Unk_020d8e1413func_02035328Ev(s32 a);
 s32 _ZN12Unk_02036a6413func_02036a98Ev(s32 a);
 s32 func_02040c7c(void);
-void func_0209d498(void *);
+void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
-s32 func_0203f2e0(u32, void *, u32);
+s32 Event_GetState(u32, void *, u32);
 s32 func_020b0f30(void);
 s32 _ZN10PlayerData13func_0209865cEv(s32 a);
 s32 func_02099c1c(s32 a);
 extern u16 data_020c8b9c[];
 void func_02133ef8(void *, u32);
-s32 func_0209cf0c(void);
-void func_0209cfb8(u16 *);
-void func_0209cf18(u16 *);
-s32 func_0209cf00(void);
-void func_0205c170(void);
+s32 Clock_GetYear(void);
+void Clock_GetDayMonth(u16 *);
+void Clock_GetMinuteHour(u16 *);
+s32 Clock_GetSecond(void);
+void BgHeap_Destroy(void);
 void func_020639e8(void *buf, const void *fmt, ...);
-void *func_02037244(void *, void *);
+void *BgModel_LoadFile(void *, void *);
 void *File_LoadAlloc(void *, void *, s32, s32);
 s32 func_02101340(void *, const void *, void *);
 void func_02101310(void *);
@@ -756,8 +756,8 @@ void *func_02106670(void *, s32);
 void *func_02106690(void *);
 void *func_021066ac(void *, s32);
 void *NNS_G3dGetTex(void *);
-void func_02055724(void *, s32);
-void *func_0205588c(void *, void *);
+void Gfx3d_LoadTexAndPltt(void *, s32);
+void *Gfx3d_CopyTex(void *, void *);
 void Mem_Free(void *);
 void *Heap_Alloc(void *, u32);
 void *func_0204df64(void *);
@@ -765,12 +765,12 @@ extern u8 data_020d8ebc[], data_020d8ed0[], data_020d8ed4[], data_020d8ee4[], da
 extern u8 data_020d8f04[], data_020d8f14[], data_020d8f24[], data_020d8f34[], data_020d8f44[];
 extern u8 data_020d8f58[], data_020d8f68[], data_020d8f7c[], data_020d8f90[], data_020d8fa0[];
 extern u8 data_020d8fb4[], data_020d8fc4[], data_020d8fd8[];
-extern void *data_021c620c;
+extern void *gBgHeap;
 extern void *gCurrentHeap;
 extern u8 data_021e3680[];
-extern u8 data_021c1b90[];
-void *func_02036f24(s32 id, void *heap);
-s32 func_020370f8(void *);
+extern u8 gBgModelCache[];
+void *BgModel_LoadBcl(s32 id, void *heap);
+s32 BgModel_GetGrassType(void *);
 extern Unk_021e5890_T data_021e5890;
 }
 
@@ -864,8 +864,8 @@ s32 func_02035234(void);
 s32 func_020b5184(void);
 s32 func_02035d94(void);
 s32 _ZN12Unk_02036a6413func_02036ab8Ejjjjjj(s32 o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-extern u32 data_020cbb18;
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(u32 a);
+extern u32 gCommManager;
+s32 _ZN11CommManager8isOnlineEv(u32 a);
 s32 PlayerData_GetCurrent(void);
 s32 func_020b0f0c(void);
 s32 _ZN12Unk_02097ff413func_02098044Ej(s32 a, s32 b);
@@ -1040,10 +1040,10 @@ void Unk_02036a64::func_02036a64()
     unk_10 = unk_04;
     unk_12 = *(u16 *)&unk_06;
     unk_14 = unk_08;
-    unk_00 = func_0209cf0c();
-    func_0209cfb8(&unk_04);
-    func_0209cf18((u16 *)&unk_06);
-    unk_08 = func_0209cf00();
+    unk_00 = Clock_GetYear();
+    Clock_GetDayMonth(&unk_04);
+    Clock_GetMinuteHour((u16 *)&unk_06);
+    unk_08 = Clock_GetSecond();
 }
 
 Unk_020d8e04::Unk_020d8e04(u32 v) : unk_04(v), unk_08(0x18), unk_0c(0xffff), unk_0e(0), unk_0f(0), unk_10(0)
@@ -1306,17 +1306,17 @@ void Unk_020d8e24::func_02036528() {
     BOOL r6, r7;
     t[0] = 0;
     t[1] = 0;
-    func_0209d498(t);
+    Clock_GetDateTime(t);
     MI_CpuCopy8(t, b0, 8);
-    if (func_0203f2e0(0x13, b0, 0) != 0) r6 = TRUE; else r6 = FALSE;
+    if (Event_GetState(0x13, b0, 0) != 0) r6 = TRUE; else r6 = FALSE;
     r7 = TRUE;
     if (r5 != 0x12) {
         MI_CpuCopy8(t, b1, 8);
-        if (func_0203f2e0(0x12, b1, 0) != 3) r7 = FALSE;
+        if (Event_GetState(0x12, b1, 0) != 3) r7 = FALSE;
     }
-    if (Ns_02035e2c::_ZN12Unk_020cbb1813func_02072e44Ev(Ns_02035e2c::data_020cbb18) != 0) {
+    if (Ns_02035e2c::_ZN11CommManager8isOnlineEv(Ns_02035e2c::gCommManager) != 0) {
         MI_CpuCopy8(t, b2, 8);
-        r5 = func_0203f2e0(0xf, b2, 0);
+        r5 = Event_GetState(0xf, b2, 0);
     } else if (r5 == 0xf) {
         r5 = 1;
     } else {

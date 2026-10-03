@@ -9,10 +9,10 @@ struct Unk_ov003_02215c7c_Blk {
 
 struct Unk_020553f8_Res;
 
-class Unk_020dbd34 {
+class CachedModel {
 public:
-    Unk_020dbd34();
-    virtual ~Unk_020dbd34();
+    CachedModel();
+    virtual ~CachedModel();
 
     u8 pad_04[0x64 - 4];
     Unk_ov003_02215c7c_Blk unk_64;
@@ -20,7 +20,7 @@ public:
     u32 unk_98;
 };
 
-class Model : public Unk_020dbd34 {
+class Model : public CachedModel {
 public:
     void setResourceAndBind(Unk_020553f8_Res *r, u32 a);
 };
@@ -59,13 +59,13 @@ public:
     BOOL func_02217b78();
     void func_02217bb8();
 
-    /* 0x00 */ Unk_020dbd34 unk_00;
+    /* 0x00 */ CachedModel unk_00;
     /* 0x9c */ Unk_020553f8_Res *unk_9c;
 };
 
 // other modules' methods are reached through their real mangled symbols (object first)
-#define func_02036ce0 _ZN12Unk_02036cec13func_02036ce0Ev
-#define func_02036d54 _ZN12Unk_02036cec13func_02036d54Ei
+#define BgModelCache_getGroundTex _ZN12BgModelCache12getGroundTexEv
+#define BgModelCache_getAcre _ZN12BgModelCache7getAcreEi
 #define Unk_020d93b8_getEyeCurveAngle _ZN12Unk_020d93b816getEyeCurveAngleEv
 
 extern "C" {
@@ -77,9 +77,9 @@ extern Unk_ov003_02217910_V3 gCameraLookAt;
 void func_020e8388(void *m, s32 x, s32 y, s32 z);
 void func_020e8434(void *m, s32 a);
 s32 Unk_020d93b8_getEyeCurveAngle(void *self);
-void *func_02036c58();
-void *func_02036d54(void *self, s32 i);
-s32 func_02036ce0(void *self);
+void *BgModelCache_Get();
+void *BgModelCache_getAcre(void *self, s32 i);
+s32 BgModelCache_getGroundTex(void *self);
 }
 
 extern "C" {
@@ -106,8 +106,8 @@ void Unk_ov003_02217b10::func_02217bb8() {
 }
 
 BOOL Unk_ov003_02217b10::func_02217b78() {
-    Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)func_02036d54(func_02036c58(), 0x83);
-    s32 t = func_02036ce0(func_02036c58());
+    Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)BgModelCache_getAcre(BgModelCache_Get(), 0x83);
+    s32 t = BgModelCache_getGroundTex(BgModelCache_Get());
     unk_9c = e->unk_08;
     ((Model *)&unk_00)->setResourceAndBind(unk_9c, t);
     func_02217b10();

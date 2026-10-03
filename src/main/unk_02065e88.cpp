@@ -3831,14 +3831,14 @@ extern "C" { s32 _ZN12Unk_020e0d4413func_020892acEv(void *); }
 extern "C" { BOOL _ZN12Unk_020e0d4413func_02089284Ev(void *); }
 extern "C" { void _ZN12Unk_020e0d4413func_02089320Eii(void *, s32, s32); }
 extern "C" { void _ZN12Unk_020e0d4413func_020892b0Ei(void *, s32); }
-extern "C" { void func_02001804(s32, s32); }
-extern "C" { void func_02001674(s32, s32, s32, s32); }
-extern "C" { void func_020014e4(s32); }
-extern "C" { void func_02001554(s32); }
-extern "C" { void func_020014f4(s32); }
-extern "C" { void func_02001564(s32); }
-extern "C" { void func_02001750(s32); }
-extern "C" { void func_020016cc(s32); }
+extern "C" { void Gfx2d_SetMainBg2Offset(s32, s32); }
+extern "C" { void Gfx2d_SetMainWin0Rect(s32, s32, s32, s32); }
+extern "C" { void Gfx2d_HideMainPlanes(s32); }
+extern "C" { void Gfx2d_DisableMainWindows(s32); }
+extern "C" { void Gfx2d_ShowMainPlanes(s32); }
+extern "C" { void Gfx2d_EnableMainWindows(s32); }
+extern "C" { void Gfx2d_SetMainWin0Planes(s32); }
+extern "C" { void Gfx2d_SetMainWinOutPlanes(s32); }
 extern "C" { void DC_FlushRange(void *, u32); }
 extern "C" { void GX_LoadBGPltt(void *, s32, u32); }
 extern "C" { void GX_LoadBG2Char(void *, s32, u32); }
@@ -3858,8 +3858,8 @@ extern "C" void TalkFrame_SetupBgControl()
     *r = (*r & ~3) | 1;
     *r = (*r & 0x43) | 0x600;
     *r = *r & ~0x40;
-    func_02001750(0x1f);
-    func_020016cc(0x1b);
+    Gfx2d_SetMainWin0Planes(0x1f);
+    Gfx2d_SetMainWinOutPlanes(0x1b);
 }
 extern "C" void TalkFrame_UploadBg(Unk_02068490_Ptrs *p)
 {
@@ -3873,13 +3873,13 @@ extern "C" void TalkFrame_UploadBg(Unk_02068490_Ptrs *p)
 }
 extern "C" void TalkFrame_ShowBg()
 {
-    func_020014f4(4);
-    func_02001564(1);
+    Gfx2d_ShowMainPlanes(4);
+    Gfx2d_EnableMainWindows(1);
 }
 extern "C" void TalkFrame_HideBg()
 {
-    func_020014e4(4);
-    func_02001554(1);
+    Gfx2d_HideMainPlanes(4);
+    Gfx2d_DisableMainWindows(1);
 }
 }
 void TalkFrameView::setScrollY(s32 b) {
@@ -3889,12 +3889,12 @@ void TalkFrameView::setScroll(s32 a, s32 b)
     using namespace n8;
     unk_74 = a;
     unk_78 = b;
-    func_02001804(a, b);
+    Gfx2d_SetMainBg2Offset(a, b);
     s32 hi = 0xff - a;
     s32 lo = -a;
     if (lo < 0) lo = 0;
     if (hi > 0xff) hi = 0xff;
-    func_02001674(lo, 0x3c, hi, 0xc0);
+    Gfx2d_SetMainWin0Rect(lo, 0x3c, hi, 0xc0);
 }
 void TalkFrameView::hideArrow() {
     using namespace n8; _ZN12Unk_020e0d4413func_020892b0Ei(&unk_0c, 0); }
@@ -4162,12 +4162,12 @@ extern "C" { s32 _ZN10TalkParser4stopEv(void *p); }
 extern "C" { s32 _ZN11TalkTextBox11clearLabelsEv(void *p); }
 extern "C" { s32 _ZN10TalkParser16clearFastForwardEv(void *p); }
 extern "C" { s32 _ZN15TalkAutoAdvance4stopEv(void *p); }
-extern "C" { s32 func_0209cf0c(); }
-extern "C" { s32 func_0209cfb8(void *p); }
-extern "C" { s32 func_0209cf18(void *p); }
-extern "C" { s32 func_0209cef4(); }
-extern "C" { s32 func_0209cf00(); }
-extern "C" { s32 func_0209ccd0(); }
+extern "C" { s32 Clock_GetYear(); }
+extern "C" { s32 Clock_GetDayMonth(void *p); }
+extern "C" { s32 Clock_GetMinuteHour(void *p); }
+extern "C" { s32 Clock_GetWeekday(); }
+extern "C" { s32 Clock_GetSecond(); }
+extern "C" { s32 Clock_GetTimeOfDay(); }
 extern "C" { s32 func_020e759c(void *p, s32 a, s32 b); }
 extern "C" { s32 func_01ffcb0c(s32 a, s32 b); }
 extern "C" { s32 _ZN13TalkFrameView9setScrollEii(void *p, s32 a, s32 b); }
@@ -4592,12 +4592,12 @@ void TalkWindowState::updateShake() {
 }
 void TalkWindowState::captureClock() {
     using namespace n7;
-    unk_1708 = func_0209cf0c();
-    func_0209cfb8(&unk_170c);
-    func_0209cf18(&unk_170e);
-    unk_1710 = func_0209cef4();
-    unk_1714 = func_0209cf00();
-    unk_1718 = func_0209ccd0();
+    unk_1708 = Clock_GetYear();
+    Clock_GetDayMonth(&unk_170c);
+    Clock_GetMinuteHour(&unk_170e);
+    unk_1710 = Clock_GetWeekday();
+    unk_1714 = Clock_GetSecond();
+    unk_1718 = Clock_GetTimeOfDay();
 }
 void TalkWindowState::resetPrint() {
     using namespace n7;
@@ -5171,7 +5171,7 @@ extern "C" { extern u8 gTalkMsgIndexEnd; }
 extern "C" { extern s16 sTalkWindowCloseOffsets[]; }
 extern "C" { extern s16 sTalkWindowOpenOffsets[]; }
 extern "C" { extern u8 *data_021c1b3c; }
-extern "C" { extern Unk_020cbb18_Obj *data_020cbb18; }
+extern "C" { extern Unk_020cbb18_Obj *gCommManager; }
 typedef void (TalkWindowState::*Unk_020660f8_Fn)();
 
 }
@@ -5242,7 +5242,7 @@ void TalkWindowState::enterOpening() {
     _ZN13TalkFrameView9hideArrowEv(unk_1c);
     _ZN13TalkWindowMsg15createNameLabelEv(this);
     _ZN11TalkTextBox12createLabelsEv(unk_58c);
-    if (data_020cbb18) func_02038fd4(data_020cbb18->unk_64);
+    if (gCommManager) func_02038fd4(gCommManager->unk_64);
     if (unk_1a19 == 0) Snd_PlaySe(9);
     if (unk_1a18 == 0) {
         if (unk_14 != 1 && unk_14 != 2 && unk_14 != 3) _ZN12Unk_0203575813func_02035bd4Ev(data_021c1b3c + 0x1c4);

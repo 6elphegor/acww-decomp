@@ -1,7 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 pad_00[0x64];
     s32 unk_64;
     s32 unk_68;
@@ -57,7 +57,7 @@ inline u16 Unk_02095f38_F(u32 v) {
     return 0x1518;
 }
 
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 extern u32 data_020d03d8[];
 extern u32 data_020d03e8[];
 extern u32 data_020d03f8[];
@@ -74,23 +74,23 @@ struct Unk_02095f38_G {
 extern Unk_02095f38_G data_021ed150;
 
 extern "C" {
-BOOL func_020729bc(Unk_020cbb18 *p, s32 v);
+BOOL func_020729bc(CommManager *p, s32 v);
 }
 
 extern "C" {
-u32 func_02072970(Unk_020cbb18 *p, u32 v);
+u32 func_02072970(CommManager *p, u32 v);
 }
 
 extern "C" {
-u32 _ZN12Unk_020cbb1813func_02072e88Ei(Unk_020cbb18 *p, s32 v);
+u32 _ZN11CommManager12isSlotActiveEi(CommManager *p, s32 v);
 }
 
 extern "C" {
-u32 _ZN12Unk_020cbb1813func_020729ccEj(Unk_020cbb18 *p, s32 v);
+u32 _ZN11CommManager7isMyAidEj(CommManager *p, s32 v);
 }
 
 extern "C" {
-BOOL func_02072e44(Unk_020cbb18 *p);
+BOOL func_02072e44(CommManager *p);
 }
 
 extern "C" {
@@ -98,15 +98,15 @@ s32 func_020b50e8();
 }
 
 extern "C" {
-void func_02076a2c(u32 a, s32 *x, s32 *y);
+void NetBuf_UnpackPair20(u32 a, s32 *x, s32 *y);
 }
 
 extern "C" {
-void func_02076ae8(u32 a, u8 *b, s32 c);
+void CommRecord_UnpackSource(u32 a, u8 *b, s32 c);
 }
 
 extern "C" {
-void func_02076280(s32 a, void *b, s32 c, s32 d);
+void CommSyncVar_SetVar(s32 a, void *b, s32 c, s32 d);
 }
 
 extern "C" {
@@ -270,19 +270,19 @@ void func_02096f10(void *p, s32 v);
 }
 
 extern "C" {
-Unk_02095dcc_Grid *func_0204da0c();
+Unk_02095dcc_Grid *TownBlockMap_Get();
 }
 
 extern "C" {
-void *func_0204ebd8(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
+void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 
 extern "C" {
-void func_02045de4();
+void Town_GetUpdater();
 }
 
 extern "C" {
-s32 func_020464bc();
+s32 Town_WashUpBottle();
 }
 
 extern "C" {
@@ -364,7 +364,7 @@ Unk_020e1ce0::~Unk_020e1ce0() {}
 BOOL Unk_020e1ce0::vfunc_00() { return TRUE; }
 
 BOOL Unk_020e1ce0::onExecute() {
-    Unk_020cbb18 *g;
+    CommManager *g;
     s32 i, m1;
     s32 *p8;
     u8 *pc;
@@ -375,10 +375,10 @@ BOOL Unk_020e1ce0::onExecute() {
     s16 s;
     s32 v, x, y;
     i = 3;
-    g = data_020cbb18;
+    g = gCommManager;
     m1 = -1;
     do {
-        if (_ZN12Unk_020cbb1813func_02072e88Ei(g, i) && !_ZN12Unk_020cbb1813func_020729ccEj(g, i)) {
+        if (_ZN11CommManager12isSlotActiveEi(g, i) && !_ZN11CommManager7isMyAidEj(g, i)) {
             idx = i;
             c = func_020a6358(i);
             p8 = func_020952bc(idx);
@@ -404,14 +404,14 @@ BOOL Unk_020e1ce0::onExecute() {
         }
         i--;
     } while (i >= 0);
-    if (_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64)) {
+    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64)) {
         Unk_02095774_Ent *o = func_02095204(4);
         if (o) {
             s32 n = g->unk_68;
             if (n < 4) {
-                func_02076280(n + 4, (u8 *)o + 0x8e, 0, 0);
-                func_02076280(n, o->unk_5c, 0, 0);
-                func_02076280(n + 8, 0, 0, 0);
+                CommSyncVar_SetVar(n + 4, (u8 *)o + 0x8e, 0, 0);
+                CommSyncVar_SetVar(n, o->unk_5c, 0, 0);
+                CommSyncVar_SetVar(n + 8, 0, 0, 0);
             }
         }
     }

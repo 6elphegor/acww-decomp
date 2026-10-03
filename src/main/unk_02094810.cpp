@@ -10,7 +10,7 @@ struct Unk_02006d14_Blk { u32 w[12]; };
 enum Unk_02094a08_Limit { Unk_02094a08_LIMIT_5 = 5 };
 enum Unk_02094d60_Limit { Unk_02094d60_LIMIT_5 = 5, Unk_02094d60_LIMIT_6 = 6 };
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 pad_00[0x64];
     s32 unk_64;
     s32 unk_68;
@@ -83,7 +83,7 @@ extern const u32 data_020d03d8[];
 extern const u32 data_020d03e8[];
 extern const u32 data_020d03f8[];
 extern const s32 data_020d0428;
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 extern PlayerSessionTable gPlayerSessionTable;
 
@@ -124,8 +124,8 @@ s32 Item_GetFurnitureIndex(void *p);
 s32 func_02063c18(s32 v);
 void *func_020b4934();
 void func_020b4b68(void *a, s32 b, void *c, void *d);
-s32 func_ov003_02210628(Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
-s32 func_ov003_0220dff0(Unk_02006d14 *o, u32 a, u32 b, s32 c);
+s32 PlayerActor_RequestStowItem(Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
+s32 PlayerActor_RequestFishReelIn(Unk_02006d14 *o, u32 a, u32 b, s32 c);
 void func_ov004_0222113c(Unk_02006d14 *o, s32 a);
 void func_ov004_0222148c(Unk_02006d14 *o, s32 a);
 void func_ov004_02221558(Unk_02006d14 *o, s32 a);
@@ -137,18 +137,18 @@ void __cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
 void __cxa_vec_cleanup(void *p, s32 n, s32 size, void *dtor);
 void _ZN6FxVec3D1Ev(void *p);
 void func_02000c98(void *p);
-u16 func_0207694c(u8 *p);
-void func_02076964(u8 *p, u16 h);
-void func_02076994(u8 *p, s32 v);
-void func_02076b08(void *p, s32 a, s32 b);
-s32 func_020766e0(s32 v);
-u16 func_020769ac(void *p);
+u16 NetBuf_ReadU16(u8 *p);
+void NetBuf_WriteU16(u8 *p, u16 h);
+void NetBuf_WriteS16(u8 *p, s32 v);
+void CommRecord_PackSource(void *p, s32 a, s32 b);
+s32 CommSyncVar_GetVarSize(s32 v);
+u16 NetBuf_ReadS16B(void *p);
 s32 func_020b50e8();
 void MI_CpuCopy8(const void *src, void *dst, s32 n);
-BOOL _ZN12Unk_020cbb1813func_020729bcEj(Unk_020cbb18 *g, s32 v);
-u32 _ZN12Unk_020cbb1813func_02072970Ej(Unk_020cbb18 *g, u32 v);
-void func_02076a2c(u32 a, s32 *x, s32 *y);
-void func_02076ae8(u32 a, u8 *b, s32 c);
+BOOL _ZN11CommManager11isLocalSlotEj(CommManager *g, s32 v);
+u32 _ZN11CommManager10getSyncVarEj(CommManager *g, u32 v);
+void NetBuf_UnpackPair20(u32 a, s32 *x, s32 *y);
+void CommRecord_UnpackSource(u32 a, u8 *b, s32 c);
 u32 func_02095720(s32 v);
 u32 func_0209573c(s32 v);
 u32 func_02095758(s32 v);
@@ -179,23 +179,23 @@ void func_02095218();
 
 extern "C" Unk_02006d14 *PlayerActor_Get(s32 idx) {
     if (idx == 4) {
-        idx = data_020cbb18->unk_68;
+        idx = gCommManager->unk_68;
     }
     return (Unk_02006d14 *)func_02095478(&gPlayerSessionTable, idx);
 }
 
-extern "C" u32 func_02095758(s32 idx) { return _ZN12Unk_020cbb1813func_02072970Ej(data_020cbb18, data_020d03d8[idx]); }
+extern "C" u32 func_02095758(s32 idx) { return _ZN11CommManager10getSyncVarEj(gCommManager, data_020d03d8[idx]); }
 
-extern "C" u32 func_0209573c(s32 idx) { return _ZN12Unk_020cbb1813func_02072970Ej(data_020cbb18, data_020d03e8[idx]); }
+extern "C" u32 func_0209573c(s32 idx) { return _ZN11CommManager10getSyncVarEj(gCommManager, data_020d03e8[idx]); }
 
-extern "C" u32 func_02095720(s32 idx) { return _ZN12Unk_020cbb1813func_02072970Ej(data_020cbb18, data_020d03f8[idx]); }
+extern "C" u32 func_02095720(s32 idx) { return _ZN11CommManager10getSyncVarEj(gCommManager, data_020d03f8[idx]); }
 
 // ---------------------------------------------------------------- functions (file unk_02095670)
 extern "C" BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx) {
     if (idx == 4) {
-        idx = data_020cbb18->unk_68;
+        idx = gCommManager->unk_68;
     }
-    if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, idx)) {
+    if (_ZN11CommManager11isLocalSlotEj(gCommManager, idx)) {
         Unk_02006d14 *e = PlayerActor_Get(4);
         if (e != NULL) {
             s32 *p = (s32 *)&e->unk_5c;
@@ -214,10 +214,10 @@ extern "C" BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32
     u32 t2 = func_02095758(idx);
     if (t2 == 0) return FALSE;
     s32 a, b;
-    func_02076a2c(t2, &a, &b);
+    NetBuf_UnpackPair20(t2, &a, &b);
     *x = a;
     *y = b;
-    func_02076ae8(t, outb, 0);
+    CommRecord_UnpackSource(t, outb, 0);
     return TRUE;
 }
 
@@ -225,9 +225,9 @@ extern "C" BOOL PlayerActor_GetSlotAngle(s16 *out, s32 a, s32 idx)
 {
     u32 st;
     if (idx == 4) {
-        idx = data_020cbb18->unk_68;
+        idx = gCommManager->unk_68;
     }
-    if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, idx)) {
+    if (_ZN11CommManager11isLocalSlotEj(gCommManager, idx)) {
         Unk_02006d14 *o = PlayerActor_Get(4);
         if (o) {
             *out = o->unk_8e;
@@ -248,7 +248,7 @@ extern "C" BOOL PlayerActor_GetSlotAngle(s16 *out, s32 a, s32 idx)
     if (!q) {
         return FALSE;
     }
-    *out = func_020769ac(q);
+    *out = NetBuf_ReadS16B(q);
     return TRUE;
 }
 
@@ -256,9 +256,9 @@ extern "C" BOOL PlayerActor_GetSlotAction(u32 *out, s32 a, s32 idx)
 {
     u8 buf;
     if (idx == 4) {
-        idx = data_020cbb18->unk_68;
+        idx = gCommManager->unk_68;
     }
-    if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, idx)) {
+    if (_ZN11CommManager11isLocalSlotEj(gCommManager, idx)) {
         Unk_02006d14 *o = PlayerActor_Get(4);
         if (o) {
             *out = o->unk_7ec;
@@ -283,27 +283,27 @@ extern "C" void func_020954f8(void *dst, s32 x)
     Unk_020954f8_L l;
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
-        func_02076b08(l.t, func_020b50e8(), 0);
+        CommRecord_PackSource(l.t, func_020b50e8(), 0);
         if (PlayerActor_GetSlotAction(&l.out, -1, 4)) {
             l.t[1] = l.out + 1;
         }
-        func_02076994(l.t + 2, o->unk_c80);
+        NetBuf_WriteS16(l.t + 2, o->unk_c80);
         MI_CpuCopy8((u8 *)o + 0x8ec, l.t + 4, 8);
     } else {
         l.t[1] = 0x94;
     }
-    MI_CpuCopy8(l.t, dst, func_020766e0(x));
+    MI_CpuCopy8(l.t, dst, CommSyncVar_GetVarSize(x));
 }
 
 extern "C" void func_020954e0(u8 *p, u16 h, u8 v)
 {
-    func_02076964(p, h);
+    NetBuf_WriteU16(p, h);
     p[2] = v;
 }
 
 extern "C" void func_020954c8(u8 *p, u16 *a, u32 *b)
 {
-    *a = func_0207694c(p);
+    *a = NetBuf_ReadU16(p);
     *b = p[2];
 }
 
@@ -857,7 +857,7 @@ extern "C" s32 func_02094c38() {
                 c2 = buf[0] == 0xfff1 ? TRUE : FALSE;
             }
             if (!c2 && !_ZN12Unk_02006d1420getHeldHoldableIndexEv(o) && r4 != 0x39) {
-                return func_ov003_02210628(o, 2, 2, 0, 0, 0, 6, -1);
+                return PlayerActor_RequestStowItem(o, 2, 2, 0, 0, 0, 6, -1);
             }
         }
         return _ZN11PlayerActor11requestWaitEjjj(o, 3, 5, -1);
@@ -943,7 +943,7 @@ extern "C" s32 PlayerActor_RequestAct79() {
         Unk_02094a08_Limit k = Unk_02094a08_LIMIT_5;
         if (!(k > _ZN11PlayerActor19getRequiredPriorityEv(o))) {
             if (o->unk_7ec == 0x4f && o->unk_5c8 != 5) {
-                func_ov003_0220dff0(o, 1, 6, -1);
+                PlayerActor_RequestFishReelIn(o, 1, 6, -1);
                 return 1;
             }
             return 0;
@@ -967,7 +967,7 @@ extern "C" void func_020949a0(u32 a) {
         _ZN12Unk_02006d1412requestAct10Esji(o, 3, 5, -1);
         return;
     LightLevel:
-        func_ov003_02210628(o, 0x10, a, o->unk_5c.x, o->unk_5c.z, o->unk_8e, 6, -1);
+        PlayerActor_RequestStowItem(o, 0x10, a, o->unk_5c.x, o->unk_5c.z, o->unk_8e, 6, -1);
     }
 }
 

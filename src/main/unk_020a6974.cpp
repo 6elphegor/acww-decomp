@@ -58,15 +58,15 @@ void StrBuf_Clear(StrBuf *buf);
 }
 
 extern "C" {
-void func_02002ab8(void);
+void AbAllObjGfx_Upload(void);
 }
 
 extern "C" {
-void func_020014e4(u32 arg);
+void Gfx2d_HideMainPlanes(u32 arg);
 }
 
 extern "C" {
-void func_020014f4(u32 arg);
+void Gfx2d_ShowMainPlanes(u32 arg);
 }
 
 extern "C" {
@@ -110,7 +110,7 @@ u8 Talk_ColorTagToTextColor(u32 x);
 }
 
 extern "C" {
-void func_02076b08(void *p, int a, int b);
+void CommRecord_PackSource(void *p, int a, int b);
 }
 
 extern "C" {
@@ -869,9 +869,9 @@ Unk_02008040 data_021edb68(0xff);
 u8 sInputLocked;
 BmgFileHeader sBmgFileHeader;
 
-extern "C" void func_020a8b94() { func_020014f4(0x10); }
+extern "C" void func_020a8b94() { Gfx2d_ShowMainPlanes(0x10); }
 
-extern "C" void func_020a8b88() { func_020014e4(0x10); }
+extern "C" void func_020a8b88() { Gfx2d_HideMainPlanes(0x10); }
 
 // ---- MsgStringAttr
 MsgStringAttr::MsgStringAttr() {

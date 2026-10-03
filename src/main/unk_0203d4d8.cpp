@@ -127,16 +127,16 @@ extern Unk_0203dbb8_Fn sTalkRequestBeginFns[];
 extern Unk_0203dbb8_Fn sTalkRequestEndFns[];
 
 extern "C" {
-extern u8 data_021c3cc0;
+extern u8 gScreenTransition;
 extern u8 data_020d96d0;
 extern s32 gActorDefaultParent;
-extern s32 data_020cbb18;
+extern s32 gCommManager;
 
 Unk_0203e604_Obj *func_02095204(s32 id);
 u32 _ZN9Character9getCharIdEv(Unk_0203e604_Obj *o);
 Unk_0203e604_Obj *Character_FindByCharId(u32 id);
 Unk_0203dad4_Task *func_0203eb78();
-void func_020652ec(Unk_0203dc50_List *l, Unk_0203dad4_Task *t);
+void PrioList_Insert(Unk_0203dc50_List *l, Unk_0203dad4_Task *t);
 void func_0203ebdc(Unk_0203dc50_List *l);
 void func_020e79a0(Unk_0203dc50_List *l, Unk_0203dad4_Task *t);
 void func_020a5d4c();
@@ -165,7 +165,7 @@ void func_020949a0();
 BOOL func_02094898();
 u32 func_020b4934();
 void func_020b4bbc(u32 a, u32 b);
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(s32 v);
+BOOL _ZN11CommManager8isOnlineEv(s32 v);
 BOOL func_ov004_0222497c();
 Unk_0203e604_Obj *Character_FindInteractionTarget(Unk_0203e604_Obj *o);
 BOOL _ZN9Character16checkInteractionEPS_(Unk_0203e604_Obj *a, Unk_0203e604_Obj *b);
@@ -187,7 +187,7 @@ BOOL PlayerActor_RequestAct05(void);
 void MenuCtrl_RequestOpen(u32 v);
 void TalkRequestQueue_Reset(void);
 s32 func_020b14f0(void);
-void func_02065328(void *p);
+void PrioList_Init(void *p);
 void func_0203ebb0(void);
 void func_0203eb38(void);
 BOOL TalkRequest_Add(u32 a, u32 b, u32 c, u32 d, u8 e);
@@ -252,7 +252,7 @@ extern "C" TalkRequestQueue *TalkRequestQueue_Create(void) {
 }
 
 extern "C" void TalkRequestQueue_Reset(void) {
-    func_02065328(&sTalkRequestList);
+    PrioList_Init(&sTalkRequestList);
     func_0203ebb0();
     gTalkRequestCurrent = 0;
     sTalkTargetId = 0;
@@ -345,7 +345,7 @@ extern "C" BOOL func_0203e19c(Unk_0203dad4_Task *t) {
     s32 r = func_0203e9ac();
     switch (r) {
     case 2:
-        if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+        if (_ZN11CommManager8isOnlineEv(gCommManager)) {
             Unk_0203e604_Obj *o = Character_FindByCharId(t->unk_10);
             if (_ZN9Character13func_0203e3e8Ev()) {
                 if (t->unk_17 == 1) {
@@ -624,7 +624,7 @@ extern "C" BOOL func_0203dd60(Unk_0203dad4_Task *t) {
     if (func_0203d99c()) {
         return FALSE;
     }
-    BOOL b = data_021c3cc0 == 2 ? TRUE : FALSE;
+    BOOL b = gScreenTransition == 2 ? TRUE : FALSE;
     if (!b) {
         return FALSE;
     }
@@ -795,7 +795,7 @@ extern "C" BOOL TalkRequest_Add(u32 a, u32 b, u32 c, u32 d, u8 e) {
     t->unk_18 = 0;
     t->unk_19 = 0;
     t->unk_14 = 1;
-    func_020652ec(&sTalkRequestList, t);
+    PrioList_Insert(&sTalkRequestList, t);
     return TRUE;
 }
 

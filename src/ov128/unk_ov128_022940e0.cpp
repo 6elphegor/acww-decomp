@@ -65,16 +65,16 @@ void func_ov004_02224844();
 void func_02094960();
 void func_02034f80(void *p);
 void func_02034f98(void *p);
-void func_0200261c(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void func_020015b8(s32 a);
-void func_02002398(s32 a, s32 b);
-void func_0200226c(u32 a, u32 b, u32 c, u32 d);
-void func_0200151c(s32 a);
-void func_0200152c(s32 a);
-void func_020021b8(s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_020021a0(s32 a);
-void func_020020b8(s32 a);
-void func_02001710(s32 a, s32 b);
+void Gfx2d_LoadCharFile(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_SetSubBgModeState(s32 a);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
+void Gfx2d_DisableSubWindows(s32 a);
+void Gfx2d_EnableSubWindows(s32 a);
+void Gfx2d_SetWindowRect(s32 a, s32 b, s32 c, s32 d, s32 e);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ShowLayer(s32 a);
+void Gfx2d_SetSubWin1Planes(s32 a, s32 b);
 void *ProcBase_GetParent();
 void ProcBase_RequestDelete(void *p);
 void func_0206f994(void *self, u8 *s, s32 n);
@@ -469,10 +469,10 @@ void Unk_ov128_022954e0::func_ov128_02294ec8() {
     ::func_ov128_02294c38();
     func_ov128_02294bdc();
     func_ov002_022008e0(9, 4, 0, 0x30);
-    func_020020b8(3);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(3);
+    Gfx2d_ShowLayer(6);
     func_ov128_02294194(1);
-    func_02001710(0x1e, 1);
+    Gfx2d_SetSubWin1Planes(0x1e, 1);
     func_ov128_02294da0();
     func_ov128_02294de8();
     func_ov002_02200a50(1);
@@ -492,7 +492,7 @@ void Unk_ov128_022954e0::func_ov128_02294e90() {
 void Unk_ov128_022954e0::func_ov128_02294e48() {
     ((Unk_ov092_02291ec8 *)ProcBase_GetParent())->func_ov092_02291ce4(0x44, 1);
     func_ov002_022008c4(9, 0, 0, 0x30);
-    func_02001710(0x1e, 1);
+    Gfx2d_SetSubWin1Planes(0x1e, 1);
     func_ov128_02294da0();
     func_ov128_02294de8();
     func_ov002_02200a50(3);
@@ -500,9 +500,9 @@ void Unk_ov128_022954e0::func_ov128_02294e48() {
 
 void Unk_ov128_022954e0::func_ov128_02294e0c() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(3);
-        func_020021a0(6);
-        func_0200151c(2);
+        Gfx2d_ResetLayer(3);
+        Gfx2d_ResetLayer(6);
+        Gfx2d_DisableSubWindows(2);
         func_ov002_02200a60(5);
     } else {
         func_ov128_02294da0();
@@ -522,10 +522,10 @@ void Unk_ov128_022954e0::func_ov128_02294da0() {
     }
     s32 b = func_ov002_02200920() - 0x30;
     if (b <= 0) {
-        func_0200151c(2);
+        Gfx2d_DisableSubWindows(2);
     } else {
-        func_0200152c(2);
-        func_020021b8(3, 0, a, 0xff, b);
+        Gfx2d_EnableSubWindows(2);
+        Gfx2d_SetWindowRect(3, 0, a, 0xff, b);
     }
 }
 
@@ -547,7 +547,7 @@ void Unk_ov128_022954e0::func_ov128_02294cd4() {
     unk_2cb0.func_0206fc44();
     func_02094960();
     func_02034f80(data_021c1b3c + 0x2f0);
-    func_0200261c((void *)"menu/inventory/b_itm0.bch", gCurrentHeap, 3, 0, 0x10, 0x10);
+    Gfx2d_LoadCharFile((void *)"menu/inventory/b_itm0.bch", gCurrentHeap, 3, 0, 0x10, 0x10);
 }
 
 void Unk_ov128_022954e0::func_ov128_02294ccc() { func_ov128_02294c8c(); }
@@ -569,11 +569,11 @@ void Unk_ov128_022954e0::func_ov128_02294c70() {
 }
 
 extern "C" void func_ov128_02294c38() {
-    func_020015b8(0);
-    func_02002398(3, 2);
-    func_0200226c(3, 1, 0, 0);
-    func_02002398(6, 1);
-    func_0200226c(6, 0, 0, 0);
+    Gfx2d_SetSubBgModeState(0);
+    Gfx2d_SetLayerPriority(3, 2);
+    Gfx2d_SetLayerControl(3, 1, 0, 0);
+    Gfx2d_SetLayerPriority(6, 1);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
 void Unk_ov128_022954e0::func_ov128_02294bdc() {

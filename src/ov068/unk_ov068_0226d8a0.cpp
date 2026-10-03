@@ -18,7 +18,7 @@
 //    (func_ov004_02224ce4 / func_ov004_02224d5c), so LightLevel and Cf4 have no destructor here.
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
-//  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (Unk_020dbd54), unk_1a4, unk_248, unk_250.
+//  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
 // Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
 
 // Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
@@ -116,10 +116,10 @@ public:
     u8 pad_04[0x94];
 };
 
-class Unk_020dbd34 : public Unk_02055704 {
+class CachedModel : public Unk_02055704 {
 public:
-    Unk_020dbd34();
-    virtual ~Unk_020dbd34();
+    CachedModel();
+    virtual ~CachedModel();
     u32 unk_98;
 };
 
@@ -137,17 +137,17 @@ public:
     s32 hasPassedFrame(s32 a);
 };
 
-class Unk_020dbd54 : public Unk_020dbd34, public AnimFrameCtrl {
+class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:
-    Unk_020dbd54();
-    virtual ~Unk_020dbd54();
+    AnimModel();
+    virtual ~AnimModel();
     void *unk_b4;
 
-    s32 func_02054710();
-    s32 func_020547cc(void *q);
-    void func_020547e4();
-    BOOL func_02054800(void *x);
-    // declared in Unk_0205454c in src/main, but it is called on this object
+    s32 attachAnim();
+    s32 drawAnimated(void *q);
+    void stepAnim();
+    BOOL allocAnmObj(void *x);
+    // declared in BlendAnimModel in src/main, but it is called on this object
     void func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e);
 };
 
@@ -227,7 +227,7 @@ public:
     void func_ov004_02224f90(char *name);
     void func_ov004_02224fc8(char *a, char *b);
 
-    /* 0xec */ Unk_020dbd54 unk_ec;
+    /* 0xec */ AnimModel unk_ec;
     /* 0x1a4 */ Unk_ov004_02224ee4 unk_1a4;
     /* 0x248 */ Unk_ov004_02224d60_B unk_248;
     /* 0x250 */ Unk_ov004_02224cf4 unk_250;
@@ -270,27 +270,27 @@ void func_020e761c(void *dst, s32 v, s32 n);
 void NNS_G3dMdlSetMdlAlpha(void *o, u32 i, u32 v);
 }
 
-class Unk_ov068_022708fc : public Unk_ov004_0224d4e8 {
+class RoostCafeSet : public Unk_ov004_0224d4e8 {
 public:
-    Unk_ov068_022708fc();
-    virtual ~Unk_ov068_022708fc();
+    RoostCafeSet();
+    virtual ~RoostCafeSet();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_60(u32 v);
 
-    void func_ov068_0226d8a0();
-    BOOL func_ov068_0226d8ac();
-    void func_ov068_0226d8bc();
-    BOOL func_ov068_0226d8c8();
-    void func_ov068_0226d8d8();
+    void execShown();
+    BOOL enterShown();
+    void execHidden();
+    BOOL enterHidden();
+    void updateFadeState();
 
     /* 0x290 */ s32 unk_290;
     /* 0x294 */ s32 unk_294;
     /* 0x298 */ u8 unk_298;
     /* 0x299 */ u8 pad_299[3];
-    /* 0x29c */ Unk_020dbd54 unk_29c;
+    /* 0x29c */ AnimModel unk_29c;
     /* 0x354 */ Unk_ov004_02224ee4 unk_354;
     /* 0x3f8 */ Unk_ov004_02224d60 unk_3f8;
 };
@@ -302,24 +302,24 @@ extern "C" Unk_ov068_022708fc_Color data_ov068_02271254(0x1f, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov068_022708fc_Color data_ov068_0227126c(0x14, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov068_022708fc_Color data_ov068_02271258(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov068_022708fc_Color data_ov068_0227125c(0x14, 0x18, 0x18, 0x1f);
-extern "C" Unk_ov068_022708fc *func_ov068_0226dbcc();
-extern "C" Unk_ov068_Scene_Entry data_ov068_022708dc = {(void *(*)())func_ov068_0226dbcc, 0x10, 0x12, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" RoostCafeSet *RoostCafeSet_Create();
+extern "C" Unk_ov068_Scene_Entry sRoostCafeSetProfile = {(void *(*)())RoostCafeSet_Create, 0x10, 0x12, {0, 0xc8000, 0x12c000, 0x258000}};
 extern "C" {
-Unk_ov068_022708fc *data_ov068_02271270;
+RoostCafeSet *sRoostCafeSet;
 }
 
-extern "C" Unk_ov068_022708fc *func_ov068_0226dbcc() {
-    return new Unk_ov068_022708fc();
+extern "C" RoostCafeSet *RoostCafeSet_Create() {
+    return new RoostCafeSet();
 }
 
-Unk_ov068_022708fc::Unk_ov068_022708fc() {
-    data_ov068_02271270 = NULL;
+RoostCafeSet::RoostCafeSet() {
+    sRoostCafeSet = NULL;
 }
 
-Unk_ov068_022708fc::~Unk_ov068_022708fc() {}
+RoostCafeSet::~RoostCafeSet() {}
 
-BOOL Unk_ov068_022708fc::vfunc_00() {
-    data_ov068_02271270 = this;
+BOOL RoostCafeSet::vfunc_00() {
+    sRoostCafeSet = this;
     func_ov004_02224f58(1);
     func_ov004_02224f90("obj_ms_cafe");
     unk_290 = unk_294 = 1;
@@ -329,8 +329,8 @@ BOOL Unk_ov068_022708fc::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_ov068_022708fc::onExecute() {
-    func_ov068_0226d8d8();
+BOOL RoostCafeSet::onExecute() {
+    updateFadeState();
     if (unk_290 != unk_294) {
         func_020e761c(&unk_290, unk_294, 2);
     }
@@ -341,27 +341,27 @@ BOOL Unk_ov068_022708fc::onExecute() {
     return TRUE;
 }
 
-BOOL Unk_ov068_022708fc::onDraw() {
-    unk_ec.func_020547cc(0);
+BOOL RoostCafeSet::onDraw() {
+    unk_ec.drawAnimated(0);
     if (unk_298 != 0) {
-        unk_29c.func_020547cc(0);
+        unk_29c.drawAnimated(0);
     }
     return TRUE;
 }
 
-BOOL Unk_ov068_022708fc::vfunc_0c() {
+BOOL RoostCafeSet::vfunc_0c() {
     func_ov004_02224f60();
     if (unk_298 != 0) {
         func_ov004_02224f7c(&unk_354, &unk_3f8);
     }
-    data_ov068_02271270 = NULL;
+    sRoostCafeSet = NULL;
     return TRUE;
 }
 
-BOOL Unk_ov068_022708fc::vfunc_60(u32 v) {
-    static BOOL (Unk_ov068_022708fc::*tbl[2])() = {
-        &Unk_ov068_022708fc::func_ov068_0226d8c8,
-        &Unk_ov068_022708fc::func_ov068_0226d8ac,
+BOOL RoostCafeSet::vfunc_60(u32 v) {
+    static BOOL (RoostCafeSet::*tbl[2])() = {
+        &RoostCafeSet::enterHidden,
+        &RoostCafeSet::enterShown,
     };
     if (v < 2) {
         if ((this->*tbl[v])()) {
@@ -374,30 +374,30 @@ BOOL Unk_ov068_022708fc::vfunc_60(u32 v) {
     return FALSE;
 }
 
-void Unk_ov068_022708fc::func_ov068_0226d8d8() {
-    static void (Unk_ov068_022708fc::*tbl[2])() = {
-        &Unk_ov068_022708fc::func_ov068_0226d8bc,
-        &Unk_ov068_022708fc::func_ov068_0226d8a0,
+void RoostCafeSet::updateFadeState() {
+    static void (RoostCafeSet::*tbl[2])() = {
+        &RoostCafeSet::execHidden,
+        &RoostCafeSet::execShown,
     };
     if (unk_248.unk_04 < 2) {
         (this->*tbl[unk_248.unk_04])();
     }
 }
 
-BOOL Unk_ov068_022708fc::func_ov068_0226d8c8() {
+BOOL RoostCafeSet::enterHidden() {
     unk_294 = 1;
     return TRUE;
 }
 
-void Unk_ov068_022708fc::func_ov068_0226d8bc() {
+void RoostCafeSet::execHidden() {
     unk_294 = 1;
 }
 
-BOOL Unk_ov068_022708fc::func_ov068_0226d8ac() {
+BOOL RoostCafeSet::enterShown() {
     unk_294 = 0x1f;
     return TRUE;
 }
 
-void Unk_ov068_022708fc::func_ov068_0226d8a0() {
+void RoostCafeSet::execShown() {
     unk_294 = 0x1f;
 }

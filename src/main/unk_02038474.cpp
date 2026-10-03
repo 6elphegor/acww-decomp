@@ -89,7 +89,7 @@ public:
     u32 pad[0x1c / 4];
 };
 
-struct Unk_020cbb18 {
+struct CommManager {
     /* 0x00 */ u8 unk_00[0x64];
     /* 0x64 */ s32 unk_64;
 };
@@ -261,15 +261,15 @@ extern const u32 data_020c8cd4[4];
 
 
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 extern u16 gPad[];
 extern u8 data_020d467c[];
-extern s32 data_021c5384;
+extern s32 gGfxMainOnTop;
 
 s32 PlayerActor_GetAction(s32 a);
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(Unk_020cbb18 *p);
-BOOL _ZN12Unk_020cbb1813func_02072e88Ei(Unk_020cbb18 *p, s32 i);
-u8 *_ZN12Unk_020cbb1813func_02072970Ej(Unk_020cbb18 *p, s32 i);
+BOOL _ZN11CommManager8isOnlineEv(CommManager *p);
+BOOL _ZN11CommManager12isSlotActiveEi(CommManager *p, s32 i);
+u8 *_ZN11CommManager10getSyncVarEj(CommManager *p, s32 i);
 BOOL TalkRequest_IsActive();
 BOOL func_02011880();
 s32 func_020b50e8();
@@ -281,8 +281,8 @@ void _ZN8PlayerId13func_020940d0EP9MsgString(void *p, Unk_020e1c64 *t);
 void StrBuf_ClearAlt(void *p);
 void StrBuf_AsciiToGame(Unk_020d914c *p, void *q);
 void StrBuf_GameToAscii(Unk_020d9134 *a, Unk_020d914c *b);
-void func_02076280(s32 a, s32 b, s32 c, s32 d);
-u32 func_020766e0(void *p);
+void CommSyncVar_SetVar(s32 a, s32 b, s32 c, s32 d);
+u32 CommSyncVar_GetVarSize(void *p);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 void func_020385ec(void *self);
 void func_020388fc();
@@ -672,7 +672,7 @@ void Unk_020d9194::func_020390e4() {
             unk_98->unk_2c = 4;
             TextLabel *t = unk_98;
             t->unk_10 = (u32)((StrBuf *)&unk_88)->data();
-            if (data_021c5384 == 0) {
+            if (gGfxMainOnTop == 0) {
                 unk_98->unk_50 = 3;
             } else {
                 unk_98->unk_50 = 2;
@@ -700,7 +700,7 @@ void Unk_020d9194::func_02039028() {
             unk_9c->unk_2c = 4;
             TextLabel *t = unk_9c;
             t->unk_10 = (u32)((MsgString *)&unk_54)->vfunc_0c();
-            if (data_021c5384 == 0) {
+            if (gGfxMainOnTop == 0) {
                 unk_9c->unk_50 = 3;
             } else {
                 unk_9c->unk_50 = 2;
@@ -785,7 +785,7 @@ void Unk_020d9114::func_02038dfc(s32 idx, StrBuf *a, MsgString *b) {
 }
 
 s32 Unk_020d9114::func_02038ddc(s32 idx) {
-    return (idx - data_020cbb18->unk_64 + 4) % 4;
+    return (idx - gCommManager->unk_64 + 4) % 4;
 }
 
 s32 Unk_020d9114::func_02038dd0(s32 idx) {
@@ -1002,20 +1002,20 @@ void Unk_020d9104::func_020389dc() { func_020388fc(); }
 
 extern "C" void func_020389a0(s32 i, Unk_020d9194 *x) {
     if (i < 4) {
-        Unk_020cbb18 *g = data_020cbb18;
-        if (_ZN12Unk_020cbb1813func_02072e44Ev(g) && _ZN12Unk_020cbb1813func_02072e88Ei(g, i)) {
-            func_02076280(i + 0x14, (s32)x, 0, 1);
+        CommManager *g = gCommManager;
+        if (_ZN11CommManager8isOnlineEv(g) && _ZN11CommManager12isSlotActiveEi(g, i)) {
+            CommSyncVar_SetVar(i + 0x14, (s32)x, 0, 1);
         }
     }
 }
 
 extern "C" void func_020388fc() {
-    Unk_020cbb18 *g = data_020cbb18;
+    CommManager *g = gCommManager;
     s32 n = g->unk_64;
     s32 i;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(g)) {
+    if (_ZN11CommManager8isOnlineEv(g)) {
         for (i = 0; i < 4; i++) {
-            if (i != n && _ZN12Unk_020cbb1813func_02072e88Ei(g, i) && func_0203889c(i)) {
+            if (i != n && _ZN11CommManager12isSlotActiveEi(g, i) && func_0203889c(i)) {
                 Unk_020d914c s((data_021c302c + 1), 8);
                 Unk_020d9164 b((data_021c302c + 9), 0x20);
                 Unk_020d9134 t;
@@ -1029,7 +1029,7 @@ extern "C" void func_020388fc() {
 }
 
 extern "C" u8 func_0203889c(s32 idx) {
-    u8 *p = _ZN12Unk_020cbb1813func_02072970Ej(data_020cbb18, idx + 0x14);
+    u8 *p = _ZN11CommManager10getSyncVarEj(gCommManager, idx + 0x14);
     u8 c = *p;
     if (c != 0) {
         s32 r = func_020b50e8();
@@ -1051,7 +1051,7 @@ extern "C" void func_02038828(u8 *a, void *b, Unk_020d9194 *c) {
     buf.fromMsgString((MsgString *)((u8 *)c + 0x54));
     StrBuf_AsciiToGame(&s, (u8 *)c + 0x88);
     data_021c302c[0] = 1;
-    MI_CpuCopy8(data_021c302c, a, func_020766e0(b));
+    MI_CpuCopy8(data_021c302c, a, CommSyncVar_GetVarSize(b));
 }
 
 extern "C" void func_020387b4() {
@@ -1063,7 +1063,7 @@ extern "C" void func_020387b4() {
         _ZN8PlayerId13func_020940d0EP9MsgString(_ZN10PlayerData11getPlayerIdEv(p), &t);
         code = 0xef;
         String_Load2d(&buf, &code, 0);
-        func_02038fe8(data_020cbb18->unk_64, (StrBuf *)&t, &buf);
+        func_02038fe8(gCommManager->unk_64, (StrBuf *)&t, &buf);
         Snd_PlaySe(0x32);
         data_021c3000 = 0x1e;
     }
@@ -1087,7 +1087,7 @@ void Unk_020d9124::func_02038764() {
 
 extern "C" void func_020385ec(void *self) {
     BOOL a, ready, modeOk, any;
-    Unk_020cbb18 *g;
+    CommManager *g;
     BOOL b, c, d, e;
     BOOL idle;
     u32 keys;
@@ -1126,8 +1126,8 @@ extern "C" void func_020385ec(void *self) {
     if (!(keys & 8) && !a && !b && !c && !d && !e) {
         any = FALSE;
     }
-    g = data_020cbb18;
-    ready = _ZN12Unk_020cbb1813func_02072e44Ev(g);
+    g = gCommManager;
+    ready = _ZN11CommManager8isOnlineEv(g);
     if (TalkRequest_IsActive()) {
         idle = FALSE;
     } else {

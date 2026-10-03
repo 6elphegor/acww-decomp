@@ -7,9 +7,9 @@ extern "C" {
 u32 func_02063b8c(u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 void File_LoadToBuffer(u32 a, void *b, u32 c);
-s32 func_02002580(void *a, u32 b, u32 c, u32 d, u32 e);
-void _ZN12Unk_020e45f813func_020b8618Ejhjh(void *p, void *q, u32 a, u32 b, u32 c);
-void _ZN12Unk_020e45f8C1Ev(void *p);
+s32 Gfx2d_LoadPaletteRange(void *a, u32 b, u32 c, u32 d, u32 e);
+void _ZN10BgVramTask19requestPaletteRangeEjhjh(void *p, void *q, u32 a, u32 b, u32 c);
+void _ZN10BgVramTaskC1Ev(void *p);
 void Mem_Clear(void *p, u32 n);
 u32 _ZN8PlayerId13func_02094294Ev(void *p);
 void _ZN8PlayerIdC1Ev(void *p);
@@ -94,7 +94,7 @@ public:
 };
 
 extern "C" {
-void *_ZN12Unk_020e45f813func_020b87d0Ev(void *p);
+void *_ZN10BgVramTask6cancelEv(void *p);
 }
 
 Unk_020b0a60::Unk_020b0a60() {
@@ -162,7 +162,7 @@ u32 Unk_020e2f5c::vfunc_08() { return 0x10; }
 u8 *Unk_020e2f5c::vfunc_0c() { return unk_0e; }
 
 Unk_020b08b4::Unk_020b08b4() {
-    _ZN12Unk_020e45f8C1Ev(this);
+    _ZN10BgVramTaskC1Ev(this);
 }
 
 Unk_020b08b4::~Unk_020b08b4() {}
@@ -171,7 +171,7 @@ extern "C" {
 void func_020b080c(u8 *p) {
     s32 i;
     BOOL changed;
-    _ZN12Unk_020e45f813func_020b87d0Ev(p);
+    _ZN10BgVramTask6cancelEv(p);
     changed = FALSE;
     for (i = 0; i < 4; i++) {
         u8 *e = p + i;
@@ -190,12 +190,12 @@ void func_020b080c(u8 *p) {
         }
     }
     if (changed) {
-        _ZN12Unk_020e45f813func_020b8618Ejhjh(p, p + 0x24, p[0x32c], 4, 7);
+        _ZN10BgVramTask19requestPaletteRangeEjhjh(p, p + 0x24, p[0x32c], 4, 7);
     }
 }
 void func_020b0788(u8 *self, s32 arg) {
     s32 i, j;
-    _ZN12Unk_020e45f813func_020b87d0Ev(self);
+    _ZN10BgVramTask6cancelEv(self);
     for (i = 0; i < 5; i++) {
         u8 *p = self + i;
         p[0x324] = func_02063b8c(0x5a) + 10;
@@ -206,11 +206,11 @@ void func_020b0788(u8 *self, s32 arg) {
         File_LoadToBuffer((u32)data_020e2f04[j], self + 0xa4 + j * 0x80, 0x80);
     }
     MI_CpuCopy8(self + 0xa4, self + 0x24, 0x80);
-    func_02002580(self + 0x24, arg, 4, 4, 7);
+    Gfx2d_LoadPaletteRange(self + 0x24, arg, 4, 4, 7);
 }
 
 void *func_020b0780(void *p) {
-    return _ZN12Unk_020e45f813func_020b87d0Ev(p);
+    return _ZN10BgVramTask6cancelEv(p);
 }
 
 u8 *func_020b0774(s32 n) {

@@ -29,7 +29,7 @@ public:
 
 extern "C" {
 extern u32 data_020d6f54[];
-extern u32 data_020cbb18;
+extern u32 gCommManager;
 extern u32 gVec3Zero;
 extern const s32 data_020c6cf0;
 extern u8 data_020e416c;
@@ -54,7 +54,7 @@ void Npc_GetName(u32 a, u16 *p);
         name(); \
         ~name(); \
     }
-MEMBER(Unk_020dbd74, 0x2a0 - 0xec);
+MEMBER(ThreeLayerAnimModel, 0x2a0 - 0xec);
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
 MEMBER(Unk_02016350, 0x1c);
@@ -117,7 +117,7 @@ struct Character : Actor {
 
 struct Unk_020d77a4 : Character {
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -168,7 +168,7 @@ struct Unk_020d77a4 : Character {
 
 extern "C" {
 void NpcRegistry_RemoveSpNpc(void *p);
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(u32 v);
+BOOL _ZN11CommManager8isOnlineEv(u32 v);
 BOOL func_020a62a0();
 BOOL func_020e96ec(void *a, void *b);
 void *_ZN12Unk_020e074013func_02081fb8Ev(void *p);
@@ -182,8 +182,8 @@ BOOL NpcRegistry_AddSpNpc(void *p, void *q);
 void _ZN12Unk_0201347413func_020135c4Ev(void *p);
 s32 _ZN12Unk_020d77a413func_0201b888EPiPh(void *self, void *a, void *b);
 s32 func_02077ac4(void *p);
-BOOL _ZN12Unk_020dbd3413func_02054b38EPv(void *p, s32 v);
-BOOL _ZN12Unk_020dbd7413func_02053a14Ej(void *p, s32 v);
+BOOL _ZN11CachedModel16allocJointRecordEPv(void *p, s32 v);
+BOOL _ZN19ThreeLayerAnimModel16allocLayer3AnimsEj(void *p, s32 v);
 }
 
 static inline BOOL Unk_0202e318_IsOne(u8 v) {
@@ -221,10 +221,10 @@ Unk_020d8bc8::~Unk_020d8bc8() {}
 
 BOOL Unk_020d8bc8::loadAnimSet() {
     void *p = _ZN12Unk_020e074013func_02081fb8Ev(&unk_640);
-    if (!_ZN12Unk_020dbd3413func_02054b38EPv(&unk_ec, func_02077ac4(p))) {
+    if (!_ZN11CachedModel16allocJointRecordEPv(&unk_ec, func_02077ac4(p))) {
         return FALSE;
     }
-    if (_ZN12Unk_020dbd7413func_02053a14Ej(&unk_ec, func_02077ac4(p))) {
+    if (_ZN19ThreeLayerAnimModel16allocLayer3AnimsEj(&unk_ec, func_02077ac4(p))) {
         return TRUE;
     }
     return FALSE;
@@ -248,7 +248,7 @@ BOOL Unk_020d8bc8::vfunc_00() {
     if (!Unk_020d77a4::vfunc_00()) {
         return FALSE;
     }
-    if (!func_020a62a0() && _ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) && !unk_558.unk_0b) {
+    if (!func_020a62a0() && _ZN11CommManager8isOnlineEv(gCommManager) && !unk_558.unk_0b) {
         Unk_0203e7a4_Vec v;
         s16 s;
         v.x = 0;

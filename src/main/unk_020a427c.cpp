@@ -40,25 +40,25 @@ public:
     u16 *func_02087364();
 };
 
-class Unk_020cbb18 {
+class CommManager {
 public:
     /* 0x00 */ u8 pad_00[0x64];
     /* 0x64 */ s32 unk_64;
-    BOOL func_02072e44();
-    BOOL func_02072e88(s32 i);
+    BOOL isOnline();
+    BOOL isSlotActive(s32 i);
     void func_02072204(u32 v);
-    u32 func_02072374();
-    void func_02072380(u32 v);
-    void func_02072824(u32 a, u32 b);
-    void func_020728a4(u8 *p, u32 n);
-    void func_020728d4();
-    BOOL func_020729cc(u32 v);
-    BOOL func_02072448();
-    void func_02072460();
-    void func_020724c4();
-    BOOL func_02072558();
-    BOOL func_02072620();
-    BOOL func_02072744();
+    u32 getErrorFlags();
+    void setErrorFlags(u32 v);
+    void endRecord(u32 a, u32 b);
+    void writeRecord(u8 *p, u32 n);
+    void beginRecord();
+    BOOL isMyAid(u32 v);
+    BOOL getAuxLenB();
+    void clearAuxLenB();
+    void clearAuxLenA();
+    BOOL getLoopbackLen();
+    BOOL getHeldLen();
+    BOOL getDeferredLen();
 };
 
 // Static object registered with the atexit-style helper (class of the destructor at func_02000c8c).
@@ -279,8 +279,8 @@ public:
 };
 
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
-extern u8 data_021c3cc0;
+extern CommManager *gCommManager;
+extern u8 gScreenTransition;
 extern u8 data_021c3cb8;
 extern u8 data_021d726c;
 extern u32 data_021d72e8;
@@ -294,7 +294,7 @@ static inline BOOL IsZero_020a5d4c(u8 v) {
 }
 
 extern "C" {
-void func_02002918(void);
+void Gfx3d_InitEngine(void);
 void Snd_DestroyScene(void);
 s32 GameProc_CreateChild(u32 a, u32 b, s32 c, s32 d);
 void func_0203d4c0(void);
@@ -302,20 +302,20 @@ void func_0203d544(void);
 BOOL func_0203d56c(void);
 s32 TalkRequestQueue_Reset(void);
 s32 func_0203eb38(void);
-void func_02041104(void);
-s32 func_020412f0(u32 a, u32 b, u32 c);
-s32 func_0204137c(u32 a, u32 b);
+void ScreenTransition_ShowCover(void);
+s32 ScreenTransition_StartFadeIn(u32 a, u32 b, u32 c);
+s32 ScreenTransition_StartFadeOut(u32 a, u32 b);
 void func_02045c68(void);
 void func_020535e0(void);
 void func_0206e660(void);
-u32 _ZN12Unk_020cbb1813func_02072448Ev(void *);
-void _ZN12Unk_020cbb1813func_02072460Ev(void *);
-u32 _ZN12Unk_020cbb1813func_02072478Ev(void *);
-u32 _ZN12Unk_020cbb1813func_020724acEv(void *);
-void _ZN12Unk_020cbb1813func_020724c4Ev(void *);
-u32 _ZN12Unk_020cbb1813func_020724d8Ev(void *);
-s32 func_02073168(void);
-void func_020739b8(s32 a);
+u32 _ZN11CommManager10getAuxLenBEv(void *);
+void _ZN11CommManager12clearAuxLenBEv(void *);
+u32 _ZN11CommManager10getAuxBufBEv(void *);
+u32 _ZN11CommManager10getAuxLenAEv(void *);
+void _ZN11CommManager12clearAuxLenAEv(void *);
+u32 _ZN11CommManager10getAuxBufAEv(void *);
+s32 Comm_GetMemberMask(void);
+void Comm_ProcessReceived(s32 a);
 void func_0208e968(void);
 s32 func_02097444(s32 a);
 s32 PlayerData_Get(s32 a);
@@ -323,11 +323,11 @@ Unk_020872fc *_ZN10PlayerData13func_020986a4Ev(s32 a);
 void func_0209caf4(void);
 void func_0209f230(s32 a);
 void func_020a0408(s32 a);
-void func_020a08dc(void);
-void func_020a08f4(void);
-void func_020a0900(void);
-void func_020a0918(void);
-void func_020a0924(void);
+void SaveManager_RequestAct1B(void);
+void SaveManager_RequestAct19(void);
+void SaveManager_RequestAct18(void);
+void SaveManager_RequestAct16(void);
+void SaveManager_RequestAct15(void);
 void func_020a6388(u32 idx, u32 a, u32 b, u32 c, u32 d);
 void func_020a63a8(s32, s32);
 void func_020a63bc(s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -361,8 +361,8 @@ s32 func_020b50e8(void);
 void func_020b78dc(void);
 void func_020b78f4(s32 a);
 void func_020b7914(s32 a);
-void func_020e9b70(void);
-u32 func_020eaf28(void);
+void Net_WifiHostKeepAlive(void);
+u32 Net_GetConnectedMask(void);
 s32 ProcBase_HasCreatingChild(void *p);
 s32 ProcBase_RequestDelete(void *p);
 void GX_SetBankForTexPltt(s32 a);
@@ -448,7 +448,7 @@ void func_020a5c94(s32 a);
 void func_020a5c30();
 void func_020a5c2c();
 Unk_020e2988 *func_020a46fc(void);
-void func_020a4698(void);
+void SceneBase_SetupGraphics(void);
 void func_020a4414(u32 a, u32 b, u32 c, u32 d);
 void func_020a43ec(void);
 BOOL func_020a4394(void);
@@ -484,7 +484,7 @@ extern "C" s32 func_020a62f8(s32 a) {
 }
 
 extern "C" s32 func_020a62a0() {
-    s32 r2 = data_020cbb18->unk_64;
+    s32 r2 = gCommManager->unk_64;
     u8 v[3];
     if (r2 >= 4) {
         return 1;
@@ -500,7 +500,7 @@ extern "C" s32 func_020a62a0() {
 }
 
 extern "C" s32 func_020a6280() {
-    s32 v = data_020cbb18->unk_64;
+    s32 v = gCommManager->unk_64;
     if (v < 4) {
         return func_020a62f8(v);
     }
@@ -512,9 +512,9 @@ extern "C" s32 func_020a6214(u32 a) {
     s32 i;
     u8 v[3];
     i = 3;
-    Unk_020cbb18 *o = data_020cbb18;
+    CommManager *o = gCommManager;
     for (; i >= 0; i--) {
-        if (o->func_02072e88(i)) {
+        if (o->isSlotActive(i)) {
             data_021eda94.unk_00[i].func_020a6760(&v[0], &v[1], &v[2]);
             if (v[0] == a && v[1] != 0 && v[2] == 0) {
                 r6 = i;
@@ -526,7 +526,7 @@ extern "C" s32 func_020a6214(u32 a) {
 }
 
 extern "C" s32 func_020a6114(s32 a, s32 b, u32 c, u8 *d) {
-    s32 r4 = data_020cbb18->unk_64;
+    s32 r4 = gCommManager->unk_64;
     u8 v[6];
     *d = 0;
     if (b == 0) {
@@ -582,24 +582,24 @@ fail:
 
 extern "C" s32 func_020a60d0(s32 a) {
     func_020a65fc(a);
-    Unk_020cbb18 *o = data_020cbb18;
-    o->func_020728d4();
-    u32 r6 = _ZN12Unk_020cbb1813func_020724d8Ev(o);
-    u32 r2 = _ZN12Unk_020cbb1813func_020724acEv(o);
-    o->func_020728a4((u8 *)r6, r2);
-    o->func_02072824(0xf, a);
-    _ZN12Unk_020cbb1813func_020724c4Ev(o);
+    CommManager *o = gCommManager;
+    o->beginRecord();
+    u32 r6 = _ZN11CommManager10getAuxBufAEv(o);
+    u32 r2 = _ZN11CommManager10getAuxLenAEv(o);
+    o->writeRecord((u8 *)r6, r2);
+    o->endRecord(0xf, a);
+    _ZN11CommManager12clearAuxLenAEv(o);
 }
 
 extern "C" s32 func_020a608c(s32 a) {
     func_020a64e4(a);
-    Unk_020cbb18 *o = data_020cbb18;
-    o->func_020728d4();
-    u32 r6 = _ZN12Unk_020cbb1813func_02072478Ev(o);
-    u32 r2 = _ZN12Unk_020cbb1813func_02072448Ev(o);
-    o->func_020728a4((u8 *)r6, r2);
-    o->func_02072824(0x10, a);
-    _ZN12Unk_020cbb1813func_02072460Ev(o);
+    CommManager *o = gCommManager;
+    o->beginRecord();
+    u32 r6 = _ZN11CommManager10getAuxBufBEv(o);
+    u32 r2 = _ZN11CommManager10getAuxLenBEv(o);
+    o->writeRecord((u8 *)r6, r2);
+    o->endRecord(0x10, a);
+    _ZN11CommManager12clearAuxLenBEv(o);
 }
 
 extern "C" s32 func_020a6018(u32 a) {
@@ -630,17 +630,17 @@ extern "C" s32 func_020a6018(u32 a) {
 }
 
 extern "C" void func_020a5fb0() {
-    Unk_020cbb18 *o = data_020cbb18;
-    if (o->func_020729cc(0)) {
+    CommManager *o = gCommManager;
+    if (o->isMyAid(0)) {
         s32 r4 = o->unk_64;
         func_020a6430(r4, func_020b4994());
     } else {
         Unk_020a6968 tmp;
         tmp.func_020a6968(func_020b4994());
-        o = data_020cbb18;
-        o->func_020728d4();
-        o->func_020728a4((u8 *)&tmp, 1);
-        o->func_02072824(8, 0);
+        o = gCommManager;
+        o->beginRecord();
+        o->writeRecord((u8 *)&tmp, 1);
+        o->endRecord(8, 0);
     }
 }
 
@@ -719,20 +719,20 @@ extern "C" void func_020a5e74(s32 idx, u8 *a, u8 *b, u8 *c) {
 }
 
 extern "C" void func_020a5dd8() {
-    Unk_020cbb18 *o = data_020cbb18;
+    CommManager *o = gCommManager;
     s32 r5 = o->unk_64;
-    if (o->func_02072e88(r5)) {
-        if (_ZN12Unk_020cbb1813func_020724acEv(o)) {
+    if (o->isSlotActive(r5)) {
+        if (_ZN11CommManager10getAuxLenAEv(o)) {
             func_020a6564();
             func_020a63bc(r5, 0x3f, 1, 0, 2);
-            if (o->func_02072e44()) {
+            if (o->isOnline()) {
                 if (r5 != 0) {
                     Unk_020a67bc tmp;
                     tmp.func_020a6878(0x3f, 1, 0, 2);
-                    o = data_020cbb18;
-                    o->func_020728d4();
-                    o->func_020728a4((u8 *)&tmp, 2);
-                    o->func_02072824(0xb, 0);
+                    o = gCommManager;
+                    o->beginRecord();
+                    o->writeRecord((u8 *)&tmp, 2);
+                    o->endRecord(0xb, 0);
                 } else {
                     func_020a6388(r5, 0x3f, 1, 0, 2);
                 }
@@ -742,18 +742,18 @@ extern "C" void func_020a5dd8() {
 }
 
 extern "C" void func_020a5dac() {
-    Unk_020cbb18 *o = data_020cbb18;
-    if (o->func_02072e88(*(s32 *)((u8 *)o + 0x64))) {
-        if (_ZN12Unk_020cbb1813func_02072448Ev(o)) {
+    CommManager *o = gCommManager;
+    if (o->isSlotActive(*(s32 *)((u8 *)o + 0x64))) {
+        if (_ZN11CommManager10getAuxLenBEv(o)) {
             func_020a647c();
         }
     }
 }
 
 extern "C" void func_020a5d4c() {
-    if (data_020cbb18->func_02072e88(data_020cbb18->unk_64)) {
+    if (gCommManager->isSlotActive(gCommManager->unk_64)) {
         if (V3().func_020a56ac() == 3) {
-            if (IsZero_020a5d4c(data_021c3cc0)) {
+            if (IsZero_020a5d4c(gScreenTransition)) {
                 if (!func_020a5cc0(func_020b50e8())) {
                     func_020a60d0(V3().func_020a538c());
                 }
@@ -764,7 +764,7 @@ extern "C" void func_020a5d4c() {
 }
 
 extern "C" void func_020a5d0c() {
-    if (data_020cbb18->func_02072e88(data_020cbb18->unk_64)) {
+    if (gCommManager->isSlotActive(gCommManager->unk_64)) {
         s32 r4 = V3().func_020a52ac();
         if (r4 < 4) {
             func_020a608c(r4);
@@ -812,8 +812,8 @@ extern "C" void func_020a5c94(s32 a) {
 }
 
 extern "C" void func_020a5c30() {
-    s32 r4 = data_020cbb18->unk_64;
-    if (data_020cbb18->func_02072e88(r4)) {
+    s32 r4 = gCommManager->unk_64;
+    if (gCommManager->isSlotActive(r4)) {
         V3().func_020a5278();
         V3().func_020a51b0();
         if (r4 == 0) {
@@ -918,7 +918,7 @@ void Unk_020a512c::func_020a5908() {
     func_020a5760(&idx[0], &cnt[0]);
     func_020a58b8(&idx[1], &cnt[1]);
     u32 i = 0;
-    Unk_020cbb18 *o = data_020cbb18;
+    CommManager *o = gCommManager;
     for (; i < 2; i++) {
         u32 off = i << 2;
         s32 r7 = *(u32 *)((u8 *)idx + off);
@@ -926,9 +926,9 @@ void Unk_020a512c::func_020a5908() {
             _ZN12Unk_020a675413func_020a6760EPhS0_S0_(&unk_00[r7 * 3], &l.b0, &l.b1, &l.b2);
             func_020a6848(l.buf);
             func_020a681c(l.buf, r7, l.b0, l.b1, l.b2, *(u32 *)((u8 *)cnt + off));
-            o->func_020728d4();
-            o->func_020728a4(l.buf, 2);
-            o->func_02072824(9, 4);
+            o->beginRecord();
+            o->writeRecord(l.buf, 2);
+            o->endRecord(9, 4);
             func_020a6838(l.buf);
         }
     }
@@ -978,22 +978,22 @@ void Unk_020a512c::func_020a5854() {
 }
 
 void Unk_020a512c::func_020a5800() {
-    s32 idx = ((volatile Unk_020cbb18 *)data_020cbb18)->unk_64;
+    s32 idx = ((volatile CommManager *)gCommManager)->unk_64;
     u32 *p = &unk_2c[idx];
     s32 v;
     _ZN12Unk_020a66f813func_020a6700EPj(p, &v);
     if (v != 0) {
         u8 b = v;
-        Unk_020cbb18 *o = data_020cbb18;
-        o->func_020728d4();
-        o->func_020728a4(&b, 1);
-        o->func_02072824(10, 0);
+        CommManager *o = gCommManager;
+        o->beginRecord();
+        o->writeRecord(&b, 1);
+        o->endRecord(10, 0);
         _ZN12Unk_020a66f813func_020a66f8Ev(p);
     }
 }
 
 void Unk_020a512c::func_020a5760(u32 *a, u32 *b) {
-    Unk_020cbb18 *o;
+    CommManager *o;
     s32 r5 = func_020a58a0();
     if (r5 < 4) {
         u32 *p = &unk_2c[r5];
@@ -1006,9 +1006,9 @@ void Unk_020a512c::func_020a5760(u32 *a, u32 *b) {
             _ZN12Unk_020a672013func_020a672cEPiPh(unk_0c, &tmp, &byte);
             s32 i;
             i = 3;
-            o = data_020cbb18;
+            o = gCommManager;
             for (; i >= 0; i--) {
-                if (r5 != i && o->func_02072e88(i) != 0 && byte == func_020a6358(i)) {
+                if (r5 != i && o->isSlotActive(i) != 0 && byte == func_020a6358(i)) {
                     r7 = 0;
                     break;
                 }
@@ -1024,7 +1024,7 @@ void Unk_020a512c::func_020a5760(u32 *a, u32 *b) {
 
 void Unk_020a512c::func_020a56c4() {
     u32 i = 0;
-    Unk_020cbb18 *o = data_020cbb18;
+    CommManager *o = gCommManager;
     for (; i < 4; i++) {
         u8 b0, b1, b2;
         u8 buf[5];
@@ -1035,9 +1035,9 @@ void Unk_020a512c::func_020a56c4() {
             func_020a63bc(i, b0, b1, b2, out);
             func_020a6848(buf);
             func_020a681c(buf, i, b0, b1, b2, out);
-            o->func_020728d4();
-            o->func_020728a4(buf, 2);
-            o->func_02072824(9, 4);
+            o->beginRecord();
+            o->writeRecord(buf, 2);
+            o->endRecord(9, 4);
             _ZN12Unk_020a679013func_020a6790Ev(p);
             func_020a6838(buf);
         }
@@ -1053,7 +1053,7 @@ void Unk_020a512c::func_020a56b0(s32 v) { unk_60 = v; }
 s32 Unk_020a512c::func_020a56ac() { return unk_60; }
 
 void Unk_020a512c::func_020a5394() {
-    Unk_020cbb18 *o = data_020cbb18;
+    CommManager *o = gCommManager;
     s32 r7 = o->unk_64;
     u8 b0, b1, b2, b3, b4, b5;
     s32 best;
@@ -1080,7 +1080,7 @@ void Unk_020a512c::func_020a5394() {
         if (b1 != 0) {
             best = 4;
             for (i = 0; i < 4; i++) {
-                if (i != r7 && o->func_02072e88(i) != 0 && b0 == func_020a6358(i)) {
+                if (i != r7 && o->isSlotActive(i) != 0 && b0 == func_020a6358(i)) {
                     best = i;
                     break;
                 }
@@ -1101,7 +1101,7 @@ void Unk_020a512c::func_020a5394() {
         flag = 1;
         if (func_020a5cc0(func_020b50e8()) == 0) {
             for (i = 3; i >= 0; i--) {
-                if (i != r7 && o->func_02072e88(i) != 0) {
+                if (i != r7 && o->isSlotActive(i) != 0) {
                     s32 t = func_020a6358(i);
                     if (t == func_020b50e8() && func_020a537c(i) == 0) {
                         flag = 0;
@@ -1111,12 +1111,12 @@ void Unk_020a512c::func_020a5394() {
             }
         }
         if (flag != 0) {
-            if (o->func_02072744() != 0) break;
-            if (o->func_02072620() != 0) break;
-            if (o->func_02072558() != 0) break;
+            if (o->getDeferredLen() != 0) break;
+            if (o->getHeldLen() != 0) break;
+            if (o->getLoopbackLen() != 0) break;
             if (func_020a6474() != 0) break;
             func_020a5368();
-            o->func_020724c4();
+            o->clearAuxLenA();
             func_020a56b0(3);
         }
         break;
@@ -1137,7 +1137,7 @@ void Unk_020a512c::func_020a5394() {
         u32 v = func_020b4994();
         best = 4;
         for (i = 3; i >= 0; i--) {
-            if (i != r7 && o->func_02072e88(i) != 0) {
+            if (i != r7 && o->isSlotActive(i) != 0) {
                 func_020a5e74(i, &b3, &b4, &b5);
                 if (b3 == v && b4 != 0) {
                     best = i;
@@ -1148,11 +1148,11 @@ void Unk_020a512c::func_020a5394() {
         if (best < 4) {
             func_020a52b8(best);
             func_020a56bc(0);
-            o->func_02072460();
+            o->clearAuxLenB();
             if (func_020a5cc0(func_020b4994()) == 0) {
-                Unk_020cbb18 *o2 = data_020cbb18;
-                o2->func_020728d4();
-                o2->func_02072824(0xe, func_020a52b4());
+                CommManager *o2 = gCommManager;
+                o2->beginRecord();
+                o2->endRecord(0xe, func_020a52b4());
             }
             func_020a56b0(10);
         } else {
@@ -1163,7 +1163,7 @@ void Unk_020a512c::func_020a5394() {
         break;
     }
     case 10:
-        if (o->func_02072448() != 0 || func_020a5cc0(func_020b4994()) != 0) {
+        if (o->getAuxLenB() != 0 || func_020a5cc0(func_020b4994()) != 0) {
             func_020a56b0(11);
         }
         break;
@@ -1172,7 +1172,7 @@ void Unk_020a512c::func_020a5394() {
     case 13:
         break;
     case 14:
-        func_020a63a8(((Unk_020cbb18 *)o)->unk_64, 1);
+        func_020a63a8(((CommManager *)o)->unk_64, 1);
         func_020a56b0(15);
         break;
     case 15:
@@ -1204,20 +1204,20 @@ s32 Unk_020a512c::func_020a5360() { return unk_6c; }
 void Unk_020a512c::func_020a52bc() {
     s32 r5 = 4;
     s32 i = 3;
-    Unk_020cbb18 *o = data_020cbb18;
+    CommManager *o = gCommManager;
     for (; i >= 0; i--) {
-        if (o->func_02072e88(i) != 0 && func_020a62f8(i) != 0) {
+        if (o->isSlotActive(i) != 0 && func_020a62f8(i) != 0) {
             r5 = i;
             break;
         }
     }
     if (r5 != func_020a5360()) {
         if (r5 < 4) {
-            if (o->func_020729cc(r5) == 0 && (s32)func_020a6358(r5) == func_020b50e8() &&
+            if (o->isMyAid(r5) == 0 && (s32)func_020a6358(r5) == func_020b50e8() &&
                 func_020a6328(r5) != 0 && func_020a5cc0(func_020b50e8()) == 0) {
-                Unk_020cbb18 *o2 = data_020cbb18;
-                o2->func_020728d4();
-                o2->func_02072824(0xd, r5);
+                CommManager *o2 = gCommManager;
+                o2->beginRecord();
+                o2->endRecord(0xd, r5);
             }
             func_020a5364(r5);
         } else {
@@ -1258,22 +1258,22 @@ s32 Unk_020a512c::func_020a5258() { return unk_80; }
 
 void Unk_020a512c::func_020a51b0() {
     s32 r5 = 4;
-    Unk_020cbb18 *o = data_020cbb18;
+    CommManager *o = gCommManager;
     s32 saved = o->unk_64;
     s32 i;
     for (i = 3; i >= 0; i--) {
-        if (o->func_02072e88(i) != 0 && func_020a62f8(i) != 0) {
+        if (o->isSlotActive(i) != 0 && func_020a62f8(i) != 0) {
             r5 = i;
             break;
         }
     }
     if (r5 != func_020a5258()) {
         if (r5 < 4) {
-            if (o->func_020729cc(r5) == 0 && func_020a6328(saved) != 0 &&
+            if (o->isMyAid(r5) == 0 && func_020a6328(saved) != 0 &&
                 (s32)func_020a6358(r5) == func_020b50e8() && func_020a5cc0(func_020b50e8()) == 0) {
-                Unk_020cbb18 *o2 = data_020cbb18;
-                o2->func_020728d4();
-                o2->func_02072824(0x11, r5);
+                CommManager *o2 = gCommManager;
+                o2->beginRecord();
+                o2->endRecord(0x11, r5);
             }
             func_020a5260(r5);
         } else {
@@ -1299,10 +1299,10 @@ void Unk_020a512c::func_020a512c(u32 a, u32 b) {
         func_020a51a4(0, 6);
     } else {
         u8 buf = 6;
-        Unk_020cbb18 *o = data_020cbb18;
-        o->func_020728d4();
-        o->func_020728a4(&buf, 1);
-        o->func_02072824(1, a);
+        CommManager *o = gCommManager;
+        o->beginRecord();
+        o->writeRecord(&buf, 1);
+        o->endRecord(1, a);
         func_020a51a4(a, 7);
     }
 }
@@ -1315,7 +1315,7 @@ void Unk_020a4738::func_020a4c60() {
     s32 z24 = 0, z28 = 0, z14 = 0, z18 = 0, z1c = 0, z20 = 0, z2c = 0;
     u8 m[5];
     s32 mode;
-    Unk_020cbb18 *g;
+    CommManager *g;
     s32 c18;
     s32 k;
     BOOL all;
@@ -1380,18 +1380,18 @@ void Unk_020a4738::func_020a4c60() {
     if (func_020a4c30() == 0) {
         c18 = func_020a4c18();
         k = 3;
-        g = data_020cbb18;
+        g = gCommManager;
         for (; k >= 0; k--) {
-            if (k != c18 && g->func_02072e88(k)) {
+            if (k != c18 && g->isSlotActive(k)) {
                 if (k == 0) {
                     func_020a4bec(0, 0);
                 } else {
                     func_020a66f4(&m[0]);
                     mode = func_020a4c00();
                     func_020a66d4(&m[0], 0, mode, func_020a4c18());
-                    g->func_020728d4();
-                    g->func_020728a4(&m[0], 1);
-                    g->func_02072824(0xc, k);
+                    g->beginRecord();
+                    g->writeRecord(&m[0], 1);
+                    g->endRecord(0xc, k);
                     func_020a4bec(k, 1);
                     func_020a66f0(&m[0]);
                 }
@@ -1403,9 +1403,9 @@ void Unk_020a4738::func_020a4c60() {
         all = TRUE;
         c18 = func_020a4c18();
         k = 3;
-        g = data_020cbb18;
+        g = gCommManager;
         for (; k >= 0; k--) {
-            if (k != c18 && g->func_02072e88(k)) {
+            if (k != c18 && g->isSlotActive(k)) {
                 s32 v = func_020a4be0(k);
                 if (v != 2 && v != 3) {
                     all = FALSE;
@@ -1416,35 +1416,35 @@ void Unk_020a4738::func_020a4c60() {
         if (all) {
             all2 = TRUE;
             for (k = 3; k >= 0; k--) {
-                if (k != c18 && g->func_02072e88(k) && func_020a4be0(k) == 3) {
+                if (k != c18 && g->isSlotActive(k) && func_020a4be0(k) == 3) {
                     all2 = FALSE;
                     break;
                 }
             }
             if (all2) {
                 for (k = 3; k >= 0; k--) {
-                    if (k != c18 && g->func_02072e88(k)) {
+                    if (k != c18 && g->isSlotActive(k)) {
                         if (k == 0) {
                             func_020a4bec(0, 5);
                         } else {
                             func_020a66f4(&m[1]);
                             func_020a66d4(&m[1], 5, 4, func_020a4c18());
-                            g->func_020728d4();
-                            g->func_020728a4(&m[1], 1);
-                            g->func_02072824(0xc, k);
+                            g->beginRecord();
+                            g->writeRecord(&m[1], 1);
+                            g->endRecord(0xc, k);
                             func_020a4bec(k, 5);
                             func_020a66f0(&m[1]);
                         }
                     }
                 }
-                if (func_020a4c00() == 0 || g->func_020729cc(c18) != 0) {
+                if (func_020a4c00() == 0 || g->isMyAid(c18) != 0) {
                     ((Unk_020a512c *)this)->func_020a51a4(c18, 5);
                 } else {
                     m[2] = 5;
-                    Unk_020cbb18 *g5 = data_020cbb18;
-                    g5->func_020728d4();
-                    g5->func_020728a4(&m[2], 1);
-                    g5->func_02072824(1, c18);
+                    CommManager *g5 = gCommManager;
+                    g5->beginRecord();
+                    g5->writeRecord(&m[2], 1);
+                    g5->endRecord(1, c18);
                     ((Unk_020a512c *)this)->func_020a51a4(c18, 7);
                 }
                 if (func_020a4c00() == 0) {
@@ -1454,16 +1454,16 @@ void Unk_020a4738::func_020a4c60() {
                 func_020a4c38(2);
             } else {
                 for (k = 3; k >= 0; k--) {
-                    if (k != c18 && g->func_02072e88(k)) {
+                    if (k != c18 && g->isSlotActive(k)) {
                         if (func_020a4be0(k) == 2) {
                             if (k == 0) {
                                 func_020a4bec(0, 4);
                             } else {
                                 func_020a66f4(&m[3]);
                                 func_020a66d4(&m[3], 4, 4, func_020a4c18());
-                                g->func_020728d4();
-                                g->func_020728a4(&m[3], 1);
-                                g->func_02072824(0xc, k);
+                                g->beginRecord();
+                                g->writeRecord(&m[3], 1);
+                                g->endRecord(0xc, k);
                                 func_020a4bec(k, 4);
                                 func_020a66f0(&m[3]);
                             }
@@ -1480,9 +1480,9 @@ void Unk_020a4738::func_020a4c60() {
         BOOL all3 = TRUE;
         s32 c18b = func_020a4c18();
         k = 3;
-        Unk_020cbb18 *g6 = data_020cbb18;
+        CommManager *g6 = gCommManager;
         for (; k >= 0; k--) {
-            if (k != c18b && g6->func_02072e88(k) && func_020a4be0(k) != 6) {
+            if (k != c18b && g6->isSlotActive(k) && func_020a4be0(k) != 6) {
                 all3 = FALSE;
                 break;
             }
@@ -1495,26 +1495,26 @@ void Unk_020a4738::func_020a4c60() {
         BOOL all4 = TRUE;
         s32 c18c = func_020a4c18();
         k = 3;
-        Unk_020cbb18 *g7 = data_020cbb18;
+        CommManager *g7 = gCommManager;
         for (; k >= 0; k--) {
-            if (k != c18c && g7->func_02072e88(k) && func_020a4be0(k) != 6) {
+            if (k != c18c && g7->isSlotActive(k) && func_020a4be0(k) != 6) {
                 all4 = FALSE;
                 break;
             }
         }
         if (all4) {
-            if (func_020a4c00() == 0 || g7->func_020729cc(c18c) != 0) {
+            if (func_020a4c00() == 0 || g7->isMyAid(c18c) != 0) {
                 ((Unk_020a512c *)this)->func_020a51a4(c18c, 6);
             } else {
                 m[4] = 6;
-                Unk_020cbb18 *g8 = data_020cbb18;
-                g8->func_020728d4();
-                g8->func_020728a4(&m[4], 1);
-                g8->func_02072824(1, c18c);
+                CommManager *g8 = gCommManager;
+                g8->beginRecord();
+                g8->writeRecord(&m[4], 1);
+                g8->endRecord(1, c18c);
                 ((Unk_020a512c *)this)->func_020a51a4(c18c, 7);
             }
             if (func_020a4c00() == 0) {
-                func_020e9b70();
+                Net_WifiHostKeepAlive();
             }
             func_020a4c38(4);
         }
@@ -1565,7 +1565,7 @@ void Unk_020a4738::func_020a4bc0() {
 u16 data_020e2974 = 0xd8;
 
 void Unk_020a4738::func_020a4778() {
-    Unk_020cbb18 *g = data_020cbb18;
+    CommManager *g = gCommManager;
     s32 st = g->unk_64;
     s32 mode;
     s32 v;
@@ -1593,15 +1593,15 @@ void Unk_020a4738::func_020a4778() {
             if (st != 0) {
                 func_020a66f4(&m[0]);
                 func_020a66d4(&m[0], 2, 4, func_020a4c18());
-                Unk_020cbb18 *g2 = data_020cbb18;
-                g2->func_020728d4();
-                g2->func_020728a4(&m[0], 1);
-                g2->func_02072824(0xc, 0);
+                CommManager *g2 = gCommManager;
+                g2->beginRecord();
+                g2->writeRecord(&m[0], 1);
+                g2->endRecord(0xc, 0);
                 func_020a66f0(&m[0]);
             }
             func_020b78f4(mode);
             func_020a4bec(st, 2);
-            g->func_02072204(func_02073168());
+            g->func_02072204(Comm_GetMemberMask());
         } else {
             u32 n = func_020a4768() + 1;
             if (n >= 0xa0) {
@@ -1610,10 +1610,10 @@ void Unk_020a4738::func_020a4778() {
                 } else {
                     func_020a66f4(&m[1]);
                     func_020a66d4(&m[1], 3, 4, func_020a4c18());
-                    Unk_020cbb18 *g2 = data_020cbb18;
-                    g2->func_020728d4();
-                    g2->func_020728a4(&m[1], 1);
-                    g2->func_02072824(0xc, 0);
+                    CommManager *g2 = gCommManager;
+                    g2->beginRecord();
+                    g2->writeRecord(&m[1], 1);
+                    g2->endRecord(0xc, 0);
                     func_020a4bec(st, 6);
                     func_020a66f0(&m[1]);
                 }
@@ -1637,10 +1637,10 @@ void Unk_020a4738::func_020a4778() {
         if (st2 != 0) {
             func_020a66f4(&m[2]);
             func_020a66d4(&m[2], 6, 4, func_020a4c18());
-            Unk_020cbb18 *g3 = data_020cbb18;
-            g3->func_020728d4();
-            g3->func_020728a4(&m[2], 1);
-            g3->func_02072824(0xc, 0);
+            CommManager *g3 = gCommManager;
+            g3->beginRecord();
+            g3->writeRecord(&m[2], 1);
+            g3->endRecord(0xc, 0);
             func_020a66f0(&m[2]);
         }
         func_020a4bec(st2, 6);
@@ -1663,12 +1663,12 @@ void Unk_020a4738::func_020a4778() {
                 if (func_02097444(sl + 3) == 0) {
                     r7 = TRUE;
                     if (st2 == 0) {
-                        u32 irq = func_020eaf28();
+                        u32 irq = Net_GetConnectedMask();
                         u16 mask = 1 << sl;
                         if (mask != (mask & irq)) {
-                            u32 f = g->func_02072374();
+                            u32 f = g->getErrorFlags();
                             if ((f & 4) == 0) {
-                                g->func_02072380(f | 4);
+                                g->setErrorFlags(f | 4);
                             }
                         }
                     }
@@ -1697,32 +1697,32 @@ void Unk_020a4738::func_020a4778() {
         } else {
             func_020b4f58(func_020b4934(), 0x2e, 2, 3);
         }
-        if (g->func_020729cc(0)) {
+        if (g->isMyAid(0)) {
             if (md == 0) {
-                func_020a0924();
+                SaveManager_RequestAct15();
             } else if (md == 1) {
-                func_020a0900();
+                SaveManager_RequestAct18();
             }
         } else {
             if (md == 0) {
-                func_020a0918();
+                SaveManager_RequestAct16();
             } else if (md == 1) {
-                func_020a08f4();
+                SaveManager_RequestAct19();
             } else if (md == 2) {
-                func_020a08dc();
+                SaveManager_RequestAct1B();
                 func_0209f230(0);
             } else {
-                func_020a08dc();
+                SaveManager_RequestAct1B();
                 func_0209f230(1);
             }
         }
         if (st2 != 0) {
             func_020a66f4(&m[3]);
             func_020a66d4(&m[3], 6, 4, func_020a4c18());
-            Unk_020cbb18 *g3 = data_020cbb18;
-            g3->func_020728d4();
-            g3->func_020728a4(&m[3], 1);
-            g3->func_02072824(0xc, 0);
+            CommManager *g3 = gCommManager;
+            g3->beginRecord();
+            g3->writeRecord(&m[3], 1);
+            g3->endRecord(0xc, 0);
             func_020a66f0(&m[3]);
         }
         func_020a4bec(st2, 6);
@@ -1751,7 +1751,7 @@ extern "C" Unk_020e2988 *func_020a46fc(void) {
     return new Unk_020e2988();
 }
 
-extern "C" void func_020a4698(void) {
+extern "C" void SceneBase_SetupGraphics(void) {
     func_020535e0();
     G3X_Init();
     GX_SetBankForBG(0x20);
@@ -1763,7 +1763,7 @@ extern "C" void func_020a4698(void) {
     *(volatile u32 *)0x40004cc = 0x7fff;
     *(volatile u32 *)0x40004c0 = 0x7fff;
     *(volatile u32 *)0x40004c4 = 0;
-    func_02002918();
+    Gfx3d_InitEngine();
 }
 
 BOOL Unk_020e2988::vfunc_04() {
@@ -1773,14 +1773,14 @@ BOOL Unk_020e2988::vfunc_04() {
     if (data_021eda64 != 0) {
         return TRUE;
     }
-    func_020a4698();
+    SceneBase_SetupGraphics();
     func_0208e968();
     gActorDefaultParent = this;
     data_021eda54 = 4;
     func_020a6470();
     func_020a5dac();
     data_021eda64++;
-    if (data_020cbb18->func_02072e88(data_020cbb18->unk_64)) {
+    if (gCommManager->isSlotActive(gCommManager->unk_64)) {
         switch (func_020a5ec8()) {
         case 6:
             func_020a5ed8(7);
@@ -1799,9 +1799,9 @@ void Unk_020e2988::postCreate(s32 a) {
     if (a == 2) {
         data_021eda64 = 0;
         if (*(u16 *)&unk_04[8] != 6) {
-            func_02041104();
+            ScreenTransition_ShowCover();
         }
-        func_020739b8(0);
+        Comm_ProcessReceived(0);
         func_020a5c30();
         func_02045c68();
         func_0203d4c0();
@@ -1831,23 +1831,23 @@ BOOL Unk_020e2988::vfunc_14(s32 a) {
 }
 
 BOOL Unk_020e2988::preExecute() {
-    func_020739b8(0);
+    Comm_ProcessReceived(0);
     func_020a5c30();
     func_02045c68();
     if (ProcBase::preExecute() == 0) {
         return FALSE;
     }
     if (data_021d726c != 0) {
-        if (Unk_020a42c4_IsTwo(data_021c3cc0) != 0) {
+        if (Unk_020a42c4_IsTwo(gScreenTransition) != 0) {
             data_021eda60 = 2;
             data_021eda5c = 0;
-            func_0204137c(2, 0x10);
+            ScreenTransition_StartFadeOut(2, 0x10);
         }
         return FALSE;
     }
     if (data_020e2974 != 0xd8) {
-        if (Unk_020a42c4_IsTwo(data_021c3cc0) != 0 || data_021c3cb8 != 0) {
-            func_0204137c(data_021eda60, 0xf);
+        if (Unk_020a42c4_IsTwo(gScreenTransition) != 0 || data_021c3cb8 != 0) {
+            ScreenTransition_StartFadeOut(data_021eda60, 0xf);
         }
         return FALSE;
     }
@@ -1860,10 +1860,10 @@ BOOL Unk_020e2988::preExecute() {
         }
     }
     if (data_021eda54 != 0) {
-        if (Unk_020a42c4_IsZero(data_021c3cc0) != 0) {
+        if (Unk_020a42c4_IsZero(gScreenTransition) != 0) {
             data_021eda54 = data_021eda54 - 1;
             if (data_021eda54 == 0) {
-                if (func_020412f0(data_021eda5c, 0xf, 0) == 0) {
+                if (ScreenTransition_StartFadeIn(data_021eda5c, 0xf, 0) == 0) {
                     data_021eda54 = 1;
                 }
             }
@@ -1914,7 +1914,7 @@ extern "C" BOOL func_020a4394(void) {
 
 extern "C" void func_020a42c4(void *p) {
     if (data_021d726c != 0) {
-        u8 m = data_021c3cc0;
+        u8 m = gScreenTransition;
         if (Unk_020a42c4_IsTwo(m) == 0) {
             if (Unk_020a42c4_IsZero(m) != 0) {
                 func_020a4414(0xd4, 0, 0, 0);
@@ -1924,11 +1924,11 @@ extern "C" void func_020a42c4(void *p) {
             }
         }
     } else if (data_020e2974 != 0xd8) {
-        u8 m = data_021c3cc0;
+        u8 m = gScreenTransition;
         if (Unk_020a42c4_IsTwo(m) == 0) {
             if (data_021c3cb8 == 0) {
                 if (Unk_020a42c4_IsZero(m) != 0) {
-                    if (data_020cbb18->func_02072e88(data_020cbb18->unk_64) != 0) {
+                    if (gCommManager->isSlotActive(gCommManager->unk_64) != 0) {
                         switch (func_020a5ec8()) {
                         case 5:
                             ProcBase_RequestDelete(p);

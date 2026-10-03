@@ -38,7 +38,7 @@ extern "C" {
 extern u8 data_021d735c[];
 extern u8 data_021e935c[];
 extern u8 data_021ec780[];
-extern Unk_020973e4_Pl *data_020cbb18;
+extern Unk_020973e4_Pl *gCommManager;
 
 s32 func_020978fc(u32 idx);
 s32 func_020978c8(u8 *base, s32 idx);
@@ -408,9 +408,9 @@ extern "C" s32 func_02097534(s32 idx) {
 
 extern "C" u32 PlayerData_GetBySessionSlot(u32 a) { return PlayerData_Get(PlayerSession_GetDataIndex(a)); }
 
-extern "C" u32 PlayerData_GetCurrent() { return PlayerData_GetBySessionSlot(data_020cbb18->unk_68); }
+extern "C" u32 PlayerData_GetCurrent() { return PlayerData_GetBySessionSlot(gCommManager->unk_68); }
 
-extern "C" u32 PlayerData_GetCurrentIndex() { return PlayerSession_GetDataIndex(data_020cbb18->unk_68); }
+extern "C" u32 PlayerData_GetCurrentIndex() { return PlayerSession_GetDataIndex(gCommManager->unk_68); }
 
 extern "C" u32 PlayerData_Get(s32 idx) {
     u32 r = 0;

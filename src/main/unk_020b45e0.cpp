@@ -2,7 +2,7 @@
 #include "Unk_020d8c7c.h"
 
 extern "C" {
-void func_02002ab8(void);
+void AbAllObjGfx_Upload(void);
 void Snd_CreateScene(void);
 void func_0208e9a8(void);
 u32 func_0209c08c(void);
@@ -10,17 +10,17 @@ void func_020a4414(u32 a, u32 b, u32 c, u32 d);
 u32 func_020a5ec8(void);
 void func_020a5ed8(u32 x);
 void func_020b5408(void);
-void func_020b541c(void);
-extern u32 data_021c5388;
+void Scene_SetupGraphics(void);
+extern u32 gGfxFrameHooks;
 }
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 unk_00[0x64];
     u32 unk_64;
-    BOOL func_02072e88(s32 i);
+    BOOL isSlotActive(s32 i);
 };
 
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 
 // Intermediate game-state class with an inline constructor that sets flags
 class Unk_020e2988 : public GameProc {
@@ -72,20 +72,20 @@ void Unk_020e40cc::func_020b4708() {
 void Unk_020e40cc::func_020b4704() {}
 
 BOOL Unk_020e40cc::vfunc_00() {
-    if (data_020cbb18->func_02072e88(data_020cbb18->unk_64)) {
+    if (gCommManager->isSlotActive(gCommManager->unk_64)) {
         unk_50 = 0;
     } else {
         unk_50 = 1;
     }
     Snd_CreateScene();
-    func_020b541c();
-    func_02002ab8();
+    Scene_SetupGraphics();
+    AbAllObjGfx_Upload();
     func_0208e9a8();
     return TRUE;
 }
 
 BOOL Unk_020e40cc::vfunc_0c() {
-    data_021c5388 = 0;
+    gGfxFrameHooks = 0;
     func_020b5408();
     return TRUE;
 }

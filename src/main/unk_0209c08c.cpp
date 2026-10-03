@@ -50,7 +50,7 @@ extern const char data_020e22e4[];
 }
 
 extern "C" {
-extern u32 data_020d0634[6];
+extern u32 sPondAcreIds[6];
 }
 
 extern "C" {
@@ -180,7 +180,7 @@ BOOL func_0209c7ec(u32 v);
 }
 
 extern "C" {
-void func_0204edd8(Unk_0209c614_Vec *a, Unk_0209c614_Vec *b);
+void FieldPos_SnapToUnitCenter(Unk_0209c614_Vec *a, Unk_0209c614_Vec *b);
 }
 
 extern "C" {
@@ -191,16 +191,16 @@ extern "C" {
 s32 func_020b50dc();
 }
 
-// ---- Unk_020cbb18 (comm state; only the methods used here)
-class Unk_020cbb18 {
+// ---- CommManager (comm state; only the methods used here)
+class CommManager {
 public:
-    BOOL func_02072e44();
-    void func_020728d4();
-    void func_020728a4(u8 *buf, u32 n);
-    void func_02072824(u32 cmd, u32 arg);
-    u32 func_020729cc(u32 v);
+    BOOL isOnline();
+    void beginRecord();
+    void writeRecord(u8 *buf, u32 n);
+    void endRecord(u32 cmd, u32 arg);
+    u32 isMyAid(u32 v);
 };
-extern "C" Unk_020cbb18 *data_020cbb18;
+extern "C" CommManager *gCommManager;
 
 // ---- RecordFile (cached record table)
 class RecordFile {
@@ -214,25 +214,25 @@ public:
 };
 
 // ---- 8-byte cell
-class Unk_0209c040 {
+class TownAcreCell {
 public:
-    Unk_0209c040();
-    ~Unk_0209c040();
-    BOOL func_0209c040(s32 v);
-    void func_0209c050(s32 v);
-    s32 func_0209c054();
-    s32 func_0209c058();
+    TownAcreCell();
+    ~TownAcreCell();
+    BOOL setType(s32 v);
+    void setAcreId(s32 v);
+    s32 getType();
+    s32 getAcreId();
 
     s32 unk_00;
     s32 unk_04;
 };
 
 // ---- 6x6 cell grid
-class Unk_0209be24 {
+class TownAcreGenerator {
 public:
-    Unk_0209be24();
-    ~Unk_0209be24();
-    Unk_0209c040 *func_0209bc54(u32 x, u32 y);
+    TownAcreGenerator();
+    ~TownAcreGenerator();
+    TownAcreCell *func_0209bc54(u32 x, u32 y);
     void func_0209b5d4(s32 v);
     BOOL func_0209b63c();
     BOOL func_0209b830();
@@ -240,13 +240,13 @@ public:
     BOOL func_0209bcf8();
     BOOL func_0209bca8();
 
-    void func_0209be24(u8 *out);
-    u32 func_0209be58();
-    BOOL func_0209bee4(s32 v);
-    void func_0209bf94();
-    BOOL func_0209bfa4();
+    void writeAcreIds(u8 *out);
+    u32 getTotalArchiveSize();
+    BOOL generate(s32 v);
+    void closeCandidates();
+    BOOL openCandidates();
 
-    Unk_0209c040 unk_00[0x24];
+    TownAcreCell unk_00[0x24];
     RecordFile unk_120;
 };
 
@@ -265,28 +265,28 @@ public:
     Unk_020b83b0() : unk_04(0), unk_08(0), unk_0c(0xff) {}
 };
 
-class Unk_020e4618 : public Unk_020b83b0 {
+class VramTask : public Unk_020b83b0 {
 public:
     u8 unk_0d;
     u8 unk_0e;
     u8 unk_0f;
-    Unk_020e4618();
-    virtual BOOL vfunc_00() = 0;
+    VramTask();
+    virtual BOOL execute() = 0;
 };
 
-struct Unk_020b8c1c {
+struct TexTransfer {
     u32 unk_00;
     u32 unk_04;
     u32 unk_08;
 };
 
-class Unk_020e45ec : public Unk_020e4618 {
+class TexVramTask : public VramTask {
 public:
-    Unk_020b8c1c unk_10;
-    Unk_020e45ec();
-    virtual BOOL vfunc_00();
-    void func_020b89c8(void);
-    BOOL func_020b89f0(u32 *a, u8 b);
+    TexTransfer unk_10;
+    TexVramTask();
+    virtual BOOL execute();
+    void cancel(void);
+    BOOL requestTexResource(u32 *a, u8 b);
 };
 
 class TexVramSlot {
@@ -299,18 +299,18 @@ public:
 
     TexVramSlot();
     virtual ~TexVramSlot();
-    void func_020551f4(u32 a, u32 b, u32 c);
-    void func_02055200(void);
-    void func_02055210(void *p);
-    u32 func_0205526c(u32 a, u32 b);
-    u32 func_02055298(u32 a, u32 b, u32 c);
-    u32 func_020552d8(u32 a, u32 b);
-    u32 func_020552ec(u32 a, u32 b);
-    u32 func_02055300(u32 a);
-    u32 func_02055314(u32 a, u32 b);
-    u32 func_02055328(u32 a);
-    u32 func_02055334(u32 a);
-    s32 func_02055340(void *a, void *b, void *c);
+    void setKeys(u32 a, u32 b, u32 c);
+    void clear(void);
+    void relocateTexture(void *p);
+    u32 makePlttKeyAt(u32 a, u32 b);
+    u32 makeKeyAtOffset(u32 a, u32 b, u32 c);
+    u32 makeTex4x4KeyAt(u32 a, u32 b);
+    u32 makeTexKeyAt(u32 a, u32 b);
+    u32 makePlttKey(u32 a);
+    u32 makeKeyWithBase(u32 a, u32 b);
+    u32 makeTex4x4Key(u32 a);
+    u32 makeTexKey(u32 a);
+    s32 alloc(void *a, void *b, void *c);
 };
 
 class ModelResource {
@@ -319,17 +319,17 @@ public:
     void *unk_08;
     void *unk_0c;
     void *unk_10;
-    Unk_020e45ec unk_14;
+    TexVramTask unk_14;
     u8 unk_30;
     u8 unk_31;
 
     ModelResource();
     virtual ~ModelResource();
-    u32 func_02055014(void *a, TexVramSlot *b, void *c);
-    u32 func_02055090(void *res, TexVramSlot *b, void *tex, void *heap);
-    void func_0205516c(void);
-    void *func_0205500c(void);
-    void *func_02055010(void);
+    u32 loadTexture(void *a, TexVramSlot *b, void *c);
+    u32 loadModel(void *res, TexVramSlot *b, void *tex, void *heap);
+    void release(void);
+    void *getTexture(void);
+    void *getModel(void);
 };
 
 // ---- pool entry (0x1c bytes)
@@ -420,7 +420,7 @@ BOOL Unk_0209c2f4::func_0209c300(void *a, void *b, u32 size, void *extra) {
         unk_04 = FrameHeap_Create((size + 3) & ~3, (u32)extra);
     }
     if (a != 0 || b != 0) {
-        if (unk_08.func_02055340(a, 0, b)) return TRUE;
+        if (unk_08.alloc(a, 0, b)) return TRUE;
         return FALSE;
     }
     return TRUE;
@@ -546,7 +546,7 @@ s32 Unk_0209c0ac::func_0209c0d0(Unk_0209c2f4 *e, const char *name) {
     if (unk_34 == 0) {
         TexVramSlot *r = e->func_0209c344();
         void *t = e->func_0209c348();
-        if (unk_00.func_02055090((void *)name, r, t, gCurrentHeap) == 3) unk_34 = 1;
+        if (unk_00.loadModel((void *)name, r, t, gCurrentHeap) == 3) unk_34 = 1;
     }
     return unk_34;
 }
@@ -559,11 +559,11 @@ void Unk_0209c0ac::func_0209c0b4() {
     unk_34 = 0;
     unk_38 = 0;
     unk_3c = 0;
-    unk_00.func_0205516c();
+    unk_00.release();
 }
 
 void *Unk_0209c0ac::func_0209c0ac() {
-    return unk_00.func_02055010();
+    return unk_00.getModel();
 }
 
 Unk_0209c08c::Unk_0209c08c() {}

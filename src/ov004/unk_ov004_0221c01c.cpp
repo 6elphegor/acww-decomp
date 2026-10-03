@@ -133,15 +133,15 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     u32 unk_a4;
     u32 unk_a8;
     u32 unk_ac;
     u8 pad_b0[8];
     u8 unk_b8[0x2a0 - 0xec - 0xb8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -260,7 +260,7 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -370,16 +370,16 @@ struct Unk_ov004_0224d0a0_Ent {
 #define func_02087c50 _ZN12Unk_02087ad813func_02087c50Ej
 #define func_02087c54 _ZN12Unk_02087ad813func_02087c54Ev
 #define PlayerId_getGender _ZN8PlayerId9getGenderEv
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
-#define func_ov068_0226c334 _ZN18Unk_ov068_0227081019func_ov068_0226c334Ev
-#define func_020539a0 _ZN12Unk_020dbd7413func_020539a0Ev
-#define func_02056520 _ZN12Unk_020dbe6c13func_02056520Ei
+#define SpNpcRoostGuest_getGuest _ZN15SpNpcRoostGuest8getGuestEv
+#define ThreeLayerAnimModel_updateLayers3 _ZN19ThreeLayerAnimModel13updateLayers3Ev
+#define JointBlend_start _ZN10JointBlend5startEi
 
 extern "C" {
-extern Unk_ov004_0221b954_Global *data_020cbb18;
+extern Unk_ov004_0221b954_Global *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
 extern Unk_ov004_0221b954_Vec gVec3Zero;
@@ -443,20 +443,20 @@ s32 func_02063b8c(s32 n);
 s32 func_0202e1cc(...);
 s32 func_020a032c(void);
 s32 func_020a62a0(void);
-s32 func_02072e44(void *p);
-s32 func_02072e88(void *p, u32 i);
+s32 CommManager_isOnline(void *p);
+s32 CommManager_isSlotActive(void *p, u32 i);
 s16 *func_0209c37c(s32 a, s32 b);
 void *Actor_findByProfile(s32 a, s32 b);
 void Actor_spawn(s32 a, s32 b, const void *c, const void *d, s32 e);
-s32 func_ov068_0226c334(void *p);
+s32 SpNpcRoostGuest_getGuest(void *p);
 s32 PlayerActor_IsInAction(s32 a, s32 b);
 void Hud_Hide(void);
 void Hud_Show(void);
 void TalkRequest_EndTalkWith(void *p);
 void TalkRequest_AddPlayerTalk7(void *p, s32 a);
-void func_020553cc(void *p, void *q, s32 n);
-void func_020539a0(void *p);
-void func_02056520(void *p, s32 n);
+void Model_GetJointWorldMtx(void *p, void *q, s32 n);
+void ThreeLayerAnimModel_updateLayers3(void *p);
+void JointBlend_start(void *p, s32 n);
 s32 func_02034d2c(void);
 s32 func_020e77cc(s32 a, s32 b, s32 c);
 u8 *Snd_GetBeatState(void);
@@ -577,7 +577,7 @@ BOOL Unk_ov004_0224d0a0::vfunc_00() {
     data_ov004_02250a9c = this;
     unk_710 = unk_8e;
     unk_4cc.unk_1c |= 2;
-    if (func_02072e44(data_020cbb18) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
         if (func_020a62a0() != 0) {
             func_ov004_0221d37c(0);
         } else {
@@ -586,7 +586,7 @@ BOOL Unk_ov004_0224d0a0::vfunc_00() {
     } else {
         func_ov004_0221d37c(0);
     }
-    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64) == 0) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0) {
         Actor_spawn(0x66, 0xd01d, data_ov004_02240128, data_ov004_02240120, 0);
     }
     return TRUE;
@@ -604,8 +604,8 @@ BOOL Unk_ov004_0224d0a0::onDraw() {
     if (Unk_020d77a4::onDraw() == 0) {
         return FALSE;
     }
-    func_020553cc(&unk_ec, unk_714, 0xe);
-    func_020553cc(&unk_ec, unk_744, 0xb);
+    Model_GetJointWorldMtx(&unk_ec, unk_714, 0xe);
+    Model_GetJointWorldMtx(&unk_ec, unk_744, 0xb);
     func_ov004_02226860();
     return TRUE;
 }
@@ -627,7 +627,7 @@ BOOL Unk_ov004_0224d0a0::updateAct() {
     if (func_020e77cc(func_02034d2c(), 0x63, 0xab) != 0) {
         if (unk_77a == 0) {
             if (((unk_ec.unk_a4 << 4) >> 16) != 0) {
-                func_02056520(&unk_ec.unk_b8, 10);
+                JointBlend_start(&unk_ec.unk_b8, 10);
             }
             unk_77a = 1;
         }
@@ -636,7 +636,7 @@ BOOL Unk_ov004_0224d0a0::updateAct() {
             if ((s8)q[3] != 1) {
                 unk_ec.unk_a4 = 0;
                 unk_ec.unk_ac = *(u32 *)(q + 0x10);
-                func_020539a0(&unk_ec);
+                ThreeLayerAnimModel_updateLayers3(&unk_ec);
                 unk_ec.unk_ac = 0;
             }
         }
@@ -674,7 +674,7 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221d278() {
             unk_774 = 1;
         }
     }
-    if (func_02072e44(data_020cbb18) == 0 && *func_0209c37c(0, 0x4a) == 0) {
+    if (CommManager_isOnline(gCommManager) == 0 && *func_0209c37c(0, 0x4a) == 0) {
         if (PlayerActor_IsInAction(0x27, 4) != 0) {
             TalkRequest_AddPlayerTalk7(this, 0);
         }
@@ -699,7 +699,7 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221d20c() {
 
 BOOL Unk_ov004_0224d0a0::func_ov004_0221d17c() {
     if (func_02014220(&unk_618) == 0) {
-        if (func_02072e44(data_020cbb18) == 0 && *func_0209c37c(0, 0x4a) == 0) {
+        if (CommManager_isOnline(gCommManager) == 0 && *func_0209c37c(0, 0x4a) == 0) {
             if (PlayerActor_IsInAction(0x28, 4) != 0) {
                 func_ov004_02224a38(2);
             }
@@ -754,14 +754,14 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221d010() {
     if (func_0201ba88(this) != 0) {
         s32 a = 4;
         s32 b = 4;
-        if (func_0201b9e8(this, &a, &b) != 0 && a == (s32)data_020cbb18->unk_64 && a == b) {
-            func_0201b9fc(this, 1, data_020cbb18->unk_64, data_020cbb18->unk_64);
+        if (func_0201b9e8(this, &a, &b) != 0 && a == (s32)gCommManager->unk_64 && a == b) {
+            func_0201b9fc(this, 1, gCommManager->unk_64, gCommManager->unk_64);
             ((ActorTalkRequest *)&unk_658)->vfunc_08();
             s32 r = Unk_020d77a4_getPlayerActor(this, 4);
             func_02015ab0(&unk_658, r);
             func_ov004_0221d37c(1);
         } else if (func_020a62a0() != 0 && b == 4) {
-            func_0201b9fc(this, 1, data_020cbb18->unk_64, 4);
+            func_0201b9fc(this, 1, gCommManager->unk_64, 4);
             func_ov004_0221d37c(0);
         }
     }
@@ -780,7 +780,7 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221cf80() {
         if (func_0201b9e8(this, &a, &b) != 0) {
             if (a == 4) {
                 if (func_020a62a0() != 0) {
-                    func_0201b9fc(this, 1, data_020cbb18->unk_64, 4);
+                    func_0201b9fc(this, 1, gCommManager->unk_64, 4);
                     func_ov004_0221d37c(0);
                 }
             }
@@ -818,10 +818,10 @@ void Unk_ov004_0224d010::vfunc_78(void *arg) {
     } else {
         out->unk_00 = data_ov004_0224cf54[0];
         void *o = Actor_findByProfile(0x66, 0);
-        if (func_02072e44(data_020cbb18) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+        if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
             out->unk_04 = func_02063b8c(3) + 0x55;
         } else if (func_0202e1cc(0x17) != 0) {
-            if (o != 0 && func_ov068_0226c334(o) == 7) {
+            if (o != 0 && SpNpcRoostGuest_getGuest(o) == 7) {
                 out->unk_04 = 0x58;
             } else {
                 s32 c = func_02087c4c(h) >> 2;
@@ -830,7 +830,7 @@ void Unk_ov004_0224d010::vfunc_78(void *arg) {
         } else if (PlayerActor_IsInAction(0x28, 4) == 0) {
             if (func_0202e1cc(0x16, 1) == 0) {
                 out->unk_04 = func_02087c4c(h) >> 1;
-            } else if (o != 0 && func_ov068_0226c334(o) == 7) {
+            } else if (o != 0 && SpNpcRoostGuest_getGuest(o) == 7) {
                 out->unk_04 = 0x58;
             } else {
                 out->unk_04 = (func_02087c4c(h) >> 2) + 0x49;
@@ -1211,27 +1211,27 @@ void Unk_ov004_0224d0a0::vfunc_4c(u32 cmd, u32 arg) {
     case 3:
         unk_558.unk_08 = arg;
         if (arg != 4) {
-            func_0201b9fc(this, 1, data_020cbb18->unk_64, arg);
+            func_0201b9fc(this, 1, gCommManager->unk_64, arg);
             func_ov004_0221d37c(7);
         } else if (func_0201ba88(this)) {
-            s32 g = data_020cbb18->unk_64;
+            s32 g = gCommManager->unk_64;
             func_0201b9fc(this, 1, g, g);
             func_ov004_0221d37c(7);
         }
         break;
     case 1:
         unk_558.unk_08 = arg;
-        if (arg != 4 && arg != data_020cbb18->unk_64) {
+        if (arg != 4 && arg != gCommManager->unk_64) {
             func_0201b9fc(this, 1, arg, arg);
             func_ov004_0221d37c(6);
         } else if (func_0201ba88(this)) {
-            Unk_ov004_0221b954_Global *gl = data_020cbb18;
+            Unk_ov004_0221b954_Global *gl = gCommManager;
             s32 g = gl->unk_64;
             func_0201b9fc(this, 1, g, g);
             ActorTalkRequest *p = &unk_658;
             p->vfunc_08();
             func_02015ab0(&unk_658, Unk_020d77a4_getPlayerActor(this, 4));
-            if (func_02072e44(gl) || *func_0209c37c(0, 0x4a) != 0) {
+            if (CommManager_isOnline(gl) || *func_0209c37c(0, 0x4a) != 0) {
                 func_ov004_0221d37c(1);
             } else {
                 func_ov004_0221d37c(4);
@@ -1240,11 +1240,11 @@ void Unk_ov004_0224d0a0::vfunc_4c(u32 cmd, u32 arg) {
         break;
     case 0:
         unk_558.unk_08 = arg;
-        if (arg != 4 && arg != data_020cbb18->unk_64) {
+        if (arg != 4 && arg != gCommManager->unk_64) {
             func_0201b9fc(this, 1, arg, arg);
             func_ov004_0221d37c(6);
         } else if (func_0201ba88(this)) {
-            s32 g = data_020cbb18->unk_64;
+            s32 g = gCommManager->unk_64;
             func_0201b9fc(this, 1, g, g);
             ActorTalkRequest *p = &unk_658;
             p->vfunc_08();
@@ -1255,10 +1255,10 @@ void Unk_ov004_0224d0a0::vfunc_4c(u32 cmd, u32 arg) {
     case 8:
         if (arg == 4) {
             if (func_020a62a0()) {
-                func_0201b9fc(this, 1, data_020cbb18->unk_64, 4);
+                func_0201b9fc(this, 1, gCommManager->unk_64, 4);
                 func_ov004_0221d37c(3);
             } else {
-                func_0201b9fc(this, 1, 4, data_020cbb18->unk_64);
+                func_0201b9fc(this, 1, 4, gCommManager->unk_64);
                 func_ov004_0221d37c(5);
             }
         }
@@ -1275,7 +1275,7 @@ void Unk_ov004_0224d0a0::vfunc_4c(u32 cmd, u32 arg) {
                 }
                 if (arg == 4) {
                 body:
-                    func_0201b9fc(this, 1, data_020cbb18->unk_64, 4);
+                    func_0201b9fc(this, 1, gCommManager->unk_64, 4);
                     func_ov004_0221d37c(0);
                 }
             }

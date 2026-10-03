@@ -99,7 +99,7 @@ struct Unk_ov004_0223e2f4_Pad {
 };
 
 extern "C" {
-extern u8 data_021c3cc0;
+extern u8 gScreenTransition;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u8 gTouchPrevHeld;
@@ -107,7 +107,7 @@ extern u8 gTouchPrevChanged;
 extern u8 gSaveData[];
 extern u8 data_021d735c[];
 extern Unk_ov004_0223e2f4_Pad gPad;
-extern Unk_ov004_0223e2f4_G *data_020cbb18;
+extern Unk_ov004_0223e2f4_G *gCommManager;
 extern const Unk_ov004_0223e10c_Pair data_ov004_0224480c[];
 extern const Unk_ov004_0223e10c_Pair data_ov004_022447e4;
 extern const s32 data_ov004_022447dc[];
@@ -130,7 +130,7 @@ s32 *func_020947f0(u32);
 void PlayerActor_RequestAct6F(void *v, s32 a, s32 b);
 void PlayerActor_RequestAct70(s32 a, u32 b);
 BOOL func_020a0868(void);
-void func_020a0954(void);
+void SaveManager_RequestAct03(void);
 BOOL func_020e7500(void *p);
 BOOL InputMode_IsTouch();
 BOOL InputMode_IsButtons();
@@ -139,8 +139,8 @@ void InputMode_SetButtons(void);
 u8 *func_020b50b4();
 s32 func_020b6080(u8 *obj, void *out, s32 *a, u8 *b);
 void String_Load2d(void *o, u8 *p, u32 x);
-void func_0209d498(void *p);
-s32 func_0209d3d0(void *a, void *b, s32 n);
+void Clock_GetDateTime(void *p);
+s32 DateTime_Compare(void *a, void *b, s32 n);
 s32 _ZN8SaveData8testFlagEj(void *self, u32 i);
 #define SaveData_testFlag _ZN8SaveData8testFlagEj
 s32 _ZN10PlayerData13func_02098a48Ev(void *self);
@@ -168,7 +168,7 @@ extern Unk_ov004_0223e6bc_Ent data_ov004_02258854[];
 extern "C" void func_ov004_0223e014(Unk_ov004_0224f20c *o);
 
 static inline BOOL Unk_ov004_0223e2f4_IsMode2() {
-    if (data_021c3cc0 == 2) {
+    if (gScreenTransition == 2) {
         return TRUE;
     }
     return FALSE;
@@ -282,7 +282,7 @@ BOOL Unk_ov004_0224f20c::vfunc_00() {
         func_ov004_0223e6bc(1);
     }
     unk_31d = 0;
-    func_0209d498(&unk_328);
+    Clock_GetDateTime(&unk_328);
     return TRUE;
 }
 
@@ -297,8 +297,8 @@ BOOL Unk_ov004_0224f20c::vfunc_0c() {
         func_0206e7f8();
         l[0] = 0;
         l[1] = 0;
-        func_0209d498(l);
-        if (func_0209d3d0(&unk_328, l, 0x3f) == -1) {
+        Clock_GetDateTime(l);
+        if (DateTime_Compare(&unk_328, l, 0x3f) == -1) {
             func_0206e820();
         } else {
             func_0206e82c();
@@ -368,7 +368,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e580() {
     }
     if (InputMode_IsTouch() && Unk_ov004_0223e580_BothEf()) {
         if (func_020b6080(func_020b50b4(), out, &a, &c) && a == 1) {
-            data_020cbb18->unk_68 = c;
+            gCommManager->unk_68 = c;
             unk_31c = c;
             func_ov004_0223e6bc(3);
             return;
@@ -396,7 +396,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e2f4() {
     if (!Unk_ov004_0223e2f4_IsMode2()) {
         return;
     }
-    g = data_020cbb18;
+    g = gCommManager;
     if (g->unk_68 != 4) {
         func_ov004_0223e6bc(3);
         return;
@@ -547,7 +547,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e23c() {
 }
 
 void Unk_ov004_0224f20c::func_ov004_0223e234() {
-    func_020a0954();
+    SaveManager_RequestAct03();
 }
 
 void Unk_ov004_0224f20c::func_ov004_0223e218() {
@@ -620,7 +620,7 @@ extern "C" void func_ov004_0223e014(Unk_ov004_0224f20c *o) {
         xy[1] = xy[1] + data_ov004_022447dc[1];
     }
     BOOL t;
-    if (data_021c3cc0 == 2) {
+    if (gScreenTransition == 2) {
         t = TRUE;
     } else {
         t = FALSE;

@@ -202,7 +202,7 @@ public:
 namespace n7 {
 
 typedef u32 Unk_02077a54_Fn;extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 }
 extern "C" {
 extern void *data_021cc8b0[];
@@ -226,22 +226,22 @@ extern "C" {
 extern u8 data_020e416c;
 }
 extern "C" {
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 }
 extern "C" {
 extern void *gCurrentHeap;
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *);
+BOOL _ZN11CommManager8isOnlineEv(void *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020728d4Ev(void *);
+void _ZN11CommManager11beginRecordEv(void *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020728a4EPhj(void *, void *, s32);
+void _ZN11CommManager11writeRecordEPhj(void *, void *, s32);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072824Ejj(void *, s32, s32);
+void _ZN11CommManager9endRecordEjj(void *, s32, s32);
 }
 extern "C" {
 void func_02077ab4(u8 *, s32, s32);
@@ -328,10 +328,10 @@ extern "C" {
 s32 func_020b4928(s32);
 }
 extern "C" {
-void func_0204ee10(s32 *, s32 *, s32);
+void FieldPos_ToUnit(s32 *, s32 *, s32);
 }
 extern "C" {
-void *func_0204ebd8(void *, s32, s32, s32, s32, s32);
+void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
 }
 extern "C" {
 BOOL func_0204e418(void *, s32, s32);
@@ -576,12 +576,12 @@ extern "C" void func_02077a9c(s32 *a, s32 *b, u8 *p)
 extern "C" void func_02077a54(s32 a, s32 b)
 {
     u8 buf;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         func_02077ab4(&buf, a, b);
-        void *t = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(t);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(t, &buf, 1);
-        _ZN12Unk_020cbb1813func_02072824Ejj(t, 0x36, 4);
+        void *t = gCommManager;
+        _ZN11CommManager11beginRecordEv(t);
+        _ZN11CommManager11writeRecordEPhj(t, &buf, 1);
+        _ZN11CommManager9endRecordEjj(t, 0x36, 4);
     }
 }
 }
@@ -598,22 +598,22 @@ extern "C" {
 void func_02076fc8(u32 a, const char *s);
 }
 extern "C" {
-u16 func_0207694c(void *p);
+u16 NetBuf_ReadU16(void *p);
 }
 extern "C" {
-void func_02076964(void *p, u16 v);
+void NetBuf_WriteU16(void *p, u16 v);
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *g);
+BOOL _ZN11CommManager8isOnlineEv(void *g);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_020728d4Ev(void *g);
+s32 _ZN11CommManager11beginRecordEv(void *g);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_020728a4EPhj(void *g, void *p, s32 n);
+s32 _ZN11CommManager11writeRecordEPhj(void *g, void *p, s32 n);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072824Ejj(void *g, s32 a, s32 b);
+s32 _ZN11CommManager9endRecordEjj(void *g, s32 a, s32 b);
 }
 extern "C" {
 u32 func_0207e334(u32 a);
@@ -631,7 +631,7 @@ extern "C" {
 void _ZN9MsgString5clearEv(void *p);
 }
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 }
 extern "C" {
 extern char *data_020e0544;
@@ -704,7 +704,7 @@ static inline BOOL R1(u16 *p, u32 lo, u32 hi) {
 
 
 extern "C" void func_02077a1c(u32 a, u32 b) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         a = func_0207e334(a);
         if (SaveVillagers_IsValidIndex(a)) {
             func_02077a54(a, b);
@@ -713,18 +713,18 @@ extern "C" void func_02077a1c(u32 a, u32 b) {
 }
 
 extern "C" void func_020779d4(u32 a, u32 b) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[1];
         func_02077ab4(buf, a, b);
-        void *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(g);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g, buf, 1);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x37, 4);
+        void *g = gCommManager;
+        _ZN11CommManager11beginRecordEv(g);
+        _ZN11CommManager11writeRecordEPhj(g, buf, 1);
+        _ZN11CommManager9endRecordEjj(g, 0x37, 4);
     }
 }
 
 extern "C" void func_0207799c(u32 a, u32 b) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         a = func_0207e334(a);
         if (SaveVillagers_IsValidIndex(a)) {
             func_020779d4(a, b);
@@ -733,19 +733,19 @@ extern "C" void func_0207799c(u32 a, u32 b) {
 }
 
 extern "C" void func_02077944(u32 a, u32 b, u32 c) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[1];
         func_02077ab4(buf, a, b);
-        void *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(g);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g, buf, 1);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g, &c, 1);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x38, 4);
+        void *g = gCommManager;
+        _ZN11CommManager11beginRecordEv(g);
+        _ZN11CommManager11writeRecordEPhj(g, buf, 1);
+        _ZN11CommManager11writeRecordEPhj(g, &c, 1);
+        _ZN11CommManager9endRecordEjj(g, 0x38, 4);
     }
 }
 
 extern "C" void func_0207790c(u32 a, u32 b, u32 c) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         a = func_0207e334(a);
         if (SaveVillagers_IsValidIndex(a)) {
             func_02077944(a, b, c);
@@ -754,19 +754,19 @@ extern "C" void func_0207790c(u32 a, u32 b, u32 c) {
 }
 
 extern "C" void func_020778b4(u32 a, u32 b, u32 c) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[1];
         func_02077ab4(buf, a, b);
-        void *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(g);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g, buf, 1);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g, &c, 1);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x39, 4);
+        void *g = gCommManager;
+        _ZN11CommManager11beginRecordEv(g);
+        _ZN11CommManager11writeRecordEPhj(g, buf, 1);
+        _ZN11CommManager11writeRecordEPhj(g, &c, 1);
+        _ZN11CommManager9endRecordEjj(g, 0x39, 4);
     }
 }
 
 extern "C" void func_0207787c(u32 a, u32 b, u32 c) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         a = func_0207e334(a);
         if (SaveVillagers_IsValidIndex(a)) {
             func_020778b4(a, b, c);
@@ -776,27 +776,27 @@ extern "C" void func_0207787c(u32 a, u32 b, u32 c) {
 
 extern "C" void func_0207785c(u8 *out, s32 a, s32 b, u16 *c) {
     func_02077ab4(out + 2, a, b);
-    func_02076964(out, *c);
+    NetBuf_WriteU16(out, *c);
 }
 
 extern "C" void func_0207783c(u32 *o0, u32 *o1, u16 *o2, u8 *src) {
     func_02077a9c(o0, o1, src + 2);
-    *o2 = func_0207694c(src);
+    *o2 = NetBuf_ReadU16(src);
 }
 
 extern "C" void func_020777f0(u32 a, u32 b, u32 c) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[3];
         func_0207785c(buf, a, b, (u16 *)c);
-        void *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(g);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g, buf, 3);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x3e, 4);
+        void *g = gCommManager;
+        _ZN11CommManager11beginRecordEv(g);
+        _ZN11CommManager11writeRecordEPhj(g, buf, 3);
+        _ZN11CommManager9endRecordEjj(g, 0x3e, 4);
     }
 }
 
 extern "C" void func_020777b8(u32 a, u32 b, u32 c) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         a = func_0207e334(a);
         if (SaveVillagers_IsValidIndex(a)) {
             func_020777f0(a, b, c);
@@ -816,18 +816,18 @@ extern "C" void func_02077780(s32 *o0, u8 *o1, u8 *o2, u8 *src) {
 }
 
 extern "C" void func_02077734(u32 a, u32 b, u32 c) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[2];
         func_020777a0(buf, a, c, b);
-        void *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(g);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g, buf, 2);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x3c, 4);
+        void *g = gCommManager;
+        _ZN11CommManager11beginRecordEv(g);
+        _ZN11CommManager11writeRecordEPhj(g, buf, 2);
+        _ZN11CommManager9endRecordEjj(g, 0x3c, 4);
     }
 }
 
 extern "C" void func_020776fc(u32 a, u32 b, u32 c) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         a = func_0207e334(a);
         if (SaveVillagers_IsValidIndex(a)) {
             func_02077734(a, b, c);
@@ -845,7 +845,7 @@ extern "C" void func_020776b4(u32 a, u32 b) { func_020776fc(a, b, 5); }
 extern "C" void func_02077684(u8 *out, s32 a, u32 b, u16 *c, s32 d, u8 e) {
     out[2] = (d & 7) | (((a << 4) & 0xf0) | ((e & 1) << 3));
     out[3] = b;
-    func_02076964(out, *c);
+    NetBuf_WriteU16(out, *c);
 }
 
 extern "C" void func_0207764c(s32 *o0, u8 *o1, u16 *o2, s32 *o3, u8 *o4, u8 *src) {
@@ -853,22 +853,22 @@ extern "C" void func_0207764c(s32 *o0, u8 *o1, u16 *o2, s32 *o3, u8 *o4, u8 *src
     *o3 = src[2] & 7;
     *o4 = (src[2] >> 3) & 1;
     *o1 = src[3];
-    *o2 = func_0207694c(src);
+    *o2 = NetBuf_ReadU16(src);
 }
 
 extern "C" void func_020775e8(u32 a, u32 b, u32 c, u32 d, u8 e) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[4];
         func_02077684(buf, a, b, (u16 *)c, d, e ? 1 : 0);
-        void *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(g);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g, buf, 4);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x3d, 4);
+        void *g = gCommManager;
+        _ZN11CommManager11beginRecordEv(g);
+        _ZN11CommManager11writeRecordEPhj(g, buf, 4);
+        _ZN11CommManager9endRecordEjj(g, 0x3d, 4);
     }
 }
 
 extern "C" void func_020775a0(u32 a, u32 b, u32 c, u32 d, u8 e) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         a = func_0207e334(a);
         if (SaveVillagers_IsValidIndex(a)) {
             func_020775e8(a, b, c, d, e);
@@ -877,18 +877,18 @@ extern "C" void func_020775a0(u32 a, u32 b, u32 c, u32 d, u8 e) {
 }
 
 extern "C" void func_02077558(u32 a, u16 *b) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[3];
         func_02077508(buf, a, b);
-        void *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(g);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g, buf, 3);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x3f, 4);
+        void *g = gCommManager;
+        _ZN11CommManager11beginRecordEv(g);
+        _ZN11CommManager11writeRecordEPhj(g, buf, 3);
+        _ZN11CommManager9endRecordEjj(g, 0x3f, 4);
     }
 }
 
 extern "C" void func_02077520(u32 a, u16 *b) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         a = func_0207e334(a);
         if (SaveVillagers_IsValidIndex(a)) {
             func_02077558(a, b);
@@ -897,30 +897,30 @@ extern "C" void func_02077520(u32 a, u16 *b) {
 }
 
 extern "C" void func_02077508(u8 *out, s32 a, u16 *b) {
-    func_02076964(out, *b);
+    NetBuf_WriteU16(out, *b);
     out[2] = a;
 }
 
 extern "C" void func_020774f0(s32 *out, u16 *dst, u8 *src) {
     *out = src[2];
-    *dst = func_0207694c(src);
+    *dst = NetBuf_ReadU16(src);
 }
 
 extern "C" void func_02077488(u32 a, u16 *b) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         if (R1(b, 0x11a8, 0x12a7)) {
             u8 buf[3];
             func_02077508(buf, a, b);
-            void *g = data_020cbb18;
-            _ZN12Unk_020cbb1813func_020728d4Ev(g);
-            _ZN12Unk_020cbb1813func_020728a4EPhj(g, buf, 3);
-            _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x3a, 4);
+            void *g = gCommManager;
+            _ZN11CommManager11beginRecordEv(g);
+            _ZN11CommManager11writeRecordEPhj(g, buf, 3);
+            _ZN11CommManager9endRecordEjj(g, 0x3a, 4);
         }
     }
 }
 
 extern "C" void func_02077450(u32 a, u16 *b) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         a = func_0207e334(a);
         if (SaveVillagers_IsValidIndex(a)) {
             func_02077488(a, b);
@@ -931,7 +931,7 @@ extern "C" void func_02077450(u32 a, u16 *b) {
 extern "C" void func_02077428(u8 *out, s32 a, u16 *src) {
     s32 i;
     for (i = 0; i < 4; i++) {
-        func_02076964(out + i * 2, *src);
+        NetBuf_WriteU16(out + i * 2, *src);
         src++;
     }
     out[8] = a;
@@ -941,24 +941,24 @@ extern "C" void func_02077404(s32 *out, u16 *dst, u8 *src) {
     s32 i;
     *out = src[8];
     for (i = 0; i < 4; i++) {
-        *dst = func_0207694c(src + i * 2);
+        *dst = NetBuf_ReadU16(src + i * 2);
         dst++;
     }
 }
 
 extern "C" void func_020773b8(u32 a, u16 *b) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) && b) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) && b) {
         u8 buf[9];
         func_02077428(buf, a, b);
-        void *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(g);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g, buf, 9);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x3b, 4);
+        void *g = gCommManager;
+        _ZN11CommManager11beginRecordEv(g);
+        _ZN11CommManager11writeRecordEPhj(g, buf, 9);
+        _ZN11CommManager9endRecordEjj(g, 0x3b, 4);
     }
 }
 
 extern "C" void func_02077380(u32 a, u16 *b) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         a = func_0207e334(a);
         if (SaveVillagers_IsValidIndex(a)) {
             func_020773b8(a, b);
@@ -1153,7 +1153,7 @@ extern "C" {
 void MI_CpuCopy8(const void *, void *, u32);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020723a4EPvj(void *ctx, const void *p, u32 n);
+void _ZN11CommManager13appendControlEPvj(void *ctx, const void *p, u32 n);
 }
 extern "C" {
 void *_ZN12Unk_0209ada413func_0209ada4Ev(void *);
@@ -1183,25 +1183,25 @@ extern "C" {
 void _ZN12Unk_0209ada413func_0209ad54EhPth(void *a, u32 b, u32 c, u32 d);
 }
 extern "C" {
-extern u8 *data_020cbb18;
+extern u8 *gCommManager;
 }
 extern "C" {
-extern u8 *data_021c6218;
+extern u8 *gNetHeap;
 }
 extern "C" {
-s32 func_020eaf18(void);
+s32 Net_GetMode(void);
 }
 extern "C" {
-s32 func_020eaf90(void);
+s32 Net_GetMyAid(void);
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e88Ei(void *g, s32 i);
+BOOL _ZN11CommManager12isSlotActiveEi(void *g, s32 i);
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_020729ccEj(void *g, s32 i);
+BOOL _ZN11CommManager7isMyAidEj(void *g, s32 i);
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072dc4Ei(void *g, s32 i);
+BOOL _ZN11CommManager13getSendCreditEi(void *g, s32 i);
 }
 extern "C" {
 void Heap_Free(void *g, s32 a);
@@ -1267,7 +1267,7 @@ extern "C" {
 void *_ZN12Unk_0207719813func_020771f0Ev(void *p);
 }
 extern "C" {
-void func_0209cf88(void *p);
+void Clock_GetDate(void *p);
 }
 extern "C" {
 void _ZN12Unk_020772cc13func_02077348EPh(void *p, void *q);
@@ -1330,64 +1330,64 @@ extern "C" {
 void func_02076ff0(u32 a, u32 b, u32 c, u32 d, u8 e);
 }
 extern "C" {
-void _ZN12Unk_02076f70D1Ev(void *p);
+void _ZN13DwcFriendDataD1Ev(void *p);
 }
 extern "C" {
-void _ZN12Unk_02076f70C1Ev(void *p);
+void _ZN13DwcFriendDataC1Ev(void *p);
 }
 extern "C" {
-void func_02076cf0(void *p);
+void FriendEntry_GetFriendData(void *p);
 }
 extern "C" {
-void func_02076cf4(void *p);
+void FriendEntry_Clear(void *p);
 }
 extern "C" {
-void func_02076f1c(void *p);
+void DwcFriendData_Clear(void *p);
 }
 extern "C" {
-void *func_02076d18(void *p, void *q);
+void *FriendEntry_Copy(void *p, void *q);
 }
 extern "C" {
-void *func_02076d30(void *p);
+void *FriendEntry_Destruct(void *p);
 }
 extern "C" {
-void *func_02076d40(void *p);
+void *FriendEntry_Construct(void *p);
 }
 extern "C" {
-BOOL func_02076f04(void);
+BOOL DwcFriendData_IsValid(void);
 }
 extern "C" {
-void func_02076a8c(u8 *p, u32 *out, u8 *out2);
+void NetBuf_Unpack20(u8 *p, u32 *out, u8 *out2);
 }
 extern "C" {
-void func_02076a2c(u8 *p, u32 *out, u32 *x);
+void NetBuf_UnpackPair20(u8 *p, u32 *out, u32 *x);
 }
 extern "C" {
-void func_02076a6c(u8 *p, s32 v, s32 x);
+void NetBuf_PackPair20(u8 *p, s32 v, s32 x);
 }
 extern "C" {
-void func_02076ac8(u8 *p, s32 v, u8 hi);
+void NetBuf_Pack20(u8 *p, s32 v, u8 hi);
 }
 extern "C" {
 BOOL func_02077040(void *self, void *p);
 }
 extern "C" {
-BOOL func_02076b40(u32 mask);
+BOOL Comm_HasSendCredit(u32 mask);
 }
 extern "C" {
 u64 _ll_mul(u64 a, u64 b);
 }
 extern "C" {
-Unk_02076d68_E *func_02076db4(void);
+Unk_02076d68_E *FriendList_GetEntries(void);
 }
 extern "C" {
-u32 func_02076e1c(void *);
+u32 DwcFriendData_GetBytes(void *);
 }
 extern "C" {
 void func_02077118(void *a, u32 b, u32 c);
 }
 extern "C" {
-s32 func_02076eec(void);
+s32 DwcFriendData_IsFriendKey(void);
 }
 extern "C" {
 extern u8 data_021e87d8[];
@@ -1400,7 +1400,7 @@ extern u8 data_021edb68[];
 
 struct Unk_02076f28_T {
     s32 a, b, c;
-    ~Unk_02076f28_T() { _ZN12Unk_02076f70D1Ev(this); }
+    ~Unk_02076f28_T() { _ZN13DwcFriendDataD1Ev(this); }
 };
 
 struct Unk_02076ff0_Obj {
@@ -1478,14 +1478,14 @@ extern "C" void func_02076ff0(u32 a, u32 b, u32 c, u32 d, u8 e) {
 
 extern "C" void func_02076fc8(u32 a, u32 b) {
     Unk_02076fc8_D d;
-    func_0209cf88(&d);
+    Clock_GetDate(&d);
     func_02076ff0(a, b, d.c, d.b, d.a);
 }
 
 extern "C" void func_02076f88(void *dst) {
     u32 loc;
     void *r = _ZN12Unk_0207719813func_020771f0Ev(data_021e87d8);
-    func_0209cf88(&loc);
+    Clock_GetDate(&loc);
     _ZN12Unk_020772cc13func_02077348EPh(r, &loc);
     _ZN12Unk_020772cc13func_020772ccEv(r);
     MI_CpuCopy8(dst, func_02077374(r), 0xc0);
@@ -1493,36 +1493,36 @@ extern "C" void func_02076f88(void *dst) {
 
 extern "C" void func_02076f78(void) { _ZN12Unk_0207719813func_02077230Ev(data_021e87d8); }
 
-extern "C" void _ZN12Unk_02076f70C1Ev(void *) {}
-extern "C" void _ZN12Unk_02076f70D1Ev(void *) {}
+extern "C" void _ZN13DwcFriendDataC1Ev(void *) {}
+extern "C" void _ZN13DwcFriendDataD1Ev(void *) {}
 
-extern "C" void *func_02076f58(void *p, void *q) {
+extern "C" void *DwcFriendData_Copy(void *p, void *q) {
     MI_CpuCopy8(q, p, 12);
     return p;
 }
 
-extern "C" s32 func_02076f28(void *self, Unk_02076f28_T *src) {
+extern "C" s32 DwcFriendData_Compare(void *self, Unk_02076f28_T *src) {
     Unk_02076f28_T t = *src;
     return func_020e9d88(self, &t);
 }
 
-extern "C" void func_02076f1c(void *p) { MI_CpuFill8(p, 0, 0xc); }
+extern "C" void DwcFriendData_Clear(void *p) { MI_CpuFill8(p, 0, 0xc); }
 
-extern "C" BOOL func_02076f04(void) {
+extern "C" BOOL DwcFriendData_IsValid(void) {
     if (func_020e9d7c() != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_02076eec(void) {
+extern "C" BOOL DwcFriendData_IsFriendKey(void) {
     if (func_020e9d7c() == 2) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_02076e88(void *out, u8 *data, u32 ctx) {
+extern "C" BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, u32 ctx) {
     u8 tmp[12];
     u64 acc = 0;
     u64 i = 0;
@@ -1538,7 +1538,7 @@ extern "C" BOOL func_02076e88(void *out, u8 *data, u32 ctx) {
     return TRUE;
 }
 
-extern "C" BOOL func_02076e38(u32 a, u8 *buf) {
+extern "C" BOOL DwcFriendData_ToCodeDigits(u32 a, u8 *buf) {
     u64 v;
     s32 i;
     if (func_020e9d7c() != 2) {
@@ -1552,46 +1552,46 @@ extern "C" BOOL func_02076e38(u32 a, u8 *buf) {
     return TRUE;
 }
 
-extern "C" BOOL func_02076e20(void) {
-    if (func_02076eec() == 0) {
+extern "C" BOOL DwcFriendData_IsNotFriendKey(void) {
+    if (DwcFriendData_IsFriendKey() == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" u32 func_02076e1c(void *) {}
+extern "C" u32 DwcFriendData_GetBytes(void *) {}
 
-extern "C" void *func_02076df4(void *p) {
-    __cxa_vec_ctor(p, 0x20, 0x1c, func_02076d40, func_02076d30);
+extern "C" void *FriendList_Construct(void *p) {
+    __cxa_vec_ctor(p, 0x20, 0x1c, FriendEntry_Construct, FriendEntry_Destruct);
     return p;
 }
 
-extern "C" void *func_02076dd8(void *p) {
-    __cxa_vec_cleanup(p, 0x20, 0x1c, func_02076d30);
+extern "C" void *FriendList_Destruct(void *p) {
+    __cxa_vec_cleanup(p, 0x20, 0x1c, FriendEntry_Destruct);
     return p;
 }
 
-extern "C" void func_02076db8(Unk_02076d68_E *base) {
+extern "C" void FriendList_Clear(Unk_02076d68_E *base) {
     s32 i;
     for (i = 0; i < 0x20; i++) {
-        func_02076cf4(&base[i]);
+        FriendEntry_Clear(&base[i]);
     }
 }
 
-extern "C" Unk_02076d68_E *func_02076db4(void) {}
+extern "C" Unk_02076d68_E *FriendList_GetEntries(void) {}
 
-extern "C" void func_02076d68(void) {
-    Unk_02076d68_E *base = func_02076db4();
+extern "C" void FriendList_Compact(void) {
+    Unk_02076d68_E *base = FriendList_GetEntries();
     s32 i, n;
     n = 0;
     i = n;
     for (; i < 0x20; i++) {
         Unk_02076d68_E *e = &base[i];
-        func_02076cf0(e);
-        if (func_02076f04()) {
+        FriendEntry_GetFriendData(e);
+        if (DwcFriendData_IsValid()) {
             if (i != n) {
-                func_02076d18(&base[n], e);
-                func_02076cf4(e);
+                FriendEntry_Copy(&base[n], e);
+                FriendEntry_Clear(e);
             }
             n++;
         }
@@ -1601,46 +1601,46 @@ extern "C" void FriendList_SetChecksum(u8 *p, u16 v) { *(u16 *)(p + 0x380) = v; 
 
 extern "C" u16 FriendList_GetChecksum(u8 *p) { return *(u16 *)(p + 0x380); }
 
-extern "C" void *func_02076d40(void *p) {
-    _ZN12Unk_02076f70C1Ev(p);
+extern "C" void *FriendEntry_Construct(void *p) {
+    _ZN13DwcFriendDataC1Ev(p);
     return p;
 }
 
-extern "C" void *func_02076d30(void *p) {
-    _ZN12Unk_02076f70D1Ev(p);
+extern "C" void *FriendEntry_Destruct(void *p) {
+    _ZN13DwcFriendDataD1Ev(p);
     return p;
 }
 
-extern "C" void *func_02076d18(void *p, void *q) {
+extern "C" void *FriendEntry_Copy(void *p, void *q) {
     MI_CpuCopy8(q, p, 0x1c);
     return p;
 }
 
 
-extern "C" void func_02076cf4(void *pp) {
+extern "C" void FriendEntry_Clear(void *pp) {
     u8 *p = (u8 *)pp;
-    func_02076f1c(p);
+    DwcFriendData_Clear(p);
     Mem_Clear(p + 0xc, 8);
     Mem_Clear(p + 0x14, 8);
 }
-extern "C" void func_02076cf0(void *p) {}
+extern "C" void FriendEntry_GetFriendData(void *p) {}
 extern "C" u8 *func_02076cec(u8 *p) { return p + 0xc; }
 
 extern "C" u8 *func_02076ce8(u8 *p) { return p + 0x14; }
 
-extern "C" u8 *func_02076cd4(u8 *p) {
-    _ZN12Unk_02076f70C1Ev(p + 0x40);
+extern "C" u8 *PlayerWifiData_Construct(u8 *p) {
+    _ZN13DwcFriendDataC1Ev(p + 0x40);
     return p;
 }
 
-extern "C" u8 *func_02076cc0(u8 *p) {
-    _ZN12Unk_02076f70D1Ev(p + 0x40);
+extern "C" u8 *PlayerWifiData_Destruct(u8 *p) {
+    _ZN13DwcFriendDataD1Ev(p + 0x40);
     return p;
 }
 
-extern "C" void func_02076c9c(u8 *p) {
+extern "C" void PlayerWifiData_Create(u8 *p) {
     func_020ea418(p, 0x41444d45);
-    u32 r = func_02076e1c(p + 0x40);
+    u32 r = DwcFriendData_GetBytes(p + 0x40);
     func_020ea3d0(p, r);
 }
 extern "C" void func_02076c94(void) { func_020ea3c4(); }
@@ -1648,9 +1648,9 @@ extern "C" void func_02076c8c(void) { func_020ea3dc(); }
 
 extern "C" void func_02076c84(void) { func_020e9d94(); }
 
-extern "C" void func_02076c80(void) {}
+extern "C" void PlayerWifiData_GetDwcUserData(void) {}
 
-extern "C" u8 *func_02076c7c(u8 *p) { return p + 0x40; }
+extern "C" u8 *PlayerWifiData_GetOwnFriendData(u8 *p) { return p + 0x40; }
 
 extern "C" void PlayerWifiData_SetChecksum(u8 *p, u16 v) { *(u16 *)(p + 0x4c) = v; }
 
@@ -1674,52 +1674,52 @@ extern "C" void OverlayHandle_Load(Unk_02076c24_S *s, s32 v) {
     s->unk_04 = 0;
 }
 
-extern "C" s32 func_02076c0c(s32 x) {
-    if (x >= func_020eaf90()) {
+extern "C" s32 Comm_AidToPeerIndex(s32 x) {
+    if (x >= Net_GetMyAid()) {
         x--;
     }
     return x;
 }
 
-extern "C" void func_02076c04(u8 *p, s32 a) { *p = a & 3; }
+extern "C" void CommPacket_SetAckHeader(u8 *p, s32 a) { *p = a & 3; }
 
-extern "C" void func_02076bf0(u8 *p, s32 a, s32 b) { *p = ((b & 0x1f) << 2) | 0x80 | (a & 3); }
+extern "C" void CommPacket_SetHeader(u8 *p, s32 a, s32 b) { *p = ((b & 0x1f) << 2) | 0x80 | (a & 3); }
 
-extern "C" BOOL func_02076bdc(u8 *p) {
+extern "C" BOOL CommPacket_IsControl(u8 *p) {
     if ((*p & 0x80) != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" u32 func_02076bd4(u8 *p) { return *p & 3; }
+extern "C" u32 CommPacket_GetAck(u8 *p) { return *p & 3; }
 
-extern "C" u32 func_02076bc8(u8 *p) { return (*p >> 2) & 0x1f; }
+extern "C" u32 CommPacket_GetType(u8 *p) { return (*p >> 2) & 0x1f; }
 
-extern "C" void func_02076bb0(s32 a, s32 b) { Heap_AllocAligned(data_021c6218, a, b); }
+extern "C" void NetHeap_Alloc(s32 a, s32 b) { Heap_AllocAligned(gNetHeap, a, b); }
 
-extern "C" void func_02076b9c(s32 a) { Heap_Free(data_021c6218, a); }
+extern "C" void NetHeap_Free(s32 a) { Heap_Free(gNetHeap, a); }
 
-extern "C" BOOL func_02076b40(u32 mask) {
+extern "C" BOOL Comm_HasSendCredit(u32 mask) {
     s32 i = 3;
-    void *g = data_020cbb18;
+    void *g = gCommManager;
     u32 one = 1;
     for (; i >= 0; i--) {
-        if (!_ZN12Unk_020cbb1813func_02072e88Ei(g, i)) continue;
-        if (_ZN12Unk_020cbb1813func_020729ccEj(g, i)) continue;
+        if (!_ZN11CommManager12isSlotActiveEi(g, i)) continue;
+        if (_ZN11CommManager7isMyAidEj(g, i)) continue;
         u32 t = (u16)(one << i);
         t &= mask;
         if (t == 0) continue;
-        if (_ZN12Unk_020cbb1813func_02072dc4Ei(g, i)) continue;
+        if (_ZN11CommManager13getSendCreditEi(g, i)) continue;
         return FALSE;
     }
     return TRUE;
 }
 
-extern "C" void func_02076b34(void) { func_02076b40(0xf); }
+extern "C" void Comm_HasSendCreditAll(void) { Comm_HasSendCredit(0xf); }
 
-extern "C" BOOL func_02076b18(void) {
-    s32 r = func_020eaf18();
+extern "C" BOOL Comm_IsWifi(void) {
+    s32 r = Net_GetMode();
     switch (r) {
     case 3:
     case 4:
@@ -1728,86 +1728,86 @@ extern "C" BOOL func_02076b18(void) {
     return FALSE;
 }
 
-extern "C" void func_02076b08(u8 *p, s32 v, s32 w) { p[0] = ((w << 6) & 0xc0) | (v & 0x3f); }
+extern "C" void CommRecord_PackSource(u8 *p, s32 v, s32 w) { p[0] = ((w << 6) & 0xc0) | (v & 0x3f); }
 
-extern "C" void func_02076ae8(u8 *p, u8 *a, u8 *out) {
+extern "C" void CommRecord_UnpackSource(u8 *p, u8 *a, u8 *out) {
     if (out != NULL) {
         *out = ((u32)p[0] >> 6) & 3;
     }
     *a = p[0] & 0x3f;
 }
 
-extern "C" void func_02076ac8(u8 *p, s32 v, u8 hi) {
+extern "C" void NetBuf_Pack20(u8 *p, s32 v, u8 hi) {
     p[0] = ((hi << 4) & 0xf0) | ((v >> 16) & 0xf);
     p[1] = v >> 8;
     p[2] = v;
 }
 
-extern "C" void func_02076a8c(u8 *p, u32 *out, u8 *out2) {
+extern "C" void NetBuf_Unpack20(u8 *p, u32 *out, u8 *out2) {
     if (out2 != NULL) {
         *out2 = ((u32)p[0] >> 4) & 0xf;
     }
     *out = (p[2] & 0xff) | (((p[0] << 16) & 0xf0000) | ((p[1] << 8) & 0xff00));
 }
 
-extern "C" void func_02076a6c(u8 *p, s32 v, s32 x) {
+extern "C" void NetBuf_PackPair20(u8 *p, s32 v, s32 x) {
     p[0] = v >> 8;
     p[1] = v;
-    func_02076ac8(p + 2, x, (u8)((v >> 16) & 0xf));
+    NetBuf_Pack20(p + 2, x, (u8)((v >> 16) & 0xf));
 }
 
-extern "C" void func_02076a2c(u8 *p, u32 *out, u32 *x) {
+extern "C" void NetBuf_UnpackPair20(u8 *p, u32 *out, u32 *x) {
     u8 t;
-    func_02076a8c(p + 2, x, &t);
+    NetBuf_Unpack20(p + 2, x, &t);
     *out = (p[1] & 0xff) | (((t << 16) & 0xf0000) | ((p[0] << 8) & 0xff00));
 }
 
-extern "C" void func_02076a04(u8 *p, s32 a, s32 x, s32 y, u8 z) {
-    func_02076a6c(p, a, x + 0x80000);
-    func_02076ac8(p + 5, y, z);
+extern "C" void NetBuf_PackTriple20(u8 *p, s32 a, s32 x, s32 y, u8 z) {
+    NetBuf_PackPair20(p, a, x + 0x80000);
+    NetBuf_Pack20(p + 5, y, z);
 }
 
-extern "C" void func_020769dc(u8 *p, u32 *out, s32 *x, u32 *y, u8 *z) {
-    func_02076a2c(p, out, (u32 *)x);
+extern "C" void NetBuf_UnpackTriple20(u8 *p, u32 *out, s32 *x, u32 *y, u8 *z) {
+    NetBuf_UnpackPair20(p, out, (u32 *)x);
     *x = *x - 0x80000;
-    func_02076a8c(p + 5, y, z);
+    NetBuf_Unpack20(p + 5, y, z);
 }
 
-extern "C" void func_020769c4(void *dst, s16 v) { MI_CpuCopy8(&v, dst, 2); }
+extern "C" void NetBuf_WriteS16B(void *dst, s16 v) { MI_CpuCopy8(&v, dst, 2); }
 
-extern "C" s16 func_020769ac(void *src) {
+extern "C" s16 NetBuf_ReadS16B(void *src) {
     s16 v;
     MI_CpuCopy8(src, &v, 2);
     return v;
 }
 
-extern "C" void func_02076994(void *dst, s16 v) { MI_CpuCopy8(&v, dst, 2); }
+extern "C" void NetBuf_WriteS16(void *dst, s16 v) { MI_CpuCopy8(&v, dst, 2); }
 
-extern "C" s16 func_0207697c(void *src) {
+extern "C" s16 NetBuf_ReadS16(void *src) {
     s16 v;
     MI_CpuCopy8(src, &v, 2);
     return v;
 }
 
-extern "C" void func_02076964(void *dst, u16 v) { MI_CpuCopy8(&v, dst, 2); }
+extern "C" void NetBuf_WriteU16(void *dst, u16 v) { MI_CpuCopy8(&v, dst, 2); }
 
-extern "C" u16 func_0207694c(void *src) {
+extern "C" u16 NetBuf_ReadU16(void *src) {
     u16 v;
     MI_CpuCopy8(src, &v, 2);
     return v;
 }
 
-extern "C" void func_02076934(void *dst, u16 v) { MI_CpuCopy8(&v, dst, 2); }
+extern "C" void CommRecord_SetLength(void *dst, u16 v) { MI_CpuCopy8(&v, dst, 2); }
 
-extern "C" u16 func_0207691c(void *src) {
+extern "C" u16 CommRecord_GetLength(void *src) {
     u16 v;
     MI_CpuCopy8(src, &v, 2);
     return v;
 }
 
-extern "C" void func_02076918(void) {}
+extern "C" void CommBlock_WriteAct00(void) {}
 
-extern "C" void func_020768a4(void) {
+extern "C" void CommBlock_WriteAct01(void) {
     Unk_020767f8_Tag t;
     u32 v;
     Unk_020767f8_Tag *tp = &t;
@@ -1816,7 +1816,7 @@ extern "C" void func_020768a4(void) {
     void *ctx;
     t.b = 3;
     i = 0;
-    ctx = data_020cbb18;
+    ctx = gCommManager;
     for (; i < 8; i++) {
         p = func_0207aa78(i);
         if (p != NULL) {
@@ -1824,19 +1824,19 @@ extern "C" void func_020768a4(void) {
         } else {
             t.b = 3;
         }
-        _ZN12Unk_020cbb1813func_020723a4EPvj(ctx, &t.b, 1);
-        _ZN12Unk_020cbb1813func_020723a4EPvj(ctx, func_02078578(p), 12);
+        _ZN11CommManager13appendControlEPvj(ctx, &t.b, 1);
+        _ZN11CommManager13appendControlEPvj(ctx, func_02078578(p), 12);
         v = *(u32 *)((u8 *)p + 0x20);
-        _ZN12Unk_020cbb1813func_020723a4EPvj(ctx, &v, 4);
+        _ZN11CommManager13appendControlEPvj(ctx, &v, 4);
         t.h = *(u16 *)((u8 *)p + 0x24);
-        _ZN12Unk_020cbb1813func_020723a4EPvj(ctx, &t.h, 2);
+        _ZN11CommManager13appendControlEPvj(ctx, &t.h, 2);
     }
 }
 
-extern "C" void func_020768a0(void) {}
+extern "C" void CommBlock_ReadAct00(void) {}
 
 // ---------------------------------------------------------------------------
-extern "C" void func_020767f8(u8 *buf) {
+extern "C" void CommBlock_ReadAct01(u8 *buf) {
     Unk_020767f8_Tag t;
     u8 obj[0x10];
     u32 v;
@@ -1870,9 +1870,9 @@ extern "C" void func_020767f8(u8 *buf) {
 
 // ======== unk_02075e60.cpp ========
 namespace n4 {
-class Unk_020cbb18;
+class CommManager;
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 extern "C" {
 extern u8 data_020e416c;
@@ -1884,25 +1884,25 @@ extern "C" {
 extern void *gCurrentHeap;
 }
 extern "C" {
-extern void (*data_020cbb1c[])(u32);
+extern void (*sCommBlockWriters[])(u32);
 }
 extern "C" {
-extern void (*data_020cbb24[])(u8 *, u32);
+extern void (*sCommBlockReaders[])(u8 *, u32);
 }
 extern "C" {
-extern u8 data_020cbb2c[];
+extern u8 sCommSyncVarVarSizes[];
 }
 extern "C" {
-extern u16 data_020cbbd4[];
+extern u16 sCommSyncVarVarOffsets[];
 }
 extern "C" {
-extern void (*data_020cbd60[])(void *);
+extern void (*sCommSyncVarInitHandlers[])(void *);
 }
 extern "C" {
-extern void (*data_020cbe78[])(void *, u32, u32);
+extern void (*sCommSyncVarPackHandlers[])(void *, u32, u32);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072770EPhj(Unk_020cbb18 *g, void *out, u32 idx);
+s32 _ZN11CommManager10readRecordEPhj(CommManager *g, void *out, u32 idx);
 }
 extern "C" {
 void func_ov003_02226e70(u32 v);
@@ -1914,22 +1914,22 @@ extern "C" {
 s32 func_ov003_02227100(u32 v);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072968Ei(Unk_020cbb18 *g, u32 i);
+s32 _ZN11CommManager14isSyncVarDirtyEi(CommManager *g, u32 i);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_02072970Ej(Unk_020cbb18 *g, u32 i);
+void *_ZN11CommManager10getSyncVarEj(CommManager *g, u32 i);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072960Eij(Unk_020cbb18 *g, u32 i, s32 v);
+void _ZN11CommManager15setSyncVarDirtyEij(CommManager *g, u32 i, s32 v);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020728d4Ev(Unk_020cbb18 *g);
+void _ZN11CommManager11beginRecordEv(CommManager *g);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020728a4EPhj(Unk_020cbb18 *g, void *p, s32 n);
+void _ZN11CommManager11writeRecordEPhj(CommManager *g, void *p, s32 n);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072824Ejj(Unk_020cbb18 *g, u32 a, u32 b);
+void _ZN11CommManager9endRecordEjj(CommManager *g, u32 a, u32 b);
 }
 extern "C" {
 void func_020ac7e8(u32 a);
@@ -1995,10 +1995,10 @@ extern "C" {
 void func_02034048(void *p);
 }
 extern "C" {
-void *func_02076bb0(u32 a, u32 b);
+void *NetHeap_Alloc(u32 a, u32 b);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072994EPh(Unk_020cbb18 *g, void *p);
+void _ZN11CommManager13setSyncVarBufEPh(CommManager *g, void *p);
 }
 extern "C" {
 void MI_CpuFill8(void *p, u32 a, u32 b);
@@ -2028,77 +2028,77 @@ extern "C" {
 void func_ov003_0222e640(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void func_020769c4(u32 a, s32 b);
+void NetBuf_WriteS16B(u32 a, s32 b);
 }
 extern "C" {
-void func_02076a6c(u32 a, s32 b, s32 c);
+void NetBuf_PackPair20(u32 a, s32 b, s32 c);
 }
 extern "C" {
-s32 _Z13func_020720f8v();
+s32 _Z20NetOverlay_AssertAnyv();
 }
 extern "C" {
-s32 func_020eaca0();
+s32 Net_IsReadyToSend();
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020723d4Ev(Unk_020cbb18 *g);
+void _ZN11CommManager15clearControlLenEv(CommManager *g);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072ddcEi(Unk_020cbb18 *g, u32 n);
+s32 _ZN11CommManager10getSendBufEi(CommManager *g, u32 n);
 }
 extern "C" {
-void func_02076bf0(s32 p, u32 a, u32 b);
+void CommPacket_SetHeader(s32 p, u32 a, u32 b);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020723ecEj(Unk_020cbb18 *g, u32 n);
+void _ZN11CommManager13setControlLenEj(CommManager *g, u32 n);
 }
 extern "C" {
-u32 _ZN12Unk_020cbb1813func_020723e0Ev(Unk_020cbb18 *g);
+u32 _ZN11CommManager13getControlLenEv(CommManager *g);
 }
 extern "C" {
-void func_0207664c(u32 i);
+void CommSyncVar_InitVar(u32 i);
 }
 extern "C" {
-u32 func_020766e0(u32 i);
+u32 CommSyncVar_GetVarSize(u32 i);
 }
 extern "C" {
-void func_02076610(u32 a, s16 *b);
+void CommSyncVar_PackAngle(u32 a, s16 *b);
 }
 extern "C" {
-void func_0207663c(u32 a, s32 *b);
+void CommSyncVar_PackPos(u32 a, s32 *b);
 }
 extern "C" {
 static inline BOOL Unk_02075e60_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 }
 
 
-class Unk_020cbb18 {
+class CommManager {
 public:
     /* 0x00 */ u8 unk_00[0x64];
     /* 0x64 */ s32 unk_64;
     /* 0x68 */ u8 unk_68[0x8];
     /* 0x70 */ void *unk_70;
 };
-extern "C" s32 func_02076744(u32 a) {
+extern "C" s32 CommBlock_BuildPacket(u32 a) {
     struct { u16 len; u8 hdr[3]; } l;
-    _Z13func_020720f8v();
-    if (func_020eaca0() == 0) {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend() == 0) {
         return 0;
     }
-    Unk_020cbb18 *g = data_020cbb18;
-    _ZN12Unk_020cbb1813func_020723d4Ev(g);
-    func_02076bf0(_ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 0, 0xd);
-    _ZN12Unk_020cbb1813func_020723ecEj(g, 1);
+    CommManager *g = gCommManager;
+    _ZN11CommManager15clearControlLenEv(g);
+    CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 0xd);
+    _ZN11CommManager13setControlLenEj(g, 1);
     s32 i = 0;
     goto test0;
 loop0:
     {
-        u32 s = _ZN12Unk_020cbb1813func_020723e0Ev(g);
-        u8 *dst = (u8 *)_ZN12Unk_020cbb1813func_02072ddcEi(g, 4) + s;
-        _ZN12Unk_020cbb1813func_020723ecEj(g, s + 3);
-        data_020cbb1c[i](a);
-        u32 e = _ZN12Unk_020cbb1813func_020723e0Ev(g);
+        u32 s = _ZN11CommManager13getControlLenEv(g);
+        u8 *dst = (u8 *)_ZN11CommManager10getSendBufEi(g, 4) + s;
+        _ZN11CommManager13setControlLenEj(g, s + 3);
+        sCommBlockWriters[i](a);
+        u32 e = _ZN11CommManager13getControlLenEv(g);
         if (e <= s + 3) {
-            _ZN12Unk_020cbb1813func_020723ecEj(g, s);
+            _ZN11CommManager13setControlLenEj(g, s);
         } else {
             l.len = e - s - 3;
             MI_CpuCopy8(&l.len, l.hdr, 2);
@@ -2111,7 +2111,7 @@ test0:
     if (i < 2) goto loop0;
     return 1;
 }
-extern "C" void func_020766ec(u8 *p, u32 n) {
+extern "C" void CommBlock_ParseAll(u8 *p, u32 n) {
     struct { u8 id; u8 pad; u16 len; } h;
     u8 buf[3];
     while (n != 0) {
@@ -2122,240 +2122,240 @@ extern "C" void func_020766ec(u8 *p, u32 n) {
         MI_CpuCopy8(buf + 2, &h.id, 1);
         u32 len = h.len;
         u32 id = *(volatile u8 *)&h.id;
-        data_020cbb24[id](p, len);
+        sCommBlockReaders[id](p, len);
         p += len;
         n -= len;
     }
 }
-extern "C" u32 func_020766e0(u32 i) { return data_020cbb2c[i]; }
-extern "C" u32 func_020766d4(u32 i) { return data_020cbbd4[i]; }
-extern "C" void func_020766c8(u32 a) { func_02084404(a, 0xc); }
-extern "C" void func_020766bc(u32 a) { func_02084404(a, 0xd); }
-extern "C" void func_020766b0(u32 a) { func_02084404(a, 0xe); }
-extern "C" void func_020766a4(u32 a) { func_02084404(a, 0xf); }
-extern "C" void func_02076698(u32 a) { func_02084404(a, 0x10); }
-extern "C" void func_0207668c(u32 a) { func_02084404(a, 0x11); }
-extern "C" void func_02076680(u32 a) { func_02084404(a, 0x12); }
-extern "C" void func_02076674(u32 a) { func_02084404(a, 0x13); }
-extern "C" void func_0207664c(u32 i) {
-    void (*f)(void *) = data_020cbd60[i];
+extern "C" u32 CommSyncVar_GetVarSize(u32 i) { return sCommSyncVarVarSizes[i]; }
+extern "C" u32 CommSyncVar_GetVarOffset(u32 i) { return sCommSyncVarVarOffsets[i]; }
+extern "C" void CommSyncVar_InitVillager0(u32 a) { func_02084404(a, 0xc); }
+extern "C" void CommSyncVar_InitVillager1(u32 a) { func_02084404(a, 0xd); }
+extern "C" void CommSyncVar_InitVillager2(u32 a) { func_02084404(a, 0xe); }
+extern "C" void CommSyncVar_InitVillager3(u32 a) { func_02084404(a, 0xf); }
+extern "C" void CommSyncVar_InitVillager4(u32 a) { func_02084404(a, 0x10); }
+extern "C" void CommSyncVar_InitVillager5(u32 a) { func_02084404(a, 0x11); }
+extern "C" void CommSyncVar_InitVillager6(u32 a) { func_02084404(a, 0x12); }
+extern "C" void CommSyncVar_InitVillager7(u32 a) { func_02084404(a, 0x13); }
+extern "C" void CommSyncVar_InitVar(u32 i) {
+    void (*f)(void *) = sCommSyncVarInitHandlers[i];
     if (f) {
-        void *o = _ZN12Unk_020cbb1813func_02072970Ej(data_020cbb18, i);
+        void *o = _ZN11CommManager10getSyncVarEj(gCommManager, i);
         f(o);
     }
 }
-extern "C" void func_0207663c(u32 a, s32 *b) { func_02076a6c(a, b[0], b[2]); }
-extern "C" void func_02076634(u32 a, s32 *b) { func_0207663c(a, b); }
-extern "C" void func_0207662c(u32 a, s32 *b) { func_0207663c(a, b); }
-extern "C" void func_02076624(u32 a, s32 *b) { func_0207663c(a, b); }
-extern "C" void func_0207661c(u32 a, s32 *b) { func_0207663c(a, b); }
-extern "C" void func_02076610(u32 a, s16 *b) { func_020769c4(a, *b); }
-extern "C" void func_02076608(u32 a, s16 *b) { func_02076610(a, b); }
-extern "C" void func_02076600(u32 a, s16 *b) { func_02076610(a, b); }
-extern "C" void func_020765f8(u32 a, s16 *b) { func_02076610(a, b); }
-extern "C" void func_020765f0(u32 a, s16 *b) { func_02076610(a, b); }
-extern "C" void func_020765e4(u32 a) { func_020954f8(a, 0x8); }
-extern "C" void func_020765d8(u32 a) { func_020954f8(a, 0x9); }
-extern "C" void func_020765cc(u32 a) { func_020954f8(a, 0xa); }
-extern "C" void func_020765c0(u32 a) { func_020954f8(a, 0xb); }
-extern "C" void func_020765b4(u32 a) { func_020843c4(a, 0xc); }
-extern "C" void func_020765a8(u32 a) { func_020843c4(a, 0xd); }
-extern "C" void func_0207659c(u32 a) { func_020843c4(a, 0xe); }
-extern "C" void func_02076590(u32 a) { func_020843c4(a, 0xf); }
-extern "C" void func_02076584(u32 a) { func_020843c4(a, 0x10); }
-extern "C" void func_02076578(u32 a) { func_020843c4(a, 0x11); }
-extern "C" void func_0207656c(u32 a) { func_020843c4(a, 0x12); }
-extern "C" void func_02076560(u32 a) { func_020843c4(a, 0x13); }
-extern "C" void func_02076554(u32 a, u32 b) { func_02038828(a, 0x14, b); }
-extern "C" void func_02076548(u32 a, u32 b) { func_02038828(a, 0x15, b); }
-extern "C" void func_0207653c(u32 a, u32 b) { func_02038828(a, 0x16, b); }
-extern "C" void func_02076530(u32 a, u32 b) { func_02038828(a, 0x17, b); }
-extern "C" void func_02076524(u32 a, u32 b) { func_ov003_0222e640(a, 0x18, b); }
-extern "C" void func_02076518(u32 a, u32 b) { func_ov003_0222e640(a, 0x19, b); }
-extern "C" void func_0207650c(u32 a, u32 b) { func_ov003_0222e640(a, 0x1a, b); }
-extern "C" void func_02076500(u32 a, u32 b) { func_ov003_0222e640(a, 0x1b, b); }
-extern "C" void func_020764f4(u32 a, u32 b) { func_ov003_0222e640(a, 0x1c, b); }
-extern "C" void func_020764e8(u32 a, u32 b) { func_ov003_0222e640(a, 0x1d, b); }
-extern "C" void func_020764dc(u32 a, u32 b) { func_ov003_0222e640(a, 0x1e, b); }
-extern "C" void func_020764d0(u32 a, u32 b) { func_ov003_0222e640(a, 0x1f, b); }
-extern "C" void func_020764c4(u32 a) { func_020842c0(a, 0x20); }
-extern "C" void func_020764b8(u32 a) { func_020842c0(a, 0x21); }
-extern "C" void func_020764ac(u32 a) { func_020842c0(a, 0x22); }
-extern "C" void func_020764a0(u32 a) { func_020842c0(a, 0x23); }
-extern "C" void func_02076494(u32 a) { func_020842c0(a, 0x24); }
-extern "C" void func_02076488(u32 a) { func_020842c0(a, 0x25); }
-extern "C" void func_0207647c(u32 a) { func_020842c0(a, 0x26); }
-extern "C" void func_02076470(u32 a) { func_020842c0(a, 0x27); }
-extern "C" void func_02076464(u32 a) { func_020842c0(a, 0x28); }
-extern "C" void func_02076458(u32 a) { func_020842c0(a, 0x29); }
-extern "C" void func_0207644c(u32 a) { func_020842c0(a, 0x2a); }
-extern "C" void func_02076440(u32 a) { func_020842c0(a, 0x2b); }
-extern "C" void func_02076434(u32 a) { func_020842c0(a, 0x2c); }
-extern "C" void func_02076428(u32 a) { func_020842c0(a, 0x2d); }
-extern "C" void func_0207641c(u32 a) { func_020842c0(a, 0x2e); }
-extern "C" void func_02076410(u32 a) { func_020842c0(a, 0x2f); }
-extern "C" void func_02076404(u32 a) { func_020842c0(a, 0x30); }
-extern "C" void func_020763f8(u32 a) { func_020842c0(a, 0x31); }
-extern "C" void func_020763ec(u32 a) { func_020842c0(a, 0x32); }
-extern "C" void func_020763e0(u32 a) { func_020842c0(a, 0x33); }
-extern "C" void func_020763d4(u32 a) { func_020842c0(a, 0x34); }
-extern "C" void func_020763c8(u32 a) { func_020842c0(a, 0x35); }
-extern "C" void func_020763bc(u32 a) { func_020842c0(a, 0x36); }
-extern "C" void func_020763b0(u32 a) { func_020842c0(a, 0x37); }
-extern "C" void func_020763a4(u32 a) { func_020842c0(a, 0x38); }
-extern "C" void func_02076398(u32 a) { func_020842c0(a, 0x39); }
-extern "C" void func_0207638c(u32 a) { func_020842c0(a, 0x3a); }
-extern "C" void func_02076380(u32 a) { func_020842c0(a, 0x3b); }
-extern "C" void func_02076374(u32 a) { func_020842c0(a, 0x3c); }
-extern "C" void func_02076368(u32 a) { func_020842c0(a, 0x3d); }
-extern "C" void func_0207635c(u32 a) { func_020842c0(a, 0x3e); }
-extern "C" void func_02076350(u32 a) { func_020842c0(a, 0x3f); }
-extern "C" void func_02076344(u32 a) { func_020842c0(a, 0x40); }
-extern "C" void func_02076338(u32 a) { func_020842c0(a, 0x41); }
-extern "C" void func_0207632c(u32 a) { func_020842c0(a, 0x42); }
-extern "C" void func_02076320(u32 a) { func_020842c0(a, 0x43); }
-extern "C" void func_02076314(u32 a) { func_020842c0(a, 0x44); }
-extern "C" void func_02076308(u32 a) { func_020842c0(a, 0x45); }
-extern "C" void func_02076280(u32 a, u32 b, u32 c, s32 d) {
-    Unk_020cbb18 *g = data_020cbb18;
-    s32 r = _ZN12Unk_020cbb1813func_02072968Ei(g, a);
-    u32 sz = func_020766e0(a);
-    void *obj = _ZN12Unk_020cbb1813func_02072970Ej(g, a);
+extern "C" void CommSyncVar_PackPos(u32 a, s32 *b) { NetBuf_PackPair20(a, b[0], b[2]); }
+extern "C" void CommSyncVar_PackPlayerPos0(u32 a, s32 *b) { CommSyncVar_PackPos(a, b); }
+extern "C" void CommSyncVar_PackPlayerPos1(u32 a, s32 *b) { CommSyncVar_PackPos(a, b); }
+extern "C" void CommSyncVar_PackPlayerPos2(u32 a, s32 *b) { CommSyncVar_PackPos(a, b); }
+extern "C" void CommSyncVar_PackPlayerPos3(u32 a, s32 *b) { CommSyncVar_PackPos(a, b); }
+extern "C" void CommSyncVar_PackAngle(u32 a, s16 *b) { NetBuf_WriteS16B(a, *b); }
+extern "C" void CommSyncVar_PackPlayerAngle0(u32 a, s16 *b) { CommSyncVar_PackAngle(a, b); }
+extern "C" void CommSyncVar_PackPlayerAngle1(u32 a, s16 *b) { CommSyncVar_PackAngle(a, b); }
+extern "C" void CommSyncVar_PackPlayerAngle2(u32 a, s16 *b) { CommSyncVar_PackAngle(a, b); }
+extern "C" void CommSyncVar_PackPlayerAngle3(u32 a, s16 *b) { CommSyncVar_PackAngle(a, b); }
+extern "C" void CommSyncVar_PackVar08(u32 a) { func_020954f8(a, 0x8); }
+extern "C" void CommSyncVar_PackVar09(u32 a) { func_020954f8(a, 0x9); }
+extern "C" void CommSyncVar_PackVar0A(u32 a) { func_020954f8(a, 0xa); }
+extern "C" void CommSyncVar_PackVar0B(u32 a) { func_020954f8(a, 0xb); }
+extern "C" void CommSyncVar_PackVillager0(u32 a) { func_020843c4(a, 0xc); }
+extern "C" void CommSyncVar_PackVillager1(u32 a) { func_020843c4(a, 0xd); }
+extern "C" void CommSyncVar_PackVillager2(u32 a) { func_020843c4(a, 0xe); }
+extern "C" void CommSyncVar_PackVillager3(u32 a) { func_020843c4(a, 0xf); }
+extern "C" void CommSyncVar_PackVillager4(u32 a) { func_020843c4(a, 0x10); }
+extern "C" void CommSyncVar_PackVillager5(u32 a) { func_020843c4(a, 0x11); }
+extern "C" void CommSyncVar_PackVillager6(u32 a) { func_020843c4(a, 0x12); }
+extern "C" void CommSyncVar_PackVillager7(u32 a) { func_020843c4(a, 0x13); }
+extern "C" void CommSyncVar_PackPlayerMsg0(u32 a, u32 b) { func_02038828(a, 0x14, b); }
+extern "C" void CommSyncVar_PackPlayerMsg1(u32 a, u32 b) { func_02038828(a, 0x15, b); }
+extern "C" void CommSyncVar_PackPlayerMsg2(u32 a, u32 b) { func_02038828(a, 0x16, b); }
+extern "C" void CommSyncVar_PackPlayerMsg3(u32 a, u32 b) { func_02038828(a, 0x17, b); }
+extern "C" void CommSyncVar_PackVar18(u32 a, u32 b) { func_ov003_0222e640(a, 0x18, b); }
+extern "C" void CommSyncVar_PackVar19(u32 a, u32 b) { func_ov003_0222e640(a, 0x19, b); }
+extern "C" void CommSyncVar_PackVar1A(u32 a, u32 b) { func_ov003_0222e640(a, 0x1a, b); }
+extern "C" void CommSyncVar_PackVar1B(u32 a, u32 b) { func_ov003_0222e640(a, 0x1b, b); }
+extern "C" void CommSyncVar_PackVar1C(u32 a, u32 b) { func_ov003_0222e640(a, 0x1c, b); }
+extern "C" void CommSyncVar_PackVar1D(u32 a, u32 b) { func_ov003_0222e640(a, 0x1d, b); }
+extern "C" void CommSyncVar_PackVar1E(u32 a, u32 b) { func_ov003_0222e640(a, 0x1e, b); }
+extern "C" void CommSyncVar_PackVar1F(u32 a, u32 b) { func_ov003_0222e640(a, 0x1f, b); }
+extern "C" void CommSyncVar_PackSpNpc00(u32 a) { func_020842c0(a, 0x20); }
+extern "C" void CommSyncVar_PackSpNpc01(u32 a) { func_020842c0(a, 0x21); }
+extern "C" void CommSyncVar_PackSpNpc02(u32 a) { func_020842c0(a, 0x22); }
+extern "C" void CommSyncVar_PackSpNpc03(u32 a) { func_020842c0(a, 0x23); }
+extern "C" void CommSyncVar_PackSpNpc04(u32 a) { func_020842c0(a, 0x24); }
+extern "C" void CommSyncVar_PackSpNpc05(u32 a) { func_020842c0(a, 0x25); }
+extern "C" void CommSyncVar_PackSpNpc06(u32 a) { func_020842c0(a, 0x26); }
+extern "C" void CommSyncVar_PackSpNpc07(u32 a) { func_020842c0(a, 0x27); }
+extern "C" void CommSyncVar_PackSpNpc08(u32 a) { func_020842c0(a, 0x28); }
+extern "C" void CommSyncVar_PackSpNpc09(u32 a) { func_020842c0(a, 0x29); }
+extern "C" void CommSyncVar_PackSpNpc0A(u32 a) { func_020842c0(a, 0x2a); }
+extern "C" void CommSyncVar_PackSpNpc0B(u32 a) { func_020842c0(a, 0x2b); }
+extern "C" void CommSyncVar_PackSpNpc0C(u32 a) { func_020842c0(a, 0x2c); }
+extern "C" void CommSyncVar_PackSpNpc0D(u32 a) { func_020842c0(a, 0x2d); }
+extern "C" void CommSyncVar_PackSpNpc0E(u32 a) { func_020842c0(a, 0x2e); }
+extern "C" void CommSyncVar_PackSpNpc0F(u32 a) { func_020842c0(a, 0x2f); }
+extern "C" void CommSyncVar_PackSpNpc10(u32 a) { func_020842c0(a, 0x30); }
+extern "C" void CommSyncVar_PackSpNpc11(u32 a) { func_020842c0(a, 0x31); }
+extern "C" void CommSyncVar_PackSpNpc12(u32 a) { func_020842c0(a, 0x32); }
+extern "C" void CommSyncVar_PackSpNpc13(u32 a) { func_020842c0(a, 0x33); }
+extern "C" void CommSyncVar_PackSpNpc14(u32 a) { func_020842c0(a, 0x34); }
+extern "C" void CommSyncVar_PackSpNpc15(u32 a) { func_020842c0(a, 0x35); }
+extern "C" void CommSyncVar_PackSpNpc16(u32 a) { func_020842c0(a, 0x36); }
+extern "C" void CommSyncVar_PackSpNpc17(u32 a) { func_020842c0(a, 0x37); }
+extern "C" void CommSyncVar_PackSpNpc18(u32 a) { func_020842c0(a, 0x38); }
+extern "C" void CommSyncVar_PackSpNpc19(u32 a) { func_020842c0(a, 0x39); }
+extern "C" void CommSyncVar_PackSpNpc1A(u32 a) { func_020842c0(a, 0x3a); }
+extern "C" void CommSyncVar_PackSpNpc1B(u32 a) { func_020842c0(a, 0x3b); }
+extern "C" void CommSyncVar_PackSpNpc1C(u32 a) { func_020842c0(a, 0x3c); }
+extern "C" void CommSyncVar_PackSpNpc1D(u32 a) { func_020842c0(a, 0x3d); }
+extern "C" void CommSyncVar_PackSpNpc1E(u32 a) { func_020842c0(a, 0x3e); }
+extern "C" void CommSyncVar_PackSpNpc1F(u32 a) { func_020842c0(a, 0x3f); }
+extern "C" void CommSyncVar_PackSpNpc20(u32 a) { func_020842c0(a, 0x40); }
+extern "C" void CommSyncVar_PackSpNpc21(u32 a) { func_020842c0(a, 0x41); }
+extern "C" void CommSyncVar_PackSpNpc22(u32 a) { func_020842c0(a, 0x42); }
+extern "C" void CommSyncVar_PackSpNpc23(u32 a) { func_020842c0(a, 0x43); }
+extern "C" void CommSyncVar_PackSpNpc24(u32 a) { func_020842c0(a, 0x44); }
+extern "C" void CommSyncVar_PackSpNpc25(u32 a) { func_020842c0(a, 0x45); }
+extern "C" void CommSyncVar_SetVar(u32 a, u32 b, u32 c, s32 d) {
+    CommManager *g = gCommManager;
+    s32 r = _ZN11CommManager14isSyncVarDirtyEi(g, a);
+    u32 sz = CommSyncVar_GetVarSize(a);
+    void *obj = _ZN11CommManager10getSyncVarEj(g, a);
     if (r == 0 && d == 0) {
         MI_CpuCopy8(obj, g->unk_70, sz);
     }
-    data_020cbe78[a](obj, b, c);
+    sCommSyncVarPackHandlers[a](obj, b, c);
     if (d != 0) {
-        _ZN12Unk_020cbb1813func_02072960Eij(g, a, 1);
+        _ZN11CommManager15setSyncVarDirtyEij(g, a, 1);
     } else if (r == 0) {
-        Unk_020cbb18 *h = data_020cbb18;
+        CommManager *h = gCommManager;
         s32 v = func_02063a04(obj, h->unk_70, sz);
-        _ZN12Unk_020cbb1813func_02072960Eij(h, a, v);
+        _ZN11CommManager15setSyncVarDirtyEij(h, a, v);
     }
 }
-extern "C" void func_02076240() {
-    void *p = func_02076bb0(0x68c, 4);
-    _ZN12Unk_020cbb1813func_02072994EPh(data_020cbb18, p);
+extern "C" void CommSyncVar_Init() {
+    void *p = NetHeap_Alloc(0x68c, 4);
+    _ZN11CommManager13setSyncVarBufEPh(gCommManager, p);
     if (p) {
         MI_CpuFill8(p, 0, 0x68c);
     }
     for (s32 i = 0; i < 0x46; i++) {
-        func_0207664c(i);
+        CommSyncVar_InitVar(i);
     }
 }
-extern "C" void func_02076220(u32 a) {
+extern "C" void CommRecv_RoomWallFloor(u32 a) {
     u8 buf[4];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, a);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
     func_02034048(buf);
 }
-extern "C" void func_02076200(u32 a) {
+extern "C" void CommRecv_PatternMove(u32 a) {
     u8 buf[4];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, a);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
     func_02070560(buf);
 }
-extern "C" void func_020761bc(u32 a, u32 b, u32 c, u32 d) {
+extern "C" void CommRecv_SubCommand(u32 a, u32 b, u32 c, u32 d) {
     void *g = gCurrentHeap;
     void *r = Heap_AllocTail(g, a);
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, r, a);
+    _ZN11CommManager10readRecordEPhj(gCommManager, r, a);
     func_0206f804(r, d);
     Heap_Free(g, r);
 }
-extern "C" void func_02076194(u32 a, u32 b, u32 c, u32 d) {
+extern "C" void CommRecv_CharInteract(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, a);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
     func_0203eb60(buf, d);
 }
-extern "C" void func_02076174(u32 a) {
+extern "C" void CommRecv_FurnitureState(u32 a) {
     u8 buf[4];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, a);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
     func_020521fc(buf);
 }
-extern "C" void func_02076154(u32 a) {
+extern "C" void CommRecv_HouseRoomFlag(u32 a) {
     u8 buf[4];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, a);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
     func_0205218c(buf);
 }
-extern "C" void func_0207612c(u32 a, u32 b, u32 c) {
+extern "C" void CommRecv_RoomItemSet(u32 a, u32 b, u32 c) {
     u8 buf[8];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, 4);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, 4);
     func_020520a8(c, buf);
 }
-extern "C" void func_02076104(u32 a, u32 b, u32 c) {
+extern "C" void CommRecv_FurnitureRemove(u32 a, u32 b, u32 c) {
     u8 buf[8];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, 4);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, 4);
     func_02052134(c, buf);
 }
-extern "C" void func_020760dc(u32 a, u32 b, u32 c) {
+extern "C" void CommRecv_FurniturePlace(u32 a, u32 b, u32 c) {
     u8 buf[8];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, 4);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, 4);
     func_020520d0(c, buf);
 }
-extern "C" void func_020760bc(u32 a) {
+extern "C" void CommRecv_FurnitureUseRequest(u32 a) {
     u8 buf[4];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, a);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
     func_02051fcc(buf);
 }
-extern "C" void func_02076094(u32 a, u32 b, u32 c, u32 d) {
+extern "C" void CommRecv_SpotReserveRequest(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, 3);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, 3);
     func_02051f68(buf, d);
 }
-extern "C" void func_02076088() { func_02051f50(1); }
-extern "C" void func_0207607c() { func_02051f50(0); }
-extern "C" void func_02076070(u32 a, u32 b, u32 c, u32 d) { func_02051f40(d); }
-extern "C" void func_02076050(u32 a) {
+extern "C" void CommRecv_SpotReserveGranted() { func_02051f50(1); }
+extern "C" void CommRecv_SpotReserveDenied() { func_02051f50(0); }
+extern "C" void CommRecv_SpotRelease(u32 a, u32 b, u32 c, u32 d) { func_02051f40(d); }
+extern "C" void CommRecv_BuildingState(u32 a) {
     u8 buf[4];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, a);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
     func_020b1388(buf);
 }
-extern "C" void func_02076028(u32 a, u32 b, u32 c, u32 d) {
+extern "C" void CommRecv_BuildingEnter(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, a);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
     func_020b1260(buf, d);
 }
-extern "C" void func_02076000(u32 a, u32 b, u32 c, u32 d) {
+extern "C" void CommRecv_BuildingLeave(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, a);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
     func_020b1234(buf, d);
 }
-extern "C" void func_02075fe0(u32 a) {
+extern "C" void CommRecv_Act25(u32 a) {
     u8 buf[4];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, a);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
     func_0209c3cc(buf);
 }
-extern "C" void func_02075fb8(u32 a, u32 b, u32 c, u32 d) {
+extern "C" void CommRecv_ShopPurchase(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, a);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
     func_020ac7f8(buf, d);
 }
-extern "C" void func_02075fac(u32 a, u32 b, u32 c, u32 d) { func_020ac7e8(d); }
-extern "C" void func_02075f0c(u32 a, u32 b, u32 c, u32 d) {
+extern "C" void CommRecv_ShopPurchaseAck(u32 a, u32 b, u32 c, u32 d) { func_020ac7e8(d); }
+extern "C" void CommRecv_FieldActorClaimRequest(u32 a, u32 b, u32 c, u32 d) {
     struct L { volatile u8 b; volatile u8 f; } l;
     l.f = 1;
-    Unk_020cbb18 *g = data_020cbb18;
-    _ZN12Unk_020cbb1813func_02072770EPhj(g, (void *)&l, a);
+    CommManager *g = gCommManager;
+    _ZN11CommManager10readRecordEPhj(g, (void *)&l, a);
     if (Unk_02075e60_IsZero(data_020e416c)) {
         l.f = func_ov003_02226180(l.b);
     }
-    _ZN12Unk_020cbb1813func_020728d4Ev(g);
+    _ZN11CommManager11beginRecordEv(g);
     if (l.f == 0) {
         l.b &= 0xf;
         l.b |= d << 4;
         l.b += 0x10;
-        g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g, (void *)&l, 1);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x29, 7);
+        g = gCommManager;
+        _ZN11CommManager11writeRecordEPhj(g, (void *)&l, 1);
+        _ZN11CommManager9endRecordEjj(g, 0x29, 7);
     } else {
-        g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g, (void *)&l.f, 1);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x29, d);
+        g = gCommManager;
+        _ZN11CommManager11writeRecordEPhj(g, (void *)&l.f, 1);
+        _ZN11CommManager9endRecordEjj(g, 0x29, d);
     }
 }
-extern "C" void func_02075e98(u32 a) {
+extern "C" void CommRecv_FieldActorClaimResult(u32 a) {
     volatile u8 n;
     if (Unk_02075e60_IsZero(data_020e416c)) {
-        Unk_020cbb18 *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_02072770EPhj(g, (void *)&n, a);
+        CommManager *g = gCommManager;
+        _ZN11CommManager10readRecordEPhj(g, (void *)&n, a);
         u32 v = n;
         u32 h = (v << 20) >> 24;
         n = (v & 0xf) | 0x10;
@@ -2373,9 +2373,9 @@ extern "C" void func_02075e98(u32 a) {
         }
     }
 }
-extern "C" void func_02075e60(u32 a) {
+extern "C" void CommRecv_FieldActorRelease(u32 a) {
     u8 b;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &b, a);
+    _ZN11CommManager10readRecordEPhj(gCommManager, &b, a);
     if (Unk_02075e60_IsZero(data_020e416c)) {
         func_ov003_02226e70(b);
     }
@@ -2403,7 +2403,7 @@ extern "C" {
 s32 func_020a5f9c(void *, u32);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072770EPhj(void *, void *, s32);
+void _ZN11CommManager10readRecordEPhj(void *, void *, s32);
 }
 extern "C" {
 void func_02077404(u32 *, u16 *, void *);
@@ -2532,7 +2532,7 @@ extern "C" {
 s32 _ZN10PlayerData12setHairColorEh(void *, u32);
 }
 extern "C" {
-s32 func_0204fe7c(void *, s32);
+s32 FishDisplay_OnNetPacket(void *, s32);
 }
 extern "C" {
 s32 func_020954c8(void *, u16 *, u32 *);
@@ -2565,10 +2565,10 @@ extern "C" {
 void func_ov003_022271a8(u32);
 }
 extern "C" {
-void *func_0204da0c();
+void *TownBlockMap_Get();
 }
 extern "C" {
-u16 *func_0204ebd8(void *, s32, s32, s32, s32, u32);
+u16 *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, u32);
 }
 extern "C" {
 s32 func_020453e8(Unk_02075bc4_Pt *, u32);
@@ -2583,7 +2583,7 @@ extern "C" {
 s32 func_02044774(void *, BOOL, void *);
 }
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 }
 extern "C" {
 extern u32 data_021dfd8c[];
@@ -2596,7 +2596,7 @@ extern u8 data_020e416c;
 }
 
 
-static inline void *G() { return data_020cbb18; }
+static inline void *G() { return gCommManager; }
 
 static inline BOOL Unk_02075680_R(volatile u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -2616,9 +2616,9 @@ static inline BOOL Unk_02075e1c_IsZero(u8 v) {
 
 
 
-extern "C" void func_02075e1c(u32 n) {
+extern "C" void CommRecv_FieldActorRemove(u32 n) {
     u8 buf;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &buf, n);
+    _ZN11CommManager10readRecordEPhj(gCommManager, &buf, n);
     if (Unk_02075e1c_IsZero(data_020e416c)) {
         if (buf < 4) {
             func_ov003_02227074(buf, 0);
@@ -2628,17 +2628,17 @@ extern "C" void func_02075e1c(u32 n) {
     }
 }
 
-extern "C" void func_02075df4(s32 n, s32 b, s32 c, s32 d) {
+extern "C" void CommRecv_FishDisplay(s32 n, s32 b, s32 c, s32 d) {
     u8 buf[8];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, n);
-    func_0204fe7c(buf, d);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, n);
+    FishDisplay_OnNetPacket(buf, d);
 }
 
-extern "C" void func_02075d38(s32 n, s32 b, s32 c, void *d) {
+extern "C" void CommRecv_ClothesChange(s32 n, s32 b, s32 c, void *d) {
     u16 h, v;
     u8 buf[4];
     u32 k;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, n);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, n);
     func_020954c8(buf, &h, &k);
     v = h;
     switch (k) {
@@ -2667,36 +2667,36 @@ extern "C" void func_02075d38(s32 n, s32 b, s32 c, void *d) {
     }
 }
 
-extern "C" void func_02075cf0(s32 n, s32 b, s32 c, void *d) {
+extern "C" void CommRecv_HairChange(s32 n, s32 b, s32 c, void *d) {
     u8 buf[3];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, n);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, n);
     func_0209549c(&buf[0], &buf[1], &buf[2]);
     void *r4 = PlayerData_GetBySessionSlot(d);
     _ZN10PlayerData12setHairStyleEh(r4, buf[1]);
     _ZN10PlayerData12setHairColorEh(r4, buf[2]);
 }
 
-extern "C" void func_02075cc8(s32 n, s32 b, s32 c, s32 d) {
+extern "C" void CommRecv_FaceChange(s32 n, s32 b, s32 c, s32 d) {
     u8 buf[4];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, n);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, n);
     func_020945d4(buf[0], d);
 }
 
-extern "C" void func_02075ca0(s32 n, s32 b, s32 c, s32 d) {
+extern "C" void CommRecv_TanChange(s32 n, s32 b, s32 c, s32 d) {
     u8 buf[4];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, n);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, n);
     func_020945b4(buf[0], d);
 }
 
-extern "C" void func_02075bc4(s32 a, s32 b, s32 c, void *d) {
+extern "C" void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, void *d) {
     void *grid;
     volatile u16 c1, b1, c2, b2, a1, a2;
     Unk_02075bc4_Buf buf;
     Unk_02075bc4_Pt pt, pt2;
-    grid = func_0204da0c();
+    grid = TownBlockMap_Get();
     if (grid != NULL) {
         BOOL ok;
-        _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &buf, 8);
+        _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 8);
         ok = FALSE;
         a1 = buf.pos;
         u16 t1 = a1;
@@ -2706,7 +2706,7 @@ extern "C" void func_02075bc4(s32 a, s32 b, s32 c, void *d) {
         s32 y = b1 & 0xff;
         s32 hx = x >> 4;
         s32 hy = y >> 4;
-        u16 *cell = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), buf.flag);
+        u16 *cell = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), buf.flag);
         if (cell != NULL) {
             if (*cell == buf.id) {
                 a2 = buf.pos;
@@ -2734,33 +2734,33 @@ extern "C" void func_02075bc4(s32 a, s32 b, s32 c, void *d) {
     }
 }
 
-extern "C" void func_02075b9c(s32 a, s32 b, s32 c) {
+extern "C" void CommRecv_ItemActionResult(s32 a, s32 b, s32 c) {
     u8 buf[14];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, 0xe);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, 0xe);
     func_02044490(buf, c);
 }
 
-extern "C" void func_02075b74(s32 a, s32 b, s32 c, s32 d) {
+extern "C" void CommRecv_ObjectUseRequest(s32 a, s32 b, s32 c, s32 d) {
     u32 buf;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &buf, 1);
+    _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 1);
     func_0209c4e4(&buf, d);
 }
 
-extern "C" void func_02075b54() {
+extern "C" void CommRecv_ObjectUseReply() {
     u32 buf;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &buf, 1);
+    _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 1);
     func_0209c4bc(&buf);
 }
 
-extern "C" void func_02075b2c(s32 a, s32 b, s32 c, s32 d) {
+extern "C" void CommRecv_ObjectUseRelease(s32 a, s32 b, s32 c, s32 d) {
     u32 buf;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &buf, 1);
+    _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 1);
     func_0209c4a8(&buf, d);
 }
 
-extern "C" void func_02075acc(s32 n, s32 b, s32 c, void *d) {
+extern "C" void CommRecv_VillagerMemoryInit(s32 n, s32 b, s32 c, void *d) {
     u32 buf, id, x;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &buf, n);
+    _ZN11CommManager10readRecordEPhj(gCommManager, &buf, n);
     func_02077a9c(&id, &x, &buf);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
@@ -2772,9 +2772,9 @@ extern "C" void func_02075acc(s32 n, s32 b, s32 c, void *d) {
     }
 }
 
-extern "C" void func_02075a6c(s32 n, s32 b, s32 c, void *d) {
+extern "C" void CommRecv_VillagerMemorySetPlayer(s32 n, s32 b, s32 c, void *d) {
     u32 buf, id, x;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &buf, n);
+    _ZN11CommManager10readRecordEPhj(gCommManager, &buf, n);
     func_02077a9c(&id, &x, &buf);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
@@ -2786,44 +2786,44 @@ extern "C" void func_02075a6c(s32 n, s32 b, s32 c, void *d) {
     }
 }
 
-extern "C" void func_02075a10() {
+extern "C" void CommRecv_VillagerImpression() {
     u8 b[2];
     u32 id, x;
-    void *r5 = data_020cbb18;
-    _ZN12Unk_020cbb1813func_02072770EPhj(r5, b, 1);
+    void *r5 = gCommManager;
+    _ZN11CommManager10readRecordEPhj(r5, b, 1);
     func_02077a9c(&id, &x, b);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
         void *r4 = Villager_GetMemory(r0, x);
         if (r4 != NULL) {
-            _ZN12Unk_020cbb1813func_02072770EPhj(r5, b + 1, 1);
+            _ZN11CommManager10readRecordEPhj(r5, b + 1, 1);
             _ZN14VillagerMemory13setImpressionEi(r4, b[1]);
         }
     }
 }
 
-extern "C" void func_020759b4() {
+extern "C" void CommRecv_VillagerFriendship() {
     s8 b[2];
     u32 id, x;
-    void *r5 = data_020cbb18;
-    _ZN12Unk_020cbb1813func_02072770EPhj(r5, b, 1);
+    void *r5 = gCommManager;
+    _ZN11CommManager10readRecordEPhj(r5, b, 1);
     func_02077a9c(&id, &x, b);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
         void *r4 = Villager_GetMemory(r0, x);
         if (r4 != NULL) {
-            _ZN12Unk_020cbb1813func_02072770EPhj(r5, b + 1, 1);
+            _ZN11CommManager10readRecordEPhj(r5, b + 1, 1);
             _ZN14VillagerMemory13setFriendshipEa(r4, b[1]);
         }
     }
 }
 
-extern "C" void func_02075950() {
+extern "C" void CommRecv_VillagerReceivedItem() {
     struct { u16 x; u8 y[3]; } l;
     u32 id;
     u32 k;
     l.x = 0xfff1;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, l.y, 3);
+    _ZN11CommManager10readRecordEPhj(gCommManager, l.y, 3);
     func_0207783c(&id, &k, &l.x, l.y);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
@@ -2836,12 +2836,12 @@ extern "C" void func_02075950() {
     }
 }
 
-extern "C" void func_02075860() {
+extern "C" void CommRecv_Act3C() {
     struct { u8 a; u8 b; u16 c; } l;
     u32 id;
     l.a = 6;
     l.b = 0;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &l.c, 2);
+    _ZN11CommManager10readRecordEPhj(gCommManager, &l.c, 2);
     func_02077780(&id, &l.a, &l.b, &l.c);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
@@ -2879,7 +2879,7 @@ extern "C" void func_02075860() {
     }
 }
 
-extern "C" void func_020757ac() {
+extern "C" void CommRecv_Act3D() {
     struct { u8 a; u8 b; u16 c; } l;
     u32 buf;
     u32 id;
@@ -2888,7 +2888,7 @@ extern "C" void func_020757ac() {
     l.c = 0xfff1;
     n = 4;
     l.b = 0;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &buf, 4);
+    _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 4);
     func_0207764c(&id, &l.a, &l.c, &n, &l.b, &buf);
     void *r6 = SaveVillagers_Get(data_021dfd8c, id);
     if (r6 != NULL) {
@@ -2910,11 +2910,11 @@ extern "C" void func_020757ac() {
     }
 }
 
-extern "C" void func_020756ec() {
+extern "C" void CommRecv_Act3F() {
     struct { u16 x; u8 y[4]; } l;
     u32 id;
     l.x = 0xfff1;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, l.y, 4);
+    _ZN11CommManager10readRecordEPhj(gCommManager, l.y, 4);
     func_020774f0(&id, &l.x, l.y);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
@@ -2936,12 +2936,12 @@ extern "C" void func_020756ec() {
     }
 }
 
-extern "C" void func_02075680() {
+extern "C" void CommRecv_VillagerShirt() {
     struct { u16 x; u8 y[3]; } l;
     u32 id;
     Unk_02075680_Pad pad;
     l.x = 0xfff1;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, l.y, 3);
+    _ZN11CommManager10readRecordEPhj(gCommManager, l.y, 3);
     func_020774f0(&id, &l.x, l.y);
     void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
@@ -2950,7 +2950,7 @@ extern "C" void func_02075680() {
     }
 }
 
-extern "C" void func_0207561c() {
+extern "C" void CommRecv_VillagerItems() {
     u32 id;
     u16 arr[4];
     u8 buf[9];
@@ -2960,7 +2960,7 @@ extern "C" void func_0207561c() {
     arr[1] = 0xfff1;
     arr[2] = 0xfff1;
     arr[3] = 0xfff1;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, 9);
+    _ZN11CommManager10readRecordEPhj(gCommManager, buf, 9);
     func_02077404(&id, arr, buf);
     r5 = SaveVillagers_Get(data_021dfd8c, id);
     if (r5 != NULL) {
@@ -2973,20 +2973,20 @@ extern "C" void func_0207561c() {
     }
 }
 
-extern "C" void func_020755f4(s32 a, s32 b, s32 c, void *d) {
+extern "C" void CommRecv_PeerNetState(s32 a, s32 b, s32 c, void *d) {
     u8 v;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &v, 1);
+    _ZN11CommManager10readRecordEPhj(gCommManager, &v, 1);
     func_020a5f9c(d, v);
 }
 
-extern "C" void func_020755cc() {
-    Unk_02075558_Obj *o = (Unk_02075558_Obj *)data_020cbb18;
+extern "C" void CommRecv_OwnNetState() {
+    Unk_02075558_Obj *o = (Unk_02075558_Obj *)gCommManager;
     u8 b;
-    _ZN12Unk_020cbb1813func_02072770EPhj(o, &b, 1);
+    _ZN11CommManager10readRecordEPhj(o, &b, 1);
     func_020a5f9c(o->unk_64, b);
 }
 
-extern "C" void func_020755a4(s32 a, s32 b, s32 c, s32 d) {
+extern "C" void CommRecv_Act02(s32 a, s32 b, s32 c, s32 d) {
     if (func_020b50e8() == 0x2e) {
         if (SaveManager_Get() != 0) {
             func_020a0284(SaveManager_Get(), d, 1);
@@ -2994,7 +2994,7 @@ extern "C" void func_020755a4(s32 a, s32 b, s32 c, s32 d) {
     }
 }
 
-extern "C" void func_02075580() {
+extern "C" void CommRecv_Act03() {
     if (func_020b50e8() == 0x2e) {
         if (SaveManager_Get() != 0) {
             SaveManager_Get();
@@ -3003,7 +3003,7 @@ extern "C" void func_02075580() {
     }
 }
 
-extern "C" void func_02075558(s32 a, s32 b, s32 c, s32 d) {
+extern "C" void CommRecv_Act04(s32 a, s32 b, s32 c, s32 d) {
     if (func_020b50e8() == 0x2e) {
         if (SaveManager_Get() != 0) {
             func_020a028c(SaveManager_Get(), d, 1);
@@ -3014,40 +3014,40 @@ extern "C" void func_02075558(s32 a, s32 b, s32 c, s32 d) {
 // ======== unk_02074c4c.cpp ========
 namespace n2 {
 extern "C" {
-extern Unk_02074c4c_G *data_020cbb18;
+extern Unk_02074c4c_G *gCommManager;
 }
 extern "C" {
-extern void (*data_020cbc60[])(u32, u32, u32, u32);
+extern void (*sCommRecvHandlers[])(u32, u32, u32, u32);
 }
 extern "C" {
-s32 _Z13func_020720f8v();
+s32 _Z20NetOverlay_AssertAnyv();
 }
 extern "C" {
-BOOL func_020eaca0();
+BOOL Net_IsReadyToSend();
 }
 extern "C" {
-BOOL func_02076b40(u32);
+BOOL Comm_HasSendCredit(u32);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020729ccEj(void *, s32);
+void _ZN11CommManager7isMyAidEj(void *, s32);
 }
 extern "C" {
-u8 *_ZN12Unk_020cbb1813func_02072ddcEi(void *, s32);
+u8 *_ZN11CommManager10getSendBufEi(void *, s32);
 }
 extern "C" {
-void func_02076bf0(void *, s32, s32);
+void CommPacket_SetHeader(void *, s32, s32);
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(void *, void *, u32, u32, u32, u32, u32, u32, u32, u32);
+BOOL _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(void *, void *, u32, u32, u32, u32, u32, u32, u32, u32);
 }
 extern "C" {
-s32 func_02073190();
+s32 Comm_GetRemoteMask();
 }
 extern "C" {
-u32 _ZN12Unk_020cbb1813func_020723e0Ev(void *);
+u32 _ZN11CommManager13getControlLenEv(void *);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_02072998Ev(void *);
+void *_ZN11CommManager13getSyncVarBufEv(void *);
 }
 extern "C" {
 u32 PlayerSession_GetDataIndex(u32);
@@ -3074,19 +3074,19 @@ extern "C" {
 u32 _ZN18TownCompressBuffer7getSizeEv();
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e88Ei(void *, s32);
+BOOL _ZN11CommManager12isSlotActiveEi(void *, s32);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020727a0EPh(void *);
+void _ZN11CommManager10setReadPtrEPh(void *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072770EPhj(void *, void *, u32);
+void _ZN11CommManager10readRecordEPhj(void *, void *, u32);
 }
 extern "C" {
-u32 func_0207694c(void *);
+u32 NetBuf_ReadU16(void *);
 }
 extern "C" {
-void func_02076ae8(void *, void *, void *);
+void CommRecord_UnpackSource(void *, void *, void *);
 }
 extern "C" {
 void func_0205f094(s32, s32, u32, u32, u32);
@@ -3095,16 +3095,16 @@ extern "C" {
 void func_0205f144(void *);
 }
 extern "C" {
-u32 _ZN12Unk_020cbb1813func_02072478Ev(void *);
+u32 _ZN11CommManager10getAuxBufBEv(void *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072454Ej(void *, void *);
+void _ZN11CommManager10setAuxLenBEj(void *, void *);
 }
 extern "C" {
-u32 _ZN12Unk_020cbb1813func_020724d8Ev(void *);
+u32 _ZN11CommManager10getAuxBufAEv(void *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020724b8Ej(void *, void *);
+void _ZN11CommManager10setAuxLenAEj(void *, void *);
 }
 extern "C" {
 void func_020a5dd8();
@@ -3188,66 +3188,66 @@ extern "C" {
 void func_020a024c(u32, u32, u32);
 }
 extern "C" {
-void func_02073e14(u32);
+void Comm_RemoveMember(u32);
 }
 extern "C" {
-BOOL func_020750ac(u8 *p, void *data, u32 size, u32 type, u32 mask);
+BOOL CommSend_Chunked(u8 *p, void *data, u32 size, u32 type, u32 mask);
 }
 
 
-extern "C" void func_02075534() {
+extern "C" void CommRecv_PlayerLeft() {
     u8 t;
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &t, 1);
-    func_02073e14(t);
+    _ZN11CommManager10readRecordEPhj(gCommManager, &t, 1);
+    Comm_RemoveMember(t);
 }
-extern "C" void func_0207550c(u32 a, u32 b, u32 c, u32 d) {
+extern "C" void CommRecv_Act06(u32 a, u32 b, u32 c, u32 d) {
     if (func_020b50e8() == 0x2e) {
         if (SaveManager_Get()) {
             func_020a024c(SaveManager_Get(), d, 1);
         }
     }
 }
-extern "C" void func_020754e8() {
+extern "C" void CommRecv_Act07() {
     if (func_020b50e8() == 0x2e) {
         if (SaveManager_Get()) {
             func_020a02a8(SaveManager_Get(), 1);
         }
     }
 }
-extern "C" void func_020754a8(u32 a, u32 b, u32 c, u32 d) {
+extern "C" void CommRecv_Act08(u32 a, u32 b, u32 c, u32 d) {
     u8 t[2];
     func_020a6970(t);
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, t, 1);
+    _ZN11CommManager10readRecordEPhj(gCommManager, t, 1);
     func_020a6960(t, t + 1);
     func_020a6430(d, t[1]);
     func_020a696c(t);
 }
-extern "C" void func_02075450() {
+extern "C" void CommRecv_SlotStatus() {
     struct { u8 t[4]; u32 pad; u32 w1; u32 w2; } l;
     func_020a6848(l.t + 3);
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, l.t + 3, 2);
+    _ZN11CommManager10readRecordEPhj(gCommManager, l.t + 3, 2);
     func_020a6804(l.t + 3, &l.w1, l.t, l.t + 1, l.t + 2, &l.w2);
     func_020a63bc(l.w1, l.t[0], l.t[1], l.t[2], l.w2);
     func_020a6838(l.t + 3);
 }
-extern "C" void func_02075428(u32 a, u32 b, u32 c, u32 d) {
+extern "C" void CommRecv_Act0A(u32 a, u32 b, u32 c, u32 d) {
     u8 t[4];
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, t, 1);
+    _ZN11CommManager10readRecordEPhj(gCommManager, t, 1);
     func_020a63a8(d, t[0]);
 }
-extern "C" void func_020753d0(u32 a, u32 b, u32 c, u32 d) {
+extern "C" void CommRecv_Act0B(u32 a, u32 b, u32 c, u32 d) {
     struct { u8 t[4]; u32 pad; u32 w; } l;
     func_020a68a8(l.t + 3);
-    _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, l.t + 3, 2);
+    _ZN11CommManager10readRecordEPhj(gCommManager, l.t + 3, 2);
     func_020a6858(l.t + 3, l.t, l.t + 1, l.t + 2, &l.w);
     func_020a6388(d, l.t[0], l.t[1], l.t[2], l.w);
     func_020a6898(l.t + 3);
 }
-extern "C" void func_0207536c(u32 a, u32 b, u32 c, u32 d) {
+extern "C" void CommRecv_Act0C(u32 a, u32 b, u32 c, u32 d) {
     s32 v[5];
     func_020a66f4(v);
-    Unk_02074c4c_G *g = data_020cbb18;
-    _ZN12Unk_020cbb1813func_02072770EPhj(g, v, 1);
+    Unk_02074c4c_G *g = gCommManager;
+    _ZN11CommManager10readRecordEPhj(g, v, 1);
     func_020a66ac(v, v + 1, v + 2, v + 3);
     if (d == 0) func_020a5f48(g->unk_64, v[1]);
     else func_020a5f48(d, v[1]);
@@ -3255,59 +3255,59 @@ extern "C" void func_0207536c(u32 a, u32 b, u32 c, u32 d) {
     if (v[3] < 4) func_020a5f5c();
     func_020a66f0(v);
 }
-extern "C" void func_02075360(u32 a, u32 b, u32 c, u32 d) { func_020a5eb4(d, 1); }
-extern "C" void func_02075354(u32 a, u32 b, u32 c, u32 d) { func_020a5ea4(d); }
-extern "C" void func_02075320(u32 n) {
-    void *g = data_020cbb18;
-    _ZN12Unk_020cbb1813func_02072770EPhj(g, (void *)_ZN12Unk_020cbb1813func_020724d8Ev(g), n);
-    _ZN12Unk_020cbb1813func_020724b8Ej(g, (void *)n);
+extern "C" void CommRecv_Act0D(u32 a, u32 b, u32 c, u32 d) { func_020a5eb4(d, 1); }
+extern "C" void CommRecv_Act0E(u32 a, u32 b, u32 c, u32 d) { func_020a5ea4(d); }
+extern "C" void CommRecv_Act0F(u32 n) {
+    void *g = gCommManager;
+    _ZN11CommManager10readRecordEPhj(g, (void *)_ZN11CommManager10getAuxBufAEv(g), n);
+    _ZN11CommManager10setAuxLenAEj(g, (void *)n);
     func_020a5dd8();
 }
-extern "C" void func_020752f0(u32 n) {
-    void *g = data_020cbb18;
-    _ZN12Unk_020cbb1813func_02072770EPhj(g, (void *)_ZN12Unk_020cbb1813func_02072478Ev(g), n);
-    _ZN12Unk_020cbb1813func_02072454Ej(g, (void *)n);
+extern "C" void CommRecv_Act10(u32 n) {
+    void *g = gCommManager;
+    _ZN11CommManager10readRecordEPhj(g, (void *)_ZN11CommManager10getAuxBufBEv(g), n);
+    _ZN11CommManager10setAuxLenBEj(g, (void *)n);
 }
-extern "C" void func_020752e4() { func_020a5e94(1); }
-extern "C" void func_020752b0(u32 n) {
+extern "C" void CommRecv_Act11() { func_020a5e94(1); }
+extern "C" void CommRecv_ItemSet(u32 n) {
     u32 i = 0;
-    void *g = data_020cbb18;
+    void *g = gCommManager;
     u8 buf[5];
     while (i < n) {
-        _ZN12Unk_020cbb1813func_02072770EPhj(g, buf, 5);
+        _ZN11CommManager10readRecordEPhj(g, buf, 5);
         func_0205f144(buf);
         i += 5;
     }
 }
-extern "C" void func_0207524c(u32 n) {
+extern "C" void CommRecv_ItemSetRequest(u32 n) {
     u32 i = 0;
-    void *g = data_020cbb18;
+    void *g = gCommManager;
     s32 z = 0;
     u8 buf[7];
     while (i < n) {
-        _ZN12Unk_020cbb1813func_02072770EPhj(g, buf + 2, 5);
-        u32 v = func_0207694c(buf + 2);
-        func_02076ae8(buf + 4, buf, buf + 1);
+        _ZN11CommManager10readRecordEPhj(g, buf + 2, 5);
+        u32 v = NetBuf_ReadU16(buf + 2);
+        CommRecord_UnpackSource(buf + 4, buf, buf + 1);
         func_0205f094(((s8 *)buf)[5], ((s8 *)buf)[6], buf[0], v, buf[1] ? 1 : z);
         i += 5;
     }
 }
-extern "C" void func_0207521c(u32 idx, u32 x, u32 a, u32 b, u8 c, u32 d) {
-    _ZN12Unk_020cbb1813func_020727a0EPh(data_020cbb18);
-    data_020cbc60[idx](a, b, c, d);
+extern "C" void CommRecv_Dispatch(u32 idx, u32 x, u32 a, u32 b, u8 c, u32 d) {
+    _ZN11CommManager10setReadPtrEPh(gCommManager);
+    sCommRecvHandlers[idx](a, b, c, d);
 }
-extern "C" BOOL func_02075170(u32 a) {
-    _Z13func_020720f8v();
-    if (func_020eaca0()) {
-        if (func_02076b40(a)) {
-            void *g = data_020cbb18;
-            _ZN12Unk_020cbb1813func_020729ccEj(g, 0);
-            u8 *b = _ZN12Unk_020cbb1813func_02072ddcEi(g, 4);
-            func_02076bf0(b, 0, 0);
+extern "C" BOOL CommSend_MemberInfo(u32 a) {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend()) {
+        if (Comm_HasSendCredit(a)) {
+            void *g = gCommManager;
+            _ZN11CommManager7isMyAidEj(g, 0);
+            u8 *b = _ZN11CommManager10getSendBufEi(g, 4);
+            CommPacket_SetHeader(b, 0, 0);
             u32 m = 0;
             u32 i = 0;
             for (i = 0; i < 4; i++) {
-                if (_ZN12Unk_020cbb1813func_02072e88Ei(g, i)) {
+                if (_ZN11CommManager12isSlotActiveEi(g, i)) {
                     m |= (u8)(1 << i);
                 }
             }
@@ -3315,28 +3315,28 @@ extern "C" BOOL func_02075170(u32 a) {
             u32 r = (u8)m;
             r |= (((u8)PlayerSession_GetDataIndex(0)) << 6) & 0xc0;
             b[1] = r;
-            g = data_020cbb18;
-            return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 2, a, 0, 0, 0, 0, 0, 0);
+            g = gCommManager;
+            return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 2, a, 0, 0, 0, 0, 0, 0);
         }
     }
     return FALSE;
 }
-extern "C" BOOL func_020750ac(u8 *p, void *data, u32 size, u32 type, u32 maskw) {
+extern "C" BOOL CommSend_Chunked(u8 *p, void *data, u32 size, u32 type, u32 maskw) {
     u32 cnt = size / 0xffb;
     u32 rem = size % 0xffb;
     if (rem != 0) cnt++;
-    _Z13func_020720f8v();
-    if (func_020eaca0()) {
-        if (func_02076b40(*(u16 *)&maskw)) {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend()) {
+        if (Comm_HasSendCredit(*(u16 *)&maskw)) {
             u32 off = *p * 0xffb;
             u32 left = size - off;
             if (left > 0xffb) left = 0xffb;
-            void *g = data_020cbb18;
-            u8 *b = _ZN12Unk_020cbb1813func_02072ddcEi(g, 4);
-            func_02076bf0(b, 0, type);
+            void *g = gCommManager;
+            u8 *b = _ZN11CommManager10getSendBufEi(g, 4);
+            CommPacket_SetHeader(b, 0, type);
             MI_CpuCopy8(&off, b + 1, 4);
             MI_CpuCopy8((u8 *)data + off, b + 5, left);
-            if (_ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), left + 5, *(u16 *)&maskw, 0, 0, 0, 0, 0, 0)) {
+            if (_ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), left + 5, *(u16 *)&maskw, 0, 0, 0, 0, 0, 0)) {
                 (*p)++;
             }
         }
@@ -3344,29 +3344,29 @@ extern "C" BOOL func_020750ac(u8 *p, void *data, u32 size, u32 type, u32 maskw) 
     if (*p >= cnt) return TRUE;
     return FALSE;
 }
-extern "C" void func_02075078(u8 *p, u32 v) {
+extern "C" void CommSend_TownChunk(u8 *p, u32 v) {
     void *d = SaveManager_GetTownCompressBuf();
     u32 n = _ZN18TownCompressBuffer7getSizeEv();
     u32 sz;
     if (n == 0) sz = 0x15fe4; else sz = n + 4;
-    func_020750ac(p, d, sz, 1, v);
+    CommSend_Chunked(p, d, sz, 1, v);
 }
-extern "C" BOOL func_02074ff0(u8 *p) {
+extern "C" BOOL CommSend_VillagerTransfer(u8 *p) {
     void *d = func_0208f0b0(4);
     if (_ZN12Unk_0208f23813func_0208f1c0Ev(d)) {
-        return func_020750ac(p, d, 0x84c, 2, 1);
+        return CommSend_Chunked(p, d, 0x84c, 2, 1);
     }
-    _Z13func_020720f8v();
-    if (func_020eaca0()) {
-        if (func_02076b40(1)) {
-            void *g = data_020cbb18;
-            func_02076bf0(_ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 0, 2);
-            return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend()) {
+        if (Comm_HasSendCredit(1)) {
+            void *g = gCommManager;
+            CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 2);
+            return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
         }
     }
     return FALSE;
 }
-extern "C" BOOL func_02074eb4(s32 a, void *b, s32 c, void *d, s32 e, void *f) {
+extern "C" BOOL CommSend_VillagerTransferReply(s32 a, void *b, s32 c, void *d, s32 e, void *f) {
     s32 vals[3];
     void *ptrs[3];
     u8 *bufs[3];
@@ -3375,21 +3375,21 @@ extern "C" BOOL func_02074eb4(s32 a, void *b, s32 c, void *d, s32 e, void *f) {
     u32 i;
     s32 mode;
     void *g;
-    _Z13func_020720f8v();
-    if (!func_020eaca0()) goto fail;
+    _Z20NetOverlay_AssertAnyv();
+    if (!Net_IsReadyToSend()) goto fail;
     vals[0] = a; vals[1] = c; vals[2] = e;
     ptrs[0] = b; ptrs[1] = d; ptrs[2] = f;
     func_02133ef8(bufs, 0xc);
     func_02133ef8(offs, 0xc);
     func_02133ef8(masks, 6);
     i = 0;
-    g = data_020cbb18;
+    g = gCommManager;
     for (; i < 3; i++) {
         mode = vals[i];
         if (mode != 3) {
-            bufs[i] = _ZN12Unk_020cbb1813func_02072ddcEi(g, i + 1);
+            bufs[i] = _ZN11CommManager10getSendBufEi(g, i + 1);
             u8 *bb = bufs[i];
-            func_02076bf0(bb, 0, 3);
+            CommPacket_SetHeader(bb, 0, 3);
             offs[i] = offs[i] + 1;
             if (mode == 0) {
                 bb[1] = 0;
@@ -3407,8 +3407,8 @@ extern "C" BOOL func_02074eb4(s32 a, void *b, s32 c, void *d, s32 e, void *f) {
     if (a == 3 && c == 3) {
         if (e == 3) goto yes;
     }
-    if (func_02076b40((u16)(masks[0] | masks[1] | masks[2]))) {
-        return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, bufs[0], offs[0], masks[0], (u32)bufs[1], offs[1], masks[1], (u32)bufs[2], offs[2], masks[2]);
+    if (Comm_HasSendCredit((u16)(masks[0] | masks[1] | masks[2]))) {
+        return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, bufs[0], offs[0], masks[0], (u32)bufs[1], offs[1], masks[1], (u32)bufs[2], offs[2], masks[2]);
     }
     return FALSE;
 yes:
@@ -3416,71 +3416,71 @@ yes:
 fail:
     return FALSE;
 }
-extern "C" void func_02074e80(u8 *p, u32 v) {
-    func_020750ac(p, (void *)PlayerData_Get(PlayerSession_GetDataIndex(data_020cbb18->unk_68)), 0x228c, 4, v);
+extern "C" void CommSend_PlayerData(u8 *p, u32 v) {
+    CommSend_Chunked(p, (void *)PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->unk_68)), 0x228c, 4, v);
 }
-extern "C" void func_02074e50(u8 *p, u32 v) {
-    func_020750ac(p, _ZN12Unk_020cbb1813func_02072998Ev(data_020cbb18), 0x68c, 0xc, v);
+extern "C" void CommSend_SyncVarChunk(u8 *p, u32 v) {
+    CommSend_Chunked(p, _ZN11CommManager13getSyncVarBufEv(gCommManager), 0x68c, 0xc, v);
 }
-extern "C" BOOL func_02074df4(u32 a) {
-    _Z13func_020720f8v();
-    if (func_020eaca0()) {
-        if (func_02076b40(a)) {
-            void *g = data_020cbb18;
-            u8 *b = _ZN12Unk_020cbb1813func_02072ddcEi(g, 4);
-            return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, b, _ZN12Unk_020cbb1813func_020723e0Ev(g), a, 0, 0, 0, 0, 0, 0);
+extern "C" BOOL CommSend_BuiltPacket(u32 a) {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend()) {
+        if (Comm_HasSendCredit(a)) {
+            void *g = gCommManager;
+            u8 *b = _ZN11CommManager10getSendBufEi(g, 4);
+            return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, b, _ZN11CommManager13getControlLenEv(g), a, 0, 0, 0, 0, 0, 0);
         }
     }
     return FALSE;
 }
-extern "C" BOOL func_02074d78() {
-    u32 a = func_02073190();
+extern "C" BOOL CommCtrl_SendAct08() {
+    u32 a = Comm_GetRemoteMask();
     if (a != 0) {
-        _Z13func_020720f8v();
-        if (func_020eaca0()) {
-            if (func_02076b40(a)) {
-                void *g = data_020cbb18;
-                _ZN12Unk_020cbb1813func_020729ccEj(g, 0);
-                u8 *b = _ZN12Unk_020cbb1813func_02072ddcEi(g, 4);
-                func_02076bf0(b, 0, 8);
+        _Z20NetOverlay_AssertAnyv();
+        if (Net_IsReadyToSend()) {
+            if (Comm_HasSendCredit(a)) {
+                void *g = gCommManager;
+                _ZN11CommManager7isMyAidEj(g, 0);
+                u8 *b = _ZN11CommManager10getSendBufEi(g, 4);
+                CommPacket_SetHeader(b, 0, 8);
                 b[1] = 1;
-                return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 2, a, 0, 0, 0, 0, 0, 0);
+                return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 2, a, 0, 0, 0, 0, 0, 0);
             }
         }
         return FALSE;
     }
     return TRUE;
 }
-extern "C" BOOL func_02074d18() {
-    _Z13func_020720f8v();
-    if (func_020eaca0()) {
-        if (func_02076b40(1)) {
-            void *g = data_020cbb18;
-            func_02076bf0(_ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 0, 7);
-            return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
+extern "C" BOOL CommCtrl_SendAct07() {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend()) {
+        if (Comm_HasSendCredit(1)) {
+            void *g = gCommManager;
+            CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 7);
+            return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
         }
     }
     return FALSE;
 }
-extern "C" BOOL func_02074cb4(u32 a) {
-    _Z13func_020720f8v();
-    if (func_020eaca0()) {
-        if (func_02076b40(a)) {
-            void *g = data_020cbb18;
-            func_02076bf0(_ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 0, 0xb);
-            return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 1, a, 0, 0, 0, 0, 0, 0);
+extern "C" BOOL CommSend_JoinDone(u32 a) {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend()) {
+        if (Comm_HasSendCredit(a)) {
+            void *g = gCommManager;
+            CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 0xb);
+            return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, a, 0, 0, 0, 0, 0, 0);
         }
     }
     return FALSE;
 }
-extern "C" BOOL func_02074c4c() {
-    _Z13func_020720f8v();
-    if (func_020eaca0()) {
-        if (func_02076b40(1)) {
-            void *g = data_020cbb18;
-            _ZN12Unk_020cbb1813func_020729ccEj(g, 0);
-            func_02076bf0(_ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 0, 9);
-            return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
+extern "C" BOOL CommSend_JoinReady() {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend()) {
+        if (Comm_HasSendCredit(1)) {
+            void *g = gCommManager;
+            _ZN11CommManager7isMyAidEj(g, 0);
+            CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 9);
+            return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
         }
     }
     return FALSE;
@@ -3489,12 +3489,12 @@ extern "C" BOOL func_02074c4c() {
 
 // ======== unk_020742f4.cpp ========
 namespace n1 {
-struct Unk_020cbb18;
+struct CommManager;
 extern "C" {
-extern void (*data_020cbb74[])(void *, s32, s32);
+extern void (*sCommCtrlHandlers[])(void *, s32, s32);
 }
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 extern "C" {
 s32 func_020b50e8();
@@ -3563,22 +3563,22 @@ extern "C" {
 s32 func_020a63bc(u32, u32, u32, u32, u32);
 }
 extern "C" {
-u32 func_020eaf90();
+u32 Net_GetMyAid();
 }
 extern "C" {
 s32 func_020a027c(s32, s32, s32);
 }
 extern "C" {
-void func_020766ec(void *, s32, s32);
+void CommBlock_ParseAll(void *, s32, s32);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072998Ev(Unk_020cbb18 *);
+s32 _ZN11CommManager13getSyncVarBufEv(CommManager *);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072e1cEv(Unk_020cbb18 *);
+s32 _ZN11CommManager14getPendingModeEv(CommManager *);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072e20Ej(Unk_020cbb18 *, u32);
+s32 _ZN11CommManager14setPendingModeEj(CommManager *, u32);
 }
 extern "C" {
 s32 func_020a5cfc(s32);
@@ -3620,86 +3620,86 @@ extern "C" {
 s32 func_020a02c0(s32, u8);
 }
 extern "C" {
-void _Z13func_020720f8v();
+void _Z20NetOverlay_AssertAnyv();
 }
 extern "C" {
-u32 func_020eaca0();
+u32 Net_IsReadyToSend();
 }
 extern "C" {
-u32 func_02076b40(u32);
+u32 Comm_HasSendCredit(u32);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_020729ccEj(Unk_020cbb18 *, s32);
+s32 _ZN11CommManager7isMyAidEj(CommManager *, s32);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072ddcEi(Unk_020cbb18 *, s32);
+s32 _ZN11CommManager10getSendBufEi(CommManager *, s32);
 }
 extern "C" {
-s32 func_02076bf0(s32, s32, s32);
+s32 CommPacket_SetHeader(s32, s32, s32);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(Unk_020cbb18 *, s32, u32, u32, s32, s32, s32, s32, s32, s32);
+s32 _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(CommManager *, s32, u32, u32, s32, s32, s32, s32, s32, s32);
 }
 extern "C" {
 s32 PlayerSession_GetDataIndex(s32);
 }
 extern "C" {
-s32 func_020750ac(void *, s32, s32, s32, s32);
+s32 CommSend_Chunked(void *, s32, s32, s32, s32);
 }
 extern "C" {
-void func_02073190();
+void Comm_GetRemoteMask();
 }
 extern "C" {
 s32 func_020a5e74(u32, u8 *, u8 *, u8 *);
 }
 extern "C" {
-s32 func_0209d498(void *);
+s32 Clock_GetDateTime(void *);
 }
 
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 pad_00[0x64];
     s32 unk_64;
     volatile s32 unk_68;
 };
-extern "C" s32 func_02074bc8(u32 a) {
-    _Z13func_020720f8v();
-    if (func_020eaca0() != 0 && func_02076b40(a) != 0) {
-        Unk_020cbb18 *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020729ccEj(g, 0);
-        u8 *p = (u8 *)_ZN12Unk_020cbb1813func_02072ddcEi(g, 4);
-        func_02076bf0((s32)p, 0, 0xa);
+extern "C" s32 CommSend_DateTime(u32 a) {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(a) != 0) {
+        CommManager *g = gCommManager;
+        _ZN11CommManager7isMyAidEj(g, 0);
+        u8 *p = (u8 *)_ZN11CommManager10getSendBufEi(g, 4);
+        CommPacket_SetHeader((s32)p, 0, 0xa);
         u32 t[2];
         t[0] = 0;
         t[1] = 0;
-        func_0209d498(t);
+        Clock_GetDateTime(t);
         MI_CpuCopy8(t, p + 1, 8);
-        return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 9, a, 0, 0, 0, 0, 0, 0);
+        return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 9, a, 0, 0, 0, 0, 0, 0);
     }
     return 0;
 }
-extern "C" s32 func_02074b58(u8 a, u32 b) {
+extern "C" s32 CommCtrl_SendAct0E(u8 a, u32 b) {
     if (b != 0) {
-        _Z13func_020720f8v();
-        if (func_020eaca0() != 0 && func_02076b40(b) != 0) {
-            Unk_020cbb18 *g = data_020cbb18;
-            u8 *p = (u8 *)_ZN12Unk_020cbb1813func_02072ddcEi(g, 4);
-            func_02076bf0((s32)p, 0, 0xe);
+        _Z20NetOverlay_AssertAnyv();
+        if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(b) != 0) {
+            CommManager *g = gCommManager;
+            u8 *p = (u8 *)_ZN11CommManager10getSendBufEi(g, 4);
+            CommPacket_SetHeader((s32)p, 0, 0xe);
             p[1] = a;
-            return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 2, b, 0, 0, 0, 0, 0, 0);
+            return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 2, b, 0, 0, 0, 0, 0, 0);
         }
         return 0;
     }
     return 1;
 }
-extern "C" s32 func_02074a94(s32 a) {
+extern "C" s32 CommSend_SlotStatusAll(s32 a) {
     u16 m = 1 << a;
-    _Z13func_020720f8v();
-    if (func_020eaca0() != 0 && func_02076b40(m) != 0) {
-        u8 *p = (u8 *)_ZN12Unk_020cbb1813func_02072ddcEi(data_020cbb18, 4);
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(m) != 0) {
+        u8 *p = (u8 *)_ZN11CommManager10getSendBufEi(gCommManager, 4);
         u32 len = 0;
         u32 j;
-        func_02076bf0((s32)p, 0, 0xf);
+        CommPacket_SetHeader((s32)p, 0, 0xf);
         p++;
         len++;
         for (j = 0; j < 4; j++) {
@@ -3715,79 +3715,79 @@ extern "C" s32 func_02074a94(s32 a) {
             len += 2;
             func_020a6898(l.col);
         }
-        Unk_020cbb18 *g = data_020cbb18;
-        return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), len, m, 0, 0, 0, 0, 0, 0);
+        CommManager *g = gCommManager;
+        return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), len, m, 0, 0, 0, 0, 0, 0);
     }
     return 0;
 }
-extern "C" s32 func_02074a2c() {
-    _Z13func_020720f8v();
-    if (func_020eaca0() != 0 && func_02076b40(1) != 0) {
-        Unk_020cbb18 *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020729ccEj(g, 0);
-        func_02076bf0(_ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 0, 0x10);
-        return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
+extern "C" s32 CommCtrl_SendAct10() {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(1) != 0) {
+        CommManager *g = gCommManager;
+        _ZN11CommManager7isMyAidEj(g, 0);
+        CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 0x10);
+        return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
     }
     return 0;
 }
-extern "C" s32 func_020749cc() {
-    _Z13func_020720f8v();
-    if (func_020eaca0() != 0 && func_02076b40(1) != 0) {
-        Unk_020cbb18 *g = data_020cbb18;
-        func_02076bf0(_ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 0, 0x11);
-        return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
+extern "C" s32 CommCtrl_SendAct11() {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(1) != 0) {
+        CommManager *g = gCommManager;
+        CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 0x11);
+        return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
     }
     return 0;
 }
-extern "C" s32 func_02074960(u32 a) {
-    _Z13func_020720f8v();
-    if (func_020eaca0() != 0 && func_02076b40(a) != 0) {
-        Unk_020cbb18 *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020729ccEj(g, 0);
-        func_02076bf0(_ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 0, 0x12);
-        return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 1, a, 0, 0, 0, 0, 0, 0);
+extern "C" s32 CommCtrl_SendAct12(u32 a) {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(a) != 0) {
+        CommManager *g = gCommManager;
+        _ZN11CommManager7isMyAidEj(g, 0);
+        CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 0x12);
+        return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, a, 0, 0, 0, 0, 0, 0);
     }
     return 0;
 }
-extern "C" s32 func_020748fc() {
-    _Z13func_020720f8v();
-    if (func_020eaca0() != 0 && func_02076b40(1) != 0) {
-        Unk_020cbb18 *g = data_020cbb18;
-        func_02076bf0(_ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 0, 0x13);
-        func_02073190();
-        return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
+extern "C" s32 CommCtrl_SendAct13() {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(1) != 0) {
+        CommManager *g = gCommManager;
+        CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 0x13);
+        Comm_GetRemoteMask();
+        return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
     }
     return 0;
 }
-extern "C" s32 func_02074894() {
-    _Z13func_020720f8v();
-    if (func_020eaca0() != 0 && func_02076b40(1) != 0) {
-        Unk_020cbb18 *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020729ccEj(g, 0);
-        func_02076bf0(_ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 0, 0x14);
-        return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
+extern "C" s32 CommCtrl_SendAct14() {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(1) != 0) {
+        CommManager *g = gCommManager;
+        _ZN11CommManager7isMyAidEj(g, 0);
+        CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 0x14);
+        return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
     }
     return 0;
 }
-extern "C" s32 func_02074860(void *a) {
-    s32 r = PlayerData_Get(PlayerSession_GetDataIndex(data_020cbb18->unk_68));
-    return func_020750ac(a, r, 0x228c, 0x15, 1);
+extern "C" s32 CommSend_PlayerDataToHost(void *a) {
+    s32 r = PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->unk_68));
+    return CommSend_Chunked(a, r, 0x228c, 0x15, 1);
 }
-extern "C" s32 func_02074828(void *a) {
-    s32 r = func_02097a04(PlayerData_Get(PlayerSession_GetDataIndex(data_020cbb18->unk_68)));
-    return func_020750ac(a, r, 0x477c, 0x16, 1);
+extern "C" s32 CommSend_LetterStorageToHost(void *a) {
+    s32 r = func_02097a04(PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->unk_68)));
+    return CommSend_Chunked(a, r, 0x477c, 0x16, 1);
 }
-extern "C" s32 func_020747c0() {
-    _Z13func_020720f8v();
-    if (func_020eaca0() != 0 && func_02076b40(1) != 0) {
-        Unk_020cbb18 *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020729ccEj(g, 0);
-        func_02076bf0(_ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 0, 0x17);
-        return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
+extern "C" s32 CommCtrl_SendAct17() {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(1) != 0) {
+        CommManager *g = gCommManager;
+        _ZN11CommManager7isMyAidEj(g, 0);
+        CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 0x17);
+        return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
     }
     return 0;
 }
-extern "C" void func_02074780(u8 *a) {
+extern "C" void CommCtrl_RecvMemberInfo(u8 *a) {
     if (func_020b50e8() == 0xc) {
         if (SaveManager_Get() != 0) {
             s32 v = *a;
@@ -3796,7 +3796,7 @@ extern "C" void func_02074780(u8 *a) {
         }
     }
 }
-extern "C" void func_02074724(u8 *a, s32 b) {
+extern "C" void CommCtrl_RecvTownChunk(u8 *a, s32 b) {
     u32 n;
     if (func_020b50e8() == 0xc) {
         MI_CpuCopy8(a, &n, 4);
@@ -3814,7 +3814,7 @@ extern "C" void func_02074724(u8 *a, s32 b) {
         }
     }
 }
-extern "C" void func_020746c0(u8 *a, s32 b, s32 c) {
+extern "C" void CommCtrl_RecvVillagerTransfer(u8 *a, s32 b, s32 c) {
     u32 n;
     if (b != 0) {
         MI_CpuCopy8(a, &n, 4);
@@ -3829,7 +3829,7 @@ extern "C" void func_020746c0(u8 *a, s32 b, s32 c) {
         }
     }
 }
-extern "C" void func_02074668(u8 *a, s32 b) {
+extern "C" void CommCtrl_RecvVillagerTransferReply(u8 *a, s32 b) {
     if (b == 1) {
         if (*a != 0) {
             func_0208f1dc(func_0208f0b0(4));
@@ -3839,11 +3839,11 @@ extern "C" void func_02074668(u8 *a, s32 b) {
     }
     if (func_020b50e8() == 0x2e) {
         if (SaveManager_Get() != 0) {
-            _ZN12Unk_020e282413func_020a1464Ejh(SaveManager_Get(), data_020cbb18->unk_64, 1);
+            _ZN12Unk_020e282413func_020a1464Ejh(SaveManager_Get(), gCommManager->unk_64, 1);
         }
     }
 }
-extern "C" void func_02074630(u8 *a, s32 b, s32 c) {
+extern "C" void CommCtrl_RecvVisitorPlayerData(u8 *a, s32 b, s32 c) {
     u32 n;
     MI_CpuCopy8(a, &n, 4);
     s32 t = c + 3;
@@ -3851,31 +3851,31 @@ extern "C" void func_02074630(u8 *a, s32 b, s32 c) {
     MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
     PlayerSession_SetDataIndex(c, t);
 }
-extern "C" void func_02074620(u8 *a, s32 b, s32 c) {
+extern "C" void CommCtrl_RecvNetState(u8 *a, s32 b, s32 c) {
     func_020a5f9c(c, *a);
 }
-extern "C" void func_020745fc(u8 *a) {
+extern "C" void CommCtrl_Act06(u8 *a) {
     s32 v = *a;
     func_020a5f9c(3, v & 7);
     func_020a5f7c((v >> 4) & 0xf);
 }
-extern "C" void func_020745f0() {
+extern "C" void CommCtrl_Act07() {
     func_020a5cfc(1);
 }
-extern "C" void func_020745c8(u8 *a) {
-    Unk_020cbb18 *g = data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_02072e1cEv(g) == 3) {
-        _ZN12Unk_020cbb1813func_02072e20Ej(g, *a);
+extern "C" void CommCtrl_Act08(u8 *a) {
+    CommManager *g = gCommManager;
+    if (_ZN11CommManager14getPendingModeEv(g) == 3) {
+        _ZN11CommManager14setPendingModeEj(g, *a);
     }
 }
-extern "C" void func_0207459c() {
+extern "C" void CommCtrl_RecvJoinReady() {
     if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f) {
         if (SaveManager_Get() != 0) {
             func_020a02a0(SaveManager_Get(), 1);
         }
     }
 }
-extern "C" void func_02074564(void *a) {
+extern "C" void CommCtrl_RecvDateTime(void *a) {
     if (func_020b50e8() == 0xc) {
         if (SaveManager_Get() != 0) {
             MI_CpuCopy8(a, (void *)func_020a0294(SaveManager_Get()), 8);
@@ -3883,27 +3883,27 @@ extern "C" void func_02074564(void *a) {
         }
     }
 }
-extern "C" void func_02074538() {
+extern "C" void CommCtrl_RecvJoinDone() {
     if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f) {
         if (SaveManager_Get() != 0) {
             func_020a02b8(SaveManager_Get(), 1);
         }
     }
 }
-extern "C" void func_02074504(u8 *a, s32 b) {
+extern "C" void CommCtrl_RecvSyncVarChunk(u8 *a, s32 b) {
     u32 n;
     MI_CpuCopy8(a, &n, 4);
-    s32 q = _ZN12Unk_020cbb1813func_02072998Ev(data_020cbb18);
+    s32 q = _ZN11CommManager13getSyncVarBufEv(gCommManager);
     MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
 }
-extern "C" void func_020744fc(void *a, s32 b, s32 c) {
-    func_020766ec(a, b, c);
+extern "C" void CommCtrl_RecvStateBlocks(void *a, s32 b, s32 c) {
+    CommBlock_ParseAll(a, b, c);
 }
-extern "C" void func_020744b8(u8 *a, s32 b, s32 c) {
+extern "C" void CommCtrl_Act0E(u8 *a, s32 b, s32 c) {
     if (func_020b50e8() == 0x2e || func_020b50e8() == 9) {
         s32 p = SaveManager_Get();
         if (p != 0) {
-            if (func_020eaf90() == 0) {
+            if (Net_GetMyAid() == 0) {
                 func_020a027c(p, c, *a);
             } else {
                 func_020a027c(p, 0, *a);
@@ -3911,7 +3911,7 @@ extern "C" void func_020744b8(u8 *a, s32 b, s32 c) {
         }
     }
 }
-extern "C" void func_0207445c(u8 *a) {
+extern "C" void CommCtrl_RecvSlotStatusAll(u8 *a) {
     struct {
         u8 r, g, b;
         u8 col[2];
@@ -3927,44 +3927,44 @@ extern "C" void func_0207445c(u8 *a) {
         func_020a6898(l.col);
     }
 }
-extern "C" void func_02074434(void *a, s32 b, s32 c) {
+extern "C" void CommCtrl_Act10(void *a, s32 b, s32 c) {
     if (func_020b50e8() == 0x2e) {
         if (SaveManager_Get() != 0) {
             func_020a0244(SaveManager_Get(), c, 1);
         }
     }
 }
-extern "C" void func_0207440c(void *a, s32 b, s32 c) {
+extern "C" void CommCtrl_Act11(void *a, s32 b, s32 c) {
     if (func_020b50e8() == 0x2e) {
         if (SaveManager_Get() != 0) {
             func_020a023c(SaveManager_Get(), c, 1);
         }
     }
 }
-extern "C" void func_020743e8() {
+extern "C" void CommCtrl_Act12() {
     if (func_020b50e8() == 0x2e) {
         if (SaveManager_Get() != 0) {
             func_020a02b0(SaveManager_Get(), 1);
         }
     }
 }
-extern "C" void func_020743c0(void *a, s32 b, s32 c) {
+extern "C" void CommCtrl_Act13(void *a, s32 b, s32 c) {
     if (func_020b50e8() == 0x2e) {
         if (SaveManager_Get() != 0) {
             func_020a024c(SaveManager_Get(), c, 1);
         }
     }
 }
-extern "C" void func_020743b4(void *a, s32 b, s32 c) {
+extern "C" void CommCtrl_Act14(void *a, s32 b, s32 c) {
     func_020a0228(c);
 }
-extern "C" void func_0207435c(u8 *a, s32 b) {
+extern "C" void CommCtrl_RecvPlayerDataToHost(u8 *a, s32 b) {
     u32 n;
     if (func_020b50e8() == 0x2e) {
         if (SaveManager_Get() != 0) {
             MI_CpuCopy8(a, &n, 4);
             s32 r = _ZN12Unk_020e282413func_020a148cEv(SaveManager_Get());
-            Unk_020cbb18 *g = data_020cbb18;
+            CommManager *g = gCommManager;
             g->unk_68 = 0;
             PlayerSession_SetDataIndex(g->unk_68, r);
             s32 q = PlayerData_GetCurrent();
@@ -3972,21 +3972,21 @@ extern "C" void func_0207435c(u8 *a, s32 b) {
         }
     }
 }
-extern "C" void func_0207432c(u8 *a, s32 b) {
+extern "C" void CommCtrl_RecvLetterStorageToHost(u8 *a, s32 b) {
     u32 n;
     MI_CpuCopy8(a, &n, 4);
     s32 q = func_02097a04(PlayerData_GetCurrent());
     MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
 }
-extern "C" void func_02074308() {
+extern "C" void CommCtrl_Act17() {
     if (func_020b50e8() == 0x2e) {
         if (SaveManager_Get() != 0) {
             func_020a0208(SaveManager_Get(), 1);
         }
     }
 }
-extern "C" void func_020742f4(void *a, s32 b, s32 c, u32 idx) {
-    data_020cbb74[idx](a, b, c);
+extern "C" void CommCtrl_Dispatch(void *a, s32 b, s32 c, u32 idx) {
+    sCommCtrlHandlers[idx](a, b, c);
 }
 }
 
@@ -3999,206 +3999,206 @@ typedef void (*FPT_data_020cbb74)(void *, s32, s32);
 typedef void (*FPT_data_020cbc60)(u32, u32, u32, u32);
 typedef void (*FPT_data_020cbd60)(void *);
 typedef void (*FPT_data_020cbe78)(void *, u32, u32);
-void func_02074308(void);
-void func_0207432c(void);
-void func_0207435c(void);
-void func_020743b4(void);
-void func_020743c0(void);
-void func_020743e8(void);
-void func_0207440c(void);
-void func_02074434(void);
-void func_0207445c(void);
-void func_020744b8(void);
-void func_020744fc(void);
-void func_02074504(void);
-void func_02074538(void);
-void func_02074564(void);
-void func_0207459c(void);
-void func_020745c8(void);
-void func_020745f0(void);
-void func_020745fc(void);
-void func_02074620(void);
-void func_02074630(void);
-void func_02074668(void);
-void func_020746c0(void);
-void func_02074724(void);
-void func_02074780(void);
-void func_0207524c(void);
-void func_020752b0(void);
-void func_020752e4(void);
-void func_020752f0(void);
-void func_02075320(void);
-void func_02075354(void);
-void func_02075360(void);
-void func_0207536c(void);
-void func_020753d0(void);
-void func_02075428(void);
-void func_02075450(void);
-void func_020754a8(void);
-void func_020754e8(void);
-void func_0207550c(void);
-void func_02075534(void);
-void func_02075558(void);
-void func_02075580(void);
-void func_020755a4(void);
-void func_020755cc(void);
-void func_020755f4(void);
-void func_0207561c(void);
-void func_02075680(void);
-void func_020756ec(void);
-void func_020757ac(void);
-void func_02075860(void);
-void func_02075950(void);
-void func_020759b4(void);
-void func_02075a10(void);
-void func_02075a6c(void);
-void func_02075acc(void);
-void func_02075b2c(void);
-void func_02075b54(void);
-void func_02075b74(void);
-void func_02075b9c(void);
-void func_02075bc4(void);
-void func_02075ca0(void);
-void func_02075cc8(void);
-void func_02075cf0(void);
-void func_02075d38(void);
-void func_02075df4(void);
-void func_02075e1c(void);
-void func_02075e60(void);
-void func_02075e98(void);
-void func_02075f0c(void);
-void func_02075fac(void);
-void func_02075fb8(void);
-void func_02075fe0(void);
-void func_02076000(void);
-void func_02076028(void);
-void func_02076050(void);
-void func_02076070(void);
-void func_0207607c(void);
-void func_02076088(void);
-void func_02076094(void);
-void func_020760bc(void);
-void func_020760dc(void);
-void func_02076104(void);
-void func_0207612c(void);
-void func_02076154(void);
-void func_02076174(void);
-void func_02076194(void);
-void func_020761bc(void);
-void func_02076200(void);
-void func_02076220(void);
-void func_02076308(void);
-void func_02076314(void);
-void func_02076320(void);
-void func_0207632c(void);
-void func_02076338(void);
-void func_02076344(void);
-void func_02076350(void);
-void func_0207635c(void);
-void func_02076368(void);
-void func_02076374(void);
-void func_02076380(void);
-void func_0207638c(void);
-void func_02076398(void);
-void func_020763a4(void);
-void func_020763b0(void);
-void func_020763bc(void);
-void func_020763c8(void);
-void func_020763d4(void);
-void func_020763e0(void);
-void func_020763ec(void);
-void func_020763f8(void);
-void func_02076404(void);
-void func_02076410(void);
-void func_0207641c(void);
-void func_02076428(void);
-void func_02076434(void);
-void func_02076440(void);
-void func_0207644c(void);
-void func_02076458(void);
-void func_02076464(void);
-void func_02076470(void);
-void func_0207647c(void);
-void func_02076488(void);
-void func_02076494(void);
-void func_020764a0(void);
-void func_020764ac(void);
-void func_020764b8(void);
-void func_020764c4(void);
-void func_020764d0(void);
-void func_020764dc(void);
-void func_020764e8(void);
-void func_020764f4(void);
-void func_02076500(void);
-void func_0207650c(void);
-void func_02076518(void);
-void func_02076524(void);
-void func_02076530(void);
-void func_0207653c(void);
-void func_02076548(void);
-void func_02076554(void);
-void func_02076560(void);
-void func_0207656c(void);
-void func_02076578(void);
-void func_02076584(void);
-void func_02076590(void);
-void func_0207659c(void);
-void func_020765a8(void);
-void func_020765b4(void);
-void func_020765c0(void);
-void func_020765cc(void);
-void func_020765d8(void);
-void func_020765e4(void);
-void func_020765f0(void);
-void func_020765f8(void);
-void func_02076600(void);
-void func_02076608(void);
-void func_0207661c(void);
-void func_02076624(void);
-void func_0207662c(void);
-void func_02076634(void);
-void func_02076674(void);
-void func_02076680(void);
-void func_0207668c(void);
-void func_02076698(void);
-void func_020766a4(void);
-void func_020766b0(void);
-void func_020766bc(void);
-void func_020766c8(void);
-void func_020767f8(void);
-void func_020768a0(void);
-void func_020768a4(void);
-void func_02076918(void);
+void CommCtrl_Act17(void);
+void CommCtrl_RecvLetterStorageToHost(void);
+void CommCtrl_RecvPlayerDataToHost(void);
+void CommCtrl_Act14(void);
+void CommCtrl_Act13(void);
+void CommCtrl_Act12(void);
+void CommCtrl_Act11(void);
+void CommCtrl_Act10(void);
+void CommCtrl_RecvSlotStatusAll(void);
+void CommCtrl_Act0E(void);
+void CommCtrl_RecvStateBlocks(void);
+void CommCtrl_RecvSyncVarChunk(void);
+void CommCtrl_RecvJoinDone(void);
+void CommCtrl_RecvDateTime(void);
+void CommCtrl_RecvJoinReady(void);
+void CommCtrl_Act08(void);
+void CommCtrl_Act07(void);
+void CommCtrl_Act06(void);
+void CommCtrl_RecvNetState(void);
+void CommCtrl_RecvVisitorPlayerData(void);
+void CommCtrl_RecvVillagerTransferReply(void);
+void CommCtrl_RecvVillagerTransfer(void);
+void CommCtrl_RecvTownChunk(void);
+void CommCtrl_RecvMemberInfo(void);
+void CommRecv_ItemSetRequest(void);
+void CommRecv_ItemSet(void);
+void CommRecv_Act11(void);
+void CommRecv_Act10(void);
+void CommRecv_Act0F(void);
+void CommRecv_Act0E(void);
+void CommRecv_Act0D(void);
+void CommRecv_Act0C(void);
+void CommRecv_Act0B(void);
+void CommRecv_Act0A(void);
+void CommRecv_SlotStatus(void);
+void CommRecv_Act08(void);
+void CommRecv_Act07(void);
+void CommRecv_Act06(void);
+void CommRecv_PlayerLeft(void);
+void CommRecv_Act04(void);
+void CommRecv_Act03(void);
+void CommRecv_Act02(void);
+void CommRecv_OwnNetState(void);
+void CommRecv_PeerNetState(void);
+void CommRecv_VillagerItems(void);
+void CommRecv_VillagerShirt(void);
+void CommRecv_Act3F(void);
+void CommRecv_Act3D(void);
+void CommRecv_Act3C(void);
+void CommRecv_VillagerReceivedItem(void);
+void CommRecv_VillagerFriendship(void);
+void CommRecv_VillagerImpression(void);
+void CommRecv_VillagerMemorySetPlayer(void);
+void CommRecv_VillagerMemoryInit(void);
+void CommRecv_ObjectUseRelease(void);
+void CommRecv_ObjectUseReply(void);
+void CommRecv_ObjectUseRequest(void);
+void CommRecv_ItemActionResult(void);
+void CommRecv_ItemActionRequest(void);
+void CommRecv_TanChange(void);
+void CommRecv_FaceChange(void);
+void CommRecv_HairChange(void);
+void CommRecv_ClothesChange(void);
+void CommRecv_FishDisplay(void);
+void CommRecv_FieldActorRemove(void);
+void CommRecv_FieldActorRelease(void);
+void CommRecv_FieldActorClaimResult(void);
+void CommRecv_FieldActorClaimRequest(void);
+void CommRecv_ShopPurchaseAck(void);
+void CommRecv_ShopPurchase(void);
+void CommRecv_Act25(void);
+void CommRecv_BuildingLeave(void);
+void CommRecv_BuildingEnter(void);
+void CommRecv_BuildingState(void);
+void CommRecv_SpotRelease(void);
+void CommRecv_SpotReserveDenied(void);
+void CommRecv_SpotReserveGranted(void);
+void CommRecv_SpotReserveRequest(void);
+void CommRecv_FurnitureUseRequest(void);
+void CommRecv_FurniturePlace(void);
+void CommRecv_FurnitureRemove(void);
+void CommRecv_RoomItemSet(void);
+void CommRecv_HouseRoomFlag(void);
+void CommRecv_FurnitureState(void);
+void CommRecv_CharInteract(void);
+void CommRecv_SubCommand(void);
+void CommRecv_PatternMove(void);
+void CommRecv_RoomWallFloor(void);
+void CommSyncVar_PackSpNpc25(void);
+void CommSyncVar_PackSpNpc24(void);
+void CommSyncVar_PackSpNpc23(void);
+void CommSyncVar_PackSpNpc22(void);
+void CommSyncVar_PackSpNpc21(void);
+void CommSyncVar_PackSpNpc20(void);
+void CommSyncVar_PackSpNpc1F(void);
+void CommSyncVar_PackSpNpc1E(void);
+void CommSyncVar_PackSpNpc1D(void);
+void CommSyncVar_PackSpNpc1C(void);
+void CommSyncVar_PackSpNpc1B(void);
+void CommSyncVar_PackSpNpc1A(void);
+void CommSyncVar_PackSpNpc19(void);
+void CommSyncVar_PackSpNpc18(void);
+void CommSyncVar_PackSpNpc17(void);
+void CommSyncVar_PackSpNpc16(void);
+void CommSyncVar_PackSpNpc15(void);
+void CommSyncVar_PackSpNpc14(void);
+void CommSyncVar_PackSpNpc13(void);
+void CommSyncVar_PackSpNpc12(void);
+void CommSyncVar_PackSpNpc11(void);
+void CommSyncVar_PackSpNpc10(void);
+void CommSyncVar_PackSpNpc0F(void);
+void CommSyncVar_PackSpNpc0E(void);
+void CommSyncVar_PackSpNpc0D(void);
+void CommSyncVar_PackSpNpc0C(void);
+void CommSyncVar_PackSpNpc0B(void);
+void CommSyncVar_PackSpNpc0A(void);
+void CommSyncVar_PackSpNpc09(void);
+void CommSyncVar_PackSpNpc08(void);
+void CommSyncVar_PackSpNpc07(void);
+void CommSyncVar_PackSpNpc06(void);
+void CommSyncVar_PackSpNpc05(void);
+void CommSyncVar_PackSpNpc04(void);
+void CommSyncVar_PackSpNpc03(void);
+void CommSyncVar_PackSpNpc02(void);
+void CommSyncVar_PackSpNpc01(void);
+void CommSyncVar_PackSpNpc00(void);
+void CommSyncVar_PackVar1F(void);
+void CommSyncVar_PackVar1E(void);
+void CommSyncVar_PackVar1D(void);
+void CommSyncVar_PackVar1C(void);
+void CommSyncVar_PackVar1B(void);
+void CommSyncVar_PackVar1A(void);
+void CommSyncVar_PackVar19(void);
+void CommSyncVar_PackVar18(void);
+void CommSyncVar_PackPlayerMsg3(void);
+void CommSyncVar_PackPlayerMsg2(void);
+void CommSyncVar_PackPlayerMsg1(void);
+void CommSyncVar_PackPlayerMsg0(void);
+void CommSyncVar_PackVillager7(void);
+void CommSyncVar_PackVillager6(void);
+void CommSyncVar_PackVillager5(void);
+void CommSyncVar_PackVillager4(void);
+void CommSyncVar_PackVillager3(void);
+void CommSyncVar_PackVillager2(void);
+void CommSyncVar_PackVillager1(void);
+void CommSyncVar_PackVillager0(void);
+void CommSyncVar_PackVar0B(void);
+void CommSyncVar_PackVar0A(void);
+void CommSyncVar_PackVar09(void);
+void CommSyncVar_PackVar08(void);
+void CommSyncVar_PackPlayerAngle3(void);
+void CommSyncVar_PackPlayerAngle2(void);
+void CommSyncVar_PackPlayerAngle1(void);
+void CommSyncVar_PackPlayerAngle0(void);
+void CommSyncVar_PackPlayerPos3(void);
+void CommSyncVar_PackPlayerPos2(void);
+void CommSyncVar_PackPlayerPos1(void);
+void CommSyncVar_PackPlayerPos0(void);
+void CommSyncVar_InitVillager7(void);
+void CommSyncVar_InitVillager6(void);
+void CommSyncVar_InitVillager5(void);
+void CommSyncVar_InitVillager4(void);
+void CommSyncVar_InitVillager3(void);
+void CommSyncVar_InitVillager2(void);
+void CommSyncVar_InitVillager1(void);
+void CommSyncVar_InitVillager0(void);
+void CommBlock_ReadAct01(void);
+void CommBlock_ReadAct00(void);
+void CommBlock_WriteAct01(void);
+void CommBlock_WriteAct00(void);
 }
 }
 namespace n0 {
 extern "C" {
-extern const FPT_data_020cbb1c data_020cbb1c[2];
-const FPT_data_020cbb1c data_020cbb1c[2] = {
-    (FPT_data_020cbb1c)func_02076918,
-    (FPT_data_020cbb1c)func_020768a4
+extern const FPT_data_020cbb1c sCommBlockWriters[2];
+const FPT_data_020cbb1c sCommBlockWriters[2] = {
+    (FPT_data_020cbb1c)CommBlock_WriteAct00,
+    (FPT_data_020cbb1c)CommBlock_WriteAct01
 };
 }
 }
 namespace n0 {
 extern "C" {
-extern const FPT_data_020cbb24 data_020cbb24[2];
-const FPT_data_020cbb24 data_020cbb24[2] = {
-    (FPT_data_020cbb24)func_020768a0,
-    (FPT_data_020cbb24)func_020767f8
+extern const FPT_data_020cbb24 sCommBlockReaders[2];
+const FPT_data_020cbb24 sCommBlockReaders[2] = {
+    (FPT_data_020cbb24)CommBlock_ReadAct00,
+    (FPT_data_020cbb24)CommBlock_ReadAct01
 };
 }
 }
 namespace n0 {
 extern "C" {
-extern const u8 data_020cbb2c[72];
-const u8 data_020cbb2c[72] = {0x5, 0x5, 0x5, 0x5, 0x2, 0x2, 0x2, 0x2, 0xc, 0xc, 0xc, 0xc, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x29, 0x29, 0x29, 0x29, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x0, 0x0};
+extern const u8 sCommSyncVarVarSizes[72];
+const u8 sCommSyncVarVarSizes[72] = {0x5, 0x5, 0x5, 0x5, 0x2, 0x2, 0x2, 0x2, 0xc, 0xc, 0xc, 0xc, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x29, 0x29, 0x29, 0x29, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x7, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x1e, 0x0, 0x0};
 }
 }
 namespace n0 {
 extern "C" {
-extern const FPT_data_020cbd60 data_020cbd60[70];
-const FPT_data_020cbd60 data_020cbd60[70] = {
+extern const FPT_data_020cbd60 sCommSyncVarInitHandlers[70];
+const FPT_data_020cbd60 sCommSyncVarInitHandlers[70] = {
     0,
     0,
     0,
@@ -4211,14 +4211,14 @@ const FPT_data_020cbd60 data_020cbd60[70] = {
     0,
     0,
     0,
-    (FPT_data_020cbd60)func_020766c8,
-    (FPT_data_020cbd60)func_020766bc,
-    (FPT_data_020cbd60)func_020766b0,
-    (FPT_data_020cbd60)func_020766a4,
-    (FPT_data_020cbd60)func_02076698,
-    (FPT_data_020cbd60)func_0207668c,
-    (FPT_data_020cbd60)func_02076680,
-    (FPT_data_020cbd60)func_02076674,
+    (FPT_data_020cbd60)CommSyncVar_InitVillager0,
+    (FPT_data_020cbd60)CommSyncVar_InitVillager1,
+    (FPT_data_020cbd60)CommSyncVar_InitVillager2,
+    (FPT_data_020cbd60)CommSyncVar_InitVillager3,
+    (FPT_data_020cbd60)CommSyncVar_InitVillager4,
+    (FPT_data_020cbd60)CommSyncVar_InitVillager5,
+    (FPT_data_020cbd60)CommSyncVar_InitVillager6,
+    (FPT_data_020cbd60)CommSyncVar_InitVillager7,
     0,
     0,
     0,
@@ -4277,187 +4277,187 @@ char *data_020e0544 = data_020e0548;
 char data_020e0548[] = "bbs_default";
 namespace n0 {
 extern "C" {
-extern const FPT_data_020cbb74 data_020cbb74[24];
-const FPT_data_020cbb74 data_020cbb74[24] = {
-    (FPT_data_020cbb74)func_02074780,
-    (FPT_data_020cbb74)func_02074724,
-    (FPT_data_020cbb74)func_020746c0,
-    (FPT_data_020cbb74)func_02074668,
-    (FPT_data_020cbb74)func_02074630,
-    (FPT_data_020cbb74)func_02074620,
-    (FPT_data_020cbb74)func_020745fc,
-    (FPT_data_020cbb74)func_020745f0,
-    (FPT_data_020cbb74)func_020745c8,
-    (FPT_data_020cbb74)func_0207459c,
-    (FPT_data_020cbb74)func_02074564,
-    (FPT_data_020cbb74)func_02074538,
-    (FPT_data_020cbb74)func_02074504,
-    (FPT_data_020cbb74)func_020744fc,
-    (FPT_data_020cbb74)func_020744b8,
-    (FPT_data_020cbb74)func_0207445c,
-    (FPT_data_020cbb74)func_02074434,
-    (FPT_data_020cbb74)func_0207440c,
-    (FPT_data_020cbb74)func_020743e8,
-    (FPT_data_020cbb74)func_020743c0,
-    (FPT_data_020cbb74)func_020743b4,
-    (FPT_data_020cbb74)func_0207435c,
-    (FPT_data_020cbb74)func_0207432c,
-    (FPT_data_020cbb74)func_02074308
+extern const FPT_data_020cbb74 sCommCtrlHandlers[24];
+const FPT_data_020cbb74 sCommCtrlHandlers[24] = {
+    (FPT_data_020cbb74)CommCtrl_RecvMemberInfo,
+    (FPT_data_020cbb74)CommCtrl_RecvTownChunk,
+    (FPT_data_020cbb74)CommCtrl_RecvVillagerTransfer,
+    (FPT_data_020cbb74)CommCtrl_RecvVillagerTransferReply,
+    (FPT_data_020cbb74)CommCtrl_RecvVisitorPlayerData,
+    (FPT_data_020cbb74)CommCtrl_RecvNetState,
+    (FPT_data_020cbb74)CommCtrl_Act06,
+    (FPT_data_020cbb74)CommCtrl_Act07,
+    (FPT_data_020cbb74)CommCtrl_Act08,
+    (FPT_data_020cbb74)CommCtrl_RecvJoinReady,
+    (FPT_data_020cbb74)CommCtrl_RecvDateTime,
+    (FPT_data_020cbb74)CommCtrl_RecvJoinDone,
+    (FPT_data_020cbb74)CommCtrl_RecvSyncVarChunk,
+    (FPT_data_020cbb74)CommCtrl_RecvStateBlocks,
+    (FPT_data_020cbb74)CommCtrl_Act0E,
+    (FPT_data_020cbb74)CommCtrl_RecvSlotStatusAll,
+    (FPT_data_020cbb74)CommCtrl_Act10,
+    (FPT_data_020cbb74)CommCtrl_Act11,
+    (FPT_data_020cbb74)CommCtrl_Act12,
+    (FPT_data_020cbb74)CommCtrl_Act13,
+    (FPT_data_020cbb74)CommCtrl_Act14,
+    (FPT_data_020cbb74)CommCtrl_RecvPlayerDataToHost,
+    (FPT_data_020cbb74)CommCtrl_RecvLetterStorageToHost,
+    (FPT_data_020cbb74)CommCtrl_Act17
 };
 }
 }
 namespace n0 {
 extern "C" {
-extern const FPT_data_020cbc60 data_020cbc60[64];
-const FPT_data_020cbc60 data_020cbc60[64] = {
-    (FPT_data_020cbc60)func_020755f4,
-    (FPT_data_020cbc60)func_020755cc,
-    (FPT_data_020cbc60)func_020755a4,
-    (FPT_data_020cbc60)func_02075580,
-    (FPT_data_020cbc60)func_02075558,
-    (FPT_data_020cbc60)func_02075534,
-    (FPT_data_020cbc60)func_0207550c,
-    (FPT_data_020cbc60)func_020754e8,
-    (FPT_data_020cbc60)func_020754a8,
-    (FPT_data_020cbc60)func_02075450,
-    (FPT_data_020cbc60)func_02075428,
-    (FPT_data_020cbc60)func_020753d0,
-    (FPT_data_020cbc60)func_0207536c,
-    (FPT_data_020cbc60)func_02075360,
-    (FPT_data_020cbc60)func_02075354,
-    (FPT_data_020cbc60)func_02075320,
-    (FPT_data_020cbc60)func_020752f0,
-    (FPT_data_020cbc60)func_020752e4,
-    (FPT_data_020cbc60)func_020752b0,
-    (FPT_data_020cbc60)func_0207524c,
-    (FPT_data_020cbc60)func_02076220,
-    (FPT_data_020cbc60)func_02076200,
-    (FPT_data_020cbc60)func_020761bc,
-    (FPT_data_020cbc60)func_02076194,
-    (FPT_data_020cbc60)func_02076174,
-    (FPT_data_020cbc60)func_02076154,
-    (FPT_data_020cbc60)func_0207612c,
-    (FPT_data_020cbc60)func_02076104,
-    (FPT_data_020cbc60)func_020760dc,
-    (FPT_data_020cbc60)func_020760bc,
-    (FPT_data_020cbc60)func_02076094,
-    (FPT_data_020cbc60)func_02076088,
-    (FPT_data_020cbc60)func_0207607c,
-    (FPT_data_020cbc60)func_02076070,
-    (FPT_data_020cbc60)func_02076050,
-    (FPT_data_020cbc60)func_02076028,
-    (FPT_data_020cbc60)func_02076000,
-    (FPT_data_020cbc60)func_02075fe0,
-    (FPT_data_020cbc60)func_02075fb8,
-    (FPT_data_020cbc60)func_02075fac,
-    (FPT_data_020cbc60)func_02075f0c,
-    (FPT_data_020cbc60)func_02075e98,
-    (FPT_data_020cbc60)func_02075df4,
-    (FPT_data_020cbc60)func_02075d38,
-    (FPT_data_020cbc60)func_02075cf0,
-    (FPT_data_020cbc60)func_02075cc8,
-    (FPT_data_020cbc60)func_02075ca0,
-    (FPT_data_020cbc60)func_02075e60,
-    (FPT_data_020cbc60)func_02075e1c,
-    (FPT_data_020cbc60)func_02075bc4,
-    (FPT_data_020cbc60)func_02075b9c,
-    (FPT_data_020cbc60)func_02075b74,
-    (FPT_data_020cbc60)func_02075b54,
-    (FPT_data_020cbc60)func_02075b2c,
-    (FPT_data_020cbc60)func_02075acc,
-    (FPT_data_020cbc60)func_02075a6c,
-    (FPT_data_020cbc60)func_02075a10,
-    (FPT_data_020cbc60)func_020759b4,
-    (FPT_data_020cbc60)func_02075680,
-    (FPT_data_020cbc60)func_0207561c,
-    (FPT_data_020cbc60)func_02075860,
-    (FPT_data_020cbc60)func_020757ac,
-    (FPT_data_020cbc60)func_02075950,
-    (FPT_data_020cbc60)func_020756ec
+extern const FPT_data_020cbc60 sCommRecvHandlers[64];
+const FPT_data_020cbc60 sCommRecvHandlers[64] = {
+    (FPT_data_020cbc60)CommRecv_PeerNetState,
+    (FPT_data_020cbc60)CommRecv_OwnNetState,
+    (FPT_data_020cbc60)CommRecv_Act02,
+    (FPT_data_020cbc60)CommRecv_Act03,
+    (FPT_data_020cbc60)CommRecv_Act04,
+    (FPT_data_020cbc60)CommRecv_PlayerLeft,
+    (FPT_data_020cbc60)CommRecv_Act06,
+    (FPT_data_020cbc60)CommRecv_Act07,
+    (FPT_data_020cbc60)CommRecv_Act08,
+    (FPT_data_020cbc60)CommRecv_SlotStatus,
+    (FPT_data_020cbc60)CommRecv_Act0A,
+    (FPT_data_020cbc60)CommRecv_Act0B,
+    (FPT_data_020cbc60)CommRecv_Act0C,
+    (FPT_data_020cbc60)CommRecv_Act0D,
+    (FPT_data_020cbc60)CommRecv_Act0E,
+    (FPT_data_020cbc60)CommRecv_Act0F,
+    (FPT_data_020cbc60)CommRecv_Act10,
+    (FPT_data_020cbc60)CommRecv_Act11,
+    (FPT_data_020cbc60)CommRecv_ItemSet,
+    (FPT_data_020cbc60)CommRecv_ItemSetRequest,
+    (FPT_data_020cbc60)CommRecv_RoomWallFloor,
+    (FPT_data_020cbc60)CommRecv_PatternMove,
+    (FPT_data_020cbc60)CommRecv_SubCommand,
+    (FPT_data_020cbc60)CommRecv_CharInteract,
+    (FPT_data_020cbc60)CommRecv_FurnitureState,
+    (FPT_data_020cbc60)CommRecv_HouseRoomFlag,
+    (FPT_data_020cbc60)CommRecv_RoomItemSet,
+    (FPT_data_020cbc60)CommRecv_FurnitureRemove,
+    (FPT_data_020cbc60)CommRecv_FurniturePlace,
+    (FPT_data_020cbc60)CommRecv_FurnitureUseRequest,
+    (FPT_data_020cbc60)CommRecv_SpotReserveRequest,
+    (FPT_data_020cbc60)CommRecv_SpotReserveGranted,
+    (FPT_data_020cbc60)CommRecv_SpotReserveDenied,
+    (FPT_data_020cbc60)CommRecv_SpotRelease,
+    (FPT_data_020cbc60)CommRecv_BuildingState,
+    (FPT_data_020cbc60)CommRecv_BuildingEnter,
+    (FPT_data_020cbc60)CommRecv_BuildingLeave,
+    (FPT_data_020cbc60)CommRecv_Act25,
+    (FPT_data_020cbc60)CommRecv_ShopPurchase,
+    (FPT_data_020cbc60)CommRecv_ShopPurchaseAck,
+    (FPT_data_020cbc60)CommRecv_FieldActorClaimRequest,
+    (FPT_data_020cbc60)CommRecv_FieldActorClaimResult,
+    (FPT_data_020cbc60)CommRecv_FishDisplay,
+    (FPT_data_020cbc60)CommRecv_ClothesChange,
+    (FPT_data_020cbc60)CommRecv_HairChange,
+    (FPT_data_020cbc60)CommRecv_FaceChange,
+    (FPT_data_020cbc60)CommRecv_TanChange,
+    (FPT_data_020cbc60)CommRecv_FieldActorRelease,
+    (FPT_data_020cbc60)CommRecv_FieldActorRemove,
+    (FPT_data_020cbc60)CommRecv_ItemActionRequest,
+    (FPT_data_020cbc60)CommRecv_ItemActionResult,
+    (FPT_data_020cbc60)CommRecv_ObjectUseRequest,
+    (FPT_data_020cbc60)CommRecv_ObjectUseReply,
+    (FPT_data_020cbc60)CommRecv_ObjectUseRelease,
+    (FPT_data_020cbc60)CommRecv_VillagerMemoryInit,
+    (FPT_data_020cbc60)CommRecv_VillagerMemorySetPlayer,
+    (FPT_data_020cbc60)CommRecv_VillagerImpression,
+    (FPT_data_020cbc60)CommRecv_VillagerFriendship,
+    (FPT_data_020cbc60)CommRecv_VillagerShirt,
+    (FPT_data_020cbc60)CommRecv_VillagerItems,
+    (FPT_data_020cbc60)CommRecv_Act3C,
+    (FPT_data_020cbc60)CommRecv_Act3D,
+    (FPT_data_020cbc60)CommRecv_VillagerReceivedItem,
+    (FPT_data_020cbc60)CommRecv_Act3F
 };
 }
 }
 Unk_021cc7d0 gOverlayHandle;
 namespace n0 {
 extern "C" {
-extern const FPT_data_020cbe78 data_020cbe78[70];
-const FPT_data_020cbe78 data_020cbe78[70] = {
-    (FPT_data_020cbe78)func_02076634,
-    (FPT_data_020cbe78)func_0207662c,
-    (FPT_data_020cbe78)func_02076624,
-    (FPT_data_020cbe78)func_0207661c,
-    (FPT_data_020cbe78)func_02076608,
-    (FPT_data_020cbe78)func_02076600,
-    (FPT_data_020cbe78)func_020765f8,
-    (FPT_data_020cbe78)func_020765f0,
-    (FPT_data_020cbe78)func_020765e4,
-    (FPT_data_020cbe78)func_020765d8,
-    (FPT_data_020cbe78)func_020765cc,
-    (FPT_data_020cbe78)func_020765c0,
-    (FPT_data_020cbe78)func_020765b4,
-    (FPT_data_020cbe78)func_020765a8,
-    (FPT_data_020cbe78)func_0207659c,
-    (FPT_data_020cbe78)func_02076590,
-    (FPT_data_020cbe78)func_02076584,
-    (FPT_data_020cbe78)func_02076578,
-    (FPT_data_020cbe78)func_0207656c,
-    (FPT_data_020cbe78)func_02076560,
-    (FPT_data_020cbe78)func_02076554,
-    (FPT_data_020cbe78)func_02076548,
-    (FPT_data_020cbe78)func_0207653c,
-    (FPT_data_020cbe78)func_02076530,
-    (FPT_data_020cbe78)func_02076524,
-    (FPT_data_020cbe78)func_02076518,
-    (FPT_data_020cbe78)func_0207650c,
-    (FPT_data_020cbe78)func_02076500,
-    (FPT_data_020cbe78)func_020764f4,
-    (FPT_data_020cbe78)func_020764e8,
-    (FPT_data_020cbe78)func_020764dc,
-    (FPT_data_020cbe78)func_020764d0,
-    (FPT_data_020cbe78)func_020764c4,
-    (FPT_data_020cbe78)func_020764b8,
-    (FPT_data_020cbe78)func_020764ac,
-    (FPT_data_020cbe78)func_020764a0,
-    (FPT_data_020cbe78)func_02076494,
-    (FPT_data_020cbe78)func_02076488,
-    (FPT_data_020cbe78)func_0207647c,
-    (FPT_data_020cbe78)func_02076470,
-    (FPT_data_020cbe78)func_02076464,
-    (FPT_data_020cbe78)func_02076458,
-    (FPT_data_020cbe78)func_0207644c,
-    (FPT_data_020cbe78)func_02076440,
-    (FPT_data_020cbe78)func_02076434,
-    (FPT_data_020cbe78)func_02076428,
-    (FPT_data_020cbe78)func_0207641c,
-    (FPT_data_020cbe78)func_02076410,
-    (FPT_data_020cbe78)func_02076404,
-    (FPT_data_020cbe78)func_020763f8,
-    (FPT_data_020cbe78)func_020763ec,
-    (FPT_data_020cbe78)func_020763e0,
-    (FPT_data_020cbe78)func_020763d4,
-    (FPT_data_020cbe78)func_020763c8,
-    (FPT_data_020cbe78)func_020763bc,
-    (FPT_data_020cbe78)func_020763b0,
-    (FPT_data_020cbe78)func_020763a4,
-    (FPT_data_020cbe78)func_02076398,
-    (FPT_data_020cbe78)func_0207638c,
-    (FPT_data_020cbe78)func_02076380,
-    (FPT_data_020cbe78)func_02076374,
-    (FPT_data_020cbe78)func_02076368,
-    (FPT_data_020cbe78)func_0207635c,
-    (FPT_data_020cbe78)func_02076350,
-    (FPT_data_020cbe78)func_02076344,
-    (FPT_data_020cbe78)func_02076338,
-    (FPT_data_020cbe78)func_0207632c,
-    (FPT_data_020cbe78)func_02076320,
-    (FPT_data_020cbe78)func_02076314,
-    (FPT_data_020cbe78)func_02076308
+extern const FPT_data_020cbe78 sCommSyncVarPackHandlers[70];
+const FPT_data_020cbe78 sCommSyncVarPackHandlers[70] = {
+    (FPT_data_020cbe78)CommSyncVar_PackPlayerPos0,
+    (FPT_data_020cbe78)CommSyncVar_PackPlayerPos1,
+    (FPT_data_020cbe78)CommSyncVar_PackPlayerPos2,
+    (FPT_data_020cbe78)CommSyncVar_PackPlayerPos3,
+    (FPT_data_020cbe78)CommSyncVar_PackPlayerAngle0,
+    (FPT_data_020cbe78)CommSyncVar_PackPlayerAngle1,
+    (FPT_data_020cbe78)CommSyncVar_PackPlayerAngle2,
+    (FPT_data_020cbe78)CommSyncVar_PackPlayerAngle3,
+    (FPT_data_020cbe78)CommSyncVar_PackVar08,
+    (FPT_data_020cbe78)CommSyncVar_PackVar09,
+    (FPT_data_020cbe78)CommSyncVar_PackVar0A,
+    (FPT_data_020cbe78)CommSyncVar_PackVar0B,
+    (FPT_data_020cbe78)CommSyncVar_PackVillager0,
+    (FPT_data_020cbe78)CommSyncVar_PackVillager1,
+    (FPT_data_020cbe78)CommSyncVar_PackVillager2,
+    (FPT_data_020cbe78)CommSyncVar_PackVillager3,
+    (FPT_data_020cbe78)CommSyncVar_PackVillager4,
+    (FPT_data_020cbe78)CommSyncVar_PackVillager5,
+    (FPT_data_020cbe78)CommSyncVar_PackVillager6,
+    (FPT_data_020cbe78)CommSyncVar_PackVillager7,
+    (FPT_data_020cbe78)CommSyncVar_PackPlayerMsg0,
+    (FPT_data_020cbe78)CommSyncVar_PackPlayerMsg1,
+    (FPT_data_020cbe78)CommSyncVar_PackPlayerMsg2,
+    (FPT_data_020cbe78)CommSyncVar_PackPlayerMsg3,
+    (FPT_data_020cbe78)CommSyncVar_PackVar18,
+    (FPT_data_020cbe78)CommSyncVar_PackVar19,
+    (FPT_data_020cbe78)CommSyncVar_PackVar1A,
+    (FPT_data_020cbe78)CommSyncVar_PackVar1B,
+    (FPT_data_020cbe78)CommSyncVar_PackVar1C,
+    (FPT_data_020cbe78)CommSyncVar_PackVar1D,
+    (FPT_data_020cbe78)CommSyncVar_PackVar1E,
+    (FPT_data_020cbe78)CommSyncVar_PackVar1F,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc00,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc01,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc02,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc03,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc04,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc05,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc06,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc07,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc08,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc09,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc0A,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc0B,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc0C,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc0D,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc0E,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc0F,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc10,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc11,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc12,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc13,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc14,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc15,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc16,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc17,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc18,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc19,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc1A,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc1B,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc1C,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc1D,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc1E,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc1F,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc20,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc21,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc22,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc23,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc24,
+    (FPT_data_020cbe78)CommSyncVar_PackSpNpc25
 };
 }
 }
 namespace n0 {
 extern "C" {
-extern const u16 data_020cbbd4[70];
-const u16 data_020cbbd4[70] = {0x0, 0x5, 0xa, 0xf, 0x14, 0x16, 0x18, 0x1a, 0x1c, 0x28, 0x34, 0x40, 0x4c, 0x6a, 0x88, 0xa6, 0xc4, 0xe2, 0x100, 0x11e, 0x13c, 0x165, 0x18e, 0x1b7, 0x1e0, 0x1e7, 0x1ee, 0x1f5, 0x1fc, 0x203, 0x20a, 0x211, 0x218, 0x236, 0x254, 0x272, 0x290, 0x2ae, 0x2cc, 0x2ea, 0x308, 0x326, 0x344, 0x362, 0x380, 0x39e, 0x3bc, 0x3da, 0x3f8, 0x416, 0x434, 0x452, 0x470, 0x48e, 0x4ac, 0x4ca, 0x4e8, 0x506, 0x524, 0x542, 0x560, 0x57e, 0x59c, 0x5ba, 0x5d8, 0x5f6, 0x614, 0x632, 0x650, 0x66e};
+extern const u16 sCommSyncVarVarOffsets[70];
+const u16 sCommSyncVarVarOffsets[70] = {0x0, 0x5, 0xa, 0xf, 0x14, 0x16, 0x18, 0x1a, 0x1c, 0x28, 0x34, 0x40, 0x4c, 0x6a, 0x88, 0xa6, 0xc4, 0xe2, 0x100, 0x11e, 0x13c, 0x165, 0x18e, 0x1b7, 0x1e0, 0x1e7, 0x1ee, 0x1f5, 0x1fc, 0x203, 0x20a, 0x211, 0x218, 0x236, 0x254, 0x272, 0x290, 0x2ae, 0x2cc, 0x2ea, 0x308, 0x326, 0x344, 0x362, 0x380, 0x39e, 0x3bc, 0x3da, 0x3f8, 0x416, 0x434, 0x452, 0x470, 0x48e, 0x4ac, 0x4ca, 0x4e8, 0x506, 0x524, 0x542, 0x560, 0x57e, 0x59c, 0x5ba, 0x5d8, 0x5f6, 0x614, 0x632, 0x650, 0x66e};
 }
 }

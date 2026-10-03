@@ -17,17 +17,17 @@
 #define func_020323b0 _ZN12Unk_02032238C1Ev
 #define func_02033914 _ZN12Unk_0203389c13func_02033914Ei
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_0204e474 _ZN12Unk_0204e2f013func_0204e474Eii
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
-#define func_020548a0 _ZN12Unk_020dbd54D1Ev
-#define func_020548d0 _ZN12Unk_020dbd54C1Ev
-#define func_02054b14 _ZN12Unk_020dbd3413func_02054b14Ev
-#define func_02054c2c _ZN12Unk_020dbd3413func_02054c2cEPvS0_
+#define func_0204e474 _ZN8BlockMap13func_0204e474Eii
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
+#define func_020548a0 _ZN9AnimModelD1Ev
+#define func_020548d0 _ZN9AnimModelC1Ev
+#define CachedModel_release _ZN11CachedModel7releaseEv
+#define CachedModel_loadCached _ZN11CachedModel10loadCachedEPvS0_
 #define Model_setAlpha _ZN5Model8setAlphaEj
 #define Model_setPolygonId _ZN5Model12setPolygonIdEj
 #define func_02088bf8 _ZN12Unk_020e0d3013func_02088bf8EPvP4Vec3iijjjhi
@@ -84,9 +84,9 @@ struct Unk_ov004_0223717c_Vec {
     s32 unk_08;
 };
 
-class Unk_020cbb18 {
+class CommManager {
 public:
-    BOOL func_02072e44();
+    BOOL isOnline();
 };
 
 class HouseData {
@@ -223,9 +223,9 @@ public:
 };
 
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 extern u8 data_021e58a8[];
-extern Unk_ov004_0223717c_Grid *data_021c47c4;
+extern Unk_ov004_0223717c_Grid *gSceneBlockMap;
 extern u32 gCurrentHeap;
 extern u8 data_0213b91c[];
 extern u8 data_0213b954[];
@@ -235,17 +235,17 @@ Unk_ov004_0224ebec *func_ov004_0223740c();
 
 BOOL func_020b52f8();
 s32 func_020b5328();
-void func_02054c2c(void *p, u32 a, void *b);
+void CachedModel_loadCached(void *p, u32 a, void *b);
 void *FrameHeap_CreateAsCurrent(u32 a, u32 b);
 void ProcBase_SetHeap(void *a, void *b);
-void func_02054800(void *p, void *q);
+void AnimModel_allocAnmObj(void *p, void *q);
 void *File_Load(const char *p);
 void func_020e877c(void *p);
 void Heap_RestoreCurrent();
 void *func_02106788(void *p);
 void *func_021067a4(void *p, u32 q);
-void func_02054720(void *p, void *a, s32 b, s32 c, u16 d, u16 e);
-void func_02054710(void *p);
+void BlendAnimModel_initAnim(void *p, void *a, s32 b, s32 c, u16 d, u16 e);
+void AnimModel_attachAnim(void *p);
 void Unk_02003c30_callReset(void *p);
 void func_02088c34(void *p);
 void func_020548a0(void *p);
@@ -259,8 +259,8 @@ void func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
 void *NpcRegistry_FindVillager(u32 i);
 BOOL func_0204e474(void *g, s32 x, s32 y);
-u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-void func_0204ed8c(void *p, s32 x, s32 y);
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+void FieldPos_FromUnitCenter(void *p, s32 x, s32 y);
 void *Item_GetFurnitureIndex(void *p);
 BOOL Item_IsFurniture();
 s32 func_02063b8c(s32 n);
@@ -268,7 +268,7 @@ void *func_02095204(u32 a);
 s32 func_020e9650(void *a, void *b);
 void ProcBase_RequestDelete(void *p);
 void *Actor_spawn(u32 a, u32 b, void *c, void *d, void *e);
-void func_0209cf18(void *p);
+void Clock_GetMinuteHour(void *p);
 s32 func_020339bc(void *o, void *v, s32 a, s32 b);
 void func_02033988(void *o);
 s32 func_02033914(void *o, s32 a);
@@ -281,13 +281,13 @@ void Unk_02003c30_callRelease(void *p);
 void Unk_02003c40_callRequest(void *p, u32 id);
 void Unk_02003c40_callRequestSustained(void *p, u32 id);
 s32 Unk_02003c40_callUpdateRelative(void *p, void *v);
-void func_02054b14(void *p);
+void CachedModel_release(void *p);
 void Model_setPolygonId(void *p, s32 a);
 void NNSi_G3dModifyPolygonAttrMask(u32 a, u32 b, u32 c);
 void Model_setAlpha(void *p, u32 v);
-void func_020547cc(void *p, u32 v);
-void func_020547e4(void *p);
-void func_020547a4(void *p);
+void AnimModel_drawAnimated(void *p, u32 v);
+void AnimModel_stepAnim(void *p);
+void AnimModel_setFrame(void *p);
 void func_020abc10(void *p, s32 a, s32 b, s32 c);
 BOOL func_02088d38(void *p, u32 mask);
 u32 WorldCurve_ToCurved(void *a, void *b);
@@ -342,14 +342,14 @@ Unk_ov004_0224eb9c::~Unk_ov004_0224eb9c() {
 }
 
 BOOL Unk_ov004_0224eb9c::vfunc_0c() {
-    if (!func_020b52f8() || data_020cbb18->func_02072e44()) return TRUE;
+    if (!func_020b52f8() || gCommManager->isOnline()) return TRUE;
     ((HouseData *)data_021e58a8)->func_020603b0(data_ov004_022523cc);
     data_ov004_022523d0 = 0;
     return TRUE;
 }
 
 BOOL Unk_ov004_0224eb9c::onExecute() {
-    if (!func_020b52f8() || data_020cbb18->func_02072e44()) return TRUE;
+    if (!func_020b52f8() || gCommManager->isOnline()) return TRUE;
     u8 mask = 0;
     s8 last = 0;
     s32 i = 0;
@@ -400,7 +400,7 @@ BOOL Unk_ov004_0224eb9c::onExecute() {
 }
 
 BOOL Unk_ov004_0224eb9c::vfunc_00() {
-    if (!func_020b52f8() || data_020cbb18->func_02072e44()) return TRUE;
+    if (!func_020b52f8() || gCommManager->isOnline()) return TRUE;
     data_ov004_022523d0 = this;
     if (!func_ov004_02236fb8(this)) return TRUE;
     func_ov004_02236fe0(this);
@@ -409,7 +409,7 @@ BOOL Unk_ov004_0224eb9c::vfunc_00() {
 
 extern "C" BOOL func_ov004_0223717c(u32 a, u32 b) {
     BOOL r = FALSE;
-    if (data_020cbb18->func_02072e44()) return r;
+    if (gCommManager->isOnline()) return r;
     u32 c = data_ov004_022523c8;
     if (c < 3) {
         s32 d = data_ov004_022523cc - c;
@@ -433,7 +433,7 @@ extern "C" BOOL func_ov004_02236fe0(void *owner) {
     s32 x2;
     s32 y2;
     u8 cnt = 0;
-    Unk_ov004_0223717c_Grid *g = data_021c47c4;
+    Unk_ov004_0223717c_Grid *g = gSceneBlockMap;
     u32 rows[32];
     s32 x;
     s32 y;
@@ -459,7 +459,7 @@ extern "C" BOOL func_ov004_02236fe0(void *owner) {
         if (func_0204e474(g, x, y) == 0) goto xn0;
         hx = x >> 4;
         hy = y >> 4;
-        cell = func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+        cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (cell == 0) goto xn0;
         if (Item_IsFurniture() != 0) {
             u16 tmp = 0xfff1;
@@ -501,7 +501,7 @@ extern "C" BOOL func_ov004_02236fe0(void *owner) {
         if (b) k = (u8)(k - 1);
         if (k == 0) {
             *row2 -= 1 << x2;
-            func_0204ed8c(&loc, x2, y2);
+            FieldPos_FromUnitCenter(&loc, x2, y2);
             loc.unk_04 = 0x200;
             y2 = g->unk_10;
             goto yn1;
@@ -568,16 +568,16 @@ void Unk_ov004_0224ebec::func_02236d9c(s32 v) {
 }
 
 BOOL Unk_ov004_0224ebec::func_02236cb8() {
-    func_02054c2c(unk_120, 0x474f4b49, data_ov004_0224eb64);
+    CachedModel_loadCached(unk_120, 0x474f4b49, data_ov004_0224eb64);
     void *h = FrameHeap_CreateAsCurrent(0x5000, gCurrentHeap);
     ProcBase_SetHeap(this, h);
-    func_02054800(unk_120, 0);
+    AnimModel_allocAnmObj(unk_120, 0);
     void *t = File_Load("/insect/51/bug52.nsbva");
     func_020e877c(h);
     Heap_RestoreCurrent();
     void *r = func_021067a4(func_02106788(t), 0);
-    func_02054720(unk_120, r, 0, 0x1000, 0, 0);
-    func_02054710(unk_120);
+    BlendAnimModel_initAnim(unk_120, r, 0, 0x1000, 0, 0);
+    AnimModel_attachAnim(unk_120);
     Unk_02003c30_callReset(unk_114);
     s16 *q = &unk_92;
     q[1] = unk_8e;
@@ -741,7 +741,7 @@ BOOL Unk_ov004_0224ebec::func_02236838() {
             func_02236bb8();
             func_022367dc();
             if (unk_22a != 0) {
-                func_020547e4(unk_120);
+                AnimModel_stepAnim(unk_120);
             }
         } else {
             F08(this) = t - 1;
@@ -817,7 +817,7 @@ BOOL Unk_ov004_0224ebec::func_022366cc() {
         Model_setPolygonId(unk_120, 3);
         NNSi_G3dModifyPolygonAttrMask(unk_17c, 1, 0x1f0000);
         Model_setAlpha(unk_120, (u8)F08(this));
-        func_020547cc(unk_120, 0);
+        AnimModel_drawAnimated(unk_120, 0);
         if (F08(this) >= 0x1f && unk_110 == 1) {
             func_020abc10(pv, 0x400, 0x4000, 0x1000);
         }
@@ -826,7 +826,7 @@ BOOL Unk_ov004_0224ebec::func_022366cc() {
 }
 
 BOOL Unk_ov004_0224ebec::func_02236694() {
-    func_02054b14(unk_120);
+    CachedModel_release(unk_120);
     unk_110 = 4;
     F08(this) = 0xffff;
     Unk_02003c30_callRelease(unk_114);
@@ -1037,10 +1037,10 @@ BOOL Unk_ov004_0224ebec::func_02236004() {
             p6->y = 3;
             unk_22e = 0;
             unk_22a = 0;
-            func_020547a4(unk_120);
+            AnimModel_setFrame(unk_120);
         } else {
             unk_22e = unk_22e + 1;
-            func_020547e4(unk_120);
+            AnimModel_stepAnim(unk_120);
         }
     } else {
         s32 m = unk_260;

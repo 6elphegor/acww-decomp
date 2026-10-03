@@ -138,7 +138,7 @@ public:
         u8 unk_00[size]; \
         name(); \
     }
-MEMBER(Unk_020dbd74, 0x2a0 - 0xec);
+MEMBER(ThreeLayerAnimModel, 0x2a0 - 0xec);
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
 MEMBER(Unk_02016350, 0x1c);
@@ -207,7 +207,7 @@ struct Character : Actor {
 
 struct Unk_020d77a4 : Character {
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;

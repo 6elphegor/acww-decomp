@@ -95,10 +95,10 @@ public:
     u8 pad_04[0x94];
 };
 
-class Unk_020dbd34 : public Unk_02055704 {
+class CachedModel : public Unk_02055704 {
 public:
-    Unk_020dbd34();
-    virtual ~Unk_020dbd34();
+    CachedModel();
+    virtual ~CachedModel();
     u32 unk_98;
 };
 
@@ -116,17 +116,17 @@ public:
     s32 hasPassedFrame(s32 a);
 };
 
-class Unk_020dbd54 : public Unk_020dbd34, public AnimFrameCtrl {
+class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:
-    Unk_020dbd54();
-    virtual ~Unk_020dbd54();
+    AnimModel();
+    virtual ~AnimModel();
     void *unk_b4;
 
-    s32 func_02054710();
-    s32 func_020547cc(void *q);
-    void func_020547e4();
-    BOOL func_02054800(void *x);
-    // declared in Unk_0205454c in src/main, but it is called on this object
+    s32 attachAnim();
+    s32 drawAnimated(void *q);
+    void stepAnim();
+    BOOL allocAnmObj(void *x);
+    // declared in BlendAnimModel in src/main, but it is called on this object
     void func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e);
 };
 
@@ -232,7 +232,7 @@ struct Unk_020d8cf4 {
 class Unk_ov004_0224d618;
 
 extern "C" {
-extern void *data_021c620c;
+extern void *gBgHeap;
 
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 func_0209c3e0(u32 v);
@@ -251,7 +251,7 @@ void _ZN12Unk_020d8cf4C1Ev(void *self);
 void _ZN12Unk_020d8cf4D2Ev(void *self);
 s32 func_ov004_02224d8c(void *o, u32 i);
 void func_ov004_02224ca4(void *o, s32 v);
-void _ZN12Unk_0205454c13func_02054720Eiiitt(void *self, s32 a, s32 b, s32 c, u16 d, u16 e);
+void _ZN14BlendAnimModel8initAnimEiiitt(void *self, s32 a, s32 b, s32 c, u16 d, u16 e);
 }
 
 class Unk_ov004_0224d4e8 : public Character {
@@ -272,7 +272,7 @@ public:
     void func_ov004_02224fc8(char *a, char *b);
     virtual void vfunc_20(u32 a);
 
-    /* 0xec */ Unk_020dbd54 unk_ec;
+    /* 0xec */ AnimModel unk_ec;
     /* 0x1a4 */ Unk_ov004_02224ee4 unk_1a4;
     /* 0x248 */ Unk_ov004_02224d60 unk_248;
     /* 0x250 */ Unk_ov004_02224cf4 unk_250;
@@ -351,10 +351,10 @@ BOOL WindowLight::vfunc_00() {
     func_ov004_02224fc8("/roomObj/obj_b_machine.arc", "/roomObj/obj_b_machine.nsbtx");
     func_ov004_022252cc();
     if (func_ov004_02224d8c(&unk_1a4, 0) != 0) {
-        if (unk_ec.func_02054800(data_021c620c) != 0) {
+        if (unk_ec.allocAnmObj(gBgHeap) != 0) {
             s32 r = func_ov004_02224d8c(&unk_1a4, 0);
-            _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
-            unk_ec.func_02054710();
+            _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
+            unk_ec.attachAnim();
         }
     }
     return TRUE;
@@ -368,7 +368,7 @@ BOOL WindowLight::onExecute() {
 
 // @2225628
 BOOL WindowLight::onDraw() {
-    unk_ec.func_020547cc(0);
+    unk_ec.drawAnimated(0);
     return TRUE;
 }
 
@@ -420,7 +420,7 @@ void WindowLight::func_ov004_022254c4() {
 // @222548c
 BOOL WindowLight::func_ov004_0222548c() {
     s32 r = func_ov004_02224d8c(&unk_1a4, 0);
-    _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
@@ -431,7 +431,7 @@ void WindowLight::func_ov004_02225488() {
 // @2225440
 BOOL WindowLight::func_ov004_02225440() {
     s32 r = func_ov004_02224d8c(&unk_1a4, 0);
-    _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
     func_ov004_02224ca4(&unk_250, 0x4d8);
     return TRUE;
 }
@@ -445,14 +445,14 @@ void WindowLight::func_ov004_022253fc() {
             func_0209c41c(this, 2);
         }
     } else {
-        unk_ec.func_020547e4();
+        unk_ec.stepAnim();
     }
 }
 
 // @22253c4
 BOOL WindowLight::func_ov004_022253c4() {
     s32 r = func_ov004_02224d8c(&unk_1a4, 1);
-    _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
@@ -465,14 +465,14 @@ void WindowLight::func_ov004_02225380() {
             func_0209c41c(this, 3);
         }
     } else {
-        unk_ec.func_020547e4();
+        unk_ec.stepAnim();
     }
 }
 
 // @222532c
 BOOL WindowLight::func_ov004_0222532c() {
     s32 r = func_ov004_02224d8c(&unk_1a4, 2);
-    _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
     func_ov004_02224ca4(&unk_250, 0x4d9);
     unk_370 = 0;
     return TRUE;
@@ -483,7 +483,7 @@ void WindowLight::func_ov004_022252fc() {
     if (unk_ec.isFinished() != 0) {
         vfunc_60(0);
     } else {
-        unk_ec.func_020547e4();
+        unk_ec.stepAnim();
     }
 }
 

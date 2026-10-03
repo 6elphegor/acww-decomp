@@ -2,8 +2,8 @@
 #include "types.h"
 
 extern "C" {
-void *func_020ec808(u32 size, u32 align); // alloc via hook data_021f48f4
-void func_020ec7e4(void *p); // free via hook data_021f48f0
+void *Net_Alloc(u32 size, u32 align); // alloc via hook data_021f48f4
+void Net_Free(void *p); // free via hook sFreeHook
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
 void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
 void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...); // OS_SPrintf
@@ -29,12 +29,12 @@ void func_ov065_02277fe0(void *a, void *b, void *c, u32 d);
 void func_020fff48(void *a, u32 b, void *c);
 void func_020ebe94(void);
 void func_020ebe80(void);
-void func_020ebeac(void);
-void func_020ec158(void);
-void func_020ec258(void);
-void func_020ec1e4(void);
-void func_020ec038(void);
-void func_020ec0d8(void);
+void Net_OnGameStatsChallenge(void);
+void Net_OnWifiFriendDeleted(void);
+void Net_OnWifiServersUpdated(void);
+void Net_OnWifiFriendStatus(void);
+void Net_OnHttpDownloadDone(void);
+void Net_OnGameStatsUploadDone(void);
 s64 func_020ea3c4(void *p);
 s32 func_021000fc(void *p);
 s32 func_021000f4(void *p);
@@ -66,21 +66,21 @@ s32 func_ov066_0225f64c(void *p);
 s32 func_ov066_02261ff8(void);
 s32 func_ov065_02270e60(void);
 s32 func_ov065_02270e7c(void);
-u32 func_020ea5d0(void);
-u32 func_020ea960(void);
-u32 func_020ea7c4(void);
+u32 Net_WifiFindFriend(void);
+u32 Net_GetLocalError(void);
+u32 Net_GetWifiError(void);
 void func_020ec3c4(void);
 void func_020ec30c(void);
-void func_020ec3a4(void);
-void func_020ec370(void);
+void Net_OnWifiSendDone(void);
+void Net_OnWifiRecv(void);
 void func_020ec3c0(void);
 void func_020ec310(void);
 extern u8 data_021f488c;
 extern u8 data_021f49e0[];
 extern u32 data_021f4910[];
-extern u32 data_021f48bc;
-extern u32 data_021f4990[];
-extern char data_0213b0b0[];
+extern u32 sLastErrorCode;
+extern u32 sWifiPingState[];
+extern char sGameStatsSecret[];
 struct HexTable {
     u8 c[17];
 };
@@ -91,10 +91,10 @@ extern char data_0213b0d4[];
 extern char data_0213b0dc[];
 extern char data_0213b0e4[];
 
-extern u16 data_021f4894;
-extern u8 data_021f4890;
-extern u8 *data_021f48d4;
-extern u8 *data_021f48d8;
+extern u16 sWifiConnectStep;
+extern u8 sNetMode;
+extern u8 *sWifiFriendList;
+extern u8 *sWifiUserData;
 extern u32 data_021f48e8;
 extern u32 data_021f48e0;
 extern void *data_021f48c0;
@@ -116,7 +116,7 @@ extern char data_0213b098[];
 
 // one digest byte as two hex characters (view struct: keeps the loop on the index, see notes)
 struct HexPair { char hi, lo; };
-extern "C" BOOL func_020ea0b4(char *a, void *b, u32 c, u32 d) {
+extern "C" BOOL Net_GameStatsUpload(char *a, void *b, u32 c, u32 d) {
     u32 builder;
     HexTable hex;
     char buf[16];
@@ -125,19 +125,19 @@ extern "C" BOOL func_020ea0b4(char *a, void *b, u32 c, u32 d) {
     u32 len;
     u8 *dg;
     u32 i;
-    if (data_021f4894 < 4) return FALSE;
+    if (sWifiConnectStep < 4) return FALSE;
     if (data_0213b064 != 0) {
         enc = ((c + 2) / 3) * 4 + 1;
-        sz = STD_GetStringLength(data_0213b0b0);
-        data_021f48b4 = (u32)func_020ec808(sz + enc, 4);
+        sz = STD_GetStringLength(sGameStatsSecret);
+        data_021f48b4 = (u32)Net_Alloc(sz + enc, 4);
         if (data_021f48b4 == 0) return FALSE;
-        data_021f48c4 = (char *)func_020ec808(0x29, 4);
+        data_021f48c4 = (char *)Net_Alloc(0x29, 4);
         if (data_021f48c4 == NULL) {
-            func_020ec7e4((void *)data_021f48b4);
+            Net_Free((void *)data_021f48b4);
             data_021f48b4 = 0;
             return FALSE;
         }
-        func_02127838((char *)data_021f48b4, data_0213b0b0);
+        func_02127838((char *)data_021f48b4, sGameStatsSecret);
         len = func_ov065_0226fb08(b, c, (char *)data_021f48b4 + sz, enc);
         MATH_CalcSHA1(data_021f48c4 + 0x14, (void *)data_021f48b4, sz + len);
         hex = data_0213b084;
@@ -149,13 +149,13 @@ extern "C" BOOL func_020ea0b4(char *a, void *b, u32 c, u32 d) {
         data_021f48c4[0x28] = 0;
         data_0213b064 = 0;
         MI_CpuFill8(buf, 0, 16);
-        OS_SNPrintf(buf, 16, data_0213b0c8, func_020ea3c4(data_021f48d8 + 0x10));
+        OS_SNPrintf(buf, 16, data_0213b0c8, func_020ea3c4(sWifiUserData + 0x10));
         func_ov065_02278060(&builder);
         func_ov065_02278054(&builder, data_0213b0d0, buf);
         func_ov065_02278054(&builder, data_0213b0d4, data_021f48c4);
         func_ov065_02278054(&builder, data_0213b0dc, (char *)data_021f48b4 + 0x14);
         func_ov065_02278054(&builder, data_0213b0e4, (void *)d);
-        func_ov065_02277fe0(a, &builder, (void *)func_020ec0d8, 0);
+        func_ov065_02277fe0(a, &builder, (void *)Net_OnGameStatsUploadDone, 0);
         return TRUE;
     }
     return FALSE;

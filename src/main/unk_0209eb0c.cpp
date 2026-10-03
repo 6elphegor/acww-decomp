@@ -9,10 +9,10 @@ u32 func_02063b8c(s32 n);
 
 class SaveRecord4 {
 public:
-    BOOL func_0209ea50();
-    void func_0209ea60();
-    void func_0209eacc(void *src);
-    void func_0209eaf4();
+    BOOL isDateActive();
+    void expireDate();
+    void setDateToday(void *src);
+    void resetDate();
     u8 getStamp();
     void setStamp(u8 v);
     void newStamp();

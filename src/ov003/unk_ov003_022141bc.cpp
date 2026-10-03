@@ -154,10 +154,10 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
+class BuildingActor : public Character, public TalkMsgRequest {
 public:
-    Unk_ov009_0225e29c();
-    virtual ~Unk_ov009_0225e29c();
+    BuildingActor();
+    virtual ~BuildingActor();
     virtual BOOL vfunc_00();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
@@ -190,9 +190,9 @@ public:
     virtual void vfunc_b4();
     virtual BOOL vfunc_b8();
 
-    s32 func_ov009_0225d6b8(u32 a);
-    void func_ov009_0225d244();
-    void func_ov009_0225bc88();
+    s32 getBtaAnim(u32 a);
+    void getResources();
+    void updateMatrix();
 
     /* 0x130 */ u8 unk_130;
     /* 0x131 */ u8 pad_131;
@@ -248,7 +248,7 @@ BOOL TalkRequest_EndTalkWith(void *p);
 s32 func_020e780c(s32 a, s32 b);
 }
 
-class Unk_ov003_02230df4 : public Unk_ov009_0225e29c {
+class Unk_ov003_02230df4 : public BuildingActor {
 public:
     Unk_ov003_02230df4();
     virtual ~Unk_ov003_02230df4();

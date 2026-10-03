@@ -57,7 +57,7 @@ struct ItemId {
 };
 
 extern "C" {
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 extern const Unk_ov004_0223dd88_Tbl data_ov004_02244230[];
 
 s32 FX_Div(s32 a, s32 b);
@@ -72,8 +72,8 @@ s32 func_ov004_0223df10(Rec *r);
 s16 func_ov004_0223df14(Rec *r);
 void *func_ov004_0223df1c(Rec *r);
 void func_ov004_0223df58(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, s32 d, u8 e);
-void *func_0204ebd8(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_0204eb5c(void *a, u16 *t, s32 x, s32 y, s32 p4, s32 p5, s32 z);
+void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
+void BlockMap_SetItem(void *a, u16 *t, s32 x, s32 y, s32 p4, s32 p5, s32 z);
 s32 Ftr_GetUnk05(void *p);
 }
 
@@ -475,10 +475,10 @@ Unk_ov004_0224f140::~Unk_ov004_0224f140() {}
 
 BOOL Unk_ov004_0224f140::vfunc_48() {
     s32 y, x;
-    void *m = data_021c47c4;
+    void *m = gSceneBlockMap;
     for (y = 0; y < 16; y++) {
         for (x = 0; x < 16; x++) {
-            u16 *p = (u16 *)func_0204ebd8(m, 0, 0, x, y, 0);
+            u16 *p = (u16 *)BlockMap_GetItemPtr(m, 0, 0, x, y, 0);
             if (p != NULL) {
                 BOOL k = FALSE;
                 if (*p >= 0x450c && *p <= 0x45db) {
@@ -499,7 +499,7 @@ BOOL Unk_ov004_0224f140::vfunc_48() {
                         } else {
                             v = sb.v;
                         }
-                        func_0204eb5c(m, &v, 0, 0, x, y, 0);
+                        BlockMap_SetItem(m, &v, 0, 0, x, y, 0);
                     }
                 }
             }

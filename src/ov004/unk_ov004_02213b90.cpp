@@ -181,7 +181,7 @@ extern u8 gTalkMsgIndexEnd;
 extern char gTalkMsgIndexNone[];
 extern u8 gVec3Zero[];
 extern s16 data_02135f44[];
-extern Unk_ov004_022146ec_Sing *data_020cbb18;
+extern Unk_ov004_022146ec_Sing *gCommManager;
 extern TalkWindowState data_021ed0a0;
 
 void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
@@ -745,7 +745,7 @@ BOOL Unk_ov004_0224bda0::vfunc_00() {
                 unk_5c[2] = out[2];
             }
         }
-        l.a = (u16)data_020cbb18->unk_64;
+        l.a = (u16)gCommManager->unk_64;
         *(u16 *)&l = (*(u16 *)&l & ~0xfc) | ((func_020b50e8() & 0x3f) << 2);
         l.c = unk_150;
         Character_setCharId(this, *(u16 *)&l);

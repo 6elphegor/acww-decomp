@@ -35,40 +35,40 @@ struct Unk_02064870_Time {
     u16 v;
 };
 
-// Element of the 3-entry array at +0x58 of Unk_020dd408 (0x44 bytes).
-struct Unk_020648dc {
-    BOOL func_020648dc(s32 mode);
+// Element of the 3-entry array at +0x58 of SceneLights (0x44 bytes).
+struct LightSwitch {
+    BOOL sync(s32 mode);
     u8 unk_00;
     s32 unk_04;
     LightLevel unk_08;
     s32 unk_1c;
 };
 
-struct Unk_02064b98 {
-    void func_02064b98(s32 a, s32 b);
+struct ThunderSe {
+    void schedule(s32 a, s32 b);
     s32 func_02064bc4();
-    s32 func_02064be0();
-    s32 func_02064bfc();
+    s32 tickAll();
+    s32 clearAll();
     s32 func_02064c18(s32 a, s32 b);
     s32 func_02064c20();
-    void func_02064c24();
-    s32 func_02064c78();
+    void tick();
+    s32 clear();
 
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ s32 unk_04;
 };
 
-struct Unk_02064944 {
-    s32 func_02064944();
-    s32 func_020649dc();
-    s32 func_020649f4();
-    s32 func_02064a14();
-    s32 func_02064a70();
-    s32 func_02064a90();
-    s32 func_02064ab0();
-    void func_02064abc(void *m);
-    void func_02064b10();
-    s32 func_02064b88();
+struct FlashLight {
+    s32 stepColorFlash();
+    s32 startColorFlash();
+    s32 updateColorFlash();
+    s32 stepLightning();
+    s32 startLightning();
+    s32 updateLightning();
+    s32 shutdown();
+    void apply(void *m);
+    void update();
+    s32 reset();
 
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ u16 unk_04;
@@ -77,20 +77,20 @@ struct Unk_02064944 {
     /* 0x18 */ s32 unk_18;
     /* 0x1c */ s32 unk_1c;
     /* 0x20 */ s32 unk_20;
-    /* 0x24 */ Unk_02064b98 unk_24[4];
+    /* 0x24 */ ThunderSe unk_24[4];
 };
 
-struct Unk_0206444c {
-    ~Unk_0206444c();
-    void func_0206449c(void *m);
-    void func_020644e8();
-    void func_020645b8();
-    void func_02064644();
-    void func_02064674();
-    void func_020646e0();
-    void func_0206476c();
-    void func_020647d0(Unk_02064674_Vec *out);
-    s16 func_02064870();
+struct SceneLight {
+    ~SceneLight();
+    void apply(void *m);
+    void update();
+    void updateColorAndDir();
+    void calcWarmColor();
+    void calcLampColor();
+    void calcSwitchColor();
+    void updateOutdoor();
+    void calcDirection(Unk_02064674_Vec *out);
+    s16 getTimeAngle();
 
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ s32 unk_04;
@@ -98,7 +98,7 @@ struct Unk_0206444c {
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s16 unk_10;
     /* 0x12 */ s16 unk_12;
-    /* 0x14 */ Unk_020648dc unk_14;
+    /* 0x14 */ LightSwitch unk_14;
     /* 0x34 */ u16 unk_34;
     /* 0x38 */ Unk_02064674_Vec unk_38;
 };
@@ -159,19 +159,19 @@ struct Unk_02064d6c_Rgb {
     u16 x : 1;
 };
 
-class Unk_020dd408 : public GameProc {
+class SceneLights : public GameProc {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    void func_02064d6c();
-    void func_0206513c();
+    void updateBaseColor();
+    void setupLights();
 
     /* 0x050 */ s32 unk_50;
     /* 0x054 */ s32 unk_54;
-    /* 0x058 */ Unk_0206444c unk_58[3];
-    /* 0x124 */ Unk_02064944 unk_124;
+    /* 0x058 */ SceneLight unk_58[3];
+    /* 0x124 */ FlashLight unk_124;
     /* 0x168 */ s16 unk_168;
     /* 0x16a */ u16 unk_16a;
     /* 0x16c */ u16 unk_16c;
@@ -187,7 +187,7 @@ struct Unk_021c9f40_Color {
     Unk_021c9f40_Color(u8 a_, u8 b_, u8 c_, u8 d_) { a = a_; b = b_; c = c_; d = d_; }
 };
 
-// Flags and values at data_021c9f5c (0x14 bytes).
+// Flags and values at sLightSwitchState (0x14 bytes).
 struct Unk_021c9f5c {
     u8 flag[2];
     u32 b[2];
@@ -196,7 +196,7 @@ struct Unk_021c9f5c {
 
 // Scene registration entry: constructor, two halfwords.
 struct Unk_020dd3b8 {
-    Unk_020dd408 *(*unk_00)(void);
+    SceneLights *(*unk_00)(void);
     s16 unk_04;
     s16 unk_06;
 };
@@ -209,8 +209,8 @@ extern Unk_020d93b8 *gCamera;
 extern Unk_02064fa8_Data gViewMtx;
 }
 
-extern Unk_020dd408 *data_021c9f44;
-extern Unk_021c9f5c data_021c9f5c;
+extern SceneLights *gSceneLights;
+extern Unk_021c9f5c sLightSwitchState;
 extern const u16 data_020cb728[];
 extern const u16 data_020cb6f8[];
 extern const u16 data_020cb6fc[];
@@ -228,7 +228,7 @@ void func_020e93a0(Unk_02064674_Vec *v, s32 a);
 s32 func_020e94f8(Unk_02064674_Vec *v);
 s32 VEC_Mag(Unk_02064674_Vec *v);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_0209cf18(Unk_02064870_Time *t);
+void Clock_GetMinuteHour(Unk_02064870_Time *t);
 void func_0209cdf8(Unk_02064870_Time a, Unk_02064870_Time b, Unk_02064870_Time *out);
 s32 func_020b5184();
 s32 func_020b5164();
@@ -239,11 +239,11 @@ void VEC_Normalize(void *a, void *b);
 void func_020e7968(void);
 void func_020e7a10(void *list, void *node, void *prev);
 
-void func_0206481c(Unk_02064674_Vec *in, Unk_02064674_Vec *out);
-void func_02064fa8(void *a, void *b);
+void Light_ClampDir(Unk_02064674_Vec *in, Unk_02064674_Vec *out);
+void Light_GetViewRotation(void *a, void *b);
 void func_020648d8(void *p);
-void func_02064460(s32 i, u32 v);
-void func_02064478(s32 i, u32 a, u32 b);
+void LightSwitch_SetOff(s32 i, u32 v);
+void LightSwitch_SetOn(s32 i, u32 a, u32 b);
 }
 
 inline BOOL IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
@@ -251,7 +251,7 @@ inline BOOL IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 
 extern "C" u8 func_020ba9f8(u32 x);
 
-// ---- Unk_020dd408::func_02064d6c
+// ---- SceneLights::updateBaseColor
 static inline void Unk_02064d6c_Adjust(Unk_02064d6c_Rgb *c) {
     s32 r = c->r + 10;
     s32 g = c->g + 10;
@@ -273,12 +273,12 @@ static inline void Unk_02064d6c_Adjust(Unk_02064d6c_Rgb *c) {
     }
 }
 
-extern "C" void func_02065328(Unk_020652c0_List *list) {
+extern "C" void PrioList_Init(Unk_020652c0_List *list) {
     list->unk_00 = NULL;
     list->unk_04 = NULL;
 }
 
-extern "C" BOOL func_020652ec(Unk_020652ec_List *list, Unk_020652ec_Node *node) {
+extern "C" BOOL PrioList_Insert(Unk_020652ec_List *list, Unk_020652ec_Node *node) {
     Unk_020652ec_Node *prev = list->unk_00;
     if (prev == NULL) {
         list->unk_00 = node;
@@ -303,7 +303,7 @@ extern "C" BOOL func_020652dc(void) {
     return TRUE;
 }
 
-extern "C" Unk_020652c0_Node *func_020652c0(Unk_020652c0_List *list, s32 key) {
+extern "C" Unk_020652c0_Node *PrioList_FindById(Unk_020652c0_List *list, s32 key) {
     if (key == 0) return NULL;
     Unk_020652c0_Node *p;
     for (p = list->unk_00; p != NULL; p = p->unk_04) {
@@ -312,11 +312,11 @@ extern "C" Unk_020652c0_Node *func_020652c0(Unk_020652c0_List *list, s32 key) {
     return NULL;
 }
 
-extern "C" Unk_020dd408 *func_02065260(void) {
-    return new Unk_020dd408();
+extern "C" SceneLights *SceneLights_Create(void) {
+    return new SceneLights();
 }
 
-void Unk_020dd408::func_0206513c() {
+void SceneLights::setupLights() {
     s32 id;
     s32 i = 0;
     id = func_020b50e8();
@@ -324,11 +324,11 @@ void Unk_020dd408::func_0206513c() {
         if (func_020b52f8() == 0) i = 1;
     }
     if (i) {
-        func_02064478(0, 2, 0);
+        LightSwitch_SetOn(0, 2, 0);
     } else {
-        func_02064460(0, 1);
+        LightSwitch_SetOff(0, 1);
     }
-    func_02064460(1, 1);
+    LightSwitch_SetOff(1, 1);
     const Unk_0206513c_DefList *dl = data_020dd3ec[unk_50];
     const Unk_0206513c_Def *const *list = dl->unk_04;
     s32 count = dl->unk_00;
@@ -349,7 +349,7 @@ void Unk_020dd408::func_0206513c() {
         case 5:
             unk_58[i].unk_10 = rec->unk_04;
             unk_58[i].unk_12 = rec->unk_06;
-            Unk_0206444c *e = &unk_58[i];
+            SceneLight *e = &unk_58[i];
             e->unk_14.unk_00 = 0;
             e->unk_14.unk_08.switchLightAnimated(0);
             unk_174 = &e->unk_14.unk_08;
@@ -357,8 +357,8 @@ void Unk_020dd408::func_0206513c() {
     }
 }
 
-BOOL Unk_020dd408::vfunc_00() {
-    data_021c9f44 = this;
+BOOL SceneLights::vfunc_00() {
+    gSceneLights = this;
     s32 id = func_020b50e8();
     unk_50 = data_020cb7d8[id];
     if (id == 0x21) {
@@ -375,53 +375,53 @@ BOOL Unk_020dd408::vfunc_00() {
         unk_170 = 0;
         unk_178 = rec->unk_08;
     }
-    func_0206513c();
-    Unk_0206444c *p;
+    setupLights();
+    SceneLight *p;
     s32 i;
     for (p = unk_58, i = 0; i < unk_54; p++, i++) {
         func_020648d8(p);
-        p->func_020644e8();
+        p->update();
     }
-    unk_124.func_02064b88();
+    unk_124.reset();
     return TRUE;
 }
 
-BOOL Unk_020dd408::onExecute() {
-    Unk_0206444c *p;
+BOOL SceneLights::onExecute() {
+    SceneLight *p;
     s32 i;
     for (p = unk_58, i = 0; i < unk_54; p++, i++) {
-        p->func_020644e8();
+        p->update();
     }
-    unk_124.func_02064b10();
-    func_02064d6c();
+    unk_124.update();
+    updateBaseColor();
     return TRUE;
 }
 
-BOOL Unk_020dd408::onDraw() {
+BOOL SceneLights::onDraw() {
     u8 l[0x24];
     s32 i;
-    Unk_0206444c *p;
-    func_02064fa8(&gViewMtx, l);
+    SceneLight *p;
+    Light_GetViewRotation(&gViewMtx, l);
     for (p = unk_58, i = 0; i < unk_54; p++, i++) {
-        p->func_0206449c(l);
+        p->apply(l);
     }
-    unk_124.func_02064abc(l);
+    unk_124.apply(l);
     return TRUE;
 }
 
-BOOL Unk_020dd408::vfunc_0c() {
-    unk_124.func_02064ab0();
-    data_021c9f44 = NULL;
+BOOL SceneLights::vfunc_0c() {
+    unk_124.shutdown();
+    gSceneLights = NULL;
     return TRUE;
 }
 
-extern "C" void func_02064fa8(void *a, void *b) {
+extern "C" void Light_GetViewRotation(void *a, void *b) {
     VEC_Normalize(a, b);
     VEC_Normalize((u8 *)a + 0xc, (u8 *)b + 0xc);
     VEC_Normalize((u8 *)a + 0x18, (u8 *)b + 0x18);
 }
 
-extern "C" s32 func_02064f84(void) {
+extern "C" s32 SceneLights_GetMatLightMask(void) {
     s32 r = 15;
     u8 t = data_020cb7d8[func_020b50e8()];
     switch (t) {
@@ -432,7 +432,7 @@ extern "C" s32 func_02064f84(void) {
     return r;
 }
 
-extern "C" s32 func_02064f60(void) {
+extern "C" s32 SceneLights_GetMatLightMask2(void) {
     s32 r = 15;
     u8 t = data_020cb7d8[func_020b50e8()];
     switch (t) {
@@ -443,9 +443,9 @@ extern "C" s32 func_02064f60(void) {
     return r;
 }
 
-extern "C" s16 func_02064f2c(void) {
+extern "C" s16 SceneLights_GetFlashColor(void) {
     volatile s16 v = 0;
-    Unk_020dd408 *o = data_021c9f44;
+    SceneLights *o = gSceneLights;
     if (o != NULL) {
         if (*(s32 *)((u8 *)o + 0x124) != 9) {
             v = *(u16 *)((u8 *)o + 0x128);
@@ -454,11 +454,11 @@ extern "C" s16 func_02064f2c(void) {
     return v;
 }
 
-extern "C" s16 func_02064f18(void) {
-    return data_021c9f44->unk_168;
+extern "C" s16 SceneLights_GetBaseColor(void) {
+    return gSceneLights->unk_168;
 }
 
-void Unk_020dd408::func_02064d6c() {
+void SceneLights::updateBaseColor() {
     struct {
         volatile u16 a;
         Unk_02064d6c_Rgb c;
@@ -489,7 +489,7 @@ void Unk_020dd408::func_02064d6c() {
     unk_168 = *(u16 *)&l.c;
 }
 
-extern "C" s16 func_02064cc4(void) {
+extern "C" s16 SceneLights_GetRoomColor(void) {
     struct {
         volatile u16 a;
         u16 c;
@@ -497,7 +497,7 @@ extern "C" s16 func_02064cc4(void) {
         u16 d;
     } l;
     l.c = 0;
-    Unk_020dd408 *o = data_021c9f44;
+    SceneLights *o = gSceneLights;
     if (o == NULL) {
         return l.c;
     }
@@ -505,8 +505,8 @@ extern "C" s16 func_02064cc4(void) {
     case 2:
     case 3: {
         s32 t = o->unk_174->getLevel();
-        Unk_02064d6c_Rgb *x = (Unk_02064d6c_Rgb *)&data_021c9f44->unk_170;
-        Unk_02064d6c_Rgb *y = (Unk_02064d6c_Rgb *)&data_021c9f44->unk_16e;
+        Unk_02064d6c_Rgb *x = (Unk_02064d6c_Rgb *)&gSceneLights->unk_170;
+        Unk_02064d6c_Rgb *y = (Unk_02064d6c_Rgb *)&gSceneLights->unk_16e;
         s32 b = x->b + (((y->b - x->b) * t) >> 12);
         s32 r = x->r + (((y->r - x->r) * t) >> 12);
         s32 g = x->g + (((y->g - x->g) * t) >> 12);
@@ -525,20 +525,20 @@ extern "C" u8 func_02064c84(u32 x) {
     BOOL b = (data_020e416c == 1);
     if (b) {
         if (x == 0) {
-            return data_021c9f44->unk_178;
+            return gSceneLights->unk_178;
         }
         return func_020ba9f8(x);
     }
     return func_020ba9f8(x);
 }
 
-s32 Unk_02064b98::func_02064c78()
+s32 ThunderSe::clear()
 {
     unk_00 = 2;
     unk_04 = 0;
 }
 
-void Unk_02064b98::func_02064c24()
+void ThunderSe::tick()
 {
     u32 x;
     if (unk_00 == 0) {
@@ -557,31 +557,31 @@ void Unk_02064b98::func_02064c24()
     }
 }
 
-s32 Unk_02064b98::func_02064c20() {}
+s32 ThunderSe::func_02064c20() {}
 
-s32 Unk_02064b98::func_02064c18(s32 a, s32 b)
+s32 ThunderSe::func_02064c18(s32 a, s32 b)
 {
     unk_00 = a;
     unk_04 = b;
 }
 
-s32 Unk_02064b98::func_02064bfc()
+s32 ThunderSe::clearAll()
 {
     s32 i;
     for (i = 0; i < 4; i++) {
-        func_02064c78();
+        clear();
     }
 }
 
-s32 Unk_02064b98::func_02064be0()
+s32 ThunderSe::tickAll()
 {
     s32 i;
     for (i = 0; i < 4; i++) {
-        func_02064c24();
+        tick();
     }
 }
 
-s32 Unk_02064b98::func_02064bc4()
+s32 ThunderSe::func_02064bc4()
 {
     s32 i;
     for (i = 0; i < 4; i++) {
@@ -589,7 +589,7 @@ s32 Unk_02064b98::func_02064bc4()
     }
 }
 
-void Unk_02064b98::func_02064b98(s32 a, s32 b)
+void ThunderSe::schedule(s32 a, s32 b)
 {
     s32 i;
     for (i = 0; i < 4; i++) {
@@ -599,18 +599,18 @@ void Unk_02064b98::func_02064b98(s32 a, s32 b)
     }
 }
 
-s32 Unk_02064944::func_02064b88()
+s32 FlashLight::reset()
 {
     unk_00 = 9;
-    return unk_24[0].func_02064bfc();
+    return unk_24[0].clearAll();
 }
 
-void Unk_02064944::func_02064b10()
+void FlashLight::update()
 {
     Unk_02064674_Vec v;
     switch (unk_00) {
     case 0:
-        func_02064a90();
+        updateLightning();
         break;
     case 1:
     case 2:
@@ -620,7 +620,7 @@ void Unk_02064944::func_02064b10()
     case 6:
     case 7:
     case 8:
-        func_020649f4();
+        updateColorFlash();
         break;
     }
     if (gCamera) {
@@ -629,11 +629,11 @@ void Unk_02064944::func_02064b10()
     v.x = unk_08.x;
     v.y = unk_08.y;
     v.z = unk_08.z;
-    func_0206481c(&v, &unk_08);
-    unk_24[0].func_02064be0();
+    Light_ClampDir(&v, &unk_08);
+    unk_24[0].tickAll();
 }
 
-void Unk_02064944::func_02064abc(void *m)
+void FlashLight::apply(void *m)
 {
     if (unk_00 != 9) {
         *(volatile s32 *)0x4000440 = 2;
@@ -646,34 +646,34 @@ void Unk_02064944::func_02064abc(void *m)
     }
 }
 
-s32 Unk_02064944::func_02064ab0()
+s32 FlashLight::shutdown()
 {
     return unk_24[0].func_02064bc4();
 }
 
-s32 Unk_02064944::func_02064a90()
+s32 FlashLight::updateLightning()
 {
     switch (unk_14) {
     case 1:
-        func_02064a70();
+        startLightning();
         break;
     case 2:
-        func_02064a14();
+        stepLightning();
         break;
     }
 }
 
-s32 Unk_02064944::func_02064a70()
+s32 FlashLight::startLightning()
 {
     unk_04 = 0;
     unk_14 = 2;
     unk_1c = 0;
     unk_20 = 0x800;
     unk_18 = 0;
-    unk_24[0].func_02064b98(0, 0xb4);
+    unk_24[0].schedule(0, 0xb4);
 }
 
-s32 Unk_02064944::func_02064a14()
+s32 FlashLight::stepLightning()
 {
     unk_08.x = 0;
     unk_08.y = -0x1000;
@@ -695,19 +695,19 @@ s32 Unk_02064944::func_02064a14()
     unk_04 = (c << 10) | (c | (c << 5));
 }
 
-s32 Unk_02064944::func_020649f4()
+s32 FlashLight::updateColorFlash()
 {
     switch (unk_14) {
     case 1:
-        func_020649dc();
+        startColorFlash();
         break;
     case 2:
-        func_02064944();
+        stepColorFlash();
         break;
     }
 }
 
-s32 Unk_02064944::func_020649dc()
+s32 FlashLight::startColorFlash()
 {
     unk_04 = 0;
     unk_14 = 2;
@@ -716,7 +716,7 @@ s32 Unk_02064944::func_020649dc()
     unk_18 = 0;
 }
 
-s32 Unk_02064944::func_02064944()
+s32 FlashLight::stepColorFlash()
 {
     unk_08.x = 0;
     unk_08.y = -0x1000;
@@ -743,9 +743,9 @@ s32 Unk_02064944::func_02064944()
     }
 }
 
-extern "C" void func_02064928(u32 v)
+extern "C" void SceneLights_StartFlash(u32 v)
 {
-    Unk_020dd408 *g = data_021c9f44;
+    SceneLights *g = gSceneLights;
     if (g != 0) {
         u32 *p = (u32 *)((u8 *)g + 0x124);
         p[0] = v;
@@ -753,27 +753,27 @@ extern "C" void func_02064928(u32 v)
     }
 }
 
-BOOL Unk_020648dc::func_020648dc(s32 mode)
+BOOL LightSwitch::sync(s32 mode)
 {
     BOOL r = FALSE;
     u8 v;
     switch (mode) {
     case 3:
     case 4:
-        v = data_021c9f5c.flag[0];
+        v = sLightSwitchState.flag[0];
         if (unk_00 != v) {
             unk_00 = v;
-            unk_04 = data_021c9f5c.b[0];
-            unk_1c = data_021c9f5c.a[0];
+            unk_04 = sLightSwitchState.b[0];
+            unk_1c = sLightSwitchState.a[0];
             r = TRUE;
         }
         break;
     case 5:
-        v = data_021c9f5c.flag[1];
+        v = sLightSwitchState.flag[1];
         if (unk_00 != v) {
             unk_00 = v;
-            unk_04 = data_021c9f5c.b[1];
-            unk_1c = data_021c9f5c.a[1];
+            unk_04 = sLightSwitchState.b[1];
+            unk_1c = sLightSwitchState.a[1];
             r = TRUE;
         }
         break;
@@ -783,17 +783,17 @@ BOOL Unk_020648dc::func_020648dc(s32 mode)
 
 extern "C" void func_020648d8(void *) {}
 
-s16 Unk_0206444c::func_02064870()
+s16 SceneLight::getTimeAngle()
 {
     Unk_02064870_Time res, tm, now;
     tm.v = unk_08;
-    func_0209cf18(&now);
+    Clock_GetMinuteHour(&now);
     func_0209cdf8(now, tm, &res);
     u8 *p = (u8 *)&res;
     return -(((p[0] + p[1] * 60) << 15) / 0x5a0 - 0x4000);
 }
 
-extern "C" void func_0206481c(Unk_02064674_Vec *in, Unk_02064674_Vec *out)
+extern "C" void Light_ClampDir(Unk_02064674_Vec *in, Unk_02064674_Vec *out)
 {
     if (func_020e94f8(in)) {
         if (VEC_Mag(in) >= 0xff0) {
@@ -809,14 +809,14 @@ extern "C" void func_0206481c(Unk_02064674_Vec *in, Unk_02064674_Vec *out)
     }
 }
 
-void Unk_0206444c::func_020647d0(Unk_02064674_Vec *out)
+void SceneLight::calcDirection(Unk_02064674_Vec *out)
 {
     switch (unk_00) {
     case 0:
     case 1:
     case 2:
         func_020e944c(out, unk_10);
-        func_020e93a0(out, func_02064870());
+        func_020e93a0(out, getTimeAngle());
         break;
     default:
         func_020e944c(out, unk_10);
@@ -825,7 +825,7 @@ void Unk_0206444c::func_020647d0(Unk_02064674_Vec *out)
     }
 }
 
-void Unk_0206444c::func_0206476c()
+void SceneLight::updateOutdoor()
 {
     Unk_02064674_Color c0;
     volatile u16 c1;
@@ -833,7 +833,7 @@ void Unk_0206444c::func_0206476c()
     v.x = 0;
     v.y = 0;
     v.z = -0x1000;
-    func_020647d0(&v);
+    calcDirection(&v);
     if (gCamera) {
         func_020e944c(&v, gCamera->getEyeCurveAngle());
     }
@@ -843,13 +843,13 @@ void Unk_0206444c::func_0206476c()
     w.x = v.x;
     w.y = v.y;
     w.z = v.z;
-    func_0206481c(&w, &unk_38);
+    Light_ClampDir(&w, &unk_38);
 }
 
-void Unk_0206444c::func_020646e0()
+void SceneLight::calcSwitchColor()
 {
     s32 t = unk_14.unk_08.getLevel();
-    Unk_020dd408 *g = data_021c9f44;
+    SceneLights *g = gSceneLights;
     Unk_02064674_Color *pa = (Unk_02064674_Color *)&g->unk_16c;
     Unk_02064674_Color *pb = (Unk_02064674_Color *)&g->unk_16a;
     Unk_02064674_Color &ca = *pa;
@@ -871,10 +871,10 @@ void Unk_0206444c::func_020646e0()
     unk_34 = (bl << 10) | (r | (gr << 5));
 }
 
-void Unk_0206444c::func_02064674()
+void SceneLight::calcLampColor()
 {
     s32 t = unk_14.unk_08.getLevel();
-    Unk_020dd408 *g = data_021c9f44;
+    SceneLights *g = gSceneLights;
     Unk_02064674_Color *pa = (Unk_02064674_Color *)&g->unk_16c;
     Unk_02064674_Color *pb = (Unk_02064674_Color *)&g->unk_16a;
     Unk_02064674_Color &ca = *pa;
@@ -885,32 +885,32 @@ void Unk_0206444c::func_02064674()
     unk_34 = (bl << 10) | (r | (gr << 5));
 }
 
-void Unk_0206444c::func_02064644()
+void SceneLight::calcWarmColor()
 {
     s32 t = unk_14.unk_08.getLevel();
     unk_34 = ((((t << 4) >> 12) + 15) << 10) | ((((t << 2) >> 12) + 25) | (((t * 9 >> 12) + 20) << 5));
 }
 
-void Unk_0206444c::func_020645b8()
+void SceneLight::updateColorAndDir()
 {
     Unk_02064674_Color c0;
     volatile u16 c1;
     Unk_02064674_Vec v, w;
     switch (unk_00) {
     case 3:
-        func_020646e0();
+        calcSwitchColor();
         v.x = 0;
         v.y = -0x1000;
         v.z = 0;
         break;
     case 4:
-        func_02064674();
+        calcLampColor();
         v.x = 0;
         v.y = -0x1000;
         v.z = 0;
         break;
     case 5:
-        func_02064644();
+        calcWarmColor();
         v.x = 0;
         v.y = -0x1000;
         v.z = 0;
@@ -924,20 +924,20 @@ void Unk_0206444c::func_020645b8()
         v.z = -0x1000;
         break;
     }
-    func_020647d0(&v);
+    calcDirection(&v);
     w.x = v.x;
     w.y = v.y;
     w.z = v.z;
-    func_0206481c(&w, &unk_38);
+    Light_ClampDir(&w, &unk_38);
 }
 
-void Unk_0206444c::func_020644e8()
+void SceneLight::update()
 {
-    if (data_021c9f44->unk_50 == 0) {
-        func_0206476c();
+    if (gSceneLights->unk_50 == 0) {
+        updateOutdoor();
         return;
     }
-    if (unk_14.func_020648dc(unk_00)) {
+    if (unk_14.sync(unk_00)) {
         if (unk_14.unk_00 != 0) {
             switch (unk_14.unk_04) {
             case 0:
@@ -964,10 +964,10 @@ void Unk_0206444c::func_020644e8()
         }
     }
     unk_14.unk_08.update();
-    func_020645b8();
+    updateColorAndDir();
 }
 
-void Unk_0206444c::func_0206449c(void *m)
+void SceneLight::apply(void *m)
 {
     s32 id = unk_04;
     *(volatile s32 *)0x4000440 = 2;
@@ -977,20 +977,20 @@ void Unk_0206444c::func_0206449c(void *m)
     NNS_G3dGlbLightColor(id, unk_34);
 }
 
-extern "C" void func_02064478(s32 i, u32 a, u32 b)
+extern "C" void LightSwitch_SetOn(s32 i, u32 a, u32 b)
 {
-    data_021c9f5c.flag[i] = 1;
-    data_021c9f5c.a[i] = a;
-    data_021c9f5c.b[i] = b;
+    sLightSwitchState.flag[i] = 1;
+    sLightSwitchState.a[i] = a;
+    sLightSwitchState.b[i] = b;
 }
 
-extern "C" void func_02064460(s32 i, u32 v)
+extern "C" void LightSwitch_SetOff(s32 i, u32 v)
 {
-    data_021c9f5c.flag[i] = 0;
-    data_021c9f5c.a[i] = v;
+    sLightSwitchState.flag[i] = 0;
+    sLightSwitchState.a[i] = v;
 }
 
-Unk_0206444c::~Unk_0206444c() {}
+SceneLight::~SceneLight() {}
 
 // ---- data (definition order = creation order, solved by inverting the heapsort)
 extern const Unk_0206513c_DefList data_020cb700;
@@ -1089,16 +1089,16 @@ extern const Unk_0206513c_Def data_020cb788 = {3, 3, 0, 1, 0x1000, 0x1000};
 extern const Unk_0206513c_Def data_020cb7c4 = {5, 1, 0, 1, 0x1000, 0x1000};
 extern const Unk_0206513c_DefList data_020cb720 = {2, data_020dd3c0};
 extern const u16 data_020cb728[8] = {0x0922, 0x08c9, 0x30c3, 0x30a9, 0x1224, 0x1192, 0x5da6, 0x5531};
-Unk_020dd3b8 data_020dd3b8 = {func_02065260, 7, 5};
+Unk_020dd3b8 data_020dd3b8 = {SceneLights_Create, 7, 5};
 Unk_021c9f40_Color data_021c9f54(20, 20, 31, 31);
 Unk_021c9f40_Color data_021c9f50(31, 31, 20, 31);
 extern const Unk_0206513c_DefList data_020cb700 = {1, data_020dd3b4};
 const Unk_0206513c_Def *data_020dd3c0[2] = {&data_020cb7b0, &data_020cb7c4};
 Unk_021c9f40_Color data_021c9f48(20, 31, 20, 31);
-Unk_021c9f5c data_021c9f5c;
+Unk_021c9f5c sLightSwitchState;
 extern const Unk_0206513c_Def data_020cb738 = {0, 0, 0, 0, 0, 0};
 Unk_021c9f40_Color data_021c9f4c(20, 31, 31, 31);
 Unk_021c9f40_Color data_021c9f40(20, 24, 24, 31);
 extern const Unk_0206513c_Def data_020cb7b0 = {4, 0, 0, 1, 0x1000, 0x1000};
 extern const Unk_0206513c_Def data_020cb74c = {1, 3, 0, 0, 0, 0};
-Unk_020dd408 *data_021c9f44;
+SceneLights *gSceneLights;

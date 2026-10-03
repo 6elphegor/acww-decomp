@@ -12,20 +12,20 @@
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
 #define func_02033914 _ZN12Unk_0203389c13func_02033914Ei
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_0205436c _ZN12Unk_0205454c13func_0205436cEiiiitt
-#define func_0205439c _ZN12Unk_0205454c13func_0205439cEv
-#define func_020543b4 _ZN12Unk_0205454c13func_020543b4EPS_
-#define func_02054420 _ZN12Unk_0205454c13func_02054420EPS_
-#define func_020544d8 _ZN12Unk_0205454cD1Ev
-#define func_02054514 _ZN12Unk_0205454cC1Ev
-#define func_020546ec _ZN12Unk_020dbd5413func_020546ecEv
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
-#define func_02054b14 _ZN12Unk_020dbd3413func_02054b14Ev
-#define func_02054b38 _ZN12Unk_020dbd3413func_02054b38EPv
-#define func_02055488 _ZN5Model13func_02055488Eii
+#define BlendAnimModel_playBlend _ZN14BlendAnimModel9playBlendEiiiitt
+#define BlendAnimModel_stepBlend _ZN14BlendAnimModel9stepBlendEv
+#define BlendAnimModel_onJointCalcPost _ZN14BlendAnimModel15onJointCalcPostEPS_
+#define BlendAnimModel_onJointCalcPre _ZN14BlendAnimModel14onJointCalcPreEPS_
+#define func_020544d8 _ZN14BlendAnimModelD1Ev
+#define func_02054514 _ZN14BlendAnimModelC1Ev
+#define AnimModel_detachJointAnim _ZN9AnimModel15detachJointAnimEv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
+#define CachedModel_release _ZN11CachedModel7releaseEv
+#define CachedModel_allocJointRecord _ZN11CachedModel16allocJointRecordEPv
+#define Model_setInitCallback _ZN5Model15setInitCallbackEii
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define func_02070358 _ZN12Unk_0206fe8013func_02070358EPt
@@ -656,20 +656,20 @@ BOOL func_020308b4(void *p, s32 a, void *c, s32 w, s32 h);
 s32 func_02033914(void *o, s32 f);
 void func_02033988(void *o);
 void *func_020339bc(void *o, void *v, s32 a, s32 b);
-void func_0205436c(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-s32 func_0205439c(void *);
-s32 func_020543b4(void *, void *);
-s32 func_02054420(void *, void *);
+void BlendAnimModel_playBlend(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+s32 BlendAnimModel_stepBlend(void *);
+s32 BlendAnimModel_onJointCalcPost(void *, void *);
+s32 BlendAnimModel_onJointCalcPre(void *, void *);
 void func_020544d8(void *);
 void func_02054514(void *);
-void func_020546ec(void *p);
-s32 func_02054710(void *);
-s32 func_02054720(void *, s32, s32, s32, s32, s32);
-s32 func_020547cc(void *, V3 *);
-s32 func_02054800(void *, s32);
-void func_02054b14(void *p);
-s32 func_02054b38(void *, s32);
-void func_02055488(void *self, void *fn, void *arg);
+void AnimModel_detachJointAnim(void *p);
+s32 AnimModel_attachAnim(void *);
+s32 BlendAnimModel_initAnim(void *, s32, s32, s32, s32, s32);
+s32 AnimModel_drawAnimated(void *, V3 *);
+s32 AnimModel_allocAnmObj(void *, s32);
+void CachedModel_release(void *p);
+s32 CachedModel_allocJointRecord(void *, s32);
+void Model_setInitCallback(void *self, void *fn, void *arg);
 s32 Model_setResource(void *, s32, s32);
 BOOL AnimFrameCtrl_hasPassedFrame(void *p, s32 v);
 void func_0205bf68(void);
@@ -1355,7 +1355,7 @@ extern "C" s32 func_ov004_02232220(E864 *o) {
 extern "C" void func_ov004_022321e8(E864 *o, s32 i) {
     s32 t = func_021065dc(o->unk_54[i]);
     s32 r = func_021065f8(t, 0);
-    func_0205436c(o->unk_64, r, 2, 0, 0x1000, 0, 0);
+    BlendAnimModel_playBlend(o->unk_64, r, 2, 0, 0x1000, 0, 0);
 }
 
 extern "C" void func_ov004_022321cc(E864 *o)
@@ -1841,7 +1841,7 @@ extern "C" void func_ov004_02231600(R *o, V3 *out) {
 extern "C" void _ZN18Unk_ov004_0224e7448vfunc_00Ev(E744 *o) {
     o->unk_50 = o;
     o->unk_1c8 = 2;
-    func_02055488(&o->unk_64, (void *)func_ov004_0222ef04, o);
+    Model_setInitCallback(&o->unk_64, (void *)func_ov004_0222ef04, o);
     s32 *t = &o->unk_15c;
     o->unk_1e8 = *t;
     o->unk_1e9 = *t;
@@ -1895,7 +1895,7 @@ extern "C" void _ZN18Unk_ov004_0224e72c8vfunc_00Ev(E72c *o) {
     o->unk_1e8 = *t;
     o->unk_1c7 = 0;
     if ((u32)(*t - 0x35) <= 1) {
-        func_02055488(&o->unk_64, (void *)func_ov004_0222ef04, o);
+        Model_setInitCallback(&o->unk_64, (void *)func_ov004_0222ef04, o);
     }
     s32 r;
     if (func_ov004_02231e28(0, 2) > 0) {
@@ -2225,7 +2225,7 @@ extern "C" void _ZN18Unk_ov004_0224e78c8vfunc_00Ev(E78c *e) {
     e->unk_1e9 = e->unk_15c;
     e->unk_1c8 = 1;
     func_ov004_0222dea8(e);
-    func_02055488(&e->unk_64, (void *)func_ov004_0222ef04, e);
+    Model_setInitCallback(&e->unk_64, (void *)func_ov004_0222ef04, e);
 }
 
 extern "C" void _ZN18Unk_ov004_0224e78c8vfunc_04Ev(E78c *e) {
@@ -2456,7 +2456,7 @@ extern "C" void func_ov004_0223015c(E75c *o) {
 
 extern "C" void _ZN18Unk_ov004_0224e7148vfunc_00Ev(E714 *o) {
     o->unk_1e8 = o->unk_15c;
-    func_02055488(&o->unk_64, (void *)func_ov004_0222ef04, o);
+    Model_setInitCallback(&o->unk_64, (void *)func_ov004_0222ef04, o);
     func_ov004_0222dea8(o);
 }
 
@@ -2845,7 +2845,7 @@ extern "C" void _ZN18Unk_ov004_0224e81c8vfunc_00Ev(E81c *o) {
     o->unk_1e9 = o->unk_15c;
     o->unk_1c8 = 1;
     func_ov004_0222dea8(o);
-    func_02055488((u8 *)o + 0x64, (void *)func_ov004_0222ef04, o);
+    Model_setInitCallback((u8 *)o + 0x64, (void *)func_ov004_0222ef04, o);
 }
 
 extern "C" void _ZN18Unk_ov004_0224e81c8vfunc_04Ev(E81c *o) {
@@ -2981,7 +2981,7 @@ extern "C" void func_ov004_0222f1d0(E864 *e) {
     e->unk_1e9 = *p;
     func_ov004_0222dea8(e);
     if (e->unk_1c6) {
-        func_02055488((u8 *)e + 0x64, (void *)func_ov004_0222ef04, e);
+        Model_setInitCallback((u8 *)e + 0x64, (void *)func_ov004_0222ef04, e);
     }
 }
 
@@ -3025,7 +3025,7 @@ extern "C" void func_ov004_0222f090(E864 *e) {
     e->unk_1e8 = e->unk_15c;
     func_ov004_0222dea8(e);
     if (e->unk_1c6) {
-        func_02055488((u8 *)e + 0x64, (void *)func_ov004_0222ef04, e);
+        Model_setInitCallback((u8 *)e + 0x64, (void *)func_ov004_0222ef04, e);
     }
 }
 
@@ -3073,14 +3073,14 @@ skip:
 extern "C" void func_ov004_0222ef40(Cb *c) {
     void *m = c->unk_04->unk_2c;
     if (m) {
-        func_02054420((u8 *)m + 0x64, c);
+        BlendAnimModel_onJointCalcPre((u8 *)m + 0x64, c);
     }
 }
 
 extern "C" void func_ov004_0222ef24(Cb *c) {
     void *m = c->unk_04->unk_2c;
     if (m) {
-        func_020543b4((u8 *)m + 0x64, c);
+        BlendAnimModel_onJointCalcPost((u8 *)m + 0x64, c);
     }
 }
 
@@ -3694,8 +3694,8 @@ extern "C" void func_ov004_0222dd3c(Mgr *self, s32 i)
             }
         }
         (*p)->unk_160 = 0;
-        func_020546ec((u8 *)*p + 0x64);
-        func_02054b14((u8 *)*p + 0x64);
+        AnimModel_detachJointAnim((u8 *)*p + 0x64);
+        CachedModel_release((u8 *)*p + 0x64);
         func_0209c0b4((u8 *)*p + 0x168);
         func_0209c224((u8 *)self + 0x7f8, (u8 *)*p + 0x166);
         switch ((*p)->unk_15c) {
@@ -4011,7 +4011,7 @@ extern "C" void func_ov004_0222d460(Mgr *o, R **p, s32 x) {
     func_ov004_0222e060(*p);
     func_ov004_0222ca24(o, p, x);
     func_ov004_0222d180(o, p);
-    func_0205439c((u8 *)(*p) + 0x64);
+    BlendAnimModel_stepBlend((u8 *)(*p) + 0x64);
 }
 
 extern "C" s32 _ZN18Unk_ov004_0224e87c9onExecuteEv(Mgr *o) {
@@ -4076,10 +4076,10 @@ extern "C" s32 func_ov004_0222d1d8(Mgr *o, R **p, s32 idx) {
             return 0;
         }
         d = func_021065f8(func_021065dc((*p)->unk_54[0]), 0);
-        if (func_02054800(q, c)) {
-            func_02054720(q, d, 0, 0x1000, 1, 0);
-            func_02054710(q);
-            func_02054b38(q, func_0209c348(a));
+        if (AnimModel_allocAnmObj(q, c)) {
+            BlendAnimModel_initAnim(q, d, 0, 0x1000, 1, 0);
+            AnimModel_attachAnim(q);
+            CachedModel_allocJointRecord(q, func_0209c348(a));
             (*p)->unk_160 = 2;
             (*p)->unk_1e8 = (*p)->unk_15c;
             func_ov004_0222d180(o, p);
@@ -4130,7 +4130,7 @@ extern "C" s32 _ZN18Unk_ov004_0224e87c6onDrawEv(Mgr *o) {
                     v.z = 0x1000;
                     break;
                 }
-                func_020547cc((u8 *)(*p) + 0x64, &v);
+                AnimModel_drawAnimated((u8 *)(*p) + 0x64, &v);
             }
         }
     }

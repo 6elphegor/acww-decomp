@@ -78,7 +78,7 @@ void _ZN12Unk_0208623813func_02086258Ev(void *self);
 void _ZN12Unk_0208623813func_02086238Ev(void *self);
 BOOL func_0202e1cc(s32 a, s32 b);
 void TalkRequest_EndTalkWith(void *p);
-void func_0203ffa4(s32 a);
+void EventWeekSlots_MarkPlayer(s32 a);
 void _ZN12Unk_0201442013func_02014ce4EPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_020d771013func_02014e60EPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 s32 _ZN12Unk_02015b8c13func_02015e48Ej(void *self, u32 a);
@@ -90,12 +90,12 @@ u32 func_02063b8c(u32 n);
 void _ZN12ItemPickSpec3setEii(Unk_ov072_02271a58_Obj *o, s32 a, s32 b);
 void func_02063388(Unk_ov072_02271a58_Obj *o);
 void ItemPick_One(u16 *out, Unk_ov072_02271a58_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
-void *func_0204da0c();
-void *func_02037558(void *cell, s32 a, s32 b, s32 c);
-void func_02037590(void *cell, u16 *h, s32 a, s32 b, s32 c);
-BOOL _ZN12Unk_0204e2f013func_0204e440Eiiii(void *self, s32 x, s32 y, s32 z, s32 w);
-void func_0204edf8(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
-u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
+void *TownBlockMap_Get();
+void *MapBlock_GetItemPtr(void *cell, s32 a, s32 b, s32 c);
+void MapBlock_SetItem(void *cell, u16 *h, s32 a, s32 b, s32 c);
+BOOL _ZN8BlockMap13func_0204e440Eiiii(void *self, s32 x, s32 y, s32 z, s32 w);
+void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 BOOL Item_IsMarker(void *p);
 BOOL Item_IsTreeStage0(void *p);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
@@ -225,12 +225,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -355,7 +355,7 @@ public:
     u32 getAngleToPlayer(u32 n);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -667,12 +667,12 @@ extern "C" BOOL func_ov072_02271ca4(s32 *a, s32 *b, void *g) {
     for (i = 1; i <= 2; i++) {
         s32 hx, hy, xx, yy;
         u16 *cell;
-        func_0204edf8(&x, &y, a[0], a[1], b[0], b[1] + i);
+        FieldUnit_FromBlockUnit(&x, &y, a[0], a[1], b[0], b[1] + i);
         xx = *(volatile s32 *)&x;
         yy = *(volatile s32 *)&y;
         hx = xx >> 4;
         hy = yy >> 4;
-        cell = func_0204ebd8(g, hx, hy, xx - (hx << 4), yy - (hy << 4), 0);
+        cell = BlockMap_GetItemPtr(g, hx, hy, xx - (hx << 4), yy - (hy << 4), 0);
         if (cell == NULL) {
             goto fail;
         }
@@ -711,17 +711,17 @@ extern "C" BOOL func_ov072_02271b70(u8 *cnt, s32 *pe, void *g0) {
                 if (k == 0) {
                     cell = Unk_ov072_02271a58_Cell(g, *(volatile s32 *)&v[0], *(volatile s32 *)&v[1]);
                     if (cell != NULL) {
-                        t = (u8 *)func_02037558(cell, 0, 0, 0);
+                        t = (u8 *)MapBlock_GetItemPtr(cell, 0, 0, 0);
                         if (t != NULL) {
                             k2 = func_02063b8c(*cnt);
                             for (v[3] = 0; v[3] < 16; v[3]++) {
                                 for (v[2] = 0; v[2] < 16; t += 2, v[2]++) {
                                     if (*(u16 *)t == 0xfff1) {
-                                        if (_ZN12Unk_0204e2f013func_0204e440Eiiii(g, v[0], v[1], *(volatile s32 *)&v[2], v[3])) {
+                                        if (_ZN8BlockMap13func_0204e440Eiiii(g, v[0], v[1], *(volatile s32 *)&v[2], v[3])) {
                                             if (func_ov072_02271ca4((s32 *)&v[0], (s32 *)&v[2], g)) {
                                                 if (k2 == 0) {
                                                     h = 0x1568;
-                                                    func_02037590(cell, &h, v[2], v[3], 0);
+                                                    MapBlock_SetItem(cell, &h, v[2], v[3], 0);
                                                     (*cnt)--;
                                                     if (*cnt == 0) {
                                                         (*pe)--;
@@ -745,7 +745,7 @@ extern "C" BOOL func_ov072_02271b70(u8 *cnt, s32 *pe, void *g0) {
 }
 
 extern "C" void func_ov072_02271a58() {
-    Unk_02071a58_Grid *g = (Unk_02071a58_Grid *)func_0204da0c();
+    Unk_02071a58_Grid *g = (Unk_02071a58_Grid *)TownBlockMap_Get();
     s32 total, i;
     u8 *cnt, *t;
     s32 v[5];
@@ -763,12 +763,12 @@ extern "C" void func_ov072_02271a58() {
             for (v[0] = 1; v[0] < 5; cnt++, v[0]++) {
                 void *cell = Unk_ov072_02271a58_Cell(g, *(volatile s32 *)&v[0], *(volatile s32 *)&v[1]);
                 if (cell != NULL) {
-                    t = (u8 *)func_02037558(cell, 0, 0, 0);
+                    t = (u8 *)MapBlock_GetItemPtr(cell, 0, 0, 0);
                     if (t != NULL) {
                         for (v[3] = 0; v[3] < 16; v[3]++) {
                             for (v[2] = 0; v[2] < 16; t += 2, v[2]++) {
                                 if (*(u16 *)t == 0xfff1) {
-                                    if (_ZN12Unk_0204e2f013func_0204e440Eiiii(g, v[0], v[1], *(volatile s32 *)&v[2], v[3])) {
+                                    if (_ZN8BlockMap13func_0204e440Eiiii(g, v[0], v[1], *(volatile s32 *)&v[2], v[3])) {
                                         if (func_ov072_02271ca4(&v[0], &v[2], g)) {
                                             (*cnt)++;
                                         }
@@ -1005,7 +1005,7 @@ void Unk_ov072_02272438::vfunc_14() {
         r = 0x19;
         break;
     case 0x19:
-        func_0203ffa4(0x44);
+        EventWeekSlots_MarkPlayer(0x44);
         break;
     }
     if (r != 0xff) {

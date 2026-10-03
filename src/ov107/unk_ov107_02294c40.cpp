@@ -62,11 +62,11 @@ struct Unk_ov107_SceneEntry {
 #define func_ov094_02294644 _ZN18Unk_ov094_02294bd419func_ov094_02294644Ei
 #define func_ov092_02291c5c _ZN18Unk_ov092_02291ec819func_ov092_02291c5cEv
 #define func_ov092_02291ce4 _ZN18Unk_ov092_02291ec819func_ov092_02291ce4Eii
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
 #define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
 #define HandCursor_getAnim _ZN10HandCursor7getAnimEv
@@ -74,7 +74,7 @@ struct Unk_ov107_SceneEntry {
 #define HandCursor_disableObjWindow _ZN10HandCursor16disableObjWindowEv
 #define HandCursor_enableObjWindow _ZN10HandCursor15enableObjWindowEv
 #define PlayerData_getCatalog _ZN10PlayerData10getCatalogEv
-#define func_020b87d0 _ZN12Unk_020e45f813func_020b87d0Ev
+#define BgVramTask_cancel _ZN10BgVramTask6cancelEv
 
 class Unk_ov002_022044e4 : public GameProc {
 public:
@@ -125,9 +125,9 @@ public:
 };
 
 // Sub-objects of the scene (constructor/destructor symbols live in main, ov002 and ov094).
-class Unk_020e4608 {
+class BgVramTaskPair {
 public:
-    Unk_020e4608();
+    BgVramTaskPair();
     u32 unk_00[0x38 / 4];
 };
 
@@ -206,7 +206,7 @@ struct Unk_ov107_Comm {
 };
 
 extern "C" {
-extern Unk_ov107_Comm *data_020cbb18;
+extern Unk_ov107_Comm *gCommManager;
 extern u8 data_021edb68;
 extern u8 gTouchCurX;
 extern u8 gTouchCurY;
@@ -216,17 +216,17 @@ extern u16 gPad[];
 
 s32 ProcBase_GetParent(...);
 void ProcBase_RequestDelete(void *p);
-void func_020020b8(u32 x);
+void Gfx2d_ShowLayer(u32 x);
 s32 func_0206ed50();
 void func_0206ea6c();
 s32 func_02045400();
-BOOL func_02072e44(void *p);
-BOOL func_02072e88(void *p, s32 v);
-void func_020728d4(void *p);
-void func_020728a4(void *p, void *buf, s32 n);
-void func_02072824(void *p, s32 a, s32 b);
+BOOL CommManager_isOnline(void *p);
+BOOL CommManager_isSlotActive(void *p, s32 v);
+void CommManager_beginRecord(void *p);
+void CommManager_writeRecord(void *p, void *buf, s32 n);
+void CommManager_endRecord(void *p, s32 a, s32 b);
 void MI_CpuCopy8(void *a, void *b, u32 n);
-void func_0204ed8c(void *out, s32 a, s32 b);
+void FieldPos_FromUnitCenter(void *out, s32 a, s32 b);
 s32 func_02042d10(s32 v);
 s32 func_02042830(s32 v);
 void func_02042820(s32 v);
@@ -234,7 +234,7 @@ s32 func_02042c08(s32 a, s32 b);
 s32 func_02042bd0(s32 a, s32 b);
 s32 func_0204339c(s32 a, s32 b, s32 c, s32 d);
 u16 *func_020451c4(s32 a);
-void func_02076a6c(void *dst, s32 a, s32 b);
+void NetBuf_PackPair20(void *dst, s32 a, s32 b);
 u8 *func_02095204(s32 a);
 s32 func_02030d78(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 u32 func_02063b8c(s32 a);
@@ -251,9 +251,9 @@ void Snd_PlaySe(u32 a);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 BOOL func_020951a0();
-void func_02002398(s32 a, s32 b);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_020021a0(s32 a);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_ResetLayer(s32 a);
 void HandCursor_setAnimAtEnd(void *a, s32 b);
 void HandCursor_disableObjWindow(void *a);
 void LabelBalloon_setPos(void *a, s32 b, s32 c);
@@ -279,7 +279,7 @@ void func_ov002_02202064(void *p, s32 x);
 void func_ov002_02202098(void *a, s32 b);
 void func_ov002_02203920(void *p);
 
-BOOL func_ov003_0221255c(void *a, void *b);
+BOOL PlayerActor_LocalRequestBuryItem(void *a, void *b);
 void func_ov003_02227074(s32 a, s32 b);
 void func_ov003_02223498(s32 a);
 BOOL func_ov003_022201bc(s32 a, s32 b, void *c);
@@ -287,7 +287,7 @@ BOOL func_ov003_02220290(void *a, s32 b);
 s32 func_ov003_02227434(...);
 void func_ov003_02227248(s32 a, s32 b);
 void func_ov003_0222746c(s32 a, s32 b);
-void func_ov003_02212504(s32 a);
+void PlayerActor_LocalReleaseCatch(s32 a);
 
 void func_ov094_0229238c();
 BOOL func_ov094_022923a4(s32 a);
@@ -365,7 +365,7 @@ void func_ov094_0229462c(void *p);
 void func_ov094_02294644(void *p, s32 a);
 void func_ov092_02291c5c();
 void func_ov092_02291ce4(s32 a, s32 b, s32 c);
-void func_020b87d0(void *p);
+void BgVramTask_cancel(void *p);
 }
 
 static inline BOOL Unk_ov107_02296270_Both() {
@@ -511,7 +511,7 @@ public:
     /* 0xc8 */ u32 unk_c8;
     /* 0xcc */ s32 unk_cc;
     /* 0xd0 */ s32 unk_d0;
-    /* 0xd4 */ Unk_020e4608 unk_d4[1];
+    /* 0xd4 */ BgVramTaskPair unk_d4[1];
     /* 0x10c */ Unk_ov094_02294a50 unk_10c;
     /* 0xb6c */ Unk_ov094_02294bd4 unk_b6c;
     /* 0xb94 */ Unk_ov094_02292d6c unk_b94;
@@ -647,7 +647,7 @@ void Unk_ov107_02296e78::func_ov107_02296884() {
     func_ov094_02293d2c(&unk_b6c);
     func_ov094_022941f8(&unk_b6c, 0xf);
     func_ov002_022008e0(8, 0, 0, 0x30);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(6);
     func_ov002_02200840(6, 0, -16);
     func_ov002_02200a50(2);
     func_ov107_02294d64(1);
@@ -677,7 +677,7 @@ void Unk_ov107_02296e78::func_ov107_022967e8() {
 void Unk_ov107_02296e78::func_ov107_0229679c()
 {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
+        Gfx2d_ResetLayer(6);
         func_ov002_02200a60(5);
         func_ov107_02294d54(1);
         func_ov107_02294d54(2);
@@ -744,8 +744,8 @@ void Unk_ov107_02296e78::func_ov107_0229663c()
 
 void Unk_ov107_02296e78::func_ov107_0229661c()
 {
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
 void Unk_ov107_02296e78::func_ov107_02296608()
@@ -1050,7 +1050,7 @@ void Unk_ov107_02296e78::func_ov107_02295e60(s32 a, u32 b) {
 }
 
 void Unk_ov107_02296e78::func_ov107_02295e54() {
-    func_020b87d0(unk_d4);
+    BgVramTask_cancel(unk_d4);
 }
 
 BOOL Unk_ov107_02296e78::func_ov107_02295e48(s32 a) {
@@ -1474,9 +1474,9 @@ BOOL Unk_ov107_02296e78::func_ov107_022952e4(void *pad) {
 void Unk_ov107_02296e78::func_ov107_02295270() {
     s32 t = func_ov107_02295bb0(unk_b9);
     if (func_0206ed50() == 0x29) {
-        unk_ac = func_02042c08(data_020cbb18->unk_64, t);
+        unk_ac = func_02042c08(gCommManager->unk_64, t);
     } else {
-        unk_ac = func_02042bd0(data_020cbb18->unk_64, t);
+        unk_ac = func_02042bd0(gCommManager->unk_64, t);
     }
     if (unk_ac == -1) {
         func_ov107_02295f40();
@@ -1529,7 +1529,7 @@ void Unk_ov107_02296e78::func_ov107_02295130() {
         x += *(s16 *)(func_02095204(4) + 0x8e);
         func_ov003_02227248((u8)r5, r7);
         func_ov003_0222746c(r7, x);
-        func_ov003_02212504(0);
+        PlayerActor_LocalReleaseCatch(0);
         func_ov107_022950e8((u8)r5, t);
         func_ov002_02200a58(0x12);
         func_ov107_02295568();
@@ -1538,14 +1538,14 @@ void Unk_ov107_02296e78::func_ov107_02295130() {
 
 void Unk_ov107_02296e78::func_ov107_022950e8(u8 a, u8 b) {
     u8 buf[3];
-    if (func_02072e44(data_020cbb18)) {
+    if (CommManager_isOnline(gCommManager)) {
         buf[0] = 1;
         buf[1] = a;
         buf[2] = b;
-        void *g = data_020cbb18;
-        func_020728d4(g);
-        func_020728a4(g, buf, 3);
-        func_02072824(g, 0x16, 4);
+        void *g = gCommManager;
+        CommManager_beginRecord(g);
+        CommManager_writeRecord(g, buf, 3);
+        CommManager_endRecord(g, 0x16, 4);
     }
 }
 
@@ -1606,21 +1606,21 @@ void Unk_ov107_02296e78::func_ov107_02294fb0() {
 void Unk_ov107_02296e78::func_ov107_02294f48(u8 v) {
     u8 buf[7];
     u8 tmp[5];
-    if (func_02072e44(data_020cbb18)) {
+    if (CommManager_isOnline(gCommManager)) {
         buf[0] = 2;
         buf[1] = v;
-        func_02076a6c(tmp, unk_c0, unk_c8);
+        NetBuf_PackPair20(tmp, unk_c0, unk_c8);
         MI_CpuCopy8(tmp, &buf[2], 5);
-        void *g = data_020cbb18;
-        func_020728d4(g);
-        func_020728a4(g, buf, 7);
-        func_02072824(g, 0x16, 4);
+        void *g = gCommManager;
+        CommManager_beginRecord(g);
+        CommManager_writeRecord(g, buf, 7);
+        CommManager_endRecord(g, 0x16, 4);
     }
 }
 
 void Unk_ov107_02296e78::func_ov107_02294ed4() {
     s32 t = func_ov107_02295bb0(unk_b9);
-    Unk_ov107_Comm *g = data_020cbb18;
+    Unk_ov107_Comm *g = gCommManager;
     unk_ac = func_0204339c(g->unk_64, 2, 0, t);
     if (unk_ac == -1) {
         func_ov107_02295f40();
@@ -1654,18 +1654,18 @@ void Unk_ov107_02296e78::func_ov107_02294e84() {
 void Unk_ov107_02296e78::func_ov107_02294e38() {
     u16 v;
     u32 buf[3];
-    func_0204ed8c(buf, unk_cc, unk_d0);
+    FieldPos_FromUnitCenter(buf, unk_cc, unk_d0);
     v = func_ov107_02295bb0(unk_b9);
-    if (func_ov003_0221255c(buf, &v)) {
+    if (PlayerActor_LocalRequestBuryItem(buf, &v)) {
         func_ov107_02295568();
         func_ov002_02200a58(0x14);
     }
 }
 
 u8 Unk_ov107_02296e78::func_ov107_02294e14() {
-    Unk_ov107_Comm *g = data_020cbb18;
+    Unk_ov107_Comm *g = gCommManager;
     u32 v = g->unk_64;
-    if (func_02072e88(g, v)) {
+    if (CommManager_isSlotActive(g, v)) {
         return (u8)v;
     }
     return 0;
@@ -1682,13 +1682,13 @@ void Unk_ov107_02296e78::func_ov107_02294d88(BOOL flag) {
             break;
         }
         func_02045400();
-        if (func_02072e44(data_020cbb18)) {
+        if (CommManager_isOnline(gCommManager)) {
             buf[0] = 0x17;
             buf[1] = k;
-            void *g = data_020cbb18;
-            func_020728d4(g);
-            func_020728a4(g, buf, 2);
-            func_02072824(g, 0x16, 4);
+            void *g = gCommManager;
+            CommManager_beginRecord(g);
+            CommManager_writeRecord(g, buf, 2);
+            CommManager_endRecord(g, 0x16, 4);
         }
         break;
     case 0x2b:

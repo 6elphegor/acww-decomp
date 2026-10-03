@@ -115,7 +115,7 @@ void func_02000c8c(void);
 }
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 }
 
 extern "C" {
@@ -287,7 +287,7 @@ void func_020e99a4(void);
 }
 
 extern "C" {
-void func_0205b794(void);
+void HBlank_Init(void);
 }
 
 extern "C" {
@@ -295,7 +295,7 @@ void OS_SetIrqFunction(u32 a, void (*cb)(void));
 }
 
 extern "C" {
-void func_01ffcc30(void);
+void HBlank_Handler(void);
 }
 
 extern "C" {
@@ -343,7 +343,7 @@ void Heap_CreateProcHeap(u32 a, u32 b);
 }
 
 extern "C" {
-void func_020537a4(void);
+void Gfx_Init(void);
 }
 
 extern "C" {
@@ -355,7 +355,7 @@ void func_020e7d2c(void);
 }
 
 extern "C" {
-void func_0209cfe4(void);
+void Clock_Init(void);
 }
 
 extern "C" {
@@ -569,9 +569,9 @@ extern "C" void Main_Init(void) {
     func_020b0c80();
     func_01ffcb28();
     func_020e99a4();
-    func_0205b794();
+    HBlank_Init();
     Main_InitVBlank();
-    OS_SetIrqFunction(2, func_01ffcc30);
+    OS_SetIrqFunction(2, HBlank_Handler);
     OS_EnableIrqMask(3);
     *(vu16 *)0x4000208;
     *(vu16 *)0x4000208 = 1;
@@ -585,10 +585,10 @@ extern "C" void Main_Init(void) {
     Touch_Init();
     func_020ec8b0();
     Heap_CreateProcHeap(0x13fc8, 0);
-    func_020537a4();
+    Gfx_Init();
     Snd_Init();
     func_020e7d2c();
-    func_0209cfe4();
+    Clock_Init();
     func_02045c88();
     func_020380e0();
     gProfileTable = (u32)sProfileTableMain;

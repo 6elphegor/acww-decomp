@@ -53,7 +53,7 @@ extern "C" {
 s32 SaveVillagers_IsValidIndex(s32);
 s32 Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
-s32 func_0204ee10(s32 *, s32 *, u32 *);
+s32 FieldPos_ToUnit(s32 *, s32 *, u32 *);
 s32 func_02063b8c(s32);
 s32 NpcRegistry_GetSlotCount();
 s32 NpcRegistry_FindSpNpcByHandle(void *a);
@@ -203,7 +203,7 @@ Unk_02081974_Obj *NpcActorRegistry::findVillagerAt(s32 a, s32 b) {
     s32 i;
     for (i = 0; i < 8; s++, i++) {
         if (isVillagerSlotUsed(s)) {
-            func_0204ee10(&x, &y, &s->unk_00->unk_5c);
+            FieldPos_ToUnit(&x, &y, &s->unk_00->unk_5c);
             if (x == a && y == b) {
                 r = s->unk_00;
                 break;
@@ -345,7 +345,7 @@ Unk_02081974_Obj *NpcActorRegistry::findSpNpcAt(s32 a, s32 b) {
     s32 i;
     for (i = 0; i < 4; s++, i++) {
         if (isSpNpcSlotUsed(s)) {
-            func_0204ee10(&x, &y, &s->unk_00->unk_5c);
+            FieldPos_ToUnit(&x, &y, &s->unk_00->unk_5c);
             if (x == a && y == b) {
                 r = s->unk_00;
                 break;

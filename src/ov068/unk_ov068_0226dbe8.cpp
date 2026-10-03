@@ -313,7 +313,7 @@ public:
 
 
 // ---------------------------------------------------------------- TU10 classes
-class Unk_ov068_02270afc;
+class HouseVisitVillager;
 
 struct Unk_ov068_02270a6c_Out {
     void *unk_00;
@@ -341,7 +341,7 @@ struct Unk_ov068_0226eda4_V {
     s32 a, b;
 };
 
-// Grid header (data_021c47c4 points at one)
+// Grid header (gSceneBlockMap points at one)
 struct Unk_ov068_0226ee74_Grid {
     void *cells;
     u8 *w;
@@ -360,8 +360,8 @@ struct Unk_ov068_0226eee0_Q1 {
 struct Unk_ov068_0226eee0_Mid : Unk_ov068_0226eee0_Q0, Unk_ov068_0226eee0_Q1 {};
 struct Unk_ov068_0226eee0_Top : Unk_ov068_0226eee0_P0, Unk_ov068_0226eee0_Mid {};
 
-typedef void (Unk_ov068_02270afc::*Unk_ov068_02270afc_Fn)();
-typedef BOOL (Unk_ov068_02270afc::*Unk_ov068_02270afc_BFn)();
+typedef void (HouseVisitVillager::*Unk_ov068_02270afc_Fn)();
+typedef BOOL (HouseVisitVillager::*Unk_ov068_02270afc_BFn)();
 
 struct Unk_ov068_022708fc_Color {
     u8 a, b, c, d;
@@ -413,23 +413,23 @@ public:
 #define SPEAK(str) VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov068_022712e0, 0x28, (void *)str)
 
 // Menu/dialog sub-object at +0x898 of the owner (vtable 0x02270a6c)
-class Unk_ov068_02270a6c : public VillagerTalk {
+class HouseVisitVillagerTalk : public VillagerTalk {
 public:
-    inline Unk_ov068_02270a6c() {}
+    inline HouseVisitVillagerTalk() {}
     virtual void vfunc_10(u32 a);
     virtual void vfunc_14(u32 a);
     virtual void vfunc_18(u32 a);
     virtual void vfunc_78(void *arg);
 
-    void func_ov068_0226eb90(Unk_ov068_02270afc *owner);
+    void attachOwner(HouseVisitVillager *owner);
 
-    /* 0x1a0 */ Unk_ov068_02270afc *unk_1a0;
+    /* 0x1a0 */ HouseVisitVillager *unk_1a0;
 };
 
 // Owner (vtable 0x02270afc, size 0xa74)
-class Unk_ov068_02270afc : public VillagerActor {
+class HouseVisitVillager : public VillagerActor {
 public:
-    inline Unk_ov068_02270afc() {}    virtual BOOL vfunc_00();
+    inline HouseVisitVillager() {}    virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL onDraw();
@@ -439,37 +439,37 @@ public:
     virtual BOOL vfunc_7c();
     virtual void vfunc_80();
 
-    void func_ov068_0226dca4();
-    BOOL func_ov068_0226dd14();
-    void func_ov068_0226dd18();
-    BOOL func_ov068_0226dd38();
-    void func_ov068_0226dd3c();
-    BOOL func_ov068_0226dd48();
-    void func_ov068_0226dda4();
-    BOOL func_ov068_0226dda8();
-    void func_ov068_0226ddac();
-    BOOL func_ov068_0226e0cc();
-    void func_ov068_0226e12c();
-    BOOL func_ov068_0226e1cc();
-    void func_ov068_0226e20c();
-    BOOL func_ov068_0226e228();
-    void func_ov068_0226e268();
-    BOOL func_ov068_0226e2f4();
-    void func_ov068_0226e354();
-    BOOL func_ov068_0226e390();
-    void func_ov068_0226e3b8();
-    BOOL func_ov068_0226e3f4();
-    void func_ov068_0226e490();
-    BOOL func_ov068_0226e4dc();
-    void func_ov068_0226e54c();
-    BOOL func_ov068_0226e638(s32 idx);
+    void execVisitLeave();
+    BOOL enterVisitLeave();
+    void execVisitTalkWait();
+    BOOL enterVisitTalkWait();
+    void execVisitTalk();
+    BOOL enterVisitTalk();
+    void execVisitIdle7();
+    BOOL enterVisitIdle7();
+    void execVisitWander();
+    BOOL enterVisitWander();
+    void execVisitStay();
+    BOOL enterVisitStay();
+    void execVisitGreetEnd();
+    BOOL enterVisitGreetEnd();
+    void execVisitWalkIn();
+    BOOL enterVisitWalkIn();
+    void execVisitDoorOpen();
+    BOOL enterVisitDoorOpen();
+    void execVisitCall();
+    BOOL enterVisitCall();
+    void execVisitOutside();
+    BOOL enterVisitOutside();
+    void updateVisitState();
+    BOOL setVisitState(s32 idx);
     void func_ov068_0226ee18();
     void func_ov068_0226ee3c();
     void func_ov068_0226ee74();
-    BOOL func_ov068_0226ef58();
+    BOOL drawModel();
 
     /* 0x894 */ s32 unk_894;
-    /* 0x898 */ Unk_ov068_02270a6c unk_898;
+    /* 0x898 */ HouseVisitVillagerTalk unk_898;
     /* 0xa3c */ Unk_ov068_02270afc_BFn unk_a3c;
     /* 0xa44 */ u32 unk_a44;
     /* 0xa48 */ u8 unk_a48;
@@ -494,29 +494,29 @@ public:
     /* 0xa70 */ s32 unk_a70;
 };
 extern "C" {
-void _ZN18Unk_ov068_02270afc19func_ov068_0226e354Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226e268Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226e1ccEv();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226e3f4Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226ef58Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226e20cEv();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226dca4Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226e12cEv();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226dd48Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226dd38Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226ddacEv();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226dda8Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226e0ccEv();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226dd14Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226e228Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226e2f4Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226e390Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226dda4Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226e4dcEv();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226e3b8Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226dd18Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226e490Ev();
-void _ZN18Unk_ov068_02270afc19func_ov068_0226dd3cEv();
+void _ZN18HouseVisitVillager17execVisitDoorOpenEv();
+void _ZN18HouseVisitVillager15execVisitWalkInEv();
+void _ZN18HouseVisitVillager14enterVisitStayEv();
+void _ZN18HouseVisitVillager14enterVisitCallEv();
+void _ZN18HouseVisitVillager9drawModelEv();
+void _ZN18HouseVisitVillager17execVisitGreetEndEv();
+void _ZN18HouseVisitVillager14execVisitLeaveEv();
+void _ZN18HouseVisitVillager13execVisitStayEv();
+void _ZN18HouseVisitVillager14enterVisitTalkEv();
+void _ZN18HouseVisitVillager18enterVisitTalkWaitEv();
+void _ZN18HouseVisitVillager15execVisitWanderEv();
+void _ZN18HouseVisitVillager15enterVisitIdle7Ev();
+void _ZN18HouseVisitVillager16enterVisitWanderEv();
+void _ZN18HouseVisitVillager15enterVisitLeaveEv();
+void _ZN18HouseVisitVillager18enterVisitGreetEndEv();
+void _ZN18HouseVisitVillager16enterVisitWalkInEv();
+void _ZN18HouseVisitVillager18enterVisitDoorOpenEv();
+void _ZN18HouseVisitVillager14execVisitIdle7Ev();
+void _ZN18HouseVisitVillager17enterVisitOutsideEv();
+void _ZN18HouseVisitVillager13execVisitCallEv();
+void _ZN18HouseVisitVillager17execVisitTalkWaitEv();
+void _ZN18HouseVisitVillager16execVisitOutsideEv();
+void _ZN18HouseVisitVillager13execVisitTalkEv();
 extern void *data_ov068_0227097c[2];
 extern void *data_ov068_02270984[2];
 extern void *data_ov068_0227098c[2];
@@ -541,22 +541,22 @@ extern void *data_ov068_02270a1c[2];
 extern void *data_ov068_02270a24[2];
 extern void *data_ov068_02270a2c[2];
 extern void *data_ov068_02270a34[2];
-extern Unk_ov068_02270afc *data_ov068_022712ac;
+extern HouseVisitVillager *sHouseVisitVillager;
 extern u8 data_ov068_022712b8[0x28];
 extern u8 data_ov068_022712e0[0x28];
 extern Unk_ov068_02270a6c_Buf data_ov068_02270a3c;
-Unk_ov068_02270afc *func_ov068_0226f0a8();
+HouseVisitVillager *HouseVisitVillager_Create();
 }
 
 extern "C" {
-void func_ov068_0226ebb0(void *);
-BOOL func_ov068_0226ebcc(void *);
-void func_ov068_0226ebf0(void *);
-BOOL func_ov068_0226ec14(void *);
-void func_ov068_0226ec38(void *);
-BOOL func_ov068_0226ec5c(void *);
-void func_ov068_0226ed88(void *);
-BOOL func_ov068_0226eda4(void *);
+void HouseVisit_SetFirstTalkDone(void *);
+BOOL HouseVisit_IsFirstTalkPending(void *);
+void HouseVisit_SetDoorTalkDone(void *);
+BOOL HouseVisit_IsDoorTalkDone(void *);
+void HouseVisit_SetCalled(void *);
+BOOL HouseVisit_IsCalled(void *);
+void HouseVisit_SetFinished(void *);
+BOOL HouseVisit_IsAppointmentNow(void *);
 }
 #define data_0213a740 __ptmf_null
 extern "C" Unk_ov068_02270afc_BFn __ptmf_null;
@@ -645,7 +645,7 @@ void *func_0209865c(void *);
 }
 namespace sC {
 extern "C" {
-extern Unk_ov068_0226ee74_Grid *data_021c47c4;
+extern Unk_ov068_0226ee74_Grid *gSceneBlockMap;
 
 
 void *PlayerData_GetCurrent();
@@ -654,15 +654,15 @@ s32 func_0209abb4(void *, s32);
 s32 func_0209abc4(void *);
 s32 func_02063b8c(s32);
 void MI_CpuCopy8(void *, void *, u32);
-void func_0209d258(void *, s32);
-void func_0209d498(void *);
-s32 func_0209d3d0(void *, void *, s32);
+void DateTime_AddMinutes(void *, s32);
+void Clock_GetDateTime(void *);
+s32 DateTime_Compare(void *, void *, s32);
 s32 func_0201a8d0(void *, s32, s32, s32, s32);
 s32 func_02014220(void *);
 void *PlayerData_getPlayerId(void *);
 void *func_0207f55c(void *, void *);
 void func_02080ecc(void *, s32, s32, s32);
-s32 func_02037558(void *, s32, s32, s32);
+s32 MapBlock_GetItemPtr(void *, s32, s32, s32);
 s32 Item_IsFurnitureOrF031();
 void func_0203002c(s32, s32);
 s32 func_0202d928(void *);
@@ -681,31 +681,31 @@ void Unk_020d77a4_setTalkRequest(void *, void *);
 
 }
 
-extern "C" void *data_ov068_02270a24[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226ef58Ev, 0};
-extern "C" void *data_ov068_022709bc[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226dd48Ev, 0};
-extern "C" void *data_ov068_022709cc[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226ddacEv, 0};
+extern "C" void *data_ov068_02270a24[2] = {(void *)_ZN18HouseVisitVillager9drawModelEv, 0};
+extern "C" void *data_ov068_022709bc[2] = {(void *)_ZN18HouseVisitVillager14enterVisitTalkEv, 0};
+extern "C" void *data_ov068_022709cc[2] = {(void *)_ZN18HouseVisitVillager15execVisitWanderEv, 0};
 extern "C" {
-Unk_ov068_02270afc *data_ov068_022712ac;
+HouseVisitVillager *sHouseVisitVillager;
 }
 
 
-extern "C" Unk_ov068_02270afc *func_ov068_0226f0a8() {
+extern "C" HouseVisitVillager *HouseVisitVillager_Create() {
     using namespace sC;
-    return new Unk_ov068_02270afc;
+    return new HouseVisitVillager;
 }
 
-BOOL Unk_ov068_02270afc::vfunc_04() {
+BOOL HouseVisitVillager::vfunc_04() {
     using namespace sC;
     if (func_0202dab0(this) == 0) {
         return FALSE;
     }
-    data_ov068_022712ac = this;
+    sHouseVisitVillager = this;
     Unk_020d77a4_setTalkRequest(this, &unk_898);
-    unk_898.func_ov068_0226eb90(this);
+    unk_898.attachOwner(this);
     return TRUE;
 }
 
-BOOL Unk_ov068_02270afc::vfunc_00() {
+BOOL HouseVisitVillager::vfunc_00() {
     using namespace sC;
     if (func_0202d948(this) == 0) {
         return FALSE;
@@ -718,25 +718,25 @@ BOOL Unk_ov068_02270afc::vfunc_00() {
     unk_a58 = 0xb0;
     func_020b50dc();
     if (func_020b5198() != 0) {
-        func_ov068_0226e638(0);
-    } else if (func_ov068_0226ec5c(&unk_898) != 0) {
+        setVisitState(0);
+    } else if (HouseVisit_IsCalled(&unk_898) != 0) {
         u32 buf[6];
         func_020b1028();
         unk_a56 = (func_02063b8c(0x14) + 0x28) * 0x3c;
         unk_a54 = func_02063b8c(4) + 2;
         func_0205b124(buf);
         unk_a4c = (u32)func_0205afdc(buf, &unk_a44);
-        func_ov068_0226e638(6);
+        setVisitState(6);
         func_0205b120(buf);
     } else {
         unk_a56 = (func_02063b8c(0x28) + 0x3c) * 0x3c;
         unk_a54 = func_02063b8c(4) + 7;
-        func_ov068_0226e638(0);
+        setVisitState(0);
     }
     return TRUE;
 }
 
-BOOL Unk_ov068_02270afc::func_ov068_0226ef58() {
+BOOL HouseVisitVillager::drawModel() {
     using namespace sC;
     if (func_0201b138(this) != 0) {
         return TRUE;
@@ -744,7 +744,7 @@ BOOL Unk_ov068_02270afc::func_ov068_0226ef58() {
     return FALSE;
 }
 
-BOOL Unk_ov068_02270afc::onDraw() {
+BOOL HouseVisitVillager::onDraw() {
     using namespace sC;
     if (unk_a3c) {
         return (this->*unk_a3c)();
@@ -752,7 +752,7 @@ BOOL Unk_ov068_02270afc::onDraw() {
     return TRUE;
 }
 
-BOOL Unk_ov068_02270afc::preDelete() {
+BOOL HouseVisitVillager::preDelete() {
     using namespace sC;
     if (func_0202d928(this) == 0) {
         return FALSE;
@@ -764,19 +764,19 @@ BOOL Unk_ov068_02270afc::preDelete() {
         Unk_ov068_0226eee0_Q1 &q2 = m;
         func_0209abb4(&q2, 2);
     }
-    data_ov068_022712ac = NULL;
+    sHouseVisitVillager = NULL;
     return TRUE;
 }
 
-BOOL Unk_ov068_02270afc::updateAct() {
+BOOL HouseVisitVillager::updateAct() {
     using namespace sC;
-    func_ov068_0226e54c();
+    updateVisitState();
     return TRUE;
 }
 
-void Unk_ov068_02270afc::func_ov068_0226ee74() {
+void HouseVisitVillager::func_ov068_0226ee74() {
     using namespace sC;
-    Unk_ov068_0226ee74_Grid *g = data_021c47c4;
+    Unk_ov068_0226ee74_Grid *g = gSceneBlockMap;
     void *grid;
     s32 y, x;
     s32 z;
@@ -789,7 +789,7 @@ void Unk_ov068_02270afc::func_ov068_0226ee74() {
     z = 0;
     for (; y < 16; y++) {
         for (x = 0; x < 16; x++) {
-            if (func_02037558(grid, x, y, z) != 0) {
+            if (MapBlock_GetItemPtr(grid, x, y, z) != 0) {
                 if (Item_IsFurnitureOrF031() != 0) {
                     func_0203002c(x, y);
                 }
@@ -798,7 +798,7 @@ void Unk_ov068_02270afc::func_ov068_0226ee74() {
     }
 }
 
-void Unk_ov068_02270afc::func_ov068_0226ee3c() {
+void HouseVisitVillager::func_ov068_0226ee3c() {
     using namespace sC;
     void *p = PlayerData_GetCurrent();
     if (p != NULL) {
@@ -808,34 +808,34 @@ void Unk_ov068_02270afc::func_ov068_0226ee3c() {
     }
 }
 
-void Unk_ov068_02270afc::func_ov068_0226ee18() {
+void HouseVisitVillager::func_ov068_0226ee18() {
     using namespace sC;
     func_0201a8d0(&unk_350, 1, 0x100, 0x19, 0x33);
 }
 
-extern "C" BOOL func_ov068_0226eda4(void *) {
+extern "C" BOOL HouseVisit_IsAppointmentNow(void *) {
     using namespace sC;
     Unk_ov068_0226eda4_V a, b, c;
     MI_CpuCopy8(func_0209865c(PlayerData_GetCurrent()) + 0xa0, &a, 8);
     MI_CpuCopy8(&a, &b, 8);
-    func_0209d258(&b, 0x1e);
+    DateTime_AddMinutes(&b, 0x1e);
     c.a = 0;
     c.b = 0;
-    func_0209d498(&c);
-    if (func_0209d3d0(&a, &c, 0x3e) == -1 || func_0209d3d0(&a, &c, 0x3e) == 0) {
-        if (func_0209d3d0(&c, &b, 0x3e) == -1) {
+    Clock_GetDateTime(&c);
+    if (DateTime_Compare(&a, &c, 0x3e) == -1 || DateTime_Compare(&a, &c, 0x3e) == 0) {
+        if (DateTime_Compare(&c, &b, 0x3e) == -1) {
             return TRUE;
         }
     }
     return FALSE;
 }
 
-extern "C" void func_ov068_0226ed88(void *) {
+extern "C" void HouseVisit_SetFinished(void *) {
     using namespace sC;
     func_0209abb4(func_0209865c(PlayerData_GetCurrent()) + 0x94, 4);
 }
 
-BOOL Unk_ov068_02270afc::vfunc_48() {
+BOOL HouseVisitVillager::vfunc_48() {
     using namespace sC;
     if (func_02014220(&unk_618) != 0) {
         return FALSE;
@@ -846,7 +846,7 @@ BOOL Unk_ov068_02270afc::vfunc_48() {
     return FALSE;
 }
 
-void Unk_ov068_02270afc::vfunc_4c(u32 idx, u32 v) {
+void HouseVisitVillager::vfunc_4c(u32 idx, u32 v) {
     using namespace sC;
     switch (idx) {
     case 3:
@@ -855,32 +855,32 @@ void Unk_ov068_02270afc::vfunc_4c(u32 idx, u32 v) {
             if (unk_894 == 5) {
                 unk_a56 = (func_02063b8c(0x28) + 0x3c) * 0x3c;
             }
-            func_ov068_0226e638(7);
+            setVisitState(7);
         }
         break;
     case 0:
         unk_558.unk_08 = v;
-        unk_898.func_ov068_0226eb90(this);
-        func_ov068_0226e638(8);
+        unk_898.attachOwner(this);
+        setVisitState(8);
         break;
     case 1:
         unk_558.unk_08 = v;
-        unk_898.func_ov068_0226eb90(this);
+        unk_898.attachOwner(this);
         if (unk_894 == 0) {
-            func_ov068_0226e638(1);
+            setVisitState(1);
         } else {
-            func_ov068_0226e638(8);
+            setVisitState(8);
         }
         break;
     case 8:
         unk_a58 = 0x14;
         func_ov068_0226ee3c();
         if (unk_894 != 0xa && unk_894 != 5) {
-            func_ov068_0226e638(6);
+            setVisitState(6);
         }
         break;
     case 4:
-        func_ov068_0226e638(6);
+        setVisitState(6);
         break;
     case 2:
     case 5:
@@ -890,7 +890,7 @@ void Unk_ov068_02270afc::vfunc_4c(u32 idx, u32 v) {
     }
 }
 
-extern "C" BOOL func_ov068_0226ec5c(void *) {
+extern "C" BOOL HouseVisit_IsCalled(void *) {
     using namespace sC;
     if (func_0209abc4(func_0209865c(PlayerData_GetCurrent()) + 0x94) != 0) {
         return TRUE;
@@ -898,14 +898,14 @@ extern "C" BOOL func_ov068_0226ec5c(void *) {
     return FALSE;
 }
 
-extern "C" void func_ov068_0226ec38(void *p) {
+extern "C" void HouseVisit_SetCalled(void *p) {
     using namespace sC;
-    if (func_ov068_0226ec5c(p) == 0) {
+    if (HouseVisit_IsCalled(p) == 0) {
         func_0209abb4(func_0209865c(PlayerData_GetCurrent()) + 0x94, 1);
     }
 }
 
-extern "C" BOOL func_ov068_0226ec14(void *) {
+extern "C" BOOL HouseVisit_IsDoorTalkDone(void *) {
     using namespace sC;
     if ((u32)func_0209abc4(func_0209865c(PlayerData_GetCurrent()) + 0x94) > 1) {
         return TRUE;
@@ -913,14 +913,14 @@ extern "C" BOOL func_ov068_0226ec14(void *) {
     return FALSE;
 }
 
-extern "C" void func_ov068_0226ebf0(void *p) {
+extern "C" void HouseVisit_SetDoorTalkDone(void *p) {
     using namespace sC;
-    if (func_ov068_0226ec14(p) == 0) {
+    if (HouseVisit_IsDoorTalkDone(p) == 0) {
         func_0209abb4(func_0209865c(PlayerData_GetCurrent()) + 0x94, 2);
     }
 }
 
-extern "C" BOOL func_ov068_0226ebcc(void *) {
+extern "C" BOOL HouseVisit_IsFirstTalkPending(void *) {
     using namespace sC;
     if (func_0209abc4(func_0209865c(PlayerData_GetCurrent()) + 0x94) == 2) {
         return TRUE;
@@ -928,19 +928,19 @@ extern "C" BOOL func_ov068_0226ebcc(void *) {
     return FALSE;
 }
 
-extern "C" void func_ov068_0226ebb0(void *) {
+extern "C" void HouseVisit_SetFirstTalkDone(void *) {
     using namespace sC;
     func_0209abb4(func_0209865c(PlayerData_GetCurrent()) + 0x94, 3);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void Unk_ov068_02270a6c::func_ov068_0226eb90(Unk_ov068_02270afc *owner) {
+void HouseVisitVillagerTalk::attachOwner(HouseVisitVillager *owner) {
     using namespace sC;
     begin((VillagerActor *)owner, 0x11);
     unk_1a0 = owner;
 }
 
-void Unk_ov068_02270a6c::vfunc_78(void *arg) {
+void HouseVisitVillagerTalk::vfunc_78(void *arg) {
     using namespace sB;
     Unk_ov068_02270a6c_Out *out = (Unk_ov068_02270a6c_Out *)arg;
     out->unk_00 = data_ov068_022712e0;
@@ -948,7 +948,7 @@ void Unk_ov068_02270a6c::vfunc_78(void *arg) {
         unk_1a0->unk_a52 = 1;
         SPEAK((void *)"q10_call");
         out->unk_04 = func_02063b8c(3);
-        func_ov068_0226ec38(this);
+        HouseVisit_SetCalled(this);
         return;
     }
     if (unk_1a0->unk_a50 != 0 && unk_1a0->unk_a51 != 0) {
@@ -968,19 +968,19 @@ void Unk_ov068_02270a6c::vfunc_78(void *arg) {
         out->unk_04 = func_02063b8c(2);
         return;
     }
-    if (func_ov068_0226ec14(this) == 0) {
+    if (HouseVisit_IsDoorTalkDone(this) == 0) {
         unk_1a0->unk_a52 = 2;
         SPEAK((void *)"q10_door");
         out->unk_04 = func_02063b8c(3);
-        func_ov068_0226ebf0(this);
+        HouseVisit_SetDoorTalkDone(this);
         return;
     }
-    if (func_ov068_0226ebcc(this)) {
+    if (HouseVisit_IsFirstTalkPending(this)) {
         unk_1a0->unk_a52 = 5;
         SPEAK((void *)"q10_first");
         out->unk_00 = data_ov068_022712e0;
         out->unk_04 = func_02063b8c(3);
-        func_ov068_0226ebb0(this);
+        HouseVisit_SetFirstTalkDone(this);
         return;
     }
     if (unk_1a0->unk_a54 != 0) {
@@ -1037,23 +1037,23 @@ void Unk_ov068_02270a6c::vfunc_78(void *arg) {
     }
 }
 
-void Unk_ov068_02270a6c::vfunc_10(u32 a) {
+void HouseVisitVillagerTalk::vfunc_10(u32 a) {
     using namespace sB;
     if (unk_1a0->unk_a52 == 0) {
         VillagerTalk::vfunc_10(a);
     }
 }
 
-void Unk_ov068_02270a6c::vfunc_14(u32 a) {
+void HouseVisitVillagerTalk::vfunc_14(u32 a) {
     using namespace sB;
     u8 buf[2];
-    Unk_ov068_02270afc *o = unk_1a0;
+    HouseVisitVillager *o = unk_1a0;
     u32 st = o->unk_a52;
     if (st == 0) {
         VillagerTalk::vfunc_14(a);
     } else if (o != 0) {
         if (st == 1) {
-            o->func_ov068_0226e638(2);
+            o->setVisitState(2);
         } else if (st == 6 || st == 8) {
             o->unk_a52 = 7;
             VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov068_022712b8, 0x28, (void *)"q_bye");
@@ -1062,20 +1062,20 @@ void Unk_ov068_02270a6c::vfunc_14(u32 a) {
         } else if (st == 7) {
             buf[1] = gTalkMsgIndexEnd;
             unk_1a0->unk_898.unk_3c->setNextMessage(&buf[1], 0);
-            unk_1a0->func_ov068_0226e638(10);
+            unk_1a0->setVisitState(10);
             Snd_PlaySe(0x5f);
         }
     }
 }
 
-void Unk_ov068_02270a6c::vfunc_18(u32 a) {
+void HouseVisitVillagerTalk::vfunc_18(u32 a) {
     using namespace sB;
     if (unk_1a0->unk_a52 == 0) {
         VillagerTalk::vfunc_18(a);
     }
 }
 
-BOOL Unk_ov068_02270afc::func_ov068_0226e638(s32 idx) {
+BOOL HouseVisitVillager::setVisitState(s32 idx) {
     using namespace sB;
     static Unk_ov068_02270afc_BFn tbl[11] = {
         *(Unk_ov068_02270afc_BFn *)data_ov068_02270a0c,
@@ -1099,43 +1099,43 @@ BOOL Unk_ov068_02270afc::func_ov068_0226e638(s32 idx) {
     return FALSE;
 }
 
-extern "C" void *data_ov068_02270a2c[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226e490Ev, 0};
-extern "C" void *data_ov068_02270a34[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226dd3cEv, 0};
-extern "C" void *data_ov068_022709fc[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226e390Ev, 0};
+extern "C" void *data_ov068_02270a2c[2] = {(void *)_ZN18HouseVisitVillager16execVisitOutsideEv, 0};
+extern "C" void *data_ov068_02270a34[2] = {(void *)_ZN18HouseVisitVillager13execVisitTalkEv, 0};
+extern "C" void *data_ov068_022709fc[2] = {(void *)_ZN18HouseVisitVillager18enterVisitDoorOpenEv, 0};
 extern "C" Unk_ov068_022708fc_Color data_ov068_022712a8(0x1f, 0x14, 0x14, 0x1f);
-extern "C" void *data_ov068_02270a1c[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226dd18Ev, 0};
-extern "C" void *data_ov068_02270a14[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226e3b8Ev, 0};
-extern "C" void *data_ov068_02270a0c[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226e4dcEv, 0};
-extern "C" void *data_ov068_02270994[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226e3f4Ev, 0};
+extern "C" void *data_ov068_02270a1c[2] = {(void *)_ZN18HouseVisitVillager17execVisitTalkWaitEv, 0};
+extern "C" void *data_ov068_02270a14[2] = {(void *)_ZN18HouseVisitVillager13execVisitCallEv, 0};
+extern "C" void *data_ov068_02270a0c[2] = {(void *)_ZN18HouseVisitVillager17enterVisitOutsideEv, 0};
+extern "C" void *data_ov068_02270994[2] = {(void *)_ZN18HouseVisitVillager14enterVisitCallEv, 0};
 extern "C" {
 u8 data_ov068_022712e0[0x28];
 }
-extern "C" void *data_ov068_022709f4[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226e2f4Ev, 0};
-extern "C" void *data_ov068_022709ec[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226e228Ev, 0};
-extern "C" void *data_ov068_0227098c[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226e1ccEv, 0};
-extern "C" void *data_ov068_022709dc[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226e0ccEv, 0};
-extern "C" void *data_ov068_022709b4[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226e12cEv, 0};
-extern "C" Unk_ov068_Scene_Entry data_ov068_02270a4c = {(void *(*)())func_ov068_0226f0a8, 0x82, 0x86, {2, 0x5000, 0x5000, 0x3e800}};
-extern "C" void *data_ov068_022709c4[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226dd38Ev, 0};
+extern "C" void *data_ov068_022709f4[2] = {(void *)_ZN18HouseVisitVillager16enterVisitWalkInEv, 0};
+extern "C" void *data_ov068_022709ec[2] = {(void *)_ZN18HouseVisitVillager18enterVisitGreetEndEv, 0};
+extern "C" void *data_ov068_0227098c[2] = {(void *)_ZN18HouseVisitVillager14enterVisitStayEv, 0};
+extern "C" void *data_ov068_022709dc[2] = {(void *)_ZN18HouseVisitVillager16enterVisitWanderEv, 0};
+extern "C" void *data_ov068_022709b4[2] = {(void *)_ZN18HouseVisitVillager13execVisitStayEv, 0};
+extern "C" Unk_ov068_Scene_Entry sHouseVisitVillagerProfile = {(void *(*)())HouseVisitVillager_Create, 0x82, 0x86, {2, 0x5000, 0x5000, 0x3e800}};
+extern "C" void *data_ov068_022709c4[2] = {(void *)_ZN18HouseVisitVillager18enterVisitTalkWaitEv, 0};
 extern "C" Unk_ov068_022708fc_Color data_ov068_02271298(0x14, 0x14, 0x1f, 0x1f);
 extern "C" Unk_ov068_022708fc_Color data_ov068_022712b0(0x1f, 0x1f, 0x14, 0x1f);
-extern "C" void *data_ov068_022709e4[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226dd14Ev, 0};
-extern "C" void *data_ov068_02270a04[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226dda4Ev, 0};
-extern "C" void *data_ov068_0227099c[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226ef58Ev, 0};
-extern "C" void *data_ov068_0227097c[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226e354Ev, 0};
+extern "C" void *data_ov068_022709e4[2] = {(void *)_ZN18HouseVisitVillager15enterVisitLeaveEv, 0};
+extern "C" void *data_ov068_02270a04[2] = {(void *)_ZN18HouseVisitVillager14execVisitIdle7Ev, 0};
+extern "C" void *data_ov068_0227099c[2] = {(void *)_ZN18HouseVisitVillager9drawModelEv, 0};
+extern "C" void *data_ov068_0227097c[2] = {(void *)_ZN18HouseVisitVillager17execVisitDoorOpenEv, 0};
 extern "C" Unk_ov068_022708fc_Color data_ov068_022712a0(0x14, 0x1f, 0x14, 0x1f);
-extern "C" void *data_ov068_022709a4[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226e20cEv, 0};
+extern "C" void *data_ov068_022709a4[2] = {(void *)_ZN18HouseVisitVillager17execVisitGreetEndEv, 0};
 extern "C" Unk_ov068_022708fc_Color data_ov068_0227129c(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov068_02270a6c_Buf data_ov068_02270a3c = {{0xdd, 0xdd, 0xdd, 0xdd, 0xdd, 0xdd, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
-extern "C" void *data_ov068_022709d4[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226dda8Ev, 0};
+extern "C" void *data_ov068_022709d4[2] = {(void *)_ZN18HouseVisitVillager15enterVisitIdle7Ev, 0};
 extern "C" Unk_ov068_022708fc_Color data_ov068_022712a4(0x14, 0x18, 0x18, 0x1f);
 extern "C" {
 u8 data_ov068_022712b8[0x28];
 }
-extern "C" void *data_ov068_02270984[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226e268Ev, 0};
+extern "C" void *data_ov068_02270984[2] = {(void *)_ZN18HouseVisitVillager15execVisitWalkInEv, 0};
 
 
-void Unk_ov068_02270afc::func_ov068_0226e54c() {
+void HouseVisitVillager::updateVisitState() {
     using namespace sB;
     static Unk_ov068_02270afc_Fn tbl[11] = {
         *(Unk_ov068_02270afc_Fn *)data_ov068_02270a2c,
@@ -1155,10 +1155,10 @@ void Unk_ov068_02270afc::func_ov068_0226e54c() {
     }
 }
 
-extern "C" void *data_ov068_022709ac[2] = {(void *)_ZN18Unk_ov068_02270afc19func_ov068_0226dca4Ev, 0};
+extern "C" void *data_ov068_022709ac[2] = {(void *)_ZN18HouseVisitVillager14execVisitLeaveEv, 0};
 
 
-BOOL Unk_ov068_02270afc::func_ov068_0226e4dc() {
+BOOL HouseVisitVillager::enterVisitOutside() {
     using namespace sB;
     unk_5c = data_020c8cb4;
     unk_64 = data_020c8cb8 - 0x1000;
@@ -1171,9 +1171,9 @@ BOOL Unk_ov068_02270afc::func_ov068_0226e4dc() {
     return TRUE;
 }
 
-void Unk_ov068_02270afc::func_ov068_0226e490() {
+void HouseVisitVillager::execVisitOutside() {
     using namespace sB;
-    if (func_ov068_0226eda4(this)) {
+    if (HouseVisit_IsAppointmentNow(this)) {
         VillagerActor *p = func_02095204(4);
         if (p) {
             Unk_ov068_02270afc_Vec v;
@@ -1188,7 +1188,7 @@ void Unk_ov068_02270afc::func_ov068_0226e490() {
     }
 }
 
-BOOL Unk_ov068_02270afc::func_ov068_0226e3f4() {
+BOOL HouseVisitVillager::enterVisitCall() {
     using namespace sB;
     u32 loc[6];
     unk_a3c = data_0213a740;
@@ -1206,7 +1206,7 @@ BOOL Unk_ov068_02270afc::func_ov068_0226e3f4() {
     return TRUE;
 }
 
-void Unk_ov068_02270afc::func_ov068_0226e3b8() {
+void HouseVisitVillager::execVisitCall() {
     using namespace sB;
     if (unk_a59 > 0) {
         unk_a59 = unk_a59 - 1;
@@ -1217,23 +1217,23 @@ void Unk_ov068_02270afc::func_ov068_0226e3b8() {
     }
 }
 
-BOOL Unk_ov068_02270afc::func_ov068_0226e390() {
+BOOL HouseVisitVillager::enterVisitDoorOpen() {
     using namespace sB;
     unk_a3c = data_0213a740;
     unk_4cc.unk_44 = 1;
     return TRUE;
 }
 
-void Unk_ov068_02270afc::func_ov068_0226e354() {
+void HouseVisitVillager::execVisitDoorOpen() {
     using namespace sB;
     if (unk_898.unk_3c->unk_04 == 0) {
         func_02003e70(&unk_514, 0x4cb, 0x7f, 0);
         func_020b0e60();
-        func_ov068_0226e638(3);
+        setVisitState(3);
     }
 }
 
-BOOL Unk_ov068_02270afc::func_ov068_0226e2f4() {
+BOOL HouseVisitVillager::enterVisitWalkIn() {
     using namespace sB;
     unk_a68 = unk_5c;
     unk_a6c = unk_60;
@@ -1245,14 +1245,14 @@ BOOL Unk_ov068_02270afc::func_ov068_0226e2f4() {
     return TRUE;
 }
 
-void Unk_ov068_02270afc::func_ov068_0226e268() {
+void HouseVisitVillager::execVisitWalkIn() {
     using namespace sB;
     if (unk_a48 == 1) {
         unk_a3c = *(Unk_ov068_02270afc_BFn *)data_ov068_0227099c;
         func_020196b4(&unk_564, 1, 2, unk_a68, unk_a70, 0, 0, 0, 0, 0, 0);
     } else if (unk_a48 == 0) {
         if (func_02019790(&unk_564)) {
-            func_ov068_0226e638(4);
+            setVisitState(4);
         }
     }
     if (unk_a48 != 0) {
@@ -1260,7 +1260,7 @@ void Unk_ov068_02270afc::func_ov068_0226e268() {
     }
 }
 
-BOOL Unk_ov068_02270afc::func_ov068_0226e228() {
+BOOL HouseVisitVillager::enterVisitGreetEnd() {
     using namespace sB;
     if (func_02014220(&unk_618)) {
         return func_02019614(&unk_564, 2, data_020c6cc8);
@@ -1269,14 +1269,14 @@ BOOL Unk_ov068_02270afc::func_ov068_0226e228() {
     }
 }
 
-void Unk_ov068_02270afc::func_ov068_0226e20c() {
+void HouseVisitVillager::execVisitGreetEnd() {
     using namespace sB;
-    if (func_ov068_0226e638(5)) {
+    if (setVisitState(5)) {
         TalkRequest_EndTalkWith(this);
     }
 }
 
-BOOL Unk_ov068_02270afc::func_ov068_0226e1cc() {
+BOOL HouseVisitVillager::enterVisitStay() {
     using namespace sB;
     unk_a4a = 5;
     func_0201a8d0(&unk_350, 1, 0x148, 0x25, 0x25);
@@ -1284,7 +1284,7 @@ BOOL Unk_ov068_02270afc::func_ov068_0226e1cc() {
     return TRUE;
 }
 
-void Unk_ov068_02270afc::func_ov068_0226e12c() {
+void HouseVisitVillager::execVisitStay() {
     using namespace sB;
     if (func_02014220(&unk_618) == 0) {
         if (unk_a56 == 0 || unk_a54 == 0) {
@@ -1313,7 +1313,7 @@ void Unk_ov068_02270afc::func_ov068_0226e12c() {
     }
 }
 
-BOOL Unk_ov068_02270afc::func_ov068_0226e0cc() {
+BOOL HouseVisitVillager::enterVisitWander() {
     using namespace sB;
     if (func_02019614(&unk_564, 1, data_020c6cc8)) {
         func_0201a6c0(&unk_3b0, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
@@ -1323,7 +1323,7 @@ BOOL Unk_ov068_02270afc::func_ov068_0226e0cc() {
     return FALSE;
 }
 
-void Unk_ov068_02270afc::func_ov068_0226ddac() {
+void HouseVisitVillager::execVisitWander() {
     using namespace sA;
     Unk_ov068_02270afc_Vec v;
     Unk_ov068_02270afc_Vec tmp;
@@ -1426,15 +1426,15 @@ void Unk_ov068_02270afc::func_ov068_0226ddac() {
     }
 }
 
-BOOL Unk_ov068_02270afc::func_ov068_0226dda8() {
+BOOL HouseVisitVillager::enterVisitIdle7() {
     using namespace sA;
     return TRUE;
 }
 
-void Unk_ov068_02270afc::func_ov068_0226dda4() {
+void HouseVisitVillager::execVisitIdle7() {
     using namespace sA;}
 
-BOOL Unk_ov068_02270afc::func_ov068_0226dd48() {
+BOOL HouseVisitVillager::enterVisitTalk() {
     using namespace sA;
     void *p = func_02095204(4);
     if (p != NULL) {
@@ -1449,17 +1449,17 @@ BOOL Unk_ov068_02270afc::func_ov068_0226dd48() {
     return FALSE;
 }
 
-void Unk_ov068_02270afc::func_ov068_0226dd3c() {
+void HouseVisitVillager::execVisitTalk() {
     using namespace sA;
-    func_ov068_0226e638(9);
+    setVisitState(9);
 }
 
-BOOL Unk_ov068_02270afc::func_ov068_0226dd38() {
+BOOL HouseVisitVillager::enterVisitTalkWait() {
     using namespace sA;
     return TRUE;
 }
 
-void Unk_ov068_02270afc::func_ov068_0226dd18() {
+void HouseVisitVillager::execVisitTalkWait() {
     using namespace sA;
     if (unk_898.unk_3c != NULL) {
         if (unk_898.unk_3c->unk_04 == 0) {
@@ -1468,12 +1468,12 @@ void Unk_ov068_02270afc::func_ov068_0226dd18() {
     }
 }
 
-BOOL Unk_ov068_02270afc::func_ov068_0226dd14() {
+BOOL HouseVisitVillager::enterVisitLeave() {
     using namespace sA;
     return TRUE;
 }
 
-void Unk_ov068_02270afc::func_ov068_0226dca4() {
+void HouseVisitVillager::execVisitLeave() {
     using namespace sA;
     if (unk_898.unk_3c != NULL) {
         if (unk_898.unk_3c->unk_04 == 0) {
@@ -1481,7 +1481,7 @@ void Unk_ov068_02270afc::func_ov068_0226dca4() {
             if (vfunc_64() != NULL) {
                 func_020785a8(func_0207e310(vfunc_64()));
             }
-            func_ov068_0226ed88(this);
+            HouseVisit_SetFinished(this);
             if (unk_a50 != 0) {
                 func_020b4a08(func_020b4934(), 0);
                 func_020b4bbc(func_020b4934(), 6);
@@ -1492,12 +1492,12 @@ void Unk_ov068_02270afc::func_ov068_0226dca4() {
     }
 }
 
-void Unk_ov068_02270afc::vfunc_80() {
+void HouseVisitVillager::vfunc_80() {
     using namespace sA;
     (*((u8 *)this + 0x893)) = 1;
 }
 
-BOOL Unk_ov068_02270afc::vfunc_7c() {
+BOOL HouseVisitVillager::vfunc_7c() {
     using namespace sA;
     if ((*((u8 *)this + 0x893)) == 0) {
         return TRUE;

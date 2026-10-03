@@ -19,7 +19,7 @@
 //    (func_ov004_02224ce4 / func_ov004_02224d5c), so LightLevel and Cf4 have no destructor here.
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
-//  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (Unk_020dbd54), unk_1a4, unk_248, unk_250.
+//  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
 // Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
 
 // Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
@@ -117,10 +117,10 @@ public:
     u8 pad_04[0x94];
 };
 
-class Unk_020dbd34 : public Unk_02055704 {
+class CachedModel : public Unk_02055704 {
 public:
-    Unk_020dbd34();
-    virtual ~Unk_020dbd34();
+    CachedModel();
+    virtual ~CachedModel();
     u32 unk_98;
 };
 
@@ -138,17 +138,17 @@ public:
     s32 hasPassedFrame(s32 a);
 };
 
-class Unk_020dbd54 : public Unk_020dbd34, public AnimFrameCtrl {
+class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:
-    Unk_020dbd54();
-    virtual ~Unk_020dbd54();
+    AnimModel();
+    virtual ~AnimModel();
     void *unk_b4;
 
-    s32 func_02054710();
-    s32 func_020547cc(void *q);
-    void func_020547e4();
-    BOOL func_02054800(void *x);
-    // declared in Unk_0205454c in src/main, but it is called on this object
+    s32 attachAnim();
+    s32 drawAnimated(void *q);
+    void stepAnim();
+    BOOL allocAnmObj(void *x);
+    // declared in BlendAnimModel in src/main, but it is called on this object
     void func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e);
 };
 
@@ -228,7 +228,7 @@ public:
     void func_ov004_02224f90(char *name);
     void func_ov004_02224fc8(char *a, char *b);
 
-    /* 0xec */ Unk_020dbd54 unk_ec;
+    /* 0xec */ AnimModel unk_ec;
     /* 0x1a4 */ Unk_ov004_02224ee4 unk_1a4;
     /* 0x248 */ Unk_ov004_02224d60 unk_248;
     /* 0x250 */ Unk_ov004_02224cf4 unk_250;
@@ -253,13 +253,13 @@ public:
 };
 
 extern "C" {
-extern u32 data_021c620c;
+extern u32 gBgHeap;
 s32 func_ov004_02224d8c(void *, u32);
-s32 _ZN12Unk_020dbd5413func_02054800EPv(void *, u32);
-s32 _ZN12Unk_0205454c13func_02054720Eiiitt(void *, u32, u32, u32, u32, u32);
-s32 _ZN12Unk_020dbd5413func_02054710Ev(void *);
-s32 _ZN12Unk_020dbd5413func_020547ccEPv(void *, u32);
-s32 _ZN12Unk_020dbd5413func_020547e4Ev(void *);
+s32 _ZN9AnimModel11allocAnmObjEPv(void *, u32);
+s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, u32, u32, u32, u32, u32);
+s32 _ZN9AnimModel10attachAnimEv(void *);
+s32 _ZN9AnimModel12drawAnimatedEPv(void *, u32);
+s32 _ZN9AnimModel8stepAnimEv(void *);
 }
 
 extern "C" Unk_ov004_0224dc50 *func_ov004_02227e20();
@@ -276,21 +276,21 @@ Unk_ov004_0224dc50::~Unk_ov004_0224dc50() {}
 BOOL Unk_ov004_0224dc50::vfunc_00() {
     func_ov004_02224f90("obj_b_pole");
     if (func_ov004_02224d8c((u8 *)this + 0x1a4, 0) != 0) {
-        if (_ZN12Unk_020dbd5413func_02054800EPv((u8 *)this + 0xec, data_021c620c) != 0) {
-            _ZN12Unk_0205454c13func_02054720Eiiitt((u8 *)this + 0xec, func_ov004_02224d8c((u8 *)this + 0x1a4, 0), 0, 0x1000, 0, 0);
-            _ZN12Unk_020dbd5413func_02054710Ev((u8 *)this + 0xec);
+        if (_ZN9AnimModel11allocAnmObjEPv((u8 *)this + 0xec, gBgHeap) != 0) {
+            _ZN14BlendAnimModel8initAnimEiiitt((u8 *)this + 0xec, func_ov004_02224d8c((u8 *)this + 0x1a4, 0), 0, 0x1000, 0, 0);
+            _ZN9AnimModel10attachAnimEv((u8 *)this + 0xec);
         }
     }
     return TRUE;
 }
 
 BOOL Unk_ov004_0224dc50::onExecute() {
-    _ZN12Unk_020dbd5413func_020547e4Ev((u8 *)this + 0xec);
+    _ZN9AnimModel8stepAnimEv((u8 *)this + 0xec);
     return TRUE;
 }
 
 BOOL Unk_ov004_0224dc50::onDraw() {
-    _ZN12Unk_020dbd5413func_020547ccEPv((u8 *)this + 0xec, 0);
+    _ZN9AnimModel12drawAnimatedEPv((u8 *)this + 0xec, 0);
     return TRUE;
 }
 

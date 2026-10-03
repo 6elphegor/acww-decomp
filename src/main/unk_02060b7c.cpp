@@ -4,7 +4,7 @@
 // (.init 0x020c4648), the empty destructor 0x02060b98 and Random_SeedGlobal. Source: prep/U096/notes.txt.
 
 extern "C" {
-void *func_0209cbe0();
+void *Clock_GetTimeSeed();
 s32 Random_SetSeed(void *a, void *b);
 }
 
@@ -22,6 +22,6 @@ Random gRandom;
 Random::~Random() {}
 
 extern "C" s32 Random_SeedGlobal() {
-    void *r = func_0209cbe0();
+    void *r = Clock_GetTimeSeed();
     return Random_SetSeed(&gRandom, r);
 }

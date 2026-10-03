@@ -210,12 +210,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -334,7 +334,7 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -456,7 +456,7 @@ s32 func_020626cc(u16 *p, s32 mode);
 u32 func_02063b8c(u32 a);
 void Hud_Hide();
 void Hud_Show();
-void func_0203ffa4(u32 id);
+void EventWeekSlots_MarkPlayer(u32 id);
 void PlayerActor_RequestWearHatAlt(u16 *p);
 void PlayerActor_RequestWearFaceItemAlt(u16 *p);
 void PlayerActor_RequestWearShirtAlt(u16 *p);
@@ -1092,7 +1092,7 @@ void Unk_ov070_0227277c::vfunc_14() {
         func_0202e1cc(9, 1);
         break;
     case 0x38:
-        func_0203ffa4(0x40);
+        EventWeekSlots_MarkPlayer(0x40);
         break;
     }
     if (code != 0xff) {

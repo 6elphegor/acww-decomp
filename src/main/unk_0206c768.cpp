@@ -26,11 +26,11 @@ void MsgTextLabel_Destroy(TextLabel *obj);
 }
 
 extern "C" {
-BOOL func_020027b4(u32 x);
+BOOL Gfx2d_IsMainScreenLayer(u32 x);
 }
 
 extern "C" {
-s32 func_02002778(u32 n);
+s32 Gfx2d_GetLayerBgIndex(u32 n);
 }
 
 extern u8 data_021caabc[0x8fc];

@@ -27,7 +27,7 @@ public:
 
 extern "C" {
 u32 func_020b50e8(void);
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 void Snd_PlaySe(s32 a);
 Unk_ov004_0224e53c *func_ov004_0222beb8();
 }
@@ -58,7 +58,7 @@ BOOL Unk_ov004_0224e53c::onExecute() {
     Unk_0209d498_Time t;
     ((u32 *)&t)[0] = 0;
     ((u32 *)&t)[1] = 0;
-    func_0209d498(&t);
+    Clock_GetDateTime(&t);
     if (idx < 0x33) {
         if (data_ov004_022402b8[idx] != 0) {
             if (t.b4 == 0xc && t.b3 == 0x1f) {

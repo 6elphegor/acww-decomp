@@ -58,15 +58,15 @@ void StrBuf_Clear(StrBuf *buf);
 }
 
 extern "C" {
-void func_02002ab8(void);
+void AbAllObjGfx_Upload(void);
 }
 
 extern "C" {
-void func_020014e4(u32 arg);
+void Gfx2d_HideMainPlanes(u32 arg);
 }
 
 extern "C" {
-void func_020014f4(u32 arg);
+void Gfx2d_ShowMainPlanes(u32 arg);
 }
 
 extern "C" {
@@ -110,7 +110,7 @@ u8 Talk_ColorTagToTextColor(u32 x);
 }
 
 extern "C" {
-void func_02076b08(void *p, int a, int b);
+void CommRecord_PackSource(void *p, int a, int b);
 }
 
 extern "C" {
@@ -747,7 +747,7 @@ Unk_020e2b70::~Unk_020e2b70() {}
 BOOL Unk_020e2b70::vfunc_00() {
     func_0208f000();
     Input_ResetMode();
-    func_02002ab8();
+    AbAllObjGfx_Upload();
     func_0201195c();
     func_02011874();
     TalkWindow_CreateAll();

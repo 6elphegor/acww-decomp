@@ -69,13 +69,13 @@ public:
 };
 
 // Screen upload helper, 0x24 bytes (src/main/unk_020b8464.cpp)
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    Unk_020e45f8();
+    BgVramTask();
     virtual BOOL vfunc_00();
-    virtual void vfunc_04();
-    BOOL func_020b86c0(u32 a, u8 b, u32 c, u32 d);
-    void func_020b87d0();
+    virtual void clear();
+    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
+    void cancel();
     u32 unk_04[0x20 / 4];
 };
 
@@ -141,13 +141,13 @@ public:
 };
 
 // Global at 0x020cbb18
-class Unk_020cbb18 {
+class CommManager {
 public:
-    s32 func_02072e44();
-    void func_020728d4();
-    void func_020728a4(u8 *p, u32 n);
-    void func_02072824(u32 a, u32 b);
-    s16 func_02072e34();
+    s32 isOnline();
+    void beginRecord();
+    void writeRecord(u8 *p, u32 n);
+    void endRecord(u32 a, u32 b);
+    s16 getSendSeq();
 };
 
 // ov092 singleton returned by ProcBase_GetParent
@@ -171,24 +171,24 @@ extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u16 gPad[];
 extern s32 data_020ddf8c;
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 extern u8 data_021ed2f8[];
 extern u8 data_021dfd8c[];
 extern u8 gMelodyEditPattern[];
 extern void *gCurrentHeap;
 
-void func_0200140c();
-void func_0200142c();
-s32 func_020013cc(s32 a);
-void func_020015b8(s32 a);
-void func_020020b8(s32 a);
-void func_020021a0(s32 a);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_02002398(s32 a, s32 b);
-void func_020024f0(void *a, s32 b, s32 c, s32 d);
-void func_0200261c(void *name, void *h, s32 a, s32 b, s32 c, s32 d);
-void func_02002654(void *name, void *h, s32 a);
-void func_020026c4(void *name, void *h, s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_EndSubObjWinBrightness();
+void Gfx2d_BeginSubObjWinBrightness();
+s32 Gfx2d_SetSubBrightness(s32 a);
+void Gfx2d_SetSubBgModeState(s32 a);
+void Gfx2d_ShowLayer(s32 a);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_LoadScreen(void *a, s32 b, s32 c, s32 d);
+void Gfx2d_LoadCharFile(void *name, void *h, s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_LoadScreenFile(void *name, void *h, s32 a);
+void Gfx2d_LoadPaletteFile(void *name, void *h, s32 a, s32 b, s32 c, s32 d);
 void Snd_PlaySe(s32 a);
 void File_LoadToBuffer(void *a, void *b, u32 c);
 void Melody_PlayEditPattern(u32 a);
@@ -202,7 +202,7 @@ BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_0206f9fc(void *self, u32 id);
-s32 func_020740a0(s32 v);
+s32 Comm_IsSeqConfirmed(s32 v);
 void func_020795a8(void *a);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
@@ -403,7 +403,7 @@ public:
     /* 0x110 */ Unk_ov002_022046cc unk_110;
     /* 0x274 */ Unk_020e0488 unk_274[16];
     /* 0x674 */ u8 unk_674[0x800];
-    /* 0xe74 */ Unk_020e45f8 unk_e74[1];
+    /* 0xe74 */ BgVramTask unk_e74[1];
 };
 
 static inline BOOL Unk_ov143_Both() {
@@ -484,8 +484,8 @@ void Unk_ov143_02293b80::func_ov143_02293528() {
     func_ov143_022931bc();
     func_ov143_022920ac();
     func_ov002_022008e0(10, 4, 0, 0x18);
-    func_020020b8(6);
-    func_020020b8(4);
+    Gfx2d_ShowLayer(6);
+    Gfx2d_ShowLayer(4);
     func_ov143_0229346c();
     func_ov143_02292000(1);
     unk_110.func_ov002_02203590();
@@ -509,8 +509,8 @@ void Unk_ov143_02293b80::func_ov143_022934c8() {
 
 void Unk_ov143_02293b80::func_ov143_02293498() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
-        func_020021a0(4);
+        Gfx2d_ResetLayer(6);
+        Gfx2d_ResetLayer(4);
         func_ov002_02200a60(5);
     } else {
         func_ov143_0229346c();
@@ -564,7 +564,7 @@ void Unk_ov143_02293b80::func_ov143_0229334c() {
 }
 
 void Unk_ov143_02293b80::func_ov143_02293324() {
-    unk_e74[0].func_020b87d0();
+    unk_e74[0].cancel();
     func_ov143_022923f8();
     unk_110.func_ov002_02203900();
 }
@@ -577,7 +577,7 @@ void Unk_ov143_02293b80::func_ov143_0229330c() {
 void Unk_ov143_02293b80::func_ov143_02293304() { func_ov143_022932d4(); }
 
 void Unk_ov143_02293b80::func_ov143_022932dc() {
-    unk_e74[0].func_020b87d0();
+    unk_e74[0].cancel();
     func_ov143_022923f8();
     unk_110.func_ov002_02203900();
 }
@@ -585,28 +585,28 @@ void Unk_ov143_02293b80::func_ov143_022932dc() {
 void Unk_ov143_02293b80::func_ov143_022932d4() { func_ov143_02292590(); }
 
 void Unk_ov143_02293b80::func_ov143_0229329c() {
-    func_020015b8(0);
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
-    func_02002398(4, 2);
-    func_0200226c(4, 0, 0, 0);
+    Gfx2d_SetSubBgModeState(0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 2);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
 }
 
 void Unk_ov143_02293b80::func_ov143_02293228() {
     void *h = gCurrentHeap;
-    func_0200261c((void *)"menu/melody/bg0.bch", h, 6, 0x11, 0x11, 0x9c);
-    func_020026c4((void *)"menu/melody/bg.bpl", h, 6, 1, 1, 6);
-    func_02002654((void *)"menu/melody/a_bg.bsc", h, 6);
+    Gfx2d_LoadCharFile((void *)"menu/melody/bg0.bch", h, 6, 0x11, 0x11, 0x9c);
+    Gfx2d_LoadPaletteFile((void *)"menu/melody/bg.bpl", h, 6, 1, 1, 6);
+    Gfx2d_LoadScreenFile((void *)"menu/melody/a_bg.bsc", h, 6);
     File_LoadToBuffer((void *)"menu/melody/b_bg.bsc", unk_674, 0x800);
-    func_020024f0(unk_674, 4, 0x800, 0);
+    Gfx2d_LoadScreen(unk_674, 4, 0x800, 0);
 }
 
 void Unk_ov143_02293b80::func_ov143_022931bc() {
     func_ov002_02203920(&unk_110);
     void *h = gCurrentHeap;
-    func_0200261c((void *)"menu/melody/obj.bch", h, 8, 0xc0, 0xc0, 0xff);
-    func_0200261c((void *)"menu/melody/obj2.bch", h, 8, 0x140, 0x140, 0x1bf);
-    func_020026c4((void *)"menu/melody/obj.bpl", h, 8, 4, 4, 0xd);
+    Gfx2d_LoadCharFile((void *)"menu/melody/obj.bch", h, 8, 0xc0, 0xc0, 0xff);
+    Gfx2d_LoadCharFile((void *)"menu/melody/obj2.bch", h, 8, 0x140, 0x140, 0x1bf);
+    Gfx2d_LoadPaletteFile((void *)"menu/melody/obj.bpl", h, 8, 4, 4, 0xd);
 }
 
 void Unk_ov143_02293b80::func_ov143_0229312c() {
@@ -866,22 +866,22 @@ void Unk_ov143_02293b80::func_ov143_02292bc0() {
 
 void Unk_ov143_02293b80::func_ov143_02292b64() {
     u8 buf[0x11];
-    if (data_020cbb18->func_02072e44() != 0) {
-        Unk_020cbb18 *g;
+    if (gCommManager->isOnline() != 0) {
+        CommManager *g;
         buf[0] = 0xc;
         MI_CpuCopy8(unk_a0, buf + 1, 0x10);
-        g = data_020cbb18;
-        g->func_020728d4();
-        g->func_020728a4(buf, 0x11);
-        g->func_02072824(0x16, 4);
-        unk_9c = g->func_02072e34();
+        g = gCommManager;
+        g->beginRecord();
+        g->writeRecord(buf, 0x11);
+        g->endRecord(0x16, 4);
+        unk_9c = g->getSendSeq();
     }
 }
 
 BOOL Unk_ov143_02293b80::func_ov143_02292b2c() {
     if (func_0206ed18() == 0) return TRUE;
-    if (data_020cbb18->func_02072e44() != 0) {
-        if (func_020740a0(unk_9c) == 0) return FALSE;
+    if (gCommManager->isOnline() != 0) {
+        if (Comm_IsSeqConfirmed(unk_9c) == 0) return FALSE;
     }
     return TRUE;
 }
@@ -1107,7 +1107,7 @@ BOOL Unk_ov143_02293b80::func_ov143_022925d4(void *pad) {
 
 void Unk_ov143_02293b80::func_ov143_02292590() {
     if (func_ov143_02292010(4)) {
-        if (unk_e74[0].func_020b86c0((u32)unk_674, 4, 0x800, 0)) {
+        if (unk_e74[0].requestScreen((u32)unk_674, 4, 0x800, 0)) {
             func_ov143_02291ff0(4);
         }
     }
@@ -1294,13 +1294,13 @@ void Unk_ov143_02293b80::func_ov143_02292064(s32 *out, s32 idx) {
 }
 
 void Unk_ov143_02293b80::func_ov143_02292040() {
-    func_0200142c();
-    func_020013cc(-6);
+    Gfx2d_BeginSubObjWinBrightness();
+    Gfx2d_SetSubBrightness(-6);
     ((Unk_ov002_02202fac *)&unk_110)->func_ov002_02203044();
 }
 
 void Unk_ov143_02293b80::func_ov143_02292024() {
-    func_0200140c();
+    Gfx2d_EndSubObjWinBrightness();
     ((Unk_ov002_02202fac *)&unk_110)->func_ov002_0220301c();
 }
 

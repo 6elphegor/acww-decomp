@@ -10,22 +10,22 @@ extern u16 gMainWaitingFrame;
 extern u8 gFrameWaitQueue[];
 extern u8 gVBlankQueue[];
 extern u8 data_027e0000[];
-extern u8 data_027e0434;
-extern u8 data_027e0438[];
+extern u8 sMenuWipeLine;
+extern u8 sMenuWipeEdge[];
 
 void OS_WakeupThread(void *queue); // OS_WakeupThread
-void func_020b83f0(void);
-void func_0205b714(void);
+void VramQueueTex_Run(void);
+void HBlank_RunVBlank(void);
 }
 
-extern "C" void func_01ffcd4c(void) {
+extern "C" void Sky_HBlankNone(void) {
 }
 
-// WIN0H animation: data_027e0434 counts 0..47, data_027e0438 is a 24-entry table walked up and down
-extern "C" void func_01ffccf4(void) {
-    u32 i = data_027e0434;
+// WIN0H animation: sMenuWipeLine counts 0..47, sMenuWipeEdge is a 24-entry table walked up and down
+extern "C" void MenuScreen_WipeHBlank(void) {
+    u32 i = sMenuWipeLine;
     u32 j = (i >= 24) ? 47 - i : i;
-    u32 w = data_027e0438[j];
+    u32 w = sMenuWipeEdge[j];
     vu16 *reg = (vu16 *)0x04000000;
     u32 v = ((w << 8) & 0xff00) | 0xff;
     if (reg[2] & 2) {
@@ -35,7 +35,7 @@ extern "C" void func_01ffccf4(void) {
     if (i >= 48) {
         i -= 48;
     }
-    data_027e0434 = (u8)i;
+    sMenuWipeLine = (u8)i;
 }
 
 // vblank work
@@ -45,10 +45,10 @@ extern "C" void Main_VBlankCallback(void) {
         if (gMainWaitingFrame != 0) {
             OS_WakeupThread(gFrameWaitQueue);
             sVBlankCount = 0;
-            func_020b83f0();
+            VramQueueTex_Run();
         }
     }
-    func_0205b714();
+    HBlank_RunVBlank();
     OS_WakeupThread(gVBlankQueue);
     *(vu32 *)((u32)data_027e0000 + 0x3ff8) |= 1;
 }

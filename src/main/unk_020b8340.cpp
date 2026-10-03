@@ -2,8 +2,8 @@
 
 extern "C" {
 void func_020e79a0(void *list, void *node);
-BOOL func_020652ec(void *list, void *node);
-void func_02065328(void *list);
+BOOL PrioList_Insert(void *list, void *node);
+void PrioList_Init(void *list);
 }
 
 // Two-word list head, cleared by __sinit (inline constructor).
@@ -15,40 +15,40 @@ public:
     Unk_021ef630() : unk_00(0), unk_04(0) {}
 };
 
-extern Unk_021ef630 data_021ef630;
-extern Unk_021ef630 data_021ef638;
+extern Unk_021ef630 sVramQueue2d;
+extern Unk_021ef630 sVramQueueTex;
 
 // Five-word command record (fields depend on the mode it was set up for).
-struct Unk_020b8b40 {
+struct BgTransfer {
     u32 unk_00;
     u8 unk_04;
     u32 unk_08;
     u32 unk_0c;
     u32 unk_10;
 
-    void func_020b8b44(void);
-    void func_020b8b68(u32 a, u8 b, u32 c, u8 d);
-    void func_020b8b80(void);
-    void func_020b8ba0(u32 a, u8 b, u32 c);
-    void func_020b8bac(void);
-    void func_020b8bc4(u32 a, u8 b, u32 c, u32 d);
-    u8 func_020b8bd0(void);
-    void func_020b8be0(void);
-    void func_020b8bfc(u32 a, u8 b, u32 c, u32 d, u32 e);
-    void func_020b8c0c(void);
+    void loadPaletteRange(void);
+    void setPaletteRange(u32 a, u8 b, u32 c, u8 d);
+    void loadPalette(void);
+    void setPalette(u32 a, u8 b, u32 c);
+    void loadScreen(void);
+    void setScreen(u32 a, u8 b, u32 c, u32 d);
+    u8 getCharCost(void);
+    void loadChars(void);
+    void setChars(u32 a, u8 b, u32 c, u32 d, u32 e);
+    void clear(void);
 };
 
 // Three-word record used by three modes.
-struct Unk_020b8c1c {
+struct TexTransfer {
     u32 unk_00;
     u32 unk_04;
     u32 unk_08;
 };
 
 extern "C" {
-u8 func_020b8b40(Unk_020b8b40 *p);
-u8 func_020b8b7c(Unk_020b8b40 *p);
-u8 func_020b8ba8(Unk_020b8b40 *p);
+u8 BgTransfer_GetPaletteRangeCost(BgTransfer *p);
+u8 BgTransfer_GetPaletteCost(BgTransfer *p);
+u8 BgTransfer_GetScreenCost(BgTransfer *p);
 }
 
 class Unk_020b83b0 {
@@ -60,48 +60,48 @@ public:
     Unk_020b83b0() : unk_04(0), unk_08(0), unk_0c(0xff) {}
 };
 
-class Unk_020e4618 : public Unk_020b83b0 {
+class VramTask : public Unk_020b83b0 {
 public:
     u8 unk_0d;
     u8 unk_0e;
     u8 unk_0f;
 
-    Unk_020e4618();
-    virtual BOOL vfunc_00() = 0;
-    void func_020b8464(void);
-    BOOL func_020b847c(void);
-    void func_020b8cc0(void);
+    VramTask();
+    virtual BOOL execute() = 0;
+    void dequeueTex(void);
+    BOOL enqueueTex(void);
+    void resetState(void);
 };
 
 extern "C" {
-void func_020b83b0(Unk_020e4618 *p);
-BOOL func_020b83c8(Unk_020e4618 *p);
+void VramQueue2d_Dequeue(VramTask *p);
+BOOL VramQueue2d_Enqueue(VramTask *p);
 }
 
-class Unk_020e45f8 : public Unk_020e4618 {
+class BgVramTask : public VramTask {
 public:
-    Unk_020b8b40 unk_10;
+    BgTransfer unk_10;
 
-    Unk_020e45f8();
-    virtual BOOL vfunc_00();
-    virtual void vfunc_04();
-    BOOL func_020b8618(u32 a, u8 b, u32 c, u8 d);
-    BOOL func_020b8670(u32 a, u8 b, u32 c);
-    BOOL func_020b86c0(u32 a, u8 b, u32 c, u32 d);
-    BOOL func_020b8714(u32 a, u8 b, u32 c, u32 d, u32 e);
-    void func_020b876c(void);
-    void func_020b87d0(void);
+    BgVramTask();
+    virtual BOOL execute();
+    virtual void clear();
+    BOOL requestPaletteRange(u32 a, u8 b, u32 c, u8 d);
+    BOOL requestPalette(u32 a, u8 b, u32 c);
+    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
+    BOOL requestChars(u32 a, u8 b, u32 c, u32 d, u32 e);
+    void prepare(void);
+    void cancel(void);
 };
 
-class Unk_020e4608 : public Unk_020e45f8 {
+class BgVramTaskPair : public BgVramTask {
 public:
-    Unk_020b8b40 unk_24;
+    BgTransfer unk_24;
 
-    Unk_020e4608();
-    virtual BOOL vfunc_00();
-    virtual void vfunc_04();
-    BOOL func_020b84a4(u32 a, u8 b, u32 c, u32 d, u32 e, u32 f, u8 g);
-    BOOL func_020b851c(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g);
+    BgVramTaskPair();
+    virtual BOOL execute();
+    virtual void clear();
+    BOOL requestCharsAndPalette(u32 a, u8 b, u32 c, u32 d, u32 e, u32 f, u8 g);
+    BOOL requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g);
 };
 
 class Unk_020b8340_Task {
@@ -114,46 +114,46 @@ public:
     /* 0x0f */ u8 unk_0f;
 };
 
-BOOL Unk_020e4608::func_020b851c(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g) {
-    func_020b876c();
+BOOL BgVramTaskPair::requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g) {
+    prepare();
     unk_0e = 8;
-    unk_10.func_020b8bfc(a, c, d, d, e);
-    unk_0f = unk_10.func_020b8bd0();
-    unk_24.func_020b8bfc(b, c, f, f, g);
-    unk_0f += unk_24.func_020b8bd0();
+    unk_10.setChars(a, c, d, d, e);
+    unk_0f = unk_10.getCharCost();
+    unk_24.setChars(b, c, f, f, g);
+    unk_0f += unk_24.getCharCost();
     unk_0c = 4;
-    if (func_020b83c8(this)) {
+    if (VramQueue2d_Enqueue(this)) {
         return TRUE;
     }
-    vfunc_04();
+    clear();
     return FALSE;
 }
 
-BOOL Unk_020e4608::func_020b84a4(u32 a, u8 b, u32 c, u32 d, u32 e, u32 f, u8 g) {
-    func_020b876c();
+BOOL BgVramTaskPair::requestCharsAndPalette(u32 a, u8 b, u32 c, u32 d, u32 e, u32 f, u8 g) {
+    prepare();
     unk_0e = 9;
-    unk_10.func_020b8bfc(a, b, c, d, e);
-    unk_0f = unk_10.func_020b8bd0();
-    unk_24.func_020b8ba0(f, b, g);
-    unk_0f += func_020b8b7c(&unk_24);
+    unk_10.setChars(a, b, c, d, e);
+    unk_0f = unk_10.getCharCost();
+    unk_24.setPalette(f, b, g);
+    unk_0f += BgTransfer_GetPaletteCost(&unk_24);
     unk_0c = 4;
-    if (func_020b83c8(this)) {
+    if (VramQueue2d_Enqueue(this)) {
         return TRUE;
     }
-    vfunc_04();
+    clear();
     return FALSE;
 }
 
-extern "C" void func_020b8494(void) {
-    func_02065328(&data_021ef638);
+extern "C" void VramQueueTex_Init(void) {
+    PrioList_Init(&sVramQueueTex);
 }
 
-BOOL Unk_020e4618::func_020b847c(void) {
-    return func_020652ec(&data_021ef638, (Unk_020b83b0 *)this);
+BOOL VramTask::enqueueTex(void) {
+    return PrioList_Insert(&sVramQueueTex, (Unk_020b83b0 *)this);
 }
 
-void Unk_020e4618::func_020b8464(void) {
-    func_020e79a0(&data_021ef638, (Unk_020b83b0 *)this);
+void VramTask::dequeueTex(void) {
+    func_020e79a0(&sVramQueueTex, (Unk_020b83b0 *)this);
 }
 
 static inline Unk_020b8340_Task *Unk_020b8340_First(void **l) {
@@ -162,9 +162,9 @@ static inline Unk_020b8340_Task *Unk_020b8340_First(void **l) {
     return t;
 }
 
-extern "C" void func_020b83f0(void) {
+extern "C" void VramQueueTex_Run(void) {
     Unk_020b8340_Task *r5;
-    for (r5 = Unk_020b8340_First((void **)&data_021ef638); r5 != 0; r5 = Unk_020b8340_First((void **)&data_021ef638)) {
+    for (r5 = Unk_020b8340_First((void **)&sVramQueueTex); r5 != 0; r5 = Unk_020b8340_First((void **)&sVramQueueTex)) {
         if (*(u16 *)0x4000006 + r5->unk_0f > 0xd4) break;
         BOOL ready = (r5->unk_0d == 1) ? TRUE : FALSE;
         if (ready) {
@@ -173,7 +173,7 @@ extern "C" void func_020b83f0(void) {
             }
         }
         if (r5 != 0) r5 = (Unk_020b8340_Task *)((u8 *)r5 + 4);
-        func_020e79a0(&data_021ef638, r5);
+        func_020e79a0(&sVramQueueTex, r5);
     }
     volatile u16 *vc = (volatile u16 *)0x4000006;
     if (*vc <= 0xd5) {
@@ -181,25 +181,25 @@ extern "C" void func_020b83f0(void) {
     }
 }
 
-extern "C" void func_020b83e0(void) {
-    func_02065328(&data_021ef630);
+extern "C" void VramQueue2d_Init(void) {
+    PrioList_Init(&sVramQueue2d);
 }
 
-extern "C" BOOL func_020b83c8(Unk_020e4618 *p) {
+extern "C" BOOL VramQueue2d_Enqueue(VramTask *p) {
     u8 *n = (u8 *)p;
     if (n != 0) n = n + 4;
-    return func_020652ec(&data_021ef630, n);
+    return PrioList_Insert(&sVramQueue2d, n);
 }
 
-extern "C" void func_020b83b0(Unk_020e4618 *p) {
+extern "C" void VramQueue2d_Dequeue(VramTask *p) {
     u8 *n = (u8 *)p;
     if (n != 0) n = n + 4;
-    func_020e79a0(&data_021ef630, n);
+    func_020e79a0(&sVramQueue2d, n);
 }
 
-extern "C" void func_020b8340(void) {
+extern "C" void VramQueue2d_Run(void) {
     Unk_020b8340_Task *r5;
-    for (r5 = Unk_020b8340_First((void **)&data_021ef630); r5 != 0; r5 = Unk_020b8340_First((void **)&data_021ef630)) {
+    for (r5 = Unk_020b8340_First((void **)&sVramQueue2d); r5 != 0; r5 = Unk_020b8340_First((void **)&sVramQueue2d)) {
         if (*(u16 *)0x4000006 + r5->unk_0f > 0x104) break;
         BOOL ready = (r5->unk_0d == 1) ? TRUE : FALSE;
         if (ready) {
@@ -208,9 +208,9 @@ extern "C" void func_020b8340(void) {
             }
         }
         if (r5 != 0) r5 = (Unk_020b8340_Task *)((u8 *)r5 + 4);
-        func_020e79a0(&data_021ef630, r5);
+        func_020e79a0(&sVramQueue2d, r5);
     }
 }
 
-Unk_021ef630 data_021ef638;
-Unk_021ef630 data_021ef630;
+Unk_021ef630 sVramQueueTex;
+Unk_021ef630 sVramQueue2d;

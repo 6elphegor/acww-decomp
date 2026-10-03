@@ -19,11 +19,11 @@ extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 
 void ProcBase_RequestDelete(void *p);
-void func_020015b8(s32 a);
-void func_02002398(s32 a, s32 b);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_020021a0(s32 a);
-void func_020020b8(s32 a);
+void Gfx2d_SetSubBgModeState(s32 a);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ShowLayer(s32 a);
 void func_0206e814();
 s32 func_0206ed50();
 BOOL MenuCtrl_IsButtons();
@@ -364,8 +364,8 @@ void Unk_ov138_02296380::func_ov138_02295f7c() {
     func_ov138_02295dbc();
     func_ov138_02295d9c();
     func_ov002_022008e0(10, 4, 0, 0x30);
-    func_020020b8(6);
-    func_020020b8(4);
+    Gfx2d_ShowLayer(6);
+    Gfx2d_ShowLayer(4);
     func_ov138_02295ecc();
     func_ov138_02295404(1);
     unk_fc.func_ov002_022034c4(0x65);
@@ -389,8 +389,8 @@ void Unk_ov138_02296380::func_ov138_02295f1c() {
 
 void Unk_ov138_02296380::func_ov138_02295eec() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
-        func_020021a0(4);
+        Gfx2d_ResetLayer(6);
+        Gfx2d_ResetLayer(4);
         func_ov002_02200a60(5);
     } else {
         func_ov138_02295ecc();
@@ -433,13 +433,13 @@ void Unk_ov138_02296380::func_ov138_02295e28() {
 }
 
 void Unk_ov138_02296380::func_ov138_02295ddc() {
-    func_020015b8(0);
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
-    func_02002398(4, 1);
-    func_0200226c(4, 0, 0, 0);
-    func_02002398(3, 1);
-    func_0200226c(3, 0, 0, 0);
+    Gfx2d_SetSubBgModeState(0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 1);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
+    Gfx2d_SetLayerPriority(3, 1);
+    Gfx2d_SetLayerControl(3, 0, 0, 0);
 }
 
 void Unk_ov138_02296380::func_ov138_02295dbc() {

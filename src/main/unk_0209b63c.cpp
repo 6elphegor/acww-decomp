@@ -5,36 +5,36 @@ public:
     s32 func_0209c038(s32 y);
 };
 
-class Unk_0209c040 {
+class TownAcreCell {
 public:
     s32 unk_00;
     s32 unk_04;
-    Unk_0209c040();
-    ~Unk_0209c040();
-    BOOL func_0209c040(s32 v);
-    void func_0209c050(s32 v);
-    s32 func_0209c054();
-    s32 func_0209c058();
+    TownAcreCell();
+    ~TownAcreCell();
+    BOOL setType(s32 v);
+    void setAcreId(s32 v);
+    s32 getType();
+    s32 getAcreId();
 };
 
 extern "C" {
 s32 func_02063b8c(s32);
 s32 func_02037260(s32);
-s32 func_02037310(s32);
+s32 AcreType_GetAttr(s32);
 s32 func_02037338(s32);
 }
 
-class Unk_0209b5d4 {
+class TownAcreGrid {
 public:
-    Unk_0209c040 cells[36];
+    TownAcreCell cells[36];
     u32 unk_120[8];
 
-    BOOL func_0209b63c();
+    BOOL setBorder();
     BOOL func_0209b830();
-    BOOL func_0209b9ac(u32 mode);
-    BOOL func_0209ba90(s32 a, s32 b);
-    BOOL func_0209bbac(s32 val);
-    Unk_0209c040 *func_0209bc54(s32 x, s32 y);
+    BOOL placeFacilities(u32 mode);
+    BOOL placeNextTo(s32 a, s32 b);
+    BOOL placeOnRandomGrass(s32 val);
+    TownAcreCell *getCell(s32 x, s32 y);
 };
 
 static inline BOOL Unk_0209b830_Bit(s32 t, s32 m)
@@ -44,7 +44,7 @@ static inline BOOL Unk_0209b830_Bit(s32 t, s32 m)
 
 static inline BOOL Unk_0209b830_Chk(s32 v)
 {
-    s32 t = func_02037310(v);
+    s32 t = AcreType_GetAttr(v);
     if (!Unk_0209b830_Bit(t, 8) && !Unk_0209b830_Bit(t, 4) && !Unk_0209b830_Bit(t, 0x80000) && func_02037260(v) == 1) return TRUE;
     return FALSE;
 }
@@ -57,38 +57,38 @@ struct Unk_0209ba90_Dir {
 extern "C" s32 func_0209bc34(s32 v);
 
 
-Unk_0209c040 *Unk_0209b5d4::func_0209bc54(s32 x, s32 y)
+TownAcreCell *TownAcreGrid::getCell(s32 x, s32 y)
 {
     s32 idx = ((Unk_0209c038 *)x)->func_0209c038(y);
     if ((u32)idx < 0x24) return &cells[idx];
-    static Unk_0209c040 dflt;
+    static TownAcreCell dflt;
     return &dflt;
 }
 
 extern "C" s32 func_0209bc34(s32 v)
 {
-    s32 t = func_02037310(v);
+    s32 t = AcreType_GetAttr(v);
     t = func_02037338(t | 0x100);
     if (t == 0x36) t = v;
     return t;
 }
 
-BOOL Unk_0209b5d4::func_0209bbac(s32 val)
+BOOL TownAcreGrid::placeOnRandomGrass(s32 val)
 {
     s32 cnt = 0;
     u32 y, x;
     for (y = 1; y < 5; y++) {
         for (x = 1; x < 5; x++) {
-            if (func_0209bc54(x, y)->func_0209c054() == 9) cnt++;
+            if (getCell(x, y)->getType() == 9) cnt++;
         }
     }
     s32 r = func_02063b8c(cnt);
     s32 k = 0;
     for (y = 1; y < 5; y++) {
         for (x = 1; x < 5; x++) {
-            if (func_0209bc54(x, y)->func_0209c054() == 9) {
+            if (getCell(x, y)->getType() == 9) {
                 if (r == k) {
-                    func_0209bc54(x, y)->func_0209c040(val);
+                    getCell(x, y)->setType(val);
                     return TRUE;
                 }
                 k++;
@@ -98,13 +98,13 @@ BOOL Unk_0209b5d4::func_0209bbac(s32 val)
     return FALSE;
 }
 
-BOOL Unk_0209b5d4::func_0209ba90(s32 a, s32 b)
+BOOL TownAcreGrid::placeNextTo(s32 a, s32 b)
 {
     s32 found = 0;
     u32 x, y;
     for (y = 1; y < 5; y++) {
         for (x = 1; x < 5; x++) {
-            if (a == func_0209bc54(x, y)->func_0209c054()) {
+            if (a == getCell(x, y)->getType()) {
                 found = 1;
                 break;
             }
@@ -116,16 +116,16 @@ BOOL Unk_0209b5d4::func_0209ba90(s32 a, s32 b)
         s32 cnt = 0;
         u32 i;
         for (i = 0; i < 4; i++) {
-            if (func_0209bc54(x + dirs[i].x, y + dirs[i].y)->func_0209c054() == 9) cnt++;
+            if (getCell(x + dirs[i].x, y + dirs[i].y)->getType() == 9) cnt++;
         }
         if (cnt != 0) {
             s32 r = func_02063b8c(cnt);
             s32 k = 0;
             for (i = 0; i < 4; i++) {
                 Unk_0209ba90_Dir *d = &dirs[i];
-                if (func_0209bc54(x + dirs[i].x, y + d->y)->func_0209c054() == 9) {
+                if (getCell(x + dirs[i].x, y + d->y)->getType() == 9) {
                     if (r == k) {
-                        func_0209bc54(x + d->x, y + d->y)->func_0209c040(b);
+                        getCell(x + d->x, y + d->y)->setType(b);
                         return TRUE;
                     }
                     k++;
@@ -136,27 +136,27 @@ BOOL Unk_0209b5d4::func_0209ba90(s32 a, s32 b)
     return FALSE;
 }
 
-BOOL Unk_0209b5d4::func_0209b9ac(u32 mode)
+BOOL TownAcreGrid::placeFacilities(u32 mode)
 {
-    if (!func_0209bbac(0xe)) return FALSE;
-    if (!func_0209bbac(0xd)) return FALSE;
-    if (!func_0209bbac(0xc)) return FALSE;
-    if (mode == 1) return func_0209ba90(0xd, 0xb);
-    if (mode == 2) return func_0209ba90(0xe, 0xb);
-    if (mode == 3) return func_0209ba90(0xa, 0xb);
-    if (mode == 4) return func_0209ba90(0xc, 0xb);
+    if (!placeOnRandomGrass(0xe)) return FALSE;
+    if (!placeOnRandomGrass(0xd)) return FALSE;
+    if (!placeOnRandomGrass(0xc)) return FALSE;
+    if (mode == 1) return placeNextTo(0xd, 0xb);
+    if (mode == 2) return placeNextTo(0xe, 0xb);
+    if (mode == 3) return placeNextTo(0xa, 0xb);
+    if (mode == 4) return placeNextTo(0xc, 0xb);
     s32 cnt = 0;
     u32 x;
     for (x = 1; x < 5; x++) {
-        if (func_0209bc54(x, 3)->func_0209c054() == 9) cnt++;
+        if (getCell(x, 3)->getType() == 9) cnt++;
     }
     if (cnt != 0) {
         s32 r = func_02063b8c(cnt);
         s32 k = 0;
         for (x = 1; x < 5; x++) {
-            if (func_0209bc54(x, 3)->func_0209c054() == 9) {
+            if (getCell(x, 3)->getType() == 9) {
                 if (r == k) {
-                    func_0209bc54(x, 3)->func_0209c040(0xb);
+                    getCell(x, 3)->setType(0xb);
                     return TRUE;
                 }
                 k++;
@@ -166,14 +166,14 @@ BOOL Unk_0209b5d4::func_0209b9ac(u32 mode)
     return FALSE;
 }
 
-BOOL Unk_0209b5d4::func_0209b830()
+BOOL TownAcreGrid::func_0209b830()
 {
     s32 k, v, r;
     s32 cnt = 0;
     u32 y, x;
     for (y = 1; y < 5; y++) {
         for (x = 1; x < 5; x++) {
-            v = func_0209bc54(x, y)->func_0209c054();
+            v = getCell(x, y)->getType();
             if (Unk_0209b830_Chk(v)) cnt++;
         }
     }
@@ -182,12 +182,12 @@ BOOL Unk_0209b5d4::func_0209b830()
         k = 0;
         for (y = 1; y < 5; y++) {
             for (x = 1; x < 5; x++) {
-                v = func_0209bc54(x, y)->func_0209c054();
+                v = getCell(x, y)->getType();
                 if (Unk_0209b830_Chk(v)) {
                     if (r == k) {
-                        s32 n = func_0209bc34(func_0209bc54(x, y)->func_0209c054());
-                        if (n != func_0209bc54(x, y)->func_0209c054()) {
-                            func_0209bc54(x, y)->func_0209c040(n);
+                        s32 n = func_0209bc34(getCell(x, y)->getType());
+                        if (n != getCell(x, y)->getType()) {
+                            getCell(x, y)->setType(n);
                             return TRUE;
                         }
                     }
@@ -199,46 +199,46 @@ BOOL Unk_0209b5d4::func_0209b830()
     return FALSE;
 }
 
-BOOL Unk_0209b5d4::func_0209b63c()
+BOOL TownAcreGrid::setBorder()
 {
-    func_0209bc54(0, 0)->func_0209c040(7);
-    func_0209bc54(1, 0)->func_0209c040(0);
-    func_0209bc54(2, 0)->func_0209c040(0);
-    func_0209bc54(3, 0)->func_0209c040(0);
-    func_0209bc54(4, 0)->func_0209c040(0);
-    func_0209bc54(5, 0)->func_0209c040(8);
-    func_0209bc54(0, 5)->func_0209c040(0x35);
-    func_0209bc54(1, 5)->func_0209c040(0x35);
-    func_0209bc54(2, 5)->func_0209c040(0x35);
-    func_0209bc54(3, 5)->func_0209c040(0x35);
-    func_0209bc54(4, 5)->func_0209c040(0x35);
-    func_0209bc54(5, 5)->func_0209c040(0x35);
-    func_0209bc54(0, 1)->func_0209c040(3);
-    func_0209bc54(0, 2)->func_0209c040(3);
-    func_0209bc54(0, 3)->func_0209c040(3);
-    func_0209bc54(0, 4)->func_0209c040(4);
-    func_0209bc54(5, 1)->func_0209c040(5);
-    func_0209bc54(5, 2)->func_0209c040(5);
-    func_0209bc54(5, 3)->func_0209c040(5);
-    func_0209bc54(5, 4)->func_0209c040(6);
+    getCell(0, 0)->setType(7);
+    getCell(1, 0)->setType(0);
+    getCell(2, 0)->setType(0);
+    getCell(3, 0)->setType(0);
+    getCell(4, 0)->setType(0);
+    getCell(5, 0)->setType(8);
+    getCell(0, 5)->setType(0x35);
+    getCell(1, 5)->setType(0x35);
+    getCell(2, 5)->setType(0x35);
+    getCell(3, 5)->setType(0x35);
+    getCell(4, 5)->setType(0x35);
+    getCell(5, 5)->setType(0x35);
+    getCell(0, 1)->setType(3);
+    getCell(0, 2)->setType(3);
+    getCell(0, 3)->setType(3);
+    getCell(0, 4)->setType(4);
+    getCell(5, 1)->setType(5);
+    getCell(5, 2)->setType(5);
+    getCell(5, 3)->setType(5);
+    getCell(5, 4)->setType(6);
     u32 i;
     for (i = 1; i < 5; i++) {
-        if (func_0209bc54(i, 1)->func_0209c054() == 0x14) {
-            func_0209bc54(i, 0)->func_0209c040(2);
+        if (getCell(i, 1)->getType() == 0x14) {
+            getCell(i, 0)->setType(2);
         }
     }
     s32 cnt = 0;
     u32 j;
     for (j = 2; j <= 3; j++) {
-        if (func_02037260(func_0209bc54(j, 1)->func_0209c054()) == 0) cnt++;
+        if (func_02037260(getCell(j, 1)->getType()) == 0) cnt++;
     }
     s32 r = func_02063b8c(cnt);
     s32 k = 0;
     for (j = 2; j <= 3; j++) {
-        if (func_02037260(func_0209bc54(j, 1)->func_0209c054()) == 0) {
+        if (func_02037260(getCell(j, 1)->getType()) == 0) {
             if (k == r) {
-                func_0209bc54(j, 0)->func_0209c040(1);
-                func_0209bc54(j, 1)->func_0209c040(10);
+                getCell(j, 0)->setType(1);
+                getCell(j, 1)->setType(10);
                 return TRUE;
             }
             k++;

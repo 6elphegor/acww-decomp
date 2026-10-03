@@ -398,11 +398,11 @@ void func_020e8528(Mtx43 *m, s32 a, s32 b, s32 c);
 void func_020e8434(Mtx43 *m, s32 a);
 void func_0202f3a8(Vec3 *out, Vec3 *a, Vec3 *b, Vec3 *c);
 BOOL func_020307c4(s32 x, s32 z, s32 *a, s32 *b, s32 *c);
-void func_0204ee10(s32 *a, s32 *b, Vec3 *v);
+void FieldPos_ToUnit(s32 *a, s32 *b, Vec3 *v);
 s32 func_ov003_02218bc8(s32 a, s32 b);
 s32 func_ov003_02218b1c(s32 a);
 
-extern s32 data_021c5384;
+extern s32 gGfxMainOnTop;
 extern Unk_020b60dc_Cfg *data_021ef2f0;
 extern s32 data_020c8cbc;
 extern s32 data_020c8cb8;
@@ -422,7 +422,7 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
     Vec3 p0, p1, r, v;
 
     self->func_020b69c0(flag);
-    if (flag == 0 || data_021c5384 == 1) {
+    if (flag == 0 || gGfxMainOnTop == 1) {
         self->unk_20 = 0;
         self->unk_24 = 0;
         self->unk_1c = 0;
@@ -689,7 +689,7 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
                         if (tc == 10) {
                             self->unk_18 = 6;
                             s32 g1, g2;
-                            func_0204ee10(&g1, &g2, (Vec3 *)&self->unk_0c);
+                            FieldPos_ToUnit(&g1, &g2, (Vec3 *)&self->unk_0c);
                             self->unk_19 = func_ov003_02218b1c(func_ov003_02218bc8(g1, g2));
                         } else {
                             self->unk_18 = 5;

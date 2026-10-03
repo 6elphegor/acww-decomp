@@ -12,10 +12,10 @@ extern u16 gPad[];
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 
-void func_020020b8(s32 a);
-void func_020021a0(s32 a);
-void func_0200226c(u32 n, u32 a, u32 b, u32 c);
-void func_02002398(u32 a, u32 b);
+void Gfx2d_ShowLayer(s32 a);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
+void Gfx2d_SetLayerPriority(u32 a, u32 b);
 void Snd_PlaySe(u32 a);
 void func_02065e70(void *a, void *b);
 void func_0206ecf8(u32 a);
@@ -76,9 +76,9 @@ public:
     void enableObjWindow();
 };
 
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    void func_020b87d0();
+    void cancel();
 };
 
 struct Unk_ov002_022013ac_Rec;
@@ -140,9 +140,9 @@ public:
     u32 unk_00[0xf4 / 4];
 };
 
-class Unk_020e4608 {
+class BgVramTaskPair {
 public:
-    Unk_020e4608();
+    BgVramTaskPair();
     u32 unk_00[0x38 / 4];
 };
 
@@ -456,7 +456,7 @@ public:
     /* 0x29d */ u8 unk_29d;
     /* 0x29e */ u8 unk_29e;
     /* 0x29f */ u8 unk_29f;
-    /* 0x2a0 */ Unk_020e4608 unk_2a0[1];
+    /* 0x2a0 */ BgVramTaskPair unk_2a0[1];
     /* 0x2d8 */ Unk_ov094_02294a50 unk_2d8;
     /* 0xd38 */ Unk_ov094_02294bd4 unk_d38;
     /* 0xd60 */ Unk_ov094_02292d6c unk_d60;
@@ -571,7 +571,7 @@ void Unk_ov108_02296b58::func_ov108_02296588() {
     func_ov094_02293d2c(&unk_d38);
     func_ov108_0229567c();
     func_ov002_022008e0(8, 0, 0, 0x30);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(6);
     func_ov002_02200840(6, 0, -16);
     func_ov002_02200a50(2);
     func_ov108_02294d8c(1);
@@ -600,7 +600,7 @@ void Unk_ov108_02296b58::func_ov108_022964ec() {
 
 void Unk_ov108_02296b58::func_ov108_022964a0() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
+        Gfx2d_ResetLayer(6);
         func_ov108_02294d7c(2);
         func_ov108_02294d7c(1);
         func_ov002_02200a60(5);
@@ -657,8 +657,8 @@ void Unk_ov108_02296b58::func_ov108_02296344() {
 }
 
 void Unk_ov108_02296b58::func_ov108_02296324() {
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
 void Unk_ov108_02296b58::func_ov108_02296310() {
@@ -1048,7 +1048,7 @@ void Unk_ov108_02296b58::func_ov108_02295850() {
 }
 
 void Unk_ov108_02296b58::func_ov108_02295840() {
-    ((Unk_020e45f8 *)&unk_2a0)->func_020b87d0();
+    ((BgVramTask *)&unk_2a0)->cancel();
 }
 
 BOOL Unk_ov108_02296b58::func_ov108_02295830(u32 b) {

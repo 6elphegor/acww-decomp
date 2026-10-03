@@ -104,7 +104,7 @@ void func_02063388(Unk_0202368c_Obj *o);
 void TalkRequest_EndTalkWith(void *p);
 void func_020947c0(u16 *out, s32 v);
 s32 func_02094348(u16 *p);
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 s32 func_02098eb0(u16 *p);
 s32 func_02098ffc();
 void func_02099064(s32 v);
@@ -122,7 +122,7 @@ s32 func_0202c908(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
 s32 SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
 void *_ZN12VillagerData13getVillagerIdEv();
 void _ZN12Unk_0208581013func_02085870EP16Unk_02085810_Rec(void *g, void *p);
-void func_02053848(void *p, s32 a, s32 b);
+void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 void _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 BOOL _ZN12Unk_02013b1013func_02014220Ev(void *self);
 void _ZN12Unk_02013b1013func_020141b4Essh(void *self, u32 a, u32 b, u32 c);
@@ -249,12 +249,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -373,7 +373,7 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -524,7 +524,7 @@ BOOL Unk_ov081_0227217c::vfunc_00() {
         l.z = 0;
         l.w = 0;
         l.a = 0xfff1;
-        func_0209d498(&l.z);
+        Clock_GetDateTime(&l.z);
         u32 b4 = ((u8 *)&l.w)[0];
         u32 b3 = ((u8 *)&l.z)[3];
         u32 t = func_0204f234(b4, func_0204f0f4(b3));
@@ -543,7 +543,7 @@ BOOL Unk_ov081_0227217c::vfunc_00() {
         }
     }
     _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
-    func_02053848(&unk_ec, 0xc, 0xe);
+    ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
     unk_4cc.unk_1c |= 2;
     return TRUE;
 }
@@ -715,7 +715,7 @@ void Unk_ov081_022720ec::vfunc_78(Unk_ov081_0227186c_Out *out) {
     out->a = (u32)"sp_npc_turtle1";
     l.o.w[0] = 0;
     l.o.w[1] = 0;
-    func_0209d498(&l.o);
+    Clock_GetDateTime(&l.o);
     if (unk_c4 == -1) {
         l.h[2] = 0x37e0;
         unk_c4 = func_02098eb0(&l.h[2]);

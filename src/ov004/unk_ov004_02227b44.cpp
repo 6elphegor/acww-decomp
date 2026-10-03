@@ -19,7 +19,7 @@
 //    (func_ov004_02224ce4 / func_ov004_02224d5c), so LightLevel and Cf4 have no destructor here.
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
-//  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (Unk_020dbd54), unk_1a4, unk_248, unk_250.
+//  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
 // Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
 
 // Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
@@ -117,10 +117,10 @@ public:
     u8 pad_04[0x94];
 };
 
-class Unk_020dbd34 : public Unk_02055704 {
+class CachedModel : public Unk_02055704 {
 public:
-    Unk_020dbd34();
-    virtual ~Unk_020dbd34();
+    CachedModel();
+    virtual ~CachedModel();
     u32 unk_98;
 };
 
@@ -138,17 +138,17 @@ public:
     s32 hasPassedFrame(s32 a);
 };
 
-class Unk_020dbd54 : public Unk_020dbd34, public AnimFrameCtrl {
+class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:
-    Unk_020dbd54();
-    virtual ~Unk_020dbd54();
+    AnimModel();
+    virtual ~AnimModel();
     void *unk_b4;
 
-    s32 func_02054710();
-    s32 func_020547cc(void *q);
-    void func_020547e4();
-    BOOL func_02054800(void *x);
-    // declared in Unk_0205454c in src/main, but it is called on this object
+    s32 attachAnim();
+    s32 drawAnimated(void *q);
+    void stepAnim();
+    BOOL allocAnmObj(void *x);
+    // declared in BlendAnimModel in src/main, but it is called on this object
     void func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e);
 };
 
@@ -228,7 +228,7 @@ public:
     void func_ov004_02224f90(char *name);
     void func_ov004_02224fc8(char *a, char *b);
 
-    /* 0xec */ Unk_020dbd54 unk_ec;
+    /* 0xec */ AnimModel unk_ec;
     /* 0x1a4 */ Unk_ov004_02224ee4 unk_1a4;
     /* 0x248 */ Unk_ov004_02224d60 unk_248;
     /* 0x250 */ Unk_ov004_02224cf4 unk_250;
@@ -302,15 +302,15 @@ struct Unk_ov004_02227ccc_Obj {
 };
 
 extern "C" {
-extern void *data_021c620c;
+extern void *gBgHeap;
 extern u8 data_021ed0a0[];
 s32 func_ov004_02224d8c(void *, u32);
 void *Heap_Alloc(void *heap, u32 size);
 s32 _ZN12Unk_0206fe8013func_02070358EPt(void *p, u16 *v);
 s32 func_020639e8(char *buf, const char *fmt, ...);
-s32 _ZN12Unk_02056fd813func_02056fccEi(void *p, char *name);
-s32 _ZN12Unk_020dbd5413func_020547ccEPv(void *p, u32 a);
-s32 _ZN5Model13func_02055488Eii(void *p, void *fn, void *self);
+s32 _ZN12G3dResAccess13func_02056fccEi(void *p, char *name);
+s32 _ZN9AnimModel12drawAnimatedEPv(void *p, u32 a);
+s32 _ZN5Model15setInitCallbackEii(void *p, void *fn, void *self);
 void func_ov004_02227cbc(void *p);
 void func_ov004_02227ccc(Unk_ov004_02227ccc_Obj *o);
 const Unk_ov004_02227728_Rec *func_ov004_02227ce8(u32 i);
@@ -400,7 +400,7 @@ Unk_ov004_0224dbc0::~Unk_ov004_0224dbc0() {}
 BOOL Unk_ov004_0224dbc0::vfunc_00() {
     const Unk_ov004_02227728_Rec *r = func_ov004_02227ce8(F(s32, 0x08));
     func_ov004_02224fc8((char *)r->unk_08, (char *)r->unk_0c);
-    _ZN5Model13func_02055488Eii((u8 *)this + 0xec, (void *)func_ov004_02227cbc, this);
+    _ZN5Model15setInitCallbackEii((u8 *)this + 0xec, (void *)func_ov004_02227cbc, this);
     func_02227b7c();
     return TRUE;
 }
@@ -410,7 +410,7 @@ BOOL Unk_ov004_0224dbc0::onExecute() {
 }
 
 BOOL Unk_ov004_0224dbc0::onDraw() {
-    _ZN12Unk_020dbd5413func_020547ccEPv((u8 *)this + 0xec, 0);
+    _ZN9AnimModel12drawAnimatedEPv((u8 *)this + 0xec, 0);
     return TRUE;
 }
 
@@ -425,7 +425,7 @@ void Unk_ov004_0224dbc0::func_02227bfc(s32 c, void *o) {
 
 void Unk_ov004_0224dbc0::func_02227b7c() {
     const Unk_ov004_02227728_Rec *r = func_ov004_02227ce8(F(s32, 0x08));
-    unk_290 = (s8 *)Heap_Alloc(data_021c620c, r->unk_04);
+    unk_290 = (s8 *)Heap_Alloc(gBgHeap, r->unk_04);
     u32 z = 0;
     u32 i;
     for (i = 0; i < r->unk_04; i++) {
@@ -435,7 +435,7 @@ void Unk_ov004_0224dbc0::func_02227b7c() {
             f = 1;
         }
         func_020639e8(data_ov004_02250e20, "p%d_%d", i, f);
-        unk_290[i] = _ZN12Unk_02056fd813func_02056fccEi(F(void *, 0x148), data_ov004_02250e20);
+        unk_290[i] = _ZN12G3dResAccess13func_02056fccEi(F(void *, 0x148), data_ov004_02250e20);
     }
 }
 

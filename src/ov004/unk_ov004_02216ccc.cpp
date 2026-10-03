@@ -54,8 +54,8 @@ class Unk_ov004_0224c38c;
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
 #define VillagerClothModel_getItem _ZN18VillagerClothModel7getItemEv
 #define VillagerClothModel_change _ZN18VillagerClothModel6changeEP13VillagerActorPt
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define VillagerDataProfileView_getShirt _ZN23VillagerDataProfileView8getShirtEv
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 class Unk_ov004_02216ff4;
@@ -92,7 +92,7 @@ struct Unk_ov004_SceneEntry {
 extern "C" {
 extern Unk_ov004_0221745c_Dir data_ov004_02250658[4];
 extern Unk_ov004_02216ff4_Entry data_ov004_02250678[];
-extern Unk_ov004_022170e0_Global *data_020cbb18;
+extern Unk_ov004_022170e0_Global *gCommManager;
 extern u16 data_020c6cc8;
 extern const u8 data_ov004_02240090[4];
 extern const u8 data_ov004_02240094[5];
@@ -119,13 +119,13 @@ void *func_02015aac(void *);
 s32 Unk_020d77a4_getAngleTo(void *, void *);
 void func_020141b4(void *, u32, s32, u32);
 s32 func_02063b8c(u32);
-void func_0204ee10(s32 *, s32 *, void *);
-void func_0204ed8c(s32 *, s32, s32);
+void FieldPos_ToUnit(s32 *, s32 *, void *);
+void FieldPos_FromUnitCenter(s32 *, s32, s32);
 s32 func_02083eb4(void *, s32, s32);
 s32 func_02083ed4(void *, s32, s32);
 
-u32 func_02072e44(void *g);
-s32 func_02072e88(void *g, u32 v);
+u32 CommManager_isOnline(void *g);
+s32 CommManager_isSlotActive(void *g, u32 v);
 void *VillagerDataProfileView_getShirt(void *o);
 u16 *VillagerClothModel_getItem(void *o);
 s32 Item_IsFurniture(void *p);
@@ -416,8 +416,8 @@ BOOL Unk_ov004_0224c38c::vfunc_00() {
     } else {
         unk_89c.func_ov004_02217530(this, 3);
     }
-    u32 *g = (u32 *)data_020cbb18;
-    if (!func_02072e88(g, g[0x64 / 4])) {
+    u32 *g = (u32 *)gCommManager;
+    if (!CommManager_isSlotActive(g, g[0x64 / 4])) {
         if (vfunc_64()) {
             if (func_020785ec(func_0207e310(vfunc_64())) == 1) {
                 func_020785e8(func_0207e310(vfunc_64()), 0);
@@ -453,7 +453,7 @@ void Unk_ov004_0224c38c::vfunc_80() { unk_8d0 = 1; }
 
 BOOL Unk_ov004_0224c38c::updateAct() {
     unk_89c.func_ov004_0221757c(this);
-    if (func_02072e44(data_020cbb18)) {
+    if (CommManager_isOnline(gCommManager)) {
         if (func_02015e48(&unk_334, 0) != 6) {
             if (vfunc_64()) {
                 u16 *p = (u16 *)VillagerDataProfileView_getShirt(vfunc_64());
@@ -533,21 +533,21 @@ BOOL Unk_ov004_02216ff4::func_ov004_0221745c(s32 *o1, s32 *o2, Unk_ov004_0224c38
     x = 0;
     y = 0;
     u8 dir = (o->unk_8e >> 14) & 3;
-    func_0204ee10(&x, &y, (u8 *)o + 0x5c);
+    FieldPos_ToUnit(&x, &y, (u8 *)o + 0x5c);
     s32 px = x;
     s32 py = y;
     px += data_ov004_02250658[dir].dx;
     py += data_ov004_0225065c[dir].dx;
     if ((u32) * (volatile s32 *)&y < 0xe) {
         if (func_02083eb4(&o->unk_8b0, px, py) != 0) {
-            func_0204ed8c(v, px, py);
+            FieldPos_FromUnitCenter(v, px, py);
             *o1 = v[0];
             *o2 = v[2];
             return TRUE;
         }
     } else {
         if (func_02083ed4(&o->unk_8b0, px, py) != 0) {
-            func_0204ed8c(v, px, py);
+            FieldPos_FromUnitCenter(v, px, py);
             *o1 = v[0];
             *o2 = v[2];
             return TRUE;
@@ -672,7 +672,7 @@ BOOL Unk_ov004_02216ff4::func_ov004_02216ff8(Unk_ov004_0224c38c *o) {
         s32 la;
         void *w = o->unk_82c;
         s32 g;
-        if (func_0201b9e8(o, &a, &b) != 0 && ((la = a), la == (g = data_020cbb18->unk_64)) && la == b) {
+        if (func_0201b9e8(o, &a, &b) != 0 && ((la = a), la == (g = gCommManager->unk_64)) && la == b) {
             func_0201b9fc(o, 1, g, g);
             if (w != 0 && Villager_GetResidentStatus(w) != 3) {
                 o->unk_8d4 = 12;
@@ -684,7 +684,7 @@ BOOL Unk_ov004_02216ff4::func_ov004_02216ff8(Unk_ov004_0224c38c *o) {
             o->unk_89c.func_ov004_02217530(o, 1);
         } else {
             if (func_020a62a0() != 0 && b == 4) {
-                func_0201b9fc(o, 1, data_020cbb18->unk_64, 4);
+                func_0201b9fc(o, 1, gCommManager->unk_64, 4);
                 if (o->unk_89c.func_ov004_02217508(o) == 0) {
                     o->unk_89c.func_ov004_02217530(o, 0);
                 }
@@ -705,7 +705,7 @@ BOOL Unk_ov004_02216ff4::func_ov004_02216f84(Unk_ov004_0224c38c *o) {
         if (func_0201b9e8(o, &a, &b) != 0) {
             if (a == 4) {
                 if (func_020a62a0() != 0) {
-                    func_0201b9fc(o, 1, data_020cbb18->unk_64, 4);
+                    func_0201b9fc(o, 1, gCommManager->unk_64, 4);
                     if (o->unk_89c.func_ov004_02217508(o) == 0) {
                         o->unk_89c.func_ov004_02217530(o, 0);
                     }
@@ -728,13 +728,13 @@ void Unk_ov004_0224c38c::vfunc_4c(u32 idx, u32 v) {
     case 3:
         unk_558.unk_08 = v;
         if (v != 4) {
-            func_0201b9fc(this, 1, data_020cbb18->unk_64, v);
+            func_0201b9fc(this, 1, gCommManager->unk_64, v);
             unk_89c.func_ov004_02217530(this, 2);
         } else {
             if (func_0201ba88(this) == 0) {
                 return;
             }
-            s32 g = data_020cbb18->unk_64;
+            s32 g = gCommManager->unk_64;
             func_0201b9fc(this, 1, g, g);
             if (unk_82c != 0 && Villager_GetResidentStatus(unk_82c) != 3) {
                 unk_8d4 = 12;
@@ -760,12 +760,12 @@ void Unk_ov004_0224c38c::vfunc_4c(u32 idx, u32 v) {
         break;
     case 0:
         unk_558.unk_08 = v;
-        if (v != 4 && v != data_020cbb18->unk_64) {
+        if (v != 4 && v != gCommManager->unk_64) {
             func_0201b9fc(this, 1, v, v);
             unk_89c.func_ov004_02217530(this, 4);
         } else {
             if (func_0201ba88(this) != 0) {
-                s32 g = data_020cbb18->unk_64;
+                s32 g = gCommManager->unk_64;
                 func_0201b9fc(this, 1, g, g);
                 VillagerTalk_begin(&unk_680, this, unk_8d4);
                 func_02015ab0(&unk_680, Unk_020d77a4_getPlayerActor(this, 4));
@@ -777,12 +777,12 @@ void Unk_ov004_0224c38c::vfunc_4c(u32 idx, u32 v) {
     case 8:
         if (v == 4) {
             if (func_020a62a0() != 0) {
-                func_0201b9fc(this, 1, data_020cbb18->unk_64, 4);
+                func_0201b9fc(this, 1, gCommManager->unk_64, 4);
                 if (unk_89c.func_ov004_02217508(this) == 0) {
                     unk_89c.func_ov004_02217530(this, 0);
                 }
             } else {
-                func_0201b9fc(this, 1, 4, data_020cbb18->unk_64);
+                func_0201b9fc(this, 1, 4, gCommManager->unk_64);
                 unk_89c.func_ov004_02217530(this, 3);
             }
         }
@@ -804,7 +804,7 @@ void Unk_ov004_0224c38c::vfunc_4c(u32 idx, u32 v) {
                         break;
                     }
                 body:
-                    func_0201b9fc(this, 1, data_020cbb18->unk_64, 4);
+                    func_0201b9fc(this, 1, gCommManager->unk_64, 4);
                     if (unk_89c.func_ov004_02217508(this) == 0) {
                         unk_89c.func_ov004_02217530(this, 0);
                     }

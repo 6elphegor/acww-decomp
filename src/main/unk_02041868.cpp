@@ -7,7 +7,7 @@ struct Unk_02042104_Date {
 };
 
 struct Unk_02041880_Pair { u8 unk_00; u8 unk_01; u8 pad[2]; };
-struct Unk_020cbb18 { u8 unk_00[0x64]; u32 unk_64; };
+struct CommManager { u8 unk_00[0x64]; u32 unk_64; };
 struct Unk_02041938 { u8 unk_00[0x10e9]; u8 unk_10e9; u8 unk_10ea; };
 struct Unk_020419b4 {
     u8 pad00[0x64];
@@ -35,11 +35,11 @@ struct Unk_02041ac0_Glob {
 
 extern u32 data_021fcc2c[];
 
-extern Unk_020cbb18 *data_020cbb18;
-extern Unk_02041ac0_Glob data_021c3ea4;
+extern CommManager *gCommManager;
+extern Unk_02041ac0_Glob gTownUpdater;
 extern u32 gCurrentHeap;
 extern u8 data_ov003_02258ef8;
-extern volatile u32 data_021c40cc[];
+extern volatile u32 gTownEval[];
 extern u8 gSaveData[];
 extern u8 data_021ed20c[];
 
@@ -54,8 +54,8 @@ struct Unk_02041e00_Ent {
 };
 
 extern "C" {
-void func_02045df4();
-s32 _ZN12Unk_020cbb1813func_02072e88Ei(u32, u32);
+void Town_GetEnvironmentRank();
+s32 _ZN11CommManager12isSlotActiveEi(u32, u32);
 s32 func_020b5184();
 s32 func_020b5164();
 void func_ov003_0222675c();
@@ -66,28 +66,28 @@ s32 func_02041938(Unk_02041938 *p);
 void func_02041908();
 void func_020418d4(Unk_02041880_Pair *p);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-void func_0209d498(Unk_02042104_Date *d);
-void func_0209d124(Unk_02042104_Date *d, u32 n);
-void func_0209d164(Unk_02042104_Date *d, s32 n);
-u32 func_0209ceac(u32 a, u32 b, u32 c);
+void Clock_GetDateTime(Unk_02042104_Date *d);
+void DateTime_SubHours(Unk_02042104_Date *d, u32 n);
+void DateTime_SubDays(Unk_02042104_Date *d, s32 n);
+u32 Date_GetWeekday(u32 a, u32 b, u32 c);
 s32 func_02041d98(void *o, u8 *a, Unk_02042104_Date *d);
 void func_02041d40(void *o, u8 *base, Unk_02042104_Date *d);
 void func_02041c10(void *o, u8 *base, s32 cnt, Unk_02042104_Date *d, s32 flag);
 void func_02041cec(void *o, u8 *base, Unk_02042104_Date *d);
 s32 func_020978a4(void *p);
 s32 func_0203f14c();
-s32 func_0209d3a4(Unk_02042104_Date *a, Unk_02042104_Date *b);
-void func_0209d2c0(Unk_02042104_Date *a, s32 n);
-void func_0204c22c(void *a, u8 *b);
+s32 DateTime_DiffDays(Unk_02042104_Date *a, Unk_02042104_Date *b);
+void DateTime_AddDays(Unk_02042104_Date *a, s32 n);
+void TownState_PickNextWeekDate(void *a, u8 *b);
 void func_02041ee4(void *o, u8 *base, Unk_02042104_Date *d);
 void func_02041f50(void *o, u8 *base, Unk_02042104_Date *d);
-s32 func_0203f508(Unk_02041e00_Ent *z, Unk_02042104_Date *d);
+s32 EventSchedule_CollectDayAll(Unk_02041e00_Ent *z, Unk_02042104_Date *d);
 void func_02041e00(void *o, Unk_02041e00_Ent *z, Unk_02042104_Date *d);
 void func_02041b1c(u8 *arg);
 void OS_ExitThread();
 u32 DC_FlushAll();
 void Heap_SetThreadHeap(u32 a, u32 b);
-void func_0204674c(void *r, u8 *a, u8 *b, u32 c, u32 d, u32 e);
+void Town_AdvanceDays(void *r, u8 *a, u8 *b, u32 c, u32 d, u32 e);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 s32 func_020419b4(Unk_020419b4 *p);
 void func_02041a80(Unk_020419b4 *p, u8 *a, u8 *b, u32 c, u8 d);
@@ -116,7 +116,7 @@ extern "C" s32 func_02041d98(void *o, u8 *a, Unk_02042104_Date *d) {
         t.c5 = a[2];
         t.c4 = a[1];
         t.c3 = a[0];
-        r = func_0209d3a4(&t, d);
+        r = DateTime_DiffDays(&t, d);
         if (r > 0x1f) {
             r = 0x1f;
         } else if (r < 0) {
@@ -138,8 +138,8 @@ extern "C" void func_02041d40(void *o, u8 *base, Unk_02042104_Date *d) {
     a.c4 = p[1];
     a.c3 = p[0];
     u8 *q = base + 0x15e54;
-    while (func_0209d3a4(d, &a) < 0) {
-        func_0204c22c(q, p);
+    while (DateTime_DiffDays(d, &a) < 0) {
+        TownState_PickNextWeekDate(q, p);
         a.c5 = p[2];
         a.c4 = p[1];
         a.c3 = p[0];
@@ -153,7 +153,7 @@ extern "C" void func_02041cec(void *o, u8 *base, Unk_02042104_Date *d) {
     *((u32 *)&x + 1) = 0;
     MI_CpuCopy8(d, &x, 8);
     MI_CpuCopy8(&x, &y, 8);
-    if (func_0203f508(z, &y) > 0) {
+    if (EventSchedule_CollectDayAll(z, &y) > 0) {
         MI_CpuCopy8(&x, &w, 8);
         func_02041e00(o, z, &w);
     }
@@ -179,10 +179,10 @@ extern "C" void func_02041c10(void *o, u8 *base, s32 cnt, Unk_02042104_Date *d, 
         a.c5 = p[2];
         a.c4 = p[1];
         a.c3 = p[0];
-        if (func_0209d3a4(&b, &a) == 0) {
+        if (DateTime_DiffDays(&b, &a) == 0) {
             MI_CpuCopy8(&a, &c, 8);
             func_02041ee4(o, base, &c);
-            func_0204c22c(base + 0x15e54, p);
+            TownState_PickNextWeekDate(base + 0x15e54, p);
         }
         if (flag == 1) {
             MI_CpuCopy8(&b, &e, 8);
@@ -193,7 +193,7 @@ extern "C" void func_02041c10(void *o, u8 *base, s32 cnt, Unk_02042104_Date *d, 
         }
         cnt--;
         flag = (flag + 1) % 7;
-        func_0209d2c0(&b, 1);
+        DateTime_AddDays(&b, 1);
     }
 }
 
@@ -202,16 +202,16 @@ extern "C" void func_02041b68() {
     Unk_02042104_Date d;
     *(u32 *)&d = 0;
     *((u32 *)&d + 1) = 0;
-    func_0209d498(&d);
-    func_0209d124(&d, 6);
+    Clock_GetDateTime(&d);
+    DateTime_SubHours(&d, 6);
     u8 *p = data_021ed20c;
     s32 r = func_02041d98(data_021c3e70, p, &d);
     if (r != 0) {
         p[2] = d.c5;
         p[1] = d.c4;
         p[0] = d.c3;
-        func_0209d164(&d, r - 1);
-        u32 x = func_0209ceac(d.c5, d.c4, d.c3);
+        DateTime_SubDays(&d, r - 1);
+        u32 x = Date_GetWeekday(d.c5, d.c4, d.c3);
         func_02041d40(data_021c3e70, base, &d);
         func_02041c10(data_021c3e70, base, r, &d, x);
     } else if (base[0x15e76] == 0) {
@@ -223,8 +223,8 @@ extern "C" void func_02041b68() {
 
 extern "C" void func_02041b1c(u8 *arg) {
     DC_FlushAll();
-    Unk_020419b4 *g = data_021c3ea4.unk_20;
-    func_0204674c(&data_021c3ea4, arg, arg + 8, *(u32 *)(arg + 0x10), arg[0x14], 1);
+    Unk_020419b4 *g = gTownUpdater.unk_20;
+    Town_AdvanceDays(&gTownUpdater, arg, arg + 8, *(u32 *)(arg + 0x10), arg[0x14], 1);
     Heap_SetThreadHeap(g->unk_c0, g->unk_c4);
     g->unk_10e9 = 1;
     OS_ExitThread();
@@ -239,9 +239,9 @@ extern "C" void func_02041aec(Unk_020419b4 *p) {
 }
 
 extern "C" void func_02041ac0() {
-    data_021c3ea4.unk_20 = (Unk_020419b4 *)Heap_Alloc(gCurrentHeap, 0x10ec);
-    if (data_021c3ea4.unk_20 != 0) {
-        func_02041aec(data_021c3ea4.unk_20);
+    gTownUpdater.unk_20 = (Unk_020419b4 *)Heap_Alloc(gCurrentHeap, 0x10ec);
+    if (gTownUpdater.unk_20 != 0) {
+        func_02041aec(gTownUpdater.unk_20);
     }
 }
 
@@ -254,8 +254,8 @@ extern "C" void func_02041a80(Unk_020419b4 *p, u8 *a, u8 *b, u32 c, u8 d) {
 }
 
 extern "C" void func_02041a54(u8 *a, u8 *b, u32 c, u8 d) {
-    if (data_021c3ea4.unk_20 != 0) {
-        func_02041a80(data_021c3ea4.unk_20, a, b, c, d);
+    if (gTownUpdater.unk_20 != 0) {
+        func_02041a80(gTownUpdater.unk_20, a, b, c, d);
     }
 }
 
@@ -278,8 +278,8 @@ extern "C" s32 func_020419b4(Unk_020419b4 *p) {
 
 extern "C" s32 func_0204198c() {
     s32 r = 0;
-    if (data_021c3ea4.unk_20 != 0) {
-        r = func_020419b4(data_021c3ea4.unk_20);
+    if (gTownUpdater.unk_20 != 0) {
+        r = func_020419b4(gTownUpdater.unk_20);
         if (r == 0) {
             func_02041908();
         }
@@ -289,7 +289,7 @@ extern "C" s32 func_0204198c() {
 
 extern "C" BOOL func_02041960() {
     BOOL r = FALSE;
-    Unk_02041938 *p = (Unk_02041938 *)data_021c3ea4.unk_20;
+    Unk_02041938 *p = (Unk_02041938 *)gTownUpdater.unk_20;
     if (p != 0) {
         if (p->unk_10e9 != 0) {
             func_02041908();
@@ -306,21 +306,21 @@ extern "C" s32 func_02041938(Unk_02041938 *p) {
 }
 
 extern "C" void func_02041908() {
-    Unk_02041938 *p = (Unk_02041938 *)data_021c3ea4.unk_20;
+    Unk_02041938 *p = (Unk_02041938 *)gTownUpdater.unk_20;
     if (p != 0) {
         func_02041938(p);
         Heap_Free(gCurrentHeap, (u32)p);
-        data_021c3ea4.unk_20 = 0;
+        gTownUpdater.unk_20 = 0;
     }
 }
 
 extern "C" void func_020418d4(Unk_02041880_Pair *p) {
-    if (((s32)(data_021c40cc[0x30 / 4] << 24) >> 31) != 0) {
+    if (((s32)(gTownEval[0x30 / 4] << 24) >> 31) != 0) {
         p->unk_00 = 1;
     } else {
         p->unk_00 = 0;
     }
-    if (((s32)(data_021c40cc[0x30 / 4] << 25) >> 31) != 0) {
+    if (((s32)(gTownEval[0x30 / 4] << 25) >> 31) != 0) {
         p->unk_01 = 1;
     } else {
         p->unk_01 = 0;
@@ -328,7 +328,7 @@ extern "C" void func_020418d4(Unk_02041880_Pair *p) {
 }
 
 extern "C" void func_02041880(Unk_02041880_Pair *p) {
-    if (_ZN12Unk_020cbb1813func_02072e88Ei((u32)data_020cbb18, data_020cbb18->unk_64) != 0) return;
+    if (_ZN11CommManager12isSlotActiveEi((u32)gCommManager, gCommManager->unk_64) != 0) return;
     if (func_020b5184() == 0) {
         if (func_020b5164() == 0) return;
     }
@@ -339,7 +339,7 @@ extern "C" void func_02041880(Unk_02041880_Pair *p) {
 }
 
 extern "C" void func_02041868() {
-    func_02045df4();
+    Town_GetEnvironmentRank();
     func_020418d4(&data_021c3e74);
 }
 

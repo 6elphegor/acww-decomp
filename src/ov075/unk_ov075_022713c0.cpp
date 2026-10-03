@@ -113,7 +113,7 @@ s32 Unk_020d77a4_getAngleTo(void *self, void *a);
 void func_020e7518(void *p);
 s32 Random_Next(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_0204edd8(void *out, void *in);
+void FieldPos_SnapToUnitCenter(void *out, void *in);
 s32 func_02077f40(void *v, s32 a);
 void func_020135c4(void *p);
 void *func_020850e0();
@@ -244,12 +244,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -358,7 +358,7 @@ public:
     void setTalkRequest(Unk_0201bc1c *p);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -705,7 +705,7 @@ BOOL Unk_ov075_022723bc::func_ov075_02271c04(s32 *px, s32 *pz) {
         v.x = t + unk_5c;
         t = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
         v.z = t + unk_64;
-        func_0204edd8(&v, &v);
+        FieldPos_SnapToUnitCenter(&v, &v);
         if (func_02077f40(&v, r) != 0) {
             *px = v.x;
             *pz = v.z;

@@ -114,8 +114,8 @@ struct Unk_02051a50_Bits {
 };
 
 extern u8 data_020e416c;
-extern void *data_020cbb18;
-extern void *data_021c47c4;
+extern void *gCommManager;
+extern void *gSceneBlockMap;
 extern u8 data_021e58a8[];
 extern const Unk_0205242c_Ent data_020ca650;
 extern const Unk_0205242c_Ent data_020ca63c;
@@ -129,29 +129,29 @@ inline BOOL Range(u16 *p, u32 lo, u32 hi) {
 }
 
 extern "C" {
-BOOL _ZN18Unk_ov004_0224882c19func_ov004_0220711cEPiS0_ii(s32 a, s32 *x, s32 *y, s32 z, s32 w);
-s32 func_ov004_02208750(s32 a);
+BOOL _ZN8FtrActor11findOwnTileEPiS0_ii(s32 a, s32 *x, s32 *y, s32 z, s32 w);
+s32 FtrActor_GetLayer(s32 a);
 void *func_ov004_02235718();
 Unk_02051d24_Obj *_ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(void *self, s32 a, s32 b, s32 c);
-void func_ov004_022087a4(void *p);
-s32 _ZN18Unk_ov004_0224882c19func_ov004_02206f8cEv(void *p);
-s32 func_ov004_02206f7c(void *p);
-s32 _ZN18Unk_ov004_02205c4419func_ov004_02205c7cEv(void *p);
+void FtrActor_GetFtrIndex(void *p);
+s32 _ZN8FtrActor9isPreviewEv(void *p);
+s32 FtrActor_PredIsStereo(void *p);
+s32 _ZN9FtrSwitch4isOnEv(void *p);
 s32 func_ov004_02234c2c(void (*f)());
-void _ZN18Unk_ov004_0224882c19func_ov004_02209c44Ev();
+void _ZN8FtrActor8isGyroidEv();
 void *func_ov004_02234bb4(void (*f)(), s32 a);
 
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
-s32 _ZN12Unk_020cbb1813func_020729ccEj(void *p, s32 v);
-void _ZN12Unk_020cbb1813func_020728d4Ev(void *p);
-void _ZN12Unk_020cbb1813func_020728a4EPhj(void *p, void *d, s32 n);
-void _ZN12Unk_020cbb1813func_02072824Ejj(void *p, s32 a, s32 b);
+s32 _ZN11CommManager8isOnlineEv(void *p);
+s32 _ZN11CommManager7isMyAidEj(void *p, s32 v);
+void _ZN11CommManager11beginRecordEv(void *p);
+void _ZN11CommManager11writeRecordEPhj(void *p, void *d, s32 n);
+void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
 u32 func_020b50e8();
 s32 func_020a62a0();
-void *func_0204ebd8(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void *func_0204cbc0(s32 a);
-s32 func_0204eb30(void *p, void *b, s32 c, s32 d, s32 e);
-void func_0204ee10(s32 *a, s32 *b, s32 c);
+void *BlockMap_GetItemPtr(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+void *BlockMap_GetForArea(s32 a);
+s32 BlockMap_SetItemAtUnit(void *p, void *b, s32 c, s32 d, s32 e);
+void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 s32 Item_GetFurnitureIndex(void *p);
 s32 Item_GetFurnitureDirection(void *p);
 s32 FtrInfo_GetUnk05(s32 a);
@@ -494,11 +494,11 @@ extern "C" s32 func_02052318(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bo
             return o->vfunc_70(e, i);
         }
     }
-    void *t = func_0204cbc0(a);
+    void *t = BlockMap_GetForArea(a);
     if (t) {
         s32 hb = b >> 4;
         s32 hc = c >> 4;
-        u16 *p = (u16 *)func_0204ebd8(t, hb, hc, b - (hb << 4), c - (hc << 4), 0);
+        u16 *p = (u16 *)BlockMap_GetItemPtr(t, hb, hc, b - (hb << 4), c - (hc << 4), 0);
         if (p && Range(p, 0x45dc, 0x47d7)) {
             if (f) {
                 func_02052504(b, c, (u8)(i & 0xf), a);
@@ -526,10 +526,10 @@ extern "C" s32 func_020521fc(u32 *pp) {
         func_02052318(p->a, p->d, p->e, (u8)p->b, p->f, p->c, p->o, p->p, p->g);
         u32 w = *pp;
         w &= 0xdfffffff;
-        void *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(g);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g, &w, 4);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x18, 4);
+        void *g = gCommManager;
+        _ZN11CommManager11beginRecordEv(g);
+        _ZN11CommManager11writeRecordEPhj(g, &w, 4);
+        _ZN11CommManager9endRecordEjj(g, 0x18, 4);
     } else {
         func_02052318(p->a, p->d, p->e, (u8)p->b, p->f, p->c, p->o, p->p, p->g);
     }
@@ -543,10 +543,10 @@ extern "C" s32 func_0205218c(Unk_0205218c_B *p) {
         Unk_0205218c_B t;
         t = *p;
         t.c = 0;
-        void *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(g);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g, &t, 1);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x19, 4);
+        void *g = gCommManager;
+        _ZN11CommManager11beginRecordEv(g);
+        _ZN11CommManager11writeRecordEPhj(g, &t, 1);
+        _ZN11CommManager9endRecordEjj(g, 0x19, 4);
     } else {
         _ZN9HouseData13func_02060244Ejj(data_021e58a8, a, b);
     }
@@ -576,9 +576,9 @@ extern "C" void func_02051ff8(u8 a, s32 b, s32 c, u8 d, u8 e) {
         {
             Unk_02051d24_Obj *o = _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(func_ov004_02235718(), b, c, d);
             if (o) {
-                if (_ZN18Unk_ov004_02205c4419func_ov004_02205c7cEv((u8 *)o + 0x73c) == 0) {
-                    if ((u32)func_ov004_02234c2c(_ZN18Unk_ov004_0224882c19func_ov004_02209c44Ev) >= 4) {
-                        void *r = func_ov004_02234bb4(_ZN18Unk_ov004_0224882c19func_ov004_02209c44Ev, 0);
+                if (_ZN9FtrSwitch4isOnEv((u8 *)o + 0x73c) == 0) {
+                    if ((u32)func_ov004_02234c2c(_ZN8FtrActor8isGyroidEv) >= 4) {
+                        void *r = func_ov004_02234bb4(_ZN8FtrActor8isGyroidEv, 0);
                         if (r) {
                             func_02051da4((s32)r, 0, 0xff, e);
                         }
@@ -604,13 +604,13 @@ extern "C" s32 func_02051f68(u8 *p, s32 q) {
     v.x = p[0] << 9;
     v.z = p[1] << 9;
     if (data_021c4ee4.func_020529e4(q, p[2], (Unk_02052ab4_Vec *)&v)) {
-        void *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(g);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x1f, q);
+        void *g = gCommManager;
+        _ZN11CommManager11beginRecordEv(g);
+        _ZN11CommManager9endRecordEjj(g, 0x1f, q);
     } else {
-        void *g = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(g);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x20, q);
+        void *g = gCommManager;
+        _ZN11CommManager11beginRecordEv(g);
+        _ZN11CommManager9endRecordEjj(g, 0x20, q);
     }
 }
 
@@ -628,7 +628,7 @@ extern "C" s32 func_02051e00(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) {
     u32 r5 = (g != 4) ? 1 : 0;
     Unk_02051d24_Obj *o = _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(func_ov004_02235718(), a, b, c);
     if (!o) return 0;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) && o && !_ZN18Unk_ov004_0224882c19func_ov004_02206f8cEv(o)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) && o && !_ZN8FtrActor9isPreviewEv(o)) {
         u32 t = o->vfunc_74(d);
         w = (w & ~0x3f) | (func_020b50e8() & 0x3f);
         c = c & 1;
@@ -645,11 +645,11 @@ extern "C" s32 func_02051e00(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) {
         w = (w & 0x7fffffff) | ((f & 1) << 31);
         r5 = r5 & 1;
         w = (w & 0xdfffffff) | (r5 << 29);
-        w = (w & 0xbfffffff) | ((func_ov004_02206f7c(o) & 1) << 30);
-        void *g2 = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(g2);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(g2, &w, 4);
-        _ZN12Unk_020cbb1813func_02072824Ejj(g2, 0x18, g);
+        w = (w & 0xbfffffff) | ((FtrActor_PredIsStereo(o) & 1) << 30);
+        void *g2 = gCommManager;
+        _ZN11CommManager11beginRecordEv(g2);
+        _ZN11CommManager11writeRecordEPhj(g2, &w, 4);
+        _ZN11CommManager9endRecordEjj(g2, 0x18, g);
     }
     return 1;
 }
@@ -657,8 +657,8 @@ extern "C" s32 func_02051e00(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) {
 extern "C" s32 func_02051da4(s32 a, s32 b, u8 c, u8 d) {
     s32 x, y;
     if (IsOne(data_020e416c)) {
-        if (_ZN18Unk_ov004_0224882c19func_ov004_0220711cEPiS0_ii(a, &x, &y, 0, 0)) {
-            return func_02051d24(x, y, func_ov004_02208750(a), b, c, d, 1);
+        if (_ZN8FtrActor11findOwnTileEPiS0_ii(a, &x, &y, 0, 0)) {
+            return func_02051d24(x, y, FtrActor_GetLayer(a), b, c, d, 1);
         }
     }
     return 0;
@@ -678,17 +678,17 @@ extern "C" s32 func_02051d24(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
 extern "C" s32 func_02051cc8(s32 a, s32 b, u8 c, u8 d) {
     s32 x, y;
     if (IsOne(data_020e416c)) {
-        if (_ZN18Unk_ov004_0224882c19func_ov004_0220711cEPiS0_ii(a, &x, &y, 0, 0)) {
-            return func_02051c10(x, y, func_ov004_02208750(a), b, c, d, 1);
+        if (_ZN8FtrActor11findOwnTileEPiS0_ii(a, &x, &y, 0, 0)) {
+            return func_02051c10(x, y, FtrActor_GetLayer(a), b, c, d, 1);
         }
     }
     return 0;
 }
 
 extern "C" s32 func_02051c10(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
-    void *s = data_020cbb18;
+    void *s = gCommManager;
     u8 *p;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(s) == 0 || _ZN12Unk_020cbb1813func_020729ccEj(s, 0) != 0) {
+    if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0) {
         return func_02051d24(a, b, c, d, e, f, g);
     }
     if (!(data_020e416c == 1 ? TRUE : FALSE)) {
@@ -718,9 +718,9 @@ extern "C" void func_02051a50(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u
     u32 idx;
     loc[0] = *h;
     if ((data_020e416c == 1 ? TRUE : FALSE) && a == func_020b50e8()) {
-        o = data_021c47c4;
+        o = gSceneBlockMap;
     } else {
-        o = func_0204cbc0(a);
+        o = BlockMap_GetForArea(a);
     }
     if (o == NULL) {
         return;
@@ -738,7 +738,7 @@ extern "C" void func_02051a50(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u
             src = &loc[2];
         }
         loc[1] = *src;
-        if (func_0204eb30(o, &loc[1], x, y, d) == 0) {
+        if (BlockMap_SetItemAtUnit(o, &loc[1], x, y, d) == 0) {
             func_020524a4(&pk);
             return;
         }
@@ -747,7 +747,7 @@ extern "C" void func_02051a50(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u
             func_02052504(x, y, g, a);
         }
     }
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) != 0 && i != 0) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) != 0 && i != 0) {
         void *t;
         bits.x = b;
         bits.y = c;
@@ -756,10 +756,10 @@ extern "C" void func_02051a50(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u
         bits.e = e;
         bits.f = f;
         bits.item = loc[0];
-        t = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(t);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(t, &bits, 4);
-        _ZN12Unk_020cbb1813func_02072824Ejj(t, 0x1c, 4);
+        t = gCommManager;
+        _ZN11CommManager11beginRecordEv(t);
+        _ZN11CommManager11writeRecordEPhj(t, &bits, 4);
+        _ZN11CommManager9endRecordEjj(t, 0x1c, 4);
     }
     func_020524a4(&pk);
 }
@@ -774,9 +774,9 @@ extern "C" void func_02051844(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, 
     u32 bits;
     loc[0] = *f;
     if ((data_020e416c == 1 ? TRUE : FALSE) && a == func_020b50e8()) {
-        o = data_021c47c4;
+        o = gSceneBlockMap;
     } else {
-        o = func_0204cbc0(a);
+        o = BlockMap_GetForArea(a);
     }
     if (o == NULL) {
         return;
@@ -790,13 +790,13 @@ extern "C" void func_02051844(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, 
         x = b + ((s16 *)func_0205242c(&pk, idx))[0];
         y = c + ((s16 *)func_0205242c(&pk, idx))[1];
         loc[1] = 0xfff1;
-        if (func_0204eb30(o, &loc[1], x, y, d) == 0 ? TRUE : FALSE) {
+        if (BlockMap_SetItemAtUnit(o, &loc[1], x, y, d) == 0 ? TRUE : FALSE) {
             func_020524a4(&pk);
             return;
         }
         if (g != 0 && d == 0) {
             loc[2] = 0xfff1;
-            if (func_0204eb30(o, &loc[2], x, y, 1) == 0 ? TRUE : FALSE) {
+            if (BlockMap_SetItemAtUnit(o, &loc[2], x, y, 1) == 0 ? TRUE : FALSE) {
                 func_020524a4(&pk);
                 return;
             }
@@ -809,7 +809,7 @@ extern "C" void func_02051844(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, 
             func_020524dc(x, y, a);
         }
     }
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) != 0 && h != 0) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) != 0 && h != 0) {
         void *t;
         bits = (bits & ~1) | (d & 1);
         bits = (bits & ~0x1e) | ((b & 0xf) << 1);
@@ -817,10 +817,10 @@ extern "C" void func_02051844(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, 
         bits = (bits & 0xfffffdff) | ((g & 1) << 9);
         bits = (bits & 0xfffffbff) | ((e & 1) << 10);
         bits = (bits & 0xf80007ff) | ((loc[0] & 0xffff) << 11);
-        t = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(t);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(t, &bits, 4);
-        _ZN12Unk_020cbb1813func_02072824Ejj(t, 0x1b, 4);
+        t = gCommManager;
+        _ZN11CommManager11beginRecordEv(t);
+        _ZN11CommManager11writeRecordEPhj(t, &bits, 4);
+        _ZN11CommManager9endRecordEjj(t, 0x1b, 4);
     }
     func_020524a4(&pk);
 }
@@ -828,25 +828,25 @@ extern "C" void func_02051844(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, 
 extern "C" void func_02051784(s32 a, s32 b, s32 c, u16 *d, u8 f) {
     void *o;
     if ((data_020e416c == 1 ? TRUE : FALSE) && a == func_020b50e8()) {
-        o = data_021c47c4;
+        o = gSceneBlockMap;
     } else {
-        o = func_0204cbc0(a);
+        o = BlockMap_GetForArea(a);
     }
-    if (o != NULL && func_0204eb30(o, d, b, c, 1) != 0 && f != 0 && _ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) != 0) {
+    if (o != NULL && BlockMap_SetItemAtUnit(o, d, b, c, 1) != 0 && f != 0 && _ZN11CommManager8isOnlineEv(gCommManager) != 0) {
         u32 bits;
         void *t;
         bits = (bits & ~0xf) | (b & 0xf);
         bits = (bits & ~0xf0) | ((c & 0xf) << 4);
         bits = (bits & 0xff0000ff) | ((*d & 0xffff) << 8);
-        t = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(t);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(t, &bits, 4);
-        _ZN12Unk_020cbb1813func_02072824Ejj(t, 0x1a, 4);
+        t = gCommManager;
+        _ZN11CommManager11beginRecordEv(t);
+        _ZN11CommManager11writeRecordEPhj(t, &bits, 4);
+        _ZN11CommManager9endRecordEjj(t, 0x1a, 4);
     }
 }
 
 extern "C" void func_0205170c(s32 a, s32 b, s32 c) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) != 0) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) != 0) {
         volatile u8 bits;
         BOOL f;
         void *t;
@@ -857,10 +857,10 @@ extern "C" void func_0205170c(s32 a, s32 b, s32 c) {
             f = FALSE;
         }
         bits = (bits & ~0x80) | ((f & 1) << 7);
-        t = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(t);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(t, (void *)&bits, 1);
-        _ZN12Unk_020cbb1813func_02072824Ejj(t, 0x19, c);
+        t = gCommManager;
+        _ZN11CommManager11beginRecordEv(t);
+        _ZN11CommManager11writeRecordEPhj(t, (void *)&bits, 1);
+        _ZN11CommManager9endRecordEjj(t, 0x19, c);
     }
 }
 
@@ -870,8 +870,8 @@ extern "C" void func_020516e4(s32 a, s32 b) {
 }
 
 extern "C" void func_020516a4(s32 a, s32 b) {
-    void *s = data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(s) == 0 || _ZN12Unk_020cbb1813func_020729ccEj(s, 0) != 0) {
+    void *s = gCommManager;
+    if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0) {
         func_020516e4(a, b);
     } else {
         func_0205170c(a, b, 0);
@@ -879,7 +879,7 @@ extern "C" void func_020516a4(s32 a, s32 b) {
 }
 
 extern "C" void func_020515e0(s32 a, s32 b, s32 c, s32 d) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0 || func_020a62a0() != 0) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 || func_020a62a0() != 0) {
         ((void (*)(s32, s32, s32, s32, s32))func_02051ff8)(a, b, c, d, 1);
     } else {
         volatile u16 bits;
@@ -892,16 +892,16 @@ extern "C" void func_020515e0(s32 a, s32 b, s32 c, s32 d) {
         bits = (bits & ~0x40) | ((d & 1) << 6);
         bits = (bits & ~0x780) | (((u16)b & 0xf) << 7);
         bits = (bits & ~0x7800) | (((u16)c & 0xf) << 11);
-        t = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(t);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(t, (void *)&bits, 2);
-        _ZN12Unk_020cbb1813func_02072824Ejj(t, 0x1d, 6);
+        t = gCommManager;
+        _ZN11CommManager11beginRecordEv(t);
+        _ZN11CommManager11writeRecordEPhj(t, (void *)&bits, 2);
+        _ZN11CommManager9endRecordEjj(t, 0x1d, 6);
     }
 }
 
 extern "C" void func_020515b8(s32 a, s32 b, s32 c) {
     s32 x, y;
-    func_0204ee10(&x, &y, b);
+    FieldPos_ToUnit(&x, &y, b);
     func_020515e0(a, x, y, c);
 }
 
@@ -909,8 +909,8 @@ extern "C" void func_02051524(s32 *p) {
     void *s;
     u8 buf[3];
     data_021c4e38 = 0;
-    s = data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(s) == 0 || _ZN12Unk_020cbb1813func_020729ccEj(s, 0) != 0) {
+    s = gCommManager;
+    if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0) {
         if (data_021c4ee4.func_020529e4(0, func_020b50e8(), (Unk_02052ab4_Vec *)p) != 0) {
             data_021c4e38 = 1;
         } else {
@@ -921,10 +921,10 @@ extern "C" void func_02051524(s32 *p) {
         buf[0] = p[0] >> 9;
         buf[1] = p[2] >> 9;
         buf[2] = func_020b50e8();
-        t = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(t);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(t, buf, 3);
-        _ZN12Unk_020cbb1813func_02072824Ejj(t, 0x1e, 0);
+        t = gCommManager;
+        _ZN11CommManager11beginRecordEv(t);
+        _ZN11CommManager11writeRecordEPhj(t, buf, 3);
+        _ZN11CommManager9endRecordEjj(t, 0x1e, 0);
     }
 }
 
@@ -939,13 +939,13 @@ extern "C" u32 func_02051508() { return func_02051518(); }
 extern "C" void func_020514a4(void *arg) {
     void *s;
     data_021c4e38 = 0;
-    s = data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(s) == 0 || _ZN12Unk_020cbb1813func_020729ccEj(s, 0) != 0 || _ZN12Unk_020cbb1813func_020729ccEj(s, 4) != 0) {
+    s = gCommManager;
+    if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0 || _ZN11CommManager7isMyAidEj(s, 4) != 0) {
         data_021c4ee4.func_02052a70((s32)arg);
     } else {
-        void *t = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(t);
-        _ZN12Unk_020cbb1813func_02072824Ejj(t, 0x21, 0);
+        void *t = gCommManager;
+        _ZN11CommManager11beginRecordEv(t);
+        _ZN11CommManager9endRecordEjj(t, 0x21, 0);
     }
 }
 

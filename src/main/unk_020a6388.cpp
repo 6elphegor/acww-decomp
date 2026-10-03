@@ -1,15 +1,15 @@
 #include "types.h"
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 pad_00[0x104];
     u8 *unk_104;
     u8 pad_108[8];
     u8 *unk_110;
 
-    void func_0207264c();
+    void flushDeferred();
 };
 
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 
 struct Unk_020a66f8 {
     u32 unk_00;
@@ -79,7 +79,7 @@ extern "C" void func_020a63bc(s32 idx, u32 b, u32 c, u32 d, u32 e) {
         v[2] = d;
     }
     t->func_020a6774(v[0], v[1], v[2]);
-    data_020cbb18->func_0207264c();
+    gCommManager->flushDeferred();
 }
 
 extern "C" void func_020a63a8(s32 idx, u32 v) { ((Unk_020a66f8 *)data_021edac0)[idx].func_020a6708(v); }

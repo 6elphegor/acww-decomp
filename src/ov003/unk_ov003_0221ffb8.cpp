@@ -15,24 +15,24 @@
 #define func_0203239c _ZN12Unk_02032238D1Ev
 #define func_020323b0 _ZN12Unk_02032238C1Ev
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020375bc _ZN12Unk_020375d013func_020375bcEv
-#define func_020546ec _ZN12Unk_020dbd5413func_020546ecEv
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
-#define func_020548a0 _ZN12Unk_020dbd54D1Ev
-#define func_020548d0 _ZN12Unk_020dbd54C1Ev
-#define func_02054b14 _ZN12Unk_020dbd3413func_02054b14Ev
-#define func_02054c2c _ZN12Unk_020dbd3413func_02054c2cEPvS0_
-#define func_02054e24 _ZN12Unk_020dbd34D1Ev
-#define func_02054e3c _ZN12Unk_020dbd34C1Ev
+#define MapBlockAcre_hasPond _ZN12MapBlockAcre7hasPondEv
+#define AnimModel_detachJointAnim _ZN9AnimModel15detachJointAnimEv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
+#define func_020548a0 _ZN9AnimModelD1Ev
+#define func_020548d0 _ZN9AnimModelC1Ev
+#define CachedModel_release _ZN11CachedModel7releaseEv
+#define CachedModel_loadCached _ZN11CachedModel10loadCachedEPvS0_
+#define func_02054e24 _ZN11CachedModelD1Ev
+#define func_02054e3c _ZN11CachedModelC1Ev
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
-#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define ModelAnim_init _ZN9ModelAnim4initEiiit
+#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define func_02055c38 _ZN9ModelAnimD2Ev
 #define func_02055cac _ZN9ModelAnimC2Ev
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
@@ -40,11 +40,11 @@
 #define func_0205f92c _ZN12Unk_0205f8d413func_0205f92cEi
 #define func_0205fb40 _ZN12Unk_0205f8d413func_0205fb40Ev
 #define func_0205fbbc _ZN12Unk_0205f8d413func_0205fbbcEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -856,10 +856,10 @@ void func_0209c370(void *p);
 void func_0209c364(void *p);
 void _ZN12Unk_02032238C1Ev(void *p);
 void _ZN12Unk_02032238D1Ev(void *p);
-void _ZN12Unk_020dbd34C1Ev(void *p);
-void _ZN12Unk_020dbd34D1Ev(void *p);
-void _ZN12Unk_020dbd54C1Ev(void *p);
-void _ZN12Unk_020dbd54D1Ev(void *p);
+void _ZN11CachedModelC1Ev(void *p);
+void _ZN11CachedModelD1Ev(void *p);
+void _ZN9AnimModelC1Ev(void *p);
+void _ZN9AnimModelD1Ev(void *p);
 void _ZN12Unk_0209c0acC1Ev(void *p);
 void _ZN12Unk_0209c0acD1Ev(void *p);
 void _ZN12Unk_0209c0ac13func_0209c0c8Ev(void *p);
@@ -887,10 +887,10 @@ public:
     u8 raw[0x50];
 };
 
-class Unk_020dbd54 {
+class AnimModel {
 public:
-    Unk_020dbd54();
-    ~Unk_020dbd54();
+    AnimModel();
+    ~AnimModel();
     u8 raw[0xc4];
 };
 
@@ -901,7 +901,7 @@ public:
     u32 unk_00;
     Unk_0209c364 unk_04;
     Unk_0209c0ac unk_08;
-    Unk_020dbd54 unk_58;
+    AnimModel unk_58;
     Unk_ov003_02234a94 unk_11c;
 };
 
@@ -910,13 +910,13 @@ extern s32 data_020c7c1c;
 extern u8 data_020ca314[];
 extern u8 data_020ca315[];
 extern u8 data_020ca316[];
-extern void * data_020cbb18;
+extern void * gCommManager;
 extern s16 data_02135f44[];
 extern u8 data_0213b91c[];
 extern u8 data_0213b954[];
 extern u32 gCamera;
 extern Unk_ov003_02220128_Vec3 gCameraLookAt;
-extern void * data_021c47c4;
+extern void * gSceneBlockMap;
 extern u8 gTouchHeld;
 extern u8 data_021f47e0[];
 extern void * gCurrentHeap;
@@ -929,22 +929,22 @@ void func_02003e70(void *o, s32 a, s32 b, s32 c);
 void func_02003e80(void *self, void *v);
 s32 func_020309d4(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
 s32 func_020312a8(s32 x, s32 y);
-u32 func_020374e8(void *c);
-void func_0204ee10(s32 *a, s32 *b, void *c);
+u32 MapBlock_GetAttr(void *c);
+void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 void func_0204f4f8(u32 i, s32 a, s32 b, s32 c, s32 d);
-void func_02054710(void *o);
-void func_02054720(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
-BOOL func_02054800(void *o, void *t);
+void AnimModel_attachAnim(void *o);
+void BlendAnimModel_initAnim(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
+BOOL AnimModel_allocAnmObj(void *o, void *t);
 s32 func_0205f92c(void *p, s32 a);
 void func_0205fbbc(void *e, void *o);
 void *func_0205ffe4();
 u32 func_02063b8c(u32 n);
 void *File_LoadAlloc(void *a, void *b, s32 c, s32 d);
-void func_02072824(void *g, s32 a, s32 b);
-void func_020728a4(void *g, void *buf, s32 n);
-void func_020728d4(void *g);
-BOOL func_020729cc(void *g, s32 a);
-BOOL func_02072e44(void *g);
+void CommManager_endRecord(void *g, s32 a, s32 b);
+void CommManager_writeRecord(void *g, void *buf, s32 n);
+void CommManager_beginRecord(void *g);
+BOOL CommManager_isMyAid(void *g, s32 a);
+BOOL CommManager_isOnline(void *g);
 void func_020902d4(s32 h, void *v, s32 a, s32 b);
 void func_020902f8(s32 h);
 s32 func_02090330(s32 a, void *v, s32 b, s32 c);
@@ -972,13 +972,13 @@ void func_0203239c(void *p);
 void func_020323b0(void *p);
 void func_02033988(void *o);
 void func_020339bc(void *o, void *p, s32 a, s32 b);
-s32 func_020375bc(void *c);
+s32 MapBlockAcre_hasPond(void *c);
 void WorldCurve_FromCurved(V3_f5 *a, V3_f5 *b);
 s32 WorldCurve_Apply(V3_f3 *v);
 s32 func_020429d0(s32 a, s32 *p, s32 c);
-void func_0204ed8c(void *a, s32 x, s32 y);
-void func_0204edd8(void *a, void *b);
-void func_0204edf8(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
+void FieldPos_FromUnitCenter(void *a, s32 x, s32 y);
+void FieldPos_SnapToUnitCenter(void *a, void *b);
+void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
 BOOL func_0204f134(s32 *a, s32 *b, s32 c);
 BOOL func_0204f364(void *o, s32 a);
 void func_0204f3b4(s32 h);
@@ -987,20 +987,20 @@ s32 func_0204f49c();
 s32 func_0204f4a4(Unk_ov003_02221364_Vec *v, s32 *p, u8 i);
 u32 func_0204f4c8(u8 i);
 u32 func_0204f4e0(u8 i);
-void func_020546ec(void *p);
-s32 func_020547cc(void *p, V3_f3 *v);
-s32 func_020547e4(void *p);
+void AnimModel_detachJointAnim(void *p);
+s32 AnimModel_drawAnimated(void *p, V3_f3 *v);
+s32 AnimModel_stepAnim(void *p);
 void func_020548a0(void *p);
 void func_020548d0(void *p);
-void func_02054b14(void *p);
-BOOL func_02054c2c(void *a, s32 b, void *c);
+void CachedModel_release(void *p);
+BOOL CachedModel_loadCached(void *a, s32 b, void *c);
 void func_02054e24(void *p);
 void func_02054e3c(void *p);
 void *Model_getRenderObj(void *a);
 void Model_setResource(void *a, void *b, s32 c);
 void ModelAnim_addToRenderObj(void *a, void *b);
-void func_02055b38(void *a, s32 b, s32 c, s32 d, s32 e);
-BOOL func_02055bcc(void *a, void *b, void *c);
+void ModelAnim_init(void *a, s32 b, s32 c, s32 d, s32 e);
+BOOL ModelAnim_allocMatAnm(void *a, void *b, void *c);
 void func_02055c38(void *p);
 void func_02055cac(void *p);
 BOOL AnimFrameCtrl_hasPassedFrame(void *o, s32 a);
@@ -1012,7 +1012,7 @@ void func_0205c020();
 BOOL func_0205f1e8(V3_f5 *a, s32 b, s32 *c, s32 *d, s32 e);
 void func_0205f284(V3_f5 *a, V3_f5 *b, s32 *c, s32 *d, s32 e);
 void func_0205fb40(void *);
-void func_02076a6c(void *, s32, s32);
+void NetBuf_PackPair20(void *, s32, s32);
 void func_020944f8(T48_f5 *out, u32 a);
 void *func_0209c0ac(void *a);
 void func_0209c0b4(void *p);
@@ -1039,8 +1039,8 @@ s32 func_02106654();
 s32 func_02106670(s32 a, s32 b);
 s32 MI_CpuCopy8(const void *src, void *dst, u32 n);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
-void func_ov003_02212034(T48_f5 *t, V3_f5 *d);
-s32 func_ov003_02212824(s32 a);
+void PlayerActor_ApplyHoldOffset(T48_f5 *t, V3_f5 *d);
+s32 PlayerActor_TestSlotFlag9(s32 a);
 void func_ov003_0221cfdc(s32 o, V3_f9 *a, V3_f9 *b, s32 c, s16 d, s16 e);
 
 // own functions
@@ -1237,7 +1237,7 @@ extern "C" {
 Unk_ov003_0225812c data_ov003_0225812c[6];
 Unk_ov003_02257be0 data_ov003_02257be0;
 Unk_ov003_02221ab0_Ent data_ov003_02257e9c[4];
-void *data_ov003_02257a7c = (void *)data_021c47c4;
+void *data_ov003_02257a7c = (void *)gSceneBlockMap;
 Unk_ov003_02257a74 data_ov003_02257a74;
 Unk_ov003_02257d1c data_ov003_02257d1c[4];
 extern void *data_ov003_022348a0[2];
@@ -1487,9 +1487,9 @@ extern "C" s32 func_ov003_02224bc4(s32 i)
     if (p == 0) {
         return 0;
     }
-    s = data_020cbb18;
-    if (func_02072e44(s)) {
-        if (func_020729cc(s, i)) {
+    s = gCommManager;
+    if (CommManager_isOnline(s)) {
+        if (CommManager_isMyAid(s, i)) {
             e->unk_5c = 1;
         } else {
             e->unk_5c = 0;
@@ -1798,7 +1798,7 @@ extern "C" void func_ov003_022244bc(Obj_f9 *o)
         case 1:
         case 2:
         case 3:
-            func_0204ee10(&x, &y, &o->unk_120);
+            FieldPos_ToUnit(&x, &y, &o->unk_120);
             if (func_020312a8(x, y) == 1) {
                 ((s32 (*)(void *, void *))func_ov003_02220c68)(o, &o->unk_218);
             }
@@ -1807,7 +1807,7 @@ extern "C" void func_ov003_022244bc(Obj_f9 *o)
             break;
         case 5:
         case 6:
-            func_0204ee10(&x, &y, &o->unk_120);
+            FieldPos_ToUnit(&x, &y, &o->unk_120);
             if (func_020312a8(x, y) == 2) {
                 ((s32 (*)(void *, void *))func_ov003_02220c68)(o, &o->unk_218);
             }
@@ -1990,7 +1990,7 @@ extern "C" s32 func_ov003_02223f78(Obj_f8 *self)
         s32 r = ((s32 (*)(s32, s32))func_ov003_022202ec)(0, 100);
         s32 lim = 0x5f;
         s32 a, b;
-        func_0204ee10(&a, &b, p);
+        FieldPos_ToUnit(&a, &b, p);
         switch (self->unk_1fe) {
         case 0:
         case 1:
@@ -2590,14 +2590,14 @@ extern "C" BOOL func_ov003_02223310(s32 idx, s32 flag) {
         rec->unk_40 = 1;
     }
     rec->unk_48 = 3;
-    void *g = data_020cbb18;
-    if (func_02072e44(g)) {
-        if (func_020729cc(g, idx)) {
+    void *g = gCommManager;
+    if (CommManager_isOnline(g)) {
+        if (CommManager_isMyAid(g, idx)) {
             u8 b = 2;
-            g = data_020cbb18;
-            func_020728d4(g);
-            func_020728a4(g, &b, 1);
-            func_02072824(g, 0x2a, 4);
+            g = gCommManager;
+            CommManager_beginRecord(g);
+            CommManager_writeRecord(g, &b, 1);
+            CommManager_endRecord(g, 0x2a, 4);
         }
     }
     return TRUE;
@@ -2638,10 +2638,10 @@ extern "C" BOOL func_ov003_02223258(s32 idx) {
     }
     if (p->unk_a0 == 0) {
         u8 b = 1;
-        void *g = data_020cbb18;
-        func_020728d4(g);
-        func_020728a4(g, &b, 1);
-        func_02072824(g, 0x2a, 4);
+        void *g = gCommManager;
+        CommManager_beginRecord(g);
+        CommManager_writeRecord(g, &b, 1);
+        CommManager_endRecord(g, 0x2a, 4);
         r = TRUE;
         p->unk_a0 = r;
     }
@@ -2727,8 +2727,8 @@ extern "C" BOOL func_ov003_02222fe4(Obj_f7 *self) {
     if (e == NULL) {
         return FALSE;
     }
-    void *g = data_020cbb18;
-    if (func_02072e44(g)) {
+    void *g = gCommManager;
+    if (CommManager_isOnline(g)) {
         s32 t = e->unk_3c;
         if (t < 0) {
             return FALSE;
@@ -2920,12 +2920,12 @@ extern "C" BOOL func_ov003_02222d9c(Obj_f6 *self, u32 k)
     }
     buf[0] = 0;
     buf[1] = h;
-    func_02076a6c(tmp, self->unk_120.x, self->unk_120.z);
+    NetBuf_PackPair20(tmp, self->unk_120.x, self->unk_120.z);
     MI_CpuCopy8(tmp, &buf[2], 5);
-    s = data_020cbb18;
-    func_020728d4(s);
-    func_020728a4(s, buf, 7);
-    func_02072824(s, 0x2a, 4);
+    s = gCommManager;
+    CommManager_beginRecord(s);
+    CommManager_writeRecord(s, buf, 7);
+    CommManager_endRecord(s, 0x2a, 4);
     return TRUE;
 }
 
@@ -2973,7 +2973,7 @@ extern "C" BOOL func_ov003_02222ce0(Obj_f6 *self)
     p.y = pv->y;
     p.z = pv->z;
     p.z = p.z - 0x2000;
-    ((void (*)(s32 *, s32 *, V3_f6 *))func_0204ee10)(&x, &y, &p);
+    ((void (*)(s32 *, s32 *, V3_f6 *))FieldPos_ToUnit)(&x, &y, &p);
     if (func_020312a8(x, y) == 1) {
         r = TRUE;
     }
@@ -2986,7 +2986,7 @@ extern "C" s32 func_ov003_02222b1c(Obj_f6 *self)
 {
     s32 r = 0;
     s32 x, y;
-    ((void (*)(s32 *, s32 *, V3_f6 *))func_0204ee10)(&x, &y, &self->unk_120);
+    ((void (*)(s32 *, s32 *, V3_f6 *))FieldPos_ToUnit)(&x, &y, &self->unk_120);
     switch (self->unk_1fe) {
     case 0:
     case 1:
@@ -3272,9 +3272,9 @@ extern "C" void func_ov003_02222658(Obj_f6 *self, void *arg)
         (self->*data_ov003_02257af8[self->unk_40].f)(arg);
     }
     {
-        void *s = data_020cbb18;
-        if (((s32 (*)(void *))func_02072e44)(s)) {
-            if (((s32 (*)(void *, void *))func_020729cc)(s, arg) == 0) {
+        void *s = gCommManager;
+        if (((s32 (*)(void *))CommManager_isOnline)(s)) {
+            if (((s32 (*)(void *, void *))CommManager_isMyAid)(s, arg) == 0) {
                 if (self->unk_40 == 4) {
                     ((s32 (*)(void *, s32, s32, s32, s32))func_0204f4f8)(arg, 8, -1, 0, 0);
                 }
@@ -3344,7 +3344,7 @@ extern "C" BOOL func_ov003_02222504(Self_f5 *self, u32 a) {
     l.d.x = 0x800;
     l.d.y = 0;
     l.d.z = 0;
-    func_ov003_02212034(&l.t, &l.d);
+    PlayerActor_ApplyHoldOffset(&l.t, &l.d);
     l.w.x = ((V3_f5 *)((u8 *)&l.t + 0x24))->x;
     l.w.y = ((V3_f5 *)((u8 *)&l.t + 0x24))->y;
     l.w.z = ((V3_f5 *)((u8 *)&l.t + 0x24))->z;
@@ -3481,7 +3481,7 @@ extern "C" BOOL func_ov003_022222a0(Self_f5 *self, u32 a) {
         ((void (*)(Self_f5 *, u32))func_ov003_0222323c)(self, a);
         func_020944f8(&l.blk, a);
         l.tt = l.blk;
-        func_ov003_02212034(&l.tt, 0);
+        PlayerActor_ApplyHoldOffset(&l.tt, 0);
         l.w.x = ((V3_f5 *)((u8 *)&l.tt + 0x24))->x;
         l.w.y = ((V3_f5 *)((u8 *)&l.tt + 0x24))->y;
         l.w.z = ((V3_f5 *)((u8 *)&l.tt + 0x24))->z;
@@ -3605,9 +3605,9 @@ extern "C" s32 func_ov003_02221f40(Self_f5 *self, s32 a) {
         break;
     }
     self->unk_48 = 5;
-    void *g = data_020cbb18;
-    if (func_02072e44(g)) {
-        if (func_020729cc(g, a)) {
+    void *g = gCommManager;
+    if (CommManager_isOnline(g)) {
+        if (CommManager_isMyAid(g, a)) {
             ((s32 (*)(void *, s32))func_ov003_02220db0)(&v, ((*(u8 * *)(data_ov003_022348c0))[data_020ca315[k] * 4] << 12) / 10);
         }
     } else {
@@ -3713,12 +3713,12 @@ extern "C" void func_ov003_02221cec(Self_f5 *self, Ent_f5 *ent, V3_f5 *out) {
 //@ 0x2221bfc
 extern "C" void func_ov003_02221bfc(void *a) {
     s32 i = 0;
-    void *net = data_020cbb18;
+    void *net = gCommManager;
     volatile s32 zero = 0;
     s32 m1 = -1;
     s32 z = 0;
     for (; i < 4; i++) {
-        if (func_020729cc(net, i) == 0) {
+        if (CommManager_isMyAid(net, i) == 0) {
             u32 t = func_0204f4e0(i);
             if (t == 9) {
                 t = 1;
@@ -3848,8 +3848,8 @@ Unk_ov003_0225812c::Unk_ov003_0225812c()
     *(volatile u8 **)(a + 0x40) = data_0213b954;
     _ZN12Unk_02032238C1Ev(a + 0x4c);
     func_0209c370(a + 0x7c);
-    _ZN12Unk_020dbd34C1Ev(a + 0x84);
-    _ZN12Unk_020dbd54C1Ev(a + 0x144);
+    _ZN11CachedModelC1Ev(a + 0x84);
+    _ZN9AnimModelC1Ev(a + 0x144);
     *(u32 *)(a + 0x208) = 0;
     *(u32 *)(a + 0x20c) = 0;
     func_ov003_022218f8(a + 0x248);
@@ -3874,8 +3874,8 @@ Unk_ov003_0225812c::~Unk_ov003_0225812c()
 {
     u8 *a = (u8 *)this;
     func_ov003_022218f4(a + 0x248);
-    _ZN12Unk_020dbd54D1Ev(a + 0x144);
-    _ZN12Unk_020dbd34D1Ev(a + 0x84);
+    _ZN9AnimModelD1Ev(a + 0x144);
+    _ZN11CachedModelD1Ev(a + 0x84);
     func_0209c364(a + 0x7c);
     _ZN12Unk_02032238D1Ev(a + 0x4c);
     func_020f43fc(a);
@@ -4007,8 +4007,8 @@ extern "C" BOOL func_ov003_022216cc(u8 *a) {
 //@ 0x2221684
 extern "C" void func_ov003_02221684(u8 *a) {
     (*(u32 *)((u8 *)&data_ov003_02257be0)) = 0;
-    func_020546ec(((u8 *)((u8 *)&data_ov003_02257be0.unk_58.raw[0])));
-    func_02054b14(((u8 *)((u8 *)&data_ov003_02257be0.unk_58.raw[0])));
+    AnimModel_detachJointAnim(((u8 *)((u8 *)&data_ov003_02257be0.unk_58.raw[0])));
+    CachedModel_release(((u8 *)((u8 *)&data_ov003_02257be0.unk_58.raw[0])));
     func_0209c0b4(((u8 *)((u8 *)&data_ov003_02257be0.unk_08.raw[0])));
     func_0209c224(a + 0x68, ((u8 *)((u8 *)&data_ov003_02257be0.unk_04.raw[0])));
     data_ov003_02257be0.unk_11c.unk_18 = 0;
@@ -4044,9 +4044,9 @@ BOOL Unk_ov003_0223498c::vfunc_00() {
     } while (i < 6);
     u8 *q = (u8 *)data_ov003_02257e9c;
     s32 k = 0;
-    void *net = data_020cbb18;
+    void *net = gCommManager;
     for (; k < 4; k++) {
-        if (func_02072e44(net) && !func_020729cc(net, k) && func_0204f4e0(k) == 3) {
+        if (CommManager_isOnline(net) && !CommManager_isMyAid(net, k) && func_0204f4e0(k) == 3) {
             ((void (*)(u8, s32, s32, s32, s32))func_0204f4f8)(k, 6, -1, z, z);
         }
         func_02003ecc(q);
@@ -4228,7 +4228,7 @@ extern "C" void func_ov003_02221134(O_f3 *o, E_f3 *e, s32 x) {
     if (e->unk_7f != 0) {
         func_ov003_022210a4(o, e);
     } else {
-        func_020547e4(e->unk_144);
+        AnimModel_stepAnim(e->unk_144);
     }
     func_ov003_02220d94(o, e, x);
 }
@@ -4247,8 +4247,8 @@ extern "C" void func_ov003_022210a4(O_f3 *o, E_f3 *e) {
     *(s32 *)(q + 0xac) = e->unk_1f0;
     *(u32 *)(q + 0xa4) = (u32)(u16)(((Unk_ov003_022210a4_Bits *)&e->unk_1e8)->mid + 1) << 12;
     func_ov003_0222105c(o, pv, q, ang);
-    func_020547e4(e->unk_144);
-    func_020547e4(q);
+    AnimModel_stepAnim(e->unk_144);
+    AnimModel_stepAnim(q);
     Unk_ov003_022210a4_R *r = &p->unk_11c;
     AnimFrameCtrl_step(r);
     *r->unk_18 = r->unk_08;
@@ -4284,7 +4284,7 @@ BOOL Unk_ov003_0223498c::onExecute() {
 
 //@ 0x2220fc8
 extern "C" void func_ov003_02220fc8(O_f3 *o) {
-    if (((s32 (*)(void *))func_02072e44)(data_020cbb18) != 0) {
+    if (((s32 (*)(void *))CommManager_isOnline)(gCommManager) != 0) {
         ((s32 (*)(O_f3 *))func_ov003_02221bfc)(o);
     }
     s32 i;
@@ -4319,13 +4319,13 @@ BOOL Unk_ov003_0223498c::onDraw() {
                 q->unk_0c = q->unk_0c & 0xffe0ffff;
                 q->unk_0c = q->unk_0c | ((n & 0x1f) << 16);
             }
-            func_020547cc(e->unk_144, &v);
+            AnimModel_drawAnimated(e->unk_144, &v);
             if (e->unk_7f != 0) {
                 V3_f3 v2;
                 v2.x = func_02133150(rec->unk_0e << 12, 100);
                 v2.y = 0x1000;
                 v2.z = func_02133150(rec->unk_0f << 12, 100);
-                func_020547cc(((u8 *)((u8 *)&data_ov003_02257be0.unk_58.raw[0])), &v2);
+                AnimModel_drawAnimated(((u8 *)((u8 *)&data_ov003_02257be0.unk_58.raw[0])), &v2);
             }
         }
         e = (E_f3 *)((u8 *)e + 0x24c);
@@ -4461,7 +4461,7 @@ extern "C" BOOL func_ov003_02220cf8(s32 a, E_f3 *e) {
 extern "C" BOOL func_ov003_02220c98(s32 a, s32 b, E_f3 *e) {
     BOOL r = FALSE;
     if (((s32 (*)(s32, V3_f3 *, s32))func_ov003_02220994)(a, &e->unk_120, b) != 0) {
-        if (func_ov003_02212824(b) != 0) {
+        if (PlayerActor_TestSlotFlag9(b) != 0) {
             r = TRUE;
         } else if (((s32 (*)(s32))func_ov003_022209c8)(b) != 0) {
             u8 *pc = &e->unk_214;
@@ -4624,7 +4624,7 @@ extern "C" BOOL func_ov003_02220844(void *self, Unk_ov003_02220844_Obj *e, s32 f
     if (func_0204f134(&x, &y, fl)) {
         if (func_ov003_02220460(self, &a, &b, &cd.a, &cd.b, y, flag, e)) {
             if (func_ov003_022203f8(self, e, x)) {
-                func_0204ed8c(&v, a, b);
+                FieldPos_FromUnitCenter(&v, a, b);
                 v.y = 0xffffeccd;
                 s32 t = x;
                 e->unk_7e = t;
@@ -4664,7 +4664,7 @@ extern "C" BOOL func_ov003_02220844(void *self, Unk_ov003_02220844_Obj *e, s32 f
 //@ 0x222069c
 extern "C" BOOL func_ov003_0222069c(void *self, u8 *out, s32 *cnt, s32 mode) {
     BOOL result = FALSE;
-    Unk_ov003_0222069c_Grid *g = (*(Unk_ov003_0222069c_Grid * *)&data_021c47c4);
+    Unk_ov003_0222069c_Grid *g = (*(Unk_ov003_0222069c_Grid * *)&gSceneBlockMap);
     if (g != NULL) {
         s32 x, y;
         for (x = 1; x < (s32)g->unk_08 - 1; x++) {
@@ -4680,42 +4680,42 @@ extern "C" BOOL func_ov003_0222069c(void *self, u8 *out, s32 *cnt, s32 mode) {
                 }
                 switch (mode) {
                 case 6:
-                    if ((func_020374e8(c) & 8) != 0) {
+                    if ((MapBlock_GetAttr(c) & 8) != 0) {
                         out[*cnt * 2] = x;
                         (&out[*cnt * 2])[1] = y;
                         (*cnt)++;
                     }
                     break;
                 case 0:
-                    if ((func_020374e8(c) & 0x7f000) != 0) {
+                    if ((MapBlock_GetAttr(c) & 0x7f000) != 0) {
                         out[*cnt * 2] = x;
                         (&out[*cnt * 2])[1] = y;
                         (*cnt)++;
                     }
                     break;
                 case 1:
-                    if ((func_020374e8(c) & 0x100) != 0) {
+                    if ((MapBlock_GetAttr(c) & 0x100) != 0) {
                         out[*cnt * 2] = x;
                         (&out[*cnt * 2])[1] = y;
                         (*cnt)++;
                     }
                     break;
                 case 2:
-                    if ((func_020374e8(c) & 0x80000) != 0) {
+                    if ((MapBlock_GetAttr(c) & 0x80000) != 0) {
                         out[*cnt * 2] = x;
                         (&out[*cnt * 2])[1] = y;
                         (*cnt)++;
                     }
                     break;
                 case 3:
-                    if (func_020375bc(c) != 0) {
+                    if (MapBlockAcre_hasPond(c) != 0) {
                         out[*cnt * 2] = x;
                         (&out[*cnt * 2])[1] = y;
                         (*cnt)++;
                     }
                     break;
                 case 4: {
-                    u32 t = func_020374e8(c);
+                    u32 t = MapBlock_GetAttr(c);
                     if ((t & 0x7f000) != 0 && (t & 8) != 0) {
                         out[*cnt * 2] = x;
                         (&out[*cnt * 2])[1] = y;
@@ -4724,7 +4724,7 @@ extern "C" BOOL func_ov003_0222069c(void *self, u8 *out, s32 *cnt, s32 mode) {
                     break;
                 }
                 case 5:
-                    if ((func_020374e8(c) & 8) != 0) {
+                    if ((MapBlock_GetAttr(c) & 8) != 0) {
                         out[*cnt * 2] = x;
                         (&out[*cnt * 2])[1] = y;
                         (*cnt)++;
@@ -4756,7 +4756,7 @@ extern "C" BOOL func_ov003_02220460(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *
         return z;
     }
     v44 = gCameraLookAt;
-    func_0204edd8(&v50, &v44);
+    FieldPos_SnapToUnitCenter(&v50, &v44);
     if (func_ov003_0222069c(self, grid, &cnt, mode) == 0) {
         return z;
     }
@@ -4791,7 +4791,7 @@ extern "C" BOOL func_ov003_02220460(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *
             }
         }
     }
-    func_0204edf8(&sx, &sz, ax, az, 0, 0);
+    FieldUnit_FromBlockUnit(&sx, &sz, ax, az, 0, 0);
     s32 xlim = sx + 0x10;
     s32 zlim = sz + 0x10;
     for (x = sx; x < xlim; x++) {
@@ -4849,7 +4849,7 @@ extern "C" BOOL func_ov003_02220460(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *
     s32 rx, ry;
     ry = cq[kk];
     rx = ((s8 *)cand)[kk];
-    func_0204ed8c(&v5c, rx, ry);
+    FieldPos_FromUnitCenter(&v5c, rx, ry);
     if (func_ov003_0222034c((s32 *)&v5c, (s32 *)&v50, 0xa000, 0x10000, 0xa000)) {
         *ox = -1;
         *oz = -1;
@@ -5053,16 +5053,16 @@ extern "C" void func_ov003_022201ac(u8 *self, s32 v) {
 extern "C" BOOL func_ov003_02220128(u8 *self, void *p, s32 q) {
     BOOL r = FALSE;
     u8 *o = self + 0x144;
-    func_02054c2c(o, 0x66736477, (*(void * *)((u8 *)&data_ov003_02234778)));
+    CachedModel_loadCached(o, 0x66736477, (*(void * *)((u8 *)&data_ov003_02234778)));
     if (p == NULL) {
         return r;
     }
     ((void (*)(s32, void *))func_0209c25c)(q, self + 0x7c);
     s32 t = ((s32 (*)(void))func_0209c348)();
     s32 u = func_021065f8(func_021065dc((s32)p), r);
-    if (((BOOL (*)(void *, s32))func_02054800)(o, t)) {
-        func_02054720(o, u, r, 0x1000, 1, r);
-        func_02054710(o);
+    if (((BOOL (*)(void *, s32))AnimModel_allocAnmObj)(o, t)) {
+        BlendAnimModel_initAnim(o, u, r, 0x1000, 1, r);
+        AnimModel_attachAnim(o);
         r = TRUE;
     }
     return r;
@@ -5081,16 +5081,16 @@ extern "C" BOOL func_ov003_02220030(u8 *self, void *a)
         void *nm = ((void * (*)(void *))func_0209c348)(res);
         File_LoadAlloc((*(void * *)((u8 *)&data_ov003_02234774)), nm, 4, 0);
         s32 v = func_021065f8(((s32 (*)(void))func_021065dc)(), 0);
-        if (func_02054800(r4, nm)) {
-            func_02054720(r4, v, 0, 0x1000, 1, 0);
-            func_02054710(r4);
+        if (AnimModel_allocAnmObj(r4, nm)) {
+            BlendAnimModel_initAnim(r4, v, 0, 0x1000, 1, 0);
+            AnimModel_attachAnim(r4);
         } else {
             return FALSE;
         }
         File_LoadAlloc((*(void * *)((u8 *)&data_ov003_0223477c)), nm, 4, 0);
         s32 w = func_02106670(func_02106654(), 0);
-        if (func_02055bcc(self + 0x11c, *(void **)(r4 + 0x5c), nm)) {
-            func_02055b38(self + 0x11c, w, 0, 0x1000, 1);
+        if (ModelAnim_allocMatAnm(self + 0x11c, *(void **)(r4 + 0x5c), nm)) {
+            ModelAnim_init(self + 0x11c, w, 0, 0x1000, 1);
             ModelAnim_addToRenderObj(self + 0x11c, Model_getRenderObj(r4));
         } else {
             return FALSE;

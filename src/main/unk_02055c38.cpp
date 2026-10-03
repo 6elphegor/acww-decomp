@@ -49,20 +49,20 @@ struct Unk_02056160_Arg {
 };
 
 extern "C" {
-void func_02056274(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_020561d8_Vec *out, s32 t);
+void Anim_LerpVec(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_020561d8_Vec *out, s32 t);
 }
 
 extern "C" {
-void func_020562e0(Unk_020561d8_Mtx *a, Unk_020561d8_Mtx *b, Unk_020561d8_Mtx *out, s32 t);
+void Anim_LerpRotMtx(Unk_020561d8_Mtx *a, Unk_020561d8_Mtx *b, Unk_020561d8_Mtx *out, s32 t);
 }
 
-extern "C" s32 _ZN12Unk_02056fd813func_02057110Ei(void *res, ...);
-extern "C" u32 _ZN12Unk_02056fd813func_02057100Ei(void *res, ...);
-extern "C" void *_ZN12Unk_02056fd813func_020570b0Ei(void *res, u32 x);
-extern "C" s32 _ZN12Unk_02056fd813func_02057078Ei(u8 *hdr, const char *name);
-extern "C" u8 *_ZN12Unk_02056fd813func_02057048Ei(u8 *hdr, s32 idx);
-extern "C" s32 _ZN12Unk_02056fd813func_02056fd8Ei(u8 *hdr, s32 idx);
-extern "C" s32 func_02057180(u32 v);
+extern "C" s32 _ZN12G3dResAccess10findMatIdxEi(void *res, ...);
+extern "C" u32 _ZN12G3dResAccess10findTexIdxEi(void *res, ...);
+extern "C" void *_ZN12G3dResAccess10getTexDataEi(void *res, u32 x);
+extern "C" s32 _ZN12G3dResAccess11findPlttIdxEi(u8 *hdr, const char *name);
+extern "C" u8 *_ZN12G3dResAccess11getPlttDataEi(u8 *hdr, s32 idx);
+extern "C" s32 _ZN12G3dResAccess11getPlttSizeEi(u8 *hdr, s32 idx);
+extern "C" s32 G3dTex_GetImageSize(u32 v);
 extern "C" void _ZN13AnimFrameCtrl4stepEv(void *p);
 extern "C" void func_02056714(void *p);
 extern "C" s32 _ZN13AnimFrameCtrl5setupEihit(void *p, u32 a, u32 b, void *c, void *d);
@@ -71,12 +71,12 @@ extern "C" s32 NNS_G3dGetResDictIdxByName(void *a, void *b);
 extern "C" void *NNSi_G3dGetTexPatAnmDataByIdx(void *a, s32 i);
 extern "C" void *NNS_G3dGetTex(void *p);
 extern "C" void *Heap_Alloc(void *heap, u32 size);
-extern "C" BOOL _ZN12Unk_020e45ec13func_020b8984EPvjj(void *a, void *b, u32 c, void *d);
-extern "C" void _ZN12Unk_020e45ec13func_020b89c8Ev(void *a);
-extern "C" void _ZN12Unk_020e45ec13func_020b8b08Ev(void *a);
-extern "C" void _ZN12Unk_020e45ecC2Ev(void *a);
-extern "C" s32 _ZN12Unk_020e45ec13func_020b8a84Ejjjh(void *self, u8 *a, u32 b, s32 c, s32 d);
-extern "C" s32 _ZN12Unk_020e45ec13func_020b8a34Ejjjh(void *self, u8 *a, u32 b, s32 c, s32 d);
+extern "C" BOOL _ZN11TexVramTask13requestMatTexEPvjj(void *a, void *b, u32 c, void *d);
+extern "C" void _ZN11TexVramTask6cancelEv(void *a);
+extern "C" void _ZN11TexVramTask5clearEv(void *a);
+extern "C" void _ZN11TexVramTaskC2Ev(void *a);
+extern "C" s32 _ZN11TexVramTask10requestTexEjjjh(void *self, u8 *a, u32 b, s32 c, s32 d);
+extern "C" s32 _ZN11TexVramTask11requestPlttEjjjh(void *self, u8 *a, u32 b, s32 c, s32 d);
 extern "C" void MTX_Identity33_(void *m);
 extern "C" s32 FX_Div(s32 a, s32 b);
 extern "C" void MI_CpuFill8(void *dst, u32 v, u32 n);
@@ -87,10 +87,10 @@ extern "C" u8 *NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *p, u32 v);
 extern "C" u32 func_0212a438(const char *s);
 extern "C" void func_0212a360(void *p);
 extern "C" void operator delete(void *p);
-extern "C" void func_020563cc(Unk_020561d8_Vec *v);
-extern "C" void func_02056274(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_020561d8_Vec *out, s32 t);
-extern "C" void func_020562e0(Unk_020561d8_Mtx *a, Unk_020561d8_Mtx *b, Unk_020561d8_Mtx *out, s32 t);
-extern "C" s32 func_02057158(void *p, s32 a);
+extern "C" void Anim_NormalizeVec(Unk_020561d8_Vec *v);
+extern "C" void Anim_LerpVec(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_020561d8_Vec *out, s32 t);
+extern "C" void Anim_LerpRotMtx(Unk_020561d8_Mtx *a, Unk_020561d8_Mtx *b, Unk_020561d8_Mtx *out, s32 t);
+extern "C" s32 G3dRes_FindDictIdx(void *p, s32 a);
 extern "C" void *gCurrentHeap;
 
 class AnimFrameCtrl {
@@ -117,7 +117,7 @@ public:
     u32 unk_1c;
 };
 
-class Unk_0205614c {
+class MatTexPatTrack {
 public:
     void *unk_00;
     u8 unk_04[0x1c];
@@ -127,88 +127,88 @@ public:
     u8 unk_23;
     u16 unk_24;
 
-    void func_02056070(u32 frame, u8 *p2, void *p3, void *p4);
-    BOOL func_02056018();
-    void func_02056028(void *a, void *b);
-    void func_020560f8();
-    BOOL func_0205610c();
-    void func_02056124();
-    Unk_0205614c *func_0205614c();
+    void update(u32 frame, u8 *p2, void *p3, void *p4);
+    BOOL isPaused();
+    void upload(void *a, void *b);
+    void release();
+    BOOL init();
+    void reset();
+    MatTexPatTrack *construct();
 };
 
-class Unk_020dbe5c : public AnimFrameCtrl {
+class MatTexPatAnim : public AnimFrameCtrl {
 public:
     void *unk_18;
     void *unk_1c;
     void *unk_20;
     u16 unk_24;
     u8 unk_26;
-    Unk_0205614c *unk_28;
+    MatTexPatTrack *unk_28;
 
-    Unk_020dbe5c();
-    virtual ~Unk_020dbe5c();
-    void func_02055d18();
-    BOOL func_02055d60(s32 unused, u32 x);
-    void func_02055df0();
-    void func_02055e38();
-    void func_02055e4c(void *r1, void *r2, u32 r3, u8 p5, void *p6);
-    void func_02055eec();
-    BOOL func_02055f1c(void *r1, void *r2, u32 r3, void *heap);
-    void func_02055f9c();
+    MatTexPatAnim();
+    virtual ~MatTexPatAnim();
+    void pauseMaterial();
+    BOOL setMaterialTex(s32 unused, u32 x);
+    void applyFrame();
+    void update();
+    void setAnim(void *r1, void *r2, u32 r3, u8 p5, void *p6);
+    void release();
+    BOOL init(void *r1, void *r2, u32 r3, void *heap);
+    void clear();
 };
 
-class Unk_020dbe6c {
+class JointBlend {
 public:
     Unk_020561d8_Mtx unk_04;
     Unk_020561d8_Vec unk_28;
     s32 unk_34;
     s32 unk_38;
 
-    Unk_020dbe6c();
-    virtual ~Unk_020dbe6c();
-    void func_02056160(Unk_02056160_Arg *x);
-    void func_020561d8(Unk_02056160_Arg *x);
-    void func_02056520(s32 n);
-    BOOL func_02056544();
+    JointBlend();
+    virtual ~JointBlend();
+    void capturePose(Unk_02056160_Arg *x);
+    void blendPose(Unk_02056160_Arg *x);
+    void start(s32 n);
+    BOOL advance();
 };
 
-struct Unk_02056e28 {
+struct ResName16 {
     char unk_00[17];
-    Unk_02056e28();
-    ~Unk_02056e28();
-    char *func_02056dec();
-    void func_02056df0(const char *src);
+    ResName16();
+    ~ResName16();
+    char *get();
+    void set(const char *src);
 };
 
 // Library class (see unk_020b8464.cpp)
-class Unk_020e45ec {
+class TexVramTask {
 public:
-    Unk_020e45ec();
-    void func_020b89c8(void);
+    TexVramTask();
+    void cancel(void);
 
     u32 unk_00[7];
 };
 
-class Unk_02056f94 {
+class TexPatVramTasks {
 public:
-    Unk_02056f94();
-    ~Unk_02056f94();
+    TexPatVramTasks();
+    ~TexPatVramTasks();
 
-    /* 0x00 */ Unk_020e45ec unk_00[2];
+    /* 0x00 */ TexVramTask unk_00[2];
 };
 
-struct Unk_02056e38 {
+struct TexPatVramUploader {
     u32 unk_00[14];
-    BOOL func_02056e38(u8 *hdr, const char *n1, const char *n2, u8 *x, s32 a, s32 b);
-    BOOL func_02056e88(u8 *hdr, s32 i1, s32 i2, u8 *x, s32 a, s32 b);
+    BOOL uploadByName(u8 *hdr, const char *n1, const char *n2, u8 *x, s32 a, s32 b);
+    BOOL uploadByIdx(u8 *hdr, s32 i1, s32 i2, u8 *x, s32 a, s32 b);
 };
 
-class Unk_020dbe8c : public AnimFrameCtrl {
+class TexPatVramAnim : public AnimFrameCtrl {
 public:
-    Unk_02056f94 unk_18;
+    TexPatVramTasks unk_18;
     u8 *unk_50;
-    Unk_02056e28 unk_54;
-    Unk_02056e28 unk_65;
+    ResName16 unk_54;
+    ResName16 unk_65;
     u8 *unk_78;
     u8 *unk_7c;
     s32 unk_80;
@@ -216,31 +216,31 @@ public:
     s32 unk_88;
     u8 unk_8c;
 
-    Unk_020dbe8c();
-    virtual ~Unk_020dbe8c();
-    void func_02056d00();
-    void func_02056b84(s32 *a, s32 *b);
-    BOOL func_02056bf8();
-    BOOL func_02056ca4(u8 *hdr, const char *n1, const char *n2, u8 *x, u8 *y, u8 flag);
+    TexPatVramAnim();
+    virtual ~TexPatVramAnim();
+    void clear();
+    void getFrameIndices(s32 *a, s32 *b);
+    BOOL update();
+    BOOL init(u8 *hdr, const char *n1, const char *n2, u8 *x, u8 *y, u8 flag);
 };
 
-struct Unk_02056b74 {
+struct MatTexBinder {
     u8 *unk_00;
     s8 unk_04;
 
-    Unk_02056b74();
-    ~Unk_02056b74();
-    void func_02056ae8();
-    BOOL func_02056b60();
-    BOOL func_02056af0(u8 *hdr, s32 idx);
-    BOOL func_02056b28(u8 *hdr, const char *name);
-    s8 func_020567e4();
-    BOOL func_020567ec(u8 *hdr2, s32 idx2);
-    BOOL func_020568cc(u8 *hdr2, const char *name);
-    BOOL func_020568f8(u8 *hdr2, s32 idx2);
-    BOOL func_02056a4c(u8 *hdr2, const char *name);
-    BOOL func_02056a78(u8 *hdr2, s32 a, s32 idx);
-    BOOL func_02056ab0(u8 *hdr2, const char *n, const char *n2);
+    MatTexBinder();
+    ~MatTexBinder();
+    void clear();
+    BOOL hasMaterial();
+    BOOL setMaterial(u8 *hdr, s32 idx);
+    BOOL setMaterialByName(u8 *hdr, const char *name);
+    s8 getMaterial();
+    BOOL bindPltt(u8 *hdr2, s32 idx2);
+    BOOL bindPlttByName(u8 *hdr2, const char *name);
+    BOOL bindTex(u8 *hdr2, s32 idx2);
+    BOOL bindTexByName(u8 *hdr2, const char *name);
+    BOOL bindByIdx(u8 *hdr2, s32 a, s32 idx);
+    BOOL bindByName(u8 *hdr2, const char *n, const char *n2);
 };
 
 static inline u8 *Unk_02056e88_Ent(u8 *d, s32 idx) {
@@ -251,19 +251,19 @@ static inline u8 *Unk_02056e88_Ent(u8 *d, s32 idx) {
 }
 
 // Resource header
-class Unk_02056fd8 {
+class G3dResAccess {
 public:
     u32 func_02056fcc(s32 a);
-    u32 func_02056fd8(s32 idx);
+    u32 getPlttSize(s32 idx);
     void func_02057030(void);
-    void *func_02057048(s32 idx);
-    s32 func_02057078(s32 a);
-    u32 func_02057084(s32 idx);
-    void *func_020570b0(s32 idx);
+    void *getPlttData(s32 idx);
+    s32 findPlttIdx(s32 a);
+    u32 getTexSize(s32 idx);
+    void *getTexData(s32 idx);
     void *func_020570e0(void);
-    s32 func_02057100(s32 a);
-    u32 func_0205710c(void);
-    s32 func_02057110(s32 a);
+    s32 findTexIdx(s32 a);
+    u32 getTexImageOffset(void);
+    s32 findMatIdx(s32 a);
 
     /* 0x00 */ u32 unk_00;
     /* 0x04 */ u32 unk_04;
@@ -280,11 +280,11 @@ public:
     /* 0x42 */ u16 unk_42;
 };
 
-class Unk_02057120 {
+class G3dMatData {
 public:
-    u32 func_02057120(void);
-    u32 func_0205713c(void);
-    u32 func_0205714c(void);
+    u32 getPlttAddr(void);
+    u32 getTexAddr(void);
+    u32 getTexSize(void);
 
     /* 0x00 */ u32 unk_00[5];
     /* 0x14 */ u32 unk_14;
@@ -292,7 +292,7 @@ public:
     /* 0x1c */ u16 unk_1c;
 };
 
-s32 func_02057158(void *p, s32 a) {
+s32 G3dRes_FindDictIdx(void *p, s32 a) {
     u32 buf[4];
     buf[0] = 0;
     buf[1] = 0;
@@ -302,44 +302,44 @@ s32 func_02057158(void *p, s32 a) {
     return NNS_G3dGetResDictIdxByName(p, buf);
 }
 
-u32 Unk_02057120::func_0205714c(void) {
-    return func_02057180(unk_14);
+u32 G3dMatData::getTexSize(void) {
+    return G3dTex_GetImageSize(unk_14);
 }
 
-u32 Unk_02057120::func_0205713c(void) {
+u32 G3dMatData::getTexAddr(void) {
     return (unk_14 & 0xffff) << 3;
 }
 
-u32 Unk_02057120::func_02057120(void) {
+u32 G3dMatData::getPlttAddr(void) {
     if (((unk_14 & 0x1c000000) >> 26) == 2) {
         return unk_1c << 3;
     }
     return unk_1c << 4;
 }
 
-s32 Unk_02056fd8::func_02057110(s32 a) {
-    return func_02057158((u8 *)this + unk_08 + 4, a);
+s32 G3dResAccess::findMatIdx(s32 a) {
+    return G3dRes_FindDictIdx((u8 *)this + unk_08 + 4, a);
 }
 
-u32 Unk_02056fd8::func_0205710c(void) {
+u32 G3dResAccess::getTexImageOffset(void) {
     return unk_14;
 }
 
-s32 Unk_02056fd8::func_02057100(s32 a) {
-    return func_02057158((u8 *)this + 0x3c, a);
+s32 G3dResAccess::findTexIdx(s32 a) {
+    return G3dRes_FindDictIdx((u8 *)this + 0x3c, a);
 }
 
-void *Unk_02056fd8::func_020570e0(void) {
+void *G3dResAccess::func_020570e0(void) {
     s32 u;
-    s32 idx = func_02057100(u);
+    s32 idx = findTexIdx(u);
     void *r = 0;
     if (idx != -1) {
-        r = func_020570b0(idx);
+        r = getTexData(idx);
     }
     return r;
 }
 
-void *Unk_02056fd8::func_020570b0(s32 idx) {
+void *G3dResAccess::getTexData(s32 idx) {
     u8 *base = (u8 *)this + 0x3c;
     u32 off = unk_42;
     u8 *list = base + off;
@@ -349,7 +349,7 @@ void *Unk_02056fd8::func_020570b0(s32 idx) {
     return data + ((*(u32 *)(ent + 4) & 0xffff) << 3);
 }
 
-u32 Unk_02056fd8::func_02057084(s32 idx) {
+u32 G3dResAccess::getTexSize(s32 idx) {
     if (idx == -1) {
         return 0;
     }
@@ -358,14 +358,14 @@ u32 Unk_02056fd8::func_02057084(s32 idx) {
     u8 *list = base + off;
     u32 stride = *(u16 *)(base + off);
     u8 *ent = list + stride * idx;
-    return func_02057180(*(u32 *)(ent + 4));
+    return G3dTex_GetImageSize(*(u32 *)(ent + 4));
 }
 
-s32 Unk_02056fd8::func_02057078(s32 a) {
-    return func_02057158((u8 *)this + unk_34, a);
+s32 G3dResAccess::findPlttIdx(s32 a) {
+    return G3dRes_FindDictIdx((u8 *)this + unk_34, a);
 }
 
-void *Unk_02056fd8::func_02057048(s32 idx) {
+void *G3dResAccess::getPlttData(s32 idx) {
     if (idx == -1) {
         return 0;
     }
@@ -378,12 +378,12 @@ void *Unk_02056fd8::func_02057048(s32 idx) {
     return data + (*(u16 *)(ent + 4) << 3);
 }
 
-void Unk_02056fd8::func_02057030(void) {
+void G3dResAccess::func_02057030(void) {
     s32 u;
-    func_02057048(func_02057078(u));
+    getPlttData(findPlttIdx(u));
 }
 
-u32 Unk_02056fd8::func_02056fd8(s32 idx) {
+u32 G3dResAccess::getPlttSize(s32 idx) {
     u8 *base = (u8 *)this + unk_34;
     u8 *ent = 0;
     s32 i;
@@ -415,19 +415,19 @@ u32 Unk_02056fd8::func_02056fd8(s32 idx) {
     }
 }
 
-u32 Unk_02056fd8::func_02056fcc(s32 a) {
-    return func_02057158((u8 *)this + 0x40, a);
+u32 G3dResAccess::func_02056fcc(s32 a) {
+    return G3dRes_FindDictIdx((u8 *)this + 0x40, a);
 }
 
-Unk_02056f94::Unk_02056f94() {
+TexPatVramTasks::TexPatVramTasks() {
 }
 
-Unk_02056f94::~Unk_02056f94() {
-    unk_00[0].func_020b89c8();
-    unk_00[1].func_020b89c8();
+TexPatVramTasks::~TexPatVramTasks() {
+    unk_00[0].cancel();
+    unk_00[1].cancel();
 }
 
-BOOL Unk_02056e38::func_02056e88(u8 *hdr, s32 i1, s32 i2, u8 *x, volatile s32 a, volatile s32 b) {
+BOOL TexPatVramUploader::uploadByIdx(u8 *hdr, s32 i1, s32 i2, u8 *x, volatile s32 a, volatile s32 b) {
     u8 *p1;
     u8 *e2;
     u8 *r7;
@@ -451,21 +451,21 @@ BOOL Unk_02056e38::func_02056e88(u8 *hdr, s32 i1, s32 i2, u8 *x, volatile s32 a,
         e3 = Unk_02056e88_Ent(x + *(u16 *)(x + 0x34), tb);
     }
     if (p1 != NULL) {
-        func_02057180(*(u32 *)p1);
+        G3dTex_GetImageSize(*(u32 *)p1);
         u32 r6 = *(u32 *)p1 + (u16) * (u32 *)(hdr + 8);
         if (r7 != NULL) {
-            u8 *t = (u8 *)_ZN12Unk_02056fd813func_020570b0Ei(x, a);
-            s32 r3 = func_02057180(*(u32 *)r7);
-            if (!_ZN12Unk_020e45ec13func_020b8a84Ejjjh(this, t, (r6 & 0xffff) << 3, r3, 2)) {
+            u8 *t = (u8 *)_ZN12G3dResAccess10getTexDataEi(x, a);
+            s32 r3 = G3dTex_GetImageSize(*(u32 *)r7);
+            if (!_ZN11TexVramTask10requestTexEjjjh(this, t, (r6 & 0xffff) << 3, r3, 2)) {
                 return FALSE;
             }
         }
         if (e2 != NULL && e3 != NULL) {
             s32 bb = b;
-            u8 *t = _ZN12Unk_02056fd813func_02057048Ei(x, bb);
-            s32 r3 = _ZN12Unk_02056fd813func_02056fd8Ei(x, bb);
-            if (!_ZN12Unk_020e45ec13func_020b8a34Ejjjh((u8 *)unk_00 + 0x1c, t, (*(u16 *)e2 + (u16) * (u32 *)(hdr + 0x2c)) << 3, r3, 3)) {
-                _ZN12Unk_020e45ec13func_020b89c8Ev(this);
+            u8 *t = _ZN12G3dResAccess11getPlttDataEi(x, bb);
+            s32 r3 = _ZN12G3dResAccess11getPlttSizeEi(x, bb);
+            if (!_ZN11TexVramTask11requestPlttEjjjh((u8 *)unk_00 + 0x1c, t, (*(u16 *)e2 + (u16) * (u32 *)(hdr + 0x2c)) << 3, r3, 3)) {
+                _ZN11TexVramTask6cancelEv(this);
                 return FALSE;
             }
         }
@@ -473,31 +473,31 @@ BOOL Unk_02056e38::func_02056e88(u8 *hdr, s32 i1, s32 i2, u8 *x, volatile s32 a,
     return TRUE;
 }
 
-BOOL Unk_02056e38::func_02056e38(u8 *hdr, const char *n1, const char *n2, u8 *x, s32 a, s32 b) {
+BOOL TexPatVramUploader::uploadByName(u8 *hdr, const char *n1, const char *n2, u8 *x, s32 a, s32 b) {
     s32 i1;
     s32 i2;
     if (n1 != NULL) {
-        i1 = _ZN12Unk_02056fd813func_02057100Ei(hdr, n1);
+        i1 = _ZN12G3dResAccess10findTexIdxEi(hdr, n1);
     } else {
         i1 = -1;
     }
     if (n2 != NULL) {
-        i2 = _ZN12Unk_02056fd813func_02057078Ei(hdr, n2);
+        i2 = _ZN12G3dResAccess11findPlttIdxEi(hdr, n2);
     } else {
         i2 = -1;
     }
-    return func_02056e88(hdr, i1, i2, x, a, b);
+    return uploadByIdx(hdr, i1, i2, x, a, b);
 }
 
-Unk_02056e28::Unk_02056e28() {
+ResName16::ResName16() {
     for (u32 i = 0; i < 0x11; i++) {
         unk_00[i] = 0;
     }
 }
 
-Unk_02056e28::~Unk_02056e28() {}
+ResName16::~ResName16() {}
 
-void Unk_02056e28::func_02056df0(const char *src) {
+void ResName16::set(const char *src) {
     if (src != NULL) {
         u32 n = func_0212a438(src) + 1;
         for (u32 i = 0; i < 0x11; i++) {
@@ -510,11 +510,11 @@ void Unk_02056e28::func_02056df0(const char *src) {
     }
 }
 
-char *Unk_02056e28::func_02056dec() {
+char *ResName16::get() {
     return unk_00;
 }
 
-Unk_020dbe8c::Unk_020dbe8c() {
+TexPatVramAnim::TexPatVramAnim() {
     unk_50 = NULL;
     unk_78 = NULL;
     unk_7c = NULL;
@@ -523,11 +523,11 @@ Unk_020dbe8c::Unk_020dbe8c() {
     unk_88 = -1;
 }
 
-Unk_020dbe8c::~Unk_020dbe8c() {
-    func_02056d00();
+TexPatVramAnim::~TexPatVramAnim() {
+    clear();
 }
 
-void Unk_020dbe8c::func_02056d00() {
+void TexPatVramAnim::clear() {
     unk_50 = NULL;
     unk_78 = NULL;
     unk_7c = NULL;
@@ -535,33 +535,33 @@ void Unk_020dbe8c::func_02056d00() {
     unk_84 = -1;
 }
 
-BOOL Unk_020dbe8c::func_02056ca4(u8 *hdr, const char *n1, const char *n2, u8 *x, u8 *y, u8 flag) {
-    func_02056d00();
+BOOL TexPatVramAnim::init(u8 *hdr, const char *n1, const char *n2, u8 *x, u8 *y, u8 flag) {
+    clear();
     unk_8c = flag;
-    unk_54.func_02056df0(n1);
-    unk_65.func_02056df0(n2);
+    unk_54.set(n1);
+    unk_65.set(n2);
     unk_50 = hdr;
     unk_78 = x;
     unk_7c = y;
     setup(*(u16 *)(y + 4), 0, 0x1000, 0);
-    func_02056bf8();
+    update();
     return TRUE;
 }
 
-BOOL Unk_020dbe8c::func_02056bf8() {
+BOOL TexPatVramAnim::update() {
     s32 xy[2];
     unk_88 = unk_84;
     step();
-    func_02056b84(&xy[0], &xy[1]);
+    getFrameIndices(&xy[0], &xy[1]);
     if (unk_84 == xy[0] || unk_8c != 0) {
         xy[0] = -1;
     }
     if (unk_80 == xy[1]) {
         xy[1] = -1;
     }
-    char *n1 = unk_54.func_02056dec();
-    char *n2 = unk_65.func_02056dec();
-    if (((Unk_02056e38 *)&unk_18)->func_02056e38(unk_50, n1, n2, unk_78, xy[0], xy[1])) {
+    char *n1 = unk_54.get();
+    char *n2 = unk_65.get();
+    if (((TexPatVramUploader *)&unk_18)->uploadByName(unk_50, n1, n2, unk_78, xy[0], xy[1])) {
         if (xy[0] != -1) {
             unk_84 = xy[0];
         }
@@ -573,7 +573,7 @@ BOOL Unk_020dbe8c::func_02056bf8() {
     return FALSE;
 }
 
-void Unk_020dbe8c::func_02056b84(s32 *a, s32 *b) {
+void TexPatVramAnim::getFrameIndices(s32 *a, s32 *b) {
     *b = -1;
     *a = *b;
     u8 *r7 = NNSi_G3dGetTexPatAnmFV(unk_7c, 0, (u32)(unk_08 << 4) >> 16);
@@ -587,32 +587,32 @@ void Unk_020dbe8c::func_02056b84(s32 *a, s32 *b) {
     }
 }
 
-Unk_02056b74::Unk_02056b74() {
-    func_02056ae8();
+MatTexBinder::MatTexBinder() {
+    clear();
 }
 
-Unk_02056b74::~Unk_02056b74() {}
+MatTexBinder::~MatTexBinder() {}
 
-BOOL Unk_02056b74::func_02056b60() {
+BOOL MatTexBinder::hasMaterial() {
     if (unk_04 != -1) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_02056b74::func_02056b28(u8 *hdr, const char *name) {
-    if (!func_02056b60()) {
-        s32 idx = (s8)_ZN12Unk_02056fd813func_02057110Ei(hdr, name);
+BOOL MatTexBinder::setMaterialByName(u8 *hdr, const char *name) {
+    if (!hasMaterial()) {
+        s32 idx = (s8)_ZN12G3dResAccess10findMatIdxEi(hdr, name);
         if (idx != -1) {
-            return func_02056af0(hdr, idx);
+            return setMaterial(hdr, idx);
         }
         return FALSE;
     }
     return FALSE;
 }
 
-BOOL Unk_02056b74::func_02056af0(u8 *hdr, s32 idx) {
-    if (!func_02056b60()) {
+BOOL MatTexBinder::setMaterial(u8 *hdr, s32 idx) {
+    if (!hasMaterial()) {
         if (idx != -1 && idx < *(u8 *)(hdr + *(s32 *)(hdr + 8) + 5)) {
             unk_04 = idx;
             unk_00 = hdr;
@@ -623,34 +623,34 @@ BOOL Unk_02056b74::func_02056af0(u8 *hdr, s32 idx) {
     return FALSE;
 }
 
-void Unk_02056b74::func_02056ae8() {
+void MatTexBinder::clear() {
     unk_04 = -1;
 }
 
-BOOL Unk_02056b74::func_02056ab0(u8 *hdr2, const char *n, const char *n2) {
-    BOOL ok = (func_02056a4c(hdr2, n) & 1) ? TRUE : FALSE;
-    if (ok & func_020568cc(hdr2, n2)) {
+BOOL MatTexBinder::bindByName(u8 *hdr2, const char *n, const char *n2) {
+    BOOL ok = (bindTexByName(hdr2, n) & 1) ? TRUE : FALSE;
+    if (ok & bindPlttByName(hdr2, n2)) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_02056b74::func_02056a78(u8 *hdr2, s32 a, s32 idx) {
-    BOOL ok = (func_020568f8(hdr2, a) & 1) ? TRUE : FALSE;
-    if (ok & func_020567ec(hdr2, idx)) {
+BOOL MatTexBinder::bindByIdx(u8 *hdr2, s32 a, s32 idx) {
+    BOOL ok = (bindTex(hdr2, a) & 1) ? TRUE : FALSE;
+    if (ok & bindPltt(hdr2, idx)) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_02056b74::func_02056a4c(u8 *hdr2, const char *name) {
+BOOL MatTexBinder::bindTexByName(u8 *hdr2, const char *name) {
     if (name != NULL) {
-        return func_020568f8(hdr2, _ZN12Unk_02056fd813func_02057100Ei(hdr2, name));
+        return bindTex(hdr2, _ZN12G3dResAccess10findTexIdxEi(hdr2, name));
     }
     return TRUE;
 }
 
-BOOL Unk_02056b74::func_020568f8(u8 *hdr2, s32 idx2) {
+BOOL MatTexBinder::bindTex(u8 *hdr2, s32 idx2) {
     u8 *r5;
     u8 *r6;
     u8 *r4;
@@ -669,7 +669,7 @@ BOOL Unk_02056b74::func_020568f8(u8 *hdr2, s32 idx2) {
     u32 c;
     u8 *ent;
     u32 *w;
-    if (func_02056b60()) {
+    if (hasMaterial()) {
         r5 = NULL;
         if (idx2 != -1) {
             u8 *h = unk_00;
@@ -736,14 +736,14 @@ BOOL Unk_02056b74::func_020568f8(u8 *hdr2, s32 idx2) {
     return FALSE;
 }
 
-BOOL Unk_02056b74::func_020568cc(u8 *hdr2, const char *name) {
+BOOL MatTexBinder::bindPlttByName(u8 *hdr2, const char *name) {
     if (name != NULL) {
-        return func_020567ec(hdr2, _ZN12Unk_02056fd813func_02057078Ei(hdr2, name));
+        return bindPltt(hdr2, _ZN12G3dResAccess11findPlttIdxEi(hdr2, name));
     }
     return TRUE;
 }
 
-BOOL Unk_02056b74::func_020567ec(u8 *hdr2, s32 idx2) {
+BOOL MatTexBinder::bindPltt(u8 *hdr2, s32 idx2) {
     u8 *r6;
     u8 *r5;
     u8 *r4;
@@ -758,7 +758,7 @@ BOOL Unk_02056b74::func_020567ec(u8 *hdr2, s32 idx2) {
     u32 v5;
     u8 *lst2;
     u32 v1;
-    if (func_02056b60()) {
+    if (hasMaterial()) {
         r4 = NULL;
         if (idx2 != -1) {
             u8 *h = unk_00;
@@ -814,25 +814,25 @@ BOOL Unk_02056b74::func_020567ec(u8 *hdr2, s32 idx2) {
     return FALSE;
 }
 
-s8 Unk_02056b74::func_020567e4() {
+s8 MatTexBinder::getMaterial() {
     return unk_04;
 }
 
-extern "C" s32 func_02056794(u8 *hdr, const char *name, s32 p, s32 q, s32 r) {
-    Unk_02056b74 l;
-    if (l.func_02056b28(hdr, name)) {
-        s32 res = l.func_02056ab0((u8 *)p, (const char *)q, (const char *)r);
-        l.func_02056ae8();
+extern "C" s32 Model_BindMatTexByName(u8 *hdr, const char *name, s32 p, s32 q, s32 r) {
+    MatTexBinder l;
+    if (l.setMaterialByName(hdr, name)) {
+        s32 res = l.bindByName((u8 *)p, (const char *)q, (const char *)r);
+        l.clear();
         return res;
     }
     return 0;
 }
 
-extern "C" s32 func_02056744(u8 *hdr, const char *name, s32 p, s32 q, s32 r) {
-    Unk_02056b74 l;
-    if (l.func_02056b28(hdr, name)) {
-        s32 res = l.func_02056a78((u8 *)p, q, r);
-        l.func_02056ae8();
+extern "C" s32 Model_BindMatTexByIdx(u8 *hdr, const char *name, s32 p, s32 q, s32 r) {
+    MatTexBinder l;
+    if (l.setMaterialByName(hdr, name)) {
+        s32 res = l.bindByIdx((u8 *)p, q, r);
+        l.clear();
         return res;
     }
     return 0;
@@ -929,15 +929,15 @@ no:
     return FALSE;
 }
 
-Unk_020dbe6c::Unk_020dbe6c() {
+JointBlend::JointBlend() {
     MI_CpuFill8(&unk_04, 0, 0x24);
     unk_34 = 0;
     unk_38 = 0;
 }
 
-Unk_020dbe6c::~Unk_020dbe6c() {}
+JointBlend::~JointBlend() {}
 
-BOOL Unk_020dbe6c::func_02056544() {
+BOOL JointBlend::advance() {
     if (unk_38 != 0) {
         unk_34 += unk_38;
         if (unk_34 >= 0x1000) {
@@ -950,7 +950,7 @@ BOOL Unk_020dbe6c::func_02056544() {
     return TRUE;
 }
 
-void Unk_020dbe6c::func_02056520(s32 n) {
+void JointBlend::start(s32 n) {
     unk_34 = 0;
     if (n == 0) {
         unk_38 = 0;
@@ -960,7 +960,7 @@ void Unk_020dbe6c::func_02056520(s32 n) {
 }
 
 #pragma thumb off
-extern "C" void func_020563cc(Unk_020561d8_Vec *v) {
+extern "C" void Anim_NormalizeVec(Unk_020561d8_Vec *v) {
     s64 sum = (s64)v->x * v->x;
     sum += (s64)v->y * v->y;
     sum += (s64)v->z * v->z;
@@ -983,7 +983,7 @@ extern "C" void func_020563cc(Unk_020561d8_Vec *v) {
     }
 }
 
-extern "C" void func_020562e0(Unk_020561d8_Mtx *a, Unk_020561d8_Mtx *b, Unk_020561d8_Mtx *out, s32 t) {
+extern "C" void Anim_LerpRotMtx(Unk_020561d8_Mtx *a, Unk_020561d8_Mtx *b, Unk_020561d8_Mtx *out, s32 t) {
     s32 k = 0x1000 - t;
     out->m[0] = (s32)(((s64)t * a->m[0] + (s64)k * b->m[0]) >> 12);
     out->m[1] = (s32)(((s64)t * a->m[1] + (s64)k * b->m[1]) >> 12);
@@ -991,13 +991,13 @@ extern "C" void func_020562e0(Unk_020561d8_Mtx *a, Unk_020561d8_Mtx *b, Unk_0205
     out->m[3] = (s32)(((s64)t * a->m[3] + (s64)k * b->m[3]) >> 12);
     out->m[4] = (s32)(((s64)t * a->m[4] + (s64)k * b->m[4]) >> 12);
     out->m[5] = (s32)(((s64)t * a->m[5] + (s64)k * b->m[5]) >> 12);
-    func_020563cc((Unk_020561d8_Vec *)&out->m[0]);
-    func_020563cc((Unk_020561d8_Vec *)&out->m[3]);
+    Anim_NormalizeVec((Unk_020561d8_Vec *)&out->m[0]);
+    Anim_NormalizeVec((Unk_020561d8_Vec *)&out->m[3]);
     VEC_CrossProduct(&out->m[0], &out->m[3], &out->m[6]);
     VEC_CrossProduct(&out->m[6], &out->m[0], &out->m[3]);
 }
 
-extern "C" void func_02056274(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_020561d8_Vec *out, s32 t) {
+extern "C" void Anim_LerpVec(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_020561d8_Vec *out, s32 t) {
     s32 k = 0x1000 - t;
     out->x = (s32)(((s64)t * a->x + (s64)k * b->x) >> 12);
     out->y = (s32)(((s64)t * a->y + (s64)k * b->y) >> 12);
@@ -1005,12 +1005,12 @@ extern "C" void func_02056274(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_0205
 }
 #pragma thumb reset
 
-void Unk_020dbe6c::func_020561d8(Unk_02056160_Arg *x) {
+void JointBlend::blendPose(Unk_02056160_Arg *x) {
     Unk_020561d8_Vec v;
     Unk_020561d8_Mtx m;
     u32 idx = x->hdr->idx;
     if ((x->z->flags & 4) == 0 && idx <= 1) {
-        func_02056274(&x->z->vec, &unk_28, &v, unk_34);
+        Anim_LerpVec(&x->z->vec, &unk_28, &v, unk_34);
         Unk_020561d8_Z *z = x->z;
         Unk_020561d8_Vec *pv = &z->vec;
         pv->x = v.x;
@@ -1020,12 +1020,12 @@ void Unk_020dbe6c::func_020561d8(Unk_02056160_Arg *x) {
     if (x->z->flags & 2) {
         MTX_Identity33_(&x->z->mtx);
     }
-    func_020562e0(&x->z->mtx, &unk_04, &m, unk_34);
+    Anim_LerpRotMtx(&x->z->mtx, &unk_04, &m, unk_34);
     x->z->mtx = m;
     x->z->flags &= ~2;
 }
 
-void Unk_020dbe6c::func_02056160(Unk_02056160_Arg *x) {
+void JointBlend::capturePose(Unk_02056160_Arg *x) {
     Unk_02056160_Rec *r = &x->tbl->recs[x->hdr->idx];
     if (r->mtx.m[0] == 0 && r->mtx.m[1] == 0 && r->mtx.m[2] == 0 && r->mtx.m[3] == 0 && r->mtx.m[4] == 0 &&
         r->mtx.m[5] == 0 && r->mtx.m[6] == 0 && r->mtx.m[7] == 0 && r->mtx.m[8] == 0) {
@@ -1038,12 +1038,12 @@ void Unk_020dbe6c::func_02056160(Unk_02056160_Arg *x) {
     unk_28.z = r->vec.z;
 }
 
-Unk_0205614c *Unk_0205614c::func_0205614c() {
-    _ZN12Unk_020e45ecC2Ev(unk_04);
+MatTexPatTrack *MatTexPatTrack::construct() {
+    _ZN11TexVramTaskC2Ev(unk_04);
     return this;
 }
 
-void Unk_0205614c::func_02056124() {
+void MatTexPatTrack::reset() {
     unk_21 = 0xff;
     unk_22 = 0xff;
     unk_20 = 0xff;
@@ -1052,18 +1052,18 @@ void Unk_0205614c::func_02056124() {
     unk_24 = 0xffff;
 }
 
-BOOL Unk_0205614c::func_0205610c() {
-    func_02056124();
-    _ZN12Unk_020e45ec13func_020b8b08Ev(unk_04);
+BOOL MatTexPatTrack::init() {
+    reset();
+    _ZN11TexVramTask5clearEv(unk_04);
     return TRUE;
 }
 
-void Unk_0205614c::func_020560f8() {
-    func_02056124();
-    _ZN12Unk_020e45ec13func_020b89c8Ev(unk_04);
+void MatTexPatTrack::release() {
+    reset();
+    _ZN11TexVramTask6cancelEv(unk_04);
 }
 
-void Unk_0205614c::func_02056070(u32 frame, u8 *p2, void *p3, void *p4) {
+void MatTexPatTrack::update(u32 frame, u8 *p2, void *p3, void *p4) {
     u8 *b = p2;
     u8 i;
     u8 *p;
@@ -1084,27 +1084,27 @@ void Unk_0205614c::func_02056070(u32 frame, u8 *p2, void *p3, void *p4) {
             u8 v = NNS_G3dGetResDictIdxByName((u8 *)p3 + 0x3c, b + *(u16 *)(b + 8) + (p[2] << 4));
             if (v != unk_20) {
                 unk_20 = v;
-                func_02056028(p4, p3);
+                upload(p4, p3);
             }
         }
     }
 }
 
-void Unk_0205614c::func_02056028(void *a, void *b) {
-    if (!_ZN12Unk_020e45ec13func_020b8984EPvjj(unk_04, a, unk_22, _ZN12Unk_02056fd813func_020570b0Ei(b, unk_20))) {
+void MatTexPatTrack::upload(void *a, void *b) {
+    if (!_ZN11TexVramTask13requestMatTexEPvjj(unk_04, a, unk_22, _ZN12G3dResAccess10getTexDataEi(b, unk_20))) {
         unk_21 = 0xff;
         unk_20 = 0xff;
         unk_24 = 0xffff;
     }
 }
 
-BOOL Unk_0205614c::func_02056018() { return (unk_23 & 1) ? TRUE : FALSE; }
+BOOL MatTexPatTrack::isPaused() { return (unk_23 & 1) ? TRUE : FALSE; }
 
-Unk_020dbe5c::Unk_020dbe5c() { func_02055f9c(); }
+MatTexPatAnim::MatTexPatAnim() { clear(); }
 
-Unk_020dbe5c::~Unk_020dbe5c() {}
+MatTexPatAnim::~MatTexPatAnim() {}
 
-void Unk_020dbe5c::func_02055f9c() {
+void MatTexPatAnim::clear() {
     unk_18 = NULL;
     unk_24 = 0;
     unk_26 = 0;
@@ -1112,39 +1112,39 @@ void Unk_020dbe5c::func_02055f9c() {
     unk_20 = NULL;
 }
 
-BOOL Unk_020dbe5c::func_02055f1c(void *r1, void *r2, u32 r3, void *heap) {
+BOOL MatTexPatAnim::init(void *r1, void *r2, u32 r3, void *heap) {
     unk_18 = r1;
     if (heap == NULL) {
         heap = gCurrentHeap;
     }
     unk_1c = NNS_G3dGetTex(r2);
     unk_26 = r3;
-    unk_28 = (Unk_0205614c *)Heap_Alloc(heap, unk_26 * 0x28);
+    unk_28 = (MatTexPatTrack *)Heap_Alloc(heap, unk_26 * 0x28);
     if (unk_28 == NULL) {
         return FALSE;
     }
     s32 i;
     for (i = 0; i < unk_26; i++) {
-        Unk_0205614c *e = &unk_28[i];
+        MatTexPatTrack *e = &unk_28[i];
         if (e) {
-            e->func_0205614c();
+            e->construct();
         }
-        if (!unk_28[i].func_0205610c()) {
+        if (!unk_28[i].init()) {
             return FALSE;
         }
     }
     return TRUE;
 }
 
-void Unk_020dbe5c::func_02055eec() {
+void MatTexPatAnim::release() {
     s32 i;
     for (i = 0; i < unk_26; i++) {
-        unk_28[i].func_020560f8();
+        unk_28[i].release();
     }
-    func_02055f9c();
+    clear();
 }
 
-void Unk_020dbe5c::func_02055e4c(void *r1, void *r2, u32 r3, u8 p5, void *p6) {
+void MatTexPatAnim::setAnim(void *r1, void *r2, u32 r3, u8 p5, void *p6) {
     unk_20 = NNS_G3dGetAnmByIdx(r1, 0);
     unk_24 = *(u16 *)((u8 *)unk_20 + 4);
     if (r3 == 0) {
@@ -1166,27 +1166,27 @@ void Unk_020dbe5c::func_02055e4c(void *r1, void *r2, u32 r3, u8 p5, void *p6) {
     ::_ZN13AnimFrameCtrl5setupEihit(this, r3, p5, p6, r2);
 }
 
-void Unk_020dbe5c::func_02055e38() {
+void MatTexPatAnim::update() {
     ::_ZN13AnimFrameCtrl4stepEv(this);
-    func_02055df0();
+    applyFrame();
 }
 
-void Unk_020dbe5c::func_02055df0() {
+void MatTexPatAnim::applyFrame() {
     u32 frame = (u32)(unk_08 << 4) >> 16;
     s32 i;
     for (i = 0; i < unk_26; i++) {
-        if (!unk_28[i].func_02056018()) {
-            unk_28[i].func_02056070(frame, (u8 *)unk_20, unk_1c, unk_18);
+        if (!unk_28[i].isPaused()) {
+            unk_28[i].update(frame, (u8 *)unk_20, unk_1c, unk_18);
         }
     }
 }
 
-BOOL Unk_020dbe5c::func_02055d60(s32 unused, u32 x) {
+BOOL MatTexPatAnim::setMaterialTex(s32 unused, u32 x) {
     BOOL z = FALSE;
-    s32 id = _ZN12Unk_02056fd813func_02057110Ei(unk_18);
+    s32 id = _ZN12G3dResAccess10findMatIdxEi(unk_18);
     
     if (id == -1) return z;
-    u8 v = _ZN12Unk_02056fd813func_02057100Ei(unk_1c, x);
+    u8 v = _ZN12G3dResAccess10findTexIdxEi(unk_1c, x);
     
     if (v == -1) return z;
     s32 i = z;
@@ -1196,7 +1196,7 @@ BOOL Unk_020dbe5c::func_02055d60(s32 unused, u32 x) {
                 unk_28[i].unk_20 = v;
                 unk_28[i].unk_21 = 0xff;
                 unk_28[i].unk_24 = 0xffff;
-                unk_28[i].func_02056028(unk_18, unk_1c);
+                unk_28[i].upload(unk_18, unk_1c);
                 return TRUE;
             }
             return z;
@@ -1205,8 +1205,8 @@ BOOL Unk_020dbe5c::func_02055d60(s32 unused, u32 x) {
     return z;
 }
 
-void Unk_020dbe5c::func_02055d18() {
-    s32 id = _ZN12Unk_02056fd813func_02057110Ei(unk_18);
+void MatTexPatAnim::pauseMaterial() {
+    s32 id = _ZN12G3dResAccess10findMatIdxEi(unk_18);
     s32 i;
     if (id != -1) {
         for (i = 0; i < unk_26; i++) {
@@ -1218,9 +1218,9 @@ void Unk_020dbe5c::func_02055d18() {
     }
 }
 
-extern "C" void func_02055cd0(Unk_02055cd0_Obj *p, void *q) {
+extern "C" void MatTexPatAnim_ResumeMaterial(Unk_02055cd0_Obj *p, void *q) {
     s32 i, r;
-    r = _ZN12Unk_02056fd813func_02057110Ei((void *)p->unk_18);
+    r = _ZN12G3dResAccess10findMatIdxEi((void *)p->unk_18);
     i = 0;
     if (r != -1) {
         u32 n = p->unk_26;

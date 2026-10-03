@@ -154,12 +154,12 @@ public:
     virtual BOOL vfunc_30();
 };
 
-// object data_021ef2e4: only a vtable pointer; vfunc_00/04 are defined in another unit, vfunc_08 here
-class Unk_020e41d0 {
+// object sFieldGfxFrameHooks: only a vtable pointer; vfunc_00/04 are defined in another unit, vfunc_08 here
+class GfxFrameHooks {
 public:
-    virtual inline void vfunc_00();
-    virtual inline void vfunc_04();
-    virtual void vfunc_08();
+    virtual inline void onPreTask();
+    virtual inline void onPostTask();
+    virtual void onVBlank();
 };
 
 // stand-in for the owner of the six pointer-to-member targets of the vfunc_00 table
@@ -176,16 +176,16 @@ public:
 extern "C" {
 // ---- data of other units ----
 extern s32 data_020c8cc0;
-extern Unk_020cbb18_t* data_020cbb18;
+extern Unk_020cbb18_t* gCommManager;
 extern u16 data_020e2974;
 extern u8 data_021e5890[];
 extern S2f0* gActorDefaultParent;
 extern u8 gTouchHeld;
 extern u16 gTouchX;
 extern u16 gTouchY;
-extern u8 data_021c3cc0;
+extern u8 gScreenTransition;
 extern u8 data_021c3cb8;
-extern u32 data_021c5388;
+extern u32 gGfxFrameHooks;
 extern u32 data_021ce63c;
 extern u32 gVBlanksPerFrame;
 extern u8 data_021eda64;
@@ -199,19 +199,19 @@ extern u8 data_ov054_0225b7a8[];
 extern u8 data_ov005_0225b79c[];
 
 // ---- functions of other units ----
-BOOL _ZN12Unk_020cbb1813func_02072e88Ei(Unk_020cbb18_t* p, u32 i);
-BOOL _ZN12Unk_020cbb1813func_020729ccEj(Unk_020cbb18_t* p, u32 i);
-void _ZN12Unk_020cbb1813func_020729a8Ej(void*, s32);
+BOOL _ZN11CommManager12isSlotActiveEi(Unk_020cbb18_t* p, u32 i);
+BOOL _ZN11CommManager7isMyAidEj(Unk_020cbb18_t* p, u32 i);
+void _ZN11CommManager14setMemberCountEj(void*, s32);
 u32 func_020a6358(u32 i);
 void func_020a4414(s32 a, s32 b, s32 c, s32 d);
 s32 func_0209c098(s32 a);
 u32 func_0209501c(Vec3* a, s16* b);
-void func_0204ee10(s32* a, s32* b, Vec3* c);
-void func_0204edd8(Vec3* out, Vec3* in);
-void* func_0204da0c();
-BOOL func_0204d700(void* o, Vec3* v, s32* a, s32* b);
-BOOL func_0204d684(void* o, Vec3* v, s32* a, s32* b);
-void func_0209cfb8(u8 *out);
+void FieldPos_ToUnit(s32* a, s32* b, Vec3* c);
+void FieldPos_SnapToUnitCenter(Vec3* out, Vec3* in);
+void* TownBlockMap_Get();
+BOOL Town_FindPlayerHouse(void* o, Vec3* v, s32* a, s32* b);
+BOOL Town_FindGateHouse(void* o, Vec3* v, s32* a, s32* b);
+void Clock_GetDayMonth(u8 *out);
 void OverlayMgr_Release(u32 v);
 void OverlayMgr_Acquire(u32 v);
 void func_020b60dc(s32, u32, u32, u32);
@@ -225,31 +225,31 @@ s32 func_020a5ef8();
 void func_020a5ee8(s32);
 BOOL PlayerData_Get(s32);
 void _ZN10PlayerData13func_02098a58Ev();
-s32 func_02036c58();
-void _ZN12Unk_0203710813func_02037108Ej(s32, s32);
+s32 BgModelCache_Get();
+void _ZN15BgModelCacheObj5setupEj(s32, s32);
 void FtrInfo_LoadIndoor(s32);
 void ItemInfo_LoadIndoor(s32);
 void _ZN12Unk_020b69a813func_020b69a8Ev();
 void _ZN12Unk_020b696013func_020b6990Ev();
 void func_02038158();
-s32 func_020559d0();
-void func_020559d8();
+s32 ResCache_Destroy();
+void ResCache_Init();
 void func_02038168();
-void func_02053780();
-void func_020b83e0();
-void func_020b8494();
-void func_0205369c();
+void Gfx_ResetScene();
+void VramQueue2d_Init();
+void VramQueueTex_Init();
+void Gfx_DisableAllBanks();
 void GX_SetBankForTex(u32);
 void GX_SetBankForTexPltt(u32);
 void GX_SetBankForBG(u32);
 void GX_SetBankForOBJ(u32);
 void GX_SetBankForSubBG(u32);
 void GX_SetBankForSubOBJ(u32);
-void func_020015a0(u32);
-void func_0200158c(u32);
-void func_020b7f80();
-void func_020014f4(u32);
-void func_020014bc(u32);
+void Gfx2d_SetMainBgMode(u32);
+void Gfx2d_SetSubBgMode(u32);
+void TexVram_InitManagers();
+void Gfx2d_ShowMainPlanes(u32);
+void Gfx2d_ShowSubPlanes(u32);
 void G3X_SetFog(u32, u32, u32, u32);
 void G3X_SetFogTable(const void *);
 void NNS_G3dGeFlushBuffer();
@@ -258,12 +258,12 @@ void func_02088d58();
 void func_02030518();
 void func_02089118();
 u64 OS_GetTick();
-void func_020739b8(s32);
+void Comm_ProcessReceived(s32);
 void func_020a5c30();
 void func_02045c68();
 u8 func_020a5f08();
 void func_020a5f18(s32);
-void func_02041104();
+void ScreenTransition_ShowCover();
 void Character_ResetList();
 void TalkRequestQueue_StartInitial();
 void func_02038fb0();
@@ -293,7 +293,7 @@ void FtrInfo_FreeIndoor();
 void ItemInfo_FreeIndoor();
 void func_020abe10();
 void func_020ac3a4();
-void _ZN12Unk_02036cec13func_02036cecEv();
+void _ZN12BgModelCache5resetEv();
 void _ZN12Unk_020718a413func_02071770Ev();
 void func_0205c644(u32);
 void func_0205cde4(u32);
@@ -393,13 +393,13 @@ s32 func_020b5328(void);
 s32 func_020b533c(u32 x);
 u32 func_020b5350(void);
 u8 func_020b5364(BOOL a);
-void func_020b53d4(s32 unused, u8* src);
-void func_020b53ec(u16 v);
-void func_020b53f8(u32 v);
+void Fog_SetTable(s32 unused, u8* src);
+void Fog_SetOffset(u16 v);
+void Fog_SetAlpha(u32 v);
 s32 func_020b5408(void);
-void func_020b541c(void);
-void func_020b54b0(s32 unused);
-void func_020b54ec(s32 a);
+void Scene_SetupGraphics(void);
+void Fog_Apply(s32 unused);
+void Fog_InitDefault(s32 a);
 u16 func_020b5b98(void);
 u32 func_020b5bbc(void);
 void func_020b5c0c(void);
@@ -418,7 +418,7 @@ extern const u8 data_020d0c8c[0x34];
 extern const u8 data_020d0cc0[0x34];
 extern const u8 data_020d0cf4[0x34];
 extern const Unk_020d0d28_Ent data_020d0d28[13];
-extern u8 data_020e41dc[0x20];
+extern u8 sDefaultFogTable[0x20];
 extern u8 data_020e41fc[0x34];
 extern s32 data_020e434c[51];
 extern u8 data_020e416c;
@@ -432,12 +432,12 @@ extern u32 data_020e41b8[2];
 extern TileData *data_020e4280[51];
 extern TileData *data_021ef2f0;
 extern u8 data_021ef2d4;
-extern Unk_020e41d0 data_021ef2e4;
+extern GfxFrameHooks sFieldGfxFrameHooks;
 extern u32 data_021ef2ec;
 extern Unk_020b50a4 data_021ef348;
 extern Unk_020b50a4 data_021ef360;
 extern Unk_020b4fc4 data_021ef378;
-extern S394 data_021ef394;
+extern S394 sFogState;
 extern Unk_020b6960 data_021ef3bc;
 extern Unk_020d9248 gViewFrustum;
 
@@ -471,12 +471,12 @@ extern Unk_020d9248 gViewFrustum;
 
 
 
-u8 data_020e41dc[0x20] = {
+u8 sDefaultFogTable[0x20] = {
     0x00, 0x00, 0x01, 0x01, 0x02, 0x02, 0x04, 0x06, 0x08, 0x0c, 0x10, 0x15, 0x19, 0x1d, 0x21, 0x25,
     0x2a, 0x2e, 0x32, 0x36, 0x3a, 0x3f, 0x43, 0x47, 0x49, 0x4b, 0x4d, 0x4d, 0x4e, 0x4e, 0x4f, 0x4f,
 };
 
-Unk_020e41d0 data_021ef2e4;
+GfxFrameHooks sFieldGfxFrameHooks;
 
 Unk_020d9248 gViewFrustum;
 
@@ -585,7 +585,7 @@ u8 data_020e4170 = 0x3f;
 
 Unk_020b50a4 data_021ef348;
 
-S394 data_021ef394;
+S394 sFogState;
 
 Unk_020b50a4 data_021ef360;
 
@@ -690,7 +690,7 @@ extern "C" void func_020b5c0c(void) {
 // ----- 0x020b5bbc -----
 extern "C" u32 func_020b5bbc(void) {
     u8 buf[2];
-    func_0209cfb8(buf);
+    Clock_GetDayMonth(buf);
     u32 a = buf[1];
     u32 b = buf[0];
     for (u32 i = 0; i < 13; i++) {
@@ -712,7 +712,7 @@ extern "C" u16 func_020b5b98(void) {
 }
 
 BOOL Unk_020b5844::func_020b5af4(u32, u32) {
-    func_02041104();
+    ScreenTransition_ShowCover();
     u8 m = data_020e4170;
     u8 r0 = func_020a5f08();
     if (m == 0x2e || m == 0xd || m == 0xc || m == 0xe || m == 0x2f) {
@@ -722,7 +722,7 @@ BOOL Unk_020b5844::func_020b5af4(u32, u32) {
     data_020e4174 = data_020e4170;
     data_020e4170 = func_020b49a8((u8*)&data_021ef378);
     func_020b5d4c();
-    data_021c5388 = (u32)&data_021ef2e4;
+    gGfxFrameHooks = (u32)&sFieldGfxFrameHooks;
     func_020b50b4();
     _ZN12Unk_020b69a813func_020b69a8Ev();
     data_021ef2d4 = 0;
@@ -734,19 +734,19 @@ BOOL Unk_020b5844::func_020b5af4(u32, u32) {
 }
 
 BOOL Unk_020b5844::func_020b59f8(u32, u32) {
-    func_020b541c();
-    func_02041104();
+    Scene_SetupGraphics();
+    ScreenTransition_ShowCover();
     func_0208e974();
     Snd_CreateScene();
-    Unk_020cbb18_t* p = data_020cbb18;
+    Unk_020cbb18_t* p = gCommManager;
     s32 i;
-    if (_ZN12Unk_020cbb1813func_02072e88Ei(p, p->unk_64)) {
+    if (_ZN11CommManager12isSlotActiveEi(p, p->unk_64)) {
         for (i = 0; i < 4; i++) PlayerSession_SetGfxSlot(i, 4);
     } else if (func_020b52ac()) {
-        _ZN12Unk_020cbb1813func_020729a8Ej(p, 4);
+        _ZN11CommManager14setMemberCountEj(p, 4);
         for (i = 0; i < 4; i++) PlayerSession_SetGfxSlot(i, i);
     } else {
-        _ZN12Unk_020cbb1813func_020729a8Ej(p, 1);
+        _ZN11CommManager14setMemberCountEj(p, 1);
         for (i = 0; i < 4; i++) PlayerSession_SetGfxSlot(i, 4);
     }
     if (func_020b52ac()) {
@@ -766,7 +766,7 @@ BOOL Unk_020b5844::func_020b59f8(u32, u32) {
             }
         }
     } else if (func_020b50e8() == 0x2c) {
-        Unk_020cbb18_t* q = data_020cbb18;
+        Unk_020cbb18_t* q = gCommManager;
         q->unk_64 = 4;
         q->f68 = 4;
         for (i = 3; i >= 0; i--) PlayerSession_ClearDataIndex(i);
@@ -775,8 +775,8 @@ BOOL Unk_020b5844::func_020b59f8(u32, u32) {
 }
 
 BOOL Unk_020b5844::func_020b58f0(u32, u32) {
-    s32 t = func_02036c58();
-    _ZN12Unk_0203710813func_02037108Ej(t, data_021ef2f0->f4 == 1 ? TRUE : FALSE);
+    s32 t = BgModelCache_Get();
+    _ZN15BgModelCacheObj5setupEj(t, data_021ef2f0->f4 == 1 ? TRUE : FALSE);
     FtrInfo_LoadIndoor(data_021ef2f0->f4 == 1 ? TRUE : FALSE);
     ItemInfo_LoadIndoor(data_021ef2f0->f4 == 1 ? TRUE : FALSE);
     func_020716cc();
@@ -817,7 +817,7 @@ BOOL Unk_020b5844::func_020b58b0(u32 a, u32 b) {
 }
 
 BOOL Unk_020b5844::func_020b5844(u32, u32) {
-    func_020b54ec((s32)this);
+    Fog_InitDefault((s32)this);
     func_0209035c();
     reg_4000008 = (reg_4000008 & ~3) | 2;
     func_02089124();
@@ -858,7 +858,7 @@ BOOL Unk_020e4238::vfunc_00() {
         }
     }
     if (fail) {
-        func_020739b8(0);
+        Comm_ProcessReceived(0);
         func_020a5c30();
         func_02045c68();
         return -1;
@@ -870,7 +870,7 @@ BOOL Unk_020e4238::vfunc_0c() {
     func_02034938();
     func_020b50b4();
     _ZN12Unk_020b696013func_020b6990Ev();
-    data_021c5388 = 0;
+    gGfxFrameHooks = 0;
     func_0205b848();
     func_02081d00();
     func_02077e30();
@@ -893,13 +893,13 @@ BOOL Unk_020e4238::vfunc_0c() {
     ItemInfo_FreeIndoor();
     func_020abe10();
     func_020ac3a4();
-    func_02036c58();
-    _ZN12Unk_02036cec13func_02036cecEv();
+    BgModelCache_Get();
+    _ZN12BgModelCache5resetEv();
     func_020b5408();
     data_021ce63c = 0;
     if (func_020b50e8() == 6) {
         u32 i = 0;
-        Unk_020cbb18_t* p = data_020cbb18;
+        Unk_020cbb18_t* p = gCommManager;
         for (; i < 4; i++) {
             if (i == 0) {
                 PlayerSession_SetDataIndex(0, p->f68);
@@ -930,7 +930,7 @@ BOOL Unk_020e4238::onExecute() {
     func_02030518();
     func_02089118();
     BOOL b;
-    if (data_021c3cc0 == 2) b = TRUE; else b = FALSE;
+    if (gScreenTransition == 2) b = TRUE; else b = FALSE;
     if (!b && data_021c3cb8 == 0) return TRUE;
     if (func_020b4fe4(func_020b49a8((u8*)&data_021ef378))) {
         s32 r4 = func_020b4944((Unk_020b4fc4*)func_020b4934());
@@ -940,7 +940,7 @@ BOOL Unk_020e4238::onExecute() {
 }
 
 BOOL Unk_020e4238::onDraw() {
-    func_020b54b0((s32)this);
+    Fog_Apply((s32)this);
     NNS_G3dGeFlushBuffer();
     s32 r0 = (s32)func_020b50b4();
     func_020b60dc(r0, (u8)gTouchX, (u8)gTouchY, gTouchHeld ? 1 : 0);
@@ -951,31 +951,31 @@ BOOL Unk_020e4238::onDraw() {
 
 BOOL Unk_020e4238::vfunc_30() {}
 
-extern "C" void func_020b54ec(s32 a) {
-    func_020b53d4(a, data_020e41dc);
+extern "C" void Fog_InitDefault(s32 a) {
+    Fog_SetTable(a, sDefaultFogTable);
     BOOL b;
     if (data_020e416c == 1) b = TRUE; else b = FALSE;
-    if (b) data_021ef394.m20 = 0;
-    else data_021ef394.m20 = 1;
-    data_021ef394.m21 = 8;
-    data_021ef394.h22 = 0xd2;
-    data_021ef394.h24 = 0x7fff;
-    data_021ef394.m26 = 0;
-    func_020b54b0(a);
+    if (b) sFogState.m20 = 0;
+    else sFogState.m20 = 1;
+    sFogState.m21 = 8;
+    sFogState.h22 = 0xd2;
+    sFogState.h24 = 0x7fff;
+    sFogState.m26 = 0;
+    Fog_Apply(a);
 }
 
-extern "C" void func_020b54b0(s32 unused) {
-    S394* a = &data_021ef394;
+extern "C" void Fog_Apply(s32 unused) {
+    S394* a = &sFogState;
     G3X_SetFog(a->m20, 1, a->m21, a->h22);
     reg_4000358 = a->h24 | (a->m26 << 16);
     G3X_SetFogTable(a);
 }
 
-extern "C" void func_020b541c(void) {
-    func_02053780();
-    func_020b83e0();
-    func_020b8494();
-    func_0205369c();
+extern "C" void Scene_SetupGraphics(void) {
+    Gfx_ResetScene();
+    VramQueue2d_Init();
+    VramQueueTex_Init();
+    Gfx_DisableAllBanks();
     GX_SetBankForTex(7);
     GX_SetBankForTexPltt(0x10);
     GX_SetBankForBG(0x20);
@@ -984,24 +984,24 @@ extern "C" void func_020b541c(void) {
     GX_SetBankForSubOBJ(0x100);
     *(volatile u32 *)0x4000000 = *(volatile u32 *)0x4000000 & 0xffcfffef;
     *(volatile u32 *)0x4001000 = *(volatile u32 *)0x4001000 & 0xffcfffef;
-    func_020015a0(0);
-    func_0200158c(1);
+    Gfx2d_SetMainBgMode(0);
+    Gfx2d_SetSubBgMode(1);
     *(volatile u32 *)0x4000000 = *(volatile u32 *)0x4000000 & 0xc7ffffff;
-    func_020b7f80();
-    func_020014f4(0x11);
-    func_020014bc(0x10);
-    func_020559d8();
+    TexVram_InitManagers();
+    Gfx2d_ShowMainPlanes(0x11);
+    Gfx2d_ShowSubPlanes(0x10);
+    ResCache_Init();
     func_02038168();
 }
 
-extern "C" s32 func_020b5408(void) { func_02038158(); return func_020559d0(); }
+extern "C" s32 func_020b5408(void) { func_02038158(); return ResCache_Destroy(); }
 
-extern "C" void func_020b53f8(u32 v) { data_021ef394.m26 = v & 0x1f; }
+extern "C" void Fog_SetAlpha(u32 v) { sFogState.m26 = v & 0x1f; }
 
-extern "C" void func_020b53ec(u16 v) { data_021ef394.h22 = v; }
+extern "C" void Fog_SetOffset(u16 v) { sFogState.h22 = v; }
 
-extern "C" void func_020b53d4(s32 unused, u8* src) {
-    u8* dst = (u8*)&data_021ef394;
+extern "C" void Fog_SetTable(s32 unused, u8* src) {
+    u8* dst = (u8*)&sFogState;
     s32 i;
     for (i = 0; i < 0x20; i++) {
         *dst = *src;
@@ -1010,7 +1010,7 @@ extern "C" void func_020b53d4(s32 unused, u8* src) {
 }
 
 // ----- member functions and constructors -----
-void Unk_020e41d0::vfunc_08() {}
+void GfxFrameHooks::onVBlank() {}
 
 extern "C" u8 func_020b5364(BOOL a) {
     u8 r = 0;
@@ -1270,12 +1270,12 @@ extern "C" s32 func_020b4d38(s32 a, s32 id, u8* type, Vec3* pos, u32* w, s16* s,
                     u8 n = t->count;
                     if (id >= 0 && id < n) {
                         Unk_020b4fc4* e = &entries[id];
-                        void* o = func_0204da0c();
+                        void* o = TownBlockMap_Get();
                         s32 va, vb;
                         Vec3 v;
                         switch (entries[id].type) {
                         case 0x3e:
-                            if (func_0204d700(o, &v, &va, &vb)) {
+                            if (Town_FindPlayerHouse(o, &v, &va, &vb)) {
                                 v.z += 0x1000;
                                 *type = 0;
                                 pos->x = v.x;
@@ -1290,7 +1290,7 @@ extern "C" s32 func_020b4d38(s32 a, s32 id, u8* type, Vec3* pos, u32* w, s16* s,
                             }
                             return 3;
                         case 0x3d:
-                            if (func_0204d684(o, &v, &va, &vb)) {
+                            if (Town_FindGateHouse(o, &v, &va, &vb)) {
                                 v.z += 0x1000;
                                 *type = 0;
                                 pos->x = v.x;
@@ -1363,7 +1363,7 @@ extern "C" s32 func_020b4c64(s32 a, s32 id, u8* type, Vec3* pos, u32* w, s16* s,
                             Unk_020b4fc4* e = &entries[id];
                             u8 ty = e->type;
                             if (e->pos.y == 0) e->pos.y = 0x200;
-                            if (_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64) && ty == 7) ty = 8;
+                            if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) && ty == 7) ty = 8;
                             *type = ty;
                             pos->x = e->pos.x;
                             pos->y = e->pos.y;
@@ -1433,7 +1433,7 @@ extern "C" BOOL func_020b4aec(s32 a, s32 id, Vec3* out, Vec3* in) {
     s16 s;
     Vec3 t;
     if (func_020b4b68(a, id, &type, &s)) {
-        func_0204edd8(&t, in);
+        FieldPos_SnapToUnitCenter(&t, in);
         setVec(out, t.x, in->y, t.z);
         if (s == 0 || s == -0x8000) {
             out->x = in->x;
@@ -1467,7 +1467,7 @@ extern "C" void func_020b4a08(s32 unused, s32 add) {
     u32 r = func_0209501c(&v, &s);
     p = 0;
     q = 0;
-    func_0204ee10(&p, &q, &v);
+    FieldPos_ToUnit(&p, &q, &v);
     if (func_020b50e8() == 0xb && v.z < minZ) v.z = minZ;
     v.z += add;
     func_020b4aa8((s32)func_020b4934(), func_020b50e8(), &v, (r << 22) & 0x3fc00000, s, p, q);
@@ -1530,13 +1530,13 @@ extern "C" u8 func_020b4904(u32 i) { return data_020d0c24[i]; }
 extern "C" BOOL func_020b4880(void) {
     u32 v;
     s32 i;
-    Unk_020cbb18_t *p = data_020cbb18;
-    if (!_ZN12Unk_020cbb1813func_02072e88Ei(p, p->unk_64)) {
+    Unk_020cbb18_t *p = gCommManager;
+    if (!_ZN11CommManager12isSlotActiveEi(p, p->unk_64)) {
         v = func_020b50e8();
         if (v == 12 || v == 13 || v == 14 || (u8)(v + 0xd2) <= 1) return FALSE;
     } else {
         for (i = 3; i >= 0; i--) {
-            if (_ZN12Unk_020cbb1813func_02072e88Ei(p, i) && !_ZN12Unk_020cbb1813func_020729ccEj(p, i)) {
+            if (_ZN11CommManager12isSlotActiveEi(p, i) && !_ZN11CommManager7isMyAidEj(p, i)) {
                 v = func_020a6358(i);
                 if (v == 12 || v == 13 || v == 14 || (u8)(v + 0xd2) <= 1) return FALSE;
             }

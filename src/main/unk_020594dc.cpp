@@ -234,7 +234,7 @@ s32 _ZN12Unk_02097ff413func_02098044Ej(void *p, s32 v);
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void func_020656dc(void *obj, u8 *b, const void *fmt, void *s, void *s2, void *p);
 s32 _ZN12Unk_02097ff413func_0209801cEj(void *p, s32 v);
-s32 _ZN12Unk_0204e2f013func_0204e474Eii(void *grid, s32 x, s32 y);
+s32 _ZN8BlockMap13func_0204e474Eii(void *grid, s32 x, s32 y);
 s32 _ZN8SaveData8testFlagEj(void *tbl, s32 v);
 void _ZN8SaveData7setFlagEj(void *tbl, s32 v);
 void *PlayerData_GetResident(void *tbl, s32 i);
@@ -250,7 +250,7 @@ void _ZN11MsgString33C1Ev(void *o);
 void _ZN11MsgString33D1Ev(void *o);
 void String_LoadResolveAltText(void *o, u8 *b, const void *fmt);
 s16 *func_0209c37c(s32 a, s32 b);
-u16 *func_0204ebd8(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 BOOL FtrInfo_TestIndoorFlag0(s32 v);
@@ -277,9 +277,9 @@ u32 Ftr_GetIndexInSeries(u16 *p);
 u32 FtrInfo_CountInSeries(u32 v);
 s32 Series_GetType(s32 v);
 s32 ItemInfo_GetSeries(u16 *p);
-void *func_0204d0a4(s32 a, void *heap);
-void func_0204d040(void *heap);
-void *func_0204d528(s32 i);
+void *VillagerRoomMap_Create(s32 a, void *heap);
+void VillagerRoomMap_Destroy(void *heap);
+void *HouseRoomMaps_Get(s32 i);
 void *_ZN9HouseData13func_0206052cEi(void *p, s32 a);
 u16 *_ZN9HouseRoom13func_02060850EPi(void *h, s32 i);
 u16 *_ZN9HouseRoom13func_02060834EPi(void *h, s32 i);
@@ -291,11 +291,11 @@ void func_020524a8(Unk_0205b320_Buf *b, void *cell);
 u32 func_0205248c(Unk_0205b320_Buf *b);
 s16 *func_0205242c(Unk_0205b320_Buf *b, u32 i);
 void func_020524a4(Unk_0205b320_Buf *b);
-void func_0209d498(Unk_0205b524_T *t);
-void func_0209d164(Unk_0205b524_T *t, s32 v);
-s32 func_0209ceac(s32 a, s32 b, s32 c);
-void func_0209d2c0(Unk_0205b524_T *t, s32 v);
-s32 func_0209d3d0(Unk_0205b524_T *a, Unk_0205b524_T *b, s32 n);
+void Clock_GetDateTime(Unk_0205b524_T *t);
+void DateTime_SubDays(Unk_0205b524_T *t, s32 v);
+s32 Date_GetWeekday(s32 a, s32 b, s32 c);
+void DateTime_AddDays(Unk_0205b524_T *t, s32 v);
+s32 DateTime_Compare(Unk_0205b524_T *a, Unk_0205b524_T *b, s32 n);
 Unk_020594dc_H ItemPick_One(ItemPickSpec o, s32 a, s32 b, s32 c, s32 d, s32 e);
 Unk_020594dc_H ItemPick_OneSimple(ItemPickSpec o);
 s32 func_0209788c(void *p, s32 q);
@@ -317,7 +317,7 @@ u8 func_0205b4ec();
 u8 func_0205b4f8();
 }
 
-extern "C" BOOL func_0205b690(Unk_0205b6e4 *t, s32 a, void (*b)()) {
+extern "C" BOOL HBlank_Replace(Unk_0205b6e4 *t, s32 a, void (*b)()) {
     t->unk_14 = b;
     t->unk_10 = a;
     t->unk_00 = 2;
@@ -338,7 +338,7 @@ extern "C" void func_0205b650(u8 *out) {
     Unk_0205b524_T t;
     t.w0 = 0;
     t.w1 = 0;
-    func_0209d498(&t);
+    Clock_GetDateTime(&t);
     out[0] = ((u8 *)&t)[3];
     out[1] = ((u8 *)&t)[4];
     out[2] = ((u8 *)&t)[5];
@@ -356,16 +356,16 @@ extern "C" s32 func_0205b55c(u8 *out) {
 #define LB(o) (((u8 *)&l)[o])
     l.a.w0 = 0;
     l.a.w1 = 0;
-    func_0209d498(&l.a);
+    Clock_GetDateTime(&l.a);
     if (LB(2) < 6) {
         LB(2) = 7;
-        func_0209d164(&l.a, 1);
+        DateTime_SubDays(&l.a, 1);
     }
     l.b.w0 = 0;
     l.b.w1 = 0;
-    func_0209d498(&l.b);
-    func_0209d164(&l.b, func_0209ceac(LB(0xd), LB(0xc), LB(0xb)));
-    if (LB(0xd) > LB(5)) func_0209d2c0(&l.b, 7);
+    Clock_GetDateTime(&l.b);
+    DateTime_SubDays(&l.b, Date_GetWeekday(LB(0xd), LB(0xc), LB(0xb)));
+    if (LB(0xd) > LB(5)) DateTime_AddDays(&l.b, 7);
     l.c.w0 = 0;
     l.c.w1 = 0;
     LB(0x15) = out[2];
@@ -374,7 +374,7 @@ extern "C" s32 func_0205b55c(u8 *out) {
     LB(0x12) = 7;
     LB(0x11) = 0;
     LB(0x10) = 0;
-    if (func_0209d3d0(&l.a, &l.c, 0x38) == -1) {
+    if (DateTime_Compare(&l.a, &l.c, 0x38) == -1) {
         out[2] = LB(5);
         out[1] = LB(4);
         out[0] = LB(3);
@@ -386,10 +386,10 @@ extern "C" s32 func_0205b55c(u8 *out) {
         LB(0x10) = 0;
         return FALSE;
     }
-    if (func_0209d3d0(&l.c, &l.b, 0x38) == -1) {
-        s32 t = func_0209d3d0(&l.b, &l.a, 0x38);
+    if (DateTime_Compare(&l.c, &l.b, 0x38) == -1) {
+        s32 t = DateTime_Compare(&l.b, &l.a, 0x38);
         if (t == -1) goto yes;
-        t = func_0209d3d0(&l.b, &l.a, 0x38);
+        t = DateTime_Compare(&l.b, &l.a, 0x38);
         if (t == 0) {
         yes:
             return TRUE;
@@ -403,8 +403,8 @@ extern "C" void func_0205b524(u8 *out) {
     Unk_0205b524_T t;
     t.w0 = 0;
     t.w1 = 0;
-    func_0209d498(&t);
-    if (((u8 *)&t)[2] < 6) func_0209d164(&t, 1);
+    Clock_GetDateTime(&t);
+    if (((u8 *)&t)[2] < 6) DateTime_SubDays(&t, 1);
     out[0] = ((u8 *)&t)[3];
     out[1] = ((u8 *)&t)[4];
     out[2] = ((u8 *)&t)[5];
@@ -430,7 +430,7 @@ extern "C" void func_0205b470() {
     data_021c5ccc = 0;
     for (i = 0; i < 5; i++) {
         Unk_0205b448 s;
-        void *m = func_0204d528(i);
+        void *m = HouseRoomMaps_Get(i);
         if (m != NULL) {
             s.func_0205b2b4((s32)m);
             data_021c5ccc += s.func_0205b448();
@@ -478,7 +478,7 @@ u8 Unk_0205b448::func_0205b320(s32 m, s32 x0, s32 x1, volatile s32 y0, volatile 
                 {
                 s32 hx = x >> 4;
                 s32 hy = y >> 4;
-                u16 *cell = (u16 *)func_0204ebd8((void *)m, hx, hy, x - (hx << 4), y - (hy << 4), layer);
+                u16 *cell = (u16 *)BlockMap_GetItemPtr((void *)m, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (cell != NULL && Item_IsFurniture(cell)) {
                     f = Item_GetFurnitureIndex(cell);
                     func_020524a8(&buf, cell);
@@ -527,7 +527,7 @@ extern "C" Unk_020dc0b0::Unk_020dc0b0() {}
 extern "C" Unk_020dc0b0::~Unk_020dc0b0() {}
 
 extern "C" void *Unk_020dc0b0::vfunc_00(s32 i) {
-    return func_0204d528(i);
+    return HouseRoomMaps_Get(i);
 }
 
 extern "C" void Unk_020dc0b0::vfunc_04(s32 a, s32 key) {
@@ -591,7 +591,7 @@ extern "C" void func_0205b124(Unk_0205afdc *p) {
 extern "C" void func_0205b120() {}
 
 extern "C" u32 func_0205afdc(Unk_0205afdc *p, s32 *out) {
-    void *m = func_0204d528(0);
+    void *m = HouseRoomMaps_Get(0);
     s32 x = 3;
     u32 flags = 0;
     if (m != NULL) {
@@ -659,12 +659,12 @@ extern "C" void func_0205afa0(s32 a) {
 extern "C" s32 func_0205af28(s32 a, s32 b, s32 *c, s32 *d, s32 *e, s32 *f) {
     s32 r;
     if (data_021c5cd8 == NULL) {
-        data_021c5cd8 = func_0204d0a4(b, gCurrentHeap);
+        data_021c5cd8 = VillagerRoomMap_Create(b, gCurrentHeap);
     }
     Unk_020dc09c ops;
     r = func_0205a930((RoomScoreEvaluator *)a, (u16 *)c, d, e, (s32 *)f, (Unk_020dc0fc_Ops *)&ops, 1, b, 0);
     if (data_021c5cd8 != NULL) {
-        func_0204d040(gCurrentHeap);
+        VillagerRoomMap_Destroy(gCurrentHeap);
         data_021c5cd8 = NULL;
     }
     return r;
@@ -903,7 +903,7 @@ s32 RoomScoreEvaluator::func_0205a6bc(void *grid, u32 *out)
             loop0:
                 hx = (s32)x >> 4;
                 hy = (s32)y >> 4;
-                p = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
+                p = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p && Item_IsFurniture(p)) {
                     s32 id = Ftr_GetSeries(p);
                     if (Series_GetType(id) == 0) {
@@ -982,7 +982,7 @@ s32 RoomScoreEvaluator::func_0205a580(void *grid)
             loop0:
                 hx = (s32)x >> 4;
                 hy = (s32)y >> 4;
-                p = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
+                p = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p && Item_IsFurniture(p)) {
                     s32 id = Ftr_GetSeries(p);
                     if (Series_GetType(id) == 1) {
@@ -1047,7 +1047,7 @@ s32 RoomScoreEvaluator::func_0205a480(void *grid)
             loop0:
                 hx = (s32)x >> 4;
                 hy = (s32)y >> 4;
-                p = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
+                p = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p && Item_IsFurniture(p)) {
                     s32 id = Ftr_GetSeries(p);
                     if (Series_GetType(id) == 2) {
@@ -1095,7 +1095,7 @@ void RoomScoreEvaluator::func_0205a3c0(void *grid)
             loop0:
                 hx = (s32)x >> 4;
                 hy = (s32)y >> 4;
-                p = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
+                p = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p && Item_IsFurniture(p)) {
                     s32 id = Item_GetFurnitureIndex(p);
                     s32 kind = FtrInfo_GetUnk06(id);
@@ -1131,7 +1131,7 @@ s32 RoomScoreEvaluator::func_0205a344(void *grid)
             loop0:
                 hx = (s32)x >> 4;
                 hy = (s32)y >> 4;
-                p = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
+                p = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p && Item_IsFurniture(p)) {
                     total += FtrClass_GetBasePoints(FtrInfo_GetClass(Item_GetFurnitureIndex(p)));
                 }
@@ -1174,7 +1174,7 @@ s32 RoomScoreEvaluator::func_0205a1d0(void *grid)
             loop0:
                 hx = (s32)x >> 4;
                 hy = (s32)y >> 4;
-                p = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
+                p = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p && Item_IsFurniture(p)) {
                     s32 id = Item_GetFurnitureIndex(p);
                     s32 t, u;
@@ -1248,7 +1248,7 @@ s32 RoomScoreEvaluator::func_02059f3c(void *grid, s32 *out1, s32 *out2)
             {
                 s32 hx = (s32)x >> 4;
                 s32 hy = (s32)y >> 4;
-                p3 = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
+                p3 = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p3 && Item_IsFurniture(p3)) {
                     v = Item_GetFurnitureIndex(p3);
                     for (j = 0; j < 24; j++) {
@@ -1289,7 +1289,7 @@ s32 RoomScoreEvaluator::func_02059f3c(void *grid, s32 *out1, s32 *out2)
             {
                 s32 hx = (s32)x >> 4;
                 s32 hy = (s32)y >> 4;
-                p4 = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer2);
+                p4 = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer2);
                 if (p4 && Item_IsFurniture(p4)) {
                     v = Item_GetFurnitureIndex(p4);
                     for (j = 0; j < 24; j++) {
@@ -1340,7 +1340,7 @@ s32 RoomScoreEvaluator::func_02059e94(void *grid, s32 *out)
             {
                 s32 hx = (s32)x >> 4;
                 s32 hy = (s32)y >> 4;
-                u16 *p = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
+                u16 *p = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p && Item_IsFurniture(p)) {
                     s32 k = Ftr_GetUnk03(p);
                     counts[k] = counts[k] + 1;
@@ -1379,7 +1379,7 @@ s32 RoomScoreEvaluator::func_02059db0(void *grid, u8 *f1, u8 *f2)
             {
                 s32 hx = (s32)x >> 4;
                 s32 hy = (s32)y >> 4;
-                u16 *p = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
+                u16 *p = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p) {
                     if (Item_IsFurniture(p)) {
                         if (FtrInfo_TestAlwaysFlag4(Item_GetFurnitureIndex(p))) {
@@ -1417,7 +1417,7 @@ void RoomScoreEvaluator::func_02059d1c(void *grid)
             {
                 s32 hx = (s32)x >> 4;
                 s32 hy = (s32)y >> 4;
-                u16 *p = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
+                u16 *p = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p && Item_IsFurniture(p)) {
                     s32 v = Item_GetFurnitureIndex(p);
                     if (FtrInfo_TestIndoorFlag0(v)) {
@@ -1528,7 +1528,7 @@ extern "C" BOOL func_02059a30(s32 *a, s32 *b, s32 *c, s32 *d, void *grid)
     f0 = FALSE; f1 = FALSE; f2 = FALSE; f3 = FALSE;
     for (y = 0; y < 16; y++) {
         for (x = 0; x < 16; x++) {
-            if (_ZN12Unk_0204e2f013func_0204e474Eii(grid, x, y)) {
+            if (_ZN8BlockMap13func_0204e474Eii(grid, x, y)) {
                 if (x <= *a) { *a = x; f0 = TRUE; }
                 if (x >= *b) { *b = x; f1 = TRUE; }
                 if (y <= *c) { *c = y; f2 = TRUE; }

@@ -16,10 +16,10 @@ extern u16 gPad[];
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 
-void func_02002398(u32 a, u32 b);
-void func_0200226c(u32 n, u32 a, u32 b, u32 c);
-void func_020021a0(s32 a);
-void func_020020b8(s32 a);
+void Gfx2d_SetLayerPriority(u32 a, u32 b);
+void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ShowLayer(s32 a);
 void func_02065af0();
 void func_02065e70(void *dst, void *src);
 BOOL MenuCtrl_IsButtons();
@@ -80,14 +80,14 @@ public:
     void setPos(s32 a, s32 b);
 };
 
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    void func_020b87d0();
+    void cancel();
 };
 
-class Unk_020e4608 : public Unk_020e45f8 {
+class BgVramTaskPair : public BgVramTask {
 public:
-    Unk_020e4608();
+    BgVramTaskPair();
     u32 unk_00[0x38 / 4];
 };
 
@@ -456,7 +456,7 @@ public:
     void func_ov103_022967d0();
     void func_ov103_02296820();
 
-    /* 0x0094 */ Unk_020e4608 unk_94[1];
+    /* 0x0094 */ BgVramTaskPair unk_94[1];
     /* 0x00cc */ Unk_ov094_02294a50 unk_cc;
     /* 0x0b2c */ Unk_ov094_02294bd4 unk_b2c;
     /* 0x0b54 */ Unk_ov094_02292d6c unk_b54;
@@ -499,7 +499,7 @@ typedef char Unk_ov103_size_Unk_ov002_022040ec[(sizeof(Unk_ov002_022040ec) == 0x
 typedef char Unk_ov103_size_Unk_ov002_02204604[(sizeof(Unk_ov002_02204604) == 0x18) ? 1 : -1];
 typedef char Unk_ov103_size_Unk_ov094_02294a50[(sizeof(Unk_ov094_02294a50) == 0xa60) ? 1 : -1];
 typedef char Unk_ov103_size_Unk_ov094_02294bd4[(sizeof(Unk_ov094_02294bd4) == 0x28) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_020e4608[(sizeof(Unk_020e4608) == 0x38) ? 1 : -1];
+typedef char Unk_ov103_size_Unk_020e4608[(sizeof(BgVramTaskPair) == 0x38) ? 1 : -1];
 
 static inline BOOL Unk_ov103_02295f10_Both()
 {
@@ -617,7 +617,7 @@ void Unk_ov103_02296da0::func_ov103_0229675c() {
     func_ov094_02293d2c(&unk_b2c);
     func_ov103_02295730();
     func_ov002_022008e0(8, 0, 0, 0x30);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(6);
     func_ov002_02200840(6, 0, 0);
     func_ov002_02200a50(2);
     func_ov103_02294da4(1);
@@ -648,7 +648,7 @@ void Unk_ov103_02296da0::func_ov103_022966ac() {
 
 void Unk_ov103_02296da0::func_ov103_0229663c() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
+        Gfx2d_ResetLayer(6);
         func_ov103_02294d94(2);
         if (func_ov103_02294db4(0x100)) {
             func_ov002_02200a50(5);
@@ -668,9 +668,9 @@ void Unk_ov103_02296da0::func_ov103_022965b4() {
     func_02065af0();
     unk_2678.func_0206d2e0((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
     func_ov002_022008e0(3, 0, 0, 0x30);
-    func_020020b8(3);
+    Gfx2d_ShowLayer(3);
     func_ov002_02200840(3, 0, 0);
-    func_020020b8(4);
+    Gfx2d_ShowLayer(4);
     func_ov002_02200840(4, 0, 0);
     func_ov002_02200a50(6);
     unk_2888.func_ov002_02203ec8(0x88);
@@ -700,8 +700,8 @@ void Unk_ov103_02296da0::func_ov103_02296528() {
 
 void Unk_ov103_02296da0::func_ov103_022964e0() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(3);
-        func_020021a0(4);
+        Gfx2d_ResetLayer(3);
+        Gfx2d_ResetLayer(4);
         func_ov103_02294d94(0x80);
         func_ov103_022967d0();
     } else {
@@ -756,8 +756,8 @@ void Unk_ov103_02296da0::func_ov103_02296394() {
 }
 
 void Unk_ov103_02296da0::func_ov103_02296374() {
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
 void Unk_ov103_02296da0::func_ov103_02296360() {
@@ -1140,7 +1140,7 @@ void Unk_ov103_02296da0::func_ov103_022958d8(u32 a, u32 b) {
 }
 
 void Unk_ov103_02296da0::func_ov103_022958cc() {
-    unk_94->func_020b87d0();
+    unk_94->cancel();
 }
 
 BOOL Unk_ov103_02296da0::func_ov103_022958bc(u32 a) {

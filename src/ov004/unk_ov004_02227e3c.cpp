@@ -19,7 +19,7 @@
 //    (func_ov004_02224ce4 / func_ov004_02224d5c), so LightLevel and Cf4 have no destructor here.
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
-//  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (Unk_020dbd54), unk_1a4, unk_248, unk_250.
+//  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
 // Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
 
 // Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
@@ -117,10 +117,10 @@ public:
     u8 pad_04[0x94];
 };
 
-class Unk_020dbd34 : public Unk_02055704 {
+class CachedModel : public Unk_02055704 {
 public:
-    Unk_020dbd34();
-    virtual ~Unk_020dbd34();
+    CachedModel();
+    virtual ~CachedModel();
     u32 unk_98;
 };
 
@@ -138,17 +138,17 @@ public:
     s32 hasPassedFrame(s32 a);
 };
 
-class Unk_020dbd54 : public Unk_020dbd34, public AnimFrameCtrl {
+class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:
-    Unk_020dbd54();
-    virtual ~Unk_020dbd54();
+    AnimModel();
+    virtual ~AnimModel();
     void *unk_b4;
 
-    s32 func_02054710();
-    s32 func_020547cc(void *q);
-    void func_020547e4();
-    BOOL func_02054800(void *x);
-    // declared in Unk_0205454c in src/main, but it is called on this object
+    s32 attachAnim();
+    s32 drawAnimated(void *q);
+    void stepAnim();
+    BOOL allocAnmObj(void *x);
+    // declared in BlendAnimModel in src/main, but it is called on this object
     void func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e);
 };
 
@@ -228,7 +228,7 @@ public:
     void func_ov004_02224f90(char *name);
     void func_ov004_02224fc8(char *a, char *b);
 
-    /* 0xec */ Unk_020dbd54 unk_ec;
+    /* 0xec */ AnimModel unk_ec;
     /* 0x1a4 */ Unk_ov004_02224ee4 unk_1a4;
     /* 0x248 */ Unk_ov004_02224d60 unk_248;
     /* 0x250 */ Unk_ov004_02224cf4 unk_250;
@@ -383,8 +383,8 @@ typedef BOOL (Unk_ov004_0224dd98::*Unk_ov004_022280b0_Fn)();
 
 extern "C" {
 extern void *data_021c1b3c;
-extern s32 data_021c5384;
-extern u32 data_021c620c;
+extern s32 gGfxMainOnTop;
+extern u32 gBgHeap;
 s32 func_020318cc(void *);
 s32 func_02031908(void *, s32, s32, s32, void *, s32, s32);
 Unk_020b6960 *func_020b50b4(void);
@@ -395,11 +395,11 @@ s32 func_0206eca4(u32);
 s32 func_020e9650(s32 *a, s32 *b);
 s32 func_020e780c(s32 a, s32 b);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *);
-s32 _ZN12Unk_020dbd5413func_020547e4Ev(void *);
-s32 _ZN12Unk_020dbd5413func_020547ccEPv(void *, u32);
-s32 _ZN12Unk_020dbd5413func_02054710Ev(void *);
-s32 _ZN12Unk_020dbd5413func_02054800EPv(void *, u32);
-s32 _ZN12Unk_0205454c13func_02054720Eiiitt(void *, u32, u32, u32, u32, u32);
+s32 _ZN9AnimModel8stepAnimEv(void *);
+s32 _ZN9AnimModel12drawAnimatedEPv(void *, u32);
+s32 _ZN9AnimModel10attachAnimEv(void *);
+s32 _ZN9AnimModel11allocAnmObjEPv(void *, u32);
+s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, u32, u32, u32, u32, u32);
 s32 func_ov004_02224d8c(void *, u32);
 void func_ov004_02224ca4(void *, s32);
 void _ZN12Unk_020d8cf4C1Ev(void *self);
@@ -469,9 +469,9 @@ BOOL Unk_ov004_0224dd98::vfunc_00() {
     func_ov004_02224f90("obj_r_box");
     func_ov004_02227e4c();
     if (func_ov004_02224d8c(&unk_1a4, 0)) {
-        if (_ZN12Unk_020dbd5413func_02054800EPv(&unk_ec, data_021c620c)) {
-            _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 0), 1, 0x1000, 0, 0);
-            _ZN12Unk_020dbd5413func_02054710Ev(&unk_ec);
+        if (_ZN9AnimModel11allocAnmObjEPv(&unk_ec, gBgHeap)) {
+            _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 0), 1, 0x1000, 0, 0);
+            _ZN9AnimModel10attachAnimEv(&unk_ec);
         }
     }
     func_ov004_022280b0(0);
@@ -487,7 +487,7 @@ BOOL Unk_ov004_0224dd98::onExecute() {
 }
 
 BOOL Unk_ov004_0224dd98::onDraw() {
-    _ZN12Unk_020dbd5413func_020547ccEPv(&unk_ec, 0);
+    _ZN9AnimModel12drawAnimatedEPv(&unk_ec, 0);
     return TRUE;
 }
 
@@ -553,14 +553,14 @@ void Unk_ov004_0224dd98::func_ov004_022282d0() {
 }
 
 BOOL Unk_ov004_0224dd98::func_ov004_02228298() {
-    _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 0), 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 0), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 void Unk_ov004_0224dd98::func_ov004_02228294() {}
 
 BOOL Unk_ov004_0224dd98::func_ov004_0222824c() {
-    _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 0), 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 0), 1, 0x1000, 0, 0);
     func_ov004_02224ca4(&unk_250, 0x4d6);
     return TRUE;
 }
@@ -569,19 +569,19 @@ void Unk_ov004_0224dd98::func_ov004_0222821c() {
     if (_ZN13AnimFrameCtrl10isFinishedEv((u8 *)this + 0x188)) {
         vfunc_60(2);
     } else {
-        _ZN12Unk_020dbd5413func_020547e4Ev(&unk_ec);
+        _ZN9AnimModel8stepAnimEv(&unk_ec);
     }
 }
 
 BOOL Unk_ov004_0224dd98::func_ov004_022281e4() {
-    _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 1), 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 1), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 void Unk_ov004_0224dd98::func_ov004_022281e0() {}
 
 BOOL Unk_ov004_0224dd98::func_ov004_02228198() {
-    _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 1), 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 1), 1, 0x1000, 0, 0);
     func_ov004_02224ca4(&unk_250, 0x4d7);
     return TRUE;
 }
@@ -590,7 +590,7 @@ void Unk_ov004_0224dd98::func_ov004_02228168() {
     if (_ZN13AnimFrameCtrl10isFinishedEv((u8 *)this + 0x188)) {
         vfunc_60(0);
     } else {
-        _ZN12Unk_020dbd5413func_020547e4Ev(&unk_ec);
+        _ZN9AnimModel8stepAnimEv(&unk_ec);
     }
 }
 
@@ -680,7 +680,7 @@ BOOL Unk_ov004_0224dd98::func_ov004_02227f14() {
 }
 
 void Unk_ov004_0224dd98::func_ov004_02227eec() {
-    if (data_021c5384 == 0) {
+    if (gGfxMainOnTop == 0) {
         if (func_0206ec6c() != 0) {
             func_ov004_022280b0(5);
         }

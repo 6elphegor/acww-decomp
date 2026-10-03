@@ -49,26 +49,26 @@ extern "C" u8 data_ov127_02293fa0[4];
 
 extern "C" {
 extern void *gCurrentHeap;
-void func_020026c4(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void func_0200261c(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_LoadPaletteFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_LoadCharFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void File_LoadToBuffer(const char *a, void *b, u32 c);
-void func_020024f0(void *a, u32 b, u32 c, u32 d);
-void func_0200226c(u32 a, u32 b, u32 c, u32 d);
+void Gfx2d_LoadScreen(void *a, u32 b, u32 c, u32 d);
+void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
 void func_020affac(void *p);
-void _ZN12Unk_020e45f8C1Ev(void *self);
+void _ZN10BgVramTaskC1Ev(void *self);
 
 Unk_ov127_02291fcc *func_020b04a4(s32 i);
 Unk_ov127_02291fcc *func_020b053c(s32 i);
 s32 func_020b005c(s32 x, s32 y);
 void func_020b0008(void *p);
-void _ZN12Unk_020e45f813func_020b87d0Ev(void *self);
-s32 _ZN12Unk_020e45f813func_020b86c0Ejhjj(void *self, void *b, s32 c, s32 d, s32 e);
+void _ZN10BgVramTask6cancelEv(void *self);
+s32 _ZN10BgVramTask13requestScreenEjhjj(void *self, void *b, s32 c, s32 d, s32 e);
 s32 func_02087dac(void *info, s32 x, s32 y, s32 a, s32 b);
 void func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
 s32 Snd_StopSe(s32 a, s32 b);
 void func_02004008(s32 a);
 s32 Snd_SetPanIfChanged(s32 a);
-void func_020021fc(u32 a, s32 b, s32 c);
+void Gfx2d_SetLayerOffset(u32 a, s32 b, s32 c);
 void func_020e9960(Unk_ov127_02291f60_Vec *out, Unk_ov127_02291f60_Vec *a, Unk_ov127_02291f60_Vec *b);
 s32 func_020e9688(Unk_ov127_02291f60_Vec *v);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -101,7 +101,7 @@ void func_ov127_02292698(Unk_ov127_02291f60 *s, s32 mode, s32 a, s32 b);
 
 // Unk_ov127_02292aac's constructor and destructor (ov129 constructs this class as a member)
 extern "C" void *_ZN18Unk_ov127_02292aacC1Ev(void *s) {
-    _ZN12Unk_020e45f8C1Ev(s);
+    _ZN10BgVramTaskC1Ev(s);
     return s;
 }
 
@@ -117,26 +117,26 @@ extern "C" void func_ov127_02292a7c(u8 *s) {
 
 extern "C" void func_ov127_02292a0c(u8 *s, u32 v) {
     s[0x2832] = v;
-    func_0200226c(s[0x2832], 1, 0, 0);
-    func_0200261c("menu/star/b_bg.bch", gCurrentHeap, s[0x2832], 0x10, 0x10, 0x1f);
+    Gfx2d_SetLayerControl(s[0x2832], 1, 0, 0);
+    Gfx2d_LoadCharFile("menu/star/b_bg.bch", gCurrentHeap, s[0x2832], 0x10, 0x10, 0x1f);
     File_LoadToBuffer("menu/star/bg.bsc", s + 0x24, 0x1000);
     func_020affac(s + 0x24);
-    func_020024f0(s + 0x24, s[0x2832], 0x1000, 0);
+    Gfx2d_LoadScreen(s + 0x24, s[0x2832], 0x1000, 0);
 }
 
 extern "C" void func_ov127_02292994(u8 *s, u32 v) {
     void *h = gCurrentHeap;
     s[0x2833] = v;
-    func_020026c4("menu/star/b_scp_bg.bpl", h, s[0x2833], 4, 8, 0xb);
-    func_0200261c("menu/star/b_scp_bg.bch", h, s[0x2833], 0x20, 0x20, 0xbf);
+    Gfx2d_LoadPaletteFile("menu/star/b_scp_bg.bpl", h, s[0x2833], 4, 8, 0xb);
+    Gfx2d_LoadCharFile("menu/star/b_scp_bg.bch", h, s[0x2833], 0x20, 0x20, 0xbf);
     File_LoadToBuffer("menu/star/b_scp_bg.bsc", s + 0x2024, 0x800);
-    func_020024f0(s + 0x2024, s[0x2833], 0x800, 0);
+    Gfx2d_LoadScreen(s + 0x2024, s[0x2833], 0x800, 0);
 }
 
 extern "C" void func_ov127_02292950() {
     void *h = gCurrentHeap;
-    func_020026c4("menu/star/b_scp_obj.bpl", h, 8, 5, 5, 9);
-    func_0200261c("menu/star/b_scp_obj.bch", h, 8, 0xc0, 0xc0, 0x13f);
+    Gfx2d_LoadPaletteFile("menu/star/b_scp_obj.bpl", h, 8, 5, 5, 9);
+    Gfx2d_LoadCharFile("menu/star/b_scp_obj.bch", h, 8, 0xc0, 0xc0, 0x13f);
 }
 
 extern "C" void func_ov127_02292824(Unk_ov127_02291f60 *s)
@@ -146,7 +146,7 @@ extern "C" void func_ov127_02292824(Unk_ov127_02291f60 *s)
     }
     if (func_ov127_02292238(s, 1)) {
         s32 v;
-        func_020021fc(s->unk_2832, s->unk_2824, s->unk_2826);
+        Gfx2d_SetLayerOffset(s->unk_2832, s->unk_2824, s->unk_2826);
         func_ov127_02292218(s, 1);
         v = 0;
         s32 t = s->unk_2826;
@@ -191,14 +191,14 @@ extern "C" void func_ov127_02292824(Unk_ov127_02291f60 *s)
                 }
             }
         }
-        _ZN12Unk_020e45f813func_020b86c0Ejhjj(s, s->unk_1024, s->unk_2832, 0x1000, 0);
+        _ZN10BgVramTask13requestScreenEjhjj(s, s->unk_1024, s->unk_2832, 0x1000, 0);
         func_ov127_02292218(s, 2);
     }
 }
 
 extern "C" void func_ov127_0229281c(void *p)
 {
-    _ZN12Unk_020e45f813func_020b87d0Ev(p);
+    _ZN10BgVramTask6cancelEv(p);
 }
 
 extern "C" void func_ov127_022927a8(Unk_ov127_02291f60 *s, s32 a, s32 b)

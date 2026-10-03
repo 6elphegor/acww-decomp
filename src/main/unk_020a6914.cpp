@@ -4,7 +4,7 @@
 // Bodies unchanged from src/main/unk_020a6914.cpp.
 
 extern "C" {
-void func_02076b08(void *p, int a, int b);
+void CommRecord_PackSource(void *p, int a, int b);
 }
 
 extern "C" void func_020a6970(void) {}
@@ -23,7 +23,7 @@ extern "C" void func_020a6914(u8 *p, int a, int b, int c, u8 d, int e) {
     u8 flags = 0;
     if (c) flags |= 1;
     if (d) flags |= 2;
-    func_02076b08(p, b, flags);
+    CommRecord_PackSource(p, b, flags);
     p[1] = e;
     p[1] |= (a << 6) & 0xc0;
 }

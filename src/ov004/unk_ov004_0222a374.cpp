@@ -31,14 +31,14 @@ public:
 };
 
 extern "C" {
-extern Unk_0204e858_Grid *data_021c47c4;
+extern Unk_0204e858_Grid *gSceneBlockMap;
 void *PlayerData_Get(u32 i);
 u16 *_ZN10PlayerData6getBedEv(void *self);
 s32 Item_IsFurniture(Unk_ov004_0222a374_Loc *l);
 s32 Item_GetFurnitureIndex(u16 *p);
 void Item_SetFurnitureDirection(Unk_ov004_0222a374_Loc *l, s32 v);
 s32 Ftr_GetUnk05(Unk_ov004_0222a374_Loc *l);
-void func_0204eb30(Unk_0204e858_Grid *g, Unk_ov004_0222a374_Loc *l, s32 x, s32 y, s32 z);
+void BlockMap_SetItemAtUnit(Unk_0204e858_Grid *g, Unk_ov004_0222a374_Loc *l, s32 x, s32 y, s32 z);
 }
 
 extern "C" Unk_ov004_0224e3f8 *func_ov004_0222a4e8();
@@ -62,7 +62,7 @@ BOOL Unk_ov004_0224e3f8::vfunc_00() {
 extern "C" {
 void func_ov004_0222a374() {
     static Unk_ov004_0222a374_Pair tbl[4] = { Unk_ov004_0222a374_Pair(6, 9), Unk_ov004_0222a374_Pair(9, 9), Unk_ov004_0222a374_Pair(6, 12), Unk_ov004_0222a374_Pair(9, 12) };
-    Unk_0204e858_Grid *g = data_021c47c4;
+    Unk_0204e858_Grid *g = gSceneBlockMap;
     if (g != 0) {
         s32 i;
         BOOL z1 = FALSE, z0 = FALSE, z2 = FALSE;
@@ -93,7 +93,7 @@ void func_ov004_0222a374() {
                             x--;
                         }
                     }
-                    func_0204eb30(g, &l, x, y, z2);
+                    BlockMap_SetItemAtUnit(g, &l, x, y, z2);
                 }
             }
         }

@@ -61,7 +61,7 @@ u32 func_02063b8c(u32 n);
 BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
 void TalkRequest_EndTalkWith(void *p);
 void func_020ac7cc(u16 *p);
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 void *func_020850e0();
 BOOL func_020851bc(void *p, s32 v);
 void func_020851a4(void *p, s32 v);
@@ -69,8 +69,8 @@ void func_02085290(void *p);
 void _ZN12Unk_0208581013func_02085900Ej(void *p, s32 v);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void func_020856a4(void *p, s32 v);
-u32 func_0203f42c(s32 v);
-void func_02053848(void *p, s32 a, s32 b);
+u32 Event_GetDaysSinceStart(s32 v);
+void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 void _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 extern u16 data_020c6cc8;
 BOOL _ZN12Unk_02013b1013func_02014220Ev(void *self);
@@ -191,12 +191,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -315,7 +315,7 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -425,9 +425,9 @@ BOOL Unk_ov083_02271c4c::vfunc_00() {
     }
     func_ov083_02271858(0);
     _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
-    func_02053848(&unk_ec, 0xc, 0xe);
+    ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
     unk_4cc.unk_1c |= 2;
-    unk_714 = func_0203f42c(0xe);
+    unk_714 = Event_GetDaysSinceStart(0xe);
     func_020856a4(data_021ed24c, 0);
     return TRUE;
 }
@@ -524,7 +524,7 @@ void Unk_ov083_02271bbc::vfunc_78(Unk_ov083_02271620_Out *out) {
     }
     w[0] = 0;
     w[1] = 0;
-    func_0209d498(w);
+    Clock_GetDateTime(w);
     {
         u32 v = ((u8 *)w)[2];
         if (v < 6 || v >= 0x12) {

@@ -155,10 +155,10 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
+class BuildingActor : public Character, public TalkMsgRequest {
 public:
-    Unk_ov009_0225e29c();
-    virtual ~Unk_ov009_0225e29c();
+    BuildingActor();
+    virtual ~BuildingActor();
     virtual BOOL vfunc_00();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
@@ -191,12 +191,12 @@ public:
     virtual void vfunc_b4();
     virtual BOOL vfunc_b8();
 
-    s32 func_ov009_0225d650();
-    s32 func_ov009_0225bb74();
-    BOOL func_ov009_0225bbdc(Unk_ov009_0225b880_Vec3 *out, s16 *ang);
-    s32 func_ov009_0225d6b8(u32 a);
-    void func_ov009_0225d244();
-    void func_ov009_0225bc88();
+    s32 getEntranceType();
+    s32 getInteriorScene();
+    BOOL getDoorPos(Unk_ov009_0225b880_Vec3 *out, s16 *ang);
+    s32 getBtaAnim(u32 a);
+    void getResources();
+    void updateMatrix();
 
     /* 0x130 */ u8 unk_130;
     /* 0x131 */ u8 pad_131;
@@ -234,7 +234,7 @@ class Unk_020ad700 {public: u32 func_020ad618(void *w);};
 
 
 extern "C" {
-extern void *data_021c620c;
+extern void *gBgHeap;
 void *Heap_Alloc(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 void *func_0212899c(void *p, s32 v, u32 n);
@@ -254,7 +254,7 @@ BOOL func_020b4bbc(void *o, s32 a);
 s32 func_020b50e8();
 void func_020b49c4(void *o, s32 a, Unk_ov009_0225b880_Vec3 *v, u32 b, s32 c, u32 d, u32 e);
 s32 func_02030814(u32 a);
-BOOL func_ov003_02212430(u32 a, s32 *b, s32 *c, s32 d);
+BOOL PlayerActor_LocalRequestDoorEnter(u32 a, s32 *b, s32 *c, s32 d);
 BOOL func_0206ed18();
 s32 func_020ad274();
 s32 _ZN15TalkWindowState14setNextMessageEPhPv(void *o, u8 *p, char *s);
@@ -277,9 +277,9 @@ void _ZN12Unk_020e2e54C1Ev(void *);
 void _ZN12Unk_020e2e54D1Ev(void *);
 Unk_020ad700 *_ZN12Unk_021ed2c013func_020ad3bcEv(void *);
 void _ZN15TalkWindowState7setSlotEiPv(void *, s32, void *);
-void func_0209d498(void *);
+void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, s32);
-s32 func_0203f2e0(u32, void *, u32);
+s32 Event_GetState(u32, void *, u32);
 s32 func_020b50e8();
 void Visitor_ScheduleLow(void *, s32, void *);
 extern u16 data_ov003_02231144;
@@ -303,7 +303,7 @@ s32 func_020b249c(s32);
 void func_020b24a4(s32, void *);
 s32 func_020b24ac(s32);
 void func_020547e4(void *);
-void func_0204ee10(s32 *, s32 *, s32 *);
+void FieldPos_ToUnit(s32 *, s32 *, s32 *);
 BOOL func_0203006c(s32, s32, s32);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 func_ov003_02218da8();
@@ -312,7 +312,7 @@ u32 func_ov003_02214f3c();
 s32 func_ov003_02214f54();
 }
 
-class Unk_ov003_02230ff0 : public Unk_ov009_0225e29c {
+class Unk_ov003_02230ff0 : public BuildingActor {
 public:
     Unk_ov003_02230ff0();
     virtual ~Unk_ov003_02230ff0();
@@ -356,7 +356,7 @@ public:
 void Unk_ov003_02230ff0::vfunc_4c(u32 a, u8 b) {
     switch (a) {
     case 6:
-        Unk_ov009_0225e29c::vfunc_4c(a, b);
+        BuildingActor::vfunc_4c(a, b);
         break;
     case 0:
     case 1:

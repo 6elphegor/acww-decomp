@@ -78,11 +78,11 @@ extern u32 data_020e1c74;
 }
 
 extern "C" {
-extern Unk_020cbb18_Data *data_020cbb18;
+extern Unk_020cbb18_Data *gCommManager;
 }
 
 extern "C" {
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 }
 
 extern "C" {
@@ -142,11 +142,11 @@ s32 func_ov004_02234588(s32 *a, s32 *b, s32 c, s32 d);
 }
 
 extern "C" {
-u16 *func_0204eba0(void *g, void *v, s32 z);
+u16 *BlockMap_GetItemPtrAtPos(void *g, void *v, s32 z);
 }
 
 extern "C" {
-s32 func_0204e858(void *g, void *v);
+s32 BlockMap_IsBuriedAtPos(void *g, void *v);
 }
 
 extern "C" {
@@ -202,11 +202,11 @@ void func_020b4b68(void *a, s32 b, void *c, void *d);
 }
 
 extern "C" {
-s32 func_ov003_02210628(Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
+s32 PlayerActor_RequestStowItem(Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
 }
 
 extern "C" {
-s32 func_ov003_0220dff0(Unk_02006d14 *o, u32 a, u32 b, s32 c);
+s32 PlayerActor_RequestFishReelIn(Unk_02006d14 *o, u32 a, u32 b, s32 c);
 }
 
 extern "C" {
@@ -375,16 +375,16 @@ extern "C" u16 *func_02094440() {
     BOOL t = data_020e416c == 1 ? TRUE : FALSE;
     if (t) {
         if (func_020b52f8()) {
-            if (data_020cbb18->unk_68 == 0) {
+            if (gCommManager->unk_68 == 0) {
                 if (func_ov004_02234588(&a, &b, 0, 0) < 0) {
-                    r = func_0204eba0(data_021c47c4, buf, 0);
+                    r = BlockMap_GetItemPtrAtPos(gSceneBlockMap, buf, 0);
                 }
             }
         }
     } else {
-        void *g = data_021c47c4;
-        if (func_0204e858(g, buf)) return 0;
-        r = func_0204eba0(g, buf, 0);
+        void *g = gSceneBlockMap;
+        if (BlockMap_IsBuriedAtPos(g, buf)) return 0;
+        r = BlockMap_GetItemPtrAtPos(g, buf, 0);
     }
     return r;
 }

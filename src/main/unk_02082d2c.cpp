@@ -105,7 +105,7 @@ public:
     /* 0x50 */ Unk_02082d74_M unk_50;
 };
 
-struct Unk_020cbb18 { u8 pad_00[0x64]; s32 unk_64; BOOL func_02072e88(s32 i); };
+struct CommManager { u8 pad_00[0x64]; s32 unk_64; BOOL isSlotActive(s32 i); };
 
 struct Unk_02082e80_Cell { u8 pad_00[0x28]; };
 struct Unk_02082e80_Grid {
@@ -122,11 +122,11 @@ extern u8 data_020e416c;
 }
 
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 
 extern "C" {
-extern Unk_02082e80_Grid *data_021c47c4;
+extern Unk_02082e80_Grid *gSceneBlockMap;
 }
 
 extern "C" {
@@ -150,7 +150,7 @@ void func_0205c384(void *p);
 }
 
 extern "C" {
-void func_0204edd8(void *g, void *v);
+void FieldPos_SnapToUnitCenter(void *g, void *v);
 }
 
 extern "C" {
@@ -242,7 +242,7 @@ s32 VisitorTable_FindByNpc(void *a, void *b, s32 c);
 }
 
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 
 extern "C" {
@@ -262,11 +262,11 @@ s32 func_02087444();
 }
 
 extern "C" {
-s32 func_020374b0(void *c, s32 v);
+s32 MapBlock_HasAnyAttr(void *c, s32 v);
 }
 
 extern "C" {
-s32 func_020374cc(void *c, s32 v);
+s32 MapBlock_HasAllAttr(void *c, s32 v);
 }
 
 extern "C" {
@@ -274,11 +274,11 @@ s32 func_02031194(s32 x, s32 y);
 }
 
 extern "C" {
-void func_0204edf8(s32 *o1, s32 *o2, s32 a, s32 b, s32 c, s32 d);
+void FieldUnit_FromBlockUnit(s32 *o1, s32 *o2, s32 a, s32 b, s32 c, s32 d);
 }
 
 extern "C" {
-void func_0204ed8c(void *a, s32 x, s32 y);
+void FieldPos_FromUnitCenter(void *a, s32 x, s32 y);
 }
 
 static inline BOOL Unk_02083058_IsA() { return data_020e416c == 0 ? TRUE : FALSE; }

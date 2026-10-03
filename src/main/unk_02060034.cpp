@@ -21,11 +21,11 @@ public:
     void func_020526ec();
 };
 
-struct Unk_0204ee94 {
+struct MapBlockEntry {
     u32 unk_00;
     u32 unk_04[2];
     u32 unk_0c;
-    Unk_0204ee94();
+    MapBlockEntry();
 };
 
 class Unk_02060034 {
@@ -48,7 +48,7 @@ public:
     HouseRoom();
     ~HouseRoom();
     void func_02060878_dummy();
-    Unk_0204ee94 *func_02060878(void *heap);
+    MapBlockEntry *func_02060878(void *heap);
     void func_020608b8(s32 i);
     void func_020607c8(u16 *src);
     u16 *func_020607d4();
@@ -94,7 +94,7 @@ public:
     BOOL func_02060474();
     u32 func_020604c4();
     BOOL func_020604d4();
-    Unk_0204ee94 *func_020604f8(s32 idx, void *heap);
+    MapBlockEntry *func_020604f8(s32 idx, void *heap);
     HouseRoom *func_0206052c(s32 idx);
     HouseRoom *func_02060550(s32 x);
     void func_0206058c();
@@ -112,14 +112,14 @@ s32 func_020b533c(u32 x);
 s32 func_020b530c(u32 x);
 s32 _ZN8SaveData8testFlagEj(void *p, s32 v);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
-void func_0204d42c();
-void func_0204d3d8();
-void *func_0204da0c();
+void HouseRoomMaps_UpdateAll();
+void HouseRoomMaps_BindBg();
+void *TownBlockMap_Get();
 u16 Item_MakePlayerHouse(s32 x);
-Unk_0204ee94 *func_0204ee64(s32 n, void *heap);
-BOOL func_0204e9dc(void *g, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 filter, s32 h);
-void func_0204edf8(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
-void *func_0204eb30(void *g, u16 *a, s32 x, s32 z, u8 d);
+MapBlockEntry *MapBlockEntry_NewArray(s32 n, void *heap);
+BOOL BlockMap_FindItemAnyAttr(void *g, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 filter, s32 h);
+void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
+void *BlockMap_SetItemAtUnit(void *g, u16 *a, s32 x, s32 z, u8 d);
 void OS_GetOwnerInfo(u8 *buf);
 void func_02052554(s32 a, s32 b, s32 c, s32 d, s32 e);
 u32 func_020602ac(u32 x);
@@ -134,7 +134,7 @@ void *__cxa_vec_cleanup(void *arr, u32 n, u32 sz, void (*dtor)(void *));
 void *__cxa_vec_ctor(void *arr, u32 n, u32 sz, void (*ctor)(void *), void (*dtor)(void *));
 void _ZN6ItemIdD1Ev(void *p);
 void _ZN6ItemIdC1Ev(void *p);
-void *func_0209cbe0();
+void *Clock_GetTimeSeed();
 s32 Random_SetSeed(void *a, void *b);
 void func_0206007c(u8 *bits, u32 i);
 void func_020600d4(u8 *bits, u32 i);
@@ -240,10 +240,10 @@ void HouseRoom::func_020608b8(s32 i) {
     }
 }
 
-Unk_0204ee94 *HouseRoom::func_02060878(void *heap) {
-    Unk_0204ee94 *p = func_0204ee64(1, heap);
+MapBlockEntry *HouseRoom::func_02060878(void *heap) {
+    MapBlockEntry *p = MapBlockEntry_NewArray(1, heap);
     if (p) {
-        new (p) Unk_0204ee94;
+        new (p) MapBlockEntry;
     }
     if (p) {
         for (s32 i = 0; i < 2; i++) {
@@ -300,16 +300,16 @@ void HouseData::func_020606d8() {
 }
 
 extern "C" BOOL func_02060654(s32 x) {
-    void *g = func_0204da0c();
+    void *g = TownBlockMap_Get();
     u16 arr[3];
     s32 ox, oz, a, b, c, d;
     Unk_02060654_Pad pad;
     arr[1] = 0x5014;
     arr[2] = 0x501a;
-    if (func_0204e9dc(g, &a, &b, &c, &d, &arr[1], &arr[2], 1, 0)) {
-        func_0204edf8(&ox, &oz, a, b, c, d);
+    if (BlockMap_FindItemAnyAttr(g, &a, &b, &c, &d, &arr[1], &arr[2], 1, 0)) {
+        FieldUnit_FromBlockUnit(&ox, &oz, a, b, c, d);
         arr[0] = Item_MakePlayerHouse(x);
-        if (func_0204eb30(g, arr, ox, oz, 0)) return TRUE;
+        if (BlockMap_SetItemAtUnit(g, arr, ox, oz, 0)) return TRUE;
     }
     return FALSE;
 }
@@ -324,8 +324,8 @@ void HouseData::func_020605a8() {
             unk_15a0.a = unk_15a0.b;
             unk_15a0.d = unk_15a0.e;
             unk_15a0.c = unk_15a0.d;
-            func_0204d42c();
-            func_0204d3d8();
+            HouseRoomMaps_UpdateAll();
+            HouseRoomMaps_BindBg();
             _ZN8SaveData7setFlagEj(gSaveData, 13);
         }
     }
@@ -356,8 +356,8 @@ HouseRoom *HouseData::func_0206052c(s32 idx) {
     return r;
 }
 
-Unk_0204ee94 *HouseData::func_020604f8(s32 idx, void *heap) {
-    Unk_0204ee94 *p = NULL;
+MapBlockEntry *HouseData::func_020604f8(s32 idx, void *heap) {
+    MapBlockEntry *p = NULL;
     HouseRoom *e = func_0206052c(idx);
     if (e) {
         p = e->func_02060878(heap);

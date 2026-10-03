@@ -88,7 +88,7 @@ u32 func_020b50e8();
 }
 
 extern "C" {
-void *func_02037558(void *a, s32 b, s32 c, s32 d);
+void *MapBlock_GetItemPtr(void *a, s32 b, s32 c, s32 d);
 }
 
 extern "C" {
@@ -100,7 +100,7 @@ u32 Item_GetFurnitureIndex(void *p);
 }
 
 extern "C" {
-void *func_0204ebd8(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void *BlockMap_GetItemPtr(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 }
 
 extern "C" {
@@ -112,7 +112,7 @@ BOOL Item_IsNormalItem(void *p);
 }
 
 extern "C" {
-void func_0204eb30(void *a, void *b, s32 c, s32 d, s32 e);
+void BlockMap_SetItemAtUnit(void *a, void *b, s32 c, s32 d, s32 e);
 }
 
 extern "C" {
@@ -284,7 +284,7 @@ extern u8 data_020e2ea8[];
 }
 
 extern "C" {
-extern u8 data_020cbb18[];
+extern u8 gCommManager[];
 }
 
 extern "C" {
@@ -328,7 +328,7 @@ extern u8 data_020e416c;
 }
 
 extern "C" {
-extern Unk_021c47c4 *data_021c47c4;
+extern Unk_021c47c4 *gSceneBlockMap;
 }
 
 extern "C" {

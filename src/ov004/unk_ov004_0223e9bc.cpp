@@ -6,7 +6,7 @@
 class Unk_ov004_0224f284;
 
 extern "C" {
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 extern u8 data_021ed104[];
 extern u8 data_021ed2d4[];
 extern u8 data_021ed2c0[];
@@ -31,12 +31,12 @@ u16 *func_020ae844(void *tbl, s32 idx, u16 *out);
 s32 func_020ae82c(void *tbl, u16 *p);
 s32 func_020ad8d0(void *tbl, u16 *p);
 s32 func_020acf90(void *tbl, u16 *p);
-u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-s32 func_0204eb30(void *g, u16 *v, s32 x, s32 y, u32 z);
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+s32 BlockMap_SetItemAtUnit(void *g, u16 *v, s32 x, s32 y, u32 z);
 void *func_ov004_02235718();
 void *_ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(void *self, s32 x, s32 y, s32 z);
 #define func_ov004_022355d8 _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii
-s32 func_ov004_022087a4(void *o);
+s32 FtrActor_GetFtrIndex(void *o);
 
 u8 *func_ov004_0223f278();
 s32 func_ov004_0223f210(u16 *p);
@@ -320,7 +320,7 @@ BOOL Unk_ov004_0224f284::vfunc_0c() { return TRUE; }
 
 BOOL Unk_ov004_0224f284::func_ov004_0223f018(u16 *item, s32 code) {
     u8 *tbl = func_ov004_0223f278();
-    void *g = data_021c47c4;
+    void *g = gSceneBlockMap;
     s32 y;
     s32 x;
     s32 hx;
@@ -337,7 +337,7 @@ BOOL Unk_ov004_0224f284::func_ov004_0223f018(u16 *item, s32 code) {
             loopx:
                 hx = x >> 4;
                 hy = y >> 4;
-                t = func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+                t = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
                 if (t) {
                     BOOL r;
                     s32 f1 = 0, f2 = 0;
@@ -350,7 +350,7 @@ BOOL Unk_ov004_0224f284::func_ov004_0223f018(u16 *item, s32 code) {
                     }
                     if (r) {
                         if (code == row[x]) {
-                            if (func_0204eb30(g, item, x, y, 0)) return TRUE;
+                            if (BlockMap_SetItemAtUnit(g, item, x, y, 0)) return TRUE;
                         }
                     }
                 }
@@ -425,18 +425,18 @@ extern "C" BOOL func_ov004_0223eeb8(u16 *p) {
 extern "C" u16 *func_ov004_0223ed40(s32 x, s32 y) {
     static ItemId dflt(0xfff1);
     u16 cv[3];
-    void *g = data_021c47c4;
+    void *g = gSceneBlockMap;
     if (g) {
         s32 hx = x >> 4;
         s32 hy = y >> 4;
-        u16 *r4 = func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+        u16 *r4 = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (r4) {
             if (!Unk_ov004_0223ed40_Chk(r4, &cv[1], 0xfff1)) {
                 if (Item_IsFurnitureOrF031(r4)) {
                     void *o = func_ov004_022355d8(func_ov004_02235718(), x, y, 0);
                     if (!o) return &dflt.v;
                     static ItemId v2(0xfff1);
-                    v2.v = Item_MakeFurniture(func_ov004_022087a4(o), 0);
+                    v2.v = Item_MakeFurniture(FtrActor_GetFtrIndex(o), 0);
                     if (func_ov004_0223eeb8(&v2.v)) return &v2.v;
                 } else if (Item_IsNormalItem(r4)) {
                     if (!Unk_ov004_0223ed40_Chk(r4, &cv[2], 0x1547)) {
@@ -558,25 +558,25 @@ void Unk_ov004_0224f284::func_ov004_0223eb8c() {
 
 BOOL Unk_ov004_0224f284::func_ov004_0223ea98() {
     func_ov004_0223eb8c();
-    void *g = data_021c47c4;
+    void *g = gSceneBlockMap;
     u16 v;
     v = 0xfff1;
     v = 0x3e04;
-    func_0204eb30(g, &v, 6, 10, 0);
+    BlockMap_SetItemAtUnit(g, &v, 6, 10, 0);
     v = 0x3e08;
-    func_0204eb30(g, &v, 7, 10, 0);
+    BlockMap_SetItemAtUnit(g, &v, 7, 10, 0);
     v = 0x3e0c;
-    func_0204eb30(g, &v, 8, 10, 0);
+    BlockMap_SetItemAtUnit(g, &v, 8, 10, 0);
     v = 0x3e10;
-    func_0204eb30(g, &v, 9, 10, 0);
+    BlockMap_SetItemAtUnit(g, &v, 9, 10, 0);
     v = 0x3e14;
-    func_0204eb30(g, &v, 6, 11, 0);
+    BlockMap_SetItemAtUnit(g, &v, 6, 11, 0);
     v = 0x3e18;
-    func_0204eb30(g, &v, 7, 11, 0);
+    BlockMap_SetItemAtUnit(g, &v, 7, 11, 0);
     v = 0x3e1c;
-    func_0204eb30(g, &v, 8, 11, 0);
+    BlockMap_SetItemAtUnit(g, &v, 8, 11, 0);
     v = 0x3e20;
-    func_0204eb30(g, &v, 9, 11, 0);
+    BlockMap_SetItemAtUnit(g, &v, 9, 11, 0);
     return TRUE;
 }
 

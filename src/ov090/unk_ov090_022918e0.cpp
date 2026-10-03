@@ -7,26 +7,26 @@
 #undef vfunc_14
 
 extern "C" {
-void func_020021b8(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
-void func_020021fc(s32 a, s32 b, s32 c);
+void Gfx2d_SetWindowRect(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
+void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
 void Snd_PlaySe(s32 a);
-void func_0206e020();
-BOOL func_0206e2f4();
-BOOL func_0206e308();
+void MenuScreen_ClearState();
+BOOL MenuScreen_IsClosed();
+BOOL MenuScreen_IsOpen();
 void MenuCtrl_SetButtons();
 void MenuCtrl_SetTouch();
 void MenuCtrl_RemoveOpenMenu(void *p);
 void MenuCtrl_AddOpenMenu(void *p);
-void func_02001564(s32 a);
-void func_02001750(s32 a);
-s32 func_02001580();
-void func_020016bc(s32 a);
-void func_020016cc(s32 a);
-void func_0200152c(s32 a);
-void func_02001724(s32 a, s32 b);
-void func_020016b0(s32 a);
-void func_0200151c(s32 a);
-void func_02001554(s32 a);
+void Gfx2d_EnableMainWindows(s32 a);
+void Gfx2d_SetMainWin0Planes(s32 a);
+s32 Gfx2d_GetMainWindows();
+void Gfx2d_RemoveMainWinOutPlanes(s32 a);
+void Gfx2d_SetMainWinOutPlanes(s32 a);
+void Gfx2d_EnableSubWindows(s32 a);
+void Gfx2d_SetSubWin0Planes(s32 a, s32 b);
+void Gfx2d_SetSubWinOutPlanes(s32 a);
+void Gfx2d_DisableSubWindows(s32 a);
+void Gfx2d_DisableMainWindows(s32 a);
 void *Heap_AllocTail(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 void *func_0212899c(void *p, s32 v, u32 n);
@@ -239,22 +239,22 @@ public:
 
 // ---------------------------------------------------------------- ov090 declarations
 extern "C" {
-void func_020015b8(u32 a);
-s32 func_020026c4(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f);
+void Gfx2d_SetSubBgModeState(u32 a);
+s32 Gfx2d_LoadPaletteFile(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f);
 void func_020639e8(char *buf, const char *fmt, ...);
 BOOL File_LoadToBuffer(const void *a, void *b, s32 c);
 BOOL MenuCtrl_RequestOpenNested(u32 v);
 void func_0206ed44(u8 v);
 u32 func_0206ed50();
-void func_0206e070();
+void MenuScreen_BeginClose();
 void func_0206ec60();
 void func_0206e03c();
 BOOL Save_WritePlayerFriendList();
-void func_0206dfe4();
+void MenuScreen_Reset();
 void Snd_EndMenuDuck();
 void func_0206e5fc();
 void func_0206e60c();
-void func_0206e048();
+void MenuScreen_BeginOpen();
 void Snd_BeginMenuDuck();
 void MenuCtrl_SyncFromInputMode();
 void ProcBase_RequestDelete();
@@ -276,17 +276,17 @@ public:
     Unk_020b83b0() : unk_04(0), unk_08(0), unk_0c(0xff) {}
 };
 
-class Unk_020e4618 : public Unk_020b83b0 {
+class VramTask : public Unk_020b83b0 {
 public:
     u8 unk_0d;
     u8 unk_0e;
     u8 unk_0f;
 
-    Unk_020e4618();
-    virtual BOOL vfunc_00() = 0;
+    VramTask();
+    virtual BOOL execute() = 0;
 };
 
-struct Unk_020b8b40 {
+struct BgTransfer {
     u32 unk_00;
     u8 unk_04;
     u32 unk_08;
@@ -294,26 +294,26 @@ struct Unk_020b8b40 {
     u32 unk_10;
 };
 
-class Unk_020e45f8 : public Unk_020e4618 {
+class BgVramTask : public VramTask {
 public:
-    Unk_020b8b40 unk_10;
+    BgTransfer unk_10;
 
-    Unk_020e45f8();
-    virtual BOOL vfunc_00();
-    virtual void vfunc_04();
-    BOOL func_020b8670(u32 a, u8 b, u32 c);
-    BOOL func_020b8714(u32 a, u8 b, u32 c, u32 d, u32 e);
-    void func_020b87d0(void);
+    BgVramTask();
+    virtual BOOL execute();
+    virtual void clear();
+    BOOL requestPalette(u32 a, u8 b, u32 c);
+    BOOL requestChars(u32 a, u8 b, u32 c, u32 d, u32 e);
+    void cancel(void);
 };
 
-class Unk_020e4608 : public Unk_020e45f8 {
+class BgVramTaskPair : public BgVramTask {
 public:
-    Unk_020b8b40 unk_24;
+    BgTransfer unk_24;
 
-    Unk_020e4608();
-    virtual BOOL vfunc_00();
-    virtual void vfunc_04();
-    BOOL func_020b851c(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g);
+    BgVramTaskPair();
+    virtual BOOL execute();
+    virtual void clear();
+    BOOL requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g);
 };
 
 class Unk_ov002_022040ec {
@@ -384,7 +384,7 @@ public:
     /* 0x96 */ u8 unk_96;
     /* 0x97 */ u8 unk_97;
     /* 0x98 */ u8 unk_98;
-    /* 0x9c */ Unk_020e4608 unk_9c[3];
+    /* 0x9c */ BgVramTaskPair unk_9c[3];
     /* 0x144 */ u32 unk_144[0x200];
     /* 0x944 */ u32 unk_944[0x200];
     /* 0x1144 */ u32 unk_1144[8];
@@ -421,7 +421,7 @@ BOOL Unk_ov090_022921e0::vfunc_00() {
     unk_98 = 1;
     func_0206e60c();
     func_ov090_02291b1c();
-    func_0206e048();
+    MenuScreen_BeginOpen();
     unk_96 = 0xff;
     data_ov090_02292320 = 0;
     unk_97 = 0;
@@ -435,7 +435,7 @@ BOOL Unk_ov090_022921e0::vfunc_00() {
 }
 
 BOOL Unk_ov090_022921e0::vfunc_0c() {
-    func_0206dfe4();
+    MenuScreen_Reset();
     func_ov090_02291b14();
     Snd_EndMenuDuck();
     func_0206e5fc();
@@ -485,7 +485,7 @@ BOOL Unk_ov090_022921e0::vfunc_50() {
             unk_97 = 3;
         } else {
             unk_97 = 0;
-            func_0206e070();
+            MenuScreen_BeginClose();
         }
     }
     if (data_ov090_02292320 != 0) {
@@ -540,7 +540,7 @@ void Unk_ov090_022921e0::func_ov090_02291d8c(u32 idx) {
             unk_97 = 2;
         }
         if (unk_97 == 0) {
-            func_0206e070();
+            MenuScreen_BeginClose();
         }
         Snd_PlaySe(2);
         data_021c1b3c->unk_1c4.func_02035bb4();
@@ -588,7 +588,7 @@ u8 Unk_ov090_022921e0::func_ov090_02291d2c() {
 void Unk_ov090_022921e0::func_ov090_02291d0c() {
     unk_8c = 2;
     func_ov002_02200a60(1);
-    func_020015b8(1);
+    Gfx2d_SetSubBgModeState(1);
 }
 
 void Unk_ov090_022921e0::func_ov090_02291d08() {}
@@ -652,14 +652,14 @@ void Unk_ov090_022921e0::func_ov090_02291c2c() {
 void Unk_ov090_022921e0::func_ov090_02291c18() { unk_1164.func_ov002_02204234(0); }
 
 void Unk_ov090_022921e0::func_ov090_02291ba0() {
-    func_020026c4((u32)"menu/tag/obj.bpl", gCurrentHeap, 8, 0xf, 0xf, 0xf);
+    Gfx2d_LoadPaletteFile((u32)"menu/tag/obj.bpl", gCurrentHeap, 8, 0xf, 0xf, 0xf);
     File_LoadToBuffer("menu/tag/obj1.bch", unk_144, 0x800);
     File_LoadToBuffer("menu/tag/obj2.bch", unk_944, 0x800);
     func_ov090_0229196c(func_0206ed50());
     unk_91 = 1;
     unk_92 = 0;
     unk_8c = 1;
-    func_020015b8(0);
+    Gfx2d_SetSubBgModeState(0);
 }
 
 void Unk_ov090_022921e0::func_ov090_02291b8c() {
@@ -748,7 +748,7 @@ extern "C" u8 func_ov090_02291a38(u8 a) {
 void Unk_ov090_022921e0::func_ov090_02291a18() {
     s32 i;
     for (i = 0; i < 3; i++) {
-        unk_9c[i].func_020b87d0();
+        unk_9c[i].cancel();
     }
 }
 
@@ -757,13 +757,13 @@ void Unk_ov090_022921e0::func_ov090_0229196c(u32 idx) {
     if (idx <= 7) {
         if (idx != unk_96) {
             char buf[0x24];
-            unk_9c[0].func_020b8714((u32)unk_144, 8, 0x80, 0x80, 0xbf);
+            unk_9c[0].requestChars((u32)unk_144, 8, 0x80, 0x80, 0xbf);
             u32 a = (u32)unk_944 + idx * 0x60;
             u32 t = idx * 3 + 0x80;
-            unk_9c[1].func_020b851c(a, a + 0x400, 8, t, t + 2, t + 0x20, t + 0x22);
+            unk_9c[1].requestCharPair(a, a + 0x400, 8, t, t + 2, t + 0x20, t + 0x22);
             func_020639e8(buf, "menu/tag/obj%d.bpl", idx);
             File_LoadToBuffer(buf, unk_1144, 0x20);
-            unk_9c[2].func_020b8670((u32)unk_1144, 8, 0xf);
+            unk_9c[2].requestPalette((u32)unk_1144, 8, 0xf);
             unk_96 = idx;
         }
     }

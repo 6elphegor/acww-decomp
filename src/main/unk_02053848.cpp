@@ -77,24 +77,24 @@ public:
     u8 pad_60[0x34];
     void *unk_94;
 
-    BOOL func_020555dc(void);
+    BOOL clearResource(void);
     void initRenderObj(void);
 };
 
-class Unk_020dbd34 : public Model {
+class CachedModel : public Model {
 public:
-    Unk_020dbd34();
-    virtual ~Unk_020dbd34();
+    CachedModel();
+    virtual ~CachedModel();
     u32 unk_98;
-    BOOL func_02054b14(void);
-    BOOL func_02054b38(void *heap);
-    void func_02054b70(void *a);
-    BOOL func_02054bac(void *a, void *b, void *c);
-    BOOL func_02054c2c(void *a, void *b);
-    BOOL func_02054c64(void *res, void *name, void *tex, void *d, u32 *e, s32 f);
-    BOOL func_02054c88(void *res, void *name);
-    BOOL func_02054c9c(void *res, void *name, void *tex, void *d, u32 *e, s32 f, u32 tag);
-    BOOL func_02054d58(void *res, void *name, u32 tag);
+    BOOL release(void);
+    BOOL allocJointRecord(void *heap);
+    void setFromFile(void *a);
+    BOOL loadWithSharedTex(void *a, void *b, void *c);
+    BOOL loadCached(void *a, void *b);
+    BOOL loadWithTex(void *res, void *name, void *tex, void *d, u32 *e, s32 f);
+    BOOL load(void *res, void *name);
+    BOOL loadWithTexKeyed(void *res, void *name, void *tex, void *d, u32 *e, s32 f, u32 tag);
+    BOOL loadKeyed(void *res, void *name, u32 tag);
 };
 
 class Unk_020dbd44 {
@@ -118,10 +118,10 @@ public:
     u8 pad_b1[3];
 };
 
-class Unk_020dbe6c {
+class JointBlend {
 public:
-    Unk_020dbe6c();
-    virtual ~Unk_020dbe6c();
+    JointBlend();
+    virtual ~JointBlend();
     u8 unk_bc[0x18];
     u8 *unk_d4;
     u8 unk_d8[0x14];
@@ -129,116 +129,116 @@ public:
     s32 unk_f0;
 };
 
-class Unk_020dbd54 : public Unk_020dbd34, public AnimFrameCtrl {
+class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:
-    Unk_020dbd54();
-    virtual ~Unk_020dbd54();
+    AnimModel();
+    virtual ~AnimModel();
     Unk_02054584_Data *unk_b4;
 
-    void func_0205468c();
-    void func_020546c8();
-    void func_020546ec();
-    s32 func_02054710();
-    void func_020547a4(s32 v);
-    s32 func_020547cc(void *q);
-    void func_020547e4();
-    BOOL func_02054800(void *x);
+    void detachAnim();
+    void detachVisAnim();
+    void detachJointAnim();
+    s32 attachAnim();
+    void setFrame(s32 v);
+    s32 drawAnimated(void *q);
+    void stepAnim();
+    BOOL allocAnmObj(void *x);
 };
 
-class Unk_0205454c : public Unk_020dbd54, public Unk_020dbe6c {
+class BlendAnimModel : public AnimModel, public JointBlend {
 public:
-    Unk_0205454c();
-    virtual ~Unk_0205454c();
+    BlendAnimModel();
+    virtual ~BlendAnimModel();
 
-    void func_0205436c(s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
-    void func_0205439c();
-    void func_020543b4(Unk_0205454c *x);
-    void func_020543d4(Unk_0205454c *x);
-    void func_02054420(Unk_0205454c *x);
-    void func_02054440(Unk_0205454c *x);
-    Unk_02054584_Data *func_02054584();
-    u32 func_0205458c();
-    void func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e);
+    void playBlend(s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
+    void stepBlend();
+    void onJointCalcPost(BlendAnimModel *x);
+    void applyJointBlend(BlendAnimModel *x);
+    void onJointCalcPre(BlendAnimModel *x);
+    void captureJointPose(BlendAnimModel *x);
+    Unk_02054584_Data *getAnmObj();
+    u32 getAnmRes();
+    void initAnim(s32 a, s32 b, s32 c, u16 d, u16 e);
 };
 
-class Unk_020dbda4 : public Unk_0205454c {
+class TwoLayerAnimModel : public BlendAnimModel {
 public:
-    Unk_020dbda4();
-    virtual ~Unk_020dbda4();
-    void func_02053dc0();
-    void func_02053dd8(u32 a, u32 b);
-    void func_02053e00(u32 a, u32 b);
-    void func_02053e28(u32 a, u32 b);
-    void func_02053e70(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g);
-    void func_02053f08(u32 a);
-    void func_02053f20();
-    BOOL func_02053f8c(u32 a);
-    void func_02053fcc(Unk_02053a54_Msg *m);
-    void func_02054004(Unk_02053a54_Msg *m);
-    void func_02054048(Unk_02053a54_Msg *m);
-    void func_02054098(Unk_02053a54_Msg *m);
-    BOOL func_020540bc(u32 i);
-    void func_020540f4(u32 i);
-    void func_02054124(u32 i);
-    void func_02054154(u32 i);
-    void func_02054158(u32 i);
+    TwoLayerAnimModel();
+    virtual ~TwoLayerAnimModel();
+    void clearLayer2Mask();
+    void releaseJointsFromLayer2(u32 a, u32 b);
+    void assignJointsToLayer2(u32 a, u32 b);
+    void playLayer2FromBase(u32 a, u32 b);
+    void playLayer2(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g);
+    void drawLayered(u32 a);
+    void updateLayers();
+    BOOL allocLayerAnims(u32 a);
+    void onJointCalcPostLayer2(Unk_02053a54_Msg *m);
+    void applyLayer2Blend(Unk_02053a54_Msg *m);
+    void onJointCalcPreLayer2(Unk_02053a54_Msg *m);
+    void captureLayer2Pose(Unk_02053a54_Msg *m);
+    BOOL isLayer2Joint(u32 i);
+    void clearLayer2Joint(u32 i);
+    void setLayer2Joint(u32 i);
+    void onJointLayerAssign(u32 i);
+    void onJointLayerRelease(u32 i);
 
     void *unk_f4;
     AnimFrameCtrl unk_f8;
-    Unk_020dbe6c unk_110;
+    JointBlend unk_110;
     u32 unk_14c;
     u32 unk_150;
 };
 
-class Unk_020dbd74 : public Unk_020dbda4 {
+class ThreeLayerAnimModel : public TwoLayerAnimModel {
 public:
-    Unk_020dbd74();
-    virtual ~Unk_020dbd74();
-    void func_02053878(u32 a, u32 b);
-    void func_020538a8(u32 a, u32 b);
-    void func_020538f0();
-    void func_02053900(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g);
-    void func_020539a0();
-    BOOL func_02053a14(u32 a);
-    void func_02053a54(Unk_02053a54_Msg *m);
-    void func_02053af0(Unk_02053a54_Msg *m);
-    void func_02053b34(Unk_02053a54_Msg *m);
-    void func_02053be4(Unk_02053a54_Msg *m);
-    BOOL func_02053c08(u32 i);
-    void func_02053c40(u32 i);
-    void func_02053c70(u32 i);
+    ThreeLayerAnimModel();
+    virtual ~ThreeLayerAnimModel();
+    void assignJointsToLayer3(u32 a, u32 b);
+    void playLayer3FromBase(u32 a, u32 b);
+    void checkLayer3Finished();
+    void playLayer3(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g);
+    void updateLayers3();
+    BOOL allocLayer3Anims(u32 a);
+    void onJointCalcPostLayer3(Unk_02053a54_Msg *m);
+    void applyLayer3Blend(Unk_02053a54_Msg *m);
+    void onJointCalcPreLayer3(Unk_02053a54_Msg *m);
+    void captureLayer3Pose(Unk_02053a54_Msg *m);
+    BOOL isLayer3Joint(u32 i);
+    void clearLayer3Joint(u32 i);
+    void setLayer3Joint(u32 i);
 
     void *unk_154;
     AnimFrameCtrl unk_158;
-    Unk_020dbe6c unk_170;
+    JointBlend unk_170;
     u32 unk_1ac;
     u32 unk_1b0;
 };
 
-struct Unk_02054970_Table {
+struct ModelSet {
     u32 unk_00;
     u32 unk_04;
-    Unk_020dbd34 *unk_08;
+    CachedModel *unk_08;
     u8 *unk_0c;
 };
 
 extern "C" {
 void MTX_Identity33_(void *p);
 s32 func_01ffcc10(void);
-void _ZN12Unk_020dbe6c13func_02056520Ei(void *p, s32 v);
-s32 _ZN12Unk_020dbe6c13func_02056544Ev(void *p);
-void _ZN12Unk_020dbe6c13func_02056160EP16Unk_02056160_Arg(void *p, void *q);
-void _ZN12Unk_020dbe6c13func_020561d8EP16Unk_02056160_Arg(void *p, void *q);
+void _ZN10JointBlend5startEi(void *p, s32 v);
+s32 _ZN10JointBlend7advanceEv(void *p);
+void _ZN10JointBlend11capturePoseEP16Unk_02056160_Arg(void *p, void *q);
+void _ZN10JointBlend9blendPoseEP16Unk_02056160_Arg(void *p, void *q);
 void _ZN13AnimFrameCtrl5setupEihit(void *p, u32 a, s32 b, s32 c, u32 d);
 s32 _ZN13AnimFrameCtrl4stepEv(void *p);
 void _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 void NNS_G3dAnmObjInit(void *a, s32 b, void *c, s32 d);
 void NNS_G3dRenderObjRemoveAnmObj(void *a, void *b);
 void NNS_G3dRenderObjAddAnmObj(void *a, void *b);
-void _ZN5Model13func_0205553cEPi(void *p, void *q);
-void *func_02055c08(void *a, void *b, void *c);
-extern u8 data_020dbd28[];
-s32 _ZN12Unk_020dbd5413func_020547ccEPv(void *p);
+void _ZN5Model10drawScaledEPi(void *p, void *q);
+void *Gfx3d_AllocAnmObj(void *a, void *b, void *c);
+extern u8 sJointAnmHeader2[];
+s32 _ZN9AnimModel12drawAnimatedEPv(void *p);
 void func_0206fde4(u32 v);
 void func_0206fe0c(u32 v);
 void func_0206fd10(void *a, void *b, void *c);
@@ -248,43 +248,43 @@ void func_0206fdb4(void *a, void *b);
 s32 strcmp(void *a, void *b);
 void *File_LoadAlloc(void *a, void *b, s32 c, s32 d);
 extern void *gCurrentHeap;
-extern void *data_021c6214;
+extern void *gModelCacheHeap;
 void *NNS_G3dGetMdlSet(void *p);
 void *NNS_G3dGetTex(void *p);
 void *Heap_Alloc(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
-void func_02055724(void *a, void *b);
-void *func_0205588c(void *a, void *heap);
-void *func_02055928(void *a, void *heap);
+void Gfx3d_LoadTexAndPltt(void *a, void *b);
+void *Gfx3d_CopyTex(void *a, void *heap);
+void *Gfx3d_CopyModel(void *a, void *heap);
 void _ZN5Model18setResourceAndBindEP16Unk_020553f8_Resj(void *a, void *b, void *c);
 void NNS_G3dBindMdlTex(void *a, void *b);
 void NNS_G3dBindMdlPltt(void *a, void *b);
 void func_02103978(void *a, void *b, s32 c, s32 d);
 void func_021037b4(void *a, void *b, s32 c, void *d);
-void *func_020558bc(void *a, u32 tag);
-void *func_0205598c(void *a);
+void *ResCache_GetModel(void *a, u32 tag);
+void *ResCache_FindModel(void *a);
 void *func_020716cc(void);
 void *_ZN12Unk_020718a413func_020716e8Eii(void *a, void *b, void *c);
-void func_02053830(void *p);
-void func_02053ee8(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
-void func_0205415c(void *p, void *q);
-void func_02053848(void *a, u32 b, u32 c);
-void func_02053980(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
-u16 func_02054778(u32 kind, Unk_02054778_Info *p);
+void ThreeLayerAnimModel_ClearLayer3Mask(void *p);
+void BlendAnimModel_Play(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
+void AnimModel_SwitchAnmObj(void *p, void *q);
+void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, u32 b, u32 c);
+void BlendAnimModel_Play2(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
+u16 Anim_GetFrameCountForMode(u32 kind, Unk_02054778_Info *p);
 }
 
-u8 data_020dbd28[4] = {0x4a, 0x00, 0x41, 0x43};
+u8 sJointAnmHeader2[4] = {0x4a, 0x00, 0x41, 0x43};
 
 static inline u8 *Unk_02054b70_Off(u8 *p) {
     return p + *(u32 *)(p + *(u16 *)(p + 0xe) + 0xc);
 }
 
-Unk_020dbd34::Unk_020dbd34() : unk_98(0x4e554c4c) {}
+CachedModel::CachedModel() : unk_98(0x4e554c4c) {}
 
-Unk_020dbd34::~Unk_020dbd34() {}
+CachedModel::~CachedModel() {}
 
-BOOL Unk_020dbd34::func_02054d58(void *res, void *name, u32 tag) {
+BOOL CachedModel::loadKeyed(void *res, void *name, u32 tag) {
     void *heap = gCurrentHeap;
     void *h = File_LoadAlloc(res, heap, -4, 0);
     if (h == NULL) {
@@ -293,12 +293,12 @@ BOOL Unk_020dbd34::func_02054d58(void *res, void *name, u32 tag) {
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
     void *q = NNS_G3dGetTex(h);
     if (name != NULL) {
-        unk_5c = func_02055928(p, name);
+        unk_5c = Gfx3d_CopyModel(p, name);
     } else {
-        unk_5c = func_020558bc(p, tag);
+        unk_5c = ResCache_GetModel(p, tag);
     }
     if (q != NULL) {
-        func_02055724(q, unk_94);
+        Gfx3d_LoadTexAndPltt(q, unk_94);
         NNS_G3dBindMdlTex(unk_5c, q);
         NNS_G3dBindMdlPltt(unk_5c, q);
     }
@@ -307,7 +307,7 @@ BOOL Unk_020dbd34::func_02054d58(void *res, void *name, u32 tag) {
     return TRUE;
 }
 
-BOOL Unk_020dbd34::func_02054c9c(void *res, void *name, void *tex, void *d, u32 *e, s32 f, u32 tag) {
+BOOL CachedModel::loadWithTexKeyed(void *res, void *name, void *tex, void *d, u32 *e, s32 f, u32 tag) {
     void *heap = gCurrentHeap;
     void *h = File_LoadAlloc(res, heap, -4, 0);
     if (h == NULL) {
@@ -315,16 +315,16 @@ BOOL Unk_020dbd34::func_02054c9c(void *res, void *name, void *tex, void *d, u32 
     }
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
     if (name != NULL) {
-        unk_5c = func_02055928(p, name);
+        unk_5c = Gfx3d_CopyModel(p, name);
     } else {
-        unk_5c = func_020558bc(p, tag);
+        unk_5c = ResCache_GetModel(p, tag);
     }
     if (tex != NULL) {
         NNS_G3dBindMdlTex(unk_5c, tex);
     } else {
         void *q = NNS_G3dGetTex(h);
         if (q != NULL) {
-            func_02055724(q, unk_94);
+            Gfx3d_LoadTexAndPltt(q, unk_94);
             NNS_G3dBindMdlTex(unk_5c, q);
         }
     }
@@ -339,32 +339,32 @@ BOOL Unk_020dbd34::func_02054c9c(void *res, void *name, void *tex, void *d, u32 
     return TRUE;
 }
 
-BOOL Unk_020dbd34::func_02054c88(void *res, void *name) {
-    return func_02054d58(res, name, 0x4e554c4c);
+BOOL CachedModel::load(void *res, void *name) {
+    return loadKeyed(res, name, 0x4e554c4c);
 }
 
-BOOL Unk_020dbd34::func_02054c64(void *res, void *name, void *tex, void *d, u32 *e, s32 f) {
-    return func_02054c9c(res, name, tex, d, e, f, 0x4e554c4c);
+BOOL CachedModel::loadWithTex(void *res, void *name, void *tex, void *d, u32 *e, s32 f) {
+    return loadWithTexKeyed(res, name, tex, d, e, f, 0x4e554c4c);
 }
 
-BOOL Unk_020dbd34::func_02054c2c(void *a, void *b) {
-    unk_5c = func_0205598c(a);
+BOOL CachedModel::loadCached(void *a, void *b) {
+    unk_5c = ResCache_FindModel(a);
     if (unk_5c != NULL) {
         initRenderObj();
         return TRUE;
     }
     unk_98 = (u32)a;
-    return func_02054d58(b, NULL, (u32)a);
+    return loadKeyed(b, NULL, (u32)a);
 }
 
-BOOL Unk_020dbd34::func_02054bac(void *a, void *b, void *c) {
+BOOL CachedModel::loadWithSharedTex(void *a, void *b, void *c) {
     void *heap = gCurrentHeap;
     void *h = File_LoadAlloc(a, heap, -4, 0);
     if (h == NULL) {
         return FALSE;
     }
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
-    unk_5c = func_020558bc(p, 0x4e554c4c);
+    unk_5c = ResCache_GetModel(p, 0x4e554c4c);
     void *r = _ZN12Unk_020718a413func_020716e8Eii(func_020716cc(), b, c);
     func_02103978(unk_5c, r, 0, 0);
     func_021037b4(unk_5c, r, 0, 0);
@@ -373,7 +373,7 @@ BOOL Unk_020dbd34::func_02054bac(void *a, void *b, void *c) {
     return TRUE;
 }
 
-void Unk_020dbd34::func_02054b70(void *a) {
+void CachedModel::setFromFile(void *a) {
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(a));
     void *q = NNS_G3dGetTex(a);
     unk_5c = p;
@@ -382,7 +382,7 @@ void Unk_020dbd34::func_02054b70(void *a) {
     initRenderObj();
 }
 
-BOOL Unk_020dbd34::func_02054b38(void *heap) {
+BOOL CachedModel::allocJointRecord(void *heap) {
     u32 size = unk_0c[0x17] * 0x58;
     if (heap == NULL) {
         heap = gCurrentHeap;
@@ -396,9 +396,9 @@ BOOL Unk_020dbd34::func_02054b38(void *heap) {
     return TRUE;
 }
 
-BOOL Unk_020dbd34::func_02054b14(void) {
+BOOL CachedModel::release(void) {
     BOOL r = TRUE;
-    r &= func_020555dc();
+    r &= clearResource();
     unk_98 = 0x4e554c4c;
     return r;
 }
@@ -407,7 +407,7 @@ Unk_020dbd44::Unk_020dbd44() : unk_04(0), unk_08(0) {}
 
 Unk_020dbd44::~Unk_020dbd44() {}
 
-extern "C" BOOL func_020549e4(Unk_02054970_Table *t, void *file, void *heap)
+extern "C" BOOL ModelSet_Load(ModelSet *t, void *file, void *heap)
 {
     u32 size;
     void *fileHeap;
@@ -415,7 +415,7 @@ extern "C" BOOL func_020549e4(Unk_02054970_Table *t, void *file, void *heap)
     void *hdr;
     u32 i;
     if (heap == 0) {
-        heap = data_021c6214;
+        heap = gModelCacheHeap;
     }
     fileHeap = gCurrentHeap;
     res = File_LoadAlloc(file, fileHeap, -4, 0);
@@ -431,27 +431,27 @@ extern "C" BOOL func_020549e4(Unk_02054970_Table *t, void *file, void *heap)
         p = p + *(u16 *)(hdr2 + 0xe);
         MI_CpuCopy8(p + *(u16 *)(p + 2), t->unk_0c, size);
     }
-    t->unk_08 = (Unk_020dbd34 *)Heap_Alloc(heap, t->unk_04 * 0x9c);
+    t->unk_08 = (CachedModel *)Heap_Alloc(heap, t->unk_04 * 0x9c);
     for (i = 0; i < t->unk_04; i++) {
-        new (&t->unk_08[i]) Unk_020dbd34();
+        new (&t->unk_08[i]) CachedModel();
     }
     hdr = NNS_G3dGetTex(res);
-    func_02055724(hdr, 0);
-    hdr = func_0205588c(hdr, heap);
+    Gfx3d_LoadTexAndPltt(hdr, 0);
+    hdr = Gfx3d_CopyTex(hdr, heap);
     for (i = 0; i < t->unk_04; i++) {
         u8 *h = (u8 *)NNS_G3dGetMdlSet(res);
         u8 *p = h + 8;
         u32 off = *(u16 *)(h + 0xe);
         u32 st = *(u16 *)(p + off);
         u8 *q = h + *(s32 *)(p + off + st * i + 4);
-        void *r = func_02055928(q, heap);
+        void *r = Gfx3d_CopyModel(q, heap);
         _ZN5Model18setResourceAndBindEP16Unk_020553f8_Resj(&t->unk_08[i], r, hdr);
     }
     Heap_Free(fileHeap, res);
     return TRUE;
 }
 
-extern "C" void *func_020549ac(Unk_02054970_Table *t, void *name)
+extern "C" void *ModelSet_Find(ModelSet *t, void *name)
 {
     u32 i = 0;
     u32 n = t->unk_04;
@@ -463,54 +463,54 @@ extern "C" void *func_020549ac(Unk_02054970_Table *t, void *name)
     return 0;
 }
 
-extern "C" BOOL func_02054970(Unk_02054970_Table *t)
+extern "C" BOOL ModelSet_Release(ModelSet *t)
 {
     BOOL r = TRUE;
     if (t->unk_04 == 0) {
         return r;
     }
     for (u32 i = 0; i < t->unk_04; i++) {
-        r &= t->unk_08[i].func_02054b14();
+        r &= t->unk_08[i].release();
     }
     t->unk_04 = 0;
     return TRUE;
 }
 
-Unk_020dbd54::Unk_020dbd54()
+AnimModel::AnimModel()
 {
     unk_b4 = 0;
 }
 
-Unk_020dbd54::~Unk_020dbd54() {}
+AnimModel::~AnimModel() {}
 
-BOOL Unk_020dbd54::func_02054800(void *x)
+BOOL AnimModel::allocAnmObj(void *x)
 {
     if (unk_b4 != 0 || unk_5c == 0) {
         return FALSE;
     }
-    unk_b4 = (Unk_02054584_Data *)func_02055c08(unk_5c, data_020dbd28, x);
+    unk_b4 = (Unk_02054584_Data *)Gfx3d_AllocAnmObj(unk_5c, sJointAnmHeader2, x);
     if (unk_b4 != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_020dbd54::func_020547e4()
+void AnimModel::stepAnim()
 {
     AnimFrameCtrl &r = *this;
     _ZN13AnimFrameCtrl4stepEv(&r);
     unk_b4->unk_00 = unk_a4;
 }
 
-s32 Unk_020dbd54::func_020547cc(void *q)
+s32 AnimModel::drawAnimated(void *q)
 {
     if (unk_3c != 0) {
         unk_08 |= 1;
     }
-    _ZN5Model13func_0205553cEPi(this, q);
+    _ZN5Model10drawScaledEPi(this, q);
 }
 
-void Unk_020dbd54::func_020547a4(s32 v)
+void AnimModel::setFrame(s32 v)
 {
     unk_a4 = v << 12;
     unk_b4->unk_00 = unk_a4;
@@ -519,7 +519,7 @@ void Unk_020dbd54::func_020547a4(s32 v)
     }
 }
 
-extern "C" u16 func_02054778(u32 kind, Unk_02054778_Info *p)
+extern "C" u16 Anim_GetFrameCountForMode(u32 kind, Unk_02054778_Info *p)
 {
     u16 r = p->unk_04;
     if (kind == 0 || kind == 2) {
@@ -534,10 +534,10 @@ extern "C" u16 func_02054778(u32 kind, Unk_02054778_Info *p)
     return r;
 }
 
-void Unk_0205454c::func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e)
+void BlendAnimModel::initAnim(s32 a, s32 b, s32 c, u16 d, u16 e)
 {
     if (e == 0) {
-        e = func_02054778(b, (Unk_02054778_Info *)a);
+        e = Anim_GetFrameCountForMode(b, (Unk_02054778_Info *)a);
     }
     AnimFrameCtrl &r = *this;
     _ZN13AnimFrameCtrl5setupEihit(&r, e, b, c, d);
@@ -545,12 +545,12 @@ void Unk_0205454c::func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e)
     unk_b4->unk_00 = unk_a4;
 }
 
-s32 Unk_020dbd54::func_02054710()
+s32 AnimModel::attachAnim()
 {
     NNS_G3dRenderObjAddAnmObj(&unk_08, unk_b4);
 }
 
-void Unk_020dbd54::func_020546ec()
+void AnimModel::detachJointAnim()
 {
     if (unk_b4 != 0) {
         NNS_G3dRenderObjRemoveAnmObj(&unk_08, unk_18);
@@ -558,7 +558,7 @@ void Unk_020dbd54::func_020546ec()
     }
 }
 
-void Unk_020dbd54::func_020546c8()
+void AnimModel::detachVisAnim()
 {
     if (unk_b4 != 0) {
         NNS_G3dRenderObjRemoveAnmObj(&unk_08, unk_20);
@@ -566,7 +566,7 @@ void Unk_020dbd54::func_020546c8()
     }
 }
 
-void Unk_020dbd54::func_0205468c()
+void AnimModel::detachAnim()
 {
     if (unk_b4 != 0) {
         if (unk_18 == unk_b4) {
@@ -636,38 +636,38 @@ extern "C" void func_02054594(void *unused, Unk_02054628_Obj *o, void *p)
     }
 }
 
-u32 Unk_0205454c::func_0205458c()
+u32 BlendAnimModel::getAnmRes()
 {
     return unk_b4->unk_08;
 }
 
-Unk_02054584_Data *Unk_0205454c::func_02054584()
+Unk_02054584_Data *BlendAnimModel::getAnmObj()
 {
     return unk_b4;
 }
 
-Unk_0205454c::Unk_0205454c()
+BlendAnimModel::BlendAnimModel()
 {
 }
 
-Unk_0205454c::~Unk_0205454c() {}
+BlendAnimModel::~BlendAnimModel() {}
 
-void Unk_0205454c::func_02054440(Unk_0205454c *x)
+void BlendAnimModel::captureJointPose(BlendAnimModel *x)
 {
     if (unk_f0 != 0) {
-        Unk_020dbe6c &r = *this;
-        _ZN12Unk_020dbe6c13func_02056160EP16Unk_02056160_Arg(&r, x);
+        JointBlend &r = *this;
+        _ZN10JointBlend11capturePoseEP16Unk_02056160_Arg(&r, x);
     }
 }
 
-void Unk_0205454c::func_02054420(Unk_0205454c *x)
+void BlendAnimModel::onJointCalcPre(BlendAnimModel *x)
 {
     if (func_01ffcc10() == 0) {
-        func_02054440(x);
+        captureJointPose(x);
     }
 }
 
-void Unk_0205454c::func_020543d4(Unk_0205454c *x)
+void BlendAnimModel::applyJointBlend(BlendAnimModel *x)
 {
     Unk_02054584_Data *d = x->unk_b4;
     if (d->unk_00 & 4) {
@@ -679,42 +679,42 @@ void Unk_0205454c::func_020543d4(Unk_0205454c *x)
         MTX_Identity33_(d->unk_28);
     }
     if (unk_f0 != 0) {
-        Unk_020dbe6c &r = *this;
-        _ZN12Unk_020dbe6c13func_020561d8EP16Unk_02056160_Arg(&r, x);
+        JointBlend &r = *this;
+        _ZN10JointBlend9blendPoseEP16Unk_02056160_Arg(&r, x);
     }
 }
 
-void Unk_0205454c::func_020543b4(Unk_0205454c *x)
+void BlendAnimModel::onJointCalcPost(BlendAnimModel *x)
 {
     if (func_01ffcc10() == 0) {
-        func_020543d4(x);
+        applyJointBlend(x);
     }
 }
 
-void Unk_0205454c::func_0205439c()
+void BlendAnimModel::stepBlend()
 {
-    Unk_020dbe6c &r = *this;
-    _ZN12Unk_020dbe6c13func_02056544Ev(&r);
-    func_020547e4();
+    JointBlend &r = *this;
+    _ZN10JointBlend7advanceEv(&r);
+    stepAnim();
 }
 
-void Unk_0205454c::func_0205436c(s32 a, s32 b, s32 c, s32 d, u16 e, u16 f)
+void BlendAnimModel::playBlend(s32 a, s32 b, s32 c, s32 d, u16 e, u16 f)
 {
-    Unk_020dbe6c &r = *this;
-    _ZN12Unk_020dbe6c13func_02056520Ei(&r, b);
-    func_02054720(a, c, d, e, f);
+    JointBlend &r = *this;
+    _ZN10JointBlend5startEi(&r, b);
+    initAnim(a, c, d, e, f);
 }
 
-Unk_020dbda4::Unk_020dbda4()
+TwoLayerAnimModel::TwoLayerAnimModel()
 {
     unk_f4 = 0;
     unk_14c = 0;
     unk_150 = 0;
 }
 
-Unk_020dbda4::~Unk_020dbda4() {}
+TwoLayerAnimModel::~TwoLayerAnimModel() {}
 
-extern "C" void func_0205415c(void *pv, void *qv) {
+extern "C" void AnimModel_SwitchAnmObj(void *pv, void *qv) {
     Unk_0205415c_Obj *p = (Unk_0205415c_Obj *)pv;
     Unk_0205415c_Item *q = (Unk_0205415c_Item *)qv;
     Unk_0205415c_Item *cur = p->unk_18;
@@ -724,11 +724,11 @@ extern "C" void func_0205415c(void *pv, void *qv) {
     }
 }
 
-void Unk_020dbda4::func_02054158(u32 i) {}
+void TwoLayerAnimModel::onJointLayerRelease(u32 i) {}
 
-void Unk_020dbda4::func_02054154(u32 i) {}
+void TwoLayerAnimModel::onJointLayerAssign(u32 i) {}
 
-void Unk_020dbda4::func_02054124(u32 i) {
+void TwoLayerAnimModel::setLayer2Joint(u32 i) {
     if (i >= 0x20) {
         unk_150 |= 1 << (i - 0x20);
     } else {
@@ -736,7 +736,7 @@ void Unk_020dbda4::func_02054124(u32 i) {
     }
 }
 
-void Unk_020dbda4::func_020540f4(u32 i) {
+void TwoLayerAnimModel::clearLayer2Joint(u32 i) {
     if (i >= 0x20) {
         unk_150 &= ~(1 << (i - 0x20));
     } else {
@@ -744,7 +744,7 @@ void Unk_020dbda4::func_020540f4(u32 i) {
     }
 }
 
-BOOL Unk_020dbda4::func_020540bc(u32 i) {
+BOOL TwoLayerAnimModel::isLayer2Joint(u32 i) {
     if (i >= 0x20) {
         if ((unk_150 & (1 << (i - 0x20))) == 0) {
             return FALSE;
@@ -757,61 +757,61 @@ BOOL Unk_020dbda4::func_020540bc(u32 i) {
     return TRUE;
 }
 
-void Unk_020dbda4::func_02054098(Unk_02053a54_Msg *m) {
+void TwoLayerAnimModel::captureLayer2Pose(Unk_02053a54_Msg *m) {
     if (unk_110.unk_f0 != 0) {
-        _ZN12Unk_020dbe6c13func_02056160EP16Unk_02056160_Arg(&unk_110, m);
+        _ZN10JointBlend11capturePoseEP16Unk_02056160_Arg(&unk_110, m);
     }
 }
 
-void Unk_020dbda4::func_02054048(Unk_02053a54_Msg *m) {
+void TwoLayerAnimModel::onJointCalcPreLayer2(Unk_02053a54_Msg *m) {
     if (func_01ffcc10() == 0) {
-        if (func_020540bc(m->unk_00->unk_01)) {
-            func_0205415c(this, unk_f4);
-            func_02054098(m);
+        if (isLayer2Joint(m->unk_00->unk_01)) {
+            AnimModel_SwitchAnmObj(this, unk_f4);
+            captureLayer2Pose(m);
         } else {
-            func_0205415c(this, unk_b4);
-            func_02054440((Unk_0205454c *)m);
+            AnimModel_SwitchAnmObj(this, unk_b4);
+            captureJointPose((BlendAnimModel *)m);
         }
     }
 }
 
-void Unk_020dbda4::func_02054004(Unk_02053a54_Msg *m) {
+void TwoLayerAnimModel::applyLayer2Blend(Unk_02053a54_Msg *m) {
     if ((m->unk_b4->unk_00 & 4) != 0) {
         m->unk_b4->unk_4c = 0;
         m->unk_b4->unk_50 = 0;
         m->unk_b4->unk_54 = 0;
     }
     if (unk_110.unk_f0 != 0) {
-        _ZN12Unk_020dbe6c13func_020561d8EP16Unk_02056160_Arg(&unk_110, m);
+        _ZN10JointBlend9blendPoseEP16Unk_02056160_Arg(&unk_110, m);
     }
 }
 
-void Unk_020dbda4::func_02053fcc(Unk_02053a54_Msg *m) {
+void TwoLayerAnimModel::onJointCalcPostLayer2(Unk_02053a54_Msg *m) {
     if (func_01ffcc10() == 0) {
-        if (func_020540bc(m->unk_00->unk_01)) {
-            func_02054004(m);
+        if (isLayer2Joint(m->unk_00->unk_01)) {
+            applyLayer2Blend(m);
         } else {
-            func_020543d4((Unk_0205454c *)m);
+            applyJointBlend((BlendAnimModel *)m);
         }
     }
 }
 
-BOOL Unk_020dbda4::func_02053f8c(u32 a) {
-    if (!func_02054800((void *)a)) {
+BOOL TwoLayerAnimModel::allocLayerAnims(u32 a) {
+    if (!allocAnmObj((void *)a)) {
         return FALSE;
     }
-    unk_f4 = func_02055c08(unk_5c, data_020dbd28, (void *)a);
+    unk_f4 = Gfx3d_AllocAnmObj(unk_5c, sJointAnmHeader2, (void *)a);
     if (unk_f4 != NULL) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_020dbda4::func_02053f20() {
-    func_0205439c();
+void TwoLayerAnimModel::updateLayers() {
+    stepBlend();
     if (unk_14c != 0 || unk_150 != 0) {
-        if (_ZN12Unk_020dbe6c13func_02056544Ev(&unk_110) != 0 && (unk_04 & 0x4000) != 0) {
-            func_02053dc0();
+        if (_ZN10JointBlend7advanceEv(&unk_110) != 0 && (unk_04 & 0x4000) != 0) {
+            clearLayer2Mask();
             unk_04 = unk_04 & 0xffffbfff;
         }
         _ZN13AnimFrameCtrl4stepEv(&unk_f8);
@@ -819,19 +819,19 @@ void Unk_020dbda4::func_02053f20() {
     }
 }
 
-void Unk_020dbda4::func_02053f08(u32 a) {
-    _ZN12Unk_020dbd5413func_020547ccEPv(this);
-    func_0205415c(this, unk_b4);
+void TwoLayerAnimModel::drawLayered(u32 a) {
+    _ZN9AnimModel12drawAnimatedEPv(this);
+    AnimModel_SwitchAnmObj(this, unk_b4);
 }
 
-extern "C" void func_02053ee8(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f) {
-    ((Unk_0205454c *)p)->func_0205436c(a, b, c, d, e, f);
+extern "C" void BlendAnimModel_Play(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f) {
+    ((BlendAnimModel *)p)->playBlend(a, b, c, d, e, f);
 }
 
-void Unk_020dbda4::func_02053e70(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g) {
-    _ZN12Unk_020dbe6c13func_02056520Ei(&unk_110, b);
+void TwoLayerAnimModel::playLayer2(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g) {
+    _ZN10JointBlend5startEi(&unk_110, b);
     if (*(u16 *)&f == 0) {
-        *(u16 *)&f = func_02054778(c, (Unk_02054778_Info *)a);
+        *(u16 *)&f = Anim_GetFrameCountForMode(c, (Unk_02054778_Info *)a);
     }
     _ZN13AnimFrameCtrl5setupEihit(&unk_f8, *(u16 *)&f, c, d, *(u16 *)&e);
     NNS_G3dAnmObjInit(unk_f4, a, unk_5c, 0);
@@ -842,45 +842,45 @@ void Unk_020dbda4::func_02053e70(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL 
     }
 }
 
-void Unk_020dbda4::func_02053e28(u32 a, u32 b) {
+void TwoLayerAnimModel::playLayer2FromBase(u32 a, u32 b) {
     if (a == 0) {
-        func_02053dc0();
+        clearLayer2Mask();
     } else {
-        func_02053e70(func_0205458c(), a, unk_b0, unk_ac, (unk_a4 << 4) >> 16, b, 1);
+        playLayer2(getAnmRes(), a, unk_b0, unk_ac, (unk_a4 << 4) >> 16, b, 1);
     }
 }
 
-void Unk_020dbda4::func_02053e00(u32 a, u32 b) {
+void TwoLayerAnimModel::assignJointsToLayer2(u32 a, u32 b) {
     u32 i = a;
     for (; i <= b; i++) {
-        func_02054154(i);
-        func_02054124(i);
+        onJointLayerAssign(i);
+        setLayer2Joint(i);
     }
 }
 
-void Unk_020dbda4::func_02053dd8(u32 a, u32 b) {
+void TwoLayerAnimModel::releaseJointsFromLayer2(u32 a, u32 b) {
     u32 i = a;
     for (; i <= b; i++) {
-        func_02054158(i);
-        func_020540f4(i);
+        onJointLayerRelease(i);
+        clearLayer2Joint(i);
     }
 }
 
-void Unk_020dbda4::func_02053dc0() {
+void TwoLayerAnimModel::clearLayer2Mask() {
     unk_150 = 0;
     unk_14c = unk_150;
 }
 
-Unk_020dbd74::Unk_020dbd74() {
+ThreeLayerAnimModel::ThreeLayerAnimModel() {
     unk_154 = NULL;
     unk_1ac = 0;
     unk_1b0 = 0;
 }
 
-Unk_020dbd74::~Unk_020dbd74() {
+ThreeLayerAnimModel::~ThreeLayerAnimModel() {
 }
 
-void Unk_020dbd74::func_02053c70(u32 i) {
+void ThreeLayerAnimModel::setLayer3Joint(u32 i) {
     if (i >= 0x20) {
         unk_1b0 |= 1 << (i - 0x20);
     } else {
@@ -888,7 +888,7 @@ void Unk_020dbd74::func_02053c70(u32 i) {
     }
 }
 
-void Unk_020dbd74::func_02053c40(u32 i) {
+void ThreeLayerAnimModel::clearLayer3Joint(u32 i) {
     if (i >= 0x20) {
         unk_1b0 &= ~(1 << (i - 0x20));
     } else {
@@ -896,7 +896,7 @@ void Unk_020dbd74::func_02053c40(u32 i) {
     }
 }
 
-BOOL Unk_020dbd74::func_02053c08(u32 i) {
+BOOL ThreeLayerAnimModel::isLayer3Joint(u32 i) {
     if (i >= 0x20) {
         if ((unk_1b0 & (1 << (i - 0x20))) == 0) {
             return FALSE;
@@ -909,13 +909,13 @@ BOOL Unk_020dbd74::func_02053c08(u32 i) {
     return TRUE;
 }
 
-void Unk_020dbd74::func_02053be4(Unk_02053a54_Msg *m) {
+void ThreeLayerAnimModel::captureLayer3Pose(Unk_02053a54_Msg *m) {
     if (unk_170.unk_f0 != 0) {
-        _ZN12Unk_020dbe6c13func_02056160EP16Unk_02056160_Arg(&unk_170, m);
+        _ZN10JointBlend11capturePoseEP16Unk_02056160_Arg(&unk_170, m);
     }
 }
 
-void Unk_020dbd74::func_02053b34(Unk_02053a54_Msg *m) {
+void ThreeLayerAnimModel::onJointCalcPreLayer3(Unk_02053a54_Msg *m) {
     if (func_01ffcc10() == 0) {
         u32 t = m->unk_00->unk_01;
         u32 v;
@@ -925,8 +925,8 @@ void Unk_020dbd74::func_02053b34(Unk_02053a54_Msg *m) {
             v = unk_1ac & (1 << t);
         }
         if (v != 0) {
-            func_0205415c(this, unk_154);
-            func_02053be4(m);
+            AnimModel_SwitchAnmObj(this, unk_154);
+            captureLayer3Pose(m);
         } else {
             u32 w;
             if (t >= 0x20) {
@@ -935,63 +935,63 @@ void Unk_020dbd74::func_02053b34(Unk_02053a54_Msg *m) {
                 w = unk_14c & (1 << t);
             }
             if (w != 0) {
-                func_0205415c(this, unk_f4);
-                func_02054098(m);
+                AnimModel_SwitchAnmObj(this, unk_f4);
+                captureLayer2Pose(m);
             } else {
-                func_0205415c(this, unk_b4);
-                func_02054440((Unk_0205454c *)m);
+                AnimModel_SwitchAnmObj(this, unk_b4);
+                captureJointPose((BlendAnimModel *)m);
             }
         }
     }
 }
 
-void Unk_020dbd74::func_02053af0(Unk_02053a54_Msg *m) {
+void ThreeLayerAnimModel::applyLayer3Blend(Unk_02053a54_Msg *m) {
     if ((m->unk_b4->unk_00 & 4) != 0) {
         m->unk_b4->unk_4c = 0;
         m->unk_b4->unk_50 = 0;
         m->unk_b4->unk_54 = 0;
     }
     if (unk_170.unk_f0 != 0) {
-        _ZN12Unk_020dbe6c13func_020561d8EP16Unk_02056160_Arg(&unk_170, m);
+        _ZN10JointBlend9blendPoseEP16Unk_02056160_Arg(&unk_170, m);
     }
 }
 
-void Unk_020dbd74::func_02053a54(Unk_02053a54_Msg *m) {
+void ThreeLayerAnimModel::onJointCalcPostLayer3(Unk_02053a54_Msg *m) {
     if (func_01ffcc10() == 0) {
         u32 x = unk_1b0 | (unk_1ac | (unk_14c | unk_150));
         if (x == 0) {
-            func_020543d4((Unk_0205454c *)m);
+            applyJointBlend((BlendAnimModel *)m);
         } else {
             u32 t = m->unk_00->unk_01;
             if ((x & (1 << (t & 0x1f))) == 0) {
-                func_020543d4((Unk_0205454c *)m);
-            } else if (func_02053c08(t)) {
-                func_02053af0(m);
-            } else if (func_020540bc(t)) {
-                func_02054004(m);
+                applyJointBlend((BlendAnimModel *)m);
+            } else if (isLayer3Joint(t)) {
+                applyLayer3Blend(m);
+            } else if (isLayer2Joint(t)) {
+                applyLayer2Blend(m);
             } else {
-                func_020543d4((Unk_0205454c *)m);
+                applyJointBlend((BlendAnimModel *)m);
             }
         }
     }
 }
 
-BOOL Unk_020dbd74::func_02053a14(u32 a) {
-    if (!func_02053f8c(a)) {
+BOOL ThreeLayerAnimModel::allocLayer3Anims(u32 a) {
+    if (!allocLayerAnims(a)) {
         return FALSE;
     }
-    unk_154 = func_02055c08(unk_5c, data_020dbd28, (void *)a);
+    unk_154 = Gfx3d_AllocAnmObj(unk_5c, sJointAnmHeader2, (void *)a);
     if (unk_154 != NULL) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_020dbd74::func_020539a0() {
-    func_02053f20();
+void ThreeLayerAnimModel::updateLayers3() {
+    updateLayers();
     if (unk_1ac != 0 || unk_1b0 != 0) {
-        if (_ZN12Unk_020dbe6c13func_02056544Ev(&unk_170) != 0 && (unk_04 & 0x8000) != 0) {
-            func_02053830(this);
+        if (_ZN10JointBlend7advanceEv(&unk_170) != 0 && (unk_04 & 0x8000) != 0) {
+            ThreeLayerAnimModel_ClearLayer3Mask(this);
             unk_04 = unk_04 & 0xffff7fff;
         }
         _ZN13AnimFrameCtrl4stepEv(&unk_158);
@@ -999,12 +999,12 @@ void Unk_020dbd74::func_020539a0() {
     }
 }
 
-extern "C" void func_02053980(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f) { func_02053ee8(p, a, b, c, d, e, f); }
+extern "C" void BlendAnimModel_Play2(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f) { BlendAnimModel_Play(p, a, b, c, d, e, f); }
 
-void Unk_020dbd74::func_02053900(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g) {
-    _ZN12Unk_020dbe6c13func_02056520Ei(&unk_170, b);
+void ThreeLayerAnimModel::playLayer3(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g) {
+    _ZN10JointBlend5startEi(&unk_170, b);
     if (*(u16 *)&f == 0) {
-        *(u16 *)&f = func_02054778(c, (Unk_02054778_Info *)a);
+        *(u16 *)&f = Anim_GetFrameCountForMode(c, (Unk_02054778_Info *)a);
     }
     _ZN13AnimFrameCtrl5setupEihit(&unk_158, *(u16 *)&f, c, d, *(u16 *)&e);
     NNS_G3dAnmObjInit(unk_154, a, unk_5c, 0);
@@ -1015,32 +1015,32 @@ void Unk_020dbd74::func_02053900(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL 
     }
 }
 
-void Unk_020dbd74::func_020538f0() { _ZN13AnimFrameCtrl10isFinishedEv(&unk_158); }
+void ThreeLayerAnimModel::checkLayer3Finished() { _ZN13AnimFrameCtrl10isFinishedEv(&unk_158); }
 
-void Unk_020dbd74::func_020538a8(u32 a, u32 b) {
+void ThreeLayerAnimModel::playLayer3FromBase(u32 a, u32 b) {
     if (a == 0) {
-        func_02053830(this);
+        ThreeLayerAnimModel_ClearLayer3Mask(this);
     } else {
-        func_02053900(func_0205458c(), a, unk_b0, unk_ac, (unk_a4 << 4) >> 16, b, 1);
+        playLayer3(getAnmRes(), a, unk_b0, unk_ac, (unk_a4 << 4) >> 16, b, 1);
     }
 }
 
-void Unk_020dbd74::func_02053878(u32 a, u32 b) {
+void ThreeLayerAnimModel::assignJointsToLayer3(u32 a, u32 b) {
     u32 i = a;
     for (; i <= b; i++) {
-        func_02054154(i);
-        func_020540f4(i);
-        func_02053c70(i);
+        onJointLayerAssign(i);
+        clearLayer2Joint(i);
+        setLayer3Joint(i);
     }
 }
 
-extern "C" void func_02053848(void *a, u32 b, u32 c)
+extern "C" void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, u32 b, u32 c)
 {
-    Unk_020dbd74 *o = (Unk_020dbd74 *)a;
+    ThreeLayerAnimModel *o = (ThreeLayerAnimModel *)a;
     for (; b <= c; b++) {
-        o->func_02054154(b);
-        o->func_02054124(b);
-        o->func_02053c40(b);
+        o->onJointLayerAssign(b);
+        o->setLayer2Joint(b);
+        o->clearLayer3Joint(b);
     }
 }
 

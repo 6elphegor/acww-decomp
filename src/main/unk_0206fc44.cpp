@@ -141,7 +141,7 @@ extern void *gCurrentHeap;
 }
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 }
 
 extern "C" {
@@ -277,7 +277,7 @@ void func_0208f1a8(void *p, s32 v);
 }
 
 extern "C" {
-void func_02076a2c(void *a, void *b, void *c);
+void NetBuf_UnpackPair20(void *a, void *b, void *c);
 }
 
 extern "C" {
@@ -357,11 +357,11 @@ void MsgTextLabel_Destroy(TextLabel *obj);
 }
 
 extern "C" {
-s32 func_02002778(u32 id);
+s32 Gfx2d_GetLayerBgIndex(u32 id);
 }
 
 extern "C" {
-s32 func_020027b4(u32 id);
+s32 Gfx2d_IsMainScreenLayer(u32 id);
 }
 
 extern "C" {

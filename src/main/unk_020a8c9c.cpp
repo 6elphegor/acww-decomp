@@ -646,15 +646,15 @@ public:
 
 extern "C" {
 // Other files
-void func_020014e4(s32 a);
+void Gfx2d_HideMainPlanes(s32 a);
 }
 
 extern "C" {
-void func_020014f4(s32 a);
+void Gfx2d_ShowMainPlanes(s32 a);
 }
 
 extern "C" {
-void func_02001824(s32 a, s32 b);
+void Gfx2d_SetMainBg1Offset(s32 a, s32 b);
 }
 
 extern "C" {
@@ -1118,11 +1118,11 @@ void ChoiceWindow::flushRowColors() {
 }
 
 void ChoiceWindow::showLayer() {
-    func_020014f4(2);
+    Gfx2d_ShowMainPlanes(2);
 }
 
 void ChoiceWindow::hideLayer() {
-    func_020014e4(2);
+    Gfx2d_HideMainPlanes(2);
 }
 
 void ChoiceWindow::setScroll(s32 a, s32 b) {
@@ -1133,7 +1133,7 @@ void ChoiceWindow::setScroll(s32 a, s32 b) {
         n = 0;
     }
     s32 pos = a + (x + y * n);
-    func_02001824(pos, b);
+    Gfx2d_SetMainBg1Offset(pos, b);
     unk_18 = pos;
     unk_1a = b;
 }

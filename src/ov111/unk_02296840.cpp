@@ -48,17 +48,17 @@ extern u8 gTouchCurY;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u16 gPad[];
-extern u32 data_020cbb18;
+extern u32 gCommManager;
 extern u32 gCurrentHeap;
 extern u32 data_ov111_022989b8[];
 extern char data_ov111_022989c8[];
 
-void func_020020b8(s32 v);
-void func_0200212c(s32 v);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_02002398(s32 a, s32 b);
-void func_0200261c(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
-void func_020026c4(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_ShowLayer(s32 v);
+void Gfx2d_HideLayer(s32 v);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_LoadCharFile(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_LoadPaletteFile(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
 void Snd_PlaySe(u32 v);
 void func_02038fd4(s32 a);
 void func_02038fe8(s32 a, void *p, void *q);
@@ -271,9 +271,9 @@ public:
 };
 
 // 0x24-byte objects at +0x23a0
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    Unk_020e45f8();
+    BgVramTask();
     u32 unk_00[0x24 / 4];
 };
 
@@ -291,7 +291,7 @@ public:
     Unk_ov111_ov095_02293944() : unk_22f4(), unk_233c() {}
     ~Unk_ov111_ov095_02293944() {}
     u32 unk_00[0x22f4 / 4];
-    /* 0x22f4 */ Unk_020e45f8 unk_22f4[2];
+    /* 0x22f4 */ BgVramTask unk_22f4[2];
     /* 0x233c */ Unk_020e0488 unk_233c[2];
 };
 
@@ -650,17 +650,17 @@ BOOL func_ov111_0229844c(S *s, s32 a, u32 b) {
 }
 
 void func_ov111_0229842c() {
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
 void func_ov111_022983c4(S *s) {
     u32 r4 = gCurrentHeap;
-    func_020026c4((void *)"menu/chat2/b_cht_bg.bpl", r4, 6, 1, 1, 9);
+    Gfx2d_LoadPaletteFile((void *)"menu/chat2/b_cht_bg.bpl", r4, 6, 1, 1, 9);
     func_ov095_022943dc(&s->unk_ac, data_ov111_022989c8);
     s->func_ov111_0229698c();
     func_ov095_022943b4(&s->unk_ac, 6);
-    func_0200261c((void *)"menu/chat2/b_cht.bch", r4, 6, 0x13d, 0x13d, 0x1e9);
+    Gfx2d_LoadCharFile((void *)"menu/chat2/b_cht.bch", r4, 6, 0x13d, 0x13d, 0x1e9);
 }
 
 void Unk_ov111_02298a48::func_ov111_02298394() {
@@ -686,7 +686,7 @@ void Unk_ov111_02298a48::func_ov111_02298310() {
     this->func_ov111_02296a24();
     this->func_ov111_02296968(4);
     this->func_ov002_022008e0(8, 3, 0, 0x30);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(6);
     this->func_ov002_02200840(6, 0, 0);
     this->func_ov002_02200a50(3);
     func_ov111_022976bc(this);
@@ -708,7 +708,7 @@ void Unk_ov111_02298a48::func_ov111_022982b0() {
 
 void Unk_ov111_02298a48::func_ov111_02298280() {
     if (this->func_ov002_022008fc(0) != 0) {
-        func_0200212c(6);
+        Gfx2d_HideLayer(6);
         this->func_ov002_02200a60(5);
     } else {
         this->func_ov002_02200840(6, 0, 0);
@@ -1179,13 +1179,13 @@ void func_ov111_02297664(S *s) {
     Unk_020e1c64 buf;
     ((PlayerId *)r->getPlayerId())->func_020940d0((MsgString *)&buf);
     String_CensorTaboo(&s->unk_3c68);
-    func_02038fe8(*(s32 *)(data_020cbb18 + 0x64), &buf, &s->unk_3c68);
+    func_02038fe8(*(s32 *)(gCommManager + 0x64), &buf, &s->unk_3c68);
     func_ov111_02297360(s);
     func_ov111_022976bc(s);
 }
 
 void func_ov111_02297650(S *s) {
-    func_02038fd4(*(s32 *)(data_020cbb18 + 0x64));
+    func_02038fd4(*(s32 *)(gCommManager + 0x64));
 }
 
 BOOL func_ov111_022975ec(S *s, u32 a) {

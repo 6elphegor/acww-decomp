@@ -133,12 +133,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -257,7 +257,7 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -359,12 +359,12 @@ struct Unk_ov004_0221e0b4_Ent {
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define func_02098044 _ZN12Unk_02097ff413func_02098044Ej
 #define func_0209801c _ZN12Unk_02097ff413func_0209801cEj
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02099790 _ZN12Unk_020994cc13func_02099790Ev
 
 extern "C" {
-extern Unk_ov004_0221b954_Global *data_020cbb18;
+extern Unk_ov004_0221b954_Global *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
 extern u8 data_021dfd8c[];
@@ -429,8 +429,8 @@ s32 func_020a032c(void);
 s32 func_02063b8c(s32 n);
 s32 func_02098044(void *p, s32 n);
 void func_0209801c(void *p, s32 n);
-s32 func_02072e44(void *p);
-s32 func_02072e88(void *p, u32 i);
+s32 CommManager_isOnline(void *p);
+s32 CommManager_isSlotActive(void *p, u32 i);
 s32 func_020a62a0(void);
 void TalkRequest_EndTalkWith(void *p);
 s32 SaveVillagers_GetUnk3830Index(void *p);
@@ -533,7 +533,7 @@ BOOL Unk_ov004_0224d2d8::vfunc_00() {
     }
     unk_70c = unk_8e;
     unk_4cc.unk_1c |= 2;
-    if (func_02072e44(data_020cbb18) && func_020b50e8() == 0xb) {
+    if (CommManager_isOnline(gCommManager) && func_020b50e8() == 0xb) {
         if (func_0201ba88(this)) {
             func_ov004_0221e0b4(0);
         } else {
@@ -549,8 +549,8 @@ BOOL Unk_ov004_0224d2d8::vfunc_0c() {
     if (!Unk_020d8bc8::vfunc_0c()) {
         return FALSE;
     }
-    Unk_ov004_0221b954_Global *g = data_020cbb18;
-    if (func_02072e88(g, g->unk_64) && !func_02072e44(g)) {
+    Unk_ov004_0221b954_Global *g = gCommManager;
+    if (CommManager_isSlotActive(g, g->unk_64) && !CommManager_isOnline(g)) {
         void *p = data_021dfd8c;
         if (SaveVillagers_GetUnk3830Index(p) != -1) {
             func_02099790(SaveVillagers_GetUnk3830(p));
@@ -639,7 +639,7 @@ BOOL Unk_ov004_0224d2d8::func_ov004_0221df08() {
         b = 4;
         if (func_0201b9e8(this, &a, &b)) {
             s32 av = a;
-            s32 g = data_020cbb18->unk_64;
+            s32 g = gCommManager->unk_64;
             if (av == g && av == b) {
                 func_0201b9fc(this, 1, g, g);
                 func_ov004_0221e0b4(1);
@@ -647,7 +647,7 @@ BOOL Unk_ov004_0224d2d8::func_ov004_0221df08() {
             }
         }
         if (func_020a62a0() && b == 4) {
-            func_0201b9fc(this, 1, data_020cbb18->unk_64, 4);
+            func_0201b9fc(this, 1, gCommManager->unk_64, 4);
             func_ov004_0221e0b4(0);
         }
     }
@@ -662,7 +662,7 @@ BOOL Unk_ov004_0224d2d8::func_ov004_0221deac() {
         s32 a = 4;
         s32 b = 4;
         if (func_0201b9e8(this, &a, &b) && a == 4 && func_020a62a0()) {
-            func_0201b9fc(this, 1, data_020cbb18->unk_64, 4);
+            func_0201b9fc(this, 1, gCommManager->unk_64, 4);
             func_ov004_0221e0b4(3);
         }
     }
@@ -728,9 +728,9 @@ void Unk_ov004_0224d248::vfunc_18() {
     switch (unk_1e) {
     case 0xf:
         if (t == 0) {
-            Unk_ov004_0221b954_Global *s = data_020cbb18;
-            if (func_02072e88(s, s->unk_64) != 0) {
-                if (func_02072e44(s) != 0) {
+            Unk_ov004_0221b954_Global *s = gCommManager;
+            if (CommManager_isSlotActive(s, s->unk_64) != 0) {
+                if (CommManager_isOnline(s) != 0) {
                     s32 q = PlayerData_GetBySessionSlot(func_0209ebf0());
                     if (q != 0) {
                         func_020157e8(this, (s32)PlayerData_getPlayerId(q), 1);
@@ -933,12 +933,12 @@ void Unk_ov004_0224d2d8::vfunc_4c(u32 cmd, u32 arg) {
     case 3:
         unk_558.unk_08 = arg;
         if (arg != 4) {
-            func_0201b9fc(this, 1, data_020cbb18->unk_64, arg);
+            func_0201b9fc(this, 1, gCommManager->unk_64, arg);
             func_ov004_0221e0b4(6);
             break;
         }
         if (func_0201ba88(this) != 0) {
-            func_0201b9fc(this, 1, data_020cbb18->unk_64, data_020cbb18->unk_64);
+            func_0201b9fc(this, 1, gCommManager->unk_64, gCommManager->unk_64);
             func_ov004_0221e0b4(6);
         }
         break;
@@ -947,23 +947,23 @@ void Unk_ov004_0224d2d8::vfunc_4c(u32 cmd, u32 arg) {
         break;
     case 0:
         unk_558.unk_08 = arg;
-        if (arg != 4 && arg != data_020cbb18->unk_64) {
+        if (arg != 4 && arg != gCommManager->unk_64) {
             func_0201b9fc(this, 1, arg, arg);
             func_ov004_0221e0b4(5);
             break;
         }
         if (func_0201ba88(this) != 0) {
-            func_0201b9fc(this, 1, data_020cbb18->unk_64, data_020cbb18->unk_64);
+            func_0201b9fc(this, 1, gCommManager->unk_64, gCommManager->unk_64);
             func_ov004_0221e0b4(1);
         }
         break;
     case 8:
         if (arg == 4) {
             if (func_020a62a0() != 0) {
-                func_0201b9fc(this, 1, data_020cbb18->unk_64, 4);
+                func_0201b9fc(this, 1, gCommManager->unk_64, 4);
                 func_ov004_0221e0b4(3);
             } else {
-                func_0201b9fc(this, 1, 4, data_020cbb18->unk_64);
+                func_0201b9fc(this, 1, 4, gCommManager->unk_64);
                 func_ov004_0221e0b4(4);
             }
         }
@@ -975,7 +975,7 @@ void Unk_ov004_0224d2d8::vfunc_4c(u32 cmd, u32 arg) {
                 b = 4;
                 if (func_0201b9e8(this, &a, &b) != 0) {
                     if ((arg != 4 && arg == (u32)b) || arg == 4) {
-                        func_0201b9fc(this, 1, data_020cbb18->unk_64, 4);
+                        func_0201b9fc(this, 1, gCommManager->unk_64, 4);
                         func_ov004_0221e0b4(0);
                     }
                 }

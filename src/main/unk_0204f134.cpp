@@ -11,12 +11,12 @@ struct Unk_0204f178_Row {
 
 extern "C" {
 u32 func_02063b8c(u32);
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *);
-void func_0209cfb8(void *p);
-void func_0209cf18(void *p);
+s32 _ZN11CommManager8isOnlineEv(void *);
+void Clock_GetDayMonth(void *p);
+void Clock_GetMinuteHour(void *p);
 u8 func_0204f084(u8 r);
 u32 func_0204f100(u32 r);
-extern void *data_020cbb18;
+extern void *gCommManager;
 }
 
 extern "C" void func_02012100(void);
@@ -188,7 +188,7 @@ extern "C" s32 func_0204f178(u32 *out0, u32 *out1, s32 a, s32 b, s32 c) {
     s32 res = -1;
     s32 off;
     s32 i;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         off = 3;
         lim = func_02063b8c(0x60);
     } else {
@@ -214,9 +214,9 @@ extern "C" void func_0204f134(void *a, void *b, s32 c) {
     u8 buf[4];
     u32 e;
     u8 x, y;
-    func_0209cfb8(buf);
+    Clock_GetDayMonth(buf);
     x = buf[1];
-    func_0209cf18(&buf[2]);
+    Clock_GetMinuteHour(&buf[2]);
     y = buf[3];
     e = func_0204f084(x);
     func_0204f178((u32 *)a, (u32 *)b, c, e, func_0204f100(y));

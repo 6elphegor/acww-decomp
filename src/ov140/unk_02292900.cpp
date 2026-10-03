@@ -26,14 +26,14 @@ void func_0206ecf8(u32 v);
 void func_0206ed2c(u32 v);
 void func_0206e874();
 void Snd_PlaySe(u32 v);
-void func_020015b8(u32 a);
-void func_02002398(u32 a, u32 b);
-void func_0200226c(u32 a, u32 b, u32 c, u32 d);
-void func_020020b8(u32 a);
-void func_020021a0(u32 a);
+void Gfx2d_SetSubBgModeState(u32 a);
+void Gfx2d_SetLayerPriority(u32 a, u32 b);
+void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
+void Gfx2d_ShowLayer(u32 a);
+void Gfx2d_ResetLayer(u32 a);
 void File_LoadToBuffer(void *src, void *dst, u32 n);
 void Oam_DrawCell(s32 a, void *src, s32 n, void *dst, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void *func_020ea574();
+void *Net_GetWifiFriendList();
 void *ProcBase_GetParent();
 void ProcBase_RequestDelete(void *p);
 BOOL func_ov002_0220125c(u32 v);
@@ -105,13 +105,13 @@ public:
 };
 
 // Screen upload helper, 0x24 bytes (src/main/unk_020b8464.cpp)
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    Unk_020e45f8();
+    BgVramTask();
     virtual void vfunc_00();
-    virtual void vfunc_04();
-    BOOL func_020b86c0(u32 a, u8 b, u32 c, u32 d);
-    void func_020b87d0();
+    virtual void clear();
+    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
+    void cancel();
     u8 unk_04[0x20];
 };
 
@@ -284,7 +284,7 @@ public:
     /* 0x8e8 */ Unk_ov139_02291f60 unk_8e8;
     /* 0xf0c */ Unk_ov002_02204614 unk_f0c;
     /* 0xf70 */ Unk_ov002_022046cc unk_f70;
-    /* 0x10d4 */ Unk_020e45f8 unk_10d4;
+    /* 0x10d4 */ BgVramTask unk_10d4;
     /* 0x10f8 */ u8 unk_10f8[0x16a0 - 0x10f8];
     /* 0x16a0 */ Unk_020e0488 unk_16a0[3];
 };
@@ -473,7 +473,7 @@ void Unk_ov140_02293e04::func_ov140_022937fc() {
     func_ov140_02292c84();
     func_ov140_02292b74(5);
     func_ov002_022008e0(8, 4, 0, 0x30);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(6);
     func_ov140_02293750();
     func_ov140_022929c0(1);
     func_ov002_02200a50(2);
@@ -496,7 +496,7 @@ void Unk_ov140_02293e04::func_ov140_0229379c() {
 
 void Unk_ov140_02293e04::func_ov140_02293770() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
+        Gfx2d_ResetLayer(6);
         func_ov002_02200a60(5);
     } else {
         func_ov140_02293750();
@@ -530,7 +530,7 @@ void Unk_ov140_02293e04::func_ov140_022936c4() {
 void Unk_ov140_02293e04::func_ov140_02293690() {
     unk_f70.func_ov002_02203900();
     unk_8e8.func_ov139_022924f4();
-    unk_10d4.func_020b87d0();
+    unk_10d4.cancel();
     func_ov140_02292b10();
 }
 
@@ -542,7 +542,7 @@ void Unk_ov140_02293e04::func_ov140_02293674() {
 void Unk_ov140_02293e04::func_ov140_0229366c() { func_ov140_0229361c(); }
 
 void Unk_ov140_02293e04::func_ov140_02293638() {
-    unk_10d4.func_020b87d0();
+    unk_10d4.cancel();
     unk_f70.func_ov002_02203900();
     unk_8e8.func_ov139_022924d8();
     func_ov140_02292b10();
@@ -554,13 +554,13 @@ void Unk_ov140_02293e04::func_ov140_0229361c() {
 }
 
 extern "C" void func_ov140_022935d0() {
-    func_020015b8(0);
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
-    func_02002398(4, 2);
-    func_0200226c(4, 0, 0, 0);
-    func_02002398(3, 2);
-    func_0200226c(3, 0, 0, 0);
+    Gfx2d_SetSubBgModeState(0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 2);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
+    Gfx2d_SetLayerPriority(3, 2);
+    Gfx2d_SetLayerControl(3, 0, 0, 0);
 }
 
 void Unk_ov140_02293e04::func_ov140_02293598() {
@@ -879,7 +879,7 @@ BOOL Unk_ov140_02293e04::func_ov140_02292ea4(u32 pad) {
 
 void Unk_ov140_02293e04::func_ov140_02292e64() {
     if (func_ov140_022929d0(4)) {
-        if (unk_10d4.func_020b86c0((u32)unk_ac, 6, 0x800, 0)) {
+        if (unk_10d4.requestScreen((u32)unk_ac, 6, 0x800, 0)) {
             func_ov140_022929b0(4);
         }
     }
@@ -1016,7 +1016,7 @@ void Unk_ov140_02293e04::func_ov140_02292b74(s32 t) {
     }
 }
 
-void *Unk_ov140_02293e04::func_ov140_02292b6c() { return func_020ea574(); }
+void *Unk_ov140_02293e04::func_ov140_02292b6c() { return Net_GetWifiFriendList(); }
 
 Unk_020e0488 *Unk_ov140_02293e04::func_ov140_02292b3c() {
     u32 c = unk_8e6;

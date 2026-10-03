@@ -62,11 +62,11 @@ public:
 };
 
 // ---- ov009 actor (only the methods used here)
-class Unk_ov009_0225e29c {
+class BuildingActor {
 public:
-    s32 func_ov009_0225b964();
-    u32 func_ov009_0225b974();
-    u32 func_ov009_0225b980();
+    s32 callIsLit();
+    u32 getGridZ();
+    u32 getGridX();
 };
 
 // ---- class with vtable 0x02234aac (derived from ModelAnim)
@@ -85,10 +85,10 @@ public:
     u32 pad[0x30 / 4];
 };
 
-class Unk_020dbd54 {
+class AnimModel {
 public:
-    Unk_020dbd54();
-    ~Unk_020dbd54();
+    AnimModel();
+    ~AnimModel();
     u32 pad[0xb8 / 4];
 };
 
@@ -142,7 +142,7 @@ public:
 
     /* 0x000 */ Unk_ov003_02234aac unk_00;
     /* 0x020 */ Unk_02032238 unk_20;
-    /* 0x050 */ Unk_020dbd54 unk_50;
+    /* 0x050 */ AnimModel unk_50;
     /* 0x108 */ Unk_02088b20 unk_108;
     /* 0x130 */ Unk_0209c0ac unk_130;
     /* 0x170 */ u32 unk_170;
@@ -435,7 +435,7 @@ extern "C" void *data_ov003_02234c6c[120] = {
 
 extern "C" { Unk_ov003_02258f18 data_ov003_02258f18; }
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -490,7 +490,7 @@ extern u8 data_ov003_02258f54[];
 extern u8 data_ov003_02259154[];
 extern Unk_ov003_02225cb0_Ent data_ov003_0225a17c[];
 extern Unk_ov003_02225d38_Ent *data_020dcbd0[];
-extern Unk_ov003_02225dbc_Data *data_020cbb18;
+extern Unk_ov003_02225dbc_Data *gCommManager;
 extern u8 data_0213b91c[];
 extern u8 data_0213b954[];
 typedef void *(*Unk_ov003_02225ed0_Fn)(void *);
@@ -502,20 +502,20 @@ u32 Item_MakeBuilding(u32 a);
 void *StrBSize_Get(u16 *p);
 u32 func_020b2b98(void *p);
 BOOL func_020b2ae0(void *p, s32 *x, s32 *y, u32 i);
-Unk_ov009_0225e29c *func_ov003_02218b40(u32 id);
+BuildingActor *func_ov003_02218b40(u32 id);
 void func_02133150();
-void *func_0204da0c();
+void *TownBlockMap_Get();
 s32 func_02063b8c(s32 n);
 BOOL func_ov003_02225238(void *a, s32 code, s32 *x, s32 *y, void *obj, u8 flag);
 void *func_02095204(s32 n);
 s32 func_020e9650(void *a, s32 *v);
 void *MI_CpuCopy8(void *dst, void *src, s32 n);
 s32 func_020b8fe8();
-BOOL func_02045d98(void *buf);
-BOOL func_02072e88(void *p, u32 v);
-void func_0209cf18(void *p);
-void func_0209cfb8(void *p);
-void func_0204ee10(s32 *a, s32 *b, void *c);
+BOOL Town_GetRafflesiaPos(void *buf);
+BOOL CommManager_isSlotActive(void *p, u32 v);
+void Clock_GetMinuteHour(void *p);
+void Clock_GetDayMonth(void *p);
+void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 void func_0209c364(void *p);
 void func_0209c370(void *p);
 void func_0209c128(void *p);
@@ -560,9 +560,9 @@ extern "C" BOOL func_ov003_022260e8(void *p);
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
@@ -645,7 +645,7 @@ typedef Unk_ov003_02226180_Vec Vec3;
 typedef Unk_ov003_022264f0_Buf Buf;
 
 extern "C" {
-extern Unk_020cbb18_Ptr *data_020cbb18;
+extern Unk_020cbb18_Ptr *gCommManager;
 extern void *gCamera;
 extern Vec3 gCameraLookAt;
 extern s16 data_02135f44[];
@@ -653,13 +653,13 @@ extern Rec data_ov003_0225a17c[];
 extern Rec data_ov003_02259354[];
 extern Rec data_ov003_0225980c[];
 extern u8 data_ov003_02258f0c;
-BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
+BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 s32 func_0209c0ac(void *p);
 s32 func_02106020(s32 a, s32 b);
 void WorldCurve_FromCurved(void *dst, void *src);
 s32 func_01ffcb0c(s32 a, s32 b);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
-void func_020547a4(void *p, s32 v);
+void AnimModel_setFrame(void *p, s32 v);
 void func_020902f8(s32);
 s32 func_020b8fe8(void);
 s32 func_020a62a0(void);
@@ -710,12 +710,12 @@ extern "C" void func_ov003_02226874(s32 obj, s32 flag, s32 idx, s32 x, s32 z);
 #undef data_ov003_02259594
 #undef data_ov003_022595b0
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -780,7 +780,7 @@ extern Obj data_ov003_0225a17c[];
 extern Obj data_ov003_02259354[];
 extern Obj data_ov003_0225980c[];
 extern u8 data_ov003_02258efc;
-extern Unk_ov003_02226d54_Net *data_020cbb18;
+extern Unk_ov003_02226d54_Net *gCommManager;
 extern Blk data_021f47e0;
 extern s16 data_02135f44[];
 s32 func_ov003_022273b4(Obj *self, void *a, s32 n);
@@ -799,15 +799,15 @@ s32 func_020902f8(s32 h);
 void *func_0209c0ac(void *p);
 s32 func_02106020(void *a, s32 b);
 s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
-s32 func_020547cc(void *p, void *q);
+s32 AnimModel_drawAnimated(void *p, void *q);
 void func_020abdd0(void *p, s32 a, u32 b, u8 c);
-BOOL func_02072e88(void *p, s32 i);
+BOOL CommManager_isSlotActive(void *p, s32 i);
 BOOL func_020a62a0();
 void *func_02095204(s32 a);
-BOOL func_020729cc(void *g, s32 a);
-void func_020728d4(void *g);
-void func_020728a4(void *g, void *buf, s32 n);
-void func_02072824(void *g, s32 a, s32 b);
+BOOL CommManager_isMyAid(void *g, s32 a);
+void CommManager_beginRecord(void *g);
+void CommManager_writeRecord(void *g, void *buf, s32 n);
+void CommManager_endRecord(void *g, s32 a, s32 b);
 s32 func_ov003_02226a5c(Obj *self);
 void func_ov003_02226a9c(void *a, Obj *o, s32 flag);
 BOOL func_ov003_02226c14(void *a, Obj *o);
@@ -856,10 +856,10 @@ extern "C" BOOL func_ov003_0222733c(s32 a, s32 t);
 #undef data_ov003_02234b06
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
 #define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
 namespace s03 {
@@ -933,13 +933,13 @@ struct Unk_ov003_02227970_Loc {
 };
 
 extern "C" {
-extern Unk_020cbb18_Ptr *data_020cbb18;
+extern Unk_020cbb18_Ptr *gCommManager;
 extern Rec data_ov003_0225a17c[];
 extern Rec data_ov003_02259354[];
 extern Rec data_ov003_0225980c[];
 extern Unk_ov003_02234c6c_Ent data_ov003_02234c6c[];
 extern Unk_ov003_02234b04_Ent data_ov003_02234b04[];
-BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
+BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 s32 func_020a62a0(void);
 s32 func_020b8fe8(void);
 s32 PlayerActor_GetAction(s32 v);
@@ -948,13 +948,13 @@ BOOL func_0203a4c4(void *p, s32 a, s32 b);
 void func_020309d4(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
 s32 func_020e9650(void *a, void *b);
 void Unk_02003c40_callUpdateRelative(void *obj, V3 *v);
-void func_020728d4(Unk_020cbb18_Ptr *g);
-void func_020728a4(Unk_020cbb18_Ptr *g, void *buf, s32 n);
+void CommManager_beginRecord(Unk_020cbb18_Ptr *g);
+void CommManager_writeRecord(Unk_020cbb18_Ptr *g, void *buf, s32 n);
 void func_020728c4(Unk_020cbb18_Ptr *g, s32 a, s32 b);
-void func_02072824(Unk_020cbb18_Ptr *g, s32 a, s32 b);
-void *func_0204da0c(void);
-void func_0204ee10(s32 *x, s32 *y, void *p);
-u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+void CommManager_endRecord(Unk_020cbb18_Ptr *g, s32 a, s32 b);
+void *TownBlockMap_Get(void);
+void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 BOOL func_ov003_0222733c(void *a, s32 t);
 void func_ov003_02226c88(void *a, Rec *o);
 void func_ov003_02226d08(Rec *o, s32 v);
@@ -1022,18 +1022,18 @@ extern "C" void func_ov003_02227970(void *a);
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
-#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define ModelAnim_init _ZN9ModelAnim4initEiiit
+#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
@@ -1184,14 +1184,14 @@ struct Unk_ov003_02234c6c_Ent {
 };
 
 extern "C" {
-extern Unk_020cbb18_Ptr *data_020cbb18;
+extern Unk_020cbb18_Ptr *gCommManager;
 extern Unk_ov003_02234c6c_Ent data_ov003_02234c6c[];
 extern Rec data_ov003_0225a17c[];
 extern u8 data_ov003_02258ef4;
 extern u8 data_ov003_02258ef8;
 extern Unk_ov003_02234b04_Rec data_ov003_02234b04[];
 extern void *gCurrentHeap;
-BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
+BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL func_020a62a0();
 s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
 void *func_02095204(s32 a);
@@ -1204,7 +1204,7 @@ void func_020309d4(void *obj, void *pos, void *prev, s32 a, s32 b, s32 c, s32 d)
 void func_02088b20(void *obj, void *v, s32 a, s32 b, s32 flags);
 void Unk_02003c40_callUpdateRelative(void *obj, void *v);
 void Unk_02003c30_callReset(void *obj);
-void func_020547e4(void *obj);
+void AnimModel_stepAnim(void *obj);
 void AnimFrameCtrl_step(void *e);
 void func_02133ef8(void *p, s32 n);
 void *func_0209c25c(void *sub, void *p);
@@ -1217,19 +1217,19 @@ s32 func_02106788(void *r);
 s32 func_021067a4(s32 a, s32 b);
 s32 func_021065dc(void *r);
 s32 func_021065f8(s32 a, s32 b);
-BOOL func_02054800(void *o, void *h);
-void func_02054720(void *o, s32 m, s32 a, s32 b, s32 c, s32 d);
-void func_02054710(void *o);
+BOOL AnimModel_allocAnmObj(void *o, void *h);
+void BlendAnimModel_initAnim(void *o, s32 m, s32 a, s32 b, s32 c, s32 d);
+void AnimModel_attachAnim(void *o);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 s32 func_02106654();
 s32 func_02106670(s32 a, s32 b);
-BOOL func_02055bcc(Rec *e, void *a, void *b);
-void func_02055b38(Rec *e, s32 m, s32 a, s32 b, s32 c);
+BOOL ModelAnim_allocMatAnm(Rec *e, void *a, void *b);
+void ModelAnim_init(Rec *e, s32 m, s32 a, s32 b, s32 c);
 void *Model_getRenderObj(void *o);
 void ModelAnim_addToRenderObj(Rec *e, void *a);
 void func_ov003_02225cb0();
 BOOL func_ov003_02225e34(s8 *a, s8 *b, s32 c);
-BOOL func_ov003_02212824(s32 a);
+BOOL PlayerActor_TestSlotFlag9(s32 a);
 s32 func_ov003_0222644c(void *a, s32 b, s32 c, s32 d);
 s32 func_ov003_022264f0(void *a, s32 kind, u32 sub, s32 flag);
 void func_ov003_02226768(void *a, s32 b);
@@ -1289,9 +1289,9 @@ extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode)
 #undef data_ov003_022595b0
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -1300,7 +1300,7 @@ extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode)
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 extern "C" {
-extern u32 *data_020cbb18[];
+extern u32 *gCommManager[];
 void func_0209c1a4(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
 void func_0205c088();
 void func_0205c06c();
@@ -1308,10 +1308,10 @@ void func_0205c0f0();
 void func_0205c0d4();
 void func_0205c0bc();
 void func_0205c0a0();
-BOOL func_02072e88(void *p, u32 v);
+BOOL CommManager_isSlotActive(void *p, u32 v);
 void func_ov003_02225108();
 void func_02041868();
-void func_0205468c(void *p);
+void AnimModel_detachAnim(void *p);
 void Unk_02003c30_callRelease(void *p);
 void func_0209c0b4(void *p);
 void func_0209c0c8(void *p);
@@ -1391,7 +1391,7 @@ void *func_ov003_02228b18();
 #undef func_0209c25c
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -1472,7 +1472,7 @@ s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(void *a, void *b, void *out);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
-void func_020547a4(void *p, s32 v);
+void AnimModel_setFrame(void *p, s32 v);
 void func_020339bc(Buf *b, void *pos, s32 a, s32 c);
 void func_02033988(Buf *b);
 void *func_0209c0ac(void *p);
@@ -1540,7 +1540,7 @@ extern "C" void func_ov003_02229938(Rec *self);
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
@@ -1612,10 +1612,10 @@ s32 func_01ffcb0c(s32 a, s32 b);
 void *func_02095204(s32 n);
 s32 func_020e9650(void *a, void *b);
 s32 AnimFrameCtrl_setup(void *o, s32 a, s32 b, s32 c, s32 d);
-void func_020547a4(void *o, s32 v);
-void *func_0204da0c(void);
-void func_0204ee10(s32 *x, s32 *y, void *p);
-u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+void AnimModel_setFrame(void *o, s32 v);
+void *TownBlockMap_Get(void);
+void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 Math_AngleXZ(void *a, void *b);
 void *func_0209c0ac(void *p);
 void NNS_G3dMdlSetMdlAlpha(void *a, s32 b, s32 c);
@@ -1705,7 +1705,7 @@ extern "C" void func_ov003_0222a24c(Rec *o, s16 *p);
 
 #define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_02133150 _s32_div_f
@@ -1783,13 +1783,13 @@ void VEC_Add(V3 *dst, V3 *a, V3 *b);
 s32 func_02063b8c(s32 n);
 s32 func_02133150(s32 a, s32 b);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
-void func_020547a4(void *p, u16 v);
+void AnimModel_setFrame(void *p, u16 v);
 s32 func_0209c0ac(void *p);
 u32 func_02106020(u32 a, u32 b);
 s32 NNS_G3dMdlSetMdlAlpha(s32 p, s32 a, s32 b);
-void func_0204ee10(s32 *x, s32 *y, void *p);
-void *func_0204da0c(void);
-u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
+void *TownBlockMap_Get(void);
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 func_020a62a0(void);
 void func_020339bc(Unk_ov003_0222abc0_Obj *o, V3 *p, s32 a, s32 b);
 s32 func_020338d0(Unk_ov003_0222abc0_Obj *o, s32 v);
@@ -1883,9 +1883,9 @@ extern "C" s32 func_ov003_0222abc0(Rec *self);
 #undef func_ov068_02269a28
 #undef func_ov068_02269aa4
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
@@ -1965,8 +1965,8 @@ struct Unk_020cbb18_Ptr {
 };
 
 extern "C" {
-extern Unk_020cbb18_Ptr *data_020cbb18;
-BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
+extern Unk_020cbb18_Ptr *gCommManager;
+BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL func_020a62a0();
 s32 MenuCtrl_IsMenuOpen();
 s32 func_0209c0ac(void *p);
@@ -1976,12 +1976,12 @@ s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_AngleXZ(void *a, void *b);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
-void func_020547a4(void *p, s32 v);
+void AnimModel_setFrame(void *p, s32 v);
 s32 func_02030814(u32 a);
 s32 func_02063b8c(s32 n);
 s32 func_020e7530(s16 *a, s32 b, s32 c);
-BOOL func_ov003_02211fd0();
-s32 func_ov003_022126d0(V3 *a, s32 b);
+BOOL PlayerActor_LocalHoldsNet();
+s32 PlayerActor_GetStrikeCountdownAt(V3 *a, s32 b);
 void func_ov003_02226d08(Rec *o, s32 v);
 void func_ov003_02229910(Rec *e);
 void func_ov003_0222a36c(Rec *o, s16 *p);
@@ -2026,8 +2026,8 @@ extern "C" void func_ov003_0222b620(Rec *self);
 #undef func_ov068_02269b20
 #undef func_ov068_02269d18
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
@@ -2101,9 +2101,9 @@ struct Unk_ov003_0222bb28_V3 : V3 {
 };
 
 extern "C" {
-extern Unk_020cbb18_Ptr *data_020cbb18;
+extern Unk_020cbb18_Ptr *gCommManager;
 extern u8 data_020e12cc[];
-BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
+BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL func_020a62a0();
 BOOL func_02031218(s32 x, s32 y);
 s32 func_0209c0ac(void *p);
@@ -2112,12 +2112,12 @@ s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_AngleXZ(void *a, void *b);
 s32 func_020e9650(void *a, void *b);
-void func_020547a4(void *p, s32 v);
+void AnimModel_setFrame(void *p, s32 v);
 s32 func_02030814(u32 a);
 void func_02041868();
-void *func_0204da0c();
-void func_0204ee10(s32 *a, s32 *b, void *c);
-u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+void *TownBlockMap_Get();
+void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void func_0208fc88(u32 a, void *b, u32 c, void *d);
 void func_ov003_02229910(Rec *e);
 void func_ov003_02229ab4(Rec *o);
@@ -2162,8 +2162,8 @@ extern "C" void func_ov003_0222bf7c(Rec *self);
 #undef func_0209c0ac
 #undef func_ov068_02269d58
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -2244,13 +2244,13 @@ struct Unk_02095204_Obj {
 };
 
 extern "C" {
-extern Unk_020cbb18_Ptr *data_020cbb18;
-BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
+extern Unk_020cbb18_Ptr *gCommManager;
+BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL func_020a62a0();
 s32 func_02063b8c(s32 n);
 s32 FX_Div(s32 a, s32 b);
 s32 Math_AngleXZ(void *a, void *b);
-void func_020547a4(void *p, s32 v);
+void AnimModel_setFrame(void *p, s32 v);
 s32 func_02030814(u32 a);
 s32 func_020e7530(s16 *a, s32 b, s32 c);
 s32 func_02133150(s32 a, s32 b);
@@ -2317,8 +2317,8 @@ extern "C" void func_ov003_0222c8f8(Rec *o, V3 *out, s32 *dist, u8 *flag, u8 a, 
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 namespace s12 {
 struct Unk_ov003_0222c9e0_V3 {
@@ -2379,8 +2379,8 @@ struct Unk_020cbb18_Ptr {
 };
 
 extern "C" {
-extern Unk_020cbb18_Ptr *data_020cbb18;
-BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
+extern Unk_020cbb18_Ptr *gCommManager;
+BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL func_020a62a0();
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -2388,8 +2388,8 @@ void VEC_Add(V3 *dst, V3 *a, V3 *b);
 s32 Math_AngleXZ(V3 *a, V3 *b);
 s32 func_02063b8c(s32 n);
 s32 func_02133150(s32 a, s32 b);
-void func_020547a4(void *p, s32 v);
-void func_0204ee10(s32 *x, s32 *y, void *p);
+void AnimModel_setFrame(void *p, s32 v);
+void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
 s32 func_020e7530(s16 *a, s32 b, s32 c);
 s32 func_020e7d4c(V3 *a, V3 *b, s32 c, s32 d, s32 e);
 s32 func_020e7870(s32 *a, s32 b, s32 c, s32 d, s32 e);
@@ -2428,9 +2428,9 @@ extern "C" void func_ov003_0222d28c(Rec *self, s32 a);
 #undef func_02072e88
 #undef func_02133150
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -2500,9 +2500,9 @@ struct Unk_020cbb18_Ptr {
 };
 
 extern "C" {
-extern Unk_020cbb18_Ptr *data_020cbb18;
+extern Unk_020cbb18_Ptr *gCommManager;
 extern s16 data_02135f44[];
-BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
+BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL func_020a62a0();
 void *func_02095204(u32 a);
 s32 Math_AngleXZ(void *a, void *b);
@@ -2516,7 +2516,7 @@ s32 func_020e7d4c(void *a, void *b, s32 c, s32 d, s32 e);
 s32 func_020e7530(s16 *a, s32 b, s32 c);
 s32 func_021329d0(s32 a);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
-void func_020547a4(void *p, s32 v);
+void AnimModel_setFrame(void *p, s32 v);
 s32 func_02063b8c(s32 n);
 s32 func_ov003_02225ec8(Rec *self, s32 a);
 s32 func_ov003_0222ab68(Vec3 *a, Vec3 *b, s32 c);
@@ -2584,11 +2584,11 @@ extern "C" s32 func_ov003_0222dbdc(s32 a, s32 b);
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
@@ -2652,7 +2652,7 @@ struct Unk_02095204_Obj {
 };
 
 extern "C" {
-extern Unk_020cbb18_Ptr *data_020cbb18;
+extern Unk_020cbb18_Ptr *gCommManager;
 extern s16 data_02135f44[];
 extern u8 data_ov003_0225980c[];
 extern u8 data_ov003_02259354[];
@@ -2661,10 +2661,10 @@ extern u8 data_ov003_0225b468[];
 extern u8 data_ov003_0225b470[];
 extern u8 data_ov003_0225b474[];
 extern u8 data_ov003_0225b475[];
-BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
+BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL func_020a62a0();
 s32 func_02063b8c(s32 n);
-void func_020547a4(void *p, s32 v);
+void AnimModel_setFrame(void *p, s32 v);
 s32 func_02030814(u32 a);
 s32 func_02133150(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -2672,21 +2672,21 @@ Unk_02095204_Obj *func_02095204(u32 n);
 s32 Unk_02003c40_callRequest(void *p, s32 v);
 s32 Unk_02003c40_callRequestSustained(void *p, s32 v);
 s32 func_02090330(s32 a, V3 *v, void *p, s32 b);
-s32 func_02049370(s32 a);
-s32 func_020494bc(s32 a);
+s32 Flower_GetColor(s32 a);
+s32 Flower_GetSpecies(s32 a);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
-void func_0204ee10(s32 *a, s32 *b, s32 c);
+void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 s32 func_020312a8(s32 x, s32 y);
 void func_020e93a0(V3 *o, s32 a);
-BOOL func_02072e44(void *g);
-u8 *func_02072970(void *g, s32 a);
-void func_02076a2c(void *p, s32 *a, s32 *b);
-void func_02076a6c(void *p, s32 a, s32 b);
-s32 func_020766e0(s32 a);
+BOOL CommManager_isOnline(void *g);
+u8 *CommManager_getSyncVar(void *g, s32 a);
+void NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
+void NetBuf_PackPair20(void *p, s32 a, s32 b);
+s32 CommSyncVar_GetVarSize(s32 a);
 void MI_CpuCopy8(void *, void *, s32);
 void *__cxa_vec_cleanup(void *, s32, s32, void *(*)(void *));
 s32 func_ov003_0222dbdc(s32 a);
-s32 func_ov003_02212758(s32 a, s32 b);
+s32 PlayerActor_GetDigCountdownAt(s32 a, s32 b);
 void func_ov003_0222d720(Rec *o);
 s32 func_ov003_0222d334(Rec *o);
 void func_ov003_02229ab4(Rec *o);
@@ -2725,17 +2725,17 @@ extern "C" s32 func_ov003_0222e500(Rec *o, s32 a, s32 b);
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
 // 0x222e500
 extern "C" s32 func_ov003_0222e500(Rec *o, s32 a, s32 b) {
-    if (!func_02072e88(data_020cbb18, data_020cbb18->unk_64) || func_020a62a0() || o->unk_251 == 9 || o->unk_251 == 0xb) {
+    if (!CommManager_isSlotActive(gCommManager, gCommManager->unk_64) || func_020a62a0() || o->unk_251 == 9 || o->unk_251 == 0xb) {
         func_ov003_0222e33c(o, a, b);
         if ((u8)(s8)(o->unk_24d - 0x36) <= 1 && o->unk_251 == 4) {
             return func_ov003_0222e420(o);
@@ -2757,11 +2757,11 @@ extern "C" s32 func_ov003_0222e500(Rec *o, s32 a, s32 b) {
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
@@ -2791,11 +2791,11 @@ extern "C" u32 func_ov003_0222e494(Rec *o) {
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
@@ -2828,11 +2828,11 @@ extern "C" u32 func_ov003_0222e420(Rec *o) {
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
@@ -2870,11 +2870,11 @@ extern "C" BOOL func_ov003_0222e33c(Rec *o, s32 a, s32 b) {
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
@@ -2898,11 +2898,11 @@ extern "C" void func_ov003_0222e328(V3 *o, s32 a) {
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
@@ -2910,7 +2910,7 @@ namespace s14 {
 extern "C" BOOL func_ov003_0222e2fc(s32 v) {
     s32 x = 0;
     s32 y = 0;
-    func_0204ee10(&x, &y, v);
+    FieldPos_ToUnit(&x, &y, v);
     if (func_020312a8(x, y)) return TRUE;
     return FALSE;
 }
@@ -2927,11 +2927,11 @@ extern "C" BOOL func_ov003_0222e2fc(s32 v) {
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
@@ -2953,11 +2953,11 @@ extern "C" void func_ov003_0222e2e0(Rec *o, s32 n) {
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
@@ -2974,7 +2974,7 @@ extern "C" BOOL func_ov003_0222e1e0(Rec *o, u32 ang, s32 d) {
         return func_ov003_0222e0f0(o, ang, (u8)(d >> 12));
     case 0xc: case 0xd:
     case 0x1b: case 0x1c: case 0x1d:
-        if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
+        if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
             return func_ov003_0222e0f0(o, ang, (u8)(d >> 12));
         }
     default:
@@ -3000,11 +3000,11 @@ extern "C" BOOL func_ov003_0222e1e0(Rec *o, u32 ang, s32 d) {
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
@@ -3066,11 +3066,11 @@ extern "C" BOOL func_ov003_0222e0f0(Rec *o, u32 ang, s32 n) {
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
@@ -3112,11 +3112,11 @@ extern "C" Unk_02095204_Obj *func_ov003_0222e098(V3 *pos) {
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
@@ -3126,7 +3126,7 @@ extern "C" void func_ov003_0222df80(Rec *o) {
     if (func_ov003_0222d334(o) == 0) {
         s32 st = o->unk_24d;
         if (st == 0xa || st == 0x33) {
-            if (o->unk_f4.mid != 0) func_020547a4(o->unk_50, 0);
+            if (o->unk_f4.mid != 0) AnimModel_setFrame(o->unk_50, 0);
             func_ov003_02229ab4(o);
         } else if (st == 0x33) {
         } else {
@@ -3147,7 +3147,7 @@ extern "C" void func_ov003_0222df80(Rec *o) {
         if (st != 0xa && st != 0x33) {
             AnimFrameCtrl_setup(o->unk_ec, 9, 0, o->unk_21c, 0);
         } else {
-            func_020547a4(o->unk_50, 1);
+            AnimModel_setFrame(o->unk_50, 1);
         }
     }
 }
@@ -3164,18 +3164,18 @@ extern "C" void func_ov003_0222df80(Rec *o) {
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
 // 0x222dec8
 extern "C" BOOL func_ov003_0222dec8(s32 a, s32 b) {
-    u32 t = func_02049370(b);
-    u32 c = func_020494bc(b);
+    u32 t = Flower_GetColor(b);
+    u32 c = Flower_GetSpecies(b);
     if (a == 0xf) {
         if (c == 0 || c == 3) {
             if (t == 2) return TRUE;
@@ -3218,11 +3218,11 @@ extern "C" BOOL func_ov003_0222dec8(s32 a, s32 b) {
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
@@ -3270,11 +3270,11 @@ extern "C" BOOL func_ov003_0222de04(Rec *o) {
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
@@ -3283,13 +3283,13 @@ extern "C" BOOL func_ov003_0222dd90(Rec *o, s32 a) {
     s8 i;
     s8 *p = &o->unk_24e;
     if (*p <= 0) {
-        if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
+        if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
             for (i = 0; i < 4; i++) {
-                *p = func_ov003_02212758(a, i);
+                *p = PlayerActor_GetDigCountdownAt(a, i);
                 if (*p > 0) break;
             }
         } else {
-            *p = func_ov003_02212758(a, 4);
+            *p = PlayerActor_GetDigCountdownAt(a, 4);
         }
     }
     if (*p > 0) {
@@ -3311,11 +3311,11 @@ extern "C" BOOL func_ov003_0222dd90(Rec *o, s32 a) {
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072970 _ZN12Unk_020cbb1813func_02072970Ej
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_getSyncVar _ZN11CommManager10getSyncVarEj
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
 namespace s14 {
@@ -3341,9 +3341,9 @@ extern "C" s32 func_ov003_0222dd54(Rec *o, s32 a, s32 b) {
 #undef func_02133150
 #undef func_ov003_02225ed0
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -3411,9 +3411,9 @@ extern "C" s32 func_ov003_0222dbdc(s32 a, s32 b) {
 #undef func_ov068_022687e8
 #undef func_ov068_02268864
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -3440,9 +3440,9 @@ extern "C" void func_ov003_0222db74(Rec *self, Vec3 *p, s32 a) {
 #undef func_ov068_022687e8
 #undef func_ov068_02268864
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -3464,9 +3464,9 @@ extern "C" void func_ov003_0222db34(Rec *self) {
 #undef func_ov068_022687e8
 #undef func_ov068_02268864
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -3499,9 +3499,9 @@ extern "C" s32 func_ov003_0222dae0(Rec *self) {
 #undef func_ov068_022687e8
 #undef func_ov068_02268864
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -3535,9 +3535,9 @@ extern "C" s32 func_ov003_0222da7c(Rec *self) {
 #undef func_ov068_022687e8
 #undef func_ov068_02268864
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -3571,9 +3571,9 @@ extern "C" s32 func_ov003_0222da1c(Rec *self) {
 #undef func_ov068_022687e8
 #undef func_ov068_02268864
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -3627,7 +3627,7 @@ extern "C" void func_ov003_0222d7d8(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
     {
         s32 k = func_ov003_0222da1c(self);
         if (func_020e7d4c(r6, r10, 0x28, k + 0x19a, func_ov003_0222da1c(self)) == 0) {
-            if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
+            if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
                 if (func_020a62a0() == 0) {
                     return;
                 }
@@ -3639,7 +3639,7 @@ extern "C" void func_ov003_0222d7d8(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
                 *r6 = *r4;
                 if (self->unk_24a != 0) {
                     void *e2;
-                    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
+                    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
                         e2 = (void *)func_ov003_0222e098(r4);
                     } else {
                         e2 = func_02095204(4);
@@ -3666,9 +3666,9 @@ extern "C" void func_ov003_0222d7d8(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
 #undef func_ov068_022687e8
 #undef func_ov068_02268864
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -3692,9 +3692,9 @@ extern "C" void func_ov003_0222d75c(Rec *self, s32 a, s32 b, s32 c) {
 #undef func_ov068_022687e8
 #undef func_ov068_02268864
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -3703,7 +3703,7 @@ namespace s13 {
 extern "C" s32 func_ov003_0222d720(Rec *self) {
     Vec3 v;
     s32 r = func_ov003_0222c7fc(self, &v);
-    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
         func_ov003_0222d6a0(self, &v);
     } else {
         func_ov068_022687e8(self, &v);
@@ -3718,9 +3718,9 @@ extern "C" s32 func_ov003_0222d720(Rec *self) {
 #undef func_ov068_022687e8
 #undef func_ov068_02268864
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -3749,9 +3749,9 @@ extern "C" void func_ov003_0222d6a0(Rec *self, Vec3 *p) {
 #undef func_ov068_022687e8
 #undef func_ov068_02268864
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -3759,9 +3759,9 @@ namespace s13 {
 // 0x222d674
 extern "C" void func_ov003_0222d674(Rec *self) {
     if (self->unk_f4.mid == 1) {
-        func_020547a4(&self->unk_50, 2);
+        AnimModel_setFrame(&self->unk_50, 2);
     } else {
-        func_020547a4(&self->unk_50, 1);
+        AnimModel_setFrame(&self->unk_50, 1);
     }
 }
 }
@@ -3772,9 +3772,9 @@ extern "C" void func_ov003_0222d674(Rec *self) {
 #undef func_ov068_022687e8
 #undef func_ov068_02268864
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -3841,9 +3841,9 @@ extern "C" void func_ov003_0222d530(Rec *self) {
 #undef func_ov068_022687e8
 #undef func_ov068_02268864
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -3895,7 +3895,7 @@ extern "C" void func_ov003_0222d350(Rec *self) {
             if (self->unk_21c != self->unk_fc) {
                 func_ov003_02225ec8(self, self->unk_21c);
             }
-            if (func_02072e88(data_020cbb18, data_020cbb18->unk_64) == 0) {
+            if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0) {
                 func_ov068_02268b70(self, &ang);
             }
         }
@@ -3924,9 +3924,9 @@ extern "C" void func_ov003_0222d350(Rec *self) {
 #undef func_ov068_022687e8
 #undef func_ov068_02268864
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_021329d0 _ffix
 #define func_ov068_022687e8 _ZN18Unk_ov068_0226821419func_ov068_022687e8EPi
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
@@ -3948,8 +3948,8 @@ extern "C" BOOL func_ov003_0222d334(Rec *self) {
 #undef func_ov068_022687e8
 #undef func_ov068_02268864
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222d28c
@@ -3976,8 +3976,8 @@ extern "C" void func_ov003_0222d28c(Rec *self, s32 a) {
 #undef func_02072e88
 #undef func_02133150
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222d1f0
@@ -4021,8 +4021,8 @@ extern "C" void func_ov003_0222d1f0(Rec *self, s16 *cnt) {
 #undef func_02072e88
 #undef func_02133150
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222d1dc
@@ -4040,8 +4040,8 @@ extern "C" s32 func_ov003_0222d1dc(s32 a) {
 #undef func_02072e88
 #undef func_02133150
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222cfb0
@@ -4053,9 +4053,9 @@ extern "C" void func_ov003_0222cfb0(Rec *self) {
         if (self->unk_24f % 0x14 == 0) {
             s32 r = func_02063b8c(100);
             if (self->unk_f4.mid == 0 && r > 0x5c) {
-                func_020547a4(self->unk_50, 2);
+                AnimModel_setFrame(self->unk_50, 2);
             } else if (r > 0x32) {
-                func_020547a4(self->unk_50, 0);
+                AnimModel_setFrame(self->unk_50, 0);
             }
         } else if (self->unk_f4.mid != 0) {
             func_ov003_0222d674(self);
@@ -4121,7 +4121,7 @@ extern "C" void func_ov003_0222cfb0(Rec *self) {
         } else {
             s32 r = func_ov003_0222d334(self);
             *cnt = 0;
-            if (self->unk_24a == 0 && r != 0 && func_02072e88(data_020cbb18, data_020cbb18->unk_64) == 0) {
+            if (self->unk_24a == 0 && r != 0 && CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0) {
                 func_ov068_0226a4f0(self);
             }
             if (self->unk_251 == 0x12) {
@@ -4140,15 +4140,15 @@ extern "C" void func_ov003_0222cfb0(Rec *self) {
 #undef func_02072e88
 #undef func_02133150
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222ce78
 extern "C" void func_ov003_0222ce78(Rec *self, s16 *cnt) {
     V3 *p = &self->unk_204;
     s32 r = func_02063b8c(100);
-    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64) != 0 && func_020a62a0() == 0) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0 && func_020a62a0() == 0) {
         V3 *q = &self->unk_1d4;
         if (q->x != p->x || q->z != p->z) {
             self->unk_251 = 4;
@@ -4196,8 +4196,8 @@ extern "C" void func_ov003_0222ce78(Rec *self, s16 *cnt) {
 #undef func_02072e88
 #undef func_02133150
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222cd58
@@ -4226,9 +4226,9 @@ extern "C" void func_ov003_0222cd58(Rec *self) {
     } else {
         s32 x, y;
         self->unk_23a = Math_AngleXZ(p, q);
-        if (func_02072e88(data_020cbb18, data_020cbb18->unk_64) != 0) {
+        if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0) {
             if (func_020a62a0() == 0) {
-                func_0204ee10(&x, &y, p);
+                FieldPos_ToUnit(&x, &y, p);
                 if (x < 0x10 || x > 0x4f || y < 0x10) {
                     self->unk_251 = 0x13;
                 }
@@ -4248,8 +4248,8 @@ extern "C" void func_ov003_0222cd58(Rec *self) {
 #undef func_02072e88
 #undef func_02133150
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222cca8
@@ -4277,8 +4277,8 @@ extern "C" void func_ov003_0222cca8(Rec *self, s16 *cnt) {
 #undef func_02072e88
 #undef func_02133150
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222cc14
@@ -4306,8 +4306,8 @@ extern "C" void func_ov003_0222cc14(Rec *self) {
 #undef func_02072e88
 #undef func_02133150
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222cb3c
@@ -4362,8 +4362,8 @@ tail:
 #undef func_02072e88
 #undef func_02133150
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222c9e0
@@ -4371,7 +4371,7 @@ extern "C" s32 func_ov003_0222c9e0(Rec *self, u32 a) {
     BOOL result = FALSE;
     s16 ang = self->unk_23a;
     if (self->unk_251 != 0xb) {
-        if (func_020a62a0() == 0 && func_02072e88(data_020cbb18, data_020cbb18->unk_64) != 0) {
+        if (func_020a62a0() == 0 && CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0) {
             if (self->unk_204.x != self->unk_1d4.x && self->unk_204.z != self->unk_1d4.z) {
                 self->unk_251 = 4;
                 self->unk_24c = a;
@@ -4413,8 +4413,8 @@ extern "C" s32 func_ov003_0222c9e0(Rec *self, u32 a) {
 #undef func_02072e88
 #undef func_02133150
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -4464,8 +4464,8 @@ extern "C" void func_ov003_0222c8f8(Rec *o, V3 *out, s32 *dist, u8 *flag, u8 a, 
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -4491,7 +4491,7 @@ extern "C" s32 func_ov003_0222c7fc(Rec *o, s32 *out) {
     s14 = o->unk_254;
     r4 = o->unk_255;
     out[0] = 0;
-    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
         if (func_020a62a0() == 0) {
             flagC = r;
         }
@@ -4541,8 +4541,8 @@ extern "C" s32 func_ov003_0222c7fc(Rec *o, s32 *out) {
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -4577,7 +4577,7 @@ extern "C" void func_ov003_0222c718(Rec *o) {
     case 0x13:
         func_ov003_0222c36c(o);
         if (o->unk_f4.mid != 0) {
-            func_020547a4((u8 *)o + 0x50, 0);
+            AnimModel_setFrame((u8 *)o + 0x50, 0);
         }
         if (func_ov003_0222c3c4(o, p) == 0) {
             func_ov003_0222c668(o, p);
@@ -4608,8 +4608,8 @@ extern "C" void func_ov003_0222c718(Rec *o) {
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -4619,7 +4619,7 @@ namespace s11 {
 // 0x222c668
 extern "C" void func_ov003_0222c668(Rec *o, s16 *p) {
     *p = *p + 1;
-    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64) && !func_020a62a0()) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && !func_020a62a0()) {
         V3 *a = &o->unk_204;
         V3 *b = &o->unk_1d4;
         if (a->x != b->x || a->z != b->z) {
@@ -4647,8 +4647,8 @@ extern "C" void func_ov003_0222c668(Rec *o, s16 *p) {
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -4675,8 +4675,8 @@ extern "C" s16 func_ov003_0222c620(s32 a, s32 b) {
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -4734,7 +4734,7 @@ extern "C" void func_ov003_0222c444(Rec *o) {
         if (!func_020e7870((u8 *)src + 4, v, q, 0x1000, 0x266) && flag != 0 && st != 0xb && st != 9) {
             o->unk_232 = (func_02063b8c(9) + 2) * 0x14;
             o->unk_251 = 0x13;
-            func_020547a4((u8 *)o + 0x50, 0);
+            AnimModel_setFrame((u8 *)o + 0x50, 0);
             if (v < 0) {
                 func_ov003_0222de04(o);
                 o->unk_242 = 0;
@@ -4760,8 +4760,8 @@ extern "C" void func_ov003_0222c444(Rec *o) {
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -4770,7 +4770,7 @@ extern "C" void func_ov003_0222c444(Rec *o) {
 namespace s11 {
 // 0x222c3c4
 extern "C" void *func_ov003_0222c3c4(Rec *o, s16 *p) {
-    if (!func_02072e88(data_020cbb18, data_020cbb18->unk_64) || func_020a62a0()) {
+    if (!CommManager_isSlotActive(gCommManager, gCommManager->unk_64) || func_020a62a0()) {
         void *r = func_ov003_0222e500(o, 0x50, 0xe38);
         if (r) {
             *p = 0;
@@ -4792,8 +4792,8 @@ extern "C" void *func_ov003_0222c3c4(Rec *o, s16 *p) {
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -4819,8 +4819,8 @@ extern "C" void func_ov003_0222c3a0(Rec *o) {
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -4849,8 +4849,8 @@ extern "C" void func_ov003_0222c36c(Rec *o) {
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -4892,8 +4892,8 @@ extern "C" void func_ov003_0222c2e0(Rec *o) {
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -4935,8 +4935,8 @@ extern "C" void func_ov003_0222c240(Rec *o) {
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -4983,8 +4983,8 @@ extern "C" void func_ov003_0222c188(Rec *o) {
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -4995,7 +4995,7 @@ namespace s11 {
 extern "C" void func_ov003_0222c0d0(Rec *o) {
     s16 t = o->unk_23a;
     s16 *p = &o->unk_242;
-    if (!func_02072e88(data_020cbb18, data_020cbb18->unk_64) || func_020a62a0()) {
+    if (!CommManager_isSlotActive(gCommManager, gCommManager->unk_64) || func_020a62a0()) {
         if (func_ov003_0222d720(o) == 2) {
             func_ov003_02225ec8(o, 0x1000);
             o->unk_24a = 0;
@@ -5016,8 +5016,8 @@ extern "C" void func_ov003_0222c0d0(Rec *o) {
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
 #define func_ov068_022694c0 _ZN18Unk_ov068_0226821419func_ov068_022694c0Ev
 #define func_ov068_02269714 _ZN18Unk_ov068_0226821419func_ov068_02269714Ev
@@ -5075,8 +5075,8 @@ extern "C" void func_ov003_0222c024(Rec *o) {
 #undef func_ov068_022697b8
 #undef func_ov068_02269840
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
@@ -5114,8 +5114,8 @@ extern "C" void func_ov003_0222bf7c(Rec *self) {
 #undef func_0209c0ac
 #undef func_ov068_02269d58
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
@@ -5141,15 +5141,15 @@ extern "C" void func_ov003_0222be88(Rec *self) {
         }
         break;
     case 18: {
-        void *g = func_0204da0c();
+        void *g = TownBlockMap_Get();
         V3 *pos = &self->unk_204;
         s32 x, y;
-        func_0204ee10(&x, &y, pos);
+        FieldPos_ToUnit(&x, &y, pos);
         s32 lx = *(volatile s32 *)&x;
         s32 ly = *(volatile s32 *)&y;
         s32 hx = lx >> 4;
         s32 hy = ly >> 4;
-        u16 *p = func_0204ebd8(g, hx, hy, lx - (hx << 4), ly - (hy << 4), 0);
+        u16 *p = BlockMap_GetItemPtr(g, hx, hy, lx - (hx << 4), ly - (hy << 4), 0);
         BOOL r = FALSE;
         u32 v = *p;
         if (v >= 0x154a && v <= 0x1553) {
@@ -5168,8 +5168,8 @@ extern "C" void func_ov003_0222be88(Rec *self) {
 #undef func_0209c0ac
 #undef func_ov068_02269d58
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
@@ -5200,8 +5200,8 @@ extern "C" void func_ov003_0222be0c(Rec *self) {
 #undef func_0209c0ac
 #undef func_ov068_02269d58
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
@@ -5236,8 +5236,8 @@ extern "C" void func_ov003_0222bd60(Rec *self, s16 *cnt) {
 #undef func_0209c0ac
 #undef func_ov068_02269d58
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
@@ -5304,17 +5304,17 @@ extern "C" void func_ov003_0222bb28(Rec *self, s16 *cnt) {
                 } else if (self->unk_24d == 0x31) {
                     self->unk_232 = 0;
                     if (self->unk_f4.mid != 1) {
-                        func_020547a4(self->unk_50, 1);
+                        AnimModel_setFrame(self->unk_50, 1);
                     }
                 }
                 self->unk_251 = 9;
             } else {
                 self->unk_251 = 4;
                 if (self->unk_24d == 0x31) {
-                    func_020547a4(self->unk_50, 1);
+                    AnimModel_setFrame(self->unk_50, 1);
                 }
                 if (self->unk_24d == 0x31 || self->unk_24d == 0x1e) {
-                    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64) && func_020a62a0()) {
+                    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && func_020a62a0()) {
                         func_ov003_0222e1e0(self, self->unk_23a, 0xc000);
                     }
                 }
@@ -5336,8 +5336,8 @@ extern "C" void func_ov003_0222bb28(Rec *self, s16 *cnt) {
 #undef func_0209c0ac
 #undef func_ov068_02269d58
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
@@ -5418,15 +5418,15 @@ extern "C" void func_ov003_0222b928(Rec *self, s16 *cnt) {
 #undef func_0209c0ac
 #undef func_ov068_02269d58
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222b838
 extern "C" void func_ov003_0222b838(Rec *self, s16 *cnt) {
     s32 r4 = self->unk_232;
-    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
         if (func_ov003_0222abc0(self) != 0) {
             return;
         }
@@ -5438,8 +5438,8 @@ extern "C" void func_ov003_0222b838(Rec *self, s16 *cnt) {
     self->unk_232 = r4 - 1;
     if (r4 == 5) {
         s32 x, y;
-        func_0204ee10(&x, &y, &self->unk_204);
-        if (func_02031218(x, y) == 0 && func_02072e88(data_020cbb18, data_020cbb18->unk_64) == 0) {
+        FieldPos_ToUnit(&x, &y, &self->unk_204);
+        if (func_02031218(x, y) == 0 && CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0) {
             func_0208fc88(0x80, &self->unk_204, 0, data_020e12cc);
         } else {
             self->unk_251 = 9;
@@ -5466,8 +5466,8 @@ extern "C" void func_ov003_0222b838(Rec *self, s16 *cnt) {
 #undef func_0209c0ac
 #undef func_ov068_02269d58
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
@@ -5515,8 +5515,8 @@ extern "C" s32 func_ov003_0222b784(Rec *self) {
 #undef func_0209c0ac
 #undef func_ov068_02269d58
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
@@ -5530,7 +5530,7 @@ extern "C" void func_ov003_0222b6e0(Rec *self) {
         break;
     case 11:
         if (self->unk_f4.mid == 1) {
-            func_020547a4(self->unk_50, 0);
+            AnimModel_setFrame(self->unk_50, 0);
         }
     case 5:
         func_ov003_0222bb28(self, cnt);
@@ -5544,7 +5544,7 @@ extern "C" void func_ov003_0222b6e0(Rec *self) {
     case 19:
         func_ov003_0222b450(self, cnt);
         if (self->unk_f4.mid != 0) {
-            func_020547a4(self->unk_50, 0);
+            AnimModel_setFrame(self->unk_50, 0);
         }
         break;
     }
@@ -5555,9 +5555,9 @@ extern "C" void func_ov003_0222b6e0(Rec *self) {
 #undef func_0209c0ac
 #undef func_ov068_02269d58
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
@@ -5580,10 +5580,10 @@ extern "C" void func_ov003_0222b620(Rec *self) {
             self->unk_232 = r4 - 1;
             if (self->unk_254 < self->unk_255) {
                 self->unk_251 = 4;
-                func_020547a4(&self->unk_50, 1);
+                AnimModel_setFrame(&self->unk_50, 1);
                 s32 a = Math_AngleXZ(pos, &out);
                 self->unk_23a = a + 0x8000;
-                if (func_02072e88(data_020cbb18, data_020cbb18->unk_64) && func_020a62a0()) {
+                if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && func_020a62a0()) {
                     func_ov003_0222e1e0(self, self->unk_23a, 0xc000);
                 }
             }
@@ -5598,9 +5598,9 @@ extern "C" void func_ov003_0222b620(Rec *self) {
 #undef func_ov068_02269b20
 #undef func_ov068_02269d18
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
@@ -5609,7 +5609,7 @@ namespace s09 {
 extern "C" void func_ov003_0222b518(Rec *self) {
     V3 *pos = &self->unk_204;
     s32 r4 = self->unk_232;
-    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
         if (func_ov003_0222abc0(self) != 0) {
             return;
         }
@@ -5621,11 +5621,11 @@ extern "C" void func_ov003_0222b518(Rec *self) {
     V3 out;
     func_ov003_0222c7fc(self, &out.x);
     if (self->unk_254 >= self->unk_255 &&
-        (func_02072e88(data_020cbb18, data_020cbb18->unk_64) == 0 || func_020a62a0() != 0 ||
+        (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0 || func_020a62a0() != 0 ||
          (self->unk_1d4.x == self->unk_204.x && self->unk_1d4.z == self->unk_204.z))) {
         self->unk_251 = 7;
-        func_020547a4(&self->unk_50, 0);
-        if (func_02072e88(data_020cbb18, data_020cbb18->unk_64) && func_020a62a0()) {
+        AnimModel_setFrame(&self->unk_50, 0);
+        if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && func_020a62a0()) {
             V3 *src = &self->unk_204;
             V3 *dst = &self->unk_1d4;
             dst->x = src->x;
@@ -5651,9 +5651,9 @@ extern "C" void func_ov003_0222b518(Rec *self) {
 #undef func_ov068_02269b20
 #undef func_ov068_02269d18
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
@@ -5663,16 +5663,16 @@ extern "C" BOOL func_ov003_0222b450(Rec *self, s16 *out) {
     s8 *p = &self->unk_24e;
     V3 *sub = &self->unk_204;
     if (*p <= 0) {
-        if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
+        if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
             s8 i;
             for (i = 0; i < 4; i++) {
-                *p = func_ov003_022126d0(sub, i);
+                *p = PlayerActor_GetStrikeCountdownAt(sub, i);
                 if (*p > 0) {
                     break;
                 }
             }
         } else {
-            *p = func_ov003_022126d0(sub, 4);
+            *p = PlayerActor_GetStrikeCountdownAt(sub, 4);
         }
     }
     s8 c = *p;
@@ -5701,9 +5701,9 @@ extern "C" BOOL func_ov003_0222b450(Rec *self, s16 *out) {
 #undef func_ov068_02269b20
 #undef func_ov068_02269d18
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
@@ -5737,9 +5737,9 @@ extern "C" void func_ov003_0222b3f4(Rec *self) {
 #undef func_ov068_02269b20
 #undef func_ov068_02269d18
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
@@ -5829,9 +5829,9 @@ extern "C" void func_ov003_0222b224(Rec *self) {
 #undef func_ov068_02269b20
 #undef func_ov068_02269d18
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
@@ -5844,7 +5844,7 @@ extern "C" void func_ov003_0222aff0(Rec *self) {
     s16 *p23e = &self->unk_23e;
     Unk_ov003_0222aff0_Sub *sub = &self->unk_50;
     if (MenuCtrl_IsMenuOpen() == 0) {
-        if (func_ov003_02211fd0()) {
+        if (PlayerActor_LocalHoldsNet()) {
             self->unk_247 = 1;
         } else {
             self->unk_247 = 0;
@@ -5924,9 +5924,9 @@ extern "C" void func_ov003_0222aff0(Rec *self) {
 #undef func_ov068_02269b20
 #undef func_ov068_02269d18
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
@@ -5945,7 +5945,7 @@ extern "C" void func_ov003_0222af84(Rec *self) {
         func_ov003_0222a36c(self, &self->unk_242);
         break;
     case 0x13:
-        func_020547a4(&self->unk_50, 3);
+        AnimModel_setFrame(&self->unk_50, 3);
         self->unk_251 = 4;
         break;
     }
@@ -5958,9 +5958,9 @@ extern "C" void func_ov003_0222af84(Rec *self) {
 #undef func_ov068_02269b20
 #undef func_ov068_02269d18
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
@@ -5984,9 +5984,9 @@ extern "C" BOOL func_ov003_0222af48(Rec *self, s32 a) {
 #undef func_ov068_02269b20
 #undef func_ov068_02269d18
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
@@ -6062,7 +6062,7 @@ extern "C" BOOL func_ov003_0222adc4(Rec *self) {
 
 #define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_02133150 _s32_div_f
@@ -6153,7 +6153,7 @@ extern "C" s32 func_ov003_0222abc0(Rec *self) {
 
 #define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_02133150 _s32_div_f
@@ -6202,7 +6202,7 @@ extern "C" void func_ov003_0222ab68(V3 *out, V3 *in, s32 c) {
 
 #define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_02133150 _s32_div_f
@@ -6217,14 +6217,14 @@ extern "C" void func_ov003_0222a8d0(Rec *self) {
     if (st != 0xb && st != 9) {
         s32 xy[2];
         V3 q(self->unk_21c, 0, self->unk_204.z + 0x3e8);
-        func_0204ee10(&xy[0], &xy[1], &q);
-        void *g = func_0204da0c();
+        FieldPos_ToUnit(&xy[0], &xy[1], &q);
+        void *g = TownBlockMap_Get();
         if (g) {
             s32 x = *(volatile s32 *)&xy[0];
             s32 y = *(volatile s32 *)&xy[1];
             s32 hx = x >> 4;
             s32 hy = y >> 4;
-            u16 *cell = func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+            u16 *cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
             if (cell) {
                 if (!Unk_ov003_0222a8d0_Chk(cell)) {
                     if (func_ov003_0222af48(self, 3)) {
@@ -6295,7 +6295,7 @@ extern "C" void func_ov003_0222a8d0(Rec *self) {
 
 #define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_02133150 _s32_div_f
@@ -6374,7 +6374,7 @@ extern "C" void func_ov003_0222a7d4(Rec *self) {
 
 #define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_02133150 _s32_div_f
@@ -6436,7 +6436,7 @@ extern "C" void func_ov003_0222a6cc(Rec *self, s16 *cnt) {
 
 #define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_02133150 _s32_div_f
@@ -6482,7 +6482,7 @@ extern "C" void func_ov003_0222a630(Rec *self, s16 *cnt) {
 
 #define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_02133150 _s32_div_f
@@ -6528,7 +6528,7 @@ extern "C" void func_ov003_0222a594(Rec *self, s16 *cnt) {
 
 #define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_02133150 _s32_div_f
@@ -6581,7 +6581,7 @@ extern "C" void func_ov003_0222a4a0(Rec *self, s16 *cnt) {
 
 #define func_020338d0 _ZN12Unk_0203389c13func_020338d0Ei
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_02133150 _s32_div_f
@@ -6621,7 +6621,7 @@ extern "C" void func_ov003_0222a36c(Rec *self, s16 *cnt) {
             AnimFrameCtrl_setup(s + 0x9c, 9, 0, 0x1000, 0);
         }
     } else {
-        func_020547a4(s, st == 1 ? 2 : 1);
+        AnimModel_setFrame(s, st == 1 ? 2 : 1);
     }
     if (func_ov003_0222af48(self, 1)) {
         func_ov003_02229910(self);
@@ -6637,7 +6637,7 @@ extern "C" void func_ov003_0222a36c(Rec *self, s16 *cnt) {
 #undef func_ov068_02269a28
 #undef func_ov068_02269aa4
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
@@ -6680,7 +6680,7 @@ extern "C" void func_ov003_0222a24c(Rec *o, s16 *p) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
@@ -6711,7 +6711,7 @@ extern "C" void func_ov003_0222a1c8(Rec *o, s16 *p) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
@@ -6734,7 +6734,7 @@ extern "C" void func_ov003_0222a090(Rec *o, s16 *p) {
             o->unk_238 = 0xd55;
             o->unk_251 = 7;
             o->unk_24a = 1;
-            func_020547a4(o->unk_50, 1);
+            AnimModel_setFrame(o->unk_50, 1);
             s32 z = 0;
             *p = z;
             func_ov003_0222dd54(o, 1, z);
@@ -6763,7 +6763,7 @@ extern "C" void func_ov003_0222a090(Rec *o, s16 *p) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
@@ -6833,22 +6833,22 @@ extern "C" void func_ov003_02229eac(Rec *o) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
 // 0x2229dcc
 extern "C" BOOL func_ov003_02229dcc(void *pp) {
-    void *g = func_0204da0c();
+    void *g = TownBlockMap_Get();
     if (g != 0) {
         s32 xy[2];
-        func_0204ee10(&xy[0], &xy[1], pp);
+        FieldPos_ToUnit(&xy[0], &xy[1], pp);
         s32 hy, hx, x, y;
         x = *(volatile s32 *)&xy[0];
         y = *(volatile s32 *)&xy[1];
         hx = x >> 4;
         hy = y >> 4;
-        u16 *c = func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+        u16 *c = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (c != 0) {
             if (Unk_ov003_02229dcc_Chk(c)) {
                 return TRUE;
@@ -6862,7 +6862,7 @@ extern "C" BOOL func_ov003_02229dcc(void *pp) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
@@ -6905,18 +6905,18 @@ extern "C" void func_ov003_02229c1c(Rec *o, s16 *p) {
             if (n > 0x14) {
                 u32 m = o->unk_f4.mid;
                 if (m == 2) {
-                    func_020547a4(o->unk_50, 1);
+                    AnimModel_setFrame(o->unk_50, 1);
                 } else if (m == 1) {
-                    func_020547a4(o->unk_50, 0);
+                    AnimModel_setFrame(o->unk_50, 0);
                     o->unk_251 = 0x13;
                     o->unk_252 = 0x3c;
                 }
             } else {
                 s32 t = (s32)(*(u32 *)&o->unk_f4) >> 12;
                 if ((u16)t == 0 && o->unk_252 == 0) {
-                    func_020547a4(o->unk_50, 1);
+                    AnimModel_setFrame(o->unk_50, 1);
                 } else if ((u16)t == 1) {
-                    func_020547a4(o->unk_50, 2);
+                    AnimModel_setFrame(o->unk_50, 2);
                 } else if (o->unk_252 != 0) {
                     o->unk_252--;
                 }
@@ -6929,7 +6929,7 @@ extern "C" void func_ov003_02229c1c(Rec *o, s16 *p) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
@@ -6998,7 +6998,7 @@ extern "C" void func_ov003_02229ab4(Rec *o) {
 #undef func_0205668c
 #undef func_0209c0ac
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
@@ -7021,7 +7021,7 @@ extern "C" void func_ov003_02229a3c(Rec *o) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7058,7 +7058,7 @@ extern "C" void func_ov003_02229938(Rec *self) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7074,7 +7074,7 @@ extern "C" void func_ov003_02229910(Rec *self) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7118,9 +7118,9 @@ extern "C" void func_ov003_022297c8(Rec *self, s16 *pp) {
         func_ov003_0222b928(self, pp);
         u32 m = self->unk_f4.mid;
         if (m == 0) {
-            func_020547a4((u8 *)self + 0x50, 1);
+            AnimModel_setFrame((u8 *)self + 0x50, 1);
         } else if (m == 1) {
-            func_020547a4((u8 *)self + 0x50, 2);
+            AnimModel_setFrame((u8 *)self + 0x50, 2);
         }
     }
 }
@@ -7131,7 +7131,7 @@ extern "C" void func_ov003_022297c8(Rec *self, s16 *pp) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7182,7 +7182,7 @@ extern "C" void func_ov003_02229698(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, s
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7201,7 +7201,7 @@ extern "C" s16 func_ov003_02229670() {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7216,7 +7216,7 @@ extern "C" void func_ov003_02229668(Rec *self) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7237,7 +7237,7 @@ extern "C" void func_ov003_022295ec(Rec *self, s32 a, s32 b, s32 c, u8 d, s32 e)
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7280,7 +7280,7 @@ extern "C" void func_ov003_022294f8(Rec *self) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7295,7 +7295,7 @@ extern "C" void func_ov003_022294f0(Rec *self) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7320,7 +7320,7 @@ extern "C" void func_ov003_02229464(Rec *self) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7338,7 +7338,7 @@ extern "C" void func_ov003_02229424(Rec *self) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7353,7 +7353,7 @@ extern "C" void func_ov003_0222941c(Rec *self) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7368,7 +7368,7 @@ extern "C" void func_ov003_022293f8(Rec *self) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7383,7 +7383,7 @@ extern "C" void func_ov003_022293f0(Rec *self) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7405,7 +7405,7 @@ extern "C" void func_ov003_02229370(Rec *self, s32 a, s32 b, s32 c, s32 d) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7420,7 +7420,7 @@ extern "C" void func_ov003_02229368(Rec *self) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7506,7 +7506,7 @@ extern "C" void func_ov003_02229144(Rec *self) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7524,7 +7524,7 @@ extern "C" void func_ov003_022290e4(Rec *self, s32 a, s32 b, s32 c, u8 d) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7539,7 +7539,7 @@ extern "C" void func_ov003_022290dc(Rec *self) {
 #undef func_0209c0ac
 
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
@@ -7570,9 +7570,9 @@ extern "C" void func_ov003_02229050(Rec *self) {
 #undef func_0209c0ac
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -7599,9 +7599,9 @@ extern "C" void func_ov003_02229010(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -7636,9 +7636,9 @@ extern "C" void func_ov003_02228fb4(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -7663,9 +7663,9 @@ extern "C" void func_ov003_02228fac(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -7692,9 +7692,9 @@ extern "C" void func_ov003_02228f6c(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -7719,9 +7719,9 @@ extern "C" void func_ov003_02228f64(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -7752,9 +7752,9 @@ extern "C" void func_ov003_02228f0c(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -7779,9 +7779,9 @@ extern "C" void func_ov003_02228f04(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -7821,9 +7821,9 @@ extern "C" void func_ov003_02228e60(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -7856,9 +7856,9 @@ extern "C" void func_ov003_02228de0(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -7883,9 +7883,9 @@ extern "C" void func_ov003_02228dd8(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -7910,9 +7910,9 @@ extern "C" void func_ov003_02228dd0(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -7941,9 +7941,9 @@ extern "C" void func_ov003_02228d7c(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -7968,9 +7968,9 @@ extern "C" void func_ov003_02228d74(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -7996,9 +7996,9 @@ extern "C" void func_ov003_02228d48(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8023,9 +8023,9 @@ extern "C" void func_ov003_02228d40(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8051,9 +8051,9 @@ extern "C" void func_ov003_02228d14(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8078,9 +8078,9 @@ extern "C" void func_ov003_02228d0c(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8107,9 +8107,9 @@ extern "C" void func_ov003_02228cc4(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8134,9 +8134,9 @@ extern "C" void func_ov003_02228cbc(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8172,9 +8172,9 @@ extern "C" void func_ov003_02228c1c(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8199,9 +8199,9 @@ extern "C" void func_ov003_02228c14(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8226,9 +8226,9 @@ extern "C" void func_ov003_02228c0c(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8254,9 +8254,9 @@ extern "C" void func_ov003_02228bdc(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8283,9 +8283,9 @@ extern "C" void func_ov003_02228b98(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8310,9 +8310,9 @@ extern "C" void func_ov003_02228b74(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8337,9 +8337,9 @@ extern "C" void func_ov003_02228b6c(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8364,9 +8364,9 @@ extern "C" void func_ov003_02228b48(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8391,9 +8391,9 @@ extern "C" void func_ov003_02228b40(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8418,9 +8418,9 @@ extern "C" void func_ov003_02228b38(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8445,9 +8445,9 @@ extern "C" void func_ov003_02228b30(Unk_ov003_02228710_Act *a) {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8473,9 +8473,9 @@ void *func_ov003_02228b18() {
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8498,9 +8498,9 @@ Unk_ov003_02234abc::Unk_ov003_02234abc() { using namespace s05;
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8522,9 +8522,9 @@ Unk_ov003_02234abc::~Unk_ov003_02234abc() { using namespace s05;
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8578,9 +8578,9 @@ BOOL Unk_ov003_02234abc::func_0222898c(Unk_ov003_02228710_Act *e) { using namesp
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8614,9 +8614,9 @@ BOOL Unk_ov003_02234abc::func_02228924(s32 id, s32 idx) { using namespace s05;
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8646,9 +8646,9 @@ BOOL Unk_ov003_02234abc::func_022288dc(Unk_ov003_02228710_Act *e) { using namesp
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8663,7 +8663,7 @@ void Unk_ov003_02234abc::func_022287c8(Unk_ov003_02228710_Act *e, s32 mode) { us
         func_02041868();
     }
     if (e->unk_24d >= 0) {
-        func_0205468c(e->unk_50);
+        AnimModel_detachAnim(e->unk_50);
     }
     e->unk_250 = 0;
     e->unk_21c = 0;
@@ -8708,9 +8708,9 @@ void Unk_ov003_02234abc::func_022287c8(Unk_ov003_02228710_Act *e, s32 mode) { us
 #undef func_0209c25c
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define func_0205468c _ZN12Unk_020dbd5413func_0205468cEv
+#define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
 #define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
@@ -8722,8 +8722,8 @@ BOOL Unk_ov003_02234abc::vfunc_00() { using namespace s05;
     func_0209c1a4(&unk_50, 8, 0x400, 0x40, 0x9c4, (void *)func_0205c088, (void *)func_0205c06c, 0);
     func_0209c1a4(&unk_68, 2, 0x400, 0x40, 0x6e8, (void *)func_0205c0f0, (void *)func_0205c0d4, 0);
     func_0209c1a4(&unk_80, 4, 0x400, 0x40, 0x9c4, (void *)func_0205c0bc, (void *)func_0205c0a0, 0);
-    u32 *g = data_020cbb18[0];
-    if (func_02072e88(g, g[0x64 / 4]) == 0) {
+    u32 *g = gCommManager[0];
+    if (CommManager_isSlotActive(g, g[0x64 / 4]) == 0) {
         func_02228924(0x3a, 0);
         func_02228924(0x3b, 1);
     }
@@ -8743,18 +8743,18 @@ BOOL Unk_ov003_02234abc::vfunc_00() { using namespace s05;
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
-#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define ModelAnim_init _ZN9ModelAnim4initEiiit
+#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
@@ -8850,7 +8850,7 @@ extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode)
     } else {
         m = func_021065f8(func_021065dc(r7), 0);
     }
-    if (!func_02054800(obj, h2)) {
+    if (!AnimModel_allocAnmObj(obj, h2)) {
         return;
     }
     ok = TRUE;
@@ -8858,8 +8858,8 @@ extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode)
     if (t4 == 0x35 || t4 == 9) {
         sc = 0;
     }
-    func_02054720(obj, m, 0, sc, 0, 0);
-    func_02054710(obj);
+    BlendAnimModel_initAnim(obj, m, 0, sc, 0, 0);
+    AnimModel_attachAnim(obj);
     if (t4 == 9) {
         AnimFrameCtrl_setup(&e->unk_ec, 9, 1, 0, 9);
     }
@@ -8870,8 +8870,8 @@ extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode)
             File_LoadAlloc(l.path, h2, 4, 0);
             if (r7 != 0) {
                 r7 = (void *)func_02106670(func_02106654(), 0);
-                if (func_02055bcc(e, *(void **)(obj + 0x5c), h2)) {
-                    func_02055b38(e, (s32)r7, 0, 0x1000, 0);
+                if (ModelAnim_allocMatAnm(e, *(void **)(obj + 0x5c), h2)) {
+                    ModelAnim_init(e, (s32)r7, 0, 0x1000, 0);
                     ModelAnim_addToRenderObj(e, Model_getRenderObj(obj));
                     ok = TRUE;
                 }
@@ -8931,18 +8931,18 @@ extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode)
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
-#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define ModelAnim_init _ZN9ModelAnim4initEiiit
+#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
@@ -9045,18 +9045,18 @@ extern "C" void func_ov003_02228308(void *a, Rec *e) {
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
-#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define ModelAnim_init _ZN9ModelAnim4initEiiit
+#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
@@ -9079,7 +9079,7 @@ namespace s04 {
 // 0x2228060
 extern "C" void func_ov003_02228060(void *a, Rec *e, s32 flags, s32 kind) {
     u8 r4 = e->unk_249;
-    s32 r7 = func_02072e88(data_020cbb18, data_020cbb18->unk_64);
+    s32 r7 = CommManager_isSlotActive(gCommManager, gCommManager->unk_64);
     if (r7 != 0 && e->unk_258 != 0) {
         r4 = 1;
     }
@@ -9165,7 +9165,7 @@ extern "C" void func_ov003_02228060(void *a, Rec *e, s32 flags, s32 kind) {
     }
 L226:
     if (data_ov003_02234b04[t4].unk_00 == 0) {
-        func_020547e4(e->unk_50);
+        AnimModel_stepAnim(e->unk_50);
         if ((u8)(s8)(t4 - 0x3a) <= 1) {
             AnimFrameCtrl_step(e);
             *e->unk_18 = e->unk_08;
@@ -9174,7 +9174,7 @@ L226:
     goto L268;
 L258:
     if (t4 == 0x14 || t4 == 0x37) {
-        func_020547e4(e->unk_50);
+        AnimModel_stepAnim(e->unk_50);
     }
 L268:
     if (t7 == 0xa) {
@@ -9231,18 +9231,18 @@ L268:
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
-#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define ModelAnim_init _ZN9ModelAnim4initEiiit
+#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
@@ -9265,7 +9265,7 @@ L268:
 BOOL Unk_ov003_02234abc::onExecute() { using namespace s04;
     void *self = this;
     func_ov003_02227970(self);
-    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64) == 0) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0) {
         func_ov003_02227740(self);
     }
     func_ov003_02227624(self);
@@ -9307,18 +9307,18 @@ BOOL Unk_ov003_02234abc::onExecute() { using namespace s04;
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
-#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define ModelAnim_init _ZN9ModelAnim4initEiiit
+#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
@@ -9343,12 +9343,12 @@ extern "C" void func_ov003_02227f20(void *a, Rec *e) {
     Unk_ov003_02227f20_Slot *o;
     u8 ok;
     s32 px, py;
-    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64) != 0) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0) {
         if (func_020a62a0() != 0) {
             u8 i;
             s32 z0 = 0, z1 = 0;
             for (i = 0; i < 4; i++) {
-                if (PlayerActor_GetSlotPosXZ(&ok, &px, &py, -1, i) && ok == 0 && func_ov003_02212824(i)) {
+                if (PlayerActor_GetSlotPosXZ(&ok, &px, &py, -1, i) && ok == 0 && PlayerActor_TestSlotFlag9(i)) {
                     Vec3 v;
                     v.x = px;
                     v.y = z0;
@@ -9367,7 +9367,7 @@ extern "C" void func_ov003_02227f20(void *a, Rec *e) {
             }
         }
     } else {
-        if (func_ov003_02212824(4)) {
+        if (PlayerActor_TestSlotFlag9(4)) {
             u8 *p = (u8 *)func_02095204(4);
             if (p) {
                 s32 lim = e->unk_224;
@@ -9428,18 +9428,18 @@ extern "C" void func_ov003_02227f20(void *a, Rec *e) {
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
-#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define ModelAnim_init _ZN9ModelAnim4initEiiit
+#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
@@ -9508,18 +9508,18 @@ extern "C" s32 func_ov003_02227ed4(u8 *out, u32 idx) {
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
-#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define ModelAnim_init _ZN9ModelAnim4initEiiit
+#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
@@ -9597,18 +9597,18 @@ extern "C" BOOL func_ov003_02227e40(u32 idx) {
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
-#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define ModelAnim_init _ZN9ModelAnim4initEiiit
+#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
@@ -9673,18 +9673,18 @@ extern "C" s32 func_ov003_02227e08(Vec3 *out, u32 idx) {
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
-#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define ModelAnim_init _ZN9ModelAnim4initEiiit
+#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
@@ -9708,7 +9708,7 @@ namespace s04 {
 extern "C" void func_ov003_02227cd0(void *self) {
     s8 b[8];
     s32 px, py;
-    s32 r4 = func_02072e88(data_020cbb18, data_020cbb18->unk_64);
+    s32 r4 = CommManager_isSlotActive(gCommManager, gCommManager->unk_64);
     if (r4 == 0 || func_020a62a0() != 0) {
         if (data_ov003_02258ef4 % 20 == 0) {
             func_ov003_02225cb0();
@@ -9784,10 +9784,10 @@ if (func_ov003_022264f0(self, b[2], (u8)b[3], 2)) {
 #undef data_ov003_022595b0
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
 #define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
 namespace s03 {
@@ -9802,7 +9802,7 @@ extern "C" void func_ov003_02227970(void *a) {
     v18 = 0;
     v1c = 0;
     l.i = 0;
-    g = data_020cbb18;
+    g = gCommManager;
     s32 neg = -1;
     goto test0;
 loop0:
@@ -9810,7 +9810,7 @@ loop0:
         k = o->unk_250;
         V3 *p204;
         V3 *p1d4;
-        if (func_02072e88(g, g->unk_64)) {
+        if (CommManager_isSlotActive(g, g->unk_64)) {
             p204 = &o->unk_204;
             p1d4 = &o->unk_1d4;
             l.a = neg;
@@ -9863,7 +9863,7 @@ loop0:
     sw0:
         switch (k) {
         case 2:
-            if (func_020a62a0() == 0 && func_02072e88(g, g->unk_64)) {
+            if (func_020a62a0() == 0 && CommManager_isSlotActive(g, g->unk_64)) {
                 if (l.a != o->unk_24d && v18 > 0) {
                     func_ov003_022287c8(a, o, 1);
                 } else {
@@ -9874,7 +9874,7 @@ loop0:
             }
             break;
         case 3:
-            if (func_02072e88(g, g->unk_64)) {
+            if (CommManager_isSlotActive(g, g->unk_64)) {
                 if (func_020a62a0() == 0) {
                     if (func_ov003_02227930(a, o, l.a, v18, v1c)) {
                         o->unk_251 = 10;
@@ -9891,7 +9891,7 @@ loop0:
             func_ov003_02228060(a, o, l.i, 1);
             break;
         case 4:
-            if (func_02072e88(g, g->unk_64) == 0) {
+            if (CommManager_isSlotActive(g, g->unk_64) == 0) {
                 o->unk_251 = 10;
                 func_ov003_022287c8(a, o, 1);
             } else if (func_020a62a0()) {
@@ -9912,9 +9912,9 @@ loop0:
                     o->unk_204.x = 1;
                     q2->y = 1;
                     q2->z = 1;
-                    func_020728d4(g);
-                    func_020728a4(g, &l.i, 1);
-                    func_02072824(g, 0x30, 7);
+                    CommManager_beginRecord(g);
+                    CommManager_writeRecord(g, &l.i, 1);
+                    CommManager_endRecord(g, 0x30, 7);
                 }
                 *cnt = *cnt + 1;
                 if (*cnt > 0xc8) {
@@ -9948,10 +9948,10 @@ test0:
 #undef func_ov003_0222898c
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
 #define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
 namespace s03 {
@@ -9974,10 +9974,10 @@ extern "C" BOOL func_ov003_02227930(void *a, Rec *o, s32 c, s32 d, s32 e) {
 #undef func_ov003_0222898c
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
 #define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
 namespace s03 {
@@ -9988,13 +9988,13 @@ extern "C" BOOL func_ov003_022277c0(void *a, Rec *o) {
     case 0x9: case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x1f: case 0x21: case 0x22: case 0x23: case 0x24: case 0x26: case 0x27: case 0x28: case 0x29: case 0x2a: case 0x2b: case 0x2c: case 0x2d: case 0x2e: case 0x2f: case 0x34:
     {
         s32 x = 0, y = 0;
-        func_0204ee10(&x, &y, &o->unk_204);
-        void *grid = func_0204da0c();
+        FieldPos_ToUnit(&x, &y, &o->unk_204);
+        void *grid = TownBlockMap_Get();
         if (grid == 0) goto yes;
         s32 px = *(volatile s32 *)&x, py = *(volatile s32 *)&y;
         s32 hx = px >> 4;
         s32 hy = py >> 4;
-        u16 *p = func_0204ebd8(grid, hx, hy, px - (hx << 4), py - (hy << 4), 0);
+        u16 *p = BlockMap_GetItemPtr(grid, hx, hy, px - (hx << 4), py - (hy << 4), 0);
         if (p == 0) return FALSE;
         if (Unk_ov003_022277c0_Chk(p)) goto yes;
         return FALSE;
@@ -10015,10 +10015,10 @@ yes:
 #undef func_ov003_0222898c
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
 #define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
 namespace s03 {
@@ -10053,16 +10053,16 @@ extern "C" void func_ov003_02227740(void *a) {
 #undef func_ov003_0222898c
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
 #define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
 namespace s03 {
 // 0x2227624
 extern "C" void func_ov003_02227624(void *a) {
-    Unk_020cbb18_Ptr *g = data_020cbb18;
+    Unk_020cbb18_Ptr *g = gCommManager;
     u32 cur = g->unk_64;
     if (cur == 4) cur = 0;
     Rec *o = data_ov003_0225980c;
@@ -10111,10 +10111,10 @@ extern "C" void func_ov003_02227624(void *a) {
 #undef func_ov003_0222898c
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
 #define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
 namespace s03 {
@@ -10126,8 +10126,8 @@ extern "C" BOOL func_ov003_02227544(void *a, Rec *o) {
     t = o->unk_24d;
     if (st == 9 || st == 0xb) goto yes;
     if (t != 0x3a && t != 0x3b) {
-        Unk_020cbb18_Ptr *g = data_020cbb18;
-        if (func_02072e88(g, g->unk_64) == 0) goto cont;
+        Unk_020cbb18_Ptr *g = gCommManager;
+        if (CommManager_isSlotActive(g, g->unk_64) == 0) goto cont;
         if (func_020a62a0() != 0) goto cont;
     }
     return FALSE;
@@ -10158,10 +10158,10 @@ yes:
 #undef func_ov003_0222898c
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
 #define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
 namespace s03 {
@@ -10206,10 +10206,10 @@ extern "C" void func_ov003_0222746c(s32 idx, s32 v) {
 #undef func_ov003_0222898c
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
 #define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
 namespace s03 {
@@ -10232,10 +10232,10 @@ extern "C" u32 func_ov003_02227434(s32 idx) {
 #undef func_ov003_0222898c
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
 #define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
 namespace s03 {
@@ -10268,12 +10268,12 @@ test0:
 #undef func_ov003_022287c8
 #undef func_ov003_0222898c
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -10317,12 +10317,12 @@ extern "C" BOOL func_ov003_0222733c(s32 a, s32 t) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -10341,12 +10341,12 @@ extern "C" V3 *func_ov003_02227320(s32 idx) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -10394,12 +10394,12 @@ extern "C" void func_ov003_02227248(s32 t, s32 idx) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -10430,12 +10430,12 @@ extern "C" void func_ov003_022271a8(s32 id) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -10463,12 +10463,12 @@ extern "C" BOOL func_ov003_0222716c(s32 t) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -10493,24 +10493,24 @@ extern "C" void func_ov003_02227100(s32 id) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
 // 0x2227074
 extern "C" void func_ov003_02227074(u8 id, s32 flag) {
     Obj *o = &data_ov003_0225980c[id];
-    Unk_ov003_02226d54_Net *g = data_020cbb18;
-    if (func_02072e88(g, g->unk_64) && flag && func_020729cc(g, id)) {
-        Unk_ov003_02226d54_Net *g2 = data_020cbb18;
-        func_020728d4(g2);
-        func_020728a4(g2, &id, 1);
-        func_02072824(g2, 0x30, 4);
+    Unk_ov003_02226d54_Net *g = gCommManager;
+    if (CommManager_isSlotActive(g, g->unk_64) && flag && CommManager_isMyAid(g, id)) {
+        Unk_ov003_02226d54_Net *g2 = gCommManager;
+        CommManager_beginRecord(g2);
+        CommManager_writeRecord(g2, &id, 1);
+        CommManager_endRecord(g2, 0x30, 4);
     }
     if (o->unk_22c != -1) {
         func_020902f8(o->unk_22c);
@@ -10528,12 +10528,12 @@ extern "C" void func_ov003_02227074(u8 id, s32 flag) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -10545,11 +10545,11 @@ extern "C" s32 func_ov003_02226fac(u8 id) {
     else if ((id >> 5) & 1) o = &data_ov003_02259354[idx];
     o->unk_242 = 0;
     o->unk_250 = 4;
-    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
-        Unk_ov003_02226d54_Net *g = data_020cbb18;
-        func_020728d4(g);
-        func_020728a4(g, &id, 1);
-        func_02072824(g, 0x30, 4);
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
+        Unk_ov003_02226d54_Net *g = gCommManager;
+        CommManager_beginRecord(g);
+        CommManager_writeRecord(g, &id, 1);
+        CommManager_endRecord(g, 0x30, 4);
     }
     s32 c = o->unk_24d;
     switch (c) {
@@ -10574,12 +10574,12 @@ extern "C" s32 func_ov003_02226fac(u8 id) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -10593,7 +10593,7 @@ extern "C" s32 func_ov003_02226ee8(s32 id) {
     else r = 1;
     if (o == 0) r = 1;
     if (r != 1) {
-        if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
+        if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
             if (!func_020a62a0()) r = data_ov003_02258efc;
         }
     }
@@ -10601,12 +10601,12 @@ extern "C" s32 func_ov003_02226ee8(s32 id) {
         u8 b;
         func_ov003_02226e70(id);
         b = id;
-        if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
+        if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
             if (!func_020a62a0()) {
-                Unk_ov003_02226d54_Net *g = data_020cbb18;
-                func_020728d4(g);
-                func_020728a4(g, &b, 1);
-                func_02072824(g, 0x2f, 4);
+                Unk_ov003_02226d54_Net *g = gCommManager;
+                CommManager_beginRecord(g);
+                CommManager_writeRecord(g, &b, 1);
+                CommManager_endRecord(g, 0x2f, 4);
             }
         }
     }
@@ -10622,12 +10622,12 @@ extern "C" s32 func_ov003_02226ee8(s32 id) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -10652,12 +10652,12 @@ extern "C" void func_ov003_02226e70(s32 id) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -10680,13 +10680,13 @@ extern "C" s32 func_ov003_02226d54(u8 id) {
         NNS_G3dMdlSetMdlAlpha(func_0209c0ac(&o->unk_130), 0, 0);
         o->unk_251 = 0x10;
     }
-    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
         if (!func_020a62a0()) {
             data_ov003_02258efc = 2;
-            Unk_ov003_02226d54_Net *g = data_020cbb18;
-            func_020728d4(g);
-            func_020728a4(g, &id, 1);
-            func_02072824(g, 0x28, 6);
+            Unk_ov003_02226d54_Net *g = gCommManager;
+            CommManager_beginRecord(g);
+            CommManager_writeRecord(g, &id, 1);
+            CommManager_endRecord(g, 0x28, 6);
         }
     }
     return 1;
@@ -10701,12 +10701,12 @@ extern "C" s32 func_ov003_02226d54(u8 id) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -10733,12 +10733,12 @@ extern "C" void func_ov003_02226d08(Obj *o, s32 v) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -10752,7 +10752,7 @@ extern "C" void func_ov003_02226c88(void *a, Obj *o) {
         r = (31 - r) << 1;
         if (r > 31) c = 0;
         else c = 31 - r;
-        func_020547cc(&o->unk_50, p);
+        AnimModel_drawAnimated(&o->unk_50, p);
         if (func_ov003_02226c14(a, o)) {
             func_020abdd0(&o->unk_204, data_ov003_02234b06[o->unk_24d].a, 0x9000, (u8)c);
         }
@@ -10768,12 +10768,12 @@ extern "C" void func_ov003_02226c88(void *a, Obj *o) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -10806,12 +10806,12 @@ extern "C" BOOL func_ov003_02226c14(void *a, Obj *o) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 namespace s02 {
@@ -10875,12 +10875,12 @@ extern "C" void func_ov003_02226a9c(void *a, Obj *o, s32 flag) {
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_02072824 _ZN12Unk_020cbb1813func_02072824Ejj
-#define func_020728a4 _ZN12Unk_020cbb1813func_020728a4EPhj
-#define func_020728d4 _ZN12Unk_020cbb1813func_020728d4Ev
-#define func_020729cc _ZN12Unk_020cbb1813func_020729ccEj
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define CommManager_endRecord _ZN11CommManager9endRecordEjj
+#define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
+#define CommManager_beginRecord _ZN11CommManager11beginRecordEv
+#define CommManager_isMyAid _ZN11CommManager7isMyAidEj
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
 #define data_ov003_0225a17c (*(Obj (*)[1])&::data_ov003_0225a17c)
@@ -10909,9 +10909,9 @@ BOOL Unk_ov003_02234abc::onDraw() { using namespace s02;
 #undef func_0209c0ac
 #undef data_ov003_02234b06
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
@@ -10970,9 +10970,9 @@ BOOL Unk_ov003_02234abc::vfunc_0c() { using namespace s01;
 #undef data_ov003_02259594
 #undef data_ov003_022595b0
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
@@ -11040,9 +11040,9 @@ extern "C" void func_ov003_02226874(s32 obj, s32 flag, s32 idx, s32 x, s32 z) {
 #undef data_ov003_02259594
 #undef data_ov003_022595b0
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
@@ -11111,9 +11111,9 @@ extern "C" void func_ov003_02226768(s32 obj, s32 flag) {
 #undef data_ov003_02259594
 #undef data_ov003_022595b0
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
@@ -11140,9 +11140,9 @@ extern "C" void func_ov003_0222675c(void) {
 #undef data_ov003_02259594
 #undef data_ov003_022595b0
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
@@ -11185,7 +11185,7 @@ extern "C" BOOL func_ov003_022264f0(s32 obj, s32 kind, u8 sub, s32 flag) {
     }
     Vec3 *q = (Vec3 *)func_02095204(4);
     if (q != 0 && flag == 1 && kind != 0x33) {
-        if (func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
+        if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
             s32 k;
             u8 b0;
             s32 px, pz;
@@ -11205,7 +11205,7 @@ extern "C" BOOL func_ov003_022264f0(s32 obj, s32 kind, u8 sub, s32 flag) {
     } else {
         cur = &data_ov003_022595b0;
     }
-    if (kind == 0x23 && !func_02072e88(data_020cbb18, data_020cbb18->unk_64)) {
+    if (kind == 0x23 && !CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
         u8 j;
         for (j = 0; j < 2; j++) {
             u8 *o = func_ov003_0222eb10(j);
@@ -11267,9 +11267,9 @@ fail:
 #undef data_ov003_02259594
 #undef data_ov003_022595b0
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
@@ -11315,9 +11315,9 @@ extern "C" s32 func_ov003_0222644c(s32 a, s32 b, s8 c, u32 d) {
 #undef data_ov003_02259594
 #undef data_ov003_022595b0
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
@@ -11347,9 +11347,9 @@ extern "C" void func_ov003_02226428(Vec3 *v) {
 #undef data_ov003_02259594
 #undef data_ov003_022595b0
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
@@ -11396,9 +11396,9 @@ extern "C" BOOL func_ov003_022261ec(s32 idx, s16 *p, Unk_ov003_02226180_Blk *q, 
                     *(u32 *)(s + 0xa4) = 0x4000;
                 } else if ((u16)(s16)(t - 10) <= 1) {
                     if (((*(u32 *)(s + 0xa4) << 4) >> 16) == 0) {
-                        func_020547a4(s, 1);
+                        AnimModel_setFrame(s, 1);
                     } else {
-                        func_020547a4(s, 0);
+                        AnimModel_setFrame(s, 0);
                     }
                 } else if (t == 0x37) {
                     s32 w = *(s32 *)(s + 0xa0) >> 12;
@@ -11440,9 +11440,9 @@ extern "C" BOOL func_ov003_022261ec(s32 idx, s16 *p, Unk_ov003_02226180_Blk *q, 
 #undef data_ov003_02259594
 #undef data_ov003_022595b0
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
@@ -11481,9 +11481,9 @@ extern "C" BOOL func_ov003_02226180(s32 x) {
 #undef data_ov003_02259594
 #undef data_ov003_022595b0
 
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
 #define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
@@ -11495,8 +11495,8 @@ extern "C" BOOL func_ov003_02226180(s32 x) {
 namespace s01 {
 // 0x222612c
 extern "C" BOOL func_ov003_0222612c(void) {
-    Unk_020cbb18_Ptr *p = data_020cbb18;
-    if (func_02072e88(p, p->unk_64) == 0) {
+    Unk_020cbb18_Ptr *p = gCommManager;
+    if (CommManager_isSlotActive(p, p->unk_64) == 0) {
         Rec *e = data_ov003_02259354;
         if (func_02106020(func_0209c0ac(data_ov003_02259484), 0) > 0x1e && e->unk_250 == 3 && e->unk_24d != 0x13) {
             return TRUE;
@@ -11517,7 +11517,7 @@ extern "C" BOOL func_ov003_0222612c(void) {
 #undef data_ov003_02259594
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11529,8 +11529,8 @@ extern "C" BOOL func_ov003_022260e8(void *p)
     s32 c, d;
     s32 a, b;
     if (data_ov003_02258f00 != 0) {
-        func_0204ee10(&a, &b, p);
-        func_0204ee10(&c, &d, data_ov003_02258f18);
+        FieldPos_ToUnit(&a, &b, p);
+        FieldPos_ToUnit(&c, &d, data_ov003_02258f18);
         if (c == a && d == b) {
             return TRUE;
         }
@@ -11544,7 +11544,7 @@ extern "C" BOOL func_ov003_022260e8(void *p)
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11555,7 +11555,7 @@ extern "C" BOOL func_ov003_022260ac(u8 *out)
 {
     Unk_ov003_02226058_Buf l;
     u8 v;
-    func_0209cfb8(&l);
+    Clock_GetDayMonth(&l);
     v = l.unk_01 - 1;
     if (v > 11) {
         v = 0;
@@ -11572,7 +11572,7 @@ extern "C" BOOL func_ov003_022260ac(u8 *out)
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11583,7 +11583,7 @@ extern "C" s32 func_ov003_02226058()
 {
     Unk_ov003_02226058_Buf l;
     u32 b;
-    func_0209cf18(&l);
+    Clock_GetMinuteHour(&l);
     b = l.unk_01;
     if (b >= 4 && b <= 7) {
         return 1;
@@ -11609,7 +11609,7 @@ extern "C" s32 func_ov003_02226058()
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11631,7 +11631,7 @@ extern "C" void func_ov003_0222603c(u8 *self)
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11663,7 +11663,7 @@ Unk_ov003_02225ed0::Unk_ov003_02225ed0()
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11676,7 +11676,7 @@ Unk_ov003_02225ed0::~Unk_ov003_02225ed0() { using namespace s00;}
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11694,7 +11694,7 @@ extern "C" void func_ov003_02225ec8(u8 *self, u32 v)
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11707,7 +11707,7 @@ extern "C" BOOL func_ov003_02225e34(u8 *a, u8 *b, s32 c)
     u8 buf[16];
     if (c != 0) {
         if (r == 0) {
-            if (func_02045d98(buf)) {
+            if (Town_GetRafflesiaPos(buf)) {
                 *a = 0x33;
                 *b = 8;
                 return TRUE;
@@ -11741,7 +11741,7 @@ extern "C" BOOL func_ov003_02225e34(u8 *a, u8 *b, s32 c)
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11750,8 +11750,8 @@ namespace s00 {
 // 0x2225dbc
 extern "C" BOOL func_ov003_02225dbc(s32 a)
 {
-    Unk_ov003_02225dbc_Data *p = data_020cbb18;
-    if (!func_02072e88(p, p->unk_64)) {
+    Unk_ov003_02225dbc_Data *p = gCommManager;
+    if (!CommManager_isSlotActive(p, p->unk_64)) {
         return TRUE;
     }
     switch (a) {
@@ -11778,7 +11778,7 @@ extern "C" BOOL func_ov003_02225dbc(s32 a)
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11823,7 +11823,7 @@ extern "C" BOOL func_ov003_02225d38(u32 a, u32 b, u8 *out)
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11856,7 +11856,7 @@ extern "C" void func_ov003_02225cb0()
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11914,7 +11914,7 @@ extern "C" s32 func_ov003_02225bf8(s32 a, s32 b)
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11927,7 +11927,7 @@ Unk_ov003_02234aac::Unk_ov003_02234aac() { using namespace s00;}
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11940,7 +11940,7 @@ Unk_ov003_02234aac::~Unk_ov003_02234aac() { using namespace s00;}
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11967,7 +11967,7 @@ extern "C" s32 func_ov003_02225b6c(void *p, s32 t)
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -11984,7 +11984,7 @@ extern "C" s32 func_ov003_02225910(u8 *self, void *a, s32 code, u32 flag)
     s32 rnd33;
     s32 *q;
     u32 n;
-    void *obj = func_0204da0c();
+    void *obj = TownBlockMap_Get();
     if (obj == 0) {
         return 0;
     }
@@ -12106,7 +12106,7 @@ extern "C" s32 func_ov003_02225910(u8 *self, void *a, s32 code, u32 flag)
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -12132,7 +12132,7 @@ extern "C" void func_ov003_022258cc(u16 (*arr)[4][16])
 #undef func_02133150
 #undef data_ov003_022595b0
 
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
@@ -12146,7 +12146,7 @@ extern "C" void func_ov003_02225800(u16 (*arr)[4][16])
         u16 id;
         void *p;
         u32 n;
-        Unk_ov009_0225e29c *o;
+        BuildingActor *o;
         id = Item_MakeBuilding(i);
         p = StrBSize_Get(&id);
         if (p != 0) {
@@ -12158,9 +12158,9 @@ extern "C" void func_ov003_02225800(u16 (*arr)[4][16])
                     for (j = 0; j < n; j++) {
                         s32 xy[2];
                         if (func_020b2ae0(p, &xy[0], &xy[1], j)) {
-                            if (o->func_ov009_0225b964() == 1) {
-                                s32 px = xy[0] + o->func_ov009_0225b980();
-                                s32 py = xy[1] + o->func_ov009_0225b974();
+                            if (o->callIsLit() == 1) {
+                                s32 px = xy[0] + o->getGridX();
+                                s32 py = xy[1] + o->getGridZ();
                                 s32 bx = (px - 16) / 16;
                                 s32 by = (py - 16) / 16;
                                 u16 *c = (u16 *)((u8 *)arr + bx * 32 + by * 128);

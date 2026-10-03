@@ -70,17 +70,17 @@ void *func_020850e0();
 void *func_0208517c(void *p);
 void _ZN12Unk_02086f1413func_02086f14Ej(void *p, u32 v);
 s32 ProcBase_RequestDelete(void *p);
-s32 func_0204ee10(s32 *x, s32 *y, void *v);
-s32 func_0204ed8c(void *out, s32 x, s32 z);
+s32 FieldPos_ToUnit(s32 *x, s32 *y, void *v);
+s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 void TalkRequest_AddPlayerTalk7(void *p, s32 a);
-s32 func_0204ea88(void *g, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 g1, s32 g2);
-s32 func_0204edf8(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
-void func_ov003_02212014(void *p);
+s32 BlockMap_FindItemAllAttr(void *g, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 g1, s32 g2);
+s32 FieldUnit_FromBlockUnit(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
+void PlayerActor_LocalPlayAnim99(void *p);
 BOOL _ZN12Unk_02013b1013func_02014220Ev(void *self);
 void _ZN12Unk_02013b1013func_020141b4Essh(void *self, u32 a, u32 b, u32 c);
 extern u16 data_020c6cc8;
 extern u8 data_020e416c;
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 extern u32 __ptmf_null[];
 }
 
@@ -218,14 +218,14 @@ union Unk_ov077_Word {
     u32 w;
     Unk_ov077_Bits b;
 };
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     Unk_ov077_Word unk_a4;
     u8 pad_a8[4];
     s32 unk_ac;
     u8 pad_b0[0x2a0 - 0xec - 0xb0];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 struct Unk_0201ad3c {
     u8 unk_00[0xc];
@@ -349,7 +349,7 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -621,7 +621,7 @@ BOOL Unk_ov077_0227224c::func_ov077_02271bf4() {
     u16 u0, u1;
     _ZN12Unk_0201985813func_020195c8Eiijtt(&unk_564, 1, 0xfd, 1, 0, 0);
     if (Unk_ov077_02271bf4_IsZero(data_020e416c)) {
-        g = data_021c47c4;
+        g = gSceneBlockMap;
         a = 0;
         b = 0;
         c = 0;
@@ -629,8 +629,8 @@ BOOL Unk_ov077_0227224c::func_ov077_02271bf4() {
         if (g != NULL) {
             u0 = 0x5014;
             u1 = 0x501a;
-            if (func_0204ea88(g, &a, &b, &c, &d, &u0, &u1, 1, 0)) {
-                func_0204edf8(&unk_718, &unk_71c, a, b, c, d);
+            if (BlockMap_FindItemAllAttr(g, &a, &b, &c, &d, &u0, &u1, 1, 0)) {
+                FieldUnit_FromBlockUnit(&unk_718, &unk_71c, a, b, c, d);
             }
         }
     }
@@ -657,7 +657,7 @@ BOOL Unk_ov077_0227224c::func_ov077_02271a84() {
     }
     ax = 0;
     az = 0;
-    func_0204ee10(&ax, &az, &v);
+    FieldPos_ToUnit(&ax, &az, &v);
     dx = ax - unk_718;
     dz = az - unk_71c;
     {
@@ -691,7 +691,7 @@ BOOL Unk_ov077_0227224c::func_ov077_02271a84() {
                 x = pa.x + unk_718;
                 z = pa.y + unk_71c;
             }
-            func_0204ed8c(&unk_5c, x, z);
+            FieldPos_FromUnitCenter(&unk_5c, x, z);
             TalkRequest_AddPlayerTalk7(this, 0);
         }
     }
@@ -848,7 +848,7 @@ void Unk_ov077_022721bc::func_ov077_02271660(Unk_ov077_0227224c *owner) {
 void Unk_ov077_022721bc::vfunc_1c(s32 a) {
     switch (a) {
     case 0:
-        func_ov003_02212014(this);
+        PlayerActor_LocalPlayAnim99(this);
         break;
     case 1:
         func_02003ddc(&unk_b4->unk_514, 0x7f4, 0x7f, 0);

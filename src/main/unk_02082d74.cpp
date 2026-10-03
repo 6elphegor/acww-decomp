@@ -42,10 +42,10 @@ struct Unk_02083c28_Rec {
     u8 pad[0x1b];
 };
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 pad_00[0x64];
     s32 unk_64;
-    BOOL func_02072e88(s32 i);
+    BOOL isSlotActive(s32 i);
 };
 
 
@@ -298,12 +298,12 @@ void *data_020e098c[2] = {(void *)Dp::Visitor_CheckKatie, 0};
 namespace F1 {
 extern "C" {
 extern u8 data_020e416c;
-extern Unk_020cbb18 *data_020cbb18;
-extern Unk_02082e80_Grid *data_021c47c4;
+extern CommManager *gCommManager;
+extern Unk_02082e80_Grid *gSceneBlockMap;
 extern u8 sPeteVisitTable[], sDateVisitorTable[], sDateVisitorChecks[], sVisitorSpawnTable[];
 extern s32 sVisitorSpawnTableCount;
 extern u8 data_021ed315, data_021eca50;
-void func_0204edd8(void *g, void *v);
+void FieldPos_SnapToUnitCenter(void *g, void *v);
 void *func_020850e0();
 void *func_02085170(void *p);
 void *func_0208516c(void *p);
@@ -319,23 +319,23 @@ s32 func_02063b8c(s32 a);
 s32 PlayerData_GetCurrent();
 void *_ZN10PlayerData13func_02098698Ev();
 s32 _ZN12Unk_020877e013func_02087838Ej(void *a, s32 b);
-s32 _ZN11SaveRecord413func_0209ea50Ev(void *a);
+s32 _ZN11SaveRecord412isDateActiveEv(void *a);
 s32 func_020b50e8();
 s32 func_02083ba4();
 s32 func_02083b84();
 s32 Visitor_FindActiveEventEntry(void *tbl, s32 x);
 s32 VisitorTable_FindByProfile(void *a, void *b, s32 c);
 s32 VisitorTable_FindByNpc(void *a, void *b, s32 c);
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 s32 Event_IsActive(s32 a, void *p);
 s32 _ZN12Unk_0208722413func_0208723cEv(void *p);
 s32 func_0208740c();
 s32 func_02087444();
-s32 func_020374b0(void *c, s32 v);
-s32 func_020374cc(void *c, s32 v);
+s32 MapBlock_HasAnyAttr(void *c, s32 v);
+s32 MapBlock_HasAllAttr(void *c, s32 v);
 s32 func_02031194(s32 x, s32 y);
-void func_0204edf8(s32 *o1, s32 *o2, s32 a, s32 b, s32 c, s32 d);
-void func_0204ed8c(void *a, s32 x, s32 y);
+void FieldUnit_FromBlockUnit(s32 *o1, s32 *o2, s32 a, s32 b, s32 c, s32 d);
+void FieldPos_FromUnitCenter(void *a, s32 x, s32 y);
 BOOL Visitor_FindBlanca(BOOL flag);
 BOOL Visitor_FindKaitlin(BOOL flag);
 }
@@ -351,9 +351,9 @@ static inline Unk_02082e80_Cell *Unk_02082e80_GetCell(Unk_02082e80_Grid *g, u32 
 namespace F2 {
 extern "C" {
 extern u8 data_020e416c;
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 extern u8 data_021ed315;
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 extern s32 sVisitorSpawnTableCount;
 extern u8 sVisitorSpawnTable[];
 extern u8 data_020e0874[];
@@ -373,10 +373,10 @@ void *func_0209a4f0(void *);
 s32 _ZN12Unk_0209ada413func_0209ad68Ev(void *);
 s32 _ZN12Unk_0209ada413func_0209abccEv(void *);
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
-void func_0209d498(void *);
-void *_ZN11SaveRecord413func_0209ea50Ev(void *);
-BOOL _ZN12Unk_020cbb1813func_02072e88Ei(Unk_020cbb18 *g, s32 i);
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(Unk_020cbb18 *g);
+void Clock_GetDateTime(void *);
+void *_ZN11SaveRecord412isDateActiveEv(void *);
+BOOL _ZN11CommManager12isSlotActiveEi(CommManager *g, s32 i);
+BOOL _ZN11CommManager8isOnlineEv(CommManager *g);
 s32 func_020850e0();
 s32 func_02085178(s32);
 s32 func_0208517c(s32);
@@ -386,11 +386,11 @@ s32 _ZN12Unk_02086f8413func_02086fa8Ev(s32);
 s32 _ZN12Unk_02086f1413func_02086f18Ev(s32);
 s32 func_02087444();
 s32 Event_IsActive(u32, void *);
-s32 func_0204ed8c(void *, s32, s32);
-s32 func_0204ea88(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
-void func_0204eda4(void *, s32, s32, s32, s32);
-void func_0204ed70(void *, s32, s32, s32, s32);
-void func_0204edf8(s32 *, s32 *, s32, s32, s32, s32);
+s32 FieldPos_FromUnitCenter(void *, s32, s32);
+s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
+void FieldPos_FromBlockUnitCenter(void *, s32, s32, s32, s32);
+void FieldPos_FromBlockUnit(void *, s32, s32, s32, s32);
+void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
 s32 func_02063b8c(s32);
 void OverlayMgr_Release(u32);
 void *VisitorTable_FindByNpc(u16 *, void *, s32);
@@ -431,30 +431,30 @@ extern VisitorSchedule sVisitorSchedule;
 extern u32 data_020e0874[2];
 extern VisitorCheckEntry sVisitorCheckTable[11];
 extern u8 data_020e416c;
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 extern Unk_02083c28_Vec gVec3Zero;
 extern Unk_02083c28_Rec data_021cd844[0x26];
 extern Unk_02083c28_Rec data_021cd654[8];
 extern u8 data_021cd640;
 extern u8 data_021dfd8c[];
-extern u16 *data_021c47c4;
+extern u16 *gSceneBlockMap;
 s32 func_020b50e8();
 s32 func_020b5184();
-s32 _ZN12Unk_020cbb1813func_02072e88Ei(Unk_020cbb18 *g, s32 i);
+s32 _ZN11CommManager12isSlotActiveEi(CommManager *g, s32 i);
 void OverlayMgr_Acquire(u32 ovl);
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, void *c, void *d, void *e);
 s32 func_0204263c(Unk_02083c28_Vec *v);
 s32 func_02083ba4(u16 *p);
-u16 *func_0204ebd8(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
-void func_0204ed8c(Unk_02083c28_Vec *out, s32 x, s32 y);
+u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
+void FieldPos_FromUnitCenter(Unk_02083c28_Vec *out, s32 x, s32 y);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
-s32 func_02076ae8(u8 *p, u8 *dst, s32 z);
-s32 func_02076280(u32 a, u8 *p, s32 b, s32 c);
-s32 func_020766e0(u32 id);
-void func_02076b08(u8 *p, u32 a, s32 b);
-void func_02076a6c(u8 *p, s32 a, s32 b);
-u8 *_ZN12Unk_020cbb1813func_02072970Ej(Unk_020cbb18 *g, s32 i);
+s32 CommRecord_UnpackSource(u8 *p, u8 *dst, s32 z);
+s32 CommSyncVar_SetVar(u32 a, u8 *p, s32 b, s32 c);
+s32 CommSyncVar_GetVarSize(u32 id);
+void CommRecord_PackSource(u8 *p, u32 a, s32 b);
+void NetBuf_PackPair20(u8 *p, s32 a, s32 b);
+u8 *_ZN11CommManager10getSyncVarEj(CommManager *g, s32 i);
 void *func_0207aa78(s32 i);
 s32 func_02078568(void *p, s32 v);
 s32 func_0207854c(void *p, s32 v);
@@ -495,7 +495,7 @@ static inline BOOL Unk_02083c28_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 
 namespace F4 {
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 extern u8 data_021dfd8c[];
 extern u8 sVisitorSchedule[];
 extern u8 data_021cd654[];
@@ -531,12 +531,12 @@ void func_0207821c(s32 v);
 s32 func_020b50dc();
 s32 func_020b5198(s32 v);
 s32 func_02078294();
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 s32 func_02079ab0(void *p, void *q);
 void func_020782ac(s32 v);
 void func_0207827c(s32 v);
 s32 func_02083b84();
-s32 _ZN12Unk_020cbb1813func_02072e88Ei(void *g, s32 i);
+s32 _ZN11CommManager12isSlotActiveEi(void *g, s32 i);
 s32 PlayerData_GetCurrent();
 s32 _ZN10PlayerData11getPlayerIdEv(s32 p);
 void func_020793e8(void *p, s32 v);
@@ -552,11 +552,11 @@ void func_020832c4(void *p);
 s32 _ZN10PlayerData13func_0209865cEv(s32 p);
 s32 _ZN12Unk_0209ada413func_0209ad68Ev(void *p);
 s32 _ZN12Unk_0209ada413func_0209ac64Ev(void *p);
-s32 func_0209d374(void *p, void *q);
+s32 DateTime_DiffMinutes(void *p, void *q);
 s32 _ZN12Unk_0209ada413func_0209abc4Ev(void *p);
 s32 SaveVillagers_FindIndex(void *p, void *q);
 s32 SaveVillagers_IsValidIndex(s32 v);
-void func_02076a2c(void *a, void *b, void *c);
+void NetBuf_UnpackPair20(void *a, void *b, void *c);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 s32 SaveVillagers_Find(void *p, void *q);
 s32 func_0207e310();
@@ -575,16 +575,16 @@ s32 _ZN12Unk_020994cc13func_02099668Ev(s32 v);
 s32 Villager_GetResidentStatus(void *p);
 s32 func_020812f4();
 s32 func_0207b7d4(void *p, void *q);
-void func_02076ae8(void *a, void *b, s32 c);
+void CommRecord_UnpackSource(void *a, void *b, s32 c);
 s32 func_020b50e8();
 s32 func_020b5178(s32 v);
 void *_ZN20VillagerDataItemView11getHousePosEv(void *p);
-void func_0204ed8c(void *p, s32 x, s32 y);
+void FieldPos_FromUnitCenter(void *p, s32 x, s32 y);
 s32 func_0207e278(void *p);
 void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(void *buf, void *v, s32 a, s32 b);
 s32 _ZN12Unk_0203389c13func_02033914Ei(void *buf, s32 f);
 void func_02033988(void *buf);
-s32 _ZN11SaveRecord413func_0209ea50Ev(void *p);
+s32 _ZN11SaveRecord412isDateActiveEv(void *p);
 void *Visitor_FindTortimer(s32 v);
 void *Visitor_FindEventHost(s32 v);
 u16 *Visitor_FindLyle(s32 v);
@@ -594,7 +594,7 @@ u16 *Visitor_FindKaitlin(s32 v);
 u16 *Visitor_FindInEventTable(void *a, void *b, u32 c, s32 d);
 u16 *Visitor_FindBlanca(s32 v);
 BOOL Event_IsActive(s32 a, s32 *p);
-s32 func_0203f2e0(s32 a, void *b, s32 c);
+s32 Event_GetState(s32 a, void *b, s32 c);
 s32 func_02083f44(void *p);
 void func_02083ef4(void *p, s32 x, s32 y);
 s32 func_02083ed4(void *p, s32 x, s32 y);
@@ -615,22 +615,22 @@ extern u8 data_021cd844[];
 extern u8 sVisitorSchedule[];
 extern u8 data_021dfd8c[];
 extern u8 data_020e416c;
-extern Unk_020cbb18_Data *data_020cbb18;
+extern Unk_020cbb18_Data *gCommManager;
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void *SaveVillagers_Get(void *, s32);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
 s32 _ZN10VillagerId7isValidEv(void *);
 u8 *_ZN20VillagerDataItemView11getHousePosEv(...);
-void func_0204ed8c(Unk_02084ecc_Vec *out, s32 x, s32 z);
-void func_02076a6c(void *, s32, s32);
-void func_02076b08(void *, s32, s32);
+void FieldPos_FromUnitCenter(Unk_02084ecc_Vec *out, s32 x, s32 z);
+void NetBuf_PackPair20(void *, s32, s32);
+void CommRecord_PackSource(void *, s32, s32);
 s32 VisitorSchedule_Clear(void *);
-BOOL _ZN12Unk_020cbb1813func_02072e88Ei(void *, u32);
+BOOL _ZN11CommManager12isSlotActiveEi(void *, u32);
 s32 func_020b50e8();
 s32 func_020b4910();
-void *func_0204da0c();
-void *func_02037558(void *, s32, s32, s32);
-void func_02037590(void *, u16 *, s32, s32, s32);
+void *TownBlockMap_Get();
+void *MapBlock_GetItemPtr(void *, s32, s32, s32);
+void MapBlock_SetItem(void *, u16 *, s32, s32, s32);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 }
@@ -639,7 +639,7 @@ s32 Item_GetFurnitureIndex(u16 *);
 
 extern "C" void func_02084ffc()
 {
-    Unk_02084ffc_Grid *g = (Unk_02084ffc_Grid *)F5::func_0204da0c();
+    Unk_02084ffc_Grid *g = (Unk_02084ffc_Grid *)F5::TownBlockMap_Get();
     s32 x, y;
     if (g != NULL) {
         for (y = 1; y < 5; y++) {
@@ -652,7 +652,7 @@ extern "C" void func_02084ffc()
                     cell = NULL;
                 }
                 if (cell != NULL) {
-                    p = (u16 *)F5::func_02037558(cell, 0, 0, 0);
+                    p = (u16 *)F5::MapBlock_GetItemPtr(cell, 0, 0, 0);
                     if (p != NULL) {
                         s32 i, j;
                         for (j = 0; j < 16; j++) {
@@ -668,7 +668,7 @@ extern "C" void func_02084ffc()
                                 }
                                 if (ok) {
                                     v[0] = 0xfff1;
-                                    F5::func_02037590(cell, v, i, j, 0);
+                                    F5::MapBlock_SetItem(cell, v, i, j, 0);
                                 }
                                 p++;
                             }
@@ -684,8 +684,8 @@ extern "C" s32 func_02084fbc()
 {
     BOOL b = (F5::data_020e416c == 0);
     if (b) {
-        Unk_020cbb18_Data *d = F5::data_020cbb18;
-        if (F5::_ZN12Unk_020cbb1813func_02072e88Ei(d, d->unk_64)) {
+        Unk_020cbb18_Data *d = F5::gCommManager;
+        if (F5::_ZN11CommManager12isSlotActiveEi(d, d->unk_64)) {
             return 0;
         }
     }
@@ -722,9 +722,9 @@ extern "C" void func_02084ecc()
             v.y = 0;
             v.z = 0;
             u8 *q = F5::_ZN20VillagerDataItemView11getHousePosEv(o);
-            F5::func_0204ed8c(&v, q[0] + 1, q[1] + 2);
-            F5::func_02076a6c(p + 4, v.x, v.z);
-            F5::func_02076b08(p + 3, z, z);
+            F5::FieldPos_FromUnitCenter(&v, q[0] + 1, q[1] + 2);
+            F5::NetBuf_PackPair20(p + 4, v.x, v.z);
+            F5::CommRecord_PackSource(p + 3, z, z);
             p[0] = 1;
         }
     }
@@ -752,7 +752,7 @@ extern "C" s32 func_02084e20(u8 *a, void *out)
                 for (x = 0; x < 16; x++) {
                     if (F4::func_02083ed4(a + 0x50, x, y)) {
                         if (r6 == 0) {
-                            F4::func_0204ed8c(out, x, y);
+                            F4::FieldPos_FromUnitCenter(out, x, y);
                             return 1;
                         }
                         r6--;
@@ -771,11 +771,11 @@ extern "C" BOOL Event_IsActive(s32 a, s32 *p)
     t[0] = 0;
     t[1] = 0;
     if (p == 0) {
-        F4::func_0209d498(t);
+        F4::Clock_GetDateTime(t);
         p = t;
     }
     F4::MI_CpuCopy8(p, buf, 8);
-    if (F4::func_0203f2e0(a, buf, 0)) {
+    if (F4::Event_GetState(a, buf, 0)) {
         return TRUE;
     }
     return FALSE;
@@ -783,7 +783,7 @@ extern "C" BOOL Event_IsActive(s32 a, s32 *p)
 
 extern "C" void Visitor_GetTodaysNpc(u16 *out)
 {
-    s32 r4 = F4::_ZN11SaveRecord413func_0209ea50Ev(F4::data_021ed315);
+    s32 r4 = F4::_ZN11SaveRecord412isDateActiveEv(F4::data_021ed315);
     u16 *p;
     void *q = F4::Visitor_FindTortimer(0);
     if (q == 0) {
@@ -846,7 +846,7 @@ extern "C" void func_02084c94(void *a, void *vec)
     if (F4::func_0207e278(a) == 0) {
         if (F4::_ZN12Unk_0203389c13func_02033914Ei(buf, 0)) {
             u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(a);
-            F4::func_0204ed8c(vec, p[0] + 1, p[1] + 2);
+            F4::FieldPos_FromUnitCenter(vec, p[0] + 1, p[1] + 2);
         }
     }
     F4::func_02033988(buf);
@@ -882,28 +882,28 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
         w.h[0] = (i & 0xfff) | 0xe000;
         u8 *e = (u8 *)F4::func_02084398(&w.h[0]);
         if (e != 0 && e[0] != 0) {
-            F4::func_02076ae8(e + 3, &w, 0);
+            F4::CommRecord_UnpackSource(e + 3, &w, 0);
             if (w.b == F4::func_020b50e8()) {
-                F4::func_02076a2c(e + 4, &v.x, &v.z);
+                F4::NetBuf_UnpackPair20(e + 4, &v.x, &v.z);
                 F4::MI_CpuCopy8(e + 9, &w.h[2], 2);
             } else {
                 u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(r7);
-                F4::func_0204ed8c(&v, p[0] + 1, p[1] + 2);
+                F4::FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
             }
         } else if (F4::func_020a62a0() && ((u8 *)(F4::data_021cd654 + i * 30))[0] != 0) {
             u8 *t = F4::data_021cd654 + i * 30;
-            F4::func_02076ae8(t + 3, &w, 0);
+            F4::CommRecord_UnpackSource(t + 3, &w, 0);
             s32 wb = w.b;
             if (wb != F4::func_020b50e8() && F4::func_020b5198(wb) == 0 && F4::func_020b5178(w.b) == 0 && w.b != 0x2c) {
                 u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(r7);
-                F4::func_0204ed8c(&v, p[0] + 1, p[1] + 2);
+                F4::FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
             } else {
-                F4::func_02076a2c(t + 4, &v.x, &v.z);
+                F4::NetBuf_UnpackPair20(t + 4, &v.x, &v.z);
                 F4::func_02084c94(r7, &v);
             }
         } else {
             u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(r7);
-            F4::func_0204ed8c(&v, p[0] + 1, p[1] + 2);
+            F4::FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
         }
         if (F4::_ZN5Actor5spawnEPvS0_S0_S0_S0_(0x84, w.h[0], &v, &w.h[1], a)) {
             cnt++;
@@ -942,7 +942,7 @@ extern "C" void NpcSpawner_SpawnHouseOwner(u8 *a)
         r4 = F4::func_02084e20(a, &v);
         h[3] = F4::func_02063b8c(4) << 14;
     } else if (e != 0 && e[0] != 0) {
-        F4::func_02076a2c(e + 4, &v.x, &v.z);
+        F4::NetBuf_UnpackPair20(e + 4, &v.x, &v.z);
         F4::MI_CpuCopy8(e + 9, &h[3], 2);
         r4 = 1;
     } else {
@@ -952,7 +952,7 @@ extern "C" void NpcSpawner_SpawnHouseOwner(u8 *a)
     if (r4 != 0) {
         s32 c = 0x85;
         s32 r6 = 0xd8;
-        if (F4::_ZN12Unk_020cbb1813func_02072e88Ei(F4::data_020cbb18, F4::data_020cbb18->unk_64) == 0) {
+        if (F4::_ZN11CommManager12isSlotActiveEi(F4::gCommManager, F4::gCommManager->unk_64) == 0) {
             if (r7 == F4::func_02078294()) {
                 c = 0x80;
                 if (F4::SaveVillagers_IsValidIndex(F4::func_02078264())) {
@@ -988,7 +988,7 @@ extern "C" void func_020847b0(void *a)
     Unk_02084ae4_Vec v;
     u16 h[4];
     s32 vv[2];
-    if (F4::_ZN12Unk_020cbb1813func_02072e88Ei(F4::data_020cbb18, F4::data_020cbb18->unk_64)) {
+    if (F4::_ZN11CommManager12isSlotActiveEi(F4::gCommManager, F4::gCommManager->unk_64)) {
         return;
     }
     code = 0x85;
@@ -1012,8 +1012,8 @@ extern "C" void func_020847b0(void *a)
             if (F4::_ZN12Unk_0209ada413func_0209ac64Ev(r4) == 0x15) {
                 vv[0] = flag;
                 vv[1] = flag;
-                F4::func_0209d498(vv);
-                t = F4::func_0209d374(r7 + 0x18, vv);
+                F4::Clock_GetDateTime(vv);
+                t = F4::DateTime_DiffMinutes(r7 + 0x18, vv);
                 if (F4::_ZN12Unk_0209ada413func_0209abc4Ev(r4) == 0) {
                     if (t <= 0x1e) {
                         r5 = F4::SaveVillagers_FindIndex(F4::data_021dfd8c, r7);
@@ -1024,7 +1024,7 @@ extern "C" void func_020847b0(void *a)
                         if (F4::SaveVillagers_IsValidIndex(r5)) {
                             u8 *e = F4::data_021cd654 + r5 * 30;
                             if (e[0] != 0) {
-                                F4::func_02076a2c(e + 4, &v.x, &v.z);
+                                F4::NetBuf_UnpackPair20(e + 4, &v.x, &v.z);
                                 F4::MI_CpuCopy8(e + 9, &h[2], 2);
                             }
                         }
@@ -1054,7 +1054,7 @@ extern "C" void func_020847b0(void *a)
             if (F4::func_020b5198(F4::func_020b50dc()) == 0) {
                 u8 *e = F4::data_021cd654 + r4 * 30;
                 if (e[0] != 0) {
-                    F4::func_02076a2c(e + 4, &v.x, &v.z);
+                    F4::NetBuf_UnpackPair20(e + 4, &v.x, &v.z);
                     F4::MI_CpuCopy8(e + 9, &h[2], 2);
                 }
             }
@@ -1085,7 +1085,7 @@ BOOL NpcSpawner::vfunc_00()
             sp[0] = 0;
             sp[1] = 0;
             s32 r4 = F4::func_02078294();
-            F4::func_0209d498(sp);
+            F4::Clock_GetDateTime(sp);
             s32 m = -1;
             if (r4 != m) {
                 if (r4 != F4::func_02079ab0(g, sp)) {
@@ -1100,7 +1100,7 @@ BOOL NpcSpawner::vfunc_00()
     }
     if (F4::Unk_020845a8_IsZero(F4::data_020e416c)) {
         if (F4::func_02083b84() == 0) {
-            if (F4::_ZN12Unk_020cbb1813func_02072e88Ei(F4::data_020cbb18, F4::data_020cbb18->unk_64) == 0) {
+            if (F4::_ZN11CommManager12isSlotActiveEi(F4::gCommManager, F4::gCommManager->unk_64) == 0) {
                 s32 r1;
                 if (F4::PlayerData_GetCurrent()) {
                     r1 = F4::_ZN10PlayerData11getPlayerIdEv(F4::PlayerData_GetCurrent());
@@ -1171,11 +1171,11 @@ BOOL NpcSpawner::onExecute()
     u16 id;
     if (F3::func_020b5184()) {
         F3::func_0207869c();
-        if (F3::_ZN12Unk_020cbb1813func_02072e88Ei(F3::data_020cbb18, F3::data_020cbb18->unk_64) == 0) {
+        if (F3::_ZN11CommManager12isSlotActiveEi(F3::gCommManager, F3::gCommManager->unk_64) == 0) {
             if (g) F3::SaveVillagers_UpdatePlans(g);
         }
     }
-    if (F3::_ZN12Unk_020cbb1813func_02072e88Ei(F3::data_020cbb18, F3::data_020cbb18->unk_64) == 0) {
+    if (F3::_ZN11CommManager12isSlotActiveEi(F3::gCommManager, F3::gCommManager->unk_64) == 0) {
         if (g) {
             id = 0xfff1;
             for (i = 0; i < 8; i++) {
@@ -1207,8 +1207,8 @@ extern "C" BOOL func_02084464(u16 *p, u32 b, Unk_02083c28_Vec *v, u16 c, u8 *d, 
     if (i < 8) {
         Unk_02083c28_Rec *r = &F3::data_021cd654[i];
         r->unk_00 = 1;
-        F3::func_02076b08((u8 *)r + 3, b, 0);
-        F3::func_02076a6c((u8 *)r + 4, v->x, v->z);
+        F3::CommRecord_PackSource((u8 *)r + 3, b, 0);
+        F3::NetBuf_PackPair20((u8 *)r + 4, v->x, v->z);
         F3::MI_CpuCopy8(&c, (u8 *)r + 9, 2);
         F3::MI_CpuCopy8(d, (u8 *)r + 0xf, 0xf);
         F3::MI_CpuCopy8(e, (u8 *)r + 0xb, 4);
@@ -1244,14 +1244,14 @@ extern "C" void func_020843c4(void *dst, s32 id) {
     if (i < 8) {
         Unk_02083c28_Rec *r = &F3::data_021cd654[i];
         r->unk_00 = 1;
-        F3::MI_CpuCopy8(r, dst, F3::func_020766e0(id));
+        F3::MI_CpuCopy8(r, dst, F3::CommSyncVar_GetVarSize(id));
         F3::data_021cd640 = 1;
     }
 }
 
 extern "C" u8 *func_02084398(u16 *p) {
     u32 i = *p & 0xfff;
-    if (i < 8) return F3::_ZN12Unk_020cbb1813func_02072970Ej(F3::data_020cbb18, i + 0xc);
+    if (i < 8) return F3::_ZN11CommManager10getSyncVarEj(F3::gCommManager, i + 0xc);
     return 0;
 }
 
@@ -1260,8 +1260,8 @@ extern "C" BOOL func_0208432c(u16 *p, u32 b, Unk_02083c28_Vec *v, u16 c, u8 *d, 
     if (i < 0x26) {
         Unk_02083c28_Rec *r = &F3::data_021cd844[i];
         r->unk_00 = 1;
-        F3::func_02076b08((u8 *)r + 3, b, 0);
-        F3::func_02076a6c((u8 *)r + 4, v->x, v->z);
+        F3::CommRecord_PackSource((u8 *)r + 3, b, 0);
+        F3::NetBuf_PackPair20((u8 *)r + 4, v->x, v->z);
         F3::MI_CpuCopy8(&c, (u8 *)r + 9, 2);
         F3::MI_CpuCopy8(d, (u8 *)r + 0xf, 0xf);
         F3::MI_CpuCopy8(e, (u8 *)r + 0xb, 4);
@@ -1287,13 +1287,13 @@ extern "C" void func_020842c0(void *dst, s32 id) {
     if (i < 0x26) {
         Unk_02083c28_Rec *r = &F3::data_021cd844[i];
         r->unk_00 = 1;
-        F3::MI_CpuCopy8(r, dst, F3::func_020766e0(id));
+        F3::MI_CpuCopy8(r, dst, F3::CommSyncVar_GetVarSize(id));
     }
 }
 
 extern "C" u8 *func_02084294(u16 *p) {
     u32 i = *p & 0xfff;
-    if (i < 0x26) return F3::_ZN12Unk_020cbb1813func_02072970Ej(F3::data_020cbb18, i + 0x20);
+    if (i < 0x26) return F3::_ZN11CommManager10getSyncVarEj(F3::gCommManager, i + 0x20);
     return 0;
 }
 
@@ -1320,14 +1320,14 @@ extern "C" u8 *func_020841fc(u16 *p) {
 
 extern "C" void func_0208419c(u32 a, u32 b, u32 c, u16 *p) {
     F3::func_02084228(p, b, c);
-    if (F3::_ZN12Unk_020cbb1813func_02072e88Ei(F3::data_020cbb18, F3::data_020cbb18->unk_64)) {
+    if (F3::_ZN11CommManager12isSlotActiveEi(F3::gCommManager, F3::gCommManager->unk_64)) {
         u32 v = *p;
         s32 k = (s32)(v & 0xf000) >> 12;
         u32 idx = v & 0xfff;
         if (k == 0xe) {
-            F3::func_02076280(idx + 0xc, (u8 *)&a, 0, 0);
+            F3::CommSyncVar_SetVar(idx + 0xc, (u8 *)&a, 0, 0);
         } else if (k == 0xd) {
-            F3::func_02076280(idx + 0x20, (u8 *)&a, 0, 0);
+            F3::CommSyncVar_SetVar(idx + 0x20, (u8 *)&a, 0, 0);
         }
     }
 }
@@ -1350,18 +1350,18 @@ extern "C" void func_02084040() {
     s32 s4, s8;
     s32 i;
     s32 ovl = F3::func_020b50e8();
-    Unk_020cbb18 *d;
+    CommManager *d;
     s4 = 4;
     s8 = 4;
     l.id = 0xfff1;
     i = 0;
-    d = F3::data_020cbb18;
+    d = F3::gCommManager;
     for (; i < 8; i++) {
         u8 *rec;
         l.id = (i & 0xfff) | 0xe000;
         rec = F3::func_020841fc(&l.id);
         if (rec) {
-            F3::func_02076ae8(rec + 3, l.b, 0);
+            F3::CommRecord_UnpackSource(rec + 3, l.b, 0);
             if (l.b[0] == ovl) {
                 s4 = 4;
                 s8 = 4;
@@ -1380,7 +1380,7 @@ extern "C" void func_02084040() {
         l.id = (i & 0xfff) | 0xd000;
         rec = F3::func_020841fc(&l.id);
         if (rec) {
-            F3::func_02076ae8(rec + 3, l.b, 0);
+            F3::CommRecord_UnpackSource(rec + 3, l.b, 0);
             if (l.b[0] == ovl) {
                 s4 = 4;
                 s8 = 4;
@@ -1402,15 +1402,15 @@ Unk_02084038::~Unk_02084038() {}
 
 extern "C" BOOL func_02083f44(u16 *out) {
     s32 y, x;
-    u16 *grid = F3::data_021c47c4;
+    u16 *grid = F3::gSceneBlockMap;
     F3::MI_CpuFill8(out, 0, 0x20);
     if (grid) {
-        u16 *p = F3::func_0204ebd8(grid, 0, 0, 0, 0, 0);
+        u16 *p = F3::BlockMap_GetItemPtr(grid, 0, 0, 0, 0, 0);
         if (p) {
             for (y = 0; y < 16; y++) {
                 for (x = 0; x < 16; x++) {
                     Unk_02083c28_Vec v;
-                    F3::func_0204ed8c(&v, x, y);
+                    F3::FieldPos_FromUnitCenter(&v, x, y);
                     Unk_0203398c o(&v, 0, 0);
                     if (*p == 0xfff1 && !o.func_02033914(1)) {
                         F3::func_02083f1c(out, x, y);
@@ -1518,7 +1518,7 @@ extern "C" BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, Unk_02083c28_Ve
 }
 
 extern "C" BOOL Visitor_ScheduleLow(u16 *p, u8 b, Unk_02083c28_Vec *pos) {
-    if (F3::func_02083ba4(p) == 0 && F3::_ZN12Unk_020cbb1813func_02072e88Ei(F3::data_020cbb18, F3::data_020cbb18->unk_64) == 0) {
+    if (F3::func_02083ba4(p) == 0 && F3::_ZN11CommManager12isSlotActiveEi(F3::gCommManager, F3::gCommManager->unk_64) == 0) {
         return F3::Visitor_ScheduleIfHigher(p, 1, b, pos);
     }
     return 0;
@@ -1563,7 +1563,7 @@ u16 *VisitorSpawner::spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n) {
                 }
                 if (F3::_ZN5Actor5spawnEPvS0_S0_S0_S0_(e->id, e->id2, &v, t, this)) {
                     if (F3::Unk_02083c28_IsZero(F3::data_020e416c)) {
-                        if (F3::_ZN12Unk_020cbb1813func_02072e88Ei(F3::data_020cbb18, F3::data_020cbb18->unk_64) == 0) {
+                        if (F3::_ZN11CommManager12isSlotActiveEi(F3::gCommManager, F3::gCommManager->unk_64) == 0) {
                             Unk_02083c28_Vec w;
                             w.x = v.x;
                             w.y = v.y;
@@ -1594,7 +1594,7 @@ extern "C" s32 Visitor_FindActiveEventEntry(EventVisitorEntry *p, s32 n)
     s32 i;
     buf[0] = 0;
     buf[1] = 0;
-    F2::func_0209d498(buf);
+    F2::Clock_GetDateTime(buf);
     for (i = 0; i < n; p++, i++) {
         if (F2::Event_IsActive(p->a, buf) != 0)
             return i;
@@ -1620,7 +1620,7 @@ extern "C" BOOL func_02083b84()
 extern "C" BOOL Visitor_CheckResetti()
 {
     u16 k;
-    if (F2::func_020b50e8() == 0 && F2::_ZN12Unk_02086f1413func_02086f18Ev(F2::func_0208517c(F2::func_020850e0())) != 0 && F2::_ZN12Unk_020cbb1813func_02072e88Ei(F2::data_020cbb18, F2::data_020cbb18->unk_64) == 0) {
+    if (F2::func_020b50e8() == 0 && F2::_ZN12Unk_02086f1413func_02086f18Ev(F2::func_0208517c(F2::func_020850e0())) != 0 && F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->unk_64) == 0) {
         k = 0xd011;
         return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
     }
@@ -1632,13 +1632,13 @@ extern "C" BOOL func_02083a9c(s32 a, Unk_02083314_V3 *p)
     u16 k[2];
     BOOL c = F2::data_020e416c == 0 ? TRUE : FALSE;
     if (c) {
-        void *g = F2::data_021c47c4;
+        void *g = F2::gSceneBlockMap;
         s32 x = 0, y = 0, z = 0, w = 0;
         if (g != 0) {
                 k[0] = 0x5014;
             k[1] = 0x501a;
-            if (F2::func_0204ea88(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
-                F2::func_0204eda4(p, x, y, z, w);
+            if (F2::BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
+                F2::FieldPos_FromBlockUnitCenter(p, x, y, z, w);
                 p->z = p->z + 0x4000;
                 return TRUE;
             }
@@ -1651,7 +1651,7 @@ extern "C" BOOL Visitor_CheckTomNook()
 {
     u16 k;
     void *r4 = F2::PlayerData_GetCurrent();
-    if (F2::func_020b50e8() == 0 && F2::func_02083b84() == 0 && F2::_ZN12Unk_020cbb1813func_02072e88Ei(F2::data_020cbb18, F2::data_020cbb18->unk_64) == 0 && r4 != 0 && F2::_ZN12Unk_02097ff413func_02098044Ej(r4, 0x23) != 0) {
+    if (F2::func_020b50e8() == 0 && F2::func_02083b84() == 0 && F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->unk_64) == 0 && r4 != 0 && F2::_ZN12Unk_02097ff413func_02098044Ej(r4, 0x23) != 0) {
         if (F2::func_020b530c(F2::func_020b50dc()) != 0 || F2::func_020b50dc() == 6) {
             k = 0xd019;
             return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
@@ -1663,16 +1663,16 @@ extern "C" BOOL Visitor_CheckTomNook()
 extern "C" BOOL func_02083984(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
 {
     u16 k[2];
-    void *g = F2::data_021c47c4;
+    void *g = F2::gSceneBlockMap;
     s32 x = 0, y = 0, z = 0, w = 0;
     if (g != 0) {
         k[0] = 0x5014;
         k[1] = 0x501a;
-        if (F2::func_0204ea88(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
+        if (F2::BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
             q->a = 0;
             q->b = 0x4000;
             q->c = 0;
-            F2::func_0204ed70(p, x, y, z, w);
+            F2::FieldPos_FromBlockUnit(p, x, y, z, w);
             p->x = p->x - 0x8000;
             p->z = p->z + 0x6000;
             p->y = 0;
@@ -1684,7 +1684,7 @@ extern "C" BOOL func_02083984(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
 
 extern "C" BOOL func_02083944()
 {
-    if (F2::_ZN12Unk_020cbb1813func_02072e88Ei(F2::data_020cbb18, F2::data_020cbb18->unk_64) == 0) {
+    if (F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->unk_64) == 0) {
         if (F2::func_020851bc(F2::func_020850e0(), 8) != 0 && F2::func_02083b84() == 0 && F2::func_02083ba4() == 0)
             return TRUE;
     }
@@ -1735,7 +1735,7 @@ extern "C" BOOL Visitor_FindEventHost(s32 flag)
 {
     s32 pass; s32 idx; s32 ok; s32 r6;
     u16 k1, k2;
-    if (F2::_ZN12Unk_020cbb1813func_02072e88Ei(F2::data_020cbb18, F2::data_020cbb18->unk_64) == 0) {
+    if (F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->unk_64) == 0) {
         ok = TRUE;
         if (flag != 0) {
             pass = FALSE;
@@ -1783,19 +1783,19 @@ extern "C" BOOL Visitor_CheckEventHost(s32 a, s32 b, s32 c)
 
 extern "C" BOOL func_020836e4(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
 {
-    void *g = F2::data_021c47c4;
+    void *g = F2::gSceneBlockMap;
     if (g != 0) {
         s32 x = 0, y = 0, z = 0, w = 0;
         u16 k;
         s32 bx, bz;
         k = 0x5000;
-        if (F2::func_0204ea88(g, &x, &y, &z, &w, &k, &k, 0x200, 0) != 0) {
+        if (F2::BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k, &k, 0x200, 0) != 0) {
             bx = 0;
             bz = 0;
-            F2::func_0204edf8(&bx, &bz, x, y, z, w);
+            F2::FieldUnit_FromBlockUnit(&bx, &bz, x, y, z, w);
             bx -= 2;
             bz += 3;
-            F2::func_0204ed8c(p, bx, bz);
+            F2::FieldPos_FromUnitCenter(p, bx, bz);
             q->b = F2::func_02063b8c(0xffff);
             return TRUE;
         }
@@ -1806,19 +1806,19 @@ extern "C" BOOL func_020836e4(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
 extern "C" BOOL func_0208364c(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
 {
     u16 k[2];
-    void *g = F2::data_021c47c4;
+    void *g = F2::gSceneBlockMap;
     if (g != 0) {
         s32 x = 0, y = 0, z = 0, w = 0;
         s32 bx, bz;
         k[0] = 0x5014;
         k[1] = 0x501a;
-        if (F2::func_0204ea88(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
+        if (F2::BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
             bx = 0;
             bz = 0;
-            F2::func_0204edf8(&bx, &bz, x, y, z, w);
+            F2::FieldUnit_FromBlockUnit(&bx, &bz, x, y, z, w);
             bx += 2;
             bz += 2;
-            F2::func_0204ed8c(p, bx, bz);
+            F2::FieldPos_FromUnitCenter(p, bx, bz);
             q->b = F2::func_02063b8c(0xffff);
             return TRUE;
         }
@@ -1850,8 +1850,8 @@ extern "C" BOOL func_02083608(s32 a, Unk_02083314_V3 *p)
 extern "C" BOOL Visitor_FindLyle(s32 flag)
 {
     u16 k;
-    void *r4 = F2::_ZN11SaveRecord413func_0209ea50Ev(&F2::data_021ed315);
-    if (F2::_ZN12Unk_020cbb1813func_02072e88Ei(F2::data_020cbb18, F2::data_020cbb18->unk_64) == 0) {
+    void *r4 = F2::_ZN11SaveRecord412isDateActiveEv(&F2::data_021ed315);
+    if (F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->unk_64) == 0) {
         if (flag != 0) {
             BOOL c = F2::data_020e416c == 0 ? TRUE : FALSE;
             if (!c)
@@ -1880,13 +1880,13 @@ extern "C" BOOL func_020834cc(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
     u16 k[2];
     BOOL c = F2::data_020e416c == 0 ? TRUE : FALSE;
     if (c) {
-        void *g = F2::data_021c47c4;
+        void *g = F2::gSceneBlockMap;
         s32 x = 0, y = 0, z = 0, w = 0;
         if (g != 0) {
             k[0] = 0x5014;
             k[1] = 0x501a;
-            if (F2::func_0204ea88(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
-                F2::func_0204eda4(p, x, y, z, w);
+            if (F2::BlockMap_FindItemAllAttr(g, &x, &y, &z, &w, &k[0], &k[1], 1, 0) != 0) {
+                F2::FieldPos_FromBlockUnitCenter(p, x, y, z, w);
                 p->x = p->x + 0x4000;
                 p->z = p->z + 0x4000;
                 q->b = -0x4000;
@@ -1900,8 +1900,8 @@ extern "C" BOOL func_020834cc(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
 extern "C" BOOL Visitor_FindJoan(s32 flag)
 {
     u16 k;
-    void *r4 = F2::_ZN11SaveRecord413func_0209ea50Ev(&F2::data_021ed315);
-    if (F2::_ZN12Unk_020cbb1813func_02072e88Ei(F2::data_020cbb18, F2::data_020cbb18->unk_64) == 0) {
+    void *r4 = F2::_ZN11SaveRecord412isDateActiveEv(&F2::data_021ed315);
+    if (F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->unk_64) == 0) {
         if (flag != 0) {
             BOOL c = F2::data_020e416c == 0 ? TRUE : FALSE;
             if (!c)
@@ -1941,7 +1941,7 @@ extern "C" BOOL Visitor_FindKatie(s32 flag)
             }
             goto c2;
         a8:
-            if (F2::_ZN12Unk_020cbb1813func_02072e88Ei(F2::data_020cbb18, F2::data_020cbb18->unk_64) == 0) {
+            if (F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->unk_64) == 0) {
                 if (F2::Event_IsActive(0x3d, 0) == 0)
                     goto fe;
             }
@@ -1949,7 +1949,7 @@ extern "C" BOOL Visitor_FindKatie(s32 flag)
     c2:
         if (F2::_ZN12Unk_02086f8413func_02086fa8Ev(F2::func_02085178(F2::func_020850e0())) != 0) {
             if (F2::func_020b50e8() == 0xb) {
-                if (F2::_ZN12Unk_020cbb1813func_02072e44Ev(F2::data_020cbb18) == 0)
+                if (F2::_ZN11CommManager8isOnlineEv(F2::gCommManager) == 0)
                     goto fe;
             }
         }
@@ -1976,13 +1976,13 @@ extern "C" BOOL func_02083314(s32 a, Unk_02083314_V3 *p)
         F2::_ZN12Unk_02086f8413func_02086fb8EP17Unk_02086ec4_Vec3(F2::func_02085178(F2::func_020850e0()), p);
         return TRUE;
     }
-    F2::func_0204ed8c(p, 6, 0x11);
+    F2::FieldPos_FromUnitCenter(p, 6, 0x11);
     p->x = p->x + 0x1000;
     return TRUE;
 }
 
 extern "C" void func_020832c4() {
-    if (F1::data_020cbb18->func_02072e88(F1::data_020cbb18->unk_64) != 0) {
+    if (F1::gCommManager->isSlotActive(F1::gCommManager->unk_64) != 0) {
         if (F1::func_02083ba4() == 0) {
             if (F1::func_02087444() != 0) {
                 if (F1::Unk_02083058_IsA()) {
@@ -2002,7 +2002,7 @@ extern "C" BOOL Visitor_FindKaitlin(BOOL flag) {
         if (!F1::Unk_02083058_IsA()) goto fail;
         if (F1::func_020b50e8() == 0x2c) goto fail;
     }
-    if (F1::data_020cbb18->func_02072e88(F1::data_020cbb18->unk_64) != 0) goto fail;
+    if (F1::gCommManager->isSlotActive(F1::gCommManager->unk_64) != 0) goto fail;
     if (F1::Event_IsActive(0x3d, NULL) != 0) goto fail;
     v = 0xd023;
     return F1::VisitorTable_FindByNpc(&v, F1::sVisitorSpawnTable, F1::sVisitorSpawnTableCount);
@@ -2024,14 +2024,14 @@ extern "C" BOOL Visitor_FindBlanca(BOOL flag) {
     s32 loc[2];
     loc[0] = 0;
     loc[1] = 0;
-    F1::func_0209d498(loc);
+    F1::Clock_GetDateTime(loc);
     if (F1::func_02083ba4() != 0) goto fail;
     if (F1::func_02083b84() != 0) goto fail;
     if (flag) {
         if (!F1::Unk_02083058_IsA()) goto fail;
         if (F1::func_020b50e8() == 0x2c) goto fail;
     }
-    if (F1::data_020cbb18->func_02072e88(F1::data_020cbb18->unk_64) != 0) goto fail;
+    if (F1::gCommManager->isSlotActive(F1::gCommManager->unk_64) != 0) goto fail;
     if (F1::Event_IsActive(0x3b, loc) != 0) goto fail;
     if (F1::Event_IsActive(0x3c, loc) != 0) goto fail;
     if (F1::Event_IsActive(0x3d, loc) != 0) goto fail;
@@ -2054,7 +2054,7 @@ extern "C" BOOL Visitor_CheckBlanca() {
 }
 
 extern "C" BOOL Visitor_FindInEventTable(void *tbl, void *fn, s32 x, BOOL flag) {
-    s32 r7 = F1::_ZN11SaveRecord413func_0209ea50Ev(&F1::data_021ed315);
+    s32 r7 = F1::_ZN11SaveRecord412isDateActiveEv(&F1::data_021ed315);
     s32 idx;
     if (flag) {
         if (!F1::Unk_02083058_IsA()) goto fail;
@@ -2063,7 +2063,7 @@ extern "C" BOOL Visitor_FindInEventTable(void *tbl, void *fn, s32 x, BOOL flag) 
     if (r7 != 0) goto fail;
     if (F1::func_02083ba4() != 0) goto fail;
     if (F1::func_02083b84() != 0) goto fail;
-    if (F1::data_020cbb18->func_02072e88(F1::data_020cbb18->unk_64) != 0) goto fail;
+    if (F1::gCommManager->isSlotActive(F1::gCommManager->unk_64) != 0) goto fail;
     idx = F1::Visitor_FindActiveEventEntry(tbl, x);
     if (idx == -1) goto fail;
     if (fn != NULL) {
@@ -2109,7 +2109,7 @@ extern "C" BOOL func_02082e80(void *self, void *p1) {
     s32 by;
     u32 *sz;
     if (!F1::Unk_02083058_IsA()) goto fail;
-    m = F1::data_021c47c4;
+    m = F1::gSceneBlockMap;
     if (m == NULL) return FALSE;
     sz = &m->unk_04[0];
     w = sz[0];
@@ -2126,10 +2126,10 @@ xloop:
     } else {
         c = NULL;
     }
-    if (c != NULL && F1::func_020374b0(c, 0x7f000) && F1::func_020374cc(c, 8)) {
+    if (c != NULL && F1::MapBlock_HasAnyAttr(c, 0x7f000) && F1::MapBlock_HasAllAttr(c, 8)) {
         bx = 0;
         by = 0;
-        F1::func_0204edf8(&bx, &by, x, y, 0, 0);
+        F1::FieldUnit_FromBlockUnit(&bx, &by, x, y, 0, 0);
         x1 = bx + 0x10;
         yy = by;
         y1 = by + 0x10;
@@ -2166,7 +2166,7 @@ ytest:
 ybreak:
     if (count > 0) {
         s32 i = F1::func_02063b8c(count);
-        F1::func_0204ed8c(p1, list[i].x, list[i].y);
+        F1::FieldPos_FromUnitCenter(p1, list[i].x, list[i].y);
         return TRUE;
     }
 fail:
@@ -2198,7 +2198,7 @@ extern "C" BOOL func_02082dd0(void *self, void *g, u16 *out, s32 *a) {
     v.x = x;
     v.y = 0;
     v.z = z;
-    F1::func_0204edd8(g, &v);
+    F1::FieldPos_SnapToUnitCenter(g, &v);
     out[1] = 0;
     return TRUE;
 }

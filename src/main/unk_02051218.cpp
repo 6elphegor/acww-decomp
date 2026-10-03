@@ -5,9 +5,9 @@ extern u8 data_021c4d4c[0xe0];
 void MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 extern u8 data_020e416c;
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 extern u32 data_021c4e38;
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 data_021c4ee4[];
 extern u8 data_021e58a8[];
 
@@ -15,8 +15,8 @@ u32 Msg_DecodeGameChar(u8 *buf, u32 c);
 u8 Msg_MeasureWidth(u8 *buf);
 void *func_ov004_02235718();
 u8 *_ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(void *p, s32 x, s32 y, s32 z);
-void func_ov004_022087a4(void *p);
-void *func_0204ebd8(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+void FtrActor_GetFtrIndex(void *p);
+void *BlockMap_GetItemPtr(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 FtrInfo_GetDmaUnk04();
 s32 Item_IsFurniture(void *p);
 u32 Item_GetFurnitureIndex(void *p);
@@ -28,12 +28,12 @@ void func_02072824(void *p, s32 a, s32 b);
 void func_020728a4(void *p, void *data, s32 size);
 s32 func_020b50e8();
 s32 func_020529e4(void *p, s32 a, s32 b, void *c);
-void func_0204ee10(s32 *a, s32 *b, s32 c);
+void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 s32 func_020a62a0();
 void func_02051ff8(s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_02060244(void *p, s32 a, s32 b);
-void *func_0204cbc0(s32 a);
-s32 func_0204eb30(void *p, void *b, s32 c, s32 d, s32 e);
+void *BlockMap_GetForArea(s32 a);
+s32 BlockMap_SetItemAtUnit(void *p, void *b, s32 c, s32 d, s32 e);
 
 u32 func_02051370(u32 c);
 u32 func_02051518();
@@ -62,14 +62,14 @@ extern "C" u32 func_02051468() { return func_02051518(); }
 extern "C" BOOL func_020513b0(s32 x, s32 y) {
     BOOL r;
     if (data_020e416c == 1 ? TRUE : FALSE) {
-        void *p = data_021c47c4;
+        void *p = gSceneBlockMap;
         u8 *q = _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(func_ov004_02235718(), x, y, 0);
         if (p != NULL && q != NULL) {
             s32 hx = x >> 4;
             s32 hy = y >> 4;
             u16 code;
-            void *o = func_0204ebd8(p, hx, hy, x - (hx << 4), y - (hy << 4), 1);
-            func_ov004_022087a4(q);
+            void *o = BlockMap_GetItemPtr(p, hx, hy, x - (hx << 4), y - (hy << 4), 1);
+            FtrActor_GetFtrIndex(q);
             if (FtrInfo_GetDmaUnk04() == 1 && o != NULL) {
                 if (Item_IsFurniture(o) != 0) {
                     code = 0xfff1;

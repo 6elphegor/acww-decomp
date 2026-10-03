@@ -2,7 +2,7 @@
 // ov003 TU10 (actor 022318e8): .text 0x02215c74-0x02216430
 #include "types.h"
 
-// shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 Unk_ov009_0225e29c).
+// shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
 // (do NOT include GameProc.h: the chain below is an own copy whose slot names are the real symbol names).
 //
@@ -18,21 +18,21 @@
 //     74 ov009::func_ov009_0225ca98   78..b0 ov009::vfunc_78..b0   b4 / b8 ov009::vfunc_b4/b8 (symbols: func_ov009_0225b884 /
 //     func_ov009_0225b880, ALIAS)
 // Aliases (zero-size labels, tools/pipeline/alias.py) the coordinator must add; <existing> -> <new>:
-//   ov009  _ZN18Unk_ov009_0225e29c10preExecuteEv           -> _ZN18Unk_ov009_0225e29c10preExecuteEv        (0x0225db04)
-//   ov009  _ZN18Unk_ov009_0225e29c7preDrawEj           -> _ZN18Unk_ov009_0225e29c8vfunc_20Ej        (0x0225da90)
-//   ov009  _ZN18Unk_ov009_0225e29c7preDrawEv           -> _ZN18Unk_ov009_0225e29c7preDrawEv        (0x0225d9e4)
-//   ov009  func_ov009_0225b884                           -> _ZN18Unk_ov009_0225e29c8vfunc_b4Ev        (0x0225b884)
-//   ov009  func_ov009_0225b880                           -> _ZN18Unk_ov009_0225e29c8vfunc_b8Ev        (0x0225b880)
+//   ov009  _ZN13BuildingActor10preExecuteEv           -> _ZN13BuildingActor10preExecuteEv        (0x0225db04)
+//   ov009  _ZN13BuildingActor7preDrawEj           -> _ZN13BuildingActor8vfunc_20Ej        (0x0225da90)
+//   ov009  _ZN13BuildingActor7preDrawEv           -> _ZN13BuildingActor7preDrawEv        (0x0225d9e4)
+//   ov009  func_ov009_0225b884                           -> _ZN13BuildingActor8vfunc_b4Ev        (0x0225b884)
+//   ov009  func_ov009_0225b880                           -> _ZN13BuildingActor8vfunc_b8Ev        (0x0225b880)
 //   main   TalkMsgRequest slots, one label each (the unit names them vfunc_sXX so that overrides in the primary chain
 //          cannot override them): _ZN14TalkMsgRequest9vfunc_sXXEv for XX = 08 0c 10 18 1c 20 24 28 2c 30 34 3c 40 44 48 4c 50 54 58
 //          5c 60 64 68 6c 70 74 (existing name _ZN14TalkMsgRequest8vfunc_XXEv) and _ZN14TalkMsgRequest9vfunc_s38Ej (existing
 //          _ZN14TalkMsgRequest8vfunc_38Ej).
-//   ov003  0x0221445c is _ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev, the thunk of ov009::vfunc_88 in slot 0x14 of the secondary
+//   ov003  0x0221445c is _ZThn236_N13BuildingActor8vfunc_88Ev, the thunk of ov009::vfunc_88 in slot 0x14 of the secondary
 //          vtable.  Every unit of the family names that slot vfunc_88, so each emits the thunk as a link-once function and
 //          the linker keeps the copy of the first unit in link order (unk_ov003_022141bc.cpp), as in the original.
 //          (No alias: the old label _ZN14TalkMsgRequest9vfunc_s14Ev is gone.)
 // Notes:
-//  * The ctor of a derived class calls Unk_ov009_0225e29c::Unk_ov009_0225e29c() (ov009 symbol C2 0x0225deec).
+//  * The ctor of a derived class calls BuildingActor::BuildingActor() (ov009 symbol C2 0x0225deec).
 //  * Names a derived class must not reuse for its own members: unk_130 .. unk_2a4 below.
 
 class ProcBase {
@@ -138,8 +138,8 @@ public:
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
-    // Slot 0x14 has the name of Unk_ov009_0225e29c::vfunc_88, which overrides it: the vtable then names the shared
-    // thunk _ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev (0x0221445c).  The compiler also emits a link-once copy of the
+    // Slot 0x14 has the name of BuildingActor::vfunc_88, which overrides it: the vtable then names the shared
+    // thunk _ZThn236_N13BuildingActor8vfunc_88Ev (0x0221445c).  The compiler also emits a link-once copy of the
     // thunk in this unit; the linker keeps the first one (unk_ov003_022141bc.cpp) and drops this one.
     virtual void vfunc_88();
     virtual void vfunc_s18();
@@ -188,10 +188,10 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
+class BuildingActor : public Character, public TalkMsgRequest {
 public:
-    Unk_ov009_0225e29c();
-    virtual ~Unk_ov009_0225e29c();
+    BuildingActor();
+    virtual ~BuildingActor();
     virtual BOOL vfunc_00();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
@@ -224,9 +224,9 @@ public:
     virtual void vfunc_b4();
     virtual BOOL vfunc_b8();
 
-    s32 func_ov009_0225d6b8(u32 a);
-    void func_ov009_0225d244();
-    void func_ov009_0225bc88();
+    s32 getBtaAnim(u32 a);
+    void getResources();
+    void updateMatrix();
 
     /* 0x130 */ u8 unk_130;
     /* 0x131 */ u8 pad_131;
@@ -276,18 +276,18 @@ public:
     ModelAnim();
     virtual ~ModelAnim();
     void addToRenderObj(u32 a);
-    void func_02055ae4(s32 a, s32 b, s32 c, s32 e, u16 f);
-    BOOL func_02055bcc(u32 a, void *c);
+    void initWithTex(s32 a, s32 b, s32 c, s32 e, u16 f);
+    BOOL allocMatAnm(u32 a, void *c);
 
     u32 unk_18;
     u32 unk_1c;
 };
 
-class Unk_020dbd54 {
+class AnimModel {
 public:
-    Unk_020dbd54();
-    virtual ~Unk_020dbd54();
-    s32 func_020547cc(void *q);
+    AnimModel();
+    virtual ~AnimModel();
+    s32 drawAnimated(void *q);
 
     u8 pad_04[0x5c - 4];
     void *unk_5c;
@@ -304,12 +304,12 @@ public:
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define VillagerId_getName _ZN10VillagerId7getNameEj
 #define TalkWindowState_setSlot _ZN15TalkWindowState7setSlotEiPv
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define VillagerDataProfileView_getInfo28 _ZN23VillagerDataProfileView9getInfo28Ev
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 extern "C" {
 extern u8 data_021dfd8c[];
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern void *data_021c6204;
 extern const u8 data_ov003_0222eff8[];
 extern const u8 data_ov003_0222eff0[];
@@ -318,7 +318,7 @@ extern char data_ov003_02235308[];
 extern char data_ov003_022352d4[];
 extern u32 data_ov003_022352e8[];
 
-BOOL func_ov009_0225d600(void *p);
+BOOL Building_IsNight(void *p);
 void *SaveVillagers_Get(void *p, s32 i);
 s32 func_0207e274(void *p);
 s32 func_0207e278(void *p);
@@ -332,7 +332,7 @@ void NNS_G3dBindMdlTex(void *a, s32 b);
 void _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, s32 d, void *e);
 void _ZN10VillagerId7getNameEj(void *self, void *x);
 void _ZN15TalkWindowState7setSlotEiPv(void *self, s32 a, void *q);
-BOOL _ZN12Unk_020cbb1813func_02072e88Ei(void *self, s32 i);
+BOOL _ZN11CommManager12isSlotActiveEi(void *self, s32 i);
 void *_ZN23VillagerDataProfileView9getInfo28Ev(void *self);
 void *_ZN12VillagerData13getVillagerIdEv(void *self);
 void *_ZN5Model12getRenderObjEv(void *self);
@@ -355,7 +355,7 @@ s32 func_ov003_02218da8();
 void func_ov003_022163dc();
 }
 
-static inline s32 Unk_ov003_02215c7c_Idx(Unk_ov009_0225e29c *o) {
+static inline s32 Unk_ov003_02215c7c_Idx(BuildingActor *o) {
     BOOL r = FALSE;
     u16 v = o->unk_132;
     if (v < 0x5001 || v > 0x5008) {
@@ -384,7 +384,7 @@ struct FxVec3 {
 };
 
 // ============================================================ class Unk_ov003_022318e8
-class Unk_ov003_022318e8 : public Unk_ov009_0225e29c {
+class Unk_ov003_022318e8 : public BuildingActor {
 public:
     Unk_ov003_022318e8();
     virtual ~Unk_ov003_022318e8();
@@ -408,7 +408,7 @@ public:
     u8 func_ov003_02215fc0();
     s32 func_ov003_02216018();
 
-    /* 0x2b0 */ Unk_020dbd54 unk_2b0;
+    /* 0x2b0 */ AnimModel unk_2b0;
     /* 0x368 */ ModelAnim unk_368;
 };
 
@@ -472,10 +472,10 @@ BOOL Unk_ov003_022318e8::vfunc_70() {
             NNS_G3dBindMdlTex(a, func_ov003_02218880(func_ov003_02218d84()));
             void *b = func_ov003_02218870(func_ov003_02218d84(), q);
             NNS_G3dBindMdlPltt(b, func_ov003_02218880(func_ov003_02218d84()));
-            if (unk_368.func_02055bcc((u32)unk_2b0.unk_5c, data_021c6204)) {
+            if (unk_368.allocMatAnm((u32)unk_2b0.unk_5c, data_021c6204)) {
                 s32 c = func_ov003_0221886c(func_ov003_02218d84());
                 s32 d = func_ov003_02218880(func_ov003_02218d84());
-                unk_368.func_02055ae4(c, d, 0, 0x1000, 0);
+                unk_368.initWithTex(c, d, 0, 0x1000, 0);
                 unk_368.addToRenderObj((u32)_ZN5Model12getRenderObjEv(&unk_2b0));
                 *(Unk_ov003_Blk *)((u8 *)this + 0x314) = unk_19c;
             }
@@ -497,7 +497,7 @@ BOOL Unk_ov003_022318e8::onExecute() {
 
 BOOL Unk_ov003_022318e8::onDraw() {
     if (func_ov003_02218868(func_ov003_02218d84())) {
-        unk_2b0.func_020547cc(0);
+        unk_2b0.drawAnimated(0);
     }
     return TRUE;
 }
@@ -597,7 +597,7 @@ BOOL Unk_ov003_022318e8::vfunc_8c() {
 
 BOOL Unk_ov003_022318e8::vfunc_9c() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
-    if (func_ov009_0225d600(this)) {
+    if (Building_IsNight(this)) {
         void *p = SaveVillagers_Get(data_021dfd8c, idx);
         if (p) {
             if (func_0207e274(p) == 0) {
@@ -610,9 +610,9 @@ BOOL Unk_ov003_022318e8::vfunc_9c() {
             if (func_0207e278(p) == 2) {
                 u8 a, b, c;
                 u32 i = 0;
-                void *g = data_020cbb18;
+                void *g = gCommManager;
                 for (; i < 4; i++) {
-                    if (func_02072e88(g, i)) {
+                    if (CommManager_isSlotActive(g, i)) {
                         func_020a5e74(i, &a, &b, &c);
                         if (idx == func_020b51e8(a)) {
                             return TRUE;

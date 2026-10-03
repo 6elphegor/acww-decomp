@@ -42,7 +42,7 @@ public:
     static void copy(MsgString *p);
 };
 
-extern s32 data_021c5384;
+extern s32 gGfxMainOnTop;
 extern u8 data_020d4694[];
 extern u8 data_020d468c[];
 struct SpriteAnimSeq { u32 unk_00; u32 unk_04; };

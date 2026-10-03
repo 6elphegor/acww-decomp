@@ -22,7 +22,7 @@ s32 func_0205c91c(void *);
 s32 NNS_G3dTexGetRequiredSize(void *p);
 s32 NNS_G3dTex4x4GetRequiredSize(void *p);
 s32 NNS_G3dPlttGetRequiredSize(void *p);
-extern u8 *data_020cbb18;
+extern u8 *gCommManager;
 extern u32 data_021c61cc;
 }
 
@@ -34,29 +34,29 @@ public:
     Unk_020b83b0() : unk_04(0), unk_08(0), unk_0c(0xff) {}
 };
 
-class Unk_020e4618 : public Unk_020b83b0 {
+class VramTask : public Unk_020b83b0 {
 public:
     u8 unk_0d;
     u8 unk_0e;
     u8 unk_0f;
-    Unk_020e4618();
-    virtual BOOL vfunc_00() = 0;
+    VramTask();
+    virtual BOOL execute() = 0;
 };
 
-struct Unk_020b8c1c {
+struct TexTransfer {
     u32 unk_00;
     u32 unk_04;
     u32 unk_08;
 };
 
-class Unk_020e45ec : public Unk_020e4618 {
+class TexVramTask : public VramTask {
 public:
-    Unk_020b8c1c unk_10;
-    Unk_020e45ec();
-    virtual BOOL vfunc_00();
-    void func_020b89c8(void);
-    BOOL func_020b89f0(u32 *a, u8 b);
-    void func_020b8b08(void);
+    TexTransfer unk_10;
+    TexVramTask();
+    virtual BOOL execute();
+    void cancel(void);
+    BOOL requestTexResource(u32 *a, u8 b);
+    void clear(void);
 };
 
 class TexVramSlot {
@@ -69,18 +69,18 @@ public:
 
     TexVramSlot();
     virtual ~TexVramSlot();
-    void func_020551f4(u32 a, u32 b, u32 c);
-    void func_02055200(void);
-    void func_02055210(void *p);
-    u32 func_0205526c(u32 a, u32 b);
-    u32 func_02055298(u32 a, u32 b, u32 c);
-    u32 func_020552d8(u32 a, u32 b);
-    u32 func_020552ec(u32 a, u32 b);
-    u32 func_02055300(u32 a);
-    u32 func_02055314(u32 a, u32 b);
-    u32 func_02055328(u32 a);
-    u32 func_02055334(u32 a);
-    void func_02055340(void *a, void *b, void *c);
+    void setKeys(u32 a, u32 b, u32 c);
+    void clear(void);
+    void relocateTexture(void *p);
+    u32 makePlttKeyAt(u32 a, u32 b);
+    u32 makeKeyAtOffset(u32 a, u32 b, u32 c);
+    u32 makeTex4x4KeyAt(u32 a, u32 b);
+    u32 makeTexKeyAt(u32 a, u32 b);
+    u32 makePlttKey(u32 a);
+    u32 makeKeyWithBase(u32 a, u32 b);
+    u32 makeTex4x4Key(u32 a);
+    u32 makeTexKey(u32 a);
+    void alloc(void *a, void *b, void *c);
 };
 
 static inline BOOL Unk_0205d4e4_IsTwo(u8 v) {
@@ -95,13 +95,13 @@ class Unk_0205dbb8 {
 public:
     void *unk_00[4];
     TexVramSlot unk_10[4][2];
-    Unk_020e45ec unk_b0[4][2];
+    TexVramTask unk_b0[4][2];
     void *unk_190[4][2];
     u8 unk_1b0[4][2];
 
     void func_0205dbb8(u32 i, u32 j, u32 v);
     s32 func_0205dbc8(u32 i, u32 j);
-    Unk_020e45ec *func_0205dbd8(u32 i, u32 j);
+    TexVramTask *func_0205dbd8(u32 i, u32 j);
     TexVramSlot *func_0205dbe8(u32 i, u32 j);
     void func_0205dbf8(u32 i, u32 j, void *v);
     void *func_0205dc0c(u32 i, u32 j);
@@ -124,7 +124,7 @@ class Unk_0205dd1c {
 public:
     u32 unk_00[4];
     TexVramSlot unk_10[8];
-    Unk_020e45ec unk_b0[8];
+    TexVramTask unk_b0[8];
     Unk_0205dd38_Pair unk_190[4];
     Unk_0205dd38_Bytes unk_1b0[4];
 
@@ -187,7 +187,7 @@ void *func_0205d868(u8 *p);
 void *func_0205d854(u8 *p, s32 j);
 void func_0205d834(u8 *p, s32 j, void *v);
 TexVramSlot *func_0205d820(u8 *p, s32 j);
-Unk_020e45ec *func_0205d80c(u8 *p, s32 j);
+TexVramTask *func_0205d80c(u8 *p, s32 j);
 s32 func_0205d7f8(u8 *p, s32 j);
 void func_0205d7d8(u8 *p, s32 j, u32 v);
 }
@@ -305,10 +305,10 @@ Unk_0205dd1c::Unk_0205dd1c() {
 Unk_0205dd1c::~Unk_0205dd1c() {}
 
 void Unk_0205dbb8::func_0205dcac(void) {
-    u32 n = *(u8 *)(data_020cbb18 + 0x6c);
+    u32 n = *(u8 *)(gCommManager + 0x6c);
     u32 i;
     for (i = 0; i < n; i++) {
-        unk_10[i][0].func_02055340((void *)func_0205ddb8(), (void *)func_0205ddb4(), (void *)func_0205ddb0());
+        unk_10[i][0].alloc((void *)func_0205ddb8(), (void *)func_0205ddb4(), (void *)func_0205ddb0());
     }
     void *heap = (void *)data_021c61cc;
     for (i = 0; i < n; i++) {
@@ -319,8 +319,8 @@ void Unk_0205dbb8::func_0205dcac(void) {
 void Unk_0205dbb8::func_0205dc28(void) {
     s32 i;
     for (i = 0; i < 4; i++) {
-        unk_10[i][0].func_02055200();
-        unk_10[i][1].func_02055200();
+        unk_10[i][0].clear();
+        unk_10[i][1].clear();
     }
     for (i = 0; i < 4; i++) {
         unk_00[i] = NULL;
@@ -340,7 +340,7 @@ void *Unk_0205dbb8::func_0205dc20(u32 i) { return unk_00[i]; }
 void *Unk_0205dbb8::func_0205dc0c(u32 i, u32 j) { return unk_190[i][j]; }
 void Unk_0205dbb8::func_0205dbf8(u32 i, u32 j, void *v) { unk_190[i][j] = v; }
 TexVramSlot *Unk_0205dbb8::func_0205dbe8(u32 i, u32 j) { return &unk_10[i][j]; }
-Unk_020e45ec *Unk_0205dbb8::func_0205dbd8(u32 i, u32 j) { return &unk_b0[i][j]; }
+TexVramTask *Unk_0205dbb8::func_0205dbd8(u32 i, u32 j) { return &unk_b0[i][j]; }
 s32 Unk_0205dbb8::func_0205dbc8(u32 i, u32 j) { return unk_1b0[i][j]; }
 void Unk_0205dbb8::func_0205dbb8(u32 i, u32 j, u32 v) { unk_1b0[i][j] = v; }
 
@@ -362,14 +362,14 @@ extern "C" void func_0205db70(u8 *p) {
 
 extern "C" void func_0205db04(u8 *p) {
     if (Unk_0205d4e4_IsOne(func_0205d80c(p, 0)->unk_0d)) {
-        func_0205d80c(p, 0)->func_020b89c8();
+        func_0205d80c(p, 0)->cancel();
     } else {
-        func_0205d80c(p, 0)->func_020b8b08();
+        func_0205d80c(p, 0)->clear();
     }
     if (Unk_0205d4e4_IsOne(func_0205d80c(p, 1)->unk_0d)) {
-        func_0205d80c(p, 1)->func_020b89c8();
+        func_0205d80c(p, 1)->cancel();
     } else {
-        func_0205d80c(p, 1)->func_020b8b08();
+        func_0205d80c(p, 1)->clear();
     }
 }
 
@@ -408,7 +408,7 @@ extern "C" s32 func_0205da08(u8 *p, s32 a, s32 b, u16 *c, s32 d) {
 extern "C" void func_0205d934(u8 *p) {
     void *q = NNS_G3dGetTex(func_0205d854(p, 0));
     TexVramSlot *d0 = func_0205d820(p, 0);
-    d0->func_02055210(q);
+    d0->relocateTexture(q);
     if (func_0205d7f8(p, 1) < 0x9e) {
         void *src = func_0205d854(p, 1);
         if (src) {
@@ -420,32 +420,32 @@ extern "C" void func_0205d934(u8 *p) {
             s32 f = NNS_G3dTex4x4GetRequiredSize(q2);
             s32 g = NNS_G3dPlttGetRequiredSize(q2);
             TexVramSlot *d1 = func_0205d820(p, 1);
-            u32 x = d0->func_020552ec(d0->func_02055334(a), e);
-            u32 y = d0->func_020552d8(d0->func_02055328(b), f);
-            u32 z = d0->func_0205526c(d0->func_02055300(c), g);
-            d1->func_020551f4(x, y, z);
-            d1->func_02055210(q2);
+            u32 x = d0->makeTexKeyAt(d0->makeTexKey(a), e);
+            u32 y = d0->makeTex4x4KeyAt(d0->makeTex4x4Key(b), f);
+            u32 z = d0->makePlttKeyAt(d0->makePlttKey(c), g);
+            d1->setKeys(x, y, z);
+            d1->relocateTexture(q2);
         }
     }
 }
 
 extern "C" BOOL func_0205d87c(u8 *p) {
     BOOL r6 = FALSE, r4 = FALSE;
-    Unk_020e45ec *o = func_0205d80c(p, r6);
+    TexVramTask *o = func_0205d80c(p, r6);
     u8 st = o->unk_0d;
     if (Unk_0205d4e4_IsTwo(st)) {
         r6 = TRUE;
     } else if (!Unk_0205d4e4_IsOne(st)) {
-        o->func_020b89f0((u32 *)NNS_G3dGetTex(func_0205d854(p, 0)), 1);
+        o->requestTexResource((u32 *)NNS_G3dGetTex(func_0205d854(p, 0)), 1);
     }
     if (func_0205d7f8(p, 1) < 0x9e) {
         void *d = func_0205d854(p, 1);
-        Unk_020e45ec *o2 = func_0205d80c(p, 1);
+        TexVramTask *o2 = func_0205d80c(p, 1);
         u8 st2 = o2->unk_0d;
         if (Unk_0205d4e4_IsTwo(st2)) {
             r4 = TRUE;
         } else if (!Unk_0205d4e4_IsOne(st2)) {
-            o2->func_020b89f0((u32 *)NNS_G3dGetTex(d), 1);
+            o2->requestTexResource((u32 *)NNS_G3dGetTex(d), 1);
         }
     } else {
         r4 = TRUE;
@@ -468,7 +468,7 @@ extern "C" void func_0205d834(u8 *p, s32 j, void *v) {
 extern "C" TexVramSlot *func_0205d820(u8 *p, s32 j) {
     return MGR->func_0205dbe8(*p, j);
 }
-extern "C" Unk_020e45ec *func_0205d80c(u8 *p, s32 j) {
+extern "C" TexVramTask *func_0205d80c(u8 *p, s32 j) {
     return MGR->func_0205dbd8(*p, j);
 }
 extern "C" s32 func_0205d7f8(u8 *p, s32 j) {

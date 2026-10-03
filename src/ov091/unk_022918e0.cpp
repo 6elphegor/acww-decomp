@@ -7,10 +7,10 @@
 
 extern "C" {
 void Snd_PlaySe(s32 a);
-void func_020021a0(s32 a);
-void func_020020b8(s32 a);
-void func_0200226c(u32 n, u32 a, u32 b, u32 c);
-void func_020015e0(u32 a);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ShowLayer(s32 a);
+void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
+void Gfx2d_SetMainBgModeState(u32 a);
 void *func_0206ed68();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
@@ -264,15 +264,15 @@ BOOL Unk_ov091_02291ef0::vfunc_5c() {
 void Unk_ov091_02291ef0::func_ov091_02291c04() {
     Snd_PlaySe(1);
     ((Unk_02035758 *)(data_021c1b3c + 0x1c4))->func_02035bbc(0);
-    func_020015e0(0);
+    Gfx2d_SetMainBgModeState(0);
     unk_94.func_0206d2e0((Unk_0206d1d4_Src *)func_0206ed68(), 0, (void *)2, 1);
     func_ov002_022008a8(0xa, 0, 0, 0x30);
-    func_020020b8(0);
+    Gfx2d_ShowLayer(0);
     func_ov002_02200840(0, 0, 0);
-    func_0200226c(0, 0, 0, 0);
-    func_020020b8(2);
+    Gfx2d_SetLayerControl(0, 0, 0, 0);
+    Gfx2d_ShowLayer(2);
     func_ov002_02200840(2, 0, 0);
-    func_0200226c(2, 0, 0, 0);
+    Gfx2d_SetLayerControl(2, 0, 0, 0);
     func_ov002_02200a50(1);
 }
 
@@ -322,8 +322,8 @@ void Unk_ov091_02291ef0::func_ov091_02291ab4() {
 
 void Unk_ov091_02291ef0::func_ov091_02291a70() {
     if (func_ov002_022008fc(1)) {
-        func_020021a0(0);
-        func_020021a0(2);
+        Gfx2d_ResetLayer(0);
+        Gfx2d_ResetLayer(2);
         func_ov002_02200a60(5);
     } else {
         func_ov002_02200840(0, 0, 0);

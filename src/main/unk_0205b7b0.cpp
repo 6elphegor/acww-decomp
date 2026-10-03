@@ -55,10 +55,10 @@ extern void *data_021c61fc;
 extern void *data_021c6200;
 extern void *data_021c6204;
 extern void *data_021c6208;
-extern void *data_021c620c;
+extern void *gBgHeap;
 extern void *data_021c6210;
-extern void *data_021c6214;
-extern void *data_021c6218;
+extern void *gModelCacheHeap;
+extern void *gNetHeap;
 extern void *data_021c621c;
 extern char data_021c622c[];
 extern Unk_0205c3b0 data_021c6240;
@@ -66,7 +66,7 @@ extern u8 data_020e416c;
 extern u32 data_020cbf94, data_020cbf98, data_020cbf9c, data_020cbfa0, data_020cbfa4;
 extern u32 data_020c8b9c;
 extern u32 data_020c8ba0;
-extern Unk_0205b848_Cfg *data_020cbb18;
+extern Unk_0205b848_Cfg *gCommManager;
 extern const u8 data_020cab88[4];
 extern const u8 data_020cab8c[4];
 extern const u8 data_020cab90[4];
@@ -135,10 +135,10 @@ const u16 data_020cab84[2] = {0x800, 0};
 extern const u16 data_020cab80[2];  // 0x020cab80, 0x020cab84: start of this file's .rodata; read by the unit at 0x020594dc (0x0205a900, 0x0205a90c)
 const u16 data_020cab80[2] = {0x400, 0};
 void *data_021c621c;
-void *data_021c6218;
-void *data_021c6214;
+void *gNetHeap;
+void *gModelCacheHeap;
 void *data_021c6210;
-void *data_021c620c;
+void *gBgHeap;
 extern const u16 data_020caf64[0x144];
 const u16 data_020caf64[0x144] = {
     367, 367, 367, 367, 367, 187, 188, 189, 189, 190, 190, 191, 367, 192, 191, 367,
@@ -322,7 +322,7 @@ Unk_0205c3b0::~Unk_0205c3b0() {}
 
 void Unk_0205c3b0::func_0205c460() {
     void *heap = data_021c61e0;
-    u32 n = data_020cbb18->unk_6c;
+    u32 n = gCommManager->unk_6c;
     u32 m = func_020b4928(func_020b50e8());
     if (n < m) m = n;
     u32 k = m ? m : 1;
@@ -431,21 +431,21 @@ extern "C" u32 func_0205c254(u8 *p) { return data_021c6240.func_0205c418(*p); }
 
 extern "C" u32 func_0205c240(u8 *p) { return data_021c6240.func_0205c40c(*p); }
 
-extern "C" void func_0205c228(u32 size, void *parent) { data_021c6218 = ExpHeap_Create(size, parent); }
+extern "C" void NetHeap_Create(u32 size, void *parent) { gNetHeap = ExpHeap_Create(size, parent); }
 
-extern "C" void func_0205c20c() { func_020e8c88(data_021c6218); data_021c6218 = 0; }
+extern "C" void NetHeap_Destroy() { func_020e8c88(gNetHeap); gNetHeap = 0; }
 
-extern "C" void func_0205c1f4(u32 size, void *parent) { data_021c6214 = ExpHeap_Create(size, parent); }
+extern "C" void ModelCacheHeap_Create(u32 size, void *parent) { gModelCacheHeap = ExpHeap_Create(size, parent); }
 
-extern "C" void func_0205c1d8() { func_020e8c88(data_021c6214); data_021c6214 = 0; }
+extern "C" void ModelCacheHeap_Destroy() { func_020e8c88(gModelCacheHeap); gModelCacheHeap = 0; }
 
 extern "C" void func_0205c1c0(u32 size, void *parent) { data_021c6210 = ExpHeap_Create(size, parent); }
 
 extern "C" void func_0205c1a4() { func_020e8c88(data_021c6210); data_021c6210 = 0; }
 
-extern "C" void func_0205c18c(u32 size, void *parent) { data_021c620c = ExpHeap_Create(size, parent); }
+extern "C" void BgHeap_Create(u32 size, void *parent) { gBgHeap = ExpHeap_Create(size, parent); }
 
-extern "C" void func_0205c170() { func_020e8c88(data_021c620c); data_021c620c = 0; }
+extern "C" void BgHeap_Destroy() { func_020e8c88(gBgHeap); gBgHeap = 0; }
 
 extern "C" void func_0205c158(u32 size, void *parent) { data_021c6208 = ExpHeap_Create(size, parent); }
 
@@ -537,7 +537,7 @@ extern "C" void func_0205bf68(void) {
 
 extern "C" void func_0205bed4(void *parent) {
     u32 s0 = 0, s1 = 0, s2 = 0, s3 = 0;
-    u32 n = data_020cbb18->unk_6c;
+    u32 n = gCommManager->unk_6c;
     u32 a = func_020b4928(func_020b50e8());
     if (n < a) {
         a = n;
@@ -575,7 +575,7 @@ extern "C" void func_0205be58(void) {
 }
 
 extern "C" void func_0205be20(void *parent) {
-    u32 n = data_020cbb18->unk_6c;
+    u32 n = gCommManager->unk_6c;
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205d418());
     t += s * n;
@@ -602,7 +602,7 @@ extern "C" void func_0205bda8(void) {
 }
 
 extern "C" void func_0205bd70(void *parent) {
-    u32 n = data_020cbb18->unk_6c;
+    u32 n = gCommManager->unk_6c;
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205c8c8());
     t += s * n;
@@ -615,7 +615,7 @@ extern "C" void func_0205bd54(void) {
 }
 
 extern "C" void func_0205bd1c(void *parent) {
-    u32 n = data_020cbb18->unk_6c;
+    u32 n = gCommManager->unk_6c;
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205ddc0());
     t += s * n;
@@ -628,7 +628,7 @@ extern "C" void func_0205bd00(void) {
 }
 
 extern "C" void func_0205bcd0(void *parent) {
-    u32 n = data_020cbb18->unk_6c;
+    u32 n = gCommManager->unk_6c;
     u32 s = 0, t = 0;
     s += func_0205f018();
     t += s * n;
@@ -641,7 +641,7 @@ extern "C" void func_0205bcb4(void) {
 }
 
 extern "C" void func_0205bc7c(void *parent) {
-    u32 n = data_020cbb18->unk_6c;
+    u32 n = gCommManager->unk_6c;
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205d770());
     t += s * n;
@@ -682,7 +682,7 @@ extern "C" void func_0205bba0(void) {
 }
 
 extern "C" void func_0205bb64(void *parent) {
-    u32 n = data_020cbb18->unk_6c;
+    u32 n = gCommManager->unk_6c;
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205eec0());
     t += ALIGN4(s + 0x48) * n;

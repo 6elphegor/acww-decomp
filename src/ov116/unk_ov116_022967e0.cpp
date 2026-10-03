@@ -14,10 +14,10 @@ extern u16 gPad[];
 
 void *ProcBase_GetParent();
 void ProcBase_RequestDelete(void *p);
-void func_020021a0(s32 a);
-void func_020020b8(s32 a);
-void func_02002398(s32 a, s32 b);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ShowLayer(s32 a);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 BOOL func_0206e63c();
 BOOL func_0206e61c();
 BOOL MenuCtrl_IsTouch();
@@ -384,8 +384,8 @@ void Unk_ov116_02297378::func_ov116_02296f3c() {
     func_ov116_02296d88();
     func_ov116_02296d70();
     func_ov002_022008e0(0xb, 0, 0, 0x30);
-    func_020020b8(3);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(3);
+    Gfx2d_ShowLayer(6);
     func_ov116_02296868(1);
     func_ov116_02296e68();
     func_ov002_02200a50(1);
@@ -409,9 +409,9 @@ void Unk_ov116_02297378::func_ov116_02296edc() {
 
 void Unk_ov116_02297378::func_ov116_02296ea4() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(3);
-        func_020021a0(6);
-        func_020021a0(4);
+        Gfx2d_ResetLayer(3);
+        Gfx2d_ResetLayer(6);
+        Gfx2d_ResetLayer(4);
         func_ov002_02200a60(5);
     } else {
         func_ov116_02296e68();
@@ -454,12 +454,12 @@ void Unk_ov116_02297378::func_ov116_02296de8() {
 }
 
 void Unk_ov116_02297378::func_ov116_02296da0() {
-    func_02002398(3, 1);
-    func_0200226c(3, 0, 0, 0);
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
-    func_02002398(4, 2);
-    func_0200226c(4, 0, 0, 0);
+    Gfx2d_SetLayerPriority(3, 1);
+    Gfx2d_SetLayerControl(3, 0, 0, 0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 2);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
 }
 
 void Unk_ov116_02297378::func_ov116_02296d88() {

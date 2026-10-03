@@ -2,7 +2,7 @@
 
 // U125: design (pattern) storage and display helpers, 0x02070560-0x020720f8
 
-class Unk_020cbb18;
+class CommManager;
 class EncodedString16Buf;
 class Unk_020942c8;
 
@@ -309,7 +309,7 @@ extern "C" {
 extern u16 data_020d03cc;
 }
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 extern "C" {
 extern Unk_020720f8_Data gOverlayHandle;
@@ -363,10 +363,10 @@ extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 extern "C" {
-s32 func_02076c0c(s32 i);
+s32 Comm_AidToPeerIndex(s32 i);
 }
 extern "C" {
-s32 func_02076b18();
+s32 Comm_IsWifi();
 }
 extern "C" {
 void *PlayerData_GetCurrent();
@@ -697,10 +697,10 @@ namespace n4 {
 // ======== unk_0207116c.cpp ========
 namespace n3 {
 extern "C" {
-void func_02001ea0(void *src, void *dst, s32 w, s32 h);
+void Gfx2d_TilesToLinear4bpp(void *src, void *dst, s32 w, s32 h);
 }
 extern "C" {
-void func_02001fd8(void *src, void *dst, s32 x, s32 w, s32 h);
+void Gfx2d_TilesInRow32ToLinear(void *src, void *dst, s32 x, s32 w, s32 h);
 }
 extern "C" {
 void File_LoadToBuffer(char *name, void *p, u32 size);
@@ -796,10 +796,10 @@ extern "C" {
 void *func_0203c6c8(void *);
 }
 extern "C" {
-s32 func_02055724(void *a, u32 b);
+s32 Gfx3d_LoadTexAndPltt(void *a, u32 b);
 }
 extern "C" {
-void *func_02055820(void *a, u32 key);
+void *ResCache_GetTex(void *a, u32 key);
 }
 extern "C" {
 s32 func_0203c6f8(void *a, void *b);
@@ -808,7 +808,7 @@ extern "C" {
 void *_ZN19AbleSistersPatterns13func_02071b00Eh(void *tbl, u32 i);
 }
 extern "C" {
-void _ZN12Unk_02056f94C1Ev(void *p);
+void _ZN15TexPatVramTasksC1Ev(void *p);
 }
 extern "C" {
 void *_ZN12Unk_02071ed013func_02071fa0Ev(void *p);
@@ -1115,7 +1115,7 @@ void Unk_020718a4::func_02071770() {
     a = data_021cbcb8;
     for (i = 0; i < 8; i++) {
         if (a != 0) func_0203c928(a);
-        if (b != 0) _ZN12Unk_02056f94C1Ev(b);
+        if (b != 0) _ZN15TexPatVramTasksC1Ev(b);
         a += 0x2c4;
         b += 0x38;
     }
@@ -1125,7 +1125,7 @@ void Unk_020718a4::func_02071770() {
     c = data_021cbca4;
     for (j = 0; j < 8; j++) {
         if (c != 0) func_0203c928(c);
-        if (d != 0) _ZN12Unk_02056f94C1Ev(d);
+        if (d != 0) _ZN15TexPatVramTasksC1Ev(d);
         c += 0x2c4;
         d += 0x38;
     }
@@ -1252,8 +1252,8 @@ void Unk_020718a4::func_02071460() {
                 q = (u16 *)func_0203c6d0(b);
                 sp = (u16 *)_ZN12Unk_02071ed013func_02072040Ev(_ZN7Pattern13func_02071e04Ev(e));
                 for (k2 = 0; k2 < 0x10; k2++) *q++ = *sp++;
-                if (func_02055724(func_0203c6c8(b), 0)) {
-                    row[j] = (u32)func_02055820(func_0203c6c8(b), 0x4e554c4c);
+                if (Gfx3d_LoadTexAndPltt(func_0203c6c8(b), 0)) {
+                    row[j] = (u32)ResCache_GetTex(func_0203c6c8(b), 0x4e554c4c);
                 }
                 j++;
                 if (j < 8) goto loop0;
@@ -1264,8 +1264,8 @@ void Unk_020718a4::func_02071460() {
             if (t == 10) {
                 for (j = 0; j < 8; j++) {
                     func_0203c6f8(b, _ZN19AbleSistersPatterns13func_02071b00Eh((u8 *)&gSaveData + 0xfafc, j));
-                    if (func_02055724(func_0203c6c8(b), 0)) {
-                        data_021cbd18[j] = (u32)func_02055820(func_0203c6c8(b), 0x4e554c4c);
+                    if (Gfx3d_LoadTexAndPltt(func_0203c6c8(b), 0)) {
+                        data_021cbd18[j] = (u32)ResCache_GetTex(func_0203c6c8(b), 0x4e554c4c);
                     }
                 }
             }
@@ -1323,20 +1323,20 @@ extern "C" void func_0207131c(void *p) {}
 extern "C" void func_02071304(void *p) { File_LoadToBuffer("menu/desi/b_myd_my_obj.bch", p, 0x1000); }
 extern "C" BOOL func_020712e0(void *a, void *b, s32 x) {
     if (x < 0 || x >= 8) return FALSE;
-    func_02001fd8(a, b, x * 4, 4, 4);
+    Gfx2d_TilesInRow32ToLinear(a, b, x * 4, 4, 4);
     return TRUE;
 }
 extern "C" void func_020712dc(void *p) {}
 extern "C" void func_020712c4(void *p) { File_LoadToBuffer("menu/desi/b_myd_bu_obj.bch", p, 0x1000); }
 extern "C" BOOL func_020712a0(void *a, void *b, s32 x) {
     if (x < 0 || x >= 8) return FALSE;
-    func_02001fd8(a, b, x * 4, 4, 4);
+    Gfx2d_TilesInRow32ToLinear(a, b, x * 4, 4, 4);
     return TRUE;
 }
 extern "C" void func_0207129c(void *p) {}
 extern "C" void func_02071284(void *p) { File_LoadToBuffer("menu/desi/myc/obj0.bch", p, 0x200); }
 extern "C" BOOL func_02071270(void *a, void *b) {
-    func_02001ea0(a, b, 4, 4);
+    Gfx2d_TilesToLinear4bpp(a, b, 4, 4);
     return TRUE;
 }
 extern "C" void func_0207126c(void *p) {}
@@ -1346,7 +1346,7 @@ extern "C" void func_02071240(void *dst, s32 n) {
     File_LoadToBuffer(buf, dst, 0x200);
 }
 extern "C" BOOL func_0207122c(void *a, void *b) {
-    func_02001ea0(a, b, 4, 4);
+    Gfx2d_TilesToLinear4bpp(a, b, 4, 4);
     return TRUE;
 }
 extern "C" BOOL func_0207116c(s32 cmd, s32 x) {
@@ -1399,7 +1399,7 @@ static inline BOOL Unk_02070fbc_In(volatile u16 *p, u32 lo, u32 hi) {
     return r;
 }
 extern "C" {
-extern Unk_02070790_Game *data_020cbb18;
+extern Unk_02070790_Game *gCommManager;
 }
 extern "C" {
 extern u8 data_021dfd8c[];
@@ -1414,7 +1414,7 @@ extern "C" {
 extern HouseData data_021e58a8;
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
+BOOL _ZN11CommManager8isOnlineEv(void *p);
 }
 extern "C" {
 void *PlayerData_GetBySessionSlot(s32 a);
@@ -1426,16 +1426,16 @@ extern "C" {
 s32 _ZN14PlayerPatterns13func_02071c88Eh(void *p, s32 i);
 }
 extern "C" {
-Unk_020707ec_Grid *func_0204da0c(void);
+Unk_020707ec_Grid *TownBlockMap_Get(void);
 }
 extern "C" {
-Unk_020707ec_Grid *func_0204d528(s32 i);
+Unk_020707ec_Grid *HouseRoomMaps_Get(s32 i);
 }
 extern "C" {
-u16 *func_02037558(void *cell, s32 x, s32 y, s32 z);
+u16 *MapBlock_GetItemPtr(void *cell, s32 x, s32 y, s32 z);
 }
 extern "C" {
-BOOL func_02037590(void *cell, u16 *t, s32 x, s32 y, s32 v);
+BOOL MapBlock_SetItem(void *cell, u16 *t, s32 x, s32 y, s32 v);
 }
 extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
@@ -1447,13 +1447,13 @@ extern "C" {
 void func_0207116c(s32 t, s32 i);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020728d4Ev(void *g);
+void _ZN11CommManager11beginRecordEv(void *g);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020728a4EPhj(void *g, void *p, s32 n);
+void _ZN11CommManager11writeRecordEPhj(void *g, void *p, s32 n);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072824Ejj(void *g, s32 a, s32 n);
+void _ZN11CommManager9endRecordEjj(void *g, s32 a, s32 n);
 }
 extern "C" {
 void *SaveVillagers_Get(void *a, s32 x);
@@ -1664,24 +1664,24 @@ extern "C" BOOL func_02070e4c(u32 a, u32 b, u32 c, u32 d, u32 e) {
     *r6 = *r4;
     func_0207116c(tc, d);
     if (*(u8 *)&e) {
-        if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+        if (_ZN11CommManager8isOnlineEv(gCommManager)) {
             bits.a = ta;
             bits.b = b;
             bits.c = tc;
             bits.d = d;
             bits.e = 0;
             bits.f = 0;
-            Unk_02070790_Game *g = data_020cbb18;
-            _ZN12Unk_020cbb1813func_020728d4Ev(g);
-            _ZN12Unk_020cbb1813func_020728a4EPhj(g, &bits, 4);
-            _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x15, 4);
+            Unk_02070790_Game *g = gCommManager;
+            _ZN11CommManager11beginRecordEv(g);
+            _ZN11CommManager11writeRecordEPhj(g, &bits, 4);
+            _ZN11CommManager9endRecordEjj(g, 0x15, 4);
         }
     }
     return TRUE;
 }
 extern "C" s32 func_02070e20(s32 t) {
-    Unk_02070790_Game *g = data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(g) && t == 9) {
+    Unk_02070790_Game *g = gCommManager;
+    if (_ZN11CommManager8isOnlineEv(g) && t == 9) {
         return g->unk_64;
     }
     return t;
@@ -1702,17 +1702,17 @@ extern "C" BOOL func_02070b68(u32 a, u32 b, u32 c, u32 d, u32 e) {
     func_0207116c(ta, b);
     func_0207116c(tc, d);
     if (*(u8 *)&e) {
-        if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+        if (_ZN11CommManager8isOnlineEv(gCommManager)) {
             bits.a = ta;
             bits.b = b;
             bits.c = tc;
             bits.d = d;
             bits.e = 1;
             bits.f = 0;
-            Unk_02070790_Game *g = data_020cbb18;
-            _ZN12Unk_020cbb1813func_020728d4Ev(g);
-            _ZN12Unk_020cbb1813func_020728a4EPhj(g, &bits, 4);
-            _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x15, 4);
+            Unk_02070790_Game *g = gCommManager;
+            _ZN11CommManager11beginRecordEv(g);
+            _ZN11CommManager11writeRecordEPhj(g, &bits, 4);
+            _ZN11CommManager9endRecordEjj(g, 0x15, 4);
         }
     }
     return TRUE;
@@ -1741,7 +1741,7 @@ extern "C" void func_020707ec(s32 p) {
     s32 x2;
     u8 *cells;
     u8 *cell;
-    Unk_020707ec_Grid *g = func_0204da0c();
+    Unk_020707ec_Grid *g = TownBlockMap_Get();
     if (g != NULL) {
         s32 x, y;
         for (y = 1; y < g->h - 1; y++) {
@@ -1756,7 +1756,7 @@ extern "C" void func_020707ec(s32 p) {
                     do {
                         j = 0;
                         do {
-                            u16 *v = func_02037558(cell, j, i, 0);
+                            u16 *v = MapBlock_GetItemPtr(cell, j, i, 0);
                             if (v != NULL) {
                                 BOOL in = FALSE;
                                 if (*v >= 0xa7 && *v <= 0xc6) {
@@ -1764,7 +1764,7 @@ extern "C" void func_020707ec(s32 p) {
                                 }
                                 if (in) {
                                     if (p == (s32)(*v - 0xa7) / 8) {
-                                        func_02037590(cell, &t.v, j, i, 0);
+                                        MapBlock_SetItem(cell, &t.v, j, i, 0);
                                     }
                                 }
                             }
@@ -1778,7 +1778,7 @@ extern "C" void func_020707ec(s32 p) {
     }
     m = 0;
     do {
-        Unk_020707ec_Grid *g2 = func_0204d528(m);
+        Unk_020707ec_Grid *g2 = HouseRoomMaps_Get(m);
         if (g2 != NULL) {
             if ((u8 *)g2->w > (u8 *)0 && (u8 *)g2->h > (u8 *)0 && g2->cells != NULL) {
                 cells = g2->cells;
@@ -1790,7 +1790,7 @@ extern "C" void func_020707ec(s32 p) {
                 do {
                     x2 = 0;
                     do {
-                        u16 *v = func_02037558(cells, x2, y2, 0);
+                        u16 *v = MapBlock_GetItemPtr(cells, x2, y2, 0);
                         if (v != NULL) {
                             BOOL f = FALSE;
                             u16 val = *v;
@@ -1800,22 +1800,22 @@ extern "C" void func_020707ec(s32 p) {
                             if (f) {
                                 idx = ((Unk_020707ec_K(val, 0x3d84, 0x3e03) >> 3) & 3);
  if (idx == p) {
-                                    func_02037590(cells, &t.v, x2, y2, 0);
+                                    MapBlock_SetItem(cells, &t.v, x2, y2, 0);
                                 }
                             } else if (val >= 0x3ea4 && val <= 0x3f23) {
                                 idx = ((Unk_020707ec_K(val, 0x3ea4, 0x3f23) >> 3) & 3);
  if (idx == p) {
-                                    func_02037590(cells, &t.v, x2, y2, 0);
+                                    MapBlock_SetItem(cells, &t.v, x2, y2, 0);
                                 }
                             } else if (val >= 0x3f24 && val <= 0x3fa3) {
                                 idx = ((Unk_020707ec_K(val, 0x3f24, 0x3fa3) >> 3) & 3);
  if (idx == p) {
-                                    func_02037590(cells, &t.v, x2, y2, 0);
+                                    MapBlock_SetItem(cells, &t.v, x2, y2, 0);
                                 }
                             } else if (val >= 0x4224 && val <= 0x42a3) {
                                 idx = ((Unk_020707ec_K(val, 0x4224, 0x42a3) >> 3) & 3);
  if (idx == p) {
-                                    func_02037590(cells, &t.v, x2, y2, 0);
+                                    MapBlock_SetItem(cells, &t.v, x2, y2, 0);
                                 }
                             }
                         }
@@ -1871,7 +1871,7 @@ extern "C" void func_020707ec(s32 p) {
     } while (m < 5);
 }
 extern "C" s32 func_020707b4(s32 a, s32 b) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         void *p = PlayerData_GetBySessionSlot(a);
         if (p) {
             return _ZN14PlayerPatterns13func_02071c88Eh(_ZN10PlayerData13func_020986d4Ev(p), b);
@@ -1957,7 +1957,7 @@ extern "C" {
 s32 func_020978fc(s32 t);
 }
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 extern "C" {
 s32 _ZN8SaveData8testFlagEj(void *p, s32 i);
@@ -1999,7 +1999,7 @@ extern "C" {
 s32 func_0203c6c8(void *p);
 }
 extern "C" {
-void _ZN12Unk_02056e3813func_02056e88EPhiiS0_ii(void *a, u32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(void *a, u32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 }
 extern "C" {
 void *_ZN10PlayerData13func_020986d4Ev(void *p);
@@ -2089,7 +2089,7 @@ extern "C" BOOL func_02070628(u32 a, u32 b) {
         void *q = _ZN14PlayerPatterns13func_02071c88Eh(_ZN10PlayerData13func_020986d4Ev(PlayerData_GetResident(data_021d735c, x)), y);
         s32 off = y * 0x2c4;
         func_0203c6f8(data_021cbcb8 + off, (s32)q);
-        _ZN12Unk_02056e3813func_02056e88EPhiiS0_ii(data_021cbcb0 + y * 0x38, t, 0, 0, func_0203c6c8(data_021cbcb8 + off), 0, 0);
+        _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(data_021cbcb0 + y * 0x38, t, 0, 0, func_0203c6c8(data_021cbcb8 + off), 0, 0);
         return TRUE;
     }
     return FALSE;
@@ -2100,7 +2100,7 @@ extern "C" BOOL func_020705a0(u32 x) {
     if (t && data_021cbca4 && data_021cbcb4) {
         s32 off = i * 0x2c4;
         func_0203c6f8(data_021cbca4 + off, _ZN19AbleSistersPatterns13func_02071b00Eh(data_021e6e4c, x));
-        _ZN12Unk_02056e3813func_02056e88EPhiiS0_ii(data_021cbcb4 + i * 0x38, t, 0, 0, func_0203c6c8(data_021cbca4 + off), 0, 0);
+        _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(data_021cbcb4 + i * 0x38, t, 0, 0, func_0203c6c8(data_021cbca4 + off), 0, 0);
         return TRUE;
     }
     return FALSE;

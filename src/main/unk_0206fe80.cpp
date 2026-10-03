@@ -36,7 +36,7 @@ s32 _ZN10PlayerData11getPlayerIdEv(void *p);
 void _ZN8PlayerId13func_020940d0EP9MsgString(s32 a, s32 b);
 s32 PlayerData_GetCurrentIndex();
 s32 func_020978fc(s32 t);
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 s32 _ZN8SaveData8testFlagEj(void *p, s32 i);
 void _ZN8SaveData7setFlagEj(void *p, s32 i);
 s32 _ZN10PlayerData13func_02098a48Ev(void *p);
@@ -200,7 +200,7 @@ void Unk_0206fe80::func_020702ec() {
             Unk_020702ec_Date t;
             ((u32 *)&t)[0] = 0;
             ((u32 *)&t)[1] = 0;
-            func_0209d498(&t);
+            Clock_GetDateTime(&t);
             if (unk_62 != t.b5 || unk_61 != t.b4 || unk_60 != t.b3) {
                 if (func_02070248()) _ZN8SaveData7setFlagEj(gSaveData, 3);
             }
@@ -240,7 +240,7 @@ void Unk_0206fe80::func_020701d0(u16 *id) {
     if (func_02070060()) {
         t[0] = 0;
         t[1] = 0;
-        func_0209d498(t);
+        Clock_GetDateTime(t);
         unk_62 = ((u8 *)t)[5];
         unk_61 = ((u8 *)t)[4];
         unk_60 = ((u8 *)t)[3];

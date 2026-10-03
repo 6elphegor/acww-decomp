@@ -1,7 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 pad_00[0x64];
     s32 unk_64;
     s32 unk_68;
@@ -57,7 +57,7 @@ inline u16 Unk_02095f38_F(u32 v) {
     return 0x1518;
 }
 
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 extern u32 data_020d03d8[];
 extern u32 data_020d03e8[];
 extern u32 data_020d03f8[];
@@ -74,23 +74,23 @@ struct Unk_02095f38_G {
 extern Unk_02095f38_G data_021ed150;
 
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_020729bcEj(Unk_020cbb18 *p, s32 v);
+BOOL _ZN11CommManager11isLocalSlotEj(CommManager *p, s32 v);
 }
 
 extern "C" {
-u32 func_02072970(Unk_020cbb18 *p, u32 v);
+u32 func_02072970(CommManager *p, u32 v);
 }
 
 extern "C" {
-u32 _ZN12Unk_020cbb1813func_02072e88Ei(Unk_020cbb18 *p, s32 v);
+u32 _ZN11CommManager12isSlotActiveEi(CommManager *p, s32 v);
 }
 
 extern "C" {
-u32 func_020729cc(Unk_020cbb18 *p, s32 v);
+u32 func_020729cc(CommManager *p, s32 v);
 }
 
 extern "C" {
-BOOL func_02072e44(Unk_020cbb18 *p);
+BOOL func_02072e44(CommManager *p);
 }
 
 extern "C" {
@@ -98,15 +98,15 @@ s32 func_020b50e8();
 }
 
 extern "C" {
-void func_02076a2c(u32 a, s32 *x, s32 *y);
+void NetBuf_UnpackPair20(u32 a, s32 *x, s32 *y);
 }
 
 extern "C" {
-void func_02076ae8(u32 a, u8 *b, s32 c);
+void CommRecord_UnpackSource(u32 a, u8 *b, s32 c);
 }
 
 extern "C" {
-void func_02076280(s32 a, void *b, s32 c, s32 d);
+void CommSyncVar_SetVar(s32 a, void *b, s32 c, s32 d);
 }
 
 extern "C" {
@@ -270,19 +270,19 @@ void func_02096f10(void *p, s32 v);
 }
 
 extern "C" {
-Unk_02095dcc_Grid *func_0204da0c();
+Unk_02095dcc_Grid *TownBlockMap_Get();
 }
 
 extern "C" {
-void *func_0204ebd8(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
+void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 
 extern "C" {
-void func_02045de4();
+void Town_GetUpdater();
 }
 
 extern "C" {
-s32 func_020464bc();
+s32 Town_WashUpBottle();
 }
 
 extern "C" {
@@ -374,7 +374,7 @@ Unk_020e1c88::~Unk_020e1c88() {}
 BOOL Unk_020e1c88::vfunc_00() { return TRUE; }
 
 BOOL Unk_020e1c88::onExecute() {
-    Unk_020cbb18 *g = data_020cbb18;
+    CommManager *g = gCommManager;
     s32 mode = g->unk_64;
     u8 la, lb;
     s16 lc;
@@ -424,12 +424,12 @@ BOOL Unk_020e1c88::onExecute() {
         func_02094308(mode, &p1, lr1, 0x4000000);
         goto ret1;
     }
-    if (!_ZN12Unk_020cbb1813func_02072e88Ei(g, mode)) goto ret1;
+    if (!_ZN11CommManager12isSlotActiveEi(g, mode)) goto ret1;
     if (!func_02095204(4)) goto ret1;
     ob = func_02094348();
     i = 0;
     do {
-        if (!_ZN12Unk_020cbb1813func_020729bcEj(g, i) && _ZN12Unk_020cbb1813func_02072e88Ei(g, i) && !func_02095204(i)) {
+        if (!_ZN11CommManager11isLocalSlotEj(g, i) && _ZN11CommManager12isSlotActiveEi(g, i) && !func_02095204(i)) {
             if (PlayerActor_GetSlotAction(&lv1, -1, i) && lv1 < 0x93 && PlayerActor_GetSlotPosXZ(&la, &lx1, &ly1, -1, i) &&
                 la == func_020b50e8() && PlayerActor_GetSlotAngle(&lc, -1, i)) {
                 p2.x = lx1;
@@ -456,7 +456,7 @@ BOOL Unk_020e1c88::onExecute() {
     } while ((u32)i < 4);
     j = 0;
     do {
-        if (!_ZN12Unk_020cbb1813func_020729bcEj(g, j) && !PlayerActor_TestSlotFlag(0x1b, ob)) {
+        if (!_ZN11CommManager11isLocalSlotEj(g, j) && !PlayerActor_TestSlotFlag(0x1b, ob)) {
             Unk_02095774_Ent *e = func_02095204(j);
             if (e) {
                 if (!Unk_0209579c_IsTwo(((Unk_0209579c_Rec *)e)->unk_0e)) {

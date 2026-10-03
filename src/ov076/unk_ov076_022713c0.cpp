@@ -91,7 +91,7 @@ s32 func_0206ed18();
 s32 func_0206ed38();
 void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 void func_02063388(ItemPickSpec *o);
-void func_0203ffa4(u32 id);
+void EventWeekSlots_MarkPlayer(u32 id);
 void TalkRequest_EndTalkWith(void *self);
 void func_020e7530(void *a, s32 b, s32 c);
 void ProcBase_RequestDelete(void *self);
@@ -213,12 +213,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -337,7 +337,7 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -785,7 +785,7 @@ void Unk_ov076_022720e4::vfunc_14() {
             }
             unk_b0->unk_718 = 1;
         }
-        func_0203ffa4(0x42);
+        EventWeekSlots_MarkPlayer(0x42);
         break;
     }
     if (code != 0xff) {

@@ -7,18 +7,18 @@
 
 extern "C" {
 u32 func_0206ed50();
-void func_0206e048();
+void MenuScreen_BeginOpen();
 void func_0206db88(s32 a);
 void Snd_PlaySe(s32 a);
 void func_02003f5c(s32 a);
-void func_020015b8(s32 a);
+void Gfx2d_SetSubBgModeState(s32 a);
 void func_0206e60c();
 void MenuCtrl_RequestOpenNested(s32 a);
 void func_0206ed44(s32 a);
 void func_0206e03c();
-void func_0206e070();
+void MenuScreen_BeginClose();
 void func_0206e5fc();
-void func_0206dfe4();
+void MenuScreen_Reset();
 void Snd_EndMenuDuck();
 void Snd_BeginMenuDuck();
 void MenuCtrl_SyncFromInputMode();
@@ -133,7 +133,7 @@ BOOL Unk_ov092_02291ec8::vfunc_00() {
 
 BOOL Unk_ov092_02291ec8::vfunc_0c() {
     func_0206e5fc();
-    func_0206dfe4();
+    MenuScreen_Reset();
     func_ov092_02291918();
     Snd_EndMenuDuck();
     return TRUE;
@@ -172,7 +172,7 @@ void Unk_ov092_02291ec8::func_ov092_02291ce4(s32 a, s32 b) {
     case 0x43:
         break;
     case 0x44:
-        func_0206e070();
+        MenuScreen_BeginClose();
         break;
     }
     if (a != 0x43 && a != 0x44) {
@@ -191,12 +191,12 @@ void Unk_ov092_02291ec8::func_ov092_02291c5c() {
         break;
     case 0x44:
         func_ov002_02200a60(0);
-        func_020015b8(1);
+        Gfx2d_SetSubBgModeState(1);
         func_0206e03c();
         break;
     case 0:
     case 1:
-        func_0206e048();
+        MenuScreen_BeginOpen();
         unk_8d = 1;
         break;
     case 2:
@@ -527,7 +527,7 @@ _end:
 #endif
 
 void Unk_ov092_02291ec8::func_ov092_02291a2c() {
-    func_020015b8(0);
+    Gfx2d_SetSubBgModeState(0);
     func_ov002_02200a60(2);
 }
 
@@ -539,7 +539,7 @@ void Unk_ov092_02291ec8::func_ov092_0229191c() {
     } else {
         unk_8c = 0;
         func_ov002_02200a60(0);
-        func_0206e048();
+        MenuScreen_BeginOpen();
     }
     switch (unk_91) {
     case 0x2d:

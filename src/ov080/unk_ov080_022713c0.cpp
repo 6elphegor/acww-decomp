@@ -25,7 +25,7 @@ BOOL TalkRequest_EndTalkWith(void *p);
 void func_0203d948();
 BOOL func_0203c338();
 BOOL func_0203c31c();
-void func_02053848(void *self, s32 a, s32 b);
+void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
 void func_0201610c(void *self, void *owner, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void func_02014ce4(void *self, u16 *p, u32 a, u32 b, u32 c);
 BOOL unk_618_func_02014220(void *self);
@@ -160,12 +160,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -277,7 +277,7 @@ public:
     BOOL getAngleTo(Unk_020d77a4 *p);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -400,7 +400,7 @@ BOOL Unk_ov080_02271cac::vfunc_00() {
     }
     func_ov080_022718c0(0);
     func_0201610c(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
-    func_02053848(&unk_ec, 0xc, 0xe);
+    ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
     unk_4cc.unk_1c |= 2;
     if (func_02098044(PlayerData_GetCurrent(), 1) == 0) {
         func_0203d948();

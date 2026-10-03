@@ -2,22 +2,22 @@
 #include "Unk_020d8c7c.h"
 
 extern "C" {
-void func_0200145c(s32 x);
-void func_02001504(u32 x);
-void func_020014cc(u32 x);
-void func_0200158c(u32 x);
-void func_020015a0(u32 x);
-void func_020020b8(u32 x);
-void func_0200226c(u32 a, u32 b, u32 c, u32 d);
-void func_0200261c(const char *path, void *heap, u32 a, u32 b, u32 c, u32 d);
-void func_02002654(const char *path, void *heap, u32 a);
-void func_020026c4(const char *path, void *heap, u32 a, u32 b, u32 c, u32 d);
+void Gfx2d_SetBrightness(s32 x);
+void Gfx2d_SetMainPlanes(u32 x);
+void Gfx2d_SetSubPlanes(u32 x);
+void Gfx2d_SetSubBgMode(u32 x);
+void Gfx2d_SetMainBgMode(u32 x);
+void Gfx2d_ShowLayer(u32 x);
+void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
+void Gfx2d_LoadCharFile(const char *path, void *heap, u32 a, u32 b, u32 c, u32 d);
+void Gfx2d_LoadScreenFile(const char *path, void *heap, u32 a);
+void Gfx2d_LoadPaletteFile(const char *path, void *heap, u32 a, u32 b, u32 c, u32 d);
 void Snd_PlaySe(u32 x);
 void Snd_CreateScene(void);
-void func_0205c170(void);
-void func_0205c18c(u32 a, u32 b);
-void func_0205369c(void);
-void func_02053780(void);
+void BgHeap_Destroy(void);
+void BgHeap_Create(u32 a, u32 b);
+void Gfx_DisableAllBanks(void);
+void Gfx_ResetScene(void);
 void func_02078370(void);
 void func_0207835c(void);
 void func_02097564(void);
@@ -32,8 +32,8 @@ u32 Save_ReadSlotAsyncStep(u32 a, void *p);
 void func_020b4f78(void *p, u32 x);
 void func_020b4968(u32 a, u32 b);
 u8 *func_020b4934(void);
-void func_020b83e0(void);
-void func_020b8494(void);
+void VramQueue2d_Init(void);
+void VramQueueTex_Init(void);
 u64 OS_GetTick(void);
 void GX_SetBankForSubBG(u32 x);
 void GX_SetBankForBG(u32 x);
@@ -65,7 +65,7 @@ public:
     virtual ~Unk_020e2988() {}
 };
 
-class Unk_020e3fe4 : public Unk_020e2988 {
+class BootLogoScene : public Unk_020e2988 {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -73,7 +73,7 @@ public:
 
     void func_020b41cc();
     void func_020b4248();
-    void func_020b42b8();
+    void setupGraphics();
 
     /* 0x50 */ u8 unk_50;
     /* 0x51 */ volatile u8 unk_51;
@@ -87,9 +87,9 @@ public:
     /* 0x68 */ void *unk_68;
 };
 
-extern "C" Unk_020e3fe4 *func_020b459c(void) { return new Unk_020e3fe4; }
+extern "C" BootLogoScene *func_020b459c(void) { return new BootLogoScene; }
 
-BOOL Unk_020e3fe4::vfunc_00() {
+BOOL BootLogoScene::vfunc_00() {
     gVBlanksPerFrame = 3;
     Snd_CreateScene();
     unk_50 = 0;
@@ -99,13 +99,13 @@ BOOL Unk_020e3fe4::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_020e3fe4::vfunc_0c() {
+BOOL BootLogoScene::vfunc_0c() {
     Heap_Free(unk_60, unk_64);
     Heap_Free(unk_60, unk_68);
     return TRUE;
 }
 
-BOOL Unk_020e3fe4::onExecute() {
+BOOL BootLogoScene::onExecute() {
     switch (unk_5f) {
     case 0:
         if (unk_50 == 1) unk_5f = 1;
@@ -129,8 +129,8 @@ BOOL Unk_020e3fe4::onExecute() {
     }
     switch (unk_50) {
     case 0:
-        func_020b42b8();
-        func_0200145c(-16);
+        setupGraphics();
+        Gfx2d_SetBrightness(-16);
         unk_50 = 1;
         unk_51 = 0x10;
         Snd_PlaySe(0x88c);
@@ -138,7 +138,7 @@ BOOL Unk_020e3fe4::onExecute() {
     case 1:
         if (unk_51 != 0) {
             unk_51 = unk_51 - 1;
-            func_0200145c(-unk_51);
+            Gfx2d_SetBrightness(-unk_51);
         } else {
             unk_50 = 2;
             unk_54 = OS_GetTick();
@@ -160,10 +160,10 @@ BOOL Unk_020e3fe4::onExecute() {
     case 3:
         if (unk_51 != 0) {
             unk_51 = unk_51 - 1;
-            func_0200145c(unk_51 - 0x10);
+            Gfx2d_SetBrightness(unk_51 - 0x10);
         } else {
-            func_02001504(0);
-            func_020014cc(0);
+            Gfx2d_SetMainPlanes(0);
+            Gfx2d_SetSubPlanes(0);
             unk_50 = 4;
             func_020b4f78(func_020b4934(), 0x2c);
             func_020b4968(3, 2);
@@ -173,32 +173,32 @@ BOOL Unk_020e3fe4::onExecute() {
     return TRUE;
 }
 
-void Unk_020e3fe4::func_020b42b8() {
-    func_02053780();
-    func_020b83e0();
-    func_020b8494();
-    func_0205369c();
+void BootLogoScene::setupGraphics() {
+    Gfx_ResetScene();
+    VramQueue2d_Init();
+    VramQueueTex_Init();
+    Gfx_DisableAllBanks();
     GX_SetBankForBG(0x20);
     GX_SetBankForSubBG(0x80);
     *(volatile u32 *)0x4000000 = *(volatile u32 *)0x4000000 & 0xffcfffef;
     *(volatile u32 *)0x4001000 = *(volatile u32 *)0x4001000 & 0xffcfffef;
-    func_020015a0(0);
-    func_0200158c(0);
+    Gfx2d_SetMainBgMode(0);
+    Gfx2d_SetSubBgMode(0);
     *(volatile u32 *)0x4000000 = *(volatile u32 *)0x4000000 & 0xc7ffffff;
-    func_0200226c(6, 0, 0, 0);
-    func_0200226c(2, 0, 0, 0);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerControl(2, 0, 0, 0);
     void *heap = gCurrentHeap;
-    func_0200261c("menu/nin/nin.bch", heap, 6, 0, 0, 0x2ff);
-    func_020026c4("menu/nin/ninE.bpl", heap, 6, 0, 0, 0);
-    func_02002654("menu/nin/nin.bsc", heap, 6);
-    func_0200261c("menu/nin/arrE.bch", heap, 2, 0, 0, 0x13f);
-    func_020026c4("menu/nin/arrE.bpl", heap, 2, 0, 0, 0);
-    func_02002654("menu/nin/arrE.bsc", heap, 2);
-    func_020020b8(6);
-    func_020020b8(2);
+    Gfx2d_LoadCharFile("menu/nin/nin.bch", heap, 6, 0, 0, 0x2ff);
+    Gfx2d_LoadPaletteFile("menu/nin/ninE.bpl", heap, 6, 0, 0, 0);
+    Gfx2d_LoadScreenFile("menu/nin/nin.bsc", heap, 6);
+    Gfx2d_LoadCharFile("menu/nin/arrE.bch", heap, 2, 0, 0, 0x13f);
+    Gfx2d_LoadPaletteFile("menu/nin/arrE.bpl", heap, 2, 0, 0, 0);
+    Gfx2d_LoadScreenFile("menu/nin/arrE.bsc", heap, 2);
+    Gfx2d_ShowLayer(6);
+    Gfx2d_ShowLayer(2);
 }
 
-void Unk_020e3fe4::func_020b4248() {
+void BootLogoScene::func_020b4248() {
     if (unk_5c == 1 || unk_5d == 1) {
         unk_5e = 1;
     } else if (unk_5c != 0 && unk_5d != 0) {
@@ -221,8 +221,8 @@ void Unk_020e3fe4::func_020b4248() {
     }
 }
 
-void Unk_020e3fe4::func_020b41cc() {
-    func_0205c18c(0x5000, 0);
+void BootLogoScene::func_020b41cc() {
+    BgHeap_Create(0x5000, 0);
     if (unk_5e == 4 || unk_5e == 1) {
         if (unk_5e == 4) {
             if (!_ZN11SaveRecord412isStateUnsetEv(&data_021ed32c)) func_0209f224(1);
@@ -237,7 +237,7 @@ void Unk_020e3fe4::func_020b41cc() {
     }
     SaveData_Apply(&gSaveData);
     func_0207835c();
-    func_0205c170();
+    BgHeap_Destroy();
 }
 
 

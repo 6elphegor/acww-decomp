@@ -41,15 +41,15 @@ public:
     ~Unk_0209c980();
 };
 
-class Unk_020cbb18 {
+class CommManager {
 public:
-    BOOL func_02072e44();
-    void func_020728d4();
-    void func_020728a4(u8 *buf, u32 n);
-    void func_02072824(u32 cmd, u32 arg);
-    u32 func_020729cc(u32 v);
+    BOOL isOnline();
+    void beginRecord();
+    void writeRecord(u8 *buf, u32 n);
+    void endRecord(u32 cmd, u32 arg);
+    u32 isMyAid(u32 v);
 };
-extern "C" Unk_020cbb18 *data_020cbb18;
+extern "C" CommManager *gCommManager;
 
 class Unk_0209c614_Actor {
 public:
@@ -66,7 +66,7 @@ extern u8 gVec3Zero[];
 
 void func_020b4b68(void *o, u32 id, u32 *p24, s16 *f);
 void func_020b4aec(void *o, u32 id, Unk_0209c614_Vec *v34, Unk_0209c614_Vec *v40);
-void func_0204edd8(Unk_0209c614_Vec *a, Unk_0209c614_Vec *b);
+void FieldPos_SnapToUnitCenter(Unk_0209c614_Vec *a, Unk_0209c614_Vec *b);
 void *func_020b4934();
 s32 func_020b4c64(void *o, u32 id, u8 *a, Unk_0209c614_Vec *v, u32 *p20, u16 *e, u8 *c, u8 *b, s32 z0, s32 z1);
 s32 func_020b50e8();
@@ -302,12 +302,12 @@ extern "C" BOOL func_0209c614(u32 id) {
         v4c.y = v40.y;
         v4c.z = v40.z;
         v4c.z = v4c.z + 0x2000;
-        func_0204edd8(&v4c, &v4c);
+        FieldPos_SnapToUnitCenter(&v4c, &v4c);
         v4c.x = v40.x;
         func_0209c82c(&data_021d7290, &v4c);
         if (func_0209c7ec(s.a)) {
-            Unk_020cbb18 *g = data_020cbb18;
-            if (!g->func_02072e44() || g->func_020729cc(0) != 0) {
+            CommManager *g = gCommManager;
+            if (!g->isOnline() || g->isMyAid(0) != 0) {
                 if ((u32)func_0209c8d4(data_021d72b4.e, s.a, 0) <= 1) {
                     func_0209c908(data_021d72b4.e, s.a, 0);
                     func_0209c860(&data_021d7290, 2);
@@ -316,10 +316,10 @@ extern "C" BOOL func_0209c614(u32 id) {
                 }
             } else {
                 s.d = s.a;
-                g = data_020cbb18;
-                g->func_020728d4();
-                g->func_020728a4(&s.d, 1);
-                g->func_02072824(0x33, 0);
+                g = gCommManager;
+                g->beginRecord();
+                g->writeRecord(&s.d, 1);
+                g->endRecord(0x33, 0);
             }
         } else {
             func_0209c860(&data_021d7290, 2);
@@ -334,15 +334,15 @@ extern "C" void *func_0209c60c() {
 }
 
 extern "C" void func_0209c5a0(u32 a, u32 b) {
-    Unk_020cbb18 *g = data_020cbb18;
-    if (!g->func_02072e44() || g->func_020729cc(0) != 0 || g->func_020729cc(4) != 0) {
+    CommManager *g = gCommManager;
+    if (!g->isOnline() || g->isMyAid(0) != 0 || g->isMyAid(4) != 0) {
         func_0209c8f0(data_021d72b4.e, a, b);
     } else {
         u8 v = a;
-        g = data_020cbb18;
-        g->func_020728d4();
-        g->func_020728a4(&v, 1);
-        g->func_02072824(0x35, 0);
+        g = gCommManager;
+        g->beginRecord();
+        g->writeRecord(&v, 1);
+        g->endRecord(0x35, 0);
     }
 }
 
@@ -372,10 +372,10 @@ extern "C" void func_0209c4e4(u8 *p, u32 x) {
     } else {
         flag = 0;
     }
-    Unk_020cbb18 *g = data_020cbb18;
-    g->func_020728d4();
-    g->func_020728a4(&flag, 1);
-    g->func_02072824(0x34, x);
+    CommManager *g = gCommManager;
+    g->beginRecord();
+    g->writeRecord(&flag, 1);
+    g->endRecord(0x34, x);
 }
 
 extern "C" void func_0209c4bc(u8 *p) {

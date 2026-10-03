@@ -1,14 +1,14 @@
 #include "types.h"
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 pad_00[0x104];
     u8 *unk_104;
     u8 pad_108[8];
     u8 *unk_110;
 
-    void func_02072454(u32 v);
-    void func_02072460();
-    u32 func_02072478();
+    void setAuxLenB(u32 v);
+    void clearAuxLenB();
+    u32 getAuxBufB();
 };
 
 extern "C" {
@@ -18,7 +18,7 @@ void func_020a64e0();
 void func_020a6560();
 }
 
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 
 extern void (*const data_020d07a0[1])(s32);
 extern void (*const data_020d07a4[1])(u8 *, u32);
@@ -35,9 +35,9 @@ struct Unk_020a647c_Buf {
 extern "C" void func_020a6560() {}
 
 extern "C" void func_020a64e4() {
-    Unk_020cbb18 *g = data_020cbb18;
-    g->func_02072460();
-    u8 *base = (u8 *)g->func_02072478();
+    CommManager *g = gCommManager;
+    g->clearAuxLenB();
+    u8 *base = (u8 *)g->getAuxBufB();
     u8 *p = base + 2;
     s32 m = func_020b50e8();
     g->unk_110 = p + 4;
@@ -55,15 +55,15 @@ extern "C" void func_020a64e4() {
     s32 tot = p - base;
     b.total = tot - 2;
     MI_CpuCopy8(&b.total, base, 2);
-    g->func_02072454(tot);
+    g->setAuxLenB(tot);
 }
 
 extern "C" void func_020a64e0() {}
 
 extern "C" void func_020a647c() {
-    Unk_020cbb18 *g = data_020cbb18;
-    Unk_020cbb18 *sg = g;
-    u8 *p = (u8 *)g->func_02072478();
+    CommManager *g = gCommManager;
+    CommManager *sg = g;
+    u8 *p = (u8 *)g->getAuxBufB();
     Unk_020a647c_Buf b;
     u32 n;
     MI_CpuCopy8(p, &b.total, 2);
@@ -81,5 +81,5 @@ extern "C" void func_020a647c() {
         p += len;
         n += len;
     }
-    sg->func_02072460();
+    sg->clearAuxLenB();
 }

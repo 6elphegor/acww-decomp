@@ -14,11 +14,11 @@ extern u8 gTouchCurX[];
 extern u8 gTouchCurY[];
 
 void Snd_PlaySe(u32 id);
-void func_020015b8(s32 a);
-void func_02002398(s32 a, s32 b);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_020021a0(s32 a);
-void func_020020b8(s32 a);
+void Gfx2d_SetSubBgModeState(s32 a);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ShowLayer(s32 a);
 void *PlayerData_GetCurrent();
 void *_ZN12Unk_02097ff413func_02098320Ev();
 void *_ZN10PlayerData13func_02098750Ev(void *p);
@@ -330,8 +330,8 @@ void Unk_ov131_022942f0::func_ov131_02293fb4() {
     func_ov131_02293df4();
     func_ov131_02293dd4();
     func_ov002_022008e0(10, 4, 0, 0x30);
-    func_020020b8(6);
-    func_020020b8(4);
+    Gfx2d_ShowLayer(6);
+    Gfx2d_ShowLayer(4);
     func_ov131_02293f04();
     func_ov131_02293734(1);
     unk_f8.func_ov002_022034c4(0x65);
@@ -356,8 +356,8 @@ void Unk_ov131_022942f0::func_ov131_02293f54() {
 
 void Unk_ov131_022942f0::func_ov131_02293f24() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
-        func_020021a0(4);
+        Gfx2d_ResetLayer(6);
+        Gfx2d_ResetLayer(4);
         func_ov002_02200a60(5);
     } else {
         func_ov131_02293f04();
@@ -402,11 +402,11 @@ void Unk_ov131_022942f0::func_ov131_02293e3c() {
 }
 
 void Unk_ov131_022942f0::func_ov131_02293e04() {
-    func_020015b8(0);
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
-    func_02002398(4, 2);
-    func_0200226c(4, 0, 0, 0);
+    Gfx2d_SetSubBgModeState(0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 2);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
 }
 
 s32 Unk_ov131_022942f0::func_ov131_02293df4() { return unk_25c.func_ov130_02292e90(); }

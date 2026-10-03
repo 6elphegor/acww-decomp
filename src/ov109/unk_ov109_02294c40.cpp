@@ -21,10 +21,10 @@ extern u16 gPad[];
 
 void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
-void func_020020b8(u32 x);
-void func_020021a0(u32 x);
-void func_02002398(u32 a, u32 b);
-void func_0200226c(u32 a, u32 b, u32 c, u32 d);
+void Gfx2d_ShowLayer(u32 x);
+void Gfx2d_ResetLayer(u32 x);
+void Gfx2d_SetLayerPriority(u32 a, u32 b);
+void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
 void Snd_PlaySe(s32 v);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
@@ -90,15 +90,15 @@ public:
 };
 
 // Screen upload helper, 0x38 bytes
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    void func_020b87d0();
+    void cancel();
     u32 unk_00[0x38 / 4];
 };
 
-class Unk_020e4608 : public Unk_020e45f8 {
+class BgVramTaskPair : public BgVramTask {
 public:
-    Unk_020e4608();
+    BgVramTaskPair();
 };
 
 class HandCursor {
@@ -378,7 +378,7 @@ public:
     void func_ov109_02295e28();
 
     /* 0x0091 */ u8 unk_91[3];
-    /* 0x0094 */ Unk_020e4608 unk_94[1];
+    /* 0x0094 */ BgVramTaskPair unk_94[1];
     /* 0x00cc */ Unk_ov094_02294a50 unk_cc;
     /* 0x0b2c */ Unk_ov094_02294bd4 unk_b2c;
     /* 0x0b54 */ Unk_ov094_02292d6c unk_b54;
@@ -593,7 +593,7 @@ void Unk_ov109_02296698::func_ov109_02296160() {
     func_ov094_02293d2c(&unk_b2c);
     unk_b2c.func_ov094_022941f8(0xf);
     func_ov002_022008e0(8, 0, 0, 0x30);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(6);
     func_ov002_02200840(6, 0, -0x10);
     func_ov002_02200a50(2);
     func_ov109_02294d5c(1);
@@ -627,7 +627,7 @@ void Unk_ov109_02296698::func_ov109_022960a0() {
 
 void Unk_ov109_02296698::func_ov109_02296050() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
+        Gfx2d_ResetLayer(6);
         func_ov002_02200a60(5);
         func_ov109_02294d4c(1);
         func_ov109_02294d4c(2);
@@ -685,8 +685,8 @@ void Unk_ov109_02296698::func_ov109_02295f00() {
 }
 
 void Unk_ov109_02296698::func_ov109_02295ee0() {
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
 void Unk_ov109_02296698::func_ov109_02295ecc() { func_ov094_02292d1c(&unk_b54, 0); }
@@ -955,7 +955,7 @@ void func_ov109_0229578c(S *s, u32 a) {
 }
 
 void func_ov109_02295780(S *s) {
-    M(s)->unk_94[0].func_020b87d0();
+    M(s)->unk_94[0].cancel();
 }
 
 BOOL func_ov109_02295774(S *s, u32 a) {

@@ -355,12 +355,12 @@ namespace n5 {
 extern "C" {
 void _ZN8PlayerIdC1Ev(void *p);
 void _ZN8PlayerIdC1EPv(void *p);
-s32 func_0209d498(void *p);
-s32 func_0209d258(void *p, s32 x);
-s32 func_0209d020(void *p);
-s32 func_0209d374(void *p, void *q);
-s32 func_0209d3d0(void *p, void *q, s32 m);
-s32 func_0209d3a4(void *p, void *q);
+s32 Clock_GetDateTime(void *p);
+s32 DateTime_AddMinutes(void *p, s32 x);
+s32 DateTime_IsInvalid(void *p);
+s32 DateTime_DiffMinutes(void *p, void *q);
+s32 DateTime_Compare(void *p, void *q, s32 m);
+s32 DateTime_DiffDays(void *p, void *q);
 s32 func_02063b8c(s32 x);
 void MI_CpuCopy8(void *a, void *b, s32 n);
 void MI_CpuFill8(void *a, s32 v, s32 n);
@@ -491,8 +491,8 @@ void Unk_0209b3bc::func_0209b358(s32 a, s32 flag) {
     if (flag != 0) {
         unk_11.func_0209b494(unk_10);
     }
-    func_0209d498(this);
-    func_0209d498((u8 *)this + 8);
+    Clock_GetDateTime(this);
+    Clock_GetDateTime((u8 *)this + 8);
 }
 
 
@@ -551,7 +551,7 @@ void Unk_0209b3bc::func_0209b294() {
         unk_21.f = 0;
     }
     func_0209b350(8);
-    func_0209d498(this);
+    Clock_GetDateTime(this);
     MI_CpuCopy8(this, (u8 *)this + 8, 8);
 }
 
@@ -566,7 +566,7 @@ void Unk_0209b3bc::func_0209b238() {
         unk_21.f = 0;
     }
     func_0209b350(0xb);
-    func_0209d498(this);
+    Clock_GetDateTime(this);
     MI_CpuCopy8(this, (u8 *)this + 8, 8);
 }
 
@@ -575,8 +575,8 @@ namespace n5 {
 }
 BOOL Unk_0209b3bc::func_0209b1f0(void *o, u32 c) {
     using namespace n5;
-    if (func_0209d020(this) == 0 && func_0209b3a4()) {
-        s32 t = func_0209d374(this, o);
+    if (DateTime_IsInvalid(this) == 0 && func_0209b3a4()) {
+        s32 t = DateTime_DiffMinutes(this, o);
         if (t < 0) t = -t;
         if ((u32)_s32_div_f(t, 0x5a0) >= c) return TRUE;
         return FALSE;
@@ -623,7 +623,7 @@ s32 Unk_0209b3bc::func_0209b12c() {
             func_0209b350(i);
             unk_11.func_0209b494(i);
             unk_21.f = 0;
-            func_0209d498(this);
+            Clock_GetDateTime(this);
             MI_CpuCopy8(this, (u8 *)this + 8, 8);
             return i;
         }
@@ -642,7 +642,7 @@ s32 Unk_0209b3bc::func_0209b0c4(Unk_0209b3bc *o) {
             func_0209b350(i);
             unk_11.func_0209b494(i);
             unk_21.f = 0;
-            func_0209d498(this);
+            Clock_GetDateTime(this);
             MI_CpuCopy8(this, (u8 *)this + 8, 8);
             return i;
         }
@@ -656,13 +656,13 @@ namespace n5 {
 s32 Unk_0209b3bc::func_0209b044(void *x) {
     using namespace n5;
     if (unk_10 == 0xa) {
-        if (x == 0 || (func_0209d3d0(x, this, 0x3f) == 1 && func_0209d3a4(this, x) >= 1)) {
+        if (x == 0 || (DateTime_Compare(x, this, 0x3f) == 1 && DateTime_DiffDays(this, x) >= 1)) {
             u32 i = unk_11.func_0209b4cc();
             if (func_0209b3b0(i)) {
                 func_0209b350(i);
                 unk_11.func_0209b494(i);
                 unk_21.f = 0;
-                func_0209d498(this);
+                Clock_GetDateTime(this);
                 MI_CpuCopy8(this, (u8 *)this + 8, 8);
                 return i;
             }
@@ -898,8 +898,8 @@ namespace n5 {
 }
 s32 Unk_0209ada4::func_0209ac48(s32 x) {
     using namespace n5;
-    func_0209d498(this);
-    return func_0209d258(this, x);
+    Clock_GetDateTime(this);
+    return DateTime_AddMinutes(this, x);
 }
 
 
@@ -1032,7 +1032,7 @@ s32 func_0209ab54(void *p);
 s32 func_0209ab6c(void *p);
 s32 func_0209b334(void *p);
 s32 func_0209b570(u32 *a, s32 i);
-s32 func_0209d498(s32 x);
+s32 Clock_GetDateTime(s32 x);
 s32 _ZN10VillagerId7isValidEv(void *p);
 void func_020030d8(void *p, s32 v);
 void func_020030e8(void *p);
@@ -1054,7 +1054,7 @@ void _ZN12ItemPickSpec3setEii(void *p, s32 a, s32 b);
 void func_02063388(void *p);
 void ItemPick_One(void *out, void *x, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 func_020657a0(void *a, u8 *b, u8 *c, u8 *d, u8 *e, void *f, const void *g, void *h, void *i, s32 j);
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
+s32 _ZN11CommManager8isOnlineEv(void *p);
 s32 Item_GetFossilGroup(u16 *p);
 s32 Item_IsFurniture(void *p);
 void *Item_GetFurnitureIndex(void *p);
@@ -1067,7 +1067,7 @@ s32 Ftr_GetSeries(void *p);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)(void *));
 void __cxa_vec_ctor(void *p, u32 n, u32 sz, void (*c)(void *), void (*d)(void *));
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 data_020d05a4[];
 extern u8 data_020d05d4[];
 extern u32 data_020d05f0[];
@@ -1218,7 +1218,7 @@ extern "C" void func_0209a9f0(Unk_0209ab18 *self, s32 a1, u16 *p, void *obj, u8 
     }
     if (obj) {
         _ZN8PlayerId13func_020942b8EPv(func_0209a92c(self), (s32)obj);
-        func_0209d498(func_0209ac44(func_0209a940(self)));
+        Clock_GetDateTime(func_0209ac44(func_0209a940(self)));
         _ZN12Unk_0209ada413func_0209ab98Eh(func_0209a940(self), 0);
     } else {
         _ZN8PlayerId13func_02094294Ev(func_0209a92c(self));
@@ -1529,7 +1529,7 @@ extern "C" u8 *func_0209a4e4(Unk_0209a5dc *p, s32 i) {
 extern "C" BOOL func_0209a49c(s32 a, void *b) {
     s32 t;
     BOOL r;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         return FALSE;
     }
     t = func_0209b334(b);
@@ -2220,8 +2220,8 @@ void _ZN8PlayerId13func_02094294Ev(void *);
 s32 _ZN8PlayerId13func_020942b8EPv(void *, void *);
 void *_ZN8PlayerIdC1Ev(void *);
 void *_ZN8PlayerIdC1EPv(void *);
-s32 func_0209cd00(void *, void *);
-s32 func_0209cf88(void *);
+s32 Date_DaysBetween(void *, void *);
+s32 Clock_GetDate(void *);
 void func_020030d8(void *, void *);
 void func_020030e8(void *);
 void *func_02003100(void *);
@@ -2420,11 +2420,11 @@ BOOL Unk_020994cc::func_02099624(Unk_020994cc_Date *d) {
     using namespace n2;
     Unk_020994cc_Date local;
     if (d == NULL) {
-        func_0209cf88(&local);
+        Clock_GetDate(&local);
         d = &local;
     }
     if (func_02099668()) {
-        s32 r = func_0209cd00(d, unk_8a);
+        s32 r = Date_DaysBetween(d, unk_8a);
         if (r >= 0 && r < 3) return TRUE;
         return FALSE;
     }

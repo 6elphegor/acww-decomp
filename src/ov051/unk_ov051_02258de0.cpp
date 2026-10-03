@@ -81,13 +81,13 @@ BOOL func_020a02dc();
 BOOL func_020a02f0();
 BOOL func_020a0304();
 BOOL func_0206ed04();
-void func_0209d498(void *p);
-void func_0209b5c8(u32 a);
+void Clock_GetDateTime(void *p);
+void Town_SetGenGateMode(u32 a);
 void func_0206e8cc(void *p);
 void SaveData_Setup(void *p, s32 a);
 void SaveData_Apply(void *p);
-s32 func_0204da0c();
-void func_0204d5d8(s32 a, void *p, s32 b, s32 c);
+s32 TownBlockMap_Get();
+void Town_FindTownHallFront(s32 a, void *p, s32 b, s32 c);
 s32 func_020b4934();
 void func_020b4f18(s32 a, s32 b, void *p, u32 c, u32 d, u32 e, u32 f);
 s32 func_020e7500(void *p);
@@ -96,14 +96,14 @@ void func_0203d984();
 void func_0203d990();
 s32 func_02063b8c(s32 a);
 void func_0203a318();
-void func_0204137c(s32 a, s32 b);
+void ScreenTransition_StartFadeOut(s32 a, s32 b);
 void Snd_FadeOutScene();
-void func_020412f0(s32 a, s32 b, s32 c);
+void ScreenTransition_StartFadeIn(s32 a, s32 b, s32 c);
 void func_020b0f24();
-s32 func_ov068_0226ba48();
-void func_ov068_0226b9f0();
+s32 TaxiInterior_StopRain();
+void TaxiInterior_StartDriverAnim();
 extern u16 data_020c6cc8;
-extern u8 data_021c3cc0;
+extern u8 gScreenTransition;
 extern u8 gSaveData[];
 extern u8 data_020d0544[];
 extern u8 gTalkMsgIndexEnd[];
@@ -191,12 +191,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     Unk_ov051_02258e50_Bits unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -312,7 +312,7 @@ public:
     void setTalkRequest(Unk_0201bc1c *p);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -623,7 +623,7 @@ s32 Unk_ov051_0225a2dc::vfunc_9c() { return 10; }
 BOOL Unk_ov051_0225a2dc::func_ov051_02259bd4() { return TRUE; }
 
 BOOL Unk_ov051_0225a2dc::func_ov051_02259b98() {
-    if (Unk_ov051_02259b98_IsTwo(data_021c3cc0)) {
+    if (Unk_ov051_02259b98_IsTwo(gScreenTransition)) {
         if (func_020e7500(&unk_714) == 0) {
             func_ov051_02259be4(1);
         }
@@ -649,13 +649,13 @@ BOOL Unk_ov051_0225a2dc::func_ov051_02259a8c() {
         u32 w[2];
         u32 v[3];
     } l;
-    if (Unk_ov051_02259a8c_IsZero(data_021c3cc0)) {
-        func_020412f0(3, 0, 1);
+    if (Unk_ov051_02259a8c_IsZero(gScreenTransition)) {
+        ScreenTransition_StartFadeIn(3, 0, 1);
         func_020b0f24();
         if (func_020a02f0() || func_020a0318()) {
             l.w[0] = 0;
             l.w[1] = 0;
-            func_0209d498(&l.w);
+            Clock_GetDateTime(&l.w);
             func_0206e8cc(&l.w);
         }
         if (func_020a0318()) {
@@ -669,7 +669,7 @@ BOOL Unk_ov051_0225a2dc::func_ov051_02259a8c() {
             SaveData_Apply(gSaveData);
         }
         _ZN8SaveData9clearFlagEj(gSaveData, 0x12);
-        func_0204d5d8(func_0204da0c(), &l.v, 0, 0);
+        Town_FindTownHallFront(TownBlockMap_Get(), &l.v, 0, 0);
         func_020b4f18(func_020b4934(), 0, &l.v, 0x400000, 0xffff8000, 3, 2);
         func_ov051_02259be4(2);
     }
@@ -683,11 +683,11 @@ BOOL Unk_ov051_0225a2dc::func_ov051_02259a88() { return TRUE; }
 BOOL Unk_ov051_0225a2dc::func_ov051_02259a40() {
     if (TalkWindow_Get(0)->unk_04 == 0) {
         if (func_02063b8c(4) == 0) {
-            func_ov068_0226b9f0();
+            TaxiInterior_StartDriverAnim();
             func_0203a318();
             unk_716 = 10;
         }
-        func_0204137c(0, 0xf);
+        ScreenTransition_StartFadeOut(0, 0xf);
         Snd_FadeOutScene();
         func_ov051_02259be4(3);
     }
@@ -705,7 +705,7 @@ void Unk_ov051_0225a1a4::func_ov051_022599d4(Unk_ov051_0225a2dc *owner) {
 
 void Unk_ov051_0225a1a4::vfunc_1c(s32 a) {
     if (a == 0) {
-        func_ov068_0226ba48();
+        TaxiInterior_StopRain();
     }
 }
 
@@ -770,7 +770,7 @@ void Unk_ov051_0225a1a4::vfunc_10() {
         s32 r4 = 0x19;
         l.w[0] = 0;
         l.w[1] = 0;
-        func_0209d498(&l.w);
+        Clock_GetDateTime(&l.w);
         if (((u8 *)l.w)[2] >= 0xc) {
             r4 = 0x1a;
         }
@@ -1025,7 +1025,7 @@ void Unk_ov051_0225a1a4::func_ov051_0225912c(u32 sel) {
     u8 msg;
     msg = func_ov051_02258fa8(0x17);
     unk_3c->setNextMessage(&msg, data_ov051_02259f60);
-    func_0209b5c8(sel);
+    Town_SetGenGateMode(sel);
 }
 
 void Unk_ov051_0225a1a4::func_ov051_022590ec(u32 sel) {

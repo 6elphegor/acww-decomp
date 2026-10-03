@@ -348,11 +348,11 @@ s32 PlayerActor_IsInAction(s32, s32);
 }
 
 extern "C" {
-s32 func_0204ee10(s32 *, s32 *, void *);
+s32 FieldPos_ToUnit(s32 *, s32 *, void *);
 }
 
 extern "C" {
-s32 func_0204989c(s32, s32, s32, s32, s32);
+s32 Area_PlaceItem(s32, s32, s32, s32, s32);
 }
 extern "C" void func_02094360(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f);
 extern "C" s32 func_02094348();
@@ -380,8 +380,8 @@ extern "C" void func_02094360(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f)
         s[0] = *e;
         s[1] = 0;
         s[2] = fv;
-        func_0204ee10(&o1, &o2, s);
-        func_0204989c(0, o1, o2, 0xfff1, 0);
+        FieldPos_ToUnit(&o1, &o2, s);
+        Area_PlaceItem(0, o1, o2, 0xfff1, 0);
     }
 }
 

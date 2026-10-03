@@ -125,13 +125,13 @@ public:
 };
 
 // Button/sound helper (size 0x24)
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    Unk_020e45f8();
+    BgVramTask();
     virtual BOOL vfunc_00();
-    virtual void vfunc_04();
-    BOOL func_020b8670(u32 a, u8 b, u32 c);
-    void func_020b87d0(void);
+    virtual void clear();
+    BOOL requestPalette(u32 a, u8 b, u32 c);
+    void cancel(void);
 
     /* 0x04 */ u8 unk_04[0x20];
 };
@@ -139,8 +139,8 @@ public:
 extern "C" {
 extern u32 gCurrentHeap;
 
-s32 func_0200261c(u32 p0, u32 p1, u32 p2, s32 p3, s32 e, s32 f);
-s32 func_020026c4(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f);
+s32 Gfx2d_LoadCharFile(u32 p0, u32 p1, u32 p2, s32 p3, s32 e, s32 f);
+s32 Gfx2d_LoadPaletteFile(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f);
 void func_0206f994(MsgString *dst, const void *s, s32 len);
 void func_0206f9fc(void *a, u8 v);
 BOOL func_020a78a4(void *, const void *, s32);
@@ -196,7 +196,7 @@ public:
 
     /* 0x000 */ Unk_ov002_02204770 unk_00;
     /* 0x0bc */ Unk_020e0488 unk_bc[20];
-    /* 0x5bc */ Unk_020e45f8 unk_5bc;
+    /* 0x5bc */ BgVramTask unk_5bc;
     /* 0x5e0 */ u16 unk_5e0[16];
     /* 0x600 */ u16 unk_600[16];
     /* 0x620 */ u16 unk_620;
@@ -218,17 +218,17 @@ void Unk_ov139_02291f60::func_ov139_02292510(u8 id, u8 v) {
 
 void Unk_ov139_02291f60::func_ov139_022924f4() {
     func_ov139_0229212c();
-    unk_5bc.func_020b87d0();
+    unk_5bc.cancel();
 }
 
 void Unk_ov139_02291f60::func_ov139_022924d8() {
     func_ov139_0229212c();
-    unk_5bc.func_020b87d0();
+    unk_5bc.cancel();
 }
 
 void Unk_ov139_02291f60::func_ov139_02292498() {
     if (func_ov139_02291f80(1)) {
-        if (unk_5bc.func_020b8670((u32)unk_600, unk_622, 7)) {
+        if (unk_5bc.requestPalette((u32)unk_600, unk_622, 7)) {
             func_ov139_02291f60(1);
         }
     }
@@ -241,8 +241,8 @@ void Unk_ov139_02291f60::func_ov139_02292480(s32 a, s32 b) {
 
 void Unk_ov139_02291f60::func_ov139_02292410() {
     u32 h = gCurrentHeap;
-    func_0200261c((u32)"menu/res/bg.bch", h, unk_622, 0x11, 0x11, 0x36);
-    func_020026c4((u32)"menu/res/bg.bpl", h, unk_622, 1, 1, 8);
+    Gfx2d_LoadCharFile((u32)"menu/res/bg.bch", h, unk_622, 0x11, 0x11, 0x36);
+    Gfx2d_LoadPaletteFile((u32)"menu/res/bg.bpl", h, unk_622, 1, 1, 8);
     File_LoadToBuffer((void *)"menu/res/bg7.bpl", unk_5e0, 0x20);
     MIi_CpuCopy16(unk_5e0, unk_600, 0x20);
 }
@@ -257,9 +257,9 @@ void Unk_ov139_02291f60::func_ov139_022923dc() {
 
 void Unk_ov139_02291f60::func_ov139_0229237c() {
     u32 h = gCurrentHeap;
-    func_0200261c((u32)"menu/res/obj0.bch", h, 8, 0x80, 0x80, 0xff);
-    func_0200261c((u32)"menu/res/obj1.bch", h, 8, 0x160, 0x160, 0x1ff);
-    func_020026c4((u32)"menu/res/obj.bpl", h, 8, 4, 4, 0xd);
+    Gfx2d_LoadCharFile((u32)"menu/res/obj0.bch", h, 8, 0x80, 0x80, 0xff);
+    Gfx2d_LoadCharFile((u32)"menu/res/obj1.bch", h, 8, 0x160, 0x160, 0x1ff);
+    Gfx2d_LoadPaletteFile((u32)"menu/res/obj.bpl", h, 8, 4, 4, 0xd);
 }
 
 void Unk_ov139_02291f60::func_ov139_022922a0(s32 a, s32 x, s32 n, s32 e) {

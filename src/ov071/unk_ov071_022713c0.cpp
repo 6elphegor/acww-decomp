@@ -99,8 +99,8 @@ void *_ZN10PlayerData13func_0209868cEv(void *h);
 s32 func_02087b14(void *h);
 void _ZN12Unk_020877e013func_02087af0Ev(void *h);
 void _ZN12Unk_02087ad813func_02087ad8Ev(void *h);
-void func_0209cf88(void *p);
-s32 func_0209cd00(void *p, s32 v);
+void Clock_GetDate(void *p);
+s32 Date_DaysBetween(void *p, s32 v);
 void Hud_Hide();
 void Hud_Show();
 s32 func_0202e1cc(s32 a, s32 b);
@@ -154,12 +154,12 @@ BOOL func_0201a834(Unk_ov071_02271f54_Tmp *t);
 void TalkRequest_EndTalkWith(void *self);
 s32 func_020e96a4(void *a, void *b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_0204edd8(void *a, void *b);
+void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL func_02077f40(void *a, s32 b);
 BOOL func_02040c88();
 void *func_020850e0();
 void func_0208516c(void *p);
-void func_02053848(void *self, s32 a, s32 b);
+void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
 BOOL func_ov071_02271ab0(u16 *p, s32 x);
 }
 
@@ -284,12 +284,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -414,7 +414,7 @@ public:
     u32 getAngleToPlayer(u32 n);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -599,7 +599,7 @@ BOOL Unk_ov071_02272c38::vfunc_00() {
         return FALSE;
     }
     _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(&unk_334, this, 0x141, 0, 0, 0x1000, 0, 1);
-    func_02053848(&unk_ec, 0xc, 0xe);
+    ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
     func_ov071_022726c4(4);
     return TRUE;
 }
@@ -852,7 +852,7 @@ BOOL Unk_ov071_02272c38::func_ov071_02272090(s32 *x, s32 *z) {
         v.x = t + unk_5c.x;
         t = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
         v.z = t + unk_5c.z;
-        func_0204edd8(&v, &v);
+        FieldPos_SnapToUnitCenter(&v, &v);
         if (func_02077f40(&v, r) != 0) {
             *x = v.x;
             *z = v.z;
@@ -1205,8 +1205,8 @@ void Unk_ov071_02272ba8::vfunc_78(Unk_ov071_02271800_Out *out) {
     if (_ZN12Unk_02097ff413func_02098044Ej(h, 0x17) != 0) {
         s32 v = func_02087b14(_ZN10PlayerData13func_0209868cEv(h));
         Unk_0209cf88_Obj obj;
-        func_0209cf88(&obj);
-        if (func_0209cd00(&obj, v) < 1) {
+        Clock_GetDate(&obj);
+        if (Date_DaysBetween(&obj, v) < 1) {
             unk_ac = 1;
         } else if (_ZN12Unk_02097ff413func_02098044Ej(h, 0x18) != 0) {
             if (func_0202e1cc(0x28, b) != 0) {

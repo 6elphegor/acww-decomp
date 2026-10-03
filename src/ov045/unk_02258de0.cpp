@@ -8,7 +8,7 @@
 #define func_02098784 _ZN10PlayerData13func_02098784Eh
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 #define VillagerId_isValid _ZN10VillagerId7isValidEv
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define VillagerMemory_addFriendship _ZN14VillagerMemory13addFriendshipEi
 #define VillagerMemory_getFriendship _ZN14VillagerMemory13getFriendshipEv
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
@@ -29,8 +29,8 @@ u32 func_02063b8c(u32 n);
 void TalkRequest_EndTalkWith(void *p);
 void TalkRequest_AddPlayerTalk6(void *p, s32 a);
 void *func_020947f0(s32);
-s32 func_0209d498(void *);
-void func_0204ee10(s32 *, s32 *, void *);
+s32 Clock_GetDateTime(void *);
+void FieldPos_ToUnit(s32 *, s32 *, void *);
 s32 func_0206ed18();
 s32 func_0206ecf0();
 void func_020a78a4(void *, s32, s32);
@@ -50,7 +50,7 @@ void *Villager_GetMemory(void *, void *);
 void *VillagerData_getVillagerId(void *self);
 s32 VillagerId_isValid(void *self);
 void *func_0207e310(void *);
-s32 func_02072e88(void *self, s32 v);
+s32 CommManager_isSlotActive(void *self, s32 v);
 s32 func_0207856c(void *);
 void func_02078550(void *, s32);
 void func_0207854c(void *, s32);
@@ -71,14 +71,14 @@ void unk_564_func_020196b4(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 
 void base_vfunc_38(void *self, u32 a);
 void *func_020b4934();
 s32 func_020b4bbc(void *, s32);
-s32 func_020553cc(void *p, void *q, s32 v);
+s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
 s32 func_020e7518(void *p);
 s32 func_02090330(u32 kind, void *a, s32 b, s32 c);
 void func_020902f8(s32 id);
 void func_020902d4(s32 id, void *pos, s32 a, s32 b);
 extern u16 data_020c6cc8;
 extern u8 gSaveData[];
-extern u8 *data_020cbb18;
+extern u8 *gCommManager;
 }
 
 struct TalkWindowState {
@@ -246,12 +246,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -362,7 +362,7 @@ public:
     void func_0201bd9c(s32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -567,7 +567,7 @@ BOOL Unk_ov045_02259eb0::onDraw() {
     if (!Unk_020d77a4::onDraw()) {
         return FALSE;
     }
-    func_020553cc(&unk_ec, &unk_65c, 0xe);
+    Model_GetJointWorldMtx(&unk_ec, &unk_65c, 0xe);
     func_ov004_02228e84();
     return TRUE;
 }
@@ -782,8 +782,8 @@ void Unk_ov045_02259e20::vfunc_14() {
                     if (w != 0) {
                         switch (kind) {
                         case 1: {
-                            u8 *g = data_020cbb18;
-                            if (func_02072e88(g, *(s32 *)(g + 0x64)) == 0 && r5 != 0) {
+                            u8 *g = gCommManager;
+                            if (CommManager_isSlotActive(g, *(s32 *)(g + 0x64)) == 0 && r5 != 0) {
                                 if (func_0207856c(r5) == 1) {
                                     func_02078550(r5, 0xe10);
                                 } else {
@@ -796,8 +796,8 @@ void Unk_ov045_02259e20::vfunc_14() {
                             break;
                         }
                         case 2: {
-                            u8 *g = data_020cbb18;
-                            if (func_02072e88(g, *(s32 *)(g + 0x64)) == 0 && r5 != 0) {
+                            u8 *g = gCommManager;
+                            if (CommManager_isSlotActive(g, *(s32 *)(g + 0x64)) == 0 && r5 != 0) {
                                 if (func_0207856c(r5) == 4) {
                                     func_02078550(r5, 0x4b0);
                                 } else {
@@ -949,7 +949,7 @@ BOOL Unk_ov045_02259eb0::vfunc_48() {
     rec.c = src->c;
     bx = r;
     by = r;
-    func_0204ee10(&bx, &by, &rec);
+    FieldPos_ToUnit(&bx, &by, &rec);
     if (unk_658 == 0) {
         s32 x = unk_5c;
         if (rec.a > x - 0x1000 && rec.a < x + 0x1000) {
@@ -980,7 +980,7 @@ BOOL Unk_ov045_02259eb0::func_ov045_02259004() {
     u32 z[2];
     z[0] = 0;
     z[1] = 0;
-    func_0209d498(z);
+    Clock_GetDateTime(z);
     if (((u8 *)z)[2] < 6) {
         return TRUE;
     }

@@ -124,7 +124,7 @@ extern u32 sTalkRequestList;
 }
 
 extern "C" {
-extern Unk_0203e938_Net *volatile data_020cbb18;
+extern Unk_0203e938_Net *volatile gCommManager;
 }
 
 extern "C" {
@@ -136,7 +136,7 @@ extern u8 gActorList[];
 }
 
 extern "C" {
-void func_02065328(void *);
+void PrioList_Init(void *);
 }
 
 extern "C" {
@@ -212,7 +212,7 @@ long long func_020e9630(Unk_0203e4f0_Vec *);
 }
 
 extern "C" {
-void *func_020652c0(void *, u32);
+void *PrioList_FindById(void *, u32);
 }
 
 extern "C" {
@@ -244,7 +244,7 @@ s32 func_0203ea74(u32);
 }
 
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_020729ccEj(void *, u32);
+BOOL _ZN11CommManager7isMyAidEj(void *, u32);
 }
 
 extern "C" {
@@ -252,19 +252,19 @@ void *func_02095204(u32);
 }
 
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *);
+BOOL _ZN11CommManager8isOnlineEv(void *);
 }
 
 extern "C" {
-void _ZN12Unk_020cbb1813func_020728d4Ev(void *);
+void _ZN11CommManager11beginRecordEv(void *);
 }
 
 extern "C" {
-void _ZN12Unk_020cbb1813func_020728a4EPhj(void *, void *, u32);
+void _ZN11CommManager11writeRecordEPhj(void *, void *, u32);
 }
 
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072824Ejj(void *, u32, u32);
+void _ZN11CommManager9endRecordEjj(void *, u32, u32);
 }
 
 extern "C" {
@@ -297,10 +297,10 @@ extern "C" void func_0203eb38(void) {
 }
 
 extern "C" void func_0203eb04(u8 a, u32 aid, ...) {
-    Unk_0203e938_Net *o = data_020cbb18;
-    _ZN12Unk_020cbb1813func_020728d4Ev(o);
-    _ZN12Unk_020cbb1813func_020728a4EPhj(o, &a, 1);
-    _ZN12Unk_020cbb1813func_02072824Ejj(o, 0x17, aid);
+    Unk_0203e938_Net *o = gCommManager;
+    _ZN11CommManager11beginRecordEv(o);
+    _ZN11CommManager11writeRecordEPhj(o, &a, 1);
+    _ZN11CommManager9endRecordEjj(o, 0x17, aid);
 }
 
 extern "C" u32 func_0203eac8(u32 idx, u32 id) {
@@ -323,8 +323,8 @@ extern "C" void func_0203eab8(u32 idx) {
 }
 
 extern "C" s32 func_0203ea74(u32 id) {
-    Unk_0203e938_Net *o = data_020cbb18;
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(o)) {
+    Unk_0203e938_Net *o = gCommManager;
+    if (!_ZN11CommManager8isOnlineEv(o)) {
         return 2;
     }
     if (o->unk_64 == 0) {
@@ -337,8 +337,8 @@ extern "C" s32 func_0203ea74(u32 id) {
 }
 
 extern "C" void func_0203ea08(u32 id) {
-    Unk_0203e938_Net *o = data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(o)) {
+    Unk_0203e938_Net *o = gCommManager;
+    if (_ZN11CommManager8isOnlineEv(o)) {
         if (o->unk_64 == 0) {
             data_021c39e0[o->unk_64] = id;
         } else {
@@ -349,17 +349,17 @@ extern "C" void func_0203ea08(u32 id) {
             buf[2] = id >> 8;
             buf[3] = id >> 16;
             buf[4] = id >> 24;
-            Unk_0203e938_Net *p = data_020cbb18;
-            _ZN12Unk_020cbb1813func_020728d4Ev(p);
-            _ZN12Unk_020cbb1813func_020728a4EPhj(p, buf, 5);
-            _ZN12Unk_020cbb1813func_02072824Ejj(p, 0x17, 0);
+            Unk_0203e938_Net *p = gCommManager;
+            _ZN11CommManager11beginRecordEv(p);
+            _ZN11CommManager11writeRecordEPhj(p, buf, 5);
+            _ZN11CommManager9endRecordEjj(p, 0x17, 0);
         }
     }
 }
 
 extern "C" void func_0203e9d8(void) {
-    Unk_0203e938_Net *o = data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(o)) {
+    Unk_0203e938_Net *o = gCommManager;
+    if (_ZN11CommManager8isOnlineEv(o)) {
         if (o->unk_64 == 0) {
             func_0203eab8(0);
         } else {
@@ -369,7 +369,7 @@ extern "C" void func_0203e9d8(void) {
 }
 
 extern "C" s32 func_0203e9ac(void) {
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         return 2;
     }
     if (func_020a62a0()) {
@@ -387,7 +387,7 @@ extern "C" void func_0203e994(u32 id, u8 x) {
 }
 
 extern "C" void func_0203e938(u32 id, u8 x, u8 mode) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[6];
         data_020d96d0 = mode;
         buf[0] = mode;
@@ -396,10 +396,10 @@ extern "C" void func_0203e938(u32 id, u8 x, u8 mode) {
         buf[3] = id >> 16;
         buf[4] = id >> 24;
         buf[5] = x;
-        Unk_0203e938_Net *o = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(o);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(o, buf, 6);
-        _ZN12Unk_020cbb1813func_02072824Ejj(o, 0x17, 6);
+        Unk_0203e938_Net *o = gCommManager;
+        _ZN11CommManager11beginRecordEv(o);
+        _ZN11CommManager11writeRecordEPhj(o, buf, 6);
+        _ZN11CommManager9endRecordEjj(o, 0x17, 6);
     }
 }
 
@@ -427,7 +427,7 @@ extern "C" void func_0203e7d0(u8 *msg, u32 aid) {
     void *w = func_02095204(aid);
     if (!o || !w) {
         if (msg[0] == 4) {
-            if (!_ZN12Unk_020cbb1813func_020729ccEj(data_020cbb18, aid)) {
+            if (!_ZN11CommManager7isMyAidEj(gCommManager, aid)) {
                 func_0203eb04(2, aid);
             } else {
                 data_020d96d0 = 2;
@@ -448,7 +448,7 @@ extern "C" void func_0203e7d0(u8 *msg, u32 aid) {
             r5 = o->vfunc_58(w);
             break;
         }
-        if (!_ZN12Unk_020cbb1813func_020729ccEj(data_020cbb18, aid)) {
+        if (!_ZN11CommManager7isMyAidEj(gCommManager, aid)) {
             if (r5) {
                 o->vfunc_4c(3, (u8)aid);
                 func_0203eb04(1, aid);

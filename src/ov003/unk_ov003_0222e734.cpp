@@ -71,28 +71,28 @@ struct Unk_ov003_0222ed20_Loc {
 // ---- externs ----
 // other modules' methods are reached through their real mangled symbols (object first)
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020af514 _ZN12Unk_020af51413func_020af514Ev
 #define func_020af564 _ZN12Unk_020af53c13func_020af564Ev
 #define func_020af590 _ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_
 
 extern "C" {
-extern Unk_ov003_0222e734_Grid *data_021c47c4;
-extern Unk_ov003_0222ed20_Sess *data_020cbb18;
+extern Unk_ov003_0222e734_Grid *gSceneBlockMap;
+extern Unk_ov003_0222ed20_Sess *gCommManager;
 extern u8 data_021ed2e6[];
 
-BOOL func_02072e88(void *, u32);
-s32 func_02076280(s32 a, s32 b, s32 c, s32 d);
-void func_0204edf8(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
-void func_0204ee10(s32 *a, s32 *b, void *c);
-void func_0204ed8c(void *out, s32 x, s32 z);
-void func_0204eda4(Unk_ov003_0222ed20_V3 *out, s32 a, s32 b, s32 c, s32 d);
-u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+BOOL CommManager_isSlotActive(void *, u32);
+s32 CommSyncVar_SetVar(s32 a, s32 b, s32 c, s32 d);
+void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
+void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
+void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
+void FieldPos_FromBlockUnitCenter(Unk_ov003_0222ed20_V3 *out, s32 a, s32 b, s32 c, s32 d);
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 BOOL func_02031130(s32 a, s32 b);
 BOOL func_020310f8(s32 a, s32 b);
 s32 func_02063b8c(s32 n);
-void *func_02037558(void *c, u32 i, u32 j, s32 k);
-void func_02037590(void *c, u16 *p, u32 a, u32 b, u32 d);
+void *MapBlock_GetItemPtr(void *c, u32 i, u32 j, s32 k);
+void MapBlock_SetItem(void *c, u16 *p, u32 a, u32 b, u32 d);
 BOOL Item_IsSnowman(u16 *p);
 s32 Item_GetSnowmanIndex(u16 *p);
 s32 func_020af590(void *o, s32 i, void *a, void *b, void *c, void *d, void *e, void *f);
@@ -102,8 +102,8 @@ void func_020af514();
 s32 func_020b50bc();
 s32 func_020b5184();
 BOOL func_020af564(void *o);
-void func_0209d498(void *);
-void func_0209d164(void *, s32);
+void Clock_GetDateTime(void *);
+void DateTime_SubDays(void *, s32);
 BOOL func_ov003_022132a0(void *p);
 BOOL func_ov003_022132b4(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 
@@ -127,7 +127,7 @@ Unk_ov003_0222eb10_Obj *data_ov003_0225b4f8[8];
 // ---- functions ----
 
 extern "C" void func_ov003_0222ed20(void *self) {
-    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64) != 0 || func_020b50bc() == 0) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0 || func_020b50bc() == 0) {
         func_020af3f4();
         func_020af514();
         return;
@@ -141,9 +141,9 @@ extern "C" void func_ov003_0222ed20(void *self) {
     for (i = 0; i < 3; i++) {
         f.l.w[0] = 0;
         f.l.w[1] = 0;
-        func_0209d498(f.l.w);
+        Clock_GetDateTime(f.l.w);
         if (((u8 *)&f.l)[6] < 6) {
-            func_0209d164(f.l.w, 1);
+            DateTime_SubDays(f.l.w, 1);
         }
         if (func_020af590(data_021ed2e6, i, &f.p[0], &f.p[1], &f.p[2], &f.l.k[0], &f.l.k[1], &f.l.k[2]) != 0) {
             if (f.l.k[0] == ((u8 *)&f.l)[9] && f.l.k[1] == ((u8 *)&f.l)[8] && f.l.k[2] == ((u8 *)&f.l)[7]) {
@@ -189,7 +189,7 @@ extern "C" void func_ov003_0222ed20(void *self) {
 }
 
 extern "C" void func_ov003_0222ec20(void *self) {
-    Unk_ov003_0222e734_Grid *g = data_021c47c4;
+    Unk_ov003_0222e734_Grid *g = gSceneBlockMap;
     u32 by, bx;
     s32 lx, n;
     Unk_ov003_0222e734_Cell *cell;
@@ -204,18 +204,18 @@ extern "C" void func_ov003_0222ec20(void *self) {
                 s32 ly;
                 for (ly = 0; ly < 16; ly++) {
                     for (lx = 0; lx < 16; lx++) {
-                        u16 *t = (u16 *)func_02037558(cell, lx, ly, 0);
+                        u16 *t = (u16 *)MapBlock_GetItemPtr(cell, lx, ly, 0);
                         if (t != 0) {
                             if (Item_IsSnowman(t)) {
                                 s32 v = Item_GetSnowmanIndex(t);
                                 if (func_020af590(data_021ed2e6, v, 0, 0, 0, 0, 0, 0) == 0) {
                                     u16 tmp[1];
                                     tmp[0] = 0xfff1;
-                                    func_02037590(cell, tmp, lx, ly, 0);
+                                    MapBlock_SetItem(cell, tmp, lx, ly, 0);
                                 } else {
                                     n = v * 2 + 2;
                                     Unk_ov003_0222ed20_V3 loc;
-                                    func_0204eda4(&loc, bx, by, lx, ly);
+                                    FieldPos_FromBlockUnitCenter(&loc, bx, by, lx, ly);
                                     Actor_spawn(0xbd, n, &loc, 0, self);
                                     Actor_spawn(0xbd, n + 1, &loc, 0, self);
                                 }
@@ -402,7 +402,7 @@ extern "C" BOOL func_ov003_0222e8e0(Unk_ov003_0222e734_Pool *pool, s32 *ox, s32 
 }
 
 extern "C" BOOL func_ov003_0222e734(void *a, void *b, s32 c, s32 d) {
-    Unk_ov003_0222e734_Grid *g = data_021c47c4;
+    Unk_ov003_0222e734_Grid *g = gSceneBlockMap;
     static Unk_ov003_0222e734_Pool pool;
     func_ov003_0222e9d4(&pool);
     u32 by, bx, ly, lx, k;
@@ -411,7 +411,7 @@ extern "C" BOOL func_ov003_0222e734(void *a, void *b, s32 c, s32 d) {
             for (ly = 0; ly < 16; ly++) {
                 for (lx = 0; lx < 16; lx++) {
                     s32 x, y;
-                    func_0204edf8(&x, &y, bx, by, lx, ly);
+                    FieldUnit_FromBlockUnit(&x, &y, bx, by, lx, ly);
                     if (!func_02031130(x, y) || !func_020310f8(x, y + 1) || !func_020310f8(x, y + 2)) {
                         func_ov003_0222e964(&pool, x, y);
                     } else if (d != 0) {
@@ -419,7 +419,7 @@ extern "C" BOOL func_ov003_0222e734(void *a, void *b, s32 c, s32 d) {
                         s32 ey = *(volatile s32 *)&y;
                         s32 hx = ex >> 4;
                         s32 hy = ey >> 4;
-                        u16 *cell = func_0204ebd8(g, hx, hy, ex - (hx << 4), ey - (hy << 4), 0);
+                        u16 *cell = BlockMap_GetItemPtr(g, hx, hy, ex - (hx << 4), ey - (hy << 4), 0);
                         if (cell != 0 && *cell != 0xfff1) {
                             func_ov003_0222e964(&pool, x, y);
                         }
@@ -430,7 +430,7 @@ extern "C" BOOL func_ov003_0222e734(void *a, void *b, s32 c, s32 d) {
     }
     if (c != 0) {
         s32 px, py;
-        func_0204ee10(&px, &py, (void *)c);
+        FieldPos_ToUnit(&px, &py, (void *)c);
         s32 yy, xx;
         for (yy = py - 7; yy <= py + 7; yy++) {
             for (xx = px - 7; xx <= px + 7; xx++) {
@@ -440,7 +440,7 @@ extern "C" BOOL func_ov003_0222e734(void *a, void *b, s32 c, s32 d) {
     }
     s32 ox, oy;
     if (func_ov003_0222e8e0(&pool, &ox, &oy)) {
-        func_0204ed8c(b, ox, oy);
+        FieldPos_FromUnitCenter(b, ox, oy);
         return TRUE;
     } else if (d != 0) {
         return func_ov003_0222e734(a, b, c, 0);

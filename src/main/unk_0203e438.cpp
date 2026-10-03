@@ -98,7 +98,7 @@ extern u32 sTalkRequestList;
 }
 
 extern "C" {
-extern Unk_0203e938_Net *volatile data_020cbb18;
+extern Unk_0203e938_Net *volatile gCommManager;
 }
 
 extern "C" {
@@ -110,7 +110,7 @@ extern u8 gActorList[];
 }
 
 extern "C" {
-void func_02065328(void *);
+void PrioList_Init(void *);
 }
 
 extern "C" {
@@ -186,7 +186,7 @@ long long func_020e9630(Unk_0203e4f0_Vec *);
 }
 
 extern "C" {
-void *func_020652c0(void *, u32);
+void *PrioList_FindById(void *, u32);
 }
 
 extern "C" {
@@ -218,7 +218,7 @@ s32 func_0203ea74(u32);
 }
 
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_020729ccEj(void *, u32);
+BOOL _ZN11CommManager7isMyAidEj(void *, u32);
 }
 
 extern "C" {
@@ -226,19 +226,19 @@ void *func_02095204(u32);
 }
 
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *);
+BOOL _ZN11CommManager8isOnlineEv(void *);
 }
 
 extern "C" {
-void _ZN12Unk_020cbb1813func_020728d4Ev(void *);
+void _ZN11CommManager11beginRecordEv(void *);
 }
 
 extern "C" {
-void _ZN12Unk_020cbb1813func_020728a4EPhj(void *, void *, u32);
+void _ZN11CommManager11writeRecordEPhj(void *, void *, u32);
 }
 
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072824Ejj(void *, u32, u32);
+void _ZN11CommManager9endRecordEjj(void *, u32, u32);
 }
 
 extern "C" {
@@ -336,7 +336,7 @@ Character::Character() {
 Character::~Character() {}
 
 extern "C" void Character_ResetList(void) {
-    func_02065328(&gCharacterList);
+    PrioList_Init(&gCharacterList);
 }
 
 BOOL Character::vfunc_04() {
@@ -380,7 +380,7 @@ void Character::setCharId(u32 a) {
 }
 
 extern "C" Character *Character_FindByCharId(u32 id) {
-    Unk_0203e5d0_Node *n = (Unk_0203e5d0_Node *)func_020652c0(&gCharacterList, id);
+    Unk_0203e5d0_Node *n = (Unk_0203e5d0_Node *)PrioList_FindById(&gCharacterList, id);
     if (n) {
         return n->unk_0c;
     }

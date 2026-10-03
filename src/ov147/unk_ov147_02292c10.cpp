@@ -6,10 +6,10 @@ extern s16 data_02135f44[];
 
 void G2x_SetBlendAlpha_(u32 a, s32 b, s32 c, s32 d, s32 e);
 s32 _s32_div_f(s32 a, s32 b);
-s32 func_020014e4(s32 a);
-u32 func_02001510(s32 a);
-void func_020014f4(s32 a);
-void func_020017e4(s32 a, s32 b);
+s32 Gfx2d_HideMainPlanes(s32 a);
+u32 Gfx2d_GetMainPlanes(s32 a);
+void Gfx2d_ShowMainPlanes(s32 a);
+void Gfx2d_SetMainBg3Offset(s32 a, s32 b);
 void DC_FlushRange(void *p, u32 size);
 void GX_LoadBG3Scr(void *p, u32 a, u32 size);
 void GX_LoadBGPltt(void *p, u32 a, u32 size);
@@ -217,14 +217,14 @@ extern "C" void func_ov147_02292d6c() {
     *r = (*r & ~3) | 1;
     *r = (*r & 0x43) | 0x700;
     *r = *r & ~0x40;
-    func_020017e4(0, 0);
+    Gfx2d_SetMainBg3Offset(0, 0);
 }
 
-extern "C" void func_ov147_02292d60() { func_020014f4(8); }
+extern "C" void func_ov147_02292d60() { Gfx2d_ShowMainPlanes(8); }
 
 extern "C" void func_ov147_02292d34() {
     volatile u32 *r = (volatile u32 *)0x4000000;
-    u32 v = func_02001510(func_020014e4(8));
+    u32 v = Gfx2d_GetMainPlanes(Gfx2d_HideMainPlanes(8));
     *r = (*r & 0xffffe0ff) | (v << 8);
 }
 

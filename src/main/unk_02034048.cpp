@@ -15,7 +15,7 @@ struct Unk_02034250_Id {
 
 extern "C" {
 extern u8 data_020e416c;
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 data_021d735c[];
 extern u8 data_021e58a8[];
 
@@ -27,12 +27,12 @@ s32 Item_SetDesign(u16 *out, s32 a, s32 b);
 BOOL PlayerData_GetCurrent();
 u32 _ZN10PlayerData11getPlayerIdEv();
 u32 func_02097740(void *a, u32 b);
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
+BOOL _ZN11CommManager8isOnlineEv(void *p);
 s32 func_020b50e8();
 BOOL func_020b530c(s32 a);
-void _ZN12Unk_020cbb1813func_020728d4Ev(void *p);
-void _ZN12Unk_020cbb1813func_020728a4EPhj(void *p, void *q, s32 n);
-void _ZN12Unk_020cbb1813func_02072824Ejj(void *p, s32 a, s32 b);
+void _ZN11CommManager11beginRecordEv(void *p);
+void _ZN11CommManager11writeRecordEPhj(void *p, void *q, s32 n);
+void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
 void *_ZN9HouseData13func_02060550Ei(void *a, s32 b);
 void _ZN9HouseRoom13func_02060808EPtj(void *a, void *b, s32 c);
 void _ZN9HouseRoom13func_020607e0EPtj(void *a, void *b, s32 c);
@@ -75,17 +75,17 @@ extern "C" void func_020343b0(u16 *out, s32 a) {
 }
 
 extern "C" void func_02034320(u16 *id, s32 a, s32 b, s32 c) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         Unk_02034320_Pkt pkt;
         pkt.a = *id;
         pkt.b = (pkt.b & ~0x3f) | (func_020b50e8() & 0x3f);
         pkt.b = (pkt.b & ~0x40) | ((b & 1) << 6);
         pkt.b = (pkt.b & ~0x80) | (((u16)a & 1) << 7);
         pkt.b = (pkt.b & ~0x100) | ((c & 1) << 8);
-        void *obj = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(obj);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(obj, &pkt, 4);
-        _ZN12Unk_020cbb1813func_02072824Ejj(obj, 0x14, 4);
+        void *obj = gCommManager;
+        _ZN11CommManager11beginRecordEv(obj);
+        _ZN11CommManager11writeRecordEPhj(obj, &pkt, 4);
+        _ZN11CommManager9endRecordEjj(obj, 0x14, 4);
     }
 }
 

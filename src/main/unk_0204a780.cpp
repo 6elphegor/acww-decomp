@@ -358,20 +358,20 @@ u16 *_ZN10PlayerData13getNookPointsEv(void *p);
 void *PlayerData_GetCurrent();
 s32 FtrInfo_GetPrice(s32 x);
 s32 PlayerData_GetCurrentIndex();
-s32 func_0209cf88(Unk_0204c0f4_Date *d);
-s32 func_0209cd00(Unk_0204c0f4_Date *a, Unk_0204c0f4_Date *b);
-s32 func_0209cf0c();
-void func_0203f1e8(s32 *a, s32 *b, u32 c);
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
+s32 Clock_GetDate(Unk_0204c0f4_Date *d);
+s32 Date_DaysBetween(Unk_0204c0f4_Date *a, Unk_0204c0f4_Date *b);
+s32 Clock_GetYear();
+void Event_GetRange(s32 *a, s32 *b, u32 c);
+s32 _ZN11CommManager8isOnlineEv(void *p);
 s32 _s32_div_f(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
-s32 func_0209ceac(u32 a, u32 b, u32 c);
-void func_0209d2c0(void *p, s32 n);
+s32 Date_GetWeekday(u32 a, u32 b, u32 c);
+void DateTime_AddDays(void *p, s32 n);
 s32 func_02063b8c(s32 n);
-Unk_0204c290_W *func_0204da0c();
-u16 *func_0204ebd8(Unk_0204c290_W *w, s32 cx, s32 cy, s32 ix, s32 iy, u32 z);
-void func_0204eb30(Unk_0204c290_W *w, u16 *item, s32 x, s32 y, u32 z);
-extern void *data_020cbb18;
+Unk_0204c290_W *TownBlockMap_Get();
+u16 *BlockMap_GetItemPtr(Unk_0204c290_W *w, s32 cx, s32 cy, s32 ix, s32 iy, u32 z);
+void BlockMap_SetItemAtUnit(Unk_0204c290_W *w, u16 *item, s32 x, s32 y, u32 z);
+extern void *gCommManager;
 extern u8 gSaveData[];
 extern Unk_0204c084_Data data_021ed1b0;
 extern Unk_0204c1fc_Entry data_021ed1c8[];
@@ -391,9 +391,9 @@ s32 func_0204c058(u8 *p);
 u16 Item_MakeFruit(s32 n);
 BOOL Item_Equals(u16 *a, u16 *b);
 s32 func_0204be64(u16 *p);
-s32 func_0204c188(s32 x, u32 id);
-Unk_0204c1fc_Entry *func_0204c1fc(s32 i);
-Unk_0204c0f4_Date *func_0204c140(u8 *p, s32 i);
+s32 TownState_FindEvent(s32 x, u32 id);
+Unk_0204c1fc_Entry *TownState_GetEvent(s32 i);
+Unk_0204c0f4_Date *TownState_GetPlayerDate(u8 *p, s32 i);
 static inline BOOL Unk_0204b9c0_R(u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
     if (*p >= lo && *p <= hi) r = TRUE;
@@ -437,36 +437,36 @@ BOOL Item_Equals(u16 *a, u16 *b);
 u16 Item_MakeFruit(s32 n);
 s32 func_0204c058(u8 *p);
 BOOL Item_IsFruit(u16 *p);
-void func_0204c084(u32 n);
-u32 func_0204c0ac();
-void func_0204c0b8(Unk_0204c0b8_S *p, s32 k, s32 add);
-BOOL func_0204c0e0();
-BOOL func_0204c0f4(u8 *p);
-void func_0204c124(u8 *p);
-Unk_0204c0f4_Date *func_0204c140(u8 *p, s32 i);
-s32 func_0204c148(s32 x, u32 id);
-s32 func_0204c188(s32 x, u32 id);
-void func_0204c1b8(s32 x, u32 id);
-void func_0204c1d8();
-Unk_0204c1fc_Entry *func_0204c1fc(s32 i);
-void func_0204c20c(Unk_0204c20c_S *p);
-void func_0204c21c(Unk_0204c21c_S *p);
-void func_0204c22c(u8 *dst, u8 *src);
+void TownState_SetSeasonPeriod(u32 n);
+u32 TownState_GetSeasonPeriod();
+void TownState_UpdatePerfectStreak(Unk_0204c0b8_S *p, s32 k, s32 add);
+BOOL TownState_IsPerfectStreak15();
+BOOL TownState_IsPlayerDateNotToday(u8 *p);
+void TownState_SetPlayerDateToday(u8 *p);
+Unk_0204c0f4_Date *TownState_GetPlayerDate(u8 *p, s32 i);
+s32 TownState_AddEvent(s32 x, u32 id);
+s32 TownState_FindEvent(s32 x, u32 id);
+void TownState_RemoveEvent(s32 x, u32 id);
+void TownState_ClearEvents();
+Unk_0204c1fc_Entry *TownState_GetEvent(s32 i);
+void TownState_ClearUnk16(Unk_0204c20c_S *p);
+void TownState_ClearUnk0c(Unk_0204c21c_S *p);
+void TownState_PickNextWeekDate(u8 *dst, u8 *src);
 struct Unk_0204c290_V {
     u16 v;
     u16 pad;
 };
-void func_0204c290();
+void Town_ReplaceSouthCedars();
 u8 *func_0204bdb8();
 }
 }
 
 namespace nC {
-extern "C" void func_0204c290() {
+extern "C" void Town_ReplaceSouthCedars() {
     Unk_0204c290_W *w;
     s32 wd, ht, x, y;
     s32 cx, cy;
-    w = func_0204da0c();
+    w = TownBlockMap_Get();
     if (w) {
         s32 *q = &w->unk_04;
         wd = q[0] << 4;
@@ -478,11 +478,11 @@ extern "C" void func_0204c290() {
             loop:
                 {
                     cx = x >> 4; cy = y >> 4;
-                    u16 *it = func_0204ebd8(w, cx, cy, x - (cx << 4), y - (cy << 4), 0);
+                    u16 *it = BlockMap_GetItemPtr(w, cx, cy, x - (cx << 4), y - (cy << 4), 0);
                     if (it) {
                         if (Unk_0204b9c0_R(it, 0x5d, 0x61)) {
                             u16 v = 0x2a;
-                            func_0204eb30(w, &v, x, y, 0);
+                            BlockMap_SetItemAtUnit(w, &v, x, y, 0);
                         }
                     }
                 }
@@ -496,11 +496,11 @@ extern "C" void func_0204c290() {
 }
 
 namespace nC {
-extern "C" void func_0204c22c(u8 *dst, u8 *src) {
+extern "C" void TownState_PickNextWeekDate(u8 *dst, u8 *src) {
     u32 l[2];
     l[0] = 0;
     l[1] = 0;
-    s32 d = func_0209ceac(src[2], src[1], src[0]);
+    s32 d = Date_GetWeekday(src[2], src[1], src[0]);
     s32 r;
     do {
         r = func_02063b8c(7);
@@ -510,7 +510,7 @@ extern "C" void func_0204c22c(u8 *dst, u8 *src) {
     ((u8 *)l)[5] = src[2];
     ((u8 *)l)[4] = src[1];
     ((u8 *)l)[3] = src[0];
-    func_0209d2c0(l, (7 - d) + r);
+    DateTime_AddDays(l, (7 - d) + r);
     dst[10] = ((u8 *)l)[5];
     dst[9] = ((u8 *)l)[4];
     dst[8] = ((u8 *)l)[3];
@@ -518,20 +518,20 @@ extern "C" void func_0204c22c(u8 *dst, u8 *src) {
 }
 
 namespace nC {
-extern "C" void func_0204c21c(Unk_0204c21c_S *p) { for (s32 i = 0; i < 10; i++) p->unk_0c[i] = 0; }
+extern "C" void TownState_ClearUnk0c(Unk_0204c21c_S *p) { for (s32 i = 0; i < 10; i++) p->unk_0c[i] = 0; }
 }
 
 namespace nC {
-extern "C" void func_0204c20c(Unk_0204c20c_S *p) { for (s32 i = 0; i < 11; i++) p->unk_16[i] = 0; }
+extern "C" void TownState_ClearUnk16(Unk_0204c20c_S *p) { for (s32 i = 0; i < 11; i++) p->unk_16[i] = 0; }
 }
 
 namespace nC {
-extern "C" Unk_0204c1fc_Entry *func_0204c1fc(s32 i) { return &data_021ed1c8[i]; }
+extern "C" Unk_0204c1fc_Entry *TownState_GetEvent(s32 i) { return &data_021ed1c8[i]; }
 }
 
 namespace nC {
-extern "C" void func_0204c1d8() {
-    Unk_0204c1fc_Entry *e = func_0204c1fc(0);
+extern "C" void TownState_ClearEvents() {
+    Unk_0204c1fc_Entry *e = TownState_GetEvent(0);
     for (s32 i = 0; i < 4; e++, i++) {
         e->unk_00 = 0x63;
         e->unk_04 = 1;
@@ -541,10 +541,10 @@ extern "C" void func_0204c1d8() {
 }
 
 namespace nC {
-extern "C" void func_0204c1b8(s32 x, u32 id) {
-    s32 i = func_0204c188(x, id);
+extern "C" void TownState_RemoveEvent(s32 x, u32 id) {
+    s32 i = TownState_FindEvent(x, id);
     if (i >= 0) {
-        Unk_0204c1fc_Entry *e = func_0204c1fc(i);
+        Unk_0204c1fc_Entry *e = TownState_GetEvent(i);
         e->unk_00 = 0x63;
         e->unk_04 = 1;
         e->unk_08 = 1;
@@ -553,9 +553,9 @@ extern "C" void func_0204c1b8(s32 x, u32 id) {
 }
 
 namespace nC {
-extern "C" s32 func_0204c188(s32 x, u32 id) {
+extern "C" s32 TownState_FindEvent(s32 x, u32 id) {
     s32 r = -1;
-    Unk_0204c1fc_Entry *e = func_0204c1fc(0);
+    Unk_0204c1fc_Entry *e = TownState_GetEvent(0);
     for (s32 i = 0; i < 4; e++, i++) {
         if (id == e->unk_00) { r = i; break; }
     }
@@ -564,15 +564,15 @@ extern "C" s32 func_0204c188(s32 x, u32 id) {
 }
 
 namespace nC {
-extern "C" s32 func_0204c148(s32 x, u32 id) {
-    s32 i = func_0204c188(x, id);
+extern "C" s32 TownState_AddEvent(s32 x, u32 id) {
+    s32 i = TownState_FindEvent(x, id);
     if (i < 0) {
-        i = func_0204c188(x, 0x63);
+        i = TownState_FindEvent(x, 0x63);
         if (i >= 0) {
-            Unk_0204c1fc_Entry *e = func_0204c1fc(i);
+            Unk_0204c1fc_Entry *e = TownState_GetEvent(i);
             e->unk_00 = id;
-            func_0203f1e8(&e->unk_04, &e->unk_08, id);
-            e->unk_02 = func_0209cf0c();
+            Event_GetRange(&e->unk_04, &e->unk_08, id);
+            e->unk_02 = Clock_GetYear();
         }
     }
     return i;
@@ -580,27 +580,27 @@ extern "C" s32 func_0204c148(s32 x, u32 id) {
 }
 
 namespace nC {
-extern "C" Unk_0204c0f4_Date *func_0204c140(u8 *p, s32 i) { return (Unk_0204c0f4_Date *)(p + 0x58) + i; }
+extern "C" Unk_0204c0f4_Date *TownState_GetPlayerDate(u8 *p, s32 i) { return (Unk_0204c0f4_Date *)(p + 0x58) + i; }
 }
 
 namespace nC {
-extern "C" void func_0204c124(u8 *p) { func_0209cf88(func_0204c140(p, PlayerData_GetCurrentIndex())); }
+extern "C" void TownState_SetPlayerDateToday(u8 *p) { Clock_GetDate(TownState_GetPlayerDate(p, PlayerData_GetCurrentIndex())); }
 }
 
 namespace nC {
-extern "C" BOOL func_0204c0f4(u8 *p) {
+extern "C" BOOL TownState_IsPlayerDateNotToday(u8 *p) {
     BOOL r = FALSE;
     s32 i = PlayerData_GetCurrentIndex();
     Unk_0204c0f4_Date t;
-    func_0209cf88(&t);
+    Clock_GetDate(&t);
     p += 0x58;
-    if (func_0209cd00(&t, (Unk_0204c0f4_Date *)p + i)) r = TRUE;
+    if (Date_DaysBetween(&t, (Unk_0204c0f4_Date *)p + i)) r = TRUE;
     return r;
 }
 }
 
 namespace nC {
-extern "C" BOOL func_0204c0e0() {
+extern "C" BOOL TownState_IsPerfectStreak15() {
     BOOL r = FALSE;
     if (data_021ed1b0.unk_15 >= 0xf) r = TRUE;
     return r;
@@ -608,7 +608,7 @@ extern "C" BOOL func_0204c0e0() {
 }
 
 namespace nC {
-extern "C" void func_0204c0b8(Unk_0204c0b8_S *p, s32 k, s32 add) {
+extern "C" void TownState_UpdatePerfectStreak(Unk_0204c0b8_S *p, s32 k, s32 add) {
     if (k == 4) {
         s32 v = p->unk_21;
         if (v < 0) p->unk_21 = 1;
@@ -620,12 +620,12 @@ extern "C" void func_0204c0b8(Unk_0204c0b8_S *p, s32 k, s32 add) {
 }
 
 namespace nC {
-extern "C" u32 func_0204c0ac() { return data_021ed1b0.unk_17; }
+extern "C" u32 TownState_GetSeasonPeriod() { return data_021ed1b0.unk_17; }
 }
 
 namespace nC {
-extern "C" void func_0204c084(u32 n) {
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+extern "C" void TownState_SetSeasonPeriod(u32 n) {
+    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         if (n >= 0x17) n = 0x16;
         data_021ed1b0.unk_17 = n;
     }

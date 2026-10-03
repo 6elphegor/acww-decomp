@@ -11,23 +11,23 @@ s32 func_02106634(s32 a, s32 b);
 s32 func_02106788(void *p);
 s32 func_021067a4(s32 a, s32 b);
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, u32 b);
-void _ZN12Unk_020dbd3413func_02054b14Ev(void *p);
-void _ZN12Unk_020dbd3413func_02054b38EPv(void *p, void *h);
-void _ZN12Unk_020dbd5413func_02054800EPv(void *p, void *h);
-void _ZN12Unk_020dbd5413func_02054710Ev(void *p);
-void _ZN12Unk_020dbd5413func_020547ccEPv(void *p, s32 q);
-void _ZN12Unk_020dbd5413func_020547e4Ev(void *p);
-void _ZN12Unk_0205454c13func_02054720Eiiitt(void *p, s32 a, s32 b, s32 c, u16 d, u16 e);
-BOOL _ZN12Unk_020dbd3413func_02054c2cEPvS0_(void *p, u32 a, u32 b);
-void _ZN9ModelAnim13func_02055b38Eiiit(void *p, s32 a, s32 b, s32 c, u16 e);
-void _ZN9ModelAnim13func_02055bccEjPv(void *p, void *a, void *c);
-void _ZN9ModelAnim13func_02055b90EjPv(void *p, void *a, void *c);
+void _ZN11CachedModel7releaseEv(void *p);
+void _ZN11CachedModel16allocJointRecordEPv(void *p, void *h);
+void _ZN9AnimModel11allocAnmObjEPv(void *p, void *h);
+void _ZN9AnimModel10attachAnimEv(void *p);
+void _ZN9AnimModel12drawAnimatedEPv(void *p, s32 q);
+void _ZN9AnimModel8stepAnimEv(void *p);
+void _ZN14BlendAnimModel8initAnimEiiitt(void *p, s32 a, s32 b, s32 c, u16 d, u16 e);
+BOOL _ZN11CachedModel10loadCachedEPvS0_(void *p, u32 a, u32 b);
+void _ZN9ModelAnim4initEiiit(void *p, s32 a, s32 b, s32 c, u16 e);
+void _ZN9ModelAnim11allocMatAnmEjPv(void *p, void *a, void *c);
+void _ZN9ModelAnim13allocJointAnmEjPv(void *p, void *a, void *c);
 void _ZN9ModelAnim14addToRenderObjEj(void *p, u32 a);
 u32 _ZN5Model12getRenderObjEv(void *p);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 void _ZN13AnimFrameCtrl4stepEv(void *p);
 s32 WorldCurve_ToCurved(void *out, void *in);
-s32 func_02064cc4();
+s32 SceneLights_GetRoomColor();
 void func_020e8388(void *m, s32 x, s32 y, s32 z);
 void func_020e8434(void *m, s32 v);
 void func_020e8464(void *m, s32 x, s32 y, s32 z);
@@ -51,9 +51,9 @@ void *NNS_FndCreateFrmHeapEx(void *, void *, void *);
 void MIi_CpuClear32(s32, void *, s32);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *dst, void *src, u32 size);
-u16 func_02064f18();
+u16 SceneLights_GetBaseColor();
 u16 func_020b5b98();
-s32 func_0204c0ac();
+s32 TownState_GetSeasonPeriod();
 s32 File_Load(void *);
 void *NNS_FndAllocFromFrmHeapEx(u32 heap, u32 size, s32 align);
 s32 SPL_LoadTexByVRAMManager(u32 h);
@@ -61,10 +61,10 @@ s32 SPL_LoadTexPlttByVRAMManager(u32 h);
 }
 
 // Opaque views of library-side model classes (see unk_02054190.cpp / unk_020553f8.cpp for the full declarations)
-class Unk_020dbd54 {
+class AnimModel {
 public:
-    Unk_020dbd54();
-    virtual ~Unk_020dbd54();
+    AnimModel();
+    virtual ~AnimModel();
 
     /* 0x04 */ u8 unk_04[0x58];
     /* 0x5c */ void *unk_5c;
@@ -118,7 +118,7 @@ public:
     /* 0x1c */ s16 unk_1c;
     /* 0x1e */ s16 unk_1e;
     /* 0x20 */ s16 unk_20;
-    /* 0x24 */ Unk_020dbd54 unk_24;
+    /* 0x24 */ AnimModel unk_24;
     /* 0xdc */ u32 unk_dc;
     /* 0xe0 */ s32 unk_e0;
     /* 0xe4 */ s32 unk_e4;
@@ -1006,13 +1006,13 @@ BOOL Unk_020e141c::vfunc_0c()
 
 extern "C" s16 func_0208ff30(Unk_0208fdcc_Obj *o)
 {
-    s32 idx = func_0204c0ac();
+    s32 idx = TownState_GetSeasonPeriod();
     return data_020e1180[o->unk_80][idx];
 }
 
 extern "C" s16 func_0208ff18()
 {
-    return data_020e13b4[func_0204c0ac()];
+    return data_020e13b4[TownState_GetSeasonPeriod()];
 }
 
 extern "C" void func_0208fe0c(Unk_0208fdcc_Obj *o)
@@ -1020,7 +1020,7 @@ extern "C" void func_0208fe0c(Unk_0208fdcc_Obj *o)
     u32 f = o->unk_18->unk_00->unk_50;
     if ((f & 0x80) != 0) {
         volatile Unk_0208fe0c_U l0, l2, l4, l6, l8, la, lc, le;
-        l4.v = func_02064f18();
+        l4.v = SceneLights_GetBaseColor();
         la.v = l4.v;
         l6.v = la.v;
         if ((f & 0x40) != 0) {
@@ -1469,7 +1469,7 @@ void Unk_0208f6c0::func_0208f6c0() {
 
 BOOL Unk_0208f308::func_0208f694(s32 idx) {
     BOOL r = TRUE;
-    if (!_ZN12Unk_020dbd3413func_02054c2cEPvS0_(&unk_24, idx + 0x6d656666, data_020e1190[idx])) {
+    if (!_ZN11CachedModel10loadCachedEPvS0_(&unk_24, idx + 0x6d656666, data_020e1190[idx])) {
         r = FALSE;
     }
     return r;
@@ -1481,18 +1481,18 @@ void Unk_0208f308::func_0208f568(Unk_0208f2e8 *src) {
     if (func_0208f694(idx)) {
         u32 *r = src->unk_524;
         if (r[0] != 0) {
-            _ZN12Unk_020dbd3413func_02054b38EPv(&unk_24, data_021d04a0);
-            _ZN12Unk_020dbd5413func_02054800EPv(&unk_24, data_021d04a0);
+            _ZN11CachedModel16allocJointRecordEPv(&unk_24, data_021d04a0);
+            _ZN9AnimModel11allocAnmObjEPv(&unk_24, data_021d04a0);
             s32 t = func_021065f8(func_021065dc((void *)r[0]), 0);
-            _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_24, t, 1, 0x1000, 0, 0);
-            _ZN12Unk_020dbd5413func_02054710Ev(&unk_24);
+            _ZN14BlendAnimModel8initAnimEiiitt(&unk_24, t, 1, 0x1000, 0, 0);
+            _ZN9AnimModel10attachAnimEv(&unk_24);
         }
         if (r[1] != 0) {
             unk_e0 = 1;
             ModelAnim *e = &unk_e8[1];
-            _ZN9ModelAnim13func_02055bccEjPv(e, unk_24.unk_5c, data_021d04a0);
+            _ZN9ModelAnim11allocMatAnmEjPv(e, unk_24.unk_5c, data_021d04a0);
             s32 u = func_02106634(func_02106618((void *)r[1]), 0);
-            _ZN9ModelAnim13func_02055b38Eiiit(e, u, 1, 0x1000, 0);
+            _ZN9ModelAnim4initEiiit(e, u, 1, 0x1000, 0);
             _ZN9ModelAnim14addToRenderObjEj(e, _ZN5Model12getRenderObjEv(&unk_24));
         } else {
             unk_e0 = 0;
@@ -1500,9 +1500,9 @@ void Unk_0208f308::func_0208f568(Unk_0208f2e8 *src) {
         if (r[2] != 0) {
             unk_e4 = 1;
             ModelAnim *e = &unk_e8[2];
-            _ZN9ModelAnim13func_02055b90EjPv(e, unk_24.unk_5c, data_021d04a0);
+            _ZN9ModelAnim13allocJointAnmEjPv(e, unk_24.unk_5c, data_021d04a0);
             s32 u = func_021067a4(func_02106788((void *)r[2]), 0);
-            _ZN9ModelAnim13func_02055b38Eiiit(e, u, 1, 0x1000, 0);
+            _ZN9ModelAnim4initEiiit(e, u, 1, 0x1000, 0);
             _ZN9ModelAnim14addToRenderObjEj(e, _ZN5Model12getRenderObjEv(&unk_24));
         } else {
             unk_e4 = 0;
@@ -1512,7 +1512,7 @@ void Unk_0208f308::func_0208f568(Unk_0208f2e8 *src) {
 
 void Unk_0208f308::func_0208f508() {
     if (unk_00 != 0) {
-        _ZN12Unk_020dbd5413func_020547e4Ev(&unk_24);
+        _ZN9AnimModel8stepAnimEv(&unk_24);
         s32 i;
         for (i = 1; i < 3; i++) {
             if ((&unk_dc)[i] != 0) {
@@ -1535,16 +1535,16 @@ void Unk_0208f308::func_0208f480() {
         func_020e8464(data_021f47e0, unk_1c, unk_1e, unk_20);
         func_020e84f8(data_021f47e0, unk_10, unk_14, unk_18);
         *(Unk_0208f480_Mtx *)unk_24.unk_64 = *(Unk_0208f480_Mtx *)data_021f47e0;
-        _ZN12Unk_020dbd5413func_020547ccEPv(&unk_24, 0);
+        _ZN9AnimModel12drawAnimatedEPv(&unk_24, 0);
         volatile u16 a, b;
-        a = func_02064cc4();
+        a = SceneLights_GetRoomColor();
         b = a;
         NNS_G3dMdlSetMdlEmi(unk_24.unk_5c, 0, b);
     }
 }
 
 void Unk_0208f308::func_0208f474() {
-    _ZN12Unk_020dbd3413func_02054b14Ev(&unk_24);
+    _ZN11CachedModel7releaseEv(&unk_24);
 }
 
 void Unk_0208f308::func_0208f3c8(Unk_0208f2e8 *src, void (*cb)(Unk_0208f308 *)) {
@@ -1557,14 +1557,14 @@ void Unk_0208f308::func_0208f3c8(Unk_0208f2e8 *src, void (*cb)(Unk_0208f308 *)) 
     unk_20 = 0;
     u32 *r = src->unk_524;
     s32 t = func_021065f8(func_021065dc((void *)r[0]), 0);
-    _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_24, t, 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_24, t, 1, 0x1000, 0, 0);
     if (unk_e0 != 0) {
         s32 u = func_02106634(func_02106618((void *)r[1]), 0);
-        _ZN9ModelAnim13func_02055b38Eiiit(&unk_e8[1], u, 1, 0x1000, 0);
+        _ZN9ModelAnim4initEiiit(&unk_e8[1], u, 1, 0x1000, 0);
     }
     if (unk_e4 != 0) {
         s32 u = func_021067a4(func_02106788((void *)r[2]), 0);
-        _ZN9ModelAnim13func_02055b38Eiiit(&unk_e8[2], u, 1, 0x1000, 0);
+        _ZN9ModelAnim4initEiiit(&unk_e8[2], u, 1, 0x1000, 0);
     }
     cb(this);
 }

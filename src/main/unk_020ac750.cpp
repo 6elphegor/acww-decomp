@@ -379,13 +379,13 @@ extern "C" {
 u8 *func_02063b8c(s32 a);
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
+BOOL _ZN11CommManager8isOnlineEv(void *p);
 }
 extern "C" {
 u32 func_020b50e8();
 }
 extern "C" {
-void *func_02037558(void *a, s32 b, s32 c, s32 d);
+void *MapBlock_GetItemPtr(void *a, s32 b, s32 c, s32 d);
 }
 extern "C" {
 BOOL Item_IsFurniture(void *p);
@@ -394,7 +394,7 @@ extern "C" {
 u32 Item_GetFurnitureIndex(void *p);
 }
 extern "C" {
-void *func_0204ebd8(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void *BlockMap_GetItemPtr(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 }
 extern "C" {
 BOOL Item_IsFurnitureOrF031();
@@ -403,7 +403,7 @@ extern "C" {
 BOOL Item_IsNormalItem(void *p);
 }
 extern "C" {
-void func_0204eb30(void *a, void *b, s32 c, s32 d, s32 e);
+void BlockMap_SetItemAtUnit(void *a, void *b, s32 c, s32 d, s32 e);
 }
 extern "C" {
 s32 Snd_PlaySe(s32 a);
@@ -532,7 +532,7 @@ extern "C" {
 extern u8 data_020e2ea8[];
 }
 extern "C" {
-extern u8 data_020cbb18[];
+extern u8 gCommManager[];
 }
 extern "C" {
 extern u8 data_021ee160[];
@@ -565,7 +565,7 @@ extern "C" {
 extern u8 data_020e416c;
 }
 extern "C" {
-extern Unk_021c47c4 *data_021c47c4;
+extern Unk_021c47c4 *gSceneBlockMap;
 }
 extern "C" {
 extern u16 data_020d09cc[];
@@ -613,8 +613,8 @@ extern "C" void func_020af230(Counter *c) {
 }
 extern "C" void func_020af1fc(Counter *c) {
     c->unk_01 = 0;
-    u8 *p = *(u8 **)data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(p)) c->unk_00 = p[0x6c] - 1;
+    u8 *p = *(u8 **)gCommManager;
+    if (_ZN11CommManager8isOnlineEv(p)) c->unk_00 = p[0x6c] - 1;
     else c->unk_00 = 0;
 }
 extern "C" BOOL func_020af1ec(Counter *c) {
@@ -703,10 +703,10 @@ extern "C" s32 func_020aef80(u16 *key, u16 *arr, u8 *bits, u32 n) {
 extern "C" void func_020aee90(s32 x, s32 y, u32 a, s32 b) {
     if (IsZ()) return;
     if (a != func_020b50e8()) return;
-    void *w = data_021c47c4;
+    void *w = gSceneBlockMap;
     s32 bx = x >> 4;
     s32 by = y >> 4;
-    void *o = func_0204ebd8(w, bx, by, x - (bx << 4), y - (by << 4), 0);
+    void *o = BlockMap_GetItemPtr(w, bx, by, x - (bx << 4), y - (by << 4), 0);
     if (o == 0) return;
     if (Item_IsFurnitureOrF031()) {
         void *r = func_ov004_02235718();
@@ -719,7 +719,7 @@ extern "C" void func_020aee90(s32 x, s32 y, u32 a, s32 b) {
     } else if (Item_IsNormalItem(o)) {
         u16 *pc = (u16 *)o;
         if (!R1(pc, 0x1000, 0x10ff)) {
-            if (!R2(pc, 0x151f, 0x151f)) func_0204eb30(w, &data_021ee168, x, y, 0);
+            if (!R2(pc, 0x151f, 0x151f)) BlockMap_SetItemAtUnit(w, &data_021ee168, x, y, 0);
         }
         if (b != 0) Snd_PlaySe(0x2e);
     }
@@ -727,7 +727,7 @@ extern "C" void func_020aee90(s32 x, s32 y, u32 a, s32 b) {
 extern "C" void func_020aedc4(u16 *p, u32 a, s32 b) {
     if (IsZ()) return;
     if (a != func_020b50e8()) return;
-    Unk_021c47c4 *s = data_021c47c4;
+    Unk_021c47c4 *s = gSceneBlockMap;
     if (s == 0) return;
     void *q; u32 k = 0;
     if (s->unk_04 > k && s->unk_08 > k && s->unk_00 != 0) q = (void *)s->unk_00;
@@ -735,7 +735,7 @@ extern "C" void func_020aedc4(u16 *p, u32 a, s32 b) {
     if (q == 0) return;
     for (s32 y = 0; y < 16; y++) {
         for (s32 x = 0; x < 16; x++) {
-            u16 *e = (u16 *)func_02037558(q, x, y, 0);
+            u16 *e = (u16 *)MapBlock_GetItemPtr(q, x, y, 0);
             if (e == 0) continue;
             BOOL eq;
             if (Item_IsFurniture(e)) eq = Item_GetFurnitureIndex(e) == Item_GetFurnitureIndex(p);
@@ -788,7 +788,7 @@ extern "C" BOOL func_020aec74(Unk_020aec74_Out *out) {
     return FALSE;
 }
 extern "C" BOOL func_020aec4c() {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(*(void **)data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(*(void **)gCommManager)) {
         return func_020af1ec((Counter *)data_021ee160);
     }
     return TRUE;
@@ -816,7 +816,7 @@ extern "C" void func_020aebbc(Unk_020aebbc *p) {
 // ======== unk_020ae290.cpp ========
 namespace n4 {
 extern "C" {
-extern u8 data_021ed2d4[], data_020cbb18[], data_021d735c[], data_021ee1f4[], data_021ee17c[], data_021ee180[],
+extern u8 data_021ed2d4[], gCommManager[], data_021d735c[], data_021ee1f4[], data_021ee17c[], data_021ee180[],
     data_021ee20c[], gSaveData[], data_021ed104[];
 }
 extern "C" {
@@ -841,19 +841,19 @@ extern "C" {
 int func_020b50e8();
 }
 extern "C" {
-void func_0209d498(WindowLight*);
+void Clock_GetDateTime(WindowLight*);
 }
 extern "C" {
-void func_0209d164(WindowLight*, int);
+void DateTime_SubDays(WindowLight*, int);
 }
 extern "C" {
-void func_0209d2c0(WindowLight*, int);
+void DateTime_AddDays(WindowLight*, int);
 }
 extern "C" {
-int func_0209d3d0(WindowLight*, WindowLight*, int);
+int DateTime_Compare(WindowLight*, WindowLight*, int);
 }
 extern "C" {
-int _ZN12Unk_020cbb1813func_02072e44Ev(int);
+int _ZN11CommManager8isOnlineEv(int);
 }
 extern "C" {
 void func_020ace7c();
@@ -1035,7 +1035,7 @@ extern "C" BOOL func_020aeb80(Obj* self) {
     WindowLight d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
-    func_0209d498(&d);
+    Clock_GetDateTime(&d);
     int v = self->flags.v;
     if (v != 0) {
         if (d.c >= v && d.c < 0x17) return TRUE;
@@ -1053,7 +1053,7 @@ extern "C" int func_020aeb14(Obj* self) {
     WindowLight d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
-    func_0209d498(&d);
+    Clock_GetDateTime(&d);
     return func_020aeb38(self, &d);
 }
 extern "C" BOOL func_020aeac8(Obj* self) {
@@ -1086,7 +1086,7 @@ extern "C" Rgba func_020aea38(Obj* self) {
         d.b = 0;
         d.a = 0;
         d.g = 0;
-        func_0209d164(&d, 1);
+        DateTime_SubDays(&d, 1);
         r.c = d.f;
         r.b = d.e;
         r.a = d.d;
@@ -1098,7 +1098,7 @@ extern "C" int func_020aea04(Obj* self, WindowLight* d) {
     ((u32*)&t)[0] = 0;
     ((u32*)&t)[1] = 0;
     if (func_020aec74(&t) != 0) {
-        if ((u32)(func_0209d3d0(&t, d, 0x3c) + 1) <= 1) return TRUE;
+        if ((u32)(DateTime_Compare(&t, d, 0x3c) + 1) <= 1) return TRUE;
     }
     return FALSE;
 }
@@ -1106,7 +1106,7 @@ extern "C" int func_020ae9e0(Obj* self) {
     WindowLight d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
-    func_0209d498(&d);
+    Clock_GetDateTime(&d);
     return func_020aea04(self, &d);
 }
 extern "C" int func_020ae964(Obj* self, WindowLight* d) {
@@ -1121,7 +1121,7 @@ extern "C" int func_020ae964(Obj* self, WindowLight* d) {
         t.b = 0;
         t.a = 0;
         t.g = 0;
-        func_0209d164(&t, 1);
+        DateTime_SubDays(&t, 1);
         if (t.f == d->f && t.e == d->e && t.d == d->d) return TRUE;
         return FALSE;
     }
@@ -1131,18 +1131,18 @@ extern "C" int func_020ae940(Obj* self) {
     WindowLight d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
-    func_0209d498(&d);
+    Clock_GetDateTime(&d);
     return func_020ae964(self, &d);
 }
 extern "C" int func_020ae920(Obj* self, WindowLight* d) {
-    func_0209d2c0(d, 1);
+    DateTime_AddDays(d, 1);
     return func_020ae964(self, d);
 }
 extern "C" int func_020ae8fc(Obj* self) {
     WindowLight d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
-    func_0209d498(&d);
+    Clock_GetDateTime(&d);
     return func_020ae920(self, &d);
 }
 extern "C" u32 func_020ae8d0(Obj* self, int mode) {
@@ -1185,16 +1185,16 @@ extern "C" void func_020ae778(Obj* self) {
     WindowLight d;
     WindowLight t;
     int r4 = func_020ae888(self);
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(*(int*)data_020cbb18) != 0) return;
+    if (_ZN11CommManager8isOnlineEv(*(int*)gCommManager) != 0) return;
     if (func_020ae02c(self) >= r4) return;
     if (func_020aeac4(self)->flag != 0) return;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
-    func_0209d498(&d);
-    func_0209d2c0(&d, 2);
+    Clock_GetDateTime(&d);
+    DateTime_AddDays(&d, 2);
     MI_CpuCopy8(&d, &t, 8);
-    func_0209d164(&t, 1);
-    if (func_020aeb38(self, &t) != 0) func_0209d2c0(&d, 1);
+    DateTime_SubDays(&t, 1);
+    if (func_020aeb38(self, &t) != 0) DateTime_AddDays(&d, 1);
     func_020aeac4(self)->flag = 1;
     u8 u;
     u = d.f;
@@ -1203,7 +1203,7 @@ extern "C" void func_020ae778(Obj* self) {
     func_020aeac4(self)->b = u;
     u = d.d;
     func_020aeac4(self)->a = u;
-    func_0209d164(&d, 1);
+    DateTime_SubDays(&d, 1);
     func_020aece4(d.e, d.d);
 }
 extern "C" void func_020ae740(Obj* self, int add, int arg) {
@@ -1272,14 +1272,14 @@ extern "C" void func_020ae3a4(Obj* self, int force) {
     fresh = 1;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
-    func_0209d498(&d);
+    Clock_GetDateTime(&d);
     if (d.c < 6) {
-        func_0209d164(&d, fresh);
+        DateTime_SubDays(&d, fresh);
         fresh = 0;
     }
     if (force == 0 && func_020ae2d4(self, &d) == 0) return;
     self->flags.v = 0;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(*(int*)data_020cbb18) != 0) return;
+    if (_ZN11CommManager8isOnlineEv(*(int*)gCommManager) != 0) return;
     func_020ace7c();
     func_020ae29c(self, &d);
     func_020ae320(self, d.f, d.e, d.d);
@@ -1391,7 +1391,7 @@ extern "C" {
 extern u8 gSaveData[];
 }
 extern "C" {
-extern u32 data_020cbb18;
+extern u32 gCommManager;
 }
 extern "C" {
 void _ZN6ItemIdD1Ev(void*);
@@ -1427,13 +1427,13 @@ extern "C" {
 void func_020af160(void*, void*, u32, u32, u32, u32, u32);
 }
 extern "C" {
-void func_0209d498(V8*);
+void Clock_GetDateTime(V8*);
 }
 extern "C" {
-void func_0209d164(V8*, u32);
+void DateTime_SubDays(V8*, u32);
 }
 extern "C" {
-u32 _ZN12Unk_020cbb1813func_02072e44Ev(u32);
+u32 _ZN11CommManager8isOnlineEv(u32);
 }
 extern "C" {
 void _ZN22DateSeededRandomSource4seedEhhh(void*, u32, u32, u32);
@@ -1466,13 +1466,13 @@ extern "C" {
 u32 func_020ae888(void*);
 }
 extern "C" {
-void* func_0204da0c(u32);
+void* TownBlockMap_Get(u32);
 }
 extern "C" {
-void* func_0204ec8c(void*, u32);
+void* BlockMap_FindBlockAnyAttr(void*, u32);
 }
 extern "C" {
-u32 func_02037558(void*, u32, u32, u32);
+u32 MapBlock_GetItemPtr(void*, u32, u32, u32);
 }
 extern "C" {
 u32 Item_IsNookShop(void);
@@ -1481,7 +1481,7 @@ extern "C" {
 u16 Item_MakeNookShop(u32);
 }
 extern "C" {
-void func_02037590(void*, void*, u32, u32, u32);
+void MapBlock_SetItem(void*, void*, u32, u32, u32);
 }
 extern "C" {
 u32 func_020aec74(void*);
@@ -1502,10 +1502,10 @@ extern "C" {
 BOOL _ZN8SaveData8testFlagEj(void*, u32);
 }
 extern "C" {
-void func_0209cf88(B4*);
+void Clock_GetDate(B4*);
 }
 extern "C" {
-s32 func_0209cd00(B4*, u8*);
+s32 Date_DaysBetween(B4*, u8*);
 }
 extern "C" {
 void _ZN8SaveData9clearFlagEj(void*, u32);
@@ -1514,19 +1514,19 @@ extern "C" {
 void _ZN8SaveData7setFlagEj(void*, u32);
 }
 extern "C" {
-s32 func_0209ceac(u32, u32, u32);
+s32 Date_GetWeekday(u32, u32, u32);
 }
 extern "C" {
-void func_0209d2c0(V8*, s32);
+void DateTime_AddDays(V8*, s32);
 }
 extern "C" {
-s32 func_0203f508(E12*, V8*);
+s32 EventSchedule_CollectDayAll(E12*, V8*);
 }
 extern "C" {
 BOOL func_020ae290(u16);
 }
 extern "C" {
-s32 func_0209d3d0(V8*, V8*, u32);
+s32 DateTime_Compare(V8*, V8*, u32);
 }
 extern "C" {
 void func_020aed98(u32, u32);
@@ -1614,8 +1614,8 @@ void func_020ae040(S *s, V8 *p) {
     MI_CpuCopy8(p, &LampLights, 8);
     mode = _ZN22DateSeededRandomSource6randomEj(data_021ee1f4, 2);
     if (_ZN8SaveData8testFlagEj(gSaveData, 5)) {
-        func_0209cf88(&LightLevel);
-        r = func_0209cd00(&LightLevel, &s->f52);
+        Clock_GetDate(&LightLevel);
+        r = Date_DaysBetween(&LightLevel, &s->f52);
         if (r >= 1) {
             _ZN8SaveData9clearFlagEj(gSaveData, 5);
         } else if (r <= -7) {
@@ -1624,14 +1624,14 @@ void func_020ae040(S *s, V8 *p) {
     }
     if (!_ZN8SaveData8testFlagEj(gSaveData, 5)) {
         MI_CpuCopy8(p, &C, 8);
-        k = func_0209ceac(C.b5, C.b4, C.b3);
+        k = Date_GetWeekday(C.b5, C.b4, C.b3);
         if (k != 6 && k != 0) {
             r5 = 6 - k;
             if (r5 < 0) r5 = -r5;
             MI_CpuCopy8(&C, &WindowLight, 8);
             MI_CpuCopy8(&C, &E, 8);
-            func_0209d2c0(&WindowLight, r5);
-            func_0209d2c0(&E, r5 + 1);
+            DateTime_AddDays(&WindowLight, r5);
+            DateTime_AddDays(&E, r5 + 1);
             d4 = WindowLight.b4;
             d3 = WindowLight.b3;
             d5 = WindowLight.b5;
@@ -1639,9 +1639,9 @@ void func_020ae040(S *s, V8 *p) {
             e3 = E.b3;
             e5 = E.b5;
             MI_CpuCopy8(&WindowLight, &H, 8);
-            n1 = func_0203f508(arr1, &H);
+            n1 = EventSchedule_CollectDayAll(arr1, &H);
             MI_CpuCopy8(&E, &I, 8);
-            n2 = func_0203f508(arr2, &I);
+            n2 = EventSchedule_CollectDayAll(arr2, &I);
             cnt1 = 0;
             cnt2 = 0;
             for (i = 0; i < n1; i++) {
@@ -1675,13 +1675,13 @@ void func_020ae040(S *s, V8 *p) {
         F.b3 = s->f52;
         F.b2 = 6;
         F.b1 = 0;
-        if (func_0209d3d0(&F, &LampLights, 0x38) == -1) {
+        if (DateTime_Compare(&F, &LampLights, 0x38) == -1) {
             _ZN8SaveData9clearFlagEj(gSaveData, 5);
         } else {
             MI_CpuCopy8(&F, &G, 8);
-            func_0209d164(&G, 4);
-            if (func_0209d3d0(&G, &LampLights, 0x38) == -1) {
-                if (func_0209d3d0(&LampLights, &F, 0x38) == -1) {
+            DateTime_SubDays(&G, 4);
+            if (DateTime_Compare(&G, &LampLights, 0x38) == -1) {
+                if (DateTime_Compare(&LampLights, &F, 0x38) == -1) {
                     if (!_ZN8SaveData8testFlagEj(gSaveData, 6)) {
                         func_020aed98(s->f53, s->f52);
                         _ZN8SaveData7setFlagEj(gSaveData, 6);
@@ -1796,23 +1796,23 @@ extern "C" u32 func_020ada88(void) {
     if (func_020ac79c() == 1) return 0;
     if (func_020ae9e0(data_021ed104)) {
         r6 = func_020ae888(data_021ed104);
-        void *t = func_0204da0c(r6);
+        void *t = TownBlockMap_Get(r6);
         if (t) {
-            r7 = func_0204ec8c(t, 2);
+            r7 = BlockMap_FindBlockAnyAttr(t, 2);
             if (r7) {
                 for (y = 0; y < 16; y++) {
                     for (x = 0; x < 16; x++) {
-                        if (func_02037558(r7, x, y, 0) && Item_IsNookShop()) {
+                        if (MapBlock_GetItemPtr(r7, x, y, 0) && Item_IsNookShop()) {
                             u16 name;
                             u32 a[2];
                             V8 b;
                             name = Item_MakeNookShop(r6);
-                            func_02037590(r7, &name, x, y, 0);
+                            MapBlock_SetItem(r7, &name, x, y, 0);
                             func_020ae008((S*)data_021ed104, r6);
                             a[0] = 0; a[1] = 0;
                             if (func_020aec74(a)) {
                                 ((u32*)&b)[0] = 0; ((u32*)&b)[1] = 0;
-                                func_0209d498(&b);
+                                Clock_GetDateTime(&b);
                                 if (b.b5 == ((V8*)a)->b5 && b.b4 == ((V8*)a)->b4 && b.b3 == ((V8*)a)->b3) func_020aecc4();
                             }
                             func_020aeac4(data_021ed104)->p3 = 0;
@@ -1844,9 +1844,9 @@ extern "C" void func_020ad9c4(S1 *s) {
     V8 t;
     ((u32*)&t)[0] = 0;
     ((u32*)&t)[1] = 0;
-    func_0209d498(&t);
-    if (t.b2 < 6) func_0209d164(&t, 1);
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) && func_020ad930(s, &t)) {
+    Clock_GetDateTime(&t);
+    if (t.b2 < 6) DateTime_SubDays(&t, 1);
+    if (!_ZN11CommManager8isOnlineEv(gCommManager) && func_020ad930(s, &t)) {
         func_020ad970(s, t.b5, t.b4, t.b3);
         func_020ad904(s, &t);
     }
@@ -1963,7 +1963,7 @@ extern "C" {
 u32 _ZN6TownId13func_02094058Ev(void *p);
 }
 extern "C" {
-u32 _ZN12Unk_020cbb1813func_02072e44Ev(u32 v);
+u32 _ZN11CommManager8isOnlineEv(u32 v);
 }
 extern "C" {
 void MailText_SetSlot(u32 a, void *b);
@@ -1993,19 +1993,19 @@ extern "C" {
 u32 String_LoadResolveAltText(void *w, u8 *b, const char *s);
 }
 extern "C" {
-u32 func_0204da0c();
+u32 TownBlockMap_Get();
 }
 extern "C" {
-u32 func_0204ec8c(u32 a, u32 b);
+u32 BlockMap_FindBlockAnyAttr(u32 a, u32 b);
 }
 extern "C" {
 void func_02135558x();
 }
 extern "C" {
-u32 func_020374f4(u32 a, void *b, void *c, void *d, void *e, u32 f);
+u32 MapBlock_FindItemInRange(u32 a, void *b, void *c, void *d, void *e, u32 f);
 }
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 extern "C" {
 void func_02135558(void *a, void *b, void *c);
@@ -2044,7 +2044,7 @@ extern "C" {
 extern u8 data_021ee1f4[];
 }
 extern "C" {
-extern u32 data_020cbb18;
+extern u32 gCommManager;
 }
 extern "C" {
 extern const u32 data_020e2e44;
@@ -2414,15 +2414,15 @@ u8 data_021ee15c;
 namespace n2 {
 extern "C" BOOL func_020ad330() {
     u32 v[4];
-    u32 a = func_0204da0c();
+    u32 a = TownBlockMap_Get();
     if (a != 0) {
-        u32 b = func_0204ec8c(a, 0x200);
+        u32 b = BlockMap_FindBlockAnyAttr(a, 0x200);
         if (b != 0) {
             static ItemId tmp(0x5012);
-            if (func_020374f4(b, &v[0], &v[1], &tmp, &tmp, 0) != 0) {
+            if (MapBlock_FindItemInRange(b, &v[0], &v[1], &tmp, &tmp, 0) != 0) {
                 v[2] = 0;
                 v[3] = 0;
-                func_0209d498(&v[2]);
+                Clock_GetDateTime(&v[2]);
                 if (((u8 *)v)[0xa] >= 6) {
                     return TRUE;
                 }
@@ -2467,7 +2467,7 @@ extern "C" BOOL func_020ad274() {
 extern "C" void func_020ad194() {
     data_021ed2c0.func_020ad3bc()->func_020ad680();
     if (data_021ed2c0.func_020ad3bc()->func_020ad594()) {
-        if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0) {
+        if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
             Letter ctx;
             u8 r = func_02063b8c(3);
             Unk_020e2e54 w;
@@ -2667,16 +2667,16 @@ extern "C" {
 void func_02054b14(void *a);
 }
 extern "C" {
-Col func_02064cc4(void);
+Col SceneLights_GetRoomColor(void);
 }
 extern "C" {
-RGB func_02064f2c(void);
+RGB SceneLights_GetFlashColor(void);
 }
 extern "C" {
 s32 func_02064c84(s32 a);
 }
 extern "C" {
-void func_0209cf18(void *p);
+void Clock_GetMinuteHour(void *p);
 }
 extern "C" {
 BOOL func_02054c88(void *a, void *b, s32 c);
@@ -2703,7 +2703,7 @@ extern "C" {
 extern s32 gCurrentHeap;
 }
 extern "C" {
-extern s32 data_021c620c;
+extern s32 gBgHeap;
 }
 extern "C" {
 extern u8 data_021f47e0[];
@@ -2748,10 +2748,10 @@ extern "C" {
 u8 *NNS_G3dGetTex(void *p);
 }
 extern "C" {
-void func_02055724(void *p, s32 a);
+void Gfx3d_LoadTexAndPltt(void *p, s32 a);
 }
 extern "C" {
-u8 *func_0205588c(void *p, s32 heap);
+u8 *Gfx3d_CopyTex(void *p, s32 heap);
 }
 extern "C" {
 void Mem_Free(void *p);
@@ -2796,7 +2796,7 @@ extern "C" {
 void func_020ac790(int v);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_02072e44Ev(void *h);
+void *_ZN11CommManager8isOnlineEv(void *h);
 }
 extern "C" {
 void func_020ada88(void);
@@ -2823,13 +2823,13 @@ extern "C" {
 BOOL func_020b5268(u32 v);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020728d4Ev(void *h);
+void _ZN11CommManager11beginRecordEv(void *h);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020728a4EPhj(void *h, void *p, u32 n);
+void _ZN11CommManager11writeRecordEPhj(void *h, void *p, u32 n);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072824Ejj(void *h, u32 a, u32 b);
+void _ZN11CommManager9endRecordEjj(void *h, u32 a, u32 b);
 }
 extern "C" {
 u32 func_020aec4c(void);
@@ -2973,7 +2973,7 @@ extern "C" {
 void _ZN12Unk_02097ff413func_0209801cEj(void *p, u32 i);
 }
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 }
 extern "C" {
 extern u8 data_021ed104[];
@@ -3082,7 +3082,7 @@ static inline Unk_020ac500_Pltt *Unk_020ac500_PlttData(const Unk_020ac500_Tex *t
 
 
 extern "C" void func_020ace7c(void) {
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         void *r5 = PlayerData_GetCurrent();
         if (r5) {
             u32 n = func_020acde8(*func_020acf54(_ZN10PlayerData13getNookPointsEv(r5)));
@@ -3162,15 +3162,15 @@ extern "C" void func_020acb74(u32 a, u32 b, u32 c, u32 d, int mode, u8 flag, int
     e = e;
     if (a == 0x3f) {
         func_020ae740(data_021ed104, b, d);
-        if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) && flag) {
+        if (_ZN11CommManager8isOnlineEv(gCommManager) && flag) {
             p1.a = a;
             p1.b = b;
             p1.c = d;
             p1.d = c;
-            void *h = data_020cbb18;
-            _ZN12Unk_020cbb1813func_020728d4Ev(h);
-            _ZN12Unk_020cbb1813func_020728a4EPhj(h, &p1, 4);
-            _ZN12Unk_020cbb1813func_02072824Ejj(h, 0x26, 4);
+            void *h = gCommManager;
+            _ZN11CommManager11beginRecordEv(h);
+            _ZN11CommManager11writeRecordEPhj(h, &p1, 4);
+            _ZN11CommManager9endRecordEjj(h, 0x26, 4);
         }
     } else {
         cur = data_021ee168;
@@ -3210,15 +3210,15 @@ extern "C" void func_020acb74(u32 a, u32 b, u32 c, u32 d, int mode, u8 flag, int
                 func_020aedc4(&cur, c, e);
                 break;
             }
-            if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) && flag) {
+            if (_ZN11CommManager8isOnlineEv(gCommManager) && flag) {
                 p2.a = a;
                 p2.b = b;
                 p2.c = d;
                 p2.d = c;
-                void *h = data_020cbb18;
-                _ZN12Unk_020cbb1813func_020728d4Ev(h);
-                _ZN12Unk_020cbb1813func_020728a4EPhj(h, &p2, 4);
-                _ZN12Unk_020cbb1813func_02072824Ejj(h, 0x26, 4);
+                void *h = gCommManager;
+                _ZN11CommManager11beginRecordEv(h);
+                _ZN11CommManager11writeRecordEPhj(h, &p2, 4);
+                _ZN11CommManager9endRecordEjj(h, 0x26, 4);
             }
         }
     }
@@ -3261,7 +3261,7 @@ extern "C" u32 func_020aca44(void) {
 }
 
 extern "C" BOOL func_020aca18(void) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         return FALSE;
     }
     if (func_02096880()) {
@@ -3340,9 +3340,9 @@ extern "C" void func_020ac7f8(Bits *p, u32 arg) {
         func_020acb74(a, p->b, d, c, 0, 0, 1);
     }
     if (a != 0x3f) {
-        void *h = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(h);
-        _ZN12Unk_020cbb1813func_02072824Ejj(h, 0x27, arg);
+        void *h = gCommManager;
+        _ZN11CommManager11beginRecordEv(h);
+        _ZN11CommManager9endRecordEjj(h, 0x27, arg);
     }
 }
 
@@ -3356,7 +3356,7 @@ extern "C" void func_020ac7cc(u16 *p) {
 
 extern "C" BOOL func_020ac7a8(void) {
     struct { u8 a; u8 b; u8 c; u8 d; } s;
-    func_0209cf18(&s);
+    Clock_GetMinuteHour(&s);
     if (s.b >= 8 && s.b < 0x17) {
         return TRUE;
     }
@@ -3374,7 +3374,7 @@ extern "C" void func_020ac790(int v) {
 extern "C" void func_020ac750(void) {
     if (func_020b5184()) {
         if (func_020ac79c() == 2) {
-            if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+            if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
                 func_020ada88();
                 func_020ae3a4(data_021ed104, 0);
             }

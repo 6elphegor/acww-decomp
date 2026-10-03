@@ -212,12 +212,12 @@ public:
 #define func_02098750 _ZN10PlayerData13func_02098750Ev
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define MsgString_copy _ZN9MsgString4copyEPS_
-#define func_020b851c _ZN12Unk_020e460813func_020b851cEjjhjjjj
-#define func_020b85f8 _ZN12Unk_020e4608C1Ev
-#define func_020b8670 _ZN12Unk_020e45f813func_020b8670Ejhj
-#define func_020b86c0 _ZN12Unk_020e45f813func_020b86c0Ejhjj
-#define func_020b8714 _ZN12Unk_020e45f813func_020b8714Ejhjjj
-#define func_020b87d0 _ZN12Unk_020e45f813func_020b87d0Ev
+#define BgVramTaskPair_requestCharPair _ZN14BgVramTaskPair15requestCharPairEjjhjjjj
+#define func_020b85f8 _ZN14BgVramTaskPairC1Ev
+#define BgVramTask_requestPalette _ZN10BgVramTask14requestPaletteEjhj
+#define BgVramTask_requestScreen _ZN10BgVramTask13requestScreenEjhjj
+#define BgVramTask_requestChars _ZN10BgVramTask12requestCharsEjhjjj
+#define BgVramTask_cancel _ZN10BgVramTask6cancelEv
 #define func_021355f0 __cxa_vec_cleanup
 #define func_02135714 __cxa_vec_ctor
 
@@ -227,10 +227,10 @@ extern "C" {
 void Snd_PlaySe(s32 a);
 void Snd_StopSe(s32 a, s32 b);
 void func_02004008(s32 a);
-void func_02002438(void *a, s32 b, s32 c, s32 d, s32 e);
-void func_020024f0(void *a, u32 b, u32 c, s32 d);
-void func_0200261c(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_020026c4(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_LoadCharRange(void *a, s32 b, s32 c, s32 d, s32 e);
+void Gfx2d_LoadScreen(void *a, u32 b, u32 c, s32 d);
+void Gfx2d_LoadCharFile(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_LoadPaletteFile(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Item_GetInfoUnk02(void *p);
 void StrBuf_Copy(void *a, void *b);
 void ItemName_setFromItem(void *a, void *b);
@@ -281,12 +281,12 @@ void func_02098e90(void *a, void *b);
 void func_0209909c(u16 *a, s32 b, s32 c);
 void MsgString_copy(void *a, void *b);
 void String_SetSlot(s32 a, void *p);
-void func_020b851c(void *a, void *b, void *c, s32 d, u32 e, u32 f, u32 g, u32 h);
+void BgVramTaskPair_requestCharPair(void *a, void *b, void *c, s32 d, u32 e, u32 f, u32 g, u32 h);
 void func_020b85f8(void *p);
-s32 func_020b8670(void *a, void *b, s32 c, s32 d);
-s32 func_020b86c0(void *a, void *b, s32 c, s32 d, s32 e);
-s32 func_020b8714(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void func_020b87d0(void *p);
+s32 BgVramTask_requestPalette(void *a, void *b, s32 c, s32 d);
+s32 BgVramTask_requestScreen(void *a, void *b, s32 c, s32 d, s32 e);
+s32 BgVramTask_requestChars(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
+void BgVramTask_cancel(void *p);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 func_021355f0(void *p, s32 n, u32 sz, void *dtor);
 s32 func_02135714(void *p, s32 n, u32 sz, void *ctor, void *dtor);
@@ -622,8 +622,8 @@ void func_ov094_022937e4(Unk_ov094_02294a50 *o, s32 k, u16 *p, s32 a)
         Unk_ov094_022937e4_Ent *e = (Unk_ov094_022937e4_Ent *)func_ov094_02292fa4((S *)o, k);
         s32 c = (u32)(e->unk_04 << 22) >> 22;
         u8 *q = o->unk_184.func_ov094_02293b08(r);
-        func_02002438(q, 8, c, c, c + 1);
-        func_02002438(q + 0x400, 8, c + 0x20, c + 0x20, c + 0x21);
+        Gfx2d_LoadCharRange(q, 8, c, c, c + 1);
+        Gfx2d_LoadCharRange(q + 0x400, 8, c + 0x20, c + 0x20, c + 0x21);
         u32 n = func_ov094_02293abc(&o->unk_184, r);
         e->unk_04 = (e->unk_04 & 0xffff0fff) | ((n & 0xf) << 12);
     }
@@ -840,7 +840,7 @@ void func_ov094_0229334c(S *s, Rec *r, void *dst, s32 c) {
     MI_CpuCopy8(dst, p, 0x40);
     MI_CpuCopy8((u8 *)dst + 0x400, q, 0x40);
     k *= 0x38;
-    func_020b851c((u8 *)s->unk_98c + k, p, q, 8, t, t + 1, t + 0x20, t + 0x21);
+    BgVramTaskPair_requestCharPair((u8 *)s->unk_98c + k, p, q, 8, t, t + 1, t + 0x20, t + 0x21);
     c &= 0xf;
     ((u32 *)r)[1] = (((u32 *)r)[1] & 0xffff0fff) | (c << 12);
 }
@@ -981,7 +981,7 @@ u32 func_ov094_02292f8c(u32 i) {
 void func_ov094_02292f58(S *s) {
     s32 i;
     for (i = 0; i < 3; i++) {
-        func_020b87d0(&s->unk_98c[i]);
+        BgVramTask_cancel(&s->unk_98c[i]);
     }
     s->unk_a58 = 0;
 }

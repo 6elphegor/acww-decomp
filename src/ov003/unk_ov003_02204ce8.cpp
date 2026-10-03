@@ -75,7 +75,7 @@
 #define func_02035bac _ZN12Unk_0203575813func_02035bacEv
 #define func_0203e47c _ZN9Character13func_0203e47cEi
 #define func_0203e488 _ZN9Character13func_0203e488Ei
-#define func_02053f20 _ZN12Unk_020dbda413func_02053f20Ev
+#define TwoLayerAnimModel_updateLayers _ZN17TwoLayerAnimModel12updateLayersEv
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -93,7 +93,7 @@
 #define func_0206260c _ZN8ItemNameD1Ev
 #define func_02062650 _ZN8ItemNameC1EPt
 #define TalkWindowState_setNamedSlot _ZN15TalkWindowState12setNamedSlotEiPvj
-#define func_020729bc _ZN12Unk_020cbb1813func_020729bcEj
+#define CommManager_isLocalSlot _ZN11CommManager11isLocalSlotEj
 #define func_02089040 _ZN12Unk_020e0d0813func_02089040Ev
 #define HudCountdown_incCountB _ZN12HudCountdown9incCountBEv
 #define HudCountdown_incCountA _ZN12HudCountdown9incCountAEv
@@ -344,31 +344,31 @@ public:
 extern "C" {
 s32 func_020e9650(s32 *a, s32 *b);
 extern s32 data_ov003_02230af0[];
-extern s32 data_ov003_0222efb4[];
-extern void *data_021c47c4;
-BOOL func_ov003_02205b68(Unk_02006d14 *self, s32 *p);
-s32 func_ov003_02205894(Unk_02006d14 *self, s32 *out, s32 *in);
-void func_ov003_0220fc00(Unk_02006d14 *self, s32 a, s32 b);
-void func_ov003_0220b620(Unk_02006d14 *self, s32 a, s32 b);
-void func_ov003_0220d00c(Unk_02006d14 *self, s32 a, s32 b);
-void func_ov003_0220e8cc(Unk_02006d14 *self, s32 *v, s32 a, s32 b);
-void func_ov003_0220e6b0(Unk_02006d14 *self, s32 a, s32 b);
-void func_ov003_02209030(Unk_02006d14 *self, s32 a, s32 b);
-void func_ov003_02208d18(Unk_02006d14 *self, s32 a, s32 b);
-void func_ov003_0220627c(Unk_02006d14 *self, s32 a, s32 b);
-void func_ov003_02206770(Unk_02006d14 *self, s32 a, s32 b);
-void func_ov003_02206574(Unk_02006d14 *self, s32 a, s32 b);
-void func_ov003_022084f4(Unk_02006d14 *self, s32 x, s32 z, s32 f, s32 a, s32 b, s32 c);
-void func_ov003_0220fe1c(Unk_02006d14 *self, s32 a, s32 b);
-void func_ov003_02207404(Unk_02006d14 *self, s32 a, s32 b);
+extern s32 sFieldFrontDist[];
+extern void *gSceneBlockMap;
+BOOL PlayerActor_FieldInteractFront(Unk_02006d14 *self, s32 *p);
+s32 PlayerActor_FishFindCastTarget(Unk_02006d14 *self, s32 *out, s32 *in);
+void PlayerActor_RequestAxeSwing(Unk_02006d14 *self, s32 a, s32 b);
+void PlayerActor_RequestShovelReady(Unk_02006d14 *self, s32 a, s32 b);
+void PlayerActor_RequestBugNetSwing(Unk_02006d14 *self, s32 a, s32 b);
+void PlayerActor_RequestFishCast(Unk_02006d14 *self, s32 *v, s32 a, s32 b);
+void PlayerActor_RequestFishCastFail(Unk_02006d14 *self, s32 a, s32 b);
+void PlayerActor_RequestWateringCan(Unk_02006d14 *self, s32 a, s32 b);
+void PlayerActor_RequestSlingshot(Unk_02006d14 *self, s32 a, s32 b);
+void PlayerActor_RequestAct82(Unk_02006d14 *self, s32 a, s32 b);
+void PlayerActor_RequestAct80(Unk_02006d14 *self, s32 a, s32 b);
+void PlayerActor_RequestAct81(Unk_02006d14 *self, s32 a, s32 b);
+void PlayerActor_RequestAct68(Unk_02006d14 *self, s32 x, s32 z, s32 f, s32 a, s32 b, s32 c);
+void PlayerActor_RequestUmbrellaSpin(Unk_02006d14 *self, s32 a, s32 b);
+void PlayerActor_RequestAct72(Unk_02006d14 *self, s32 a, s32 b);
 void func_0200f3ec(Unk_ov003_02204ce8_Vec *out, Unk_02006d14 *o, s32 *in, u16 *ang, s32 *p);
 void func_0200f45c(Unk_ov003_02204ce8_Vec *out, Unk_02006d14 *o);
 BOOL func_020e972c(s32 *a, s32 *b);
 s32 func_020e7b98(s32 a, s32 b);
 BOOL func_02030d60(s32 *p);
 BOOL func_020b8e14();
-void func_0204ee10(s32 *a, s32 *b, s32 *c);
-void *func_0204ebd8(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
+void FieldPos_ToUnit(s32 *a, s32 *b, s32 *c);
+void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 
 struct Unk_ov003_02204f3c_Pad {
@@ -385,9 +385,9 @@ extern "C" s32 func_0200f9bc(Unk_02006d14 *self);
 
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" BOOL func_ov003_02204d90(Unk_02006d14 *self, s32 mode, s32 *pos);
-extern "C" BOOL func_ov003_02204f3c(Unk_02006d14 *self);
-extern "C" BOOL func_ov003_02204ce8(Unk_02006d14 *self, s32 a);
+extern "C" BOOL PlayerActor_FieldStartToolAction(Unk_02006d14 *self, s32 mode, s32 *pos);
+extern "C" BOOL PlayerActor_FieldUseTool(Unk_02006d14 *self);
+extern "C" BOOL PlayerActor_FieldInteractAt(Unk_02006d14 *self, s32 a);
 }
 
 namespace ns_022052f4 {
@@ -483,11 +483,11 @@ typedef Unk_ov003_022052f4_Date Date;
 typedef Unk_ov003_022052f4_Item Item;
 
 extern "C" {
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 extern u8 data_ov003_02230ae8[];
-extern u8 data_ov003_02230ae4[];
-extern u8 data_ov003_02230acc[];
-extern u8 data_ov003_0222efb4[];
+extern u8 sFishCastFarDist[];
+extern u8 sFishCastNearDist[];
+extern u8 sFieldFrontDist[];
 
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
 Item *NpcRegistry_FindByKind(u32 a, u32 b);
@@ -496,9 +496,9 @@ BOOL func_0200e7c0(Obj *o);
 u16 *func_020952d0();
 u8 *func_020952c8();
 s32 PlayerActor_GetPlayerData(Obj *o);
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 s32 func_0200f23c(Obj *o);
-s32 func_020b8fd8();
+s32 Weather_GetCurrent();
 s32 PlayerActor_GetTan(Obj *o);
 void PlayerData_setTan(u32 a, u32 b);
 void func_0200f17c(Obj *o, s32 a, void *d);
@@ -506,16 +506,16 @@ void Unk_02006d14_netSendTan(Obj *o);
 BOOL Unk_02006d14_testActionFlag(Obj *o, u32 id);
 s32 Unk_02006d14_clearActionFlag(Obj *o, u32 id);
 void Unk_02006d14_setActionFlag(Obj *o, u32 id);
-s32 func_ov003_022072b8(Obj *o, s32 *p, s32 a, s32 b);
+s32 PlayerActor_RequestPitfallFall(Obj *o, s32 *p, s32 a, s32 b);
 BOOL PlayerActor_isLocomotionAction(Obj *o, s32 a);
-void func_0204ee10(s32 *a, s32 *b, V3 *v);
+void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 s32 Unk_02006d14_getHeldToolKind(Obj *o);
 s32 func_02042f44(s32 a, V2 *p, s32 k);
 s32 func_0200f9bc(Obj *o);
 void PlayerActor_clearRequests(Obj *o);
 s32 func_02043f20(V2 *p);
 void func_0200f3ec(V3 *out, Obj *o, V3 *pos, s16 *ang, void *arg);
-u16 *func_0204ebd8(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void func_ov003_0221cd34(s32 a, V2 *p, s32 b);
 s32 func_020e972c(V3 *a, V3 *b);
 s32 func_020e7b98(s32 a, s32 b);
@@ -523,21 +523,21 @@ BOOL func_02030d60(V3 *v);
 s32 func_0200f7a0(Obj *o, V2 *p, s32 a, s32 b);
 void func_0200f43c(V3 *out, Obj *o);
 s32 func_0203081c(V3 *v, s32 *out, s32 a);
-u16 *func_0204eba0(void *grid, V3 *v, u32 a);
+u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
 s32 func_0200fa2c(Obj *o, V3 *v, u32 a);
 s32 func_0200f8f8(Obj *o, V3 *v, s32 a, s32 b);
 s32 func_0200f6d4(Obj *o, V3 *v, s32 a);
 
-BOOL func_ov003_022052f4(Obj *o);
-void func_ov003_022053e4(Obj *o);
-void func_ov003_02205574(Obj *o);
-void func_ov003_022055e4(Obj *o);
-void func_ov003_022056c8(Obj *o);
-void func_ov003_02205744(Obj *o);
-BOOL func_ov003_02205894(Obj *o, V3 *out, V3 *tgt);
-s32 func_ov003_02205928(Obj *o, V3 *p, u8 *f);
-s32 func_ov003_02205a00(Obj *o, u8 *pa, u8 *pb, s32 *out);
-BOOL func_ov003_02205b68(Obj *o, s32 *pa);
+BOOL PlayerActor_CheckToolHitActor(Obj *o);
+void PlayerActor_FieldUpdateTan(Obj *o);
+void PlayerActor_FieldPollPitfall(Obj *o);
+void PlayerActor_FieldCheckStepUnit(Obj *o);
+void PlayerActor_FieldRunStep(Obj *o);
+void PlayerActor_FieldCheckUnitAhead(Obj *o);
+BOOL PlayerActor_FishFindCastTarget(Obj *o, V3 *out, V3 *tgt);
+s32 PlayerActor_ShovelClassifyTarget(Obj *o, V3 *p, u8 *f);
+s32 PlayerActor_AxeClassifyTarget(Obj *o, u8 *pa, u8 *pb, s32 *out);
+BOOL PlayerActor_FieldInteractFront(Obj *o, s32 *pa);
 }
 
 static inline BOOL Unk_ov003_022052f4_Rng(u16 *p, u32 lo, u32 hi) {
@@ -570,16 +570,16 @@ static inline BOOL Unk_ov003_02205744_Chk(u16 *p) {
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" BOOL func_ov003_022052f4(Obj *o);
-extern "C" void func_ov003_022053e4(Obj *o);
-extern "C" void func_ov003_02205574(Obj *o);
-extern "C" void func_ov003_022055e4(Obj *o);
-extern "C" void func_ov003_022056c8(Obj *o);
-extern "C" void func_ov003_02205744(Obj *o);
-extern "C" BOOL func_ov003_02205894(Obj *o, V3 *out, V3 *tgt);
-extern "C" s32 func_ov003_02205928(Obj *o, V3 *p, u8 *f);
-extern "C" s32 func_ov003_02205a00(Obj *o, u8 *pa, u8 *pb, s32 *out);
-extern "C" BOOL func_ov003_02205b68(Obj *o, s32 *pa);
+extern "C" BOOL PlayerActor_CheckToolHitActor(Obj *o);
+extern "C" void PlayerActor_FieldUpdateTan(Obj *o);
+extern "C" void PlayerActor_FieldPollPitfall(Obj *o);
+extern "C" void PlayerActor_FieldCheckStepUnit(Obj *o);
+extern "C" void PlayerActor_FieldRunStep(Obj *o);
+extern "C" void PlayerActor_FieldCheckUnitAhead(Obj *o);
+extern "C" BOOL PlayerActor_FishFindCastTarget(Obj *o, V3 *out, V3 *tgt);
+extern "C" s32 PlayerActor_ShovelClassifyTarget(Obj *o, V3 *p, u8 *f);
+extern "C" s32 PlayerActor_AxeClassifyTarget(Obj *o, u8 *pa, u8 *pb, s32 *out);
+extern "C" BOOL PlayerActor_FieldInteractFront(Obj *o, s32 *pa);
 }
 
 namespace ns_02205c28 {
@@ -691,7 +691,7 @@ typedef PlayerActionRequest Msg;
 extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, u32 a, u32 b, u32 c);
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 *data_021c1b3c;
 extern u8 data_ov003_02258f00;
 extern V3 data_ov003_02258f18;
@@ -714,7 +714,7 @@ void Unk_02006d14_playSe(Obj *o, u32 a);
 void Unk_02006d14_netSendClothesChange(Obj *o, u32 a, u32 b);
 s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, s32 a);
-s32 func_020729bc(void *g, s32 a);
+s32 CommManager_isLocalSlot(void *g, s32 a);
 s32 func_020e7b98(s32 a, s32 b);
 s32 func_020e9650(void *a, void *b);
 void func_02010d98(void *a, s32 b);
@@ -745,59 +745,59 @@ s32 func_ov003_02224d14(s32 a);
 V3 *func_ov003_02224ba4(s32 a);
 void func_ov003_02224bc4(s32 a);
 
-s32 func_ov003_02205c28(Obj *o);
+s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 namespace ovcall {
-s32 func_ov003_02205c90(Obj *o);
-s32 func_ov003_02205f98(Obj *o);
-s32 func_ov003_02205eb8(Obj *o);
-s32 func_ov003_02206120(Obj *o);
-s32 func_ov003_022060b4(Obj *o);
-s32 func_ov003_022062d4(Obj *o);
-s32 func_ov003_02206378(Obj *o);
+s32 PlayerActor_FishReleaseLook(Obj *o);
+s32 PlayerActor_Act89ShowItem(Obj *o);
+s32 PlayerActor_Act89Look(Obj *o);
+s32 PlayerActor_Act82Update(Obj *o);
+s32 PlayerActor_Act82CheckEnd(Obj *o);
+s32 PlayerActor_Act81CheckEnd(Obj *o);
+s32 PlayerActor_Act81Update(Obj *o);
 }
-void func_ov003_02205c90(Obj *o);
-void func_ov003_02205e44(u8 *src, u8 *a, u8 *b);
-void func_ov003_02205e50(u8 *p, u32 a, u32 b);
-s32 func_ov003_02205e58(Obj *o, u8 *p, u32 c, s32 id, s32 e);
-void func_ov003_02205f98(Obj *o);
-void func_ov003_02205eb8(Obj *o);
-s32 func_ov003_0220605c(Obj *o, s32 a, s32 b);
-void func_ov003_02206120(Obj *o);
-void func_ov003_022060b4(Obj *o);
-s32 func_ov003_0220627c(Obj *o, s32 a, s32 b);
-void func_ov003_02206378(Obj *o);
-void func_ov003_022062d4(Obj *o);
-s32 func_ov003_02206574(Obj *o, s32 a, s32 b);
+void PlayerActor_FishReleaseLook(Obj *o);
+void PlayerActor_FishReleaseGetNetData(u8 *src, u8 *a, u8 *b);
+void PlayerActor_FishReleaseSetNetData(u8 *p, u32 a, u32 b);
+s32 PlayerActor_RequestFishRelease(Obj *o, u8 *p, u32 c, s32 id, s32 e);
+void PlayerActor_Act89ShowItem(Obj *o);
+void PlayerActor_Act89Look(Obj *o);
+s32 PlayerActor_RequestAct89(Obj *o, s32 a, s32 b);
+void PlayerActor_Act82Update(Obj *o);
+void PlayerActor_Act82CheckEnd(Obj *o);
+s32 PlayerActor_RequestAct82(Obj *o, s32 a, s32 b);
+void PlayerActor_Act81Update(Obj *o);
+void PlayerActor_Act81CheckEnd(Obj *o);
+s32 PlayerActor_RequestAct81(Obj *o, s32 a, s32 b);
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" s32 func_ov003_02205c28(Obj *o);
-extern "C" void func_ov003_02205c64(Obj *o);
-extern "C" void func_ov003_02205c90(Obj *o);
-extern "C" s32 func_ov003_02205dd0(Obj *o, s32 a);
-extern "C" void func_ov003_02205e04(Obj *o, Rec *r);
-extern "C" void func_ov003_02205e44(u8 *src, u8 *a, u8 *b);
-extern "C" void func_ov003_02205e50(u8 *p, u32 a, u32 b);
-extern "C" s32 func_ov003_02205e58(Obj *o, u8 *p, u32 c, s32 id, s32 e);
-extern "C" void func_ov003_02205e9c(Obj *o);
-extern "C" void func_ov003_02205eb8(Obj *o);
-extern "C" void func_ov003_02205f98(Obj *o);
-extern "C" s32 func_ov003_02206034(Obj *o, s32 a);
-extern "C" void func_ov003_02206040(Obj *o);
-extern "C" s32 func_ov003_0220605c(Obj *o, s32 a, s32 b);
-extern "C" void func_ov003_02206094(Obj *o);
-extern "C" void func_ov003_022060b4(Obj *o);
-extern "C" void func_ov003_02206120(Obj *o);
-extern "C" void func_ov003_022061e0(Obj *o);
-extern "C" s32 func_ov003_02206234(Obj *o, s32 a);
-extern "C" void func_ov003_02206240(Obj *o);
-extern "C" s32 func_ov003_0220627c(Obj *o, s32 a, s32 b);
-extern "C" void func_ov003_022062b4(Obj *o);
-extern "C" void func_ov003_022062d4(Obj *o);
-extern "C" void func_ov003_02206378(Obj *o);
-extern "C" void func_ov003_0220646c(Obj *o);
-extern "C" s32 func_ov003_02206500(Obj *o, s32 a);
-extern "C" void func_ov003_0220650c(Obj *o);
+extern "C" s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
+extern "C" void PlayerActor_MainFishRelease(Obj *o);
+extern "C" void PlayerActor_FishReleaseLook(Obj *o);
+extern "C" s32 PlayerActor_NetFishRelease(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupFishRelease(Obj *o, Rec *r);
+extern "C" void PlayerActor_FishReleaseGetNetData(u8 *src, u8 *a, u8 *b);
+extern "C" void PlayerActor_FishReleaseSetNetData(u8 *p, u32 a, u32 b);
+extern "C" s32 PlayerActor_RequestFishRelease(Obj *o, u8 *p, u32 c, s32 id, s32 e);
+extern "C" void PlayerActor_MainAct89(Obj *o);
+extern "C" void PlayerActor_Act89Look(Obj *o);
+extern "C" void PlayerActor_Act89ShowItem(Obj *o);
+extern "C" s32 PlayerActor_NetAct89(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupAct89(Obj *o);
+extern "C" s32 PlayerActor_RequestAct89(Obj *o, s32 a, s32 b);
+extern "C" void PlayerActor_MainAct82(Obj *o);
+extern "C" void PlayerActor_Act82CheckEnd(Obj *o);
+extern "C" void PlayerActor_Act82Update(Obj *o);
+extern "C" void PlayerActor_EndAct82(Obj *o);
+extern "C" s32 PlayerActor_NetAct82(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupAct82(Obj *o);
+extern "C" s32 PlayerActor_RequestAct82(Obj *o, s32 a, s32 b);
+extern "C" void PlayerActor_MainAct81(Obj *o);
+extern "C" void PlayerActor_Act81CheckEnd(Obj *o);
+extern "C" void PlayerActor_Act81Update(Obj *o);
+extern "C" void PlayerActor_EndAct81(Obj *o);
+extern "C" s32 PlayerActor_NetAct81(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupAct81(Obj *o);
 }
 
 namespace ns_02206574 {
@@ -915,7 +915,7 @@ typedef PlayerActionRequest Msg;
 extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, u32 a, u32 b, u32 c);
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern s16 data_02135f44[];
 struct Unk_ov003_02206c04_Keys { u16 a; u16 b; s16 c; };
 extern Unk_ov003_02206c04_Keys gPad;
@@ -939,7 +939,7 @@ s32 PlayerActor_getInputMagnitude(Obj *o);
 s32 PlayerActor_getInputAngleRaw(Obj *o);
 s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, s32 a);
-s32 func_020729bc(void *g, s32 a);
+s32 CommManager_isLocalSlot(void *g, s32 a);
 s32 PlayerData_GetBySessionSlot(s32 a);
 void PlayerData_setHeldItem(s32 a, u16 *p);
 u16 *PlayerData_getHeldItem(s32 a);
@@ -976,48 +976,48 @@ s32 FX_Div(s32 a, s32 b);
 s32 VEC_Mag(V3 *v);
 void func_020e9960(V3 *out, V3 *a, V3 *b);
 s32 func_ov003_0221950c(s32 a, V3 *v);
-s32 func_ov003_02210628(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+s32 PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 
-s32 func_ov003_02206574(Obj *o, s32 a, s32 b);
-s32 func_ov003_022065cc(Obj *o);
-s32 func_ov003_02206670(Obj *o);
-s32 func_ov003_02206770(Obj *o, s32 a, s32 b);
-void func_ov003_022067c4(Obj *o);
-s32 func_ov003_02206a84(Obj *o);
-s32 func_ov003_02206bb0(Obj *o, s32 a, s32 b);
-void func_ov003_02206c04(Obj *o);
-void func_ov003_02206de8(Obj *o);
+s32 PlayerActor_RequestAct81(Obj *o, s32 a, s32 b);
+s32 PlayerActor_Act80CheckEnd(Obj *o);
+s32 PlayerActor_Act80Update(Obj *o);
+s32 PlayerActor_RequestAct80(Obj *o, s32 a, s32 b);
+void PlayerActor_BeeStingUpdate(Obj *o);
+s32 PlayerActor_PitfallClimbOutCheckEnd(Obj *o);
+s32 PlayerActor_RequestPitfallClimbOut(Obj *o, s32 a, s32 b);
+void PlayerActor_PitfallStruggleInput(Obj *o);
+void PlayerActor_PitfallStruggleUpdate(Obj *o);
 }
 
 namespace Unk_ov003_02206be8_Ns {
-extern "C" s32 func_ov003_02206c04(Obj *o);
-extern "C" s32 func_ov003_02206de8(Obj *o);
+extern "C" s32 PlayerActor_PitfallStruggleInput(Obj *o);
+extern "C" s32 PlayerActor_PitfallStruggleUpdate(Obj *o);
 }
 extern "C" void MsgRequest_setFileName(void *self, const char *s);
 
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" s32 func_ov003_02206574(Obj *o, s32 a, s32 b);
-extern "C" void func_ov003_022065ac(Obj *o);
-extern "C" s32 func_ov003_022065cc(Obj *o);
-extern "C" s32 func_ov003_02206670(Obj *o);
-extern "C" void func_ov003_02206710(Obj *o);
-extern "C" s32 func_ov003_02206750(Obj *o, s32 a);
-extern "C" void func_ov003_0220675c(Obj *o);
-extern "C" s32 func_ov003_02206770(Obj *o, s32 a, s32 b);
-extern "C" void func_ov003_022067a8(Obj *o);
-extern "C" void func_ov003_022067c4(Obj *o);
-extern "C" void func_ov003_022069c4();
-extern "C" void func_ov003_022069c8(Obj *o);
-extern "C" s32 func_ov003_02206a1c(Obj *o, s32 a, s32 b);
-extern "C" void func_ov003_02206a68(Obj *o);
-extern "C" s32 func_ov003_02206a84(Obj *o);
-extern "C" s32 func_ov003_02206adc(Obj *o, s32 a);
-extern "C" void func_ov003_02206ae8(Obj *o);
-extern "C" s32 func_ov003_02206bb0(Obj *o, s32 a, s32 b);
-extern "C" void func_ov003_02206be8(Obj *o);
-extern "C" void func_ov003_02206c04(Obj *o);
-extern "C" void func_ov003_02206de8(Obj *o);
+extern "C" s32 PlayerActor_RequestAct81(Obj *o, s32 a, s32 b);
+extern "C" void PlayerActor_MainAct80(Obj *o);
+extern "C" s32 PlayerActor_Act80CheckEnd(Obj *o);
+extern "C" s32 PlayerActor_Act80Update(Obj *o);
+extern "C" void PlayerActor_EndAct80(Obj *o);
+extern "C" s32 PlayerActor_NetAct80(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupAct80(Obj *o);
+extern "C" s32 PlayerActor_RequestAct80(Obj *o, s32 a, s32 b);
+extern "C" void PlayerActor_MainBeeSting(Obj *o);
+extern "C" void PlayerActor_BeeStingUpdate(Obj *o);
+extern "C" void PlayerActor_NetBeeSting();
+extern "C" void PlayerActor_SetupBeeSting(Obj *o);
+extern "C" s32 PlayerActor_RequestBeeSting(Obj *o, s32 a, s32 b);
+extern "C" void PlayerActor_MainPitfallClimbOut(Obj *o);
+extern "C" s32 PlayerActor_PitfallClimbOutCheckEnd(Obj *o);
+extern "C" s32 PlayerActor_NetPitfallClimbOut(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupPitfallClimbOut(Obj *o);
+extern "C" s32 PlayerActor_RequestPitfallClimbOut(Obj *o, s32 a, s32 b);
+extern "C" void PlayerActor_MainPitfallStruggle(Obj *o);
+extern "C" void PlayerActor_PitfallStruggleInput(Obj *o);
+extern "C" void PlayerActor_PitfallStruggleUpdate(Obj *o);
 }
 
 namespace ns_02206e94 {
@@ -1094,7 +1094,7 @@ extern "C" void func_020339bc(Unk_ov003_02206fd8_X *self, V3 *v, s32 a, s32 b);
 extern "C" void func_02033988(Unk_ov003_02206fd8_X *self);
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 data_ov003_02230ad0[];
 extern u8 data_ov003_02230ad8[];
 
@@ -1122,56 +1122,56 @@ void func_0205e1a0(void *p, s32 a, s32 b, s32 c);
 void func_0205e184(void *p, s32 a);
 s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, s32 a);
-void func_02053f20(void *p);
+void TwoLayerAnimModel_updateLayers(void *p);
 s32 Unk_020102ec_advanceAnim(Obj *o);
 s32 Unk_020102ec_moveWithCollision(Obj *o);
 s32 func_0201071c(Obj *o);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 void Unk_020102ec_setSpeed(Obj *o, s32 *a);
 void PlayerActor_GetHeldItem(u16 *a, Obj *o);
-s32 func_020729bc(void *g, u32 a);
+s32 CommManager_isLocalSlot(void *g, u32 a);
 s32 func_020b8df0();
 void *PlayerData_GetCurrent();
 s32 func_02098044(void *p, s32 a);
 s32 func_0209801c(void *p, s32 a);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
-void func_0204ed8c(V3 *out, u32 a, u32 b);
+void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 
 s32 func_ov003_0221950c(s32 a, V3 *v);
 s32 func_ov003_02219bf0(s32 a, V3 *v);
-void func_ov003_02205c28(Obj *o);
+void PlayerActor_ResumeWalkOrIdle(Obj *o);
 
-void func_ov003_02206e94(Obj *o, s32 a);
-s32 func_ov003_02206edc(Obj *o, s32 a);
-void func_ov003_02206f0c(Obj *o, s32 *a);
-s32 func_ov003_02206f88(Obj *o, s32 a, s32 b, s32 c);
-void func_ov003_02206fc4(Obj *o);
-void func_ov003_02206fd8(Obj *o);
-s32 func_ov003_022070fc(Obj *o);
-void func_ov003_0220714c(Obj *o, s32 a);
-s32 func_ov003_022071ec(Obj *o, s32 a);
-s32 func_ov003_02207224(Obj *o, u8 *a);
-void func_ov003_022072a4(u8 *s, u8 *a, u8 *b);
-void func_ov003_022072b0(u8 *p, u8 a, u8 b);
-s32 func_ov003_022072b8(Obj *o, s32 *p, s32 b, s32 c);
-void func_ov003_022072fc(Obj *o);
-void func_ov003_02207324(Obj *o);
-void func_ov003_0220739c(Obj *o);
-s32 func_ov003_022073c8(Obj *o, s32 a);
-s32 func_ov003_022073d4(Obj *o);
-s32 func_ov003_02207404(Obj *o, s32 a, s32 b);
-void func_ov003_0220743c(Obj *o);
-void func_ov003_02207464(Obj *o);
-void func_ov003_02207550(Obj *o);
-void func_ov003_022075a4(Obj *o);
-s32 func_ov003_022076e8(Obj *o, s32 a);
-void func_ov003_022076f4(Obj *o);
-s32 func_ov003_02207790(Obj *o, s32 a, s32 b);
+void PlayerActor_EndPitfallStruggle(Obj *o, s32 a);
+s32 PlayerActor_NetPitfallStruggle(Obj *o, s32 a);
+void PlayerActor_SetupPitfallStruggle(Obj *o, s32 *a);
+s32 PlayerActor_RequestPitfallStruggle(Obj *o, s32 a, s32 b, s32 c);
+void PlayerActor_MainPitfallFall(Obj *o);
+void PlayerActor_PitfallFallUpdate(Obj *o);
+s32 PlayerActor_PitfallFallEffect(Obj *o);
+void PlayerActor_EndPitfallFall(Obj *o, s32 a);
+s32 PlayerActor_NetPitfallFall(Obj *o, s32 a);
+s32 PlayerActor_SetupPitfallFall(Obj *o, u8 *a);
+void PlayerActor_PitfallFallGetNetData(u8 *s, u8 *a, u8 *b);
+void PlayerActor_PitfallFallSetNetData(u8 *p, u8 a, u8 b);
+s32 PlayerActor_RequestPitfallFall(Obj *o, s32 *p, s32 b, s32 c);
+void PlayerActor_MainAct72(Obj *o);
+void PlayerActor_Act72CheckEnd(Obj *o);
+void PlayerActor_Act72Decelerate(Obj *o);
+s32 PlayerActor_NetAct72(Obj *o, s32 a);
+s32 PlayerActor_SetupAct72(Obj *o);
+s32 PlayerActor_RequestAct72(Obj *o, s32 a, s32 b);
+void PlayerActor_MainTrip(Obj *o);
+void PlayerActor_TripUpdate(Obj *o);
+void PlayerActor_TripCheckEnd(Obj *o);
+void PlayerActor_TripEffects(Obj *o);
+s32 PlayerActor_NetTrip(Obj *o, s32 a);
+void PlayerActor_SetupTrip(Obj *o);
+s32 PlayerActor_RequestTrip(Obj *o, s32 a, s32 b);
 }
 
 namespace ns_02206fc4 {
-extern "C" s32 func_ov003_02206fd8(Obj *o);
+extern "C" s32 PlayerActor_PitfallFallUpdate(Obj *o);
 }
 
 static inline BOOL Eq2(V3 *p, volatile V3 *v) {
@@ -1191,11 +1191,11 @@ struct Unk_ov003_022072b8_P {
 };
 
 namespace ns_022072fc {
-extern "C" s32 func_ov003_02207324(Obj *o);
+extern "C" s32 PlayerActor_Act72CheckEnd(Obj *o);
 }
 
 namespace ns_0220743c {
-extern "C" s32 func_ov003_02207550(Obj *o);
+extern "C" s32 PlayerActor_TripCheckEnd(Obj *o);
 }
 
 static inline BOOL Range(volatile u16 *p, u32 lo, u32 hi) {
@@ -1207,32 +1207,32 @@ static inline BOOL Range(volatile u16 *p, u32 lo, u32 hi) {
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_02206e94(Obj *o, s32 a);
-extern "C" s32 func_ov003_02206edc(Obj *o, s32 a);
-extern "C" void func_ov003_02206f0c(Obj *o, s32 *a);
-extern "C" s32 func_ov003_02206f88(Obj *o, s32 a, s32 b, s32 c);
-extern "C" void func_ov003_02206fc4(Obj *o);
-extern "C" void func_ov003_02206fd8(Obj *o);
-extern "C" s32 func_ov003_022070fc(Obj *o);
-extern "C" void func_ov003_0220714c(Obj *o, s32 a);
-extern "C" s32 func_ov003_022071ec(Obj *o, s32 a);
-extern "C" s32 func_ov003_02207224(Obj *o, u8 *a);
-extern "C" void func_ov003_022072a4(u8 *s, u8 *a, u8 *b);
-extern "C" void func_ov003_022072b0(u8 *p, u8 a, u8 b);
-extern "C" s32 func_ov003_022072b8(Obj *o, s32 *p, s32 b, s32 c);
-extern "C" void func_ov003_022072fc(Obj *o);
-extern "C" void func_ov003_02207324(Obj *o);
-extern "C" void func_ov003_0220739c(Obj *o);
-extern "C" s32 func_ov003_022073c8(Obj *o, s32 a);
-extern "C" s32 func_ov003_022073d4(Obj *o);
-extern "C" s32 func_ov003_02207404(Obj *o, s32 a, s32 b);
-extern "C" void func_ov003_0220743c(Obj *o);
-extern "C" void func_ov003_02207464(Obj *o);
-extern "C" void func_ov003_02207550(Obj *o);
-extern "C" void func_ov003_022075a4(Obj *o);
-extern "C" s32 func_ov003_022076e8(Obj *o, s32 a);
-extern "C" void func_ov003_022076f4(Obj *o);
-extern "C" s32 func_ov003_02207790(Obj *o, s32 a, s32 b);
+extern "C" void PlayerActor_EndPitfallStruggle(Obj *o, s32 a);
+extern "C" s32 PlayerActor_NetPitfallStruggle(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupPitfallStruggle(Obj *o, s32 *a);
+extern "C" s32 PlayerActor_RequestPitfallStruggle(Obj *o, s32 a, s32 b, s32 c);
+extern "C" void PlayerActor_MainPitfallFall(Obj *o);
+extern "C" void PlayerActor_PitfallFallUpdate(Obj *o);
+extern "C" s32 PlayerActor_PitfallFallEffect(Obj *o);
+extern "C" void PlayerActor_EndPitfallFall(Obj *o, s32 a);
+extern "C" s32 PlayerActor_NetPitfallFall(Obj *o, s32 a);
+extern "C" s32 PlayerActor_SetupPitfallFall(Obj *o, u8 *a);
+extern "C" void PlayerActor_PitfallFallGetNetData(u8 *s, u8 *a, u8 *b);
+extern "C" void PlayerActor_PitfallFallSetNetData(u8 *p, u8 a, u8 b);
+extern "C" s32 PlayerActor_RequestPitfallFall(Obj *o, s32 *p, s32 b, s32 c);
+extern "C" void PlayerActor_MainAct72(Obj *o);
+extern "C" void PlayerActor_Act72CheckEnd(Obj *o);
+extern "C" void PlayerActor_Act72Decelerate(Obj *o);
+extern "C" s32 PlayerActor_NetAct72(Obj *o, s32 a);
+extern "C" s32 PlayerActor_SetupAct72(Obj *o);
+extern "C" s32 PlayerActor_RequestAct72(Obj *o, s32 a, s32 b);
+extern "C" void PlayerActor_MainTrip(Obj *o);
+extern "C" void PlayerActor_TripUpdate(Obj *o);
+extern "C" void PlayerActor_TripCheckEnd(Obj *o);
+extern "C" void PlayerActor_TripEffects(Obj *o);
+extern "C" s32 PlayerActor_NetTrip(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupTrip(Obj *o);
+extern "C" s32 PlayerActor_RequestTrip(Obj *o, s32 a, s32 b);
 }
 
 namespace ns_022077c8 {
@@ -1286,9 +1286,9 @@ typedef PlayerActionRequest Msg;
 extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s16 c);
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 *data_021c1b3c;
-extern u8 data_021c3cc0;
+extern u8 gScreenTransition;
 
 void func_02010358(Obj *o, s32 a, u32 b, u32 c);
 void Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
@@ -1322,47 +1322,47 @@ void func_02034dd0(s32 a, s32 b, s32 c);
 void Snd_PlaySe(s32 a);
 s32 func_0203d76c();
 void func_0203da7c();
-s32 func_020729bc(void *g, u32 a);
+s32 CommManager_isLocalSlot(void *g, u32 a);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_IsFurniture(u16 *p);
-void func_0204ee10(s32 *x, s32 *y, V3 *v);
-s32 func_0204da0c();
-s32 func_0204d700(s32 o, V3 *v, s32 *a, s32 *b);
-s32 func_0204d684(s32 o, V3 *v, s32 *a, s32 *b);
+void FieldPos_ToUnit(s32 *x, s32 *y, V3 *v);
+s32 TownBlockMap_Get();
+s32 Town_FindPlayerHouse(s32 o, V3 *v, s32 *a, s32 *b);
+s32 Town_FindGateHouse(s32 o, V3 *v, s32 *a, s32 *b);
 s32 func_020b4934();
 void func_020b4f18(s32 a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g);
 s32 func_02090330(s32 a, void *b, void *c, s32 d);
 s32 func_020902d4(s32 h, void *a, void *b, s32 c);
-void func_020769dc(void *p, s32 *out, s32 *x, s32 *y, s32 *z);
-void func_02076a04(void *p, s32 a, s32 x, s32 y, s32 z);
+void NetBuf_UnpackTriple20(void *p, s32 *out, s32 *x, s32 *y, s32 *z);
+void NetBuf_PackTriple20(void *p, s32 a, s32 x, s32 y, s32 z);
 s32 func_020e7b98(s32 a, s32 b);
-void func_ov003_02210628(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void func_ov003_0221cd34(u32 a, Pair *p, s32 b);
-void func_ov003_02208108(void *r, s32 a, s32 b, s32 c, u32 d, u32 e);
+void PlayerActor_Act69SetWork(void *r, s32 a, s32 b, s32 c, u32 d, u32 e);
 
-void func_ov003_022077e4(Obj *o);
-void func_ov003_022078e0(Obj *o);
-s32 func_ov003_0220798c(Obj *o, s32 a, s16 b);
-void func_ov003_022079e0(Obj *o);
-void func_ov003_02207aec(Obj *o);
-s32 func_ov003_02207c08(Obj *o, u32 a, s32 b, s16 c);
-void func_ov003_02207c58(Obj *o);
-s32 func_ov003_02207d08(Obj *o, s32 a, s16 b);
-s32 func_ov003_02207d9c(Obj *o, s32 a, s16 b);
-void func_ov003_02207e1c(Obj *o);
-s32 func_ov003_02207df4(Obj *o);
-void func_ov003_02207eb4(void *a, V3 *v);
-void func_ov003_02207ecc(void *a, V3 *v);
-void func_ov003_02207ee8(V3 *d, V3 v);
-s32 func_ov003_02207efc(Obj *o, V3 v, s32 a, s16 b);
-void func_ov003_02207f40(V3 *d, V3 v);
-void func_ov003_02207fbc(Obj *o);
-void func_ov003_0220801c(Obj *o);
-void func_ov003_02208048(Obj *o);
+void PlayerActor_Act6ECheckEnd(Obj *o);
+void PlayerActor_Act6EUpdateAnim(Obj *o);
+s32 PlayerActor_RequestAct6E(Obj *o, s32 a, s16 b);
+void PlayerActor_FaintWarp(Obj *o);
+void PlayerActor_FaintEffect(Obj *o);
+s32 PlayerActor_RequestFaint(Obj *o, u32 a, s32 b, s16 c);
+void PlayerActor_Act6CUpdate(Obj *o);
+s32 PlayerActor_RequestAct6C(Obj *o, s32 a, s16 b);
+s32 PlayerActor_RequestAct6B(Obj *o, s32 a, s16 b);
+void PlayerActor_Act6AMove(Obj *o);
+s32 PlayerActor_Act6ACheckEnd(Obj *o);
+void PlayerActor_Act6AGetNetData(void *a, V3 *v);
+void PlayerActor_Act6ASetNetData(void *a, V3 *v);
+void PlayerActor_Act6ASetWork(V3 *d, V3 v);
+s32 PlayerActor_RequestAct6A(Obj *o, V3 v, s32 a, s16 b);
+void PlayerActor_Act6ASetArgs(V3 *d, V3 v);
+void PlayerActor_Act69CheckEnd(Obj *o);
+void PlayerActor_Act69Turn(Obj *o);
+void PlayerActor_Act69Update(Obj *o);
 }
 
 namespace Unk_ov003_022077c8_Impl {
-extern "C" s32 func_ov003_022077e4(Obj *o);
+extern "C" s32 PlayerActor_Act6ECheckEnd(Obj *o);
 }
 
 static inline BOOL Unk_ov003_022078e0_IsTwo(u8 v) {
@@ -1371,7 +1371,7 @@ static inline BOOL Unk_ov003_022078e0_IsTwo(u8 v) {
 }
 
 namespace Unk_ov003_022079c4_Impl {
-extern "C" s32 func_ov003_022079e0(Obj *o);
+extern "C" s32 PlayerActor_FaintWarp(Obj *o);
 }
 
 struct Unk_ov003_022080a0_V3 {
@@ -1381,43 +1381,43 @@ struct Unk_ov003_022080a0_V3 {
 };
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_022077c8(Obj *o);
-extern "C" void func_ov003_022077e4(Obj *o);
-extern "C" void func_ov003_022078e0(Obj *o);
-extern "C" s32 func_ov003_02207938(Obj *o, s16 a);
-extern "C" void func_ov003_02207944(Obj *o);
-extern "C" s32 func_ov003_0220798c(Obj *o, s32 a, s16 b);
-extern "C" void func_ov003_022079c4(Obj *o);
-extern "C" void func_ov003_022079e0(Obj *o);
-extern "C" void func_ov003_02207aec(Obj *o);
-extern "C" s32 func_ov003_02207b30(Obj *o, s16 a);
-extern "C" void func_ov003_02207b44(Obj *o, Msg *m);
-extern "C" s32 func_ov003_02207c08(Obj *o, u32 a, s32 b, s16 c);
-extern "C" s32 func_ov003_02207c44(Obj *o);
-extern "C" void func_ov003_02207c58(Obj *o);
-extern "C" s32 func_ov003_02207cb0(Obj *o, s16 a);
-extern "C" void func_ov003_02207cbc(Obj *o);
-extern "C" s32 func_ov003_02207d08(Obj *o, s32 a, s16 b);
-extern "C" void func_ov003_02207d40(Obj *o);
-extern "C" s32 func_ov003_02207d54(Obj *o, s16 a);
-extern "C" void func_ov003_02207d60(Obj *o);
-extern "C" s32 func_ov003_02207d9c(Obj *o, s32 a, s16 b);
-extern "C" s32 func_ov003_02207dd4(Obj *o);
-extern "C" s32 func_ov003_02207df4(Obj *o);
-extern "C" void func_ov003_02207e1c(Obj *o);
-extern "C" void func_ov003_02207e3c(Obj *o, s16 a);
-extern "C" void func_ov003_02207e6c(Obj *o, Msg *m);
-extern "C" void func_ov003_02207eb4(void *a, V3 *v);
-extern "C" void func_ov003_02207ecc(void *a, V3 *v);
-extern "C" void func_ov003_02207ee8(V3 *d, V3 v);
-extern "C" s32 func_ov003_02207efc(Obj *o, V3 v, s32 a, s16 b);
-extern "C" void func_ov003_02207f40(V3 *d, V3 v);
-extern "C" void func_ov003_02207f54(Obj *o);
-extern "C" void func_ov003_02207fbc(Obj *o);
-extern "C" void func_ov003_0220801c(Obj *o);
-extern "C" void func_ov003_02208048(Obj *o);
-extern "C" void func_ov003_0220809c();
-extern "C" void func_ov003_022080a0(Obj *o, Msg *m);
+extern "C" void PlayerActor_MainAct6E(Obj *o);
+extern "C" void PlayerActor_Act6ECheckEnd(Obj *o);
+extern "C" void PlayerActor_Act6EUpdateAnim(Obj *o);
+extern "C" s32 PlayerActor_NetAct6E(Obj *o, s16 a);
+extern "C" void PlayerActor_SetupAct6E(Obj *o);
+extern "C" s32 PlayerActor_RequestAct6E(Obj *o, s32 a, s16 b);
+extern "C" void PlayerActor_MainFaint(Obj *o);
+extern "C" void PlayerActor_FaintWarp(Obj *o);
+extern "C" void PlayerActor_FaintEffect(Obj *o);
+extern "C" s32 PlayerActor_NetFaint(Obj *o, s16 a);
+extern "C" void PlayerActor_SetupFaint(Obj *o, Msg *m);
+extern "C" s32 PlayerActor_RequestFaint(Obj *o, u32 a, s32 b, s16 c);
+extern "C" s32 PlayerActor_MainAct6C(Obj *o);
+extern "C" void PlayerActor_Act6CUpdate(Obj *o);
+extern "C" s32 PlayerActor_NetAct6C(Obj *o, s16 a);
+extern "C" void PlayerActor_SetupAct6C(Obj *o);
+extern "C" s32 PlayerActor_RequestAct6C(Obj *o, s32 a, s16 b);
+extern "C" void PlayerActor_MainAct6B(Obj *o);
+extern "C" s32 PlayerActor_NetAct6B(Obj *o, s16 a);
+extern "C" void PlayerActor_SetupAct6B(Obj *o);
+extern "C" s32 PlayerActor_RequestAct6B(Obj *o, s32 a, s16 b);
+extern "C" s32 PlayerActor_MainAct6A(Obj *o);
+extern "C" s32 PlayerActor_Act6ACheckEnd(Obj *o);
+extern "C" void PlayerActor_Act6AMove(Obj *o);
+extern "C" void PlayerActor_NetAct6A(Obj *o, s16 a);
+extern "C" void PlayerActor_SetupAct6A(Obj *o, Msg *m);
+extern "C" void PlayerActor_Act6AGetNetData(void *a, V3 *v);
+extern "C" void PlayerActor_Act6ASetNetData(void *a, V3 *v);
+extern "C" void PlayerActor_Act6ASetWork(V3 *d, V3 v);
+extern "C" s32 PlayerActor_RequestAct6A(Obj *o, V3 v, s32 a, s16 b);
+extern "C" void PlayerActor_Act6ASetArgs(V3 *d, V3 v);
+extern "C" void PlayerActor_MainAct69(Obj *o);
+extern "C" void PlayerActor_Act69CheckEnd(Obj *o);
+extern "C" void PlayerActor_Act69Turn(Obj *o);
+extern "C" void PlayerActor_Act69Update(Obj *o);
+extern "C" void PlayerActor_NetAct69();
+extern "C" void PlayerActor_SetupAct69(Obj *o, Msg *m);
 }
 
 namespace ns_02208108 {
@@ -1518,14 +1518,14 @@ extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s16
 typedef Unk_ov003_02208190_Obj Obj;
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 void *Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, s32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
-s32 func_020729bc(void *g, s32 a);
+s32 CommManager_isLocalSlot(void *g, s32 a);
 void Unk_020102ec_advanceAnim(Obj *o);
 void func_0201071c(Obj *o);
 s32 func_0200ef08(Obj *o);
@@ -1538,88 +1538,88 @@ void Unk_02006d14_clearActionFlag(Obj *o, s32 a);
 s32 Unk_02006d14_testActionFlag(Obj *o, s32 a);
 void Unk_02006d14_setActionFlag(Obj *o, s32 a);
 void Unk_02006d14_playSe(Obj *o, s32 a);
-void func_0204ee10(s32 *a, s32 *b, V3 *v);
-void func_0204edd8(V3 *out, s32 a);
-void func_0204ed8c(V3 *out, s32 a, s32 b);
+void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
+void FieldPos_SnapToUnitCenter(V3 *out, s32 a);
+void FieldPos_FromUnitCenter(V3 *out, s32 a, s32 b);
 void func_02090330(s32 a, void *b, void *c, s32 d);
-void func_02076a2c(void *a, s32 *b, s32 *c);
-void func_02076a6c(void *a, s32 b, s32 c);
+void NetBuf_UnpackPair20(void *a, s32 *b, s32 *c);
+void NetBuf_PackPair20(void *a, s32 b, s32 c);
 s32 func_020e7b98(s32 a, s32 b);
 
 void func_ov003_0221bf88(s32 a, Pair p);
 void func_ov003_0221cd34(s32 a, Pair p, s32 b);
 void func_ov003_0221977c(s32 a, V3 v);
-void func_ov003_02205c28(Obj *o);
-void func_ov003_02208a58(void *a, Pair *p);
-void func_ov003_02208a64(void *a, Pair *p);
-void func_ov003_02208a70(RecA *r, u32 a, s32 ang, V3 v);
-void func_ov003_02208a88(Obj *o, Pair p, s32 a, s32 b, s32 c);
+void PlayerActor_ResumeWalkOrIdle(Obj *o);
+void PlayerActor_Act66GetNetData(void *a, Pair *p);
+void PlayerActor_Act66SetNetData(void *a, Pair *p);
+void PlayerActor_Act66SetWork(RecA *r, u32 a, s32 ang, V3 v);
+void PlayerActor_RequestAct66(Obj *o, Pair p, s32 a, s32 b, s32 c);
 
-void func_ov003_02208108(void *p, s16 a, s32 b, s32 c, u8 d, u8 e);
-s32 func_ov003_0220812c(Obj *o, s32 x, s32 z, u8 a, u8 b, s32 c, s16 d);
-void func_ov003_0220817c(void *p, s32 a, s32 b, u8 c, u8 d);
-void func_ov003_02208190(Obj *o);
-void func_ov003_02208248(Obj *o);
-void func_ov003_022082a4(Obj *o);
-void func_ov003_0220832c(Obj *o);
-void func_ov003_02208358(Obj *o);
-void func_ov003_022083bc(Obj *o, s32 a);
-void func_ov003_02208420(Obj *o, u8 *m);
-void func_ov003_022084a8(u8 *p, s32 *a, s32 *b, u8 *c);
-void func_ov003_022084c0(u8 *p, s32 a, s32 b, u8 c);
-void func_ov003_022084d8(RecA *r, s32 a, s32 x, s32 z, u8 b, u8 c);
-s32 func_ov003_022084f4(Obj *o, s32 x, s32 z, bool a, bool b, s32 c, s32 d);
-void func_ov003_02208544(void *p, s32 a, s32 b, u8 c, u8 d);
-void func_ov003_02208558(Obj *o);
-void func_ov003_022085bc(Obj *o);
-void func_ov003_022085f8(Obj *o);
-void func_ov003_0220864c(Obj *o);
-void func_ov003_02208678(Obj *o);
-void func_ov003_022086c4(Obj *o);
-void func_ov003_022086c8(Obj *o, u8 *m);
-void func_ov003_02208754(RecC *r, s32 a, V3 v);
-s32 func_ov003_02208764(Obj *o, V3 *v, s32 a, s16 b);
-void func_ov003_022087b8(V3 *d, V3 v);
-void func_ov003_022087c8(Obj *o);
-void func_ov003_02208810(Obj *o);
-void func_ov003_022088d8(Obj *o);
-void func_ov003_02208904(Obj *o, s32 a);
-void func_ov003_02208984(Obj *o, s32 a);
-void func_ov003_022089d4(Obj *o, u8 *m);
+void PlayerActor_Act69SetWork(void *p, s16 a, s32 b, s32 c, u8 d, u8 e);
+s32 PlayerActor_RequestAct69(Obj *o, s32 x, s32 z, u8 a, u8 b, s32 c, s16 d);
+void PlayerActor_Act69SetArgs(void *p, s32 a, s32 b, u8 c, u8 d);
+void PlayerActor_MainAct68(Obj *o);
+void PlayerActor_Act68CheckEndRemote(Obj *o);
+void PlayerActor_Act68CheckEnd(Obj *o);
+void PlayerActor_Act68Turn(Obj *o);
+void PlayerActor_EndAct68(Obj *o);
+void PlayerActor_NetAct68(Obj *o, s32 a);
+void PlayerActor_SetupAct68(Obj *o, u8 *m);
+void PlayerActor_Act68GetNetData(u8 *p, s32 *a, s32 *b, u8 *c);
+void PlayerActor_Act68SetNetData(u8 *p, s32 a, s32 b, u8 c);
+void PlayerActor_Act68SetWork(RecA *r, s32 a, s32 x, s32 z, u8 b, u8 c);
+s32 PlayerActor_RequestAct68(Obj *o, s32 x, s32 z, bool a, bool b, s32 c, s32 d);
+void PlayerActor_Act68SetArgs(void *p, s32 a, s32 b, u8 c, u8 d);
+void PlayerActor_MainAct67(Obj *o);
+void PlayerActor_Act67CheckEndRemote(Obj *o);
+void PlayerActor_Act67CheckEnd(Obj *o);
+void PlayerActor_Act67Turn(Obj *o);
+void PlayerActor_Act67Effect(Obj *o);
+void PlayerActor_NetAct67(Obj *o);
+void PlayerActor_SetupAct67(Obj *o, u8 *m);
+void PlayerActor_Act67SetWork(RecC *r, s32 a, V3 v);
+s32 PlayerActor_RequestAct67(Obj *o, V3 *v, s32 a, s16 b);
+void PlayerActor_Act67SetArgs(V3 *d, V3 v);
+void PlayerActor_MainAct66(Obj *o);
+void PlayerActor_Act66CheckEnd(Obj *o);
+void PlayerActor_Act66Turn(Obj *o);
+void PlayerActor_EndAct66(Obj *o, s32 a);
+void PlayerActor_NetAct66(Obj *o, s32 a);
+void PlayerActor_SetupAct66(Obj *o, u8 *m);
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_02208108(void *p, s16 a, s32 b, s32 c, u8 d, u8 e);
-extern "C" s32 func_ov003_0220812c(Obj *o, s32 x, s32 z, u8 a, u8 b, s32 c, s16 d);
-extern "C" void func_ov003_0220817c(void *p, s32 a, s32 b, u8 c, u8 d);
-extern "C" void func_ov003_02208190(Obj *o);
-extern "C" void func_ov003_02208248(Obj *o);
-extern "C" void func_ov003_022082a4(Obj *o);
-extern "C" void func_ov003_0220832c(Obj *o);
-extern "C" void func_ov003_02208358(Obj *o);
-extern "C" void func_ov003_022083bc(Obj *o, s32 a);
-extern "C" void func_ov003_02208420(Obj *o, u8 *m);
-extern "C" void func_ov003_022084a8(u8 *p, s32 *a, s32 *b, u8 *c);
-extern "C" void func_ov003_022084c0(u8 *p, s32 a, s32 b, u8 c);
-extern "C" void func_ov003_022084d8(RecA *r, s32 a, s32 x, s32 z, u8 b, u8 c);
-extern "C" s32 func_ov003_022084f4(Obj *o, s32 x, s32 z, bool a, bool b, s32 c, s32 d);
-extern "C" void func_ov003_02208544(void *p, s32 a, s32 b, u8 c, u8 d);
-extern "C" void func_ov003_02208558(Obj *o);
-extern "C" void func_ov003_022085bc(Obj *o);
-extern "C" void func_ov003_022085f8(Obj *o);
-extern "C" void func_ov003_0220864c(Obj *o);
-extern "C" void func_ov003_02208678(Obj *o);
-extern "C" void func_ov003_022086c4(Obj *o);
-extern "C" void func_ov003_022086c8(Obj *o, u8 *m);
-extern "C" void func_ov003_02208754(RecC *r, s32 a, V3 v);
-extern "C" s32 func_ov003_02208764(Obj *o, V3 *v, s32 a, s16 b);
-extern "C" void func_ov003_022087b8(V3 *d, V3 v);
-extern "C" void func_ov003_022087c8(Obj *o);
-extern "C" void func_ov003_02208810(Obj *o);
-extern "C" void func_ov003_022088d8(Obj *o);
-extern "C" void func_ov003_02208904(Obj *o, s32 a);
-extern "C" void func_ov003_02208984(Obj *o, s32 a);
-extern "C" void func_ov003_022089d4(Obj *o, u8 *m);
+extern "C" void PlayerActor_Act69SetWork(void *p, s16 a, s32 b, s32 c, u8 d, u8 e);
+extern "C" s32 PlayerActor_RequestAct69(Obj *o, s32 x, s32 z, u8 a, u8 b, s32 c, s16 d);
+extern "C" void PlayerActor_Act69SetArgs(void *p, s32 a, s32 b, u8 c, u8 d);
+extern "C" void PlayerActor_MainAct68(Obj *o);
+extern "C" void PlayerActor_Act68CheckEndRemote(Obj *o);
+extern "C" void PlayerActor_Act68CheckEnd(Obj *o);
+extern "C" void PlayerActor_Act68Turn(Obj *o);
+extern "C" void PlayerActor_EndAct68(Obj *o);
+extern "C" void PlayerActor_NetAct68(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupAct68(Obj *o, u8 *m);
+extern "C" void PlayerActor_Act68GetNetData(u8 *p, s32 *a, s32 *b, u8 *c);
+extern "C" void PlayerActor_Act68SetNetData(u8 *p, s32 a, s32 b, u8 c);
+extern "C" void PlayerActor_Act68SetWork(RecA *r, s32 a, s32 x, s32 z, u8 b, u8 c);
+extern "C" s32 PlayerActor_RequestAct68(Obj *o, s32 x, s32 z, bool a, bool b, s32 c, s32 d);
+extern "C" void PlayerActor_Act68SetArgs(void *p, s32 a, s32 b, u8 c, u8 d);
+extern "C" void PlayerActor_MainAct67(Obj *o);
+extern "C" void PlayerActor_Act67CheckEndRemote(Obj *o);
+extern "C" void PlayerActor_Act67CheckEnd(Obj *o);
+extern "C" void PlayerActor_Act67Turn(Obj *o);
+extern "C" void PlayerActor_Act67Effect(Obj *o);
+extern "C" void PlayerActor_NetAct67(Obj *o);
+extern "C" void PlayerActor_SetupAct67(Obj *o, u8 *m);
+extern "C" void PlayerActor_Act67SetWork(RecC *r, s32 a, V3 v);
+extern "C" s32 PlayerActor_RequestAct67(Obj *o, V3 *v, s32 a, s16 b);
+extern "C" void PlayerActor_Act67SetArgs(V3 *d, V3 v);
+extern "C" void PlayerActor_MainAct66(Obj *o);
+extern "C" void PlayerActor_Act66CheckEnd(Obj *o);
+extern "C" void PlayerActor_Act66Turn(Obj *o);
+extern "C" void PlayerActor_EndAct66(Obj *o, s32 a);
+extern "C" void PlayerActor_NetAct66(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupAct66(Obj *o, u8 *m);
 }
 
 namespace ns_02208a58 {
@@ -1689,8 +1689,8 @@ typedef PlayerActionRequest Msg;
 extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s16 c);
 
 extern "C" {
-extern void *data_020cbb18;
-extern void *data_021c47c4;
+extern void *gCommManager;
+extern void *gSceneBlockMap;
 extern u8 data_ov003_02258f00;
 extern V3 data_ov003_02258f18;
 
@@ -1700,7 +1700,7 @@ void func_0201065c(Obj *o);
 void Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
 void func_02010358(Obj *o, s32 a, u32 b, u32 c);
 s32 AnimFrameCtrl_isFinished(void *p);
-s32 func_020729bc(void *g, u32 a);
+s32 CommManager_isLocalSlot(void *g, u32 a);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 void func_0200f478(Obj *o, s32 a);
 void Unk_02006d14_playSeAt(Obj *o, s32 a, V3 *v);
@@ -1718,7 +1718,7 @@ void Unk_02007694_requestAct05(Obj *o, s32 a, s32 b, s32 c);
 void func_020b8e60(s32 h);
 void func_0205e1a0(void *p, u32 a, u32 b, u32 c);
 s32 PlayerActor_GetSlotAction(s32 *out, s32 a, u32 b);
-s32 func_ov003_02205c28(Obj *o);
+s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
 s32 func_02090330(u32 id, V3 *v, s16 *h, u32 z);
 void func_020902d4(s32 h, V3 *v, u32 z);
@@ -1728,26 +1728,26 @@ s32 func_0200f8f8(Obj *o, V3 *v, s32 a, s32 b);
 void func_0200ede8(Obj *o, V3 *v);
 void func_0200f504(Obj *o, s32 a);
 s32 func_020e7b98(s32 a, s32 b);
-void func_0204ed8c(V3 *out, u32 a, u32 b);
-u16 *func_0204eba0(void *grid, V3 *v, u32 a);
+void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
+u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
 void func_ov003_02219b84(s32 h, V3 *v);
 void func_ov003_02219b18(s32 h, V3 *v);
 void func_0203e47c(Obj *o, Unk_ov003_02208a58_Sec *s);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 
-void func_ov003_02208ad8(u8 *d, Pair v, u32 c);
-void func_ov003_02208bc0(Obj *o);
-void func_ov003_02208b6c(Obj *o);
-s32 func_ov003_02208d18(Obj *o, s32 a, s16 b);
-void func_ov003_02208ec8(Obj *o);
-void func_ov003_02208e38(Obj *o);
-void func_ov003_02208d90(Obj *o);
-void func_ov003_02209024(u8 *p, u8 *out);
-void func_ov003_0220902c(u8 *p, u32 v);
-s32 func_ov003_02209030(Obj *o, s32 a, s16 b);
-void func_ov003_02209274(Obj *o);
-void func_ov003_02209170(Obj *o);
-void func_ov003_022090a8(Obj *o);
+void PlayerActor_Act66SetArgs(u8 *d, Pair v, u32 c);
+void PlayerActor_SlingshotUpdate(Obj *o);
+void PlayerActor_SlingshotCheckEnd(Obj *o);
+s32 PlayerActor_RequestSlingshot(Obj *o, s32 a, s16 b);
+void PlayerActor_WateringCanUpdate(Obj *o);
+void PlayerActor_WateringCanCheckEnd(Obj *o);
+void PlayerActor_WateringCanCheckEndRemote(Obj *o);
+void PlayerActor_WateringCanGetNetData(u8 *p, u8 *out);
+void PlayerActor_WateringCanSetNetData(u8 *p, u32 v);
+s32 PlayerActor_RequestWateringCan(Obj *o, s32 a, s16 b);
+void PlayerActor_FillHoleTurn(Obj *o);
+void PlayerActor_FillHoleUpdate(Obj *o);
+void PlayerActor_FillHoleCheckEnd(Obj *o);
 }
 
 struct Unk_ov003_02209314_Arg {
@@ -1759,38 +1759,38 @@ struct Unk_ov003_02209314_Arg {
 };
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_02208a58(u8 *p, Pair *out);
-extern "C" void func_ov003_02208a64(u8 *p, Pair *v);
-extern "C" void func_ov003_02208a70(u8 *r, u32 a, u32 b, V3 *v);
-extern "C" s32 func_ov003_02208a88(Obj *o, Pair *p, u32 c, s32 b, s16 d);
-extern "C" void func_ov003_02208ad8(u8 *d, Pair v, u32 c);
-extern "C" void func_ov003_02208ae4(Obj *o);
-extern "C" void func_ov003_02208b00();
-extern "C" void func_ov003_02208b04(Obj *o);
-extern "C" s32 func_ov003_02208b18(Obj *o, s32 a, s16 b);
-extern "C" void func_ov003_02208b50(Obj *o);
-extern "C" void func_ov003_02208b6c(Obj *o);
-extern "C" void func_ov003_02208bc0(Obj *o);
-extern "C" s32 func_ov003_02208c94(Obj *o, s16 b);
-extern "C" void func_ov003_02208ca0(Obj *o);
-extern "C" s32 func_ov003_02208d18(Obj *o, s32 a, s16 b);
-extern "C" void func_ov003_02208d50(Obj *o);
-extern "C" void func_ov003_02208d90(Obj *o);
-extern "C" void func_ov003_02208e38(Obj *o);
-extern "C" void func_ov003_02208ec8(Obj *o);
-extern "C" void func_ov003_02208fb0(Obj *o);
-extern "C" s32 func_ov003_02208ff8(Obj *o, s16 b);
-extern "C" void func_ov003_02209004(Obj *o);
-extern "C" void func_ov003_02209024(u8 *p, u8 *out);
-extern "C" void func_ov003_0220902c(u8 *p, u32 v);
-extern "C" s32 func_ov003_02209030(Obj *o, s32 a, s16 b);
-extern "C" void func_ov003_02209068(Obj *o);
-extern "C" void func_ov003_022090a8(Obj *o);
-extern "C" void func_ov003_02209170(Obj *o);
-extern "C" void func_ov003_02209274(Obj *o);
-extern "C" void func_ov003_02209284(Obj *o);
-extern "C" void func_ov003_02209310();
-extern "C" void func_ov003_02209314(Obj *o, Unk_ov003_02209314_Arg *a);
+extern "C" void PlayerActor_Act66GetNetData(u8 *p, Pair *out);
+extern "C" void PlayerActor_Act66SetNetData(u8 *p, Pair *v);
+extern "C" void PlayerActor_Act66SetWork(u8 *r, u32 a, u32 b, V3 *v);
+extern "C" s32 PlayerActor_RequestAct66(Obj *o, Pair *p, u32 c, s32 b, s16 d);
+extern "C" void PlayerActor_Act66SetArgs(u8 *d, Pair v, u32 c);
+extern "C" void PlayerActor_MainAct65(Obj *o);
+extern "C" void PlayerActor_NetAct65();
+extern "C" void PlayerActor_SetupAct65(Obj *o);
+extern "C" s32 PlayerActor_RequestAct65(Obj *o, s32 a, s16 b);
+extern "C" void PlayerActor_MainSlingshot(Obj *o);
+extern "C" void PlayerActor_SlingshotCheckEnd(Obj *o);
+extern "C" void PlayerActor_SlingshotUpdate(Obj *o);
+extern "C" s32 PlayerActor_NetSlingshot(Obj *o, s16 b);
+extern "C" void PlayerActor_SetupSlingshot(Obj *o);
+extern "C" s32 PlayerActor_RequestSlingshot(Obj *o, s32 a, s16 b);
+extern "C" void PlayerActor_MainWateringCan(Obj *o);
+extern "C" void PlayerActor_WateringCanCheckEndRemote(Obj *o);
+extern "C" void PlayerActor_WateringCanCheckEnd(Obj *o);
+extern "C" void PlayerActor_WateringCanUpdate(Obj *o);
+extern "C" void PlayerActor_EndWateringCan(Obj *o);
+extern "C" s32 PlayerActor_NetWateringCan(Obj *o, s16 b);
+extern "C" void PlayerActor_SetupWateringCan(Obj *o);
+extern "C" void PlayerActor_WateringCanGetNetData(u8 *p, u8 *out);
+extern "C" void PlayerActor_WateringCanSetNetData(u8 *p, u32 v);
+extern "C" s32 PlayerActor_RequestWateringCan(Obj *o, s32 a, s16 b);
+extern "C" void PlayerActor_MainFillHole(Obj *o);
+extern "C" void PlayerActor_FillHoleCheckEnd(Obj *o);
+extern "C" void PlayerActor_FillHoleUpdate(Obj *o);
+extern "C" void PlayerActor_FillHoleTurn(Obj *o);
+extern "C" void PlayerActor_EndFillHole(Obj *o);
+extern "C" void PlayerActor_NetFillHole();
+extern "C" void PlayerActor_SetupFillHole(Obj *o, Unk_ov003_02209314_Arg *a);
 }
 
 namespace ns_022093bc {
@@ -1905,10 +1905,10 @@ struct Unk_ov003_022093bc_Obj : public Unk_ov003_022093bc_Prim, public MsgReques
 typedef Unk_ov003_022093bc_Obj Obj;
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
-s32 func_020729bc(void *g, u32 a);
+s32 CommManager_isLocalSlot(void *g, u32 a);
 void func_02007c08_dummy();
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 AnimFrameCtrl_isFinished(void *p);
@@ -1927,10 +1927,10 @@ void func_0200f504(Obj *o, s32 a);
 void func_0200f004(Obj *o, s32 a);
 s32 func_0200f4c0(Obj *o, s32 a);
 void func_0200ede8(Obj *o, V3 *v);
-void func_0204ed8c(V3 *out, u32 a, u32 b);
-void func_0204ee10(s32 *a, s32 *b, V3 *v);
+void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
+void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 s32 func_020e7b98(s32 a, s32 b);
-void func_02076964(void *p, u32 v);
+void NetBuf_WriteU16(void *p, u32 v);
 void func_02099124(void *p);
 s32 func_0206e75c(u32 v);
 s32 func_0206ec6c();
@@ -1954,25 +1954,25 @@ void func_02034e10(s32 a, s32 b, s32 c, s32 d);
 s32 func_02098ffc();
 s32 func_02043380(u32 a, s32 b, s32 c, u32 d);
 
-void func_ov003_02209d50(Obj *o);
-s32 func_ov003_022093bc(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b);
-void func_ov003_02209408(Obj *o);
-void func_ov003_02209428(Obj *o);
-void func_ov003_022094ec(Obj *o);
-void func_ov003_022094fc();
-void func_ov003_02209500(Obj *o, Msg *m);
-void func_ov003_022095cc(Sub *s, u32 v, u8 a, u8 b, u8 c);
-s32 func_ov003_022095e8(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b);
-void func_ov003_02209634(Obj *o);
-void func_ov003_02209650(Obj *o);
-void func_ov003_02209810(Obj *o);
-void func_ov003_0220987c(Obj *o, s32 a);
-void func_ov003_022098bc(Obj *o, Unk_ov003_022093bc_Msg3 *m);
-void func_ov003_02209900(Sub *s, u8 *a, u8 *b, u8 *c);
-void func_ov003_02209914(Sub *s, u8 a, u8 b, u8 c);
-s32 func_ov003_0220991c(Obj *o, Pair *p, u32 c, u32 d, s32 e);
-void func_ov003_02209964(Obj *o);
-void func_ov003_022099d0(Obj *o);
+void PlayerActor_DigUpItemUpdate(Obj *o);
+s32 PlayerActor_RequestFillHole(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b);
+void PlayerActor_MainBuryItem(Obj *o);
+void PlayerActor_BuryItemCheckEnd(Obj *o);
+void PlayerActor_BuryItemTurn(Obj *o);
+void PlayerActor_NetBuryItem();
+void PlayerActor_SetupBuryItem(Obj *o, Msg *m);
+void PlayerActor_BuryItemSetNetData(Sub *s, u32 v, u8 a, u8 b, u8 c);
+s32 PlayerActor_RequestBuryItem(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b);
+void PlayerActor_MainDugItemStore(Obj *o);
+void PlayerActor_DugItemStoreUpdate(Obj *o);
+void PlayerActor_DugItemStoreShrink(Obj *o);
+void PlayerActor_NetDugItemStore(Obj *o, s32 a);
+void PlayerActor_SetupDugItemStore(Obj *o, Unk_ov003_022093bc_Msg3 *m);
+void PlayerActor_DugItemStoreGetNetData(Sub *s, u8 *a, u8 *b, u8 *c);
+void PlayerActor_DugItemStoreSetNetData(Sub *s, u8 a, u8 b, u8 c);
+s32 PlayerActor_RequestDugItemStore(Obj *o, Pair *p, u32 c, u32 d, s32 e);
+void PlayerActor_MainDigUpItem(Obj *o);
+void PlayerActor_DigUpItemMessage(Obj *o);
 }
 
 static inline BOOL Unk_ov003_022099d0_R(u16 *p, u32 lo, u32 hi) {
@@ -1982,24 +1982,24 @@ static inline BOOL Unk_ov003_022099d0_R(u16 *p, u32 lo, u32 hi) {
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" s32 func_ov003_022093bc(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b);
-extern "C" void func_ov003_02209408(Obj *o);
-extern "C" void func_ov003_02209428(Obj *o);
-extern "C" void func_ov003_022094ec(Obj *o);
-extern "C" void func_ov003_022094fc();
-extern "C" void func_ov003_02209500(Obj *o, Msg *m);
-extern "C" void func_ov003_022095cc(Sub *s, u32 v, u8 a, u8 b, u8 c);
-extern "C" s32 func_ov003_022095e8(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b);
-extern "C" void func_ov003_02209634(Obj *o);
-extern "C" void func_ov003_02209650(Obj *o);
-extern "C" void func_ov003_02209810(Obj *o);
-extern "C" void func_ov003_0220987c(Obj *o, s32 a);
-extern "C" void func_ov003_022098bc(Obj *o, Unk_ov003_022093bc_Msg3 *m);
-extern "C" void func_ov003_02209900(Sub *s, u8 *a, u8 *b, u8 *c);
-extern "C" void func_ov003_02209914(Sub *s, u8 a, u8 b, u8 c);
-extern "C" s32 func_ov003_0220991c(Obj *o, Pair *p, u32 c, u32 d, s32 e);
-extern "C" void func_ov003_02209964(Obj *o);
-extern "C" void func_ov003_022099d0(Obj *o);
+extern "C" s32 PlayerActor_RequestFillHole(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b);
+extern "C" void PlayerActor_MainBuryItem(Obj *o);
+extern "C" void PlayerActor_BuryItemCheckEnd(Obj *o);
+extern "C" void PlayerActor_BuryItemTurn(Obj *o);
+extern "C" void PlayerActor_NetBuryItem();
+extern "C" void PlayerActor_SetupBuryItem(Obj *o, Msg *m);
+extern "C" void PlayerActor_BuryItemSetNetData(Sub *s, u32 v, u8 a, u8 b, u8 c);
+extern "C" s32 PlayerActor_RequestBuryItem(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b);
+extern "C" void PlayerActor_MainDugItemStore(Obj *o);
+extern "C" void PlayerActor_DugItemStoreUpdate(Obj *o);
+extern "C" void PlayerActor_DugItemStoreShrink(Obj *o);
+extern "C" void PlayerActor_NetDugItemStore(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupDugItemStore(Obj *o, Unk_ov003_022093bc_Msg3 *m);
+extern "C" void PlayerActor_DugItemStoreGetNetData(Sub *s, u8 *a, u8 *b, u8 *c);
+extern "C" void PlayerActor_DugItemStoreSetNetData(Sub *s, u8 a, u8 b, u8 c);
+extern "C" s32 PlayerActor_RequestDugItemStore(Obj *o, Pair *p, u32 c, u32 d, s32 e);
+extern "C" void PlayerActor_MainDigUpItem(Obj *o);
+extern "C" void PlayerActor_DigUpItemMessage(Obj *o);
 }
 
 namespace ns_02209d50 {
@@ -2091,8 +2091,8 @@ extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, u32 a, u32 b, u32
 typedef Unk_ov003_02209d50_Pay Pay;
 
 extern "C" {
-extern void *data_020cbb18;
-extern void *data_021c47c4;
+extern void *gCommManager;
+extern void *gSceneBlockMap;
 
 s32 Unk_020102ec_advanceAnim(Obj *o);
 void func_02090330(s32 a, V3 *b, s16 *c, s32 d);
@@ -2100,21 +2100,21 @@ void Unk_02006d14_playSe(Obj *o, u32 a);
 void Unk_02006d14_setActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 BOOL Unk_02006d14_testActionFlag(Obj *o, u32 a);
-void func_0204ee10(s32 *a, s32 *b, V3 *v);
+void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 void func_02030504(s32 a, s32 b);
 void func_ov003_02219c5c(s32 a, V3 v, u32 b);
 void func_ov003_02219908(s32 a, V3 v, s16 b);
 void func_0200e7f4(Obj *o);
 void func_0200f004(Obj *o, s32 a);
 void WorldCurve_FromCurved(void *a, void *b);
-s32 func_020729bc(void *g, s32 a);
+s32 CommManager_isLocalSlot(void *g, s32 a);
 void func_02010358(Obj *o, s32 a, s32 b, s32 c);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-s32 func_02076964(void *p, u32 a);
-u16 func_0207694c(void *p);
-void func_0204ed8c(V3 *out, s32 x, s32 y);
-u16 *func_0204ebd8(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+s32 NetBuf_WriteU16(void *p, u32 a);
+u16 NetBuf_ReadU16(void *p);
+void FieldPos_FromUnitCenter(V3 *out, s32 x, s32 y);
+u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void func_02034dd0(s32 a, s32 b, s32 c);
 void func_020787f8(V3 *v);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
@@ -2125,19 +2125,19 @@ BOOL AnimFrameCtrl_isFinished(void *p);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 void PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 
-void func_ov003_02209d50(Obj *o);
-void func_ov003_02209ef4(Obj *o, s32 p);
-void func_ov003_02209f68(Obj *o, s32 a);
-void func_ov003_02209fc8(Obj *o, Msg *m);
-void func_ov003_0220a27c(u8 *p, s32 *xy, u16 *a, u8 *b);
-void func_ov003_0220a29c(u8 *p, V2 v, u16 a, u8 b);
-s32 func_ov003_0220a2bc(Obj *o, V3 v, u16 a, u8 b, s32 c, s32 d);
-s32 func_ov003_0220a344(Obj *o, V3 v, u8 x, s32 c, s32 e);
-void func_ov003_0220a39c(Pay *d, V3 v, u16 a, u8 b);
-void func_ov003_0220a3b4(Obj *o);
-void func_ov003_0220a410(Obj *o);
-void func_ov003_0220a484(Obj *o);
-void func_ov003_0220a5e4(Obj *o);
+void PlayerActor_DigUpItemUpdate(Obj *o);
+void PlayerActor_EndDigUpItem(Obj *o, s32 p);
+void PlayerActor_NetDigUpItem(Obj *o, s32 a);
+void PlayerActor_SetupDigUpItem(Obj *o, Msg *m);
+void PlayerActor_DigUpItemGetNetData(u8 *p, s32 *xy, u16 *a, u8 *b);
+void PlayerActor_DigUpItemSetNetData(u8 *p, V2 v, u16 a, u8 b);
+s32 PlayerActor_RequestDigUpItemWith(Obj *o, V3 v, u16 a, u8 b, s32 c, s32 d);
+s32 PlayerActor_RequestDigUpItem(Obj *o, V3 v, u8 x, s32 c, s32 e);
+void PlayerActor_DigUpItemSetArgs(Pay *d, V3 v, u16 a, u8 b);
+void PlayerActor_MainDig(Obj *o);
+void PlayerActor_DigCheckEnd(Obj *o);
+void PlayerActor_DigUpdate(Obj *o);
+void PlayerActor_EndDig(Obj *o);
 }
 
 static inline BOOL Unk_ov003_02209fc8_Eq(u16 *p) {
@@ -2168,19 +2168,19 @@ static inline BOOL Unk_ov003_02209fc8_IsNone(u16 *p) {
 struct Unk_ov003_02209fc8_ItE { u16 v; Unk_ov003_02209fc8_ItE() {} ~Unk_ov003_02209fc8_ItE() {} };
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_02209d50(Obj *o);
-extern "C" void func_ov003_02209ef4(Obj *o, s32 p);
-extern "C" void func_ov003_02209f68(Obj *o, s32 a);
-extern "C" void func_ov003_02209fc8(Obj *o, Msg *m);
-extern "C" void func_ov003_0220a27c(u8 *p, s32 *xy, u16 *a, u8 *b);
-extern "C" void func_ov003_0220a29c(u8 *p, V2 v, u16 a, u8 b);
-extern "C" s32 func_ov003_0220a2bc(Obj *o, V3 v, u16 a, u8 b, s32 c, s32 d);
-extern "C" s32 func_ov003_0220a344(Obj *o, V3 v, u8 x, s32 c, s32 e);
-extern "C" void func_ov003_0220a39c(Pay *d, V3 v, u16 a, u8 b);
-extern "C" void func_ov003_0220a3b4(Obj *o);
-extern "C" void func_ov003_0220a410(Obj *o);
-extern "C" void func_ov003_0220a484(Obj *o);
-extern "C" void func_ov003_0220a5e4(Obj *o);
+extern "C" void PlayerActor_DigUpItemUpdate(Obj *o);
+extern "C" void PlayerActor_EndDigUpItem(Obj *o, s32 p);
+extern "C" void PlayerActor_NetDigUpItem(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupDigUpItem(Obj *o, Msg *m);
+extern "C" void PlayerActor_DigUpItemGetNetData(u8 *p, s32 *xy, u16 *a, u8 *b);
+extern "C" void PlayerActor_DigUpItemSetNetData(u8 *p, V2 v, u16 a, u8 b);
+extern "C" s32 PlayerActor_RequestDigUpItemWith(Obj *o, V3 v, u16 a, u8 b, s32 c, s32 d);
+extern "C" s32 PlayerActor_RequestDigUpItem(Obj *o, V3 v, u8 x, s32 c, s32 e);
+extern "C" void PlayerActor_DigUpItemSetArgs(Pay *d, V3 v, u16 a, u8 b);
+extern "C" void PlayerActor_MainDig(Obj *o);
+extern "C" void PlayerActor_DigCheckEnd(Obj *o);
+extern "C" void PlayerActor_DigUpdate(Obj *o);
+extern "C" void PlayerActor_EndDig(Obj *o);
 }
 
 namespace ns_0220a680 {
@@ -2342,8 +2342,8 @@ typedef PlayerActionRequest Msg;
 extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, u32 a, u32 b, s16 c);
 
 extern "C" {
-extern void *data_020cbb18;
-extern void *data_021c47c4;
+extern void *gCommManager;
+extern void *gSceneBlockMap;
 extern s16 data_02135f44[];
 
 s32 func_02010358(Obj *o, s32 a, u32 b, u32 c);
@@ -2363,52 +2363,52 @@ s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, s32 a);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
-s32 func_020729bc(void *g, s32 a);
+s32 CommManager_isLocalSlot(void *g, s32 a);
 s32 func_0200ef08(Obj *o);
 void func_0200f45c(V3 *out, Obj *o);
-void func_0204ee10(s32 *a, s32 *b, V3 *v);
-void func_0204ed8c(V3 *out, u32 a, u32 b);
-u16 *func_0204ebd8(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
+void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
+u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_02090330(s32 a, V3 *v, s16 *ang, ...);
 
 s32 func_ov003_0221cb54(Pair *p);
 void func_ov003_0221cd34(s32 a, Pair p, s32 b);
 s32 func_ov003_022135c4(void *p, s32 a);
-s32 func_ov003_02205928(Obj *o, V3 *p, u8 *f);
-s32 func_ov003_0220a344(Obj *o, V3 v, s32 a, s32 b, s32 c);
-s32 func_ov003_022093bc(Obj *o, s32 a, Pair p, s32 b, s32 c, s32 d);
+s32 PlayerActor_ShovelClassifyTarget(Obj *o, V3 *p, u8 *f);
+s32 PlayerActor_RequestDigUpItem(Obj *o, V3 v, s32 a, s32 b, s32 c);
+s32 PlayerActor_RequestFillHole(Obj *o, s32 a, Pair p, s32 b, s32 c, s32 d);
 
-void func_ov003_0220a680(Obj *o);
-s32 func_ov003_0220a684(Obj *o, Msg *m);
-void func_ov003_0220a700(Rec *r, u32 id, V3 v);
-s32 func_ov003_0220a710(Obj *o, u32 id, V3 v, s32 b, s16 c);
-void func_ov003_0220a764(P3 *p, u32 id, V3 v);
-void func_ov003_0220a774(Obj *o);
-void func_ov003_0220a7bc(Obj *o);
-void func_ov003_0220a7fc(Obj *o);
-void func_ov003_0220ab20(Obj *o);
-void func_ov003_0220ab80(Obj *o, s32 x);
-void func_ov003_0220abd4(Obj *o, Msg *m);
-void func_ov003_0220ac38(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d);
-void func_ov003_0220ac54(u8 *d, u8 a, u8 b, u8 c, u8 e);
-void func_ov003_0220ac68(Rec *r, Pair p, u8 c);
-s32 func_ov003_0220ac74(Obj *o, u32 id, Pair p, s32 b, s32 c);
-void func_ov003_0220acc4(B3 *d, Pair p, u32 c);
-void func_ov003_0220acd0(Obj *o);
-void func_ov003_0220ad10(Obj *o);
-s32 func_ov003_0220ad50(Obj *o, s16 x);
-void func_ov003_0220ad5c(Obj *o);
-s32 func_ov003_0220ad70(Obj *o, u32 a, s16 b);
-void func_ov003_0220ada8(Obj *o);
-void func_ov003_0220adc4(Obj *o);
-void func_ov003_0220ae04(Obj *o);
-s32 func_ov003_0220ae34(Obj *o, s16 x);
-void func_ov003_0220ae40(Obj *o);
-s32 func_ov003_0220ae54(Obj *o, u32 a, s16 b);
-void func_ov003_0220ae8c(Obj *o);
-s32 func_ov003_0220af3c(Obj *o, V3 *v, u8 f);
-void func_ov003_0220b0f0(Obj *o);
+void PlayerActor_NetDig(Obj *o);
+s32 PlayerActor_SetupDig(Obj *o, Msg *m);
+void PlayerActor_DigSetWork(Rec *r, u32 id, V3 v);
+s32 PlayerActor_RequestDig(Obj *o, u32 id, V3 v, s32 b, s16 c);
+void PlayerActor_DigSetArgs(P3 *p, u32 id, V3 v);
+void PlayerActor_MainShovelStrike(Obj *o);
+void PlayerActor_ShovelStrikeCheckEnd(Obj *o);
+void PlayerActor_ShovelStrikeUpdate(Obj *o);
+void PlayerActor_EndShovelStrike(Obj *o);
+void PlayerActor_NetShovelStrike(Obj *o, s32 x);
+void PlayerActor_SetupShovelStrike(Obj *o, Msg *m);
+void PlayerActor_ShovelStrikeGetNetData(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d);
+void PlayerActor_ShovelStrikeSetNetData(u8 *d, u8 a, u8 b, u8 c, u8 e);
+void PlayerActor_ShovelStrikeSetWork(Rec *r, Pair p, u8 c);
+s32 PlayerActor_RequestShovelStrike(Obj *o, u32 id, Pair p, s32 b, s32 c);
+void PlayerActor_ShovelStrikeSetArgs(B3 *d, Pair p, u32 c);
+void PlayerActor_MainAct5C(Obj *o);
+void PlayerActor_Act5CCheckEnd(Obj *o);
+s32 PlayerActor_NetAct5C(Obj *o, s16 x);
+void PlayerActor_SetupAct5C(Obj *o);
+s32 PlayerActor_RequestAct5C(Obj *o, u32 a, s16 b);
+void PlayerActor_MainAct5B(Obj *o);
+void PlayerActor_Act5BCheckEnd(Obj *o);
+void PlayerActor_Act5BUpdate(Obj *o);
+s32 PlayerActor_NetAct5B(Obj *o, s16 x);
+void PlayerActor_SetupAct5B(Obj *o);
+s32 PlayerActor_RequestAct5B(Obj *o, u32 a, s16 b);
+void PlayerActor_MainShovelWait(Obj *o);
+s32 PlayerActor_ShovelDispatch(Obj *o, V3 *v, u8 f);
+void PlayerActor_ShovelWaitTrackTarget(Obj *o);
 }
 
 static inline BOOL Unk_ov003_0220a7fc_Chk(u16 *p) {
@@ -2443,35 +2443,35 @@ static inline BOOL Unk_ov003_0220a7fc_Chk(u16 *p) {
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_0220a680(Obj *o);
-extern "C" s32 func_ov003_0220a684(Obj *o, Msg *m);
-extern "C" void func_ov003_0220a700(Rec *r, u32 id, V3 v);
-extern "C" s32 func_ov003_0220a710(Obj *o, u32 id, V3 v, s32 b, s16 c);
-extern "C" void func_ov003_0220a764(P3 *p, u32 id, V3 v);
-extern "C" void func_ov003_0220a774(Obj *o);
-extern "C" void func_ov003_0220a7bc(Obj *o);
-extern "C" void func_ov003_0220a7fc(Obj *o);
-extern "C" void func_ov003_0220ab20(Obj *o);
-extern "C" void func_ov003_0220ab80(Obj *o, s32 x);
-extern "C" void func_ov003_0220abd4(Obj *o, Msg *m);
-extern "C" void func_ov003_0220ac38(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d);
-extern "C" void func_ov003_0220ac54(u8 *d, u8 a, u8 b, u8 c, u8 e);
-extern "C" void func_ov003_0220ac68(Rec *r, Pair p, u8 c);
-extern "C" s32 func_ov003_0220ac74(Obj *o, u32 id, Pair p, s32 b, s32 c);
-extern "C" void func_ov003_0220acc4(B3 *d, Pair p, u32 c);
-extern "C" void func_ov003_0220acd0(Obj *o);
-extern "C" void func_ov003_0220ad10(Obj *o);
-extern "C" s32 func_ov003_0220ad50(Obj *o, s16 x);
-extern "C" void func_ov003_0220ad5c(Obj *o);
-extern "C" s32 func_ov003_0220ad70(Obj *o, u32 a, s16 b);
-extern "C" void func_ov003_0220ada8(Obj *o);
-extern "C" void func_ov003_0220adc4(Obj *o);
-extern "C" void func_ov003_0220ae04(Obj *o);
-extern "C" s32 func_ov003_0220ae34(Obj *o, s16 x);
-extern "C" void func_ov003_0220ae40(Obj *o);
-extern "C" s32 func_ov003_0220ae54(Obj *o, u32 a, s16 b);
-extern "C" void func_ov003_0220ae8c(Obj *o);
-extern "C" s32 func_ov003_0220af3c(Obj *o, V3 *v, u8 f);
+extern "C" void PlayerActor_NetDig(Obj *o);
+extern "C" s32 PlayerActor_SetupDig(Obj *o, Msg *m);
+extern "C" void PlayerActor_DigSetWork(Rec *r, u32 id, V3 v);
+extern "C" s32 PlayerActor_RequestDig(Obj *o, u32 id, V3 v, s32 b, s16 c);
+extern "C" void PlayerActor_DigSetArgs(P3 *p, u32 id, V3 v);
+extern "C" void PlayerActor_MainShovelStrike(Obj *o);
+extern "C" void PlayerActor_ShovelStrikeCheckEnd(Obj *o);
+extern "C" void PlayerActor_ShovelStrikeUpdate(Obj *o);
+extern "C" void PlayerActor_EndShovelStrike(Obj *o);
+extern "C" void PlayerActor_NetShovelStrike(Obj *o, s32 x);
+extern "C" void PlayerActor_SetupShovelStrike(Obj *o, Msg *m);
+extern "C" void PlayerActor_ShovelStrikeGetNetData(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d);
+extern "C" void PlayerActor_ShovelStrikeSetNetData(u8 *d, u8 a, u8 b, u8 c, u8 e);
+extern "C" void PlayerActor_ShovelStrikeSetWork(Rec *r, Pair p, u8 c);
+extern "C" s32 PlayerActor_RequestShovelStrike(Obj *o, u32 id, Pair p, s32 b, s32 c);
+extern "C" void PlayerActor_ShovelStrikeSetArgs(B3 *d, Pair p, u32 c);
+extern "C" void PlayerActor_MainAct5C(Obj *o);
+extern "C" void PlayerActor_Act5CCheckEnd(Obj *o);
+extern "C" s32 PlayerActor_NetAct5C(Obj *o, s16 x);
+extern "C" void PlayerActor_SetupAct5C(Obj *o);
+extern "C" s32 PlayerActor_RequestAct5C(Obj *o, u32 a, s16 b);
+extern "C" void PlayerActor_MainAct5B(Obj *o);
+extern "C" void PlayerActor_Act5BCheckEnd(Obj *o);
+extern "C" void PlayerActor_Act5BUpdate(Obj *o);
+extern "C" s32 PlayerActor_NetAct5B(Obj *o, s16 x);
+extern "C" void PlayerActor_SetupAct5B(Obj *o);
+extern "C" s32 PlayerActor_RequestAct5B(Obj *o, u32 a, s16 b);
+extern "C" void PlayerActor_MainShovelWait(Obj *o);
+extern "C" s32 PlayerActor_ShovelDispatch(Obj *o, V3 *v, u8 f);
 }
 
 namespace ns_0220b0f0 {
@@ -2592,7 +2592,7 @@ typedef Unk_ov003_0220b0f0_S30 S30;
 typedef Unk_ov003_0220b0f0_Sec Sec;
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 
 void Unk_020102ec_advanceAnim(Obj *o);
 void func_0201071c(Obj *o);
@@ -2601,16 +2601,16 @@ void Unk_020102ec_moveWithCollision(Obj *o);
 void Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
 void func_02010358(Obj *o, s32 a, u32 b, u32 c);
 s32 AnimFrameCtrl_isFinished(void *p);
-s32 func_020729bc(void *g, s32 a);
+s32 CommManager_isLocalSlot(void *g, s32 a);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 void PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_02006d14_testActionFlag(Obj *o, u32 a);
 void Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 s32 func_020e7b98(s32 a, s32 b);
 s32 func_020e9650(void *a, void *b);
-void func_0204ed8c(V3 *out, u32 a, u32 b);
-void func_0204ee10(s32 *a, s32 *b, V3 *v);
-void func_0204edd8(V3 *out, V3 *in);
+void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
+void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
+void FieldPos_SnapToUnitCenter(V3 *out, V3 *in);
 void func_02010740(Obj *o, V3 *v, s32 a, s32 b);
 s32 func_02089040(void *p);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
@@ -2631,36 +2631,36 @@ void func_0203e47c(Obj *o, Sec *s);
 void func_0203d7f8();
 s32 func_02063b8c(s32 a);
 
-s32 func_ov003_0220af3c(Obj *o, V3C v, s32 a);
-void func_ov003_02212034(S30 *p, s32 a);
+s32 PlayerActor_ShovelDispatch(Obj *o, V3C v, s32 a);
+void PlayerActor_ApplyHoldOffset(S30 *p, s32 a);
 void func_ov003_02227074(u8 id, s32 a);
 void func_ov003_0222746c(u8 id, s32 a);
 s32 func_ov003_02227434(u8 id);
 V3 *func_ov003_02227320(u8 id);
 void func_ov003_022261ec(u8 id, s16 *a, S30 *p, s32 f);
-void func_ov003_0220bb60(u8 *p, s32 a);
-void func_ov003_0220bb6c(u8 *p, s32 a);
-s32 func_ov003_0220bb3c(u8 *p);
-s32 func_ov003_0220bb30(u8 *p);
+void PlayerActor_InsectStoreSetNetAngle(u8 *p, s32 a);
+void PlayerActor_InsectStoreSetNetState(u8 *p, s32 a);
+s32 PlayerActor_InsectStoreGetNetState(u8 *p);
+s32 PlayerActor_InsectStoreGetNetAngle(u8 *p);
 
-s32 func_ov003_0220b1f8(Obj *o, Pair p, s32 id, s16 e);
-void func_ov003_0220b240(u8 *d, Pair v);
-void func_ov003_0220b1d4(u8 *p, Pair *out);
-void func_ov003_0220b1e0(u8 *p, Pair *v);
-void func_ov003_0220b1ec(u8 *p, Pair *v);
-void func_ov003_0220b41c(Obj *o);
-void func_ov003_0220b330(Obj *o);
-void func_ov003_0220b3dc(Obj *o);
-void func_ov003_0220b2f4(Obj *o);
-void func_ov003_0220b5a0(u8 *src, u8 *a, u8 *b, u8 *c);
-void func_ov003_0220b5b4(u8 *p, u8 a, u8 b, u32 c);
-void func_ov003_0220b5bc(Rec *r, V3C v, s32 c, u32 d);
-s32 func_ov003_0220b5d8(Obj *o, u8 *a, u8 *b, u8 *c, s32 id, s32 e);
-void func_ov003_0220b6cc(u8 *p, u8 a, u8 b, u32 c);
+s32 PlayerActor_RequestShovelWait(Obj *o, Pair p, s32 id, s16 e);
+void PlayerActor_ShovelWaitSetArgs(u8 *d, Pair v);
+void PlayerActor_ShovelWaitGetNetData(u8 *p, Pair *out);
+void PlayerActor_ShovelWaitSetNetData(u8 *p, Pair *v);
+void PlayerActor_ShovelWaitSetWork(u8 *p, Pair *v);
+void PlayerActor_ShovelReadyTurn(Obj *o);
+void PlayerActor_ShovelReadyCheckEnd(Obj *o);
+void PlayerActor_ShovelReadyTrackTarget(Obj *o);
+void PlayerActor_ShovelReadyCheckEndRemote(Obj *o);
+void PlayerActor_ShovelReadyGetNetData(u8 *src, u8 *a, u8 *b, u8 *c);
+void PlayerActor_ShovelReadySetNetData(u8 *p, u8 a, u8 b, u32 c);
+void PlayerActor_ShovelReadySetWork(Rec *r, V3C v, s32 c, u32 d);
+s32 PlayerActor_RequestShovelReadyAt(Obj *o, u8 *a, u8 *b, u8 *c, s32 id, s32 e);
+void PlayerActor_ShovelReadySetArgs(u8 *p, u8 a, u8 b, u32 c);
 namespace ovcall {
-s32 func_ov003_0220b6f4(Obj *o);
+s32 PlayerActor_InsectStoreUpdate(Obj *o);
 }
-void func_ov003_0220b6f4(Obj *o);
+void PlayerActor_InsectStoreUpdate(Obj *o);
 }
 
 static inline BOOL Unk_ov003_0220b330_IsZero(s32 v) {
@@ -2668,29 +2668,29 @@ static inline BOOL Unk_ov003_0220b330_IsZero(s32 v) {
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_0220b0f0(Obj *o);
-extern "C" s32 func_ov003_0220b130(Obj *o, s16 a);
-extern "C" void func_ov003_0220b168(Obj *o, RecB *r);
-extern "C" void func_ov003_0220b1d4(u8 *p, Pair *out);
-extern "C" void func_ov003_0220b1e0(u8 *p, Pair *v);
-extern "C" void func_ov003_0220b1ec(u8 *p, Pair *v);
-extern "C" s32 func_ov003_0220b1f8(Obj *o, Pair p, s32 id, s16 e);
-extern "C" void func_ov003_0220b240(u8 *d, Pair v);
-extern "C" void func_ov003_0220b24c(Obj *o);
-extern "C" void func_ov003_0220b2f4(Obj *o);
-extern "C" void func_ov003_0220b330(Obj *o);
-extern "C" void func_ov003_0220b3dc(Obj *o);
-extern "C" void func_ov003_0220b41c(Obj *o);
-extern "C" s32 func_ov003_0220b488(Obj *o, s32 a);
-extern "C" void func_ov003_0220b4c4(Obj *o, RecB *r);
-extern "C" void func_ov003_0220b5a0(u8 *src, u8 *a, u8 *b, u8 *c);
-extern "C" void func_ov003_0220b5b4(u8 *p, u8 a, u8 b, u32 c);
-extern "C" void func_ov003_0220b5bc(Rec *r, V3C v, s32 c, u32 d);
-extern "C" s32 func_ov003_0220b5d8(Obj *o, u8 *a, u8 *b, u8 *c, s32 id, s32 e);
-extern "C" s32 func_ov003_0220b620(Obj *o, s32 a, s16 b);
-extern "C" void func_ov003_0220b6cc(u8 *p, u8 a, u8 b, u32 c);
-extern "C" void func_ov003_0220b6d4(Obj *o);
-extern "C" void func_ov003_0220b6f4(Obj *o);
+extern "C" void PlayerActor_ShovelWaitTrackTarget(Obj *o);
+extern "C" s32 PlayerActor_NetShovelWait(Obj *o, s16 a);
+extern "C" void PlayerActor_SetupShovelWait(Obj *o, RecB *r);
+extern "C" void PlayerActor_ShovelWaitGetNetData(u8 *p, Pair *out);
+extern "C" void PlayerActor_ShovelWaitSetNetData(u8 *p, Pair *v);
+extern "C" void PlayerActor_ShovelWaitSetWork(u8 *p, Pair *v);
+extern "C" s32 PlayerActor_RequestShovelWait(Obj *o, Pair p, s32 id, s16 e);
+extern "C" void PlayerActor_ShovelWaitSetArgs(u8 *d, Pair v);
+extern "C" void PlayerActor_MainShovelReady(Obj *o);
+extern "C" void PlayerActor_ShovelReadyCheckEndRemote(Obj *o);
+extern "C" void PlayerActor_ShovelReadyCheckEnd(Obj *o);
+extern "C" void PlayerActor_ShovelReadyTrackTarget(Obj *o);
+extern "C" void PlayerActor_ShovelReadyTurn(Obj *o);
+extern "C" s32 PlayerActor_NetShovelReady(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupShovelReady(Obj *o, RecB *r);
+extern "C" void PlayerActor_ShovelReadyGetNetData(u8 *src, u8 *a, u8 *b, u8 *c);
+extern "C" void PlayerActor_ShovelReadySetNetData(u8 *p, u8 a, u8 b, u32 c);
+extern "C" void PlayerActor_ShovelReadySetWork(Rec *r, V3C v, s32 c, u32 d);
+extern "C" s32 PlayerActor_RequestShovelReadyAt(Obj *o, u8 *a, u8 *b, u8 *c, s32 id, s32 e);
+extern "C" s32 PlayerActor_RequestShovelReady(Obj *o, s32 a, s16 b);
+extern "C" void PlayerActor_ShovelReadySetArgs(u8 *p, u8 a, u8 b, u32 c);
+extern "C" void PlayerActor_MainInsectStore(Obj *o);
+extern "C" void PlayerActor_InsectStoreUpdate(Obj *o);
 }
 
 namespace ns_0220ba90 {
@@ -2818,14 +2818,14 @@ extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, u32 a, u32 b, u32
 typedef Unk_ov003_0220bc84_State State;
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 
 void Unk_020102ec_advanceAnim(Obj *o);
 s32 func_0200ef08(Obj *o);
 void func_0201071c(Obj *o);
 void func_0200e7f4(Obj *o);
 void func_0200f4c0(Obj *o, s32 a);
-s32 func_020729bc(void *g, s32 a);
+s32 CommManager_isLocalSlot(void *g, s32 a);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 void Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
 void func_02010358(Obj *o, s32 a, u32 b, u32 c);
@@ -2864,60 +2864,60 @@ void func_02034e10(s32 a, s32 b, s32 c, s32 d);
 void Hud_GetCountdown();
 void HudCountdown_incCountB();
 void func_0207881c(void *p);
-u32 func_020769ac(u8 *p);
-void func_020769c4(u8 *p, u32 a);
+u32 NetBuf_ReadS16B(u8 *p);
+void NetBuf_WriteS16B(u8 *p, u32 a);
 
 void func_ov003_02226fac(u32 a);
-void func_ov003_02212034(T48 *t, V3 *d);
+void PlayerActor_ApplyHoldOffset(T48 *t, V3 *d);
 void func_ov003_02227248(u32 a, u32 b);
 s32 func_ov003_0222746c(u32 a, s32 b);
 s32 func_ov003_02227434(u32 a);
 V3 *func_ov003_02227320(u8 a);
 void func_ov003_022261ec(u32 a, s16 *p, T48 *t, s32 b);
-u32 func_ov003_0220c454(u8 *p);
-s32 func_ov003_0220c448(u8 *p);
-void func_ov003_0220c47c(u8 *p, s32 a);
-void func_ov003_0220c488(u8 *p, u32 a);
-void func_ov003_0220c458(u8 *p, u8 *a, u8 *b, u8 *c, u8 *d, u32 *e);
-void func_ov003_0220c48c(u8 *p, u32 a, u32 b, u32 c, u32 d, s32 e);
-void func_ov003_0220c4ac(Obj *o, u32 a, u32 b, u32 c, s32 d, s32 e);
+u32 PlayerActor_InsectShowCatchGetNetState(u8 *p);
+s32 PlayerActor_InsectShowCatchGetNetAngle(u8 *p);
+void PlayerActor_InsectShowCatchSetNetAngle(u8 *p, s32 a);
+void PlayerActor_InsectShowCatchSetNetState(u8 *p, u32 a);
+void PlayerActor_InsectShowCatchGetNetData(u8 *p, u8 *a, u8 *b, u8 *c, u8 *d, u32 *e);
+void PlayerActor_InsectShowCatchSetNetData(u8 *p, u32 a, u32 b, u32 c, u32 d, s32 e);
+void PlayerActor_RequestInsectShowCatch(Obj *o, u32 a, u32 b, u32 c, s32 d, s32 e);
 
-void func_ov003_0220ba90(Obj *o);
-s32 func_ov003_0220baa4(Obj *o, s32 a);
-void func_ov003_0220badc(Obj *o, Rec *r);
-u32 func_ov003_0220bb30(u8 *p);
-u32 func_ov003_0220bb3c(u8 *p);
-void func_ov003_0220bb40(u8 *p, u8 *a, u8 *b, u16 *c);
-void func_ov003_0220bb60(u8 *p, u32 a);
-void func_ov003_0220bb6c(u8 *p, u32 a);
-void func_ov003_0220bb70(u8 *p, u32 a, u32 b, u32 c);
-s32 func_ov003_0220bb90(Obj *o, u32 a, u32 b, s32 id, s32 e);
-void func_ov003_0220bbd4(Obj *o);
+void PlayerActor_EndInsectStore(Obj *o);
+s32 PlayerActor_NetInsectStore(Obj *o, s32 a);
+void PlayerActor_SetupInsectStore(Obj *o, Rec *r);
+u32 PlayerActor_InsectStoreGetNetAngle(u8 *p);
+u32 PlayerActor_InsectStoreGetNetState(u8 *p);
+void PlayerActor_InsectStoreGetNetData(u8 *p, u8 *a, u8 *b, u16 *c);
+void PlayerActor_InsectStoreSetNetAngle(u8 *p, u32 a);
+void PlayerActor_InsectStoreSetNetState(u8 *p, u32 a);
+void PlayerActor_InsectStoreSetNetData(u8 *p, u32 a, u32 b, u32 c);
+s32 PlayerActor_RequestInsectStore(Obj *o, u32 a, u32 b, s32 id, s32 e);
+void PlayerActor_MainInsectShowCatch(Obj *o);
 namespace ovcall {
-void func_ov003_0220bc84(Obj *o);
+void PlayerActor_InsectShowCatchUpdate(Obj *o);
 }
-void func_ov003_0220bc84(Obj *o);
-void func_ov003_0220c2dc(Obj *o);
-void func_ov003_0220c30c(Obj *o, s32 a);
-void func_ov003_0220c350(Obj *o, Rec *r);
+void PlayerActor_InsectShowCatchUpdate(Obj *o);
+void PlayerActor_EndInsectShowCatch(Obj *o);
+void PlayerActor_NetInsectShowCatch(Obj *o, s32 a);
+void PlayerActor_SetupInsectShowCatch(Obj *o, Rec *r);
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_0220ba90(Obj *o);
-extern "C" s32 func_ov003_0220baa4(Obj *o, s32 a);
-extern "C" void func_ov003_0220badc(Obj *o, Rec *r);
-extern "C" u32 func_ov003_0220bb30(u8 *p);
-extern "C" u32 func_ov003_0220bb3c(u8 *p);
-extern "C" void func_ov003_0220bb40(u8 *p, u8 *a, u8 *b, u16 *c);
-extern "C" void func_ov003_0220bb60(u8 *p, u32 a);
-extern "C" void func_ov003_0220bb6c(u8 *p, u32 a);
-extern "C" void func_ov003_0220bb70(u8 *p, u32 a, u32 b, u32 c);
-extern "C" s32 func_ov003_0220bb90(Obj *o, u32 a, u32 b, s32 id, s32 e);
-extern "C" void func_ov003_0220bbd4(Obj *o);
-extern "C" void func_ov003_0220bc84(Obj *o);
-extern "C" void func_ov003_0220c2dc(Obj *o);
-extern "C" void func_ov003_0220c30c(Obj *o, s32 a);
-extern "C" void func_ov003_0220c350(Obj *o, Rec *r);
+extern "C" void PlayerActor_EndInsectStore(Obj *o);
+extern "C" s32 PlayerActor_NetInsectStore(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupInsectStore(Obj *o, Rec *r);
+extern "C" u32 PlayerActor_InsectStoreGetNetAngle(u8 *p);
+extern "C" u32 PlayerActor_InsectStoreGetNetState(u8 *p);
+extern "C" void PlayerActor_InsectStoreGetNetData(u8 *p, u8 *a, u8 *b, u16 *c);
+extern "C" void PlayerActor_InsectStoreSetNetAngle(u8 *p, u32 a);
+extern "C" void PlayerActor_InsectStoreSetNetState(u8 *p, u32 a);
+extern "C" void PlayerActor_InsectStoreSetNetData(u8 *p, u32 a, u32 b, u32 c);
+extern "C" s32 PlayerActor_RequestInsectStore(Obj *o, u32 a, u32 b, s32 id, s32 e);
+extern "C" void PlayerActor_MainInsectShowCatch(Obj *o);
+extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o);
+extern "C" void PlayerActor_EndInsectShowCatch(Obj *o);
+extern "C" void PlayerActor_NetInsectShowCatch(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupInsectShowCatch(Obj *o, Rec *r);
 }
 
 namespace ns_0220c448 {
@@ -3003,17 +3003,17 @@ extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, u32 a, u32 b, u32
 typedef Unk_ov003_0220c4ac_Rec Rec;
 
 extern "C" {
-extern void *data_020cbb18;
-extern void *data_021c47c4;
+extern void *gCommManager;
+extern void *gSceneBlockMap;
 extern u8 data_ov003_02230ad4[];
 extern u8 data_ov003_02230adc[];
 extern u8 data_ov003_02230ae0[];
 extern s16 data_02135f44[];
 
-u32 func_020769ac(void *p);
-void func_020769c4(void *p, s32 a);
+u32 NetBuf_ReadS16B(void *p);
+void NetBuf_WriteS16B(void *p, s32 a);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
-s32 func_020729bc(void *g, s32 a);
+s32 CommManager_isLocalSlot(void *g, s32 a);
 s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, s32 a);
 void Unk_020102ec_moveWithCollision(Obj *o);
@@ -3032,51 +3032,51 @@ s32 func_02030908(void *p, V3 *a, V3 *b, s32 c);
 s32 Unk_02006d14_setActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_playSe(Obj *o, u32 a);
 void func_0205e1a0(void *p, s32 a, s32 b, s32 c);
-void func_0204ee10(s32 *a, s32 *b, V3 *c);
+void FieldPos_ToUnit(s32 *a, s32 *b, V3 *c);
 void func_02043f04(void *p);
 s32 func_0200f3ec(V3 *out, Obj *o, void *pos, void *ang, void *arg);
 s32 func_0203081c(V3 *a, s32 *b, s32 c);
-void func_0204edd8(V3 *a, V3 *b);
-u16 *func_0204eba0(void *grid, V3 *v, u32 a);
+void FieldPos_SnapToUnitCenter(V3 *a, V3 *b);
+u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
 s32 func_020e7b98(s32 a, s32 b);
 s32 func_020e780c(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 
 s32 func_ov003_02226ee8(s32 a, u32 b);
 s32 func_ov003_02226fac(s32 a);
-s32 func_ov003_022052f4(Obj *o);
-void func_ov003_0220cf68(Obj *o);
-void func_ov003_0220cd4c(Obj *o);
-void func_ov003_0220cf78(Obj *o);
-void func_ov003_0220cf30(Obj *o);
+s32 PlayerActor_CheckToolHitActor(Obj *o);
+void PlayerActor_BugNetSwingTurn(Obj *o);
+void PlayerActor_BugNetSwingUpdate(Obj *o);
+void PlayerActor_BugNetSwingAdvanceAnim(Obj *o);
+void PlayerActor_BugNetSwingTrackTarget(Obj *o);
 
-void func_ov003_0220c698(Obj *o);
-void func_ov003_0220c5b8(Obj *o);
-void func_ov003_0220c6e0(Obj *o);
-s32 func_ov003_0220c888(Obj *o);
-s32 func_ov003_0220c768(Obj *o, V3 *a, V3 *b, V3 *c);
-s32 func_ov003_0220c4ac(Obj *o, u32 a, u32 b, u32 c, s32 d, s16 e);
-void func_ov003_0220cbc8(Obj *o, V3 *a, V3 *b, V3 *c);
-s32 func_ov003_0220c93c(Obj *o, V3 *a, V3 *b, u8 *c);
+void PlayerActor_BugNetSwingDecelerate(Obj *o);
+void PlayerActor_BugNetSwingCheckEnd(Obj *o);
+void PlayerActor_BugNetSwingUpdateRemote(Obj *o);
+s32 PlayerActor_BugNetSwingCheckWall(Obj *o);
+s32 PlayerActor_BugNetSwingCheckGround(Obj *o, V3 *a, V3 *b, V3 *c);
+s32 PlayerActor_RequestInsectShowCatch(Obj *o, u32 a, u32 b, u32 c, s32 d, s16 e);
+void PlayerActor_BugNetSwingGetSweep(Obj *o, V3 *a, V3 *b, V3 *c);
+s32 PlayerActor_BugNetSwingCanReach(Obj *o, V3 *a, V3 *b, u8 *c);
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" u32 func_ov003_0220c448(void *p);
-extern "C" u32 func_ov003_0220c454(u8 *p);
-extern "C" void func_ov003_0220c458(u8 *p, u8 *a, u8 *b, u8 *c, u8 *d, u16 *e);
-extern "C" void func_ov003_0220c47c(void *p, s32 a);
-extern "C" void func_ov003_0220c488(u8 *p, u32 a);
-extern "C" void func_ov003_0220c48c(u8 *p, u32 a, u32 b, u32 c, u8 d, s16 e);
-extern "C" s32 func_ov003_0220c4ac(Obj *o, u32 a, u32 b, u32 c, s32 d, s16 e);
-extern "C" void func_ov003_0220c4f0(Obj *o);
-extern "C" void func_ov003_0220c5b8(Obj *o);
-extern "C" void func_ov003_0220c698(Obj *o);
-extern "C" void func_ov003_0220c6e0(Obj *o);
-extern "C" s32 func_ov003_0220c768(Obj *o, V3 *a, V3 *b, V3 *c);
-extern "C" s32 func_ov003_0220c888(Obj *o);
-extern "C" s32 func_ov003_0220c93c(Obj *o, V3 *a, V3 *b, u8 *c);
-extern "C" s32 func_ov003_0220ca70(Obj *o, u8 *a, V3 *b, u8 *c);
-extern "C" void func_ov003_0220cbc8(Obj *o, V3 *a, V3 *b, V3 *out);
+extern "C" u32 PlayerActor_InsectShowCatchGetNetAngle(void *p);
+extern "C" u32 PlayerActor_InsectShowCatchGetNetState(u8 *p);
+extern "C" void PlayerActor_InsectShowCatchGetNetData(u8 *p, u8 *a, u8 *b, u8 *c, u8 *d, u16 *e);
+extern "C" void PlayerActor_InsectShowCatchSetNetAngle(void *p, s32 a);
+extern "C" void PlayerActor_InsectShowCatchSetNetState(u8 *p, u32 a);
+extern "C" void PlayerActor_InsectShowCatchSetNetData(u8 *p, u32 a, u32 b, u32 c, u8 d, s16 e);
+extern "C" s32 PlayerActor_RequestInsectShowCatch(Obj *o, u32 a, u32 b, u32 c, s32 d, s16 e);
+extern "C" void PlayerActor_MainBugNetSwing(Obj *o);
+extern "C" void PlayerActor_BugNetSwingCheckEnd(Obj *o);
+extern "C" void PlayerActor_BugNetSwingDecelerate(Obj *o);
+extern "C" void PlayerActor_BugNetSwingUpdateRemote(Obj *o);
+extern "C" s32 PlayerActor_BugNetSwingCheckGround(Obj *o, V3 *a, V3 *b, V3 *c);
+extern "C" s32 PlayerActor_BugNetSwingCheckWall(Obj *o);
+extern "C" s32 PlayerActor_BugNetSwingCanReach(Obj *o, V3 *a, V3 *b, u8 *c);
+extern "C" s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *b, u8 *c);
+extern "C" void PlayerActor_BugNetSwingGetSweep(Obj *o, V3 *a, V3 *b, V3 *out);
 }
 
 namespace ns_0220cd4c {
@@ -3187,7 +3187,7 @@ extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s32
 typedef Unk_ov003_0220d114_Act Act;
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 // 0x022349e6 is byte 0x12 of the record table data_ov003_022349d4 (unit unk_ov003_0221ffb8)
 extern u8 data_ov003_022349d4[];
 #define data_ov003_022349e6 (data_ov003_022349d4 + 0x12)
@@ -3200,9 +3200,9 @@ void PlayerActor_GetHeldItem(u16 *out, Obj *o);
 s32 func_02088a20(V3 *a, V3 *b, s32 c, u8 *d, s32 e);
 void func_ov003_02227e08(V3 *v, u32 a);
 u32 func_ov003_02227e40(u32 a);
-s32 func_ov003_0220ca70(Obj *o, u8 *a, V3 *v, u8 *b);
-s32 func_ov003_0220cbc8(Obj *o, V3 *a, V3 *b, V3 *c);
-s32 func_ov003_0220c768(Obj *o, V3 *a, V3 *b, V3 *c);
+s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *v, u8 *b);
+s32 PlayerActor_BugNetSwingGetSweep(Obj *o, V3 *a, V3 *b, V3 *c);
+s32 PlayerActor_BugNetSwingCheckGround(Obj *o, V3 *a, V3 *b, V3 *c);
 s32 func_ov003_02226d54(u32 a);
 void Unk_02006d14_playSe(Obj *o, u32 a);
 s32 func_020e7b98(s32 a, s32 b);
@@ -3217,14 +3217,14 @@ s32 func_0205e1a0(void *p, u32 a, u32 b, u32 c);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 void func_0200ef08(Obj *o);
 void func_0201071c(Obj *o);
-s32 func_020729bc(void *g, u32 a);
+s32 CommManager_isLocalSlot(void *g, u32 a);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 void Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
 Act *func_0205fbb8(void *p);
 void func_0205fbbc(void *p, u32 a);
 void func_0205fb20(void *p);
 void func_0205fb08(void *p);
-void func_ov003_02212034(Blk *b, u32 a);
+void PlayerActor_ApplyHoldOffset(Blk *b, u32 a);
 void func_ov003_02223400(Act *a, V3 *b, V3 *c);
 void func_ov003_02223450(V3 *v, s32 a);
 void func_ov003_02223258(u32 a);
@@ -3239,27 +3239,27 @@ void func_0203e47c(Obj *o, Unk_ov003_0220cd4c_Sec *s);
 void func_0203d7f8();
 s32 func_0206e750();
 s32 func_02042bbc(u32 a, u32 b);
-void func_ov003_02205e58(Obj *o, void *d, u32 a, u32 b, s32 c);
+void PlayerActor_RequestFishRelease(Obj *o, void *d, u32 a, u32 b, s32 c);
 void func_0200e7f4(Obj *o);
 void func_0200f4c0(Obj *o, s32 a);
 
-void func_ov003_0220cd4c(Obj *o);
-void func_ov003_0220cf30(Obj *o);
-void func_ov003_0220cf68(Obj *o);
-void func_ov003_0220cf78(Obj *o);
-s32 func_ov003_0220cfc0(Obj *o, s16 b);
-void func_ov003_0220cfcc(Obj *o, u8 *b);
-s32 func_ov003_0220d00c(Obj *o, s32 a, s32 b);
-void func_ov003_0220d084(Obj *o);
-void func_ov003_0220d0c4(Obj *o);
-void func_ov003_0220d114(Obj *o);
-s32 func_ov003_0220d568(Obj *o, s16 a);
-void func_ov003_0220d590(Obj *o, u8 *b);
-u32 func_ov003_0220d5c4(u8 *p);
-void func_ov003_0220d5c8(u8 *p, u32 v);
-s32 func_ov003_0220d5cc(Obj *o, u32 a, s32 b, s32 c);
-void func_ov003_0220d608(Obj *o);
-void func_ov003_0220d6f4(Obj *o);
+void PlayerActor_BugNetSwingUpdate(Obj *o);
+void PlayerActor_BugNetSwingTrackTarget(Obj *o);
+void PlayerActor_BugNetSwingTurn(Obj *o);
+void PlayerActor_BugNetSwingAdvanceAnim(Obj *o);
+s32 PlayerActor_NetBugNetSwing(Obj *o, s16 b);
+void PlayerActor_SetupBugNetSwing(Obj *o, u8 *b);
+s32 PlayerActor_RequestBugNetSwing(Obj *o, s32 a, s32 b);
+void PlayerActor_MainFishStore(Obj *o);
+void PlayerActor_FishStoreCheckEndRemote(Obj *o);
+void PlayerActor_FishStoreUpdate(Obj *o);
+s32 PlayerActor_NetFishStore(Obj *o, s16 a);
+void PlayerActor_SetupFishStore(Obj *o, u8 *b);
+u32 PlayerActor_FishStoreGetNetState(u8 *p);
+void PlayerActor_FishStoreSetNetState(u8 *p, u32 v);
+s32 PlayerActor_RequestFishStore(Obj *o, u32 a, s32 b, s32 c);
+void PlayerActor_MainFishShowCatch(Obj *o);
+void PlayerActor_FishShowCatchUpdate(Obj *o);
 }
 
 static inline BOOL Rng(volatile u16 *p, u32 lo, u32 hi) {
@@ -3271,22 +3271,22 @@ static inline BOOL Rng(volatile u16 *p, u32 lo, u32 hi) {
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_0220cd4c(Obj *o);
-extern "C" void func_ov003_0220cf30(Obj *o);
-extern "C" void func_ov003_0220cf68(Obj *o);
-extern "C" void func_ov003_0220cf78(Obj *o);
-extern "C" s32 func_ov003_0220cfc0(Obj *o, s16 b);
-extern "C" void func_ov003_0220cfcc(Obj *o, u8 *b);
-extern "C" s32 func_ov003_0220d00c(Obj *o, s32 a, s32 b);
-extern "C" void func_ov003_0220d084(Obj *o);
-extern "C" void func_ov003_0220d0c4(Obj *o);
-extern "C" void func_ov003_0220d114(Obj *o);
-extern "C" s32 func_ov003_0220d568(Obj *o, s16 a);
-extern "C" void func_ov003_0220d590(Obj *o, u8 *b);
-extern "C" s32 func_ov003_0220d5cc(Obj *o, u32 a, s32 b, s32 c);
-extern "C" void func_ov003_0220d608(Obj *o);
-extern "C" u32 func_ov003_0220d5c4(u8 *p);
-extern "C" void func_ov003_0220d5c8(u8 *p, u32 v);
+extern "C" void PlayerActor_BugNetSwingUpdate(Obj *o);
+extern "C" void PlayerActor_BugNetSwingTrackTarget(Obj *o);
+extern "C" void PlayerActor_BugNetSwingTurn(Obj *o);
+extern "C" void PlayerActor_BugNetSwingAdvanceAnim(Obj *o);
+extern "C" s32 PlayerActor_NetBugNetSwing(Obj *o, s16 b);
+extern "C" void PlayerActor_SetupBugNetSwing(Obj *o, u8 *b);
+extern "C" s32 PlayerActor_RequestBugNetSwing(Obj *o, s32 a, s32 b);
+extern "C" void PlayerActor_MainFishStore(Obj *o);
+extern "C" void PlayerActor_FishStoreCheckEndRemote(Obj *o);
+extern "C" void PlayerActor_FishStoreUpdate(Obj *o);
+extern "C" s32 PlayerActor_NetFishStore(Obj *o, s16 a);
+extern "C" void PlayerActor_SetupFishStore(Obj *o, u8 *b);
+extern "C" s32 PlayerActor_RequestFishStore(Obj *o, u32 a, s32 b, s32 c);
+extern "C" void PlayerActor_MainFishShowCatch(Obj *o);
+extern "C" u32 PlayerActor_FishStoreGetNetState(u8 *p);
+extern "C" void PlayerActor_FishStoreSetNetState(u8 *p, u32 v);
 }
 
 namespace ns_0220d6f4 {
@@ -3384,14 +3384,14 @@ typedef Unk_ov003_0220d6f4_Sec Sec;
 typedef Unk_ov003_0220d6f4_Rec Rec;
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 data_ov003_02230ac0[];
-extern u8 data_ov003_02230aec[];
+extern u8 sFishEscapeSpeed[];
 
 void func_0200f4c0(Obj *o, s32 a);
 Act *func_0205fbb8(void *p);
 void func_ov003_02223450(V3 *v, s32 a);
-void func_ov003_02212034(Blk *b, V3 *v);
+void PlayerActor_ApplyHoldOffset(Blk *b, V3 *v);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
 void func_ov003_02223400(Act *a, V3 *b, V3 *c);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
@@ -3410,14 +3410,14 @@ s32 func_020429d0(u32 a, u32 *b);
 void func_0203e47c(Obj *o, Sec *s);
 void Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 void func_0203d7f8();
-s32 func_ov003_0220d5cc(Obj *o, u32 a, s32 b, s32 c);
+s32 PlayerActor_RequestFishStore(Obj *o, u32 a, s32 b, s32 c);
 void Camera_SetModeDefault();
 s32 func_02042bbc(u32 a, u32 b);
 void func_0205fb08(void *p);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
-void func_ov003_02205e58(Obj *o, void *d, u32 a, u32 b, s32 c);
+void PlayerActor_RequestFishRelease(Obj *o, void *d, u32 a, u32 b, s32 c);
 void Unk_02006d14_requestAct76(Obj *o, u32 a, u32 b, u32 c, u32 d, s32 e);
-s32 func_020729bc(void *g, u32 a);
+s32 CommManager_isLocalSlot(void *g, u32 a);
 void func_02078840(void *p);
 void Hud_GetCountdown();
 void HudCountdown_incCountA();
@@ -3435,33 +3435,33 @@ s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 void Unk_020102ec_setSpeed(Obj *o, s32 *a);
 void PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 void Unk_02008040_requestAct79(Obj *o, s32 a, s32 b);
-void func_ov003_0220e030(u8 *p, u32 v);
+void PlayerActor_FishReelInSetArgs(u8 *p, u32 v);
 
-void func_ov003_0220dc00(u8 *p, u8 *out);
-void func_ov003_0220dc08(u8 *p, u32 v);
-s32 func_ov003_0220dc0c(Obj *o, u32 a, s32 b, s16 c);
-void func_ov003_0220dc80(Obj *o);
-s32 func_ov003_0220dd28(Obj *o, s32 a, s16 b);
-void func_ov003_0220ddb4(Obj *o);
-s32 func_ov003_0220de60(Obj *o, s32 a, s16 b);
-void func_ov003_0220deb8(Obj *o);
-void func_ov003_0220dfe0(u8 *p, u8 *out);
-void func_ov003_0220dfe8(u8 *p, u32 v);
-void func_ov003_0220dfec(u8 *p, u32 v);
-s32 func_ov003_0220dff0(Obj *o, u32 a, s32 b, s16 c);
+void PlayerActor_FishShowCatchGetNetData(u8 *p, u8 *out);
+void PlayerActor_FishShowCatchSetNetData(u8 *p, u32 v);
+s32 PlayerActor_RequestFishShowCatch(Obj *o, u32 a, s32 b, s16 c);
+void PlayerActor_FishLandCheckEnd(Obj *o);
+s32 PlayerActor_RequestFishLand(Obj *o, s32 a, s16 b);
+void PlayerActor_FishEscapeCheckEnd(Obj *o);
+s32 PlayerActor_RequestFishEscape(Obj *o, s32 a, s16 b);
+void PlayerActor_FishReelInCheckEnd(Obj *o);
+void PlayerActor_FishReelInGetNetData(u8 *p, u8 *out);
+void PlayerActor_FishReelInSetNetData(u8 *p, u32 v);
+void PlayerActor_FishReelInSetWork(u8 *p, u32 v);
+s32 PlayerActor_RequestFishReelIn(Obj *o, u32 a, s32 b, s16 c);
 
-void func_ov003_0220d6f4(Obj *o);
-void func_ov003_0220db30(Obj *o, s16 a);
-void func_ov003_0220db5c(Obj *o, u8 *p);
-void func_ov003_0220dc48(Obj *o);
-s32 func_ov003_0220dcb8(Obj *o, s16 a);
-void func_ov003_0220dcc4(Obj *o);
-void func_ov003_0220dd60(Obj *o);
-s32 func_ov003_0220de20(Obj *o, s16 a);
-void func_ov003_0220de2c(Obj *o);
-void func_ov003_0220de98(Obj *o);
-void func_ov003_0220df10(Obj *o, s16 a);
-void func_ov003_0220df3c(Obj *o, u8 *p);
+void PlayerActor_FishShowCatchUpdate(Obj *o);
+void PlayerActor_NetFishShowCatch(Obj *o, s16 a);
+void PlayerActor_SetupFishShowCatch(Obj *o, u8 *p);
+void PlayerActor_MainFishLand(Obj *o);
+s32 PlayerActor_NetFishLand(Obj *o, s16 a);
+void PlayerActor_SetupFishLand(Obj *o);
+void PlayerActor_MainFishEscape(Obj *o);
+s32 PlayerActor_NetFishEscape(Obj *o, s16 a);
+void PlayerActor_SetupFishEscape(Obj *o);
+void PlayerActor_MainFishReelIn(Obj *o);
+void PlayerActor_NetFishReelIn(Obj *o, s16 a);
+void PlayerActor_SetupFishReelIn(Obj *o, u8 *p);
 }
 
 static inline BOOL Rng(volatile u16 *p, u32 lo, u32 hi) {
@@ -3473,30 +3473,30 @@ static inline BOOL Rng(volatile u16 *p, u32 lo, u32 hi) {
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_0220d6f4(Obj *o);
-extern "C" void func_ov003_0220db30(Obj *o, s16 a);
-extern "C" void func_ov003_0220db5c(Obj *o, u8 *p);
-extern "C" void func_ov003_0220dc00(u8 *p, u8 *out);
-extern "C" void func_ov003_0220dc08(u8 *p, u32 v);
-extern "C" s32 func_ov003_0220dc0c(Obj *o, u32 a, s32 b, s16 c);
-extern "C" void func_ov003_0220dc48(Obj *o);
-extern "C" void func_ov003_0220dc80(Obj *o);
-extern "C" s32 func_ov003_0220dcb8(Obj *o, s16 a);
-extern "C" void func_ov003_0220dcc4(Obj *o);
-extern "C" s32 func_ov003_0220dd28(Obj *o, s32 a, s16 b);
-extern "C" void func_ov003_0220dd60(Obj *o);
-extern "C" void func_ov003_0220ddb4(Obj *o);
-extern "C" s32 func_ov003_0220de20(Obj *o, s16 a);
-extern "C" void func_ov003_0220de2c(Obj *o);
-extern "C" s32 func_ov003_0220de60(Obj *o, s32 a, s16 b);
-extern "C" void func_ov003_0220de98(Obj *o);
-extern "C" void func_ov003_0220deb8(Obj *o);
-extern "C" void func_ov003_0220df10(Obj *o, s16 a);
-extern "C" void func_ov003_0220df3c(Obj *o, u8 *p);
-extern "C" void func_ov003_0220dfe0(u8 *p, u8 *out);
-extern "C" void func_ov003_0220dfe8(u8 *p, u32 v);
-extern "C" void func_ov003_0220dfec(u8 *p, u32 v);
-extern "C" s32 func_ov003_0220dff0(Obj *o, u32 a, s32 b, s16 c);
+extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o);
+extern "C" void PlayerActor_NetFishShowCatch(Obj *o, s16 a);
+extern "C" void PlayerActor_SetupFishShowCatch(Obj *o, u8 *p);
+extern "C" void PlayerActor_FishShowCatchGetNetData(u8 *p, u8 *out);
+extern "C" void PlayerActor_FishShowCatchSetNetData(u8 *p, u32 v);
+extern "C" s32 PlayerActor_RequestFishShowCatch(Obj *o, u32 a, s32 b, s16 c);
+extern "C" void PlayerActor_MainFishLand(Obj *o);
+extern "C" void PlayerActor_FishLandCheckEnd(Obj *o);
+extern "C" s32 PlayerActor_NetFishLand(Obj *o, s16 a);
+extern "C" void PlayerActor_SetupFishLand(Obj *o);
+extern "C" s32 PlayerActor_RequestFishLand(Obj *o, s32 a, s16 b);
+extern "C" void PlayerActor_MainFishEscape(Obj *o);
+extern "C" void PlayerActor_FishEscapeCheckEnd(Obj *o);
+extern "C" s32 PlayerActor_NetFishEscape(Obj *o, s16 a);
+extern "C" void PlayerActor_SetupFishEscape(Obj *o);
+extern "C" s32 PlayerActor_RequestFishEscape(Obj *o, s32 a, s16 b);
+extern "C" void PlayerActor_MainFishReelIn(Obj *o);
+extern "C" void PlayerActor_FishReelInCheckEnd(Obj *o);
+extern "C" void PlayerActor_NetFishReelIn(Obj *o, s16 a);
+extern "C" void PlayerActor_SetupFishReelIn(Obj *o, u8 *p);
+extern "C" void PlayerActor_FishReelInGetNetData(u8 *p, u8 *out);
+extern "C" void PlayerActor_FishReelInSetNetData(u8 *p, u32 v);
+extern "C" void PlayerActor_FishReelInSetWork(u8 *p, u32 v);
+extern "C" s32 PlayerActor_RequestFishReelIn(Obj *o, u32 a, s32 b, s16 c);
 }
 
 namespace ns_0220e030 {
@@ -3567,14 +3567,14 @@ typedef Unk_ov003_0220e030_P2 P2;
 typedef Unk_ov003_0220e030_Arg Arg;
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 *data_021c1b3c;
 
 s32 Unk_020102ec_advanceAnim(Obj *o);
 s32 func_0200ef08(Obj *o);
 s32 func_0201071c(Obj *o);
 s32 Unk_020102ec_moveWithCollision(Obj *o);
-s32 func_020729bc(void *g, u32 a);
+s32 CommManager_isLocalSlot(void *g, u32 a);
 s32 func_0205fb70(void *p);
 s32 func_0205fb88(void *p);
 s32 func_0205fbb8(void *p);
@@ -3606,88 +3606,88 @@ s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 func_0200f504(Obj *o, s32 a);
 s32 Camera_SetMode5();
-s32 func_020769dc(void *p, s32 *a, s32 *b, s32 *c, u8 *d);
-s32 func_02076a04(void *p, s32 a, s32 b, s32 c, u32 d);
-s32 func_02076a2c(void *p, s32 *a, s32 *b);
-s32 func_02076a6c(void *p, s32 a, s32 b);
-s32 func_ov003_0220de60(Obj *o, s32 a, s32 b);
-s32 func_ov003_0220dd28(Obj *o, s32 a, s32 b);
-s32 func_ov003_0220dff0(Obj *o, s32 a, s32 b, s32 c);
+s32 NetBuf_UnpackTriple20(void *p, s32 *a, s32 *b, s32 *c, u8 *d);
+s32 NetBuf_PackTriple20(void *p, s32 a, s32 b, s32 c, u32 d);
+s32 NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
+s32 NetBuf_PackPair20(void *p, s32 a, s32 b);
+s32 PlayerActor_RequestFishEscape(Obj *o, s32 a, s32 b);
+s32 PlayerActor_RequestFishLand(Obj *o, s32 a, s32 b);
+s32 PlayerActor_RequestFishReelIn(Obj *o, s32 a, s32 b, s32 c);
 s32 func_ov003_022236dc();
 s32 func_ov003_02220db0(void *p, s32 a);
-s32 func_ov003_0220e9a4(Obj *o);
+s32 PlayerActor_AxeBrokenMessageUpdate(Obj *o);
 
-void func_ov003_0220e030(u8 *p, u32 v);
-s32 func_ov003_0220e034(Obj *o);
-s32 func_ov003_0220e054(Obj *o);
-s32 func_ov003_0220e0d8(Obj *o, s16 a);
-s32 func_ov003_0220e0e4(Obj *o);
-s32 func_ov003_0220e12c(Obj *o, s32 a, s16 b);
-s32 func_ov003_0220e164(Obj *o);
-s32 func_ov003_0220e1c0(Obj *o);
-void func_ov003_0220e260(Obj *o);
-s32 func_ov003_0220e2e4(Obj *o);
-void func_ov003_0220e324(Obj *o);
-s32 func_ov003_0220e43c(Obj *o, s32 a);
-s32 func_ov003_0220e490(Obj *o, s16 a);
-s32 func_ov003_0220e4bc(Obj *o);
-void func_ov003_0220e55c(void *p, V3 *v, u8 *out);
-s32 func_ov003_0220e574(void *p, V3 *v, u8 c);
-s32 func_ov003_0220e58c(Obj *o, s32 a, s16 b);
-s32 func_ov003_0220e5c4(Obj *o);
-s32 func_ov003_0220e610(Obj *o);
-s32 func_ov003_0220e650(Obj *o);
-s32 func_ov003_0220e67c(Obj *o, s16 a);
-s32 func_ov003_0220e688(Obj *o);
-s32 func_ov003_0220e6b0(Obj *o, s32 a, s16 b);
-s32 func_ov003_0220e6e8(Obj *o);
-s32 func_ov003_0220e784(Obj *o);
-s32 func_ov003_0220e7c8(Obj *o);
-s32 func_ov003_0220e7d8(Obj *o);
-s32 func_ov003_0220e804(Obj *o, s16 a);
-s32 func_ov003_0220e844(Obj *o, Arg *a);
-s32 func_ov003_0220e8bc(void *p, s32 *a, s32 *b);
-s32 func_ov003_0220e8c4(void *p, s32 a, s32 b);
-s32 func_ov003_0220e8cc(Obj *o, V3 *v, s32 a, s16 b);
-void func_ov003_0220e918(P2 *d, V3 *s);
-s32 func_ov003_0220e924(Obj *o);
+void PlayerActor_FishReelInSetArgs(u8 *p, u32 v);
+s32 PlayerActor_MainFishHook(Obj *o);
+s32 PlayerActor_FishHookCheckResult(Obj *o);
+s32 PlayerActor_NetFishHook(Obj *o, s16 a);
+s32 PlayerActor_SetupFishHook(Obj *o);
+s32 PlayerActor_RequestFishHook(Obj *o, s32 a, s16 b);
+s32 PlayerActor_MainFishWait(Obj *o);
+s32 PlayerActor_FishWaitCheckInput(Obj *o);
+void PlayerActor_FishWaitOnBobberLand(Obj *o);
+s32 PlayerActor_FishWaitFaceBobber(Obj *o);
+void PlayerActor_FishWaitSyncBobber(Obj *o);
+s32 PlayerActor_EndFishWait(Obj *o, s32 a);
+s32 PlayerActor_NetFishWait(Obj *o, s16 a);
+s32 PlayerActor_SetupFishWait(Obj *o);
+void PlayerActor_FishWaitGetNetData(void *p, V3 *v, u8 *out);
+s32 PlayerActor_FishWaitSetNetData(void *p, V3 *v, u8 c);
+s32 PlayerActor_RequestFishWait(Obj *o, s32 a, s16 b);
+s32 PlayerActor_MainFishCastFail(Obj *o);
+s32 PlayerActor_FishCastFailCheckEnd(Obj *o);
+s32 PlayerActor_FishCastFailUpdate(Obj *o);
+s32 PlayerActor_NetFishCastFail(Obj *o, s16 a);
+s32 PlayerActor_SetupFishCastFail(Obj *o);
+s32 PlayerActor_RequestFishCastFail(Obj *o, s32 a, s16 b);
+s32 PlayerActor_MainFishCast(Obj *o);
+s32 PlayerActor_FishCastCheckEnd(Obj *o);
+s32 PlayerActor_FishCastTurn(Obj *o);
+s32 PlayerActor_FishCastUpdate(Obj *o);
+s32 PlayerActor_NetFishCast(Obj *o, s16 a);
+s32 PlayerActor_SetupFishCast(Obj *o, Arg *a);
+s32 PlayerActor_FishCastGetNetData(void *p, s32 *a, s32 *b);
+s32 PlayerActor_FishCastSetNetData(void *p, s32 a, s32 b);
+s32 PlayerActor_RequestFishCast(Obj *o, V3 *v, s32 a, s16 b);
+void PlayerActor_FishCastSetArgs(P2 *d, V3 *s);
+s32 PlayerActor_MainAxeBrokenMessage(Obj *o);
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_0220e030(u8 *p, u32 v);
-extern "C" s32 func_ov003_0220e034(Obj *o);
-extern "C" s32 func_ov003_0220e054(Obj *o);
-extern "C" s32 func_ov003_0220e0d8(Obj *o, s16 a);
-extern "C" s32 func_ov003_0220e0e4(Obj *o);
-extern "C" s32 func_ov003_0220e12c(Obj *o, s32 a, s16 b);
-extern "C" s32 func_ov003_0220e164(Obj *o);
-extern "C" s32 func_ov003_0220e1c0(Obj *o);
-extern "C" void func_ov003_0220e260(Obj *o);
-extern "C" s32 func_ov003_0220e2e4(Obj *o);
-extern "C" void func_ov003_0220e324(Obj *o);
-extern "C" s32 func_ov003_0220e43c(Obj *o, s32 a);
-extern "C" s32 func_ov003_0220e490(Obj *o, s16 a);
-extern "C" s32 func_ov003_0220e4bc(Obj *o);
-extern "C" void func_ov003_0220e55c(void *p, V3 *v, u8 *out);
-extern "C" s32 func_ov003_0220e574(void *p, V3 *v, u8 c);
-extern "C" s32 func_ov003_0220e58c(Obj *o, s32 a, s16 b);
-extern "C" s32 func_ov003_0220e5c4(Obj *o);
-extern "C" s32 func_ov003_0220e610(Obj *o);
-extern "C" s32 func_ov003_0220e650(Obj *o);
-extern "C" s32 func_ov003_0220e67c(Obj *o, s16 a);
-extern "C" s32 func_ov003_0220e688(Obj *o);
-extern "C" s32 func_ov003_0220e6b0(Obj *o, s32 a, s16 b);
-extern "C" s32 func_ov003_0220e6e8(Obj *o);
-extern "C" s32 func_ov003_0220e784(Obj *o);
-extern "C" s32 func_ov003_0220e7c8(Obj *o);
-extern "C" s32 func_ov003_0220e7d8(Obj *o);
-extern "C" s32 func_ov003_0220e804(Obj *o, s16 a);
-extern "C" s32 func_ov003_0220e844(Obj *o, Arg *a);
-extern "C" s32 func_ov003_0220e8bc(void *p, s32 *a, s32 *b);
-extern "C" s32 func_ov003_0220e8c4(void *p, s32 a, s32 b);
-extern "C" s32 func_ov003_0220e8cc(Obj *o, V3 *v, s32 a, s16 b);
-extern "C" void func_ov003_0220e918(P2 *d, V3 *s);
-extern "C" s32 func_ov003_0220e924(Obj *o);
+extern "C" void PlayerActor_FishReelInSetArgs(u8 *p, u32 v);
+extern "C" s32 PlayerActor_MainFishHook(Obj *o);
+extern "C" s32 PlayerActor_FishHookCheckResult(Obj *o);
+extern "C" s32 PlayerActor_NetFishHook(Obj *o, s16 a);
+extern "C" s32 PlayerActor_SetupFishHook(Obj *o);
+extern "C" s32 PlayerActor_RequestFishHook(Obj *o, s32 a, s16 b);
+extern "C" s32 PlayerActor_MainFishWait(Obj *o);
+extern "C" s32 PlayerActor_FishWaitCheckInput(Obj *o);
+extern "C" void PlayerActor_FishWaitOnBobberLand(Obj *o);
+extern "C" s32 PlayerActor_FishWaitFaceBobber(Obj *o);
+extern "C" void PlayerActor_FishWaitSyncBobber(Obj *o);
+extern "C" s32 PlayerActor_EndFishWait(Obj *o, s32 a);
+extern "C" s32 PlayerActor_NetFishWait(Obj *o, s16 a);
+extern "C" s32 PlayerActor_SetupFishWait(Obj *o);
+extern "C" void PlayerActor_FishWaitGetNetData(void *p, V3 *v, u8 *out);
+extern "C" s32 PlayerActor_FishWaitSetNetData(void *p, V3 *v, u8 c);
+extern "C" s32 PlayerActor_RequestFishWait(Obj *o, s32 a, s16 b);
+extern "C" s32 PlayerActor_MainFishCastFail(Obj *o);
+extern "C" s32 PlayerActor_FishCastFailCheckEnd(Obj *o);
+extern "C" s32 PlayerActor_FishCastFailUpdate(Obj *o);
+extern "C" s32 PlayerActor_NetFishCastFail(Obj *o, s16 a);
+extern "C" s32 PlayerActor_SetupFishCastFail(Obj *o);
+extern "C" s32 PlayerActor_RequestFishCastFail(Obj *o, s32 a, s16 b);
+extern "C" s32 PlayerActor_MainFishCast(Obj *o);
+extern "C" s32 PlayerActor_FishCastCheckEnd(Obj *o);
+extern "C" s32 PlayerActor_FishCastTurn(Obj *o);
+extern "C" s32 PlayerActor_FishCastUpdate(Obj *o);
+extern "C" s32 PlayerActor_NetFishCast(Obj *o, s16 a);
+extern "C" s32 PlayerActor_SetupFishCast(Obj *o, Arg *a);
+extern "C" s32 PlayerActor_FishCastGetNetData(void *p, s32 *a, s32 *b);
+extern "C" s32 PlayerActor_FishCastSetNetData(void *p, s32 a, s32 b);
+extern "C" s32 PlayerActor_RequestFishCast(Obj *o, V3 *v, s32 a, s16 b);
+extern "C" void PlayerActor_FishCastSetArgs(P2 *d, V3 *s);
+extern "C" s32 PlayerActor_MainAxeBrokenMessage(Obj *o);
 }
 
 namespace ns_0220e970 {
@@ -3817,10 +3817,10 @@ typedef Unk_ov003_0220e970_Sec Sec;
 typedef Unk_ov003_0220e970_Q Q;
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern s16 data_02135f44[];
 
-s32 func_020729bc(void *g, u32 a);
+s32 CommManager_isLocalSlot(void *g, u32 a);
 s32 func_020946f0(s32 a, u32 b);
 s32 Unk_02006d14_setActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_clearActionFlag(Obj *o, u32 a);
@@ -3861,77 +3861,77 @@ u16 *PlayerData_getHeldItem(s32 a);
 s32 PlayerActor_Decelerate(s32 a, s32 b);
 s32 Unk_020102ec_setSpeed(Obj *o, s32 *a);
 s32 PlayerActor_GetHeldItem(u16 *out, Obj *o);
-s32 func_0204ed8c(V3 *v, s32 a, s32 b);
+s32 FieldPos_FromUnitCenter(V3 *v, s32 a, s32 b);
 s32 func_ov003_0221cbe4(u32 a, P2 *p, s32 b);
 s32 func_ov003_0221cb54(P2 *p);
 s32 func_ov003_022135c4(Q *q, s32 a);
-s32 func_ov003_02205c28(Obj *o);
-s32 func_ov003_0220f314(Obj *o);
+s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
+s32 PlayerActor_AxeStrikeUpdate(Obj *o);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 
-s32 func_ov003_0220e970(Obj *o);
-void func_ov003_0220e9a4(Obj *o);
-s32 func_ov003_0220ea4c(Obj *o, s16 a);
-s32 func_ov003_0220ea58(Obj *o);
-void func_ov003_0220eae8(Rec *r);
-s32 func_ov003_0220eaf0(Obj *o, s32 a, s16 b);
-s32 func_ov003_0220eb28(Obj *o);
-void func_ov003_0220eb48(Obj *o);
-void func_ov003_0220eb98(Obj *o);
-void func_ov003_0220ecb8(Obj *o);
-void func_ov003_0220ed24(Obj *o, s16 a);
-s32 func_ov003_0220ed5c(Obj *o, Arg *a);
-void func_ov003_0220edc4(u8 *src, u8 *dst);
-void func_ov003_0220edcc(u8 *p, u32 v);
-void func_ov003_0220edd0(Rec *r, u32 c, Pv p);
-s32 func_ov003_0220eddc(Obj *o, u32 a, Pv p, s32 c, s16 e);
-void func_ov003_0220ee2c(Rec *r, u32 c, Pv p);
-s32 func_ov003_0220ee38(Obj *o);
-void func_ov003_0220ee58(Obj *o);
-s32 func_ov003_0220eeec(Obj *o);
-s32 func_ov003_0220efb0(Obj *o);
-s32 func_ov003_0220efd8(Obj *o);
-void func_ov003_0220f00c(Obj *o);
-s32 func_ov003_0220f010(Obj *o, Arg *a);
-void func_ov003_0220f054(Rec *r, u32 a, u32 b, Pv p);
-s32 func_ov003_0220f064(Obj *o, u32 a, u32 b, Pv p, s32 c, s16 d);
-void func_ov003_0220f0b4(Rec *r, u32 a, u32 b, Pv p);
-s32 func_ov003_0220f0c4(Obj *o);
-s32 func_ov003_0220f10c(Obj *o);
-void func_ov003_0220f14c(Obj *o);
+s32 PlayerActor_EndAxeBrokenMessage(Obj *o);
+void PlayerActor_AxeBrokenMessageUpdate(Obj *o);
+s32 PlayerActor_NetAxeBrokenMessage(Obj *o, s16 a);
+s32 PlayerActor_SetupAxeBrokenMessage(Obj *o);
+void PlayerActor_AxeBrokenMessageInitWork(Rec *r);
+s32 PlayerActor_RequestAxeBrokenMessage(Obj *o, s32 a, s16 b);
+s32 PlayerActor_MainAxeBreak(Obj *o);
+void PlayerActor_AxeBreakCheckEnd(Obj *o);
+void PlayerActor_AxeBreakUpdate(Obj *o);
+void PlayerActor_EndAxeBreak(Obj *o);
+void PlayerActor_NetAxeBreak(Obj *o, s16 a);
+s32 PlayerActor_SetupAxeBreak(Obj *o, Arg *a);
+void PlayerActor_AxeBreakGetNetData(u8 *src, u8 *dst);
+void PlayerActor_AxeBreakSetNetData(u8 *p, u32 v);
+void PlayerActor_AxeBreakSetWork(Rec *r, u32 c, Pv p);
+s32 PlayerActor_RequestAxeBreak(Obj *o, u32 a, Pv p, s32 c, s16 e);
+void PlayerActor_AxeBreakSetArgs(Rec *r, u32 c, Pv p);
+s32 PlayerActor_MainAxeChop(Obj *o);
+void PlayerActor_AxeChopCheckEnd(Obj *o);
+s32 PlayerActor_AxeChopHit(Obj *o);
+s32 PlayerActor_AxeChopUpdate(Obj *o);
+s32 PlayerActor_EndAxeChop(Obj *o);
+void PlayerActor_NetAxeChop(Obj *o);
+s32 PlayerActor_SetupAxeChop(Obj *o, Arg *a);
+void PlayerActor_AxeChopSetWork(Rec *r, u32 a, u32 b, Pv p);
+s32 PlayerActor_RequestAxeChop(Obj *o, u32 a, u32 b, Pv p, s32 c, s16 d);
+void PlayerActor_AxeChopSetArgs(Rec *r, u32 a, u32 b, Pv p);
+s32 PlayerActor_MainAxeStrike(Obj *o);
+s32 PlayerActor_AxeStrikeCheckEnd(Obj *o);
+void PlayerActor_AxeStrikeHit(Obj *o);
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" s32 func_ov003_0220e970(Obj *o);
-extern "C" void func_ov003_0220e9a4(Obj *o);
-extern "C" s32 func_ov003_0220ea4c(Obj *o, s16 a);
-extern "C" s32 func_ov003_0220ea58(Obj *o);
-extern "C" s32 func_ov003_0220eaf0(Obj *o, s32 a, s16 b);
-extern "C" s32 func_ov003_0220eb28(Obj *o);
-extern "C" void func_ov003_0220eb48(Obj *o);
-extern "C" void func_ov003_0220eb98(Obj *o);
-extern "C" void func_ov003_0220ecb8(Obj *o);
-extern "C" void func_ov003_0220ed24(Obj *o, s16 a);
-extern "C" s32 func_ov003_0220ed5c(Obj *o, Arg *a);
-extern "C" s32 func_ov003_0220eddc(Obj *o, u32 a, Pv p, s32 c, s16 e);
-extern "C" s32 func_ov003_0220ee38(Obj *o);
-extern "C" void func_ov003_0220ee58(Obj *o);
-extern "C" s32 func_ov003_0220eeec(Obj *o);
-extern "C" s32 func_ov003_0220efb0(Obj *o);
-extern "C" s32 func_ov003_0220efd8(Obj *o);
-extern "C" s32 func_ov003_0220f010(Obj *o, Arg *a);
-extern "C" s32 func_ov003_0220f064(Obj *o, u32 a, u32 b, Pv p, s32 c, s16 d);
-extern "C" s32 func_ov003_0220f0c4(Obj *o);
-extern "C" s32 func_ov003_0220f10c(Obj *o);
-extern "C" void func_ov003_0220f14c(Obj *o);
-extern "C" void func_ov003_0220eae8(Rec *r);
-extern "C" void func_ov003_0220edc4(u8 *src, u8 *dst);
-extern "C" void func_ov003_0220edcc(u8 *p, u32 v);
-extern "C" void func_ov003_0220edd0(Rec *r, u32 c, Pv p);
-extern "C" void func_ov003_0220ee2c(Rec *r, u32 c, Pv p);
-extern "C" void func_ov003_0220f00c(Obj *o);
-extern "C" void func_ov003_0220f054(Rec *r, u32 a, u32 b, Pv p);
-extern "C" void func_ov003_0220f0b4(Rec *r, u32 a, u32 b, Pv p);
+extern "C" s32 PlayerActor_EndAxeBrokenMessage(Obj *o);
+extern "C" void PlayerActor_AxeBrokenMessageUpdate(Obj *o);
+extern "C" s32 PlayerActor_NetAxeBrokenMessage(Obj *o, s16 a);
+extern "C" s32 PlayerActor_SetupAxeBrokenMessage(Obj *o);
+extern "C" s32 PlayerActor_RequestAxeBrokenMessage(Obj *o, s32 a, s16 b);
+extern "C" s32 PlayerActor_MainAxeBreak(Obj *o);
+extern "C" void PlayerActor_AxeBreakCheckEnd(Obj *o);
+extern "C" void PlayerActor_AxeBreakUpdate(Obj *o);
+extern "C" void PlayerActor_EndAxeBreak(Obj *o);
+extern "C" void PlayerActor_NetAxeBreak(Obj *o, s16 a);
+extern "C" s32 PlayerActor_SetupAxeBreak(Obj *o, Arg *a);
+extern "C" s32 PlayerActor_RequestAxeBreak(Obj *o, u32 a, Pv p, s32 c, s16 e);
+extern "C" s32 PlayerActor_MainAxeChop(Obj *o);
+extern "C" void PlayerActor_AxeChopCheckEnd(Obj *o);
+extern "C" s32 PlayerActor_AxeChopHit(Obj *o);
+extern "C" s32 PlayerActor_AxeChopUpdate(Obj *o);
+extern "C" s32 PlayerActor_EndAxeChop(Obj *o);
+extern "C" s32 PlayerActor_SetupAxeChop(Obj *o, Arg *a);
+extern "C" s32 PlayerActor_RequestAxeChop(Obj *o, u32 a, u32 b, Pv p, s32 c, s16 d);
+extern "C" s32 PlayerActor_MainAxeStrike(Obj *o);
+extern "C" s32 PlayerActor_AxeStrikeCheckEnd(Obj *o);
+extern "C" void PlayerActor_AxeStrikeHit(Obj *o);
+extern "C" void PlayerActor_AxeBrokenMessageInitWork(Rec *r);
+extern "C" void PlayerActor_AxeBreakGetNetData(u8 *src, u8 *dst);
+extern "C" void PlayerActor_AxeBreakSetNetData(u8 *p, u32 v);
+extern "C" void PlayerActor_AxeBreakSetWork(Rec *r, u32 c, Pv p);
+extern "C" void PlayerActor_AxeBreakSetArgs(Rec *r, u32 c, Pv p);
+extern "C" void PlayerActor_NetAxeChop(Obj *o);
+extern "C" void PlayerActor_AxeChopSetWork(Rec *r, u32 a, u32 b, Pv p);
+extern "C" void PlayerActor_AxeChopSetArgs(Rec *r, u32 a, u32 b, Pv p);
 }
 
 namespace ns_0220f314 {
@@ -4023,13 +4023,13 @@ typedef Unk_ov003_0220f314_Arg4 Arg4;
 typedef Unk_ov003_0220f314_Pair Pair;
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 
 s32 Unk_020102ec_advanceAnim(Obj *o);
 s32 func_0200ef08(Obj *o);
 s32 func_0201071c(Obj *o);
 s32 Unk_020102ec_moveWithCollision(Obj *o);
-s32 func_020729bc(void *g, u32 a);
+s32 CommManager_isLocalSlot(void *g, u32 a);
 s32 Unk_02006d14_testActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_playSe(Obj *o, u32 a);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
@@ -4044,8 +4044,8 @@ s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 func_0200f504(Obj *o, s32 a);
-s32 func_02076a2c(void *p, s32 *a, s32 *b);
-s32 func_02076a6c(void *p, s32 a, s32 b);
+s32 NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
+s32 NetBuf_PackPair20(void *p, s32 a, s32 b);
 s32 Unk_02006d14_getHeldHoldableIndex(Obj *o);
 void func_0200f43c(V3 *out, Obj *o);
 void func_0200f45c(V3 *out, Obj *o);
@@ -4056,45 +4056,45 @@ s32 func_02063b8c(s32 a);
 s32 func_0203081c(V3 *a, s32 *b, s32 c);
 void Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 void Unk_02006d14_setActionFlag(Obj *o, u32 a);
-s32 func_ov003_02205a00(Obj *o, u8 *pa, u8 *pb, s32 *out);
-s32 func_ov003_0220eddc(Obj *o, s32 a, s32 *b, s32 c, s32 d);
-s32 func_ov003_0220f064(Obj *o, s32 a, s32 b, s32 *c, s32 d, s32 e);
-s32 func_ov003_0220f14c(Obj *o);
+s32 PlayerActor_AxeClassifyTarget(Obj *o, u8 *pa, u8 *pb, s32 *out);
+s32 PlayerActor_RequestAxeBreak(Obj *o, s32 a, s32 *b, s32 c, s32 d);
+s32 PlayerActor_RequestAxeChop(Obj *o, s32 a, s32 b, s32 *c, s32 d, s32 e);
+s32 PlayerActor_AxeStrikeHit(Obj *o);
 
-s32 func_ov003_0220f314(Obj *o);
-s32 func_ov003_0220f33c(Obj *o);
-void func_ov003_0220f370(Obj *o, s32 a);
-s32 func_ov003_0220f3cc(Obj *o, Arg4 *a);
-void func_ov003_0220f43c(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d, u8 *e);
-void func_ov003_0220f45c(u8 *d, u8 a, u8 b, u8 c, u8 e, u8 f);
-void func_ov003_0220f474(u8 *d, u32 x, u32 y, s32 *s);
-s32 func_ov003_0220f484(Obj *o, u32 a, u32 b, s32 *c, s32 d, s32 e);
-void func_ov003_0220f4d4(u8 *d, u32 x, u32 y, s32 *s);
-s32 func_ov003_0220f4e4(Obj *o);
-s32 func_ov003_0220f500(Obj *o);
-s32 func_ov003_0220f540(Obj *o);
-s32 func_ov003_0220f570(Obj *o, s16 b);
-s32 func_ov003_0220f57c(Obj *o);
-s32 func_ov003_0220f590(Obj *o, s32 a, s16 b);
-s32 func_ov003_0220f5c8(Obj *o);
-s32 func_ov003_0220f668(Obj *o, u8 a, ...);
-s32 func_ov003_0220f828(Obj *o);
-s32 func_ov003_0220f860(Obj *o, s16 b);
-s32 func_ov003_0220f86c(Obj *o);
-s32 func_ov003_0220f880(Obj *o, s32 a, s16 b);
-void func_ov003_0220f8b8(Obj *o);
-s32 func_ov003_0220f97c(Obj *o);
-s32 func_ov003_0220f9b8(Obj *o);
-s32 func_ov003_0220f9ec(Obj *o);
-s32 func_ov003_0220fa2c(Obj *o);
-s32 func_ov003_0220fa3c(Obj *o, s32 a);
-s32 func_ov003_0220fa70(Obj *o, Arg *a);
-void func_ov003_0220fb78(void *p, s32 *a, s32 *b, u8 *c);
-s32 func_ov003_0220fb90(void *p, s32 a, s32 b, u8 c);
-void func_ov003_0220fba8(u8 *d, V3 *v, s32 a);
-s32 func_ov003_0220fbb8(Obj *o, s32 *a, s32 *b, u8 *c, s32 d, s32 e);
-s32 func_ov003_0220fc00(Obj *o, s32 a, s16 b);
-void func_ov003_0220fc88(u8 *d, s32 a, s32 b, u32 c);
+s32 PlayerActor_AxeStrikeUpdate(Obj *o);
+s32 PlayerActor_EndAxeStrike(Obj *o);
+void PlayerActor_NetAxeStrike(Obj *o, s32 a);
+s32 PlayerActor_SetupAxeStrike(Obj *o, Arg4 *a);
+void PlayerActor_AxeStrikeGetNetData(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d, u8 *e);
+void PlayerActor_AxeStrikeSetNetData(u8 *d, u8 a, u8 b, u8 c, u8 e, u8 f);
+void PlayerActor_AxeStrikeSetWork(u8 *d, u32 x, u32 y, s32 *s);
+s32 PlayerActor_RequestAxeStrike(Obj *o, u32 a, u32 b, s32 *c, s32 d, s32 e);
+void PlayerActor_AxeStrikeSetArgs(u8 *d, u32 x, u32 y, s32 *s);
+s32 PlayerActor_MainAct48(Obj *o);
+s32 PlayerActor_Act48CheckEnd(Obj *o);
+s32 PlayerActor_Act48Update(Obj *o);
+s32 PlayerActor_NetAct48(Obj *o, s16 b);
+s32 PlayerActor_SetupAct48(Obj *o);
+s32 PlayerActor_RequestAct48(Obj *o, s32 a, s16 b);
+s32 PlayerActor_MainAxeFollowThrough(Obj *o);
+s32 PlayerActor_AxeDispatch(Obj *o, u8 a, ...);
+s32 PlayerActor_AxeFollowThroughTrackTarget(Obj *o);
+s32 PlayerActor_NetAxeFollowThrough(Obj *o, s16 b);
+s32 PlayerActor_SetupAxeFollowThrough(Obj *o);
+s32 PlayerActor_RequestAxeFollowThrough(Obj *o, s32 a, s16 b);
+void PlayerActor_MainAxeSwing(Obj *o);
+s32 PlayerActor_AxeSwingCheckEndRemote(Obj *o);
+s32 PlayerActor_AxeSwingCheckEnd(Obj *o);
+s32 PlayerActor_AxeSwingTrackTarget(Obj *o);
+s32 PlayerActor_AxeSwingTurn(Obj *o);
+s32 PlayerActor_NetAxeSwing(Obj *o, s32 a);
+s32 PlayerActor_SetupAxeSwing(Obj *o, Arg *a);
+void PlayerActor_AxeSwingGetNetData(void *p, s32 *a, s32 *b, u8 *c);
+s32 PlayerActor_AxeSwingSetNetData(void *p, s32 a, s32 b, u8 c);
+void PlayerActor_AxeSwingSetWork(u8 *d, V3 *v, s32 a);
+s32 PlayerActor_RequestAxeSwingAt(Obj *o, s32 *a, s32 *b, u8 *c, s32 d, s32 e);
+s32 PlayerActor_RequestAxeSwing(Obj *o, s32 a, s16 b);
+void PlayerActor_AxeSwingSetArgs(u8 *d, s32 a, s32 b, u32 c);
 }
 
 static inline BOOL Unk_ov003_0220fa70_Ge(s32 v) {
@@ -4105,39 +4105,39 @@ static inline BOOL Unk_ov003_0220fa70_Ge(s32 v) {
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" s32 func_ov003_0220f314(Obj *o);
-extern "C" s32 func_ov003_0220f33c(Obj *o);
-extern "C" void func_ov003_0220f370(Obj *o, s32 a);
-extern "C" s32 func_ov003_0220f3cc(Obj *o, Arg4 *a);
-extern "C" s32 func_ov003_0220f484(Obj *o, u32 a, u32 b, s32 *c, s32 d, s32 e);
-extern "C" s32 func_ov003_0220f4e4(Obj *o);
-extern "C" s32 func_ov003_0220f500(Obj *o);
-extern "C" s32 func_ov003_0220f540(Obj *o);
-extern "C" s32 func_ov003_0220f570(Obj *o, s16 b);
-extern "C" s32 func_ov003_0220f57c(Obj *o);
-extern "C" s32 func_ov003_0220f590(Obj *o, s32 a, s16 b);
-extern "C" s32 func_ov003_0220f5c8(Obj *o);
-extern "C" s32 func_ov003_0220f668(Obj *o, u8 a, ...);
-extern "C" s32 func_ov003_0220f828(Obj *o);
-extern "C" s32 func_ov003_0220f860(Obj *o, s16 b);
-extern "C" s32 func_ov003_0220f86c(Obj *o);
-extern "C" s32 func_ov003_0220f880(Obj *o, s32 a, s16 b);
-extern "C" void func_ov003_0220f8b8(Obj *o);
-extern "C" s32 func_ov003_0220f97c(Obj *o);
-extern "C" s32 func_ov003_0220f9b8(Obj *o);
-extern "C" s32 func_ov003_0220f9ec(Obj *o);
-extern "C" s32 func_ov003_0220fa2c(Obj *o);
-extern "C" s32 func_ov003_0220fa3c(Obj *o, s32 a);
-extern "C" s32 func_ov003_0220fa70(Obj *o, Arg *a);
-extern "C" void func_ov003_0220fb78(void *p, s32 *a, s32 *b, u8 *c);
-extern "C" s32 func_ov003_0220fb90(void *p, s32 a, s32 b, u8 c);
-extern "C" s32 func_ov003_0220fbb8(Obj *o, s32 *a, s32 *b, u8 *c, s32 d, s32 e);
-extern "C" s32 func_ov003_0220fc00(Obj *o, s32 a, s16 b);
-extern "C" void func_ov003_0220f43c(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d, u8 *e);
-extern "C" void func_ov003_0220f45c(u8 *d, u8 a, u8 b, u8 c, u8 e, u8 f);
-extern "C" void func_ov003_0220f4d4(u8 *d, u32 x, u32 y, s32 *s);
-extern "C" void func_ov003_0220fba8(u8 *d, V3 *v, s32 a);
-extern "C" void func_ov003_0220f474(u8 *d, u32 x, u32 y, s32 *s);
+extern "C" s32 PlayerActor_AxeStrikeUpdate(Obj *o);
+extern "C" s32 PlayerActor_EndAxeStrike(Obj *o);
+extern "C" void PlayerActor_NetAxeStrike(Obj *o, s32 a);
+extern "C" s32 PlayerActor_SetupAxeStrike(Obj *o, Arg4 *a);
+extern "C" s32 PlayerActor_RequestAxeStrike(Obj *o, u32 a, u32 b, s32 *c, s32 d, s32 e);
+extern "C" s32 PlayerActor_MainAct48(Obj *o);
+extern "C" s32 PlayerActor_Act48CheckEnd(Obj *o);
+extern "C" s32 PlayerActor_Act48Update(Obj *o);
+extern "C" s32 PlayerActor_NetAct48(Obj *o, s16 b);
+extern "C" s32 PlayerActor_SetupAct48(Obj *o);
+extern "C" s32 PlayerActor_RequestAct48(Obj *o, s32 a, s16 b);
+extern "C" s32 PlayerActor_MainAxeFollowThrough(Obj *o);
+extern "C" s32 PlayerActor_AxeDispatch(Obj *o, u8 a, ...);
+extern "C" s32 PlayerActor_AxeFollowThroughTrackTarget(Obj *o);
+extern "C" s32 PlayerActor_NetAxeFollowThrough(Obj *o, s16 b);
+extern "C" s32 PlayerActor_SetupAxeFollowThrough(Obj *o);
+extern "C" s32 PlayerActor_RequestAxeFollowThrough(Obj *o, s32 a, s16 b);
+extern "C" void PlayerActor_MainAxeSwing(Obj *o);
+extern "C" s32 PlayerActor_AxeSwingCheckEndRemote(Obj *o);
+extern "C" s32 PlayerActor_AxeSwingCheckEnd(Obj *o);
+extern "C" s32 PlayerActor_AxeSwingTrackTarget(Obj *o);
+extern "C" s32 PlayerActor_AxeSwingTurn(Obj *o);
+extern "C" s32 PlayerActor_NetAxeSwing(Obj *o, s32 a);
+extern "C" s32 PlayerActor_SetupAxeSwing(Obj *o, Arg *a);
+extern "C" void PlayerActor_AxeSwingGetNetData(void *p, s32 *a, s32 *b, u8 *c);
+extern "C" s32 PlayerActor_AxeSwingSetNetData(void *p, s32 a, s32 b, u8 c);
+extern "C" s32 PlayerActor_RequestAxeSwingAt(Obj *o, s32 *a, s32 *b, u8 *c, s32 d, s32 e);
+extern "C" s32 PlayerActor_RequestAxeSwing(Obj *o, s32 a, s16 b);
+extern "C" void PlayerActor_AxeStrikeGetNetData(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d, u8 *e);
+extern "C" void PlayerActor_AxeStrikeSetNetData(u8 *d, u8 a, u8 b, u8 c, u8 e, u8 f);
+extern "C" void PlayerActor_AxeStrikeSetArgs(u8 *d, u32 x, u32 y, s32 *s);
+extern "C" void PlayerActor_AxeSwingSetWork(u8 *d, V3 *v, s32 a);
+extern "C" void PlayerActor_AxeStrikeSetWork(u8 *d, u32 x, u32 y, s32 *s);
 }
 
 namespace ns_0220fc88 {
@@ -4233,14 +4233,14 @@ typedef Unk_ov003_0220fc88_H H;
 typedef Unk_ov003_0220fc88_Sub Sub;
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 
 s32 Unk_020102ec_advanceAnim(Obj *o);
 s32 Unk_020102ec_moveWithCollision(Obj *o);
 s32 func_0200ef08(Obj *o);
 s32 func_0201071c(Obj *o);
 s32 func_0201065c(Obj *o);
-s32 func_020729bc(void *g, u32 a);
+s32 CommManager_isLocalSlot(void *g, u32 a);
 s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
@@ -4263,69 +4263,69 @@ s32 PlayerActor_GetHeldItem(H *h, Obj *o);
 s32 PlayerActor_GetPlayerData(Obj *o);
 s32 PlayerData_setHeldItem(s32 r, void *p);
 s32 func_02010284(Obj *o, s32 a, s32 b);
-s32 func_02076a2c(void *p, s32 *a, s32 *b);
-s32 func_020769ac(void *p);
-s32 func_02076a6c(void *p, s32 a, s32 b);
-s32 func_020769c4(void *p, s32 a);
-s32 func_ov003_02205c28(Obj *o);
-s32 func_ov003_0221129c(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 func_ov003_02211098(Obj *o, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-s32 func_ov003_022105bc(void *p, u8 *a, s32 *b, s32 *c, s16 *d);
-s32 func_ov003_02210628(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b);
-s32 func_ov003_02210608(void *p, s32 st, u32 bits, s32 x, s32 y, s32 h, s32 v);
-s32 func_ov003_022105e0(void *p, u32 bits, s32 x, s32 y, s32 h);
+s32 NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
+s32 NetBuf_ReadS16B(void *p);
+s32 NetBuf_PackPair20(void *p, s32 a, s32 b);
+s32 NetBuf_WriteS16B(void *p, s32 a);
+s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
+s32 PlayerActor_RequestDoorApproach(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
+s32 PlayerActor_RequestDoorEnter(Obj *o, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+s32 PlayerActor_StowItemGetNetData(void *p, u8 *a, s32 *b, s32 *c, s16 *d);
+s32 PlayerActor_RequestStowItem(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b);
+s32 PlayerActor_StowItemSetWork(void *p, s32 st, u32 bits, s32 x, s32 y, s32 h, s32 v);
+s32 PlayerActor_StowItemSetNetData(void *p, u32 bits, s32 x, s32 y, s32 h);
 
-void func_ov003_0220fc88(s32 *p, s32 a, s32 b, u32 c);
-s32 func_ov003_0220fc90(Obj *o);
-void func_ov003_0220fcd8(Obj *o);
-s32 func_ov003_0220fd44(Obj *o);
-void func_ov003_0220fdac(Obj *o);
-s32 func_ov003_0220fdcc(Obj *o, s16 b);
-s32 func_ov003_0220fdd8(Obj *o);
-void func_ov003_0220fe0c(u8 *p);
-s32 func_ov003_0220fe1c(Obj *o, s32 a, s16 b);
-s32 func_ov003_0220fe54(Obj *o);
-void func_ov003_0220fe70(Obj *o);
-void func_ov003_0220ff5c(Obj *o);
-s32 func_ov003_0220ffd4(Obj *o, s32 a);
-s32 func_ov003_02210044(Obj *o, Arg a);
-s32 func_ov003_0221019c(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d);
-s32 func_ov003_022101c0(u8 *p, u32 id, s32 x, s32 y, s32 h);
-s32 func_ov003_022101e8(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
-s32 func_ov003_02210204(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b);
-s32 func_ov003_02210260(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
-s32 func_ov003_0221027c(Obj *o);
-void func_ov003_02210298(Obj *o);
-s32 func_ov003_02210404(Obj *o);
-s32 func_ov003_02210438(Obj *o, s32 a);
-s32 func_ov003_022104a8(Obj *o, Arg a);
+void PlayerActor_AxeSwingSetArgs(s32 *p, s32 a, s32 b, u32 c);
+s32 PlayerActor_MainUmbrellaSpin(Obj *o);
+void PlayerActor_UmbrellaSpinCheckEnd(Obj *o);
+s32 PlayerActor_UmbrellaSpinEffect(Obj *o);
+void PlayerActor_EndUmbrellaSpin(Obj *o);
+s32 PlayerActor_NetUmbrellaSpin(Obj *o, s16 b);
+s32 PlayerActor_SetupUmbrellaSpin(Obj *o);
+void PlayerActor_UmbrellaSpinInitWork(u8 *p);
+s32 PlayerActor_RequestUmbrellaSpin(Obj *o, s32 a, s16 b);
+s32 PlayerActor_MainStowUmbrella(Obj *o);
+void PlayerActor_StowUmbrellaCheckEnd(Obj *o);
+void PlayerActor_StowUmbrellaUpdate(Obj *o);
+s32 PlayerActor_NetStowUmbrella(Obj *o, s32 a);
+s32 PlayerActor_SetupStowUmbrella(Obj *o, Arg a);
+s32 PlayerActor_StowUmbrellaGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d);
+s32 PlayerActor_StowUmbrellaSetNetData(u8 *p, u32 id, s32 x, s32 y, s32 h);
+s32 PlayerActor_StowUmbrellaSetWork(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
+s32 PlayerActor_RequestStowUmbrella(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b);
+s32 PlayerActor_StowUmbrellaSetArgs(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
+s32 PlayerActor_MainStowItem(Obj *o);
+void PlayerActor_StowItemUpdate(Obj *o);
+s32 PlayerActor_EndStowItem(Obj *o);
+s32 PlayerActor_NetStowItem(Obj *o, s32 a);
+s32 PlayerActor_SetupStowItem(Obj *o, Arg a);
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_0220fc88(s32 *p, s32 a, s32 b, u32 c);
-extern "C" s32 func_ov003_0220fc90(Obj *o);
-extern "C" void func_ov003_0220fcd8(Obj *o);
-extern "C" s32 func_ov003_0220fd44(Obj *o);
-extern "C" void func_ov003_0220fdac(Obj *o);
-extern "C" s32 func_ov003_0220fdcc(Obj *o, s16 b);
-extern "C" s32 func_ov003_0220fdd8(Obj *o);
-extern "C" void func_ov003_0220fe0c(u8 *p);
-extern "C" s32 func_ov003_0220fe1c(Obj *o, s32 a, s16 b);
-extern "C" s32 func_ov003_0220fe54(Obj *o);
-extern "C" void func_ov003_0220fe70(Obj *o);
-extern "C" void func_ov003_0220ff5c(Obj *o);
-extern "C" s32 func_ov003_0220ffd4(Obj *o, s32 a);
-extern "C" s32 func_ov003_02210044(Obj *o, Arg a);
-extern "C" s32 func_ov003_0221019c(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d);
-extern "C" s32 func_ov003_022101c0(u8 *p, u32 id, s32 x, s32 y, s32 h);
-extern "C" s32 func_ov003_022101e8(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
-extern "C" s32 func_ov003_02210204(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b);
-extern "C" s32 func_ov003_02210260(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
-extern "C" s32 func_ov003_0221027c(Obj *o);
-extern "C" void func_ov003_02210298(Obj *o);
-extern "C" s32 func_ov003_02210404(Obj *o);
-extern "C" s32 func_ov003_02210438(Obj *o, s32 a);
-extern "C" s32 func_ov003_022104a8(Obj *o, Arg a);
+extern "C" void PlayerActor_AxeSwingSetArgs(s32 *p, s32 a, s32 b, u32 c);
+extern "C" s32 PlayerActor_MainUmbrellaSpin(Obj *o);
+extern "C" void PlayerActor_UmbrellaSpinCheckEnd(Obj *o);
+extern "C" s32 PlayerActor_UmbrellaSpinEffect(Obj *o);
+extern "C" void PlayerActor_EndUmbrellaSpin(Obj *o);
+extern "C" s32 PlayerActor_NetUmbrellaSpin(Obj *o, s16 b);
+extern "C" s32 PlayerActor_SetupUmbrellaSpin(Obj *o);
+extern "C" void PlayerActor_UmbrellaSpinInitWork(u8 *p);
+extern "C" s32 PlayerActor_RequestUmbrellaSpin(Obj *o, s32 a, s16 b);
+extern "C" s32 PlayerActor_MainStowUmbrella(Obj *o);
+extern "C" void PlayerActor_StowUmbrellaCheckEnd(Obj *o);
+extern "C" void PlayerActor_StowUmbrellaUpdate(Obj *o);
+extern "C" s32 PlayerActor_NetStowUmbrella(Obj *o, s32 a);
+extern "C" s32 PlayerActor_SetupStowUmbrella(Obj *o, Arg a);
+extern "C" s32 PlayerActor_StowUmbrellaGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d);
+extern "C" s32 PlayerActor_StowUmbrellaSetNetData(u8 *p, u32 id, s32 x, s32 y, s32 h);
+extern "C" s32 PlayerActor_StowUmbrellaSetWork(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
+extern "C" s32 PlayerActor_RequestStowUmbrella(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b);
+extern "C" s32 PlayerActor_StowUmbrellaSetArgs(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
+extern "C" s32 PlayerActor_MainStowItem(Obj *o);
+extern "C" void PlayerActor_StowItemUpdate(Obj *o);
+extern "C" s32 PlayerActor_EndStowItem(Obj *o);
+extern "C" s32 PlayerActor_NetStowItem(Obj *o, s32 a);
+extern "C" s32 PlayerActor_SetupStowItem(Obj *o, Arg a);
 }
 
 namespace ns_022105bc {
@@ -4397,12 +4397,12 @@ typedef Unk_ov003_02210bdc_Rec Rec2;
 typedef Unk_ov003_02210eb4_Rec Rec3;
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 
-s32 func_02076a2c(void *p, u32 a, u32 b);
-s32 func_02076a6c(void *p, u32 a, u32 b);
-u32 func_020769ac(void *p);
-void func_020769c4(void *p, s32 a);
+s32 NetBuf_UnpackPair20(void *p, u32 a, u32 b);
+s32 NetBuf_PackPair20(void *p, u32 a, u32 b);
+u32 NetBuf_ReadS16B(void *p);
+void NetBuf_WriteS16B(void *p, s32 a);
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
 s32 Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_setActionFlag(Obj *o, u32 a);
@@ -4410,7 +4410,7 @@ s32 Unk_02006d14_testActionFlag(Obj *o, u32 a);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 s32 func_02010358(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_020102ec_startAnim(Obj *o, s32 a, s32 b, s32 c);
-s32 func_020729bc(void *g, s32 a);
+s32 CommManager_isLocalSlot(void *g, s32 a);
 s32 AnimFrameCtrl_isFinished(void *p);
 s32 func_0200ed9c(Obj *o);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
@@ -4437,28 +4437,28 @@ s32 func_0201071c(Obj *o);
 s32 func_0200f258(Obj *o);
 s32 func_0200f594(Obj *o, s32 a, s32 b, s32 c);
 
-void func_ov003_022106e8(Pay *p, s32 a, u32 b, s32 c, s32 d, s16 e);
-s32 func_ov003_02210204(Obj *o, s32 a, s32 b, s32 c, s32 d, s16 e, s32 f, s16 g);
+void PlayerActor_StowItemSetArgs(Pay *p, s32 a, u32 b, s32 c, s32 d, s16 e);
+s32 PlayerActor_RequestStowUmbrella(Obj *o, s32 a, s32 b, s32 c, s32 d, s16 e, s32 f, s16 g);
 s32 func_ov003_02218d78();
 s32 func_ov003_02218d34(void *p);
-void func_ov003_02210cfc(u8 *p, u8 *a, u8 *b);
-void func_ov003_02210d08(u8 *p, u32 a, u32 b);
-s32 func_ov003_02210d10(Obj *o, u32 a, u32 b, s32 c, s16 d);
-s32 func_ov003_02210dc0(Obj *o, s32 a, s32 b);
-s32 func_ov003_022107a8(Obj *o, s32 a, s32 b);
-void func_ov003_02210ad4(Obj *o);
-void func_ov003_022107fc(Obj *o);
-s32 func_ov003_02210eb4(Obj *o);
-void func_ov003_02210e40(Obj *o);
-s32 func_ov003_02210e18(Obj *o);
+void PlayerActor_DoorExitGetNetData(u8 *p, u8 *a, u8 *b);
+void PlayerActor_DoorExitSetNetData(u8 *p, u32 a, u32 b);
+s32 PlayerActor_RequestDoorExitWith(Obj *o, u32 a, u32 b, s32 c, s16 d);
+s32 PlayerActor_RequestDoorEntered(Obj *o, s32 a, s32 b);
+s32 PlayerActor_RequestAct3C(Obj *o, s32 a, s32 b);
+void PlayerActor_DoorExitUpdate(Obj *o);
+void PlayerActor_DoorExitCheckEnd(Obj *o);
+s32 PlayerActor_DoorEnterMove(Obj *o);
+void PlayerActor_DoorEnterUpdate(Obj *o);
+s32 PlayerActor_DoorEnterCheckEnd(Obj *o);
 }
 
 namespace Unk_ov003_022107e0_Ns {
-extern "C" s32 func_ov003_022107fc(Obj *o);
+extern "C" s32 PlayerActor_DoorExitCheckEnd(Obj *o);
 }
 
 namespace Unk_ov003_02210b94_Ns {
-extern "C" s32 func_ov003_02210d10(Obj *o, u32 a, u32 b, s32 c, s32 d);
+extern "C" s32 PlayerActor_RequestDoorExitWith(Obj *o, u32 a, u32 b, s32 c, s32 d);
 }
 
 static inline BOOL Unk_ov003_022107fc_Eq(u16 *p, u16 *k) {
@@ -4473,33 +4473,33 @@ static inline BOOL Unk_ov003_022107fc_Eq(u16 *p, u16 *k) {
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_022105bc(u8 *p, u8 *a, u32 b, u32 c, u16 *d);
-extern "C" void func_ov003_022105e0(u8 *p, u32 a, u32 b, u32 c, s16 d);
-extern "C" void func_ov003_02210608(Rec *p, s32 a, u32 b, s32 c, s32 d, s16 e, s32 f);
-extern "C" s32 func_ov003_02210628(Obj *o, s32 a, s32 b, s32 c, s32 d, s16 e, s32 f, s16 g);
-extern "C" void func_ov003_022106e8(Pay *p, s32 a, u32 b, s32 c, s32 d, s16 e);
-extern "C" void func_ov003_02210704();
-extern "C" s32 func_ov003_02210708(Obj *o, s32 a);
-extern "C" s32 func_ov003_02210720(Obj *o, s32 a);
-extern "C" void func_ov003_0221072c(Obj *o);
-extern "C" s32 func_ov003_022107a8(Obj *o, s32 a, s32 b);
-extern "C" void func_ov003_022107e0(Obj *o);
-extern "C" void func_ov003_022107fc(Obj *o);
-extern "C" void func_ov003_02210ad4(Obj *o);
-extern "C" void func_ov003_02210b94(Obj *o, s32 a);
-extern "C" s32 func_ov003_02210bdc(Obj *o, Msg *m);
-extern "C" void func_ov003_02210cfc(u8 *p, u8 *a, u8 *b);
-extern "C" void func_ov003_02210d08(u8 *p, u32 a, u32 b);
-extern "C" s32 func_ov003_02210d10(Obj *o, u32 a, u32 b, s32 c, s16 d);
-extern "C" s32 func_ov003_02210d54(Obj *o, s32 a, s32 b);
-extern "C" void func_ov003_02210d94();
-extern "C" s32 func_ov003_02210d98(Obj *o, s32 a);
-extern "C" void func_ov003_02210da4(Obj *o);
-extern "C" s32 func_ov003_02210dc0(Obj *o, s32 a, s32 b);
-extern "C" s32 func_ov003_02210df8(Obj *o);
-extern "C" s32 func_ov003_02210e18(Obj *o);
-extern "C" void func_ov003_02210e40(Obj *o);
-extern "C" s32 func_ov003_02210eb4(Obj *o);
+extern "C" void PlayerActor_StowItemGetNetData(u8 *p, u8 *a, u32 b, u32 c, u16 *d);
+extern "C" void PlayerActor_StowItemSetNetData(u8 *p, u32 a, u32 b, u32 c, s16 d);
+extern "C" void PlayerActor_StowItemSetWork(Rec *p, s32 a, u32 b, s32 c, s32 d, s16 e, s32 f);
+extern "C" s32 PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s16 e, s32 f, s16 g);
+extern "C" void PlayerActor_StowItemSetArgs(Pay *p, s32 a, u32 b, s32 c, s32 d, s16 e);
+extern "C" void PlayerActor_MainAct3C();
+extern "C" s32 PlayerActor_EndAct3C(Obj *o, s32 a);
+extern "C" s32 PlayerActor_NetAct3C(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupAct3C(Obj *o);
+extern "C" s32 PlayerActor_RequestAct3C(Obj *o, s32 a, s32 b);
+extern "C" void PlayerActor_MainDoorExit(Obj *o);
+extern "C" void PlayerActor_DoorExitCheckEnd(Obj *o);
+extern "C" void PlayerActor_DoorExitUpdate(Obj *o);
+extern "C" void PlayerActor_NetDoorExit(Obj *o, s32 a);
+extern "C" s32 PlayerActor_SetupDoorExit(Obj *o, Msg *m);
+extern "C" void PlayerActor_DoorExitGetNetData(u8 *p, u8 *a, u8 *b);
+extern "C" void PlayerActor_DoorExitSetNetData(u8 *p, u32 a, u32 b);
+extern "C" s32 PlayerActor_RequestDoorExitWith(Obj *o, u32 a, u32 b, s32 c, s16 d);
+extern "C" s32 PlayerActor_RequestDoorExit(Obj *o, s32 a, s32 b);
+extern "C" void PlayerActor_MainDoorEntered();
+extern "C" s32 PlayerActor_NetDoorEntered(Obj *o, s32 a);
+extern "C" void PlayerActor_SetupDoorEntered(Obj *o);
+extern "C" s32 PlayerActor_RequestDoorEntered(Obj *o, s32 a, s32 b);
+extern "C" s32 PlayerActor_MainDoorEnter(Obj *o);
+extern "C" s32 PlayerActor_DoorEnterCheckEnd(Obj *o);
+extern "C" void PlayerActor_DoorEnterUpdate(Obj *o);
+extern "C" s32 PlayerActor_DoorEnterMove(Obj *o);
 }
 
 namespace ns_02210ef0 {
@@ -4561,7 +4561,7 @@ struct Unk_ov003_02210ef0_Obj {
 };
 
 namespace Unk_ov003_02210f7c_Ns {
-extern "C" void func_ov003_0221107c(struct Unk_ov003_02210ef0_Rec *p, u32 a, s32 b, s32 c, s16 d, u32 e);
+extern "C" void PlayerActor_DoorEnterSetWork(struct Unk_ov003_02210ef0_Rec *p, u32 a, s32 b, s32 c, s16 d, u32 e);
 }
 
 typedef Unk_ov003_02210ef0_Obj Obj;
@@ -4572,14 +4572,14 @@ typedef Unk_ov003_02210ef0_Rec Rec;
 typedef Unk_ov003_02210ef0_Pair Pair;
 
 extern "C" {
-extern void *data_020cbb18;
-extern void *data_021c47c4;
+extern void *gCommManager;
+extern void *gSceneBlockMap;
 
 s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
-void func_02076a2c(void *p, s32 *a, s32 *b);
-void func_02076a6c(void *p, s32 a, s32 b);
-u32 func_020769ac(void *p);
-void func_020769c4(void *p, s32 a);
+void NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
+void NetBuf_PackPair20(void *p, s32 a, s32 b);
+u32 NetBuf_ReadS16B(void *p);
+void NetBuf_WriteS16B(void *p, s32 a);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 s32 Unk_02006d14_setActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_clearActionFlag(Obj *o, u32 a);
@@ -4587,7 +4587,7 @@ s32 Unk_02006d14_testActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_playSe(Obj *o, u32 a);
 s32 func_02010358(Obj *o, u32 a, u32 b, u32 c);
 s32 Unk_020102ec_startAnim(Obj *o, u32 a, u32 b);
-s32 func_020729bc(void *g, s32 a);
+s32 CommManager_isLocalSlot(void *g, s32 a);
 s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, s32 a);
 void Unk_020102ec_advanceAnim(Obj *o);
@@ -4599,72 +4599,72 @@ s32 func_0200ede8(Obj *o, V3 *v);
 s32 func_0200eee4(Obj *o, Pair *p);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
-void func_0204ee10(s32 *a, s32 *b, V3 *c);
+void FieldPos_ToUnit(s32 *a, s32 *b, V3 *c);
 s32 func_02090330(s32 a, V3 *b, s16 *c, s32 d);
 s32 func_0209028c(s32 a, V3 *b, s32 c, s32 d);
 void VEC_Add(V3 *a, V3 *b, V3 *c);
 s32 func_0204407c(u16 *a, Pair *b, s32 c, s32 d);
 void func_02045570(Pair *a, s32 b);
-void func_0204ed8c(V3 *a, u32 b, u32 c);
+void FieldPos_FromUnitCenter(V3 *a, u32 b, u32 c);
 void func_0205e1a0(void *p, s32 a, s32 b, s32 c);
-u16 *func_0204eba0(void *grid, V3 *v, u32 a);
+u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
 s32 func_ov003_02218d50(void *p, s32 a);
-s32 func_ov003_02205c28(Obj *o);
-void func_ov003_02211878(void *p, Pair *q);
-s32 func_ov003_02211890(Obj *o, Pair *q, s32 a, s32 b);
+s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
+void PlayerActor_PluckReachGetNetData(void *p, Pair *q);
+s32 PlayerActor_RequestPluckReach(Obj *o, Pair *q, s32 a, s32 b);
 
-void func_ov003_02211030(u8 *p, u8 *a, s32 *b, s32 *c, u16 *e);
-void func_ov003_02211054(u8 *p, u32 a, s32 b, s32 c, s16 e);
-void func_ov003_0221107c(Rec *p, u32 a, s32 b, s32 c, s16 d, u8 e);
-s32 func_ov003_02211098(Obj *o, u8 a, s32 b, s32 c, s16 d, s32 e, s32 f);
-void func_ov003_022110e8(Rec *p, u32 a, s32 b, s32 c, s16 d);
-void func_ov003_022111a0(Obj *o);
-void func_ov003_02211164(Obj *o);
-void func_ov003_02211120(Obj *o);
-void func_ov003_0221125c(u8 *p, s32 *a, s32 *b, s16 *c);
-void func_ov003_02211278(u8 *p, s32 a, s32 b, s16 c);
-void func_ov003_02211294(Rec *p, s32 a, s32 b, s16 c);
-s32 func_ov003_0221129c(Obj *o, s32 a, s32 b, s16 c, s32 d, s32 e);
-void func_ov003_022112e4(Rec *p, s32 a, s32 b, s16 c);
-void func_ov003_02211594(Obj *o);
-void func_ov003_0221132c(Obj *o);
-s32 func_ov003_022113a4(Obj *o);
-s32 func_ov003_02211674(Obj *o, s32 *p, s32 a, s32 b);
-void func_ov003_02211798(Obj *o);
-void func_ov003_02211710(Obj *o);
+void PlayerActor_DoorEnterGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, u16 *e);
+void PlayerActor_DoorEnterSetNetData(u8 *p, u32 a, s32 b, s32 c, s16 e);
+void PlayerActor_DoorEnterSetWork(Rec *p, u32 a, s32 b, s32 c, s16 d, u8 e);
+s32 PlayerActor_RequestDoorEnter(Obj *o, u8 a, s32 b, s32 c, s16 d, s32 e, s32 f);
+void PlayerActor_DoorEnterSetArgs(Rec *p, u32 a, s32 b, s32 c, s16 d);
+void PlayerActor_DoorApproachMove(Obj *o);
+void PlayerActor_DoorApproachUpdate(Obj *o);
+void PlayerActor_DoorApproachCheckEnd(Obj *o);
+void PlayerActor_DoorApproachGetNetData(u8 *p, s32 *a, s32 *b, s16 *c);
+void PlayerActor_DoorApproachSetNetData(u8 *p, s32 a, s32 b, s16 c);
+void PlayerActor_DoorApproachSetWork(Rec *p, s32 a, s32 b, s16 c);
+s32 PlayerActor_RequestDoorApproach(Obj *o, s32 a, s32 b, s16 c, s32 d, s32 e);
+void PlayerActor_DoorApproachSetArgs(Rec *p, s32 a, s32 b, s16 c);
+void PlayerActor_PluckUpdate(Obj *o);
+void PlayerActor_PluckCheckEnd(Obj *o);
+s32 PlayerActor_PluckApply(Obj *o);
+s32 PlayerActor_RequestPluck(Obj *o, s32 *p, s32 a, s32 b);
+void PlayerActor_PluckReachUpdate(Obj *o);
+void PlayerActor_PluckReachCheckEnd(Obj *o);
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_02210ef0(Obj *o, s32 x);
-extern "C" void func_ov003_02210f7c(Obj *o, Msg *m);
-extern "C" void func_ov003_02211030(u8 *p, u8 *a, s32 *b, s32 *c, u16 *e);
-extern "C" void func_ov003_02211054(u8 *p, u32 a, s32 b, s32 c, s16 e);
-extern "C" void func_ov003_0221107c(Rec *p, u32 a, s32 b, s32 c, s16 d, u8 e);
-extern "C" s32 func_ov003_02211098(Obj *o, u8 a, s32 b, s32 c, s16 d, s32 e, s32 f);
-extern "C" void func_ov003_022110e8(Rec *p, u32 a, s32 b, s32 c, s16 d);
-extern "C" void func_ov003_02211100(Obj *o);
-extern "C" void func_ov003_02211120(Obj *o);
-extern "C" void func_ov003_02211164(Obj *o);
-extern "C" void func_ov003_022111a0(Obj *o);
-extern "C" void func_ov003_022111bc(Obj *o, s32 x);
-extern "C" void func_ov003_02211210(Obj *o, Msg *m);
-extern "C" void func_ov003_0221125c(u8 *p, s32 *a, s32 *b, s16 *c);
-extern "C" void func_ov003_02211278(u8 *p, s32 a, s32 b, s16 c);
-extern "C" void func_ov003_02211294(Rec *p, s32 a, s32 b, s16 c);
-extern "C" s32 func_ov003_0221129c(Obj *o, s32 a, s32 b, s16 c, s32 d, s32 e);
-extern "C" void func_ov003_022112e4(Rec *p, s32 a, s32 b, s16 c);
-extern "C" void func_ov003_022112ec(Obj *o);
-extern "C" void func_ov003_0221132c(Obj *o);
-extern "C" s32 func_ov003_022113a4(Obj *o);
-extern "C" void func_ov003_02211594(Obj *o);
-extern "C" void func_ov003_022115bc(Obj *o);
-extern "C" void func_ov003_022115f0();
-extern "C" void func_ov003_022115f4(Obj *o, Msg *m);
-extern "C" s32 func_ov003_02211674(Obj *o, s32 *p, s32 a, s32 b);
-extern "C" void func_ov003_022116b8(Obj *o);
-extern "C" void func_ov003_02211710(Obj *o);
-extern "C" void func_ov003_02211798(Obj *o);
-extern "C" void func_ov003_022117c8(Obj *o, s32 x);
+extern "C" void PlayerActor_NetDoorEnter(Obj *o, s32 x);
+extern "C" void PlayerActor_SetupDoorEnter(Obj *o, Msg *m);
+extern "C" void PlayerActor_DoorEnterGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, u16 *e);
+extern "C" void PlayerActor_DoorEnterSetNetData(u8 *p, u32 a, s32 b, s32 c, s16 e);
+extern "C" void PlayerActor_DoorEnterSetWork(Rec *p, u32 a, s32 b, s32 c, s16 d, u8 e);
+extern "C" s32 PlayerActor_RequestDoorEnter(Obj *o, u8 a, s32 b, s32 c, s16 d, s32 e, s32 f);
+extern "C" void PlayerActor_DoorEnterSetArgs(Rec *p, u32 a, s32 b, s32 c, s16 d);
+extern "C" void PlayerActor_MainDoorApproach(Obj *o);
+extern "C" void PlayerActor_DoorApproachCheckEnd(Obj *o);
+extern "C" void PlayerActor_DoorApproachUpdate(Obj *o);
+extern "C" void PlayerActor_DoorApproachMove(Obj *o);
+extern "C" void PlayerActor_NetDoorApproach(Obj *o, s32 x);
+extern "C" void PlayerActor_SetupDoorApproach(Obj *o, Msg *m);
+extern "C" void PlayerActor_DoorApproachGetNetData(u8 *p, s32 *a, s32 *b, s16 *c);
+extern "C" void PlayerActor_DoorApproachSetNetData(u8 *p, s32 a, s32 b, s16 c);
+extern "C" void PlayerActor_DoorApproachSetWork(Rec *p, s32 a, s32 b, s16 c);
+extern "C" s32 PlayerActor_RequestDoorApproach(Obj *o, s32 a, s32 b, s16 c, s32 d, s32 e);
+extern "C" void PlayerActor_DoorApproachSetArgs(Rec *p, s32 a, s32 b, s16 c);
+extern "C" void PlayerActor_MainPluck(Obj *o);
+extern "C" void PlayerActor_PluckCheckEnd(Obj *o);
+extern "C" s32 PlayerActor_PluckApply(Obj *o);
+extern "C" void PlayerActor_PluckUpdate(Obj *o);
+extern "C" void PlayerActor_EndPluck(Obj *o);
+extern "C" void PlayerActor_NetPluck();
+extern "C" void PlayerActor_SetupPluck(Obj *o, Msg *m);
+extern "C" s32 PlayerActor_RequestPluck(Obj *o, s32 *p, s32 a, s32 b);
+extern "C" void PlayerActor_MainPluckReach(Obj *o);
+extern "C" void PlayerActor_PluckReachCheckEnd(Obj *o);
+extern "C" void PlayerActor_PluckReachUpdate(Obj *o);
+extern "C" void PlayerActor_NetPluckReach(Obj *o, s32 x);
 }
 
 namespace ns_02211818 {
@@ -4737,14 +4737,14 @@ struct Unk_ov003_02211818_T {
 };
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 void func_02010358(Obj *o, s32 a, u32 b, u32 c);
 void Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
 void func_0205e1a0(void *p, u32 a, u32 b, u32 c);
 s32 Unk_02006d14_getHeldToolKind(Obj *o);
-s32 func_020729bc(void *g, u32 a);
+s32 CommManager_isLocalSlot(void *g, u32 a);
 void func_0200bc78(Obj *o);
 s32 func_0200ef08(Obj *o);
 void func_0201071c(Obj *o);
@@ -4775,23 +4775,23 @@ s32 func_01ffcb0c(s32 a, s32 b);
 void func_020947c0(u16 *p, u32 a);
 Obj *PlayerActor_Get(u32 a);
 void *func_020947f0(u32 a);
-u16 func_0207694c(u8 *p);
-void func_02076964(u8 *p, s32 a);
+u16 NetBuf_ReadU16(u8 *p);
+void NetBuf_WriteU16(u8 *p, s32 a);
 
-void func_ov003_02211878(u8 *p, Pair *o);
-void func_ov003_02211884(u8 *p, Pair *s);
-void func_ov003_022118d8(u8 *p, Pair *s);
-void func_ov003_02211920(Obj *o);
-s32 func_ov003_02211978(Obj *o, u32 p, s32 a, s16 b);
-void func_ov003_022119b8(u8 *p, u32 v);
-void func_ov003_02211a7c(Obj *o);
-void func_ov003_02211b8c(Obj *o);
-void func_ov003_02212034(Blk *b, V3 *v);
-u8 func_ov003_02211f74(u8 *p);
-void func_ov003_02211f78(u8 *p, u32 v);
-void func_ov003_02211f7c(u8 *p, u16 *out);
-void func_ov003_02211f8c(u8 *p, s32 a);
-s32 func_ov003_02211f94(Obj *o, u32 a, s32 b, s16 c);
+void PlayerActor_PluckReachGetNetData(u8 *p, Pair *o);
+void PlayerActor_PluckReachSetNetData(u8 *p, Pair *s);
+void PlayerActor_PluckReachSetArgs(u8 *p, Pair *s);
+void PlayerActor_Act11Update(Obj *o);
+s32 PlayerActor_RequestAct11(Obj *o, u32 p, s32 a, s16 b);
+void PlayerActor_Act11SetArgs(u8 *p, u32 v);
+void PlayerActor_ReleaseCreatureUpdate(Obj *o);
+void PlayerActor_ReleaseCreatureUpdateModel(Obj *o);
+void PlayerActor_ApplyHoldOffset(Blk *b, V3 *v);
+u8 PlayerActor_ReleaseCreatureGetNetState(u8 *p);
+void PlayerActor_ReleaseCreatureSetNetState(u8 *p, u32 v);
+void PlayerActor_ReleaseCreatureGetNetItem(u8 *p, u16 *out);
+void PlayerActor_ReleaseCreatureSetNetItem(u8 *p, s32 a);
+s32 PlayerActor_RequestReleaseCreature(Obj *o, u32 a, s32 b, s16 c);
 }
 
 static inline s32 Idx(volatile u16 *p, u32 lo, u32 hi) {
@@ -4804,34 +4804,34 @@ static inline s32 Idx(volatile u16 *p, u32 lo, u32 hi) {
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void func_ov003_02211878(u8 *p, Pair *o);
-extern "C" void func_ov003_02211818(Obj *o, u8 *m);
-extern "C" void func_ov003_02211884(u8 *p, Pair *s);
-extern "C" s32 func_ov003_02211890(Obj *o, Pair *p, s32 a, s16 b);
-extern "C" void func_ov003_022118d8(u8 *p, Pair *s);
-extern "C" void func_ov003_022118e4(Obj *o);
-extern "C" void func_ov003_02211920(Obj *o);
-extern "C" s32 func_ov003_0221194c(Obj *o, s16 a);
-extern "C" void func_ov003_02211960(Obj *o, u8 *m);
-extern "C" s32 func_ov003_02211978(Obj *o, u32 p, s32 a, s16 b);
-extern "C" void func_ov003_022119b8(u8 *p, u32 v);
-extern "C" void func_ov003_022119bc(Obj *o);
-extern "C" void func_ov003_02211a7c(Obj *o);
-extern "C" void func_ov003_02211b8c(Obj *o);
-extern "C" void func_ov003_02211e04(Obj *o);
-extern "C" s32 func_ov003_02211e48(Obj *o, s16 a);
-extern "C" void func_ov003_02211e74(Obj *o, u8 *m);
-extern "C" u8 func_ov003_02211f74(u8 *p);
-extern "C" void func_ov003_02211f78(u8 *p, u32 v);
-extern "C" void func_ov003_02211f7c(u8 *p, u16 *out);
-extern "C" void func_ov003_02211f8c(u8 *p, s32 a);
-extern "C" s32 func_ov003_02211f94(Obj *o, u32 a, s32 b, s16 c);
-extern "C" BOOL func_ov003_02211fd0();
-extern "C" void func_ov003_02212014();
-extern "C" void func_ov003_02212034(Blk *b, V3 *v);
-extern "C" void *func_ov003_022120ac(u32 a);
-extern "C" BOOL func_ov003_022120e4();
-extern "C" s32 func_ov003_0221211c(u32 a);
+extern "C" void PlayerActor_PluckReachGetNetData(u8 *p, Pair *o);
+extern "C" void PlayerActor_SetupPluckReach(Obj *o, u8 *m);
+extern "C" void PlayerActor_PluckReachSetNetData(u8 *p, Pair *s);
+extern "C" s32 PlayerActor_RequestPluckReach(Obj *o, Pair *p, s32 a, s16 b);
+extern "C" void PlayerActor_PluckReachSetArgs(u8 *p, Pair *s);
+extern "C" void PlayerActor_MainAct11(Obj *o);
+extern "C" void PlayerActor_Act11Update(Obj *o);
+extern "C" s32 PlayerActor_NetAct11(Obj *o, s16 a);
+extern "C" void PlayerActor_SetupAct11(Obj *o, u8 *m);
+extern "C" s32 PlayerActor_RequestAct11(Obj *o, u32 p, s32 a, s16 b);
+extern "C" void PlayerActor_Act11SetArgs(u8 *p, u32 v);
+extern "C" void PlayerActor_MainReleaseCreature(Obj *o);
+extern "C" void PlayerActor_ReleaseCreatureUpdate(Obj *o);
+extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o);
+extern "C" void PlayerActor_EndReleaseCreature(Obj *o);
+extern "C" s32 PlayerActor_NetReleaseCreature(Obj *o, s16 a);
+extern "C" void PlayerActor_SetupReleaseCreature(Obj *o, u8 *m);
+extern "C" u8 PlayerActor_ReleaseCreatureGetNetState(u8 *p);
+extern "C" void PlayerActor_ReleaseCreatureSetNetState(u8 *p, u32 v);
+extern "C" void PlayerActor_ReleaseCreatureGetNetItem(u8 *p, u16 *out);
+extern "C" void PlayerActor_ReleaseCreatureSetNetItem(u8 *p, s32 a);
+extern "C" s32 PlayerActor_RequestReleaseCreature(Obj *o, u32 a, s32 b, s16 c);
+extern "C" BOOL PlayerActor_LocalHoldsNet();
+extern "C" void PlayerActor_LocalPlayAnim99();
+extern "C" void PlayerActor_ApplyHoldOffset(Blk *b, V3 *v);
+extern "C" void *PlayerActor_GetTrackTarget(u32 a);
+extern "C" BOOL PlayerActor_ConfirmReleaseCreature();
+extern "C" s32 PlayerActor_LocalRequestReleaseCreature(u32 a);
 }
 
 namespace ns_02212140 {
@@ -4888,43 +4888,43 @@ struct Unk_ov003_02212190_Gs {
 enum Unk_ov003_0221227c_Limit { UNK_ov003_0221227c_5 = 5 };
 
 extern "C" {
-extern Unk_ov003_02212190_Gs *data_020cbb18;
+extern Unk_ov003_02212190_Gs *gCommManager;
 
 Obj *PlayerActor_Get(s32 id);
 void func_0203d79c();
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 void func_02094574(s32 a, s32 b, s32 c);
-s32 func_020729bc(Unk_ov003_02212190_Gs *g, s32 a);
-s32 func_ov003_02208b18(Obj *o, s32 a, s32 b);
-s32 func_ov003_0220605c(Obj *o, s32 a, s32 b);
-s32 func_ov003_02211978(Obj *o, s32 a, s32 b, s32 c);
+s32 CommManager_isLocalSlot(Unk_ov003_02212190_Gs *g, s32 a);
+s32 PlayerActor_RequestAct65(Obj *o, s32 a, s32 b);
+s32 PlayerActor_RequestAct89(Obj *o, s32 a, s32 b);
+s32 PlayerActor_RequestAct11(Obj *o, s32 a, s32 b, s32 c);
 s32 func_0203d878();
 s32 Unk_02006d14_testActionFlag(Obj *o, s32 a);
 s32 PlayerActor_getRequiredPriority(Obj *o);
-s32 func_ov003_0220dff0(Obj *o, s32 a, s32 b, s32 c);
+s32 PlayerActor_RequestFishReelIn(Obj *o, s32 a, s32 b, s32 c);
 s32 func_0203d820();
-s32 func_ov003_02206a1c(Obj *o, s32 a, s32 b);
+s32 PlayerActor_RequestBeeSting(Obj *o, s32 a, s32 b);
 s32 func_020e7b98(s32 a, s32 b);
 s32 Unk_02008040_requestAct77(Obj *o, s32 v, s32 a, s32 b);
-s32 func_ov003_02207c08(Obj *o, u8 a, s32 b, s32 c);
+s32 PlayerActor_RequestFaint(Obj *o, u8 a, s32 b, s32 c);
 s32 Unk_02006d14_clearActionFlag(Obj *o, s32 a);
 void func_02034d84(s32 a);
-s32 func_ov003_02207d9c(Obj *o, s32 a, s32 b);
-s32 func_ov003_02207d08(Obj *o, s32 a, s32 b);
-s32 func_ov003_02207efc(Obj *o, V3 v, s32 a, s32 b);
-s32 func_ov003_02210d54(Obj *o, s32 a, s32 b);
+s32 PlayerActor_RequestAct6B(Obj *o, s32 a, s32 b);
+s32 PlayerActor_RequestAct6C(Obj *o, s32 a, s32 b);
+s32 PlayerActor_RequestAct6A(Obj *o, V3 v, s32 a, s32 b);
+s32 PlayerActor_RequestDoorExit(Obj *o, s32 a, s32 b);
 s32 Unk_02006d14_getHeldHoldableIndex();
-s32 func_ov003_02210628(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+s32 PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 Unk_02006d14_setActionFlag(Obj *o, s32 a);
-s32 func_ov003_02211098(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-s32 func_ov003_0221129c(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 func_ov003_02205e58(Obj *o, u8 *p, u32 c, s32 id, s32 e);
-s32 func_ov003_0220c4ac(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_0204ee10(s32 *a, s32 *b, V3 *c);
-s32 func_ov003_022095e8(Obj *o, s32 a, Pair *p, u32 b, s32 c, s32 d);
+s32 PlayerActor_RequestDoorEnter(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+s32 PlayerActor_RequestDoorApproach(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
+s32 PlayerActor_RequestFishRelease(Obj *o, u8 *p, u32 c, s32 id, s32 e);
+s32 PlayerActor_RequestInsectShowCatch(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
+void FieldPos_ToUnit(s32 *a, s32 *b, V3 *c);
+s32 PlayerActor_RequestBuryItem(Obj *o, s32 a, Pair *p, u32 b, s32 c, s32 d);
 s32 func_0200f45c(V3 *v, Obj *o);
-void func_0204ed8c(V3 *a, u32 b, u32 c);
+void FieldPos_FromUnitCenter(V3 *a, u32 b, u32 c);
 void PlayerActor_TestSlotFlag(s32 a, s32 b);
 }
 
@@ -4950,47 +4950,47 @@ static inline BOOL Unk_ov003_022125ac_R(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-extern "C" s32 func_ov003_022127e0(V3 *a, V3 *b);
+extern "C" s32 FieldPos_IsSameUnit(V3 *a, V3 *b);
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" s32 func_ov003_02212140();
-extern "C" s32 func_ov003_02212190(s32 a, s32 b);
-extern "C" s32 func_ov003_0221220c();
-extern "C" s32 func_ov003_02212240();
-extern "C" s32 func_ov003_0221227c();
-extern "C" s32 func_ov003_022122fc(V3 *p);
-extern "C" s32 func_ov003_02212338(s32 a);
-extern "C" s32 func_ov003_022123a4(s32 a);
-extern "C" s32 func_ov003_022123e0(V3 *p);
-extern "C" s32 func_ov003_0221240c();
-extern "C" s32 func_ov003_02212430(u32 a, s32 *b, s32 *c, s32 d);
-extern "C" s32 func_ov003_0221249c(s32 *a, s32 *b, s16 *c);
-extern "C" s32 func_ov003_02212504(u8 a, s32 b, s32 c, s32 d);
-extern "C" s32 func_ov003_0221255c(V3 *p, u16 *b);
-extern "C" u16 func_ov003_022125ac();
-extern "C" s32 func_ov003_0221264c();
-extern "C" s32 func_ov003_02212680(V3 *a);
-extern "C" s32 func_ov003_022126d0(V3 *a, s32 b);
-extern "C" s32 func_ov003_02212758(V3 *a, s32 b);
-extern "C" s32 func_ov003_022127e0(V3 *a, V3 *b);
-extern "C" void func_ov003_02212824(s32 a);
+extern "C" s32 PlayerActor_LocalEndWatch();
+extern "C" s32 PlayerActor_SetWatchMode(s32 a, s32 b);
+extern "C" s32 PlayerActor_LocalRequestAct89();
+extern "C" s32 PlayerActor_LocalRequestAct11();
+extern "C" s32 PlayerActor_LocalBeeSting();
+extern "C" s32 PlayerActor_LocalRequestAct77From(V3 *p);
+extern "C" s32 PlayerActor_LocalFaint(s32 a);
+extern "C" s32 PlayerActor_LocalRequestAct6BOr6C(s32 a);
+extern "C" s32 PlayerActor_LocalRequestAct6A(V3 *p);
+extern "C" s32 PlayerActor_LocalRequestDoorExit();
+extern "C" s32 PlayerActor_LocalRequestDoorEnter(u32 a, s32 *b, s32 *c, s32 d);
+extern "C" s32 PlayerActor_LocalRequestDoorApproach(s32 *a, s32 *b, s16 *c);
+extern "C" s32 PlayerActor_LocalReleaseCatch(u8 a, s32 b, s32 c, s32 d);
+extern "C" s32 PlayerActor_LocalRequestBuryItem(V3 *p, u16 *b);
+extern "C" u16 PlayerActor_GetLocalShownItem();
+extern "C" s32 PlayerActor_IsLocalReleaseWaiting();
+extern "C" s32 PlayerActor_IsLocalAct67HitAt(V3 *a);
+extern "C" s32 PlayerActor_GetStrikeCountdownAt(V3 *a, s32 b);
+extern "C" s32 PlayerActor_GetDigCountdownAt(V3 *a, s32 b);
+extern "C" s32 FieldPos_IsSameUnit(V3 *a, V3 *b);
+extern "C" void PlayerActor_TestSlotFlag9(s32 a);
 }
 
 namespace ns_02212140 {
-extern "C" void func_ov003_02212824(s32 a) {
+extern "C" void PlayerActor_TestSlotFlag9(s32 a) {
     PlayerActor_TestSlotFlag(9, a);
 }
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_022127e0(V3 *a, V3 *b) {
+extern "C" s32 FieldPos_IsSameUnit(V3 *a, V3 *b) {
     s32 p[2], q[2];
     p[0] = 0;
     p[1] = 0;
     q[0] = 0;
     q[1] = 0;
-    func_0204ee10(&p[0], &p[1], b);
-    func_0204ee10(&q[0], &q[1], a);
+    FieldPos_ToUnit(&p[0], &p[1], b);
+    FieldPos_ToUnit(&q[0], &q[1], a);
     if (p[0] == q[0] && p[1] == q[1]) {
         return TRUE;
     }
@@ -4999,7 +4999,7 @@ extern "C" s32 func_ov003_022127e0(V3 *a, V3 *b) {
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_02212758(V3 *a, s32 b) {
+extern "C" s32 PlayerActor_GetDigCountdownAt(V3 *a, s32 b) {
     Obj *o = PlayerActor_Get(b);
     if (o) {
         u32 t = o->unk_2d4.mid;
@@ -5025,7 +5025,7 @@ extern "C" s32 func_ov003_02212758(V3 *a, s32 b) {
             w.x = v.x;
             w.y = v.y;
             w.z = v.z;
-            if (func_ov003_022127e0(a, &w)) {
+            if (FieldPos_IsSameUnit(a, &w)) {
                 return r;
             }
         }
@@ -5035,7 +5035,7 @@ extern "C" s32 func_ov003_02212758(V3 *a, s32 b) {
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_022126d0(V3 *a, s32 b) {
+extern "C" s32 PlayerActor_GetStrikeCountdownAt(V3 *a, s32 b) {
     Obj *o = PlayerActor_Get(b);
     if (o) {
         u32 t = o->unk_2d4.mid;
@@ -5047,11 +5047,11 @@ extern "C" s32 func_ov003_022126d0(V3 *a, s32 b) {
         s32 st = o->unk_7ec;
         if (st == 0x49) {
             u8 *q = o->unk_7d0;
-            func_0204ed8c(&v, q[0], q[1]);
+            FieldPos_FromUnitCenter(&v, q[0], q[1]);
             r = 8 - t;
         } else if (st == 0x5d) {
             u8 *q = o->unk_7d0;
-            func_0204ed8c(&v, q[0], q[1]);
+            FieldPos_FromUnitCenter(&v, q[0], q[1]);
             r = 5 - t;
         }
         if (r > 0) {
@@ -5059,7 +5059,7 @@ extern "C" s32 func_ov003_022126d0(V3 *a, s32 b) {
             w.x = v.x;
             w.y = v.y;
             w.z = v.z;
-            if (func_ov003_022127e0(a, &w)) {
+            if (FieldPos_IsSameUnit(a, &w)) {
                 return r;
             }
         }
@@ -5069,7 +5069,7 @@ extern "C" s32 func_ov003_022126d0(V3 *a, s32 b) {
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_02212680(V3 *a) {
+extern "C" s32 PlayerActor_IsLocalAct67HitAt(V3 *a) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         u32 t = o->unk_2d4.mid;
@@ -5077,7 +5077,7 @@ extern "C" s32 func_ov003_02212680(V3 *a) {
         if ((st == 0x67 && t == 5) || (st == 0x44 && t == 8)) {
             V3D v;
             func_0200f45c(&v, o);
-            return func_ov003_022127e0(a, &v);
+            return FieldPos_IsSameUnit(a, &v);
         }
     }
     return 0;
@@ -5085,7 +5085,7 @@ extern "C" s32 func_ov003_02212680(V3 *a) {
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_0221264c() {
+extern "C" s32 PlayerActor_IsLocalReleaseWaiting() {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         if (o->unk_7ec == 6) {
@@ -5099,7 +5099,7 @@ extern "C" s32 func_ov003_0221264c() {
 }
 
 namespace ns_02212140 {
-extern "C" u16 func_ov003_022125ac() {
+extern "C" u16 PlayerActor_GetLocalShownItem() {
     Obj *o = PlayerActor_Get(4);
     u16 r = 0xfff1;
     if (o) {
@@ -5133,92 +5133,92 @@ extern "C" u16 func_ov003_022125ac() {
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_0221255c(V3 *p, u16 *b) {
+extern "C" s32 PlayerActor_LocalRequestBuryItem(V3 *p, u16 *b) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         s32 x = 0;
         s32 y = 0;
-        func_0204ee10(&x, &y, p);
+        FieldPos_ToUnit(&x, &y, p);
         Pair pr;
         u32 t = *b;
         pr.a = x;
         pr.b = y;
-        return func_ov003_022095e8(o, 1, &pr, t, 6, -1);
+        return PlayerActor_RequestBuryItem(o, 1, &pr, t, 6, -1);
     }
     return 0;
 }
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_02212504(u8 a, s32 b, s32 c, s32 d) {
+extern "C" s32 PlayerActor_LocalReleaseCatch(u8 a, s32 b, s32 c, s32 d) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         if (a) {
-            return func_ov003_02205e58(o, &a, o->unk_7ec == 5 ? 1 : 0, 6, -1);
+            return PlayerActor_RequestFishRelease(o, &a, o->unk_7ec == 5 ? 1 : 0, 6, -1);
         }
-        return func_ov003_0220c4ac(o, 1, 0, 0, 6, -1);
+        return PlayerActor_RequestInsectShowCatch(o, 1, 0, 0, 6, -1);
     }
     return 0;
 }
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_0221249c(s32 *a, s32 *b, s16 *c) {
+extern "C" s32 PlayerActor_LocalRequestDoorApproach(s32 *a, s32 *b, s16 *c) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         if (Unk_02006d14_getHeldHoldableIndex()) {
-            return func_ov003_02210628(o, 0x38, 0, *a, *b, *c, 6, -1);
+            return PlayerActor_RequestStowItem(o, 0x38, 0, *a, *b, *c, 6, -1);
         }
         Unk_02006d14_setActionFlag(o, 1);
-        return func_ov003_0221129c(o, *a, *b, *c, 6, -1);
+        return PlayerActor_RequestDoorApproach(o, *a, *b, *c, 6, -1);
     }
     return 0;
 }
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_02212430(u32 a, s32 *b, s32 *c, s32 d) {
+extern "C" s32 PlayerActor_LocalRequestDoorEnter(u32 a, s32 *b, s32 *c, s32 d) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         if (Unk_02006d14_getHeldHoldableIndex()) {
-            return func_ov003_02210628(o, 0x39, ((u32)a << 26) >> 24, *b, *c, d, 6, -1);
+            return PlayerActor_RequestStowItem(o, 0x39, ((u32)a << 26) >> 24, *b, *c, d, 6, -1);
         }
         Unk_02006d14_setActionFlag(o, 1);
-        return func_ov003_02211098(o, a, *b, *c, d, 6, -1);
+        return PlayerActor_RequestDoorEnter(o, a, *b, *c, d, 6, -1);
     }
     return 0;
 }
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_0221240c() {
+extern "C" s32 PlayerActor_LocalRequestDoorExit() {
     Obj *o = PlayerActor_Get(4);
     if (o) {
-        return func_ov003_02210d54(o, 6, -1);
+        return PlayerActor_RequestDoorExit(o, 6, -1);
     }
     return 0;
 }
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_022123e0(V3 *p) {
+extern "C" s32 PlayerActor_LocalRequestAct6A(V3 *p) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
-        return func_ov003_02207efc(o, *p, 6, -1);
+        return PlayerActor_RequestAct6A(o, *p, 6, -1);
     }
     return 0;
 }
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_022123a4(s32 a) {
+extern "C" s32 PlayerActor_LocalRequestAct6BOr6C(s32 a) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         switch (a) {
         case 1:
-            return func_ov003_02207d9c(o, 6, -1);
+            return PlayerActor_RequestAct6B(o, 6, -1);
         case 2:
-            return func_ov003_02207d08(o, 6, -1);
+            return PlayerActor_RequestAct6C(o, 6, -1);
         default:
             return 0;
         }
@@ -5228,7 +5228,7 @@ extern "C" s32 func_ov003_022123a4(s32 a) {
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_02212338(s32 a) {
+extern "C" s32 PlayerActor_LocalFaint(s32 a) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         Unk_ov003_0221227c_Limit k = UNK_ov003_0221227c_5;
@@ -5238,7 +5238,7 @@ extern "C" s32 func_ov003_02212338(s32 a) {
         if (o->unk_7ec == 0x78) {
             return 0;
         }
-        if (func_ov003_02207c08(o, a + 2, 7, -1)) {
+        if (PlayerActor_RequestFaint(o, a + 2, 7, -1)) {
             if (Unk_02006d14_testActionFlag(o, 0x1a)) {
                 Unk_02006d14_clearActionFlag(o, 0x1a);
                 func_02034d84(0x3f);
@@ -5251,7 +5251,7 @@ extern "C" s32 func_ov003_02212338(s32 a) {
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_022122fc(V3 *p) {
+extern "C" s32 PlayerActor_LocalRequestAct77From(V3 *p) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         return Unk_02008040_requestAct77(o, func_020e7b98(p->x - o->unk_5c, p->z - o->unk_64), 6, -1);
@@ -5261,7 +5261,7 @@ extern "C" s32 func_ov003_022122fc(V3 *p) {
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_0221227c() {
+extern "C" s32 PlayerActor_LocalBeeSting() {
     if (func_0203d878()) {
         return 0;
     }
@@ -5277,51 +5277,51 @@ extern "C" s32 func_ov003_0221227c() {
                 return 0;
             }
             if (st == 0x4f) {
-                func_ov003_0220dff0(o, 0, 6, -1);
+                PlayerActor_RequestFishReelIn(o, 0, 6, -1);
                 return 0;
             }
         }
         if (!func_0203d820()) {
             return 0;
         }
-        return func_ov003_02206a1c(o, 5, -1);
+        return PlayerActor_RequestBeeSting(o, 5, -1);
     }
     return 0;
 }
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_02212240() {
+extern "C" s32 PlayerActor_LocalRequestAct11() {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
-        return func_ov003_02211978(o, 3, 5, -1);
+        return PlayerActor_RequestAct11(o, 3, 5, -1);
     }
     return 0;
 }
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_0221220c() {
+extern "C" s32 PlayerActor_LocalRequestAct89() {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         if (o->unk_7ec == 0x89) {
             return 0;
         }
-        return func_ov003_0220605c(o, 6, -1);
+        return PlayerActor_RequestAct89(o, 6, -1);
     }
     return 0;
 }
 }
 
 namespace ns_02212140 {
-extern "C" s32 func_ov003_02212190(s32 a, s32 b) {
+extern "C" s32 PlayerActor_SetWatchMode(s32 a, s32 b) {
     Obj *o = PlayerActor_Get(b);
     if (b == 4) {
-        b = data_020cbb18->unk_68;
+        b = gCommManager->unk_68;
     }
     if (o) {
-        if (func_020729bc(data_020cbb18, b)) {
+        if (CommManager_isLocalSlot(gCommManager, b)) {
             o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
             switch (a) {
             case 0:
@@ -5329,7 +5329,7 @@ extern "C" s32 func_ov003_02212190(s32 a, s32 b) {
                 PlayerActor_requestWait(o, 3, 1, -1);
                 break;
             case 1:
-                func_ov003_02208b18(o, 6, -1);
+                PlayerActor_RequestAct65(o, 6, -1);
                 break;
             }
         }
@@ -5341,7 +5341,7 @@ extern "C" s32 func_ov003_02212190(s32 a, s32 b) {
 
 namespace ns_02212140 {
 // ---------------------------------------------------------------- free functions on the big player object
-extern "C" s32 func_ov003_02212140() {
+extern "C" s32 PlayerActor_LocalEndWatch() {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         func_0203d79c();
@@ -5357,17 +5357,17 @@ extern "C" s32 func_ov003_02212140() {
 }
 
 namespace ns_02211818 {
-extern "C" s32 func_ov003_0221211c(u32 a) {
+extern "C" s32 PlayerActor_LocalRequestReleaseCreature(u32 a) {
     Obj *p = PlayerActor_Get(4);
     if (p) {
-        return func_ov003_02211f94(p, a, 5, -1);
+        return PlayerActor_RequestReleaseCreature(p, a, 5, -1);
     }
     return 0;
 }
 }
 
 namespace ns_02211818 {
-extern "C" BOOL func_ov003_022120e4() {
+extern "C" BOOL PlayerActor_ConfirmReleaseCreature() {
     Obj *p = PlayerActor_Get(4);
     if (p) {
         if (p->unk_7ec == 6) {
@@ -5383,7 +5383,7 @@ extern "C" BOOL func_ov003_022120e4() {
 }
 
 namespace ns_02211818 {
-extern "C" void *func_ov003_022120ac(u32 a) {
+extern "C" void *PlayerActor_GetTrackTarget(u32 a) {
     Obj *p = PlayerActor_Get(a);
     if (p != 0 && Unk_02006d14_getHeldToolKind(p) == 3) {
         s32 *q = (s32 *)((u8 *)p + 0x5c4);
@@ -5394,7 +5394,7 @@ extern "C" void *func_ov003_022120ac(u32 a) {
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_02212034(Blk *b, V3 *v) {
+extern "C" void PlayerActor_ApplyHoldOffset(Blk *b, V3 *v) {
     s32 r7 = b->v[9];
     s32 s0 = b->v[10];
     s32 s4 = b->v[11];
@@ -5420,7 +5420,7 @@ extern "C" void func_ov003_02212034(Blk *b, V3 *v) {
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_02212014() {
+extern "C" void PlayerActor_LocalPlayAnim99() {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         func_02010358(o, 0x99, 3, 0);
@@ -5429,7 +5429,7 @@ extern "C" void func_ov003_02212014() {
 }
 
 namespace ns_02211818 {
-extern "C" BOOL func_ov003_02211fd0() {
+extern "C" BOOL PlayerActor_LocalHoldsNet() {
     u16 t;
     func_020947c0(&t, 4);
     BOOL f = FALSE;
@@ -5443,7 +5443,7 @@ extern "C" BOOL func_ov003_02211fd0() {
 }
 
 namespace ns_02211818 {
-extern "C" s32 func_ov003_02211f94(Obj *o, u32 a, s32 b, s16 c) {
+extern "C" s32 PlayerActor_RequestReleaseCreature(Obj *o, u32 a, s32 b, s16 c) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 6, b, c);
     *(u16 *)((u8 *)&m + 0xc) = a;
@@ -5453,31 +5453,31 @@ extern "C" s32 func_ov003_02211f94(Obj *o, u32 a, s32 b, s16 c) {
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_02211f8c(u8 *p, s32 a) {
-    func_02076964(p, a);
+extern "C" void PlayerActor_ReleaseCreatureSetNetItem(u8 *p, s32 a) {
+    NetBuf_WriteU16(p, a);
 }
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_02211f7c(u8 *p, u16 *out) {
-    *out = func_0207694c(p);
+extern "C" void PlayerActor_ReleaseCreatureGetNetItem(u8 *p, u16 *out) {
+    *out = NetBuf_ReadU16(p);
 }
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_02211f78(u8 *p, u32 v) {
+extern "C" void PlayerActor_ReleaseCreatureSetNetState(u8 *p, u32 v) {
     p[2] = v;
 }
 }
 
 namespace ns_02211818 {
-extern "C" u8 func_ov003_02211f74(u8 *p) {
+extern "C" u8 PlayerActor_ReleaseCreatureGetNetState(u8 *p) {
     return p[2];
 }
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_02211e74(Obj *o, u8 *m) {
+extern "C" void PlayerActor_SetupReleaseCreature(Obj *o, u8 *m) {
     Rec *r4 = &o->unk_7d0;
     volatile u16 t;
     u16 r7 = *(u16 *)(m + 0xc);
@@ -5507,10 +5507,10 @@ extern "C" void func_ov003_02211e74(Obj *o, u8 *m) {
     func_02010358(o, id, 3, 3);
     Unk_02006d14_playSe(o, 0x4f);
     r6 = o->unk_8ec;
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-        func_ov003_02211f8c(r6, r7);
-        func_ov003_02211f78(r6, 0);
-    } else if (func_ov003_02211f74(r6) >= 1) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        PlayerActor_ReleaseCreatureSetNetItem(r6, r7);
+        PlayerActor_ReleaseCreatureSetNetState(r6, 0);
+    } else if (PlayerActor_ReleaseCreatureGetNetState(r6) >= 1) {
         r4->unk_0d = 1;
         *(u32 *)&o->unk_2d4 = ((u32)(o->unk_2d0.mid - 1) << 16) >> 4;
     }
@@ -5518,15 +5518,15 @@ extern "C" void func_ov003_02211e74(Obj *o, u8 *m) {
 }
 
 namespace ns_02211818 {
-extern "C" s32 func_ov003_02211e48(Obj *o, s16 a) {
+extern "C" s32 PlayerActor_NetReleaseCreature(Obj *o, s16 a) {
     u16 t;
-    func_ov003_02211f7c(o->unk_8ec, &t);
-    return func_ov003_02211f94(o, t, 5, a);
+    PlayerActor_ReleaseCreatureGetNetItem(o->unk_8ec, &t);
+    return PlayerActor_RequestReleaseCreature(o, t, 5, a);
 }
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_02211e04(Obj *o) {
+extern "C" void PlayerActor_EndReleaseCreature(Obj *o) {
     Rec *r4 = &o->unk_7d0;
     if (r4->unk_04 > -1) {
         func_020902f8(r4->unk_04);
@@ -5540,7 +5540,7 @@ extern "C" void func_ov003_02211e04(Obj *o) {
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_02211b8c(Obj *o) {
+extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
     Rec *r6 = &o->unk_7d0;
     Unk_ov003_02211818_T t;
     Blk b;
@@ -5564,7 +5564,7 @@ extern "C" void func_ov003_02211b8c(Obj *o) {
         v50.y = v50.y + q;
         v50.z = v50.z - q;
     }
-    func_ov003_02212034(&b, &v50);
+    PlayerActor_ApplyHoldOffset(&b, &v50);
     if (*r7 > -1) {
         v5c.x = b.v[9];
         v5c.y = b.v[10];
@@ -5629,7 +5629,7 @@ extern "C" void func_ov003_02211b8c(Obj *o) {
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_02211a7c(Obj *o) {
+extern "C" void PlayerActor_ReleaseCreatureUpdate(Obj *o) {
     Rec *r0 = &o->unk_7d0;
     u8 *r6 = o->unk_8ec;
     u8 *r5 = &r0->unk_0d;
@@ -5642,12 +5642,12 @@ extern "C" void func_ov003_02211a7c(Obj *o) {
         }
         if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
             *r5 = 1;
-            func_ov003_02211f78(r6, 1);
+            PlayerActor_ReleaseCreatureSetNetState(r6, 1);
         }
         break;
     case 1:
-        if (func_020729bc(data_020cbb18, o->unk_7fc) == 0) {
-            if (func_ov003_02211f74(r6) >= 2) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
+            if (PlayerActor_ReleaseCreatureGetNetState(r6) >= 2) {
                 *r5 = 2;
             }
         }
@@ -5656,8 +5656,8 @@ extern "C" void func_ov003_02211a7c(Obj *o) {
         if (r0->unk_04 > -1) {
             func_020902f8(r0->unk_04);
         }
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-            func_ov003_02211f78(r6, 2);
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+            PlayerActor_ReleaseCreatureSetNetState(r6, 2);
         }
         func_02010358(o, 0xa0, 3, 0);
         Unk_02006d14_playSe(o, 0x7f1);
@@ -5673,7 +5673,7 @@ extern "C" void func_ov003_02211a7c(Obj *o) {
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_022119bc(Obj *o) {
+extern "C" void PlayerActor_MainReleaseCreature(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     volatile V3 v;
     V3 *pv = &o->unk_c4;
@@ -5684,7 +5684,7 @@ extern "C" void func_ov003_022119bc(Obj *o) {
     Blk b1 = o->unk_294;
     Blk b2 = o->unk_694;
     func_0200e7f4(o);
-    func_ov003_02211b8c(o);
+    PlayerActor_ReleaseCreatureUpdateModel(o);
     o->unk_c4.x = v.x;
     o->unk_c4.y = v.y;
     o->unk_c4.z = v.z;
@@ -5695,40 +5695,40 @@ extern "C" void func_ov003_022119bc(Obj *o) {
         Unk_020102ec_moveWithCollision(o);
     }
     func_0201071c(o);
-    func_ov003_02211a7c(o);
+    PlayerActor_ReleaseCreatureUpdate(o);
 }
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_022119b8(u8 *p, u32 v) {
+extern "C" void PlayerActor_Act11SetArgs(u8 *p, u32 v) {
     *(u16 *)p = v;
 }
 }
 
 namespace ns_02211818 {
-extern "C" s32 func_ov003_02211978(Obj *o, u32 p, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestAct11(Obj *o, u32 p, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x11, a, b);
-    func_ov003_022119b8(m.v_02211818.unk_0c, p);
+    PlayerActor_Act11SetArgs(m.v_02211818.unk_0c, p);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_02211960(Obj *o, u8 *m) {
+extern "C" void PlayerActor_SetupAct11(Obj *o, u8 *m) {
     func_02010358(o, 0x9a, *(u16 *)(m + 0xc), 0);
 }
 }
 
 namespace ns_02211818 {
-extern "C" s32 func_ov003_0221194c(Obj *o, s16 a) {
-    return func_ov003_02211978(o, 3, 5, a);
+extern "C" s32 PlayerActor_NetAct11(Obj *o, s16 a) {
+    return PlayerActor_RequestAct11(o, 3, 5, a);
 }
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_02211920(Obj *o) {
+extern "C" void PlayerActor_Act11Update(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         Unk_020102ec_startAnim(o, 0, 3, 0);
@@ -5737,9 +5737,9 @@ extern "C" void func_ov003_02211920(Obj *o) {
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_022118e4(Obj *o) {
-    func_ov003_02211920(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+extern "C" void PlayerActor_MainAct11(Obj *o) {
+    PlayerActor_Act11Update(o);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         func_0200bc78(o);
     } else {
         func_0200ef08(o);
@@ -5749,41 +5749,41 @@ extern "C" void func_ov003_022118e4(Obj *o) {
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_022118d8(u8 *p, Pair *s) {
+extern "C" void PlayerActor_PluckReachSetArgs(u8 *p, Pair *s) {
     p[0] = s->a;
     p[1] = s->b;
 }
 }
 
 namespace ns_02211818 {
-extern "C" s32 func_ov003_02211890(Obj *o, Pair *p, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestPluckReach(Obj *o, Pair *p, s32 a, s16 b) {
     Pair t;
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x16, a, b);
     t.a = p->a;
     t.b = p->b;
-    func_ov003_022118d8(m.v_02211818.unk_0c, &t);
+    PlayerActor_PluckReachSetArgs(m.v_02211818.unk_0c, &t);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_02211884(u8 *p, Pair *s) {
+extern "C" void PlayerActor_PluckReachSetNetData(u8 *p, Pair *s) {
     p[0] = s->a;
     p[1] = s->b;
 }
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_02211878(u8 *p, Pair *o) {
+extern "C" void PlayerActor_PluckReachGetNetData(u8 *p, Pair *o) {
     o->a = p[0];
     o->b = p[1];
 }
 }
 
 namespace ns_02211818 {
-extern "C" void func_ov003_02211818(Obj *o, u8 *m) {
+extern "C" void PlayerActor_SetupPluckReach(Obj *o, u8 *m) {
     Pair s;
     u8 *q = m + 0xc;
     u32 a = q[0];
@@ -5794,7 +5794,7 @@ extern "C" void func_ov003_02211818(Obj *o, u8 *m) {
     r[2] = 0;
     s.a = a;
     s.b = b;
-    func_ov003_02211884(o->unk_8ec, &s);
+    PlayerActor_PluckReachSetNetData(o->unk_8ec, &s);
     Unk_020102ec_startAnim(o, 0x15, 3, 0);
     if (Unk_02006d14_getHeldToolKind(o) == 4) {
         func_0205e1a0(o->unk_59c, 0xb, 3, 0);
@@ -5803,20 +5803,20 @@ extern "C" void func_ov003_02211818(Obj *o, u8 *m) {
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_022117c8(Obj *o, s32 x) {
+extern "C" void PlayerActor_NetPluckReach(Obj *o, s32 x) {
     if (o->unk_7ec == 0x16) {
         o->unk_c80 = x;
     } else {
         Pair p(0, 0);
-        func_ov003_02211878(o->unk_8ec, &p);
+        PlayerActor_PluckReachGetNetData(o->unk_8ec, &p);
         Pair q = p;
-        func_ov003_02211890(o, &q, 6, x);
+        PlayerActor_RequestPluckReach(o, &q, 6, x);
     }
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_02211798(Obj *o) {
+extern "C" void PlayerActor_PluckReachUpdate(Obj *o) {
     u8 *r = (u8 *)&o->unk_7d0;
     if (r[2] == 0) {
         s32 t = o->unk_814;
@@ -5831,8 +5831,8 @@ extern "C" void func_ov003_02211798(Obj *o) {
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_02211710(Obj *o) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc) == 0) {
+extern "C" void PlayerActor_PluckReachCheckEnd(Obj *o) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
     }
     u8 *r = (u8 *)&o->unk_7d0;
@@ -5843,7 +5843,7 @@ extern "C" void func_ov003_02211710(Obj *o) {
         s32 y = r[1];
         s32 x = r[0];
         Pair q(x, y);
-        func_ov003_02211674(o, (s32 *)&q, 6, -1);
+        PlayerActor_RequestPluck(o, (s32 *)&q, 6, -1);
         break;
     }
     case 2:
@@ -5855,9 +5855,9 @@ extern "C" void func_ov003_02211710(Obj *o) {
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_022116b8(Obj *o) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-        func_ov003_02211798(o);
+extern "C" void PlayerActor_MainPluckReach(Obj *o) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        PlayerActor_PluckReachUpdate(o);
     } else {
         Unk_020102ec_advanceAnim(o);
         u8 *r = (u8 *)&o->unk_7d0;
@@ -5867,12 +5867,12 @@ extern "C" void func_ov003_022116b8(Obj *o) {
         func_0200eee4(o, &q);
     }
     func_0201071c(o);
-    func_ov003_02211710(o);
+    PlayerActor_PluckReachCheckEnd(o);
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" s32 func_ov003_02211674(Obj *o, s32 *p, s32 a, s32 b) {
+extern "C" s32 PlayerActor_RequestPluck(Obj *o, s32 *p, s32 a, s32 b) {
     Msg m;
     Unk_ov003_02210ef0_Rec2 &q = *(Unk_ov003_02210ef0_Rec2 *)&m.v_02210ef0.unk_0c;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x17, a, b);
@@ -5884,10 +5884,10 @@ extern "C" s32 func_ov003_02211674(Obj *o, s32 *p, s32 a, s32 b) {
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_022115f4(Obj *o, Msg *m) {
+extern "C" void PlayerActor_SetupPluck(Obj *o, Msg *m) {
     u8 *p = (u8 *)m + 0xc;
     V3 v;
-    func_0204ed8c(&v, p[0], p[1]);
+    FieldPos_FromUnitCenter(&v, p[0], p[1]);
     V3 *pv = (V3 *)&o->unk_7d0;
     *pv = v;
     ((u8 *)pv)[12] = 0;
@@ -5895,38 +5895,38 @@ extern "C" void func_ov003_022115f4(Obj *o, Msg *m) {
     if (Unk_02006d14_getHeldToolKind(o) == 4) {
         func_0205e1a0(o->unk_59c, 0xe, 3, 0);
     }
-    u16 *g = func_0204eba0(data_021c47c4, &v, 0);
+    u16 *g = BlockMap_GetItemPtrAtPos(gSceneBlockMap, &v, 0);
     o->unk_81e = *g;
     o->unk_81c = o->unk_81e;
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_022115f0() {
+extern "C" void PlayerActor_NetPluck() {
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_022115bc(Obj *o) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc) == 0) {
+extern "C" void PlayerActor_EndPluck(Obj *o) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
-            func_ov003_022113a4(o);
+            PlayerActor_PluckApply(o);
         }
     }
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_02211594(Obj *o) {
+extern "C" void PlayerActor_PluckUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0xa)) {
-        func_ov003_022113a4(o);
+        PlayerActor_PluckApply(o);
     }
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" s32 func_ov003_022113a4(Obj *o) {
+extern "C" s32 PlayerActor_PluckApply(Obj *o) {
     s16 ang;
     u16 t2;
     Pair ab;
@@ -5934,7 +5934,7 @@ extern "C" s32 func_ov003_022113a4(Obj *o) {
     V3 v = *pv;
     ab.a = 0;
     ab.b = 0;
-    func_0204ee10(&ab.a, &ab.b, &v);
+    FieldPos_ToUnit(&ab.a, &ab.b, &v);
     ang = o->unk_8e;
     switch (o->unk_81c) {
     case 0x1f:
@@ -6005,14 +6005,14 @@ extern "C" s32 func_ov003_022113a4(Obj *o) {
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_0221132c(Obj *o) {
+extern "C" void PlayerActor_PluckCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
     if (o->unk_2d4.mid >= 0xe) {
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-            func_ov003_02205c28(o);
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+            PlayerActor_ResumeWalkOrIdle(o);
         } else {
             Unk_02006d14_clearActionFlag(o, 0x12);
         }
@@ -6021,19 +6021,19 @@ extern "C" void func_ov003_0221132c(Obj *o) {
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_022112ec(Obj *o) {
-    func_ov003_02211594(o);
+extern "C" void PlayerActor_MainPluck(Obj *o) {
+    PlayerActor_PluckUpdate(o);
     V3 *pv = (V3 *)&o->unk_7d0;
     V3 v = *pv;
     func_0200ede8(o, &v);
     func_0201071c(o);
     func_0201065c(o);
-    func_ov003_0221132c(o);
+    PlayerActor_PluckCheckEnd(o);
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_022112e4(Rec *p, s32 a, s32 b, s16 c) {
+extern "C" void PlayerActor_DoorApproachSetArgs(Rec *p, s32 a, s32 b, s16 c) {
     p->a = a;
     p->b = b;
     p->c = c;
@@ -6041,17 +6041,17 @@ extern "C" void func_ov003_022112e4(Rec *p, s32 a, s32 b, s16 c) {
 }
 
 namespace ns_02210ef0 {
-extern "C" s32 func_ov003_0221129c(Obj *o, s32 a, s32 b, s16 c, s32 d, s32 e) {
+extern "C" s32 PlayerActor_RequestDoorApproach(Obj *o, s32 a, s32 b, s16 c, s32 d, s32 e) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x38, d, *(s16 *)&e);
-    func_ov003_022112e4(&m.v_02210ef0.unk_0c, a, b, c);
+    PlayerActor_DoorApproachSetArgs(&m.v_02210ef0.unk_0c, a, b, c);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_02211294(Rec *p, s32 a, s32 b, s16 c) {
+extern "C" void PlayerActor_DoorApproachSetWork(Rec *p, s32 a, s32 b, s16 c) {
     p->a = a;
     p->b = b;
     p->c = c;
@@ -6059,53 +6059,53 @@ extern "C" void func_ov003_02211294(Rec *p, s32 a, s32 b, s16 c) {
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_02211278(u8 *p, s32 a, s32 b, s16 c) {
-    func_02076a6c(p, a, b);
-    func_020769c4(p + 5, c);
+extern "C" void PlayerActor_DoorApproachSetNetData(u8 *p, s32 a, s32 b, s16 c) {
+    NetBuf_PackPair20(p, a, b);
+    NetBuf_WriteS16B(p + 5, c);
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_0221125c(u8 *p, s32 *a, s32 *b, s16 *c) {
-    func_02076a2c(p, a, b);
-    *c = func_020769ac(p + 5);
+extern "C" void PlayerActor_DoorApproachGetNetData(u8 *p, s32 *a, s32 *b, s16 *c) {
+    NetBuf_UnpackPair20(p, a, b);
+    *c = NetBuf_ReadS16B(p + 5);
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_02211210(Obj *o, Msg *m) {
+extern "C" void PlayerActor_SetupDoorApproach(Obj *o, Msg *m) {
     u8 *p = (u8 *)m + 0xc;
     func_02010358(o, 0x37, 3, 0);
     s32 a = *(s32 *)p;
     s32 b = *(s32 *)(p + 4);
     s16 c = *(s16 *)(p + 8);
-    func_ov003_02211294(&o->unk_7d0, a, b, c);
-    func_ov003_02211278(o->unk_8ec, a, b, c);
+    PlayerActor_DoorApproachSetWork(&o->unk_7d0, a, b, c);
+    PlayerActor_DoorApproachSetNetData(o->unk_8ec, a, b, c);
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_022111bc(Obj *o, s32 x) {
+extern "C" void PlayerActor_NetDoorApproach(Obj *o, s32 x) {
     s16 ang;
     V3 pos;
-    func_ov003_0221125c(o->unk_8ec, &pos.x, &pos.z, &ang);
+    PlayerActor_DoorApproachGetNetData(o->unk_8ec, &pos.x, &pos.z, &ang);
     pos.y = o->unk_5c.y;
     V3 *pv = &o->unk_5c;
     *pv = pos;
     o->unk_8e = ang;
-    func_ov003_0221129c(o, pos.x, pos.z, ang, 6, x);
+    PlayerActor_RequestDoorApproach(o, pos.x, pos.z, ang, 6, x);
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_022111a0(Obj *o) {
+extern "C" void PlayerActor_DoorApproachMove(Obj *o) {
     Rec *r = &o->unk_7d0;
     func_0200f594(o, r->a, r->b, r->c);
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_02211164(Obj *o) {
+extern "C" void PlayerActor_DoorApproachUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 8) || AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0xd)) {
         Unk_02006d14_playSe(o, 0x7d5);
@@ -6114,25 +6114,25 @@ extern "C" void func_ov003_02211164(Obj *o) {
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_02211120(Obj *o) {
+extern "C" void PlayerActor_DoorApproachCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         Rec *r = &o->unk_7d0;
-        func_ov003_02211098(o, 1, r->a, r->b, r->c, 6, -1);
+        PlayerActor_RequestDoorEnter(o, 1, r->a, r->b, r->c, 6, -1);
     }
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_02211100(Obj *o) {
-    func_ov003_022111a0(o);
-    func_ov003_02211164(o);
+extern "C" void PlayerActor_MainDoorApproach(Obj *o) {
+    PlayerActor_DoorApproachMove(o);
+    PlayerActor_DoorApproachUpdate(o);
     func_0201071c(o);
-    func_ov003_02211120(o);
+    PlayerActor_DoorApproachCheckEnd(o);
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_022110e8(Rec *p, u32 a, s32 b, s32 c, s16 d) {
+extern "C" void PlayerActor_DoorEnterSetArgs(Rec *p, u32 a, s32 b, s32 c, s16 d) {
     p->d = a;
     p->a = b;
     p->b = c;
@@ -6141,17 +6141,17 @@ extern "C" void func_ov003_022110e8(Rec *p, u32 a, s32 b, s32 c, s16 d) {
 }
 
 namespace ns_02210ef0 {
-extern "C" s32 func_ov003_02211098(Obj *o, u8 a, s32 b, s32 c, s16 d, s32 e, s32 f) {
+extern "C" s32 PlayerActor_RequestDoorEnter(Obj *o, u8 a, s32 b, s32 c, s16 d, s32 e, s32 f) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x39, e, *(s16 *)&f);
-    func_ov003_022110e8(&m.v_02210ef0.unk_0c, a, b, c, d);
+    PlayerActor_DoorEnterSetArgs(&m.v_02210ef0.unk_0c, a, b, c, d);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_0221107c(Rec *p, u32 a, s32 b, s32 c, s16 d, u8 e) {
+extern "C" void PlayerActor_DoorEnterSetWork(Rec *p, u32 a, s32 b, s32 c, s16 d, u8 e) {
     p->d = a;
     p->a = b;
     p->b = c;
@@ -6161,23 +6161,23 @@ extern "C" void func_ov003_0221107c(Rec *p, u32 a, s32 b, s32 c, s16 d, u8 e) {
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_02211054(u8 *p, u32 a, s32 b, s32 c, s16 e) {
+extern "C" void PlayerActor_DoorEnterSetNetData(u8 *p, u32 a, s32 b, s32 c, s16 e) {
     p[7] = a;
-    func_02076a6c(p, b, c);
-    func_020769c4(p + 5, e);
+    NetBuf_PackPair20(p, b, c);
+    NetBuf_WriteS16B(p + 5, e);
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_02211030(u8 *p, u8 *a, s32 *b, s32 *c, u16 *e) {
+extern "C" void PlayerActor_DoorEnterGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, u16 *e) {
     *a = p[7];
-    func_02076a2c(p, b, c);
-    *e = func_020769ac(p + 5);
+    NetBuf_UnpackPair20(p, b, c);
+    *e = NetBuf_ReadS16B(p + 5);
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_02210f7c(Obj *o, Msg *m) {
+extern "C" void PlayerActor_SetupDoorEnter(Obj *o, Msg *m) {
     Unk_02006d14_setActionFlag(o, 4);
     u8 *p = (u8 *)m + 0xc;
     Rec *r = &o->unk_7d0;
@@ -6198,15 +6198,15 @@ extern "C" void func_ov003_02210f7c(Obj *o, Msg *m) {
     u32 id = p[0xa];
     Pair t = *(Pair *)p;
     s16 ang = *(s16 *)(p + 8);
-    Unk_ov003_02210f7c_Ns::func_ov003_0221107c(r, id, t.a, t.b, ang, k);
-    func_ov003_02211054(o->unk_8ec, id, t.a, t.b, ang);
-    s32 b = func_020729bc(data_020cbb18, o->unk_7fc) ? 1 : 0;
+    Unk_ov003_02210f7c_Ns::PlayerActor_DoorEnterSetWork(r, id, t.a, t.b, ang, k);
+    PlayerActor_DoorEnterSetNetData(o->unk_8ec, id, t.a, t.b, ang);
+    s32 b = CommManager_isLocalSlot(gCommManager, o->unk_7fc) ? 1 : 0;
     func_ov003_02218d50(&o->unk_5c, b);
 }
 }
 
 namespace ns_02210ef0 {
-extern "C" void func_ov003_02210ef0(Obj *o, s32 x) {
+extern "C" void PlayerActor_NetDoorEnter(Obj *o, s32 x) {
     if ((u32)(o->unk_7ec - 0x38) <= 2) {
         o->unk_c80 = x;
     } else {
@@ -6215,20 +6215,20 @@ extern "C" void func_ov003_02210ef0(Obj *o, s32 x) {
         s16 ang;
         s32 o1, o2;
         V3 pos;
-        func_ov003_02211030(o->unk_8ec, &a, &pos.x, &pos.z, (u16 *)&ang);
+        PlayerActor_DoorEnterGetNetData(o->unk_8ec, &a, &pos.x, &pos.z, (u16 *)&ang);
         pos.y = o->unk_5c.y;
         if (PlayerActor_GetSlotPosXZ(&f, &o1, &o2, -1, o->unk_7fc)) {
             o->unk_5c.x = o1;
             o->unk_5c.z = o2;
         }
         o->unk_8e = ang;
-        func_ov003_02211098(o, a, pos.x, pos.z, ang, 6, x);
+        PlayerActor_RequestDoorEnter(o, a, pos.x, pos.z, ang, 6, x);
     }
 }
 }
 
 namespace ns_022105bc {
-extern "C" s32 func_ov003_02210eb4(Obj *o) {
+extern "C" s32 PlayerActor_DoorEnterMove(Obj *o) {
     Rec3 *r = (Rec3 *)&o->unk_7d0;
     u8 *p = &r->cnt;
     if (r->cnt) {
@@ -6243,7 +6243,7 @@ extern "C" s32 func_ov003_02210eb4(Obj *o) {
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_02210e40(Obj *o) {
+extern "C" void PlayerActor_DoorEnterUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (o->unk_700 == 0x32) {
         s32 m = o->unk_2d4.mid;
@@ -6280,24 +6280,24 @@ extern "C" void func_ov003_02210e40(Obj *o) {
 }
 
 namespace ns_022105bc {
-extern "C" s32 func_ov003_02210e18(Obj *o) {
+extern "C" s32 PlayerActor_DoorEnterCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        func_ov003_02210dc0(o, 6, -1);
+        PlayerActor_RequestDoorEntered(o, 6, -1);
     }
 }
 }
 
 namespace ns_022105bc {
-extern "C" s32 func_ov003_02210df8(Obj *o) {
-    func_ov003_02210eb4(o);
-    func_ov003_02210e40(o);
+extern "C" s32 PlayerActor_MainDoorEnter(Obj *o) {
+    PlayerActor_DoorEnterMove(o);
+    PlayerActor_DoorEnterUpdate(o);
     func_0201071c(o);
-    func_ov003_02210e18(o);
+    PlayerActor_DoorEnterCheckEnd(o);
 }
 }
 
 namespace ns_022105bc {
-extern "C" s32 func_ov003_02210dc0(Obj *o, s32 a, s32 b) {
+extern "C" s32 PlayerActor_RequestDoorEntered(Obj *o, s32 a, s32 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x3a, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -6306,24 +6306,24 @@ extern "C" s32 func_ov003_02210dc0(Obj *o, s32 a, s32 b) {
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_02210da4(Obj *o) {
+extern "C" void PlayerActor_SetupDoorEntered(Obj *o) {
     Unk_02006d14_clearActionFlag(o, 0);
     o->unk_7f4 = 0;
 }
 }
 
 namespace ns_022105bc {
-extern "C" s32 func_ov003_02210d98(Obj *o, s32 a) {
-    return func_ov003_02210dc0(o, 6, a);
+extern "C" s32 PlayerActor_NetDoorEntered(Obj *o, s32 a) {
+    return PlayerActor_RequestDoorEntered(o, 6, a);
 }
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_02210d94() {}
+extern "C" void PlayerActor_MainDoorEntered() {}
 }
 
 namespace ns_022105bc {
-extern "C" s32 func_ov003_02210d54(Obj *o, s32 a, s32 b) {
+extern "C" s32 PlayerActor_RequestDoorExit(Obj *o, s32 a, s32 b) {
     Msg m;
     Rec2 &q = *(Rec2 *)m.v_022105bc.unk_0c;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x3b, a, b);
@@ -6335,7 +6335,7 @@ extern "C" s32 func_ov003_02210d54(Obj *o, s32 a, s32 b) {
 }
 
 namespace ns_022105bc {
-extern "C" s32 func_ov003_02210d10(Obj *o, u32 a, u32 b, s32 c, s16 d) {
+extern "C" s32 PlayerActor_RequestDoorExitWith(Obj *o, u32 a, u32 b, s32 c, s16 d) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x3b, c, d);
     Rec2 &q = *(Rec2 *)m.v_022105bc.unk_0c;
@@ -6347,33 +6347,33 @@ extern "C" s32 func_ov003_02210d10(Obj *o, u32 a, u32 b, s32 c, s16 d) {
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_02210d08(u8 *p, u32 a, u32 b) {
+extern "C" void PlayerActor_DoorExitSetNetData(u8 *p, u32 a, u32 b) {
     p[0] = a;
     p[1] = b;
 }
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_02210cfc(u8 *p, u8 *a, u8 *b) {
+extern "C" void PlayerActor_DoorExitGetNetData(u8 *p, u8 *a, u8 *b) {
     *a = p[0];
     *b = p[1];
 }
 }
 
 namespace ns_022105bc {
-extern "C" s32 func_ov003_02210bdc(Obj *o, Msg *m) {
+extern "C" s32 PlayerActor_SetupDoorExit(Obj *o, Msg *m) {
     Unk_02006d14_clearActionFlag(o, 0);
     u8 *p = (u8 *)m + 0xc;
     Rec2 *rec = (Rec2 *)&o->unk_7d0;
     s32 t = 0;
-    void *g = data_020cbb18;
+    void *g = gCommManager;
     s32 n;
-    if (func_020729bc(g, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(g, o->unk_7fc)) {
         n = func_ov003_02218d78();
     } else {
         n = p[0];
     }
-    if (func_020729bc(g, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(g, o->unk_7fc)) {
         void *q = PlayerData_GetCurrent();
         if (func_020b50e8() == 0 && q != 0 && func_02098044(q, 0x23) != 0 &&
             (func_020b530c(func_020b50dc()) != 0 || func_020b50dc() == 6)) {
@@ -6402,25 +6402,25 @@ extern "C" s32 func_ov003_02210bdc(Obj *o, Msg *m) {
     }
     rec->b = u;
     rec->a = t;
-    func_ov003_02210d08(o->unk_8ec, n, t);
+    PlayerActor_DoorExitSetNetData(o->unk_8ec, n, t);
     func_ov003_02218d34(o->unk_5c);
 }
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_02210b94(Obj *o, s32 a) {
+extern "C" void PlayerActor_NetDoorExit(Obj *o, s32 a) {
     if (o->unk_7ec == 0x3b) {
         o->unk_c80 = a;
     } else {
         Rec2 r;
-        func_ov003_02210cfc(o->unk_8ec, &r.a, &r.b);
-        Unk_ov003_02210b94_Ns::func_ov003_02210d10(o, r.a, r.b, 6, a);
+        PlayerActor_DoorExitGetNetData(o->unk_8ec, &r.a, &r.b);
+        Unk_ov003_02210b94_Ns::PlayerActor_RequestDoorExitWith(o, r.a, r.b, 6, a);
     }
 }
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_02210ad4(Obj *o) {
+extern "C" void PlayerActor_DoorExitUpdate(Obj *o) {
     u8 *p = &o->unk_7d1;
     Unk_020102ec_advanceAnim(o);
     u32 c = o->unk_7d1;
@@ -6474,7 +6474,7 @@ extern "C" void func_ov003_02210ad4(Obj *o) {
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_022107fc(Obj *o) {
+extern "C" void PlayerActor_DoorExitCheckEnd(Obj *o) {
     u16 v[8];
     if (!AnimFrameCtrl_isFinished(o->unk_2cc)) return;
     func_0200ed9c(o);
@@ -6499,10 +6499,10 @@ extern "C" void func_ov003_022107fc(Obj *o) {
     case 0: {
         BOOL r = Unk_ov003_022107fc_Eq(v, &v[5]);
         if (r == 0 && func_020b0f30() == 0 && Unk_02006d14_testActionFlag(o, 0x1d) == 0) {
-            func_ov003_02210628(o, 2, 2, 0, 0, 0, 6, -1);
+            PlayerActor_RequestStowItem(o, 2, 2, 0, 0, 0, 6, -1);
             return;
         }
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             if (Unk_ov003_022107fc_Eq(v, &v[2])) {
                 Unk_02006d14_setActionFlag(o, 0);
             }
@@ -6517,8 +6517,8 @@ extern "C" void func_ov003_022107fc(Obj *o) {
         PlayerActor_requestWait(o, 3, 1, -1);
         break;
     case 2: {
-        void *g = data_020cbb18;
-        if (func_020729bc(g, o->unk_7fc)) {
+        void *g = gCommManager;
+        if (CommManager_isLocalSlot(g, o->unk_7fc)) {
             func_02085188(func_020850e0(), 0);
         }
         if (func_020b0f30() == 0) {
@@ -6526,7 +6526,7 @@ extern "C" void func_ov003_022107fc(Obj *o) {
             return;
         }
         func_0203d76c();
-        if (func_020729bc(g, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(g, o->unk_7fc)) {
             goto x;
         } else {
             PlayerActor_GetHeldItem(&v[1], o);
@@ -6540,7 +6540,7 @@ extern "C" void func_ov003_022107fc(Obj *o) {
         break;
     }
     case 3:
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             func_02085188(func_020850e0(), 5);
             func_02097ff4(PlayerData_GetCurrent(), 1);
             func_02041b68();
@@ -6552,15 +6552,15 @@ extern "C" void func_ov003_022107fc(Obj *o) {
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_022107e0(Obj *o) {
-    func_ov003_02210ad4(o);
+extern "C" void PlayerActor_MainDoorExit(Obj *o) {
+    PlayerActor_DoorExitUpdate(o);
     func_0201071c(o);
-    Unk_ov003_022107e0_Ns::func_ov003_022107fc(o);
+    Unk_ov003_022107e0_Ns::PlayerActor_DoorExitCheckEnd(o);
 }
 }
 
 namespace ns_022105bc {
-extern "C" s32 func_ov003_022107a8(Obj *o, s32 a, s32 b) {
+extern "C" s32 PlayerActor_RequestAct3C(Obj *o, s32 a, s32 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x3c, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -6569,7 +6569,7 @@ extern "C" s32 func_ov003_022107a8(Obj *o, s32 a, s32 b) {
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_0221072c(Obj *o) {
+extern "C" void PlayerActor_SetupAct3C(Obj *o) {
     Unk_02006d14_clearActionFlag(o, 0);
     if (func_ov003_02218d78()) {
         func_02010358(o, 0x34, 0, 0);
@@ -6578,7 +6578,7 @@ extern "C" void func_ov003_0221072c(Obj *o) {
     }
     o->unk_7f4 = 0;
     if (func_020851bc(func_020850e0(), 0) != 0 || func_020851bc(func_020850e0(), 5) != 0) {
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             func_02034dd0(0x12, 0xf, 0);
         }
     }
@@ -6586,13 +6586,13 @@ extern "C" void func_ov003_0221072c(Obj *o) {
 }
 
 namespace ns_022105bc {
-extern "C" s32 func_ov003_02210720(Obj *o, s32 a) {
-    return func_ov003_022107a8(o, 1, a);
+extern "C" s32 PlayerActor_NetAct3C(Obj *o, s32 a) {
+    return PlayerActor_RequestAct3C(o, 1, a);
 }
 }
 
 namespace ns_022105bc {
-extern "C" s32 func_ov003_02210708(Obj *o, s32 a) {
+extern "C" s32 PlayerActor_EndAct3C(Obj *o, s32 a) {
     if (a != 0x3b && a != 0x3d) {
         Unk_02006d14_setActionFlag(o, 0);
     }
@@ -6600,11 +6600,11 @@ extern "C" s32 func_ov003_02210708(Obj *o, s32 a) {
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_02210704() {}
+extern "C" void PlayerActor_MainAct3C() {}
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_022106e8(Pay *p, s32 a, u32 b, s32 c, s32 d, s16 e) {
+extern "C" void PlayerActor_StowItemSetArgs(Pay *p, s32 a, u32 b, s32 c, s32 d, s16 e) {
     p->a = a;
     p->b = b;
     p->c = c;
@@ -6614,7 +6614,7 @@ extern "C" void func_ov003_022106e8(Pay *p, s32 a, u32 b, s32 c, s32 d, s16 e) {
 }
 
 namespace ns_022105bc {
-extern "C" s32 func_ov003_02210628(Obj *o, s32 a, s32 b, s32 c, s32 d, s16 e, s32 f, s16 g) {
+extern "C" s32 PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s16 e, s32 f, s16 g) {
     u16 v[2];
     PlayerActor_GetHeldItem(v, o);
     {
@@ -6627,12 +6627,12 @@ extern "C" s32 func_ov003_02210628(Obj *o, s32 a, s32 b, s32 c, s32 d, s16 e, s3
             r = TRUE;
         }
         if (r != 0 || (x >= 0x13a0 && x <= 0x13a7)) {
-            return func_ov003_02210204(o, a, b, c, d, e, f, g);
+            return PlayerActor_RequestStowUmbrella(o, a, b, c, d, e, f, g);
         }
     }
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x3d, f, g);
-    func_ov003_022106e8((Pay *)&m.v_022105bc.unk_0c, a, b, c, d, e);
+    PlayerActor_StowItemSetArgs((Pay *)&m.v_022105bc.unk_0c, a, b, c, d, e);
     Unk_02006d14_clearActionFlag(o, 1);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
@@ -6640,7 +6640,7 @@ extern "C" s32 func_ov003_02210628(Obj *o, s32 a, s32 b, s32 c, s32 d, s16 e, s3
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_02210608(Rec *p, s32 a, u32 b, s32 c, s32 d, s16 e, s32 f) {
+extern "C" void PlayerActor_StowItemSetWork(Rec *p, s32 a, u32 b, s32 c, s32 d, s16 e, s32 f) {
     p->a = a;
     p->b = b;
     p->c = c;
@@ -6651,23 +6651,23 @@ extern "C" void func_ov003_02210608(Rec *p, s32 a, u32 b, s32 c, s32 d, s16 e, s
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_022105e0(u8 *p, u32 a, u32 b, u32 c, s16 d) {
+extern "C" void PlayerActor_StowItemSetNetData(u8 *p, u32 a, u32 b, u32 c, s16 d) {
     p[7] = a;
-    func_02076a6c(p, b, c);
-    func_020769c4(p + 5, d);
+    NetBuf_PackPair20(p, b, c);
+    NetBuf_WriteS16B(p + 5, d);
 }
 }
 
 namespace ns_022105bc {
-extern "C" void func_ov003_022105bc(u8 *p, u8 *a, u32 b, u32 c, u16 *d) {
+extern "C" void PlayerActor_StowItemGetNetData(u8 *p, u8 *a, u32 b, u32 c, u16 *d) {
     *a = p[7];
-    func_02076a2c(p, b, c);
-    *d = func_020769ac(p + 5);
+    NetBuf_UnpackPair20(p, b, c);
+    *d = NetBuf_ReadS16B(p + 5);
 }
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_022104a8(Obj *o, Arg a) {
+extern "C" s32 PlayerActor_SetupStowItem(Obj *o, Arg a) {
     RecA *r = &a.unk_0c;
     H hh;
     RecA *p7d0 = (RecA *)&o->unk_7d0;
@@ -6691,7 +6691,7 @@ extern "C" s32 func_ov003_022104a8(Obj *o, Arg a) {
     s32 x = r->a;
     s32 y = r->b;
     s32 h2 = r->h;
-    func_ov003_02210608(p7d0, st, bits, x, y, h2, v);
+    PlayerActor_StowItemSetWork(p7d0, st, bits, x, y, h2, v);
     u8 *p8 = o->unk_8ec;
     switch (st) {
     case 0x38:
@@ -6706,17 +6706,17 @@ extern "C" s32 func_ov003_022104a8(Obj *o, Arg a) {
         bits |= 0x30;
         break;
     }
-    func_ov003_022105e0(p8, bits, x, y, h2);
+    PlayerActor_StowItemSetNetData(p8, bits, x, y, h2);
     Unk_02006d14_playSe(o, 0x4f);
 }
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_02210438(Obj *o, s32 a) {
+extern "C" s32 PlayerActor_NetStowItem(Obj *o, s32 a) {
     u8 b;
     s16 h;
     s32 x, y;
-    func_ov003_022105bc(o->unk_8ec, &b, &x, &y, &h);
+    PlayerActor_StowItemGetNetData(o->unk_8ec, &b, &x, &y, &h);
     s32 id;
     switch (b & 0xf0) {
     case 0:
@@ -6732,12 +6732,12 @@ extern "C" s32 func_ov003_02210438(Obj *o, s32 a) {
         id = 2;
         break;
     }
-    func_ov003_02210628(o, id, (u8)(b & 0xf), x, y, h, 6, a);
+    PlayerActor_RequestStowItem(o, id, (u8)(b & 0xf), x, y, h, 6, a);
 }
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_02210404(Obj *o) {
+extern "C" s32 PlayerActor_EndStowItem(Obj *o) {
     if ((o->unk_7d0.bits & 3) == 2) {
         o->unk_5a0 = 0x1000;
     } else {
@@ -6748,7 +6748,7 @@ extern "C" s32 func_ov003_02210404(Obj *o) {
 }
 
 namespace ns_0220fc88 {
-extern "C" void func_ov003_02210298(Obj *o) {
+extern "C" void PlayerActor_StowItemUpdate(Obj *o) {
     RecB *r = &o->unk_7d0;
     s32 *t = &r->timer;
     s32 target;
@@ -6776,11 +6776,11 @@ extern "C" void func_ov003_02210298(Obj *o) {
         switch (r->st) {
         case 0x38:
             Unk_02006d14_clearActionFlag(o, 0);
-            func_ov003_0221129c(o, r->a, r->b, r->h, 6, -1);
+            PlayerActor_RequestDoorApproach(o, r->a, r->b, r->h, 6, -1);
             break;
         case 0x39:
             Unk_02006d14_clearActionFlag(o, 0);
-            func_ov003_02211098(o, (u8)((r->bits & 0xc) >> 2), r->a, r->b, r->h, 6, -1);
+            PlayerActor_RequestDoorEnter(o, (u8)((r->bits & 0xc) >> 2), r->a, r->b, r->h, 6, -1);
             break;
         case 0x10:
             Unk_02006d14_clearActionFlag(o, 0);
@@ -6798,15 +6798,15 @@ extern "C" void func_ov003_02210298(Obj *o) {
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_0221027c(Obj *o) {
+extern "C" s32 PlayerActor_MainStowItem(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     func_0201071c(o);
-    func_ov003_02210298(o);
+    PlayerActor_StowItemUpdate(o);
 }
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_02210260(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h) {
+extern "C" s32 PlayerActor_StowUmbrellaSetArgs(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h) {
     p->st = st;
     p->bits = bits;
     p->a = x;
@@ -6816,10 +6816,10 @@ extern "C" s32 func_ov003_02210260(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_02210204(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b) {
+extern "C" s32 PlayerActor_RequestStowUmbrella(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x3e, a, *(s16 *)&b);
-    func_ov003_02210260(&m.v_0220fc88.unk_0c, id, low, x, y, h);
+    PlayerActor_StowUmbrellaSetArgs(&m.v_0220fc88.unk_0c, id, low, x, y, h);
     Unk_02006d14_clearActionFlag(o, 1);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
@@ -6827,7 +6827,7 @@ extern "C" s32 func_ov003_02210204(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, 
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_022101e8(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h) {
+extern "C" s32 PlayerActor_StowUmbrellaSetWork(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h) {
     p->st = st;
     p->bits = bits;
     p->a = x;
@@ -6837,23 +6837,23 @@ extern "C" s32 func_ov003_022101e8(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_022101c0(u8 *p, u32 id, s32 x, s32 y, s32 h) {
+extern "C" s32 PlayerActor_StowUmbrellaSetNetData(u8 *p, u32 id, s32 x, s32 y, s32 h) {
     p[7] = id;
-    func_02076a6c(p, x, y);
-    func_020769c4(p + 5, *(s16 *)&h);
+    NetBuf_PackPair20(p, x, y);
+    NetBuf_WriteS16B(p + 5, *(s16 *)&h);
 }
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_0221019c(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d) {
+extern "C" s32 PlayerActor_StowUmbrellaGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d) {
     *a = p[7];
-    func_02076a2c(p, b, c);
-    *d = func_020769ac(p + 5);
+    NetBuf_UnpackPair20(p, b, c);
+    *d = NetBuf_ReadS16B(p + 5);
 }
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_02210044(Obj *o, Arg a) {
+extern "C" s32 PlayerActor_SetupStowUmbrella(Obj *o, Arg a) {
     RecA *r = &a.unk_0c;
     u8 bits = r->bits;
     RecA *p7d0 = (RecA *)&o->unk_7d0;
@@ -6882,7 +6882,7 @@ extern "C" s32 func_ov003_02210044(Obj *o, Arg a) {
     x = r->a;
     y = r->b;
     h = r->h;
-    func_ov003_022101e8(p7d0, st, bits, x, y, h);
+    PlayerActor_StowUmbrellaSetWork(p7d0, st, bits, x, y, h);
     u8 *p8 = o->unk_8ec;
     switch (st) {
     case 0x38:
@@ -6897,17 +6897,17 @@ extern "C" s32 func_ov003_02210044(Obj *o, Arg a) {
         bits |= 0x30;
         break;
     }
-    func_ov003_022101c0(p8, bits, x, y, h);
+    PlayerActor_StowUmbrellaSetNetData(p8, bits, x, y, h);
     Unk_02006d14_playSe(o, 0x4f);
 }
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_0220ffd4(Obj *o, s32 a) {
+extern "C" s32 PlayerActor_NetStowUmbrella(Obj *o, s32 a) {
     u8 b;
     s16 h;
     s32 x, y;
-    func_ov003_0221019c(o->unk_8ec, &b, &x, &y, &h);
+    PlayerActor_StowUmbrellaGetNetData(o->unk_8ec, &b, &x, &y, &h);
     s32 id;
     switch (b & 0xf0) {
     case 0:
@@ -6923,12 +6923,12 @@ extern "C" s32 func_ov003_0220ffd4(Obj *o, s32 a) {
         id = 2;
         break;
     }
-    func_ov003_02210204(o, id, (u8)(b & 0xf), x, y, h, 6, a);
+    PlayerActor_RequestStowUmbrella(o, id, (u8)(b & 0xf), x, y, h, 6, a);
 }
 }
 
 namespace ns_0220fc88 {
-extern "C" void func_ov003_0220ff5c(Obj *o) {
+extern "C" void PlayerActor_StowUmbrellaUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     RecA *r = (RecA *)&o->unk_7d0;
     if ((r->bits & 3) != 2) {
@@ -6949,18 +6949,18 @@ extern "C" void func_ov003_0220ff5c(Obj *o) {
 }
 
 namespace ns_0220fc88 {
-extern "C" void func_ov003_0220fe70(Obj *o) {
+extern "C" void PlayerActor_StowUmbrellaCheckEnd(Obj *o) {
     RecA *r = (RecA *)&o->unk_7d0;
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         Unk_02006d14_setActionFlag(o, 1);
         switch (r->st) {
         case 0x38:
             Unk_02006d14_clearActionFlag(o, 0);
-            func_ov003_0221129c(o, r->a, r->b, r->h, 6, -1);
+            PlayerActor_RequestDoorApproach(o, r->a, r->b, r->h, 6, -1);
             break;
         case 0x39:
             Unk_02006d14_clearActionFlag(o, 0);
-            func_ov003_02211098(o, (u8)((r->bits & 0xc) >> 2), r->a, r->b, r->h, 6, -1);
+            PlayerActor_RequestDoorEnter(o, (u8)((r->bits & 0xc) >> 2), r->a, r->b, r->h, 6, -1);
             break;
         case 0x10:
             Unk_02006d14_clearActionFlag(o, 0);
@@ -6978,15 +6978,15 @@ extern "C" void func_ov003_0220fe70(Obj *o) {
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_0220fe54(Obj *o) {
-    func_ov003_0220ff5c(o);
+extern "C" s32 PlayerActor_MainStowUmbrella(Obj *o) {
+    PlayerActor_StowUmbrellaUpdate(o);
     func_0201071c(o);
-    func_ov003_0220fe70(o);
+    PlayerActor_StowUmbrellaCheckEnd(o);
 }
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_0220fe1c(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestUmbrellaSpin(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x45, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -6995,7 +6995,7 @@ extern "C" s32 func_ov003_0220fe1c(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_0220fc88 {
-extern "C" void func_ov003_0220fe0c(u8 *p) {
+extern "C" void PlayerActor_UmbrellaSpinInitWork(u8 *p) {
     *(u16 *)p = 0;
     *(u16 *)(p + 2) = 0x20;
     *(s32 *)(p + 4) = -1;
@@ -7003,22 +7003,22 @@ extern "C" void func_ov003_0220fe0c(u8 *p) {
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_0220fdd8(Obj *o) {
+extern "C" s32 PlayerActor_SetupUmbrellaSpin(Obj *o) {
     func_02010358(o, 0x63, 3, 0);
-    func_ov003_0220fe0c((u8 *)&o->unk_7d0);
+    PlayerActor_UmbrellaSpinInitWork((u8 *)&o->unk_7d0);
     Unk_02006d14_playSe(o, 0x856);
     Unk_02006d14_setActionFlag(o, 9);
 }
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_0220fdcc(Obj *o, s16 b) {
-    return func_ov003_0220fe1c(o, 6, b);
+extern "C" s32 PlayerActor_NetUmbrellaSpin(Obj *o, s16 b) {
+    return PlayerActor_RequestUmbrellaSpin(o, 6, b);
 }
 }
 
 namespace ns_0220fc88 {
-extern "C" void func_ov003_0220fdac(Obj *o) {
+extern "C" void PlayerActor_EndUmbrellaSpin(Obj *o) {
     s32 h = o->unk_7d0.a;
     if (h != -1) {
         func_020902f8(h);
@@ -7027,7 +7027,7 @@ extern "C" void func_ov003_0220fdac(Obj *o) {
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_0220fd44(Obj *o) {
+extern "C" s32 PlayerActor_UmbrellaSpinEffect(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     s32 *p = &o->unk_7d0.a;
     V3 v(o->unk_628.x, o->unk_628.y, o->unk_628.z);
@@ -7041,36 +7041,36 @@ extern "C" s32 func_ov003_0220fd44(Obj *o) {
 }
 
 namespace ns_0220fc88 {
-extern "C" void func_ov003_0220fcd8(Obj *o) {
+extern "C" void PlayerActor_UmbrellaSpinCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
     u32 m = o->unk_2d4.mid;
     if (m >= 0xe) {
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-            func_ov003_02205c28(o);
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+            PlayerActor_ResumeWalkOrIdle(o);
         }
     }
 }
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 func_ov003_0220fc90(Obj *o) {
-    func_ov003_0220fd44(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+extern "C" s32 PlayerActor_MainUmbrellaSpin(Obj *o) {
+    PlayerActor_UmbrellaSpinEffect(o);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         Unk_020102ec_moveWithCollision(o);
     } else {
         func_0200ef08(o);
     }
     func_0201071c(o);
     func_0201065c(o);
-    func_ov003_0220fcd8(o);
+    PlayerActor_UmbrellaSpinCheckEnd(o);
 }
 }
 
 namespace ns_0220fc88 {
-extern "C" void func_ov003_0220fc88(s32 *p, s32 a, s32 b, u32 c) {
+extern "C" void PlayerActor_AxeSwingSetArgs(s32 *p, s32 a, s32 b, u32 c) {
     p[0] = a;
     p[1] = b;
     *(u8 *)&p[2] = c;
@@ -7078,14 +7078,14 @@ extern "C" void func_ov003_0220fc88(s32 *p, s32 a, s32 b, u32 c) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220fc00(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestAxeSwing(Obj *o, s32 a, s16 b) {
     Msg m;
     u8 *p = m.v_0220f314.unk_0c;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x46, a, b);
     if (o->unk_144) {
-        func_ov003_0220fc88(p, o->unk_154, o->unk_15c, 1);
+        PlayerActor_AxeSwingSetArgs(p, o->unk_154, o->unk_15c, 1);
     } else {
-        func_ov003_0220fc88(p, o->unk_148, o->unk_150, o->unk_140 != 0 ? 1 : 0);
+        PlayerActor_AxeSwingSetArgs(p, o->unk_148, o->unk_150, o->unk_140 != 0 ? 1 : 0);
     }
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
@@ -7093,17 +7093,17 @@ extern "C" s32 func_ov003_0220fc00(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220fbb8(Obj *o, s32 *a, s32 *b, u8 *c, s32 d, s32 e) {
+extern "C" s32 PlayerActor_RequestAxeSwingAt(Obj *o, s32 *a, s32 *b, u8 *c, s32 d, s32 e) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x46, d, *(s16 *)&e);
-    func_ov003_0220fc88(m.v_0220f314.unk_0c, *a, *b, *c);
+    PlayerActor_AxeSwingSetArgs(m.v_0220f314.unk_0c, *a, *b, *c);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_0220f314 {
-extern "C" void func_ov003_0220fba8(u8 *d, V3 *v, s32 a) {
+extern "C" void PlayerActor_AxeSwingSetWork(u8 *d, V3 *v, s32 a) {
     Unk_ov003_0220f314_Rec7d0 *r = (Unk_ov003_0220f314_Rec7d0 *)d;
     r->v.x = v->x;
     r->v.y = v->y;
@@ -7113,22 +7113,22 @@ extern "C" void func_ov003_0220fba8(u8 *d, V3 *v, s32 a) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220fb90(void *p, s32 a, s32 b, u8 c) {
-    func_02076a6c(p, a, b);
+extern "C" s32 PlayerActor_AxeSwingSetNetData(void *p, s32 a, s32 b, u8 c) {
+    NetBuf_PackPair20(p, a, b);
     ((u8 *)p)[5] = c;
 }
 }
 
 namespace ns_0220f314 {
-extern "C" void func_ov003_0220fb78(void *p, s32 *a, s32 *b, u8 *c) {
-    func_02076a2c(p, a, b);
+extern "C" void PlayerActor_AxeSwingGetNetData(void *p, s32 *a, s32 *b, u8 *c) {
+    NetBuf_UnpackPair20(p, a, b);
     u32 t = ((u8 *)p)[5];
     *c = t;
 }
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220fa70(Obj *o, Arg *a) {
+extern "C" s32 PlayerActor_SetupAxeSwing(Obj *o, Arg *a) {
     struct {
         s32 out;
         V3 v, LampLights, LightLevel, C, WindowLight;
@@ -7138,7 +7138,7 @@ extern "C" s32 func_ov003_0220fa70(Obj *o, Arg *a) {
     s32 x = a->unk_0c.x;
     s32 z = q->z;
     u8 flag = q->flag;
-    func_ov003_0220fb90(o->unk_8ec, x, z, flag);
+    PlayerActor_AxeSwingSetNetData(o->unk_8ec, x, z, flag);
     func_02010358(o, 0x42, 3, 0);
     if (flag != 0) {
         l.v.x = x;
@@ -7161,8 +7161,8 @@ extern "C" s32 func_ov003_0220fa70(Obj *o, Arg *a) {
     l.WindowLight.x = l.v.x;
     l.WindowLight.y = l.v.y;
     l.WindowLight.z = l.v.z;
-    func_ov003_0220fba8(rec, &l.WindowLight, ang);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+    PlayerActor_AxeSwingSetWork(rec, &l.WindowLight, ang);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         Unk_02006d14_clearActionFlag(o, 0x14);
         if (Unk_02006d14_getHeldHoldableIndex(o) != 0xb) {
             if (!func_02063b8c(8)) {
@@ -7174,22 +7174,22 @@ extern "C" s32 func_ov003_0220fa70(Obj *o, Arg *a) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220fa3c(Obj *o, s32 a) {
+extern "C" s32 PlayerActor_NetAxeSwing(Obj *o, s32 a) {
     u8 c;
     s32 x, z;
-    func_ov003_0220fb78(o->unk_8ec, &x, &z, &c);
-    return func_ov003_0220fbb8(o, &x, &z, &c, 6, a);
+    PlayerActor_AxeSwingGetNetData(o->unk_8ec, &x, &z, &c);
+    return PlayerActor_RequestAxeSwingAt(o, &x, &z, &c, 6, a);
 }
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220fa2c(Obj *o) {
+extern "C" s32 PlayerActor_AxeSwingTurn(Obj *o) {
     return func_0200f504(o, o->unk_7d0.h);
 }
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f9ec(Obj *o) {
+extern "C" s32 PlayerActor_AxeSwingTrackTarget(Obj *o) {
     V3 t;
     V3 *pv = &o->unk_7d0.v;
     t.x = pv->x;
@@ -7201,37 +7201,37 @@ extern "C" s32 func_ov003_0220f9ec(Obj *o) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f9b8(Obj *o) {
+extern "C" s32 PlayerActor_AxeSwingCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        if (func_ov003_0220f668(o, 1) == 0) {
-            func_ov003_0220f880(o, 6, -1);
+        if (PlayerActor_AxeDispatch(o, 1) == 0) {
+            PlayerActor_RequestAxeFollowThrough(o, 6, -1);
         }
     }
 }
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f97c(Obj *o) {
+extern "C" s32 PlayerActor_AxeSwingCheckEndRemote(Obj *o) {
     o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        func_ov003_0220f880(o, 6, -1);
+        PlayerActor_RequestAxeFollowThrough(o, 6, -1);
     }
 }
 }
 
 namespace ns_0220f314 {
-extern "C" void func_ov003_0220f8b8(Obj *o) {
+extern "C" void PlayerActor_MainAxeSwing(Obj *o) {
     s32 old = o->unk_98;
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         s32 t;
-        func_ov003_0220fa2c(o);
+        PlayerActor_AxeSwingTurn(o);
         Unk_020102ec_advanceAnim(o);
         Unk_020102ec_moveWithCollision(o);
         func_0201071c(o);
         t = PlayerActor_DecreaseClamped(o->unk_98, 0, 0x171);
         Unk_020102ec_setSpeed(o, &t);
-        func_ov003_0220f9b8(o);
-        func_ov003_0220f9ec(o);
+        PlayerActor_AxeSwingCheckEnd(o);
+        PlayerActor_AxeSwingTrackTarget(o);
     } else {
         s32 t2;
         Unk_020102ec_advanceAnim(o);
@@ -7241,7 +7241,7 @@ extern "C" void func_ov003_0220f8b8(Obj *o) {
         func_0201071c(o);
         t2 = PlayerActor_DecreaseClamped(o->unk_98, 0, 0x171);
         Unk_020102ec_setSpeed(o, &t2);
-        func_ov003_0220f97c(o);
+        PlayerActor_AxeSwingCheckEndRemote(o);
     }
     if (old != 0 && o->unk_98 == 0) {
         func_02090330(0x2c, &o->unk_5c, &o->unk_8e, 0);
@@ -7250,7 +7250,7 @@ extern "C" void func_ov003_0220f8b8(Obj *o) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f880(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestAxeFollowThrough(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x47, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -7259,19 +7259,19 @@ extern "C" s32 func_ov003_0220f880(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f86c(Obj *o) {
+extern "C" s32 PlayerActor_SetupAxeFollowThrough(Obj *o) {
     Unk_020102ec_startAnim(o, 0x43, 3, 0);
 }
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f860(Obj *o, s16 b) {
-    return func_ov003_0220f880(o, 6, b);
+extern "C" s32 PlayerActor_NetAxeFollowThrough(Obj *o, s16 b) {
+    return PlayerActor_RequestAxeFollowThrough(o, 6, b);
 }
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f828(Obj *o) {
+extern "C" s32 PlayerActor_AxeFollowThroughTrackTarget(Obj *o) {
     V3 v;
     func_0200f43c(&v, o);
     func_02010740(o, &v, 0xf33, 0x1000);
@@ -7280,7 +7280,7 @@ extern "C" s32 func_ov003_0220f828(Obj *o) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f668(Obj *o, u8 a, ...) {
+extern "C" s32 PlayerActor_AxeDispatch(Obj *o, u8 a, ...) {
     u8 k;
     s32 v[2];
     s32 r;
@@ -7301,37 +7301,37 @@ extern "C" s32 func_ov003_0220f668(Obj *o, u8 a, ...) {
     }
     v[0] = 0;
     v[1] = 0;
-    r = func_ov003_02205a00(o, &a, &k, v);
-    if (!func_020729bc(data_020cbb18, o->unk_7fc)) {
+    r = PlayerActor_AxeClassifyTarget(o, &a, &k, v);
+    if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         k = 0;
     }
     switch (r) {
     case 1:
-        func_ov003_0220f590(o, 6, -1);
+        PlayerActor_RequestAct48(o, 6, -1);
         break;
     case 2:
     case 3:
         if (k == 2) {
             t0.a = v[0];
             t0.b = v[1];
-            func_ov003_0220eddc(o, 1, &t0.a, 6, -1);
+            PlayerActor_RequestAxeBreak(o, 1, &t0.a, 6, -1);
         } else {
             t1.a = v[0];
             t1.b = v[1];
             BOOL f1 = k ? 1 : 0;
             BOOL f2 = r == 3 ? 1 : 0;
-            func_ov003_0220f064(o, f1, f2, &t1.a, 6, -1);
+            PlayerActor_RequestAxeChop(o, f1, f2, &t1.a, 6, -1);
         }
         break;
     case 4:
         if (k == 2) {
             t2.a = v[0];
             t2.b = v[1];
-            func_ov003_0220eddc(o, 0, &t2.a, 6, -1);
+            PlayerActor_RequestAxeBreak(o, 0, &t2.a, 6, -1);
         } else {
             t3.a = v[0];
             t3.b = v[1];
-            func_ov003_0220f484(o, k ? 1 : 0, 0, &t3.a, 6, -1);
+            PlayerActor_RequestAxeStrike(o, k ? 1 : 0, 0, &t3.a, 6, -1);
         }
         break;
     case 5:
@@ -7342,11 +7342,11 @@ extern "C" s32 func_ov003_0220f668(Obj *o, u8 a, ...) {
         if (k == 2) {
             t4.a = v[0];
             t4.b = v[1];
-            func_ov003_0220eddc(o, 1, &t4.a, 6, -1);
+            PlayerActor_RequestAxeBreak(o, 1, &t4.a, 6, -1);
         } else {
             t5.a = v[0];
             t5.b = v[1];
-            func_ov003_0220f484(o, k ? 1 : 0, 1, &t5.a, 6, -1);
+            PlayerActor_RequestAxeStrike(o, k ? 1 : 0, 1, &t5.a, 6, -1);
         }
         break;
     }
@@ -7355,15 +7355,15 @@ extern "C" s32 func_ov003_0220f668(Obj *o, u8 a, ...) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f5c8(Obj *o) {
+extern "C" s32 PlayerActor_MainAxeFollowThrough(Obj *o) {
     Unk_020102ec_advanceAnim(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         s32 t;
         Unk_020102ec_moveWithCollision(o);
         func_0201071c(o);
         t = PlayerActor_Decelerate(o->unk_98, 0);
         Unk_020102ec_setSpeed(o, &t);
-        func_ov003_0220f668(o, 0);
+        PlayerActor_AxeDispatch(o, 0);
     } else {
         s32 t2;
         if (func_0200ef08(o)) {
@@ -7374,12 +7374,12 @@ extern "C" s32 func_ov003_0220f5c8(Obj *o) {
         Unk_020102ec_setSpeed(o, &t2);
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
     }
-    func_ov003_0220f828(o);
+    PlayerActor_AxeFollowThroughTrackTarget(o);
 }
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f590(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestAct48(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x48, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -7388,19 +7388,19 @@ extern "C" s32 func_ov003_0220f590(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f57c(Obj *o) {
+extern "C" s32 PlayerActor_SetupAct48(Obj *o) {
     func_02010358(o, 0x46, 3, 0);
 }
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f570(Obj *o, s16 b) {
-    return func_ov003_0220f590(o, 6, b);
+extern "C" s32 PlayerActor_NetAct48(Obj *o, s16 b) {
+    return PlayerActor_RequestAct48(o, 6, b);
 }
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f540(Obj *o) {
+extern "C" s32 PlayerActor_Act48Update(Obj *o) {
     if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 6)) {
         Unk_02006d14_playSe(o, 0x83d);
     }
@@ -7409,7 +7409,7 @@ extern "C" s32 func_ov003_0220f540(Obj *o) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f500(Obj *o) {
+extern "C" s32 PlayerActor_Act48CheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
@@ -7418,15 +7418,15 @@ extern "C" s32 func_ov003_0220f500(Obj *o) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f4e4(Obj *o) {
-    func_ov003_0220f540(o);
+extern "C" s32 PlayerActor_MainAct48(Obj *o) {
+    PlayerActor_Act48Update(o);
     func_0201071c(o);
-    func_ov003_0220f500(o);
+    PlayerActor_Act48CheckEnd(o);
 }
 }
 
 namespace ns_0220f314 {
-extern "C" void func_ov003_0220f4d4(u8 *d, u32 x, u32 y, s32 *s) {
+extern "C" void PlayerActor_AxeStrikeSetArgs(u8 *d, u32 x, u32 y, s32 *s) {
     d[2] = x;
     d[3] = y;
     d[0] = s[0];
@@ -7435,20 +7435,20 @@ extern "C" void func_ov003_0220f4d4(u8 *d, u32 x, u32 y, s32 *s) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f484(Obj *o, u32 a, u32 b, s32 *c, s32 d, s32 e) {
+extern "C" s32 PlayerActor_RequestAxeStrike(Obj *o, u32 a, u32 b, s32 *c, s32 d, s32 e) {
     Msg m;
     Pair t;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x49, d, *(s16 *)&e);
     t.a = c[0];
     t.b = c[1];
-    func_ov003_0220f4d4(m.v_0220f314.unk_0c, a, b, &t.a);
+    PlayerActor_AxeStrikeSetArgs(m.v_0220f314.unk_0c, a, b, &t.a);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_0220f314 {
-extern "C" void func_ov003_0220f474(u8 *d, u32 x, u32 y, s32 *s) {
+extern "C" void PlayerActor_AxeStrikeSetWork(u8 *d, u32 x, u32 y, s32 *s) {
     d[2] = x;
     d[3] = y;
     d[0] = s[0];
@@ -7457,7 +7457,7 @@ extern "C" void func_ov003_0220f474(u8 *d, u32 x, u32 y, s32 *s) {
 }
 
 namespace ns_0220f314 {
-extern "C" void func_ov003_0220f45c(u8 *d, u8 a, u8 b, u8 c, u8 e, u8 f) {
+extern "C" void PlayerActor_AxeStrikeSetNetData(u8 *d, u8 a, u8 b, u8 c, u8 e, u8 f) {
     d[0] = a;
     d[1] = b;
     d[2] = c;
@@ -7467,7 +7467,7 @@ extern "C" void func_ov003_0220f45c(u8 *d, u8 a, u8 b, u8 c, u8 e, u8 f) {
 }
 
 namespace ns_0220f314 {
-extern "C" void func_ov003_0220f43c(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d, u8 *e) {
+extern "C" void PlayerActor_AxeStrikeGetNetData(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d, u8 *e) {
     *a = s[0];
     *b = s[1];
     *c = s[2];
@@ -7477,7 +7477,7 @@ extern "C" void func_ov003_0220f43c(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d, u8 *e) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f3cc(Obj *o, Arg4 *a) {
+extern "C" s32 PlayerActor_SetupAxeStrike(Obj *o, Arg4 *a) {
     u8 *q = a->b;
     u8 b2 = q[2];
     u8 b3 = q[3];
@@ -7486,8 +7486,8 @@ extern "C" s32 func_ov003_0220f3cc(Obj *o, Arg4 *a) {
     Pair t;
     t.a = b0;
     t.b = b1;
-    func_ov003_0220f474((u8 *)&o->unk_7d0, b2, b3, &t.a);
-    func_ov003_0220f45c(o->unk_8ec, b2, b3, o->unk_168, b0, b1);
+    PlayerActor_AxeStrikeSetWork((u8 *)&o->unk_7d0, b2, b3, &t.a);
+    PlayerActor_AxeStrikeSetNetData(o->unk_8ec, b2, b3, o->unk_168, b0, b1);
     func_02010358(o, 0x45, 3, 0);
     if (b3) {
         Unk_02006d14_setActionFlag(o, 0x1c);
@@ -7496,42 +7496,42 @@ extern "C" s32 func_ov003_0220f3cc(Obj *o, Arg4 *a) {
 }
 
 namespace ns_0220f314 {
-extern "C" void func_ov003_0220f370(Obj *o, s32 a) {
+extern "C" void PlayerActor_NetAxeStrike(Obj *o, s32 a) {
     struct {
         u8 a, b, c, d, e;
     } l;
     Pair t;
-    func_ov003_0220f43c(o->unk_8ec, &l.a, &l.b, &l.c, &l.d, &l.e);
+    PlayerActor_AxeStrikeGetNetData(o->unk_8ec, &l.a, &l.b, &l.c, &l.d, &l.e);
     o->unk_168 = l.c;
     if (l.b == 0) {
         t.a = l.d;
         t.b = l.e;
-        func_ov003_0220f484(o, l.a, 0, &t.a, 6, a);
+        PlayerActor_RequestAxeStrike(o, l.a, 0, &t.a, 6, a);
     }
 }
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f33c(Obj *o) {
-    if (!func_020729bc(data_020cbb18, o->unk_7fc)) {
+extern "C" s32 PlayerActor_EndAxeStrike(Obj *o) {
+    if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
-            func_ov003_0220f14c(o);
+            PlayerActor_AxeStrikeHit(o);
         }
     }
 }
 }
 
 namespace ns_0220f314 {
-extern "C" s32 func_ov003_0220f314(Obj *o) {
+extern "C" s32 PlayerActor_AxeStrikeUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 8)) {
-        func_ov003_0220f14c(o);
+        PlayerActor_AxeStrikeHit(o);
     }
 }
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220f14c(Obj *o) {
+extern "C" void PlayerActor_AxeStrikeHit(Obj *o) {
     s16 ang;
     u16 buf;
     s32 t = -0x333;
@@ -7591,7 +7591,7 @@ extern "C" void func_ov003_0220f14c(Obj *o) {
         }
         break;
     case 3:
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             if (func_ov003_022135c4(o->unk_164, 1) == 0) {
                 Unk_02006d14_playSe(o, 0x7df);
             }
@@ -7606,7 +7606,7 @@ extern "C" void func_ov003_0220f14c(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220f10c(Obj *o) {
+extern "C" s32 PlayerActor_AxeStrikeCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
@@ -7615,8 +7615,8 @@ extern "C" s32 func_ov003_0220f10c(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220f0c4(Obj *o) {
-    func_ov003_0220f314(o);
+extern "C" s32 PlayerActor_MainAxeStrike(Obj *o) {
+    PlayerActor_AxeStrikeUpdate(o);
     Unk_020102ec_moveWithCollision(o);
     func_0201071c(o);
     s32 *p = &o->unk_98;
@@ -7624,12 +7624,12 @@ extern "C" s32 func_ov003_0220f0c4(Obj *o) {
     if (v < 0) v = -v;
     s32 t = PlayerActor_Decelerate(v, 0) * -1;
     Unk_020102ec_setSpeed(o, &t);
-    func_ov003_0220f10c(o);
+    PlayerActor_AxeStrikeCheckEnd(o);
 }
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220f0b4(Rec *r, u32 a, u32 b, Pv p) {
+extern "C" void PlayerActor_AxeChopSetArgs(Rec *r, u32 a, u32 b, Pv p) {
     r->b2 = a;
     r->b3 = b;
     r->b0 = p.x;
@@ -7638,17 +7638,17 @@ extern "C" void func_ov003_0220f0b4(Rec *r, u32 a, u32 b, Pv p) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220f064(Obj *o, u32 a, u32 b, Pv p, s32 c, s16 d) {
+extern "C" s32 PlayerActor_RequestAxeChop(Obj *o, u32 a, u32 b, Pv p, s32 c, s16 d) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x4a, c, d);
-    func_ov003_0220f0b4(&m.v_0220e970.unk_0c, a, b, p);
+    PlayerActor_AxeChopSetArgs(&m.v_0220e970.unk_0c, a, b, p);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220f054(Rec *r, u32 a, u32 b, Pv p) {
+extern "C" void PlayerActor_AxeChopSetWork(Rec *r, u32 a, u32 b, Pv p) {
     r->b2 = a;
     r->b3 = b;
     r->b0 = p.x;
@@ -7657,42 +7657,42 @@ extern "C" void func_ov003_0220f054(Rec *r, u32 a, u32 b, Pv p) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220f010(Obj *o, Arg *a) {
+extern "C" s32 PlayerActor_SetupAxeChop(Obj *o, Arg *a) {
     Rec &r = a->unk_0c;
     u32 c = r.b2;
     u32 d = r.b3;
-    func_ov003_0220f054(&o->unk_7d0, c, d, Pv(r.b0, r.b1));
+    PlayerActor_AxeChopSetWork(&o->unk_7d0, c, d, Pv(r.b0, r.b1));
     func_02010358(o, 0x44, 3, 0);
     Unk_02006d14_setActionFlag(o, 0x1c);
 }
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220f00c(Obj *o) {
+extern "C" void PlayerActor_NetAxeChop(Obj *o) {
 }
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220efd8(Obj *o) {
-    if (!func_020729bc(data_020cbb18, o->unk_7fc)) {
+extern "C" s32 PlayerActor_EndAxeChop(Obj *o) {
+    if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
-            func_ov003_0220eeec(o);
+            PlayerActor_AxeChopHit(o);
         }
     }
 }
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220efb0(Obj *o) {
+extern "C" s32 PlayerActor_AxeChopUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 8)) {
-        func_ov003_0220eeec(o);
+        PlayerActor_AxeChopHit(o);
     }
 }
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220eeec(Obj *o) {
+extern "C" s32 PlayerActor_AxeChopHit(Obj *o) {
     Rec *r = &o->unk_7d0;
     s32 n = Unk_02006d14_getHeldHoldableIndex(o);
     if (r->b2) {
@@ -7710,7 +7710,7 @@ extern "C" s32 func_ov003_0220eeec(Obj *o) {
     u32 y = r->b1;
     u16 v;
     V3 pos;
-    func_0204ed8c(&pos, r->b0, r->b1);
+    FieldPos_FromUnitCenter(&pos, r->b0, r->b1);
     v = o->unk_8e + 0x2000;
     func_02090330(2, &pos, &v, 0);
     if (pos.x >= o->unk_5c.x) {
@@ -7729,7 +7729,7 @@ extern "C" s32 func_ov003_0220eeec(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220ee58(Obj *o) {
+extern "C" void PlayerActor_AxeChopCheckEnd(Obj *o) {
     u32 b3 = o->unk_7d0.b3;
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
@@ -7740,9 +7740,9 @@ extern "C" void func_ov003_0220ee58(Obj *o) {
         }
     }
     if (b3 == 0) {
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             if (o->unk_2d4.mid > 8) {
-                func_ov003_02205c28(o);
+                PlayerActor_ResumeWalkOrIdle(o);
             }
         }
     }
@@ -7750,16 +7750,16 @@ extern "C" void func_ov003_0220ee58(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220ee38(Obj *o) {
-    func_ov003_0220efb0(o);
+extern "C" s32 PlayerActor_MainAxeChop(Obj *o) {
+    PlayerActor_AxeChopUpdate(o);
     func_0201071c(o);
     func_0201065c(o);
-    func_ov003_0220ee58(o);
+    PlayerActor_AxeChopCheckEnd(o);
 }
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220ee2c(Rec *r, u32 c, Pv p) {
+extern "C" void PlayerActor_AxeBreakSetArgs(Rec *r, u32 c, Pv p) {
     r->b2 = c;
     r->b0 = p.x;
     r->b1 = p.z;
@@ -7767,17 +7767,17 @@ extern "C" void func_ov003_0220ee2c(Rec *r, u32 c, Pv p) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220eddc(Obj *o, u32 a, Pv p, s32 c, s16 e) {
+extern "C" s32 PlayerActor_RequestAxeBreak(Obj *o, u32 a, Pv p, s32 c, s16 e) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x4b, c, e);
-    func_ov003_0220ee2c(&m.v_0220e970.unk_0c, a, p);
+    PlayerActor_AxeBreakSetArgs(&m.v_0220e970.unk_0c, a, p);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220edd0(Rec *r, u32 c, Pv p) {
+extern "C" void PlayerActor_AxeBreakSetWork(Rec *r, u32 c, Pv p) {
     r->b2 = c;
     r->b0 = p.x;
     r->b1 = p.z;
@@ -7785,43 +7785,43 @@ extern "C" void func_ov003_0220edd0(Rec *r, u32 c, Pv p) {
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220edcc(u8 *p, u32 v) {
+extern "C" void PlayerActor_AxeBreakSetNetData(u8 *p, u32 v) {
     *p = v;
 }
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220edc4(u8 *src, u8 *dst) {
+extern "C" void PlayerActor_AxeBreakGetNetData(u8 *src, u8 *dst) {
     *dst = *src;
 }
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220ed5c(Obj *o, Arg *a) {
+extern "C" s32 PlayerActor_SetupAxeBreak(Obj *o, Arg *a) {
     Rec *r = &a->unk_0c;
     u32 c = r->b2;
-    func_ov003_0220edd0(&o->unk_7d0, c, Pv(r->b0, r->b1));
-    func_ov003_0220edcc(o->unk_8ec, c);
+    PlayerActor_AxeBreakSetWork(&o->unk_7d0, c, Pv(r->b0, r->b1));
+    PlayerActor_AxeBreakSetNetData(o->unk_8ec, c);
     func_02010358(o, 0x47, 3, 0);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         func_02034dd0(0x12, 0xf, 0);
     }
 }
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220ed24(Obj *o, s16 a) {
+extern "C" void PlayerActor_NetAxeBreak(Obj *o, s16 a) {
     u8 t;
-    func_ov003_0220edc4(o->unk_8ec, &t);
+    PlayerActor_AxeBreakGetNetData(o->unk_8ec, &t);
     if (t == 0) {
-        func_ov003_0220eddc(o, 0, Pv(0, 0), 6, a);
+        PlayerActor_RequestAxeBreak(o, 0, Pv(0, 0), 6, a);
     }
 }
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220ecb8(Obj *o) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+extern "C" void PlayerActor_EndAxeBreak(Obj *o) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         u16 *r = PlayerData_getHeldItem(PlayerData_GetBySessionSlot(o->unk_7fc));
         if (r) {
             Unk_02006d14_netSendClothesChange(o, 3, *r);
@@ -7842,7 +7842,7 @@ extern "C" void func_ov003_0220ecb8(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220eb98(Obj *o) {
+extern "C" void PlayerActor_AxeBreakUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (o->unk_2d4.mid >= 8) {
         if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 8)) {
@@ -7889,11 +7889,11 @@ extern "C" void func_ov003_0220eb98(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220eb48(Obj *o) {
+extern "C" void PlayerActor_AxeBreakCheckEnd(Obj *o) {
     if (o->unk_8e == 0) {
         if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-            if (!func_020729bc(data_020cbb18, o->unk_7fc) || func_0203d820()) {
-                func_ov003_0220eaf0(o, 6, -1);
+            if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc) || func_0203d820()) {
+                PlayerActor_RequestAxeBrokenMessage(o, 6, -1);
             }
         }
     }
@@ -7901,16 +7901,16 @@ extern "C" void func_ov003_0220eb48(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220eb28(Obj *o) {
-    func_ov003_0220eb98(o);
+extern "C" s32 PlayerActor_MainAxeBreak(Obj *o) {
+    PlayerActor_AxeBreakUpdate(o);
     Unk_020102ec_moveWithCollision(o);
     func_0201071c(o);
-    func_ov003_0220eb48(o);
+    PlayerActor_AxeBreakCheckEnd(o);
 }
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220eaf0(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestAxeBrokenMessage(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x4c, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -7919,17 +7919,17 @@ extern "C" s32 func_ov003_0220eaf0(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220eae8(Rec *r) {
+extern "C" void PlayerActor_AxeBrokenMessageInitWork(Rec *r) {
     r->b0 = 0;
 }
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220ea58(Obj *o) {
+extern "C" s32 PlayerActor_SetupAxeBrokenMessage(Obj *o) {
     struct Pad { s32 v[2]; Pad() {} ~Pad() {} } pad;
     Unk_020102ec_startAnim(o, 0x48, 3, 0);
-    func_ov003_0220eae8(&o->unk_7d0);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+    PlayerActor_AxeBrokenMessageInitWork(&o->unk_7d0);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         func_0203e488(o, o);
         Sec &s = *o;
         MsgRequest_setFileName(&s, (void *)"obj_etc_player");
@@ -7944,13 +7944,13 @@ extern "C" s32 func_ov003_0220ea58(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220ea4c(Obj *o, s16 a) {
-    return func_ov003_0220eaf0(o, 6, a);
+extern "C" s32 PlayerActor_NetAxeBrokenMessage(Obj *o, s16 a) {
+    return PlayerActor_RequestAxeBrokenMessage(o, 6, a);
 }
 }
 
 namespace ns_0220e970 {
-extern "C" void func_ov003_0220e9a4(Obj *o) {
+extern "C" void PlayerActor_AxeBrokenMessageUpdate(Obj *o) {
     Rec *p = &o->unk_7d0;
     switch (p->b0) {
     case 0:
@@ -7980,8 +7980,8 @@ extern "C" void func_ov003_0220e9a4(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 func_ov003_0220e970(Obj *o) {
-    if (!func_020729bc(data_020cbb18, o->unk_7fc)) {
+extern "C" s32 PlayerActor_EndAxeBrokenMessage(Obj *o) {
+    if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         func_020946f0(0, o->unk_7fc);
         Unk_02006d14_setActionFlag(o, 0);
     }
@@ -7989,11 +7989,11 @@ extern "C" s32 func_ov003_0220e970(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e924(Obj *o) {
+extern "C" s32 PlayerActor_MainAxeBrokenMessage(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     func_0201071c(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-        func_ov003_0220e9a4(o);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        PlayerActor_AxeBrokenMessageUpdate(o);
     } else {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
     }
@@ -8001,40 +8001,40 @@ extern "C" s32 func_ov003_0220e924(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" void func_ov003_0220e918(P2 *d, V3 *s) {
+extern "C" void PlayerActor_FishCastSetArgs(P2 *d, V3 *s) {
     d->x = s->x;
     d->z = s->z;
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e8cc(Obj *o, V3 *v, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestFishCast(Obj *o, V3 *v, s32 a, s16 b) {
     Msg m;
     V3 t;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x4d, a, b);
     t.x = v->x;
     t.y = v->y;
     t.z = v->z;
-    func_ov003_0220e918(&m.v_0220e030.unk_0c, &t);
+    PlayerActor_FishCastSetArgs(&m.v_0220e030.unk_0c, &t);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e8c4(void *p, s32 a, s32 b) {
-    return func_02076a6c(p, a, b);
+extern "C" s32 PlayerActor_FishCastSetNetData(void *p, s32 a, s32 b) {
+    return NetBuf_PackPair20(p, a, b);
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e8bc(void *p, s32 *a, s32 *b) {
-    return func_02076a2c(p, a, b);
+extern "C" s32 PlayerActor_FishCastGetNetData(void *p, s32 *a, s32 *b) {
+    return NetBuf_UnpackPair20(p, a, b);
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e844(Obj *o, Arg *a) {
+extern "C" s32 PlayerActor_SetupFishCast(Obj *o, Arg *a) {
     func_02010358(o, 0x52, 3, 0);
     func_0205e1a0(o->unk_59c, 0x15, 3, 0);
     P2 &q = a->unk_0c;
@@ -8044,16 +8044,16 @@ extern "C" s32 func_ov003_0220e844(Obj *o, Arg *a) {
     l.t1.x = x; l.t1.y = 0; l.t1.z = z;
     l.t2.x = x; l.t2.y = 0; l.t2.z = z;
     func_0205faf8(o->unk_5c4, &l.t2);
-    func_ov003_0220e8c4(o->unk_8ec, l.t1.x, l.t1.z);
+    PlayerActor_FishCastSetNetData(o->unk_8ec, l.t1.x, l.t1.z);
     o->unk_7d0 = func_020e7b98(l.t1.x - o->unk_5c, l.t1.z - o->unk_64);
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e804(Obj *o, s16 a) {
+extern "C" s32 PlayerActor_NetFishCast(Obj *o, s16 a) {
     s32 x, z;
     struct { V3 v1, v2; } l;
-    func_ov003_0220e8bc(o->unk_8ec, &x, &z);
+    PlayerActor_FishCastGetNetData(o->unk_8ec, &x, &z);
     s32 y = o->unk_60;
     l.v1.x = x;
     l.v1.y = y;
@@ -8061,12 +8061,12 @@ extern "C" s32 func_ov003_0220e804(Obj *o, s16 a) {
     l.v2.x = x;
     l.v2.y = y;
     l.v2.z = z;
-    return func_ov003_0220e8cc(o, &l.v2, 6, a);
+    return PlayerActor_RequestFishCast(o, &l.v2, 6, a);
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e7d8(Obj *o) {
+extern "C" s32 PlayerActor_FishCastUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0x11)) {
         Unk_02006d14_playSe(o, 0x849);
@@ -8075,16 +8075,16 @@ extern "C" s32 func_ov003_0220e7d8(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e7c8(Obj *o) {
+extern "C" s32 PlayerActor_FishCastTurn(Obj *o) {
     return func_0200f504(o, o->unk_7d0);
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e784(Obj *o) {
+extern "C" s32 PlayerActor_FishCastCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        func_ov003_0220e58c(o, 6, -1);
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        PlayerActor_RequestFishWait(o, 6, -1);
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             Camera_SetMode5();
         }
     }
@@ -8092,32 +8092,32 @@ extern "C" s32 func_ov003_0220e784(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e6e8(Obj *o) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+extern "C" s32 PlayerActor_MainFishCast(Obj *o) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         s32 t;
-        func_ov003_0220e7c8(o);
-        func_ov003_0220e7d8(o);
+        PlayerActor_FishCastTurn(o);
+        PlayerActor_FishCastUpdate(o);
         Unk_020102ec_moveWithCollision(o);
         func_0201071c(o);
         t = PlayerActor_DecreaseClamped(o->unk_98, 0, 0x171);
         Unk_020102ec_setSpeed(o, &t);
-        func_ov003_0220e784(o);
+        PlayerActor_FishCastCheckEnd(o);
     } else {
         s32 t2;
-        func_ov003_0220e7d8(o);
+        PlayerActor_FishCastUpdate(o);
         if (func_0200ef08(o)) {
             Unk_020102ec_moveWithCollision(o);
         }
         func_0201071c(o);
         t2 = PlayerActor_DecreaseClamped(o->unk_98, 0, 0x171);
         Unk_020102ec_setSpeed(o, &t2);
-        func_ov003_0220e784(o);
+        PlayerActor_FishCastCheckEnd(o);
     }
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e6b0(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestFishCastFail(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x4e, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -8126,20 +8126,20 @@ extern "C" s32 func_ov003_0220e6b0(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e688(Obj *o) {
+extern "C" s32 PlayerActor_SetupFishCastFail(Obj *o) {
     func_02010358(o, 0x53, 3, 0);
     func_0205e1a0(o->unk_59c, 0x16, 3, 0);
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e67c(Obj *o, s16 a) {
-    return func_ov003_0220e6b0(o, 6, a);
+extern "C" s32 PlayerActor_NetFishCastFail(Obj *o, s16 a) {
+    return PlayerActor_RequestFishCastFail(o, 6, a);
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e650(Obj *o) {
+extern "C" s32 PlayerActor_FishCastFailUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0xc)) {
         Unk_02006d14_playSe(o, 0x84a);
@@ -8148,7 +8148,7 @@ extern "C" s32 func_ov003_0220e650(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e610(Obj *o) {
+extern "C" s32 PlayerActor_FishCastFailCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
@@ -8157,20 +8157,20 @@ extern "C" s32 func_ov003_0220e610(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e5c4(Obj *o) {
-    func_ov003_0220e650(o);
+extern "C" s32 PlayerActor_MainFishCastFail(Obj *o) {
+    PlayerActor_FishCastFailUpdate(o);
     if (func_0200ef08(o)) {
         Unk_020102ec_moveWithCollision(o);
     }
     func_0201071c(o);
     s32 t = PlayerActor_DecreaseClamped(o->unk_98, 0, 0x171);
     Unk_020102ec_setSpeed(o, &t);
-    func_ov003_0220e610(o);
+    PlayerActor_FishCastFailCheckEnd(o);
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e58c(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestFishWait(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x4f, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -8179,27 +8179,27 @@ extern "C" s32 func_ov003_0220e58c(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e574(void *p, V3 *v, u8 c) {
-    return func_02076a04(p, v->x, v->y, v->z, c);
+extern "C" s32 PlayerActor_FishWaitSetNetData(void *p, V3 *v, u8 c) {
+    return NetBuf_PackTriple20(p, v->x, v->y, v->z, c);
 }
 }
 
 namespace ns_0220e030 {
-extern "C" void func_ov003_0220e55c(void *p, V3 *v, u8 *out) {
-    func_020769dc(p, &v->x, &v->y, &v->z, out);
+extern "C" void PlayerActor_FishWaitGetNetData(void *p, V3 *v, u8 *out) {
+    NetBuf_UnpackTriple20(p, &v->x, &v->y, &v->z, out);
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e4bc(Obj *o) {
+extern "C" s32 PlayerActor_SetupFishWait(Obj *o) {
     u8 kind;
     V3 pos;
     V3 cur;
     u8 *p = o->unk_8ec;
     Unk_020102ec_startAnim(o, 0x54, 3, 0);
-    void *g = data_020cbb18;
-    if (!func_020729bc(g, o->unk_7fc)) {
-        func_ov003_0220e55c(p, &pos, &kind);
+    void *g = gCommManager;
+    if (!CommManager_isLocalSlot(g, o->unk_7fc)) {
+        PlayerActor_FishWaitGetNetData(p, &pos, &kind);
         if (kind == 3) {
             cur.x = pos.x;
             cur.y = pos.y;
@@ -8208,28 +8208,28 @@ extern "C" s32 func_ov003_0220e4bc(Obj *o) {
         }
     }
     func_0205e1a0(o->unk_59c, 0x17, 3, 0);
-    if (func_020729bc(g, o->unk_7fc)) {
-        func_ov003_0220e574(p, &o->unk_5cc, o->unk_5c8);
+    if (CommManager_isLocalSlot(g, o->unk_7fc)) {
+        PlayerActor_FishWaitSetNetData(p, &o->unk_5cc, o->unk_5c8);
     }
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e490(Obj *o, s16 a) {
+extern "C" s32 PlayerActor_NetFishWait(Obj *o, s16 a) {
     s32 st = o->unk_7ec;
     if (st != 0x4d) {
         if (st == 0x4f) {
             o->unk_c80 = a;
         } else {
-            func_ov003_0220e58c(o, 6, a);
+            PlayerActor_RequestFishWait(o, 6, a);
         }
     }
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e43c(Obj *o, s32 a) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+extern "C" s32 PlayerActor_EndFishWait(Obj *o, s32 a) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         func_02035ba4(data_021c1b3c + 0x1c4);
     } else if (a != 0x50 && a != 0x51) {
         func_0205f92c(o->unk_5c4, 1);
@@ -8238,15 +8238,15 @@ extern "C" s32 func_ov003_0220e43c(Obj *o, s32 a) {
 }
 
 namespace ns_0220e030 {
-extern "C" void func_ov003_0220e324(Obj *o) {
+extern "C" void PlayerActor_FishWaitSyncBobber(Obj *o) {
     u8 kind;
     V3 pos;
     struct { V3 cur, t2, t3; } l;
     u8 *p = o->unk_8ec;
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-        func_ov003_0220e574(p, &o->unk_5cc, o->unk_5c8);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        PlayerActor_FishWaitSetNetData(p, &o->unk_5cc, o->unk_5c8);
     } else {
-        func_ov003_0220e55c(p, &pos, &kind);
+        PlayerActor_FishWaitGetNetData(p, &pos, &kind);
         u8 k = kind;
         s32 st = o->unk_5c8;
         if (st == 4) goto case4;
@@ -8282,7 +8282,7 @@ extern "C" void func_ov003_0220e324(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e2e4(Obj *o) {
+extern "C" s32 PlayerActor_FishWaitFaceBobber(Obj *o) {
     u16 t;
     V3 *p = &o->unk_5cc;
     s32 a = func_020e7b98(p->x - o->unk_5c, p->z - o->unk_64);
@@ -8293,14 +8293,14 @@ extern "C" s32 func_ov003_0220e2e4(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" void func_ov003_0220e260(Obj *o) {
+extern "C" void PlayerActor_FishWaitOnBobberLand(Obj *o) {
     if (func_0205df98(o->unk_59c) && o->unk_5fc) {
         Unk_02006d14_playSe(o, 0x84b);
         V3 *p = &o->unk_5cc;
         o->unk_8c0.x = p->x;
         o->unk_8c0.y = p->y;
         o->unk_8c0.z = p->z;
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             func_02035bac(data_021c1b3c + 0x1c4);
         }
     }
@@ -8308,8 +8308,8 @@ extern "C" void func_ov003_0220e260(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e1c0(Obj *o) {
-    func_ov003_0220e260(o);
+extern "C" s32 PlayerActor_FishWaitCheckInput(Obj *o) {
+    PlayerActor_FishWaitOnBobberLand(o);
     if (func_0205df98(o->unk_59c)) {
         if (Unk_02006d14_testActionFlag(o, 0xb)) {
             if (func_0205fbb8(o->unk_5c4)) {
@@ -8317,13 +8317,13 @@ extern "C" s32 func_ov003_0220e1c0(Obj *o) {
             } else {
                 func_ov003_02220db0(&o->unk_5cc, 0x1000);
             }
-            func_ov003_0220dff0(o, 0, 6, -1);
+            PlayerActor_RequestFishReelIn(o, 0, 6, -1);
         } else {
             if (o->unk_13c != 0 || func_020b60b0(func_020b50b4(), 0)) {
                 if (func_0205fb88(o->unk_5c4)) {
-                    func_ov003_0220e12c(o, 6, -1);
+                    PlayerActor_RequestFishHook(o, 6, -1);
                 } else {
-                    func_ov003_0220dff0(o, 0, 6, -1);
+                    PlayerActor_RequestFishReelIn(o, 0, 6, -1);
                 }
             }
         }
@@ -8332,14 +8332,14 @@ extern "C" s32 func_ov003_0220e1c0(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e164(Obj *o) {
+extern "C" s32 PlayerActor_MainFishWait(Obj *o) {
     Unk_020102ec_advanceAnim(o);
-    func_ov003_0220e324(o);
+    PlayerActor_FishWaitSyncBobber(o);
     func_0200ef08(o);
-    func_ov003_0220e2e4(o);
+    PlayerActor_FishWaitFaceBobber(o);
     func_0201071c(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-        func_ov003_0220e1c0(o);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        PlayerActor_FishWaitCheckInput(o);
     } else {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
     }
@@ -8347,7 +8347,7 @@ extern "C" s32 func_ov003_0220e164(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e12c(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestFishHook(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x50, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -8356,36 +8356,36 @@ extern "C" s32 func_ov003_0220e12c(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e0e4(Obj *o) {
+extern "C" s32 PlayerActor_SetupFishHook(Obj *o) {
     Unk_020102ec_startAnim(o, 0x55, 3, 0);
     func_0205e1a0(o->unk_59c, 0x18, 3, 0);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         func_02034dd0(0x12, 0, 0);
     }
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e0d8(Obj *o, s16 a) {
-    return func_ov003_0220e12c(o, 6, a);
+extern "C" s32 PlayerActor_NetFishHook(Obj *o, s16 a) {
+    return PlayerActor_RequestFishHook(o, 6, a);
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e054(Obj *o) {
+extern "C" s32 PlayerActor_FishHookCheckResult(Obj *o) {
     V3 *p = &o->unk_5cc;
     volatile s32 pad;
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         switch (func_0205fb70(o->unk_5c4)) {
         case 0:
             Unk_02006d14_playSeAt(o, 0x7f6, p);
             break;
         case 1:
-            func_ov003_0220de60(o, 6, -1);
+            PlayerActor_RequestFishEscape(o, 6, -1);
             func_02034d70(0x12);
             break;
         case 2:
-            func_ov003_0220dd28(o, 6, -1);
+            PlayerActor_RequestFishLand(o, 6, -1);
             break;
         }
     } else {
@@ -8395,53 +8395,53 @@ extern "C" s32 func_ov003_0220e054(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 func_ov003_0220e034(Obj *o) {
+extern "C" s32 PlayerActor_MainFishHook(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     func_0200ef08(o);
     func_0201071c(o);
-    func_ov003_0220e054(o);
+    PlayerActor_FishHookCheckResult(o);
 }
 }
 
 namespace ns_0220e030 {
-extern "C" void func_ov003_0220e030(u8 *p, u32 v) {
+extern "C" void PlayerActor_FishReelInSetArgs(u8 *p, u32 v) {
     *p = v;
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" s32 func_ov003_0220dff0(Obj *o, u32 a, s32 b, s16 c) {
+extern "C" s32 PlayerActor_RequestFishReelIn(Obj *o, u32 a, s32 b, s16 c) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x51, b, c);
-    func_ov003_0220e030(m.v_0220d6f4.unk_0c, a);
+    PlayerActor_FishReelInSetArgs(m.v_0220d6f4.unk_0c, a);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220dfec(u8 *p, u32 v) {
+extern "C" void PlayerActor_FishReelInSetWork(u8 *p, u32 v) {
     *p = v;
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220dfe8(u8 *p, u32 v) {
+extern "C" void PlayerActor_FishReelInSetNetData(u8 *p, u32 v) {
     *p = v;
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220dfe0(u8 *p, u8 *out) {
+extern "C" void PlayerActor_FishReelInGetNetData(u8 *p, u8 *out) {
     *out = *p;
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220df3c(Obj *o, u8 *p) {
+extern "C" void PlayerActor_SetupFishReelIn(Obj *o, u8 *p) {
     u32 b = p[0xc];
-    func_ov003_0220dfec((u8 *)&o->unk_7d0, b);
-    func_ov003_0220dfe8(&o->unk_8ec, b);
+    PlayerActor_FishReelInSetWork((u8 *)&o->unk_7d0, b);
+    PlayerActor_FishReelInSetNetData(&o->unk_8ec, b);
     func_02010358(o, 0x56, 3, 0);
     func_0205e1a0(o->unk_59c, 0x19, 3, 0);
     Unk_02006d14_playSe(o, 0x84c);
@@ -8450,20 +8450,20 @@ extern "C" void func_ov003_0220df3c(Obj *o, u8 *p) {
     o->unk_8c0 = q[0];
     o->unk_8c4 = q[1];
     o->unk_8c8 = q[2];
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) Camera_SetModeDefault();
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) Camera_SetModeDefault();
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220df10(Obj *o, s16 a) {
+extern "C" void PlayerActor_NetFishReelIn(Obj *o, s16 a) {
     u8 t;
-    func_ov003_0220dfe0(&o->unk_8ec, &t);
-    func_ov003_0220dff0(o, t, 6, a);
+    PlayerActor_FishReelInGetNetData(&o->unk_8ec, &t);
+    PlayerActor_RequestFishReelIn(o, t, 6, a);
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220deb8(Obj *o) {
+extern "C" void PlayerActor_FishReelInCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         if (*(u8 *)&o->unk_7d0) {
@@ -8476,16 +8476,16 @@ extern "C" void func_ov003_0220deb8(Obj *o) {
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220de98(Obj *o) {
+extern "C" void PlayerActor_MainFishReelIn(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     func_0200ef08(o);
     func_0201071c(o);
-    func_ov003_0220deb8(o);
+    PlayerActor_FishReelInCheckEnd(o);
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" s32 func_ov003_0220de60(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestFishEscape(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x52, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -8494,23 +8494,23 @@ extern "C" s32 func_ov003_0220de60(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220de2c(Obj *o) {
-    Unk_020102ec_setSpeed(o, (s32 *)data_ov003_02230aec);
+extern "C" void PlayerActor_SetupFishEscape(Obj *o) {
+    Unk_020102ec_setSpeed(o, (s32 *)sFishEscapeSpeed);
     func_02010358(o, 0x57, 3, 0);
     func_0205e1a0(o->unk_59c, 0x1a, 3, 0);
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" s32 func_ov003_0220de20(Obj *o, s16 a) {
-    return func_ov003_0220de60(o, 6, a);
+extern "C" s32 PlayerActor_NetFishEscape(Obj *o, s16 a) {
+    return PlayerActor_RequestFishEscape(o, 6, a);
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220ddb4(Obj *o) {
+extern "C" void PlayerActor_FishEscapeCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) Camera_SetModeDefault();
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) Camera_SetModeDefault();
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
         func_0205e1a0(o->unk_59c, 0x13, 3, 0);
@@ -8519,7 +8519,7 @@ extern "C" void func_ov003_0220ddb4(Obj *o) {
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220dd60(Obj *o) {
+extern "C" void PlayerActor_MainFishEscape(Obj *o) {
     s32 t;
     Unk_020102ec_advanceAnim(o);
     if (func_0200ef08(o)) Unk_020102ec_moveWithCollision(o);
@@ -8528,12 +8528,12 @@ extern "C" void func_ov003_0220dd60(Obj *o) {
     if (v < 0) v = -v;
     t = PlayerActor_DecreaseClamped(v, 0, 0xc5) * -1;
     Unk_020102ec_setSpeed(o, &t);
-    func_ov003_0220ddb4(o);
+    PlayerActor_FishEscapeCheckEnd(o);
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" s32 func_ov003_0220dd28(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestFishLand(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x53, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -8542,7 +8542,7 @@ extern "C" s32 func_ov003_0220dd28(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220dcc4(Obj *o) {
+extern "C" void PlayerActor_SetupFishLand(Obj *o) {
     func_02010358(o, 0x58, 3, 0);
     func_0205e1a0(o->unk_59c, 0x1b, 3, 1);
     Unk_02006d14_playSe(o, 0x84c);
@@ -8555,30 +8555,30 @@ extern "C" void func_ov003_0220dcc4(Obj *o) {
 }
 
 namespace ns_0220d6f4 {
-extern "C" s32 func_ov003_0220dcb8(Obj *o, s16 a) {
-    return func_ov003_0220dd28(o, 6, a);
+extern "C" s32 PlayerActor_NetFishLand(Obj *o, s16 a) {
+    return PlayerActor_RequestFishLand(o, 6, a);
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220dc80(Obj *o) {
+extern "C" void PlayerActor_FishLandCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        if (func_0205fb34(o->unk_5c4)) func_ov003_0220dc0c(o, 0, 6, -1);
+        if (func_0205fb34(o->unk_5c4)) PlayerActor_RequestFishShowCatch(o, 0, 6, -1);
     }
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220dc48(Obj *o) {
+extern "C" void PlayerActor_MainFishLand(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     func_0200ef08(o);
     func_0201071c(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) func_ov003_0220dc80(o);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) PlayerActor_FishLandCheckEnd(o);
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" s32 func_ov003_0220dc0c(Obj *o, u32 a, s32 b, s16 c) {
+extern "C" s32 PlayerActor_RequestFishShowCatch(Obj *o, u32 a, s32 b, s16 c) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x54, b, c);
     m.v_0220d6f4.unk_0c[0] = a;
@@ -8588,26 +8588,26 @@ extern "C" s32 func_ov003_0220dc0c(Obj *o, u32 a, s32 b, s16 c) {
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220dc08(u8 *p, u32 v) {
+extern "C" void PlayerActor_FishShowCatchSetNetData(u8 *p, u32 v) {
     *p = v;
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220dc00(u8 *p, u8 *out) {
+extern "C" void PlayerActor_FishShowCatchGetNetData(u8 *p, u8 *out) {
     *out = *p;
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220db5c(Obj *o, u8 *p) {
+extern "C" void PlayerActor_SetupFishShowCatch(Obj *o, u8 *p) {
     u32 b = p[0xc];
     Rec *r = &o->unk_7d0;
     r->unk_04 = b;
     r->unk_00 = 0x39;
     r->unk_05 = func_0203c338();
     if (b == 0) {
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             Act *a = func_0205fbb8(o->unk_5c4);
             s8 v = a->unk_7e;
             r->unk_03 = v;
@@ -8625,20 +8625,20 @@ extern "C" void func_ov003_0220db5c(Obj *o, u8 *p) {
         r->unk_00 = 0x3a;
         o->unk_818 = 8;
     }
-    func_ov003_0220dc08(&o->unk_8ec, b);
+    PlayerActor_FishShowCatchSetNetData(&o->unk_8ec, b);
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220db30(Obj *o, s16 a) {
+extern "C" void PlayerActor_NetFishShowCatch(Obj *o, s16 a) {
     u8 t;
-    func_ov003_0220dc00(&o->unk_8ec, &t);
-    func_ov003_0220dc0c(o, t, 6, a);
+    PlayerActor_FishShowCatchGetNetData(&o->unk_8ec, &t);
+    PlayerActor_RequestFishShowCatch(o, t, 6, a);
 }
 }
 
 namespace ns_0220d6f4 {
-extern "C" void func_ov003_0220d6f4(Obj *o) {
+extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
     Rec *r6;
     u8 *r5;
     Act *a;
@@ -8674,7 +8674,7 @@ extern "C" void func_ov003_0220d6f4(Obj *o) {
             v48.y = v48.y + q;
             v48.z = v48.z - q;
         }
-        func_ov003_02212034(&b, &v48);
+        PlayerActor_ApplyHoldOffset(&b, &v48);
         v60.x = b.v[9];
         v60.y = b.v[10];
         v60.z = b.v[11];
@@ -8746,7 +8746,7 @@ extern "C" void func_ov003_0220d6f4(Obj *o) {
             func_0203e47c(o, o);
             Unk_02006d14_clearActionFlag(o, 0x11);
             func_0203d7f8();
-            func_ov003_0220d5cc(o, 0, 6, -1);
+            PlayerActor_RequestFishStore(o, 0, 6, -1);
             Camera_SetModeDefault();
         }
         return;
@@ -8770,7 +8770,7 @@ extern "C" void func_ov003_0220d6f4(Obj *o) {
             if (o->unk_128->unk_04 != 0) return;
             func_0203e47c(o, o);
             Unk_02006d14_clearActionFlag(o, 0x11);
-            func_ov003_0220d5cc(o, 1, 6, -1);
+            PlayerActor_RequestFishStore(o, 1, 6, -1);
             Camera_SetModeDefault();
         }
         return;
@@ -8782,7 +8782,7 @@ extern "C" void func_ov003_0220d6f4(Obj *o) {
         Unk_02006d14_clearActionFlag(o, 0x11);
         func_0203d7f8();
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
-        func_ov003_02205e58(o, data_ov003_02230ac0, 0, 6, -1);
+        PlayerActor_RequestFishRelease(o, data_ov003_02230ac0, 0, 6, -1);
         Camera_SetModeDefault();
         return;
     case 5:
@@ -8804,7 +8804,7 @@ extern "C" void func_ov003_0220d6f4(Obj *o) {
 }
 
 namespace ns_0220cd4c {
-extern "C" void func_ov003_0220d608(Obj *o) {
+extern "C" void PlayerActor_MainFishShowCatch(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     volatile Unk_ov003_0220cd4c_P3 sv;
     V3 *pv = &o->unk_c4;
@@ -8817,8 +8817,8 @@ extern "C" void func_ov003_0220d608(Obj *o) {
     func_0200e7f4(o);
     func_0200ef08(o);
     func_0201071c(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-        func_ov003_0220d6f4(o);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        PlayerActor_FishShowCatchUpdate(o);
     } else {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         func_0200f4c0(o, 0x400);
@@ -8833,7 +8833,7 @@ extern "C" void func_ov003_0220d608(Obj *o) {
 }
 
 namespace ns_0220cd4c {
-extern "C" s32 func_ov003_0220d5cc(Obj *o, u32 a, s32 b, s32 c) {
+extern "C" s32 PlayerActor_RequestFishStore(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x55, b, c);
     *(u8 *)((u8 *)&m + 0xc) = a;
@@ -8843,35 +8843,35 @@ extern "C" s32 func_ov003_0220d5cc(Obj *o, u32 a, s32 b, s32 c) {
 }
 
 namespace ns_0220cd4c {
-extern "C" void func_ov003_0220d5c8(u8 *p, u32 v) {
+extern "C" void PlayerActor_FishStoreSetNetState(u8 *p, u32 v) {
     *p = v;
 }
 }
 
 namespace ns_0220cd4c {
-extern "C" u32 func_ov003_0220d5c4(u8 *p) {
+extern "C" u32 PlayerActor_FishStoreGetNetState(u8 *p) {
     return *p;
 }
 }
 
 namespace ns_0220cd4c {
-extern "C" void func_ov003_0220d590(Obj *o, u8 *b) {
+extern "C" void PlayerActor_SetupFishStore(Obj *o, u8 *b) {
     u8 v = b[0xc];
     o->unk_7d0.unk_00 = v;
-    func_ov003_0220d5c8(&o->unk_8ec, v);
+    PlayerActor_FishStoreSetNetState(&o->unk_8ec, v);
     func_02010358(o, 0x5a, 3, 3);
     Unk_02006d14_playSe(o, 0x4f);
 }
 }
 
 namespace ns_0220cd4c {
-extern "C" s32 func_ov003_0220d568(Obj *o, s16 a) {
-    return func_ov003_0220d5cc(o, func_ov003_0220d5c4(&o->unk_8ec), 6, a);
+extern "C" s32 PlayerActor_NetFishStore(Obj *o, s16 a) {
+    return PlayerActor_RequestFishStore(o, PlayerActor_FishStoreGetNetState(&o->unk_8ec), 6, a);
 }
 }
 
 namespace ns_0220cd4c {
-extern "C" void func_ov003_0220d114(Obj *o) {
+extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
     u16 v[4];
     V3 vf;
     Blk bl;
@@ -8897,7 +8897,7 @@ extern "C" void func_ov003_0220d114(Obj *o) {
     vf.y = f;
     vf.z = f;
     bl = o->unk_694;
-    func_ov003_02212034(&bl, 0);
+    PlayerActor_ApplyHoldOffset(&bl, 0);
     v48.x = ((V3 *)&bl.v[9])->x;
     v48.y = ((V3 *)&bl.v[9])->y;
     v48.z = ((V3 *)&bl.v[9])->z;
@@ -8922,7 +8922,7 @@ extern "C" void func_ov003_0220d114(Obj *o) {
         if (!AnimFrameCtrl_isFinished(o->unk_2cc)) return;
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 6, 1, -1);
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             v[3] = v[0];
             func_02099124(&v[3]);
         }
@@ -8934,7 +8934,7 @@ extern "C" void func_ov003_0220d114(Obj *o) {
             Unk_020102ec_startAnim(o, 0x6c, 6, 6);
             func_0205e1a0(o->unk_59c, 0x13, 6, 0);
         }
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             if (o->unk_818 == 5) {
                 if (!func_0206e7a4(v[0], p5)) return;
                 o->unk_818 = 6;
@@ -8951,7 +8951,7 @@ extern "C" void func_ov003_0220d114(Obj *o) {
                     v[1] = func_0206e750();
                     o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
                     if (Rng(&v[1], 0x12e8, 0x131f)) {
-                        func_ov003_02205e58(o, data_ov003_02230ac4, 0, 6, -1);
+                        PlayerActor_RequestFishRelease(o, data_ov003_02230ac4, 0, 6, -1);
                     } else {
                         PlayerActor_requestWait(o, 6, 1, -1);
                         *r6 = 2;
@@ -8979,8 +8979,8 @@ extern "C" void func_ov003_0220d114(Obj *o) {
                         b.z = vf.z;
                         func_ov003_02223400(p5, &a, &b);
                     }
-                    func_ov003_02205e58(o, data_ov003_02230ac8, 0, 6, -1);
-                    func_ov003_0220d5c8(r7, 2);
+                    PlayerActor_RequestFishRelease(o, data_ov003_02230ac8, 0, 6, -1);
+                    PlayerActor_FishStoreSetNetState(r7, 2);
                 }
                 func_0205fb08(o->unk_5c4);
                 if (Unk_02006d14_testActionFlag(o, 0x11)) {
@@ -8991,7 +8991,7 @@ extern "C" void func_ov003_0220d114(Obj *o) {
             }
         } else {
             o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
-            if (func_ov003_0220d5c4(r7) == 2) {
+            if (PlayerActor_FishStoreGetNetState(r7) == 2) {
                 if (p5) {
                     V3 a, b;
                     func_ov003_02223450(&vf, p5->unk_7e);
@@ -9024,7 +9024,7 @@ extern "C" void func_ov003_0220d114(Obj *o) {
 }
 
 namespace ns_0220cd4c {
-extern "C" void func_ov003_0220d0c4(Obj *o) {
+extern "C" void PlayerActor_FishStoreCheckEndRemote(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         Unk_020102ec_startAnim(o, 0x6c, 6, 6);
@@ -9034,20 +9034,20 @@ extern "C" void func_ov003_0220d0c4(Obj *o) {
 }
 
 namespace ns_0220cd4c {
-extern "C" void func_ov003_0220d084(Obj *o) {
+extern "C" void PlayerActor_MainFishStore(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     func_0200ef08(o);
     func_0201071c(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-        func_ov003_0220d114(o);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        PlayerActor_FishStoreUpdate(o);
     } else {
-        func_ov003_0220d0c4(o);
+        PlayerActor_FishStoreCheckEndRemote(o);
     }
 }
 }
 
 namespace ns_0220cd4c {
-extern "C" s32 func_ov003_0220d00c(Obj *o, s32 a, s32 b) {
+extern "C" s32 PlayerActor_RequestBugNetSwing(Obj *o, s32 a, s32 b) {
     Msg m;
     u16 *p = (u16 *)&m.v_0220cd4c.unk_0c;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x56, a, b);
@@ -9062,7 +9062,7 @@ extern "C" s32 func_ov003_0220d00c(Obj *o, s32 a, s32 b) {
 }
 
 namespace ns_0220cd4c {
-extern "C" void func_ov003_0220cfcc(Obj *o, u8 *b) {
+extern "C" void PlayerActor_SetupBugNetSwing(Obj *o, u8 *b) {
     Unk_ov003_0220cd4c_Rec *r = &o->unk_7d0;
     u32 z = 0;
     r->unk_00 = z;
@@ -9074,13 +9074,13 @@ extern "C" void func_ov003_0220cfcc(Obj *o, u8 *b) {
 }
 
 namespace ns_0220cd4c {
-extern "C" s32 func_ov003_0220cfc0(Obj *o, s16 b) {
-    return func_ov003_0220d00c(o, 6, b);
+extern "C" s32 PlayerActor_NetBugNetSwing(Obj *o, s16 b) {
+    return PlayerActor_RequestBugNetSwing(o, 6, b);
 }
 }
 
 namespace ns_0220cd4c {
-extern "C" void func_ov003_0220cf78(Obj *o) {
+extern "C" void PlayerActor_BugNetSwingAdvanceAnim(Obj *o) {
     BOOL r;
     if (AnimFrameCtrl_isFinished(o->unk_2cc))
         r = TRUE;
@@ -9094,13 +9094,13 @@ extern "C" void func_ov003_0220cf78(Obj *o) {
 }
 
 namespace ns_0220cd4c {
-extern "C" void func_ov003_0220cf68(Obj *o) {
+extern "C" void PlayerActor_BugNetSwingTurn(Obj *o) {
     func_0200f504(o, *(s16 *)((u8 *)o + 0x7d2));
 }
 }
 
 namespace ns_0220cd4c {
-extern "C" void func_ov003_0220cf30(Obj *o) {
+extern "C" void PlayerActor_BugNetSwingTrackTarget(Obj *o) {
     V3 v;
     func_0200f43c(&v, o);
     func_02010740(o, &v, 0x99a, 0x1000);
@@ -9109,7 +9109,7 @@ extern "C" void func_ov003_0220cf30(Obj *o) {
 }
 
 namespace ns_0220cd4c {
-extern "C" void func_ov003_0220cd4c(Obj *o) {
+extern "C" void PlayerActor_BugNetSwingUpdate(Obj *o) {
     struct {
         u8 a, b, c, pad;
         volatile u16 w;
@@ -9128,7 +9128,7 @@ extern "C" void func_ov003_0220cd4c(Obj *o) {
     v18.x = v0c.x;
     v18.y = v0c.y;
     v18.z = v0c.z;
-    func_ov003_0220cbc8(o, &v18, &v24, &v30);
+    PlayerActor_BugNetSwingGetSweep(o, &v18, &v24, &v30);
     r5 = &o->unk_7d0;
     if (r5->unk_00 == 0 && o->unk_2d4.mid < 6) {
         PlayerActor_GetHeldItem((u16 *)&st.w, o);
@@ -9144,7 +9144,7 @@ extern "C" void func_ov003_0220cd4c(Obj *o) {
             if (st.b != 0) v3c.z += 0x100;
         }
     }
-    switch (func_ov003_0220ca70(o, &st.a, &v3c, &st.b)) {
+    switch (PlayerActor_BugNetSwingCheckHit(o, &st.a, &v3c, &st.b)) {
     case 1:
         if (func_ov003_02226d54(st.c) == 0) return;
         r5->unk_00 = 1;
@@ -9166,7 +9166,7 @@ extern "C" void func_ov003_0220cd4c(Obj *o) {
     v54.x = v0c.x;
     v54.y = v0c.y;
     v54.z = v0c.z;
-    s32 r = func_ov003_0220c768(o, &v54, &v24, &v30);
+    s32 r = PlayerActor_BugNetSwingCheckGround(o, &v54, &v24, &v30);
     if (st.a == 0) return;
     s32 ang;
     if (r) {
@@ -9188,7 +9188,7 @@ extern "C" void func_ov003_0220cd4c(Obj *o) {
 }
 
 namespace ns_0220c448 {
-extern "C" void func_ov003_0220cbc8(Obj *o, V3 *a, V3 *b, V3 *out) {
+extern "C" void PlayerActor_BugNetSwingGetSweep(Obj *o, V3 *a, V3 *b, V3 *out) {
     V3 *pos = &o->unk_5c;
     b->x = pos->x;
     b->y = pos->y;
@@ -9233,11 +9233,11 @@ extern "C" void func_ov003_0220cbc8(Obj *o, V3 *a, V3 *b, V3 *out) {
 }
 
 namespace ns_0220c448 {
-extern "C" s32 func_ov003_0220ca70(Obj *o, u8 *a, V3 *b, u8 *c) {
+extern "C" s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *b, u8 *c) {
     V3 v;
     s32 t;
     if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 4)) {
-        if (func_ov003_022052f4(o)) {
+        if (PlayerActor_CheckToolHitActor(o)) {
             Unk_02006d14_setActionFlag(o, 9);
             Unk_02006d14_playSe(o, 0x846);
             o->unk_2dc = 0;
@@ -9251,14 +9251,14 @@ extern "C" s32 func_ov003_0220ca70(Obj *o, u8 *a, V3 *b, u8 *c) {
             return 2;
         }
         func_0200f3ec(&v, o, &o->unk_5c, &o->unk_8e, data_ov003_02230adc);
-        func_0204edd8(&v, &v);
+        FieldPos_SnapToUnitCenter(&v, &v);
         if (func_0203081c(&v, &t, 0x19) >= 0x400) {
             Unk_02006d14_setActionFlag(o, 9);
             Unk_02006d14_playSe(o, 0x846);
             o->unk_2dc = 0;
             func_0205e1a0(o->unk_59c, 4, 3, 1);
             if (a[0] != 0) {
-                if (func_ov003_0220c93c(o, &v, b, c)) {
+                if (PlayerActor_BugNetSwingCanReach(o, &v, b, c)) {
                     return 1;
                 }
                 return 2;
@@ -9270,9 +9270,9 @@ extern "C" s32 func_ov003_0220ca70(Obj *o, u8 *a, V3 *b, u8 *c) {
             V3 w;
             s32 u;
             func_0200f3ec(&w, o, &o->unk_5c, &o->unk_8e, data_ov003_02230ae0);
-            func_0204edd8(&w, &w);
+            FieldPos_SnapToUnitCenter(&w, &w);
             if (func_0203081c(&w, &u, 0x19) >= 0x400) {
-                if (func_ov003_0220c93c(o, &w, b, c)) {
+                if (PlayerActor_BugNetSwingCanReach(o, &w, b, c)) {
                     return 1;
                 }
                 return 2;
@@ -9284,13 +9284,13 @@ extern "C" s32 func_ov003_0220ca70(Obj *o, u8 *a, V3 *b, u8 *c) {
 }
 
 namespace ns_0220c448 {
-extern "C" s32 func_ov003_0220c93c(Obj *o, V3 *a, V3 *b, u8 *c) {
+extern "C" s32 PlayerActor_BugNetSwingCanReach(Obj *o, V3 *a, V3 *b, u8 *c) {
     volatile V3 base;
     V3 *pv = &o->unk_5c;
     base.x = pv->x;
     base.y = pv->y;
     base.z = pv->z;
-    u16 *cell = func_0204eba0(data_021c47c4, a, 0);
+    u16 *cell = BlockMap_GetItemPtrAtPos(gSceneBlockMap, a, 0);
     if (cell) {
         if (*cell == 0x1b || *cell == 0x89) {
             return 1;
@@ -9334,11 +9334,11 @@ extern "C" s32 func_ov003_0220c93c(Obj *o, V3 *a, V3 *b, u8 *c) {
 }
 
 namespace ns_0220c448 {
-extern "C" s32 func_ov003_0220c888(Obj *o) {
+extern "C" s32 PlayerActor_BugNetSwingCheckWall(Obj *o) {
     V3 v;
     s32 t;
     if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 4)) {
-        if (func_ov003_022052f4(o)) {
+        if (PlayerActor_CheckToolHitActor(o)) {
             Unk_02006d14_setActionFlag(o, 9);
             Unk_02006d14_playSe(o, 0x846);
             o->unk_2dc = 0;
@@ -9359,7 +9359,7 @@ extern "C" s32 func_ov003_0220c888(Obj *o) {
 }
 
 namespace ns_0220c448 {
-extern "C" s32 func_ov003_0220c768(Obj *o, V3 *a, V3 *b, V3 *c) {
+extern "C" s32 PlayerActor_BugNetSwingCheckGround(Obj *o, V3 *a, V3 *b, V3 *c) {
     Unk_ov003_0220c768_A l;
     func_02032228(&l);
     s32 x, y;
@@ -9373,7 +9373,7 @@ extern "C" s32 func_ov003_0220c768(Obj *o, V3 *a, V3 *b, V3 *c) {
             Unk_ov003_0220c448_Pair p;
             x = 0;
             y = 0;
-            func_0204ee10(&x, &y, c);
+            FieldPos_ToUnit(&x, &y, c);
             p.a = x;
             p.b = y;
             func_02043f04(&p);
@@ -9386,7 +9386,7 @@ extern "C" s32 func_ov003_0220c768(Obj *o, V3 *a, V3 *b, V3 *c) {
         if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 5) == 0) {
             goto end0;
         }
-        if (func_020729bc(data_020cbb18, o->unk_7fc) == 0) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
             Unk_ov003_0220c768_B q;
             func_020339bc(&q, b, 0, 0);
             if (q.unk_30 == 0) {
@@ -9407,23 +9407,23 @@ end0:
 }
 
 namespace ns_0220c448 {
-extern "C" void func_ov003_0220c6e0(Obj *o) {
+extern "C" void PlayerActor_BugNetSwingUpdateRemote(Obj *o) {
     if (o->unk_2dc != 0 && o->unk_2d4.mid >= 3) {
-        if (func_ov003_0220c888(o) == 0) {
+        if (PlayerActor_BugNetSwingCheckWall(o) == 0) {
             V3 a(o->unk_688, o->unk_68c, o->unk_690);
             V3 b, c, d, e;
             WorldCurve_FromCurved(&a, &a);
             b = a;
-            func_ov003_0220cbc8(o, &b, &c, &d);
+            PlayerActor_BugNetSwingGetSweep(o, &b, &c, &d);
             e = a;
-            func_ov003_0220c768(o, &e, &c, &d);
+            PlayerActor_BugNetSwingCheckGround(o, &e, &c, &d);
         }
     }
 }
 }
 
 namespace ns_0220c448 {
-extern "C" void func_ov003_0220c698(Obj *o) {
+extern "C" void PlayerActor_BugNetSwingDecelerate(Obj *o) {
     if (o->unk_98 != 0) {
         s32 t = PlayerActor_DecreaseClamped(o->unk_98, 0, 0x171);
         Unk_020102ec_setSpeed(o, &t);
@@ -9435,7 +9435,7 @@ extern "C" void func_ov003_0220c698(Obj *o) {
 }
 
 namespace ns_0220c448 {
-extern "C" void func_ov003_0220c5b8(Obj *o) {
+extern "C" void PlayerActor_BugNetSwingCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc) == 0 && o->unk_2dc != 0) {
         return;
     }
@@ -9443,12 +9443,12 @@ extern "C" void func_ov003_0220c5b8(Obj *o) {
     if (p[0] != 0) {
         u32 id = p[4];
         if (id == 0xff) {
-            func_ov003_0220c4ac(o, 0, id, 0x30, 6, -1);
+            PlayerActor_RequestInsectShowCatch(o, 0, id, 0x30, 6, -1);
         } else {
             s32 r = func_ov003_02226ee8(id, (u8)o->unk_7fc);
             if (r == 0) {
                 u32 t = (u8)func_ov003_02226fac(id);
-                func_ov003_0220c4ac(o, 0, id, t, 6, -1);
+                PlayerActor_RequestInsectShowCatch(o, 0, id, t, 6, -1);
             } else if (r == 1) {
                 p[0] = 0;
             }
@@ -9456,7 +9456,7 @@ extern "C" void func_ov003_0220c5b8(Obj *o) {
     } else {
         if (AnimFrameCtrl_isFinished(func_0205dfa4(o->unk_59c) + 0x9c)) {
             o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
-            if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+            if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
                 PlayerActor_requestWait(o, 9, 1, -1);
             }
         }
@@ -9465,26 +9465,26 @@ extern "C" void func_ov003_0220c5b8(Obj *o) {
 }
 
 namespace ns_0220c448 {
-extern "C" void func_ov003_0220c4f0(Obj *o) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-        func_ov003_0220cf68(o);
-        func_ov003_0220cd4c(o);
-        func_ov003_0220cf78(o);
+extern "C" void PlayerActor_MainBugNetSwing(Obj *o) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        PlayerActor_BugNetSwingTurn(o);
+        PlayerActor_BugNetSwingUpdate(o);
+        PlayerActor_BugNetSwingAdvanceAnim(o);
         Unk_020102ec_moveWithCollision(o);
         func_0201071c(o);
-        func_ov003_0220c698(o);
-        func_ov003_0220c5b8(o);
-        func_ov003_0220cf30(o);
+        PlayerActor_BugNetSwingDecelerate(o);
+        PlayerActor_BugNetSwingCheckEnd(o);
+        PlayerActor_BugNetSwingTrackTarget(o);
     } else {
-        func_ov003_0220c6e0(o);
-        func_ov003_0220cf78(o);
+        PlayerActor_BugNetSwingUpdateRemote(o);
+        PlayerActor_BugNetSwingAdvanceAnim(o);
         if (func_0200ef08(o)) {
             Unk_020102ec_moveWithCollision(o);
         }
         func_0201071c(o);
-        func_ov003_0220c698(o);
-        func_ov003_0220c5b8(o);
-        func_ov003_0220cf30(o);
+        PlayerActor_BugNetSwingDecelerate(o);
+        PlayerActor_BugNetSwingCheckEnd(o);
+        PlayerActor_BugNetSwingTrackTarget(o);
     }
     u8 *p = &o->unk_7d0;
     V3 a, b(o->unk_604.v[9], o->unk_604.v[10], o->unk_604.v[11]);
@@ -9494,7 +9494,7 @@ extern "C" void func_ov003_0220c4f0(Obj *o) {
 }
 
 namespace ns_0220c448 {
-extern "C" s32 func_ov003_0220c4ac(Obj *o, u32 a, u32 b, u32 c, s32 d, s16 e) {
+extern "C" s32 PlayerActor_RequestInsectShowCatch(Obj *o, u32 a, u32 b, u32 c, s32 d, s16 e) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x57, d, e);
     Rec &q = m.v_0220c448.unk_0c;
@@ -9507,51 +9507,51 @@ extern "C" s32 func_ov003_0220c4ac(Obj *o, u32 a, u32 b, u32 c, s32 d, s16 e) {
 }
 
 namespace ns_0220c448 {
-extern "C" void func_ov003_0220c48c(u8 *p, u32 a, u32 b, u32 c, u8 d, s16 e) {
+extern "C" void PlayerActor_InsectShowCatchSetNetData(u8 *p, u32 a, u32 b, u32 c, u8 d, s16 e) {
     p[0] = a;
     p[1] = b;
     p[2] = c;
     p[3] = d;
-    func_ov003_0220c47c(p, e);
+    PlayerActor_InsectShowCatchSetNetAngle(p, e);
 }
 }
 
 namespace ns_0220c448 {
-extern "C" void func_ov003_0220c488(u8 *p, u32 a) {
+extern "C" void PlayerActor_InsectShowCatchSetNetState(u8 *p, u32 a) {
     p[0] = a;
 }
 }
 
 namespace ns_0220c448 {
-extern "C" void func_ov003_0220c47c(void *p, s32 a) {
-    func_020769c4((u8 *)p + 4, a);
+extern "C" void PlayerActor_InsectShowCatchSetNetAngle(void *p, s32 a) {
+    NetBuf_WriteS16B((u8 *)p + 4, a);
 }
 }
 
 namespace ns_0220c448 {
-extern "C" void func_ov003_0220c458(u8 *p, u8 *a, u8 *b, u8 *c, u8 *d, u16 *e) {
+extern "C" void PlayerActor_InsectShowCatchGetNetData(u8 *p, u8 *a, u8 *b, u8 *c, u8 *d, u16 *e) {
     *a = p[0];
     *b = p[1];
     *c = p[2];
     *d = p[3];
-    *e = func_ov003_0220c448(p);
+    *e = PlayerActor_InsectShowCatchGetNetAngle(p);
 }
 }
 
 namespace ns_0220c448 {
-extern "C" u32 func_ov003_0220c454(u8 *p) {
+extern "C" u32 PlayerActor_InsectShowCatchGetNetState(u8 *p) {
     return p[0];
 }
 }
 
 namespace ns_0220c448 {
-extern "C" u32 func_ov003_0220c448(void *p) {
-    return func_020769ac((u8 *)p + 4);
+extern "C" u32 PlayerActor_InsectShowCatchGetNetAngle(void *p) {
+    return NetBuf_ReadS16B((u8 *)p + 4);
 }
 }
 
 namespace ns_0220ba90 {
-extern "C" void func_ov003_0220c350(Obj *o, Rec *r) {
+extern "C" void PlayerActor_SetupInsectShowCatch(Obj *o, Rec *r) {
     u8 *q = &r->unk_0c.a;
     u32 a = q[0];
     u32 b = q[1];
@@ -9579,7 +9579,7 @@ extern "C" void func_ov003_0220c350(Obj *o, Rec *r) {
             rec->unk_09 = 7;
         }
     } else {
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             func_02034dd0(0x12, 0, 0);
             Hud_GetCountdown();
             HudCountdown_incCountB();
@@ -9588,23 +9588,23 @@ extern "C" void func_ov003_0220c350(Obj *o, Rec *r) {
         rec->unk_09 = 0;
     }
     rec->unk_00 = -1;
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-        func_ov003_0220c48c(o->unk_8ec, rec->unk_09, a, b, c, 0);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        PlayerActor_InsectShowCatchSetNetData(o->unk_8ec, rec->unk_09, a, b, c, 0);
     }
 }
 }
 
 namespace ns_0220ba90 {
-extern "C" void func_ov003_0220c30c(Obj *o, s32 a) {
+extern "C" void PlayerActor_NetInsectShowCatch(Obj *o, s32 a) {
     u8 buf[4];
     u32 e;
-    func_ov003_0220c458(o->unk_8ec, &buf[0], &buf[1], &buf[2], &buf[3], &e);
-    func_ov003_0220c4ac(o, buf[3], buf[1], buf[2], 6, a);
+    PlayerActor_InsectShowCatchGetNetData(o->unk_8ec, &buf[0], &buf[1], &buf[2], &buf[3], &e);
+    PlayerActor_RequestInsectShowCatch(o, buf[3], buf[1], buf[2], 6, a);
 }
 }
 
 namespace ns_0220ba90 {
-extern "C" void func_ov003_0220c2dc(Obj *o) {
+extern "C" void PlayerActor_EndInsectShowCatch(Obj *o) {
     if (o->unk_7d0.unk_00 != -1) {
         func_020902f8(o->unk_7d0.unk_00);
     }
@@ -9614,7 +9614,7 @@ extern "C" void func_ov003_0220c2dc(Obj *o) {
 }
 
 namespace ns_0220ba90 {
-extern "C" void func_ov003_0220bc84(Obj *o) {
+extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
     struct {
         s16 v[5];
         s32 pr[2];
@@ -9642,7 +9642,7 @@ extern "C" void func_ov003_0220bc84(Obj *o) {
     }
     s32 r7 = o->unk_7fc;
     if (*st == 0) {
-        if (func_020729bc(data_020cbb18, r7)) {
+        if (CommManager_isLocalSlot(gCommManager, r7)) {
             *st = 1;
         } else {
             *st = 9;
@@ -9653,7 +9653,7 @@ extern "C" void func_ov003_0220bc84(Obj *o) {
         u32 bt = b8;
         if (bt == 0x18 || bt == 0x30 || (u8)(bt + 0xce) <= 1) {
             t = o->unk_694;
-            func_ov003_02212034(&t, 0);
+            PlayerActor_ApplyHoldOffset(&t, 0);
             vv.x = ((V3 *)((u8 *)&t + 0x24))->x;
             vv.y = ((V3 *)((u8 *)&t + 0x24))->y;
             vv.z = ((V3 *)((u8 *)&t + 0x24))->z;
@@ -9681,7 +9681,7 @@ extern "C" void func_ov003_0220bc84(Obj *o) {
             d.z = d.z - e;
         }
     }
-    func_ov003_02212034(&t2, &d);
+    PlayerActor_ApplyHoldOffset(&t2, &d);
     if (rec->unk_00 != -1) {
         w.x = ((V3 *)((u8 *)&t2 + 0x24))->x;
         w.y = ((V3 *)((u8 *)&t2 + 0x24))->y;
@@ -9696,12 +9696,12 @@ extern "C" void func_ov003_0220bc84(Obj *o) {
     if (fr < 0x17 && o->unk_700 == 0x5c) {
         goto tail;
     }
-    g = data_020cbb18;
-    if (!func_020729bc(g, o->unk_7fc)) {
+    g = gCommManager;
+    if (!CommManager_isLocalSlot(g, o->unk_7fc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         if (*st < 6 || *st == 9) {
-            if (func_ov003_0220c454(sub) == 6) {
-                func_ov003_0222746c((u8)r7, func_ov003_0220c448(sub));
+            if (PlayerActor_InsectShowCatchGetNetState(sub) == 6) {
+                func_ov003_0222746c((u8)r7, PlayerActor_InsectShowCatchGetNetAngle(sub));
                 Unk_020102ec_startAnim(o, 0, 3, 3);
                 *st = 7;
             }
@@ -9790,7 +9790,7 @@ extern "C" void func_ov003_0220bc84(Obj *o) {
         func_0203e47c(o, sec);
         Unk_02006d14_clearActionFlag(o, 0x11);
         func_0203d7f8();
-        func_ov003_0220bb90(o, b8, 0, 6, -1);
+        PlayerActor_RequestInsectStore(o, b8, 0, 6, -1);
         Camera_SetModeDefault();
         break;
     }
@@ -9809,7 +9809,7 @@ extern "C" void func_ov003_0220bc84(Obj *o) {
         MsgRequest *sec = o;
         func_0203e47c(o, sec);
         Unk_02006d14_clearActionFlag(o, 0x11);
-        func_ov003_0220bb90(o, b8, 1, 6, -1);
+        PlayerActor_RequestInsectStore(o, b8, 1, 6, -1);
         Camera_SetModeDefault();
         break;
     }
@@ -9826,14 +9826,14 @@ extern "C" void func_ov003_0220bc84(Obj *o) {
         }
         s16 ang = func_02063b8c(0x2aaa) - 0x1555;
         func_ov003_0222746c((u8)r7, ang);
-        func_ov003_0220c47c(sub, ang);
+        PlayerActor_InsectShowCatchSetNetAngle(sub, ang);
         MsgRequest *sec = o;
         func_0203e47c(o, sec);
         Unk_02006d14_clearActionFlag(o, 0x11);
         func_0203d7f8();
         Unk_020102ec_startAnim(o, 0, 3, 3);
         *st = 6;
-        func_ov003_0220c488(sub, 6);
+        PlayerActor_InsectShowCatchSetNetState(sub, 6);
         Camera_SetModeDefault();
         return;
     }
@@ -9843,7 +9843,7 @@ extern "C" void func_ov003_0220bc84(Obj *o) {
                 o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
                 switch (mode) {
                 case 2:
-                    if (func_020729bc(g, o->unk_7fc)) {
+                    if (CommManager_isLocalSlot(g, o->unk_7fc)) {
                         if (Unk_02006d14_testActionFlag(o, 0x11)) {
                             Unk_02006d14_clearActionFlag(o, 0x11);
                             MsgRequest *sec = o;
@@ -9911,7 +9911,7 @@ tail:
 }
 
 namespace ns_0220ba90 {
-extern "C" void func_ov003_0220bbd4(Obj *o) {
+extern "C" void PlayerActor_MainInsectShowCatch(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     volatile V3 sv;
     V3 *pv = &o->unk_c4;
@@ -9924,7 +9924,7 @@ extern "C" void func_ov003_0220bbd4(Obj *o) {
     func_0200e7f4(o);
     func_0200ef08(o);
     func_0201071c(o);
-    ovcall::func_ov003_0220bc84(o);
+    ovcall::PlayerActor_InsectShowCatchUpdate(o);
     o->unk_c4.x = sv.x;
     o->unk_c4.y = sv.y;
     o->unk_c4.z = sv.z;
@@ -9935,7 +9935,7 @@ extern "C" void func_ov003_0220bbd4(Obj *o) {
 }
 
 namespace ns_0220ba90 {
-extern "C" s32 func_ov003_0220bb90(Obj *o, u32 a, u32 b, s32 id, s32 e) {
+extern "C" s32 PlayerActor_RequestInsectStore(Obj *o, u32 a, u32 b, s32 id, s32 e) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x58, id, *(s16 *)&e);
     Unk_ov003_0220bc84_Pair &q = m.v_0220ba90.unk_0c;
@@ -9947,47 +9947,47 @@ extern "C" s32 func_ov003_0220bb90(Obj *o, u32 a, u32 b, s32 id, s32 e) {
 }
 
 namespace ns_0220ba90 {
-extern "C" void func_ov003_0220bb70(u8 *p, u32 a, u32 b, u32 c) {
+extern "C" void PlayerActor_InsectStoreSetNetData(u8 *p, u32 a, u32 b, u32 c) {
     p[0] = a;
-    func_ov003_0220bb6c(p, b);
-    func_ov003_0220bb60(p, c);
+    PlayerActor_InsectStoreSetNetState(p, b);
+    PlayerActor_InsectStoreSetNetAngle(p, c);
 }
 }
 
 namespace ns_0220ba90 {
-extern "C" void func_ov003_0220bb6c(u8 *p, u32 a) {
+extern "C" void PlayerActor_InsectStoreSetNetState(u8 *p, u32 a) {
     p[1] = a;
 }
 }
 
 namespace ns_0220ba90 {
-extern "C" void func_ov003_0220bb60(u8 *p, u32 a) {
-    func_020769c4(p + 2, a);
+extern "C" void PlayerActor_InsectStoreSetNetAngle(u8 *p, u32 a) {
+    NetBuf_WriteS16B(p + 2, a);
 }
 }
 
 namespace ns_0220ba90 {
-extern "C" void func_ov003_0220bb40(u8 *p, u8 *a, u8 *b, u16 *c) {
+extern "C" void PlayerActor_InsectStoreGetNetData(u8 *p, u8 *a, u8 *b, u16 *c) {
     *a = p[0];
-    *b = func_ov003_0220bb3c(p);
-    *c = func_ov003_0220bb30(p);
+    *b = PlayerActor_InsectStoreGetNetState(p);
+    *c = PlayerActor_InsectStoreGetNetAngle(p);
 }
 }
 
 namespace ns_0220ba90 {
-extern "C" u32 func_ov003_0220bb3c(u8 *p) {
+extern "C" u32 PlayerActor_InsectStoreGetNetState(u8 *p) {
     return p[1];
 }
 }
 
 namespace ns_0220ba90 {
-extern "C" u32 func_ov003_0220bb30(u8 *p) {
-    return func_020769ac(p + 2);
+extern "C" u32 PlayerActor_InsectStoreGetNetAngle(u8 *p) {
+    return NetBuf_ReadS16B(p + 2);
 }
 }
 
 namespace ns_0220ba90 {
-extern "C" void func_ov003_0220badc(Obj *o, Rec *r) {
+extern "C" void PlayerActor_SetupInsectStore(Obj *o, Rec *r) {
     u8 x, y;
     Unk_ov003_0220bc84_Pair *q = &r->unk_0c;
     u8 *p = (u8 *)&o->unk_7d0;
@@ -9995,7 +9995,7 @@ extern "C" void func_ov003_0220badc(Obj *o, Rec *r) {
     y = q->b;
     p[0] = x;
     p[1] = y;
-    func_ov003_0220bb70(o->unk_8ec, x, y, 0);
+    PlayerActor_InsectStoreSetNetData(o->unk_8ec, x, y, 0);
     func_02010358(o, 0x5d, 3, 0);
     func_0205e1a0(o->unk_59c, 6, 3, 1);
     Unk_02006d14_playSe(o, 0x4f);
@@ -10003,22 +10003,22 @@ extern "C" void func_ov003_0220badc(Obj *o, Rec *r) {
 }
 
 namespace ns_0220ba90 {
-extern "C" s32 func_ov003_0220baa4(Obj *o, s32 a) {
+extern "C" s32 PlayerActor_NetInsectStore(Obj *o, s32 a) {
     u8 buf[4];
-    func_ov003_0220bb40(o->unk_8ec, &buf[0], &buf[1], (u16 *)&buf[2]);
-    return func_ov003_0220bb90(o, buf[0], buf[1], 6, a);
+    PlayerActor_InsectStoreGetNetData(o->unk_8ec, &buf[0], &buf[1], (u16 *)&buf[2]);
+    return PlayerActor_RequestInsectStore(o, buf[0], buf[1], 6, a);
 }
 }
 
 namespace ns_0220ba90 {
-extern "C" void func_ov003_0220ba90(Obj *o) {
+extern "C" void PlayerActor_EndInsectStore(Obj *o) {
     o->unk_458 = 0;
     o->unk_45a = 0;
 }
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b6f4(Obj *o) {
+extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
     s32 flag = 0;
     s16 w[4];
     V3 pos;
@@ -10046,7 +10046,7 @@ extern "C" void func_ov003_0220b6f4(Obj *o) {
     w[2] = h;
     w[3] = h;
     cp = o->unk_694;
-    func_ov003_02212034(&cp, 0);
+    PlayerActor_ApplyHoldOffset(&cp, 0);
     u8 *rec = (u8 *)&o->unk_7d0;
     u8 *p6 = o->unk_8ec;
     u8 *st = rec + 1;
@@ -10059,7 +10059,7 @@ extern "C" void func_ov003_0220b6f4(Obj *o) {
         func_ov003_02227074(o->unk_7fc, 1);
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 6, 1, -1);
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             w[0] = code;
             func_02099124(w);
         }
@@ -10080,7 +10080,7 @@ extern "C" void func_ov003_0220b6f4(Obj *o) {
         cp.v[9] = pos.x;
         cp.v[10] = pos.y;
         cp.v[11] = pos.z;
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             s32 s = o->unk_818;
             if (s == 5) {
                 if (func_0206e7d4(code) == 0) {
@@ -10108,20 +10108,20 @@ extern "C" void func_ov003_0220b6f4(Obj *o) {
             }
             v = (s16)(func_02063b8c(0x2aaa) - 0x1555);
             func_ov003_0222746c(id, v);
-            func_ov003_0220bb60(p6, v);
+            PlayerActor_InsectStoreSetNetAngle(p6, v);
             if (Unk_02006d14_testActionFlag(o, 0x11)) {
                 Unk_02006d14_clearActionFlag(o, 0x11);
                 func_0203e47c(o, o);
             }
             func_0203d7f8();
             *st = 2;
-            func_ov003_0220bb6c(p6, 2);
+            PlayerActor_InsectStoreSetNetState(p6, 2);
             Unk_020102ec_startAnim(o, 0, 4, 4);
             return;
         } else {
             o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
-            if (func_ov003_0220bb3c(p6) == 2) {
-                func_ov003_0222746c(id, func_ov003_0220bb30(p6));
+            if (PlayerActor_InsectStoreGetNetState(p6) == 2) {
+                func_ov003_0222746c(id, PlayerActor_InsectStoreGetNetAngle(p6));
                 *st = 2;
                 Unk_020102ec_startAnim(o, 0, 4, 4);
             }
@@ -10162,16 +10162,16 @@ extern "C" void func_ov003_0220b6f4(Obj *o) {
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b6d4(Obj *o) {
+extern "C" void PlayerActor_MainInsectStore(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     func_0200ef08(o);
     func_0201071c(o);
-    ovcall::func_ov003_0220b6f4(o);
+    ovcall::PlayerActor_InsectStoreUpdate(o);
 }
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b6cc(u8 *p, u8 a, u8 b, u32 c) {
+extern "C" void PlayerActor_ShovelReadySetArgs(u8 *p, u8 a, u8 b, u32 c) {
     p[0] = a;
     p[1] = b;
     p[2] = c;
@@ -10179,7 +10179,7 @@ extern "C" void func_ov003_0220b6cc(u8 *p, u8 a, u8 b, u32 c) {
 }
 
 namespace ns_0220b0f0 {
-extern "C" s32 func_ov003_0220b620(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestShovelReady(Obj *o, s32 a, s16 b) {
     Msg m;
     u8 *d = (u8 *)&m.v_0220b0f0.unk_0c;
     V3 v;
@@ -10203,25 +10203,25 @@ extern "C" s32 func_ov003_0220b620(Obj *o, s32 a, s16 b) {
     }
     s32 x = 0;
     s32 y = 0;
-    func_0204ee10(&x, &y, &v);
-    func_ov003_0220b6cc(d, x, y, f);
+    FieldPos_ToUnit(&x, &y, &v);
+    PlayerActor_ShovelReadySetArgs(d, x, y, f);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_0220b0f0 {
-extern "C" s32 func_ov003_0220b5d8(Obj *o, u8 *a, u8 *b, u8 *c, s32 id, s32 e) {
+extern "C" s32 PlayerActor_RequestShovelReadyAt(Obj *o, u8 *a, u8 *b, u8 *c, s32 id, s32 e) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x59, id, *(s16 *)&e);
-    func_ov003_0220b6cc((u8 *)&m.v_0220b0f0.unk_0c, *a, *b, *c);
+    PlayerActor_ShovelReadySetArgs((u8 *)&m.v_0220b0f0.unk_0c, *a, *b, *c);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b5bc(Rec *r, V3C v, s32 c, u32 d) {
+extern "C" void PlayerActor_ShovelReadySetWork(Rec *r, V3C v, s32 c, u32 d) {
     r->unk_00.x = v.x;
     r->unk_00.y = v.y;
     r->unk_00.z = v.z;
@@ -10232,7 +10232,7 @@ extern "C" void func_ov003_0220b5bc(Rec *r, V3C v, s32 c, u32 d) {
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b5b4(u8 *p, u8 a, u8 b, u32 c) {
+extern "C" void PlayerActor_ShovelReadySetNetData(u8 *p, u8 a, u8 b, u32 c) {
     p[0] = a;
     p[1] = b;
     p[2] = c;
@@ -10240,7 +10240,7 @@ extern "C" void func_ov003_0220b5b4(u8 *p, u8 a, u8 b, u32 c) {
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b5a0(u8 *src, u8 *a, u8 *b, u8 *c) {
+extern "C" void PlayerActor_ShovelReadyGetNetData(u8 *src, u8 *a, u8 *b, u8 *c) {
     *a = src[0];
     *b = src[1];
     *c = src[2];
@@ -10248,7 +10248,7 @@ extern "C" void func_ov003_0220b5a0(u8 *src, u8 *a, u8 *b, u8 *c) {
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b4c4(Obj *o, RecB *r) {
+extern "C" void PlayerActor_SetupShovelReady(Obj *o, RecB *r) {
     Unk_ov003_0220b0f0_B3 *q = &r->unk_0c;
     Rec *rp = &o->unk_7d0;
     u32 a = q->a;
@@ -10258,9 +10258,9 @@ extern "C" void func_ov003_0220b4c4(Obj *o, RecB *r) {
     V3 out;
     V3C t;
     s32 acc;
-    func_ov003_0220b5b4(o->unk_8ec, a, b, c);
+    PlayerActor_ShovelReadySetNetData(o->unk_8ec, a, b, c);
     func_02010358(o, 0x49, 3, 0);
-    func_0204ed8c(&pos, a, b);
+    FieldPos_FromUnitCenter(&pos, a, b);
     if (c == 0) {
         s32 d = o->unk_98;
         acc = 0x2000;
@@ -10276,26 +10276,26 @@ extern "C" void func_ov003_0220b4c4(Obj *o, RecB *r) {
         pos.x = out.x;
         pos.y = out.y;
         pos.z = out.z;
-        func_0204edd8(&pos, &pos);
+        FieldPos_SnapToUnitCenter(&pos, &pos);
     }
     s32 h = func_020e7b98(pos.x - o->unk_6f0, pos.z - o->unk_6f8);
     t.x = pos.x;
     t.y = pos.y;
     t.z = pos.z;
-    func_ov003_0220b5bc(rp, t, h, c);
+    PlayerActor_ShovelReadySetWork(rp, t, h, c);
 }
 }
 
 namespace ns_0220b0f0 {
-extern "C" s32 func_ov003_0220b488(Obj *o, s32 a) {
+extern "C" s32 PlayerActor_NetShovelReady(Obj *o, s32 a) {
     u8 b[3];
-    func_ov003_0220b5a0(o->unk_8ec, &b[0], &b[1], &b[2]);
-    return func_ov003_0220b5d8(o, &b[0], &b[1], &b[2], 6, a);
+    PlayerActor_ShovelReadyGetNetData(o->unk_8ec, &b[0], &b[1], &b[2]);
+    return PlayerActor_RequestShovelReadyAt(o, &b[0], &b[1], &b[2], 6, a);
 }
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b41c(Obj *o) {
+extern "C" void PlayerActor_ShovelReadyTurn(Obj *o) {
     Rec *r4 = &o->unk_7d0;
     s32 h;
     if (o->unk_98 == 0 && r4->unk_0e == 0) {
@@ -10315,7 +10315,7 @@ extern "C" void func_ov003_0220b41c(Obj *o) {
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b3dc(Obj *o) {
+extern "C" void PlayerActor_ShovelReadyTrackTarget(Obj *o) {
     V3 v;
     Rec *r = &o->unk_7d0;
     v.x = r->unk_00.x;
@@ -10327,7 +10327,7 @@ extern "C" void func_ov003_0220b3dc(Obj *o) {
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b330(Obj *o) {
+extern "C" void PlayerActor_ShovelReadyCheckEnd(Obj *o) {
     Rec *r4 = &o->unk_7d0;
     if (AnimFrameCtrl_isFinished(o->unk_2cc) != 0 || o->unk_700 == 0x4a) {
         if (o->unk_700 == 0x49) {
@@ -10339,14 +10339,14 @@ extern "C" void func_ov003_0220b330(Obj *o) {
                 a.x = r4->unk_00.x;
                 a.y = r4->unk_00.y;
                 a.z = r4->unk_00.z;
-                if (Unk_ov003_0220b330_IsZero(func_ov003_0220af3c(o, a, 1))) {
+                if (Unk_ov003_0220b330_IsZero(PlayerActor_ShovelDispatch(o, a, 1))) {
                     s32 x = 0;
                     s32 y = 0;
                     Pair w;
-                    func_0204ee10(&x, &y, &a);
+                    FieldPos_ToUnit(&x, &y, &a);
                     w.a = x;
                     w.b = y;
-                    func_ov003_0220b1f8(o, w, 6, -1);
+                    PlayerActor_RequestShovelWait(o, w, 6, -1);
                 }
             }
         }
@@ -10355,7 +10355,7 @@ extern "C" void func_ov003_0220b330(Obj *o) {
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b2f4(Obj *o) {
+extern "C" void PlayerActor_ShovelReadyCheckEndRemote(Obj *o) {
     o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         Unk_020102ec_startAnim(o, 0x4a, 3, 0);
@@ -10364,24 +10364,24 @@ extern "C" void func_ov003_0220b2f4(Obj *o) {
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b24c(Obj *o) {
+extern "C" void PlayerActor_MainShovelReady(Obj *o) {
     s32 r4 = o->unk_98;
     s32 t = PlayerActor_DecreaseClamped(r4, 0, 0x171);
     Unk_020102ec_setSpeed(o, &t);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-        func_ov003_0220b41c(o);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        PlayerActor_ShovelReadyTurn(o);
         Unk_020102ec_advanceAnim(o);
         Unk_020102ec_moveWithCollision(o);
         func_0201071c(o);
-        func_ov003_0220b330(o);
-        func_ov003_0220b3dc(o);
+        PlayerActor_ShovelReadyCheckEnd(o);
+        PlayerActor_ShovelReadyTrackTarget(o);
     } else {
         Unk_020102ec_advanceAnim(o);
         if (func_0200ef08(o)) {
             Unk_020102ec_moveWithCollision(o);
         }
         func_0201071c(o);
-        func_ov003_0220b2f4(o);
+        PlayerActor_ShovelReadyCheckEndRemote(o);
     }
     if (r4 != 0 && o->unk_98 == 0) {
         func_02090330(0x2a, &o->unk_5c, &o->unk_8e, 0);
@@ -10390,45 +10390,45 @@ extern "C" void func_ov003_0220b24c(Obj *o) {
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b240(u8 *d, Pair v) {
+extern "C" void PlayerActor_ShovelWaitSetArgs(u8 *d, Pair v) {
     d[0] = v.a;
     d[1] = v.b;
 }
 }
 
 namespace ns_0220b0f0 {
-extern "C" s32 func_ov003_0220b1f8(Obj *o, Pair p, s32 id, s16 e) {
+extern "C" s32 PlayerActor_RequestShovelWait(Obj *o, Pair p, s32 id, s16 e) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x5a, id, e);
-    func_ov003_0220b240((u8 *)&m.v_0220b0f0.unk_0c, p);
+    PlayerActor_ShovelWaitSetArgs((u8 *)&m.v_0220b0f0.unk_0c, p);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b1ec(u8 *p, Pair *v) {
+extern "C" void PlayerActor_ShovelWaitSetWork(u8 *p, Pair *v) {
     p[0] = v->a;
     p[1] = v->b;
 }
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b1e0(u8 *p, Pair *v) {
+extern "C" void PlayerActor_ShovelWaitSetNetData(u8 *p, Pair *v) {
     p[0] = v->a;
     p[1] = v->b;
 }
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b1d4(u8 *p, Pair *out) {
+extern "C" void PlayerActor_ShovelWaitGetNetData(u8 *p, Pair *out) {
     out->a = p[0];
     out->b = p[1];
 }
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b168(Obj *o, RecB *r) {
+extern "C" void PlayerActor_SetupShovelWait(Obj *o, RecB *r) {
     Pair w;
     Pair w2;
     Unk_ov003_0220b0f0_B3 *q = &r->unk_0c;
@@ -10437,7 +10437,7 @@ extern "C" void func_ov003_0220b168(Obj *o, RecB *r) {
     u32 a = q->a;
     w.a = a;
     w.b = b;
-    func_ov003_0220b1ec(p, &w);
+    PlayerActor_ShovelWaitSetWork(p, &w);
     if (o->unk_808 == -1) {
         p[2] = 0;
     } else {
@@ -10445,7 +10445,7 @@ extern "C" void func_ov003_0220b168(Obj *o, RecB *r) {
     }
     w2.a = a;
     w2.b = b;
-    func_ov003_0220b1e0(o->unk_8ec, &w2);
+    PlayerActor_ShovelWaitSetNetData(o->unk_8ec, &w2);
     if (o->unk_700 == 0x4a) {
         Unk_020102ec_startAnim(o, 0x4a, 3, 0);
     }
@@ -10453,27 +10453,27 @@ extern "C" void func_ov003_0220b168(Obj *o, RecB *r) {
 }
 
 namespace ns_0220b0f0 {
-extern "C" s32 func_ov003_0220b130(Obj *o, s16 a) {
+extern "C" s32 PlayerActor_NetShovelWait(Obj *o, s16 a) {
     Pair v;
     v.a = 0;
     v.b = 0;
-    func_ov003_0220b1d4(o->unk_8ec, &v);
-    return func_ov003_0220b1f8(o, v, 6, a);
+    PlayerActor_ShovelWaitGetNetData(o->unk_8ec, &v);
+    return PlayerActor_RequestShovelWait(o, v, 6, a);
 }
 }
 
 namespace ns_0220b0f0 {
-extern "C" void func_ov003_0220b0f0(Obj *o) {
+extern "C" void PlayerActor_ShovelWaitTrackTarget(Obj *o) {
     V3 v;
     u8 *p = (u8 *)&o->unk_7d0;
-    func_0204ed8c(&v, p[0], p[1]);
+    FieldPos_FromUnitCenter(&v, p[0], p[1]);
     func_02010740(o, &v, 0xf33, 0x1000);
     func_02089040((u8 *)o + 0x1c0);
 }
 }
 
 namespace ns_0220a680 {
-extern "C" s32 func_ov003_0220af3c(Obj *o, V3 *v, u8 f) {
+extern "C" s32 PlayerActor_ShovelDispatch(Obj *o, V3 *v, u8 f) {
     Pair xy;
     V3 pos;
     s32 r6;
@@ -10487,16 +10487,16 @@ extern "C" s32 func_ov003_0220af3c(Obj *o, V3 *v, u8 f) {
         pos.y = v->y;
         pos.z = v->z;
     } else {
-        func_0204ed8c(&pos, r5->a, r5->b);
+        FieldPos_FromUnitCenter(&pos, r5->a, r5->b);
         if (r5->c == 0) {
             r7 = 1;
             f = 1;
         }
     }
-    r6 = func_ov003_02205928(o, &pos, &f);
+    r6 = PlayerActor_ShovelClassifyTarget(o, &pos, &f);
     xy.a = 0;
     xy.b = 0;
-    func_0204ee10(&xy.a, &xy.b, &pos);
+    FieldPos_ToUnit(&xy.a, &xy.b, &pos);
     if (r7 != 0) {
         if (o->unk_808 != -1) r5->c = 1;
     }
@@ -10504,36 +10504,36 @@ extern "C" s32 func_ov003_0220af3c(Obj *o, V3 *v, u8 f) {
     case 0:
         break;
     case 1:
-        func_ov003_0220ae54(o, 6, -1);
+        PlayerActor_RequestAct5B(o, 6, -1);
         break;
     case 2:
-        func_ov003_0220ac74(o, 0, xy, 6, -1);
+        PlayerActor_RequestShovelStrike(o, 0, xy, 6, -1);
         break;
     case 3:
-        func_ov003_0220a710(o, 0, pos, 6, -1);
+        PlayerActor_RequestDig(o, 0, pos, 6, -1);
         break;
     case 4:
-        func_ov003_0220a710(o, 1, pos, 6, -1);
+        PlayerActor_RequestDig(o, 1, pos, 6, -1);
         break;
     case 5:
-        func_ov003_0220a344(o, pos, 0, 6, -1);
+        PlayerActor_RequestDigUpItem(o, pos, 0, 6, -1);
         break;
     case 6: {
         Pair xy2;
         xy2.a = 0;
         xy2.b = 0;
-        func_0204ee10(&xy2.a, &xy2.b, &pos);
-        func_ov003_022093bc(o, 0, xy2, 0xfff1, 6, -1);
+        FieldPos_ToUnit(&xy2.a, &xy2.b, &pos);
+        PlayerActor_RequestFillHole(o, 0, xy2, 0xfff1, 6, -1);
         break;
     }
     case 7:
-        func_ov003_0220ad70(o, 6, -1);
+        PlayerActor_RequestAct5C(o, 6, -1);
         break;
     case 8:
-        func_ov003_0220ac74(o, 1, xy, 6, -1);
+        PlayerActor_RequestShovelStrike(o, 1, xy, 6, -1);
         break;
     case 9:
-        func_ov003_0220a344(o, pos, 1, 6, -1);
+        PlayerActor_RequestDigUpItem(o, pos, 1, 6, -1);
         break;
     }
     return r6;
@@ -10541,25 +10541,25 @@ extern "C" s32 func_ov003_0220af3c(Obj *o, V3 *v, u8 f) {
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220ae8c(Obj *o) {
+extern "C" void PlayerActor_MainShovelWait(Obj *o) {
     s32 r4 = o->unk_98;
     s32 t = PlayerActor_Decelerate(r4, 0);
     Unk_020102ec_setSpeed(o, &t);
     Unk_020102ec_advanceAnim(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         V3 v;
         Unk_020102ec_moveWithCollision(o);
         func_0201071c(o);
         v.x = 0;
         v.y = 0;
         v.z = 0;
-        func_ov003_0220af3c(o, &v, 0);
+        PlayerActor_ShovelDispatch(o, &v, 0);
     } else {
         if (func_0200ef08(o)) Unk_020102ec_moveWithCollision(o);
         func_0201071c(o);
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
     }
-    func_ov003_0220b0f0(o);
+    PlayerActor_ShovelWaitTrackTarget(o);
     if (r4 != 0) {
         if (o->unk_98 == 0) {
             func_02090330(0x2a, &o->unk_5c, &o->unk_8e, 0);
@@ -10569,7 +10569,7 @@ extern "C" void func_ov003_0220ae8c(Obj *o) {
 }
 
 namespace ns_0220a680 {
-extern "C" s32 func_ov003_0220ae54(Obj *o, u32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestAct5B(Obj *o, u32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x5b, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -10578,19 +10578,19 @@ extern "C" s32 func_ov003_0220ae54(Obj *o, u32 a, s16 b) {
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220ae40(Obj *o) {
+extern "C" void PlayerActor_SetupAct5B(Obj *o) {
     func_02010358(o, 0x4d, 3, 0);
 }
 }
 
 namespace ns_0220a680 {
-extern "C" s32 func_ov003_0220ae34(Obj *o, s16 x) {
-    return func_ov003_0220ae54(o, 6, x);
+extern "C" s32 PlayerActor_NetAct5B(Obj *o, s16 x) {
+    return PlayerActor_RequestAct5B(o, 6, x);
 }
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220ae04(Obj *o) {
+extern "C" void PlayerActor_Act5BUpdate(Obj *o) {
     if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 5)) {
         Unk_02006d14_playSe(o, 0x842);
     }
@@ -10599,7 +10599,7 @@ extern "C" void func_ov003_0220ae04(Obj *o) {
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220adc4(Obj *o) {
+extern "C" void PlayerActor_Act5BCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
@@ -10608,15 +10608,15 @@ extern "C" void func_ov003_0220adc4(Obj *o) {
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220ada8(Obj *o) {
-    func_ov003_0220ae04(o);
+extern "C" void PlayerActor_MainAct5B(Obj *o) {
+    PlayerActor_Act5BUpdate(o);
     func_0201071c(o);
-    func_ov003_0220adc4(o);
+    PlayerActor_Act5BCheckEnd(o);
 }
 }
 
 namespace ns_0220a680 {
-extern "C" s32 func_ov003_0220ad70(Obj *o, u32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestAct5C(Obj *o, u32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x5c, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -10625,19 +10625,19 @@ extern "C" s32 func_ov003_0220ad70(Obj *o, u32 a, s16 b) {
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220ad5c(Obj *o) {
+extern "C" void PlayerActor_SetupAct5C(Obj *o) {
     func_02010358(o, 0x5e, 3, 0);
 }
 }
 
 namespace ns_0220a680 {
-extern "C" s32 func_ov003_0220ad50(Obj *o, s16 x) {
-    return func_ov003_0220ad70(o, 6, x);
+extern "C" s32 PlayerActor_NetAct5C(Obj *o, s16 x) {
+    return PlayerActor_RequestAct5C(o, 6, x);
 }
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220ad10(Obj *o) {
+extern "C" void PlayerActor_Act5CCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
@@ -10646,18 +10646,18 @@ extern "C" void func_ov003_0220ad10(Obj *o) {
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220acd0(Obj *o) {
+extern "C" void PlayerActor_MainAct5C(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     Unk_020102ec_moveWithCollision(o);
     func_0201071c(o);
     s32 t = PlayerActor_DecreaseClamped(o->unk_98, 0, 0x171);
     Unk_020102ec_setSpeed(o, &t);
-    func_ov003_0220ad10(o);
+    PlayerActor_Act5CCheckEnd(o);
 }
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220acc4(B3 *d, Pair p, u32 c) {
+extern "C" void PlayerActor_ShovelStrikeSetArgs(B3 *d, Pair p, u32 c) {
     d->a = p.a;
     d->b = p.b;
     d->c = c;
@@ -10665,17 +10665,17 @@ extern "C" void func_ov003_0220acc4(B3 *d, Pair p, u32 c) {
 }
 
 namespace ns_0220a680 {
-extern "C" s32 func_ov003_0220ac74(Obj *o, u32 id, Pair p, s32 b, s32 c) {
+extern "C" s32 PlayerActor_RequestShovelStrike(Obj *o, u32 id, Pair p, s32 b, s32 c) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x5d, b, *(s16 *)&c);
-    func_ov003_0220acc4((B3 *)&m.v_0220a680.unk_0c, p, id);
+    PlayerActor_ShovelStrikeSetArgs((B3 *)&m.v_0220a680.unk_0c, p, id);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220ac68(Rec *r, Pair p, u8 c) {
+extern "C" void PlayerActor_ShovelStrikeSetWork(Rec *r, Pair p, u8 c) {
     r->a = p.a;
     r->b = p.b;
     r->c = c;
@@ -10683,7 +10683,7 @@ extern "C" void func_ov003_0220ac68(Rec *r, Pair p, u8 c) {
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220ac54(u8 *d, u8 a, u8 b, u8 c, u8 e) {
+extern "C" void PlayerActor_ShovelStrikeSetNetData(u8 *d, u8 a, u8 b, u8 c, u8 e) {
     d[0] = a;
     d[1] = b;
     d[2] = c;
@@ -10692,7 +10692,7 @@ extern "C" void func_ov003_0220ac54(u8 *d, u8 a, u8 b, u8 c, u8 e) {
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220ac38(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d) {
+extern "C" void PlayerActor_ShovelStrikeGetNetData(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d) {
     *a = s[0];
     *b = s[1];
     *c = s[2];
@@ -10701,7 +10701,7 @@ extern "C" void func_ov003_0220ac38(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d) {
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220abd4(Obj *o, Msg *m) {
+extern "C" void PlayerActor_SetupShovelStrike(Obj *o, Msg *m) {
     B3 *q = (B3 *)&m->v_0220a680.unk_0c;
     u8 c = q->c;
     s32 a = q->a;
@@ -10709,8 +10709,8 @@ extern "C" void func_ov003_0220abd4(Obj *o, Msg *m) {
     Pair p;
     p.a = a;
     p.b = b;
-    func_ov003_0220ac68(&o->unk_7d0, p, c);
-    func_ov003_0220ac54(o->unk_8ec, c, a, b, o->unk_168);
+    PlayerActor_ShovelStrikeSetWork(&o->unk_7d0, p, c);
+    PlayerActor_ShovelStrikeSetNetData(o->unk_8ec, c, a, b, o->unk_168);
     func_02010358(o, 0x4c, 3, 0);
     if (c != 0) {
         Unk_02006d14_setActionFlag(o, 0x1c);
@@ -10719,22 +10719,22 @@ extern "C" void func_ov003_0220abd4(Obj *o, Msg *m) {
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220ab80(Obj *o, s32 x) {
+extern "C" void PlayerActor_NetShovelStrike(Obj *o, s32 x) {
     u8 b[4];
-    func_ov003_0220ac38(o->unk_8ec, &b[0], &b[1], &b[2], &b[3]);
+    PlayerActor_ShovelStrikeGetNetData(o->unk_8ec, &b[0], &b[1], &b[2], &b[3]);
     o->unk_168 = b[3];
     if (b[0] == 0) {
         Pair p;
         p.a = b[1];
         p.b = b[2];
-        func_ov003_0220ac74(o, 0, p, 6, x);
+        PlayerActor_RequestShovelStrike(o, 0, p, 6, x);
     }
 }
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220ab20(Obj *o) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc) == 0) {
+extern "C" void PlayerActor_EndShovelStrike(Obj *o) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
             Rec *r = &o->unk_7d0;
             if (r->c != 0) {
@@ -10753,7 +10753,7 @@ extern "C" void func_ov003_0220ab20(Obj *o) {
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220a7fc(Obj *o) {
+extern "C" void PlayerActor_ShovelStrikeUpdate(Obj *o) {
     s16 h[2];
     s32 xy[2];
     V3 pos;
@@ -10777,13 +10777,13 @@ extern "C" void func_ov003_0220a7fc(Obj *o) {
         func_0200f45c(&pos, o);
         xy[0] = 0;
         xy[1] = 0;
-        func_0204ee10(&xy[0], &xy[1], &pos);
+        FieldPos_ToUnit(&xy[0], &xy[1], &pos);
         s32 x, y, hx, hy;
         x = *(volatile s32 *)&xy[0];
         y = *(volatile s32 *)&xy[1];
         hx = x >> 4;
         hy = y >> 4;
-        p = func_0204ebd8(data_021c47c4, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+        p = BlockMap_GetItemPtr(gSceneBlockMap, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (p != NULL) {
             if (Unk_ov003_0220a7fc_Chk(p)) {
                 func_ov003_0221cd34(o->unk_7fc, Pair(xy[0], xy[1]), 1);
@@ -10855,7 +10855,7 @@ extern "C" void func_ov003_0220a7fc(Obj *o) {
             }
             break;
         case 3:
-            if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+            if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
                 if (func_ov003_022135c4(o->unk_164, 1) == 0) {
                     Unk_02006d14_playSe(o, 0x7df);
                 }
@@ -10871,7 +10871,7 @@ extern "C" void func_ov003_0220a7fc(Obj *o) {
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220a7bc(Obj *o) {
+extern "C" void PlayerActor_ShovelStrikeCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
@@ -10880,20 +10880,20 @@ extern "C" void func_ov003_0220a7bc(Obj *o) {
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220a774(Obj *o) {
-    func_ov003_0220a7fc(o);
+extern "C" void PlayerActor_MainShovelStrike(Obj *o) {
+    PlayerActor_ShovelStrikeUpdate(o);
     Unk_020102ec_moveWithCollision(o);
     func_0201071c(o);
     s32 v = o->unk_98;
     if (v < 0) v = -v;
     s32 t = PlayerActor_Decelerate(v, 0) * -1;
     Unk_020102ec_setSpeed(o, &t);
-    func_ov003_0220a7bc(o);
+    PlayerActor_ShovelStrikeCheckEnd(o);
 }
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220a764(P3 *p, u32 id, V3 v) {
+extern "C" void PlayerActor_DigSetArgs(P3 *p, u32 id, V3 v) {
     p->id = id;
     p->pos.x = v.x;
     p->pos.y = v.y;
@@ -10902,17 +10902,17 @@ extern "C" void func_ov003_0220a764(P3 *p, u32 id, V3 v) {
 }
 
 namespace ns_0220a680 {
-extern "C" s32 func_ov003_0220a710(Obj *o, u32 id, V3 v, s32 b, s16 c) {
+extern "C" s32 PlayerActor_RequestDig(Obj *o, u32 id, V3 v, s32 b, s16 c) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x5e, b, c);
-    func_ov003_0220a764((P3 *)&m.v_0220a680.unk_0c, id, v);
+    PlayerActor_DigSetArgs((P3 *)&m.v_0220a680.unk_0c, id, v);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220a700(Rec *r, u32 id, V3 v) {
+extern "C" void PlayerActor_DigSetWork(Rec *r, u32 id, V3 v) {
     r->a = id;
     r->pos.x = v.x;
     r->pos.y = v.y;
@@ -10921,12 +10921,12 @@ extern "C" void func_ov003_0220a700(Rec *r, u32 id, V3 v) {
 }
 
 namespace ns_0220a680 {
-extern "C" s32 func_ov003_0220a684(Obj *o, Msg *m) {
+extern "C" s32 PlayerActor_SetupDig(Obj *o, Msg *m) {
     P3 *p = (P3 *)&m->v_0220a680.unk_0c;
     u32 id = p->id;
     V3 t = p->pos;
     Rec *r = &o->unk_7d0;
-    func_ov003_0220a700(r, id, t);
+    PlayerActor_DigSetWork(r, id, t);
     if ((u32)(o->unk_700 - 0x49) <= 1) {
         if (r->a != 0) {
             func_02010358(o, 0x4e, 3, 0);
@@ -10941,13 +10941,13 @@ extern "C" s32 func_ov003_0220a684(Obj *o, Msg *m) {
 }
 
 namespace ns_0220a680 {
-extern "C" void func_ov003_0220a680(Obj *o) {
+extern "C" void PlayerActor_NetDig(Obj *o) {
 }
 }
 
 namespace ns_02209d50 {
-extern "C" void func_ov003_0220a5e4(Obj *o) {
-    if (!func_020729bc(data_020cbb18, o->unk_7fc)) {
+extern "C" void PlayerActor_EndDig(Obj *o) {
+    if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
             Rec2 *r = (Rec2 *)&o->unk_7d0;
             V3D p;
@@ -10967,7 +10967,7 @@ extern "C" void func_ov003_0220a5e4(Obj *o) {
 }
 
 namespace ns_02209d50 {
-extern "C" void func_ov003_0220a484(Obj *o) {
+extern "C" void PlayerActor_DigUpdate(Obj *o) {
     s16 h;
     V3D p;
     s32 a, b;
@@ -10990,7 +10990,7 @@ extern "C" void func_ov003_0220a484(Obj *o) {
                 func_02090330(7, &p, &h, 0);
                 func_ov003_02219c5c(o->unk_7fc, p, 0);
                 Unk_02006d14_clearActionFlag(o, 0x1c);
-                func_0204ee10(&a, &b, &p);
+                FieldPos_ToUnit(&a, &b, &p);
                 func_02030504(a, b);
                 break;
             }
@@ -11022,7 +11022,7 @@ extern "C" void func_ov003_0220a484(Obj *o) {
 }
 
 namespace ns_02209d50 {
-extern "C" void func_ov003_0220a410(Obj *o) {
+extern "C" void PlayerActor_DigCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         if (o->unk_700 == 0x49) {
             if (*(u8 *)&o->unk_7d0 != 0) {
@@ -11039,10 +11039,10 @@ extern "C" void func_ov003_0220a410(Obj *o) {
 }
 
 namespace ns_02209d50 {
-extern "C" void func_ov003_0220a3b4(Obj *o) {
+extern "C" void PlayerActor_MainDig(Obj *o) {
     V3 v;
-    func_ov003_0220a484(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+    PlayerActor_DigUpdate(o);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         Unk_020102ec_moveWithCollision(o);
     } else {
         Rec2 *r = (Rec2 *)&o->unk_7d0;
@@ -11050,12 +11050,12 @@ extern "C" void func_ov003_0220a3b4(Obj *o) {
         func_0200ede8(o, &v);
     }
     func_0201071c(o);
-    func_ov003_0220a410(o);
+    PlayerActor_DigCheckEnd(o);
 }
 }
 
 namespace ns_02209d50 {
-extern "C" void func_ov003_0220a39c(Pay *d, V3 v, u16 a, u8 b) {
+extern "C" void PlayerActor_DigUpItemSetArgs(Pay *d, V3 v, u16 a, u8 b) {
     d->v.x = v.x;
     d->v.y = v.y;
     d->v.z = v.z;
@@ -11065,21 +11065,21 @@ extern "C" void func_ov003_0220a39c(Pay *d, V3 v, u16 a, u8 b) {
 }
 
 namespace ns_02209d50 {
-extern "C" s32 func_ov003_0220a344(Obj *o, V3 v, u8 x, s32 c, s32 e) {
+extern "C" s32 PlayerActor_RequestDigUpItem(Obj *o, V3 v, u8 x, s32 c, s32 e) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x5f, c, *(s16 *)&e);
-    func_ov003_0220a39c(&m.v_02209d50.unk_0c, v, 0xfff1, x);
+    PlayerActor_DigUpItemSetArgs(&m.v_02209d50.unk_0c, v, 0xfff1, x);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_02209d50 {
-extern "C" s32 func_ov003_0220a2bc(Obj *o, V3 v, u16 a, u8 b, s32 c, s32 d) {
+extern "C" s32 PlayerActor_RequestDigUpItemWith(Obj *o, V3 v, u16 a, u8 b, s32 c, s32 d) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x5f, c, *(s16 *)&d);
-    func_ov003_0220a39c(&m.v_02209d50.unk_0c, v, a, b);
-    if (!func_020729bc(data_020cbb18, o->unk_7fc)) {
+    PlayerActor_DigUpItemSetArgs(&m.v_02209d50.unk_0c, v, a, b);
+    if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         o->unk_81c = o->unk_81e = 0xfff1;
     }
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -11088,25 +11088,25 @@ extern "C" s32 func_ov003_0220a2bc(Obj *o, V3 v, u16 a, u8 b, s32 c, s32 d) {
 }
 
 namespace ns_02209d50 {
-extern "C" void func_ov003_0220a29c(u8 *p, V2 v, u16 a, u8 b) {
+extern "C" void PlayerActor_DigUpItemSetNetData(u8 *p, V2 v, u16 a, u8 b) {
     p[2] = v.x;
     p[3] = v.y;
-    func_02076964(p, a);
+    NetBuf_WriteU16(p, a);
     p[4] = b;
 }
 }
 
 namespace ns_02209d50 {
-extern "C" void func_ov003_0220a27c(u8 *p, s32 *xy, u16 *a, u8 *b) {
+extern "C" void PlayerActor_DigUpItemGetNetData(u8 *p, s32 *xy, u16 *a, u8 *b) {
     xy[0] = p[2];
     xy[1] = p[3];
-    *a = func_0207694c(p);
+    *a = NetBuf_ReadU16(p);
     *b = p[4];
 }
 }
 
 namespace ns_02209d50 {
-extern "C" void func_ov003_02209fc8(Obj *o, Msg *m) {
+extern "C" void PlayerActor_SetupDigUpItem(Obj *o, Msg *m) {
     Pay *pl = &m->v_02209d50.unk_0c;
     V3 v = pl->v;
     u16 loc = pl->a;
@@ -11137,17 +11137,17 @@ extern "C" void func_ov003_02209fc8(Obj *o, Msg *m) {
     s32 xy[2];
     xy[0] = 0;
     xy[1] = 0;
-    func_0204ee10(&xy[0], &xy[1], &v);
+    FieldPos_ToUnit(&xy[0], &xy[1], &v);
     u16 t = o->unk_81c;
     V2 pr;
     pr.x = xy[0];
     pr.y = xy[1];
-    func_ov003_0220a29c(o->unk_8ec, pr, t, b);
+    PlayerActor_DigUpItemSetNetData(o->unk_8ec, pr, t, b);
     s32 px = *(volatile s32 *)&xy[0];
     s32 py = *(volatile s32 *)&xy[1];
     s32 hx = px >> 4;
     s32 hy = py >> 4;
-    u16 *cell = func_0204ebd8(data_021c47c4, hx, hy, px - (hx << 4), py - (hy << 4), 0);
+    u16 *cell = BlockMap_GetItemPtr(gSceneBlockMap, hx, hy, px - (hx << 4), py - (hy << 4), 0);
     if (!Unk_ov003_02209fc8_IsNone(&loc)) {
         o->unk_81c = o->unk_81e = loc;
         if (Unk_ov003_02209fc8_Rng(cell, 0xfc, 0xfd)) {
@@ -11155,7 +11155,7 @@ extern "C" void func_ov003_02209fc8(Obj *o, Msg *m) {
             Unk_02006d14_setActionFlag(o, 0xd);
         }
     } else {
-        if (Unk_ov003_02209fc8_Eq(&o->unk_81c) || !func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (Unk_ov003_02209fc8_Eq(&o->unk_81c) || !CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             if (cell == 0) {
                 o->unk_81c = o->unk_81e = 0xfff1;
             } else {
@@ -11163,7 +11163,7 @@ extern "C" void func_ov003_02209fc8(Obj *o, Msg *m) {
             }
         }
     }
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         func_02034dd0(0x12, 0xf, 0);
         if (Unk_ov003_02209fc8_Rng(&o->unk_81c, 0x1549, 0x1549)) func_020787f8(&o->unk_5c);
     }
@@ -11173,7 +11173,7 @@ extern "C" void func_ov003_02209fc8(Obj *o, Msg *m) {
 }
 
 namespace ns_02209d50 {
-extern "C" void func_ov003_02209f68(Obj *o, s32 a) {
+extern "C" void PlayerActor_NetDigUpItem(Obj *o, s32 a) {
     s32 xy[2];
     V3 v;
     u16 h;
@@ -11181,17 +11181,17 @@ extern "C" void func_ov003_02209f68(Obj *o, s32 a) {
     if (o->unk_7ec == 0) {
         xy[0] = 0;
         xy[1] = 0;
-        func_ov003_0220a27c(o->unk_8ec, xy, &h, &b);
-        func_0204ed8c(&v, xy[0], xy[1]);
+        PlayerActor_DigUpItemGetNetData(o->unk_8ec, xy, &h, &b);
+        FieldPos_FromUnitCenter(&v, xy[0], xy[1]);
         V3 w = v;
-        func_ov003_0220a2bc(o, w, h, b, 6, a);
+        PlayerActor_RequestDigUpItemWith(o, w, h, b, 6, a);
     }
 }
 }
 
 namespace ns_02209d50 {
-extern "C" void func_ov003_02209ef4(Obj *o, s32 p) {
-    if (!func_020729bc(data_020cbb18, o->unk_7fc)) {
+extern "C" void PlayerActor_EndDigUpItem(Obj *o, s32 p) {
+    if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
             Rec *r = &o->unk_7d0;
             V3 v;
@@ -11206,7 +11206,7 @@ extern "C" void func_ov003_02209ef4(Obj *o, s32 p) {
 }
 
 namespace ns_02209d50 {
-extern "C" void func_ov003_02209d50(Obj *o) {
+extern "C" void PlayerActor_DigUpItemUpdate(Obj *o) {
     s32 a, b;
     V3 p;
     volatile Unk_ov003_02209d50_P3 sv;
@@ -11226,7 +11226,7 @@ extern "C" void func_ov003_02209d50(Obj *o) {
             break;
         case 12: {
             func_02090330(8, &p, 0, 0);
-            func_0204ee10(&a, &b, &p);
+            FieldPos_ToUnit(&a, &b, &p);
             func_02030504(a, b);
             func_ov003_02219c5c(o->unk_7fc, p, r->unk_0d);
             Unk_02006d14_setActionFlag(o, 0xd);
@@ -11265,7 +11265,7 @@ extern "C" void func_ov003_02209d50(Obj *o) {
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_022099d0(Obj *o) {
+extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
     void *l;
     struct {
         u32 pad;
@@ -11281,14 +11281,14 @@ extern "C" void func_ov003_022099d0(Obj *o) {
     Unk_ov003_022093bc_RecC *r5 = &o->unk_7d0.c;
     u8 *r6 = &r5->unk_0c;
     s32 lvl = (u32)(o->unk_2d4 << 4) >> 16;
-    l = data_020cbb18;
-    if (func_020729bc(l, o->unk_7fc) != 0) {
+    l = gCommManager;
+    if (CommManager_isLocalSlot(l, o->unk_7fc) != 0) {
         if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0x13) != 0) Camera_SetMode4();
     }
     if (lvl < 0x19) return;
     if (func_0200f4c0(o, 0x400) == 0) return;
     if (AnimFrameCtrl_isFinished(o->unk_2cc) == 0) return;
-    if (func_020729bc(l, o->unk_7fc) == 0) {
+    if (CommManager_isLocalSlot(l, o->unk_7fc) == 0) {
         Unk_02006d14_clearActionFlag(o, 0x12);
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         return;
@@ -11349,10 +11349,10 @@ extern "C" void func_ov003_022099d0(Obj *o) {
         v0.x = r5->unk_00.x;
         v0.y = r5->unk_00.y;
         v0.z = r5->unk_00.z;
-        func_0204ee10(&ab.a0, &ab.b0, &v0);
+        FieldPos_ToUnit(&ab.a0, &ab.b0, &v0);
         ab.p0.a = ab.a0;
         ab.p0.b = ab.b0;
-        func_ov003_0220991c(o, &ab.p0, 0, 6, -1);
+        PlayerActor_RequestDugItemStore(o, &ab.p0, 0, 6, -1);
         Camera_SetModeDefault();
         break;
     case 3:
@@ -11369,10 +11369,10 @@ extern "C" void func_ov003_022099d0(Obj *o) {
         v1.x = r5->unk_00.x;
         v1.y = r5->unk_00.y;
         v1.z = r5->unk_00.z;
-        func_0204ee10(&ab.a1, &ab.b1, &v1);
+        FieldPos_ToUnit(&ab.a1, &ab.b1, &v1);
         ab.p1.a = ab.a1;
         ab.p1.b = ab.b1;
-        func_ov003_0220991c(o, &ab.p1, 1, 6, -1);
+        PlayerActor_RequestDugItemStore(o, &ab.p1, 1, 6, -1);
         Camera_SetModeDefault();
         break;
     case 4:
@@ -11391,11 +11391,11 @@ extern "C" void func_ov003_022099d0(Obj *o) {
         v2.x = r5->unk_00.x;
         v2.y = r5->unk_00.y;
         v2.z = r5->unk_00.z;
-        func_0204ee10(&ab.a2, &ab.b2, &v2);
+        FieldPos_ToUnit(&ab.a2, &ab.b2, &v2);
         u32 hh = o->unk_81c;
         ab.p2.a = ab.a2;
         ab.p2.b = ab.b2;
-        func_ov003_022095e8(o, 2, &ab.p2, hh, 6, -1);
+        PlayerActor_RequestBuryItem(o, 2, &ab.p2, hh, 6, -1);
         Camera_SetModeDefault();
         break;
     }
@@ -11403,9 +11403,9 @@ extern "C" void func_ov003_022099d0(Obj *o) {
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_02209964(Obj *o) {
-    func_ov003_02209d50(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc) != 0) {
+extern "C" void PlayerActor_MainDigUpItem(Obj *o) {
+    PlayerActor_DigUpItemUpdate(o);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) != 0) {
         if ((u32)(o->unk_2d4 << 4) >> 16 >= 0x19) Unk_020102ec_moveWithCollision(o);
     } else {
         V3 v;
@@ -11416,12 +11416,12 @@ extern "C" void func_ov003_02209964(Obj *o) {
         func_0200ede8(o, &v);
     }
     func_0201071c(o);
-    func_ov003_022099d0(o);
+    PlayerActor_DigUpItemMessage(o);
 }
 }
 
 namespace ns_022093bc {
-extern "C" s32 func_ov003_0220991c(Obj *o, Pair *p, u32 c, u32 d, s32 e) {
+extern "C" s32 PlayerActor_RequestDugItemStore(Obj *o, Pair *p, u32 c, u32 d, s32 e) {
     Msg m;
     u8 *pl = (u8 *)&m.v_022093bc.unk_0c;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x60, d, *(s16 *)&e);
@@ -11434,7 +11434,7 @@ extern "C" s32 func_ov003_0220991c(Obj *o, Pair *p, u32 c, u32 d, s32 e) {
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_02209914(Sub *s, u8 a, u8 b, u8 c) {
+extern "C" void PlayerActor_DugItemStoreSetNetData(Sub *s, u8 a, u8 b, u8 c) {
     s->unk_00 = a;
     s->unk_01 = b;
     s->unk_02 = c;
@@ -11442,7 +11442,7 @@ extern "C" void func_ov003_02209914(Sub *s, u8 a, u8 b, u8 c) {
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_02209900(Sub *s, u8 *a, u8 *b, u8 *c) {
+extern "C" void PlayerActor_DugItemStoreGetNetData(Sub *s, u8 *a, u8 *b, u8 *c) {
     *a = s->unk_00;
     *b = s->unk_01;
     *c = s->unk_02;
@@ -11450,7 +11450,7 @@ extern "C" void func_ov003_02209900(Sub *s, u8 *a, u8 *b, u8 *c) {
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_022098bc(Obj *o, Unk_ov003_022093bc_Msg3 *m) {
+extern "C" void PlayerActor_SetupDugItemStore(Obj *o, Unk_ov003_022093bc_Msg3 *m) {
     u8 *q = &m->b0;
     Unk_ov003_022093bc_RecB *r = &o->unk_7d0.b;
     u8 t2 = q[2];
@@ -11459,25 +11459,25 @@ extern "C" void func_ov003_022098bc(Obj *o, Unk_ov003_022093bc_Msg3 *m) {
     r->unk_02 = t2;
     r->unk_00 = t0;
     r->unk_01 = t1;
-    func_ov003_02209914(&o->unk_8ec, t0, t1, t2);
+    PlayerActor_DugItemStoreSetNetData(&o->unk_8ec, t0, t1, t2);
     func_02010358(o, 0x50, 3, 0);
     Unk_02006d14_playSe(o, 0x4f);
 }
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_0220987c(Obj *o, s32 a) {
+extern "C" void PlayerActor_NetDugItemStore(Obj *o, s32 a) {
     u8 b[3];
-    func_ov003_02209900(&o->unk_8ec, &b[0], &b[1], &b[2]);
+    PlayerActor_DugItemStoreGetNetData(&o->unk_8ec, &b[0], &b[1], &b[2]);
     Pair p;
     p.a = b[0];
     p.b = b[1];
-    func_ov003_0220991c(o, &p, b[2], 6, a);
+    PlayerActor_RequestDugItemStore(o, &p, b[2], 6, a);
 }
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_02209810(Obj *o) {
+extern "C" void PlayerActor_DugItemStoreShrink(Obj *o) {
     s32 r4;
     Unk_020102ec_advanceAnim(o);
     if (o->unk_700 == 0x50) {
@@ -11498,7 +11498,7 @@ extern "C" void func_ov003_02209810(Obj *o) {
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_02209650(Obj *o) {
+extern "C" void PlayerActor_DugItemStoreUpdate(Obj *o) {
     Unk_ov003_022093bc_RecB *g = &o->unk_7d0.b;
     u8 *st = &g->unk_02;
     switch (g->unk_02) {
@@ -11506,7 +11506,7 @@ extern "C" void func_ov003_02209650(Obj *o) {
         if (AnimFrameCtrl_isFinished(o->unk_2cc) == 0) break;
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
-        if (func_020729bc(data_020cbb18, o->unk_7fc) == 0) break;
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) break;
         func_02099124(&o->unk_81c);
         break;
     case 1:
@@ -11514,7 +11514,7 @@ extern "C" void func_ov003_02209650(Obj *o) {
             if (AnimFrameCtrl_isFinished(o->unk_2cc) == 0) break;
             Unk_020102ec_startAnim(o, 0x6c, 3, 3);
         }
-        if (func_020729bc(data_020cbb18, o->unk_7fc) != 0) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) != 0) {
             s32 s = o->unk_818;
             if (s == 5) {
                 if (func_0206e75c(o->unk_81c) != 0) o->unk_818 = 6;
@@ -11552,7 +11552,7 @@ extern "C" void func_ov003_02209650(Obj *o) {
         u32 pa = g->unk_00;
         p.a = pa;
         p.b = pb;
-        func_ov003_022095e8(o, 2, &p, v, 6, -1);
+        PlayerActor_RequestBuryItem(o, 2, &p, v, 6, -1);
         Unk_02006d14_clearActionFlag(o, 0xd);
         break;
     }
@@ -11560,15 +11560,15 @@ extern "C" void func_ov003_02209650(Obj *o) {
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_02209634(Obj *o) {
-    func_ov003_02209810(o);
+extern "C" void PlayerActor_MainDugItemStore(Obj *o) {
+    PlayerActor_DugItemStoreShrink(o);
     func_0201071c(o);
-    func_ov003_02209650(o);
+    PlayerActor_DugItemStoreUpdate(o);
 }
 }
 
 namespace ns_022093bc {
-extern "C" s32 func_ov003_022095e8(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestBuryItem(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b) {
     Msg m;
     Pay *pl = &m.v_022093bc.unk_0c;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x61, a, b);
@@ -11582,8 +11582,8 @@ extern "C" s32 func_ov003_022095e8(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b) 
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_022095cc(Sub *s, u32 v, u8 a, u8 b, u8 c) {
-    func_02076964(s, v);
+extern "C" void PlayerActor_BuryItemSetNetData(Sub *s, u32 v, u8 a, u8 b, u8 c) {
+    NetBuf_WriteU16(s, v);
     s->unk_02 = a;
     s->unk_03 = b;
     s->unk_04 = c;
@@ -11591,7 +11591,7 @@ extern "C" void func_ov003_022095cc(Sub *s, u32 v, u8 a, u8 b, u8 c) {
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_02209500(Obj *o, Msg *m) {
+extern "C" void PlayerActor_SetupBuryItem(Obj *o, Msg *m) {
     u32 h;
     Pay *pl = &m->v_022093bc.unk_0c;
     Unk_ov003_022093bc_RecA *r = &o->unk_7d0.a;
@@ -11599,10 +11599,10 @@ extern "C" void func_ov003_02209500(Obj *o, Msg *m) {
     u32 x = pl->b2;
     u32 z = pl->b3;
     V3 v;
-    func_0204ed8c(&v, x, z);
+    FieldPos_FromUnitCenter(&v, x, z);
     h = m->v_022093bc.unk_0c.h;
     if (k == 2) {
-        if (func_020729bc(data_020cbb18, o->unk_7fc) != 0) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) != 0) {
             o->unk_808 = func_02043380(o->unk_7fc, 2, 0, o->unk_81c);
         }
     } else if (o->unk_700 == 0x6c) {
@@ -11614,27 +11614,27 @@ extern "C" void func_ov003_02209500(Obj *o, Msg *m) {
     r->unk_04 = k;
     r->unk_07 = 0;
     r->unk_02 = func_020e7b98(v.x - o->unk_5c.x, v.z - o->unk_5c.z);
-    func_ov003_022095cc(&o->unk_8ec, h, (u8)x, (u8)z, k);
+    PlayerActor_BuryItemSetNetData(&o->unk_8ec, h, (u8)x, (u8)z, k);
     func_02010358(o, 0x49, 7, 0);
     Unk_02006d14_clearActionFlag(o, 0xd);
 }
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_022094fc() {
+extern "C" void PlayerActor_NetBuryItem() {
 }
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_022094ec(Obj *o) {
+extern "C" void PlayerActor_BuryItemTurn(Obj *o) {
     func_0200f504(o, o->unk_7d0.a.unk_02);
 }
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_02209428(Obj *o) {
+extern "C" void PlayerActor_BuryItemCheckEnd(Obj *o) {
     Unk_ov003_022093bc_RecA *r = &o->unk_7d0.a;
-    if (func_020729bc(data_020cbb18, o->unk_7fc) == 0) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         return;
     }
@@ -11648,22 +11648,22 @@ extern "C" void func_ov003_02209428(Obj *o) {
         u32 pa = r->unk_05;
         p.a = pa;
         p.b = pb;
-        func_ov003_022093bc(o, r->unk_04, &p, r->unk_00, 6, -1);
+        PlayerActor_RequestFillHole(o, r->unk_04, &p, r->unk_00, 6, -1);
     }
 }
 }
 
 namespace ns_022093bc {
-extern "C" void func_ov003_02209408(Obj *o) {
-    func_ov003_022094ec(o);
+extern "C" void PlayerActor_MainBuryItem(Obj *o) {
+    PlayerActor_BuryItemTurn(o);
     Unk_020102ec_advanceAnim(o);
     func_0201071c(o);
-    func_ov003_02209428(o);
+    PlayerActor_BuryItemCheckEnd(o);
 }
 }
 
 namespace ns_022093bc {
-extern "C" s32 func_ov003_022093bc(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestFillHole(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b) {
     Msg m;
     Pay *pl = &m.v_022093bc.unk_0c;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x62, a, b);
@@ -11677,12 +11677,12 @@ extern "C" s32 func_ov003_022093bc(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b) 
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02209314(Obj *o, Unk_ov003_02209314_Arg *a) {
+extern "C" void PlayerActor_SetupFillHole(Obj *o, Unk_ov003_02209314_Arg *a) {
     V3 v;
     u8 *q = (u8 *)&a->unk_0c;
     Rec *r4 = &o->unk_7d0;
     u32 b = q[4];
-    func_0204ed8c(&v, q[2], q[3]);
+    FieldPos_FromUnitCenter(&v, q[2], q[3]);
     *(u16 *)&o->unk_7d0.unk_00 = a->unk_0c;
     r4->unk_12 = b;
     r4->unk_04.x = v.x;
@@ -11708,22 +11708,22 @@ extern "C" void func_ov003_02209314(Obj *o, Unk_ov003_02209314_Arg *a) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02209310() {}
+extern "C" void PlayerActor_NetFillHole() {}
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02209284(Obj *o) {
+extern "C" void PlayerActor_EndFillHole(Obj *o) {
     volatile V3 v;
     V3 w;
     V3 x;
-    void *g = data_020cbb18;
-    if (!func_020729bc(g, o->unk_7fc)) {
+    void *g = gCommManager;
+    if (!CommManager_isLocalSlot(g, o->unk_7fc)) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
             Rec *r = &o->unk_7d0;
             v.x = r->unk_04.x;
             v.y = r->unk_04.y;
             v.z = r->unk_04.z;
-            if (func_020729bc(g, o->unk_7fc)) {
+            if (CommManager_isLocalSlot(g, o->unk_7fc)) {
                 w.x = v.x;
                 w.y = v.y;
                 w.z = v.z;
@@ -11741,13 +11741,13 @@ extern "C" void func_ov003_02209284(Obj *o) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02209274(Obj *o) {
+extern "C" void PlayerActor_FillHoleTurn(Obj *o) {
     func_0200f504(o, o->unk_7d0.unk_10);
 }
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02209170(Obj *o) {
+extern "C" void PlayerActor_FillHoleUpdate(Obj *o) {
     V3 v;
     V3 w;
     V3 x;
@@ -11764,13 +11764,13 @@ extern "C" void func_ov003_02209170(Obj *o) {
             func_02090330(9, &v, &h, 0);
             break;
         case 5:
-            if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+            if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
                 w.x = v.x;
                 w.y = v.y;
                 w.z = v.z;
                 func_ov003_02219b84(o->unk_7fc, &w);
             } else {
-                u16 *p = func_0204eba0(data_021c47c4, &v, 0);
+                u16 *p = BlockMap_GetItemPtrAtPos(gSceneBlockMap, &v, 0);
                 BOOL f = FALSE;
                 if (*p >= 0xfc && *p <= 0xfd) f = TRUE;
                 if (f) {
@@ -11796,7 +11796,7 @@ extern "C" void func_ov003_02209170(Obj *o) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_022090a8(Obj *o) {
+extern "C" void PlayerActor_FillHoleCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         Rec *r5 = &o->unk_7d0;
         if (o->unk_700 == 0x49) {
@@ -11806,7 +11806,7 @@ extern "C" void func_ov003_022090a8(Obj *o) {
             u32 b = r5->unk_12;
             if (b == 1) {
                 Unk_02007694_requestAct05(o, 3, 5, -1);
-            } else if (func_020729bc(data_020cbb18, o->unk_7fc) && b == 3) {
+            } else if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) && b == 3) {
                 if (Unk_02006d14_testActionFlag(o, 0x11)) {
                     Unk_02006d14_clearActionFlag(o, 0x11);
                     func_0203e47c(o, o);
@@ -11821,22 +11821,22 @@ extern "C" void func_ov003_022090a8(Obj *o) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02209068(Obj *o) {
+extern "C" void PlayerActor_MainFillHole(Obj *o) {
     V3 v;
-    func_ov003_02209274(o);
-    func_ov003_02209170(o);
+    PlayerActor_FillHoleTurn(o);
+    PlayerActor_FillHoleUpdate(o);
     Rec *r = &o->unk_7d0;
     v.x = r->unk_04.x;
     v.y = r->unk_04.y;
     v.z = r->unk_04.z;
     func_0200ede8(o, &v);
     func_0201071c(o);
-    func_ov003_022090a8(o);
+    PlayerActor_FillHoleCheckEnd(o);
 }
 }
 
 namespace ns_02208a58 {
-extern "C" s32 func_ov003_02209030(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestWateringCan(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x63, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -11845,32 +11845,32 @@ extern "C" s32 func_ov003_02209030(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_0220902c(u8 *p, u32 v) {
+extern "C" void PlayerActor_WateringCanSetNetData(u8 *p, u32 v) {
     *p = v;
 }
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02209024(u8 *p, u8 *out) {
+extern "C" void PlayerActor_WateringCanGetNetData(u8 *p, u8 *out) {
     *out = *p;
 }
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02209004(Obj *o) {
+extern "C" void PlayerActor_SetupWateringCan(Obj *o) {
     func_02010358(o, 0x61, 3, 0);
     o->unk_7d0.unk_00 = -1;
 }
 }
 
 namespace ns_02208a58 {
-extern "C" s32 func_ov003_02208ff8(Obj *o, s16 b) {
-    return func_ov003_02209030(o, 6, b);
+extern "C" s32 PlayerActor_NetWateringCan(Obj *o, s16 b) {
+    return PlayerActor_RequestWateringCan(o, 6, b);
 }
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208fb0(Obj *o) {
+extern "C" void PlayerActor_EndWateringCan(Obj *o) {
     V3 t;
     if (o->unk_7d0.unk_00 != -1) {
         func_020902f8(o->unk_7d0.unk_00);
@@ -11884,7 +11884,7 @@ extern "C" void func_ov003_02208fb0(Obj *o) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208ec8(Obj *o) {
+extern "C" void PlayerActor_WateringCanUpdate(Obj *o) {
     V3 v;
     V3 t;
     V3 t2;
@@ -11929,16 +11929,16 @@ extern "C" void func_ov003_02208ec8(Obj *o) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208e38(Obj *o) {
+extern "C" void PlayerActor_WateringCanCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
     u8 *p6 = &o->unk_8ec;
-    func_ov003_0220902c(p6, 0);
-    if (o->unk_2d4.mid >= 0x21 && func_ov003_02205c28(o)) {
+    PlayerActor_WateringCanSetNetData(p6, 0);
+    if (o->unk_2d4.mid >= 0x21 && PlayerActor_ResumeWalkOrIdle(o)) {
         s32 *p4 = &o->unk_7d0.unk_00;
-        func_ov003_0220902c(p6, 1);
+        PlayerActor_WateringCanSetNetData(p6, 1);
         if (o->unk_7d0.unk_00 != -1) {
             func_020902f8(o->unk_7d0.unk_00);
             *p4 = -1;
@@ -11948,16 +11948,16 @@ extern "C" void func_ov003_02208e38(Obj *o) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208d90(Obj *o) {
+extern "C" void PlayerActor_WateringCanCheckEndRemote(Obj *o) {
     u8 b;
     s32 out;
     o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
     u8 *p6 = &o->unk_8ec;
-    func_ov003_02209024(p6, &b);
+    PlayerActor_WateringCanGetNetData(p6, &b);
     if (b != 0 && PlayerActor_GetSlotAction(&out, -1, o->unk_7fc) && out == 0x63) {
-        func_ov003_02209030(o, 6, -1);
+        PlayerActor_RequestWateringCan(o, 6, -1);
         s32 *p4 = &o->unk_7d0.unk_00;
-        func_ov003_0220902c(p6, 1);
+        PlayerActor_WateringCanSetNetData(p6, 1);
         if (o->unk_7d0.unk_00 != -1) {
             func_020902f8(o->unk_7d0.unk_00);
             *p4 = -1;
@@ -11971,20 +11971,20 @@ extern "C" void func_ov003_02208d90(Obj *o) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208d50(Obj *o) {
-    func_ov003_02208ec8(o);
+extern "C" void PlayerActor_MainWateringCan(Obj *o) {
+    PlayerActor_WateringCanUpdate(o);
     func_0201071c(o);
     func_0201065c(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-        func_ov003_02208e38(o);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        PlayerActor_WateringCanCheckEnd(o);
     } else {
-        func_ov003_02208d90(o);
+        PlayerActor_WateringCanCheckEndRemote(o);
     }
 }
 }
 
 namespace ns_02208a58 {
-extern "C" s32 func_ov003_02208d18(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestSlingshot(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x64, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -11993,8 +11993,8 @@ extern "C" s32 func_ov003_02208d18(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208ca0(Obj *o) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc) && !func_0203d7c4()) {
+extern "C" void PlayerActor_SetupSlingshot(Obj *o) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) && !func_0203d7c4()) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
     } else {
@@ -12006,13 +12006,13 @@ extern "C" void func_ov003_02208ca0(Obj *o) {
 }
 
 namespace ns_02208a58 {
-extern "C" s32 func_ov003_02208c94(Obj *o, s16 b) {
-    return func_ov003_02208d18(o, 6, b);
+extern "C" s32 PlayerActor_NetSlingshot(Obj *o, s16 b) {
+    return PlayerActor_RequestSlingshot(o, 6, b);
 }
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208bc0(Obj *o) {
+extern "C" void PlayerActor_SlingshotUpdate(Obj *o) {
     V3 v;
     V3 w;
     func_0200f478(o, 0x400);
@@ -12040,10 +12040,10 @@ extern "C" void func_ov003_02208bc0(Obj *o) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208b6c(Obj *o) {
+extern "C" void PlayerActor_SlingshotCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         Unk_020102ec_startAnim(o, 0x60, 3, 3);
-        if (!func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (!CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         }
     }
@@ -12051,15 +12051,15 @@ extern "C" void func_ov003_02208b6c(Obj *o) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208b50(Obj *o) {
-    func_ov003_02208bc0(o);
+extern "C" void PlayerActor_MainSlingshot(Obj *o) {
+    PlayerActor_SlingshotUpdate(o);
     func_0201071c(o);
-    func_ov003_02208b6c(o);
+    PlayerActor_SlingshotCheckEnd(o);
 }
 }
 
 namespace ns_02208a58 {
-extern "C" s32 func_ov003_02208b18(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestAct65(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x65, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -12068,17 +12068,17 @@ extern "C" s32 func_ov003_02208b18(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208b04(Obj *o) {
+extern "C" void PlayerActor_SetupAct65(Obj *o) {
     Unk_020102ec_startAnim(o, 0, 3, 0);
 }
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208b00() {}
+extern "C" void PlayerActor_NetAct65() {}
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208ae4(Obj *o) {
+extern "C" void PlayerActor_MainAct65(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     func_0201071c(o);
     func_0201065c(o);
@@ -12086,7 +12086,7 @@ extern "C" void func_ov003_02208ae4(Obj *o) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208ad8(u8 *d, Pair v, u32 c) {
+extern "C" void PlayerActor_Act66SetArgs(u8 *d, Pair v, u32 c) {
     d[0] = v.a;
     d[1] = v.b;
     d[2] = c;
@@ -12094,17 +12094,17 @@ extern "C" void func_ov003_02208ad8(u8 *d, Pair v, u32 c) {
 }
 
 namespace ns_02208a58 {
-extern "C" s32 func_ov003_02208a88(Obj *o, Pair *p, u32 c, s32 b, s16 d) {
+extern "C" s32 PlayerActor_RequestAct66(Obj *o, Pair *p, u32 c, s32 b, s16 d) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x66, b, d);
-    func_ov003_02208ad8((u8 *)&m.v_02208a58.unk_0c, *p, c);
+    PlayerActor_Act66SetArgs((u8 *)&m.v_02208a58.unk_0c, *p, c);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208a70(u8 *r, u32 a, u32 b, V3 *v) {
+extern "C" void PlayerActor_Act66SetWork(u8 *r, u32 a, u32 b, V3 *v) {
     r[0xf] = a;
     r[0xe] = 0;
     *(u16 *)(r + 0xc) = b;
@@ -12115,21 +12115,21 @@ extern "C" void func_ov003_02208a70(u8 *r, u32 a, u32 b, V3 *v) {
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208a64(u8 *p, Pair *v) {
+extern "C" void PlayerActor_Act66SetNetData(u8 *p, Pair *v) {
     p[0] = v->a;
     p[1] = v->b;
 }
 }
 
 namespace ns_02208a58 {
-extern "C" void func_ov003_02208a58(u8 *p, Pair *out) {
+extern "C" void PlayerActor_Act66GetNetData(u8 *p, Pair *out) {
     out->a = p[0];
     out->b = p[1];
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_022089d4(Obj *o, u8 *m) {
+extern "C" void PlayerActor_SetupAct66(Obj *o, u8 *m) {
     u8 *q = m + 0xc;
     RecA *r = (RecA *)((u8 *)o + 0x7d0);
     s32 a = m[0xc];
@@ -12138,14 +12138,14 @@ extern "C" void func_ov003_022089d4(Obj *o, u8 *m) {
     Pair p;
     VD d;
     V3 pos;
-    func_0204ed8c(&pos, a, b);
+    FieldPos_FromUnitCenter(&pos, a, b);
     d.x = pos.x - o->unk_5c.x;
     d.z = pos.z - o->unk_5c.z;
     s32 ang = func_020e7b98(d.x, d.z);
-    func_ov003_02208a70(r, c, ang, pos);
+    PlayerActor_Act66SetWork(r, c, ang, pos);
     p.a = a;
     p.b = b;
-    func_ov003_02208a64(o->unk_8ec, &p);
+    PlayerActor_Act66SetNetData(o->unk_8ec, &p);
     Unk_020102ec_startAnim(o, 0x64, 3, 0);
     if (r->unk_0f == 1) {
         Unk_02006d14_setActionFlag(o, 0x1c);
@@ -12154,22 +12154,22 @@ extern "C" void func_ov003_022089d4(Obj *o, u8 *m) {
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_02208984(Obj *o, s32 a) {
+extern "C" void PlayerActor_NetAct66(Obj *o, s32 a) {
     if (o->unk_7ec == 0x66) {
         o->unk_c80 = a;
     } else {
         Pair p;
         p.a = 0;
         p.b = 0;
-        func_ov003_02208a58(o->unk_8ec, &p);
-        func_ov003_02208a88(o, p, 0, 6, a);
+        PlayerActor_Act66GetNetData(o->unk_8ec, &p);
+        PlayerActor_RequestAct66(o, p, 0, 6, a);
     }
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_02208904(Obj *o, s32 a) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc) == 0) {
+extern "C" void PlayerActor_EndAct66(Obj *o, s32 a) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
         if (a == 2) {
             Unk_02006d14_clearActionFlag(o, 0x1c);
         } else if (a != 0x67) {
@@ -12188,7 +12188,7 @@ extern "C" void func_ov003_02208904(Obj *o, s32 a) {
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_022088d8(Obj *o) {
+extern "C" void PlayerActor_Act66Turn(Obj *o) {
     s16 h = o->unk_8e;
     func_02010d98(&h, *(s16 *)((u8 *)o + 0x7dc));
     Unk_020102ec_setAngleY(o, &h);
@@ -12196,10 +12196,10 @@ extern "C" void func_ov003_022088d8(Obj *o) {
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_02208810(Obj *o) {
+extern "C" void PlayerActor_Act66CheckEnd(Obj *o) {
     RecC *r = (RecC *)((u8 *)o + 0x7d0);
-    void *g = data_020cbb18;
-    if (func_020729bc(g, o->unk_7fc) != 0) {
+    void *g = gCommManager;
+    if (CommManager_isLocalSlot(g, o->unk_7fc) != 0) {
         if (r->unk_0f == 0) {
             if (o->unk_814 == 1) {
                 r->unk_0f = 1;
@@ -12211,7 +12211,7 @@ extern "C" void func_ov003_02208810(Obj *o) {
     if (r->unk_0e < 2) {
         r->unk_0e++;
     } else {
-        if (func_020729bc(g, o->unk_7fc) == 0) {
+        if (CommManager_isLocalSlot(g, o->unk_7fc) == 0) {
             o->unk_7f8 = (s32)Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         }
         switch (r->unk_0f) {
@@ -12222,7 +12222,7 @@ extern "C" void func_ov003_02208810(Obj *o) {
             v.x = r->unk_00;
             v.y = r->unk_04;
             v.z = r->unk_08;
-            func_ov003_02208764(o, &v, 6, -1);
+            PlayerActor_RequestAct67(o, &v, 6, -1);
             break;
         }
         case 2:
@@ -12235,7 +12235,7 @@ extern "C" void func_ov003_02208810(Obj *o) {
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_022087c8(Obj *o) {
+extern "C" void PlayerActor_MainAct66(Obj *o) {
     RecC *r = (RecC *)((u8 *)o + 0x7d0);
     Unk_020102ec_advanceAnim(o);
     V3 v;
@@ -12243,46 +12243,46 @@ extern "C" void func_ov003_022087c8(Obj *o) {
     v.y = r->unk_04;
     v.z = r->unk_08;
     if (func_0200ede8(o, &v)) {
-        func_ov003_022088d8(o);
+        PlayerActor_Act66Turn(o);
     }
     func_0201071c(o);
-    func_ov003_02208810(o);
+    PlayerActor_Act66CheckEnd(o);
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_022087b8(V3 *d, V3 v) {
+extern "C" void PlayerActor_Act67SetArgs(V3 *d, V3 v) {
     *d = v;
 }
 }
 
 namespace ns_02208108 {
-extern "C" s32 func_ov003_02208764(Obj *o, V3 *v, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestAct67(Obj *o, V3 *v, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x67, a, b);
     V3 t;
-    func_0204edd8(&t, (s32)v);
-    func_ov003_022087b8((V3 *)m.v_02208108.unk_0c, t);
+    FieldPos_SnapToUnitCenter(&t, (s32)v);
+    PlayerActor_Act67SetArgs((V3 *)m.v_02208108.unk_0c, t);
     return PlayerActor_pushRequest(o, &m);
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_02208754(RecC *r, s32 a, V3 v) {
+extern "C" void PlayerActor_Act67SetWork(RecC *r, s32 a, V3 v) {
     *(u16 *)r = a;
     *(V3 *)((u8 *)r + 4) = v;
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_022086c8(Obj *o, u8 *m) {
+extern "C" void PlayerActor_SetupAct67(Obj *o, u8 *m) {
     VD d;
     u8 *q = m + 0xc;
     V3D l(*(s32 *)(m + 0xc), *(s32 *)(q + 4), *(s32 *)(q + 8));
     d.x = l.x - o->unk_5c.x;
     d.z = l.z - o->unk_5c.z;
     s32 ang = func_020e7b98(d.x, d.z);
-    func_ov003_02208754((RecC *)((u8 *)o + 0x7d0), ang, l);
+    PlayerActor_Act67SetWork((RecC *)((u8 *)o + 0x7d0), ang, l);
     func_02010358(o, 0x65, 3, 0);
     func_ov003_0221977c(o->unk_7fc, l);
     Unk_02006d14_clearActionFlag(o, 0x1c);
@@ -12292,12 +12292,12 @@ extern "C" void func_ov003_022086c8(Obj *o, u8 *m) {
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_022086c4(Obj *o) {
+extern "C" void PlayerActor_NetAct67(Obj *o) {
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_02208678(Obj *o) {
+extern "C" void PlayerActor_Act67Effect(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (o->unk_700 == 0x65) {
         if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 3) || AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0xd)) {
@@ -12308,7 +12308,7 @@ extern "C" void func_ov003_02208678(Obj *o) {
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_0220864c(Obj *o) {
+extern "C" void PlayerActor_Act67Turn(Obj *o) {
     s16 h = o->unk_8e;
     func_02010d98(&h, *(s16 *)((u8 *)o + 0x7d0));
     Unk_020102ec_setAngleY(o, &h);
@@ -12316,19 +12316,19 @@ extern "C" void func_ov003_0220864c(Obj *o) {
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_022085f8(Obj *o) {
+extern "C" void PlayerActor_Act67CheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = (s32)Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
     if (o->unk_2d4.mid >= 0x16) {
-        func_ov003_02205c28(o);
+        PlayerActor_ResumeWalkOrIdle(o);
     }
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_022085bc(Obj *o) {
+extern "C" void PlayerActor_Act67CheckEndRemote(Obj *o) {
     o->unk_7f8 = (s32)Unk_02007694_getActionDonePriority(o, o->unk_7ec);
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         PlayerActor_requestWait(o, 3, 1, -1);
@@ -12337,27 +12337,27 @@ extern "C" void func_ov003_022085bc(Obj *o) {
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_02208558(Obj *o) {
+extern "C" void PlayerActor_MainAct67(Obj *o) {
     RecC *r = (RecC *)((u8 *)o + 0x7d0);
-    func_ov003_02208678(o);
+    PlayerActor_Act67Effect(o);
     V3 v;
     v.x = r->unk_04;
     v.y = r->unk_08;
     v.z = *(s32 *)((u8 *)r + 0xc);
     if (func_0200ede8(o, &v)) {
-        func_ov003_0220864c(o);
+        PlayerActor_Act67Turn(o);
     }
     func_0201071c(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-        func_ov003_022085f8(o);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        PlayerActor_Act67CheckEnd(o);
     } else {
-        func_ov003_022085bc(o);
+        PlayerActor_Act67CheckEndRemote(o);
     }
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_02208544(void *p, s32 a, s32 b, u8 c, u8 d) {
+extern "C" void PlayerActor_Act68SetArgs(void *p, s32 a, s32 b, u8 c, u8 d) {
     u8 *q = (u8 *)p;
     *(s32 *)q = a;
     *(s32 *)(q + 4) = b;
@@ -12367,16 +12367,16 @@ extern "C" void func_ov003_02208544(void *p, s32 a, s32 b, u8 c, u8 d) {
 }
 
 namespace ns_02208108 {
-extern "C" s32 func_ov003_022084f4(Obj *o, s32 x, s32 z, bool a, bool b, s32 c, s32 d) {
+extern "C" s32 PlayerActor_RequestAct68(Obj *o, s32 x, s32 z, bool a, bool b, s32 c, s32 d) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x68, c, *(s16 *)&d);
-    func_ov003_02208544(m.v_02208108.unk_0c, x, z, a, b);
+    PlayerActor_Act68SetArgs(m.v_02208108.unk_0c, x, z, a, b);
     return PlayerActor_pushRequest(o, &m);
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_022084d8(RecA *r, s32 a, s32 x, s32 z, u8 b, u8 c) {
+extern "C" void PlayerActor_Act68SetWork(RecA *r, s32 a, s32 x, s32 z, u8 b, u8 c) {
     r->unk_08 = a;
     r->unk_00 = x;
     r->unk_04 = z;
@@ -12387,21 +12387,21 @@ extern "C" void func_ov003_022084d8(RecA *r, s32 a, s32 x, s32 z, u8 b, u8 c) {
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_022084c0(u8 *p, s32 a, s32 b, u8 c) {
-    func_02076a6c(p, a, b);
+extern "C" void PlayerActor_Act68SetNetData(u8 *p, s32 a, s32 b, u8 c) {
+    NetBuf_PackPair20(p, a, b);
     p[5] = c;
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_022084a8(u8 *p, s32 *a, s32 *b, u8 *c) {
-    func_02076a2c(p, a, b);
+extern "C" void PlayerActor_Act68GetNetData(u8 *p, s32 *a, s32 *b, u8 *c) {
+    NetBuf_UnpackPair20(p, a, b);
     *c = p[5];
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_02208420(Obj *o, u8 *m) {
+extern "C" void PlayerActor_SetupAct68(Obj *o, u8 *m) {
     u8 *q = m + 0xc;
     u8 b0 = q[8];
     u8 b1 = q[9];
@@ -12410,8 +12410,8 @@ extern "C" void func_ov003_02208420(Obj *o, u8 *m) {
     d.x = v.x - o->unk_5c.x;
     d.z = v.z - o->unk_5c.z;
     s32 ang = func_020e7b98(d.x, d.z);
-    func_ov003_022084d8((RecA *)((u8 *)o + 0x7d0), ang, v.x, v.z, b0, b1);
-    func_ov003_022084c0(o->unk_8ec, v.x, v.z, b0 | (b1 << 4));
+    PlayerActor_Act68SetWork((RecA *)((u8 *)o + 0x7d0), ang, v.x, v.z, b0, b1);
+    PlayerActor_Act68SetNetData(o->unk_8ec, v.x, v.z, b0 | (b1 << 4));
     if (b1 != 0) {
         func_02010358(o, 0x66, 3, 0);
     } else {
@@ -12422,30 +12422,30 @@ extern "C" void func_ov003_02208420(Obj *o, u8 *m) {
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_022083bc(Obj *o, s32 a) {
+extern "C" void PlayerActor_NetAct68(Obj *o, s32 a) {
     if (o->unk_7ec == 0x68) {
         o->unk_c80 = a;
     } else {
         s32 x, z;
         u8 f;
-        func_ov003_022084a8(o->unk_8ec, &x, &z, &f);
+        PlayerActor_Act68GetNetData(o->unk_8ec, &x, &z, &f);
         bool t0 = f != 0;
         bool t1 = (f >> 4) != 0;
-        func_ov003_022084f4(o, x, z, t0, t1, 6, a);
+        PlayerActor_RequestAct68(o, x, z, t0, t1, 6, a);
     }
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_02208358(Obj *o) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc) == 0) {
+extern "C" void PlayerActor_EndAct68(Obj *o) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
         RecA *r = (RecA *)((u8 *)o + 0x7d0);
         if (r->unk_0a < 5) {
             V3 v(r->unk_00, 0, r->unk_04);
             Pair p;
             p.a = 0;
             p.b = 0;
-            func_0204ee10(&p.a, &p.b, &v);
+            FieldPos_ToUnit(&p.a, &p.b, &v);
             func_ov003_0221cd34(o->unk_7fc, p, 2);
         }
     }
@@ -12453,7 +12453,7 @@ extern "C" void func_ov003_02208358(Obj *o) {
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_0220832c(Obj *o) {
+extern "C" void PlayerActor_Act68Turn(Obj *o) {
     s16 h = o->unk_8e;
     func_02010d98(&h, *(s16 *)((u8 *)o + 0x7d8));
     Unk_020102ec_setAngleY(o, &h);
@@ -12461,11 +12461,11 @@ extern "C" void func_ov003_0220832c(Obj *o) {
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_022082a4(Obj *o) {
+extern "C" void PlayerActor_Act68CheckEnd(Obj *o) {
     RecA *r = (RecA *)((u8 *)o + 0x7d0);
     if (r->unk_0c != 0) {
         if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-            func_ov003_0220812c(o, r->unk_00, r->unk_04, r->unk_0b, 1, 6, -1);
+            PlayerActor_RequestAct69(o, r->unk_00, r->unk_04, r->unk_0b, 1, 6, -1);
         }
     } else {
         s32 t = o->unk_814;
@@ -12481,25 +12481,25 @@ extern "C" void func_ov003_022082a4(Obj *o) {
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_02208248(Obj *o) {
+extern "C" void PlayerActor_Act68CheckEndRemote(Obj *o) {
     RecA *r = (RecA *)((u8 *)o + 0x7d0);
     o->unk_7f8 = (s32)Unk_02007694_getActionDonePriority(o, o->unk_7ec);
     if (r->unk_0c != 0) {
         if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-            func_ov003_0220812c(o, r->unk_00, r->unk_04, r->unk_0b, 1, 6, -1);
+            PlayerActor_RequestAct69(o, r->unk_00, r->unk_04, r->unk_0b, 1, 6, -1);
         }
     }
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_02208190(Obj *o) {
+extern "C" void PlayerActor_MainAct68(Obj *o) {
     RecA *r = (RecA *)((u8 *)o + 0x7d0);
     V3 v(r->unk_00, 0, r->unk_04);
     Pair p;
     p.a = 0;
     p.b = 0;
-    func_0204ee10(&p.a, &p.b, &v);
+    FieldPos_ToUnit(&p.a, &p.b, &v);
     if (r->unk_0a > 5) {
         func_ov003_0221bf88(o->unk_7fc, p);
     } else {
@@ -12509,22 +12509,22 @@ extern "C" void func_ov003_02208190(Obj *o) {
         }
     }
     Unk_020102ec_advanceAnim(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-        func_ov003_0220832c(o);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        PlayerActor_Act68Turn(o);
         func_0201071c(o);
-        func_ov003_022082a4(o);
+        PlayerActor_Act68CheckEnd(o);
     } else {
         if (func_0200ef08(o)) {
-            func_ov003_0220832c(o);
+            PlayerActor_Act68Turn(o);
         }
         func_0201071c(o);
-        func_ov003_02208248(o);
+        PlayerActor_Act68CheckEndRemote(o);
     }
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_0220817c(void *p, s32 a, s32 b, u8 c, u8 d) {
+extern "C" void PlayerActor_Act69SetArgs(void *p, s32 a, s32 b, u8 c, u8 d) {
     u8 *q = (u8 *)p;
     *(s32 *)q = a;
     *(s32 *)(q + 4) = b;
@@ -12534,16 +12534,16 @@ extern "C" void func_ov003_0220817c(void *p, s32 a, s32 b, u8 c, u8 d) {
 }
 
 namespace ns_02208108 {
-extern "C" s32 func_ov003_0220812c(Obj *o, s32 x, s32 z, u8 a, u8 b, s32 c, s16 d) {
+extern "C" s32 PlayerActor_RequestAct69(Obj *o, s32 x, s32 z, u8 a, u8 b, s32 c, s16 d) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x69, c, d);
-    func_ov003_0220817c(m.v_02208108.unk_0c, x, z, a, b);
+    PlayerActor_Act69SetArgs(m.v_02208108.unk_0c, x, z, a, b);
     return PlayerActor_pushRequest(o, &m);
 }
 }
 
 namespace ns_02208108 {
-extern "C" void func_ov003_02208108(void *p, s16 a, s32 b, s32 c, u8 d, u8 e) {
+extern "C" void PlayerActor_Act69SetWork(void *p, s16 a, s32 b, s32 c, u8 d, u8 e) {
     u8 *q = (u8 *)p;
     q[0] = 0;
     *(s16 *)(q + 2) = a;
@@ -12555,7 +12555,7 @@ extern "C" void func_ov003_02208108(void *p, s16 a, s32 b, s32 c, u8 d, u8 e) {
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_022080a0(Obj *o, Msg *m) {
+extern "C" void PlayerActor_SetupAct69(Obj *o, Msg *m) {
     s32 o1, o2;
     Unk_ov003_022080a0_V3 d;
     V3 t;
@@ -12572,19 +12572,19 @@ extern "C" void func_ov003_022080a0(Obj *o, Msg *m) {
     s32 r7 = func_020e7b98(d.x, d.z);
     o1 = 0;
     o2 = 0;
-    func_0204ee10(&o1, &o2, &t);
-    func_ov003_02208108((u8 *)o + 0x7d0, r7, o1, o2, r4, r6);
+    FieldPos_ToUnit(&o1, &o2, &t);
+    PlayerActor_Act69SetWork((u8 *)o + 0x7d0, r7, o1, o2, r4, r6);
     func_02010358(o, 0x67, 3, 0);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_0220809c() {
+extern "C" void PlayerActor_NetAct69() {
 }
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02208048(Obj *o) {
+extern "C" void PlayerActor_Act69Update(Obj *o) {
     Pair p;
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame(&o->unk_2cc, 5)) {
@@ -12601,7 +12601,7 @@ extern "C" void func_ov003_02208048(Obj *o) {
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_0220801c(Obj *o) {
+extern "C" void PlayerActor_Act69Turn(Obj *o) {
     s16 v = o->unk_8e;
     func_02010d98(&v, *(s16 *)((u8 *)o + 0x7d2));
     Unk_020102ec_setAngleY(o, &v);
@@ -12609,7 +12609,7 @@ extern "C" void func_ov003_0220801c(Obj *o) {
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207fbc(Obj *o) {
+extern "C" void PlayerActor_Act69CheckEnd(Obj *o) {
     u8 r4 = *((u8 *)o + 0x7dc);
     if (AnimFrameCtrl_isFinished(&o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
@@ -12623,12 +12623,12 @@ extern "C" void func_ov003_02207fbc(Obj *o) {
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207f54(Obj *o) {
+extern "C" void PlayerActor_MainAct69(Obj *o) {
     Pair p;
     s32 *r4 = &o->unk_7d0;
-    func_ov003_02208048(o);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
-        func_ov003_0220801c(o);
+    PlayerActor_Act69Update(o);
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
+        PlayerActor_Act69Turn(o);
         func_0201071c(o);
     } else {
         s32 y = r4[2];
@@ -12636,16 +12636,16 @@ extern "C" void func_ov003_02207f54(Obj *o) {
         p.a = x;
         p.b = y;
         if (func_0200eee4(o, &p)) {
-            func_ov003_0220801c(o);
+            PlayerActor_Act69Turn(o);
         }
         func_0201071c(o);
     }
-    func_ov003_02207fbc(o);
+    PlayerActor_Act69CheckEnd(o);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207f40(V3 *d, V3 v) {
+extern "C" void PlayerActor_Act6ASetArgs(V3 *d, V3 v) {
     d->x = v.x;
     d->y = v.y;
     d->z = v.z;
@@ -12653,17 +12653,17 @@ extern "C" void func_ov003_02207f40(V3 *d, V3 v) {
 }
 
 namespace ns_022077c8 {
-extern "C" s32 func_ov003_02207efc(Obj *o, V3 v, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestAct6A(Obj *o, V3 v, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x6a, a, b);
-    func_ov003_02207f40(&m.v_022077c8.unk_0c, v);
+    PlayerActor_Act6ASetArgs(&m.v_022077c8.unk_0c, v);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207ee8(V3 *d, V3 v) {
+extern "C" void PlayerActor_Act6ASetWork(V3 *d, V3 v) {
     d->x = v.x;
     d->y = v.y;
     d->z = v.z;
@@ -12671,65 +12671,65 @@ extern "C" void func_ov003_02207ee8(V3 *d, V3 v) {
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207ecc(void *a, V3 *v) {
-    func_02076a04(a, v->x, v->y, v->z, 0);
+extern "C" void PlayerActor_Act6ASetNetData(void *a, V3 *v) {
+    NetBuf_PackTriple20(a, v->x, v->y, v->z, 0);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207eb4(void *a, V3 *v) {
+extern "C" void PlayerActor_Act6AGetNetData(void *a, V3 *v) {
     s32 t;
-    func_020769dc(a, &v->x, &v->y, &v->z, &t);
+    NetBuf_UnpackTriple20(a, &v->x, &v->y, &v->z, &t);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207e6c(Obj *o, Msg *m) {
+extern "C" void PlayerActor_SetupAct6A(Obj *o, Msg *m) {
     V3 v;
     func_02010358(o, 0x7a, 3, 0);
     V3 *pv = &m->v_022077c8.unk_0c;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    func_ov003_02207ee8((V3 *)&o->unk_7d0, v);
-    func_ov003_02207ecc(o->unk_8ec, &v);
+    PlayerActor_Act6ASetWork((V3 *)&o->unk_7d0, v);
+    PlayerActor_Act6ASetNetData(o->unk_8ec, &v);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207e3c(Obj *o, s16 a) {
+extern "C" void PlayerActor_NetAct6A(Obj *o, s16 a) {
     V3 v;
-    func_ov003_02207eb4(o->unk_8ec, &v);
-    func_ov003_02207efc(o, v, 6, a);
+    PlayerActor_Act6AGetNetData(o->unk_8ec, &v);
+    PlayerActor_RequestAct6A(o, v, 6, a);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207e1c(Obj *o) {
+extern "C" void PlayerActor_Act6AMove(Obj *o) {
     s32 *r2 = &o->unk_7d0;
     func_0200f594(o, r2[0], r2[2], -0x8000);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" s32 func_ov003_02207df4(Obj *o) {
+extern "C" s32 PlayerActor_Act6ACheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(&o->unk_2cc)) {
-        func_ov003_02207d9c(o, 6, -1);
+        PlayerActor_RequestAct6B(o, 6, -1);
     }
 }
 }
 
 namespace ns_022077c8 {
-extern "C" s32 func_ov003_02207dd4(Obj *o) {
-    func_ov003_02207e1c(o);
+extern "C" s32 PlayerActor_MainAct6A(Obj *o) {
+    PlayerActor_Act6AMove(o);
     Unk_020102ec_advanceAnim(o);
     func_0201071c(o);
-    func_ov003_02207df4(o);
+    PlayerActor_Act6ACheckEnd(o);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" s32 func_ov003_02207d9c(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestAct6B(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x6b, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -12738,7 +12738,7 @@ extern "C" s32 func_ov003_02207d9c(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207d60(Obj *o) {
+extern "C" void PlayerActor_SetupAct6B(Obj *o) {
     if (o->unk_700 != 0x7a) {
         func_02010358(o, 0x38, 3, 0);
     }
@@ -12748,20 +12748,20 @@ extern "C" void func_ov003_02207d60(Obj *o) {
 }
 
 namespace ns_022077c8 {
-extern "C" s32 func_ov003_02207d54(Obj *o, s16 a) {
-    return func_ov003_02207d9c(o, 6, a);
+extern "C" s32 PlayerActor_NetAct6B(Obj *o, s16 a) {
+    return PlayerActor_RequestAct6B(o, 6, a);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207d40(Obj *o) {
+extern "C" void PlayerActor_MainAct6B(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     func_0201071c(o);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" s32 func_ov003_02207d08(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestAct6C(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x6c, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -12770,7 +12770,7 @@ extern "C" s32 func_ov003_02207d08(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207cbc(Obj *o) {
+extern "C" void PlayerActor_SetupAct6C(Obj *o) {
     if (o->unk_700 != 0x7a) {
         func_02010358(o, 0x7a, 3, 0);
     }
@@ -12780,17 +12780,17 @@ extern "C" void func_ov003_02207cbc(Obj *o) {
 }
 
 namespace ns_022077c8 {
-extern "C" s32 func_ov003_02207cb0(Obj *o, s16 a) {
-    return func_ov003_02207d08(o, 6, a);
+extern "C" s32 PlayerActor_NetAct6C(Obj *o, s16 a) {
+    return PlayerActor_RequestAct6C(o, 6, a);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207c58(Obj *o) {
+extern "C" void PlayerActor_Act6CUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_isFinished(&o->unk_2cc)) {
         Unk_020102ec_startAnim(o, 0, 3, 3);
-        if (func_020729bc(data_020cbb18, o->unk_7fc) == 0) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) == 0) {
             o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         }
     }
@@ -12798,14 +12798,14 @@ extern "C" void func_ov003_02207c58(Obj *o) {
 }
 
 namespace ns_022077c8 {
-extern "C" s32 func_ov003_02207c44(Obj *o) {
-    func_ov003_02207c58(o);
+extern "C" s32 PlayerActor_MainAct6C(Obj *o) {
+    PlayerActor_Act6CUpdate(o);
     func_0201071c(o);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" s32 func_ov003_02207c08(Obj *o, u32 a, s32 b, s16 c) {
+extern "C" s32 PlayerActor_RequestFaint(Obj *o, u32 a, s32 b, s16 c) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x6d, b, c);
     *(u8 *)&m.v_022077c8.unk_0c = a;
@@ -12815,7 +12815,7 @@ extern "C" s32 func_ov003_02207c08(Obj *o, u32 a, s32 b, s16 c) {
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207b44(Obj *o, Msg *m) {
+extern "C" void PlayerActor_SetupFaint(Obj *o, Msg *m) {
     u8 b = *(u8 *)&m->v_022077c8.unk_0c;
     s32 t = Unk_02006d14_getHeldToolKind(o);
     if (t == 3 || t == 4 || t == 10) {
@@ -12846,13 +12846,13 @@ extern "C" void func_ov003_02207b44(Obj *o, Msg *m) {
 }
 
 namespace ns_022077c8 {
-extern "C" s32 func_ov003_02207b30(Obj *o, s16 a) {
-    return func_ov003_02207c08(o, 0, 7, a);
+extern "C" s32 PlayerActor_NetFaint(Obj *o, s16 a) {
+    return PlayerActor_RequestFaint(o, 0, 7, a);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207aec(Obj *o) {
+extern "C" void PlayerActor_FaintEffect(Obj *o) {
     s32 *r4;
     Unk_020102ec_advanceAnim(o);
     r4 = &o->unk_7d0;
@@ -12865,7 +12865,7 @@ extern "C" void func_ov003_02207aec(Obj *o) {
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_022079e0(Obj *o) {
+extern "C" void PlayerActor_FaintWarp(Obj *o) {
     Unk_ov003_022077c8_Rec *r4 = (Unk_ov003_022077c8_Rec *)((u8 *)o + 0x7d0);
     V3 v;
     s32 r6;
@@ -12875,19 +12875,19 @@ extern "C" void func_ov003_022079e0(Obj *o) {
             func_02035214(data_021c1b3c + 0x2e4);
         }
     } else if (AnimFrameCtrl_hasPassedFrame(&o->unk_2cc, 0x2f)) {
-        r6 = func_0204da0c();
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        r6 = TownBlockMap_Get();
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             if (r4->unk_04 == 0) {
-                if (func_0204d700(r6, &v, 0, 0)) {
+                if (Town_FindPlayerHouse(r6, &v, 0, 0)) {
                     func_020b4f18(func_020b4934(), 0, &o->unk_5c, 0x1b800000, 0, 2, 2);
                 }
             } else if (o->unk_7fc == 0) {
-                if (func_0204d700(r6, &v, 0, 0)) {
+                if (Town_FindPlayerHouse(r6, &v, 0, 0)) {
                     v.z += 0x2000;
                     func_020b4f18(func_020b4934(), 0, &v, 0x1b800000, 0, 2, 2);
                 }
             } else {
-                if (func_0204d684(r6, &v, 0, 0)) {
+                if (Town_FindGateHouse(r6, &v, 0, 0)) {
                     func_020b4f18(func_020b4934(), 0, &v, 0x1b800000, 0, 2, 2);
                 }
             }
@@ -12897,15 +12897,15 @@ extern "C" void func_ov003_022079e0(Obj *o) {
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_022079c4(Obj *o) {
-    func_ov003_02207aec(o);
+extern "C" void PlayerActor_MainFaint(Obj *o) {
+    PlayerActor_FaintEffect(o);
     func_0201071c(o);
-    Unk_ov003_022079c4_Impl::func_ov003_022079e0(o);
+    Unk_ov003_022079c4_Impl::PlayerActor_FaintWarp(o);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" s32 func_ov003_0220798c(Obj *o, s32 a, s16 b) {
+extern "C" s32 PlayerActor_RequestAct6E(Obj *o, s32 a, s16 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x6e, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -12914,7 +12914,7 @@ extern "C" s32 func_ov003_0220798c(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_02207944(Obj *o) {
+extern "C" void PlayerActor_SetupAct6E(Obj *o) {
     s16 v;
     *(u8 *)&o->unk_7d0 = 0;
     v = -0x8000;
@@ -12926,14 +12926,14 @@ extern "C" void func_ov003_02207944(Obj *o) {
 }
 
 namespace ns_022077c8 {
-extern "C" s32 func_ov003_02207938(Obj *o, s16 a) {
-    return func_ov003_0220798c(o, 7, a);
+extern "C" s32 PlayerActor_NetAct6E(Obj *o, s16 a) {
+    return PlayerActor_RequestAct6E(o, 7, a);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_022078e0(Obj *o) {
-    if (Unk_ov003_022078e0_IsTwo(data_021c3cc0)) {
+extern "C" void PlayerActor_Act6EUpdateAnim(Obj *o) {
+    if (Unk_ov003_022078e0_IsTwo(gScreenTransition)) {
         Unk_020102ec_advanceAnim(o);
         if (o->unk_700 == 0x6a) {
             u32 m = o->unk_2d4.mid;
@@ -12948,7 +12948,7 @@ extern "C" void func_ov003_022078e0(Obj *o) {
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_022077e4(Obj *o) {
+extern "C" void PlayerActor_Act6ECheckEnd(Obj *o) {
     u8 *r4 = (u8 *)o + 0x7d0;
     u16 v[2];
     s32 r;
@@ -12979,7 +12979,7 @@ extern "C" void func_ov003_022077e4(Obj *o) {
                 }
             }
             if (r == 0) {
-                func_ov003_02210628(o, 2, 2, 0, 0, 0, 6, -1);
+                PlayerActor_RequestStowItem(o, 2, 2, 0, 0, 0, 6, -1);
             } else {
                 PlayerActor_requestWait(o, 3, 1, -1);
                 Unk_02006d14_setActionFlag(o, 0);
@@ -12990,15 +12990,15 @@ extern "C" void func_ov003_022077e4(Obj *o) {
 }
 
 namespace ns_022077c8 {
-extern "C" void func_ov003_022077c8(Obj *o) {
-    func_ov003_022078e0(o);
+extern "C" void PlayerActor_MainAct6E(Obj *o) {
+    PlayerActor_Act6EUpdateAnim(o);
     func_0201071c(o);
-    Unk_ov003_022077c8_Impl::func_ov003_022077e4(o);
+    Unk_ov003_022077c8_Impl::PlayerActor_Act6ECheckEnd(o);
 }
 }
 
 namespace ns_02206e94 {
-extern "C" s32 func_ov003_02207790(Obj *o, s32 a, s32 b) {
+extern "C" s32 PlayerActor_RequestTrip(Obj *o, s32 a, s32 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x71, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -13007,7 +13007,7 @@ extern "C" s32 func_ov003_02207790(Obj *o, s32 a, s32 b) {
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_022076f4(Obj *o) {
+extern "C" void PlayerActor_SetupTrip(Obj *o) {
     Rec *r = &o->unk_7d0;
     s32 st = Unk_02006d14_getHeldToolKind(o);
     o->unk_7d0.unk_00 = st;
@@ -13034,19 +13034,19 @@ extern "C" void func_ov003_022076f4(Obj *o) {
 }
 
 namespace ns_02206e94 {
-extern "C" s32 func_ov003_022076e8(Obj *o, s32 a) {
-    return func_ov003_02207790(o, 6, a);
+extern "C" s32 PlayerActor_NetTrip(Obj *o, s32 a) {
+    return PlayerActor_RequestTrip(o, 6, a);
 }
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_022075a4(Obj *o) {
+extern "C" void PlayerActor_TripEffects(Obj *o) {
     u16 hh[2];
     V3 vb;
     V3 va;
     V3 out1;
     V3 out2;
-    func_02053f20(o->unk_230);
+    TwoLayerAnimModel_updateLayers(o->unk_230);
     hh[0] = o->unk_8e;
     if (o->unk_7d0.unk_04_b == 0) {
         if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0xa) != 0) {
@@ -13094,7 +13094,7 @@ extern "C" void func_ov003_022075a4(Obj *o) {
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_02207550(Obj *o) {
+extern "C" void PlayerActor_TripCheckEnd(Obj *o) {
     if (o->unk_7d0.unk_04_b == 1) {
         if (AnimFrameCtrl_isFinished(o->unk_2cc) != 0) {
             o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
@@ -13106,7 +13106,7 @@ extern "C" void func_ov003_02207550(Obj *o) {
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_02207464(Obj *o) {
+extern "C" void PlayerActor_TripUpdate(Obj *o) {
     Rec *r = &o->unk_7d0;
     if (r->unk_04_b == 0) {
         s32 t = PlayerActor_DecreaseClamped(o->unk_98, 0, 0x7b);
@@ -13130,7 +13130,7 @@ extern "C" void func_ov003_02207464(Obj *o) {
                     break;
                 }
                 r->unk_04_b = 1;
-                if (func_020729bc(data_020cbb18, o->unk_7fc) != 0) {
+                if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) != 0) {
                     void *p = PlayerData_GetCurrent();
                     if (p != 0) {
                         if (func_02098044(p, 0x17) != 0) {
@@ -13145,17 +13145,17 @@ extern "C" void func_ov003_02207464(Obj *o) {
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_0220743c(Obj *o) {
-    func_ov003_02207464(o);
-    func_ov003_022075a4(o);
+extern "C" void PlayerActor_MainTrip(Obj *o) {
+    PlayerActor_TripUpdate(o);
+    PlayerActor_TripEffects(o);
     Unk_020102ec_moveWithCollision(o);
     func_0201071c(o);
-    ns_0220743c::func_ov003_02207550(o);
+    ns_0220743c::PlayerActor_TripCheckEnd(o);
 }
 }
 
 namespace ns_02206e94 {
-extern "C" s32 func_ov003_02207404(Obj *o, s32 a, s32 b) {
+extern "C" s32 PlayerActor_RequestAct72(Obj *o, s32 a, s32 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x72, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -13164,22 +13164,22 @@ extern "C" s32 func_ov003_02207404(Obj *o, s32 a, s32 b) {
 }
 
 namespace ns_02206e94 {
-extern "C" s32 func_ov003_022073d4(Obj *o) {
+extern "C" s32 PlayerActor_SetupAct72(Obj *o) {
     func_02010358(o, 0x9c, 3, 0);
-    if (func_020729bc(data_020cbb18, o->unk_7fc) != 0) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) != 0) {
         func_020b8df0();
     }
 }
 }
 
 namespace ns_02206e94 {
-extern "C" s32 func_ov003_022073c8(Obj *o, s32 a) {
-    return func_ov003_02207404(o, 6, a);
+extern "C" s32 PlayerActor_NetAct72(Obj *o, s32 a) {
+    return PlayerActor_RequestAct72(o, 6, a);
 }
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_0220739c(Obj *o) {
+extern "C" void PlayerActor_Act72Decelerate(Obj *o) {
     if (o->unk_98 != 0) {
         s32 t = PlayerActor_DecreaseClamped(o->unk_98, 0, 0x171);
         Unk_020102ec_setSpeed(o, &t);
@@ -13188,32 +13188,32 @@ extern "C" void func_ov003_0220739c(Obj *o) {
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_02207324(Obj *o) {
+extern "C" void PlayerActor_Act72CheckEnd(Obj *o) {
     func_0200f4c0(o, 0x59a);
     if (AnimFrameCtrl_isFinished(o->unk_2cc) != 0) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
-    if (func_020729bc(data_020cbb18, o->unk_7fc) != 0) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc) != 0) {
         if (o->unk_2d4.mid >= 0x1a) {
-            func_ov003_02205c28(o);
+            PlayerActor_ResumeWalkOrIdle(o);
         }
     }
 }
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_022072fc(Obj *o) {
+extern "C" void PlayerActor_MainAct72(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     Unk_020102ec_moveWithCollision(o);
     func_0201071c(o);
-    func_ov003_0220739c(o);
-    ns_022072fc::func_ov003_02207324(o);
+    PlayerActor_Act72Decelerate(o);
+    ns_022072fc::PlayerActor_Act72CheckEnd(o);
 }
 }
 
 namespace ns_02206e94 {
-extern "C" s32 func_ov003_022072b8(Obj *o, s32 *p, s32 b, s32 c) {
+extern "C" s32 PlayerActor_RequestPitfallFall(Obj *o, s32 *p, s32 b, s32 c) {
     Msg m;
     Unk_ov003_022072b8_P &q = *(Unk_ov003_022072b8_P *)&m.v_02206e94.unk_0c;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x73, b, c);
@@ -13225,27 +13225,27 @@ extern "C" s32 func_ov003_022072b8(Obj *o, s32 *p, s32 b, s32 c) {
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_022072b0(u8 *p, u8 a, u8 b) {
+extern "C" void PlayerActor_PitfallFallSetNetData(u8 *p, u8 a, u8 b) {
     p[0] = a;
     p[1] = b;
 }
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_022072a4(u8 *s, u8 *a, u8 *b) {
+extern "C" void PlayerActor_PitfallFallGetNetData(u8 *s, u8 *a, u8 *b) {
     *a = s[0];
     *b = s[1];
 }
 }
 
 namespace ns_02206e94 {
-extern "C" s32 func_ov003_02207224(Obj *o, u8 *a) {
+extern "C" s32 PlayerActor_SetupPitfallFall(Obj *o, u8 *a) {
     Unk_ov003_022072b8_P *q = (Unk_ov003_022072b8_P *)(a + 0xc);
     V3 v;
     Rec *r = &o->unk_7d0;
     s32 c0 = q->a;
     s32 c1 = q->b;
-    func_0204ed8c(&v, c0, c1);
+    FieldPos_FromUnitCenter(&v, c0, c1);
     o->unk_7d0.unk_00 = v.x;
     r->unk_04 = v.z;
     r->unk_08 = -1;
@@ -13253,24 +13253,24 @@ extern "C" s32 func_ov003_02207224(Obj *o, u8 *a) {
     if (Unk_02006d14_getHeldToolKind(o) == 4) {
         func_0205e1a0(o->unk_59c, 0xf, 3, 0);
     }
-    func_ov003_022072b0(o->unk_8ec, c0, c1);
+    PlayerActor_PitfallFallSetNetData(o->unk_8ec, c0, c1);
     Unk_02006d14_playSe(o, 0x7ee);
 }
 }
 
 namespace ns_02206e94 {
-extern "C" s32 func_ov003_022071ec(Obj *o, s32 a) {
+extern "C" s32 PlayerActor_NetPitfallFall(Obj *o, s32 a) {
     u8 b[2];
     s32 p[2];
-    func_ov003_022072a4(o->unk_8ec, &b[0], &b[1]);
+    PlayerActor_PitfallFallGetNetData(o->unk_8ec, &b[0], &b[1]);
     p[0] = b[0];
     p[1] = b[1];
-    return func_ov003_022072b8(o, p, 6, a);
+    return PlayerActor_RequestPitfallFall(o, p, 6, a);
 }
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_0220714c(Obj *o, s32 a) {
+extern "C" void PlayerActor_EndPitfallFall(Obj *o, s32 a) {
     Rec *r = &o->unk_7d0;
     Unk_ov003_0220714c_T v;
     s32 z = r->unk_04;
@@ -13312,7 +13312,7 @@ extern "C" void func_ov003_0220714c(Obj *o, s32 a) {
 }
 
 namespace ns_02206e94 {
-extern "C" s32 func_ov003_022070fc(Obj *o) {
+extern "C" s32 PlayerActor_PitfallFallEffect(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     s32 *p = (s32 *)&o->unk_7d0.unk_08;
     s32 z = 0;
@@ -13326,7 +13326,7 @@ extern "C" s32 func_ov003_022070fc(Obj *o) {
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_02206fd8(Obj *o) {
+extern "C" void PlayerActor_PitfallFallUpdate(Obj *o) {
     Rec *r = &o->unk_7d0;
     if (o->unk_700 == 0x90) {
         volatile V3 v;
@@ -13347,7 +13347,7 @@ extern "C" void func_ov003_02206fd8(Obj *o) {
     }
     if (AnimFrameCtrl_isFinished(o->unk_2cc) != 0) {
         if (o->unk_700 == 0x91) {
-            func_ov003_02206f88(o, r->unk_08, 6, -1);
+            PlayerActor_RequestPitfallStruggle(o, r->unk_08, 6, -1);
             Unk_02006d14_setActionFlag(o, 9);
         } else {
             struct { V3 pad; V3 b; } l;
@@ -13382,14 +13382,14 @@ end:;
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_02206fc4(Obj *o) {
-    func_ov003_022070fc(o);
-    ns_02206fc4::func_ov003_02206fd8(o);
+extern "C" void PlayerActor_MainPitfallFall(Obj *o) {
+    PlayerActor_PitfallFallEffect(o);
+    ns_02206fc4::PlayerActor_PitfallFallUpdate(o);
 }
 }
 
 namespace ns_02206e94 {
-extern "C" s32 func_ov003_02206f88(Obj *o, s32 a, s32 b, s32 c) {
+extern "C" s32 PlayerActor_RequestPitfallStruggle(Obj *o, s32 a, s32 b, s32 c) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x74, b, c);
     m.v_02206e94.unk_0c.x = a;
@@ -13399,7 +13399,7 @@ extern "C" s32 func_ov003_02206f88(Obj *o, s32 a, s32 b, s32 c) {
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_02206f0c(Obj *o, s32 *a) {
+extern "C" void PlayerActor_SetupPitfallStruggle(Obj *o, s32 *a) {
     s32 t;
     Unk_020102ec_startAnim(o, 0x92, 3, 0);
     o->unk_2dc = 0x800;
@@ -13421,20 +13421,20 @@ extern "C" void func_ov003_02206f0c(Obj *o, s32 *a) {
 }
 
 namespace ns_02206e94 {
-extern "C" s32 func_ov003_02206edc(Obj *o, s32 a) {
+extern "C" s32 PlayerActor_NetPitfallStruggle(Obj *o, s32 a) {
     s32 st = o->unk_7ec;
     if (st != 0x73) {
         if (st == 0x74) {
             o->unk_c80 = a;
         } else {
-            func_ov003_02206f88(o, -1, 6, a);
+            PlayerActor_RequestPitfallStruggle(o, -1, 6, a);
         }
     }
 }
 }
 
 namespace ns_02206e94 {
-extern "C" void func_ov003_02206e94(Obj *o, s32 a) {
+extern "C" void PlayerActor_EndPitfallStruggle(Obj *o, s32 a) {
     if (o->unk_7d0.unk_18 != -1) {
         func_020902f8(o->unk_7d0.unk_18);
     }
@@ -13450,7 +13450,7 @@ extern "C" void func_ov003_02206e94(Obj *o, s32 a) {
 }
 
 namespace ns_02206574 {
-extern "C" void func_ov003_02206de8(Obj *o) {
+extern "C" void PlayerActor_PitfallStruggleUpdate(Obj *o) {
     Unk_ov003_02206c04_St *r6 = &o->unk_7d0;
     s32 *r4 = &r6->f4;
     if (r6->fc >= 10) {
@@ -13481,8 +13481,8 @@ extern "C" void func_ov003_02206de8(Obj *o) {
 }
 
 namespace ns_02206574 {
-extern "C" void func_ov003_02206c04(Obj *o) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+extern "C" void PlayerActor_PitfallStruggleInput(Obj *o) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         Unk_ov003_02206c04_St *p = &o->unk_7d0;
         s32 *q = &p->f10;
         s32 r4 = p->f0;
@@ -13535,22 +13535,22 @@ extern "C" void func_ov003_02206c04(Obj *o) {
             p->f8 = FX_Div(func_01ffcb0c(func_01ffcb0c(0x1c00, *q), 0xa66), 0x190000) + 0x800;
         }
         if (Unk_02006d14_testActionFlag(o, 0xb) != 0 || p->f10 >= 0x190000) {
-            func_ov003_02206bb0(o, 6, -1);
+            PlayerActor_RequestPitfallClimbOut(o, 6, -1);
         }
     }
 }
 }
 
 namespace ns_02206574 {
-extern "C" void func_ov003_02206be8(Obj *o) {
-    Unk_ov003_02206be8_Ns::func_ov003_02206de8(o);
+extern "C" void PlayerActor_MainPitfallStruggle(Obj *o) {
+    Unk_ov003_02206be8_Ns::PlayerActor_PitfallStruggleUpdate(o);
     func_0201071c(o);
-    Unk_ov003_02206be8_Ns::func_ov003_02206c04(o);
+    Unk_ov003_02206be8_Ns::PlayerActor_PitfallStruggleInput(o);
 }
 }
 
 namespace ns_02206574 {
-extern "C" s32 func_ov003_02206bb0(Obj *o, s32 a, s32 b) {
+extern "C" s32 PlayerActor_RequestPitfallClimbOut(Obj *o, s32 a, s32 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x75, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -13559,7 +13559,7 @@ extern "C" s32 func_ov003_02206bb0(Obj *o, s32 a, s32 b) {
 }
 
 namespace ns_02206574 {
-extern "C" void func_ov003_02206ae8(Obj *o) {
+extern "C" void PlayerActor_SetupPitfallClimbOut(Obj *o) {
     V3 pos;
     u32 buf[0x10];
     V3 pos2;
@@ -13594,13 +13594,13 @@ extern "C" void func_ov003_02206ae8(Obj *o) {
 }
 
 namespace ns_02206574 {
-extern "C" s32 func_ov003_02206adc(Obj *o, s32 a) {
-    return func_ov003_02206bb0(o, 6, a);
+extern "C" s32 PlayerActor_NetPitfallClimbOut(Obj *o, s32 a) {
+    return PlayerActor_RequestPitfallClimbOut(o, 6, a);
 }
 }
 
 namespace ns_02206574 {
-extern "C" s32 func_ov003_02206a84(Obj *o) {
+extern "C" s32 PlayerActor_PitfallClimbOutCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         u16 k = 3;
@@ -13613,15 +13613,15 @@ extern "C" s32 func_ov003_02206a84(Obj *o) {
 }
 
 namespace ns_02206574 {
-extern "C" void func_ov003_02206a68(Obj *o) {
+extern "C" void PlayerActor_MainPitfallClimbOut(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     func_0201071c(o);
-    func_ov003_02206a84(o);
+    PlayerActor_PitfallClimbOutCheckEnd(o);
 }
 }
 
 namespace ns_02206574 {
-extern "C" s32 func_ov003_02206a1c(Obj *o, s32 a, s32 b) {
+extern "C" s32 PlayerActor_RequestBeeSting(Obj *o, s32 a, s32 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x78, a, b);
     if (PlayerActor_pushRequest(o, &m)) {
@@ -13633,7 +13633,7 @@ extern "C" s32 func_ov003_02206a1c(Obj *o, s32 a, s32 b) {
 }
 
 namespace ns_02206574 {
-extern "C" void func_ov003_022069c8(Obj *o) {
+extern "C" void PlayerActor_SetupBeeSting(Obj *o) {
     func_02010358(o, 0x71, 3, 0);
     *(u8 *)&o->unk_7d0 = 0;
     if (Unk_02006d14_getHeldToolKind(o) == 3) {
@@ -13646,27 +13646,27 @@ extern "C" void func_ov003_022069c8(Obj *o) {
 }
 
 namespace ns_02206574 {
-extern "C" void func_ov003_022069c4() {
+extern "C" void PlayerActor_NetBeeSting() {
 }
 }
 
 extern "C" s32 data_ov003_02230af0 = 0xccd;
-extern "C" s32 data_ov003_02230aec = -0x419;
+extern "C" s32 sFishEscapeSpeed = -0x419;
 extern "C" s32 data_ov003_02230ae8 = 0x10cd;
-extern "C" s32 data_ov003_02230ae4 = 0x6000;
+extern "C" s32 sFishCastFarDist = 0x6000;
 extern "C" s32 data_ov003_02230ae0 = 0x2000;
 extern "C" s32 data_ov003_02230adc = 0x2d9a;
 extern "C" s32 data_ov003_02230ad8 = 0x800;
 extern "C" s32 data_ov003_02230ad4 = 0x2d9a;
 extern "C" s32 data_ov003_02230ad0 = 0x1000;
-extern "C" s32 data_ov003_02230acc = 0x5000;
+extern "C" s32 sFishCastNearDist = 0x5000;
 extern "C" s32 data_ov003_02230ac8 = 1;
 extern "C" s32 data_ov003_02230ac4 = 1;
 extern "C" s32 data_ov003_02230ac0 = 1;
-extern "C" const s32 data_ov003_0222efb4 = 0x2000;
+extern "C" const s32 sFieldFrontDist = 0x2000;
 
 namespace ns_02206574 {
-extern "C" void func_ov003_022067c4(Obj *o) {
+extern "C" void PlayerActor_BeeStingUpdate(Obj *o) {
     Unk_ov003_022067c4_Pad pad;
 
     switch (o->unk_700) {
@@ -13750,15 +13750,15 @@ extern "C" void func_ov003_022067c4(Obj *o) {
 }
 
 namespace ns_02206574 {
-extern "C" void func_ov003_022067a8(Obj *o) {
+extern "C" void PlayerActor_MainBeeSting(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     func_0201071c(o);
-    func_ov003_022067c4(o);
+    PlayerActor_BeeStingUpdate(o);
 }
 }
 
 namespace ns_02206574 {
-extern "C" s32 func_ov003_02206770(Obj *o, s32 a, s32 b) {
+extern "C" s32 PlayerActor_RequestAct80(Obj *o, s32 a, s32 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x80, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -13767,20 +13767,20 @@ extern "C" s32 func_ov003_02206770(Obj *o, s32 a, s32 b) {
 }
 
 namespace ns_02206574 {
-extern "C" void func_ov003_0220675c(Obj *o) {
+extern "C" void PlayerActor_SetupAct80(Obj *o) {
     func_02010358(o, 0x7b, 3, 0);
 }
 }
 
 namespace ns_02206574 {
-extern "C" s32 func_ov003_02206750(Obj *o, s32 a) {
-    return func_ov003_02206770(o, 6, a);
+extern "C" s32 PlayerActor_NetAct80(Obj *o, s32 a) {
+    return PlayerActor_RequestAct80(o, 6, a);
 }
 }
 
 namespace ns_02206574 {
-extern "C" void func_ov003_02206710(Obj *o) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+extern "C" void PlayerActor_EndAct80(Obj *o) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         u16 *r = PlayerData_getHeldItem(PlayerData_GetBySessionSlot(o->unk_7fc));
         if (r) {
             Unk_02006d14_netSendClothesChange(o, 3, *r);
@@ -13790,7 +13790,7 @@ extern "C" void func_ov003_02206710(Obj *o) {
 }
 
 namespace ns_02206574 {
-extern "C" s32 func_ov003_02206670(Obj *o) {
+extern "C" s32 PlayerActor_Act80Update(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0xd)) {
         u16 t[2];
@@ -13815,17 +13815,17 @@ extern "C" s32 func_ov003_02206670(Obj *o) {
 }
 
 namespace ns_02206574 {
-extern "C" s32 func_ov003_022065cc(Obj *o) {
+extern "C" s32 PlayerActor_Act80CheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         u16 t = 0x137d;
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
-        if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+        if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
             s32 r4 = func_02098eb0(&t);
             if (r4 != -1) {
                 Unk_02006d14_clearActionFlag(o, 0);
                 func_020946f0(0x15, o->unk_7fc);
                 func_02099064(r4);
-                func_ov003_02210628(o, 2, 2, 0, 0, 0, 6, -1);
+                PlayerActor_RequestStowItem(o, 2, 2, 0, 0, 0, 6, -1);
                 return;
             }
         }
@@ -13835,16 +13835,16 @@ extern "C" s32 func_ov003_022065cc(Obj *o) {
 }
 
 namespace ns_02206574 {
-extern "C" void func_ov003_022065ac(Obj *o) {
-    func_ov003_02206670(o);
+extern "C" void PlayerActor_MainAct80(Obj *o) {
+    PlayerActor_Act80Update(o);
     Unk_020102ec_moveWithCollision(o);
     func_0201071c(o);
-    func_ov003_022065cc(o);
+    PlayerActor_Act80CheckEnd(o);
 }
 }
 
 namespace ns_02206574 {
-extern "C" s32 func_ov003_02206574(Obj *o, s32 a, s32 b) {
+extern "C" s32 PlayerActor_RequestAct81(Obj *o, s32 a, s32 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x81, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -13853,14 +13853,14 @@ extern "C" s32 func_ov003_02206574(Obj *o, s32 a, s32 b) {
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_0220650c(Obj *o) {
+extern "C" void PlayerActor_SetupAct81(Obj *o) {
     s32 *r2 = &o->unk_7d0;
     *r2 = -1;
     ((u8 *)r2)[4] = 0;
     ((u8 *)r2)[5] = 0x14;
     Unk_020102ec_startAnim(o, 0x7c, 9, 0);
     func_0205e1a0(o->unk_59c, 0x28, 0, 1);
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         Camera_SetMode4();
         func_02035b9c(data_021c1b3c + 0x1c4);
     }
@@ -13868,14 +13868,14 @@ extern "C" void func_ov003_0220650c(Obj *o) {
 }
 
 namespace ns_02205c28 {
-extern "C" s32 func_ov003_02206500(Obj *o, s32 a) {
-    return func_ov003_02206574(o, 6, a);
+extern "C" s32 PlayerActor_NetAct81(Obj *o, s32 a) {
+    return PlayerActor_RequestAct81(o, 6, a);
 }
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_0220646c(Obj *o) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+extern "C" void PlayerActor_EndAct81(Obj *o) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         u16 *r = PlayerData_getHeldItem(PlayerData_GetBySessionSlot(o->unk_7fc));
         if (r) {
             Unk_02006d14_netSendClothesChange(o, 3, *r);
@@ -13896,7 +13896,7 @@ extern "C" void func_ov003_0220646c(Obj *o) {
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_02206378(Obj *o) {
+extern "C" void PlayerActor_Act81Update(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     s32 *r6 = &o->unk_7d0;
     u8 *r4 = (u8 *)r6 + 4;
@@ -13937,7 +13937,7 @@ extern "C" void func_ov003_02206378(Obj *o) {
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_022062d4(Obj *o) {
+extern "C" void PlayerActor_Act81CheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(func_0205dfa4(o->unk_59c) + 0x9c)) {
         u8 *q = (u8 *)&o->unk_7d0;
         u8 *r1 = q + 4;
@@ -13965,16 +13965,16 @@ extern "C" void func_ov003_022062d4(Obj *o) {
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_022062b4(Obj *o) {
-    ovcall::func_ov003_02206378(o);
+extern "C" void PlayerActor_MainAct81(Obj *o) {
+    ovcall::PlayerActor_Act81Update(o);
     Unk_020102ec_moveWithCollision(o);
     func_0201071c(o);
-    ovcall::func_ov003_022062d4(o);
+    ovcall::PlayerActor_Act81CheckEnd(o);
 }
 }
 
 namespace ns_02205c28 {
-extern "C" s32 func_ov003_0220627c(Obj *o, s32 a, s32 b) {
+extern "C" s32 PlayerActor_RequestAct82(Obj *o, s32 a, s32 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x82, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -13983,7 +13983,7 @@ extern "C" s32 func_ov003_0220627c(Obj *o, s32 a, s32 b) {
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_02206240(Obj *o) {
+extern "C" void PlayerActor_SetupAct82(Obj *o) {
     o->unk_7d0 = -1;
     func_02010358(o, 0x7d, 3, 0);
     func_0205e1a0(o->unk_59c, 0x2a, 0, 0);
@@ -13992,14 +13992,14 @@ extern "C" void func_ov003_02206240(Obj *o) {
 }
 
 namespace ns_02205c28 {
-extern "C" s32 func_ov003_02206234(Obj *o, s32 a) {
-    return func_ov003_0220627c(o, 6, a);
+extern "C" s32 PlayerActor_NetAct82(Obj *o, s32 a) {
+    return PlayerActor_RequestAct82(o, 6, a);
 }
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_022061e0(Obj *o) {
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+extern "C" void PlayerActor_EndAct82(Obj *o) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         u16 *r = PlayerData_getHeldItem(PlayerData_GetBySessionSlot(o->unk_7fc));
         if (r) {
             Unk_02006d14_netSendClothesChange(o, 3, *r);
@@ -14012,7 +14012,7 @@ extern "C" void func_ov003_022061e0(Obj *o) {
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_02206120(Obj *o) {
+extern "C" void PlayerActor_Act82Update(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     s32 f = o->unk_2d4.f;
     if (f >= 0xe && f <= 0x18) {
@@ -14037,31 +14037,31 @@ extern "C" void func_ov003_02206120(Obj *o) {
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_022060b4(Obj *o) {
+extern "C" void PlayerActor_Act82CheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 3, 1, -1);
     }
-    if (func_020729bc(data_020cbb18, o->unk_7fc)) {
+    if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         u32 f = o->unk_2d4.f;
         if (f >= 0x18) {
-            func_ov003_02205c28(o);
+            PlayerActor_ResumeWalkOrIdle(o);
         }
     }
 }
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_02206094(Obj *o) {
-    ovcall::func_ov003_02206120(o);
+extern "C" void PlayerActor_MainAct82(Obj *o) {
+    ovcall::PlayerActor_Act82Update(o);
     Unk_020102ec_moveWithCollision(o);
     func_0201071c(o);
-    ovcall::func_ov003_022060b4(o);
+    ovcall::PlayerActor_Act82CheckEnd(o);
 }
 }
 
 namespace ns_02205c28 {
-extern "C" s32 func_ov003_0220605c(Obj *o, s32 a, s32 b) {
+extern "C" s32 PlayerActor_RequestAct89(Obj *o, s32 a, s32 b) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x89, a, b);
     s32 r = PlayerActor_pushRequest(o, &m);
@@ -14070,20 +14070,20 @@ extern "C" s32 func_ov003_0220605c(Obj *o, s32 a, s32 b) {
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_02206040(Obj *o) {
+extern "C" void PlayerActor_SetupAct89(Obj *o) {
     func_02010358(o, 0x8f, 0, 0);
     Unk_02006d14_playSe(o, 0x4f);
 }
 }
 
 namespace ns_02205c28 {
-extern "C" s32 func_ov003_02206034(Obj *o, s32 a) {
-    return func_ov003_0220605c(o, 6, a);
+extern "C" s32 PlayerActor_NetAct89(Obj *o, s32 a) {
+    return PlayerActor_RequestAct89(o, 6, a);
 }
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_02205f98(Obj *o) {
+extern "C" void PlayerActor_Act89ShowItem(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (o->unk_700 == 0x8f) {
         s32 f = o->unk_2d4.f;
@@ -14108,7 +14108,7 @@ extern "C" void func_ov003_02205f98(Obj *o) {
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_02205eb8(Obj *o) {
+extern "C" void PlayerActor_Act89Look(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         Unk_020102ec_startAnim(o, 0, 3, 3);
     } else if (o->unk_700 == 0) {
@@ -14141,15 +14141,15 @@ extern "C" void func_ov003_02205eb8(Obj *o) {
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_02205e9c(Obj *o) {
-    ovcall::func_ov003_02205f98(o);
+extern "C" void PlayerActor_MainAct89(Obj *o) {
+    ovcall::PlayerActor_Act89ShowItem(o);
     func_0201071c(o);
-    ovcall::func_ov003_02205eb8(o);
+    ovcall::PlayerActor_Act89Look(o);
 }
 }
 
 namespace ns_02205c28 {
-extern "C" s32 func_ov003_02205e58(Obj *o, u8 *p, u32 c, s32 id, s32 e) {
+extern "C" s32 PlayerActor_RequestFishRelease(Obj *o, u8 *p, u32 c, s32 id, s32 e) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x8f, id, *(s16 *)&e);
     u8 v0 = *(volatile u8 *)p;
@@ -14162,21 +14162,21 @@ extern "C" s32 func_ov003_02205e58(Obj *o, u8 *p, u32 c, s32 id, s32 e) {
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_02205e50(u8 *p, u32 a, u32 b) {
+extern "C" void PlayerActor_FishReleaseSetNetData(u8 *p, u32 a, u32 b) {
     p[0] = a;
     p[1] = b;
 }
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_02205e44(u8 *src, u8 *a, u8 *b) {
+extern "C" void PlayerActor_FishReleaseGetNetData(u8 *src, u8 *a, u8 *b) {
     *a = src[0];
     *b = src[1];
 }
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_02205e04(Obj *o, Rec *r) {
+extern "C" void PlayerActor_SetupFishRelease(Obj *o, Rec *r) {
     u8 x, y;
     u8 *p;
     Unk_ov003_02205e58_Pair *q = &r->unk_0c;
@@ -14188,20 +14188,20 @@ extern "C" void func_ov003_02205e04(Obj *o, Rec *r) {
     }
     p[0] = x;
     p[1] = y;
-    func_ov003_02205e50(o->unk_8ec, x, y);
+    PlayerActor_FishReleaseSetNetData(o->unk_8ec, x, y);
 }
 }
 
 namespace ns_02205c28 {
-extern "C" s32 func_ov003_02205dd0(Obj *o, s32 a) {
+extern "C" s32 PlayerActor_NetFishRelease(Obj *o, s32 a) {
     u8 buf[2];
-    func_ov003_02205e44(o->unk_8ec, &buf[0], &buf[1]);
-    return func_ov003_02205e58(o, &buf[0], buf[1], 6, a);
+    PlayerActor_FishReleaseGetNetData(o->unk_8ec, &buf[0], &buf[1]);
+    return PlayerActor_RequestFishRelease(o, &buf[0], buf[1], 6, a);
 }
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_02205c90(Obj *o) {
+extern "C" void PlayerActor_FishReleaseLook(Obj *o) {
     u8 *p = (u8 *)&o->unk_7d0;
     if (p[0] != 0) {
         s32 t = o->unk_7fc;
@@ -14244,18 +14244,18 @@ extern "C" void func_ov003_02205c90(Obj *o) {
 }
 
 namespace ns_02205c28 {
-extern "C" void func_ov003_02205c64(Obj *o) {
+extern "C" void PlayerActor_MainFishRelease(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (func_0200ef08(o)) {
         Unk_020102ec_moveWithCollision(o);
     }
     func_0201071c(o);
-    ovcall::func_ov003_02205c90(o);
+    ovcall::PlayerActor_FishReleaseLook(o);
 }
 }
 
 namespace ns_02205c28 {
-extern "C" s32 func_ov003_02205c28(Obj *o) {
+extern "C" s32 PlayerActor_ResumeWalkOrIdle(Obj *o) {
     if (Unk_02006d14_getTargetWalkSpeed(o) > 0) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWalk(o, 0, 1, -1);
@@ -14266,11 +14266,11 @@ extern "C" s32 func_ov003_02205c28(Obj *o) {
 }
 
 namespace ns_022052f4 {
-extern "C" BOOL func_ov003_02205b68(Obj *o, s32 *pa) {
+extern "C" BOOL PlayerActor_FieldInteractFront(Obj *o, s32 *pa) {
     V3 v;
     if (o->unk_16c == 1) {
         V3 t;
-        func_0200f3ec(&t, o, &o->unk_5c, &o->unk_8e, data_ov003_0222efb4);
+        func_0200f3ec(&t, o, &o->unk_5c, &o->unk_8e, sFieldFrontDist);
         v.x = t.x;
         v.y = t.y;
         v.z = t.z;
@@ -14286,13 +14286,13 @@ extern "C" BOOL func_ov003_02205b68(Obj *o, s32 *pa) {
 }
 
 namespace ns_022052f4 {
-extern "C" s32 func_ov003_02205a00(Obj *o, u8 *pa, u8 *pb, s32 *out) {
+extern "C" s32 PlayerActor_AxeClassifyTarget(Obj *o, u8 *pa, u8 *pb, s32 *out) {
     s32 r = 1;
     s32 a, b, t;
     V3 pos;
-    if (*pa != 0 && func_ov003_022052f4(o)) return 4;
+    if (*pa != 0 && PlayerActor_CheckToolHitActor(o)) return 4;
     func_0200f43c(&pos, o);
-    func_0204ee10(&a, &b, &pos);
+    FieldPos_ToUnit(&a, &b, &pos);
     if (out != NULL) {
         out[0] = a;
         out[1] = b;
@@ -14300,8 +14300,8 @@ extern "C" s32 func_ov003_02205a00(Obj *o, u8 *pa, u8 *pb, s32 *out) {
     s32 res = func_0203081c(&pos, &t, 0x19);
     if (t == 4) goto aac;
     if (t != 6) goto b42;
-    if (data_021c47c4 != NULL) {
-        u16 *p = func_0204eba0(data_021c47c4, &pos, 0);
+    if (gSceneBlockMap != NULL) {
+        u16 *p = BlockMap_GetItemPtrAtPos(gSceneBlockMap, &pos, 0);
         BOOL f3 = TRUE, f2 = TRUE, f1 = TRUE, f0 = FALSE;
         u32 v = *p;
         if (v >= 0x2b && v <= 0x2e) f0 = TRUE;
@@ -14346,11 +14346,11 @@ done:
 }
 
 namespace ns_022052f4 {
-extern "C" s32 func_ov003_02205928(Obj *o, V3 *p, u8 *f) {
+extern "C" s32 PlayerActor_ShovelClassifyTarget(Obj *o, V3 *p, u8 *f) {
     s32 a, b;
-    func_0204ee10(&a, &b, p);
+    FieldPos_ToUnit(&a, &b, p);
     if (*f != 0) {
-        if (func_ov003_022052f4(o)) return 2;
+        if (PlayerActor_CheckToolHitActor(o)) return 2;
         V2 q;
         q.x = 0;
         q.y = 0;
@@ -14383,7 +14383,7 @@ extern "C" s32 func_ov003_02205928(Obj *o, V3 *p, u8 *f) {
 }
 
 namespace ns_022052f4 {
-extern "C" BOOL func_ov003_02205894(Obj *o, V3 *out, V3 *tgt) {
+extern "C" BOOL PlayerActor_FishFindCastTarget(Obj *o, V3 *out, V3 *tgt) {
     s16 ang;
     V3 t1, t0;
     if (func_020e972c(tgt, &o->unk_5c)) {
@@ -14391,25 +14391,25 @@ extern "C" BOOL func_ov003_02205894(Obj *o, V3 *out, V3 *tgt) {
     } else {
         ang = func_020e7b98(tgt->x - o->unk_5c.x, tgt->z - o->unk_5c.z);
     }
-    func_0200f3ec(&t0, o, &o->unk_5c, &ang, data_ov003_02230ae4);
+    func_0200f3ec(&t0, o, &o->unk_5c, &ang, sFishCastFarDist);
     out->x = t0.x;
     out->y = t0.y;
     out->z = t0.z;
     BOOL r4 = func_02030d60(out);
-    func_0200f3ec(&t1, o, &o->unk_5c, &ang, data_ov003_02230acc);
+    func_0200f3ec(&t1, o, &o->unk_5c, &ang, sFishCastNearDist);
     if (r4 && func_02030d60(&t1)) return TRUE;
     return FALSE;
 }
 }
 
 namespace ns_022052f4 {
-extern "C" void func_ov003_02205744(Obj *o) {
+extern "C" void PlayerActor_FieldCheckUnitAhead(Obj *o) {
     V2 p;
     V3 out;
     p.x = 0;
     p.y = 0;
     func_0200f3ec(&out, o, &o->unk_5c, &o->unk_8e, data_ov003_02230ae8);
-    func_0204ee10(&p.x, &p.y, &out);
+    FieldPos_ToUnit(&p.x, &p.y, &out);
     BOOL same = FALSE;
     s32 x = p.x;
     if (*(volatile s32 *)&p.x == o->unk_8cc && p.y == o->unk_8d0) same = TRUE;
@@ -14420,7 +14420,7 @@ extern "C" void func_ov003_02205744(Obj *o) {
         o->unk_8cc = x;
         o->unk_8d0 = p.y;
         s32 x0 = *(volatile s32 *)&p.x, y = p.y, hx = x0 >> 4, hy = y >> 4;
-        u16 *c = func_0204ebd8(data_021c47c4, hx, hy, x0 - (hx << 4), y - (hy << 4), 0);
+        u16 *c = BlockMap_GetItemPtr(gSceneBlockMap, hx, hy, x0 - (hx << 4), y - (hy << 4), 0);
         if (c != NULL) {
             if (Unk_ov003_02205744_Chk(c)) {
                 V2 q;
@@ -14434,12 +14434,12 @@ extern "C" void func_ov003_02205744(Obj *o) {
 }
 
 namespace ns_022052f4 {
-extern "C" void func_ov003_022056c8(Obj *o) {
+extern "C" void PlayerActor_FieldRunStep(Obj *o) {
     V2 p;
     p.x = 0;
     p.y = 0;
     if (o->unk_98 > 0x53f) {
-        func_0204ee10(&p.x, &p.y, &o->unk_5c);
+        FieldPos_ToUnit(&p.x, &p.y, &o->unk_5c);
         BOOL same = FALSE;
         s32 x = p.x;
         if (*(volatile s32 *)&p.x == o->unk_8d4 && p.y == o->unk_8d8) same = TRUE;
@@ -14459,7 +14459,7 @@ extern "C" void func_ov003_022056c8(Obj *o) {
 }
 
 namespace ns_022052f4 {
-extern "C" void func_ov003_022055e4(Obj *o) {
+extern "C" void PlayerActor_FieldCheckStepUnit(Obj *o) {
     if (Unk_02006d14_testActionFlag(o, 0xb)) return;
     if (Unk_02006d14_testActionFlag(o, 0x16)) return;
     if (!PlayerActor_isLocomotionAction(o, o->unk_7ec)) return;
@@ -14467,7 +14467,7 @@ extern "C" void func_ov003_022055e4(Obj *o) {
     V2 p;
     p.x = 0;
     p.y = 0;
-    func_0204ee10(&p.x, &p.y, &o->unk_5c);
+    FieldPos_ToUnit(&p.x, &p.y, &o->unk_5c);
     s32 t = Unk_02006d14_getHeldToolKind(o);
     s32 k = 0;
     switch (t) {
@@ -14493,14 +14493,14 @@ extern "C" void func_ov003_022055e4(Obj *o) {
 }
 
 namespace ns_022052f4 {
-extern "C" void func_ov003_02205574(Obj *o) {
+extern "C" void PlayerActor_FieldPollPitfall(Obj *o) {
     if (Unk_02006d14_testActionFlag(o, 0x16)) {
         switch (o->unk_814) {
         case 1: {
             s32 v[2];
             v[0] = o->unk_8dc;
             v[1] = o->unk_8e0;
-            func_ov003_022072b8(o, v, 6, -1);
+            PlayerActor_RequestPitfallFall(o, v, 6, -1);
             Unk_02006d14_clearActionFlag(o, 0x16);
             Unk_02006d14_clearActionFlag(o, 0x13);
             break;
@@ -14515,7 +14515,7 @@ extern "C" void func_ov003_02205574(Obj *o) {
 }
 
 namespace ns_022052f4 {
-extern "C" void func_ov003_022053e4(Obj *o) {
+extern "C" void PlayerActor_FieldUpdateTan(Obj *o) {
     struct L {
         u16 w0;
         u16 s2;
@@ -14537,7 +14537,7 @@ extern "C" void func_ov003_022053e4(Obj *o) {
     tm = PlayerActor_GetPlayerData(o);
     l.t[0] = 0;
     l.t[1] = 0;
-    func_0209d498(l.t);
+    Clock_GetDateTime(l.t);
     if ((*fl & 1) != 0) {
         if (func_0200f23c(o) != 1) return;
         if (night) {
@@ -14558,7 +14558,7 @@ extern "C" void func_ov003_022053e4(Obj *o) {
     }
     u8 hh = ((u8 *)&l)[0xa];
     if (hh < 0xa || hh >= 0x11) return;
-    if (func_020b8fd8() >= 3) return;
+    if (Weather_GetCurrent() >= 3) return;
     PlayerActor_GetHeldItem(&l.s2, o);
     if (Unk_ov003_022052f4_RngV(&l.s2, 0x1380, 0x139f)) return;
     PlayerActor_GetHeldItem(&l.s4, o);
@@ -14580,7 +14580,7 @@ extern "C" void func_ov003_022053e4(Obj *o) {
 }
 
 namespace ns_022052f4 {
-extern "C" BOOL func_ov003_022052f4(Obj *o) {
+extern "C" BOOL PlayerActor_CheckToolHitActor(Obj *o) {
     u16 buf[2];
     s32 k;
     u32 id;
@@ -14624,7 +14624,7 @@ extern "C" BOOL func_ov003_022052f4(Obj *o) {
 }
 
 namespace ns_02204d90 {
-extern "C" BOOL func_ov003_02204f3c(Unk_02006d14 *self) {
+extern "C" BOOL PlayerActor_FieldUseTool(Unk_02006d14 *self) {
     s32 mode = Unk_02006d14_getHeldToolKind(self);
     u16 ang;
     s32 xy[2];
@@ -14636,7 +14636,7 @@ extern "C" BOOL func_ov003_02204f3c(Unk_02006d14 *self) {
         l.z.x = 0;
         l.z.y = 0;
         l.z.z = 0;
-        if (func_ov003_02204d90(self, mode, &l.z.x)) {
+        if (PlayerActor_FieldStartToolAction(self, mode, &l.z.x)) {
             return TRUE;
         }
     }
@@ -14651,7 +14651,7 @@ extern "C" BOOL func_ov003_02204f3c(Unk_02006d14 *self) {
     switch (self->unk_140) {
     case 1:
         if (self->unk_140 != 0) {
-            if (func_ov003_02205b68(self, &mode)) {
+            if (PlayerActor_FieldInteractFront(self, &mode)) {
                 return TRUE;
             }
         }
@@ -14661,14 +14661,14 @@ extern "C" BOOL func_ov003_02204f3c(Unk_02006d14 *self) {
                     l.va.x = self->unk_154;
                     l.va.y = self->unk_158;
                     l.va.z = self->unk_15c;
-                    if (func_ov003_02204d90(self, 0, &l.va.x)) {
+                    if (PlayerActor_FieldStartToolAction(self, 0, &l.va.x)) {
                         return TRUE;
                     }
                 } else {
                     l.vb.x = self->unk_154;
                     l.vb.y = self->unk_158;
                     l.vb.z = self->unk_15c;
-                    if (func_ov003_02204d90(self, mode, &l.vb.x)) {
+                    if (PlayerActor_FieldStartToolAction(self, mode, &l.vb.x)) {
                         return TRUE;
                     }
                 }
@@ -14680,20 +14680,20 @@ extern "C" BOOL func_ov003_02204f3c(Unk_02006d14 *self) {
             l.z.x = 0;
             l.z.y = 0;
             l.z.z = 0;
-            if (func_ov003_02204d90(self, mode, &l.z.x)) {
+            if (PlayerActor_FieldStartToolAction(self, mode, &l.z.x)) {
                 return TRUE;
             }
         }
         break;
     }
     if (self->unk_16c == 2 && mode == 5) {
-        func_0204ee10(&xy[0], &xy[1], &self->unk_154);
+        FieldPos_ToUnit(&xy[0], &xy[1], &self->unk_154);
         s32 hx, hy, x, y;
         x = *(volatile s32 *)&xy[0];
         y = *(volatile s32 *)&xy[1];
         hx = x >> 4;
         hy = y >> 4;
-        u16 *cell = (u16 *)func_0204ebd8(data_021c47c4, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+        u16 *cell = (u16 *)BlockMap_GetItemPtr(gSceneBlockMap, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (cell) {
             BOOL f8 = TRUE, f7 = TRUE, f6 = TRUE, f5 = TRUE, f4 = TRUE, f3 = TRUE, f2 = TRUE, f1 = FALSE;
             u32 v = *cell;
@@ -14743,7 +14743,7 @@ extern "C" BOOL func_ov003_02204f3c(Unk_02006d14 *self) {
             l.z.x = 0;
             l.z.y = 0;
             l.z.z = 0;
-            if (func_ov003_02204d90(self, mode, &l.z.x)) {
+            if (PlayerActor_FieldStartToolAction(self, mode, &l.z.x)) {
                 return TRUE;
             }
         }
@@ -14758,7 +14758,7 @@ after_tile:
         switch (mode) {
         case 1: {
             ang = func_020e7b98(self->unk_154 - self->unk_6f0, self->unk_15c - self->unk_6f8);
-            func_0200f3ec(&l.t, self, self->unk_5c, &ang, data_ov003_0222efb4);
+            func_0200f3ec(&l.t, self, self->unk_5c, &ang, sFieldFrontDist);
             if (func_0200fa2c(self, &l.t.x, mode)) {
                 s32 *pa = &self->unk_154;
                 s32 *pb = &self->unk_158;
@@ -14772,7 +14772,7 @@ after_tile:
                 l.z.x = 0;
                 l.z.y = 0;
                 l.z.z = 0;
-                if (func_ov003_02204d90(self, mode, &l.z.x)) {
+                if (PlayerActor_FieldStartToolAction(self, mode, &l.z.x)) {
                     self->unk_154 = l.s.x;
                     self->unk_158 = l.s.y;
                     self->unk_15c = l.s.z;
@@ -14788,7 +14788,7 @@ after_tile:
             l.z.x = 0;
             l.z.y = 0;
             l.z.z = 0;
-            if (func_ov003_02204d90(self, mode, &l.z.x)) {
+            if (PlayerActor_FieldStartToolAction(self, mode, &l.z.x)) {
                 return TRUE;
             }
             break;
@@ -14797,7 +14797,7 @@ after_tile:
                 l.vc.x = self->unk_154;
                 l.vc.y = self->unk_158;
                 l.vc.z = self->unk_15c;
-                if (func_ov003_02204d90(self, mode, &l.vc.x)) {
+                if (PlayerActor_FieldStartToolAction(self, mode, &l.vc.x)) {
                     return TRUE;
                 }
             }
@@ -14808,7 +14808,7 @@ fail:
     if (mode == 0) {
         if (self->unk_13c) {
             if (func_020b8e14()) {
-                func_ov003_02207404(self, 6, -1);
+                PlayerActor_RequestAct72(self, 6, -1);
                 return TRUE;
             }
         }
@@ -14818,17 +14818,17 @@ fail:
 }
 
 namespace ns_02204d90 {
-extern "C" BOOL func_ov003_02204d90(Unk_02006d14 *self, s32 mode, s32 *pos) {
+extern "C" BOOL PlayerActor_FieldStartToolAction(Unk_02006d14 *self, s32 mode, s32 *pos) {
     Unk_ov003_02204ce8_Vec a, z, c, z2, t1, t2;
     switch (mode) {
     case 2:
-        func_ov003_0220fc00(self, 6, -1);
+        PlayerActor_RequestAxeSwing(self, 6, -1);
         return TRUE;
     case 1:
-        func_ov003_0220b620(self, 6, -1);
+        PlayerActor_RequestShovelReady(self, 6, -1);
         return TRUE;
     case 4:
-        func_ov003_0220d00c(self, 6, -1);
+        PlayerActor_RequestBugNetSwing(self, 6, -1);
         return TRUE;
     case 3:
         z.x = 0;
@@ -14840,29 +14840,29 @@ extern "C" BOOL func_ov003_02204d90(Unk_02006d14 *self, s32 mode, s32 *pos) {
             pos[1] = pv[1];
             pos[2] = pv[2];
         }
-        if (func_ov003_02205894(self, &a.x, pos)) {
+        if (PlayerActor_FishFindCastTarget(self, &a.x, pos)) {
             c.x = a.x;
             c.y = a.y;
             c.z = a.z;
-            func_ov003_0220e8cc(self, &c.x, 6, -1);
+            PlayerActor_RequestFishCast(self, &c.x, 6, -1);
         } else {
-            func_ov003_0220e6b0(self, 6, -1);
+            PlayerActor_RequestFishCastFail(self, 6, -1);
         }
         return TRUE;
     case 5:
-        func_ov003_02209030(self, 6, -1);
+        PlayerActor_RequestWateringCan(self, 6, -1);
         return TRUE;
     case 6:
-        func_ov003_02208d18(self, 6, -1);
+        PlayerActor_RequestSlingshot(self, 6, -1);
         return TRUE;
     case 7:
-        func_ov003_0220627c(self, 6, -1);
+        PlayerActor_RequestAct82(self, 6, -1);
         return TRUE;
     case 8:
-        func_ov003_02206770(self, 6, -1);
+        PlayerActor_RequestAct80(self, 6, -1);
         return TRUE;
     case 9:
-        func_ov003_02206574(self, 6, -1);
+        PlayerActor_RequestAct81(self, 6, -1);
         return TRUE;
     case 0:
     case 10:
@@ -14888,12 +14888,12 @@ extern "C" BOOL func_ov003_02204d90(Unk_02006d14 *self, s32 mode, s32 *pos) {
                     f = TRUE;
                 }
                 s32 zero = 0;
-                func_ov003_022084f4(self, a.x, a.z, f, zero, 6, ~zero);
+                PlayerActor_RequestAct68(self, a.x, a.z, f, zero, 6, ~zero);
                 return TRUE;
             }
         }
         if (mode == 10) {
-            func_ov003_0220fe1c(self, 6, -1);
+            PlayerActor_RequestUmbrellaSpin(self, 6, -1);
             return TRUE;
         }
     }
@@ -14902,9 +14902,9 @@ extern "C" BOOL func_ov003_02204d90(Unk_02006d14 *self, s32 mode, s32 *pos) {
 }
 
 namespace ns_02204d90 {
-extern "C" BOOL func_ov003_02204ce8(Unk_02006d14 *self, s32 a) {
+extern "C" BOOL PlayerActor_FieldInteractAt(Unk_02006d14 *self, s32 a) {
     Unk_ov003_02204ce8_Vec v;
-    if (func_ov003_02205b68(self, &a)) {
+    if (PlayerActor_FieldInteractFront(self, &a)) {
         return TRUE;
     }
     if (self->unk_16c == 1) {

@@ -66,24 +66,24 @@ struct Unk_02040d80_Obj {
 
 extern "C" {
 s32 func_02063b8c(s32);
-void func_0209d2c0(s32, s32);
+void DateTime_AddDays(s32, s32);
 void MI_CpuCopy8(void *, void *, u32);
-s32 func_0203f218(void *, s32, void *);
-void func_0209cf88(void *);
-s32 func_0209cd00(void *, void *);
+s32 EventSchedule_CollectAtNoon(void *, s32, void *);
+void Clock_GetDate(void *);
+s32 Date_DaysBetween(void *, void *);
 void func_02040df0(void);
 void func_02040864(u8 *);
 void func_02040a60(s32);
 void func_020402f8(void *, s32);
-void func_0203f4c0(s32);
+void Event_RefreshToday(s32);
 void func_02040684(void *);
 s32 func_020b50e8(void);
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *);
+s32 _ZN11CommManager8isOnlineEv(void *);
 s32 func_020850e0(void);
 s32 func_0208517c(void);
 s32 _ZN12Unk_02086f1413func_02086f18Ev(void);
-s32 _ZN12Unk_020cbb1813func_02072e88Ei(void *, s32);
-void func_0209d498(void *);
+s32 _ZN11CommManager12isSlotActiveEi(void *, s32);
+void Clock_GetDateTime(void *);
 void *TalkWindow_Get(s32);
 void _ZN15TalkWindowState13detachRequestEv(void *p);
 s32 func_020b4934(void);
@@ -107,35 +107,35 @@ void func_02040cac(void);
 s32 func_0203d9d8(void);
 s32 func_0203d9c0(void);
 s32 Melody_IsBusy(void);
-s32 func_0204da0c(void);
-s32 func_0204d560(s32, void *);
-s32 func_0204d780(s32, void *, s32, s32);
+s32 TownBlockMap_Get(void);
+s32 Town_FindGulliverShip(s32, void *);
+s32 Town_FindTownHall(s32, void *, s32, s32);
 void func_020b4a08(s32, s32);
 void func_020b4f18(s32, s32, void *, s32, ...);
 s32 func_020a5cc0(s32);
-s32 func_0203f31c(s32, void *, s32);
-s32 func_0203f2e0(s32, void *, s32);
+s32 Event_GetStateAt(s32, void *, s32);
+s32 Event_GetState(s32, void *, s32);
 s32 func_0203d99c(void);
 s32 func_0203d984(void);
 s32 func_0203d990(void);
 s32 func_020b5164(void);
-void func_02046c24(void);
-void func_020460dc(s32);
+void Town_RefreshEventsOffline(void);
+void Town_UpdateDay(s32);
 s32 func_020b101c(void);
 void MIi_CpuClear16(u32 v, u32 dst, u32 size);
 u32 G2_GetBG2ScrPtr();
 u32 G2_GetBG2CharPtr();
 u32 G2S_GetBG2ScrPtr();
 u32 G2S_GetBG2CharPtr();
-void func_020014f4(u32);
-void func_020014bc(u32);
-void func_02041104();
+void Gfx2d_ShowMainPlanes(u32);
+void Gfx2d_ShowSubPlanes(u32);
+void ScreenTransition_ShowCover();
 BOOL func_02040908(void);
 void func_02040974(s32 a, s32 b, s32 c);
 }
 
-extern Unk_02040974_Obj *data_020cbb18;
-extern u8 data_021c3cc0;
+extern Unk_02040974_Obj *gCommManager;
+extern u8 gScreenTransition;
 extern "C" Unk_020da258 *func_020410ec();
 struct Unk_020da224_Rec { void *(*unk_00)(); s16 unk_04; s16 unk_06; };
 extern Unk_02040d80_Obj *gActorDefaultParent;
@@ -165,7 +165,7 @@ static inline void Unk_02041104_Fill(u16 v, u32 dst, u32 size) {
     MIi_CpuClear16(t, dst, size);
 }
 
-extern "C" void func_02041104() {
+extern "C" void ScreenTransition_ShowCover() {
     volatile u16 *r;
     r = (volatile u16 *)0x400000c;
     *r &= ~3;
@@ -173,14 +173,14 @@ extern "C" void func_02041104() {
     Unk_02041104_Fill(0, G2_GetBG2ScrPtr(), 0x800);
     Unk_02041104_Fill(0x1111, G2_GetBG2CharPtr(), 0x20);
     Unk_02041104_Fill(0x8000, 0x5000000, 4);
-    func_020014f4(4);
+    Gfx2d_ShowMainPlanes(4);
     r = (volatile u16 *)0x400100c;
     *r &= ~3;
     *r = (*r & 0x43) | 0xe04;
     Unk_02041104_Fill(0, G2S_GetBG2ScrPtr(), 0x800);
     Unk_02041104_Fill(0x1111, G2S_GetBG2CharPtr(), 0x20);
     Unk_02041104_Fill(0x8000, 0x5000400, 4);
-    func_020014bc(4);
+    Gfx2d_ShowSubPlanes(4);
 }
 
 extern "C" Unk_020da258 *func_020410ec() {
@@ -202,16 +202,16 @@ BOOL Unk_020da258::vfunc_00()
         return FALSE;
     }
     r5 = gSaveData;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0 && func_020b50e8() != 0xd) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 && func_020b50e8() != 0xd) {
         if (data_021c3c90 != 0) {
             u32 k;
             t.a = 0;
             t.b = 0;
-            func_0209d498(&t);
+            Clock_GetDateTime(&t);
             func_02040e14();
             k = r5[0x15e29];
             MI_CpuCopy8(&t, buf, 8);
-            r = func_0203f2e0(k, buf, 0);
+            r = Event_GetState(k, buf, 0);
             if (r != 0 && r != 3) {
                 data_020da218 = k;
                 data_020da220 = k;
@@ -221,7 +221,7 @@ BOOL Unk_020da258::vfunc_00()
         r5[0x15e29] = 99;
         data_021c3c90 = 0;
         if (func_020b5164() != 0 && data_021c3ca8.unk_03 == 0) {
-            func_02046c24();
+            Town_RefreshEventsOffline();
         }
     } else {
         func_02040e14();
@@ -247,7 +247,7 @@ BOOL Unk_020da258::vfunc_00()
             func_0203d990();
             data_021c3ca8.unk_00 = 5;
             if (data_021c3ca8.unk_03 != 0) {
-                func_020460dc(0);
+                Town_UpdateDay(0);
                 data_021c3ca8.unk_03 = 0;
             }
             v = data_020da220;
@@ -264,7 +264,7 @@ BOOL Unk_020da258::vfunc_00()
 BOOL Unk_020da258::onExecute()
 {
     s32 x = (s32)this;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
         func_02040c94();
         switch (data_021c3ca8.unk_00) {
         case 0:
@@ -314,7 +314,7 @@ BOOL Unk_020da258::vfunc_0c()
         data_021c3ca8.unk_00 = 2;
         break;
     }
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
         data_021ed170[9] = data_020da21c;
     }
     return TRUE;
@@ -333,14 +333,14 @@ extern "C" void func_02040e14(void)
 extern "C" void func_02040df0(void)
 {
     func_02040e14();
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
         func_02040cac();
     }
 }
 
 extern "C" BOOL func_02040d80(void)
 {
-    if (!Unk_02040ad8_IsTwo(data_021c3cc0)) {
+    if (!Unk_02040ad8_IsTwo(gScreenTransition)) {
         return FALSE;
     }
     if (func_020b50e8() == 0x3f) {
@@ -370,7 +370,7 @@ extern "C" void func_02040cac(void)
     s32 i;
     t.a = 0;
     t.b = 0;
-    func_0209d498(&t);
+    Clock_GetDateTime(&t);
     if (data_020da220 == 99) {
         zero = 0;
         for (i = 0; i < 11; i++) {
@@ -378,7 +378,7 @@ extern "C" void func_02040cac(void)
             s32 r;
             MI_CpuCopy8(&t, buf, 8);
             k = data_020c9098[i];
-            r = func_0203f31c(k, buf, 0);
+            r = Event_GetStateAt(k, buf, 0);
             switch (r) {
             case 2:
                 if (k == 0x13) {
@@ -402,7 +402,7 @@ extern "C" void func_02040cac(void)
     }
     if (data_020da21c != 99) {
         MI_CpuCopy8(&t, buf2, 8);
-        if (func_0203f31c(data_020da21c, buf2, 0) == 0) {
+        if (Event_GetStateAt(data_020da21c, buf2, 0) == 0) {
             if (data_020da21c == 0x13) {
                 data_020da220 = 99;
                 data_020da21c = 99;
@@ -480,12 +480,12 @@ extern "C" void func_02040b48(s32)
         data_020da220 = v;
         data_020da21c = v;
         if (func_0203d9c0() != 0 && Melody_IsBusy() == 0) {
-            r = func_0204da0c();
+            r = TownBlockMap_Get();
             if (r != 0) {
                 if (data_021c3ca8.unk_04 == 14) {
-                    r = func_0204d560(r, buf);
+                    r = Town_FindGulliverShip(r, buf);
                 } else {
-                    r = func_0204d780(r, buf, 0, 0);
+                    r = Town_FindTownHall(r, buf, 0, 0);
                 }
                 if (r != 0) {
                     func_020b4a08(func_020b4934(), 0);
@@ -501,7 +501,7 @@ extern "C" void func_02040b48(s32)
 
 extern "C" void func_02040ad8(Unk_02040ad8_Owner *o)
 {
-    if (Unk_02040ad8_IsTwo(data_021c3cc0)) {
+    if (Unk_02040ad8_IsTwo(gScreenTransition)) {
         Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)TalkWindow_Get(0);
         o->unk_54.vfunc_08();
         _ZN10MsgRequest11setFileNameEPKc(&o->unk_54, (void *)data_020da22c[data_021c3ca8.unk_01]);
@@ -546,14 +546,14 @@ extern "C" void func_02040974(s32 a, s32 b, s32 c)
 {
     s32 r4;
     s32 r6;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         return;
     }
     if (func_020b50e8() == 0) {
         func_020850e0();
         func_0208517c();
         if (_ZN12Unk_02086f1413func_02086f18Ev()) {
-            if (!_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64)) {
+            if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64)) {
                 return;
             }
         }
@@ -586,7 +586,7 @@ extern "C" void func_02040974(s32 a, s32 b, s32 c)
             r4 = 15;
             data_021c3c94 = 0;
             data_021c3ca8.unk_03 = 1;
-            func_0209d498(&t);
+            Clock_GetDateTime(&t);
             if (((u8 *)&t)[1] == 0) {
                 r6 = 1;
             } else {
@@ -638,7 +638,7 @@ extern "C" void func_020408fc(void)
 extern "C" void func_02040864(u8 *p)
 {
     Unk_02040754_Time t;
-    func_0209cf88(&t);
+    Clock_GetDate(&t);
     Unk_02040754_Time t1 = t;
     p[0] = t1.b[0];
     p[1] = t1.b[1];
@@ -674,22 +674,22 @@ extern "C" void func_020407fc(u8 *p)
 {
     Unk_02040754_Time a;
     Unk_02040754_Time b;
-    func_0209cf88(&a);
-    if (func_0209cd00(&a, p + 8) >= 7) {
+    Clock_GetDate(&a);
+    if (Date_DaysBetween(&a, p + 8) >= 7) {
         p[8] = 1;
         p[9] = 1;
         p[10] = 0;
         p[11] = 0;
     }
-    func_0209cf88(&b);
-    if (func_0209cd00(&b, p + 12) >= 7) {
+    Clock_GetDate(&b);
+    if (Date_DaysBetween(&b, p + 12) >= 7) {
         p[12] = 1;
         p[13] = 1;
         p[14] = 0;
         p[15] = 0;
     }
     func_020402f8(p, 0);
-    func_0203f4c0(1);
+    Event_RefreshToday(1);
     func_02040df0();
 }
 

@@ -4,49 +4,49 @@
 #include "Unk_020d8c7c.h"
 
 // ================================================================ other modules' real names
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_0204e3a0 _ZN12Unk_0204e2f013func_0204e3a0Eii
-#define func_0204e474 _ZN12Unk_0204e2f013func_0204e474Eii
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define func_0204e3a0 _ZN8BlockMap13func_0204e3a0Eii
+#define func_0204e474 _ZN8BlockMap13func_0204e474Eii
 #define func_02133150 _s32_div_f
 #define func_02003e50 _ZN12Unk_02003c3013func_02003e50Ev
 #define func_02003e80 _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec
 #define func_02003ecc _ZN12Unk_02003c3013func_02003eccEv
 #define func_020339bc _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii
 #define func_0209801c _ZN12Unk_02097ff413func_0209801cEj
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
 #define func_02098044 _ZN12Unk_02097ff413func_02098044Ej
-#define func_02054b14 _ZN12Unk_020dbd3413func_02054b14Ev
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
+#define CachedModel_release _ZN11CachedModel7releaseEv
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
-#define func_02054b38 _ZN12Unk_020dbd3413func_02054b38EPv
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
-#define func_020554a0 _ZN5Model13func_020554a0Eiiiii
-#define func_020548a0 _ZN12Unk_020dbd54D1Ev
-#define func_020548d0 _ZN12Unk_020dbd54C1Ev
+#define CachedModel_allocJointRecord _ZN11CachedModel16allocJointRecordEPv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
+#define Model_setCallback _ZN5Model11setCallbackEiiiii
+#define func_020548a0 _ZN9AnimModelD1Ev
+#define func_020548d0 _ZN9AnimModelC1Ev
 #define func_02135714 __cxa_vec_ctor
 #define func_021355f0 __cxa_vec_cleanup
-#define func_02055550 _ZN5Model13func_02055550EPi
-#define func_02054bac _ZN12Unk_020dbd3413func_02054bacEPvS0_S0_
-#define func_02054c88 _ZN12Unk_020dbd3413func_02054c88EPvS0_
-#define func_02054c64 _ZN12Unk_020dbd3413func_02054c64EPvS0_S0_S0_Pji
+#define Model_drawShapesDirect _ZN5Model16drawShapesDirectEPi
+#define CachedModel_loadWithSharedTex _ZN11CachedModel17loadWithSharedTexEPvS0_S0_
+#define CachedModel_load _ZN11CachedModel4loadEPvS0_
+#define CachedModel_loadWithTex _ZN11CachedModel11loadWithTexEPvS0_S0_S0_Pji
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
-#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
-#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
+#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
+#define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 
 
 // ================================================================ shared (global) classes
-class Unk_020dbd34 {
+class CachedModel {
 public:
-    Unk_020dbd34();
-    virtual ~Unk_020dbd34();
+    CachedModel();
+    virtual ~CachedModel();
     u32 pad_04[0x94 / 4];
     u32 unk_98;
 };
@@ -97,20 +97,20 @@ public:
     virtual BOOL onDraw();
 
     /* 0x050 */ u32 unk_50[0x49];
-    /* 0x174 */ Unk_020dbd34 unk_174[0x12];
-    /* 0xc6c */ Unk_020dbd34 unk_c6c[6];
-    /* 0x1014 */ Unk_020dbd34 unk_1014[3];
-    /* 0x11e8 */ Unk_020dbd34 unk_11e8[6];
-    /* 0x1590 */ Unk_020dbd34 unk_1590[0x28];
-    /* 0x2df0 */ Unk_020dbd34 unk_2df0[4];
+    /* 0x174 */ CachedModel unk_174[0x12];
+    /* 0xc6c */ CachedModel unk_c6c[6];
+    /* 0x1014 */ CachedModel unk_1014[3];
+    /* 0x11e8 */ CachedModel unk_11e8[6];
+    /* 0x1590 */ CachedModel unk_1590[0x28];
+    /* 0x2df0 */ CachedModel unk_2df0[4];
     /* 0x3060 */ u8 pad_3060[8];
-    /* 0x3068 */ Unk_020dbd34 unk_3068[0x20];
-    /* 0x43e8 */ Unk_020dbd34 unk_43e8[5];
+    /* 0x3068 */ CachedModel unk_3068[0x20];
+    /* 0x43e8 */ CachedModel unk_43e8[5];
     /* 0x46f4 */ u32 unk_46f4[5];
-    /* 0x4708 */ Unk_020dbd34 unk_4708[2];
-    /* 0x4840 */ Unk_020dbd34 unk_4840[2];
+    /* 0x4708 */ CachedModel unk_4708[2];
+    /* 0x4840 */ CachedModel unk_4840[2];
     /* 0x4978 */ u32 unk_4978[12];
-    /* 0x49a8 */ Unk_020dbd34 unk_49a8[2];
+    /* 0x49a8 */ CachedModel unk_49a8[2];
     /* 0x4ae0 */ Unk_020dbd44 unk_4ae0;
     /* 0x4af0 */ Unk_020dbd44 unk_4af0;
     /* 0x4b00 */ Unk_020dbd44 unk_4b00;
@@ -170,7 +170,7 @@ struct Unk_ov003_02219654_Obj {
 };
 typedef Unk_ov003_02219578_P2 P2;
 typedef Unk_ov003_02219578_V3 V3;
-struct Unk_020cbb18 {
+struct CommManager {
     u8 pad_00[0x64];
     s32 unk_64;
 };
@@ -178,18 +178,18 @@ extern "C" {
 
 extern u8 data_ov003_022359a4[];
 extern u8 data_ov003_0222f01c[];
-extern Unk_020cbb18 *data_020cbb18;
-BOOL func_02072e44(Unk_020cbb18 *g);
+extern CommManager *gCommManager;
+BOOL CommManager_isOnline(CommManager *g);
 
-void *func_0204da0c();
-void func_0204ee10(s32 *a, s32 *b, s32 c);
+void *TownBlockMap_Get();
+void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 BOOL func_0204e3a0(void *g, s32 x, s32 z);
-void *func_0204ebd8(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
+void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 s32 func_02045354(void *p, s32 a);
 BOOL func_0204e474(void *g, s32 x, s32 z);
 void *func_02095204(s32 a);
 s32 func_02133150(s32 a, s32 b);
-void func_0204ed8c(void *out, s32 x, s32 z);
+void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 s32 func_02063ba4(s32 a);
 u8 *func_02045214();
 
@@ -275,15 +275,15 @@ typedef Unk_ov003_022359a4 Tbl;
 extern "C" {
 
 extern Tbl data_ov003_022359a4;
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern void *data_ov003_02235930;
 extern Blk data_021f47e0;
 
-void *func_0204da0c();
-void func_0204ee10(s32 *x, s32 *y, s32 v);
+void *TownBlockMap_Get();
+void FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
 s32 func_0204e3a0(void *m, s32 x, s32 y);
-s32 func_02072e44(void *g);
-void func_0204ed8c(void *out, s32 x, s32 y);
+s32 CommManager_isOnline(void *g);
+void FieldPos_FromUnitCenter(void *out, s32 x, s32 y);
 void func_02003e50(void *);
 void func_02003e80(void *, void *);
 void func_02003ecc(void *);
@@ -447,12 +447,12 @@ s32 func_0208fc88(s32 id, void *v, s32 c, void *cb);
 void func_0208fb00(s32 a, void *fn);
 void func_020b8e20(s32 a);
 void func_020b8e38(void);
-void func_ov003_022122fc(void *p);
+void PlayerActor_LocalRequestAct77From(void *p);
 void func_ov003_0221b228(Unk_ov003_0221a4a0 *p);
 s32 func_ov003_0221b46c(Unk_ov003_0221a4a0 *p);
 s32 func_ov003_0221b214(Unk_ov003_0221a4a0 *p);
 u32 func_ov003_022195b8(void *p);
-s32 func_0204ed8c(void *out, s32 x, s32 z);
+s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 s32 func_02133150(s32 a, s32 b);
 void *PlayerData_GetCurrent(void);
 void func_0209801c(void *p, s32 a);
@@ -638,13 +638,13 @@ extern u32 data_ov003_02234684[][4];
 extern void *data_ov003_02235938;
 extern Unk_ov003_0221b7d4_Rec *data_ov003_0223291c[];
 
-void func_0204ed8c(void *out, s32 x, s32 z);
+void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 BOOL func_0204e3a0(void *g, s32 x, s32 z);
 s32 func_ov003_0221caf0(s32 a, s32 b, u32 c, s32 d);
 void VEC_Add(void *a, void *b, void *c);
 s32 func_02003e70(void *p, u32 a, u32 b, u32 c);
-void *func_0204ebd8(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
-s32 func_0204e88c(void *g, s32 x, s32 z);
+void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
+s32 BlockMap_IsBuriedAtUnit(void *g, s32 x, s32 z);
 s32 Item_IsFlower(void *c);
 s32 func_02044098(void *c, void *p, s32 a, s32 b);
 s32 func_0204403c(void *c, void *p);
@@ -655,14 +655,14 @@ Unk_ov003_0221b7d4_Ent *func_02045214(s32 i);
 s32 func_02045220(u8 a, s32 b);
 s32 func_02045570(void *p, s32 z);
 s32 func_02045460(void *p, s32 z);
-void *func_0204da0c();
+void *TownBlockMap_Get();
 s32 func_02045510(const P2 &p, s32 a, s32 b);
 void Heap_Free(void *heap, void *p);
 void *File_LoadAlloc(void *s, void *heap, s32 a, s32 b);
 void *func_021065dc(void *p);
 void *func_021065f8(void *p, s32 a);
-void func_02054720(void *self, s32 a, s32 b, s32 c, u16 d, u16 e);
-void func_02054710(void *self);
+void BlendAnimModel_initAnim(void *self, s32 a, s32 b, s32 c, u16 d, u16 e);
+void AnimModel_attachAnim(void *self);
 s32 Item_IsTreeGrown(void *c);
 s32 func_02043ba8();
 s32 func_ov003_0221ba50(void *self, s32 a);
@@ -775,7 +775,7 @@ struct Unk_ov003_0221c030_Ent {
 };
 extern "C" {
 
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern Unk_ov003_0221b8bc_V3 *data_ov003_0223291c[];
 extern u16 data_ov003_0222f034[];
 extern Unk_ov003_0221b8bc_Blk data_021f47e0;
@@ -783,35 +783,35 @@ extern s32 data_ov003_02235960;
 extern s32 data_ov003_02235938;
 extern u8 *data_ov003_02235930;
 
-s32 func_02072e44(void *p);
+s32 CommManager_isOnline(void *p);
 void *PlayerData_GetCurrent(void);
 s32 func_02098044(void *p, s32 a);
-void func_0204ed8c(Unk_ov003_0221b8bc_V3 *out, s32 x, s32 z);
+void FieldPos_FromUnitCenter(Unk_ov003_0221b8bc_V3 *out, s32 x, s32 z);
 void func_01ffd070(Unk_ov003_0221b8bc_V3 *out, Unk_ov003_0221b8bc_V3 *a, void *m);
 void func_ov003_02219a1c(Unk_ov003_0221b8bc *o, s32 id, Unk_ov003_0221b8bc_V2 *a, Unk_ov003_0221b8bc_V3 *b);
 s32 func_02045220(u8 a, u8 b);
 void *func_02045214(void);
 s32 Item_GetFruitTreeFruit(u16 *p);
-void func_0204ee10(s32 *x, s32 *y, Unk_ov003_0221b8bc_V3 *v);
+void FieldPos_ToUnit(s32 *x, s32 *y, Unk_ov003_0221b8bc_V3 *v);
 void func_ov003_02219a9c(s32 a, s32 id, Unk_ov003_0221b8bc_V2 *p, Unk_ov003_0221b8bc_V3 *v, s32 f, s32 i);
 void *func_02043ee0(void *p);
 u16 *func_02095204(void *p);
-void *func_0204da0c(void);
-u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 e);
+void *TownBlockMap_Get(void);
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 e);
 s32 func_02045354(Unk_ov003_0221b8bc_V2 *p, s32 a);
 void func_ov003_0221b718(Unk_ov003_0221b8bc *o, u16 *cell);
 void func_02045510(Unk_ov003_0221b8bc_V2 *p, s32 id, s32 a);
 void func_02003e70(void *p, u32 a, u32 b, u32 c);
 void func_ov003_0221b618(Unk_ov003_0221b8bc *o);
-void func_02054b14(void *p);
+void CachedModel_release(void *p);
 void func_02003e50(void *p);
 s32 WorldCurve_ToCurved(Unk_ov003_0221b8bc_V3 *out, void *v);
 void func_020e8388(void *p, s32 x, s32 y, s32 z);
 void func_020e8434(void *p, s32 a);
-void func_020547cc(void *p, s32 a);
-u16 func_02064cc4(void);
+void AnimModel_drawAnimated(void *p, s32 a);
+u16 SceneLights_GetRoomColor(void);
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, s32 b);
-void func_020547e4(void *p);
+void AnimModel_stepAnim(void *p);
 s32 AnimFrameCtrl_isFinished(void *p);
 void func_02105f00(void *p, s32 a);
 void func_02105f48(void *p, s32 a);
@@ -820,9 +820,9 @@ s32 Item_GetTreeStage(u16 *p);
 void *func_ov003_0221c62c(void *d, s32 mode, s32 n, u16 *cell, Unk_ov003_0221b8bc_V2 *p, s32 c);
 void *func_ov003_0221c6c4(void *d, s32 mode, s32 n, u16 *cell, Unk_ov003_0221b8bc_V2 *p, s32 c);
 void func_02003e80(void *p, Unk_ov003_0221b8bc_V3 *v);
-void func_02054b38(void *p, s32 a);
-void func_02054800(void *p, s32 a);
-void func_020554a0(void *p, void *fn, s32 a, s32 b, void *o, s32 c);
+void CachedModel_allocJointRecord(void *p, s32 a);
+void AnimModel_allocAnmObj(void *p, s32 a);
+void Model_setCallback(void *p, void *fn, s32 a, s32 b, void *o, s32 c);
 void func_02003ecc(void *p);
 void func_ov003_0221b5e4(void);
 Unk_ov003_0221b8bc *func_ov003_0221c220(void *a, u16 *cell, s32 n, s32 f);
@@ -975,15 +975,15 @@ void func_020548d0(void *p);
 void *func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
 void *func_021355f0(void *p, u32 n, u32 size, void *dtor);
 s32 func_02133150(s32 a, s32 b);
-u32 func_0204c0ac();
-s32 func_0204ed8c(Vec3 *out, s32 x, s32 z);
+u32 TownState_GetSeasonPeriod();
+s32 FieldPos_FromUnitCenter(Vec3 *out, s32 x, s32 z);
 s32 func_0208fb20(s32, void *, s32, void *);
 s32 func_0208fdac(void *);
 s32 func_0208fdc0(void *);
 s32 func_020b5184();
-s32 func_0204eb30(void *grid, u16 *v, s32 x, s32 y, s32 z);
-s32 func_0204e978(void *grid, s32 x, s32 y);
-s32 func_0204e914(void *grid, s32 x, s32 y);
+s32 BlockMap_SetItemAtUnit(void *grid, u16 *v, s32 x, s32 y, s32 z);
+s32 BlockMap_SetBuriedAtUnit(void *grid, s32 x, s32 y);
+s32 BlockMap_ClearBuriedAtUnit(void *grid, s32 x, s32 y);
 
 extern Set data_ov003_02235960;
 extern s32 data_ov003_0222f564[][4];
@@ -996,7 +996,7 @@ extern Unk_ov003_0221c62c_Quad data_ov003_02232b48;
 extern Unk_ov003_0221c62c_Quad data_ov003_02232b78;
 extern PRec ****data_ov003_02232928[];
 extern s32 data_ov003_022335c0[];
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 
 u8 *func_ov003_0221c220(Big *self, u16 *p, s32 a, s32 b);
 void func_ov003_0221c2d8(Big *self);
@@ -1103,24 +1103,24 @@ struct Unk_ov003_0221cb54_Rec {
 };
 extern "C" {
 
-extern u8 *data_020cbb18;
+extern u8 *gCommManager;
 extern u8 *data_ov003_02235930;
 extern u8 data_ov003_022359a4[];
 extern u8 *data_ov003_02235934;
 extern u8 *data_ov003_02235938;
 extern u8 data_ov003_0222f64c[];
-extern u8 *data_021c47c4;
+extern u8 *gSceneBlockMap;
 extern u8 *gCamera;
 
 s32 func_02045220(u8 a, u8 b);
 Unk_ov003_0221cb54_Rec *func_02045214();
 void func_ov003_02219718(u32 a, u32 b, P2 p);
 void func_ov003_02219578(u32 a, u32 b, P2 p, V3 v);
-void func_0204ed8c(V3 *out, s32 x, s32 z);
-void *func_0204da0c();
-u16 *func_0204ebd8(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
+void FieldPos_FromUnitCenter(V3 *out, s32 x, s32 z);
+void *TownBlockMap_Get();
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 s32 func_020452c8(void *o, P2 p, s32 a);
-s32 func_0204962c(u16 *c);
+s32 Town_IsSaplingBlocker(u16 *c);
 void func_ov003_0221c030(void *a, void *o, P2 p, s32 mode, s32 flag);
 s32 Item_IsTreeStage0(u16 *c);
 s32 func_0203a4c4(V3 *v, s32 a, s32 b);
@@ -1131,11 +1131,11 @@ void func_02045510(P2 p, void *a, s32 b);
 void func_ov003_0221e4d4(void *g, void *o, V3 *a, V3 *b, s32 c, s16 d, s16 e);
 void func_ov003_0221e750(void *g, void *o, V3 *a, s32 k, V3 *b, s32 c, s16 d, s16 e);
 void func_ov003_0221e7b0(void *g, void *o, V3 *a, s32 k, V3 *b, s32 c, s16 d, s16 e);
-s32 func_02045d98(V3 *o, s32 z);
+s32 Town_GetRafflesiaPos(V3 *o, s32 z);
 void func_020e9960(V3 *out, V3 *a, s32 b);
-void func_0204ee10(s32 *x, s32 *z, V3 *v);
-s32 func_020494bc(u16 *c);
-void func_02054970(void *p);
+void FieldPos_ToUnit(s32 *x, s32 *z, V3 *v);
+s32 Flower_GetSpecies(u16 *c);
+void ModelSet_Release(void *p);
 void func_ov003_0221c2d8(void *p);
 void func_ov003_02219e50(void *p);
 void func_ov003_02219e7c(void *p);
@@ -1146,11 +1146,11 @@ s32 func_02133150(s32 a, s32 b);
 void func_ov003_0221d37c(O *o, void *g);
 extern V3 gCameraLookAt;
 extern Blk data_021f47e0;
-void func_0204edd8(V3 *out, V3 *in);
+void FieldPos_SnapToUnitCenter(V3 *out, V3 *in);
 s32 WorldCurve_ToCurved(V3 *out, V3 *in);
 void func_020e8388(Blk *m, s32 x, s32 y, s32 z);
 void func_020e8434(Blk *m, s32 a);
-u16 *func_0204eba0(void *g, V3 *pos, s32 layer);
+u16 *BlockMap_GetItemPtrAtPos(void *g, V3 *pos, s32 layer);
 s32 func_01ffcbd8(void *g, s32 x, s32 z);
 s32 Item_GetInfoUnk07(u16 *c);
 void func_ov003_0221db54(O *o, void *p, Blk m);
@@ -1285,10 +1285,10 @@ struct Unk_ov003_0221e398_V3 {
 };
 typedef Unk_ov003_0221db54_V3 V3;
 typedef Unk_ov003_0221db54_Blk Blk;
-class Unk_020dbd34 {
+class CachedModel {
 public:
-    Unk_020dbd34();
-    virtual ~Unk_020dbd34();
+    CachedModel();
+    virtual ~CachedModel();
     u32 pad_04[0x58 / 4];
     u32 unk_5c;
     u32 pad_60;
@@ -1315,21 +1315,21 @@ public:
     virtual ~Unk_ov003_0223463c();
 
     /* 0x050 */ u8 pad_050[0x174 - 0x50];
-    /* 0x174 */ Unk_020dbd34 unk_174[0x12];
-    /* 0xc6c */ Unk_020dbd34 unk_c6c[6];
-    /* 0x1014 */ Unk_020dbd34 unk_1014[3];
-    /* 0x11e8 */ Unk_020dbd34 unk_11e8[6];
-    /* 0x1590 */ Unk_020dbd34 unk_1590[4][10];
-    /* 0x2df0 */ Unk_020dbd34 unk_2df0[4];
-    /* 0x3060 */ Unk_020dbd34 *unk_3060;
-    /* 0x3064 */ Unk_020dbd34 *unk_3064;
-    /* 0x3068 */ Unk_020dbd34 unk_3068[0x20];
-    /* 0x43e8 */ Unk_020dbd34 unk_43e8[5];
-    /* 0x46f4 */ Unk_020dbd34 *unk_46f4[5];
-    /* 0x4708 */ Unk_020dbd34 unk_4708[2];
-    /* 0x4840 */ Unk_020dbd34 unk_4840[2];
-    /* 0x4978 */ Unk_020dbd34 *unk_4978[12];
-    /* 0x49a8 */ Unk_020dbd34 unk_49a8[2];
+    /* 0x174 */ CachedModel unk_174[0x12];
+    /* 0xc6c */ CachedModel unk_c6c[6];
+    /* 0x1014 */ CachedModel unk_1014[3];
+    /* 0x11e8 */ CachedModel unk_11e8[6];
+    /* 0x1590 */ CachedModel unk_1590[4][10];
+    /* 0x2df0 */ CachedModel unk_2df0[4];
+    /* 0x3060 */ CachedModel *unk_3060;
+    /* 0x3064 */ CachedModel *unk_3064;
+    /* 0x3068 */ CachedModel unk_3068[0x20];
+    /* 0x43e8 */ CachedModel unk_43e8[5];
+    /* 0x46f4 */ CachedModel *unk_46f4[5];
+    /* 0x4708 */ CachedModel unk_4708[2];
+    /* 0x4840 */ CachedModel unk_4840[2];
+    /* 0x4978 */ CachedModel *unk_4978[12];
+    /* 0x49a8 */ CachedModel unk_49a8[2];
     /* 0x4ae0 */ Unk_020dbd44 unk_4ae0;
     /* 0x4af0 */ Unk_020dbd44 unk_4af0;
     /* 0x4b00 */ Unk_020dbd44 unk_4b00;
@@ -1339,7 +1339,7 @@ public:
     /* 0x6a6c */ s32 unk_6a6c;
 };
 typedef Unk_ov003_0223463c O;
-typedef Unk_020dbd34 M;
+typedef CachedModel M;
 extern "C" {
 
 extern Blk data_021f47e0;
@@ -1347,17 +1347,17 @@ extern V3 data_ov003_0222f510[];
 extern V3 data_ov003_0222f4f8[];
 extern u16 data_ov003_0222f028[];
 
-void func_02055550(M *p, s32 a);
-u16 func_02064cc4();
+void Model_drawShapesDirect(M *p, s32 a);
+u16 SceneLights_GetRoomColor();
 void func_02105fd8(u32 a, u32 b);
 s32 func_020ac22c(s32 a);
 void func_020ac23c(V3 *v, u8 n);
-s32 func_020494bc(u16 *p);
-s32 func_02049370(u16 *p);
+s32 Flower_GetSpecies(u16 *p);
+s32 Flower_GetColor(u16 *p);
 s32 Item_GetTreeStage(u16 *p);
 s32 Item_GetFruitTreeFruit(u16 *p);
 s32 Item_IsTreeGrown(u16 *p);
-s32 func_02045d48(s32 a, s32 b);
+s32 LitCedarList_Find(s32 a, s32 b);
 s32 WorldCurve_ToCurved(Unk_ov003_0221e398_V3 *out, Unk_ov003_0221e398_V3 *p);
 void func_020e8388(Blk *m, s32 x, s32 y, s32 z);
 void func_020e8434(Blk *m, s32 a);
@@ -1463,11 +1463,11 @@ void Heap_Free(void *heap, void *p);
 void *ExpHeap_CreateInPlace(void *p, u32 n);
 void *ExpHeap_Create(u32 n, void *heap);
 s32 Item_GetInfoUnk07(volatile u16 *p);
-u32 func_0204c0ac();
+u32 TownState_GetSeasonPeriod();
 void func_02045e14();
-s32 func_02054bac(void *p, void *t, u8 a, u8 b);
-s32 func_02054c88(void *p, void *a, void *b);
-s32 func_02054c64(void *p, void *a, void *b, u32 c, u32 d, void *e, u32 f);
+s32 CachedModel_loadWithSharedTex(void *p, void *t, u8 a, u8 b);
+s32 CachedModel_load(void *p, void *a, void *b);
+s32 CachedModel_loadWithTex(void *p, void *a, void *b, u32 c, u32 d, void *e, u32 f);
 
 s32 func_ov003_0221db54(Obj *o, Unk_ov003_0221e4d4_Model *m, Blk b);
 s32 func_ov003_0221db98(Obj *o, volatile u16 *t, Blk m);
@@ -1646,10 +1646,10 @@ extern u8 data_ov003_02232bc8[];
 extern u8 data_ov003_0222f758[];
 extern void *data_ov003_0223264c;
 
-s32 func_020549e4(void *t, void *file, void *heap);
-void *func_020549ac(void *t, void *name);
-s32 func_02054c64(void *p, void *a, void *b, u32 c, u32 d, void *e, u32 f);
-u32 func_0204c0ac();
+s32 ModelSet_Load(void *t, void *file, void *heap);
+void *ModelSet_Find(void *t, void *name);
+s32 CachedModel_loadWithTex(void *p, void *a, void *b, u32 c, u32 d, void *e, u32 f);
+u32 TownState_GetSeasonPeriod();
 void Heap_Free(void *heap, void *p);
 
 s32 func_ov003_0221fc70(Obj *o, void *a, void *b, void *c, s32 d);
@@ -1740,7 +1740,7 @@ extern void *data_ov003_02234770;
 extern void *data_ov003_02234774;
 extern void *data_ov003_0223477c;
 extern void *gCurrentHeap;
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 extern u8 data_ov003_0225812c[];
 extern u32 data_ov003_0222f810[][3];
 extern void **data_ov003_022328a4[];
@@ -1763,16 +1763,16 @@ extern void **data_ov003_022328ec[];
 extern void *data_ov003_02234604[];
 extern Unk_ov003_0221fda8_Ent data_ov003_0222f4b8[];
 
-BOOL func_02054c64(void *obj, void *res, void *name, void *tex, u32 d, u32 e, s32 f);
-BOOL func_020549e4(void *t, void *file, void *heap);
-void *func_020549ac(void *t, void *name);
-void func_02055744(void *a, u32 b);
-void func_020557a0(void *a, u32 b);
+BOOL CachedModel_loadWithTex(void *obj, void *res, void *name, void *tex, u32 d, u32 e, s32 f);
+BOOL ModelSet_Load(void *t, void *file, void *heap);
+void *ModelSet_Find(void *t, void *name);
+void Gfx3d_LoadPltt(void *a, u32 b);
+void Gfx3d_LoadTex(void *a, u32 b);
 u32 Item_GetIconModelName(s32 a, s32 b);
-s32 func_0204c0ac();
+s32 TownState_GetSeasonPeriod();
 void *File_LoadAlloc(void *a, void *b, s32 c, s32 d);
 void *NNS_G3dGetTex();
-void *func_0204ebd8(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
+void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 void *func_0209c25c(void *a, void *b);
 BOOL func_0209c0d0(void *a, void *b, void *c);
 void *func_0209c0ac(void *a);
@@ -1782,11 +1782,11 @@ s32 func_021065dc();
 s32 func_021065f8(s32 a, s32 b);
 s32 func_02106654();
 s32 func_02106670(s32 a, s32 b);
-BOOL func_02054800(void *a, void *b);
-void func_02054720(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_02054710(void *a);
-BOOL func_02055bcc(void *a, void *b, void *c);
-void func_02055b38(void *a, s32 b, s32 c, s32 d, s32 e);
+BOOL AnimModel_allocAnmObj(void *a, void *b);
+void BlendAnimModel_initAnim(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void AnimModel_attachAnim(void *a);
+BOOL ModelAnim_allocMatAnm(void *a, void *b, void *c);
+void ModelAnim_init(void *a, s32 b, s32 c, s32 d, s32 e);
 void *Model_getRenderObj(void *a);
 void ModelAnim_addToRenderObj(void *a, void *b);
 void func_020f43fc(void *p);
@@ -3363,18 +3363,18 @@ u8 *func_ov003_0221fda8(u8 *p)
 }
 
 BOOL Unk_ov003_02232c08::vfunc_08(s32 *a, s32 *b, s32 *c, s32 x, s32 z) {
-    using ns_0221f798::data_021c47c4;
-    using ns_0221f798::func_0204ebd8;
+    using ns_0221f798::gSceneBlockMap;
+    using ns_0221f798::BlockMap_GetItemPtr;
     using ns_0221f798::func_ov003_0221fda8;
 
-    void *g = data_021c47c4;
+    void *g = gSceneBlockMap;
     BOOL ok = FALSE;
     if (g != NULL) {
         s32 px = *(volatile s32 *)&x;
         s32 pz = *(volatile s32 *)&z;
         s32 hx = px >> 4;
         s32 hz = pz >> 4;
-        u8 *cell = func_ov003_0221fda8((u8 *)func_0204ebd8(g, hx, hz, px - (hx << 4), pz - (hz << 4), 0));
+        u8 *cell = func_ov003_0221fda8((u8 *)BlockMap_GetItemPtr(g, hx, hz, px - (hx << 4), pz - (hz << 4), 0));
         if (cell != NULL && cell[2] != 0) {
             *a = ((s32)cell[0] << 12) >> 4;
             *b = ((s32)cell[1] << 12) >> 4;
@@ -3398,7 +3398,7 @@ BOOL func_ov003_0221fcd4(void *self, u32 *a, u32 *b, u32 *names, s32 n)
                 return FALSE;
             }
             *a = (u32)NNS_G3dGetTex();
-            func_020557a0((void *)*a, 0);
+            Gfx3d_LoadTex((void *)*a, 0);
         } else {
             *a = 0;
         }
@@ -3420,7 +3420,7 @@ BOOL func_ov003_0221fc70(void *self, u32 *a, u32 *b, u32 *names, s32 n)
             return FALSE;
         }
         *a = (u32)NNS_G3dGetTex();
-        func_02055744((void *)*a, 0);
+        Gfx3d_LoadPltt((void *)*a, 0);
     }
     return TRUE;
 }
@@ -3432,10 +3432,10 @@ extern "C" {
 BOOL func_ov003_0221fc1c(Unk_ov003_0223463c *self)
 {
     BOOL ok = FALSE;
-    if (func_020549e4(&self->unk_4ae0, (char *)"/fg/icon/icon.nsbmd", data_ov003_02235934)) {
+    if (ModelSet_Load(&self->unk_4ae0, (char *)"/fg/icon/icon.nsbmd", data_ov003_02235934)) {
         s32 i;
         for (i = 0; i < 0x49; i++) {
-            self->unk_50[i] = (u32)func_020549ac(&self->unk_4ae0, (void *)Item_GetIconModelName(i, 1));
+            self->unk_50[i] = (u32)ModelSet_Find(&self->unk_4ae0, (void *)Item_GetIconModelName(i, 1));
         }
         ok = TRUE;
     }
@@ -3450,12 +3450,12 @@ BOOL func_ov003_0221fbb8(Unk_ov003_0223463c *self)
 {
     BOOL ok = FALSE;
     s32 t = func_ov003_0221fb20(self, 2);
-    if (func_020549e4(&self->unk_4b00, data_ov003_022328b0[t], data_ov003_02235938)) {
+    if (ModelSet_Load(&self->unk_4b00, data_ov003_022328b0[t], data_ov003_02235938)) {
         void **p = data_ov003_022328ec[t];
         void *h = &self->unk_4b00;
         s32 i;
         for (i = 0; i < 5; i++) {
-            self->unk_46f4[i] = (u32)func_020549ac(h, *p);
+            self->unk_46f4[i] = (u32)ModelSet_Find(h, *p);
             p++;
         }
         ok = TRUE;
@@ -3479,10 +3479,10 @@ extern "C" {
 BOOL func_ov003_0221fb50(Unk_ov003_0223463c *self)
 {
     BOOL ok = FALSE;
-    if (func_020549e4(&self->unk_4b10, (char *)"/fg/tree/stamp/stamp.nsbmd", data_ov003_02235934)) {
+    if (ModelSet_Load(&self->unk_4b10, (char *)"/fg/tree/stamp/stamp.nsbmd", data_ov003_02235934)) {
         s32 i;
         for (i = 0; i < 12; i++) {
-            self->unk_4978[i] = (u32)func_020549ac(&self->unk_4b10, data_ov003_02234604[i]);
+            self->unk_4978[i] = (u32)ModelSet_Find(&self->unk_4b10, data_ov003_02234604[i]);
         }
         ok = TRUE;
     }
@@ -3504,7 +3504,7 @@ namespace ns_0221f798 {
 extern "C" {
 s32 func_ov003_0221fb20(void *self, s32 i)
 {
-    return data_ov003_0222f810[func_0204c0ac()][i];
+    return data_ov003_0222f810[TownState_GetSeasonPeriod()][i];
 }
 }
 }
@@ -3690,7 +3690,7 @@ BOOL func_ov003_0221f828(Unk_ov003_0223463c *self, u32 *a, u32 *b, u32 c)
     for (i = 0; i < 3; i++) {
         s32 t = func_ov003_0221fb20(self, i);
         void *n = func_ov003_0221fb04(self, i, 0);
-        if (!func_02054c64((u8 *)self + 0x174 + i * 0x3a8, n, data_ov003_02235934, (void *)a[t * 6], b[i], c, ok)) {
+        if (!CachedModel_loadWithTex((u8 *)self + 0x174 + i * 0x3a8, n, data_ov003_02235934, (void *)a[t * 6], b[i], c, ok)) {
             ok = FALSE;
             break;
         }
@@ -3705,7 +3705,7 @@ extern "C" {
 BOOL func_ov003_0221f7e0(Unk_ov003_0223463c *self, u32 *a, u32 *b, u32 c)
 {
     BOOL ok = TRUE;
-    if (!func_02054c64(&self->unk_c6c[0], func_ov003_0221fac8(self, 0), data_ov003_02235934, (void *)*a, *b, c, ok)) {
+    if (!CachedModel_loadWithTex(&self->unk_c6c[0], func_ov003_0221fac8(self, 0), data_ov003_02235934, (void *)*a, *b, c, ok)) {
         ok = FALSE;
     }
     return ok;
@@ -3718,7 +3718,7 @@ extern "C" {
 BOOL func_ov003_0221f798(Unk_ov003_0223463c *self, u32 *a, u32 *b, u32 c)
 {
     BOOL ok = TRUE;
-    if (!func_02054c64(&self->unk_11e8[0], func_ov003_0221fa88(self, 0), data_ov003_02235934, (void *)*a, *b, c, ok)) {
+    if (!CachedModel_loadWithTex(&self->unk_11e8[0], func_ov003_0221fa88(self, 0), data_ov003_02235934, (void *)*a, *b, c, ok)) {
         ok = FALSE;
     }
     return ok;
@@ -3739,7 +3739,7 @@ extern "C" BOOL func_ov003_0221f674(Obj *o, u32 *a, u32 *b, void *c)
         base1 = o->unk_174[i];
         for (; j <= 4; j++) {
             void *n = func_ov003_0221fb04(o, i, j);
-            if (!func_02054c64(&base1[j], n, data_ov003_02235934, q1[j], *pb1, c, 2)) {
+            if (!CachedModel_loadWithTex(&base1[j], n, data_ov003_02235934, q1[j], *pb1, c, 2)) {
                 return FALSE;
             }
         }
@@ -3752,7 +3752,7 @@ extern "C" BOOL func_ov003_0221f674(Obj *o, u32 *a, u32 *b, void *c)
         q2 = a + t * 6;
         for (; j < 4; j++) {
             void *n = func_ov003_0221fae8(o, i, j);
-            if (!func_02054c64(&base2[j].e, n, data_ov003_02235934, (q2 + j)[1], *pb2, c, 2)) {
+            if (!CachedModel_loadWithTex(&base2[j].e, n, data_ov003_02235934, (q2 + j)[1], *pb2, c, 2)) {
                 return FALSE;
             }
         }
@@ -3767,14 +3767,14 @@ extern "C" BOOL func_ov003_0221f5c4(Obj *o, u32 *a, u32 *b, void *c)
     s32 i;
     for (i = 1; i <= 4; i++) {
         void *n = func_ov003_0221fac8(o, i);
-        if (!func_02054c64(&o->unk_c6c[i], n, data_ov003_02235934, a[i], *b, c, 2)) {
+        if (!CachedModel_loadWithTex(&o->unk_c6c[i], n, data_ov003_02235934, a[i], *b, c, 2)) {
             return FALSE;
         }
     }
     for (i = 0; i < 4; i++) {
         void *n = func_ov003_0221faa8(o, i);
         Seg *sg = &o->unk_5ab0[i];
-        if (!func_02054c64(&sg->e, n, data_ov003_02235934, (a + i)[1], *b, c, 2)) {
+        if (!CachedModel_loadWithTex(&sg->e, n, data_ov003_02235934, (a + i)[1], *b, c, 2)) {
             return FALSE;
         }
     }
@@ -3787,7 +3787,7 @@ extern "C" BOOL func_ov003_0221f564(Obj *o, u32 *a, u32 *b)
 {
     s32 cnt;
     for (cnt = 0; cnt < 3; cnt++) {
-        if (!func_02054c64(&o->unk_1014[cnt], data_ov003_0223264c, data_ov003_02235934, *a, *b, &cnt, 1)) {
+        if (!CachedModel_loadWithTex(&o->unk_1014[cnt], data_ov003_0223264c, data_ov003_02235934, *a, *b, &cnt, 1)) {
             return FALSE;
         }
     }
@@ -3801,14 +3801,14 @@ extern "C" BOOL func_ov003_0221f4b4(Obj *o, u32 *a, u32 *b, void *c)
     s32 i;
     for (i = 1; i <= 4; i++) {
         void *n = func_ov003_0221fa88(o, i);
-        if (!func_02054c64(&o->unk_11e8[i], n, data_ov003_02235934, a[i], *b, c, 2)) {
+        if (!CachedModel_loadWithTex(&o->unk_11e8[i], n, data_ov003_02235934, a[i], *b, c, 2)) {
             return FALSE;
         }
     }
     for (i = 0; i < 4; i++) {
         void *n = func_ov003_0221fa68(o, i);
         Seg *sg = &o->unk_63c4[i];
-        if (!func_02054c64(&sg->e, n, data_ov003_02235934, (a + i)[1], *b, c, 2)) {
+        if (!CachedModel_loadWithTex(&sg->e, n, data_ov003_02235934, (a + i)[1], *b, c, 2)) {
             return FALSE;
         }
     }
@@ -3823,7 +3823,7 @@ extern "C" BOOL func_ov003_0221f438(Obj *o, u32 *a, u32 *b, void *c)
     for (i = 0; i < 3; i++) {
         s32 t = func_ov003_0221fb20(o, i);
         void *n = func_ov003_0221fb04(o, i, 5);
-        if (!func_02054c64(&o->unk_174[i][5], n, data_ov003_02235934, (a + t * 6)[5], b[i], c, 1)) {
+        if (!CachedModel_loadWithTex(&o->unk_174[i][5], n, data_ov003_02235934, (a + t * 6)[5], b[i], c, 1)) {
             return FALSE;
         }
     }
@@ -3835,7 +3835,7 @@ namespace ns_0221ede8 {
 extern "C" BOOL func_ov003_0221f3f0(Obj *o, u32 *a, u32 *b, void *c)
 {
     void *n = func_ov003_0221fac8(o, 5);
-    if (func_02054c64(&o->unk_c6c[5], n, data_ov003_02235934, a[5], *b, c, 1)) {
+    if (CachedModel_loadWithTex(&o->unk_c6c[5], n, data_ov003_02235934, a[5], *b, c, 1)) {
         return TRUE;
     }
     return FALSE;
@@ -3846,7 +3846,7 @@ namespace ns_0221ede8 {
 extern "C" BOOL func_ov003_0221f3a8(Obj *o, u32 *a, u32 *b, void *c)
 {
     void *n = func_ov003_0221fa88(o, 5);
-    if (func_02054c64(&o->unk_11e8[5], n, data_ov003_02235934, a[5], *b, c, 1)) {
+    if (CachedModel_loadWithTex(&o->unk_11e8[5], n, data_ov003_02235934, a[5], *b, c, 1)) {
         return TRUE;
     }
     return FALSE;
@@ -3985,7 +3985,7 @@ extern "C" void func_ov003_0221f1cc(Obj *o, void **a, void **b, void **c)
 namespace ns_0221ede8 {
 extern "C" BOOL func_ov003_0221efb4()
 {
-    u32 idx = func_0204c0ac();
+    u32 idx = TownState_GetSeasonPeriod();
     u8 *p;
     BOOL r7 = FALSE, r4 = FALSE, r6 = FALSE;
     p = (u8 *)data_ov003_0222f758 + idx * 8;
@@ -4091,7 +4091,7 @@ extern "C" BOOL func_ov003_0221eef4(Obj *o, u32 *a, u32 *b)
         Elem *base = o->unk_1590[i];
         s32 n = data_ov003_0222f4a8[i];
         for (; j < n; j++) {
-            if (!func_02054c64(&base[j], *pname, data_ov003_02235934, *a, *b, &j, 1)) {
+            if (!CachedModel_loadWithTex(&base[j], *pname, data_ov003_02235934, *a, *b, &j, 1)) {
                 return FALSE;
             }
         }
@@ -4121,7 +4121,7 @@ extern "C" BOOL func_ov003_0221ee40(Obj *o, u32 *a, u32 *b)
     for (i = 0; i < 2; a++, b++, i++) {
         s32 j;
         for (j = 0; j < 2; j++) {
-            if (!func_02054c64(&o->unk_2df0[i][j], data_ov003_022326e8[i], data_ov003_02235934, *a, *b, &j, 1)) {
+            if (!CachedModel_loadWithTex(&o->unk_2df0[i][j], data_ov003_022326e8[i], data_ov003_02235934, *a, *b, &j, 1)) {
                 return FALSE;
             }
         }
@@ -4134,10 +4134,10 @@ namespace ns_0221ede8 {
 extern "C" BOOL func_ov003_0221ede8(Obj *o)
 {
     BOOL r = FALSE;
-    if (func_020549e4(o->unk_4af0, (u8 *)"/fg/flower/tanpopo.nsbmd", data_ov003_02235934)) {
+    if (ModelSet_Load(o->unk_4af0, (u8 *)"/fg/flower/tanpopo.nsbmd", data_ov003_02235934)) {
         s32 i;
         for (i = 0; i < 2; i++) {
-            o->unk_3060[i] = func_020549ac(o->unk_4af0, data_ov003_02232720[i]);
+            o->unk_3060[i] = ModelSet_Find(o->unk_4af0, data_ov003_02232720[i]);
         }
         r = TRUE;
     }
@@ -4234,12 +4234,12 @@ extern "C" {
 BOOL func_ov003_0221ec0c(Obj *o, u32 idx) {
     s32 i;
     volatile s32 z;
-    u32 n = func_0204c0ac();
+    u32 n = TownState_GetSeasonPeriod();
     i = 0;
     u32 *p = &data_ov003_0222f6a0[n];
     z = 0;
     for (; i < 5; i++) {
-        if (!func_02054c64(&o->unk_43e8[i], data_ov003_02232bd8[i], data_ov003_02235934, z, idx, p, 1)) {
+        if (!CachedModel_loadWithTex(&o->unk_43e8[i], data_ov003_02232bd8[i], data_ov003_02235934, z, idx, p, 1)) {
             return FALSE;
         }
     }
@@ -4270,7 +4270,7 @@ BOOL func_ov003_0221ebc0() {
 namespace ns_0221e4d4 {
 extern "C" {
 void *func_ov003_0221eba8() {
-    return data_ov003_0222f6fc[func_0204c0ac()];
+    return data_ov003_0222f6fc[TownState_GetSeasonPeriod()];
 }
 }
 }
@@ -4287,10 +4287,10 @@ namespace ns_0221e4d4 {
 extern "C" {
 BOOL func_ov003_0221eb1c(Obj *o, u32 idx) {
     void *m = func_ov003_0221eba8();
-    if (func_02054c64(&o->unk_4708, data_ov003_02232634, data_ov003_02235934, 0, idx, &m, 1) == 0) {
+    if (CachedModel_loadWithTex(&o->unk_4708, data_ov003_02232634, data_ov003_02235934, 0, idx, &m, 1) == 0) {
         return FALSE;
     }
-    if (func_02054c64(&o->unk_47a4, data_ov003_02232634, data_ov003_02235934, 0, idx, (data_ov003_0222f924 + 0x310), 1)) {
+    if (CachedModel_loadWithTex(&o->unk_47a4, data_ov003_02232634, data_ov003_02235934, 0, idx, (data_ov003_0222f924 + 0x310), 1)) {
         return TRUE;
     }
     return FALSE;
@@ -4329,10 +4329,10 @@ namespace ns_0221e4d4 {
 extern "C" {
 BOOL func_ov003_0221ea44(Obj *o, u32 idx) {
     void *m = func_ov003_0221eba8();
-    if (func_02054c64(&o->unk_4840, data_ov003_02232648, data_ov003_02235934, 0, idx, &m, 1) == 0) {
+    if (CachedModel_loadWithTex(&o->unk_4840, data_ov003_02232648, data_ov003_02235934, 0, idx, &m, 1) == 0) {
         return FALSE;
     }
-    if (func_02054c64(&o->unk_48dc, data_ov003_02232648, data_ov003_02235934, 0, idx, (data_ov003_0222f924 + 0x30c), 1)) {
+    if (CachedModel_loadWithTex(&o->unk_48dc, data_ov003_02232648, data_ov003_02235934, 0, idx, (data_ov003_0222f924 + 0x30c), 1)) {
         return TRUE;
     }
     return FALSE;
@@ -4364,7 +4364,7 @@ extern "C" {
 BOOL func_ov003_0221e9a8(Obj *o) {
     s32 i;
     for (i = 0; i < 2; i++) {
-        if (!func_02054c88(&data_ov003_02235930->unk_49a8[i], data_ov003_02232788[i], data_ov003_02235938)) {
+        if (!CachedModel_load(&data_ov003_02235930->unk_49a8[i], data_ov003_02232788[i], data_ov003_02235938)) {
             return FALSE;
         }
     }
@@ -4389,7 +4389,7 @@ BOOL func_ov003_0221e954(Obj *o) {
     u32 j;
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 8; j++) {
-            if (!func_02054bac(p, (u8 *)"/fg/obj_myD.nsbmd", i, j)) {
+            if (!CachedModel_loadWithSharedTex(p, (u8 *)"/fg/obj_myD.nsbmd", i, j)) {
                 return FALSE;
             }
             p++;
@@ -4638,7 +4638,7 @@ namespace ns_0221db54 {
 extern "C" void func_ov003_0221e398(O *o, Unk_ov003_0221e398_V3 *t, s32 a, s32 b)
 {
     M *q = NULL;
-    s32 idx = func_02045d48(a, b);
+    s32 idx = LitCedarList_Find(a, b);
     if (idx != -1) {
         s32 d = (o->unk_6a6c + idx * 15) / 20;
         q = &o->unk_1014[(idx + d) % 3];
@@ -4790,8 +4790,8 @@ extern "C" M *func_ov003_0221dfb8(O *o, u16 *t, Blk m)
 namespace ns_0221db54 {
 extern "C" M *func_ov003_0221df48(O *o, u16 *t, Blk m)
 {
-    s32 a = func_020494bc(t);
-    s32 b = func_02049370(t);
+    s32 a = Flower_GetSpecies(t);
+    s32 b = Flower_GetColor(t);
     M *q = &o->unk_1590[a][b];
     func_ov003_0221db54(o, q, m);
     return q;
@@ -4801,7 +4801,7 @@ extern "C" M *func_ov003_0221df48(O *o, u16 *t, Blk m)
 namespace ns_0221db54 {
 extern "C" M *func_ov003_0221dee8(O *o, u16 *t, Blk m)
 {
-    M *q = &o->unk_1590[func_020494bc(t)][0];
+    M *q = &o->unk_1590[Flower_GetSpecies(t)][0];
     func_ov003_0221db54(o, q, m);
     return q;
 }
@@ -4928,8 +4928,8 @@ extern "C" void func_ov003_0221db54(O *o, M *p, Blk m)
 {
     if (p != NULL) {
         *(Blk *)p->unk_64 = m;
-        func_02055550(p, 0);
-        volatile u16 a = func_02064cc4();
+        Model_drawShapesDirect(p, 0);
+        volatile u16 a = SceneLights_GetRoomColor();
         volatile u16 b = a;
         func_02105fd8(p->unk_5c, b);
     }
@@ -4952,8 +4952,8 @@ void func_ov003_0221d37c(O *o, void *g) {
     u16 *cell;
     if (gCamera != 0) {
         l.LampLights = gCameraLookAt;
-        func_0204edd8(&l.C, &l.LampLights);
-        func_0204ee10(&l.x, &l.z, &l.C);
+        FieldPos_SnapToUnitCenter(&l.C, &l.LampLights);
+        FieldPos_ToUnit(&l.x, &l.z, &l.C);
         l.LightLevel.x = l.C.x + 0x12000;
         cnt = 0;
         l.LightLevel.y = 0;
@@ -4961,7 +4961,7 @@ void func_ov003_0221d37c(O *o, void *g) {
         j = 4;
         goto jtest;
     jloop:
-        func_0204edd8(&l.WindowLight, &l.LightLevel);
+        FieldPos_SnapToUnitCenter(&l.WindowLight, &l.LightLevel);
         {
             s32 r4 = WorldCurve_ToCurved(&l.E, &l.WindowLight);
             func_020e8388(&data_021f47e0, l.E.x, l.E.y, l.E.z);
@@ -4972,7 +4972,7 @@ void func_ov003_0221d37c(O *o, void *g) {
         i = 9;
         goto itest;
     iloop:
-        cell = func_0204eba0(g, &l.WindowLight, 0);
+        cell = BlockMap_GetItemPtrAtPos(g, &l.WindowLight, 0);
         if (cell == 0) goto step;
         if (Chk_0221d37c(cell)) {
             if (Item_IsTreeStage0(cell) == 0) {
@@ -5081,7 +5081,7 @@ end:;
 namespace ns_0221cb54 {
 extern "C" {
 s32 _ZN18Unk_ov003_0223463c6onDrawEv(u8 *self) {
-    u8 *a = data_021c47c4;
+    u8 *a = gSceneBlockMap;
     u8 *b = gCamera;
     if (a != 0 && b != 0) {
         s32 *cnt = (s32 *)(self + 0x6a6c);
@@ -5101,16 +5101,16 @@ BOOL Unk_ov003_0223463c::vfunc_0c() {
     using ns_0221cb54::data_ov003_02235938;
     using ns_0221cb54::data_ov003_022359a4;
     using ns_0221cb54::func_020453ac;
-    using ns_0221cb54::func_02054970;
+    using ns_0221cb54::ModelSet_Release;
     using ns_0221cb54::func_020e8c94;
     using ns_0221cb54::func_ov003_02219e50;
     using ns_0221cb54::func_ov003_0221c2d8;
     u8 *self = (u8 *)this;
 
-    func_02054970(self + 0x4ae0);
-    func_02054970(self + 0x4af0);
-    func_02054970(self + 0x4b00);
-    func_02054970(self + 0x4b10);
+    ModelSet_Release(self + 0x4ae0);
+    ModelSet_Release(self + 0x4af0);
+    ModelSet_Release(self + 0x4b00);
+    ModelSet_Release(self + 0x4b10);
     func_ov003_0221c2d8(self + 0x4b20);
     func_ov003_02219e50(data_ov003_022359a4);
     func_020453ac();
@@ -5130,14 +5130,14 @@ namespace ns_0221cb54 {
 extern "C" {
 s32 func_ov003_0221d118(V3 *out, V3 pos, s32 mask) {
     s32 i;
-    u8 *g = data_021c47c4;
+    u8 *g = gSceneBlockMap;
     s32 r = 0;
     if (g != 0) {
         V3k keep(pos);
         s32 xy[2];
         xy[0] = 0;
         xy[1] = 0;
-        func_0204ee10(&xy[0], &xy[1], &pos);
+        FieldPos_ToUnit(&xy[0], &xy[1], &pos);
         s32 layer = 0;
         i = 0;
         goto test;
@@ -5148,15 +5148,15 @@ s32 func_ov003_0221d118(V3 *out, V3 pos, s32 mask) {
             s32 cz = xy[1] + ((b & 0xf) - 8);
             s32 hx = cx >> 4;
             s32 hz = cz >> 4;
-            u16 *cell = func_0204ebd8(g, hx, hz, cx - (hx << 4), cz - (hz << 4), layer);
+            u16 *cell = BlockMap_GetItemPtr(g, hx, hz, cx - (hx << 4), cz - (hz << 4), layer);
             if (cell != 0) {
                 if (Chk_0221d118(cell)) {
-                    s32 bit = func_020494bc(cell);
+                    s32 bit = Flower_GetSpecies(cell);
                     if (((mask >> bit) & 1) != 0) {
                         u32 b2 = ((volatile u8 *)data_ov003_0222f64c)[i];
                         xy[0] = xy[0] + (((s32)b2 >> 4) - 8);
                         xy[1] = xy[1] + ((b2 & 0xf) - 8);
-                        func_0204ed8c(out, xy[0], xy[1]);
+                        FieldPos_FromUnitCenter(out, xy[0], xy[1]);
                         r = 1;
                         goto end;
                     }
@@ -5179,7 +5179,7 @@ s32 func_ov003_0221d0c8(V3 *out, s32 b) {
     out->x = 0;
     out->y = 0;
     out->z = 0;
-    s32 r = func_02045d98(out, 0);
+    s32 r = Town_GetRafflesiaPos(out, 0);
     if (r != 0) {
         V3k t;
         V3k tmp;
@@ -5263,18 +5263,18 @@ extern "C" {
 s32 func_ov003_0221cd80(void *o, P2 pos) {
     s32 result = 0;
     if (data_ov003_02235930 != 0) {
-        void *g = func_0204da0c();
+        void *g = TownBlockMap_Get();
         if (g != 0) {
             s32 x = pos.x;
             s32 z = pos.z;
             s32 hx = x >> 4;
             s32 hz = z >> 4;
-            u16 *cell = func_0204ebd8(g, hx, hz, x - (hx << 4), z - (hz << 4), 0);
+            u16 *cell = BlockMap_GetItemPtr(g, hx, hz, x - (hx << 4), z - (hz << 4), 0);
             if (cell != 0) {
                 if (Chk_0221cd80(cell)) {
                     if (Item_IsTreeStage0(cell) == 0) {
                         V3 v;
-                        func_0204ed8c(&v, pos.x, pos.z);
+                        FieldPos_FromUnitCenter(&v, pos.x, pos.z);
                         if (func_0203a4c4(&v, 0x2000, 0x2000) == 0) {
                             result = 1;
                         }
@@ -5284,13 +5284,13 @@ s32 func_ov003_0221cd80(void *o, P2 pos) {
         }
     }
     if (result == 0) {
-        void *g2 = func_0204da0c();
+        void *g2 = TownBlockMap_Get();
         if (g2 != 0) {
             s32 x = pos.x;
             s32 z = pos.z;
             s32 hx = x >> 4;
             s32 hz = z >> 4;
-            u16 *cell = func_0204ebd8(g2, hx, hz, x - (hx << 4), z - (hz << 4), 0);
+            u16 *cell = BlockMap_GetItemPtr(g2, hx, hz, x - (hx << 4), z - (hz << 4), 0);
             if (cell != 0) {
                 void *a = func_02043ec0(o);
                 BOOL k = FALSE;
@@ -5335,12 +5335,12 @@ namespace ns_0221cb54 {
 extern "C" {
 void func_ov003_0221cbe4(void *o, P2 pos, s32 mode) {
     if (func_ov003_0221cd80(o, pos)) {
-        void *g = func_0204da0c();
+        void *g = TownBlockMap_Get();
         s32 x = pos.x;
         s32 z = pos.z;
         s32 hx = x >> 4;
         s32 hz = z >> 4;
-        func_0204ebd8(g, hx, hz, x - (hx << 4), z - (hz << 4), 0);
+        BlockMap_GetItemPtr(g, hx, hz, x - (hx << 4), z - (hz << 4), 0);
         switch (mode) {
         case 4:
             if (func_ov003_0221cf58(o, pos) == 0) {
@@ -5352,8 +5352,8 @@ void func_ov003_0221cbe4(void *o, P2 pos, s32 mode) {
                     s32 z2 = pos.z;
                     s32 hx2 = xx >> 4;
                     s32 hz2 = z2 >> 4;
-                    u16 *cell = func_0204ebd8(g, hx2, hz2, xx - (hx2 << 4), z2 - (hz2 << 4), 0);
-                    if (cell != 0 && func_0204962c(cell)) {
+                    u16 *cell = BlockMap_GetItemPtr(g, hx2, hz2, xx - (hx2 << 4), z2 - (hz2 << 4), 0);
+                    if (cell != 0 && Town_IsSaplingBlocker(cell)) {
                         mode = 6;
                     } else if (x2 - 2 < 0x10) {
                         mode = 6;
@@ -5373,8 +5373,8 @@ void func_ov003_0221cbe4(void *o, P2 pos, s32 mode) {
                     s32 z2 = pos.z;
                     s32 hx2 = xx >> 4;
                     s32 hz2 = z2 >> 4;
-                    u16 *cell = func_0204ebd8(g, hx2, hz2, xx - (hx2 << 4), z2 - (hz2 << 4), 0);
-                    if (cell != 0 && func_0204962c(cell)) {
+                    u16 *cell = BlockMap_GetItemPtr(g, hx2, hz2, xx - (hx2 << 4), z2 - (hz2 << 4), 0);
+                    if (cell != 0 && Town_IsSaplingBlocker(cell)) {
                         mode = 7;
                     } else if (x2 + 2 >= 0x50) {
                         mode = 7;
@@ -5394,7 +5394,7 @@ void func_ov003_0221cbe4(void *o, P2 pos, s32 mode) {
 namespace ns_0221cb54 {
 extern "C" {
 void func_ov003_0221cb54(P2 pos) {
-    u32 t = *(u32 *)(data_020cbb18 + 0x64);
+    u32 t = *(u32 *)(gCommManager + 0x64);
     if (func_02045220(t, 4) >= 0) {
         Unk_ov003_0221cb54_Rec *r = func_02045214();
         func_ov003_02219718(t, r->unk_0a, pos);
@@ -5402,7 +5402,7 @@ void func_ov003_0221cb54(P2 pos) {
     if (func_02045220(t, 3) >= 0) {
         Unk_ov003_0221cb54_Rec *r = func_02045214();
         V3 v;
-        func_0204ed8c(&v, pos.x, pos.z);
+        FieldPos_FromUnitCenter(&v, pos.x, pos.z);
         Col c;
         c.c = r->unk_08;
         u16 tt = c.c;
@@ -5420,15 +5420,15 @@ void func_ov003_0221caf0(s32 x, s32 y, u32 tile, s32 flag) {
     void *g;
     volatile u16 t[1];
     func_020b5184();
-    g = data_021c47c4;
+    g = gSceneBlockMap;
     if (g != 0) {
         t[0] = 0xfff1;
         t[0] = tile;
-        func_0204eb30(g, (u16 *)t, x, y, 0);
+        BlockMap_SetItemAtUnit(g, (u16 *)t, x, y, 0);
         if (tile != 0xfff1 && flag != 0) {
-            func_0204e978(g, x, y);
+            BlockMap_SetBuriedAtUnit(g, x, y);
         } else {
-            func_0204e914(g, x, y);
+            BlockMap_ClearBuriedAtUnit(g, x, y);
         }
     }
 }
@@ -5629,7 +5629,7 @@ test:
 namespace ns_0221c220 {
 extern "C" {
 void func_ov003_0221c778(Set *self, Rec *r, s32 *o1, s32 *o2, Vec3 *out, u16 *tile, Pos *pos) {
-    u8 *c = (u8 *)func_0204c0ac();
+    u8 *c = (u8 *)TownState_GetSeasonPeriod();
     s32 k;
     BOOL f = FALSE;
     u32 t = *tile;
@@ -5656,7 +5656,7 @@ void func_ov003_0221c778(Set *self, Rec *r, s32 *o1, s32 *o2, Vec3 *out, u16 *ti
         r->unk_10 = 2;
         *o2 = 0x22;
     }
-    func_0204ed8c(out, pos->x, pos->z);
+    FieldPos_FromUnitCenter(out, pos->x, pos->z);
 }
 }
 }
@@ -5666,7 +5666,7 @@ extern "C" {
 Rec *func_ov003_0221c6c4(Set *self, s32 p1, u32 p2, u16 *p3, Pos *p4, s32 p5) {
     Unk_ov003_0221c62c_Quad q = data_ov003_02232b48;
     Rec *r = 0;
-    if (data_ov003_0222f4c8[func_0204c0ac()] != 0) {
+    if (data_ov003_0222f4c8[TownState_GetSeasonPeriod()] != 0) {
         r = func_ov003_0221c838(self);
         if (r != 0) {
             s32 v14, v18;
@@ -5886,7 +5886,7 @@ void func_ov003_0221c13c(void *a, Unk_ov003_0221c030_Ent *o) {
     s32 *q;
     s32 hx, hy;
     Unk_ov003_0221b8bc *e;
-    void *g = func_0204da0c();
+    void *g = TownBlockMap_Get();
     if (g == 0) {
         func_ov003_0221b4b8(o);
         return;
@@ -5896,7 +5896,7 @@ void func_ov003_0221c13c(void *a, Unk_ov003_0221c030_Ent *o) {
     z = q[1];
     hx = x >> 4;
     hy = z >> 4;
-    cell = func_0204ebd8(g, hx, hy, x - (hx << 4), z - (hy << 4), 0);
+    cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), z - (hy << 4), 0);
     if (cell == 0) {
         func_ov003_0221b4b8(o);
         return;
@@ -5939,19 +5939,19 @@ void func_ov003_0221c13c(void *a, Unk_ov003_0221c030_Ent *o) {
 namespace ns_0221b8bc {
 extern "C" {
 void func_ov003_0221c030(u8 *a, s32 id, s32 *pos, s32 c, s32 d) {
-    void *g = func_0204da0c();
+    void *g = TownBlockMap_Get();
     if (g != 0) {
         s32 x = pos[0];
         s32 z = pos[1];
         s32 hx = x >> 4;
         s32 hy = z >> 4;
-        u16 *cell = func_0204ebd8(g, hx, hy, x - (hx << 4), z - (hy << 4), 0);
+        u16 *cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), z - (hy << 4), 0);
         if (cell != 0) {
             Unk_ov003_0221c030_Ent *e;
             s32 f1, f2;
             u32 v;
             Unk_ov003_0221b8bc_V2 t;
-            if (func_02072e44(data_020cbb18) == 0) {
+            if (CommManager_isOnline(gCommManager) == 0) {
                 id = 0;
             }
             e = (Unk_ov003_0221c030_Ent *)(a + 0x1dd4 + id * 0x18);
@@ -6020,17 +6020,17 @@ void func_ov003_0221c030(u8 *a, s32 id, s32 *pos, s32 c, s32 d) {
 namespace ns_0221b8bc {
 extern "C" {
 void func_ov003_0221bf88(s32 id, s32 *pos) {
-    void *g = func_0204da0c();
+    void *g = TownBlockMap_Get();
     if (g != 0) {
         s32 x = pos[0];
         s32 z = pos[1];
         s32 hx = x >> 4;
         s32 hy = z >> 4;
-        u16 *cell = func_0204ebd8(g, hx, hy, x - (hx << 4), z - (hy << 4), 0);
+        u16 *cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), z - (hy << 4), 0);
         if (cell != 0) {
             s32 n;
             Unk_ov003_0221b8bc *e;
-            if (func_02072e44(data_020cbb18) == 0) {
+            if (CommManager_isOnline(gCommManager) == 0) {
                 id = 0;
             }
             n = Item_GetTreeStage(cell);
@@ -6049,10 +6049,10 @@ void func_ov003_0221bf88(s32 id, s32 *pos) {
 namespace ns_0221b8bc {
 extern "C" {
 void func_ov003_0221bf30(Unk_ov003_0221b8bc *o) {
-    func_02054b38(o->unk_08, data_ov003_02235938);
-    func_02054800(o->unk_08, data_ov003_02235938);
+    CachedModel_allocJointRecord(o->unk_08, data_ov003_02235938);
+    AnimModel_allocAnmObj(o->unk_08, data_ov003_02235938);
     o->unk_d4 = 8;
-    func_020554a0(o->unk_08, (void *)func_ov003_0221b5e4, 2, 2, o, 0);
+    Model_setCallback(o->unk_08, (void *)func_ov003_0221b5e4, 2, 2, o, 0);
     func_02003ecc(o->unk_e0);
     func_ov003_0221b618(o);
 }
@@ -6063,12 +6063,12 @@ namespace ns_0221b8bc {
 extern "C" {
 void func_ov003_0221bc24(Unk_ov003_0221b8bc *o) {
     if (o->unk_00 == 1) {
-        func_020547e4(o->unk_08);
+        AnimModel_stepAnim(o->unk_08);
         if (AnimFrameCtrl_isFinished(o->unk_9c + 8)) {
             func_ov003_0221b618(o);
         } else {
             s32 r5 = 0;
-            s32 r6 = *(s32 *)((u8 *)data_020cbb18 + 0x68);
+            s32 r6 = *(s32 *)((u8 *)gCommManager + 0x68);
             switch (o->unk_d4) {
             case 4:
             case 5:
@@ -6143,13 +6143,13 @@ void func_ov003_0221bc24(Unk_ov003_0221b8bc *o) {
             func_02105f00(o->unk_64, o->unk_d8 >> 12);
             func_02105f48(o->unk_64, r6 + 0x33);
             if (r5 != 0) {
-                void *g = func_0204da0c();
+                void *g = TownBlockMap_Get();
                 if (g != 0) {
                     s32 x = o->unk_cc;
                     s32 z = o->unk_d0;
                     s32 hx = x >> 4;
                     s32 hy = z >> 4;
-                    u16 *cell = func_0204ebd8(g, hx, hy, x - (hx << 4), z - (hy << 4), 0);
+                    u16 *cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), z - (hy << 4), 0);
                     if (cell != 0) {
                         BOOL f3 = TRUE, f2 = TRUE, f1 = TRUE, f0 = FALSE;
                         u32 v = *cell;
@@ -6212,8 +6212,8 @@ void func_ov003_0221bbb8(Unk_ov003_0221b8bc *o) {
         func_020e8388(&data_021f47e0, v.x, v.y, v.z);
         func_020e8434(&data_021f47e0, r);
         o->unk_6c = data_021f47e0;
-        func_020547cc(o->unk_08, 0);
-        l.a = func_02064cc4();
+        AnimModel_drawAnimated(o->unk_08, 0);
+        l.a = SceneLights_GetRoomColor();
         l.b = l.a;
         NNS_G3dMdlSetMdlEmi(o->unk_64, 0, l.b);
     }
@@ -6225,7 +6225,7 @@ namespace ns_0221b8bc {
 extern "C" {
 s32 func_ov003_0221bb98(Unk_ov003_0221b8bc *o) {
     func_ov003_0221b618(o);
-    func_02054b14(o->unk_08);
+    CachedModel_release(o->unk_08);
     func_02003e50(o->unk_e0);
 }
 }
@@ -6237,12 +6237,12 @@ void func_ov003_0221ba50(Unk_ov003_0221b8bc *o, s32 flag) {
     Unk_ov003_0221b8bc_V2 a, b, c;
     s32 hx, hy, x, z;
     u16 *cell;
-    void *g = func_0204da0c();
+    void *g = TownBlockMap_Get();
     x = o->unk_cc;
     z = o->unk_d0;
     hx = x >> 4;
     hy = z >> 4;
-    cell = func_0204ebd8(g, hx, hy, x - (hx << 4), z - (hy << 4), 0);
+    cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), z - (hy << 4), 0);
     switch (o->unk_d4) {
     case 1:
         break;
@@ -6316,7 +6316,7 @@ void func_ov003_0221b93c(u16 *cell, s32 id, s32 *pos) {
     Unk_ov003_0221b8bc_V3 base, cur, cp;
     Unk_ov003_0221b8bc_V3 *tbl;
     s32 n, arg, i;
-    func_0204ed8c(&base, pos[0], pos[1]);
+    FieldPos_FromUnitCenter(&base, pos[0], pos[1]);
     switch (*cell) {
     case 0xcc:
         tbl = data_ov003_0223291c[2];
@@ -6351,7 +6351,7 @@ void func_ov003_0221b93c(u16 *cell, s32 id, s32 *pos) {
             xy.z = col.b & 0xff;
             r = 0;
         } else {
-            func_0204ee10(&xy.x, &xy.z, &cur);
+            FieldPos_ToUnit(&xy.x, &xy.z, &cur);
             r = 1;
         }
         cp = cur;
@@ -6372,8 +6372,8 @@ void func_ov003_0221b8bc(Unk_ov003_0221b8bc *o, s32 *p) {
     Unk_ov003_0221b8bc_V3D c;
     Unk_ov003_0221b8bc_V3 e;
     Unk_ov003_0221b8bc_V3 d;
-    if (func_02072e44(data_020cbb18) == 0 && func_02098044(PlayerData_GetCurrent(), 1) == 0) {
-        func_0204ed8c(&b, p[0], p[1]);
+    if (CommManager_isOnline(gCommManager) == 0 && func_02098044(PlayerData_GetCurrent(), 1) == 0) {
+        FieldPos_FromUnitCenter(&b, p[0], p[1]);
         Unk_ov003_0221b8bc_V3 *t = data_ov003_0223291c[0];
         t = t + func_ov003_0221ba28(o, &b);
         func_01ffd070(&e, &b, t);
@@ -6407,7 +6407,7 @@ extern "C" void func_ov003_0221b7d4(u16 *cell, s32 a, P2 p)
             if (t == 0x6a) fl = 1;
         }
         Unk_ov003_0221aed4_Raw3 d;
-        func_0204ed8c(&d, p.x, p.z);
+        FieldPos_FromUnitCenter(&d, p.x, p.z);
         s32 idx = func_ov003_0221ba28(a, &d);
         tbl = tbl + idx;
         Unk_ov003_0221b7d4_Ent *e = func_02045214(rec);
@@ -6464,20 +6464,20 @@ extern "C" void func_ov003_0221b718(Unk_ov003_0221b5e4_Obj *self, void *cell)
 namespace ns_0221aed4 {
 extern "C" s32 func_ov003_0221b65c(Unk_ov003_0221b5e4_Obj *self, s32 a, P2 p, s32 kind, s32 idx, s32 last)
 {
-    func_0204da0c();
+    TownBlockMap_Get();
     BOOL f = TRUE;
     u8 *tbl = data_ov003_02235930 + 0x696c;
     if (kind == 2) f = FALSE;
-    func_02054720(&self->unk_08, *(s32 *)(tbl + kind * 16 + 0x80 + idx * 4), f, 0x1000, 0, 0);
+    BlendAnimModel_initAnim(&self->unk_08, *(s32 *)(tbl + kind * 16 + 0x80 + idx * 4), f, 0x1000, 0, 0);
     if (self->unk_d4 == 8) {
-        func_02054710(&self->unk_08);
+        AnimModel_attachAnim(&self->unk_08);
     }
     self->unk_d4 = kind;
     self->unk_04 = (Unk_ov003_0221b5e4_Mid *)a;
     self->unk_cc.x = p.x;
     self->unk_cc.z = p.z;
     Unk_ov003_0221b65c_Tmp t;
-    func_0204ed8c(&t, p.x, p.z);
+    FieldPos_FromUnitCenter(&t, p.x, p.z);
     self->unk_c0 = t.x;
     self->unk_c4 = t.y;
     self->unk_c8 = t.z;
@@ -6568,13 +6568,13 @@ namespace ns_0221aed4 {
 extern "C" void func_ov003_0221b4b8(Unk_ov003_0221b4b8_Obj *self)
 {
     if (self->unk_10 != 1) {
-        void *g = func_0204da0c();
+        void *g = TownBlockMap_Get();
         if (g != 0) {
             s32 x = self->unk_08.x;
             s32 z = self->unk_08.z;
             s32 hx = x >> 4;
             s32 hz = z >> 4;
-            void *c = func_0204ebd8(g, hx, hz, x - (hx << 4), z - (hz << 4), 0);
+            void *c = BlockMap_GetItemPtr(g, hx, hz, x - (hx << 4), z - (hz << 4), 0);
             if (c != 0) {
                 func_ov003_0221b73c((u16 *)c, self->unk_04, P2(self->unk_08));
             }
@@ -6711,7 +6711,7 @@ namespace ns_0221aed4 {
 extern "C" void func_ov003_0221b160(Unk_ov003_0221aed4_Fx *self, P2 p, V3 q)
 {
     Unk_ov003_0221aed4_Raw3 t;
-    func_0204ed8c(&t, p.x, p.z);
+    FieldPos_FromUnitCenter(&t, p.x, p.z);
     s32 a = func_02133150(t.z - q.z, 9);
     self->unk_30 = func_02133150(t.x - q.x, 9);
     self->unk_34 = 0x1000;
@@ -6785,7 +6785,7 @@ extern "C" void func_ov003_0221b090(Unk_ov003_0221aed4_Fx *self)
 namespace ns_0221aed4 {
 extern "C" void func_ov003_0221af8c(Unk_ov003_0221aed4_Fx *self, P2 p, void *g, s32 flag)
 {
-    func_0204ed8c(&self->unk_18, p.x, p.z);
+    FieldPos_FromUnitCenter(&self->unk_18, p.x, p.z);
     self->unk_3c = 0;
     self->unk_40 = 0x1000;
     self->unk_44 = 0;
@@ -6796,9 +6796,9 @@ extern "C" void func_ov003_0221af8c(Unk_ov003_0221aed4_Fx *self, P2 p, void *g, 
     s32 z = p.z;
     s32 hx = x >> 4;
     s32 hz = z >> 4;
-    u16 *c = (u16 *)func_0204ebd8(g, hx, hz, x - (hx << 4), z - (hz << 4), 0);
+    u16 *c = (u16 *)BlockMap_GetItemPtr(g, hx, hz, x - (hx << 4), z - (hz << 4), 0);
     if (c != 0) {
-        s32 r = func_0204e88c(g, p.x, p.z);
+        s32 r = BlockMap_IsBuriedAtUnit(g, p.x, p.z);
         if (Item_IsFlower(c) != 0) {
             Unk_ov003_0221aed4_Raw2 q;
             q.x = p.x;
@@ -6825,7 +6825,7 @@ extern "C" void func_ov003_0221af8c(Unk_ov003_0221aed4_Fx *self, P2 p, void *g, 
                 }
             }
         }
-        if (func_0204e88c(g, p.x, p.z) != 0) {
+        if (BlockMap_IsBuriedAtUnit(g, p.x, p.z) != 0) {
             func_ov003_0221caf0(p.x, p.z, 0xfff1, 0);
         }
     }
@@ -6847,7 +6847,7 @@ extern "C" void func_ov003_0221af60(Unk_ov003_0221aed4_Fx *self)
 namespace ns_0221aed4 {
 extern "C" void func_ov003_0221af28(Unk_ov003_0221aed4_Fx *self, P2 p)
 {
-    func_0204ed8c(&self->unk_18, p.x, p.z);
+    FieldPos_FromUnitCenter(&self->unk_18, p.x, p.z);
     self->unk_3c = 0;
     self->unk_40 = 0x1000;
     self->unk_44 = 0;
@@ -6862,7 +6862,7 @@ extern "C" void func_ov003_0221af28(Unk_ov003_0221aed4_Fx *self, P2 p)
 namespace ns_0221aed4 {
 extern "C" void func_ov003_0221aed4(Unk_ov003_0221aed4_Fx *self, P2 p, void *g)
 {
-    func_0204ed8c(&self->unk_18, p.x, p.z);
+    FieldPos_FromUnitCenter(&self->unk_18, p.x, p.z);
     if (func_0204e3a0(g, p.x, p.z) == 0) {
         self->unk_08 = 0xfc;
     } else {
@@ -6911,7 +6911,7 @@ extern "C" void func_ov003_0221ad28(Unk_ov003_0221a4a0 *self, Unk_ov003_0221a4a0
 {
     struct Pad { s32 v[2]; Pad() {} ~Pad() {} } pad;
     volatile u16 tmp;
-    func_0204ed8c(&self->unk_18, p->a, p->b);
+    FieldPos_FromUnitCenter(&self->unk_18, p->a, p->b);
     s32 z = 0;
     self->unk_3c = z;
     self->unk_40 = z;
@@ -6984,7 +6984,7 @@ extern "C" void func_ov003_0221ab94(Unk_ov003_0221a4a0 *self)
     VEC_Add(&self->unk_18, &self->unk_30, &self->unk_18);
     if (self->unk_1c < 0) {
         if (self->unk_4c == 0) {
-            func_0204ed8c(&v, self->unk_10, self->unk_14);
+            FieldPos_FromUnitCenter(&v, self->unk_10, self->unk_14);
             s32 r5 = func_02133150(v.z - self->unk_20, 8);
             self->unk_30 = func_02133150(v.x - self->unk_18, 8);
             self->unk_34 = 0x1000;
@@ -7016,7 +7016,7 @@ namespace ns_0221a4a0 {
 extern "C" void func_ov003_0221ab14(Unk_ov003_0221a4a0 *self, Unk_ov003_0221a4a0_V2 *p, Unk_ov003_0221a4a0_V3 *q)
 {
     Unk_ov003_0221a4a0_V3 v;
-    func_0204ed8c(&v, p->a, p->b);
+    FieldPos_FromUnitCenter(&v, p->a, p->b);
     s32 r7 = func_02133150(v.z - q->z, 0x1e);
     s32 r6 = -func_02133150(q->y, 0x1e);
     self->unk_30 = func_02133150(v.x - q->x, 0x1e);
@@ -7124,7 +7124,7 @@ extern "C" void func_ov003_0221a978(Unk_ov003_0221a4a0 *self)
 namespace ns_0221a4a0 {
 extern "C" void func_ov003_0221a918(Unk_ov003_0221a4a0 *self, Unk_ov003_0221a4a0_V2 *p, u32 ang)
 {
-    func_0204ed8c(&self->unk_18, p->a, p->b);
+    FieldPos_FromUnitCenter(&self->unk_18, p->a, p->b);
     s32 i = ((u16)ang >> 4) * 2;
     self->unk_30 = (data_02135f44[i] << 10) >> 12;
     self->unk_34 = 0x1000;
@@ -7157,7 +7157,7 @@ extern "C" void func_ov003_0221a840(Unk_ov003_0221a4a0 *self, Unk_ov003_0221a4a0
 {
     Unk_ov003_0221a4a0_V3 v;
     volatile u16 tmp;
-    func_0204ed8c(&v, p->a, p->b);
+    FieldPos_FromUnitCenter(&v, p->a, p->b);
     s32 r6 = func_02133150(v.z - q->z, 8);
     self->unk_30 = func_02133150(v.x - q->x, 8);
     self->unk_34 = 0x1000;
@@ -7219,7 +7219,7 @@ extern "C" void func_ov003_0221a798(Unk_ov003_0221a4a0 *self)
 namespace ns_0221a4a0 {
 extern "C" void func_ov003_0221a768(Unk_ov003_0221a4a0 *self, Unk_ov003_0221a4a0_V2 *p)
 {
-    func_0204ed8c(&self->unk_18, p->a, p->b);
+    FieldPos_FromUnitCenter(&self->unk_18, p->a, p->b);
     self->unk_3c = 0x1000;
     self->unk_40 = 0x1000;
     self->unk_44 = 0x1000;
@@ -7326,7 +7326,7 @@ extern "C" void func_ov003_0221a4a0(Unk_ov003_0221a4a0 *self)
             self->unk_50 = self->unk_50 - 1;
             if (self->unk_50 < 0) {
                 func_020b8e38();
-                func_ov003_022122fc(&self->unk_18);
+                PlayerActor_LocalRequestAct77From(&self->unk_18);
                 self->unk_a0 = 0;
                 func_ov003_0221b228(self);
             }
@@ -7337,7 +7337,7 @@ extern "C" void func_ov003_0221a4a0(Unk_ov003_0221a4a0 *self)
             if (self->unk_1c < 0) {
                 self->unk_1c = 0;
                 self->unk_50 = func_ov003_022195b8(&self->unk_10);
-                func_0204ed8c(&v, self->unk_10, self->unk_14);
+                FieldPos_FromUnitCenter(&v, self->unk_10, self->unk_14);
                 s32 r5 = func_02133150(v.z - self->unk_20, 8);
                 self->unk_30 = func_02133150(v.x - self->unk_18, 8);
                 self->unk_34 = 0x1000;
@@ -7372,7 +7372,7 @@ extern "C" void func_ov003_0221a4a0(Unk_ov003_0221a4a0 *self)
 namespace ns_02219b84 {
 extern "C" {
 void func_ov003_0221a42c(Ent *e, P2 *p, void *m) {
-    func_0204ed8c(&e->unk_18, p->x, p->y);
+    FieldPos_FromUnitCenter(&e->unk_18, p->x, p->y);
     if (func_0204e3a0(m, p->x, p->y) == 0) {
         e->unk_08 = 0xfc;
     } else {
@@ -7415,7 +7415,7 @@ void func_ov003_0221a310(Tbl *t) {
     Ent *e = t->e;
     V3 tmp;
     s32 i;
-    func_02072e44(data_020cbb18);
+    CommManager_isOnline(gCommManager);
     for (i = 0; i < 20; e++, i++) {
         if (e->unk_04 != 0) {
             e->unk_4e++;
@@ -7620,7 +7620,7 @@ Ent *func_ov003_02219e2c(Tbl *t, s32 g) {
 namespace ns_02219b84 {
 extern "C" {
 s32 func_ov003_02219dc0(Tbl *t, s32 a, P2 p, V3 v, s32 f, u32 g, s32 h, s32 i) {
-    void *map = func_0204da0c();
+    void *map = TownBlockMap_Get();
     if (map == 0) {
         return 0;
     }
@@ -7638,7 +7638,7 @@ s32 func_ov003_02219dc0(Tbl *t, s32 a, P2 p, V3 v, s32 f, u32 g, s32 h, s32 i) {
 namespace ns_02219b84 {
 extern "C" {
 s32 func_ov003_02219d64(Tbl *t, s32 a, P2 p, V3 v, s32 f, u32 g, s32 h, s32 i) {
-    if (func_02072e44(data_020cbb18) == 0) {
+    if (CommManager_isOnline(gCommManager) == 0) {
         a = 0;
     }
     return func_ov003_02219dc0(t, a, p, v, f, *(u16 *)&g, *(s16 *)&h, i);
@@ -7679,13 +7679,13 @@ s32 func_ov003_02219ccc(s32 a, u32 b, P2 p, V3 v) {
 namespace ns_02219b84 {
 extern "C" {
 s32 func_ov003_02219c5c(s32 type, s32 v, s32 w) {
-    void *map = func_0204da0c();
+    void *map = TownBlockMap_Get();
     if (map == 0) {
         return 0;
     }
     s32 ox = 0;
     s32 oy = 0;
-    func_0204ee10(&ox, &oy, v);
+    FieldPos_ToUnit(&ox, &oy, v);
     u32 k;
     if (func_0204e3a0(map, ox, oy) == 0) {
         k = 0xfc;
@@ -7700,13 +7700,13 @@ s32 func_ov003_02219c5c(s32 type, s32 v, s32 w) {
 namespace ns_02219b84 {
 extern "C" {
 s32 func_ov003_02219bf0(s32 type, s32 v) {
-    void *map = func_0204da0c();
+    void *map = TownBlockMap_Get();
     if (map == 0) {
         return 0;
     }
     s32 ox = 0;
     s32 oy = 0;
-    func_0204ee10(&ox, &oy, v);
+    FieldPos_ToUnit(&ox, &oy, v);
     u32 k;
     if (func_0204e3a0(map, ox, oy) == 0) {
         k = 0xfc;
@@ -7721,13 +7721,13 @@ s32 func_ov003_02219bf0(s32 type, s32 v) {
 namespace ns_02219b84 {
 extern "C" {
 s32 func_ov003_02219b84(s32 type, s32 v) {
-    void *map = func_0204da0c();
+    void *map = TownBlockMap_Get();
     if (map == 0) {
         return 0;
     }
     s32 ox = 0;
     s32 oy = 0;
-    func_0204ee10(&ox, &oy, v);
+    FieldPos_ToUnit(&ox, &oy, v);
     u32 k;
     if (func_0204e3a0(map, ox, oy) == 0) {
         k = 0xfc;
@@ -7745,7 +7745,7 @@ extern "C" s32 func_ov003_02219b18(s32 a, s32 b)
     s32 p0 = 0;
     s32 p1 = 0;
     u32 r = 0xfff1;
-    func_0204ee10(&p0, &p1, b);
+    FieldPos_ToUnit(&p0, &p1, b);
     Unk_ov003_022195b8_Pos pos;
     pos.x = p0;
     pos.z = p1;
@@ -7790,18 +7790,18 @@ extern "C" void func_ov003_02219a1c(s32 a, s32 v, P2 p, V3 q)
 namespace ns_0221927c {
 extern "C" s32 func_ov003_02219908(s32 a, s32 b, s32 c)
 {
-    void *g = func_0204da0c();
+    void *g = TownBlockMap_Get();
     if (g == NULL) {
         return 0;
     }
     s32 p0 = 0;
     s32 p1 = 0;
-    func_0204ee10(&p0, &p1, b);
+    FieldPos_ToUnit(&p0, &p1, b);
     s32 x = *(volatile s32 *)&p0;
     s32 z = *(volatile s32 *)&p1;
     s32 hx = x >> 4;
     s32 hz = z >> 4;
-    u16 *cell = (u16 *)func_0204ebd8(g, hx, hz, x - (hx << 4), z - (hz << 4), 0);
+    u16 *cell = (u16 *)BlockMap_GetItemPtr(g, hx, hz, x - (hx << 4), z - (hz << 4), 0);
     u32 r = 0x2b;
     if (cell != NULL) {
         BOOL f4 = TRUE, f3 = TRUE, f2 = TRUE, f1 = FALSE;
@@ -7854,13 +7854,13 @@ extern "C" void func_ov003_022197e8(s32 a, s32 b, P2 c, V3 d)
 namespace ns_0221927c {
 extern "C" s32 func_ov003_0221977c(s32 a, s32 b)
 {
-    void *g = func_0204da0c();
+    void *g = TownBlockMap_Get();
     if (g == NULL) {
         return 0;
     }
     s32 p0 = 0;
     s32 p1 = 0;
-    func_0204ee10(&p0, &p1, b);
+    FieldPos_ToUnit(&p0, &p1, b);
     s32 sel;
     if (func_0204e3a0(g, p0, p1) == 0) {
         sel = 0xfc;
@@ -7876,7 +7876,7 @@ extern "C" void func_ov003_02219718(s32 a, s32 b, P2 c)
 {
     s32 r = 0;
     s32 tmp[3];
-    func_0204ed8c(tmp, c.x, c.z);
+    FieldPos_FromUnitCenter(tmp, c.x, c.z);
     u8 *obj = (u8 *)func_02095204(4);
     if (obj != NULL) {
         r = (s32)(func_02063ba4(*(s16 *)(obj + 0x8e)) << 29) >> 16;
@@ -7898,10 +7898,10 @@ extern "C" void func_ov003_02219654(s32 a, s32 n)
         LampLights.y = pv->y;
         LampLights.z = pv->z;
         LampLights.x = LampLights.x + ((n << 12) >> 4);
-        func_0204ee10(&p0, &p1, (s32)&LampLights);
+        FieldPos_ToUnit(&p0, &p1, (s32)&LampLights);
         p1 = (func_02133150(p1, 16) << 4) + 1;
         s32 tmp[3];
-        func_0204ed8c(tmp, p0, p1);
+        FieldPos_FromUnitCenter(tmp, p0, p1);
         LampLights.z = tmp[2];
     }
     LampLights.y = 0xa000;
@@ -7911,9 +7911,9 @@ extern "C" void func_ov003_02219654(s32 a, s32 n)
     } else {
         t = 0x137b;
     }
-    Unk_020cbb18 *g = data_020cbb18;
+    CommManager *g = gCommManager;
     s32 r;
-    if (func_02072e44(g)) {
+    if (CommManager_isOnline(g)) {
         r = g->unk_64;
     } else {
         r = 0;
@@ -7927,7 +7927,7 @@ extern "C" s32 func_ov003_022195b8(s32 *p)
 {
     s32 result;
     void *g;
-    g = func_0204da0c();
+    g = TownBlockMap_Get();
     result = 2;
     if (g == NULL) {
         return result;
@@ -7942,7 +7942,7 @@ extern "C" s32 func_ov003_022195b8(s32 *p)
         s32 z = p[1] + ((b & 0xf) - 8);
         s32 hx = x >> 4;
         s32 hz = z >> 4;
-        u16 *c = (u16 *)func_0204ebd8(g, hx, hz, x - (hx << 4), z - (hz << 4), k10);
+        u16 *c = (u16 *)BlockMap_GetItemPtr(g, hx, hz, x - (hx << 4), z - (hz << 4), k10);
         if (c != NULL && *c == 0xfff1) {
             Unk_ov003_022195b8_Pos pos;
             pos.x = x;
@@ -7971,13 +7971,13 @@ extern "C" void func_ov003_02219578(s32 a, s32 v, P2 p, V3 q)
 namespace ns_0221927c {
 extern "C" s32 func_ov003_0221950c(s32 a, s32 b)
 {
-    void *g = func_0204da0c();
+    void *g = TownBlockMap_Get();
     if (g == NULL) {
         return 0;
     }
     s32 p0 = 0;
     s32 p1 = 0;
-    func_0204ee10(&p0, &p1, b);
+    FieldPos_ToUnit(&p0, &p1, b);
     s32 sel;
     if (func_0204e3a0(g, p0, p1) == 0) {
         sel = 0xfc;

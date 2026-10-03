@@ -2,7 +2,7 @@
 
 extern "C" {
 extern void *data_021c61d8;
-extern u8 *data_020cbb18;
+extern u8 *gCommManager;
 extern char data_021c651c[0x14];
 
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
@@ -64,7 +64,7 @@ Unk_0205d3a0::~Unk_0205d3a0() {}
 
 extern "C" void func_0205d3d0(u32 *arr) {
     void *heap = data_021c61d8;
-    u32 n = *(u8 *)(data_020cbb18 + 0x6c);
+    u32 n = *(u8 *)(gCommManager + 0x6c);
     u32 i;
     for (i = 0; i < n; i++) {
         arr[i] = (u32)Heap_AllocAligned(heap, func_0205d418(), 4);

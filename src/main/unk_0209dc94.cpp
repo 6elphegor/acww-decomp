@@ -4,7 +4,7 @@ struct Unk_0209da44_E98c { u8 b[0x98c]; };
 struct Unk_0209da44_Eb4 { u8 b[0xb4]; };
 
 extern "C" {
-void func_0209d7bc(void *);
+void SaveData_SyncClockOffset(void *);
 void func_0209d81c(void *);
 void SaveData_InitNew(u8 *p);
 void func_0209d994(u8 *p);
@@ -12,9 +12,9 @@ void *PlayerData_GetCurrent();
 void _ZN12Unk_02097ff413func_0209801cEj(void *, s32);
 void _ZN12Unk_02097ff413func_02097ff4Ej(void *, s32);
 void func_0209c80c();
-void func_0209cfe4();
-void func_0204d42c();
-void func_0204d3d8();
+void Clock_Init();
+void HouseRoomMaps_UpdateAll();
+void HouseRoomMaps_BindBg();
 void func_020af3f4();
 void _ZN12Unk_020af51413func_020af514Ev();
 void func_0207824c(s32);
@@ -29,8 +29,8 @@ void func_0207ac60(void *);
 void func_0207a80c();
 void func_0207a63c(void *);
 void _ZN7TownMap13func_0204df30Ev(void *);
-void func_0204dd20(void *, u32);
-void _ZN11SaveRecord413func_0209eaccEPv(void *, s32);
+void TownMap_Generate(void *, u32);
+void _ZN11SaveRecord412setDateTodayEPv(void *, s32);
 s32 _ZN11SaveRecord412isStateValidEv(void *);
 s32 func_020b50e8();
 void _ZN12Unk_02097ff413func_020981acEj(void *, s32);
@@ -70,11 +70,11 @@ void func_020639a0(void *);
 void func_020977ac(void *);
 void func_020ada24(void *);
 void func_020ad3c0(void *);
-void _ZN7TownMap13func_0204e038Ev(void *);
+void _ZN7TownMap5clearEv(void *);
 void _ZN12Unk_0207719813func_02077264Ev(void *);
 void _ZN9HouseData13func_020606d8Ev(void *);
-void func_0204c3f4(void *);
-void func_020c02f4(void *);
+void TownState_Reset(void *);
+void Weather_SetDateToday(void *);
 void func_020aebbc(void *);
 void _ZN12Unk_0208722413func_020872c8Ev(void *);
 void _ZN12Unk_0208634013func_020868a8Ev(void *);
@@ -88,7 +88,7 @@ void func_020b09c0(void *);
 void _ZN12Unk_02096e7813func_02096f30Ev(void *);
 void func_0208f088(void *);
 void func_0205b650(void *);
-void _ZN11SaveRecord413func_0209eaf4Ev(void *);
+void _ZN11SaveRecord49resetDateEv(void *);
 void _ZN12Unk_020af53c13func_020af674Ev(void *);
 void func_0204085c(void *);
 void _ZN12Unk_020872fc13func_02087368Ev(void *);
@@ -281,11 +281,11 @@ void SaveData::reset() {
     SaveVillagers_Clear(&f_8a3c);
     func_020ada24(&f_15f84);
     func_020ad3c0(&f_15f70);
-    _ZN7TownMap13func_0204e038Ev(&f_c330);
+    _ZN7TownMap5clearEv(&f_c330);
     _ZN12Unk_0207719813func_02077264Ev(&f_11488);
     _ZN9HouseData13func_020606d8Ev(&f_e558);
-    func_0204c3f4(&f_15e54);
-    func_020c02f4(&f_15f66);
+    TownState_Reset(&f_15e54);
+    Weather_SetDateToday(&f_15f66);
     func_020aebbc(&f_15db4);
     _ZN12Unk_0208722413func_020872c8Ev(&f_15700);
     _ZN12Unk_0208634013func_020868a8Ev(&f_15f4c);
@@ -299,7 +299,7 @@ void SaveData::reset() {
     _ZN12Unk_02096e7813func_02096f30Ev(&f_15b5c);
     func_0208f088(&f_15c58);
     func_0205b650(&f_15fb0);
-    _ZN11SaveRecord413func_0209eaf4Ev(&f_15fc5);
+    _ZN11SaveRecord49resetDateEv(&f_15fc5);
     _ZN12Unk_020af53c13func_020af674Ev(&f_15f96);
     func_0204085c(&f_15e18);
     _ZN12Unk_020872fc13func_02087368Ev(&f_15fca);
@@ -319,10 +319,10 @@ void SaveData::resetPlayer(s32 i) {
 
 void SaveData::func_0209de74() {
     void *a = PlayerData_GetCurrent();
-    func_0209d7bc(this);
-    func_0204dd20(&f_c330, gCurrentHeap);
+    SaveData_SyncClockOffset(this);
+    TownMap_Generate(&f_c330, gCurrentHeap);
     func_0209d81c(this);
-    _ZN11SaveRecord413func_0209eaccEPv(&f_15fc5, 0);
+    _ZN11SaveRecord412setDateTodayEPv(&f_15fc5, 0);
     _ZN6TownId13func_02094094EPS_(_ZN10PlayerData11getPlayerIdEv(a), &f_2);
     void *t = _ZN10PlayerData13func_020986d4Ev(a);
     _ZN14PlayerPatterns13func_02071d08EP12Unk_020942c8(t, _ZN10PlayerData11getPlayerIdEv(a));
@@ -344,9 +344,9 @@ void SaveData::func_0209de74() {
 void SaveData::func_0209ddb0() {
     void *a = PlayerData_GetCurrent();
     func_0209d81c(this);
-    func_0204d42c();
-    func_0204d3d8();
-    func_0209cfe4();
+    HouseRoomMaps_UpdateAll();
+    HouseRoomMaps_BindBg();
+    Clock_Init();
     _ZN6TownId13func_02094094EPS_(_ZN10PlayerData11getPlayerIdEv(a), &f_2);
     void *t = _ZN10PlayerData13func_020986d4Ev(a);
     _ZN14PlayerPatterns13func_02071d08EP12Unk_020942c8(t, _ZN10PlayerData11getPlayerIdEv(a));
@@ -373,9 +373,9 @@ void SaveData::func_0209dc94() {
     void *a = PlayerData_GetCurrent();
     if (func_020b50e8() != 6) {
         func_0209d81c(this);
-        func_0204d42c();
-        func_0204d3d8();
-        func_0209cfe4();
+        HouseRoomMaps_UpdateAll();
+        HouseRoomMaps_BindBg();
+        Clock_Init();
         func_0207ae84(&f_8a3c, 0);
     }
     func_0207ac60(&f_8a3c);

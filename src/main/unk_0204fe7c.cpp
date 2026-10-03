@@ -18,9 +18,9 @@ extern "C" s32 OS_GetLockID(void);
 extern "C" void CARD_LockBackup(u16 v);
 extern "C" s32 CARDi_RequestStreamCommand(u32 a, u32 b, u32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i);
 
-extern "C" void func_0204fe0c(u8 *p, u32 v);
-extern "C" void func_0204fe28(u8 *p, u32 v);
-extern "C" void func_0204fe44(u8 *p, u32 v);
+extern "C" void FishDisplay_RecvAct02(u8 *p, u32 v);
+extern "C" void FishDisplay_RecvAct01(u8 *p, u32 v);
+extern "C" void FishDisplay_RecvAct00(u8 *p, u32 v);
 
 extern "C" s32 Backup_Write(Backup *g, u32 a, u32 b, u32 c);
 extern "C" s32 Backup_WriteAsync(Backup *g, u32 a, u32 b, u32 c);
@@ -31,10 +31,10 @@ extern "C" void Backup_EndAccess(Backup *g);
 extern "C" u16 Save_Sum16(u16 *p, u32 n);
 extern "C" u16 Save_CalcChecksum(u16 *p, u32 n, u32 m);
 extern "C" void Backup_CancelAndWait(void);
-extern "C" void func_0204fe7c(u8 *p, u32 v);
+extern "C" void FishDisplay_OnNetPacket(u8 *p, u32 v);
 
-extern "C" void (*data_020dba38[3])(u8 *, u32);
-extern "C" void (*data_020dba38[3])(u8 *, u32) = {func_0204fe44, func_0204fe28, func_0204fe0c};
+extern "C" void (*sFishDisplayNetHandlers[3])(u8 *, u32);
+extern "C" void (*sFishDisplayNetHandlers[3])(u8 *, u32) = {FishDisplay_RecvAct00, FishDisplay_RecvAct01, FishDisplay_RecvAct02};
 
 extern "C" s32 Backup_Write(Backup *g, u32 a, u32 b, u32 c) {
     s32 r = 1;
@@ -159,8 +159,8 @@ extern "C" void Backup_CancelAndWait(void) {
     }
 }
 
-extern "C" void func_0204fe7c(u8 *p, u32 v) {
+extern "C" void FishDisplay_OnNetPacket(u8 *p, u32 v) {
     if (*p < 3) {
-        data_020dba38[*p](p, v);
+        sFishDisplayNetHandlers[*p](p, v);
     }
 }

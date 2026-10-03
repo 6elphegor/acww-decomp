@@ -5,9 +5,9 @@ struct Unk_0203ff50_Slot { u8 pad[0x10]; u8 unk_10, unk_11; u8 unk_12, unk_13; u
 extern "C" {
 
 s32 func_02063b8c(s32);
-void func_0209d2c0(s32, s32);
+void DateTime_AddDays(s32, s32);
 void MI_CpuCopy8(void *, void *, u32);
-s32 func_0203f218(void *, s32, void *);
+s32 EventSchedule_CollectAtNoon(void *, s32, void *);
 
 BOOL func_02040754(void *, u8 *p, u32 v);
 }
@@ -23,16 +23,16 @@ extern "C" s32 func_020407a8(void *, s32 *out, s32 x)
     s32 cnt = 0;
     u8 a[8];
     u8 b[0x58];
-    func_0209d2c0(x, 1);
+    DateTime_AddDays(x, 1);
     for (i = 0; i < 5; i++) {
         MI_CpuCopy8((void *)x, a, 8);
-        if (func_0203f218(b, 7, a) <= 0) {
+        if (EventSchedule_CollectAtNoon(b, 7, a) <= 0) {
             *out = 1;
             cnt++;
         } else {
             *out = 0;
         }
-        func_0209d2c0(x, 1);
+        DateTime_AddDays(x, 1);
         out++;
     }
     return cnt;

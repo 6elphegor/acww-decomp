@@ -29,14 +29,14 @@ extern u8 data_021edb68;
 extern s32 gCurrentHeap;
 extern u16 gPad[];
 
-void func_020020b8(s32 a);
-void func_020021a0(s32 a);
-void func_0200261c(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_02002654(const char *a, s32 b, s32 c);
-void func_020026c4(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_ShowLayer(s32 a);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_LoadCharFile(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_LoadScreenFile(const char *a, s32 b, s32 c);
+void Gfx2d_LoadPaletteFile(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void Snd_PlaySe(s32 a);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_02002398(s32 a, s32 b);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
 void func_0203c42c(void *a, void *p, s32 skip, s32 set);
 u16 Item_MakePaper(void *p, s32 a);
 void func_02065af0(void *a);
@@ -108,8 +108,8 @@ class Letter;
 class LabelBalloon;
 class HandCursor;
 class LabelButton;
-class Unk_020e45f8;
-class Unk_020e4608;
+class BgVramTask;
+class BgVramTaskPair;
 class Unk_ov002_022013ac;
 class Unk_ov002_022013ac_Rec;
 class Unk_ov002_02202d98;
@@ -127,9 +127,9 @@ class Unk_ov094_02292d6c;
 class Unk_ov094_02294a50;
 class Unk_ov094_02294bd4;
 
-class Unk_020e4608 {
+class BgVramTaskPair {
 public:
-    Unk_020e4608();
+    BgVramTaskPair();
     u32 unk_00[0x38 / 4];
 };
 
@@ -305,9 +305,9 @@ public:
     void setPos(s32, s32);
 };
 
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    void func_020b87d0();
+    void cancel();
 };
 
 class Unk_ov002_022013ac {
@@ -596,7 +596,7 @@ public:
     /* 0xbd */ u8 unk_bd;
     /* 0xbe */ u8 unk_be;
     /* 0xbf */ u8 unk_bf;
-    /* 0x00c0 */ Unk_020e4608 unk_c0[1];
+    /* 0x00c0 */ BgVramTaskPair unk_c0[1];
     /* 0x00f8 */ Unk_ov094_02294a50 unk_f8;
     /* 0x0b58 */ Unk_ov094_02294bd4 unk_b58;
     /* 0x0b80 */ Unk_ov094_02292d6c unk_b80;
@@ -794,7 +794,7 @@ void Unk_ov106_02298180::func_ov106_022978fc() {
     func_ov094_02293cf0(&unk_b58, unk_2924);
     func_ov106_02295bbc();
     func_ov002_022008e0(8, 0, 0, 0x30);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(6);
     func_ov002_02200a50(2);
     func_ov106_02294e0c(1);
     func_ov106_02294e0c(2);
@@ -808,7 +808,7 @@ void Unk_ov106_02298180::func_ov106_0229789c() {
         func_ov106_02297340();
         func_ov002_022008e0(2, 0, 2, 0x30);
         func_ov002_02200850(0xc0);
-        func_020020b8(4);
+        Gfx2d_ShowLayer(4);
         func_ov106_02294e0c(0x200);
         func_ov106_02297594();
         func_ov002_02200a50(3);
@@ -841,7 +841,7 @@ void Unk_ov106_02298180::func_ov106_022977f0() {
 
 void Unk_ov106_02298180::func_ov106_022977a0() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(4);
+        Gfx2d_ResetLayer(4);
         func_ov106_02294dfc(0x200);
         func_ov002_022008c4(8, 0, 0, 0x30);
         func_ov002_02200a50(6);
@@ -853,7 +853,7 @@ void Unk_ov106_02298180::func_ov106_022977a0() {
 
 void Unk_ov106_02298180::func_ov106_02297744() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
+        Gfx2d_ResetLayer(6);
         func_ov106_02294dfc(2);
         if (func_ov106_02294e1c(0x100)) {
             func_ov002_02200a50(7);
@@ -873,8 +873,8 @@ void Unk_ov106_02298180::func_ov106_022976c4() {
     func_02065af0(t);
     ((Unk_0206d0a0 *)&unk_26a4)->func_0206d2e0((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
     func_ov002_022008e0(3, 0, 0, 0x30);
-    func_020020b8(3);
-    func_020020b8(4);
+    Gfx2d_ShowLayer(3);
+    Gfx2d_ShowLayer(4);
     func_ov106_022975e0();
     func_ov002_02200a50(8);
     ((Unk_ov002_02204738 *)&unk_28b4)->func_ov002_02203ec8(0x88);
@@ -902,8 +902,8 @@ void Unk_ov106_02298180::func_ov106_02297658() {
 
 void Unk_ov106_02298180::func_ov106_02297600() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(3);
-        func_020021a0(4);
+        Gfx2d_ResetLayer(3);
+        Gfx2d_ResetLayer(4);
         func_ov106_02294dfc(0x80);
         if (func_ov106_02294e1c(0x8000)) {
             func_ov002_02200a60(5);
@@ -993,10 +993,10 @@ void Unk_ov106_02298180::func_ov106_022973dc() {
 }
 
 extern "C" void func_ov106_022973a8() {
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
-    func_02002398(4, 1);
-    func_0200226c(4, 0, 0, 0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 1);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
 }
 
 void Unk_ov106_02298180::func_ov106_02297394() {
@@ -1005,9 +1005,9 @@ void Unk_ov106_02298180::func_ov106_02297394() {
 
 void Unk_ov106_02298180::func_ov106_02297340() {
     s32 h = gCurrentHeap;
-    func_020026c4("menu/inventory/b_itm_post.bpl", h, 4, 4, 4, 4);
-    func_02002654("menu/inventory/b_itm_bg_ltr2.bsc", h, 4);
-    func_0200261c("menu/inventory/b_itm_post.bch", h, 4, 0x1e2, 0x1e2, 0x227);
+    Gfx2d_LoadPaletteFile("menu/inventory/b_itm_post.bpl", h, 4, 4, 4, 4);
+    Gfx2d_LoadScreenFile("menu/inventory/b_itm_bg_ltr2.bsc", h, 4);
+    Gfx2d_LoadCharFile("menu/inventory/b_itm_post.bch", h, 4, 0x1e2, 0x1e2, 0x227);
 }
 
 void Unk_ov106_02298180::func_ov106_02297314() {
@@ -1798,7 +1798,7 @@ void Unk_ov106_02298180::func_ov106_02295e74() {
 }
 
 void Unk_ov106_02298180::func_ov106_02295e68() {
-    ((Unk_020e45f8 *)unk_c0)->func_020b87d0();
+    ((BgVramTask *)unk_c0)->cancel();
 }
 
 BOOL Unk_ov106_02298180::func_ov106_02295e58(u32 v) {

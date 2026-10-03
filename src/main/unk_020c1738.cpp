@@ -26,7 +26,7 @@ void func_020e7518(void *p);
 u32 Random_Next(void *p);
 u32 func_02063b8c(u32 n);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_0204edd8(void *a, void *b);
+void FieldPos_SnapToUnitCenter(void *a, void *b);
 s32 func_02077f40(void *v, s32 a);
 void _ZN16ActorTalkRequest13func_02015818Ejj(void *self, s32 a, s32 b);
 void *PlayerData_GetCurrent(void);
@@ -179,7 +179,7 @@ public:
         u8 unk_00[size]; \
         name(); \
     }
-MEMBER(Unk_020dbd74, 0x2a0 - 0xec);
+MEMBER(ThreeLayerAnimModel, 0x2a0 - 0xec);
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
 MEMBER(Unk_02016350, 0x1c);
@@ -257,7 +257,7 @@ struct Character : Actor {
 
 struct Unk_020d77a4 : Character {
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -761,7 +761,7 @@ BOOL SpNpcMissing2::findRandomWalkTarget(s32 *px, s32 *pz) {
         v.x = m + unk_5c;
         m = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
         v.z = m + unk_64;
-        func_0204edd8(&v, &v);
+        FieldPos_SnapToUnitCenter(&v, &v);
         if (func_02077f40(&v, 0)) {
             *ppx = v.x;
             *ppz = v.z;

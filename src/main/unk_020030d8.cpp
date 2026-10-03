@@ -20,8 +20,8 @@ void func_020118d4(u32 a);
 void func_020118e4(u32 v);
 BOOL func_0206edb0();
 s32 func_0206edbc();
-s32 func_020eaf18();
-s32 func_020eb0cc();
+s32 Net_GetMode();
+s32 Net_GetLinkLevel();
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 }
 
@@ -212,7 +212,7 @@ void Unk_02003574::func_02003738() {}
 
 void Unk_02003574::func_020036ec() {
     if (func_02003670()) {
-        s32 v = func_020eb0cc();
+        s32 v = Net_GetLinkLevel();
         if (v == 1) {
             unk_00 = 2;
         } else if (v == 2) {
@@ -236,8 +236,8 @@ void Unk_02003574::func_020036a4() {
 
 BOOL Unk_02003574::func_02003670() {
     BOOL r = FALSE;
-    if (func_020eaf18() != 0) {
-        s32 v = func_020eaf18();
+    if (Net_GetMode() != 0) {
+        s32 v = Net_GetMode();
         if (v != 6) {
             r = TRUE;
         }
@@ -250,7 +250,7 @@ BOOL Unk_02003574::func_02003670() {
 
 BOOL Unk_02003574::func_02003648() {
     BOOL b;
-    switch (func_020eaf18()) {
+    switch (Net_GetMode()) {
     case 3:
     case 4:
         b = TRUE;

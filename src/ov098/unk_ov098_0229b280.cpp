@@ -15,13 +15,13 @@ s32 func_0204341c(s32 a, void *b, s32 c, s32 d, s32 e);
 s32 func_02042c9c(s32 a, s32 b, s32 c);
 s32 func_02042d10(s32 a);
 void func_02042820(s32 a);
-void func_0204ed8c(void *out, s32 x, s32 z);
-void func_0204ee10(s32 *x, s32 *z, void *p);
-void *func_0204da0c();
-u16 *func_0204ebd8(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
-u32 func_0204ec50(void *grid, s32 x, s32 z);
+void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
+void FieldPos_ToUnit(s32 *x, s32 *z, void *p);
+void *TownBlockMap_Get();
+u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
+u32 BlockMap_GetBlockAttr(void *grid, s32 x, s32 z);
 BOOL func_02030d78(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void func_02076a6c(void *out, s32 a, s32 b);
+void NetBuf_PackPair20(void *out, s32 a, s32 b);
 u32 func_02063b8c(u32 a);
 void *Heap_AllocTail(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
@@ -30,7 +30,7 @@ void *func_0208f158(void *p);
 void func_02065e70(void *a, void *b);
 
 extern void *data_021c6210;
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 extern u8 data_021e7f8c[];
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
@@ -38,30 +38,30 @@ extern u16 gPad[];
 extern "C" s16 data_ov098_0229bd00[16] = {0, 0x1800, -0x1800, 0};
 
 // other overlays
-BOOL func_ov003_022120e4();
-BOOL func_ov003_0221264c();
-BOOL func_ov003_0221211c();
+BOOL PlayerActor_ConfirmReleaseCreature();
+BOOL PlayerActor_IsLocalReleaseWaiting();
+BOOL PlayerActor_LocalRequestReleaseCreature();
 BOOL func_ov003_02224d14(void *p);
 void func_ov003_02224d58(void *p, void *q);
-void func_ov003_0221220c();
+void PlayerActor_LocalRequestAct89();
 BOOL func_ov003_02227434(void *p);
 void func_ov003_02227248(u32 a, void *p);
 void func_ov003_0222746c(void *p, s32 a);
-void func_ov003_02212504(s32 a);
+void PlayerActor_LocalReleaseCatch(s32 a);
 BOOL func_ov003_022201bc(void *p, s32 a, void *q);
-BOOL func_ov003_0221255c(void *a, void *b);
+BOOL PlayerActor_LocalRequestBuryItem(void *a, void *b);
 BOOL func_ov002_02201700(u8 *p, u32 a, u32 b);
 }
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 pad_00[0x64];
     s32 unk_64;
-    BOOL func_02072e44();
-    void func_020728d4();
-    void func_020728a4(u8 *buf, u32 n);
-    void func_02072824(u32 cmd, u32 arg);
+    BOOL isOnline();
+    void beginRecord();
+    void writeRecord(u8 *buf, u32 n);
+    void endRecord(u32 cmd, u32 arg);
 };
-extern "C" Unk_020cbb18 *data_020cbb18;
+extern "C" CommManager *gCommManager;
 
 class Unk_ov096_0229aea8;
 extern "C" {
@@ -288,7 +288,7 @@ void Unk_ov096_0229aea8::func_ov098_0229bb5c(u16 v) {
 
 void Unk_ov096_0229aea8::func_ov098_0229bb18() {
     func_ov096_02294d9c(8);
-    if (!data_020cbb18->func_02072e44()) {
+    if (!gCommManager->isOnline()) {
         if (func_ov098_0229ba78(1)) {
             func_ov002_02201700(unk_27f0, 0x11, 0x19);
             func_ov096_02294dac(8);
@@ -302,7 +302,7 @@ BOOL Unk_ov096_0229aea8::func_ov098_0229ba78(s32 flag) {
     u8 *q;
     q = p + 0x5c;
     base = 0xa00;
-    u32 f = func_0204ec50(data_021c47c4, *(s32 *)(p + 0x5c) >> 17, *(s32 *)(q + 8) >> 17);
+    u32 f = BlockMap_GetBlockAttr(gSceneBlockMap, *(s32 *)(p + 0x5c) >> 17, *(s32 *)(q + 8) >> 17);
     if (flag) {
         if ((f & 0x7f000) == 0 && (f & 8) == 0) {
             return FALSE;
@@ -345,22 +345,22 @@ void Unk_ov096_0229aea8::func_ov098_0229b9e4() {
             r1 = -1;
         }
         func_ov098_0229b96c((u8)r1);
-        func_ov003_02212504(1);
+        PlayerActor_LocalReleaseCatch(1);
         func_ov096_02298320(this);
     }
 }
 
 void Unk_ov096_0229aea8::func_ov098_0229b978(u8 a, u8 b) {
-    if (data_020cbb18->func_02072e44()) {
+    if (gCommManager->isOnline()) {
         u8 pkt[12];
         pkt[0] = b;
         pkt[1] = a;
-        func_02076a6c(&pkt[7], unk_2b84, unk_2b8c);
+        NetBuf_PackPair20(&pkt[7], unk_2b84, unk_2b8c);
         MI_CpuCopy8(&pkt[7], &pkt[2], 5);
-        Unk_020cbb18 *g = data_020cbb18;
-        g->func_020728d4();
-        g->func_020728a4(pkt, 7);
-        g->func_02072824(0x16, 4);
+        CommManager *g = gCommManager;
+        g->beginRecord();
+        g->writeRecord(pkt, 7);
+        g->endRecord(0x16, 4);
     }
 }
 
@@ -391,22 +391,22 @@ void Unk_ov096_0229aea8::func_ov098_0229b8ac() {
         x += *(s16 *)(func_02095204(4) + 0x8e);
         func_ov003_02227248((u8)r5, r7);
         func_ov003_0222746c(r7, x);
-        func_ov003_02212504(0);
+        PlayerActor_LocalReleaseCatch(0);
         func_ov098_0229b864((u8)r5, t);
         func_ov096_02298320(this);
     }
 }
 
 void Unk_ov096_0229aea8::func_ov098_0229b864(u8 a, u32 b) {
-    if (data_020cbb18->func_02072e44()) {
+    if (gCommManager->isOnline()) {
         u8 buf[3];
         buf[0] = 1;
         buf[1] = a;
         buf[2] = b;
-        Unk_020cbb18 *g = data_020cbb18;
-        g->func_020728d4();
-        g->func_020728a4(buf, 3);
-        g->func_02072824(0x16, 4);
+        CommManager *g = gCommManager;
+        g->beginRecord();
+        g->writeRecord(buf, 3);
+        g->endRecord(0x16, 4);
     }
 }
 
@@ -437,8 +437,8 @@ BOOL Unk_ov096_0229aea8::func_ov098_0229b6b4() {
     }
     u8 *q = func_02095204(4);
     s32 px = 0, py = 0;
-    void *grid = func_0204da0c();
-    func_0204ee10(&px, &py, q + 0x5c);
+    void *grid = TownBlockMap_Get();
+    FieldPos_ToUnit(&px, &py, q + 0x5c);
     s32 zero1 = 0, zero2 = 0;
     s16 base = *(s16 *)(q + 0x8e);
     for (s32 i = 0; i < 3; i++) {
@@ -447,7 +447,7 @@ BOOL Unk_ov096_0229aea8::func_ov098_0229b6b4() {
         s32 y = py + p[1];
         s32 hx = x >> 4;
         s32 hy = y >> 4;
-        u16 *c = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), zero1);
+        u16 *c = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), zero1);
         if (c) {
             BOOL ok = zero2;
             if (*c >= 0xfc && *c <= 0xfd) {
@@ -472,7 +472,7 @@ void Unk_ov096_0229aea8::func_ov098_0229b624() {
         s32 pair[2];
         pair[0] = unk_2b90;
         pair[1] = unk_2b94;
-        unk_c4 = func_0204341c(data_020cbb18->unk_64, pair, 2, 0, a);
+        unk_c4 = func_0204341c(gCommManager->unk_64, pair, 2, 0, a);
         if (unk_c4 == -1) {
             func_ov096_0229865c(this);
             func_ov096_02298334(this, 0xd, 0xff, 1);
@@ -500,9 +500,9 @@ void Unk_ov096_0229aea8::func_ov098_0229b5d4() {
 void Unk_ov096_0229aea8::func_ov098_0229b580() {
     u16 v;
     s32 out[3];
-    func_0204ed8c(out, unk_2b90, unk_2b94);
+    FieldPos_FromUnitCenter(out, unk_2b90, unk_2b94);
     v = func_ov096_02297b9c(this, unk_b6);
-    if (func_ov003_0221255c(out, &v)) {
+    if (PlayerActor_LocalRequestBuryItem(out, &v)) {
         func_ov096_0229806c(this, unk_b6);
         func_ov002_02200a58(0x2f);
     }
@@ -514,13 +514,13 @@ void Unk_ov096_0229aea8::func_ov098_0229b4c4() {
         s32 pair[2];
         pair[0] = unk_2b90;
         pair[1] = unk_2b94;
-        unk_c4 = func_0204341c(data_020cbb18->unk_64, pair, 2, 0, a);
+        unk_c4 = func_0204341c(gCommManager->unk_64, pair, 2, 0, a);
         if (unk_c4 != -1) {
             func_ov002_02200a58(0x2d);
             return;
         }
     }
-    unk_c4 = func_02042c9c(data_020cbb18->unk_64, 0x18, a);
+    unk_c4 = func_02042c9c(gCommManager->unk_64, 0x18, a);
     if (unk_c4 == -1) {
         func_ov096_0229865c(this);
         func_ov096_02298334(this, 8, 0xff, 0);
@@ -533,7 +533,7 @@ void Unk_ov096_0229aea8::func_ov098_0229b4c4() {
 
 void Unk_ov096_0229aea8::func_ov098_0229b488() {
     func_ov098_0229b3ac();
-    func_ov003_0221220c();
+    PlayerActor_LocalRequestAct89();
     func_ov003_02224d58(&unk_2b84, func_ov096_0229567c(this));
     func_ov096_0229803c(this, unk_b6);
     func_ov002_02200a58(0x33);
@@ -554,8 +554,8 @@ void Unk_ov096_0229aea8::func_ov098_0229b44c() {
 void Unk_ov096_0229aea8::func_ov098_0229b3ac() {
     func_ov098_0229b978(0, 5);
     s32 p = func_ov096_02297b14(this, unk_b6);
-    Unk_020cbb18 *g = data_020cbb18;
-    if (!g->func_02072e44() || g->unk_64 == 0) {
+    CommManager *g = gCommManager;
+    if (!g->isOnline() || g->unk_64 == 0) {
         u8 *const d = data_021e7f8c;
         func_02065e70(func_0208f158(d), (void *)p);
         ((Unk_0208f238 *)d)->func_0208f168();
@@ -565,10 +565,10 @@ void Unk_ov096_0229aea8::func_ov098_0229b3ac() {
         u8 *buf = (u8 *)Heap_AllocTail(heap, 0xf5);
         buf[0] = 6;
         MI_CpuCopy8((void *)p, buf + 1, 0xf4);
-        Unk_020cbb18 *g2 = data_020cbb18;
-        g2->func_020728d4();
-        g2->func_020728a4(buf, 0xf5);
-        g2->func_02072824(0x16, 0);
+        CommManager *g2 = gCommManager;
+        g2->beginRecord();
+        g2->writeRecord(buf, 0xf5);
+        g2->endRecord(0x16, 0);
         Heap_Free(heap, buf);
     }
 }
@@ -581,13 +581,13 @@ void Unk_ov096_0229aea8::func_ov098_0229b390() {
 
 void Unk_ov096_0229aea8::func_ov098_0229b36c() {
     func_ov096_02297b9c(this, unk_b6);
-    if (func_ov003_0221211c()) {
+    if (PlayerActor_LocalRequestReleaseCreature()) {
         func_ov002_02200a58(0x36);
     }
 }
 
 void Unk_ov096_0229aea8::func_ov098_0229b344() {
-    if (func_ov003_0221264c()) {
+    if (PlayerActor_IsLocalReleaseWaiting()) {
         func_ov002_02200a58(0x37);
         unk_27fc.func_ov002_022040ec();
     }
@@ -603,7 +603,7 @@ void Unk_ov096_0229aea8::func_ov098_0229b2d8() {
 
 void Unk_ov096_0229aea8::func_ov098_0229b2b0() {
     unk_27fc.func_ov002_022040d4();
-    if (func_ov003_022120e4()) {
+    if (PlayerActor_ConfirmReleaseCreature()) {
         func_ov002_02200a58(0x39);
     }
 }

@@ -3,17 +3,17 @@
 
 extern "C" {
 u32 func_020b50d0(u32);
-void func_0209d498(void *);
-void func_0209d164(void *, u32);
-s32 func_0209cd00(void *, void *);
+void Clock_GetDateTime(void *);
+void DateTime_SubDays(void *, u32);
+s32 Date_DaysBetween(void *, void *);
 s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
-void *func_0204da0c();
-void func_0204eb30(void *, void *, u32, u32, u32);
-void *func_02037558(void *, u32, u32, u32);
+void *TownBlockMap_Get();
+void BlockMap_SetItemAtUnit(void *, void *, u32, u32, u32);
+void *MapBlock_GetItemPtr(void *, u32, u32, u32);
 BOOL Item_IsSnowman(void *);
 u32 Item_GetSnowmanIndex(void *);
-void func_0204edf8(u32 *, u32 *, u32, u32, u32, u32);
+void FieldUnit_FromBlockUnit(u32 *, u32 *, u32, u32, u32, u32);
 }
 
 struct Bits;
@@ -176,8 +176,8 @@ Unk_020b4948 *func_020b4934();
 u32 func_020b50e8();
 BOOL func_020b52ac();
 BOOL func_020b5184();
-BOOL _ZN12Unk_020cbb1813func_020729bcEj(void *, ...);
-void _ZN12Unk_020cbb1813func_02072e88Ei(void *, u32);
+BOOL _ZN11CommManager11isLocalSlotEj(void *, ...);
+void _ZN11CommManager12isSlotActiveEi(void *, u32);
 s32 PlayerSession_GetDataIndex(u32);
 BOOL func_020978c8(void *, s32);
 u32 PlayerSession_FindFreeGfxSlot();
@@ -190,7 +190,7 @@ struct Data020cbb18 {
     u8 pad[0x64];
     u32 unk_64;
 };
-extern Data020cbb18 *data_020cbb18;
+extern Data020cbb18 *gCommManager;
 extern u8 data_021d735c[];
 }
 
@@ -220,7 +220,7 @@ BOOL Unk_020afd04::func_020afd04(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot_, u32 *
     if (mode) {
         s32 idx = PlayerSession_GetDataIndex(i);
         if (idx < 4 && func_020978c8(data_021d735c, PlayerSession_GetDataIndex(i))) {
-            if (!_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, i) || func_020b4948(func_020b4934())) {
+            if (!_ZN11CommManager11isLocalSlotEj(gCommManager, i) || func_020b4948(func_020b4934())) {
                 (this + idx)->get(pos, rot_, out);
             } else {
                 Vec3 *v = func_020b4964(func_020b4934());
@@ -236,7 +236,7 @@ BOOL Unk_020afd04::func_020afd04(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot_, u32 *
             return TRUE;
         }
     } else {
-        if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18)) {
+        if (_ZN11CommManager11isLocalSlotEj(gCommManager)) {
             if (func_020b4948(func_020b4934())) {
                 get(pos, rot_, out);
             } else {
@@ -272,7 +272,7 @@ BOOL Unk_020afbb8::func_020afc48(u8 *idx, u32 lo, u32 hi) {
     Unk_020afd04 *items = (Unk_020afd04 *)ptr;
     if (items != NULL && func_020b50e8() != 0xd && func_020b50e8() != 0xe && func_020b50e8() != 0x2f) {
         if (func_020b52ac()) {
-            _ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64);
+            _ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64);
             for (u32 i = 0; i < 4; i++) {
                 Vec3s rot;
                 u32 v;
@@ -417,9 +417,9 @@ void Unk_020af85c::func_020af96c(u32 x, u32 y, u32 z) {
     DateTmp d;
     ((u32 *)&d)[0] = 0;
     ((u32 *)&d)[1] = 0;
-    func_0209d498(&d);
+    Clock_GetDateTime(&d);
     if (d.b2 < 6) {
-        func_0209d164(&d, 1);
+        DateTime_SubDays(&d, 1);
     }
     a0 = d.b5;
     a1 = d.b4;
@@ -471,9 +471,9 @@ s32 Unk_020af85c::func_020af85c() {
     ((u32 *)&d)[1] = 0;
     u8 e[4];
     u8 f[4];
-    func_0209d498(&d);
+    Clock_GetDateTime(&d);
     if (d.b2 < 6) {
-        func_0209d164(&d, 1);
+        DateTime_SubDays(&d, 1);
     }
     e[2] = d.b5;
     e[1] = d.b4;
@@ -481,7 +481,7 @@ s32 Unk_020af85c::func_020af85c() {
     f[2] = a0;
     f[1] = a1;
     f[0] = a2;
-    return func_0209cd00(e, f);
+    return Date_DaysBetween(e, f);
 }
 
 Unk_020af53c::Unk_020af53c() {}
@@ -490,7 +490,7 @@ Unk_020af53c::~Unk_020af53c() {}
 
 extern "C" BOOL func_020af768(u32 *a, u32 *b, u32 idx) {
     Cell *cell;
-    Grid *g = (Grid *)func_0204da0c();
+    Grid *g = (Grid *)TownBlockMap_Get();
     for (s32 y = 1; y <= 4; y++) {
         for (s32 x = 1; x <= 4; x++) {
             if ((u32)x < g->w && (u32)y < g->h && g->cells != NULL) {
@@ -501,9 +501,9 @@ extern "C" BOOL func_020af768(u32 *a, u32 *b, u32 idx) {
             if (cell != NULL) {
                 for (s32 j = 0; j < 16; j++) {
                     for (s32 i = 0; i < 16; i++) {
-                        void *o = func_02037558(cell, i, j, 0);
+                        void *o = MapBlock_GetItemPtr(cell, i, j, 0);
                         if (o != NULL && Item_IsSnowman(o) && idx == Item_GetSnowmanIndex(o)) {
-                            func_0204edf8(a, b, x, y, i, j);
+                            FieldUnit_FromBlockUnit(a, b, x, y, i, j);
                             return TRUE;
                         }
                     }
@@ -517,9 +517,9 @@ extern "C" BOOL func_020af768(u32 *a, u32 *b, u32 idx) {
 extern "C" BOOL func_020af72c(u32 idx) {
     u32 a, b;
     if (func_020af768(&a, &b, idx)) {
-        void *p = func_0204da0c();
+        void *p = TownBlockMap_Get();
         u16 h = 0xfff1;
-        func_0204eb30(p, &h, a, b, 0);
+        BlockMap_SetItemAtUnit(p, &h, a, b, 0);
         return TRUE;
     } else {
         return TRUE;

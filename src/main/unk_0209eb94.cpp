@@ -20,7 +20,7 @@ public:
     /* 0x08 */ u32 unk_08;
 };
 
-struct Unk_020cbb18 {
+struct CommManager {
     /* 0x00 */ u8 unk_00[4];
     /* 0x04 */ u16 unk_04;
     /* 0x06 */ u8 unk_06;
@@ -32,18 +32,18 @@ struct Unk_020cbb18 {
     /* 0x68 */ s32 unk_68;
     /* 0x6c */ u8 unk_6c;
 
-    void func_02072368(u32 v);
-    void func_02072824(u32 a, u32 b);
-    void func_020728a4(u8 *src, u32 n);
-    void func_020728d4();
-    void func_020729a8(u32 v);
-    BOOL func_020729cc(u32 v);
-    BOOL func_02072d44(s32 v);
-    u8 func_02072e24();
-    void func_02072e28(u32 v);
-    BOOL func_02072e44();
-    u32 func_02072e88(s32 i);
-    void func_02072e94(s32 i, u32 v);
+    void setErrorMode(u32 v);
+    void endRecord(u32 a, u32 b);
+    void writeRecord(u8 *src, u32 n);
+    void beginRecord();
+    void setMemberCount(u32 v);
+    BOOL isMyAid(u32 v);
+    BOOL getAckCount(s32 v);
+    u8 getMode();
+    void setMode(u32 v);
+    BOOL isOnline();
+    u32 isSlotActive(s32 i);
+    void setSlotActive(s32 i, u32 v);
 };
 
 class MsgRequest {
@@ -150,17 +150,17 @@ public:
     void func_020a15f8();
     void func_020a1614();
     void func_020a1648();
-    void func_020a167c();
-    void func_020a1950();
-    void func_020a1974();
-    void func_020a3b7c();
-    void func_020a3b9c();
-    void func_020a3c84();
-    void func_020a3cc4();
-    void func_020a3dac();
-    void func_020a3dec();
-    void func_020a3eb8();
-    void func_020a3ebc(s32 idx);
+    void execAct1F();
+    void enterAct1F();
+    void execAct1E();
+    void enterAct03();
+    void execAct02();
+    void enterAct02();
+    void execAct01();
+    void enterAct01();
+    void execAct00();
+    void enterAct00();
+    void setState(s32 idx);
 
     /* 0x50 */ s32 unk_50;
     /* 0x54 */ Unk_020e2824 unk_54;
@@ -230,8 +230,8 @@ extern "C" void _ZN11SaveRecord413func_0209eb8cEv(void *p);
 namespace NA {
 extern "C" {
 extern u8 data_021ed3ac[];
-extern u8 data_021ed3a0;
-extern u8 data_021ed448[];
+extern u8 sAxBbsReceived;
+extern u8 sAxBbsBuf[];
 void MI_CpuCopy8(void *src, void *dst, s32 n);
 void func_0203ec54(void *p);
 void *func_0203ec4c(void *p);
@@ -290,22 +290,22 @@ struct Unk_0209f304 {
 
 namespace NB {
 extern "C" {
-extern u8 data_021ed394;
-extern u8 data_021ed51c[];
-extern u8 data_021ed39c;
-extern u8 data_021ed824[];
+extern u8 sAxMailReceived;
+extern u8 sAxMailBuf[];
+extern u8 sGameStatsReceived;
+extern u8 sGameStatsBuf[];
 extern u8 data_021eca50[];
-extern u8 data_021ed3a0;
-extern char *data_020e24fc;
-extern char *data_020e24f4;
-extern char *data_020e2500;
-extern u32 data_020e24f8;
-extern u8 data_021ed448[];
+extern u8 sAxBbsReceived;
+extern char *sAxMailBaseUrl;
+extern char *sAxBbsFileName;
+extern char *sAxMailFileName;
+extern u32 sNetRegion;
+extern u8 sAxBbsBuf[];
 extern u8 gSaveData[];
 extern u8 gOverlayHandle[];
 extern u8 data_021ed390;
 extern u8 data_021ed3a4;
-extern u8 *data_020cbb18;
+extern u8 *gCommManager;
 extern u8 data_021ed32c[];
 extern u32 OVERLAY_68_ID[];
 extern u32 OVERLAY_65_ID[];
@@ -326,24 +326,24 @@ s32 _ZN12Unk_0208722413func_02087224Ev(void *p);
 s32 Save_CalcChecksum(void *p, u32 n, s32 v);
 s32 _ZN12Unk_0208722413func_02087280Ev(void *p);
 void _ZN12Unk_0208722413func_020872c8Ev(void *p);
-s32 _Z13func_020721b4v(void);
-s32 func_020ea01c(s32 a);
-s32 func_020e9da0(s32 a);
+s32 _Z21NetOverlay_AssertWifiv(void);
+s32 Net_IsUploadDone(s32 a);
+s32 Net_IsDownloadDone(s32 a);
 s32 _ZN8SaveData8testFlagEj(void *p, u32 n);
 char *func_0212a360(char *dst, const char *src);
 char *func_0212a2bc(char *dst, const char *src);
-void func_020e9b00(char *p);
-s32 func_020e9e38(char *a, void *b, u32 c, u32 d);
-s32 func_020e9eb8(void *a, void *b, u32 c, u32 d);
-s32 func_020ea0b4(void *a, void *b, u32 c, u32 d);
-s32 func_020eaf18(void);
-s32 func_02073a78(void);
+void Net_GetBrid(char *p);
+s32 Net_HttpDownload(char *a, void *b, u32 c, u32 d);
+s32 Net_GameStatsDownload(void *a, void *b, u32 c, u32 d);
+s32 Net_GameStatsUpload(void *a, void *b, u32 c, u32 d);
+s32 Net_GetMode(void);
+s32 Comm_End(void);
 s32 PlayerData_GetCurrent(void);
 s32 _ZN10PlayerData8getIndexEv(s32 h);
-void func_0209ed74(void);
-void func_0209ecf8(void);
-void func_0209ec80(void);
-void func_0209f248(void);
+void GameStats_ApplyDownload(void);
+void AxMail_ApplyMail(void);
+void AxMail_ApplyBbs(void);
+void Wifi_StoreFriendList(void);
 s32 Save_WritePlayerFriendList(void);
 s32 TalkWindow_Get(s32 a);
 void _ZN15TalkWindowState13func_02067990Ev(void);
@@ -362,30 +362,30 @@ void func_021162b0(void *a, void *b, u32 c);
 s32 func_021164ec(void *a, u32 b, void *c);
 void OverlayHandle_Unload(void *p);
 void OverlayHandle_Load(void *p, u32 v);
-s32 _ZN12Unk_020cbb1813func_020721f8Ev(void *p);
+s32 _ZN11CommManager17getWifiFriendListEv(void *p);
 s32 _ZN10PlayerData13getFriendListEv(void);
-u8 *func_02076db4(void);
-s32 func_02076cf0(u8 *p);
-u8 *func_02076e1c(s32 p);
+u8 *FriendList_GetEntries(void);
+s32 FriendEntry_GetFriendData(u8 *p);
+u8 *DwcFriendData_GetBytes(s32 p);
 void _ZN12Unk_020a099013func_020a0990EPKch(u32 a, void *b, u32 c);
 void _ZN12Unk_02097ff413func_02097ff4Ej(s32 a, u32 b);
 void _ZN12Unk_02097ff413func_0209801cEj(s32 a, u32 b);
 s32 Hud_GetCountdown(void);
 void _ZN12HudCountdown5startEii(s32 a, u32 b, u32 c);
-u32 _ZN12Unk_020cbb1813func_02072e24Ev(void *g);
-s32 func_02074a2c(void);
-s32 _ZN12Unk_020cbb1813func_02072e88Ei(void *g, s32 i);
-s32 _ZN12Unk_020cbb1813func_020729ccEj(void *g, s32 i);
+u32 _ZN11CommManager7getModeEv(void *g);
+s32 CommCtrl_SendAct10(void);
+s32 _ZN11CommManager12isSlotActiveEi(void *g, s32 i);
+s32 _ZN11CommManager7isMyAidEj(void *g, s32 i);
 s32 func_020a6358(s32 i);
 s32 func_020a62f8(s32 i);
-void _ZN12Unk_020cbb1813func_02072e20Ej(void *g, u32 v);
-s32 func_02074d78(void);
-s32 func_02073090(u32 a);
-void func_0207312c(void);
+void _ZN11CommManager14setPendingModeEj(void *g, u32 v);
+s32 CommCtrl_SendAct08(void);
+s32 Comm_IsConnectionLost(u32 a);
+void Comm_SetLostFlag(void);
 s32 _ZN11SaveManager13func_020a13c4Ev(void *p);
 s32 _ZN14SaveSlotWriter12loadSlotStepEi(void *p, u32 v);
 s32 _ZN14SaveSlotWriter12saveSlotStepEi(void *p, u32 v);
-s32 func_02074b58(u32 a, u32 b);
+s32 CommCtrl_SendAct0E(u32 a, u32 b);
 void func_020a0268(void *p);
 void _ZN11SaveManager13func_020a1494Ev(void *p);
 void func_020a14d8(void *p);
@@ -413,22 +413,22 @@ struct Unk_0209f898_Rec { u32 unk_00; u32 unk_04; };
 
 namespace NC {
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 extern u8 data_021ed32c;
 extern Unk_0209fb48_V3 data_020e2764;
 extern Unk_0209fb48_V3 data_020e2770;
-BOOL func_02073090(s32 a);
-void func_0207312c();
-u32 func_02073190();
+BOOL Comm_IsConnectionLost(s32 a);
+void Comm_SetLostFlag();
+u32 Comm_GetRemoteMask();
 void func_02073340();
-void _Z13func_020720f8v();
-BOOL func_020eaca0();
-BOOL func_020eaf90();
-s32 func_020eaf18();
-void func_020741b0();
-void func_020741a8();
-BOOL func_02074b58(s32 a, u32 b);
-BOOL func_020748fc();
+void _Z20NetOverlay_AssertAnyv();
+BOOL Net_IsReadyToSend();
+BOOL Net_GetMyAid();
+s32 Net_GetMode();
+void Comm_EnterCritical();
+void Comm_LeaveCritical();
+BOOL CommCtrl_SendAct0E(s32 a, u32 b);
+BOOL CommCtrl_SendAct13();
 s32 _ZN11SaveManager13func_020a13c4Ev(Unk_0209f638 *p);
 s32 _ZN14SaveSlotWriter12saveSlotStepEi(Unk_0209f638 *p, u32 v);
 void _ZN11SaveManager13func_020a1494Ev(Unk_0209f638 *p);
@@ -439,10 +439,10 @@ void *_ZN11SaveManager13func_020a1484Ej(Unk_0209f638 *p, s32 i);
 void _ZN11SaveRecord415markInterruptedEv(void *p);
 void _ZN11SaveRecord416setStateValidAltEv(void *p);
 void func_020873e0();
-void func_0209f000(Unk_0209f638 *p);
+void Wifi_EndSession(Unk_0209f638 *p);
 Unk_0209f898_Rec *TalkWindow_Get(s32 i);
 void OS_ResetSystem(s32 v);
-void func_02074eb4(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void CommSend_VillagerTransferReply(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void *func_0208f0b0(s32 a);
 BOOL _ZN12Unk_0208f23813func_0208f1c0Ev(void *a);
 void *_ZN12Unk_0208f23813func_0208f18cEv(void *a);
@@ -466,10 +466,10 @@ void *func_0209c37c(s32 a, s32 b);
 BOOL func_02063b8c(s32 a);
 void *_ZN10PlayerData15getWifiUserDataEv(void *a);
 void *_ZN10PlayerData13getFriendListEv(void *a);
-void *func_02076c7c(void *a);
-void *func_02076e1c(void *a);
-void *func_02076db4(void *a);
-void *func_02076cf0(void *a);
+void *PlayerWifiData_GetOwnFriendData(void *a);
+void *DwcFriendData_GetBytes(void *a);
+void *FriendList_GetEntries(void *a);
+void *FriendEntry_GetFriendData(void *a);
 BOOL func_020e9d88(void *a, void *b);
 void func_0209fef8(Unk_0209f638 *p, void *q);
 BOOL func_0209fc68(Unk_0209f638 *p, void *a, void *b);
@@ -533,7 +533,7 @@ public:
 
 namespace ND {
 extern "C" {
-extern Unk_020cbb18_ff4c *data_020cbb18;
+extern Unk_020cbb18_ff4c *gCommManager;
 extern Unk_021ed3b0 *gSaveManager;
 extern s32 data_021ed3bc;
 extern u8 data_021ed398;
@@ -549,8 +549,8 @@ extern u8 gBackup[];
 extern const u32 sSaveSlotOffsets[];
 extern u8 data_020e24ec;
 extern u8 data_020e252c[];
-BOOL _ZN12Unk_020cbb1813func_02072e88Ei(Unk_020cbb18_ff4c *, s32);
-void _ZN12Unk_020cbb1813func_020729a8Ej(Unk_020cbb18_ff4c *, u32);
+BOOL _ZN11CommManager12isSlotActiveEi(Unk_020cbb18_ff4c *, s32);
+void _ZN11CommManager14setMemberCountEj(Unk_020cbb18_ff4c *, u32);
 void func_0208f0b0(s32);
 void _ZN12Unk_0208f23813func_0208f18cEv();
 void _ZN12Unk_020872fc13func_02087368Ev();
@@ -559,26 +559,26 @@ s32 func_020a5ef8();
 void _ZN11SaveManager13func_020a147cEjh(void *, s32, s32);
 s32 func_02063b8c(s32);
 void func_02073340(void *);
-void func_0209f000(void *);
+void Wifi_EndSession(void *);
 void PlayerSession_ClearDataIndex(s32);
 void PlayerSession_SetDataIndex(s32, s32);
 s32 PlayerSession_GetDataIndex(s32);
 s32 PlayerData_Get(s32);
 void _ZN10PlayerData13func_02098a58Ev();
-void func_0209cfc8(s32);
+void Clock_Update(s32);
 void SaveData_Setup(void *, s32);
 void SaveData_Apply(void *);
-s32 func_0204da0c();
-void _ZN12Unk_0204da1813func_0204dab4Ev(s32);
-void _ZN12Unk_0204da1813func_0204da24Ev(s32);
-void func_0204c6a4(s32);
-void func_0204d42c();
-void func_0204d3d8();
-void func_02045e98();
-void func_020741b8(s32);
+s32 TownBlockMap_Get();
+void _ZN12TownBlockMap13updateAcreIdsEv(s32);
+void _ZN12TownBlockMap6bindBgEv(s32);
+void Town_ClearBorderTrees(s32);
+void HouseRoomMaps_UpdateAll();
+void HouseRoomMaps_BindBg();
+void Town_OnLoad();
+void Comm_ResetPeerState(s32);
 u8 *func_020952c8(s32);
 u16 *func_020952d8();
-void func_0209d498(void *);
+void Clock_GetDateTime(void *);
 void _ZN10PlayerData15setLastPlayDateE17Unk_0209865c_Bits(s32, Unk_020a0088_Date);
 void _ZN8SaveData5resetEv(void *);
 s32 func_020977a0(void *);
@@ -656,7 +656,7 @@ public:
 
 namespace NE {
 extern "C" {
-extern s32 data_021ed3c8;
+extern s32 sSaveManagerRequest;
 extern u8 gSaveData[];
 extern u8 gBackup[];
 extern s32 sSaveSlotSizes[];
@@ -719,7 +719,7 @@ extern "C" s32 MI_CpuCopy8(const void *src, void *dst, u32 size);
 
 namespace NF {
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 extern u8 gSaveData[];
 extern u8 data_021ed32c[];
 extern u8 gTalkMsgIndexEnd[];
@@ -729,24 +729,24 @@ u8 _ZN14SaveSlotWriter14verifySlotStepEi(SaveManager *self, u32 x);
 s32 _ZN14SaveSlotWriter12saveSlotStepEi(SaveManager *self, u32 x);
 u32 Save_SlotStampsMatch(void);
 s32 func_020a0210(void);
-void _ZN11SaveManager13func_020a3ebcEi(void *p, s32 x);
+void _ZN11SaveManager8setStateEi(void *p, s32 x);
 void *TalkWindow_Get(u32 x);
 void _ZN15TalkWindowState11lockAdvanceEv(void *o);
 void _ZN15TalkWindowState14setNextMessageEPhPv(void *o, void *a, void *b);
 void _ZN15TalkWindowState13func_02067990Ev(void *o);
 s32 _ZN15TalkWindowState13unlockAdvanceEv(void *o);
 void _ZN15TalkWindowState13func_0206799cEv(void *o, u32 x);
-s32 func_02073090(s32 x);
-void func_0207312c(void);
-s32 func_02074894(void);
-s32 func_02074860(u8 *p);
-s32 func_02074828(u8 *p);
-s32 func_020747c0(void);
-s32 func_02074b58(u32 a, u32 b);
-u32 _Z13func_020720f8v(void);
-s32 func_020eaca0(u32 x);
-u32 func_020eaf28(void);
-s32 func_020eaf90(s32 x);
+s32 Comm_IsConnectionLost(s32 x);
+void Comm_SetLostFlag(void);
+s32 CommCtrl_SendAct14(void);
+s32 CommSend_PlayerDataToHost(u8 *p);
+s32 CommSend_LetterStorageToHost(u8 *p);
+s32 CommCtrl_SendAct17(void);
+s32 CommCtrl_SendAct0E(u32 a, u32 b);
+u32 _Z20NetOverlay_AssertAnyv(void);
+s32 Net_IsReadyToSend(u32 x);
+u32 Net_GetConnectedMask(void);
+s32 Net_GetMyAid(s32 x);
 HudWallet *Hud_GetWallet(void);
 void _ZN12Unk_0208f23813func_0208f174Ev(void *p);
 void *PlayerData_GetCurrent(void);
@@ -760,10 +760,10 @@ void _ZN8SaveData11resetPlayerEi(void *p, s32 x);
 void _ZN8SaveData7setFlagEj(void *p, u32 x);
 void _ZN11SaveRecord416setStateValidAltEv(void *p);
 void _ZN11SaveRecord415markInterruptedEv(void *p);
-u32 func_0209f000(void *p);
-void func_0209f1c4(void);
+u32 Wifi_EndSession(void *p);
+void NetOverlay_Restore(void);
 void func_0209f898(void *self, u8 *st, u32 a, u32 b, u32 c, u32 d);
-void func_02073348(void);
+void Comm_PrepareJoin(void);
 void func_0203ca94(void);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
@@ -788,16 +788,16 @@ public:
     u8 pad_ff[0x107 - 0xff];
     u8 unk_107;
 
-    void func_020a1c88();
-    void func_020a1cb8();
-    void func_020a1d74();
-    void func_020a1de4();
-    void func_020a1e04();
-    void func_020a1e14();
-    void func_020a20a4();
-    void func_020a20ac();
-    void func_020a2400();
-    void func_020a2408();
+    void enterAct1E();
+    void execAct1D();
+    void enterAct1D();
+    void execAct1C();
+    void enterAct1C();
+    void execAct1B();
+    void enterAct1B();
+    void execAct1A();
+    void enterAct1A();
+    void execAct19();
 };
 
 namespace NG {
@@ -806,17 +806,17 @@ extern u8 gSaveData[];
 extern u8 data_021d7352[];
 extern u8 data_021d735c[];
 extern u8 data_020e24ec;
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 s32 func_020a0210(Unk_020a1c88 *self);
-void _ZN11SaveManager13func_020a3ebcEi(Unk_020a1c88 *self, u32 s);
+void _ZN11SaveManager8setStateEi(Unk_020a1c88 *self, u32 s);
 BOOL _ZN11SaveManager13func_020a15c8Ej(Unk_020a1c88 *self, u32 a);
 void _ZN11SaveManager13func_020a15f8Ev(Unk_020a1c88 *self);
 BOOL _ZN11SaveManager13func_020a1470Ej(Unk_020a1c88 *self, s32 a);
 void _ZN11SaveManager13func_020a14acEv(Unk_020a1c88 *self);
 s32 _ZN11SaveManager13func_020a1484Ej(Unk_020a1c88 *self, u32 a);
-void func_020a0088(Unk_020a1c88 *self, u32 a, u32 b);
+void NetSession_ReturnToSolo(Unk_020a1c88 *self, u32 a, u32 b);
 void _ZN12Unk_020a099013func_020a0990EPKch(Unk_020a1c88 *self, void *a, u32 b);
-BOOL func_0209f000(Unk_020a1c88 *self);
+BOOL Wifi_EndSession(Unk_020a1c88 *self);
 void func_0209ff8c(Unk_020a1c88 *self);
 void func_0209fefc(Unk_020a1c88 *self);
 BOOL _ZN12Unk_0209f30413func_0209f344Ev(Unk_020a1c88 *self);
@@ -829,31 +829,31 @@ void func_0209f638(Unk_020a1c88 *self, u8 *s, u32 a, u32 b, u32 c, u32 d, u32 e,
 void func_0209f898(Unk_020a1c88 *self, u8 *s, u32 a, u32 b, u32 c, u32 d);
 BOOL _ZN8SaveData7isValidEv(void *p);
 TalkWindowState *TalkWindow_Get(u32 x);
-u32 func_020eb004();
+u32 Net_GetMemberCount();
 BOOL func_020e7500(void *p);
-BOOL func_020733bc();
-void func_02073bf8(s32 a, u32 b, u32 c);
-void func_020733b0();
+BOOL Comm_SendEmpty();
+void Comm_Start(s32 a, u32 b, u32 c);
+void Comm_SetRecvBuffersAsHost();
 void *func_02063964(void *p);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
-void _Z13func_0207217cv();
+void _Z25NetOverlay_AssertWirelessv();
 void func_020ea720(void *p, u32 n);
 u8 func_020977a0(void *p);
-void func_0209f204();
-BOOL func_02073090(s32 a);
-void func_0207312c();
-u32 func_02073190();
-u32 func_02073168();
+void NetOverlay_LoadWireless();
+BOOL Comm_IsConnectionLost(s32 a);
+void Comm_SetLostFlag();
+u32 Comm_GetRemoteMask();
+u32 Comm_GetMemberMask();
 BOOL func_0209f23c();
-void _Z13func_020720f8v();
-BOOL func_020eaca0();
-BOOL func_020eb650();
-BOOL func_020749cc();
-BOOL func_020748fc();
-BOOL func_02074960(u32 a);
-void func_020741b0();
-void func_020741a8();
-void func_0209f1c4();
+void _Z20NetOverlay_AssertAnyv();
+BOOL Net_IsReadyToSend();
+BOOL Net_PollConnected();
+BOOL CommCtrl_SendAct11();
+BOOL CommCtrl_SendAct13();
+BOOL CommCtrl_SendAct12(u32 a);
+void Comm_EnterCritical();
+void Comm_LeaveCritical();
+void NetOverlay_Restore();
 s32 func_020a5ef8();
 void func_020a5c94(u32 a);
 void func_020b8e80();
@@ -864,9 +864,9 @@ s32 func_0208f1dc(void *a);
 
 // ---- unk_020a25d8.cpp
 
-struct Unk_0204da18 {
-    void func_0204da24();
-    void func_0204dab4();
+struct TownBlockMap {
+    void bindBg();
+    void updateAcreIds();
 };
 
 struct Unk_020a25d8 {
@@ -898,7 +898,7 @@ struct Unk_020a2ecc_Reg {
 
 namespace NH {
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 extern u8 data_020e24ec;
 extern u8 data_021ed3a8;
 extern u8 data_021c3cb8;
@@ -907,10 +907,10 @@ extern void *gTownTransferBuf;
 extern u8 gSaveData[];
 extern Unk_020a2ecc_Reg data_021ed2d0;
 void func_0209f2d4(Unk_020a25d8 *p, s32 v);
-BOOL func_02073090(u32 v);
-void func_0207312c();
-u32 func_02073190();
-u32 func_02073168();
+BOOL Comm_IsConnectionLost(u32 v);
+void Comm_SetLostFlag();
+u32 Comm_GetRemoteMask();
+u32 Comm_GetMemberMask();
 BOOL _ZN11SaveManager13func_020a15c8Ej(Unk_020a25d8 *p, s32 v);
 void func_0209fffc(Unk_020a25d8 *p);
 void func_0209ff4c(Unk_020a25d8 *p);
@@ -925,62 +925,62 @@ void func_0208f1dc(void *p);
 void _ZN11SaveManager13func_020a14acEv(Unk_020a25d8 *p);
 void func_0209ec20(u32 v);
 void func_0209f638(Unk_020a25d8 *p, u8 *st, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g);
-BOOL func_02074960(u32 v);
-void func_02073e14(u32 v);
-void _Z13func_020720f8v();
-BOOL func_020eaca0();
-u32 func_020eb004();
+BOOL CommCtrl_SendAct12(u32 v);
+void Comm_RemoveMember(u32 v);
+void _Z20NetOverlay_AssertAnyv();
+BOOL Net_IsReadyToSend();
+u32 Net_GetMemberCount();
 void func_020b8e80();
-void func_02045e98();
+void Town_OnLoad();
 void func_0209f898(Unk_020a25d8 *p, u8 *st, u32 a, u32 b, u32 c, u32 d);
 void _ZN11SaveManager13func_020a15f8Ev(Unk_020a25d8 *p);
-void _ZN11SaveManager13func_020a3ebcEi(Unk_020a25d8 *p, s32 v);
+void _ZN11SaveManager8setStateEi(Unk_020a25d8 *p, s32 v);
 void _ZN12Unk_0209f30413func_0209f304EPhj(Unk_020a25d8 *p, u8 *st, u32 a);
 BOOL _ZN11SaveManager13func_020a1470Ej(Unk_020a25d8 *p, s32 v);
 void _ZN12Unk_0209f30413func_0209f430EPhjjhhhj(Unk_020a25d8 *p, u8 *st, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
-BOOL func_020749cc();
-void func_020a0088(Unk_020a25d8 *p, u32 a, u32 b);
-void func_0209f1c4();
+BOOL CommCtrl_SendAct11();
+void NetSession_ReturnToSolo(Unk_020a25d8 *p, u32 a, u32 b);
+void NetOverlay_Restore();
 void *PlayerData_GetCurrent();
 void _ZN12Unk_02097ff413func_0209801cEj(void *p, s32 v);
 void func_020a5ee8(s32 v);
 void func_020a63bc(u32 a, s32 b, u32 c, u32 d, u32 e);
-void func_020741b8(u32 v);
-BOOL func_02074e80(u8 *p, u32 v);
+void Comm_ResetPeerState(u32 v);
+BOOL CommSend_PlayerData(u8 *p, u32 v);
 BOOL func_020a5cec();
-BOOL func_02075170(u32 v);
-BOOL func_02076744(u32 v);
-BOOL func_02074df4(u32 v);
-BOOL func_02074e50(u8 *p, u32 v);
-BOOL func_02074a94(u32 v);
+BOOL CommSend_MemberInfo(u32 v);
+BOOL CommBlock_BuildPacket(u32 v);
+BOOL CommSend_BuiltPacket(u32 v);
+BOOL CommSend_SyncVarChunk(u8 *p, u32 v);
+BOOL CommSend_SlotStatusAll(u32 v);
 void _ZN18TownCompressThread5startEj(u32 a, s32 b);
 BOOL _ZN18TownCompressThread6isDoneEv(u32 a);
 void DC_FlushAll();
-BOOL func_02075078(u8 *p, u32 v);
-BOOL func_02074bc8(u32 v);
+BOOL CommSend_TownChunk(u8 *p, u32 v);
+BOOL CommSend_DateTime(u32 v);
 void func_0209ec60(u32 v);
 void func_02096b74();
 void func_020b013c();
 void func_0209ec0c();
-BOOL func_02074d18();
-BOOL func_02074ff0(u8 *p);
+BOOL CommCtrl_SendAct07();
+BOOL CommSend_VillagerTransfer(u8 *p);
 BOOL func_02097444(s32 v);
 BOOL func_020a03f0();
 void *func_02095204(u32 v);
 void ProcBase_RequestDelete();
-BOOL func_02074c4c();
-u32 func_020eaf90();
+BOOL CommSend_JoinReady();
+u32 Net_GetMyAid();
 u32 PlayerSession_GetDataIndex(u32 v);
 void *PlayerData_Get(u32 v);
 void PlayerSession_SetDataIndex(u32 a, u32 b);
-u32 func_0209cb9c(u32 *a, void *b);
-u32 func_0209cb74(u32 *a, void *b);
-Unk_0204da18 *func_0204da0c();
-void func_0204c6a4(Unk_0204da18 *p);
-void func_0204d42c();
-void func_0204d3d8();
+u32 ClockOffset_CalcMinutes(u32 *a, void *b);
+u32 ClockOffset_CalcSeconds(u32 *a, void *b);
+TownBlockMap *TownBlockMap_Get();
+void Town_ClearBorderTrees(TownBlockMap *p);
+void HouseRoomMaps_UpdateAll();
+void HouseRoomMaps_BindBg();
 void Melody_SetPacked(u8 *p);
-BOOL func_02074cb4(u32 v);
+BOOL CommSend_JoinDone(u32 v);
 BOOL func_ov048_0225b8a8();
 void *func_020b4934();
 void func_020b4bbc(void *p, u32 v);
@@ -1003,45 +1003,45 @@ public:
     u8 pad_9e[0x10a - 0x9e];
     u8 unk_10a;
 
-    void func_020a3238();
-    void func_020a324c();
-    void func_020a32e0();
-    void func_020a32fc();
-    void func_020a3390();
-    void func_020a3398();
-    void func_020a33c4();
-    void func_020a33c8();
-    void func_020a3408();
-    void func_020a340c();
-    void func_020a3478();
-    void func_020a347c();
-    void func_020a34e0();
-    void func_020a34e4();
-    void func_020a3514();
-    void func_020a3518();
-    void func_020a3584();
-    void func_020a3588();
-    void func_020a35b8();
-    void func_020a35bc();
-    void func_020a3614();
-    void func_020a3618();
-    void func_020a3670();
-    void func_020a3674();
-    void func_020a36a0();
-    void func_020a36a4();
-    void func_020a3768();
-    void func_020a3784();
-    void func_020a3868();
-    void func_020a38f4();
-    void func_020a39c8();
-    void func_020a39e4();
-    void func_020a3ac8();
-    void func_020a3ad0();
+    void enterAct14();
+    void execAct13();
+    void enterAct13();
+    void execAct12();
+    void enterAct12();
+    void execAct11();
+    void enterAct11();
+    void execAct10();
+    void enterAct10();
+    void execAct0F();
+    void enterAct0F();
+    void execAct0E();
+    void enterAct0E();
+    void execAct0D();
+    void enterAct0D();
+    void execAct0C();
+    void enterAct0C();
+    void execAct0B();
+    void enterAct0B();
+    void execAct0A();
+    void enterAct0A();
+    void execAct09();
+    void enterAct09();
+    void execAct08();
+    void enterAct08();
+    void execAct07();
+    void enterAct07();
+    void execAct06();
+    void enterAct06();
+    void execAct05();
+    void enterAct05();
+    void execAct04();
+    void enterAct04();
+    void execAct03();
 };
 
 namespace NI {
 extern "C" {
-extern u8 data_021c3cc0;
+extern u8 gScreenTransition;
 extern u8 gSaveData[];
 extern u8 data_021d735c[];
 extern u32 data_021ed3c4;
@@ -1053,7 +1053,7 @@ s32 _ZN14SaveSlotWriter12saveSlotStepEi(Unk_020a3238 *self, u32 n);
 s32 _ZN11SaveManager13func_020a15c8Ej(Unk_020a3238 *self, u32 n);
 void _ZN11SaveManager13func_020a15f8Ev(Unk_020a3238 *self);
 void _ZN11SaveManager13func_020a1648Ev(Unk_020a3238 *self);
-void _ZN11SaveManager13func_020a3ebcEi(Unk_020a3238 *self, u32 n);
+void _ZN11SaveManager8setStateEi(Unk_020a3238 *self, u32 n);
 void _ZN12Unk_020a099013func_020a0990EPKch(Unk_020a3238 *self, void *p, u32 n);
 s32 Save_InvalidateAll(Unk_020a3238 *self);
 s32 _ZN14SaveSlotWriter13eraseSlotStepEi(Unk_020a3238 *self, u32 n);
@@ -1061,8 +1061,8 @@ TalkWindowState *TalkWindow_Get(s32 i);
 s32 func_020b4934();
 void func_020b4bbc(s32 a, s32 b);
 s32 func_020b50e8();
-s32 func_0204da0c();
-void func_0204d5d8(s32 a, Unk_020a3238_Vec *v, s32 b, s32 c);
+s32 TownBlockMap_Get();
+void Town_FindTownHallFront(s32 a, Unk_020a3238_Vec *v, s32 b, s32 c);
 void func_020b4f18(s32 a, s32 b, Unk_020a3238_Vec *v, s32 c, s32 d, s32 e, s32 f);
 void func_020b4f58(s32 a, s32 b, s32 c, s32 d);
 s32 _ZN8SaveData8testFlagEj(void *p, s32 n);
@@ -1081,7 +1081,7 @@ void func_0209f2d4(void *p, s32 n);
 s32 func_020b013c();
 s32 PlayerData_GetCurrent(void *p);
 void _ZN12Unk_02097ff413func_02097ff4Ej(s32 a, s32 b);
-void func_0209cfe4();
+void Clock_Init();
 void func_0207ae84(void *p, s32 n);
 s32 func_0204198c();
 s32 func_02041960();
@@ -1106,23 +1106,23 @@ static inline BOOL Unk_020a3238_Is2(u8 v) {
 
 namespace NJ {
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
-extern u8 data_021c3cc0;
-extern s32 data_021ed3c8;
+extern CommManager *gCommManager;
+extern u8 gScreenTransition;
+extern s32 sSaveManagerRequest;
 extern void *gSaveManager;
 extern void *gTownTransferBuf;
 extern u8 data_021ed398;
 extern void *gCurrentHeap;
 extern u8 data_021dfd8c[];
 extern u8 data_021ed1a4[];
-extern Unk_020e27d4_Ent data_021ed624[];
+extern Unk_020e27d4_Ent sSaveManagerStates[];
 s32 func_020b50e8(void);
 void _ZN12Unk_020a099013func_020a0990EPKch(void *p, char *name, s32 id);
 s32 func_0203ca94(void);
 s32 _ZN11SaveManager13func_020a15c8Ej(void *p, s32 v);
 s32 func_02073340(void);
-BOOL func_0209f000(void *p);
-s32 func_0209f1c4(void);
+BOOL Wifi_EndSession(void *p);
+s32 NetOverlay_Restore(void);
 s32 _ZN11SaveManager13func_020a13c4Ev(void *p);
 s32 _ZN14SaveSlotWriter12saveSlotStepEi(void *p, u32 v);
 s32 _ZN11SaveManager13func_020a1648Ev(void *p);
@@ -1130,17 +1130,17 @@ s32 _ZN11SaveManager13func_020a15f8Ev(void *p);
 void *PlayerData_GetCurrent(void);
 s32 func_0206e7f8(void);
 s32 _ZN12Unk_02097ff413func_02097ff4Ej(void *p, s32 v);
-s32 func_0204c3c0(void *p);
+s32 TownState_ClampDate(void *p);
 s32 func_02079cc8(void *p);
 s32 Heap_Free(void *heap, void *p);
 void *Heap_Alloc(void *heap, u32 size);
 s32 _ZN18TownCompressThread4killEv(void);
-s32 func_0204da0c(void);
-s32 _ZN12Unk_0204da1813func_0204dab4Ev(s32 v);
-s32 _ZN12Unk_0204da1813func_0204da24Ev(s32 v);
-s32 func_0204c6a4(s32 v);
-s32 func_0204d42c(void);
-s32 func_0204d3d8(void);
+s32 TownBlockMap_Get(void);
+s32 _ZN12TownBlockMap13updateAcreIdsEv(s32 v);
+s32 _ZN12TownBlockMap6bindBgEv(s32 v);
+s32 Town_ClearBorderTrees(s32 v);
+s32 HouseRoomMaps_UpdateAll(void);
+s32 HouseRoomMaps_BindBg(void);
 void _ZN12Unk_020e282413func_020a1574Ej(void *p, void *q);
 s32 Save_ReadSlot(s32 v);
 void *SaveManager_GetLetterStorage(void);
@@ -1168,70 +1168,70 @@ extern char data_020e27a4[];
 extern "C" SaveManager *SaveManager_Create();
 namespace NT {
 extern "C" {
-void _ZN11SaveManager13func_020a3eb8Ev();
-void _ZN11SaveManager13func_020a3decEv();
-void _ZN11SaveManager13func_020a3dacEv();
-void _ZN11SaveManager13func_020a3cc4Ev();
-void _ZN11SaveManager13func_020a3c84Ev();
-void _ZN11SaveManager13func_020a3b9cEv();
-void _ZN11SaveManager13func_020a3b7cEv();
-void _ZN12Unk_020a323813func_020a3ad0Ev();
-void _ZN12Unk_020a323813func_020a3ac8Ev();
-void _ZN12Unk_020a323813func_020a39e4Ev();
-void _ZN12Unk_020a323813func_020a39c8Ev();
-void _ZN12Unk_020a323813func_020a38f4Ev();
-void _ZN12Unk_020a323813func_020a3868Ev();
-void _ZN12Unk_020a323813func_020a3784Ev();
-void _ZN12Unk_020a323813func_020a3768Ev();
-void _ZN12Unk_020a323813func_020a36a4Ev();
-void _ZN12Unk_020a323813func_020a36a0Ev();
-void _ZN12Unk_020a323813func_020a3674Ev();
-void _ZN12Unk_020a323813func_020a3670Ev();
-void _ZN12Unk_020a323813func_020a3618Ev();
-void _ZN12Unk_020a323813func_020a3614Ev();
-void _ZN12Unk_020a323813func_020a35bcEv();
-void _ZN12Unk_020a323813func_020a35b8Ev();
-void _ZN12Unk_020a323813func_020a3588Ev();
-void _ZN12Unk_020a323813func_020a3584Ev();
-void _ZN12Unk_020a323813func_020a3518Ev();
-void _ZN12Unk_020a323813func_020a3514Ev();
-void _ZN12Unk_020a323813func_020a34e4Ev();
-void _ZN12Unk_020a323813func_020a34e0Ev();
-void _ZN12Unk_020a323813func_020a347cEv();
-void _ZN12Unk_020a323813func_020a3478Ev();
-void _ZN12Unk_020a323813func_020a340cEv();
-void _ZN12Unk_020a323813func_020a3408Ev();
-void _ZN12Unk_020a323813func_020a33c8Ev();
-void _ZN12Unk_020a323813func_020a33c4Ev();
-void _ZN12Unk_020a323813func_020a3398Ev();
-void _ZN12Unk_020a323813func_020a3390Ev();
-void _ZN12Unk_020a323813func_020a32fcEv();
-void _ZN12Unk_020a323813func_020a32e0Ev();
-void _ZN12Unk_020a323813func_020a324cEv();
-void _ZN12Unk_020a323813func_020a3238Ev();
-void func_020a2ecc();
-void func_020a2e9c();
-void func_020a2be8();
-void func_020a2bdc();
-void func_020a2ae4();
-void func_020a2abc();
-void func_020a2908();
-void func_020a28fc();
-void func_020a25e4();
-void func_020a25d8();
-void _ZN12Unk_020a1c8813func_020a2408Ev();
-void _ZN12Unk_020a1c8813func_020a2400Ev();
-void _ZN12Unk_020a1c8813func_020a20acEv();
-void _ZN12Unk_020a1c8813func_020a20a4Ev();
-void _ZN12Unk_020a1c8813func_020a1e14Ev();
-void _ZN12Unk_020a1c8813func_020a1e04Ev();
-void _ZN12Unk_020a1c8813func_020a1de4Ev();
-void _ZN12Unk_020a1c8813func_020a1d74Ev();
-void _ZN12Unk_020a1c8813func_020a1cb8Ev();
-void _ZN12Unk_020a1c8813func_020a1c88Ev();
-void _ZN11SaveManager13func_020a1974Ev();
-void _ZN11SaveManager13func_020a1950Ev();
-void _ZN11SaveManager13func_020a167cEv();
+void _ZN11SaveManager10enterAct00Ev();
+void _ZN11SaveManager9execAct00Ev();
+void _ZN11SaveManager10enterAct01Ev();
+void _ZN11SaveManager9execAct01Ev();
+void _ZN11SaveManager10enterAct02Ev();
+void _ZN11SaveManager9execAct02Ev();
+void _ZN11SaveManager10enterAct03Ev();
+void _ZN12Unk_020a32389execAct03Ev();
+void _ZN12Unk_020a323810enterAct04Ev();
+void _ZN12Unk_020a32389execAct04Ev();
+void _ZN12Unk_020a323810enterAct05Ev();
+void _ZN12Unk_020a32389execAct05Ev();
+void _ZN12Unk_020a323810enterAct06Ev();
+void _ZN12Unk_020a32389execAct06Ev();
+void _ZN12Unk_020a323810enterAct07Ev();
+void _ZN12Unk_020a32389execAct07Ev();
+void _ZN12Unk_020a323810enterAct08Ev();
+void _ZN12Unk_020a32389execAct08Ev();
+void _ZN12Unk_020a323810enterAct09Ev();
+void _ZN12Unk_020a32389execAct09Ev();
+void _ZN12Unk_020a323810enterAct0AEv();
+void _ZN12Unk_020a32389execAct0AEv();
+void _ZN12Unk_020a323810enterAct0BEv();
+void _ZN12Unk_020a32389execAct0BEv();
+void _ZN12Unk_020a323810enterAct0CEv();
+void _ZN12Unk_020a32389execAct0CEv();
+void _ZN12Unk_020a323810enterAct0DEv();
+void _ZN12Unk_020a32389execAct0DEv();
+void _ZN12Unk_020a323810enterAct0EEv();
+void _ZN12Unk_020a32389execAct0EEv();
+void _ZN12Unk_020a323810enterAct0FEv();
+void _ZN12Unk_020a32389execAct0FEv();
+void _ZN12Unk_020a323810enterAct10Ev();
+void _ZN12Unk_020a32389execAct10Ev();
+void _ZN12Unk_020a323810enterAct11Ev();
+void _ZN12Unk_020a32389execAct11Ev();
+void _ZN12Unk_020a323810enterAct12Ev();
+void _ZN12Unk_020a32389execAct12Ev();
+void _ZN12Unk_020a323810enterAct13Ev();
+void _ZN12Unk_020a32389execAct13Ev();
+void _ZN12Unk_020a323810enterAct14Ev();
+void SaveManager_ExecAct14();
+void SaveManager_EnterAct15();
+void SaveManager_ExecAct15();
+void SaveManager_EnterAct16();
+void SaveManager_ExecAct16();
+void SaveManager_EnterAct17();
+void SaveManager_ExecAct17();
+void SaveManager_EnterAct18();
+void SaveManager_ExecAct18();
+void SaveManager_EnterAct19();
+void _ZN12Unk_020a1c889execAct19Ev();
+void _ZN12Unk_020a1c8810enterAct1AEv();
+void _ZN12Unk_020a1c889execAct1AEv();
+void _ZN12Unk_020a1c8810enterAct1BEv();
+void _ZN12Unk_020a1c889execAct1BEv();
+void _ZN12Unk_020a1c8810enterAct1CEv();
+void _ZN12Unk_020a1c889execAct1CEv();
+void _ZN12Unk_020a1c8810enterAct1DEv();
+void _ZN12Unk_020a1c889execAct1DEv();
+void _ZN12Unk_020a1c8810enterAct1EEv();
+void _ZN11SaveManager9execAct1EEv();
+void _ZN11SaveManager10enterAct1FEv();
+void _ZN11SaveManager9execAct1FEv();
 }
 }
 extern void *data_020e273c[2];
@@ -1305,16 +1305,16 @@ extern "C" SaveManager *SaveManager_Create() {
 
 BOOL SaveManager::vfunc_00() {
     if (NJ::func_020b50e8() == 6) {
-        if (NJ::func_0204da0c() != 0) {
-            NJ::_ZN12Unk_0204da1813func_0204dab4Ev(NJ::func_0204da0c());
-            NJ::_ZN12Unk_0204da1813func_0204da24Ev(NJ::func_0204da0c());
-            NJ::func_0204c6a4(NJ::func_0204da0c());
+        if (NJ::TownBlockMap_Get() != 0) {
+            NJ::_ZN12TownBlockMap13updateAcreIdsEv(NJ::TownBlockMap_Get());
+            NJ::_ZN12TownBlockMap6bindBgEv(NJ::TownBlockMap_Get());
+            NJ::Town_ClearBorderTrees(NJ::TownBlockMap_Get());
         }
-        NJ::func_0204d42c();
-        NJ::func_0204d3d8();
+        NJ::HouseRoomMaps_UpdateAll();
+        NJ::HouseRoomMaps_BindBg();
     }
     NJ::data_021ed398 = 0;
-    if (NJ::data_020cbb18->func_02072e44()) {
+    if (NJ::gCommManager->isOnline()) {
         if (NJ::func_020b50e8() == 0xb || NJ::func_020b50e8() == 9) {
             return FALSE;
         }
@@ -1341,12 +1341,12 @@ BOOL SaveManager::vfunc_00() {
         unk_b4 = NJ::Heap_Alloc(unk_a8, 0x15fe0);
         unk_bc = NJ::Heap_Alloc(unk_a8, 0x84c);
     }
-    if (NJ::data_021ed3c8 == 0x14 || NJ::data_021ed3c8 == 0x15) {
+    if (NJ::sSaveManagerRequest == 0x14 || NJ::sSaveManagerRequest == 0x15) {
         unk_c4 = NJ::Heap_Alloc(unk_a8, 0x15fe4);
         unk_c8 = NJ::Heap_Alloc(unk_a8, 0x10cc);
         NJ::_ZN18TownCompressThread4initEv(unk_c8);
     }
-    if (NJ::data_021ed3c8 == 0x14) {
+    if (NJ::sSaveManagerRequest == 0x14) {
         void *p = NJ::Heap_Alloc(unk_a8, 0x15fe0);
         NJ::gTownTransferBuf = p;
         NJ::_ZN11SaveRecord410clearStateEv((u8 *)p + 0x15fdc);
@@ -1358,7 +1358,7 @@ BOOL SaveManager::vfunc_0c() {
     if (NJ::func_020b50e8() == 6) {
         NJ::func_02079cc8(NJ::data_021dfd8c);
     }
-    if (NJ::data_020cbb18->func_02072e44()) {
+    if (NJ::gCommManager->isOnline()) {
         if (NJ::func_020b50e8() == 0xb || NJ::func_020b50e8() == 9) {
             return TRUE;
         }
@@ -1392,72 +1392,72 @@ BOOL SaveManager::vfunc_0c() {
 }
 
 BOOL SaveManager::onExecute() {
-    if (NJ::data_021ed624[unk_50].exec) {
-        (this->*NJ::data_021ed624[unk_50].exec)();
+    if (NJ::sSaveManagerStates[unk_50].exec) {
+        (this->*NJ::sSaveManagerStates[unk_50].exec)();
     }
     return TRUE;
 }
 
-void SaveManager::func_020a3ebc(s32 idx) {
-    if (NJ::data_021ed624[idx].enter) {
-        (this->*NJ::data_021ed624[idx].enter)();
+void SaveManager::setState(s32 idx) {
+    if (NJ::sSaveManagerStates[idx].enter) {
+        (this->*NJ::sSaveManagerStates[idx].enter)();
     }
     unk_50 = idx;
 }
 
-void SaveManager::func_020a3eb8() {}
+void SaveManager::enterAct00() {}
 
-void SaveManager::func_020a3dec() {
+void SaveManager::execAct00() {
     s32 m = NJ::func_020b50e8();
-    if (Unk_020a42c4_IsTwo(NJ::data_021c3cc0) != 0) {
+    if (Unk_020a42c4_IsTwo(NJ::gScreenTransition) != 0) {
         if (m == 9) {
-            s32 t = NJ::data_021ed3c8;
+            s32 t = NJ::sSaveManagerRequest;
             if (t == 0x12 || t == 0x1f) {
-                func_020a3ebc(*(volatile s32 *)&NJ::data_021ed3c8);
-                NJ::data_021ed3c8 = 0;
+                setState(*(volatile s32 *)&NJ::sSaveManagerRequest);
+                NJ::sSaveManagerRequest = 0;
             }
         } else if (m == 0xb) {
-            if (NJ::data_021ed3c8 == 0x13) {
-                func_020a3ebc(NJ::data_021ed3c8);
-                NJ::data_021ed3c8 = 0;
+            if (NJ::sSaveManagerRequest == 0x13) {
+                setState(NJ::sSaveManagerRequest);
+                NJ::sSaveManagerRequest = 0;
             }
         } else if (m == 6) {
-            if ((u32)(NJ::data_021ed3c8 - 3) <= 1) {
-                func_020a3ebc(NJ::data_021ed3c8);
-                NJ::data_021ed3c8 = 0;
+            if ((u32)(NJ::sSaveManagerRequest - 3) <= 1) {
+                setState(NJ::sSaveManagerRequest);
+                NJ::sSaveManagerRequest = 0;
             }
         } else if (m == 0x2e) {
-            func_020a3ebc(NJ::data_021ed3c8);
-            NJ::data_021ed3c8 = 0;
+            setState(NJ::sSaveManagerRequest);
+            NJ::sSaveManagerRequest = 0;
         }
-        if (m == 0xc && NJ::data_021ed3c8 == 0x14) {
-            func_020a3ebc(NJ::data_021ed3c8);
-            NJ::data_021ed3c8 = 0;
+        if (m == 0xc && NJ::sSaveManagerRequest == 0x14) {
+            setState(NJ::sSaveManagerRequest);
+            NJ::sSaveManagerRequest = 0;
         }
         if (m == 0x2f || m == 0xd) {
-            func_020a3ebc(NJ::data_021ed3c8);
-            NJ::data_021ed3c8 = 0;
+            setState(NJ::sSaveManagerRequest);
+            NJ::sSaveManagerRequest = 0;
         }
     }
 }
 
-void SaveManager::func_020a3dac() {
+void SaveManager::enterAct01() {
     void *r5 = NJ::PlayerData_GetCurrent();
     NJ::_ZN12Unk_020a099013func_020a0990EPKch(this, (char *)"sp_etc_sequence2", 1);
     NJ::func_0206e7f8();
     NJ::_ZN12Unk_02097ff413func_02097ff4Ej(r5, 2);
-    NJ::func_0204c3c0(NJ::data_021ed1a4);
+    NJ::TownState_ClampDate(NJ::data_021ed1a4);
     unk_9d = 0;
 }
 
-void SaveManager::func_020a3cc4() {
+void SaveManager::execAct01() {
     switch (unk_9d) {
     case 0:
         if (NJ::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
-            if (NJ::data_020cbb18->func_02072e88(NJ::data_020cbb18->unk_64) != 0) {
+            if (NJ::gCommManager->isSlotActive(NJ::gCommManager->unk_64) != 0) {
                 NJ::func_02073340();
-                if (NJ::func_0209f000(this) != 0) {
-                    NJ::func_0209f1c4();
+                if (NJ::Wifi_EndSession(this) != 0) {
+                    NJ::NetOverlay_Restore();
                 }
             }
             unk_9d = 1;
@@ -1498,28 +1498,28 @@ void SaveManager::func_020a3cc4() {
         break;
     default:
         NJ::_ZN11SaveManager13func_020a15f8Ev(this);
-        func_020a3ebc(0xc);
+        setState(0xc);
         break;
     }
 }
 
-void SaveManager::func_020a3c84() {
+void SaveManager::enterAct02() {
     void *r5 = NJ::PlayerData_GetCurrent();
     NJ::_ZN12Unk_020a099013func_020a0990EPKch(this, (char *)"sp_npc_gatekeeper", 0x66);
     NJ::func_0206e7f8();
     NJ::_ZN12Unk_02097ff413func_02097ff4Ej(r5, 2);
-    NJ::func_0204c3c0(NJ::data_021ed1a4);
+    NJ::TownState_ClampDate(NJ::data_021ed1a4);
     unk_9d = 0;
 }
 
-void SaveManager::func_020a3b9c() {
+void SaveManager::execAct02() {
     switch (unk_9d) {
     case 0:
         if (NJ::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
-            if (NJ::data_020cbb18->func_02072e88(NJ::data_020cbb18->unk_64) != 0) {
+            if (NJ::gCommManager->isSlotActive(NJ::gCommManager->unk_64) != 0) {
                 NJ::func_02073340();
-                if (NJ::func_0209f000(this) != 0) {
-                    NJ::func_0209f1c4();
+                if (NJ::Wifi_EndSession(this) != 0) {
+                    NJ::NetOverlay_Restore();
                 }
             }
             unk_9d = 1;
@@ -1560,22 +1560,22 @@ void SaveManager::func_020a3b9c() {
         break;
     default:
         NJ::_ZN11SaveManager13func_020a15f8Ev(this);
-        func_020a3ebc(0xd);
+        setState(0xd);
         break;
     }
 }
 
-void SaveManager::func_020a3b7c() {
+void SaveManager::enterAct03() {
     NJ::_ZN12Unk_020a099013func_020a0990EPKch(this, (char *)"sp_etc_sequence1", 0x28);
     NJ::func_0203ca94();
     unk_9d = 0;
 }
 
-void Unk_020a3238::func_020a3ad0() {
+void Unk_020a3238::execAct03() {
     switch (unk_9d) {
     case 0:
         if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
-            NI::func_0209cfe4();
+            NI::Clock_Init();
             unk_9d = unk_9d + 1;
         }
         break;
@@ -1596,16 +1596,16 @@ void Unk_020a3238::func_020a3ad0() {
         unk_9d = unk_9d + 1;
         break;
     default:
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 4);
+        NI::_ZN11SaveManager8setStateEi(this, 4);
         break;
     }
 }
 
-void Unk_020a3238::func_020a3ac8() {
+void Unk_020a3238::enterAct04() {
     unk_9d = 0;
 }
 
-void Unk_020a3238::func_020a39e4() {
+void Unk_020a3238::execAct04() {
     switch (unk_9d) {
     case 0:
         unk_9d = 1;
@@ -1657,17 +1657,17 @@ void Unk_020a3238::func_020a39e4() {
         break;
     default:
         NI::_ZN11SaveManager13func_020a15f8Ev(this);
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 0x10);
+        NI::_ZN11SaveManager8setStateEi(this, 0x10);
         break;
     }
 }
 
-void Unk_020a3238::func_020a39c8() {
+void Unk_020a3238::enterAct05() {
     NI::_ZN12Unk_020a099013func_020a0990EPKch(this, (u32 *)"sp_etc_sequence1", 0xc);
     unk_9d = 0;
 }
 
-void Unk_020a3238::func_020a38f4() {
+void Unk_020a3238::execAct05() {
     switch (unk_9d) {
     case 0:
         if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
@@ -1718,12 +1718,12 @@ void Unk_020a3238::func_020a38f4() {
         break;
     default:
         NI::_ZN11SaveManager13func_020a15f8Ev(this);
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 0xc);
+        NI::_ZN11SaveManager8setStateEi(this, 0xc);
         break;
     }
 }
 
-void Unk_020a3238::func_020a3868() {
+void Unk_020a3238::enterAct06() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     u8 *d = NI::gSaveData;
     u8 buf[0x1c];
@@ -1741,7 +1741,7 @@ void Unk_020a3238::func_020a3868() {
     NI::_ZN12Unk_020e1c64D1Ev(buf);
 }
 
-void Unk_020a3238::func_020a3784() {
+void Unk_020a3238::execAct06() {
     switch (unk_9d) {
     case 0:
         if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
@@ -1792,17 +1792,17 @@ void Unk_020a3238::func_020a3784() {
         break;
     default:
         NI::_ZN11SaveManager13func_020a15f8Ev(this);
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 0xc);
+        NI::_ZN11SaveManager8setStateEi(this, 0xc);
         break;
     }
 }
 
-void Unk_020a3238::func_020a3768() {
+void Unk_020a3238::enterAct07() {
     NI::_ZN12Unk_020a099013func_020a0990EPKch(this, (u32 *)"sp_etc_sequence3", 0x27);
     unk_9d = 0;
 }
 
-void Unk_020a3238::func_020a36a4() {
+void Unk_020a3238::execAct07() {
     switch (unk_9d) {
     case 0:
         if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
@@ -1844,25 +1844,25 @@ void Unk_020a3238::func_020a36a4() {
         break;
     default:
         NI::_ZN11SaveManager13func_020a15f8Ev(this);
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 0xf);
+        NI::_ZN11SaveManager8setStateEi(this, 0xf);
         break;
     }
 }
 
-void Unk_020a3238::func_020a36a0() {}
+void Unk_020a3238::enterAct08() {}
 
-void Unk_020a3238::func_020a3674() {
+void Unk_020a3238::execAct08() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
         o->detachRequest();
         NI::func_020b4bbc(NI::func_020b4934(), 1);
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
+        NI::_ZN11SaveManager8setStateEi(this, 0);
     }
 }
 
-void Unk_020a3238::func_020a3670() {}
+void Unk_020a3238::enterAct09() {}
 
-void Unk_020a3238::func_020a3618() {
+void Unk_020a3238::execAct09() {
     Unk_020a3238_Vec v;
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
@@ -1871,13 +1871,13 @@ void Unk_020a3238::func_020a3618() {
         v.y = NI::data_020d0770.y;
         v.z = NI::data_020d0770.z;
         NI::func_020b4f18(NI::func_020b4934(), 0xd, &v, 0x800000, 0, 3, 2);
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
+        NI::_ZN11SaveManager8setStateEi(this, 0);
     }
 }
 
-void Unk_020a3238::func_020a3614() {}
+void Unk_020a3238::enterAct0A() {}
 
-void Unk_020a3238::func_020a35bc() {
+void Unk_020a3238::execAct0A() {
     Unk_020a3238_Vec v;
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
@@ -1886,24 +1886,24 @@ void Unk_020a3238::func_020a35bc() {
         v.y = NI::data_020d0788.y;
         v.z = NI::data_020d0788.z;
         NI::func_020b4f18(NI::func_020b4934(), 0xe, &v, 0x800000, 0, 3, 2);
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
+        NI::_ZN11SaveManager8setStateEi(this, 0);
     }
 }
 
-void Unk_020a3238::func_020a35b8() {}
+void Unk_020a3238::enterAct0B() {}
 
-void Unk_020a3238::func_020a3588() {
+void Unk_020a3238::execAct0B() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
         o->detachRequest();
         NI::func_020b4f58(NI::func_020b4934(), 0x2f, 3, 2);
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
+        NI::_ZN11SaveManager8setStateEi(this, 0);
     }
 }
 
-void Unk_020a3238::func_020a3584() {}
+void Unk_020a3238::enterAct0C() {}
 
-void Unk_020a3238::func_020a3518() {
+void Unk_020a3238::execAct0C() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
         o->detachRequest();
@@ -1919,26 +1919,26 @@ void Unk_020a3238::func_020a3518() {
         NI::SaveData_Apply(NI::gSaveData);
         NI::func_0207835c();
         NI::func_020b4f58(NI::func_020b4934(), 0x2c, 3, 2);
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
+        NI::_ZN11SaveManager8setStateEi(this, 0);
     }
 }
 
-void Unk_020a3238::func_020a3514() {}
+void Unk_020a3238::enterAct0D() {}
 
-void Unk_020a3238::func_020a34e4() {
+void Unk_020a3238::execAct0D() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
         o->detachRequest();
         NI::func_020a4414(2, 3, 0, 0);
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
+        NI::_ZN11SaveManager8setStateEi(this, 0);
     }
 }
 
-void Unk_020a3238::func_020a34e0() {}
+void Unk_020a3238::enterAct0E() {}
 
-void Unk_020a3238::func_020a347c() {
+void Unk_020a3238::execAct0E() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
-    if (Unk_020a3238_Is2(NI::data_021c3cc0)) {
+    if (Unk_020a3238_Is2(NI::gScreenTransition)) {
         if (o->unk_04 == 0) {
             o->detachRequest();
             if (NI::_ZN8SaveData8testFlagEj(NI::gSaveData, 0x12) != 0) {
@@ -1948,29 +1948,29 @@ void Unk_020a3238::func_020a347c() {
             }
             NI::func_020a042c();
             NI::func_020b4f58(NI::func_020b4934(), 0x2d, 3, 0);
-            NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
+            NI::_ZN11SaveManager8setStateEi(this, 0);
         }
     }
 }
 
-void Unk_020a3238::func_020a3478() {}
+void Unk_020a3238::enterAct0F() {}
 
-void Unk_020a3238::func_020a340c() {
+void Unk_020a3238::execAct0F() {
     Unk_020a3238_Vec v;
     TalkWindowState *o = NI::TalkWindow_Get(0);
-    if (Unk_020a3238_Is2(NI::data_021c3cc0)) {
+    if (Unk_020a3238_Is2(NI::gScreenTransition)) {
         if (o->unk_04 == 0) {
             o->detachRequest();
-            NI::func_0204d5d8(NI::func_0204da0c(), &v, 0, 0);
+            NI::Town_FindTownHallFront(NI::TownBlockMap_Get(), &v, 0, 0);
             NI::func_020b4f18(NI::func_020b4934(), 0, &v, 0x400000, -0x8000, 3, 2);
-            NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
+            NI::_ZN11SaveManager8setStateEi(this, 0);
         }
     }
 }
 
-void Unk_020a3238::func_020a3408() {}
+void Unk_020a3238::enterAct10() {}
 
-void Unk_020a3238::func_020a33c8() {
+void Unk_020a3238::execAct10() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
         o->detachRequest();
@@ -1979,26 +1979,26 @@ void Unk_020a3238::func_020a33c8() {
         } else {
             NI::func_020b4bbc(NI::func_020b4934(), 0);
         }
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
+        NI::_ZN11SaveManager8setStateEi(this, 0);
     }
 }
 
-void Unk_020a3238::func_020a33c4() {}
+void Unk_020a3238::enterAct11() {}
 
-void Unk_020a3238::func_020a3398() {
+void Unk_020a3238::execAct11() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
         o->detachRequest();
         NI::func_020b4bbc(NI::func_020b4934(), 2);
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
+        NI::_ZN11SaveManager8setStateEi(this, 0);
     }
 }
 
-void Unk_020a3238::func_020a3390() {
+void Unk_020a3238::enterAct12() {
     unk_9d = 0;
 }
 
-void Unk_020a3238::func_020a32fc() {
+void Unk_020a3238::execAct12() {
     switch (unk_9d) {
     case 0: {
         s32 r = NI::_ZN11SaveManager13func_020a13c4Ev(this);
@@ -2030,17 +2030,17 @@ void Unk_020a3238::func_020a32fc() {
     case 3:
         break;
     default:
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
+        NI::_ZN11SaveManager8setStateEi(this, 0);
         break;
     }
 }
 
-void Unk_020a3238::func_020a32e0() {
+void Unk_020a3238::enterAct13() {
     NI::_ZN12Unk_02097ff413func_02097ff4Ej(NI::PlayerData_GetCurrent(this), 2);
     unk_9d = 0;
 }
 
-void Unk_020a3238::func_020a324c() {
+void Unk_020a3238::execAct13() {
     switch (unk_9d) {
     case 0: {
         s32 r = NI::_ZN11SaveManager13func_020a13c4Ev(this);
@@ -2072,44 +2072,44 @@ void Unk_020a3238::func_020a324c() {
     case 3:
         break;
     default:
-        NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
+        NI::_ZN11SaveManager8setStateEi(this, 0);
         break;
     }
 }
 
-void Unk_020a3238::func_020a3238() {
+void Unk_020a3238::enterAct14() {
     NI::func_0209f2d4(this, 1);
     NI::func_020b013c();
 }
 
-extern "C" void func_020a2ecc(Unk_020a25d8 *p) {
+extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
     switch (p->unk_9d) {
     case 0:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
-        } else if (NH::func_02074d18()) {
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
+        } else if (NH::CommCtrl_SendAct07()) {
             p->unk_9d = 1;
         }
         break;
     case 1:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
         } else if (p->unk_d0 != 0) {
             p->unk_d4 = 0;
             p->unk_9d = 2;
         }
         break;
     case 2:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
-        } else if (NH::func_02074ff0(&p->unk_d4)) {
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
+        } else if (NH::CommSend_VillagerTransfer(&p->unk_d4)) {
             p->unk_d4 = 0;
             p->unk_9d = 3;
         }
         break;
     case 3:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
         } else if (NH::_ZN18TownCompressThread6isDoneEv(p->unk_c8)) {
             BOOL r6 = TRUE;
             s32 r5 = 3;
@@ -2130,8 +2130,8 @@ extern "C" void func_020a2ecc(Unk_020a25d8 *p) {
         }
         break;
     case 4:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
         } else if (NH::func_020a03f0()) {
             NH::func_02095204(4);
             NH::ProcBase_RequestDelete();
@@ -2139,20 +2139,20 @@ extern "C" void func_020a2ecc(Unk_020a25d8 *p) {
         }
         break;
     case 5:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
         } else if (NH::func_02095204(4) == 0) {
-            if (NH::func_02074c4c()) {
+            if (NH::CommSend_JoinReady()) {
                 p->unk_9d = 6;
             }
         }
         break;
     case 6:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
         } else if (p->unk_d6 != 0) {
-            u32 r7 = NH::func_020eaf90();
-            Unk_020cbb18 *r5 = NH::data_020cbb18;
+            u32 r7 = NH::Net_GetMyAid();
+            CommManager *r5 = NH::gCommManager;
             r5->unk_64 = r7;
             void *r6 = NH::PlayerData_Get(NH::PlayerSession_GetDataIndex(r5->unk_68));
             NH::MI_CpuCopy8(r6, NH::PlayerData_Get(r5->unk_64 + 3), 0x228c);
@@ -2163,13 +2163,13 @@ extern "C" void func_020a2ecc(Unk_020a25d8 *p) {
             s32 i = 3;
             for (; i >= 0; i--) {
                 if (p->unk_d0 & (1 << i)) {
-                    r5->func_02072e94(i, 1);
+                    r5->setSlotActive(i, 1);
                     cnt = (u8)(cnt + 1);
                 } else {
-                    r5->func_02072e94(i, zero);
+                    r5->setSlotActive(i, zero);
                 }
             }
-            r5->func_020729a8(cnt);
+            r5->setMemberCount(cnt);
             NH::func_020a63bc(r7, 0xc, 1, 0, 7);
             NH::PlayerSession_SetDataIndex(0, p->unk_d3);
             NH::PlayerSession_SetDataIndex(r7, r7 + 3);
@@ -2178,40 +2178,40 @@ extern "C" void func_020a2ecc(Unk_020a25d8 *p) {
             u8 buf2[8];
             NH::MI_CpuCopy8(p->unk_d8, buf1, 8);
             u32 *const r7p = &NH::data_021ed304;
-            u32 r6b = NH::func_0209cb9c(r7p, buf1);
+            u32 r6b = NH::ClockOffset_CalcMinutes(r7p, buf1);
             NH::MI_CpuCopy8(p->unk_d8, buf2, 8);
-            u32 h = NH::func_0209cb74(r7p, buf2);
+            u32 h = NH::ClockOffset_CalcSeconds(r7p, buf2);
             *r7p = r6b;
             NH::data_021ed2d0.unk_38 = h;
-            if (NH::func_0204da0c()) {
-                NH::func_0204da0c()->func_0204dab4();
-                NH::func_0204da0c()->func_0204da24();
-                NH::func_0204c6a4(NH::func_0204da0c());
+            if (NH::TownBlockMap_Get()) {
+                NH::TownBlockMap_Get()->updateAcreIds();
+                NH::TownBlockMap_Get()->bindBg();
+                NH::Town_ClearBorderTrees(NH::TownBlockMap_Get());
             }
-            NH::func_0204d42c();
-            NH::func_0204d3d8();
-            NH::func_020741b8(4);
+            NH::HouseRoomMaps_UpdateAll();
+            NH::HouseRoomMaps_BindBg();
+            NH::Comm_ResetPeerState(4);
             NH::Melody_SetPacked((u8 *)((u32)NH::gSaveData + 0x15fa8));
             NH::func_020b8e80();
             p->unk_d2 = 1;
-            r5->func_02072e28(1);
+            r5->setMode(1);
             p->unk_9d = 7;
         }
         break;
     case 7:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
-        } else if (NH::func_02074cb4(NH::func_02073190())) {
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
+        } else if (NH::CommSend_JoinDone(NH::Comm_GetRemoteMask())) {
             p->unk_9d = 8;
         }
         break;
     case 8:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
         } else {
-            NH::_Z13func_020720f8v();
-            if (NH::func_020eaca0()) {
-                NH::data_020cbb18->func_02072e28(2);
+            NH::_Z20NetOverlay_AssertAnyv();
+            if (NH::Net_IsReadyToSend()) {
+                NH::gCommManager->setMode(2);
                 if (NH::func_ov048_0225b8a8()) {
                     NH::func_020b4bbc(NH::func_020b4934(), 2);
                     NH::func_020b4940(NH::func_020b4934(), 3);
@@ -2227,9 +2227,9 @@ extern "C" void func_020a2ecc(Unk_020a25d8 *p) {
     }
 }
 
-extern "C" void func_020a2e9c(Unk_020a25d8 *p) {
+extern "C" void SaveManager_EnterAct15(Unk_020a25d8 *p) {
     NH::func_0209f2d4(p, 1);
-    if (NH::data_020cbb18->unk_6c == 1) {
+    if (NH::gCommManager->unk_6c == 1) {
         NH::func_02096b74();
         NH::func_02096b74();
         NH::func_020b013c();
@@ -2237,13 +2237,13 @@ extern "C" void func_020a2e9c(Unk_020a25d8 *p) {
     }
 }
 
-extern "C" void func_020a2be8(Unk_020a25d8 *p) {
+extern "C" void SaveManager_ExecAct15(Unk_020a25d8 *p) {
     switch (p->unk_9d) {
     case 0: {
-        u32 r5 = NH::func_02073190();
+        u32 r5 = NH::Comm_GetRemoteMask();
         r5 |= 1 << NH::func_020a5ef8();
-        if (NH::func_02073090(r5)) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(r5)) {
+            NH::Comm_SetLostFlag();
         } else if (NH::func_020a5cec()) {
             p->unk_9d = 1;
         }
@@ -2251,87 +2251,87 @@ extern "C" void func_020a2be8(Unk_020a25d8 *p) {
     }
     case 1:
     case 2: {
-        u32 r5 = NH::func_02073190();
+        u32 r5 = NH::Comm_GetRemoteMask();
         r5 |= 1 << NH::func_020a5ef8();
-        if (NH::func_02073090(r5)) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(r5)) {
+            NH::Comm_SetLostFlag();
         } else {
             NH::_ZN12Unk_0209f30413func_0209f390EPhjjj(p, &p->unk_9d, 1, 0xd, 0x2f);
             if (p->unk_9d > 2) {
                 NH::func_020a63bc(NH::data_021ed3a8, 0xc, 1, 0, 7);
-                Unk_020cbb18 *g = NH::data_020cbb18;
-                g->func_020729a8((u8)(g->unk_6c + 1));
-                g->func_02072e94(NH::data_021ed3a8, 1);
-                NH::func_020741b8(NH::data_021ed3a8);
+                CommManager *g = NH::gCommManager;
+                g->setMemberCount((u8)(g->unk_6c + 1));
+                g->setSlotActive(NH::data_021ed3a8, 1);
+                NH::Comm_ResetPeerState(NH::data_021ed3a8);
             }
         }
         break;
     }
     case 3:
-        if (NH::func_02073090(NH::func_02073190())) {
-            NH::func_0207312c();
-        } else if (NH::func_02075170((u16)(1 << NH::data_021ed3a8))) {
+        if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
+            NH::Comm_SetLostFlag();
+        } else if (NH::CommSend_MemberInfo((u16)(1 << NH::data_021ed3a8))) {
             p->unk_9d = 4;
         }
         break;
     case 4:
-        if (NH::func_02073090(NH::func_02073190())) {
-            NH::func_0207312c();
-        } else if (NH::func_02076744(NH::data_021ed3a8)) {
+        if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
+            NH::Comm_SetLostFlag();
+        } else if (NH::CommBlock_BuildPacket(NH::data_021ed3a8)) {
             p->unk_9d = 5;
         }
         break;
     case 5:
-        if (NH::func_02073090(NH::func_02073190())) {
-            NH::func_0207312c();
-        } else if (NH::func_02074df4((u16)(1 << NH::data_021ed3a8))) {
+        if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
+            NH::Comm_SetLostFlag();
+        } else if (NH::CommSend_BuiltPacket((u16)(1 << NH::data_021ed3a8))) {
             p->unk_d4 = 0;
             p->unk_9d = 6;
         }
         break;
     case 6:
-        if (NH::func_02073090(NH::func_02073190())) {
-            NH::func_0207312c();
-        } else if (NH::func_02074e50(&p->unk_d4, (u16)(1 << NH::data_021ed3a8))) {
+        if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
+            NH::Comm_SetLostFlag();
+        } else if (NH::CommSend_SyncVarChunk(&p->unk_d4, (u16)(1 << NH::data_021ed3a8))) {
             p->unk_9d = 7;
         }
         break;
     case 7:
-        if (NH::func_02073090(NH::func_02073190())) {
-            NH::func_0207312c();
-        } else if (NH::func_02074a94(NH::data_021ed3a8)) {
+        if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
+            NH::Comm_SetLostFlag();
+        } else if (NH::CommSend_SlotStatusAll(NH::data_021ed3a8)) {
             NH::_ZN18TownCompressThread5startEj(p->unk_c8, 1);
             p->unk_d4 = 0;
             p->unk_9d = 8;
         }
         break;
     case 8:
-        if (NH::func_02073090(NH::func_02073190())) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
+            NH::Comm_SetLostFlag();
         } else if (NH::_ZN18TownCompressThread6isDoneEv(p->unk_c8)) {
             NH::DC_FlushAll();
-            if (NH::func_02075078(&p->unk_d4, (u16)(1 << NH::data_021ed3a8))) {
+            if (NH::CommSend_TownChunk(&p->unk_d4, (u16)(1 << NH::data_021ed3a8))) {
                 p->unk_9d = 9;
             }
         }
         break;
     case 9:
-        if (NH::func_02073090(NH::func_02073190())) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
+            NH::Comm_SetLostFlag();
         } else if (p->unk_d5 != 0) {
-            if (NH::func_02074bc8((u16)(1 << NH::data_021ed3a8))) {
+            if (NH::CommSend_DateTime((u16)(1 << NH::data_021ed3a8))) {
                 p->unk_9d = 10;
             }
         }
         break;
     case 10:
-        if (NH::func_02073090(NH::func_02073190())) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
+            NH::Comm_SetLostFlag();
         } else {
-            NH::_Z13func_020720f8v();
-            if (NH::func_020eaca0()) {
+            NH::_Z20NetOverlay_AssertAnyv();
+            if (NH::Net_IsReadyToSend()) {
                 if (p->unk_e0 != 0) {
-                    NH::data_020cbb18->func_02072e28(2);
+                    NH::gCommManager->setMode(2);
                     p->unk_d2 = 1;
                     NH::func_0209ec60(NH::data_021ed3a8);
                     p->unk_9d = 11;
@@ -2342,39 +2342,39 @@ extern "C" void func_020a2be8(Unk_020a25d8 *p) {
     }
 }
 
-extern "C" void func_020a2bdc(Unk_020a25d8 *p) {
+extern "C" void SaveManager_EnterAct16(Unk_020a25d8 *p) {
     NH::func_0209f2d4(p, 1);
 }
 
-extern "C" void func_020a2ae4(Unk_020a25d8 *p) {
+extern "C" void SaveManager_ExecAct16(Unk_020a25d8 *p) {
     switch (p->unk_9d) {
     case 0:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
-        } else if (NH::data_020cbb18->func_02072e24() == 1) {
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
+        } else if (NH::gCommManager->getMode() == 1) {
             NH::func_020a63bc(NH::data_021ed3a8, 0xc, 1, 0, 7);
-            Unk_020cbb18 *g = NH::data_020cbb18;
-            g->func_020729a8((u8)(g->unk_6c + 1));
-            g->func_02072e94(NH::data_021ed3a8, 1);
-            NH::func_020741b8(NH::data_021ed3a8);
+            CommManager *g = NH::gCommManager;
+            g->setMemberCount((u8)(g->unk_6c + 1));
+            g->setSlotActive(NH::data_021ed3a8, 1);
+            NH::Comm_ResetPeerState(NH::data_021ed3a8);
             p->unk_9d = 1;
         }
         break;
     case 1:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
-        } else if (NH::func_02074e80(&p->unk_d4, (u16)(1 << NH::data_021ed3a8))) {
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
+        } else if (NH::CommSend_PlayerData(&p->unk_d4, (u16)(1 << NH::data_021ed3a8))) {
             p->unk_9d = 2;
         }
         break;
     case 2:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
         } else {
-            NH::_Z13func_020720f8v();
-            if (NH::func_020eaca0()) {
+            NH::_Z20NetOverlay_AssertAnyv();
+            if (NH::Net_IsReadyToSend()) {
                 if (p->unk_e0 != 0) {
-                    NH::data_020cbb18->func_02072e28(2);
+                    NH::gCommManager->setMode(2);
                     p->unk_d2 = 1;
                     p->unk_9d = 3;
                 }
@@ -2384,34 +2384,34 @@ extern "C" void func_020a2ae4(Unk_020a25d8 *p) {
     }
 }
 
-extern "C" void func_020a2abc(Unk_020a25d8 *p) {
+extern "C" void SaveManager_EnterAct17(Unk_020a25d8 *p) {
     NH::func_0209f2d4(p, 0);
     NH::_ZN12Unk_02097ff413func_0209801cEj(NH::PlayerData_GetCurrent(), 2);
-    NH::func_020a5ee8(NH::data_020cbb18->unk_64);
+    NH::func_020a5ee8(NH::gCommManager->unk_64);
 }
 
-extern "C" void func_020a2908(Unk_020a25d8 *p) {
+extern "C" void SaveManager_ExecAct17(Unk_020a25d8 *p) {
     switch (p->unk_9d) {
     case 0:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
         } else if (NH::_ZN11SaveManager13func_020a15c8Ej(p, 0)) {
-            p->unk_ce = NH::func_02073168();
+            p->unk_ce = NH::Comm_GetMemberMask();
             p->unk_9d = 1;
         }
         break;
     case 1:
     case 2:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
         } else {
             NH::_ZN12Unk_0209f30413func_0209f304EPhj(p, &p->unk_9d, 1);
         }
         break;
     case 3:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
-        } else if (NH::_ZN11SaveManager13func_020a1470Ej(p, NH::data_020cbb18->unk_64)) {
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
+        } else if (NH::_ZN11SaveManager13func_020a1470Ej(p, NH::gCommManager->unk_64)) {
             NH::_ZN11SaveManager13func_020a14acEv(p);
             p->unk_9d = 4;
         }
@@ -2427,16 +2427,16 @@ extern "C" void func_020a2908(Unk_020a25d8 *p) {
         NH::_ZN12Unk_0209f30413func_0209f430EPhjjhhhj(p, &p->unk_9d, 4, 0xe, 0x14, 1, 0, 1);
         break;
     case 12:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
         } else {
             BOOL r6 = TRUE;
             s32 r5 = 3;
-            Unk_020cbb18 *g = NH::data_020cbb18;
+            CommManager *g = NH::gCommManager;
             for (; r5 >= 0; r5--) {
-                if (g->func_02072e88(r5)) {
-                    if (!g->func_020729cc(r5)) {
-                        if (g->func_02072d44(r5)) {
+                if (g->isSlotActive(r5)) {
+                    if (!g->isMyAid(r5)) {
+                        if (g->getAckCount(r5)) {
                             r6 = FALSE;
                             break;
                         }
@@ -2444,19 +2444,19 @@ extern "C" void func_020a2908(Unk_020a25d8 *p) {
                 }
             }
             if (r6) {
-                if (NH::func_020749cc()) {
+                if (NH::CommCtrl_SendAct11()) {
                     p->unk_9d = 0xd;
                 }
             }
         }
         break;
     case 13:
-        if (NH::func_02073090(1)) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(1)) {
+            NH::Comm_SetLostFlag();
         } else if (p->unk_e1 != 0) {
-            NH::func_020a0088(p, NH::data_020e24ec, 0);
+            NH::NetSession_ReturnToSolo(p, NH::data_020e24ec, 0);
             NH::data_020e24ec = 7;
-            NH::func_0209f1c4();
+            NH::NetOverlay_Restore();
             NH::func_020b8e80();
             p->unk_9d = 0x19;
         }
@@ -2476,22 +2476,22 @@ extern "C" void func_020a2908(Unk_020a25d8 *p) {
         break;
     default:
         NH::_ZN11SaveManager13func_020a15f8Ev(p);
-        NH::_ZN11SaveManager13func_020a3ebcEi(p, 8);
+        NH::_ZN11SaveManager8setStateEi(p, 8);
         break;
     }
 }
 
-extern "C" void func_020a28fc(Unk_020a25d8 *p) {
+extern "C" void SaveManager_EnterAct18(Unk_020a25d8 *p) {
     NH::func_0209f2d4(p, 0);
 }
 
-extern "C" void func_020a25e4(Unk_020a25d8 *p) {
+extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
     switch (p->unk_9d) {
     case 0:
-        if (NH::func_02073090(NH::func_02073190())) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
+            NH::Comm_SetLostFlag();
         } else if (NH::_ZN11SaveManager13func_020a15c8Ej(p, 0)) {
-            p->unk_ce = NH::func_02073168();
+            p->unk_ce = NH::Comm_GetMemberMask();
             NH::func_0209fffc(p);
             NH::func_0209ff4c(p);
             p->unk_9d = 1;
@@ -2499,22 +2499,22 @@ extern "C" void func_020a25e4(Unk_020a25d8 *p) {
         break;
     case 1:
     case 2:
-        if (NH::func_02073090(NH::func_02073190())) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
+            NH::Comm_SetLostFlag();
         } else {
             NH::_ZN12Unk_0209f30413func_0209f390EPhjjj(p, &p->unk_9d, 1, 0x2e, 0x2e);
         }
         break;
     case 3:
-        if (NH::func_02073090(NH::func_02073190())) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
+            NH::Comm_SetLostFlag();
         } else if (NH::_ZN12Unk_0209f30413func_0209f344Ev(p)) {
             p->unk_9d = 4;
         }
         break;
     case 4:
-        if (NH::func_02073090(NH::func_02073190())) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
+            NH::Comm_SetLostFlag();
         } else if (NH::func_0209fb48(p)) {
             s32 r5 = NH::func_020a5ef8();
             u32 r7 = NH::_ZN11SaveManager13func_020a1484Ej(p, r5);
@@ -2533,20 +2533,20 @@ extern "C" void func_020a25e4(Unk_020a25d8 *p) {
     case 9:
     case 10:
     case 11: {
-        u32 t = NH::func_02073190();
+        u32 t = NH::Comm_GetRemoteMask();
         NH::func_0209f638(p, &p->unk_9d, 1, 5, 0xf, 0x15, 4, 1, t);
         break;
     }
     case 12:
-        if (NH::func_02073090(NH::func_02073190())) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
+            NH::Comm_SetLostFlag();
         } else {
             BOOL r6 = TRUE;
             s32 r5 = 3;
-            Unk_020cbb18 *g = NH::data_020cbb18;
+            CommManager *g = NH::gCommManager;
             for (; r5 >= 0; r5--) {
-                if (g->func_02072e88(r5)) {
-                    if (!g->func_020729cc(r5)) {
+                if (g->isSlotActive(r5)) {
+                    if (!g->isMyAid(r5)) {
                         if (p->unk_f8[r5] == 0) {
                             r6 = FALSE;
                             break;
@@ -2555,34 +2555,34 @@ extern "C" void func_020a25e4(Unk_020a25d8 *p) {
                 }
             }
             if (r6) {
-                if (g->func_02072d44(NH::func_020a5ef8())) {
+                if (g->getAckCount(NH::func_020a5ef8())) {
                     r6 = FALSE;
                 }
             }
             if (r6) {
-                if (NH::func_02074960((u16)(1 << NH::func_020a5ef8()))) {
+                if (NH::CommCtrl_SendAct12((u16)(1 << NH::func_020a5ef8()))) {
                     p->unk_9d = 0xd;
                 }
             }
         }
         break;
     case 13: {
-        u32 r5 = NH::func_02073190();
+        u32 r5 = NH::Comm_GetRemoteMask();
         r5 ^= (u16)(1 << NH::func_020a5ef8());
-        if (NH::func_02073090(r5)) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(r5)) {
+            NH::Comm_SetLostFlag();
         } else {
-            NH::_Z13func_020720f8v();
-            if (NH::func_020eaca0() || NH::func_020eb004() <= 1) {
-                NH::func_02073e14(NH::func_020a5ef8());
-                Unk_020cbb18 *g = NH::data_020cbb18;
-                g->func_02072e28(2);
-                if (g->func_02072e44()) {
+            NH::_Z20NetOverlay_AssertAnyv();
+            if (NH::Net_IsReadyToSend() || NH::Net_GetMemberCount() <= 1) {
+                NH::Comm_RemoveMember(NH::func_020a5ef8());
+                CommManager *g = NH::gCommManager;
+                g->setMode(2);
+                if (g->isOnline()) {
                     u8 b = NH::func_020a5ef8();
-                    g = NH::data_020cbb18;
-                    g->func_020728d4();
-                    g->func_020728a4(&b, 1);
-                    g->func_02072824(5, 5);
+                    g = NH::gCommManager;
+                    g->beginRecord();
+                    g->writeRecord(&b, 1);
+                    g->endRecord(5, 5);
                 }
                 p->unk_9d = 0xe;
             }
@@ -2590,15 +2590,15 @@ extern "C" void func_020a25e4(Unk_020a25d8 *p) {
         break;
     }
     case 14:
-        if (NH::func_02073090(NH::func_02073190())) {
-            NH::func_0207312c();
+        if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
+            NH::Comm_SetLostFlag();
         } else {
             BOOL r6 = TRUE;
             s32 r5 = 3;
-            Unk_020cbb18 *g = NH::data_020cbb18;
+            CommManager *g = NH::gCommManager;
             for (; r5 >= 0; r5--) {
-                if (g->func_02072e88(r5)) {
-                    if (!g->func_020729cc(r5)) {
+                if (g->isSlotActive(r5)) {
+                    if (!g->isMyAid(r5)) {
                         if (p->unk_f0[r5] == 0) {
                             r6 = FALSE;
                             break;
@@ -2608,11 +2608,11 @@ extern "C" void func_020a25e4(Unk_020a25d8 *p) {
             }
             if (r6) {
                 NH::func_020b8e80();
-                g = NH::data_020cbb18;
-                g->func_020728d4();
-                g->func_02072824(7, 5);
+                g = NH::gCommManager;
+                g->beginRecord();
+                g->endRecord(7, 5);
                 if (g->unk_6c == 1) {
-                    NH::func_02045e98();
+                    NH::Town_OnLoad();
                 }
                 p->unk_9d = 0x1a;
             }
@@ -2629,41 +2629,41 @@ extern "C" void func_020a25e4(Unk_020a25d8 *p) {
     case 23:
     case 24:
     case 25:
-        NH::func_0209f898(p, &p->unk_9d, 0xf, 0x15, NH::func_02073190(), 1);
+        NH::func_0209f898(p, &p->unk_9d, 0xf, 0x15, NH::Comm_GetRemoteMask(), 1);
         break;
     default:
         NH::_ZN11SaveManager13func_020a15f8Ev(p);
-        NH::_ZN11SaveManager13func_020a3ebcEi(p, 10);
+        NH::_ZN11SaveManager8setStateEi(p, 10);
         break;
     }
 }
 
-extern "C" void func_020a25d8(Unk_020a25d8 *p) {
+extern "C" void SaveManager_EnterAct19(Unk_020a25d8 *p) {
     NH::func_0209f2d4(p, 0);
 }
 
-void Unk_020a1c88::func_020a2408() {
+void Unk_020a1c88::execAct19() {
     switch (unk_9d) {
     case 0:
-        if (NG::func_02073090(1)) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(1)) {
+            NG::Comm_SetLostFlag();
         } else if (NG::_ZN11SaveManager13func_020a15c8Ej(this, 0)) {
-            unk_ce = NG::func_02073168();
+            unk_ce = NG::Comm_GetMemberMask();
             unk_9d = 1;
         }
         break;
     case 1:
     case 2:
-        if (NG::func_02073090(1)) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(1)) {
+            NG::Comm_SetLostFlag();
         } else {
             NG::_ZN12Unk_0209f30413func_0209f304EPhj(this, &unk_9d, 1);
         }
         break;
     case 3:
-        if (NG::func_02073090(1)) {
-            NG::func_0207312c();
-        } else if (NG::_ZN11SaveManager13func_020a1470Ej(this, NG::data_020cbb18->unk_64)) {
+        if (NG::Comm_IsConnectionLost(1)) {
+            NG::Comm_SetLostFlag();
+        } else if (NG::_ZN11SaveManager13func_020a1470Ej(this, NG::gCommManager->unk_64)) {
             NG::_ZN11SaveManager13func_020a14acEv(this);
             unk_9d = 4;
         }
@@ -2679,42 +2679,42 @@ void Unk_020a1c88::func_020a2408() {
         NG::_ZN12Unk_0209f30413func_0209f430EPhjjhhhj(this, &unk_9d, 4, 0xf, 0x15, 1, 1, 1);
         break;
     case 12:
-        if (NG::func_02073090(1)) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(1)) {
+            NG::Comm_SetLostFlag();
         } else {
             BOOL r5 = TRUE;
-            if (NG::data_020cbb18->func_02072d44(NG::func_020a5ef8())) {
+            if (NG::gCommManager->getAckCount(NG::func_020a5ef8())) {
                 r5 = FALSE;
             }
             if (r5) {
-                if (NG::func_020749cc()) {
+                if (NG::CommCtrl_SendAct11()) {
                     unk_9d = 0xd;
                 }
             }
         }
         break;
     case 13:
-        if (NG::func_02073090(1)) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(1)) {
+            NG::Comm_SetLostFlag();
         } else {
-            NG::_Z13func_020720f8v();
-            if (NG::func_020eaca0()) {
-                u32 t = NG::func_02073168();
+            NG::_Z20NetOverlay_AssertAnyv();
+            if (NG::Net_IsReadyToSend()) {
+                u32 t = NG::Comm_GetMemberMask();
                 if (unk_ce != t) {
-                    Unk_020cbb18 *r5;
+                    CommManager *r5;
                     NG::func_020a5c94(NG::func_020a5ef8());
-                    r5 = NG::data_020cbb18;
-                    r5->func_02072e28(2);
-                    r5->func_020728d4();
-                    r5->func_02072824(6, 0);
+                    r5 = NG::gCommManager;
+                    r5->setMode(2);
+                    r5->beginRecord();
+                    r5->endRecord(6, 0);
                     unk_9d = 0xe;
                 }
             }
         }
         break;
     case 14:
-        if (NG::func_02073090(1)) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(1)) {
+            NG::Comm_SetLostFlag();
         } else if (unk_e2) {
             NG::func_020b8e80();
             unk_9d = 0x1a;
@@ -2735,20 +2735,20 @@ void Unk_020a1c88::func_020a2408() {
         break;
     default:
         NG::_ZN11SaveManager13func_020a15f8Ev(this);
-        NG::_ZN11SaveManager13func_020a3ebcEi(this, 0xa);
+        NG::_ZN11SaveManager8setStateEi(this, 0xa);
         break;
     }
 }
 
-void Unk_020a1c88::func_020a2400() {
+void Unk_020a1c88::enterAct1A() {
     NG::func_0209f294(this);
 }
 
-void Unk_020a1c88::func_020a20ac() {
+void Unk_020a1c88::execAct1A() {
     switch (unk_9d) {
     case 0:
-        if (NG::func_02073090(NG::func_02073190())) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
+            NG::Comm_SetLostFlag();
         } else if (NG::_ZN11SaveManager13func_020a15c8Ej(this, 0)) {
             if (NG::func_0209f23c()) {
                 NG::func_0209ff8c(this);
@@ -2759,22 +2759,22 @@ void Unk_020a1c88::func_020a20ac() {
         break;
     case 1:
     case 2:
-        if (NG::func_02073090(NG::func_02073190())) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
+            NG::Comm_SetLostFlag();
         } else {
             NG::_ZN12Unk_0209f30413func_0209f390EPhjjj(this, &unk_9d, 1, 0x2e, 0x2e);
         }
         break;
     case 3:
-        if (NG::func_02073090(NG::func_02073190())) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
+            NG::Comm_SetLostFlag();
         } else if (NG::_ZN12Unk_0209f30413func_0209f344Ev(this)) {
             unk_9d = 4;
         }
         break;
     case 4:
-        if (NG::func_02073090(NG::func_02073190())) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
+            NG::Comm_SetLostFlag();
         } else if (NG::func_0209f23c()) {
             if (NG::func_0209fb48(this)) {
                 s32 r5 = NG::_ZN11SaveManager13func_020a1484Ej(this, 0);
@@ -2804,17 +2804,17 @@ void Unk_020a1c88::func_020a20ac() {
     case 11: {
         BOOL r5;
         if (NG::func_0209f23c()) r5 = TRUE; else r5 = FALSE;
-        NG::func_0209f638(this, &unk_9d, 1, 5, 0x10, 0x16, 4, r5, NG::func_02073190());
+        NG::func_0209f638(this, &unk_9d, 1, 5, 0x10, 0x16, 4, r5, NG::Comm_GetRemoteMask());
         break;
     }
     case 12:
-        if (NG::func_02073090(NG::func_02073190())) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
+            NG::Comm_SetLostFlag();
         } else {
-            NG::_Z13func_020720f8v();
-            if (NG::func_020eaca0()) {
+            NG::_Z20NetOverlay_AssertAnyv();
+            if (NG::Net_IsReadyToSend()) {
                 if (!NG::func_0209f23c()) {
-                    NG::data_020cbb18->func_02072e28(2);
+                    NG::gCommManager->setMode(2);
                     unk_9d = 0xe;
                 } else {
                     unk_9d = 0xd;
@@ -2823,25 +2823,25 @@ void Unk_020a1c88::func_020a20ac() {
         }
         break;
     case 14:
-        if (NG::func_02073090(NG::func_02073190())) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
+            NG::Comm_SetLostFlag();
         } else {
-            Unk_020cbb18 *r5 = NG::data_020cbb18;
-            r5->func_020728d4();
-            r5->func_02072824(7, 5);
+            CommManager *r5 = NG::gCommManager;
+            r5->beginRecord();
+            r5->endRecord(7, 5);
             unk_9d = 0x1b;
         }
         break;
     case 13:
-        if (NG::func_02073090(NG::func_02073190())) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
+            NG::Comm_SetLostFlag();
         } else {
             BOOL r6 = TRUE;
             s32 r5 = 3;
-            Unk_020cbb18 *r7 = NG::data_020cbb18;
+            CommManager *r7 = NG::gCommManager;
             for (; r5 >= 0; r5--) {
-                if (r7->func_02072e88(r5)) {
-                    if (!r7->func_020729cc(r5)) {
+                if (r7->isSlotActive(r5)) {
+                    if (!r7->isMyAid(r5)) {
                         if (!unk_f8[r5]) {
                             r6 = FALSE;
                             break;
@@ -2851,9 +2851,9 @@ void Unk_020a1c88::func_020a20ac() {
             }
             if (r6) {
                 for (r5 = 3; r5 >= 0; r5--) {
-                    if (r7->func_02072e88(r5)) {
-                        if (!r7->func_020729cc(r5)) {
-                            if (r7->func_02072d44(r5)) {
+                    if (r7->isSlotActive(r5)) {
+                        if (!r7->isMyAid(r5)) {
+                            if (r7->getAckCount(r5)) {
                                 r6 = FALSE;
                                 break;
                             }
@@ -2862,25 +2862,25 @@ void Unk_020a1c88::func_020a20ac() {
                 }
             }
             if (r6) {
-                if (NG::func_02074960(NG::func_02073190())) {
+                if (NG::CommCtrl_SendAct12(NG::Comm_GetRemoteMask())) {
                     unk_9d = 0xf;
                 }
             }
         }
         break;
     case 15:
-        if (NG::func_02073090(NG::func_02073190())) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
+            NG::Comm_SetLostFlag();
         } else {
             BOOL r6 = TRUE;
             s32 r5;
-            Unk_020cbb18 *r7;
-            NG::func_020741b0();
+            CommManager *r7;
+            NG::Comm_EnterCritical();
             r5 = 3;
-            r7 = NG::data_020cbb18;
+            r7 = NG::gCommManager;
             for (; r5 >= 0; r5--) {
-                if (r7->func_02072e88(r5)) {
-                    if (!r7->func_020729cc(r5)) {
+                if (r7->isSlotActive(r5)) {
+                    if (!r7->isMyAid(r5)) {
                         if (!unk_f0[r5]) {
                             r6 = FALSE;
                             break;
@@ -2888,10 +2888,10 @@ void Unk_020a1c88::func_020a20ac() {
                     }
                 }
             }
-            NG::func_020741a8();
+            NG::Comm_LeaveCritical();
             if (r6) {
-                NG::func_020a0088(this, 7, 1);
-                NG::func_0209f1c4();
+                NG::NetSession_ReturnToSolo(this, 7, 1);
+                NG::NetOverlay_Restore();
                 unk_9d = 0x1b;
             }
         }
@@ -2907,7 +2907,7 @@ void Unk_020a1c88::func_020a20ac() {
     case 24:
     case 25:
     case 26:
-        NG::func_0209f898(this, &unk_9d, 0x10, 0x16, NG::func_02073190(), 1);
+        NG::func_0209f898(this, &unk_9d, 0x10, 0x16, NG::Comm_GetRemoteMask(), 1);
         break;
     default: {
         u8 b;
@@ -2916,38 +2916,38 @@ void Unk_020a1c88::func_020a20ac() {
             b = 6;
             NG::TalkWindow_Get(0)->setNextMessage(&b, (u8 *)"sp_etc_sequence2");
         }
-        NG::_ZN11SaveManager13func_020a3ebcEi(this, 8);
+        NG::_ZN11SaveManager8setStateEi(this, 8);
         break;
     }
     }
 }
 
-void Unk_020a1c88::func_020a20a4() {
+void Unk_020a1c88::enterAct1B() {
     NG::func_0209f294(this);
 }
 
-void Unk_020a1c88::func_020a1e14() {
+void Unk_020a1c88::execAct1B() {
     switch (unk_9d) {
     case 0:
-        if (NG::func_02073090(1)) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(1)) {
+            NG::Comm_SetLostFlag();
         } else if (NG::_ZN11SaveManager13func_020a15c8Ej(this, 0)) {
             unk_9d = 1;
         }
         break;
     case 1:
     case 2:
-        if (NG::func_02073090(1)) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(1)) {
+            NG::Comm_SetLostFlag();
         } else {
             NG::_ZN12Unk_0209f30413func_0209f304EPhj(this, &unk_9d, 1);
         }
         break;
     case 3:
-        if (NG::func_02073090(1)) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(1)) {
+            NG::Comm_SetLostFlag();
         } else if (NG::func_0209f23c()) {
-            if (NG::_ZN11SaveManager13func_020a1470Ej(this, NG::data_020cbb18->unk_64)) {
+            if (NG::_ZN11SaveManager13func_020a1470Ej(this, NG::gCommManager->unk_64)) {
                 NG::_ZN11SaveManager13func_020a14acEv(this);
                 unk_9d = 4;
             }
@@ -2970,11 +2970,11 @@ void Unk_020a1c88::func_020a1e14() {
         break;
     }
     case 12:
-        if (NG::func_02073090(1)) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(1)) {
+            NG::Comm_SetLostFlag();
         } else {
-            NG::_Z13func_020720f8v();
-            if (NG::func_020eaca0()) {
+            NG::_Z20NetOverlay_AssertAnyv();
+            if (NG::Net_IsReadyToSend()) {
                 if (!NG::func_0209f23c()) {
                     unk_9d = 0xd;
                 } else {
@@ -2984,24 +2984,24 @@ void Unk_020a1c88::func_020a1e14() {
         }
         break;
     case 13:
-        if (NG::func_02073090(1)) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(1)) {
+            NG::Comm_SetLostFlag();
         } else if (unk_e2) {
-            NG::data_020cbb18->func_02072e28(2);
+            NG::gCommManager->setMode(2);
             unk_9d = 0x1c;
         }
         break;
     case 14:
-        if (NG::func_02073090(1)) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(1)) {
+            NG::Comm_SetLostFlag();
         } else {
             BOOL r6 = TRUE;
             s32 r5 = 3;
-            Unk_020cbb18 *g = NG::data_020cbb18;
+            CommManager *g = NG::gCommManager;
             for (; r5 >= 0; r5--) {
-                if (g->func_02072e88(r5)) {
-                    if (!g->func_020729cc(r5)) {
-                        if (g->func_02072d44(r5)) {
+                if (g->isSlotActive(r5)) {
+                    if (!g->isMyAid(r5)) {
+                        if (g->getAckCount(r5)) {
                             r6 = FALSE;
                             break;
                         }
@@ -3009,27 +3009,27 @@ void Unk_020a1c88::func_020a1e14() {
                 }
             }
             if (r6) {
-                if (NG::func_020749cc()) {
+                if (NG::CommCtrl_SendAct11()) {
                     unk_9d = 0xf;
                 }
             }
         }
         break;
     case 15:
-        if (NG::func_02073090(1)) {
-            NG::func_0207312c();
+        if (NG::Comm_IsConnectionLost(1)) {
+            NG::Comm_SetLostFlag();
         } else if (unk_e1) {
-            if (NG::func_020748fc()) {
-                NG::data_020cbb18->func_02072368(2);
+            if (NG::CommCtrl_SendAct13()) {
+                NG::gCommManager->setErrorMode(2);
                 unk_9d = 0x10;
             }
         }
         break;
     case 16:
-        NG::_Z13func_020720f8v();
-        if (!NG::func_020eb650()) {
-            NG::func_020a0088(this, NG::data_020e24ec, 0);
-            NG::func_0209f1c4();
+        NG::_Z20NetOverlay_AssertAnyv();
+        if (!NG::Net_PollConnected()) {
+            NG::NetSession_ReturnToSolo(this, NG::data_020e24ec, 0);
+            NG::NetOverlay_Restore();
             NG::data_020e24ec = 7;
             unk_9d = 0x1c;
         }
@@ -3053,43 +3053,43 @@ void Unk_020a1c88::func_020a1e14() {
         if (NG::func_0209f23c()) {
             b = 6;
             NG::TalkWindow_Get(0)->setNextMessage(&b, (u8 *)"sp_etc_sequence2");
-            NG::_ZN11SaveManager13func_020a3ebcEi(this, 0x11);
+            NG::_ZN11SaveManager8setStateEi(this, 0x11);
         } else {
-            NG::_ZN11SaveManager13func_020a3ebcEi(this, 8);
+            NG::_ZN11SaveManager8setStateEi(this, 8);
         }
         break;
     }
     }
 }
 
-void Unk_020a1c88::func_020a1e04() {
+void Unk_020a1c88::enterAct1C() {
     NG::_ZN12Unk_020a099013func_020a0990EPKch(this, (u8 *)"sp_etc_sequence1", 0x23);
 }
 
-void Unk_020a1c88::func_020a1de4() {
+void Unk_020a1c88::execAct1C() {
     if (NG::_ZN11SaveManager13func_020a15c8Ej(this, 1)) {
-        NG::func_0209f204();
-        NG::_ZN11SaveManager13func_020a3ebcEi(this, 0x1d);
+        NG::NetOverlay_LoadWireless();
+        NG::_ZN11SaveManager8setStateEi(this, 0x1d);
     }
 }
 
-void Unk_020a1c88::func_020a1d74() {
+void Unk_020a1c88::enterAct1D() {
     u8 buf[16];
     unk_cc = 0x258;
-    NG::func_02073bf8(1, 2, 0);
-    NG::func_020733b0();
+    NG::Comm_Start(1, 2, 0);
+    NG::Comm_SetRecvBuffersAsHost();
     NG::MI_CpuCopy8(NG::func_02063964(NG::data_021d7352), buf, 8);
     buf[9] = 1;
     buf[8] = 0;
     if (NG::_ZN8SaveData7isValidEv(NG::gSaveData) == 0) {
         buf[8] = 1;
     }
-    NG::_Z13func_0207217cv();
+    NG::_Z25NetOverlay_AssertWirelessv();
     NG::func_020ea720(buf, 10);
     unk_fe = NG::func_020977a0(NG::data_021d735c);
 }
 
-void Unk_020a1c88::func_020a1cb8() {
+void Unk_020a1c88::execAct1D() {
     u8 b[2];
     s32 n = NG::func_020a0210(this);
     if (n > 0 && n < 4) {
@@ -3098,37 +3098,37 @@ void Unk_020a1c88::func_020a1cb8() {
         p->unlockAdvance();
         b[0] = 0x26;
         p->setNextMessage(&b[0], (u8 *)"sp_etc_sequence1");
-        NG::_ZN11SaveManager13func_020a3ebcEi(this, 0);
+        NG::_ZN11SaveManager8setStateEi(this, 0);
     } else {
         BOOL ok = FALSE;
-        if (NG::func_020eb004() == 2) {
+        if (NG::Net_GetMemberCount() == 2) {
             unk_cc = ok;
             return;
         }
-        if (NG::func_020eb004() == 1) {
+        if (NG::Net_GetMemberCount() == 1) {
             if (NG::func_020e7500(&unk_cc) == 0) {
                 ok = TRUE;
             } else {
-                NG::func_020733bc();
+                NG::Comm_SendEmpty();
             }
         } else {
             ok = TRUE;
         }
         if (ok) {
-            if (NG::func_0209f000(this)) {
-                NG::func_0209f1c4();
+            if (NG::Wifi_EndSession(this)) {
+                NG::NetOverlay_Restore();
             }
             TalkWindowState *p = NG::TalkWindow_Get(0);
             b[1] = 0x25;
             p->setNextMessage(&b[1], (u8 *)"sp_etc_sequence1");
             p->func_02067990();
             p->unlockAdvance();
-            NG::_ZN11SaveManager13func_020a3ebcEi(this, 0xc);
+            NG::_ZN11SaveManager8setStateEi(this, 0xc);
         }
     }
 }
 
-void Unk_020a1c88::func_020a1c88() {
+void Unk_020a1c88::enterAct1E() {
     unk_9d = 0;
     if (NG::_ZN8SaveData7isValidEv(NG::gSaveData) == 0) {
         unk_107 = 1;
@@ -3137,18 +3137,18 @@ void Unk_020a1c88::func_020a1c88() {
     }
 }
 
-void SaveManager::func_020a1974() {
+void SaveManager::execAct1E() {
     switch (unk_9d) {
     case 0:
-        if (NF::func_02073090(-1)) {
-            NF::func_0207312c();
+        if (NF::Comm_IsConnectionLost(-1)) {
+            NF::Comm_SetLostFlag();
         } else if (func_020a15c8(0)) {
             unk_9d = 1;
         }
         break;
     case 1:
-        if (NF::func_02073090(-1)) {
-            NF::func_0207312c();
+        if (NF::Comm_IsConnectionLost(-1)) {
+            NF::Comm_SetLostFlag();
         } else {
             s32 r = NF::func_020a0210();
             if (r > 0) {
@@ -3159,8 +3159,8 @@ void SaveManager::func_020a1974() {
         }
         break;
     case 2:
-        if (NF::func_02073090(-1)) {
-            NF::func_0207312c();
+        if (NF::Comm_IsConnectionLost(-1)) {
+            NF::Comm_SetLostFlag();
         } else if (unk_fd != 0) {
             if (unk_107 == 0) {
                 NF::SaveData_Setup(NF::gSaveData, 5);
@@ -3173,8 +3173,8 @@ void SaveManager::func_020a1974() {
         }
         break;
     case 3:
-        if (NF::func_02073090(-1)) {
-            NF::func_0207312c();
+        if (NF::Comm_IsConnectionLost(-1)) {
+            NF::Comm_SetLostFlag();
         } else {
             s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, 2);
             if (r == 1) {
@@ -3185,8 +3185,8 @@ void SaveManager::func_020a1974() {
         }
         break;
     case 4:
-        if (NF::func_02073090(-1)) {
-            NF::func_0207312c();
+        if (NF::Comm_IsConnectionLost(-1)) {
+            NF::Comm_SetLostFlag();
         } else {
             s32 r = func_020a13c4();
             if (r == 1) {
@@ -3198,8 +3198,8 @@ void SaveManager::func_020a1974() {
         }
         break;
     case 5:
-        if (NF::func_02073090(-1)) {
-            NF::func_0207312c();
+        if (NF::Comm_IsConnectionLost(-1)) {
+            NF::Comm_SetLostFlag();
         } else {
             s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a.hi);
             if (r == 1) {
@@ -3210,14 +3210,14 @@ void SaveManager::func_020a1974() {
         }
         break;
     case 6:
-        if (NF::func_02073090(-1)) {
-            NF::func_0207312c();
+        if (NF::Comm_IsConnectionLost(-1)) {
+            NF::Comm_SetLostFlag();
         } else {
             u32 t = unk_eb[NF::func_020a0210()];
             if (t == 1) {
                 NF::_ZN11SaveRecord416setStateValidAltEv(NF::data_021ed32c);
                 unk_eb[NF::func_020a0210()] = 0;
-                NF::data_020cbb18->func_02072368(2);
+                NF::gCommManager->setErrorMode(2);
                 unk_9d = 7;
             } else if (t == 2) {
                 unk_9d = 0x11;
@@ -3225,10 +3225,10 @@ void SaveManager::func_020a1974() {
         }
         break;
     case 7: {
-        NF::func_02073090(-1);
+        NF::Comm_IsConnectionLost(-1);
         s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a.hi);
         if (r == 1) {
-            NF::data_020cbb18->func_02072368(0);
+            NF::gCommManager->setErrorMode(0);
             unk_9d = 0xb;
         } else if (r == 0) {
             unk_9d = 8;
@@ -3236,35 +3236,35 @@ void SaveManager::func_020a1974() {
         break;
     }
     case 8:
-        if (NF::func_02073090(-1)) {
+        if (NF::Comm_IsConnectionLost(-1)) {
             NF::_ZN11SaveRecord415markInterruptedEv(NF::data_021ed32c);
             unk_9d = 0xa;
         } else {
             s32 i = NF::func_020a0210();
-            if (NF::func_02074b58(1, (u16)(1 << i))) {
-                NF::data_020cbb18->func_02072368(0);
+            if (NF::CommCtrl_SendAct0E(1, (u16)(1 << i))) {
+                NF::gCommManager->setErrorMode(0);
                 unk_9d = 9;
             }
         }
         break;
     case 9: {
-        u32 m = NF::func_020eaf28();
+        u32 m = NF::Net_GetConnectedMask();
         if ((m & (1 << NF::func_020a0210())) == 0) {
-            if (NF::func_0209f000(this)) {
-                NF::func_0209f1c4();
+            if (NF::Wifi_EndSession(this)) {
+                NF::NetOverlay_Restore();
             }
             unk_9d = 0x16;
         }
         break;
     }
     case 10: {
-        NF::func_02073090(-1);
+        NF::Comm_IsConnectionLost(-1);
         s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a.hi);
         if (r == 1) {
-            NF::data_020cbb18->func_02072368(0);
+            NF::gCommManager->setErrorMode(0);
             unk_9d = 0xb;
         } else if (r == 0) {
-            NF::data_020cbb18->func_02072368(0);
+            NF::gCommManager->setErrorMode(0);
             unk_9d = 0x11;
         }
         break;
@@ -3286,53 +3286,53 @@ void SaveManager::func_020a1974() {
     }
     default:
         func_020a15f8();
-        NF::_ZN11SaveManager13func_020a3ebcEi(this, 0xe);
+        NF::_ZN11SaveManager8setStateEi(this, 0xe);
         break;
     }
 }
 
-void SaveManager::func_020a1950() {
-    NF::func_020eaf90(NF::_ZN12Unk_02097ff413func_02097ff4Ej(NF::PlayerData_GetCurrent(), 2));
-    NF::func_02073348();
+void SaveManager::enterAct1F() {
+    NF::Net_GetMyAid(NF::_ZN12Unk_02097ff413func_02097ff4Ej(NF::PlayerData_GetCurrent(), 2));
+    NF::Comm_PrepareJoin();
     unk_9d = 0;
 }
 
-void SaveManager::func_020a167c() {
+void SaveManager::execAct1F() {
     switch (unk_9d) {
     case 0:
-        if (NF::func_02073090(1)) {
-            NF::func_0207312c();
-        } else if (NF::func_02074894()) {
+        if (NF::Comm_IsConnectionLost(1)) {
+            NF::Comm_SetLostFlag();
+        } else if (NF::CommCtrl_SendAct14()) {
             unk_9d = 1;
         }
         break;
     case 1:
-        if (NF::func_02073090(1)) {
-            NF::func_0207312c();
-        } else if (NF::func_02074860(&unk_d4)) {
+        if (NF::Comm_IsConnectionLost(1)) {
+            NF::Comm_SetLostFlag();
+        } else if (NF::CommSend_PlayerDataToHost(&unk_d4)) {
             unk_d4 = 0;
             unk_9d = 2;
         }
         break;
     case 2:
-        if (NF::func_02073090(1)) {
-            NF::func_0207312c();
-        } else if (NF::func_02074828(&unk_d4)) {
+        if (NF::Comm_IsConnectionLost(1)) {
+            NF::Comm_SetLostFlag();
+        } else if (NF::CommSend_LetterStorageToHost(&unk_d4)) {
             unk_d4 = 0;
             unk_9d = 3;
         }
         break;
     case 3:
-        if (NF::func_02073090(1)) {
-            NF::func_0207312c();
-        } else if (NF::func_020747c0()) {
+        if (NF::Comm_IsConnectionLost(1)) {
+            NF::Comm_SetLostFlag();
+        } else if (NF::CommCtrl_SendAct17()) {
             unk_9d = 4;
         }
         break;
     case 4:
-        if (NF::func_02073090(1)) {
-            NF::func_0207312c();
-        } else if (NF::func_020eaca0(NF::_Z13func_020720f8v())) {
+        if (NF::Comm_IsConnectionLost(1)) {
+            NF::Comm_SetLostFlag();
+        } else if (NF::Net_IsReadyToSend(NF::_Z20NetOverlay_AssertAnyv())) {
             NF::Hud_GetWallet()->freezeValue();
             NF::MI_CpuCopy8(NF::PlayerData_GetCurrent(), unk_b8, 0x228c);
             NF::_ZN10PlayerData13func_02098a58Ev(NF::PlayerData_GetCurrent());
@@ -3341,23 +3341,23 @@ void SaveManager::func_020a167c() {
         }
         break;
     case 5:
-        if (NF::func_02073090(1)) {
-            NF::func_0207312c();
+        if (NF::Comm_IsConnectionLost(1)) {
+            NF::Comm_SetLostFlag();
         } else {
             s32 r = func_020a13c4();
             if (r == 1) {
                 unk_9d = 0xb;
             } else if (r != 3) {
-                NF::data_020cbb18->func_02072368(2);
+                NF::gCommManager->setErrorMode(2);
                 unk_9d = 6;
             }
         }
         break;
     case 6: {
-        NF::func_02073090(1);
+        NF::Comm_IsConnectionLost(1);
         s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a.hi);
         if (r == 1) {
-            NF::data_020cbb18->func_02072368(0);
+            NF::gCommManager->setErrorMode(0);
             unk_9d = 0xb;
         } else if (r == 0) {
             unk_9d = 7;
@@ -3365,21 +3365,21 @@ void SaveManager::func_020a167c() {
         break;
     }
     case 7:
-        if (NF::func_02073090(1)) {
+        if (NF::Comm_IsConnectionLost(1)) {
             NF::_ZN11SaveRecord415markInterruptedEv(NF::data_021ed32c);
             unk_9d = 0xa;
-        } else if (NF::func_02074b58(1, 1)) {
+        } else if (NF::CommCtrl_SendAct0E(1, 1)) {
             unk_9d = 8;
         }
         break;
     case 8:
-        if (NF::func_02073090(1)) {
+        if (NF::Comm_IsConnectionLost(1)) {
             NF::_ZN11SaveRecord415markInterruptedEv(NF::data_021ed32c);
             unk_9d = 0xa;
-        } else if (NF::func_020eaca0(NF::_Z13func_020720f8v())) {
+        } else if (NF::Net_IsReadyToSend(NF::_Z20NetOverlay_AssertAnyv())) {
             u32 t = unk_eb[0];
             if (t == 1) {
-                NF::data_020cbb18->func_02072368(0);
+                NF::gCommManager->setErrorMode(0);
                 unk_9d = 9;
             } else if (t == 2) {
                 NF::_ZN11SaveRecord415markInterruptedEv(NF::data_021ed32c);
@@ -3388,21 +3388,21 @@ void SaveManager::func_020a167c() {
         }
         break;
     case 9:
-        if (NF::func_0209f000(this)) {
-            NF::func_0209f1c4();
+        if (NF::Wifi_EndSession(this)) {
+            NF::NetOverlay_Restore();
         }
         NF::MI_CpuCopy8(unk_b8, NF::PlayerData_GetCurrent(), 0x228c);
         NF::Hud_GetWallet()->unfreezeValue();
         unk_9d = 0x16;
         break;
     case 10: {
-        NF::func_02073090(1);
+        NF::Comm_IsConnectionLost(1);
         s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a.hi);
         if (r == 1) {
-            NF::data_020cbb18->func_02072368(0);
+            NF::gCommManager->setErrorMode(0);
             unk_9d = 0xb;
         } else if (r == 0) {
-            NF::data_020cbb18->func_02072368(0);
+            NF::gCommManager->setErrorMode(0);
             unk_9d = 0x11;
         }
         break;
@@ -3421,7 +3421,7 @@ void SaveManager::func_020a167c() {
         NF::func_0209f898(this, &unk_9d, 0xb, 0x11, 1, 1);
         break;
     default:
-        NF::_ZN11SaveManager13func_020a3ebcEi(this, 0);
+        NF::_ZN11SaveManager8setStateEi(this, 0);
         break;
     }
 }
@@ -3487,7 +3487,7 @@ void Unk_020e2824::vfunc_14() {
         break;
     case 0x26:
         NF::_ZN15TalkWindowState11lockAdvanceEv(o);
-        NF::_ZN11SaveManager13func_020a3ebcEi((void *)unk_44, 0x1e);
+        NF::_ZN11SaveManager8setStateEi((void *)unk_44, 0x1e);
         break;
     case 0x69:
         NF::_ZN15TalkWindowState14setNextMessageEPhPv(o, NF::gTalkMsgIndexEnd, 0);
@@ -3533,13 +3533,13 @@ void SaveManager::func_020a1464(u32 i, u8 v) {
     unk_103[i] = v;
 }
 
-Unk_0203ecdc data_021ed51c;
+Unk_0203ecdc sAxMailBuf;
 
-Unk_0203ec54 data_021ed448;
+Unk_0203ec54 sAxBbsBuf;
 
-Unk_02087224 data_021ed824;
+Unk_02087224 sGameStatsBuf;
 
-Unk_020e27d4_Ent data_021ed624[32] = {
+Unk_020e27d4_Ent sSaveManagerStates[32] = {
     {*(Unk_020e27d4_Fn *)data_020e273c, *(Unk_020e27d4_Fn *)data_020e2734},
     {*(Unk_020e27d4_Fn *)data_020e25bc, *(Unk_020e27d4_Fn *)data_020e2724},
     {*(Unk_020e27d4_Fn *)data_020e271c, *(Unk_020e27d4_Fn *)data_020e25ac},
@@ -3574,171 +3574,171 @@ Unk_020e27d4_Ent data_021ed624[32] = {
     {*(Unk_020e27d4_Fn *)data_020e2754, *(Unk_020e27d4_Fn *)data_020e2544},
 };
 
-void *data_020e2654[2] = {(void *)NT::_ZN12Unk_020a323813func_020a35b8Ev, 0};
+void *data_020e2654[2] = {(void *)NT::_ZN12Unk_020a323810enterAct0BEv, 0};
 
 u8 data_021ed390;
 
 SaveManager *gSaveManager;
 
-void *data_020e2674[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3584Ev, 0};
+void *data_020e2674[2] = {(void *)NT::_ZN12Unk_020a323810enterAct0CEv, 0};
 
 u8 data_021ed3a8;
 
-void *data_020e2574[2] = {(void *)NT::_ZN11SaveManager13func_020a3b7cEv, 0};
+void *data_020e2574[2] = {(void *)NT::_ZN11SaveManager10enterAct03Ev, 0};
 
-char *data_020e24f8 = data_020e24f0;
+char *sNetRegion = data_020e24f0;
 
-void *data_020e2624[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3398Ev, 0};
+void *data_020e2624[2] = {(void *)NT::_ZN12Unk_020a32389execAct11Ev, 0};
 
 char data_020e2790[] = "forest_mail_USA.bin";
 
 char data_020e24f0[] = "us";
 
-void *data_020e250c[2] = {(void *)NT::_ZN12Unk_020a323813func_020a32fcEv, 0};
+void *data_020e250c[2] = {(void *)NT::_ZN12Unk_020a32389execAct12Ev, 0};
 
-void *data_020e2514[2] = {(void *)NT::_ZN12Unk_020a323813func_020a32e0Ev, 0};
+void *data_020e2514[2] = {(void *)NT::_ZN12Unk_020a323810enterAct13Ev, 0};
 
-void *data_020e256c[2] = {(void *)NT::func_020a28fc, 0};
+void *data_020e256c[2] = {(void *)NT::SaveManager_EnterAct18, 0};
 
-void *data_020e25d4[2] = {(void *)NT::_ZN12Unk_020a1c8813func_020a20a4Ev, 0};
+void *data_020e25d4[2] = {(void *)NT::_ZN12Unk_020a1c8810enterAct1BEv, 0};
 
-void *data_020e2754[2] = {(void *)NT::_ZN11SaveManager13func_020a1950Ev, 0};
+void *data_020e2754[2] = {(void *)NT::_ZN11SaveManager10enterAct1FEv, 0};
 
-void *data_020e25cc[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3768Ev, 0};
+void *data_020e25cc[2] = {(void *)NT::_ZN12Unk_020a323810enterAct07Ev, 0};
 
-s32 data_021ed3c8;
+s32 sSaveManagerRequest;
 
 u8 data_021ed3ac[3];
 
 const Unk_020a3238_Vec data_020d0770 = {0x10000, 0, 0x5000};
 
-void *data_020e272c[2] = {(void *)NT::_ZN11SaveManager13func_020a1974Ev, 0};
+void *data_020e272c[2] = {(void *)NT::_ZN11SaveManager9execAct1EEv, 0};
 
-void *data_020e2724[2] = {(void *)NT::_ZN11SaveManager13func_020a3cc4Ev, 0};
+void *data_020e2724[2] = {(void *)NT::_ZN11SaveManager9execAct01Ev, 0};
 
-void *data_020e271c[2] = {(void *)NT::_ZN11SaveManager13func_020a3c84Ev, 0};
+void *data_020e271c[2] = {(void *)NT::_ZN11SaveManager10enterAct02Ev, 0};
 
-void *data_020e257c[2] = {(void *)NT::func_020a25d8, 0};
+void *data_020e257c[2] = {(void *)NT::SaveManager_EnterAct19, 0};
 
-void *data_020e2584[2] = {(void *)NT::_ZN12Unk_020a1c8813func_020a2400Ev, 0};
+void *data_020e2584[2] = {(void *)NT::_ZN12Unk_020a1c8810enterAct1AEv, 0};
 
-void *data_020e2704[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3ad0Ev, 0};
+void *data_020e2704[2] = {(void *)NT::_ZN12Unk_020a32389execAct03Ev, 0};
 
-void *data_020e26fc[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3ac8Ev, 0};
+void *data_020e26fc[2] = {(void *)NT::_ZN12Unk_020a323810enterAct04Ev, 0};
 
-void *data_020e26f4[2] = {(void *)NT::_ZN12Unk_020a323813func_020a39e4Ev, 0};
+void *data_020e26f4[2] = {(void *)NT::_ZN12Unk_020a32389execAct04Ev, 0};
 
-void *data_020e2594[2] = {(void *)NT::_ZN12Unk_020a1c8813func_020a20acEv, 0};
+void *data_020e2594[2] = {(void *)NT::_ZN12Unk_020a1c889execAct1AEv, 0};
 
-void *data_020e26e4[2] = {(void *)NT::_ZN12Unk_020a323813func_020a38f4Ev, 0};
+void *data_020e26e4[2] = {(void *)NT::_ZN12Unk_020a32389execAct05Ev, 0};
 
-u8 data_021ed39c;
+u8 sGameStatsReceived;
 
-u8 data_021ed3a0;
+u8 sAxBbsReceived;
 
-void *data_020e26cc[2] = {(void *)NT::_ZN12Unk_020a1c8813func_020a1c88Ev, 0};
+void *data_020e26cc[2] = {(void *)NT::_ZN12Unk_020a1c8810enterAct1EEv, 0};
 
-void *data_020e26c4[2] = {(void *)NT::_ZN12Unk_020a323813func_020a36a4Ev, 0};
+void *data_020e26c4[2] = {(void *)NT::_ZN12Unk_020a32389execAct07Ev, 0};
 
-void *data_020e26bc[2] = {(void *)NT::_ZN12Unk_020a323813func_020a36a0Ev, 0};
+void *data_020e26bc[2] = {(void *)NT::_ZN12Unk_020a323810enterAct08Ev, 0};
 
-void *data_020e26b4[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3674Ev, 0};
+void *data_020e26b4[2] = {(void *)NT::_ZN12Unk_020a32389execAct08Ev, 0};
 
-void *data_020e26ac[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3670Ev, 0};
+void *data_020e26ac[2] = {(void *)NT::_ZN12Unk_020a323810enterAct09Ev, 0};
 
-void *data_020e26a4[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3618Ev, 0};
+void *data_020e26a4[2] = {(void *)NT::_ZN12Unk_020a32389execAct09Ev, 0};
 
-void *data_020e269c[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3614Ev, 0};
+void *data_020e269c[2] = {(void *)NT::_ZN12Unk_020a323810enterAct0AEv, 0};
 
-void *data_020e2694[2] = {(void *)NT::_ZN12Unk_020a323813func_020a35bcEv, 0};
+void *data_020e2694[2] = {(void *)NT::_ZN12Unk_020a32389execAct0AEv, 0};
 
-void *data_020e268c[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3514Ev, 0};
+void *data_020e268c[2] = {(void *)NT::_ZN12Unk_020a323810enterAct0DEv, 0};
 
-void *data_020e267c[2] = {(void *)NT::_ZN12Unk_020a1c8813func_020a1cb8Ev, 0};
+void *data_020e267c[2] = {(void *)NT::_ZN12Unk_020a1c889execAct1DEv, 0};
 
 void *gTownTransferBuf;
 
-void *data_020e2684[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3518Ev, 0};
+void *data_020e2684[2] = {(void *)NT::_ZN12Unk_020a32389execAct0CEv, 0};
 
 Unk_0209fb48_V3 data_020e2770 = {4, 4, 4};
 
-void *data_020e26ec[2] = {(void *)NT::_ZN12Unk_020a323813func_020a39c8Ev, 0};
+void *data_020e26ec[2] = {(void *)NT::_ZN12Unk_020a323810enterAct05Ev, 0};
 
-void *data_020e270c[2] = {(void *)NT::_ZN12Unk_020a323813func_020a34e4Ev, 0};
+void *data_020e270c[2] = {(void *)NT::_ZN12Unk_020a32389execAct0DEv, 0};
 
-void *data_020e273c[2] = {(void *)NT::_ZN11SaveManager13func_020a3eb8Ev, 0};
+void *data_020e273c[2] = {(void *)NT::_ZN11SaveManager10enterAct00Ev, 0};
 
-void *data_020e2744[2] = {(void *)NT::_ZN12Unk_020a323813func_020a347cEv, 0};
+void *data_020e2744[2] = {(void *)NT::_ZN12Unk_020a32389execAct0EEv, 0};
 
-void *data_020e2644[2] = {(void *)NT::_ZN12Unk_020a323813func_020a340cEv, 0};
+void *data_020e2644[2] = {(void *)NT::_ZN12Unk_020a32389execAct0FEv, 0};
 
-void *data_020e263c[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3408Ev, 0};
+void *data_020e263c[2] = {(void *)NT::_ZN12Unk_020a323810enterAct10Ev, 0};
 
-void *data_020e2634[2] = {(void *)NT::_ZN12Unk_020a323813func_020a33c8Ev, 0};
+void *data_020e2634[2] = {(void *)NT::_ZN12Unk_020a32389execAct10Ev, 0};
 
-void *data_020e253c[2] = {(void *)NT::_ZN12Unk_020a323813func_020a33c4Ev, 0};
+void *data_020e253c[2] = {(void *)NT::_ZN12Unk_020a323810enterAct11Ev, 0};
 
-void *data_020e261c[2] = {(void *)NT::_ZN12Unk_020a1c8813func_020a1e04Ev, 0};
+void *data_020e261c[2] = {(void *)NT::_ZN12Unk_020a1c8810enterAct1CEv, 0};
 
 const s32 sSaveSlotSizes[3] = {0x15fe0, 0x15fe0, 0x11df4};
 
-void *data_020e2614[2] = {(void *)NT::_ZN12Unk_020a1c8813func_020a1e14Ev, 0};
+void *data_020e2614[2] = {(void *)NT::_ZN12Unk_020a1c889execAct1BEv, 0};
 
 char data_020e277c[] = "forest_bbs_USA.bin";
 
-void *data_020e2604[2] = {(void *)NT::_ZN12Unk_020a323813func_020a324cEv, 0};
+void *data_020e2604[2] = {(void *)NT::_ZN12Unk_020a32389execAct13Ev, 0};
 
-void *data_020e25fc[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3238Ev, 0};
+void *data_020e25fc[2] = {(void *)NT::_ZN12Unk_020a323810enterAct14Ev, 0};
 
-void *data_020e25f4[2] = {(void *)NT::func_020a2ecc, 0};
+void *data_020e25f4[2] = {(void *)NT::SaveManager_ExecAct14, 0};
 
-void *data_020e25ec[2] = {(void *)NT::func_020a2e9c, 0};
+void *data_020e25ec[2] = {(void *)NT::SaveManager_EnterAct15, 0};
 
-char *data_020e2500 = data_020e2790;
+char *sAxMailFileName = data_020e2790;
 
-void *data_020e25dc[2] = {(void *)NT::func_020a2bdc, 0};
+void *data_020e25dc[2] = {(void *)NT::SaveManager_EnterAct16, 0};
 
 s32 data_021ed3bc;
 
-void *data_020e2554[2] = {(void *)NT::func_020a2ae4, 0};
+void *data_020e2554[2] = {(void *)NT::SaveManager_ExecAct16, 0};
 
-void *data_020e25c4[2] = {(void *)NT::func_020a2908, 0};
+void *data_020e25c4[2] = {(void *)NT::SaveManager_ExecAct17, 0};
 
-void *data_020e2734[2] = {(void *)NT::_ZN11SaveManager13func_020a3decEv, 0};
+void *data_020e2734[2] = {(void *)NT::_ZN11SaveManager9execAct00Ev, 0};
 
-void *data_020e25b4[2] = {(void *)NT::func_020a25e4, 0};
+void *data_020e25b4[2] = {(void *)NT::SaveManager_ExecAct18, 0};
 
 s32 data_021ed3c4;
 
 const Unk_020a3238_Vec data_020d0788 = {0x10000, 0, 0x5000};
 
-void *data_020e259c[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3784Ev, 0};
+void *data_020e259c[2] = {(void *)NT::_ZN12Unk_020a32389execAct06Ev, 0};
 
-void *data_020e25a4[2] = {(void *)NT::_ZN12Unk_020a1c8813func_020a2408Ev, 0};
+void *data_020e25a4[2] = {(void *)NT::_ZN12Unk_020a1c889execAct19Ev, 0};
 
-void *data_020e25ac[2] = {(void *)NT::_ZN11SaveManager13func_020a3b9cEv, 0};
+void *data_020e25ac[2] = {(void *)NT::_ZN11SaveManager9execAct02Ev, 0};
 
 const u32 sSaveSlotOffsets[3] = {0, 0x15fe0, 0x2e20c};
 
-void *data_020e264c[2] = {(void *)NT::_ZN12Unk_020a1c8813func_020a1de4Ev, 0};
+void *data_020e264c[2] = {(void *)NT::_ZN12Unk_020a1c889execAct1CEv, 0};
 
-void *data_020e265c[2] = {(void *)NT::_ZN12Unk_020a1c8813func_020a1d74Ev, 0};
+void *data_020e265c[2] = {(void *)NT::_ZN12Unk_020a1c8810enterAct1DEv, 0};
 
 Unk_0209fb48_V3 data_020e2764 = {3, 3, 3};
 
 u8 data_021ed3a4;
 
-char *data_020e24f4 = data_020e277c;
+char *sAxBbsFileName = data_020e277c;
 
-void *data_020e2714[2] = {(void *)NT::_ZN12Unk_020a323813func_020a34e0Ev, 0};
+void *data_020e2714[2] = {(void *)NT::_ZN12Unk_020a323810enterAct0EEv, 0};
 
-void *data_020e274c[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3478Ev, 0};
+void *data_020e274c[2] = {(void *)NT::_ZN12Unk_020a323810enterAct0FEv, 0};
 
-void *data_020e2544[2] = {(void *)NT::_ZN11SaveManager13func_020a167cEv, 0};
+void *data_020e2544[2] = {(void *)NT::_ZN11SaveManager9execAct1FEv, 0};
 
-void *data_020e2504[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3390Ev, 0};
+void *data_020e2504[2] = {(void *)NT::_ZN12Unk_020a323810enterAct12Ev, 0};
 
-u8 data_021ed394;
+u8 sAxMailReceived;
 
 u8 data_020e252c[8] = {0x9c, 0x9c, 0x9c, 0x9c, 0x9c, 0x9c, 0, 0};
 
@@ -4103,41 +4103,41 @@ void Unk_020a0990::func_020a0990(const char *str, u8 flag) {
     o->unk_08 = 1;
 }
 
-extern "C" void func_020a0984(void) { NE::data_021ed3c8 = 1; }
+extern "C" void SaveManager_RequestAct01(void) { NE::sSaveManagerRequest = 1; }
 
-extern "C" void func_020a0978(void) { NE::data_021ed3c8 = 2; }
+extern "C" void SaveManager_RequestAct02(void) { NE::sSaveManagerRequest = 2; }
 
-extern "C" void func_020a096c(void) { NE::data_021ed3c8 = 6; }
+extern "C" void SaveManager_RequestAct06(void) { NE::sSaveManagerRequest = 6; }
 
-extern "C" void func_020a0960(void) { NE::data_021ed3c8 = 5; }
+extern "C" void SaveManager_RequestAct05(void) { NE::sSaveManagerRequest = 5; }
 
-extern "C" void func_020a0954(void) { NE::data_021ed3c8 = 3; }
+extern "C" void SaveManager_RequestAct03(void) { NE::sSaveManagerRequest = 3; }
 
-extern "C" void func_020a0948(void) { NE::data_021ed3c8 = 0x12; }
+extern "C" void SaveManager_RequestAct12(void) { NE::sSaveManagerRequest = 0x12; }
 
-extern "C" void func_020a093c(void) { NE::data_021ed3c8 = 0x13; }
+extern "C" void SaveManager_RequestAct13(void) { NE::sSaveManagerRequest = 0x13; }
 
-extern "C" void func_020a0930(void) { NE::data_021ed3c8 = 0x14; }
+extern "C" void SaveManager_RequestAct14(void) { NE::sSaveManagerRequest = 0x14; }
 
-extern "C" void func_020a0924(void) { NE::data_021ed3c8 = 0x15; }
+extern "C" void SaveManager_RequestAct15(void) { NE::sSaveManagerRequest = 0x15; }
 
-extern "C" void func_020a0918(void) { NE::data_021ed3c8 = 0x16; }
+extern "C" void SaveManager_RequestAct16(void) { NE::sSaveManagerRequest = 0x16; }
 
-extern "C" void func_020a090c(void) { NE::data_021ed3c8 = 0x17; }
+extern "C" void SaveManager_RequestAct17(void) { NE::sSaveManagerRequest = 0x17; }
 
-extern "C" void func_020a0900(void) { NE::data_021ed3c8 = 0x18; }
+extern "C" void SaveManager_RequestAct18(void) { NE::sSaveManagerRequest = 0x18; }
 
-extern "C" void func_020a08f4(void) { NE::data_021ed3c8 = 0x19; }
+extern "C" void SaveManager_RequestAct19(void) { NE::sSaveManagerRequest = 0x19; }
 
-extern "C" void func_020a08e8(void) { NE::data_021ed3c8 = 0x1a; }
+extern "C" void SaveManager_RequestAct1A(void) { NE::sSaveManagerRequest = 0x1a; }
 
-extern "C" void func_020a08dc(void) { NE::data_021ed3c8 = 0x1b; }
+extern "C" void SaveManager_RequestAct1B(void) { NE::sSaveManagerRequest = 0x1b; }
 
-extern "C" void func_020a08d0(void) { NE::data_021ed3c8 = 0x1f; }
+extern "C" void SaveManager_RequestAct1F(void) { NE::sSaveManagerRequest = 0x1f; }
 
-extern "C" void func_020a08c4(void) { NE::data_021ed3c8 = 0x1c; }
+extern "C" void SaveManager_RequestAct1C(void) { NE::sSaveManagerRequest = 0x1c; }
 
-extern "C" BOOL func_020a08a8(void) {
+extern "C" BOOL SaveManager_IsIdle(void) {
     SaveSlotWriter *p = NE::gSaveManager;
     if (p != NULL && p->unk_50 == 0) return TRUE;
     return FALSE;
@@ -4276,13 +4276,13 @@ extern "C" void func_020a042c() {
     if (!ND::func_020a02dc()) {
         if (ND::func_020a0318()) ND::_ZN8SaveData5resetEv(ND::gSaveData);
         if (ND::func_020a02f0()) {
-            Unk_020cbb18_ff4c *g = ND::data_020cbb18;
+            Unk_020cbb18_ff4c *g = ND::gCommManager;
             g->unk_68 = 0;
             ND::PlayerSession_SetDataIndex(g->unk_68, 0);
         } else {
             void *p = ND::data_021d735c;
             s32 t = ND::func_020977a0(p);
-            Unk_020cbb18_ff4c *g = ND::data_020cbb18;
+            Unk_020cbb18_ff4c *g = ND::gCommManager;
             g->unk_68 = 0;
             ND::PlayerSession_SetDataIndex(g->unk_68, t);
             ND::func_020975f0(p, ND::data_020e252c, 0, t);
@@ -4407,7 +4407,7 @@ extern "C" u32 func_020a0210() {
 
 extern "C" void func_020a0208(Unk_021ed3b0 *p, u32 v) { p->unk_fd = v; }
 
-extern "C" void func_020a0088(void *a, s32 b, s32 c) {
+extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
     s32 i;
     Unk_020cbb18_ff4c *g;
     s32 s;
@@ -4416,14 +4416,14 @@ extern "C" void func_020a0088(void *a, s32 b, s32 c) {
     u8 *r4;
     struct { Unk_020a0088_Date packed; u32 d[2]; } l;
     ND::func_02073340(a);
-    ND::func_0209f000(a);
+    ND::Wifi_EndSession(a);
     if (b < 7) {
-        g = ND::data_020cbb18;
+        g = ND::gCommManager;
         ND::PlayerSession_ClearDataIndex(g->unk_68);
         g->unk_68 = 0;
     }
-    g = ND::data_020cbb18;
-    ND::_ZN12Unk_020cbb1813func_020729a8Ej(g, 1);
+    g = ND::gCommManager;
+    ND::_ZN11CommManager14setMemberCountEj(g, 1);
     if (b < 7) {
         ND::PlayerSession_SetDataIndex(g->unk_68, b);
     }
@@ -4436,20 +4436,20 @@ extern "C" void func_020a0088(void *a, s32 b, s32 c) {
         if (ND::PlayerData_Get(i + 4)) ND::_ZN10PlayerData13func_02098a58Ev();
     }
     if (c == 0) {
-        ND::func_0209cfc8(0);
+        ND::Clock_Update(0);
         ND::SaveData_Setup(ND::gSaveData, 2);
         ND::SaveData_Apply(ND::gSaveData);
-        if (ND::func_0204da0c()) {
-            ND::_ZN12Unk_0204da1813func_0204dab4Ev(ND::func_0204da0c());
-            ND::_ZN12Unk_0204da1813func_0204da24Ev(ND::func_0204da0c());
-            ND::func_0204c6a4(ND::func_0204da0c());
+        if (ND::TownBlockMap_Get()) {
+            ND::_ZN12TownBlockMap13updateAcreIdsEv(ND::TownBlockMap_Get());
+            ND::_ZN12TownBlockMap6bindBgEv(ND::TownBlockMap_Get());
+            ND::Town_ClearBorderTrees(ND::TownBlockMap_Get());
         }
-        ND::func_0204d42c();
-        ND::func_0204d3d8();
+        ND::HouseRoomMaps_UpdateAll();
+        ND::HouseRoomMaps_BindBg();
     } else {
-        ND::func_02045e98();
+        ND::Town_OnLoad();
     }
-    ND::func_020741b8(-4);
+    ND::Comm_ResetPeerState(-4);
     if (c == 0) {
         t = ND::PlayerSession_GetDataIndex(0);
         if (t < 7) {
@@ -4458,7 +4458,7 @@ extern "C" void func_020a0088(void *a, s32 b, s32 c) {
             if (*r4 & 6) {
                 l.d[0] = 0;
                 l.d[1] = 0;
-                ND::func_0209d498(l.d);
+                ND::Clock_GetDateTime(l.d);
                 l.packed.v = (l.packed.v & ~0x7f) | (((u8 *)l.d)[5] & 0x7f);
                 l.packed.v = (l.packed.v & ~0x780) | ((((u8 *)l.d)[4] & 0xf) << 7);
                 l.packed.v = (l.packed.v & ~0xf800) | ((((u8 *)l.d)[3] & 0x1f) << 11);
@@ -4481,15 +4481,15 @@ extern "C" void func_0209fffc(void *a) {
     s32 pick;
     n = 0;
     i = 3;
-    g = ND::data_020cbb18;
+    g = ND::gCommManager;
     for (; i >= 0; i--) {
-        if (i != cur && ND::_ZN12Unk_020cbb1813func_02072e88Ei(g, i)) {
+        if (i != cur && ND::_ZN11CommManager12isSlotActiveEi(g, i)) {
             list[n] = i;
             n++;
         }
     }
     for (i = 3; i >= 0; i--) {
-        if (ND::_ZN12Unk_020cbb1813func_02072e88Ei(g, i)) {
+        if (ND::_ZN11CommManager12isSlotActiveEi(g, i)) {
             ND::_ZN11SaveManager13func_020a147cEjh(a, i, i);
         } else {
             ND::_ZN11SaveManager13func_020a147cEjh(a, i, 4);
@@ -4504,9 +4504,9 @@ extern "C" void func_0209ff8c(void *a) {
     s32 list[4];
     s32 n = 0;
     s32 i = 3, j;
-    Unk_020cbb18_ff4c *g = ND::data_020cbb18;
+    Unk_020cbb18_ff4c *g = ND::gCommManager;
     for (; i >= 0; i--) {
-        if (ND::_ZN12Unk_020cbb1813func_02072e88Ei(g, i)) {
+        if (ND::_ZN11CommManager12isSlotActiveEi(g, i)) {
             list[n] = i;
             n++;
         }
@@ -4524,9 +4524,9 @@ extern "C" void func_0209ff8c(void *a) {
 
 extern "C" void func_0209ff4c(void *a) {
     s32 i = 3;
-    Unk_020cbb18_ff4c *g = ND::data_020cbb18;
+    Unk_020cbb18_ff4c *g = ND::gCommManager;
     for (; i >= 0; i--) {
-        if (ND::_ZN12Unk_020cbb1813func_02072e88Ei(g, i)) {
+        if (ND::_ZN11CommManager12isSlotActiveEi(g, i)) {
             ND::func_0208f0b0(i);
             ND::_ZN12Unk_0208f23813func_0208f18cEv();
             ND::_ZN12Unk_020872fc13func_02087368Ev();
@@ -4536,16 +4536,16 @@ extern "C" void func_0209ff4c(void *a) {
 }
 
 extern "C" void func_0209fefc(Unk_0209f638 *self) {
-    Unk_020cbb18 *o;
+    CommManager *o;
     s32 i = 3;
-    o = NC::data_020cbb18;
+    o = NC::gCommManager;
     for (; i >= 0; i--) {
-        if (o->func_02072e88(i)) {
+        if (o->isSlotActive(i)) {
             NC::_ZN12Unk_020872fc13func_02087368Ev(NC::_ZN12Unk_0208f23813func_0208f18cEv(NC::func_0208f0b0(i)));
         }
     }
     for (i = 3; i >= 0; i--) {
-        if (o->func_02072e88(i)) {
+        if (o->isSlotActive(i)) {
             NC::func_0209fcc4(self, i);
         }
     }
@@ -4571,16 +4571,16 @@ extern "C" void func_0209fcc4(Unk_0209f638 *self, s32 idx) {
     u32 sb[7];
     NC::_ZN12Unk_020dd38cC2Ev(sb);
     s32 i = 0;
-    Unk_020cbb18 *o = NC::data_020cbb18;
+    CommManager *o = NC::gCommManager;
     for (; i < 4; i++) {
         if (i == idx) continue;
-        if (!o->func_02072e88(i)) continue;
+        if (!o->isSlotActive(i)) continue;
         other = NC::PlayerData_GetBySessionSlot(i);
         if (!other) continue;
         NC::func_020638d0(NC::func_0209409c(NC::_ZN10PlayerData11getPlayerIdEv(other)), sb);
         other2 = NC::_ZN10PlayerData13func_020986a4Ev(other);
         if (NC::_ZN12Unk_020872fc13func_02087354Ev(other2)) continue;
-        if (NC::func_020eaf18() == 3 || NC::func_020eaf18() == 4) {
+        if (NC::Net_GetMode() == 3 || NC::Net_GetMode() == 4) {
             if (!NC::func_0209fc68(self, other, r7)) continue;
             if (!NC::func_0209fc68(self, r7, other)) continue;
         }
@@ -4633,12 +4633,12 @@ extern "C" void func_0209fcc4(Unk_0209f638 *self, s32 idx) {
 }
 
 extern "C" BOOL func_0209fc68(Unk_0209f638 *self, void *a, void *b) {
-    void *r6 = NC::func_02076e1c(NC::func_02076c7c(NC::_ZN10PlayerData15getWifiUserDataEv(a)));
-    u8 *r5 = (u8 *)NC::func_02076db4(NC::_ZN10PlayerData13getFriendListEv(b));
+    void *r6 = NC::DwcFriendData_GetBytes(NC::PlayerWifiData_GetOwnFriendData(NC::_ZN10PlayerData15getWifiUserDataEv(a)));
+    u8 *r5 = (u8 *)NC::FriendList_GetEntries(NC::_ZN10PlayerData13getFriendListEv(b));
     s32 i;
     u32 st = 0x1c;
     for (i = 0; i < 0x20; i++) {
-        void *e = NC::func_02076e1c(NC::func_02076cf0(r5 + i * st));
+        void *e = NC::DwcFriendData_GetBytes(NC::FriendEntry_GetFriendData(r5 + i * st));
         if (e) {
             if (NC::func_020e9d88(r6, e)) return TRUE;
         }
@@ -4670,10 +4670,10 @@ extern "C" void func_0209fb48(Unk_0209f638 *self) {
     Unk_0209fb48_V3 a = NC::data_020e2764;
     Unk_0209fb48_V3 b = NC::data_020e2770;
     s32 i = 2;
-    Unk_020cbb18 *o = NC::data_020cbb18;
+    CommManager *o = NC::gCommManager;
     for (; i >= 0; i--) {
         s32 n = i + 1;
-        if (o->func_02072e88(n)) {
+        if (o->isSlotActive(n)) {
             s32 q = (s32)NC::_ZN11SaveManager13func_020a1484Ej(self, n);
             if (q < 4) {
                 if (NC::_ZN12Unk_0208f23813func_0208f1c0Ev(NC::func_0208f0b0(q))) {
@@ -4687,40 +4687,40 @@ extern "C" void func_0209fb48(Unk_0209f638 *self) {
             }
         }
     }
-    NC::func_02074eb4(a.v[0], b.v[0], a.v[1], b.v[1], a.v[2], b.v[2]);
+    NC::CommSend_VillagerTransferReply(a.v[0], b.v[0], a.v[1], b.v[1], a.v[2], b.v[2]);
 }
 
 extern "C" s32 func_0209f898(Unk_0209f638 *self, u8 *st, s32 base, s32 base2, u32 mask, u8 a6) {
     u32 cur = *st;
     if (cur == base) {
-        if (NC::func_02073090(mask)) {
-            NC::func_0207312c();
+        if (NC::Comm_IsConnectionLost(mask)) {
+            NC::Comm_SetLostFlag();
             return 0x20;
         }
-        if (NC::func_020eaf90() == 0) {
-            if (NC::func_02074b58(2, mask)) {
+        if (NC::Net_GetMyAid() == 0) {
+            if (NC::CommCtrl_SendAct0E(2, mask)) {
                 *st = base + 1;
             }
         } else {
-            if (NC::func_02074b58(2, 1)) {
+            if (NC::CommCtrl_SendAct0E(2, 1)) {
                 *st = base + 1;
             }
         }
     } else if (cur == base + 1) {
-        if (NC::func_02073090(mask)) {
-            NC::func_0207312c();
+        if (NC::Comm_IsConnectionLost(mask)) {
+            NC::Comm_SetLostFlag();
             return 0x20;
         }
-        NC::_Z13func_020720f8v();
-        if (NC::func_020eaca0()) {
+        NC::_Z20NetOverlay_AssertAnyv();
+        if (NC::Net_IsReadyToSend()) {
             *st = base + 2;
         }
     } else if (cur == base + 2) {
-        if (NC::func_020eaf90() == 0) {
+        if (NC::Net_GetMyAid() == 0) {
             BOOL flag = TRUE;
             u32 m = 0;
             s32 i;
-            NC::func_020741b0();
+            NC::Comm_EnterCritical();
             for (i = 3; i >= 0; i--) {
                 if (i != 0) {
                     u32 bit = 1 << i;
@@ -4733,40 +4733,40 @@ extern "C" s32 func_0209f898(Unk_0209f638 *self, u8 *st, s32 base, s32 base2, u3
                     }
                 }
             }
-            BOOL err = NC::func_02073090(m);
-            NC::func_020741a8();
+            BOOL err = NC::Comm_IsConnectionLost(m);
+            NC::Comm_LeaveCritical();
             if (err) {
-                NC::func_0207312c();
+                NC::Comm_SetLostFlag();
                 return 0x20;
             }
             if (flag) {
                 NC::func_02073340();
-                NC::func_0209f000(self);
+                NC::Wifi_EndSession(self);
                 *st = base + 3;
             }
         } else {
-            if (NC::func_02073090(mask)) {
-                NC::func_0207312c();
+            if (NC::Comm_IsConnectionLost(mask)) {
+                NC::Comm_SetLostFlag();
                 return 0x20;
             }
             if (self->unk_eb[0]) {
-                if (NC::func_020748fc()) {
+                if (NC::CommCtrl_SendAct13()) {
                     *st = base + 3;
                 }
             }
         }
     } else if (cur == base + 3) {
-        if (NC::func_020eaf90() == 0) {
+        if (NC::Net_GetMyAid() == 0) {
             *st = base + 4;
         } else {
-            if (NC::func_02073090(mask)) {
-                NC::func_0207312c();
+            if (NC::Comm_IsConnectionLost(mask)) {
+                NC::Comm_SetLostFlag();
                 return 0x20;
             }
-            NC::_Z13func_020720f8v();
-            if (NC::func_020eaca0()) {
+            NC::_Z20NetOverlay_AssertAnyv();
+            if (NC::Net_IsReadyToSend()) {
                 NC::func_02073340();
-                NC::func_0209f000(self);
+                NC::Wifi_EndSession(self);
                 *st = base + 4;
             }
         }
@@ -4777,34 +4777,34 @@ extern "C" s32 func_0209f898(Unk_0209f638 *self, u8 *st, s32 base, s32 base2, u3
 
     cur = *st;
     if (cur == base2) {
-        if (NC::func_02073090(mask)) {
-            NC::func_0207312c();
+        if (NC::Comm_IsConnectionLost(mask)) {
+            NC::Comm_SetLostFlag();
             return 0x20;
         }
-        if (NC::func_020eaf90() == 0) {
-            if (NC::func_02074b58(2, mask)) {
+        if (NC::Net_GetMyAid() == 0) {
+            if (NC::CommCtrl_SendAct0E(2, mask)) {
                 *st = base2 + 1;
             }
         } else {
-            if (NC::func_020748fc()) {
+            if (NC::CommCtrl_SendAct13()) {
                 *st = base2 + 1;
             }
         }
     } else if (cur == base2 + 1) {
-        if (NC::func_02073090(mask)) {
-            NC::func_0207312c();
+        if (NC::Comm_IsConnectionLost(mask)) {
+            NC::Comm_SetLostFlag();
             return 0x20;
         }
-        NC::_Z13func_020720f8v();
-        if (NC::func_020eaca0()) {
+        NC::_Z20NetOverlay_AssertAnyv();
+        if (NC::Net_IsReadyToSend()) {
             *st = base2 + 2;
         }
     } else if (cur == base2 + 2) {
-        if (NC::func_020eaf90() == 0) {
+        if (NC::Net_GetMyAid() == 0) {
             BOOL flag = TRUE;
             u32 m = 0;
             s32 i;
-            NC::func_020741b0();
+            NC::Comm_EnterCritical();
             for (i = 3; i >= 0; i--) {
                 if (i != 0) {
                     u32 bit = 1 << i;
@@ -4817,20 +4817,20 @@ extern "C" s32 func_0209f898(Unk_0209f638 *self, u8 *st, s32 base, s32 base2, u3
                     }
                 }
             }
-            m = NC::func_02073090(m);
-            NC::func_020741a8();
+            m = NC::Comm_IsConnectionLost(m);
+            NC::Comm_LeaveCritical();
             if (m) {
-                NC::func_0207312c();
+                NC::Comm_SetLostFlag();
                 return 0x20;
             }
             if (flag) {
                 NC::func_02073340();
-                NC::func_0209f000(self);
+                NC::Wifi_EndSession(self);
                 *st = base2 + 3;
             }
         } else {
             NC::func_02073340();
-            NC::func_0209f000(self);
+            NC::Wifi_EndSession(self);
             *st = base2 + 3;
         }
     } else if (cur == base2 + 3) {
@@ -4845,11 +4845,11 @@ extern "C" s32 func_0209f898(Unk_0209f638 *self, u8 *st, s32 base, s32 base2, u3
 }
 
 extern "C" s32 func_0209f638(Unk_0209f638 *self, u8 *st, s32 a2, s32 base, u8 a5, u8 a6, s32 a7, u8 a8, u32 a9) {
-    Unk_020cbb18 *o5, *o2;
+    CommManager *o5, *o2;
     u32 cur = *st;
     if (cur == base) {
-        if (NC::func_02073090(a9)) {
-            NC::func_0207312c();
+        if (NC::Comm_IsConnectionLost(a9)) {
+            NC::Comm_SetLostFlag();
             return 0x20;
         }
         s32 r = NC::_ZN11SaveManager13func_020a13c4Ev(self);
@@ -4866,8 +4866,8 @@ extern "C" s32 func_0209f638(Unk_0209f638 *self, u8 *st, s32 a2, s32 base, u8 a5
             *st = base + 1;
         }
     } else if (cur == base + 1) {
-        if (NC::func_02073090(a9)) {
-            NC::func_0207312c();
+        if (NC::Comm_IsConnectionLost(a9)) {
+            NC::Comm_SetLostFlag();
             return 0x20;
         }
         s32 r = NC::_ZN14SaveSlotWriter12saveSlotStepEi(self, (u32)(self->unk_10a << 24) >> 28);
@@ -4877,15 +4877,15 @@ extern "C" s32 func_0209f638(Unk_0209f638 *self, u8 *st, s32 a2, s32 base, u8 a5
             *st = base + 2;
         }
     } else if (cur == base + 2) {
-        if (NC::func_02073090(a9)) {
-            NC::func_0207312c();
+        if (NC::Comm_IsConnectionLost(a9)) {
+            NC::Comm_SetLostFlag();
             return 0x20;
         }
         s32 r6 = 1;
         s32 i = 3;
-        o2 = NC::data_020cbb18;
+        o2 = NC::gCommManager;
         for (; i >= 0; i--) {
-            if (o2->func_02072e88(i) && !o2->func_020729cc(i)) {
+            if (o2->isSlotActive(i) && !o2->isMyAid(i)) {
                 u8 v = self->unk_eb[i];
                 if (v == 0) {
                     r6 = 0;
@@ -4908,21 +4908,21 @@ extern "C" s32 func_0209f638(Unk_0209f638 *self, u8 *st, s32 a2, s32 base, u8 a5
             *st = a6;
         }
     } else if (cur == base + 3) {
-        if (NC::func_02073090(a9)) {
-            NC::func_0207312c();
+        if (NC::Comm_IsConnectionLost(a9)) {
+            NC::Comm_SetLostFlag();
             return 0x20;
         }
-        NC::_Z13func_020720f8v();
-        if (NC::func_020eaca0()) {
-            u32 m = NC::func_02073190();
-            if (NC::func_02074b58(1, m)) {
+        NC::_Z20NetOverlay_AssertAnyv();
+        if (NC::Net_IsReadyToSend()) {
+            u32 m = NC::Comm_GetRemoteMask();
+            if (NC::CommCtrl_SendAct0E(1, m)) {
                 NC::_ZN11SaveRecord416setStateValidAltEv(&NC::data_021ed32c);
                 *st = base + 4;
             }
         }
     } else if (cur == base + 4) {
-        if (NC::func_02073090(a9)) {
-            NC::func_0207312c();
+        if (NC::Comm_IsConnectionLost(a9)) {
+            NC::Comm_SetLostFlag();
             return 0x20;
         }
         s32 r = NC::_ZN14SaveSlotWriter12saveSlotStepEi(self, (u32)(self->unk_10a << 24) >> 28);
@@ -4932,15 +4932,15 @@ extern "C" s32 func_0209f638(Unk_0209f638 *self, u8 *st, s32 a2, s32 base, u8 a5
             *st = base + 5;
         }
     } else if (cur == base + 5) {
-        if (NC::func_02073090(a9)) {
-            NC::func_0207312c();
+        if (NC::Comm_IsConnectionLost(a9)) {
+            NC::Comm_SetLostFlag();
             return 0x20;
         }
         s32 r7 = 1;
         s32 i = 3;
-        o5 = NC::data_020cbb18;
+        o5 = NC::gCommManager;
         for (; i >= 0; i--) {
-            if (o5->func_02072e88(i) && !o5->func_020729cc(i)) {
+            if (o5->isSlotActive(i) && !o5->isMyAid(i)) {
                 u8 v = self->unk_eb[i];
                 if (v == 0) {
                     r7 = 0;
@@ -4958,15 +4958,15 @@ extern "C" s32 func_0209f638(Unk_0209f638 *self, u8 *st, s32 a2, s32 base, u8 a5
             *st = a6;
         }
     } else if (cur == base + 6) {
-        if (NC::func_02073090(a9)) {
-            NC::func_0207312c();
+        if (NC::Comm_IsConnectionLost(a9)) {
+            NC::Comm_SetLostFlag();
             return 0x20;
         }
-        u32 m = NC::func_02073190();
+        u32 m = NC::Comm_GetRemoteMask();
         if (a7 < 4) {
             m = (u16)(m | (1 << a7));
         }
-        if (NC::func_02074b58(1, m)) {
+        if (NC::CommCtrl_SendAct0E(1, m)) {
             *st = base + 7;
         }
     }
@@ -4977,8 +4977,8 @@ s32 Unk_0209f304::func_0209f430(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8 a7, 
     u32 v = *p;
     s32 r;
     if (v == base) {
-        if (NB::func_02073090(a8) != 0) {
-            NB::func_0207312c();
+        if (NB::Comm_IsConnectionLost(a8) != 0) {
+            NB::Comm_SetLostFlag();
             return 0x20;
         }
         r = NB::_ZN11SaveManager13func_020a13c4Ev(this);
@@ -4989,8 +4989,8 @@ s32 Unk_0209f304::func_0209f430(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8 a7, 
             *p = base + 1;
         }
     } else if (v == base + 1) {
-        if (NB::func_02073090(a8) != 0) {
-            NB::func_0207312c();
+        if (NB::Comm_IsConnectionLost(a8) != 0) {
+            NB::Comm_SetLostFlag();
             return 0x20;
         }
         r = NB::_ZN14SaveSlotWriter12loadSlotStepEi(this, unk_10a_lo);
@@ -5009,8 +5009,8 @@ s32 Unk_0209f304::func_0209f430(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8 a7, 
             *p = base + 2;
         }
     } else if (v == base + 2) {
-        if (NB::func_02073090(a8) != 0) {
-            NB::func_0207312c();
+        if (NB::Comm_IsConnectionLost(a8) != 0) {
+            NB::Comm_SetLostFlag();
             return 0x20;
         }
         r = NB::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a_hi);
@@ -5020,16 +5020,16 @@ s32 Unk_0209f304::func_0209f430(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8 a7, 
             *p = base + 3;
         }
     } else if (v == base + 3) {
-        if (NB::func_02073090(a8) != 0) {
-            NB::func_0207312c();
+        if (NB::Comm_IsConnectionLost(a8) != 0) {
+            NB::Comm_SetLostFlag();
             return 0x20;
         }
-        if (NB::func_02074b58(1, 1) != 0) {
+        if (NB::CommCtrl_SendAct0E(1, 1) != 0) {
             *p = base + 4;
         }
     } else if (v == base + 4) {
-        if (NB::func_02073090(a8) != 0) {
-            NB::func_0207312c();
+        if (NB::Comm_IsConnectionLost(a8) != 0) {
+            NB::Comm_SetLostFlag();
             return 0x20;
         }
         if (unk_eb == 1) {
@@ -5040,8 +5040,8 @@ s32 Unk_0209f304::func_0209f430(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8 a7, 
             *p = a5;
         }
     } else if (v == base + 5) {
-        if (NB::func_02073090(a8) != 0) {
-            NB::func_0207312c();
+        if (NB::Comm_IsConnectionLost(a8) != 0) {
+            NB::Comm_SetLostFlag();
             return 0x20;
         }
         r = NB::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a_hi);
@@ -5054,16 +5054,16 @@ s32 Unk_0209f304::func_0209f430(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8 a7, 
             *p = base + 6;
         }
     } else if (v == base + 6) {
-        if (NB::func_02073090(a8) != 0) {
-            NB::func_0207312c();
+        if (NB::Comm_IsConnectionLost(a8) != 0) {
+            NB::Comm_SetLostFlag();
             return 0x20;
         }
-        if (NB::func_02074b58(1, 1) != 0) {
+        if (NB::CommCtrl_SendAct0E(1, 1) != 0) {
             *p = base + 7;
         }
     } else if (v == base + 7) {
-        if (NB::func_02073090(a8) != 0) {
-            NB::func_0207312c();
+        if (NB::Comm_IsConnectionLost(a8) != 0) {
+            NB::Comm_SetLostFlag();
             return 0x20;
         }
         if (unk_eb == 1) {
@@ -5080,9 +5080,9 @@ void Unk_0209f304::func_0209f390(u8 *p, u32 base, u32 x, u32 y) {
     if (v == base) {
         BOOL r = TRUE;
         s32 i = 3;
-        u8 *g = NB::data_020cbb18;
+        u8 *g = NB::gCommManager;
         for (; i >= 0; i--) {
-            if (NB::_ZN12Unk_020cbb1813func_02072e88Ei(g, i) != 0 && NB::_ZN12Unk_020cbb1813func_020729ccEj(g, i) == 0) {
+            if (NB::_ZN11CommManager12isSlotActiveEi(g, i) != 0 && NB::_ZN11CommManager7isMyAidEj(g, i) == 0) {
                 if (x == NB::func_020a6358(i) || y == NB::func_020a6358(i)) {
                     if (NB::func_020a62f8(i) == 0) {
                         continue;
@@ -5093,11 +5093,11 @@ void Unk_0209f304::func_0209f390(u8 *p, u32 base, u32 x, u32 y) {
             }
         }
         if (r) {
-            NB::_ZN12Unk_020cbb1813func_02072e20Ej(g, 1);
+            NB::_ZN11CommManager14setPendingModeEj(g, 1);
             *p = base + 1;
         }
     } else if (v == base + 1) {
-        if (NB::_ZN12Unk_020cbb1813func_02072e24Ev(NB::data_020cbb18) == 1 && NB::func_02074d78() != 0) {
+        if (NB::_ZN11CommManager7getModeEv(NB::gCommManager) == 1 && NB::CommCtrl_SendAct08() != 0) {
             *p = base + 2;
         }
     }
@@ -5106,9 +5106,9 @@ void Unk_0209f304::func_0209f390(u8 *p, u32 base, u32 x, u32 y) {
 BOOL Unk_0209f304::func_0209f344() {
     BOOL r = TRUE;
     s32 i = 3;
-    u8 *g = NB::data_020cbb18;
+    u8 *g = NB::gCommManager;
     for (; i >= 0; i--) {
-        if (NB::_ZN12Unk_020cbb1813func_02072e88Ei(g, i) != 0 && NB::_ZN12Unk_020cbb1813func_020729ccEj(g, i) == 0 && unk_f4[i] == 0) {
+        if (NB::_ZN11CommManager12isSlotActiveEi(g, i) != 0 && NB::_ZN11CommManager7isMyAidEj(g, i) == 0 && unk_f4[i] == 0) {
             r = FALSE;
             break;
         }
@@ -5119,11 +5119,11 @@ BOOL Unk_0209f304::func_0209f344() {
 void Unk_0209f304::func_0209f304(u8 *p, u32 base) {
     u32 v = *p;
     if (v == base) {
-        if (NB::_ZN12Unk_020cbb1813func_02072e24Ev(NB::data_020cbb18) == 1) {
+        if (NB::_ZN11CommManager7getModeEv(NB::gCommManager) == 1) {
             *p = base + 1;
         }
     } else if (v == base + 1) {
-        if (NB::func_02074a2c() != 0) {
+        if (NB::CommCtrl_SendAct10() != 0) {
             *p = base + 2;
         }
     }
@@ -5146,14 +5146,14 @@ extern "C" void func_0209f294(u32 a) {
     }
 }
 
-extern "C" void func_0209f248(void) {
-    s32 r6 = NB::_ZN12Unk_020cbb1813func_020721f8Ev(NB::data_020cbb18);
+extern "C" void Wifi_StoreFriendList(void) {
+    s32 r6 = NB::_ZN11CommManager17getWifiFriendListEv(NB::gCommManager);
     NB::PlayerData_GetCurrent();
     NB::_ZN10PlayerData13getFriendListEv();
-    u8 *r5 = NB::func_02076db4();
+    u8 *r5 = NB::FriendList_GetEntries();
     s32 i;
     for (i = 0; i < 0x20; i++) {
-        NB::MI_CpuCopy8((u8 *)r6 + i * 12, NB::func_02076e1c(NB::func_02076cf0(r5)), 12);
+        NB::MI_CpuCopy8((u8 *)r6 + i * 12, NB::DwcFriendData_GetBytes(NB::FriendEntry_GetFriendData(r5)), 12);
         r5 += 0x1c;
     }
 }
@@ -5164,17 +5164,17 @@ extern "C" void func_0209f230(u32 v) { NB::data_021ed3a4 = v; }
 
 extern "C" void func_0209f224(u32 v) { NB::data_021ed390 = v; }
 
-extern "C" void func_0209f204(void) {
+extern "C" void NetOverlay_LoadWireless(void) {
     NB::OverlayHandle_Unload(NB::gOverlayHandle);
     NB::OverlayHandle_Load(NB::gOverlayHandle, (u32)NB::OVERLAY_66_ID);
 }
 
-extern "C" void func_0209f1e4(void) {
+extern "C" void NetOverlay_LoadWifi(void) {
     NB::OverlayHandle_Unload(NB::gOverlayHandle);
     NB::OverlayHandle_Load(NB::gOverlayHandle, (u32)NB::OVERLAY_65_ID);
 }
 
-extern "C" void func_0209f1c4(void) {
+extern "C" void NetOverlay_Restore(void) {
     NB::OverlayHandle_Unload(NB::gOverlayHandle);
     NB::OverlayHandle_Load(NB::gOverlayHandle, (u32)NB::OVERLAY_68_ID);
 }
@@ -5238,21 +5238,21 @@ u8 TownCompressThread::isDone() {
     return unk_10c8;
 }
 
-extern "C" s32 func_0209f000(void) {
+extern "C" s32 Wifi_EndSession(void) {
     BOOL r4 = FALSE;
-    if (NB::func_020eaf18() == 3 || NB::func_020eaf18() == 4) {
+    if (NB::Net_GetMode() == 3 || NB::Net_GetMode() == 4) {
         r4 = TRUE;
     }
-    s32 r5 = NB::func_02073a78();
+    s32 r5 = NB::Comm_End();
     if (r4) {
         s32 h = NB::PlayerData_GetCurrent();
         if (h != 0) {
             s32 q = NB::_ZN10PlayerData8getIndexEv(h);
             if (q >= 0 && q < 4) {
-                NB::func_0209ed74();
-                NB::func_0209ecf8();
-                NB::func_0209ec80();
-                NB::func_0209f248();
+                NB::GameStats_ApplyDownload();
+                NB::AxMail_ApplyMail();
+                NB::AxMail_ApplyBbs();
+                NB::Wifi_StoreFriendList();
                 if (NB::Save_WritePlayerFriendList() != 0) {
                     s32 t = NB::TalkWindow_Get(0);
                     NB::_ZN15TalkWindowState13func_02067990Ev();
@@ -5266,24 +5266,24 @@ extern "C" s32 func_0209f000(void) {
     return r5;
 }
 
-extern "C" BOOL func_0209efa4(void) {
+extern "C" BOOL GameStats_Upload(void) {
     u8 *p = NB::data_021eca50;
     if (NB::_ZN12Unk_0208722413func_02087280Ev(p) == 3) {
         s32 v = NB::_ZN12Unk_0208722413func_02087224Ev(p);
         NB::_ZN12Unk_0208722413func_02087230Ej(p, NB::Save_CalcChecksum(p, 0x22c, v));
-        u32 t = NB::data_020e24f8;
-        NB::_Z13func_020721b4v();
-        NB::func_020ea0b4((u8 *)"http://gamestats.gs.nintendowifi.net/acrossingds/upload.asp", p, 0x22c, t);
+        u32 t = NB::sNetRegion;
+        NB::_Z21NetOverlay_AssertWifiv();
+        NB::Net_GameStatsUpload((u8 *)"http://gamestats.gs.nintendowifi.net/acrossingds/upload.asp", p, 0x22c, t);
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_0209ef5c(void) {
+extern "C" BOOL GameStats_Download(void) {
     if (NB::_ZN12Unk_0208722413func_02087280Ev(NB::data_021eca50) == 0) {
-        u32 t = NB::data_020e24f8;
-        NB::_Z13func_020721b4v();
-        if (NB::func_020e9eb8((u8 *)"http://gamestats.gs.nintendowifi.net/acrossingds/download.asp", NB::data_021ed824, 0x22c, t) != 0) {
+        u32 t = NB::sNetRegion;
+        NB::_Z21NetOverlay_AssertWifiv();
+        if (NB::Net_GameStatsDownload((u8 *)"http://gamestats.gs.nintendowifi.net/acrossingds/download.asp", NB::sGameStatsBuf, 0x22c, t) != 0) {
             return TRUE;
         }
         return FALSE;
@@ -5291,120 +5291,120 @@ extern "C" BOOL func_0209ef5c(void) {
     return FALSE;
 }
 
-extern "C" BOOL func_0209eedc(void) {
+extern "C" BOOL AxMail_DownloadMail(void) {
     char a[0xc];
     char buf[0x84];
     if (NB::_ZN8SaveData8testFlagEj(NB::gSaveData, 0x14) != 0) {
         return FALSE;
     }
-    NB::func_0212a360(buf, NB::data_020e24fc);
-    NB::func_0212a2bc(buf, NB::data_020e2500);
-    NB::func_020e9b00(a);
+    NB::func_0212a360(buf, NB::sAxMailBaseUrl);
+    NB::func_0212a2bc(buf, NB::sAxMailFileName);
+    NB::Net_GetBrid(a);
     NB::func_0212a2bc(buf, "?brid=");
     NB::func_0212a2bc(buf, a);
-    u32 t = NB::data_020e24f8;
-    NB::_Z13func_020721b4v();
-    if (NB::func_020e9e38(buf, NB::data_021ed51c, 0x108, t) != 0) {
+    u32 t = NB::sNetRegion;
+    NB::_Z21NetOverlay_AssertWifiv();
+    if (NB::Net_HttpDownload(buf, NB::sAxMailBuf, 0x108, t) != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_0209ee60(void) {
+extern "C" BOOL AxMail_DownloadBbs(void) {
     char a[0xc];
     char buf[0x84];
     if (NB::_ZN8SaveData8testFlagEj(NB::gSaveData, 0x14) != 0) {
         return FALSE;
     }
-    NB::func_0212a360(buf, NB::data_020e24fc);
-    NB::func_0212a2bc(buf, NB::data_020e24f4);
-    NB::func_020e9b00(a);
+    NB::func_0212a360(buf, NB::sAxMailBaseUrl);
+    NB::func_0212a2bc(buf, NB::sAxBbsFileName);
+    NB::Net_GetBrid(a);
     NB::func_0212a2bc(buf, "?brid=");
     NB::func_0212a2bc(buf, a);
-    u32 t = NB::data_020e24f8;
-    NB::_Z13func_020721b4v();
-    if (NB::func_020e9e38(buf, NB::data_021ed448, 0xd2, t) != 0) {
+    u32 t = NB::sNetRegion;
+    NB::_Z21NetOverlay_AssertWifiv();
+    if (NB::Net_HttpDownload(buf, NB::sAxBbsBuf, 0xd2, t) != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_0209ee3c(void) {
-    if (NB::func_020e9da0(NB::_Z13func_020721b4v()) != 0) {
-        NB::data_021ed39c = 1;
+extern "C" BOOL GameStats_PollDownload(void) {
+    if (NB::Net_IsDownloadDone(NB::_Z21NetOverlay_AssertWifiv()) != 0) {
+        NB::sGameStatsReceived = 1;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_0209ee18(void) {
-    if (NB::func_020e9da0(NB::_Z13func_020721b4v()) != 0) {
-        NB::data_021ed394 = 1;
+extern "C" BOOL AxMail_PollMail(void) {
+    if (NB::Net_IsDownloadDone(NB::_Z21NetOverlay_AssertWifiv()) != 0) {
+        NB::sAxMailReceived = 1;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_0209edf4(void) {
-    if (NB::func_020e9da0(NB::_Z13func_020721b4v()) != 0) {
-        NB::data_021ed3a0 = 1;
+extern "C" BOOL AxMail_PollBbs(void) {
+    if (NB::Net_IsDownloadDone(NB::_Z21NetOverlay_AssertWifiv()) != 0) {
+        NB::sAxBbsReceived = 1;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_0209edcc(void) {
-    if (NB::func_020ea01c(NB::_Z13func_020721b4v()) != 0) {
+extern "C" BOOL GameStats_PollUpload(void) {
+    if (NB::Net_IsUploadDone(NB::_Z21NetOverlay_AssertWifiv()) != 0) {
         NB::_ZN12Unk_0208722413func_020872c8Ev(NB::data_021eca50);
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void func_0209ed74(void) {
-    if (NB::data_021ed39c != 0) {
-        NB::data_021ed39c = 0;
-        s32 r = NB::Save_Sum16(NB::data_021ed824, 0x22c);
+extern "C" void GameStats_ApplyDownload(void) {
+    if (NB::sGameStatsReceived != 0) {
+        NB::sGameStatsReceived = 0;
+        s32 r = NB::Save_Sum16(NB::sGameStatsBuf, 0x22c);
         u8 *dst = NB::data_021eca50;
         if (r == 0) {
-            NB::_ZN12Unk_0208722413func_0208728cEj(NB::data_021ed824, 1);
-            NB::MI_CpuCopy8(NB::data_021ed824, dst, 0x22c);
+            NB::_ZN12Unk_0208722413func_0208728cEj(NB::sGameStatsBuf, 1);
+            NB::MI_CpuCopy8(NB::sGameStatsBuf, dst, 0x22c);
         }
-        NB::MI_CpuFill8(NB::data_021ed824, 0, 0x22c);
-        NB::_ZN12Unk_0208722413func_02087230Ej(NB::data_021ed824, 1);
+        NB::MI_CpuFill8(NB::sGameStatsBuf, 0, 0x22c);
+        NB::_ZN12Unk_0208722413func_02087230Ej(NB::sGameStatsBuf, 1);
     }
 }
 
-extern "C" void func_0209ecf8(void) {
-    if (NB::data_021ed394 != 0) {
+extern "C" void AxMail_ApplyMail(void) {
+    if (NB::sAxMailReceived != 0) {
         u32 buf[4];
         u32 obj[0x42];
-        NB::data_021ed394 = 0;
+        NB::sAxMailReceived = 0;
         NB::func_0203ecdc(obj);
-        NB::MI_CpuCopy8(NB::data_021ed51c, obj, 0x108);
+        NB::MI_CpuCopy8(NB::sAxMailBuf, obj, 0x108);
         NB::MI_CpuFill8(NB::func_0203ecc8((u8 *)obj), 0, 0x10);
         NB::func_0211a748(buf, obj, 0x108, NB::func_02000b7c(), 0x10);
-        if (NB::func_02063a04(NB::func_0203ecc8(NB::data_021ed51c), (u8 *)buf, 0x10) == 0) {
-            NB::func_0203ec58(NB::data_021ed51c);
+        if (NB::func_02063a04(NB::func_0203ecc8(NB::sAxMailBuf), (u8 *)buf, 0x10) == 0) {
+            NB::func_0203ec58(NB::sAxMailBuf);
         }
-        NB::MI_CpuFill8(NB::data_021ed51c, 0, 0x108);
+        NB::MI_CpuFill8(NB::sAxMailBuf, 0, 0x108);
         NB::func_0203eccc(obj);
     }
 }
 
-extern "C" void func_0209ec80() {
+extern "C" void AxMail_ApplyBbs() {
     u8 a[0x10];
     u8 b[0xd2];
-    if (NA::data_021ed3a0 != 0) {
-        NA::data_021ed3a0 = 0;
+    if (NA::sAxBbsReceived != 0) {
+        NA::sAxBbsReceived = 0;
         NA::func_0203ec54(b);
-        NA::MI_CpuCopy8(NA::data_021ed448, b, 0xd2);
+        NA::MI_CpuCopy8(NA::sAxBbsBuf, b, 0xd2);
         NA::MI_CpuFill8(NA::func_0203ec4c(b), 0, 0x10);
         NA::func_0211a748(a, b, 0xd2, NA::func_02000b7c(), 0x10);
-        if (NA::func_02063a04(NA::func_0203ec4c(NA::data_021ed448), a, 0x10) == 0) {
-            NA::func_0203ec18(NA::data_021ed448);
+        if (NA::func_02063a04(NA::func_0203ec4c(NA::sAxBbsBuf), a, 0x10) == 0) {
+            NA::func_0203ec18(NA::sAxBbsBuf);
         }
-        NA::MI_CpuFill8(NA::data_021ed448, 0, 0xd2);
+        NA::MI_CpuFill8(NA::sAxBbsBuf, 0, 0xd2);
         NA::func_0203ec50(b);
     }
 }
@@ -5451,24 +5451,24 @@ extern "C" u32 func_0209ebf0() {
     return 4;
 }
 
-void *data_020e2534[2] = {(void *)NT::func_020a2be8, 0};
+void *data_020e2534[2] = {(void *)NT::SaveManager_ExecAct15, 0};
 
 Unk_020a4238_Entry data_020e254c = {(void *)SaveManager_Create, 0xc7, 0xc5};
 
-void *data_020e25bc[2] = {(void *)NT::_ZN11SaveManager13func_020a3dacEv, 0};
+void *data_020e25bc[2] = {(void *)NT::_ZN11SaveManager10enterAct01Ev, 0};
 
 u8 data_020e24ec = 7;
 
-void *data_020e266c[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3588Ev, 0};
+void *data_020e266c[2] = {(void *)NT::_ZN12Unk_020a32389execAct0BEv, 0};
 
-void *data_020e26dc[2] = {(void *)NT::_ZN12Unk_020a323813func_020a3868Ev, 0};
+void *data_020e26dc[2] = {(void *)NT::_ZN12Unk_020a323810enterAct06Ev, 0};
 
 char data_020e27a4[] = "http://axing.nintendowifi.net/axmail/";
 
-void *data_020e2564[2] = {(void *)NT::func_020a2abc, 0};
+void *data_020e2564[2] = {(void *)NT::SaveManager_EnterAct17, 0};
 
 const s32 sSaveSlotDataSizes[3] = {0x15fe0, 0x15fe0, 0x11df4};
 
-char *data_020e24fc = data_020e27a4;
+char *sAxMailBaseUrl = data_020e27a4;
 
 u8 data_021ed398;

@@ -19,11 +19,11 @@ struct Unk_0204e858_Grid {
     u32 unk_08;
 };
 
-struct Unk_0204ee94 {
+struct MapBlockEntry {
     u32 unk_00;
     u32 unk_04[2];
     u32 unk_0c;
-    Unk_0204ee94();
+    MapBlockEntry();
 };
 
 struct OverlaySlot {
@@ -65,7 +65,7 @@ static inline BOOL Unk_0204e8b0_Bit(u16 *m, u32 x, u32 y) {
 }
 
 namespace Unk_0204eba0_Ns {
-extern "C" u16 *func_0204ebd8(Unk_0204e858_Grid *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
+extern "C" u16 *BlockMap_GetItemPtr(Unk_0204e858_Grid *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 }
 
 namespace Unk_0204eee4_Ns {
@@ -73,19 +73,19 @@ extern "C" s32 OverlayMgr_UnloadSlot(OverlaySlot *e);
 }
 
 extern "C" {
-void func_0204ee20(s32 *a, s32 *c, Unk_0204e858_Vec *v);
+void FieldPos_ToBlockUnit2(s32 *a, s32 *c, Unk_0204e858_Vec *v);
 }
 
 extern "C" {
-void func_0204ee38(s32 *ax, s32 *az, s32 *cx, s32 *cz, Unk_0204e858_Vec *v);
+void FieldPos_ToBlockUnit(s32 *ax, s32 *az, s32 *cx, s32 *cz, Unk_0204e858_Vec *v);
 }
 
 extern "C" {
-void func_0204edf8(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
+void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
 }
 
 extern "C" {
-void func_0204ed8c(Unk_0204e858_Vec *v, s32 x, s32 z);
+void FieldPos_FromUnitCenter(Unk_0204e858_Vec *v, s32 x, s32 z);
 }
 
 extern "C" {
@@ -137,43 +137,43 @@ void FS_GetOverlayFileID(void *a, void *b);
 }
 
 extern "C" {
-s32 func_02037478(Unk_0204e858_Cell *c, s32 a, s32 b);
+s32 MapBlock_ClearBuried(Unk_0204e858_Cell *c, s32 a, s32 b);
 }
 
 extern "C" {
-s32 func_02037494(Unk_0204e858_Cell *c, s32 a, s32 b);
+s32 MapBlock_SetBuried(Unk_0204e858_Cell *c, s32 a, s32 b);
 }
 
 extern "C" {
-s32 func_020374b0(Unk_0204e858_Cell *c, s32 a);
+s32 MapBlock_HasAnyAttr(Unk_0204e858_Cell *c, s32 a);
 }
 
 extern "C" {
-s32 func_020374cc(Unk_0204e858_Cell *c, s32 a);
+s32 MapBlock_HasAllAttr(Unk_0204e858_Cell *c, s32 a);
 }
 
 extern "C" {
-s32 func_020374e8(Unk_0204e858_Cell *c);
+s32 MapBlock_GetAttr(Unk_0204e858_Cell *c);
 }
 
 extern "C" {
-s32 func_020374f4(Unk_0204e858_Cell *c, s32 a, s32 b, s32 d, s32 e, s32 f);
+s32 MapBlock_FindItemInRange(Unk_0204e858_Cell *c, s32 a, s32 b, s32 d, s32 e, s32 f);
 }
 
 extern "C" {
-s32 func_02037558(Unk_0204e858_Cell *c, s32 a, s32 b, u8 d);
+s32 MapBlock_GetItemPtr(Unk_0204e858_Cell *c, s32 a, s32 b, u8 d);
 }
 
 extern "C" {
-void *func_02037590(Unk_0204e858_Cell *c, s32 a, s32 b, s32 d, u8 e);
+void *MapBlock_SetItem(Unk_0204e858_Cell *c, s32 a, s32 b, s32 d, u8 e);
 }
 
 extern "C" {
-void func_0209cfb8(void *p);
+void Clock_GetDayMonth(void *p);
 }
 
 extern "C" {
-void func_0209cf18(void *p);
+void Clock_GetMinuteHour(void *p);
 }
 
 extern "C" {
@@ -189,19 +189,19 @@ void func_0204f178(void *a, void *b, s32 c, u32 d, u32 e);
 }
 
 extern "C" {
-s32 func_0204e8b0(Unk_0204e858_Grid *g, u32 hx, u32 hy, u32 lx, u32 ly);
+s32 BlockMap_IsBuried(Unk_0204e858_Grid *g, u32 hx, u32 hy, u32 lx, u32 ly);
 }
 
 extern "C" {
-s32 func_0204e938(Unk_0204e858_Grid *g, u32 hx, u32 hy, u32 lx, u32 ly);
+s32 BlockMap_ClearBuried(Unk_0204e858_Grid *g, u32 hx, u32 hy, u32 lx, u32 ly);
 }
 
 extern "C" {
-s32 func_0204e99c(Unk_0204e858_Grid *g, u32 hx, u32 hy, u32 lx, u32 ly);
+s32 BlockMap_SetBuried(Unk_0204e858_Grid *g, u32 hx, u32 hy, u32 lx, u32 ly);
 }
 
 extern "C" {
-void *func_0204eb5c(Unk_0204e858_Grid *g, s32 a, u32 hx, u32 hy, u32 lx, u32 ly, u8 d);
+void *BlockMap_SetItem(Unk_0204e858_Grid *g, s32 a, u32 hx, u32 hy, u32 lx, u32 ly, u8 d);
 }
 // prototypes
 extern "C" u32 func_0204f100(u32 r);
@@ -244,14 +244,14 @@ extern "C" u8 func_0204f084(u8 x) {
         return x;
     }
     if (x == 8) {
-        func_0209cfb8(&t[0]);
+        Clock_GetDayMonth(&t[0]);
         if (func_0204f0f4(t[0]) != 0) {
             x = x + 1;
         }
         return x;
     }
     if (x == 9) {
-        func_0209cfb8(&t[2]);
+        Clock_GetDayMonth(&t[2]);
         if (func_0204f0f4(t[2]) == 0) {
             return x + 1;
         }

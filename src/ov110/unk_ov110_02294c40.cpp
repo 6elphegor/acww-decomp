@@ -10,7 +10,7 @@
 class Unk_ov110_02297778;
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 data_021ed210[];
 extern u8 data_021ed22e[];
 extern u8 gTouchCurY;
@@ -21,14 +21,14 @@ extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u16 gPad[];
 extern s32 gCurrentHeap;
-extern void *data_020cbb18;
-void func_020020b8(s32 a);
-void func_020021a0(s32 a);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_02002398(s32 a, s32 b);
-void func_0200261c(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_02002654(const void *a, s32 b, s32 c);
-void func_020026c4(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+extern void *gCommManager;
+void Gfx2d_ShowLayer(s32 a);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_LoadCharFile(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_LoadScreenFile(const void *a, s32 b, s32 c);
+void Gfx2d_LoadPaletteFile(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Snd_PlaySe(s32 a);
 BOOL func_0206e61c();
 void func_0206e63c();
@@ -42,9 +42,9 @@ s32 func_0206ed50();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void func_0206f9fc(void *p, s32 a);
-s32 func_020740a0(s32 a);
+s32 Comm_IsSeqConfirmed(s32 a);
 s32 func_02098ffc();
-BOOL func_0209cef4();
+BOOL Clock_GetWeekday();
 s32 ProcBase_GetParent(...);
 void ProcBase_RequestDelete(void *p);
 void MI_CpuCopy8(void *a, void *b, u32 c);
@@ -112,9 +112,9 @@ public:
 };
 
 // Screen upload helper sub-object, 0x38 bytes
-class Unk_020e4608 {
+class BgVramTaskPair {
 public:
-    Unk_020e4608();
+    BgVramTaskPair();
 //@@CLS_Unk_020e4608@@
     u32 unk_00[0x38 / 4];
 };
@@ -126,19 +126,19 @@ public:
     void setPopDownward();
 };
 
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    void func_020b87d0();
+    void cancel();
 };
 
-// Comm/session singleton (data_020cbb18)
-class Unk_020cbb18 {
+// Comm/session singleton (gCommManager)
+class CommManager {
 public:
-    void func_02072824(u32, u32);
-    void func_020728a4(u8 *, u32);
-    void func_020728d4();
-    s32 func_02072e34();
-    BOOL func_02072e44();
+    void endRecord(u32, u32);
+    void writeRecord(u8 *, u32);
+    void beginRecord();
+    s32 getSendSeq();
+    BOOL isOnline();
 };
 
 class Unk_ov094_02294a50 {
@@ -464,7 +464,7 @@ public:
     /* 0xfb */ u8 unk_fb;
     /* 0xfc */ u8 unk_fc;
     /* 0xfd */ u8 unk_fd[3];
-    /* 0x100 */ Unk_020e4608 unk_100[1];
+    /* 0x100 */ BgVramTaskPair unk_100[1];
     /* 0x138 */ Unk_ov094_02294a50 unk_138;
     /* 0xb98 */ Unk_ov094_02294bd4 unk_b98;
     /* 0xbc0 */ Unk_ov094_02292d6c unk_bc0;
@@ -479,11 +479,11 @@ public:
 static inline void func_0206fab4(void *p, s32 a, s32 b) { ((Unk_020e0488 *)p)->func_0206fab4((s32)a, (s32)b); }
 static inline void func_0206fb9c(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) { ((Unk_020e0488 *)p)->func_0206fb9c((u32)a, (u32)b, (u32)c, (u8)d, (u8)e, (s32)f); }
 static inline void func_0206fc44(void *p) { ((Unk_020e0488 *)p)->func_0206fc44(); }
-static inline void func_02072824(void *p, s32 a, s32 b) { ((Unk_020cbb18 *)p)->func_02072824((u32)a, (u32)b); }
-static inline void func_020728a4(void *p, void *buf, s32 n) { ((Unk_020cbb18 *)p)->func_020728a4((u8 *)buf, (u32)n); }
-static inline void func_020728d4(void *p) { ((Unk_020cbb18 *)p)->func_020728d4(); }
-static inline s32 func_02072e34(void *p) { return ((Unk_020cbb18 *)p)->func_02072e34(); }
-static inline BOOL func_02072e44(void *p) { return ((Unk_020cbb18 *)p)->func_02072e44(); }
+static inline void CommManager_endRecord(void *p, s32 a, s32 b) { ((CommManager *)p)->endRecord((u32)a, (u32)b); }
+static inline void CommManager_writeRecord(void *p, void *buf, s32 n) { ((CommManager *)p)->writeRecord((u8 *)buf, (u32)n); }
+static inline void CommManager_beginRecord(void *p) { ((CommManager *)p)->beginRecord(); }
+static inline s32 CommManager_getSendSeq(void *p) { return ((CommManager *)p)->getSendSeq(); }
+static inline BOOL CommManager_isOnline(void *p) { return ((CommManager *)p)->isOnline(); }
 static inline void func_02089ad8(void *p, s32 a, s32 b) { ((LabelBalloon *)p)->setPos((s32)a, (s32)b); }
 static inline void func_02089af0(void *p) { ((LabelBalloon *)p)->setPopUpward(); }
 static inline void func_02089af8(void *p) { ((LabelBalloon *)p)->setPopDownward(); }
@@ -491,7 +491,7 @@ static inline s32 func_0208d4fc(void *p) { return ((HandCursor *)p)->isAnimDone(
 static inline s32 func_0208d534(void *p) { return ((HandCursor *)p)->getAnim(); }
 static inline void func_0208d538(void *p, s32 a) { ((HandCursor *)p)->setAnimAtEnd((s32)a); }
 static inline s32 func_0208d644(void *p) { return ((HandCursor *)p)->enableObjWindow(); }
-static inline void func_020b87d0(void *p) { ((Unk_020e45f8 *)p)->func_020b87d0(); }
+static inline void func_020b87d0(void *p) { ((BgVramTask *)p)->cancel(); }
 static inline void func_ov002_022006a4(void *a, s32 b) { ((Unk_ov002_02204468 *)a)->func_ov002_022006a4((u8)b); }
 static inline void func_ov002_022006b0(void *p) { ((Unk_ov002_02204468 *)p)->func_ov002_022006b0(); }
 static inline void func_ov002_022006b8(void *p) { ((Unk_ov002_02204468 *)p)->func_ov002_022006b8(); }
@@ -792,7 +792,7 @@ void Unk_ov110_02297778::func_ov110_0229714c() {
     ::func_ov094_02293d2c(s->unk_b98);
     ::func_ov094_022941f8(s->unk_b98, 0xf);
     ::func_ov002_022008e0(s, 8, 0, 0, 0x30);
-    ::func_020020b8(6);
+    ::Gfx2d_ShowLayer(6);
     ::func_ov002_02200840(s, 6, 0, 0);
     ::func_ov002_02200a50(s, 2);
     ::func_ov110_02294d78(s, 1);
@@ -810,7 +810,7 @@ void Unk_ov110_02297778::func_ov110_022970cc() {
         ::func_ov002_022008e0(s, 2, 0, 1, 0x30);
         ::func_ov002_02200850(s, 0x80);
         ::func_ov110_02294d78(s, 0x80);
-        ::func_020020b8(4);
+        ::Gfx2d_ShowLayer(4);
         ::func_ov002_02200840(s, 4, 0, 0);
         s->unk_9c = ::func_ov002_02200920(s);
         ::func_ov002_02200a50(s, 3);
@@ -844,7 +844,7 @@ void Unk_ov110_02297778::func_ov110_02297024() {
 void Unk_ov110_02297778::func_ov110_02296fbc() {
     S *s = (S *)this;
     if (::func_ov002_022008fc(s, 0)) {
-        ::func_020021a0(4);
+        ::Gfx2d_ResetLayer(4);
         ::func_ov110_02294d68(s, 0x80);
         ::func_ov002_022008c4(s, 8, 0, 0, 0x30);
         ::func_ov002_02200840(s, 6, 0, 0);
@@ -859,7 +859,7 @@ void Unk_ov110_02297778::func_ov110_02296fbc() {
 void Unk_ov110_02297778::func_ov110_02296f70() {
     S *s = (S *)this;
     if (::func_ov002_022008fc(s, 0)) {
-        ::func_020021a0(6);
+        ::Gfx2d_ResetLayer(6);
         ::func_ov002_02200a60(s, 5);
         ::func_ov110_02294d68(s, 1);
         ::func_ov110_02294d68(s, 2);
@@ -934,10 +934,10 @@ extern "C" void func_ov110_02296db8(S *s) {
 }
 
 void func_ov110_02296d84() {
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
-    func_02002398(4, 1);
-    func_0200226c(4, 0, 0, 0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 1);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
 }
 
 extern "C" void func_ov110_02296d70(S *s) {
@@ -946,8 +946,8 @@ extern "C" void func_ov110_02296d70(S *s) {
 
 extern "C" void func_ov110_02296c9c(S *s) {
     s32 h = gCurrentHeap;
-    func_02002654("menu/inventory/b_itm_bg_tra2.bsc", h, 4);
-    func_0200261c("menu/inventory/b_itm_sell.bch", h, 4, 0x1b9, 0x1b9, 0x238);
+    Gfx2d_LoadScreenFile("menu/inventory/b_itm_bg_tra2.bsc", h, 4);
+    Gfx2d_LoadCharFile("menu/inventory/b_itm_sell.bch", h, 4, 0x1b9, 0x1b9, 0x238);
     s32 v = func_0206ed50();
     const char *a = NULL;
     const char *b = NULL;
@@ -970,10 +970,10 @@ extern "C" void func_ov110_02296c9c(S *s) {
         break;
     }
     if (a != NULL) {
-        func_020026c4(a, h, 4, 3, 3, 5);
+        Gfx2d_LoadPaletteFile(a, h, 4, 3, 3, 5);
     }
     if (b != NULL) {
-        func_0200261c(b, h, 4, 0x208, 0x208, 0x238);
+        Gfx2d_LoadCharFile(b, h, 4, 0x208, 0x208, 0x238);
     }
     func_ov110_02294fb8(s, 0);
 }
@@ -1573,7 +1573,7 @@ extern "C" BOOL func_ov110_02295c78(S *s, u32 a)
         u16 y = v;
         if (y >= 0x1492 && x <= 0x14fd) f = TRUE;
         if (f) return TRUE;
-        if (!func_0209cef4()) {
+        if (!Clock_GetWeekday()) {
             BOOL g = FALSE;
             u16 x2 = v;
             u16 y2 = v;
@@ -2164,15 +2164,15 @@ s32 Unk_ov110_02297778::func_ov110_02294e48(u16 *p) {
 
 void Unk_ov110_02297778::func_ov110_02294de4(u8 v) {
     u8 buf[0x24];
-    if (func_02072e44(data_020cbb18)) {
+    if (CommManager_isOnline(gCommManager)) {
         func_ov110_02294d78(8);
         buf[0] = v;
         MI_CpuCopy8(unk_b0, &buf[1], 0x1e);
-        void *g = data_020cbb18;
-        func_020728d4(g);
-        func_020728a4(g, buf, 0x1f);
-        func_02072824(g, 0x16, 4);
-        unk_ee = func_02072e34(g);
+        void *g = gCommManager;
+        CommManager_beginRecord(g);
+        CommManager_writeRecord(g, buf, 0x1f);
+        CommManager_endRecord(g, 0x16, 4);
+        unk_ee = CommManager_getSendSeq(g);
     }
 }
 
@@ -2183,8 +2183,8 @@ BOOL Unk_ov110_02297778::func_ov110_02294d9c() {
     if (func_ov110_02294d88(8) == 0) {
         return TRUE;
     }
-    if (func_02072e44(data_020cbb18)) {
-        if (func_020740a0(unk_ee) == 0) {
+    if (CommManager_isOnline(gCommManager)) {
+        if (Comm_IsSeqConfirmed(unk_ee) == 0) {
             return FALSE;
         }
     }

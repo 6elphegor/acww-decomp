@@ -122,12 +122,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -248,7 +248,7 @@ public:
     s32 getDistanceToPlayer(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -304,7 +304,7 @@ extern u16 data_020c6cc8;
 extern u16 gPad[];
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
-extern u8 data_021c3cc0;
+extern u8 gScreenTransition;
 extern const void *data_ov055_02259820;
 extern u8 data_ov055_02259880[];
 extern u8 data_ov055_022598b0[];
@@ -325,8 +325,8 @@ void func_020e9a3c(void *p);
 void func_020e9a48(void *p);
 void func_020e9a54(void *a, void *b, u32 n);
 void Snd_PlaySe(s32 v);
-void func_02073a0c();
-void func_02073bac();
+void Comm_EndOv067Mode();
+void Comm_StartOv067Mode();
 void _ZN15TalkWindowState14setNextMessageEPhPv(void *self, void *m, const void *x);
 void _ZN15TalkWindowState13unlockAdvanceEv(void *self);
 void _ZN15TalkWindowState11lockAdvanceEv(void *self);
@@ -341,7 +341,7 @@ void _ZN12Unk_02013b1013func_02014198Ehh(void *self, u8 a, u8 b);
 void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
 void func_ov004_0223f894(void *p);
 }
-void *func_02072144();
+void *NetOverlay_AssertOv067();
 class Unk_ov055_02259904;
 typedef void (Unk_ov055_02259904::*Unk_ov055_02259904_Fn)();
 
@@ -562,7 +562,7 @@ BOOL Unk_ov055_02259994::func_ov055_022594ac() {
 }
 
 BOOL Unk_ov055_02259994::func_ov055_02259484() {
-    if (Unk_ov055_02259484_IsTwo(data_021c3cc0)) {
+    if (Unk_ov055_02259484_IsTwo(gScreenTransition)) {
         func_ov055_022594e0(1);
     }
     return TRUE;
@@ -604,20 +604,20 @@ void Unk_ov055_02259904::vfunc_14() {
     void *r6 = unk_3c;
     switch (unk_1e) {
     case 0x39:
-        if (func_020e9a18(func_02072144()) == 0) {
+        if (func_020e9a18(NetOverlay_AssertOv067()) == 0) {
             if (unk_ac->unk_70c != 0) {
                 m[0] = 0x36;
                 _ZN15TalkWindowState14setNextMessageEPhPv(r6, &m[0], data_ov055_02259820);
                 break;
             }
-            func_02073bac();
+            Comm_StartOv067Mode();
             MI_CpuFill8(&unk_ac->unk_1058, 0, 0x948);
             Unk_ov055_02259994 *r4 = unk_ac;
-            func_02072144();
+            NetOverlay_AssertOv067();
             func_020e9a54(&r4->unk_710, &r4->unk_1058, 0x948);
-            func_020e9a48(func_02072144());
+            func_020e9a48(NetOverlay_AssertOv067());
         }
-        func_020e9a48(func_02072144());
+        func_020e9a48(NetOverlay_AssertOv067());
         _ZN15TalkWindowState11lockAdvanceEv(r6);
         func_ov055_0225922c(1);
         break;
@@ -633,7 +633,7 @@ void Unk_ov055_02259904::vfunc_14() {
 void Unk_ov055_02259904::vfunc_18() {
     s32 t = _ZN10ChoiceList9getResultEv(_ZN15TalkWindowState13getChoiceListEv(unk_3c));
     if (unk_1e == 0x3a && t == 1) {
-        func_02073a0c();
+        Comm_EndOv067Mode();
     }
 }
 
@@ -672,8 +672,8 @@ void Unk_ov055_02259904::func_ov055_0225915c() {
         r5 = TRUE;
     }
     own->unk_70d = k;
-    if (func_020e9a08(func_02072144())) {
-        func_02073a0c();
+    if (func_020e9a08(NetOverlay_AssertOv067())) {
+        Comm_EndOv067Mode();
         m[0] = 0x3c;
         _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m[0], data_ov055_02259820);
         func_ov055_0225922c(2);
@@ -681,7 +681,7 @@ void Unk_ov055_02259904::func_ov055_0225915c() {
         if ((gPad[1] & 1) == 0 && !Unk_ov055_0225915c_Both() && r5 == 0) {
             return;
         }
-        func_020e9a3c(func_02072144());
+        func_020e9a3c(NetOverlay_AssertOv067());
         m[1] = 0x3a;
         _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m[1], data_ov055_02259820);
         func_ov055_0225922c(3);
@@ -702,14 +702,14 @@ void Unk_ov055_02259904::func_ov055_02259128() {
 void Unk_ov055_02259904::func_ov055_022590b0() {
     void *r4 = unk_3c;
     if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) == 0) {
-        if (func_020e9a08(func_02072144())) {
+        if (func_020e9a08(NetOverlay_AssertOv067())) {
             Snd_PlaySe(0x69);
-            func_02073a0c();
+            Comm_EndOv067Mode();
             u8 m = 0x3c;
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m, data_ov055_02259820);
         } else {
-            if (func_020e9a18(func_02072144()) != 1) {
-                func_020e9a3c(func_02072144());
+            if (func_020e9a18(NetOverlay_AssertOv067()) != 1) {
+                func_020e9a3c(NetOverlay_AssertOv067());
                 return;
             }
         }

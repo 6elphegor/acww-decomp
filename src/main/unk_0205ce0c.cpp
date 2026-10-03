@@ -32,7 +32,7 @@ struct Unk_0205cfb4 {
 extern "C" {
 extern Unk_0205cfb4 data_021c6464;
 extern void *data_021c61d4;
-extern u8 *data_020cbb18;
+extern u8 *gCommManager;
 extern const u8 data_020cb1ec[];
 extern u8 data_021c6450[];
 
@@ -86,7 +86,7 @@ Unk_0205cfb4::~Unk_0205cfb4() {}
 void Unk_0205cfb4::func_0205d0ac() {
     void *heap = data_021c61d4;
     u32 n, i, m;
-    n = data_020cbb18[0x6c];
+    n = gCommManager[0x6c];
     m = func_020b4928(func_020b50e8());
     if (n < m) m = n;
     for (i = 0; i < m; i++) {

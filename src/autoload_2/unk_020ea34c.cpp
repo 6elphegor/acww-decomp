@@ -34,36 +34,36 @@ s32 func_ov066_0225f64c(void *p);
 s32 func_ov066_02261ff8(void);
 s32 func_ov065_02270e60(void);
 s32 func_ov065_02270e7c(u32 *p);
-s32 func_020ea5d0(u32 a);
-u32 func_020ea960(void);
-u32 func_020ea7c4(void);
+s32 Net_WifiFindFriend(u32 a);
+u32 Net_GetLocalError(void);
+u32 Net_GetWifiError(void);
 void func_020ec3c4(void);
 void func_020ec30c(void);
-void func_020ec3a4(void);
-void func_020ec370(void);
+void Net_OnWifiSendDone(void);
+void Net_OnWifiRecv(void);
 void func_020ec3c0(void);
 void func_020ec310(void);
 extern u8 data_021f488c;
 extern u8 data_021f49e0[];
 extern u32 data_021f4910[];
-extern u32 data_021f48bc;
+extern u32 sLastErrorCode;
 struct Ent {
     u16 a;
     u8 b;
     u8 c;
 };
-extern Ent data_021f4990[];
+extern Ent sWifiPingState[];
 struct HexTable {
     u8 c[17];
 };
 
-extern u16 data_021f4894;
-extern u8 data_021f4890;
-extern u8 *data_021f48d4;
+extern u16 sWifiConnectStep;
+extern u8 sNetMode;
+extern u8 *sWifiFriendList;
 }
 
-extern "C" u32 func_020ea7c4(void) {
-    u32 err = func_ov065_02270e7c(&data_021f48bc);
+extern "C" u32 Net_GetWifiError(void) {
+    u32 err = func_ov065_02270e7c(&sLastErrorCode);
     u32 i;
     if (err != 0) {
         switch (err) {
@@ -94,25 +94,25 @@ extern "C" u32 func_020ea7c4(void) {
         }
     }
     for (i = 0; i < 16; i++) {
-        if (data_021f4990[i].b > 30) {
-            data_021f48bc = 1000000;
+        if (sWifiPingState[i].b > 30) {
+            sLastErrorCode = 1000000;
             return 0x4007;
         }
     }
     return 0;
 }
 
-extern "C" u32 func_020ea748(void) {
-    u32 st = data_021f4890;
-    data_021f48bc = 0;
-    if ((u8)(st + 255) <= 1) return func_020ea960();
-    if ((u8)(st + 253) <= 1) return func_020ea7c4();
+extern "C" u32 Net_GetError(void) {
+    u32 st = sNetMode;
+    sLastErrorCode = 0;
+    if ((u8)(st + 255) <= 1) return Net_GetLocalError();
+    if ((u8)(st + 253) <= 1) return Net_GetWifiError();
     if (st != 5) return 0xffff;
     return 0;
 }
 
-extern "C" u32 func_020ea738(void) {
-    return data_021f48bc;
+extern "C" u32 Net_GetLastErrorCode(void) {
+    return sLastErrorCode;
 }
 
 extern "C" s32 func_020ea72c(void) {
@@ -133,7 +133,7 @@ extern "C" s32 func_020ea6c8(void *p) {
     return func_ov066_0225f688(p);
 }
 
-extern "C" u32 *func_020ea65c(void) {
+extern "C" u32 *Net_GetScanResults(void) {
     u32 i;
     u32 n;
     MI_CpuFill8(data_021f4910, 0, 32);
@@ -147,7 +147,7 @@ extern "C" u32 *func_020ea65c(void) {
     return data_021f4910;
 }
 
-extern "C" s32 func_020ea608(void *p) {
+extern "C" s32 Net_ConnectToParent(void *p) {
     if (func_ov066_0225ffcc() == 7 && p != NULL) {
         MI_CpuCopy8(p, data_021f49e0, 0xe0);
         return func_ov066_02260cac(data_021f49e0, 0, 0);
@@ -155,40 +155,40 @@ extern "C" s32 func_020ea608(void *p) {
     return 0;
 }
 
-extern "C" s32 func_020ea5d0(u32 a) {
-    if (data_021f4894 < 4) return -1;
+extern "C" s32 Net_WifiFindFriend(u32 a) {
+    if (sWifiConnectStep < 4) return -1;
     return func_ov065_02271e8c(a);
 }
 
 extern "C" s32 func_020ea598(u32 a) {
-    if (data_021f4894 < 4) return -1;
+    if (sWifiConnectStep < 4) return -1;
     return func_ov065_02271ed8(a);
 }
 
-extern "C" u8 *func_020ea574(void) {
-    if (data_021f4894 < 4) return NULL;
-    return data_021f48d4;
+extern "C" u8 *Net_GetWifiFriendList(void) {
+    if (sWifiConnectStep < 4) return NULL;
+    return sWifiFriendList;
 }
 
-extern "C" BOOL func_020ea4dc(void) {
-    if (data_021f4894 < 4) return FALSE;
-    data_021f4890 = 3;
+extern "C" BOOL Net_WifiStartHost(void) {
+    if (sWifiConnectStep < 4) return FALSE;
+    sNetMode = 3;
     func_ov065_0227083c(data_021f488c, (void *)func_020ec310, 0, (void *)func_020ec30c, 0);
-    func_ov065_022776c8((void *)func_020ec3a4);
-    func_ov065_022776b4((void *)func_020ec370);
+    func_ov065_022776c8((void *)Net_OnWifiSendDone);
+    func_ov065_022776b4((void *)Net_OnWifiRecv);
     func_ov065_022706f8((void *)func_020ec3c0, 0);
     return TRUE;
 }
 
-extern "C" BOOL func_020ea434(u32 a) {
+extern "C" BOOL Net_WifiConnectToHost(u32 a) {
     u32 r;
-    if (data_021f4894 != 4) return FALSE;
-    data_021f4890 = 4;
-    r = func_020ea5d0(a);
+    if (sWifiConnectStep != 4) return FALSE;
+    sNetMode = 4;
+    r = Net_WifiFindFriend(a);
     if (r == (u32)-1) return FALSE;
     func_ov065_02270710(r, (void *)func_020ec3c4, 0, (void *)func_020ec30c, 0);
-    func_ov065_022776c8((void *)func_020ec3a4);
-    func_ov065_022776b4((void *)func_020ec370);
+    func_ov065_022776c8((void *)Net_OnWifiSendDone);
+    func_ov065_022776b4((void *)Net_OnWifiRecv);
     func_ov065_022706f8((void *)func_020ec3c0, 0);
     return TRUE;
 }

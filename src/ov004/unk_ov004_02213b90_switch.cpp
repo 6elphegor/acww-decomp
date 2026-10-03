@@ -181,7 +181,7 @@ extern u8 gTalkMsgIndexEnd;
 extern char gTalkMsgIndexNone[];
 extern u8 gVec3Zero[];
 extern s16 data_02135f44[];
-extern Unk_ov004_022146ec_Sing *data_020cbb18;
+extern Unk_ov004_022146ec_Sing *gCommManager;
 extern TalkWindowState data_021ed0a0;
 
 void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);

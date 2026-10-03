@@ -9,47 +9,47 @@
 #define TvSound_callReset _ZN7TvSound9callResetEv
 #define func_02004b60 _ZN6ItemIdD1Ev
 #define func_0203442c _ZN6ItemIdC1Ev
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
-#define func_020548a0 _ZN12Unk_020dbd54D1Ev
-#define func_020548d0 _ZN12Unk_020dbd54C1Ev
-#define func_02055488 _ZN5Model13func_02055488Eii
-#define func_02055524 _ZN5Model13func_02055524Ev
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
+#define func_020548a0 _ZN9AnimModelD1Ev
+#define func_020548d0 _ZN9AnimModelC1Ev
+#define Model_setInitCallback _ZN5Model15setInitCallbackEii
+#define Model_drawNoGeCmd _ZN5Model11drawNoGeCmdEv
 #define Model_setResourceAndBind _ZN5Model18setResourceAndBindEP16Unk_020553f8_Resj
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
-#define func_02056bf8 _ZN12Unk_020dbe8c13func_02056bf8Ev
-#define func_02056ca4 _ZN12Unk_020dbe8c13func_02056ca4EPhPKcS2_S0_S0_h
-#define func_02056d54 _ZN12Unk_020dbe8cD1Ev
-#define func_02056d8c _ZN12Unk_020dbe8cC1Ev
+#define TexPatVramAnim_update _ZN14TexPatVramAnim6updateEv
+#define TexPatVramAnim_init _ZN14TexPatVramAnim4initEPhPKcS2_S0_S0_h
+#define func_02056d54 _ZN14TexPatVramAnimD1Ev
+#define func_02056d8c _ZN14TexPatVramAnimC1Ev
 #define func_02088bf8 _ZN12Unk_020e0d3013func_02088bf8EPvP4Vec3iijjjhi
 #define func_02089040 _ZN12Unk_020e0d0813func_02089040Ev
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
 #define func_02133150 _s32_div_f
-#define func_ov004_02205820 _ZN18Unk_ov004_0224882c19func_ov004_02205820Es
-#define func_ov004_022058c0 _ZN18Unk_ov004_0224882c19func_ov004_022058c0Es
-#define func_ov004_02205954 _ZN18Unk_ov004_0224882c19func_ov004_02205954Ei
-#define func_ov004_02207598 _ZN18Unk_ov004_0224882c19func_ov004_02207598Ei
-#define func_ov004_022075a4 _ZN18Unk_ov004_0224882c19func_ov004_022075a4Ei
-#define func_ov004_02209108 _ZN18Unk_ov004_0224882c19func_ov004_02209108Ev
-#define func_ov004_02209150 _ZN18Unk_ov004_0224882c19func_ov004_02209150Ev
-#define func_ov004_02209198 _ZN18Unk_ov004_0224882c19func_ov004_02209198Ev
-#define func_ov004_02209bb4 _ZN18Unk_ov004_0224882c19func_ov004_02209bb4Ev
-#define func_ov004_02209c10 _ZN18Unk_ov004_0224882c19func_ov004_02209c10Ev
-#define func_ov004_02209c44 _ZN18Unk_ov004_0224882c19func_ov004_02209c44Ev
-#define func_ov004_02209c88 _ZN18Unk_ov004_0224882c19func_ov004_02209c88Ev
-#define func_ov004_0220af14 _ZN18Unk_ov004_0224949813func_0220af14Ev
-#define func_ov004_0220af28 _ZN18Unk_ov004_0224949813func_0220af28Ev
-#define func_ov004_0220c93c _ZN18Unk_ov004_0224ad3419func_ov004_0220c93cEv
-#define func_ov004_0220c950 _ZN18Unk_ov004_0224ad3419func_ov004_0220c950Ev
-#define func_ov004_0220e738 _ZN18Unk_ov004_02249df819func_ov004_0220e738Ev
-#define func_ov004_0220f29c _ZN18Unk_ov004_0224a17c19func_ov004_0220f29cEv
-#define func_ov004_0220f2a8 _ZN18Unk_ov004_0224a17c19func_ov004_0220f2a8Ev
-#define func_ov004_02210dd8 _ZN18Unk_ov004_0224ba1819func_ov004_02210dd8EP20Unk_ov004_022108f0_ViS1_
+#define FtrActor_startPull _ZN8FtrActor9startPullEs
+#define FtrActor_startPush _ZN8FtrActor9startPushEs
+#define FtrActor_startRotate _ZN8FtrActor11startRotateEi
+#define FtrActor_canMoveBy _ZN8FtrActor9canMoveByEi
+#define FtrActor_canRotateBy _ZN8FtrActor11canRotateByEi
+#define FtrActor_playSound2 _ZN8FtrActor10playSound2Ev
+#define FtrActor_playSound1 _ZN8FtrActor10playSound1Ev
+#define FtrActor_playSound0 _ZN8FtrActor10playSound0Ev
+#define FtrActor_isSoundingClock _ZN8FtrActor15isSoundingClockEv
+#define FtrActor_isCabinClock _ZN8FtrActor12isCabinClockEv
+#define FtrActor_isGyroid _ZN8FtrActor8isGyroidEv
+#define FtrActor_isTvOn _ZN8FtrActor6isTvOnEv
+#define func_ov004_0220af14 _ZN11FtrHeadwear8syncAct1Ev
+#define func_ov004_0220af28 _ZN11FtrHeadwear8syncAct0Ev
+#define FtrShirt_syncAct0 _ZN8FtrShirt8syncAct0Ev
+#define FtrShirt_syncAct1 _ZN8FtrShirt8syncAct1Ev
+#define func_ov004_0220e738 _ZN5FtrTv19func_ov004_0220e738Ev
+#define func_ov004_0220f29c _ZN9FtrStereo19func_ov004_0220f29cEv
+#define func_ov004_0220f2a8 _ZN9FtrStereo19func_ov004_0220f2a8Ev
+#define FtrBed_checkStepTile _ZN6FtrBed13checkStepTileEP20Unk_ov004_022108f0_ViS1_
 #define func_ov004_022326fc _ZN18Unk_ov004_0224e87cC1Ev
 
 
@@ -117,7 +117,7 @@ struct Unk_ov004_022332b8_Buf {
     u8 unk_0b;
 };
 
-// P: 0xa8-byte TV/ftr resource slot (member sub-object Unk_020dbe8c at +0x10)
+// P: 0xa8-byte TV/ftr resource slot (member sub-object TexPatVramAnim at +0x10)
 struct Unk_ov004_02233790 {
     void *unk_00;
     u32 unk_04;
@@ -146,7 +146,7 @@ struct Unk_ov004_02233b3c_Mat {
     s32 v[12];
 };
 
-// R: furniture model wrapper (Unk_020dbd54 at +0x2c)
+// R: furniture model wrapper (AnimModel at +0x2c)
 struct Unk_ov004_02233b3c {
     u8 unk_00;
     s32 unk_04;
@@ -222,15 +222,15 @@ struct Unk_ov004_02233f3c_V3 {
     ~Unk_ov004_02233f3c_V3() {}
 };
 
-struct Unk_ov004_02205c44 {
-    void func_ov004_02205c44(u32 v, s32 flag);
-    u8 func_ov004_02205c7c();
+struct FtrSwitch {
+    void set(u32 v, s32 flag);
+    u8 isOn();
     u8 unk_00;
     u8 unk_01;
 };
 
 // TU02's class: only the members this unit touches
-class Unk_ov004_0224882c {
+class FtrActor {
 public:
     virtual void vfunc_00();
     virtual void vfunc_04();
@@ -260,23 +260,23 @@ public:
     virtual void vfunc_64();
     virtual void vfunc_68();
     virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
-    virtual void vfunc_88();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98(BOOL v);
-    virtual void vfunc_9c(BOOL v);
-    virtual BOOL vfunc_a0();
+    virtual void changeAct();
+    virtual void getActSwitchState();
+    virtual void getActAid();
+    virtual void initModel();
+    virtual void updateActive();
+    virtual void updateAppearRemove();
+    virtual void isVisible();
+    virtual void needsTexCopy();
+    virtual void onRemove();
+    virtual void onMoveStart();
+    virtual void onRotateStart(BOOL v);
+    virtual void onRotateUpdate(BOOL v);
+    virtual BOOL isReady();
 
-    BOOL func_ov004_022056bc(s32 idx);
-    BOOL func_ov004_022057c8();
-    BOOL func_ov004_022075b0();
+    BOOL setAct(s32 idx);
+    BOOL isNotReady();
+    BOOL hasItemOnTop();
 
     /* 0x04 */ u8 pad_04[0x5c - 4];
     /* 0x5c */ Unk_ov004_Vec3 unk_5c;
@@ -287,7 +287,7 @@ public:
     /* 0x150 */ u8 pad_150[0x284 - 0x150];
     /* 0x284 */ u8 unk_284;
     /* 0x285 */ u8 pad_285[0x73c - 0x285];
-    /* 0x73c */ Unk_ov004_02205c44 unk_73c;
+    /* 0x73c */ FtrSwitch unk_73c;
     /* 0x73e */ u8 pad_73e[0x770 - 0x73e];
     /* 0x770 */ u32 unk_770;
     /* 0x774 */ s32 unk_774;
@@ -355,7 +355,7 @@ public:
     void *unk_00[0x1c];
     Unk_ov004_0223583c();
     ~Unk_ov004_0223583c();
-    Unk_ov004_0224882c *func_ov004_02235720(u32 idx);
+    FtrActor *func_ov004_02235720(u32 idx);
     s32 func_ov004_02235740(void *v);
     s32 func_ov004_0223576c();
     s32 func_ov004_02235788();
@@ -423,8 +423,8 @@ public:
     u8 unk_00[2][16][16];
     Unk_ov004_02235708();
     ~Unk_ov004_02235708();
-    Unk_ov004_0224882c *func_ov004_022355b0(void *p, s32 layer);
-    Unk_ov004_0224882c *func_ov004_022355d8(s32 x, s32 y, s32 layer);
+    FtrActor *func_ov004_022355b0(void *p, s32 layer);
+    FtrActor *func_ov004_022355d8(s32 x, s32 y, s32 layer);
     s32 func_ov004_02235624(s32 x, s32 y, s32 layer);
     BOOL func_ov004_02235648(s32 id, s32 x, s32 y, u8 layer);
     BOOL func_ov004_0223568c(s32 id, s32 x, s32 y, u8 layer);
@@ -537,9 +537,9 @@ extern "C" {
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
 void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, s32));
 extern s16 data_02135f44[];
-extern Unk_ov004_02233f3c_World *data_021c47c4;
+extern Unk_ov004_02233f3c_World *gSceneBlockMap;
 extern u8 gBackup[];
-extern void *data_021c620c;
+extern void *gBgHeap;
 extern u8 data_021d735c[];
 extern Unk_ov004_02233244_Src data_021ed2b0;
 extern s32 data_021f47e0[];
@@ -590,7 +590,7 @@ void func_02004b60();
 s32 func_0202ffdc(void *);
 s32 func_02031284(s32 x, s32 y);
 void func_0203442c();
-void *func_02037558(void *, u32, u32, u8);
+void *MapBlock_GetItemPtr(void *, u32, u32, u8);
 void *func_0203c2cc(void *);
 s32 Item_MakeFurniture(s32 a, s32 b);
 s32 Item_GetFurnitureIndex(void *p);
@@ -598,10 +598,10 @@ s32 Item_GetFurnitureDirection(void *);
 s32 Item_IsFurniture(void *p);
 s32 Item_IsNormalItem(u16 *p);
 u32 Item_GetPaperIndex(u16 *p);
-u16 *func_0204eba0(Unk_ov004_02233f3c_World *w, void *q, u32 z);
-u16 *func_0204ebd8(Unk_ov004_02233f3c_World *w, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-void func_0204ed8c(Unk_ov004_Vec3 *out, s32 x, s32 z);
-void func_0204ee10(s32 *a, s32 *b, void *c);
+u16 *BlockMap_GetItemPtrAtPos(Unk_ov004_02233f3c_World *w, void *q, u32 z);
+u16 *BlockMap_GetItemPtr(Unk_ov004_02233f3c_World *w, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+void FieldPos_FromUnitCenter(Unk_ov004_Vec3 *out, s32 x, s32 z);
+void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 s32 Backup_GetStatus(void *p);
 s32 func_020515b8(s32, void *, s32);
 s32 func_02051da4(void *, s32, s32, s32);
@@ -614,22 +614,22 @@ s32 FtrInfo_GetDmaUnk04(s32 a);
 s32 FtrInfo_TestAlwaysFlag4(s32);
 s32 FtrInfo_GetUnk05(s32 a);
 s32 FtrInfo_GetDmaUnk02(s32);
-void func_02054710(void *self);
-void func_02054720(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_020547a4(void *p);
-void func_020547e4(void *p);
-BOOL func_02054800(void *self, void *x);
+void AnimModel_attachAnim(void *self);
+void BlendAnimModel_initAnim(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
+void AnimModel_setFrame(void *p);
+void AnimModel_stepAnim(void *p);
+BOOL AnimModel_allocAnmObj(void *self, void *x);
 void func_020548a0(void *self);
 void func_020548d0(void *self);
-void func_02055488(void *self, void *cb, void *arg);
-void func_02055524(void *self);
+void Model_setInitCallback(void *self, void *cb, void *arg);
+void Model_drawNoGeCmd(void *self);
 BOOL Model_setResourceAndBind(void *self, void *res, u32 a);
-void func_02055724(void *a, void *b);
-void *func_0205588c(void *a, void *heap);
+void Gfx3d_LoadTexAndPltt(void *a, void *b);
+void *Gfx3d_CopyTex(void *a, void *heap);
 BOOL AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
 BOOL AnimFrameCtrl_isFinished(void *self);
-BOOL func_02056bf8(void *p);
-BOOL func_02056ca4(void *self, void *hdr, const char *n1, const char *n2, void *x, void *y, u32 flag);
+BOOL TexPatVramAnim_update(void *p);
+BOOL TexPatVramAnim_init(void *self, void *hdr, const char *n1, const char *n2, void *x, void *y, u32 flag);
 void func_02056d54(void *p);
 void func_02056d8c(void *p);
 void func_0205c13c();
@@ -640,15 +640,15 @@ s32 func_02063b8c(s32 a);
 void *File_LoadAlloc(const char *a, void *b, s32 c, s32 d);
 s32 func_02088bf8(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 s32 func_02089040(void *a);
-Unk_ov004_0224882c *func_02095204(s32 a);
+FtrActor *func_02095204(s32 a);
 s32 PlayerData_GetCurrent(void);
 s32 func_02097740(void *a, s32 b);
 s32 PlayerData_getPlayerId(...);
 void func_0209c1a4(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
-s32 func_0209cc34(void *);
-s32 func_0209cef4();
-void func_0209cf18(void *);
-void func_0209d498(void *);
+s32 Date_GetWeatherPeriod(void *);
+s32 Clock_GetWeekday();
+void Clock_GetMinuteHour(void *);
+void Clock_GetDateTime(void *);
 s32 func_020b4904(s32);
 s32 func_020b50e8();
 BOOL func_020b51a4();
@@ -685,37 +685,37 @@ void *func_021065f8(void *p, s32 a);
 void *func_02106690(void *p);
 void *func_021066ac(void *p, s32 a);
 s32 func_02133150(s32 a, s32 b);
-s32 func_ov004_02205820(void *, s32);
-s32 func_ov004_022058c0(void *, s32);
-s32 func_ov004_02205954(void *, s32);
-void func_ov004_02206f3c(u16 *out, Unk_ov004_0224882c *o);
-s32 func_ov004_02206f74();
-BOOL func_ov004_02206f7c(Unk_ov004_0224882c *);
-s32 func_ov004_02207598(void *, void *);
-s32 func_ov004_022075a4(void *, s32);
-s32 func_ov004_02207c04(s32 a);
-u32 func_ov004_02208750(void *);
-s32 func_ov004_0220875c(void *);
-u32 func_ov004_022087a4(void *o);
-BOOL func_ov004_022087e8(Unk_ov004_Vec3 *, s32, s32, s32, s32);
-void func_ov004_02209108(void *);
-void func_ov004_02209150(void *);
-void func_ov004_02209198(void *);
-BOOL func_ov004_02209bb4(Unk_ov004_0224882c *);
-BOOL func_ov004_02209c10(Unk_ov004_0224882c *);
-BOOL func_ov004_02209c44(Unk_ov004_0224882c *);
-BOOL func_ov004_02209c88(Unk_ov004_0224882c *);
-s32 func_ov004_02209d40(Unk_ov004_0224882c *);
-s32 func_ov004_02209d4c(Unk_ov004_0224882c *);
-Unk_ov004_0224882c *func_ov004_02209d58(s32 a, s32 b, s32 c, s32 d, u32 e, s32 f);
+s32 FtrActor_startPull(void *, s32);
+s32 FtrActor_startPush(void *, s32);
+s32 FtrActor_startRotate(void *, s32);
+void FtrActor_GetItemId(u16 *out, FtrActor *o);
+s32 FtrActor_PredIsSeatOrBed();
+BOOL FtrActor_PredIsStereo(FtrActor *);
+s32 FtrActor_canMoveBy(void *, void *);
+s32 FtrActor_canRotateBy(void *, s32);
+s32 FtrActor_AngleToDir(s32 a);
+u32 FtrActor_GetLayer(void *);
+s32 FtrActor_RequestToggle(void *);
+u32 FtrActor_GetFtrIndex(void *o);
+BOOL FtrActor_IsPosClearOfCharacters(Unk_ov004_Vec3 *, s32, s32, s32, s32);
+void FtrActor_playSound2(void *);
+void FtrActor_playSound1(void *);
+void FtrActor_playSound0(void *);
+BOOL FtrActor_isSoundingClock(FtrActor *);
+BOOL FtrActor_isCabinClock(FtrActor *);
+BOOL FtrActor_isGyroid(FtrActor *);
+BOOL FtrActor_isTvOn(FtrActor *);
+s32 FtrActor_GetArgMode(FtrActor *);
+s32 FtrActor_GetArgFtrIndex(FtrActor *);
+FtrActor *FtrActor_MakeSpawnArg(s32 a, s32 b, s32 c, s32 d, u32 e, s32 f);
 s32 func_ov004_0220af14(void *p);
 s32 func_ov004_0220af28(void *p);
-s32 func_ov004_0220c93c(void *p);
-s32 func_ov004_0220c950(void *p);
-void func_ov004_0220e738(Unk_ov004_0224882c *);
-void func_ov004_0220f29c(Unk_ov004_0224882c *);
-void func_ov004_0220f2a8(Unk_ov004_0224882c *);
-BOOL func_ov004_02210dd8(Unk_ov004_0224882c *, Unk_ov004_Vec3 *, s32, Unk_ov004_Vec3 *);
+s32 FtrShirt_syncAct0(void *p);
+s32 FtrShirt_syncAct1(void *p);
+void func_ov004_0220e738(FtrActor *);
+void func_ov004_0220f29c(FtrActor *);
+void func_ov004_0220f2a8(FtrActor *);
+BOOL FtrBed_checkStepTile(FtrActor *, Unk_ov004_Vec3 *, s32, Unk_ov004_Vec3 *);
 void func_ov004_022326fc(void *);
 void func_ov004_02235180();
 void func_ov004_022356cc();
@@ -735,7 +735,7 @@ extern "C" Unk_ov004_02235708 *func_ov004_02235718();
 extern "C" Unk_ov004_022351bc *func_ov004_022354d8();
 extern "C" s32 func_ov004_022350f4();
 extern "C" s32 func_ov004_022350c8();
-extern "C" s32 func_ov004_02235028(Unk_ov004_0224882c *self);
+extern "C" s32 func_ov004_02235028(FtrActor *self);
 extern "C" s32 func_ov004_02234ff4(s32 x, s32 y, s32 a, s32 b, u8 c, s32 d);
 extern "C" s32 func_ov004_02234f80(s32 x, s32 y);
 extern "C" s32 func_ov004_02234f6c(Unk_ov004_Vec3 *p);
@@ -747,9 +747,9 @@ extern "C" BOOL func_ov004_02234dd4(Unk_ov004_Vec3 *pos, s32 ang);
 extern "C" BOOL func_ov004_02234d80(Unk_ov004_Vec3 *pos, s32 ang);
 extern "C" BOOL func_ov004_02234d2c(Unk_ov004_Vec3 *pos, s32 ang);
 extern "C" BOOL func_ov004_02234cd8();
-extern "C" void func_ov004_02234c7c(u32 v, BOOL (*f)(Unk_ov004_0224882c *), s32 a);
-extern "C" s32 func_ov004_02234c2c(BOOL (*f)(Unk_ov004_0224882c *));
-extern "C" Unk_ov004_0224882c *func_ov004_02234bb4(BOOL (*f)(Unk_ov004_0224882c *), s32 a);
+extern "C" void func_ov004_02234c7c(u32 v, BOOL (*f)(FtrActor *), s32 a);
+extern "C" s32 func_ov004_02234c2c(BOOL (*f)(FtrActor *));
+extern "C" FtrActor *func_ov004_02234bb4(BOOL (*f)(FtrActor *), s32 a);
 extern "C" u16 func_ov004_02234ba8();
 extern "C" s32 func_ov004_02234b0c(u32 key);
 extern "C" u32 func_ov004_02234af8();
@@ -766,7 +766,7 @@ extern "C" s32 func_ov004_022344e8(s32 idx, u16 *p1, u16 *p2);
 extern "C" s32 func_ov004_022344dc(s32 idx);
 extern "C" Unk_ov004_Vec3 *func_ov004_022344a4(s32 idx);
 extern "C" void func_ov004_02234490(Unk_ov004_Vec3 *v);
-extern "C" s32 func_ov004_02234464(Unk_ov004_0224882c *p);
+extern "C" s32 func_ov004_02234464(FtrActor *p);
 extern "C" s32 func_ov004_02234440(s32 i);
 extern "C" s32 func_ov004_02234320(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 ang, s32 idx);
 extern "C" s32 func_ov004_022341c0(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 layer, s32 cx, s32 cy);
@@ -907,7 +907,7 @@ namespace Unk_ov004_02233f3c_Ns {
 extern "C" s32 func_ov004_022341c0(void *out, s32 x, s32 y, s32 dir, s32 pl, u8 layer, s32 cx, s32 cy);
 }
 
-static inline BOOL Unk_ov004_02234f30_Is37(Unk_ov004_0224882c *m) {
+static inline BOOL Unk_ov004_02234f30_Is37(FtrActor *m) {
     if (*(u16 *)((u8 *)m + 0xc) == 0x37) {
         return TRUE;
     }
@@ -1161,7 +1161,7 @@ BOOL Unk_ov004_02235a0c::func_ov004_02235a54(u16 *p) {
         u32 *slot2 = &unk_00[n];
         if (*slot2 == 0) {
             if (func_ov004_02233f08(&out, &v, 2) == 3) {
-                *slot2 = func_ov004_02235028((Unk_ov004_0224882c *)out);
+                *slot2 = func_ov004_02235028((FtrActor *)out);
                 unk_08[n] = *p;
                 unk_0c = n;
                 return TRUE;
@@ -1427,9 +1427,9 @@ s32 Unk_ov004_0223583c::func_ov004_02235740(void *v) {
 }
 
 // @0x2235720 unk_022350c8.cpp
-Unk_ov004_0224882c *Unk_ov004_0223583c::func_ov004_02235720(u32 idx) {
+FtrActor *Unk_ov004_0223583c::func_ov004_02235720(u32 idx) {
     if (idx < func_ov004_02234af8()) {
-        return (Unk_ov004_0224882c *)unk_00[idx];
+        return (FtrActor *)unk_00[idx];
     }
     return 0;
 }
@@ -1490,7 +1490,7 @@ s32 Unk_ov004_02235708::func_ov004_02235624(s32 x, s32 y, s32 layer) {
 }
 
 // @0x22355d8 unk_022350c8.cpp
-Unk_ov004_0224882c *Unk_ov004_02235708::func_ov004_022355d8(s32 x, s32 y, s32 layer) {
+FtrActor *Unk_ov004_02235708::func_ov004_022355d8(s32 x, s32 y, s32 layer) {
     u8 *p = &unk_00[layer & 1][y & 15][x & 15];
     u32 c = *p;
     if (c != 0xff && c < func_ov004_02234af8()) {
@@ -1502,9 +1502,9 @@ Unk_ov004_0224882c *Unk_ov004_02235708::func_ov004_022355d8(s32 x, s32 y, s32 la
 }
 
 // @0x22355b0 unk_022350c8.cpp
-Unk_ov004_0224882c *Unk_ov004_02235708::func_ov004_022355b0(void *p, s32 layer) {
+FtrActor *Unk_ov004_02235708::func_ov004_022355b0(void *p, s32 layer) {
     s32 x, y;
-    func_0204ee10(&x, &y, p);
+    FieldPos_ToUnit(&x, &y, p);
     return func_ov004_022355d8(x, y, layer);
 }
 
@@ -1652,13 +1652,13 @@ void Unk_ov004_022351bc::func_ov004_0223539c() {
     Unk_ov004_022355ac *s1 = func_ov004_022354a4(1);
     if (o1 != 0 && s1 != 0) {
         BOOL k1 = TRUE;
-        if (FtrInfo_TestAlwaysFlag4(func_ov004_022087a4(o1))) {
+        if (FtrInfo_TestAlwaysFlag4(FtrActor_GetFtrIndex(o1))) {
             if (s1->func_ov004_022354e8()) {
                 k1 = FALSE;
             }
         }
         if (k1) {
-            if (func_ov004_0220875c(o1) != 0) {
+            if (FtrActor_RequestToggle(o1) != 0) {
                 return;
             }
         }
@@ -1667,13 +1667,13 @@ void Unk_ov004_022351bc::func_ov004_0223539c() {
     Unk_ov004_022355ac *s2 = func_ov004_022354a4(0);
     if (o2 != 0 && s2 != 0) {
         BOOL k2 = TRUE;
-        if (FtrInfo_TestAlwaysFlag4(func_ov004_022087a4(o2))) {
+        if (FtrInfo_TestAlwaysFlag4(FtrActor_GetFtrIndex(o2))) {
             if (s2->func_ov004_022354e8()) {
                 k2 = FALSE;
             }
         }
         if (k2) {
-            if (func_ov004_0220875c(o2) != 0) {
+            if (FtrActor_RequestToggle(o2) != 0) {
                 return;
             }
         }
@@ -1684,7 +1684,7 @@ void Unk_ov004_022351bc::func_ov004_0223539c() {
 void *Unk_ov004_022351bc::func_ov004_0223537c(s32 v) {
     void *o = func_ov004_02235434(0);
     if (o != 0) {
-        return (void *)func_ov004_022075a4(o, v);
+        return (void *)FtrActor_canRotateBy(o, v);
     }
     return 0;
 }
@@ -1693,7 +1693,7 @@ void *Unk_ov004_022351bc::func_ov004_0223537c(s32 v) {
 void *Unk_ov004_022351bc::func_ov004_0223535c(s32 v) {
     void *o = func_ov004_02235434(0);
     if (o != 0) {
-        return (void *)func_ov004_02205954(o, v);
+        return (void *)FtrActor_startRotate(o, v);
     }
     return 0;
 }
@@ -1723,7 +1723,7 @@ void *Unk_ov004_022351bc::func_ov004_022352d0(s32 v) {
     Unk_ov004_022355ac *s = func_ov004_022354a4(0);
     void *o = func_ov004_02235434(0);
     if (s != 0 && o != 0) {
-        return (void *)func_ov004_02207598(o, func_ov004_0223527c((s16)(v + s->func_ov004_022354e0())));
+        return (void *)FtrActor_canMoveBy(o, func_ov004_0223527c((s16)(v + s->func_ov004_022354e0())));
     }
     return 0;
 }
@@ -1775,7 +1775,7 @@ void *Unk_ov004_022351bc::func_ov004_02235234() {
     Unk_ov004_022355ac *s = func_ov004_022354a4(0);
     void *o = func_ov004_02235434(0);
     if (s != 0 && o != 0) {
-        return (void *)func_ov004_022058c0(o, s->func_ov004_022354e0());
+        return (void *)FtrActor_startPush(o, s->func_ov004_022354e0());
     }
     return 0;
 }
@@ -1790,7 +1790,7 @@ void *Unk_ov004_022351bc::func_ov004_022351e8() {
     Unk_ov004_022355ac *s = func_ov004_022354a4(0);
     void *o = func_ov004_02235434(0);
     if (s != 0 && o != 0) {
-        return (void *)func_ov004_02205820(o, s->func_ov004_022354e0());
+        return (void *)FtrActor_startPull(o, s->func_ov004_022354e0());
     }
     return 0;
 }
@@ -1820,7 +1820,7 @@ BOOL Unk_ov004_022351bc::func_ov004_02235120(s32 id, Unk_ov004_02235528_V3 *a, U
     {
         void *o = func_ov004_0223584c()->func_ov004_02235720(id);
         if (o != 0) {
-            u32 k = func_ov004_02208750(o);
+            u32 k = FtrActor_GetLayer(o);
             unk_00[k & 1].func_ov004_02235528(id, a, b, c, d, e, f, g);
             return TRUE;
         }
@@ -1854,10 +1854,10 @@ extern "C" s32 func_ov004_022350c8() {
 }
 
 // @0x2235028 unk_02234774.cpp
-extern "C" s32 func_ov004_02235028(Unk_ov004_0224882c *self) {
+extern "C" s32 func_ov004_02235028(FtrActor *self) {
     if (func_ov004_0223584c()->func_ov004_0223576c()) {
-        s32 a = FtrInfo_GetDmaUnk02(func_ov004_02209d4c(self));
-        s32 b = func_ov004_02209d40(self);
+        s32 a = FtrInfo_GetDmaUnk02(FtrActor_GetArgFtrIndex(self));
+        s32 b = FtrActor_GetArgMode(self);
         u16 v;
         if (a >= 0 && a < 0x30) {
             v = data_ov004_0224091c[a];
@@ -1865,10 +1865,10 @@ extern "C" s32 func_ov004_02235028(Unk_ov004_0224882c *self) {
             v = data_ov004_0224091c[0];
         }
         if (a == 0x18 && b == 1) {
-            if ((u32)func_ov004_02234c2c(func_ov004_02209c44) >= 4) {
-                Unk_ov004_0224882c *e = func_ov004_02234bb4(func_ov004_02209c44, 0);
+            if ((u32)func_ov004_02234c2c(FtrActor_isGyroid) >= 4) {
+                FtrActor *e = func_ov004_02234bb4(FtrActor_isGyroid, 0);
                 if (e != NULL) {
-                    e->unk_73c.func_ov004_02205c44(1, 0);
+                    e->unk_73c.set(1, 0);
                     func_020515b8(func_020b50e8(), (u8 *)e + 0x5c, 0);
                 }
             }
@@ -1881,12 +1881,12 @@ extern "C" s32 func_ov004_02235028(Unk_ov004_0224882c *self) {
 // @0x2234ff4 unk_02234774.cpp
 extern "C" s32 func_ov004_02234ff4(s32 x, s32 y, s32 a, s32 b, u8 c, s32 d) {
     FtrInfo_GetDmaUnk02(a);
-    return func_ov004_02235028(func_ov004_02209d58(x, y, a, b, c, d));
+    return func_ov004_02235028(FtrActor_MakeSpawnArg(x, y, a, b, c, d));
 }
 
 // @0x2234f80 unk_02234774.cpp
 extern "C" s32 func_ov004_02234f80(s32 x, s32 y) {
-    Unk_ov004_0224882c *e = func_ov004_02235718()->func_ov004_022355d8(x, y, 0);
+    FtrActor *e = func_ov004_02235718()->func_ov004_022355d8(x, y, 0);
     if (e != NULL) {
         if (e->unk_788 == 1) {
             return e->unk_5c.y;
@@ -1909,9 +1909,9 @@ extern "C" s32 func_ov004_02234f6c(Unk_ov004_Vec3 *p) {
 
 // @0x2234f30 unk_02234774.cpp
 extern "C" s32 func_ov004_02234f30(Unk_ov004_Vec3 *pos, s32 ang, Unk_ov004_Vec3 *out) {
-    Unk_ov004_0224882c *m = func_ov004_02235718()->func_ov004_022355b0(pos, 0);
+    FtrActor *m = func_ov004_02235718()->func_ov004_022355b0(pos, 0);
     if (m != NULL && Unk_ov004_02234f30_Is37(m)) {
-        return func_ov004_02210dd8(m, pos, ang, out);
+        return FtrBed_checkStepTile(m, pos, ang, out);
     }
     return 0;
 }
@@ -3725,7 +3725,7 @@ extern "C" s32 func_ov004_02234df8(Unk_ov004_Vec3 *p, s16 ang, s32 dist) {
     if (func_ov004_02234f6c(&v)) {
         return 0;
     }
-    if (func_ov004_022087e8(&v, 0x800, 0x2000, 0x800, 0) == 0) {
+    if (FtrActor_IsPosClearOfCharacters(&v, 0x800, 0x2000, 0x800, 0) == 0) {
         return 1;
     }
     s32 t = func_0202ffdc(&v);
@@ -3746,7 +3746,7 @@ extern "C" BOOL func_ov004_02234dd4(Unk_ov004_Vec3 *pos, s32 ang) {
 
 // @0x2234d80 unk_02234774.cpp
 extern "C" BOOL func_ov004_02234d80(Unk_ov004_Vec3 *pos, s32 ang) {
-    Unk_ov004_0224882c *m = func_ov004_02235718()->func_ov004_022355b0(pos, 0);
+    FtrActor *m = func_ov004_02235718()->func_ov004_022355b0(pos, 0);
     if (m != NULL && m->unk_77c != 0x26) {
         return FALSE;
     }
@@ -3758,7 +3758,7 @@ extern "C" BOOL func_ov004_02234d80(Unk_ov004_Vec3 *pos, s32 ang) {
 
 // @0x2234d2c unk_02234774.cpp
 extern "C" BOOL func_ov004_02234d2c(Unk_ov004_Vec3 *pos, s32 ang) {
-    Unk_ov004_0224882c *m = func_ov004_02235718()->func_ov004_022355b0(pos, 0);
+    FtrActor *m = func_ov004_02235718()->func_ov004_022355b0(pos, 0);
     if (m != NULL && m->unk_77c != 0x26) {
         return FALSE;
     }
@@ -3773,8 +3773,8 @@ extern "C" BOOL func_ov004_02234cd8() {
     s32 i = 0;
     s32 z = 0;
     for (; (u32)i < func_ov004_02234af8(); i++) {
-        Unk_ov004_0224882c *e = func_ov004_0223584c()->func_ov004_02235720(i);
-        if (e != NULL && func_ov004_02206f7c(e) && e->unk_73c.func_ov004_02205c7c()) {
+        FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(i);
+        if (e != NULL && FtrActor_PredIsStereo(e) && e->unk_73c.isOn()) {
             func_02051da4(e, z, 0xff, 1);
         }
     }
@@ -3782,14 +3782,14 @@ extern "C" BOOL func_ov004_02234cd8() {
 }
 
 // @0x2234c7c unk_02234774.cpp
-extern "C" void func_ov004_02234c7c(u32 v, BOOL (*f)(Unk_ov004_0224882c *), s32 a) {
+extern "C" void func_ov004_02234c7c(u32 v, BOOL (*f)(FtrActor *), s32 a) {
     u32 i = 0;
     for (; i < func_ov004_02234af8(); i++) {
-        Unk_ov004_0224882c *e = func_ov004_0223584c()->func_ov004_02235720(i);
+        FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(i);
         if (e != NULL) {
             if (f == NULL || (f != NULL && f(e))) {
-                if (v != e->unk_73c.func_ov004_02205c7c()) {
-                    e->unk_73c.func_ov004_02205c44(v, a);
+                if (v != e->unk_73c.isOn()) {
+                    e->unk_73c.set(v, a);
                 }
             }
         }
@@ -3797,13 +3797,13 @@ extern "C" void func_ov004_02234c7c(u32 v, BOOL (*f)(Unk_ov004_0224882c *), s32 
 }
 
 // @0x2234c2c unk_02234774.cpp
-extern "C" s32 func_ov004_02234c2c(BOOL (*f)(Unk_ov004_0224882c *)) {
+extern "C" s32 func_ov004_02234c2c(BOOL (*f)(FtrActor *)) {
     s32 cnt = 0;
     u32 i = 0;
     for (; i < func_ov004_02234af8(); i++) {
-        Unk_ov004_0224882c *e = func_ov004_0223584c()->func_ov004_02235720(i);
+        FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(i);
         if (e != NULL) {
-            if (f == NULL || (f != NULL && f(e) && e->unk_73c.func_ov004_02205c7c())) {
+            if (f == NULL || (f != NULL && f(e) && e->unk_73c.isOn())) {
                 cnt++;
             }
         }
@@ -3812,19 +3812,19 @@ extern "C" s32 func_ov004_02234c2c(BOOL (*f)(Unk_ov004_0224882c *)) {
 }
 
 // @0x2234bb4 unk_02234774.cpp
-extern "C" Unk_ov004_0224882c *func_ov004_02234bb4(BOOL (*f)(Unk_ov004_0224882c *), s32 a) {
+extern "C" FtrActor *func_ov004_02234bb4(BOOL (*f)(FtrActor *), s32 a) {
     s32 n = func_ov004_02234c2c(f);
     if (n != 0) {
         s32 pick = func_02063b8c(n);
         s32 cnt = 0;
         u32 i = 0;
         for (; i < func_ov004_02234af8(); i++) {
-            Unk_ov004_0224882c *e = func_ov004_0223584c()->func_ov004_02235720(i);
+            FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(i);
             if (e != NULL) {
                 if (f == NULL || (f != NULL && f(e))) {
-                    if (e->unk_73c.func_ov004_02205c7c()) {
+                    if (e->unk_73c.isOn()) {
                         if (cnt == pick) {
-                            e->unk_73c.func_ov004_02205c44(0, a);
+                            e->unk_73c.set(0, a);
                             return e;
                         }
                         cnt++;
@@ -3848,7 +3848,7 @@ extern "C" s32 func_ov004_02234b0c(u32 key) {
     s32 cnt = 0;
     u32 i = 0;
     for (; i < n; i++) {
-        Unk_ov004_0224882c *e = mgr->func_ov004_02235720(i);
+        FtrActor *e = mgr->func_ov004_02235720(i);
         if (e != NULL && e->unk_774 != -1 && key == e->unk_770) {
             cnt++;
         }
@@ -3858,7 +3858,7 @@ extern "C" s32 func_ov004_02234b0c(u32 key) {
         cnt = 0;
         i = 0;
         for (; i < n; i++) {
-            Unk_ov004_0224882c *e = mgr->func_ov004_02235720(i);
+            FtrActor *e = mgr->func_ov004_02235720(i);
             if (e != NULL && e->unk_774 != -1 && key == e->unk_770) {
                 if (cnt == pick) {
                     return e->unk_774;
@@ -3890,7 +3890,7 @@ extern "C" void func_ov004_02234ad0(void *) {
 
 // @0x2234a48 unk_02234774.cpp
 extern "C" void func_ov004_02234a48(void *) {
-    Unk_ov004_02234a48_Grid *g = data_021c47c4;
+    Unk_ov004_02234a48_Grid *g = gSceneBlockMap;
     void *cells;
     if ((u8 *)g->w > (u8 *)0 && (u8 *)g->h > (u8 *)0 && g->cells != NULL) {
         cells = g->cells;
@@ -3903,7 +3903,7 @@ extern "C" void func_ov004_02234a48(void *) {
         for (y = 0; y < 16; y++) {
             s32 x;
             for (x = 0; x < 16; x++) {
-                void *c = func_02037558(cells, x, y, layer);
+                void *c = MapBlock_GetItemPtr(cells, x, y, layer);
                 if (c != NULL && Item_IsFurniture(c)) {
                     s32 a = Item_GetFurnitureIndex(c);
                     func_ov004_02234ff4(x, y, a, Item_GetFurnitureDirection(c), layer, 0);
@@ -3927,8 +3927,8 @@ extern "C" void func_ov004_022349a8(void *) {
         best = -1;
         s32 minv = data_ov004_02251f98;
         for (; i < func_ov004_02234af8(); i++) {
-            Unk_ov004_0224882c *e = func_ov004_0223584c()->func_ov004_02235720(i);
-            if (e != NULL && func_ov004_02209c10(e)) {
+            FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(i);
+            if (e != NULL && FtrActor_isCabinClock(e)) {
                 Unk_ov004_Vec3 v0c;
                 Unk_ov004_Vec3 t = e->unk_7b4;
                 v0c.x = t.x;
@@ -3942,7 +3942,7 @@ extern "C" void func_ov004_022349a8(void *) {
             }
         }
         if (best != -1) {
-            Unk_ov004_0224882c *e = func_ov004_0223584c()->func_ov004_02235720(best);
+            FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(best);
             if (e != NULL) {
                 func_ov004_0220f29c(e);
             }
@@ -3964,8 +3964,8 @@ extern "C" void func_ov004_02234908(void *) {
         best = -1;
         s32 minv = data_ov004_02251f98;
         for (; i < func_ov004_02234af8(); i++) {
-            Unk_ov004_0224882c *e = func_ov004_0223584c()->func_ov004_02235720(i);
-            if (e != NULL && func_ov004_02209bb4(e)) {
+            FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(i);
+            if (e != NULL && FtrActor_isSoundingClock(e)) {
                 Unk_ov004_Vec3 v0c;
                 Unk_ov004_Vec3 t = e->unk_7b4;
                 v0c.x = t.x;
@@ -3979,7 +3979,7 @@ extern "C" void func_ov004_02234908(void *) {
             }
         }
         if (best != -1) {
-            Unk_ov004_0224882c *e = func_ov004_0223584c()->func_ov004_02235720(best);
+            FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(best);
             if (e != NULL) {
                 func_ov004_0220f2a8(e);
             }
@@ -4006,8 +4006,8 @@ extern "C" void func_ov004_02234774(Unk_ov004_0224e9d8 *self) {
             s32 best = -1;
             s32 minv = data_ov004_02251f98;
             for (; i < func_ov004_02234af8(); i++) {
-                Unk_ov004_0224882c *e = func_ov004_0223584c()->func_ov004_02235720(i);
-                if (e != NULL && func_ov004_02209c88(e)) {
+                FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(i);
+                if (e != NULL && FtrActor_isTvOn(e)) {
                     Unk_ov004_Vec3 v20;
                     Unk_ov004_Vec3 t = e->unk_7b4;
                     v20.x = t.x;
@@ -4021,7 +4021,7 @@ extern "C" void func_ov004_02234774(Unk_ov004_0224e9d8 *self) {
                 }
             }
             if (best != -1) {
-                Unk_ov004_0224882c *e = func_ov004_0223584c()->func_ov004_02235720(best);
+                FtrActor *e = func_ov004_0223584c()->func_ov004_02235720(best);
                 if (e != NULL) {
                     func_ov004_0220e738(e);
                     Unk_ov004_Vec3 t = e->unk_7b4;
@@ -4072,22 +4072,22 @@ extern "C" s32 func_ov004_022345c4(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 an
     s32 t, idx;
     s32 hx, hy, sx, sy;
     u16 tmp;
-    Unk_ov004_0224882c *o;
+    FtrActor *o;
     u16 *cell;
     u16 *cell2;
     Unk_ov004_02233f3c_V3 v34;
     Unk_ov004_02233f3c_V3 v40;
     if (p1 != 0) *p1 = 0xfff1;
     if (p2 != 0) *p2 = 0xfff1;
-    func_0204ee10(&b24, &b28, pos);
-    w = data_021c47c4;
+    FieldPos_ToUnit(&b24, &b28, pos);
+    w = gSceneBlockMap;
     if (w != 0) {
         idx = ((s32)(u16)ang >> 4) * 2;
         t = pos->z + func_01ffcb0c(data_02135f44[idx + 1], 0x10cd);
         v34.x = pos->x + func_01ffcb0c(data_02135f44[idx], 0x10cd);
         v34.y = 0;
         v34.z = t;
-        cell = func_0204eba0(w, &v34, 0);
+        cell = BlockMap_GetItemPtrAtPos(w, &v34, 0);
         if (cell != 0) {
             if (Item_IsNormalItem(cell) != 0) {
                 return -1;
@@ -4099,20 +4099,20 @@ extern "C" s32 func_ov004_022345c4(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 an
             if (func_ov004_02234320(&c2c, &c30, pos, ang, i) == 0) {
                 continue;
             }
-            func_0204ed8c((Unk_ov004_Vec3 *)&v40, c2c, c30);
+            FieldPos_FromUnitCenter((Unk_ov004_Vec3 *)&v40, c2c, c30);
             if (func_020e9650(pos, &v40) > data_ov004_022406b4[layer & 1]) {
                 continue;
             }
             o = func_ov004_02235718()->func_ov004_022355d8(c2c, c30, (u8)layer);
             *ox = c2c;
             *oy = c30;
-            if (o != 0 && o->vfunc_a0() != 0 && o->func_ov004_022075b0() == 0) {
+            if (o != 0 && o->isReady() != 0 && o->hasItemOnTop() == 0) {
                 if (p1 != 0) {
-                    func_ov004_02206f3c(&tmp, o);
+                    FtrActor_GetItemId(&tmp, o);
                     *p1 = tmp;
                 }
                 if (p2 != 0) {
-                    *p2 = Item_MakeFurniture(func_ov004_022087a4(o), 0);
+                    *p2 = Item_MakeFurniture(FtrActor_GetFtrIndex(o), 0);
                 }
                 return func_ov004_0223584c()->func_ov004_02235740(o);
             }
@@ -4121,7 +4121,7 @@ extern "C" s32 func_ov004_022345c4(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 an
                 sy = *(volatile s32 *)&c30;
                 hx = sx >> 4;
                 hy = sy >> 4;
-                cell2 = func_0204ebd8(w, hx, hy, sx - (hx << 4), sy - (hy << 4), (u8)layer);
+                cell2 = BlockMap_GetItemPtr(w, hx, hy, sx - (hx << 4), sy - (hy << 4), (u8)layer);
                 if (cell2 != 0 && Item_IsNormalItem(cell2) != 0) {
                     if (p1 != 0) *p1 = *cell2;
                     if (p2 != 0) *p2 = *cell2;
@@ -4135,7 +4135,7 @@ extern "C" s32 func_ov004_022345c4(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 an
 
 // @0x2234588 unk_02233dc0.cpp
 extern "C" s32 func_ov004_02234588(s32 *a, s32 *b, u16 *c, u16 *d) {
-    Unk_ov004_0224882c *o = func_02095204(4);
+    FtrActor *o = func_02095204(4);
     if (o != 0) {
         return func_ov004_022345c4(a, b, &o->unk_5c, o->unk_8e, c, d);
     }
@@ -4156,16 +4156,16 @@ extern "C" u8 func_ov004_02234550(u32 i) {
 extern "C" s32 func_ov004_022344e8(s32 idx, u16 *p1, u16 *p2) {
     if (p1 != 0) *p1 = 0xfff1;
     if (p2 != 0) *p2 = 0xfff1;
-    Unk_ov004_0224882c *o = func_ov004_0223584c()->func_ov004_02235720(idx);
+    FtrActor *o = func_ov004_0223584c()->func_ov004_02235720(idx);
     if (o != 0) {
-        o->func_ov004_022056bc(5);
+        o->setAct(5);
         if (p1 != 0) {
             u16 t[2];
-            func_ov004_02206f3c(t, o);
+            FtrActor_GetItemId(t, o);
             *p1 = t[0];
         }
         if (p2 != 0) {
-            *p2 = Item_MakeFurniture(func_ov004_022087a4(o), 0);
+            *p2 = Item_MakeFurniture(FtrActor_GetFtrIndex(o), 0);
         }
         return 1;
     }
@@ -4179,7 +4179,7 @@ extern "C" s32 func_ov004_022344dc(s32 idx) {
 
 // @0x22344a4 unk_02233dc0.cpp
 extern "C" Unk_ov004_Vec3 *func_ov004_022344a4(s32 idx) {
-    Unk_ov004_0224882c *o = func_ov004_0223584c()->func_ov004_02235720(idx);
+    FtrActor *o = func_ov004_0223584c()->func_ov004_02235720(idx);
     if (o == 0) {
         return (Unk_ov004_Vec3 *)&data_ov004_0225203c;
     }
@@ -4197,10 +4197,10 @@ extern "C" void func_ov004_02234490(Unk_ov004_Vec3 *v) {
 }
 
 // @0x2234464 unk_02233dc0.cpp
-extern "C" s32 func_ov004_02234464(Unk_ov004_0224882c *p) {
+extern "C" s32 func_ov004_02234464(FtrActor *p) {
     if (p != 0) {
-        if (p->vfunc_a0() != 0) {
-            if (p->func_ov004_022075b0() == 0) {
+        if (p->isReady() != 0) {
+            if (p->hasItemOnTop() == 0) {
                 return 1;
             }
         }
@@ -4211,7 +4211,7 @@ extern "C" s32 func_ov004_02234464(Unk_ov004_0224882c *p) {
 // @0x2234440 unk_02233dc0.cpp
 extern "C" s32 func_ov004_02234440(s32 i) {
     if (i >= 0) {
-        Unk_ov004_0224882c *o = func_ov004_0223584c()->func_ov004_02235720(i);
+        FtrActor *o = func_ov004_0223584c()->func_ov004_02235720(i);
         if (o != 0) {
             return func_ov004_02234464(o);
         }
@@ -4230,7 +4230,7 @@ extern "C" s32 func_ov004_02234320(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 an
         Unk_ov004_02233f3c_P(-1, -1), Unk_ov004_02233f3c_P(-1, -1), Unk_ov004_02233f3c_P(-1, 0),
         Unk_ov004_02233f3c_P(-1, 0), Unk_ov004_02233f3c_P(-1, 1),  Unk_ov004_02233f3c_P(-1, 1),
         Unk_ov004_02233f3c_P(0, 1)};
-    func_0204ee10(ox, oy, pos);
+    FieldPos_ToUnit(ox, oy, pos);
     if (idx == 0) {
         return 1;
     }
@@ -4257,7 +4257,7 @@ extern "C" s32 func_ov004_022341c0(void *out, s32 x, s32 y, s32 dir, s32 pl, u32
     Unk_ov004_022341c0_Buf b;
     s34 = Item_MakeFurniture(pl, dir);
     func_020524a8(&b, &s34);
-    Unk_ov004_02233f3c_World *w = data_021c47c4;
+    Unk_ov004_02233f3c_World *w = gSceneBlockMap;
     BOOL ok = TRUE;
     u32 i = 0;
     z2 = i;
@@ -4267,7 +4267,7 @@ extern "C" s32 func_ov004_022341c0(void *out, s32 x, s32 y, s32 dir, s32 pl, u32
         py = y + func_0205242c(&b, i)[1];
         s32 hx = px >> 4;
         s32 hy = py >> 4;
-        u16 *cell = func_0204ebd8(w, hx, hy, px - (hx << 4), py - (hy << 4), layer);
+        u16 *cell = BlockMap_GetItemPtr(w, hx, hy, px - (hx << 4), py - (hy << 4), layer);
         if (l18 == 0 && px == cx && py == cy) {
             ok = FALSE;
             break;
@@ -4293,15 +4293,15 @@ extern "C" s32 func_ov004_022341c0(void *out, s32 x, s32 y, s32 dir, s32 pl, u32
                 ok = FALSE;
                 break;
             }
-            Unk_ov004_0224882c *o = func_ov004_02235718()->func_ov004_022355d8(px, py, z2);
-            if (o == 0 || (o != 0 && o->unk_784 != 1) || (o != 0 && o->func_ov004_022057c8() != 0)) {
+            FtrActor *o = func_ov004_02235718()->func_ov004_022355d8(px, py, z2);
+            if (o == 0 || (o != 0 && o->unk_784 != 1) || (o != 0 && o->isNotReady() != 0)) {
                 ok = FALSE;
                 break;
             }
         }
     }
     if (ok) {
-        *(u32 *)out = (u32)func_ov004_02209d58(x, y, pl, dir, layer, 1);
+        *(u32 *)out = (u32)FtrActor_MakeSpawnArg(x, y, pl, dir, layer, 1);
         func_020524a4(&b);
         return 3;
     }
@@ -4337,7 +4337,7 @@ extern "C" s32 func_ov004_02233f3c(void *out, u16 *tile, Unk_ov004_Vec3 *pos, s3
         return 1;
     }
     if (mode == 2) {
-        *(u32 *)out = (u32)func_ov004_02209d58(0, 0, Item_GetFurnitureIndex(tile), 0, 0, 2);
+        *(u32 *)out = (u32)FtrActor_MakeSpawnArg(0, 0, Item_GetFurnitureIndex(tile), 0, 0, 2);
         return 3;
     }
     if (func_020b52f8() == 0) {
@@ -4345,8 +4345,8 @@ extern "C" s32 func_ov004_02233f3c(void *out, u16 *tile, Unk_ov004_Vec3 *pos, s3
     }
     pl = Item_GetFurnitureIndex(tile);
     kind = FtrInfo_GetUnk05(pl);
-    base = func_ov004_02207c04((s16)(ang + 0x8000));
-    func_0204ee10(&bx, &by, pos);
+    base = FtrActor_AngleToDir((s16)(ang + 0x8000));
+    FieldPos_ToUnit(&bx, &by, pos);
     static Unk_ov004_02233f3c_P dirs[4] = {Unk_ov004_02233f3c_P(0, 0), Unk_ov004_02233f3c_P(-1, 0),
                                            Unk_ov004_02233f3c_P(0, -1), Unk_ov004_02233f3c_P(-1, -1)};
     n = layer = 1;
@@ -4358,7 +4358,7 @@ loopK:
     if (func_ov004_02234320(&c54, &c58, pos, ang, k) == 0) {
         goto nextK;
     }
-    func_0204ed8c((Unk_ov004_Vec3 *)&v64, c54, c58);
+    FieldPos_FromUnitCenter((Unk_ov004_Vec3 *)&v64, c54, c58);
     d = 0;
     goto testD;
 loopD:
@@ -4387,7 +4387,7 @@ loopE:
             for (; i < m; i++) {
                 q3c = px + *(s16 *)((u8 *)func_0205242c(&buf, i) + z);
                 y3c = py + func_0205242c(&buf, i)[1];
-                func_0204ed8c((Unk_ov004_Vec3 *)&v7c, q3c, y3c);
+                FieldPos_FromUnitCenter((Unk_ov004_Vec3 *)&v7c, q3c, y3c);
                 VEC_Add(&v70, &v7c, &v70);
             }
             func_020e97c8(&v70, m << 12);
@@ -4422,7 +4422,7 @@ testL:
 
 // @0x2233f08 unk_02233dc0.cpp
 extern "C" s32 func_ov004_02233f08(void *a, u16 *b, u32 c) {
-    Unk_ov004_0224882c *o = func_02095204(4);
+    FtrActor *o = func_02095204(4);
     if (o != 0) {
         return func_ov004_02233f3c(a, b, &o->unk_5c, o->unk_8e, c);
     }
@@ -4456,7 +4456,7 @@ extern "C" s32 func_ov004_02233d88(void *o0) {
         switch (o->unk_77c) {
         case 0x1b:
             if (o) {
-                return func_ov004_0220c950(o);
+                return FtrShirt_syncAct1(o);
             }
             break;
         case 0x27:
@@ -4481,7 +4481,7 @@ extern "C" s32 func_ov004_02233d2c(void *o0) {
         switch (o->unk_77c) {
         case 0x1b:
             if (o) {
-                return func_ov004_0220c93c(o);
+                return FtrShirt_syncAct0(o);
             }
             break;
         case 0x27:
@@ -4673,7 +4673,7 @@ extern "C" void func_ov004_02233af0(Unk_ov004_02233b3c *r, Unk_ov004_02233b3c_V3
 // @0x2233a70 unk_0223349c.cpp
 extern "C" BOOL func_ov004_02233a70(Unk_ov004_02233b3c *r, s32 x, volatile u8 *flag, Unk_ov004_02233b3c_V3 *pos, s32 e) {
     if (*flag == 0 && r->unk_00 == 0 && x != 0) {
-        func_02054720(r->unk_2c, x, 1, 0x1000, 0, 0);
+        BlendAnimModel_initAnim(r->unk_2c, x, 1, 0x1000, 0, 0);
         r->unk_00 = 1;
         *flag = r->unk_00;
         r->unk_04 = pos->x;
@@ -4700,8 +4700,8 @@ extern "C" BOOL func_ov004_02233a20(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_o
 // @0x22339cc unk_0223349c.cpp
 extern "C" BOOL func_ov004_022339cc(Unk_ov004_02233b3c *r, volatile u8 *a, Unk_ov004_02233b3c_V3 *out) {
     if (r->unk_00 != 0 && *a != 0) {
-        func_020547e4(r->unk_2c);
-        func_02055524(r->unk_2c);
+        AnimModel_stepAnim(r->unk_2c);
+        Model_drawNoGeCmd(r->unk_2c);
         out->x = r->unk_04;
         out->y = r->unk_08;
         out->z = r->unk_0c;
@@ -4797,10 +4797,10 @@ extern "C" BOOL func_ov004_022337d4(Unk_ov004_02233b3c *r) {
             p = (u8 *)NNS_G3dGetMdlSet(func_021012bc(data_ov004_0224e930));
             r->unk_28 = (u32)p + *(u32 *)(p + *(u16 *)(p + 0xe) + 0xc);
             if (Model_setResourceAndBind(r->unk_2c, (void *)r->unk_28, ok)) {
-                if (func_02054800(r->unk_2c, r->unk_10)) {
-                    func_02054720(r->unk_2c, func_ov004_022337c4(r), 1, 0x1000, ok, ok);
-                    func_02054710(r->unk_2c);
-                    func_02055488(r->unk_2c, (void *)func_ov004_02233b80, r);
+                if (AnimModel_allocAnmObj(r->unk_2c, r->unk_10)) {
+                    BlendAnimModel_initAnim(r->unk_2c, func_ov004_022337c4(r), 1, 0x1000, ok, ok);
+                    AnimModel_attachAnim(r->unk_2c);
+                    Model_setInitCallback(r->unk_2c, (void *)func_ov004_02233b80, r);
                     ok = TRUE;
                 }
             }
@@ -4883,7 +4883,7 @@ extern "C" BOOL func_ov004_02233660(Unk_ov004_02233790 *p, u32 id, s32 x) {
     }
     p->unk_08 = (u32)NNS_G3dGetTex(File_LoadAlloc(buf1, p->unk_00, 4, 0));
     p->unk_0c = (u32)func_021066ac(func_02106690(File_LoadAlloc(buf2, p->unk_00, 4, 0)), 0);
-    if (func_02056ca4(&p->unk_10, (void *)p->unk_04, "tv.0", "tv_pl", (void *)p->unk_08, (void *)p->unk_0c, 0)) {
+    if (TexPatVramAnim_init(&p->unk_10, (void *)p->unk_04, "tv.0", "tv_pl", (void *)p->unk_08, (void *)p->unk_0c, 0)) {
         p->unk_a0 = id;
         p->unk_a4 = r6;
         p->unk_a6 = 0;
@@ -4904,7 +4904,7 @@ extern "C" void func_ov004_02233644(Unk_ov004_02233790 *p) {
 // @0x22335fc unk_0223349c.cpp
 extern "C" void func_ov004_022335fc(Unk_ov004_02233790 *p) {
     if (p->unk_08 && p->unk_0c) {
-        func_02056bf8(&p->unk_10);
+        TexPatVramAnim_update(&p->unk_10);
         if (AnimFrameCtrl_hasPassedFrame(&p->unk_10, 0)) {
             s32 t = p->unk_a6 + 1;
             if (t > 0xffff) {
@@ -4974,8 +4974,8 @@ extern "C" void func_ov004_0223349c(Unk_ov004_02233560 *q) {
     h = File_LoadAlloc("/ftr/tv/tv.nsbtx", gCurrentHeap, 4, 0);
     if (h) {
         void *r6 = NNS_G3dGetTex(h);
-        func_02055724(r6, 0);
-        q->unk_154 = (u32)func_0205588c(r6, data_021c620c);
+        Gfx3d_LoadTexAndPltt(r6, 0);
+        q->unk_154 = (u32)Gfx3d_CopyTex(r6, gBgHeap);
         Mem_Free(h);
     }
     func_ov004_02233744(&q->unk_04[0], q->unk_154);
@@ -5035,11 +5035,11 @@ extern "C" void func_ov004_02233380(Unk_ov004_02233560 *o) {
 
 // @0x2233330 unk_02232b1c.cpp
 extern "C" u8 func_ov004_02233330(void *) {
-    const Unk_ov004_02233330_Tbl *t = &data_ov004_022406bc[func_0209cef4()];
+    const Unk_ov004_02233330_Tbl *t = &data_ov004_022406bc[Clock_GetWeekday()];
     Unk_ov004_02233330_Time l;
     s32 i;
     u16 y;
-    func_0209cf18(&l);
+    Clock_GetMinuteHour(&l);
     i = t->unk_04 - 1;
     y = l.unk_00;
     for (; i >= 0; i--) {
@@ -5057,7 +5057,7 @@ extern "C" s32 func_ov004_022332b8() {
     s32 r;
     l.unk_00 = 0;
     l.unk_04 = 0;
-    func_0209d498(&l);
+    Clock_GetDateTime(&l);
     l.unk_08 = 1;
     l.unk_09 = 1;
     l.unk_0a = 0;
@@ -5065,7 +5065,7 @@ extern "C" s32 func_ov004_022332b8() {
     l.unk_0a = ((u8 *)&l)[5];
     l.unk_09 = ((u8 *)&l)[4];
     l.unk_08 = ((u8 *)&l)[3];
-    r = func_0209cc34(&l.unk_08);
+    r = Date_GetWeatherPeriod(&l.unk_08);
     switch (r) {
     case 0:
     case 1:
@@ -5185,7 +5185,7 @@ extern "C" u16 func_ov004_022330f8(s32 idx) {
 extern "C" void func_ov004_022330cc(s32 a) {
     void *p = func_ov004_02235718()->func_ov004_022355b0((void *)a, 0);
     if (p) {
-        if (func_ov004_02206f74()) func_ov004_02209150(p);
+        if (FtrActor_PredIsSeatOrBed()) FtrActor_playSound1(p);
     }
 }
 
@@ -5193,7 +5193,7 @@ extern "C" void func_ov004_022330cc(s32 a) {
 extern "C" void func_ov004_022330a0(s32 a) {
     void *p = func_ov004_02235718()->func_ov004_022355b0((void *)a, 0);
     if (p) {
-        if (func_ov004_02206f74()) func_ov004_02209198(p);
+        if (FtrActor_PredIsSeatOrBed()) FtrActor_playSound0(p);
     }
 }
 
@@ -5201,7 +5201,7 @@ extern "C" void func_ov004_022330a0(s32 a) {
 extern "C" void func_ov004_02233074(s32 a) {
     void *p = func_ov004_02235718()->func_ov004_022355b0((void *)a, 0);
     if (p) {
-        if (func_ov004_02206f74()) func_ov004_02209108(p);
+        if (FtrActor_PredIsSeatOrBed()) FtrActor_playSound2(p);
     }
 }
 

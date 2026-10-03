@@ -39,26 +39,26 @@ void MsgString_append(void *self, const void *s);
 void MsgString_appendString(void *self, void *src);
 void LabelButton_setLabelText(void *self, void *src);
 
-void func_020021b8(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
-void func_020021fc(s32 a, s32 b, s32 c);
+void Gfx2d_SetWindowRect(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
+void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
 void Snd_PlaySe(s32 a);
-void func_0206e020();
-BOOL func_0206e2f4();
-BOOL func_0206e308();
+void MenuScreen_ClearState();
+BOOL MenuScreen_IsClosed();
+BOOL MenuScreen_IsOpen();
 void MenuCtrl_SetButtons();
 void MenuCtrl_SetTouch();
 void MenuCtrl_RemoveOpenMenu(void *p);
 void MenuCtrl_AddOpenMenu(void *p);
-void func_02001564(s32 a);
-void func_02001750(s32 a);
-s32 func_02001580();
-void func_020016bc(s32 a);
-void func_020016cc(s32 a);
-void func_0200152c(s32 a);
-void func_02001724(s32 a, s32 b);
-void func_020016b0(s32 a);
-void func_0200151c(s32 a);
-void func_02001554(s32 a);
+void Gfx2d_EnableMainWindows(s32 a);
+void Gfx2d_SetMainWin0Planes(s32 a);
+s32 Gfx2d_GetMainWindows();
+void Gfx2d_RemoveMainWinOutPlanes(s32 a);
+void Gfx2d_SetMainWinOutPlanes(s32 a);
+void Gfx2d_EnableSubWindows(s32 a);
+void Gfx2d_SetSubWin0Planes(s32 a, s32 b);
+void Gfx2d_SetSubWinOutPlanes(s32 a);
+void Gfx2d_DisableSubWindows(s32 a);
+void Gfx2d_DisableMainWindows(s32 a);
 void *Heap_AllocTail(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 void *func_0212899c(void *p, s32 v, u32 n);
@@ -80,23 +80,23 @@ s32 SaveVillagers_IsOccupied(void *a, s32 b);
 void *SaveVillagers_Get(void *a, s32 b);
 s32 Villager_FindMemory(void *a, s32 b);
 BOOL MenuCtrl_IsButtons();
-void func_0200212c(s32 a);
-s32 func_0200273c(s32 a);
-s32 func_0200140c();
-s32 func_0200142c();
-void func_02002700(s32 a);
-void func_020013e0();
-s32 func_020013cc(s32 a);
-void func_020020b8(s32 a);
-void func_02002398(s32 a, u32 b);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_HideLayer(s32 a);
+s32 Gfx2d_GetLayerPlaneMask(s32 a);
+s32 Gfx2d_EndSubObjWinBrightness();
+s32 Gfx2d_BeginSubObjWinBrightness();
+void Gfx2d_GetLayerBlendMask(s32 a);
+void Gfx2d_ExcludeSubBrightnessPlanes();
+s32 Gfx2d_SetSubBrightness(s32 a);
+void Gfx2d_ShowLayer(s32 a);
+void Gfx2d_SetLayerPriority(s32 a, u32 b);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 u8 *File_LoadAlloc(const char *path, void *heap, s32 a, s32 b);
 void MIi_CpuCopy16(void *dst, void *src, s32 n);
 void MIi_CpuClear16(s32 v, void *dst, s32 n);
-void func_020024f0(void *buf, s32 a, s32 b, s32 c);
-void func_020026c4(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
-void func_0200261c(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
-void func_02002654(char *buf, void *h, s32 x);
+void Gfx2d_LoadScreen(void *buf, s32 a, s32 b, s32 c);
+void Gfx2d_LoadPaletteFile(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
+void Gfx2d_LoadCharFile(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
+void Gfx2d_LoadScreenFile(char *buf, void *h, s32 x);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void GXS_LoadOBJPltt(const void *p, u32 a, u32 b);
@@ -1130,16 +1130,16 @@ void Unk_ov002_022044b4::func_ov002_022010c4(s32 mode)
         if (unk_0c > unk_14) {
             ((Unk_ov002_02201194 *)this)->func_ov002_02200d08(2);
         } else {
-            func_0200151c(1);
-            func_020016b0(0x1f);
+            Gfx2d_DisableSubWindows(1);
+            Gfx2d_SetSubWinOutPlanes(0x1f);
         }
         break;
     case 1:
         if (unk_0c > unk_14) {
             ((Unk_ov002_02201194 *)this)->func_ov002_02200d08(0);
         } else {
-            func_02001554(1);
-            func_020016cc(0x1f);
+            Gfx2d_DisableMainWindows(1);
+            Gfx2d_SetMainWinOutPlanes(0x1f);
         }
         break;
     }
@@ -1164,12 +1164,12 @@ BOOL Unk_ov002_022044b4::func_ov002_0220102c(s32 mode)
         unk_0c = 0;
         switch (mode) {
         case 0:
-            func_0200151c(1);
-            func_020016b0(0x1f);
+            Gfx2d_DisableSubWindows(1);
+            Gfx2d_SetSubWinOutPlanes(0x1f);
             break;
         case 1:
-            func_02001554(1);
-            func_020016cc(0x1f);
+            Gfx2d_DisableMainWindows(1);
+            Gfx2d_SetMainWinOutPlanes(0x1f);
             break;
         }
         return TRUE;
@@ -1192,11 +1192,11 @@ void Unk_ov002_022044b4::func_ov002_02200fe0(s32 mode)
     if (unk_0c > unk_14) {
         switch (mode) {
         case 0:
-            func_0200152c(1);
+            Gfx2d_EnableSubWindows(1);
             ((Unk_ov002_02201194 *)this)->func_ov002_02200d08(2);
             break;
         case 1:
-            func_02001564(1);
+            Gfx2d_EnableMainWindows(1);
             ((Unk_ov002_02201194 *)this)->func_ov002_02200d08(0);
             break;
         }
@@ -1222,10 +1222,10 @@ BOOL Unk_ov002_02201194::func_ov002_02200f54(s32 a) {
     if (func_ov002_022011cc()) {
         switch (a) {
         case 0:
-            func_0200151c(1);
+            Gfx2d_DisableSubWindows(1);
             break;
         case 1:
-            func_02001554(1);
+            Gfx2d_DisableMainWindows(1);
             break;
         }
         return TRUE;
@@ -1244,36 +1244,36 @@ BOOL Unk_ov002_02201194::func_ov002_02200f54(s32 a) {
 
 void Unk_ov002_02201194::func_ov002_02200f18(s32 a, s32 b, s32 mode, s32 dist) {
     func_ov002_02200e18(b, mode, dist);
-    func_0200152c(1);
-    func_02001724(0x1f, 1);
-    func_020016b0(~a & 0x1f);
+    Gfx2d_EnableSubWindows(1);
+    Gfx2d_SetSubWin0Planes(0x1f, 1);
+    Gfx2d_SetSubWinOutPlanes(~a & 0x1f);
     func_ov002_02200d08(2);
 }
 
 void Unk_ov002_02201194::func_ov002_02200edc(s32 a, s32 b, s32 mode, s32 dist) {
     func_ov002_02200dd8(b, mode, dist);
-    func_0200152c(1);
-    func_02001724(0x1f, 1);
-    func_020016b0(~a & 0x1f);
+    Gfx2d_EnableSubWindows(1);
+    Gfx2d_SetSubWin0Planes(0x1f, 1);
+    Gfx2d_SetSubWinOutPlanes(~a & 0x1f);
     func_ov002_02200d08(2);
 }
 
 void Unk_ov002_02201194::func_ov002_02200ea4(s32 a, s32 b, s32 mode, s32 dist) {
     func_ov002_02200e18(b, mode, dist);
-    func_02001564(1);
-    func_02001750(0x1f);
-    func_020016cc(~a & 0x1f);
+    Gfx2d_EnableMainWindows(1);
+    Gfx2d_SetMainWin0Planes(0x1f);
+    Gfx2d_SetMainWinOutPlanes(~a & 0x1f);
     func_ov002_02200d08(0);
 }
 
 void Unk_ov002_02201194::func_ov002_02200e58(s32 a, s32 b, s32 mode, s32 dist) {
     func_ov002_02200dd8(b, mode, dist);
-    func_02001564(1);
-    func_02001750(0x1f);
-    if (func_02001580() & 2) {
-        func_020016bc(a);
+    Gfx2d_EnableMainWindows(1);
+    Gfx2d_SetMainWin0Planes(0x1f);
+    if (Gfx2d_GetMainWindows() & 2) {
+        Gfx2d_RemoveMainWinOutPlanes(a);
     } else {
-        func_020016cc(~a & 0x1f);
+        Gfx2d_SetMainWinOutPlanes(~a & 0x1f);
     }
     func_ov002_02200d08(0);
 }
@@ -1316,16 +1316,16 @@ void Unk_ov002_02201194::func_ov002_02200dd8(s32 a, s32 mode, s32 dist) {
 void Unk_ov002_02201194::func_ov002_02200d78(s32 a, s32 b, s32 c) {
     switch (unk_18) {
     case 0:
-        func_020021fc(a, -b, -(unk_0c + c));
+        Gfx2d_SetLayerOffset(a, -b, -(unk_0c + c));
         break;
     case 1:
-        func_020021fc(a, -b, unk_0c - c);
+        Gfx2d_SetLayerOffset(a, -b, unk_0c - c);
         break;
     case 2:
-        func_020021fc(a, unk_0c - b, -c);
+        Gfx2d_SetLayerOffset(a, unk_0c - b, -c);
         break;
     case 3:
-        func_020021fc(a, -(unk_0c + b), -c);
+        Gfx2d_SetLayerOffset(a, -(unk_0c + b), -c);
         break;
     }
 }
@@ -1361,7 +1361,7 @@ void Unk_ov002_02201194::func_ov002_02200d08(s32 a) {
         }
         break;
     }
-    func_020021b8(a, x0, y0, x1, y1);
+    Gfx2d_SetWindowRect(a, x0, y0, x1, y1);
 }
 
 // ---------------------------------------------------------------- Unk_ov002_02201194
@@ -1428,11 +1428,11 @@ BOOL Unk_ov002_022044e4::preExecute() {
 BOOL Unk_ov002_022044e4::vfunc_20() { return ProcBase::vfunc_20(); }
 
 BOOL Unk_ov002_022044e4::vfunc_48() {
-    if (func_0206e308()) {
+    if (MenuScreen_IsOpen()) {
         func_ov002_02200a60(1);
     }
-    if (func_0206e2f4()) {
-        func_0206e020();
+    if (MenuScreen_IsClosed()) {
+        MenuScreen_ClearState();
         func_ov002_02200a60(5);
     }
     return TRUE;

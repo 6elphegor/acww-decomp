@@ -51,10 +51,10 @@ struct Unk_0203f408_Entry {
     /* 0x08 */ u32 unk_08;
 };
 
-class Unk_0203fed4 {
+class EventDayList {
 public:
-    Unk_0203fed4();
-    ~Unk_0203fed4();
+    EventDayList();
+    ~EventDayList();
 
     /* 0x00 */ u8 unk_00[4];
     /* 0x04 */ Unk_0203f408_Entry unk_04[7];
@@ -92,7 +92,7 @@ union Unk_0203f42c_L {
     u8 b[16];
 };
 
-class Unk_020d96fc : public GameProc {
+class EventCalendarModule : public GameProc {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -105,25 +105,25 @@ extern u8 gSaveData[];
 extern u8 data_021ed168[];
 extern u8 data_021eca50[];
 extern u8 gBackup[];
-extern u32 data_020cbb18;
+extern u32 gCommManager;
 }
 
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(u32 v);
+s32 _ZN11CommManager8isOnlineEv(u32 v);
 s32 Backup_GetStatus(void *p);
 s32 func_02040264(s32 v);
 s32 func_020a032c(void);
 s32 PlayerData_GetCurrent();
 s32 _ZN12Unk_02097ff413func_02098044Ej(s32 p, s32 v);
 s32 func_020400b0(...);
-s32 func_0209d374(void *a, void *b);
-s32 func_0209d3a4(void *a, void *b);
-void func_0209d498(void *);
-void func_0209d2c0(void *, s32);
-void func_0209d164(void *, s32);
-s32 func_0209ceac(u32, u32, u32);
-s32 func_0209ce48(u32, u32);
-s32 func_0209cef4(void);
+s32 DateTime_DiffMinutes(void *a, void *b);
+s32 DateTime_DiffDays(void *a, void *b);
+void Clock_GetDateTime(void *);
+void DateTime_AddDays(void *, s32);
+void DateTime_SubDays(void *, s32);
+s32 Date_GetWeekday(u32, u32, u32);
+s32 Date_GetDaysInMonth(u32, u32);
+s32 Clock_GetWeekday(void);
 s32 PlayerData_GetCurrentIndex(void);
 s32 func_02040234(Unk_0203ff50_Slot *, u32);
 s32 func_02040188(Unk_0203f554_Cal);
@@ -140,36 +140,36 @@ u8 *func_0207fae4(void *);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
 u8 *_ZN12Unk_02097ff413func_02098308Ev(s32);
 
-void func_0203f4c0(s32);
-void func_0203f52c(Unk_0203f554_Ent *, Unk_0203f508_Date, s32);
-s32 func_0203f554(Unk_0203f554_Ent *out, Unk_0203f508_Date d, s32 x, s32 y);
-Unk_0203f554_Cal func_0203f804(Unk_0203f554_Sub *, s32, Unk_0203f554_Cal, u32);
-Unk_0203f554_Cal func_0203f7e8(Unk_0203f554_Sub *, s32, Unk_0203f554_Cal, u32);
-Unk_0203f554_Cal func_0203f820(Unk_0203f554_Sub *, s32, Unk_0203f554_Cal, u32);
-s32 func_0203f600(Unk_0203f554_Ent *, Unk_0203f554_Tbl *, s32, Unk_0203f554_Cal);
-void func_0203f678(Unk_0203f554_Ent *, Unk_0203f554_Cal);
-s32 func_0203f69c(Unk_0203f554_Tbl *, Unk_0203f554_Cal, Unk_0203f554_Ent *, Unk_0203f554_Ent *, s32, s32, s32);
-void func_0203f7cc(Unk_0203f554_Ent *, s32);
-u8 func_0203fe18(u32 *self, s32 w0, Unk_0203fe18_B4 d, s32 type);
-u8 func_0203fc7c(Unk_0203f554_Sub *, u32, Unk_0203f554_Cal, u32, u32);
-void func_0203fc4c(Unk_0203f554_Sub *, Unk_0203f554_Cal *);
-void func_0203fbb0(Unk_0203f554_Sub *, Unk_0203f554_Cal *, s32);
-Unk_0203f554_Cal func_0203fb1c(Unk_0203f554_Sub *, u32, Unk_0203f554_Cal);
-void func_0203f484();
-s32 func_0203f31c(s32 a, u8 *b, s32 c);
-s32 func_0203f3a0(s32 a, u8 *b, Unk_0203f408_Entry *c);
-Unk_0203f408_Entry *func_0203f408(u32 id, Unk_0203f408_Entry *tbl);
+void Event_RefreshToday(s32);
+void EventSchedule_CollectDay(Unk_0203f554_Ent *, Unk_0203f508_Date, s32);
+s32 EventSchedule_Collect(Unk_0203f554_Ent *out, Unk_0203f508_Date d, s32 x, s32 y);
+Unk_0203f554_Cal EventRule_ResolveStart(Unk_0203f554_Sub *, s32, Unk_0203f554_Cal, u32);
+Unk_0203f554_Cal EventRule_ResolveEnd(Unk_0203f554_Sub *, s32, Unk_0203f554_Cal, u32);
+Unk_0203f554_Cal EventRule_Resolve(Unk_0203f554_Sub *, s32, Unk_0203f554_Cal, u32);
+s32 EventSchedule_Match(Unk_0203f554_Ent *, Unk_0203f554_Tbl *, s32, Unk_0203f554_Cal);
+void Event_AdjustToDay(Unk_0203f554_Ent *, Unk_0203f554_Cal);
+s32 EventSchedule_IsBlocked(Unk_0203f554_Tbl *, Unk_0203f554_Cal, Unk_0203f554_Ent *, Unk_0203f554_Ent *, s32, s32, s32);
+void EventDayList_Clear(Unk_0203f554_Ent *, s32);
+u8 EventRule_ResolveMonth(u32 *self, s32 w0, Unk_0203fe18_B4 d, s32 type);
+u8 EventRule_ResolveDay(Unk_0203f554_Sub *, u32, Unk_0203f554_Cal, u32, u32);
+void EventRule_GetPlayerBirthday(Unk_0203f554_Sub *, Unk_0203f554_Cal *);
+void EventRule_GetVillagerBirthday(Unk_0203f554_Sub *, Unk_0203f554_Cal *, s32);
+Unk_0203f554_Cal EventRule_GetWeekSlotDate(Unk_0203f554_Sub *, u32, Unk_0203f554_Cal);
+void Event_RefreshIfDateChanged();
+s32 Event_GetStateAt(s32 a, u8 *b, s32 c);
+s32 EventDayList_GetState(s32 a, u8 *b, Unk_0203f408_Entry *c);
+Unk_0203f408_Entry *EventDayList_Find(u32 id, Unk_0203f408_Entry *tbl);
 s32 func_0203f14c(void);
-Unk_0203ff20_Entry *func_02040030(Unk_0203ff50_Slot *, s32);
-s32 func_0203ff50(u32, s32);
-void func_0203ff3c(Unk_0203ff20_Entry *);
+Unk_0203ff20_Entry *EventWeekSlots_Get(Unk_0203ff50_Slot *, s32);
+s32 EventWeekSlots_IsUnavailable(u32, s32);
+void EventWeekSlot_Clear(Unk_0203ff20_Entry *);
 }
 
-Unk_0203fed4 data_021c3bd8;
-s32 data_021c3bbc;
-Unk_0203fed4 data_021c3c30;
+EventDayList gTodayEvents;
+s32 sEventsOnlineRefresh;
+EventDayList data_021c3c30;
 
-Unk_0203f554_Tbl data_020d9744[99] = {
+Unk_0203f554_Tbl sEventSchedule[99] = {
     { 0x0, 5, { 0x4000, 0x0, 0x0 }, { 0x4000, 0x0, 0x18 } },
     { 0x4b, 5, { 0x4001, -4, 0x0 }, { 0x4001, -1, 0x18 } },
     { 0x1, 5, { 0x4000, 0x0, 0x0 }, { 0x4000, 0x0, 0x18 } },
@@ -274,7 +274,7 @@ Unk_0203f554_Tbl data_020d9744[99] = {
 static inline BOOL IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 static inline BOOL IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 
-extern "C" Unk_0203ff20_Entry *func_02040030(Unk_0203ff50_Slot *s, s32 idx) {
+extern "C" Unk_0203ff20_Entry *EventWeekSlots_Get(Unk_0203ff50_Slot *s, s32 idx) {
     Unk_0203ff20_Entry *r = 0;
     if (idx >= 0 && idx <= 6 && idx != 0 && idx != 6) {
         r = s->ent + (idx - 1);
@@ -282,24 +282,24 @@ extern "C" Unk_0203ff20_Entry *func_02040030(Unk_0203ff50_Slot *s, s32 idx) {
     return r;
 }
 
-extern "C" Unk_0203ff20_Entry *func_0203ffe8(Unk_0203ff50_Slot *unused) {
+extern "C" Unk_0203ff20_Entry *EventWeekSlots_GetToday(Unk_0203ff50_Slot *unused) {
     u8 *g = gSaveData;
     Unk_0203ff20_Entry *r = 0;
-    s32 r4 = func_0209cef4();
+    s32 r4 = Clock_GetWeekday();
     if (r4) {
         Unk_0203fe18_Date d;
         ((s32*)&d)[0] = 0;
         ((s32*)&d)[1] = 0;
-        func_0209d498(&d);
+        Clock_GetDateTime(&d);
         if (d.b2 < 6) r4--;
-        r = func_02040030((Unk_0203ff50_Slot *)(g + 0x15e18), r4);
+        r = EventWeekSlots_Get((Unk_0203ff50_Slot *)(g + 0x15e18), r4);
     }
     return r;
 }
 
-extern "C" void func_0203ffa4(u32 id) {
+extern "C" void EventWeekSlots_MarkPlayer(u32 id) {
     Unk_0203ff50_Slot *s = (Unk_0203ff50_Slot *)data_021ed168;
-    Unk_0203ff20_Entry *e = func_02040030(s, func_02040234(s, id));
+    Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, func_02040234(s, id));
     if (e) {
         if (id == 0x44) {
             e->unk_05 = 0xff;
@@ -310,7 +310,7 @@ extern "C" void func_0203ffa4(u32 id) {
     }
 }
 
-extern "C" BOOL func_0203ff50(u32 id, s32 idx) {
+extern "C" BOOL EventWeekSlots_IsUnavailable(u32 id, s32 idx) {
     BOOL r;
     Unk_0203ff20_Entry *e;
     u8 *g;
@@ -318,7 +318,7 @@ extern "C" BOOL func_0203ff50(u32 id, s32 idx) {
     g = gSaveData;
     r = FALSE;
     if (id == 0x60) id = 0x40;
-    e = func_02040030((Unk_0203ff50_Slot *)(g + 0x15e18), idx);
+    e = EventWeekSlots_Get((Unk_0203ff50_Slot *)(g + 0x15e18), idx);
     if (e) {
         if (id != e->unk_02) {
             r = TRUE;
@@ -329,7 +329,7 @@ extern "C" BOOL func_0203ff50(u32 id, s32 idx) {
     return r;
 }
 
-extern "C" void func_0203ff3c(Unk_0203ff20_Entry *e) {
+extern "C" void EventWeekSlot_Clear(Unk_0203ff20_Entry *e) {
     e->unk_00 = 1;
     e->unk_02 = 0x63;
     e->unk_03 = 0;
@@ -337,34 +337,34 @@ extern "C" void func_0203ff3c(Unk_0203ff20_Entry *e) {
     e->unk_05 = 0;
 }
 
-extern "C" void func_0203ff20(Unk_0203ff20_Entry *e, u8 id, Unk_0203fe18_Date *d) {
-    func_0203ff3c(e);
+extern "C" void EventWeekSlot_Set(Unk_0203ff20_Entry *e, u8 id, Unk_0203fe18_Date *d) {
+    EventWeekSlot_Clear(e);
     ((u8*)e)[1] = d->b4;
     ((u8*)e)[0] = d->b3;
     e->unk_02 = id;
 }
 
-extern "C" void func_0203ff10(Unk_0203ff20_Entry *e) {
+extern "C" void EventWeekSlot_MarkAllPlayers(Unk_0203ff20_Entry *e) {
     if (e->unk_02 != 0x45) {
         e->unk_05 = 0xff;
         e->unk_03 = 2;
     }
 }
 
-extern "C" Unk_020d96fc *func_0203fee4() {
-    return new Unk_020d96fc();
+extern "C" EventCalendarModule *EventCalendarModule_New() {
+    return new EventCalendarModule();
 }
 
-Unk_0203fed4::Unk_0203fed4() {
+EventDayList::EventDayList() {
     unk_00[0] = 1;
     unk_00[1] = 1;
     unk_00[2] = 0;
     unk_00[3] = 0;
 }
 
-Unk_0203fed4::~Unk_0203fed4() {}
+EventDayList::~EventDayList() {}
 
-extern "C" u8 func_0203fe18(u32 *self, s32 w0, Unk_0203fe18_B4 d, s32 type) {
+extern "C" u8 EventRule_ResolveMonth(u32 *self, s32 w0, Unk_0203fe18_B4 d, s32 type) {
     u8 b7 = d.s.b3;
     u8 b6 = d.s.b2;
     u8 r = 0;
@@ -390,7 +390,7 @@ extern "C" u8 func_0203fe18(u32 *self, s32 w0, Unk_0203fe18_B4 d, s32 type) {
             t.b4 = b7;
             t.b3 = b6;
             if (n < 0) n = -n;
-            func_0209d2c0(&t, n);
+            DateTime_AddDays(&t, n);
             r = t.b4;
         }
         switch (type) {
@@ -413,7 +413,7 @@ extern "C" u8 func_0203fe18(u32 *self, s32 w0, Unk_0203fe18_B4 d, s32 type) {
     return r;
 }
 
-extern "C" u8 func_0203fc7c(Unk_0203f554_Sub *e, u32 year, Unk_0203f554_Cal cal, u32 mon, u32 id) {
+extern "C" u8 EventRule_ResolveDay(Unk_0203f554_Sub *e, u32 year, Unk_0203f554_Cal cal, u32 mon, u32 id) {
     s32 s;
     u32 b;
     s32 k;
@@ -422,14 +422,14 @@ extern "C" u8 func_0203fc7c(Unk_0203f554_Sub *e, u32 year, Unk_0203f554_Cal cal,
     u32 w = e->flags;
     b = (w >> 8) & 7;
     c = (w >> 1) & 7;
-    dim = func_0209ce48(year, mon);
+    dim = Date_GetDaysInMonth(year, mon);
     cm = ((volatile Unk_0203f554_CalB *)&cal)->b3;
-    x = func_0209ce48(year, cm);
+    x = Date_GetDaysInMonth(year, cm);
     switch (b) {
     case 0:
         return e->off;
     case 6: {
-        s32 wd = func_0209ceac((u8)year, mon, (u8)dim);
+        s32 wd = Date_GetWeekday((u8)year, mon, (u8)dim);
         if (wd < cal.s.b0) {
             return dim - 7 + (cal.s.b0 - wd);
         } else {
@@ -459,13 +459,13 @@ extern "C" u8 func_0203fc7c(Unk_0203f554_Sub *e, u32 year, Unk_0203f554_Cal cal,
             if (k < cm) {
                 cm = cal.s.b3;
                 for (; k < (s32)cm; k++) {
-                    s += func_0209ce48(year, (u8)k);
+                    s += Date_GetDaysInMonth(year, (u8)k);
                 }
                 s = (s % 7);
                 r6 = ((r6 - s + 7) % 7);
             } else {
                 for (; (s32)cm < k; cm++) {
-                    s += func_0209ce48(year, (u8)cm);
+                    s += Date_GetDaysInMonth(year, (u8)cm);
                 }
                 r6 = ((r6 + s) % 7);
             }
@@ -489,7 +489,7 @@ extern "C" u8 func_0203fc7c(Unk_0203f554_Sub *e, u32 year, Unk_0203f554_Cal cal,
     }
 }
 
-extern "C" void func_0203fc4c(Unk_0203f554_Sub *e, Unk_0203f554_Cal *out) {
+extern "C" void EventRule_GetPlayerBirthday(Unk_0203f554_Sub *e, Unk_0203f554_Cal *out) {
     if (PlayerData_GetCurrent()) {
         u8 *p = _ZN12Unk_02097ff413func_02098308Ev(PlayerData_GetCurrent());
         if (p) {
@@ -513,7 +513,7 @@ extern "C" BOOL func_0203fc10(void *a, s32 b) {
     return r;
 }
 
-extern "C" void func_0203fbb0(Unk_0203f554_Sub *e, Unk_0203f554_Cal *out, s32 n) {
+extern "C" void EventRule_GetVillagerBirthday(Unk_0203f554_Sub *e, Unk_0203f554_Cal *out, s32 n) {
     u8 *base = gSaveData;
     out->w = 0;
     if (n < 0 || n > 7) n -= 0x4b;
@@ -528,13 +528,13 @@ extern "C" void func_0203fbb0(Unk_0203f554_Sub *e, Unk_0203f554_Cal *out, s32 n)
     }
 }
 
-extern "C" Unk_0203f554_Cal func_0203fb1c(Unk_0203f554_Sub *e, u32 id, Unk_0203f554_Cal cal) {
+extern "C" Unk_0203f554_Cal EventRule_GetWeekSlotDate(Unk_0203f554_Sub *e, u32 id, Unk_0203f554_Cal cal) {
     Unk_0203fb1c_Pair x, y;
     u8 *base = gSaveData;
     Unk_0203f554_Cal ret;
     ret.w = 0;
     if (id == 0x45) {
-        Unk_0203fb1c_Rec *p = (Unk_0203fb1c_Rec *)func_02040030((Unk_0203ff50_Slot *)(base + 0x15e18), cal.s.b0);
+        Unk_0203fb1c_Rec *p = (Unk_0203fb1c_Rec *)EventWeekSlots_Get((Unk_0203ff50_Slot *)(base + 0x15e18), cal.s.b0);
         if (p && id == p->id) {
             x = p->pr;
             ret.s.b3 = x.b[1];
@@ -545,7 +545,7 @@ extern "C" Unk_0203f554_Cal func_0203fb1c(Unk_0203f554_Sub *e, u32 id, Unk_0203f
         if (id == 0x60) id = 0x40;
         s32 n = cal.s.b0 - 1;
         for (s32 i = 0; i < 2; n++, i++) {
-            Unk_0203fb1c_Rec *p = (Unk_0203fb1c_Rec *)func_02040030((Unk_0203ff50_Slot *)(base + 0x15e18), n);
+            Unk_0203fb1c_Rec *p = (Unk_0203fb1c_Rec *)EventWeekSlots_Get((Unk_0203ff50_Slot *)(base + 0x15e18), n);
             if (p && id == p->id) {
                 y = p->pr;
                 ret.s.b3 = y.b[1];
@@ -558,7 +558,7 @@ extern "C" Unk_0203f554_Cal func_0203fb1c(Unk_0203f554_Sub *e, u32 id, Unk_0203f
     return ret;
 }
 
-extern "C" Unk_0203f554_Cal func_0203f820(Unk_0203f554_Sub *e, s32 year, Unk_0203f554_Cal cal, u32 id) {
+extern "C" Unk_0203f554_Cal EventRule_Resolve(Unk_0203f554_Sub *e, s32 year, Unk_0203f554_Cal cal, u32 id) {
     Unk_0203f554_Cal ret;
     ret.w = 0;
     u32 w = e->flags;
@@ -585,7 +585,7 @@ extern "C" Unk_0203f554_Cal func_0203f820(Unk_0203f554_Sub *e, s32 year, Unk_020
             ret.s.b3 = 1;
             break;
         }
-        ret.s.b2 = func_0203fc7c(e, year, cal, ret.s.b3, id);
+        ret.s.b2 = EventRule_ResolveDay(e, year, cal, ret.s.b3, id);
         ret.s.b1 = e->unk_08;
         break;
     }
@@ -602,20 +602,20 @@ extern "C" Unk_0203f554_Cal func_0203f820(Unk_0203f554_Sub *e, s32 year, Unk_020
             ret.s.b3 = 6;
             break;
         }
-        ret.s.b2 = func_0203fc7c(e, year, cal, ret.s.b3, id);
+        ret.s.b2 = EventRule_ResolveDay(e, year, cal, ret.s.b3, id);
         ret.s.b1 = e->unk_08;
         break;
     }
     case 0:
-        ret.s.b3 = func_0203fe18((u32 *)e, year, cal, id);
-        ret.s.b2 = func_0203fc7c(e, year, cal, ret.s.b3, id);
+        ret.s.b3 = EventRule_ResolveMonth((u32 *)e, year, cal, id);
+        ret.s.b2 = EventRule_ResolveDay(e, year, cal, ret.s.b3, id);
         ret.s.b1 = e->unk_08;
         break;
     case 1:
-        func_0203fc4c(e, &ret);
+        EventRule_GetPlayerBirthday(e, &ret);
         break;
     case 2:
-        func_0203fbb0(e, &ret, id);
+        EventRule_GetVillagerBirthday(e, &ret, id);
         break;
     case 5: {
         s32 s;
@@ -629,13 +629,13 @@ extern "C" Unk_0203f554_Cal func_0203f820(Unk_0203f554_Sub *e, s32 year, Unk_020
             s = 0;
             if (a < r4) {
                 for (s32 m = a; m < (s32)r4; m++) {
-                    s += func_0209ce48(year, (u8)m);
+                    s += Date_GetDaysInMonth(year, (u8)m);
                 }
                 s %= 7;
                 r5 = (r5 - s + 7) % 7;
             } else {
                 for (; r4 < a; r4++) {
-                    s += func_0209ce48(year, (u8)r4);
+                    s += Date_GetDaysInMonth(year, (u8)r4);
                 }
                 r5 = (r5 + s) % 7;
             }
@@ -664,7 +664,7 @@ extern "C" Unk_0203f554_Cal func_0203f820(Unk_0203f554_Sub *e, s32 year, Unk_020
         case 0x44:
         case 0x45:
         case 0x60:
-            ret = func_0203fb1c(e, id, cal);
+            ret = EventRule_GetWeekSlotDate(e, id, cal);
             break;
         case 0x61:
         case 0x62:
@@ -701,17 +701,17 @@ extern "C" Unk_0203f554_Cal func_0203f820(Unk_0203f554_Sub *e, s32 year, Unk_020
         ((u8 *)&dt)[5] = year;
         ((u8 *)&dt)[4] = ret.s.b3;
         ((u8 *)&dt)[3] = ret.s.b2;
-        s32 dim = func_0209ce48(year, ret.s.b3);
+        s32 dim = Date_GetDaysInMonth(year, ret.s.b3);
         if (ret.s.b2 > dim) {
             ((u8 *)&dt)[3] = dim;
-            func_0209d2c0(&dt, ret.s.b2 - dim);
+            DateTime_AddDays(&dt, ret.s.b2 - dim);
         }
         if (d != 0) {
             s32 off = e->off;
             if (off < 0) {
-                func_0209d164(&dt, off < 0 ? -off : off);
+                DateTime_SubDays(&dt, off < 0 ? -off : off);
             } else {
-                func_0209d2c0(&dt, off);
+                DateTime_AddDays(&dt, off);
             }
         }
         ret.s.b3 = ((u8 *)&dt)[4];
@@ -720,22 +720,22 @@ extern "C" Unk_0203f554_Cal func_0203f820(Unk_0203f554_Sub *e, s32 year, Unk_020
     return ret;
 }
 
-extern "C" Unk_0203f554_Cal func_0203f804(Unk_0203f554_Sub *e, s32 year, Unk_0203f554_Cal cal, u32 id) {
-    return func_0203f820(e, year, cal, id);
+extern "C" Unk_0203f554_Cal EventRule_ResolveStart(Unk_0203f554_Sub *e, s32 year, Unk_0203f554_Cal cal, u32 id) {
+    return EventRule_Resolve(e, year, cal, id);
 }
 
-extern "C" Unk_0203f554_Cal func_0203f7e8(Unk_0203f554_Sub *e, s32 year, Unk_0203f554_Cal cal, u32 id) {
-    return func_0203f820(e, year, cal, id);
+extern "C" Unk_0203f554_Cal EventRule_ResolveEnd(Unk_0203f554_Sub *e, s32 year, Unk_0203f554_Cal cal, u32 id) {
+    return EventRule_Resolve(e, year, cal, id);
 }
 
-extern "C" void func_0203f7cc(Unk_0203f554_Ent *p, s32 n) {
+extern "C" void EventDayList_Clear(Unk_0203f554_Ent *p, s32 n) {
     for (s32 i = 0; i < n; p++, i++) {
         p->id = 0x63;
         p->kind = 5;
     }
 }
 
-extern "C" s32 func_0203f69c(Unk_0203f554_Tbl *t, Unk_0203f554_Cal cal, Unk_0203f554_Ent *e, Unk_0203f554_Ent *out, s32 count, s32 x, s32 y) {
+extern "C" s32 EventSchedule_IsBlocked(Unk_0203f554_Tbl *t, Unk_0203f554_Cal cal, Unk_0203f554_Ent *e, Unk_0203f554_Ent *out, s32 count, s32 x, s32 y) {
     u32 lo;
     u32 hi;
     u32 olo;
@@ -749,9 +749,9 @@ extern "C" s32 func_0203f69c(Unk_0203f554_Tbl *t, Unk_0203f554_Cal cal, Unk_0203
     }
     if (kind == 4) {
         if (y != 0) {
-            if (func_0203ff50(e->id, cal.s.b0)) return 1;
+            if (EventWeekSlots_IsUnavailable(e->id, cal.s.b0)) return 1;
         } else {
-            if (func_0203ff50(e->id, cal.s.b0) && func_0203ff50(e->id, (u8)(cal.s.b0 - 1))) return 1;
+            if (EventWeekSlots_IsUnavailable(e->id, cal.s.b0) && EventWeekSlots_IsUnavailable(e->id, (u8)(cal.s.b0 - 1))) return 1;
         }
         if (func_02087444() || func_0208740c()) return 1;
         return 0;
@@ -781,7 +781,7 @@ extern "C" s32 func_0203f69c(Unk_0203f554_Tbl *t, Unk_0203f554_Cal cal, Unk_0203
     }
 }
 
-extern "C" void func_0203f678(Unk_0203f554_Ent *e, Unk_0203f554_Cal cal) {
+extern "C" void Event_AdjustToDay(Unk_0203f554_Ent *e, Unk_0203f554_Cal cal) {
     u8 v = cal.s.b2;
     switch (e->id) {
     case 0x16:
@@ -795,15 +795,15 @@ extern "C" void func_0203f678(Unk_0203f554_Ent *e, Unk_0203f554_Cal cal) {
     }
 }
 
-extern "C" s32 func_0203f600(Unk_0203f554_Ent *out, Unk_0203f554_Tbl *t, s32 year, Unk_0203f554_Cal cal) {
+extern "C" s32 EventSchedule_Match(Unk_0203f554_Ent *out, Unk_0203f554_Tbl *t, s32 year, Unk_0203f554_Cal cal) {
     s32 ok = 0;
     u32 key = cal.w & 0xffff0000;
     u32 id = t->id;
     out->id = id;
     out->kind = t->kind;
-    out->a = func_0203f804(&t->a, year, cal, id);
+    out->a = EventRule_ResolveStart(&t->a, year, cal, id);
     if (out->a.w != 0 && (out->a.w & 0xffff0000) <= key) {
-        out->b = func_0203f7e8(&t->b, year, cal, id);
+        out->b = EventRule_ResolveEnd(&t->b, year, cal, id);
         if (out->b.w != 0 && (out->b.w & 0xffff0000) >= key) {
             ok = 1;
         }
@@ -811,7 +811,7 @@ extern "C" s32 func_0203f600(Unk_0203f554_Ent *out, Unk_0203f554_Tbl *t, s32 yea
     return ok;
 }
 
-extern "C" s32 func_0203f554(Unk_0203f554_Ent *out, Unk_0203f508_Date d, s32 x, s32 y) {
+extern "C" s32 EventSchedule_Collect(Unk_0203f554_Ent *out, Unk_0203f508_Date d, s32 x, s32 y) {
     Unk_0203f554_Tbl *t;
     s32 count = 0;
     u32 year = ((u8 *)&d)[5];
@@ -822,13 +822,13 @@ extern "C" s32 func_0203f554(Unk_0203f554_Ent *out, Unk_0203f508_Date d, s32 x, 
     u32 dd = ((u8 *)&d)[3];
     cal.s.b2 = dd;
     cal.s.b1 = ((u8 *)&d)[2];
-    cal.s.b0 = func_0209ceac(year, m, dd);
-    func_0203f7cc(out, 7);
-    t = data_020d9744;
+    cal.s.b0 = Date_GetWeekday(year, m, dd);
+    EventDayList_Clear(out, 7);
+    t = sEventSchedule;
     for (s32 j = 0; j < 99; t++, j++) {
-        if (func_0203f600(&e, t, year, cal)) {
-            if (!func_0203f69c(t, cal, &e, out, count, x, y)) {
-                func_0203f678(&e, cal);
+        if (EventSchedule_Match(&e, t, year, cal)) {
+            if (!EventSchedule_IsBlocked(t, cal, &e, out, count, x, y)) {
+                Event_AdjustToDay(&e, cal);
                 out[count].id = e.id;
                 out[count].kind = e.kind;
                 out[count].a = e.a;
@@ -841,45 +841,45 @@ extern "C" s32 func_0203f554(Unk_0203f554_Ent *out, Unk_0203f508_Date d, s32 x, 
     return count;
 }
 
-extern "C" void func_0203f52c(Unk_0203f554_Ent *a, Unk_0203f508_Date d, s32 x) {
-    func_0203f554(a, d, 0, x);
+extern "C" void EventSchedule_CollectDay(Unk_0203f554_Ent *a, Unk_0203f508_Date d, s32 x) {
+    EventSchedule_Collect(a, d, 0, x);
 }
 
-extern "C" s32 func_0203f508(Unk_0203f554_Ent *a, Unk_0203f508_Date d) {
-    return func_0203f554(a, d, 1, 0);
+extern "C" s32 EventSchedule_CollectDayAll(Unk_0203f554_Ent *a, Unk_0203f508_Date d) {
+    return EventSchedule_Collect(a, d, 1, 0);
 }
 
-extern "C" void func_0203f4c0(s32 x) {
+extern "C" void Event_RefreshToday(s32 x) {
     Unk_0203f484_Date d;
     d.a = 0;
     d.b = 0;
-    func_0209d498(&d);
-    func_0203f52c((Unk_0203f554_Ent *)data_021c3bd8.unk_04, *(Unk_0203f508_Date *)&d, x);
-    data_021c3bd8.unk_00[2] = ((u8 *)&d)[5];
-    data_021c3bd8.unk_00[1] = ((u8 *)&d)[4];
-    data_021c3bd8.unk_00[0] = ((u8 *)&d)[3];
+    Clock_GetDateTime(&d);
+    EventSchedule_CollectDay((Unk_0203f554_Ent *)gTodayEvents.unk_04, *(Unk_0203f508_Date *)&d, x);
+    gTodayEvents.unk_00[2] = ((u8 *)&d)[5];
+    gTodayEvents.unk_00[1] = ((u8 *)&d)[4];
+    gTodayEvents.unk_00[0] = ((u8 *)&d)[3];
 }
 
-extern "C" void func_0203f484() {
+extern "C" void Event_RefreshIfDateChanged() {
     Unk_0203f484_Date d;
     d.a = 0;
     d.b = 0;
-    func_0209d498(&d);
-    if (((u8 *)&d)[5] != data_021c3bd8.unk_00[2] || ((u8 *)&d)[4] != data_021c3bd8.unk_00[1] || ((u8 *)&d)[3] != data_021c3bd8.unk_00[0]) {
-        func_0203f4c0(0);
+    Clock_GetDateTime(&d);
+    if (((u8 *)&d)[5] != gTodayEvents.unk_00[2] || ((u8 *)&d)[4] != gTodayEvents.unk_00[1] || ((u8 *)&d)[3] != gTodayEvents.unk_00[0]) {
+        Event_RefreshToday(0);
     }
 }
 
-extern "C" s32 func_0203f42c(u32 id) {
+extern "C" s32 Event_GetDaysSinceStart(u32 id) {
     s32 r = -1;
-    Unk_0203f408_Entry *e = func_0203f408(id, data_021c3bd8.unk_04);
+    Unk_0203f408_Entry *e = EventDayList_Find(id, gTodayEvents.unk_04);
     if (e) {
         Unk_0203f42c_L l;
         l.w[0] = 0;
         l.w[1] = 0;
         l.w[2] = 0;
         l.w[3] = 0;
-        func_0209d498(&l);
+        Clock_GetDateTime(&l);
         l.b[2] = 0;
         l.b[1] = 0;
         l.b[0] = 0;
@@ -889,12 +889,12 @@ extern "C" s32 func_0203f42c(u32 id) {
         l.b[13] = l.b[5];
         l.b[12] = e4[3];
         l.b[11] = e4[2];
-        r = func_0209d3a4(&l.w[2], &l);
+        r = DateTime_DiffDays(&l.w[2], &l);
     }
     return r;
 }
 
-extern "C" Unk_0203f408_Entry *func_0203f408(u32 id, Unk_0203f408_Entry *e) {
+extern "C" Unk_0203f408_Entry *EventDayList_Find(u32 id, Unk_0203f408_Entry *e) {
     Unk_0203f408_Entry *r = NULL;
     for (s32 i = 0; i < 7; e++, i++) {
         if (e->unk_00 == id) {
@@ -905,9 +905,9 @@ extern "C" Unk_0203f408_Entry *func_0203f408(u32 id, Unk_0203f408_Entry *e) {
     return r;
 }
 
-extern "C" s32 func_0203f3a0(s32 a, u8 *p, Unk_0203f408_Entry *tbl) {
+extern "C" s32 EventDayList_GetState(s32 a, u8 *p, Unk_0203f408_Entry *tbl) {
     s32 r = 0;
-    Unk_0203f408_Entry *e = func_0203f408(a, tbl);
+    Unk_0203f408_Entry *e = EventDayList_Find(a, tbl);
     if (e) {
         Unk_0203f3a0_L l;
         u32 z = 0;
@@ -925,7 +925,7 @@ extern "C" s32 func_0203f3a0(s32 a, u8 *p, Unk_0203f408_Entry *tbl) {
             l.b[8] = ((u8 *)e)[0xb];
             l.b[7] = ((u8 *)e)[0xa];
             l.b[6] = ((u8 *)e)[9];
-            s32 v = func_0209d374(p, &l.w[1]);
+            s32 v = DateTime_DiffMinutes(p, &l.w[1]);
             if (v > 0) {
                 if (v <= 5) {
                     r = 3;
@@ -940,32 +940,32 @@ extern "C" s32 func_0203f3a0(s32 a, u8 *p, Unk_0203f408_Entry *tbl) {
     return r;
 }
 
-extern "C" s32 func_0203f31c(s32 a, u8 *p, s32 c) {
+extern "C" s32 Event_GetStateAt(s32 a, u8 *p, s32 c) {
     s32 r = 0;
     u8 d1[8];
     u8 d2[8];
     u8 d3[8];
     u8 tbl[0x58];
-    if (p[5] == data_021c3bd8.unk_00[2] && p[4] == data_021c3bd8.unk_00[1] && p[3] == data_021c3bd8.unk_00[0]) {
+    if (p[5] == gTodayEvents.unk_00[2] && p[4] == gTodayEvents.unk_00[1] && p[3] == gTodayEvents.unk_00[0]) {
         if (c != 0 || func_0203f14c() == 0) {
             MI_CpuCopy8(p, d1, 8);
-            r = func_0203f3a0(a, d1, data_021c3bd8.unk_04);
+            r = EventDayList_GetState(a, d1, gTodayEvents.unk_04);
         }
     } else {
         MI_CpuCopy8(p, d2, 8);
-        ((void (*)(void *, void *, s32))func_0203f52c)(tbl, d2, 0);
+        ((void (*)(void *, void *, s32))EventSchedule_CollectDay)(tbl, d2, 0);
         MI_CpuCopy8(p, d3, 8);
-        r = func_0203f3a0(a, d3, (Unk_0203f408_Entry *)tbl);
+        r = EventDayList_GetState(a, d3, (Unk_0203f408_Entry *)tbl);
     }
     return r;
 }
 
-extern "C" s32 func_0203f2e0(s32 a, void *b, s32 c) {
+extern "C" s32 Event_GetState(s32 a, void *b, s32 c) {
     s32 r = 0;
     u8 buf[8];
     if (func_020400b0() == 0) {
         MI_CpuCopy8(b, buf, 8);
-        r = func_0203f31c(a, buf, c);
+        r = Event_GetStateAt(a, buf, c);
         if (r == 1) {
             r = 0;
         }
@@ -973,9 +973,9 @@ extern "C" s32 func_0203f2e0(s32 a, void *b, s32 c) {
     return r;
 }
 
-extern "C" Unk_0203f408_Entry *func_0203f2d8(void) { return data_021c3bd8.unk_04; }
+extern "C" Unk_0203f408_Entry *Event_GetTodayList(void) { return gTodayEvents.unk_04; }
 
-extern "C" s32 func_0203f218(Unk_0203f554_Ent *out, s32 n, u8 *p) {
+extern "C" s32 EventSchedule_CollectAtNoon(Unk_0203f554_Ent *out, s32 n, u8 *p) {
     u32 p5;
     Unk_0203f554_Cal w;
     Unk_0203f554_Ent tmp;
@@ -987,15 +987,15 @@ extern "C" s32 func_0203f218(Unk_0203f554_Ent *out, s32 n, u8 *p) {
     w.s.b3 = p[4];
     w.s.b2 = p[3];
     w.s.b1 = 0xc;
-    w.s.b0 = func_0209ceac(p5, p[4], p[3]);
-    func_0203f7cc(out, n);
+    w.s.b0 = Date_GetWeekday(p5, p[4], p[3]);
+    EventDayList_Clear(out, n);
     zero = 0;
-    e = data_020d9744;
+    e = sEventSchedule;
     for (s32 i = 0; i < 99; e++, i++) {
         if (e->kind == 5) {
             continue;
         }
-        if (func_0203f600(&tmp, e, p5, w) == 0) {
+        if (EventSchedule_Match(&tmp, e, p5, w) == 0) {
             continue;
         }
         if (tmp.a.w >= w.w) {
@@ -1004,10 +1004,10 @@ extern "C" s32 func_0203f218(Unk_0203f554_Ent *out, s32 n, u8 *p) {
         if (tmp.b.w <= w.w) {
             continue;
         }
-        if (func_0203f69c(e, w, &tmp, out, cnt, 1, zero) != 0) {
+        if (EventSchedule_IsBlocked(e, w, &tmp, out, cnt, 1, zero) != 0) {
             continue;
         }
-        func_0203f678(&tmp, w);
+        Event_AdjustToDay(&tmp, w);
         out[cnt].id = tmp.id;
         out[cnt].kind = tmp.kind;
         out[cnt].a.w = tmp.a.w;
@@ -1020,8 +1020,8 @@ extern "C" s32 func_0203f218(Unk_0203f554_Ent *out, s32 n, u8 *p) {
     return cnt;
 }
 
-extern "C" void func_0203f1e8(s32 *a, s32 *b, u32 id) {
-    Unk_0203f408_Entry *e = func_0203f408(id, data_021c3bd8.unk_04);
+extern "C" void Event_GetRange(s32 *a, s32 *b, u32 id) {
+    Unk_0203f408_Entry *e = EventDayList_Find(id, gTodayEvents.unk_04);
     if (e) {
         *a = e->unk_04;
         *b = e->unk_08;
@@ -1031,29 +1031,29 @@ extern "C" void func_0203f1e8(s32 *a, s32 *b, u32 id) {
     }
 }
 
-BOOL Unk_020d96fc::vfunc_00() {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0) {
-        if (data_021c3bbc) {
-            func_0203f4c0(0);
+BOOL EventCalendarModule::vfunc_00() {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
+        if (sEventsOnlineRefresh) {
+            Event_RefreshToday(0);
         }
-        data_021c3bbc = 0;
+        sEventsOnlineRefresh = 0;
     } else {
-        func_0203f4c0(0);
-        data_021c3bbc = 1;
+        Event_RefreshToday(0);
+        sEventsOnlineRefresh = 1;
     }
     return TRUE;
 }
 
-BOOL Unk_020d96fc::onExecute() {
+BOOL EventCalendarModule::onExecute() {
     if (Backup_GetStatus(gBackup) != 3) {
-        func_02040264(((s32 (*)(void *))func_0203f484)(this));
+        func_02040264(((s32 (*)(void *))Event_RefreshIfDateChanged)(this));
     }
     return TRUE;
 }
 
-BOOL Unk_020d96fc::onDraw() { return TRUE; }
+BOOL EventCalendarModule::onDraw() { return TRUE; }
 
-BOOL Unk_020d96fc::vfunc_0c() { return TRUE; }
+BOOL EventCalendarModule::vfunc_0c() { return TRUE; }
 
 extern "C" BOOL func_0203f14c(void) {
     BOOL r = FALSE;

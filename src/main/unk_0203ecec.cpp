@@ -60,7 +60,7 @@ struct Unk_0203f218_Slot {
 };
 
 extern "C" {
-extern Unk_0203f218_Slot data_020d9744[99];
+extern Unk_0203f218_Slot sEventSchedule[99];
 }
 
 extern "C" {
@@ -95,11 +95,11 @@ extern s16 data_02135f44[];
 }
 
 extern "C" {
-extern u32 data_020cbb18;
+extern u32 gCommManager;
 }
 
 extern "C" {
-extern s32 data_021c3bbc;
+extern s32 sEventsOnlineRefresh;
 }
 
 extern "C" {
@@ -111,7 +111,7 @@ extern Unk_0203f408_Entry data_021c3bdc[7];
 }
 
 extern "C" {
-extern u8 data_021c3bd8[];
+extern u8 gTodayEvents[];
 }
 
 extern "C" {
@@ -231,7 +231,7 @@ s32 func_02072e44(u32 v);
 }
 
 extern "C" {
-s32 func_0203f4c0(s32 v);
+s32 Event_RefreshToday(s32 v);
 }
 
 extern "C" {
@@ -239,7 +239,7 @@ s32 Backup_GetStatus(void *p);
 }
 
 extern "C" {
-s32 func_0203f484(void *p);
+s32 Event_RefreshIfDateChanged(void *p);
 }
 
 extern "C" {
@@ -255,51 +255,51 @@ s32 func_0203f14c(void);
 }
 
 extern "C" {
-void func_0203f52c(void *out, void *in, s32 v);
+void EventSchedule_CollectDay(void *out, void *in, s32 v);
 }
 
 extern "C" {
-s32 func_0209d374(void *a, void *b);
+s32 DateTime_DiffMinutes(void *a, void *b);
 }
 
 extern "C" {
-void func_0209d498(void *a);
+void Clock_GetDateTime(void *a);
 }
 
 extern "C" {
-s32 func_0209d3a4(void *a, void *b);
+s32 DateTime_DiffDays(void *a, void *b);
 }
 
 extern "C" {
-u32 func_0209ceac(u32 v, u32 a, u32 b);
+u32 Date_GetWeekday(u32 v, u32 a, u32 b);
 }
 
 extern "C" {
-void func_0203f7cc(void *a, s32 n);
+void EventDayList_Clear(void *a, s32 n);
 }
 
 extern "C" {
-s32 func_0203f600(Unk_0203f408_Entry *out, Unk_0203f218_Slot *e, u32 v, Unk_0203f218_Ver w);
+s32 EventSchedule_Match(Unk_0203f408_Entry *out, Unk_0203f218_Slot *e, u32 v, Unk_0203f218_Ver w);
 }
 
 extern "C" {
-s32 func_0203f69c(Unk_0203f218_Slot *e, Unk_0203f218_Ver w, Unk_0203f408_Entry *tmp, Unk_0203f408_Entry *out, s32 n, s32 x, s32 y);
+s32 EventSchedule_IsBlocked(Unk_0203f218_Slot *e, Unk_0203f218_Ver w, Unk_0203f408_Entry *tmp, Unk_0203f408_Entry *out, s32 n, s32 x, s32 y);
 }
 
 extern "C" {
-void func_0203f678(Unk_0203f408_Entry *tmp, Unk_0203f218_Ver w);
+void Event_AdjustToDay(Unk_0203f408_Entry *tmp, Unk_0203f218_Ver w);
 }
 
 extern "C" {
-s32 func_0203f31c(s32 a, u8 *b, s32 c);
+s32 Event_GetStateAt(s32 a, u8 *b, s32 c);
 }
 
 extern "C" {
-s32 func_0203f3a0(s32 a, u8 *b, Unk_0203f408_Entry *c);
+s32 EventDayList_GetState(s32 a, u8 *b, Unk_0203f408_Entry *c);
 }
 
 extern "C" {
-Unk_0203f408_Entry *func_0203f408(u32 id, Unk_0203f408_Entry *tbl);
+Unk_0203f408_Entry *EventDayList_Find(u32 id, Unk_0203f408_Entry *tbl);
 }
 
 static inline BOOL IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
@@ -471,13 +471,13 @@ extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in) {
     }
 }
 
-class Unk_020d96fc : public GameProc {
+class EventCalendarModule : public GameProc {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_020d96fc();
+    virtual ~EventCalendarModule();
 };
 
 extern "C" {

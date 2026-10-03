@@ -129,8 +129,8 @@ extern u8 data_ov004_02250828[0x28];
 void *func_ov004_0223584c();
 void *func_ov004_02235720(void *, s32);
 s32 func_ov004_02234440(s32);
-void *func_ov004_022087a4(...);
-void func_ov004_022088c0(void *, void *);
+void *FtrActor_GetFtrIndex(...);
+void FtrActor_GetCenter(void *, void *);
 void *func_ov004_02235788(...);
 void func_ov004_02235d04();
 void func_ov004_022344dc(s32);
@@ -148,8 +148,8 @@ void func_0202ff44();
 void func_0202ffb0(s32);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 s32 TalkRequest_IsActive();
-void func_0209d498(void *);
-s32 func_0209d374(void *, void *);
+void Clock_GetDateTime(void *);
+s32 DateTime_DiffMinutes(void *, void *);
 void func_020b1028();
 void func_02015ab0(void *, s32);
 s32 Unk_020d77a4_getPlayerActor(void *, s32);
@@ -203,7 +203,7 @@ void func_0201a9ec(void *, void *);
 s32 func_020e972c(void *, void *);
 s32 func_020e96ec(void *, void *);
 s32 func_020e780c(s32, s32);
-void func_0204ee10(s32 *, s32 *, s32 *);
+void FieldPos_ToUnit(s32 *, s32 *, s32 *);
 s32 Math_AngleXZ(void *, void *);
 s32 func_02015aac(void *);
 s32 Unk_020d77a4_getAngleTo(void *, s32);
@@ -738,7 +738,7 @@ BOOL Unk_ov004_0224c7d0::vfunc_00() {
         func_020b1028();
         func_0202ffb0(0);
         func_ov004_02235d04();
-        func_0209d498(unk_ac8);
+        Clock_GetDateTime(unk_ac8);
         unk_ac0 = 2;
         func_ov004_02219f18(3);
     } else {
@@ -994,20 +994,20 @@ BOOL Unk_ov004_0224c7d0::func_ov004_022198a8() {
     v.x = v.x + g;
     g = func_01ffcb0c(0x2000, data_02135f44[idx + 1]);
     v.z = v.z + g;
-    func_0204ee10(&xy[0], &xy[1], &v.x);
+    FieldPos_ToUnit(&xy[0], &xy[1], &v.x);
     s32 r4b = func_ov004_02235624(func_ov004_02235718(), xy[0], xy[1], 0);
     s32 r6 = func_ov004_02235624(func_ov004_02235718(), xy[0], xy[1], 1);
     if (func_ov004_02218a48(r6)) {
         void *o = func_ov004_02235720(func_ov004_0223584c(), r6);
-        unk_894 = Item_MakeFurniture(func_ov004_022087a4(), 0);
-        func_ov004_022088c0(o, unk_898);
+        unk_894 = Item_MakeFurniture(FtrActor_GetFtrIndex(), 0);
+        FtrActor_GetCenter(o, unk_898);
         func_ov004_022189dc(o);
         func_ov004_02218a20(r6);
         unk_8a4 = r6;
     } else if (func_ov004_02218a48(r4b)) {
         void *o = func_ov004_02235720(func_ov004_0223584c(), r4b);
-        unk_894 = Item_MakeFurniture(func_ov004_022087a4(), 0);
-        func_ov004_022088c0(o, unk_898);
+        unk_894 = Item_MakeFurniture(FtrActor_GetFtrIndex(), 0);
+        FtrActor_GetCenter(o, unk_898);
         func_ov004_022189dc(o);
         func_ov004_02218a20(r4b);
         unk_8a4 = r4b;
@@ -1071,7 +1071,7 @@ BOOL Unk_ov004_0224c7d0::func_ov004_02219724() {
         func_020e7518(&unk_ad5);
         return TRUE;
     }
-    func_0209d498(unk_ac8);
+    Clock_GetDateTime(unk_ac8);
     if (!func_02014220(&unk_618)) {
         TalkRequest_EndTalkWith(this);
         if (unk_ac0 == 1) {
@@ -1424,7 +1424,7 @@ void Unk_ov004_0224c7d0::vfunc_4c(s32 cmd, u32 b) {
             func_020b1028();
             func_0202ffb0(0);
             func_ov004_02235d04();
-            func_0209d498(unk_ac8);
+            Clock_GetDateTime(unk_ac8);
         }
         break;
     case 0:
@@ -1476,8 +1476,8 @@ BOOL Unk_ov004_0224c7d0::func_ov004_02218cdc() {
     }
     z[0] = 0;
     z[1] = 0;
-    func_0209d498(z);
-    s32 n = func_0209d374(unk_ac8, z);
+    Clock_GetDateTime(z);
+    s32 n = DateTime_DiffMinutes(unk_ac8, z);
     {
         if (unk_ae0 != 0) {
             unk_ae0 = unk_ae0 + 1;
@@ -1506,8 +1506,8 @@ BOOL Unk_ov004_0224c7d0::func_ov004_02218bd4() {
     do {
         if (func_ov004_02218a48(i)) {
             void *e = func_ov004_02235720(func_ov004_0223584c(), i);
-            unk_894 = Item_MakeFurniture(func_ov004_022087a4(e), 0);
-            func_ov004_022088c0(e, unk_898);
+            unk_894 = Item_MakeFurniture(FtrActor_GetFtrIndex(e), 0);
+            FtrActor_GetCenter(e, unk_898);
             func_ov004_022189dc(e);
             func_ov004_02218a20(i);
             unk_8a4 = i;
@@ -1535,7 +1535,7 @@ BOOL Unk_ov004_0224c7d0::func_ov004_02218a48(s32 idx) {
     if (func_ov004_02234440(idx) == 0) {
         return FALSE;
     }
-    v = Item_MakeFurniture(func_ov004_022087a4(p), 0);
+    v = Item_MakeFurniture(FtrActor_GetFtrIndex(p), 0);
     BOOL r0 = FALSE;
     volatile u16 *pv = &v;
     u32 w = *pv;
@@ -1568,7 +1568,7 @@ void Unk_ov004_0224c7d0::func_ov004_02218a20(u32 v) {
 }
 
 void Unk_ov004_0224c7d0::func_ov004_022189dc(void *arg) {
-    func_ov004_022087a4(arg);
+    FtrActor_GetFtrIndex(arg);
     switch (FtrInfo_GetUnk05()) {
     case 0:
         unk_ad0 = 0x3000;

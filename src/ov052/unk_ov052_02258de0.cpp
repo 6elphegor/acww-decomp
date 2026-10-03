@@ -71,8 +71,8 @@ u32 func_02063b8c(u32 n);
 BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
 void TalkRequest_EndTalkWith(void *p);
 void TalkRequest_AddPlayerTalk6(void *p, s32 v);
-void func_0209d498(void *p);
-void func_02053848(void *p, s32 a, s32 b);
+void Clock_GetDateTime(void *p);
+void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 extern u16 data_020c6cc8;
 BOOL _ZN12Unk_02013b1013func_02014220Ev(void *self);
 void _ZN12Unk_02013b1013func_020141b4Essh(void *self, u32 a, u32 b, u32 c);
@@ -83,7 +83,7 @@ s32 _ZN12Unk_0201985813func_020197a8Ev(void *self);
 void _ZN12Unk_0201a8c413func_0201a8d0Eiiii(void *self, s32 a, s32 b, s32 c, s32 d);
 void _ZN12Unk_0201a8c413func_0201a99cEs(void *self, s32 v);
 void _ZN12Unk_0201a8c413func_0201a9ecEP17Unk_0201a334_Vec3(void *self, void *v);
-void _ZN12Unk_0204e2f013func_0204e328EPv(void *g, void *v);
+void _ZN8BlockMap13func_0204e328EPv(void *g, void *v);
 void *func_020947f0(s32 a);
 s32 func_0202ff64(void *p);
 void func_0202ff44();
@@ -91,7 +91,7 @@ void func_0202ffb0(s32 a);
 void *func_02095204(s32 a);
 s32 TalkRequest_IsActive();
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_0204ee10(s32 *bx, s32 *by, void *pos);
+void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 void *func_ov004_02235718();
 void *_ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(void *self, s32 a, s32 b, s32 c);
 void *func_020b50b4();
@@ -104,7 +104,7 @@ s32 Item_GetPrice(u16 *p);
 s32 func_020b4934();
 void func_020b4bbc(s32 a, s32 b);
 BOOL func_020b50dc();
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *g);
+s32 _ZN11CommManager8isOnlineEv(void *g);
 void func_0201adc8(void *o, s32 v);
 s32 func_0201ade4(void *o, s32 v);
 void func_020ac894(s32 a, s32 b, s32 c);
@@ -132,8 +132,8 @@ extern u8 gTouchPrevHeld[];
 extern u8 gTouchPrevChanged[];
 extern u16 gPad[];
 extern s16 data_02135f44[];
-extern void *data_021c47c4;
-extern void *data_020cbb18;
+extern void *gSceneBlockMap;
+extern void *gCommManager;
 }
 
 struct TalkWindowState {
@@ -247,12 +247,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -373,7 +373,7 @@ public:
     s32 getDistanceToPlayer(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -829,7 +829,7 @@ BOOL Unk_ov052_0225a900::func_ov052_02259c04() {
     Unk_ov052_Vec out;
     func_0201ae00(&out, this, &v);
     s32 t = getDistanceToPlayer(4);
-    _ZN12Unk_0204e2f013func_0204e328EPv(data_021c47c4, &unk_5c);
+    _ZN8BlockMap13func_0204e328EPv(gSceneBlockMap, &unk_5c);
     if (t > 0x4000) {
         if (_ZN12Unk_0201985813func_020197a8Ev(&unk_564) == 1) {
             _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
@@ -939,7 +939,7 @@ void Unk_ov052_0225a870::vfunc_78(Unk_ov052_022595dc_Out *out) {
         u16 *pp = &unk_b0->unk_71a;
         if (Unk_ov052_022595dc_Eq(pp, &k1)) {
             if (_ZN12Unk_02097ff413func_02098044Ej(h, 0xc) != 0) {
-                if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0 && unk_b8 == -1) {
+                if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 && unk_b8 == -1) {
                     x = 0x34a8;
                     unk_b8 = func_02098eb0(&x);
                 }
@@ -1226,7 +1226,7 @@ BOOL Unk_ov052_0225a900::func_ov052_02258f34() {
     s32 idx = ((u16)ang >> 4) * 2;
     v.x += func_01ffcb0c(0x2000, data_02135f44[idx]);
     v.z += func_01ffcb0c(0x2000, data_02135f44[idx + 1]);
-    func_0204ee10(&bx, &by, &v);
+    FieldPos_ToUnit(&bx, &by, &v);
     if (f) {
         void *o = _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(func_ov004_02235718(), bx, by, 0);
         if (o != 0) {
@@ -1237,7 +1237,7 @@ BOOL Unk_ov052_0225a900::func_ov052_02258f34() {
             s32 bx2 = 0, by2 = 0;
             Unk_ov052_Vec v2;
             func_020b60b0(func_020b50b4(), &v2);
-            func_0204ee10(&bx2, &by2, &v2);
+            FieldPos_ToUnit(&bx2, &by2, &v2);
             if (bx2 != bx || by2 != by) {
                 return FALSE;
             }
@@ -1286,7 +1286,7 @@ BOOL Unk_ov052_0225a900::func_ov052_02258e60() {
     u32 buf[2];
     buf[0] = 0;
     buf[1] = 0;
-    func_0209d498(buf);
+    Clock_GetDateTime(buf);
     if (((u8 *)buf)[2] < 6) {
         unk_658.func_ov052_02259a90(0xc);
         TalkRequest_AddPlayerTalk6(this, 0);

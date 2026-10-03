@@ -53,7 +53,7 @@ struct Obj {
 
 extern "C" {
 extern Grid *data_020d8ce8;
-extern Node *data_021c6190;
+extern Node *sHBlankListHead;
 void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
 Chunk *func_01ffcb5c(s32 x, s32 z);
 void Camera_GetLookAtOffset(Vec3 *out, Cam *c);
@@ -67,9 +67,9 @@ static inline Chunk *At(s32 x, s32 z) {
     return 0;
 }
 
-extern "C" void func_01ffcc30(void) {
+extern "C" void HBlank_Handler(void) {
     if (*(vu16 *)0x04000006 < 192) {
-        Node *n = data_021c6190;
+        Node *n = sHBlankListHead;
         if (n != 0) {
             do {
                 if (n->unk_0c != 0) {

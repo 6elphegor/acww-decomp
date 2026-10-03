@@ -108,11 +108,11 @@ public:
     /* 0x398 */ s32 unk_398;
     /* 0x39c */ s32 unk_39c;
 
-    BOOL func_ov068_022685ec();
-    void func_ov068_02268608();
-    void func_ov068_0226867c();
-    void func_ov068_02268740();
-    void func_ov068_02268214();
+    BOOL enterSnowballRoll();
+    void spawnSnowballSplash();
+    void spawnSnowballBreak();
+    void applySnowballMotion();
+    void execSnowballRoll();
 };
 
 extern "C" {
@@ -145,18 +145,18 @@ s32 func_ov003_02212d28(void *o, s32 st);
 extern u16 data_020c6cc8;
 extern u32 data_021ed104;
 extern u32 gVec3Zero[];
-extern const char *data_ov068_0226fd68[];
-extern const char *data_ov068_0226fd78[];
-extern u8 *data_021c47c4;
+extern const char *sNookModelPaths[];
+extern const char *sNookTexPaths[];
+extern u8 *gSceneBlockMap;
 extern s16 data_02135f44[];
 void *func_ov003_0222ead4(void *self);
 u8 *func_020af3f4();
-void func_0204edd8(void *, void *);
+void FieldPos_SnapToUnitCenter(void *, void *);
 void func_02003e70(void *, s32, s32, s32);
-void func_0204ee10(s32 *, s32 *, void *);
-u16 *func_0204ebd8(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
+void FieldPos_ToUnit(s32 *, s32 *, void *);
+u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 u16 Item_MakeSnowman(u32);
-void func_0204eb30(void *m, u16 *v, s32 x, s32 y, s32 z);
+void BlockMap_SetItemAtUnit(void *m, u16 *v, s32 x, s32 y, s32 z);
 void func_ov003_02212e50(void *);
 s32 func_ov003_022135c4(void *o, s32 a);
 void func_020339bc(void *, void *, s32, s32);
@@ -182,7 +182,7 @@ s32 func_ov003_0221d0c8(void *a, void *b);
 s32 func_ov003_0221d118(void *a, void *b, s32 c);
 s32 func_ov003_0222d1dc(s32 a);
 s32 func_ov003_0222dec8(s32 a, void *b);
-s32 func_020494bc(void *cell);
+s32 Flower_GetSpecies(void *cell);
 s32 func_020e96a4(void *a, void *b);
 s32 func_020e7b98(s32 x, s32 z);
 s32 func_020e780c(s32 a, s32 b);
@@ -191,23 +191,23 @@ s32 func_02031218(s32 x, s32 y);
 s32 func_020af608(void *tbl, s32 a, s32 b, s32 c);
 void func_020af3fc();
 s32 func_02033914(void *o, s32 f);
-u16 *func_0204eba0(void *grid, void *pos, u32 z);
+u16 *BlockMap_GetItemPtrAtPos(void *grid, void *pos, u32 z);
 extern u8 data_021ed2e6[];
-s32 _ZN18Unk_ov068_0226821419func_ov068_02268608Ev(void *);
-void _ZN18Unk_ov068_0226821419func_ov068_0226867cEv(void *);
-void _ZN18Unk_ov068_0226821419func_ov068_02268740Ev(void *);
-s32 func_ov068_022686e8(s32 v);
+s32 _ZN18Unk_ov068_0226821419spawnSnowballSplashEv(void *);
+void _ZN18Unk_ov068_0226821418spawnSnowballBreakEv(void *);
+void _ZN18Unk_ov068_0226821419applySnowballMotionEv(void *);
+s32 Snowball_GetSizeRatioRank(s32 v);
 }
 
 class Unk_ov068_02267584 {
 public:
-    void func_ov068_02267584();
-    BOOL func_ov068_02267614();
-    void func_ov068_02267668();
-    BOOL func_ov068_022676f8();
-    void func_ov068_0226775c();
-    BOOL func_ov068_022677cc();
-    void func_ov068_02267814();
+    void execSnowballCrumble2();
+    BOOL enterSnowballCrumble2();
+    void execSnowballCrumble();
+    BOOL enterSnowballCrumble();
+    void execSnowballSettle();
+    BOOL enterSnowballSettle();
+    void execSnowballStack();
 
     u8 pad_00[0x5c];
     s32 unk_5c;
@@ -282,21 +282,21 @@ public:
     /* 0x395 */ u8 unk_395;
     /* 0x396 */ u16 unk_396;
 
-    s32 func_ov068_022678c4();
-    void func_ov068_022679bc();
-    s32 func_ov068_02267aa0();
-    void func_ov068_02267b38();
-    s32 func_ov068_02267bf0();
-    void func_ov068_02267c58();
-    s32 func_ov068_02267d08();
-    void func_ov068_02267d70();
-    s32 func_ov068_02267e04();
-    void func_ov068_02267e5c();
-    s32 func_ov068_02267e74();
-    void func_ov068_02267ec4();
-    s32 func_ov068_02267f8c();
-    void func_ov068_02268008();
-    s32 func_ov068_022680f0();
+    s32 enterSnowballStack();
+    void execSnowballToSnowman();
+    s32 enterSnowballToSnowman();
+    void execSnowballSplash();
+    s32 enterSnowballSplash();
+    void execSnowball05();
+    s32 enterSnowball05();
+    void execSnowballHole();
+    s32 enterSnowballHole();
+    void execSnowballBreak();
+    s32 enterSnowballBreak();
+    void execSnowballSink();
+    s32 enterSnowballSink();
+    void execSnowballFall();
+    s32 enterSnowballFall();
 };
 
 #define FX32_CONST(x) ((s32)((x) > 0 ? (x) * 4096.0f + 0.5f : (x) * 4096.0f - 0.5f))
@@ -309,7 +309,7 @@ static inline BOOL Unk_ov068_02268214_InRange(u16 *p) {
     return r;
 }
 
-void Unk_ov068_02268214::func_ov068_02268740() {
+void Unk_ov068_02268214::applySnowballMotion() {
     if ((unk_270 & 1) != 0) {
         unk_a8 = 0;
     } else {
@@ -325,7 +325,7 @@ void Unk_ov068_02268214::func_ov068_02268740() {
     }
 }
 
-extern "C" s32 func_ov068_022686e8(s32 v) {
+extern "C" s32 Snowball_GetSizeRatioRank(s32 v) {
     if (v < 0x99a) {
         return 3;
     }
@@ -347,7 +347,7 @@ extern "C" s32 func_ov068_022686e8(s32 v) {
     return 3;
 }
 
-void Unk_ov068_02268214::func_ov068_0226867c() {
+void Unk_ov068_02268214::spawnSnowballBreak() {
     Unk_ov068_02268608_Vec v;
     u16 h;
     func_01ffd070(&v, &unk_5c, unk_304);
@@ -357,7 +357,7 @@ void Unk_ov068_02268214::func_ov068_0226867c() {
     func_02003e70(unk_324, 0x81f, 0x7f, 0);
 }
 
-void Unk_ov068_02268214::func_ov068_02268608() {
+void Unk_ov068_02268214::spawnSnowballSplash() {
     Unk_ov068_02268608_Vec v;
     u16 h;
     v.x = unk_5c;
@@ -370,14 +370,14 @@ void Unk_ov068_02268214::func_ov068_02268608() {
     func_ov003_02220db0(&unk_5c, 0x5000);
 }
 
-BOOL Unk_ov068_02268214::func_ov068_022685ec() {
+BOOL Unk_ov068_02268214::enterSnowballRoll() {
     unk_374 |= 0x10;
     unk_374 &= ~0x20;
     return TRUE;
 }
 
-void Unk_ov068_02268214::func_ov068_02268214() {
-    u8 *grid = data_021c47c4;
+void Unk_ov068_02268214::execSnowballRoll() {
+    u8 *grid = gSceneBlockMap;
     s32 sx, sy;
     u16 cell;
     u32 objA[16];
@@ -392,14 +392,14 @@ void Unk_ov068_02268214::func_ov068_02268214() {
         if (o != 0 && *(s32 *)(o + 0x268) >= 0xa00) {
             d = func_020e96a4(&unk_5c, o + 0x5c);
             t = FX_Div(0, 0x64000) + 0x400;
-            func_0204ee10(&sx, &sy, o + 0x5c);
+            FieldPos_ToUnit(&sx, &sy, o + 0x5c);
             cell = 0xfff1;
             if (grid != 0) {
                 u32 x = sx;
                 u32 y = sy;
                 s32 hx = (s32)x >> 4;
                 s32 hy = (s32)y >> 4;
-                u16 *c = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+                u16 *c = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), 0);
                 if (c != 0) {
                     cell = *c;
                 }
@@ -411,7 +411,7 @@ void Unk_ov068_02268214::func_ov068_02268214() {
                 case 0:
                 case 1:
                     s32 lv;
-                    lv = func_ov068_022686e8(FX_Div(unk_268, *(s32 *)(o + 0x268)));
+                    lv = Snowball_GetSizeRatioRank(FX_Div(unk_268, *(s32 *)(o + 0x268)));
                     s32 res = func_020af608(data_021ed2e6, unk_268, *(s32 *)(o + 0x268), lv);
                     if (res != -1) {
                         Unk_ov068_02268214_Flags &of = *(Unk_ov068_02268214_Flags *)(o + 0x374);
@@ -432,7 +432,7 @@ void Unk_ov068_02268214::func_ov068_02268214() {
             }
         }
     }
-    func_ov068_02268740();
+    applySnowballMotion();
     func_020339bc(objA, &unk_5c, 0, 0);
     if (func_02033914(objA, 0) < 0) {
         func_ov003_02212d28(this, 1);
@@ -452,8 +452,8 @@ void Unk_ov068_02268214::func_ov068_02268214() {
     }
     func_02033988(objB);
     if (grid != 0) {
-        func_0204edd8(objC, &unk_5c);
-        u16 *c = func_0204eba0(grid, &unk_5c, 0);
+        FieldPos_SnapToUnitCenter(objC, &unk_5c);
+        u16 *c = BlockMap_GetItemPtrAtPos(grid, &unk_5c, 0);
         if (c != 0 && Unk_ov068_02268214_InRange(c) != 0) {
             if (func_020e9650(objC, &unk_5c) < 0x1000) {
                 u8 *o = (u8 *)func_ov003_0222ead4(this);
@@ -499,7 +499,7 @@ void Unk_ov068_02268214::func_ov068_02268214() {
     func_02033988(objA);
 }
 
-s32 Unk_ov068_022678c4::func_ov068_022680f0() {
+s32 Unk_ov068_022678c4::enterSnowballFall() {
     unk_374_b4 = 1;
     unk_374_b5 = 0;
     unk_26c = 0;
@@ -535,7 +535,7 @@ s32 Unk_ov068_022678c4::func_ov068_022680f0() {
     return 1;
 }
 
-void Unk_ov068_022678c4::func_ov068_02268008() {
+void Unk_ov068_022678c4::execSnowballFall() {
     u32 buf[17];
     s32 lim;
     s32 t = unk_268;
@@ -555,7 +555,7 @@ void Unk_ov068_022678c4::func_ov068_02268008() {
         func_020339bc(buf, &unk_5c, 0, 0);
         lim = (s32)buf[15] - unk_268 - 0x200;
         if (unk_60 < lim) {
-            _ZN18Unk_ov068_0226821419func_ov068_02268608Ev(this);
+            _ZN18Unk_ov068_0226821419spawnSnowballSplashEv(this);
             unk_60 = lim;
             func_ov003_02212d28(this, 2);
         }
@@ -563,7 +563,7 @@ void Unk_ov068_022678c4::func_ov068_02268008() {
     }
 }
 
-s32 Unk_ov068_022678c4::func_ov068_02267f8c() {
+s32 Unk_ov068_022678c4::enterSnowballSink() {
     unk_374_b4 = 1;
     unk_374_b5 = 0;
     unk_392 = 0;
@@ -581,7 +581,7 @@ s32 Unk_ov068_022678c4::func_ov068_02267f8c() {
     return 1;
 }
 
-void Unk_ov068_022678c4::func_ov068_02267ec4() {
+void Unk_ov068_022678c4::execSnowballSink() {
     u32 buf[16];
     s32 t = unk_268;
     t = t + (t >> 1);
@@ -597,12 +597,12 @@ void Unk_ov068_022678c4::func_ov068_02267ec4() {
         unk_268 = 0;
         ProcBase_RequestDelete(this);
     }
-    _ZN18Unk_ov068_0226821419func_ov068_02268740Ev(this);
+    _ZN18Unk_ov068_0226821419applySnowballMotionEv(this);
     unk_60 = (s32)buf[15] - unk_268 - 0x200;
     func_02033988(buf);
 }
 
-s32 Unk_ov068_022678c4::func_ov068_02267e74() {
+s32 Unk_ov068_022678c4::enterSnowballBreak() {
     unk_374_b4 = 1;
     unk_374_b5 = 0;
     u32 ei = unk_08 & 1;
@@ -611,19 +611,19 @@ s32 Unk_ov068_022678c4::func_ov068_02267e74() {
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
     e[ei & 1].d = 0x800;
-    _ZN18Unk_ov068_0226821419func_ov068_0226867cEv(this);
+    _ZN18Unk_ov068_0226821418spawnSnowballBreakEv(this);
     return 1;
 }
 
-void Unk_ov068_022678c4::func_ov068_02267e5c() {
+void Unk_ov068_022678c4::execSnowballBreak() {
     unk_26c = unk_268;
     ProcBase_RequestDelete(this);
 }
 
-s32 Unk_ov068_022678c4::func_ov068_02267e04() {
+s32 Unk_ov068_022678c4::enterSnowballHole() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
-    func_0204edd8(unk_384, &unk_5c);
+    FieldPos_SnapToUnitCenter(unk_384, &unk_5c);
     u32 ei = unk_08 & 1;
     Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)func_020af3f4();
     e[ei & 1].a = 0;
@@ -633,7 +633,7 @@ s32 Unk_ov068_022678c4::func_ov068_02267e04() {
     return 1;
 }
 
-void Unk_ov068_022678c4::func_ov068_02267d70() {
+void Unk_ov068_022678c4::execSnowballHole() {
     unk_26c = unk_268;
     s32 v[3];
     func_020e9960(v, unk_384, &unk_5c);
@@ -641,7 +641,7 @@ void Unk_ov068_022678c4::func_ov068_02267d70() {
     func_020e9888(v, 0x80);
     unk_5c += v[0];
     unk_64 += v[2];
-    _ZN18Unk_ov068_0226821419func_ov068_02268740Ev(this);
+    _ZN18Unk_ov068_0226821419applySnowballMotionEv(this);
     s32 d = func_020e9650(&unk_5c, unk_384);
     s32 lim = 0;
     if (d < 0x1000) {
@@ -655,7 +655,7 @@ void Unk_ov068_022678c4::func_ov068_02267d70() {
     }
 }
 
-s32 Unk_ov068_022678c4::func_ov068_02267d08() {
+s32 Unk_ov068_022678c4::enterSnowball05() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
     u32 ei = unk_08 & 1;
@@ -670,7 +670,7 @@ s32 Unk_ov068_022678c4::func_ov068_02267d08() {
     return 1;
 }
 
-void Unk_ov068_022678c4::func_ov068_02267c58() {
+void Unk_ov068_022678c4::execSnowball05() {
     unk_2f0 += FX_Div(0, 0x3e8000) + 0x158;
     unk_5c += unk_2ec;
     unk_64 += unk_2f0;
@@ -685,7 +685,7 @@ void Unk_ov068_022678c4::func_ov068_02267c58() {
     }
 }
 
-s32 Unk_ov068_022678c4::func_ov068_02267bf0() {
+s32 Unk_ov068_022678c4::enterSnowballSplash() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
     u32 ei = unk_08 & 1;
@@ -696,11 +696,11 @@ s32 Unk_ov068_022678c4::func_ov068_02267bf0() {
     e[ei & 1].d = 0x800;
     unk_392 = 0;
     unk_2f0 >>= 1;
-    _ZN18Unk_ov068_0226821419func_ov068_02268608Ev(this);
+    _ZN18Unk_ov068_0226821419spawnSnowballSplashEv(this);
     return 1;
 }
 
-void Unk_ov068_022678c4::func_ov068_02267b38() {
+void Unk_ov068_022678c4::execSnowballSplash() {
     u32 buf[16];
     func_020339bc(buf, &unk_5c, 0, 0);
     s32 *p = (s32 *)&buf[9];
@@ -721,10 +721,10 @@ void Unk_ov068_022678c4::func_ov068_02267b38() {
     func_02033988(buf);
 }
 
-s32 Unk_ov068_022678c4::func_ov068_02267aa0() {
+s32 Unk_ov068_022678c4::enterSnowballToSnowman() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
-    func_0204edd8(&unk_378, &unk_5c);
+    FieldPos_SnapToUnitCenter(&unk_378, &unk_5c);
     u32 ei = unk_08 & 1;
     Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)func_020af3f4();
     e[ei & 1].a = 0;
@@ -737,7 +737,7 @@ s32 Unk_ov068_022678c4::func_ov068_02267aa0() {
     return 1;
 }
 
-void Unk_ov068_022678c4::func_ov068_022679bc() {
+void Unk_ov068_022678c4::execSnowballToSnowman() {
     unk_26c = unk_268;
     unk_5c += unk_310;
     unk_60 = 0;
@@ -746,31 +746,31 @@ void Unk_ov068_022678c4::func_ov068_022679bc() {
         unk_5c = unk_378;
         unk_60 = unk_37c;
         unk_64 = unk_380;
-        void *g = data_021c47c4;
+        void *g = gSceneBlockMap;
         if (g) {
             s32 x, y;
-            func_0204ee10(&x, &y, &unk_5c);
+            FieldPos_ToUnit(&x, &y, &unk_5c);
             s32 tx = *(volatile s32 *)&x;
             s32 ty = *(volatile s32 *)&y;
             s32 hx = tx >> 4;
             s32 hy = ty >> 4;
-            u16 *c = (u16 *)func_0204ebd8(g, hx, hy, tx - (hx << 4), ty - (hy << 4), 0);
+            u16 *c = (u16 *)BlockMap_GetItemPtr(g, hx, hy, tx - (hx << 4), ty - (hy << 4), 0);
             if (c) {
                 unk_396 = *c;
             }
             u16 v = Item_MakeSnowman(unk_374_lo);
-            func_0204eb30(g, &v, x, y, 0);
+            BlockMap_SetItemAtUnit(g, &v, x, y, 0);
         }
         func_ov003_02212e50(&unk_396);
         func_ov003_02212d28(this, 9);
     }
 }
 
-s32 Unk_ov068_022678c4::func_ov068_022678c4() {
+s32 Unk_ov068_022678c4::enterSnowballStack() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
     Unk_ov068_022678c4_Src *o = (Unk_ov068_022678c4_Src *)func_ov003_0222ead4(this);
-    func_0204edd8(&unk_378, (u8 *)o + 0x5c);
+    FieldPos_SnapToUnitCenter(&unk_378, (u8 *)o + 0x5c);
     unk_37c += ((o->unk_268 * 2 - (o->unk_268 >> 3)) - (unk_268 >> 3)) - 0x400;
     unk_a8 = -(FX_Div(0, 0x3e8000) + 0x8f2);
     u32 ei = unk_08 & 1;
@@ -786,7 +786,7 @@ s32 Unk_ov068_022678c4::func_ov068_022678c4() {
     return 1;
 }
 
-void Unk_ov068_02267584::func_ov068_02267814() {
+void Unk_ov068_02267584::execSnowballStack() {
     unk_26c = unk_268;
     unk_5c += unk_310;
     unk_64 += unk_314;
@@ -805,7 +805,7 @@ void Unk_ov068_02267584::func_ov068_02267814() {
     }
 }
 
-BOOL Unk_ov068_02267584::func_ov068_022677cc() {
+BOOL Unk_ov068_02267584::enterSnowballSettle() {
     unk_374 &= ~0x10;
     unk_374 |= 0x20;
     unk_392 = 0;
@@ -813,7 +813,7 @@ BOOL Unk_ov068_02267584::func_ov068_022677cc() {
     return TRUE;
 }
 
-void Unk_ov068_02267584::func_ov068_0226775c() {
+void Unk_ov068_02267584::execSnowballSettle() {
     unk_26c = unk_268;
     unk_5c += unk_310;
     unk_64 += unk_314;
@@ -827,7 +827,7 @@ void Unk_ov068_02267584::func_ov068_0226775c() {
     }
 }
 
-BOOL Unk_ov068_02267584::func_ov068_022676f8() {
+BOOL Unk_ov068_02267584::enterSnowballCrumble() {
     unk_374 &= ~0x10;
     unk_374 |= 0x20;
     func_ov003_02212ebc(&unk_5c);
@@ -839,7 +839,7 @@ BOOL Unk_ov068_02267584::func_ov068_022676f8() {
     return TRUE;
 }
 
-void Unk_ov068_02267584::func_ov068_02267668() {
+void Unk_ov068_02267584::execSnowballCrumble() {
     s32 a;
     unk_26c = unk_268;
     a = data_02135f44[((u16)unk_392 >> 4) * 2 + 1];
@@ -850,12 +850,12 @@ void Unk_ov068_02267584::func_ov068_02267668() {
         unk_394--;
     }
     if (unk_394 == 0) {
-        _ZN18Unk_ov068_0226821419func_ov068_0226867cEv(this);
+        _ZN18Unk_ov068_0226821418spawnSnowballBreakEv(this);
         ProcBase_RequestDelete(this);
     }
 }
 
-BOOL Unk_ov068_02267584::func_ov068_02267614() {
+BOOL Unk_ov068_02267584::enterSnowballCrumble2() {
     unk_374 &= ~0x10;
     unk_374 |= 0x20;
     unk_304 = gVec3Zero[0];
@@ -866,7 +866,7 @@ BOOL Unk_ov068_02267584::func_ov068_02267614() {
     return TRUE;
 }
 
-void Unk_ov068_02267584::func_ov068_02267584() {
+void Unk_ov068_02267584::execSnowballCrumble2() {
     s32 a;
     unk_26c = unk_268;
     a = data_02135f44[((u16)unk_392 >> 4) * 2 + 1];
@@ -877,7 +877,7 @@ void Unk_ov068_02267584::func_ov068_02267584() {
         unk_394--;
     }
     if (unk_394 == 0) {
-        _ZN18Unk_ov068_0226821419func_ov068_0226867cEv(this);
+        _ZN18Unk_ov068_0226821418spawnSnowballBreakEv(this);
         ProcBase_RequestDelete(this);
     }
 }

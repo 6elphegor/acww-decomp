@@ -19,9 +19,9 @@ public:
 };
 struct Unk_020d96fc_G { u8 b0, b1, b2, b3; };
 
-class Unk_020d96fc : public GameProc {
+class EventCalendarModule : public GameProc {
 public:
-    Unk_020d96fc() {}
+    EventCalendarModule() {}
     virtual BOOL vfunc_0c();
 };
 
@@ -62,27 +62,27 @@ extern u32 data_020c907c[];
 }
 
 extern "C" {
-s32 func_0209d2c0(Unk_0203fe18_Date*, s32);
+s32 DateTime_AddDays(Unk_0203fe18_Date*, s32);
 }
 
 extern "C" {
-s32 func_0209d164(Unk_0203fe18_Date*, s32);
+s32 DateTime_SubDays(Unk_0203fe18_Date*, s32);
 }
 
 extern "C" {
-void func_0209d498(Unk_0203fe18_Date*);
+void Clock_GetDateTime(Unk_0203fe18_Date*);
 }
 
 extern "C" {
-s32 func_0209cef4(void);
+s32 Clock_GetWeekday(void);
 }
 
 extern "C" {
-s32 func_0209cd00(Unk_0203fe18_B3*, u8*);
+s32 Date_DaysBetween(Unk_0203fe18_B3*, u8*);
 }
 
 extern "C" {
-void func_0209d338(Unk_0203fe18_Date*, long long*);
+void DateTime_GetWeekStart(Unk_0203fe18_Date*, long long*);
 }
 
 extern "C" {
@@ -98,15 +98,15 @@ s32 func_0203f14c(void);
 }
 
 extern "C" {
-s32 func_0203f31c(u32, Unk_0203fe18_Date*, s32);
+s32 Event_GetStateAt(u32, Unk_0203fe18_Date*, s32);
 }
 
 extern "C" {
-s32 func_0203f3a0(u32, Unk_0203fe18_Date*, void*);
+s32 EventDayList_GetState(u32, Unk_0203fe18_Date*, void*);
 }
 
 extern "C" {
-s32 func_0203f508(void*, Unk_0203fe18_Date*);
+s32 EventSchedule_CollectDayAll(void*, Unk_0203fe18_Date*);
 }
 
 extern "C" {
@@ -130,7 +130,7 @@ s32 func_020407a8(void*, void*, void*);
 }
 
 extern "C" {
-Unk_0203ff20_Entry* func_02040030(Unk_0203ff50_Slot*, s32);
+Unk_0203ff20_Entry* EventWeekSlots_Get(Unk_0203ff50_Slot*, s32);
 }
 
 extern "C" {
@@ -138,7 +138,7 @@ s32 func_02040234(Unk_0203ff50_Slot*, u32);
 }
 
 extern "C" {
-Unk_0203ff20_Entry* func_0203ffe8(Unk_0203ff50_Slot*);
+Unk_0203ff20_Entry* EventWeekSlots_GetToday(Unk_0203ff50_Slot*);
 }
 
 extern "C" {
@@ -150,15 +150,15 @@ void func_02040078(Unk_0203ff50_Slot*);
 }
 
 extern "C" {
-void func_0203ff10(Unk_0203ff20_Entry*);
+void EventWeekSlot_MarkAllPlayers(Unk_0203ff20_Entry*);
 }
 
 extern "C" {
-void func_0203ff3c(Unk_0203ff20_Entry*);
+void EventWeekSlot_Clear(Unk_0203ff20_Entry*);
 }
 
 extern "C" {
-void func_0203ff20(Unk_0203ff20_Entry*, u8, Unk_0203fe18_Date*);
+void EventWeekSlot_Set(Unk_0203ff20_Entry*, u8, Unk_0203fe18_Date*);
 }
 
 extern "C" {
@@ -211,9 +211,9 @@ extern "C" void func_02040264(void);
 extern "C" s32 func_02040234(Unk_0203ff50_Slot *s, u32 id);
 
 extern "C" void func_02040684(Unk_0203ff50_Slot *s) {
-    Unk_0203ff20_Entry *e = func_02040030(s, 1);
+    Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, 1);
     s32 i;
-    for (i = 0; i < 5; e++, i++) func_0203ff3c(e);
+    for (i = 0; i < 5; e++, i++) EventWeekSlot_Clear(e);
     Unk_021ed2c0 *p = &data_021ed2c0;
     for (i = 0; i < 1; i++) {
         p->func_020ad3bc()->func_020ad650();
@@ -235,15 +235,15 @@ extern "C" void func_020405f4(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, u8 *a, U
                 arr[r6] = z1;
                 (*cnt)--;
             }
-            e = func_02040030(s, r6 + 1);
+            e = EventWeekSlots_Get(s, r6 + 1);
             if (e) {
                 Unk_0203fe18_Date d1, d2;
                 ((s32*)&d1)[0] = z2;
                 ((s32*)&d1)[1] = z2;
                 MI_CpuCopy8(pd, &d1, 8);
-                func_0209d2c0(&d1, r6 + 1);
+                DateTime_AddDays(&d1, r6 + 1);
                 MI_CpuCopy8(&d1, &d2, 8);
-                func_0203ff20(e, v, &d2);
+                EventWeekSlot_Set(e, v, &d2);
             }
         }
         a[5] = v;
@@ -264,15 +264,15 @@ extern "C" void func_0204056c(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203
                 arr[r6] = z1;
                 (*cnt)--;
             }
-            e = func_02040030(s, r6 + 1);
+            e = EventWeekSlots_Get(s, r6 + 1);
             if (e) {
                 Unk_0203fe18_Date d1, d2;
                 ((s32*)&d1)[0] = z2;
                 ((s32*)&d1)[1] = z2;
                 MI_CpuCopy8(pd, &d1, 8);
-                func_0209d2c0(&d1, r6 + 1);
+                DateTime_AddDays(&d1, r6 + 1);
                 MI_CpuCopy8(&d1, &d2, 8);
-                func_0203ff20(e, v, &d2);
+                EventWeekSlot_Set(e, v, &d2);
             }
         }
     }
@@ -292,24 +292,24 @@ extern "C" void func_020404ac(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203
             ((s32*)&c)[1] = 0;
             ((s32*)&d)[0] = 0;
             ((s32*)&d)[1] = 0;
-            func_0209d498(&d);
+            Clock_GetDateTime(&d);
             MI_CpuCopy8(&d, &c, 8);
-            t = r4 - func_0209cef4();
-            if (t >= 0) func_0209d2c0(&c, t);
-            else func_0209d164(&c, -t);
+            t = r4 - Clock_GetWeekday();
+            if (t >= 0) DateTime_AddDays(&c, t);
+            else DateTime_SubDays(&c, -t);
             x.b.b3 = c.b4;
             x.b.b2 = c.b3;
             if (!func_020400f8(x)) {
-                Unk_0203ff20_Entry *e = func_02040030(s, r4);
+                Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, r4);
                 if (e) {
                     ((s32*)&z)[0] = 0;
                     ((s32*)&z)[1] = 0;
                     *r6 = 0;
                     (*cnt)--;
                     MI_CpuCopy8(pd, &z, 8);
-                    func_0209d2c0(&z, r4);
+                    DateTime_AddDays(&z, r4);
                     MI_CpuCopy8(&z, &cp, 8);
-                    func_0203ff20(e, 0x3d, &cp);
+                    EventWeekSlot_Set(e, 0x3d, &cp);
                 }
             }
         }
@@ -323,26 +323,26 @@ extern "C" void func_02040410(Unk_0203ff50_Slot *s) {
     s32 i, r6;
     ((s32*)&d)[0] = 0;
     ((s32*)&d)[1] = 0;
-    i = func_0209cef4();
-    func_0209d498(&d);
+    i = Clock_GetWeekday();
+    Clock_GetDateTime(&d);
     func_02040078(s);
     MI_CpuCopy8(&d, &c1, 8);
-    func_0203f508(arr, &c1);
-    func_0209d498(&d);
+    EventSchedule_CollectDayAll(arr, &c1);
+    Clock_GetDateTime(&d);
     r6 = i - 1;
     i = 0;
     z = 0;
     for (; i <= r6; i++) {
-        Unk_0203ff20_Entry *e = func_02040030(s, i + 1);
+        Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, i + 1);
         if (e) {
             if (e->unk_02 != 0x63) {
                 BOOL ok;
                 MI_CpuCopy8(&d, &c2, 8);
-                ok = func_0203f3a0(e->unk_02, &c2, arr) == 0 ? TRUE : z;
+                ok = EventDayList_GetState(e->unk_02, &c2, arr) == 0 ? TRUE : z;
                 if (ok) {
-                    func_0203ff10(e);
+                    EventWeekSlot_MarkAllPlayers(e);
                 } else if (i != r6 && e->unk_02 == 0x45) {
-                    func_0203ff10(e);
+                    EventWeekSlot_MarkAllPlayers(e);
                 }
             }
         }
@@ -360,12 +360,12 @@ extern "C" void func_020402f8(Unk_0203ff50_Slot *s, s32 flag) {
     ((s32*)&d)[0] = 0;
     ((s32*)&d)[1] = 0;
     t = 0;
-    func_0209d498(&d);
-    r6 = func_0209cef4();
+    Clock_GetDateTime(&d);
+    r6 = Clock_GetWeekday();
     data_021c3c8c = d.b2;
-    func_0209d338(&d, &t);
+    DateTime_GetWeekStart(&d, &t);
     if (s->unk_34 == 0 || s->unk_34 != t || flag != 0) {
-        Unk_0203ff20_Entry *e = func_02040030(s, 1);
+        Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, 1);
         for (i = 0; i < 5; e++, i++) a[i] = e->unk_02;
         a[5] = 0x63;
         func_02040684(s);
@@ -382,7 +382,7 @@ extern "C" void func_020402f8(Unk_0203ff50_Slot *s, s32 flag) {
     func_02040410(s);
     idx = func_02040234(s, 0x3d);
     if ((u32)(idx - r6) <= 1) {
-        Unk_0203ff20_Entry *e = func_02040030(s, idx);
+        Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, idx);
         if (e) {
             if (e->unk_04 == 0) {
                 func_020ad194();
@@ -404,23 +404,23 @@ extern "C" void func_02040264(void) {
         u32 t;
         ((s32*)&d)[0] = 0;
         ((s32*)&d)[1] = 0;
-        func_0209d498(&d);
+        Clock_GetDateTime(&d);
         t = d.b2;
         if (data_021c3c8c != t) {
             data_021c3c8c = t;
-            e = func_0203ffe8((Unk_0203ff50_Slot *)(g + 0x15e18));
+            e = EventWeekSlots_GetToday((Unk_0203ff50_Slot *)(g + 0x15e18));
             if (e) {
                 u32 id = e->unk_02;
                 if (id != 0x63) {
                     s32 r;
                     MI_CpuCopy8(&d, &c, 8);
-                    r = func_0203f31c(id, &c, 0);
+                    r = Event_GetStateAt(id, &c, 0);
                     switch (e->unk_03) {
                     case 0:
                         if (r == 2) e->unk_03 = 1;
                         break;
                     case 1:
-                        if (r == 0) func_0203ff10(e);
+                        if (r == 0) EventWeekSlot_MarkAllPlayers(e);
                         break;
                     }
                 }
@@ -431,7 +431,7 @@ extern "C" void func_02040264(void) {
 
 extern "C" s32 func_02040234(Unk_0203ff50_Slot *s, u32 id) {
     s32 r = 0;
-    Unk_0203ff20_Entry *e = func_02040030(s, 1);
+    Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, 1);
     s32 i;
     for (i = 0; i < 5; e++, i++) {
         if (id == e->unk_02) {

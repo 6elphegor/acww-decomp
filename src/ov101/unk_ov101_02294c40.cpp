@@ -24,10 +24,10 @@ u32 func_0206ea6c();
 u32 func_0206ea78();
 void func_0206ecf8(u32 v);
 void func_0206ed2c(u32 v);
-void func_02002398(u32 a, u32 b);
-void func_0200226c(u32 n, u32 a, u32 b, u32 c);
-void func_020021a0(s32 a);
-void func_020020b8(s32 a);
+void Gfx2d_SetLayerPriority(u32 a, u32 b);
+void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ShowLayer(s32 a);
 void Snd_PlaySe(u32 v);
 void ProcBase_RequestDelete();
 void *ProcBase_GetParent(...);
@@ -97,14 +97,14 @@ public:
     void func_ov092_02291ce4(s32 a, s32 b);
 };
 
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    void func_020b87d0();
+    void cancel();
 };
 
-class Unk_020e4608 : public Unk_020e45f8 {
+class BgVramTaskPair : public BgVramTask {
 public:
-    Unk_020e4608();
+    BgVramTaskPair();
     u32 unk_00[0x38 / 4];
 };
 
@@ -450,7 +450,7 @@ public:
     /* 0x00b8 */ u8 unk_b8;
     /* 0x00b9 */ u8 unk_b9;
     /* 0x00ba */ u8 unk_ba[2];
-    /* 0x00bc */ Unk_020e4608 unk_bc[1];
+    /* 0x00bc */ BgVramTaskPair unk_bc[1];
     /* 0x00f4 */ Unk_ov094_02294a50 unk_f4;
     /* 0x0b54 */ Unk_ov094_02294bd4 unk_b54;
     /* 0x0b7c */ Unk_ov094_02292d6c unk_b7c;
@@ -569,7 +569,7 @@ void Unk_ov101_02296b38::func_ov101_02296594() {
     func_ov094_02293d2c(&unk_b54);
     unk_b54.func_ov094_022941f8(0xf);
     func_ov002_022008e0(8, 0, 0, 0x30);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(6);
     func_ov002_02200840(6, 0, -16);
     func_ov002_02200a50(2);
     func_ov101_02294d5c(1);
@@ -598,7 +598,7 @@ void Unk_ov101_02296b38::func_ov101_022964f8() {
 
 void Unk_ov101_02296b38::func_ov101_022964ac() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
+        Gfx2d_ResetLayer(6);
         func_ov002_02200a60(5);
         func_ov101_02294d4c(1);
         func_ov101_02294d4c(2);
@@ -655,8 +655,8 @@ void Unk_ov101_02296b38::func_ov101_02296368() {
 }
 
 void Unk_ov101_02296b38::func_ov101_02296348() {
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
 void Unk_ov101_02296b38::func_ov101_02296334() {
@@ -1033,7 +1033,7 @@ void Unk_ov101_02296b38::func_ov101_02295910(u32 a, u32 b) {
 }
 
 void Unk_ov101_02296b38::func_ov101_02295904() {
-    unk_bc[0].func_020b87d0();
+    unk_bc[0].cancel();
 }
 
 BOOL Unk_ov101_02296b38::func_ov101_022958f8(u32 a) {

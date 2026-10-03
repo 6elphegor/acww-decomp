@@ -117,7 +117,7 @@ public:
 #define func_02094218 _ZN8PlayerId13func_02094218Ev
 #define func_020942c8 _ZN8PlayerIdC1Ev
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-#define func_020b8840 _ZN12Unk_020e45e013func_020b8840EPvjS0_jj
+#define MatTexVramTask_request _ZN14MatTexVramTask7requestEPvjS0_jj
 
 extern "C" {
 extern u8 data_021eca50[];
@@ -172,7 +172,7 @@ s32 func_020197a8(void *p);
 s32 func_020196b4(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 s32 Math_AngleXZ(void *a, s32 *b);
 Unk_ov074_02271be8_V *func_0201a978(void *p);
-s32 func_020b8840(void *p, u32 a, u32 *b, u32 c, s32 d, s32 e);
+s32 MatTexVramTask_request(void *p, u32 a, u32 *b, u32 c, s32 d, s32 e);
 void func_020135bc(void *p);
 void func_020135c4(void *p);
 BOOL func_02014220(void *p);
@@ -185,7 +185,7 @@ BOOL func_0201a968(void *a);
 void func_0201a8f0(void *a);
 void func_0201a900(void *out, void *pos, s32 x, s32 y);
 s32 func_0201a834(void *p);
-void func_0204edd8(void *a, void *b);
+void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL func_02077f40(void *a, s32 b);
 void func_0201a6c0(void *p, s32 a, s32 b, s32 c, s32 *d, s32 e, s32 f, s32 g);
 }
@@ -271,10 +271,10 @@ public:
     virtual ~SpNpcTalkRequest();
 };
 
-class Unk_020e45e0 {
+class MatTexVramTask {
 public:
-    Unk_020e45e0();
-    void func_020b8930();
+    MatTexVramTask();
+    void cancel();
     u8 pad_00[0x28];
 };
 
@@ -287,7 +287,7 @@ public:
     u32 func_0227149c();
     void func_022714b8(u32 *a, void *b);
     u32 unk_00;
-    Unk_020e45e0 unk_04;
+    MatTexVramTask unk_04;
 };
 
 class Unk_ov074_02272578 : public SpNpcTalkRequest {
@@ -316,7 +316,7 @@ public:
         name(); \
         ~name(); \
     }
-MEMBER(Unk_020dbd74, 0x2a0 - 0xec);
+MEMBER(ThreeLayerAnimModel, 0x2a0 - 0xec);
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
 MEMBER(Unk_02016350, 0x1c);
@@ -406,7 +406,7 @@ public:
     u32 getPlayerActor(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -674,7 +674,7 @@ extern "C" s32 func_ov074_02271f90(void *self, s32 *a, s32 *b) {
         v.x = t + FS(s32, 0x5c);
         t = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
         v.z = t + FS(s32, 0x64);
-        func_0204edd8(&v, &v);
+        FieldPos_SnapToUnitCenter(&v, &v);
         if (func_02077f40(&v, r6) != 0) {
             *a = v.x;
             *b = v.z;
@@ -1133,14 +1133,14 @@ void Unk_ov074_02271450_Helper::func_02271450(void *e) {
         if (func_0203c6b0(unk_00, t) != 0) {
             h = func_0227149c();
             if (h != 0) {
-                func_020b8840(&unk_04, ent->unk_5c, data_ov074_022724e4, h, 0, 0);
+                MatTexVramTask_request(&unk_04, ent->unk_5c, data_ov074_022724e4, h, 0, 0);
             }
         }
     }
 }
 
 void Unk_ov074_02271450_Helper::func_0227142c(u32 *p) {
-    unk_04.func_020b8930();
+    unk_04.cancel();
     if (unk_00 != 0) {
         Heap_Free(p, unk_00);
     }

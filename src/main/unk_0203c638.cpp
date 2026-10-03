@@ -234,11 +234,11 @@ void *NNS_G3dGetTex();
 }
 
 extern "C" {
-void *_ZN12Unk_02056fd813func_02057048Ei(void *p, s32 v);
+void *_ZN12G3dResAccess11getPlttDataEi(void *p, s32 v);
 }
 
 extern "C" {
-void *_ZN12Unk_02056fd813func_020570b0Ei(void *p, s32 v);
+void *_ZN12G3dResAccess10getTexDataEi(void *p, s32 v);
 }
 
 extern "C" {
@@ -350,9 +350,9 @@ extern "C" BOOL func_0203c6f8(void *a, void *b) {
     return FALSE;
 }
 
-extern "C" void *func_0203c6e4(void *unused) { return _ZN12Unk_02056fd813func_020570b0Ei(func_0203c6c8(), 0); }
+extern "C" void *func_0203c6e4(void *unused) { return _ZN12G3dResAccess10getTexDataEi(func_0203c6c8(), 0); }
 
-extern "C" void *func_0203c6d0(void *unused) { return _ZN12Unk_02056fd813func_02057048Ei(func_0203c6c8(), 0); }
+extern "C" void *func_0203c6d0(void *unused) { return _ZN12G3dResAccess11getPlttDataEi(func_0203c6c8(), 0); }
 
 extern "C" void *func_0203c6c8() { return NNS_G3dGetTex(); }
 

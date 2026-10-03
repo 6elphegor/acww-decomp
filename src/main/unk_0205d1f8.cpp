@@ -11,7 +11,7 @@ struct Unk_0205d238 {
 
 extern "C" {
 extern void *data_021c61bc;
-extern u8 *data_020cbb18;
+extern u8 *gCommManager;
 extern Unk_0205d238 data_021c64dc;
 
 void func_0205bba0();
@@ -54,7 +54,7 @@ Unk_0205d238::~Unk_0205d238() {}
 void Unk_0205d238::func_0205d278() {
     void *heap = data_021c61bc;
     u32 n, i, m;
-    n = data_020cbb18[0x6c];
+    n = gCommManager[0x6c];
     m = func_020b4928(func_020b50e8());
     if (n < m) m = n;
     for (i = 0; i < m; i++) {

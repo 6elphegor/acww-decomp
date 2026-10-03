@@ -28,11 +28,11 @@ BOOL func_ov002_0220127c(u32 v);
 BOOL func_ov002_0220128c(u32 v);
 void *ProcBase_GetParent();
 void ProcBase_RequestDelete(void *p);
-void func_020015b8(s32 a);
-void func_02002398(s32 a, s32 b);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_020021a0(s32 a);
-void func_020020b8(s32 a);
+void Gfx2d_SetSubBgModeState(s32 a);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ShowLayer(s32 a);
 void _ZN18Unk_ov092_02291ec819func_ov092_02291c5cEv(void *self);
 void _ZN18Unk_ov092_02291ec819func_ov092_02291ce4Eii(void *self, s32 a, s32 b);
 
@@ -372,8 +372,8 @@ void Unk_ov137_022962e0::func_ov137_02295ef0() {
     func_ov137_02295d30();
     func_ov137_02295d10();
     func_ov002_022008e0(10, 4, 0, 0x30);
-    func_020020b8(6);
-    func_020020b8(4);
+    Gfx2d_ShowLayer(6);
+    Gfx2d_ShowLayer(4);
     func_ov137_02295e40();
     func_ov137_02295404(1);
     unk_f8.func_ov002_02203510(0x21);
@@ -397,8 +397,8 @@ void Unk_ov137_022962e0::func_ov137_02295e90() {
 
 void Unk_ov137_022962e0::func_ov137_02295e60() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
-        func_020021a0(4);
+        Gfx2d_ResetLayer(6);
+        Gfx2d_ResetLayer(4);
         func_ov002_02200a60(5);
     } else {
         func_ov137_02295e40();
@@ -440,13 +440,13 @@ void Unk_ov137_022962e0::func_ov137_02295d9c() {
 }
 
 void Unk_ov137_022962e0::func_ov137_02295d50() {
-    func_020015b8(0);
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
-    func_02002398(4, 1);
-    func_0200226c(4, 0, 0, 0);
-    func_02002398(3, 1);
-    func_0200226c(3, 0, 0, 0);
+    Gfx2d_SetSubBgModeState(0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 1);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
+    Gfx2d_SetLayerPriority(3, 1);
+    Gfx2d_SetLayerControl(3, 0, 0, 0);
 }
 
 void Unk_ov137_022962e0::func_ov137_02295d30() {

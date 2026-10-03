@@ -251,7 +251,7 @@ struct Unk_02034518 {
     Unk_020d8e14 unk_2d0;
 };
 
-class Unk_ov009_0225e29c;
+class BuildingActor;
 struct Unk_ov009_0225cc24_Obj;
 
 class Unk_020d8ccc {
@@ -280,14 +280,14 @@ public:
 };
 
 // ov009 element (vtable 0x0225e280, size 0x54), one per ground-collision triangle
-class Unk_ov009_0225e280 : public Unk_020d8d74 {
+class BuildingCollider : public Unk_020d8d74 {
 public:
-    Unk_ov009_0225e280();
+    BuildingCollider();
     virtual void vfunc_10(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24_Obj *o, s32 off);
-    BOOL func_ov009_0225cc24(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_ov009_0225cc24_Obj *o);
+    BOOL isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_ov009_0225cc24_Obj *o);
     static void *operator new(unsigned long, void *p) { return p; }
 
-    /* 0x4c */ Unk_ov009_0225e29c *unk_4c;
+    /* 0x4c */ BuildingActor *unk_4c;
     /* 0x50 */ s32 unk_50;
 };
 
@@ -310,18 +310,18 @@ struct Unk_ov009_0225cd48_Item {
     /* 0x18 */ s32 unk_18;
 };
 
-struct Unk_ov009_0225cd48_Tbl {
-    Unk_ov009_0225cd48_Item *func_ov009_0225cd48(u32 i);
-    u32 func_ov009_0225cd54();
+struct BuildingShadowTable {
+    Unk_ov009_0225cd48_Item *getEntry(u32 i);
+    u32 getCount();
 
     /* 0x00 */ u32 unk_00;
     /* 0x04 */ Unk_ov009_0225cd48_Item unk_04[1];
 };
 
-// 0x50-byte record of the static array data_ov009_0225e674 (0x22 entries)
-struct Unk_ov009_0225d244_Entry {
-    Unk_ov009_0225d244_Entry();
-    ~Unk_ov009_0225d244_Entry();
+// 0x50-byte record of the static array sBuildingResources (0x22 entries)
+struct BuildingResources {
+    BuildingResources();
+    ~BuildingResources();
 
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ s32 unk_04;
@@ -330,7 +330,7 @@ struct Unk_ov009_0225d244_Entry {
     /* 0x10 */ s32 unk_10;
     /* 0x14 */ s32 unk_14;
     /* 0x18 */ s32 unk_18;
-    /* 0x1c */ Unk_ov009_0225cd48_Tbl *unk_1c;
+    /* 0x1c */ BuildingShadowTable *unk_1c;
     /* 0x20 */ s32 unk_20[4];
     /* 0x30 */ s32 unk_30[4];
     /* 0x40 */ s32 unk_40;
@@ -368,24 +368,24 @@ public:
     /* 0x04 */ u8 pad_04[0x3c];
 };
 
-class Unk_ov009_0225b894 {
+class BuildingSeEmitter {
 public:
-    Unk_ov009_0225b894();
+    BuildingSeEmitter();
 
-    void func_ov009_0225b894(u32 a);
-    void func_ov009_0225b8b0(u32 a);
-    void func_ov009_0225b8cc();
-    void func_ov009_0225b8ec(Unk_ov009_0225b880_Vec3 *v);
-    void func_ov009_0225b914();
+    void playSeHeld(u32 a);
+    void playSe(u32 a);
+    void deactivate();
+    void setPosition(Unk_ov009_0225b880_Vec3 *v);
+    void activate();
 
     /* 0x00 */ Unk_0213b9c4 unk_00;
     /* 0x40 */ u8 unk_40;
 };
 
-class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
+class BuildingActor : public Character, public TalkMsgRequest {
 public:
-    Unk_ov009_0225e29c();
-    virtual ~Unk_ov009_0225e29c();
+    BuildingActor();
+    virtual ~BuildingActor();
     virtual BOOL vfunc_00();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
@@ -418,76 +418,76 @@ public:
     virtual Unk_ov009_0225da90_Vec3 vfunc_b4();
     virtual BOOL vfunc_b8(Unk_ov009_0225bc88_Blk *out);
 
-    s32 func_ov009_0225d650();
-    s32 func_ov009_0225d7f0();
-    s32 func_ov009_0225d720();
-    s32 func_ov009_0225d788();
-    BOOL func_ov009_0225c360(s32 a);
-    BOOL func_ov009_0225c1ac();
-    BOOL func_ov009_0225c248();
-    void func_ov009_0225c288();
-    BOOL func_ov009_0225c28c();
-    void func_ov009_0225c290();
-    void func_ov009_0225c440();
-    BOOL func_ov009_0225c454();
-    void func_ov009_0225c458();
-    BOOL func_ov009_0225c46c();
-    void func_ov009_0225c470();
-    BOOL func_ov009_0225c4f4();
-    void func_ov009_0225c538();
-    BOOL func_ov009_0225c568();
-    void func_ov009_0225c5d4();
-    BOOL func_ov009_0225c644();
-    void func_ov009_0225c7a8();
-    BOOL func_ov009_0225c818();
-    void func_ov009_0225c97c();
-    BOOL func_ov009_0225ca50();
+    s32 getEntranceType();
+    s32 getViewRangeX();
+    s32 getViewRangeFront();
+    s32 getViewRangeBack();
+    BOOL setEntryState(s32 a);
+    BOOL execEntryCheck();
+    BOOL enterEntryCheck();
+    void execEntryIdle();
+    BOOL enterEntryIdle();
+    void updateEntryState();
+    void execDoorNoAnimOut();
+    BOOL enterDoorNoAnimOut();
+    void execDoorNoAnimIn();
+    BOOL enterDoorNoAnimIn();
+    void execDoorSlideClose();
+    BOOL enterDoorSlideClose();
+    void execDoorSlideOpen();
+    BOOL enterDoorSlideOpen();
+    void execDoorOpenOut();
+    BOOL enterDoorOpenOut();
+    void execDoorOpenIn();
+    BOOL enterDoorOpenIn();
+    void execDoorIdle();
+    BOOL enterDoorIdle();
 
-    void func_ov009_0225cd58();
-    void func_ov009_0225cdb4();
-    void func_ov009_0225ce04(Unk_ov009_0225bc88_Blk *m);
-    void func_ov009_0225cf40();
-    void func_ov009_0225cf78(Unk_ov009_0225bc88_Blk *m);
-    void func_ov009_0225cfd8(Unk_ov009_0225bc88_Blk *m);
-    void func_ov009_0225d078(Unk_ov009_0225bc88_Blk *out);
+    void destroyColliders();
+    void submitColliders();
+    void createColliders(Unk_ov009_0225bc88_Blk *m);
+    void destroyShadows();
+    void updateShadows(Unk_ov009_0225bc88_Blk *m);
+    void createShadows(Unk_ov009_0225bc88_Blk *m);
+    void updateBaseMatrix(Unk_ov009_0225bc88_Blk *out);
     void func_ov009_0225d0d8();
-    Unk_ov009_0225d244_Entry *func_ov009_0225d244();
-    void func_ov009_0225d264(Unk_ov009_0225bc88_Blk *out);
-    BOOL func_ov009_0225d2a4(char *a, char *b, char *c);
-    BOOL func_ov009_0225d498(char *a, char *b, char *c);
-    void *func_ov009_0225d6b8(u32 idx);
-    s32 func_ov009_0225d6d8();
-    void func_ov009_0225d858();
-    void func_ov009_0225d928();
+    BuildingResources *getResources();
+    void makeCurvedMatrix(Unk_ov009_0225bc88_Blk *out);
+    BOOL loadResources(char *a, char *b, char *c);
+    BOOL setupModel(char *a, char *b, char *c);
+    void *getBtaAnim(u32 idx);
+    s32 getBca2Anim();
+    void setupAnims();
+    void initEntryArea();
 
-    BOOL func_ov009_0225b998();
-    BOOL func_ov009_0225b9b8();
-    BOOL func_ov009_0225b9fc();
-    BOOL func_ov009_0225ba1c();
-    BOOL func_ov009_0225ba60();
-    void func_ov009_0225ba74();
-    BOOL func_ov009_0225baa4();
-    void func_ov009_0225b964();
-    u32 func_ov009_0225b974();
-    u32 func_ov009_0225b980();
-    u16 *func_ov009_0225b98c();
-    s32 func_ov009_0225bb74();
-    BOOL func_ov009_0225bbdc(Unk_ov009_0225b880_Vec3 *out, s16 *ang);
-    void func_ov009_0225bc88();
-    void func_ov009_0225beb0();
-    BOOL func_ov009_0225bf08();
-    void func_ov009_0225bf0c();
-    BOOL func_ov009_0225bf28();
-    void func_ov009_0225bf3c();
-    BOOL func_ov009_0225c008();
-    void func_ov009_0225c018();
-    BOOL func_ov009_0225c054();
-    void func_ov009_0225c0d8();
-    BOOL func_ov009_0225c0f4();
-    void func_ov009_0225c108();
-    BOOL func_ov009_0225c14c();
-    void func_ov009_0225c150();
-    BOOL func_ov009_0225c17c();
+    BOOL tryOpenDoorForExit();
+    BOOL openDoorForExit();
+    BOOL tryOpenDoorForEntry();
+    BOOL openDoorForEntry();
+    BOOL isDoorIdle();
+    void updateOffscreen();
+    BOOL isOffscreen();
+    void callIsLit();
+    u32 getGridZ();
+    u32 getGridX();
+    u16 *getItemId();
+    s32 getInteriorScene();
+    BOOL getDoorPos(Unk_ov009_0225b880_Vec3 *out, s16 *ang);
+    void updateMatrix();
+    void execEntry08();
+    BOOL enterEntry08();
+    void execEntry07();
+    BOOL enterEntry07();
+    void execEntryWarp();
+    BOOL enterEntryWarp();
+    void execEntry05();
+    BOOL enterEntry05();
+    void execEntry04();
+    BOOL enterEntry04();
+    void execEntryTalk();
+    BOOL enterEntryTalk();
+    void execEntryTalkOpen();
+    BOOL enterEntryTalkOpen();
 
     /* 0x130 */ u8 unk_130;
     /* 0x131 */ u8 pad_131;
@@ -513,7 +513,7 @@ public:
     /* 0x27e */ u16 unk_27e;
     /* 0x280 */ Unk_020abea8 *unk_280;
     /* 0x284 */ Unk_020e44d4 *unk_284;
-    /* 0x288 */ Unk_ov009_0225e280 *unk_288;
+    /* 0x288 */ BuildingCollider *unk_288;
     /* 0x28c */ u8 unk_28c;
     /* 0x28d */ u8 pad_28d;
     /* 0x28e */ u8 unk_28e[2];
@@ -525,8 +525,8 @@ public:
     /* 0x2a4 */ Unk_ov009_0225b880_Vec3 unk_2a4;
 };
 
-typedef void (Unk_ov009_0225e29c::*Unk_ov009_0225c290_Fn)();
-typedef BOOL (Unk_ov009_0225e29c::*Unk_ov009_0225c360_Fn)();
+typedef void (BuildingActor::*Unk_ov009_0225c290_Fn)();
+typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
 
 // Real (mangled) symbols of the other modules, reached as plain functions with the object first.
 #define func_02002d9c _ZN5Actor7preDrawEv
@@ -538,15 +538,15 @@ typedef BOOL (Unk_ov009_0225e29c::*Unk_ov009_0225c360_Fn)();
 #define func_02003e80 _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec
 #define func_02003ecc _ZN12Unk_02003c3013func_02003eccEv
 #define func_02031ea0 _ZN12Unk_020d8d7413func_02031ea0Ev
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
-#define func_020548a0 _ZN12Unk_020dbd54D1Ev
-#define func_020548d0 _ZN12Unk_020dbd54C1Ev
-#define func_02055488 _ZN5Model13func_02055488Eii
-#define func_020555dc _ZN5Model13func_020555dcEv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
+#define func_020548a0 _ZN9AnimModelD1Ev
+#define func_020548d0 _ZN9AnimModelC1Ev
+#define Model_setInitCallback _ZN5Model15setInitCallbackEii
+#define Model_clearResource _ZN5Model13clearResourceEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
@@ -558,10 +558,10 @@ typedef BOOL (Unk_ov009_0225e29c::*Unk_ov009_0225c360_Fn)();
 #define func_020b200c _ZN14BuildingLightsD2Ev
 #define func_020b2034 _ZN14BuildingLightsC2Ev
 #define func_ov009_0225b934 _ZN12Unk_0213b9c4D1Ev
-#define func_ov009_0225b94c _ZN18Unk_ov009_0225b894C1Ev
+#define func_ov009_0225b94c _ZN17BuildingSeEmitterC1Ev
 
 extern "C" {
-extern char data_ov009_0225e3d8[];
+extern char sBuildingDefaultMsgFile[];
 extern char data_ov009_0225e3e8[];
 extern char data_ov009_0225e3ec[];
 extern char data_ov009_0225e3fc[];
@@ -571,13 +571,13 @@ extern char data_ov009_0225e42c[];
 extern char data_ov009_0225e43c[];
 extern char data_ov009_0225e44c[];
 extern char data_ov009_0225e45c[];
-extern char data_ov009_0225e474[];
-extern char data_ov009_0225e494[];
-extern char data_ov009_0225e4b0[];
-extern char data_ov009_0225e514[];
-extern char data_ov009_0225e534[];
-extern char data_ov009_0225e554[];
-extern Unk_ov009_0225d244_Entry data_ov009_0225e674[];
+extern char sBuildingLightTexPathFmt[];
+extern char sBuildingTexPathFmt[];
+extern char sBuildingArcPathFmt[];
+extern char sBuildingArcPath[];
+extern char sBuildingTexPath[];
+extern char sBuildingLightTexPath[];
+extern BuildingResources sBuildingResources[];
 extern u32 gCamera;
 extern Unk_ov009_0225b880_Vec3 gCameraLookAt;
 extern u8 data_020d0a7c[];
@@ -591,7 +591,7 @@ void *func_ov009_0225b934(void *self);
 void _ZN12SndSeEmitterD2Ev(void *self);
 extern u8 data_0213b9c4[];
 void func_ov009_0225b94c(void *self);
-void _ZN18Unk_ov009_0225b89419func_ov009_0225b8ecEP23Unk_ov009_0225b880_Vec3(void *self, Unk_ov009_0225b880_Vec3 *v, u32 extra);
+void _ZN17BuildingSeEmitter11setPositionEP23Unk_ov009_0225b880_Vec3(void *self, Unk_ov009_0225b880_Vec3 *v, u32 extra);
 Unk_020b28ac *StrBSize_Get(u16 *p);
 
 void func_020b16bc(void *self, const u8 *src);
@@ -609,7 +609,7 @@ void func_02003e50(void *);
 void func_02003e80(void *, void *);
 void func_02003ecc(void *);
 void BuildingLights_isLit(void *);
-void func_020547cc(void *, u32);
+void AnimModel_drawAnimated(void *, u32);
 s32 func_020e7b98(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 void func_01ffd070(Unk_ov009_0225b880_Vec3 *, void *, Unk_ov009_0225b880_Vec3 *);
@@ -624,13 +624,13 @@ void func_020b49b4();
 s32 func_020e780c(s32, s32);
 s32 func_020e9650(void *, void *);
 s32 *func_020947f0(u32);
-BOOL func_ov003_02212430(u32, s32 *, s32 *, s32);
+BOOL PlayerActor_LocalRequestDoorEnter(u32, s32 *, s32 *, s32);
 BOOL func_020951d0();
 void func_020949a0(u32);
 BOOL func_020951c4();
 void Camera_SetMode3();
 void TalkRequest_EndTalkWith(void *);
-BOOL func_ov003_0221249c(s32 *, s32 *, s16 *);
+BOOL PlayerActor_LocalRequestDoorApproach(s32 *, s32 *, s16 *);
 s32 func_020b50e8();
 s32 func_020b4bbc(void *, s32);
 s32 func_02030814(u32);
@@ -640,10 +640,10 @@ void func_020b0f00();
 s32 func_020b10c4(u32);
 void func_020b10e0(u32);
 BOOL Item_IsNookShop(u16 *);
-void func_020547e4(void *);
+void AnimModel_stepAnim(void *);
 BOOL AnimFrameCtrl_isFinished(void *);
 BOOL AnimFrameCtrl_hasPassedFrame(void *, s32);
-void func_02054720(void *, void *, s32, s32, s32, s32);
+void BlendAnimModel_initAnim(void *, void *, s32, s32, s32, s32);
 void Melody_PlayAt(void *, s32);
 s32 PlayerActor_TestSlotFlag(s32, s32);
 BOOL func_0203d978();
@@ -656,7 +656,7 @@ BOOL func_020b1d3c(u32, u32);
 void *Heap_Alloc(void *heap, u32 size);
 u32 func_ov003_02218b1c(void *p);
 void func_ov003_02218d6c(u32 a);
-BOOL func_ov003_0221240c();
+BOOL PlayerActor_LocalRequestDoorExit();
 s32 func_02031da4(void *node);
 void func_02031de0(void *node);
 s32 WorldCurve_ToCurved(void *out, void *in);
@@ -675,9 +675,9 @@ void *func_02106690();
 void *func_021066ac(void *p, s32 a);
 void *NNS_G3dGetTex(void *p);
 void Mem_Free(void *p);
-BOOL func_020557a0(void *p, u32 a);
-BOOL func_02055724(void *p, u32 a);
-void *func_0205588c(void *p, void *g);
+BOOL Gfx3d_LoadTex(void *p, u32 a);
+BOOL Gfx3d_LoadTexAndPltt(void *p, u32 a);
+void *Gfx3d_CopyTex(void *p, void *g);
 
 u16 Item_MakeBuilding(u32 x);
 s32 func_020b1d80(u32);
@@ -687,13 +687,13 @@ s32 func_ov003_022187f8();
 void func_ov003_02218c0c(void *);
 void func_ov003_02218c34(void *);
 BOOL Model_setResource(void *, void *, s32);
-void func_02054800(void *, void *);
-void func_02054710(void *);
-void func_020555dc(void *);
-void func_02055488(void *, void *, void *);
+void AnimModel_allocAnmObj(void *, void *);
+void AnimModel_attachAnim(void *);
+void Model_clearResource(void *);
+void Model_setInitCallback(void *, void *, void *);
 void func_020548a0(void *);
 void func_0209c364(void *);
-void func_0209cf18(void *);
+void Clock_GetMinuteHour(void *);
 void BuildingLights_setLit(void *, s32, s32, s32);
 void BuildingLights_updateLights(void *, void *);
 void BuildingLights_bind(void *, void *, s32);
@@ -718,17 +718,17 @@ u32 func_021065f8(void *, u32);
 void *NNS_G3dGetMdlSet();
 void MTX_MultVec43(s32, s32, Unk_ov009_0225b880_Vec3 *);
 void WorldCurve_FromCurved(void *, Unk_ov009_0225b880_Vec3 *);
-void __cxa_vec_cleanup(void *, s32, s32, void (*)(Unk_ov009_0225d244_Entry *));
+void __cxa_vec_cleanup(void *, s32, s32, void (*)(BuildingResources *));
 
-void func_ov009_0225e020(void *p, s32 a, s32 b);
-BOOL _ZN18Unk_ov009_0225e29c19func_ov009_0225c360Ei(void *self, s32 a);
-BOOL func_ov009_0225d600();
-void func_ov009_0225e040();
-BOOL func_ov009_0225dfb8(Unk_ov009_0225d244_Entry *e);
+void Building_LocalToWorld(void *p, s32 a, s32 b);
+BOOL _ZN13BuildingActor13setEntryStateEi(void *self, s32 a);
+BOOL Building_IsNight();
+void BuildingActor_Create();
+BOOL BuildingResources_IsLoaded(BuildingResources *e);
 void *func_ov009_0225df58(void *unused);
 void *func_ov009_0225df6c(void *unused);
-void func_ov009_0225df84(Unk_ov009_0225df84_Obj *o);
-void func_ov009_0225df94(struct Unk_ov009_0225df94_Arg *a);
+void Building_InitModelCallback(Unk_ov009_0225df84_Obj *o);
+void Building_ModelCallback(struct Unk_ov009_0225df94_Arg *a);
 }
 
 static inline BOOL Unk_ov009_0225d0d8_Match(u16 *p, u32 v) {
@@ -778,7 +778,7 @@ static inline BOOL Unk_ov009_0225d858_Is(u16 *p, u32 v) {
 
 struct Unk_ov009_0225df94_Target {
     /* 0x00 */ u8 pad_00[0x2c];
-    /* 0x2c */ Unk_ov009_0225e29c *unk_2c;
+    /* 0x2c */ BuildingActor *unk_2c;
 };
 
 struct Unk_ov009_0225df94_Arg {
@@ -793,17 +793,17 @@ struct Unk_ov009_0225df84_Obj {
     /* 0x92 */ u8 unk_92;
 };
 
-extern "C" void func_ov009_0225e040() {
-    Unk_ov009_0225e29c *p = new Unk_ov009_0225e29c();
+extern "C" void BuildingActor_Create() {
+    BuildingActor *p = new BuildingActor();
 }
 
-extern "C" void func_ov009_0225e020(void *p, s32 a, s32 b) {
+extern "C" void Building_LocalToWorld(void *p, s32 a, s32 b) {
     Unk_ov009_0225b880_Vec3 v;
     MTX_MultVec43(a, b, &v);
     WorldCurve_FromCurved(p, &v);
 }
 
-Unk_ov009_0225d244_Entry::Unk_ov009_0225d244_Entry() {
+BuildingResources::BuildingResources() {
     u32 i;
     unk_00 = 0;
     unk_04 = 0;
@@ -822,7 +822,7 @@ Unk_ov009_0225d244_Entry::Unk_ov009_0225d244_Entry() {
     }
 }
 
-Unk_ov009_0225d244_Entry::~Unk_ov009_0225d244_Entry() {}
+BuildingResources::~BuildingResources() {}
 
 
 extern "C" {
@@ -832,10 +832,10 @@ Unk_ov009_0225e4e0_Col data_ov009_0225e4f4(31, 31, 20, 31);
 Unk_ov009_0225e4e0_Col data_ov009_0225e4f0(20, 31, 20, 31);
 Unk_ov009_0225e4e0_Col data_ov009_0225e500(20, 31, 31, 31);
 Unk_ov009_0225e4e0_Col data_ov009_0225e4f8(20, 24, 24, 31);
-Unk_ov009_0225d244_Entry data_ov009_0225e674[0x22];
+BuildingResources sBuildingResources[0x22];
 }
 
-extern "C" BOOL func_ov009_0225dfb8(Unk_ov009_0225d244_Entry *e) {
+extern "C" BOOL BuildingResources_IsLoaded(BuildingResources *e) {
     if (e->unk_00 != 0 || e->unk_04 != 0 || e->unk_14 != 0 || e->unk_18 != 0 || e->unk_1c != 0 || e->unk_08 != 0 ||
         e->unk_0c != 0 || e->unk_10 != 0) {
         return TRUE;
@@ -843,18 +843,18 @@ extern "C" BOOL func_ov009_0225dfb8(Unk_ov009_0225d244_Entry *e) {
     return FALSE;
 }
 
-void Unk_ov009_0225e29c::vfunc_60(u32 a, void *b) {
+void BuildingActor::vfunc_60(u32 a, void *b) {
 }
 
-extern "C" void func_ov009_0225df94(Unk_ov009_0225df94_Arg *a) {
-    Unk_ov009_0225e29c *o = a->unk_04->unk_2c;
+extern "C" void Building_ModelCallback(Unk_ov009_0225df94_Arg *a) {
+    BuildingActor *o = a->unk_04->unk_2c;
     if (o != NULL) {
         o->vfunc_60(a->unk_00[1], a);
     }
 }
 
-extern "C" void func_ov009_0225df84(Unk_ov009_0225df84_Obj *o) {
-    o->unk_24 = (void *)func_ov009_0225df94;
+extern "C" void Building_InitModelCallback(Unk_ov009_0225df84_Obj *o) {
+    o->unk_24 = (void *)Building_ModelCallback;
     o->unk_92 = 2;
 }
 
@@ -868,7 +868,7 @@ extern "C" void *func_ov009_0225df58(void *unused) {
     return (void *)func_021065f8(p, 0);
 }
 
-Unk_ov009_0225e29c::Unk_ov009_0225e29c() {
+BuildingActor::BuildingActor() {
     unk_132 = 0xfff1;
     func_020548d0(unk_138);
     func_020b2034(unk_1f0);
@@ -876,16 +876,16 @@ Unk_ov009_0225e29c::Unk_ov009_0225e29c() {
     func_0209c370(unk_28e);
 }
 
-Unk_ov009_0225e29c::~Unk_ov009_0225e29c() {
+BuildingActor::~BuildingActor() {
     func_0209c364(unk_28e);
     func_ov009_0225b934(unk_234);
     func_020b200c(unk_1f0);
     func_020548a0(unk_138);
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225dd58() { return TRUE; }
+BOOL BuildingActor::func_ov009_0225dd58() { return TRUE; }
 
-BOOL Unk_ov009_0225e29c::vfunc_00() {
+BOOL BuildingActor::vfunc_00() {
     Unk_ov009_0225bc88_Blk b1;
     Unk_ov009_0225bc88_Blk b2;
     struct {
@@ -901,47 +901,47 @@ BOOL Unk_ov009_0225e29c::vfunc_00() {
     char *a = vfunc_a4();
     char *bb = vfunc_a8();
     char *c = vfunc_ac();
-    func_ov009_0225d498(a, bb, c);
-    func_ov009_0225d928();
-    func_ov009_0225d858();
-    func_ov009_0225d078(&b1);
-    func_02055488(unk_138, (void *)func_ov009_0225df84, this);
+    setupModel(a, bb, c);
+    initEntryArea();
+    setupAnims();
+    updateBaseMatrix(&b1);
+    Model_setInitCallback(unk_138, (void *)Building_InitModelCallback, this);
     b2 = b1;
-    func_ov009_0225cfd8(&b2);
+    createShadows(&b2);
     s32 ang = WorldCurve_Apply(&v, &unk_5c[0]);
     func_020e8388(&m, v.x, v.y, v.z);
     func_020e8434(&m, ang);
-    func_ov009_0225ce04((Unk_ov009_0225bc88_Blk *)&m);
-    Unk_ov009_0225d244_Entry *r = func_ov009_0225d244();
+    createColliders((Unk_ov009_0225bc88_Blk *)&m);
+    BuildingResources *r = getResources();
     BuildingLights_bind(unk_1f0, (void *)(r ? r->unk_00 : 0), 1);
     setInteractionRange(0);
-    if (func_ov009_0225bbdc(&unk_2a4, (s16 *)0)) {
+    if (getDoorPos(&unk_2a4, (s16 *)0)) {
         unk_2a4.z -= 0x4000;
     }
     BOOL res = func_ov009_0225dd58();
-    func_ov009_0225c360(0);
+    setEntryState(0);
     return res;
 }
 
-BOOL Unk_ov009_0225e29c::preExecute() {
+BOOL BuildingActor::preExecute() {
     if (!func_0203e638(this)) {
         return FALSE;
     }
-    ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b914();
-    u16 *p = func_ov009_0225b98c();
+    ((BuildingSeEmitter *)unk_234)->activate();
+    u16 *p = getItemId();
     if (Unk_ov009_0225d858_Is(p, 0x501d)) {
         s32 t = func_020b1d80(unk_132);
         if (unk_130 != t) {
             vfunc_6c(t);
         }
     }
-    func_ov009_0225ba74();
+    updateOffscreen();
     if (func_020b50e8() != 0x2c) {
-        func_ov009_0225c290();
+        updateEntryState();
     }
     func_ov009_0225ca98();
     if (func_020b50e8() != 0x2c) {
-        func_ov009_0225cdb4();
+        submitColliders();
     }
     BOOL on = vfunc_9c();
     s32 b = vfunc_a0();
@@ -951,10 +951,10 @@ BOOL Unk_ov009_0225e29c::preExecute() {
     return TRUE;
 }
 
-BOOL Unk_ov009_0225e29c::vfunc_20(u32 a) {
+BOOL BuildingActor::vfunc_20(u32 a) {
     Unk_ov009_0225da90_Vec3 v = vfunc_b4();
-    u16 *pp = func_ov009_0225b98c();
-    _ZN18Unk_ov009_0225b89419func_ov009_0225b8ecEP23Unk_ov009_0225b880_Vec3(unk_234, (Unk_ov009_0225b880_Vec3 *)&v, *pp);
+    u16 *pp = getItemId();
+    _ZN17BuildingSeEmitter11setPositionEP23Unk_ov009_0225b880_Vec3(unk_234, (Unk_ov009_0225b880_Vec3 *)&v, *pp);
     if (unk_231 & 2) {
         unk_231 |= 8;
     } else {
@@ -965,16 +965,16 @@ BOOL Unk_ov009_0225e29c::vfunc_20(u32 a) {
     func_02002dd0(this, a);
 }
 
-BOOL Unk_ov009_0225e29c::preDraw() {
+BOOL BuildingActor::preDraw() {
     if (!func_02002d9c(this)) {
         return FALSE;
     }
     if ((unk_231 & 1) == 0) {
-        u16 *p = func_ov009_0225b98c();
+        u16 *p = getItemId();
         BOOL r = Unk_ov009_0225d858_Is(p, 0x500b);
         if (r || !func_0203a4c4(&unk_290, unk_29c, unk_2a0)) {
             if (vfunc_b0()) {
-                func_ov009_0225bc88();
+                updateMatrix();
             }
             return TRUE;
         }
@@ -982,14 +982,14 @@ BOOL Unk_ov009_0225e29c::preDraw() {
     return FALSE;
 }
 
-BOOL Unk_ov009_0225e29c::preDelete() {
+BOOL BuildingActor::preDelete() {
     if (!func_0203e650(this)) {
         return FALSE;
     }
-    ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8cc();
-    func_ov009_0225cf40();
-    func_ov009_0225cd58();
-    func_020555dc(unk_138);
+    ((BuildingSeEmitter *)unk_234)->deactivate();
+    destroyShadows();
+    destroyColliders();
+    Model_clearResource(unk_138);
     func_ov003_02218c0c(this);
     if (unk_232.f0) {
         func_0203e9d8();
@@ -1000,8 +1000,8 @@ BOOL Unk_ov009_0225e29c::preDelete() {
     return TRUE;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225d928() {
-    Unk_ov009_0225d244_Entry *r = func_ov009_0225d244();
+void BuildingActor::initEntryArea() {
+    BuildingResources *r = getResources();
     if (r != NULL) {
         s32 z = unk_5c[2] + r->unk_44;
         s32 y = unk_5c[1];
@@ -1014,14 +1014,14 @@ void Unk_ov009_0225e29c::func_ov009_0225d928() {
     }
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225d858() {
+void BuildingActor::setupAnims() {
     if (func_ov009_0225d708() != 0 || func_ov009_0225d6f0() != 0) {
-        func_02054800(unk_138, data_021c6204);
-        func_02054720(unk_138, (void *)func_ov009_0225d708(), 0, 0x1000, 0, 0);
-        func_02054710(unk_138);
+        AnimModel_allocAnmObj(unk_138, data_021c6204);
+        BlendAnimModel_initAnim(unk_138, (void *)func_ov009_0225d708(), 0, 0x1000, 0, 0);
+        AnimModel_attachAnim(unk_138);
     }
-    if (func_ov009_0225d650() != 0) {
-        u16 *p = func_ov009_0225b98c();
+    if (getEntranceType() != 0) {
+        u16 *p = getItemId();
         if (Unk_ov009_0225d858_Is(p, 0x501d)) {
             vfunc_6c(func_020b1d80(unk_132));
         } else {
@@ -1030,7 +1030,7 @@ void Unk_ov009_0225e29c::func_ov009_0225d858() {
     }
 }
 
-s32 Unk_ov009_0225e29c::func_ov009_0225d7f0() {
+s32 BuildingActor::getViewRangeX() {
     u32 v;
     BOOL in = FALSE;
     v = unk_132;
@@ -1049,7 +1049,7 @@ s32 Unk_ov009_0225e29c::func_ov009_0225d7f0() {
     return r;
 }
 
-s32 Unk_ov009_0225e29c::func_ov009_0225d788() {
+s32 BuildingActor::getViewRangeBack() {
     u32 v;
     BOOL in = FALSE;
     v = unk_132;
@@ -1068,7 +1068,7 @@ s32 Unk_ov009_0225e29c::func_ov009_0225d788() {
     return r;
 }
 
-s32 Unk_ov009_0225e29c::func_ov009_0225d720() {
+s32 BuildingActor::getViewRangeFront() {
     u32 v;
     BOOL in = FALSE;
     v = unk_132;
@@ -1087,33 +1087,33 @@ s32 Unk_ov009_0225e29c::func_ov009_0225d720() {
     return r;
 }
 
-s32 Unk_ov009_0225e29c::func_ov009_0225d708() {
-    Unk_ov009_0225d244_Entry *r = func_ov009_0225d244();
+s32 BuildingActor::func_ov009_0225d708() {
+    BuildingResources *r = getResources();
     if (r != NULL) {
         return r->unk_08;
     }
     return 0;
 }
 
-s32 Unk_ov009_0225e29c::func_ov009_0225d6f0() {
-    Unk_ov009_0225d244_Entry *r = func_ov009_0225d244();
+s32 BuildingActor::func_ov009_0225d6f0() {
+    BuildingResources *r = getResources();
     if (r != NULL) {
         return r->unk_0c;
     }
     return 0;
 }
 
-s32 Unk_ov009_0225e29c::func_ov009_0225d6d8() {
-    Unk_ov009_0225d244_Entry *r = func_ov009_0225d244();
+s32 BuildingActor::getBca2Anim() {
+    BuildingResources *r = getResources();
     if (r != NULL) {
         return r->unk_10;
     }
     return 0;
 }
 
-void *Unk_ov009_0225e29c::func_ov009_0225d6b8(u32 idx) {
+void *BuildingActor::getBtaAnim(u32 idx) {
     if (idx < 4) {
-        Unk_ov009_0225d244_Entry *r = func_ov009_0225d244();
+        BuildingResources *r = getResources();
         if (r != NULL) {
             return (void *)r->unk_20[idx];
         }
@@ -1121,7 +1121,7 @@ void *Unk_ov009_0225e29c::func_ov009_0225d6b8(u32 idx) {
     return 0;
 }
 
-s32 Unk_ov009_0225e29c::func_ov009_0225d650() {
+s32 BuildingActor::getEntranceType() {
     u32 v;
     BOOL in = FALSE;
     v = unk_132;
@@ -1140,20 +1140,20 @@ s32 Unk_ov009_0225e29c::func_ov009_0225d650() {
     return r;
 }
 
-BOOL Unk_ov009_0225e29c::vfunc_9c() {
-    if (func_ov009_0225d600() && vfunc_8c()) {
+BOOL BuildingActor::vfunc_9c() {
+    if (Building_IsNight() && vfunc_8c()) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov009_0225e29c::vfunc_8c() { return TRUE; }
+BOOL BuildingActor::vfunc_8c() { return TRUE; }
 
-extern "C" BOOL func_ov009_0225d600() {
+extern "C" BOOL Building_IsNight() {
     struct {
         u8 v[4];
     } t;
-    func_0209cf18(&t);
+    Clock_GetMinuteHour(&t);
     u32 b = t.v[1];
     if (b >= 6 && b < 0x12) {
         return FALSE;
@@ -1161,19 +1161,19 @@ extern "C" BOOL func_ov009_0225d600() {
     return TRUE;
 }
 
-char *Unk_ov009_0225e29c::vfunc_a4() {
+char *BuildingActor::vfunc_a4() {
     u32 i = unk_134;
-    func_020639e8(data_ov009_0225e514, data_ov009_0225e4b0, i, i, func_ov003_02218da8());
-    return data_ov009_0225e514;
+    func_020639e8(sBuildingArcPath, sBuildingArcPathFmt, i, i, func_ov003_02218da8());
+    return sBuildingArcPath;
 }
 
-char *Unk_ov009_0225e29c::vfunc_a8() {
+char *BuildingActor::vfunc_a8() {
     u32 i = unk_134;
-    func_020639e8(data_ov009_0225e534, data_ov009_0225e494, i, i, func_ov003_02218da8());
-    return data_ov009_0225e534;
+    func_020639e8(sBuildingTexPath, sBuildingTexPathFmt, i, i, func_ov003_02218da8());
+    return sBuildingTexPath;
 }
 
-char *Unk_ov009_0225e29c::vfunc_ac() {
+char *BuildingActor::vfunc_ac() {
     volatile u16 v = Item_MakeBuilding(unk_134);
     switch (v) {
     case 0x500a:
@@ -1183,16 +1183,16 @@ char *Unk_ov009_0225e29c::vfunc_ac() {
         return 0;
     }
     u32 i = unk_134;
-    func_020639e8(data_ov009_0225e554, data_ov009_0225e474, i, i, func_ov003_02218da8());
-    return data_ov009_0225e554;
+    func_020639e8(sBuildingLightTexPath, sBuildingLightTexPathFmt, i, i, func_ov003_02218da8());
+    return sBuildingLightTexPath;
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225d498(char *a, char *b, char *c) {
+BOOL BuildingActor::setupModel(char *a, char *b, char *c) {
     if (unk_280 != 0 || unk_194 != 0) {
         return TRUE;
     }
-    func_ov009_0225d2a4(a, b, c);
-    Unk_ov009_0225d244_Entry *r = func_ov009_0225d244();
+    loadResources(a, b, c);
+    BuildingResources *r = getResources();
     if (r != NULL && r->unk_00 != 0) {
         if (Model_setResource(unk_138, (void *)r->unk_00, 0)) {
             func_ov003_02218d94();
@@ -1212,10 +1212,10 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225d498(char *a, char *b, char *c) {
     return TRUE;
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225d2a4(char *a, char *b, char *c) {
+BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
     BOOL result = FALSE;
-    Unk_ov009_0225d244_Entry *e = func_ov009_0225d244();
-    if (func_ov009_0225dfb8(e)) {
+    BuildingResources *e = getResources();
+    if (BuildingResources_IsLoaded(e)) {
         return TRUE;
     }
     Unk_020b28ac *h = StrBSize_Get(&unk_132);
@@ -1265,7 +1265,7 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225d2a4(char *a, char *b, char *c) {
                 if (t) {
                     e->unk_04 = (s32)func_ov009_0225df6c(t);
                 }
-                e->unk_1c = (Unk_ov009_0225cd48_Tbl *)func_021012bc(data_ov009_0225e45c);
+                e->unk_1c = (BuildingShadowTable *)func_021012bc(data_ov009_0225e45c);
                 func_02101310(&obj);
             }
             result = TRUE;
@@ -1276,8 +1276,8 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225d2a4(char *a, char *b, char *c) {
             void *r5 = File_LoadAlloc(b, gCurrentHeap, -4, 0);
             if (r5 != NULL) {
                 e->unk_14 = (s32)NNS_G3dGetTex(r5);
-                if (func_020557a0((void *)e->unk_14, 0)) {
-                    e->unk_14 = (s32)func_0205588c((void *)e->unk_14, data_021c6204);
+                if (Gfx3d_LoadTex((void *)e->unk_14, 0)) {
+                    e->unk_14 = (s32)Gfx3d_CopyTex((void *)e->unk_14, data_021c6204);
                 }
                 Mem_Free(r5);
             }
@@ -1288,8 +1288,8 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225d2a4(char *a, char *b, char *c) {
             void *r5 = File_LoadAlloc(c, gCurrentHeap, -4, 0);
             if (r5 != NULL) {
                 e->unk_18 = (s32)NNS_G3dGetTex(r5);
-                if (func_02055724((void *)e->unk_18, 0)) {
-                    e->unk_18 = (s32)func_0205588c((void *)e->unk_18, data_021c6204);
+                if (Gfx3d_LoadTexAndPltt((void *)e->unk_18, 0)) {
+                    e->unk_18 = (s32)Gfx3d_CopyTex((void *)e->unk_18, data_021c6204);
                 }
                 Mem_Free(r5);
             }
@@ -1298,7 +1298,7 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225d2a4(char *a, char *b, char *c) {
     return result;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225d264(Unk_ov009_0225bc88_Blk *out) {
+void BuildingActor::makeCurvedMatrix(Unk_ov009_0225bc88_Blk *out) {
     Unk_ov009_0225bc88_Blk m;
     func_020e8388(&m, unk_c4, unk_c8, unk_cc);
     func_020e8434(&m, unk_d0);
@@ -1306,22 +1306,22 @@ void Unk_ov009_0225e29c::func_ov009_0225d264(Unk_ov009_0225bc88_Blk *out) {
 }
 
 // tiny callees defined last so they stay out of line
-Unk_ov009_0225d244_Entry *Unk_ov009_0225e29c::func_ov009_0225d244() {
+BuildingResources *BuildingActor::getResources() {
     if (unk_134 < 0x22) {
-        return &data_ov009_0225e674[unk_134];
+        return &sBuildingResources[unk_134];
     }
     return NULL;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225d0d8() {
+void BuildingActor::func_ov009_0225d0d8() {
     if (unk_230 >= 1) {
         if (unk_230 == 3) {
             if (func_02094e3c()) {
-                switch (func_ov009_0225d650()) {
+                switch (getEntranceType()) {
                 case 2:
                     func_ov003_02218d6c(1);
                     data_021c1b3c->unk_2d0.func_0203535c(1);
-                    if (func_ov003_0221240c()) {
+                    if (PlayerActor_LocalRequestDoorExit()) {
                         unk_230 = 0;
                         return;
                     }
@@ -1329,7 +1329,7 @@ void Unk_ov009_0225e29c::func_ov009_0225d0d8() {
                 case 3:
                     func_ov003_02218d6c(0);
                     data_021c1b3c->unk_2d0.func_0203535c(2);
-                    if (func_ov003_0221240c()) {
+                    if (PlayerActor_LocalRequestDoorExit()) {
                         unk_230 = 0;
                         return;
                     }
@@ -1341,7 +1341,7 @@ void Unk_ov009_0225e29c::func_ov009_0225d0d8() {
                     } else {
                         data_021c1b3c->unk_2d0.func_0203535c(3);
                     }
-                    if (func_ov003_0221240c()) {
+                    if (PlayerActor_LocalRequestDoorExit()) {
                         unk_230 = 0;
                         return;
                     }
@@ -1358,11 +1358,11 @@ void Unk_ov009_0225e29c::func_ov009_0225d0d8() {
     }
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225d078(Unk_ov009_0225bc88_Blk *out) {
+void BuildingActor::updateBaseMatrix(Unk_ov009_0225bc88_Blk *out) {
     Unk_ov009_0225bc88_Blk blk;
     if (!vfunc_b8(&blk)) {
         unk_d0 = WorldCurve_ToCurved(&unk_c4, unk_5c);
-        func_ov009_0225d264(&blk);
+        makeCurvedMatrix(&blk);
     }
     unk_19c = blk;
     if (out != NULL) {
@@ -1370,12 +1370,12 @@ void Unk_ov009_0225e29c::func_ov009_0225d078(Unk_ov009_0225bc88_Blk *out) {
     }
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225cfd8(Unk_ov009_0225bc88_Blk *m) {
-    Unk_ov009_0225d244_Entry *e = func_ov009_0225d244();
+void BuildingActor::createShadows(Unk_ov009_0225bc88_Blk *m) {
+    BuildingResources *e = getResources();
     if (e != NULL) {
         if (e->unk_1c != NULL) {
             void *heap = data_021c6204;
-            u32 n = e->unk_1c->func_ov009_0225cd54();
+            u32 n = e->unk_1c->getCount();
             unk_280 = (Unk_020abea8 *)Heap_Alloc(heap, n * 0x34);
             Unk_020abea8 *p = unk_280;
             u32 i;
@@ -1386,53 +1386,53 @@ void Unk_ov009_0225e29c::func_ov009_0225cfd8(Unk_ov009_0225bc88_Blk *m) {
                 if (p != NULL) {
                     p = p->func_020ac1e0();
                 }
-                Unk_ov009_0225cd48_Item *it = e->unk_1c->func_ov009_0225cd48(i);
+                Unk_ov009_0225cd48_Item *it = e->unk_1c->getEntry(i);
                 Unk_ov009_0225cb4c_V3 v(it->unk_04, zero, it->unk_08);
                 Unk_ov009_0225b880_Vec3 out;
-                func_ov009_0225e020(&out, (s32)&v, (s32)m);
+                Building_LocalToWorld(&out, (s32)&v, (s32)m);
                 p->func_020ac0c4((Vec3 *)&out, it->unk_0c, it->unk_10, it->unk_00, it->unk_14, it->unk_18, (s32)heap);
             }
         }
     }
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225cf78(Unk_ov009_0225bc88_Blk *m) {
-    Unk_ov009_0225d244_Entry *e = func_ov009_0225d244();
+void BuildingActor::updateShadows(Unk_ov009_0225bc88_Blk *m) {
+    BuildingResources *e = getResources();
     if (e != NULL) {
         Unk_020abea8 *p = unk_280;
         if (p != NULL) {
             s32 i = 0;
             s32 zero = i;
-            for (; (u32)i < e->unk_1c->func_ov009_0225cd54(); p++, i++) {
-                Unk_ov009_0225cd48_Item *it = e->unk_1c->func_ov009_0225cd48(i);
+            for (; (u32)i < e->unk_1c->getCount(); p++, i++) {
+                Unk_ov009_0225cd48_Item *it = e->unk_1c->getEntry(i);
                 Unk_ov009_0225cb4c_V3 v(it->unk_04, zero, it->unk_08);
                 Unk_ov009_0225b880_Vec3 out;
-                func_ov009_0225e020(&out, (s32)&v, (s32)m);
+                Building_LocalToWorld(&out, (s32)&v, (s32)m);
                 p->func_020abed4((Vec3 *)&out);
             }
         }
     }
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225cf40() {
-    Unk_ov009_0225d244_Entry *e = func_ov009_0225d244();
+void BuildingActor::destroyShadows() {
+    BuildingResources *e = getResources();
     if (e != NULL) {
         if (unk_280 != NULL) {
             u32 i;
-            for (i = 0; i < e->unk_1c->func_ov009_0225cd54(); i++) {
+            for (i = 0; i < e->unk_1c->getCount(); i++) {
             }
             unk_280 = NULL;
         }
     }
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225ce04(Unk_ov009_0225bc88_Blk *m) {
+void BuildingActor::createColliders(Unk_ov009_0225bc88_Blk *m) {
     unk_28c = 0;
     Unk_020b28ac *h = StrBSize_Get(&unk_132);
     if (h != NULL) {
         unk_28c = h->func_020b29e4();
         if (unk_28c != 0) {
-            Unk_ov009_0225e280 *e4;
+            BuildingCollider *e4;
             Unk_020e44d4 *e6;
             u8 k;
             u32 i;
@@ -1440,23 +1440,23 @@ void Unk_ov009_0225e29c::func_ov009_0225ce04(Unk_ov009_0225bc88_Blk *m) {
             Unk_ov009_0225b880_Vec3 wa, wb, wc;
             Unk_ov009_0225b880_Vec3 la, lb, lc;
             unk_284 = (Unk_020e44d4 *)Heap_Alloc(data_021c6204, unk_28c * 0x44);
-            unk_288 = (Unk_ov009_0225e280 *)Heap_Alloc(data_021c6204, unk_28c * 0x54);
+            unk_288 = (BuildingCollider *)Heap_Alloc(data_021c6204, unk_28c * 0x54);
             e4 = unk_288;
             e6 = unk_284;
             k = func_ov003_02218b1c(this);
             for (i = 0; i < unk_28c; e4++, e6++, i++) {
                 if (h->func_020b2958(&a.x, &b.x, &c.x, i)) {
-                    func_ov009_0225e020(&wa, (s32)&a, (s32)m);
-                    func_ov009_0225e020(&wb, (s32)&b, (s32)m);
-                    func_ov009_0225e020(&wc, (s32)&c, (s32)m);
+                    Building_LocalToWorld(&wa, (s32)&a, (s32)m);
+                    Building_LocalToWorld(&wb, (s32)&b, (s32)m);
+                    Building_LocalToWorld(&wc, (s32)&c, (s32)m);
                     func_01ffd070(&la, unk_5c, &a);
                     func_01ffd070(&lb, unk_5c, &b);
                     func_01ffd070(&lc, unk_5c, &c);
                     e6 = new (e6) Unk_020e44d4;
                     func_020b50b4()->func_020b6818(e6, (Vec3 *)&wa, (Vec3 *)&wb, (Vec3 *)&wc, 7, k);
-                    e4 = new (e4) Unk_ov009_0225e280;
+                    e4 = new (e4) BuildingCollider;
                     e4->unk_4c = this;
-                    e4->unk_50 = func_ov009_0225d650();
+                    e4->unk_50 = getEntranceType();
                     e4->func_02031e10((Unk_02031e10_Vec *)&la, (Unk_02031e10_Vec *)&lb, (Unk_02031e10_Vec *)&lc, 0x3000);
                     func_02031de0(e4);
                 }
@@ -1465,7 +1465,7 @@ void Unk_ov009_0225e29c::func_ov009_0225ce04(Unk_ov009_0225bc88_Blk *m) {
     }
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225cdb4() {
+void BuildingActor::submitColliders() {
     if ((unk_231 & 1) == 0) {
         Unk_020e44d4 *p = unk_284;
         if (p != NULL) {
@@ -1477,11 +1477,11 @@ void Unk_ov009_0225e29c::func_ov009_0225cdb4() {
 }
 
 // ---------------------------------------------------------------- actor
-void Unk_ov009_0225e29c::func_ov009_0225cd58() {
+void BuildingActor::destroyColliders() {
     if (unk_284 != NULL) {
         unk_284 = NULL;
     }
-    Unk_ov009_0225e280 *p = unk_288;
+    BuildingCollider *p = unk_288;
     if (p != NULL) {
         for (; p < unk_288 + unk_28c; p += 2) {
             func_02031da4(p);
@@ -1492,18 +1492,18 @@ void Unk_ov009_0225e29c::func_ov009_0225cd58() {
     unk_28c = 0;
 }
 
-u32 Unk_ov009_0225cd48_Tbl::func_ov009_0225cd54() {
+u32 BuildingShadowTable::getCount() {
     return unk_00;
 }
 
-Unk_ov009_0225cd48_Item *Unk_ov009_0225cd48_Tbl::func_ov009_0225cd48(u32 i) {
+Unk_ov009_0225cd48_Item *BuildingShadowTable::getEntry(u32 i) {
     return &unk_04[i];
 }
 
-Unk_ov009_0225e280::Unk_ov009_0225e280() {}
+BuildingCollider::BuildingCollider() {}
 
-void Unk_ov009_0225e280::vfunc_10(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24_Obj *o, s32 off) {
-    if (func_ov009_0225cc24(a, off, o)) {
+void BuildingCollider::vfunc_10(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24_Obj *o, s32 off) {
+    if (isPlayerAtDoor(a, off, o)) {
         unk_4c->unk_231 |= 2;
         if (o->unk_98 >= 0x200) {
             unk_4c->unk_231 |= 4;
@@ -1512,7 +1512,7 @@ void Unk_ov009_0225e280::vfunc_10(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24
 }
 
 // ---------------------------------------------------------------- element
-BOOL Unk_ov009_0225e280::func_ov009_0225cc24(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_ov009_0225cc24_Obj *o) {
+BOOL BuildingCollider::isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_ov009_0225cc24_Obj *o) {
     s16 ang;
     Unk_ov009_0225b880_Vec3 p;
     Unk_ov009_0225b880_Vec3 a;
@@ -1525,7 +1525,7 @@ BOOL Unk_ov009_0225e280::func_ov009_0225cc24(Unk_ov009_0225b880_Vec3 *v, s32 off
                     s32 d = func_0202f274((Unk_0202f2ac_V3 *)v);
                     if (d >= 0) {
                         if (d <= off + 0x666) {
-                            if (unk_4c->func_ov009_0225bbdc(&p, &ang)) {
+                            if (unk_4c->getDoorPos(&p, &ang)) {
                                 if (func_020e780c(ang, o->unk_8e) <= 0x1100) {
                                     a.x = v->x;
                                     a.y = v->y;
@@ -1551,12 +1551,12 @@ BOOL Unk_ov009_0225e280::func_ov009_0225cc24(Unk_ov009_0225b880_Vec3 *v, s32 off
 }
 
 // ---------------------------------------------------------------- vfunc_6c
-s32 Unk_ov009_0225e29c::vfunc_6c(s32 a) {
-    static BOOL (Unk_ov009_0225e29c::*tbl[7])() = {
-        &Unk_ov009_0225e29c::func_ov009_0225ca50, &Unk_ov009_0225e29c::func_ov009_0225c818,
-        &Unk_ov009_0225e29c::func_ov009_0225c644, &Unk_ov009_0225e29c::func_ov009_0225c568,
-        &Unk_ov009_0225e29c::func_ov009_0225c4f4, &Unk_ov009_0225e29c::func_ov009_0225c46c,
-        &Unk_ov009_0225e29c::func_ov009_0225c454,
+s32 BuildingActor::vfunc_6c(s32 a) {
+    static BOOL (BuildingActor::*tbl[7])() = {
+        &BuildingActor::enterDoorIdle, &BuildingActor::enterDoorOpenIn,
+        &BuildingActor::enterDoorOpenOut, &BuildingActor::enterDoorSlideOpen,
+        &BuildingActor::enterDoorSlideClose, &BuildingActor::enterDoorNoAnimIn,
+        &BuildingActor::enterDoorNoAnimOut,
     };
     if ((u32)a < 7) {
         if ((this->*tbl[a])()) {
@@ -1569,36 +1569,36 @@ s32 Unk_ov009_0225e29c::vfunc_6c(s32 a) {
     return FALSE;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225ca98() {
+void BuildingActor::func_ov009_0225ca98() {
     static Unk_ov009_0225c290_Fn tbl[7] = {
-        &Unk_ov009_0225e29c::func_ov009_0225c97c, &Unk_ov009_0225e29c::func_ov009_0225c7a8,
-        &Unk_ov009_0225e29c::func_ov009_0225c5d4, &Unk_ov009_0225e29c::func_ov009_0225c538,
-        &Unk_ov009_0225e29c::func_ov009_0225c470, &Unk_ov009_0225e29c::func_ov009_0225c458,
-        &Unk_ov009_0225e29c::func_ov009_0225c440
+        &BuildingActor::execDoorIdle, &BuildingActor::execDoorOpenIn,
+        &BuildingActor::execDoorOpenOut, &BuildingActor::execDoorSlideOpen,
+        &BuildingActor::execDoorSlideClose, &BuildingActor::execDoorNoAnimIn,
+        &BuildingActor::execDoorNoAnimOut
     };
     if (unk_130 < 7) {
         (this->*tbl[unk_130])();
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225ca50() {
-    switch (func_ov009_0225d650()) {
+BOOL BuildingActor::enterDoorIdle() {
+    switch (getEntranceType()) {
     case 1:
     case 2: {
         void *r = (void *)func_ov009_0225d708();
         if (r == 0) {
             return FALSE;
         }
-        func_02054720(unk_138, r, 0, 0x1000, 0, 0);
+        BlendAnimModel_initAnim(unk_138, r, 0, 0x1000, 0, 0);
         break;
     }
     }
     return TRUE;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225c97c() {
+void BuildingActor::execDoorIdle() {
     if (PlayerActor_TestSlotFlag(0x13, 4) == 0 && func_0203d978() == 0) {
-        s32 st = func_ov009_0225d650();
+        s32 st = getEntranceType();
         s32 f = 0;
         if (st == 1 || st == 3) {
             if ((unk_231 & 4) != 0) {
@@ -1630,12 +1630,12 @@ void Unk_ov009_0225e29c::func_ov009_0225c97c() {
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c818() {
+BOOL BuildingActor::enterDoorOpenIn() {
     void *r = (void *)func_ov009_0225d708();
     if (r != 0) {
-        func_02054720(unk_138, r, 1, 0x1000, 0, 0);
-        ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x7d1);
-        ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x7d2);
+        BlendAnimModel_initAnim(unk_138, r, 1, 0x1000, 0, 0);
+        ((BuildingSeEmitter *)unk_234)->playSe(0x7d1);
+        ((BuildingSeEmitter *)unk_234)->playSe(0x7d2);
         if (vfunc_98()) {
             s32 m = 0;
             u16 v[3];
@@ -1701,23 +1701,23 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225c818() {
     return FALSE;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225c7a8() {
-    func_020547e4(unk_138);
+void BuildingActor::execDoorOpenIn() {
+    AnimModel_stepAnim(unk_138);
     if (AnimFrameCtrl_isFinished(unk_1d4)) {
         vfunc_6c(0);
     } else if (AnimFrameCtrl_hasPassedFrame(unk_1d4, 0x14)) {
-        ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x7d3);
+        ((BuildingSeEmitter *)unk_234)->playSe(0x7d3);
     } else if (AnimFrameCtrl_hasPassedFrame(unk_1d4, 0x1e)) {
-        ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x7d4);
+        ((BuildingSeEmitter *)unk_234)->playSe(0x7d4);
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c644() {
+BOOL BuildingActor::enterDoorOpenOut() {
     void *r = (void *)func_ov009_0225d6f0();
     if (r != 0) {
-        func_02054720(unk_138, r, 1, 0x1000, 0, 0);
-        ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x7d1);
-        ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x7d2);
+        BlendAnimModel_initAnim(unk_138, r, 1, 0x1000, 0, 0);
+        ((BuildingSeEmitter *)unk_234)->playSe(0x7d1);
+        ((BuildingSeEmitter *)unk_234)->playSe(0x7d2);
         if (vfunc_98()) {
             s32 m = 0;
             u16 v[3];
@@ -1783,82 +1783,82 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225c644() {
     return FALSE;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225c5d4() {
-    func_020547e4(unk_138);
+void BuildingActor::execDoorOpenOut() {
+    AnimModel_stepAnim(unk_138);
     if (AnimFrameCtrl_isFinished(unk_1d4)) {
         vfunc_6c(0);
     } else if (AnimFrameCtrl_hasPassedFrame(unk_1d4, 0x12)) {
-        ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x7d3);
+        ((BuildingSeEmitter *)unk_234)->playSe(0x7d3);
     } else if (AnimFrameCtrl_hasPassedFrame(unk_1d4, 0x18)) {
-        ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x7d4);
+        ((BuildingSeEmitter *)unk_234)->playSe(0x7d4);
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c568() {
+BOOL BuildingActor::enterDoorSlideOpen() {
     void *r = (void *)func_ov009_0225d708();
     if (r) {
-        func_02054720(unk_138, r, 1, 0x1000, 0, 0);
+        BlendAnimModel_initAnim(unk_138, r, 1, 0x1000, 0, 0);
         if (Item_IsNookShop(&unk_132)) {
-            ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x806);
+            ((BuildingSeEmitter *)unk_234)->playSe(0x806);
         } else {
-            ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x808);
+            ((BuildingSeEmitter *)unk_234)->playSe(0x808);
         }
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225c538() {
-    func_020547e4(unk_138);
+void BuildingActor::execDoorSlideOpen() {
+    AnimModel_stepAnim(unk_138);
     if (AnimFrameCtrl_isFinished(unk_1d4)) {
         vfunc_6c(4);
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c4f4() {
+BOOL BuildingActor::enterDoorSlideClose() {
     unk_42 = 0x1a;
     void *r = (void *)func_ov009_0225d6f0();
     if (r) {
-        func_02054720(unk_138, r, 1, 0x1000, 0, 0);
+        BlendAnimModel_initAnim(unk_138, r, 1, 0x1000, 0, 0);
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225c470() {
+void BuildingActor::execDoorSlideClose() {
     if (unk_42 != 0) {
         unk_42--;
         if (unk_42 == 0) {
             if (Item_IsNookShop(&unk_132)) {
-                ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x807);
+                ((BuildingSeEmitter *)unk_234)->playSe(0x807);
             } else {
-                ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x809);
+                ((BuildingSeEmitter *)unk_234)->playSe(0x809);
             }
         }
     }
     if (unk_42 == 0) {
-        func_020547e4(unk_138);
+        AnimModel_stepAnim(unk_138);
         if (AnimFrameCtrl_isFinished(unk_1d4)) {
             vfunc_6c(0);
         }
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c46c() { return TRUE; }
+BOOL BuildingActor::enterDoorNoAnimIn() { return TRUE; }
 
-void Unk_ov009_0225e29c::func_ov009_0225c458() { vfunc_6c(0); }
+void BuildingActor::execDoorNoAnimIn() { vfunc_6c(0); }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c454() { return TRUE; }
+BOOL BuildingActor::enterDoorNoAnimOut() { return TRUE; }
 
-void Unk_ov009_0225e29c::func_ov009_0225c440() { vfunc_6c(0); }
+void BuildingActor::execDoorNoAnimOut() { vfunc_6c(0); }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c360(s32 a) {
+BOOL BuildingActor::setEntryState(s32 a) {
     static Unk_ov009_0225c360_Fn tbl[9] = {
-        &Unk_ov009_0225e29c::func_ov009_0225c28c, &Unk_ov009_0225e29c::func_ov009_0225c248,
-        &Unk_ov009_0225e29c::func_ov009_0225c17c, &Unk_ov009_0225e29c::func_ov009_0225c14c,
-        &Unk_ov009_0225e29c::func_ov009_0225c0f4, &Unk_ov009_0225e29c::func_ov009_0225c054,
-        &Unk_ov009_0225e29c::func_ov009_0225c008, &Unk_ov009_0225e29c::func_ov009_0225bf28,
-        &Unk_ov009_0225e29c::func_ov009_0225bf08
+        &BuildingActor::enterEntryIdle, &BuildingActor::enterEntryCheck,
+        &BuildingActor::enterEntryTalkOpen, &BuildingActor::enterEntryTalk,
+        &BuildingActor::enterEntry04, &BuildingActor::enterEntry05,
+        &BuildingActor::enterEntryWarp, &BuildingActor::enterEntry07,
+        &BuildingActor::enterEntry08
     };
     if (a < 9) {
         if ((this->*tbl[a])()) {
@@ -1869,24 +1869,24 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225c360(s32 a) {
     return FALSE;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225c290() {
+void BuildingActor::updateEntryState() {
     static Unk_ov009_0225c290_Fn tbl[9] = {
-        &Unk_ov009_0225e29c::func_ov009_0225c288, (Unk_ov009_0225c290_Fn)&Unk_ov009_0225e29c::func_ov009_0225c1ac,
-        &Unk_ov009_0225e29c::func_ov009_0225c150, &Unk_ov009_0225e29c::func_ov009_0225c108,
-        &Unk_ov009_0225e29c::func_ov009_0225c0d8, &Unk_ov009_0225e29c::func_ov009_0225c018,
-        &Unk_ov009_0225e29c::func_ov009_0225bf3c, &Unk_ov009_0225e29c::func_ov009_0225bf0c,
-        &Unk_ov009_0225e29c::func_ov009_0225beb0
+        &BuildingActor::execEntryIdle, (Unk_ov009_0225c290_Fn)&BuildingActor::execEntryCheck,
+        &BuildingActor::execEntryTalkOpen, &BuildingActor::execEntryTalk,
+        &BuildingActor::execEntry04, &BuildingActor::execEntry05,
+        &BuildingActor::execEntryWarp, &BuildingActor::execEntry07,
+        &BuildingActor::execEntry08
     };
     if (unk_278 < 9) {
         (this->*tbl[unk_278])();
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c28c() { return TRUE; }
+BOOL BuildingActor::enterEntryIdle() { return TRUE; }
 
-void Unk_ov009_0225e29c::func_ov009_0225c288() {}
+void BuildingActor::execEntryIdle() {}
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c248() {
+BOOL BuildingActor::enterEntryCheck() {
     if (unk_27c == 0) {
         func_020b10e0(unk_132);
     }
@@ -1895,7 +1895,7 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225c248() {
     return TRUE;
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c1ac() {
+BOOL BuildingActor::execEntryCheck() {
     if (unk_27c == 0) {
         s32 r = func_020b10c4(unk_132);
         if (r != 0) {
@@ -1904,35 +1904,35 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225c1ac() {
             *p = (*p & ~2) | ((v & 1) << 1);
             unk_233 = (r == 3) ? 1 : 0;
             if (unk_232.f1 != 0 || unk_233 != 0) {
-                func_ov009_0225c360(2);
-            } else if (func_ov009_0225d650() == 1) {
-                func_ov009_0225c360(7);
+                setEntryState(2);
+            } else if (getEntranceType() == 1) {
+                setEntryState(7);
             } else {
-                func_ov009_0225c360(4);
+                setEntryState(4);
             }
         }
     } else {
-        func_ov009_0225c360(2);
+        setEntryState(2);
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c17c() {
+BOOL BuildingActor::enterEntryTalkOpen() {
     _ZN9Character13func_0203e488Ei(this, this);
     unk_3c->unk_08 = 1;
     vfunc_78();
     return TRUE;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225c150() {
+void BuildingActor::execEntryTalkOpen() {
     if (unk_3c != NULL && unk_3c->unk_04 != 0) {
         vfunc_7c();
-        func_ov009_0225c360(3);
+        setEntryState(3);
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c14c() { return TRUE; }
+BOOL BuildingActor::enterEntryTalk() { return TRUE; }
 
-void Unk_ov009_0225e29c::func_ov009_0225c108() {
+void BuildingActor::execEntryTalk() {
     if (unk_3c != NULL && unk_3c->unk_04 == 0) {
         vfunc_84();
         _ZN9Character13func_0203e47cEi(this, this);
@@ -1942,22 +1942,22 @@ void Unk_ov009_0225e29c::func_ov009_0225c108() {
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c0f4() {
+BOOL BuildingActor::enterEntry04() {
     func_020949a0(0);
     return TRUE;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225c0d8() {
+void BuildingActor::execEntry04() {
     if (func_020951d0()) {
-        func_ov009_0225c360(5);
+        setEntryState(5);
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c054() {
+BOOL BuildingActor::enterEntry05() {
     s16 ang;
     s32 p4;
     Unk_ov009_0225b880_Vec3 v;
-    if (func_ov009_0225bbdc(&v, &ang)) {
+    if (getDoorPos(&v, &ang)) {
         p4 = v.x;
         if (vfunc_94() == 0) {
             s32 *q = func_020947f0(4);
@@ -1966,12 +1966,12 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225c054() {
             }
         }
         if (vfunc_90()) {
-            if (func_ov003_0221249c(&p4, &v.z, &ang)) {
+            if (PlayerActor_LocalRequestDoorApproach(&p4, &v.z, &ang)) {
                 return TRUE;
             }
         } else {
-            BOOL m = func_ov009_0225d650() == 2 ? TRUE : FALSE;
-            if (func_ov003_02212430(m, &p4, &v.z, ang)) {
+            BOOL m = getEntranceType() == 2 ? TRUE : FALSE;
+            if (PlayerActor_LocalRequestDoorEnter(m, &p4, &v.z, ang)) {
                 return TRUE;
             }
         }
@@ -1979,45 +1979,45 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225c054() {
     return FALSE;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225c018() {
+void BuildingActor::execEntry05() {
     if (func_020951c4()) {
-        switch (func_ov009_0225d650()) {
+        switch (getEntranceType()) {
         case 2:
             Camera_SetMode3();
-            func_ov009_0225c360(6);
+            setEntryState(6);
             break;
         case 3:
             Camera_SetMode3();
-            func_ov009_0225c360(6);
+            setEntryState(6);
             break;
         }
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225c008() {
+BOOL BuildingActor::enterEntryWarp() {
     unk_27e = 0;
     return TRUE;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225bf3c() {
+void BuildingActor::execEntryWarp() {
     unk_27e = unk_27e + 1;
-    func_ov009_0225d650();
+    getEntranceType();
     u32 lim = 0x14;
-    if (func_ov009_0225d650() == 1) {
+    if (getEntranceType() == 1) {
         lim += 0xc;
     }
     if (unk_27e >= lim) {
-        s32 r = func_ov009_0225bb74();
+        s32 r = getInteriorScene();
         s16 ang;
         Unk_ov009_0225b880_Vec3 v;
-        if (func_ov009_0225bbdc(&v, &ang)) {
+        if (getDoorPos(&v, &ang)) {
             if (func_020b4bbc(func_020b4934(), r)) {
                 v.y = func_02030814(0);
                 v.z = v.z + 0x1000;
                 void *o = func_020b4934();
                 s32 k = func_020b50e8();
                 func_020b49c4(o, k, &v, 0xf000000, (s16)(ang + 0x8000), unk_228, unk_22c);
-                func_ov009_0225d650();
+                getEntranceType();
                 func_020b0f00();
                 unk_232.f0 = 1;
             }
@@ -2025,24 +2025,24 @@ void Unk_ov009_0225e29c::func_ov009_0225bf3c() {
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225bf28() {
+BOOL BuildingActor::enterEntry07() {
     func_020949a0(0);
     return TRUE;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225bf0c() {
+void BuildingActor::execEntry07() {
     if (func_020951d0()) {
-        func_ov009_0225c360(8);
+        setEntryState(8);
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225bf08() { return TRUE; }
+BOOL BuildingActor::enterEntry08() { return TRUE; }
 
-void Unk_ov009_0225e29c::func_ov009_0225beb0() {
+void BuildingActor::execEntry08() {
     s16 ang;
     s32 p4;
     Unk_ov009_0225b880_Vec3 v;
-    if (func_ov009_0225bbdc(&v, &ang)) {
+    if (getDoorPos(&v, &ang)) {
         p4 = v.x;
         if (vfunc_94() == 0) {
             s32 *q = func_020947f0(4);
@@ -2050,22 +2050,22 @@ void Unk_ov009_0225e29c::func_ov009_0225beb0() {
                 p4 = *q;
             }
         }
-        if (func_ov003_02212430(2, &p4, &v.z, ang)) {
-            func_ov009_0225c360(6);
+        if (PlayerActor_LocalRequestDoorEnter(2, &p4, &v.z, ang)) {
+            setEntryState(6);
         }
     }
 }
 
-Unk_ov009_0225b880_Vec3 *Unk_ov009_0225e29c::getInteractionPos() { return &unk_2a4; }
+Unk_ov009_0225b880_Vec3 *BuildingActor::getInteractionPos() { return &unk_2a4; }
 
-BOOL Unk_ov009_0225e29c::vfunc_48(Character *a) {
+BOOL BuildingActor::vfunc_48(Character *a) {
     if (a == NULL) {
         return FALSE;
     }
     s32 d = func_020e780c((s16)(unk_8e + 0x8000), a->unk_8e);
     if (d <= 0x1000) {
-        if (func_ov009_0225d650() != 0) {
-            if ((unk_231 & 8) != 0 && func_ov009_0225d650() == 2) {
+        if (getEntranceType() != 0) {
+            if ((unk_231 & 8) != 0 && getEntranceType() == 2) {
                 if (vfunc_8c() == 0) {
                     func_0203e42c();
                     unk_27c = 1;
@@ -2089,7 +2089,7 @@ BOOL Unk_ov009_0225e29c::vfunc_48(Character *a) {
 }
 
 
-void Unk_ov009_0225e29c::vfunc_88() {
+void BuildingActor::vfunc_88() {
     BOOL ok;
     if (Item_IsFurniture(&unk_132)) {
         u16 v = 0x500a;
@@ -2110,28 +2110,28 @@ void Unk_ov009_0225e29c::vfunc_88() {
     }
 }
 
-void Unk_ov009_0225e29c::vfunc_78() {
+void BuildingActor::vfunc_78() {
     Unk_ov009_0225bce0_Pad pad;
-    setFileName((const char *)data_ov009_0225e3d8);
+    setFileName((const char *)sBuildingDefaultMsgFile);
     unk_1e = 0;
 }
 
-void Unk_ov009_0225e29c::vfunc_7c() {}
+void BuildingActor::vfunc_7c() {}
 
-void Unk_ov009_0225e29c::vfunc_80() {}
+void BuildingActor::vfunc_80() {}
 
-void Unk_ov009_0225e29c::vfunc_84() {}
+void BuildingActor::vfunc_84() {}
 
-void Unk_ov009_0225e29c::func_ov009_0225bc88() {
+void BuildingActor::updateMatrix() {
     if (unk_194 != NULL) {
-        func_ov009_0225d078(0);
-        func_020547cc(unk_138, 0);
+        updateBaseMatrix(0);
+        AnimModel_drawAnimated(unk_138, 0);
         Unk_ov009_0225bc88_Blk t = unk_19c;
-        func_ov009_0225cf78(&t);
+        updateShadows(&t);
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225bbdc(Unk_ov009_0225b880_Vec3 *out, s16 *ang) {
+BOOL BuildingActor::getDoorPos(Unk_ov009_0225b880_Vec3 *out, s16 *ang) {
     if (unk_288 != NULL && unk_28c != 0) {
         s32 a = func_020e7b98(unk_288->unk_28, unk_288->unk_30);
         s32 t0 = func_01ffcb0c(0x1000, unk_288->unk_30);
@@ -2159,7 +2159,7 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225bbdc(Unk_ov009_0225b880_Vec3 *out, s16 *
     return FALSE;
 }
 
-s32 Unk_ov009_0225e29c::func_ov009_0225bb74(){
+s32 BuildingActor::getInteriorScene(){
     u32 v;
     BOOL in = FALSE;
     v = unk_132;
@@ -2178,7 +2178,7 @@ s32 Unk_ov009_0225e29c::func_ov009_0225bb74(){
     return r;
 }
 
-s32 Unk_ov009_0225e29c::vfunc_a0(){
+s32 BuildingActor::vfunc_a0(){
     u32 v;
     BOOL in = FALSE;
     v = unk_132;
@@ -2197,15 +2197,15 @@ s32 Unk_ov009_0225e29c::vfunc_a0(){
     return r;
 }
 
-BOOL Unk_ov009_0225e29c::vfunc_90() { return FALSE; }
+BOOL BuildingActor::vfunc_90() { return FALSE; }
 
-BOOL Unk_ov009_0225e29c::vfunc_b0() { return TRUE; }
+BOOL BuildingActor::vfunc_b0() { return TRUE; }
 
-BOOL Unk_ov009_0225e29c::vfunc_94() { return TRUE; }
+BOOL BuildingActor::vfunc_94() { return TRUE; }
 
-BOOL Unk_ov009_0225e29c::vfunc_98() { return FALSE; }
+BOOL BuildingActor::vfunc_98() { return FALSE; }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225baa4() {
+BOOL BuildingActor::isOffscreen() {
     if (gCamera != 0) {
         Unk_ov009_0225b880_Vec3 *g = &gCameraLookAt;
         s32 dx = unk_5c[0] - g->x;
@@ -2213,7 +2213,7 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225baa4() {
             dx = -dx;
         }
         s32 dz = unk_5c[2] - g->z;
-        if (dx > func_ov009_0225d7f0() || dz > func_ov009_0225d720() || dz < -func_ov009_0225d788()) {
+        if (dx > getViewRangeX() || dz > getViewRangeFront() || dz < -getViewRangeBack()) {
             return TRUE;
         }
         return FALSE;
@@ -2221,22 +2221,22 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225baa4() {
     return TRUE;
 }
 
-void Unk_ov009_0225e29c::func_ov009_0225ba74() {
+void BuildingActor::updateOffscreen() {
     unk_231 = unk_231 & ~1;
-    if (func_ov009_0225baa4()) {
+    if (isOffscreen()) {
         unk_231 = unk_231 | 1;
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225ba60() {
+BOOL BuildingActor::isDoorIdle() {
     if (unk_130 == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225ba1c() {
-    switch (func_ov009_0225d650()) {
+BOOL BuildingActor::openDoorForEntry() {
+    switch (getEntranceType()) {
     case 2:
         return vfunc_6c(1);
     case 3:
@@ -2248,15 +2248,15 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225ba1c() {
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225b9fc() {
+BOOL BuildingActor::tryOpenDoorForEntry() {
     if (unk_278 == 0) {
-        return func_ov009_0225ba1c();
+        return openDoorForEntry();
     }
     return FALSE;
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225b9b8() {
-    switch (func_ov009_0225d650()) {
+BOOL BuildingActor::openDoorForExit() {
+    switch (getEntranceType()) {
     case 2:
         return vfunc_6c(2);
     case 3:
@@ -2268,23 +2268,23 @@ BOOL Unk_ov009_0225e29c::func_ov009_0225b9b8() {
     }
 }
 
-BOOL Unk_ov009_0225e29c::func_ov009_0225b998() {
+BOOL BuildingActor::tryOpenDoorForExit() {
     if (unk_278 == 0) {
-        return func_ov009_0225b9b8();
+        return openDoorForExit();
     }
     return FALSE;
 }
 
-u16 *Unk_ov009_0225e29c::func_ov009_0225b98c() { return &unk_132; }
+u16 *BuildingActor::getItemId() { return &unk_132; }
 
-u32 Unk_ov009_0225e29c::func_ov009_0225b980() { return unk_228; }
+u32 BuildingActor::getGridX() { return unk_228; }
 
-u32 Unk_ov009_0225e29c::func_ov009_0225b974() { return unk_22c; }
+u32 BuildingActor::getGridZ() { return unk_22c; }
 
-void Unk_ov009_0225e29c::func_ov009_0225b964() { BuildingLights_isLit(unk_1f0); }
+void BuildingActor::callIsLit() { BuildingLights_isLit(unk_1f0); }
 
 
-Unk_ov009_0225b894::Unk_ov009_0225b894() {
+BuildingSeEmitter::BuildingSeEmitter() {
     unk_40 = 0;
 }
 
@@ -2294,14 +2294,14 @@ extern "C" void *_ZN12Unk_0213b9c4D1Ev(void *p) {
     return p;
 }
 
-void Unk_ov009_0225b894::func_ov009_0225b914() {
+void BuildingSeEmitter::activate() {
     if (unk_40 == 0) {
         func_02003ecc(this);
         unk_40 = 1;
     }
 }
 
-void Unk_ov009_0225b894::func_ov009_0225b8ec(Unk_ov009_0225b880_Vec3 *v) {
+void BuildingSeEmitter::setPosition(Unk_ov009_0225b880_Vec3 *v) {
     if (unk_40 != 0) {
         Unk_ov009_0225b880_Vec3 t;
         t.x = v->x;
@@ -2311,26 +2311,26 @@ void Unk_ov009_0225b894::func_ov009_0225b8ec(Unk_ov009_0225b880_Vec3 *v) {
     }
 }
 
-void Unk_ov009_0225b894::func_ov009_0225b8cc() {
+void BuildingSeEmitter::deactivate() {
     if (unk_40 != 0) {
         func_02003e50(this);
         unk_40 = 0;
     }
 }
 
-void Unk_ov009_0225b894::func_ov009_0225b8b0(u32 a) {
+void BuildingSeEmitter::playSe(u32 a) {
     if (unk_40 != 0) {
         func_02003e70(this, a, 0x7f, 0);
     }
 }
 
-void Unk_ov009_0225b894::func_ov009_0225b894(u32 a) {
+void BuildingSeEmitter::playSeHeld(u32 a) {
     if (unk_40 != 0) {
         Snd_SeEmitterPlayHeld(this, a, 0x7f, 0);
     }
 }
 
-Unk_ov009_0225da90_Vec3 Unk_ov009_0225e29c::vfunc_b4() {
+Unk_ov009_0225da90_Vec3 BuildingActor::vfunc_b4() {
     Unk_ov009_0225da90_Vec3 r;
     r.x = unk_5c[0];
     r.y = unk_5c[1];
@@ -2339,7 +2339,7 @@ Unk_ov009_0225da90_Vec3 Unk_ov009_0225e29c::vfunc_b4() {
 }
 
 // Slots b4 / b8 of the vtable (were free functions func_ov009_0225b884 / func_ov009_0225b880)
-BOOL Unk_ov009_0225e29c::vfunc_b8(Unk_ov009_0225bc88_Blk *out) { return 0; }
+BOOL BuildingActor::vfunc_b8(Unk_ov009_0225bc88_Blk *out) { return 0; }
 
 // ---------------------------------------------------------------- data
 
@@ -2350,8 +2350,8 @@ struct Unk_ov009_0225e260_Entry {
     s32 unk_08[4];
 };
 
-extern "C" Unk_ov009_0225e260_Entry data_ov009_0225e260 = {func_ov009_0225e040, 0x1a, 0x20, {0, 0xc8000, 0x12c000, 0x258000}};
-extern "C" char data_ov009_0225e3d8[16] = "obj_etc_error";
+extern "C" Unk_ov009_0225e260_Entry sBuildingActorProfile = {BuildingActor_Create, 0x1a, 0x20, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" char sBuildingDefaultMsgFile[16] = "obj_etc_error";
 extern "C" char data_ov009_0225e3e8[4] = "STR";
 extern "C" char data_ov009_0225e3ec[16] = "STR:a/bca/bca0";
 extern "C" char data_ov009_0225e3fc[16] = "STR:a/bca/bca1";
@@ -2361,9 +2361,9 @@ extern "C" char data_ov009_0225e42c[16] = "STR:a/btp/btp%d";
 extern "C" char data_ov009_0225e43c[16] = "STR:a/bmd/bmd0";
 extern "C" char data_ov009_0225e44c[16] = "STR:a/bmd/bmd1";
 extern "C" char data_ov009_0225e45c[24] = "STR:a/bshadow/bshadow0";
-extern "C" char data_ov009_0225e474[32] = "/str/arc/%d/str%d%c_lt.nsbtx";
-extern "C" char data_ov009_0225e494[28] = "/str/arc/%d/str%d%c.nsbtx";
-extern "C" char data_ov009_0225e4b0[24] = "/str/arc/%d/str%d%c.arc";
-extern "C" char data_ov009_0225e514[32] = {0};
-extern "C" char data_ov009_0225e534[32] = {0};
-extern "C" char data_ov009_0225e554[32] = {0};
+extern "C" char sBuildingLightTexPathFmt[32] = "/str/arc/%d/str%d%c_lt.nsbtx";
+extern "C" char sBuildingTexPathFmt[28] = "/str/arc/%d/str%d%c.nsbtx";
+extern "C" char sBuildingArcPathFmt[24] = "/str/arc/%d/str%d%c.arc";
+extern "C" char sBuildingArcPath[32] = {0};
+extern "C" char sBuildingTexPath[32] = {0};
+extern "C" char sBuildingLightTexPath[32] = {0};

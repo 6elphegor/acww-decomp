@@ -200,42 +200,42 @@ s32 func_020e780c(s32 a, s32 b);
 Unk_020b6960 *func_020b50b4();
 void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
 void _ZN12Unk_020b6a94D1Ev(Unk_020b6a94 *self);
-void func_ov003_02204b20();
+void VillagerBoard_ResetTable();
 }
 
-class Unk_ov003_022309d0;
+class VillagerBoard;
 
-// ---------------------------------------------------------------- Unk_ov003_022309d0
-class Unk_ov003_022309d0 : public Character, public TalkMsgRequest {
+// ---------------------------------------------------------------- VillagerBoard
+class VillagerBoard : public Character, public TalkMsgRequest {
 public:
-    Unk_ov003_022309d0();
+    VillagerBoard();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_ov003_022309d0();
+    virtual ~VillagerBoard();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
 
-    void func_ov003_022048d8();
-    BOOL func_ov003_02204908();
-    void func_ov003_0220490c();
-    BOOL func_ov003_02204930();
-    void func_ov003_022049a0();
-    BOOL func_ov003_022049a4();
-    void func_ov003_022049a8();
-    BOOL func_ov003_02204a24(s32 m);
+    void mainReadEnd();
+    BOOL setupReadEnd();
+    void mainRead();
+    BOOL setupRead();
+    void mainIdle();
+    BOOL setupIdle();
+    void runAct();
+    BOOL changeAct(s32 m);
 
     /* 0x130 */ s32 unk_130;
     /* 0x134 */ Unk_020b6a94 unk_134;
 };
 
-typedef void (Unk_ov003_022309d0::*Unk_022049a8_Fn)();
-typedef BOOL (Unk_ov003_022309d0::*Unk_02204a24_Fn)();
+typedef void (VillagerBoard::*Unk_022049a8_Fn)();
+typedef BOOL (VillagerBoard::*Unk_02204a24_Fn)();
 
-extern "C" Unk_ov003_022309d0 *func_ov003_02204c94();
+extern "C" VillagerBoard *VillagerBoard_Create();
 
-extern "C" Unk_ov003_022309d0 *data_ov003_02234fb4[8];
+extern "C" VillagerBoard *sVillagerBoards[8];
 
 extern "C" Unk_ov003_022309d0_Color data_ov003_02234f80(0x1f, 0x14, 0x14, 0x1f);
 extern "C" Unk_ov003_022309d0_Color data_ov003_02234f64(0x14, 0x14, 0x1f, 0x1f);
@@ -244,56 +244,56 @@ extern "C" Unk_ov003_022309d0_Color data_ov003_02234f70(0x14, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov003_022309d0_Color data_ov003_02234f6c(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov003_022309d0_Color data_ov003_02234f74(0x14, 0x18, 0x18, 0x1f);
 extern "C" {
-u8 data_ov003_02234f60;
+u8 sVillagerBoardCount;
 }
 
-extern "C" Unk_ov003_022309d0 *func_ov003_02204c94() {
-    return new Unk_ov003_022309d0;
+extern "C" VillagerBoard *VillagerBoard_Create() {
+    return new VillagerBoard;
 }
 
-Unk_ov003_022309d0::Unk_ov003_022309d0() {
+VillagerBoard::VillagerBoard() {
     _ZN12Unk_020b6a94C1Ev(&unk_134);
 }
 
-Unk_ov003_022309d0::~Unk_ov003_022309d0() {
+VillagerBoard::~VillagerBoard() {
     _ZN12Unk_020b6a94D1Ev(&unk_134);
 }
 
-BOOL Unk_ov003_022309d0::vfunc_00() {
-    func_ov003_02204b20();
+BOOL VillagerBoard::vfunc_00() {
+    VillagerBoard_ResetTable();
     setCharId((u16) * (s32 *)((u8 *)this + 8));
-    func_ov003_02204a24(0);
-    data_ov003_02234fb4[*(s32 *)((u8 *)this + 8)] = this;
-    data_ov003_02234f60++;
+    changeAct(0);
+    sVillagerBoards[*(s32 *)((u8 *)this + 8)] = this;
+    sVillagerBoardCount++;
     return TRUE;
 }
 
-BOOL Unk_ov003_022309d0::onExecute() {
-    func_ov003_022049a8();
+BOOL VillagerBoard::onExecute() {
+    runAct();
     _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(func_020b50b4(), &unk_134, unk_5c, 0xc00, 9, *(s32 *)((u8 *)this + 8));
     return TRUE;
 }
 
-BOOL Unk_ov003_022309d0::onDraw() {
+BOOL VillagerBoard::onDraw() {
     return TRUE;
 }
 
-BOOL Unk_ov003_022309d0::vfunc_0c() {
-    data_ov003_02234fb4[*(s32 *)((u8 *)this + 8)] = 0;
-    data_ov003_02234f60--;
+BOOL VillagerBoard::vfunc_0c() {
+    sVillagerBoards[*(s32 *)((u8 *)this + 8)] = 0;
+    sVillagerBoardCount--;
     return TRUE;
 }
 
-extern "C" void func_ov003_02204b20() {
-    if (data_ov003_02234f60 == 0) {
+extern "C" void VillagerBoard_ResetTable() {
+    if (sVillagerBoardCount == 0) {
         u32 i;
         for (i = 0; i < 8; i++) {
-            data_ov003_02234fb4[i] = 0;
+            sVillagerBoards[i] = 0;
         }
     }
 }
 
-BOOL Unk_ov003_022309d0::vfunc_48(void *a) {
+BOOL VillagerBoard::vfunc_48(void *a) {
     func_0203e42c();
     Character *o = (Character *)a;
     if (o) {
@@ -306,19 +306,19 @@ BOOL Unk_ov003_022309d0::vfunc_48(void *a) {
     return FALSE;
 }
 
-void Unk_ov003_022309d0::vfunc_4c(u32 a, u8 b) {
+void VillagerBoard::vfunc_4c(u32 a, u8 b) {
     switch (a) {
     case 0:
-        func_ov003_02204a24(1);
+        changeAct(1);
         break;
     case 8:
-        func_ov003_02204a24(0);
+        changeAct(0);
         break;
     }
 }
 
-BOOL Unk_ov003_022309d0::func_ov003_02204a24(s32 m) {
-    static Unk_02204a24_Fn tbl[3] = { (Unk_02204a24_Fn)&Unk_ov003_022309d0::func_ov003_022049a4, (Unk_02204a24_Fn)&Unk_ov003_022309d0::func_ov003_02204930, (Unk_02204a24_Fn)&Unk_ov003_022309d0::func_ov003_02204908 };
+BOOL VillagerBoard::changeAct(s32 m) {
+    static Unk_02204a24_Fn tbl[3] = { (Unk_02204a24_Fn)&VillagerBoard::setupIdle, (Unk_02204a24_Fn)&VillagerBoard::setupRead, (Unk_02204a24_Fn)&VillagerBoard::setupReadEnd };
     if (m < 3) {
         if ((this->*tbl[m])()) {
             unk_130 = m;
@@ -328,25 +328,25 @@ BOOL Unk_ov003_022309d0::func_ov003_02204a24(s32 m) {
     return FALSE;
 }
 
-void Unk_ov003_022309d0::func_ov003_022049a8() {
-    static Unk_022049a8_Fn tbl[3] = { &Unk_ov003_022309d0::func_ov003_022049a0, &Unk_ov003_022309d0::func_ov003_0220490c, &Unk_ov003_022309d0::func_ov003_022048d8 };
+void VillagerBoard::runAct() {
+    static Unk_022049a8_Fn tbl[3] = { &VillagerBoard::mainIdle, &VillagerBoard::mainRead, &VillagerBoard::mainReadEnd };
     if (unk_130 < 3) {
         (this->*tbl[unk_130])();
     }
 }
 
-extern "C" Unk_ov003_SceneEntry data_ov003_022309b0 = {(void *(*)())func_ov003_02204c94, 0x18, 0x1d, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" Unk_ov003_SceneEntry sVillagerBoardProfile = {(void *(*)())VillagerBoard_Create, 0x18, 0x1d, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" {
-Unk_ov003_022309d0 *data_ov003_02234fb4[8];
+VillagerBoard *sVillagerBoards[8];
 }
 
-BOOL Unk_ov003_022309d0::func_ov003_022049a4() {
+BOOL VillagerBoard::setupIdle() {
     return TRUE;
 }
 
-void Unk_ov003_022309d0::func_ov003_022049a0() {}
+void VillagerBoard::mainIdle() {}
 
-BOOL Unk_ov003_022309d0::func_ov003_02204930() {
+BOOL VillagerBoard::setupRead() {
     Unk_02204930_Pad pad;
     _ZN9Character13func_0203e488Ei(this, this);
     setFileName("obj_etc_board");
@@ -358,19 +358,19 @@ BOOL Unk_ov003_022309d0::func_ov003_02204930() {
     return TRUE;
 }
 
-void Unk_ov003_022309d0::func_ov003_0220490c() {
+void VillagerBoard::mainRead() {
     if (unk_3c) {
         if (((TalkWindowState *)unk_3c)->unk_04) {
-            func_ov003_02204a24(2);
+            changeAct(2);
         }
     }
 }
 
-BOOL Unk_ov003_022309d0::func_ov003_02204908() {
+BOOL VillagerBoard::setupReadEnd() {
     return TRUE;
 }
 
-void Unk_ov003_022309d0::func_ov003_022048d8() {
+void VillagerBoard::mainReadEnd() {
     if (unk_3c) {
         if (((TalkWindowState *)unk_3c)->unk_04 == 0) {
             _ZN9Character13func_0203e47cEi(this, this);
@@ -380,9 +380,9 @@ void Unk_ov003_022309d0::func_ov003_022048d8() {
 }
 
 // ================================================================
-extern "C" Unk_ov003_022309d0 *func_ov003_022048c0(s32 i) {
+extern "C" VillagerBoard *VillagerBoard_Get(s32 i) {
     if (i >= 0 && i < 8) {
-        return data_ov003_02234fb4[i];
+        return sVillagerBoards[i];
     }
     return 0;
 }

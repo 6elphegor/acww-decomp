@@ -91,7 +91,7 @@ void *func_0208516c(void *p);
 void func_0201a900(void *out, void *pos, void *tbl, s32 ang);
 s32 func_0201a834(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_0204edd8(void *a, void *b);
+void FieldPos_SnapToUnitCenter(void *a, void *b);
 s32 func_02077f40(void *p, s32 v);
 
 // Methods of other modules' classes, called by their real (mangled) names with the object as first argument.
@@ -233,12 +233,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -347,7 +347,7 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -575,7 +575,7 @@ BOOL Unk_ov073_022724c0::func_02271e2c(s32 *a, s32 *b) {
         v.x = t + unk_5c.x;
         t = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
         v.z = t + unk_5c.z;
-        func_0204edd8(&v, &v);
+        FieldPos_SnapToUnitCenter(&v, &v);
         if (func_02077f40(&v, 0)) {
             *a = v.x;
             *b = v.z;

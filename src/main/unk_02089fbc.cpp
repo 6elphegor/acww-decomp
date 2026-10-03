@@ -132,17 +132,17 @@ void Camera_SetPresetCell(u32 a, u32 b);
 BOOL Input_IsTouchTrigInRect(s32 x0, s32 x1, s32 y0, s32 y1);
 BOOL func_02038f10();
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-void func_0209cf28(void *p);
-s32 func_0209d3d0(void *a, void *b, s32 n);
-void func_0209d064(void *a, void *b);
+void Clock_GetRtcDateTime(void *p);
+s32 DateTime_Compare(void *a, void *b, s32 n);
+void DateTime_Sub(void *a, void *b);
 s32 func_020b50e8();
 void func_020b7878(s32 x);
 u64 OS_GetTick();
 s32 MenuCtrl_IsMenuOpen();
-void func_0209d224(void *p, s32 v);
-void func_0209cfb8(void *p);
-void func_0209cf18(void *p);
-s32 func_0209cef4();
+void DateTime_AddSeconds(void *p, s32 v);
+void Clock_GetDayMonth(void *p);
+void Clock_GetMinuteHour(void *p);
+s32 Clock_GetWeekday();
 BOOL PlayerActor_IsInAction(s32 a, s32 b);
 
 // plain-named functions of the unit
@@ -1169,9 +1169,9 @@ void HudClockLabels::blinkColon() {
 
 void HudClockLabels::pollDateTime() {
     u16 v[2];
-    func_0209cfb8(v);
-    func_0209cf18(&v[1]);
-    s32 t = func_0209cef4();
+    Clock_GetDayMonth(v);
+    Clock_GetMinuteHour(&v[1]);
+    s32 t = Clock_GetWeekday();
     if (v[0] != *(u16 *)&unk_60) {
         if (((u8 *)v)[1] != unk_61) unk_48 = 1;
         if (((u8 *)v)[0] != unk_60) unk_49 = 1;
@@ -1297,8 +1297,8 @@ void HudCountdown::start(s32 a, s32 b) {
     unk_a4 = a;
     unk_b8 = 0;
     if (a != 0) {
-        func_0209cf28(&unk_a8);
-        func_0209d224(&unk_a8, kHudCountdownSeconds[a]);
+        Clock_GetRtcDateTime(&unk_a8);
+        DateTime_AddSeconds(&unk_a8, kHudCountdownSeconds[a]);
         unk_9c = 0;
         unk_a0 = 0;
         unk_94 = 1;
@@ -1565,8 +1565,8 @@ void HudCountdownLabels::updateRemaining() {
         MI_CpuCopy8(unk_a8, a, 8);
         ((u32 *)b)[0] = 0;
         ((u32 *)b)[1] = 0;
-        func_0209cf28(b);
-        r = func_0209d3d0(b, a, 0x3f);
+        Clock_GetRtcDateTime(b);
+        r = DateTime_Compare(b, a, 0x3f);
         if (r == 0) {
             goto yes;
         }
@@ -1583,11 +1583,11 @@ void HudCountdownLabels::updateRemaining() {
         } else {
             u32 k;
             MI_CpuCopy8(b, c, 8);
-            func_0209d064(a, c);
+            DateTime_Sub(a, c);
             k = x;
-            t = func_0209d3d0(unk_b0, a, 1) ? TRUE : FALSE;
+            t = DateTime_Compare(unk_b0, a, 1) ? TRUE : FALSE;
             x = (k | t) ? TRUE : FALSE;
-            r = func_0209d3d0(unk_b0, a, 2) ? TRUE : FALSE;
+            r = DateTime_Compare(unk_b0, a, 2) ? TRUE : FALSE;
             k |= r;
             y = k ? TRUE : FALSE;
         }

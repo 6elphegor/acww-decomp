@@ -2,16 +2,16 @@
 
 // TU185: 0x0209c3e0-0x0209c4a8. Three flag bytes in .bss (autoload_3 0x021d7274-0x021d7278) and their accessors.
 
-class Unk_020cbb18 {
+class CommManager {
 public:
-    BOOL func_02072e44();
-    void func_020728d4();
-    void func_020728a4(u8 *buf, u32 n);
-    void func_02072824(u32 cmd, u32 arg);
+    BOOL isOnline();
+    void beginRecord();
+    void writeRecord(u8 *buf, u32 n);
+    void endRecord(u32 cmd, u32 arg);
 };
 
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 extern u8 data_020e416c;
 
 u8 data_021d7274[3];
@@ -59,14 +59,14 @@ extern "C" BOOL func_0209c41c(Unk_0209c41c_Actor *self, u8 v) {
         if (self->vfunc_60(v)) {
             u8 idx = *((u8 *)self + 0xea);
             if (idx < 3) {
-                if (data_020cbb18->func_02072e44()) {
+                if (gCommManager->isOnline()) {
                     Unk_0209c41c_Pack pk;
                     pk.lo = idx;
                     pk.hi = v;
-                    Unk_020cbb18 *g = data_020cbb18;
-                    g->func_020728d4();
-                    g->func_020728a4((u8 *)&pk, 1);
-                    g->func_02072824(0x25, 4);
+                    CommManager *g = gCommManager;
+                    g->beginRecord();
+                    g->writeRecord((u8 *)&pk, 1);
+                    g->endRecord(0x25, 4);
                 }
             }
             return TRUE;

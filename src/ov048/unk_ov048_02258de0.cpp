@@ -92,16 +92,16 @@ extern const Unk_ov048_Vec data_ov048_0225c340;
 extern const Unk_ov048_Vec data_ov048_0225c34c;
 extern const Unk_ov048_Vec data_ov048_0225c358;
 extern const Unk_ov048_Vec data_ov048_0225c364;
-extern Unk_ov048_Global *data_020cbb18;
-extern u8 data_021c3cc0;
+extern Unk_ov048_Global *gCommManager;
+extern u8 gScreenTransition;
 extern u16 data_020c6cc8;
 extern u8 data_021d7352[];
 void _ZN15TalkWindowState14setNextMessageEPhPv(void *, u8 *, void *);
 void _ZN15TalkWindowState7setSlotEiPv(void *, s32, void *);
 void _ZN15TalkWindowState11lockAdvanceEv(void *);
-s32 func_020eaf18();
-s32 func_020ea748();
-s32 func_020ea738();
+s32 Net_GetMode();
+s32 Net_GetError();
+s32 Net_GetLastErrorCode();
 void func_020ea72c();
 void _ZN11MsgString25C1Ev(void *);
 void _ZN11MsgString25D1Ev(void *);
@@ -119,66 +119,66 @@ void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *, void *, s32, s32);
 BOOL func_020e7500(void *);
 s32 func_020e77cc(s32, s32, s32);
 void * _ZN10PlayerData15getWifiUserDataEv(...);
-void * func_02076c7c(void *);
-void * func_02076e1c(void *);
-void * func_02076c80(...);
+void * PlayerWifiData_GetOwnFriendData(void *);
+void * DwcFriendData_GetBytes(void *);
+void * PlayerWifiData_GetDwcUserData(...);
 BOOL Save_WritePlayerWifiData();
 BOOL func_020ea3e8(void *);
 void func_020ea3d0(void *, void *);
-s32 func_020ea5d0(s32);
-s32 func_020ea434(s32);
+s32 Net_WifiFindFriend(s32);
+s32 Net_WifiConnectToHost(s32);
 s32 func_020ea598(s32);
-BOOL func_020eb1cc(s32);
+BOOL Net_WifiShutdownStepExt(s32);
 BOOL func_0206ed18();
 s32 func_0206ed38();
-u8 * _ZN12Unk_020cbb1813func_020721ecEv(void *);
-u8 * _ZN12Unk_020cbb1813func_020721f8Ev(void *);
+u8 * _ZN11CommManager15getWifiUserDataEv(void *);
+u8 * _ZN11CommManager17getWifiFriendListEv(void *);
 void * PlayerData_GetCurrent();
 s32 _ZN10PlayerData8getIndexEv();
-void func_0209ed74();
-void func_0209ecf8();
-void func_0209ec80();
-void func_0209f248();
+void GameStats_ApplyDownload();
+void AxMail_ApplyMail();
+void AxMail_ApplyBbs();
+void Wifi_StoreFriendList();
 BOOL Save_WritePlayerFriendList();
 BOOL func_020a0828();
 BOOL func_020a084c();
 void SpNpcMissing1_ChangeAct05();
 s32 SpNpcMissing1_ResetAct();
-void func_020a093c();
-BOOL func_0209ee3c();
-BOOL func_0209ef5c();
-BOOL func_0209edcc();
-BOOL func_0209efa4();
-BOOL func_0209edf4();
-BOOL func_0209ee60();
-BOOL func_0209ee18();
-BOOL func_020733bc();
+void SaveManager_RequestAct13();
+BOOL GameStats_PollDownload();
+BOOL GameStats_Download();
+BOOL GameStats_PollUpload();
+BOOL GameStats_Upload();
+BOOL AxMail_PollBbs();
+BOOL AxMail_DownloadBbs();
+BOOL AxMail_PollMail();
+BOOL Comm_SendEmpty();
 s32 func_020eae78(s32);
-void * func_020ea65c(s32);
+void * Net_GetScanResults(s32);
 s32 func_020ea6c8(void *);
 void * func_020ea6f4(void *);
-void func_020ea608(void *);
+void Net_ConnectToParent(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 func_02133150(s32, s32);
-BOOL func_0209eedc();
-s32 func_020eb650(...);
-s32 func_020ea574(s32);
+BOOL AxMail_DownloadMail();
+s32 Net_PollConnected(...);
+s32 Net_GetWifiFriendList(s32);
 BOOL func_020a032c();
 s32 _ZN10ChoiceList9getResultEv(void *);
 void * _ZN15TalkWindowState13getChoiceListEv(void *);
 s32 func_ov004_02225ebc();
 s32 func_02073340();
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *);
-BOOL _ZN12Unk_020cbb1813func_020729ccEj(void *, s32);
-BOOL _ZN12Unk_020cbb1813func_02072e88Ei(void *, s32);
-void func_0209f1e4();
-void func_0209f1c4();
-void func_02076c9c(void *);
+BOOL _ZN11CommManager8isOnlineEv(void *);
+BOOL _ZN11CommManager7isMyAidEj(void *, s32);
+BOOL _ZN11CommManager12isSlotActiveEi(void *, s32);
+void NetOverlay_LoadWifi();
+void NetOverlay_Restore();
+void PlayerWifiData_Create(void *);
 s32 func_020e9d94(void *);
 s32 func_020ea3dc(void *);
 s64 func_020ea3c4(...);
-void _ZN12Unk_020cbb1813func_02072368Ej(void *, s32);
+void _ZN11CommManager12setErrorModeEj(void *, s32);
 s32 _ZN15TalkWindowState13func_02067990Ev(void *);
 s32 _ZN15TalkWindowState13unlockAdvanceEv(void *);
 s32 _ZN15TalkWindowState13func_0206799cEv(void *, s32);
@@ -186,30 +186,30 @@ s32 func_ov004_02225e9c();
 s32 func_ov004_02225ee0();
 s32 func_0202e148();
 void _ZN12Unk_02097ff413func_0209801cEj(void *, s32);
-u32 func_0209ccd0();
+u32 Clock_GetTimeOfDay();
 void * _ZN10PlayerData13getFriendListEv(void *);
-void * func_02076db4(void *);
-void * func_02076cf0(void *);
-s32 func_02076f04(void *);
-s32 func_0209f204();
-s32 func_02073bf8(s32, s32, s32);
-s32 func_02073a78();
+void * FriendList_GetEntries(void *);
+void * FriendEntry_GetFriendData(void *);
+s32 DwcFriendData_IsValid(void *);
+s32 NetOverlay_LoadWireless();
+s32 Comm_Start(s32, s32, s32);
+s32 Comm_End();
 s32 _ZN12Unk_020d77a413func_0201b9e8Eii(void *, s32 *, s32 *);
 BOOL func_020a62a0();
 Unk_ov048_Rec * TalkWindow_Get(s32);
-void func_020a0978();
+void SaveManager_RequestAct02();
 void * func_020b4934();
 s32 func_020b4f58(void *, s32, s32, s32);
 void * func_020850e0();
 void * func_02085180(void *);
 Unk_ov048_0225b278_Ent * func_02095204(s32);
-void func_0204ee10(s32 *, s32 *, Unk_ov048_0225b278_Vec *);
+void FieldPos_ToUnit(s32 *, s32 *, Unk_ov048_0225b278_Vec *);
 void _ZN12Unk_02086ef013func_02086f00Ej(void *, s32);
 void _ZN12Unk_02086ef013func_02086ef8Ei(void *, s32);
 s32 func_020b4aa8(void *, s32, Unk_ov048_0225b278_Vec *, s32, s32, s32, s32);
 void Camera_SaveView();
-void func_020a090c();
-void func_020a0930();
+void SaveManager_RequestAct17();
+void SaveManager_RequestAct14();
 s32 func_020b4f18(void *, s32, Unk_ov048_0225b278_Vec *, s32, s32, s32, s32);
 s32 func_020a5ef8();
 void * PlayerData_GetBySessionSlot();
@@ -242,7 +242,7 @@ s32 _ZN12Unk_0201635013func_0201622cEiPv(void *, s32, void *);
 s32 _ZN12Unk_0201985813func_020195c8Eiijtt(void *, s32, s32, s32, u32, s32);
 s32 _ZN12Unk_0201985813func_02019790Ev(void *);
 s32 _ZN12Unk_0201a33413func_0201a784Ev(void *);
-s32 func_0204137c(s32, s32);
+s32 ScreenTransition_StartFadeOut(s32, s32);
 s32 Snd_FadeOutScene();
 s32 _ZN12Unk_0201985813func_020197a8Ev(void *);
 void _ZN12Unk_0201985813func_02019614Ejt(void *, s32, s32);
@@ -254,8 +254,8 @@ s32 PlayerActor_RequestAct70(s32, s32);
 BOOL _ZN12Unk_02013b1013func_02014220Ev(void *);
 s32 Camera_IsBlending();
 void TalkRequest_EndTalkWith(void *);
-s32 func_020ea4dc(s32);
-s32 func_02073368();
+s32 Net_WifiStartHost(s32);
+s32 Comm_BeginHostSession();
 void * func_02063964(void *);
 void * _ZN8PlayerId13func_02094104Ev(void *);
 void func_020ea720(void *, s32);
@@ -276,24 +276,24 @@ void _ZN12Unk_0201ad2013func_0201ad34Ei(void *, s32);
 BOOL SpNpcMissing1_IsIdle();
 BOOL TalkRequest_IsActive();
 s32 _ZN12Unk_02019dd813func_02019d8cEv(void *);
-s32 func_020eaf90();
+s32 Net_GetMyAid();
 void func_020a0408();
-s32 func_02073204();
-void func_020731d4();
-BOOL func_02073230(u32);
+s32 Comm_GetSyncState();
+void Comm_ClearSyncState();
+BOOL Comm_RequestSync(u32);
 void func_020a5f38(u32);
 void func_020a5f18(u32);
 void * func_02085178(void *);
 BOOL _ZN12Unk_02086f8413func_02086fa8Ev(void *);
 void _ZN12Unk_020872fc13func_02087308Ev(void *);
 s32 func_020a5f6c();
-BOOL func_02074e80(void *, s32);
-void func_02073348();
+BOOL CommSend_PlayerData(void *, s32);
+void Comm_PrepareJoin();
 
 }
-s32 func_020721b4();
-s32 func_0207217c();
-s32 func_020720f8();
+s32 NetOverlay_AssertWifi();
+s32 NetOverlay_AssertWireless();
+s32 NetOverlay_AssertAny();
 
 class ActorTalkRequest {
 public:
@@ -504,12 +504,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -628,7 +628,7 @@ public:
     void func_0201bd9c(s32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -918,14 +918,14 @@ void _ZN7PatternC1Ev(void *);
 
 // ---- b444
 static inline BOOL Unk_ov048_0225b4e4_Is2() {
-    if (data_021c3cc0 == 2) {
+    if (gScreenTransition == 2) {
         return TRUE;
     }
     return FALSE;
 }
 
 static inline BOOL Unk_ov048_0225b854_Is0() {
-    if (data_021c3cc0 == 0) {
+    if (gScreenTransition == 0) {
         return TRUE;
     }
     return FALSE;
@@ -959,7 +959,7 @@ BOOL Unk_ov048_0225cc58::vfunc_00() {
     }
     unk_658.unk_7e4 = unk_8e;
     unk_4cc.unk_1c |= 2;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) && func_020b50e8() == 0xb) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) && func_020b50e8() == 0xb) {
         if (func_0201ba88()) {
             func_ov048_0225bfb4(this, 1);
         } else {
@@ -1140,10 +1140,10 @@ BOOL Unk_ov048_0225cc58::func_ov048_0225bcc0() {
             func_ov004_02225ee0();
             unk_658.unk_7e6 = 0x3c;
             unk_658.unk_7e9 = 2;
-            if (func_020eaf18() == 4) {
-                func_020ea4dc(func_020721b4());
-                _ZN12Unk_020cbb1813func_02072368Ej(data_020cbb18, 0);
-                func_02073368();
+            if (Net_GetMode() == 4) {
+                Net_WifiStartHost(NetOverlay_AssertWifi());
+                _ZN11CommManager12setErrorModeEj(gCommManager, 0);
+                Comm_BeginHostSession();
             }
         }
         break;
@@ -1151,8 +1151,8 @@ BOOL Unk_ov048_0225cc58::func_ov048_0225bcc0() {
         if (func_020e7500(&unk_658.unk_7e6) == 0) {
             u8 t = unk_658.unk_1e;
             if (t == 0x46 || t == 0x6c) {
-                if (func_020eaf18() == 3) {
-                    if (func_020eb650(func_020720f8()) != 0) {
+                if (Net_GetMode() == 3) {
+                    if (Net_PollConnected(NetOverlay_AssertAny()) != 0) {
                         TalkRequest_EndTalkWith(this);
                     }
                 } else {
@@ -1161,15 +1161,15 @@ BOOL Unk_ov048_0225cc58::func_ov048_0225bcc0() {
                     MI_CpuCopy8(func_02063964(data_021d7352), buf, 8);
                     MI_CpuCopy8(_ZN8PlayerId13func_02094104Ev(_ZN10PlayerData11getPlayerIdEv(h)), buf + 8, 8);
                     buf[0x10] = 0;
-                    func_0207217c();
+                    NetOverlay_AssertWireless();
                     func_020ea720(buf, 0x11);
-                    func_02073368();
+                    Comm_BeginHostSession();
                     TalkRequest_EndTalkWith(this);
                 }
             }
         } else {
-            if (func_020eaf18() == 3) {
-                func_020eb650(func_020720f8());
+            if (Net_GetMode() == 3) {
+                Net_PollConnected(NetOverlay_AssertAny());
             }
         }
         break;
@@ -1293,7 +1293,7 @@ BOOL Unk_ov048_0225cc58::func_ov048_0225b918() {
     }
     if (func_020e7500(&unk_658.unk_7e6) == 0) {
         if (unk_654 == 8) {
-            if (func_0204137c(2, 0xf)) {
+            if (ScreenTransition_StartFadeOut(2, 0xf)) {
                 Snd_FadeOutScene();
                 return TRUE;
             }
@@ -2115,11 +2115,11 @@ BOOL Unk_ov048_0225cc58::func_ov048_0225b318() {
         s = e->unk_8e;
         a = 0;
         b = 0;
-        func_0204ee10(&a, &b, &v);
+        FieldPos_ToUnit(&a, &b, &v);
         _ZN12Unk_02086ef013func_02086f00Ej(h, 1);
         _ZN12Unk_02086ef013func_02086ef8Ei(h, unk_8e);
         Camera_SaveView();
-        func_020a0930();
+        SaveManager_RequestAct14();
         func_020b4f18(func_020b4934(), 0xc, &v, 0x800000, s, 2, 2);
         func_ov048_0225bfb4(this, 3);
     }
@@ -2146,12 +2146,12 @@ BOOL Unk_ov048_0225cc58::func_ov048_0225b278() {
         s = e->unk_8e;
         a = 0;
         b = 0;
-        func_0204ee10(&a, &b, &v);
+        FieldPos_ToUnit(&a, &b, &v);
         _ZN12Unk_02086ef013func_02086f00Ej(h, 2);
         _ZN12Unk_02086ef013func_02086ef8Ei(h, unk_8e);
         func_020b4aa8(func_020b4934(), 0xc, &v, 0x800000, s, a, b);
         Camera_SaveView();
-        func_020a090c();
+        SaveManager_RequestAct17();
         func_020b4f58(func_020b4934(), 0x2e, 2, 3);
         func_ov048_0225bfb4(this, 3);
     }
@@ -2164,7 +2164,7 @@ BOOL Unk_ov048_0225cc58::func_ov048_0225b274() {
 
 BOOL Unk_ov048_0225cc58::func_ov048_0225b240() {
     if (TalkWindow_Get(0)->unk_04 == 5) {
-        func_020a0978();
+        SaveManager_RequestAct02();
         func_020b4f58(func_020b4934(), 0x2e, 2, 3);
         func_ov048_0225bfb4(this, 3);
     }
@@ -2182,13 +2182,13 @@ BOOL Unk_ov048_0225cc58::func_ov048_0225b1a0() {
         b = 4;
         s32 u;
         s32 x;
-        if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b) != 0 && (x = a, u = data_020cbb18->unk_64, x == u) && x == b) {
+        if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b) != 0 && (x = a, u = gCommManager->unk_64, x == u) && x == b) {
             func_0201b9fc(1, u, u);
             ((ActorTalkRequest *)&unk_658)->vfunc_08();
             unk_658.func_02015ab0(getPlayerActor(4));
             func_ov048_0225bfb4(this, 2);
         } else if (func_020a62a0() != 0 && b == 4) {
-            func_0201b9fc(1, data_020cbb18->unk_64, 4);
+            func_0201b9fc(1, gCommManager->unk_64, 4);
             func_ov048_0225bfb4(this, 1);
         }
     }
@@ -2207,7 +2207,7 @@ BOOL Unk_ov048_0225cc58::func_ov048_0225b144() {
         if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b) != 0) {
             if (a == 4) {
                 if (func_020a62a0() != 0) {
-                    func_0201b9fc(1, data_020cbb18->unk_64, 4);
+                    func_0201b9fc(1, gCommManager->unk_64, 4);
                     func_ov048_0225bfb4(this, 4);
                 }
             }
@@ -2253,8 +2253,8 @@ s32 Unk_ov048_0225cbc8::func_ov048_0225b030() {
 }
 
 void Unk_ov048_0225cbc8::func_ov048_0225b018() {
-    if (func_02073a78() != 0) {
-        func_0209f1c4();
+    if (Comm_End() != 0) {
+        NetOverlay_Restore();
     }
 }
 
@@ -2262,16 +2262,16 @@ void Unk_ov048_0225cbc8::func_ov048_0225afd8(s32 a, s32 b) {
     switch (a) {
     case 3:
     case 4:
-        func_0209f1e4();
+        NetOverlay_LoadWifi();
         break;
     case 1:
     case 2:
-        func_0209f204();
+        NetOverlay_LoadWireless();
         break;
     case 0:
         break;
     }
-    func_02073bf8(a, 4, b);
+    Comm_Start(a, 4, b);
 }
 
 s32 Unk_ov048_0225cbc8::func_ov048_0225af48(s64 v) {
@@ -2285,10 +2285,10 @@ s32 Unk_ov048_0225cbc8::func_ov048_0225af48(s64 v) {
 }
 
 BOOL Unk_ov048_0225cbc8::func_ov048_0225af0c() {
-    u8 *arr = (u8 *)func_02076db4(_ZN10PlayerData13getFriendListEv(PlayerData_GetCurrent()));
+    u8 *arr = (u8 *)FriendList_GetEntries(_ZN10PlayerData13getFriendListEv(PlayerData_GetCurrent()));
     s32 i;
     for (i = 0; i < 0x20; i++) {
-        if (func_02076f04(func_02076cf0(arr + i * 0x1c)) != 0) {
+        if (DwcFriendData_IsValid(FriendEntry_GetFriendData(arr + i * 0x1c)) != 0) {
             return TRUE;
         }
     }
@@ -2320,7 +2320,7 @@ void Unk_ov048_0225cbc8::vfunc_78(void *arg) {
             func_ov048_0225b038(0);
             _ZN12Unk_02097ff413func_0209801cEj(h, 5);
         } else {
-            s32 t = func_0209ccd0() + 1;
+            s32 t = Clock_GetTimeOfDay() + 1;
             func_ov048_0225b038(t);
         }
     }
@@ -2338,7 +2338,7 @@ void Unk_ov048_0225cbc8::func_ov048_0225adec() {
 void Unk_ov048_0225cbc8::func_ov048_0225adb0() {
     u8 buf[2];
     s32 v;
-    if (_ZN12Unk_020cbb1813func_020729ccEj(data_020cbb18, 0) != 0) {
+    if (_ZN11CommManager7isMyAidEj(gCommManager, 0) != 0) {
         v = 0x10;
     } else {
         v = 0xf;
@@ -2350,7 +2350,7 @@ void Unk_ov048_0225cbc8::func_ov048_0225adb0() {
 void Unk_ov048_0225cbc8::func_ov048_0225ad78() {
     func_ov048_0225bfb4(unk_b4, 7);
     func_02073340();
-    if (func_020eaf18() == 3 || func_020eaf18() == 4) {
+    if (Net_GetMode() == 3 || Net_GetMode() == 4) {
         func_ov048_0225a078(0x14);
     } else {
         func_ov048_0225b018();
@@ -2409,8 +2409,8 @@ void Unk_ov048_0225cbc8::func_ov048_0225ac58() {
 
 void Unk_ov048_0225cbc8::func_ov048_0225ac0c() {
     func_ov048_0225ad50(1);
-    if (func_020eaf18() == 2) {
-        _ZN12Unk_020cbb1813func_02072368Ej(data_020cbb18, 1);
+    if (Net_GetMode() == 2) {
+        _ZN11CommManager12setErrorModeEj(gCommManager, 1);
     } else {
         func_ov048_0225afd8(2, 1);
     }
@@ -2419,15 +2419,15 @@ void Unk_ov048_0225cbc8::func_ov048_0225ac0c() {
 }
 
 void Unk_ov048_0225cbc8::func_ov048_0225aba8() {
-    _ZN12Unk_020cbb1813func_02072368Ej(data_020cbb18, 1);
-    if (func_020eaf18() != 4) {
+    _ZN11CommManager12setErrorModeEj(gCommManager, 1);
+    if (Net_GetMode() != 4) {
         func_ov048_0225ace0();
     } else {
         s32 t;
         func_ov048_0225ad50(1);
         t = unk_b8.unk_3d4;
-        func_020721b4();
-        func_020ea434(t);
+        NetOverlay_AssertWifi();
+        Net_WifiConnectToHost(t);
         *(u16 *)(unk_b4 + 0xe3e) = 0x960;
         func_ov048_0225a078(5);
     }
@@ -2450,7 +2450,7 @@ void Unk_ov048_0225cbc8::func_ov048_0225ab60() {
 void Unk_ov048_0225cbc8::func_ov048_0225aafc() {
     u8 buf[2];
     if (unk_7e0 != 0) {
-        func_ov048_0225af48(func_020ea3c4(func_02076c80(_ZN10PlayerData15getWifiUserDataEv(PlayerData_GetCurrent()))));
+        func_ov048_0225af48(func_020ea3c4(PlayerWifiData_GetDwcUserData(_ZN10PlayerData15getWifiUserDataEv(PlayerData_GetCurrent()))));
         buf[0] = 0x76;
         _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, buf, data_ov048_0225c6e0);
     } else {
@@ -2520,9 +2520,9 @@ void Unk_ov048_0225cbc8::vfunc_14() {
 
 void Unk_ov048_0225cbc8::func_ov048_0225a8a4(s32 p) {
     if (p == 0) {
-        func_0209f1e4();
-        func_02076c9c(_ZN10PlayerData15getWifiUserDataEv(PlayerData_GetCurrent()));
-        func_0209f1c4();
+        NetOverlay_LoadWifi();
+        PlayerWifiData_Create(_ZN10PlayerData15getWifiUserDataEv(PlayerData_GetCurrent()));
+        NetOverlay_Restore();
     }
     func_ov048_0225a838(p);
 }
@@ -2595,8 +2595,8 @@ void Unk_ov048_0225cbc8::func_ov048_0225a6c8() {
         }
         return;
     }
-    void *s = func_02076c80(_ZN10PlayerData15getWifiUserDataEv(PlayerData_GetCurrent()));
-    func_0209f1e4();
+    void *s = PlayerWifiData_GetDwcUserData(_ZN10PlayerData15getWifiUserDataEv(PlayerData_GetCurrent()));
+    NetOverlay_LoadWifi();
     if (func_020ea3dc(s)) {
         if (func_020e9d94(s)) {
             v2 = data_ov048_0225c324[unk_7e3];
@@ -2610,7 +2610,7 @@ void Unk_ov048_0225cbc8::func_ov048_0225a6c8() {
         v4 = 0x71;
         _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v4, data_ov048_0225c6e0);
     }
-    func_0209f1c4();
+    NetOverlay_Restore();
 }
 
 void Unk_ov048_0225cbc8::func_ov048_0225a6a4(s32 p) {
@@ -2628,10 +2628,10 @@ void Unk_ov048_0225cbc8::func_ov048_0225a5a8(s32 p) {
         if (_ZN12Unk_02097ff413func_02098044Ej(h, 1)) {
             id = 8;
         } else {
-            Unk_ov048_Global *g = data_020cbb18;
-            if (_ZN12Unk_020cbb1813func_02072e44Ev(g) && _ZN12Unk_020cbb1813func_020729ccEj(g, 0)) {
+            Unk_ov048_Global *g = gCommManager;
+            if (_ZN11CommManager8isOnlineEv(g) && _ZN11CommManager7isMyAidEj(g, 0)) {
                 id = 0x50;
-            } else if (_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64)) {
+            } else if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64)) {
                 id = 0x51;
             } else {
                 id = 0x52;
@@ -2646,13 +2646,13 @@ void Unk_ov048_0225cbc8::func_ov048_0225a5a8(s32 p) {
         }
         break;
     case 2:
-        if (_ZN12Unk_020cbb1813func_020729ccEj(data_020cbb18, 0) == 0) {
+        if (_ZN11CommManager7isMyAidEj(gCommManager, 0) == 0) {
             if (_ZN12Unk_02097ff413func_02098044Ej(h, 1)) {
                 id = 8;
             } else {
                 void *s;
-                func_0209f1e4();
-                s = func_02076c80(_ZN10PlayerData15getWifiUserDataEv(h));
+                NetOverlay_LoadWifi();
+                s = PlayerWifiData_GetDwcUserData(_ZN10PlayerData15getWifiUserDataEv(h));
                 if (func_020e9d94(s)) {
                     if (func_020ea3dc(s)) {
                         id = 0x29;
@@ -2664,7 +2664,7 @@ void Unk_ov048_0225cbc8::func_ov048_0225a5a8(s32 p) {
                 } else {
                     id = 0x2f;
                 }
-                func_0209f1c4();
+                NetOverlay_Restore();
             }
         }
         break;
@@ -2683,10 +2683,10 @@ void Unk_ov048_0225cbc8::func_ov048_0225a514(s32 p) {
         if (_ZN12Unk_02097ff413func_02098044Ej(h, 1)) {
             id = 8;
         } else {
-            Unk_ov048_Global *g = data_020cbb18;
-            if (_ZN12Unk_020cbb1813func_02072e44Ev(g) && _ZN12Unk_020cbb1813func_020729ccEj(g, 0)) {
+            Unk_ov048_Global *g = gCommManager;
+            if (_ZN11CommManager8isOnlineEv(g) && _ZN11CommManager7isMyAidEj(g, 0)) {
                 id = 0x50;
-            } else if (_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64)) {
+            } else if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64)) {
                 id = 0x51;
             } else {
                 id = 0x52;
@@ -2748,7 +2748,7 @@ void Unk_ov048_0225cbc8::func_ov048_0225a3f8(s32 p) {
         _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v, data_ov048_0225c6e0);
         func_ov004_02225ebc();
         func_02073340();
-        if (func_020eaf18() == 3 || func_020eaf18() == 4) {
+        if (Net_GetMode() == 3 || Net_GetMode() == 4) {
             func_ov048_0225a078(0x14);
         } else {
             func_ov048_0225b018();
@@ -2874,9 +2874,9 @@ void Unk_ov048_0225cbc8::vfunc_84() {
 void Unk_ov048_0225cbc8::func_ov048_0225a078(s32 s) { unk_b0 = s; }
 
 void Unk_ov048_0225cbc8::func_ov048_0225a02c() {
-    func_020eb650(func_020720f8());
+    Net_PollConnected(NetOverlay_AssertAny());
     if (func_ov048_02259868() == 0) {
-        if (func_020ea574(func_020721b4()) != 0) {
+        if (Net_GetWifiFriendList(NetOverlay_AssertWifi()) != 0) {
             if (unk_7e3 == 0) {
                 func_ov048_0225a078(0x13);
             } else {
@@ -2889,7 +2889,7 @@ void Unk_ov048_0225cbc8::func_ov048_0225a02c() {
 // ---- a000
 
 void Unk_ov048_0225cbc8::func_ov048_0225a000() {
-    if (func_0209eedc()) {
+    if (AxMail_DownloadMail()) {
         func_ov048_0225a078(unk_b0 + 1);
     } else {
         func_ov048_0225a078(unk_b0 + 2);
@@ -2900,13 +2900,13 @@ void Unk_ov048_0225cbc8::func_ov048_02259fc8() {
     if (func_ov048_02259e6c()) {
         func_020ea72c();
         func_ov048_0225a078(unk_b0 + 1);
-    } else if (func_0209ee18()) {
+    } else if (AxMail_PollMail()) {
         func_ov048_0225a078(unk_b0 + 1);
     }
 }
 
 void Unk_ov048_0225cbc8::func_ov048_02259f9c() {
-    if (func_0209ee60()) {
+    if (AxMail_DownloadBbs()) {
         func_ov048_0225a078(unk_b0 + 1);
     } else {
         func_ov048_0225a078(unk_b0 + 2);
@@ -2917,13 +2917,13 @@ void Unk_ov048_0225cbc8::func_ov048_02259f64() {
     if (func_ov048_02259e6c()) {
         func_020ea72c();
         func_ov048_0225a078(unk_b0 + 1);
-    } else if (func_0209edf4()) {
+    } else if (AxMail_PollBbs()) {
         func_ov048_0225a078(unk_b0 + 1);
     }
 }
 
 void Unk_ov048_0225cbc8::func_ov048_02259f38() {
-    if (func_0209efa4()) {
+    if (GameStats_Upload()) {
         func_ov048_0225a078(unk_b0 + 1);
     } else {
         func_ov048_0225a078(unk_b0 + 2);
@@ -2934,13 +2934,13 @@ void Unk_ov048_0225cbc8::func_ov048_02259f00() {
     if (func_ov048_02259e6c()) {
         func_020ea72c();
         func_ov048_0225a078(unk_b0 + 1);
-    } else if (func_0209edcc()) {
+    } else if (GameStats_PollUpload()) {
         func_ov048_0225a078(unk_b0 + 1);
     }
 }
 
 void Unk_ov048_0225cbc8::func_ov048_02259ed4() {
-    if (func_0209ef5c()) {
+    if (GameStats_Download()) {
         func_ov048_0225a078(unk_b0 + 1);
     } else {
         func_ov048_0225a078(unk_b0 + 2);
@@ -2951,13 +2951,13 @@ void Unk_ov048_0225cbc8::func_ov048_02259e9c() {
     if (func_ov048_02259e6c()) {
         func_020ea72c();
         func_ov048_0225a078(unk_b0 + 1);
-    } else if (func_0209ee3c()) {
+    } else if (GameStats_PollDownload()) {
         func_ov048_0225a078(unk_b0 + 1);
     }
 }
 
 BOOL Unk_ov048_0225cbc8::func_ov048_02259e6c() {
-    s32 v = func_020ea738();
+    s32 v = Net_GetLastErrorCode();
     if (v < 0) {
         v = -v;
     }
@@ -2968,31 +2968,31 @@ BOOL Unk_ov048_0225cbc8::func_ov048_02259e6c() {
 }
 
 void Unk_ov048_0225cbc8::func_ov048_02259d40() {
-    u8 *g = (u8 *)data_020cbb18;
-    u8 *r4 = _ZN12Unk_020cbb1813func_020721ecEv(g);
+    u8 *g = (u8 *)gCommManager;
+    u8 *r4 = _ZN11CommManager15getWifiUserDataEv(g);
     void *r6 = PlayerData_GetCurrent();
     u8 m;
     s32 mv;
     if (unk_1e == 0x62) {
-        u8 *r6b = _ZN12Unk_020cbb1813func_020721f8Ev(g);
+        u8 *r6b = _ZN11CommManager17getWifiFriendListEv(g);
         s32 h = unk_b8.unk_3d4;
         s32 k;
-        func_020721b4();
-        k = func_020ea5d0(h);
+        NetOverlay_AssertWifi();
+        k = Net_WifiFindFriend(h);
         u8 *e = r6b + k * 0x13;
         if (e[0x190] != 6 || k == -1) {
             func_ov048_022597e8(0x78, 1);
         } else {
             h = unk_b8.unk_3d4;
-            func_020721b4();
-            func_020ea434(h);
+            NetOverlay_AssertWifi();
+            Net_WifiConnectToHost(h);
             *(u16 *)(unk_b4 + 0xe3e) = 0x960;
             func_ov048_0225a078(5);
         }
     } else {
         if (func_020ea3e8(r4 + 0x10)) {
-            func_020ea3d0(r4 + 0x10, func_02076e1c(func_02076c7c(_ZN10PlayerData15getWifiUserDataEv(r6))));
-            MI_CpuCopy8(r4 + 0x10, func_02076c80(_ZN10PlayerData15getWifiUserDataEv(r6)), 0x40);
+            func_020ea3d0(r4 + 0x10, DwcFriendData_GetBytes(PlayerWifiData_GetOwnFriendData(_ZN10PlayerData15getWifiUserDataEv(r6))));
+            MI_CpuCopy8(r4 + 0x10, PlayerWifiData_GetDwcUserData(_ZN10PlayerData15getWifiUserDataEv(r6)), 0x40);
             if (Save_WritePlayerWifiData() == 0) {
                 mv = 0x75;
             } else {
@@ -3024,9 +3024,9 @@ void Unk_ov048_0225cbc8::func_ov048_02259c1c() {
     u32 C[0x1c / 4];
     u32 WindowLight[0x1c / 4];
     if (func_ov048_02259838() == 0) {
-      n = func_020eae78(func_020733bc());
+      n = func_020eae78(Comm_SendEmpty());
       if (n > 0) {
-        arr = (void **)func_020ea65c(func_0207217c());
+        arr = (void **)Net_GetScanResults(NetOverlay_AssertWireless());
         _ZN12Unk_020dd38cC2Ev(LampLights);
         _ZN12Unk_020dd374C2Ev(LightLevel);
         _ZN12Unk_020e1c64C1Ev(C);
@@ -3036,10 +3036,10 @@ void Unk_ov048_0225cbc8::func_ov048_02259c1c() {
             p = arr[i];
             s32 t;
             if (p) {
-                func_0207217c();
+                NetOverlay_AssertWireless();
                 t = func_020ea6c8(p);
                 if (t == 0x11) {
-                    func_0207217c();
+                    NetOverlay_AssertWireless();
                     MI_CpuCopy8(func_020ea6f4(p), &buf[1], t);
                     if (buf[0x11] == 0) {
                         MI_CpuCopy8(p, unk_b8.unk_2f4, 0xe0);
@@ -3070,7 +3070,7 @@ void Unk_ov048_0225cbc8::func_ov048_02259bb0() {
     if (func_0206ed18()) {
         s32 r5 = func_0206ed38();
         u8 a;
-        func_020721b4();
+        NetOverlay_AssertWifi();
         unk_b8.unk_3d4 = func_020ea598(r5);
         a = 0x62;
         _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &a, data_ov048_0225c6e0);
@@ -3100,7 +3100,7 @@ void Unk_ov048_0225cbc8::func_ov048_02259ae0() {
     if (t) {
         _ZN15TalkWindowState11lockAdvanceEv(t);
     }
-    if (func_020eb1cc(func_020721b4())) {
+    if (Net_WifiShutdownStepExt(NetOverlay_AssertWifi())) {
         if (t) {
             func_ov048_0225ad38();
         }
@@ -3108,11 +3108,11 @@ void Unk_ov048_0225cbc8::func_ov048_02259ae0() {
             s32 r = _ZN10PlayerData8getIndexEv();
             if (r >= 0 && r < 4) {
                 u8 b;
-                func_0209ed74();
-                func_0209ecf8();
-                func_0209ec80();
+                GameStats_ApplyDownload();
+                AxMail_ApplyMail();
+                AxMail_ApplyBbs();
                 func_ov048_0225b018();
-                func_0209f248();
+                Wifi_StoreFriendList();
                 if (Save_WritePlayerFriendList()) {
                     b = 2;
                     _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &b, data_ov048_0225c6e0);
@@ -3125,7 +3125,7 @@ void Unk_ov048_0225cbc8::func_ov048_02259ae0() {
 
 void Unk_ov048_0225cbc8::func_ov048_02259ab8() {
     if (((Unk_ov048_0225cc58 *)unk_b4)->func_ov048_02258e34()) {
-        func_020a093c();
+        SaveManager_RequestAct13();
         func_ov048_0225a078(0x16);
     } else {
         SpNpcMissing1_ResetAct();
@@ -3152,15 +3152,15 @@ void Unk_ov048_0225cbc8::func_ov048_02259a3c() {
 }
 
 BOOL Unk_ov048_0225cbc8::func_ov048_02259924(s32 flag) {
-    s32 code = func_020ea748();
+    s32 code = Net_GetError();
     u32 a[0x2c / 4];
     u32 b[0x2c / 4];
     if (code != 0 || flag != 0) {
         if (flag != 0) {
             s32 r = func_ov048_02259390();
             func_ov048_022597e8(r, 0);
-        } else if (func_020eaf18() == 3 || func_020eaf18() == 4) {
-            s32 v = func_020ea738();
+        } else if (Net_GetMode() == 3 || Net_GetMode() == 4) {
+            s32 v = Net_GetLastErrorCode();
             s32 q;
             if (v < 0) {
                 v = -v;
@@ -3214,8 +3214,8 @@ BOOL Unk_ov048_0225cbc8::func_ov048_02259868() {
         func_ov048_022597e8(0x7a, 1);
         return TRUE;
     }
-    if (func_020ea748() != 0) {
-        s32 v = func_020ea738();
+    if (Net_GetError() != 0) {
+        s32 v = Net_GetLastErrorCode();
         if (v < 0) {
             v = -v;
         }
@@ -3237,7 +3237,7 @@ BOOL Unk_ov048_0225cbc8::func_ov048_02259838() {
 void Unk_ov048_0225cbc8::func_ov048_022597e8(u32 msg, s32 unused) {
     u8 b = msg;
     _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &b, data_ov048_0225c6e0);
-    if (func_020eaf18() == 3 || func_020eaf18() == 4) {
+    if (Net_GetMode() == 3 || Net_GetMode() == 4) {
         func_ov048_0225a078(0x14);
     } else {
         func_ov048_0225ad38();
@@ -3260,18 +3260,18 @@ void Unk_ov048_0225cbc8::func_ov048_022596e8() {
     if (func_ov048_022598c0()) {
         return;
     }
-    n = func_020eae78(func_020733bc());
+    n = func_020eae78(Comm_SendEmpty());
     if (n > 0) {
-        arr = (void **)func_020ea65c(func_0207217c());
+        arr = (void **)Net_GetScanResults(NetOverlay_AssertWireless());
         for (i = z; i < n; i++) {
             u8 *p = (u8 *)arr[i];
             s32 t;
             BOOL hit;
             if (p) {
-                func_0207217c();
+                NetOverlay_AssertWireless();
                 t = func_020ea6c8(p);
                 if (t == 0x11) {
-                    func_0207217c();
+                    NetOverlay_AssertWireless();
                     MI_CpuCopy8(func_020ea6f4(p), buf, t);
                     if (buf[0x10] == 0) {
                         if (p[2] == unk_b8.unk_2f4[2] && p[3] == unk_b8.unk_2f4[3] && p[4] == unk_b8.unk_2f4[4] && p[5] == unk_b8.unk_2f4[5] &&
@@ -3281,8 +3281,8 @@ void Unk_ov048_0225cbc8::func_ov048_022596e8() {
                             hit = z;
                         }
                         if (hit) {
-                            func_0207217c();
-                            func_020ea608(p);
+                            NetOverlay_AssertWireless();
+                            Net_ConnectToParent(p);
                             *(u16 *)(unk_b4 + 0xe3e) = 200;
                             func_ov048_0225a078(5);
                         }
@@ -3295,73 +3295,73 @@ void Unk_ov048_0225cbc8::func_ov048_022596e8() {
 
 void Unk_ov048_0225cbc8::func_ov048_02259690() {
     if (func_ov048_02259924(0) == 0 && func_ov048_022598f0() == 0) {
-        func_020720f8();
-        if (func_020eb650()) {
-            if (func_020eaf18() != 3) {
-                func_020eaf18();
+        NetOverlay_AssertAny();
+        if (Net_PollConnected()) {
+            if (Net_GetMode() != 3) {
+                Net_GetMode();
             }
             *(u16 *)((u8 *)unk_b4 + 0xe3e) = 200;
             func_ov048_0225a078(6);
-            func_020eaf90();
-            func_02073348();
+            Net_GetMyAid();
+            Comm_PrepareJoin();
         }
     }
 }
 
 void Unk_ov048_0225cbc8::func_ov048_02259648() {
-    func_020720f8();
+    NetOverlay_AssertAny();
     BOOL b;
-    if (func_020eb650() == 0) {
+    if (Net_PollConnected() == 0) {
         b = TRUE;
     } else {
         b = FALSE;
     }
     if (func_ov048_02259924(b)) {
-        func_020731d4();
-    } else if (func_02073230(0)) {
+        Comm_ClearSyncState();
+    } else if (Comm_RequestSync(0)) {
         unk_7e2 = 0;
         func_ov048_0225a078(7);
     }
 }
 
 void Unk_ov048_0225cbc8::func_ov048_02259524() {
-    func_020720f8();
+    NetOverlay_AssertAny();
     BOOL b;
-    if (func_020eb650() == 0) {
+    if (Net_PollConnected() == 0) {
         b = TRUE;
     } else {
         b = FALSE;
     }
     if (func_ov048_02259924(b)) {
-        func_020731d4();
+        Comm_ClearSyncState();
         if (_ZN12Unk_02086f8413func_02086fa8Ev(func_02085178(func_020850e0()))) {
             if (_ZN12Unk_020872fc13func_02087314Ev(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()))) {
                 _ZN12Unk_020872fc13func_020872fcEv(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()));
             }
         }
     } else {
-        s32 t = func_02073204();
+        s32 t = Comm_GetSyncState();
         if (t == 5) {
             if (_ZN12Unk_02086f8413func_02086fa8Ev(func_02085178(func_020850e0()))) {
                 if (_ZN12Unk_020872fc13func_02087314Ev(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent())) == 0) {
                     _ZN12Unk_020872fc13func_02087308Ev(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()));
                 }
             }
-            if (func_02074e80(&unk_7e2, func_020a5f6c())) {
-                _ZN12Unk_020cbb1813func_02072368Ej(data_020cbb18, 0);
+            if (CommSend_PlayerData(&unk_7e2, func_020a5f6c())) {
+                _ZN11CommManager12setErrorModeEj(gCommManager, 0);
                 func_020a5f38(0);
                 func_020a5f18(0);
-                func_020eaf90();
+                Net_GetMyAid();
                 func_020a0408();
-                func_020731d4();
+                Comm_ClearSyncState();
                 unk_3c->unk_14 = 0;
                 func_ov048_0225ad38();
                 func_ov048_0225a078(0);
                 func_ov048_0225bfb4(unk_b4, 0xc);
             }
-        } else if (t == 6 || func_020ea748() == 0x800c) {
-            func_020731d4();
-            if (func_020ea748() == 0x800c) {
+        } else if (t == 6 || Net_GetError() == 0x800c) {
+            Comm_ClearSyncState();
+            if (Net_GetError() == 0x800c) {
                 func_ov048_022597e8(0x79, 1);
             } else {
                 func_ov048_022597e8(func_ov048_02259364(), 0);
@@ -3371,13 +3371,13 @@ void Unk_ov048_0225cbc8::func_ov048_02259524() {
 }
 
 void Unk_ov048_0225cbc8::func_ov048_0225950c() {
-    func_02073230(1);
+    Comm_RequestSync(1);
     func_ov048_0225a078(9);
 }
 
 void Unk_ov048_0225cbc8::func_ov048_022594a8() {
     Unk_ov048_Owner *o = unk_3c;
-    s32 t = func_02073204();
+    s32 t = Comm_GetSyncState();
     if ((u32)(t - 5) <= 1) {
         func_ov048_0225ad38();
         func_ov048_0225a078(0);
@@ -3391,12 +3391,12 @@ void Unk_ov048_0225cbc8::func_ov048_022594a8() {
             b[0] = 0xc;
             _ZN15TalkWindowState14setNextMessageEPhPv(o, b, data_ov048_0225c6e0);
         }
-        func_020731d4();
+        Comm_ClearSyncState();
     }
 }
 
 s32 Unk_ov048_0225cbc8::func_ov048_02259420() {
-    u8 *p = _ZN12Unk_020cbb1813func_020721f8Ev(data_020cbb18);
+    u8 *p = _ZN11CommManager17getWifiFriendListEv(gCommManager);
     s32 n = 0;
     s32 i;
     for (i = 0; i < 0x20; i++) {
@@ -3407,14 +3407,14 @@ s32 Unk_ov048_0225cbc8::func_ov048_02259420() {
     s32 r = 0;
     switch (unk_7e3) {
     case 0: {
-        func_0209f1e4();
+        NetOverlay_LoadWifi();
         r = 0x26;
         PlayerData_GetCurrent();
         _ZN10PlayerData15getWifiUserDataEv();
-        func_02076c80();
+        PlayerWifiData_GetDwcUserData();
         s64 t = func_020ea3c4();
         _ZN18Unk_ov048_0225cbc819func_ov048_0225af48Ex(this, (s32)t, (s32)(t >> 32));
-        func_0209f1c4();
+        NetOverlay_Restore();
         break;
     }
     case 1:
@@ -3432,12 +3432,12 @@ s32 Unk_ov048_0225cbc8::func_ov048_02259420() {
 }
 
 s32 Unk_ov048_0225cbc8::func_ov048_022593e4() {
-    void *g = data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_020729ccEj(g, 0)) {
-        if (_ZN12Unk_020cbb1813func_02072e44Ev(g)) {
+    void *g = gCommManager;
+    if (_ZN11CommManager7isMyAidEj(g, 0)) {
+        if (_ZN11CommManager8isOnlineEv(g)) {
             return 0x17;
         }
-        if (func_020eaf18() == 3) {
+        if (Net_GetMode() == 3) {
             return 0x3a;
         }
         return 0x38;
@@ -3446,12 +3446,12 @@ s32 Unk_ov048_0225cbc8::func_ov048_022593e4() {
 }
 
 u32 Unk_ov048_0225cbc8::func_ov048_022593bc() {
-    return (u8)(_ZN12Unk_020cbb1813func_020729ccEj(data_020cbb18, 0) ? 0x21 : 0x22);
+    return (u8)(_ZN11CommManager7isMyAidEj(gCommManager, 0) ? 0x21 : 0x22);
 }
 
 u32 Unk_ov048_0225cbc8::func_ov048_02259390() {
     BOOL r = TRUE;
-    if (func_020eaf18() != 3 && func_020eaf18() != 4) {
+    if (Net_GetMode() != 3 && Net_GetMode() != 4) {
         r = FALSE;
     }
     return (u8)(r ? 0x82 : 0x65);
@@ -3459,7 +3459,7 @@ u32 Unk_ov048_0225cbc8::func_ov048_02259390() {
 
 u32 Unk_ov048_0225cbc8::func_ov048_02259364() {
     BOOL r = TRUE;
-    if (func_020eaf18() != 3 && func_020eaf18() != 4) {
+    if (Net_GetMode() != 3 && Net_GetMode() != 4) {
         r = FALSE;
     }
     return (u8)(r ? 0x80 : 0x63);
@@ -3521,10 +3521,10 @@ void Unk_ov048_0225cc58::vfunc_4c(u32 cmd, u32 arg) {
     case 3:
         unk_558.unk_08 = arg;
         if (arg != 4) {
-            func_0201b9fc(1, data_020cbb18->unk_64, arg);
+            func_0201b9fc(1, gCommManager->unk_64, arg);
             func_ov048_0225bfb4(this, 0x10);
         } else if (func_0201ba88()) {
-            s32 g = data_020cbb18->unk_64;
+            s32 g = gCommManager->unk_64;
             func_0201b9fc(1, g, g);
             func_ov048_0225bfb4(this, 0x10);
         }
@@ -3537,11 +3537,11 @@ void Unk_ov048_0225cc58::vfunc_4c(u32 cmd, u32 arg) {
     }
     case 0:
         unk_558.unk_08 = arg;
-        if (arg != 4 && arg != data_020cbb18->unk_64) {
+        if (arg != 4 && arg != gCommManager->unk_64) {
             func_0201b9fc(1, arg, arg);
             func_ov048_0225bfb4(this, 0x11);
         } else if (func_0201ba88()) {
-            s32 g = data_020cbb18->unk_64;
+            s32 g = gCommManager->unk_64;
             func_0201b9fc(1, g, g);
             ((ActorTalkRequest *)&unk_658)->vfunc_08();
             unk_658.func_02015ab0(getPlayerActor(4));
@@ -3556,10 +3556,10 @@ void Unk_ov048_0225cc58::vfunc_4c(u32 cmd, u32 arg) {
     case 8:
         if (arg == 4) {
             if (func_020a62a0()) {
-                func_0201b9fc(1, data_020cbb18->unk_64, 4);
+                func_0201b9fc(1, gCommManager->unk_64, 4);
                 func_ov048_0225bfb4(this, 4);
             } else {
-                func_0201b9fc(1, 4, data_020cbb18->unk_64);
+                func_0201b9fc(1, 4, gCommManager->unk_64);
                 func_ov048_0225bfb4(this, 0xf);
             }
         }
@@ -3572,7 +3572,7 @@ void Unk_ov048_0225cc58::vfunc_4c(u32 cmd, u32 arg) {
                 b = 4;
                 if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b)) {
                     if ((arg != 4 && (s32)arg == b) || arg == 4) {
-                        func_0201b9fc(1, data_020cbb18->unk_64, 4);
+                        func_0201b9fc(1, gCommManager->unk_64, 4);
                         func_ov048_0225bfb4(this, 1);
                     }
                 }
@@ -3583,9 +3583,9 @@ void Unk_ov048_0225cc58::vfunc_4c(u32 cmd, u32 arg) {
 }
 
 BOOL Unk_ov048_0225cc58::func_ov048_02258e88() {
-    Unk_ov048_Global *g = data_020cbb18;
+    Unk_ov048_Global *g = gCommManager;
     Unk_ov048_Vec_Loc v;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(g)) {
+    if (_ZN11CommManager8isOnlineEv(g)) {
         return FALSE;
     }
     if (func_020b50e8() == 0x2f) {
@@ -3594,14 +3594,14 @@ BOOL Unk_ov048_0225cc58::func_ov048_02258e88() {
     if (TalkRequest_IsActive()) {
         return FALSE;
     }
-    if (_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64) == 0) {
+    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) == 0) {
         return FALSE;
     }
     Unk_ov048_Vec *p = func_020947f0(4);
     *(Unk_ov048_Vec *)&v = *p;
     if (v.unk_08 <= data_ov048_0225c328.unk_08) {
         PlayerData_GetCurrent();
-        if (_ZN12Unk_020cbb1813func_02072e44Ev(g)) {
+        if (_ZN11CommManager8isOnlineEv(g)) {
             unk_658.func_ov048_0225b038(9);
         } else {
             unk_658.func_ov048_0225b038(10);

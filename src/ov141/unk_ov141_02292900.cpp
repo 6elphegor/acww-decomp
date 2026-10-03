@@ -21,21 +21,21 @@ BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
 void Snd_PlaySe(u32 v);
 void MI_CpuCopy8(void *a, void *b, u32 n);
-void func_020733bc();
+void Comm_SendEmpty();
 s32 func_020eae78();
-u32 *func_020ea65c();
+u32 *Net_GetScanResults();
 u32 func_020ea6c8(void *e);
 void *func_020ea6f4(void *e);
 void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
-void func_020015b8(s32 a);
-void func_02002398(s32 a, s32 b);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_020021a0(s32 a);
-void func_020020b8(s32 a);
+void Gfx2d_SetSubBgModeState(s32 a);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ShowLayer(s32 a);
 void File_LoadToBuffer(void *a, void *b, u32 c);
 void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_020026c4(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_LoadPaletteFile(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
 void func_0206ecf8(s32 a);
 void *func_0206e868();
 void *func_0206e85c();
@@ -49,7 +49,7 @@ void func_ov002_02203920(void *p);
 Unk_ov141_02293968 *func_ov141_022938a0();
 }
 
-void func_0207217c(); // C++ linkage in main
+void NetOverlay_AssertWireless(); // C++ linkage in main
 
 // Scene base class (declared in src/ov002/unk_ov002_02200680.cpp)
 class Unk_ov002_022044e4 : public GameProc {
@@ -100,13 +100,13 @@ public:
 };
 
 // Screen upload helper, 0x24 bytes (src/main/unk_020b8464.cpp)
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    Unk_020e45f8();
+    BgVramTask();
     virtual BOOL vfunc_00();
-    virtual void vfunc_04();
-    BOOL func_020b86c0(u32 a, u8 b, u32 c, u32 d);
-    void func_020b87d0();
+    virtual void clear();
+    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
+    void cancel();
     u32 unk_04[0x20 / 4];
 };
 
@@ -262,7 +262,7 @@ public:
     /* 0x094 */ Unk_ov139_02291f60 unk_94;
     /* 0x6b8 */ Unk_ov002_02204614 unk_6b8;
     /* 0x71c */ Unk_ov002_022046cc unk_71c;
-    /* 0x880 */ Unk_020e45f8 unk_880;
+    /* 0x880 */ BgVramTask unk_880;
     /* 0x8a4 */ u8 unk_8a4[6][0xe0];
     /* 0xde4 */ u8 unk_de4[6][0x11];
     /* 0xe4a */ u8 unk_e4a[2];
@@ -391,7 +391,7 @@ void Unk_ov141_02293968::func_ov141_02293524() {
 void Unk_ov141_02293968::func_ov141_022934e4() {
     unk_94.func_ov139_022921ac();
     func_ov002_022008e0(8, 4, 0, 0x30);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(6);
     func_ov141_02293424();
     func_ov141_0229298c(1);
     func_ov002_02200a50(2);
@@ -416,7 +416,7 @@ void Unk_ov141_02293968::func_ov141_02293474() {
 
 void Unk_ov141_02293968::func_ov141_02293448() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
+        Gfx2d_ResetLayer(6);
         func_ov002_02200a60(5);
     } else {
         func_ov141_02293424();
@@ -443,7 +443,7 @@ void Unk_ov141_02293968::func_ov141_022933d0() {
 void Unk_ov141_02293968::func_ov141_022933a4() {
     unk_71c.func_ov002_02203900();
     unk_94.func_ov139_022924f4();
-    unk_880.func_020b87d0();
+    unk_880.cancel();
 }
 
 void Unk_ov141_02293968::func_ov141_02293388() {
@@ -456,7 +456,7 @@ void Unk_ov141_02293968::func_ov141_02293380() {
 }
 
 void Unk_ov141_02293968::func_ov141_02293354() {
-    unk_880.func_020b87d0();
+    unk_880.cancel();
     unk_71c.func_ov002_02203900();
     unk_94.func_ov139_022924d8();
 }
@@ -467,13 +467,13 @@ void Unk_ov141_02293968::func_ov141_0229333c() {
 }
 
 void Unk_ov141_02293968::func_ov141_022932f0() {
-    func_020015b8(0);
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
-    func_02002398(4, 2);
-    func_0200226c(4, 0, 0, 0);
-    func_02002398(3, 2);
-    func_0200226c(3, 0, 0, 0);
+    Gfx2d_SetSubBgModeState(0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 2);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
+    Gfx2d_SetLayerPriority(3, 2);
+    Gfx2d_SetLayerControl(3, 0, 0, 0);
 }
 
 void Unk_ov141_02293968::func_ov141_02293270() {
@@ -483,7 +483,7 @@ void Unk_ov141_02293968::func_ov141_02293270() {
     func_0206ee80(unk_e60, 7, 8, 0x10, 0x13, 7);
     func_0206ee80(unk_e60, 0x12, 8, 0x19, 0x13, 7);
     func_ov141_0229298c(4);
-    func_020026c4((void *)"menu/res/ten0.bpl", gCurrentHeap, 6, 3, 3, 3);
+    Gfx2d_LoadPaletteFile((void *)"menu/res/ten0.bpl", gCurrentHeap, 6, 3, 3, 3);
 }
 
 void Unk_ov141_02293968::func_ov141_02293254() {
@@ -724,7 +724,7 @@ BOOL Unk_ov141_02293968::func_ov141_02292ce4(u32 pad) {
 
 void Unk_ov141_02293968::func_ov141_02292ca0() {
     if (func_ov141_0229299c(4)) {
-        if (unk_880.func_020b86c0((u32)unk_e60, 6, 0x800, 0)) {
+        if (unk_880.requestScreen((u32)unk_e60, 6, 0x800, 0)) {
             func_ov141_0229297c(4);
         }
     }
@@ -737,25 +737,25 @@ void Unk_ov141_02293968::func_ov141_02292b94() {
     s32 z[3];
     Unk_ov141_02292b94_Buf buf;
     s32 i;
-    func_020733bc();
+    Comm_SendEmpty();
     cnt = func_020eae78();
     for (i = 0; i < 6; i++) {
         if (unk_1663[i] == 1) {
             unk_1663[i] = 2;
         }
     }
-    func_0207217c();
-    list = func_020ea65c();
+    NetOverlay_AssertWireless();
+    list = Net_GetScanResults();
     z[0] = 0;
     z[1] = 0;
     z[2] = 0;
     for (u8 j = 0; j < cnt; j = j + 1) {
         u32 e = list[j];
         if (e != 0) {
-            func_0207217c();
+            NetOverlay_AssertWireless();
             u32 n = func_020ea6c8((void *)e);
             if (n == 0x11) {
-                func_0207217c();
+                NetOverlay_AssertWireless();
                 MI_CpuCopy8(func_020ea6f4((void *)e), &buf, n);
                 if (buf.flag == 0) {
                     s32 idx = func_ov141_02292a48((u8 *)e);
@@ -763,9 +763,9 @@ void Unk_ov141_02293968::func_ov141_02292b94() {
                         s32 idx2 = func_ov141_02292a24();
                         if (idx2 != ~z[2]) {
                             func_ov141_022929f0(idx2, (void *)e);
-                            func_0207217c();
+                            NetOverlay_AssertWireless();
                             n2 = func_020ea6c8((void *)e);
-                            func_0207217c();
+                            NetOverlay_AssertWireless();
                             void *q = func_020ea6f4((void *)e);
                             u8 *dst = unk_de4[idx2];
                             MI_CpuCopy8(q, dst, n2);

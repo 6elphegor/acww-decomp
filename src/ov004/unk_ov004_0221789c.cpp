@@ -50,14 +50,14 @@ class Unk_ov004_0224c574;
 #define Unk_020d77a4_getDistanceToPlayer _ZN12Unk_020d77a419getDistanceToPlayerEj
 #define Unk_020d77a4_getNpcIndex _ZN12Unk_020d77a411getNpcIndexEv
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
-#define func_0204e328 _ZN12Unk_0204e2f013func_0204e328EPv
+#define func_0204e328 _ZN8BlockMap13func_0204e328EPv
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
 #define VillagerDataProfileView_getShirt _ZN23VillagerDataProfileView8getShirtEv
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 #define VillagerMemory_getFriendship _ZN14VillagerMemory13getFriendshipEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-#define func_ov004_0220711c _ZN18Unk_ov004_0224882c19func_ov004_0220711cEPiS0_ii
+#define FtrActor_findOwnTile _ZN8FtrActor11findOwnTileEPiS0_ii
 #define func_ov004_022355d8 _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii
 #define func_ov004_02235624 _ZN18Unk_ov004_0223570819func_ov004_02235624Eiii
 typedef BOOL (Unk_ov004_0224c574::*Unk_ov004_022187b8_Fn)();
@@ -99,14 +99,14 @@ struct Unk_ov004_0224c4e4_Out {
 
 extern "C" {
 extern u16 data_020c6cc8;
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 extern s32 gCurrentHeap;
 extern u8 gTouchPrevHeld;
 extern u8 gTouchPrevChanged;
 extern u8 data_020e416c;
 extern u16 gPad[];
 extern s16 data_02135f44[];
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern Unk_ov004_022187b8_Ent data_ov004_02250718[8];
 extern u8 data_ov004_022506c8[0x28];
 extern u8 data_ov004_022506f0[0x28];
@@ -147,7 +147,7 @@ void func_020b50dc(void);
 s32 func_020b5178(void);
 void func_0202ffb0(u32);
 s32 Unk_020d77a4_getNpcIndex(void *);
-s32 func_0204cc1c(void *, s32, s32);
+s32 FgData_GetVillagerLayout(void *, s32, s32);
 void Unk_020d77a4_setTalkRequest(void *, void *);
 void VillagerTalk_begin(void *, void *, u32);
 void Mem_Free(s32);
@@ -160,19 +160,19 @@ s32 func_0202ff64(void *p);
 s32 TalkRequest_IsActive();
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
-void func_0204ee10(s32 *x, s32 *y, void *v);
+void FieldPos_ToUnit(s32 *x, s32 *y, void *v);
 void *func_ov004_02235718();
 s32 func_ov004_02235624(void *g, s32 x, s32 y, u32 z);
 void *func_ov004_022355d8(void *g, s32 x, s32 y, u32 z);
 u16 Item_MakeFurniture(void *p, u32 a);
-void func_ov004_0220711c(void *o, s32 *x, s32 *y, u32 a, u32 b);
+void FtrActor_findOwnTile(void *o, s32 *x, s32 *y, u32 a, u32 b);
 void *func_020b50b4();
 void func_020b60b0(void *a, void *b);
 void *func_020b6048(void *a, u32 b, u32 c);
 s32 func_0207e3b8(void *o, s32 *xy, u32 a, u32 b);
 void *ChoiceList_getResult(void *o);
 u32 VillagerId_makeFileName(void *a, void *b, u32 c, const void *d);
-void *func_ov004_022087a4();
+void *FtrActor_GetFtrIndex();
 s32 func_02098ffc();
 void TalkWindowState_setNextMessage(void *a, u8 *b, void *c);
 void Hud_Hide();
@@ -583,7 +583,7 @@ BOOL Unk_ov004_0224c574::vfunc_00() {
     }
     func_0202ffb0(0);
     unk_a54 = 0;
-    unk_a50 = func_0204cc1c(&unk_a54, Unk_020d77a4_getNpcIndex(this), gCurrentHeap);
+    unk_a50 = FgData_GetVillagerLayout(&unk_a54, Unk_020d77a4_getNpcIndex(this), gCurrentHeap);
     return TRUE;
 }
 
@@ -793,7 +793,7 @@ BOOL Unk_ov004_0224c574::func_ov004_0221823c() {
     a.z = p->z;
     func_0201ae00(&b, this, &a);
     r4 = Unk_020d77a4_getDistanceToPlayer(this, 4);
-    func_0204e328(data_021c47c4, &unk_5c);
+    func_0204e328(gSceneBlockMap, &unk_5c);
     if (r4 > 0x4000) {
         if (func_020197a8(&unk_564) == 1) {
             func_020196b4(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
@@ -1059,7 +1059,7 @@ BOOL Unk_ov004_0224c574::func_ov004_02217954() {
     v0.z = v0.z + func_01ffcb0c(0x2000, data_02135f44[idx + 1]);
     hx = 0;
     hy = 0;
-    func_0204ee10(&hx, &hy, &v0);
+    FieldPos_ToUnit(&hx, &hy, &v0);
     if (flag) {
         s32 t = func_ov004_02235624(func_ov004_02235718(), hx, hy, 0);
         BOOL z = FALSE;
@@ -1075,7 +1075,7 @@ BOOL Unk_ov004_0224c574::func_ov004_02217954() {
             ax = 0;
             ay = 0;
             func_020b60b0(func_020b50b4(), &v1);
-            func_0204ee10(&ax, &ay, &v1);
+            FieldPos_ToUnit(&ax, &ay, &v1);
             if (ax != hx || ay != hy) {
                 return FALSE;
             }
@@ -1085,10 +1085,10 @@ BOOL Unk_ov004_0224c574::func_ov004_02217954() {
     if (c2 == NULL) {
         return FALSE;
     }
-    r[0] = Item_MakeFurniture(func_ov004_022087a4(), 0);
+    r[0] = Item_MakeFurniture(FtrActor_GetFtrIndex(), 0);
     x2 = hx;
     y2 = hy;
-    func_ov004_0220711c(c2, &x2, &y2, 0, 0);
+    FtrActor_findOwnTile(c2, &x2, &y2, 0, 0);
     hx = x2;
     hy = y2;
     unk_894 = r[0];

@@ -56,27 +56,27 @@ public:
 
 // other modules' methods are reached through their real mangled symbols (object first)
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
-#define func_020375d0 _ZN12Unk_020375d013func_020375d0Ev
-#define func_0204e114 _ZN7TownMap13func_0204e114EPtiih
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define MapBlockAcre_getAcreId _ZN12MapBlockAcre9getAcreIdEv
+#define TownMap_placeStructure _ZN7TownMap14placeStructureEPtiih
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b23a4 _ZN12Unk_020b23a013func_020b23a4Ev
 #define func_020b2a0c _ZN12Unk_020b28ac13func_020b2a0cEPiS0_S0_j
 #define func_020b2b28 _ZN12Unk_020b28ac13func_020b2b28Ev
-#define func_ov009_0225b98c _ZN18Unk_ov009_0225e29c19func_ov009_0225b98cEv
-#define func_ov009_0225b998 _ZN18Unk_ov009_0225e29c19func_ov009_0225b998Ev
-#define func_ov009_0225b9b8 _ZN18Unk_ov009_0225e29c19func_ov009_0225b9b8Ev
-#define func_ov009_0225b9fc _ZN18Unk_ov009_0225e29c19func_ov009_0225b9fcEv
-#define func_ov009_0225ba1c _ZN18Unk_ov009_0225e29c19func_ov009_0225ba1cEv
+#define BuildingActor_getItemId _ZN13BuildingActor9getItemIdEv
+#define BuildingActor_tryOpenDoorForExit _ZN13BuildingActor18tryOpenDoorForExitEv
+#define BuildingActor_openDoorForExit _ZN13BuildingActor15openDoorForExitEv
+#define BuildingActor_tryOpenDoorForEntry _ZN13BuildingActor19tryOpenDoorForEntryEv
+#define BuildingActor_openDoorForEntry _ZN13BuildingActor16openDoorForEntryEv
 
 extern "C" {
 extern void *data_021c6204;
 extern u8 data_021ecc7c[];
 extern void *gCurrentHeap;
 extern Unk_ov003_02218bc8_Ent *data_ov003_022358b0[0x20];
-extern Unk_ov003_02218c60_Grid *data_021c47c4;
+extern Unk_ov003_02218c60_Grid *gSceneBlockMap;
 extern u8 data_020d0a7c[];
 extern u32 *gActorDefaultParent;
-extern u32 *data_020cbb18;
+extern u32 *gCommManager;
 }
 
 class Unk_ov003_022324ec : public GameProc {
@@ -92,55 +92,55 @@ public:
 extern "C" {
 s32 func_020b0f0c();
 s32 func_020b0f30();
-s32 func_020375d0(void *c);
-void func_02037590(void *c, u16 *p, s32 a, s32 b, s32 d);
-void *func_02037558(void *c, u32 i, u32 j, s32 k);
-void func_0204edf8(s32 *a, s32 *b, s32 x, s32 y, u32 i, u32 j);
+s32 MapBlockAcre_getAcreId(void *c);
+void MapBlock_SetItem(void *c, u16 *p, s32 a, s32 b, s32 d);
+void *MapBlock_GetItemPtr(void *c, u32 i, u32 j, s32 k);
+void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 x, s32 y, u32 i, u32 j);
 s32 func_020b5184();
-s32 func_02072e88(void *self, u32 v);
-s32 func_0204da0c();
-s32 func_0204d5d8(s32 k, s32 *a, s32 *b, s32 *c);
+s32 CommManager_isSlotActive(void *self, u32 v);
+s32 TownBlockMap_Get();
+s32 Town_FindTownHallFront(s32 k, s32 *a, s32 *b, s32 *c);
 void *func_020b23a4(void *p);
 s32 func_020b2514(void *p, s32 i);
 void *File_LoadAllocF(void *heap, s32 a, const char *fmt, ...);
 void *NNS_G3dGetTex(...);
-s32 func_020557a0(void *p, s32 a);
-void *func_0205588c(void *p, void *heap);
+s32 Gfx3d_LoadTex(void *p, s32 a);
+void *Gfx3d_CopyTex(void *p, void *heap);
 void Mem_Free(void *p);
-s32 func_02055724(void *p, s32 a);
+s32 Gfx3d_LoadTexAndPltt(void *p, s32 a);
 void *File_LoadAlloc(const char *s, void *heap, s32 a, s32 b);
 void *func_021065dc();
 void *func_021065f8(void *p, s32 a);
-u16 *func_ov009_0225b98c(void *p);
+u16 *BuildingActor_getItemId(void *p);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 func_020b50bc();
-s32 func_ov009_0225b998(void *p);
-s32 func_ov009_0225b9fc(void *p);
-s32 func_ov009_0225b9b8(void *p);
-s32 func_ov009_0225ba1c(void *p);
-void func_0204ee10(s32 *a, s32 *b, s32 c);
-u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
+s32 BuildingActor_tryOpenDoorForExit(void *p);
+s32 BuildingActor_tryOpenDoorForEntry(void *p);
+s32 BuildingActor_openDoorForExit(void *p);
+s32 BuildingActor_openDoorForEntry(void *p);
+void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 void func_0205c108(s32 a);
 void func_0205c124(s32 a, s32 b);
 void *StrBSize_Get(s32 p);
 s32 func_020b2b28(void *self);
 s32 func_020b2a0c(void *self, s32 *a, s32 *b, s32 *c, u32 i);
 void func_0203006c(s32 x, s32 y, u32 v);
-void func_0204ed8c(Unk_ov003_02218e2c_V3 *v, s32 x, s32 y);
+void FieldPos_FromUnitCenter(Unk_ov003_02218e2c_V3 *v, s32 x, s32 y);
 void func_020b16bc(void *o, void *p);
 s32 func_020b16ac(void *o);
 s32 func_020b16b4(void *o);
 void func_020b16b8(void *o);
 s32 Actor_spawn(s32 self, void *b, void *c, void *d, void *e);
-void func_0204e114(void *self, u16 *p, s32 x, s32 y, u8 z);
+void TownMap_placeStructure(void *self, u16 *p, s32 x, s32 y, u8 z);
 void func_020b2774(s32 a);
 void func_020b15d4();
 void func_020b278c(s32 a);
 void GameProc_CreateChild(s32 a, u32 *b, s32 c, s32 d);
-void func_02055744(void *, s32);
+void Gfx3d_LoadPltt(void *, s32);
 extern u32 data_021ed1a4[];
-s32 func_0204c188(void *, s32);
+s32 TownState_FindEvent(void *, s32);
 s32 func_02101340(char *, const char *, void *);
 void func_020639e8(char *, const char *, ...);
 void *func_021012bc(const char *);
@@ -257,7 +257,7 @@ s32 func_ov003_02218eec(void *self) {
     u16 *p;
     Unk_ov003_02218c60_Grid *g;
     data_ov003_02235814 = 0;
-    g = data_021c47c4;
+    g = gSceneBlockMap;
     gw = g->w;
     gh = g->h;
     a = TRUE;
@@ -274,17 +274,17 @@ s32 func_ov003_02218eec(void *self) {
             } else {
                 cell = 0;
             }
-            s32 t = func_020375d0(cell);
+            s32 t = MapBlockAcre_getAcreId(cell);
             switch (t) {
             case 0x1a:
             case 0x1b:
             case 0x1c:
                 buf[1] = 0x500b;
-                func_02037590(cell, &buf[1], 7, 0, 0);
+                MapBlock_SetItem(cell, &buf[1], 7, 0, 0);
             }
             for (jj = 0; jj < 0x10; jj++) {
                 for (ii = 0; ii < 0x10; ii++) {
-                    p = (u16 *)func_02037558(cell, ii, jj, 0);
+                    p = (u16 *)MapBlock_GetItemPtr(cell, ii, jj, 0);
                     if (p != 0) {
                         BOOL f = FALSE;
                         if (*p >= 0x5000 && *p <= 0x5021) {
@@ -292,7 +292,7 @@ s32 func_ov003_02218eec(void *self) {
                         }
                         if (f) {
                             u32 idx;
-                            func_0204edf8(&ax, &ay, x, y, ii, jj);
+                            FieldUnit_FromBlockUnit(&ax, &ay, x, y, ii, jj);
                             BOOL f2 = FALSE;
                             u32 v = *p;
                             if (v >= 0x5000 && v <= 0x5021) {
@@ -345,10 +345,10 @@ s32 func_ov003_02218eec(void *self) {
         }
     }
     if (func_020b5184()) {
-        if (!func_02072e88(data_020cbb18, data_020cbb18[0x64 / 4])) {
-            s32 k = func_0204da0c();
+        if (!CommManager_isSlotActive(gCommManager, gCommManager[0x64 / 4])) {
+            s32 k = TownBlockMap_Get();
             if (func_020b0f0c() != 0 || func_020b0f30() != 0) {
-                if (func_0204d5d8(k, &tl.cx, &bx, &by)) {
+                if (Town_FindTownHallFront(k, &tl.cx, &bx, &by)) {
                     buf[0] = 0x501b;
                     func_ov003_02218e2c(self, &buf[0], bx, by + 1, 0);
                 }
@@ -365,7 +365,7 @@ s32 func_ov003_02218e2c(void *self, u16 *pv, s32 x, s32 y, u8 flag) {
     vec.x = 0;
     vec.y = 0;
     vec.z = 0;
-    func_0204ed8c(&vec, x, y);
+    FieldPos_FromUnitCenter(&vec, x, y);
     BOOL f = FALSE;
     u32 v = *pv;
     if (v >= 0x5000 && v <= 0x5021) {
@@ -385,7 +385,7 @@ s32 func_ov003_02218e2c(void *self, u16 *pv, s32 x, s32 y, u8 flag) {
     func_020b16bc(obj, q);
     if (Actor_spawn(func_020b16b4(obj), (void *)*pv, &vec, 0, 0) != 0) {
         if (flag != 0) {
-            func_0204e114(data_021c47c4, pv, x, y, 0);
+            TownMap_placeStructure(gSceneBlockMap, pv, x, y, 0);
             func_ov003_02218dd8((s32)self, pv, x, y);
         }
         func_020b16b8(obj);
@@ -431,7 +431,7 @@ void func_ov003_02218d6c(u32 v) { data_ov003_02235810 = v; }
 s32 func_ov003_02218d50(s32 a) {
     void *r = func_ov003_02218c60(a);
     if (r != 0) {
-        return func_ov009_0225ba1c(r);
+        return BuildingActor_openDoorForEntry(r);
     }
     return 0;
 }
@@ -439,7 +439,7 @@ s32 func_ov003_02218d50(s32 a) {
 s32 func_ov003_02218d34(s32 a) {
     void *r = func_ov003_02218c60(a);
     if (r != 0) {
-        return func_ov009_0225b9b8(r);
+        return BuildingActor_openDoorForExit(r);
     }
     return 0;
 }
@@ -447,7 +447,7 @@ s32 func_ov003_02218d34(s32 a) {
 s32 func_ov003_02218d0c(s32 a) {
     void *r = func_ov003_02218b40((u16)(a + 0x5001));
     if (r != 0) {
-        return func_ov009_0225b9fc(r);
+        return BuildingActor_tryOpenDoorForEntry(r);
     }
     return 0;
 }
@@ -455,21 +455,21 @@ s32 func_ov003_02218d0c(s32 a) {
 s32 func_ov003_02218ce4(s32 a) {
     void *r = func_ov003_02218b40((u16)(a + 0x5001));
     if (r != 0) {
-        return func_ov009_0225b998(r);
+        return BuildingActor_tryOpenDoorForExit(r);
     }
     return 0;
 }
 
 void *func_ov003_02218c60(s32 a) {
-    Unk_ov003_02218c60_Grid *g = data_021c47c4;
+    Unk_ov003_02218c60_Grid *g = gSceneBlockMap;
     s32 xy[2];
     if (g != 0) {
-        func_0204ee10(&xy[0], &xy[1], a);
+        FieldPos_ToUnit(&xy[0], &xy[1], a);
         for (s32 y = xy[1]; y >= xy[1] - 5; y--) {
             for (s32 x = xy[0] - 3; x <= xy[0] + 3; x++) {
                 s32 hx = x >> 4;
                 s32 hy = y >> 4;
-                u16 *cell = func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+                u16 *cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
                 if (cell != 0) {
                     BOOL f = FALSE;
                     u16 v = *cell;
@@ -537,7 +537,7 @@ void *func_ov003_02218b40(u32 id) {
     for (i = 0; (u32)i < 0x20; i++) {
         Unk_ov003_02218bc8_Ent *e = data_ov003_022358b0[i];
         if (e != 0) {
-            u16 *r = func_ov009_0225b98c(e);
+            u16 *r = BuildingActor_getItemId(e);
             BOOL ok;
             if (Item_IsFurniture(r) != 0) {
                 u16 tmp;
@@ -608,14 +608,14 @@ s32 func_ov003_022189b8(Unk_ov003_02218adc *self) {
         u32 off = i << 2;
         u32 *e = &self->unk_00[i];
         self->unk_00[i] = (u32)NNS_G3dGetTex(str);
-        if (func_020557a0((void *)self->unk_00[i], za)) {
-            *e = (u32)func_0205588c((void *)*e, data_021c6204);
+        if (Gfx3d_LoadTex((void *)self->unk_00[i], za)) {
+            *e = (u32)Gfx3d_CopyTex((void *)*e, data_021c6204);
         }
         Mem_Free(str);
         str = File_LoadAllocF(gCurrentHeap, m3, "/str/npcHsTex/%c/light_%c%d.nsbtx", c, c, rem);
         e[4] = (u32)NNS_G3dGetTex(str);
-        if (func_02055724((void *)e[4], zb)) {
-            e[4] = (u32)func_0205588c((void *)e[4], heap);
+        if (Gfx3d_LoadTexAndPltt((void *)e[4], zb)) {
+            e[4] = (u32)Gfx3d_CopyTex((void *)e[4], heap);
         }
         Mem_Free(str);
         i = i + 1;
@@ -673,7 +673,7 @@ s32 func_ov003_0221888c(Unk_ov003_02218968 *r) {
     u32 i;
     BOOL z;
     func_ov003_0221894c(r);
-    s32 c = func_0204c188(data_021ed1a4, 0x11);
+    s32 c = TownState_FindEvent(data_021ed1a4, 0x11);
     z = FALSE;
     if (c == ~z) {
         return z;
@@ -686,7 +686,7 @@ s32 func_ov003_0221888c(Unk_ov003_02218968 *r) {
             r->unk_04[i] = (s32)(p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc));
         }
         r->unk_00 = (s32)NNS_G3dGetTex(func_021012bc("STR:a/obj_x_house0.nsbtx"));
-        func_02055724((void *)r->unk_00, 0);
+        Gfx3d_LoadTexAndPltt((void *)r->unk_00, 0);
         r->unk_18 = (s32)func_021066ac(func_02106690(func_021012bc("STR:a/obj_x_deco.nsbtp")), 0);
         r->unk_1c = 1;
         func_02101310((char *)buf);
@@ -733,8 +733,8 @@ s32 func_ov003_02218800(void **out) {
     void *t = File_LoadAllocF(r4, -4, "/str/house_pl/house_pl_%c.nsbtx", r3);
     if (t != 0) {
         *out = NNS_G3dGetTex();
-        func_02055744(*out, 0);
-        *out = func_0205588c(*out, data_021c6204);
+        Gfx3d_LoadPltt(*out, 0);
+        *out = Gfx3d_CopyTex(*out, data_021c6204);
         Mem_Free(t);
         return 1;
     }

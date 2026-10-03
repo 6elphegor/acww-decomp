@@ -1756,7 +1756,7 @@ struct Unk_020e0768 { Unk_020e0768(); ~Unk_020e0768(); u32 pad[2]; };
 struct Unk_020e0754 { Unk_020e0754(); ~Unk_020e0754(); u32 pad[2]; };
 
 // unk_02019998.cpp
-struct Unk_020dbe5c { Unk_020dbe5c(); ~Unk_020dbe5c(); u32 unk_00; u32 unk_04; u32 unk_08; u32 pad[0x20 / 4]; };
+struct MatTexPatAnim { MatTexPatAnim(); ~MatTexPatAnim(); u32 unk_00; u32 unk_04; u32 unk_08; u32 pad[0x20 / 4]; };
 
 // unk_02019998.cpp
 struct Unk_02019cac_Owner {
@@ -1797,8 +1797,8 @@ struct Unk_02019dd8 : Unk_02063cfc {
     Unk_020e06c8 unk_04;
     Unk_020e0768 unk_0c;
     Unk_020e0754 unk_14;
-    Unk_020dbe5c unk_1c;
-    Unk_020dbe5c unk_48;
+    MatTexPatAnim unk_1c;
+    MatTexPatAnim unk_48;
     s32 unk_74;
     s32 unk_78;
     s32 unk_7c;
@@ -2406,7 +2406,7 @@ void _ZN12Unk_0201ac8813func_0201acc8Ev(void *p);
 void _ZN12Unk_02016350D1Ev(void *p);
 void _ZN12Unk_02019dd8D2Ev(void *p);
 void _ZN12Unk_0201ad2013func_0201ad38Ev(void *p);
-void _ZN12Unk_020dbd74D1Ev(void *p);
+void _ZN19ThreeLayerAnimModelD1Ev(void *p);
 }
 }
 
@@ -2458,7 +2458,7 @@ void func_020f43c8(void *p);
 Unk_02081d4c *_ZN12Unk_020821b413func_02081d4cEv(void *p);
 void func_0205e184(Unk_02081d4c *p, u32 v);
 Unk_0205dfa4 *func_0205dfa4(Unk_02081d4c *p);
-void func_020553cc(MsgRequest *dst, void *src, u32 n);
+void Model_GetJointWorldMtx(MsgRequest *dst, void *src, u32 n);
 void func_0205e014(Unk_02081d4c *p, void *src);
 void func_0205e120(Unk_02081d4c *p);
 void _ZN12Unk_020e071813func_0208211cEv(void *p);
@@ -2490,13 +2490,13 @@ s32 _ZN12Unk_020e071813func_02082140Ev(void *);
 s32 _ZN12Unk_020821b413func_02081d6cEi(void *, u32);
 void _ZN12Unk_020e072cD1Ev(void *);
 void _ZN12Unk_020e072cC1Ev(void *);
-extern Unk_02011f74_World *data_021c47c4;
+extern Unk_02011f74_World *gSceneBlockMap;
 extern u8 data_021dfd8c[];
 extern u8 gRandom[];
 extern s16 data_02135f44[];
 extern s32 data_021be028[];
-s32 func_020374b0(void *, u32);
-void *_ZN12Unk_020375d013func_020375d8Ev();
+s32 MapBlock_HasAnyAttr(void *, u32);
+void *_ZN12MapBlockAcre8getUnk04Ev();
 s32 Random_PickSetBit(u32, s32, s32);
 s32 func_02063b8c(u32);
 u8 *_ZN20VillagerDataItemView11getHousePosEv(...);
@@ -2504,17 +2504,17 @@ s32 _ZN12VillagerData13getVillagerIdEv(void *);
 s32 SaveVillagers_PickRandomExcept(void *, void *, u32);
 void func_02133ef8(void *, u32);
 void func_02012b94(Unk_02011f74_Pair *out, void *self, void *a, Unk_02011f74_World *w);
-void func_0204ee10(s32 *, s32 *, Unk_02011f74_Vec *);
-void func_0204ed8c(Unk_02011f74_Vec *, s32, s32);
-s32 func_0204ec14(Unk_02011f74_World *, s32, s32, u32);
-s32 func_0204ecfc(Unk_02011f74_World *, u32);
+void FieldPos_ToUnit(s32 *, s32 *, Unk_02011f74_Vec *);
+void FieldPos_FromUnitCenter(Unk_02011f74_Vec *, s32, s32);
+s32 BlockMap_BlockHasAllAttr(Unk_02011f74_World *, s32, s32, u32);
+s32 BlockMap_FindBlockAllAttr(Unk_02011f74_World *, u32);
 s32 Math_AngleXZ(Unk_02011f74_Vec *, Unk_02011f74_Vec *);
 s32 Random_Next(void *);
 s32 func_01ffcb0c(s32, s32);
-void func_0204edd8(Unk_02011f74_Vec *, Unk_02011f74_Vec *);
+void FieldPos_SnapToUnitCenter(Unk_02011f74_Vec *, Unk_02011f74_Vec *);
 s32 func_02077f40(Unk_02011f74_Vec *, s32);
 s32 func_02077f68(s32, s32, Unk_02011f74_World *);
-s32 _ZN12Unk_0204e2f013func_0204e350Eii(Unk_02011f74_World *, s32, s32);
+s32 _ZN8BlockMap13func_0204e350Eii(Unk_02011f74_World *, s32, s32);
 static inline Unk_02011f74_Cell *GetCell(Unk_02011f74_World *w, u32 x, u32 y)
 {
     if (x < (u32)w->size.a && (u32)w->size.b > y && w->unk_00 != NULL) {
@@ -2545,19 +2545,19 @@ extern "C" {
 namespace nC2 { extern Unk_020130f0_Dir data_021be028[4]; }
 void _ZN12Unk_0201326013func_020132ecEj(void *self, Unk_02012810_Vec *v);
 extern s32 data_021be028[];
-extern Unk_02012f04_Obj *data_021c47c4;
-s32 _ZN12Unk_0204e2f013func_0204e328EPv(Unk_02012f04_Obj *o, Unk_02012810_Vec *v);
-u32 func_0204ec50(Unk_02012f04_Obj *o, s32 x, s32 z);
+extern Unk_02012f04_Obj *gSceneBlockMap;
+s32 _ZN8BlockMap13func_0204e328EPv(Unk_02012f04_Obj *o, Unk_02012810_Vec *v);
+u32 BlockMap_GetBlockAttr(Unk_02012f04_Obj *o, s32 x, s32 z);
 s32 func_020e9650(Unk_02012810_Vec *a, Unk_02012810_Vec *b);
-void func_0204ee20(Unk_02012b94_Pair *a, Unk_02012b94_Pair *c, Unk_02012810_Vec *v);
-void func_0204eda4(Unk_02012810_Vec *out, u32 a, u32 b, u32 c, u32 d);
+void FieldPos_ToBlockUnit2(Unk_02012b94_Pair *a, Unk_02012b94_Pair *c, Unk_02012810_Vec *v);
+void FieldPos_FromBlockUnitCenter(Unk_02012810_Vec *out, u32 a, u32 b, u32 c, u32 d);
 s32 func_02077f68(u32 x, u32 z, Unk_02012f04_Obj *o);
 s32 Random_PickSetBit(u32 mask, s32 n, s32 max);
-s32 _ZN12Unk_0204e2f013func_0204e350Eii(Unk_02012f04_Obj *o, u32 x, u32 z);
-void func_0204edf8(u32 *bx, u32 *bz, u32 x, u32 z, u32 a, u32 b);
+s32 _ZN8BlockMap13func_0204e350Eii(Unk_02012f04_Obj *o, u32 x, u32 z);
+void FieldUnit_FromBlockUnit(u32 *bx, u32 *bz, u32 x, u32 z, u32 a, u32 b);
 s32 func_02063b8c(s32 n);
-void func_0204ee10(u32 *x, u32 *z, Unk_02012810_Vec *v);
-void func_0204ed8c(Unk_02012810_Vec *out, u32 x, u32 z);
+void FieldPos_ToUnit(u32 *x, u32 *z, Unk_02012810_Vec *v);
+void FieldPos_FromUnitCenter(Unk_02012810_Vec *out, u32 x, u32 z);
 void *MI_CpuFill8(void *, int, u32);
 void *MI_CpuCopy8(const void *, void *, u32);
 void func_02012b94(Unk_02012b94_Pair *out, s32 unused, Unk_02012b94_Pair *p, Unk_02012f04_Obj *obj);
@@ -2591,9 +2591,9 @@ void _ZN9Character13func_0203e47cEi(void *self, Unk_020133cc_Player* o);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *self, u32 v);
 void Snd_SeEmitterPlayAlternate(void *self, s32 a, u32 b);
 s32 func_020b0cbc(void *self);
-BOOL _ZN12Unk_0204e2f013func_0204e350Eii(void* p, u32 x, u32 y);
-void func_0204ed8c(void* p, u32 x, u32 y);
-void func_0204ee10(u32* a, u32* b, u32 c);
+BOOL _ZN8BlockMap13func_0204e350Eii(void* p, u32 x, u32 y);
+void FieldPos_FromUnitCenter(void* p, u32 x, u32 y);
+void FieldPos_ToUnit(u32* a, u32* b, u32 c);
 void MI_CpuFill8(void* p, u32 v, u32 n);
 BOOL _ZN12Unk_0201281013func_020131a4EP16Unk_02012810_VecP17Unk_02012b94_PairP16Unk_020130f0_DiriS3_iP16Unk_02012f04_Obj(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q);
 extern Unk_02013260_Entry data_021be210[];
@@ -2743,10 +2743,10 @@ s32 _ZN12Unk_0201a19413func_0201a164Ev(void *p);
 s32 func_0201a140(void);
 s32 _ZN12Unk_0201985813func_020197a8Ev(void *p);
 void _ZN12Unk_0201985813func_02019638Eiht(void *p, u32 a, u8 b, u32 c);
-s32 _ZN12Unk_020dbd7413func_020538f0Ev(void *p);
-void _ZN12Unk_020dbd7413func_020538a8Ejj(void *p, u32 a, u32 b);
-void _ZN12Unk_020dbd7413func_02053900Ejjjjjji(void *p, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3);
-void _ZN12Unk_020dbd7413func_02053878Ejj(void *p, u32 a, u32 b);
+s32 _ZN19ThreeLayerAnimModel19checkLayer3FinishedEv(void *p);
+void _ZN19ThreeLayerAnimModel18playLayer3FromBaseEjj(void *p, u32 a, u32 b);
+void _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(void *p, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3);
+void _ZN19ThreeLayerAnimModel20assignJointsToLayer3Ejj(void *p, u32 a, u32 b);
 s32 *_ZN12Unk_0201a8c413func_0201a8ccEv(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 void *_ZN12Unk_020e071813func_020820a0Ej(void *p, u32 idx);
@@ -2778,11 +2778,11 @@ s32 func_0205c588(s32 a, s32 b);
 s32 func_0205c5ac(s32 a, s32 b);
 s32 func_0205c5d0(void);
 s32 func_0205ed30(u16 *p);
-void _ZN12Unk_020dbda413func_02053e70Ejjjjjji(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
-void func_02053848(void *a, s32 b, s32 c);
-void _ZN12Unk_020dbda413func_02053e28Ejj(void *a, s32 b, s32 c);
-void func_02053980(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
-void _ZN12Unk_020dbd7413func_02053900Ejjjjjji(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
+void _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
+void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, s32 b, s32 c);
+void _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(void *a, s32 b, s32 c);
+void BlendAnimModel_Play2(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
 s32 _ZN12Unk_0201ad2013func_0201ad28Ev(void *p);
 s32 _ZN12Unk_0201ad2013func_0201ad24Ev(void *p);
 s32 _ZN12Unk_0201ad2013func_0201ad20Ev(void *p);
@@ -2797,8 +2797,8 @@ void *func_021065dc(void *a);
 void *func_021065f8(void *a, s32 b);
 void _ZN12Unk_02015b8c13func_02015ec4Eh(void *a, s32 b);
 BOOL _ZN12Unk_020e071813func_02082140Ev(void *a);
-void _ZN12Unk_020dbd5413func_02054710Ev(void *a);
-void _ZN5Model13func_020554a0Eiiiii(void *a, void *b, s32 c, s32 d, void *e, s32 f);
+void _ZN9AnimModel10attachAnimEv(void *a);
+void _ZN5Model11setCallbackEiiiii(void *a, void *b, s32 c, s32 d, void *e, s32 f);
 s32 _ZN12Unk_02015b8c13func_02015fc0Ev(void *a);
 void _ZN12Unk_02015b8c13func_02015f9cEv(void *a);
 void func_0201c050(void);
@@ -2860,7 +2860,7 @@ void func_02057250(u32 a, Unk_02006d14 *o);
 void func_020943dc(u32 a);
 BOOL func_020573f4(Unk_02006d14 *o);
 BOOL PlayerActor_RequestAct32();
-void _ZN12Unk_020dbda413func_02053e28Ejj(Unk_02016a44_S0ec *p, u32 a, u32 b);
+void _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(Unk_02016a44_S0ec *p, u32 a, u32 b);
 void func_02057278(u16 *p);
 void _ZN12Unk_0201984813func_02019848Ev(Unk_02016a44_Sub2c *p);
 }
@@ -2893,7 +2893,7 @@ s32 func_0209028c(u32 a, void *b, u32 c, u32 d);
 BOOL func_02057294(void);
 BOOL func_020573f4(void *p);
 BOOL PlayerActor_RequestAct32(void);
-void func_02053848(void *p, u32 a, u32 b);
+void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, u32 a, u32 b);
 BOOL func_02057328(void *p);
 void _ZN12Unk_0201a8c413func_0201ab4cEP18Unk_0201a334_Sceneist(void *a, void *b, u32 c, u32 d, u32 e);
 void _ZN12Unk_0201a8c413func_0201a9ecEP17Unk_0201a334_Vec3(void *a, void *b);
@@ -3015,10 +3015,10 @@ extern "C" {
 
 void *MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
-u16 func_0207694c(void *p);
-void func_02076964(void *p, u16 v);
-void func_02076a2c(void *p, u32 a, u32 b);
-void func_02076a6c(void *p, u32 a, u32 b);
+u16 NetBuf_ReadU16(void *p);
+void NetBuf_WriteU16(void *p, u16 v);
+void NetBuf_UnpackPair20(void *p, u32 a, u32 b);
+void NetBuf_PackPair20(void *p, u32 a, u32 b);
 void _ZN12Unk_0201a8c413func_0201ab30EP18Unk_0201a334_Scene(void *p);
 BOOL _ZN12Unk_0201a8c413func_0201a9a0EP18Unk_0201a334_Scenei(void *p, void *owner, u32 v);
 BOOL _ZN12Unk_0201a8c413func_0201a968Ev(void *p);
@@ -3031,7 +3031,7 @@ s32 _ZN12Unk_0201a19413func_0201a15cEv(void *p);
 BOOL _ZN12Unk_0201a19413func_0201a164Ev(void *p);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *p, u32 v);
 BOOL func_02063ca0(void *p);
-s32 _ZN12Unk_020dbe5c13func_02055e38Ev(void *p);
+s32 _ZN13MatTexPatAnim6updateEv(void *p);
 extern u16 data_020c6cc8;
 extern u32 gVec3Zero[3];
 extern Unk_02019858_Entry data_021be3d0[];
@@ -3063,20 +3063,20 @@ void _ZN12Unk_0205ce0c13func_0205ce78Eiii(void *h, s32 a, s32 b, s32 c);
 void *_ZN12Unk_0205ce0c13func_0205cf60Ev(void *h);
 void *_ZN12Unk_0205ce0c13func_0205cf54Ev(void *h);
 s32 NNS_G3dGetAnmByIdx(void *p, s32 v);
-void _ZN12Unk_020dbe5c13func_02055e4cEPvS0_jhS0_(void *p, void *a, s32 b, s32 c, s32 d, s32 e);
-void _ZN12Unk_020dbe5c13func_02055df0Ev(void *p);
-void _ZN12Unk_020dbe5c13func_02055eecEv(void *p);
+void _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(void *p, void *a, s32 b, s32 c, s32 d, s32 e);
+void _ZN13MatTexPatAnim10applyFrameEv(void *p);
+void _ZN13MatTexPatAnim7releaseEv(void *p);
 void _ZN12Unk_020e071813func_0208211cEv(void *p);
 void func_02063c7c(void *p);
 void func_02063c94(void *p);
-void func_02055cd0(void *p, void *q);
-void _ZN12Unk_020dbe5c13func_02055d18Ev(void *p, void *q);
-BOOL _ZN12Unk_020dbe5c13func_02055d60Eij(void *p, void *q, u32 r);
+void MatTexPatAnim_ResumeMaterial(void *p, void *q);
+void _ZN13MatTexPatAnim13pauseMaterialEv(void *p, void *q);
+BOOL _ZN13MatTexPatAnim14setMaterialTexEij(void *p, void *q, u32 r);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 void *_ZN12Unk_020e075413func_02081ed0Ev(void *p);
 BOOL _ZN12Unk_020e071813func_02082140Ev(void *p);
 void *_ZN12Unk_020e072c13func_02081de8Ev(void *p);
-BOOL _ZN12Unk_020dbe5c13func_02055f1cEPvS0_jS0_(void *p, s32 a, s32 b, s32 c, s32 d);
+BOOL _ZN13MatTexPatAnim4initEPvS0_jS0_(void *p, s32 a, s32 b, s32 c, s32 d);
 void func_02077b58(void *a, s32 b);
 s32 func_02077b44(void *a);
 s32 _ZN12Unk_0205d1f813func_0205d1f8Ev(void *a);
@@ -3128,7 +3128,7 @@ void _ZN5Actor14updatePositionEP16Unk_02002cb0_Vec(void *a, void *b);
 s32 _ZN12Unk_0201a13c13func_0201a1bcEi(Unk_0201a334 *self, s32 v);
 BOOL func_0201a834(Unk_0201a334_Vec3 *pos);
 void func_0201a900(Unk_0201a334_Vec3 *out, Unk_0201a334_Vec3 *base, Unk_0201a334_Vec3 *off, u32 ang);
-s32 func_020553cc(MsgRequest *dst, void *src, u32 n);
+s32 Model_GetJointWorldMtx(MsgRequest *dst, void *src, u32 n);
 s32 WorldCurve_FromCurved(void *v);
 s32 func_0202ffdc(s32 id);
 BOOL func_ov004_02234f6c(s32 id);
@@ -3156,8 +3156,8 @@ extern u8 data_020c6da8[];
 extern u8 data_020c6dcc[];
 extern u32 data_020c6d84[];
 extern u16 data_020c6cc8;
-extern u8 *data_021c47c4;
-extern u8 *data_020cbb18;
+extern u8 *gSceneBlockMap;
+extern u8 *gCommManager;
 void _ZN12Unk_0201a8c413func_0201ac10EP18Unk_0201a334_Scene(void *a, void *b);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void *PlayerData_GetCurrent();
@@ -3165,14 +3165,14 @@ void *_ZN10PlayerData13func_02098750Ev(void *p);
 s32 func_02097a48(void *p, s32 v, s32 n);
 s32 func_02097ce4(void *p, s32 a, s32 b);
 s32 func_02097a90(void *p, s32 v, s32 n, s32 m);
-u32 _ZN12Unk_0204e2f013func_0204e328EPv(void *g, Unk_020d77a4_Vec3 *v);
-void func_0204edd8(Unk_020d77a4_Vec3 *out, Unk_020d77a4_Vec3 *in);
+u32 _ZN8BlockMap13func_0204e328EPv(void *g, Unk_020d77a4_Vec3 *v);
+void FieldPos_SnapToUnitCenter(Unk_020d77a4_Vec3 *out, Unk_020d77a4_Vec3 *in);
 void func_01ffd070(Unk_020d77a4_Vec3 *out, Unk_020d77a4_Vec3 *a, Unk_020d77a4_Vec3 *b);
 s32 func_020e9650(Unk_020d77a4_Vec3 *a, Unk_020d77a4_Vec3 *b);
 void func_020e972c(Unk_020d77a4_Vec3 *a, Unk_020d77a4_Vec3 *b);
 s32 func_02077f40(Unk_020d77a4_Vec3 *v, s32 a);
 void func_02133ef8(void *p, u32 n);
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(u8 *g);
+s32 _ZN11CommManager8isOnlineEv(u8 *g);
 Unk_020d77a4_Vec3 *func_020947f0(u32 n);
 s32 func_02094f48(s32 a, s32 b);
 void WorldCurve_FromCurved(Unk_020d77a4_Vec3 *out, Unk_020d77a4_Vec3 *in);
@@ -3181,9 +3181,9 @@ void _ZN12Unk_02019dd813func_02019998Ev(void *p);
 void _ZN12Unk_02015b8c13func_02015d24Ev(void *p);
 void _ZN12Unk_02003c3013func_02003dccEv(void *p);
 void _ZN12Unk_020d77a413func_0201b8ccEjz(void *p, s32 v);
-s32 _ZN12Unk_020dbda413func_02053f08Ej(void *p, s32 v);
+s32 _ZN17TwoLayerAnimModel11drawLayeredEj(void *p, s32 v);
 void _ZN12Unk_0201a8c413func_0201a764EP12Unk_02006d14(void *p, void *q);
-s32 func_020553cc(void *p, void *q, s32 v);
+s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
 void func_020abc10(void *p, s32 a, s32 b, s32 c);
 s32 _ZN12Unk_020d77a413func_0201ba88Ev(void *p);
 s32 _ZN12Unk_020d77a413func_0201b858EPiS0_Ph(void *p, s32 *a, s32 *b, void *buf);
@@ -3213,7 +3213,7 @@ s32 _ZN12Unk_020d77a413func_0201b9bcEv(void *p);
 void _ZN12Unk_020e0d0813func_02089040Ev(void *p);
 void _ZN12Unk_020e0d0813func_0208905cEv(void *p);
 void _ZN12Unk_02015b8c13func_02015d2cEP18Unk_02015b8c_Scene(void *p, void *q);
-void _ZN12Unk_020dbd7413func_020539a0Ev(void *p);
+void _ZN19ThreeLayerAnimModel13updateLayers3Ev(void *p);
 void _ZN12Unk_02003c4013func_02003df4EP16Unk_02003a6c_Vec(void *p, Unk_020d77a4_Vec3 *v);
 void _ZN12Unk_02011b6013func_02011c08EP12Unk_02006d14(s32 v, void *p);
 void _ZN12Unk_0201347413func_02013474EP19Unk_020133cc_Player(void *p, void *q);
@@ -3232,7 +3232,7 @@ void func_0201ae00(V3 *out, Unk_020d77a4 *self, V3 *in);
 namespace nR {
 extern "C" {
 
-extern Unk_020d77a4_Global *data_020cbb18;
+extern Unk_020d77a4_Global *gCommManager;
 extern u16 data_020c6cc8;
 extern s32 data_020c6d60[];
 extern s32 data_020c6d48[];
@@ -3259,13 +3259,13 @@ u8 func_02081450(void *p);
 u8 *func_020841fc(void *p);
 s32 func_020b50e8();
 void func_02084254(void *a, s32 b, void *c, s32 d, void *e, void *f);
-BOOL _ZN12Unk_020cbb1813func_02072e88Ei(Unk_020d77a4_Global *g, s32 v);
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(Unk_020d77a4_Global *g);
-void func_02076280(s32 a, void *args, s32 b, s32 c);
+BOOL _ZN11CommManager12isSlotActiveEi(Unk_020d77a4_Global *g, s32 v);
+BOOL _ZN11CommManager8isOnlineEv(Unk_020d77a4_Global *g);
+void CommSyncVar_SetVar(s32 a, void *args, s32 b, s32 c);
 void func_02084228(void *a, u32 b, u32 c);
 s32 func_0208416c(s32 a, s32 b, void *c);
 s32 func_0208419c(s32 a, s32 b, s32 c, void *d);
-void func_02076a2c(void *a, void *b, void *c);
+void NetBuf_UnpackPair20(void *a, void *b, void *c);
 void _ZN16ActorTalkRequest13func_02015a78EP18Unk_02015b8c_Scene(Unk_0201bc1c *a, void *b);
 s32 func_020951ec(u32 id);
 BOOL PlayerActor_GetSlotPosXZ(u8 *a, void *b, void *c, s32 d, u32 e);
@@ -3274,8 +3274,8 @@ s32 func_020e96a4(void *a, void *b);
 BOOL func_0201a834(void *a);
 void func_0201a900(void *out, void *a, void *b, s32 c);
 s32 _ZN12Unk_0201a33413func_0201a7e8Ev(void *p);
-void _ZN12Unk_020dbd3413func_02054b14Ev(void *p);
-BOOL _ZN12Unk_020dbd3413func_02054c88EPvS0_(void *p, s32 a, s32 b);
+void _ZN11CachedModel7releaseEv(void *p);
+BOOL _ZN11CachedModel4loadEPvS0_(void *p, s32 a, s32 b);
 BOOL NpcActor_IsFrontAngle(s32 x);
 BOOL NpcActor_IsFrontAngle(s32 x);
 BOOL Item_IsFurniture(void *p);
@@ -3288,7 +3288,7 @@ void MTX_RotX33_(Unk_0201be34_Mtx *m, s32 a, s32 b);
 void MTX_Concat33(Unk_0201be34_Mtx *a, Unk_0201be34_Mtx *b, Unk_0201be34_Mtx *out);
 s32 WorldCurve_Apply(Unk_020d77a4_Vec *a, Unk_020d77a4_Vec *b);
 s32 WorldCurve_GetRadius();
-void _ZN12Unk_020dbd7413func_02053a54EP16Unk_02053a54_Msg(void *p, void *q);
+void _ZN19ThreeLayerAnimModel21onJointCalcPostLayer3EP16Unk_02053a54_Msg(void *p, void *q);
 void func_0201c050(Unk_0201be34 *p);
 void func_0201be34(Unk_0201be34 *self);
 void func_0201be34(Unk_0201be34 *self);
@@ -3808,7 +3808,7 @@ extern "C" void func_0201be44(Unk_0201be34 *self) {
         }
     }
     if (p != NULL) {
-        _ZN12Unk_020dbd7413func_02053a54EP16Unk_02053a54_Msg(p->unk_ec, self);
+        _ZN19ThreeLayerAnimModel21onJointCalcPostLayer3EP16Unk_02053a54_Msg(p->unk_ec, self);
     }
     self->unk_24 = func_0201be34;
     self->unk_92 = 3;
@@ -3826,7 +3826,7 @@ BOOL Unk_020d77a4::loadModel() {
     using namespace nR;
     s32 t = getModelPath();
     BOOL r = FALSE;
-    if (_ZN12Unk_020dbd3413func_02054c88EPvS0_(unk_ec, t, data_021c61a0) != 0) {
+    if (_ZN11CachedModel4loadEPvS0_(unk_ec, t, data_021c61a0) != 0) {
         r = TRUE;
     }
     return r;
@@ -3834,7 +3834,7 @@ BOOL Unk_020d77a4::loadModel() {
 
 void Unk_020d77a4::releaseModel() {
     using namespace nR;
-    _ZN12Unk_020dbd3413func_02054b14Ev(unk_ec);
+    _ZN11CachedModel7releaseEv(unk_ec);
 }
 
 u16 Unk_020d77a4::getNpcIndex() {
@@ -4054,8 +4054,8 @@ void Unk_020d77a4::addMood() {
 
 BOOL Unk_020d77a4::func_0201ba88() {
     using namespace nR;
-    Unk_020d77a4_Global *g = data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(g) != 0 && unk_563 == 0) {
+    Unk_020d77a4_Global *g = gCommManager;
+    if (_ZN11CommManager8isOnlineEv(g) != 0 && unk_563 == 0) {
         u8 *p = func_020841fc(&unk_ea);
         if (p != NULL && p[0] != 0) {
             if ((p[1] == 4 && func_020a62a0() != 0) || p[1] == g->unk_64) {
@@ -4076,13 +4076,13 @@ s32 Unk_020d77a4::func_0201ba70(s32 a, s32 b, s32 c) {
 void Unk_020d77a4::func_0201b9fc(u32 a, u32 b, u32 c, ...) {
     using namespace nR;
     func_02084228(&unk_ea, b, c);
-    if (_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64) != 0) {
+    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) != 0) {
         if (func_0201ba88() != 0) {
             s32 t = (unk_ea & 0xf000) >> 12;
             if (t == 0xe) {
-                func_02076280(getNpcIndex() + 0xc, &a, 0, 0);
+                CommSyncVar_SetVar(getNpcIndex() + 0xc, &a, 0, 0);
             } else if (t == 0xd) {
-                func_02076280(getNpcIndex() + 0x20, &a, 0, 0);
+                CommSyncVar_SetVar(getNpcIndex() + 0x20, &a, 0, 0);
             }
         }
     }
@@ -4132,13 +4132,13 @@ void Unk_020d77a4::func_0201b964(void *dst, s32 n) {
 void Unk_020d77a4::func_0201b8cc(u32 a, ...) {
     using namespace nR;
     func_02084254(&unk_ea, func_020b50e8(), &unk_5c, unk_8e, unk_568, unk_62d);
-    if (_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64) != 0) {
+    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) != 0) {
         if (func_0201ba88() != 0) {
             s32 t = (unk_ea & 0xf000) >> 12;
             if (t == 0xe) {
-                func_02076280(getNpcIndex() + 0xc, &a, 0, 0);
+                CommSyncVar_SetVar(getNpcIndex() + 0xc, &a, 0, 0);
             } else if (t == 0xd) {
-                func_02076280(getNpcIndex() + 0x20, &a, 0, 0);
+                CommSyncVar_SetVar(getNpcIndex() + 0x20, &a, 0, 0);
             }
         }
     }
@@ -4149,7 +4149,7 @@ BOOL Unk_020d77a4::func_0201b888(s32 *a, u8 *b) {
     if (unk_563 == 0) {
         u8 *p = func_020841fc(&unk_ea);
         if (p != NULL) {
-            func_02076a2c(p + 4, a, a + 2);
+            NetBuf_UnpackPair20(p + 4, a, a + 2);
             MI_CpuCopy8(p + 9, b, 2);
             return TRUE;
         }
@@ -4207,7 +4207,7 @@ BOOL Unk_020d77a4::vfunc_04() {
 BOOL Unk_020d77a4::vfunc_00() {
     using namespace nR;
     if (func_020a62a0() != 0) {
-        func_0201ba70(1, data_020cbb18->unk_64, 4);
+        func_0201ba70(1, gCommManager->unk_64, 4);
     }
     if (loadModel() == 0) {
         return FALSE;
@@ -4335,7 +4335,7 @@ BOOL Unk_020d77a4::onExecute() {
         _ZN12Unk_020e0d0813func_0208905cEv(((void *)((u8 *)this + (0x4cc))));
     }
     _ZN12Unk_02015b8c13func_02015d2cEP18Unk_02015b8c_Scene(((void *)((u8 *)this + (0x334))), this);
-    _ZN12Unk_020dbd7413func_020539a0Ev(((void *)((u8 *)this + (0xec))));
+    _ZN19ThreeLayerAnimModel13updateLayers3Ev(((void *)((u8 *)this + (0xec))));
     Unk_020d77a4_Vec3 *pp = (Unk_020d77a4_Vec3 *)((void *)((u8 *)this + (0x5c)));
     v.x = (*(s32 *)((u8 *)this + (0x5c)));
     v.y = pp->y;
@@ -4383,16 +4383,16 @@ BOOL Unk_020d77a4::onDraw() {
         (*(s32 *)((u8 *)this + (0x498))) = p->z;
         return TRUE;
     }
-    _ZN12Unk_020dbda413func_02053f08Ej(((void *)((u8 *)this + (0xec))), 0);
+    _ZN17TwoLayerAnimModel11drawLayeredEj(((void *)((u8 *)this + (0xec))), 0);
     _ZN12Unk_0201a8c413func_0201a764EP12Unk_02006d14(((void *)((u8 *)this + (0x3b0))), this);
-    func_020553cc(((void *)((u8 *)this + (0xec))), ((void *)((u8 *)this + (0x448))), 0xb);
-    func_020553cc(((void *)((u8 *)this + (0xec))), &buf, 0x10);
+    Model_GetJointWorldMtx(((void *)((u8 *)this + (0xec))), ((void *)((u8 *)this + (0x448))), 0xb);
+    Model_GetJointWorldMtx(((void *)((u8 *)this + (0xec))), &buf, 0x10);
     t0 = buf.v;
     WorldCurve_FromCurved((Unk_020d77a4_Vec3 *)((void *)((u8 *)this + (0x478))), &t0);
-    func_020553cc(((void *)((u8 *)this + (0xec))), &buf, 0x7);
+    Model_GetJointWorldMtx(((void *)((u8 *)this + (0xec))), &buf, 0x7);
     t1 = buf.v;
     WorldCurve_FromCurved((Unk_020d77a4_Vec3 *)((void *)((u8 *)this + (0x484))), &t1);
-    func_020553cc(((void *)((u8 *)this + (0xec))), &buf, 0x4);
+    Model_GetJointWorldMtx(((void *)((u8 *)this + (0xec))), &buf, 0x4);
     t2 = buf.v;
     WorldCurve_FromCurved((Unk_020d77a4_Vec3 *)((void *)((u8 *)this + (0x490))), &t2);
     if ((*(u8 *)((u8 *)this + (0x511))) != 0) {
@@ -4450,11 +4450,11 @@ extern "C" void func_0201ae00(V3 *out, Unk_020d77a4 *self, V3 *in) {
     u8 *g;
     s32 z0, z1, z2, z3;
     *out = *in;
-    g = data_021c47c4;
-    m0 = _ZN12Unk_0204e2f013func_0204e328EPv(g, (V3 *)((u8 *)self + 0x5c));
-    m1 = _ZN12Unk_0204e2f013func_0204e328EPv(g, in);
-    func_0204edd8(&a, (V3 *)((u8 *)self + 0x5c));
-    func_0204edd8(&b, in);
+    g = gSceneBlockMap;
+    m0 = _ZN8BlockMap13func_0204e328EPv(g, (V3 *)((u8 *)self + 0x5c));
+    m1 = _ZN8BlockMap13func_0204e328EPv(g, in);
+    FieldPos_SnapToUnitCenter(&a, (V3 *)((u8 *)self + 0x5c));
+    FieldPos_SnapToUnitCenter(&b, in);
     best = 0;
     a.y = 0;
     b.y = 0;
@@ -4465,7 +4465,7 @@ extern "C" void func_0201ae00(V3 *out, Unk_020d77a4 *self, V3 *in) {
             func_01ffd070(&t1, &a, (V3 *)(data_020c6dcc + i1 * 12));
             cand1 = t1;
             d1 = func_020e9650((V3 *)((u8 *)self + 0x5c), &cand1);
-            if (_ZN12Unk_0204e2f013func_0204e328EPv(g, &cand1) && func_02077f40(&cand1, z0)) {
+            if (_ZN8BlockMap13func_0204e328EPv(g, &cand1) && func_02077f40(&cand1, z0)) {
                 if (bestDist == 0 || bestDist > d1) {
                     bestDist = d1;
                     best = i1;
@@ -4496,13 +4496,13 @@ extern "C" void func_0201ae00(V3 *out, Unk_020d77a4 *self, V3 *in) {
             dir0 = 1;
             dir1 = 3;
         }
-        if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+        if (_ZN11CommManager8isOnlineEv(gCommManager)) {
             u32 k;
             z1 = 0;
             for (k = 0; k < 4; k++) {
                 V3 *p = func_020947f0(k);
                 if (p) {
-                    func_0204edd8(&tmp, p);
+                    FieldPos_SnapToUnitCenter(&tmp, p);
                     tmp.y = z1;
                     arr[k] = tmp;
                 }
@@ -4972,7 +4972,7 @@ void Unk_0201a8c4::func_0201a764(Unk_02006d14 *p) {
     using namespace nP;
     if (p != 0) {
         MsgRequest &s = *p;
-        func_020553cc(&s, (u8 *)this + 0x2c, 0xf);
+        Model_GetJointWorldMtx(&s, (u8 *)this + 0x2c, 0xf);
     }
 }
 
@@ -5529,12 +5529,12 @@ BOOL Unk_02019dd8::func_02019cac(Unk_02019cac_Owner *o) {
         void *h = _ZN12Unk_020e072c13func_02081de8Ev(&unk_04);
         s32 fl = o->unk_148;
         s32 x = func_02077b44(a);
-        if (!_ZN12Unk_020dbe5c13func_02055f1cEPvS0_jS0_(&unk_1c, fl, x, 1, _ZN12Unk_0205d1f813func_0205d1f8Ev(h))) {
+        if (!_ZN13MatTexPatAnim4initEPvS0_jS0_(&unk_1c, fl, x, 1, _ZN12Unk_0205d1f813func_0205d1f8Ev(h))) {
             return FALSE;
         }
         s32 fl2 = o->unk_148;
         s32 y = func_02077b44(a);
-        if (!_ZN12Unk_020dbe5c13func_02055f1cEPvS0_jS0_(&unk_48, fl2, y, 1, _ZN12Unk_0205d1f813func_0205d1f8Ev(h))) {
+        if (!_ZN13MatTexPatAnim4initEPvS0_jS0_(&unk_48, fl2, y, 1, _ZN12Unk_0205d1f813func_0205d1f8Ev(h))) {
             return FALSE;
         }
         if (!_ZN12Unk_020e071813func_02082140Ev(&unk_14)) {
@@ -5609,11 +5609,11 @@ void Unk_02019dd8::func_02019b7c(s32 v, u32 w) {
     if (func_02019d90()) {
         void *h = _ZN12Unk_020e06c813func_02081e5cEv(&unk_14);
         _ZN12Unk_0205ce0c13func_0205ce78Eiii(h, v, 1, 0);
-        _ZN12Unk_020dbe5c13func_02055e4cEPvS0_jhS0_(&unk_48, _ZN12Unk_0205ce0c13func_0205cf54Ev(h), 0, 0, w, 0x1000);
+        _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(&unk_48, _ZN12Unk_0205ce0c13func_0205cf54Ev(h), 0, 0, w, 0x1000);
         unk_48.unk_08 = 0;
         unk_78 = v;
         func_02019c24();
-        _ZN12Unk_020dbe5c13func_02055df0Ev(&unk_48);
+        _ZN13MatTexPatAnim10applyFrameEv(&unk_48);
     }
 }
 
@@ -5643,10 +5643,10 @@ void Unk_02019dd8::func_02019a84(s32 t, s32 u, s32 x, s32 mode) {
         if (t != 0 || unk_74 != t) {
             _ZN12Unk_0205ce0c13func_0205ce78Eiii(h, t, 1, 0);
             NNS_G3dGetAnmByIdx(_ZN12Unk_0205ce0c13func_0205cf60Ev(h), 0);
-            _ZN12Unk_020dbe5c13func_02055e4cEPvS0_jhS0_(&unk_1c, _ZN12Unk_0205ce0c13func_0205cf60Ev(h), 0, 0, x, 0x1000);
+            _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(&unk_1c, _ZN12Unk_0205ce0c13func_0205cf60Ev(h), 0, 0, x, 0x1000);
             unk_74 = t;
             unk_1c.unk_08 = 0;
-            _ZN12Unk_020dbe5c13func_02055df0Ev(&unk_1c);
+            _ZN13MatTexPatAnim10applyFrameEv(&unk_1c);
         }
         if (mode == 2 || !func_02019c90(unk_78)) {
             func_02019b7c(u, 0);
@@ -5674,11 +5674,11 @@ void Unk_02019dd8::func_02019a38(void *a, s32 b, s32 c) {
 BOOL Unk_02019dd8::func_020199fc(void *m, void *q, u32 r) {
     using namespace nO;
     if (func_02019d90()) {
-        _ZN12Unk_020dbe5c13func_02055d18Ev(m, q);
-        if (_ZN12Unk_020dbe5c13func_02055d60Eij(m, q, r)) {
+        _ZN13MatTexPatAnim13pauseMaterialEv(m, q);
+        if (_ZN13MatTexPatAnim14setMaterialTexEij(m, q, r)) {
             return TRUE;
         }
-        func_02055cd0(m, q);
+        MatTexPatAnim_ResumeMaterial(m, q);
     }
     return FALSE;
 }
@@ -5690,7 +5690,7 @@ BOOL Unk_02019dd8::func_020199e0(u32 a) {
 
 void Unk_02019dd8::func_020199d0() {
     using namespace nO;
-    func_02055cd0(&unk_48, ((u8 *)"m"));
+    MatTexPatAnim_ResumeMaterial(&unk_48, ((u8 *)"m"));
 }
 
 void Unk_02019dd8::func_020199c8() {
@@ -5700,8 +5700,8 @@ void Unk_02019dd8::func_020199c8() {
 
 void Unk_02019dd8::func_02019998() {
     using namespace nO;
-    _ZN12Unk_020dbe5c13func_02055eecEv(&unk_1c);
-    _ZN12Unk_020dbe5c13func_02055eecEv(&unk_48);
+    _ZN13MatTexPatAnim7releaseEv(&unk_1c);
+    _ZN13MatTexPatAnim7releaseEv(&unk_48);
     _ZN12Unk_020e071813func_0208211cEv(&unk_0c);
     _ZN12Unk_020e071813func_0208211cEv(&unk_14);
     _ZN12Unk_020e071813func_0208211cEv(&unk_04);
@@ -5712,10 +5712,10 @@ void Unk_02019dd8::func_020198c4(u8 *o) {
     if (func_02019d90()) {
         if (unk_74 == 0) {
             if (!_ZN13AnimFrameCtrl14hasPassedFrameEi(&unk_1c, 0) || func_02063ca0(this)) {
-                _ZN12Unk_020dbe5c13func_02055e38Ev(&unk_1c);
+                _ZN13MatTexPatAnim6updateEv(&unk_1c);
             }
         } else {
-            _ZN12Unk_020dbe5c13func_02055e38Ev(&unk_1c);
+            _ZN13MatTexPatAnim6updateEv(&unk_1c);
         }
         if (_ZN12Unk_0201a19413func_0201a15cEv(o + 0x418) < 2) {
             if (_ZN12Unk_0201a19413func_0201a164Ev(o + 0x418)) {
@@ -5733,7 +5733,7 @@ void Unk_02019dd8::func_020198c4(u8 *o) {
         } else if (func_02019c90(unk_78)) {
             func_02019b1c();
         }
-        _ZN12Unk_020dbe5c13func_02055e38Ev(&unk_48);
+        _ZN13MatTexPatAnim6updateEv(&unk_48);
     }
 }
 
@@ -5983,8 +5983,8 @@ void Unk_02019858::func_02019498(s32 v) {
 
 namespace nN {
 extern "C" void func_02019468(u8 *out, u32 a, u32 b, u32 c, u32 s0, s16 s1, u16 s2) {
-    func_02076a6c(out, a, b);
-    func_02076a6c(out + 5, c, s0);
+    NetBuf_PackPair20(out, a, b);
+    NetBuf_PackPair20(out + 5, c, s0);
     MI_CpuCopy8(&s1, out + 10, 2);
     out[12] = s2;
 }
@@ -5992,8 +5992,8 @@ extern "C" void func_02019468(u8 *out, u32 a, u32 b, u32 c, u32 s0, s16 s1, u16 
 
 namespace nN {
 extern "C" void func_0201942c(u32 a, u32 b, u32 c, u32 d, void *s0, u16 *s1, u8 *out) {
-    func_02076a2c(out, a, b);
-    func_02076a2c(out + 5, c, d);
+    NetBuf_UnpackPair20(out, a, b);
+    NetBuf_UnpackPair20(out + 5, c, d);
     MI_CpuCopy8(out + 10, s0, 2);
     *s1 = out[12];
 }
@@ -6035,13 +6035,13 @@ extern "C" void func_020193a0(u32 *a, u8 *b, u16 *c, u16 *d, u8 *src) {
 
 namespace nN {
 extern "C" void func_02019394(void *unused, void *p, u16 *v) {
-    func_02076964(p, *v);
+    NetBuf_WriteU16(p, *v);
 }
 }
 
 namespace nN {
 extern "C" void func_02019380(u16 *out, void *in) {
-    *out = func_0207694c(in);
+    *out = NetBuf_ReadU16(in);
 }
 }
 
@@ -6926,7 +6926,7 @@ extern "C" void _ZN12Unk_02016a4413func_02017a38EP12Unk_02006d14(S *s, C_745c *c
             if (func_020573cc(10, c)) {
                 _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
                 _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x139, 0, 0, 0x1000, 0, 1);
-                func_02053848((u8 *)c + 0xec, 9, 14);
+                ThreeLayerAnimModel_AssignJointsToLayer2((u8 *)c + 0xec, 9, 14);
                 _ZN12Unk_0201985813func_02019498Ei(s, 1);
                 s->unk_98 = 0x14;
             }
@@ -7257,7 +7257,7 @@ BOOL Unk_02016a44::func_02017188(Unk_02006d14 *o) {
             _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(&o->unk_334, o, 0x27, data_020c6cc8, 1, 0x1000, 0, 0);
             func_02003ddc(&o->unk_514, 0x4f, 0x7f, 0);
             if (_ZN12Unk_02015b8c13func_02015e48Ej(&o->unk_334, 1) == 0x139) {
-                _ZN12Unk_020dbda413func_02053e28Ejj(&o->unk_ec, 0, 0);
+                _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(&o->unk_ec, 0, 0);
             }
             nJ::_ZN12Unk_0201985813func_02019498Ei(this, 0);
         }
@@ -7280,7 +7280,7 @@ BOOL Unk_02016a44::func_020170b8(Unk_02006d14 *o) {
         if (func_020573cc(7, o)) {
             _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(&o->unk_334, o, 0x26, data_020c6cc8, 3, 0x1000, 0, 0);
             if (_ZN12Unk_02015b8c13func_02015e48Ej(&o->unk_334, 1) == 0x139) {
-                _ZN12Unk_020dbda413func_02053e28Ejj(&o->unk_ec, 0, 0);
+                _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(&o->unk_ec, 0, 0);
             }
             func_02057250(5, o);
             nJ::_ZN12Unk_0201985813func_02019498Ei(this, 0);
@@ -7741,8 +7741,8 @@ BOOL Unk_02016350::func_020162c4(Unk_02015fe0_Obj *o, s32 a) {
     unk_14 = a;
     if (!_ZN12Unk_020e071813func_02082140Ev(this)) return FALSE;
     func_0201610c(o, 0, 0, 0, 0x1000, 0, 0);
-    _ZN12Unk_020dbd5413func_02054710Ev(o->unk_ec);
-    _ZN5Model13func_020554a0Eiiiii(o->unk_ec, (void *)func_0201c050, 6, 1, o, 0);
+    _ZN9AnimModel10attachAnimEv(o->unk_ec);
+    _ZN5Model11setCallbackEiiiii(o->unk_ec, (void *)func_0201c050, 6, 1, o, 0);
     unk_0c = 2;
     if (!_ZN12Unk_02015b8c13func_02015fc0Ev(this)) _ZN12Unk_02015b8c13func_02015f9cEv(this);
     unk_10 = 0;
@@ -7806,7 +7806,7 @@ vdone:
         if (size != _ZN12Unk_0201ad2013func_0201ad28Ev(o->unk_2a0) || !func_0201622c(size, o->unk_2a0)) {
             void *r = func_0201628c(size, mode);
             if (r) {
-                func_02053980(o->unk_ec, r, a3, a4, a5, v, 0);
+                BlendAnimModel_Play2(o->unk_ec, r, a3, a4, a5, v, 0);
             }
         }
         _ZN12Unk_02015b8c13func_02015b8cEP18Unk_02015b8c_Scene(this, o);
@@ -7818,14 +7818,14 @@ vdone:
     case 1: {
         void *r = func_0201628c(kind, mode);
         if (r) {
-            _ZN12Unk_020dbda413func_02053e70Ejjjjjji(o->unk_ec, r, a3, a4, a5, v, 0, 0);
+            _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(o->unk_ec, r, a3, a4, a5, v, 0, 0);
         }
         break;
     }
     case 2: {
         void *r = func_0201628c(kind, mode);
         if (r) {
-            _ZN12Unk_020dbd7413func_02053900Ejjjjjji(o->unk_ec, r, a3, a4, a5, v, 0, 0);
+            _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(o->unk_ec, r, a3, a4, a5, v, 0, 0);
         }
         break;
     }
@@ -7839,35 +7839,35 @@ void Unk_02016350::func_02015fe0(Unk_02015fe0_Obj *o, u16 *p, void *q, u16 x) {
             if (Unk_02015fe0_R(p, 0x1369, 0x1369)) {
                 void *r = func_0201628c(0x13f, 1);
                 if (r) {
-                    _ZN12Unk_020dbda413func_02053e70Ejjjjjji(o->unk_ec, r, x, 0, 0x1000, 0, 0, 0);
-                    func_02053848(o->unk_ec, 0xc, 0xe);
+                    _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(o->unk_ec, r, x, 0, 0x1000, 0, 0, 0);
+                    ThreeLayerAnimModel_AssignJointsToLayer2(o->unk_ec, 0xc, 0xe);
                 }
             } else {
                 s32 id = func_0205ed30(p);
                 if (id != 0x144) {
                     void *r = func_0201628c(id, 1);
                     if (r) {
-                        _ZN12Unk_020dbda413func_02053e70Ejjjjjji(o->unk_ec, r, x, 0, 0x1000, 0, 0, 0);
+                        _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(o->unk_ec, r, x, 0, 0x1000, 0, 0, 0);
                         s32 t = func_0205c57c(id);
                         if (t < 4) {
                             u32 n = func_0205c5d0();
                             for (u32 i = 0; i < n; i++) {
                                 s32 a = func_0205c5ac(t, i);
-                                func_02053848(o->unk_ec, a, func_0205c588(t, i));
+                                ThreeLayerAnimModel_AssignJointsToLayer2(o->unk_ec, a, func_0205c588(t, i));
                             }
                         } else {
-                            _ZN12Unk_020dbda413func_02053e28Ejj(o->unk_ec, 0, 0);
+                            _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(o->unk_ec, 0, 0);
                         }
                     }
                 } else {
-                    _ZN12Unk_020dbda413func_02053e28Ejj(o->unk_ec, 0, 0);
+                    _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(o->unk_ec, 0, 0);
                 }
             }
         } else {
-            _ZN12Unk_020dbda413func_02053e28Ejj(o->unk_ec, 0, 0);
+            _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(o->unk_ec, 0, 0);
         }
     } else {
-        _ZN12Unk_020dbda413func_02053e28Ejj(o->unk_ec, 0, 0);
+        _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(o->unk_ec, 0, 0);
     }
 }
 
@@ -7903,13 +7903,13 @@ void Unk_02015b8c::func_02015ed8(Unk_02015b8c_Scene *scene, u32 a, u32 b) {
     using namespace nH;
     u32 r1 = func_02015f64();
     if (r1 != 0) {
-        _ZN12Unk_020dbd7413func_02053900Ejjjjjji(((void *)((u8 *)(scene) + (0xec))), r1, 0, 1, 0x1000, a, b, 0);
+        _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(((void *)((u8 *)(scene) + (0xec))), r1, 0, 1, 0x1000, a, b, 0);
         s32 t = func_0205c57c(0x143);
         if (t < 4) {
             u32 n = func_0205c5d0();
             for (u32 i = 0; i < n; i++) {
                 u32 x = func_0205c5ac(t, i);
-                _ZN12Unk_020dbd7413func_02053878Ejj(((void *)((u8 *)(scene) + (0xec))), x, func_0205c588(t, i));
+                _ZN19ThreeLayerAnimModel20assignJointsToLayer3Ejj(((void *)((u8 *)(scene) + (0xec))), x, func_0205c588(t, i));
             }
         } else {
             func_02015ec8(scene);
@@ -7921,7 +7921,7 @@ void Unk_02015b8c::func_02015ed8(Unk_02015b8c_Scene *scene, u32 a, u32 b) {
 
 void Unk_02015b8c::func_02015ec8(Unk_02015b8c_Scene *scene) {
     using namespace nH;
-    _ZN12Unk_020dbd7413func_020538a8Ejj(((void *)((u8 *)(scene) + (0xec))), 0, 0);
+    _ZN19ThreeLayerAnimModel18playLayer3FromBaseEjj(((void *)((u8 *)(scene) + (0xec))), 0, 0);
 }
 
 void Unk_02015b8c::func_02015ec4(u8 v) {
@@ -7989,7 +7989,7 @@ void Unk_02015b8c::func_02015d2c(Unk_02015b8c_Scene *scene) {
         if (_ZN12Unk_0201a19413func_0201a15cEv(((void *)((u8 *)(scene) + (0x418)))) < 2) {
             if (_ZN12Unk_0201a19413func_0201a164Ev(((void *)((u8 *)(scene) + (0x418))))) {
                 if (unk_10 != 0) {
-                    if (_ZN12Unk_020dbd7413func_020538f0Ev(((void *)((u8 *)(scene) + (0xec)))) == 0) {
+                    if (_ZN19ThreeLayerAnimModel19checkLayer3FinishedEv(((void *)((u8 *)(scene) + (0xec)))) == 0) {
                         goto tail;
                     }
                 }
@@ -7999,7 +7999,7 @@ void Unk_02015b8c::func_02015d2c(Unk_02015b8c_Scene *scene) {
                 func_02015ed8(scene, a, b);
                 unk_10 = 1;
             } else if (unk_10 == 1) {
-                if (_ZN12Unk_020dbd7413func_020538f0Ev(((void *)((u8 *)(scene) + (0xec)))) != 0) {
+                if (_ZN19ThreeLayerAnimModel19checkLayer3FinishedEv(((void *)((u8 *)(scene) + (0xec)))) != 0) {
                     func_02015ec8(scene);
                     unk_10 = 0;
                 }
@@ -10113,7 +10113,7 @@ void Unk_02013260::func_02013300(u32 a, u32 idx, u32 b, u32 c) {
 
 void Unk_02013260::func_020132ec(u32 v) {
     using namespace nD;
-    func_0204ee10(&unk_94, &unk_98, v);
+    FieldPos_ToUnit(&unk_94, &unk_98, v);
 }
 
 void Unk_02013260::func_020132c8() {
@@ -10128,7 +10128,7 @@ void Unk_02013260::func_02013260(u32 v) {
     using namespace nD;
     u32 a = 0;
     u32 b = 0;
-    func_0204ee10(&a, &b, v);
+    FieldPos_ToUnit(&a, &b, v);
     if (unk_94 != 0 && unk_98 != 0 && (unk_94 != a || unk_98 != b)) {
         unk_04 = 3;
         nD::_ZN12Unk_0201281013func_02012df8Ev(this);
@@ -10166,8 +10166,8 @@ extern "C" BOOL _ZN12Unk_0201281013func_020131a4EP16Unk_02012810_VecP17Unk_02012
             if (o.unk_30 != 0) cnt++; else cnt = zero;
             if (cnt >= 4) break;
         }
-        if (_ZN12Unk_0204e2f013func_0204e350Eii(q, x, y)) {
-            func_0204ed8c(p1, x, y);
+        if (_ZN8BlockMap13func_0204e350Eii(q, x, y)) {
+            FieldPos_FromUnitCenter(p1, x, y);
             return TRUE;
         }
     }
@@ -10188,12 +10188,12 @@ u32 Unk_02012810::func_020130f0(Unk_02012810_Vec *v, Unk_02012f04_Obj *o) {
     out.x = 0;
     out.z = 0;
     n = 0;
-    func_0204ee20(&a, &c, v);
+    FieldPos_ToBlockUnit2(&a, &c, v);
     for (i = 0; i < 4; i++) {
         u32 x = c.x + ((Unk_020130f0_Dir *)data_021be028)[i].x;
         u32 z = c.z + ((Unk_020130f0_Dir *)data_021be028)[i].z;
         if (x < 16 && z < 16) {
-            func_0204edf8(&out.x, &out.z, a.x, a.z, x, z);
+            FieldUnit_FromBlockUnit(&out.x, &out.z, a.x, a.z, x, z);
             if (func_02077f68(out.x, out.z, o) != 0) {
                 mask = mask | (1 << i);
                 n++;
@@ -10203,7 +10203,7 @@ u32 Unk_02012810::func_020130f0(Unk_02012810_Vec *v, Unk_02012f04_Obj *o) {
     dir = Random_PickSetBit(mask, n, 4);
     if (dir < 4) {
         s32 off = dir * 8;
-        func_0204eda4(v, a.x, a.z, c.x + *(s32 *)((u8 *)data_021be028 + off), c.z + *(s32 *)((u8 *)(data_021be028 + 1) + off));
+        FieldPos_FromBlockUnitCenter(v, a.x, a.z, c.x + *(s32 *)((u8 *)data_021be028 + off), c.z + *(s32 *)((u8 *)(data_021be028 + 1) + off));
         return dir;
     }
     return 4;
@@ -10218,7 +10218,7 @@ u32 Unk_02012810::func_02012f04(Unk_02012b94_Pair *out, Unk_02012810_Vec *pos) {
     Unk_02012b94_Pair p, q;
     s32 dir;
     s32 x0, z0, x1, z1, flag, off, bestd;
-    o = data_021c47c4;
+    o = gSceneBlockMap;
     best.x = pos->x;
     best.y = pos->y;
     best.z = pos->z;
@@ -10231,11 +10231,11 @@ u32 Unk_02012810::func_02012f04(Unk_02012b94_Pair *out, Unk_02012810_Vec *pos) {
     if (o == 0) {
         return 4;
     }
-    func_0204ee10(&p.x, &p.z, pos);
+    FieldPos_ToUnit(&p.x, &p.z, pos);
     Unk_02012b94_Pair *pq = &o->unk_0c;
     q.x = pq->x;
     q.z = pq->z;
-    if (_ZN12Unk_0204e2f013func_0204e328EPv(o, pos) != 0) {
+    if (_ZN8BlockMap13func_0204e328EPv(o, pos) != 0) {
         return 4;
     }
     for (s32 i = 0; i < 4; i++) {
@@ -10243,8 +10243,8 @@ u32 Unk_02012810::func_02012f04(Unk_02012b94_Pair *out, Unk_02012810_Vec *pos) {
         cand[i].y = pos->y;
         cand[i].z = pos->z;
     }
-    func_0204ee10(&p.x, &p.z, pos);
-    flag = (func_0204ec50(o, pos->x >> 17, pos->z >> 17) & 0x7f000) != 0 ? 1 : 0;
+    FieldPos_ToUnit(&p.x, &p.z, pos);
+    flag = (BlockMap_GetBlockAttr(o, pos->x >> 17, pos->z >> 17) & 0x7f000) != 0 ? 1 : 0;
     x0 = p.x & 0xfff0;
     z0 = p.z & 0xfff0;
     x1 = x0 + 16;
@@ -10281,7 +10281,7 @@ u32 Unk_02012810::func_02012f04(Unk_02012b94_Pair *out, Unk_02012810_Vec *pos) {
             dir = r;
         }
     }
-    func_0204ee10(&out->x, &out->z, &best);
+    FieldPos_ToUnit(&out->x, &out->z, &best);
 
     return dir;
 }
@@ -10322,7 +10322,7 @@ s32 Unk_02012810::func_02012e08(Unk_02012b94_Pair *out, Unk_02012e08_Pos pos, u3
             pos.x += dx;
             pos.z += dz;
             cnt++;
-            s32 r = _ZN12Unk_0204e2f013func_0204e350Eii(obj, pos.x, pos.z);
+            s32 r = _ZN8BlockMap13func_0204e350Eii(obj, pos.x, pos.z);
             if (r == 0) {
                 u32 z = pos.z - dz;
                 out->x = pos.x - dx;
@@ -10428,10 +10428,10 @@ extern "C" void func_02012b94(Unk_02012b94_Pair *out, s32 unused, Unk_02012b94_P
     s32 cnt = 0;
     s32 z, x;
     MI_CpuFill8(mask, 0, 32);
-    func_0204edf8(&bx, &bz, p->x, p->z, 0, 0);
+    FieldUnit_FromBlockUnit(&bx, &bz, p->x, p->z, 0, 0);
     for (z = 0; z < 16; z++) {
         for (x = 0; x < 16; x++) {
-            if (_ZN12Unk_0204e2f013func_0204e350Eii(obj, bx + x, bz + z) != 0) {
+            if (_ZN8BlockMap13func_0204e350Eii(obj, bx + x, bz + z) != 0) {
                 mask[z] |= 1 << x;
                 cnt++;
             }
@@ -10475,7 +10475,7 @@ s32 Unk_02012810::func_02012b78(s32 v) {
 
 void Unk_02012810::func_02012810(Unk_02012810_Vec *pos) {
     using namespace nC;
-    Unk_02012f04_Obj *o = data_021c47c4;
+    Unk_02012f04_Obj *o = gSceneBlockMap;
     s32 dirs, found;
     s32 lo2, present, dirs2, cand, bestd, i, hi, lo, w, bx, bz;
     Unk_02012b94_Pair q, p, r;
@@ -10484,7 +10484,7 @@ void Unk_02012810::func_02012810(Unk_02012810_Vec *pos) {
     if (o == 0) {
         return;
     }
-    present = _ZN12Unk_0204e2f013func_0204e328EPv(o, pos);
+    present = _ZN8BlockMap13func_0204e328EPv(o, pos);
     if (present == 0) {
         unk_90 = func_02012f04(&unk_1c, pos);
         unk_04 = 0;
@@ -10505,7 +10505,7 @@ void Unk_02012810::func_02012810(Unk_02012810_Vec *pos) {
     r.x = 0;
     r.z = 0;
     bestd = -4096;
-    func_0204ee10(&p.x, &p.z, pos);
+    FieldPos_ToUnit(&p.x, &p.z, pos);
     if ((present & ~dirs) == 0) {
         if (func_02012e08(&r, p, dirs, &q, o)) {
             unk_1c.x = r.x;
@@ -10522,14 +10522,14 @@ void Unk_02012810::func_02012810(Unk_02012810_Vec *pos) {
             lo = e1.f.lo;
             dirs2 = dirs2 | hi;
         }
-        func_0204ed8c(&tv, unk_0c, unk_10);
+        FieldPos_FromUnitCenter(&tv, unk_0c, unk_10);
         for (i = 0; i < 4; i++) {
             if (((dirs2 >> i) & 1) == 0) {
                 cand = present & (1 << i);
                 if (cand != 0) {
                     if (func_02012e08(&r, p, cand, &q, o)) {
                         s32 d;
-                        func_0204ed8c(&uv, r.x, r.z);
+                        FieldPos_FromUnitCenter(&uv, r.x, r.z);
                         d = func_020e9650(&tv, &uv);
                         if (bestd < 0 || d < bestd) {
                             bx = r.x;
@@ -10563,7 +10563,7 @@ void Unk_02012810::func_02012810(Unk_02012810_Vec *pos) {
         Unk_02012cbc_Ent e2 = func_02012cbc(&p);
         lo2 = e2.f.lo;
         w = func_02012b78(lo2);
-        func_0204ed8c(&tv, unk_0c, unk_10);
+        FieldPos_FromUnitCenter(&tv, unk_0c, unk_10);
         dirs = dirs | w;
         for (j = 0; j < 4; j++) {
             if (((dirs >> j) & 1) == 0) {
@@ -10571,7 +10571,7 @@ void Unk_02012810::func_02012810(Unk_02012810_Vec *pos) {
                 if (cand2 != 0) {
                     if (func_02012e08(&r, p, cand2, &q, o)) {
                         s32 d;
-                        func_0204ed8c(&uv, r.x, r.z);
+                        FieldPos_FromUnitCenter(&uv, r.x, r.z);
                         d = func_020e9650(&tv, &uv);
                         if (bestd < 0 || d < bestd) {
                             bx = r.x;
@@ -10615,19 +10615,19 @@ BOOL Unk_02012164::func_0201273c(Unk_02011f74_Vec *p, Unk_02011f74_Pair *lim, Un
         s32 dz = e->b;
         u32 a = 0;
         u32 b = 0;
-        func_0204ee10((s32 *)&a, (s32 *)&b, p);
+        FieldPos_ToUnit((s32 *)&a, (s32 *)&b, p);
         for (; a < (u32)lim->a && b < (u32)lim->b;) {
             a += dx;
             b += dz;
             BOOL eq = FALSE;
             if (unk_1c == a && unk_20 == b) eq = TRUE;
-            if (eq || _ZN12Unk_0204e2f013func_0204e350Eii(w, a, b)) {
-                func_0204ed8c(p, a, b);
+            if (eq || _ZN8BlockMap13func_0204e350Eii(w, a, b)) {
+                FieldPos_FromUnitCenter(p, a, b);
                 nB::_ZN12Unk_0201281013func_02012810EP16Unk_02012810_Vec(this, p);
                 break;
             }
             if (func_02077f68(a, b, w)) {
-                func_0204ed8c(p, a, b);
+                FieldPos_FromUnitCenter(p, a, b);
                 break;
             }
         }
@@ -10642,7 +10642,7 @@ BOOL Unk_02012164::func_0201273c(Unk_02011f74_Vec *p, Unk_02011f74_Pair *lim, Un
 
 BOOL Unk_02012164::func_020126f8(Unk_02011f74_Vec *p) {
     using namespace nB;
-    Unk_02011f74_World *world = data_021c47c4;
+    Unk_02011f74_World *world = gSceneBlockMap;
     if (world) {
         Unk_02011f74_Pair lim;
         Unk_02011f74_Pair *sz = &world->unk_0c;
@@ -10664,11 +10664,11 @@ BOOL Unk_02012164::func_02012620(Unk_02011f74_Vec *p, Unk_02011f74_World *w) {
         s32 k = nB::_ZN12Unk_0201281013func_02012eb0Ei(this, flag);
         s32 a = 0;
         s32 b = 0;
-        func_0204ee10(&a, &b, p);
+        FieldPos_ToUnit(&a, &b, p);
         a += data_021be028[k * 2];
         b += (data_021be028 + 1)[k * 2];
-        if (!_ZN12Unk_0204e2f013func_0204e350Eii(w, a, b)) {
-            func_0204ed8c(p, a, b);
+        if (!_ZN8BlockMap13func_0204e350Eii(w, a, b)) {
+            FieldPos_FromUnitCenter(p, a, b);
             nB::_ZN12Unk_0201281013func_02012df8Ev(this);
             unk_88 = 0;
             unk_8c = 2;
@@ -10676,7 +10676,7 @@ BOOL Unk_02012164::func_02012620(Unk_02011f74_Vec *p, Unk_02011f74_World *w) {
             unk_90 = 4;
             return FALSE;
         }
-        func_0204ed8c(p, a, b);
+        FieldPos_FromUnitCenter(p, a, b);
         if (a == unk_1c && b == unk_20) {
             nB::_ZN12Unk_0201281013func_02012810EP16Unk_02012810_Vec(this, p);
         }
@@ -10691,7 +10691,7 @@ BOOL Unk_02012164::func_02012620(Unk_02011f74_Vec *p, Unk_02011f74_World *w) {
 
 BOOL Unk_02012164::func_020125e8(Unk_02011f74_Vec *p) {
     using namespace nB;
-    Unk_02011f74_World *world = data_021c47c4;
+    Unk_02011f74_World *world = gSceneBlockMap;
     if (world) {
         func_02012620(p, world);
         if (nB::_ZN12Unk_0201281013func_02012ed0EP16Unk_02012810_Vec(this, p)) {
@@ -10710,7 +10710,7 @@ BOOL Unk_02012164::func_020125d8(Unk_02011f74_Vec *p, Unk_02011f74_World *w) {
 
 BOOL Unk_02012164::func_02012584(Unk_02011f74_Vec *p) {
     using namespace nB;
-    Unk_02011f74_World *world = data_021c47c4;
+    Unk_02011f74_World *world = gSceneBlockMap;
     if (world) {
         func_020125d8(p, world);
         if (!nB::_ZN12Unk_0201281013func_02012ed0EP16Unk_02012810_Vec(this, p)) {
@@ -10735,7 +10735,7 @@ BOOL Unk_02012164::func_02012450(Unk_02011f74_Vec *p) {
     volatile s32 zero0;
     volatile s32 zero1;
     Unk_02011f74_Vec tmp;
-    func_0204ed8c(&tmp, unk_0c.a, unk_0c.b);
+    FieldPos_FromUnitCenter(&tmp, unk_0c.a, unk_0c.b);
     if (mode == 0) {
         base = Math_AngleXZ(p, &tmp);
         mag = 0x1000;
@@ -10757,7 +10757,7 @@ BOOL Unk_02012164::func_02012450(Unk_02011f74_Vec *p) {
         r6 = ((u16)(s16)(r6 + base) >> 4) << 1;
         tmp.x = p->x + func_01ffcb0c(len, data_02135f44[r6]);
         tmp.z = p->z + func_01ffcb0c(len, data_02135f44[r6 + 1]);
-        func_0204edd8(&tmp, &tmp);
+        FieldPos_SnapToUnitCenter(&tmp, &tmp);
         if (func_02077f40(&tmp, zero0)) {
             p->x = tmp.x;
             p->z = tmp.z;
@@ -10777,12 +10777,12 @@ BOOL Unk_02012164::func_02012450(Unk_02011f74_Vec *p) {
 
 namespace nB {
 extern "C" void func_02012404(Unk_02011f74_Pair *out, void *self) {
-    Unk_02011f74_World *world = data_021c47c4;
+    Unk_02011f74_World *world = gSceneBlockMap;
     out->a = 0;
     out->b = 0;
-    if (world && func_0204ecfc(world, 0x200)) {
+    if (world && BlockMap_FindBlockAllAttr(world, 0x200)) {
         Unk_02011f74_Pair t;
-        func_02012b94(&t, self, _ZN12Unk_020375d013func_020375d8Ev(), world);
+        func_02012b94(&t, self, _ZN12MapBlockAcre8getUnk04Ev(), world);
         *out = t;
     }
 }
@@ -10790,12 +10790,12 @@ extern "C" void func_02012404(Unk_02011f74_Pair *out, void *self) {
 
 BOOL Unk_02012164::func_020123d0(Unk_02011f74_Vec *v) {
     using namespace nB;
-    Unk_02011f74_World *world = data_021c47c4;
+    Unk_02011f74_World *world = gSceneBlockMap;
     BOOL r = FALSE;
     if (world != NULL) {
         s32 x = v->x >> 17;
         s32 z = v->z >> 17;
-        BOOL c = func_0204ec14(world, x, z, 0x200);
+        BOOL c = BlockMap_BlockHasAllAttr(world, x, z, 0x200);
         if (c) {
             r = TRUE;
         }
@@ -10825,7 +10825,7 @@ BOOL Unk_02012164::func_02012344(Unk_02011f74_Vec *p) {
     using namespace nB;
     s32 a = 0;
     s32 b = 0;
-    func_0204ee10(&a, &b, p);
+    FieldPos_ToUnit(&a, &b, p);
     if (a == unk_0c.a && b == unk_0c.b) return TRUE;
     return FALSE;
 }
@@ -10844,7 +10844,7 @@ BOOL Unk_02012164::func_02012308(Unk_02011f74_Vec *p) {
 
 namespace nB {
 extern "C" void func_02012284(Unk_02011f74_Pair *out, void *self, u32 unused, Unk_02011f74_Obj *obj) {
-    Unk_02011f74_World *world = data_021c47c4;
+    Unk_02011f74_World *world = gSceneBlockMap;
     out->a = 0;
     out->b = 0;
     if (world && obj->vfunc_64()) {
@@ -10892,7 +10892,7 @@ BOOL Unk_02012164::func_020121fc(Unk_02011f74_Vec *p) {
     using namespace nB;
     s32 a = 0;
     s32 b = 0;
-    func_0204ee10(&a, &b, p);
+    FieldPos_ToUnit(&a, &b, p);
     if (a == unk_0c.a && b == unk_0c.b) return TRUE;
     return FALSE;
 }
@@ -10901,13 +10901,13 @@ BOOL Unk_02012164::func_02012164(Unk_02011f74_Vec *p) {
     using namespace nB;
     s32 a = 0;
     s32 b = 0;
-    func_0204ee10(&a, &b, p);
+    FieldPos_ToUnit(&a, &b, p);
     if (a == unk_0c.a && b >= unk_0c.b && b <= unk_0c.b + 1) {
-        func_0204ed8c(p, ((volatile Unk_02011f74_Pair &)unk_0c).a, ((volatile Unk_02011f74_Pair &)unk_0c).b);
+        FieldPos_FromUnitCenter(p, ((volatile Unk_02011f74_Pair &)unk_0c).a, ((volatile Unk_02011f74_Pair &)unk_0c).b);
     } else if (a >= unk_0c.a - 3 && a <= unk_0c.a + 4 && b >= unk_0c.b && b <= unk_0c.b + 5) {
         a = unk_0c.a;
         b = unk_0c.b + func_02063b8c(2);
-        func_0204ed8c(p, a, b);
+        FieldPos_FromUnitCenter(p, a, b);
     } else {
         func_02012450(p);
     }
@@ -10921,7 +10921,7 @@ BOOL Unk_02012164::func_02012164(Unk_02011f74_Vec *p) {
 
 namespace nB {
 extern "C" void func_02012100(Unk_02011f74_Pair *out, void *self, u32 unused, Unk_02011f74_Obj *obj) {
-    Unk_02011f74_World *world = data_021c47c4;
+    Unk_02011f74_World *world = gSceneBlockMap;
     out->a = 0;
     out->b = 0;
     if (world && obj->vfunc_64()) {
@@ -10949,7 +10949,7 @@ BOOL Unk_02012164::func_020120e4(Unk_02011f74_Vec *v) {
 
 namespace nB {
 extern "C" void func_02012088(Unk_02011f74_Pair *out, void *self) {
-    Unk_02011f74_World *world = data_021c47c4;
+    Unk_02011f74_World *world = gSceneBlockMap;
     Unk_02011f74_Pair pos;
     out->a = 0;
     out->b = 0;
@@ -10984,7 +10984,7 @@ BOOL Unk_02012164::func_0201206c(Unk_02011f74_Vec *v) {
 
 namespace nB {
 extern "C" void func_02011f74(Unk_02011f74_Pair *out, void *self, Unk_02011f74_Vec *v) {
-    Unk_02011f74_World *world = data_021c47c4;
+    Unk_02011f74_World *world = gSceneBlockMap;
     u8 mask = 0;
     out->a = 0;
     out->b = 0;
@@ -11005,7 +11005,7 @@ extern "C" void func_02011f74(Unk_02011f74_Pair *out, void *self, Unk_02011f74_V
             for (i = 1; i < sz - 1; i++) {
                 if (i != px || pz != 4) {
                     Unk_02011f74_Cell *c = GetCell(world, i, 4);
-                    if (c && func_020374b0(c, 8)) {
+                    if (c && MapBlock_HasAnyAttr(c, 8)) {
                         mask |= 1 << (i - 1);
                         count++;
                     }
@@ -11018,7 +11018,7 @@ extern "C" void func_02011f74(Unk_02011f74_Pair *out, void *self, Unk_02011f74_V
             Unk_02011f74_Cell *c = GetCell(world, idx + 1, 4);
             if (c) {
                 Unk_02011f74_Pair t;
-                func_02012b94(&t, self, _ZN12Unk_020375d013func_020375d8Ev(), world);
+                func_02012b94(&t, self, _ZN12MapBlockAcre8getUnk04Ev(), world);
                 *out = t;
             }
         }
@@ -11158,7 +11158,7 @@ void Unk_02011b60::func_02011bcc(Unk_02006d14 *p) {
         Unk_02081d4c *r = _ZN12Unk_020821b413func_02081d4cEv(&unk_04);
         if (p) {
             MsgRequest &s = *p;
-            func_020553cc(&s, unk_0c, 0xe);
+            Model_GetJointWorldMtx(&s, unk_0c, 0xe);
         }
         if (r) func_0205e014(r, unk_0c);
     }
@@ -11206,7 +11206,7 @@ inline Unk_020d77a4::~Unk_020d77a4() {
     _ZN12Unk_02016350D1Ev((u8 *)this + 0x334);
     _ZN12Unk_02019dd8D2Ev((u8 *)this + 0x2ac);
     _ZN12Unk_0201ad2013func_0201ad38Ev((u8 *)this + 0x2a0);
-    _ZN12Unk_020dbd74D1Ev((u8 *)this + 0xec);
+    _ZN19ThreeLayerAnimModelD1Ev((u8 *)this + 0xec);
 }
 
 namespace nZ {

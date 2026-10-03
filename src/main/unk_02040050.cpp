@@ -19,9 +19,9 @@ public:
 };
 struct Unk_020d96fc_G { u8 b0, b1, b2, b3; };
 
-class Unk_020d96fc : public GameProc {
+class EventCalendarModule : public GameProc {
 public:
-    Unk_020d96fc() {}
+    EventCalendarModule() {}
     virtual BOOL vfunc_0c();
 };
 
@@ -62,27 +62,27 @@ extern u32 data_020c907c[];
 }
 
 extern "C" {
-s32 func_0209d2c0(Unk_0203fe18_Date*, s32);
+s32 DateTime_AddDays(Unk_0203fe18_Date*, s32);
 }
 
 extern "C" {
-s32 func_0209d164(Unk_0203fe18_Date*, s32);
+s32 DateTime_SubDays(Unk_0203fe18_Date*, s32);
 }
 
 extern "C" {
-void func_0209d498(Unk_0203fe18_Date*);
+void Clock_GetDateTime(Unk_0203fe18_Date*);
 }
 
 extern "C" {
-s32 func_0209cef4(void);
+s32 Clock_GetWeekday(void);
 }
 
 extern "C" {
-s32 func_0209cd00(Unk_0203fe18_B3*, u8*);
+s32 Date_DaysBetween(Unk_0203fe18_B3*, u8*);
 }
 
 extern "C" {
-void func_0209d338(Unk_0203fe18_Date*, long long*);
+void DateTime_GetWeekStart(Unk_0203fe18_Date*, long long*);
 }
 
 extern "C" {
@@ -98,15 +98,15 @@ s32 func_0203f14c(void);
 }
 
 extern "C" {
-s32 func_0203f31c(u32, Unk_0203fe18_Date*, s32);
+s32 Event_GetStateAt(u32, Unk_0203fe18_Date*, s32);
 }
 
 extern "C" {
-s32 func_0203f3a0(u32, Unk_0203fe18_Date*, void*);
+s32 EventDayList_GetState(u32, Unk_0203fe18_Date*, void*);
 }
 
 extern "C" {
-s32 func_0203f508(void*, Unk_0203fe18_Date*);
+s32 EventSchedule_CollectDayAll(void*, Unk_0203fe18_Date*);
 }
 
 extern "C" {
@@ -130,7 +130,7 @@ s32 func_020407a8(void*, void*, void*);
 }
 
 extern "C" {
-Unk_0203ff20_Entry* func_02040030(Unk_0203ff50_Slot*, s32);
+Unk_0203ff20_Entry* EventWeekSlots_Get(Unk_0203ff50_Slot*, s32);
 }
 
 extern "C" {
@@ -138,7 +138,7 @@ s32 func_02040234(Unk_0203ff50_Slot*, u32);
 }
 
 extern "C" {
-Unk_0203ff20_Entry* func_0203ffe8(Unk_0203ff50_Slot*);
+Unk_0203ff20_Entry* EventWeekSlots_GetToday(Unk_0203ff50_Slot*);
 }
 
 extern "C" {
@@ -150,15 +150,15 @@ void func_02040078(Unk_0203ff50_Slot*);
 }
 
 extern "C" {
-void func_0203ff10(Unk_0203ff20_Entry*);
+void EventWeekSlot_MarkAllPlayers(Unk_0203ff20_Entry*);
 }
 
 extern "C" {
-void func_0203ff3c(Unk_0203ff20_Entry*);
+void EventWeekSlot_Clear(Unk_0203ff20_Entry*);
 }
 
 extern "C" {
-void func_0203ff20(Unk_0203ff20_Entry*, u8, Unk_0203fe18_Date*);
+void EventWeekSlot_Set(Unk_0203ff20_Entry*, u8, Unk_0203fe18_Date*);
 }
 
 extern "C" {
@@ -211,7 +211,7 @@ extern "C" void func_02040050(Unk_0203ff50_Slot *s);
 
 extern "C" void func_02040208(u32 id) {
     if (id >= 0x3e && id < 0x46) {
-        Unk_0203ff20_Entry *e = func_0203ffe8((Unk_0203ff50_Slot *)data_021ed168);
+        Unk_0203ff20_Entry *e = EventWeekSlots_GetToday((Unk_0203ff50_Slot *)data_021ed168);
         if (e) {
             if (id == e->unk_02) e->unk_04 = 1;
         }
@@ -219,14 +219,14 @@ extern "C" void func_02040208(u32 id) {
 }
 
 extern "C" void func_020401d4(Unk_0203fe18_Date *d, s32 n) {
-    func_0209d498(d);
+    Clock_GetDateTime(d);
     if (n == 1) {
-        s32 t = func_0209cef4() + 1;
-        func_0209d164(d, t);
+        s32 t = Clock_GetWeekday() + 1;
+        DateTime_SubDays(d, t);
     }
     else {
-        s32 t = 7 - func_0209cef4();
-        func_0209d2c0(d, t);
+        s32 t = 7 - Clock_GetWeekday();
+        DateTime_AddDays(d, t);
     }
 }
 
@@ -242,7 +242,7 @@ extern "C" BOOL func_02040188(Unk_0203fe18_B4 d) {
         t.b2 = c;
         t.b1 = b3;
         t.b0 = b2;
-        n = func_0209cd00(&t, g);
+        n = Date_DaysBetween(&t, g);
         if (n >= 0 && n < 7) r = TRUE;
     }
     return r;
@@ -278,7 +278,7 @@ extern "C" BOOL func_020400f8(Unk_0203fe18_B4 d) {
         t.b2 = c;
         t.b1 = b3;
         t.b0 = b2;
-        n = func_0209cd00(&t, g);
+        n = Date_DaysBetween(&t, g);
         if (n >= 0 && n < 7) r = TRUE;
     }
     return r;
@@ -300,8 +300,8 @@ extern "C" BOOL func_020400b0(u32 id) {
 }
 
 extern "C" void func_02040078(Unk_0203ff50_Slot *s) {
-    s32 r4 = func_0209cef4();
-    Unk_0203ff20_Entry *e = func_0203ffe8(s);
+    s32 r4 = Clock_GetWeekday();
+    Unk_0203ff20_Entry *e = EventWeekSlots_GetToday(s);
     if (e) {
         u8 t = e->unk_02;
         if (r4 != s->unk_13 || t != s->unk_12) {
@@ -315,7 +315,7 @@ extern "C" void func_02040078(Unk_0203ff50_Slot *s) {
 extern "C" void func_02040050(Unk_0203ff50_Slot *s) {
     Unk_0203ff20_Entry *e;
     data_021c3c88 = 0xff;
-    e = func_0203ffe8((Unk_0203ff50_Slot *)data_021ed168);
+    e = EventWeekSlots_GetToday((Unk_0203ff50_Slot *)data_021ed168);
     if (e) data_021c3c88 = e->unk_05;
 }
 

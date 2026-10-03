@@ -59,7 +59,7 @@ u32 func_02063b8c(u32 n);
 BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
 void TalkRequest_EndTalkWith(void *p);
 void func_020ac7cc(u16 *p);
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 void *func_020850e0();
 BOOL func_020851bc(void *p, s32 v);
 void func_020851a4(void *p, s32 v);
@@ -67,8 +67,8 @@ void func_02085290(void *p);
 void _ZN12Unk_0208581013func_02085900Ej(void *p, s32 v);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void func_020856a4(void *p, s32 v);
-u32 func_0203f42c(s32 v);
-void func_02053848(void *p, s32 a, s32 b);
+u32 Event_GetDaysSinceStart(s32 v);
+void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 void _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 extern u16 data_020c6cc8;
 BOOL _ZN12Unk_02013b1013func_02014220Ev(void *self);
@@ -187,12 +187,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -311,7 +311,7 @@ public:
     void *getPlayerActor(u32 v);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -404,11 +404,11 @@ void _ZN12Unk_02087ad813func_02087b4cEv(void *p);
 s32 _ZN8PlayerId9getGenderEv(void *p);
 u32 func_020a0414();
 void func_020947c0(u16 *out, u32 v);
-s32 func_0209ce68(u32 a, u32 b, s32 c, s32 d);
+s32 Date_GetNthWeekdayDay(u32 a, u32 b, s32 c, s32 d);
 BOOL func_0202e3a4(void *p);
 BOOL func_0202e514(void *p);
 void func_02085784(void *p, s32 a);
-void func_0209cf88(u8 *p);
+void Clock_GetDate(u8 *p);
 void *func_020991e4();
 s32 func_020991fc();
 void func_020656dc(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
@@ -474,10 +474,10 @@ BOOL Unk_ov084_02271e6c::vfunc_00() {
     func_ov084_02271a40(0);
     func_02085784(data_021ed24c, 0);
     _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
-    func_02053848(&unk_ec, 0xc, 0xe);
+    ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
     unk_4cc.unk_1c |= 2;
     u8 buf[8];
-    func_0209cf88(buf);
+    Clock_GetDate(buf);
     s32 n = buf[0] - 1;
     u8 *q = &unk_710;
     *q = n / 7;
@@ -591,8 +591,8 @@ void Unk_ov084_02271ddc::vfunc_78(Unk_ov084_022717ac_Out *out) {
             } else {
                 loc[0] = 0;
                 loc[1] = 0;
-                func_0209d498(&loc[0]);
-                s32 r = func_0209ce68(((u8 *)loc)[5], ((u8 *)loc)[4], 6, 5);
+                Clock_GetDateTime(&loc[0]);
+                s32 r = Date_GetNthWeekdayDay(((u8 *)loc)[5], ((u8 *)loc)[4], 6, 5);
                 if (r == -1) {
                     if (unk_ac->unk_710 <= 3) {
                         out->b = 1;

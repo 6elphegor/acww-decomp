@@ -6,13 +6,13 @@ s32 func_020512e0(void *p, s32 n);
 s32 func_02051270(void *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4);
 TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 void MsgTextLabel_Destroy(TextLabel *obj);
-BOOL func_020027b4(u32 x);
-s32 func_02002778(u32 n);
+BOOL Gfx2d_IsMainScreenLayer(u32 x);
+s32 Gfx2d_GetLayerBgIndex(u32 n);
 s32 func_020a78a4(void *buf, const void *src, s32 len);
-void func_0200212c(void *p);
-void func_02002398(void *p, s32 v);
-void func_0200226c(void *p, s32 a, s32 b, s32 c);
-void func_020021fc(void *p, s32 a, s32 b);
+void Gfx2d_HideLayer(void *p);
+void Gfx2d_SetLayerPriority(void *p, s32 v);
+void Gfx2d_SetLayerControl(void *p, s32 a, s32 b, s32 c);
+void Gfx2d_SetLayerOffset(void *p, s32 a, s32 b);
 void *func_02065c8c(void *p);
 void func_ov002_02202dd4(void *a, void *b);
 void Mem_Clear(void *p, s32 n);
@@ -177,21 +177,21 @@ void Unk_0206d0a0::func_0206d380() {
 }
 
 void Unk_0206d0a0::func_0206d2e0(Unk_0206d1d4_Src *src, void *a, void *b, s32 c) {
-    func_0200212c(b);
-    func_02002398(b, 1);
-    func_0200226c(b, 0, 0, 0);
+    Gfx2d_HideLayer(b);
+    Gfx2d_SetLayerPriority(b, 1);
+    Gfx2d_SetLayerControl(b, 0, 0, 0);
     func_ov002_02202dd4(func_02065c8c(src), b);
-    func_020021fc(b, 0, 0);
-    func_0200212c(a);
-    func_02002398(a, c);
-    func_0200226c(a, 0, 0, 0);
+    Gfx2d_SetLayerOffset(b, 0, 0);
+    Gfx2d_HideLayer(a);
+    Gfx2d_SetLayerPriority(a, c);
+    Gfx2d_SetLayerControl(a, 0, 0, 0);
     func_0206d288(src);
     func_0206d1d4(src, 0);
     func_0206d0fc((u8 *)src + 0x4c, 0);
     func_0206d0b8((u8 *)src + 0xcc);
     func_0206d3f4((u32)a);
     func_0206d380();
-    func_020021fc(a, 0, 0);
+    Gfx2d_SetLayerOffset(a, 0, 0);
 }
 
 s32 Unk_0206d0a0::func_0206d2d4() {
@@ -394,8 +394,8 @@ u32 Unk_020ddf44::vfunc_08() { return 0x29; }
 void Unk_020ddf44::func_0206cdcc(u16 v, u32 x) {
     unk_40 = v;
     unk_44 = 0;
-    unk_43 = func_020027b4(x) == 0 ? 1 : 0;
-    unk_42 = func_02002778(x);
+    unk_43 = Gfx2d_IsMainScreenLayer(x) == 0 ? 1 : 0;
+    unk_42 = Gfx2d_GetLayerBgIndex(x);
 }
 
 u8 *Unk_020ddf44::vfunc_0c() { return (u8 *)this + 0x12; }

@@ -215,10 +215,10 @@ public:
 };
 
 // main-module helper classes
-class Unk_020dbd34 {
+class CachedModel {
 public:
-    Unk_020dbd34();
-    virtual ~Unk_020dbd34();
+    CachedModel();
+    virtual ~CachedModel();
     u32 pad[0x26];
 };
 
@@ -322,8 +322,8 @@ public:
     void func_ov003_02212ba8();
     BOOL func_ov003_02212bf4();
 
-    /* 0x130 */ Unk_020dbd34 unk_130;
-    /* 0x1cc */ Unk_020dbd34 unk_1cc;
+    /* 0x130 */ CachedModel unk_130;
+    /* 0x1cc */ CachedModel unk_1cc;
     /* 0x268 */ s32 unk_268;
     /* 0x26c */ s32 unk_26c;
     /* 0x270 */ Unk_02032238 unk_270;
@@ -352,40 +352,40 @@ public:
 // ov068 classes that own the state functions named in the ptmf tables (their symbols live in ov068)
 class Unk_ov068_02267584 : public Unk_ov003_02230c6c {
 public:
-    void func_ov068_02267584();
-    void func_ov068_02267614();
-    void func_ov068_02267668();
-    void func_ov068_022676f8();
-    void func_ov068_0226775c();
-    void func_ov068_022677cc();
-    void func_ov068_02267814();
+    void execSnowballCrumble2();
+    void enterSnowballCrumble2();
+    void execSnowballCrumble();
+    void enterSnowballCrumble();
+    void execSnowballSettle();
+    void enterSnowballSettle();
+    void execSnowballStack();
 };
 class Unk_ov068_022678c4 : public Unk_ov003_02230c6c {
 public:
-    void func_ov068_022678c4();
-    void func_ov068_022679bc();
-    void func_ov068_02267aa0();
-    void func_ov068_02267b38();
-    void func_ov068_02267bf0();
-    void func_ov068_02267c58();
-    void func_ov068_02267d08();
-    void func_ov068_02267d70();
-    void func_ov068_02267e04();
-    void func_ov068_02267e5c();
-    void func_ov068_02267e74();
-    void func_ov068_02267ec4();
-    void func_ov068_02267f8c();
-    void func_ov068_02268008();
-    void func_ov068_022680f0();
+    void enterSnowballStack();
+    void execSnowballToSnowman();
+    void enterSnowballToSnowman();
+    void execSnowballSplash();
+    void enterSnowballSplash();
+    void execSnowball05();
+    void enterSnowball05();
+    void execSnowballHole();
+    void enterSnowballHole();
+    void execSnowballBreak();
+    void enterSnowballBreak();
+    void execSnowballSink();
+    void enterSnowballSink();
+    void execSnowballFall();
+    void enterSnowballFall();
 };
 class Unk_ov068_02268214 : public Unk_ov003_02230c6c {
 public:
-    void func_ov068_02268214();
-    void func_ov068_022685ec();
+    void execSnowballRoll();
+    void enterSnowballRoll();
 };
 
 extern "C" {
-extern void *data_021c47c4;
+extern void *gSceneBlockMap;
 extern void *gCamera;
 extern u8 gCameraLookAt[];
 extern s32 data_020c8cbc;
@@ -393,7 +393,7 @@ extern u32 gFrameCounter;
 extern s32 data_020d0584[4];
 extern u8 data_021ed2e6[];
 extern s16 data_02135f44[];
-extern void *data_021c620c;
+extern void *gBgHeap;
 extern const s16 data_ov003_0222efb8[16];
 // 0x0222efba is the table's second element: no separate symbol once this unit is linked
 #define data_ov003_0222efba (&data_ov003_0222efb8[1])
@@ -426,10 +426,10 @@ BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 BOOL Item_IsNormalItem(u16 *p);
 void func_02039e6c(u16 v);
-void func_0204ee10(s32 *out1, s32 *out2, void *p);
-BOOL func_0204eb30(void *self, u16 *p, s32 x, s32 y, u32 flag);
-u16 *func_0204ebd8(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
-s32 func_0204ed8c(void *out, s32 x, s32 z);
+void FieldPos_ToUnit(s32 *out1, s32 *out2, void *p);
+BOOL BlockMap_SetItemAtUnit(void *self, u16 *p, s32 x, s32 y, u32 flag);
+u16 *BlockMap_GetItemPtr(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
+s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 u16 Item_MakeSnowman(void *p);
 s32 Item_IsSnowman(u16 *c);
 s32 func_02063b8c(s32 a);
@@ -454,8 +454,8 @@ void _ZN12MsgString256C1Ev(void *self);
 void _ZN12MsgString256D1Ev(void *self);
 void _ZN12Unk_020af53c13func_020af53cEj(void *self, u32 a);
 s32 _ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_(void *self, u32 m, s32 *a, s32 *b, s32 *c, s32 z1, s32 z2, s32 z3);
-void _ZN5Model13func_0205553cEPi(void *self, void *v);
-void _ZN12Unk_020dbd3413func_02054c2cEPvS0_(void *self, u32 a, const char *b);
+void _ZN5Model10drawScaledEPi(void *self, void *v);
+void _ZN11CachedModel10loadCachedEPvS0_(void *self, u32 a, const char *b);
 void _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(void *self, void *v);
 void _ZN12Unk_02003c3013func_02003e50Ev(void *self);
 void _ZN12Unk_02003c3013func_02003eccEv(void *self);
@@ -482,7 +482,7 @@ s32 func_ov003_022135c4(Obj *o, s32 a);
 static inline void *Unk_ov003_02213058_Cell(void *g, s32 x, s32 y) {
     s32 hx = x >> 4;
     s32 hy = y >> 4;
-    return func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+    return BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
 }
 
 typedef void (Obj::*Fn0)();
@@ -537,13 +537,13 @@ extern "C" s32 func_ov003_02213fbc() { return 0x800; }
 extern "C" s32 func_ov003_02213fb4() { return 0x1400; }
 
 void *Unk_ov003_02230c6c::operator new(unsigned long size) {
-    void *p = Heap_Alloc(data_021c620c, size);
+    void *p = Heap_Alloc(gBgHeap, size);
     func_0212899c(p, 0, size);
     return p;
 }
 
 void Unk_ov003_02230c6c::operator delete(void *p) {
-    void *h = data_021c620c;
+    void *h = gBgHeap;
     if (h) {
         Heap_Free(h, p);
     }
@@ -556,8 +556,8 @@ BOOL Unk_ov003_02230c6c::vfunc_00() {
     unk_2f4.y = data_020d0584[1];
     unk_2f4.z = data_020d0584[2];
     unk_2f4.w = data_020d0584[3];
-    _ZN12Unk_020dbd3413func_02054c2cEPvS0_(&unk_130, 0x534e5730, "/snowman/snowball1.nsbmd");
-    _ZN12Unk_020dbd3413func_02054c2cEPvS0_(&unk_1cc, 0x534e5731, "/snowman/snow_face.nsbmd");
+    _ZN11CachedModel10loadCachedEPvS0_(&unk_130, 0x534e5730, "/snowman/snowball1.nsbmd");
+    _ZN11CachedModel10loadCachedEPvS0_(&unk_1cc, 0x534e5731, "/snowman/snow_face.nsbmd");
     if (func_ov003_02213290(this) != 0) {
         u32 i = unk_08 & 1;
         Rec *r = func_020af3f4();
@@ -634,9 +634,9 @@ BOOL Unk_ov003_02230c6c::onDraw() {
             v.y = s;
             v.z = s;
             if (unk_398 == 0xb) {
-                _ZN5Model13func_0205553cEPi(&unk_1cc, &v);
+                _ZN5Model10drawScaledEPi(&unk_1cc, &v);
             } else {
-                _ZN5Model13func_0205553cEPi(&unk_130, &v);
+                _ZN5Model10drawScaledEPi(&unk_130, &v);
             }
             func_020abc10(&unk_5c, unk_268, 0x4000, 0x1000);
         }
@@ -646,17 +646,17 @@ BOOL Unk_ov003_02230c6c::onDraw() {
 
 BOOL Unk_ov003_02230c6c::vfunc_0c() {
     if (unk_398 == 9) {
-        void *g = data_021c47c4;
+        void *g = gSceneBlockMap;
         volatile s32 x, y;
-        func_0204ee10((s32 *)&x, (s32 *)&y, &unk_5c);
+        FieldPos_ToUnit((s32 *)&x, (s32 *)&y, &unk_5c);
         s32 lx = x;
         s32 ly = y;
         s32 hx = lx >> 4;
         s32 hy = ly >> 4;
-        u16 *c = func_0204ebd8(g, hx, hy, lx - (hx << 4), ly - (hy << 4), 0);
+        u16 *c = BlockMap_GetItemPtr(g, hx, hy, lx - (hx << 4), ly - (hy << 4), 0);
         if (c != 0 && Item_IsSnowman(c) != 0) {
             u16 v = 0xfff1;
-            func_0204eb30(g, &v, x, y, 0);
+            BlockMap_SetItemAtUnit(g, &v, x, y, 0);
         }
         if (func_ov003_02212fd4((void *)unk_374.a, (Pos *)&unk_5c, &unk_396) == 0) {
             if (func_ov003_02212f04((void *)unk_374.a, &unk_5c, &unk_396) == 0) {
@@ -999,7 +999,7 @@ extern "C" void func_ov003_0221316c(Obj *o) {
 }
 
 extern "C" BOOL func_ov003_02213058(Pos *pos) {
-    void *g = data_021c47c4;
+    void *g = gSceneBlockMap;
     if (g) {
         s32 px0, py0;
         s32 s18, s1c, s20;
@@ -1012,13 +1012,13 @@ extern "C" BOOL func_ov003_02213058(Pos *pos) {
         px0 = -1;
         py0 = -1;
         a = func_02095204(4);
-        if (a) func_0204ee10(&px0, &py0, (u8 *)a + 0x5c);
-        func_0204ee10(&x, &y, pos);
+        if (a) FieldPos_ToUnit(&px0, &py0, (u8 *)a + 0x5c);
+        FieldPos_ToUnit(&x, &y, pos);
         lx = *(volatile s32 *)&x;
         ly = *(volatile s32 *)&y;
         hx = lx >> 4;
         hy = ly >> 4;
-        c = func_0204ebd8(g, hx, hy, lx - (hx << 4), ly - (hy << 4), 0);
+        c = BlockMap_GetItemPtr(g, hx, hy, lx - (hx << 4), ly - (hy << 4), 0);
         if (c) {
             if (Item_IsMarker(c)) return FALSE;
         }
@@ -1053,28 +1053,28 @@ extern "C" BOOL func_ov003_02213058(Pos *pos) {
 extern "C" BOOL func_ov003_02212fd4(void *a, Pos *pos, u16 *out) {
     *out = 0xfff1;
     if (func_ov003_02213058(pos)) {
-        void *g = data_021c47c4;
+        void *g = gSceneBlockMap;
         if (g) {
             u16 t;
             s32 x, y;
             s32 hx, hy, lx, ly;
             u16 *c;
             t = Item_MakeSnowman(a);
-            func_0204ee10(&x, &y, pos);
+            FieldPos_ToUnit(&x, &y, pos);
             lx = *(volatile s32 *)&x;
             ly = *(volatile s32 *)&y;
             hx = lx >> 4;
             hy = ly >> 4;
-            c = (u16 *)func_0204ebd8(g, hx, hy, lx - (hx << 4), ly - (hy << 4), 0);
+            c = (u16 *)BlockMap_GetItemPtr(g, hx, hy, lx - (hx << 4), ly - (hy << 4), 0);
             if (c) *out = *c;
-            if (func_0204eb30(g, &t, x, y, 0)) return TRUE;
+            if (BlockMap_SetItemAtUnit(g, &t, x, y, 0)) return TRUE;
         }
     }
     return FALSE;
 }
 
 extern "C" BOOL func_ov003_02212f04(void *a, void *pos, u16 *out) {
-    void *g = data_021c47c4;
+    void *g = gSceneBlockMap;
     if (g) {
         volatile u16 t[1];
         s32 x, y;
@@ -1087,12 +1087,12 @@ extern "C" BOOL func_ov003_02212f04(void *a, void *pos, u16 *out) {
         s32 C;
         s32 j;
         t[0] = Item_MakeSnowman(a);
-        func_0204ee10(&x, &y, pos);
+        FieldPos_ToUnit(&x, &y, pos);
         mask = 0;
         n = 0;
         for (LampLights = 0; LampLights < 8; LampLights++) {
             const s16 *e = &data_ov003_0222efb8[LampLights * 2];
-            func_0204ed8c(&p, x + data_ov003_0222efb8[LampLights * 2], y + e[1]);
+            FieldPos_FromUnitCenter(&p, x + data_ov003_0222efb8[LampLights * 2], y + e[1]);
             if (func_ov003_02213058(&p)) {
                 mask |= 1 << LampLights;
                 n++;
@@ -1105,7 +1105,7 @@ extern "C" BOOL func_ov003_02212f04(void *a, void *pos, u16 *out) {
             for (; (u32)j < 8; j++) {
                 if ((mask >> j) & 1) {
                     if (C == k) {
-                        func_0204ed8c(&q, x + data_ov003_0222efb8[j * 2], y + data_ov003_0222efba[j * 2]);
+                        FieldPos_FromUnitCenter(&q, x + data_ov003_0222efb8[j * 2], y + data_ov003_0222efba[j * 2]);
                         if (func_ov003_02212fd4(a, &q, out)) return TRUE;
                         return FALSE;
                     }
@@ -1118,13 +1118,13 @@ extern "C" BOOL func_ov003_02212f04(void *a, void *pos, u16 *out) {
 }
 
 extern "C" BOOL func_ov003_02212ebc(void *p) {
-    void *g = data_021c47c4;
+    void *g = gSceneBlockMap;
     if (g) {
         s32 x, y;
         u16 t;
-        func_0204ee10(&x, &y, p);
+        FieldPos_ToUnit(&x, &y, p);
         t = 0xfff1;
-        if (func_0204eb30(g, &t, x, y, 0)) return TRUE;
+        if (BlockMap_SetItemAtUnit(g, &t, x, y, 0)) return TRUE;
     }
     return FALSE;
 }
@@ -1151,10 +1151,10 @@ extern "C" const s16 data_ov003_0222efb8[16] = {-1, -1, 0, -1, 0, -1, -1, 0, 1, 
 
 extern "C" BOOL func_ov003_02212d28(Obj *o, s32 st) {
     static Fn1 tbl[14] = {
-        (Fn1)&Unk_ov068_02268214::func_ov068_022685ec, (Fn1)&Unk_ov068_022678c4::func_ov068_022680f0, (Fn1)&Unk_ov068_022678c4::func_ov068_02267f8c, (Fn1)&Unk_ov068_022678c4::func_ov068_02267e74,
-        (Fn1)&Unk_ov068_022678c4::func_ov068_02267e04, (Fn1)&Unk_ov068_022678c4::func_ov068_02267d08, (Fn1)&Unk_ov068_022678c4::func_ov068_02267bf0, (Fn1)&Unk_ov068_022678c4::func_ov068_02267aa0,
-        (Fn1)&Unk_ov068_022678c4::func_ov068_022678c4, (Fn1)&Obj::func_ov003_02212bf4, (Fn1)&Unk_ov068_02267584::func_ov068_022677cc, (Fn1)&Obj::func_ov003_02212b5c,
-        (Fn1)&Unk_ov068_02267584::func_ov068_022676f8, (Fn1)&Unk_ov068_02267584::func_ov068_02267614};
+        (Fn1)&Unk_ov068_02268214::enterSnowballRoll, (Fn1)&Unk_ov068_022678c4::enterSnowballFall, (Fn1)&Unk_ov068_022678c4::enterSnowballSink, (Fn1)&Unk_ov068_022678c4::enterSnowballBreak,
+        (Fn1)&Unk_ov068_022678c4::enterSnowballHole, (Fn1)&Unk_ov068_022678c4::enterSnowball05, (Fn1)&Unk_ov068_022678c4::enterSnowballSplash, (Fn1)&Unk_ov068_022678c4::enterSnowballToSnowman,
+        (Fn1)&Unk_ov068_022678c4::enterSnowballStack, (Fn1)&Obj::func_ov003_02212bf4, (Fn1)&Unk_ov068_02267584::enterSnowballSettle, (Fn1)&Obj::func_ov003_02212b5c,
+        (Fn1)&Unk_ov068_02267584::enterSnowballCrumble, (Fn1)&Unk_ov068_02267584::enterSnowballCrumble2};
     if (st < 0xe) {
         if ((o->*tbl[st])()) {
             o->unk_398 = st;
@@ -1166,10 +1166,10 @@ extern "C" BOOL func_ov003_02212d28(Obj *o, s32 st) {
 
 extern "C" void func_ov003_02212c10(Obj *o) {
     static Fn0 tbl[14] = {
-        (Fn0)&Unk_ov068_02268214::func_ov068_02268214, (Fn0)&Unk_ov068_022678c4::func_ov068_02268008, (Fn0)&Unk_ov068_022678c4::func_ov068_02267ec4, (Fn0)&Unk_ov068_022678c4::func_ov068_02267e5c,
-        (Fn0)&Unk_ov068_022678c4::func_ov068_02267d70, (Fn0)&Unk_ov068_022678c4::func_ov068_02267c58, (Fn0)&Unk_ov068_022678c4::func_ov068_02267b38, (Fn0)&Unk_ov068_022678c4::func_ov068_022679bc,
-        (Fn0)&Unk_ov068_02267584::func_ov068_02267814, (Fn0)&Obj::func_ov003_02212ba8, (Fn0)&Unk_ov068_02267584::func_ov068_0226775c, (Fn0)&Obj::func_ov003_02212af4,
-        (Fn0)&Unk_ov068_02267584::func_ov068_02267668, (Fn0)&Unk_ov068_02267584::func_ov068_02267584};
+        (Fn0)&Unk_ov068_02268214::execSnowballRoll, (Fn0)&Unk_ov068_022678c4::execSnowballFall, (Fn0)&Unk_ov068_022678c4::execSnowballSink, (Fn0)&Unk_ov068_022678c4::execSnowballBreak,
+        (Fn0)&Unk_ov068_022678c4::execSnowballHole, (Fn0)&Unk_ov068_022678c4::execSnowball05, (Fn0)&Unk_ov068_022678c4::execSnowballSplash, (Fn0)&Unk_ov068_022678c4::execSnowballToSnowman,
+        (Fn0)&Unk_ov068_02267584::execSnowballStack, (Fn0)&Obj::func_ov003_02212ba8, (Fn0)&Unk_ov068_02267584::execSnowballSettle, (Fn0)&Obj::func_ov003_02212af4,
+        (Fn0)&Unk_ov068_02267584::execSnowballCrumble, (Fn0)&Unk_ov068_02267584::execSnowballCrumble2};
     if (o->unk_398 < 0xe) (o->*tbl[o->unk_398])();
 }
 

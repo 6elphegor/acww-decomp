@@ -15,10 +15,10 @@ struct Unk_ov003_02217910_V3 {
 };
 
 // ---- main-module helper classes ----
-class Unk_020dbd34 {
+class CachedModel {
 public:
-    Unk_020dbd34();
-    virtual ~Unk_020dbd34();
+    CachedModel();
+    virtual ~CachedModel();
 
     u8 pad_04[0x64 - 4];
     Unk_ov003_02215c7c_Blk unk_64;
@@ -26,12 +26,12 @@ public:
     u32 unk_98;
 };
 
-class Model : public Unk_020dbd34 {
+class Model : public CachedModel {
 public:
-    void func_02055488(s32 a, s32 b);
+    void setInitCallback(s32 a, s32 b);
     u32 getRenderObj();
-    void func_0205553c(s32 *p);
-    void func_020555dc();
+    void drawScaled(s32 *p);
+    void clearResource();
     void setResourceAndBind(Unk_020553f8_Res *r, u32 a);
 };
 
@@ -53,19 +53,19 @@ public:
     ModelAnim();
     virtual ~ModelAnim();
     void addToRenderObj(u32 a);
-    void func_02055b38(s32 a, s32 b, s32 c, u16 d);
-    BOOL func_02055bcc(u32 a, void *c);
+    void init(s32 a, s32 b, s32 c, u16 d);
+    BOOL allocMatAnm(u32 a, void *c);
 
     s32 *unk_18;
     u32 unk_1c;
 };
 
-class Unk_020dbe8c {
+class TexPatVramAnim {
 public:
     u32 pad[0x90 / 4];
-    Unk_020dbe8c();
-    ~Unk_020dbe8c();
-    BOOL func_02056bf8();
+    TexPatVramAnim();
+    ~TexPatVramAnim();
+    BOOL update();
 };
 
 // ---- this overlay's part classes ----
@@ -94,7 +94,7 @@ public:
     BOOL func_02217b78();
     void func_02217bb8();
 
-    /* 0x00 */ Unk_020dbd34 unk_00;
+    /* 0x00 */ CachedModel unk_00;
     /* 0x9c */ void *unk_9c;
 };
 
@@ -108,7 +108,7 @@ public:
     BOOL func_02217c3c(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b);
 
     /* 0x00 */ s32 unk_00;
-    /* 0x04 */ Unk_020dbd34 unk_04;
+    /* 0x04 */ CachedModel unk_04;
     /* 0xa0 */ s32 unk_a0;
     /* 0xa4 */ s32 unk_a4;
     /* 0xa8 */ ModelAnim unk_a8[2];
@@ -129,7 +129,7 @@ public:
     Unk_ov003_02217910_V3 *func_02217fb4();
     s32 func_02217fb8();
 
-    /* 0x00 */ Unk_020dbd34 unk_00;
+    /* 0x00 */ CachedModel unk_00;
     /* 0x9c */ Unk_ov003_02217910_V3 unk_9c;
     /* 0xa8 */ s16 unk_a8;
     /* 0xac */ s32 unk_ac;
@@ -178,8 +178,8 @@ public:
     /* 0x148 */ s32 unk_148;
     /* 0x14c */ s32 unk_14c;
     /* 0x150 */ Unk_ov003_02217b10 unk_150;
-    /* 0x1f0 */ Unk_020dbe8c unk_1f0;
-    /* 0x280 */ Unk_020dbe8c unk_280;
+    /* 0x1f0 */ TexPatVramAnim unk_1f0;
+    /* 0x280 */ TexPatVramAnim unk_280;
     /* 0x310 */ Unk_ov003_02217948 unk_310;
 
     Unk_ov003_02232418();
@@ -226,56 +226,56 @@ struct Unk_ov003_02218794_Obj {
 };
 
 // other modules' methods are reached through their real mangled symbols (object first)
-#define func_02057110 _ZN12Unk_02056fd813func_02057110Ei
-#define func_020375d0 _ZN12Unk_020375d013func_020375d0Ev
-#define func_02036ce0 _ZN12Unk_02036cec13func_02036ce0Ev
-#define func_02036cb0 _ZN12Unk_02036cec13func_02036cb0Ev
-#define func_02036cbc _ZN12Unk_02036cec13func_02036cbcEv
-#define func_02036c98 _ZN12Unk_02036cec13func_02036c98Ev
-#define func_02036ca4 _ZN12Unk_02036cec13func_02036ca4Ev
-#define func_02036d54 _ZN12Unk_02036cec13func_02036d54Ei
-#define func_02036cd4 _ZN12Unk_02036cec13func_02036cd4Ev
-#define func_02036cc8 _ZN12Unk_02036cec13func_02036cc8Ev
+#define G3dResAccess_findMatIdx _ZN12G3dResAccess10findMatIdxEi
+#define MapBlockAcre_getAcreId _ZN12MapBlockAcre9getAcreIdEv
+#define BgModelCache_getGroundTex _ZN12BgModelCache12getGroundTexEv
+#define BgModelCache_getRiverPatTex _ZN12BgModelCache14getRiverPatTexEv
+#define BgModelCache_getRiverPatAnm _ZN12BgModelCache14getRiverPatAnmEv
+#define BgModelCache_getBeBPatTex _ZN12BgModelCache12getBeBPatTexEv
+#define BgModelCache_getBeBPatAnm _ZN12BgModelCache12getBeBPatAnmEv
+#define BgModelCache_getAcre _ZN12BgModelCache7getAcreEi
+#define BgModelCache_getGroundMatAnm _ZN12BgModelCache15getGroundMatAnmEv
+#define BgModelCache_getGroundTexSrtAnm _ZN12BgModelCache18getGroundTexSrtAnmEv
 #define Unk_020d93b8_getEyeCurveAngle _ZN12Unk_020d93b816getEyeCurveAngleEv
-#define func_02056ca4 _ZN12Unk_020dbe8c13func_02056ca4EPhPKcS2_S0_S0_h
+#define TexPatVramAnim_init _ZN14TexPatVramAnim4initEPhPKcS2_S0_S0_h
 
 extern "C" {
 extern void *gCamera;
 extern Unk_ov003_02218478_V3 gCameraLookAt;
-extern void *data_021c620c;
-extern Unk_ov003_02218478_Grid *data_021c47c4;
+extern void *gBgHeap;
+extern Unk_ov003_02218478_Grid *gSceneBlockMap;
 extern s32 data_021ce63c;
 extern s32 data_020c8cbc;
 extern u8 data_021f47e0[];
 
-s32 func_02057110(void *self, s32 a);
+s32 G3dResAccess_findMatIdx(void *self, s32 a);
 s32 func_020ac40c();
 s32 func_020abe28();
-void *func_02036c58();
-s32 func_02036ce0(void *self);
-s32 func_02036cb0(void *self);
-s32 func_02036cbc(void *self);
-s32 func_02036cd4(void *self);
-s32 func_02036cc8(void *self);
-s32 func_02036c98(void *self);
-s32 func_02036ca4(void *self);
-void *func_02036d54(void *self, s32 i);
-s32 func_020375d0(void *self);
-s32 func_02037324(s32 a);
+void *BgModelCache_Get();
+s32 BgModelCache_getGroundTex(void *self);
+s32 BgModelCache_getRiverPatTex(void *self);
+s32 BgModelCache_getRiverPatAnm(void *self);
+s32 BgModelCache_getGroundMatAnm(void *self);
+s32 BgModelCache_getGroundTexSrtAnm(void *self);
+s32 BgModelCache_getBeBPatTex(void *self);
+s32 BgModelCache_getBeBPatAnm(void *self);
+void *BgModelCache_getAcre(void *self, s32 i);
+s32 MapBlockAcre_getAcreId(void *self);
+s32 Acre_GetAttr(s32 a);
 s32 Unk_020d93b8_getEyeCurveAngle(void *self);
 void func_0203bac4(void *, s32 *, s32 *);
 s32 func_0203efec(s32);
 s16 WorldCurve_ToCurved(Unk_ov003_02218478_V3 *out, Unk_ov003_02218478_V3 *v);
 s32 func_0203edc8();
-void func_0204edf8(s32 *, s32 *, s32, s32, s32, s32);
+void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
 s32 func_02030bc4(s32, s32);
-void func_0204eda4(Unk_ov003_02218478_V3 *, s32, s32, s32, s32);
+void FieldPos_FromBlockUnitCenter(Unk_ov003_02218478_V3 *, s32, s32, s32, s32);
 void *Heap_Alloc(void *, s32);
 void func_020e8388(void *m, s32 x, s32 y, s32 z);
 void func_020e8434(void *m, s32 a);
 s32 func_020302cc();
 s32 FX_Div(s32 a, s32 b);
-s32 func_02056ca4(void *self, void *hdr, const char *n1, const char *n2, s32 x, s32 y, s32 flag);
+s32 TexPatVramAnim_init(void *self, void *hdr, const char *n1, const char *n2, s32 x, s32 y, s32 flag);
 
 // TU17 functions (the nearest-record class, sound handle helpers)
 void func_ov003_02217908(void *p);
@@ -354,18 +354,18 @@ Unk_ov003_02232418::~Unk_ov003_02232418() {
 BOOL Unk_ov003_02232418::vfunc_00() {
     unk_150.func_02217bb8();
     unk_150.func_02217b78();
-    s32 r6 = func_02036ce0(func_02036c58());
-    s32 r4 = func_02036cb0(func_02036c58());
-    s32 r0 = func_02036cbc(func_02036c58());
-    func_02056ca4(&unk_1f0, (void *)r6, "grd_riv.0", "grd_riv_pl", r4, r0, 0);
-    r6 = func_02036ce0(func_02036c58());
-    r4 = func_02036c98(func_02036c58());
-    r0 = func_02036ca4(func_02036c58());
-    func_02056ca4(&unk_280, (void *)r6, "grd_beB", "grd_beB_pl", r4, r0, 1);
-    Unk_ov003_02218478_Grid *g = data_021c47c4;
+    s32 r6 = BgModelCache_getGroundTex(BgModelCache_Get());
+    s32 r4 = BgModelCache_getRiverPatTex(BgModelCache_Get());
+    s32 r0 = BgModelCache_getRiverPatAnm(BgModelCache_Get());
+    TexPatVramAnim_init(&unk_1f0, (void *)r6, "grd_riv.0", "grd_riv_pl", r4, r0, 0);
+    r6 = BgModelCache_getGroundTex(BgModelCache_Get());
+    r4 = BgModelCache_getBeBPatTex(BgModelCache_Get());
+    r0 = BgModelCache_getBeBPatAnm(BgModelCache_Get());
+    TexPatVramAnim_init(&unk_280, (void *)r6, "grd_beB", "grd_beB_pl", r4, r0, 1);
+    Unk_ov003_02218478_Grid *g = gSceneBlockMap;
     unk_148 = g->w;
     unk_14c = g->h;
-    unk_50 = (Unk_ov003_02217be8 *)Heap_Alloc(data_021c620c, unk_14c * (unk_148 * 0xec));
+    unk_50 = (Unk_ov003_02217be8 *)Heap_Alloc(gBgHeap, unk_14c * (unk_148 * 0xec));
     {
         Unk_ov003_02217be8 *e = unk_50;
         for (; e < unk_50 + unk_148 * unk_14c; e++) {
@@ -379,14 +379,14 @@ BOOL Unk_ov003_02232418::vfunc_00() {
             for (ty = 0; ty < 16; ty++) {
                 for (tx = 0; tx < 16; tx++) {
                     s32 o1, o2;
-                    func_0204edf8(&o1, &o2, bx, by, tx, ty);
+                    FieldUnit_FromBlockUnit(&o1, &o2, bx, by, tx, ty);
                     s32 t = func_02030bc4(o1, o2);
                     if (t != -1) {
                         Unk_ov003_02217910_V3 v;
                         v.x = 0;
                         v.y = 0;
                         v.z = 0;
-                        func_0204eda4((Unk_ov003_02218478_V3 *)&v, bx, by, tx, ty);
+                        FieldPos_FromBlockUnitCenter((Unk_ov003_02218478_V3 *)&v, bx, by, tx, ty);
                         unk_54.func_02217e48(&v, t);
                     }
                 }
@@ -432,8 +432,8 @@ loop0:
     i++;
 test0:
     if (i < unk_14c) goto loop0;
-    unk_1f0.func_02056bf8();
-    unk_280.func_02056bf8();
+    unk_1f0.update();
+    unk_280.update();
     func_ov003_022180a8();
     data_021ce63c = 0;
     return TRUE;
@@ -572,7 +572,7 @@ extern "C" void func_ov003_02218034(void *op, s32 flag) {
     u8 *base = o->unk_5c;
     u8 *r4 = base + *(s32 *)(base + 8);
     for (i = 0; i < 2; i++) {
-        u32 t = func_02057110(o->unk_5c, data_ov003_022323e4[i]);
+        u32 t = G3dResAccess_findMatIdx(o->unk_5c, data_ov003_022323e4[i]);
         if (t != (u32)-1) {
             u8 *r1 = r4 + 4;
             u32 hw = *(u16 *)(r4 + 0xa);
@@ -632,16 +632,16 @@ BOOL Unk_ov003_02217dbc::func_02217e48(Unk_ov003_02217910_V3 *pos, s32 idx) {
     unk_9c.x = pos->x;
     unk_9c.y = pos->y;
     unk_9c.z = pos->z;
-    Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)func_02036d54(func_02036c58(), data_ov003_0222f010[idx]);
-    s32 t = func_02036ce0(func_02036c58());
+    Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)BgModelCache_getAcre(BgModelCache_Get(), data_ov003_0222f010[idx]);
+    s32 t = BgModelCache_getGroundTex(BgModelCache_Get());
     Unk_020553f8_Res *res = e->unk_08;
     ((Model *)&unk_00)->setResourceAndBind(res, t);
-    if (unk_b4[0].func_02055bcc((u32)res, data_021c620c)) {
-        unk_b4[0].func_02055b38(func_02036cd4(func_02036c58()), 0, 0x1000, 0);
+    if (unk_b4[0].allocMatAnm((u32)res, gBgHeap)) {
+        unk_b4[0].init(BgModelCache_getGroundMatAnm(BgModelCache_Get()), 0, 0x1000, 0);
         unk_b4[0].addToRenderObj(((Model *)&unk_00)->getRenderObj());
     }
-    if (unk_b4[1].func_02055bcc((u32)res, data_021c620c)) {
-        unk_b4[1].func_02055b38(func_02036cc8(func_02036c58()), 0, 0x1000, 0);
+    if (unk_b4[1].allocMatAnm((u32)res, gBgHeap)) {
+        unk_b4[1].init(BgModelCache_getGroundTexSrtAnm(BgModelCache_Get()), 0, 0x1000, 0);
         unk_b4[1].addToRenderObj(((Model *)&unk_00)->getRenderObj());
     }
     Unk_ov003_02217910_V3 tmp;
@@ -669,7 +669,7 @@ BOOL Unk_ov003_02217dbc::func_02217e10() {
 
 BOOL Unk_ov003_02217dbc::func_02217df0() {
     if (func_02217f78()) {
-        ((Model *)&unk_00)->func_0205553c(0);
+        ((Model *)&unk_00)->drawScaled(0);
         return TRUE;
     }
     return FALSE;
@@ -677,7 +677,7 @@ BOOL Unk_ov003_02217dbc::func_02217df0() {
 
 BOOL Unk_ov003_02217dbc::func_02217dbc() {
     if (func_02217f78()) {
-        ((Model *)&unk_00)->func_020555dc();
+        ((Model *)&unk_00)->clearResource();
         unk_b0 = -1;
         unk_ac = unk_b0;
         return TRUE;
@@ -694,29 +694,29 @@ Unk_ov003_02217be8::Unk_ov003_02217be8() {
 BOOL Unk_ov003_02217be8::func_02217c3c(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) {
     unk_a0 = a;
     unk_a4 = b;
-    unk_00 = func_020375d0(o);
-    u32 t = func_02036ce0(func_02036c58());
+    unk_00 = MapBlockAcre_getAcreId(o);
+    u32 t = BgModelCache_getGroundTex(BgModelCache_Get());
     Unk_ov003_02217c3c_P *p = o->unk_20;
     u32 q = p->unk_20;
     if (q != 0) t = q;
     Unk_020553f8_Res *res = p->unk_08;
     ((Model *)&unk_04)->setResourceAndBind(res, t);
-    if (unk_a8[0].func_02055bcc((u32)res, data_021c620c)) {
-        unk_a8[0].func_02055b38(func_02036cd4(func_02036c58()), 0, 0x1000, 0);
+    if (unk_a8[0].allocMatAnm((u32)res, gBgHeap)) {
+        unk_a8[0].init(BgModelCache_getGroundMatAnm(BgModelCache_Get()), 0, 0x1000, 0);
         unk_a8[0].addToRenderObj(((Model *)&unk_04)->getRenderObj());
     }
-    if (unk_a8[1].func_02055bcc((u32)res, data_021c620c)) {
-        unk_a8[1].func_02055b38(func_02036cc8(func_02036c58()), 0, 0x1000, 0);
+    if (unk_a8[1].allocMatAnm((u32)res, gBgHeap)) {
+        unk_a8[1].init(BgModelCache_getGroundTexSrtAnm(BgModelCache_Get()), 0, 0x1000, 0);
         unk_a8[1].addToRenderObj(((Model *)&unk_04)->getRenderObj());
     }
     func_020e8388(data_021f47e0, a * data_020c8cbc, 0, 0);
     s16 ang = b * func_0203edc8();
     func_020e8434(data_021f47e0, ang);
     unk_04.unk_64 = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
-    if (func_02037324(unk_00) & 8) {
-        unk_e8 = func_02057110(res, (s32)"m_grd_beA");
+    if (Acre_GetAttr(unk_00) & 8) {
+        unk_e8 = G3dResAccess_findMatIdx(res, (s32)"m_grd_beA");
         if (unk_e8 != -1) {
-            ((Model *)&unk_04)->func_02055488((s32)func_ov003_02218784, (s32)this);
+            ((Model *)&unk_04)->setInitCallback((s32)func_ov003_02218784, (s32)this);
         }
     }
     func_ov003_02218034(&unk_04, 1);
@@ -736,11 +736,11 @@ BOOL Unk_ov003_02217be8::func_02217c10() {
 }
 
 BOOL Unk_ov003_02217be8::func_02217bfc() {
-    ((Model *)&unk_04)->func_0205553c(0);
+    ((Model *)&unk_04)->drawScaled(0);
     return TRUE;
 }
 
 BOOL Unk_ov003_02217be8::func_02217be8() {
-    ((Model *)&unk_04)->func_020555dc();
+    ((Model *)&unk_04)->clearResource();
     return TRUE;
 }

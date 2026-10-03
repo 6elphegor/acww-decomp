@@ -109,8 +109,8 @@ public:
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
-    // Slot 0x14 has the name of Unk_ov009_0225e29c::vfunc_88, which overrides it: the vtable then names the shared
-    // thunk _ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev (0x0221445c).  The compiler also emits a link-once copy of the
+    // Slot 0x14 has the name of BuildingActor::vfunc_88, which overrides it: the vtable then names the shared
+    // thunk _ZThn236_N13BuildingActor8vfunc_88Ev (0x0221445c).  The compiler also emits a link-once copy of the
     // thunk in this unit; the linker keeps the first one (unk_ov003_022141bc.cpp) and drops this one.
     virtual void vfunc_88();
     virtual void vfunc_s18();
@@ -157,10 +157,10 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
+class BuildingActor : public Character, public TalkMsgRequest {
 public:
-    Unk_ov009_0225e29c();
-    virtual ~Unk_ov009_0225e29c();
+    BuildingActor();
+    virtual ~BuildingActor();
     virtual BOOL vfunc_00();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
@@ -193,9 +193,9 @@ public:
     virtual void vfunc_b4();
     virtual BOOL vfunc_b8(void *a);
 
-    void *func_ov009_0225d6b8(u32 a);
-    void func_ov009_0225d264(Unk_ov009_0225bc88_Blk *out);
-    void func_ov009_0225bc88();
+    void *getBtaAnim(u32 a);
+    void makeCurvedMatrix(Unk_ov009_0225bc88_Blk *out);
+    void updateMatrix();
 
     /* 0x130 */ u8 unk_130;
     /* 0x131 */ u8 pad_131;
@@ -248,8 +248,8 @@ public:
     ModelAnim();
     virtual ~ModelAnim();
     void addToRenderObj(u32 a);
-    void func_02055b38(s32 a, s32 b, s32 c, u16 d);
-    BOOL func_02055bcc(u32 a, void *c);
+    void init(s32 a, s32 b, s32 c, u16 d);
+    BOOL allocMatAnm(u32 a, void *c);
 
     s32 *unk_18;
     u32 unk_1c;
@@ -266,9 +266,9 @@ struct Unk_020b6a94 {
     u8 pad[0x1c];
 };
 
-class Unk_ov009_0225b894 {
+class BuildingSeEmitter {
 public:
-    void func_ov009_0225b8b0(u32 a);
+    void playSe(u32 a);
 };
 
 struct Unk_ov003_02231e4c_Color {
@@ -301,20 +301,20 @@ public:
 
 extern "C" {
 extern void *data_021c6204;
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 data_021f47e0[];
 
 BOOL func_020b1454(void *o, s32 v);
 BOOL func_020b1d3c(u32 a, s32 b);
 BOOL TalkRequest_EndTalkWith(void *p);
-void _ZN12Unk_0205454c13func_02054720Eiiitt(void *self, void *a, s32 b, s32 c, u16 d, u16 e);
-void _ZN12Unk_020dbd5413func_020547e4Ev(void *self);
-void _ZN9ModelAnim13func_02055b00Eiiiit(void *self, void *a, void *b, s32 c, s32 d, u16 e);
+void _ZN14BlendAnimModel8initAnimEiiitt(void *self, void *a, s32 b, s32 c, u16 d, u16 e);
+void _ZN9AnimModel8stepAnimEv(void *self);
+void _ZN9ModelAnim7replaceEiiiit(void *self, void *a, void *b, s32 c, s32 d, u16 e);
 BOOL func_0206ec6c();
-BOOL func_ov003_022123a4(s32 a);
+BOOL PlayerActor_LocalRequestAct6BOr6C(s32 a);
 BOOL func_0206eca4(u32 a);
 s32 func_02030814(s32 a);
-BOOL func_ov003_022123e0(void *p);
+BOOL PlayerActor_LocalRequestAct6A(void *p);
 u32 WorldCurve_ToCurved(void *out, void *in);
 void func_020e8528(void *m, s32 a, s32 b, s32 c);
 void *PlayerData_GetCurrent();
@@ -327,8 +327,8 @@ void _ZN12Unk_020b696013func_020b68d4EP12Unk_020b6a94(void *self, void *o);
 BOOL _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(void *self, void *o, void *a, s32 b, s32 c, u8 d);
 u32 func_ov003_02218b1c(void *p);
 BOOL func_020b5184();
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *self);
-BOOL _ZN12Unk_020cbb1813func_020729ccEj(void *self, u32 a);
+BOOL _ZN11CommManager8isOnlineEv(void *self);
+BOOL _ZN11CommManager7isMyAidEj(void *self, u32 a);
 u32 func_020b1d80(u32 a);
 void func_ov003_02217350();
 void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
@@ -337,7 +337,7 @@ void _ZN9Character13func_0203e42cEv(void *self, void *a);
 }
 
 // ============================================================ class Unk_ov003_02231e4c
-class Unk_ov003_02231e4c : public Unk_ov009_0225e29c {
+class Unk_ov003_02231e4c : public BuildingActor {
 public:
     Unk_ov003_02231e4c();
     virtual ~Unk_ov003_02231e4c();
@@ -416,9 +416,9 @@ Unk_ov003_02231e4c::~Unk_ov003_02231e4c() {
 }
 
 BOOL Unk_ov003_02231e4c::vfunc_70() {
-    if (func_ov009_0225d6b8(0)) {
-        if (unk_2b4.func_02055bcc((u32)unk_194, data_021c6204)) {
-            unk_2b4.func_02055b38((s32)func_ov009_0225d6b8(0), 1, 0x1000, 0);
+    if (getBtaAnim(0)) {
+        if (unk_2b4.allocMatAnm((u32)unk_194, data_021c6204)) {
+            unk_2b4.init((s32)getBtaAnim(0), 1, 0x1000, 0);
             unk_2b4.addToRenderObj((u32)((Model *)unk_138)->getRenderObj());
         }
     }
@@ -435,9 +435,9 @@ BOOL Unk_ov003_02231e4c::vfunc_70() {
     if (!func_020b5184()) {
         unk_2f0 = 0;
     } else {
-        void *g = data_020cbb18;
-        if (_ZN12Unk_020cbb1813func_02072e44Ev(g)) {
-            if (!_ZN12Unk_020cbb1813func_020729ccEj(g, 0)) {
+        void *g = gCommManager;
+        if (_ZN11CommManager8isOnlineEv(g)) {
+            if (!_ZN11CommManager7isMyAidEj(g, 0)) {
                 unk_2f0 = 0;
             }
         }
@@ -520,7 +520,7 @@ BOOL Unk_ov003_02231e4c::vfunc_b8(void *a) {
     v.b = 0;
     v.c = z;
     unk_d0 = WorldCurve_ToCurved(unk_c4, &v);
-    func_ov009_0225d264((Unk_ov009_0225bc88_Blk *)a);
+    makeCurvedMatrix((Unk_ov009_0225bc88_Blk *)a);
     *(Unk_ov009_0225bc88_Blk *)data_021f47e0 = *(Unk_ov009_0225bc88_Blk *)a;
     func_020e8528(data_021f47e0, (s32)0xffffe000, 0, 0x1000);
     *(Unk_ov009_0225bc88_Blk *)a = *(Unk_ov009_0225bc88_Blk *)data_021f47e0;
@@ -571,7 +571,7 @@ s32 Unk_ov003_02231e4c::func_02216e70() {
     v.a = unk_5c[0];
     v.b = func_02030814(0);
     v.c = unk_5c[2] + 0x2000;
-    if (func_ov003_022123e0(&v)) {
+    if (PlayerActor_LocalRequestAct6A(&v)) {
         func_020b1454(this, 3);
     }
     return TRUE;
@@ -600,7 +600,7 @@ s32 Unk_ov003_02231e4c::func_02216e28() {
 
 s32 Unk_ov003_02231e4c::func_02216e04() {
     if (func_0206ec6c()) {
-        if (func_ov003_022123a4(2)) {
+        if (PlayerActor_LocalRequestAct6BOr6C(2)) {
             func_02216f4c(4);
         }
     }
@@ -644,16 +644,16 @@ void Unk_ov003_02231e4c::vfunc_74() {
         (this->*tbl[unk_130])();
     }
     if (unk_2b4.hasPassedFrame(0x12)) {
-        ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x7de);
+        ((BuildingSeEmitter *)unk_234)->playSe(0x7de);
     }
 }
 
 BOOL Unk_ov003_02231e4c::func_ov003_02216bc0() {
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_64();
-    _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, b, 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, 0, 0);
     void *r4 = ((Model *)unk_138)->getRenderObj();
-    void *r2 = func_ov009_0225d6b8(0);
-    _ZN9ModelAnim13func_02055b00Eiiiit(&unk_2b4, r4, r2, 1, 0x1000, 0);
+    void *r2 = getBtaAnim(0);
+    _ZN9ModelAnim7replaceEiiiit(&unk_2b4, r4, r2, 1, 0x1000, 0);
     return TRUE;
 }
 
@@ -665,7 +665,7 @@ void Unk_ov003_02231e4c::func_ov003_02216ba4() {
 
 BOOL Unk_ov003_02231e4c::func_ov003_02216b70() {
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_64();
-    _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, b, 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
@@ -673,17 +673,17 @@ void Unk_ov003_02231e4c::func_ov003_02216b38() {
     if (func_0221706c() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
         func_020b1454(this, 2);
     } else {
-        _ZN12Unk_020dbd5413func_020547e4Ev(unk_138);
+        _ZN9AnimModel8stepAnimEv(unk_138);
     }
 }
 
 BOOL Unk_ov003_02231e4c::func_ov003_02216ac8() {
     Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)vfunc_64();
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_64();
-    _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, b, 1, 0x1000, a->unk_04 - 1, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, a->unk_04 - 1, 0);
     void *r5 = ((Model *)unk_138)->getRenderObj();
-    void *r2 = func_ov009_0225d6b8(0);
-    _ZN9ModelAnim13func_02055b00Eiiiit(&unk_2b4, r5, r2, 0, 0x1000, 0);
+    void *r2 = getBtaAnim(0);
+    _ZN9ModelAnim7replaceEiiiit(&unk_2b4, r5, r2, 0, 0x1000, 0);
     return TRUE;
 }
 
@@ -694,13 +694,13 @@ void Unk_ov003_02231e4c::func_ov003_02216aa0() {
 
 BOOL Unk_ov003_02231e4c::func_ov003_02216a5c() {
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_68();
-    _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, b, 1, 0x1000, 0, 0);
-    ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x819);
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, 0, 0);
+    ((BuildingSeEmitter *)unk_234)->playSe(0x819);
     return TRUE;
 }
 
 void Unk_ov003_02231e4c::func_ov003_02216a04() {
-    _ZN12Unk_020dbd5413func_020547e4Ev(unk_138);
+    _ZN9AnimModel8stepAnimEv(unk_138);
     unk_2b4.step();
     *unk_2b4.unk_18 = unk_2b4.unk_08;
     if (func_0221706c() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
@@ -711,7 +711,7 @@ void Unk_ov003_02231e4c::func_ov003_02216a04() {
 BOOL Unk_ov003_02231e4c::func_ov003_022169c0() {
     Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)vfunc_68();
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_68();
-    _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, b, 1, 0x1000, a->unk_04 - 1, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, a->unk_04 - 1, 0);
     return TRUE;
 }
 
@@ -723,8 +723,8 @@ void Unk_ov003_02231e4c::func_ov003_02216998() {
 BOOL Unk_ov003_02231e4c::func_ov003_02216940() {
     Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)vfunc_68();
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_68();
-    _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, b, 3, 0x1000, a->unk_04 - 1, 0);
-    ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x81a);
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 3, 0x1000, a->unk_04 - 1, 0);
+    ((BuildingSeEmitter *)unk_234)->playSe(0x81a);
     return TRUE;
 }
 
@@ -736,7 +736,7 @@ void Unk_ov003_02231e4c::func_ov003_022168d4() {
             func_020b1454(this, 2);
         }
     } else {
-        _ZN12Unk_020dbd5413func_020547e4Ev(unk_138);
+        _ZN9AnimModel8stepAnimEv(unk_138);
     }
     unk_2b4.step();
     *unk_2b4.unk_18 = unk_2b4.unk_08;
@@ -745,8 +745,8 @@ void Unk_ov003_02231e4c::func_ov003_022168d4() {
 BOOL Unk_ov003_02231e4c::func_ov003_0221687c() {
     Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)vfunc_64();
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_64();
-    _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, b, 3, 0x1000, a->unk_04 - 1, 0);
-    ((Unk_ov009_0225b894 *)unk_234)->func_ov009_0225b8b0(0x81b);
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 3, 0x1000, a->unk_04 - 1, 0);
+    ((BuildingSeEmitter *)unk_234)->playSe(0x81b);
     return TRUE;
 }
 
@@ -755,7 +755,7 @@ void Unk_ov003_02231e4c::func_ov003_02216824() {
     if (func_0221706c() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
         func_020b1454(this, 0);
     } else {
-        _ZN12Unk_020dbd5413func_020547e4Ev(unk_138);
+        _ZN9AnimModel8stepAnimEv(unk_138);
     }
     unk_2b4.step();
     *unk_2b4.unk_18 = unk_2b4.unk_08;

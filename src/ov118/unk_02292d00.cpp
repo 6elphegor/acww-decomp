@@ -28,11 +28,11 @@ void func_02004018(u32 a, s32 b);
 void Snd_PlaySe(u32 v);
 void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
-void func_020020b8(s32 a);
-void func_020021a0(s32 a);
-void func_020021fc(s32 a, s32 b, s32 c);
-s32 func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_02002398(s32 a, s32 b);
+void Gfx2d_ShowLayer(s32 a);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
+s32 Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
 BOOL func_0206e61c();
 BOOL func_0206e63c();
 BOOL MenuCtrl_IsButtons();
@@ -62,10 +62,10 @@ void func_ov002_022019a4(void *p, s32 a);
 void func_ov002_02201984(void *p, s32 a);
 void func_ov002_02201938(void *p, s32 a);
 void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_020026c4(const char *a, u32 b, u32 c, u32 d, u32 e, u32 f);
-void func_0200261c(const char *a, u32 b, u32 c, u32 d, u32 e, u32 f);
-void func_02002438(void *a, u32 b, u32 c, u32 d, u32 e);
-void func_020024f0(void *a, u32 b, u32 c, u32 d);
+void Gfx2d_LoadPaletteFile(const char *a, u32 b, u32 c, u32 d, u32 e, u32 f);
+void Gfx2d_LoadCharFile(const char *a, u32 b, u32 c, u32 d, u32 e, u32 f);
+void Gfx2d_LoadCharRange(void *a, u32 b, u32 c, u32 d, u32 e);
+void Gfx2d_LoadScreen(void *a, u32 b, u32 c, u32 d);
 void File_LoadToBuffer(const char *a, void *b, u32 c);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
@@ -93,11 +93,11 @@ public:
 };
 
 // 0x24-byte helper objects at +0xb4 / +0xd8
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    Unk_020e45f8();
-    BOOL func_020b86c0(u32 buf, u8 n, u32 size, u32 z);
-    void func_020b87d0();
+    BgVramTask();
+    BOOL requestScreen(u32 buf, u8 n, u32 size, u32 z);
+    void cancel();
     u32 unk_00[0x24 / 4];
 };
 
@@ -377,7 +377,7 @@ public:
     /* 0x00b0 */ u8 unk_b0;
     /* 0x00b1 */ u8 unk_b1;
     /* 0x00b2 */ u8 unk_b2[2];
-    /* 0x00b4 */ Unk_020e45f8 unk_b4[2];
+    /* 0x00b4 */ BgVramTask unk_b4[2];
     /* 0x00fc */ Unk_020e0488 unk_fc[13];
     /* 0x043c */ Unk_ov002_022046b0 unk_43c;
     /* 0x0484 */ Unk_ov002_02204614 unk_484;
@@ -738,9 +738,9 @@ void Unk_ov118_022955c8::func_ov118_02294c60() {
     o->func_0206fab4(1, 0);
     _ZN12Unk_020dd38cD1Ev(buf);
     func_ov002_022008e0(0xa, 3, 0, 0x30);
-    func_020020b8(4);
+    Gfx2d_ShowLayer(4);
     func_ov002_02200840(4, 0, 0);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(6);
     func_ov002_02200840(6, 0, 0x50 - unk_98);
     func_ov118_02292e10(4);
     unk_94 = func_ov002_02200920();
@@ -772,8 +772,8 @@ void Unk_ov118_022955c8::func_ov118_02294bac() {
 
 void Unk_ov118_022955c8::func_ov118_02294b4c() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(4);
-        func_020021a0(6);
+        Gfx2d_ResetLayer(4);
+        Gfx2d_ResetLayer(6);
         func_ov118_02292e00(4);
         func_ov002_02200a60(5);
     } else {
@@ -822,8 +822,8 @@ void Unk_ov118_022955c8::func_ov118_02294a58() {
 
 void Unk_ov118_022955c8::func_ov118_02294a38() {
     func_ov118_02294024();
-    unk_b4[0].func_020b87d0();
-    unk_b4[1].func_020b87d0();
+    unk_b4[0].cancel();
+    unk_b4[1].cancel();
 }
 
 void Unk_ov118_022955c8::func_ov118_02294a30() {
@@ -833,7 +833,7 @@ void Unk_ov118_022955c8::func_ov118_02294a30() {
 void Unk_ov118_022955c8::func_ov118_02294964() {
     if (func_ov118_02293794()) {
         func_ov118_022936e4();
-        func_020021fc(6, 0, unk_98 - 0x50);
+        Gfx2d_SetLayerOffset(6, 0, unk_98 - 0x50);
         if (unk_a3 != (unk_98 >> 4)) {
             func_ov118_02292e10(0x80);
         }
@@ -844,12 +844,12 @@ void Unk_ov118_022955c8::func_ov118_02294964() {
         func_ov118_02292e00(0x80);
     }
     if (func_ov118_02292e20(0x20)) {
-        if (unk_b4[1].func_020b86c0((u32)unk_4e8, 4, 0x800, 0)) {
+        if (unk_b4[1].requestScreen((u32)unk_4e8, 4, 0x800, 0)) {
             func_ov118_02292e00(0x20);
         }
     }
     if (func_ov118_02292e20(2)) {
-        if (unk_b4[0].func_020b86c0((u32)unk_ce8, 6, 0x800, 0)) {
+        if (unk_b4[0].requestScreen((u32)unk_ce8, 6, 0x800, 0)) {
             func_ov118_02292e00(2);
         }
     }
@@ -866,19 +866,19 @@ void Unk_ov118_022955c8::func_ov118_02294930() {
 }
 
 void Unk_ov118_022955c8::func_ov118_022948fc() {
-    func_02002398(4, 2);
-    func_02002398(6, 2);
-    func_0200226c(4, 0, 0, 0);
-    func_0200226c(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 2);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
 void Unk_ov118_022955c8::func_ov118_0229484c() {
     u32 p = gCurrentHeap;
-    func_020026c4("menu/map/b_map_bg.bpl", p, 4, 1, 1, 0xf);
-    func_0200261c("menu/map/b_map_bg_0.bch", p, 4, 0x11, 0x11, 0x5f);
-    func_0200261c("menu/map/b_map_bg_1.bch", p, 4, 0x230, 0x230, 0x25f);
+    Gfx2d_LoadPaletteFile("menu/map/b_map_bg.bpl", p, 4, 1, 1, 0xf);
+    Gfx2d_LoadCharFile("menu/map/b_map_bg_0.bch", p, 4, 0x11, 0x11, 0x5f);
+    Gfx2d_LoadCharFile("menu/map/b_map_bg_1.bch", p, 4, 0x230, 0x230, 0x25f);
     File_LoadToBuffer("menu/map/b_map_a_bg.bsc", unk_4e8, 0x800);
-    func_020024f0(unk_4e8, 4, 0x800, 0);
+    Gfx2d_LoadScreen(unk_4e8, 4, 0x800, 0);
     File_LoadToBuffer("menu/map/b_map_b_bg.bsc", unk_1ce8, 0x800);
     func_0206ee80(unk_1ce8, 0x13, 0, 0x1c, 1, 4);
 }
@@ -902,15 +902,15 @@ void Unk_ov118_022955c8::func_ov118_022947c4() {
     func_ov117_02292c88(&unk_44e8);
     b = (u8 *)&unk_44e8;
     func_ov094_02292360(a, b);
-    func_02002438(a, 4, 0x60, 0x60, 0x15f);
+    Gfx2d_LoadCharRange(a, 4, 0x60, 0x60, 0x15f);
     func_ov118_02293ae0(b);
 }
 
 void Unk_ov118_022955c8::func_ov118_02294764() {
     u32 p = gCurrentHeap;
-    func_020026c4("menu/map/b_map_obj.bpl", p, 8, 6, 6, 0xe);
-    func_0200261c("menu/map/b_map_obj_0.bch", p, 8, 0xc0, 0xc0, 0xff);
-    func_0200261c("menu/map/b_map_obj_1.bch", p, 8, 0x180, 0x180, 0x1ff);
+    Gfx2d_LoadPaletteFile("menu/map/b_map_obj.bpl", p, 8, 6, 6, 0xe);
+    Gfx2d_LoadCharFile("menu/map/b_map_obj_0.bch", p, 8, 0xc0, 0xc0, 0xff);
+    Gfx2d_LoadCharFile("menu/map/b_map_obj_1.bch", p, 8, 0x180, 0x180, 0x1ff);
 }
 
 void Unk_ov118_022955c8::func_ov118_022946d4() {

@@ -21,7 +21,7 @@
 //    (func_ov004_02224ce4 / func_ov004_02224d5c), so LightLevel and Cf4 have no destructor here.
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
-//  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (Unk_020dbd54), unk_1a4, unk_248, unk_250.
+//  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
 // Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
 
 // Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
@@ -119,10 +119,10 @@ public:
     u8 pad_04[0x94];
 };
 
-class Unk_020dbd34 : public Unk_02055704 {
+class CachedModel : public Unk_02055704 {
 public:
-    Unk_020dbd34();
-    virtual ~Unk_020dbd34();
+    CachedModel();
+    virtual ~CachedModel();
     u32 unk_98;
 };
 
@@ -140,17 +140,17 @@ public:
     s32 hasPassedFrame(s32 a);
 };
 
-class Unk_020dbd54 : public Unk_020dbd34, public AnimFrameCtrl {
+class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:
-    Unk_020dbd54();
-    virtual ~Unk_020dbd54();
+    AnimModel();
+    virtual ~AnimModel();
     void *unk_b4;
 
-    s32 func_02054710();
-    s32 func_020547cc(void *q);
-    void func_020547e4();
-    BOOL func_02054800(void *x);
-    // declared in Unk_0205454c in src/main, but it is called on this object
+    s32 attachAnim();
+    s32 drawAnimated(void *q);
+    void stepAnim();
+    BOOL allocAnmObj(void *x);
+    // declared in BlendAnimModel in src/main, but it is called on this object
     void func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e);
 };
 
@@ -230,7 +230,7 @@ public:
     void func_ov004_02224f90(char *name);
     void func_ov004_02224fc8(char *a, char *b);
 
-    /* 0xec */ Unk_020dbd54 unk_ec;
+    /* 0xec */ AnimModel unk_ec;
     /* 0x1a4 */ Unk_ov004_02224ee4 unk_1a4;
     /* 0x248 */ Unk_ov004_02224d60 unk_248;
     /* 0x250 */ Unk_ov004_02224cf4 unk_250;
@@ -334,11 +334,11 @@ class Unk_020b6960;
 class ChoiceList;
 
 // Functions of other modules, under their real (mangled) symbol names; the object is the first argument.
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
 #define func_0203e47c _ZN9Character13func_0203e47cEi
 #define func_0203e488 _ZN9Character13func_0203e488Ei
@@ -351,7 +351,7 @@ class ChoiceList;
 #define func_02068298 _ZN9TalkVoice13func_02068298Ei
 #define func_0206829c _ZN9TalkVoice13func_0206829cEv
 #define func_020682a4 _ZN9TalkVoice13func_020682a4Ei
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define SaveData_clearFlag _ZN8SaveData9clearFlagEj
 #define SaveData_setFlag _ZN8SaveData7setFlagEj
 #define SaveData_testFlag _ZN8SaveData8testFlagEj
@@ -363,13 +363,13 @@ class ChoiceList;
 #define func_020b6928 _ZN12Unk_020b696013func_020b6928EP12Unk_020b6e10
 
 extern "C" {
-extern u8 data_021c3cc0;
+extern u8 gScreenTransition;
 extern u8 gTouchPrevHeld;
 extern u8 gTouchPrevChanged;
-extern Unk_ov004_02229970_Glob *data_020cbb18;
+extern Unk_ov004_02229970_Glob *gCommManager;
 extern u8 gSaveData[];
 extern u8 gTalkMsgIndexNone[];
-extern s32 data_021c620c;
+extern s32 gBgHeap;
 
 void _ZN12Unk_020d8cf4C1Ev(void *self);
 void _ZN12Unk_020d8cf4D2Ev(void *self);
@@ -377,11 +377,11 @@ void _ZN12Unk_020b6e10C2Ev(void *self);
 void _ZN12Unk_020b6e10D2Ev(void *self);
 void _ZN12Unk_020b6a94C1Ev(void *self);
 void _ZN12Unk_020b6a94D1Ev(void *self);
-s32 func_02054720(void *p, u32 a, u32 b, u32 c, u32 d, u32 e);
-void func_02054710(void *p);
-void func_020547cc(void *p, s32 a);
-void func_020547e4(void *p);
-BOOL func_02054800(void *p, s32 v);
+s32 BlendAnimModel_initAnim(void *p, u32 a, u32 b, u32 c, u32 d, u32 e);
+void AnimModel_attachAnim(void *p);
+void AnimModel_drawAnimated(void *p, s32 a);
+void AnimModel_stepAnim(void *p);
+BOOL AnimModel_allocAnmObj(void *p, s32 v);
 BOOL AnimFrameCtrl_isFinished(void *p);
 void func_0203e47c(void *self, TalkMsgRequest *sec);
 void func_0203e488(void *self, TalkMsgRequest *sec);
@@ -394,7 +394,7 @@ void func_02068290(void *p);
 void func_02068298(void *p, s32 a);
 void func_0206829c(void *p);
 void func_020682a4(void *p, s32 a);
-BOOL func_02072e44(void *g);
+BOOL CommManager_isOnline(void *g);
 void SaveData_clearFlag(void *p, u32 n);
 void SaveData_setFlag(void *p, u32 n);
 BOOL SaveData_testFlag(void *p, u32 n);

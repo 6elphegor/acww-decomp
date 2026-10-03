@@ -100,11 +100,11 @@ extern u8 data_021ec780[];
 }
 
 extern "C" {
-void *func_0204da0c();
+void *TownBlockMap_Get();
 }
 
 extern "C" {
-void *func_0204d528(s32 i);
+void *HouseRoomMaps_Get(s32 i);
 }
 
 extern "C" {
@@ -156,11 +156,11 @@ s32 Item_GetFurnitureIndex(u16 *p);
 }
 
 extern "C" {
-void *func_0204ebd8(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
+void *BlockMap_GetItemPtr(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
 }
 
 extern "C" {
-void func_0204eb30(void *self, u16 *p, s32 x, s32 y, u32 flag);
+void BlockMap_SetItemAtUnit(void *self, u16 *p, s32 x, s32 y, u32 flag);
 }
 
 extern "C" {
@@ -352,11 +352,11 @@ extern "C" void Grid_ConvertFakePaintings(void *g) {
             loop:
                 hx = x >> 4;
                 hy = y >> 4;
-                p = (u16 *)func_0204ebd8(gr, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+                p = (u16 *)BlockMap_GetItemPtr(gr, hx, hy, x - (hx << 4), y - (hy << 4), 0);
                 if (p) {
                     Item_ConvertFakePainting(&t, p);
                     if (!Unk_02060e3c_Eq(p, &t)) {
-                        func_0204eb30(gr, &t, x, y, 0);
+                        BlockMap_SetItemAtUnit(gr, &t, x, y, 0);
                     }
                 }
                 x++;
@@ -372,9 +372,9 @@ extern "C" void Save_ConvertFakePaintings() {
     u16 *q;
     u32 n, k, j;
     u16 t[8];
-    Grid_ConvertFakePaintings(func_0204da0c());
+    Grid_ConvertFakePaintings(TownBlockMap_Get());
     for (j = 0; j < 5; j++) {
-        Grid_ConvertFakePaintings(func_0204d528(j));
+        Grid_ConvertFakePaintings(HouseRoomMaps_Get(j));
     }
     for (k = 0; k < 7; k++) {
         m = PlayerData_Get(k);

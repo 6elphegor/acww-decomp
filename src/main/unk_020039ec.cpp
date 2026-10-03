@@ -99,7 +99,7 @@ void *_Znwm(u32);
 }
 
 extern "C" {
-void func_0209cf18(void *);
+void Clock_GetMinuteHour(void *);
 }
 
 extern "C" {
@@ -119,7 +119,7 @@ s32 func_020b5164();
 }
 
 extern "C" {
-void func_0209d498(void *);
+void Clock_GetDateTime(void *);
 }
 
 extern "C" {
@@ -127,7 +127,7 @@ void MI_CpuCopy8(void *, void *, u32);
 }
 
 extern "C" {
-s32 func_0203f2e0(u32, void *, u32);
+s32 Event_GetState(u32, void *, u32);
 }
 
 extern "C" {
@@ -480,7 +480,7 @@ void SndMgr_StopSe(void *, u32, u32);
     } while (0)
 
 static inline BOOL Unk_020040cc_check(u32 id, void *buf) {
-    if (func_0203f2e0(id, buf, 0) != 0) {
+    if (Event_GetState(id, buf, 0) != 0) {
         return TRUE;
     }
     return FALSE;
@@ -528,7 +528,7 @@ extern "C" void Snd_CreateScene() {
     if (!Unk_020040cc_isA() && !Unk_020040cc_isB()) {
         NEW(8, func_020f1044);
     } else {
-        func_0209cf18(st);
+        Clock_GetMinuteHour(st);
         switch (func_020b50e8()) {
     case 6:
     case 7:
@@ -627,7 +627,7 @@ extern "C" void Snd_CreateScene() {
             } else {
                 t[0] = 0;
                 t[1] = 0;
-                func_0209d498(t);
+                Clock_GetDateTime(t);
                 MI_CpuCopy8(t, b0, 8);
                 if (Unk_020040cc_check(0xf, b0)) {
                     NEW(8, func_020f2788);

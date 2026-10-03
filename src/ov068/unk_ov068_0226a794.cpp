@@ -171,10 +171,10 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
+class BuildingActor : public Character, public TalkMsgRequest {
 public:
-    Unk_ov009_0225e29c();
-    virtual ~Unk_ov009_0225e29c();
+    BuildingActor();
+    virtual ~BuildingActor();
     virtual BOOL vfunc_00();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
@@ -207,8 +207,8 @@ public:
     virtual Unk_ov068_0226b12c_Vec3 vfunc_b4();
     virtual BOOL vfunc_b8();
 
-    s32 func_ov009_0225d6b8(u32 a);
-    s32 func_ov009_0225d6d8();
+    s32 getBtaAnim(u32 a);
+    s32 getBca2Anim();
 
     /* 0x130 */ u8 unk_130;
     /* 0x131 */ u8 pad_131;
@@ -225,10 +225,10 @@ public:
 };
 
 // Overlay 68 concrete actor (vtable 0x02270110, secondary vtable 0x022701d4), size 0x2e4
-class Unk_ov068_02270110 : public Unk_ov009_0225e29c {
+class KappnTaxi : public BuildingActor {
 public:
-    Unk_ov068_02270110();
-    virtual ~Unk_ov068_02270110();
+    KappnTaxi();
+    virtual ~KappnTaxi();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -240,53 +240,53 @@ public:
     virtual s32 vfunc_s6c();
 
     // update states
-    void func_ov068_0226aa74();
-    void func_ov068_0226aad4();
-    void func_ov068_0226ab60();
-    void func_ov068_0226abc8();
-    void func_ov068_0226ac3c();
-    void func_ov068_0226acf8();
-    void func_ov068_0226ada0();
-    void func_ov068_0226adc4();
-    void func_ov068_0226ae74();
-    void func_ov068_0226aef0();
-    void func_ov068_0226af10();
-    void func_ov068_0226b060();
-    void func_ov068_0226b088();
-    void func_ov068_0226b12c();
-    void func_ov068_0226b1ec();
-    void func_ov068_0226b268();
-    void func_ov068_0226b2bc();
+    void execTaxiLeaveEnd();
+    void execTaxiLeaveDrive();
+    void execTaxiPlayerGetIn();
+    void execTaxiLeaveDoorAnim();
+    void execTaxiLeaveDoorOpen();
+    void execTaxiPlayerExitTownHall();
+    void execTaxiLeave();
+    void execTaxiWarpTownHall();
+    void execTaxiEnterTownHall();
+    void execTaxiWaitPlayerWalk();
+    void execTaxiDepart();
+    void execTaxiTalkWait();
+    void execTaxiTalk();
+    void execTaxiPlayerGetOut();
+    void execTaxiDoorOpen();
+    void execTaxiArrive();
+    void execTaxiIdle();
     // enter states
-    BOOL func_ov068_0226aac4();
-    BOOL func_ov068_0226ab1c();
-    BOOL func_ov068_0226aba4();
-    BOOL func_ov068_0226abf8();
-    BOOL func_ov068_0226acc4();
-    BOOL func_ov068_0226ad74();
-    BOOL func_ov068_0226adac();
-    BOOL func_ov068_0226ae64();
-    BOOL func_ov068_0226aebc();
-    BOOL func_ov068_0226af0c();
-    BOOL func_ov068_0226b014();
-    BOOL func_ov068_0226b084();
-    BOOL func_ov068_0226b094();
-    BOOL func_ov068_0226b190();
-    BOOL func_ov068_0226b234();
-    BOOL func_ov068_0226b284();
-    BOOL func_ov068_0226b2c0();
+    BOOL enterTaxiLeaveEnd();
+    BOOL enterTaxiLeaveDrive();
+    BOOL enterTaxiPlayerGetIn();
+    BOOL enterTaxiLeaveDoorAnim();
+    BOOL enterTaxiLeaveDoorOpen();
+    BOOL enterTaxiPlayerExitTownHall();
+    BOOL enterTaxiLeave();
+    BOOL enterTaxiWarpTownHall();
+    BOOL enterTaxiEnterTownHall();
+    BOOL enterTaxiWaitPlayerWalk();
+    BOOL enterTaxiDepart();
+    BOOL enterTaxiTalkWait();
+    BOOL enterTaxiTalk();
+    BOOL enterTaxiPlayerGetOut();
+    BOOL enterTaxiDoorOpen();
+    BOOL enterTaxiArrive();
+    BOOL enterTaxiIdle();
 
-    void func_ov068_0226b2f4();
-    BOOL func_ov068_0226b43c(s32 idx);
-    void func_ov068_0226b594();
-    void func_ov068_0226b5a4();
-    void func_ov068_0226b5f0();
-    void func_ov068_0226b614();
-    void func_ov068_0226b624();
-    void func_ov068_0226b670();
-    s32 func_ov068_0226b694();
-    Unk_ov068_0226b12c_Vec3 func_ov068_0226b6dc();
-    s32 func_ov068_0226b788();
+    void updateTaxiState();
+    BOOL setTaxiState(s32 idx);
+    void stopEffect42();
+    void updateEffect42();
+    void startEffect42();
+    void stopEffect41();
+    void updateEffect41();
+    void startEffect41();
+    s32 getAngleToPlayer();
+    Unk_ov068_0226b12c_Vec3 getDoorPoint();
+    s32 callGetBca2Anim();
 
     /* 0x2b0 */ s32 unk_2b0;
     /* 0x2b4 */ s32 unk_2b4;
@@ -345,7 +345,7 @@ public:
     u8 pad_00[0x20];
 };
 
-class Unk_ov068_0226a794 {
+class PlayerActTaxiGetIn {
 public:
     /* 0x00 */ u8 pad_00[0x5c];
     /* 0x5c */ s32 unk_5c;
@@ -359,16 +359,16 @@ public:
     /* 0x7f0 */ u8 pad_7f0[0x7f8 - 0x7f0];
     /* 0x7f8 */ u32 unk_7f8;
 
-    void func_ov068_0226a794();
-    void func_ov068_0226a7a8();
-    void func_ov068_0226a7e4();
-    void func_ov068_0226a80c();
-    void func_ov068_0226a838();
-    void func_ov068_0226a83c();
-    s32 func_ov068_0226a858(s32 a, s32 b);
+    void mainTaxiGetIn();
+    void mainTaxiGetInFinish();
+    void mainTaxiGetInAnim();
+    void endTaxiGetIn();
+    void netTaxiGetIn();
+    void setupTaxiGetIn();
+    s32 requestTaxiGetIn(s32 a, s32 b);
 };
 
-class Unk_ov068_0226a890 {
+class PlayerActTaxiGetOut {
 public:
     /* 0x00 */ u8 pad_00[0x5c];
     /* 0x5c */ s32 unk_5c;
@@ -382,13 +382,13 @@ public:
     /* 0x7f0 */ u8 pad_7f0[0x7f8 - 0x7f0];
     /* 0x7f8 */ u32 unk_7f8;
 
-    void func_ov068_0226a890();
-    void func_ov068_0226a8a4();
-    void func_ov068_0226a8e8();
-    void func_ov068_0226a910();
-    void func_ov068_0226a93c();
-    void func_ov068_0226a940();
-    s32 func_ov068_0226a9cc(s32 a, s32 b);
+    void mainTaxiGetOut();
+    void mainTaxiGetOutFinish();
+    void mainTaxiGetOutAnim();
+    void endTaxiGetOut();
+    void netTaxiGetOut();
+    void setupTaxiGetOut();
+    s32 requestTaxiGetOut(s32 a, s32 b);
 };
 
 struct Unk_ov068_02270110_Color {
@@ -402,7 +402,7 @@ struct Unk_ov068_02270110_Color {
 };
 
 extern "C" {
-extern s16 data_ov068_02271088;
+extern s16 sKappnTaxiLeaveTimer;
 extern u8 gSaveData[];
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *);
 s32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, s32);
@@ -415,8 +415,8 @@ void _ZN12Unk_02006d1413func_0200f258Ev(void *);
 void _ZN12Unk_020102ec13func_02010358Eijt(void *, s32, s32, s32);
 void _ZN12Unk_02006d1415clearActionFlagEj(void *);
 void *PlayerActor_GetPlayerData(void *);
-void func_0209d498(void *);
-void func_0209d164(void *, s32);
+void Clock_GetDateTime(void *);
+void DateTime_SubDays(void *, s32);
 void func_0200f17c(void *, void *, void *);
 void *PlayerActor_Get(s32);
 void func_0203d984();
@@ -426,27 +426,27 @@ void *PlayerData_GetCurrent();
 void *_ZN10PlayerData13func_02098a58Ev(void *);
 void *PlayerData_GetCurrentIndex();
 void _ZN8SaveData11resetPlayerEi(void *, void *);
-void _ZN18Unk_ov009_0225b89419func_ov009_0225b894Ej(void *, s32);
-void _ZN18Unk_ov009_0225b89419func_ov009_0225b8b0Ej(void *, s32);
-void _ZN12Unk_020dbd5413func_020547e4Ev(void *);
-void _ZN12Unk_0205454c13func_02054720Eiiitt(void *, s32, s32, s32, s32, s32);
+void _ZN17BuildingSeEmitter10playSeHeldEj(void *, s32);
+void _ZN17BuildingSeEmitter6playSeEj(void *, s32);
+void _ZN9AnimModel8stepAnimEv(void *);
+void _ZN14BlendAnimModel8initAnimEiiitt(void *, s32, s32, s32, s32, s32);
 void func_02094574(s32, s32, s32);
 void *func_02095204(s32);
 s32 func_020e780c(s32, s32);
 void *func_ov003_02218b40(s32);
-s32 _ZN18Unk_ov009_0225e29c19func_ov009_0225ba60Ev(void *);
+s32 _ZN13BuildingActor10isDoorIdleEv(void *);
 s32 PlayerActor_RequestAct6F(void *, s32, s32);
-s32 _ZN18Unk_ov009_0225e29c19func_ov009_0225b9b8Ev(void *);
+s32 _ZN13BuildingActor15openDoorForExitEv(void *);
 void func_0203d990();
 void func_ov003_02218d6c(s32);
-s32 _ZN18Unk_ov009_0225e29c19func_ov009_0225bbdcEP23Unk_ov009_0225b880_Vec3Ps(void *, void *, void *);
+s32 _ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(void *, void *, void *);
 void func_020b4bbc(void *, s32);
 void *func_020b50e8(void *);
 void func_020b49c4(void *, void *, void *, s32, s32, s32, s32);
-void _ZN18Unk_ov009_0225e29c19func_ov009_0225ba1cEv(void *);
-s32 _ZN18Unk_ov009_0225e29c19func_ov009_0225b980Ev(void *);
-s32 _ZN18Unk_ov009_0225e29c19func_ov009_0225b974Ev(void *);
-s32 func_ov003_02212430(s32, void *, void *, s32);
+void _ZN13BuildingActor16openDoorForEntryEv(void *);
+s32 _ZN13BuildingActor8getGridXEv(void *);
+s32 _ZN13BuildingActor8getGridZEv(void *);
+s32 PlayerActor_LocalRequestDoorEnter(s32, void *, void *, s32);
 s32 func_020951b8(s32);
 u32 *TalkWindow_Get(s32);
 void _ZN15TalkWindowState13detachRequestEv(void *, u32);
@@ -473,9 +473,9 @@ BOOL func_020b0f0c();
 BOOL func_020b0f30();
 void func_020b49b4();
 void _ZN10PlayerData11setHeldItemEPt(void *, u16 *);
-BOOL func_ov068_0226aa3c();
+BOOL KappnTaxi_RequestPlayerGetOut();
 void _ZN19PlayerActionRequest6assignEiis(void *, s32, s32, s32);
-s32 func_ov068_0226aa04();
+s32 KappnTaxi_RequestPlayerGetIn();
 s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void *, void *);
 }
 
@@ -489,7 +489,7 @@ struct Unk_ov068_SceneEntry {
     u32 unk_14;
 };
 
-extern "C" void func_ov068_0226b91c();
+extern "C" void KappnTaxi_Create();
 
 extern "C" Unk_ov068_02270110_Color data_ov068_02271090(0x1f, 0x14, 0x14, 0x1f);
 extern "C" Unk_ov068_02270110_Color data_ov068_02271098(0x14, 0x14, 0x1f, 0x1f);
@@ -497,19 +497,19 @@ extern "C" Unk_ov068_02270110_Color data_ov068_022710a4(0x1f, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov068_02270110_Color data_ov068_022710a0(0x14, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov068_02270110_Color data_ov068_02271094(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov068_02270110_Color data_ov068_0227109c(0x14, 0x18, 0x18, 0x1f);
-extern "C" Unk_ov068_SceneEntry data_ov068_022700f0 = {(void *(*)())func_ov068_0226b91c, 0x23, 0x29, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" Unk_ov068_SceneEntry sKappnTaxiProfile = {(void *(*)())KappnTaxi_Create, 0x23, 0x29, 0, 0xc8000, 0x12c000, 0x258000};
 
-extern "C" void func_ov068_0226b91c() {
-    new Unk_ov068_02270110();
+extern "C" void KappnTaxi_Create() {
+    new KappnTaxi();
 }
 
-Unk_ov068_02270110::Unk_ov068_02270110() {
+KappnTaxi::KappnTaxi() {
 }
 
-Unk_ov068_02270110::~Unk_ov068_02270110() {
+KappnTaxi::~KappnTaxi() {
 }
 
-BOOL Unk_ov068_02270110::vfunc_70() {
+BOOL KappnTaxi::vfunc_70() {
     void *p = PlayerData_GetCurrent();
     unk_2c8.x = unk_5c[0];
     unk_2c8.y = unk_5c[1];
@@ -518,7 +518,7 @@ BOOL Unk_ov068_02270110::vfunc_70() {
         unk_2da = 1;
         func_020b4934();
         func_020b49b4();
-        func_ov068_0226b43c(1);
+        setTaxiState(1);
     } else if (func_020b0f30()) {
         unk_2da = 1;
         if (p) {
@@ -527,26 +527,26 @@ BOOL Unk_ov068_02270110::vfunc_70() {
         }
         func_020b4934();
         func_020b49b4();
-        func_ov068_0226b43c(0xa);
+        setTaxiState(0xa);
     } else {
-        func_ov068_0226b43c(0);
+        setTaxiState(0);
     }
     return TRUE;
 }
 
-BOOL Unk_ov068_02270110::onExecute() {
-    func_ov068_0226b2f4();
+BOOL KappnTaxi::onExecute() {
+    updateTaxiState();
     if (unk_2b0) {
         func_02094f64(1);
     }
     return TRUE;
 }
 
-BOOL Unk_ov068_02270110::onDraw() {
+BOOL KappnTaxi::onDraw() {
     return TRUE;
 }
 
-BOOL Unk_ov068_02270110::vfunc_0c() {
+BOOL KappnTaxi::vfunc_0c() {
     if (unk_2b0) {
         func_0203d984();
     }
@@ -558,22 +558,22 @@ BOOL Unk_ov068_02270110::vfunc_0c() {
     return TRUE;
 }
 
-Unk_ov068_0226b12c_Vec3 Unk_ov068_02270110::vfunc_b4() {
+Unk_ov068_0226b12c_Vec3 KappnTaxi::vfunc_b4() {
     return unk_2c8;
 }
 
-s32 Unk_ov068_02270110::func_ov068_0226b788() {
-    return func_ov009_0225d6d8();
+s32 KappnTaxi::callGetBca2Anim() {
+    return getBca2Anim();
 }
 
-BOOL Unk_ov068_02270110::vfunc_b0() {
+BOOL KappnTaxi::vfunc_b0() {
     if (unk_2b0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov068_02270110::vfunc_60(u32 a, void *b) {
+void KappnTaxi::vfunc_60(u32 a, void *b) {
     if (a == 0) {
         Unk_ov068_0226b724_Obj *o = ((Unk_ov068_0226b724_Arg *)b)->unk_b4;
         Unk_ov068_0226b12c_Vec3 v;
@@ -589,14 +589,14 @@ void Unk_ov068_02270110::vfunc_60(u32 a, void *b) {
     }
 }
 
-s32 Unk_ov068_02270110::vfunc_s6c() {
+s32 KappnTaxi::vfunc_s6c() {
     return 0;
 }
 
-void Unk_ov068_02270110::vfunc_88() {
+void KappnTaxi::vfunc_88() {
 }
 
-Unk_ov068_0226b12c_Vec3 Unk_ov068_02270110::func_ov068_0226b6dc() {
+Unk_ov068_0226b12c_Vec3 KappnTaxi::getDoorPoint() {
     Unk_ov068_0226b12c_Vec3 r;
     r.x = unk_2c8.x;
     r.y = unk_2c8.y;
@@ -605,7 +605,7 @@ Unk_ov068_0226b12c_Vec3 Unk_ov068_02270110::func_ov068_0226b6dc() {
     return r;
 }
 
-s32 Unk_ov068_02270110::func_ov068_0226b694() {
+s32 KappnTaxi::getAngleToPlayer() {
     if (func_020947f0(4)) {
         Unk_ov068_0226b12c_Vec3 a;
         Unk_ov068_0226b12c_Vec3 c;
@@ -613,66 +613,66 @@ s32 Unk_ov068_02270110::func_ov068_0226b694() {
         a.x = p->x;
         a.y = p->y;
         a.z = p->z;
-        Unk_ov068_0226b12c_Vec3 b = func_ov068_0226b6dc();
+        Unk_ov068_0226b12c_Vec3 b = getDoorPoint();
         func_020e9960(&c, &b, &a);
         return func_020e7b98(c.x, c.z);
     }
     return 0;
 }
 
-void Unk_ov068_02270110::func_ov068_0226b670() {
+void KappnTaxi::startEffect41() {
     unk_2dc = func_02090330(0x41, &unk_2c8, 0, 0);
 }
 
-void Unk_ov068_02270110::func_ov068_0226b624() {
+void KappnTaxi::updateEffect41() {
     u32 v = unk_1dc.mid;
     if (v >= 0x2d && v <= 0x31) {
         if (v == 0x2d) {
-            func_ov068_0226b670();
+            startEffect41();
         }
         func_020902d4(unk_2dc, &unk_2c8, 0, 0);
         if (v == 0x31) {
-            func_ov068_0226b614();
+            stopEffect41();
         }
     }
 }
 
-void Unk_ov068_02270110::func_ov068_0226b614() {
+void KappnTaxi::stopEffect41() {
     func_020902f8(unk_2dc);
 }
 
-void Unk_ov068_02270110::func_ov068_0226b5f0() {
+void KappnTaxi::startEffect42() {
     unk_2e0 = func_02090330(0x42, &unk_2c8, 0, 0);
 }
 
-void Unk_ov068_02270110::func_ov068_0226b5a4() {
+void KappnTaxi::updateEffect42() {
     u32 v = unk_1dc.mid;
     if (v >= 0x25 && v <= 0x32) {
         if (v == 0x25) {
-            func_ov068_0226b5f0();
+            startEffect42();
         }
         func_020902d4(unk_2e0, &unk_2c8, 0, 0);
         if (v == 0x32) {
-            func_ov068_0226b594();
+            stopEffect42();
         }
     }
 }
 
-void Unk_ov068_02270110::func_ov068_0226b594() {
+void KappnTaxi::stopEffect42() {
     func_020902f8(unk_2e0);
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226b43c(s32 idx) {
-    static BOOL (Unk_ov068_02270110::*tbl[17])() = {
-        &Unk_ov068_02270110::func_ov068_0226b2c0, &Unk_ov068_02270110::func_ov068_0226b284,
-        &Unk_ov068_02270110::func_ov068_0226b234, &Unk_ov068_02270110::func_ov068_0226b190,
-        &Unk_ov068_02270110::func_ov068_0226b094, &Unk_ov068_02270110::func_ov068_0226b084,
-        &Unk_ov068_02270110::func_ov068_0226b014, &Unk_ov068_02270110::func_ov068_0226af0c,
-        &Unk_ov068_02270110::func_ov068_0226aebc, &Unk_ov068_02270110::func_ov068_0226ae64,
-        &Unk_ov068_02270110::func_ov068_0226adac, &Unk_ov068_02270110::func_ov068_0226ad74,
-        &Unk_ov068_02270110::func_ov068_0226acc4, &Unk_ov068_02270110::func_ov068_0226abf8,
-        &Unk_ov068_02270110::func_ov068_0226aba4, &Unk_ov068_02270110::func_ov068_0226ab1c,
-        &Unk_ov068_02270110::func_ov068_0226aac4,
+BOOL KappnTaxi::setTaxiState(s32 idx) {
+    static BOOL (KappnTaxi::*tbl[17])() = {
+        &KappnTaxi::enterTaxiIdle, &KappnTaxi::enterTaxiArrive,
+        &KappnTaxi::enterTaxiDoorOpen, &KappnTaxi::enterTaxiPlayerGetOut,
+        &KappnTaxi::enterTaxiTalk, &KappnTaxi::enterTaxiTalkWait,
+        &KappnTaxi::enterTaxiDepart, &KappnTaxi::enterTaxiWaitPlayerWalk,
+        &KappnTaxi::enterTaxiEnterTownHall, &KappnTaxi::enterTaxiWarpTownHall,
+        &KappnTaxi::enterTaxiLeave, &KappnTaxi::enterTaxiPlayerExitTownHall,
+        &KappnTaxi::enterTaxiLeaveDoorOpen, &KappnTaxi::enterTaxiLeaveDoorAnim,
+        &KappnTaxi::enterTaxiPlayerGetIn, &KappnTaxi::enterTaxiLeaveDrive,
+        &KappnTaxi::enterTaxiLeaveEnd,
     };
     if (idx < 0x11) {
         if ((this->*tbl[idx])()) {
@@ -683,17 +683,17 @@ BOOL Unk_ov068_02270110::func_ov068_0226b43c(s32 idx) {
     return FALSE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226b2f4() {
-    static void (Unk_ov068_02270110::*tbl[17])() = {
-        &Unk_ov068_02270110::func_ov068_0226b2bc, &Unk_ov068_02270110::func_ov068_0226b268,
-        &Unk_ov068_02270110::func_ov068_0226b1ec, &Unk_ov068_02270110::func_ov068_0226b12c,
-        &Unk_ov068_02270110::func_ov068_0226b088, &Unk_ov068_02270110::func_ov068_0226b060,
-        &Unk_ov068_02270110::func_ov068_0226af10, &Unk_ov068_02270110::func_ov068_0226aef0,
-        &Unk_ov068_02270110::func_ov068_0226ae74, &Unk_ov068_02270110::func_ov068_0226adc4,
-        &Unk_ov068_02270110::func_ov068_0226ada0, &Unk_ov068_02270110::func_ov068_0226acf8,
-        &Unk_ov068_02270110::func_ov068_0226ac3c, &Unk_ov068_02270110::func_ov068_0226abc8,
-        &Unk_ov068_02270110::func_ov068_0226ab60, &Unk_ov068_02270110::func_ov068_0226aad4,
-        &Unk_ov068_02270110::func_ov068_0226aa74,
+void KappnTaxi::updateTaxiState() {
+    static void (KappnTaxi::*tbl[17])() = {
+        &KappnTaxi::execTaxiIdle, &KappnTaxi::execTaxiArrive,
+        &KappnTaxi::execTaxiDoorOpen, &KappnTaxi::execTaxiPlayerGetOut,
+        &KappnTaxi::execTaxiTalk, &KappnTaxi::execTaxiTalkWait,
+        &KappnTaxi::execTaxiDepart, &KappnTaxi::execTaxiWaitPlayerWalk,
+        &KappnTaxi::execTaxiEnterTownHall, &KappnTaxi::execTaxiWarpTownHall,
+        &KappnTaxi::execTaxiLeave, &KappnTaxi::execTaxiPlayerExitTownHall,
+        &KappnTaxi::execTaxiLeaveDoorOpen, &KappnTaxi::execTaxiLeaveDoorAnim,
+        &KappnTaxi::execTaxiPlayerGetIn, &KappnTaxi::execTaxiLeaveDrive,
+        &KappnTaxi::execTaxiLeaveEnd,
     };
     if (unk_2b0 < 0x11) {
         (this->*tbl[unk_2b0])();
@@ -701,73 +701,73 @@ void Unk_ov068_02270110::func_ov068_0226b2f4() {
 }
 
 extern "C" {
-s16 data_ov068_02271088;
+s16 sKappnTaxiLeaveTimer;
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226b2c0() {
-    _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, vfunc_64(), 1, 0x1000, 0, 0);
+BOOL KappnTaxi::enterTaxiIdle() {
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, vfunc_64(), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226b2bc() {
+void KappnTaxi::execTaxiIdle() {
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226b284() {
-    _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, vfunc_64(), 1, 0x1000, 0, 0);
+BOOL KappnTaxi::enterTaxiArrive() {
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, vfunc_64(), 1, 0x1000, 0, 0);
     func_0203d990();
     return TRUE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226b268() {
+void KappnTaxi::execTaxiArrive() {
     if (func_02095204(4)) {
-        func_ov068_0226b43c(2);
+        setTaxiState(2);
     }
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226b234() {
-    _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, vfunc_64(), 1, 0x1000, 0, 0);
+BOOL KappnTaxi::enterTaxiDoorOpen() {
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, vfunc_64(), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226b1ec() {
-    _ZN18Unk_ov009_0225b89419func_ov009_0225b894Ej(unk_234, 0x888);
+void KappnTaxi::execTaxiDoorOpen() {
+    _ZN17BuildingSeEmitter10playSeHeldEj(unk_234, 0x888);
     if (_ZN13AnimFrameCtrl10isFinishedEv(unk_1d4)) {
-        func_ov068_0226b43c(3);
+        setTaxiState(3);
     }
-    func_ov068_0226b624();
-    _ZN12Unk_020dbd5413func_020547e4Ev(unk_138);
+    updateEffect41();
+    _ZN9AnimModel8stepAnimEv(unk_138);
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226b190() {
+BOOL KappnTaxi::enterTaxiPlayerGetOut() {
     unk_2d9 = 0;
-    if (func_ov068_0226aa3c()) {
-        _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, vfunc_68(), 1, 0x1000, 0, 0);
-        _ZN18Unk_ov009_0225b89419func_ov009_0225b8b0Ej(unk_234, 0x88a);
+    if (KappnTaxi_RequestPlayerGetOut()) {
+        _ZN14BlendAnimModel8initAnimEiiitt(unk_138, vfunc_68(), 1, 0x1000, 0, 0);
+        _ZN17BuildingSeEmitter6playSeEj(unk_234, 0x88a);
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226b12c() {
+void KappnTaxi::execTaxiPlayerGetOut() {
     if (_ZN13AnimFrameCtrl10isFinishedEv(unk_1d4)) {
         switch (unk_2d9) {
         case 0x12:
             func_02094f20();
-            PlayerActor_RequestAct70(func_ov068_0226b694(), 4);
+            PlayerActor_RequestAct70(getAngleToPlayer(), 4);
             break;
         case 0x1c:
-            func_ov068_0226b43c(4);
+            setTaxiState(4);
             break;
         }
         if (unk_2d9 < 0xc8) {
             unk_2d9++;
         }
     } else {
-        _ZN12Unk_020dbd5413func_020547e4Ev(unk_138);
+        _ZN9AnimModel8stepAnimEv(unk_138);
     }
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226b094() {
+BOOL KappnTaxi::enterTaxiTalk() {
     u32 *rec = TalkWindow_Get(0);
     this->TalkMsgRequest::vfunc_s08();
     this->setFileName("sp_etc_sequence4");
@@ -789,43 +789,43 @@ BOOL Unk_ov068_02270110::func_ov068_0226b094() {
     return TRUE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226b088() {
-    func_ov068_0226b43c(5);
+void KappnTaxi::execTaxiTalk() {
+    setTaxiState(5);
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226b084() {
+BOOL KappnTaxi::enterTaxiTalkWait() {
     return TRUE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226b060() {
+void KappnTaxi::execTaxiTalkWait() {
     u32 *r = TalkWindow_Get(0);
     u32 t = r[1];
     if (t == 0) {
         _ZN15TalkWindowState13detachRequestEv(r, t);
-        func_ov068_0226b43c(6);
+        setTaxiState(6);
     }
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226b014() {
-    s32 r1 = func_ov068_0226b788();
-    _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, r1, 1, 0x1000, 0, 0);
-    _ZN18Unk_ov009_0225b89419func_ov009_0225b8b0Ej(unk_234, 0x88b);
+BOOL KappnTaxi::enterTaxiDepart() {
+    s32 r1 = callGetBca2Anim();
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, r1, 1, 0x1000, 0, 0);
+    _ZN17BuildingSeEmitter6playSeEj(unk_234, 0x88b);
     unk_2d8 = 0;
     return TRUE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226af10() {
-    _ZN18Unk_ov009_0225b89419func_ov009_0225b894Ej(unk_234, 0x889);
-    func_ov068_0226b5a4();
+void KappnTaxi::execTaxiDepart() {
+    _ZN17BuildingSeEmitter10playSeHeldEj(unk_234, 0x889);
+    updateEffect42();
     if (_ZN13AnimFrameCtrl10isFinishedEv(unk_1d4) != 0) {
-        func_ov068_0226b43c(7);
+        setTaxiState(7);
     } else {
-        _ZN12Unk_020dbd5413func_020547e4Ev(unk_138);
+        _ZN9AnimModel8stepAnimEv(unk_138);
         u8 *o = (u8 *)func_02095204(4);
         if (o != 0) {
             s32 r4 = *(s16 *)(o + 0x8e);
-            if (func_020e780c(r4, func_ov068_0226b694()) < 0x1200) {
-                func_02094574(0, (s16)(func_ov068_0226b694() - r4), 4);
+            if (func_020e780c(r4, getAngleToPlayer()) < 0x1200) {
+                func_02094574(0, (s16)(getAngleToPlayer() - r4), 4);
             } else {
                 if (unk_2d8 < 0xc8) {
                     unk_2d8 = unk_2d8 + 1;
@@ -835,7 +835,7 @@ void Unk_ov068_02270110::func_ov068_0226af10() {
                     if (q != 0) {
                         s32 l0[1];
                         s32 l1[3];
-                        if (_ZN18Unk_ov009_0225e29c19func_ov009_0225bbdcEP23Unk_ov009_0225b880_Vec3Ps(q, l1, l0) != 0) {
+                        if (_ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(q, l1, l0) != 0) {
                             unk_2bc.x = l1[0];
                             unk_2bc.y = l1[1];
                             s32 *p = &unk_2bc.z;
@@ -851,39 +851,39 @@ void Unk_ov068_02270110::func_ov068_0226af10() {
     }
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226af0c() {
+BOOL KappnTaxi::enterTaxiWaitPlayerWalk() {
     return TRUE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226aef0() {
+void KappnTaxi::execTaxiWaitPlayerWalk() {
     if (func_020951b8(4) == 0) {
-        func_ov068_0226b43c(8);
+        setTaxiState(8);
     }
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226aebc() {
-    if (func_ov003_02212430(1, &unk_2bc, &unk_2bc.z, -0x8000) != 0) {
+BOOL KappnTaxi::enterTaxiEnterTownHall() {
+    if (PlayerActor_LocalRequestDoorEnter(1, &unk_2bc, &unk_2bc.z, -0x8000) != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226ae74() {
+void KappnTaxi::execTaxiEnterTownHall() {
     void *q = func_ov003_02218b40(0x5000);
     if (q != 0) {
-        _ZN18Unk_ov009_0225e29c19func_ov009_0225ba1cEv(q);
-        unk_2b4 = _ZN18Unk_ov009_0225e29c19func_ov009_0225b980Ev(q);
-        unk_2b8 = _ZN18Unk_ov009_0225e29c19func_ov009_0225b974Ev(q);
-        func_ov068_0226b43c(9);
+        _ZN13BuildingActor16openDoorForEntryEv(q);
+        unk_2b4 = _ZN13BuildingActor8getGridXEv(q);
+        unk_2b8 = _ZN13BuildingActor8getGridZEv(q);
+        setTaxiState(9);
     }
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226ae64() {
+BOOL KappnTaxi::enterTaxiWarpTownHall() {
     unk_2d4 = 0x14;
     return TRUE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226adc4() {
+void KappnTaxi::execTaxiWarpTownHall() {
     Unk_ov068_0226acf8_Vec v;
     s16 sv;
     if (unk_2d4 != 0) {
@@ -892,7 +892,7 @@ void Unk_ov068_02270110::func_ov068_0226adc4() {
     if (unk_2d4 == 0) {
         void *q = func_ov003_02218b40(0x5000);
         if (q != 0) {
-            if (_ZN18Unk_ov009_0225e29c19func_ov009_0225bbdcEP23Unk_ov009_0225b880_Vec3Ps(q, &v, &sv) != 0) {
+            if (_ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(q, &v, &sv) != 0) {
                 func_020b4bbc(func_020b4934(), 9);
                 v.z = v.z + 0x1000;
                 void *r4 = func_020b4934();
@@ -904,29 +904,29 @@ void Unk_ov068_02270110::func_ov068_0226adc4() {
     }
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226adac() {
+BOOL KappnTaxi::enterTaxiLeave() {
     func_0203d990();
     func_ov003_02218d6c(1);
     return TRUE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226ada0() {
-    func_ov068_0226b43c(0xb);
+void KappnTaxi::execTaxiLeave() {
+    setTaxiState(0xb);
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226ad74() {
+BOOL KappnTaxi::enterTaxiPlayerExitTownHall() {
     void *q = func_ov003_02218b40(0x5000);
     if (q != 0) {
         unk_2d7 = 0x10;
-        return _ZN18Unk_ov009_0225e29c19func_ov009_0225b9b8Ev(q);
+        return _ZN13BuildingActor15openDoorForExitEv(q);
     }
     return TRUE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226acf8() {
+void KappnTaxi::execTaxiPlayerExitTownHall() {
     void *q = func_ov003_02218b40(0x5000);
     if (q != 0) {
-        if (_ZN18Unk_ov009_0225e29c19func_ov009_0225ba60Ev(q) != 0) {
+        if (_ZN13BuildingActor10isDoorIdleEv(q) != 0) {
             u8 *o = (u8 *)func_02095204(4);
             if (o != 0) {
                 if (unk_2d7 == 0) {
@@ -937,7 +937,7 @@ void Unk_ov068_02270110::func_ov068_0226acf8() {
                     v.z = pv->z;
                     v.z = v.z + 0x4000;
                     if (PlayerActor_RequestAct6F(&v, 0x400, 4) != 0) {
-                        func_ov068_0226b43c(0xc);
+                        setTaxiState(0xc);
                     }
                 }
             }
@@ -948,119 +948,119 @@ void Unk_ov068_02270110::func_ov068_0226acf8() {
     }
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226acc4() {
+BOOL KappnTaxi::enterTaxiLeaveDoorOpen() {
     s32 r1 = vfunc_64();
-    _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, r1, 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, r1, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226ac3c() {
-    _ZN18Unk_ov009_0225b89419func_ov009_0225b894Ej(unk_234, 0x888);
+void KappnTaxi::execTaxiLeaveDoorOpen() {
+    _ZN17BuildingSeEmitter10playSeHeldEj(unk_234, 0x888);
     if (_ZN13AnimFrameCtrl10isFinishedEv(unk_1d4) != 0) {
-        func_ov068_0226b43c(0xd);
+        setTaxiState(0xd);
     }
-    func_ov068_0226b624();
-    _ZN12Unk_020dbd5413func_020547e4Ev(unk_138);
+    updateEffect41();
+    _ZN9AnimModel8stepAnimEv(unk_138);
     u8 *o = (u8 *)func_02095204(4);
     if (o != 0) {
         s32 r4 = *(s16 *)(o + 0x8e);
-        if (func_020e780c(r4, func_ov068_0226b694()) < 0x1200) {
-            func_02094574(0, (s16)(func_ov068_0226b694() - r4), 4);
+        if (func_020e780c(r4, getAngleToPlayer()) < 0x1200) {
+            func_02094574(0, (s16)(getAngleToPlayer() - r4), 4);
         }
     }
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226abf8() {
+BOOL KappnTaxi::enterTaxiLeaveDoorAnim() {
     s32 r1 = vfunc_68();
-    _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, r1, 1, 0x1000, 0, 0);
-    _ZN18Unk_ov009_0225b89419func_ov009_0225b8b0Ej(unk_234, 0x88a);
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, r1, 1, 0x1000, 0, 0);
+    _ZN17BuildingSeEmitter6playSeEj(unk_234, 0x88a);
     return TRUE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226abc8() {
+void KappnTaxi::execTaxiLeaveDoorAnim() {
     if (_ZN13AnimFrameCtrl10isFinishedEv(unk_1d4) != 0) {
-        func_ov068_0226b43c(0xe);
+        setTaxiState(0xe);
     }
-    _ZN12Unk_020dbd5413func_020547e4Ev(unk_138);
+    _ZN9AnimModel8stepAnimEv(unk_138);
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226aba4() {
+BOOL KappnTaxi::enterTaxiPlayerGetIn() {
     unk_2d6 = 0x1e;
-    if (func_ov068_0226aa04() != 0) {
+    if (KappnTaxi_RequestPlayerGetIn() != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226ab60() {
+void KappnTaxi::execTaxiPlayerGetIn() {
     if (unk_2d6 == 0) {
-        func_ov068_0226b43c(0xf);
+        setTaxiState(0xf);
     }
     if (unk_2d6 != 0) {
         func_02094574(0, 0, 4);
         unk_2d6 = unk_2d6 - 1;
     }
-    _ZN12Unk_020dbd5413func_020547e4Ev(unk_138);
+    _ZN9AnimModel8stepAnimEv(unk_138);
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226ab1c() {
-    s32 r1 = func_ov068_0226b788();
-    _ZN12Unk_0205454c13func_02054720Eiiitt(unk_138, r1, 1, 0x1000, 0, 0);
-    _ZN18Unk_ov009_0225b89419func_ov009_0225b8b0Ej(unk_234, 0x88b);
+BOOL KappnTaxi::enterTaxiLeaveDrive() {
+    s32 r1 = callGetBca2Anim();
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, r1, 1, 0x1000, 0, 0);
+    _ZN17BuildingSeEmitter6playSeEj(unk_234, 0x88b);
     return TRUE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226aad4() {
-    _ZN18Unk_ov009_0225b89419func_ov009_0225b894Ej(unk_234, 0x889);
+void KappnTaxi::execTaxiLeaveDrive() {
+    _ZN17BuildingSeEmitter10playSeHeldEj(unk_234, 0x889);
     if (_ZN13AnimFrameCtrl10isFinishedEv(unk_1d4) != 0) {
-        func_ov068_0226b43c(0x10);
+        setTaxiState(0x10);
     }
-    func_ov068_0226b5a4();
-    _ZN12Unk_020dbd5413func_020547e4Ev(unk_138);
+    updateEffect42();
+    _ZN9AnimModel8stepAnimEv(unk_138);
 }
 
-BOOL Unk_ov068_02270110::func_ov068_0226aac4() {
-    data_ov068_02271088 = 0x41;
+BOOL KappnTaxi::enterTaxiLeaveEnd() {
+    sKappnTaxiLeaveTimer = 0x41;
     return TRUE;
 }
 
-void Unk_ov068_02270110::func_ov068_0226aa74() {
-    if (data_ov068_02271088 == 0) {
+void KappnTaxi::execTaxiLeaveEnd() {
+    if (sKappnTaxiLeaveTimer == 0) {
         func_0203d984();
         func_020b4f58(func_020b4934(), 0x2c, 2, 2);
         _ZN10PlayerData13func_02098a58Ev(PlayerData_GetCurrent());
         _ZN8SaveData11resetPlayerEi(gSaveData, PlayerData_GetCurrentIndex());
     }
-    if (data_ov068_02271088 >= 0) {
-        data_ov068_02271088 = data_ov068_02271088 - 1;
+    if (sKappnTaxiLeaveTimer >= 0) {
+        sKappnTaxiLeaveTimer = sKappnTaxiLeaveTimer - 1;
     }
 }
 
-extern "C" s32 func_ov068_0226aa3c() {
-    Unk_ov068_0226a890 *p = (Unk_ov068_0226a890 *)PlayerActor_Get(4);
+extern "C" s32 KappnTaxi_RequestPlayerGetOut() {
+    PlayerActTaxiGetOut *p = (PlayerActTaxiGetOut *)PlayerActor_Get(4);
     if (p != 0) {
         p->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(p, p->unk_7ec);
-        return p->func_ov068_0226a9cc(6, -1);
+        return p->requestTaxiGetOut(6, -1);
     }
     return 0;
 }
 
-extern "C" s32 func_ov068_0226aa04() {
-    Unk_ov068_0226a794 *p = (Unk_ov068_0226a794 *)PlayerActor_Get(4);
+extern "C" s32 KappnTaxi_RequestPlayerGetIn() {
+    PlayerActTaxiGetIn *p = (PlayerActTaxiGetIn *)PlayerActor_Get(4);
     if (p != 0) {
         p->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(p, p->unk_7ec);
-        return p->func_ov068_0226a858(6, -1);
+        return p->requestTaxiGetIn(6, -1);
     }
     return 0;
 }
 
-s32 Unk_ov068_0226a890::func_ov068_0226a9cc(s32 a, s32 b) {
+s32 PlayerActTaxiGetOut::requestTaxiGetOut(s32 a, s32 b) {
     PlayerActionRequest m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x87, a, b);
     return _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(this, &m);
 }
 
-void Unk_ov068_0226a890::func_ov068_0226a940() {
+void PlayerActTaxiGetOut::setupTaxiGetOut() {
     Unk_ov068_0226a940_Loc l;
     Unk_ov068_0226a940_Words w;
     _ZN12Unk_020102ec13func_02010358Eijt(this, 0x82, 0, 0);
@@ -1071,8 +1071,8 @@ void Unk_ov068_0226a890::func_ov068_0226a940() {
         Unk_ov068_0226a940_Bits bits;
         w.a = 0;
         w.b = 0;
-        func_0209d498(&w);
-        func_0209d164(&w, 1);
+        Clock_GetDateTime(&w);
+        DateTime_SubDays(&w, 1);
         bits.a = ((u8 *)&w)[5];
         bits.b = ((u8 *)&w)[4];
         bits.c = ((u8 *)&w)[3];
@@ -1080,23 +1080,23 @@ void Unk_ov068_0226a890::func_ov068_0226a940() {
     }
 }
 
-void Unk_ov068_0226a890::func_ov068_0226a93c() {
+void PlayerActTaxiGetOut::netTaxiGetOut() {
 }
 
-void Unk_ov068_0226a890::func_ov068_0226a910() {
+void PlayerActTaxiGetOut::endTaxiGetOut() {
     unk_5c = unk_5c + 0x1c00;
     unk_64 = unk_64 - 0x2c00;
     unk_8e = unk_8e + 0x8000;
 }
 
-void Unk_ov068_0226a890::func_ov068_0226a8e8() {
+void PlayerActTaxiGetOut::mainTaxiGetOutAnim() {
     _ZN12Unk_020102ec11advanceAnimEv(this);
     if (_ZN13AnimFrameCtrl14hasPassedFrameEi(unk_2cc, 0x16) != 0) {
         _ZN12Unk_02006d1413func_0200f258Ev(this);
     }
 }
 
-void Unk_ov068_0226a890::func_ov068_0226a8a4() {
+void PlayerActTaxiGetOut::mainTaxiGetOutFinish() {
     if (_ZN13AnimFrameCtrl10isFinishedEv(unk_2cc) != 0) {
         unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(this, unk_7ec);
         _ZN12Unk_02006d1412requestAct10Esji(this, 0, 5, -1);
@@ -1104,47 +1104,47 @@ void Unk_ov068_0226a890::func_ov068_0226a8a4() {
     }
 }
 
-void Unk_ov068_0226a890::func_ov068_0226a890() {
-    func_ov068_0226a8e8();
-    func_ov068_0226a8a4();
+void PlayerActTaxiGetOut::mainTaxiGetOut() {
+    mainTaxiGetOutAnim();
+    mainTaxiGetOutFinish();
 }
 
-s32 Unk_ov068_0226a794::func_ov068_0226a858(s32 a, s32 b) {
+s32 PlayerActTaxiGetIn::requestTaxiGetIn(s32 a, s32 b) {
     PlayerActionRequest m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x88, a, b);
     return _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(this, &m);
 }
 
-void Unk_ov068_0226a794::func_ov068_0226a83c() {
+void PlayerActTaxiGetIn::setupTaxiGetIn() {
     _ZN12Unk_020102ec13func_02010358Eijt(this, 0x83, 3, 0);
     unk_8e = 0;
 }
 
-void Unk_ov068_0226a794::func_ov068_0226a838() {
+void PlayerActTaxiGetIn::netTaxiGetIn() {
 }
 
-void Unk_ov068_0226a794::func_ov068_0226a80c() {
+void PlayerActTaxiGetIn::endTaxiGetIn() {
     unk_5c = unk_5c - 0x1c00;
     unk_64 = unk_64 + 0x2c00;
     unk_8e = unk_8e + 0x8000;
 }
 
-void Unk_ov068_0226a794::func_ov068_0226a7e4() {
+void PlayerActTaxiGetIn::mainTaxiGetInAnim() {
     _ZN12Unk_020102ec11advanceAnimEv(this);
     if (_ZN13AnimFrameCtrl14hasPassedFrameEi(unk_2cc, 8) != 0) {
         _ZN12Unk_02006d1413func_0200f258Ev(this);
     }
 }
 
-void Unk_ov068_0226a794::func_ov068_0226a7a8() {
+void PlayerActTaxiGetIn::mainTaxiGetInFinish() {
     if (_ZN13AnimFrameCtrl10isFinishedEv(unk_2cc) != 0) {
         unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(this, unk_7ec);
         _ZN11PlayerActor12requestAct01Ejj(this, 9, -1);
     }
 }
 
-void Unk_ov068_0226a794::func_ov068_0226a794() {
-    func_ov068_0226a7e4();
-    func_ov068_0226a7a8();
+void PlayerActTaxiGetIn::mainTaxiGetIn() {
+    mainTaxiGetInAnim();
+    mainTaxiGetInFinish();
 }
 

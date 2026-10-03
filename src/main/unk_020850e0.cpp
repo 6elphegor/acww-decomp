@@ -55,7 +55,7 @@ public:
 
 extern u8 data_021dfd8c[];
 extern u8 data_020e416c;
-extern u8 data_021c47c4[];
+extern u8 gSceneBlockMap[];
 extern u8 data_021d735c[];
 extern u8 gSaveData[];
 
@@ -96,16 +96,16 @@ void *SaveVillagers_Get(void *, s32);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
 s32 _ZN10VillagerId7isValidEv(void *);
 u8 *_ZN20VillagerDataItemView11getHousePosEv(...);
-void func_02076a6c(void *, s32, s32);
-void func_02076b08(void *, s32, s32);
+void NetBuf_PackPair20(void *, s32, s32);
+void CommRecord_PackSource(void *, s32, s32);
 s32 VisitorSchedule_Clear(void *);
 void func_0208403c(void *);
 BOOL func_02072e88(void *, u32);
 s32 func_020b50e8();
 s32 func_020b4910();
-void *func_0204da0c();
-void *func_02037558(void *, s32, s32, s32);
-void func_02037590(void *, u16 *, s32, s32, s32);
+void *TownBlockMap_Get();
+void *MapBlock_GetItemPtr(void *, s32, s32, s32);
+void MapBlock_SetItem(void *, u16 *, s32, s32, s32);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 void *PlayerData_GetCurrent();
@@ -114,8 +114,8 @@ s32 _ZN8PlayerId13func_02094218Ev(void *);
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
 s32 func_0203c338();
 s32 func_0203c31c();
-void func_0209d498(void *);
-s32 func_0203f2e0(s32, void *, s32);
+void Clock_GetDateTime(void *);
+s32 Event_GetState(s32, void *, s32);
 void _ZN12Unk_02086f8413func_02086f84Ev(void *);
 void _ZN12Unk_02086b7c13func_02086bf0Ev(void *);
 void func_02086adc(void *);
@@ -137,9 +137,9 @@ void func_020030e8(...);
 void _ZN8PlayerId13func_02094294Ev(...);
 s32 func_02063b8c(s32);
 s32 Random_PickSetBit(u32, s32, s32);
-s32 func_0204ea88(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
-void func_0204edf8(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
-void *func_0204ebd8(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
+s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
+void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
+void *BlockMap_GetItemPtr(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
 s32 _s32_div_f(s32, s32);
 s32 func_02085580(u32 v);
 s32 func_020855a8(u32 *out, u16 *p);
@@ -151,9 +151,9 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 func_0204b978(u16 *);
 s32 func_0204b900(u16 *);
-void func_0209cf88(void *);
-s32 func_0209cd00(void *, void *);
-s32 func_0203f42c(s32);
+void Clock_GetDate(void *);
+s32 Date_DaysBetween(void *, void *);
+s32 Event_GetDaysSinceStart(s32);
 void _ZN8SaveData9clearFlagEj(void *, s32);
 void *PlayerData_GetResident(void *, s32);
 s32 _ZN10PlayerData13func_02098a48Ev(void *);
@@ -173,7 +173,7 @@ struct Unk_020856a4_Rec {
 void Unk_02085810::func_02085908() {
     u8 d[8];
     func_02085940();
-    func_0209cf88(d);
+    Clock_GetDate(d);
     unk_36 = d[2];
     unk_35 = d[1];
     unk_34 = d[0];
@@ -210,7 +210,7 @@ extern "C" void func_02085784(u8 *self, u32 mode)
     s32 i;
     s32 z1 = 0;
     s32 z0 = 0;
-    func_0209cf88(&t);
+    Clock_GetDate(&t);
     if (self[0x36] == t.b[2] && self[0x35] == t.b[1] && self[0x34] == t.b[0]) {
         return;
     }
@@ -235,20 +235,20 @@ extern "C" void func_020856a4(u8 *self, u32 mode)
     Unk_020856a4_Rec t;
     s32 v;
     s32 i;
-    func_0209cf88(&t);
+    Clock_GetDate(&t);
     v = 0;
     switch (mode) {
     case 0:
-        v = func_0203f42c(0xe);
+        v = Event_GetDaysSinceStart(0xe);
         break;
     case 1:
-        v = func_0203f42c(0x11);
+        v = Event_GetDaysSinceStart(0x11);
         break;
     case 2:
-        v = func_0203f42c(0x10);
+        v = Event_GetDaysSinceStart(0x10);
         break;
     }
-    s32 r = func_0209cd00(&t, self + 0x34);
+    s32 r = Date_DaysBetween(&t, self + 0x34);
     if (t.b[2] == self[0x36] && v != -1 && r <= 7 && r >= 0 && t.b[0] - v <= self[0x34]) {
         return;
     }
@@ -354,7 +354,7 @@ extern "C" s32 func_020854e0(void *obj, void *grid)
             s32 y = sy + d[1];
             s32 hx = x >> 4;
             s32 hy = y >> 4;
-            void *cell = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), z1);
+            void *cell = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), z1);
             v = z2;
             if (cell != NULL && func_020855a8((u32 *)&v, (u16 *)cell)) {
                 if ((u32)v < 0x20) {
@@ -400,13 +400,13 @@ extern "C" s32 func_020853a0(void *self, void *grid)
     d = 0;
     lo = 0x5014;
     hi = 0x501a;
-    if (func_0204ea88(grid, &a, &b, &c, &d, &lo, &hi, 1, 0)) {
+    if (BlockMap_FindItemAllAttr(grid, &a, &b, &c, &d, &lo, &hi, 1, 0)) {
         mask = 0;
         sx = 0;
         sy = 0;
         cnt = 0;
         sel = 0;
-        func_0204edf8(&sx, &sy, a, b, c, d);
+        FieldUnit_FromBlockUnit(&sx, &sy, a, b, c, d);
         y = sy - 1;
         goto test1;
     loop1:
@@ -417,7 +417,7 @@ extern "C" s32 func_020853a0(void *self, void *grid)
             hx = x >> 4;
             hy = y >> 4;
             {
-                void *cell = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+                void *cell = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), 0);
                 if (cell != NULL) {
                     if (func_020855a8((u32 *)&sel, (u16 *)cell)) {
                         pos[0] = x;
@@ -451,7 +451,7 @@ extern "C" void func_02085290(void *self)
     s32 best, cnt, i;
     BOOL b = (data_020e416c == 0);
     if (b) {
-        grid = *(void **)data_021c47c4;
+        grid = *(void **)gSceneBlockMap;
         _ZN12Unk_0208581013func_0208586cEv(self);
         func_020030e8();
         _ZN12Unk_0208581013func_020858acEv(self);
@@ -580,9 +580,9 @@ extern "C" void func_020850e8(void *self)
                     s32 b[2];
                     a[0] = 0;
                     a[1] = 0;
-                    func_0209d498(a);
+                    Clock_GetDateTime(a);
                     MI_CpuCopy8(a, b, 8);
-                    if (func_0203f2e0(8, b, 0) == 0) {
+                    if (Event_GetState(8, b, 0) == 0) {
                         func_020851a4(self, 8);
                     }
                 }

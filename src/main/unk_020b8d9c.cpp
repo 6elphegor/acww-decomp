@@ -10,7 +10,7 @@ struct Unk_020b8ec0_Time;
 struct Unk_02095204;
 struct Unk_021efc08;
 struct Unk_021efa88;
-class Unk_020e5668;
+class SkyProc;
 struct Unk_020b96b8_Ent;
 struct Unk_020b96b8_Cfg;
 struct Unk_020b9964_Src;
@@ -23,7 +23,7 @@ struct Unk_020ba518_Time;
 struct Unk_020ba6f4_Color;
 struct Unk_020ba8cc_Obj;
 struct Unk_020ba8cc_State;
-struct Unk_020b9fe4;
+struct WeatherManager;
 struct Unk_020ba93c_Obj;
 struct Unk_020baa10_Time;
 struct Unk_020baa10_Buf;
@@ -63,7 +63,7 @@ struct Unk_020bd06c;
 struct Unk_020bd774_Entry;
 struct Unk_020bd1b0;
 struct Unk_020bd718;
-struct Unk_020bcf04;
+struct SkySprites;
 struct Unk_020d16e8;
 struct Unk_020bd868;
 struct Unk_020bd9a0_Row;
@@ -92,7 +92,7 @@ struct Unk_020bfe38_Ent;
 struct Unk_020bfec0_Ent;
 struct Unk_020bffc0_Mtx;
 class Unk_020bfe30;
-struct Unk_020c010c;
+struct WeatherRecord;
 struct Unk_020c010c_Ent;
 struct Unk_020c0538_Out;
 class SpNpcTalkRequest;
@@ -116,7 +116,7 @@ struct Unk_0213b938 : SndEnvChannel {
     virtual void vfunc_00();
     u8 unk_08[8];
 };
-class Unk_020e5668 : public GameProc {
+class SkyProc : public GameProc {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -221,7 +221,7 @@ struct Unk_020ba8cc_State {
     u8 pad_2c[8];
     s32 unk_34;
 };
-struct Unk_020b9fe4 {
+struct WeatherManager {
     s32 unk_0000;
     u8 pad_0004[0x1204];
     s32 unk_1208;
@@ -256,22 +256,22 @@ struct Unk_020b9fe4 {
     s32 unk_158c;
     u8 pad_1590[8];
 
-    Unk_020b9fe4();
-    ~Unk_020b9fe4();
-    void func_020b9fe4();
-    void func_020ba06c();
-    BOOL func_020ba10c(u8 **p1, u32 *p2, s32 mode, s32 idx);
-    BOOL func_020ba170(s32 idx, s32 unused);
-    s32 func_020ba1a4(s32 a, s32 b);
-    s32 func_020ba1b4(s32 v);
-    void func_020ba1dc();
-    BOOL func_020ba260(s32 v);
-    void func_020ba2a4(s32 v);
-    void func_020ba2e4(s32 a, s32 b);
-    s32 func_020ba334(s32 v);
-    void func_020ba3e4();
+    WeatherManager();
+    ~WeatherManager();
+    void streamCloudScreen();
+    void loadNextCloudGraphics();
+    BOOL loadCloudScreen(u8 **p1, u32 *p2, s32 mode, s32 idx);
+    BOOL loadCloudChars(s32 idx, s32 unused);
+    s32 getPatternWeather(s32 a, s32 b);
+    s32 getWeatherAtOffset(s32 v);
+    void updateHourly();
+    BOOL requestLevel(s32 v);
+    void startTransition(s32 v);
+    void setLevels(s32 a, s32 b);
+    s32 getPrecipKind(s32 v);
+    void init();
     void func_020ba49c();
-    void func_020ba670(s32 *a, s32 *b);
+    void getSkyBlend(s32 *a, s32 *b);
     void func_020ba794();
 };
 enum Unk_020ba518_E { Unk_020ba518_E0 = 0 };
@@ -557,7 +557,7 @@ struct SpriteAnim {
     u8 unk_00[4];
     ~SpriteAnim();
 };
-// 0x74-byte element of the 60-element array at the start of Unk_020bcf04
+// 0x74-byte element of the 60-element array at the start of SkySprites
 struct Unk_020bd058 {
     u8 unk_00[0x10];
     SpriteAnim unk_10;
@@ -681,7 +681,7 @@ struct Unk_020bd718 {
     void func_020bd7e4();
     BOOL func_020bd808(s32 v);
 };
-struct Unk_020bcf04 {
+struct SkySprites {
     Unk_020bd058 unk_0000[60];
     Unk_020bda7c unk_1b30[5];
     Unk_020bdcbc unk_1b6c;
@@ -717,8 +717,8 @@ struct Unk_020bcf04 {
     Unk_020bd1b0 unk_2fa8;
     Unk_020bd06c unk_2fcc;
 
-    Unk_020bcf04();
-    ~Unk_020bcf04();
+    SkySprites();
+    ~SkySprites();
 };
 // The original computes the destination address BEFORE loading *p. An enum-typed local is not forwarded by mwcc,
 // so holding the element base in one keeps the address computation where it is written.
@@ -988,7 +988,7 @@ public:
     void func_020bfe38();
     void func_020bfec0(BOOL flag);
 };
-struct Unk_020c010c {
+struct WeatherRecord {
     u8 unk_00;
     u8 unk_01;
     u8 unk_02;
@@ -1233,7 +1233,7 @@ extern const u32 data_020d11dc[20];
 extern const u32 data_020d122c[23];
 extern const u32 data_020d1288[44];
 extern const u32 data_020d1338[44];
-extern const u32 data_020d13e8[192];
+extern const u32 sWeatherHourTable[192];
 extern const u32 data_020d16e8[208];
 extern u32 data_020e4630[1];
 extern u32 data_020e4634[1];
@@ -1502,23 +1502,23 @@ extern u32 data_021ef678[2];
 extern u32 data_021ef680[2];
 extern u32 data_021ef688[3];
 extern u32 data_021ef694[3];
-extern u32 data_021ef6c4[7];
+extern u32 sSkyHBlankTask[7];
 extern u32 data_021ef908[196];
 extern Unk_020b08b4 data_021efc18;
-extern Unk_020b9fe4 data_021eff48;
-extern Unk_020bcf04 data_021f14e0;
+extern WeatherManager gWeatherManager;
+extern SkySprites gSkySprites;
 }
 }
 
 // ======== unk_020bfe30.cpp ========
 namespace n13 {
-struct Unk_020cbb18;
+struct CommManager;
 static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
     v->x = x;
     v->y = y;
     v->z = z;
 }
-struct Unk_020cbb18 {
+struct CommManager {
     u8 unk_00[0x68];
     s32 unk_68;
 };
@@ -1565,25 +1565,25 @@ extern "C" {
 void _ZN12Unk_020bd058D1Ev(void *p);
 }
 extern "C" {
-s32 func_0209cc08(void *p);
+s32 DateTime_GetWeatherPeriod(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(Unk_020cbb18 *p);
+s32 _ZN11CommManager8isOnlineEv(CommManager *p);
 }
 extern "C" {
 void MI_CpuCopy8(void *a, void *b, s32 n);
 }
 extern "C" {
-void func_0209d124(void *p, s32 n);
+void DateTime_SubHours(void *p, s32 n);
 }
 extern "C" {
-s32 func_0209d374(void *a, void *b);
+s32 DateTime_DiffMinutes(void *a, void *b);
 }
 extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-void func_0209d2c0(void *p, s32 n);
+void DateTime_AddDays(void *p, s32 n);
 }
 extern "C" {
 s32 func_020b50e8(void);
@@ -1598,13 +1598,13 @@ extern "C" {
 BOOL _ZN12Unk_02097ff413func_02098044Ej(s32 a, s32 b);
 }
 extern "C" {
-u16 *func_0203f2d8(void);
+u16 *Event_GetTodayList(void);
 }
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 extern "C" {
-void func_0209cf88(void *p);
+void Clock_GetDate(void *p);
 }
 extern "C" {
 void _ZN12Unk_020d8bc8D2Ev(void *p);
@@ -1730,7 +1730,7 @@ extern "C" {
 void func_020b78c4(void);
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_020729ccEj(Unk_020cbb18 *p, s32 a);
+BOOL _ZN11CommManager7isMyAidEj(CommManager *p, s32 a);
 }
 extern "C" {
 s32 _ZN12Unk_020872fc13func_0208733cEv(void);
@@ -1748,7 +1748,7 @@ extern "C" {
 void func_020b4bbc(s32 a, s32 b);
 }
 extern "C" {
-extern u8 data_021c3cc0;
+extern u8 gScreenTransition;
 }
 extern "C" {
 extern Unk_020bfe30_Vec data_020d1c8c;
@@ -1768,10 +1768,10 @@ extern s32 data_020d0e20[];
 extern "C" {
 extern s32 data_020e463c;
 }
-namespace L_021f43e0 { extern "C" { extern struct S { u8 p[0x2f00]; Unk_020bfec0_Ent v; } data_021f14e0; } }
-#define data_021f43e0 n13::L_021f43e0::data_021f14e0.v
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s16 v[1]; } data_021eff48; } }
-#define data_021f1448 n13::L_021f1448::data_021eff48.v
+namespace L_021f43e0 { extern "C" { extern struct S { u8 p[0x2f00]; Unk_020bfec0_Ent v; } gSkySprites; } }
+#define data_021f43e0 n13::L_021f43e0::gSkySprites.v
+namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s16 v[1]; } gWeatherManager; } }
+#define data_021f1448 n13::L_021f1448::gWeatherManager.v
 extern "C" {
 extern s16 data_02135f44[];
 }
@@ -1782,7 +1782,7 @@ extern "C" {
 extern s32 gCamera;
 }
 extern "C" {
-extern u8 data_021f4570;
+extern u8 sWeatherPrevDayRain;
 }
 extern "C" {
 extern s32 data_021f4574;
@@ -1791,10 +1791,10 @@ extern "C" {
 extern SpNpcMissing1 *sSpNpcMissing1Instance;
 }
 extern "C" {
-extern u8 data_020d1a2c[];
+extern u8 sWeatherPatternWeights[];
 }
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 extern "C" {
 extern u32 sSpNpcMissing1MsgKey;
@@ -1804,11 +1804,11 @@ static inline void Unk_020bfe38_Add(s32 *dst, s32 v) {
     *dst += v;
 }
 static inline BOOL Unk_020c06a0_IsMode2() {
-    return data_021c3cc0 == 2;
+    return gScreenTransition == 2;
 }
 
 extern "C" void func_020bffc0(s32 *out, Unk_020bfe30_Vec *in);
-extern "C" Unk_020e5668 *func_020c003c();
+extern "C" SkyProc *func_020c003c();
 extern "C" void *func_020c0078(void *p);
 
 extern "C" void *func_020c0078(void *p) {
@@ -1821,8 +1821,8 @@ extern "C" void *func_020c0078(void *p) {
 // ---------------------------------------------------------------------------------------------------------------------
 // Vtable classes of the library (autoload_2)
 
-extern "C" Unk_020e5668 *func_020c003c() {
-    return new Unk_020e5668();
+extern "C" SkyProc *func_020c003c() {
+    return new SkyProc();
 }
 
 extern "C" void func_020bffc0(s32 *out, Unk_020bfe30_Vec *in) {
@@ -2021,10 +2021,10 @@ extern "C" {
 void func_020e759c(void *, s32, s32);
 }
 extern "C" {
-void func_0209cf18(void *);
+void Clock_GetMinuteHour(void *);
 }
 extern "C" {
-u32 func_0209cf00(void);
+u32 Clock_GetSecond(void);
 }
 extern "C" {
 s32 _s32_div_f(s32, s32);
@@ -2059,24 +2059,24 @@ BOOL func_020bfc48(Unk_020bf4b4 *);
 extern "C" {
 void *func_02095204(s32);
 }
-namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; u8 v[1]; } data_021f14e0; } }
-#define data_021f3010 n12::L_021f3010::data_021f14e0.v
-namespace L_021f4488 { extern "C" { extern struct S { u8 p[0x2fa8]; u8 v[1]; } data_021f14e0; } }
-#define data_021f4488 n12::L_021f4488::data_021f14e0.v
+namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; u8 v[1]; } gSkySprites; } }
+#define data_021f3010 n12::L_021f3010::gSkySprites.v
+namespace L_021f4488 { extern "C" { extern struct S { u8 p[0x2fa8]; u8 v[1]; } gSkySprites; } }
+#define data_021f4488 n12::L_021f4488::gSkySprites.v
 extern "C" {
 extern u32 gFrameCounter;
 }
-namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } data_021f14e0; } }
-#define data_021f4398 n12::L_021f4398::data_021f14e0.v
+namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } gSkySprites; } }
+#define data_021f4398 n12::L_021f4398::gSkySprites.v
 extern "C" {
 extern u16 data_021ef694[];
 }
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_020bf720_Data v; } data_021eff48; } }
-#define data_021f1448 n12::L_021f1448::data_021eff48.v
-namespace L_021f4254 { extern "C" { extern struct S { u8 p[0x2d74]; Unk_020bf77c_Tbl v[1]; } data_021f14e0; } }
-#define data_021f4254 n12::L_021f4254::data_021f14e0.v
-namespace L_021f4420 { extern "C" { extern struct S { u8 p[0x2f40]; Unk_020bfa08_Data v; } data_021f14e0; } }
-#define data_021f4420 n12::L_021f4420::data_021f14e0.v
+namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_020bf720_Data v; } gWeatherManager; } }
+#define data_021f1448 n12::L_021f1448::gWeatherManager.v
+namespace L_021f4254 { extern "C" { extern struct S { u8 p[0x2d74]; Unk_020bf77c_Tbl v[1]; } gSkySprites; } }
+#define data_021f4254 n12::L_021f4254::gSkySprites.v
+namespace L_021f4420 { extern "C" { extern struct S { u8 p[0x2f40]; Unk_020bfa08_Data v; } gSkySprites; } }
+#define data_021f4420 n12::L_021f4420::gSkySprites.v
 extern "C" {
 extern s16 data_02135f44[];
 }
@@ -2099,7 +2099,7 @@ extern "C" {
 extern s32 data_020e4638;
 }
 extern "C" {
-extern Unk_020bf4b4 data_021f14e0[];
+extern Unk_020bf4b4 gSkySprites[];
 }
 extern "C" {
 void func_020bf68c(void);
@@ -2203,7 +2203,7 @@ extern "C" void func_020bfcc8(void *a) { func_020be094(a); }
 
 extern "C" BOOL func_020bfc48(Unk_020bf4b4 *this_) {
     Unk_020bfc48_Pad pad;
-    Unk_020bf4b4 *p = &data_021f14e0[_ZN12Unk_020bc58c13func_020bcbd8Ei(data_021f14e0, 3)];
+    Unk_020bf4b4 *p = &gSkySprites[_ZN12Unk_020bc58c13func_020bcbd8Ei(gSkySprites, 3)];
     BOOL result = FALSE;
     if (p != NULL && p->unk_04 == 2) {
         Unk_020bf4b4_Vec *pos = (Unk_020bf4b4_Vec *)&p->unk_34;
@@ -2332,10 +2332,10 @@ extern "C" BOOL func_020bf948(void *out_) {
     u8 d[4];
     u32 b, a, base, off, x;
     s32 r, y;
-    func_0209cf18(d);
+    Clock_GetMinuteHour(d);
     b = d[1];
     a = d[0];
-    base = func_0209cf00();
+    base = Clock_GetSecond();
     off = 0;
     if (b >= 0x13) {
         off = base + (a * 0x3c + (b - 0x13) * 0xe10);
@@ -2366,7 +2366,7 @@ extern "C" void func_020bf77c(Unk_020bf4b4 *this_) {
     s32 inv, v0, v1, v2, v3, v4, v5, w0, w1, t;
     u32 i;
     s32 r7, r5;
-    func_0209cf18(&rec);
+    Clock_GetMinuteHour(&rec);
     u32 idx = rec.unk_01;
     u32 mon = rec.unk_00;
     if (idx >= 0x13) idx -= 0x13; else idx += 5;
@@ -2600,15 +2600,15 @@ void _ZN8SaveData7setFlagEj(void *p, s32 a);
 extern "C" {
 s32 func_020beef8(s32 a, s32 flag);
 }
-namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; Unk_021f4398 v; } data_021f14e0; } }
-#define data_021f4398 n11::L_021f4398::data_021f14e0.v
-namespace L_021f4488 { extern "C" { extern struct S { u8 p[0x2fa8]; u8 v[1]; } data_021f14e0; } }
-#define data_021f4488 n11::L_021f4488::data_021f14e0.v
+namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; Unk_021f4398 v; } gSkySprites; } }
+#define data_021f4398 n11::L_021f4398::gSkySprites.v
+namespace L_021f4488 { extern "C" { extern struct S { u8 p[0x2fa8]; u8 v[1]; } gSkySprites; } }
+#define data_021f4488 n11::L_021f4488::gSkySprites.v
 extern "C" {
 extern u8 gSaveData[];
 }
 extern "C" {
-extern u8 data_021f14e0[];
+extern u8 gSkySprites[];
 }
 extern "C" {
 extern Unk_020bf1d8_Vec gCameraLookAt;
@@ -2643,8 +2643,8 @@ extern s32 data_020d1338[];
 extern "C" {
 extern s16 data_02135f44[];
 }
-namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; Unk_021f3010 v[1]; } data_021f14e0; } }
-#define data_021f3010 n11::L_021f3010::data_021f14e0.v
+namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; Unk_021f3010 v[1]; } gSkySprites; } }
+#define data_021f3010 n11::L_021f3010::gSkySprites.v
 extern "C" {
 Unk_020be018 *_ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(void *tab, s32 a, s32 b, void *pos, s32 c);
 }
@@ -2676,7 +2676,7 @@ void Unk_020be018::func_020bf400()
             pos.x = unk_34.x + func_01ffcb0c(q, data_02135f44[idx + 1]);
             pos.y = y;
             pos.z = 0;
-            Unk_020be018 *o = _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(data_021f14e0, 2, 0x3c, &pos, r4 & 0xf);
+            Unk_020be018 *o = _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(gSkySprites, 2, 0x3c, &pos, r4 & 0xf);
             if (o) {
                 o->unk_4c = scale;
                 o->unk_50 = scale;
@@ -2780,7 +2780,7 @@ namespace n11 {
 extern "C" void func_020bf18c(Unk_020be018_Vec *pos, s32 scale, s32 speed)
 {
     Unk_020bf18c_Pad tmp;
-    Unk_020be018 *o = _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(data_021f14e0, 2, 0x3c, pos, 0);
+    Unk_020be018 *o = _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(gSkySprites, 2, 0x3c, pos, 0);
     if (o) {
         o->unk_4c = scale;
         o->unk_50 = scale;
@@ -3131,7 +3131,7 @@ extern "C" {
 s32 _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(void *a, u32 b, u32 c, void *d, u32 e);
 }
 extern "C" {
-void func_02064928(u32 a);
+void SceneLights_StartFlash(u32 a);
 }
 extern "C" {
 extern s8 data_020d0e00[];
@@ -3145,13 +3145,13 @@ extern s32 data_020c8cb8;
 extern "C" {
 extern s32 gCameraLookAt[];
 }
-namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; u8 v[1]; } data_021f14e0; } }
-#define data_021f44ac n10::L_021f44ac::data_021f14e0.v
+namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; u8 v[1]; } gSkySprites; } }
+#define data_021f44ac n10::L_021f44ac::gSkySprites.v
 extern "C" {
 extern u8 gVec3Zero[];
 }
 extern "C" {
-extern u8 data_021f14e0[];
+extern u8 gSkySprites[];
 }
 static inline void Unk_020be204_Set(Unk_020be204_Vec *v, s32 x, s32 y, s32 z) {
     v->x = x;
@@ -3184,9 +3184,9 @@ void Unk_020be204::func_020beac8(u32 a) {
     func_020bdd24(b ? 1 : m + 2, r2);
     if (b) {
         unk_5c = 4;
-        func_02064928(m + 5);
+        SceneLights_StartFlash(m + 5);
     } else {
-        func_02064928(m + 1);
+        SceneLights_StartFlash(m + 1);
     }
 }
 namespace n10 {
@@ -3318,8 +3318,8 @@ void Unk_020be204::func_020be820() {
         }
         Unk_020be204_Vec v;
         Unk_020be204_Set(&v, unk_6c, unk_34.z - 0x2000, 0);
-        _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(data_021f14e0, 9, 0x3c, &v, a);
-        _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(data_021f14e0, 9, 0x3c, &v, m);
+        _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(gSkySprites, 9, 0x3c, &v, a);
+        _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(gSkySprites, 9, 0x3c, &v, m);
     }
 }
 namespace n10 {
@@ -3367,7 +3367,7 @@ namespace n10 {
 }
 void Unk_020be204::func_020be6f0(u32 a) {
     using namespace n10;
-    Unk_020bca5c_Rec *rec = _ZN12Unk_020bc58c13func_020bca5cEi(data_021f14e0, a & 0xf);
+    Unk_020bca5c_Rec *rec = _ZN12Unk_020bc58c13func_020bca5cEi(gSkySprites, a & 0xf);
     s32 id;
     unk_0c = 0x2d;
     unk_58 = 2;
@@ -3627,7 +3627,7 @@ void *data_020e5258[12] = {(void *)data_020e49a4, (void *)0x1, 0, (void *)data_0
     (void *)data_020e486c, (void *)0x1, 0, (void *)data_020e477c, (void *)0x1, 0};
 const u32 data_020d0e90[4] = {0x21, 0x24, 0x27, 0x2a};
 u32 data_020e4638[1] = {0x1};
-const u32 data_020d13e8[192] = {0x0, 0x101, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1010000, 0x1010101, 0x1, 0x0, 0x0,
+const u32 sWeatherHourTable[192] = {0x0, 0x101, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1010000, 0x1010101, 0x1, 0x0, 0x0,
     0x0, 0x1010100, 0x10101, 0x0, 0x1010101, 0x1, 0x1010100, 0x1010101, 0x0, 0x0, 0x1000000, 0x1010101,
     0x1010101, 0x1010000, 0x1, 0x0, 0x1010100, 0x1010101, 0x2010101, 0x1020202, 0x1010101, 0x1010101, 0x1010101,
     0x1020202, 0x1010101, 0x1010101, 0x1010202, 0x1010101, 0x1010101, 0x2020202, 0x2020101, 0x2010102, 0x2020202,
@@ -3673,7 +3673,7 @@ u32 data_020e52b8[12] = {0x1700f7, 0x30b7, 0x11f0000c, 0x3095, 0x100f000c, 0x30d
     0x101400e8, 0x30d6, 0x11ea00e9, 0xffff30b6};
 void *data_020e4664[2] = {(void *)_ZN12Unk_020bd1b013func_020bd32cEv, 0};
 void *data_020e4904[2] = {(void *)_ZN12Unk_020be20413func_020be4d0Ev, 0};
-Unk_020b9fe4 data_021eff48;
+WeatherManager gWeatherManager;
 u32 data_020e5488[18] = {0x130002, 0x30f7, 0x31f500e5, 0x30f6, 0xc0007, 0x30f6, 0x200600e4, 0x30f6, 0x1e600fa,
     0x30b6, 0x101300f5, 0x30b6, 0x201300ea, 0x3097, 0x31eb00eb, 0x30d5, 0x11f20008, 0xffff3097};
 u32 data_020e4a5c[2] = {0x400080f0, 0xffff0094};
@@ -3717,13 +3717,13 @@ extern "C" {
 extern Unk_020d16e8 data_020d16e8[];
 }
 extern "C" {
-extern s32 data_021eff48;
+extern s32 gWeatherManager;
 }
 extern "C" {
 extern u16 data_020d0dfc;
 }
-namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } data_021f14e0; } }
-#define data_021f4398 n09::L_021f4398::data_021f14e0.v
+namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } gSkySprites; } }
+#define data_021f4398 n09::L_021f4398::gSkySprites.v
 extern "C" {
 void MI_CpuCopy8(void*, void*, u32);
 }
@@ -3786,8 +3786,8 @@ void FS_InitFile(void*);
 extern "C" {
 extern const char* data_020d0e14[];
 }
-namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; u8 v[1]; } data_021f14e0; } }
-#define data_021f44ac n09::L_021f44ac::data_021f14e0.v
+namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; u8 v[1]; } gSkySprites; } }
+#define data_021f44ac n09::L_021f44ac::gSkySprites.v
 extern "C" {
 void _ZN12Unk_020bd06c13func_020bd0d4EiiP17Unk_020bd0a4_Vec3(void*, s32, s32, void*);
 }
@@ -3815,10 +3815,10 @@ s32 FX_Inv(s32);
 extern "C" {
 s32 _s32_div_f(s32, s32);
 }
-namespace L_021f23d4 { extern "C" { extern struct S { u8 p[0xef4]; Unk_021f23d4 v[1]; } data_021f14e0; } }
-#define data_021f23d4 n09::L_021f23d4::data_021f14e0.v
-namespace L_021f2944 { extern "C" { extern struct S { u8 p[0x1464]; Unk_021f23d4 v[1]; } data_021f14e0; } }
-#define data_021f2944 n09::L_021f2944::data_021f14e0.v
+namespace L_021f23d4 { extern "C" { extern struct S { u8 p[0xef4]; Unk_021f23d4 v[1]; } gSkySprites; } }
+#define data_021f23d4 n09::L_021f23d4::gSkySprites.v
+namespace L_021f2944 { extern "C" { extern struct S { u8 p[0x1464]; Unk_021f23d4 v[1]; } gSkySprites; } }
+#define data_021f2944 n09::L_021f2944::gSkySprites.v
 extern "C" {
 extern s32 data_020c8cb8;
 }
@@ -3844,8 +3844,8 @@ extern "C" {
 void func_020bdef0(Unk_020bdd94*, Unk_020bdd94_Out*, s32);
 }
 struct Unk_021f3010 { u8 unk_00[8]; s32 unk_08; };
-namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; Unk_021f3010 v[1]; } data_021f14e0; } }
-#define data_021f3010 n09::L_021f3010::data_021f14e0.v
+namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; Unk_021f3010 v[1]; } gSkySprites; } }
+#define data_021f3010 n09::L_021f3010::gSkySprites.v
 extern "C" {
 extern Unk_021f3010 data_020e6544[];
 }
@@ -4239,7 +4239,7 @@ extern "C" void func_020bd9a0(Unk_020bd868* p, u8* base) {
     u32 dst;
     u32 o, k;
     BOOL flag;
-    if (data_021eff48 == 0) flag = TRUE; else flag = FALSE;
+    if (gWeatherManager == 0) flag = TRUE; else flag = FALSE;
     func_020bda8c(base);
     Unk_020d16e8* ent = &data_020d16e8[p->unk_00];
     row = &data_020d11dc[ent->unk_08];
@@ -4330,7 +4330,7 @@ extern "C" void func_020bd868(Unk_020bd868* p, u8* base, u32 idx) {
     res = _ZN12Unk_020bd71813func_020bd808Ei(p, row->unk_0d);
     DC_FlushRange(p->unk_28, 0x20);
     GX_LoadOBJPltt(p->unk_28, b, 0x20);
-    if (data_021eff48 == 0) {
+    if (gWeatherManager == 0) {
         GXS_LoadOBJPltt(p->unk_28, b, 0x20);
     }
     if (res == 0) {
@@ -4350,8 +4350,8 @@ namespace n08 {
 extern "C" {
 void* __cxa_vec_ctor(void* array, u32 count, u32 size, void* (*ctor)(void*), void* (*dtor)(void*, s32));
 }
-namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; Unk_020bd06c v; } data_021f14e0; } }
-#define data_021f44ac n08::L_021f44ac::data_021f14e0.v
+namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; Unk_020bd06c v; } gSkySprites; } }
+#define data_021f44ac n08::L_021f44ac::gSkySprites.v
 extern "C" {
 void func_020e7530(s16* p, s32 target, s32 step);
 }
@@ -4377,7 +4377,7 @@ extern "C" {
 void _ZN12Unk_02086c0413func_02086c04Eii(s32 a, void* p, u8 b);
 }
 extern "C" {
-void func_ov003_02212140();
+void PlayerActor_LocalEndWatch();
 }
 extern "C" {
 void Camera_RestorePrevMode();
@@ -4410,7 +4410,7 @@ extern "C" {
 s32 func_ov003_02219654(s32 a, s32 b);
 }
 extern "C" {
-void func_ov003_02212190(s32 a, s32 b);
+void PlayerActor_SetWatchMode(s32 a, s32 b);
 }
 extern "C" {
 void* PlayerData_GetCurrent();
@@ -4604,7 +4604,7 @@ namespace n08 {
 }
 void Unk_020bd1b0::func_020bd69c(s32 a) {
     using namespace n08;
-    func_ov003_02212190(0, a);
+    PlayerActor_SetWatchMode(0, a);
 }
 namespace n08 {
 
@@ -4613,7 +4613,7 @@ void Unk_020bd1b0::func_020bd67c(u8 a) {
     using namespace n08;
     unk_21 = a;
     unk_00 = 2;
-    func_ov003_02212190(1, unk_04);
+    PlayerActor_SetWatchMode(1, unk_04);
     func_020bd4fc();
 }
 namespace n08 {
@@ -4633,7 +4633,7 @@ namespace n08 {
 void Unk_020bd1b0::func_020bd64c() {
     using namespace n08;
     unk_00 = 4;
-    func_ov003_02212190(1, unk_04);
+    PlayerActor_SetWatchMode(1, unk_04);
     func_020bd4fc();
 }
 namespace n08 {
@@ -4650,7 +4650,7 @@ namespace n08 {
 void Unk_020bd1b0::func_020bd624() {
     using namespace n08;
     unk_00 = 7;
-    func_ov003_02212190(1, unk_04);
+    PlayerActor_SetWatchMode(1, unk_04);
     func_020bd4fc();
 }
 namespace n08 {
@@ -4780,7 +4780,7 @@ void Unk_020bd1b0::func_020bd408() {
         unk_20 = 0;
     }
     if (unk_1e != 0) {
-        func_ov003_02212140();
+        PlayerActor_LocalEndWatch();
         func_020bd25c();
     }
 }
@@ -4815,7 +4815,7 @@ void Unk_020bd1b0::func_020bd334() {
     func_020bd1b0(0x190, 0x190);
     unk_08--;
     if (unk_08 <= 0) {
-        func_ov003_02212140();
+        PlayerActor_LocalEndWatch();
         Camera_RestorePrevMode();
         for (s32 i = 0; i < 4; i++) {
             void* p = PlayerData_GetResident(data_021d735c, i);
@@ -4865,7 +4865,7 @@ void Unk_020bd1b0::func_020bd288() {
             func_020850e0();
             _ZN12Unk_02086c0413func_02086c04Eii(func_02085174(), p, unk_18);
         }
-        func_ov003_02212140();
+        PlayerActor_LocalEndWatch();
         Camera_RestorePrevMode();
         func_020bd25c();
     }
@@ -5001,7 +5001,7 @@ Unk_020bd054::~Unk_020bd054() {
 namespace n08 {
 
 }
-Unk_020bcf04::Unk_020bcf04() {
+SkySprites::SkySprites() {
     using namespace n08;
     unk_2f00 = 0;
     unk_2f04 = 0;
@@ -5037,8 +5037,8 @@ namespace n08 {
 
 // ======== unk_020bc58c.cpp ========
 namespace n07 {
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s32 v[1]; } data_021eff48; } }
-#define data_021f1448 n07::L_021f1448::data_021eff48.v
+namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s32 v[1]; } gWeatherManager; } }
+#define data_021f1448 n07::L_021f1448::gWeatherManager.v
 extern "C" {
 extern s32 data_020d11a8[];
 }
@@ -5060,7 +5060,7 @@ extern "C" {
 extern u8 data_020e4634[];
 }
 extern "C" {
-void func_02064928(s32 a);
+void SceneLights_StartFlash(s32 a);
 }
 extern "C" {
 s32 func_02063b8c(s32 a);
@@ -5099,13 +5099,13 @@ extern "C" {
 void _ZN12Unk_020bd1b013func_020bd69cEi(void *a, s32 b);
 }
 extern "C" {
-void func_0209cf88(void *a);
+void Clock_GetDate(void *a);
 }
 extern "C" {
-void func_0209cf18(void *a);
+void Clock_GetMinuteHour(void *a);
 }
 extern "C" {
-s32 func_0209cd00(void *a, void *b);
+s32 Date_DaysBetween(void *a, void *b);
 }
 extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
@@ -5114,7 +5114,7 @@ extern "C" {
 s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
-u32 func_0209cf00();
+u32 Clock_GetSecond();
 }
 extern "C" {
 void *PlayerData_GetResident(void *p, u32 i);
@@ -5153,16 +5153,16 @@ extern "C" {
 void _ZN8SaveData9clearFlagEj(void *p, u32 n);
 }
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
 extern "C" {
-s32 func_0203f52c(void *a, void *b, s32 c);
+s32 EventSchedule_CollectDay(void *a, void *b, s32 c);
 }
 extern "C" {
-BOOL func_0203f2e0(u32 a, void *b, s32 c);
+BOOL Event_GetState(u32 a, void *b, s32 c);
 }
 
 extern "C" s32 func_020bc8a0();
@@ -5373,14 +5373,14 @@ void Unk_020bc58c::func_020bcb04() {
     unk_2f28 = 0;
     a[0] = 0;
     a[1] = 0;
-    func_0209d498(a);
+    Clock_GetDateTime(a);
     MI_CpuCopy8(a, b, 8);
-    end = arr + func_0203f52c(arr, b, 0);
+    end = arr + EventSchedule_CollectDay(arr, b, 0);
     for (p = arr; p < end; p++) {
         u32 id = p->id;
         BOOL ok;
         MI_CpuCopy8(a, c, 8);
-        if (func_0203f2e0(id, c, 0)) ok = TRUE; else ok = FALSE;
+        if (Event_GetState(id, c, 0)) ok = TRUE; else ok = FALSE;
         if (ok) {
             if (id == 0x44) {
                 unk_2f26 = 1;
@@ -5456,8 +5456,8 @@ namespace n07 {
 }
 void Unk_020bc58c::func_020bc960() {
     using namespace n07;
-    func_0209cf18(&unk_2f18);
-    unk_2f1c = func_0209cf00();
+    Clock_GetMinuteHour(&unk_2f18);
+    unk_2f1c = Clock_GetSecond();
     unk_2f1a = unk_2f18;
     unk_2f20 = unk_2f1c;
 }
@@ -5468,8 +5468,8 @@ void Unk_020bc58c::func_020bc928() {
     using namespace n07;
     unk_2f1a = unk_2f18;
     unk_2f20 = unk_2f1c;
-    func_0209cf18(&unk_2f18);
-    unk_2f1c = func_0209cf00();
+    Clock_GetMinuteHour(&unk_2f18);
+    unk_2f1c = Clock_GetSecond();
 }
 namespace n07 {
 
@@ -5479,9 +5479,9 @@ extern "C" s32 func_020bc8a0() {
     buf[3] = 1;
     buf[4] = 0;
     buf[5] = 0;
-    func_0209cf88(buf + 6);
-    func_0209cf18(buf);
-    s32 t = func_0209cd00(buf + 6, buf + 2);
+    Clock_GetDate(buf + 6);
+    Clock_GetMinuteHour(buf);
+    s32 t = Date_DaysBetween(buf + 6, buf + 2);
     if (buf[1] < 12) t--;
     if (t < 0) t = 0;
     t = t * 100 + 0x974;
@@ -5621,7 +5621,7 @@ void Unk_020bc58c::func_020bc5cc() {
         if (func_02063b8c(8) == 0) {
             func_020bc754(8, 0x3b, NULL, 0);
         }
-        func_02064928(0);
+        SceneLights_StartFlash(0);
         unk_2f10 = func_02063b8c(200) + 10;
     }
 }
@@ -5633,7 +5633,7 @@ void Unk_020bc58c::func_020bc58c() {
     if (unk_2f10 <= 0) unk_2f10 = 0x32;
     unk_2f10--;
     if (unk_2f10 <= 0) {
-        func_02064928(0);
+        SceneLights_StartFlash(0);
         unk_2f10 = func_02063b8c(200) + 10;
     }
 }
@@ -5647,10 +5647,10 @@ namespace n07 {
 
 // ======== unk_020bbc28.cpp ========
 namespace n06 {
-struct Unk_020cbb18;
+struct CommManager;
 struct Unk_021ed2b0;
 struct Unk_021f1448;
-struct Unk_020cbb18 {
+struct CommManager {
     char pad_00[0x64];
     s32 unk_64;
 };
@@ -5665,7 +5665,7 @@ struct Unk_021ed2b0 {
 };
 typedef void (Unk_020bbc28::*Unk_020bbeb8_Fn)();
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 extern "C" {
 BOOL NpcRegistry_FindSpNpc(s32);
@@ -5674,7 +5674,7 @@ extern "C" {
 BOOL _ZN12Unk_020d77a413func_0201b84cEv();
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e88Ei(Unk_020cbb18 *, s32);
+BOOL _ZN11CommManager12isSlotActiveEi(CommManager *, s32);
 }
 extern "C" {
 s32 func_020b8fe8();
@@ -5706,19 +5706,19 @@ extern Unk_020d0f40 data_020d0f40[];
 extern "C" {
 extern Unk_020d0f40 data_020d0f60[];
 }
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_021f1448 v; } data_021eff48; } }
-#define data_021f1448 n06::L_021f1448::data_021eff48.v
+namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_021f1448 v; } gWeatherManager; } }
+#define data_021f1448 n06::L_021f1448::gWeatherManager.v
 extern "C" {
 extern Unk_021ed2b0 data_021ed2b0;
 }
 extern "C" {
-void func_0209d498(void *);
+void Clock_GetDateTime(void *);
 }
 extern "C" {
 void MI_CpuCopy8(void *, void *, u32);
 }
 extern "C" {
-s32 func_0203f2e0(s32, void *, s32);
+s32 Event_GetState(s32, void *, s32);
 }
 extern "C" {
 s32 func_02063b8c(s32);
@@ -5730,7 +5730,7 @@ extern "C" {
 BOOL func_020b5164();
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(Unk_020cbb18 *);
+BOOL _ZN11CommManager8isOnlineEv(CommManager *);
 }
 extern "C" {
 s32 func_020b50e8();
@@ -6055,7 +6055,7 @@ void *data_020e4794[2] = {(void *)_ZN12Unk_020bb25c13func_020bb458Ev, 0};
 void *data_020e51e4[9] = {(void *)data_020e4b94, (void *)0x2, 0, (void *)data_020e4d14, (void *)0x1, 0,
     (void *)data_020e4d24, (void *)0x1, 0};
 char data_020e50a8[31] = "/sky/d_2d_b_cld_c_a_bg_nsc.bin";
-Unk_020bcf04 data_021f14e0;
+SkySprites gSkySprites;
 void *data_020e4974[2] = {(void *)_ZN12Unk_020be01813func_020bf1d8Ev, 0};
 void *data_020e4994[2] = {(void *)func_020bb190, 0};
 u32 data_020e499c[2] = {0x91f000f0, 0xffff2118};
@@ -6134,7 +6134,7 @@ u32 data_020e4884[2] = {0x81f000f0, 0xffff2098};
 void *data_020e47bc[2] = {(void *)_ZN12Unk_020bd1b013func_020bd4bcEv, 0};
 void *data_020e4a44[2] = {(void *)_ZN12Unk_020bb25c13func_020bb25cEv, 0};
 void *data_020e46c4[2] = {(void *)_ZN12Unk_020bd1b013func_020bd408Ev, 0};
-u32 data_021ef6c4[7];
+u32 sSkyHBlankTask[7];
 void *data_020e468c[2] = {(void *)_ZN12Unk_020be20413func_020be7c0Ev, 0};
 void *data_020e473c[2] = {(void *)_ZN12Unk_020be20413func_020be58cEj, 0};
 u32 data_020e4c14[4] = {0x41fc80e0, 0x9c, 0x41fc8000, 0xffff011c};
@@ -6317,9 +6317,9 @@ void Unk_020bbc28::func_020bbeb8() {
     s.a = 0;
     s.b = 0;
     s32 kind = func_02040c7c();
-    func_0209d498(&s);
+    Clock_GetDateTime(&s);
     MI_CpuCopy8(&s, &t1, 8);
-    if (func_0203f2e0(0x13, &t1, 1)) {
+    if (Event_GetState(0x13, &t1, 1)) {
         u8 a = unk_2f19;
         u8 b = unk_2f18;
         s32 c = unk_2f1c;
@@ -6332,12 +6332,12 @@ void Unk_020bbc28::func_020bbeb8() {
     } else if (kind == 0xf) {
         if (func_020b5164()) {
             MI_CpuCopy8(&s, &t2, 8);
-            if (func_0203f2e0(0xf, &t2, r4)) {
+            if (Event_GetState(0xf, &t2, r4)) {
                 r4 = TRUE;
             }
-        } else if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+        } else if (_ZN11CommManager8isOnlineEv(gCommManager)) {
             MI_CpuCopy8(&s, &t3, 8);
-            if (func_0203f2e0(0xf, &t3, r4)) {
+            if (Event_GetState(0xf, &t3, r4)) {
                 r4 = TRUE;
             }
         } else {
@@ -6346,7 +6346,7 @@ void Unk_020bbc28::func_020bbeb8() {
     } else if (func_020b50e8() == 0x2c) {
         BOOL x;
         MI_CpuCopy8(&s, &t4, 8);
-        if (func_0203f2e0(0xf, &t4, 1) == 2) {
+        if (Event_GetState(0xf, &t4, 1) == 2) {
             x = TRUE;
         } else {
             x = r4;
@@ -6396,7 +6396,7 @@ namespace n06 {
 }
 void Unk_020bbc28::func_020bbdd4() {
     using namespace n06;
-    if (!_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64)) {
+    if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64)) {
         u8 v = unk_2f19;
         if (v >= 0xa && v < 0x10) {
             if (unk_2f1a != unk_2f18) {
@@ -6437,9 +6437,9 @@ void Unk_020bbc28::func_020bbcc8() {
             s.a = 0;
             s.b = 0;
             BOOL b;
-            func_0209d498(&s);
+            Clock_GetDateTime(&s);
             MI_CpuCopy8(&s, &t, 8);
-            if (func_0203f2e0(0x44, &t, 0) == 0) {
+            if (Event_GetState(0x44, &t, 0) == 0) {
                 b = TRUE;
             } else {
                 b = FALSE;
@@ -6450,7 +6450,7 @@ void Unk_020bbc28::func_020bbcc8() {
         }
     }
     if (unk_2f26 != 0) {
-        if (!_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64)) {
+        if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64)) {
             u8 v = unk_2f18;
             u32 m = (u32)v % 10;
             if (unk_2f1a != v) {
@@ -6489,7 +6489,7 @@ void Unk_020bbc28::func_020bbc28() {
         }
     }
     if (unk_2f27 != 0) {
-        if (!_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64)) {
+        if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64)) {
             s32 r = func_020b8fe8();
             if (r != 1 && r != 2) {
                 if (unk_2f19 != unk_2f1b) {
@@ -6518,16 +6518,16 @@ extern "C" {
 u32 func_02063b8c(u32 n);
 }
 extern "C" {
-void func_02064928(s32 a);
+void SceneLights_StartFlash(s32 a);
 }
 extern "C" {
 BOOL func_020b8fe8(void);
 }
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 extern "C" {
-u32 func_0209d3d0(void *a, void *b, s32 n);
+u32 DateTime_Compare(void *a, void *b, s32 n);
 }
 extern "C" {
 void MI_CpuCopy8(void *a, void *b, s32 n);
@@ -6631,15 +6631,15 @@ void Unk_020bb25c::func_020bb9b8() {
         x[3] = 0;
         x[4] = 0;
         x[5] = 0;
-        func_0209d498(&x[4]);
+        Clock_GetDateTime(&x[4]);
         MI_CpuCopy8(&x[4], &x[0], 8);
         MI_CpuCopy8(&x[4], &x[2], 8);
         ((u8 *)x)[4] = 3;
         ((u8 *)x)[3] = 0x10;
         ((u8 *)x)[12] = 9;
         ((u8 *)x)[11] = 0xf;
-        u32 r5 = func_0209d3d0(&x[0], &x[4], 0x18);
-        u32 r0 = func_0209d3d0(&x[4], &x[2], 0x18);
+        u32 r5 = DateTime_Compare(&x[0], &x[4], 0x18);
+        u32 r0 = DateTime_Compare(&x[4], &x[2], 0x18);
         BOOL b = FALSE;
         if (r5 == (u32)-1 || r5 == 0) {
             if (r0 == (u32)-1 || r0 == 0) {
@@ -6648,8 +6648,8 @@ void Unk_020bb25c::func_020bb9b8() {
         }
         ((u8 *)x)[2] = 6;
         ((u8 *)x)[10] = 9;
-        r5 = func_0209d3d0(&x[0], &x[4], 4);
-        r0 = func_0209d3d0(&x[4], &x[2], 4);
+        r5 = DateTime_Compare(&x[0], &x[4], 4);
+        r0 = DateTime_Compare(&x[4], &x[2], 4);
         BOOL c = FALSE;
         if (r5 == (u32)-1 || r5 == 0) {
             if (r0 == (u32)-1) {
@@ -6720,9 +6720,9 @@ void Unk_020bb25c::func_020bb8a4(s32 idx, s32 a, s32 b) {
     if (data_021ef670 != 0) {
         Unk_020bb8a4_E fa = (Unk_020bb8a4_E)(a << 31); Unk_020bb8a4_E lo = (Unk_020bb8a4_E)((data_020d0e90[idx] - 0x1d) & 0xf); Unk_020bb8a4_E i8 = (Unk_020bb8a4_E)((idx & 3) << 8); Unk_020bb8a4_E fb = (Unk_020bb8a4_E)(b << 28); func_020bc754(9, 0x3c, 0, fb | (i8 | (lo | fa)));
     } else if (a != 0) {
-        func_02064928(idx + 5);
+        SceneLights_StartFlash(idx + 5);
     } else {
-        func_02064928(idx + 1);
+        SceneLights_StartFlash(idx + 1);
     }
 }
 namespace n05 {
@@ -7068,8 +7068,8 @@ struct Unk_021eff48;
 struct Unk_021f1448;
 struct Unk_021f1448 { u8 pad0[0x1c]; s32 f1c; u8 pad1[4]; s32 f24; s32 f28; u8 pad2[0x08]; s32 f34; };
 struct Unk_021eff48 { s32 f0; s32 f4; };
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_021f1448 v; } data_021eff48; } }
-#define data_021f1448 n04::L_021f1448::data_021eff48.v
+namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_021f1448 v; } gWeatherManager; } }
+#define data_021f1448 n04::L_021f1448::gWeatherManager.v
 extern "C" {
 extern s32 data_020d0e70[];
 }
@@ -7081,17 +7081,17 @@ extern u16 data_021ef688[];
 extern "C" {
 extern s32 data_021ef670;
 }
-namespace L_021f145c { extern "C" { extern struct S { u8 p[0x1514]; s32 v[1]; } data_021eff48; } }
-#define data_021f145c n04::L_021f145c::data_021eff48.v
+namespace L_021f145c { extern "C" { extern struct S { u8 p[0x1514]; s32 v[1]; } gWeatherManager; } }
+#define data_021f145c n04::L_021f145c::gWeatherManager.v
 extern "C" {
-extern Unk_021eff48 data_021eff48;
+extern Unk_021eff48 gWeatherManager;
 }
-namespace L_021f1158 { extern "C" { extern struct S { u8 p[0x1210]; u8 v[1]; } data_021eff48; } }
-#define data_021f1158 n04::L_021f1158::data_021eff48.v
-namespace L_021f146c { extern "C" { extern struct S { u8 p[0x1524]; s32 v; } data_021eff48; } }
-#define data_021f146c n04::L_021f146c::data_021eff48.v
-namespace L_021f1470 { extern "C" { extern struct S { u8 p[0x1528]; s32 v; } data_021eff48; } }
-#define data_021f1470 n04::L_021f1470::data_021eff48.v
+namespace L_021f1158 { extern "C" { extern struct S { u8 p[0x1210]; u8 v[1]; } gWeatherManager; } }
+#define data_021f1158 n04::L_021f1158::gWeatherManager.v
+namespace L_021f146c { extern "C" { extern struct S { u8 p[0x1524]; s32 v; } gWeatherManager; } }
+#define data_021f146c n04::L_021f146c::gWeatherManager.v
+namespace L_021f1470 { extern "C" { extern struct S { u8 p[0x1528]; s32 v; } gWeatherManager; } }
+#define data_021f1470 n04::L_021f1470::gWeatherManager.v
 extern "C" {
 extern u8 **data_020e4d84[];
 }
@@ -7128,7 +7128,7 @@ extern "C" {
 void func_02133ef8(void *p, u32 n);
 }
 extern "C" {
-void func_0209cf18(void*);
+void Clock_GetMinuteHour(void*);
 }
 extern "C" {
 u32 _u32_div_f(u32, u32);
@@ -7143,7 +7143,7 @@ extern "C" {
 void func_020bab7c(s32, s32, u32, u32);
 }
 extern "C" {
-s32 func_020b53ec(u32);
+s32 Fog_SetOffset(u32);
 }
 extern "C" {
 void *_ZN10SpriteAnim7getCellEv(void*);
@@ -7272,19 +7272,19 @@ extern "C" {
 void func_020baf30(Unk_020bacc0_Obj*);
 }
 extern "C" {
-void func_020ba6f4(u16*, u16*, u16*, s32);
+void Color_Lerp(u16*, u16*, u16*, s32);
 }
 extern "C" {
-void func_020b53f8(s32);
+void Fog_SetAlpha(s32);
 }
 extern "C" {
-void func_020027f8(s32);
+void Gfx3d_SetClearDepth(s32);
 }
 extern "C" {
-void func_020027ec(u32);
+void Gfx3d_SetClearColor(u32);
 }
 extern "C" {
-u16 func_02064cc4();
+u16 SceneLights_GetRoomColor();
 }
 extern "C" {
 s32 func_02104238(s32, u32, s32);
@@ -7390,7 +7390,7 @@ extern "C" void func_020bb0c8(Unk_020bacc0_Obj *obj) {
 }
 
 extern "C" void func_020bb04c(Unk_020bacc0_Obj *obj) {
-    u16 *p = (u16 *)(data_021f1158 + data_021eff48.f4 * 0x180);
+    u16 *p = (u16 *)(data_021f1158 + gWeatherManager.f4 * 0x180);
     u16 *end1 = (u16 *)((u8 *)p + 0xee);
     u16 *end2 = (u16 *)((u8 *)p + 0x12e);
     u32 v = obj->f2f51;
@@ -7524,7 +7524,7 @@ extern "C" void func_020bacc0(Unk_020bacc0_Obj *obj) {
         x = a + ((pos->x + 0x800) >> 12);
         py = b + ((pos->y + 0x800) >> 12);
         y = py - yoff;
-        if (data_021eff48.f0 == 1) {
+        if (gWeatherManager.f0 == 1) {
             u8 k = e->f5c;
             BOOL hidden = FALSE;
             if (k != 0) {
@@ -7572,18 +7572,18 @@ extern "C" void func_020bac14(s32 a, s32 b, u32 c, u32 d) {
         for (i = 0; i < 4; i++) {
             row = data_020e4d48[data_021f146c];
             t = row[i];
-            func_020ba6f4(&tmp[0], t + c, t + d, a);
+            Color_Lerp(&tmp[0], t + c, t + d, a);
             row = data_020e4d48[data_021f1470];
             t = row[i];
-            func_020ba6f4(&tmp[1], t + c, t + d, a);
-            func_020ba6f4(out, &tmp[0], &tmp[1], b);
+            Color_Lerp(&tmp[1], t + c, t + d, a);
+            Color_Lerp(out, &tmp[0], &tmp[1], b);
             out++;
         }
     } else {
         row = data_020e4d48[data_021f146c];
         for (i = 0; i < 4; i++) {
             t = row[i];
-            func_020ba6f4(out, t + c, t + d, a);
+            Color_Lerp(out, t + c, t + d, a);
             out++;
         }
     }
@@ -7598,9 +7598,9 @@ extern "C" void func_020bab7c(s32 a, s32 b, u32 c, u32 d) {
         u16 *pn = data_020e4d5c[next];
         t1 = t1 * (0x1000 - b);
         u32 t2 = (u16)(((0x1000 - a) * pn[c] + a * pn[d]) >> 12);
-        func_020b53ec((u16)((t1 + t2 * b) >> 12));
+        Fog_SetOffset((u16)((t1 + t2 * b) >> 12));
     } else {
-        func_020b53ec((u16)(((0x1000 - a) * data_020e4d5c[cur][c] + a * data_020e4d5c[cur][d]) >> 12));
+        Fog_SetOffset((u16)(((0x1000 - a) * data_020e4d5c[cur][c] + a * data_020e4d5c[cur][d]) >> 12));
     }
 }
 
@@ -7635,19 +7635,19 @@ extern "C" void func_020baaa0(s32 a, s32 b, u32 c, u32 d) {
 extern "C" void func_020baa10(s32 a, s32 b) {
     Unk_020baa10_Buf b0;
     u32 hour, rem;
-    func_0209cf18(&b0.t);
+    Clock_GetMinuteHour(&b0.t);
     hour = b0.t.hi;
     rem = (hour + 1) % 24;
     func_020bac14(a, b, hour, rem);
     func_020baaa0(a, b, hour, rem);
     func_020bab7c(a, b, hour, rem);
     if (data_021ef670 != 0) {
-        func_020b53f8(0);
-        func_020027f8(0x1c2);
+        Fog_SetAlpha(0);
+        Gfx3d_SetClearDepth(0x1c2);
         b0.y = data_021efc08.h6;
-        func_020027ec(b0.y);
+        Gfx3d_SetClearColor(b0.y);
     }
-    b0.x = func_02064cc4();
+    b0.x = SceneLights_GetRoomColor();
     b0.z = b0.x;
     func_02104238(0, b0.z, 0);
 }
@@ -7729,22 +7729,22 @@ extern "C" {
 s32 func_020ba624(s32 x);
 }
 extern "C" {
-void func_020ba6c4(u16 *d, u16 *s1, u16 *s2, s32 t);
+void Color_Lerp6(u16 *d, u16 *s1, u16 *s2, s32 t);
 }
 extern "C" {
-void func_020ba6f4(u16 *d, u16 *s1, u16 *s2, s32 t);
+void Color_Lerp(u16 *d, u16 *s1, u16 *s2, s32 t);
 }
 extern "C" {
 void func_020ba8cc(Unk_020ba8cc_Obj *o);
 }
 extern "C" {
-BOOL func_020024f0(void *p, s32 a, s32 b, s32 off);
+BOOL Gfx2d_LoadScreen(void *p, s32 a, s32 b, s32 off);
 }
 extern "C" {
-BOOL func_020025fc(u32 res, void *heap, s32 c, s32 d, s32 e, s32 f);
+BOOL Gfx2d_LoadCharFile8bpp(u32 res, void *heap, s32 c, s32 d, s32 e, s32 f);
 }
 extern "C" {
-s32 func_02002580(u8 *a, s32 b, s32 c, s32 d, s32 e);
+s32 Gfx2d_LoadPaletteRange(u8 *a, s32 b, s32 c, s32 d, s32 e);
 }
 extern "C" {
 u8 *File_LoadAlloc(u32 res, void *heap, s32 a, void *b);
@@ -7762,25 +7762,25 @@ extern "C" {
 void func_02063968(void *a, void *b);
 }
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 extern "C" {
-s32 func_0209cc08(void *p);
+s32 DateTime_GetWeatherPeriod(void *p);
 }
 extern "C" {
-void func_0209d124(void *p, s32 a);
+void DateTime_SubHours(void *p, s32 a);
 }
 extern "C" {
-void func_0209cf18(void *p);
+void Clock_GetMinuteHour(void *p);
 }
 extern "C" {
-void func_020c010c(void *dst, void *src);
+void Weather_UpdateDaily(void *dst, void *src);
 }
 extern "C" {
-u16 func_020b9cd8(Unk_020b9fe4 *self, void *t);
+u16 func_020b9cd8(WeatherManager *self, void *t);
 }
 extern "C" {
-u16 func_020b9d18(Unk_020b9fe4 *self, void *t);
+u16 func_020b9d18(WeatherManager *self, void *t);
 }
 extern "C" {
 void _ZN12Unk_020b9c9013func_020b9c90Eiti(void *a, s32 b, s32 c, s32 d);
@@ -7807,7 +7807,7 @@ extern "C" {
 extern u32 gCurrentHeap;
 }
 extern "C" {
-extern Unk_020b9fe4 data_021eff48;
+extern WeatherManager gWeatherManager;
 }
 extern "C" {
 extern u32 *data_020e4ad0[];
@@ -7816,7 +7816,7 @@ extern "C" {
 extern u32 data_020e4d34[];
 }
 extern "C" {
-extern s8 data_020d13e8[];
+extern s8 sWeatherHourTable[];
 }
 extern "C" {
 extern Unk_021ed2b0 data_021ed2b0;
@@ -7827,28 +7827,28 @@ extern u8 gSaveData[];
 extern "C" {
 extern u8 data_021d7352[];
 }
-namespace L_021f14ac { extern "C" { extern struct S { u8 p[0x1564]; u16 * v[3]; } data_021eff48; } }
-#define data_021f14ac n03::L_021f14ac::data_021eff48.v
+namespace L_021f14ac { extern "C" { extern struct S { u8 p[0x1564]; u16 * v[3]; } gWeatherManager; } }
+#define data_021f14ac n03::L_021f14ac::gWeatherManager.v
 extern "C" {
 extern s32 data_021ef670;
 }
 extern "C" {
 extern u8 data_020d0df0[];
 }
-namespace L_021f146c { extern "C" { extern struct S { u8 p[0x1524]; s32 v; } data_021eff48; } }
-#define data_021f146c n03::L_021f146c::data_021eff48.v
+namespace L_021f146c { extern "C" { extern struct S { u8 p[0x1524]; s32 v; } gWeatherManager; } }
+#define data_021f146c n03::L_021f146c::gWeatherManager.v
 extern "C" {
 extern s32 data_020d0ea0[];
 }
-namespace L_021f148c { extern "C" { extern struct S { u8 p[0x1544]; u8 * v[1][2]; } data_021eff48; } }
-#define data_021f148c n03::L_021f148c::data_021eff48.v
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_020ba8cc_State v; } data_021eff48; } }
-#define data_021f1448 n03::L_021f1448::data_021eff48.v
+namespace L_021f148c { extern "C" { extern struct S { u8 p[0x1544]; u8 * v[1][2]; } gWeatherManager; } }
+#define data_021f148c n03::L_021f148c::gWeatherManager.v
+namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_020ba8cc_State v; } gWeatherManager; } }
+#define data_021f1448 n03::L_021f1448::gWeatherManager.v
 extern "C" {
 extern u8 data_021ef908[];
 }
-namespace L_021f149c { extern "C" { extern struct S { u8 p[0x1554]; u32 v[2][2]; } data_021eff48; } }
-#define data_021f149c n03::L_021f149c::data_021eff48.v
+namespace L_021f149c { extern "C" { extern struct S { u8 p[0x1554]; u32 v[2][2]; } gWeatherManager; } }
+#define data_021f149c n03::L_021f149c::gWeatherManager.v
 extern "C" {
 extern u32 data_020e4ca4[2][2];
 }
@@ -7856,8 +7856,8 @@ extern u32 data_020e4ca4[2][2];
 extern "C" s32 func_020ba3a0(s32 x);
 extern "C" void func_020ba518();
 extern "C" s32 func_020ba624(s32 x);
-extern "C" void func_020ba6c4(u16 *d, u16 *s1, u16 *s2, s32 t);
-extern "C" void func_020ba6f4(u16 *d, u16 *s1, u16 *s2, s32 t);
+extern "C" void Color_Lerp6(u16 *d, u16 *s1, u16 *s2, s32 t);
+extern "C" void Color_Lerp(u16 *d, u16 *s1, u16 *s2, s32 t);
 extern "C" BOOL func_020ba800(u16 **p);
 extern "C" BOOL func_020ba834();
 extern "C" void func_020ba8cc(Unk_020ba8cc_Obj *o);
@@ -7890,14 +7890,14 @@ extern "C" BOOL func_020ba834() {
     s32 i, j;
     for (i = 0; i < 2; i++) {
         for (j = 0; j < 2; j++) {
-            if (data_021eff48.unk_1544[i][j] == 0) {
+            if (gWeatherManager.unk_1544[i][j] == 0) {
                 u8 **dst = &data_021f148c[i][j];
                 *dst = File_LoadAlloc(data_020e4ca4[i][j], (void *)gCurrentHeap, -4, &data_021f149c[i][j]);
                 if (!*dst) {
                     return FALSE;
                 }
             } else {
-                File_LoadToBuffer(data_020e4ca4[i][j], (u8 *)data_021eff48.unk_1544[i][j], data_021eff48.unk_1554[i][j]);
+                File_LoadToBuffer(data_020e4ca4[i][j], (u8 *)gWeatherManager.unk_1544[i][j], gWeatherManager.unk_1554[i][j]);
             }
         }
     }
@@ -7919,7 +7919,7 @@ extern "C" BOOL func_020ba800(u16 **p) {
 }
 
 }
-void Unk_020b9fe4::func_020ba794() {
+void WeatherManager::func_020ba794() {
     using namespace n03;
     Unk_020ba1dc_Time t;
     u32 st;
@@ -7928,7 +7928,7 @@ void Unk_020b9fe4::func_020ba794() {
     t.unk_00 = 0;
     t.unk_04 = 0;
     func_02063968(data_021d7352, buf);
-    func_0209d498(&t);
+    Clock_GetDateTime(&t);
     seed = ((u8 *)&t)[3] | ((((u8 *)&t)[4] << 5) | ((buf[0] << 16) | ((((u8 *)&t)[5] & 0x1f) << 9)));
     Random_SetSeed(&st, 1);
     Random_SetSeed(&st, seed);
@@ -7936,7 +7936,7 @@ void Unk_020b9fe4::func_020ba794() {
 }
 namespace n03 {
 
-extern "C" void func_020ba6f4(u16 *d, u16 *s1, u16 *s2, s32 t) {
+extern "C" void Color_Lerp(u16 *d, u16 *s1, u16 *s2, s32 t) {
     Unk_020ba6f4_Color *dc = (Unk_020ba6f4_Color *)d;
     Unk_020ba6f4_Color *c1 = (Unk_020ba6f4_Color *)s1;
     Unk_020ba6f4_Color *c2 = (Unk_020ba6f4_Color *)s2;
@@ -7947,10 +7947,10 @@ extern "C" void func_020ba6f4(u16 *d, u16 *s1, u16 *s2, s32 t) {
     dc->a = 0;
 }
 
-extern "C" void func_020ba6c4(u16 *d, u16 *s1, u16 *s2, s32 t) {
+extern "C" void Color_Lerp6(u16 *d, u16 *s1, u16 *s2, s32 t) {
     s32 i;
     for (i = 0; i < 6; i++) {
-        func_020ba6f4(d, s1, s2, t);
+        Color_Lerp(d, s1, s2, t);
         d++;
         s1++;
         s2++;
@@ -7958,10 +7958,10 @@ extern "C" void func_020ba6c4(u16 *d, u16 *s1, u16 *s2, s32 t) {
 }
 
 }
-void Unk_020b9fe4::func_020ba670(s32 *a, s32 *b) {
+void WeatherManager::getSkyBlend(s32 *a, s32 *b) {
     using namespace n03;
     Unk_020ba518_Time t;
-    func_0209cf18(&t);
+    Clock_GetMinuteHour(&t);
     *a = (u32)(t.unk_00 * 0x44445) >> 12;
     if (unk_1528 != unk_1524) {
         *b = _s32_div_f(unk_120c << 12, 32);
@@ -7976,9 +7976,9 @@ extern "C" s32 func_020ba624(s32 x) {
     s32 r;
     func_020ba518();
     if (data_021f1448.unk_28 != data_021f1448.unk_24) {
-        r = func_02002580((u8 *)pal[2], data_020d0df0[x], 1, 1, 1);
+        r = Gfx2d_LoadPaletteRange((u8 *)pal[2], data_020d0df0[x], 1, 1, 1);
     } else {
-        r = func_02002580((u8 *)pal[0], data_020d0df0[x], 1, 1, 1);
+        r = Gfx2d_LoadPaletteRange((u8 *)pal[0], data_020d0df0[x], 1, 1, 1);
     }
     return r;
 }
@@ -7990,8 +7990,8 @@ extern "C" void func_020ba518() {
     s32 b = 0;
     s32 h, pm;
     s32 h2, pm2;
-    data_021eff48.func_020ba670(&a, &b);
-    func_0209cf18(&t);
+    gWeatherManager.getSkyBlend(&a, &b);
+    Clock_GetMinuteHour(&t);
     h = t.unk_01;
     if ((s32)t.unk_01 < 12) {
         pm = 0;
@@ -8009,13 +8009,13 @@ extern "C" void func_020ba518() {
     Unk_020ba518_E set = (Unk_020ba518_E)data_020d0ea0[data_021f146c];
     u16 *s1 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm])[h * 16];
     u16 *s2 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm2])[h2 * 16];
-    func_020ba6c4(pal[0], s1, s2, a);
+    Color_Lerp6(pal[0], s1, s2, a);
     if (data_021f1448.unk_28 != data_021f146c) {
         set = (Unk_020ba518_E)data_020d0ea0[data_021f1448.unk_28];
         s1 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm])[h * 16];
         s2 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm2])[h2 * 16];
-        func_020ba6c4(pal[1], s1, s2, a);
-        func_020ba6c4(pal[2], pal[0], pal[1], b);
+        Color_Lerp6(pal[1], s1, s2, a);
+        Color_Lerp6(pal[2], pal[0], pal[1], b);
         _ZN12Unk_020b9c9013func_020b9c90Eiti(data_021ef908, 0, pal[2][4], 0);
         _ZN12Unk_020b9c9013func_020b9c90Eiti(data_021ef908, 1, pal[2][5], 0xc0);
     } else {
@@ -8026,7 +8026,7 @@ extern "C" void func_020ba518() {
 }
 
 }
-Unk_020b9fe4::Unk_020b9fe4() {
+WeatherManager::WeatherManager() {
     using namespace n03;
     unk_0000 = 0;
     unk_1520 = 0;
@@ -8046,23 +8046,23 @@ Unk_020b9fe4::Unk_020b9fe4() {
 namespace n03 {
 
 }
-void Unk_020b9fe4::func_020ba49c() {
+void WeatherManager::func_020ba49c() {
     using namespace n03;
 }
 namespace n03 {
 
 }
-void Unk_020b9fe4::func_020ba3e4() {
+void WeatherManager::init() {
     using namespace n03;
     Unk_020ba1dc_Time t;
-    s32 r = func_020ba1b4(0);
+    s32 r = getWeatherAtOffset(0);
     switch (r) {
     case 3:
     case 4:
         data_021ed2b0.unk_0d = 1;
         break;
     }
-    func_020ba2e4(r, r);
+    setLevels(r, r);
     unk_0000 = 1;
     unk_158c = 0;
     unk_152c = -1;
@@ -8074,9 +8074,9 @@ void Unk_020b9fe4::func_020ba3e4() {
     unk_120c = 0;
     t.unk_00 = 0;
     t.unk_04 = 0;
-    func_0209d498(&t);
+    Clock_GetDateTime(&t);
     unk_153e = func_020b9cd8(this, &t);
-    func_0209d124(&t, 6);
+    DateTime_SubHours(&t, 6);
     unk_153c = func_020b9d18(this, &t);
 }
 namespace n03 {
@@ -8097,17 +8097,17 @@ extern "C" s32 func_020ba3a0(s32 x) {
 }
 
 }
-s32 Unk_020b9fe4::func_020ba334(s32 v) {
+s32 WeatherManager::getPrecipKind(s32 v) {
     using namespace n03;
     s32 r = 0;
     Unk_020ba1dc_Time t;
     t.unk_00 = 0;
     t.unk_04 = 0;
-    func_0209d498(&t);
+    Clock_GetDateTime(&t);
     switch (v) {
     case 3:
     case 4:
-        switch (func_0209cc08(&t)) {
+        switch (DateTime_GetWeatherPeriod(&t)) {
         case 0:
         case 1:
         case 2:
@@ -8129,10 +8129,10 @@ s32 Unk_020b9fe4::func_020ba334(s32 v) {
 namespace n03 {
 
 }
-void Unk_020b9fe4::func_020ba2e4(s32 a, s32 b) {
+void WeatherManager::setLevels(s32 a, s32 b) {
     using namespace n03;
-    s32 x = func_020ba334(a);
-    s32 y = func_020ba334(b);
+    s32 x = getPrecipKind(a);
+    s32 y = getPrecipKind(b);
     if (x != 0) {
         unk_1534 = x;
     } else if (y != 0) {
@@ -8146,7 +8146,7 @@ void Unk_020b9fe4::func_020ba2e4(s32 a, s32 b) {
 namespace n03 {
 
 }
-void Unk_020b9fe4::func_020ba2a4(s32 v) {
+void WeatherManager::startTransition(s32 v) {
     using namespace n03;
     unk_152c = v;
     if (v > unk_1524) {
@@ -8159,14 +8159,14 @@ void Unk_020b9fe4::func_020ba2a4(s32 v) {
 namespace n03 {
 
 }
-BOOL Unk_020b9fe4::func_020ba260(s32 v) {
+BOOL WeatherManager::requestLevel(s32 v) {
     using namespace n03;
     BOOL r = FALSE;
     if (v == -1) {
     } else if (v == unk_1524) {
         r = TRUE;
     } else if (unk_1520 == 0) {
-        func_020ba2a4(v);
+        startTransition(v);
         r = TRUE;
         unk_158c = r;
         unk_1520 = r;
@@ -8176,24 +8176,24 @@ BOOL Unk_020b9fe4::func_020ba260(s32 v) {
 namespace n03 {
 
 }
-void Unk_020b9fe4::func_020ba1dc() {
+void WeatherManager::updateHourly() {
     using namespace n03;
     Unk_020ba1dc_Time t;
     u8 *base = gSaveData;
     t.unk_00 = 0;
     t.unk_04 = 0;
-    func_0209d498(&t);
+    Clock_GetDateTime(&t);
     if ((data_021ed2b0.unk_0c + 6) % 24 != ((u8 *)&t)[2]) {
         s32 r;
-        func_020c010c(base + 0x15f66, &t);
-        r = func_020ba1b4(1);
+        Weather_UpdateDaily(base + 0x15f66, &t);
+        r = getWeatherAtOffset(1);
         switch (r) {
         case 3:
         case 4:
             base[0x15f6d] = 1;
             break;
         }
-        if (func_020ba260(r)) {
+        if (requestLevel(r)) {
             s32 h = ((u8 *)&t)[2] - 6;
             if (h < 0) {
                 h += 24;
@@ -8205,26 +8205,26 @@ void Unk_020b9fe4::func_020ba1dc() {
 namespace n03 {
 
 }
-s32 Unk_020b9fe4::func_020ba1b4(s32 v) {
+s32 WeatherManager::getWeatherAtOffset(s32 v) {
     using namespace n03;
     s32 t = v + data_021ed2b0.unk_0c;
-    return func_020ba1a4(data_021ed2b0.unk_0a, t % 24);
+    return getPatternWeather(data_021ed2b0.unk_0a, t % 24);
 }
 namespace n03 {
 
 }
-s32 Unk_020b9fe4::func_020ba1a4(s32 a, s32 b) {
+s32 WeatherManager::getPatternWeather(s32 a, s32 b) {
     using namespace n03;
-    s8 *p = data_020d13e8 + a * 24;
+    s8 *p = sWeatherHourTable + a * 24;
     return p[b];
 }
 namespace n03 {
 
 }
-BOOL Unk_020b9fe4::func_020ba170(s32 idx, s32 unused) {
+BOOL WeatherManager::loadCloudChars(s32 idx, s32 unused) {
     using namespace n03;
     BOOL ok = FALSE;
-    if (func_020025fc(data_020e4d34[idx], (void *)gCurrentHeap, unused, 16, 16, 47)) {
+    if (Gfx2d_LoadCharFile8bpp(data_020e4d34[idx], (void *)gCurrentHeap, unused, 16, 16, 47)) {
         ok = TRUE;
     }
     return ok;
@@ -8232,7 +8232,7 @@ BOOL Unk_020b9fe4::func_020ba170(s32 idx, s32 unused) {
 namespace n03 {
 
 }
-BOOL Unk_020b9fe4::func_020ba10c(u8 **p1, u32 *p2, s32 mode, s32 idx) {
+BOOL WeatherManager::loadCloudScreen(u8 **p1, u32 *p2, s32 mode, s32 idx) {
     using namespace n03;
     BOOL ok = FALSE;
     s32 i;
@@ -8257,7 +8257,7 @@ BOOL Unk_020b9fe4::func_020ba10c(u8 **p1, u32 *p2, s32 mode, s32 idx) {
 namespace n03 {
 
 }
-void Unk_020b9fe4::func_020ba06c() {
+void WeatherManager::loadNextCloudGraphics() {
     using namespace n03;
     s32 mode, next;
     if (unk_1530 == 0) {
@@ -8267,9 +8267,9 @@ void Unk_020b9fe4::func_020ba06c() {
         mode = 2;
         next = unk_1524 - 1;
     }
-    if (func_020ba170(next, 6)) {
-        if (func_020ba10c(&unk_1584, &unk_1588, mode, next)) {
-            func_020ba2e4(unk_1524, next);
+    if (loadCloudChars(next, 6)) {
+        if (loadCloudScreen(&unk_1584, &unk_1588, mode, next)) {
+            setLevels(unk_1524, next);
             if (unk_1524 < 3 && unk_1528 >= 3) {
                 func_020ba794();
             }
@@ -8282,19 +8282,19 @@ void Unk_020b9fe4::func_020ba06c() {
 namespace n03 {
 
 }
-void Unk_020b9fe4::func_020b9fe4() {
+void WeatherManager::streamCloudScreen() {
     using namespace n03;
     s32 idx = unk_1578;
     s32 blk = (((unk_1208 >> 8) - 8) & 0xff) >> 3;
     if (blk == idx) {
-        if (func_020024f0(unk_1584 + (blk << 5), 6, 32, blk << 5)) {
+        if (Gfx2d_LoadScreen(unk_1584 + (blk << 5), 6, 32, blk << 5)) {
             s32 cnt = unk_120c;
             idx = idx + 1;
             cnt = cnt + 1;
             if (idx >= 32) {
                 idx = -1;
                 cnt = 32;
-                func_020ba2e4(unk_1528, unk_1528);
+                setLevels(unk_1528, unk_1528);
                 unk_1570 = unk_1574;
                 unk_158c = 3;
             }
@@ -8314,21 +8314,21 @@ namespace n03 {
 
 // ======== unk_020b96b8.cpp ========
 namespace n02 {
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_020b96b8_Cfg v; } data_021eff48; } }
-#define data_021f1448 n02::L_021f1448::data_021eff48.v
-namespace L_021f145c { extern "C" { extern struct S { u8 p[0x1514]; s32 v[1]; } data_021eff48; } }
-#define data_021f145c n02::L_021f145c::data_021eff48.v
+namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_020b96b8_Cfg v; } gWeatherManager; } }
+#define data_021f1448 n02::L_021f1448::gWeatherManager.v
+namespace L_021f145c { extern "C" { extern struct S { u8 p[0x1514]; s32 v[1]; } gWeatherManager; } }
+#define data_021f145c n02::L_021f145c::gWeatherManager.v
 namespace L_021efc08 { extern "C" { extern struct S { u8 p[0x300]; volatile u16 v[1]; } data_021ef908; } }
 #define data_021efc08 n02::L_021efc08::data_021ef908.v
-namespace L_021eff50 { extern "C" { extern struct S { u8 p[0x8]; Unk_020b96b8_Ent v[1]; } data_021eff48; } }
-#define data_021eff50 n02::L_021eff50::data_021eff48.v
+namespace L_021eff50 { extern "C" { extern struct S { u8 p[0x8]; Unk_020b96b8_Ent v[1]; } gWeatherManager; } }
+#define data_021eff50 n02::L_021eff50::gWeatherManager.v
 extern "C" {
-extern s32 data_021eff48[];
+extern s32 gWeatherManager[];
 }
-namespace L_021f4420 { extern "C" { extern struct S { u8 p[0x2f40]; u8 v[1]; } data_021f14e0; } }
-#define data_021f4420 n02::L_021f4420::data_021f14e0.v
+namespace L_021f4420 { extern "C" { extern struct S { u8 p[0x2f40]; u8 v[1]; } gSkySprites; } }
+#define data_021f4420 n02::L_021f4420::gSkySprites.v
 extern "C" {
-void func_0209cf18(u8 *out);
+void Clock_GetMinuteHour(u8 *out);
 }
 extern "C" {
 Unk_020b9964_Obj *func_02095204(u32 x);
@@ -8336,12 +8336,12 @@ Unk_020b9964_Obj *func_02095204(u32 x);
 extern "C" {
 s32 func_02064c84(u32 x);
 }
-namespace L_021f1158 { extern "C" { extern struct S { u8 p[0x1210]; u16 v[1]; } data_021eff48; } }
-#define data_021f1158 n02::L_021f1158::data_021eff48.v
-namespace L_021f14dc { extern "C" { extern struct S { u8 p[0x1594]; s32 v; } data_021eff48; } }
-#define data_021f14dc n02::L_021f14dc::data_021eff48.v
-namespace L_021f1150 { extern "C" { extern struct S { u8 p[0x1208]; s32 v; } data_021eff48; } }
-#define data_021f1150 n02::L_021f1150::data_021eff48.v
+namespace L_021f1158 { extern "C" { extern struct S { u8 p[0x1210]; u16 v[1]; } gWeatherManager; } }
+#define data_021f1158 n02::L_021f1158::gWeatherManager.v
+namespace L_021f14dc { extern "C" { extern struct S { u8 p[0x1594]; s32 v; } gWeatherManager; } }
+#define data_021f14dc n02::L_021f14dc::gWeatherManager.v
+namespace L_021f1150 { extern "C" { extern struct S { u8 p[0x1208]; s32 v; } gWeatherManager; } }
+#define data_021f1150 n02::L_021f1150::gWeatherManager.v
 extern "C" {
 extern u8 data_021ef654;
 }
@@ -8360,47 +8360,47 @@ extern s32 data_021ef908;
 namespace L_021ef90c { extern "C" { extern struct S { u8 p[0x4]; u16 v[1]; } data_021ef908; } }
 #define data_021ef90c n02::L_021ef90c::data_021ef908.v
 extern "C" {
-void func_020014e4(u32 x);
+void Gfx2d_HideMainPlanes(u32 x);
 }
 extern "C" {
-void func_020014ac(u32 x);
+void Gfx2d_HideSubPlanes(u32 x);
 }
 extern "C" {
-void func_020014bc(u32 x);
+void Gfx2d_ShowSubPlanes(u32 x);
 }
 extern "C" {
 s32 func_0206ef50();
 }
 extern "C" {
-void func_020014f4(u32 x);
+void Gfx2d_ShowMainPlanes(u32 x);
 }
 extern "C" {
-void func_02001564(u32 x);
+void Gfx2d_EnableMainWindows(u32 x);
 }
 extern "C" {
-void func_02001750(u32 x);
+void Gfx2d_SetMainWin0Planes(u32 x);
 }
 extern "C" {
-void func_020016cc(u32 x);
+void Gfx2d_SetMainWinOutPlanes(u32 x);
 }
 extern "C" {
-void func_02001674(u32 a, u32 b, u32 c, u32 d);
+void Gfx2d_SetMainWin0Rect(u32 a, u32 b, u32 c, u32 d);
 }
 #define REG16(a) (*(volatile u16 *)(a))
 #define REG32(a) (*(volatile u32 *)(a))
-extern "C" s32 func_020024f0(void *p, u32 a, u32 b, u32 off);
+extern "C" s32 Gfx2d_LoadScreen(void *p, u32 a, u32 b, u32 off);
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 extern "C" {
-s32 func_0209d3a4(void *a, void *b);
+s32 DateTime_DiffDays(void *a, void *b);
 }
 extern "C" {
 u32 func_020b9cd8(u32 unused, u8 *d);
 }
 
-extern "C" void func_020b96b8();
-extern "C" void func_020b9848();
+extern "C" void Sky_VBlankMain();
+extern "C" void Sky_VBlankSub();
 extern "C" void func_020b9964();
 extern "C" void func_020b9b94();
 extern "C" u32 func_020b9cb4(u32 x);
@@ -8429,7 +8429,7 @@ void Unk_020b9c90::func_020b9ef8()
     s32 cur = unk_1578;
     s32 k = (((unk_1208 >> 8) - 8) & 0xff) >> 3;
     if (k == cur) {
-        if (func_020024f0((u8 *)unk_157c + (k << 5), 6, 0x20, k << 5) != 0) {
+        if (Gfx2d_LoadScreen((u8 *)unk_157c + (k << 5), 6, 0x20, k << 5) != 0) {
             cur++;
             if (cur >= 0x20) {
                 cur = -1;
@@ -8558,7 +8558,7 @@ extern "C" u16 func_020b9d18(u32 unused, void *unused2)
     u64 d = 0;
     u64 t = 0x100000000ULL | 0x1000000;
     d = t;
-    return (u16)((func_0209d3a4(&d, unused2) % 0x40) << 3);
+    return (u16)((DateTime_DiffDays(&d, unused2) % 0x40) << 3);
 }
 
 extern "C" u32 func_020b9cd8(u32 unused, u8 *d)
@@ -8575,7 +8575,7 @@ extern "C" u32 func_020b9cb4(u32 x)
     u8 d[8];
     ((u32 *)d)[0] = 0;
     ((u32 *)d)[1] = 0;
-    func_0209d498(d);
+    Clock_GetDateTime(d);
     return func_020b9cd8(x, d);
 }
 
@@ -8631,7 +8631,7 @@ extern "C" void func_020b9964()
 {
     u16 *pal;
     s32 a = 0, b = 0;
-    s32 idx = (data_021eff48[1] + 1) % 2;
+    s32 idx = (gWeatherManager[1] + 1) % 2;
     s32 j, i;
     pal = (u16 *)((u8 *)data_021f1158 + idx * 0x180);
     Unk_020b9964_Obj *o = func_02095204(4);
@@ -8706,10 +8706,10 @@ extern "C" void func_020b9964()
         }
         for (; i < 0xc0; i++) *pal++ = 0x1000;
     }
-    data_021eff48[1] = idx;
+    gWeatherManager[1] = idx;
 }
 
-extern "C" void func_020b9848()
+extern "C" void Sky_VBlankSub()
 {
     u8 t[2];
     volatile u16 v1, v2;
@@ -8718,17 +8718,17 @@ extern "C" void func_020b9848()
     REG16(0x5000400) = v1;
     v2 = data_021efc08[3];
     REG16(0x5000000) = v2;
-    Unk_020b96b8_Ent *e = &data_021eff50[data_021eff48[1]];
+    Unk_020b96b8_Ent *e = &data_021eff50[gWeatherManager[1]];
     REG16(0x4001030) = e->c;
     REG32(0x4001038) = e->a;
     REG32(0x400103c) = e->b;
-    func_0209cf18(t);
+    Clock_GetMinuteHour(t);
     if (t[1] >= 6 && t[1] < 0x12) {
         REG32(0x4001000) = REG32(0x4001000) & 0xfffffdff;
-        if (func_0206ef50() == 0) func_020014ac(2);
+        if (func_0206ef50() == 0) Gfx2d_HideSubPlanes(2);
     } else {
         REG32(0x4001000) |= 0x200;
-        if (func_0206ef50() == 0) func_020014bc(2);
+        if (func_0206ef50() == 0) Gfx2d_ShowSubPlanes(2);
     }
     if (data_021f4420[0x11] != 0) {
         REG16(0x4001050) = 0x2040;
@@ -8741,7 +8741,7 @@ extern "C" void func_020b9848()
     REG16(0x4001014) = data_021f1448.h3c;
 }
 
-extern "C" void func_020b96b8()
+extern "C" void Sky_VBlankMain()
 {
     u8 t[2];
     volatile u16 v1, v2;
@@ -8750,29 +8750,29 @@ extern "C" void func_020b96b8()
     REG16(0x5000400) = v1;
     v2 = data_021efc08[2];
     REG16(0x5000000) = v2;
-    Unk_020b96b8_Ent *e = &data_021eff50[data_021eff48[1]];
+    Unk_020b96b8_Ent *e = &data_021eff50[gWeatherManager[1]];
     REG16(0x4000030) = e->c;
     REG32(0x4000038) = e->a;
     REG32(0x400003c) = e->b;
-    func_0209cf18(t);
+    Clock_GetMinuteHour(t);
     if (t[1] >= 6 && t[1] < 0x12) {
         REG32(0x4000000) = REG32(0x4000000) & 0xfffffdff;
-        func_020014e4(2);
+        Gfx2d_HideMainPlanes(2);
     } else {
         REG32(0x4000000) |= 0x200;
-        func_020014f4(2);
+        Gfx2d_ShowMainPlanes(2);
     }
     s32 r;
     if (y > 0xa8) {
         REG32(0x4000000) = REG32(0x4000000) & 0xfffff5ff;
-        func_020014e4(0xa);
+        Gfx2d_HideMainPlanes(0xa);
         REG16(0x4000050) = 0x2040;
     } else {
         REG32(0x4000000) |= 0x800;
-        func_020014f4(8);
+        Gfx2d_ShowMainPlanes(8);
         if (y > 0x97) {
             REG32(0x4000000) = REG32(0x4000000) & 0xfffffdff;
-            func_020014e4(2);
+            Gfx2d_HideMainPlanes(2);
             REG16(0x4000050) = 0x2048;
         } else if (data_021f4420[0x11] != 0) {
             REG16(0x4000050) = 0x2040;
@@ -8787,10 +8787,10 @@ extern "C" void func_020b96b8()
     if (s > 0x100) s = 0x100;
     REG16(0x4000016) = s;
     REG16(0x4000014) = data_021f1448.h3c;
-    func_02001564(1);
-    func_02001750(0x15);
-    func_020016cc(0x1f);
-    func_02001674(0, r, 0xff, 0xc0);
+    Gfx2d_EnableMainWindows(1);
+    Gfx2d_SetMainWin0Planes(0x15);
+    Gfx2d_SetMainWinOutPlanes(0x1f);
+    Gfx2d_SetMainWin0Rect(0, r, 0xff, 0xc0);
 }
 
 #undef data_021f1448
@@ -8838,60 +8838,60 @@ struct Unk_021eff48 {
     /* 0x1544 */ u32 unk_1544[2][2];
 };
 struct Unk_021f3010 { u8 pad[8]; u8 unk_08; u8 pad2[3]; };
-namespace L_021f4400 { extern "C" { extern struct S { u8 p[0x2f20]; Unk_021f4400 v; } data_021f14e0; } }
-#define data_021f4400 n01::L_021f4400::data_021f14e0.v
-namespace L_021f4420 { extern "C" { extern struct S { u8 p[0x2f40]; Unk_021f4420 v; } data_021f14e0; } }
-#define data_021f4420 n01::L_021f4420::data_021f14e0.v
-namespace L_021f44a0 { extern "C" { extern struct S { u8 p[0x2fc0]; Unk_021f44a0 v; } data_021f14e0; } }
-#define data_021f44a0 n01::L_021f44a0::data_021f14e0.v
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_021f1448 v; } data_021eff48; } }
-#define data_021f1448 n01::L_021f1448::data_021eff48.v
+namespace L_021f4400 { extern "C" { extern struct S { u8 p[0x2f20]; Unk_021f4400 v; } gSkySprites; } }
+#define data_021f4400 n01::L_021f4400::gSkySprites.v
+namespace L_021f4420 { extern "C" { extern struct S { u8 p[0x2f40]; Unk_021f4420 v; } gSkySprites; } }
+#define data_021f4420 n01::L_021f4420::gSkySprites.v
+namespace L_021f44a0 { extern "C" { extern struct S { u8 p[0x2fc0]; Unk_021f44a0 v; } gSkySprites; } }
+#define data_021f44a0 n01::L_021f44a0::gSkySprites.v
+namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_021f1448 v; } gWeatherManager; } }
+#define data_021f1448 n01::L_021f1448::gWeatherManager.v
 extern "C" {
-extern Unk_021eff48 data_021eff48;
+extern Unk_021eff48 gWeatherManager;
 }
 extern "C" {
-extern u8 data_021f14e0[];
+extern u8 gSkySprites[];
 }
 extern "C" {
-extern u8 data_021ef6c4[];
+extern u8 sSkyHBlankTask[];
 }
 extern "C" {
 extern u8 data_021efc18[];
 }
-namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } data_021f14e0; } }
-#define data_021f4398 n01::L_021f4398::data_021f14e0.v
-namespace L_021f304c { extern "C" { extern struct S { u8 p[0x1b6c]; u8 v[1]; } data_021f14e0; } }
-#define data_021f304c n01::L_021f304c::data_021f14e0.v
+namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } gSkySprites; } }
+#define data_021f4398 n01::L_021f4398::gSkySprites.v
+namespace L_021f304c { extern "C" { extern struct S { u8 p[0x1b6c]; u8 v[1]; } gSkySprites; } }
+#define data_021f304c n01::L_021f304c::gSkySprites.v
 extern "C" {
 extern u8 data_021ef658[];
 }
-namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; Unk_021f3010 v[5]; } data_021f14e0; } }
-#define data_021f3010 n01::L_021f3010::data_021f14e0.v
+namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; Unk_021f3010 v[5]; } gSkySprites; } }
+#define data_021f3010 n01::L_021f3010::gSkySprites.v
 extern "C" {
 extern void *gCurrentHeap;
 }
-namespace L_021f14c8 { extern "C" { extern struct S { u8 p[0x1580]; Unk_021f14c8 v; } data_021eff48; } }
-#define data_021f14c8 n01::L_021f14c8::data_021eff48.v
-namespace L_021f14c4 { extern "C" { extern struct S { u8 p[0x157c]; u32 v; } data_021eff48; } }
-#define data_021f14c4 n01::L_021f14c4::data_021eff48.v
-namespace L_021f14cc { extern "C" { extern struct S { u8 p[0x1584]; u32 v; } data_021eff48; } }
-#define data_021f14cc n01::L_021f14cc::data_021eff48.v
-namespace L_021f14d0 { extern "C" { extern struct S { u8 p[0x1588]; u32 v; } data_021eff48; } }
-#define data_021f14d0 n01::L_021f14d0::data_021eff48.v
-namespace L_021f146c { extern "C" { extern struct S { u8 p[0x1524]; u32 v; } data_021eff48; } }
-#define data_021f146c n01::L_021f146c::data_021eff48.v
-namespace L_021f14dc { extern "C" { extern struct S { u8 p[0x1594]; u32 v; } data_021eff48; } }
-#define data_021f14dc n01::L_021f14dc::data_021eff48.v
-namespace L_021f14ac { extern "C" { extern struct S { u8 p[0x1564]; u32 v[3]; } data_021eff48; } }
-#define data_021f14ac n01::L_021f14ac::data_021eff48.v
+namespace L_021f14c8 { extern "C" { extern struct S { u8 p[0x1580]; Unk_021f14c8 v; } gWeatherManager; } }
+#define data_021f14c8 n01::L_021f14c8::gWeatherManager.v
+namespace L_021f14c4 { extern "C" { extern struct S { u8 p[0x157c]; u32 v; } gWeatherManager; } }
+#define data_021f14c4 n01::L_021f14c4::gWeatherManager.v
+namespace L_021f14cc { extern "C" { extern struct S { u8 p[0x1584]; u32 v; } gWeatherManager; } }
+#define data_021f14cc n01::L_021f14cc::gWeatherManager.v
+namespace L_021f14d0 { extern "C" { extern struct S { u8 p[0x1588]; u32 v; } gWeatherManager; } }
+#define data_021f14d0 n01::L_021f14d0::gWeatherManager.v
+namespace L_021f146c { extern "C" { extern struct S { u8 p[0x1524]; u32 v; } gWeatherManager; } }
+#define data_021f146c n01::L_021f146c::gWeatherManager.v
+namespace L_021f14dc { extern "C" { extern struct S { u8 p[0x1594]; u32 v; } gWeatherManager; } }
+#define data_021f14dc n01::L_021f14dc::gWeatherManager.v
+namespace L_021f14ac { extern "C" { extern struct S { u8 p[0x1564]; u32 v[3]; } gWeatherManager; } }
+#define data_021f14ac n01::L_021f14ac::gWeatherManager.v
 extern "C" {
 extern u32 data_021ef670;
 }
 extern "C" {
 extern u32 gCamera;
 }
-namespace L_021f145c { extern "C" { extern struct S { u8 p[0x1514]; u32 v[1]; } data_021eff48; } }
-#define data_021f145c n01::L_021f145c::data_021eff48.v
+namespace L_021f145c { extern "C" { extern struct S { u8 p[0x1514]; u32 v[1]; } gWeatherManager; } }
+#define data_021f145c n01::L_021f145c::gWeatherManager.v
 namespace L_021efc08 { extern "C" { extern struct S { u8 p[0x300]; Unk_021efc08 v; } data_021ef908; } }
 #define data_021efc08 n01::L_021efc08::data_021ef908.v
 namespace L_021efa88 { extern "C" { extern struct S { u8 p[0x180]; Unk_021efa88 v; } data_021ef908; } }
@@ -8929,16 +8929,16 @@ extern "C" {
 void _ZN12Unk_020bc58c13func_020bcadcEi(void *p, u32 x);
 }
 extern "C" {
-void _ZN12Unk_020b9fe413func_020ba794Ev(void *p);
+void _ZN14WeatherManager13func_020ba794Ev(void *p);
 }
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 extern "C" {
 void func_020b9cd8(void *p, void *q);
 }
 extern "C" {
-void func_0209d124(void *p, u32 x);
+void DateTime_SubHours(void *p, u32 x);
 }
 extern "C" {
 s32 func_020b9d18(void *p, void *q);
@@ -8947,67 +8947,67 @@ extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
 extern "C" {
-void func_0209d2c0(void *p, s32 x);
+void DateTime_AddDays(void *p, s32 x);
 }
 extern "C" {
-void func_0209d258(void *p, s32 x);
+void DateTime_AddMinutes(void *p, s32 x);
 }
 extern "C" {
-BOOL func_0209d3d0(void *p, void *q, u32 x);
+BOOL DateTime_Compare(void *p, void *q, u32 x);
 }
 extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-void _ZN12Unk_020b9fe413func_020ba1b4Ei(void *p, u32 x);
+void _ZN14WeatherManager18getWeatherAtOffsetEi(void *p, u32 x);
 }
 extern "C" {
-void func_0205b690(void *p, void *fn, void *cb);
+void HBlank_Replace(void *p, void *fn, void *cb);
 }
 extern "C" {
-u32 func_0205b69c(void *p);
+u32 HBlank_Remove(void *p);
 }
 extern "C" {
-u32 func_0205b6e4(void *p, void *fn, void *cb, void *cb2);
+u32 HBlank_Add(void *p, void *fn, void *cb, void *cb2);
 }
 extern "C" {
-void func_020014e4(u32 x);
+void Gfx2d_HideMainPlanes(u32 x);
 }
 extern "C" {
-void func_020014ac(u32 x);
+void Gfx2d_HideSubPlanes(u32 x);
 }
 extern "C" {
-void func_020014bc(u32 x);
+void Gfx2d_ShowSubPlanes(u32 x);
 }
 extern "C" {
-void func_020014f4(u32 x);
+void Gfx2d_ShowMainPlanes(u32 x);
 }
 extern "C" {
-void func_020015b8(u32 x);
+void Gfx2d_SetSubBgModeState(u32 x);
 }
 extern "C" {
-void func_020015e0(u32 x);
+void Gfx2d_SetMainBgModeState(u32 x);
 }
 extern "C" {
-void func_0209cf18(void *p);
+void Clock_GetMinuteHour(void *p);
 }
 extern "C" {
-void func_01ffcd4c(void);
+void Sky_HBlankNone(void);
 }
 extern "C" {
-void func_01ffcd50(void);
+void Sky_HBlankMain(void);
 }
 extern "C" {
-void func_01ffceb8(void);
+void Sky_HBlankSub(void);
 }
 extern "C" {
-void func_020b9848(void);
+void Sky_VBlankSub(void);
 }
 extern "C" {
-void func_020b96b8(void);
+void Sky_VBlankMain(void);
 }
 extern "C" {
-void func_020b9678(void);
+void Sky_VBlankDisabled(void);
 }
 extern "C" {
 void func_020b9608(void);
@@ -9028,7 +9028,7 @@ extern "C" {
 void _ZN12Unk_020bc58c13func_020bc960Ev(void *p);
 }
 extern "C" {
-BOOL func_0200261c(const char *path, void *heap, u32 a, u32 b, u32 c, u32 d);
+BOOL Gfx2d_LoadCharFile(const char *path, void *heap, u32 a, u32 b, u32 c, u32 d);
 }
 extern "C" {
 void *Heap_AllocTail(void *heap, u32 size);
@@ -9046,7 +9046,7 @@ extern "C" {
 void func_020aff60(void *p);
 }
 extern "C" {
-BOOL func_020024f0(void *p, u32 a, u32 b, u32 c);
+BOOL Gfx2d_LoadScreen(void *p, u32 a, u32 b, u32 c);
 }
 extern "C" {
 void func_020b0788(void *p, u32 x);
@@ -9055,10 +9055,10 @@ extern "C" {
 void func_020b0780(void *p);
 }
 extern "C" {
-BOOL _ZN12Unk_020b9fe413func_020ba170Eii(void *p, u32 a, u32 b);
+BOOL _ZN14WeatherManager14loadCloudCharsEii(void *p, u32 a, u32 b);
 }
 extern "C" {
-BOOL _ZN12Unk_020b9fe413func_020ba10cEPPhPjii(void *p, void *a, void *b, u32 c, u32 d);
+BOOL _ZN14WeatherManager15loadCloudScreenEPPhPjii(void *p, void *a, void *b, u32 c, u32 d);
 }
 extern "C" {
 BOOL func_020ba3a0(u32 x);
@@ -9091,13 +9091,13 @@ extern "C" {
 void func_020bae84(void *p);
 }
 extern "C" {
-void _ZN12Unk_020b9fe413func_020ba1dcEv(void *p);
+void _ZN14WeatherManager12updateHourlyEv(void *p);
 }
 extern "C" {
 void func_020ba998(void *p);
 }
 extern "C" {
-void _ZN12Unk_020b9fe413func_020ba3e4Ev(void *p);
+void _ZN14WeatherManager4initEv(void *p);
 }
 extern "C" {
 BOOL func_020bdaa4(void *p);
@@ -9112,7 +9112,7 @@ extern "C" {
 void _ZN12Unk_020b9c9013func_020b9d44Ev(void *p);
 }
 extern "C" {
-void _ZN12Unk_020b9fe413func_020ba670EPiS0_(void *p, u32 *a, u32 *b);
+void _ZN14WeatherManager11getSkyBlendEPiS0_(void *p, u32 *a, u32 *b);
 }
 extern "C" {
 void func_020ba518(void);
@@ -9169,19 +9169,19 @@ extern "C" u32 func_020b8f98(void);
 extern "C" u32 func_020b8fa4(void);
 extern "C" u32 func_020b8fbc(void);
 extern "C" void func_020b8fc8(s32 *a, s32 *b);
-extern "C" void func_020b8fd8(void);
+extern "C" void Weather_GetCurrent(void);
 extern "C" s32 func_020b8fe8(void);
-extern "C" void func_020b901c(void);
-extern "C" BOOL func_020b9044(s32 arg);
+extern "C" void Sky_Disable(void);
+extern "C" BOOL Sky_SetEngine(s32 arg);
 extern "C" void func_020b91bc(void);
 extern "C" BOOL func_020b91f8(u32 idx);
 extern "C" BOOL func_020b9290(u32 idx);
 extern "C" BOOL func_020b9370(u32 idx);
 void func_020b95dc(void);
 void func_020b9608(void);
-void func_020b9678(void);
+void Sky_VBlankDisabled(void);
 
-void func_020b9678(void) {
+void Sky_VBlankDisabled(void) {
     vu16 t;
     t = data_021efc08.unk_04;
     *(vu16 *)0x5000400 = t;
@@ -9194,28 +9194,28 @@ void func_020b9608(void) {
     func_020b9b94();
     if (!func_0206ef50()) {
         func_020b9964();
-        _ZN12Unk_020b9c9013func_020b9ea8Ev(&data_021eff48);
+        _ZN12Unk_020b9c9013func_020b9ea8Ev(&gWeatherManager);
     }
-    func_020ba624(data_021eff48.unk_0000);
+    func_020ba624(gWeatherManager.unk_0000);
     if (gCamera != 0) {
         a = func_0206ede0() * 0x123 >> 12;
         b = func_0203a4b0() * 30 >> 12;
         data_021f145c[data_021f1448.unk_1c ^ 1] = a + b;
     }
-    data_021f1448.unk_3e = func_020b9cb4(&data_021eff48);
+    data_021f1448.unk_3e = func_020b9cb4(&gWeatherManager);
 }
 
 void func_020b95dc(void) {
     u32 a, b;
     if (!func_0206ef50()) {
-        _ZN12Unk_020b9c9013func_020b9d44Ev(&data_021eff48);
+        _ZN12Unk_020b9c9013func_020b9d44Ev(&gWeatherManager);
     }
-    _ZN12Unk_020b9fe413func_020ba670EPiS0_(&data_021eff48, &a, &b);
+    _ZN14WeatherManager11getSkyBlendEPiS0_(&gWeatherManager, &a, &b);
     func_020ba518();
 }
 
 }
-BOOL Unk_020e5668::vfunc_00() {
+BOOL SkyProc::vfunc_00() {
     using namespace n01;
     u32 r4 = 0;
     u32 v = 0;
@@ -9224,17 +9224,17 @@ BOOL Unk_020e5668::vfunc_00() {
         v = 1;
     }
     data_021ef670 = v;
-    _ZN12Unk_020b9fe413func_020ba3e4Ev(&data_021eff48);
+    _ZN14WeatherManager4initEv(&gWeatherManager);
     if (data_021ef670 != 0) {
         if (func_020bdaa4(data_021f304c)) {
-            if (func_020b9044(0)) {
-                func_020baffc(data_021f14e0);
-                r4 = func_0205b6e4(data_021ef6c4, (void *)func_01ffceb8, (void *)func_020b9848, (void *)func_020b9608);
+            if (Sky_SetEngine(0)) {
+                func_020baffc(gSkySprites);
+                r4 = HBlank_Add(sSkyHBlankTask, (void *)Sky_HBlankSub, (void *)Sky_VBlankSub, (void *)func_020b9608);
             }
         }
     } else {
         if (func_020ba3a0(0)) {
-            r4 = func_0205b6e4(data_021ef6c4, 0, 0, (void *)func_020b95dc);
+            r4 = HBlank_Add(sSkyHBlankTask, 0, 0, (void *)func_020b95dc);
         }
     }
     if (r4 != 0) {
@@ -9245,36 +9245,36 @@ BOOL Unk_020e5668::vfunc_00() {
 namespace n01 {
 
 }
-BOOL Unk_020e5668::onExecute() {
+BOOL SkyProc::onExecute() {
     using namespace n01;
     if (data_021ef670 != 0) {
         if (!func_0206ef50()) {
             func_020b080c(data_021efc18);
         }
-        func_020bae8c(data_021f14e0);
+        func_020bae8c(gSkySprites);
     } else {
-        func_020bae84(data_021f14e0);
+        func_020bae84(gSkySprites);
     }
-    _ZN12Unk_020b9fe413func_020ba1dcEv(&data_021eff48);
+    _ZN14WeatherManager12updateHourlyEv(&gWeatherManager);
     func_020ba998((u8 *)this + 0x50);
     return TRUE;
 }
 namespace n01 {
 
 }
-BOOL Unk_020e5668::onDraw() {
+BOOL SkyProc::onDraw() {
     using namespace n01;
     if (data_021ef670 != 0) {
-        func_020bacc0(data_021f14e0);
+        func_020bacc0(gSkySprites);
     }
     return TRUE;
 }
 namespace n01 {
 
 }
-BOOL Unk_020e5668::vfunc_0c() {
+BOOL SkyProc::vfunc_0c() {
     using namespace n01;
-    u32 saved = func_0205b69c(data_021ef6c4);
+    u32 saved = HBlank_Remove(sSkyHBlankTask);
     s32 i, j, k;
     u32 *pp;
     GX_LoadBGPltt(data_021ef658, 0, 2);
@@ -9294,7 +9294,7 @@ BOOL Unk_020e5668::vfunc_0c() {
     for (i = 0; i < 2; i++) {
         u8 *row;
         j = 0;
-        row = (u8 *)&data_021eff48 + i * 8;
+        row = (u8 *)&gWeatherManager + i * 8;
         for (; j < 2; j++) {
             u8 *r0 = row + j * 4;
             u32 *q = (u32 *)(r0 + 0x1544);
@@ -9313,7 +9313,7 @@ BOOL Unk_020e5668::vfunc_0c() {
         pp++;
     }
     if (data_021ef670 != 0) {
-        func_020bafe0(data_021f14e0);
+        func_020bafe0(gSkySprites);
     }
     func_020b0780(data_021efc18);
     func_020ba990((u8 *)this + 0x50);
@@ -9329,10 +9329,10 @@ extern "C" BOOL func_020b9370(u32 idx) {
     result = FALSE;
     r5 = data_020d0dec[idx];
     if (func_020ba3a0(idx)) {
-        if (_ZN12Unk_020b9fe413func_020ba170Eii(&data_021eff48, r4, r5)) {
+        if (_ZN14WeatherManager14loadCloudCharsEii(&gWeatherManager, r4, r5)) {
             u32 *r7 = (u32 *)&data_021f14c8;
-            if (_ZN12Unk_020b9fe413func_020ba10cEPPhPjii(&data_021eff48, &data_021f14c4, r7, 0, r4)) {
-                if (func_020024f0((void *)data_021f14c4, r5, *r7, 0)) {
+            if (_ZN14WeatherManager15loadCloudScreenEPPhPjii(&gWeatherManager, &data_021f14c4, r7, 0, r4)) {
+                if (Gfx2d_LoadScreen((void *)data_021f14c4, r5, *r7, 0)) {
                     result = TRUE;
                 }
             }
@@ -9383,8 +9383,8 @@ extern "C" BOOL func_020b9290(u32 idx) {
             }
             break;
         }
-        if (_ZN12Unk_020b9fe413func_020ba170Eii(&data_021eff48, r4, r7)) {
-            if (_ZN12Unk_020b9fe413func_020ba10cEPPhPjii(&data_021eff48, &data_021f14cc, &data_021f14d0, stk4, r4)) {
+        if (_ZN14WeatherManager14loadCloudCharsEii(&gWeatherManager, r4, r7)) {
+            if (_ZN14WeatherManager15loadCloudScreenEPPhPjii(&gWeatherManager, &data_021f14cc, &data_021f14d0, stk4, r4)) {
                 u8 *buf = (u8 *)data_021f14cc;
                 u32 off, n;
                 if (r4 == (s32)data_021f146c) {
@@ -9395,7 +9395,7 @@ extern "C" BOOL func_020b9290(u32 idx) {
                     n = r5 << 5;
                     off = 0;
                 }
-                if (func_020024f0(buf, r7, n, off)) {
+                if (Gfx2d_LoadScreen(buf, r7, n, off)) {
                     result = TRUE;
                 }
             }
@@ -9411,7 +9411,7 @@ extern "C" BOOL func_020b91f8(u32 idx) {
     void *heap = gCurrentHeap;
     u8 v6 = data_020d0df4[idx];
     void *buf;
-    if (!func_0200261c(data_020e676c, heap, v6, 0x10, 0x10, 0x1f)) {
+    if (!Gfx2d_LoadCharFile(data_020e676c, heap, v6, 0x10, 0x10, 0x1f)) {
         return FALSE;
     }
     buf = Heap_AllocTail(heap, 0x1000);
@@ -9420,7 +9420,7 @@ extern "C" BOOL func_020b91f8(u32 idx) {
     }
     File_LoadToBuffer(data_020e6780, buf, 0x1000);
     func_020aff60(buf);
-    if (!func_020024f0(buf, v6, 0x1000, 0)) {
+    if (!Gfx2d_LoadScreen(buf, v6, 0x1000, 0)) {
         Heap_Free(heap, buf);
         return FALSE;
     }
@@ -9436,51 +9436,51 @@ extern "C" void func_020b91bc(void) {
         p->unk_08 = 0;
     }
     _ZN12Unk_020bd71813func_020bd7c0Ei(data_021f4398, -1);
-    _ZN12Unk_020bc58c13func_020bce8cEv(data_021f14e0);
-    _ZN12Unk_020bc58c13func_020bc960Ev(data_021f14e0);
+    _ZN12Unk_020bc58c13func_020bce8cEv(gSkySprites);
+    _ZN12Unk_020bc58c13func_020bc960Ev(gSkySprites);
 }
 
-extern "C" BOOL func_020b9044(s32 arg) {
+extern "C" BOOL Sky_SetEngine(s32 arg) {
     BOOL result = FALSE;
     Unk_020b8ec0_Time t;
     if (arg == 0) {
-        func_020015b8(1);
-        func_0209cf18(&t);
+        Gfx2d_SetSubBgModeState(1);
+        Clock_GetMinuteHour(&t);
         if (t.unk_01 >= 6 && t.unk_01 < 0x12) {
-            func_020014ac(2);
+            Gfx2d_HideSubPlanes(2);
         } else {
-            func_020014bc(2);
+            Gfx2d_ShowSubPlanes(2);
         }
-        func_020014bc(0x10);
-        func_020014bc(8);
+        Gfx2d_ShowSubPlanes(0x10);
+        Gfx2d_ShowSubPlanes(8);
         vu16 *ra = (vu16 *)0x400100a;
         vu16 *rb = (vu16 *)0x400100e;
         *ra = (*ra & ~3) | 3;
         *rb = (*rb & ~3) | 2;
         *ra = (*ra & 0x43) | 0x4c00;
         *rb = (*rb & 0x43) | 0x6f00;
-        func_0205b690(data_021ef6c4, (void *)func_01ffceb8, (void *)func_020b9848);
+        HBlank_Replace(sSkyHBlankTask, (void *)Sky_HBlankSub, (void *)Sky_VBlankSub);
     } else {
-        func_020015e0(1);
-        func_0209cf18(&t);
+        Gfx2d_SetMainBgModeState(1);
+        Clock_GetMinuteHour(&t);
         if (t.unk_01 >= 6 && t.unk_01 < 0x12) {
-            func_020014e4(2);
+            Gfx2d_HideMainPlanes(2);
         } else {
-            func_020014f4(2);
+            Gfx2d_ShowMainPlanes(2);
         }
-        func_020014f4(0x10);
-        func_020014f4(8);
+        Gfx2d_ShowMainPlanes(0x10);
+        Gfx2d_ShowMainPlanes(8);
         vu16 *ra = (vu16 *)0x400000a;
         vu16 *rb = (vu16 *)0x400000e;
         *ra = (*ra & ~3) | 3;
         *rb = (*rb & ~3) | 2;
         *ra = (*ra & 0x43) | 0x4400;
         *rb = (*rb & 0x43) | 0x6700;
-        func_0205b690(data_021ef6c4, (void *)func_01ffcd50, (void *)func_020b96b8);
+        HBlank_Replace(sSkyHBlankTask, (void *)Sky_HBlankMain, (void *)Sky_VBlankMain);
     }
-    if (arg != data_021eff48.unk_0000 || arg == 1) {
+    if (arg != gWeatherManager.unk_0000 || arg == 1) {
         if (func_020b9370(arg) && func_020b9290(arg) && func_020b91f8(arg)) {
-            data_021eff48.unk_0000 = arg;
+            gWeatherManager.unk_0000 = arg;
             func_020b91bc();
             result = TRUE;
         }
@@ -9497,9 +9497,9 @@ extern "C" BOOL func_020b9044(s32 arg) {
     return result;
 }
 
-extern "C" void func_020b901c(void) {
-    func_0205b690(data_021ef6c4, (void *)func_01ffcd4c, (void *)func_020b9678);
-    func_020014e4(0xa);
+extern "C" void Sky_Disable(void) {
+    HBlank_Replace(sSkyHBlankTask, (void *)Sky_HBlankNone, (void *)Sky_VBlankDisabled);
+    Gfx2d_HideMainPlanes(0xa);
 }
 
 extern "C" s32 func_020b8fe8(void) {
@@ -9520,7 +9520,7 @@ extern "C" s32 func_020b8fe8(void) {
     }
 }
 
-extern "C" void func_020b8fd8(void) { _ZN12Unk_020b9fe413func_020ba1b4Ei(&data_021eff48, 0); }
+extern "C" void Weather_GetCurrent(void) { _ZN14WeatherManager18getWeatherAtOffsetEi(&gWeatherManager, 0); }
 
 extern "C" void func_020b8fc8(s32 *a, s32 *b) {
     *a = data_021f1448.unk_24;
@@ -9545,10 +9545,10 @@ extern "C" void func_020b8ec0(Unk_020b8ec0_Time *out, s32 a, s32 b) {
     s32 r7;
     tmp[0] = 0;
     tmp[1] = 0;
-    func_0209d498(tmp);
-    func_020b9cd8(&data_021eff48, tmp);
-    func_0209d124(tmp, 6);
-    r7 = func_020b9d18(&data_021eff48, tmp);
+    Clock_GetDateTime(tmp);
+    func_020b9cd8(&gWeatherManager, tmp);
+    DateTime_SubHours(tmp, 6);
+    r7 = func_020b9d18(&gWeatherManager, tmp);
     MI_CpuCopy8(tmp, out, 8);
     if (a < 0) {
         a += 0x200;
@@ -9556,7 +9556,7 @@ extern "C" void func_020b8ec0(Unk_020b8ec0_Time *out, s32 a, s32 b) {
     if (a < r7) {
         a += 0x200;
     }
-    func_0209d2c0(out, (a - r7) / 8);
+    DateTime_AddDays(out, (a - r7) / 8);
     if (b < 0) {
         b = 0;
     } else if (b > 0x68) {
@@ -9565,32 +9565,32 @@ extern "C" void func_020b8ec0(Unk_020b8ec0_Time *out, s32 a, s32 b) {
     out->unk_02 = 0x12;
     out->unk_01 = 0;
     out->unk_00 = 0;
-    func_0209d258(out, b * 0x2d0 / 0x68);
+    DateTime_AddMinutes(out, b * 0x2d0 / 0x68);
     if (out->unk_02 == 6) {
-        func_0209d124(out, 1);
+        DateTime_SubHours(out, 1);
     }
-    func_0209d498(tmp);
-    func_0209d258(tmp, 0x1e);
-    if (func_0209d3d0(tmp, out, 0x3c) == 1) {
-        func_0209d2c0(out, 0x40);
+    Clock_GetDateTime(tmp);
+    DateTime_AddMinutes(tmp, 0x1e);
+    if (DateTime_Compare(tmp, out, 0x3c) == 1) {
+        DateTime_AddDays(out, 0x40);
     }
 }
 
-extern "C" void func_020b8eb0(void) { _ZN12Unk_020b9fe413func_020ba794Ev(&data_021eff48); }
+extern "C" void func_020b8eb0(void) { _ZN14WeatherManager13func_020ba794Ev(&gWeatherManager); }
 
-extern "C" void func_020b8ea0(void) { _ZN12Unk_020b9fe413func_020ba794Ev(&data_021eff48); }
+extern "C" void func_020b8ea0(void) { _ZN14WeatherManager13func_020ba794Ev(&gWeatherManager); }
 
-extern "C" void func_020b8e90(void) { _ZN12Unk_020b9fe413func_020ba794Ev(&data_021eff48); }
+extern "C" void func_020b8e90(void) { _ZN14WeatherManager13func_020ba794Ev(&gWeatherManager); }
 
-extern "C" void func_020b8e80(void) { _ZN12Unk_020b9fe413func_020ba794Ev(&data_021eff48); }
+extern "C" void func_020b8e80(void) { _ZN14WeatherManager13func_020ba794Ev(&gWeatherManager); }
 
-extern "C" void func_020b8e70(u32 x) { _ZN12Unk_020bc58c13func_020bcadcEi(data_021f14e0, x); }
+extern "C" void func_020b8e70(u32 x) { _ZN12Unk_020bc58c13func_020bcadcEi(gSkySprites, x); }
 
-extern "C" void func_020b8e60(u32 x) { _ZN12Unk_020bc58c13func_020bca6cEi(data_021f14e0, x); }
+extern "C" void func_020b8e60(u32 x) { _ZN12Unk_020bc58c13func_020bca6cEi(gSkySprites, x); }
 
 extern "C" void func_020b8e44(void) {
     data_021f1448.unk_1c ^= 1;
-    _ZN12Unk_020bc58c13func_020bcdd8Ev(data_021f14e0);
+    _ZN12Unk_020bc58c13func_020bcdd8Ev(gSkySprites);
 }
 
 extern "C" void func_020b8e38(void) { data_021f44a0.unk_06 = 1; }
@@ -9609,7 +9609,7 @@ extern "C" void func_020b8df0(void) {
     void *p = PlayerData_GetCurrent();
     if (p != NULL) {
         _ZN12Unk_02097ff413func_0209801cEj(p, 0x32);
-        func_020bb018(data_021f14e0);
+        func_020bb018(gSkySprites);
     }
 }
 

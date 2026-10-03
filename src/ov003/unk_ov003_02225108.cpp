@@ -35,10 +35,10 @@ static inline BOOL Unk_ov003_02224bc4_Bit(u32 f, u32 m)
     return FALSE;
 }
 
-class Unk_020cbb18 {
+class CommManager {
 public:
-    BOOL func_02072e44();
-    BOOL func_020729cc(s32 i);
+    BOOL isOnline();
+    BOOL isMyAid(s32 i);
 };
 
 // 0x60-byte entry, table at data_ov003_02257d1c
@@ -63,7 +63,7 @@ struct Unk_ov003_02225238_Grid {
 extern "C" {
 extern Unk_ov003_02257d1c data_ov003_02257d1c[4];
 extern V3 data_ov003_02257d50;
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 
 Unk_ov003_02224bc4_Actor *func_020951ec();
 void func_0203239c(void *p);
@@ -72,9 +72,9 @@ void func_021355f0(void *p, u32 n, u32 size, void *dtor);
 s32 func_ov003_02224b1c(Unk_ov003_02257d1c *e);
 void func_ov003_02221874(void *p);
 void func_ov003_02221998(void *p);
-void func_0204eda4(V3 *out, s32 a, s32 b, s32 c, s32 d);
-void *func_0204da0c();
-u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+void FieldPos_FromBlockUnitCenter(V3 *out, s32 a, s32 b, s32 c, s32 d);
+void *TownBlockMap_Get();
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 Item_IsBuildingOrOccupied();
 s32 func_020312a8(s32 x, s32 y);
 void *MI_CpuFill8(void *p, s32 v, u32 n);
@@ -82,14 +82,14 @@ extern u16 data_ov003_02259154[];
 extern u16 data_ov003_02258f54[];
 void func_ov003_02225108();
 BOOL func_ov003_02225238(u16 *buf, s32 kind, s32 *px, s32 *py, Unk_ov003_02225238_Grid *grid, s32 mode);
-u32 func_020374e8();
-s32 func_0204e88c(void *g, s32 x, s32 y);
+u32 MapBlock_GetAttr();
+s32 BlockMap_IsBuriedAtUnit(void *g, s32 x, s32 y);
 s32 func_020312d0(s32 x, s32 y);
 s32 func_020312ec(s32 x, s32 y);
 s32 func_02031218(s32 x, s32 y);
 s32 func_ov003_0222dec8(s32 kind, u16 *c);
 u32 func_02063b8c(u32 n);
-void func_0204ee10(s32 *a, s32 *b, void *c);
+void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 void func_ov003_02224e68(u16 *buf, s32 x, s32 y, s32 rad, u8 a, u8 b);
 extern u8 data_ov003_02257e9c[];
 extern u8 data_ov003_0225812c[];
@@ -134,7 +134,7 @@ void func_ov003_02225108()
     u8 o1;
     u8 o2;
     u8 tx;
-    g = func_0204da0c();
+    g = TownBlockMap_Get();
     if (g != 0) {
         MI_CpuFill8(data_ov003_02259154, 0, 0x200);
         MI_CpuFill8(data_ov003_02258f54, 0, 0x200);
@@ -158,7 +158,7 @@ void func_ov003_02225108()
     l4:
         wx = xo + tx;
         hx = wx >> 4;
-        c = func_0204ebd8(g, hx, hy, wx - (hx << 4), wy - (hy << 4), 0);
+        c = BlockMap_GetItemPtr(g, hx, hy, wx - (hx << 4), wy - (hy << 4), 0);
         if (c != 0) {
             if (Item_IsBuildingOrOccupied() != 0 || (xs = xo + tx, func_020312a8(xs, wy) == 1)) {
                 m = 1 << tx;

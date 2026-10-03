@@ -1,6 +1,6 @@
 #include "types.h"
 
-extern "C" u32 func_02037358(u32 i);
+extern "C" u32 AcreAttr_GetType(u32 i);
 
 extern const u32 data_020c8bd8[0x37];
 
@@ -23,14 +23,14 @@ extern "C" u32 func_02037338(u32 v) {
     return 0x36;
 }
 
-extern "C" u32 func_02037324(u32 x);
-extern "C" u32 func_02037310(s32 i);
+extern "C" u32 Acre_GetAttr(u32 x);
+extern "C" u32 AcreType_GetAttr(s32 i);
 
-extern "C" u32 func_02037324(u32 x) {
-    return func_02037310(func_02037358(x));
+extern "C" u32 Acre_GetAttr(u32 x) {
+    return AcreType_GetAttr(AcreAttr_GetType(x));
 }
 
-extern "C" u32 func_02037310(s32 i) {
+extern "C" u32 AcreType_GetAttr(s32 i) {
     if (i < 0x37) {
         return data_020c8bd8[i];
     }
@@ -38,7 +38,7 @@ extern "C" u32 func_02037310(s32 i) {
 }
 
 extern "C" u8 func_02037260(u32 x) {
-    u32 m = func_02037310(x);
+    u32 m = AcreType_GetAttr(x);
     if (m & 0x7f000) {
         u8 n = 0;
         if (m & 0x1000) n++;

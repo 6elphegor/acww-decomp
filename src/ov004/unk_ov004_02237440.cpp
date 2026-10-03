@@ -15,23 +15,23 @@
 #define func_02031c48 _ZN12Unk_020d8cf4C1Ev
 #define func_0203239c _ZN12Unk_02032238D1Ev
 #define func_020323b0 _ZN12Unk_02032238C1Ev
-#define func_020546c8 _ZN12Unk_020dbd5413func_020546c8Ev
-#define func_020546ec _ZN12Unk_020dbd5413func_020546ecEv
-#define func_02054710 _ZN12Unk_020dbd5413func_02054710Ev
-#define func_02054720 _ZN12Unk_0205454c13func_02054720Eiiitt
-#define func_020547a4 _ZN12Unk_020dbd5413func_020547a4Ei
-#define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
-#define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
-#define func_020548a0 _ZN12Unk_020dbd54D1Ev
-#define func_020548d0 _ZN12Unk_020dbd54C1Ev
-#define func_02054e24 _ZN12Unk_020dbd34D1Ev
-#define func_02054e3c _ZN12Unk_020dbd34C1Ev
+#define AnimModel_detachVisAnim _ZN9AnimModel13detachVisAnimEv
+#define AnimModel_detachJointAnim _ZN9AnimModel15detachJointAnimEv
+#define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
+#define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
+#define AnimModel_setFrame _ZN9AnimModel8setFrameEi
+#define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
+#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
+#define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
+#define func_020548a0 _ZN9AnimModelD1Ev
+#define func_020548d0 _ZN9AnimModelC1Ev
+#define func_02054e24 _ZN11CachedModelD1Ev
+#define func_02054e3c _ZN11CachedModelC1Ev
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
-#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
-#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define ModelAnim_init _ZN9ModelAnim4initEiiit
+#define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define func_02070358 _ZN12Unk_0206fe8013func_02070358EPt
@@ -965,11 +965,11 @@ extern u8 data_0213b91c[];
 extern u8 data_0213b954[];
 extern Unk_ov004_0224ecc8 data_ov004_0224ecc8[];
 extern Elem_7690 data_ov004_022523f4[0x20];
-BOOL func_02054800(void *self, u32 a);
+BOOL AnimModel_allocAnmObj(void *self, u32 a);
 u32 func_02106788(u32 a);
 u32 func_021067a4(u32 a, s32 b);
-void func_02054720(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_02054710(void *p);
+void BlendAnimModel_initAnim(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
+void AnimModel_attachAnim(void *p);
 void Unk_02003c30_callReset(void *p);
 void func_020548a0(void *p);
 void func_0203239c(void *p);
@@ -982,14 +982,14 @@ void func_021355f0(void *p, u32 n, u32 size, void *dtor);
 s32 func_02063b8c(s32 n);
 void *func_02095204(s32 a);
 s32 func_020e9650(void *a, void *b);
-void func_0209cf18(void *p);
+void Clock_GetMinuteHour(void *p);
 void func_0209c2d8(void *p);
 void func_0209c2dc(void *p);
 void func_02088bb0(void *p);
 void func_02088bc8(void *p);
 void Mem_Free(void *p);
-void func_020546c8(void *p);
-void func_020546ec(void *p);
+void AnimModel_detachVisAnim(void *p);
+void AnimModel_detachJointAnim(void *p);
 void Unk_02003c30_callRelease(void *p);
 void func_0209c0b4(void *p);
 void func_0209c224(void *p, void *q);
@@ -1003,8 +1003,8 @@ void func_0209c0c8(void *p);
 void func_0209c15c(void *p);
 void *func_0209c0ac(void *p);
 u32 func_02106020(u32 a, u32 b);
-void func_020547cc(void *obj, void *arg);
-void func_020547e4(void *obj);
+void AnimModel_drawAnimated(void *obj, void *arg);
+void AnimModel_stepAnim(void *obj);
 void func_020abdd0(void *p, s32 a, u32 b, u8 c);
 s32 func_02070358(void *tbl, void *v);
 void func_02031c48(void *p);
@@ -1014,7 +1014,7 @@ void func_020318cc(void *p);
 void func_02088c64(void *obj, void *v, s32 a, s32 b, u32 mode, u32 c0, u32 z, u32 ff, u32 k);
 void func_02089040(void *obj);
 s32 func_02088d38(void *obj, u32 flag);
-s32 func_020553cc(void *obj, void *buf, s32 z);
+s32 Model_GetJointWorldMtx(void *obj, void *buf, s32 z);
 void WorldCurve_FromCurved(void *a, void *b);
 s32 WorldCurve_ToCurved(void *out, void *in);
 void func_020309d4(void *obj, void *pos, void *prev, s32 a, s32 b, s32 c, s32 d);
@@ -1041,8 +1041,8 @@ void func_0205c038();
 BOOL func_0209c0d0(void *self, u32 a, void *s);
 u32 func_0209c348(u32 self);
 void Model_setResource(void *self, u32 a, s32 b);
-BOOL func_02055bcc(void *self, u32 a, u32 b);
-void func_02055b38(void *self, s32 a, s32 b, s32 c, s32 d);
+BOOL ModelAnim_allocMatAnm(void *self, u32 a, u32 b);
+void ModelAnim_init(void *self, s32 a, s32 b, s32 c, s32 d);
 u32 Model_getRenderObj(void *self);
 void ModelAnim_addToRenderObj(void *self, u32 a);
 u32 func_021065dc(u32 a);
@@ -1066,7 +1066,7 @@ void func_ov004_02239574(void *o, s32 a, s32 b);
 void func_ov004_0223a25c(void *o);
 void func_ov004_0223a3c0(void *o);
 void func_ov004_02239d18(void *o);
-void func_020547a4(void *p, s32 a);
+void AnimModel_setFrame(void *p, s32 a);
 s32 Math_AngleXZ(void *a, void *b);
 extern s16 data_02136744[];
 void func_020e9960(void *out, void *a, void *b);
@@ -1379,9 +1379,9 @@ extern "C" void func_ov004_0223d8e8(void *o_) {
     u8 *o = (u8 *)o_;
     Unk_ov004_0223d8e8_Sub *p = (Unk_ov004_0223d8e8_Sub *)(o + 0xb0);
     if (p->unk_a4.mid == 1) {
-        func_020547a4(p, 2);
+        AnimModel_setFrame(p, 2);
     } else {
-        func_020547a4(p, 1);
+        AnimModel_setFrame(p, 1);
     }
 }
 
@@ -1488,7 +1488,7 @@ extern "C" void func_ov004_0223d608(void *self_) {
         if (self->unk_9a == 0) {
             if (st == 0xa || st == 0x33) {
                 if (self->unk_b0.unk_a4.mid != 0) {
-                    func_020547a4(&self->unk_b0, 0);
+                    AnimModel_setFrame(&self->unk_b0, 0);
                 }
             } else if (self->unk_b0.unk_a0.mid < 0xc) {
                 AnimFrameCtrl_setup(self->unk_b0.unk_9c, 0x11, 1, 0x1000, 9);
@@ -1508,7 +1508,7 @@ extern "C" void func_ov004_0223d608(void *self_) {
     if (st != 0xa && st != 0x33) {
         AnimFrameCtrl_setup(self->unk_b0.unk_9c, 9, 0, self->unk_4c, 0);
     } else {
-        func_020547a4(&self->unk_b0, 1);
+        AnimModel_setFrame(&self->unk_b0, 1);
     }
 }
 
@@ -1885,9 +1885,9 @@ extern "C" void func_ov004_0223cc7c(void *o_)
             if (data_ov004_022523e4 % 20 == 0) {
                 u32 r = (u8)func_02063b8c(100);
                 if (o->unk_154.mid == 0 && r > 0x5c) {
-                    func_020547a4(&o->unk_b0, 2);
+                    AnimModel_setFrame(&o->unk_b0, 2);
                 } else if (r > 0x32) {
-                    func_020547a4(&o->unk_b0, 0);
+                    AnimModel_setFrame(&o->unk_b0, 0);
                 }
             } else if (o->unk_154.mid != 0) {
                 func_ov004_0223d8e8(o);
@@ -2168,7 +2168,7 @@ extern "C" void func_ov004_0223c678(Obj_c4bc *o)
         if (!func_020e7870(&r4->y, t, r7, 0x1000, 0x266)) {
             o->unk_98 = (func_02063b8c(9) + 2) * 20;
             o->unk_172 = 25;
-            func_020547a4(&o->unk_ae + 2, 0);
+            AnimModel_setFrame(&o->unk_ae + 2, 0);
             *r6 = *r4;
             if (o->unk_9a != 0) {
                 o->unk_9c = (u8)(o->unk_9e - 10);
@@ -2710,7 +2710,7 @@ extern "C" void func_ov004_0223ba10(void *o_)
     default:
         if (func_ov004_0223d5e8(o) && func_ov004_0223b9b0(o)) {
             if (o->unk_154.mid != 1) {
-                func_020547a4(o->unk_b0, 1);
+                AnimModel_setFrame(o->unk_b0, 1);
             }
             o->unk_168 = 0;
             o->unk_172 = 4;
@@ -2725,7 +2725,7 @@ extern "C" BOOL func_ov004_0223b9b0(Obj_b1e8 *o)
     s32 r4 = o->unk_50;
     func_ov004_0223d12c(o);
     if (o->unk_9c < o->unk_9e && r4 < 2) {
-        func_020547a4(o->unk_b0, 1);
+        AnimModel_setFrame(o->unk_b0, 1);
         goto yes;
     }
     if (r4 == 0) {
@@ -2733,7 +2733,7 @@ extern "C" BOOL func_ov004_0223b9b0(Obj_b1e8 *o)
     } else if (r4 > 1) {
         o->unk_50 = r4 - 1;
     }
-    func_020547a4(o->unk_b0, 0);
+    AnimModel_setFrame(o->unk_b0, 0);
     return FALSE;
 yes:
     return TRUE;
@@ -3005,7 +3005,7 @@ extern "C" BOOL func_ov004_0223b1e8(Obj_b1e8 *o)
         } else if ((u16)t < 14 && b->unk_a4.mid < 11) {
             AnimFrameCtrl_setup(b->unk_9c, 14, 0, 0x1000, 10);
         } else if ((u16)t > 11 && b->unk_a4.mid == 13) {
-            func_020547a4(b, 10);
+            AnimModel_setFrame(b, 10);
         }
         return FALSE;
     }
@@ -3341,7 +3341,7 @@ extern "C" BOOL func_ov004_0223aa40(void *r_) {
             } else if ((u16)x < 0xe && s->unk_a4.mid < 0xa) {
                 AnimFrameCtrl_setup(s->unk_9c, 0xe, 0, 0x1000, 0xa);
             } else if (s->unk_a4.mid == 0xd && (u16)x > 0xa) {
-                func_020547a4(s, 0xa);
+                AnimModel_setFrame(s, 0xa);
             }
         }
         if (*pw > 0) {
@@ -3489,7 +3489,7 @@ void Unk_ov004_02239e70::func_0223a6e8(Unk_ov004_02239e70_V3 *v) {
     } else {
         func_ov004_0223d5a8(this, 0);
         if (unk_b0.anim.unk_08b.mid != 0) {
-            func_020547a4(&unk_b0, 0);
+            AnimModel_setFrame(&unk_b0, 0);
         }
     }
     if (func_ov004_0223d5e8(this) != 0 && *cnt == 0) {
@@ -3935,18 +3935,18 @@ void Unk_ov004_02239434::func_ov004_02239b6c(u16 *out)
         if (r6 > 0x14 || unk_22 == 0) {
             u32 t = (u32)(r4->unk_a4 << 4) >> 16;
             if (t == 2) {
-                func_020547a4(r4, 1);
+                AnimModel_setFrame(r4, 1);
             } else if (t == 1) {
-                func_020547a4(r4, 0);
+                AnimModel_setFrame(r4, 0);
                 unk_172 = 0x19;
                 unk_50 = 0x3c;
             }
         } else {
             s32 h = (s32)r4->unk_a4 >> 12;
             if ((u16)h == 0 && unk_50 == 0) {
-                func_020547a4(r4, 1);
+                AnimModel_setFrame(r4, 1);
             } else if ((u16)h == 1) {
-                func_020547a4(r4, 2);
+                AnimModel_setFrame(r4, 2);
             } else if ((n = unk_50) != 0) {
                 unk_50 = n - 1;
             }
@@ -4074,7 +4074,7 @@ void Unk_ov004_02239434::func_ov004_02239804(s32 a, s32 b, s32 c, s32 d, s32 e)
         if (c2 != 0xa && c2 != 0x33) {
             AnimFrameCtrl_setup(&unk_b0.unk_9c, 0x11, 1, 0x1000, 9);
         } else {
-            func_020547a4(&unk_b0, 0);
+            AnimModel_setFrame(&unk_b0, 0);
         }
     }
 }
@@ -4867,11 +4867,11 @@ extern "C" void func_ov004_022380a4(u8 *m, u8 *s) {
                     } else {
                         sp8 = func_021065f8(func_021065dc(tmp), 0);
                     }
-                    if (func_02054800(r6, sp10)) {
+                    if (AnimModel_allocAnmObj(r6, sp10)) {
                         s32 k = 0x1000;
                         if (t == 0x35 || t == 9) k = 0;
-                        func_02054720(r6, sp8, 0, k, 0, 0);
-                        func_02054710(r6);
+                        BlendAnimModel_initAnim(r6, sp8, 0, k, 0, 0);
+                        AnimModel_attachAnim(r6);
                     }
                     if (t == 0x18) {
                         func_020639e8(buf3, "/insect/61/bug%d.nsbta", 0x3c);
@@ -4879,8 +4879,8 @@ extern "C" void func_ov004_022380a4(u8 *m, u8 *s) {
                         if (File_Exists(buf3)) {
                             if (File_LoadAlloc(buf3, sp10, 4, ok)) {
                                 sp1c = func_02106670(func_02106654(), ok);
-                                if (func_02055bcc(s, *(u32 *)(r6 + 0x5c), sp10)) {
-                                    func_02055b38(s, sp1c, ok, 0x1000, ok);
+                                if (ModelAnim_allocMatAnm(s, *(u32 *)(r6 + 0x5c), sp10)) {
+                                    ModelAnim_init(s, sp1c, ok, 0x1000, ok);
                                     ModelAnim_addToRenderObj(s, Model_getRenderObj(r6));
                                     ok = TRUE;
                                 }
@@ -4940,7 +4940,7 @@ void Unk_ov004_0224ec80::func_ov004_02237de4(Elem_7690 *e) {
         if (func_ov004_02237d60(id, e->unk_172)) {
             p2 = *pos;
             if (id == 0x38) {
-                if (func_020553cc(e->unk_b0, &buf, 0)) {
+                if (Model_GetJointWorldMtx(e->unk_b0, &buf, 0)) {
                     q = buf.unk_24;
                     WorldCurve_FromCurved(&p2, &q);
                 }
@@ -4972,7 +4972,7 @@ void Unk_ov004_0224ec80::func_ov004_02237de4(Elem_7690 *e) {
             func_02089040(obj);
         }
         if (data_ov004_0224ecc8[id].unk_00 == 0) {
-            func_020547e4(e->unk_b0);
+            AnimModel_stepAnim(e->unk_b0);
             if (id == 0x18) {
                 AnimFrameCtrl_step(e);
                 *e->unk_00.unk_18 = e->unk_00.unk_08;
@@ -5132,9 +5132,9 @@ BOOL Unk_ov004_0224ec80::onDraw() {
             u8 *obj = e->unk_b0;
             if (id == 0x30) {
                 V3_7690 v = data_ov004_0224ec5c;
-                func_020547cc(obj, &v);
+                AnimModel_drawAnimated(obj, &v);
             } else {
-                func_020547cc(obj, (void *)z0);
+                AnimModel_drawAnimated(obj, (void *)z0);
             }
             if (func_ov004_0223798c(e)) {
                 u32 r = func_02106020((u32)func_0209c0ac(e->unk_288), z1);
@@ -5280,9 +5280,9 @@ void Unk_ov004_0224ec80::func_022375b8(s32 idx) {
             unk_198 = 0;
         }
         if (data_ov004_0224ecc8[t].unk_00 != 0) {
-            func_020546c8(r->unk_b0);
+            AnimModel_detachVisAnim(r->unk_b0);
         } else {
-            func_020546ec(r->unk_b0);
+            AnimModel_detachJointAnim(r->unk_b0);
         }
         r->unk_18 = 0;
         r->unk_1c = 0;
@@ -5316,7 +5316,7 @@ Unk_ov004_0224ec70::~Unk_ov004_0224ec70() {
 
 extern "C" u32 func_ov004_02237440() {
     Unk_ov004_02237440_Out o;
-    func_0209cf18(&o);
+    Clock_GetMinuteHour(&o);
     u32 v = o.unk_01;
     if (v >= 4 && v <= 7) return 2;
     if (v >= 8 && v <= 0xf) return 4;

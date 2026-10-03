@@ -15,18 +15,18 @@ extern u16 gPad[];
 extern void *gCurrentHeap;
 
 s32 Snd_PlaySe(s32 a);
-s32 func_0200140c();
-s32 func_0200142c();
-s32 func_020013cc(s32 a);
-s32 func_0200151c(s32 a);
-s32 func_0200152c(s32 a);
-s32 func_02001710(s32 a, s32 b);
-s32 func_02001608(s32 a, s32 b, s32 c, s32 d);
+s32 Gfx2d_EndSubObjWinBrightness();
+s32 Gfx2d_BeginSubObjWinBrightness();
+s32 Gfx2d_SetSubBrightness(s32 a);
+s32 Gfx2d_DisableSubWindows(s32 a);
+s32 Gfx2d_EnableSubWindows(s32 a);
+s32 Gfx2d_SetSubWin1Planes(s32 a, s32 b);
+s32 Gfx2d_SetSubWin1Rect(s32 a, s32 b, s32 c, s32 d);
 s32 func_02003f4c(s32 a);
 s32 Snd_StopSe(s32 a, s32 b);
-s32 func_0200212c(s32 a);
-s32 func_020020b8(s32 a);
-s32 func_020013b4(s32 a, s32 b, s32 c);
+s32 Gfx2d_HideLayer(s32 a);
+s32 Gfx2d_ShowLayer(s32 a);
+s32 Gfx2d_SetSubAlphaBlend(s32 a, s32 b, s32 c);
 s32 Snd_SetPanIfChanged(s32 a);
 s32 MIi_CpuCopy32(void *a, void *b, u32 n);
 BOOL func_ov002_0220125c(void *pad);
@@ -39,25 +39,25 @@ void Oam_DrawCell(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 
 void func_0206f994(void *p, void *s, s32 n);
 void func_0206ecf8(u32 v);
 s32 func_0206ed50();
-void func_02002438(void *p, s32 a, s32 b, s32 c, s32 d);
-void func_02001f0c(void *p, void *q, s32 a, s32 b);
+void Gfx2d_LoadCharRange(void *p, s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_LinearToTiles4bpp(void *p, void *q, s32 a, s32 b);
 void *func_020716cc();
 void *PlayerData_GetCurrent();
 void *func_0206ed38();
 void func_02004008(s32 a);
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
-s32 func_020026c4(void *, void *, u32, u32, u32, u32);
-s32 func_0200261c(void *, void *, u32, u32, u32, u32);
+s32 Gfx2d_LoadPaletteFile(void *, void *, u32, u32, u32, u32);
+s32 Gfx2d_LoadCharFile(void *, void *, u32, u32, u32, u32);
 BOOL File_LoadToBuffer(void *a, void *b, s32 c);
-BOOL func_020024f0(void *p, u32 a, u32 b, u32 c);
-void func_02002654(void *a, void *b, s32 c);
-void func_020015b8(s32 a);
-void func_02002398(s32 a, s32 b);
-void func_0200226c(u32 n, u32 a, u32 b, u32 c);
-void func_020021fc(s32 a, s32 b, s32 c);
-void func_020021a0(s32 a);
-void func_020013a4();
+BOOL Gfx2d_LoadScreen(void *p, u32 a, u32 b, u32 c);
+void Gfx2d_LoadScreenFile(void *a, void *b, s32 c);
+void Gfx2d_SetSubBgModeState(s32 a);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
+void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ResetSubBlend();
 void func_02003f5c(s32 a);
 void func_02094960();
 void PlayerActor_RequestAct05();
@@ -82,10 +82,10 @@ void *_ZN12Unk_0208722413func_02087298Ev(void *self);
 void *_ZN10PlayerData13func_020986d4Ev(void *self);
 u16 *_ZN10PlayerData6getHatEv(void *self);
 u16 *_ZN10PlayerData8getShirtEv(void *self);
-void _ZN12Unk_020e45f813func_020b8670Ejhj(void *self, void *q, s32 a, s32 b);
-void _ZN12Unk_020e45f813func_020b8714Ejhjjj(void *self, void *q, s32 a, s32 b, s32 c, s32 d);
-BOOL _ZN12Unk_020e45f813func_020b86c0Ejhjj(void *self, void *a, u32 b, u32 c, u32 d);
-void _ZN12Unk_020e45f813func_020b87d0Ev(void *self);
+void _ZN10BgVramTask14requestPaletteEjhj(void *self, void *q, s32 a, s32 b);
+void _ZN10BgVramTask12requestCharsEjhjjj(void *self, void *q, s32 a, s32 b, s32 c, s32 d);
+BOOL _ZN10BgVramTask13requestScreenEjhjj(void *self, void *a, u32 b, u32 c, u32 d);
+void _ZN10BgVramTask6cancelEv(void *self);
 }
 
 // Other modules' classes (methods called directly)
@@ -107,9 +107,9 @@ public:
 };
 
 // Element at +0xf8 (0x38 bytes each)
-class Unk_020e4608 {
+class BgVramTaskPair {
 public:
-    Unk_020e4608();
+    BgVramTaskPair();
     u32 unk_00[0x38 / 4];
 };
 
@@ -465,7 +465,7 @@ public:
     /* 0xb5 */ u8 unk_b5;
     /* 0xb6 */ u8 unk_b6[2];
     /* 0xb8 */ Unk_020e0488 unk_b8[1];
-    /* 0xf8 */ Unk_020e4608 unk_f8[3];
+    /* 0xf8 */ BgVramTaskPair unk_f8[3];
     /* 0x1a0 */ Unk_ov002_02204614 unk_1a0;
     /* 0x204 */ u8 unk_204[0xa04 - 0x204];
     /* 0xa04 */ u8 unk_a04[0x200];
@@ -788,8 +788,8 @@ void Unk_ov123_022959c4::func_ov123_02294e14() {
     func_ov123_02293bac();
     unk_5004.func_ov002_02203650();
     func_ov002_022008e0(0xb, 4, 0, 0x30);
-    func_020020b8(6);
-    func_020020b8(4);
+    Gfx2d_ShowLayer(6);
+    Gfx2d_ShowLayer(4);
     func_ov123_02292314();
     func_ov123_02294a20();
     func_ov123_02292000(1);
@@ -841,11 +841,11 @@ void Unk_ov123_022959c4::func_ov123_02294d00() {
 
 void Unk_ov123_022959c4::func_ov123_02294cb0() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
-        func_020021a0(4);
-        func_020021a0(3);
+        Gfx2d_ResetLayer(6);
+        Gfx2d_ResetLayer(4);
+        Gfx2d_ResetLayer(3);
         func_ov002_02200a60(5);
-        func_020013a4();
+        Gfx2d_ResetSubBlend();
         func_ov123_02291ff0(1);
         unk_5004.func_ov002_02203698();
     } else {
@@ -949,9 +949,9 @@ void Unk_ov123_022959c4::func_ov123_02294a20() {
 }
 
 void Unk_ov123_022959c4::func_ov123_022949e8() {
-    func_020021fc(6, 0, -unk_98);
-    func_020021fc(4, 0, -unk_98);
-    func_020021fc(3, 0, -unk_98);
+    Gfx2d_SetLayerOffset(6, 0, -unk_98);
+    Gfx2d_SetLayerOffset(4, 0, -unk_98);
+    Gfx2d_SetLayerOffset(3, 0, -unk_98);
 }
 
 void Unk_ov123_022959c4::func_ov123_02294984() {
@@ -1003,31 +1003,31 @@ void Unk_ov123_022959c4::func_ov123_022948f4() {
 }
 
 void Unk_ov123_022959c4::func_ov123_022948a8() {
-    func_020015b8(0);
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
-    func_02002398(4, 2);
-    func_0200226c(4, 0, 0, 0);
-    func_02002398(3, 2);
-    func_0200226c(3, 0, 0, 0);
+    Gfx2d_SetSubBgModeState(0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 2);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
+    Gfx2d_SetLayerPriority(3, 2);
+    Gfx2d_SetLayerControl(3, 0, 0, 0);
 }
 
 void Unk_ov123_022959c4::func_ov123_02294804() {
     void *p = gCurrentHeap;
-    func_020026c4((void *)"menu/edit/bg.bpl", p, 6, 4, 4, 0xe);
+    Gfx2d_LoadPaletteFile((void *)"menu/edit/bg.bpl", p, 6, 4, 4, 0xe);
     File_LoadToBuffer((void *)"menu/edit/a.bsc", (u8 *)this + 0x204, 0x800);
-    func_020024f0((u8 *)this + 0x204, 6, 0x800, 0);
-    func_02002654((void *)"menu/edit/b.bsc", p, 4);
-    func_02002654((void *)"menu/edit/c.bsc", p, 3);
-    func_0200261c((void *)"menu/edit/bg1.bch", p, 6, 0x120, 0x120, 0x1ff);
-    func_0200261c((void *)"menu/edit/bg0.bch", p, 6, 0x10, 0x10, 0x1f);
+    Gfx2d_LoadScreen((u8 *)this + 0x204, 6, 0x800, 0);
+    Gfx2d_LoadScreenFile((void *)"menu/edit/b.bsc", p, 4);
+    Gfx2d_LoadScreenFile((void *)"menu/edit/c.bsc", p, 3);
+    Gfx2d_LoadCharFile((void *)"menu/edit/bg1.bch", p, 6, 0x120, 0x120, 0x1ff);
+    Gfx2d_LoadCharFile((void *)"menu/edit/bg0.bch", p, 6, 0x10, 0x10, 0x1f);
 }
 
 void Unk_ov123_022959c4::func_ov123_022947a0() {
     void *p = gCurrentHeap;
-    func_020026c4((void *)"menu/edit/obj.bpl", p, 8, 4, 4, 0xc);
-    func_0200261c((void *)"menu/edit/obj0.bch", p, 8, 0xc0, 0xc0, 0x12f);
-    func_0200261c((void *)"menu/edit/obj1.bch", p, 8, 0x130, 0x130, 0x19f);
+    Gfx2d_LoadPaletteFile((void *)"menu/edit/obj.bpl", p, 8, 4, 4, 0xc);
+    Gfx2d_LoadCharFile((void *)"menu/edit/obj0.bch", p, 8, 0xc0, 0xc0, 0x12f);
+    Gfx2d_LoadCharFile((void *)"menu/edit/obj1.bch", p, 8, 0x130, 0x130, 0x19f);
 }
 
 void Unk_ov123_022959c4::func_ov123_02294740() {
@@ -1441,17 +1441,17 @@ void Unk_ov123_022959c4::func_ov123_02293d28()
 
 void Unk_ov123_022959c4::func_ov123_02293d08()
 {
-    func_02001f0c(func_ov123_0229275c(), unk_2e04, 4, 4);
+    Gfx2d_LinearToTiles4bpp(func_ov123_0229275c(), unk_2e04, 4, 4);
 }
 
 void Unk_ov123_022959c4::func_ov123_02293ce0()
 {
-    func_02002438(unk_2e04, 6, 0x120, 0x120, 0x12f);
+    Gfx2d_LoadCharRange(unk_2e04, 6, 0x120, 0x120, 0x12f);
 }
 
 void Unk_ov123_022959c4::func_ov123_02293cb0()
 {
-    _ZN12Unk_020e45f813func_020b8714Ejhjjj(unk_f8, unk_2e04, 6, 0x120, 0x120, 0x12f);
+    _ZN10BgVramTask12requestCharsEjhjjj(unk_f8, unk_2e04, 6, 0x120, 0x120, 0x12f);
 }
 
 void Unk_ov123_022959c4::func_ov123_02293bd0()
@@ -1487,17 +1487,17 @@ Li:
     }
     i++;
     if (i < 0x20) goto Li;
-    func_02001f0c(unk_e04, unk_3004, 0x10, 0x10);
+    Gfx2d_LinearToTiles4bpp(unk_e04, unk_3004, 0x10, 0x10);
 }
 
 void Unk_ov123_022959c4::func_ov123_02293bac()
 {
-    func_02002438(unk_3004, 6, 0x20, 0x20, 0x11f);
+    Gfx2d_LoadCharRange(unk_3004, 6, 0x20, 0x20, 0x11f);
 }
 
 void Unk_ov123_022959c4::func_ov123_02293b7c()
 {
-    _ZN12Unk_020e45f813func_020b8714Ejhjjj((u8 *)this + 0x130, unk_3004, 6, 0x20, 0x20, 0x11f);
+    _ZN10BgVramTask12requestCharsEjhjjj((u8 *)this + 0x130, unk_3004, 6, 0x20, 0x20, 0x11f);
 }
 
 void Unk_ov123_022959c4::func_ov123_02293b48()
@@ -1515,7 +1515,7 @@ void Unk_ov123_022959c4::func_ov123_02293b20()
 {
     void *a = func_020716cc();
     void *b = _ZN12Unk_020718a413func_020716d4Ei(a, unk_a1);
-    _ZN12Unk_020e45f813func_020b8670Ejhj(unk_f8, b, 6, 0xe);
+    _ZN10BgVramTask14requestPaletteEjhj(unk_f8, b, 6, 0xe);
 }
 
 void Unk_ov123_022959c4::func_ov123_02293b0c(u8 v)
@@ -2179,7 +2179,7 @@ void Unk_ov123_022959c4::func_ov123_02292cb4(u32 a, u32 b) {
 
 void Unk_ov123_022959c4::func_ov123_02292c70() {
     if (func_ov123_02292010(0x10)) {
-        if (_ZN12Unk_020e45f813func_020b86c0Ejhjj(&unk_f8[2], &unk_204, 6, 0x800, 0)) {
+        if (_ZN10BgVramTask13requestScreenEjhjj(&unk_f8[2], &unk_204, 6, 0x800, 0)) {
             func_ov123_02291ff0(0x10);
         }
     }
@@ -2347,7 +2347,7 @@ void Unk_ov123_022959c4::func_ov123_02292864() {
 void Unk_ov123_022959c4::func_ov123_02292844() {
     s32 i;
     for (i = 0; i < 3; i++) {
-        _ZN12Unk_020e45f813func_020b87d0Ev(&unk_f8[i]);
+        _ZN10BgVramTask6cancelEv(&unk_f8[i]);
     }
 }
 
@@ -2559,15 +2559,15 @@ void Unk_ov123_022959c4::func_ov123_02292340() {
 void Unk_ov123_022959c4::func_ov123_02292314() {
     if (!func_ov123_02292010(0x20)) {
         func_ov123_02292000(0x20);
-        func_020020b8(3);
-        func_020013b4(1, 8, 12);
+        Gfx2d_ShowLayer(3);
+        Gfx2d_SetSubAlphaBlend(1, 8, 12);
     }
 }
 
 void Unk_ov123_022959c4::func_ov123_022922f0() {
     if (func_ov123_02292010(0x20)) {
         func_ov123_02291ff0(0x20);
-        func_0200212c(3);
+        Gfx2d_HideLayer(3);
     }
 }
 
@@ -2667,20 +2667,20 @@ void Unk_ov123_022959c4::func_ov123_02292044() {
         func_ov123_022922f0();
         func_ov123_02292000(0x20000);
     }
-    func_0200142c();
-    func_020013cc(-6);
+    Gfx2d_BeginSubObjWinBrightness();
+    Gfx2d_SetSubBrightness(-6);
     unk_5004.func_ov002_02203044();
-    func_02001710(0x1f, 0);
-    func_0200152c(2);
-    func_02001608(0x40, 0x18, 0xc0, 0x98);
+    Gfx2d_SetSubWin1Planes(0x1f, 0);
+    Gfx2d_EnableSubWindows(2);
+    Gfx2d_SetSubWin1Rect(0x40, 0x18, 0xc0, 0x98);
 }
 
 // ---------------------------------------------------------------------------------------------
 
 void Unk_ov123_022959c4::func_ov123_02292024() {
-    func_0200140c();
+    Gfx2d_EndSubObjWinBrightness();
     unk_5004.func_ov002_0220301c();
-    func_0200151c(2);
+    Gfx2d_DisableSubWindows(2);
 }
 
 BOOL Unk_ov123_022959c4::func_ov123_02292010(u32 mask) {

@@ -25,11 +25,11 @@ void NNS_G3dBindMdlPltt(void *a, void *b);
 }
 
 extern "C" {
-void *func_02055928(void *a, void *b);
+void *Gfx3d_CopyModel(void *a, void *b);
 }
 
 extern "C" {
-void *func_0205588c(void *a, void *b);
+void *Gfx3d_CopyTex(void *a, void *b);
 }
 
 extern "C" {
@@ -44,28 +44,28 @@ public:
     Unk_020b83b0() : unk_04(0), unk_08(0), unk_0c(0xff) {}
 };
 
-class Unk_020e4618 : public Unk_020b83b0 {
+class VramTask : public Unk_020b83b0 {
 public:
     u8 unk_0d;
     u8 unk_0e;
     u8 unk_0f;
-    Unk_020e4618();
-    virtual BOOL vfunc_00() = 0;
+    VramTask();
+    virtual BOOL execute() = 0;
 };
 
-struct Unk_020b8c1c {
+struct TexTransfer {
     u32 unk_00;
     u32 unk_04;
     u32 unk_08;
 };
 
-class Unk_020e45ec : public Unk_020e4618 {
+class TexVramTask : public VramTask {
 public:
-    Unk_020b8c1c unk_10;
-    Unk_020e45ec();
-    virtual BOOL vfunc_00();
-    void func_020b89c8(void);
-    BOOL func_020b89f0(u32 *a, u8 b);
+    TexTransfer unk_10;
+    TexVramTask();
+    virtual BOOL execute();
+    void cancel(void);
+    BOOL requestTexResource(u32 *a, u8 b);
 };
 
 class TexVramSlot {
@@ -78,8 +78,8 @@ public:
 
     TexVramSlot();
     virtual ~TexVramSlot();
-    void func_020551f4(u32 a, u32 b, u32 c);
-    void func_02055210(void *p);
+    void setKeys(u32 a, u32 b, u32 c);
+    void relocateTexture(void *p);
 };
 
 class ModelResource {
@@ -88,17 +88,17 @@ public:
     void *unk_08;
     void *unk_0c;
     void *unk_10;
-    Unk_020e45ec unk_14;
+    TexVramTask unk_14;
     u8 unk_30;
     u8 unk_31;
 
     ModelResource();
     virtual ~ModelResource();
-    u32 func_02055014(void *a, TexVramSlot *b, void *c);
-    u32 func_02055090(void *res, TexVramSlot *b, void *tex, void *heap);
-    void func_0205516c(void);
-    void *func_0205500c(void);
-    void *func_02055010(void);
+    u32 loadTexture(void *a, TexVramSlot *b, void *c);
+    u32 loadModel(void *res, TexVramSlot *b, void *tex, void *heap);
+    void release(void);
+    void *getTexture(void);
+    void *getModel(void);
 };
 
 static inline u8 *Unk_02054b70_Off(u8 *p) {
@@ -109,7 +109,7 @@ static inline BOOL Unk_02055014_IsTwo(u8 v) {
     return v == 2 ? TRUE : FALSE;
 }
 
-void TexVramSlot::func_020551f4(u32 a, u32 b, u32 c) {
+void TexVramSlot::setKeys(u32 a, u32 b, u32 c) {
     unk_04 = a;
     unk_08 = b;
     unk_0c = c;
@@ -127,7 +127,7 @@ ModelResource::ModelResource() {
 
 ModelResource::~ModelResource() {}
 
-void ModelResource::func_0205516c(void) {
+void ModelResource::release(void) {
     if (unk_04 != 0) {
         Heap_Free(unk_08, (void *)unk_04);
     }
@@ -136,10 +136,10 @@ void ModelResource::func_0205516c(void) {
     unk_0c = NULL;
     unk_10 = NULL;
     unk_30 = 0;
-    unk_14.func_020b89c8();
+    unk_14.cancel();
 }
 
-u32 ModelResource::func_02055090(void *res, TexVramSlot *b, void *tex, void *heap) {
+u32 ModelResource::loadModel(void *res, TexVramSlot *b, void *tex, void *heap) {
     u32 st = unk_30;
     if (st == 3) {
         return st;
@@ -151,8 +151,8 @@ u32 ModelResource::func_02055090(void *res, TexVramSlot *b, void *tex, void *hea
         unk_04 = (u32)File_LoadAlloc(res, heap, -4, 0);
         unk_08 = heap;
         void *q = NNS_G3dGetTex((void *)unk_04);
-        b->func_02055210(q);
-        unk_14.func_020b89f0((u32 *)q, 1);
+        b->relocateTexture(q);
+        unk_14.requestTexResource((u32 *)q, 1);
         unk_30 = 1;
         return unk_30;
     }
@@ -164,7 +164,7 @@ u32 ModelResource::func_02055090(void *res, TexVramSlot *b, void *tex, void *hea
     }
     if (unk_30 == 2) {
         u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet((void *)unk_04));
-        unk_0c = func_02055928(p, tex);
+        unk_0c = Gfx3d_CopyModel(p, tex);
         void *q = NNS_G3dGetTex((void *)unk_04);
         NNS_G3dBindMdlTex(unk_0c, q);
         NNS_G3dBindMdlPltt(unk_0c, q);
@@ -176,14 +176,14 @@ u32 ModelResource::func_02055090(void *res, TexVramSlot *b, void *tex, void *hea
     return unk_30;
 }
 
-u32 ModelResource::func_02055014(void *a, TexVramSlot *b, void *c) {
+u32 ModelResource::loadTexture(void *a, TexVramSlot *b, void *c) {
     u32 st = unk_30;
     if (st == 3) {
         return st;
     }
     if (st == 0) {
-        b->func_02055210(a);
-        unk_14.func_020b89f0((u32 *)a, 1);
+        b->relocateTexture(a);
+        unk_14.requestTexResource((u32 *)a, 1);
         unk_30 = 1;
         return unk_30;
     }
@@ -194,17 +194,17 @@ u32 ModelResource::func_02055014(void *a, TexVramSlot *b, void *c) {
         unk_30 = 2;
     }
     if (unk_30 == 2) {
-        unk_10 = func_0205588c(a, c);
+        unk_10 = Gfx3d_CopyTex(a, c);
         unk_30 = 3;
     }
     return unk_30;
 }
 
-void *ModelResource::func_02055010(void) {
+void *ModelResource::getModel(void) {
     return unk_0c;
 }
 
-void *ModelResource::func_0205500c(void) {
+void *ModelResource::getTexture(void) {
     return unk_10;
 }
 

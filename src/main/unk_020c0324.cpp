@@ -5,7 +5,7 @@ struct Unk_020bfe30_Vec {
 };
 typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 unk_00[0x68];
     s32 unk_68;
 };
@@ -48,10 +48,10 @@ void *PlayerData_GetCurrent(void);
 void *func_020850e0(void);
 void *func_02085178(void *a);
 void *func_020947f0(s32 a);
-void *func_0204da0c(void);
-void func_0204d684(void *a, Unk_020c0acc_Vec *b, s32 c, s32 d);
-void func_0204edd8(Unk_020c0acc_Vec *a, Unk_020c0acc_Vec *b);
-void func_0204ed8c(Unk_020c0acc_Vec *a, s32 b, s32 c);
+void *TownBlockMap_Get(void);
+void Town_FindGateHouse(void *a, Unk_020c0acc_Vec *b, s32 c, s32 d);
+void FieldPos_SnapToUnitCenter(Unk_020c0acc_Vec *a, Unk_020c0acc_Vec *b);
+void FieldPos_FromUnitCenter(Unk_020c0acc_Vec *a, s32 b, s32 c);
 s32 _ZN10PlayerData13func_020986a4Ev(void *a);
 BOOL _ZN12Unk_020872fc13func_02087314Ev(s32 a);
 BOOL _ZN12Unk_02097ff413func_02098044Ej(void *a, s32 b);
@@ -81,7 +81,7 @@ s32 func_020a0414(void);
 s32 PlayerData_GetBySessionSlot(s32 a);
 BOOL func_020a03c4(void);
 void func_020b78c4(void);
-BOOL _ZN12Unk_020cbb1813func_020729ccEj(Unk_020cbb18 *p, s32 a);
+BOOL _ZN11CommManager7isMyAidEj(CommManager *p, s32 a);
 s32 _ZN12Unk_020872fc13func_0208733cEv(void);
 void _ZN12Unk_020872fc13func_02087368Ev(s32 a);
 void _ZN12Unk_0208721013func_02087210Ev(void *a);
@@ -92,16 +92,16 @@ void Camera_SetMode19(void);
 void _ZN12Unk_02013b1013func_02014198Ehh(void *p, s32 a, s32 b);
 s32 _ZN12Unk_020872fc13func_02087364Ev(void *p);
 s32 func_02063b8c(u32 n);
-extern u8 data_021c3cc0;
+extern u8 gScreenTransition;
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 void SpNpcMissing2_ChangeAct04(void);
 void SpNpcMissing2_ChangeAct06(void);
 static inline BOOL Unk_020c06a0_IsMode2() {
-    return data_021c3cc0 == 2;
+    return gScreenTransition == 2;
 }
 
 // Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here: the slot is shared with
@@ -241,11 +241,11 @@ public:
         u8 unk_00[size]; \
         name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 unk_00[0xa4];
     u32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
+    ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -313,7 +313,7 @@ struct Character : Actor {
 
 struct Unk_020d77a4 : Character {
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -481,7 +481,7 @@ BOOL SpNpcMissing1::vfunc_00() {
     unk_720 = -1;
     p = PlayerData_GetCurrent();
     if (func_020b50e8() == 0) {
-        func_0204edd8(&unk_5c, &unk_5c);
+        FieldPos_SnapToUnitCenter(&unk_5c, &unk_5c);
         if (func_02077e7c(&unk_5c, 1, 0, 0)) {
             func_02077f40(&unk_5c, 0);
             unk_5c.x += 0x2000;
@@ -489,7 +489,7 @@ BOOL SpNpcMissing1::vfunc_00() {
         }
         if (_ZN12Unk_02086f8413func_02086fa8Ev(func_02085178(func_020850e0())) != 0) {
             if (func_020b50dc() == 0xb) {
-                func_0204d684(func_0204da0c(), &unk_5c, 0, 0);
+                Town_FindGateHouse(TownBlockMap_Get(), &unk_5c, 0, 0);
                 unk_5c.z -= 0x2000;
                 unk_658.setTopic(3);
                 changeAct(5);
@@ -622,8 +622,8 @@ BOOL SpNpcMissing1::setupAct01() {
     unk_4cc.unk_1c |= 2;
     _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     _ZN12Unk_0201985813func_020195c8Eiijtt(&unk_564, 1, 0x53, 1, data_020c6cc8, 0);
-    func_0204d684(func_0204da0c(), &a, 0, 0);
-    func_0204edd8(&b, &unk_5c);
+    Town_FindGateHouse(TownBlockMap_Get(), &a, 0, 0);
+    FieldPos_SnapToUnitCenter(&b, &unk_5c);
     if (b.z < a.z) {
         if (b.x >= a.x - 0x4000 && b.x <= a.x + 0x4000) {
             unk_5c.z = a.z + 0x1000;
@@ -723,15 +723,15 @@ BOOL SpNpcMissing1::mainAct05() {
         return TRUE;
     }
     if (unk_4cc.unk_44 == 0 && func_020b50e8() == 0) {
-        func_0204d684(func_0204da0c(), &a, 0, 0);
-        func_0204edd8(&b, &unk_5c);
+        Town_FindGateHouse(TownBlockMap_Get(), &a, 0, 0);
+        FieldPos_SnapToUnitCenter(&b, &unk_5c);
         if (b.z > a.z) {
             unk_4cc.unk_44 = 1;
         }
     }
     if (unk_4cc.unk_44 == 0 && func_020b50e8() == 0xb) {
-        func_0204edd8(&d, &unk_5c);
-        func_0204ed8c(&c, 6, 15);
+        FieldPos_SnapToUnitCenter(&d, &unk_5c);
+        FieldPos_FromUnitCenter(&c, 6, 15);
         if (d.z < c.z) {
             unk_4cc.unk_44 = 1;
         }
@@ -815,7 +815,7 @@ BOOL SpNpcMissing1::mainAct08() {
     Unk_020bfe30_Vec vec24;
     Unk_020bfe30_Vec vec30;
     s32 r5 = func_020a0414();
-    Unk_020cbb18 *r7 = data_020cbb18;
+    CommManager *r7 = gCommManager;
     s32 r6 = r7->unk_68;
     s32 s = PlayerData_GetBySessionSlot(r5);
     switch (unk_724) {
@@ -908,7 +908,7 @@ BOOL SpNpcMissing1::mainAct08() {
         }
         break;
     case 10:
-        if (_ZN12Unk_020cbb1813func_020729ccEj(r7, 0)) {
+        if (_ZN11CommManager7isMyAidEj(r7, 0)) {
             s32 x = _ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent());
             if (_ZN12Unk_020872fc13func_0208733cEv() == 1) {
                 _ZN12Unk_020872fc13func_02087368Ev(x);

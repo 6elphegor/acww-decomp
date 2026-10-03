@@ -11,25 +11,25 @@ u32 data_021d72e8;
 extern "C" {
 void func_020a4394();
 void StrBSize_Unload();
-void func_02037374();
+void AcreAttr_Unload();
 void FtrInfo_Exit();
 void ItemInfo_Exit();
 void func_02071320();
 void func_020713e8();
-void func_0204cfa4(u32);
-void func_0204dc1c(u32);
-void func_0204d454(u32);
-void func_020739f8();
+void FgData_Unload(u32);
+void TownBlockMap_Destroy(u32);
+void HouseRoomMaps_Destroy(u32);
+void Comm_DestroyHeap();
 void func_020a5cb8();
 void StrBSize_Load();
-void func_02037394();
+void AcreAttr_Load();
 void FtrInfo_Init();
 void ItemInfo_Init();
 void func_020713f0();
-void func_0204cfd0(u32);
-void func_0204dc54(u32);
-void func_0204d498(u32);
-void func_02073dd8(u32);
+void FgData_Load(u32);
+void TownBlockMap_Create(u32);
+void HouseRoomMaps_Create(u32);
+void Comm_CreateHeap(u32);
 void func_020a5cbc();
 void NpcSpawn_ResetAll();
 void func_02038ef0();
@@ -71,15 +71,15 @@ extern "C" void func_0209caf4() {
 BOOL Unk_020e2304::vfunc_00() {
     data_021d72e8 = (u32)this;
     StrBSize_Load();
-    func_02037394();
+    AcreAttr_Load();
     FtrInfo_Init();
     ItemInfo_Init();
     func_02071320();
     func_020713f0();
-    func_0204cfd0((u32)gCurrentHeap);
-    func_0204dc54((u32)gCurrentHeap);
-    func_0204d498((u32)gCurrentHeap);
-    func_02073dd8((u32)gCurrentHeap);
+    FgData_Load((u32)gCurrentHeap);
+    TownBlockMap_Create((u32)gCurrentHeap);
+    HouseRoomMaps_Create((u32)gCurrentHeap);
+    Comm_CreateHeap((u32)gCurrentHeap);
     func_020a5cbc();
     NpcSpawn_ResetAll();
     return TRUE;
@@ -87,15 +87,15 @@ BOOL Unk_020e2304::vfunc_00() {
 
 BOOL Unk_020e2304::vfunc_0c() {
     StrBSize_Unload();
-    func_02037374();
+    AcreAttr_Unload();
     FtrInfo_Exit();
     ItemInfo_Exit();
     func_02071320();
     func_020713e8();
-    func_0204cfa4((u32)gCurrentHeap);
-    func_0204dc1c((u32)gCurrentHeap);
-    func_0204d454((u32)gCurrentHeap);
-    func_020739f8();
+    FgData_Unload((u32)gCurrentHeap);
+    TownBlockMap_Destroy((u32)gCurrentHeap);
+    HouseRoomMaps_Destroy((u32)gCurrentHeap);
+    Comm_DestroyHeap();
     func_020a5cb8();
     return TRUE;
 }

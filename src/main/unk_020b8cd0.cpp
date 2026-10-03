@@ -13,21 +13,21 @@ public:
     Unk_020b83b0() : unk_04(0), unk_08(0), unk_0c(0xff) {}
 };
 
-class Unk_020e4618 : public Unk_020b83b0 {
+class VramTask : public Unk_020b83b0 {
 public:
     u8 unk_0d;
     u8 unk_0e;
     u8 unk_0f;
 
-    Unk_020e4618();
-    virtual BOOL vfunc_00() = 0;
+    VramTask();
+    virtual BOOL execute() = 0;
 };
 
-extern "C" void func_020b8cf0() {
+extern "C" void Wallpaper_GetTex() {
     NNS_G3dGetTex();
 }
 
-Unk_020e4618::Unk_020e4618() {
+VramTask::VramTask() {
     unk_0d = 0;
     unk_0e = 0xa;
     unk_0f = 1;

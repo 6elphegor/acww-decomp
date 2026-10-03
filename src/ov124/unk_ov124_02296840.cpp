@@ -4,11 +4,11 @@ extern "C" {
 void func_0206f9fc(void *a, u32 v);
 void func_0206f994(void *p, void *s, s32 n);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void func_02002438(void *a, s32 b, s32 c, s32 d, s32 e);
-void func_02002688(const char *buf, void *font, s32 a, u32 b, s32 c);
-void func_0200261c(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void func_020026c4(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void func_02002654(const char *a, void *b, s32 c);
+void Gfx2d_LoadCharRange(void *a, s32 b, s32 c, s32 d, s32 e);
+void Gfx2d_LoadPaletteFileSlot(const char *buf, void *font, s32 a, u32 b, s32 c);
+void Gfx2d_LoadCharFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_LoadPaletteFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_LoadScreenFile(const char *a, void *b, s32 c);
 void *File_LoadAlloc(void *a, void *b, s32 c, void *d);
 void Heap_Free(void *heap, void *p);
 s32 func_0206ed50();
@@ -88,7 +88,7 @@ Unk_ov124_02296840::~Unk_ov124_02296840() {}
 
 void Unk_ov124_02296840::func_ov124_02296d4c(s32 a, s32 b) {
     func_ov124_02296a8c(a, 5);
-    func_02002654("menu/han/b_bg.bsc", gCurrentHeap, b);
+    Gfx2d_LoadScreenFile("menu/han/b_bg.bsc", gCurrentHeap, b);
     switch (func_0206ed50()) {
     case 4:
     case 7:
@@ -157,8 +157,8 @@ extern "C" s32 func_ov124_02296c30() {
 void Unk_ov124_02296840::func_ov124_02296a8c(s32 a, s32 b) {
     void *heap = gCurrentHeap;
     char buf[0x20];
-    func_0200261c("menu/han/bg.bch", heap, a, 0x10, 0x10, 0x169);
-    func_020026c4("menu/han/bg.bpl", heap, a, 1, 1, 6);
+    Gfx2d_LoadCharFile("menu/han/bg.bch", heap, a, 0x10, 0x10, 0x169);
+    Gfx2d_LoadPaletteFile("menu/han/bg.bpl", heap, a, 1, 1, 6);
     switch (func_0206ed50()) {
     case 4:
     case 5:
@@ -191,9 +191,9 @@ void Unk_ov124_02296840::func_ov124_02296a8c(s32 a, s32 b) {
     } else {
         func_020639e8(buf, "menu/han/bg%d.bch", unk_90);
     }
-    func_0200261c(buf, heap, a, 0x113, 0x113, 0x126);
-    func_02002688("menu/han/ten0_bg.bpl", heap, a, unk_90, 0xe);
-    func_02002654((const char *)data_ov124_02296f38[b], heap, a);
+    Gfx2d_LoadCharFile(buf, heap, a, 0x113, 0x113, 0x126);
+    Gfx2d_LoadPaletteFileSlot("menu/han/ten0_bg.bpl", heap, a, unk_90, 0xe);
+    Gfx2d_LoadScreenFile((const char *)data_ov124_02296f38[b], heap, a);
 }
 
 void Unk_ov124_02296840::func_ov124_022968ec(s32 v) {
@@ -206,13 +206,13 @@ void Unk_ov124_02296840::func_ov124_022968ec(s32 v) {
     s32 k = 0x15a;
     i = 0;
     do {
-        func_02002438(p, 8, k, k, k + 5);
+        Gfx2d_LoadCharRange(p, 8, k, k, k + 5);
         p += 0x400;
         k += 0x20;
         i++;
     } while (i < 6);
     Heap_Free(heap, buf);
-    func_02002688("menu/han/ten0_obj.bpl", heap, 8, unk_90, v);
+    Gfx2d_LoadPaletteFileSlot("menu/han/ten0_obj.bpl", heap, 8, unk_90, v);
     unk_91 = v;
     unk_40.func_ov002_02203cf8((Unk_ov002_02203c5c_Rec *)data_ov124_02296f90, 14, 2);
     switch (func_0206ed50()) {

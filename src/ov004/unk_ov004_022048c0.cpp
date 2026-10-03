@@ -6,7 +6,7 @@ struct Vec3 {
 };
 
 // ---------------------------------------------------------------- library base chain (as in link_ov009)
-// Slots 0x0c / 0x24 are overridden by Unk_ov004_0224860c; they carry the overriding methods' names so that the
+// Slots 0x0c / 0x24 are overridden by Atm; they carry the overriding methods' names so that the
 // overrides do not also override the secondary base's vfunc_0c / vfunc_24 (which would emit extra thunks).
 class ProcBase {
 public:
@@ -197,50 +197,50 @@ void _ZN12Unk_020d8cf4C1Ev(void *self);
 void _ZN12Unk_020d8cf4D2Ev(void *self);
 void _ZN12Unk_020b6e10C2Ev(void *self);
 void _ZN12Unk_020b6e10D2Ev(void *self);
-extern char *data_ov004_022485a0;
-extern char *data_ov004_022485a4;
+extern char *sAtmMsgFilePtr;
+extern char *sAtmStringBankPtr;
 }
 
 #define func_0203e47c _ZN9Character13func_0203e47cEi
 #define func_0203e488 _ZN9Character13func_0203e488Ei
 #define PlayerData_getNookPoints _ZN10PlayerData13getNookPointsEv
 
-// ---------------------------------------------------------------- Unk_ov004_0224860c
-class Unk_ov004_0224860c : public Character, public TalkMsgRequest {
+// ---------------------------------------------------------------- Atm
+class Atm : public Character, public TalkMsgRequest {
 public:
-    Unk_ov004_0224860c();
+    Atm();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_ov004_0224860c();
+    virtual ~Atm();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
     virtual void vfunc_60();
     virtual void vfunc_64();
     virtual void vfunc_68();
 
-    void func_ov004_022049e0();
-    BOOL func_ov004_02204a10();
-    void func_ov004_02204a14();
-    BOOL func_ov004_02204a38();
-    void func_ov004_02204a80();
-    BOOL func_ov004_02204a84();
-    void func_ov004_02204a88();
-    BOOL func_ov004_02204b04(s32 m);
-    void func_ov004_02204c10();
-    BOOL func_ov004_02204ccc();
-    void func_ov004_02204cdc();
+    void execTalkAct02();
+    BOOL enterTalkAct02();
+    void execTalkAct01();
+    BOOL enterTalkAct01();
+    void execTalkAct00();
+    BOOL enterTalkAct00();
+    void execTalkAct();
+    BOOL setTalkAct(s32 m);
+    void setPointTexts();
+    BOOL releaseCollision();
+    void initCollision();
 
     /* 0x130 */ s32 unk_130;
     /* 0x134 */ u8 unk_134[0x9c]; // Unk_020d8cf4 (ctor C1 / dtor D2 called by hand, as the original does)
     /* 0x1d0 */ Unk_020b6e10 unk_1d0; // (ctor C2 / dtor D2 called by hand)
 };
 
-typedef void (Unk_ov004_0224860c::*Unk_02204a88_Fn)();
-typedef BOOL (Unk_ov004_0224860c::*Unk_02204b04_Fn)();
+typedef void (Atm::*Unk_02204a88_Fn)();
+typedef BOOL (Atm::*Unk_02204b04_Fn)();
 
-extern "C" Unk_ov004_0224860c *data_ov004_0224f5c0;
+extern "C" Atm *sAtmInstance;
 
 struct Unk_02204a38_Pad {
     s32 v[2];
@@ -248,12 +248,12 @@ struct Unk_02204a38_Pad {
     ~Unk_02204a38_Pad() {}
 };
 
-extern "C" Unk_ov004_0224860c *func_ov004_02204e7c() {
-    return new Unk_ov004_0224860c;
+extern "C" Atm *Atm_Create() {
+    return new Atm;
 }
 
-extern "C" Unk_ov004_0224860c *func_ov004_02204e70() {
-    return data_ov004_0224f5c0;
+extern "C" Atm *Atm_GetInstance() {
+    return sAtmInstance;
 }
 
 // ---------------------------------------------------------------- data
@@ -264,50 +264,50 @@ struct Unk_ov004_Scene_Entry {
     s32 unk_08[4];
 };
 
-Unk_ov004_0224860c::Unk_ov004_0224860c() {
+Atm::Atm() {
     _ZN12Unk_020d8cf4C1Ev(unk_134);
     _ZN12Unk_020b6e10C2Ev(&unk_1d0);
-    data_ov004_0224f5c0 = 0;
+    sAtmInstance = 0;
 }
 
-Unk_ov004_0224860c::~Unk_ov004_0224860c() {
+Atm::~Atm() {
     _ZN12Unk_020b6e10D2Ev(&unk_1d0);
     _ZN12Unk_020d8cf4D2Ev(unk_134);
 }
 
-BOOL Unk_ov004_0224860c::vfunc_00() {
-    data_ov004_0224f5c0 = this;
+BOOL Atm::vfunc_00() {
+    sAtmInstance = this;
     setCharId(0);
-    func_ov004_02204b04(0);
-    func_ov004_02204cdc();
+    setTalkAct(0);
+    initCollision();
     return TRUE;
 }
 
-BOOL Unk_ov004_0224860c::onExecute() {
-    func_ov004_02204a88();
+BOOL Atm::onExecute() {
+    execTalkAct();
     func_020b50b4()->func_020b6928(&unk_1d0);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224860c::onDraw() {
+BOOL Atm::onDraw() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224860c::vfunc_0c() {
-    func_ov004_02204ccc();
+BOOL Atm::vfunc_0c() {
+    releaseCollision();
     return TRUE;
 }
 
-void Unk_ov004_0224860c::func_ov004_02204cdc() {
+void Atm::initCollision() {
     func_02031908(unk_134, 0x2000, 0x2000, 0x2000, unk_5c, 0, 0);
     func_020b50b4()->func_020b68ec(&unk_1d0, (Vec3 *)unk_5c, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
 }
 
-BOOL Unk_ov004_0224860c::func_ov004_02204ccc() {
+BOOL Atm::releaseCollision() {
     return func_020318cc(unk_134);
 }
 
-void Unk_ov004_0224860c::func_ov004_02204c10() {
+void Atm::setPointTexts() {
     if (unk_3c) {
         u16 *p = func_020acf54(PlayerData_getNookPoints(PlayerData_GetCurrent()));
         u8 buf[2];
@@ -318,14 +318,14 @@ void Unk_ov004_0224860c::func_ov004_02204c10() {
         unk_3c->setSlot(1, &obj);
         if (func_020acde8(*p) != 0) {
             buf[0] = func_020acde8(*p) - 1;
-            unk_3c->setSlotFromString(2, (s32)&buf[0], (s32)data_ov004_022485a4);
+            unk_3c->setSlotFromString(2, (s32)&buf[0], (s32)sAtmStringBankPtr);
         }
         buf[1] = func_020acde8(*p);
-        unk_3c->setSlotFromString(3, (s32)&buf[1], (s32)data_ov004_022485a4);
+        unk_3c->setSlotFromString(3, (s32)&buf[1], (s32)sAtmStringBankPtr);
     }
 }
 
-BOOL Unk_ov004_0224860c::vfunc_48(void *a) {
+BOOL Atm::vfunc_48(void *a) {
     Character *o = (Character *)a;
     if (o) {
         if (func_020e9650(o->unk_5c, unk_5c) < 0x2333) {
@@ -339,37 +339,37 @@ BOOL Unk_ov004_0224860c::vfunc_48(void *a) {
     return FALSE;
 }
 
-void Unk_ov004_0224860c::vfunc_4c(u32 a, u8 b) {
+void Atm::vfunc_4c(u32 a, u8 b) {
     switch (a) {
     case 0:
-        func_ov004_02204b04(1);
+        setTalkAct(1);
         break;
     case 8:
-        func_ov004_02204b04(0);
+        setTalkAct(0);
         break;
     }
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov004_0224860c *data_ov004_0224f5c0;
-extern "C" char *data_ov004_022485a4;
-extern "C" char data_ov004_022485e0[12];
-extern "C" char *data_ov004_022485a0;
-extern "C" char data_ov004_022485a8[8];
-extern "C" Unk_ov004_Scene_Entry data_ov004_022485ec;
+extern "C" Atm *sAtmInstance;
+extern "C" char *sAtmStringBankPtr;
+extern "C" char sAtmMsgFile[12];
+extern "C" char *sAtmMsgFilePtr;
+extern "C" char sAtmStringBank[8];
+extern "C" Unk_ov004_Scene_Entry sAtmProfile;
 
-extern "C" Unk_ov004_0224860c *data_ov004_0224f5c0 = 0;
+extern "C" Atm *sAtmInstance = 0;
 
-extern "C" char *data_ov004_022485a4 = data_ov004_022485a8;
+extern "C" char *sAtmStringBankPtr = sAtmStringBank;
 
-extern "C" char data_ov004_022485e0[12] = "sp_npc_atm";
+extern "C" char sAtmMsgFile[12] = "sp_npc_atm";
 
-extern "C" char *data_ov004_022485a0 = data_ov004_022485e0;
+extern "C" char *sAtmMsgFilePtr = sAtmMsgFile;
 
-extern "C" char data_ov004_022485a8[8] = "st_atm";
+extern "C" char sAtmStringBank[8] = "st_atm";
 
-extern "C" Unk_ov004_Scene_Entry data_ov004_022485ec = {(void *(*)())func_ov004_02204e7c, 0x2c, 0x32, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" Unk_ov004_Scene_Entry sAtmProfile = {(void *(*)())Atm_Create, 0x2c, 0x32, {0, 0xc8000, 0x12c000, 0x258000}};
 
-BOOL Unk_ov004_0224860c::func_ov004_02204b04(s32 m) {
-    static Unk_02204b04_Fn tbl[3] = { (Unk_02204b04_Fn)&Unk_ov004_0224860c::func_ov004_02204a84, (Unk_02204b04_Fn)&Unk_ov004_0224860c::func_ov004_02204a38, (Unk_02204b04_Fn)&Unk_ov004_0224860c::func_ov004_02204a10 };
+BOOL Atm::setTalkAct(s32 m) {
+    static Unk_02204b04_Fn tbl[3] = { (Unk_02204b04_Fn)&Atm::enterTalkAct00, (Unk_02204b04_Fn)&Atm::enterTalkAct01, (Unk_02204b04_Fn)&Atm::enterTalkAct02 };
     if (m < 3) {
         if ((this->*tbl[m])()) {
             unk_130 = m;
@@ -379,42 +379,42 @@ BOOL Unk_ov004_0224860c::func_ov004_02204b04(s32 m) {
     return FALSE;
 }
 
-void Unk_ov004_0224860c::func_ov004_02204a88() {
-    static Unk_02204a88_Fn tbl[3] = { &Unk_ov004_0224860c::func_ov004_02204a80, &Unk_ov004_0224860c::func_ov004_02204a14, &Unk_ov004_0224860c::func_ov004_022049e0 };
+void Atm::execTalkAct() {
+    static Unk_02204a88_Fn tbl[3] = { &Atm::execTalkAct00, &Atm::execTalkAct01, &Atm::execTalkAct02 };
     if (unk_130 < 3) {
         (this->*tbl[unk_130])();
     }
 }
 
-BOOL Unk_ov004_0224860c::func_ov004_02204a84() {
+BOOL Atm::enterTalkAct00() {
     return TRUE;
 }
 
-void Unk_ov004_0224860c::func_ov004_02204a80() {}
+void Atm::execTalkAct00() {}
 
-BOOL Unk_ov004_0224860c::func_ov004_02204a38() {
+BOOL Atm::enterTalkAct01() {
     Unk_02204a38_Pad pad;
     func_0203e488(this, this);
-    setFileName(data_ov004_022485a0);
+    setFileName(sAtmMsgFilePtr);
     unk_1e = 0;
-    func_ov004_02204c10();
+    setPointTexts();
     unk_3c->unk_08 = 1;
     return TRUE;
 }
 
-void Unk_ov004_0224860c::func_ov004_02204a14() {
+void Atm::execTalkAct01() {
     if (unk_3c) {
         if (unk_3c->unk_04) {
-            func_ov004_02204b04(2);
+            setTalkAct(2);
         }
     }
 }
 
-BOOL Unk_ov004_0224860c::func_ov004_02204a10() {
+BOOL Atm::enterTalkAct02() {
     return TRUE;
 }
 
-void Unk_ov004_0224860c::func_ov004_022049e0() {
+void Atm::execTalkAct02() {
     if (unk_3c) {
         if (unk_3c->unk_04 == 0) {
             func_0203e47c(this, this);
@@ -423,26 +423,26 @@ void Unk_ov004_0224860c::func_ov004_022049e0() {
     }
 }
 
-void Unk_ov004_0224860c::vfunc_60() {}
+void Atm::vfunc_60() {}
 
-void Unk_ov004_0224860c::vfunc_64() {
+void Atm::vfunc_64() {
     u8 buf[2];
     switch (unk_1e) {
     case 1:
     case 2:
         if (func_020acde8(*func_020acf54(PlayerData_getNookPoints(PlayerData_GetCurrent()))) == 4) {
             buf[0] = 5;
-            unk_3c->setNextMessage(&buf[0], data_ov004_022485a0);
+            unk_3c->setNextMessage(&buf[0], sAtmMsgFilePtr);
         } else {
             buf[1] = 3;
-            unk_3c->setNextMessage(&buf[1], data_ov004_022485a0);
+            unk_3c->setNextMessage(&buf[1], sAtmMsgFilePtr);
         }
         break;
     }
 }
 
-// ================================================================ Unk_ov004_0224860c
-void Unk_ov004_0224860c::vfunc_68() {
+// ================================================================ Atm
+void Atm::vfunc_68() {
     u8 buf[4];
     u32 st = unk_1e;
     s32 v = unk_3c->getChoiceList()->getResult();
@@ -451,19 +451,19 @@ void Unk_ov004_0224860c::vfunc_68() {
         case 0:
             if (func_020acde8(*func_020acf54(PlayerData_getNookPoints(PlayerData_GetCurrent()))) == 0) {
                 buf[0] = 1;
-                unk_3c->setNextMessage(&buf[0], data_ov004_022485a0);
+                unk_3c->setNextMessage(&buf[0], sAtmMsgFilePtr);
             } else {
                 buf[1] = 2;
-                unk_3c->setNextMessage(&buf[1], data_ov004_022485a0);
+                unk_3c->setNextMessage(&buf[1], sAtmMsgFilePtr);
             }
             break;
         case 1:
             buf[2] = 6;
-            unk_3c->setNextMessage(&buf[2], data_ov004_022485a0);
+            unk_3c->setNextMessage(&buf[2], sAtmMsgFilePtr);
             break;
         case 2:
             buf[3] = 4;
-            unk_3c->setNextMessage(&buf[3], data_ov004_022485a0);
+            unk_3c->setNextMessage(&buf[3], sAtmMsgFilePtr);
             break;
         }
     }

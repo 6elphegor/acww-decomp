@@ -28,15 +28,15 @@ void *_ZN12Unk_02071ed013func_02071f5cEP18EncodedString16Buf(void *a, void *b);
 void *_ZN7Pattern13func_02071e58Ev(void *o);
 void *_ZN7Pattern13func_02071e04Ev(void *o);
 void *_ZN12Unk_02071ed013func_02072040Ev(void *o);
-void func_02001f74(void *a, void *b, u32 c, u32 d, u32 e);
-void func_02002438(void *a, u32 b, u32 c, u32 d, u32 e);
-void func_02002580(void *a, u32 b, u32 c, u32 d, u32 e);
+void Gfx2d_LinearToTilesInRow32(void *a, void *b, u32 c, u32 d, u32 e);
+void Gfx2d_LoadCharRange(void *a, u32 b, u32 c, u32 d, u32 e);
+void Gfx2d_LoadPaletteRange(void *a, u32 b, u32 c, u32 d, u32 e);
 void MIi_CpuCopy16(void *a, void *b, u32 n);
-void func_020021a0(u32 x);
-void func_020020b8(u32 x);
-void func_020015b8(u32 x);
-void func_02002398(u32 a, u32 b);
-void func_0200226c(u32 a, u32 b, u32 c, u32 d);
+void Gfx2d_ResetLayer(u32 x);
+void Gfx2d_ShowLayer(u32 x);
+void Gfx2d_SetSubBgModeState(u32 x);
+void Gfx2d_SetLayerPriority(u32 a, u32 b);
+void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
 void func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 rect);
 s32 Snd_PlaySe(s32 a);
 void func_0206ed2c(u32 a);
@@ -437,8 +437,8 @@ void Unk_ov125_02298478::func_ov125_02298024() {
     func_ov002_02202144(&unk_128);
     func_ov125_02297cf4();
     func_ov002_022008e0(0xa, 4, 0, 0x30);
-    func_020020b8(6);
-    func_020020b8(4);
+    Gfx2d_ShowLayer(6);
+    Gfx2d_ShowLayer(4);
     func_ov125_02297f24();
     unk_54c.func_ov002_02203510(0x65);
     func_ov125_0229711c(1);
@@ -471,8 +471,8 @@ void Unk_ov125_02298478::func_ov125_02297f8c() {
 
 void Unk_ov125_02298478::func_ov125_02297f54() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
-        func_020021a0(4);
+        Gfx2d_ResetLayer(6);
+        Gfx2d_ResetLayer(4);
         func_ov125_0229710c(1);
         func_ov002_02200a60(5);
     } else {
@@ -526,13 +526,13 @@ void Unk_ov125_02298478::func_ov125_02297e34() {
 }
 
 extern "C" void func_ov125_02297de8() {
-    func_020015b8(0);
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
-    func_02002398(4, 2);
-    func_0200226c(4, 0, 0, 0);
-    func_02002398(3, 1);
-    func_0200226c(3, 0, 0, 0);
+    Gfx2d_SetSubBgModeState(0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 2);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
+    Gfx2d_SetLayerPriority(3, 1);
+    Gfx2d_SetLayerControl(3, 0, 0, 0);
 }
 
 void Unk_ov125_02298478::func_ov125_02297dd8() {
@@ -547,10 +547,10 @@ extern "C" void func_ov125_02297d18() {
     do {
         void *t = _ZN14PlayerPatterns13func_02071c68Ej(obj, i);
         t = _ZN7Pattern13func_02071e58Ev(t);
-        func_02001f74(t, buf, i * 4, 4, 4);
+        Gfx2d_LinearToTilesInRow32(t, buf, i * 4, 4, 4);
         i++;
     } while (i < 8);
-    func_02002438(buf, 8, 0xc0, 0xc0, 0x13f);
+    Gfx2d_LoadCharRange(buf, 8, 0xc0, 0xc0, 0x13f);
     Heap_Free(heap, buf);
     void *buf2 = Heap_AllocTail(heap, 0x100);
     s32 off = 0;
@@ -563,7 +563,7 @@ extern "C" void func_ov125_02297d18() {
         off += 0x10;
         k++;
     } while (k < 8);
-    func_02002580(buf2, 8, 5, 5, 0xc);
+    Gfx2d_LoadPaletteRange(buf2, 8, 5, 5, 0xc);
     Heap_Free(heap, buf2);
 }
 

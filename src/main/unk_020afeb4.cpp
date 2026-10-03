@@ -65,8 +65,8 @@ void func_020a78a4(void *buf, const void *src, s32 len);
 void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *self, void *buf, s32 a, s32 b);
 void _ZN12Unk_020e2f5cC2Ev(void *buf);
 void _ZN12Unk_020e2f5cD1Ev(void *buf);
-void func_0209d498(void *p);
-s32 func_02002580(void *a, u32 b, u32 c, u32 d, u32 e);
+void Clock_GetDateTime(void *p);
+s32 Gfx2d_LoadPaletteRange(void *a, u32 b, u32 c, u32 d, u32 e);
 void File_LoadToBuffer(u32 a, void *b, u32 c);
 void *func_020b87d0(void *p);
 u32 func_02063b8c(u32 n);
@@ -349,7 +349,7 @@ s32 func_020b0218(void) {
     s32 d, px, py, x, y, dx, i, bestd, dy, best;
     tm[0] = 0;
     tm[1] = 0;
-    func_0209d498(tm);
+    Clock_GetDateTime(tm);
     if (((u8 *)tm)[2] >= 6 && ((u8 *)tm)[2] < 0x12) {
         return -1;
     }

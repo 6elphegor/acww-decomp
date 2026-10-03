@@ -27,10 +27,10 @@ struct Unk_020bffc0_Mtx {
     s32 m[12];
 };
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 unk_00[0x68];
     s32 unk_68;
-    s32 func_02072e44();
+    s32 isOnline();
 };
 
 class Unk_02097ff4 {
@@ -97,7 +97,7 @@ void func_020bd058(void *p);
 }
 
 extern "C" {
-s32 func_0209cc08(void *p);
+s32 DateTime_GetWeatherPeriod(void *p);
 }
 
 extern "C" {
@@ -105,15 +105,15 @@ void MI_CpuCopy8(void *a, void *b, s32 n);
 }
 
 extern "C" {
-void func_0209d124(void *p, s32 n);
+void DateTime_SubHours(void *p, s32 n);
 }
 
 extern "C" {
-s32 func_0209d374(void *a, void *b);
+s32 DateTime_DiffMinutes(void *a, void *b);
 }
 
 extern "C" {
-void func_0209d2c0(void *p, s32 n);
+void DateTime_AddDays(void *p, s32 n);
 }
 
 extern "C" {
@@ -129,15 +129,15 @@ s32 PlayerData_GetCurrent(void);
 }
 
 extern "C" {
-u16 *func_0203f2d8(void);
+u16 *Event_GetTodayList(void);
 }
 
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 
 extern "C" {
-void func_0209cf88(void *p);
+void Clock_GetDate(void *p);
 }
 
 extern "C" {
@@ -305,7 +305,7 @@ void func_020b78c4(void);
 }
 
 extern "C" {
-BOOL func_020729cc(Unk_020cbb18 *p, s32 a);
+BOOL func_020729cc(CommManager *p, s32 a);
 }
 
 extern "C" {
@@ -329,7 +329,7 @@ void func_020b4bbc(s32 a, s32 b);
 }
 
 extern "C" {
-extern u8 data_021c3cc0;
+extern u8 gScreenTransition;
 }
 
 extern "C" {
@@ -377,7 +377,7 @@ extern s32 gCamera;
 }
 
 extern "C" {
-u8 data_021f4570;
+u8 sWeatherPrevDayRain;
 }
 
 extern "C" {
@@ -392,9 +392,9 @@ extern SpNpcMissing1 *sSpNpcMissing1Instance;
 extern const u32 data_020d1a28;
 const u32 data_020d1a28 = 0x20000000;
 
-extern const u8 data_020d1a2c[0x260];
+extern const u8 sWeatherPatternWeights[0x260];
 
-const u8 data_020d1a2c[0x260] = {
+const u8 sWeatherPatternWeights[0x260] = {
     0x04, 0x14, 0x14, 0x14, 0x14, 0x08, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x04, 0x0c, 0x0c, 0x0c, 0x0c, 0x04, 0x04, 0x01, 0x01, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02,
@@ -436,7 +436,7 @@ const u8 data_020d1a2c[0x260] = {
 };
 
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 
 extern "C" {
@@ -487,14 +487,14 @@ public:
     virtual ~Unk_0213b938();
 };
 
-class Unk_020e5668 : public GameProc {
+class SkyProc : public GameProc {
 public:
     virtual void postCreate();
 
     /* 0x50 */ Unk_0213b938 unk_50;
 };
 
-struct Unk_020c010c {
+struct WeatherRecord {
     u8 unk_00;
     u8 unk_01;
     u8 unk_02;
@@ -512,51 +512,51 @@ struct Unk_020c010c_Ent {
 // prototypes
 extern "C" void func_020c0320();
 extern "C" void func_020c031c();
-extern "C" void func_020c02fc(Unk_020c010c *self);
-extern "C" void func_020c02f4(void *p);
-extern "C" void func_020c0270(Unk_020c010c *self);
-extern "C" BOOL func_020c010c(Unk_020c010c *self, void *arg);
-extern "C" u8 func_020c00cc(void *self, void *p);
-extern "C" u8 func_020c00c0();
+extern "C" void Weather_InitNew(WeatherRecord *self);
+extern "C" void Weather_SetDateToday(void *p);
+extern "C" void Weather_Apply(WeatherRecord *self);
+extern "C" BOOL Weather_UpdateDaily(WeatherRecord *self, void *arg);
+extern "C" u8 Weather_PickPattern(void *self, void *p);
+extern "C" u8 Weather_GetPrevDayRain();
 
 
 extern "C" void func_020c0320() {}
 
 extern "C" void func_020c031c() {}
 
-extern "C" void func_020c02fc(Unk_020c010c *self) {
-    data_021f4570 = 0;
+extern "C" void Weather_InitNew(WeatherRecord *self) {
+    sWeatherPrevDayRain = 0;
     self->unk_07 = 0;
     self->unk_00 = 1;
     self->unk_01 = 1;
     self->unk_02 = 0;
     self->unk_03 = 0;
     self->unk_00 = 0;
-    func_020c0270(self);
+    Weather_Apply(self);
 }
 
-extern "C" void func_020c02f4(void *p) {
-    func_0209cf88(p);
+extern "C" void Weather_SetDateToday(void *p) {
+    Clock_GetDate(p);
 }
 
-extern "C" void func_020c0270(Unk_020c010c *self) {
+extern "C" void Weather_Apply(WeatherRecord *self) {
     u8 buf[12];
     ((u32 *)buf)[0] = 0;
     ((u32 *)buf)[1] = 0;
-    func_0209d498(buf);
+    Clock_GetDateTime(buf);
     if (func_020b50e8() == 0x3f) {
-        data_021f4574 = func_020c010c(self, buf);
+        data_021f4574 = Weather_UpdateDaily(self, buf);
         if (data_021f4574 == 0) {
-            data_021f4570 = self->unk_07;
+            sWeatherPrevDayRain = self->unk_07;
         }
     } else {
         if (data_021f4574 != 0) {
-            u8 saved = data_021f4570;
-            if (func_020c010c(self, buf)) {
-                data_021f4570 = saved;
+            u8 saved = sWeatherPrevDayRain;
+            if (Weather_UpdateDaily(self, buf)) {
+                sWeatherPrevDayRain = saved;
             }
         } else {
-            func_020c010c(self, buf);
+            Weather_UpdateDaily(self, buf);
         }
         data_021f4574 = 0;
     }
@@ -566,9 +566,9 @@ extern "C" void func_020c0270(Unk_020c010c *self) {
     }
 }
 
-extern "C" BOOL func_020c010c(Unk_020c010c *self, void *arg) {
+extern "C" BOOL Weather_UpdateDaily(WeatherRecord *self, void *arg) {
     BOOL result = FALSE;
-    if (data_020cbb18->func_02072e44()) {
+    if (gCommManager->isOnline()) {
         return FALSE;
     }
     u8 a[8];
@@ -576,7 +576,7 @@ extern "C" BOOL func_020c010c(Unk_020c010c *self, void *arg) {
     ((u32 *)a)[0] = 0;
     ((u32 *)a)[1] = 0;
     MI_CpuCopy8(arg, a, 8);
-    func_0209d124(a, 6);
+    DateTime_SubHours(a, 6);
     a[2] = 0;
     a[1] = 0;
     u8 c = a[5];
@@ -592,29 +592,29 @@ extern "C" BOOL func_020c010c(Unk_020c010c *self, void *arg) {
         self->unk_02 = c;
         self->unk_01 = a[4];
         self->unk_00 = a[3];
-        s32 d = func_0209d374(b, a);
+        s32 d = DateTime_DiffMinutes(b, a);
         d = d / 0x5a0;
         if (d > 0) {
             if (d >= 2) {
-                self->unk_04 = func_020c00cc(self, a);
-                func_0209d2c0(a, result);
-                self->unk_05 = func_020c00cc(self, a);
+                self->unk_04 = Weather_PickPattern(self, a);
+                DateTime_AddDays(a, result);
+                self->unk_05 = Weather_PickPattern(self, a);
             } else {
                 self->unk_04 = self->unk_05;
-                func_0209d2c0(a, result);
-                self->unk_05 = func_020c00cc(self, a);
+                DateTime_AddDays(a, result);
+                self->unk_05 = Weather_PickPattern(self, a);
             }
         } else if (d < 0) {
             if (d <= -result - 1) {
-                self->unk_04 = func_020c00cc(self, a);
-                func_0209d2c0(a, result);
-                self->unk_05 = func_020c00cc(self, a);
+                self->unk_04 = Weather_PickPattern(self, a);
+                DateTime_AddDays(a, result);
+                self->unk_05 = Weather_PickPattern(self, a);
             } else {
                 self->unk_05 = self->unk_04;
-                self->unk_04 = func_020c00cc(self, a);
+                self->unk_04 = Weather_PickPattern(self, a);
             }
         }
-        data_021f4570 = self->unk_07;
+        sWeatherPrevDayRain = self->unk_07;
         self->unk_07 = 0;
     }
     if (func_020b50e8() != 0x3f) {
@@ -625,7 +625,7 @@ extern "C" BOOL func_020c010c(Unk_020c010c *self, void *arg) {
             if (t && ((Unk_02097ff4 *)t)->func_02098044(1)) {
                 self->unk_04 = 4;
             } else {
-                Unk_020c010c_Ent *e = (Unk_020c010c_Ent *)func_0203f2d8();
+                Unk_020c010c_Ent *e = (Unk_020c010c_Ent *)Event_GetTodayList();
                 for (s32 i = 0; i < 7; i++) {
                     switch (e->unk_00) {
                     case 9:
@@ -641,12 +641,12 @@ extern "C" BOOL func_020c010c(Unk_020c010c *self, void *arg) {
     return result;
 }
 
-extern "C" u8 func_020c00cc(void *self, void *p) {
+extern "C" u8 Weather_PickPattern(void *self, void *p) {
     u8 result = 0;
-    s32 idx = func_0209cc08(p);
+    s32 idx = DateTime_GetWeatherPeriod(p);
     s32 r = func_02063b8c(100);
     s32 i = result;
-    const u8 *tab = data_020d1a2c + idx * 0x20;
+    const u8 *tab = sWeatherPatternWeights + idx * 0x20;
     for (; i < 0x20; i++) {
         r -= tab[i];
         if (r < 0) {
@@ -657,8 +657,8 @@ extern "C" u8 func_020c00cc(void *self, void *p) {
     return result;
 }
 
-extern "C" u8 func_020c00c0() {
-    return data_021f4570;
+extern "C" u8 Weather_GetPrevDayRain() {
+    return sWeatherPrevDayRain;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -765,5 +765,5 @@ public:
 };
 
 static inline BOOL Unk_020c06a0_IsMode2() {
-    return data_021c3cc0 == 2;
+    return gScreenTransition == 2;
 }

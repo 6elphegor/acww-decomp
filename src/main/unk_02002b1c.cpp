@@ -8,15 +8,15 @@ typedef volatile u32 vu32;
 // Externs
 
 extern "C" {
-extern u16 data_0213c7a8;
+extern u16 sGfx3dClearColor;
 }
 
 extern "C" {
-extern u32 data_0213c7ac;
+extern u32 sGfx3dClearDepth;
 }
 
 extern "C" {
-extern u16 data_020d47e4[32];
+extern u16 sDefaultToonTable[32];
 }
 
 extern "C" {
@@ -228,7 +228,7 @@ struct Unk_02002804_Buf {
     u16 unk_00[32];
 };
 
-// 0x30-byte record copied around by Gfx3d_SetViewMatrix and func_02002898
+// 0x30-byte record copied around by Gfx3d_SetViewMatrix and Gfx3d_Init
 struct Unk_02002848_Data {
     u32 unk_00[12];
 };
@@ -237,23 +237,23 @@ extern Unk_02002848_Data gViewMtx;
 extern Unk_02002848_Data data_02135934_;
 
 // Object with two heap pointers at +0x48 and +0x4c, first method func_020029e8
-class Unk_020029e8 {
+class AbAllObjGfx {
 public:
-    Unk_020029e8();
-    ~Unk_020029e8();
-    void func_020029e8();
-    void func_02002a14();
-    void func_02002a3c();
-    void func_02002a54();
-    BOOL func_02002a6c();
-    BOOL func_02002a8c();
+    AbAllObjGfx();
+    ~AbAllObjGfx();
+    void uploadChars();
+    void uploadPalette();
+    void freeChars();
+    void freePalette();
+    BOOL loadChars();
+    BOOL loadPalette();
 
     /* 0x00 */ u8 unk_00[0x48];
     /* 0x48 */ void *unk_48;
     /* 0x4c */ void *unk_4c;
 };
 
-extern Unk_020029e8 data_0213c81c;
+extern AbAllObjGfx sAbAllObjGfx;
 
 struct Unk_02002f14_Node {
     /* 0x00 */ void *unk_00;
@@ -368,7 +368,7 @@ extern "C" u32 VillagerId_IsValidSpecies(u32 id);
 extern "C" u32 Villager_PersonalityToVoiceType(u32 t);
 extern "C" void Villager_MakePersonalityFileName(void *buf, u32 size, u32 arg, u32 idx);
 
-extern "C" void func_02002918(void);
+extern "C" void Gfx3d_InitEngine(void);
 // prototypes (test harness)
 extern "C" u32 VillagerId_GetVoiceType(VillagerId *o);
 extern "C" u32 VillagerId_GetSpecies(VillagerId *o);

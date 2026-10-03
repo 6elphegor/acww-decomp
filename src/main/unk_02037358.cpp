@@ -12,14 +12,14 @@ void *File_LoadAlloc(const char *, void *, s32, void *);
 void Mem_Free(void *);
 void *Heap_AllocAligned(void *, s32, s32);
 void MI_CpuFill8(void *, s32, s32);
-s32 func_0209c06c(s32);
+s32 Acre_HasPond(s32);
 s32 func_020303d0(s32, s32, s32, s32);
-u32 func_02037324(u32 x);
+u32 Acre_GetAttr(u32 x);
 extern void *gCurrentHeap;
 }
 
-u8 *data_021c21dc;
-u32 data_021c21e0;
+u8 *sAcreAttrData;
+u32 sAcreAttrSize;
 
 struct Unk_02037478 {
     u32 unk_00;
@@ -39,12 +39,12 @@ static inline BOOL Unk_020374f4_Range(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-class Unk_020375d0 {
+class MapBlockAcre {
 public:
-    s32 func_020375bc();
-    u32 func_020375d0();
-    void func_020375d4(u32 v);
-    u8 *func_020375d8();
+    s32 hasPond();
+    u32 getAcreId();
+    void setAcreId(u32 v);
+    u8 *getUnk04();
     u32 unk_00;
 };
 
@@ -53,11 +53,11 @@ struct Unk_02037618_Sub {
     u32 unk_0c;
 };
 
-class Unk_02037618 {
+class MapBlock {
 public:
-    void func_020376a8();
-    void func_02037618(Unk_02037618_Sub *s, u32 t, u32 u);
-    void func_02037674(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, Unk_02037618_Sub *k2, u32 k3, s32 k4, s32 k5, u32 k6);
+    void clear();
+    void bindBg(Unk_02037618_Sub *s, u32 t, u32 u);
+    void init(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, Unk_02037618_Sub *k2, u32 k3, s32 k4, s32 k5, u32 k6);
 
     s32 unk_00;
     s32 unk_04;
@@ -68,14 +68,14 @@ public:
     s32 unk_24;
 };
 
-extern "C" u32 func_02037358(u32 i);
-extern "C" BOOL func_0203740c(void *, u16 *p, s32 bit);
-extern "C" BOOL func_0203742c(void *, u16 *p, s32 bit);
-extern "C" u32 func_020374e8(Unk_02037478 *o);
-extern "C" u16 *func_02037558(void *cell, u32 x, u32 y, u32 z);
-extern "C" void func_02037460(s32 *a, s32 *b, s32 v);
+extern "C" u32 AcreAttr_GetType(u32 i);
+extern "C" BOOL Bits16_Clear(void *, u16 *p, s32 bit);
+extern "C" BOOL Bits16_Set(void *, u16 *p, s32 bit);
+extern "C" u32 MapBlock_GetAttr(Unk_02037478 *o);
+extern "C" u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
+extern "C" void Unit_SplitIndex(s32 *a, s32 *b, s32 v);
 
-void Unk_02037618::func_020376a8() {
+void MapBlock::clear() {
     unk_04 = 0;
     unk_08 = 0;
     for (s32 i = 0; i < 2; i++) {
@@ -83,7 +83,7 @@ void Unk_02037618::func_020376a8() {
     }
 }
 
-void Unk_02037618::func_02037674(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, Unk_02037618_Sub *k2, u32 k3, s32 k4, s32 k5, u32 k6) {
+void MapBlock::init(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, Unk_02037618_Sub *k2, u32 k3, s32 k4, s32 k5, u32 k6) {
     unk_00 = a;
     unk_0c.x = v->x;
     unk_0c.y = v->y;
@@ -93,18 +93,18 @@ void Unk_02037618::func_02037674(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k
     unk_24 = k1;
     unk_04 = k4;
     unk_08 = k5;
-    func_02037618(k2, k3, k6);
+    bindBg(k2, k3, k6);
 }
 
-extern "C" void func_02037638(Unk_02037618 *self, s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, Unk_02037618_Sub *k2, u32 k3, Unk_02037638_S8 *k45, u32 k6) {
+extern "C" void MapBlock_Init(MapBlock *self, s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, Unk_02037618_Sub *k2, u32 k3, Unk_02037638_S8 *k45, u32 k6) {
     Unk_02037674_V3 t;
     t.x = v->x;
     t.y = v->y;
     t.z = v->z;
-    self->func_02037674(a, &t, b, k0, k1, k2, k3, k45->a, k45->b, k6);
+    self->init(a, &t, b, k0, k1, k2, k3, k45->a, k45->b, k6);
 }
 
-void Unk_02037618::func_02037618(Unk_02037618_Sub *s, u32 t, u32 u) {
+void MapBlock::bindBg(Unk_02037618_Sub *s, u32 t, u32 u) {
     unk_20 = s;
     if (unk_20 != 0) {
         t = unk_20->unk_0c;
@@ -114,32 +114,32 @@ void Unk_02037618::func_02037618(Unk_02037618_Sub *s, u32 t, u32 u) {
     }
 }
 
-extern "C" Unk_02037618 *func_020375dc(s32 n, void *heap, s32 x) {
-    Unk_02037618 *p = (Unk_02037618 *)Heap_AllocAligned(heap, n * 0x28, x);
+extern "C" MapBlock *MapBlock_NewArray(s32 n, void *heap, s32 x) {
+    MapBlock *p = (MapBlock *)Heap_AllocAligned(heap, n * 0x28, x);
     if (p != 0) {
         s32 i;
         for (i = 0; i < n; i++) {
-            Unk_02037618 *o = p + i;
+            MapBlock *o = p + i;
             if (o != 0) {
-                o->func_020376a8();
+                o->clear();
             }
         }
     }
     return p;
 }
 
-u8 *Unk_020375d0::func_020375d8() { return (u8 *)this + 4; }
+u8 *MapBlockAcre::getUnk04() { return (u8 *)this + 4; }
 
-void Unk_020375d0::func_020375d4(u32 v) { unk_00 = v; }
+void MapBlockAcre::setAcreId(u32 v) { unk_00 = v; }
 
-u32 Unk_020375d0::func_020375d0() { return unk_00; }
+u32 MapBlockAcre::getAcreId() { return unk_00; }
 
-s32 Unk_020375d0::func_020375bc() {
-    return func_0209c06c(func_020375d0());
+s32 MapBlockAcre::hasPond() {
+    return Acre_HasPond(getAcreId());
 }
 
-extern "C" BOOL func_02037590(void *cell, u16 *t, u32 x, u32 y, u8 z) {
-    u16 *p = func_02037558(cell, x, y, z);
+extern "C" BOOL MapBlock_SetItem(void *cell, u16 *t, u32 x, u32 y, u8 z) {
+    u16 *p = MapBlock_GetItemPtr(cell, x, y, z);
     BOOL r = FALSE;
     if (p != 0) {
         *p = *t;
@@ -149,10 +149,10 @@ extern "C" BOOL func_02037590(void *cell, u16 *t, u32 x, u32 y, u8 z) {
 }
 
 #pragma thumb off
-extern "C" u16 *func_02037558(void *cell, u32 x, u32 y, u32 z) {
+extern "C" u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z) {
     u16 *r = 0;
     if (z < 2 && x < 0x10 && y < 0x10) {
-        u16 *t = (u16 *)((Unk_02037618 *)cell)->unk_18[z];
+        u16 *t = (u16 *)((MapBlock *)cell)->unk_18[z];
         if (t != 0) {
             r = t + (x + y * 16);
         }
@@ -161,14 +161,14 @@ extern "C" u16 *func_02037558(void *cell, u32 x, u32 y, u32 z) {
 }
 #pragma thumb reset
 
-extern "C" BOOL func_020374f4(void *cell, s32 *a, s32 *b, Marker1 *m, Marker1 *c, u8 d) {
-    u16 *p = func_02037558(cell, 0, 0, d);
+extern "C" BOOL MapBlock_FindItemInRange(void *cell, s32 *a, s32 *b, Marker1 *m, Marker1 *c, u8 d) {
+    u16 *p = MapBlock_GetItemPtr(cell, 0, 0, d);
     BOOL found = FALSE;
     if (p != 0) {
         s32 i;
         for (i = 0; i < 0x100; i++) {
             if (Unk_020374f4_Range(p, m->v, c->v)) {
-                func_02037460(a, b, i);
+                Unit_SplitIndex(a, b, i);
                 found = TRUE;
                 break;
             }
@@ -178,45 +178,45 @@ extern "C" BOOL func_020374f4(void *cell, s32 *a, s32 *b, Marker1 *m, Marker1 *c
     return found;
 }
 
-extern "C" u32 func_020374e8(Unk_02037478 *o) {
-    return func_02037324(o->unk_00);
+extern "C" u32 MapBlock_GetAttr(Unk_02037478 *o) {
+    return Acre_GetAttr(o->unk_00);
 }
 
-extern "C" BOOL func_020374cc(Unk_02037478 *o, u32 mask) {
-    u32 m = mask & func_020374e8(o);
+extern "C" BOOL MapBlock_HasAllAttr(Unk_02037478 *o, u32 mask) {
+    u32 m = mask & MapBlock_GetAttr(o);
     if (mask == m) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_020374b0(Unk_02037478 *o, u32 mask) {
-    if ((mask & func_020374e8(o)) != 0) {
+extern "C" BOOL MapBlock_HasAnyAttr(Unk_02037478 *o, u32 mask) {
+    if ((mask & MapBlock_GetAttr(o)) != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_020373e8(void *base, u32 a, u32 b);
-extern "C" BOOL func_020373c4(void *base, u32 a, u32 b);
+extern "C" BOOL BuriedMask_Set(void *base, u32 a, u32 b);
+extern "C" BOOL BuriedMask_Clear(void *base, u32 a, u32 b);
 
-extern "C" BOOL func_02037494(Unk_02037478 *o, u32 a, u32 b) {
+extern "C" BOOL MapBlock_SetBuried(Unk_02037478 *o, u32 a, u32 b) {
     BOOL r = FALSE;
     if (o->unk_24 != 0) {
-        r = func_020373e8(o->unk_24, a, b);
+        r = BuriedMask_Set(o->unk_24, a, b);
     }
     return r;
 }
 
-extern "C" BOOL func_02037478(Unk_02037478 *o, u32 a, u32 b) {
+extern "C" BOOL MapBlock_ClearBuried(Unk_02037478 *o, u32 a, u32 b) {
     BOOL r = FALSE;
     if (o->unk_24 != 0) {
-        r = func_020373c4(o->unk_24, a, b);
+        r = BuriedMask_Clear(o->unk_24, a, b);
     }
     return r;
 }
 
-extern "C" void func_02037460(s32 *a, s32 *b, s32 v) {
+extern "C" void Unit_SplitIndex(s32 *a, s32 *b, s32 v) {
     *a = v & 0xf;
     *b = (v >> 4) & 0xf;
 }
@@ -225,11 +225,11 @@ extern "C" void func_0203745c() {}
 
 extern "C" void func_02037458() {}
 
-extern "C" void func_0203744c(void *p) {
+extern "C" void BuriedMask_Reset(void *p) {
     MI_CpuFill8(p, 0, 0x20);
 }
 
-extern "C" BOOL func_0203742c(void *, u16 *p, s32 bit) {
+extern "C" BOOL Bits16_Set(void *, u16 *p, s32 bit) {
     BOOL r = FALSE;
     if (bit >= 0 && bit < 0x10) {
         *p |= (1 << bit);
@@ -238,7 +238,7 @@ extern "C" BOOL func_0203742c(void *, u16 *p, s32 bit) {
     return r;
 }
 
-extern "C" BOOL func_0203740c(void *, u16 *p, s32 bit) {
+extern "C" BOOL Bits16_Clear(void *, u16 *p, s32 bit) {
     BOOL r = FALSE;
     if (bit >= 0 && bit < 0x10) {
         *p &= ~(1 << bit);
@@ -247,36 +247,36 @@ extern "C" BOOL func_0203740c(void *, u16 *p, s32 bit) {
     return r;
 }
 
-extern "C" BOOL func_020373e8(void *base, u32 a, u32 b) {
+extern "C" BOOL BuriedMask_Set(void *base, u32 a, u32 b) {
     BOOL r = FALSE;
     if (a < 0x10 && b < 0x10) {
-        r = func_0203742c(base, (u16 *)base + b, a);
+        r = Bits16_Set(base, (u16 *)base + b, a);
     }
     return r;
 }
 
-extern "C" BOOL func_020373c4(void *base, u32 a, u32 b) {
+extern "C" BOOL BuriedMask_Clear(void *base, u32 a, u32 b) {
     BOOL r = FALSE;
     if (a < 0x10 && b < 0x10) {
-        r = func_0203740c(base, (u16 *)base + b, a);
+        r = Bits16_Clear(base, (u16 *)base + b, a);
     }
     return r;
 }
 
-extern "C" BOOL func_02037394() {
-    data_021c21dc = (u8 *)File_LoadAlloc("/bg/bkattr.bin", gCurrentHeap, 4, &data_021c21e0);
+extern "C" BOOL AcreAttr_Load() {
+    sAcreAttrData = (u8 *)File_LoadAlloc("/bg/bkattr.bin", gCurrentHeap, 4, &sAcreAttrSize);
     return TRUE;
 }
 
-extern "C" BOOL func_02037374() {
-    Mem_Free(data_021c21dc);
-    data_021c21dc = 0;
+extern "C" BOOL AcreAttr_Unload() {
+    Mem_Free(sAcreAttrData);
+    sAcreAttrData = 0;
     return TRUE;
 }
 
-extern "C" u32 func_02037358(u32 i) {
-    if (i < data_021c21e0) {
-        return data_021c21dc[i];
+extern "C" u32 AcreAttr_GetType(u32 i) {
+    if (i < sAcreAttrSize) {
+        return sAcreAttrData[i];
     }
     return 0;
 }

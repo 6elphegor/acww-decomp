@@ -52,35 +52,35 @@ s32 memcmp();
 }
 
 extern "C" {
-void *_ZN12Unk_02056fd813func_02057030Ev(void *a, s32 b);
+void *_ZN12G3dResAccess13func_02057030Ev(void *a, s32 b);
 }
 
 extern "C" {
-s32 _ZN12Unk_02056fd813func_02057078Ei(void *a, s32 b);
+s32 _ZN12G3dResAccess11findPlttIdxEi(void *a, s32 b);
 }
 
 extern "C" {
-void *_ZN12Unk_02056fd813func_02057048Ei(void *a, s32 b);
+void *_ZN12G3dResAccess11getPlttDataEi(void *a, s32 b);
 }
 
 extern "C" {
-u32 _ZN12Unk_02056fd813func_02056fd8Ei(void *a, s32 b);
+u32 _ZN12G3dResAccess11getPlttSizeEi(void *a, s32 b);
 }
 
 extern "C" {
-void *_ZN12Unk_02056fd813func_020570e0Ev(void *a, s32 b);
+void *_ZN12G3dResAccess13func_020570e0Ev(void *a, s32 b);
 }
 
 extern "C" {
-s32 _ZN12Unk_02056fd813func_02057100Ei(void *a, s32 b);
+s32 _ZN12G3dResAccess10findTexIdxEi(void *a, s32 b);
 }
 
 extern "C" {
-void *_ZN12Unk_02056fd813func_020570b0Ei(void *a, s32 b);
+void *_ZN12G3dResAccess10getTexDataEi(void *a, s32 b);
 }
 
 extern "C" {
-u32 _ZN12Unk_02056fd813func_02057084Ei(void *a, s32 b);
+u32 _ZN12G3dResAccess10getTexSizeEi(void *a, s32 b);
 }
 
 extern "C" {
@@ -470,18 +470,18 @@ extern "C" s32 func_02063a9c(s32 x, s32 lo, s32 hi, s32 a, s32 b) {
 }
 
 extern "C" void func_02063a5c(void *a, void *b, s32 c, s32 d) {
-    void *p = _ZN12Unk_02056fd813func_020570e0Ev(a, c);
-    s32 i = _ZN12Unk_02056fd813func_02057100Ei(b, d);
-    void *q = _ZN12Unk_02056fd813func_020570b0Ei(b, i);
-    u32 n = _ZN12Unk_02056fd813func_02057084Ei(b, i);
+    void *p = _ZN12G3dResAccess13func_020570e0Ev(a, c);
+    s32 i = _ZN12G3dResAccess10findTexIdxEi(b, d);
+    void *q = _ZN12G3dResAccess10getTexDataEi(b, i);
+    u32 n = _ZN12G3dResAccess10getTexSizeEi(b, i);
     MI_CpuCopy8(p, q, n);
 }
 
 extern "C" void func_02063a1c(void *a, void *b, s32 c, s32 d) {
-    void *p = _ZN12Unk_02056fd813func_02057030Ev(a, c);
-    s32 i = _ZN12Unk_02056fd813func_02057078Ei(b, d);
-    void *q = _ZN12Unk_02056fd813func_02057048Ei(b, i);
-    u32 n = _ZN12Unk_02056fd813func_02056fd8Ei(b, i);
+    void *p = _ZN12G3dResAccess13func_02057030Ev(a, c);
+    s32 i = _ZN12G3dResAccess11findPlttIdxEi(b, d);
+    void *q = _ZN12G3dResAccess11getPlttDataEi(b, i);
+    u32 n = _ZN12G3dResAccess11getPlttSizeEi(b, i);
     MI_CpuCopy8(p, q, n);
 }
 

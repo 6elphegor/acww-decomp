@@ -16,7 +16,7 @@
 #define func_02071e58 _ZN7Pattern13func_02071e58Ev
 #define func_02071f5c _ZN12Unk_02071ed013func_02071f5cEP18EncodedString16Buf
 #define func_02072040 _ZN12Unk_02071ed013func_02072040Ev
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define LabelBalloon_setText _ZN12LabelBalloon7setTextEP6StrBuf
 #define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
 #define func_02089f30 _ZN12Unk_020e0d80D1Ev
@@ -32,8 +32,8 @@
 #define PlayerData_getShirt _ZN10PlayerData8getShirtEv
 #define PlayerData_getHeldItem _ZN10PlayerData11getHeldItemEv
 #define PlayerData_getIndex _ZN10PlayerData8getIndexEv
-#define func_020b86c0 _ZN12Unk_020e45f813func_020b86c0Ejhjj
-#define func_020b87d0 _ZN12Unk_020e45f813func_020b87d0Ev
+#define BgVramTask_requestScreen _ZN10BgVramTask13requestScreenEjhjj
+#define BgVramTask_cancel _ZN10BgVramTask6cancelEv
 #define func_ov002_022006a4 _ZN18Unk_ov002_0220446819func_ov002_022006a4Eh
 #define func_ov002_022006b0 _ZN18Unk_ov002_0220446819func_ov002_022006b0Ev
 #define func_ov002_022006b8 _ZN18Unk_ov002_0220446819func_ov002_022006b8Ev
@@ -73,7 +73,7 @@ struct Unk_ov121_Comm {
     u32 unk_00[0x64 / 4];
     s32 unk_64;
 };
-extern Unk_ov121_Comm *data_020cbb18;
+extern Unk_ov121_Comm *gCommManager;
 extern u8 gTouchCurY;
 extern u8 gTouchCurX;
 extern u8 gTouchPressY;
@@ -96,7 +96,7 @@ void *func_02071e04(void *p);
 s32 func_02071e58(void *p);
 s32 func_02072040(void *p);
 void func_02071f5c(void *p, void *q);
-BOOL func_02072e44(void *p);
+BOOL CommManager_isOnline(void *p);
 void LabelBalloon_setText(void *p, void *q);
 void LabelBalloon_setPos(void *p, s32 a, s32 b);
 void func_02089f30(void *p);
@@ -112,8 +112,8 @@ void PlayerData_setShirt(void *p, u16 *v);
 u16 *PlayerData_getShirt(void *p);
 u16 *PlayerData_getHeldItem(void *p);
 s32 PlayerData_getIndex(void *p);
-BOOL func_020b86c0(void *p, void *a, u32 b, u32 c, u32 d);
-void func_020b87d0(void *p);
+BOOL BgVramTask_requestScreen(void *p, void *a, u32 b, u32 c, u32 d);
+void BgVramTask_cancel(void *p);
 
 void *PlayerData_GetCurrent();
 u32 func_020b0f54();
@@ -124,7 +124,7 @@ s32 StrBuf_GameToAscii(void *p, void *q);
 s32 func_02042c64(u32 p, u32 a);
 s32 func_020342a4(u32 a, u32 b, u32 c, u32 d);
 s32 func_02034228(u32 a, u32 b, u32 c, u32 d);
-s32 func_0206e240(u16 *a, void *b, void *c, void *d);
+s32 MenuScreen_UploadClothPattern(u16 *a, void *b, void *c, void *d);
 void MI_CpuCopy8(const void *a, void *b, u32 n);
 s32 Camera_IsViewPushed();
 s32 Camera_PopView();
@@ -145,15 +145,15 @@ void File_LoadToBuffer(const char *a, void *b, s32 c);
 BOOL func_020b52f8();
 void *Heap_AllocTail(void *a, s32 b);
 void Heap_Free(void *a, void *b);
-void func_02001f74(s32 a, void *b, s32 c, s32 d, s32 e);
-void func_02002438(void *a, s32 b, s32 c, s32 d, s32 e);
-void func_02002580(void *a, s32 b, s32 c, s32 d, s32 e);
-void func_02002398(s32 a, s32 b);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_0200261c(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void func_020026c4(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void func_020021a0(s32 a);
-void func_020020b8(s32 a);
+void Gfx2d_LinearToTilesInRow32(s32 a, void *b, s32 c, s32 d, s32 e);
+void Gfx2d_LoadCharRange(void *a, s32 b, s32 c, s32 d, s32 e);
+void Gfx2d_LoadPaletteRange(void *a, s32 b, s32 c, s32 d, s32 e);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_LoadCharFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_LoadPaletteFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ShowLayer(s32 a);
 BOOL func_02094fa8();
 BOOL func_02094fb4();
 BOOL PlayerActor_RequestWearShirt(u16 *v);
@@ -248,14 +248,14 @@ public:
     virtual void vfunc_08();
 };
 
-class Unk_020e45f8 {
+class BgVramTask {
 public:
-    void func_020b87d0();
+    void BgVramTask_cancel();
 };
 
-class Unk_020e4608 : public Unk_020e45f8 {
+class BgVramTaskPair : public BgVramTask {
 public:
-    Unk_020e4608();
+    BgVramTaskPair();
     u32 unk_00[0x38 / 4];
 };
 
@@ -517,7 +517,7 @@ public:
     /* 0x398 */ Unk_ov002_02204614 unk_398;
     /* 0x3fc */ Unk_ov002_022040ec unk_3fc;
     /* 0x504 */ Unk_ov002_02204558 unk_504;
-    /* 0x804 */ Unk_020e4608 unk_804[2];
+    /* 0x804 */ BgVramTaskPair unk_804[2];
     /* 0x874 */ u8 unk_874[0x1074 - 0x874];
     /* 0x1074 */ u8 unk_1074[8];
 };
@@ -735,7 +735,7 @@ void Unk_ov121_02294d68::func_ov121_022945c8() {
     func_ov121_02294194();
     func_ov002_02202144(&unk_504);
     func_ov002_022008e0(8, 0, 0, 0x30);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(6);
     func_ov002_02200a50(1);
     func_ov121_0229240c(1);
     func_ov002_02200840(6, 0, 0);
@@ -761,7 +761,7 @@ void Unk_ov121_02294d68::func_ov121_02294550() {
 
 void Unk_ov121_02294d68::func_ov121_02294514() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
+        Gfx2d_ResetLayer(6);
         func_ov002_02200a60(5);
     } else {
         func_ov002_02200840(6, 0, 0);
@@ -786,8 +786,8 @@ void Unk_ov121_02294d68::func_ov121_02294420() {
         func_ov121_02293780(9);
         func_ov121_02293780(0xa);
         func_ov121_02293780(0xb);
-        Unk_ov121_Comm *g = data_020cbb18;
-        if (func_02072e44(g) && g->unk_64 != 0) {
+        Unk_ov121_Comm *g = gCommManager;
+        if (CommManager_isOnline(g) && g->unk_64 != 0) {
             func_ov121_02293780(0xf);
         }
     } else if (func_ov121_022943ec()) {
@@ -808,8 +808,8 @@ void Unk_ov121_02294d68::func_ov121_02294420() {
 
 BOOL Unk_ov121_02294d68::func_ov121_022943ec() {
     if (func_020b52f8()) {
-        Unk_ov121_Comm *g = data_020cbb18;
-        if (func_02072e44(g) && g->unk_64 != 0) {
+        Unk_ov121_Comm *g = gCommManager;
+        if (CommManager_isOnline(g) && g->unk_64 != 0) {
             return FALSE;
         }
         return TRUE;
@@ -819,8 +819,8 @@ BOOL Unk_ov121_02294d68::func_ov121_022943ec() {
 
 void Unk_ov121_02294d68::func_ov121_022943bc() {
     func_ov002_02201b04(&unk_504);
-    func_020b87d0(&unk_804[0]);
-    func_020b87d0(&unk_804[1]);
+    BgVramTask_cancel(&unk_804[0]);
+    BgVramTask_cancel(&unk_804[1]);
 }
 
 void Unk_ov121_02294d68::func_ov121_022943a0() {
@@ -837,7 +837,7 @@ void Unk_ov121_02294d68::func_ov121_02294394() {}
 void Unk_ov121_02294d68::func_ov121_02294328() {
     func_ov121_022925d0();
     if (func_ov121_0229241c(2)) {
-        if (func_020b86c0(&unk_804[0], &unk_874[0], 6, 0x800, 0)) {
+        if (BgVramTask_requestScreen(&unk_804[0], &unk_874[0], 6, 0x800, 0)) {
             func_ov121_022923fc(2);
         }
     }
@@ -848,14 +848,14 @@ void Unk_ov121_02294d68::func_ov121_02294328() {
 }
 
 void Unk_ov121_02294d68::func_ov121_02294308() {
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
 void Unk_ov121_02294d68::func_ov121_02294280() {
     u32 *r4 = gCurrentHeap;
-    func_020026c4("menu/desi/b_myd_bg.bpl", r4, 6, 1, 1, 7);
-    func_0200261c("menu/desi/b_myd_bg.bch", r4, 6, 0x10, 0x10, 0xc5);
+    Gfx2d_LoadPaletteFile("menu/desi/b_myd_bg.bpl", r4, 6, 1, 1, 7);
+    Gfx2d_LoadCharFile("menu/desi/b_myd_bg.bch", r4, 6, 0x10, 0x10, 0xc5);
     File_LoadToBuffer("menu/desi/b_myd_a_bg.bsc", &unk_874[0], 0x800);
     u32 i = 9;
     do {
@@ -875,16 +875,16 @@ void Unk_ov121_02294d68::func_ov121_02294194() {
     s32 v;
     u32 k;
     r6 = gCurrentHeap;
-    func_0200261c("menu/desi/b_myd_obj.bch", r6, 8, 0x140, 0x140, 0x17f);
+    Gfx2d_LoadCharFile("menu/desi/b_myd_obj.bch", r6, 8, 0x140, 0x140, 0x17f);
     r5 = Heap_AllocTail(r6, 0x1000);
     v = (s32)func_020986d4(PlayerData_GetCurrent());
     i = 0;
     k = 4;
     do {
-        func_02001f74(func_02071e58(func_02071c68((void *)v, i)), r5, i << 2, k, k);
+        Gfx2d_LinearToTilesInRow32(func_02071e58(func_02071c68((void *)v, i)), r5, i << 2, k, k);
         i = (u8)(i + 1);
     } while (i < 8);
-    func_02002438(r5, 8, 0xc0, 0xc0, 0x13f);
+    Gfx2d_LoadCharRange(r5, 8, 0xc0, 0xc0, 0x13f);
     Heap_Free(r6, r5);
     void *r7 = Heap_AllocTail(r6, 0x120);
     i = 0;
@@ -895,7 +895,7 @@ void Unk_ov121_02294d68::func_ov121_02294194() {
         n = (u8)(n + 1);
     } while (n < 8);
     File_LoadToBuffer("menu/desi/b_myd_obj.bpl", (u8 *)r7 + i * 2, 0x20);
-    func_02002580(r7, 8, 4, 4, 0xc);
+    Gfx2d_LoadPaletteRange(r7, 8, 4, 4, 0xc);
     Heap_Free(r6, r7);
 }
 
@@ -1423,7 +1423,7 @@ void Unk_ov121_02294d68::func_ov121_02293474() {
         x = 0x12a8;
     }
     w = x;
-    func_0206e240(&w, (void *)&unk_804[1], unk_d8, unk_b8);
+    MenuScreen_UploadClothPattern(&w, (void *)&unk_804[1], unk_d8, unk_b8);
     if (Unk_ov121_02293188_InRange(&v, 0x11a8, 0x12a7)) {
         func_02099014((u16 *)&v, 0);
     }
@@ -1595,7 +1595,7 @@ void Unk_ov121_02294d68::func_ov121_02292ffc() {
     u32 x = data_ov121_02294c78[t];
     x += u;
     unk_a0 = x;
-    unk_98 = func_02042c64(data_020cbb18->unk_64, unk_a0);
+    unk_98 = func_02042c64(gCommManager->unk_64, unk_a0);
     if (unk_98 == -1) {
         func_ov121_0229393c(3, 0);
         Snd_PlaySe(0x73);
@@ -2076,8 +2076,8 @@ BOOL Unk_ov121_02294d68::func_ov121_0229246c(s32 k) {
 }
 
 BOOL Unk_ov121_02294d68::func_ov121_02292430() {
-    Unk_ov121_Comm *c = data_020cbb18;
-    if (func_02072e44(c)) {
+    Unk_ov121_Comm *c = gCommManager;
+    if (CommManager_isOnline(c)) {
         if (c->unk_64 != 0 || func_020b0f54() > 1) {
             return FALSE;
         }

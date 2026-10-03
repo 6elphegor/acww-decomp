@@ -87,7 +87,7 @@ struct MsgString256 {
 };
 
 extern "C" {
-extern void *data_020cbb18;
+extern void *gCommManager;
 extern u8 gTouchPrevHeld;
 extern u8 gTouchPrevChanged;
 extern u16 gPad[];
@@ -118,13 +118,13 @@ s32 func_020b6080(void *a, void *b, void *c, s32 d);
 void func_0203a304();
 void TalkRequest_AddPlayerTalk6(void *p, s32 v);
 void TalkRequest_EndTalkWith(void *self);
-s32 func_0209ccd0();
+s32 Clock_GetTimeOfDay();
 s32 func_020e7500(void *p);
 void func_020902f8(s32 h);
 s32 func_02090330(s32 a, void *b, void *c, s32 d);
 void func_020902d4(s32 h, void *b, void *c);
 
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *self);
+BOOL _ZN11CommManager8isOnlineEv(void *self);
 void _ZN12Unk_020e2f74C1Ev(void *self);
 void _ZN12Unk_020e2f74D1Ev(void *self);
 void _ZN9MsgString12appendStringEPS_(void *self, void *p);
@@ -138,7 +138,7 @@ s32 _ZN12Unk_0201985813func_020197a8Ev(void *self);
 BOOL _ZN12Unk_0201985813func_02019790Ev(void *self);
 void _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b, s32 c, Unk_ov046_0225a11c_Vec *v, s32 d, s32 e, u8 f);
 }
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define MsgString_appendString _ZN9MsgString12appendStringEPS_
 #define MsgString_copy _ZN9MsgString4copyEPS_
 #define func_02014220 _ZN12Unk_02013b1013func_02014220Ev
@@ -240,12 +240,12 @@ public:
         name(); \
         ~name(); \
     }
-struct Unk_020dbd74 {
+struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
     s32 unk_a4;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
+    ThreeLayerAnimModel();
+    ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
@@ -363,7 +363,7 @@ public:
     s32 getAngleTo(Unk_020d77a4 *other);
 
     u16 unk_ea;
-    Unk_020dbd74 unk_ec;
+    ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
     Unk_02019dd8 unk_2ac;
     Unk_02016350 unk_334;
@@ -570,7 +570,7 @@ BOOL Unk_ov046_0225aaa0::vfunc_00() {
     unk_738 = 0;
     unk_4cc.unk_1c |= 2;
     unk_658.func_02259c2c(5);
-    if (func_0209ccd0() == 2 || func_0209ccd0() == 3 || func_02072e44(data_020cbb18) != 0 ||
+    if (Clock_GetTimeOfDay() == 2 || Clock_GetTimeOfDay() == 3 || CommManager_isOnline(gCommManager) != 0 ||
         *func_0209c37c(0, 0x4a) != 0) {
         func_ov046_0225a398(0);
     } else {
@@ -624,8 +624,8 @@ BOOL Unk_ov046_0225aaa0::func_ov046_0225a2bc() {
     if (func_ov046_02258e34()) {
         return TRUE;
     }
-    if (func_02072e44(data_020cbb18) != 0 || *func_0209c37c(0, 0x4a) != 0 || func_0209ccd0() == 2 ||
-        func_0209ccd0() == 3) {
+    if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0 || Clock_GetTimeOfDay() == 2 ||
+        Clock_GetTimeOfDay() == 3) {
         return TRUE;
     }
     if (func_020e7500(&unk_734) == 0) {
@@ -916,7 +916,7 @@ void Unk_ov046_0225aa0c::vfunc_78(Unk_ov046_0225aa0c_Out *out) {
     }
     s32 t = unk_ac;
     if (t == 4 && unk_b0[0x73a] == 0) {
-        if (func_02072e44(data_020cbb18) || *func_0209c37c(0, 0x4a) != 0) {
+        if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
             if (func_020b0564() < 0x10) {
                 out->unk_04 = 0x13;
             } else {
@@ -939,7 +939,7 @@ void Unk_ov046_0225aa0c::vfunc_78(Unk_ov046_0225aa0c_Out *out) {
 s32 Unk_ov046_0225aa0c::func_02259ac0() {
     unk_c1 = 0x10 - func_020b0564();
     unk_c0 = 0;
-    if (func_02072e44(data_020cbb18) || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
         if (func_020b0564() < 0x10) {
             return 0x27;
         }
@@ -1009,7 +1009,7 @@ void Unk_ov046_0225aa0c::vfunc_14() {
 void Unk_ov046_0225aa0c::func_022597f8() {
     s32 v = 0;
     if (func_020b0334(&v) == 0) {
-        if (func_02072e44(data_020cbb18) || *func_0209c37c(0, 0x4a) != 0) {
+        if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
             unk_d8 = 0x2f;
         } else {
             unk_d8 = 0x11;
@@ -1028,7 +1028,7 @@ void Unk_ov046_0225aa0c::func_022597f8() {
 }
 
 void Unk_ov046_0225aa0c::func_022597a0() {
-    if (func_02072e44(data_020cbb18) || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
         if (func_020b0564() < 0x10) {
             unk_d8 = 0x13;
         } else {

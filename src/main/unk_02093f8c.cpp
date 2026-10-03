@@ -347,11 +347,11 @@ s32 PlayerActor_IsInAction(s32, s32);
 }
 
 extern "C" {
-s32 func_0204ee10(s32 *, s32 *, void *);
+s32 FieldPos_ToUnit(s32 *, s32 *, void *);
 }
 
 extern "C" {
-s32 func_0204989c(s32, s32, s32, s32, s32);
+s32 Area_PlaceItem(s32, s32, s32, s32, s32);
 }
 
 Unk_020e1c4c::Unk_020e1c4c() {}

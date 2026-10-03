@@ -18,12 +18,12 @@ s32 func_ov004_02235028(s32 p);
 BOOL func_ov002_02201700(u8 *p, u32 a, u32 b);
 }
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 pad_00[0x64];
     s32 unk_64;
-    BOOL func_02072e44();
+    BOOL isOnline();
 };
-extern "C" Unk_020cbb18 *data_020cbb18;
+extern "C" CommManager *gCommManager;
 
 class Unk_ov002_022013a0 {
 public:
@@ -205,7 +205,7 @@ extern "C" s32 func_ov097_0229b2bc(Unk_ov096_0229aea8 *self, s32 a) {
             break;
         }
     } else {
-    self->unk_c4 = func_02042c64(data_020cbb18->unk_64, a);
+    self->unk_c4 = func_02042c64(gCommManager->unk_64, a);
     if (self->unk_c4 == -1) {
         func_ov096_0229865c(self);
         func_ov096_02298334(self, 3, 0xff, 0);
@@ -218,8 +218,8 @@ extern "C" s32 func_ov097_0229b2bc(Unk_ov096_0229aea8 *self, s32 a) {
 }
 
 extern "C" BOOL func_ov097_0229b280() {
-    Unk_020cbb18 *g = data_020cbb18;
-    if (g->func_02072e44()) {
+    CommManager *g = gCommManager;
+    if (g->isOnline()) {
         if (g->unk_64 != 0 || func_020b0f54() > 1) {
             return FALSE;
         }

@@ -96,10 +96,10 @@ public:
     u8 pad_04[0x94];
 };
 
-class Unk_020dbd34 : public Unk_02055704 {
+class CachedModel : public Unk_02055704 {
 public:
-    Unk_020dbd34();
-    virtual ~Unk_020dbd34();
+    CachedModel();
+    virtual ~CachedModel();
     u32 unk_98;
 };
 
@@ -117,17 +117,17 @@ public:
     s32 hasPassedFrame(s32 a);
 };
 
-class Unk_020dbd54 : public Unk_020dbd34, public AnimFrameCtrl {
+class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:
-    Unk_020dbd54();
-    virtual ~Unk_020dbd54();
+    AnimModel();
+    virtual ~AnimModel();
     void *unk_b4;
 
-    s32 func_02054710();
-    s32 func_020547cc(void *q);
-    void func_020547e4();
-    BOOL func_02054800(void *x);
-    // declared in Unk_0205454c in src/main, but it is called on this object
+    s32 attachAnim();
+    s32 drawAnimated(void *q);
+    void stepAnim();
+    BOOL allocAnmObj(void *x);
+    // declared in BlendAnimModel in src/main, but it is called on this object
     void func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e);
 };
 
@@ -191,7 +191,7 @@ public:
     void func_ov004_02224fc8(char *a, char *b);
     virtual void vfunc_20(u32 a);
 
-    /* 0xec */ Unk_020dbd54 unk_ec;
+    /* 0xec */ AnimModel unk_ec;
     /* 0x1a4 */ Unk_ov004_02224ee4 unk_1a4;
     /* 0x248 */ Unk_ov004_02224d60 unk_248;
     /* 0x250 */ Unk_ov004_02224cf4 unk_250;
@@ -314,8 +314,8 @@ typedef BOOL (Cls::*Fn2)();
 #define F(T, off) (*(T *)((u8 *)this + off))
 
 extern "C" {
-extern u32 data_021c620c;
-extern void *data_020cbb18;
+extern u32 gBgHeap;
+extern void *gCommManager;
 
 s32 func_ov004_02224d8c(void *, u32);
 s32 func_ov004_02224d7c(void *, u32);
@@ -327,38 +327,38 @@ s32 func_ov004_02224dbc(void *, const char *);
 void func_ov004_02225f04(Cls *c);
 s32 func_ov004_02224d10(void *, const char *);
 
-void _ZN12Unk_0205454c13func_02054720Eiiitt(void *, s32, s32, s32, u16, u16);
+void _ZN14BlendAnimModel8initAnimEiiitt(void *, s32, s32, s32, u16, u16);
 void *_ZN5Model12getRenderObjEv(void *);
-void _ZN9ModelAnim13func_02055b00Eiiiit(void *, s32, s32, s32, s32, u16);
-void _ZN9ModelAnim13func_02055b38Eiiit(void *, s32, s32, s32, s32);
+void _ZN9ModelAnim7replaceEiiiit(void *, s32, s32, s32, s32, u16);
+void _ZN9ModelAnim4initEiiit(void *, s32, s32, s32, s32);
 void _ZN9ModelAnim14addToRenderObjEj(void *, void *);
-BOOL _ZN9ModelAnim13func_02055bccEjPv(void *, u32, u32);
+BOOL _ZN9ModelAnim11allocMatAnmEjPv(void *, u32, u32);
 void Snd_PlaySe(u32);
-void _ZN12Unk_020dbd5413func_020547e4Ev(void *);
+void _ZN9AnimModel8stepAnimEv(void *);
 void _ZN13AnimFrameCtrl4stepEv(void *);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, u32);
 void func_020e7820(s32 *, s32, s32, s32);
-s32 _ZN12Unk_020dbd5413func_02054800EPv(void *, u32);
-void _ZN12Unk_020dbd5413func_02054710Ev(void *);
-void _ZN12Unk_020dbd5413func_020547ccEPv(void *, s32);
-s32 _ZN12Unk_02056fd813func_02057110Ei(void *, u32);
+s32 _ZN9AnimModel11allocAnmObjEPv(void *, u32);
+void _ZN9AnimModel10attachAnimEv(void *);
+void _ZN9AnimModel12drawAnimatedEPv(void *, s32);
+s32 _ZN12G3dResAccess10findMatIdxEi(void *, u32);
 s32 func_020318cc(void *);
 s32 func_02031908(void *, s32, s32, s32, void *, s32, s32);
-void func_0209cf18(u8 *);
+void Clock_GetMinuteHour(u8 *);
 s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 s32 func_020b50e8(void);
 void NNS_G3dBindMdlTex(void *, void *);
 void NNS_G3dBindMdlPltt(void *, void *);
-void *func_02036c58(void);
-void *_ZN12Unk_02036cec13func_02036ce0Ev(void *);
+void *BgModelCache_Get(void);
+void *_ZN12BgModelCache12getGroundTexEv(void *);
 s32 func_020850e0(void);
 s32 func_02085180(s32);
 s32 _ZN12Unk_02086ef013func_02086efcEv(s32);
-s32 _ZN12Unk_020cbb1813func_02072e88Ei(void *, u32);
+s32 _ZN11CommManager12isSlotActiveEi(void *, u32);
 void _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *, void *, s32);
-void _ZN5Model13func_02055488Eii(void *, void *, void *);
+void _ZN5Model15setInitCallbackEii(void *, void *, void *);
 void _ZN12Unk_020d8cf4C1Ev(void *self);
 void _ZN12Unk_020d8cf4D2Ev(void *self);
 }
@@ -431,10 +431,10 @@ BOOL Unk_ov004_0224d80c::vfunc_00() {
     func_ov004_02224dbc(&unk_1a4, "/roomObj/obj_check_in.arc");
     func_ov004_02224d10(&unk_248, "/roomObj/obj_check_in.nsbtx");
     _ZN5Model11setResourceEP16Unk_020553f8_Resj(&unk_ec, func_ov004_02224d68(&unk_1a4), 0);
-    F(u32, 0x2b0) = _ZN12Unk_02056fd813func_02057110Ei(func_ov004_02224d68(&unk_1a4), (u32)"m_lt");
-    F(u32, 0x2b4) = _ZN12Unk_02056fd813func_02057110Ei(func_ov004_02224d68(&unk_1a4), (u32)"m_ltdoor");
-    F(u32, 0x2b8) = _ZN12Unk_02056fd813func_02057110Ei(func_ov004_02224d68(&unk_1a4), (u32)"m_open");
-    _ZN5Model13func_02055488Eii(&unk_ec, (void *)func_ov004_02226458, this);
+    F(u32, 0x2b0) = _ZN12G3dResAccess10findMatIdxEi(func_ov004_02224d68(&unk_1a4), (u32)"m_lt");
+    F(u32, 0x2b4) = _ZN12G3dResAccess10findMatIdxEi(func_ov004_02224d68(&unk_1a4), (u32)"m_ltdoor");
+    F(u32, 0x2b8) = _ZN12G3dResAccess10findMatIdxEi(func_ov004_02224d68(&unk_1a4), (u32)"m_open");
+    _ZN5Model15setInitCallbackEii(&unk_ec, (void *)func_ov004_02226458, this);
     func_ov004_02226064();
     func_ov004_02225fec();
     func_ov004_02225f88();
@@ -442,7 +442,7 @@ BOOL Unk_ov004_0224d80c::vfunc_00() {
     v = func_020b50e8();
     switch (v) {
     case 0xb:
-        if (_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, *(u32 *)((u8 *)data_020cbb18 + 0x64))) {
+        if (_ZN11CommManager12isSlotActiveEi(gCommManager, *(u32 *)((u8 *)gCommManager + 0x64))) {
             vfunc_60(2);
         } else {
             vfunc_60(0);
@@ -480,7 +480,7 @@ BOOL Unk_ov004_0224d80c::onExecute() {
 
 // @2226128
 BOOL Unk_ov004_0224d80c::onDraw() {
-    _ZN12Unk_020dbd5413func_020547ccEPv(&unk_ec, 0);
+    _ZN9AnimModel12drawAnimatedEPv(&unk_ec, 0);
     return TRUE;
 }
 
@@ -498,9 +498,9 @@ BOOL Unk_ov004_0224d80c::vfunc_0c() {
 BOOL Unk_ov004_0224d80c::func_ov004_02226064() {
     void *o;
     o = func_ov004_02224d68(&unk_1a4);
-    NNS_G3dBindMdlTex(o, _ZN12Unk_02036cec13func_02036ce0Ev(func_02036c58()));
+    NNS_G3dBindMdlTex(o, _ZN12BgModelCache12getGroundTexEv(BgModelCache_Get()));
     o = func_ov004_02224d68(&unk_1a4);
-    NNS_G3dBindMdlPltt(o, _ZN12Unk_02036cec13func_02036ce0Ev(func_02036c58()));
+    NNS_G3dBindMdlPltt(o, _ZN12BgModelCache12getGroundTexEv(BgModelCache_Get()));
     o = func_ov004_02224d68(&unk_1a4);
     NNS_G3dBindMdlTex(o, (void *)func_ov004_02224d04(&unk_248));
     o = func_ov004_02224d68(&unk_1a4);
@@ -517,7 +517,7 @@ void Unk_ov004_0224d80c::func_ov004_02225fec() {
     i = 0;
     col = ((const u32 *)data_ov004_0224016c)[0x40];
     for (; i < 7; i++) {
-        s32 x = _ZN12Unk_02056fd813func_02057110Ei(func_ov004_02224d68(&unk_1a4), (u32)data_ov004_0224d7e8[i]);
+        s32 x = _ZN12G3dResAccess10findMatIdxEi(func_ov004_02224d68(&unk_1a4), (u32)data_ov004_0224d7e8[i]);
         u8 *t = base + 4 + *(u16 *)(base + 0xa);
         u8 *q = t + *(u16 *)t * x;
         u32 *rec = (u32 *)(base + *(s32 *)(q + 4));
@@ -532,9 +532,9 @@ void Unk_ov004_0224d80c::func_ov004_02225fec() {
 
 // @2225f88
 BOOL Unk_ov004_0224d80c::func_ov004_02225f88() {
-    if (func_ov004_02224d8c(&unk_1a4, 0) != 0 && _ZN12Unk_020dbd5413func_02054800EPv(&unk_ec, data_021c620c) != 0) {
-        _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 0), 0, 0x1000, 0, 0);
-        _ZN12Unk_020dbd5413func_02054710Ev(&unk_ec);
+    if (func_ov004_02224d8c(&unk_1a4, 0) != 0 && _ZN9AnimModel11allocAnmObjEPv(&unk_ec, gBgHeap) != 0) {
+        _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, func_ov004_02224d8c(&unk_1a4, 0), 0, 0x1000, 0, 0);
+        _ZN9AnimModel10attachAnimEv(&unk_ec);
         return TRUE;
     }
     return FALSE;
@@ -542,8 +542,8 @@ BOOL Unk_ov004_0224d80c::func_ov004_02225f88() {
 
 // @2225f10
 BOOL Unk_ov004_0224d80c::func_ov004_02225f10() {
-    if (func_ov004_02224d7c(&unk_1a4, 0) != 0 && _ZN9ModelAnim13func_02055bccEjPv(&unk_290, F(u32, 0x148), data_021c620c)) {
-        _ZN9ModelAnim13func_02055b38Eiiit(&unk_290, func_ov004_02224d7c(&unk_1a4, 0), 0, 0x1000, 0);
+    if (func_ov004_02224d7c(&unk_1a4, 0) != 0 && _ZN9ModelAnim11allocMatAnmEjPv(&unk_290, F(u32, 0x148), gBgHeap)) {
+        _ZN9ModelAnim4initEiiit(&unk_290, func_ov004_02224d7c(&unk_1a4, 0), 0, 0x1000, 0);
         _ZN9ModelAnim14addToRenderObjEj(&unk_290, _ZN5Model12getRenderObjEv(&unk_ec));
         return TRUE;
     }
@@ -582,7 +582,7 @@ extern "C" BOOL func_ov004_02225e9c() {
 // @2225cf4
 void Unk_ov004_0224d80c::func_ov004_02225cf4(u32 a, Unk_ov004_02225cf4_P *p) {
     u8 tm[2];
-    func_0209cf18(tm);
+    Clock_GetMinuteHour(tm);
     s32 hr = tm[1];
     s32 f = FX_Div(tm[0] << 12, 0x3c000);
     u32 i0 = (u8)((hr + 1) % 24) * 12;
@@ -739,15 +739,15 @@ void Unk_ov004_0224d80c::func_ov004_02225b1c() {
 // @2225abc
 BOOL Unk_ov004_0224d80c::func_ov004_02225abc() {
     s32 r = func_ov004_02224d8c(&unk_1a4, 0);
-    _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, r, 0, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 0, 0x1000, 0, 0);
     void *o = _ZN5Model12getRenderObjEv(&unk_ec);
-    _ZN9ModelAnim13func_02055b00Eiiiit(&unk_290, (s32)o, func_ov004_02224d7c(&unk_1a4, 0), 0, 0x1000, 0);
+    _ZN9ModelAnim7replaceEiiiit(&unk_290, (s32)o, func_ov004_02224d7c(&unk_1a4, 0), 0, 0x1000, 0);
     return TRUE;
 }
 
 // @2225a84
 void Unk_ov004_0224d80c::func_ov004_02225a84() {
-    _ZN12Unk_020dbd5413func_020547e4Ev(&unk_ec);
+    _ZN9AnimModel8stepAnimEv(&unk_ec);
     _ZN13AnimFrameCtrl4stepEv(&unk_290);
     *F(u32 *, 0x2a8) = F(u32, 0x298);
     func_ov004_02225cd4(0);
@@ -756,9 +756,9 @@ void Unk_ov004_0224d80c::func_ov004_02225a84() {
 // @2225a14
 BOOL Unk_ov004_0224d80c::func_ov004_02225a14() {
     s32 r = func_ov004_02224d8c(&unk_1a4, 1);
-    _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
     void *o = _ZN5Model12getRenderObjEv(&unk_ec);
-    _ZN9ModelAnim13func_02055b00Eiiiit(&unk_290, (s32)o, func_ov004_02224d7c(&unk_1a4, 1), 1, 0x1000, 0);
+    _ZN9ModelAnim7replaceEiiiit(&unk_290, (s32)o, func_ov004_02224d7c(&unk_1a4, 1), 1, 0x1000, 0);
     Snd_PlaySe(0x4eb);
     return TRUE;
 }
@@ -766,7 +766,7 @@ BOOL Unk_ov004_0224d80c::func_ov004_02225a14() {
 // @2225984
 void Unk_ov004_0224d80c::func_ov004_02225984() {
     s32 v;
-    _ZN12Unk_020dbd5413func_020547e4Ev(&unk_ec);
+    _ZN9AnimModel8stepAnimEv(&unk_ec);
     _ZN13AnimFrameCtrl4stepEv(&unk_290);
     *F(u32 *, 0x2a8) = F(u32, 0x298);
     v = F(s32, 0x494);
@@ -782,15 +782,15 @@ void Unk_ov004_0224d80c::func_ov004_02225984() {
 // @2225924
 BOOL Unk_ov004_0224d80c::func_ov004_02225924() {
     s32 r = func_ov004_02224d8c(&unk_1a4, 2);
-    _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, r, 0, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 0, 0x1000, 0, 0);
     void *o = _ZN5Model12getRenderObjEv(&unk_ec);
-    _ZN9ModelAnim13func_02055b00Eiiiit(&unk_290, (s32)o, func_ov004_02224d7c(&unk_1a4, 2), 0, 0x1000, 0);
+    _ZN9ModelAnim7replaceEiiiit(&unk_290, (s32)o, func_ov004_02224d7c(&unk_1a4, 2), 0, 0x1000, 0);
     return TRUE;
 }
 
 // @22258e0
 void Unk_ov004_0224d80c::func_ov004_022258e0() {
-    _ZN12Unk_020dbd5413func_020547e4Ev(&unk_ec);
+    _ZN9AnimModel8stepAnimEv(&unk_ec);
     _ZN13AnimFrameCtrl4stepEv(&unk_290);
     *F(u32 *, 0x2a8) = F(u32, 0x298);
     if (func_020b50e8() == 0xb) {
@@ -801,16 +801,16 @@ void Unk_ov004_0224d80c::func_ov004_022258e0() {
 // @2225870
 BOOL Unk_ov004_0224d80c::func_ov004_02225870() {
     s32 r = func_ov004_02224d8c(&unk_1a4, 3);
-    _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
     void *o = _ZN5Model12getRenderObjEv(&unk_ec);
-    _ZN9ModelAnim13func_02055b00Eiiiit(&unk_290, (s32)o, func_ov004_02224d7c(&unk_1a4, 3), 1, 0x1000, 0);
+    _ZN9ModelAnim7replaceEiiiit(&unk_290, (s32)o, func_ov004_02224d7c(&unk_1a4, 3), 1, 0x1000, 0);
     Snd_PlaySe(0x4ec);
     return TRUE;
 }
 
 // @22257e4
 void Unk_ov004_0224d80c::func_ov004_022257e4() {
-    unk_ec.func_020547e4();
+    unk_ec.stepAnim();
     _ZN13AnimFrameCtrl4stepEv((u8 *)this + 0x290);
     *(u32 *)*(u32 *)((u8 *)this + 0x2a8) = *(u32 *)((u8 *)this + 0x298);
     u32 t = F(s32, 0x494);

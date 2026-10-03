@@ -1,19 +1,19 @@
 #include "types.h"
 
-struct Unk_020cbb18 {
+struct CommManager {
     u8 pad_00[0x104];
     u8 *unk_104;
     u8 pad_108[8];
     u8 *unk_110;
 
-    void func_02072454(u32 v);
-    void func_02072460();
-    u32 func_02072478();
-    void func_02072484(u8 *src, u32 n);
-    void func_020724b8(u32 v);
-    void func_020724c4();
-    u32 func_020724d8();
-    void func_0207264c();
+    void setAuxLenB(u32 v);
+    void clearAuxLenB();
+    u32 getAuxBufB();
+    void appendAuxB(u8 *src, u32 n);
+    void setAuxLenA(u32 v);
+    void clearAuxLenA();
+    u32 getAuxBufA();
+    void flushDeferred();
 };
 
 extern "C" {
@@ -25,7 +25,7 @@ s32 func_020b50e8();
 }
 
 extern "C" {
-void func_02076ae8(u8 *src, u8 *a, u8 *b);
+void CommRecord_UnpackSource(u8 *src, u8 *a, u8 *b);
 }
 
 extern "C" {
@@ -40,7 +40,7 @@ extern "C" {
 void func_020a695c(void *p);
 }
 
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 
 struct Unk_020a66f8 {
     u32 unk_00;
@@ -107,7 +107,7 @@ void (*const data_020d07b0[2])(s32) = {(void (*)(s32))func_020a66a8, (void (*)(s
 
 extern "C" void func_020a68b8(u8 *p, s32 *a, u8 *b, u8 *c, u8 *d, s32 *e) {
     u8 loc;
-    func_02076ae8(p, b, &loc);
+    CommRecord_UnpackSource(p, b, &loc);
     if (loc & 1) {
         *c = 1;
     } else {
@@ -253,13 +253,13 @@ extern "C" void func_020a66a8() {}
 
 extern "C" void func_020a6688() {
     u8 v = 1;
-    data_020cbb18->func_02072484(&v, 1);
+    gCommManager->appendAuxB(&v, 1);
 }
 
 extern "C" void func_020a65fc() {
-    Unk_020cbb18 *g = data_020cbb18;
-    g->func_020724c4();
-    u8 *base = (u8 *)g->func_020724d8();
+    CommManager *g = gCommManager;
+    g->clearAuxLenA();
+    u8 *base = (u8 *)g->getAuxBufA();
     u8 *p = base + 2;
     s32 m = func_020b50e8();
     Unk_020a647c_Buf b;
@@ -280,6 +280,6 @@ extern "C" void func_020a65fc() {
     s32 tot = p - base;
     b.total = tot - 2;
     MI_CpuCopy8(&b.total, base, 2);
-    g->func_020724b8(tot);
+    g->setAuxLenA(tot);
 }
 

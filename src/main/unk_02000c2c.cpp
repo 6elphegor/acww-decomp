@@ -111,8 +111,8 @@ u32 G2_GetBG1ScrPtr(void);
 u32 G2S_GetBG1ScrPtr(void);
 void GX_DispOn(void);
 void MIi_CpuClearFast(u32 a);
-void func_020b82b8(Unk_02000fc0_Col *c, u8 *dst, const char *fmt, ...);
-void func_020b82d8(Unk_02000fc0_Col *c, u8 *dst, const char *fmt);
+void DebugText_Printf(Unk_02000fc0_Col *c, u8 *dst, const char *fmt, ...);
+void DebugText_Print(Unk_02000fc0_Col *c, u8 *dst, const char *fmt);
 u32 Task_GetPhaseName(u32 a);
 u32 func_021122b0(void);
 u32 func_02113438(Unk_02000fc0_Node *a);
@@ -162,7 +162,7 @@ void CrashScreen_DumpWords(u8 *dst, u32 src, u32 size) {
             break;
         }
         col.unk_02 = color;
-        func_020b82b8(&col, dst, "%08x", *p);
+        DebugText_Printf(&col, dst, "%08x", *p);
         dst += 0x10;
         color ^= 0x3000;
         p++;
@@ -182,7 +182,7 @@ void CrashScreen_DrawStack(void) {
     } else {
         v = sCrashSP;
     }
-    func_020b82b8(&col, buf + 0x40, "SP = %08X", v);
+    DebugText_Printf(&col, buf + 0x40, "SP = %08X", v);
     if (CrashScreen_IsValidAddress(v, 4)) {
         CrashScreen_DumpWords(buf + 0x80, v, 0x160);
     }
@@ -202,11 +202,11 @@ void CrashScreen_DrawMain(void) {
     u32 r;
     col.unk_00 = 0xd000;
     col.unk_02 = 0xd000;
-    func_020b82b8(&col, buf + 0x40, "%10ums", sCrashTimeMs);
-    func_020b82d8(&col, buf, gBuildTime);
+    DebugText_Printf(&col, buf + 0x40, "%10ums", sCrashTimeMs);
+    DebugText_Print(&col, buf, gBuildTime);
     n = gTaskPhase;
     if (n != 0 && (s32)n < 6) {
-        func_020b82b8(&col, buf + 0x180, "LoopProc %1u:%s", n, Task_GetPhaseName(n));
+        DebugText_Printf(&col, buf + 0x180, "LoopProc %1u:%s", n, Task_GetPhaseName(n));
     }
     v = 0xffff;
     pp = gTaskCurrentNode;
@@ -219,33 +219,33 @@ void CrashScreen_DrawMain(void) {
         v = gProcCreateProfile;
     }
     if (v != 0xffff) {
-        func_020b82b8(&col, buf + 0x1c0, "ProfName[%d]Step[%u]", v, gProcCreateStep);
+        DebugText_Printf(&col, buf + 0x1c0, "ProfName[%d]Step[%u]", v, gProcCreateStep);
     }
     p6 = sCrashContext;
     if (p6 != NULL) {
         for (i = 0; (u32)i < 0x12; i++) {
-            func_020b82b8(&col, buf + ((i + 2) << 6) + 0x28, "%.3s:%08X", sCrashRegNames + i * 3, p6[i]);
+            DebugText_Printf(&col, buf + ((i + 2) << 6) + 0x28, "%.3s:%08X", sCrashRegNames + i * 3, p6[i]);
         }
         p6 = sCrashContext;
         q = &p6[0x19];
-        func_020b82b8(&col, buf + 0x528, "SPSR%08X", p6[0x19]);
-        func_020b82b8(&col, buf + 0x568, "CP15%08X", q[1]);
+        DebugText_Printf(&col, buf + 0x528, "SPSR%08X", p6[0x19]);
+        DebugText_Printf(&col, buf + 0x568, "CP15%08X", q[1]);
     } else {
-        func_020b82b8(&col, buf + 0x428, "SP  %08X", sCrashSP);
-        func_020b82b8(&col, buf + 0x4a8, "PC4 %08X", sCrashPC);
+        DebugText_Printf(&col, buf + 0x428, "SP  %08X", sCrashSP);
+        DebugText_Printf(&col, buf + 0x4a8, "PC4 %08X", sCrashPC);
     }
     r = sPanicFile;
     if (r != 0) {
-        func_020b82b8(&col, buf + 0x480, "%s:%u", r, sPanicLine);
-        func_020b82d8(&col, buf + 0x4c0, sPanicMessage);
+        DebugText_Printf(&col, buf + 0x480, "%s:%u", r, sPanicLine);
+        DebugText_Print(&col, buf + 0x4c0, sPanicMessage);
     }
     r = OS_GetProcMode();
     thr = data_021fcc2c[1];
-    func_020b82b8(&col, buf + 0x80, "ID:%u mode:%02x", thr->unk_6c, r);
-    func_020b82b8(&col, buf + 0xc0, "S:%08x-%08x", thr->unk_90, thr->unk_94);
+    DebugText_Printf(&col, buf + 0x80, "ID:%u mode:%02x", thr->unk_6c, r);
+    DebugText_Printf(&col, buf + 0xc0, "S:%08x-%08x", thr->unk_90, thr->unk_94);
     r = func_021122b0();
     if (r != 0) {
-        func_020b82b8(&col, buf + 0x100, "IrqStkErr%u", r);
+        DebugText_Printf(&col, buf + 0x100, "IrqStkErr%u", r);
     } else {
         node = (Unk_02000fc0_Node *)data_021fcc2c[2];
         r = 0;
@@ -257,7 +257,7 @@ void CrashScreen_DrawMain(void) {
             node = node->unk_68;
         }
         if (node != NULL) {
-            func_020b82b8(&col, buf + 0x100, "StkErr%u:%u:%x", r, node->unk_6c, ((Unk_02000fc0_Thr *)node)->unk_98);
+            DebugText_Printf(&col, buf + 0x100, "StkErr%u:%u:%x", r, node->unk_6c, ((Unk_02000fc0_Thr *)node)->unk_98);
         }
     }
 }

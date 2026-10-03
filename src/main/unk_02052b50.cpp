@@ -86,7 +86,7 @@ void FtrInfoTables_FreeIndoor(void *p);
 void FtrInfoTables_LoadIndoor(void *p, s32 a);
 void FtrInfoTables_Close(void *p);
 void FtrInfoTables_Open(void *p);
-void func_0205369c();
+void Gfx_DisableAllBanks();
 u8 FtrInfo_GetIndoorUnk0(s32 i);
 BOOL FtrInfo_TestIndoorFlagC(s32 i);
 BOOL FtrInfo_TestIndoorFlag7(s32 i);
@@ -107,7 +107,7 @@ static inline BOOL Unk_02052c54_Range(u16 *p) {
 
 extern "C" {
 
-void func_0205369c()
+void Gfx_DisableAllBanks()
 {
     GX_DisableBankForLCDC();
     GX_DisableBankForBG();
@@ -129,7 +129,7 @@ void func_020535e0()
     volatile u16 *r = (volatile u16 *)0x4000000;
     u8 *b = (u8 *)r;
     *(volatile u16 *)(b + 0x304) |= 0x820e;
-    func_0205369c();
+    Gfx_DisableAllBanks();
     *(volatile u32 *)b = *(volatile u32 *)b & 0xf000f;
     MI_DmaFill32(data_0213bfec, b + 8, 0, 0x48);
     MI_DmaFill32(data_0213bfec, b + 0x60, 0, 8);

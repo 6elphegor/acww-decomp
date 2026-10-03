@@ -7,7 +7,7 @@ s32 func_020b50e8();
 s32 PlayerActor_GetAction(s32 v);
 }
 
-extern s32 data_021c5384;
+extern s32 gGfxMainOnTop;
 extern u8 data_020d4694[];
 extern u8 data_020d468c[];
 
@@ -114,7 +114,7 @@ extern "C" BOOL HudUnkIcon_CanShow() {
     BOOL a, b, c;
     long d, e;
     s32 v;
-    a = data_021c5384 == 0 ? TRUE : FALSE;
+    a = gGfxMainOnTop == 0 ? TRUE : FALSE;
     b = TalkRequest_IsActive() == 0 ? TRUE : FALSE;
     c = func_020b50e8() == 6 ? TRUE : FALSE;
     v = PlayerActor_GetAction(4);

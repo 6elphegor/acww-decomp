@@ -19,7 +19,7 @@
 #define func_02071e04 _ZN7Pattern13func_02071e04Ev
 #define func_02071ef4 _ZN12Unk_02071ed013func_02071ef4EPh
 #define func_02071f48 _ZN12Unk_02071ed013func_02071f48EPh
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02087298 _ZN12Unk_0208722413func_02087298Ev
 #define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
 #define HandCursor_getAnim _ZN10HandCursor7getAnimEv
@@ -86,7 +86,7 @@ extern u8 gTouchChanged;
 extern u8 gTouchCurY;
 extern u8 gTouchCurX;
 extern u32 gCurrentHeap;
-extern u8 *data_020cbb18;
+extern u8 *gCommManager;
 extern u32 data_ov126_02299ad0[4];
 
 // main
@@ -102,13 +102,13 @@ s32 func_0206e5cc();
 BOOL func_0206e61c();
 void func_0206e63c();
 void Snd_PlaySe(u32 v);
-void func_0200261c(const void *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void func_020026c4(const void *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void func_020015b8(s32 a);
-void func_02002398(s32 a, s32 b);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_020021a0(s32 a);
-void func_020020b8(s32 a);
+void Gfx2d_LoadCharFile(const void *a, void *b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_LoadPaletteFile(const void *a, void *b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_SetSubBgModeState(s32 a);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ShowLayer(s32 a);
 void func_020a78a4(void *a, void *b, s32 c);
 void MsgString_fromEncoded(void *a, void *b, s32 c, s32 d);
 s32 String_CensorTaboo(void *a);
@@ -154,15 +154,15 @@ void func_0206fc44(void *p);
 s32 func_020986d4(s32 a);
 s32 PlayerData_getFriendList(s32 a);
 void *func_02071c68(s32 a, s32 b);
-void *func_02076db4(s32 a);
-void *func_02076cf0(void *p);
-void func_02076cf4(void *p);
-void *func_02076e1c(void *p);
-BOOL func_020e9c78(u32 a, void *b);
+void *FriendList_GetEntries(s32 a);
+void *FriendEntry_GetFriendData(void *p);
+void FriendEntry_Clear(void *p);
+void *DwcFriendData_GetBytes(void *p);
+BOOL Net_WifiAddFriend(u32 a, void *b);
 void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
-BOOL func_02072e88(void *g, s32 v);
-s32 func_020eaf18();
+BOOL CommManager_isSlotActive(void *g, s32 v);
+s32 Net_GetMode();
 void Oam_DrawCell(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 BOOL HandCursor_getAnim(void *p);
 BOOL HandCursor_isAnimDone(void *p);
@@ -287,11 +287,11 @@ public:
     u8 unk_00[0x38];
 };
 
-class Unk_020e45f8 {  // screen upload helper, 0x24 bytes
+class BgVramTask {  // screen upload helper, 0x24 bytes
 public:
-    Unk_020e45f8();
+    BgVramTask();
     virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void clear();
     u8 unk_04[0x20];
 };
 
@@ -350,7 +350,7 @@ public:
     Unk_ov126_ov095_02293b60() : unk_22f4(), unk_233c() {}
     ~Unk_ov126_ov095_02293b60() {}
     u32 unk_00[0x22f4 / 4];
-    Unk_020e45f8 unk_22f4[2];
+    BgVramTask unk_22f4[2];
     Unk_020e0488 unk_233c[2];
 };
 
@@ -729,7 +729,7 @@ BOOL Unk_ov126_02299ae8::vfunc_50() {
                 func_ov002_02200a50(5);
                 func_ov002_02200a60(1);
                 if (r5 == 0x19 || r5 == 0x1b) {
-                    func_02076cf4(func_ov126_02297614());
+                    FriendEntry_Clear(func_ov126_02297614());
                 }
                 break;
             case 3:
@@ -771,8 +771,8 @@ void Unk_ov126_02299ae8::func_ov126_022993fc() {
     func_ov126_02297b38();
     func_ov126_02297a0c();
     func_ov002_022008e0(0xa, 4, 0, 0x30);
-    func_020020b8(4);
-    func_020020b8(6);
+    Gfx2d_ShowLayer(4);
+    Gfx2d_ShowLayer(6);
     func_ov126_022990d0();
     func_ov126_02297178(1);
     func_ov002_02200a50(2);
@@ -806,8 +806,8 @@ void Unk_ov126_02299ae8::func_ov126_022992d0() {
             } else {
                 func_ov090_02291d8c(r6, 6);
                 func_0206e5cc();
-                if (func_02072e88(data_020cbb18, ((s32 *)data_020cbb18)[0x64 / 4])) {
-                    s32 t = func_020eaf18();
+                if (CommManager_isSlotActive(gCommManager, ((s32 *)gCommManager)[0x64 / 4])) {
+                    s32 t = Net_GetMode();
                     if (t == 3) goto yes;
                     if (t == 4) {
                     yes:
@@ -837,7 +837,7 @@ void Unk_ov126_02299ae8::func_ov126_022992d0() {
 void Unk_ov126_02299ae8::func_ov126_02299280() {
     void *r4 = func_ov126_02297614();
     s32 r6 = func_0206ed38();
-    if (func_020e9c78(r6, func_02076e1c(func_02076cf0(r4)))) {
+    if (Net_WifiAddFriend(r6, DwcFriendData_GetBytes(FriendEntry_GetFriendData(r4)))) {
         func_ov002_022008c4(0xa, 0, 0, 0x30);
         func_ov126_022990d0();
         func_ov002_02200a50(5);
@@ -846,8 +846,8 @@ void Unk_ov126_02299ae8::func_ov126_02299280() {
 
 void Unk_ov126_02299ae8::func_ov126_022991fc() {
     if (func_ov002_022008fc(0)) {
-        func_020021a0(4);
-        func_020021a0(6);
+        Gfx2d_ResetLayer(4);
+        Gfx2d_ResetLayer(6);
         func_ov126_02297168(1);
         func_ov002_02200a60(5);
         if (func_ov126_02297188(0x40)) {
@@ -1015,16 +1015,16 @@ void Unk_ov126_02299ae8::func_ov126_02298e58() {
 }
 
 void Unk_ov126_02299ae8::func_ov126_02298e20() {
-    func_020015b8(0);
-    func_02002398(4, 3);
-    func_0200226c(4, 0, 0, 0);
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
+    Gfx2d_SetSubBgModeState(0);
+    Gfx2d_SetLayerPriority(4, 3);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
 void Unk_ov126_02299ae8::func_ov126_02298db8() {
     func_ov124_02296d2c(&unk_b0, 4);
-    func_0200261c("menu/chat2/b_cht.bch", (void *)gCurrentHeap, 4, 0x13d, 0x13d, 0x1e9);
+    Gfx2d_LoadCharFile("menu/chat2/b_cht.bch", (void *)gCurrentHeap, 4, 0x13d, 0x13d, 0x1e9);
     func_ov095_022943dc(&unk_144, "menu/letter/b_key.bsc");
     func_ov126_02298358();
     func_ov095_022943b4(&unk_144, 6);
@@ -1034,7 +1034,7 @@ void Unk_ov126_02299ae8::func_ov126_02298db8() {
 void Unk_ov126_02299ae8::func_ov126_02298cf8() {
     func_ov095_02293cc0(&unk_144);
     func_ov115_022968ec(&unk_b0, 6);
-    func_020026c4("menu/han/obj.bpl", (void *)gCurrentHeap, 8, 5, 5, 5);
+    Gfx2d_LoadPaletteFile("menu/han/obj.bpl", (void *)gCurrentHeap, 8, 5, 5, 5);
     func_ov002_02203920(&unk_3d00);
     if (func_ov126_02297188(0x100)) {
         u32 buf[0x44 / 4];
@@ -1952,7 +1952,7 @@ u8 *Unk_ov126_02299ae8::func_ov126_02297614() {
     s32 t = PlayerData_GetCurrent();
     s32 p = PlayerData_getFriendList(t);
     s32 idx = func_0206ed38();
-    u8 *q = (u8 *)func_02076db4(p);
+    u8 *q = (u8 *)FriendList_GetEntries(p);
     return q + idx * 0x1c;
 }
 

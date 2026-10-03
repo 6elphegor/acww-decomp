@@ -114,21 +114,21 @@ void MTX_Concat43(void *a, void *b, void *c);
 void VEC_Normalize(void *a, void *b);
 s32 func_02030814(s32 a);
 void WorldCurve_Apply(Vec3 *out, Vec3 *in);
-Col func_02064cc4(void);
-RGB func_02064f2c(void);
+Col SceneLights_GetRoomColor(void);
+RGB SceneLights_GetFlashColor(void);
 s32 func_02064c84(s32 a);
-void func_0209cf18(void *p);
+void Clock_GetMinuteHour(void *p);
 extern s32 gCurrentHeap;
-extern s32 data_021c620c;
+extern s32 gBgHeap;
 extern u8 data_021f47e0[];
 void *File_Load(void *p);
 u8 *NNS_G3dGetTex(void *p);
-void func_02055724(void *p, s32 a);
-u8 *func_0205588c(void *p, s32 heap);
+void Gfx3d_LoadTexAndPltt(void *p, s32 a);
+u8 *Gfx3d_CopyTex(void *p, s32 heap);
 void Mem_Free(void *p);
 void func_020639e8(char *buf, const void *fmt, ...);
-u32 _ZN12Unk_02056fd813func_02057100Ei(u8 *base, char *name);
-u32 _ZN12Unk_02056fd813func_02057078Ei(u8 *base, char *name);
+u32 _ZN12G3dResAccess10findTexIdxEi(u8 *base, char *name);
+u32 _ZN12G3dResAccess11findPlttIdxEi(u8 *base, char *name);
 extern s32 gCamera;
 extern Vec3 gCameraLookAt;
 extern u8 gViewMtx[];
@@ -208,14 +208,14 @@ extern "C" void func_020ac724(void *a, void *b) {
 
 extern "C" void func_020ac500(void *arg) {
     u32 *texData;
-    s32 heap = data_021c620c;
+    s32 heap = gBgHeap;
     if (arg != 0) {
         data_021edf44 = 0;
         Unk_020ac0c4_Entry *e = data_021ee114;
         void *file = File_Load((void *)"/shadow/tex_shadow.nsbtx");
         u8 *res = NNS_G3dGetTex(file);
-        func_02055724(res, 0);
-        res = func_0205588c(res, heap);
+        Gfx3d_LoadTexAndPltt(res, 0);
+        res = Gfx3d_CopyTex(res, heap);
         Mem_Free(file);
         u32 i;
         for (i = 0; i < 3; i++) {
@@ -227,8 +227,8 @@ extern "C" void func_020ac500(void *arg) {
             e->unk_08 = 0;
             e->unk_00 = res;
             e->unk_14 = data_020d094c[i].unk_06;
-            u32 idx1 = _ZN12Unk_02056fd813func_02057100Ei(e->unk_00, name);
-            u32 idx2 = _ZN12Unk_02056fd813func_02057078Ei(e->unk_00, buf);
+            u32 idx1 = _ZN12G3dResAccess10findTexIdxEi(e->unk_00, name);
+            u32 idx2 = _ZN12G3dResAccess11findPlttIdxEi(e->unk_00, buf);
             Unk_020ac500_Tex *tex = (Unk_020ac500_Tex *)e->unk_00;
             texData = Unk_020ac500_TexData(tex, idx1);
             u32 plttOfs = Unk_020ac500_PlttData(tex, idx2)->offset;
@@ -269,7 +269,7 @@ extern "C" void func_020ac40c() {
     struct {
         u8 a, b;
     } t;
-    func_0209cf18(&t);
+    Clock_GetMinuteHour(&t);
     s32 x = (t.a + ((t.b + 6) % 12) * 60) << 12;
     x = FX_Div(x, 0x2d0000);
     data_021edf44 = func_01ffcb0c((x - 0x800) << 1, 0x1000);
@@ -277,7 +277,7 @@ extern "C" void func_020ac40c() {
     func_020e84f8(data_021f47e0, 0x20000, 0x20000, 0x20000);
     MTX_Concat43(data_021f47e0, gViewMtx, data_021edfe0);
     func_020ac724(data_021edfe0, data_021edfbc);
-    RGB c1 = func_02064f2c();
+    RGB c1 = SceneLights_GetFlashColor();
     u8 s = c1.b + (c1.r + c1.g);
     u8 r4 = func_01ffcb0c(0x10000, FX_Div(s << 12, 0x5d000)) >> 12;
     s32 base = func_02064c84(0);
@@ -297,7 +297,7 @@ extern "C" void func_020ac3a4() {
         e->unk_00 = 0;
         e++;
     }
-    s32 heap = data_021c620c;
+    s32 heap = gBgHeap;
     data_021ee078.func_020abea8(heap);
     data_021ee0ac.func_020abea8(heap);
     data_021ee0e0.func_020abea8(heap);
@@ -487,7 +487,7 @@ void Unk_020abea8::func_020abed4(Vec3 *pos) {
                     vp->y >>= shift;
                     vp->z >>= shift;
                 }
-                c0 = func_02064cc4();
+                c0 = SceneLights_GetRoomColor();
                 c1 = c0;
                 REG(0x4000480) = c1.v;
                 REG(0x4000488) = (u16)((unk_20 << 8) >> 16) | ((u16)((*p28 << 8) >> 16) << 16);

@@ -9,8 +9,8 @@ extern "C" s32 func_ov004_02213704(s32 a);
 extern "C" s32 func_ov004_0222a2c0(void);
 extern "C" s32 func_ov004_0222864c(void);
 extern "C" s32 func_ov004_02213c40(s32 a);
-extern "C" s32 func_ov004_02204e70(void);
-extern "C" s32 func_ov003_022048c0(s32 a);
+extern "C" s32 Atm_GetInstance(void);
+extern "C" s32 VillagerBoard_Get(s32 a);
 extern "C" s32 func_ov004_0223584c(void);
 extern "C" s32 func_ov003_02218bb0(s32 a);
 extern "C" s32 NpcRegistry_FindSpNpc(void);
@@ -127,14 +127,14 @@ extern "C" s32 func_020b5f98(s32 a) {
 
 extern "C" s32 func_020b5f70(s32 a) {
     if (IsMode0()) {
-        return func_ov003_022048c0(a);
+        return VillagerBoard_Get(a);
     }
     return 0;
 }
 
 extern "C" s32 func_020b5f48(void) {
     if (IsMode1()) {
-        return func_ov004_02204e70();
+        return Atm_GetInstance();
     }
     return 0;
 }

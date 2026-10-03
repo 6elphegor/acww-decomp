@@ -17,7 +17,7 @@ struct Unk_0205cbe8;
 
 extern "C" {
 extern void *data_021c61dc;
-extern u8 *data_020cbb18;
+extern u8 *gCommManager;
 
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
@@ -87,7 +87,7 @@ Unk_0205cbe8::~Unk_0205cbe8() {}
 
 void Unk_0205cbe8::func_0205ccb0() {
     void *heap = data_021c61dc;
-    u32 n = data_020cbb18[0x6c];
+    u32 n = gCommManager[0x6c];
     u32 m = func_020b4928(func_020b50e8());
     u32 i;
     if (n < m) m = n;

@@ -8,15 +8,15 @@ typedef volatile u32 vu32;
 // Externs
 
 extern "C" {
-extern u16 data_0213c7a8;
+extern u16 sGfx3dClearColor;
 }
 
 extern "C" {
-extern u32 data_0213c7ac;
+extern u32 sGfx3dClearDepth;
 }
 
 extern "C" {
-extern u16 data_020d47e4[32];
+extern u16 sDefaultToonTable[32];
 }
 
 extern "C" {
@@ -231,7 +231,7 @@ struct Unk_02002804_Buf {
     u16 unk_00[32];
 };
 
-// 0x30-byte record copied around by Gfx3d_SetViewMatrix and func_02002898
+// 0x30-byte record copied around by Gfx3d_SetViewMatrix and Gfx3d_Init
 struct Unk_02002848_Data {
     u32 unk_00[12];
 };
@@ -240,23 +240,23 @@ extern Unk_02002848_Data gViewMtx;
 extern Unk_02002848_Data data_02135934_;
 
 // Object with two heap pointers at +0x48 and +0x4c, first method func_020029e8
-class Unk_020029e8 {
+class AbAllObjGfx {
 public:
-    Unk_020029e8();
-    ~Unk_020029e8();
-    void func_020029e8();
-    void func_02002a14();
-    void func_02002a3c();
-    void func_02002a54();
-    BOOL func_02002a6c();
-    BOOL func_02002a8c();
+    AbAllObjGfx();
+    ~AbAllObjGfx();
+    void uploadChars();
+    void uploadPalette();
+    void freeChars();
+    void freePalette();
+    BOOL loadChars();
+    BOOL loadPalette();
 
     /* 0x00 */ u8 unk_00[0x48];
     /* 0x48 */ void *unk_48;
     /* 0x4c */ void *unk_4c;
 };
 
-Unk_020029e8 data_0213c81c;
+AbAllObjGfx sAbAllObjGfx;
 
 struct Unk_02002f14_Node {
     /* 0x00 */ void *unk_00;
@@ -357,63 +357,63 @@ extern "C" u32 VillagerId_IsValidSpecies(u32 id);
 extern "C" u32 Villager_PersonalityToVoiceType(u32 t);
 extern "C" void Villager_MakePersonalityFileName(void *buf, u32 size, u32 arg, u32 idx);
 
-extern "C" void func_02002918(void);
-extern "C" void func_02002ab0(void *p);
+extern "C" void Gfx3d_InitEngine(void);
+extern "C" void AbAllObjGfx_InitFile(void *p);
 
-Unk_020029e8::Unk_020029e8() : unk_48(0), unk_4c(0) {}
+AbAllObjGfx::AbAllObjGfx() : unk_48(0), unk_4c(0) {}
 
-Unk_020029e8::~Unk_020029e8() {
-    func_02002a54();
-    func_02002a3c();
+AbAllObjGfx::~AbAllObjGfx() {
+    freePalette();
+    freeChars();
 }
 
-extern "C" void func_02002ab8(void) {
-    Unk_020029e8 *p = &data_0213c81c;
-    func_02002ab0(p);
-    BOOL a = p->func_02002a8c();
-    BOOL b = p->func_02002a6c();
-    if (a) p->func_02002a14();
-    if (b) p->func_020029e8();
-    p->func_02002a54();
-    p->func_02002a3c();
+extern "C" void AbAllObjGfx_Upload(void) {
+    AbAllObjGfx *p = &sAbAllObjGfx;
+    AbAllObjGfx_InitFile(p);
+    BOOL a = p->loadPalette();
+    BOOL b = p->loadChars();
+    if (a) p->uploadPalette();
+    if (b) p->uploadChars();
+    p->freePalette();
+    p->freeChars();
 }
 
-extern "C" void func_02002ab0(void *p) { FS_InitFile(p); }
+extern "C" void AbAllObjGfx_InitFile(void *p) { FS_InitFile(p); }
 
-BOOL Unk_020029e8::func_02002a8c() {
+BOOL AbAllObjGfx::loadPalette() {
     unk_48 = File_Load((void *)"/ab_all/ab_all_obj_ncl.bin");
     if (unk_48) return TRUE;
     return FALSE;
 }
 
-BOOL Unk_020029e8::func_02002a6c() {
+BOOL AbAllObjGfx::loadChars() {
     void *p = File_Load((void *)"/ab_all/ab_all_obj_ncg.bin");
     unk_4c = p;
     if (p) return TRUE;
     return FALSE;
 }
 
-void Unk_020029e8::func_02002a54() {
+void AbAllObjGfx::freePalette() {
     if (unk_48) {
         Mem_Free(unk_48);
         unk_48 = 0;
     }
 }
 
-void Unk_020029e8::func_02002a3c() {
+void AbAllObjGfx::freeChars() {
     if (unk_4c) {
         Mem_Free(unk_4c);
         unk_4c = 0;
     }
 }
 
-void Unk_020029e8::func_02002a14() {
+void AbAllObjGfx::uploadPalette() {
     DC_FlushRange(unk_48, 0x80);
     GX_LoadOBJPltt(unk_48, 0, 0x80);
     GXS_LoadOBJPltt(unk_48, 0, 0x80);
 }
 
-void Unk_020029e8::func_020029e8() {
+void AbAllObjGfx::uploadChars() {
     DC_FlushRange(unk_4c, 0x1000);
     GX_LoadOBJ(unk_4c, 0, 0x1000);
     GXS_LoadOBJ(unk_4c, 0, 0x1000);

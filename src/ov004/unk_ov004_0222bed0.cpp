@@ -6,8 +6,8 @@
 #define func_02003e50 _ZN12Unk_02003c3013func_02003e50Ev
 #define func_02003e80 _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec
 #define func_02003ecc _ZN12Unk_02003c3013func_02003eccEv
-#define func_02055550 _ZN5Model13func_02055550EPi
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
+#define Model_drawShapesDirect _ZN5Model16drawShapesDirectEPi
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define func_02133150 _s32_div_f
 
 #define Unk_c788_call _ZN18Unk_ov004_0224e59419func_ov004_0222c788EtRK22Unk_ov004_0222c570_VecS2_sss
@@ -137,28 +137,28 @@ public:
 
 // ---------------------------------------------------------------- externs
 extern "C" {
-extern s32 data_021c47c4;
+extern s32 gSceneBlockMap;
 extern void *gCamera;
-extern Unk_ov004_0222c570_Comm *data_020cbb18;
+extern Unk_ov004_0222c570_Comm *gCommManager;
 extern u8 data_021f47e0[];
 extern u8 gCameraLookAt[];
 
 void *func_02095204(u32 a);
-s32 func_02072e44(void *g);
-void func_02054970(void *p);
-s32 func_020549e4(void *p, void *a, s32 b);
-void *func_020549ac(void *p, u32 a);
+s32 CommManager_isOnline(void *g);
+void ModelSet_Release(void *p);
+s32 ModelSet_Load(void *p, void *a, s32 b);
+void *ModelSet_Find(void *p, u32 a);
 u32 Item_GetIconModelName(s32 a, s32 b);
-void func_02045df4();
-void func_0204ed8c(Unk_ov004_V3 *out, s32 a, s32 b);
+void Town_GetEnvironmentRank();
+void FieldPos_FromUnitCenter(Unk_ov004_V3 *out, s32 a, s32 b);
 s32 func_ov004_02234f80(s32 a, s32 b);
 void func_02003e50(void *p);
 void func_02003e80(void *p, void *v);
 void func_02003ecc(void *p);
 s32 func_02003e70(void *p, u32 a, u32 b, u32 c);
 void VEC_Add(void *a, void *b, void *c);
-void func_0204edd8(void *a, void *b);
-u16 *func_0204eba0(void *g, void *v, s32 z);
+void FieldPos_SnapToUnitCenter(void *a, void *b);
+u16 *BlockMap_GetItemPtrAtPos(void *g, void *v, s32 z);
 s32 func_ov004_02234f6c(void *p);
 s32 Item_GetInfoUnk07(u16 *p);
 u32 WorldCurve_ToCurved(void *a, void *b);
@@ -166,12 +166,12 @@ void func_020e8388(void *m, s32 a, s32 b, s32 c);
 void func_020e8434(void *m, s32 a);
 void func_020e8464(void *m, s32 x, s32 y, s32 z);
 void func_020e84f8(void *m, s32 x, s32 y, s32 z);
-void func_02055550(void *p, s32 a);
-u16 func_02064cc4();
+void Model_drawShapesDirect(void *p, s32 a);
+u16 SceneLights_GetRoomColor();
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, u32 b);
 void func_02045570(void *p, u32 a);
 void func_020b5184(void);
-void func_0204eb30(void *grid, u16 *v, s32 x, s32 y, s32 z);
+void BlockMap_SetItemAtUnit(void *grid, u16 *v, s32 x, s32 y, s32 z);
 s32 func_02133150(s32 a, s32 b);
 u32 func_020b50e8(void);
 void Snd_PlaySe(s32 a);
@@ -215,10 +215,10 @@ extern "C" Unk_ov004_0224e594 *func_ov004_0222c964() {
 BOOL Unk_ov004_0224e594::func_ov004_0222c914() {
     BOOL r = FALSE;
     void *d = (void *)"/fg/icon/icon.nsbmd";
-    if (func_020549e4(&unk_174, d ? d : d, r)) {
+    if (ModelSet_Load(&unk_174, d ? d : d, r)) {
         s32 i;
         for (i = 0; i < 0x49; i++) {
-            unk_50[i] = func_020549ac(&unk_174, Item_GetIconModelName(i, r));
+            unk_50[i] = ModelSet_Find(&unk_174, Item_GetIconModelName(i, r));
         }
         r = TRUE;
     }
@@ -228,7 +228,7 @@ BOOL Unk_ov004_0224e594::func_ov004_0222c914() {
 BOOL Unk_ov004_0224e594::vfunc_00() {
     BOOL r = FALSE;
     if (func_ov004_0222c914()) {
-        func_02045df4();
+        Town_GetEnvironmentRank();
         data_ov004_022514a4 = this;
         func_ov004_0222c1d4((Unk_ov004_Entry *)&data_ov004_022514b4);
         r = TRUE;
@@ -245,8 +245,8 @@ void Unk_ov004_0224e594::func_ov004_0222c880(Unk_ov004_0222c880_Model *model, Un
     if (model != NULL) {
         volatile u16 tmp[2];
         model->unk_64 = m;
-        func_02055550(model, 0);
-        tmp[0] = func_02064cc4();
+        Model_drawShapesDirect(model, 0);
+        tmp[0] = SceneLights_GetRoomColor();
         tmp[1] = tmp[0];
         NNS_G3dMdlSetMdlEmi(model->unk_5c, 0, tmp[1]);
     }
@@ -291,17 +291,17 @@ void Unk_ov004_0224e594::func_ov004_0222c640(void *grid) {
     a.x = ((Unk_ov004_0222c570_Vec *)gCameraLookAt)->x;
     a.y = ((Unk_ov004_0222c570_Vec *)gCameraLookAt)->y;
     a.z = ((Unk_ov004_0222c570_Vec *)gCameraLookAt)->z;
-    func_0204edd8(&out, &a);
+    FieldPos_SnapToUnitCenter(&out, &a);
     b.x = out.x + 0x10000;
     b.y = 0;
     b.z = out.z + 0x10000;
     for (i = hi; i >= -8; i--) {
-        func_0204edd8(&c, &b);
+        FieldPos_SnapToUnitCenter(&c, &b);
         u32 r = WorldCurve_ToCurved(&d, &c);
         func_020e8388(data_021f47e0, d.x, d.y, d.z);
         func_020e8434(data_021f47e0, r);
         for (j = hi; j >= -8; j--) {
-            u16 *p = func_0204eba0(grid, &c, 0);
+            u16 *p = BlockMap_GetItemPtrAtPos(grid, &c, 0);
             if (p != NULL && (s32)(*p & 0xf000) >> 12 == 1) {
                 s32 z = c.z;
                 s32 y = c.y + func_ov004_02234f6c(&c);
@@ -311,7 +311,7 @@ void Unk_ov004_0224e594::func_ov004_0222c640(void *grid) {
                 sc.z = sc.y = sc.x = 0x1000;
                 func_ov004_0222c788(*p, e1, sc, 0, 0, 0);
             }
-            p = func_0204eba0(grid, &c, 1);
+            p = BlockMap_GetItemPtrAtPos(grid, &c, 1);
             if (p != NULL && (s32)(*p & 0xf000) >> 12 == 1) {
                 s32 z = c.z;
                 s32 y = c.y + func_ov004_02234f6c(&c);
@@ -328,7 +328,7 @@ void Unk_ov004_0224e594::func_ov004_0222c640(void *grid) {
 }
 
 BOOL Unk_ov004_0224e594::onDraw() {
-    void *a = (void *)data_021c47c4;
+    void *a = (void *)gSceneBlockMap;
     void *b = gCamera;
     if (a != NULL && b != NULL) {
         func_ov004_0222c640(a);
@@ -338,19 +338,19 @@ BOOL Unk_ov004_0224e594::onDraw() {
 }
 
 BOOL Unk_ov004_0224e594::vfunc_0c() {
-    func_02054970(&unk_174);
+    ModelSet_Release(&unk_174);
     func_ov004_0222c08c((Unk_ov004_Entry *)&data_ov004_022514b4);
     return TRUE;
 }
 
 extern "C" BOOL func_ov004_0222c570(u16 *p, Unk_ov004_0222c570_Vec *v) {
-    void *g = (void *)data_021c47c4;
+    void *g = (void *)gSceneBlockMap;
     Unk_ov004_0222c570_Global *o = (Unk_ov004_0222c570_Global *)func_02095204(4);
     BOOL r = FALSE;
     if (g != NULL && o != NULL) {
-        Unk_ov004_0222c570_Comm *c = data_020cbb18;
+        Unk_ov004_0222c570_Comm *c = gCommManager;
         s32 a;
-        if (func_02072e44(c)) {
+        if (CommManager_isOnline(c)) {
             a = c->unk_64;
         } else {
             a = 0;
@@ -395,10 +395,10 @@ extern "C" void func_ov004_0222c4d8(u32 id, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s3
 
 extern "C" void func_ov004_0222c49c(s32 x, s32 y, u16 v, s32 z) {
     func_020b5184();
-    if (data_021c47c4 != 0) {
+    if (gSceneBlockMap != 0) {
         volatile u16 buf = 0xfff1;
         buf = v;
-        func_0204eb30((void *)data_021c47c4, (u16 *)&buf, x, y, z);
+        BlockMap_SetItemAtUnit((void *)gSceneBlockMap, (u16 *)&buf, x, y, z);
     }
 }
 
@@ -450,7 +450,7 @@ extern "C" void func_ov004_0222c3a8(Unk_ov004_Entry *e) {
 extern "C" void func_ov004_0222c2e0(Unk_ov004_Entry *e, Unk_ov004_P2 *p, Unk_ov004_V3 *from, Unk_ov004_V3 *to, u32 v32) {
     volatile u16 id = 0xfff1;
     Unk_ov004_V3 t;
-    func_0204ed8c(&t, p->a, p->b);
+    FieldPos_FromUnitCenter(&t, p->a, p->b);
     if (to->y == 0) {
         s32 z = func_02133150(to->z - from->z, 9);
         e->unk_30.x = func_02133150(to->x - from->x, 9);
@@ -577,7 +577,7 @@ extern "C" void func_ov004_0222c08c(Unk_ov004_Entry *e) {
 }
 
 extern "C" s32 func_ov004_0222bff4(void *base, s32 idx, Unk_ov004_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 s16v, u32 u8v) {
-    s32 g = data_021c47c4;
+    s32 g = gSceneBlockMap;
     if (g == 0) return 0;
     Unk_ov004_Entry *e = (Unk_ov004_Entry *)base + idx * 3;
     BOOL r = FALSE;
@@ -604,7 +604,7 @@ extern "C" s32 func_ov004_0222bf80(s32 idx, u32 v, Unk_ov004_P2 *p, Unk_ov004_V3
     Unk_ov004_V3 t;
     Unk_ov004_V3 lb;
     Unk_ov004_V3 lc;
-    func_0204ed8c(&t, p->a, p->b);
+    FieldPos_FromUnitCenter(&t, p->a, p->b);
     if (*(u8 *)&f != 0) {
         t.y = func_ov004_02234f80(p->a, p->b);
     }
