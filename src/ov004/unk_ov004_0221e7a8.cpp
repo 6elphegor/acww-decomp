@@ -228,8 +228,8 @@ public:
     virtual BOOL preDelete();
     virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_60(u32 v);
-    virtual void vfunc_64(Unk_ov004_02224ee4_Vec *out);
+    virtual BOOL changeSyncState(u32 v);
+    virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
 
     void setSyncSlot(u32 v);
     s32 storeSyncState();
@@ -292,7 +292,7 @@ BOOL RoomObjActor::preExecute() {
     if (unk_ea != 0xff) {
         s32 v = getSyncState();
         if (unk_248.unk_04 != v) {
-            vfunc_60(v);
+            changeSyncState(v);
         }
     }
     return TRUE;
@@ -300,7 +300,7 @@ BOOL RoomObjActor::preExecute() {
 
 void RoomObjActor::vfunc_20(u32 a) {
     Vec out;
-    vfunc_64(&out);
+    getSoundPos(&out);
     unk_250.RoomObj_SetSePos(&out);
     _ZN5Actor8vfunc_20Ev(this, a);
 }
@@ -313,13 +313,13 @@ BOOL RoomObjActor::preDelete() {
     return TRUE;
 }
 
-void RoomObjActor::vfunc_64(Vec *out) {
+void RoomObjActor::getSoundPos(Vec *out) {
     out->x = unk_5c[0];
     out->y = unk_5c[1];
     out->z = unk_5c[2];
 }
 
-BOOL RoomObjActor::vfunc_60(u32 v) {
+BOOL RoomObjActor::changeSyncState(u32 v) {
     return TRUE;
 }
 

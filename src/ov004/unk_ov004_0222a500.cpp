@@ -320,8 +320,8 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~RoomShell();
-    virtual void vfunc_48(s32 a, Unk_ov004_0222a994_Ctx *b);
-    virtual void vfunc_4c(s32 idx, Unk_ov004_0222a6c0_Obj *o);
+    virtual void onNodeDescCallback(s32 a, Unk_ov004_0222a994_Ctx *b);
+    virtual void onMatCallback(s32 idx, Unk_ov004_0222a6c0_Obj *o);
 
     void setMatLightFlags(u8 *p);
     void storeBaseMtx();
@@ -1120,7 +1120,7 @@ extern "C" u16 *RoomShell_GetPrevWallpaper() {
     return (u16 *)&sRoomNoItem;
 }
 
-void RoomShell::vfunc_48(s32 a, Unk_ov004_0222a994_Ctx *b) {
+void RoomShell::onNodeDescCallback(s32 a, Unk_ov004_0222a994_Ctx *b) {
     Unk_ov004_0222a994_Pad pad;
     if (unk_3520 == a) {
         Unk_020b1ddc_rotateHourHand(b);
@@ -1155,7 +1155,7 @@ static inline BOOL Unk_ov004_0222a6c0_Rng(u16 *p) {
     return r;
 }
 
-void RoomShell::vfunc_4c(s32 idx, Unk_ov004_0222a6c0_Obj *o) {
+void RoomShell::onMatCallback(s32 idx, Unk_ov004_0222a6c0_Obj *o) {
     u8 *h = o->unk_d8;
     u8 *t = h + 4;
     u32 off = *(u16 *)(h + 0xa);
@@ -1365,8 +1365,8 @@ public:
     virtual void vfunc_3c();
     virtual void vfunc_40();
     virtual void vfunc_44();
-    virtual void vfunc_48(u32 a, void *b);
-    virtual void vfunc_4c(u32 a, void *b);
+    virtual void onNodeDescCallback(u32 a, void *b);
+    virtual void onMatCallback(u32 a, void *b);
 };
 
 struct Unk_ov004_0222a500_Own {
@@ -1391,7 +1391,7 @@ extern "C" void RoomShell_MatCallback(void *p) {
     Unk_ov004_0222a500 *self = (Unk_ov004_0222a500 *)p;
     Unk_ov004_0222a500_Tgt *t = self->unk_04->unk_2c;
     if (t != 0) {
-        t->vfunc_4c(self->unk_00->unk_01, self);
+        t->onMatCallback(self->unk_00->unk_01, self);
     }
 }
 
@@ -1399,7 +1399,7 @@ extern "C" void RoomShell_NodeDescCallback(void *p) {
     Unk_ov004_0222a500 *self = (Unk_ov004_0222a500 *)p;
     Unk_ov004_0222a500_Tgt *t = self->unk_04->unk_2c;
     if (t != 0) {
-        t->vfunc_48(self->unk_00->unk_01, self);
+        t->onNodeDescCallback(self->unk_00->unk_01, self);
     }
 }
 

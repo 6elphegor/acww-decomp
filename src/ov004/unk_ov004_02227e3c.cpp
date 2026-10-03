@@ -9,7 +9,7 @@
 //   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::vfunc_14   18 Base::vfunc_18   1c M::vfunc_1c
 //   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor8vfunc_20Ej)
 //   24 Base::vfunc_24   28 Actor::preDraw   2c Actor::postDraw   30..3c Base   40 D1  44 D0
-//   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::vfunc_60(u32)   64 M::vfunc_64(Vec *)
+//   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::changeSyncState(u32)   64 M::getSoundPos(Vec *)
 // Notes for derived classes:
 //  * M's constructor is the base-object ctor _ZN12RoomObjActorC2Ev (0x02225244, the only ctor in the original);
 //    TU17 defines it as an extern "C" function with that name, derived constructors call it as M::M() (C2).
@@ -218,8 +218,8 @@ public:
     virtual BOOL preDelete();
     virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_60(u32 v);
-    virtual void vfunc_64(Unk_ov004_02224ee4_Vec *out);
+    virtual BOOL changeSyncState(u32 v);
+    virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
 
     void setSyncSlot(u32 v);
     s32 storeSyncState();
@@ -261,9 +261,9 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    virtual void func_ov004_02227ec0();
-    virtual void func_ov004_02227eac();
-    virtual void func_ov004_02227ea8(u32 a, u8 b);
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice(u32 a, u8 b);
     virtual void vfunc_1c();
     virtual void vfunc_20();
     virtual void vfunc_24();
@@ -340,10 +340,10 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual BOOL vfunc_60(u32 idx);
-    virtual void func_ov004_02227ec0();
-    virtual void func_ov004_02227eac();
-    virtual void func_ov004_02227ea8(u32 a, u8 b);
+    virtual BOOL changeSyncState(u32 idx);
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice(u32 a, u8 b);
 
     void removeCollision();
     void initCollision();
@@ -475,7 +475,7 @@ BOOL RecycleBox::vfunc_00() {
         }
     }
     changeAct(0);
-    vfunc_60(getSyncState());
+    changeSyncState(getSyncState());
     return TRUE;
 }
 
@@ -521,7 +521,7 @@ void RecycleBox::vfunc_4c(u32 a, u8 b) {
     }
 }
 
-BOOL RecycleBox::vfunc_60(u32 idx) {
+BOOL RecycleBox::changeSyncState(u32 idx) {
     static Unk_ov004_022280b0_Fn tbl[4] = {
         (Unk_ov004_022280b0_Fn)&RecycleBox::enterState00,
         (Unk_ov004_022280b0_Fn)&RecycleBox::enterState01,
@@ -567,7 +567,7 @@ BOOL RecycleBox::enterState01() {
 
 void RecycleBox::updateState01() {
     if (_ZN13AnimFrameCtrl10isFinishedEv((u8 *)this + 0x188)) {
-        vfunc_60(2);
+        changeSyncState(2);
     } else {
         _ZN9AnimModel8stepAnimEv(&unk_ec);
     }
@@ -588,7 +588,7 @@ BOOL RecycleBox::enterState03() {
 
 void RecycleBox::updateState03() {
     if (_ZN13AnimFrameCtrl10isFinishedEv((u8 *)this + 0x188)) {
-        vfunc_60(0);
+        changeSyncState(0);
     } else {
         _ZN9AnimModel8stepAnimEv(&unk_ec);
     }
@@ -697,13 +697,13 @@ void RecycleBox::execAct05() {
     }
 }
 
-void RecycleBox::func_ov004_02227ec0() {}
+void RecycleBox::onMessageStart() {}
 
-void RecycleBox::func_ov004_02227eac() {
+void RecycleBox::onMessageEnd() {
     ((u32 *)data_021c1b3c)[0x248 / 4] = 0x1a;
 }
 
-void RecycleBox::func_ov004_02227ea8(u32 a, u8 b) {}
+void RecycleBox::onChoice(u32 a, u8 b) {}
 
 void RecycleBox::initCollision() {
     BoxCollider_Register(unk_2d4, 0x2000, 0x4000, 0x2000, (u8 *)this + 0x5c, 0, 0);

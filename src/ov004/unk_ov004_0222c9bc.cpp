@@ -157,8 +157,8 @@ class AquariumFish;
 class AquariumFish {
 public:
     AquariumFish();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
     virtual ~AquariumFish();
 
     /* 0x004 */ u8 unk_04[0x13 - 4];
@@ -221,8 +221,8 @@ class AquariumSwimFish : public AquariumFish {
 public:
     AquariumSwimFish();
     virtual ~AquariumSwimFish();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
 
     /* 0x1fc */ u8 unk_1fc;
     /* 0x1fd */ u8 unk_1fd;
@@ -273,16 +273,16 @@ class AquariumBigFish : public AquariumSwimFish {
 public:
     AquariumBigFish();
     virtual ~AquariumBigFish();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
 };
 
 class AquariumCrawfish : public AquariumFish {
 public:
     AquariumCrawfish();
     virtual ~AquariumCrawfish();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
     /* 0x1fc */ s32 unk_1fc;
     /* 0x200 */ s32 unk_200;
     /* 0x204 */ s32 unk_204;
@@ -303,8 +303,8 @@ class AquariumSeaButterfly : public AquariumSwimFish {
 public:
     AquariumSeaButterfly();
     virtual ~AquariumSeaButterfly();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
     /* 0x258 */ s32 unk_258[3];
     /* 0x264 */ V3 unk_264;
     /* 0x270 */ u8 unk_270;
@@ -326,8 +326,8 @@ class AquariumSurfacingFish : public AquariumSwimFish {
 public:
     AquariumSurfacingFish();
     virtual ~AquariumSurfacingFish();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
     /* 0x258 */ u8 unk_258;
     /* 0x259 */ u8 unk_259;
 };
@@ -336,8 +336,8 @@ class AquariumFrog : public AquariumFish {
 public:
     AquariumFrog();
     virtual ~AquariumFrog();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
     /* 0x1fc */ Unk_0213b954 unk_1fc;
     /* 0x20c */ s32 unk_20c;
     /* 0x210 */ u8 unk_210;
@@ -350,15 +350,15 @@ class AquariumOctopus : public AquariumFish {
 public:
     AquariumOctopus();
     virtual ~AquariumOctopus();
-    virtual void vfunc_00();
+    virtual void setup();
 };
 
 class AquariumSeahorse : public AquariumSwimFish {
 public:
     AquariumSeahorse();
     virtual ~AquariumSeahorse();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
     /* 0x258 */ s32 unk_258[3];
     /* 0x264 */ u8 unk_264;
     /* 0x265 */ u8 pad_265[3];
@@ -369,8 +369,8 @@ class AquariumPufferFish : public AquariumSwimFish {
 public:
     AquariumPufferFish();
     virtual ~AquariumPufferFish();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
     /* 0x258 */ u8 unk_258;
 };
 
@@ -378,8 +378,8 @@ class AquariumPiranha : public AquariumSwimFish {
 public:
     AquariumPiranha();
     virtual ~AquariumPiranha();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
     /* 0x258 */ u8 unk_258;
     /* 0x259 */ u8 unk_259;
 };
@@ -388,8 +388,8 @@ class AquariumFastFish : public AquariumSwimFish {
 public:
     AquariumFastFish();
     virtual ~AquariumFastFish();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
 };
 
 // element of the 5-entry array in the manager (0x64 bytes)
@@ -422,8 +422,8 @@ class AquariumHidingFish : public AquariumSwimFish {
 public:
     AquariumHidingFish();
     virtual ~AquariumHidingFish();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
     /* 0x258 */ s32 unk_258[3];
     /* 0x264 */ s32 unk_264;
     /* 0x268 */ s32 unk_268;
@@ -437,16 +437,16 @@ class AquariumSquid : public AquariumSwimFish {
 public:
     AquariumSquid();
     virtual ~AquariumSquid();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
 };
 
 class AquariumEel : public AquariumFish {
 public:
     AquariumEel();
     virtual ~AquariumEel();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
     /* 0x1fc */ u8 pad_1fc[4];
     /* 0x200 */ s32 unk_200;
     union {
@@ -464,8 +464,8 @@ class AquariumJellyfish : public AquariumSwimFish {
 public:
     AquariumJellyfish();
     virtual ~AquariumJellyfish();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void setup();
+    virtual void update();
     /* 0x258 */ s32 unk_258;
     /* 0x25c */ s32 unk_25c;
     /* 0x260 */ s32 unk_260;
@@ -793,8 +793,8 @@ extern "C" BOOL Aquarium_TurnTowardHome(void *obj, void *a, void *b, s32 max);
 extern "C" BOOL Aquarium_ProbeTurnSide(s32 *p, s32 v);
 extern "C" BOOL Aquarium_TestHeight800At(V3 *pos);
 extern "C" BOOL AquariumFish_IsNearWall(E864 *o);
-extern "C" void _ZN17AquariumJellyfish8vfunc_00Ev(E7d4 *o);
-extern "C" void _ZN17AquariumJellyfish8vfunc_04Ev(E7d4 *o);
+extern "C" void _ZN17AquariumJellyfish5setupEv(E7d4 *o);
+extern "C" void _ZN17AquariumJellyfish6updateEv(E7d4 *o);
 extern "C" void Aquarium_Oscillate(s16 *out, u8 *flag, s32 *cnt, s32 max, s32 mul);
 extern "C" void AquariumJellyfish_UpdateDrift(E7d4 *o);
 extern "C" void AquariumJellyfish_StartDrift(E7d4 *o);
@@ -805,31 +805,31 @@ extern "C" void AquariumJellyfish_BeginPulse(E7d4 *o);
 extern "C" void AquariumJellyfish_PulseGrow(E7d4 *o);
 extern "C" void AquariumJellyfish_PulseShrink(E7d4 *o);
 extern "C" void AquariumFish_CalcHitCenter(R *o, V3 *out);
-extern "C" void _ZN16AquariumFastFish8vfunc_00Ev(E744 *o);
-extern "C" void _ZN16AquariumFastFish8vfunc_04Ev(E744 *o);
+extern "C" void _ZN16AquariumFastFish5setupEv(E744 *o);
+extern "C" void _ZN16AquariumFastFish6updateEv(E744 *o);
 extern "C" void AquariumFastFish_UpdateLap(E744 *o, s32 a, s32 b);
-extern "C" void _ZN15AquariumBigFish8vfunc_00Ev(E72c *o);
-extern "C" void _ZN15AquariumBigFish8vfunc_04Ev(E72c *o);
+extern "C" void _ZN15AquariumBigFish5setupEv(E72c *o);
+extern "C" void _ZN15AquariumBigFish6updateEv(E72c *o);
 extern "C" void AquariumBigFish_UpdatePatrol(E72c *o, s32 a, s32 b);
-extern "C" void _ZN12AquariumFrog8vfunc_00Ev(E834 *o);
-extern "C" void _ZN12AquariumFrog8vfunc_04Ev(E834 *o);
+extern "C" void _ZN12AquariumFrog5setupEv(E834 *o);
+extern "C" void _ZN12AquariumFrog6updateEv(E834 *o);
 extern "C" void AquariumFrog_StartCroak(E834 *o);
 extern "C" void AquariumFrog_Croak(E834 *o);
-extern "C" void _ZN11AquariumEel8vfunc_00Ev(E804 *e);
-extern "C" void _ZN11AquariumEel8vfunc_04Ev(E804 *e);
+extern "C" void _ZN11AquariumEel5setupEv(E804 *e);
+extern "C" void _ZN11AquariumEel6updateEv(E804 *e);
 extern "C" void AquariumEel_StateStart(E804 *e);
 extern "C" void AquariumEel_StateSpeedUp(E804 *e);
 extern "C" void AquariumEel_StateHold(E804 *e);
 extern "C" void AquariumEel_StateSlowDown(E804 *e);
 extern "C" void AquariumEel_StateWait(E804 *e);
-extern "C" void _ZN20AquariumSeaButterfly8vfunc_00Ev(E7bc *e);
-extern "C" void _ZN20AquariumSeaButterfly8vfunc_04Ev(E7bc *e);
-extern "C" void _ZN16AquariumSeahorse8vfunc_00Ev(E7a4 *e);
-extern "C" void _ZN16AquariumSeahorse8vfunc_04Ev(E7a4 *e);
-extern "C" void _ZN18AquariumPufferFish8vfunc_00Ev(E78c *e);
-extern "C" void _ZN18AquariumPufferFish8vfunc_04Ev(E78c *e);
-extern "C" void _ZN15AquariumPiranha8vfunc_00Ev(E75c *e);
-extern "C" void _ZN15AquariumPiranha8vfunc_04Ev(E75c *o);
+extern "C" void _ZN20AquariumSeaButterfly5setupEv(E7bc *e);
+extern "C" void _ZN20AquariumSeaButterfly6updateEv(E7bc *e);
+extern "C" void _ZN16AquariumSeahorse5setupEv(E7a4 *e);
+extern "C" void _ZN16AquariumSeahorse6updateEv(E7a4 *e);
+extern "C" void _ZN18AquariumPufferFish5setupEv(E78c *e);
+extern "C" void _ZN18AquariumPufferFish6updateEv(E78c *e);
+extern "C" void _ZN15AquariumPiranha5setupEv(E75c *e);
+extern "C" void _ZN15AquariumPiranha6updateEv(E75c *o);
 extern "C" void AquariumPiranha_StateSwim(E75c *o);
 extern "C" void AquariumPiranha_StateApproach(E75c *o);
 extern "C" void AquariumPiranha_StateBite(E75c *o);
@@ -837,28 +837,28 @@ extern "C" void AquariumPiranha_BobDepth(E75c *o);
 extern "C" void AquariumPiranha_BiteIdle(E75c *o);
 extern "C" void AquariumPiranha_BiteLunge(E75c *o);
 extern "C" void AquariumPiranha_BiteRecoil(E75c *o);
-extern "C" void _ZN21AquariumSurfacingFish8vfunc_00Ev(E714 *o);
-extern "C" void _ZN21AquariumSurfacingFish8vfunc_04Ev(E714 *o);
+extern "C" void _ZN21AquariumSurfacingFish5setupEv(E714 *o);
+extern "C" void _ZN21AquariumSurfacingFish6updateEv(E714 *o);
 extern "C" void AquariumSurfacingFish_StateSwim(E714 *o);
 extern "C" void AquariumSurfacingFish_StateSurface(E714 *o);
 extern "C" void AquariumSurfacingFish_UpdateSurface(E714 *o);
-extern "C" void _ZN18AquariumHidingFish8vfunc_00Ev(E6fc *o);
-extern "C" void _ZN18AquariumHidingFish8vfunc_04Ev(E6fc *o);
+extern "C" void _ZN18AquariumHidingFish5setupEv(E6fc *o);
+extern "C" void _ZN18AquariumHidingFish6updateEv(E6fc *o);
 extern "C" void AquariumHidingFish_UpdateClownfish(E6fc *o);
 extern "C" void AquariumHidingFish_UpdateGoby(E6fc *o);
 extern "C" void AquariumHidingFish_CheckTouch(E6fc *o);
 extern "C" void AquariumHidingFish_UpdateHide(E6fc *o);
 extern "C" void AquariumHidingFish_MoveToHideout(E6fc *o, s32 f);
 extern "C" void AquariumHidingFish_StayHidden(E6fc *o);
-extern "C" void _ZN16AquariumCrawfish8vfunc_00Ev(E84c *o);
-extern "C" void _ZN16AquariumCrawfish8vfunc_04Ev(E84c *o);
+extern "C" void _ZN16AquariumCrawfish5setupEv(E84c *o);
+extern "C" void _ZN16AquariumCrawfish6updateEv(E84c *o);
 extern "C" void AquariumCrawfish_StartWalk(E84c *o);
 extern "C" void AquariumCrawfish_Walk(E84c *o);
 extern "C" void AquariumCrawfish_SlowDown(E84c *o);
-extern "C" void _ZN13AquariumSquid8vfunc_00Ev(E81c *o);
-extern "C" void _ZN13AquariumSquid8vfunc_04Ev(E81c *o);
+extern "C" void _ZN13AquariumSquid5setupEv(E81c *o);
+extern "C" void _ZN13AquariumSquid6updateEv(E81c *o);
 extern "C" void AquariumSquid_TurnAtTankEnd(E864 *e);
-extern "C" void _ZN15AquariumOctopus8vfunc_00Ev(E7ec *e);
+extern "C" void _ZN15AquariumOctopus5setupEv(E7ec *e);
 extern "C" void AquariumSwimFish_SetupSea(E864 *e);
 extern "C" void AquariumSwimFish_UpdateSea(E864 *e);
 extern "C" void AquariumSwimFish_SetupFreshwater(E864 *e);
@@ -869,8 +869,8 @@ extern "C" void AquariumFish_InstallJointCallbacks(Cb *c);
 extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out);
 extern "C" BOOL AquariumFish_CheckTouched(E864 *e);
 extern "C" void AquariumFish_StartFlee(E864 *e, V3 *p);
-extern "C" void _ZN16AquariumSwimFish8vfunc_00Ev(E864 *e);
-extern "C" void _ZN16AquariumSwimFish8vfunc_04Ev(E864 *e);
+extern "C" void _ZN16AquariumSwimFish5setupEv(E864 *e);
+extern "C" void _ZN16AquariumSwimFish6updateEv(E864 *e);
 extern "C" void AquariumFish_StateStart(E864 *e);
 extern "C" void AquariumFish_StateAccelerate(E864 *e);
 extern "C" void AquariumFish_StateCruise(E864 *e);
@@ -1607,7 +1607,7 @@ extern "C" BOOL AquariumFish_IsNearWall(E864 *o)
     return r;
 }
 
-extern "C" void _ZN17AquariumJellyfish8vfunc_00Ev(E7d4 *o)
+extern "C" void _ZN17AquariumJellyfish5setupEv(E7d4 *o)
 {
     s32 *p = &o->unk_15c;
     o->unk_50 = o;
@@ -1625,7 +1625,7 @@ extern "C" void _ZN17AquariumJellyfish8vfunc_00Ev(E7d4 *o)
     sAquariumJellyfish = o;
 }
 
-extern "C" void _ZN17AquariumJellyfish8vfunc_04Ev(E7d4 *o)
+extern "C" void _ZN17AquariumJellyfish6updateEv(E7d4 *o)
 {
     u8 a = o->unk_1e8;
     u8 *p = &o->unk_252;
@@ -1838,7 +1838,7 @@ extern "C" void AquariumFish_CalcHitCenter(R *o, V3 *out) {
     }
 }
 
-extern "C" void _ZN16AquariumFastFish8vfunc_00Ev(E744 *o) {
+extern "C" void _ZN16AquariumFastFish5setupEv(E744 *o) {
     o->unk_50 = o;
     o->unk_1c8 = 2;
     Model_setInitCallback(&o->unk_64, (void *)AquariumFish_InstallJointCallbacks, o);
@@ -1848,7 +1848,7 @@ extern "C" void _ZN16AquariumFastFish8vfunc_00Ev(E744 *o) {
     AquariumFish_LoadParams(o);
 }
 
-extern "C" void _ZN16AquariumFastFish8vfunc_04Ev(E744 *o) {
+extern "C" void _ZN16AquariumFastFish6updateEv(E744 *o) {
     AquariumFastFish_UpdateLap(o, -2, 0x24);
     if (o->unk_1ee != 2 && o->unk_1ee != 6) {
         AquariumFish_UpdateDepthCapped(o);
@@ -1890,7 +1890,7 @@ extern "C" void AquariumFastFish_UpdateLap(E744 *o, s32 a, s32 b) {
     AquariumFish_UpdateAnimSpeed(o, 0x333);
 }
 
-extern "C" void _ZN15AquariumBigFish8vfunc_00Ev(E72c *o) {
+extern "C" void _ZN15AquariumBigFish5setupEv(E72c *o) {
     s32 *t = &o->unk_15c;
     o->unk_1e8 = *t;
     o->unk_1c7 = 0;
@@ -1907,7 +1907,7 @@ extern "C" void _ZN15AquariumBigFish8vfunc_00Ev(E72c *o) {
     AquariumFish_LoadParams(o);
 }
 
-extern "C" void _ZN15AquariumBigFish8vfunc_04Ev(E72c *o) {
+extern "C" void _ZN15AquariumBigFish6updateEv(E72c *o) {
     s32 t = o->unk_15c;
     if ((u32)(t - 0x35) <= 1) {
         AquariumBigFish_UpdatePatrol(o, 2, 0x20);
@@ -1962,7 +1962,7 @@ extern "C" void AquariumBigFish_UpdatePatrol(E72c *o, s32 a, s32 b) {
     AquariumFish_UpdateAnimSpeed(o, 0x333);
 }
 
-extern "C" void _ZN12AquariumFrog8vfunc_00Ev(E834 *o) {
+extern "C" void _ZN12AquariumFrog5setupEv(E834 *o) {
     o->unk_1c7 = 0;
     o->unk_1a8.x = 0x14500;
     o->unk_1a8.y = 0x3700;
@@ -1972,7 +1972,7 @@ extern "C" void _ZN12AquariumFrog8vfunc_00Ev(E834 *o) {
     Unk_02003c30_callReset(&o->unk_1fc);
 }
 
-extern "C" void _ZN12AquariumFrog8vfunc_04Ev(E834 *o) {
+extern "C" void _ZN12AquariumFrog6updateEv(E834 *o) {
     V3 l[2];
     l[0] = sRoomHasuPos;
     o->unk_1a8 = l[0];
@@ -2020,7 +2020,7 @@ extern "C" void AquariumFrog_Croak(E834 *o) {
     }
 }
 
-extern "C" void _ZN11AquariumEel8vfunc_00Ev(E804 *e) {
+extern "C" void _ZN11AquariumEel5setupEv(E804 *e) {
     e->unk_1c7 = 0;
     e->unk_1a8.x = 0;
     e->unk_1a8.y = 0;
@@ -2028,7 +2028,7 @@ extern "C" void _ZN11AquariumEel8vfunc_00Ev(E804 *e) {
     e->unk_1c0 = 0;
 }
 
-extern "C" void _ZN11AquariumEel8vfunc_04Ev(E804 *e) {
+extern "C" void _ZN11AquariumEel6updateEv(E804 *e) {
     (e->*sAquariumEelStates[e->unk_20e])();
     e->unk_158++;
 }
@@ -2081,7 +2081,7 @@ extern "C" void AquariumEel_StateWait(E804 *e) {
     }
 }
 
-extern "C" void _ZN20AquariumSeaButterfly8vfunc_00Ev(E7bc *e) {
+extern "C" void _ZN20AquariumSeaButterfly5setupEv(E7bc *e) {
     s32 *p = &e->unk_15c;
     e->unk_1e8 = *p;
     e->unk_1e9 = *p;
@@ -2100,7 +2100,7 @@ extern "C" void _ZN20AquariumSeaButterfly8vfunc_00Ev(E7bc *e) {
     sAquariumSeaButterfly = e;
 }
 
-extern "C" void _ZN20AquariumSeaButterfly8vfunc_04Ev(E7bc *e) {
+extern "C" void _ZN20AquariumSeaButterfly6updateEv(E7bc *e) {
     if ((u8)(e->unk_1ee + 0xfd) <= 1) {
         Aquarium_TurnTowardHome(&e->unk_1c0, &e->unk_1a8, &e->unk_258, 0x1000);
     }
@@ -2156,7 +2156,7 @@ extern "C" void _ZN20AquariumSeaButterfly8vfunc_04Ev(E7bc *e) {
     AquariumFish_CalcHitCenter(e, &e->unk_264);
 }
 
-extern "C" void _ZN16AquariumSeahorse8vfunc_00Ev(E7a4 *e) {
+extern "C" void _ZN16AquariumSeahorse5setupEv(E7a4 *e) {
     s32 *p = &e->unk_15c;
     e->unk_1e8 = *p;
     e->unk_1e9 = *p;
@@ -2174,7 +2174,7 @@ extern "C" void _ZN16AquariumSeahorse8vfunc_00Ev(E7a4 *e) {
     e->unk_207 = sAquariumFishParams[*p].unk_0b;
 }
 
-extern "C" void _ZN16AquariumSeahorse8vfunc_04Ev(E7a4 *e) {
+extern "C" void _ZN16AquariumSeahorse6updateEv(E7a4 *e) {
     Aquarium_TurnTowardHome(&e->unk_1c0, &e->unk_1a8, &e->unk_258, 0x1000);
     switch (e->unk_255) {
     case 1: {
@@ -2219,7 +2219,7 @@ extern "C" void _ZN16AquariumSeahorse8vfunc_04Ev(E7a4 *e) {
     AquariumFish_CheckTouched(e);
 }
 
-extern "C" void _ZN18AquariumPufferFish8vfunc_00Ev(E78c *e) {
+extern "C" void _ZN18AquariumPufferFish5setupEv(E78c *e) {
     e->unk_50 = e;
     e->unk_1e8 = e->unk_15c;
     e->unk_1e9 = e->unk_15c;
@@ -2228,7 +2228,7 @@ extern "C" void _ZN18AquariumPufferFish8vfunc_00Ev(E78c *e) {
     Model_setInitCallback(&e->unk_64, (void *)AquariumFish_InstallJointCallbacks, e);
 }
 
-extern "C" void _ZN18AquariumPufferFish8vfunc_04Ev(E78c *e) {
+extern "C" void _ZN18AquariumPufferFish6updateEv(E78c *e) {
     u32 v;
     s32 t;
     AquariumFish_SteerFromWall(e);
@@ -2299,13 +2299,13 @@ extern "C" void _ZN18AquariumPufferFish8vfunc_04Ev(E78c *e) {
     }
 }
 
-extern "C" void _ZN15AquariumPiranha8vfunc_00Ev(E75c *e) {
+extern "C" void _ZN15AquariumPiranha5setupEv(E75c *e) {
     e->unk_1e8 = e->unk_15c;
     e->unk_1c7 = 0;
     AquariumFish_LoadParams(e);
 }
 
-extern "C" void _ZN15AquariumPiranha8vfunc_04Ev(E75c *o) {
+extern "C" void _ZN15AquariumPiranha6updateEv(E75c *o) {
     (o->*sAquariumPiranhaStates[o->unk_255])();
     s32 t = (sAquariumFishParams[30].unk_03 << 12) >> 7;
     o->unk_256 = Collision_ClampToRect(&o->unk_1a8, t, &sAquariumTankCenterB, 0x11c00, 0x5c00);
@@ -2454,13 +2454,13 @@ extern "C" void AquariumPiranha_BiteRecoil(E75c *o) {
     if (o->unk_158 >= o->unk_258) o->unk_257 = 0;
 }
 
-extern "C" void _ZN21AquariumSurfacingFish8vfunc_00Ev(E714 *o) {
+extern "C" void _ZN21AquariumSurfacingFish5setupEv(E714 *o) {
     o->unk_1e8 = o->unk_15c;
     Model_setInitCallback(&o->unk_64, (void *)AquariumFish_InstallJointCallbacks, o);
     AquariumFish_LoadParams(o);
 }
 
-extern "C" void _ZN21AquariumSurfacingFish8vfunc_04Ev(E714 *o) {
+extern "C" void _ZN21AquariumSurfacingFish6updateEv(E714 *o) {
     switch (o->unk_255) {
     case 0:
         AquariumSurfacingFish_StateSwim(o);
@@ -2582,7 +2582,7 @@ extern "C" void AquariumSurfacingFish_UpdateSurface(E714 *o) {
     }
 }
 
-extern "C" void _ZN18AquariumHidingFish8vfunc_00Ev(E6fc *o) {
+extern "C" void _ZN18AquariumHidingFish5setupEv(E6fc *o) {
     o->unk_50 = o;
     s32 *p = &o->unk_15c;
     o->unk_1e8 = *p;
@@ -2603,7 +2603,7 @@ extern "C" void _ZN18AquariumHidingFish8vfunc_00Ev(E6fc *o) {
     AquariumFish_LoadParams(o);
 }
 
-extern "C" void _ZN18AquariumHidingFish8vfunc_04Ev(E6fc *o) {
+extern "C" void _ZN18AquariumHidingFish6updateEv(E6fc *o) {
     if (o->unk_15c == 0x26) {
         AquariumHidingFish_UpdateClownfish(o);
     } else if (o->unk_15c == 0xc) {
@@ -2766,13 +2766,13 @@ extern "C" void AquariumHidingFish_StayHidden(E6fc *o) {
     }
 }
 
-extern "C" void _ZN16AquariumCrawfish8vfunc_00Ev(E84c *o) {
+extern "C" void _ZN16AquariumCrawfish5setupEv(E84c *o) {
     o->unk_1fc = 0xc800;
     o->unk_200 = 0;
     o->unk_204 = 0x14a00;
 }
 
-extern "C" void _ZN16AquariumCrawfish8vfunc_04Ev(E84c *o) {
+extern "C" void _ZN16AquariumCrawfish6updateEv(E84c *o) {
     switch (o->unk_21c) {
     case 2:
         AquariumCrawfish_StartWalk(o);
@@ -2839,7 +2839,7 @@ extern "C" void AquariumCrawfish_SlowDown(E84c *o) {
     o->unk_1a8.z += func_01ffcb0c(r, data_02135f44[((u16)o->unk_208 >> 4) * 2]);
 }
 
-extern "C" void _ZN13AquariumSquid8vfunc_00Ev(E81c *o) {
+extern "C" void _ZN13AquariumSquid5setupEv(E81c *o) {
     o->unk_50 = o;
     o->unk_1e8 = o->unk_15c;
     o->unk_1e9 = o->unk_15c;
@@ -2848,7 +2848,7 @@ extern "C" void _ZN13AquariumSquid8vfunc_00Ev(E81c *o) {
     Model_setInitCallback((u8 *)o + 0x64, (void *)AquariumFish_InstallJointCallbacks, o);
 }
 
-extern "C" void _ZN13AquariumSquid8vfunc_04Ev(E81c *o) {
+extern "C" void _ZN13AquariumSquid6updateEv(E81c *o) {
     if (o->unk_256 == 0) {
         if (AnimFrameCtrl_hasPassedFrame(&o->unk_100, (u16)(o->unk_104.mid - 1))) {
             o->unk_256 = 1;
@@ -2958,7 +2958,7 @@ fail2:
 end:;
 }
 
-extern "C" void _ZN15AquariumOctopus8vfunc_00Ev(E7ec *e) {
+extern "C" void _ZN15AquariumOctopus5setupEv(E7ec *e) {
     e->unk_1c7 = 0;
     e->unk_1a8.x = 0x16f00;
     e->unk_1a8.y = 0xfffff400;
@@ -3167,11 +3167,11 @@ extern "C" void AquariumFish_StartFlee(E864 *e, V3 *p) {
     }
 }
 
-extern "C" void _ZN16AquariumSwimFish8vfunc_00Ev(E864 *e) {
+extern "C" void _ZN16AquariumSwimFish5setupEv(E864 *e) {
     (e->*sAquariumSwimFishRoomFns[sAquariumRoom].a)();
 }
 
-extern "C" void _ZN16AquariumSwimFish8vfunc_04Ev(E864 *e) {
+extern "C" void _ZN16AquariumSwimFish6updateEv(E864 *e) {
     (e->*sAquariumSwimFishRoomFns[sAquariumRoom].b)();
 }
 
@@ -3540,10 +3540,10 @@ extern "C" void AquariumFish_UpdateAnimSpeed(E864 *e, s32 lo) {
     e->unk_110 = v;
 }
 
-void AquariumFish::vfunc_00() {
+void AquariumFish::setup() {
 }
 
-void AquariumFish::vfunc_04() {
+void AquariumFish::update() {
 }
 
 extern "C" void AquariumFish_KeepInsideX(R *e) {
@@ -4007,7 +4007,7 @@ extern "C" void MuseumAquarium_FishStateActive(Mgr *o, R **p, s32 x) {
             v->z = v->z + b;
         }
     }
-    (*p)->vfunc_04();
+    (*p)->update();
     AquariumFish_ResetContacts(*p);
     MuseumAquarium_ConfineFish(o, p, x);
     MuseumAquarium_CalcFishMtx(o, p);
@@ -4067,7 +4067,7 @@ extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx) {
         s32 c, d;
         (*p)->unk_1c0 = Aquarium_RandAngle(0x168, 0);
         (*p)->unk_1c2 = (*p)->unk_1c0;
-        (*p)->vfunc_00();
+        (*p)->setup();
         q = (u8 *)(*p) + 0x64;
         Model_setResource(q, PooledModel_getModel(b), 0);
         c = ModelSlot_getHeap(a);

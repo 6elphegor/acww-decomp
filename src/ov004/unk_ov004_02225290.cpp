@@ -261,8 +261,8 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
-    virtual BOOL vfunc_60(u32 v);
-    virtual void vfunc_64(Unk_ov004_02224ee4_Vec *out);
+    virtual BOOL changeSyncState(u32 v);
+    virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
 
     void setSyncSlot(u32 v);
     s32 storeSyncState();
@@ -286,8 +286,8 @@ public:
     virtual BOOL func_ov004_02225608();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_60(u32 v);
-    virtual void vfunc_64(Unk_ov004_02224ee4_Vec *out);
+    virtual BOOL changeSyncState(u32 v);
+    virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
 
     void removeCollision();
     void initCollision();
@@ -381,7 +381,7 @@ BOOL WindowLight::func_ov004_02225608() {
 }
 
 // @22255ec
-void WindowLight::vfunc_64(Vec *out) {
+void WindowLight::getSoundPos(Vec *out) {
     Unk_ov004_022255ec_Pad pad;
     out->x = 0xc000;
     out->y = 0;
@@ -393,7 +393,7 @@ extern "C" Unk_ov004_Scene_Entry sBarberMachineProfile = {(void *(*)())BarberMac
 extern "C" BarberMachine *volatile sBarberMachine = 0;
 
 // @2225550
-BOOL WindowLight::vfunc_60(u32 idx) {
+BOOL WindowLight::changeSyncState(u32 idx) {
     typedef BOOL (WindowLight::*Fn)();
     static Fn tbl[4] = {&WindowLight::enterState00, &WindowLight::enterState01, &WindowLight::enterState02,
                         &WindowLight::enterState03};
@@ -440,7 +440,7 @@ BOOL WindowLight::enterState01() {
 void WindowLight::updateState01() {
     if (unk_ec.isFinished() != 0) {
         if (unk_370 == 0) {
-            vfunc_60(2);
+            changeSyncState(2);
         } else {
             RoomObjSync_ChangeState(this, 2);
         }
@@ -460,7 +460,7 @@ BOOL WindowLight::enterState02() {
 void WindowLight::updateState02() {
     if (unk_ec.isFinished() != 0) {
         if (unk_370 == 0) {
-            vfunc_60(3);
+            changeSyncState(3);
         } else {
             RoomObjSync_ChangeState(this, 3);
         }
@@ -481,7 +481,7 @@ BOOL WindowLight::enterState03() {
 // @22252fc
 void WindowLight::updateState03() {
     if (unk_ec.isFinished() != 0) {
-        vfunc_60(0);
+        changeSyncState(0);
     } else {
         unk_ec.stepAnim();
     }

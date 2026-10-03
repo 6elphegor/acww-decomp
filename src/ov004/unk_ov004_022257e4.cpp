@@ -180,8 +180,8 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
-    virtual BOOL vfunc_60(u32 v);
-    virtual void vfunc_64(Unk_ov004_02224ee4_Vec *out);
+    virtual BOOL changeSyncState(u32 v);
+    virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
 
     void setSyncSlot(u32 v);
     s32 storeSyncState();
@@ -280,7 +280,7 @@ public:
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_60(u32 a);
+    virtual BOOL changeSyncState(u32 a);
 
     void updateState03();
     BOOL enterState03();
@@ -443,22 +443,22 @@ BOOL CheckInGate::vfunc_00() {
     switch (v) {
     case 0xb:
         if (_ZN11CommManager12isSlotActiveEi(gCommManager, *(u32 *)((u8 *)gCommManager + 0x64))) {
-            vfunc_60(2);
+            changeSyncState(2);
         } else {
-            vfunc_60(0);
+            changeSyncState(0);
         }
         break;
     case 0xc:
         if (_ZN15TownTravelState7getModeEv(s) == 1) {
-            vfunc_60(0);
+            changeSyncState(0);
         } else {
-            vfunc_60(2);
+            changeSyncState(2);
         }
         break;
     case 0xd:
     case 0xe:
     case 0x2f:
-        vfunc_60(2);
+        changeSyncState(2);
         break;
     }
     CheckInGate_SetInstance(this);
@@ -558,7 +558,7 @@ extern "C" void CheckInGate_SetInstance(Cls *c) {
 // @2225ee0
 extern "C" BOOL CheckInGate_Open() {
     if (sCheckInGate != 0) {
-        return sCheckInGate->vfunc_60(1);
+        return sCheckInGate->changeSyncState(1);
     }
     return FALSE;
 }
@@ -566,7 +566,7 @@ extern "C" BOOL CheckInGate_Open() {
 // @2225ebc
 extern "C" BOOL CheckInGate_Close() {
     if (sCheckInGate != 0) {
-        return sCheckInGate->vfunc_60(3);
+        return sCheckInGate->changeSyncState(3);
     }
     return FALSE;
 }
@@ -713,7 +713,7 @@ extern "C" char data_ov004_0224d77c[] = "m_grd_clf";
 extern "C" Unk_ov004_Scene_Entry sCheckInGateProfile = {(void *(*)())CheckInGate_Create, 0x11, 0x14, {0, 0xc8000, 0x12c000, 0x258000}};
 
 // @2225ba8
-BOOL CheckInGate::vfunc_60(u32 a) {
+BOOL CheckInGate::changeSyncState(u32 a) {
     static Fn2 tbl[4] = {&Cls::enterState00, &Cls::enterState01, &Cls::enterState02,
                          &Cls::enterState03};
     if (a < 4) {
@@ -773,7 +773,7 @@ void CheckInGate::updateState01() {
     func_020e7820(&v, -0x2000, 0x100, 0x1000);
     setDoorOffset(v);
     if (_ZN13AnimFrameCtrl10isFinishedEv(((u8 *)this + 0x188))) {
-        vfunc_60(2);
+        changeSyncState(2);
     } else if (_ZN13AnimFrameCtrl14hasPassedFrameEi(((u8 *)this + 0x188), 0x3a)) {
         Snd_PlaySe(0x4ed);
     }
@@ -817,7 +817,7 @@ void CheckInGate::updateState03() {
     func_020e7820((s32 *)&t, 0, 0x100, 0x1000);
     setDoorOffset(t);
     if (unk_ec.isFinished() != 0) {
-        vfunc_60(0);
+        changeSyncState(0);
     } else {
         if (unk_ec.hasPassedFrame(0x3a) != 0) {
             Snd_PlaySe(0x4ee);

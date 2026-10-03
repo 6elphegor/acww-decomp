@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/base
 // ov004 TU26: .text 0x02229660-0x0222a374 (class RoomTelephone). The switch function at 0x02229c20
-// (RoomTelephone::vfunc_70) needs mwcc 1.2/base and is in the _switch file (object order).
+// (RoomTelephone::onChoice) needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
@@ -11,7 +11,7 @@
 //   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::vfunc_14   18 Base::vfunc_18   1c M::vfunc_1c
 //   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor8vfunc_20Ej)
 //   24 Base::vfunc_24   28 Actor::preDraw   2c Actor::postDraw   30..3c Base   40 D1  44 D0
-//   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::vfunc_60(u32)   64 M::vfunc_64(Vec *)
+//   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::changeSyncState(u32)   64 M::getSoundPos(Vec *)
 // Notes for derived classes:
 //  * M's constructor is the base-object ctor _ZN12RoomObjActorC2Ev (0x02225244, the only ctor in the original);
 //    TU17 defines it as an extern "C" function with that name, derived constructors call it as M::M() (C2).
@@ -220,8 +220,8 @@ public:
     virtual BOOL preDelete();
     virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_60(u32 v);
-    virtual void vfunc_64(Unk_ov004_02224ee4_Vec *out);
+    virtual BOOL changeSyncState(u32 v);
+    virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
 
     void setSyncSlot(u32 v);
     s32 storeSyncState();
@@ -239,7 +239,7 @@ public:
 
 // ---------------------------------------------------------------- secondary base at +0x290 (vtable main 0x020ddcf0)
 // RoomTelephone overrides its slots 0x10, 0x14 and 0x18 with the functions its own vtable has at 0x68, 0x6c and
-// 0x70, so those three slots carry the names vfunc_68/6c/70 here (thunks _ZThn656_N13RoomTelephone8vfunc_68Ev ...).
+// 0x70: onMessageStart / onMessageEnd / onChoice (thunks _ZThn656_N13RoomTelephone14onMessageStartEv ...).
 // Every other slot is named vfunc_sXX: main has a label _ZN14TalkMsgRequest9vfunc_sXXEv for each of them.
 class MsgRequest {
 public:
@@ -268,9 +268,9 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70(u32 a, u8 b);
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice(u32 a, u8 b);
     virtual void vfunc_s1c();
     virtual void vfunc_s20();
     virtual void vfunc_s24();
@@ -439,9 +439,9 @@ public:
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
     virtual void *getInteractionPos();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70(u32 a, u8 b);
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice(u32 a, u8 b);
 
     void openTalk(const char *name, u32 flag);
     void execAct0E();
@@ -535,7 +535,7 @@ RoomTelephone *RoomTelephone_Create();
 
 // Only this function: it needs mwcc 1.2/base (the rest of the unit is in the main file, built with 1.2/sp2).
 // It is the class's virtual at vtable slot 0x70 (and, through the thunk, the secondary base's slot 0x18).
-void RoomTelephone::vfunc_70(u32 a_, u8 b_) {
+void RoomTelephone::onChoice(u32 a_, u8 b_) {
     TalkWindowState *p = unk_3c;
     s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(p));
     u32 r = 0;
