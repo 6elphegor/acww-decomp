@@ -261,7 +261,9 @@ func_020ec970 kind:function(arm,size=0xd8) addr:0x020ec970
 func_020eca48 kind:function(arm,size=0x44) addr:0x020eca48
 func_020eca8c kind:function(arm,size=0x68) addr:0x020eca8c
 func_020ecaf4 kind:function(arm,size=0x84) addr:0x020ecaf4
+_ZN17Unk_020d8c7c_Base10taskDeleteEv kind:label(arm) addr:0x020ecaf4
 func_020ecb78 kind:function(arm,size=0x68) addr:0x020ecb78
+_ZN17Unk_020d8c7c_Base10taskCreateEv kind:label(arm) addr:0x020ecb78
 func_020ecbe0 kind:function(arm,size=0x8c) addr:0x020ecbe0
 _ZN17Unk_020d8c7c_BasedlEPv kind:function(arm,size=0x1c) addr:0x020ecc6c
 _ZN17Unk_020d8c7c_BasenwEm kind:function(arm,size=0x54) addr:0x020ecc88
@@ -287,12 +289,14 @@ _ZN17Unk_020d8c7c_BaseC2Ev kind:function(arm,size=0x144) addr:0x020ed378
 func_020ed4bc kind:function(arm,size=0x4c) addr:0x020ed4bc
 func_020ed508 kind:function(arm,size=0x44) addr:0x020ed508
 func_020ed54c kind:function(arm,size=0x74) addr:0x020ed54c
+_ZN8TaskList3runEv kind:label(arm) addr:0x020ed54c
 func_020ed5c0 kind:function(arm,size=0x8c) addr:0x020ed5c0
 func_020ed64c kind:function(arm,size=0x30) addr:0x020ed64c
 func_020ed67c kind:function(arm,size=0x3c) addr:0x020ed67c
 func_020ed6b8 kind:function(arm,size=0x9c) addr:0x020ed6b8
 func_020ed754 kind:function(arm,size=0x10) addr:0x020ed754
 func_020ed764 kind:function(arm,size=0x80) addr:0x020ed764
+_ZN9TaskList03runEv kind:label(arm) addr:0x020ed764
 func_020ed7e4 kind:function(arm,size=0x38) addr:0x020ed7e4
 func_020ed81c kind:function(arm,size=0xb0) addr:0x020ed81c
 func_020ed8cc kind:function(arm,size=0x94) addr:0x020ed8cc

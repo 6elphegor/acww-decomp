@@ -41,15 +41,13 @@ src/autoload_2/unk_020ec848.cpp:
 
 src/autoload_2/unk_020ed4bc.cpp:
     complete
-    .text       start:0x020ed4bc end:0x020ed5c0
+    .text       start:0x020ed4bc end:0x020ed7e4
+    .rodata     start:0x02135964 end:0x0213597c
+    .data       start:0x0213b1a4 end:0x0213b200
 
-src/autoload_2/unk_020ed5c0.cpp:
+src/autoload_2/unk_020ed7e4.cpp:
     complete
-    .text       start:0x020ed5c0 end:0x020ed64c
-
-src/autoload_2/unk_020ed64c.cpp:
-    complete
-    .text       start:0x020ed64c end:0x020ed81c
+    .text       start:0x020ed7e4 end:0x020ed81c
 
 src/autoload_2/unk_020ed81c.cpp:
     complete

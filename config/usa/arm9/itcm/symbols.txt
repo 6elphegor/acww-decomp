@@ -145,8 +145,11 @@ data_01ffd0cc kind:data(any) addr:0x01ffd0cc
 data_01ffd0d4 kind:data(any) addr:0x01ffd0d4
 data_01ffd0dc kind:data(any) addr:0x01ffd0dc
 func_01ffd0e4 kind:function(arm,size=0x68) addr:0x01ffd0e4
+_ZN17Unk_020d8c7c_Base8taskDrawEv kind:label(arm) addr:0x01ffd0e4
 func_01ffd14c kind:function(arm,size=0x68) addr:0x01ffd14c
+_ZN17Unk_020d8c7c_Base11taskExecuteEv kind:label(arm) addr:0x01ffd14c
 func_01ffd1b4 kind:function(arm,size=0x230) addr:0x01ffd1b4
+_ZN17Unk_020d8c7c_Base11taskConnectEv kind:label(arm) addr:0x01ffd1b4
 _ZN17Unk_020d8c7c_Base8vfunc_2cEv kind:function(arm,size=0x4) addr:0x01ffd3e4
 _ZN17Unk_020d8c7c_Base8vfunc_28Ev kind:function(arm,size=0x28) addr:0x01ffd3e8
 _ZN17Unk_020d8c7c_Base8vfunc_24Ev kind:function(arm,size=0x8) addr:0x01ffd410
