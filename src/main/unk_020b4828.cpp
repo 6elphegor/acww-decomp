@@ -219,8 +219,8 @@ void PlayerSession_SetDataIndex(s32, s32);
 void PlayerSession_ClearDataIndex(s32);
 void PlayerSession_SetGfxSlot(s32, s32);
 s32 PlayerSession_GetDataIndex(s32);
-s32 _ZN12Unk_020afaa412runSpawnListEPhS0_y(void*, void*, void*, u32, u32);
-void _ZN12Unk_020afaa420createSceneMapModuleEv(void*);
+s32 _ZN9SceneInfo12runSpawnListEPhS0_y(void*, void*, void*, u32, u32);
+void _ZN9SceneInfo20createSceneMapModuleEv(void*);
 s32 NetSession_GetLastSyncSlot();
 void NetSession_SetLastSyncSlot(s32);
 BOOL PlayerData_Get(s32);
@@ -808,12 +808,12 @@ BOOL FieldSceneSteps::stepLoadResources(u32, u32) {
 }
 
 BOOL FieldSceneSteps::stepCreateSceneProc(u32, u32) {
-    _ZN12Unk_020afaa420createSceneMapModuleEv((void*)gCurSceneInfo);
+    _ZN9SceneInfo20createSceneMapModuleEv((void*)gCurSceneInfo);
     return TRUE;
 }
 
 BOOL FieldSceneSteps::stepRunSceneEntries(u32 a, u32 b) {
-    return _ZN12Unk_020afaa412runSpawnListEPhS0_y((void*)gCurSceneInfo, data_021eda50, data_021eda58, a, b);
+    return _ZN9SceneInfo12runSpawnListEPhS0_y((void*)gCurSceneInfo, data_021eda50, data_021eda58, a, b);
 }
 
 BOOL FieldSceneSteps::stepFinish(u32, u32) {
@@ -1019,10 +1019,10 @@ extern "C" u8 Scene_GetSkyKind(BOOL a) {
         BOOL c3 = TRUE;
         BOOL c2 = TRUE;
         u8 m = gFieldSceneKind;
-        BOOL LampLights = (m == 0) ? TRUE : FALSE;
-        if (!LampLights) {
-            BOOL LightLevel = (m == 1) ? TRUE : FALSE;
-            if (!LightLevel) c2 = FALSE;
+        BOOL A = (m == 0) ? TRUE : FALSE;
+        if (!A) {
+            BOOL B = (m == 1) ? TRUE : FALSE;
+            if (!B) c2 = FALSE;
         }
         if (!c2) {
             if (!a || x != 5) c3 = FALSE;

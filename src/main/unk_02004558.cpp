@@ -6390,10 +6390,10 @@ void Unk_02006d14::applyHoldPose(u16 *p, s32 b, void *c) {
     using namespace nR;
     s32 r6 = HeldItem_GetHandPose(p);
     s32 r7 = CharaAnim_GetHoldPoseMode(b);
-    if (r7 == 3 || r6 == 0x144) goto LightLevel;
+    if (r7 == 3 || r6 == 0x144) goto B;
     if (r7 == 1) {
         if (!Unk_02010154_In(p)) {
-            if (*p < 0x13a0 || *p > 0x13a7) goto LightLevel;
+            if (*p < 0x13a0 || *p > 0x13a7) goto B;
         }
     }
     {
@@ -6418,7 +6418,7 @@ void Unk_02006d14::applyHoldPose(u16 *p, s32 b, void *c) {
         }
     }
     goto end;
-LightLevel:
+B:
     _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(((nR::Unk_02006d14 *)this)->unk_230, (s32)c, 0);
 end:
     ((nR::Unk_02006d14 *)this)->unk_704 = r6;

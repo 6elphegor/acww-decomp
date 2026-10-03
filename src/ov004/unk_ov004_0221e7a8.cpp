@@ -252,13 +252,11 @@ extern char _ZTV12RoomObjActor[];
 }
 
 typedef RoomObjActor M;
-typedef RoomObjRes LampLights;
-typedef RoomObjTex LightLevel;
 typedef Unk_ov004_02224ee4_Vec Vec;
 
-extern "C" void RoomObj_LoadResourcesByName(char *name, AnimModel *m, LampLights *a, LightLevel *b);
-extern "C" void RoomObj_LoadResources(char *a, char *b, AnimModel *m, LampLights *aa, LightLevel *bb);
-extern "C" void RoomObj_ReleaseResources(LampLights *a, LightLevel *b);
+extern "C" void RoomObj_LoadResourcesByName(char *name, AnimModel *m, RoomObjRes *a, RoomObjTex *b);
+extern "C" void RoomObj_LoadResources(char *a, char *b, AnimModel *m, RoomObjRes *aa, RoomObjTex *bb);
+extern "C" void RoomObj_ReleaseResources(RoomObjRes *a, RoomObjTex *b);
 
 extern "C" RoomObjActor *_ZN12RoomObjActorC2Ev(RoomObjActor *self) {
     _ZN9CharacterC2Ev(self);
@@ -323,7 +321,7 @@ BOOL RoomObjActor::changeSyncState(u32 v) {
     return TRUE;
 }
 
-extern "C" void RoomObj_LoadResources(char *a, char *b, AnimModel *m, LampLights *aa, LightLevel *bb) {
+extern "C" void RoomObj_LoadResources(char *a, char *b, AnimModel *m, RoomObjRes *aa, RoomObjTex *bb) {
     aa->RoomObjRes_Load(a);
     bb->RoomObjTex_Load(b);
     _ZN5Model11setResourceEP16Unk_020553f8_Resj(m, aa->RoomObjRes_GetModel(), 0);
@@ -333,7 +331,7 @@ extern "C" void RoomObj_LoadResources(char *a, char *b, AnimModel *m, LampLights
     NNS_G3dBindMdlPltt(q, bb->RoomObjTex_Get());
 }
 
-extern "C" void RoomObj_LoadResourcesByName(char *name, AnimModel *m, LampLights *a, LightLevel *b) {
+extern "C" void RoomObj_LoadResourcesByName(char *name, AnimModel *m, RoomObjRes *a, RoomObjTex *b) {
     char x[0x28];
     char y[0x28];
     func_020639e8(x, "/roomObj/%s.arc", name);
@@ -353,7 +351,7 @@ void RoomObjActor::loadResourcesByName(char *name) {
     loadResources(a, b);
 }
 
-extern "C" void RoomObj_ReleaseResources(LampLights *a, LightLevel *b) {
+extern "C" void RoomObj_ReleaseResources(RoomObjRes *a, RoomObjTex *b) {
     a->RoomObjRes_Free();
     b->RoomObjTex_Reset();
 }

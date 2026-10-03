@@ -234,82 +234,15 @@ class ReddPassword {public: u32 getPromptText(void *w);};
 
 
 extern "C" {
-extern void *gBgHeap;
-void *Heap_Alloc(void *heap, u32 size);
-void Heap_Free(void *heap, void *p);
-void *func_0212899c(void *p, s32 v, u32 n);
-void func_020f43fc(void *p);
-void func_020f440c(void *p);
-BOOL MenuCtrl_IsFinished();
-BOOL MenuCtrl_OpenLauncher(u32 a);
-BOOL TalkRequest_SetTargetDone(void *p);
-BOOL TalkRequest_AddPlayerTalk6(void *p, u32 a);
-void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
-void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
-BOOL PlayerActor_IsStowFinished();
-BOOL PlayerActor_IsEnteringDoor();
-void PlayerActor_RequestStowThenAct10(u32 a);
-void *Scene_GetWarpRequest();
-BOOL SceneWarp_RequestExit(void *o, s32 a);
 s32 Scene_GetCurrent();
-void Scene_SetTownReturnPos(void *o, s32 a, Unk_ov009_0225b880_Vec3 *v, u32 b, s32 c, u32 d, u32 e);
-s32 Ground_GetDefaultY(u32 a);
-BOOL PlayerActor_LocalRequestDoorEnter(u32 a, s32 *b, s32 *c, s32 d);
-BOOL MenuCtrl_IsResultOk();
-s32 ReddPassword_LearnCurrentPlayer();
-s32 _ZN15TalkWindowState14setNextMessageEPhPv(void *o, u8 *p, char *s);
-void BuildingOccupancy_Leave(u32 a, u32 b);
-extern u8 data_ov003_02231138[];
 extern u8 data_021ed2c0[];
 ReddPassword *_ZN8ReddShop11getPasswordEv(void *p);
-s32 _ZN12ReddPassword14getAnswerIndexEv();
-void MenuCtrl_OpenLauncherWithIndex(u32 a, s32 b);
-s32 ReddPassword_CurrentPlayerKnows();
-u32 BuildingOccupancy_GetAnswer(u32 a);
-void BuildingOccupancy_RequestEnter(u32 a);
-s32 func_020e780c(s32 a, s32 b);
 }
 
 extern "C" {
 extern u8 data_021ed2c0[];
-extern u8 gSaveTownFlag[];
-void _ZN18ReddPasswordStringC1Ev(void *);
-void _ZN18ReddPasswordStringD1Ev(void *);
 ReddPassword *_ZN8ReddShop11getPasswordEv(void *);
-void _ZN15TalkWindowState7setSlotEiPv(void *, s32, void *);
-void Clock_GetDateTime(void *);
-void MI_CpuCopy8(void *, void *, s32);
-s32 Event_GetState(u32, void *, u32);
 s32 Scene_GetCurrent();
-void Visitor_ScheduleLow(void *, s32, void *);
-extern u16 sGracieCarVisitorProfile;
-extern u8 data_ov003_02231430[];
-extern u8 data_ov003_02231434[];
-extern u8 data_ov003_0223144c[];
-extern u8 data_ov003_02231464[];
-extern char data_ov003_0223524c[];
-extern char data_ov003_02235204[];
-extern char data_ov003_02235228[];
-extern u32 sGateHouseModelNames[];
-extern u32 sCountdownHours;
-extern u32 sCountdownSeconds;
-extern u32 sCountdownMinutes;
-void ClothTex_Destruct(void *);
-void ClothTex_Construct(void *);
-BOOL ClothTex_LoadPattern(void *a, void *b);
-void *ClothTex_GetTex(void *);
-s32 func_020b23a0(void *);
-s32 TownFlag_GetPattern(s32);
-void TownFlag_SetPattern(s32, void *);
-s32 func_020b24ac(s32);
-void func_020547e4(void *);
-void FieldPos_ToUnit(s32 *, s32 *, s32 *);
-BOOL Ground_SetQuadrantsBlocked(s32, s32, s32);
-s32 func_020639e8(char *buf, const char *fmt, ...);
-s32 Field_GetStructureTexSuffix();
-void Snd_PlaySe(u32);
-u32 GateHouse_GetModelName();
-s32 GateHouse_GetDesign();
 }
 
 class ReddTent : public BuildingActor {

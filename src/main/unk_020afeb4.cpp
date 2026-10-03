@@ -74,9 +74,9 @@ void OverlayMgr_Release(u32 a);
 void OverlayMgr_Acquire(u32 a);
 void *PlayerData_GetCurrent(void);
 u8 *_ZN10PlayerData11getPlayerIdEv(void *p);
-// 0x02291f60 exists in every overlay of the slot (relocs.txt: module:overlays(113,123,...)); the
-// call names the first one's symbol.
-s32 _ZN11BbsReadMenuD1Ev(void *p);
+// ov127 (StarSky), loaded by Constellation_AcquireSkyOverlay; 0x02291f60 is shared by every
+// overlay of the slot (relocs.txt: module:overlays(113,123,127,...)).
+BOOL StarSky_IsConstellationFree(void *p);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 u64 func_02132ef8(u64 a, u64 b);
 
@@ -395,7 +395,7 @@ BOOL Constellation_AddReceived(Entry *e) {
         return FALSE;
     }
     Constellation_AcquireSkyOverlay();
-    r = _ZN11BbsReadMenuD1Ev(e);
+    r = StarSky_IsConstellationFree(e);
     Constellation_ReleaseSkyOverlay();
     if (r) {
         Constellation_Store(e, idx, 1);

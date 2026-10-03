@@ -1690,7 +1690,7 @@ void Keyboard_LoadEmotionIcons(Keyboard *s)
 s32 Keyboard_Draw(Keyboard *s, s32 x, s32 y, s32 z)
 {
     s32 sel = 0;
-    volatile s32 LampLights, LightLevel;
+    volatile s32 A, B;
     s32 i;
     switch (s->unk_02) {
     case 1:
@@ -1703,13 +1703,13 @@ s32 Keyboard_Draw(Keyboard *s, s32 x, s32 y, s32 z)
         break;
     }
     i = 0;
-    LightLevel = i;
-    LampLights = i;
+    B = i;
+    A = i;
     for (; i < 3; i++) {
         if (sel == i) {
-            Oam_DrawObj(1, s->unk_30 + (i << 3), x, y + 2, 0xb, z, LampLights);
+            Oam_DrawObj(1, s->unk_30 + (i << 3), x, y + 2, 0xb, z, A);
         } else {
-            Oam_DrawObj(1, s->unk_30 + (i << 3), x, y, 0xa, z, LightLevel);
+            Oam_DrawObj(1, s->unk_30 + (i << 3), x, y, 0xa, z, B);
         }
     }
     Oam_DrawCell(1, s->unk_30 + 0x18, x, y, -1, z, 0x1000, 0x1000, 0, -1, 0, 0);

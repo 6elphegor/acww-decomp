@@ -21,7 +21,7 @@ void HBlank_RunVBlank(void);
 extern "C" void Sky_HBlankNone(void) {
 }
 
-// WIN0H animation: sMenuWipeLine counts 0..47, sMenuWipeEdge is a 24-entry table walked up and down
+// WIN1H (0x04000042) animation: sMenuWipeLine counts 0..47, sMenuWipeEdge is a 24-entry table walked up and down
 extern "C" void MenuScreen_WipeHBlank(void) {
     u32 i = sMenuWipeLine;
     u32 j = (i >= 24) ? 47 - i : i;

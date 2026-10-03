@@ -626,18 +626,18 @@ void NNSi_G3dFuncSbc_NODEDESC(RS *rs, u32 opt) {
                 if (pNd->flag & 2) {
                     pResult->flag |= 2;
                 } else if (pNd->flag & 8) {
-                    fx32 LampLights, LightLevel;
+                    fx32 A, B;
                     u32 idxPivot = (pNd->flag & 0xf0) >> 4;
-                    LampLights = ((const fx16 *)p)[0];
-                    LightLevel = ((const fx16 *)p)[1];
+                    A = ((const fx16 *)p)[0];
+                    B = ((const fx16 *)p)[1];
                     MI_Zero36B(&pResult->rot);
                     pResult->rot.a[idxPivot] = (pNd->flag & 0x100) ? -FX32_ONE : FX32_ONE;
-                    pResult->rot.a[data_02135d38[idxPivot][0]] = LampLights;
-                    pResult->rot.a[data_02135d38[idxPivot][1]] = LightLevel;
-                    if (pNd->flag & 0x200) LightLevel = -LightLevel;
-                    pResult->rot.a[data_02135d38[idxPivot][2]] = LightLevel;
-                    if (pNd->flag & 0x400) LampLights = -LampLights;
-                    pResult->rot.a[data_02135d38[idxPivot][3]] = LampLights;
+                    pResult->rot.a[data_02135d38[idxPivot][0]] = A;
+                    pResult->rot.a[data_02135d38[idxPivot][1]] = B;
+                    if (pNd->flag & 0x200) B = -B;
+                    pResult->rot.a[data_02135d38[idxPivot][2]] = B;
+                    if (pNd->flag & 0x400) A = -A;
+                    pResult->rot.a[data_02135d38[idxPivot][3]] = A;
                     p += 4;
                 } else {
                     pResult->rot.a[0] = pNd->_00;

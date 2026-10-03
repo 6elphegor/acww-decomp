@@ -267,7 +267,7 @@ struct S1 { u8 pad[0xc]; u8 c, d, e, f; u16 arr[6]; };
 struct S { u8 pad0[4]; u16 str[0x24]; u8 pad1[6]; u8 f52, f53, f54, f55; u8 pad2[4]; u16 lo : 5; u16 cnt : 4; u16 kind : 2; u16 rest : 5; };
 // ======== types of unk_020ae290.cpp ========
 
-struct WindowLight {
+struct D {
     u8 a, b, c, d, e, f;
     u16 g;
 };
@@ -841,16 +841,16 @@ extern "C" {
 int Scene_GetCurrent();
 }
 extern "C" {
-void Clock_GetDateTime(WindowLight*);
+void Clock_GetDateTime(D*);
 }
 extern "C" {
-void DateTime_SubDays(WindowLight*, int);
+void DateTime_SubDays(D*, int);
 }
 extern "C" {
-void DateTime_AddDays(WindowLight*, int);
+void DateTime_AddDays(D*, int);
 }
 extern "C" {
-int DateTime_Compare(WindowLight*, WindowLight*, int);
+int DateTime_Compare(D*, D*, int);
 }
 extern "C" {
 int _ZN11CommManager8isOnlineEv(int);
@@ -892,7 +892,7 @@ extern "C" {
 int ItemList_GetTownClassRank(u16*, int);
 }
 extern "C" {
-int NookShop_GetReopenDateTime(WindowLight*);
+int NookShop_GetReopenDateTime(D*);
 }
 extern "C" {
 void _ZN22DateSeededRandomSource4seedEhhh(void*, int, int, int);
@@ -934,7 +934,7 @@ extern "C" {
 void NookShop_RestockEnd(Obj*);
 }
 extern "C" {
-void NookShop_UpdatePointSpecial(Obj*, WindowLight*);
+void NookShop_UpdatePointSpecial(Obj*, D*);
 }
 extern "C" {
 int _ZN8SaveData8testFlagEj(void*, int);
@@ -985,13 +985,13 @@ extern "C" {
 int NookShop_GetEarnedLevel(Obj* self);
 }
 extern "C" {
-int NookShop_IsClosedOn(Obj* self, WindowLight* d);
+int NookShop_IsClosedOn(Obj* self, D* d);
 }
 extern "C" {
-int NookShop_IsPointSpecialDay(Obj* self, WindowLight* d);
+int NookShop_IsPointSpecialDay(Obj* self, D* d);
 }
 extern "C" {
-int NookShop_IsClosedNextDay(Obj* self, WindowLight* d);
+int NookShop_IsClosedNextDay(Obj* self, D* d);
 }
 extern "C" {
 void NookShop_NoteBuyer(Obj* self, int f);
@@ -1000,7 +1000,7 @@ extern "C" {
 void NookShop_PostRenovationNotice(u8, u8);
 }
 extern "C" {
-int NookShop_IsReopenDue(Obj* self, WindowLight* d);
+int NookShop_IsReopenDue(Obj* self, D* d);
 }
 extern "C" {
 int NookShop_IsClosedTomorrow(Obj*);
@@ -1012,10 +1012,10 @@ extern "C" {
 void NookShop_Restock(Obj* self, int a, int b, int c);
 }
 extern "C" {
-int NookShop_IsStockStale(Obj* self, WindowLight* d);
+int NookShop_IsStockStale(Obj* self, D* d);
 }
 extern "C" {
-void NookShop_SetStockDate(Obj* self, WindowLight* d);
+void NookShop_SetStockDate(Obj* self, D* d);
 }
 extern "C" {
 static inline BOOL inRangeP(u16* p, u16 lo, u16 hi) {
@@ -1032,7 +1032,7 @@ struct Rgba {
 
 
 extern "C" BOOL NookShop_IsSaleTime(Obj* self) {
-    WindowLight d;
+    D d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
     Clock_GetDateTime(&d);
@@ -1043,14 +1043,14 @@ extern "C" BOOL NookShop_IsSaleTime(Obj* self) {
     }
     return FALSE;
 }
-extern "C" int NookShop_IsPointSpecialDay(Obj* self, WindowLight* d) {
+extern "C" int NookShop_IsPointSpecialDay(Obj* self, D* d) {
     if (_ZN8SaveData8testFlagEj(gSaveData, 5) != 0 && self->date2[2] == d->f && self->date2[1] == d->e &&
         self->date2[0] == d->d)
         return TRUE;
     return FALSE;
 }
 extern "C" int NookShop_IsPointSpecialToday(Obj* self) {
-    WindowLight d;
+    D d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
     Clock_GetDateTime(&d);
@@ -1071,7 +1071,7 @@ extern "C" S4* NookShop_GetRenovation(Obj* self) {
 }
 extern "C" Rgba NookShop_GetClosedDate(Obj* self) {
     Rgba r;
-    WindowLight d;
+    D d;
     r.d = 0;
     r.a = r.d;
     r.b = r.a;
@@ -1093,8 +1093,8 @@ extern "C" Rgba NookShop_GetClosedDate(Obj* self) {
     }
     return r;
 }
-extern "C" int NookShop_IsReopenDue(Obj* self, WindowLight* d) {
-    WindowLight t;
+extern "C" int NookShop_IsReopenDue(Obj* self, D* d) {
+    D t;
     ((u32*)&t)[0] = 0;
     ((u32*)&t)[1] = 0;
     if (NookShop_GetReopenDateTime(&t) != 0) {
@@ -1103,14 +1103,14 @@ extern "C" int NookShop_IsReopenDue(Obj* self, WindowLight* d) {
     return FALSE;
 }
 extern "C" int NookShop_IsReopenDueNow(Obj* self) {
-    WindowLight d;
+    D d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
     Clock_GetDateTime(&d);
     return NookShop_IsReopenDue(self, &d);
 }
-extern "C" int NookShop_IsClosedOn(Obj* self, WindowLight* d) {
-    WindowLight t;
+extern "C" int NookShop_IsClosedOn(Obj* self, D* d) {
+    D t;
     if (NookShop_GetRenovation(self)->flag != 0) {
         ((u32*)&t)[0] = 0;
         ((u32*)&t)[1] = 0;
@@ -1128,18 +1128,18 @@ extern "C" int NookShop_IsClosedOn(Obj* self, WindowLight* d) {
     return FALSE;
 }
 extern "C" int NookShop_IsClosedToday(Obj* self) {
-    WindowLight d;
+    D d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
     Clock_GetDateTime(&d);
     return NookShop_IsClosedOn(self, &d);
 }
-extern "C" int NookShop_IsClosedNextDay(Obj* self, WindowLight* d) {
+extern "C" int NookShop_IsClosedNextDay(Obj* self, D* d) {
     DateTime_AddDays(d, 1);
     return NookShop_IsClosedOn(self, d);
 }
 extern "C" int NookShop_IsClosedTomorrow(Obj* self) {
-    WindowLight d;
+    D d;
     ((u32*)&d)[0] = 0;
     ((u32*)&d)[1] = 0;
     Clock_GetDateTime(&d);
@@ -1182,8 +1182,8 @@ extern "C" int NookShop_FindItem(Obj* self, int arg) {
     return StockList_FindItem(arg, self->items, self->mask, 0x25);
 }
 extern "C" void NookShop_ScheduleRenovation(Obj* self) {
-    WindowLight d;
-    WindowLight t;
+    D d;
+    D t;
     int r4 = NookShop_GetEarnedLevel(self);
     if (_ZN11CommManager8isOnlineEv(*(int*)gCommManager) != 0) return;
     if (NookShop_GetLevel(self) >= r4) return;
@@ -1252,7 +1252,7 @@ const u8 kNookSaplingCounts[4] = {0, 1, 2, 3};
 namespace n4 {
 extern "C" void NookShop_UpdateDaily(Obj* self, int force) {
     int fresh;
-    WindowLight d;
+    D d;
     int ok;
     int i;
     int n;
@@ -1353,14 +1353,14 @@ extern "C" void NookShop_Restock(Obj* self, int a, int b, int c) {
     NookShop_StockMedicine(self, &z);
     NookShop_RestockEnd(self);
 }
-extern "C" int NookShop_IsStockStale(Obj* self, WindowLight* d) {
-    WindowLight t;
+extern "C" int NookShop_IsStockStale(Obj* self, D* d) {
+    D t;
     MI_CpuCopy8(d, &t, 8);
     if (self->date[2] != t.f || self->date[1] != t.e || self->date[0] != t.d || self->date[3] != 0) return TRUE;
     return FALSE;
 }
-extern "C" void NookShop_SetStockDate(Obj* self, WindowLight* d) {
-    WindowLight t;
+extern "C" void NookShop_SetStockDate(Obj* self, D* d) {
+    D t;
     MI_CpuCopy8(d, &t, 8);
     self->date[2] = t.f;
     self->date[1] = t.e;
@@ -1596,9 +1596,9 @@ void AbleShop_StockShirts(S1*, u32*);
 extern "C" // mwcc emits functions in reverse order: highest address first.
 
 void NookShop_UpdatePointSpecial(S *s, V8 *p) {
-    V8 LampLights;
-    B4 LightLevel;
-    V8 C, WindowLight, E, F, G, H, I;
+    V8 A;
+    B4 B;
+    V8 C, D, E, F, G, H, I;
     E12 arr1[7];
     E12 arr2[7];
     s32 mode;
@@ -1611,11 +1611,11 @@ void NookShop_UpdatePointSpecial(S *s, V8 *p) {
     u8 e4;
     u8 e3;
     s32 k, i, cnt1, cnt2, r, r5;
-    MI_CpuCopy8(p, &LampLights, 8);
+    MI_CpuCopy8(p, &A, 8);
     mode = _ZN22DateSeededRandomSource6randomEj(sShopRandom, 2);
     if (_ZN8SaveData8testFlagEj(gSaveData, 5)) {
-        Clock_GetDate(&LightLevel);
-        r = Date_DaysBetween(&LightLevel, &s->f52);
+        Clock_GetDate(&B);
+        r = Date_DaysBetween(&B, &s->f52);
         if (r >= 1) {
             _ZN8SaveData9clearFlagEj(gSaveData, 5);
         } else if (r <= -7) {
@@ -1628,17 +1628,17 @@ void NookShop_UpdatePointSpecial(S *s, V8 *p) {
         if (k != 6 && k != 0) {
             r5 = 6 - k;
             if (r5 < 0) r5 = -r5;
-            MI_CpuCopy8(&C, &WindowLight, 8);
+            MI_CpuCopy8(&C, &D, 8);
             MI_CpuCopy8(&C, &E, 8);
-            DateTime_AddDays(&WindowLight, r5);
+            DateTime_AddDays(&D, r5);
             DateTime_AddDays(&E, r5 + 1);
-            d4 = WindowLight.b4;
-            d3 = WindowLight.b3;
-            d5 = WindowLight.b5;
+            d4 = D.b4;
+            d3 = D.b3;
+            d5 = D.b5;
             e4 = E.b4;
             e3 = E.b3;
             e5 = E.b5;
-            MI_CpuCopy8(&WindowLight, &H, 8);
+            MI_CpuCopy8(&D, &H, 8);
             n1 = EventSchedule_CollectDayAll(arr1, &H);
             MI_CpuCopy8(&E, &I, 8);
             n2 = EventSchedule_CollectDayAll(arr2, &I);
@@ -1675,13 +1675,13 @@ void NookShop_UpdatePointSpecial(S *s, V8 *p) {
         F.b3 = s->f52;
         F.b2 = 6;
         F.b1 = 0;
-        if (DateTime_Compare(&F, &LampLights, 0x38) == -1) {
+        if (DateTime_Compare(&F, &A, 0x38) == -1) {
             _ZN8SaveData9clearFlagEj(gSaveData, 5);
         } else {
             MI_CpuCopy8(&F, &G, 8);
             DateTime_SubDays(&G, 4);
-            if (DateTime_Compare(&G, &LampLights, 0x38) == -1) {
-                if (DateTime_Compare(&LampLights, &F, 0x38) == -1) {
+            if (DateTime_Compare(&G, &A, 0x38) == -1) {
+                if (DateTime_Compare(&A, &F, 0x38) == -1) {
                     if (!_ZN8SaveData8testFlagEj(gSaveData, 6)) {
                         NookShop_PostPointSpecialNotice(s->f53, s->f52);
                         _ZN8SaveData7setFlagEj(gSaveData, 6);

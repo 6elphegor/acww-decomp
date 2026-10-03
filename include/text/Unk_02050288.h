@@ -23,7 +23,7 @@ struct GameFontDesc {
     /* 0x10 */ u8 unk_10;
 };
 
-// LampLights byte buffer interface; callers use fixed-size implementations on the stack
+// A byte buffer interface; callers use fixed-size implementations on the stack
 class StrBuf {
 public:
     virtual ~StrBuf();
@@ -31,7 +31,7 @@ public:
     virtual u8 *data();
 };
 
-// LampLights nested aggregate: a flat struct { u32 a, b; } is copied with interleaved loads and stores instead
+// A nested aggregate: a flat struct { u32 a, b; } is copied with interleaved loads and stores instead
 struct Unk_02050288_08 {
     u32 unk_00[2];
 };

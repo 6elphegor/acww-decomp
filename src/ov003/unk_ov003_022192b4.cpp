@@ -4182,14 +4182,14 @@ namespace ns_0221e4d4 {
 extern "C" {
 BOOL FieldObj_LoadFlowers() {
     BOOL r5 = FALSE, r4 = FALSE;
-    void *LampLights[4], *LightLevel[4], *C[4], *WindowLight[4];
+    void *A[4], *B[4], *C[4], *D[4];
     void *E[2], *F[2], *G[2], *H[2];
     s32 i, j;
     for (i = 0; i < 4; i++) {
-        LampLights[i] = NULL;
-        LightLevel[i] = NULL;
+        A[i] = NULL;
+        B[i] = NULL;
         C[i] = NULL;
-        WindowLight[i] = NULL;
+        D[i] = NULL;
     }
     for (j = 0; j < 2; j++) {
         E[j] = NULL;
@@ -4197,9 +4197,9 @@ BOOL FieldObj_LoadFlowers() {
         G[j] = NULL;
         H[j] = NULL;
     }
-    if (FieldObj_LoadFlowerTextures(gFieldObjectManager, LampLights, LightLevel)) {
-        if (FieldObj_LoadFlowerPalettes(gFieldObjectManager, C, WindowLight)) {
-            if (FieldObj_LoadFlowerModels(gFieldObjectManager, LampLights, C)) {
+    if (FieldObj_LoadFlowerTextures(gFieldObjectManager, A, B)) {
+        if (FieldObj_LoadFlowerPalettes(gFieldObjectManager, C, D)) {
+            if (FieldObj_LoadFlowerModels(gFieldObjectManager, A, C)) {
                 r5 = TRUE;
             }
         }
@@ -4211,7 +4211,7 @@ BOOL FieldObj_LoadFlowers() {
             }
         }
     }
-    FieldObj_FreeFlowerFiles(gFieldObjectManager, (s32 *)LightLevel, (s32 *)WindowLight, (s32 *)F, (s32 *)H);
+    FieldObj_FreeFlowerFiles(gFieldObjectManager, (s32 *)B, (s32 *)D, (s32 *)F, (s32 *)H);
     s32 r = FieldObj_LoadDandelionModels(gFieldObjectManager);
     if (r5 && r4 && r) {
         return TRUE;
@@ -4941,7 +4941,7 @@ extern "C" {
 void FieldObj_DrawUnits(O *o, void *g) {
     struct {
         s32 x, z;
-        V3 WindowLight, E, LampLights, LightLevel, C;
+        V3 D, E, A, B, C;
         union {
             Blk m;
             s32 mw[12];
@@ -4951,32 +4951,32 @@ void FieldObj_DrawUnits(O *o, void *g) {
     s32 idx, dist, i, j, cnt;
     u16 *cell;
     if (gCamera != 0) {
-        l.LampLights = gCameraLookAt;
-        FieldPos_SnapToUnitCenter(&l.C, &l.LampLights);
+        l.A = gCameraLookAt;
+        FieldPos_SnapToUnitCenter(&l.C, &l.A);
         FieldPos_ToUnit(&l.x, &l.z, &l.C);
-        l.LightLevel.x = l.C.x + 0x12000;
+        l.B.x = l.C.x + 0x12000;
         cnt = 0;
-        l.LightLevel.y = 0;
-        l.LightLevel.z = l.C.z + 0x8000;
+        l.B.y = 0;
+        l.B.z = l.C.z + 0x8000;
         j = 4;
         goto jtest;
     jloop:
-        FieldPos_SnapToUnitCenter(&l.WindowLight, &l.LightLevel);
+        FieldPos_SnapToUnitCenter(&l.D, &l.B);
         {
-            s32 r4 = WorldCurve_ToCurved(&l.E, &l.WindowLight);
+            s32 r4 = WorldCurve_ToCurved(&l.E, &l.D);
             func_020e8388(&data_021f47e0, l.E.x, l.E.y, l.E.z);
             func_020e8434(&data_021f47e0, r4);
         }
         l.m = data_021f47e0;
-        dist = l.WindowLight.z - l.C.z;
+        dist = l.D.z - l.C.z;
         i = 9;
         goto itest;
     iloop:
-        cell = BlockMap_GetItemPtrAtPos(g, &l.WindowLight, 0);
+        cell = BlockMap_GetItemPtrAtPos(g, &l.D, 0);
         if (cell == 0) goto step;
         if (Chk_0221d37c(cell)) {
             if (Item_IsTreeStage0(cell) == 0) {
-                if (Camera_IsBlockingFocusView(&l.WindowLight, 0x2000, 0x2000) != 0) goto step;
+                if (Camera_IsBlockingFocusView(&l.D, 0x2000, 0x2000) != 0) goto step;
             }
         }
         {
@@ -4991,9 +4991,9 @@ void FieldObj_DrawUnits(O *o, void *g) {
                     if (((*cell) >= 0x26 && (*cell) <= 0x2a) || ((*cell) >= 0x5d && (*cell) <= 0x61) || ((*cell) >= 0x2f && (*cell) <= 0x56) ||
                         ((*cell) >= 0x57 && (*cell) <= 0x5b) || ((*cell) >= 0x66 && (*cell) <= 0x68) || (*cell) == 0x69 ||
                         ((*cell) >= 0x6a && (*cell) <= 0x6c) || (*cell) == 0x6d || ((*cell) >= 0xc8 && (*cell) <= 0xcf)) {
-                        l.F.x = l.WindowLight.x;
-                        l.F.y = l.WindowLight.y;
-                        l.F.z = l.WindowLight.z;
+                        l.F.x = l.D.x;
+                        l.F.y = l.D.y;
+                        l.F.z = l.D.z;
                         FieldObj_DrawTreeAt(o, cell, l.x + i, l.z + j, &l.F, l.m);
                     } else if (((*cell) >= 0x21 && (*cell) <= 0x24) || ((*cell) >= 0x1f && (*cell) <= 0x20)) {
                         FieldObj_DrawGrass(o, cell, l.m);
@@ -5007,9 +5007,9 @@ void FieldObj_DrawUnits(O *o, void *g) {
                                    ((*cell) >= 0x96 && (*cell) <= 0x9b) || ((*cell) >= 0x9c && (*cell) <= 0xa3) || (*cell) == 0xa5) {
                             FieldObj_DrawFlowerBySpecies(o, cell, l.m);
                         } else if (((*cell) >= 0xe3 && (*cell) <= 0xe7) || ((*cell) >= 0xe8 && (*cell) <= 0xfb)) {
-                            l.G.x = l.WindowLight.x;
-                            l.G.y = l.WindowLight.y;
-                            l.G.z = l.WindowLight.z;
+                            l.G.x = l.D.x;
+                            l.G.y = l.D.y;
+                            l.G.z = l.D.z;
                             FieldObj_DrawRockAt(o, cell, &l.G, l.m);
                         } else if ((*cell) == 0xa6 || (*cell) == 0xfe) {
                             FieldObj_DrawCrack(o, cell, l.m);
@@ -5064,11 +5064,11 @@ void FieldObj_DrawUnits(O *o, void *g) {
         if (cnt >= 0xfc) goto end;
     step:
         l.mw[9] -= 0x2000;
-        l.WindowLight.x -= 0x2000;
+        l.D.x -= 0x2000;
         i--;
     itest:
         if (i >= -9) goto iloop;
-        l.LightLevel.z -= 0x2000;
+        l.B.z -= 0x2000;
         j--;
     jtest:
         if (j >= -14) goto jloop;
@@ -7888,23 +7888,23 @@ extern "C" void FieldItemFx_StartStrikeShake(s32 a, s32 b, P2 c)
 namespace ns_0221927c {
 extern "C" void FieldItemFx_StartBalloonDrop(s32 a, s32 n)
 {
-    V3 LampLights(0, 0, 0);
+    V3 A(0, 0, 0);
     s32 p0 = 0;
     s32 p1 = 0;
     Unk_ov003_02219654_Obj *obj = (Unk_ov003_02219654_Obj *)PlayerActor_GetActor(4);
     if (obj != NULL) {
         Unk_ov003_02219654_V3 *pv = &obj->unk_5c;
-        LampLights.x = pv->x;
-        LampLights.y = pv->y;
-        LampLights.z = pv->z;
-        LampLights.x = LampLights.x + ((n << 12) >> 4);
-        FieldPos_ToUnit(&p0, &p1, (s32)&LampLights);
+        A.x = pv->x;
+        A.y = pv->y;
+        A.z = pv->z;
+        A.x = A.x + ((n << 12) >> 4);
+        FieldPos_ToUnit(&p0, &p1, (s32)&A);
         p1 = (func_02133150(p1, 16) << 4) + 1;
         s32 tmp[3];
         FieldPos_FromUnitCenter(tmp, p0, p1);
-        LampLights.z = tmp[2];
+        A.z = tmp[2];
     }
-    LampLights.y = 0xa000;
+    A.y = 0xa000;
     s32 t;
     if (a == 0) {
         t = 0x156b;
@@ -7918,7 +7918,7 @@ extern "C" void FieldItemFx_StartBalloonDrop(s32 a, s32 n)
     } else {
         r = 0;
     }
-    FieldItemFxTable_Start(sFieldItemFxTable, r, P2(p0, p1), V3(LampLights.x, LampLights.y, LampLights.z), 0xc, t, 0, 0);
+    FieldItemFxTable_Start(sFieldItemFxTable, r, P2(p0, p1), V3(A.x, A.y, A.z), 0xc, t, 0, 0);
 }
 }
 

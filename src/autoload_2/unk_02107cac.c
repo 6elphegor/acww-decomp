@@ -156,16 +156,16 @@ void NNSi_G3dAnmObjInitNsBtp(u8 *obj, u8 *res, u8 *blk)
 }
 
 // NNS g3d (texture animation): texture index + tex scale result for the current frame
-s32 SetTexParamaters_(u8 *LampLights, u32 x, u8 *out)
+s32 SetTexParamaters_(u8 *A, u32 x, u8 *out)
 {
-    u32 *p = NNS_G3dGetResDataByName(LampLights + 60);
+    u32 *p = NNS_G3dGetResDataByName(A + 60);
     u32 m;
     u32 w, h;
     s32 r;
     if ((p[0] & 0x1c000000) != 0x14000000) {
-        m = *(u32 *)(LampLights + 8) & 0xffff;
+        m = *(u32 *)(A + 8) & 0xffff;
     } else {
-        m = *(u32 *)(LampLights + 24) & 0xffff;
+        m = *(u32 *)(A + 24) & 0xffff;
     }
     *(u32 *)(out + 16) &= 0xc00f0000;
     *(u32 *)(out + 16) |= p[0] + m;
@@ -189,10 +189,10 @@ s32 SetTexParamaters_(u8 *LampLights, u32 x, u8 *out)
 }
 
 // NNS g3d (texture animation): palette index result for the current frame
-u32 SetPlttParamaters_(u8 *LampLights, u32 x, u8 *out)
+u32 SetPlttParamaters_(u8 *A, u32 x, u8 *out)
 {
-    u16 *p = (u16 *)NNS_G3dGetResDataByName(LampLights + *(u16 *)(LampLights + 52));
-    u16 w = *(u32 *)(LampLights + 44);
+    u16 *p = (u16 *)NNS_G3dGetResDataByName(A + *(u16 *)(A + 52));
+    u16 w = *(u32 *)(A + 44);
     u16 v;
     u16 f = p[1];
     v = p[0];

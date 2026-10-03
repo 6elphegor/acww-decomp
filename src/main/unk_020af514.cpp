@@ -130,16 +130,26 @@ struct EntryPair {
     u16 b;
 };
 
-class Unk_020afaa4 {
+// gCurSceneInfo (B56); only the two methods of this unit are declared.
+class SceneInfo {
 public:
-    Unk_020afaa4();
-    ~Unk_020afaa4();
     BOOL runSpawnList(u8 *entryIdx, u8 *subIdx, u64 start);
     void createSceneMapModule();
 
     SceneSpawnList *unk_00;
     void *unk_04;
     SceneMapInfo *unk_08;
+};
+
+// one of the 2 rollable loose snowballs of gLooseSnowballs
+class LooseSnowball {
+public:
+    LooseSnowball();
+    ~LooseSnowball();
+
+    void *unk_00;
+    void *unk_04;
+    void *unk_08;
     u32 unk_0c;
 };
 
@@ -148,7 +158,7 @@ public:
     ~LooseSnowballs();
     void reset();
 
-    Unk_020afaa4 items[2];
+    LooseSnowball items[2];
 };
 
 struct Vec3 {
@@ -369,22 +379,22 @@ void SceneMapInfo::createMapModule() {
     GameProc_CreateChild(0xc, gActorDefaultParent, unk_06, 0);
 }
 
-void Unk_020afaa4::createSceneMapModule() {
+void SceneInfo::createSceneMapModule() {
     unk_08->createMapModule();
 }
 
-BOOL Unk_020afaa4::runSpawnList(u8 *entryIdx, u8 *subIdx, u64 start) {
+BOOL SceneInfo::runSpawnList(u8 *entryIdx, u8 *subIdx, u64 start) {
     return unk_00->run(entryIdx, subIdx, start);
 }
 
-Unk_020afaa4::Unk_020afaa4() {
+LooseSnowball::LooseSnowball() {
     unk_00 = NULL;
     unk_04 = NULL;
     unk_08 = NULL;
     unk_0c = 0x800;
 }
 
-Unk_020afaa4::~Unk_020afaa4() {}
+LooseSnowball::~LooseSnowball() {}
 
 LooseSnowballs::~LooseSnowballs() {}
 

@@ -799,7 +799,7 @@ static inline BOOL IsTouching() {
 }
 
 // ---- MsgQuery
-// MsgTag::MsgTag(), which func_020a6a0c calls to re-construct its token in place. LampLights placement new adds a
+// MsgTag::MsgTag(), which func_020a6a0c calls to re-construct its token in place. A placement new adds a
 // null check, and C++ has no other way to call a constructor on an existing object.
 extern "C" void func_020a776c(MsgTag *token);
 

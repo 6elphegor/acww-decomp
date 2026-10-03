@@ -1,5 +1,5 @@
 // ov141: scene overlay (class NearbyTownsMenu, vtable 0x02293968, 0x1674 bytes).
-// LampLights six-slot list of nearby players' records with a selection cursor.
+// A six-slot list of nearby players' records with a selection cursor.
 #define postCreate() postCreate(s32 a)
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"

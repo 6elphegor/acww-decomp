@@ -1083,18 +1083,18 @@ extern "C" BOOL Snowball_PlaceSnowmanNearby(void *a, void *pos, u16 *out) {
         u8 mask;
         s32 n;
         s32 k;
-        u32 LampLights;
+        u32 A;
         s32 C;
         s32 j;
         t[0] = Item_MakeSnowman(a);
         FieldPos_ToUnit(&x, &y, pos);
         mask = 0;
         n = 0;
-        for (LampLights = 0; LampLights < 8; LampLights++) {
-            const s16 *e = &sSnowmanNeighbourOffsets[LampLights * 2];
-            FieldPos_FromUnitCenter(&p, x + sSnowmanNeighbourOffsets[LampLights * 2], y + e[1]);
+        for (A = 0; A < 8; A++) {
+            const s16 *e = &sSnowmanNeighbourOffsets[A * 2];
+            FieldPos_FromUnitCenter(&p, x + sSnowmanNeighbourOffsets[A * 2], y + e[1]);
             if (Snowball_CanBuildSnowmanAt(&p)) {
-                mask |= 1 << LampLights;
+                mask |= 1 << A;
                 n++;
             }
         }

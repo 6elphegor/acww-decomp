@@ -1682,8 +1682,8 @@ void SpNpcPellyPhyllisTalk::endHandItem() {
 void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
     void *v[4];
     u8 buf[16];
-    u32 LampLights[0x1c / 4];
-    u32 LightLevel[0x18 / 4];
+    u32 A[0x1c / 4];
+    u32 B[0x18 / 4];
     void *ctx = unk_3c;
     u8 i;
     v[0] = 0;
@@ -1699,8 +1699,8 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
         setScript(0);
     } else if (n > 0) {
         v[0] = Net_GetScanResults(NetOverlay_AssertWireless());
-        func_02063888(LampLights);
-        func_02063830(LightLevel);
+        func_02063888(A);
+        func_02063830(B);
         for (i = 0; i < n; i++) {
             v[1] = ((void **)v[0])[i];
             if (v[1]) {
@@ -1712,9 +1712,9 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
                     if (buf[12] == 1) {
                         u32 m = 0x38;
                         if (buf[11] == 0) {
-                            EncodedString_SetRaw(LightLevel, &buf[3], 8);
-                            MsgString_fromEncoded(LampLights, LightLevel, 0, 0);
-                            TalkWindowState_setSlot(ctx, 8, LampLights);
+                            EncodedString_SetRaw(B, &buf[3], 8);
+                            MsgString_fromEncoded(A, B, 0, 0);
+                            TalkWindowState_setSlot(ctx, 8, A);
                             m = 0x39;
                         }
                         buf[1] = m;
@@ -1736,8 +1736,8 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
                 }
             }
         }
-        func_02063818(LightLevel);
-        func_02063870(LampLights);
+        func_02063818(B);
+        func_02063870(A);
     }
 }
 

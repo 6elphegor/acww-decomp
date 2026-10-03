@@ -306,9 +306,6 @@ public:
 };
 
 typedef RoomObjActor M;
-typedef BarberMachine WindowLight;
-typedef RoomObjRes LampLights;
-typedef RoomObjTex LightLevel;
 typedef Unk_ov004_02224ee4_Vec Vec;
 
 struct Unk_ov004_Scene_Entry {
@@ -318,7 +315,7 @@ struct Unk_ov004_Scene_Entry {
     s32 unk_08[4];
 };
 
-extern "C" WindowLight *BarberMachine_Create();
+extern "C" BarberMachine *BarberMachine_Create();
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" Unk_ov004_Scene_Entry sBarberMachineProfile;
 extern "C" BarberMachine *volatile sBarberMachine;
@@ -330,8 +327,8 @@ struct Unk_ov004_022255ec_Pad {
 };
 
 // @2225790
-extern "C" WindowLight *BarberMachine_Create() {
-    return new WindowLight;
+extern "C" BarberMachine *BarberMachine_Create() {
+    return new BarberMachine;
 }
 
 // @2225754
@@ -345,7 +342,7 @@ BarberMachine::~BarberMachine() {
 }
 
 // @222564c
-BOOL WindowLight::vfunc_00() {
+BOOL BarberMachine::vfunc_00() {
     sBarberMachine = this;
     unk_370 = 0;
     loadResources("/roomObj/obj_b_machine.arc", "/roomObj/obj_b_machine.nsbtx");
@@ -361,19 +358,19 @@ BOOL WindowLight::vfunc_00() {
 }
 
 // @222563c
-BOOL WindowLight::onExecute() {
+BOOL BarberMachine::onExecute() {
     updateState();
     return TRUE;
 }
 
 // @2225628
-BOOL WindowLight::onDraw() {
+BOOL BarberMachine::onDraw() {
     unk_ec.drawAnimated(0);
     return TRUE;
 }
 
 // @2225608
-BOOL WindowLight::func_ov004_02225608() {
+BOOL BarberMachine::func_ov004_02225608() {
     removeCollision();
     releaseResources();
     sBarberMachine = 0;
@@ -381,7 +378,7 @@ BOOL WindowLight::func_ov004_02225608() {
 }
 
 // @22255ec
-void WindowLight::getSoundPos(Vec *out) {
+void BarberMachine::getSoundPos(Vec *out) {
     Unk_ov004_022255ec_Pad pad;
     out->x = 0xc000;
     out->y = 0;
@@ -393,10 +390,10 @@ extern "C" Unk_ov004_Scene_Entry sBarberMachineProfile = {(void *(*)())BarberMac
 extern "C" BarberMachine *volatile sBarberMachine = 0;
 
 // @2225550
-BOOL WindowLight::changeSyncState(u32 idx) {
-    typedef BOOL (WindowLight::*Fn)();
-    static Fn tbl[4] = {&WindowLight::enterState00, &WindowLight::enterState01, &WindowLight::enterState02,
-                        &WindowLight::enterState03};
+BOOL BarberMachine::changeSyncState(u32 idx) {
+    typedef BOOL (BarberMachine::*Fn)();
+    static Fn tbl[4] = {&BarberMachine::enterState00, &BarberMachine::enterState01, &BarberMachine::enterState02,
+                        &BarberMachine::enterState03};
     if (idx < 4) {
         if ((this->*tbl[idx])() != 0) {
             unk_248.unk_04 = idx;
@@ -407,10 +404,10 @@ BOOL WindowLight::changeSyncState(u32 idx) {
 }
 
 // @22254c4
-void WindowLight::updateState() {
-    typedef void (WindowLight::*Fn)();
-    static Fn tbl[4] = {&WindowLight::updateState00, &WindowLight::updateState01, &WindowLight::updateState02,
-                        &WindowLight::updateState03};
+void BarberMachine::updateState() {
+    typedef void (BarberMachine::*Fn)();
+    static Fn tbl[4] = {&BarberMachine::updateState00, &BarberMachine::updateState01, &BarberMachine::updateState02,
+                        &BarberMachine::updateState03};
     u32 i = unk_248.unk_04;
     if (i < 4) {
         (this->*tbl[i])();
@@ -418,18 +415,18 @@ void WindowLight::updateState() {
 }
 
 // @222548c
-BOOL WindowLight::enterState00() {
+BOOL BarberMachine::enterState00() {
     s32 r = RoomObjRes_GetBca(&unk_1a4, 0);
     _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 // @2225488
-void WindowLight::updateState00() {
+void BarberMachine::updateState00() {
 }
 
 // @2225440
-BOOL WindowLight::enterState01() {
+BOOL BarberMachine::enterState01() {
     s32 r = RoomObjRes_GetBca(&unk_1a4, 0);
     _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
     RoomObj_PlaySe(&unk_250, 0x4d8);
@@ -437,7 +434,7 @@ BOOL WindowLight::enterState01() {
 }
 
 // @22253fc
-void WindowLight::updateState01() {
+void BarberMachine::updateState01() {
     if (unk_ec.isFinished() != 0) {
         if (unk_370 == 0) {
             changeSyncState(2);
@@ -450,14 +447,14 @@ void WindowLight::updateState01() {
 }
 
 // @22253c4
-BOOL WindowLight::enterState02() {
+BOOL BarberMachine::enterState02() {
     s32 r = RoomObjRes_GetBca(&unk_1a4, 1);
     _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 // @2225380
-void WindowLight::updateState02() {
+void BarberMachine::updateState02() {
     if (unk_ec.isFinished() != 0) {
         if (unk_370 == 0) {
             changeSyncState(3);
@@ -470,7 +467,7 @@ void WindowLight::updateState02() {
 }
 
 // @222532c
-BOOL WindowLight::enterState03() {
+BOOL BarberMachine::enterState03() {
     s32 r = RoomObjRes_GetBca(&unk_1a4, 2);
     _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
     RoomObj_PlaySe(&unk_250, 0x4d9);
@@ -479,7 +476,7 @@ BOOL WindowLight::enterState03() {
 }
 
 // @22252fc
-void WindowLight::updateState03() {
+void BarberMachine::updateState03() {
     if (unk_ec.isFinished() != 0) {
         changeSyncState(0);
     } else {
@@ -488,12 +485,12 @@ void WindowLight::updateState03() {
 }
 
 // @22252cc
-void WindowLight::initCollision() {
+void BarberMachine::initCollision() {
     BoxCollider_Register(&unk_2d4, 0x2000, 0x4000, 0x2000, unk_5c, 0, 0);
 }
 
 // @22252bc
-void WindowLight::removeCollision() {
+void BarberMachine::removeCollision() {
     BoxCollider_Unregister(&unk_2d4);
 }
 

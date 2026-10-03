@@ -361,7 +361,7 @@ public:
 
     void reportTag();
     void resetScan();
-    void func_020688ac(u8 *p);
+    void scan(u8 *p);
     void tagAltText();
     void tagColor();
     void tagNamedSlotForm3();
@@ -520,7 +520,7 @@ public:
     void attachWindow(u32 v);
     u32 getNameKind();
     u32 isNoSpeakerName();
-    MsgString9 *func_02065f10();
+    MsgString9 *getSpeakerName();
     void changeSpeakerName(MsgString *p, u32 v);
     void setNoSpeakerName(u32 v);
     void setSpeakerNameStr(MsgString *p, u32 v);
@@ -1030,7 +1030,7 @@ class TalkTagScannerView {
 public:
     TalkTagScannerView(void *owner);
     ~TalkTagScannerView();
-    void func_020688ac(u32 v);
+    void scan(u32 v);
     u8 pad[0x44];
 };
 
@@ -1233,7 +1233,7 @@ public:
     virtual void vfunc_28(u32 v);
     virtual void vfunc_2c(u32 v);
     virtual void onActionTag4(u32 v);
-    MsgString9 *func_02065f10();
+    MsgString9 *getSpeakerName();
 };
 
 class Unk_02069878_Obj {
@@ -1773,7 +1773,7 @@ void TalkRenderProcessor::tagPlayerName() {
 }
 void TalkRenderProcessor::tagSpeakerName() {
     using namespace n16;
-    pushText(unk_2c->unk_13b0->func_02065f10()->vfunc_0c());
+    pushText(unk_2c->unk_13b0_v16->getSpeakerName()->vfunc_0c());
 }
 void TalkRenderProcessor::tagCatchphrase() {
     using namespace n16;
@@ -2985,7 +2985,7 @@ void TalkParserVarTags::tagPlayerName() {
 void TalkParserVarTags::tagSpeakerName() {
     using namespace n13;
     pushText(Msg_GetColorTag(unk_5c));
-    pushText(unk_24->unk_13b0->func_02065f10()->vfunc_0c());
+    pushText(unk_24->unk_13b0->getSpeakerName()->vfunc_0c());
     pushText(Msg_GetColorTag(6));
 }
 #undef TalkMsgRequest
@@ -3624,7 +3624,7 @@ TalkTagScanner::TalkTagScanner(Unk_02068848_Owner *owner) {
 }
 TalkTagScanner::~TalkTagScanner() {
     using namespace n10;}
-void TalkTagScanner::func_020688ac(u8 *p) {
+void TalkTagScanner::scan(u8 *p) {
     using namespace n10;
     resetScan();
     unk_28 = 0;
@@ -4712,7 +4712,7 @@ extern "C" { void _ZN20VillagerDataItemView16getComplimentForEPvS0_(void *a, voi
 extern "C" { void Villager_GetNicknameFor(void *a, void *b, s32 c); }
 extern "C" { void _ZN23VillagerDataProfileView14getCatchphraseEPvS0_(void *a, void *b, s32 c); }
 extern "C" { void _ZN8PlayerId13getNameStringEP9MsgString(s32 a, void *b); }
-extern "C" { Unk_02066978_Owner *_ZN14TalkMsgRequest13func_02065f10Ev(void *p); }
+extern "C" { Unk_02066978_Owner *_ZN14TalkMsgRequest14getSpeakerNameEv(void *p); }
 extern "C" { TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c); }
 
 }
@@ -4954,7 +4954,7 @@ void TalkWindowMsg::createNameLabel() {
     if (unk_588 != 0) {
         unk_588->unk_50 = 2;
         unk_588->unk_39 = 0xe;
-        Unk_02066978_Owner *o = _ZN14TalkMsgRequest13func_02065f10Ev(unk_13b0);
+        Unk_02066978_Owner *o = _ZN14TalkMsgRequest14getSpeakerNameEv(unk_13b0);
         TextLabel *t = unk_588;
         t->unk_10 = o->vfunc_0c();
         unk_588->alignCenter();
@@ -5021,7 +5021,7 @@ void TalkWindowMsg::scanMessageTags() {
     using namespace n5;
     Unk_02066978_Owner *o = _ZN10ChoiceList13getResultTextEv(unk_314);
     TalkTagScannerView loc(this);
-    loc.func_020688ac(o->vfunc_0c());
+    ((TalkTagScannerView *)&loc)->scan(o->vfunc_0c());
 }
 char *TalkWindowMsg::buildMessagePath(const char *a, const char *b) {
     using namespace n5;
@@ -5225,7 +5225,7 @@ void TalkWindowState::enterOpening() {
     else reloadMessage();
     s32 r6 = BmgMsgAttr_LookupUnkA(unk_13b4);
     TalkMsgRequest *o = unk_13b0;
-    u8 *p = o->func_02065f10()->vfunc_0c();
+    u8 *p = o->getSpeakerName()->vfunc_0c();
     u32 v8 = unk_13b0->getNameKind();
     BOOL r7 = unk_13b0->vfunc_68() == 0 ? TRUE : FALSE;
     u32 r2 = unk_13b0->isNoSpeakerName();
@@ -5477,7 +5477,7 @@ void TalkMsgRequest::changeSpeakerName(MsgString *p, u32 v) {
 namespace n1 {
 
 }
-MsgString9 *TalkMsgRequest::func_02065f10() {
+MsgString9 *TalkMsgRequest::getSpeakerName() {
     using namespace n1; return &unk_20; }
 u32 TalkMsgRequest::isNoSpeakerName() {
     using namespace n1; return unk_40; }

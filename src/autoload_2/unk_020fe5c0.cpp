@@ -1,6 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // G015b: autoload_2 0x020fe5c0-0x020fe848 (1 function). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL: plain func_ name, nothing defined but the function.
-// WVR_StartUpAsync: acquire VRAM banks C/WindowLight (0x04000242/0x04000243 VRAMCNT) for the ARM7 under a lock id, with a completion callback (func_020fe4b4 is the PXI receive callback).
+// WVR_StartUpAsync: acquire VRAM banks C/D (0x04000242/0x04000243 VRAMCNT) for the ARM7 under a lock id, with a completion callback (func_020fe4b4 is the PXI receive callback).
 #include "types.h"
 
 struct VecFx32 { s32 x, y, z; };

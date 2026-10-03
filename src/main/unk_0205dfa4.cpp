@@ -275,7 +275,6 @@ void _ZN9ModelAnim14addToRenderObjEj(u32 *p, u32 a);
 void _ZN9AnimModel10attachAnimEv(void *slot);
 void _ZN5Model11setCallbackEiiiii(void *slot, void (*fn)(void *), u32 a, u32 b, void *o, u32 c);
 void _ZN10FishBobber6attachEjP9Characterj(void *p, u32 id, u32 x, u32 k);
-void func_0205fba8(void *p);
 
 u32 HeldItem_GetPlttVramSize(void);
 u32 HeldItem_GetTex4x4VramSize(void);
@@ -797,10 +796,10 @@ extern "C" void HeldItemModel_Update(Unk_0205dfb8_Obj *o) {
 }
 
 extern "C" void HeldItemModel_Draw(Unk_0205dfb8_Obj *o, Unk_0205dfb8_Out *src) {
-    Unk_0205dfb8_Vec LampLights;
-    Unk_0205dfb8_Out LightLevel;
+    Unk_0205dfb8_Vec A;
+    Unk_0205dfb8_Out B;
     Unk_0205dfb8_Vec C;
-    Unk_0205dfb8_Out WindowLight;
+    Unk_0205dfb8_Out D;
     Unk_0205dfb8_Out E;
     Unk_0205dfb8_Vec F;
     Unk_0205dfb8_Vec G;
@@ -809,22 +808,22 @@ extern "C" void HeldItemModel_Draw(Unk_0205dfb8_Obj *o, Unk_0205dfb8_Out *src) {
         u8 *slot = (u8 *)HeldItemModels_GetModel(&sHeldItemModelBank, id);
         *(Unk_0205dfb8_Out *)(slot + 0x64) = *src;
         u32 t0 = o->unk_04;
-        LampLights.x = t0;
-        LampLights.y = t0;
-        LampLights.z = t0;
-        _ZN9AnimModel12drawAnimatedEPv(slot, &LampLights);
+        A.x = t0;
+        A.y = t0;
+        A.z = t0;
+        _ZN9AnimModel12drawAnimatedEPv(slot, &A);
         if (Unk_0205ddc8_In(HeldItemModels_GetItem(&sHeldItemModelBank, id), 0x1374, 0x1374) ||
             Unk_0205ddc8_In(HeldItemModels_GetItem(&sHeldItemModelBank, id), 0x1375, 0x1375)) {
-            HeldItemModel_GetJointMtx(&WindowLight, o, 2);
-            LightLevel = WindowLight;
+            HeldItemModel_GetJointMtx(&D, o, 2);
+            B = D;
         } else {
             HeldItemModel_GetJointMtx(&E, o, 0);
-            LightLevel = E;
+            B = E;
         }
-        FishBobber_Draw(o->unk_28, &LightLevel, &LampLights);
-        F.x = LightLevel.v[9];
-        F.y = LightLevel.v[10];
-        F.z = LightLevel.v[11];
+        FishBobber_Draw(o->unk_28, &B, &A);
+        F.x = B.v[9];
+        F.y = B.v[10];
+        F.z = B.v[11];
         WorldCurve_FromCurved(&C, &F);
         switch (o->unk_2c) {
         case 7:

@@ -1,5 +1,5 @@
 // ov140: scene overlay (class DistantTownsMenu, vtable 0x02293e04, 0x1760 bytes).
-// LampLights list screen of up to 0x20 records shown six per page, with three counters drawn as digits.
+// A list screen of up to 0x20 records shown six per page, with three counters drawn as digits.
 #define postCreate() postCreate(s32 a)
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"

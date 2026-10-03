@@ -1594,7 +1594,6 @@ struct Unk_02018698_Vec {
 typedef Unk_02018698_Ctx C_8698;
 
 // unk_02018698.cpp
-typedef Unk_02018698_Data WindowLight;
 
 // unk_02018698.cpp
 typedef Unk_02018698_Vec V;
@@ -2977,7 +2976,7 @@ extern u8 gVec3Zero[];
 extern Unk_02018698_Ent sEmotionTable[];
 extern u32 sNpcAct07Anims[];
 extern u16 sNpcAct07Ses[];
-WindowLight *_ZN13NpcActionCtrl12getCurParamsEv(Unk_02018698 *s);
+Unk_02018698_Data *_ZN13NpcActionCtrl12getCurParamsEv(Unk_02018698 *s);
 s32 _ZN13NpcActionCtrl13setActionDoneEi(Unk_02018698 *s, u32 a);
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(Unk_02018698 *s);
 void _ZN13NpcActionCtrl9mainAct01EPh(Unk_02018698 *s, C_8698 *c);
@@ -6155,7 +6154,7 @@ void NpcActionCtrl::mainAct02(u8 *o) {
 
 s32 Unk_02018698::setupAct03(C_8698 *c) {
     using namespace nM;
-    WindowLight *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
+    Unk_02018698_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
     _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 3, d->unk_1a, d->unk_1c);
     _ZN11NpcMoveCtrl14setTargetAngleEs(c->unk_350, d->unk_18);
     _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
@@ -6181,7 +6180,7 @@ void Unk_02018698::mainAct03(C_8698 *c) {
 
 s32 Unk_02018698::setupAct04(C_8698 *c) {
     using namespace nM;
-    WindowLight *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
+    Unk_02018698_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
     V v1(d->unk_04, 0, d->unk_08);
     V v2(d->unk_0c, 0, d->unk_10);
     _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 3, d->unk_1a, d->unk_1c);
@@ -6311,7 +6310,7 @@ void Unk_02018698::mainAct04(C_8698 *c) {
 s32 Unk_02018698::setupMoveTurnFirst(C_8698 *c, s32 a, s16 b) {
     using namespace nM;
     s16 out;
-    WindowLight *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
+    Unk_02018698_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
     V v1(d->unk_04, 0, d->unk_08);
     V v2(d->unk_0c, 0, d->unk_10);
     unk_9c = a;
@@ -6403,7 +6402,7 @@ s32 Unk_02018698::setupAct06(C_8698 *c) {
 
 s32 Unk_02018698::setupAct07(C_8698 *c) {
     using namespace nM;
-    WindowLight *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
+    Unk_02018698_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
     _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 3, d->unk_1a, d->unk_1c);
     _ZN11NpcMoveCtrl14setTargetAngleEs(c->unk_350, d->unk_18);
     _ZN12Unk_0201acf813func_0201acf8Et(c->unk_3aa, -2);
@@ -6533,7 +6532,7 @@ void Unk_02018698::mainAct08(C_8698 *c) {
 
 s32 Unk_02018698::setupAct09(C_8698 *c) {
     using namespace nM;
-    WindowLight *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
+    Unk_02018698_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
     _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 0, 0, d->unk_1c);
     _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0xd8, d->unk_1c, 0, 0x1000, 0, 0);
     _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
@@ -6554,7 +6553,7 @@ void Unk_02018698::mainAct09(C_8698 *c) {
 
 s32 Unk_02018698::setupAct0A(C_8698 *c) {
     using namespace nM;
-    WindowLight *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
+    Unk_02018698_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
     _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 0, 0, d->unk_1c);
     _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
     _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);

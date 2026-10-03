@@ -66,7 +66,7 @@
 #define MenuTabBar_selectTab _ZN10MenuTabBar9selectTabEj
 #define MenuLauncher_onChildClosed _ZN12MenuLauncher13onChildClosedEv
 #define MenuLauncher_setNextRequest _ZN12MenuLauncher14setNextRequestEii
-#define func_ov111_02296840 _ZN17GeneralMenuHeader10resetFrameEv
+#define GeneralMenuHeader_resetFrame _ZN17GeneralMenuHeader10resetFrameEv
 #define FishBookTab_moveCursorTo _ZN11FishBookTab12moveCursorToEii
 #define GeneralMenuHeader_drawWithIcon _ZN17GeneralMenuHeader12drawWithIconEii
 #define func_ov124_02296c7c _ZN17GeneralMenuHeader19func_ov124_02296c7cEhhjj
@@ -209,7 +209,7 @@ void func_ov124_02296c98(void *p);
 s32 GeneralMenuHeader_GetStyle(void *p);
 void GeneralMenuHeader_loadBgGfxForStyle(void *p, s32 a);
 void GeneralMenuHeader_drawWithIcon(void *p, s32 a, void *b);
-void func_ov111_02296840(void *p);
+void GeneralMenuHeader_resetFrame(void *p);
 void FishBookTab_moveCursorTo(void *p, s32 a);
 void MenuTabBar_requestSaveOnClose(void *p);
 void MenuTabBar_showTabs(void *p);
@@ -988,7 +988,7 @@ void NameEntryMenu::init() {
 }
 
 void NameEntryMenu::releaseResources() {
-    func_ov111_02296840(&unk_b0);
+    GeneralMenuHeader_resetFrame(&unk_b0);
     Keyboard_Shutdown(&unk_144);
     MenuBottomButtons_freeTexts(&unk_3d00);
     LabelString_destroyLabel(&unk_3ec8);
@@ -1005,7 +1005,7 @@ void NameEntryMenu::postInputUpdate() {
 
 void NameEntryMenu::preStateUpdate() {
     clearFlags(0x10);
-    func_ov111_02296840(&unk_b0);
+    GeneralMenuHeader_resetFrame(&unk_b0);
     MenuBottomButtons_freeTexts(&unk_3d00);
     LabelString_destroyLabel(&unk_3ec8);
 }

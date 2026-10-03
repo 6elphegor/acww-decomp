@@ -140,31 +140,31 @@ public:
 BOOL CollisionCylinder::clipSegmentCaps(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
     s32 t1, t2;
     s32 y, z, y2, z2;
-    struct { Unk_0202f7b8_V3 LampLights, LightLevel, WindowLight, P1, P2; } l;
-    l.LampLights = Unk_0202f7b8_V3(a->x, a->y, a->z);
-    l.LightLevel = Unk_0202f7b8_V3(out->x, out->y, out->z);
-    func_020e9960(&l.WindowLight, &l.LightLevel, &l.LampLights);
-    if (func_020e94f8(&l.WindowLight)) {
-        s32 dy = l.WindowLight.y;
+    struct { Unk_0202f7b8_V3 A, B, D, P1, P2; } l;
+    l.A = Unk_0202f7b8_V3(a->x, a->y, a->z);
+    l.B = Unk_0202f7b8_V3(out->x, out->y, out->z);
+    func_020e9960(&l.D, &l.B, &l.A);
+    if (func_020e94f8(&l.D)) {
+        s32 dy = l.D.y;
         if ((dy < 0 ? -dy : dy) >= 4) {
             s32 top = unk_00.y + unk_10;
-            s32 ay = l.LampLights.y;
-            if (ay > top && l.LightLevel.y < top) {
-                t1 = FX_Div(top - ay, l.WindowLight.y);
-                z = l.LampLights.z + func_01ffcb0c(l.WindowLight.z, t1);
-                y = l.LampLights.y + func_01ffcb0c(l.WindowLight.y, t1);
-                l.P1.x = l.LampLights.x + func_01ffcb0c(l.WindowLight.x, t1);
+            s32 ay = l.A.y;
+            if (ay > top && l.B.y < top) {
+                t1 = FX_Div(top - ay, l.D.y);
+                z = l.A.z + func_01ffcb0c(l.D.z, t1);
+                y = l.A.y + func_01ffcb0c(l.D.y, t1);
+                l.P1.x = l.A.x + func_01ffcb0c(l.D.x, t1);
                 l.P1.y = y;
                 l.P1.z = z;
                 if (containsXZ(&l.P1)) {
                     *out = l.P1;
                     return TRUE;
                 }
-            } else if (ay < 0 && l.LightLevel.y > 0) {
-                t2 = FX_Div(-ay, l.WindowLight.y);
-                z2 = l.LampLights.z + func_01ffcb0c(l.WindowLight.z, t2);
-                y2 = l.LampLights.y + func_01ffcb0c(l.WindowLight.y, t2);
-                l.P2.x = l.LampLights.x + func_01ffcb0c(l.WindowLight.x, t2);
+            } else if (ay < 0 && l.B.y > 0) {
+                t2 = FX_Div(-ay, l.D.y);
+                z2 = l.A.z + func_01ffcb0c(l.D.z, t2);
+                y2 = l.A.y + func_01ffcb0c(l.D.y, t2);
+                l.P2.x = l.A.x + func_01ffcb0c(l.D.x, t2);
                 l.P2.y = y2;
                 l.P2.z = z2;
                 if (containsXZ(&l.P2)) {
@@ -180,22 +180,22 @@ BOOL CollisionCylinder::clipSegmentCaps(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a
 BOOL CollisionCylinder::clipSegmentSideBounded(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
     s32 ymin, ymax, z;
     if (!containsXZ(a)) {
-        struct { Unk_0202f7b8_V3 LampLights, LightLevel, C, WindowLight; u32 pad[6]; } l;
-        l.LampLights = Unk_0202f7b8_V3(a->x, a->y, a->z);
-        l.LightLevel = Unk_0202f7b8_V3(out->x, out->y, out->z);
+        struct { Unk_0202f7b8_V3 A, B, C, D; u32 pad[6]; } l;
+        l.A = Unk_0202f7b8_V3(a->x, a->y, a->z);
+        l.B = Unk_0202f7b8_V3(out->x, out->y, out->z);
         l.C = Unk_0202f7b8_V3(unk_00.x, unk_00.y, unk_00.z);
         s32 r = unk_0c;
-        func_020e9960(&l.WindowLight, &l.LightLevel, &l.LampLights);
-        s32 t = func_01ffcb0c(l.WindowLight.z, l.WindowLight.z);
-        s32 q = func_01ffcb0c(l.WindowLight.x, l.WindowLight.x);
+        func_020e9960(&l.D, &l.B, &l.A);
+        s32 t = func_01ffcb0c(l.D.z, l.D.z);
+        s32 q = func_01ffcb0c(l.D.x, l.D.x);
         q += t;
         s32 aq = q < 0 ? -q : q;
         if (aq < 4) {
             return FALSE;
         }
-        s32 b = FX_Div(func_01ffcb0c(l.WindowLight.x, l.LampLights.x - l.C.x) + func_01ffcb0c(l.WindowLight.z, l.LampLights.z - l.C.z), q) << 1;
-        s32 zz = func_01ffcb0c(l.LampLights.z - l.C.z, l.LampLights.z - l.C.z);
-        s32 xx = func_01ffcb0c(l.LampLights.x - l.C.x, l.LampLights.x - l.C.x);
+        s32 b = FX_Div(func_01ffcb0c(l.D.x, l.A.x - l.C.x) + func_01ffcb0c(l.D.z, l.A.z - l.C.z), q) << 1;
+        s32 zz = func_01ffcb0c(l.A.z - l.C.z, l.A.z - l.C.z);
+        s32 xx = func_01ffcb0c(l.A.x - l.C.x, l.A.x - l.C.x);
         s32 c = FX_Div(xx + zz - func_01ffcb0c(r, r), q);
         s32 disc = func_01ffcb0c(b, b) - (c << 2);
         if (disc < 0) {
@@ -211,9 +211,9 @@ BOOL CollisionCylinder::clipSegmentSideBounded(Unk_0202f660_V3 *out, Unk_0202f66
         ymax = ymin + unk_10;
         s32 y, x;
         if ((t1 < 0 ? -t1 : t1) < 4 || (t1 >= 0 && t1 <= 0x1000)) {
-            z = l.LampLights.z + func_01ffcb0c(t1, l.WindowLight.z);
-            y = l.LampLights.y + func_01ffcb0c(t1, l.WindowLight.y);
-            x = l.LampLights.x + func_01ffcb0c(t1, l.WindowLight.x);
+            z = l.A.z + func_01ffcb0c(t1, l.D.z);
+            y = l.A.y + func_01ffcb0c(t1, l.D.y);
+            x = l.A.x + func_01ffcb0c(t1, l.D.x);
             if (y >= ymin && y <= ymax) {
                 out->x = x;
                 out->y = y;
@@ -222,9 +222,9 @@ BOOL CollisionCylinder::clipSegmentSideBounded(Unk_0202f660_V3 *out, Unk_0202f66
             }
         }
         if ((t2 < 0 ? -t2 : t2) < 4 || (t2 >= 0 && t2 <= 0x1000)) {
-            z = l.LampLights.z + func_01ffcb0c(t2, l.WindowLight.z);
-            y = l.LampLights.y + func_01ffcb0c(t2, l.WindowLight.y);
-            x = l.LampLights.x + func_01ffcb0c(t2, l.WindowLight.x);
+            z = l.A.z + func_01ffcb0c(t2, l.D.z);
+            y = l.A.y + func_01ffcb0c(t2, l.D.y);
+            x = l.A.x + func_01ffcb0c(t2, l.D.x);
             if (y >= ymin && y <= ymax) {
                 out->x = x;
                 out->y = y;

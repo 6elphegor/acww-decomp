@@ -3019,18 +3019,18 @@ void SpNpcCopperTalk::scanForOpenTowns() {
     void *r7;
     u8 i;
     u8 buf[0x14];
-    u32 LampLights[0x1c / 4];
-    u32 LightLevel[0x18 / 4];
+    u32 A[0x1c / 4];
+    u32 B[0x18 / 4];
     u32 C[0x1c / 4];
-    u32 WindowLight[0x1c / 4];
+    u32 D[0x1c / 4];
     if (checkScanTimeout() == 0) {
       n = func_020eae78(Comm_SendEmpty());
       if (n > 0) {
         arr = (void **)Net_GetScanResults(NetOverlay_AssertWireless());
-        _ZN11MsgString9CC2Ev(LampLights);
-        _ZN15EncodedString8BC2Ev(LightLevel);
+        _ZN11MsgString9CC2Ev(A);
+        _ZN15EncodedString8BC2Ev(B);
         _ZN11MsgString9BC1Ev(C);
-        _ZN14EncodedString8C1Ev(WindowLight);
+        _ZN14EncodedString8C1Ev(D);
         r7 = unk_3c;
         for (i = 0; i < n; i++) {
             p = arr[i];
@@ -3043,11 +3043,11 @@ void SpNpcCopperTalk::scanForOpenTowns() {
                     MI_CpuCopy8(func_020ea6f4(p), &buf[1], t);
                     if (buf[0x11] == 0) {
                         MI_CpuCopy8(p, unk_b8.unk_2f4, 0xe0);
-                        EncodedString_SetRaw(LightLevel, &buf[1], 8);
-                        _ZN9MsgString11fromEncodedEP13EncodedStringii(LampLights, LightLevel, 0, 0);
-                        EncodedString_SetRaw(WindowLight, &buf[9], 8);
-                        _ZN9MsgString11fromEncodedEP13EncodedStringii(C, WindowLight, 0, 0);
-                        _ZN15TalkWindowState7setSlotEiPv(r7, 3, LampLights);
+                        EncodedString_SetRaw(B, &buf[1], 8);
+                        _ZN9MsgString11fromEncodedEP13EncodedStringii(A, B, 0, 0);
+                        EncodedString_SetRaw(D, &buf[9], 8);
+                        _ZN9MsgString11fromEncodedEP13EncodedStringii(C, D, 0, 0);
+                        _ZN15TalkWindowState7setSlotEiPv(r7, 3, A);
                         _ZN15TalkWindowState7setSlotEiPv(r7, 4, C);
                         buf[0] = 0x57;
                         _ZN15TalkWindowState14setNextMessageEPhPv(r7, buf, sSpNpcCopperMsgKey);
@@ -3058,10 +3058,10 @@ void SpNpcCopperTalk::scanForOpenTowns() {
                 }
             }
         }
-        _ZN14EncodedString8D1Ev(WindowLight);
+        _ZN14EncodedString8D1Ev(D);
         _ZN11MsgString9BD1Ev(C);
-        _ZN15EncodedString8BD1Ev(LightLevel);
-        _ZN11MsgString9CD1Ev(LampLights);
+        _ZN15EncodedString8BD1Ev(B);
+        _ZN11MsgString9CD1Ev(A);
     }
     }
 }

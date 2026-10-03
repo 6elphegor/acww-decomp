@@ -199,10 +199,6 @@ void Mem_Clear(void *p, u32 n);
 }
 
 extern "C" {
-u32 func_02094294(void *p);
-}
-
-extern "C" {
 void func_020942c8(void *p);
 }
 

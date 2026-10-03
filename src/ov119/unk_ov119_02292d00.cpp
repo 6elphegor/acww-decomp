@@ -1813,10 +1813,10 @@ void FriendRosterTab::drawPresentPage() {
     g = gCommManager;
     cur = g->unk_64;
     s32 n = 0;
-    u32 LampLights[7];
-    u32 LightLevel[7];
-    _ZN11MsgString9CC2Ev(LampLights);
-    _ZN11MsgString9BC1Ev(LightLevel);
+    u32 A[7];
+    u32 B[7];
+    _ZN11MsgString9CC2Ev(A);
+    _ZN11MsgString9BC1Ev(B);
     for (i = 0; i < 8; i++) {
         a = allocTextLabel();
         b = allocTextLabel();
@@ -1832,11 +1832,11 @@ void FriendRosterTab::drawPresentPage() {
         }
         if (rec != 0) {
             void *g2 = PlayerData_getPlayerId(rec);
-            TownId_GetNameString(PlayerId_GetTownId(g2), &LampLights);
-            String_SetSlot(0, &LampLights);
+            TownId_GetNameString(PlayerId_GetTownId(g2), &A);
+            String_SetSlot(0, &A);
             String_Load2dMenu(a, 0x66);
-            PlayerId_getNameString(g2, &LightLevel);
-            MsgString_copy(b, &LightLevel);
+            PlayerId_getNameString(g2, &B);
+            MsgString_copy(b, &B);
             setRowIcon(&unk_9d4[pos], 0x58);
             unk_b2 = unk_b2 | (1 << i);
         } else {
@@ -1853,29 +1853,29 @@ void FriendRosterTab::drawPresentPage() {
         pos += 0x40;
     }
     BgScreen_SetRectPalette(unk_9d4, 5, 6, 0x17, 0x15, 5);
-    _ZN11MsgString9BD1Ev(LightLevel);
-    _ZN11MsgString9CD1Ev(LampLights);
+    _ZN11MsgString9BD1Ev(B);
+    _ZN11MsgString9CD1Ev(A);
 }
 
 void FriendRosterTab::drawOwnCodePage() {
     void *g = PlayerData_getPlayerId(PlayerData_GetCurrent());
     void *a = allocTextLabel();
-    u32 LampLights[7];
-    _ZN11MsgString9CC2Ev(LampLights);
-    TownId_GetNameString(PlayerId_GetTownId(g), &LampLights);
-    String_SetSlot(0, &LampLights);
+    u32 A[7];
+    _ZN11MsgString9CC2Ev(A);
+    TownId_GetNameString(PlayerId_GetTownId(g), &A);
+    String_SetSlot(0, &A);
     String_Load2dMenu(a, 0x66);
     LabelString_createLabel(a, 4, 0x102, 10, 0xf, 0, 0);
     LabelString_redrawAligned(a, 0, 0);
     void *b = allocTextLabel();
-    u32 LightLevel[7];
-    _ZN11MsgString9BC1Ev(LightLevel);
-    PlayerId_getNameString(g, &LightLevel);
-    MsgString_copy(b, &LightLevel);
+    u32 B[7];
+    _ZN11MsgString9BC1Ev(B);
+    PlayerId_getNameString(g, &B);
+    MsgString_copy(b, &B);
     LabelString_createLabel(b, 4, 0x116, 8, 0xf, 0, 0);
     LabelString_redrawAligned(b, 0, 0);
-    _ZN11MsgString9BD1Ev(LightLevel);
-    _ZN11MsgString9CD1Ev(LampLights);
+    _ZN11MsgString9BD1Ev(B);
+    _ZN11MsgString9CD1Ev(A);
 }
 
 void FriendRosterTab::drawFriendCodeHelp() {
@@ -1928,10 +1928,10 @@ void FriendRosterTab::drawRosterPage() {
     s32 x = 0x1ce;
     s32 y = 0x14e;
     s32 pos = 0xc3;
-    u32 LampLights[7];
-    u32 LightLevel[6];
-    _ZN11MsgString9CC2Ev(LampLights);
-    _ZN15EncodedString8BC2Ev(LightLevel);
+    u32 A[7];
+    u32 B[6];
+    _ZN11MsgString9CC2Ev(A);
+    _ZN15EncodedString8BC2Ev(B);
     for (i = 0; i < 8; i++) {
         a = allocTextLabel();
         b = allocTextLabel();
@@ -1943,9 +1943,9 @@ void FriendRosterTab::drawRosterPage() {
             rec = 0;
         }
         if (rec != 0 && DwcFriendData_IsValid(FriendEntry_GetFriendData(rec))) {
-            EncodedString_SetRaw(&LightLevel, (void *)FriendEntry_GetTownName(rec), 8);
-            MsgString_fromEncoded(&LampLights, &LightLevel, 0, 0);
-            String_SetSlot(0, &LampLights);
+            EncodedString_SetRaw(&B, (void *)FriendEntry_GetTownName(rec), 8);
+            MsgString_fromEncoded(&A, &B, 0, 0);
+            String_SetSlot(0, &A);
             String_Load2dMenu(a, 0x66);
             String_FromEncodedBytes(b, (void *)FriendEntry_GetPlayerName(rec), 8);
             unk_af = unk_af + 1;
@@ -1968,8 +1968,8 @@ void FriendRosterTab::drawRosterPage() {
         base++;
         pos += 0x40;
     }
-    _ZN15EncodedString8BD1Ev(LightLevel);
-    _ZN11MsgString9CD1Ev(LampLights);
+    _ZN15EncodedString8BD1Ev(B);
+    _ZN11MsgString9CD1Ev(A);
 }
 
 void FriendRosterTab::refreshPage() {

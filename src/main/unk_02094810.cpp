@@ -957,16 +957,16 @@ extern "C" void PlayerActor_RequestStowThenAct10(u32 a) {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
         s32 t = _ZN12Unk_02006d1415getHeldToolKindEv(o);
-        if (t == 0) goto LampLights;
+        if (t == 0) goto A;
         if (t == 0xa) {
-            if (a == 1) goto LampLights;
+            if (a == 1) goto A;
         }
-        if (a < 2) goto LightLevel;
-    LampLights:
+        if (a < 2) goto B;
+    A:
         _ZN12Unk_02006d1413setActionFlagEj(o, 1);
         _ZN12Unk_02006d1412requestAct10Esji(o, 3, 5, -1);
         return;
-    LightLevel:
+    B:
         PlayerActor_RequestStowItem(o, 0x10, a, o->unk_5c.x, o->unk_5c.z, o->unk_8e, 6, -1);
     }
 }

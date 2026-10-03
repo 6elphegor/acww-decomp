@@ -18,7 +18,7 @@
 //  * The helper members unk_1a4 (RoomObjRes: real C1/D1 methods), unk_248 (RoomObjTex) and unk_250
 //    (RoomObjSe) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
 //    names); the inline member wrappers below call them.  Their destructors are called by M's own destructor bodies
-//    (RoomObj_DestructSe / RoomObjTex_Destruct), so LightLevel and Cf4 have no destructor here.
+//    (RoomObj_DestructSe / RoomObjTex_Destruct), so RoomObjTex and RoomObjSe have no destructor here.
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
 //  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.

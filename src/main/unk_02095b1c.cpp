@@ -327,11 +327,6 @@ inline BOOL Unk_02095dcc_R(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-class RemotePlayerSpawner {
-public:
-    static GameProc *vfunc_48();
-};
-
 struct Unk_020e1cd0_Rec {
     GameProc *(*fn)();
     s16 a;
@@ -340,6 +335,7 @@ struct Unk_020e1cd0_Rec {
 
 class PlayerNetSync : public GameProc {
 public:
+    static GameProc *create();
     PlayerNetSync();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -353,9 +349,9 @@ static inline void Unk_0209579c_Set(s16 *d, s16 a, s16 b, s16 c) {
     d[2] = c;
 }
 
-Unk_020e1cd0_Rec sPlayerNetSyncProfile = {&RemotePlayerSpawner::vfunc_48, 10, 14};
+Unk_020e1cd0_Rec sPlayerNetSyncProfile = {&PlayerNetSync::create, 10, 14};
 
-GameProc *RemotePlayerSpawner::vfunc_48() { return new PlayerNetSync(); }
+GameProc *PlayerNetSync::create() { return new PlayerNetSync(); }
 
 PlayerNetSync::PlayerNetSync() {}
 

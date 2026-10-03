@@ -50,7 +50,7 @@ struct Fo {
     u8 c2e;
 };
 
-// base object (vtable 0x0213bb90), view LampLights (+4 is an fx32 value)
+// base object (vtable 0x0213bb90), view A (+4 is an fx32 value)
 struct Rb {
     u32 w0;
     u16 h4;

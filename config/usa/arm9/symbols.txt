@@ -5566,8 +5566,8 @@ _ZN14TalkMsgRequest8vfunc_0cEv kind:function(thumb,size=0x8) addr:0x02065efc
 _ZN14TalkMsgRequest9vfunc_s0cEv kind:label(thumb) addr:0x02065efc
 _ZN14TalkMsgRequest11getNameKindEv kind:function(thumb,size=0x4) addr:0x02065f04
 _ZN14TalkMsgRequest15isNoSpeakerNameEv kind:function(thumb,size=0x6) addr:0x02065f08
-_ZN14TalkMsgRequest13func_02065f10Ev kind:function(thumb,size=0x4) addr:0x02065f10
-_ZN16Unk_020ddcf0_v1313func_02065f10Ev kind:label(thumb) addr:0x02065f10
+_ZN14TalkMsgRequest14getSpeakerNameEv kind:function(thumb,size=0x4) addr:0x02065f10
+_ZN16Unk_020ddcf0_v1314getSpeakerNameEv kind:label(thumb) addr:0x02065f10
 _ZN14TalkMsgRequest17changeSpeakerNameEP9MsgStringj kind:function(thumb,size=0x3c) addr:0x02065f14
 _ZN14TalkMsgRequest16setNoSpeakerNameEj kind:function(thumb,size=0x1e) addr:0x02065f50
 _ZN14TalkMsgRequest17setSpeakerNameStrEP9MsgStringj kind:function(thumb,size=0x1e) addr:0x02065f70
@@ -5759,8 +5759,8 @@ _ZN9TalkFrameC1Ev kind:label(thumb) addr:0x02068808
 _ZN14TalkTagScanner9reportTagEv kind:function(thumb,size=0x2c) addr:0x02068848
 _ZN14TalkTagScanner9resetScanEv kind:function(thumb,size=0x10) addr:0x02068874
 _ZN14TalkTagScanner5onTagEPh kind:function(thumb,size=0x28) addr:0x02068884
-_ZN14TalkTagScanner13func_020688acEPh kind:function(thumb,size=0x28) addr:0x020688ac
-_ZN18TalkTagScannerView13func_020688acEj kind:label(thumb) addr:0x020688ac
+_ZN14TalkTagScanner4scanEPh kind:function(thumb,size=0x28) addr:0x020688ac
+_ZN18TalkTagScannerView4scanEj kind:label(thumb) addr:0x020688ac
 _ZN14TalkTagScannerD0Ev kind:function(thumb,size=0x28) addr:0x020688d4
 _ZN14TalkTagScannerD1Ev kind:function(thumb,size=0x20) addr:0x020688fc
 _ZN18TalkTagScannerViewD1Ev kind:label(thumb) addr:0x020688fc
@@ -9335,7 +9335,7 @@ _ZN19RemotePlayerSpawnerD0Ev kind:function(thumb,size=0x28) addr:0x02095a9c
 _ZN19RemotePlayerSpawnerD1Ev kind:function(thumb,size=0x20) addr:0x02095ac4
 _ZN19RemotePlayerSpawnerC2Ev kind:function(thumb,size=0x20) addr:0x02095ae4
 _ZN19RemotePlayerSpawnerC1Ev kind:label(thumb) addr:0x02095ae4
-_ZN12Unk_020e1c308vfunc_48Ev kind:function(thumb,size=0x18) addr:0x02095b04
+_ZN19RemotePlayerSpawner6createEv kind:function(thumb,size=0x18) addr:0x02095b04
 _ZN13PlayerNetSync8vfunc_0cEv kind:function(thumb,size=0x4) addr:0x02095b1c
 _ZN13PlayerNetSync6onDrawEv kind:function(thumb,size=0x4) addr:0x02095b20
 _ZN13PlayerNetSync9onExecuteEv kind:function(thumb,size=0x134) addr:0x02095b24
@@ -9344,7 +9344,7 @@ _ZN13PlayerNetSyncD0Ev kind:function(thumb,size=0x28) addr:0x02095c5c
 _ZN13PlayerNetSyncD1Ev kind:function(thumb,size=0x20) addr:0x02095c84
 _ZN13PlayerNetSyncC2Ev kind:function(thumb,size=0x20) addr:0x02095ca4
 _ZN13PlayerNetSyncC1Ev kind:label(thumb) addr:0x02095ca4
-_ZN19RemotePlayerSpawner8vfunc_48Ev kind:function(thumb,size=0x18) addr:0x02095cc4
+_ZN13PlayerNetSync6createEv kind:function(thumb,size=0x18) addr:0x02095cc4
 BottleLetter_WashUpThrownBottle kind:function(thumb,size=0x88) addr:0x02095cdc
 BottleLetter_OnNewDay kind:function(thumb,size=0x68) addr:0x02095d64
 BottleLetter_IsBottleInTown kind:function(thumb,size=0x68) addr:0x02095dcc
@@ -11181,10 +11181,10 @@ _ZN13SnowmanRecord5clearEv kind:function(thumb,size=0x44) addr:0x020afa38
 _ZN13SnowmanRecordD1Ev kind:function(thumb,size=0x2) addr:0x020afa7c
 _ZN13SnowmanRecordC1Ev kind:function(thumb,size=0x2) addr:0x020afa80
 _ZN14LooseSnowballsD1Ev kind:function(thumb,size=0x1c) addr:0x020afa84
-_ZN12Unk_020afaa4D1Ev kind:function(thumb,size=0x2) addr:0x020afaa0
-_ZN12Unk_020afaa4C1Ev kind:function(thumb,size=0x14) addr:0x020afaa4
-_ZN12Unk_020afaa412runSpawnListEPhS0_y kind:function(thumb,size=0x16) addr:0x020afab8
-_ZN12Unk_020afaa420createSceneMapModuleEv kind:function(thumb,size=0xc) addr:0x020afad0
+_ZN13LooseSnowballD1Ev kind:function(thumb,size=0x2) addr:0x020afaa0
+_ZN13LooseSnowballC1Ev kind:function(thumb,size=0x14) addr:0x020afaa4
+_ZN9SceneInfo12runSpawnListEPhS0_y kind:function(thumb,size=0x16) addr:0x020afab8
+_ZN9SceneInfo20createSceneMapModuleEv kind:function(thumb,size=0xc) addr:0x020afad0
 _ZN12SceneMapInfo15createMapModuleEv kind:function(thumb,size=0x20) addr:0x020afadc
 _ZN14SceneSpawnList3runEPhS0_y kind:function(thumb,size=0xbc) addr:0x020afafc
 _ZN15SceneSpawnGroup11createProcsEPhy kind:function(thumb,size=0x90) addr:0x020afbb8

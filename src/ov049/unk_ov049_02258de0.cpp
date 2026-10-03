@@ -1811,8 +1811,8 @@ void SpNpcMabelTalk::onDisposeChoice(s32 v) {
 
 void SpNpcMabelTalk::onItemPriceChoice(s32 v) {
     u8 m[3];
-    u16 LampLights[2];
-    u16 LightLevel[2];
+    u16 A[2];
+    u16 B[2];
     u16 C[2];
     void *h = PlayerData_GetCurrent();
     if (v == 0) {
@@ -1839,27 +1839,27 @@ void SpNpcMabelTalk::onItemPriceChoice(s32 v) {
         }
         if (unk_ac->unk_734 >= 0x11a8 && unk_ac->unk_734 <= 0x12a7) {
             unk_ac->unk_730 = *PlayerData_getShirt(h);
-            LampLights[1] = unk_ac->unk_734;
-            PlayerActor_RequestWearShirtAlt(&LampLights[1]);
+            A[1] = unk_ac->unk_734;
+            PlayerActor_RequestWearShirtAlt(&A[1]);
         } else if ((unk_ac->unk_734 >= 0x13c8 && unk_ac->unk_734 <= 0x1407) || (unk_ac->unk_734 >= 0x13a8 && unk_ac->unk_734 <= 0x13c7)) {
             if (unk_ac->unk_734 >= 0x13a8 && unk_ac->unk_734 <= 0x13c7) {
                 if (!func_0204bab8(&unk_ac->unk_734)) {
                     unk_ac->unk_732 = *PlayerData_getFaceItem(h);
-                    LightLevel[0] = 0xfff1;
-                    PlayerActor_RequestWearFaceItemAlt(&LightLevel[0]);
+                    B[0] = 0xfff1;
+                    PlayerActor_RequestWearFaceItemAlt(&B[0]);
                 }
             }
             unk_ac->unk_730 = *PlayerData_getHat(h);
-            LightLevel[1] = unk_ac->unk_734;
-            PlayerActor_RequestWearHatAlt(&LightLevel[1]);
+            B[1] = unk_ac->unk_734;
+            PlayerActor_RequestWearHatAlt(&B[1]);
         } else if (unk_ac->unk_734 >= 0x1431 && unk_ac->unk_734 <= 0x1470) {
             unk_ac->unk_730 = *PlayerData_getFaceItem(h);
             C[0] = unk_ac->unk_734;
             PlayerActor_RequestWearFaceItemAlt(&C[0]);
-            LampLights[0] = 0xfff1;
-            LampLights[0] = *PlayerData_getHat(h);
-            if (Unk_ov049_02259dd8_VR(&LampLights[0], 0x13a8, 0x13c7)) {
-                if (!func_0204bab8(&LampLights[0])) {
+            A[0] = 0xfff1;
+            A[0] = *PlayerData_getHat(h);
+            if (Unk_ov049_02259dd8_VR(&A[0], 0x13a8, 0x13c7)) {
+                if (!func_0204bab8(&A[0])) {
                     unk_ac->unk_732 = *PlayerData_getHat(h);
                     C[1] = 0xfff1;
                     PlayerActor_RequestWearHatAlt(&C[1]);
@@ -1875,26 +1875,26 @@ void SpNpcMabelTalk::onItemPriceChoice(s32 v) {
 
 void SpNpcMabelTalk::onTryOnChoice(s32 v) {
     u8 m[3];
-    volatile u16 LampLights[2];
-    u16 LightLevel[2];
+    volatile u16 A[2];
+    u16 B[2];
     u16 C[2];
     if (Unk_ov049_02259774_R(&unk_ac->unk_734, 0x11a8, 0x12a7)) {
-        LampLights[1] = unk_ac->unk_730;
-        PlayerActor_RequestWearShirtAlt((u16 *)&LampLights[1]);
+        A[1] = unk_ac->unk_730;
+        PlayerActor_RequestWearShirtAlt((u16 *)&A[1]);
     }
     if (Unk_ov049_02259774_R(&unk_ac->unk_734, 0x13c8, 0x1407) || (unk_ac->unk_734 >= 0x13a8 && unk_ac->unk_734 <= 0x13c7)) {
-        LightLevel[0] = unk_ac->unk_730;
-        PlayerActor_RequestWearHatAlt(&LightLevel[0]);
+        B[0] = unk_ac->unk_730;
+        PlayerActor_RequestWearHatAlt(&B[0]);
     }
     if (Unk_ov049_02259774_R(&unk_ac->unk_734, 0x1431, 0x1470)) {
-        LightLevel[1] = unk_ac->unk_730;
-        PlayerActor_RequestWearFaceItemAlt(&LightLevel[1]);
+        B[1] = unk_ac->unk_730;
+        PlayerActor_RequestWearFaceItemAlt(&B[1]);
     }
     if (unk_ac->unk_732 != 0xfff1) {
-        LampLights[0] = unk_ac->unk_732;
+        A[0] = unk_ac->unk_732;
         BOOL r = FALSE;
-        u32 h = LampLights[0];
-        u32 l = LampLights[0];
+        u32 h = A[0];
+        u32 l = A[0];
         if (l >= 0x13a8 && h <= 0x13c7) {
             r = TRUE;
         }

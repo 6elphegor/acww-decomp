@@ -1802,7 +1802,7 @@ struct Unk_ov003_022093bc_Pair {
     s32 a, b;
 };
 
-// view LampLights of the 0x7d0 record
+// view A of the 0x7d0 record
 struct Unk_ov003_022093bc_RecA {
     u16 unk_00;
     s16 unk_02;
@@ -1812,7 +1812,7 @@ struct Unk_ov003_022093bc_RecA {
     u8 unk_07;
 };
 
-// view LightLevel
+// view B
 struct Unk_ov003_022093bc_RecB {
     u8 unk_00;
     u8 unk_01;
@@ -7131,7 +7131,7 @@ namespace ns_0220f314 {
 extern "C" s32 PlayerActor_SetupAxeSwing(Obj *o, Arg *a) {
     struct {
         s32 out;
-        V3 v, LampLights, LightLevel, C, WindowLight;
+        V3 v, A, B, C, D;
     } l;
     P2 *q = &a->unk_0c;
     u8 *rec = (u8 *)&o->unk_7d0;
@@ -7144,12 +7144,12 @@ extern "C" s32 PlayerActor_SetupAxeSwing(Obj *o, Arg *a) {
         l.v.x = x;
         l.v.z = z;
     } else {
-        PlayerActor_GetFrontPoint(&l.LampLights, o);
-        if (Unk_ov003_0220fa70_Ge(Ground_GetHeightAt(&l.LampLights, &l.out, 0x19))) {
-            PlayerActor_GetFrontUnitCenter(&l.LightLevel, o);
-            l.v.x = l.LightLevel.x;
-            l.v.y = l.LightLevel.y;
-            l.v.z = l.LightLevel.z;
+        PlayerActor_GetFrontPoint(&l.A, o);
+        if (Unk_ov003_0220fa70_Ge(Ground_GetHeightAt(&l.A, &l.out, 0x19))) {
+            PlayerActor_GetFrontUnitCenter(&l.B, o);
+            l.v.x = l.B.x;
+            l.v.y = l.B.y;
+            l.v.z = l.B.z;
         } else {
             PlayerActor_GetFrontPoint(&l.C, o);
             l.v.x = l.C.x;
@@ -7158,10 +7158,10 @@ extern "C" s32 PlayerActor_SetupAxeSwing(Obj *o, Arg *a) {
         }
     }
     s32 ang = func_020e7b98(l.v.x - o->unk_6f0, l.v.z - o->unk_6f8);
-    l.WindowLight.x = l.v.x;
-    l.WindowLight.y = l.v.y;
-    l.WindowLight.z = l.v.z;
-    PlayerActor_AxeSwingSetWork(rec, &l.WindowLight, ang);
+    l.D.x = l.v.x;
+    l.D.y = l.v.y;
+    l.D.z = l.v.z;
+    PlayerActor_AxeSwingSetWork(rec, &l.D, ang);
     if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         Unk_02006d14_clearActionFlag(o, 0x14);
         if (Unk_02006d14_getHeldHoldableIndex(o) != 0xb) {
@@ -14527,7 +14527,7 @@ extern "C" void PlayerActor_FieldUpdateTan(Obj *o) {
     u16 *cnt;
     u8 *fl;
     s32 tm;
-    u32 LampLights, LightLevel, C;
+    u32 A, B, C;
     if (o->unk_7f4 == 0) return;
     night = FALSE;
     if (Unk_02006d14_isGuestInSession(o)) night = TRUE;
@@ -14547,12 +14547,12 @@ extern "C" void PlayerActor_FieldUpdateTan(Obj *o) {
         }
     }
     u8 *tb = (u8 *)&l;
-    LampLights = tb[0xd];
-    LightLevel = tb[0xc];
+    A = tb[0xd];
+    B = tb[0xc];
     C = tb[0xb];
-    if (LightLevel != 8) {
-        if (LightLevel == 7 && C >= 0x10) {
-        } else if (LightLevel != 9 || C > 0xf) {
+    if (B != 8) {
+        if (B == 7 && C >= 0x10) {
+        } else if (B != 9 || C > 0xf) {
             return;
         }
     }
@@ -14565,8 +14565,8 @@ extern "C" void PlayerActor_FieldUpdateTan(Obj *o) {
     if (Unk_ov003_022052f4_RngV(&l.s4, 0x13a0, 0x13a7)) return;
     *cnt = *cnt - 1;
     if (*cnt != 0) return;
-    l.w0 = (l.w0 & ~0x7f) | (LampLights &= 0x7f);
-    l.w0 = (l.w0 & ~0x780) | ((LightLevel &= 0xf) << 7);
+    l.w0 = (l.w0 & ~0x7f) | (A &= 0x7f);
+    l.w0 = (l.w0 & ~0x780) | ((B &= 0xf) << 7);
     l.w0 = (l.w0 & ~0xf800) | ((C &= 0x1f) << 11);
     u32 n = (u8)(PlayerActor_GetTan(o) + 1);
     if (n > 7) n = 7;

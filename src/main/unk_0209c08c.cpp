@@ -6,18 +6,6 @@ typedef void (*Unk_0209c15c_Fn)();
 typedef void *(*Unk_0209c1a4_Alloc)(u32, u32);
 
 extern "C" {
-void MI_CpuFill8(void *p, u32 v, u32 n);
-}
-
-extern "C" {
-void func_020639e8(char *dst, const char *fmt, ...);
-}
-
-extern "C" {
-s32 File_GetDecodedSizeByPath(const char *s);
-}
-
-extern "C" {
 void Mem_Free(void *p);
 }
 
@@ -34,83 +22,7 @@ void *FrameHeap_Create(u32 a, u32 b);
 }
 
 extern "C" {
-void *func_02135714(void *p, s32 n, s32 size, void *ctor, void *dtor);
-}
-
-extern "C" {
-void func_021355f0(void *p, s32 n, s32 size, void *dtor);
-}
-
-extern "C" {
-extern const char sAcreArchivePathFmt[];
-}
-
-extern "C" {
-extern const char sTownAcreCandidatesPath[];
-}
-
-extern "C" {
-extern u32 sPondAcreIds[6];
-}
-
-extern "C" {
-extern u16 sDebugVarTable[];
-}
-
-extern "C" {
-extern u8 gSoftResetRequested;
-}
-
-extern "C" {
-extern u8 sSoftResetHeld;
-}
-
-extern "C" {
-extern u8 data_021f47d0;
-}
-
-extern "C" {
-extern u8 sRoomObjSyncStates[3];
-}
-
-extern "C" {
-extern u8 gFieldSceneKind;
-}
-
-extern "C" {
-extern u8 sExclusiveRoomScenes[];
-}
-
-extern "C" {
 extern void *gCurrentHeap;
-}
-
-extern "C" {
-extern u8 sRoomEntryRequest[];
-}
-
-extern "C" {
-extern u8 sSceneOccupantTable[];
-}
-
-extern "C" {
-s32 RoomEntryRequest_SetResult(void *p, s32 v);
-}
-
-extern "C" {
-s32 SceneOccupantTable_CountWith(void *p, u32 a, u32 b);
-}
-
-extern "C" {
-s32 SceneOccupantTable_Remove(void *p, u32 a, u32 b);
-}
-
-extern "C" {
-s32 SceneOccupantTable_Add(void *p, u32 a, u32 b);
-}
-
-extern "C" {
-s32 RoomEntryRequest_Init(void *p);
 }
 
 extern "C" {
@@ -131,66 +43,6 @@ struct Unk_0209c614_S {
 };
 }
 
-extern "C" {
-Unk_0209c614_Actor *PlayerActor_GetActor(u32 n);
-}
-
-extern "C" {
-void *Scene_GetWarpRequest();
-}
-
-extern "C" {
-s32 SceneExit_Resolve(void *o, u32 id, u8 *a, Unk_0209c614_Vec *v, u32 *p20, u16 *e, u8 *c, u8 *b, s32 z0, s32 z1);
-}
-
-extern "C" {
-void SceneExit_GetDoor(void *o, u32 id, u32 *p24, s16 *f);
-}
-
-extern "C" {
-void SceneExit_SnapPos(void *o, u32 id, Unk_0209c614_Vec *v34, Unk_0209c614_Vec *v40);
-}
-
-extern "C" {
-void RoomEntryRequest_SetExitId(void *p, u32 id);
-}
-
-extern "C" {
-void RoomEntryRequest_SetDoorKind(void *p, u32 v);
-}
-
-extern "C" {
-void RoomEntryRequest_SetScene(void *p, u32 v);
-}
-
-extern "C" {
-void RoomEntryRequest_SetPos(void *p, Unk_0209c614_Vec *v);
-}
-
-extern "C" {
-void RoomEntryRequest_SetAngle(void *p, s32 v);
-}
-
-extern "C" {
-void RoomEntryRequest_SetRetreatPos(void *p, Unk_0209c614_Vec *v);
-}
-
-extern "C" {
-BOOL RoomEntry_IsExclusiveScene(u32 v);
-}
-
-extern "C" {
-void FieldPos_SnapToUnitCenter(Unk_0209c614_Vec *a, Unk_0209c614_Vec *b);
-}
-
-extern "C" {
-s32 Scene_GetCurrent();
-}
-
-extern "C" {
-s32 Scene_GetPrevious();
-}
-
 // ---- CommManager (comm state; only the methods used here)
 class CommManager {
 public:
@@ -200,7 +52,6 @@ public:
     void endRecord(u32 cmd, u32 arg);
     u32 isMyAid(u32 v);
 };
-extern "C" CommManager *gCommManager;
 
 // ---- RecordFile (cached record table)
 class RecordFile {
@@ -583,8 +434,6 @@ struct Unk_0209c3cc_Nib {
     u8 hi : 4;
 };
 
-extern "C" BOOL RoomObjSync_SetState(u32 idx, u8 v);
-
 class Unk_0209c41c_Actor {
 public:
     virtual void vfunc_00();
@@ -618,8 +467,6 @@ struct Unk_0209c41c_Pack {
     u8 lo : 4;
     u8 hi : 4;
 };
-
-extern "C" void RoomEntry_Leave(u32 a, u32 b);
 
 struct Unk_0209c614_Actor {
     u8 pad_00[0x5c];

@@ -2131,7 +2131,7 @@ void PlayerInventory_SetWallet(void *o, s32 a, s32 b);
 }
 
 // ---------------------------------------------------------------------------
-// Class LampLights (vtable 0x0224981c, secondary 0x022498c8), size 0x86c
+// Class A (vtable 0x0224981c, secondary 0x022498c8), size 0x86c
 
 FtrCarpetSample::~FtrCarpetSample() {}
 
@@ -2142,7 +2142,7 @@ extern "C" void FtrCarpetSample_Create() {
 }
 
 // ---------------------------------------------------------------------------
-// Class LightLevel (vtable 0x02249ba0), size 0x86c
+// Class B (vtable 0x02249ba0), size 0x86c
 
 class FtrWallpaperSample : public FtrActor {
 public:
@@ -2544,7 +2544,7 @@ void func_020f5014(void *p);
 }
 }
 
-// ------------------------------------------------------------------ class LampLights (vtable 0x02249f24)
+// ------------------------------------------------------------------ class A (vtable 0x02249f24)
 
 typedef BOOL (FtrPiggyBank::*Unk_ov004_0220baf4_Fn)();
 
@@ -2585,7 +2585,7 @@ extern "C" void FtrPiggyBank_Create() {
     new FtrPiggyBank;
 }
 
-// ------------------------------------------------------------------ class LightLevel (vtable 0x0224a050)
+// ------------------------------------------------------------------ class B (vtable 0x0224a050)
 
 class FtrInstrument : public FtrActor {
 public:
@@ -2803,7 +2803,7 @@ extern "C" void FtrVillagerPic_Create() {
     new FtrVillagerPic;
 }
 
-// ------------------------------------------------------------------ class WindowLight (vtable 0x0224a62c)
+// ------------------------------------------------------------------ class D (vtable 0x0224a62c)
 class FtrCompass : public FtrActor {
 public:
     FtrCompass();
@@ -3142,7 +3142,7 @@ static inline s32 Unk_ov004_0220c554_Idx(u32 v, u32 lo, u32 hi) {
     return -1;
 }
 
-// ---- LampLights ----
+// ---- A ----
 FtrDesignDisplay::~FtrDesignDisplay() {
     p14::func_020f43fc(unk_844);
 }
@@ -3155,7 +3155,7 @@ extern "C" FtrDesignDisplay *FtrDesignDisplay_Create() {
     return new FtrDesignDisplay;
 }
 
-// ---- LightLevel ----
+// ---- B ----
 void FtrMyDesign::vfunc_64(s32 a, Unk_ov004_02206ec8_Ctx *b) {
     if (a == unk_840) {
         *((Unk_ov004_0220c534_Arg *)b)->unk_b8 = 0;
@@ -3335,7 +3335,7 @@ extern "C" FtrShirt *FtrShirt_Create() {
     return new FtrShirt;
 }
 
-// ---- WindowLight ----
+// ---- D ----
 BOOL FtrCannon::execFtrAct01() {
     p14::_ZN14BlendAnimModel9stepBlendEv(b14_f_534);
     BOOL r = p14::_ZN13AnimFrameCtrl10isFinishedEv(b14_f_5d0);
@@ -6614,7 +6614,7 @@ typedef BOOL (FtrKind06::*Unk_ov004_02211b80_Fn)();
 typedef void (FtrKind05::*Unk_ov004_02211ed8_Fn)();
 typedef BOOL (FtrKind05::*Unk_ov004_02211f64_Fn)();
 
-// ---- class LampLights (0x02249a74) ----
+// ---- class A (0x02249a74) ----
 FtrKind07::~FtrKind07() {
 }
 
@@ -6625,7 +6625,7 @@ extern "C" void FtrKind07_Create() {
     new FtrKind07;
 }
 
-// ---- class LightLevel (0x0224a2a8) ----
+// ---- class B (0x0224a2a8) ----
 void FtrKind06::execFtrAct03() {
     p23::_ZN11FtrVisNodes10setVisibleEj(b23_f_760, 1);
     playSound0();
@@ -6877,7 +6877,7 @@ extern "C" void FtrKind05_Create() {
     new FtrKind05;
 }
 
-// ---- class WindowLight (0x0224af8c) ----
+// ---- class D (0x0224af8c) ----
 void FtrKind04::execFtrAct02() {
     p23::func_020e761c(&unk_844, 0, 0xcc);
     if (unk_844 == 0) {

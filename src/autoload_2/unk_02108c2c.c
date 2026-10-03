@@ -24,7 +24,7 @@ static inline s32 FxMul(s32 a, s32 b) { return (s32)(((s64)a * b) >> 12); }
 void func_02108c2c(s32 *m, const MatAnmResult *anm)
 {
     s32 ss_cos, ss_sin, st_cos, st_sin;
-    s32 LampLights, LightLevel;
+    s32 A, B;
     s32 tmpW = anm->origWidth << 12;
     s32 tmpH = anm->origHeight << 12;
     FX_DivAsync(tmpH, tmpW);
@@ -36,9 +36,9 @@ void func_02108c2c(s32 *m, const MatAnmResult *anm)
     m[5] = st_cos;
     m[1] = st_sin * FX_GetDivResult() >> 12;
     FX_DivAsync(tmpW, tmpH);
-    LampLights = (-(s32)anm->origWidth << 11) - anm->transS * anm->origWidth;
-    LightLevel = anm->transT * anm->origHeight + (-(s32)anm->origHeight << 11);
-    m[12] = (s32)(((s64)ss_cos * LampLights - (s64)ss_sin * LightLevel) >> 8) + (anm->origWidth << 15);
-    m[13] = (s32)(((s64)st_sin * LampLights + (s64)st_cos * LightLevel) >> 8) + (anm->origHeight << 15);
+    A = (-(s32)anm->origWidth << 11) - anm->transS * anm->origWidth;
+    B = anm->transT * anm->origHeight + (-(s32)anm->origHeight << 11);
+    m[12] = (s32)(((s64)ss_cos * A - (s64)ss_sin * B) >> 8) + (anm->origWidth << 15);
+    m[13] = (s32)(((s64)st_sin * A + (s64)st_cos * B) >> 8) + (anm->origHeight << 15);
     m[4] = (-ss_sin * FX_GetDivResult()) >> 12;
 }

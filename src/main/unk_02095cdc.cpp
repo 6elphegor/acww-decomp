@@ -342,22 +342,12 @@ u8 *_ZN12FutureLetter15getDeliveryDateEv(void *);
 LetterView *FutureLetter_GetLetter(void *);
 s32 _ZN18BottleLetterRecord17pickUnusedMessageEv(void *p);
 void func_02096ed4();
-BOOL func_02096ee8(s32 i);
 void _ZN18BottleLetterRecord14setMessageUsedEi(void *p, s32 v);
-void func_02096f30();
 void *BottleLetterRecord_GetLetter(void *p);
-void func_02096f68();
-Letter *func_02096f88(s32 i);
 s32 _ZN12LetterOutbox8testFlagEj(void *, u32);
 void _ZN12LetterOutbox7setFlagEj(void *, u32);
 u8 *_ZN12LetterOutbox19getLastDeliveryTimeEv(void *);
-void func_02096fd4();
 void *_ZN12LetterOutbox9getLetterEi(void *, s32);
-void func_02097078(u32 v);
-u32 func_02097084();
-void func_02097090();
-Letter *func_020970b8(s32 i);
-u32 PlayerBank_GetDonationLevel(s32);
 s32 PlayerBank_SetBalance(s32, s32);
 s32 PlayerBank_GetBalance(s32);
 void *PlayerData_GetCurrent();
@@ -596,15 +586,15 @@ extern "C" void LetterDelivery_Update(void) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) return;
     u8 *const g = (u8 *)&data_021eb98c;
     r5 = _ZN12LetterOutbox19getLastDeliveryTimeEv(g);
-    Unk_020966f8_Rec LampLights;
+    Unk_020966f8_Rec A;
     Unk_020966f8_Rec Y, Z;
     s32 z0, z1, z2;
     s32 i;
     u8 *r6;
     void *s0;
     LetterView *s4;
-    LampLights.a = 0; LampLights.b = 0;
-    Clock_GetDateTime(&LampLights);
+    A.a = 0; A.b = 0;
+    Clock_GetDateTime(&A);
     Y.a = 0; Y.b = 0; Z.a = 0; Z.b = 0;
     if (_ZN12LetterOutbox8testFlagEj(g, 1)) {
         Y.a = 0; Y.b = 0;
@@ -626,9 +616,9 @@ extern "C" void LetterDelivery_Update(void) {
             DateTime_AddDays(&Z, 1);
         }
         Y.d2 = r5[3];
-        if (DateTime_Compare(&LampLights, &Y, 0x3c) != -1) {
+        if (DateTime_Compare(&A, &Y, 0x3c) != -1) {
             LetterDelivery_DeliverOutgoing();
-            if (DateTime_Compare(&LampLights, &Z, 0x3c) != -1) LetterDelivery_DeliverOutgoing();
+            if (DateTime_Compare(&A, &Z, 0x3c) != -1) LetterDelivery_DeliverOutgoing();
         }
     } else {
         _ZN12LetterOutbox7setFlagEj(g, 1);
@@ -645,16 +635,16 @@ extern "C" void LetterDelivery_Update(void) {
                 Y.d4 = r6[1];
                 Y.d3 = r6[0];
                 Y.d2 = 9;
-                if (DateTime_Compare(&LampLights, &Y, 0x3c) != ~z2) {
+                if (DateTime_Compare(&A, &Y, 0x3c) != ~z2) {
                     if (LetterDelivery_PutInMailbox((Letter *)s4, i, z1)) _ZN12FutureLetter17clearFutureLetterEv(PlayerData_GetFutureLetter(s0));
                 }
             }
         }
     }
-    r5[2] = LampLights.d5;
-    r5[1] = LampLights.d4;
-    r5[0] = LampLights.d3;
-    r5[3] = LampLights.d2;
+    r5[2] = A.d5;
+    r5[1] = A.d4;
+    r5[0] = A.d3;
+    r5[3] = A.d2;
 }
 
 extern "C" u8 LetterPaper_PickRandom(u32 a, u32 b) {
@@ -724,27 +714,27 @@ extern "C" s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p) {
     if (*(u16 *)q == 0) return 0;
     if (p->unk_00 == _ZN17MotherLetterState21getBirthdayLetterYearEv(r6)) return 0;
     s32 r;
-    Unk_02096484_Rec LampLights;
-    LampLights.d5 = p->unk_00;
-    LampLights.d4 = q[1];
-    LampLights.d3 = q[0];
-    Unk_02096484_Rec LightLevel;
-    LightLevel.d5 = p->unk_00;
-    LightLevel.d4 = p->unk_04;
-    LightLevel.d3 = p->unk_08;
+    Unk_02096484_Rec A;
+    A.d5 = p->unk_00;
+    A.d4 = q[1];
+    A.d3 = q[0];
+    Unk_02096484_Rec B;
+    B.d5 = p->unk_00;
+    B.d4 = p->unk_04;
+    B.d3 = p->unk_08;
     Unk_02096484_Base C;
-    MI_CpuCopy8(&LampLights, &C, 8);
+    MI_CpuCopy8(&A, &C, 8);
     DateTime_AddDays(&C, 7);
     r = 0;
-    if (C.d5 != LampLights.d5) {
-        C.d5 = LampLights.d5;
-        if (DateTime_Compare(&LightLevel, &C, 0x38) == 1) {
-            if (DateTime_Compare(&LightLevel, &LampLights, 0x38) == -1) goto end;
+    if (C.d5 != A.d5) {
+        C.d5 = A.d5;
+        if (DateTime_Compare(&B, &C, 0x38) == 1) {
+            if (DateTime_Compare(&B, &A, 0x38) == -1) goto end;
         }
         r = 1;
     } else {
-        if (DateTime_Compare(&LightLevel, &C, 0x38) == 1) goto end;
-        if (DateTime_Compare(&LightLevel, &LampLights, 0x38) == -1) goto end;
+        if (DateTime_Compare(&B, &C, 0x38) == 1) goto end;
+        if (DateTime_Compare(&B, &A, 0x38) == -1) goto end;
         r = 1;
     }
 end:

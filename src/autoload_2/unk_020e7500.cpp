@@ -67,7 +67,7 @@ void TP_RequestAutoSamplingStartAsync(u32, u32, TPData *, u32); // TP_RequestAut
 void Fatal_Trap(void); // Thumb, in main: fatal stop
 
 extern u16 data_0213a748[]; // atan table (.data of autoload_2)
-extern const s16 kPadDirAngleTable[]; // direction (angle) by WindowLight-pad bits, const s16[16] at the start of .rodata
+extern const s16 kPadDirAngleTable[]; // direction (angle) by D-pad bits, const s16[16] at the start of .rodata
 extern const s16 data_02135f44[]; // FX_SinCosTable_
 extern s32 gFrameCounter;
 extern s32 data_021f476c;

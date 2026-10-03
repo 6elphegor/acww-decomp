@@ -135,7 +135,7 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
     struct {
         Unk_ov003_0222ed20_Loc l;
         s32 p[3];
-        Unk_ov003_0222ed20_V3 LampLights, LightLevel;
+        Unk_ov003_0222ed20_V3 A, B;
     } f;
     u32 i;
     for (i = 0; i < 3; i++) {
@@ -157,32 +157,32 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
         if (SnowmanRecords_isFull(data_021ed2e6) == 0) {
             if (LooseSnowballs_Get()->a.x != 0) {
                 Unk_ov003_0222ed20_St *s = LooseSnowballs_Get();
-                f.LampLights.x = s->a.x;
-                f.LampLights.y = s->a.y;
-                f.LampLights.z = s->a.z;
+                f.A.x = s->a.x;
+                f.A.y = s->a.y;
+                f.A.z = s->a.z;
             } else {
-                Snowball_FindSpawnPos(self, &f.LampLights, 0, 1);
+                Snowball_FindSpawnPos(self, &f.A, 0, 1);
             }
             if (LooseSnowballs_Get()->b.x != 0) {
                 Unk_ov003_0222ed20_St *s = LooseSnowballs_Get();
                 Unk_ov003_0222ed20_V3 *pv = &s->b;
-                f.LightLevel.x = pv->x;
-                f.LightLevel.y = pv->y;
-                f.LightLevel.z = pv->z;
+                f.B.x = pv->x;
+                f.B.y = pv->y;
+                f.B.z = pv->z;
             } else {
-                Snowball_FindSpawnPos(self, &f.LightLevel, (s32)&f.LampLights, 1);
+                Snowball_FindSpawnPos(self, &f.B, (s32)&f.A, 1);
             }
-            if (Actor_spawn(0xbd, 0, &f.LampLights, 0, self)) {
+            if (Actor_spawn(0xbd, 0, &f.A, 0, self)) {
                 Unk_ov003_0222ed20_St *s = LooseSnowballs_Get();
-                s->a.x = f.LampLights.x;
-                s->a.y = f.LampLights.y;
-                s->a.z = f.LampLights.z;
+                s->a.x = f.A.x;
+                s->a.y = f.A.y;
+                s->a.z = f.A.z;
             }
-            if (Actor_spawn(0xbd, 1, &f.LightLevel, 0, self)) {
+            if (Actor_spawn(0xbd, 1, &f.B, 0, self)) {
                 Unk_ov003_0222ed20_St *s = LooseSnowballs_Get();
-                s->b.x = f.LightLevel.x;
-                s->b.y = f.LightLevel.y;
-                s->b.z = f.LightLevel.z;
+                s->b.x = f.B.x;
+                s->b.y = f.B.y;
+                s->b.z = f.B.z;
             }
         }
     }

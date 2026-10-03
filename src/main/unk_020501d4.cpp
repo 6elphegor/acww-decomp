@@ -55,7 +55,7 @@ void Text_InitSystem(void);
 BOOL Text_AsciiToGameChar(u8 *out, u32 c);
 }
 
-// LampLights font with its constructor and destructor (symbols.txt has them as plain functions)
+// A font with its constructor and destructor (symbols.txt has them as plain functions)
 struct GameFont : GameFontDesc {
     GameFont();
     ~GameFont();
