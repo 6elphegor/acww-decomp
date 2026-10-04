@@ -14,15 +14,15 @@ struct Unk_ov065_02290f9c {
 };
 
 struct Unk_ov065_02277d68_Args {
-    void *unk_00;
-    void *unk_04;
+    void *allocFn;
+    void *freeFn;
     u8 unk_08;
     u8 unk_09;
 };
 
 struct Unk_ov065_02277f70_Ctx {
-    u32 unk_00;
-    void (*unk_04)(s32, s32, s32, u32);
+    u32 userData;
+    void (*callback)(s32, s32, s32, u32);
 };
 
 typedef void *(*Unk_ov065_02290f98_Fn)(s32, s32, s32);
@@ -144,8 +144,8 @@ void DwcInet_StartConnect() {
             s = sDwcInet;
             l.unk_08 = s->apInitParam0;
             l.unk_09 = s->apInitParam1;
-            l.unk_00 = (void *)DwcNet_Alloc;
-            l.unk_04 = (void *)DwcNet_Free;
+            l.allocFn = (void *)DwcNet_Alloc;
+            l.freeFn = (void *)DwcNet_Free;
             s->state = 2;
             if (WifiAp_Init(&l) == 0) {
                 DwcCore_SetError(8, -6);

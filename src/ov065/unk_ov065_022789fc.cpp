@@ -6,15 +6,15 @@ typedef long long s64;
 // ov065 TU36: GameSpy common (nonport: PRNG/base64/socket wrappers, ghttpBuffer) 0x022789fc..0x0227931c
 
 struct Unk_ov065_02278e64_A {
-    u32 unk_00;
-    u32 unk_04;
-    s16 unk_08;
-    s16 unk_0a;
-    u32 unk_0c;
+    u32 hostName;
+    u32 aliases;
+    s16 addrType;
+    s16 addrLength;
+    u32 addrList;
 };
 struct Unk_ov065_02278e64_B {
-    u32 *unk_00;
-    u32 unk_04;
+    u32 *firstAddr;
+    u32 listEnd;
     u8 pad_08[0x10];
 };
 struct Unk_ov065_02291094 {
@@ -67,32 +67,32 @@ struct Unk_ov065_02278f0c_Pfd {
 
 struct Unk_ov065_0227931c_Owner {
     u8 pad_00[0x38];
-    s32 unk_38;
+    s32 result;
     u8 pad_3c[0x0c];
-    s32 unk_48;
-    s32 unk_4c;
+    s32 socketHandle;
+    s32 socketError;
     u8 pad_50[4];
-    char *unk_54;
+    char *sendBufData;
     u8 pad_58[4];
-    s32 unk_5c;
-    s32 unk_60;
+    s32 sendBufLength;
+    s32 sendBufReadPos;
     u8 pad_64[0x98];
-    s32 unk_fc;
+    s32 completed;
     u8 pad_100[0x64];
-    u32 unk_164[6];
-    s32 (*unk_17c)(Unk_ov065_0227931c_Owner *, void *, char *, s32 *, char *, s32 *);
+    u32 encryptor[6];
+    s32 (*encryptFn)(Unk_ov065_0227931c_Owner *, void *, char *, s32 *, char *, s32 *);
 };
 
 struct Unk_ov065_0227931c_Buf {
-    Unk_ov065_0227931c_Owner *unk_00;
-    char *unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
-    s32 unk_20;
+    Unk_ov065_0227931c_Owner *connection;
+    char *data;
+    s32 capacity;
+    s32 length;
+    s32 readPos;
+    s32 growBy;
+    s32 isFixed;
+    s32 keepData;
+    s32 isEncrypted;
 };
 
 
@@ -189,9 +189,9 @@ s32 GsHttpBuf_AppendInt(Unk_ov065_0227931c_Buf *o, s32 x) {
 namespace FB {
 extern "C" {
 void GsHttpBuf_Reset(Unk_ov065_0227931c_Buf *o) {
-    o->unk_0c = 0;
-    o->unk_10 = 0;
-    *o->unk_04 = 0;
+    o->length = 0;
+    o->readPos = 0;
+    *o->data = 0;
 }
 }
 }
@@ -199,27 +199,27 @@ void GsHttpBuf_Reset(Unk_ov065_0227931c_Buf *o) {
 namespace FB {
 extern "C" {
 s32 GsHttp_FlushSendBuffer(Unk_ov065_0227931c_Owner *o) {
-    s32 *pp = &o->unk_60;
+    s32 *pp = &o->sendBufReadPos;
     s32 z = 0;
     s32 w, e;
     s32 r;
     do {
-        s32 t = GsSock_Select(o->unk_48, (s32 *)z, &w, &e);
+        s32 t = GsSock_Select(o->socketHandle, (s32 *)z, &w, &e);
         if (t == ~z || e != 0) {
-            o->unk_fc = 1;
-            o->unk_38 = 5;
-            o->unk_4c = GsSock_GetLastError(o->unk_48);
+            o->completed = 1;
+            o->result = 5;
+            o->socketError = GsSock_GetLastError(o->socketHandle);
             return FALSE;
         }
         if (w == 0) {
             return TRUE;
         }
-        r = GsHttp_SocketSend(o, o->unk_54 + o->unk_60, o->unk_5c - o->unk_60);
+        r = GsHttp_SocketSend(o, o->sendBufData + o->sendBufReadPos, o->sendBufLength - o->sendBufReadPos);
         if (r == ~z) {
             return FALSE;
         }
         *pp += r;
-    } while (o->unk_60 < o->unk_5c);
+    } while (o->sendBufReadPos < o->sendBufLength);
     return TRUE;
 }
 }
@@ -233,17 +233,17 @@ s32 GsHttpBuf_Read(Unk_ov065_0227931c_Buf *o, char *dst, s32 *len) {
     if (n == 0) {
         return FALSE;
     }
-    avail = o->unk_0c - o->unk_10;
+    avail = o->length - o->readPos;
     if (avail <= 0) {
         return FALSE;
     }
     if (n >= avail) {
         n = avail;
     }
-    memcpy(dst, o->unk_04 + o->unk_10, n);
+    memcpy(dst, o->data + o->readPos, n);
     dst[n] = 0;
     *len = n;
-    o->unk_10 += n;
+    o->readPos += n;
     return TRUE;
 }
 }
@@ -460,19 +460,19 @@ s32 GsSock_CanWrite(s32 a) {
 namespace FB {
 extern "C" {
 s32 GsSock_GetLocalHost() {
-    sGsLocalHostEnt.unk_00 = (u32)"localhost";
-    sGsLocalHostEnt.unk_04 = (u32)data_ov065_0229107c;
-    sGsLocalHostEnt.unk_08 = 2;
-    sGsLocalHostEnt.unk_0a = 0;
-    sGsLocalHostEnt.unk_0c = (u32)&data_ov065_022910a8;
+    sGsLocalHostEnt.hostName = (u32)"localhost";
+    sGsLocalHostEnt.aliases = (u32)data_ov065_0229107c;
+    sGsLocalHostEnt.addrType = 2;
+    sGsLocalHostEnt.addrLength = 0;
+    sGsLocalHostEnt.addrList = (u32)&data_ov065_022910a8;
     data_ov065_02291094.hostIp = 0;
     IpAddr_StoreBe32(SockCore_GetHostIp(), (u32 *)&data_ov065_02291094);
     if (data_ov065_02291094.hostIp == 0) {
         return 0;
     }
-    data_ov065_022910a8.unk_00 = (u32 *)&data_ov065_02291094;
-    sGsLocalHostEnt.unk_0a = 4;
-    data_ov065_022910a8.unk_04 = 0;
+    data_ov065_022910a8.firstAddr = (u32 *)&data_ov065_02291094;
+    sGsLocalHostEnt.addrLength = 4;
+    data_ov065_022910a8.listEnd = 0;
     return (s32)&sGsLocalHostEnt;
 }
 }

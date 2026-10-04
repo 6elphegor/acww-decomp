@@ -4,8 +4,8 @@
 // ov065 TU34: GameSpy gsAvailable (0x02277e70..0x02278328)
 
 struct Unk_ov065_02277f70_Ctx {
-    u32 unk_00;
-    void (*unk_04)(s32, s32, s32, u32);
+    u32 userData;
+    void (*callback)(s32, s32, s32, u32);
 };
 
 struct Unk_ov065_02291024 {
@@ -166,13 +166,13 @@ s32 DwcGsHttp_Process() {
 }
 
 s32 DwcGsHttp_OnRequestDone(s32 a, s32 e, s32 c, s32 d, Unk_ov065_02277f70_Ctx *p) {
-    void (*cb)(s32, s32, s32, u32) = p->unk_04;
+    void (*cb)(s32, s32, s32, u32) = p->callback;
     if (cb != NULL) {
         if (e == 0) {
-            cb(c, d, e, p->unk_00);
+            cb(c, d, e, p->userData);
         } else {
             DwcGsHttp_ReportError(e);
-            cb(0, 0, e, p->unk_00);
+            cb(0, 0, e, p->userData);
         }
     }
     DwcNet_Free(4, p, 0);
@@ -193,15 +193,15 @@ s32 DwcGsHttp_Post(s32 a, s32 *pa, void (*cb)(s32, s32, s32, u32), u32 ud) {
     p = (Unk_ov065_02277f70_Ctx *)DwcNet_Alloc(4, 8);
     if (p == NULL) {
         DwcGsHttp_ReportError(0x14);
-        cb(0, 0, 0x14, p->unk_00);
+        cb(0, 0, 0x14, p->userData);
         return 0x14;
     }
-    p->unk_00 = ud;
-    p->unk_04 = cb;
+    p->userData = ud;
+    p->callback = cb;
     r = GsHttp_Post(a, *pa, 0, (void *)DwcGsHttp_OnRequestDone, p);
     if (r < 0) {
         DwcGsHttp_ReportError(r);
-        cb(0, 0, r, p->unk_00);
+        cb(0, 0, r, p->userData);
         DwcNet_Free(4, p, 0);
     }
     return r;
@@ -213,15 +213,15 @@ s32 DwcGsHttp_Get(s32 a, void (*cb)(s32, s32, s32, u32), u32 ud) {
     p = (Unk_ov065_02277f70_Ctx *)DwcNet_Alloc(4, 8);
     if (p == NULL) {
         DwcGsHttp_ReportError(0x14);
-        cb(0, 0, 0x14, p->unk_00);
+        cb(0, 0, 0x14, p->userData);
         return 0x14;
     }
-    p->unk_00 = ud;
-    p->unk_04 = cb;
+    p->userData = ud;
+    p->callback = cb;
     r = GsHttp_Get(a, 0, (void *)DwcGsHttp_OnRequestDone, p);
     if (r < 0) {
         DwcGsHttp_ReportError(r);
-        cb(0, 0, r, p->unk_00);
+        cb(0, 0, r, p->userData);
         DwcNet_Free(4, p, 0);
     }
     return r;

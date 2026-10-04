@@ -9,32 +9,32 @@ typedef void (*Unk_ov065_02278740_Dtor)(void *);
 typedef s32 (*Unk_ov065_022787c4_Hash)(void *, s32);
 
 struct Unk_ov065_022786bc_Vec {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    Unk_ov065_02278740_Dtor unk_10;
-    u8 *unk_14;
+    s32 count;
+    s32 capacity;
+    s32 elemSize;
+    s32 growBy;
+    Unk_ov065_02278740_Dtor freeElemFn;
+    u8 *elems;
 };
 
 struct Unk_ov065_02278928_Tbl {
-    Unk_ov065_022786bc_Vec **unk_00;
-    s32 unk_04;
-    Unk_ov065_02278740_Dtor unk_08;
-    Unk_ov065_022787c4_Hash unk_0c;
-    Unk_ov065_02278384_Cmp unk_10;
+    Unk_ov065_022786bc_Vec **buckets;
+    s32 numBuckets;
+    Unk_ov065_02278740_Dtor freeElemFn;
+    Unk_ov065_022787c4_Hash hashFn;
+    Unk_ov065_02278384_Cmp compareFn;
 };
 
 struct Unk_ov065_02278328_Addr {
     u8 unk_00;
-    u8 unk_01;
-    u16 unk_02;
-    volatile s32 unk_04;
+    u8 family;
+    u16 port;
+    volatile s32 addr;
 };
 
 struct Unk_ov065_02278328_Host {
     u8 unk_00[0xc];
-    s32 **unk_0c;
+    s32 **addrList;
 };
 
 extern "C" {
@@ -142,36 +142,36 @@ Unk_ov065_02278928_Tbl *GsHash_NewEx(s32 esize, s32 n, s32 cap, Unk_ov065_022787
                                             Unk_ov065_02278740_Dtor dtor) {
     Unk_ov065_02278928_Tbl *t = (Unk_ov065_02278928_Tbl *)GsUtil_Alloc(0x14);
     s32 i;
-    t->unk_00 = (Unk_ov065_022786bc_Vec **)GsUtil_Alloc(n * 4);
+    t->buckets = (Unk_ov065_022786bc_Vec **)GsUtil_Alloc(n * 4);
     i = 0;
     if (n > 0) {
         s32 off = i;
         do {
             Unk_ov065_022786bc_Vec *v = GsArray_New(esize, cap, dtor);
-            *(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + off) = v;
+            *(Unk_ov065_022786bc_Vec **)((u8 *)t->buckets + off) = v;
             off += 4;
             i++;
         } while (i < n);
     }
-    t->unk_04 = n;
-    t->unk_08 = dtor;
-    t->unk_10 = cmp;
-    t->unk_0c = hash;
+    t->numBuckets = n;
+    t->freeElemFn = dtor;
+    t->compareFn = cmp;
+    t->hashFn = hash;
     return t;
 }
 
 void GsHash_Free(Unk_ov065_02278928_Tbl *t) {
     if (t != NULL) {
         s32 i = 0;
-        if (t->unk_04 > 0) {
+        if (t->numBuckets > 0) {
             s32 off = i;
             do {
-                GsArray_Free(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + off));
+                GsArray_Free(*(Unk_ov065_022786bc_Vec **)((u8 *)t->buckets + off));
                 off += 4;
                 i++;
-            } while (i < t->unk_04);
+            } while (i < t->numBuckets);
         }
-        GsUtil_Free(t->unk_00);
+        GsUtil_Free(t->buckets);
         GsUtil_Free(t);
     }
 }
@@ -183,13 +183,13 @@ s32 GsHash_Count(Unk_ov065_02278928_Tbl *t) {
         return sum;
     }
     i = sum;
-    if (t->unk_04 > 0) {
+    if (t->numBuckets > 0) {
         s32 off = sum;
         do {
-            sum += GsArray_Count(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + off));
+            sum += GsArray_Count(*(Unk_ov065_022786bc_Vec **)((u8 *)t->buckets + off));
             off += 4;
             i++;
-        } while (i < t->unk_04);
+        } while (i < t->numBuckets);
     }
     return sum;
 }
@@ -198,13 +198,13 @@ void GsHash_Insert(Unk_ov065_02278928_Tbl *t, void *key) {
     s32 h;
     s32 r;
     if (t != NULL) {
-        h = t->unk_0c(key, t->unk_04) * 4;
-        r = GsArray_Search(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key, t->unk_10, 0, 0);
+        h = t->hashFn(key, t->numBuckets) * 4;
+        r = GsArray_Search(*(Unk_ov065_022786bc_Vec **)((u8 *)t->buckets + h), key, t->compareFn, 0, 0);
         if (r == -1) {
-            GsArray_Append(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key);
+            GsArray_Append(*(Unk_ov065_022786bc_Vec **)((u8 *)t->buckets + h), key);
             return;
         }
-        GsArray_ReplaceAt(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key, r);
+        GsArray_ReplaceAt(*(Unk_ov065_022786bc_Vec **)((u8 *)t->buckets + h), key, r);
     }
 }
 
@@ -214,10 +214,10 @@ s32 GsHash_Remove(Unk_ov065_02278928_Tbl *t, void *key) {
     if (t == NULL) {
         return 0;
     }
-    h = t->unk_0c(key, t->unk_04) * 4;
-    r = GsArray_Search(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key, t->unk_10, 0, 0);
+    h = t->hashFn(key, t->numBuckets) * 4;
+    r = GsArray_Search(*(Unk_ov065_022786bc_Vec **)((u8 *)t->buckets + h), key, t->compareFn, 0, 0);
     if (r != -1) {
-        GsArray_DeleteAt(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), r);
+        GsArray_DeleteAt(*(Unk_ov065_022786bc_Vec **)((u8 *)t->buckets + h), r);
         return 1;
     }
     return 0;
@@ -229,25 +229,25 @@ void *GsHash_Find(Unk_ov065_02278928_Tbl *t, void *key) {
     if (t == NULL) {
         return NULL;
     }
-    h = t->unk_0c(key, t->unk_04) * 4;
-    r = GsArray_Search(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), key, t->unk_10, 0, 0);
+    h = t->hashFn(key, t->numBuckets) * 4;
+    r = GsArray_Search(*(Unk_ov065_022786bc_Vec **)((u8 *)t->buckets + h), key, t->compareFn, 0, 0);
     if (r != -1) {
-        return GsArray_At(*(Unk_ov065_022786bc_Vec **)((u8 *)t->unk_00 + h), r);
+        return GsArray_At(*(Unk_ov065_022786bc_Vec **)((u8 *)t->buckets + h), r);
     }
     return NULL;
 }
 
 void GsHash_ForEach(Unk_ov065_02278928_Tbl *t, Unk_ov065_02278448_Cb cb, void *arg) {
     s32 i;
-    for (i = 0; i < t->unk_04; i++) {
-        GsArray_ForEachBackward(t->unk_00[i], cb, arg);
+    for (i = 0; i < t->numBuckets; i++) {
+        GsArray_ForEachBackward(t->buckets[i], cb, arg);
     }
 }
 
 void *GsHash_FindIf(Unk_ov065_02278928_Tbl *t, Unk_ov065_02278448_Cb cb, void *arg) {
     s32 i;
-    for (i = 0; i < t->unk_04; i++) {
-        void *r = GsArray_FindBackward(t->unk_00[i], cb, arg);
+    for (i = 0; i < t->numBuckets; i++) {
+        void *r = GsArray_FindBackward(t->buckets[i], cb, arg);
         if (r != NULL) {
             return r;
         }
@@ -256,18 +256,18 @@ void *GsHash_FindIf(Unk_ov065_02278928_Tbl *t, Unk_ov065_02278448_Cb cb, void *a
 }
 
 void GsArray_DestroyElement(Unk_ov065_022786bc_Vec *v, s32 i) {
-    if (v->unk_10 != NULL) {
-        v->unk_10(GsArray_At(v, i));
+    if (v->freeElemFn != NULL) {
+        v->freeElemFn(GsArray_At(v, i));
     }
 }
 
 void GsArray_Grow(Unk_ov065_022786bc_Vec *v) {
-    v->unk_04 = v->unk_04 + v->unk_0c;
-    v->unk_14 = (u8 *)GsUtil_Realloc(v->unk_14, v->unk_04 * v->unk_08);
+    v->capacity = v->capacity + v->growBy;
+    v->elems = (u8 *)GsUtil_Realloc(v->elems, v->capacity * v->elemSize);
 }
 
 void GsArray_CopyTo(Unk_ov065_022786bc_Vec *v, void *x, s32 i) {
-    memcpy(GsArray_At(v, i), x, v->unk_08);
+    memcpy(GsArray_At(v, i), x, v->elemSize);
 }
 
 Unk_ov065_022786bc_Vec *GsArray_New(s32 size, s32 cap, Unk_ov065_02278740_Dtor dtor) {
@@ -275,74 +275,74 @@ Unk_ov065_022786bc_Vec *GsArray_New(s32 size, s32 cap, Unk_ov065_02278740_Dtor d
     if (cap == 0) {
         cap = 8;
     }
-    v->unk_00 = 0;
-    v->unk_04 = cap;
-    v->unk_08 = size;
-    v->unk_0c = cap;
-    v->unk_10 = dtor;
-    if (v->unk_04 != 0) {
-        v->unk_14 = (u8 *)GsUtil_Alloc(v->unk_04 * v->unk_08);
+    v->count = 0;
+    v->capacity = cap;
+    v->elemSize = size;
+    v->growBy = cap;
+    v->freeElemFn = dtor;
+    if (v->capacity != 0) {
+        v->elems = (u8 *)GsUtil_Alloc(v->capacity * v->elemSize);
     } else {
-        v->unk_14 = NULL;
+        v->elems = NULL;
     }
     return v;
 }
 
 void GsArray_Free(Unk_ov065_022786bc_Vec *v) {
     s32 i;
-    for (i = 0; i < v->unk_00; i++) {
+    for (i = 0; i < v->count; i++) {
         GsArray_DestroyElement(v, i);
     }
-    GsUtil_Free(v->unk_14);
+    GsUtil_Free(v->elems);
     GsUtil_Free(v);
 }
 
 s32 GsArray_Count(Unk_ov065_022786bc_Vec *v) {
-    return v->unk_00;
+    return v->count;
 }
 
 void *GsArray_At(Unk_ov065_022786bc_Vec *v, s32 i) {
-    if (i < 0 || i >= v->unk_00) {
+    if (i < 0 || i >= v->count) {
         return NULL;
     }
-    return v->unk_14 + v->unk_08 * i;
+    return v->elems + v->elemSize * i;
 }
 
 void GsArray_Append(Unk_ov065_022786bc_Vec *v, void *x) {
     if (v != NULL) {
-        GsArray_InsertAt(v, x, v->unk_00);
+        GsArray_InsertAt(v, x, v->count);
     }
 }
 
 void GsArray_InsertAt(Unk_ov065_022786bc_Vec *v, void *x, s32 i) {
     s32 last;
-    if (v->unk_00 == v->unk_04) {
+    if (v->count == v->capacity) {
         GsArray_Grow(v);
     }
-    v->unk_00 = v->unk_00 + 1;
-    last = v->unk_00 - 1;
+    v->count = v->count + 1;
+    last = v->count - 1;
     if (i < last) {
         void *dst = GsArray_At(v, i + 1);
         void *src = GsArray_At(v, i);
-        memmove(dst, src, v->unk_08 * (last - i));
+        memmove(dst, src, v->elemSize * (last - i));
     }
     GsArray_CopyTo(v, x, i);
 }
 
 void GsArray_InsertSorted(Unk_ov065_022786bc_Vec *v, void *key, Unk_ov065_02278384_Cmp cmp) {
     s32 found;
-    u8 *r = GsUtil_BinarySearch(key, v->unk_14, v->unk_00, v->unk_08, cmp, &found);
-    GsArray_InsertAt(v, key, (s32)(r - v->unk_14) / v->unk_08);
+    u8 *r = GsUtil_BinarySearch(key, v->elems, v->count, v->elemSize, cmp, &found);
+    GsArray_InsertAt(v, key, (s32)(r - v->elems) / v->elemSize);
 }
 
 void GsArray_RemoveAt(Unk_ov065_022786bc_Vec *v, s32 i) {
-    s32 last = v->unk_00 - 1;
+    s32 last = v->count - 1;
     if (i < last) {
         void *a = GsArray_At(v, i);
         void *b = GsArray_At(v, i + 1);
-        memmove(a, b, v->unk_08 * (last - i));
+        memmove(a, b, v->elemSize * (last - i));
     }
-    v->unk_00 = v->unk_00 - 1;
+    v->count = v->count - 1;
 }
 
 void GsArray_DeleteAt(Unk_ov065_022786bc_Vec *v, s32 i) {
@@ -356,37 +356,37 @@ void GsArray_ReplaceAt(Unk_ov065_022786bc_Vec *v, void *x, s32 i) {
 }
 
 void GsArray_Sort(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278384_Cmp cmp) {
-    func_02128acc(v->unk_14, v->unk_00, v->unk_08, cmp);
+    func_02128acc(v->elems, v->count, v->elemSize, cmp);
 }
 
 s32 GsArray_Search(Unk_ov065_022786bc_Vec *v, void *key, Unk_ov065_02278384_Cmp cmp, s32 start, s32 sorted) {
     s32 found = 1;
     s32 n;
     u8 *r;
-    if (v == NULL || (n = v->unk_00) == 0) {
+    if (v == NULL || (n = v->count) == 0) {
         return -1;
     }
     if (sorted != 0) {
-        r = GsUtil_BinarySearch(key, (u8 *)GsArray_At(v, start), n - start, v->unk_08, cmp, &found);
+        r = GsUtil_BinarySearch(key, (u8 *)GsArray_At(v, start), n - start, v->elemSize, cmp, &found);
     } else {
-        r = GsUtil_LinearSearch(key, (u8 *)GsArray_At(v, start), n - start, v->unk_08, cmp);
+        r = GsUtil_LinearSearch(key, (u8 *)GsArray_At(v, start), n - start, v->elemSize, cmp);
     }
     if (r != NULL && found != 0) {
-        return (s32)(r - v->unk_14) / v->unk_08;
+        return (s32)(r - v->elems) / v->elemSize;
     }
     return -1;
 }
 
 void GsArray_ForEachBackward(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278448_Cb cb, void *arg) {
     s32 i;
-    for (i = v->unk_00 - 1; i >= 0; i--) {
+    for (i = v->count - 1; i >= 0; i--) {
         cb(GsArray_At(v, i), arg);
     }
 }
 
 void *GsArray_FindBackward(Unk_ov065_022786bc_Vec *v, Unk_ov065_02278448_Cb cb, void *arg) {
     s32 i;
-    for (i = v->unk_00 - 1; i >= 0; i--) {
+    for (i = v->count - 1; i >= 0; i--) {
         void *p = GsArray_At(v, i);
         if (cb(p, arg) == 0) {
             return p;
@@ -439,16 +439,16 @@ u8 *GsUtil_BinarySearch(void *key, u8 *base, s32 n, s32 size, Unk_ov065_02278384
 
 s32 GsSock_ResolveAddress(s32 a, u32 port, Unk_ov065_02278328_Addr *out) {
     s32 p;
-    out->unk_01 = 2;
+    out->family = 2;
     p = (u16)port;
-    out->unk_02 = (u16)(((p >> 8) & 0xff) | ((p << 8) & 0xff00));
-    out->unk_04 = GsSock_InetAddr(a);
-    if (out->unk_04 == -1) {
+    out->port = (u16)(((p >> 8) & 0xff) | ((p << 8) & 0xff00));
+    out->addr = GsSock_InetAddr(a);
+    if (out->addr == -1) {
         Unk_ov065_02278328_Host *h = Sock_GetHostByName(a);
         if (h == NULL) {
             return 0;
         }
-        out->unk_04 = **h->unk_0c;
+        out->addr = **h->addrList;
     }
     return 1;
 }

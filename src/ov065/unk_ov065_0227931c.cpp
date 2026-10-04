@@ -29,32 +29,32 @@ struct Unk_ov065_02278f0c_Pfd {
 
 struct Unk_ov065_0227931c_Owner {
     u8 pad_00[0x38];
-    s32 unk_38;
+    s32 result;
     u8 pad_3c[0x0c];
-    s32 unk_48;
-    s32 unk_4c;
+    s32 socketHandle;
+    s32 socketError;
     u8 pad_50[4];
-    char *unk_54;
+    char *sendBufData;
     u8 pad_58[4];
-    s32 unk_5c;
-    s32 unk_60;
+    s32 sendBufLength;
+    s32 sendBufReadPos;
     u8 pad_64[0x98];
-    s32 unk_fc;
+    s32 completed;
     u8 pad_100[0x64];
-    u32 unk_164[6];
-    s32 (*unk_17c)(Unk_ov065_0227931c_Owner *, void *, char *, s32 *, char *, s32 *);
+    u32 encryptor[6];
+    s32 (*encryptFn)(Unk_ov065_0227931c_Owner *, void *, char *, s32 *, char *, s32 *);
 };
 
 struct Unk_ov065_0227931c_Buf {
-    Unk_ov065_0227931c_Owner *unk_00;
-    char *unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
-    s32 unk_20;
+    Unk_ov065_0227931c_Owner *connection;
+    char *data;
+    s32 capacity;
+    s32 length;
+    s32 readPos;
+    s32 growBy;
+    s32 isFixed;
+    s32 keepData;
+    s32 isEncrypted;
 };
 
 extern s32 sGsSockLastError;
@@ -65,15 +65,15 @@ extern Unk_ov065_02291094 data_ov065_02291094;
 extern u8 data_0213a410[];
 
 struct Unk_ov065_02278e64_A {
-    u32 unk_00;
-    u32 unk_04;
-    s16 unk_08;
-    s16 unk_0a;
-    u32 unk_0c;
+    u32 hostName;
+    u32 aliases;
+    s16 addrType;
+    s16 addrLength;
+    u32 addrList;
 };
 struct Unk_ov065_02278e64_B {
-    u32 *unk_00;
-    u32 unk_04;
+    u32 *firstAddr;
+    u32 listEnd;
 };
 extern Unk_ov065_02278e64_A sGsLocalHostEnt;
 extern Unk_ov065_02278e64_B data_ov065_022910a8;
@@ -143,83 +143,83 @@ typedef s32 (*Unk_ov065_022798f8_Cb4)(Unk_ov065_02279c7c *, void *, u8 *, s32 *,
 typedef void (*Unk_ov065_02279a64_Cb5)(Unk_ov065_02279c7c *, void *);
 
 struct Unk_ov065_02279c7c {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    void *unk_14;
-    void *unk_18;
-    s32 unk_1c;
-    u16 unk_20;
-    void *unk_24;
-    void *unk_28;
+    s32 inUse;
+    s32 requestId;
+    s32 serial;
+    s32 requestType;
+    s32 state;
+    void *url;
+    void *serverHost;
+    s32 serverIp;
+    u16 serverPort;
+    void *requestPath;
+    void *extraHeaders;
     s32 unk_2c;
-    s32 unk_30;
-    s32 unk_34;
-    s32 unk_38;
-    Unk_ov065_022795d4_Cb2 unk_3c;
-    Unk_ov065_0227960c_Cb3 unk_40;
-    u32 unk_44;
-    s32 unk_48;
-    s32 unk_4c;
-    u32 unk_50[3];
-    u32 unk_5c;
-    u32 unk_60[5];
-    u32 unk_74;
-    u8 *unk_78;
-    s32 unk_7c;
-    s32 unk_80;
-    s32 unk_84;
-    s32 unk_88;
+    s32 isBlocking;
+    s32 keepAlive;
+    s32 result;
+    Unk_ov065_022795d4_Cb2 progressCallback;
+    Unk_ov065_0227960c_Cb3 completedCallback;
+    u32 callbackParam;
+    s32 socketHandle;
+    s32 socketError;
+    u32 sendBuf[3];
+    u32 sendBufLength;
+    u32 sendBufReadPos[5];
+    u32 recvBuf;
+    u8 *recvBufData;
+    s32 recvBufCapacity;
+    s32 recvBufLength;
+    s32 recvBufReadPos;
+    s32 recvBufGrowBy;
     u32 unk_8c[3];
-    u32 unk_98;
-    u8 *unk_9c;
+    u32 rawRecvBuf;
+    u8 *rawRecvBufData;
     u32 unk_a0;
-    s32 unk_a4;
-    s32 unk_a8;
+    s32 rawRecvBufLength;
+    s32 rawRecvBufReadPos;
     u32 unk_ac[4];
-    u32 unk_bc;
-    u32 unk_c0;
+    u32 bodyBuf;
+    u32 bodyBufData;
     u32 unk_c4[5];
-    u32 unk_d8;
+    u32 bodyBufKeepData;
     u32 unk_dc;
-    s32 unk_e0;
-    s32 unk_e4;
-    s32 unk_e8;
-    s32 unk_ec;
-    s32 unk_f0;
-    s32 unk_f4;
-    s32 unk_f8;
-    s32 unk_fc;
-    u32 unk_100;
-    u32 unk_104;
-    void *unk_108;
-    s32 unk_10c;
-    s32 unk_110;
-    u32 unk_114[6];
-    s32 unk_12c;
-    s32 unk_130;
-    u32 unk_134;
-    u32 unk_138;
-    void *unk_13c;
-    u32 unk_140;
-    u32 unk_144;
-    u32 unk_148;
-    u32 unk_14c;
-    Unk_ov065_02279588_Cb1 unk_150;
-    u32 unk_154;
-    u32 unk_158;
-    void *unk_15c;
-    u16 unk_160;
-    u32 unk_164;
-    u32 unk_168;
-    u32 unk_16c;
-    u32 unk_170;
-    u32 unk_174;
-    Unk_ov065_02279a64_Cb5 unk_178;
-    u32 unk_17c;
-    Unk_ov065_022798f8_Cb4 unk_180;
+    s32 isUserBodyBuf;
+    s32 httpMajorVersion;
+    s32 httpMinorVersion;
+    s32 statusCode;
+    s32 statusTextIndex;
+    s32 headersIndex;
+    s32 headersEnd;
+    s32 completed;
+    u32 bodyBytesReceived;
+    u32 contentLength;
+    void *redirectUrl;
+    s32 redirectCount;
+    s32 isChunked;
+    u32 chunkHeader[6];
+    s32 isProcessing;
+    s32 connectionClosed;
+    u32 isThrottled;
+    u32 lastThrottleRecvTime;
+    void *post;
+    u32 postParts;
+    u32 postPartIndex;
+    u32 postBytesSent;
+    u32 postTotalBytes;
+    Unk_ov065_02279588_Cb1 postCallback;
+    u32 postCallbackParam;
+    u32 recvTimeSliceMs;
+    void *proxyHost;
+    u16 proxyPort;
+    u32 encryptor;
+    u32 encryptEnabled;
+    u32 encryptInitialized;
+    u32 encryptSessionReady;
+    u32 encryptStartFn;
+    Unk_ov065_02279a64_Cb5 encryptCleanupFn;
+    u32 encryptFn;
+    Unk_ov065_022798f8_Cb4 decryptFn;
 };
 
 extern "C" {
@@ -315,70 +315,70 @@ struct Unk_ov065_0227a4e8_Req {
 };
 
 struct Unk_ov065_02279c7c {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    void *unk_14;
-    void *unk_18;
-    s32 unk_1c;
-    u16 unk_20;
-    void *unk_24;
-    void *unk_28;
+    s32 inUse;
+    s32 requestId;
+    s32 serial;
+    s32 requestType;
+    s32 state;
+    void *url;
+    void *serverHost;
+    s32 serverIp;
+    u16 serverPort;
+    void *requestPath;
+    void *extraHeaders;
     s32 unk_2c;
-    s32 unk_30;
-    s32 unk_34;
-    s32 unk_38;
-    void *unk_3c;
-    void *unk_40;
-    u32 unk_44;
-    s32 unk_48;
-    s32 unk_4c;
-    u32 unk_50[3];
-    s32 unk_5c;
-    s32 unk_60;
+    s32 isBlocking;
+    s32 keepAlive;
+    s32 result;
+    void *progressCallback;
+    void *completedCallback;
+    u32 callbackParam;
+    s32 socketHandle;
+    s32 socketError;
+    u32 sendBuf[3];
+    s32 sendBufLength;
+    s32 sendBufReadPos;
     u32 unk_64[4];
-    u32 unk_74;
-    u8 *unk_78;
-    s32 unk_7c;
-    s32 unk_80;
-    s32 unk_84;
-    s32 unk_88;
+    u32 recvBuf;
+    u8 *recvBufData;
+    s32 recvBufCapacity;
+    s32 recvBufLength;
+    s32 recvBufReadPos;
+    s32 recvBufGrowBy;
     u32 unk_8c[3];
-    u32 unk_98;
-    u8 *unk_9c;
+    u32 rawRecvBuf;
+    u8 *rawRecvBufData;
     u32 unk_a0;
-    s32 unk_a4;
-    s32 unk_a8;
+    s32 rawRecvBufLength;
+    s32 rawRecvBufReadPos;
     u32 unk_ac[4];
-    u32 unk_bc;
-    u32 unk_c0;
+    u32 bodyBuf;
+    u32 bodyBufData;
     u32 unk_c4[5];
-    u32 unk_d8;
+    u32 bodyBufKeepData;
     u32 unk_dc;
-    s32 unk_e0;
-    s32 unk_e4;
-    s32 unk_e8;
-    s32 unk_ec;
-    s32 unk_f0;
-    s32 unk_f4;
-    s32 unk_f8;
-    s32 unk_fc;
-    u32 unk_100;
-    u32 unk_104;
-    void *unk_108;
-    s32 unk_10c;
-    s32 unk_110;
-    u32 unk_114[6];
-    s32 unk_12c;
-    s32 unk_130;
-    u32 unk_134;
-    u32 unk_138;
-    Unk_ov065_0227a4e8_Req *unk_13c;
-    void *unk_140;
-    s32 unk_144;
-    u32 unk_148;
+    s32 isUserBodyBuf;
+    s32 httpMajorVersion;
+    s32 httpMinorVersion;
+    s32 statusCode;
+    s32 statusTextIndex;
+    s32 headersIndex;
+    s32 headersEnd;
+    s32 completed;
+    u32 bodyBytesReceived;
+    u32 contentLength;
+    void *redirectUrl;
+    s32 redirectCount;
+    s32 isChunked;
+    u32 chunkHeader[6];
+    s32 isProcessing;
+    s32 connectionClosed;
+    u32 isThrottled;
+    u32 lastThrottleRecvTime;
+    Unk_ov065_0227a4e8_Req *post;
+    void *postParts;
+    s32 postPartIndex;
+    u32 postBytesSent;
 };
 
 extern "C" {
@@ -510,31 +510,31 @@ s32 GsHttp_GetEx(const char *a, const char *b, void *c, s32 d, Unk_ov065_0227a4e
     if (conn == 0) {
         return -1;
     }
-    conn->unk_0c = 0;
-    conn->unk_14 = GsUtil_StrDup(a);
-    if (conn->unk_14 == 0) {
+    conn->requestType = 0;
+    conn->url = GsUtil_StrDup(a);
+    if (conn->url == 0) {
         GsHttp_FreeConnection(conn);
         return -1;
     }
     if (b != 0 && *b != 0) {
-        conn->unk_28 = GsUtil_StrDup(b);
-        if (conn->unk_28 == 0) {
+        conn->extraHeaders = GsUtil_StrDup(b);
+        if (conn->extraHeaders == 0) {
             GsHttp_FreeConnection(conn);
             return -1;
         }
     }
-    conn->unk_13c = e;
-    conn->unk_30 = g;
-    conn->unk_3c = (void *)h;
-    conn->unk_40 = (void *)i;
-    conn->unk_44 = j;
-    conn->unk_134 = f;
-    conn->unk_e0 = (c != 0) ? 1 : 0;
+    conn->post = e;
+    conn->isBlocking = g;
+    conn->progressCallback = (void *)h;
+    conn->completedCallback = (void *)i;
+    conn->callbackParam = j;
+    conn->isThrottled = f;
+    conn->isUserBodyBuf = (c != 0) ? 1 : 0;
     BOOL ok;
-    if (conn->unk_e0 != 0) {
-        ok = GsHttpBuf_InitUser(conn, &conn->unk_bc, c, d);
+    if (conn->isUserBodyBuf != 0) {
+        ok = GsHttpBuf_InitUser(conn, &conn->bodyBuf, c, d);
     } else {
-        ok = GsHttpBuf_Init(conn, &conn->unk_bc, 0x800, 0x800);
+        ok = GsHttpBuf_Init(conn, &conn->bodyBuf, 0x800, 0x800);
     }
     if (ok == 0) {
         GsHttp_FreeConnection(conn);
@@ -555,7 +555,7 @@ s32 GsHttp_GetEx(const char *a, const char *b, void *c, s32 d, Unk_ov065_0227a4e
         }
         return 0;
     }
-    return conn->unk_04;
+    return conn->requestId;
 }
 }
 }
@@ -585,25 +585,25 @@ s32 GsHttp_PostEx(const char *a, const char *b, Unk_ov065_0227a4e8_Req *c, u32 d
     if (conn == 0) {
         return -1;
     }
-    conn->unk_0c = 4;
-    conn->unk_14 = GsUtil_StrDup(a);
-    if (conn->unk_14 == 0) {
+    conn->requestType = 4;
+    conn->url = GsUtil_StrDup(a);
+    if (conn->url == 0) {
         GsHttp_FreeConnection(conn);
         return -1;
     }
     if (b != 0 && *b != 0) {
-        conn->unk_28 = GsUtil_StrDup(b);
-        if (conn->unk_28 == 0) {
+        conn->extraHeaders = GsUtil_StrDup(b);
+        if (conn->extraHeaders == 0) {
             GsHttp_FreeConnection(conn);
             return -1;
         }
     }
-    conn->unk_13c = c;
-    conn->unk_30 = e;
-    conn->unk_3c = (void *)f;
-    conn->unk_40 = (void *)g;
-    conn->unk_44 = h;
-    conn->unk_134 = d;
+    conn->post = c;
+    conn->isBlocking = e;
+    conn->progressCallback = (void *)f;
+    conn->completedCallback = (void *)g;
+    conn->callbackParam = h;
+    conn->isThrottled = d;
     if (c != 0) {
         if (GsHttp_InitPostState(conn) == 0) {
             GsHttp_FreeConnection(conn);
@@ -619,7 +619,7 @@ s32 GsHttp_PostEx(const char *a, const char *b, Unk_ov065_0227a4e8_Req *c, u32 d
         }
         return 0;
     }
-    return conn->unk_04;
+    return conn->requestId;
 }
 }
 }
@@ -664,7 +664,7 @@ s32 GsHttp_FindFreeSlot() {
     s32 base;
     s32 end;
     for (i = 0; i < sGsHttpConnectionCap; i++) {
-        if (sGsHttpConnections[i]->unk_00 == 0) {
+        if (sGsHttpConnections[i]->inUse == 0) {
             return i;
         }
     }
@@ -684,7 +684,7 @@ s32 GsHttp_FindFreeSlot() {
             }
             return -1;
         }
-        sGsHttpConnections[i]->unk_00 = 0;
+        sGsHttpConnections[i]->inUse = 0;
     }
     sGsHttpConnectionCap = end;
     return base;
@@ -706,53 +706,53 @@ Unk_ov065_02279c7c *GsHttp_NewConnection() {
     }
     s = sGsHttpConnections[idx];
     func_0212899c(s, 0, 0x184);
-    s->unk_00 = 1;
-    s->unk_04 = idx;
-    s->unk_08 = sGsHttpSerial++;
-    s->unk_0c = 0;
-    s->unk_10 = 0;
-    s->unk_14 = 0;
-    s->unk_18 = 0;
-    s->unk_1c = 0;
-    s->unk_20 = 0;
-    s->unk_24 = 0;
-    s->unk_28 = 0;
+    s->inUse = 1;
+    s->requestId = idx;
+    s->serial = sGsHttpSerial++;
+    s->requestType = 0;
+    s->state = 0;
+    s->url = 0;
+    s->serverHost = 0;
+    s->serverIp = 0;
+    s->serverPort = 0;
+    s->requestPath = 0;
+    s->extraHeaders = 0;
     s->unk_2c = 0;
-    s->unk_30 = 0;
-    s->unk_34 = 0;
-    s->unk_38 = 0;
-    s->unk_3c = 0;
-    s->unk_40 = 0;
-    s->unk_44 = 0;
-    s->unk_48 = -1;
-    s->unk_4c = 0;
-    s->unk_e0 = 0;
-    s->unk_e4 = 0;
-    s->unk_e8 = 0;
-    s->unk_ec = 0;
-    s->unk_f0 = 0;
-    s->unk_f4 = 0;
-    s->unk_f8 = 0;
-    s->unk_fc = 0;
-    s->unk_100 = 0;
-    s->unk_104 = -1;
-    s->unk_108 = 0;
-    s->unk_10c = 0;
-    s->unk_110 = 0;
-    s->unk_12c = 0;
-    s->unk_134 = 0;
-    s->unk_138 = 0;
-    s->unk_13c = 0;
-    s->unk_158 = 0x1f4;
-    s->unk_160 = 0x50;
-    s->unk_15c = 0;
-    s->unk_164 = 0;
-    r = GsHttpBuf_Init(s, &s->unk_50, 0x800, 0x1000);
+    s->isBlocking = 0;
+    s->keepAlive = 0;
+    s->result = 0;
+    s->progressCallback = 0;
+    s->completedCallback = 0;
+    s->callbackParam = 0;
+    s->socketHandle = -1;
+    s->socketError = 0;
+    s->isUserBodyBuf = 0;
+    s->httpMajorVersion = 0;
+    s->httpMinorVersion = 0;
+    s->statusCode = 0;
+    s->statusTextIndex = 0;
+    s->headersIndex = 0;
+    s->headersEnd = 0;
+    s->completed = 0;
+    s->bodyBytesReceived = 0;
+    s->contentLength = -1;
+    s->redirectUrl = 0;
+    s->redirectCount = 0;
+    s->isChunked = 0;
+    s->isProcessing = 0;
+    s->isThrottled = 0;
+    s->lastThrottleRecvTime = 0;
+    s->post = 0;
+    s->recvTimeSliceMs = 0x1f4;
+    s->proxyPort = 0x50;
+    s->proxyHost = 0;
+    s->encryptor = 0;
+    r = GsHttpBuf_Init(s, &s->sendBuf, 0x800, 0x1000);
     if (r != 0) {
-        r = GsHttpBuf_Init(s, &s->unk_74, 0x800, 0x800);
+        r = GsHttpBuf_Init(s, &s->recvBuf, 0x800, 0x800);
     }
     if (r != 0) {
-        r = GsHttpBuf_Init(s, &s->unk_98, 0x800, 0x400);
+        r = GsHttpBuf_Init(s, &s->rawRecvBuf, 0x800, 0x400);
     }
     if (r == 0) {
         GsHttp_FreeConnection(s);
@@ -772,46 +772,46 @@ BOOL GsHttp_FreeConnection(Unk_ov065_02279c7c *s) {
     if (s == 0) {
         return FALSE;
     }
-    if (s->unk_00 == 0) {
+    if (s->inUse == 0) {
         return FALSE;
     }
-    if (s->unk_04 < 0) {
+    if (s->requestId < 0) {
         return FALSE;
     }
-    if (s->unk_04 >= sGsHttpConnectionCap) {
+    if (s->requestId >= sGsHttpConnectionCap) {
         return FALSE;
     }
     GsHttp_EnterCritical();
-    GsUtil_Free(s->unk_14);
-    GsUtil_Free(s->unk_18);
-    GsUtil_Free(s->unk_24);
-    GsUtil_Free(s->unk_28);
-    GsUtil_Free(s->unk_108);
-    GsUtil_Free(s->unk_15c);
-    if (s->unk_48 != -1) {
-        GsSock_Shutdown(s->unk_48, 2);
-        GsSock_Close(s->unk_48);
+    GsUtil_Free(s->url);
+    GsUtil_Free(s->serverHost);
+    GsUtil_Free(s->requestPath);
+    GsUtil_Free(s->extraHeaders);
+    GsUtil_Free(s->redirectUrl);
+    GsUtil_Free(s->proxyHost);
+    if (s->socketHandle != -1) {
+        GsSock_Shutdown(s->socketHandle, 2);
+        GsSock_Close(s->socketHandle);
     }
-    GsHttpBuf_Free(&s->unk_50);
-    GsHttpBuf_Free(&s->unk_74);
-    GsHttpBuf_Free(&s->unk_98);
-    GsHttpBuf_Free(&s->unk_bc);
-    if (s->unk_140 != 0) {
+    GsHttpBuf_Free(&s->sendBuf);
+    GsHttpBuf_Free(&s->recvBuf);
+    GsHttpBuf_Free(&s->rawRecvBuf);
+    GsHttpBuf_Free(&s->bodyBuf);
+    if (s->postParts != 0) {
         GsHttp_FreePostState(s);
     }
-    if (s->unk_13c != 0) {
-        if (GsHttpPost_GetAutoFree(s->unk_13c) != 0) {
-            GsHttpPost_Free(s->unk_13c);
-            s->unk_13c = 0;
+    if (s->post != 0) {
+        if (GsHttpPost_GetAutoFree(s->post) != 0) {
+            GsHttpPost_Free(s->post);
+            s->post = 0;
         }
     }
-    if (s->unk_16c != 0) {
-        if (s->unk_178 != 0) {
-            s->unk_178(s, &s->unk_164);
+    if (s->encryptInitialized != 0) {
+        if (s->encryptCleanupFn != 0) {
+            s->encryptCleanupFn(s, &s->encryptor);
         }
-        s->unk_16c = 0;
+        s->encryptInitialized = 0;
     }
-    s->unk_00 = 0;
+    s->inUse = 0;
     sGsHttpConnectionCount--;
     GsHttp_LeaveCritical();
     return TRUE;
@@ -827,7 +827,7 @@ void GsHttp_ForEachConnection(BOOL (*cb)(Unk_ov065_02279c7c *)) {
         GsHttp_EnterCritical();
         for (i = 0; i < sGsHttpConnectionCap; i++) {
             Unk_ov065_02279c7c *s = sGsHttpConnections[i];
-            if (s->unk_00 != 0) {
+            if (s->inUse != 0) {
                 cb(s);
             }
         }
@@ -840,30 +840,30 @@ void GsHttp_ForEachConnection(BOOL (*cb)(Unk_ov065_02279c7c *)) {
 namespace Nc {
 extern "C" {
 void GsHttp_ResetForRedirect(Unk_ov065_02279c7c *self) {
-    self->unk_10 = 0;
-    GsUtil_Free(self->unk_14);
-    self->unk_14 = self->unk_108;
-    self->unk_108 = 0;
-    GsUtil_Free(self->unk_18);
-    self->unk_18 = 0;
-    self->unk_1c = 0;
-    self->unk_20 = 0;
-    GsUtil_Free(self->unk_24);
-    self->unk_24 = 0;
-    GsSock_Shutdown(self->unk_48, 2);
-    GsSock_Close(self->unk_48);
-    self->unk_48 = -1;
-    GsHttpBuf_Reset(&self->unk_50);
-    GsHttpBuf_Reset(&self->unk_74);
-    GsHttpBuf_Reset(&self->unk_98);
-    self->unk_e4 = 0;
-    self->unk_e8 = 0;
-    self->unk_ec = 0;
-    self->unk_f0 = 0;
-    self->unk_f4 = 0;
-    self->unk_f8 = 0;
-    self->unk_130 = 0;
-    self->unk_10c++;
+    self->state = 0;
+    GsUtil_Free(self->url);
+    self->url = self->redirectUrl;
+    self->redirectUrl = 0;
+    GsUtil_Free(self->serverHost);
+    self->serverHost = 0;
+    self->serverIp = 0;
+    self->serverPort = 0;
+    GsUtil_Free(self->requestPath);
+    self->requestPath = 0;
+    GsSock_Shutdown(self->socketHandle, 2);
+    GsSock_Close(self->socketHandle);
+    self->socketHandle = -1;
+    GsHttpBuf_Reset(&self->sendBuf);
+    GsHttpBuf_Reset(&self->recvBuf);
+    GsHttpBuf_Reset(&self->rawRecvBuf);
+    self->httpMajorVersion = 0;
+    self->httpMinorVersion = 0;
+    self->statusCode = 0;
+    self->statusTextIndex = 0;
+    self->headersIndex = 0;
+    self->headersEnd = 0;
+    self->connectionClosed = 0;
+    self->redirectCount++;
 }
 }
 }
@@ -921,32 +921,32 @@ BOOL GsHttp_DecryptReceived(Unk_ov065_02279c7c *self) {
     s32 outl = 0;
     s32 r;
     do {
-        s32 pos = self->unk_a8;
-        u8 *in = self->unk_9c + pos;
-        inl = self->unk_a4 - pos;
-        s32 w = self->unk_80;
-        u8 *out = self->unk_78 + w;
-        outl = self->unk_7c - w;
-        r = self->unk_180(self, &self->unk_164, in, &inl, out, &outl);
-        if (r == 2 && GsHttpBuf_Grow(&self->unk_74, self->unk_88) == 0) {
+        s32 pos = self->rawRecvBufReadPos;
+        u8 *in = self->rawRecvBufData + pos;
+        inl = self->rawRecvBufLength - pos;
+        s32 w = self->recvBufLength;
+        u8 *out = self->recvBufData + w;
+        outl = self->recvBufCapacity - w;
+        r = self->decryptFn(self, &self->encryptor, in, &inl, out, &outl);
+        if (r == 2 && GsHttpBuf_Grow(&self->recvBuf, self->recvBufGrowBy) == 0) {
             return FALSE;
         }
     } while (r == 2 && outl == 0);
-    self->unk_a8 += inl;
-    self->unk_80 += outl;
-    if (self->unk_a8 > 0xff) {
-        s32 rest = self->unk_a4 - self->unk_a8;
+    self->rawRecvBufReadPos += inl;
+    self->recvBufLength += outl;
+    if (self->rawRecvBufReadPos > 0xff) {
+        s32 rest = self->rawRecvBufLength - self->rawRecvBufReadPos;
         if (rest == 0) {
-            GsHttpBuf_Reset(&self->unk_98);
+            GsHttpBuf_Reset(&self->rawRecvBuf);
         } else {
-            memmove(self->unk_9c, self->unk_9c + self->unk_a8, rest);
-            self->unk_a8 = 0;
-            self->unk_a4 = rest;
+            memmove(self->rawRecvBufData, self->rawRecvBufData + self->rawRecvBufReadPos, rest);
+            self->rawRecvBufReadPos = 0;
+            self->rawRecvBufLength = rest;
         }
     }
     if (r == 3) {
-        self->unk_fc = 1;
-        self->unk_38 = 0x11;
+        self->completed = 1;
+        self->result = 0x11;
         return FALSE;
     }
     return TRUE;
@@ -959,61 +959,61 @@ extern "C" {
 s32 GsHttp_SocketRecv(Unk_ov065_02279c7c *self, u8 *buf, s32 *plen) {
     s32 len;
     s32 n = *plen - 1;
-    if (self->unk_134 != 0) {
+    if (self->isThrottled != 0) {
         u32 t = GsUtil_GetTimeMs();
-        if (t < self->unk_138 + sGsHttpThrottleDelay) {
+        if (t < self->lastThrottleRecvTime + sGsHttpThrottleDelay) {
             return 1;
         }
-        self->unk_138 = t;
+        self->lastThrottleRecvTime = t;
         if (n >= sGsHttpThrottleBytes) {
             n = sGsHttpThrottleBytes;
         }
     }
-    if (self->unk_84 < self->unk_80) {
-        GsHttpBuf_Read(&self->unk_74, buf, plen);
-        if (self->unk_84 == self->unk_80) {
-            self->unk_80 = self->unk_f8;
-            self->unk_84 = self->unk_f8;
+    if (self->recvBufReadPos < self->recvBufLength) {
+        GsHttpBuf_Read(&self->recvBuf, buf, plen);
+        if (self->recvBufReadPos == self->recvBufLength) {
+            self->recvBufLength = self->headersEnd;
+            self->recvBufReadPos = self->headersEnd;
         }
         return 0;
     }
-    len = GsSock_Recv(self->unk_48, buf, n, 0);
+    len = GsSock_Recv(self->socketHandle, buf, n, 0);
     if (len == -1) {
-        s32 e = GsSock_GetLastError(self->unk_48);
+        s32 e = GsSock_GetLastError(self->socketHandle);
         if (e == -6 || e == -26 || e == -76) {
             return 1;
         }
-        self->unk_fc = 1;
-        self->unk_38 = 5;
-        self->unk_4c = e;
-        self->unk_130 = 1;
+        self->completed = 1;
+        self->result = 5;
+        self->socketError = e;
+        self->connectionClosed = 1;
         return 3;
     }
     if (len == 0) {
-        self->unk_130 = 1;
+        self->connectionClosed = 1;
         return 2;
     }
-    if (self->unk_168 != 0) {
-        if (GsHttpBuf_Append(&self->unk_98, buf, len) == 0) {
+    if (self->encryptEnabled != 0) {
+        if (GsHttpBuf_Append(&self->rawRecvBuf, buf, len) == 0) {
             return 3;
         }
         if (GsHttp_DecryptReceived(self) == 0) {
-            self->unk_fc = 1;
-            self->unk_38 = 0x11;
+            self->completed = 1;
+            self->result = 0x11;
             return 3;
         }
-        if (self->unk_80 - self->unk_84 <= 0) {
+        if (self->recvBufLength - self->recvBufReadPos <= 0) {
             buf[0] = 0;
             *plen = 0;
             return 1;
         }
         len = *plen - 1;
-        if (GsHttpBuf_Read(&self->unk_74, buf, &len) == 0) {
+        if (GsHttpBuf_Read(&self->recvBuf, buf, &len) == 0) {
             return 3;
         }
-        if (self->unk_84 == self->unk_80) {
-            self->unk_80 = self->unk_f8;
-            self->unk_84 = self->unk_f8;
+        if (self->recvBufReadPos == self->recvBufLength) {
+            self->recvBufLength = self->headersEnd;
+            self->recvBufReadPos = self->headersEnd;
         }
         if (len <= 0) {
             return 1;
@@ -1033,19 +1033,19 @@ s32 GsHttp_SocketRecv(Unk_ov065_02279c7c *self, u8 *buf, s32 *plen) {
 namespace Nc {
 extern "C" {
 s32 GsHttp_SocketSend(Unk_ov065_02279c7c *self, u8 *buf, s32 len) {
-    s32 r = GsSock_Send(self->unk_48, buf, len, 0);
+    s32 r = GsSock_Send(self->socketHandle, buf, len, 0);
     if (r == -1) {
-        s32 e = GsSock_GetLastError(self->unk_48);
+        s32 e = GsSock_GetLastError(self->socketHandle);
         if (e == -6 || e == -26 || e == -76) {
             return 0;
         }
-        self->unk_fc = 1;
-        self->unk_38 = 5;
-        self->unk_4c = e;
+        self->completed = 1;
+        self->result = 5;
+        self->socketError = e;
         return -1;
     }
-    if (self->unk_10 == 4) {
-        self->unk_148 += r;
+    if (self->state == 4) {
+        self->postBytesSent += r;
     }
     return r;
 }
@@ -1056,7 +1056,7 @@ namespace Nc {
 extern "C" {
 s32 GsHttp_SendOrQueue(Unk_ov065_02279c7c *self, u8 *buf, s32 len) {
     s32 r = 0;
-    if (self->unk_5c == 0) {
+    if (self->sendBufLength == 0) {
         r = GsHttp_SocketSend(self, buf, len);
         if (r == -1) {
             return 0;
@@ -1065,7 +1065,7 @@ s32 GsHttp_SendOrQueue(Unk_ov065_02279c7c *self, u8 *buf, s32 len) {
             return 1;
         }
     }
-    if (GsHttpBuf_Append(&self->unk_50, buf + r, len - r) == 0) {
+    if (GsHttpBuf_Append(&self->sendBuf, buf + r, len - r) == 0) {
         return 0;
     }
     return 2;
@@ -1076,19 +1076,19 @@ s32 GsHttp_SendOrQueue(Unk_ov065_02279c7c *self, u8 *buf, s32 len) {
 namespace Nc {
 extern "C" {
 void GsHttp_CallCompletedCallback(Unk_ov065_02279c7c *self) {
-    if (self->unk_40 != 0) {
+    if (self->completedCallback != 0) {
         u32 a;
         u32 b;
-        if (self->unk_0c != 0) {
+        if (self->requestType != 0) {
             a = 0;
             b = 0;
         } else {
-            a = self->unk_c0;
-            b = self->unk_100;
+            a = self->bodyBufData;
+            b = self->bodyBytesReceived;
         }
-        s32 r = self->unk_40(self->unk_04, self->unk_38, a, b, self->unk_44);
+        s32 r = self->completedCallback(self->requestId, self->result, a, b, self->callbackParam);
         if (a != 0 && r == 0) {
-            self->unk_d8 = 1;
+            self->bodyBufKeepData = 1;
         }
     }
 }
@@ -1098,8 +1098,8 @@ void GsHttp_CallCompletedCallback(Unk_ov065_02279c7c *self) {
 namespace Nc {
 extern "C" {
 void GsHttp_CallProgressCallback(Unk_ov065_02279c7c *self, u32 p1, u32 p2) {
-    if (self->unk_3c != 0) {
-        self->unk_3c(self->unk_04, self->unk_10, p1, p2, self->unk_100, self->unk_104, self->unk_44);
+    if (self->progressCallback != 0) {
+        self->progressCallback(self->requestId, self->state, p1, p2, self->bodyBytesReceived, self->contentLength, self->callbackParam);
     }
 }
 }
@@ -1108,9 +1108,9 @@ void GsHttp_CallProgressCallback(Unk_ov065_02279c7c *self, u32 p1, u32 p2) {
 namespace Nc {
 extern "C" {
 void GsHttp_CallPostCallback(Unk_ov065_02279c7c *self) {
-    if (self->unk_150 != 0) {
-        u32 a = GsArray_Count(self->unk_140);
-        self->unk_150(self->unk_04, self->unk_148, self->unk_14c, self->unk_144, a, self->unk_44);
+    if (self->postCallback != 0) {
+        u32 a = GsArray_Count(self->postParts);
+        self->postCallback(self->requestId, self->postBytesSent, self->postTotalBytes, self->postPartIndex, a, self->callbackParam);
     }
 }
 }
@@ -1127,13 +1127,13 @@ s32 GsHttpBuf_Grow(Unk_ov065_0227931c_Buf *o, s32 n) {
     if (n <= 0) {
         return FALSE;
     }
-    newsize = o->unk_08 + n;
-    p = GsUtil_Realloc(o->unk_04, newsize);
+    newsize = o->capacity + n;
+    p = GsUtil_Realloc(o->data, newsize);
     if (p == 0) {
         return FALSE;
     }
-    o->unk_04 = (char *)p;
-    o->unk_08 = newsize;
+    o->data = (char *)p;
+    o->capacity = newsize;
     return TRUE;
 }
 }
@@ -1154,19 +1154,19 @@ s32 GsHttpBuf_Init(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o, s32 
     if (grow <= 0) {
         return FALSE;
     }
-    o->unk_00 = ow;
-    o->unk_04 = 0;
-    o->unk_08 = 0;
-    o->unk_0c = 0;
-    o->unk_10 = 0;
-    o->unk_14 = grow;
-    o->unk_18 = 0;
-    o->unk_1c = 0;
-    o->unk_20 = 0;
+    o->connection = ow;
+    o->data = 0;
+    o->capacity = 0;
+    o->length = 0;
+    o->readPos = 0;
+    o->growBy = grow;
+    o->isFixed = 0;
+    o->keepData = 0;
+    o->isEncrypted = 0;
     if (GsHttpBuf_Grow(o, size) == 0) {
         return FALSE;
     }
-    *o->unk_04 = 0;
+    *o->data = 0;
     return TRUE;
 }
 }
@@ -1187,15 +1187,15 @@ s32 GsHttpBuf_InitUser(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o, 
     if (size <= 0) {
         return FALSE;
     }
-    o->unk_00 = ow;
-    o->unk_04 = buf;
-    o->unk_08 = size;
-    o->unk_0c = 0;
-    o->unk_14 = 0;
-    o->unk_18 = 1;
-    o->unk_1c = 1;
-    o->unk_20 = 0;
-    *o->unk_04 = 0;
+    o->connection = ow;
+    o->data = buf;
+    o->capacity = size;
+    o->length = 0;
+    o->growBy = 0;
+    o->isFixed = 1;
+    o->keepData = 1;
+    o->isEncrypted = 0;
+    *o->data = 0;
     return TRUE;
 }
 }
@@ -1204,9 +1204,9 @@ s32 GsHttpBuf_InitUser(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o, 
 namespace Ng {
 extern "C" {
 void GsHttpBuf_Free(Unk_ov065_0227931c_Buf *o) {
-    if (o != 0 && o->unk_04 != 0) {
-        if (o->unk_1c == 0) {
-            GsUtil_Free(o->unk_04);
+    if (o != 0 && o->data != 0) {
+        if (o->keepData == 0) {
+            GsUtil_Free(o->data);
         }
         func_0212899c(o, 0, 0x24);
     }
@@ -1217,7 +1217,7 @@ void GsHttpBuf_Free(Unk_ov065_0227931c_Buf *o) {
 namespace Ng {
 extern "C" {
 s32 GsHttpBuf_Append(Unk_ov065_0227931c_Buf *o, char *s, s32 len) {
-    Unk_ov065_0227931c_Owner *ow = o->unk_00;
+    Unk_ov065_0227931c_Owner *ow = o->connection;
     s32 n;
     s32 r;
     if (o == 0) {
@@ -1232,42 +1232,42 @@ s32 GsHttpBuf_Append(Unk_ov065_0227931c_Buf *o, char *s, s32 len) {
     if (len == 0) {
         len = STD_GetStringLength(s);
     }
-    if (o->unk_20 == 1) {
+    if (o->isEncrypted == 1) {
         do {
-            n = o->unk_08 - o->unk_0c;
-            r = ow->unk_17c(ow, &ow->unk_164, s, &len, o->unk_04 + o->unk_0c, &n);
+            n = o->capacity - o->length;
+            r = ow->encryptFn(ow, &ow->encryptor, s, &len, o->data + o->length, &n);
             if (r == 2) {
-                if (o->unk_18 != 0) {
-                    o->unk_00->unk_fc = 1;
-                    o->unk_00->unk_38 = 2;
+                if (o->isFixed != 0) {
+                    o->connection->completed = 1;
+                    o->connection->result = 2;
                     return FALSE;
                 }
-                if (GsHttpBuf_Grow(o, o->unk_14) != 0) {
-                    o->unk_00->unk_fc = 1;
-                    o->unk_00->unk_38 = 1;
+                if (GsHttpBuf_Grow(o, o->growBy) != 0) {
+                    o->connection->completed = 1;
+                    o->connection->result = 1;
                     return FALSE;
                 }
             } else {
-                o->unk_0c += n;
+                o->length += n;
             }
         } while (r == 2);
     } else {
-        s32 t = o->unk_0c + len;
-        while (t >= o->unk_08) {
-            if (o->unk_18 != 0) {
-                o->unk_00->unk_fc = 1;
-                o->unk_00->unk_38 = 2;
+        s32 t = o->length + len;
+        while (t >= o->capacity) {
+            if (o->isFixed != 0) {
+                o->connection->completed = 1;
+                o->connection->result = 2;
                 return FALSE;
             }
-            if (GsHttpBuf_Grow(o, o->unk_14) == 0) {
-                o->unk_00->unk_fc = 1;
-                o->unk_00->unk_38 = 1;
+            if (GsHttpBuf_Grow(o, o->growBy) == 0) {
+                o->connection->completed = 1;
+                o->connection->result = 1;
                 return FALSE;
             }
         }
-        memcpy(o->unk_04 + o->unk_0c, s, len);
-        o->unk_0c = t;
-        o->unk_04[o->unk_0c] = 0;
+        memcpy(o->data + o->length, s, len);
+        o->length = t;
+        o->data[o->length] = 0;
     }
     return TRUE;
 }
