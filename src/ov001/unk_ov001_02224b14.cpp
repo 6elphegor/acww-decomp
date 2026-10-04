@@ -4,16 +4,16 @@
 #pragma thumb off
 
 struct Unk_ov001_02224670_Entry {
-    u32 unk_00;
-    u16 unk_04;
+    u32 attr01;
+    u16 attr2;
     u16 unk_06;
 };
 
-struct Unk_ov001_02224670 {
-    Unk_ov001_02224670 *unk_00;
-    Unk_ov001_02224670 *unk_04;
-    Unk_ov001_02224670_Entry *unk_08;
-    u8 unk_0c;
+struct WfcObjGroup {
+    WfcObjGroup *prev;
+    WfcObjGroup *next;
+    Unk_ov001_02224670_Entry *oams;
+    u8 numOams;
 };
 
 struct Unk_ov001_02224b9c_T {
@@ -28,12 +28,12 @@ void MIi_CpuClear32(s32, void *, u32);
 void MIi_CpuCopy32(void *, void *, u32);
 void WfcFs_FreeFile(void *);
 void *WfcFs_LoadFile(u32, void *, u32);
-Unk_ov001_02224670 *WfcObj_Alloc(s32, s32, s32);
-Unk_ov001_02224670_Entry *WfcObj_GetOam(Unk_ov001_02224670 *, s32);
-Unk_ov001_02224670 *WfcOam_AllocEntry(s32, void *);
+WfcObjGroup *WfcObj_Alloc(s32, s32, s32);
+Unk_ov001_02224670_Entry *WfcObj_GetOam(WfcObjGroup *, s32);
+WfcObjGroup *WfcOam_AllocEntry(s32, void *);
 
-Unk_ov001_02224670 *WfcObj_Create(s32 which, s32 idx, s32 flag);
-Unk_ov001_02224670 *WfcObj_CreateSingle(s32 which, s32 idx);
+WfcObjGroup *WfcObj_Create(s32 which, s32 idx, s32 flag);
+WfcObjGroup *WfcObj_CreateSingle(s32 which, s32 idx);
 void WfcCell_Copy(s32 which, s32 idx, void *dst);
 void WfcCell_Unload(s32 which);
 void WfcCell_Load(s32 which, u32 path);
@@ -69,15 +69,15 @@ void WfcCell_Copy(s32 which, s32 idx, void *dst) {
     }
 }
 
-Unk_ov001_02224670 *WfcObj_CreateSingle(s32 which, s32 idx) {
+WfcObjGroup *WfcObj_CreateSingle(s32 which, s32 idx) {
     u32 buf[2];
-    Unk_ov001_02224670 *r = WfcOam_AllocEntry(which, buf);
+    WfcObjGroup *r = WfcOam_AllocEntry(which, buf);
     WfcCell_Copy(which, idx, r);
     return r;
 }
 
-Unk_ov001_02224670 *WfcObj_Create(s32 which, s32 idx, s32 flag) {
-    Unk_ov001_02224670 *r = WfcObj_Alloc(which, sWfcCellData[which][idx].unk_00, flag);
+WfcObjGroup *WfcObj_Create(s32 which, s32 idx, s32 flag) {
+    WfcObjGroup *r = WfcObj_Alloc(which, sWfcCellData[which][idx].unk_00, flag);
     WfcCell_Copy(which, idx, WfcObj_GetOam(r, 0));
     return r;
 }

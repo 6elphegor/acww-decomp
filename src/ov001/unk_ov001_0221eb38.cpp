@@ -4,9 +4,9 @@
 #pragma thumb off
 
 struct Unk_ov001_0222defc {
-    void *unk_00[5];
-    void *unk_14;
-    u8 unk_18;
+    void *parts[5];
+    void *task;
+    u8 isSlidingOut;
 };
 
 struct Unk_ov001_0222a320 {
@@ -64,14 +64,14 @@ void WfcHeader_Create(s32 n)
     const u8 *p8 = sWfcHeaderPalettes + n * 5;
     s32 z = 0;
     for (i = 0; i < 5; i++) {
-        sWfcHeader->unk_00[i] = WfcObj_Create(1, *p9, 1);
-        WfcObj_SetPriority(sWfcHeader->unk_00[i], -1, z);
-        WfcObj_SetPos(sWfcHeader->unk_00[i], -1, -0x2a, sWfcHeaderPartPos[i].b);
-        WfcObj_SetModePalette(sWfcHeader->unk_00[i], -1, z, *p8);
+        sWfcHeader->parts[i] = WfcObj_Create(1, *p9, 1);
+        WfcObj_SetPriority(sWfcHeader->parts[i], -1, z);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, -0x2a, sWfcHeaderPartPos[i].b);
+        WfcObj_SetModePalette(sWfcHeader->parts[i], -1, z, *p8);
         p9++;
         p8++;
     }
-    sWfcHeader->unk_14 = (void *)WfcTask_Add(0, (void *)WfcHeader_SlideInTask0, 0, 0x78);
+    sWfcHeader->task = (void *)WfcTask_Add(0, (void *)WfcHeader_SlideInTask0, 0, 0x78);
     WfcTop_LoadScreen(n);
     WfcSound_Play(0xd);
 }
@@ -79,91 +79,91 @@ void WfcHeader_Create(s32 n)
 void WfcHeader_SlideInTask0(s32 r)
 {
     s32 a, b, i;
-    WfcObj_GetPos(sWfcHeader->unk_00[0], 0, &a, &b);
+    WfcObj_GetPos(sWfcHeader->parts[0], 0, &a, &b);
     a += 8;
     if (a < sWfcHeaderPartPos[0].a || a > 0x100) {
         for (i = 0; i < 5; i++)
-            WfcObj_SetPos(sWfcHeader->unk_00[i], -1, a, sWfcHeaderPartPos[i].b);
+            WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
         return;
     }
     a = sWfcHeaderPartPos[0].a;
     for (i = 0; i < 5; i++)
-        WfcObj_SetPos(sWfcHeader->unk_00[i], -1, a, sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInTask1);
 }
 
 void WfcHeader_SlideInTask1(s32 r)
 {
     s32 a, b, i;
-    WfcObj_GetPos(sWfcHeader->unk_00[1], 0, &a, &b);
+    WfcObj_GetPos(sWfcHeader->parts[1], 0, &a, &b);
     a += 8;
     if (a < sWfcHeaderPartPos[1].a || a > 0x100) {
         for (i = 1; i < 5; i++)
-            WfcObj_SetPos(sWfcHeader->unk_00[i], -1, a, sWfcHeaderPartPos[i].b);
+            WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
         return;
     }
     a = sWfcHeaderPartPos[1].a;
     for (i = 1; i < 5; i++)
-        WfcObj_SetPos(sWfcHeader->unk_00[i], -1, a, sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInTask2);
 }
 
 void WfcHeader_SlideInTask2(s32 r)
 {
     s32 a, b, i;
-    WfcObj_GetPos(sWfcHeader->unk_00[2], 0, &a, &b);
+    WfcObj_GetPos(sWfcHeader->parts[2], 0, &a, &b);
     a += 8;
     if (a < sWfcHeaderPartPos[2].a || a > 0x100) {
         for (i = 2; i < 5; i++)
-            WfcObj_SetPos(sWfcHeader->unk_00[i], -1, a, sWfcHeaderPartPos[i].b);
+            WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
         return;
     }
     a = sWfcHeaderPartPos[2].a;
     for (i = 2; i < 5; i++)
-        WfcObj_SetPos(sWfcHeader->unk_00[i], -1, a, sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInTask3);
 }
 
 void WfcHeader_SlideInTask3(s32 r)
 {
     s32 a, b, i;
-    WfcObj_GetPos(sWfcHeader->unk_00[3], 0, &a, &b);
+    WfcObj_GetPos(sWfcHeader->parts[3], 0, &a, &b);
     a += 8;
     if (a < sWfcHeaderPartPos[3].a || a > 0x100) {
         for (i = 3; i < 5; i++)
-            WfcObj_SetPos(sWfcHeader->unk_00[i], -1, a, sWfcHeaderPartPos[i].b);
+            WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
         return;
     }
     a = sWfcHeaderPartPos[3].a;
     for (i = 3; i < 5; i++)
-        WfcObj_SetPos(sWfcHeader->unk_00[i], -1, a, sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInTask4);
 }
 
 void WfcHeader_SlideInTask4(s32 r)
 {
     s32 a, b;
-    WfcObj_GetPos(sWfcHeader->unk_00[4], 0, &a, &b);
+    WfcObj_GetPos(sWfcHeader->parts[4], 0, &a, &b);
     a += 8;
     if (a < sWfcHeaderPartPos[4].a || a > 0x100) {
-        WfcObj_SetPos(sWfcHeader->unk_00[4], -1, a, sWfcHeaderPartPos[4].b);
+        WfcObj_SetPos(sWfcHeader->parts[4], -1, a, sWfcHeaderPartPos[4].b);
         return;
     }
     a = sWfcHeaderPartPos[4].a;
-    WfcObj_SetPos(sWfcHeader->unk_00[4], -1, a, sWfcHeaderPartPos[4].b);
+    WfcObj_SetPos(sWfcHeader->parts[4], -1, a, sWfcHeaderPartPos[4].b);
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInDone);
 }
 
 void WfcHeader_SlideInDone(s32 r)
 {
     WfcTask_RequestDelete(0, r);
-    sWfcHeader->unk_14 = 0;
+    sWfcHeader->task = 0;
 }
 
 void WfcHeader_StartSlideOut()
 {
-    sWfcHeader->unk_18 = 1;
-    sWfcHeader->unk_14 = (void *)WfcTask_Add(0, (void *)WfcHeader_SlideOutTask4, 0, 0x78);
+    sWfcHeader->isSlidingOut = 1;
+    sWfcHeader->task = (void *)WfcTask_Add(0, (void *)WfcHeader_SlideOutTask4, 0, 0x78);
 }
 
 void WfcHeader_SetStep(s32 n)
@@ -173,11 +173,11 @@ void WfcHeader_SetStep(s32 n)
     const u8 *p8 = sWfcHeaderPalettes + n * 5;
     s32 z = 0;
     for (i = 0; i < 5; i += 2) {
-        void *t = WfcObj_GetOam(sWfcHeader->unk_00[i], z);
+        void *t = WfcObj_GetOam(sWfcHeader->parts[i], z);
         WfcCell_Copy(1, *p9, t);
-        WfcObj_SetPriority(sWfcHeader->unk_00[i], -1, z);
-        WfcObj_SetPos(sWfcHeader->unk_00[i], -1, sWfcHeaderPartPos[i].a, sWfcHeaderPartPos[i].b);
-        WfcObj_SetModePalette(sWfcHeader->unk_00[i], -1, z, *p8);
+        WfcObj_SetPriority(sWfcHeader->parts[i], -1, z);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, sWfcHeaderPartPos[i].a, sWfcHeaderPartPos[i].b);
+        WfcObj_SetModePalette(sWfcHeader->parts[i], -1, z, *p8);
         p9 += 2;
         p8 += 2;
     }
@@ -186,21 +186,21 @@ void WfcHeader_SetStep(s32 n)
 
 s32 WfcHeader_IsAnimating()
 {
-    if (sWfcHeader->unk_14 != 0) return TRUE;
+    if (sWfcHeader->task != 0) return TRUE;
     return FALSE;
 }
 
 void WfcHeader_SlideOutTask4(s32 r)
 {
     s32 a, b;
-    WfcObj_GetPos(sWfcHeader->unk_00[4], 0, &a, &b);
+    WfcObj_GetPos(sWfcHeader->parts[4], 0, &a, &b);
     a -= 8;
     if (a > sWfcHeaderPartPos[3].a) {
-        WfcObj_SetPos(sWfcHeader->unk_00[4], -1, a, sWfcHeaderPartPos[4].b);
+        WfcObj_SetPos(sWfcHeader->parts[4], -1, a, sWfcHeaderPartPos[4].b);
         return;
     }
     a = sWfcHeaderPartPos[3].a;
-    WfcObj_SetPos(sWfcHeader->unk_00[4], -1, a, sWfcHeaderPartPos[4].b);
+    WfcObj_SetPos(sWfcHeader->parts[4], -1, a, sWfcHeaderPartPos[4].b);
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideOutTask3);
 }
 
@@ -208,17 +208,17 @@ void WfcHeader_SlideOutTask3(s32 a)
 {
     s32 xy[2];
     s32 i;
-    WfcObj_GetPos(sWfcHeader->unk_00[3], 0, &xy[0], &xy[1]);
+    WfcObj_GetPos(sWfcHeader->parts[3], 0, &xy[0], &xy[1]);
     xy[0] -= 8;
     if (xy[0] > sWfcHeaderPartPos[2].a) {
         for (i = 3; i < 5; i++) {
-            WfcObj_SetPos(sWfcHeader->unk_00[i], -1, xy[0], sWfcHeaderPartPos[i].b);
+            WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].b);
         }
         return;
     }
     xy[0] = sWfcHeaderPartPos[2].a;
     for (i = 3; i < 5; i++) {
-        WfcObj_SetPos(sWfcHeader->unk_00[i], -1, xy[0], sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].b);
     }
     WfcTask_SetFunc(a, (void *)WfcHeader_SlideOutTask2);
 }
@@ -227,17 +227,17 @@ void WfcHeader_SlideOutTask2(s32 a)
 {
     s32 xy[2];
     s32 i;
-    WfcObj_GetPos(sWfcHeader->unk_00[2], 0, &xy[0], &xy[1]);
+    WfcObj_GetPos(sWfcHeader->parts[2], 0, &xy[0], &xy[1]);
     xy[0] -= 8;
     if (xy[0] > sWfcHeaderPartPos[1].a) {
         for (i = 2; i < 5; i++) {
-            WfcObj_SetPos(sWfcHeader->unk_00[i], -1, xy[0], sWfcHeaderPartPos[i].b);
+            WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].b);
         }
         return;
     }
     xy[0] = sWfcHeaderPartPos[1].a;
     for (i = 2; i < 5; i++) {
-        WfcObj_SetPos(sWfcHeader->unk_00[i], -1, xy[0], sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].b);
     }
     WfcTask_SetFunc(a, (void *)WfcHeader_SlideOutTask1);
 }
@@ -246,17 +246,17 @@ void WfcHeader_SlideOutTask1(s32 a)
 {
     s32 xy[2];
     s32 i;
-    WfcObj_GetPos(sWfcHeader->unk_00[1], 0, &xy[0], &xy[1]);
+    WfcObj_GetPos(sWfcHeader->parts[1], 0, &xy[0], &xy[1]);
     xy[0] -= 8;
     if (xy[0] > sWfcHeaderPartPos[0].a) {
         for (i = 1; i < 5; i++) {
-            WfcObj_SetPos(sWfcHeader->unk_00[i], -1, xy[0], sWfcHeaderPartPos[i].b);
+            WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].b);
         }
         return;
     }
     xy[0] = sWfcHeaderPartPos[0].a;
     for (i = 1; i < 5; i++) {
-        WfcObj_SetPos(sWfcHeader->unk_00[i], -1, xy[0], sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].b);
     }
     WfcTask_SetFunc(a, (void *)WfcHeader_SlideOutTask0);
 }
@@ -265,16 +265,16 @@ void WfcHeader_SlideOutTask0(s32 a)
 {
     s32 xy[2];
     s32 i;
-    WfcObj_GetPos(sWfcHeader->unk_00[0], 0, &xy[0], &xy[1]);
+    WfcObj_GetPos(sWfcHeader->parts[0], 0, &xy[0], &xy[1]);
     xy[0] -= 8;
     for (i = 0; i < 5; i++) {
-        WfcObj_SetPos(sWfcHeader->unk_00[i], -1, xy[0], sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].b);
     }
     if (xy[0] > 0x1d6) return;
     if (xy[0] < 0x100) return;
     WfcTask_RequestDelete(0, a);
     for (i = 0; i < 5; i++) {
-        WfcObj_Free(sWfcHeader->unk_00[i]);
+        WfcObj_Free(sWfcHeader->parts[i]);
     }
     WfcHeap_FreeAndClear(&sWfcHeader);
 }
@@ -283,7 +283,7 @@ BOOL WfcHeader_IsSlideOutDone()
 {
     Unk_ov001_0222defc *g = sWfcHeader;
     if (g == 0) return TRUE;
-    return g->unk_18 == 0 ? TRUE : FALSE;
+    return g->isSlidingOut == 0 ? TRUE : FALSE;
 }
 
 // Declarations for data defined further down (definition order sets the data layout)

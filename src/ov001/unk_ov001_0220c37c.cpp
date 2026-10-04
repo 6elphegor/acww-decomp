@@ -5,17 +5,17 @@ struct Unk_ov001_0220c474_Rec {
     u16 unk_00[0x82];
 };
 
-struct Unk_ov001_0220c398_Obj {
-    u16 unk_000;
-    Unk_ov001_0220c474_Rec unk_002;
-    u16 unk_106;
-    s16 unk_108;
-    u16 unk_10a;
-    s16 unk_10c;
-    s16 unk_10e;
-    u8 unk_110[6];
-    u8 unk_116;
-    u8 unk_117[0x155];
+struct AossParam {
+    u16 keyTypeMask;
+    Unk_ov001_0220c474_Rec clientInfo;
+    u16 apRetryCount;
+    s16 apRetryWait;
+    u16 packetRetryCount;
+    s16 packetRetryWait;
+    s16 recvTimeout;
+    u8 macAddress[6];
+    u8 errorCode;
+    u8 result[0x155];
 };
 
 extern "C" {
@@ -23,7 +23,7 @@ extern const char data_ov001_02229f84[12];
 const char data_ov001_02229f84[12] = "NINTENDO-DS";
 
 volatile u8 sWfcAossSucceeded;
-Unk_ov001_0220c398_Obj *sWfcAossConfig;
+AossParam *sWfcAossConfig;
 
 extern s32 Aoss_Run(void *);
 extern s32 Aoss_WlanShutdown();
@@ -46,21 +46,21 @@ extern void OS_GetMacAddress(void *);
 void WfcAoss_Begin() {
     volatile u16 z;
     Unk_ov001_0220c474_Rec r;
-    sWfcAossConfig = (Unk_ov001_0220c398_Obj *)WfcHeap_AllocClear(0x26c, 4);
+    sWfcAossConfig = (AossParam *)WfcHeap_AllocClear(0x26c, 4);
     sWfcAossSucceeded = 0;
     z = 0;
     MIi_CpuClear16(z, &r, 0x104);
     *(u8 *)&r = 0x50;
     r.unk_00[1] = 0xc;
     MI_CpuCopy8(data_ov001_02229f84, &r.unk_00[2]);
-    sWfcAossConfig->unk_000 = 3;
-    sWfcAossConfig->unk_002 = r;
-    sWfcAossConfig->unk_106 = 1;
-    sWfcAossConfig->unk_108 = -1;
-    sWfcAossConfig->unk_10a = 1;
-    sWfcAossConfig->unk_10c = -1;
-    sWfcAossConfig->unk_10e = -1;
-    OS_GetMacAddress(sWfcAossConfig->unk_110);
+    sWfcAossConfig->keyTypeMask = 3;
+    sWfcAossConfig->clientInfo = r;
+    sWfcAossConfig->apRetryCount = 1;
+    sWfcAossConfig->apRetryWait = -1;
+    sWfcAossConfig->packetRetryCount = 1;
+    sWfcAossConfig->packetRetryWait = -1;
+    sWfcAossConfig->recvTimeout = -1;
+    OS_GetMacAddress(sWfcAossConfig->macAddress);
     if (Aoss_WlanStartup((void *)WfcAoss_Alloc, (void *)WfcAoss_Free) != 0) {
         Fatal_Trap();
     }
@@ -69,10 +69,10 @@ void WfcAoss_Begin() {
 void WfcAoss_End(s32 a) {
     Aoss_WlanShutdown();
     if (a != 0) {
-        Unk_ov001_0220c398_Obj *o = sWfcAossConfig;
-        if (o->unk_116 == 0) {
+        AossParam *o = sWfcAossConfig;
+        if (o->errorCode == 0) {
             if (sWfcAossSucceeded == 1) {
-                WfcConfig_StoreAoss(o->unk_117);
+                WfcConfig_StoreAoss(o->result);
             }
         }
     }
@@ -84,7 +84,7 @@ u32 WfcAoss_Run() {
         sWfcAossSucceeded = 1;
         return 1;
     }
-    u32 t = sWfcAossConfig->unk_116;
+    u32 t = sWfcAossConfig->errorCode;
     if (t == 1) goto zero;
     if ((u8)(t + 0xfd) > 2) goto two;
 zero:

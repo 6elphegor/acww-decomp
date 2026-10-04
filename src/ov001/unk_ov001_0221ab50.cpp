@@ -268,12 +268,12 @@ namespace F0221a40c {
 #define R25C ((const Unk_ov001_0221abb4_R *)((const u16 *)sWfcSetupMethodCursorPos + 2))
 #define R25E ((const Unk_ov001_0221abb4_R *)((const u16 *)sWfcSetupMethodCursorPos + 3))
 
-struct Unk_ov001_0221a40c_G {
-    u32 unk_00;
-    u32 unk_04[3];
-    u32 unk_10[3];
-    u8 unk_1c;
-    u8 unk_1d;
+struct WfcConnSelectWork {
+    u32 paletteFile;
+    u32 slotButtons[3];
+    u32 eraseButtons[3];
+    u8 lastColumn;
+    u8 exitAction;
     u8 pad_1e[2];
 };
 

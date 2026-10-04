@@ -2,8 +2,8 @@
 #include "types.h"
 
 struct Unk_ov001_0221dd9c_Bits {
-    u8 unk_a : 2;
-    u8 unk_b : 6;
+    u8 wepKeySize : 2;
+    u8 wepAscii : 6;
 };
 
 struct Unk_ov001_0221dd9c_Body {
@@ -11,32 +11,32 @@ struct Unk_ov001_0221dd9c_Body {
 };
 
 // 0x100 byte save slot
-struct Unk_ov001_0221dd9c_Slot {
+struct WfcConfigSlot {
     u8 unk_00[0x40];
-    u8 unk_40[0x20];
-    u8 unk_60[0x20];
-    u8 unk_80[0x40];
-    u8 unk_c0[4];
-    u8 unk_c4[4];
-    u8 unk_c8[8];
-    u8 unk_d0;
-    u8 unk_d1[0x15];
-    Unk_ov001_0221dd9c_Bits unk_e6;
-    u8 unk_e7;
+    u8 ssid[0x20];
+    u8 aossWep64Ssid[0x20];
+    u8 wepKeys[0x40];
+    u8 ipAddress[4];
+    u8 gateway[4];
+    u8 dnsServers[8];
+    u8 subnetPrefixLen;
+    u8 aossWepKeys[0x15];
+    Unk_ov001_0221dd9c_Bits wepMode;
+    u8 status;
     u8 unk_e8[7];
-    u8 unk_ef;
-    u8 unk_f0[4];
-    u8 unk_f4;
-    u8 unk_f5;
-    u8 unk_f6;
+    u8 configuredMask;
+    u8 editSubnetMask[4];
+    u8 editSlotIndex;
+    u8 editAutoIp;
+    u8 editAutoDns;
     u8 unk_f7;
     u8 unk_f8[6];
-    u16 unk_fe;
+    u16 crc16;
 };
 
-struct Unk_ov001_0221dd9c_Data {
-    Unk_ov001_0221dd9c_Slot unk_000[4];
-    Unk_ov001_0221dd9c_Slot unk_400;
+struct WfcConfigData {
+    WfcConfigSlot slots[4];
+    WfcConfigSlot editSlot;
 };
 
 #pragma thumb on
@@ -70,7 +70,7 @@ void WfcUtil_ParseIpDigits(u8 *s, u8 *out);
 void WfcConfig_WriteSlot(s32 idx);
 void WfcConfig_EraseAll();
 void WfcConfig_EraseSlot(s32 idx);
-Unk_ov001_0221dd9c_Data *WfcConfig_Get();
+WfcConfigData *WfcConfig_Get();
 void WfcConfig_StoreAoss(u8 *src);
 void WfcConfig_StoreSimpleStart(u8 *src);
 void WfcConfig_CommitEdit();
@@ -97,14 +97,14 @@ void WfcConfig_Init();
 }
 
 extern "C" const u8 sWfcZeroIp[4] = { 0, 0, 0, 0 };
-Unk_ov001_0221dd9c_Data *sWfcConfig;
+WfcConfigData *sWfcConfig;
 
 #pragma thumb off
 
 void WfcConfig_Init()
 {
     u8 *g = (u8 *)WfcHeap_Alloc(0x6f8, 0x20);
-    sWfcConfig = (Unk_ov001_0221dd9c_Data *)g;
+    sWfcConfig = (WfcConfigData *)g;
     MATHi_CRC16InitTableRev(g + 0x4f8, 0xa001);
     func_020fefb0(sWfcConfig);
 }
@@ -198,7 +198,7 @@ void WfcConfig_FormatEditIp(s32 a)
 }
 
 void WfcConfig_FormatEditSubnetMask(void *p) {
-    u8 *ip = sWfcConfig->unk_400.unk_f0;
+    u8 *ip = sWfcConfig->editSlot.editSubnetMask;
     OS_SPrintf(p, "%3d%3d%3d%3d", ip[0], ip[1], ip[2], ip[3]);
 }
 
@@ -218,118 +218,118 @@ void WfcConfig_FormatEditDns2(void *p) {
 }
 
 u32 WfcConfig_GetSlotStatus(s32 idx) {
-    return sWfcConfig->unk_000[idx].unk_e7;
+    return sWfcConfig->slots[idx].status;
 }
 
 void WfcConfig_BeginEdit(s32 idx) {
-    Unk_ov001_0221dd9c_Data *d = sWfcConfig;
-    Unk_ov001_0221dd9c_Slot *s = &d->unk_000[idx];
-    *(Unk_ov001_0221dd9c_Body *)&d->unk_400 = *(Unk_ov001_0221dd9c_Body *)s;
-    d->unk_400.unk_f4 = idx;
-    if (memcmp(s->unk_c0, sWfcZeroIp, 4) != 0) {
-        sWfcConfig->unk_400.unk_f5 = 0;
+    WfcConfigData *d = sWfcConfig;
+    WfcConfigSlot *s = &d->slots[idx];
+    *(Unk_ov001_0221dd9c_Body *)&d->editSlot = *(Unk_ov001_0221dd9c_Body *)s;
+    d->editSlot.editSlotIndex = idx;
+    if (memcmp(s->ipAddress, sWfcZeroIp, 4) != 0) {
+        sWfcConfig->editSlot.editAutoIp = 0;
     } else {
-        sWfcConfig->unk_400.unk_f5 = 1;
+        sWfcConfig->editSlot.editAutoIp = 1;
     }
-    if (memcmp(s->unk_c8, sWfcZeroIp, 4) != 0 ||
-        memcmp(&s->unk_c8[4], sWfcZeroIp, 4) != 0) {
-        sWfcConfig->unk_400.unk_f6 = 0;
+    if (memcmp(s->dnsServers, sWfcZeroIp, 4) != 0 ||
+        memcmp(&s->dnsServers[4], sWfcZeroIp, 4) != 0) {
+        sWfcConfig->editSlot.editAutoDns = 0;
     } else {
-        sWfcConfig->unk_400.unk_f6 = 1;
+        sWfcConfig->editSlot.editAutoDns = 1;
     }
-    func_020fee5c(s->unk_d0, sWfcConfig->unk_400.unk_f0);
+    func_020fee5c(s->subnetPrefixLen, sWfcConfig->editSlot.editSubnetMask);
 }
 
 void WfcConfig_CommitEdit() {
-    Unk_ov001_0221dd9c_Data *d = sWfcConfig;
-    Unk_ov001_0221dd9c_Slot *b = &d->unk_400;
-    Unk_ov001_0221dd9c_Slot *s = &d->unk_000[b->unk_f4];
+    WfcConfigData *d = sWfcConfig;
+    WfcConfigSlot *b = &d->editSlot;
+    WfcConfigSlot *s = &d->slots[b->editSlotIndex];
     *(Unk_ov001_0221dd9c_Body *)s = *(Unk_ov001_0221dd9c_Body *)b;
-    if (b->unk_f5 != 0) {
-        MI_CpuFill8(s->unk_c0, 0, 4);
-        MI_CpuFill8(s->unk_c4, 0, 4);
-        s->unk_d0 = 0;
+    if (b->editAutoIp != 0) {
+        MI_CpuFill8(s->ipAddress, 0, 4);
+        MI_CpuFill8(s->gateway, 0, 4);
+        s->subnetPrefixLen = 0;
     } else {
-        MI_CpuCopy8(b->unk_c0, s->unk_c0, 4);
-        MI_CpuCopy8(b->unk_c4, s->unk_c4, 4);
-        s->unk_d0 = func_020fee84(b->unk_f0);
+        MI_CpuCopy8(b->ipAddress, s->ipAddress, 4);
+        MI_CpuCopy8(b->gateway, s->gateway, 4);
+        s->subnetPrefixLen = func_020fee84(b->editSubnetMask);
     }
-    if (b->unk_f6 != 0) {
-        MI_CpuFill8(s->unk_c8, 0, 8);
+    if (b->editAutoDns != 0) {
+        MI_CpuFill8(s->dnsServers, 0, 8);
     } else {
-        MI_CpuCopy8(b->unk_c8, s->unk_c8, 8);
+        MI_CpuCopy8(b->dnsServers, s->dnsServers, 8);
     }
-    WfcConfig_WriteSlot(b->unk_f4);
+    WfcConfig_WriteSlot(b->editSlotIndex);
 }
 
 void WfcConfig_StoreSimpleStart(u8 *src) {
-    Unk_ov001_0221dd9c_Slot *b = &sWfcConfig->unk_400;
+    WfcConfigSlot *b = &sWfcConfig->editSlot;
     u32 n;
     s32 i;
     u8 *d;
     MI_CpuFill8(b, 0, 0xef);
-    MI_CpuCopy8(src, b->unk_40, 0x20);
+    MI_CpuCopy8(src, b->ssid, 0x20);
     switch (*(s32 *)(src + 0x20)) {
     case 1:
         n = 5;
-        b->unk_e6.unk_a = 1;
+        b->wepMode.wepKeySize = 1;
         break;
     case 2:
         n = 0xd;
-        b->unk_e6.unk_a = 2;
+        b->wepMode.wepKeySize = 2;
         break;
     case 3:
         n = 0x10;
-        b->unk_e6.unk_a = 3;
+        b->wepMode.wepKeySize = 3;
         break;
     default:
         n = 0;
-        b->unk_e6.unk_a = 0;
+        b->wepMode.wepKeySize = 0;
         break;
     }
-    b->unk_e6.unk_b = 0;
-    d = b->unk_80;
+    b->wepMode.wepAscii = 0;
+    d = b->wepKeys;
     src += 0x28;
     for (i = 0; i < 4; i++, d += 0x10, src += 0x20) {
         MI_CpuCopy8(src, d, n);
     }
-    b->unk_e7 = 2;
-    MI_CpuFill8(b->unk_f0, 0, 4);
-    b->unk_f5 = 1;
-    b->unk_f6 = 1;
+    b->status = 2;
+    MI_CpuFill8(b->editSubnetMask, 0, 4);
+    b->editAutoIp = 1;
+    b->editAutoDns = 1;
     WfcConfig_CommitEdit();
 }
 
 void WfcConfig_StoreAoss(u8 *src) {
-    Unk_ov001_0221dd9c_Slot *b = &sWfcConfig->unk_400;
+    WfcConfigSlot *b = &sWfcConfig->editSlot;
     MI_CpuFill8(b, 0, 0xef);
-    MI_CpuCopy8(src, &b->unk_d1[0], 5);
-    MI_CpuCopy8(src + 0x6, &b->unk_d1[5], 5);
-    MI_CpuCopy8(src + 0xc, &b->unk_d1[10], 5);
-    MI_CpuCopy8(src + 0x12, &b->unk_d1[15], 5);
-    MI_CpuCopy8(src + 0x18, b->unk_60, 0x20);
-    MI_CpuCopy8(src + 0x39, &b->unk_80[0], 0xd);
-    MI_CpuCopy8(src + 0x47, &b->unk_80[0x10], 0xd);
-    MI_CpuCopy8(src + 0x55, &b->unk_80[0x20], 0xd);
-    MI_CpuCopy8(src + 0x63, &b->unk_80[0x30], 0xd);
-    MI_CpuCopy8(src + 0x71, b->unk_40, 0x20);
-    b->unk_e6.unk_a = 2;
-    b->unk_e6.unk_b = 0;
-    b->unk_e7 = 1;
-    MI_CpuFill8(b->unk_f0, 0, 4);
-    b->unk_f5 = 1;
-    b->unk_f6 = 1;
+    MI_CpuCopy8(src, &b->aossWepKeys[0], 5);
+    MI_CpuCopy8(src + 0x6, &b->aossWepKeys[5], 5);
+    MI_CpuCopy8(src + 0xc, &b->aossWepKeys[10], 5);
+    MI_CpuCopy8(src + 0x12, &b->aossWepKeys[15], 5);
+    MI_CpuCopy8(src + 0x18, b->aossWep64Ssid, 0x20);
+    MI_CpuCopy8(src + 0x39, &b->wepKeys[0], 0xd);
+    MI_CpuCopy8(src + 0x47, &b->wepKeys[0x10], 0xd);
+    MI_CpuCopy8(src + 0x55, &b->wepKeys[0x20], 0xd);
+    MI_CpuCopy8(src + 0x63, &b->wepKeys[0x30], 0xd);
+    MI_CpuCopy8(src + 0x71, b->ssid, 0x20);
+    b->wepMode.wepKeySize = 2;
+    b->wepMode.wepAscii = 0;
+    b->status = 1;
+    MI_CpuFill8(b->editSubnetMask, 0, 4);
+    b->editAutoIp = 1;
+    b->editAutoDns = 1;
     WfcConfig_CommitEdit();
 }
 
-Unk_ov001_0221dd9c_Data *WfcConfig_Get() {
+WfcConfigData *WfcConfig_Get() {
     return sWfcConfig;
 }
 
 void WfcConfig_EraseSlot(s32 idx) {
-    Unk_ov001_0221dd9c_Slot *s = &sWfcConfig->unk_000[idx];
+    WfcConfigSlot *s = &sWfcConfig->slots[idx];
     MI_CpuFill8(s, 0, 0xef);
-    s->unk_e7 = 0xff;
+    s->status = 0xff;
     WfcConfig_WriteSlot(idx);
 }
 
@@ -341,7 +341,7 @@ void WfcConfig_EraseAll() {
     s32 off;
     MIi_CpuClear16(z, sWfcConfig, 0x400);
     for (i = 0; i < 3; i++) {
-        sWfcConfig->unk_000[i].unk_e7 = 0xff;
+        sWfcConfig->slots[i].status = 0xff;
     }
     func_020ff770(rtc);
     r8 = func_020fe850(rtc);
@@ -363,22 +363,22 @@ void WfcConfig_WriteSlot(s32 idx) {
     s32 i;
     s32 off;
     void *p;
-    st = sWfcConfig->unk_000[idx].unk_e7;
+    st = sWfcConfig->slots[idx].status;
     on = FALSE;
     bit = 1 << idx;
     MI_CpuFill8(flags, on, 0x10);
     flags[idx] = 1;
     if (idx <= 2) {
-        Unk_ov001_0221dd9c_Data *d = sWfcConfig;
-        if ((d->unk_000[0].unk_ef & bit) != 0) on = TRUE;
+        WfcConfigData *d = sWfcConfig;
+        if ((d->slots[0].configuredMask & bit) != 0) on = TRUE;
         if (st == 0xff && on) {
-            d->unk_000[0].unk_ef &= ~bit;
-            sWfcConfig->unk_000[1].unk_ef &= ~bit;
+            d->slots[0].configuredMask &= ~bit;
+            sWfcConfig->slots[1].configuredMask &= ~bit;
             flags[1] = 1;
             flags[0] = 1;
         } else if (st != 0xff && !on) {
-            d->unk_000[0].unk_ef |= bit;
-            sWfcConfig->unk_000[1].unk_ef |= bit;
+            d->slots[0].configuredMask |= bit;
+            sWfcConfig->slots[1].configuredMask |= bit;
             flags[1] = 1;
             flags[0] = 1;
         }
@@ -387,9 +387,9 @@ void WfcConfig_WriteSlot(s32 idx) {
     off = i;
     for (; i < 4; i++, off += 0x100) {
         if (flags[i] != 0) {
-            Unk_ov001_0221dd9c_Data *d = sWfcConfig;
-            u32 r = MATH_CalcCRC16(&d->unk_400.unk_f8, (u8 *)d + off, 0xfe);
-            sWfcConfig->unk_000[i].unk_fe = r;
+            WfcConfigData *d = sWfcConfig;
+            u32 r = MATH_CalcCRC16(&d->editSlot.unk_f8, (u8 *)d + off, 0xfe);
+            sWfcConfig->slots[i].crc16 = r;
         }
     }
     p = WfcHeap_Alloc(0x100, 0x20);

@@ -3,26 +3,26 @@
 
 #pragma thumb off
 
-struct Unk_ov001_02224670 {
-    Unk_ov001_02224670 *unk_00;
-    Unk_ov001_02224670 *unk_04;
-    void *unk_08;
-    u8 unk_0c;
+struct WfcObjGroup {
+    WfcObjGroup *prev;
+    WfcObjGroup *next;
+    void *oams;
+    u8 numOams;
 };
 
-struct Unk_ov001_02224ca0 {
-    u16 unk_00;
-    u8 unk_02;
-    u8 unk_03;
-    void *unk_04[1];
+struct WfcPool {
+    u16 capacity;
+    u8 head;
+    u8 top;
+    void *entries[1];
 };
 
-struct Unk_ov001_0222df40 {
-    s32 unk_00;
-    s16 unk_04;
-    u16 unk_06;
-    u8 unk_08;
-    u8 unk_09;
+struct WfcFadeState {
+    s32 task;
+    s16 frame;
+    u16 duration;
+    u8 fadeType;
+    u8 isBusy;
     u8 pad_0a[2];
 };
 
@@ -44,20 +44,20 @@ void WfcHeap_FreeAndClear(void *);
 s32 WfcTask_RequestDelete(s32, s32);
 s32 WfcTask_Add(s32, void *, void *, s32);
 
-Unk_ov001_02224670 *WfcPool_Get(Unk_ov001_02224ca0 *r);
-void WfcPool_Put(Unk_ov001_02224ca0 *r, void *v);
+WfcObjGroup *WfcPool_Get(WfcPool *r);
+void WfcPool_Put(WfcPool *r, void *v);
 void WfcPool_Destroy(void *a, ...);
-Unk_ov001_02224ca0 *WfcPool_CreateFrom(s32 count, u8 *base, u32 stride);
-Unk_ov001_02224ca0 *WfcPool_Create(s32 count);
-void WfcFade_WaitTask(s32 a, Unk_ov001_0222df40 *st);
+WfcPool *WfcPool_CreateFrom(s32 count, u8 *base, u32 stride);
+WfcPool *WfcPool_Create(s32 count);
+void WfcFade_WaitTask(s32 a, WfcFadeState *st);
 s32 WfcFade_StartWait(u32 v);
-void WfcFade_Task(s32 a, Unk_ov001_0222df40 *st);
+void WfcFade_Task(s32 a, WfcFadeState *st);
 u32 WfcFade_Start(u32 idx, u32 mode, s32 val, u32 h);
 u8 WfcFade_IsBusy(u32 mode);
 void WfcFade_Shutdown();
 void WfcFade_Init();
 
-Unk_ov001_0222df40 *sWfcFade;
+WfcFadeState *sWfcFade;
 }
 
 extern "C" u8 sWfcFadeFlags[4] = {0x11, 0x10, 0x01, 0x00};
@@ -65,7 +65,7 @@ extern "C" u8 sWfcFadeEndValues[4] = {0x00, 0xf0, 0x00, 0x10};
 extern "C" Unk_ov001_02224ff8_Four sWfcFadeStartValues = {{0xf0, 0x00, 0x10, 0x00}};
 
 void WfcFade_Init() {
-    sWfcFade = (Unk_ov001_0222df40 *)WfcHeap_AllocClear(0x18, 4);
+    sWfcFade = (WfcFadeState *)WfcHeap_AllocClear(0x18, 4);
     G2x_SetBlendBrightness_((void *)0x4000050, 0x3f, 0x10);
     G2x_SetBlendBrightness_((void *)0x4001050, 0x3f, 0x10);
 }
@@ -75,19 +75,19 @@ void WfcFade_Shutdown() {
 }
 
 u8 WfcFade_IsBusy(u32 mode) {
-    Unk_ov001_0222df40 *p;
+    WfcFadeState *p;
     if (mode == 1) {
         p = sWfcFade;
     } else {
-        p = (Unk_ov001_0222df40 *)((u8 *)sWfcFade + 0xc);
+        p = (WfcFadeState *)((u8 *)sWfcFade + 0xc);
     }
-    return p->unk_09;
+    return p->isBusy;
 }
 
 u32 WfcFade_Start(u32 idx, u32 mode, s32 val, u32 h) {
     Unk_ov001_02224ff8_Four arr = sWfcFadeStartValues;
-    Unk_ov001_0222df40 *p = mode == 1 ? sWfcFade : (Unk_ov001_0222df40 *)((u8 *)sWfcFade + 0xc);
-    if (p->unk_09 != 0) {
+    WfcFadeState *p = mode == 1 ? sWfcFade : (WfcFadeState *)((u8 *)sWfcFade + 0xc);
+    if (p->isBusy != 0) {
         return 0;
     }
     if (mode == 1) {
@@ -95,15 +95,15 @@ u32 WfcFade_Start(u32 idx, u32 mode, s32 val, u32 h) {
     } else {
         G2x_SetBlendBrightness_((void *)0x4000050, val, ((s8 *)arr.v)[idx]);
     }
-    p->unk_00 = WfcTask_Add(1, (void *)WfcFade_Task, p, 0xc8);
-    p->unk_04 = 0;
-    p->unk_08 = idx;
-    p->unk_06 = h;
-    p->unk_09 = 1;
+    p->task = WfcTask_Add(1, (void *)WfcFade_Task, p, 0xc8);
+    p->frame = 0;
+    p->fadeType = idx;
+    p->duration = h;
+    p->isBusy = 1;
     return 1;
 }
 
-void WfcFade_Task(s32 a, Unk_ov001_0222df40 *st) {
+void WfcFade_Task(s32 a, WfcFadeState *st) {
     s8 lo[4];
     s8 hi[4];
     lo[0] = sWfcFadeFlags[0];
@@ -114,53 +114,53 @@ void WfcFade_Task(s32 a, Unk_ov001_0222df40 *st) {
     hi[1] = sWfcFadeEndValues[1];
     hi[2] = sWfcFadeEndValues[2];
     hi[3] = sWfcFadeEndValues[3];
-    st->unk_04 = st->unk_04 + 1;
-    s32 r = FX_DivS32(st->unk_04 << 4, st->unk_06);
-    u32 f = ((u8 *)lo)[st->unk_08];
+    st->frame = st->frame + 1;
+    s32 r = FX_DivS32(st->frame << 4, st->duration);
+    u32 f = ((u8 *)lo)[st->fadeType];
     if (f & 1) r = 0x10 - r;
     if (f & 0x10) r = -r;
     if (st == sWfcFade) G2x_ChangeBlendBrightness_(0x4001050, r);
     else G2x_ChangeBlendBrightness_(0x4000050, r);
-    if (st->unk_04 < st->unk_06) return;
-    if (st == sWfcFade) G2x_ChangeBlendBrightness_(0x4001050, hi[st->unk_08]);
-    else G2x_ChangeBlendBrightness_(0x4000050, hi[st->unk_08]);
-    st->unk_09 = 0;
+    if (st->frame < st->duration) return;
+    if (st == sWfcFade) G2x_ChangeBlendBrightness_(0x4001050, hi[st->fadeType]);
+    else G2x_ChangeBlendBrightness_(0x4000050, hi[st->fadeType]);
+    st->isBusy = 0;
     WfcTask_RequestDelete(1, a);
 }
 
 s32 WfcFade_StartWait(u32 v) {
-    Unk_ov001_0222df40 *s = sWfcFade;
-    if (s->unk_09 != 0) return 0;
-    s->unk_00 = WfcTask_Add(1, (void *)WfcFade_WaitTask, s, 200);
-    s->unk_04 = 0;
-    s->unk_06 = v;
-    s->unk_09 = 1;
+    WfcFadeState *s = sWfcFade;
+    if (s->isBusy != 0) return 0;
+    s->task = WfcTask_Add(1, (void *)WfcFade_WaitTask, s, 200);
+    s->frame = 0;
+    s->duration = v;
+    s->isBusy = 1;
     return 1;
 }
 
-void WfcFade_WaitTask(s32 a, Unk_ov001_0222df40 *st) {
-    st->unk_04 = st->unk_04 + 1;
-    if (st->unk_04 < st->unk_06) return;
-    st->unk_09 = 0;
+void WfcFade_WaitTask(s32 a, WfcFadeState *st) {
+    st->frame = st->frame + 1;
+    if (st->frame < st->duration) return;
+    st->isBusy = 0;
     WfcTask_RequestDelete(1, a);
 }
 
-Unk_ov001_02224ca0 *WfcPool_Create(s32 count) {
-    Unk_ov001_02224ca0 *r = (Unk_ov001_02224ca0 *)WfcHeap_Alloc((count + 1) * 4 + 8, 4);
-    r->unk_00 = count + 1;
-    r->unk_02 = 0;
-    r->unk_03 = 0;
+WfcPool *WfcPool_Create(s32 count) {
+    WfcPool *r = (WfcPool *)WfcHeap_Alloc((count + 1) * 4 + 8, 4);
+    r->capacity = count + 1;
+    r->head = 0;
+    r->top = 0;
     return r;
 }
 
-Unk_ov001_02224ca0 *WfcPool_CreateFrom(s32 count, u8 *base, u32 stride) {
-    Unk_ov001_02224ca0 *r = WfcPool_Create(count);
+WfcPool *WfcPool_CreateFrom(s32 count, u8 *base, u32 stride) {
+    WfcPool *r = WfcPool_Create(count);
     s32 i;
     for (i = 0; i < count; i++) {
-        r->unk_04[i] = base;
+        r->entries[i] = base;
         base += stride;
     }
-    r->unk_03 = count;
+    r->top = count;
     return r;
 }
 
@@ -168,23 +168,23 @@ void WfcPool_Destroy(void *a, ...) {
     WfcHeap_FreeAndClear(&a);
 }
 
-void WfcPool_Put(Unk_ov001_02224ca0 *r, void *v) {
+void WfcPool_Put(WfcPool *r, void *v) {
     s32 irq = OS_DisableIrqMask(1);
-    u32 n = FX_ModS32(r->unk_03 + 1, r->unk_00);
-    if (n == r->unk_02) Fatal_Trap();
-    r->unk_04[r->unk_03] = v;
-    r->unk_03 = n;
+    u32 n = FX_ModS32(r->top + 1, r->capacity);
+    if (n == r->head) Fatal_Trap();
+    r->entries[r->top] = v;
+    r->top = n;
     OS_EnableIrqMask(irq);
 }
 
-Unk_ov001_02224670 *WfcPool_Get(Unk_ov001_02224ca0 *r) {
-    Unk_ov001_02224670 *res = 0;
+WfcObjGroup *WfcPool_Get(WfcPool *r) {
+    WfcObjGroup *res = 0;
     s32 irq = OS_DisableIrqMask(1);
-    u32 t = r->unk_03;
-    u32 h = r->unk_02;
+    u32 t = r->top;
+    u32 h = r->head;
     if (h != t) {
-        r->unk_03 = FX_ModS32(t + r->unk_00 - 1, r->unk_00);
-        res = (Unk_ov001_02224670 *)r->unk_04[r->unk_03];
+        r->top = FX_ModS32(t + r->capacity - 1, r->capacity);
+        res = (WfcObjGroup *)r->entries[r->top];
     }
     OS_EnableIrqMask(irq);
     return res;

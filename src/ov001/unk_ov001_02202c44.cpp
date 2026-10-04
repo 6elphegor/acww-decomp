@@ -5,37 +5,37 @@ typedef void *(*Unk_ov001_02202b3c_Alloc)(u32);
 typedef void (*Unk_ov001_02202b3c_Free)(void *);
 
 struct Unk_ov001_02202c90_In {
-    s32 unk_00;
-    u8 unk_04[0x20];
+    s32 ssidLength;
+    u8 ssid[0x20];
     s32 unk_24;
-    s32 unk_28;
-    u8 unk_2c[1];
+    s32 wepKeyLength;
+    u8 wepKey[1];
 };
 
 struct Unk_ov001_02203258_Src {
     u8 pad_00[4];
-    u8 unk_04[6];
-    u16 unk_0a;
-    u8 unk_0c[0x20];
-    u16 unk_2c;
-    u16 unk_2e;
-    u16 unk_30;
-    u16 unk_32;
+    u8 bssid[6];
+    u16 ssidLength;
+    u8 ssid[0x20];
+    u16 capaInfo;
+    u16 basicRateSet;
+    u16 supportRateSet;
+    u16 beaconPeriod;
     u8 pad_34[2];
-    u16 unk_36;
+    u16 channel;
 };
 
-struct Unk_ov001_02203258_Dst {
-    u32 unk_00;
-    u8 unk_04[0x20];
-    u32 unk_24;
+struct AossApInfo {
+    u32 ssidLength;
+    u8 ssid[0x20];
+    u32 channel;
     u8 pad_28[8];
-    u8 unk_30[6];
+    u8 bssid[6];
     u8 pad_36[2];
-    u32 unk_38;
-    u8 unk_3c[0x10];
-    u32 unk_4c;
-    u32 unk_50;
+    u32 numRates;
+    u8 rates[0x10];
+    u32 beaconPeriod;
+    u32 bssType;
 };
 
 struct Unk_ov001_02203258_Ent {
@@ -95,40 +95,40 @@ s32 WifiLink_CleanupAsync();
 void Aoss_WcmCallback(void);
 void Aoss_PostAlarmMsg(s32);
 void Aoss_PostWcmMsg(s32);
-void Aoss_ConvertBssDesc(Unk_ov001_02203258_Src *, Unk_ov001_02203258_Dst *);
+void Aoss_ConvertBssDesc(Unk_ov001_02203258_Src *, AossApInfo *);
 
 }
 
 enum Loop_02203004 { LOOP_02203004_0 = 0 };
 
-extern "C" void Aoss_ConvertBssDesc(Unk_ov001_02203258_Src *a, Unk_ov001_02203258_Dst *b) {
-    b->unk_00 = a->unk_0a;
-    MIi_CpuCopy16(a->unk_0c, b->unk_04, 0x20);
-    b->unk_24 = a->unk_36;
-    MIi_CpuCopy16(a->unk_04, b->unk_30, 6);
+extern "C" void Aoss_ConvertBssDesc(Unk_ov001_02203258_Src *a, AossApInfo *b) {
+    b->ssidLength = a->ssidLength;
+    MIi_CpuCopy16(a->ssid, b->ssid, 0x20);
+    b->channel = a->channel;
+    MIi_CpuCopy16(a->bssid, b->bssid, 6);
     s32 i;
     s32 n;
     n = 0;
     i = 0;
     Unk_ov001_02203258_Ent *e = sAossRateTable;
     for (; i < 12; e++, i++) {
-        if (a->unk_30 & e->mask) {
-            b->unk_3c[n] = e->val;
-            if (a->unk_2e & e->mask) {
-                b->unk_3c[n] |= 0x80;
+        if (a->supportRateSet & e->mask) {
+            b->rates[n] = e->val;
+            if (a->basicRateSet & e->mask) {
+                b->rates[n] |= 0x80;
             }
             n++;
         }
     }
-    b->unk_38 = n;
-    b->unk_4c = a->unk_32;
-    u32 t = a->unk_2c & 3;
+    b->numRates = n;
+    b->beaconPeriod = a->beaconPeriod;
+    u32 t = a->capaInfo & 3;
     if (t == 1) {
-        b->unk_50 = 1;
+        b->bssType = 1;
     } else if (t == 2) {
-        b->unk_50 = 2;
+        b->bssType = 2;
     } else {
-        b->unk_50 = 0;
+        b->bssType = 0;
     }
 }
 
@@ -141,7 +141,7 @@ extern "C" void Aoss_SetBssDescSsid(void *a, void *b) {
 
 extern "C" void Aoss_StoreConnectResult(void *a, void *b, s32 c) {
     *(s32 *)a = c;
-    Aoss_ConvertBssDesc((Unk_ov001_02203258_Src *)b, (Unk_ov001_02203258_Dst *)((u8 *)a + 4));
+    Aoss_ConvertBssDesc((Unk_ov001_02203258_Src *)b, (AossApInfo *)((u8 *)a + 4));
 }
 
 extern "C" void Aoss_PostWcmMsg(s32 a) {
@@ -368,7 +368,7 @@ extern "C" s32 Aoss_ScanAps(void **out) {
             if (r7 > 0) {
                 u8 *q = p + 4;
                 do {
-                    Aoss_ConvertBssDesc((Unk_ov001_02203258_Src *)r4, (Unk_ov001_02203258_Dst *)q);
+                    Aoss_ConvertBssDesc((Unk_ov001_02203258_Src *)r4, (AossApInfo *)q);
                     r4 += 0xc0;
                     q += 0x54;
                     r6++;
@@ -399,19 +399,19 @@ extern "C" s32 Aoss_ConnectAp(Unk_ov001_02202c90_In *a, void *b) {
         r6 = 0xc0000;
     }
     MI_CpuFill8(sAossWepDesc, 0, 0x60);
-    if (a->unk_28 == 5) {
+    if (a->wepKeyLength == 5) {
         sAossWepDesc[0] = 1;
-    } else if (a->unk_28 == 0xd) {
+    } else if (a->wepKeyLength == 0xd) {
         sAossWepDesc[0] = 2;
-    } else if (a->unk_28 == 0x10) {
+    } else if (a->wepKeyLength == 0x10) {
         sAossWepDesc[0] = 3;
     } else {
         return -1;
     }
     sAossWepDesc[1] = 0;
-    MI_CpuCopy8(a->unk_2c, data_ov001_0222c6ce, a->unk_28);
+    MI_CpuCopy8(a->wepKey, data_ov001_0222c6ce, a->wepKeyLength);
     WifiLink_ClearApList();
-    if (Aoss_WcmStartSearch(0, a->unk_04, a->unk_00, 0x30bffe)) {
+    if (Aoss_WcmStartSearch(0, a->ssid, a->ssidLength, 0x30bffe)) {
         s32 msg;
         u32 thr[12];
         cnt = 0;

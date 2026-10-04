@@ -69,32 +69,32 @@ struct Unk_ov001_0220a7f0_H {
 };
 
 struct Unk_ov001_0222dddc {
-    void *unk_000[3][4];
-    Unk_ov001_0220a7f0_Reg *unk_030[0x2f];
-    Unk_ov001_0220a7f0_Reg *unk_0ec[4];
-    void *unk_0fc[2];
-    void *unk_104[4];
-    void *unk_114;
-    void *unk_118;
-    u8 unk_11c;
-    u8 unk_11d;
+    void *rowCanvases[3][4];
+    Unk_ov001_0220a7f0_Reg *charKeyOams[0x2f];
+    Unk_ov001_0220a7f0_Reg *funcKeyOams[4];
+    void *bottomButtons[2];
+    void *rowTextObjs[4];
+    void *cursorObj;
+    void *task;
+    u8 inputKey;
+    u8 caseMode;
     u8 pad_11e[3];
-    u8 unk_121;
+    u8 cursorKey;
     u8 pad_122;
-    u8 unk_123;
-    u8 unk_124;
+    u8 deleteEnabled;
+    u8 insertEnabled;
 };
 
 struct Unk_ov001_0222dde0 {
-    void *unk_000[4];
-    Unk_ov001_0220a7f0_Reg *unk_010[10];
-    void *unk_038[2];
+    void *rowCanvases[4];
+    Unk_ov001_0220a7f0_Reg *digitKeyOams[10];
+    void *funcKeyOams[2];
     void *unk_040[2];
-    void *unk_048[4];
-    void *unk_058;
+    void *rowTextObjs[4];
+    void *cursorObj;
     u8 pad_05c[7];
-    s8 unk_063;
-    s8 unk_064;
+    s8 cursorKey;
+    s8 prevCursorKey;
 };
 
 extern "C" {
@@ -150,22 +150,22 @@ struct Unk_ov001_0220b05c_Reg {
 };
 
 struct Unk_ov001_0222dde0 {
-    void *unk_00[4];
-    Unk_ov001_0220b05c_Reg *unk_10[10];
-    Unk_ov001_0220b05c_Reg *unk_38[2];
+    void *rowCanvases[4];
+    Unk_ov001_0220b05c_Reg *digitKeyOams[10];
+    Unk_ov001_0220b05c_Reg *funcKeyOams[2];
     void *unk_40[2];
-    void *unk_48[4];
+    void *rowTextObjs[4];
     u8 unk_58[8];
-    u8 unk_60;
-    s8 unk_61;
-    s8 unk_62;
-    s8 unk_63;
-    u8 unk_64;
-    u8 unk_65;
-    u8 unk_66;
-    u8 unk_67;
-    u8 unk_68;
-    u8 unk_69;
+    u8 inputKey;
+    s8 touchKey;
+    s8 highlightKey;
+    s8 cursorKey;
+    u8 prevCursorKey;
+    u8 deleteHoldTimer;
+    u8 deleteEnabled;
+    u8 insertEnabled;
+    u8 dotEnabled;
+    u8 errorSoundPlayed;
 };
 
 struct Unk_ov001_0220b618_Pt {
@@ -221,23 +221,23 @@ struct Unk_ov001_0220ba08_Reg {
 };
 
 struct Unk_ov001_0222dde0 {
-    void *unk_00[4];
-    Unk_ov001_0220ba08_Reg *unk_10[10];
-    Unk_ov001_0220ba08_Reg *unk_38[2];
+    void *rowCanvases[4];
+    Unk_ov001_0220ba08_Reg *digitKeyOams[10];
+    Unk_ov001_0220ba08_Reg *funcKeyOams[2];
     void *unk_40[2];
-    void *unk_48[4];
-    void *unk_58;
-    void *unk_5c;
-    u8 unk_60;
-    s8 unk_61;
-    s8 unk_62;
-    s8 unk_63;
-    u8 unk_64;
-    u8 unk_65;
-    u8 unk_66;
-    u8 unk_67;
-    u8 unk_68;
-    u8 unk_69;
+    void *rowTextObjs[4];
+    void *cursorObj;
+    void *task;
+    u8 inputKey;
+    s8 touchKey;
+    s8 highlightKey;
+    s8 cursorKey;
+    u8 prevCursorKey;
+    u8 deleteHoldTimer;
+    u8 deleteEnabled;
+    u8 insertEnabled;
+    u8 dotEnabled;
+    u8 errorSoundPlayed;
 };
 
 extern "C" {
@@ -350,22 +350,22 @@ void WfcNumPad_Create() {
     pos = *(Unk_ov001_0220bfec_Rect *)data_ov001_0222aa58;
     pos.s = *(Unk_ov001_0220bfec_Pair *)data_ov001_02229ea4;
     sWfcNumPad = (Unk_ov001_0222dde0 *)WfcHeap_AllocClear(0x6c, 4);
-    sWfcNumPad->unk_60 = 0x1f;
-    sWfcNumPad->unk_63 = 0;
-    sWfcNumPad->unk_66 = 1;
-    sWfcNumPad->unk_67 = 1;
-    sWfcNumPad->unk_68 = 1;
+    sWfcNumPad->inputKey = 0x1f;
+    sWfcNumPad->cursorKey = 0;
+    sWfcNumPad->deleteEnabled = 1;
+    sWfcNumPad->insertEnabled = 1;
+    sWfcNumPad->dotEnabled = 1;
     for (i = 0; i < 10; i++) {
-        sWfcNumPad->unk_10[i] = (Unk_ov001_0220ba08_Reg *)WfcObj_CreateSingle(0, 0x36);
-        sWfcNumPad->unk_10[i]->w0 = (sWfcNumPad->unk_10[i]->w0 & 0xc1fffcff) | 0x200;
-        sWfcNumPad->unk_10[i]->h4 = (sWfcNumPad->unk_10[i]->h4 & ~0xc00) | 0xc00;
+        sWfcNumPad->digitKeyOams[i] = (Unk_ov001_0220ba08_Reg *)WfcObj_CreateSingle(0, 0x36);
+        sWfcNumPad->digitKeyOams[i]->w0 = (sWfcNumPad->digitKeyOams[i]->w0 & 0xc1fffcff) | 0x200;
+        sWfcNumPad->digitKeyOams[i]->h4 = (sWfcNumPad->digitKeyOams[i]->h4 & ~0xc00) | 0xc00;
     }
     u8 *p = data_ov001_02229e90;
     for (i = 0; i < 2; i++) {
-        sWfcNumPad->unk_38[i] = (Unk_ov001_0220ba08_Reg *)WfcObj_CreateSingle(0, *p);
+        sWfcNumPad->funcKeyOams[i] = (Unk_ov001_0220ba08_Reg *)WfcObj_CreateSingle(0, *p);
         p++;
-        sWfcNumPad->unk_38[i]->w0 = (sWfcNumPad->unk_38[i]->w0 & 0xc1fffcff) | 0x200;
-        sWfcNumPad->unk_38[i]->h4 = (sWfcNumPad->unk_38[i]->h4 & ~0xc00) | 0xc00;
+        sWfcNumPad->funcKeyOams[i]->w0 = (sWfcNumPad->funcKeyOams[i]->w0 & 0xc1fffcff) | 0x200;
+        sWfcNumPad->funcKeyOams[i]->h4 = (sWfcNumPad->funcKeyOams[i]->h4 & ~0xc00) | 0xc00;
     }
     for (i = 0; i < 2; i++) {
         sWfcNumPad->unk_40[i] = WfcObj_Create(0, data_ov001_02229e94[i], 1);
@@ -379,21 +379,21 @@ void WfcNumPad_Create() {
     n = i;
     v[1] = i;
     for (; i < 4; i++) {
-        sWfcNumPad->unk_00[i] = WfcText_CreateObjCanvas(0, bw, bh, 0, &t, 0);
+        sWfcNumPad->rowCanvases[i] = WfcText_CreateObjCanvas(0, bw, bh, 0, &t, 0);
         pos.p.a = 0;
         s32 idx = n;
         s32 kk;
         for (kk = 0; kk < 3; kk++, idx++, pos.p.a += 0x20) {
             v[0] = data_ov001_02229ed0[idx];
-            WfcText_DrawTextRect(sWfcNumPad->unk_00[i], pos.p.a, pos.p.b, pos.s.a, pos.s.b, 2, 0x480, (void *)v);
+            WfcText_DrawTextRect(sWfcNumPad->rowCanvases[i], pos.p.a, pos.p.b, pos.s.a, pos.s.b, 2, 0x480, (void *)v);
         }
-        sWfcNumPad->unk_48[i] = WfcObj_Alloc(0, t, 0);
+        sWfcNumPad->rowTextObjs[i] = WfcObj_Alloc(0, t, 0);
         n += 3;
     }
-    sWfcNumPad->unk_58 = WfcObj_Create(0, 0x44, 1);
-    WfcObj_SetAffineMode(sWfcNumPad->unk_58, -1, 0x200, 0);
-    WfcObj_SetPriority(sWfcNumPad->unk_58, -1, 2);
-    sWfcNumPad->unk_5c = WfcTask_Add(0, (void *)WfcNumPad_SlideInStep0, 0, 0x78);
+    sWfcNumPad->cursorObj = WfcObj_Create(0, 0x44, 1);
+    WfcObj_SetAffineMode(sWfcNumPad->cursorObj, -1, 0x200, 0);
+    WfcObj_SetPriority(sWfcNumPad->cursorObj, -1, 2);
+    sWfcNumPad->task = WfcTask_Add(0, (void *)WfcNumPad_SlideInStep0, 0, 0x78);
     WfcNumPad_SetRowY(0, 0xc0);
 }
 }
@@ -402,8 +402,8 @@ void WfcNumPad_Create() {
 namespace N_0ba08 {
 extern "C" {
 void WfcNumPad_Close() {
-    WfcObj_Free(sWfcNumPad->unk_58);
-    WfcTask_SetFunc(sWfcNumPad->unk_5c, (void *)WfcNumPad_SlideOutStep0);
+    WfcObj_Free(sWfcNumPad->cursorObj);
+    WfcTask_SetFunc(sWfcNumPad->task, (void *)WfcNumPad_SlideOutStep0);
 }
 }
 }
@@ -411,7 +411,7 @@ void WfcNumPad_Close() {
 namespace N_0ba08 {
 extern "C" {
 u32 WfcNumPad_GetKey() {
-    return sWfcNumPad->unk_60;
+    return sWfcNumPad->inputKey;
 }
 }
 }
@@ -419,7 +419,7 @@ u32 WfcNumPad_GetKey() {
 namespace N_0ba08 {
 extern "C" {
 void WfcNumPad_SetDeleteEnabled(u32 v) {
-    sWfcNumPad->unk_66 = v;
+    sWfcNumPad->deleteEnabled = v;
 }
 }
 }
@@ -427,7 +427,7 @@ void WfcNumPad_SetDeleteEnabled(u32 v) {
 namespace N_0ba08 {
 extern "C" {
 void WfcNumPad_SetInsertEnabled(u32 v) {
-    sWfcNumPad->unk_67 = v;
+    sWfcNumPad->insertEnabled = v;
 }
 }
 }
@@ -435,7 +435,7 @@ void WfcNumPad_SetInsertEnabled(u32 v) {
 namespace N_0ba08 {
 extern "C" {
 void WfcNumPad_SetDotEnabled(u32 v) {
-    sWfcNumPad->unk_68 = v;
+    sWfcNumPad->dotEnabled = v;
 }
 }
 }
@@ -452,7 +452,7 @@ namespace N_0ba08 {
 extern "C" {
 void WfcNumPad_SlideInStep0(void *self) {
     volatile s32 a, b;
-    volatile u32 *ip = (volatile u32 *)sWfcNumPad->unk_10[0];
+    volatile u32 *ip = (volatile u32 *)sWfcNumPad->digitKeyOams[0];
     a = (*ip & 0x1ff0000) >> 16;
     s32 c = *ip & 0xff;
     b = c;
@@ -474,7 +474,7 @@ namespace N_0ba08 {
 extern "C" {
 void WfcNumPad_SlideInStep1(void *self) {
     volatile s32 a, b;
-    volatile u32 *ip = (volatile u32 *)sWfcNumPad->unk_10[3];
+    volatile u32 *ip = (volatile u32 *)sWfcNumPad->digitKeyOams[3];
     a = (*ip & 0x1ff0000) >> 16;
     s32 c = *ip & 0xff;
     b = c;
@@ -496,7 +496,7 @@ namespace N_0ba08 {
 extern "C" {
 void WfcNumPad_SlideInStep2(void *self) {
     volatile s32 a, b;
-    volatile u32 *ip = (volatile u32 *)sWfcNumPad->unk_10[6];
+    volatile u32 *ip = (volatile u32 *)sWfcNumPad->digitKeyOams[6];
     a = (*ip & 0x1ff0000) >> 16;
     s32 c = *ip & 0xff;
     b = c;
@@ -518,7 +518,7 @@ namespace N_0ba08 {
 extern "C" {
 void WfcNumPad_SlideInStep3(void *self) {
     volatile s32 a, b;
-    volatile u32 *ip = (volatile u32 *)sWfcNumPad->unk_10[9];
+    volatile u32 *ip = (volatile u32 *)sWfcNumPad->digitKeyOams[9];
     a = (*ip & 0x1ff0000) >> 16;
     s32 c = *ip & 0xff;
     b = c;
@@ -571,30 +571,30 @@ void WfcNumPad_HandleTouchPress() {
     u32 out[3];
     s32 i;
     if (WfcInput_IsTouchPressedIn(gWfcScreenRect) == 0) return;
-    sWfcNumPad->unk_61 = -1;
+    sWfcNumPad->touchKey = -1;
     for (i = 0; i < 10; i++) {
         WfcUtil_RectFromPosSize(&data_ov001_02229eec[i], data_ov001_02229ea4, out);
         if (WfcInput_IsTouchPressedIn(out) != 0) {
-            if (sWfcNumPad->unk_67 == 0) {
+            if (sWfcNumPad->insertEnabled == 0) {
                 WfcSound_Play(9);
                 return;
             }
             WfcSound_Play(0);
-            sWfcNumPad->unk_61 = i;
+            sWfcNumPad->touchKey = i;
             return;
         }
     }
     for (i = 0; i < 2; i++) {
         WfcUtil_RectFromPosSize(&data_ov001_02229eb4[i], data_ov001_02229eac, out);
         if (WfcInput_IsTouchPressedIn(out) != 0) {
-            if (i == 0 && sWfcNumPad->unk_66 == 0) goto fail;
-            if (i == 1 && sWfcNumPad->unk_68 == 0) {
+            if (i == 0 && sWfcNumPad->deleteEnabled == 0) goto fail;
+            if (i == 1 && sWfcNumPad->dotEnabled == 0) {
             fail:
                 WfcSound_Play(9);
                 return;
             }
             WfcSound_Play(0);
-            sWfcNumPad->unk_61 = i + 10;
+            sWfcNumPad->touchKey = i + 10;
             return;
         }
     }
@@ -602,7 +602,7 @@ void WfcNumPad_HandleTouchPress() {
         WfcUtil_RectFromPosSize(&data_ov001_02229ebc[i], data_ov001_02229eb0, out);
         if (WfcInput_IsTouchPressedIn(out) != 0) {
             WfcSound_Play(0);
-            sWfcNumPad->unk_61 = i + 12;
+            sWfcNumPad->touchKey = i + 12;
             return;
         }
     }
@@ -616,14 +616,14 @@ void WfcNumPad_HandleTouchRelease() {
     Unk_ov001_0220b618_Pt *p;
     s32 i;
     u32 buf[3];
-    sWfcNumPad->unk_60 = 0;
+    sWfcNumPad->inputKey = 0;
     if (!WfcInput_IsTouchReleasedIn(gWfcScreenRect)) return;
     for (p = data_ov001_02229eec, i = 0; i < 10; p++, i++) {
         WfcUtil_RectFromPosSize(p, data_ov001_02229ea4, buf);
         if (WfcInput_IsTouchReleasedIn(buf)) {
-            if (sWfcNumPad->unk_61 != i) return;
-            sWfcNumPad->unk_60 = data_ov001_02229ec4[i];
-            sWfcNumPad->unk_63 = i;
+            if (sWfcNumPad->touchKey != i) return;
+            sWfcNumPad->inputKey = data_ov001_02229ec4[i];
+            sWfcNumPad->cursorKey = i;
             WfcNumPad_UpdateCursor();
             return;
         }
@@ -631,9 +631,9 @@ void WfcNumPad_HandleTouchRelease() {
     for (p = data_ov001_02229eb4, i = 0; i < 2; p++, i++) {
         WfcUtil_RectFromPosSize(p, data_ov001_02229eac, buf);
         if (WfcInput_IsTouchReleasedIn(buf)) {
-            if (sWfcNumPad->unk_61 != i + 10) return;
-            sWfcNumPad->unk_60 = data_ov001_02229ea0[i];
-            sWfcNumPad->unk_63 = i + 10;
+            if (sWfcNumPad->touchKey != i + 10) return;
+            sWfcNumPad->inputKey = data_ov001_02229ea0[i];
+            sWfcNumPad->cursorKey = i + 10;
             WfcNumPad_UpdateCursor();
             return;
         }
@@ -641,9 +641,9 @@ void WfcNumPad_HandleTouchRelease() {
     for (p = data_ov001_02229ebc, i = 0; i < 2; p++, i++) {
         WfcUtil_RectFromPosSize(p, data_ov001_02229eb0, buf);
         if (WfcInput_IsTouchReleasedIn(buf)) {
-            if (sWfcNumPad->unk_61 != i + 12) return;
-            sWfcNumPad->unk_60 = data_ov001_02229e9c[i];
-            sWfcNumPad->unk_63 = i + 12;
+            if (sWfcNumPad->touchKey != i + 12) return;
+            sWfcNumPad->inputKey = data_ov001_02229e9c[i];
+            sWfcNumPad->cursorKey = i + 12;
             WfcNumPad_UpdateCursor();
             return;
         }
@@ -662,7 +662,7 @@ void WfcNumPad_HandleTouchHold() {
     for (p = data_ov001_02229eec, i = 0; i < 10; p++, i++) {
         WfcUtil_RectFromPosSize(p, data_ov001_02229ea4, buf);
         if (WfcInput_IsTouchHeldIn(buf)) {
-            if (sWfcNumPad->unk_61 != i) goto fail;
+            if (sWfcNumPad->touchKey != i) goto fail;
             WfcNumPad_SetPressedKey(i);
             goto end;
         }
@@ -670,25 +670,25 @@ void WfcNumPad_HandleTouchHold() {
     for (p = data_ov001_02229eb4, i = 0; i < 2; p++, i++) {
         WfcUtil_RectFromPosSize(p, data_ov001_02229eac, buf);
         if (WfcInput_IsTouchHeldIn(buf)) {
-            if (sWfcNumPad->unk_61 != i + 10) goto fail;
+            if (sWfcNumPad->touchKey != i + 10) goto fail;
             WfcNumPad_SetPressedKey(i + 10);
             if (i != 0) goto end;
-            sWfcNumPad->unk_65++;
-            if (sWfcNumPad->unk_65 < 0x28) return;
-            if (sWfcNumPad->unk_66 == 0) {
+            sWfcNumPad->deleteHoldTimer++;
+            if (sWfcNumPad->deleteHoldTimer < 0x28) return;
+            if (sWfcNumPad->deleteEnabled == 0) {
                 WfcSound_Play(9);
-                sWfcNumPad->unk_61 = -1;
+                sWfcNumPad->touchKey = -1;
                 return;
             }
-            sWfcNumPad->unk_60 = 0x10;
-            sWfcNumPad->unk_65 -= 7;
+            sWfcNumPad->inputKey = 0x10;
+            sWfcNumPad->deleteHoldTimer -= 7;
             return;
         }
     }
     for (p = data_ov001_02229ebc, i = 0; i < 2; p++, i++) {
         WfcUtil_RectFromPosSize(p, data_ov001_02229eb0, buf);
         if (WfcInput_IsTouchHeldIn(buf)) {
-            if (sWfcNumPad->unk_61 != i + 12) goto fail;
+            if (sWfcNumPad->touchKey != i + 12) goto fail;
             WfcNumPad_SetPressedKey(i + 12);
             goto end;
         }
@@ -696,7 +696,7 @@ void WfcNumPad_HandleTouchHold() {
 fail:
     WfcNumPad_SetPressedKey(-1);
 end:
-    sWfcNumPad->unk_65 = 0;
+    sWfcNumPad->deleteHoldTimer = 0;
 }
 }
 }
@@ -704,10 +704,10 @@ end:
 namespace N_0b05c {
 extern "C" {
 void WfcNumPad_SetPressedKey(s32 a) {
-    if (a == sWfcNumPad->unk_62) return;
+    if (a == sWfcNumPad->highlightKey) return;
     WfcNumPad_SetKeyHighlight(a, 1);
-    WfcNumPad_SetKeyHighlight(sWfcNumPad->unk_62, 0);
-    sWfcNumPad->unk_62 = a;
+    WfcNumPad_SetKeyHighlight(sWfcNumPad->highlightKey, 0);
+    sWfcNumPad->highlightKey = a;
 }
 }
 }
@@ -721,38 +721,38 @@ void WfcNumPad_HandlePad() {
     if (WfcInput_IsKeyRepeat(0x80)) WfcNumPad_MoveCursor(3);
     if (WfcInput_IsKeyPressed(1)) {
         Unk_ov001_0222dde0 *o = sWfcNumPad;
-        s32 c = o->unk_63;
+        s32 c = o->cursorKey;
         if (c < 10) {
-            if (o->unk_67 != 0) {
-                o->unk_60 = data_ov001_02229ec4[c];
+            if (o->insertEnabled != 0) {
+                o->inputKey = data_ov001_02229ec4[c];
                 return;
             }
             WfcSound_Play(9);
             return;
         } else if (c - 10 < 2) {
-            if ((c - 10 == 0 && o->unk_66 == 0) || (c - 10 == 1 && o->unk_68 == 0)) {
+            if ((c - 10 == 0 && o->deleteEnabled == 0) || (c - 10 == 1 && o->dotEnabled == 0)) {
                 WfcSound_Play(9);
                 return;
             }
-            o->unk_60 = data_ov001_02229ea0[c - 10];
+            o->inputKey = data_ov001_02229ea0[c - 10];
             return;
         } else {
-            o->unk_60 = data_ov001_02229e9c[c - 12];
+            o->inputKey = data_ov001_02229e9c[c - 12];
         }
     }
     if (WfcInput_IsKeyRepeat(2)) {
         Unk_ov001_0222dde0 *o = sWfcNumPad;
-        if (o->unk_66 == 0) {
-            if (o->unk_69 != 0) return;
+        if (o->deleteEnabled == 0) {
+            if (o->errorSoundPlayed != 0) return;
             WfcSound_Play(9);
-            sWfcNumPad->unk_69 = 1;
+            sWfcNumPad->errorSoundPlayed = 1;
             return;
         }
-        o->unk_60 = 0x10;
+        o->inputKey = 0x10;
         return;
     }
     if (WfcInput_IsKeyReleased(2)) {
-        sWfcNumPad->unk_69 = 0;
+        sWfcNumPad->errorSoundPlayed = 0;
     }
 }
 }
@@ -767,21 +767,21 @@ void WfcNumPad_SetRowY(s32 a, s32 b) {
     s32 k = a * 3;
     s32 i;
     for (i = 0; i < x[a]; i++) {
-        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->unk_10[k];
+        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->digitKeyOams[k];
         r->w0 &= 0xc1fffcff;
         u32 t = data_ov001_02229eec[k].x;
-        r = sWfcNumPad->unk_10[k];
+        r = sWfcNumPad->digitKeyOams[k];
         r->w0 = (r->w0 & 0xfe00ff00) | (u8)b | ((t & 0x1ff) << 16);
         k++;
     }
     if (a < 4) {
-        WfcText_ArrangeObj(sWfcNumPad->unk_00[a], data_ov001_02229eec[a * 3].x, b, sWfcNumPad->unk_48[a], 2);
+        WfcText_ArrangeObj(sWfcNumPad->rowCanvases[a], data_ov001_02229eec[a * 3].x, b, sWfcNumPad->rowTextObjs[a], 2);
     }
     for (i = 0; i < y[a]; i++) {
-        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->unk_38[i];
+        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->funcKeyOams[i];
         r->w0 &= 0xc1fffcff;
         u32 t = data_ov001_02229eb4[i].x;
-        r = sWfcNumPad->unk_38[i];
+        r = sWfcNumPad->funcKeyOams[i];
         r->w0 = (r->w0 & 0xfe00ff00) | (u8)b | ((t & 0x1ff) << 16);
     }
     for (i = 0; i < z[a]; i++) {
@@ -797,11 +797,11 @@ extern "C" {
 void WfcNumPad_SetKeyHighlight(s32 a, u32 b) {
     if (a < 0) return;
     if (a < 10) {
-        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->unk_10[a];
+        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->digitKeyOams[a];
         r->w0 = r->w0 & ~0xc00;
         r->h4 = (r->h4 & ~0xf000) | (data_ov001_02229e98[b] << 12);
     } else if (a - 10 < 2) {
-        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->unk_38[a - 10];
+        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->funcKeyOams[a - 10];
         r->w0 = r->w0 & ~0xc00;
         r->h4 = (r->h4 & ~0xf000) | (data_ov001_02229e98[b] << 12);
     } else {
@@ -815,14 +815,14 @@ namespace N_0a758 {
 extern "C" {
 void WfcNumPad_UpdateCursor() {
     s32 t;
-    s32 idx = sWfcNumPad->unk_063;
+    s32 idx = sWfcNumPad->cursorKey;
     if (idx <= 0xb) t = 0x44;
     else t = 0x45;
-    void *r = WfcObj_GetOam(sWfcNumPad->unk_058, 0);
+    void *r = WfcObj_GetOam(sWfcNumPad->cursorObj, 0);
     WfcCell_Copy(0, t, (u32)r);
-    WfcObj_SetPriority(sWfcNumPad->unk_058, -1, 2);
-    s32 i2 = sWfcNumPad->unk_063 << 2;
-    WfcObj_SetPos(sWfcNumPad->unk_058, -1, *(u16 *)((u8 *)data_ov001_02229f14 + i2), *(u16 *)((u8 *)data_ov001_02229f16 + i2));
+    WfcObj_SetPriority(sWfcNumPad->cursorObj, -1, 2);
+    s32 i2 = sWfcNumPad->cursorKey << 2;
+    WfcObj_SetPos(sWfcNumPad->cursorObj, -1, *(u16 *)((u8 *)data_ov001_02229f14 + i2), *(u16 *)((u8 *)data_ov001_02229f16 + i2));
 }
 }
 }
@@ -831,23 +831,23 @@ namespace N_0a758 {
 extern "C" {
 void WfcNumPad_MoveCursor(s32 a) {
     Unk_ov001_0222dde0 *g = sWfcNumPad;
-    s32 old = g->unk_063;
-    g->unk_063 = sWfcNumPadNavTable[old][a];
+    s32 old = g->cursorKey;
+    g->cursorKey = sWfcNumPadNavTable[old][a];
     g = sWfcNumPad;
-    s32 n = g->unk_063;
+    s32 n = g->cursorKey;
     if (n == 0xd && (a == 1 || a == 3)) {
-        g->unk_064 = old;
+        g->prevCursorKey = old;
     } else if (n == -1) {
-        if (g->unk_064 == 1 || g->unk_064 == 0xa) {
-            g->unk_063 = 0xa;
+        if (g->prevCursorKey == 1 || g->prevCursorKey == 0xa) {
+            g->cursorKey = 0xa;
         } else {
-            g->unk_063 = 0xb;
+            g->cursorKey = 0xb;
         }
     } else if (n == -2) {
-        if (g->unk_064 == 1 || g->unk_064 == 0xa) {
-            g->unk_063 = 1;
+        if (g->prevCursorKey == 1 || g->prevCursorKey == 0xa) {
+            g->cursorKey = 1;
         } else {
-            g->unk_063 = 2;
+            g->cursorKey = 2;
         }
     }
     WfcNumPad_UpdateCursor();
@@ -878,7 +878,7 @@ namespace N_0a758 {
 extern "C" {
 void WfcNumPad_SlideOutStep1(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->unk_010[9];
+    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->digitKeyOams[9];
     s32 t;
     s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
     t = *(volatile u32 *)&r->w0 & 0xff;
@@ -896,7 +896,7 @@ namespace N_0a758 {
 extern "C" {
 void WfcNumPad_SlideOutStep2(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->unk_010[6];
+    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->digitKeyOams[6];
     s32 t;
     s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
     t = *(volatile u32 *)&r->w0 & 0xff;
@@ -914,7 +914,7 @@ namespace N_0a758 {
 extern "C" {
 void WfcNumPad_SlideOutStep3(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->unk_010[3];
+    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->digitKeyOams[3];
     s32 t;
     s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
     t = *(volatile u32 *)&r->w0 & 0xff;
@@ -932,7 +932,7 @@ namespace N_0a758 {
 extern "C" {
 void WfcNumPad_SlideOutStep4(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->unk_010[0];
+    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->digitKeyOams[0];
     s32 t;
     s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
     t = *(volatile u32 *)&r->w0 & 0xff;
@@ -952,17 +952,17 @@ void WfcNumPad_Destroy(s32 a) {
     s32 i;
     WfcTask_RequestDelete(0, a);
     for (i = 0; i < 4; i++) {
-        WfcObj_Free(sWfcNumPad->unk_048[i]);
-        WfcText_DestroyObjCanvas(sWfcNumPad->unk_000[i]);
+        WfcObj_Free(sWfcNumPad->rowTextObjs[i]);
+        WfcText_DestroyObjCanvas(sWfcNumPad->rowCanvases[i]);
     }
     for (i = 0; i < 2; i++) {
         WfcObj_Free(sWfcNumPad->unk_040[i]);
     }
     for (i = 0; i < 2; i++) {
-        WfcOam_FreeEntry(sWfcNumPad->unk_038[i]);
+        WfcOam_FreeEntry(sWfcNumPad->funcKeyOams[i]);
     }
     for (i = 0; i < 10; i++) {
-        WfcOam_FreeEntry(sWfcNumPad->unk_010[i]);
+        WfcOam_FreeEntry(sWfcNumPad->digitKeyOams[i]);
     }
     WfcHeap_FreeAndClear(&sWfcNumPad);
 }

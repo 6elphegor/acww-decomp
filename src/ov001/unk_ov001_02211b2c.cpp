@@ -27,28 +27,28 @@ namespace F02212e84 {
 struct Unk_ov001_02212f98_Reg { u16 h0; u16 h2; u16 h4; };
 
 struct Unk_ov001_0222de74 {
-    u8 *unk_00;
-    u32 *unk_04;
-    u32 *unk_08;
-    void *unk_0c;
-    Unk_ov001_02212f98_Reg *unk_10[5];
-    Unk_ov001_02212f98_Reg *unk_24[5];
-    void *unk_38;
-    void *unk_3c;
+    u8 *apEntries;
+    u32 *bgMapFile;
+    u32 *paletteFile;
+    void *textCanvas;
+    Unk_ov001_02212f98_Reg *securityIcons[5];
+    Unk_ov001_02212f98_Reg *signalIcons[5];
+    void *scrollTask;
+    void *bgScrollTask;
     u16 unk_40;
-    u16 unk_42[3];
-    u16 unk_48[4];
+    u16 securityIconTiles[3];
+    u16 signalIconTiles[4];
     u8 pad_50;
-    u8 unk_51;
+    u8 apCount;
     u8 unk_52;
-    u8 unk_53;
+    u8 scrollBarRange;
 };
 
 struct Unk_ov001_0222de78 {
-    u32 unk_00;
-    u32 *unk_04;
-    u8 unk_08[0x22];
-    u8 unk_2a;
+    u32 textCanvas;
+    u32 *caretOam;
+    u8 text[0x22];
+    u8 result;
 };
 
 struct Unk_ov001_02213124_S25 { u8 b[25]; };
@@ -123,15 +123,15 @@ void WfcApList_Enter() {
         sWfcApListCursor = 0;
         sWfcApListScroll = 0;
     }
-    sWfcApList->unk_51 = WfcApScan_GetResults(sWfcApList);
+    sWfcApList->apCount = WfcApScan_GetResults(sWfcApList);
     WfcApList_LoadBg();
     WfcHighlight_SetConnection();
     WfcUtil_ShowTopMessage(0x80, -1, 0);
     WfcUtil_ShowStepIndicator(2);
     WfcApList_InitScrollBar();
     WfcApList_CreateRowIcons();
-    sWfcApList->unk_0c = (void *)WfcText_CreateBgCanvas(0, 0);
-    sWfcApList->unk_3c = WfcTask_Add(1, (void *)WfcApList_ApplyBgScrollTask, 0, 0x6e);
+    sWfcApList->textCanvas = (void *)WfcText_CreateBgCanvas(0, 0);
+    sWfcApList->bgScrollTask = WfcTask_Add(1, (void *)WfcApList_ApplyBgScrollTask, 0, 0x6e);
     WfcApList_Redraw();
     WfcApList_UpdateCursor();
     WfcUtil_SetScene((void *)WfcApList_FadeIn);
@@ -141,10 +141,10 @@ void WfcApList_LoadBg() {
     char a[25] = "char/xb4ApListBack.nsc.l";
     char b[22] = "char/ybBgStep31.ncl.l";
     WfcUtil_LoadFileTo((void *)"char/jb4ApList.nsc.l", (void *)GX_LoadBG3Scr);
-    sWfcApList->unk_04 = (u32 *)WfcFs_LoadFile(WfcUtil_LocalizePath(&a), 0, 4);
-    WfcBgMap_Create(sWfcApList->unk_04);
+    sWfcApList->bgMapFile = (u32 *)WfcFs_LoadFile(WfcUtil_LocalizePath(&a), 0, 4);
+    WfcBgMap_Create(sWfcApList->bgMapFile);
     WfcBgMap_RequestTransfer();
-    sWfcApList->unk_08 = (u32 *)WfcFs_LoadFile(WfcUtil_LocalizePath(&b), 0, 4);
+    sWfcApList->paletteFile = (u32 *)WfcFs_LoadFile(WfcUtil_LocalizePath(&b), 0, 4);
     BGCNT(0x4001008, 3);
     BGCNT(0x400100a, 3);
     BGCNT(0x4000008, 3);
@@ -156,34 +156,34 @@ void WfcApList_LoadBg() {
 void WfcApList_InitScrollBar() {
     s32 r = 0;
     s32 m;
-    sWfcApList->unk_40 = (sWfcApList->unk_51 - 4) * 0x1c;
-    if (sWfcApList->unk_51 <= 4) {
+    sWfcApList->unk_40 = (sWfcApList->apCount - 4) * 0x1c;
+    if (sWfcApList->apCount <= 4) {
         m = r;
-        sWfcApList->unk_53 = 0;
-    } else if (sWfcApList->unk_51 <= 8) {
-        sWfcApList->unk_53 = 0x1f;
+        sWfcApList->scrollBarRange = 0;
+    } else if (sWfcApList->apCount <= 8) {
+        sWfcApList->scrollBarRange = 0x1f;
         m = 1;
     } else {
-        sWfcApList->unk_53 = 0x37;
+        sWfcApList->scrollBarRange = 0x37;
         m = 2;
     }
     if (m != 0) {
-        r = FX_DivS32(sWfcApListScroll * sWfcApList->unk_53, sWfcApList->unk_40);
+        r = FX_DivS32(sWfcApListScroll * sWfcApList->scrollBarRange, sWfcApList->unk_40);
     }
     WfcScrollBar_Create(m, 0x55, 0xec, 0x3f, r);
 }
 
 void WfcApList_CreateRowIcons() {
     s32 n, i;
-    n = sWfcApList->unk_51;
+    n = sWfcApList->apCount;
     if (n > 5) n = 5;
     i = 0;
     if (n > 0) {
         u32 a = data_ov001_0222a000[0];
         u32 b = data_ov001_0222a004[0];
         do {
-            sWfcApList->unk_10[i] = WfcObj_CreateSingle(0, a);
-            sWfcApList->unk_24[i] = WfcObj_CreateSingle(0, b);
+            sWfcApList->securityIcons[i] = WfcObj_CreateSingle(0, a);
+            sWfcApList->signalIcons[i] = WfcObj_CreateSingle(0, b);
             i++;
         } while (i < n);
     }
@@ -191,22 +191,22 @@ void WfcApList_CreateRowIcons() {
         const u8 *p = data_ov001_0222a000;
         u32 j;
         for (j = 0; j < 3; j++, p++) {
-            WfcCell_Copy(0, *p, sWfcApList->unk_10[0]);
-            sWfcApList->unk_42[j] = sWfcApList->unk_10[0]->h4 & 0x3ff;
+            WfcCell_Copy(0, *p, sWfcApList->securityIcons[0]);
+            sWfcApList->securityIconTiles[j] = sWfcApList->securityIcons[0]->h4 & 0x3ff;
         }
     }
     {
         const u8 *p = data_ov001_0222a004;
         u32 j;
         for (j = 0; j < 4; j++, p++) {
-            WfcCell_Copy(0, *p, sWfcApList->unk_24[0]);
-            sWfcApList->unk_48[j] = sWfcApList->unk_24[0]->h4 & 0x3ff;
+            WfcCell_Copy(0, *p, sWfcApList->signalIcons[0]);
+            sWfcApList->signalIconTiles[j] = sWfcApList->signalIcons[0]->h4 & 0x3ff;
         }
     }
     for (i = 0; i < n; i++) {
-        Unk_ov001_02212f98_Reg *r = sWfcApList->unk_10[i];
+        Unk_ov001_02212f98_Reg *r = sWfcApList->securityIcons[i];
         r->h4 = (r->h4 & ~0xc00) | 0xc00;
-        r = sWfcApList->unk_24[i];
+        r = sWfcApList->signalIcons[i];
         r->h4 = (r->h4 & ~0xc00) | 0xc00;
     }
 }
@@ -246,31 +246,31 @@ namespace F022123e4 {
 
 struct Unk_ov001_0222de74_Rec {
     u8 pad_00[0x28];
-    u8 unk_28;
+    u8 security;
     u8 pad_29;
 };
 
 struct Unk_ov001_0222de74 {
-    Unk_ov001_0222de74_Rec *unk_00;
-    void *unk_04;
-    void *unk_08;
-    void *unk_0c;
-    void *unk_10[5];
-    void *unk_24[5];
-    void *unk_38;
-    u32 unk_3c;
+    Unk_ov001_0222de74_Rec *apEntries;
+    void *bgMapFile;
+    void *paletteFile;
+    void *textCanvas;
+    void *securityIcons[5];
+    void *signalIcons[5];
+    void *scrollTask;
+    u32 bgScrollTask;
     u16 unk_40;
     u8 pad_42[0xe];
     s8 unk_50;
-    u8 unk_51;
+    u8 apCount;
     u8 unk_52;
-    u8 unk_53;
-    u8 unk_54;
-    u8 unk_55;
-    u8 unk_56;
-    u8 unk_57;
-    u8 unk_58;
-    u8 unk_59;
+    u8 scrollBarRange;
+    u8 isConfirmed;
+    u8 dragRedrawDelay;
+    u8 bgScrollPending;
+    u8 isDragging;
+    u8 scrollEndSoundPlayed;
+    u8 errorSoundPlayed;
 };
 
 extern "C" {
@@ -353,8 +353,8 @@ void WfcApList_HandleResult();
 void WfcApList_HandleScrollBar();
 void WfcApList_HandleInput();
 void WfcApList_HandleInput() {
-    if (sWfcApList->unk_38 != 0) return;
-    if (sWfcApList->unk_57 != 0) return;
+    if (sWfcApList->scrollTask != 0) return;
+    if (sWfcApList->isDragging != 0) return;
     if (WfcInput_IsTouchPressedIn(gWfcScreenRect) != 0) {
         sWfcApList->unk_50 = -1;
         u32 i;
@@ -378,7 +378,7 @@ void WfcApList_HandleInput() {
         for (i = 0; i < 4; i++, p += 8) {
             if (WfcInput_IsTouchReleasedIn(p) != 0) {
                 if (sWfcApList->unk_50 != i) break;
-                if (i >= sWfcApList->unk_51) {
+                if (i >= sWfcApList->apCount) {
                     WfcSound_Play(9);
                     break;
                 }
@@ -403,7 +403,7 @@ void WfcApList_HandleInput() {
         return;
     }
     if (WfcInput_IsKeyReleased(0x200) != 0) {
-        sWfcApList->unk_59 = 0;
+        sWfcApList->errorSoundPlayed = 0;
         return;
     }
     if (WfcInput_IsKeyRepeat(0x100) != 0) {
@@ -411,7 +411,7 @@ void WfcApList_HandleInput() {
         return;
     }
     if (WfcInput_IsKeyReleased(0x100) != 0) {
-        sWfcApList->unk_59 = 0;
+        sWfcApList->errorSoundPlayed = 0;
         return;
     }
     if (WfcInput_IsKeyRepeat(0x40) != 0) {
@@ -419,37 +419,37 @@ void WfcApList_HandleInput() {
         return;
     }
     if (WfcInput_IsKeyReleased(0x40) != 0) {
-        sWfcApList->unk_59 = 0;
+        sWfcApList->errorSoundPlayed = 0;
         return;
     }
     if (WfcInput_IsKeyRepeat(0x80) != 0) {
         WfcApList_MoveCursor(3);
         return;
     }
-    if (WfcInput_IsKeyReleased(0x80) != 0) sWfcApList->unk_59 = 0;
+    if (WfcInput_IsKeyReleased(0x80) != 0) sWfcApList->errorSoundPlayed = 0;
 }
 
 void WfcApList_HandleScrollBar() {
-    if (sWfcApList->unk_38 != 0) return;
-    if (sWfcApList->unk_55 != 0) sWfcApList->unk_55--;
+    if (sWfcApList->scrollTask != 0) return;
+    if (sWfcApList->dragRedrawDelay != 0) sWfcApList->dragRedrawDelay--;
     switch (WfcScrollBar_GetEvent()) {
     case 0:
         break;
     case 1:
-        sWfcApList->unk_57 = 1;
+        sWfcApList->isDragging = 1;
         WfcButtonBar_DisableInput();
         break;
     case 2:
-        if (sWfcApList->unk_55 != 0) return;
+        if (sWfcApList->dragRedrawDelay != 0) return;
         WfcCursor_Clear();
-        sWfcApListScroll = FX_DivS32(sWfcApList->unk_40 * WfcScrollBar_GetPos(), sWfcApList->unk_53);
+        sWfcApListScroll = FX_DivS32(sWfcApList->unk_40 * WfcScrollBar_GetPos(), sWfcApList->scrollBarRange);
         WfcApList_Redraw();
-        sWfcApList->unk_55 = 4;
+        sWfcApList->dragRedrawDelay = 4;
         break;
     case 3: {
-        sWfcApList->unk_57 = 0;
+        sWfcApList->isDragging = 0;
         WfcButtonBar_EnableInput();
-        sWfcApListScroll = FX_DivS32(sWfcApList->unk_40 * WfcScrollBar_GetPos(), sWfcApList->unk_53);
+        sWfcApListScroll = FX_DivS32(sWfcApList->unk_40 * WfcScrollBar_GetPos(), sWfcApList->scrollBarRange);
         WfcSound_Play(0x13);
         WfcApList_Redraw();
         s32 r = FX_ModS32(sWfcApListScroll, 0x1c);
@@ -457,54 +457,54 @@ void WfcApList_HandleScrollBar() {
             WfcApList_UpdateCursor();
             return;
         }
-        if (r < 0xe) sWfcApList->unk_38 = (void *)WfcTask_Add(0, (void *)WfcApList_ScrollUpTask, 0, 0x78);
-        else sWfcApList->unk_38 = (void *)WfcTask_Add(0, (void *)WfcApList_ScrollDownTask, 0, 0x78);
+        if (r < 0xe) sWfcApList->scrollTask = (void *)WfcTask_Add(0, (void *)WfcApList_ScrollUpTask, 0, 0x78);
+        else sWfcApList->scrollTask = (void *)WfcTask_Add(0, (void *)WfcApList_ScrollDownTask, 0, 0x78);
         break;
     }
     case 4:
         if (sWfcApListScroll == 0) {
-            if (sWfcApList->unk_58 != 0) return;
+            if (sWfcApList->scrollEndSoundPlayed != 0) return;
             WfcSound_Play(9);
-            sWfcApList->unk_58 = 1;
+            sWfcApList->scrollEndSoundPlayed = 1;
         } else {
             WfcSound_Play(0x13);
-            sWfcApList->unk_38 = (void *)WfcTask_Add(0, (void *)WfcApList_ScrollUpTask, 0, 0x78);
+            sWfcApList->scrollTask = (void *)WfcTask_Add(0, (void *)WfcApList_ScrollUpTask, 0, 0x78);
         }
         break;
     case 6:
-        if (sWfcApList->unk_51 > 4) {
+        if (sWfcApList->apCount > 4) {
             if (sWfcApListScroll != sWfcApList->unk_40) goto c6b;
         }
-        if (sWfcApList->unk_58 != 0) return;
+        if (sWfcApList->scrollEndSoundPlayed != 0) return;
         WfcSound_Play(9);
-        sWfcApList->unk_58 = 1;
+        sWfcApList->scrollEndSoundPlayed = 1;
         break;
     c6b:
         WfcSound_Play(0x13);
-        sWfcApList->unk_38 = (void *)WfcTask_Add(0, (void *)WfcApList_ScrollDownTask, 0, 0x78);
+        sWfcApList->scrollTask = (void *)WfcTask_Add(0, (void *)WfcApList_ScrollDownTask, 0, 0x78);
         break;
     case 5:
     case 7:
-        sWfcApList->unk_58 = 0;
+        sWfcApList->scrollEndSoundPlayed = 0;
         break;
     }
 }
 
 void WfcApList_HandleResult() {
-    if (sWfcApList->unk_38 != 0) return;
-    if (sWfcApList->unk_57 != 0) return;
+    if (sWfcApList->scrollTask != 0) return;
+    if (sWfcApList->isDragging != 0) return;
     switch (WfcButtonBar_GetResult()) {
     case 0:
         WfcSound_Play(7);
         break;
     case 1:
         if (sWfcApListCursor == 4) {
-            sWfcApList->unk_54 = 1;
+            sWfcApList->isConfirmed = 1;
             WfcSound_Play(6);
             WfcApList_HighlightSearchButton();
         } else {
             s32 t = sWfcApListCursor + FX_DivS32(sWfcApListScroll, 0x1c);
-            if (sWfcApList->unk_00[t].unk_28 == 2) {
+            if (sWfcApList->apEntries[t].security == 2) {
                 WfcSound_Play(9);
                 WfcScrollBar_Disable();
                 WfcButtonBar_DisableInput();
@@ -512,7 +512,7 @@ void WfcApList_HandleResult() {
                 WfcUtil_SetScene((void *)WfcApList_WaitErrorDialog);
                 return;
             }
-            sWfcApList->unk_54 = 1;
+            sWfcApList->isConfirmed = 1;
             sWfcApList->unk_52 = t;
             WfcSound_Play(6);
         }
@@ -531,7 +531,7 @@ void WfcApList_StartExit() {
 
 void WfcApList_FadeOut() {
     if (WfcFade_IsBusy(1) != 0) return;
-    if (sWfcApList->unk_54 != 0) WfcButtonBar_Close();
+    if (sWfcApList->isConfirmed != 0) WfcButtonBar_Close();
     else WfcButtonBar_DisableInput();
     WfcFade_Start(3, 1, 1, 8);
     WfcFade_Start(3, 0, 0x1d, 8);
@@ -542,24 +542,24 @@ void WfcApList_Exit() {
     if (WfcFade_IsBusy(1) != 0) return;
     if (WfcFade_IsBusy(0) != 0) return;
     if (WfcButtonBar_IsClosed() == 0) return;
-    WfcTask_Delete(1, (void *)sWfcApList->unk_3c);
+    WfcTask_Delete(1, (void *)sWfcApList->bgScrollTask);
     s32 i;
     for (i = 0; i < 5; i++) {
-        if (sWfcApList->unk_10[i] != 0) WfcOam_FreeEntry(sWfcApList->unk_10[i]);
-        if (sWfcApList->unk_24[i] != 0) WfcOam_FreeEntry(sWfcApList->unk_24[i]);
+        if (sWfcApList->securityIcons[i] != 0) WfcOam_FreeEntry(sWfcApList->securityIcons[i]);
+        if (sWfcApList->signalIcons[i] != 0) WfcOam_FreeEntry(sWfcApList->signalIcons[i]);
     }
-    WfcText_ReleaseBgCanvas(sWfcApList->unk_0c);
+    WfcText_ReleaseBgCanvas(sWfcApList->textCanvas);
     WfcScrollBar_Destroy();
     WfcCursor_Clear();
     WfcUtil_HideTopMessage();
     WfcBgMap_Destroy();
-    WfcFs_FreeFile(sWfcApList->unk_04);
-    WfcFs_FreeFile(sWfcApList->unk_08);
+    WfcFs_FreeFile(sWfcApList->bgMapFile);
+    WfcFs_FreeFile(sWfcApList->paletteFile);
     WfcGx_HidePlanes(1, 1);
     WfcGx_HidePlanes(0, 0x1d);
     *(volatile u32 *)0x4000010 = 0;
     *(volatile u32 *)0x4000018 = 0;
-    if (sWfcApList->unk_54 == 0) {
+    if (sWfcApList->isConfirmed == 0) {
         WfcApScan_Free();
         WfcConfig_BeginEdit(WfcConfig_GetEdit()[0xf4]);
         WfcUtil_SetScreenFlags(2, 0);
@@ -569,9 +569,9 @@ void WfcApList_Exit() {
         WfcUtil_SetScreenFlags(0, 1);
         WfcUtil_SetScene((void *)WfcApSearch_Enter);
     } else {
-        WfcConfig_SetEditSsid(&sWfcApList->unk_00[sWfcApList->unk_52]);
+        WfcConfig_SetEditSsid(&sWfcApList->apEntries[sWfcApList->unk_52]);
         WfcUtil_SetScreenFlags(0, 0);
-        if (sWfcApList->unk_00[sWfcApList->unk_52].unk_28 != 0) {
+        if (sWfcApList->apEntries[sWfcApList->unk_52].security != 0) {
             WfcUtil_SetScreenFlags(0, 1);
             WfcUtil_SetEditParams(1, 1);
             WfcUtil_SetScene((void *)WfcTextEdit_Enter);
@@ -586,13 +586,13 @@ void WfcApList_Exit() {
 
 void WfcApList_Redraw() {
     s32 base = FX_DivS32(sWfcApListScroll, 0x1c);
-    s32 n = sWfcApList->unk_51;
-    WfcText_Clear(sWfcApList->unk_0c, 0);
+    s32 n = sWfcApList->apCount;
+    WfcText_Clear(sWfcApList->textCanvas, 0);
     if (n > 5) n = 5;
     s32 p, i;
     for (i = 0, p = base; i < n; i++, p++) WfcApList_DrawSsid(p, i);
     for (i = 0, p = base; i < n; i++, p++) WfcApList_SetRowIcons(p, i);
-    WfcText_RequestTransfer(sWfcApList->unk_0c);
+    WfcText_RequestTransfer(sWfcApList->textCanvas);
     WfcApList_LayoutRows();
 }
 
@@ -602,25 +602,25 @@ void WfcApList_Redraw() {
 namespace F0221197c {
 
 struct Unk_ov001_0222de74 {
-    u8 *unk_00;
-    u32 unk_04;
-    void *unk_08;
-    void *unk_0c;
-    u32 *unk_10[5];
-    u32 *unk_24[5];
-    void *unk_38;
-    u32 unk_3c;
+    u8 *apEntries;
+    u32 bgMapFile;
+    void *paletteFile;
+    void *textCanvas;
+    u32 *securityIcons[5];
+    u32 *signalIcons[5];
+    void *scrollTask;
+    u32 bgScrollTask;
     u16 unk_40;
-    u16 unk_42[3];
-    u16 unk_48[3];
+    u16 securityIconTiles[3];
+    u16 signalIconTiles[3];
     u8 pad_4e[3];
-    u8 unk_51;
+    u8 apCount;
     u8 pad_52;
-    u8 unk_53;
+    u8 scrollBarRange;
     u8 pad_54[2];
-    u8 unk_56;
+    u8 bgScrollPending;
     u8 pad_57[2];
-    u8 unk_59;
+    u8 errorSoundPlayed;
 };
 
 extern "C" {
@@ -691,49 +691,49 @@ void WfcApList_DrawSsid(s32 a, s32 b);
 void WfcApList_DrawSsid(s32 a, s32 b) {
     u16 buf[17];
     u32 r4 = a * 0x2a;
-    s32 n = WfcUtil_StrNLen(sWfcApList->unk_00 + r4, 0x20);
+    s32 n = WfcUtil_StrNLen(sWfcApList->apEntries + r4, 0x20);
     u32 r5 = b * 0x1c;
     s32 i;
-    if (a >= sWfcApList->unk_51) return;
+    if (a >= sWfcApList->apCount) return;
     if (n <= 0x10) r5 += 6;
     MI_CpuFill8(buf, 0, 0x22);
     s32 cnt = n <= 0x10 ? n : 0x10;
-    for (i = 0; i < cnt; i++) buf[i] = (sWfcApList->unk_00 + r4)[i];
-    WfcText_DrawMonospace(sWfcApList->unk_0c, 0xa, r5, 2, 0xa, buf, 1);
+    for (i = 0; i < cnt; i++) buf[i] = (sWfcApList->apEntries + r4)[i];
+    WfcText_DrawMonospace(sWfcApList->textCanvas, 0xa, r5, 2, 0xa, buf, 1);
     if (n > 0x10) {
         MI_CpuFill8(buf, 0, 0x22);
         cnt = n - 0x10;
-        for (i = 0; i < cnt; i++) buf[i] = (sWfcApList->unk_00 + r4)[i + 0x10];
-        WfcText_DrawMonospace(sWfcApList->unk_0c, 0xa, r5 + 0xc, 2, 0xa, buf, 1);
+        for (i = 0; i < cnt; i++) buf[i] = (sWfcApList->apEntries + r4)[i + 0x10];
+        WfcText_DrawMonospace(sWfcApList->textCanvas, 0xa, r5 + 0xc, 2, 0xa, buf, 1);
     }
 }
 
 void WfcApList_SetRowIcons(s32 a, s32 b) {
     Unk_ov001_0222de74 *o = sWfcApList;
-    if (a >= o->unk_51) return;
-    u8 *rec = o->unk_00 + a * 0x2a;
-    u16 *p = (u16 *)o->unk_10[b];
-    p[2] = (p[2] & ~0x3ff) | o->unk_42[rec[0x28]];
+    if (a >= o->apCount) return;
+    u8 *rec = o->apEntries + a * 0x2a;
+    u16 *p = (u16 *)o->securityIcons[b];
+    p[2] = (p[2] & ~0x3ff) | o->securityIconTiles[rec[0x28]];
     o = sWfcApList;
-    rec = o->unk_00 + a * 0x2a;
-    u16 *q = (u16 *)o->unk_24[b];
-    q[2] = (q[2] & ~0x3ff) | o->unk_48[*(u16 *)(rec + 0x26)];
+    rec = o->apEntries + a * 0x2a;
+    u16 *q = (u16 *)o->signalIcons[b];
+    q[2] = (q[2] & ~0x3ff) | o->signalIconTiles[*(u16 *)(rec + 0x26)];
 }
 
 void WfcApList_LayoutRows() {
     s32 n = FX_ModS32(sWfcApListScroll, 0x1c);
     s32 y = 0x36 - n;
-    s32 cnt = sWfcApList->unk_51;
+    s32 cnt = sWfcApList->apCount;
     s32 i;
     if (cnt > 5) cnt = 5;
     for (i = 0; i < cnt; i++) {
-        u32 *p = sWfcApList->unk_10[i];
+        u32 *p = sWfcApList->securityIcons[i];
         *p = (*p & 0xfe00ff00) | (u8)(y - 2) | 0xb30000;
-        u32 *q = sWfcApList->unk_24[i];
+        u32 *q = sWfcApList->signalIcons[i];
         *q = (*q & 0xfe00ff00) | (u8)(y + 1) | 0xd20000;
         y += 0x1c;
     }
-    sWfcApList->unk_56 = 1;
+    sWfcApList->bgScrollPending = 1;
 }
 
 void WfcApList_ScrollUpTask(u32 a) {
@@ -752,10 +752,10 @@ void WfcApList_ScrollUpTask(u32 a) {
     }
     WfcApList_LayoutRows();
     if (n != 0) return;
-    WfcScrollBar_SetPos(FX_DivS32(sWfcApListScroll * sWfcApList->unk_53, sWfcApList->unk_40));
+    WfcScrollBar_SetPos(FX_DivS32(sWfcApListScroll * sWfcApList->scrollBarRange, sWfcApList->unk_40));
     WfcScrollBar_Enable();
     WfcApList_UpdateCursor();
-    sWfcApList->unk_38 = 0;
+    sWfcApList->scrollTask = 0;
     WfcTask_RequestDelete(0, a);
 }
 
@@ -770,20 +770,20 @@ void WfcApList_ScrollDownTask(u32 a) {
     }
     sWfcApListScroll = sWfcApListScroll - n;
     WfcApList_Redraw();
-    WfcScrollBar_SetPos(FX_DivS32(sWfcApListScroll * sWfcApList->unk_53, sWfcApList->unk_40));
+    WfcScrollBar_SetPos(FX_DivS32(sWfcApListScroll * sWfcApList->scrollBarRange, sWfcApList->unk_40));
     WfcScrollBar_Enable();
     WfcApList_UpdateCursor();
-    sWfcApList->unk_38 = 0;
+    sWfcApList->scrollTask = 0;
     WfcTask_RequestDelete(0, a);
 }
 
 void WfcApList_ApplyBgScrollTask() {
-    if (sWfcApList->unk_56 == 0) return;
+    if (sWfcApList->bgScrollPending == 0) return;
     u32 v = FX_ModS32(sWfcApListScroll, 0x1c) - 0x32;
     v = (v << 16) & 0x1ff0000;
     *(volatile u32 *)0x4000010 = v;
     *(volatile u32 *)0x4000018 = v;
-    sWfcApList->unk_56 = 0;
+    sWfcApList->bgScrollPending = 0;
 }
 
 void WfcApList_UpdateCursor() {
@@ -800,11 +800,11 @@ void WfcApList_MoveCursor(s32 a) {
                 sWfcApListCursor = 4;
             } else {
                 WfcSound_Play(0x13);
-                sWfcApList->unk_38 = WfcTask_Add(0, (void *)WfcApList_ScrollUpTask, 0, 0x78);
+                sWfcApList->scrollTask = WfcTask_Add(0, (void *)WfcApList_ScrollUpTask, 0, 0x78);
                 return;
             }
         } else {
-            if (sWfcApList->unk_51 > 1) sWfcApListCursor = sWfcApListCursor + 1;
+            if (sWfcApList->apCount > 1) sWfcApListCursor = sWfcApListCursor + 1;
             else r = 0;
         }
         break;
@@ -814,7 +814,7 @@ void WfcApList_MoveCursor(s32 a) {
             sWfcApListCursor = sWfcApListCursor - 1;
         } else {
             u32 n = sWfcApListCursor + 1;
-            if (sWfcApList->unk_51 > (s32)n) sWfcApListCursor = n;
+            if (sWfcApList->apCount > (s32)n) sWfcApListCursor = n;
             else r = 0;
         }
         break;
@@ -838,9 +838,9 @@ void WfcApList_MoveCursor(s32 a) {
         break;
     }
     if (r == 0) {
-        if (sWfcApList->unk_59 != 0) return;
+        if (sWfcApList->errorSoundPlayed != 0) return;
         WfcSound_Play(9);
-        sWfcApList->unk_59 = 1;
+        sWfcApList->errorSoundPlayed = 1;
     } else {
         WfcSound_Play(8);
         WfcApList_UpdateCursor();
@@ -849,31 +849,31 @@ void WfcApList_MoveCursor(s32 a) {
 
 void WfcApList_ScrollUp() {
     if (sWfcApListScroll == 0) {
-        if (sWfcApList->unk_59 != 0) return;
+        if (sWfcApList->errorSoundPlayed != 0) return;
         WfcSound_Play(9);
-        sWfcApList->unk_59 = 1;
+        sWfcApList->errorSoundPlayed = 1;
     } else {
         WfcSound_Play(0x13);
-        sWfcApList->unk_38 = WfcTask_Add(0, (void *)WfcApList_ScrollUpTask, 0, 0x78);
+        sWfcApList->scrollTask = WfcTask_Add(0, (void *)WfcApList_ScrollUpTask, 0, 0x78);
     }
 }
 
 void WfcApList_ScrollDown() {
     Unk_ov001_0222de74 *o = sWfcApList;
-    if (sWfcApListScroll == o->unk_40 || o->unk_51 <= 4) {
-        if (o->unk_59 != 0) return;
+    if (sWfcApListScroll == o->unk_40 || o->apCount <= 4) {
+        if (o->errorSoundPlayed != 0) return;
         WfcSound_Play(9);
-        sWfcApList->unk_59 = 1;
+        sWfcApList->errorSoundPlayed = 1;
     } else {
         WfcSound_Play(0x13);
-        sWfcApList->unk_38 = WfcTask_Add(0, (void *)WfcApList_ScrollDownTask, 0, 0x78);
+        sWfcApList->scrollTask = WfcTask_Add(0, (void *)WfcApList_ScrollDownTask, 0, 0x78);
     }
 }
 
 void WfcApList_HighlightSearchButton() {
     volatile u8 v = data_ov001_0222aea8;
     u8 t = v;
-    WfcUtil_RequestPaletteLine(sWfcApList->unk_08, t, t);
+    WfcUtil_RequestPaletteLine(sWfcApList->paletteFile, t, t);
 }
 
 void WfcApList_WaitErrorDialog() {

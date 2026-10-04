@@ -1,8 +1,8 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 
-struct Unk_ov001_02226d68_Regs {
-    u32 unk_00, unk_04, unk_08, unk_0c, unk_10, unk_14, unk_18, unk_1c, unk_20, unk_24, unk_28, unk_2c, unk_30;
+struct WfcVramBankState {
+    u32 bg, obj, bgExtPltt, objExtPltt, tex, texPltt, clearImage, subBg, subObj, subBgExtPltt, subObjExtPltt, arm7, lcdc;
 };
 
 extern "C" {
@@ -44,25 +44,25 @@ void WfcGx_RestoreVramBanks();
 void WfcGx_SaveVramBanks();
 }
 
-extern "C" Unk_ov001_02226d68_Regs sWfcSavedVramBanks = {0};
+extern "C" WfcVramBankState sWfcSavedVramBanks = {0};
 
 #pragma thumb off
 
 void WfcGx_SaveVramBanks() {
-    sWfcSavedVramBanks.unk_00 = GX_DisableBankForBG();
-    sWfcSavedVramBanks.unk_04 = GX_DisableBankForOBJ();
-    sWfcSavedVramBanks.unk_08 = GX_DisableBankForBGExtPltt();
-    sWfcSavedVramBanks.unk_0c = GX_DisableBankForOBJExtPltt();
-    sWfcSavedVramBanks.unk_10 = GX_DisableBankForTex();
-    sWfcSavedVramBanks.unk_14 = GX_DisableBankForTexPltt();
-    sWfcSavedVramBanks.unk_18 = GX_DisableBankForClearImage();
-    sWfcSavedVramBanks.unk_1c = GX_DisableBankForSubBG();
-    sWfcSavedVramBanks.unk_20 = GX_DisableBankForSubOBJ();
-    sWfcSavedVramBanks.unk_24 = GX_DisableBankForSubBGExtPltt();
-    sWfcSavedVramBanks.unk_28 = GX_DisableBankForSubOBJExtPltt();
-    sWfcSavedVramBanks.unk_2c = GX_DisableBankForARM7();
-    sWfcSavedVramBanks.unk_30 = GX_DisableBankForLCDC();
-    GX_SetBankForARM7(sWfcSavedVramBanks.unk_2c);
+    sWfcSavedVramBanks.bg = GX_DisableBankForBG();
+    sWfcSavedVramBanks.obj = GX_DisableBankForOBJ();
+    sWfcSavedVramBanks.bgExtPltt = GX_DisableBankForBGExtPltt();
+    sWfcSavedVramBanks.objExtPltt = GX_DisableBankForOBJExtPltt();
+    sWfcSavedVramBanks.tex = GX_DisableBankForTex();
+    sWfcSavedVramBanks.texPltt = GX_DisableBankForTexPltt();
+    sWfcSavedVramBanks.clearImage = GX_DisableBankForClearImage();
+    sWfcSavedVramBanks.subBg = GX_DisableBankForSubBG();
+    sWfcSavedVramBanks.subObj = GX_DisableBankForSubOBJ();
+    sWfcSavedVramBanks.subBgExtPltt = GX_DisableBankForSubBGExtPltt();
+    sWfcSavedVramBanks.subObjExtPltt = GX_DisableBankForSubOBJExtPltt();
+    sWfcSavedVramBanks.arm7 = GX_DisableBankForARM7();
+    sWfcSavedVramBanks.lcdc = GX_DisableBankForLCDC();
+    GX_SetBankForARM7(sWfcSavedVramBanks.arm7);
     WfcGx_ClearVram();
 }
 
@@ -72,18 +72,18 @@ void WfcGx_RestoreVramBanks() {
     GX_DisableBankForSubBG();
     GX_DisableBankForSubOBJ();
     WfcGx_ClearVram();
-    GX_SetBankForBG(sWfcSavedVramBanks.unk_00);
-    GX_SetBankForOBJ(sWfcSavedVramBanks.unk_04);
-    GX_SetBankForBGExtPltt(sWfcSavedVramBanks.unk_08);
-    GX_SetBankForOBJExtPltt(sWfcSavedVramBanks.unk_0c);
-    GX_SetBankForTex(sWfcSavedVramBanks.unk_10);
-    GX_SetBankForTexPltt(sWfcSavedVramBanks.unk_14);
-    GX_SetBankForClearImage(sWfcSavedVramBanks.unk_18);
-    GX_SetBankForSubBG(sWfcSavedVramBanks.unk_1c);
-    GX_SetBankForSubOBJ(sWfcSavedVramBanks.unk_20);
-    GX_SetBankForSubBGExtPltt(sWfcSavedVramBanks.unk_24);
-    GX_SetBankForSubOBJExtPltt(sWfcSavedVramBanks.unk_28);
-    GX_SetBankForLCDC(sWfcSavedVramBanks.unk_30);
+    GX_SetBankForBG(sWfcSavedVramBanks.bg);
+    GX_SetBankForOBJ(sWfcSavedVramBanks.obj);
+    GX_SetBankForBGExtPltt(sWfcSavedVramBanks.bgExtPltt);
+    GX_SetBankForOBJExtPltt(sWfcSavedVramBanks.objExtPltt);
+    GX_SetBankForTex(sWfcSavedVramBanks.tex);
+    GX_SetBankForTexPltt(sWfcSavedVramBanks.texPltt);
+    GX_SetBankForClearImage(sWfcSavedVramBanks.clearImage);
+    GX_SetBankForSubBG(sWfcSavedVramBanks.subBg);
+    GX_SetBankForSubOBJ(sWfcSavedVramBanks.subObj);
+    GX_SetBankForSubBGExtPltt(sWfcSavedVramBanks.subBgExtPltt);
+    GX_SetBankForSubOBJExtPltt(sWfcSavedVramBanks.subObjExtPltt);
+    GX_SetBankForLCDC(sWfcSavedVramBanks.lcdc);
     *(volatile u16 *)0x4000050 = 0;
     *(volatile u16 *)0x4001050 = 0;
     *(volatile u32 *)0x4000010 = 0;

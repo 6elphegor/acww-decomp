@@ -11,25 +11,25 @@ u8 sWfcAossDoneTimer;
 namespace F0221197c {
 
 struct Unk_ov001_0222de74 {
-    u8 *unk_00;
-    u32 unk_04;
-    void *unk_08;
-    void *unk_0c;
-    u32 *unk_10[5];
-    u32 *unk_24[5];
-    void *unk_38;
-    u32 unk_3c;
+    u8 *apEntries;
+    u32 bgMapFile;
+    void *paletteFile;
+    void *textCanvas;
+    u32 *securityIcons[5];
+    u32 *signalIcons[5];
+    void *scrollTask;
+    u32 bgScrollTask;
     u16 unk_40;
-    u16 unk_42[3];
-    u16 unk_48[3];
+    u16 securityIconTiles[3];
+    u16 signalIconTiles[3];
     u8 pad_4e[3];
-    u8 unk_51;
+    u8 apCount;
     u8 pad_52;
-    u8 unk_53;
+    u8 scrollBarRange;
     u8 pad_54[2];
-    u8 unk_56;
+    u8 bgScrollPending;
     u8 pad_57[2];
-    u8 unk_59;
+    u8 errorSoundPlayed;
 };
 
 extern "C" {

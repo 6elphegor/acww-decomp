@@ -24,9 +24,9 @@ public:
     virtual BOOL vfunc_5c(V3 *out);
 
     /* 0x50 */ u8 pad_50[0xc];
-    /* 0x5c */ V3 unk_5c;
+    /* 0x5c */ V3 position;
     /* 0x68 */ u8 pad_68[0xb0 - 0x68];
-    /* 0xb0 */ u32 unk_b0;
+    /* 0xb0 */ u32 actorFlags;
 };
 
 static inline BOOL Unk_ov003_02224bc4_Bit(u32 f, u32 m)
@@ -43,14 +43,14 @@ public:
 
 // 0x60-byte entry, table at sBottleThrows
 struct BottleThrow {
-    u32 unk_00[0x30 / 4];
-    u8 unk_30;
+    u32 collisionState[0x30 / 4];
+    u8 state;
     u8 pad_31[3];
-    V3 unk_34;
-    V3 unk_40;
-    V3 unk_4c;
-    s32 unk_58;
-    u8 unk_5c;
+    V3 position;
+    V3 startPos;
+    V3 targetPos;
+    s32 stateTimer;
+    u8 isLocal;
     u8 pad_5d[3];
 };
 

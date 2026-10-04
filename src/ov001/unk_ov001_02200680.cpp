@@ -7,29 +7,29 @@ struct Unk_ov001_022006e0_Rng {
     u32 add;
 };
 
-struct Unk_ov001_022008d4_Cfg {
+struct AossSocConfig {
     u32 unk_00;
     s32 (*unk_04)(s32, s32);
     s32 (*unk_08)(s32, s32);
     u32 pad_0c;
-    u32 unk_10;
-    u32 unk_14;
-    u32 unk_18;
+    u32 ipAddress;
+    u32 netmask;
+    u32 gateway;
     u8 pad_1c[8];
     u32 unk_24;
     u32 unk_28;
     u8 pad_2c[0x2c];
 };
 
-struct Unk_ov001_02200d58_Sess {
-    u8 *unk_00;
-    s32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
-    s8 unk_18;
-    s8 unk_19;
+struct AossSession {
+    u8 *clientName;
+    s32 clientNameLength;
+    u32 requestedKeyTypes;
+    u32 receivedKeyTypes;
+    u32 apAddress;
+    u32 netmask;
+    s8 useUnicast;
+    s8 clientInfoTag;
 };
 
 struct Unk_ov001_02200b5c_Rc4 {
@@ -39,27 +39,27 @@ struct Unk_ov001_02200b5c_Rc4 {
     u32 n;
 };
 
-struct Unk_ov001_02201d7c_Src {
+struct AossKeyBlock {
     u8 pad_00[4];
     s32 len;
-    u8 unk_08[0x28];
-    u8 unk_30[0x40];
-    u8 unk_70[0x40];
-    u8 unk_b0[0x40];
-    u8 unk_f0[0x40];
+    u8 ssid[0x28];
+    u8 key1[0x40];
+    u8 key2[0x40];
+    u8 key3[0x40];
+    u8 key4[0x40];
 };
 
 struct Unk_ov001_02202b3c_Cfg {
     u32 unk_00;
-    u16 unk_04;
-    u8 unk_06[0x100];
-    s16 unk_106;
-    s16 unk_108;
-    s16 unk_10a;
-    s16 unk_10c;
-    s16 unk_10e;
+    u16 clientNameLength;
+    u8 clientName[0x100];
+    s16 apRetryCount;
+    s16 apRetryWait;
+    s16 packetRetryCount;
+    s16 packetRetryWait;
+    s16 recvTimeout;
     u8 pad_110[6];
-    u8 unk_116;
+    u8 errorCode;
 };
 
 struct Unk_ov001_02200680_S;
@@ -71,8 +71,8 @@ extern "C" s32 Aoss_SocFree(s32 a, s32 b);
 
 // EXTERNS
 extern "C" Unk_ov001_022006e0_Rng sAossRand;
-extern "C" Unk_ov001_022008d4_Cfg sAossSocConfig;
-extern "C" Unk_ov001_02200d58_Sess sAossSession;
+extern "C" AossSocConfig sAossSocConfig;
+extern "C" AossSession sAossSession;
 extern "C" s16 sAossDefaultRetry[2];
 extern "C" s32 sAossSocket;
 extern "C" s32 sAossProgress;
@@ -91,10 +91,10 @@ extern "C" void *sAossConnectResult;
 
 #define FAIL(c) { o[0x116] = (c); Aoss_FreeScanBuffers(); return -1; }
 #define data_ov001_0222b90a (sAossRc4Key + 2)
-#define data_ov001_0222bff4 (*(Unk_ov001_02201d7c_Src *)(sAossKeyBuf + 0x8))
-#define data_ov001_0222c124 (*(Unk_ov001_02201d7c_Src *)(sAossKeyBuf + 0x138))
-#define data_ov001_0222c254 (*(Unk_ov001_02201d7c_Src *)(sAossKeyBuf + 0x268))
-#define data_ov001_0222c2c4 (*(Unk_ov001_02201d7c_Src *)(sAossKeyBuf + 0x2d8))
+#define data_ov001_0222bff4 (*(AossKeyBlock *)(sAossKeyBuf + 0x8))
+#define data_ov001_0222c124 (*(AossKeyBlock *)(sAossKeyBuf + 0x138))
+#define data_ov001_0222c254 (*(AossKeyBlock *)(sAossKeyBuf + 0x268))
+#define data_ov001_0222c2c4 (*(AossKeyBlock *)(sAossKeyBuf + 0x2d8))
 #define sAossMelcoStr ((u8 *)"MELCO")
 #define sAossEssidStr ((u8 *)"ESSID-AOSS")
 
@@ -206,7 +206,7 @@ struct Unk_ov001_02201cd0_Hdr {
 
 struct Unk_ov001_02202050_Buf {
     s32 sock;
-    s32 unk_04;
+    s32 recvLength;
     u8 unk_08[4];
     u8 unk_0c[0x5ec];
 };
@@ -255,9 +255,9 @@ struct Unk_ov001_02200f78_L {
 
 extern "C" s32 Aoss_Run(Unk_ov001_02202b3c_Cfg *a) {
     s32 r;
-    if (a->unk_106 == 0 || a->unk_106 < -1 || a->unk_108 < -1 || a->unk_10a == 0 || a->unk_10a < -1
-        || a->unk_10c < -1 || a->unk_10e < -1 || a->unk_04 == 0 || a->unk_04 > 0x100
-        || a->unk_06[a->unk_04 - 1] != 0) {
+    if (a->apRetryCount == 0 || a->apRetryCount < -1 || a->apRetryWait < -1 || a->packetRetryCount == 0 || a->packetRetryCount < -1
+        || a->packetRetryWait < -1 || a->recvTimeout < -1 || a->clientNameLength == 0 || a->clientNameLength > 0x100
+        || a->clientName[a->clientNameLength - 1] != 0) {
         r = -1;
     } else {
         r = 0;
@@ -266,13 +266,13 @@ extern "C" s32 Aoss_Run(Unk_ov001_02202b3c_Cfg *a) {
         r = -1;
     }
     if (r == -1) {
-        a->unk_116 = 0xf;
+        a->errorCode = 0xf;
         Aoss_FreeScanBuffers();
         return -1;
     }
     sAossPacketBuf = (u8 *)Aoss_Alloc(0x5f8);
     if (sAossPacketBuf == 0) {
-        a->unk_116 = 0xf;
+        a->errorCode = 0xf;
         Aoss_FreeScanBuffers();
         return -1;
     }
@@ -341,7 +341,7 @@ extern "C" s32 Aoss_RunProtocol(u8 *o)
         t = 0x7d0;
     }
     Aoss_InitSession(o);
-    if ((sAossSession.unk_08 & 1) != 1) {
+    if ((sAossSession.requestedKeyTypes & 1) != 1) {
         Aoss_SetError(0x13);
         FAIL(0xf);
     }
@@ -436,7 +436,7 @@ top:
     sec = t / 1000;
     usec = (t % 1000) * 1000;
 again:
-    if (state == 1 && sAossSession.unk_18 != 1) {
+    if (state == 1 && sAossSession.useUnicast != 1) {
         if (sAossSocket != -1) {
             Aoss_SocketClose(sAossSocket);
         }
@@ -500,12 +500,12 @@ again:
         if (i == v01.v[0]) {
             FAIL(0xf);
         }
-        ip = Aoss_PickHostAddress(sAossSession.unk_10, sAossSession.unk_14);
-        if (Aoss_NetStartup(ip, sAossSession.unk_14, ip) != 0) {
+        ip = Aoss_PickHostAddress(sAossSession.apAddress, sAossSession.netmask);
+        if (Aoss_NetStartup(ip, sAossSession.netmask, ip) != 0) {
             Aoss_SetError(0xc);
             FAIL(0xf);
         }
-        sAossSession.unk_18 = 1;
+        sAossSession.useUnicast = 1;
         Aoss_FreeScanBuffers();
         sAossSocket = Aoss_SocketCreate(2, 2, z);
         if (sAossSocket < 0) {
@@ -552,7 +552,7 @@ again:
     len48 = 8;
     r = Aoss_RecvFrom(sAossSocket, (s32)((u8 *)buf + 0xc), 0x5dc, z, (u8 *)sa40, &len48);
     buf->sock = sAossSocket;
-    buf->unk_04 = (u32)Aoss_Ntohs((u16)r);
+    buf->recvLength = (u32)Aoss_Ntohs((u16)r);
     res = Aoss_HandleRecvPacket(state, (u8 *)buf, &tries, st64, sAossSocket);
     if (res == 100) {
         ret = 0;
@@ -621,7 +621,7 @@ again:
             if (i == v01.v[0]) {
                 FAIL(0xf);
             }
-            if (Aoss_NetStartup(ip, sAossSession.unk_14, ip) != 0) {
+            if (Aoss_NetStartup(ip, sAossSession.netmask, ip) != 0) {
                 Aoss_SetError(0xc);
                 FAIL(0xf);
             }
@@ -726,13 +726,13 @@ extern "C" void Aoss_InitSession(u8 *p)
     Aoss_Memset(sAossSessionId, 0, 8);
     sAossError = 1;
     Aoss_Memset(&sAossSession, 0, 0x1c);
-    sAossSession.unk_00 = p + 6;
-    sAossSession.unk_04 = *(u16 *)(p + 4);
-    sAossSession.unk_08 = *(u16 *)p & 0xf;
-    sAossSession.unk_19 = p[2];
-    sAossSession.unk_0c = 0;
-    sAossSession.unk_10 = 0xc0a80b01;
-    sAossSession.unk_18 = 0;
+    sAossSession.clientName = p + 6;
+    sAossSession.clientNameLength = *(u16 *)(p + 4);
+    sAossSession.requestedKeyTypes = *(u16 *)p & 0xf;
+    sAossSession.clientInfoTag = p[2];
+    sAossSession.receivedKeyTypes = 0;
+    sAossSession.apAddress = 0xc0a80b01;
+    sAossSession.useUnicast = 0;
 }
 
 extern "C" s32 Aoss_SetError(s32 v)
@@ -748,54 +748,54 @@ extern "C" s32 Aoss_GetError()
 extern "C" s32 Aoss_StoreResult(u8 *o)
 {
     u8 *r5 = o + 0x117;
-    Unk_ov001_02201d7c_Src *a = &data_ov001_0222bff4;
-    Unk_ov001_02201d7c_Src *b = &data_ov001_0222c124;
-    Unk_ov001_02201d7c_Src *c = &data_ov001_0222c254;
-    Unk_ov001_02201d7c_Src *d = &data_ov001_0222c2c4;
+    AossKeyBlock *a = &data_ov001_0222bff4;
+    AossKeyBlock *b = &data_ov001_0222c124;
+    AossKeyBlock *c = &data_ov001_0222c254;
+    AossKeyBlock *d = &data_ov001_0222c2c4;
     if (r5 == 0) {
         return -1;
     }
-    *(u16 *)o = sAossSession.unk_08 & sAossSession.unk_0c;
+    *(u16 *)o = sAossSession.requestedKeyTypes & sAossSession.receivedKeyTypes;
     Aoss_Memset(r5, 0, 0x154);
     if ((*(u16 *)o & 1) != 0) {
-        Aoss_Memcpy(r5, a->unk_30, a->len);
-        Aoss_Memcpy(r5 + 6, a->unk_70, a->len);
-        Aoss_Memcpy(r5 + 0xc, a->unk_b0, a->len);
-        Aoss_Memcpy(r5 + 0x12, a->unk_f0, a->len);
-        if (Aoss_IsPrintable(a->unk_08, Aoss_Strlen((char *)a->unk_08)) != 0) {
+        Aoss_Memcpy(r5, a->key1, a->len);
+        Aoss_Memcpy(r5 + 6, a->key2, a->len);
+        Aoss_Memcpy(r5 + 0xc, a->key3, a->len);
+        Aoss_Memcpy(r5 + 0x12, a->key4, a->len);
+        if (Aoss_IsPrintable(a->ssid, Aoss_Strlen((char *)a->ssid)) != 0) {
             goto fail;
         }
-        Aoss_Memcpy(r5 + 0x18, a->unk_08, Aoss_Strlen((char *)a->unk_08));
+        Aoss_Memcpy(r5 + 0x18, a->ssid, Aoss_Strlen((char *)a->ssid));
     }
     if ((*(u16 *)o & 2) != 0) {
-        Aoss_Memcpy(r5 + 0x39, b->unk_30, b->len);
-        Aoss_Memcpy(r5 + 0x47, b->unk_70, b->len);
-        Aoss_Memcpy(r5 + 0x55, b->unk_b0, b->len);
-        Aoss_Memcpy(r5 + 0x63, b->unk_f0, b->len);
-        if (Aoss_IsPrintable(b->unk_08, Aoss_Strlen((char *)b->unk_08)) != 0) {
+        Aoss_Memcpy(r5 + 0x39, b->key1, b->len);
+        Aoss_Memcpy(r5 + 0x47, b->key2, b->len);
+        Aoss_Memcpy(r5 + 0x55, b->key3, b->len);
+        Aoss_Memcpy(r5 + 0x63, b->key4, b->len);
+        if (Aoss_IsPrintable(b->ssid, Aoss_Strlen((char *)b->ssid)) != 0) {
             goto fail;
         }
-        Aoss_Memcpy(r5 + 0x71, b->unk_08, Aoss_Strlen((char *)b->unk_08));
+        Aoss_Memcpy(r5 + 0x71, b->ssid, Aoss_Strlen((char *)b->ssid));
     }
     if ((*(u16 *)o & 4) != 0) {
-        if (Aoss_IsPrintable(c->unk_30, c->len - 1) != 0) {
+        if (Aoss_IsPrintable(c->key1, c->len - 1) != 0) {
             goto fail;
         }
-        Aoss_Memcpy(r5 + 0x92, c->unk_30, c->len);
-        if (Aoss_IsPrintable(c->unk_08, Aoss_Strlen((char *)c->unk_08)) != 0) {
+        Aoss_Memcpy(r5 + 0x92, c->key1, c->len);
+        if (Aoss_IsPrintable(c->ssid, Aoss_Strlen((char *)c->ssid)) != 0) {
             goto fail;
         }
-        Aoss_Memcpy(r5 + 0xd2, c->unk_08, Aoss_Strlen((char *)c->unk_08));
+        Aoss_Memcpy(r5 + 0xd2, c->ssid, Aoss_Strlen((char *)c->ssid));
     }
     if ((*(u16 *)o & 8) != 0) {
-        if (Aoss_IsPrintable(d->unk_30, d->len - 1) != 0) {
+        if (Aoss_IsPrintable(d->key1, d->len - 1) != 0) {
             goto fail;
         }
-        Aoss_Memcpy(r5 + 0xf3, d->unk_30, d->len);
-        if (Aoss_IsPrintable(d->unk_08, Aoss_Strlen((char *)d->unk_08)) != 0) {
+        Aoss_Memcpy(r5 + 0xf3, d->key1, d->len);
+        if (Aoss_IsPrintable(d->ssid, Aoss_Strlen((char *)d->ssid)) != 0) {
             goto fail;
         }
-        Aoss_Memcpy(r5 + 0x133, d->unk_08, Aoss_Strlen((char *)d->unk_08));
+        Aoss_Memcpy(r5 + 0x133, d->ssid, Aoss_Strlen((char *)d->ssid));
     }
     o[0x116] = 0;
     return 0;
@@ -995,7 +995,7 @@ extern "C" s32 Aoss_HandleKeyReply(s32 mode, u8 *q, s32 *cnt, u8 *r3)
         (*cnt)++;
         return mode;
     }
-    if ((sAossSession.unk_0c & sAossSession.unk_08) == 0) {
+    if ((sAossSession.receivedKeyTypes & sAossSession.requestedKeyTypes) == 0) {
         return mode;
     }
     *cnt = 0;
@@ -1151,10 +1151,10 @@ extern "C" s32 Aoss_ParseStartReply(u8 *p, u8 *dst)
             }
             break;
         case 5:
-            sAossSession.unk_10 = Aoss_Ntohl(Aoss_ReadLE(q + 6, len));
+            sAossSession.apAddress = Aoss_Ntohl(Aoss_ReadLE(q + 6, len));
             break;
         case 6:
-            sAossSession.unk_14 = Aoss_Ntohl(Aoss_ReadLE(q + 6, len));
+            sAossSession.netmask = Aoss_Ntohl(Aoss_ReadLE(q + 6, len));
             break;
         default:
             return -1;
@@ -1373,7 +1373,7 @@ found:
         p += n;
         r7 -= n;
     } while (r7 > 0);
-    sAossSession.unk_0c |= flags;
+    sAossSession.receivedKeyTypes |= flags;
     return 0;
 }
 
@@ -1468,7 +1468,7 @@ extern "C" s32 Aoss_SendKeyRequest(s32 a, u8 *b, s32 c) {
     l.sa.len = 2;
     l.sa.family = 0;
     l.sa.port = Aoss_Htons(4);
-    l.sa.addr = sAossSession.unk_08;
+    l.sa.addr = sAossSession.requestedKeyTypes;
     l.sa.addr = Aoss_Htonl(l.sa.addr);
     l.b = 8;
     Aoss_WriteBody(sAossEncryptFlag, r4 + 0x18, (u8 *)&l.sa, &l.b, (u16 *)&l.c, (u8 *)&l.a);
@@ -1499,10 +1499,10 @@ extern "C" s32 Aoss_BuildClientInfoTlv(u8 *out) {
     s32 len;
     s32 t;
     u8 *q;
-    out[0] = sAossSession.unk_19;
+    out[0] = sAossSession.clientInfoTag;
     out[1] = 1;
-    len = (s16)sAossSession.unk_04;
-    Aoss_Memcpy(out + 6, sAossSession.unk_00, len);
+    len = (s16)sAossSession.clientNameLength;
+    Aoss_Memcpy(out + 6, sAossSession.clientName, len);
     *(u16 *)(out + 2) = Aoss_Htons((u16)len);
     t = (s16)(((s16)(len + 6) + 1) / 2 * 2);
     *(u16 *)(out + 4) = Aoss_Htons((u16)t);
@@ -1550,8 +1550,8 @@ extern "C" s32 Aoss_SendPacket(s32 a, s32 b, s32 n, s32 c) {
     Aoss_Memset(&sa, 0, 8);
     sa.family = 2;
     sa.port = Aoss_Htons(0x5790);
-    sa.addr = Aoss_Htonl(sAossSession.unk_10);
-    if (n == 0xff || sAossSession.unk_18 == 0) {
+    sa.addr = Aoss_Htonl(sAossSession.apAddress);
+    if (n == 0xff || sAossSession.useUnicast == 0) {
         sa.addr = -1;
     }
     return Aoss_SendTo(c, a, b, 0, (u8 *)&sa, 8);
@@ -1743,9 +1743,9 @@ extern "C" s32 Aoss_SocFree(s32 a, s32 b) {
 }
 
 extern "C" s32 Aoss_NetStartup(u32 a, u32 b, u32 c) {
-    sAossSocConfig.unk_10 = Aoss_Htonl(a);
-    sAossSocConfig.unk_14 = Aoss_Htonl(b);
-    sAossSocConfig.unk_18 = Aoss_Htonl(c);
+    sAossSocConfig.ipAddress = Aoss_Htonl(a);
+    sAossSocConfig.netmask = Aoss_Htonl(b);
+    sAossSocConfig.gateway = Aoss_Htonl(c);
     if (Sock_Startup(&sAossSocConfig) < 0) {
         return -1;
     }
@@ -1892,11 +1892,11 @@ extern "C" u8 *sAossPacketBuf;
 extern "C" s32 sAossProgress;
 extern "C" s16 sAossDefaultRetry[2];
 extern "C" u8 sAossKeyBlockTags[4];
-extern "C" Unk_ov001_022008d4_Cfg sAossSocConfig;
+extern "C" AossSocConfig sAossSocConfig;
 extern "C" s32 sAossEncryptFlag;
 extern "C" Unk_ov001_022006e0_Rng sAossRand;
 extern "C" u8 sAossKeyBuf[0x6a0];
-extern "C" Unk_ov001_02200d58_Sess sAossSession;
+extern "C" AossSession sAossSession;
 extern "C" s32 sAossSocket;
 extern "C" u8 sAossNameBuf[0x280];
 
@@ -1922,7 +1922,7 @@ extern "C" s16 sAossDefaultRetry[2] = {-1, -1};
 
 extern "C" u8 sAossKeyBlockTags[4] = {9, 8, 0, 0};
 
-extern "C" Unk_ov001_022008d4_Cfg sAossSocConfig = {0x01000000, Aoss_SocAlloc, Aoss_SocFree, 0, 0, 0, 0, {0}, 0x1000, 0x1000, {0}};
+extern "C" AossSocConfig sAossSocConfig = {0x01000000, Aoss_SocAlloc, Aoss_SocFree, 0, 0, 0, 0, {0}, 0x1000, 0x1000, {0}};
 
 extern "C" s32 sAossEncryptFlag = 0;
 
@@ -1930,7 +1930,7 @@ extern "C" Unk_ov001_022006e0_Rng sAossRand = {0};
 
 extern "C" u8 sAossKeyBuf[0x6a0] = {0};
 
-extern "C" Unk_ov001_02200d58_Sess sAossSession = {0};
+extern "C" AossSession sAossSession = {0};
 
 extern "C" s32 sAossSocket = -1;
 

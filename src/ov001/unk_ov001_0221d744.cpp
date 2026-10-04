@@ -3,11 +3,11 @@
 
 #pragma thumb off
 
-struct Unk_ov001_0221d744_Ent {
+struct WfcApScanEntry {
     u8 unk_00[0x20];
-    u8 unk_20[6];
-    u16 unk_26;
-    u8 unk_28;
+    u8 bssid[6];
+    u16 linkLevel;
+    u8 security;
     u8 unk_29;
 };
 
@@ -28,20 +28,20 @@ struct Unk_ov001_0221db6c_Blob { u32 v[17]; };
 
 struct Unk_ov001_0221d744_Node {
     u8 unk_00[4];
-    u8 unk_04[6];
+    u8 bssid[6];
     u8 unk_0a[2];
-    u8 unk_0c;
+    u8 ssid;
     u8 unk_0d[0x1f];
-    u16 unk_2c;
+    u16 capaInfo;
     u8 unk_2e[0xe];
-    u16 unk_3c;
+    u16 gameInfoLength;
 };
 
 struct Unk_ov001_0221d744_List {
     u8 unk_00[0xe];
-    u16 unk_0e;
-    Unk_ov001_0221d744_Node *unk_10[0x10];
-    u16 unk_50[1];
+    u16 bssDescCount;
+    Unk_ov001_0221d744_Node *bssDesc[0x10];
+    u16 linkLevel[1];
 };
 
 extern "C" {
@@ -63,7 +63,7 @@ void *WfcHeap_AllocClear(s32, s32);
 
 void WfcApScan_StoreResults(Unk_ov001_0221d744_List *);
 void WfcApScan_WmCallback(u16 *);
-s32 WfcApScan_GetResults(Unk_ov001_0221d744_Ent **out);
+s32 WfcApScan_GetResults(WfcApScanEntry **out);
 BOOL WfcApScan_Stop();
 BOOL WfcApScan_StartScan();
 BOOL WfcApScan_Start();
@@ -122,13 +122,13 @@ BOOL WfcApScan_Stop() {
     return TRUE;
 }
 
-s32 WfcApScan_GetResults(Unk_ov001_0221d744_Ent **out) {
+s32 WfcApScan_GetResults(WfcApScanEntry **out) {
     s32 cnt = 0;
     s32 i = 0;
-    *out = (Unk_ov001_0221d744_Ent *)(sWfcApScan + 0x1300);
-    Unk_ov001_0221d744_Ent *e = *out;
+    *out = (WfcApScanEntry *)(sWfcApScan + 0x1300);
+    WfcApScanEntry *e = *out;
     for (; i < 20; i++, e++) {
-        if (memcmp(e->unk_20, sWfcApScanEmptyBssid, 6) != 0) cnt++;
+        if (memcmp(e->bssid, sWfcApScanEmptyBssid, 6) != 0) cnt++;
     }
     return cnt;
 }
@@ -152,18 +152,18 @@ void WfcApScan_WmCallback(u16 *p) {
 }
 
 void WfcApScan_StoreResults(Unk_ov001_0221d744_List *p) {
-    Unk_ov001_0221d744_Ent *tbl;
+    WfcApScanEntry *tbl;
     Unk_ov001_0221d744_Buf buf;
     s32 i;
-    tbl = (Unk_ov001_0221d744_Ent *)(sWfcApScan + 0x1300);
+    tbl = (WfcApScanEntry *)(sWfcApScan + 0x1300);
     DC_InvalidateRange(sWfcApScan + 0xf00, 0x400);
-    for (i = 0; i < p->unk_0e; i++) {
-        Unk_ov001_0221d744_Node *n = p->unk_10[i];
-        if (n->unk_0c != 0 && n->unk_3c == 0) {
+    for (i = 0; i < p->bssDescCount; i++) {
+        Unk_ov001_0221d744_Node *n = p->bssDesc[i];
+        if (n->ssid != 0 && n->gameInfoLength == 0) {
             s32 j = 0;
-            Unk_ov001_0221d744_Ent *e = tbl;
+            WfcApScanEntry *e = tbl;
             do {
-                if (memcmp(n->unk_04, e->unk_20, 6) == 0) break;
+                if (memcmp(n->bssid, e->bssid, 6) == 0) break;
                 e++;
                 j++;
             } while (j < 20);
@@ -171,30 +171,30 @@ void WfcApScan_StoreResults(Unk_ov001_0221d744_List *p) {
                 j = 0;
                 e = tbl;
                 do {
-                    if (memcmp(e->unk_20, sWfcApScanEmptyBssid, 6) == 0) break;
+                    if (memcmp(e->bssid, sWfcApScanEmptyBssid, 6) == 0) break;
                     e++;
                     j++;
                 } while (j < 20);
                 if (j == 20) return;
             }
             e = tbl + j;
-            MI_CpuCopy8(n->unk_04, e->unk_20, 6);
-            MI_CpuCopy8(&n->unk_0c, e, 0x20);
-            e->unk_26 = p->unk_50[i];
-            if ((n->unk_2c & 0x10) == 0) {
-                e->unk_28 = 0;
+            MI_CpuCopy8(n->bssid, e->bssid, 6);
+            MI_CpuCopy8(&n->ssid, e, 0x20);
+            e->linkLevel = p->linkLevel[i];
+            if ((n->capaInfo & 0x10) == 0) {
+                e->security = 0;
             } else {
-                e->unk_28 = 1;
+                e->security = 1;
                 WM_GetOtherElements(&buf, n);
                 s32 k;
                 s32 cnt = buf.cnt;
                 for (k = 0; k < cnt; k++) {
                     if (buf.v[k].type == 0x30) {
-                        e->unk_28 = 2;
+                        e->security = 2;
                         break;
                     }
                     if (buf.v[k].type == 0xdd && buf.v[k].len >= 4 && memcmp(buf.v[k].data, sWfcWpaOui, 4) == 0) {
-                        e->unk_28 = 2;
+                        e->security = 2;
                         break;
                     }
                 }

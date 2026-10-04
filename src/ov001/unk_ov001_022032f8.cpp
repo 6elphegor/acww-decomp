@@ -3,11 +3,11 @@
 
 typedef void (*Unk_ov001_022034a0_Cb)(s32, ...);
 
-struct Unk_ov001_022032f8_P {
-    s32 unk_00;
-    u32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
+struct AossWcmConfig {
+    s32 dmaNo;
+    u32 bssDescBuffer;
+    s32 bssDescBufferSize;
+    s32 bssDescMode;
 };
 
 
@@ -21,7 +21,7 @@ extern "C" u8 *sAossWcmBssidPtr = 0;
 extern "C" s32 sAossWcmConnectOption = 0;
 extern "C" Unk_ov001_022034a0_Cb sAossWcmNotifyCb = 0;
 extern "C" u8 *sAossWcmSsidPtr = 0;
-extern "C" Unk_ov001_022032f8_P *sAossWcmConfig = 0;
+extern "C" AossWcmConfig *sAossWcmConfig = 0;
 extern "C" s32 sAossWcmSearchOption = 0;
 
 extern "C" {
@@ -402,16 +402,16 @@ extern "C" s32 Aoss_WcmConnect(void *a, void *b, u32 c) {
 extern "C" s32 Aoss_WcmInit(void *fn, void *buf, u32 size) {
     u32 irq = OS_DisableInterrupts();
     sAossWcmWepDesc = (u8 *)buf;
-    Unk_ov001_022032f8_P *p = (Unk_ov001_022032f8_P *)(((u32)buf + 0x53) & ~3);
+    AossWcmConfig *p = (AossWcmConfig *)(((u32)buf + 0x53) & ~3);
     sAossWcmConfig = p;
     u32 t = (((u32)p + 0x2f) & ~0x1f);
     sAossWcmWork = (u8 *)t;
     t = ((t + 0x231f) & ~0x1f);
     sAossWcmBssDesc = (u8 *)t;
-    p->unk_04 = (t + 0xdf) & ~0x1f;
-    sAossWcmConfig->unk_08 = (s32)((u32)buf + size - sAossWcmConfig->unk_04);
-    sAossWcmConfig->unk_0c = 0;
-    sAossWcmConfig->unk_00 = 3;
+    p->bssDescBuffer = (t + 0xdf) & ~0x1f;
+    sAossWcmConfig->bssDescBufferSize = (s32)((u32)buf + size - sAossWcmConfig->bssDescBuffer);
+    sAossWcmConfig->bssDescMode = 0;
+    sAossWcmConfig->dmaNo = 3;
     sAossWcmNotifyCb = (Unk_ov001_022034a0_Cb)fn;
     if (sAossWcmState == 0) {
         if (WifiLink_Init(sAossWcmWork, 0x2300)) {

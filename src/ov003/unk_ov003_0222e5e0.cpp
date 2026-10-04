@@ -13,7 +13,7 @@ struct InsectNetSyncRec {
 
 struct Unk_020cbb18_Ptr {
     u8 unk_00[0x64];
-    u32 unk_64;
+    u32 myAid;
 };
 
 extern "C" {

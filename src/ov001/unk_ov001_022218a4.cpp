@@ -6,7 +6,7 @@
 typedef s32 (*Unk_ov001_0222df28_Fn)(...);
 
 struct Unk_ov001_0222df08_S {
-    u16 unk_00;
+    u16 state;
     u16 unk_02;
     u16 unk_04;
     u16 unk_06;
@@ -14,52 +14,52 @@ struct Unk_ov001_0222df08_S {
     u16 unk_0a;
     u16 unk_0c;
     u8 pad_0e[0x1b140 - 0x0e];
-    void *unk_1b140;
-    void *unk_1b144;
+    void *mbWork;
+    void *segmentBuffer;
 };
 
 struct Unk_ov001_0222df28_S {
-    s32 unk_00;
-    u16 unk_04;
+    s32 userGameInfo;
+    u16 userGameInfoLength;
     u8 pad_06[2];
-    s32 unk_08;
-    u16 unk_0c;
-    u16 unk_0e;
-    u16 unk_10;
-    u16 unk_12;
-    u16 unk_14;
-    u16 unk_16;
-    u16 unk_18;
+    s32 ggid;
+    u16 tgid;
+    u16 entryFlag;
+    u16 maxEntry;
+    u16 multiBootFlag;
+    u16 KS_Flag;
+    u16 CS_Flag;
+    u16 beaconPeriod;
     u8 pad_1a[0x32 - 0x1a];
-    u16 unk_32;
-    u16 unk_34;
-    u16 unk_36;
+    u16 channel;
+    u16 parentMaxSize;
+    u16 childMaxSize;
     u8 pad_38[8];
     s32 unk_40;
-    s32 unk_44;
-    s32 unk_48;
-    Unk_ov001_0222df28_Fn unk_4c;
+    s32 connectMode;
+    s32 receiverFunc;
+    Unk_ov001_0222df28_Fn judgeAcceptFunc;
     u16 unk_50;
     u16 unk_52;
-    s32 unk_54;
-    u32 unk_58;
-    u16 unk_5c;
-    u16 unk_5e;
-    u16 unk_60;
+    s32 errCode;
+    u32 rand;
+    u16 decidedChannel;
+    u16 channelBusyRatio;
+    u16 channelBitmap;
     u8 pad_62[0xf80 - 0x62];
-    u8 unk_f80[0x1060 - 0xf80];
-    u8 unk_1060[0x12a0 - 0x1060];
-    s32 unk_12a0;
-    s32 unk_12a4;
+    u8 sendBuffer[0x1060 - 0xf80];
+    u8 recvBuffer[0x12a0 - 0x1060];
+    s32 sendBufferSize;
+    s32 recvBufferSize;
     u8 pad_12a8[0x13a8 - 0x12a8];
     u32 unk_13a8;
     Unk_ov001_0222df28_Fn unk_13ac;
     u32 unk_13b0;
     u8 pad_13b4[0xc];
-    u8 unk_13c0[0x20];
-    u8 unk_13e0[0x1c00 - 0x13e0];
-    u8 unk_1c00[0x1e00 - 0x1c00];
-    u8 unk_1e00[4];
+    u8 wepKey[0x20];
+    u8 dsInfo[0x1c00 - 0x13e0];
+    u8 dataSet[0x1e00 - 0x1c00];
+    u8 keySetBuf[4];
 };
 
 struct Unk_ov001_02221734_Z { u16 v[7]; };
@@ -74,19 +74,19 @@ struct Unk_ov001_02221734_D {
 
 struct Unk_ov001_02221734_B {
     u8 pad_00[1];
-    u8 unk_01;
+    u8 favoriteColor;
     u8 pad_02[2];
-    u8 unk_04[0x14];
-    u16 unk_18;
+    u8 nickName[0x14];
+    u16 nickNameLength;
     u8 pad_1a[0x54 - 0x1a];
 };
 
 struct Unk_ov001_02222088_A {
     u8 pad_00[2];
-    u16 unk_02;
+    u16 errcode;
     u8 pad_04[4];
-    u16 unk_08;
-    u16 unk_0a;
+    u16 channel;
+    u16 ccaBusyRatio;
 };
 
 typedef void (*Unk_ov001_0222df24_Fn)(u32, const void *, ...);
@@ -216,7 +216,7 @@ extern "C" void WfcMoveWh_ChangeSysState(s32 n) {
 extern "C" void WfcMoveWh_SetError(u32 v) {
     Unk_ov001_0222df28_S *g = G;
     if ((u32)(g->unk_40 - 9) > 1) {
-        g->unk_54 = v;
+        g->errCode = v;
     }
 }
 
@@ -254,8 +254,8 @@ extern "C" void WfcMoveWh_StateOutSetParentParam(u16 *p) {
 extern "C" s32 WfcMoveWh_StateInSetWepKey() {
     s32 r;
     WfcMoveWh_ChangeSysState(3);
-    r = G->unk_13ac(G->unk_13c0, G);
-    r = WM_SetWEPKey((void *)WfcMoveWh_StateOutSetWepKey, r, G->unk_13c0);
+    r = G->unk_13ac(G->wepKey, G);
+    r = WM_SetWEPKey((void *)WfcMoveWh_StateOutSetWepKey, r, G->wepKey);
     if (r == 2) {
         return TRUE;
     }
@@ -307,7 +307,7 @@ extern "C" void WfcMoveWh_StateOutStartParent(u16 *p) {
         if (LOG) {
             LOG(0x8000000, "StartParent - new child (aid %x) connected\n", sh);
         }
-        if (G->unk_4c != 0 && (r = G->unk_4c(p)) == 0) {
+        if (G->judgeAcceptFunc != 0 && (r = G->judgeAcceptFunc(p)) == 0) {
             r = WM_Disconnect(0, p[8]);
             if (r == 2) {
                 return;
@@ -347,7 +347,7 @@ extern "C" s32 WfcMoveWh_StateInStartParentMp() {
     WfcMoveWh_ChangeSysState(4);
     {
         Unk_ov001_0222df28_S *g = G;
-        r = func_021206b4((void *)WfcMoveWh_StateOutStartParentMp, g->unk_1060, (u16)g->unk_12a4, g->unk_f80, (u16)g->unk_12a0, 1, 0, 0, 0, 0, 0);
+        r = func_021206b4((void *)WfcMoveWh_StateOutStartParentMp, g->recvBuffer, (u16)g->recvBufferSize, g->sendBuffer, (u16)g->sendBufferSize, 1, 0, 0, 0, 0, 0);
     }
     if (r == 2) {
         return TRUE;
@@ -365,7 +365,7 @@ extern "C" void WfcMoveWh_StateOutStartParentMp(u16 *p) {
     switch (p[2]) {
     case 10: {
         Unk_ov001_0222df28_S *g = G;
-        if (g->unk_44 == 2) {
+        if (g->connectMode == 2) {
             if (g->unk_40 == 4) {
                 if (DWCi_MOV_WH_StateInStartParentKeyShare()) {
                     return;
@@ -378,8 +378,8 @@ extern "C" void WfcMoveWh_StateOutStartParentMp(u16 *p) {
             } else if (g->unk_40 == 6) {
                 return;
             }
-        } else if (g->unk_44 == 4) {
-            s32 r = WM_StartDataSharing(g->unk_13e0, 0xd, 7, 0x44, 1);
+        } else if (g->connectMode == 4) {
+            s32 r = WM_StartDataSharing(g->dsInfo, 0xd, 7, 0x44, 1);
             if (r != 0) {
                 WfcMoveWh_SetError(r);
                 WfcMoveWh_ChangeSysState(9);
@@ -406,7 +406,7 @@ extern "C" void WfcMoveWh_StateOutStartParentMp(u16 *p) {
 extern "C" s32 DWCi_MOV_WH_StateInStartParentKeyShare() {
     s32 r;
     WfcMoveWh_ChangeSysState(6);
-    r = WM_StartKeySharing(G->unk_1e00, 0xd);
+    r = WM_StartKeySharing(G->keySetBuf, 0xd);
     if (r == 2) {
         return TRUE;
     }
@@ -432,8 +432,8 @@ extern "C" s32 WfcMoveWh_StateInEndParentMp() {
 }
 
 extern "C" void WfcMoveWh_StateOutEndParentMp(Unk_ov001_02222088_A *a) {
-    if (a->unk_02 != 0) {
-        WfcMoveWh_SetError(a->unk_02);
+    if (a->errcode != 0) {
+        WfcMoveWh_SetError(a->errcode);
         WfcMoveWh_Reset();
         return;
     }
@@ -455,8 +455,8 @@ extern "C" s32 DWCi_MOV_WH_StateInEndParent() {
 }
 
 extern "C" void WfcMoveWh_StateOutEndParent(Unk_ov001_02222088_A *a) {
-    if (a->unk_02 != 0) {
-        WfcMoveWh_SetError(a->unk_02);
+    if (a->errcode != 0) {
+        WfcMoveWh_SetError(a->errcode);
         return;
     }
     WfcMoveWh_ChangeSysState(1);
@@ -482,8 +482,8 @@ extern "C" s32 WfcMoveWh_StateInEndChildMp() {
 }
 
 extern "C" void WfcMoveWh_StateOutEndChildMp(Unk_ov001_02222088_A *a) {
-    if (a->unk_02 != 0) {
-        WfcMoveWh_SetError(a->unk_02);
+    if (a->errcode != 0) {
+        WfcMoveWh_SetError(a->errcode);
         DWCi_MOV_WH_Finalize();
         return;
     }
@@ -502,8 +502,8 @@ extern "C" s32 WfcMoveWh_StateInEndChild() {
 }
 
 extern "C" void WfcMoveWh_StateOutEndChild(Unk_ov001_02222088_A *a) {
-    if (a->unk_02 != 0) {
-        WfcMoveWh_SetError(a->unk_02);
+    if (a->errcode != 0) {
+        WfcMoveWh_SetError(a->errcode);
         return;
     }
     WfcMoveWh_ChangeSysState(1);
@@ -519,16 +519,16 @@ extern "C" s32 WfcMoveWh_StateInReset() {
 }
 
 extern "C" void WfcMoveWh_StateOutReset(Unk_ov001_02222088_A *a) {
-    if (a->unk_02 != 0) {
+    if (a->errcode != 0) {
         WfcMoveWh_ChangeSysState(9);
-        WfcMoveWh_SetError(a->unk_02);
+        WfcMoveWh_SetError(a->errcode);
         return;
     }
     WfcMoveWh_ChangeSysState(1);
 }
 
 extern "C" void WfcMoveWh_StateOutEnd(Unk_ov001_02222088_A *a) {
-    if (a->unk_02 != 0) {
+    if (a->errcode != 0) {
         WfcMoveWh_ChangeSysState(10);
         return;
     }
@@ -536,7 +536,7 @@ extern "C" void WfcMoveWh_StateOutEnd(Unk_ov001_02222088_A *a) {
 }
 
 extern "C" void WfcMoveWh_SetGgid(s32 x) {
-    sWfcMoveWh->unk_08 = x;
+    sWfcMoveWh->ggid = x;
 }
 
 extern "C" u16 WfcMoveWh_GetConnectedBitmap() {
@@ -554,10 +554,10 @@ extern "C" s32 WfcMoveWh_StartMeasureChannel() {
     u32 m = *(volatile u32 *)0x27ffc3c;
     u32 a = v[0] + m;
     u32 b = v[1] + a;
-    sWfcMoveWh->unk_58 = v[2] + b;
-    sWfcMoveWh->unk_58 = sWfcMoveWh->unk_58 * 0x10dcd + 0x3039;
-    sWfcMoveWh->unk_5c = 0;
-    sWfcMoveWh->unk_5e = 0x65;
+    sWfcMoveWh->rand = v[2] + b;
+    sWfcMoveWh->rand = sWfcMoveWh->rand * 0x10dcd + 0x3039;
+    sWfcMoveWh->decidedChannel = 0;
+    sWfcMoveWh->channelBusyRatio = 0x65;
     WfcMoveWh_ChangeSysState(3);
     r = WfcMoveWh_MeasureNextChannel(1);
     if (r == 0x18) {
@@ -591,23 +591,23 @@ extern "C" u16 WfcMoveWh_MeasureNextChannel(u16 x) {
 }
 
 extern "C" void WfcMoveWh_StateOutMeasureChannel(Unk_ov001_02222088_A *a) {
-    if (a->unk_02 != 0) {
-        WfcMoveWh_SetError(a->unk_02);
+    if (a->errcode != 0) {
+        WfcMoveWh_SetError(a->errcode);
         WfcMoveWh_ChangeSysState(9);
         return;
     }
-    if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "channel %d bratio = %x\n", a->unk_08, a->unk_0a);
+    if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "channel %d bratio = %x\n", a->channel, a->ccaBusyRatio);
     {
         Unk_ov001_0222df28_S *g = sWfcMoveWh;
-        u16 y = a->unk_0a;
-        u16 x = a->unk_08;
-        u16 w = g->unk_5e;
+        u16 y = a->ccaBusyRatio;
+        u16 x = a->channel;
+        u16 w = g->channelBusyRatio;
         u16 r;
         if (w > y) {
-            g->unk_5e = y;
-            sWfcMoveWh->unk_60 = 1 << (x - 1);
+            g->channelBusyRatio = y;
+            sWfcMoveWh->channelBitmap = 1 << (x - 1);
         } else if (w == y) {
-            g->unk_60 = g->unk_60 | (1 << (x - 1));
+            g->channelBitmap = g->channelBitmap | (1 << (x - 1));
         }
         r = WfcMoveWh_MeasureNextChannel(x + 1);
         if (r == 0x18) {
@@ -626,9 +626,9 @@ extern "C" s32 WfcMoveWh_StateInMeasureChannel(void *cb, s32 x) {
 extern "C" u16 WfcMoveWh_DecideChannel() {
     if (sWfcMoveWh->unk_40 != 7) Fatal_Trap();
     WfcMoveWh_ChangeSysState(1);
-    sWfcMoveWh->unk_5c = WfcMoveWh_PickRandomChannel(sWfcMoveWh->unk_60);
-    if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "decided channel = %d\n", sWfcMoveWh->unk_5c);
-    return sWfcMoveWh->unk_5c;
+    sWfcMoveWh->decidedChannel = WfcMoveWh_PickRandomChannel(sWfcMoveWh->channelBitmap);
+    if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "decided channel = %d\n", sWfcMoveWh->decidedChannel);
+    return sWfcMoveWh->decidedChannel;
 }
 
 extern "C" s16 WfcMoveWh_PickRandomChannel(u16 mask) {
@@ -643,8 +643,8 @@ extern "C" s16 WfcMoveWh_PickRandomChannel(u16 mask) {
         }
     }
     if (count <= 1) return last;
-    sWfcMoveWh->unk_58 = sWfcMoveWh->unk_58 * 0x10dcd + 0x3039;
-    r = (count * (sWfcMoveWh->unk_58 & 0xff)) >> 8;
+    sWfcMoveWh->rand = sWfcMoveWh->rand * 0x10dcd + 0x3039;
+    r = (count * (sWfcMoveWh->rand & 0xff)) >> 8;
     for (i = 0; i < 16; i++) {
         if (mask & 1) {
             if (r == 0) return i + 1;
@@ -657,21 +657,21 @@ extern "C" s16 WfcMoveWh_PickRandomChannel(u16 mask) {
 
 extern "C" BOOL WfcMoveWh_Initialize() {
     Unk_ov001_0222df28_S **g = &sWfcMoveWh;
-    (*g)->unk_12a4 = 0;
-    (*g)->unk_12a0 = 0;
-    (*g)->unk_48 = 0;
+    (*g)->recvBufferSize = 0;
+    (*g)->sendBufferSize = 0;
+    (*g)->receiverFunc = 0;
     (*g)->unk_50 = 0;
     (*g)->unk_52 = 1;
-    (*g)->unk_54 = 0;
-    (*g)->unk_00 = 0;
-    (*g)->unk_04 = 0;
-    (*g)->unk_4c = 0;
+    (*g)->errCode = 0;
+    (*g)->userGameInfo = 0;
+    (*g)->userGameInfoLength = 0;
+    (*g)->judgeAcceptFunc = 0;
     if (WfcMoveWh_StateInInitialize() != 0) return TRUE;
     return FALSE;
 }
 
 extern "C" void WfcMoveWh_IndicationCallback(Unk_ov001_02222088_A *a) {
-    if (a->unk_02 != 8) return;
+    if (a->errcode != 8) return;
     WfcMoveWh_ChangeSysState(9);
     Fatal_Trap();
 }
@@ -703,39 +703,39 @@ extern "C" void WfcMoveWh_StateOutInitialize(u16 *p) {
 
 extern "C" s32 WfcMoveWh_ParentConnect(s32 a, u32 b, u32 c) {
     if (sWfcMoveWh->unk_40 != 1) Fatal_Trap();
-    sWfcMoveWh->unk_12a4 = 0x180;
-    sWfcMoveWh->unk_12a0 = 0xe0;
-    if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "recv buffer size = %d\n", sWfcMoveWh->unk_12a4);
-    if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "send buffer size = %d\n", sWfcMoveWh->unk_12a0);
-    sWfcMoveWh->unk_44 = a;
+    sWfcMoveWh->recvBufferSize = 0x180;
+    sWfcMoveWh->sendBufferSize = 0xe0;
+    if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "recv buffer size = %d\n", sWfcMoveWh->recvBufferSize);
+    if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "send buffer size = %d\n", sWfcMoveWh->sendBufferSize);
+    sWfcMoveWh->connectMode = a;
     WfcMoveWh_ChangeSysState(3);
-    sWfcMoveWh->unk_0c = b;
-    sWfcMoveWh->unk_32 = c;
-    sWfcMoveWh->unk_18 = WM_GetDispersionBeaconPeriod();
-    sWfcMoveWh->unk_34 = 0xd0;
-    sWfcMoveWh->unk_36 = 0x44;
-    sWfcMoveWh->unk_10 = 2;
-    sWfcMoveWh->unk_16 = 0;
-    sWfcMoveWh->unk_12 = 0;
-    sWfcMoveWh->unk_0e = 1;
-    sWfcMoveWh->unk_14 = (a == 2) ? 1 : 0;
+    sWfcMoveWh->tgid = b;
+    sWfcMoveWh->channel = c;
+    sWfcMoveWh->beaconPeriod = WM_GetDispersionBeaconPeriod();
+    sWfcMoveWh->parentMaxSize = 0xd0;
+    sWfcMoveWh->childMaxSize = 0x44;
+    sWfcMoveWh->maxEntry = 2;
+    sWfcMoveWh->CS_Flag = 0;
+    sWfcMoveWh->multiBootFlag = 0;
+    sWfcMoveWh->entryFlag = 1;
+    sWfcMoveWh->KS_Flag = (a == 2) ? 1 : 0;
     if (a == 0 || a == 2 || a == 4) return WfcMoveWh_StateInSetParentParam();
     if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "unknown connect mode %d\n", a);
     return 0;
 }
 
 extern "C" void WfcMoveWh_SetJudgeCallback(s32 a) {
-    sWfcMoveWh->unk_4c = (Unk_ov001_0222df28_Fn)a;
+    sWfcMoveWh->judgeAcceptFunc = (Unk_ov001_0222df28_Fn)a;
 }
 
 extern "C" void WfcMoveWh_GetSharedData(s32 a) {
     Unk_ov001_0222df28_S *g = sWfcMoveWh;
-    WM_GetSharedDataAddress(g->unk_13e0, g->unk_1c00, a);
+    WM_GetSharedDataAddress(g->dsInfo, g->dataSet, a);
 }
 
 extern "C" s32 DWCi_MOV_WH_StepDataSharing(s32 a) {
     Unk_ov001_0222df28_S *g = sWfcMoveWh;
-    s32 r = WM_StepDataSharing(g->unk_13e0, a, g->unk_1c00);
+    s32 r = WM_StepDataSharing(g->dsInfo, a, g->dataSet);
     if (r == 7) {
         if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "DWCi_MOV_WH_StepDataSharing - Warning No Child\n");
         return 0;
@@ -770,7 +770,7 @@ extern "C" void DWCi_MOV_WH_Finalize() {
         return;
     }
     WfcMoveWh_ChangeSysState(3);
-    switch (sWfcMoveWh->unk_44) {
+    switch (sWfcMoveWh->connectMode) {
     case 3:
         if (WfcMoveWh_StateInEndChildKeyShare() != 0) return;
         WfcMoveWh_Reset();

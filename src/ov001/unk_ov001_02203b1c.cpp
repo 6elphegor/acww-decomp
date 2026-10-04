@@ -20,9 +20,9 @@ struct Unk_ov001_02206b08_Ent {
     u32 len;
     u8 name[0x20];
     u8 unk_24[4];
-    u8 unk_28[4];
+    u8 bssid[4];
     u16 unk_2c;
-    u16 unk_2e;
+    u16 privacy;
 };
 struct Unk_ov001_02206b08_Tbl {
     u32 count;
@@ -33,18 +33,18 @@ struct Unk_ov001_02206248_Out {
     u8 b[6];
     u8 c[4];
 };
-struct Unk_ov001_022070f0_Ctl {
-    s32 unk_00;
-    u32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
+struct SimpleStartWcmConfig {
+    s32 dmaNo;
+    u32 bssDescBuffer;
+    s32 bssDescBufferSize;
+    s32 bssDescMode;
 };
 struct Unk_ov001_02205e18_B5 { u8 v[5]; };
 struct Unk_ov001_02205e18_B13 { u8 v[13]; };
 struct Unk_ov001_02205e18_B16 { u8 v[16]; };
 struct Unk_ov001_02205e18_B64 { s64 v[8]; };
-struct Unk_ov001_02205e18_A { u8 pad[0x20]; s32 unk_20; s32 unk_24; };
-struct Unk_ov001_02205e18_B { u8 pad[0x2c]; s32 unk_2c; s32 unk_30; u8 pad2[0x28]; s32 unk_5c; };
+struct Unk_ov001_02205e18_A { u8 pad[0x20]; s32 securityType; s32 unk_24; };
+struct Unk_ov001_02205e18_B { u8 pad[0x2c]; s32 securityType; s32 unk_30; u8 pad2[0x28]; s32 unk_5c; };
 struct Unk_ov001_022059fc_B8 { u8 v[8]; };
 
 extern "C" {
@@ -184,7 +184,7 @@ extern u8 sSimpleStartMd5Padding[64];
 extern void *sSimpleStartSocConfig[22];
 extern u8 data_ov001_0222c850;
 extern void *(*sSimpleStartAllocFunc)(u32);
-extern Unk_ov001_022070f0_Ctl *data_ov001_0222c858;
+extern SimpleStartWcmConfig *data_ov001_0222c858;
 extern void (*sSimpleStartFreeFunc)(void *);
 extern s32 sSimpleStartCancel;
 extern u32 data_ov001_0222c864;
@@ -739,7 +739,7 @@ extern "C" s32 data_ov001_0222c870 = 0;
 extern "C" s32 data_ov001_0222c8a8 = 0;
 extern "C" u8 *data_ov001_0222c8a4 = 0;
 extern "C" s32 data_ov001_0222c8a0 = 0;
-extern "C" Unk_ov001_022070f0_Ctl *data_ov001_0222c858 = 0;
+extern "C" SimpleStartWcmConfig *data_ov001_0222c858 = 0;
 extern "C" s32 data_ov001_0222c874 = 0;
 extern "C" s32 sSimpleStartCancel = 0;
 extern "C" u8 *data_ov001_0222c890 = 0;
@@ -1177,17 +1177,17 @@ s32 SimpleStart_WcmInit(void *cb, void *buf, s32 size) {
     u32 a, b;
     data_ov001_0222c878 = (s32)buf;
     a = ((u32)buf + 0x63) & ~3;
-    data_ov001_0222c858 = (Unk_ov001_022070f0_Ctl *)a;
+    data_ov001_0222c858 = (SimpleStartWcmConfig *)a;
     b = (a + 0x2f) & ~0x1f;
     data_ov001_0222c88c = (u8 *)b;
     b = (b + 0x231f) & ~0x1f;
     data_ov001_0222c89c = (u8 *)b;
     b += 0xdf;
     b &= ~0x1f;
-    data_ov001_0222c858->unk_04 = b;
-    data_ov001_0222c858->unk_08 = ((u32)buf + size) - data_ov001_0222c858->unk_04;
-    data_ov001_0222c858->unk_0c = 0;
-    data_ov001_0222c858->unk_00 = 3;
+    data_ov001_0222c858->bssDescBuffer = b;
+    data_ov001_0222c858->bssDescBufferSize = ((u32)buf + size) - data_ov001_0222c858->bssDescBuffer;
+    data_ov001_0222c858->bssDescMode = 0;
+    data_ov001_0222c858->dmaNo = 3;
     sSimpleStartWcmNotifyCb = (Unk_ov001_0220751c_Cb)cb;
     if (sSimpleStartWcmState == 0) {
         if (WifiLink_Init(data_ov001_0222c88c, 0x2300) != 0) {
@@ -1483,8 +1483,8 @@ BOOL SimpleStart_FindSetupAp(Unk_ov001_02206b08_Tbl *a, Unk_ov001_02206b08_Tbl *
                         if (c == 0 || c == 0x20) break;
                     }
                     u32 n = func_0212a438(buf);
-                    if (memcmp(buf, e2->name, n) == 0 && memcmp(e1->unk_28, e2->unk_28, 4) == 0 &&
-                        e1->unk_2e != e2->unk_2e && e1->unk_2e == 0) {
+                    if (memcmp(buf, e2->name, n) == 0 && memcmp(e1->bssid, e2->bssid, 4) == 0 &&
+                        e1->privacy != e2->privacy && e1->privacy == 0) {
                         found = TRUE;
                         break;
                     }
@@ -1509,7 +1509,7 @@ BOOL SimpleStart_FindSetupAp(Unk_ov001_02206b08_Tbl *a, Unk_ov001_02206b08_Tbl *
                 memcpy(buf2, e2->name, 0x20);
                 buf2[e2->len] = flagA;
                 u32 n = func_0212a438(sSimpleStartSetupSsid);
-                if (memcmp(buf2, sSimpleStartSetupSsid, n) == 0 && e2->unk_2e == 0) {
+                if (memcmp(buf2, sSimpleStartSetupSsid, n) == 0 && e2->privacy == 0) {
                     flagB = TRUE;
                     break;
                 }
@@ -1527,7 +1527,7 @@ BOOL SimpleStart_FindSetupAp(Unk_ov001_02206b08_Tbl *a, Unk_ov001_02206b08_Tbl *
                 u32 y = func_0212a438(sSimpleStartSetupSsid);
                 if (x == y) {
                     u32 n = func_0212a438(sSimpleStartSetupSsid);
-                    if (memcmp(buf2, sSimpleStartSetupSsid, n) == 0 && e1->unk_2e == 0) {
+                    if (memcmp(buf2, sSimpleStartSetupSsid, n) == 0 && e1->privacy == 0) {
                         flagA = TRUE;
                         break;
                     }
@@ -1618,10 +1618,10 @@ s32 SimpleStart_SearchAp() {
             memcpy(buf1->e[j].name, src->name, 0x20);
             buf1->e[j].len = src->len;
             buf1->e[j].name[src->len] = 0;
-            buf1->e[j].unk_2e = (src->flags & 0x10) ? 1 : 0;
+            buf1->e[j].privacy = (src->flags & 0x10) ? 1 : 0;
             {
                 const u8 *ms = src->mac.b;
-                u8 *md = buf1->e[j].unk_28;
+                u8 *md = buf1->e[j].bssid;
                 md[0] = ms[0]; md[1] = ms[1]; md[2] = ms[2]; md[3] = ms[3]; md[4] = ms[4]; md[5] = ms[5];
             }
             j++;
@@ -1634,7 +1634,7 @@ s32 SimpleStart_SearchAp() {
                 func_0212a360(data_ov001_0222c964, e->name);
                 {
                     u8 *md = data_ov001_0222c8dc;
-                    const u8 *ms = e->unk_28;
+                    const u8 *ms = e->bssid;
                     md[0] = ms[0]; md[1] = ms[1]; md[2] = ms[2]; md[3] = ms[3]; md[4] = ms[4]; md[5] = ms[5];
                 }
                 SimpleStart_FormatMac((char *)unkbuf, (s8 *)data_ov001_0222c8dc);
@@ -1863,7 +1863,7 @@ s32 SimpleStart_ParseConfigTlvs(u8 *p)
             res = 1;
             break;
         case 0x202:
-            data_ov001_0222cc30.unk_2c = Unk_ov001_0220607c_Swap(r);
+            data_ov001_0222cc30.securityType = Unk_ov001_0220607c_Swap(r);
             break;
         case 0x203: {
             u32 v = Unk_ov001_0220607c_Swap(r);
@@ -1936,9 +1936,9 @@ s32 SimpleStart_BuildResult()
     s32 ret = 1;
 
     func_0212a360(&CA48_A, &data_ov001_0222cc30);
-    switch (data_ov001_0222cc30.unk_2c) {
+    switch (data_ov001_0222cc30.securityType) {
     case 0:
-        CA48_A.unk_20 = 0;
+        CA48_A.securityType = 0;
         break;
     case 1: {
         if (data_ov001_0222cc30.unk_30 == 0) {
@@ -1958,27 +1958,27 @@ s32 SimpleStart_BuildResult()
                 buf[0x20] = 0;
                 switch (func_0212a438(bp)) {
                 case 5:
-                    a->unk_20 = 1;
+                    a->securityType = 1;
                     *(Unk_ov001_02205e18_B5 *)dst = *(Unk_ov001_02205e18_B5 *)bp;
                     break;
                 case 10:
-                    a->unk_20 = 1;
+                    a->securityType = 1;
                     SimpleStart_ParseHex(dst, (s8 *)bp, 10);
                     break;
                 case 13:
-                    a->unk_20 = 2;
+                    a->securityType = 2;
                     *(Unk_ov001_02205e18_B13 *)dst = *(Unk_ov001_02205e18_B13 *)bp;
                     break;
                 case 26:
-                    a->unk_20 = 2;
+                    a->securityType = 2;
                     SimpleStart_ParseHex(dst, (s8 *)bp, 26);
                     break;
                 case 16:
-                    a->unk_20 = 3;
+                    a->securityType = 3;
                     *(Unk_ov001_02205e18_B16 *)dst = *(Unk_ov001_02205e18_B16 *)bp;
                     break;
                 case 32:
-                    a->unk_20 = 3;
+                    a->securityType = 3;
                     SimpleStart_ParseHex(dst, (s8 *)bp, 32);
                     break;
                 case 0:
@@ -1994,11 +1994,11 @@ s32 SimpleStart_BuildResult()
         break;
     }
     case 2:
-        CA48_A.unk_20 = 4;
+        CA48_A.securityType = 4;
         *(ret ? &data_ov001_0222caf0 : &data_ov001_0222caf0) = data_ov001_0222cd2c;
         break;
     case 3:
-        CA48_A.unk_20 = 5;
+        CA48_A.securityType = 5;
         *(ret ? &data_ov001_0222caf0 : &data_ov001_0222caf0) = data_ov001_0222cd2c;
         break;
     default:

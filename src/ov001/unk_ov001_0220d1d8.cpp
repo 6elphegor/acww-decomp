@@ -7,7 +7,7 @@ struct Unk_ov001_0220d1f4_V3 {
 
 struct Unk_ov001_0220d23c_Buf {
     u8 unk_00[0x20];
-    s32 unk_20;
+    s32 securityType;
     s32 unk_24;
     u8 unk_28[0xec - 0x28];
 };
@@ -189,7 +189,7 @@ s32 WfcSimpleStart_GetState() {
         return 2;
     case 6:
         if (SimpleStart_GetResult(&buf) != 1) Fatal_Trap();
-        if (buf.unk_20 >= 0 && buf.unk_20 <= 3) {
+        if (buf.securityType >= 0 && buf.securityType <= 3) {
             if (buf.unk_24 == 1) return 3;
         }
         return 5;

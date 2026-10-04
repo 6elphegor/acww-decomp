@@ -4,17 +4,17 @@
 #pragma thumb off
 
 struct Unk_ov001_0222df30 {
-    void *unk_00;
-    u8 unk_04[0x80];
-    void *unk_84;
-    u8 unk_88[0x5c];
-    u16 unk_e4;
+    void *archiveTables;
+    u8 fileSlotStorage[0x80];
+    void *fileSlotPool;
+    u8 archive[0x5c];
+    u16 lockId;
 };
 
 struct Unk_ov001_02224074_Obj {
     u8 pad_00[0x24];
-    u32 unk_24;
-    u32 unk_28;
+    u32 top;
+    u32 bottom;
     u8 pad_2c[0x1c];
 };
 
@@ -81,46 +81,46 @@ extern "C" void WfcFs_MountArchive() {
     if (FS_OpenFile(&o, (void *)"rom:/dwc/utility.bin") == 0) {
         Fatal_Trap();
     }
-    sWfcFs->unk_e4 = OS_GetLockID();
+    sWfcFs->lockId = OS_GetLockID();
     r4 = *(u32 *)((u8 *)&o + 0x24);
     FS_ReadFile(&o, a, 8);
     FS_ReadFile(&o, b, 8);
     FS_CloseFile(&o);
-    FS_InitArchive(sWfcFs->unk_88);
-    if (FS_RegisterArchiveName(sWfcFs->unk_88, (void *)sWfcArchiveName, 3) == 0) {
+    FS_InitArchive(sWfcFs->archive);
+    if (FS_RegisterArchiveName(sWfcFs->archive, (void *)sWfcArchiveName, 3) == 0) {
         Fatal_Trap();
     }
-    FS_SetArchiveProc(sWfcFs->unk_88, (void *)WfcFs_ArchiveProc, 0x602);
-    if (FS_LoadArchive(sWfcFs->unk_88, r4, b[0], b[1], a[0], a[1], (void *)WfcFs_ReadCallback, (void *)WfcFs_WriteCallback) == 0) {
+    FS_SetArchiveProc(sWfcFs->archive, (void *)WfcFs_ArchiveProc, 0x602);
+    if (FS_LoadArchive(sWfcFs->archive, r4, b[0], b[1], a[0], a[1], (void *)WfcFs_ReadCallback, (void *)WfcFs_WriteCallback) == 0) {
         Fatal_Trap();
     }
-    void *r4b = FS_LoadArchiveTables(sWfcFs->unk_88, 0, 0);
-    sWfcFs->unk_00 = WfcHeap_Alloc((s32)r4b, 4);
-    FS_LoadArchiveTables(sWfcFs->unk_88, sWfcFs->unk_00, r4b);
-    sWfcFs->unk_84 = WfcPool_CreateFrom(0x20, sWfcFs->unk_04, 4);
+    void *r4b = FS_LoadArchiveTables(sWfcFs->archive, 0, 0);
+    sWfcFs->archiveTables = WfcHeap_Alloc((s32)r4b, 4);
+    FS_LoadArchiveTables(sWfcFs->archive, sWfcFs->archiveTables, r4b);
+    sWfcFs->fileSlotPool = WfcPool_CreateFrom(0x20, sWfcFs->fileSlotStorage, 4);
     OS_SPrintf(&o2, (void *)"%s:/", (void *)sWfcArchiveName);
     FS_ChangeDir(&o2);
 }
 
 extern "C" void WfcFs_UnmountArchive() {
     FS_ChangeDir((void *)"rom:/");
-    FS_UnloadArchiveTables(sWfcFs->unk_88);
-    FS_UnloadArchive(sWfcFs->unk_88);
-    FS_ReleaseArchiveName(sWfcFs->unk_88);
-    OS_ReleaseLockID(sWfcFs->unk_e4);
-    sWfcFs->unk_e4 = 0;
+    FS_UnloadArchiveTables(sWfcFs->archive);
+    FS_UnloadArchive(sWfcFs->archive);
+    FS_ReleaseArchiveName(sWfcFs->archive);
+    OS_ReleaseLockID(sWfcFs->lockId);
+    sWfcFs->lockId = 0;
     WfcHeap_FreeAndClear(sWfcFs);
-    sWfcFs->unk_00 = 0;
+    sWfcFs->archiveTables = 0;
     WfcHeap_FreeAndClear(&sWfcFs);
 }
 
 extern "C" s32 WfcFs_ArchiveProc(void *self, s32 code) {
     switch (code) {
     case 9:
-        CARD_LockRom(sWfcFs->unk_e4);
+        CARD_LockRom(sWfcFs->lockId);
         return 0;
     case 10:
-        CARD_UnlockRom(sWfcFs->unk_e4);
+        CARD_UnlockRom(sWfcFs->lockId);
         return 0;
     case 1:
         return 4;
@@ -147,12 +147,12 @@ extern "C" void *WfcFs_LoadFile(void *name, u32 *outSize, s32 c) {
     Unk_ov001_02224074_Obj o;
     s32 r6;
     u32 n;
-    WfcPool_Get(sWfcFs->unk_84);
+    WfcPool_Get(sWfcFs->fileSlotPool);
     FS_InitFile(&o);
     if (FS_OpenFile(&o, name) == 0) {
         Fatal_Trap();
     }
-    n = o.unk_28 - o.unk_24;
+    n = o.bottom - o.top;
     if (outSize != 0) {
         *outSize = n;
     }
@@ -179,7 +179,7 @@ extern "C" void *WfcFs_LoadFile(void *name, u32 *outSize, s32 c) {
 
 extern "C" void WfcFs_FreeFile(void *p, ...) {
     WfcHeap_FreeAndClear(&p);
-    WfcPool_Put(sWfcFs->unk_84, p);
+    WfcPool_Put(sWfcFs->fileSlotPool, p);
 }
 
 extern "C" BOOL WfcUtil_StrEndsWith(void *a, void *b, s32 n) {

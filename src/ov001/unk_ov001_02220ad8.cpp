@@ -7,10 +7,10 @@ struct Unk_ov001_02220ad8_S {
     u16 state;
     u16 m[6];
     u8 pad_0e[0x1b140 - 0x0e];
-    void *unk_1b140;
-    void *unk_1b144;
+    void *mbWork;
+    void *segmentBuffer;
 };
-struct Unk_ov001_02220ad8_Z { u8 pad[0x1b140]; s32 unk_140; s32 unk_144; };
+struct Unk_ov001_02220ad8_Z { u8 pad[0x1b140]; s32 mbWork; s32 segmentBuffer; };
 
 struct Unk_ov001_02221734_Z { u16 v[7]; };
 
@@ -24,10 +24,10 @@ struct Unk_ov001_02221734_D {
 
 struct Unk_ov001_02221734_B {
     u8 pad_00[1];
-    u8 unk_01;
+    u8 favoriteColor;
     u8 pad_02[2];
-    u8 unk_04[0x14];
-    u16 unk_18;
+    u8 nickName[0x14];
+    u16 nickNameLength;
     u8 pad_1a[0x54 - 0x1a];
 };
 
@@ -80,17 +80,17 @@ void WfcMoveMb_SetWork(void *p);
 void WfcMoveMb_SetWork(void *p) {
     sWfcMoveMb = (Unk_ov001_02220ad8_S *)p;
     WfcMoveWh_SetWork((u8 *)p + 0x1b160);
-    sWfcMoveMb->unk_1b140 = 0;
-    sWfcMoveMb->unk_1b144 = 0;
+    sWfcMoveMb->mbWork = 0;
+    sWfcMoveMb->segmentBuffer = 0;
 }
 
 void WfcMoveMb_Init(s32 a, s32 b) {
     Unk_ov001_02221734_D d;
     Unk_ov001_02221734_B buf;
     OS_GetOwnerInfo(&buf);
-    d.lo = buf.unk_01;
-    d.b1 = buf.unk_18;
-    MI_CpuCopy8(buf.unk_04, d.data, buf.unk_18 * 2);
+    d.lo = buf.favoriteColor;
+    d.b1 = buf.nickNameLength;
+    MI_CpuCopy8(buf.nickName, d.data, buf.nickNameLength * 2);
     d.hi = 0;
     Unk_ov001_02221734_Z *zp = &d.z;
     zp->v[0] = 0;
@@ -101,8 +101,8 @@ void WfcMoveMb_Init(s32 a, s32 b) {
     zp->v[5] = 0;
     zp->v[6] = 0;
     *(Unk_ov001_02221734_Z *)sWfcMoveMb = *zp;
-    sWfcMoveMb->unk_1b140 = (u8 *)sWfcMoveMb + 0x10040;
-    if (func_021251ac(sWfcMoveMb->unk_1b140, &d, a, b, 2) != 0) Fatal_Trap();
+    sWfcMoveMb->mbWork = (u8 *)sWfcMoveMb + 0x10040;
+    if (func_021251ac(sWfcMoveMb->mbWork, &d, a, b, 2) != 0) Fatal_Trap();
     MB_SetParentCommParam(0x100, 1);
     MB_CommSetParentStateCallback((void *)WfcMoveMb_ParentStateCallback);
     WfcMoveMb_SetState(1);
@@ -131,10 +131,10 @@ s32 WfcMoveMb_RegisterFile(s32 *p) {
     }
     if (MB_GetSegmentLength(q) != 0) {
         Unk_ov001_02220ad8_S *g = sWfcMoveMb;
-        g->unk_1b144 = (u8 *)g + 0x2c;
-        if (sWfcMoveMb->unk_1b144 != 0) {
-            if (MB_ReadSegment(q, sWfcMoveMb->unk_1b144, 0x10000) != 0) {
-                if (MB_RegisterFile(p, sWfcMoveMb->unk_1b144) != 0) r = 1;
+        g->segmentBuffer = (u8 *)g + 0x2c;
+        if (sWfcMoveMb->segmentBuffer != 0) {
+            if (MB_ReadSegment(q, sWfcMoveMb->segmentBuffer, 0x10000) != 0) {
+                if (MB_RegisterFile(p, sWfcMoveMb->segmentBuffer) != 0) r = 1;
             }
         }
     }
@@ -364,9 +364,9 @@ void WfcMoveMb_ParentStateCallback(u32 id, u32 cmd, u8 *data)
             WfcMoveMb_SetState(0);
         }
         Unk_ov001_02220ad8_Z *z = (Unk_ov001_02220ad8_Z *)sWfcMoveMb;
-        if (z->unk_144 != 0) z->unk_144 = 0;
+        if (z->segmentBuffer != 0) z->segmentBuffer = 0;
         z = (Unk_ov001_02220ad8_Z *)sWfcMoveMb;
-        if (z->unk_140 != 0) z->unk_140 = 0;
+        if (z->mbWork != 0) z->mbWork = 0;
         break;
     }
     case 13: {

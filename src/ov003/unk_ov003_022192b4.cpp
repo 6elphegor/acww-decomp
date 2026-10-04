@@ -248,25 +248,25 @@ typedef Unk_ov003_022359a4_P2 P2;
 typedef Unk_ov003_022359a4_V3 V3;
 typedef Unk_ov003_022359a4_Blk Blk;
 struct Unk_ov003_022359a4_Ent {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ u16 unk_08;
+    /* 0x00 */ u32 sessionSlot;
+    /* 0x04 */ u32 active;
+    /* 0x08 */ u16 item;
     /* 0x0a */ u16 unk_0a;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ P2 unk_10;
-    /* 0x18 */ V3 unk_18;
-    /* 0x24 */ V3 unk_24;
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ V3 unk_3c;
+    /* 0x0c */ s32 kind;
+    /* 0x10 */ P2 unit;
+    /* 0x18 */ V3 pos;
+    /* 0x24 */ V3 offset;
+    /* 0x30 */ s32 velocityX;
+    /* 0x34 */ s32 velocityY;
+    /* 0x38 */ s32 velocityZ;
+    /* 0x3c */ V3 scale;
     /* 0x48 */ u8 pad_48[6];
-    /* 0x4e */ u16 unk_4e;
+    /* 0x4e */ u16 frame;
     /* 0x50 */ u8 pad_50[2];
-    /* 0x52 */ s16 unk_52;
+    /* 0x52 */ s16 alpha;
     /* 0x54 */ u8 pad_54[0xc];
-    /* 0x60 */ u8 unk_60[0x40];
-    /* 0xa0 */ u8 unk_a0;
+    /* 0x60 */ u8 seEmitter[0x40];
+    /* 0xa0 */ u8 pendingApply;
 };
 typedef Unk_ov003_022359a4_Ent Ent;
 struct Unk_ov003_022359a4 {
@@ -906,7 +906,7 @@ struct Unk_ov003_0221c608_Set {
     s32 spawnIndex;
 };
 struct Unk_ov003_0221ca7c_P {
-    s32 unk_00;
+    s32 lifeTime;
     u16 unk_04;
     u16 unk_06;
     s16 unk_08;
@@ -918,15 +918,15 @@ struct Unk_ov003_0221c91c_A {
     s32 posZ;
 };
 struct Unk_ov003_0221c91c_B {
-    Unk_ov003_0221c91c_A *unk_00;
+    Unk_ov003_0221c91c_A *header;
 };
 struct Unk_ov003_0221c91c_Tgt {
     u8 pad_00[0x18];
-    Unk_ov003_0221c91c_B *unk_18;
+    Unk_ov003_0221c91c_B *resource;
     u8 pad_1c[4];
-    s32 unk_20;
-    s32 unk_24;
-    s32 unk_28;
+    s32 posX;
+    s32 posY;
+    s32 posZ;
     u8 pad_2c[0x18];
     s32 unk_44;
     u8 pad_48[8];
@@ -936,7 +936,7 @@ struct Unk_ov003_0221c91c_Tgt {
     u8 pad_5a[0xe];
     u8 unk_68;
     u8 pad_69[0x17];
-    u8 unk_80;
+    u8 tintVariant;
 };
 struct Unk_ov003_0221c858_Obj {
     u8 pad_00[0xa];
@@ -1088,7 +1088,7 @@ struct Unk_ov003_0221d37c_Blk {
 };
 struct Unk_ov003_0221d37c_O {
     u8 pad_00[0x50];
-    void *unk_50[4];
+    void *iconModels[4];
 };
 typedef Unk_ov003_0221d37c_Blk Blk;
 typedef Unk_ov003_0221d37c_O O;
@@ -1099,7 +1099,7 @@ typedef Unk_ov003_0221cb54_Col Col;
 inline Unk_ov003_0221cb54_P2::Unk_ov003_0221cb54_P2(Unk_ov003_0221cb54_Col *c) { x = (s32)c->a >> 8; z = c->b & 0xff; }
 struct Unk_ov003_0221cb54_Rec {
     u8 pad_00[8];
-    u16 unk_08;
+    u16 unit;
     u16 unk_0a;
 };
 extern "C" {
@@ -1410,24 +1410,24 @@ struct Unk_ov003_0221e4d4_Elem {
 typedef Unk_ov003_0221e4d4_Elem Elem;
 struct Unk_ov003_0221e4d4_Model {
     u8 pad_00[0x5c];
-    void *unk_5c;
+    void *resMdl;
 };
 struct Unk_ov003_0221e4d4_Obj {
     /* 0x0000 */ u8 pad_0000[0x50];
-    /* 0x0050 */ Unk_ov003_0221e4d4_Model *unk_50[1];
+    /* 0x0050 */ Unk_ov003_0221e4d4_Model *iconModels[1];
     /* 0x0054 */ u8 pad_0054[0x3068 - 0x54];
-    /* 0x3068 */ Elem unk_3068[4][8];
-    /* 0x43e8 */ Elem unk_43e8[5];
+    /* 0x3068 */ Elem designModels[4][8];
+    /* 0x43e8 */ Elem grassModels[5];
     /* 0x46f4 */ u8 pad_46f4[0x4708 - 0x46f4];
-    /* 0x4708 */ Elem unk_4708;
-    /* 0x47a4 */ Elem unk_47a4;
-    /* 0x4840 */ Elem unk_4840;
-    /* 0x48dc */ Elem unk_48dc;
+    /* 0x4708 */ Elem holeModels;
+    /* 0x47a4 */ Elem holeModelAlt;
+    /* 0x4840 */ Elem crackModels;
+    /* 0x48dc */ Elem crackModelAlt;
     /* 0x4978 */ u8 pad_4978[0x49a8 - 0x4978];
-    /* 0x49a8 */ Elem unk_49a8[2];
+    /* 0x49a8 */ Elem turnipModels[2];
     /* 0x4ae0 */ u8 pad_4ae0[0x4b20 - 0x4ae0];
-    /* 0x4b20 */ u8 unk_4b20[0x6a6c - 0x4b20];
-    /* 0x6a6c */ s32 unk_6a6c;
+    /* 0x4b20 */ u8 treeAnimSet[0x6a6c - 0x4b20];
+    /* 0x6a6c */ s32 frameCounter;
 };
 typedef Unk_ov003_0221e4d4_Obj Obj;
 typedef BOOL (*Fn)();
@@ -1615,20 +1615,20 @@ struct Unk_ov003_0221f674_Seg {
 typedef Unk_ov003_0221f674_Seg Seg;
 struct Unk_ov003_0221efb4_Obj {
     /* 0x0000 */ u8 pad_0000[0x174];
-    /* 0x0174 */ Elem unk_174[3][6];
-    /* 0x0c6c */ Elem unk_c6c[6];
-    /* 0x1014 */ Elem unk_1014[3];
-    /* 0x11e8 */ Elem unk_11e8[6];
-    /* 0x1590 */ Elem unk_1590[4][10];
-    /* 0x2df0 */ Elem unk_2df0[2][2];
-    /* 0x3060 */ void *unk_3060[2];
+    /* 0x0174 */ Elem treeModels[3][6];
+    /* 0x0c6c */ Elem cedarModels[6];
+    /* 0x1014 */ Elem litCedarModels[3];
+    /* 0x11e8 */ Elem palmModels[6];
+    /* 0x1590 */ Elem flowerModels[4][10];
+    /* 0x2df0 */ Elem specialFlowerModels[2][2];
+    /* 0x3060 */ void *dandelionModels[2];
     /* 0x3068 */ u8 pad_3068[0x4af0 - 0x3068];
-    /* 0x4af0 */ u8 unk_4af0[0x10];
+    /* 0x4af0 */ u8 dandelionModelSet[0x10];
     /* 0x4b00 */ u8 pad_4b00[0x4b20 - 0x4b00];
-    /* 0x4b20 */ Seg unk_4b20[3][4];
-    /* 0x5ab0 */ Seg unk_5ab0[4];
+    /* 0x4b20 */ Seg treeAnims[3][4];
+    /* 0x5ab0 */ Seg cedarAnims[4];
     /* 0x5fe0 */ u8 pad_5fe0[0x63c4 - 0x5fe0];
-    /* 0x63c4 */ Seg unk_63c4[4];
+    /* 0x63c4 */ Seg palmAnims[4];
 };
 typedef Unk_ov003_0221efb4_Obj Obj;
 extern "C" {
@@ -1727,10 +1727,10 @@ extern "C" {
 void TreeAnimSet_Construct(void *p);
 }
 struct Unk_ov003_0221fda8_Ent {
-    u8 *unk_00;
-    u8 unk_04;
+    u8 *shapes;
+    u8 category;
     u8 unk_05;
-    u16 unk_06;
+    u16 shapeCount;
 };
 extern "C" {
 
@@ -3346,10 +3346,10 @@ u8 *FieldObj_GetShapeRecord(u8 *p)
         s32 tag = hi >> 12;
         s32 lo = v & 0xfff;
         Unk_ov003_0221fda8_Ent *e = data_ov003_0222f4b8;
-        for (; e->unk_00 != NULL; e++) {
-            if (tag == e->unk_04) {
-                if (e->unk_06 > lo) {
-                    r = e->unk_00 + lo * 3;
+        for (; e->shapes != NULL; e++) {
+            if (tag == e->category) {
+                if (e->shapeCount > lo) {
+                    r = e->shapes + lo * 3;
                 }
                 break;
             }
@@ -3737,7 +3737,7 @@ extern "C" BOOL FieldObj_LoadTreeStageModels(Obj *o, u32 *a, u32 *b, void *c)
         j = 1;
         pb1 = &b[i];
         q1 = a + t * 6;
-        base1 = o->unk_174[i];
+        base1 = o->treeModels[i];
         for (; j <= 4; j++) {
             void *n = FieldObj_GetTreeModelPath(o, i, j);
             if (!CachedModel_loadWithTex(&base1[j], n, sFieldObjectModelHeap, q1[j], *pb1, c, 2)) {
@@ -3748,7 +3748,7 @@ extern "C" BOOL FieldObj_LoadTreeStageModels(Obj *o, u32 *a, u32 *b, void *c)
     for (i = 0; i < 3; i++) {
         s32 t = FieldObj_GetSeasonSet(o, i);
         j = 0;
-        base2 = o->unk_4b20[i];
+        base2 = o->treeAnims[i];
         pb2 = &b[i];
         q2 = a + t * 6;
         for (; j < 4; j++) {
@@ -3768,13 +3768,13 @@ extern "C" BOOL FieldObj_LoadCedarStageModels(Obj *o, u32 *a, u32 *b, void *c)
     s32 i;
     for (i = 1; i <= 4; i++) {
         void *n = FieldObj_GetCedarModelPath(o, i);
-        if (!CachedModel_loadWithTex(&o->unk_c6c[i], n, sFieldObjectModelHeap, a[i], *b, c, 2)) {
+        if (!CachedModel_loadWithTex(&o->cedarModels[i], n, sFieldObjectModelHeap, a[i], *b, c, 2)) {
             return FALSE;
         }
     }
     for (i = 0; i < 4; i++) {
         void *n = FieldObj_GetCedarAnimModelPath(o, i);
-        Seg *sg = &o->unk_5ab0[i];
+        Seg *sg = &o->cedarAnims[i];
         if (!CachedModel_loadWithTex(&sg->e, n, sFieldObjectModelHeap, (a + i)[1], *b, c, 2)) {
             return FALSE;
         }
@@ -3788,7 +3788,7 @@ extern "C" BOOL FieldObj_LoadLitCedarModels(Obj *o, u32 *a, u32 *b)
 {
     s32 cnt;
     for (cnt = 0; cnt < 3; cnt++) {
-        if (!CachedModel_loadWithTex(&o->unk_1014[cnt], data_ov003_0223264c, sFieldObjectModelHeap, *a, *b, &cnt, 1)) {
+        if (!CachedModel_loadWithTex(&o->litCedarModels[cnt], data_ov003_0223264c, sFieldObjectModelHeap, *a, *b, &cnt, 1)) {
             return FALSE;
         }
     }
@@ -3802,13 +3802,13 @@ extern "C" BOOL FieldObj_LoadPalmStageModels(Obj *o, u32 *a, u32 *b, void *c)
     s32 i;
     for (i = 1; i <= 4; i++) {
         void *n = FieldObj_GetPalmModelPath(o, i);
-        if (!CachedModel_loadWithTex(&o->unk_11e8[i], n, sFieldObjectModelHeap, a[i], *b, c, 2)) {
+        if (!CachedModel_loadWithTex(&o->palmModels[i], n, sFieldObjectModelHeap, a[i], *b, c, 2)) {
             return FALSE;
         }
     }
     for (i = 0; i < 4; i++) {
         void *n = FieldObj_GetPalmAnimModelPath(o, i);
-        Seg *sg = &o->unk_63c4[i];
+        Seg *sg = &o->palmAnims[i];
         if (!CachedModel_loadWithTex(&sg->e, n, sFieldObjectModelHeap, (a + i)[1], *b, c, 2)) {
             return FALSE;
         }
@@ -3824,7 +3824,7 @@ extern "C" BOOL FieldObj_LoadTreeDeadModels(Obj *o, u32 *a, u32 *b, void *c)
     for (i = 0; i < 3; i++) {
         s32 t = FieldObj_GetSeasonSet(o, i);
         void *n = FieldObj_GetTreeModelPath(o, i, 5);
-        if (!CachedModel_loadWithTex(&o->unk_174[i][5], n, sFieldObjectModelHeap, (a + t * 6)[5], b[i], c, 1)) {
+        if (!CachedModel_loadWithTex(&o->treeModels[i][5], n, sFieldObjectModelHeap, (a + t * 6)[5], b[i], c, 1)) {
             return FALSE;
         }
     }
@@ -3836,7 +3836,7 @@ namespace ns_0221ede8 {
 extern "C" BOOL FieldObj_LoadCedarDeadModel(Obj *o, u32 *a, u32 *b, void *c)
 {
     void *n = FieldObj_GetCedarModelPath(o, 5);
-    if (CachedModel_loadWithTex(&o->unk_c6c[5], n, sFieldObjectModelHeap, a[5], *b, c, 1)) {
+    if (CachedModel_loadWithTex(&o->cedarModels[5], n, sFieldObjectModelHeap, a[5], *b, c, 1)) {
         return TRUE;
     }
     return FALSE;
@@ -3847,7 +3847,7 @@ namespace ns_0221ede8 {
 extern "C" BOOL FieldObj_LoadPalmDeadModel(Obj *o, u32 *a, u32 *b, void *c)
 {
     void *n = FieldObj_GetPalmModelPath(o, 5);
-    if (CachedModel_loadWithTex(&o->unk_11e8[5], n, sFieldObjectModelHeap, a[5], *b, c, 1)) {
+    if (CachedModel_loadWithTex(&o->palmModels[5], n, sFieldObjectModelHeap, a[5], *b, c, 1)) {
         return TRUE;
     }
     return FALSE;
@@ -4089,7 +4089,7 @@ extern "C" BOOL FieldObj_LoadFlowerModels(Obj *o, u32 *a, u32 *b)
     for (i = 0; i < 4; a++, b++, i++) {
         s32 j = 0;
         void **pname = &data_ov003_02232a28[i];
-        Elem *base = o->unk_1590[i];
+        Elem *base = o->flowerModels[i];
         s32 n = data_ov003_0222f4a8[i];
         for (; j < n; j++) {
             if (!CachedModel_loadWithTex(&base[j], *pname, sFieldObjectModelHeap, *a, *b, &j, 1)) {
@@ -4122,7 +4122,7 @@ extern "C" BOOL FieldObj_LoadSpecialFlowerModels(Obj *o, u32 *a, u32 *b)
     for (i = 0; i < 2; a++, b++, i++) {
         s32 j;
         for (j = 0; j < 2; j++) {
-            if (!CachedModel_loadWithTex(&o->unk_2df0[i][j], data_ov003_022326e8[i], sFieldObjectModelHeap, *a, *b, &j, 1)) {
+            if (!CachedModel_loadWithTex(&o->specialFlowerModels[i][j], data_ov003_022326e8[i], sFieldObjectModelHeap, *a, *b, &j, 1)) {
                 return FALSE;
             }
         }
@@ -4135,10 +4135,10 @@ namespace ns_0221ede8 {
 extern "C" BOOL FieldObj_LoadDandelionModels(Obj *o)
 {
     BOOL r = FALSE;
-    if (ModelSet_Load(o->unk_4af0, (u8 *)"/fg/flower/tanpopo.nsbmd", sFieldObjectModelHeap)) {
+    if (ModelSet_Load(o->dandelionModelSet, (u8 *)"/fg/flower/tanpopo.nsbmd", sFieldObjectModelHeap)) {
         s32 i;
         for (i = 0; i < 2; i++) {
-            o->unk_3060[i] = ModelSet_Find(o->unk_4af0, data_ov003_02232720[i]);
+            o->dandelionModels[i] = ModelSet_Find(o->dandelionModelSet, data_ov003_02232720[i]);
         }
         r = TRUE;
     }
@@ -4240,7 +4240,7 @@ BOOL FieldObj_LoadGrassModels(Obj *o, u32 idx) {
     u32 *p = &data_ov003_0222f6a0[n];
     z = 0;
     for (; i < 5; i++) {
-        if (!CachedModel_loadWithTex(&o->unk_43e8[i], data_ov003_02232bd8[i], sFieldObjectModelHeap, z, idx, p, 1)) {
+        if (!CachedModel_loadWithTex(&o->grassModels[i], data_ov003_02232bd8[i], sFieldObjectModelHeap, z, idx, p, 1)) {
             return FALSE;
         }
     }
@@ -4288,10 +4288,10 @@ namespace ns_0221e4d4 {
 extern "C" {
 BOOL FieldObj_LoadHoleModels(Obj *o, u32 idx) {
     void *m = FieldObj_GetGroundTexSet();
-    if (CachedModel_loadWithTex(&o->unk_4708, data_ov003_02232634, sFieldObjectModelHeap, 0, idx, &m, 1) == 0) {
+    if (CachedModel_loadWithTex(&o->holeModels, data_ov003_02232634, sFieldObjectModelHeap, 0, idx, &m, 1) == 0) {
         return FALSE;
     }
-    if (CachedModel_loadWithTex(&o->unk_47a4, data_ov003_02232634, sFieldObjectModelHeap, 0, idx, (sFieldObjShapeTable + 0x310), 1)) {
+    if (CachedModel_loadWithTex(&o->holeModelAlt, data_ov003_02232634, sFieldObjectModelHeap, 0, idx, (sFieldObjShapeTable + 0x310), 1)) {
         return TRUE;
     }
     return FALSE;
@@ -4330,10 +4330,10 @@ namespace ns_0221e4d4 {
 extern "C" {
 BOOL FieldObj_LoadCrackModels(Obj *o, u32 idx) {
     void *m = FieldObj_GetGroundTexSet();
-    if (CachedModel_loadWithTex(&o->unk_4840, data_ov003_02232648, sFieldObjectModelHeap, 0, idx, &m, 1) == 0) {
+    if (CachedModel_loadWithTex(&o->crackModels, data_ov003_02232648, sFieldObjectModelHeap, 0, idx, &m, 1) == 0) {
         return FALSE;
     }
-    if (CachedModel_loadWithTex(&o->unk_48dc, data_ov003_02232648, sFieldObjectModelHeap, 0, idx, (sFieldObjShapeTable + 0x30c), 1)) {
+    if (CachedModel_loadWithTex(&o->crackModelAlt, data_ov003_02232648, sFieldObjectModelHeap, 0, idx, (sFieldObjShapeTable + 0x30c), 1)) {
         return TRUE;
     }
     return FALSE;
@@ -4365,7 +4365,7 @@ extern "C" {
 BOOL FieldObj_LoadTurnipModels(Obj *o) {
     s32 i;
     for (i = 0; i < 2; i++) {
-        if (!CachedModel_load(&gFieldObjectManager->unk_49a8[i], data_ov003_02232788[i], sFieldObjectAnimHeap)) {
+        if (!CachedModel_load(&gFieldObjectManager->turnipModels[i], data_ov003_02232788[i], sFieldObjectAnimHeap)) {
             return FALSE;
         }
     }
@@ -4385,7 +4385,7 @@ BOOL FieldObj_LoadTurnips(Obj *o) {
 namespace ns_0221e4d4 {
 extern "C" {
 BOOL FieldObj_LoadDesignModels(Obj *o) {
-    Elem *p = &o->unk_3068[0][0];
+    Elem *p = &o->designModels[0][0];
     s32 i;
     u32 j;
     for (i = 0; i < 4; i++) {
@@ -4436,8 +4436,8 @@ BOOL _ZN18FieldObjectManager8vfunc_00Ev(Obj *o) {
     if (FieldObj_LoadIconModels(o)) {
         gFieldObjectManager = o;
         if (FieldObj_RunLoaders(o)) {
-            o->unk_6a6c = 0;
-            TreeAnimSet_Init(o->unk_4b20);
+            o->frameCounter = 0;
+            TreeAnimSet_Init(o->treeAnimSet);
             TreeLeafFx_Init(sTreeLeafFx);
             FieldItemFxTable_Init(sFieldItemFxTable);
             Field_OnEnter();
@@ -4455,7 +4455,7 @@ namespace ns_0221e4d4 {
 extern "C" {
 BOOL _ZN18FieldObjectManager9onExecuteEv(Obj *o) {
     FieldItemFxTable_Update(sFieldItemFxTable);
-    TreeAnimSet_Update(o->unk_4b20);
+    TreeAnimSet_Update(o->treeAnimSet);
     return TRUE;
 }
 }
@@ -4464,14 +4464,14 @@ BOOL _ZN18FieldObjectManager9onExecuteEv(Obj *o) {
 namespace ns_0221e4d4 {
 extern "C" {
 s32 FieldObj_DrawIconModel(Obj *o, u32 idx, V3 *a, s32 b, V3 *c, s32 d, s32 e, s32 f) {
-    Unk_ov003_0221e4d4_Model *m = o->unk_50[idx];
+    Unk_ov003_0221e4d4_Model *m = o->iconModels[idx];
     V3 t;
     s32 ang = WorldCurve_ToCurved(&t, a);
     func_020e8388(&data_021f47e0, t.x, t.y, t.z);
     func_020e8434(&data_021f47e0, ang);
     func_020e8464(&data_021f47e0, *(s16 *)&d, *(s16 *)&e, *(s16 *)&f);
     func_020e84f8(&data_021f47e0, c->x, c->y, c->z);
-    func_02105f00(m->unk_5c, b);
+    func_02105f00(m->resMdl, b);
     FieldObj_DrawModel(o, m, data_021f47e0);
     return (s32)m;
 }
@@ -4591,7 +4591,7 @@ void FieldObj_DrawItemModel(Obj *o, u32 t, V3 *pos, V3 *scale, s32 rx, s32 ry, s
     case 3:
     case 4:
         idx = Item_GetInfoUnk07(&type);
-        FieldObj_DrawModel(o, o->unk_50[idx], data_021f47e0);
+        FieldObj_DrawModel(o, o->iconModels[idx], data_021f47e0);
         break;
     case 2:
         break;
@@ -5054,7 +5054,7 @@ void FieldObj_DrawUnits(O *o, void *g) {
                     FieldObj_DrawCrack(o, cell, l.m);
                 } else {
                     idx = Item_GetInfoUnk07(cell);
-                    FieldObj_DrawModel(o, o->unk_50[idx], l.m);
+                    FieldObj_DrawModel(o, o->iconModels[idx], l.m);
                 }
                 cnt++;
                 break;
@@ -5405,7 +5405,7 @@ void FieldItemFx_StartStrikeResult(P2 pos) {
         V3 v;
         FieldPos_FromUnitCenter(&v, pos.x, pos.z);
         Col c;
-        c.c = r->unk_08;
+        c.c = r->unit;
         u16 tt = c.c;
         c.b = tt;
         c.a = tt;
@@ -5488,7 +5488,7 @@ void TreeLeafFx_ApplyParams(Rec *r, Tgt *t) {
     t->unk_68 = p->unk_04;
     t->unk_58 = p->unk_06;
     t->unk_50 = p->unk_08;
-    r->lifeTimer = p->unk_00;
+    r->lifeTimer = p->lifeTime;
 }
 }
 }
@@ -5553,9 +5553,9 @@ void TreeLeafFx_UpdatePos(Rec *r, Tgt *t) {
         z = r->posZ;
         break;
     }
-    t->unk_20 = x + t->unk_18->unk_00->posX;
-    t->unk_24 = y + t->unk_18->unk_00->posY;
-    t->unk_28 = z + t->unk_18->unk_00->posZ;
+    t->posX = x + t->resource->header->posX;
+    t->posY = y + t->resource->header->posY;
+    t->posZ = z + t->resource->header->posZ;
 }
 }
 }
@@ -5575,7 +5575,7 @@ void TreeLeafFx_OnEffectInit(Unk_ov003_0221c858_Obj *self) {
     self->unk_0a = i;
     TreeLeafFx_ApplyParams(r, t);
     t->unk_44 = data_ov003_0222f594[sTreeLeafFx.records[i].treeType][r->treeStage];
-    t->unk_80 = r->tintVariant;
+    t->tintVariant = r->tintVariant;
 }
 }
 }
@@ -7373,21 +7373,21 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
 namespace ns_02219b84 {
 extern "C" {
 void FieldItemFx_InitPitfallClose(Ent *e, P2 *p, void *m) {
-    FieldPos_FromUnitCenter(&e->unk_18, p->x, p->y);
+    FieldPos_FromUnitCenter(&e->pos, p->x, p->y);
     if (BlockMap_getDigKind(m, p->x, p->y) == 0) {
-        e->unk_08 = 0xfc;
+        e->item = 0xfc;
     } else {
-        e->unk_08 = 0xfd;
+        e->item = 0xfd;
     }
-    e->unk_3c.x = 0x1000;
-    e->unk_3c.y = 0x1000;
-    e->unk_3c.z = 0x1000;
+    e->scale.x = 0x1000;
+    e->scale.y = 0x1000;
+    e->scale.z = 0x1000;
     s32 z = 0;
-    e->unk_30 = z;
-    e->unk_34 = z;
-    e->unk_38 = z;
+    e->velocityX = z;
+    e->velocityY = z;
+    e->velocityZ = z;
     Field_SetUnitItem(p->x, p->y, 0xfff1, z);
-    s32 i = PendingUnit_Find(P2(e->unk_10), 0);
+    s32 i = PendingUnit_Find(P2(e->unit), 0);
     if (i >= 0) {
         *(u16 *)(PendingUnit_Get(i) + 0xa) = 0xfff1;
     }
@@ -7401,9 +7401,9 @@ void FieldItemFxTable_Init(Tbl *t) {
     Ent *e = t->e;
     s32 i;
     for (i = 0; i < 20; e++, i++) {
-        e->unk_04 = 0;
-        e->unk_08 = 0xfff1;
-        func_02003ecc(e->unk_60);
+        e->active = 0;
+        e->item = 0xfff1;
+        func_02003ecc(e->seEmitter);
     }
 }
 }
@@ -7418,10 +7418,10 @@ void FieldItemFxTable_Update(Tbl *t) {
     s32 i;
     CommManager_isOnline(gCommManager);
     for (i = 0; i < 20; e++, i++) {
-        if (e->unk_04 != 0) {
-            e->unk_4e++;
-            v = e->unk_08;
-            switch (e->unk_0c) {
+        if (e->active != 0) {
+            e->frame++;
+            v = e->item;
+            switch (e->kind) {
             case 0:
             case 13:
                 FieldItemFx_UpdateToss(e);
@@ -7462,10 +7462,10 @@ void FieldItemFxTable_Update(Tbl *t) {
                 FieldItemFx_UpdateBalloonDrop(e);
                 break;
             }
-            tmp.x = e->unk_18.x;
-            tmp.y = e->unk_18.y;
-            tmp.z = e->unk_18.z;
-            func_02003e80(e->unk_60, &tmp);
+            tmp.x = e->pos.x;
+            tmp.y = e->pos.y;
+            tmp.z = e->pos.z;
+            func_02003e80(e->seEmitter, &tmp);
         }
     }
 }
@@ -7487,12 +7487,12 @@ void FieldItemFxTable_Draw(Ent *e) {
         V3 v50, v5c, v68, v74, v80, v8c, v98;
     } l;
     for (;;) {
-        if (e->unk_04 != 0 && e->unk_08 != 0xfff1) {
-            func_01ffd070(&l.v74, &e->unk_18, &e->unk_24);
+        if (e->active != 0 && e->item != 0xfff1) {
+            func_01ffd070(&l.v74, &e->pos, &e->offset);
             l.v5c.x = l.v74.x;
             l.v5c.y = l.v74.y;
             l.v5c.z = l.v74.z;
-            type = e->unk_08;
+            type = e->item;
             s32 k = (type & 0xf000) >> 12;
             switch (k) {
             case 1:
@@ -7504,11 +7504,11 @@ void FieldItemFxTable_Draw(Ent *e) {
                 l.v8c.x = 0x1000;
                 l.v8c.y = 0x1000;
                 l.v8c.z = 0x1000;
-                FieldObj_DrawItemIcon(gFieldObjectManager, e->unk_08, &l.v80, e->unk_52, &l.v8c, z0c, z0c, z0c);
+                FieldObj_DrawItemIcon(gFieldObjectManager, e->item, &l.v80, e->alpha, &l.v8c, z0c, z0c, z0c);
                 break;
             }
             default: {
-                V3 *pv = &e->unk_3c;
+                V3 *pv = &e->scale;
                 l.v68.x = pv->x;
                 l.v68.y = pv->y;
                 l.v68.z = pv->z;
@@ -7558,12 +7558,12 @@ void FieldItemFxTable_Draw(Ent *e) {
                     l.v98.x = l.v5c.x;
                     l.v98.y = l.v5c.y;
                     l.v98.z = l.v5c.z;
-                    s32 px = *(volatile s32 *)&e->unk_10.x;
-                    y4 = *(volatile s32 *)&e->unk_10.y;
+                    s32 px = *(volatile s32 *)&e->unit.x;
+                    y4 = *(volatile s32 *)&e->unit.y;
                     FieldObj_DrawTree(gFieldObjectManager, &type, px, y4, &l.v98, data_021f47e0);
                 } else if (a == 0x25 || a == 0x5c || a == 0xc7) {
-                    s32 px = *(volatile s32 *)&e->unk_10.x;
-                    y8 = *(volatile s32 *)&e->unk_10.y;
+                    s32 px = *(volatile s32 *)&e->unit.x;
+                    y8 = *(volatile s32 *)&e->unit.y;
                     FieldObj_DrawSapling(gFieldObjectManager, &type, px, y8, data_021f47e0);
                 } else if ((a >= 0xe3 && a <= 0xe7) || (a >= 0xe8 && a <= 0xfb)) {
                     FieldObj_DrawRock(gFieldObjectManager, &type, data_021f47e0);
@@ -7592,10 +7592,10 @@ void FieldItemFxTable_Release(Tbl *t) {
     Ent *e = t->e;
     s32 i;
     for (i = 0; i < 20; e++, i++) {
-        if (e->unk_04 != 0) {
+        if (e->active != 0) {
             FieldItemFx_Finish(e);
         }
-        func_02003e50(e->unk_60);
+        func_02003e50(e->seEmitter);
     }
 }
 }
@@ -7608,7 +7608,7 @@ Ent *FieldItemFxTable_FindFree(Tbl *t, s32 g) {
     Ent *r = 0;
     Ent *e = &t->e[g * 4];
     for (i = 0; i < 4; e++, i++) {
-        if (e->unk_04 == 0) {
+        if (e->active == 0) {
             r = e;
             break;
         }
@@ -7654,9 +7654,9 @@ s32 FieldItemFx_CancelAt(s32 idx, P2 *q) {
     s32 i;
     Ent *e = &sFieldItemFxTable.e[idx * 4];
     for (i = 0; i < 4; e++, i++) {
-        if (e->unk_04 != 0) {
-            if (P2(e->unk_10) == *q) {
-                if (e->unk_a0 != 0) {
+        if (e->active != 0) {
+            if (P2(e->unit) == *q) {
+                if (e->pendingApply != 0) {
                     r = 1;
                 }
                 FieldItemFx_Finish(e);

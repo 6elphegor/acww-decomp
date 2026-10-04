@@ -3,7 +3,7 @@
 
 #pragma thumb off
 
-struct Unk_ov001_022198a4_E { u8 pad_00[0x28]; u8 unk_28; u8 pad_29[0x1]; };
+struct Unk_ov001_022198a4_E { u8 pad_00[0x28]; u8 security; u8 pad_29[0x1]; };
 
 extern "C" {
 s32 WfcFade_IsBusy(s32);
@@ -142,7 +142,7 @@ extern "C" void WfcApSearch_CheckResults() {
         return;
     }
     for (i = 0; i < n; i++) {
-        if (buf[i].unk_28 != 2) break;
+        if (buf[i].security != 2) break;
     }
     if (i == n) {
         sWfcApSearchResult = 3;

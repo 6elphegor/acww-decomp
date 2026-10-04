@@ -3,7 +3,7 @@
 
 #pragma thumb off
 
-struct Unk_ov001_0221ccb4_S { u8 pad_00[4]; u8 unk_04[0x14]; u16 unk_18; u8 pad_1a[0x3a]; };
+struct Unk_ov001_0221ccb4_S { u8 pad_00[4]; u8 nickName[0x14]; u16 nickNameLength; u8 pad_1a[0x3a]; };
 
 extern "C" {
 s32 GX_LoadBG2Scr();
@@ -88,7 +88,7 @@ extern "C" void WfcUsbWait_Enter() {
     OS_GetOwnerInfo(&s);
     z = 0;
     MIi_CpuClear16(z, b, 0x16);
-    MIi_CpuCopy16(s.unk_04, b, s.unk_18 << 1);
+    MIi_CpuCopy16(s.nickName, b, s.nickNameLength << 1);
     WfcUtil_ShowBottomMessageNum(b, 0x6d);
     WfcBusyIcon_Create(0);
     WfcUsbScan_Start((void *)WfcUsbWait_OnScanResult);

@@ -14,8 +14,8 @@ struct Unk_ov001_0222a348_Blk {
 
 struct Unk_ov001_0221fd14_Info {
     u32 unk_00;
-    u8 unk_04[0x14];
-    u16 unk_18;
+    u8 nickName[0x14];
+    u16 nickNameLength;
     u8 unk_1a[0x3a];
 };
 
@@ -26,10 +26,10 @@ struct Unk_ov001_0222df00_Buf {
 
 struct Unk_ov001_0221f7f4_Entry {
     u8 pad_00[4];
-    u8 unk_04[8];
-    u8 unk_0c[8];
+    u8 bssid[8];
+    u8 ssidPrefix[8];
     u8 unk_14;
-    u8 unk_15;
+    u8 usbGrantFlags;
 };
 
 struct Unk_ov001_0221f7f4_Arg {
@@ -39,31 +39,31 @@ struct Unk_ov001_0221f7f4_Arg {
 };
 
 struct Unk_ov001_0221faf0_Msg {
-    u16 unk_00;
-    u16 unk_02;
+    u16 apiid;
+    u16 errcode;
     u8 pad_04[4];
-    u16 unk_08;
+    u16 state;
 };
 
 struct Unk_ov001_0222df00 {
     u8 pad_0000[0xf00];
-    u8 unk_0f00[0x400];
-    Unk_ov001_0222df00_Rec unk_1300[16];
+    u8 scanBuf[0x400];
+    Unk_ov001_0222df00_Rec foundAps[16];
     void (*unk_1370)(s32);
-    u8 unk_1374[8];
-    u16 unk_137c;
+    u8 scanParam[8];
+    u16 scanMaxChannelTime;
     u8 pad_137e[0x1388 - 0x137e];
-    u8 unk_1388[8];
+    u8 scanSsid[8];
     u8 unk_1390;
     u8 unk_1391;
     u8 pad_1392[2];
-    u8 unk_1394[0x24];
+    u8 scanSsidUserName[0x24];
     u8 pad_13b8[0x1b74 - 0x13b8];
-    u64 unk_1b74;
-    u32 unk_1b7c;
-    u8 unk_1b80;
-    u8 unk_1b81;
-    u8 unk_1b82;
+    u64 startTick;
+    u32 timeoutTask;
+    u8 stopState;
+    u8 pendingResult;
+    u8 timedOut;
 };
 
 extern "C" const u8 sWfcEmptyBssid[8];
@@ -107,22 +107,22 @@ s32 WfcUsbScan_Start(void (*cb)(s32))
     sWfcUsbScan = g;
     g->unk_1370 = cb;
     g = sWfcUsbScan;
-    g->unk_1b74 = OS_GetTick();
+    g->startTick = OS_GetTick();
     if (WM_Initialize(g, (void *)WfcUsbScan_WmCallback, 3) == 2) {
         do {
             WM_ReadStatus((u8 *)sWfcUsbScan + 0x13b8);
             g = sWfcUsbScan;
         } while (((Unk_ov001_0222df00_Buf *)((u8 *)g + 0x13b8))->status != 2);
-        *(Unk_ov001_0222a348_Blk *)g->unk_1374 = *(const Unk_ov001_0222a348_Blk *)sWfcUsbScanParam;
-        *(void **)g->unk_1374 = g->unk_0f00;
+        *(Unk_ov001_0222a348_Blk *)g->scanParam = *(const Unk_ov001_0222a348_Blk *)sWfcUsbScanParam;
+        *(void **)g->scanParam = g->scanBuf;
         u16 v = WM_GetDispersionScanPeriod();
-        sWfcUsbScan->unk_137c = v;
+        sWfcUsbScan->scanMaxChannelTime = v;
         OS_GetOwnerInfo(&info);
-        MI_CpuCopy8(sWfcUsbApSsid, sWfcUsbScan->unk_1388, 8);
+        MI_CpuCopy8(sWfcUsbApSsid, sWfcUsbScan->scanSsid, 8);
         sWfcUsbScan->unk_1391 = 1;
-        MI_CpuCopy8(info.unk_04, sWfcUsbScan->unk_1394, info.unk_18 * 2);
+        MI_CpuCopy8(info.nickName, sWfcUsbScan->scanSsidUserName, info.nickNameLength * 2);
         if (WfcUsbScan_StartScan() != 0) {
-            sWfcUsbScan->unk_1b7c = WfcTask_Add(0, (void *)WfcUsbScan_TimeoutTask, 0, 0x78);
+            sWfcUsbScan->timeoutTask = WfcTask_Add(0, (void *)WfcUsbScan_TimeoutTask, 0, 0x78);
             return 1;
         }
     }
@@ -138,7 +138,7 @@ s32 WfcUsbScan_StartScan()
 s32 WfcUsbScan_Stop()
 {
     Unk_ov001_0222df00 *g = sWfcUsbScan;
-    g->unk_1b80 = 1;
+    g->stopState = 1;
     WM_ReadStatus((u8 *)sWfcUsbScan + 0x13b8);
     if (((Unk_ov001_0222df00_Buf *)((u8 *)sWfcUsbScan + 0x13b8))->status != 2) {
         if (WM_Reset((void *)WfcUsbScan_WmCallback) != 2) {
@@ -152,11 +152,11 @@ s32 WfcUsbScan_Stop()
         return 0;
     }
     Unk_ov001_0222df00 *h = sWfcUsbScan;
-    if (h->unk_1b7c != 0) {
-        WfcTask_Delete(0, h->unk_1b7c);
+    if (h->timeoutTask != 0) {
+        WfcTask_Delete(0, h->timeoutTask);
     }
     volatile Unk_ov001_0222df00 *v = sWfcUsbScan;
-    while (v->unk_1b80 != 2) {
+    while (v->stopState != 2) {
     }
     WfcHeap_FreeAndClear(&sWfcUsbScan);
     return 1;
@@ -171,22 +171,22 @@ void WfcUsbScan_WmCallback(void *arg0)
 {
     Unk_ov001_0221faf0_Msg *m = (Unk_ov001_0221faf0_Msg *)arg0;
     Unk_ov001_0222df00 *g;
-    if (m->unk_02 != 0) {
+    if (m->errcode != 0) {
         return;
     }
     g = sWfcUsbScan;
-    if (g->unk_1b80 != 0) {
-        if (m->unk_00 == 2) {
-            g->unk_1b80 = 2;
+    if (g->stopState != 0) {
+        if (m->apiid == 2) {
+            g->stopState = 2;
         }
         return;
     }
-    if (m->unk_00 != 0x26) {
+    if (m->apiid != 0x26) {
         return;
     }
-    switch (m->unk_08) {
+    switch (m->state) {
     case 5:
-        if (g->unk_1b82 != 0) {
+        if (g->timedOut != 0) {
             WfcUsbScan_CheckGranted(m);
         } else {
             WfcUsbScan_CollectAps(m);
@@ -215,14 +215,14 @@ void WfcUsbScan_CollectAps(void *arg0)
     for (i = 0; i < a->count; i++) {
         e = a->items[i];
         DC_InvalidateRange(e, 0xc0);
-        if (memcmp(e->unk_0c, sWfcUsbApSsid, 8) == 0) {
+        if (memcmp(e->ssidPrefix, sWfcUsbApSsid, 8) == 0) {
             g = sWfcUsbScan;
-            for (j = 0, p = g->unk_1300; j < 16; p++, j++) {
-                if (memcmp(e->unk_04, p->name, 6) == 0) {
-                    if (g->unk_1300[j].flag != 0) {
+            for (j = 0, p = g->foundAps; j < 16; p++, j++) {
+                if (memcmp(e->bssid, p->name, 6) == 0) {
+                    if (g->foundAps[j].flag != 0) {
                         goto next;
                     }
-                    if ((e->unk_15 & 1) == 0) {
+                    if ((e->usbGrantFlags & 1) == 0) {
                         goto next;
                     }
                     if (g->unk_1370 == NULL) {
@@ -233,9 +233,9 @@ void WfcUsbScan_CollectAps(void *arg0)
                 }
             }
             for (j = 0; j < 16; j++) {
-                if (memcmp(g->unk_1300[j].name, sWfcEmptyBssid, 6) == 0) {
-                    MI_CpuCopy8(e->unk_04, g->unk_1300[j].name, 6);
-                    sWfcUsbScan->unk_1300[j].flag = (e->unk_15 & 1) ? 1 : 0;
+                if (memcmp(g->foundAps[j].name, sWfcEmptyBssid, 6) == 0) {
+                    MI_CpuCopy8(e->bssid, g->foundAps[j].name, 6);
+                    sWfcUsbScan->foundAps[j].flag = (e->usbGrantFlags & 1) ? 1 : 0;
                     break;
                 }
             }
@@ -256,13 +256,13 @@ void WfcUsbScan_CheckGranted(void *arg0)
     Unk_ov001_0222df00_Rec *p;
     Unk_ov001_0222df00 *h;
     // DECL_END
-    if (g->unk_1b81 != 0) {
+    if (g->pendingResult != 0) {
         if (g->unk_1370 != NULL) {
-            g->unk_1370(g->unk_1b81);
+            g->unk_1370(g->pendingResult);
         }
         return;
     }
-    DC_InvalidateRange(g->unk_0f00, 0x400);
+    DC_InvalidateRange(g->scanBuf, 0x400);
     n = a->count;
     i = 0;
     if (n <= 0) {
@@ -271,14 +271,14 @@ void WfcUsbScan_CheckGranted(void *arg0)
     h = sWfcUsbScan;
     do {
         e = a->items[i];
-        if (memcmp(e->unk_0c, sWfcUsbApSsid, 8) == 0 && (e->unk_15 & 1) != 0) {
-            for (j = 0, p = h->unk_1300; j < 16; j++, p++) {
-                if (memcmp(e->unk_04, p->name, 6) == 0) {
-                    if (h->unk_1300[j].flag != 0) {
+        if (memcmp(e->ssidPrefix, sWfcUsbApSsid, 8) == 0 && (e->usbGrantFlags & 1) != 0) {
+            for (j = 0, p = h->foundAps; j < 16; j++, p++) {
+                if (memcmp(e->bssid, p->name, 6) == 0) {
+                    if (h->foundAps[j].flag != 0) {
                         break;
                     }
                     if (h->unk_1370 == NULL) {
-                        h->unk_1b81 = 1;
+                        h->pendingResult = 1;
                         return;
                     }
                     h->unk_1370(1);
@@ -297,11 +297,11 @@ void WfcUsbScan_TimeoutTask(s32 arg)
     u64 now = OS_GetTick();
     g = sWfcUsbScan;
     a = 0;
-    if (now < g->unk_1b74 + 0x17f898) return;
+    if (now < g->startTick + 0x17f898) return;
     b = 0;
     for (i = 0; i < 16; i++) {
-        if (memcmp(g->unk_1300[i].name, sWfcEmptyBssid, 6)) {
-            if (g->unk_1300[i].flag) b = 1;
+        if (memcmp(g->foundAps[i].name, sWfcEmptyBssid, 6)) {
+            if (g->foundAps[i].flag) b = 1;
             else a = 1;
         }
     }
@@ -312,8 +312,8 @@ void WfcUsbScan_TimeoutTask(s32 arg)
     } else if (!a) {
         if (g->unk_1370) g->unk_1370(0);
     }
-    sWfcUsbScan->unk_1b7c = 0;
-    sWfcUsbScan->unk_1b82 = 1;
+    sWfcUsbScan->timeoutTask = 0;
+    sWfcUsbScan->timedOut = 1;
     WfcTask_RequestDelete(0, arg);
 }
 

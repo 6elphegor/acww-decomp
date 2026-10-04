@@ -1,12 +1,12 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 
-struct Unk_ov001_02214154_S {
-    u32 unk_00;
-    u32 *unk_04;
+struct WfcAddrEdit {
+    u32 textCanvas;
+    u32 *caretOam;
     u8 name[12];
-    u8 unk_14;
-    u8 unk_15;
+    u8 octetIndex;
+    u8 result;
 };
 
 struct Unk_ov001_02214154_Tbl { u8 b[4]; };
@@ -109,29 +109,29 @@ u8 sWfcAddrEditTitleMsgs[8] = {0x91, 0x92, 0x93, 0x94, 0x95, 0, 0, 0};
 u16 data_ov001_0222af88[4] = {0, 0x29, 0, 0};
 void *sWfcAddrEditLoadFuncs[5] = {(void *)WfcConfig_FormatEditIp, (void *)WfcConfig_FormatEditSubnetMask, (void *)WfcConfig_FormatEditGateway, (void *)WfcConfig_FormatEditDns1, (void *)WfcConfig_FormatEditDns2};
 void *sWfcAddrEditStoreFuncs[5] = {(void *)WfcConfig_SetEditIp, (void *)WfcConfig_SetEditSubnetMask, (void *)WfcConfig_SetEditGateway, (void *)WfcConfig_SetEditDns1, (void *)WfcConfig_SetEditDns2};
-Unk_ov001_02214154_S *sWfcAddrEdit;
+WfcAddrEdit *sWfcAddrEdit;
 
 void WfcAddrEdit_Enter() {
     Unk_ov001_02214dd8_Fns fns = *(Unk_ov001_02214dd8_Fns *)sWfcAddrEditLoadFuncs;
     Unk_ov001_02214dd8_Ids ids = *(Unk_ov001_02214dd8_Ids *)sWfcAddrEditTitleMsgs;
     s32 idx;
-    sWfcAddrEdit = (Unk_ov001_02214154_S *)WfcHeap_AllocClear(0x18, 4);
+    sWfcAddrEdit = (WfcAddrEdit *)WfcHeap_AllocClear(0x18, 4);
     WfcUtil_GetEditParams(&idx, 0);
     fns.v[idx](sWfcAddrEdit->name);
-    Unk_ov001_02214154_S *o = sWfcAddrEdit;
+    WfcAddrEdit *o = sWfcAddrEdit;
     if (memcmp(o->name, "  0", 3) != 0) {
-        o->unk_14 = 3;
+        o->octetIndex = 3;
     } else {
         MI_CpuFill8(o->name, 0, 12);
-        sWfcAddrEdit->unk_14 = 0;
+        sWfcAddrEdit->octetIndex = 0;
     }
     WfcAddrEdit_LoadBg();
     WfcHighlight_Set(idx + 0xb);
     WfcUtil_ShowTopMessage(ids.v[idx], -1, 0);
     WfcUtil_ShowStepIndicator(2);
-    sWfcAddrEdit->unk_00 = WfcText_CreateBgCanvas(0, 0);
-    sWfcAddrEdit->unk_04 = (u32 *)WfcObj_CreateSingle(0, 0x3f);
-    u16 *p = (u16 *)((u32)sWfcAddrEdit->unk_04 + 4);
+    sWfcAddrEdit->textCanvas = WfcText_CreateBgCanvas(0, 0);
+    sWfcAddrEdit->caretOam = (u32 *)WfcObj_CreateSingle(0, 0x3f);
+    u16 *p = (u16 *)((u32)sWfcAddrEdit->caretOam + 4);
     *p = (*p & ~0xc00) | 0xc00;
     WfcAddrEdit_UpdateCaret();
     WfcAddrEdit_DrawText();
@@ -168,7 +168,7 @@ void WfcAddrEdit_OpenKeypad() {
     if (WfcFade_IsBusy(0) != 0) return;
     WfcNumPad_Create();
     WfcSound_Play(0x14);
-    if (sWfcAddrEdit->unk_14 == 0) {
+    if (sWfcAddrEdit->octetIndex == 0) {
         WfcNumPad_SetDeleteEnabled(0);
         WfcNumPad_SetDotEnabled(0);
     } else {
@@ -192,50 +192,50 @@ void WfcAddrEdit_Update() {
 
 void WfcAddrEdit_HandleKey() {
     s32 r = WfcNumPad_GetKey();
-    Unk_ov001_02214154_S *g;
+    WfcAddrEdit *g;
     switch (r) {
     case 0:
         return;
     case 0x10:
         g = sWfcAddrEdit;
-        if (g->unk_14 == 0 && g->name[2] == 0) goto end;
+        if (g->octetIndex == 0 && g->name[2] == 0) goto end;
         WfcSound_Play(3);
         {
-            u32 k = sWfcAddrEdit->unk_14;
-            if (sWfcAddrEdit->name[k * 3 + 2] == 0) sWfcAddrEdit->unk_14 = k - 1;
+            u32 k = sWfcAddrEdit->octetIndex;
+            if (sWfcAddrEdit->name[k * 3 + 2] == 0) sWfcAddrEdit->octetIndex = k - 1;
         }
-        MI_CpuFill8(&sWfcAddrEdit->name[sWfcAddrEdit->unk_14 * 3], 0, 3);
+        MI_CpuFill8(&sWfcAddrEdit->name[sWfcAddrEdit->octetIndex * 3], 0, 3);
         g = sWfcAddrEdit;
-        if (g->unk_14 == 0 && g->name[2] == 0) WfcNumPad_SetDeleteEnabled(0);
+        if (g->octetIndex == 0 && g->name[2] == 0) WfcNumPad_SetDeleteEnabled(0);
         WfcNumPad_SetInsertEnabled(1);
         WfcNumPad_SetDotEnabled(0);
         goto end;
     case 0x11: {
         g = sWfcAddrEdit;
-        u32 k = g->unk_14;
+        u32 k = g->octetIndex;
         if (k >= 3) goto end;
         if (g->name[k * 3 + 2] == 0) goto end;
         WfcSound_Play(1);
-        sWfcAddrEdit->unk_14 = sWfcAddrEdit->unk_14 + 1;
+        sWfcAddrEdit->octetIndex = sWfcAddrEdit->octetIndex + 1;
         WfcNumPad_SetDotEnabled(0);
         goto end;
     }
     case 0x12:
-        sWfcAddrEdit->unk_15 = 0;
+        sWfcAddrEdit->result = 0;
         WfcSound_Play(7);
         WfcUtil_SetScene((void *)WfcAddrEdit_StartExit);
         return;
     case 0x13:
         if (WfcAddrEdit_ValidateAddress()) {
             WfcSound_Play(6);
-            sWfcAddrEdit->unk_15 = 1;
+            sWfcAddrEdit->result = 1;
         } else {
-            sWfcAddrEdit->unk_15 = 2;
+            sWfcAddrEdit->result = 2;
             WfcSound_Play(9);
         }
-        sWfcAddrEdit->unk_14 = 3;
+        sWfcAddrEdit->octetIndex = 3;
         {
-            volatile u32 *reg = sWfcAddrEdit->unk_04;
+            volatile u32 *reg = sWfcAddrEdit->caretOam;
             *reg = (*reg & 0xc1fffcff) | 0x200;
         }
         WfcAddrEdit_UpdateCaret();
@@ -243,13 +243,13 @@ void WfcAddrEdit_HandleKey() {
         WfcUtil_SetScene((void *)WfcAddrEdit_StartExit);
         return;
     default: {
-        if (sWfcAddrEdit->unk_14 == 3) {
+        if (sWfcAddrEdit->octetIndex == 3) {
             if (WfcAddrEdit_IsOctetFull(0x1a) != 0) goto end;
         }
         WfcSound_Play(1);
         {
-            Unk_ov001_02214154_S *h = sWfcAddrEdit;
-            u32 idx = h->unk_14;
+            WfcAddrEdit *h = sWfcAddrEdit;
+            u32 idx = h->octetIndex;
             u8 *base = h->name;
             u32 lr = idx * 3;
             u8 *ip = base + (lr + 2);
@@ -263,23 +263,23 @@ void WfcAddrEdit_HandleKey() {
                     *p1 = t;
                     *ip = r;
                     if (WfcAddrEdit_IsOctetFull(0x1a) != 0) {
-                        if (sWfcAddrEdit->unk_14 < 3) sWfcAddrEdit->unk_14++;
+                        if (sWfcAddrEdit->octetIndex < 3) sWfcAddrEdit->octetIndex++;
                     }
                 } else {
                     base[lr] = c;
                     *p1 = *ip;
                     *ip = r;
-                    if (sWfcAddrEdit->unk_14 < 3) sWfcAddrEdit->unk_14++;
+                    if (sWfcAddrEdit->octetIndex < 3) sWfcAddrEdit->octetIndex++;
                 }
             }
         }
         WfcNumPad_SetDeleteEnabled(1);
-        if (sWfcAddrEdit->unk_14 < 3) {
+        if (sWfcAddrEdit->octetIndex < 3) {
             WfcNumPad_SetDotEnabled(1);
         } else {
             WfcNumPad_SetDotEnabled(0);
         }
-        if (sWfcAddrEdit->unk_14 == 3) {
+        if (sWfcAddrEdit->octetIndex == 3) {
             if (WfcAddrEdit_IsOctetFull(0x1a) != 0) WfcNumPad_SetInsertEnabled(0);
         }
     }
@@ -292,8 +292,8 @@ end:
 s32 WfcAddrEdit_IsOctetFull(s32 n) {
     u8 buf[4];
     s32 i;
-    Unk_ov001_02214154_S *g = sWfcAddrEdit;
-    u8 *p = &g->name[g->unk_14 * 3];
+    WfcAddrEdit *g = sWfcAddrEdit;
+    u8 *p = &g->name[g->octetIndex * 3];
     u32 c = *p;
     u8 *q;
     if (c != 0 && c != 0x20) return 1;
@@ -325,7 +325,7 @@ void WfcAddrEdit_CloseKeypad() {
 
 void WfcAddrEdit_WaitKeypadClosed() {
     if (WfcNumPad_Exists()) return;
-    u32 t = sWfcAddrEdit->unk_15;
+    u32 t = sWfcAddrEdit->result;
     if (t == 0) {
         WfcUtil_SetScene((void *)WfcAddrEdit_Exit);
         return;
@@ -342,7 +342,7 @@ void WfcAddrEdit_WaitKeypadClosed() {
 void WfcAddrEdit_Exit() {
     s32 v;
     WfcUtil_HideTopMessage();
-    WfcOam_FreeEntry((void *)sWfcAddrEdit->unk_04);
+    WfcOam_FreeEntry((void *)sWfcAddrEdit->caretOam);
     WfcText_DestroyBgCanvas(0);
     WfcUtil_LoadFileTo("char/ybObjMain.ncl.l", (void *)GX_LoadOBJPltt);
     WfcGx_HidePlanes(1, 1);
@@ -365,31 +365,31 @@ void WfcAddrEdit_DrawText() {
     v[3] = data_ov001_0222af88[3];
     v[2] = data_ov001_0222a070[0];
     v[3] = data_ov001_0222a070[1];
-    WfcText_Clear(sWfcAddrEdit->unk_00, 0);
+    WfcText_Clear(sWfcAddrEdit->textCanvas, 0);
     v[5] = 0;
     q = data_ov001_0222a074;
     for (i = 0; i < 12; i++, q++) {
-        Unk_ov001_02214154_S *g = sWfcAddrEdit;
+        WfcAddrEdit *g = sWfcAddrEdit;
         u32 t;
         v[4] = g->name[i];
         t = *q;
         v[0] = t;
-        WfcText_DrawTextRect(g->unk_00, t, v[1], v[2], v[3], 2, 0x480, &v[4]);
+        WfcText_DrawTextRect(g->textCanvas, t, v[1], v[2], v[3], 2, 0x480, &v[4]);
     }
-    WfcText_RequestTransfer(sWfcAddrEdit->unk_00);
+    WfcText_RequestTransfer(sWfcAddrEdit->textCanvas);
 }
 
 void WfcAddrEdit_UpdateCaret() {
-    s32 idx = sWfcAddrEdit->unk_14;
+    s32 idx = sWfcAddrEdit->octetIndex;
     if (idx > 3) idx = 3;
     u32 t = data_ov001_0222a074[idx * 3 + 2];
-    u32 *reg = sWfcAddrEdit->unk_04;
+    u32 *reg = sWfcAddrEdit->caretOam;
     *reg = ((t & 0x1ff) << 16) | ((*reg & 0xfe00ff00) | 0x28);
 }
 
 void WfcAddrEdit_WaitConfirmDialog() {
-    sWfcAddrEdit->unk_15 = WfcDialog_GetResult();
-    switch (sWfcAddrEdit->unk_15) {
+    sWfcAddrEdit->result = WfcDialog_GetResult();
+    switch (sWfcAddrEdit->result) {
     case 0:
         WfcSound_Play(7);
         break;
@@ -407,8 +407,8 @@ void WfcAddrEdit_ApplyAndExit() {
     Unk_ov001_02214358_T t = *(Unk_ov001_02214358_T *)sWfcAddrEditStoreFuncs;
     s32 v;
     if (WfcDialog_IsOpen()) return;
-    if (sWfcAddrEdit->unk_15 == 0) {
-        *sWfcAddrEdit->unk_04 &= 0xc1fffcff;
+    if (sWfcAddrEdit->result == 0) {
+        *sWfcAddrEdit->caretOam &= 0xc1fffcff;
         WfcUtil_SetScene((void *)WfcAddrEdit_OpenKeypad);
         return;
     }
@@ -443,7 +443,7 @@ s32 WfcAddrEdit_ValidateAddress() {
     Unk_ov001_02214154_Tbl tbl = *(Unk_ov001_02214154_Tbl *)data_ov001_0222af7c;
     s32 v;
     u8 out[4];
-    Unk_ov001_02214154_S *g = sWfcAddrEdit;
+    WfcAddrEdit *g = sWfcAddrEdit;
     for (i = 0, off = 0; i < 4; i++, off += 3) {
         p = g->name + off;
         if (*p != 0x20) {
@@ -481,7 +481,7 @@ void WfcAddrEdit_WaitErrorDialog() {
 
 void WfcAddrEdit_ReturnToInput() {
     if (WfcDialog_IsOpen()) return;
-    *sWfcAddrEdit->unk_04 &= 0xc1fffcff;
+    *sWfcAddrEdit->caretOam &= 0xc1fffcff;
     WfcUtil_SetScene((void *)WfcAddrEdit_OpenKeypad);
 }
 }

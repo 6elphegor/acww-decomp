@@ -3,37 +3,37 @@
 
 #pragma thumb off
 
-struct Unk_ov001_0222558c_Gfx {
+struct WfcTextCanvas {
     u8 pad_00[0x18];
-    void (*unk_18)(Unk_ov001_0222558c_Gfx *, s32);
+    void (*unk_18)(WfcTextCanvas *, s32);
     u8 pad_1c[4];
-    Unk_ov001_0222558c_Gfx *unk_20;
-    void *unk_24;
-    s32 unk_28;
-    s32 unk_2c;
-    void *unk_30;
-    u16 unk_34;
-    u8 unk_36;
-    u8 unk_37;
+    WfcTextCanvas *charCanvas;
+    void *font;
+    s32 hSpace;
+    s32 vSpace;
+    void *charBuffer;
+    u16 charName;
+    u8 areaWidth;
+    u8 areaHeight;
 };
 
 struct Unk_ov001_0222df44_Sub {
     u8 pad_00[0x20];
-    Unk_ov001_0222558c_Gfx *unk_20;
-    void *unk_24;
-    s32 unk_28;
-    s32 unk_2c;
-    void *unk_30;
-    u32 unk_34;
+    WfcTextCanvas *charCanvas;
+    void *font;
+    s32 hSpace;
+    s32 vSpace;
+    void *charBuffer;
+    u32 transferTask;
 };
 
 struct Unk_ov001_0222df44_S {
-    u8 unk_000[0x718];
-    Unk_ov001_0222df44_Sub unk_718[2];
-    void *unk_788;
-    void *unk_78c[2];
-    u8 unk_794;
-    u8 unk_795;
+    u8 fonts[0x718];
+    Unk_ov001_0222df44_Sub bgCanvases[2];
+    void *objCanvasPool;
+    void *fontFiles[2];
+    u8 mainBgDirty;
+    u8 subBgDirty;
 };
 
 extern "C" {
@@ -81,18 +81,18 @@ void *WfcPool_CreateFrom(u32, void *, u32);
 void *WfcFs_LoadFile(void *, u32, u32);
 void NNS_G2dFontInitUTF16(void *, void *);
 void WfcText_RequestTransfer(void *o);
-void WfcText_ArrangeObj(Unk_ov001_0222558c_Gfx *o, s32 a1, s32 a2, void *h, s32 a4);
-void WfcText_Clear(Unk_ov001_0222558c_Gfx *o, s32 a);
-void WfcText_DrawTextRect(Unk_ov001_0222558c_Gfx *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void WfcText_ArrangeObj(WfcTextCanvas *o, s32 a1, s32 a2, void *h, s32 a4);
+void WfcText_Clear(WfcTextCanvas *o, s32 a);
+void WfcText_DrawTextRect(WfcTextCanvas *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void WfcText_DrawMonospace(s32 a0, s32 a1, s32 a2, s32 a3, s32 w, u16 *p, s32 idx);
 void WfcText_DrawChar(s32 a0, s32 a1, s32 a2, s32 a3, u16 a4, s32 idx);
-void WfcText_DrawText(Unk_ov001_0222558c_Gfx *o, s32 a, s32 b, s32 c, s32 d, s32 e);
+void WfcText_DrawText(WfcTextCanvas *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void WfcText_DestroyBgCanvas(u32 idx);
 void WfcText_ReleaseBgCanvas(Unk_ov001_0222df44_Sub *o);
 void WfcText_BgTransferTask(u32 task, u8 *flag);
-Unk_ov001_0222558c_Gfx *WfcText_CreateBgCanvas(u32 idx, u32 slot);
+WfcTextCanvas *WfcText_CreateBgCanvas(u32 idx, u32 slot);
 void WfcText_DestroyObjCanvas(Unk_ov001_0222df44_Sub *o);
-Unk_ov001_0222558c_Gfx *WfcText_CreateObjCanvas(u32 mode, u32 w, u32 h, u32 a3, u32 *out, u32 slot);
+WfcTextCanvas *WfcText_CreateObjCanvas(u32 mode, u32 w, u32 h, u32 a3, u32 *out, u32 slot);
 void WfcText_Shutdown();
 void WfcText_Init();
 Unk_ov001_0222df44_S *sWfcText;
@@ -108,59 +108,59 @@ extern "C" char data_ov001_0222b8a4[] = "msg/lc_s.NFTR.l";
 void WfcText_Init() {
     Unk_ov001_0222df44_S *g = (Unk_ov001_0222df44_S *)WfcHeap_Alloc(0x798, 4);
     sWfcText = g;
-    void *pool = WfcPool_CreateFrom(0x20, &g->unk_000[0x18], 0x38);
-    sWfcText->unk_788 = pool;
+    void *pool = WfcPool_CreateFrom(0x20, &g->fonts[0x18], 0x38);
+    sWfcText->objCanvasPool = pool;
     s32 i;
     for (i = 0; i < 2; i++) {
         void *hh = WfcFs_LoadFile(sWfcFontPaths[i], 0, 4);
-        sWfcText->unk_78c[i] = hh;
+        sWfcText->fontFiles[i] = hh;
         Unk_ov001_0222df44_S *q = sWfcText;
-        NNS_G2dFontInitUTF16(&q->unk_000[i * 0xc], q->unk_78c[i]);
+        NNS_G2dFontInitUTF16(&q->fonts[i * 0xc], q->fontFiles[i]);
     }
 }
 
 void WfcText_Shutdown() {
     s32 i;
     for (i = 0; i < 2; i++) {
-        WfcFs_FreeFile(sWfcText->unk_78c[i]);
+        WfcFs_FreeFile(sWfcText->fontFiles[i]);
     }
-    WfcPool_Destroy(sWfcText->unk_788);
+    WfcPool_Destroy(sWfcText->objCanvasPool);
     WfcHeap_FreeAndClear(&sWfcText);
 }
 
-Unk_ov001_0222558c_Gfx *WfcText_CreateObjCanvas(u32 mode, u32 w, u32 h, u32 a3, u32 *out, u32 slot) {
-    Unk_ov001_0222558c_Gfx *e = (Unk_ov001_0222558c_Gfx *)WfcPool_Get(sWfcText->unk_788);
-    e->unk_36 = w;
-    e->unk_37 = h;
+WfcTextCanvas *WfcText_CreateObjCanvas(u32 mode, u32 w, u32 h, u32 a3, u32 *out, u32 slot) {
+    WfcTextCanvas *e = (WfcTextCanvas *)WfcPool_Get(sWfcText->objCanvasPool);
+    e->areaWidth = w;
+    e->areaHeight = h;
     s32 t;
-    e->unk_30 = WfcVram_AllocObjChar(mode, w * h, a3, &t);
-    e->unk_34 = t;
+    e->charBuffer = WfcVram_AllocObjChar(mode, w * h, a3, &t);
+    e->charName = t;
     *out = (u32)NNSi_G2dCalcRequiredOBJ(w, h);
     u32 tt = t;
     u32 base = mode == 1 ? 0x6600000 : 0x6400000;
     NNS_G2dCharCanvasInitForOBJ1D(e, base + (tt << 7), w, h, 4);
     e->unk_18(e, 0);
-    void *ent = &sWfcText->unk_000[slot * 0xc];
-    e->unk_20 = e;
-    e->unk_24 = ent;
-    e->unk_28 = 1;
-    e->unk_2c = 1;
+    void *ent = &sWfcText->fonts[slot * 0xc];
+    e->charCanvas = e;
+    e->font = ent;
+    e->hSpace = 1;
+    e->vSpace = 1;
     return e;
 }
 
 void WfcText_DestroyObjCanvas(Unk_ov001_0222df44_Sub *o) {
-    WfcVram_FreeObjChar(o->unk_30);
-    WfcPool_Put(sWfcText->unk_788, o);
+    WfcVram_FreeObjChar(o->charBuffer);
+    WfcPool_Put(sWfcText->objCanvasPool, o);
 }
 
-Unk_ov001_0222558c_Gfx *WfcText_CreateBgCanvas(u32 idx, u32 slot) {
+WfcTextCanvas *WfcText_CreateBgCanvas(u32 idx, u32 slot) {
     Unk_ov001_0222df44_Sub *o;
     u32 h;
     u32 w;
     h = data_ov001_0222a45a[idx * 2];
     w = sWfcTextBgSize[idx * 2];
-    o = &sWfcText->unk_718[idx];
-    o->unk_30 = WfcHeap_Alloc((w * h) << 5, 0x20);
+    o = &sWfcText->bgCanvases[idx];
+    o->charBuffer = WfcHeap_Alloc((w * h) << 5, 0x20);
     if (idx == 1) {
         volatile u16 *reg = (volatile u16 *)0x4001008;
         *reg = *reg & ~0x40;
@@ -170,12 +170,12 @@ Unk_ov001_0222558c_Gfx *WfcText_CreateBgCanvas(u32 idx, u32 slot) {
         *reg = *reg & ~0x40;
         *reg = (*reg & 0x43) | 0xc00;
     }
-    NNS_G2dCharCanvasInitForBG(o, o->unk_30, w, h, 4);
-    void *ent = &sWfcText->unk_000[slot * 0xc];
-    o->unk_20 = (Unk_ov001_0222558c_Gfx *)o;
-    o->unk_24 = ent;
-    o->unk_28 = 1;
-    o->unk_2c = 1;
+    NNS_G2dCharCanvasInitForBG(o, o->charBuffer, w, h, 4);
+    void *ent = &sWfcText->fonts[slot * 0xc];
+    o->charCanvas = (WfcTextCanvas *)o;
+    o->font = ent;
+    o->hSpace = 1;
+    o->vSpace = 1;
     void *r;
     if (idx == 1) {
         r = G2S_GetBG0ScrPtr();
@@ -183,9 +183,9 @@ Unk_ov001_0222558c_Gfx *WfcText_CreateBgCanvas(u32 idx, u32 slot) {
         r = G2_GetBG0ScrPtr();
     }
     NNS_G2dMapScrToCharText(r, w, h, 0, 0, 0x20, sWfcTextBgCharBase[idx], 0xf);
-    WfcText_Clear((Unk_ov001_0222558c_Gfx *)o, 0);
-    o->unk_34 = WfcTask_Add(1, (void *)WfcText_BgTransferTask, (u8 *)&sWfcText->unk_794 + idx, 0xc8);
-    return (Unk_ov001_0222558c_Gfx *)o;
+    WfcText_Clear((WfcTextCanvas *)o, 0);
+    o->transferTask = WfcTask_Add(1, (void *)WfcText_BgTransferTask, (u8 *)&sWfcText->mainBgDirty + idx, 0xc8);
+    return (WfcTextCanvas *)o;
 }
 
 void WfcText_BgTransferTask(u32 task, u8 *flag) {
@@ -193,21 +193,21 @@ void WfcText_BgTransferTask(u32 task, u8 *flag) {
         return;
     }
     Unk_ov001_0222df44_S *g = sWfcText;
-    if ((void *)flag == &g->unk_794) {
+    if ((void *)flag == &g->mainBgDirty) {
         u32 sz = (sWfcTextBgSize[0] * sWfcTextBgSize[1]) << 5;
-        DC_FlushRange(g->unk_718[0].unk_30, sz);
-        GX_LoadBG0Char(sWfcText->unk_718[0].unk_30, sWfcTextBgCharBase[0] << 5, sz);
+        DC_FlushRange(g->bgCanvases[0].charBuffer, sz);
+        GX_LoadBG0Char(sWfcText->bgCanvases[0].charBuffer, sWfcTextBgCharBase[0] << 5, sz);
     } else {
         u32 sz = (sWfcTextBgSize[2] * sWfcTextBgSize[3]) << 5;
-        DC_FlushRange(g->unk_718[1].unk_30, sz);
-        GXS_LoadBG0Char(sWfcText->unk_718[1].unk_30, sWfcTextBgCharBase[1] << 5, sz);
+        DC_FlushRange(g->bgCanvases[1].charBuffer, sz);
+        GXS_LoadBG0Char(sWfcText->bgCanvases[1].charBuffer, sWfcTextBgCharBase[1] << 5, sz);
     }
     *flag = 0;
 }
 
 void WfcText_ReleaseBgCanvas(Unk_ov001_0222df44_Sub *o) {
-    WfcTask_Delete(1, o->unk_34);
-    if ((void *)o == &sWfcText->unk_718[0]) {
+    WfcTask_Delete(1, o->transferTask);
+    if ((void *)o == &sWfcText->bgCanvases[0]) {
         void *r = G2_GetBG0CharPtr();
         volatile u16 z = 0;
         MIi_CpuClear16(z, r, (sWfcTextBgSize[0] * sWfcTextBgSize[1]) << 5);
@@ -216,19 +216,19 @@ void WfcText_ReleaseBgCanvas(Unk_ov001_0222df44_Sub *o) {
         volatile u16 z = 0;
         MIi_CpuClear16(z, r, (sWfcTextBgSize[2] * sWfcTextBgSize[3]) << 5);
     }
-    WfcHeap_FreeAndClear(&o->unk_30);
+    WfcHeap_FreeAndClear(&o->charBuffer);
 }
 
 void WfcText_DestroyBgCanvas(u32 idx) {
-    WfcText_ReleaseBgCanvas(&sWfcText->unk_718[idx]);
+    WfcText_ReleaseBgCanvas(&sWfcText->bgCanvases[idx]);
 }
 
-void WfcText_DrawText(Unk_ov001_0222558c_Gfx *o, s32 a, s32 b, s32 c, s32 d, s32 e) {
-    NNSi_G2dTextCanvasDrawText(&o->unk_20, a, b, c, d, e);
+void WfcText_DrawText(WfcTextCanvas *o, s32 a, s32 b, s32 c, s32 d, s32 e) {
+    NNSi_G2dTextCanvasDrawText(&o->charCanvas, a, b, c, d, e);
 }
 
 void WfcText_DrawChar(s32 a0, s32 a1, s32 a2, s32 a3, u16 a4, s32 idx) {
-    NNS_G2dCharCanvasDrawChar(a0, &sWfcText->unk_000[idx * 0xc], a1, a2, a3, a4);
+    NNS_G2dCharCanvasDrawChar(a0, &sWfcText->fonts[idx * 0xc], a1, a2, a3, a4);
 }
 
 void WfcText_DrawMonospace(s32 a0, s32 a1, s32 a2, s32 a3, s32 w, u16 *p, s32 idx) {
@@ -236,7 +236,7 @@ void WfcText_DrawMonospace(s32 a0, s32 a1, s32 a2, s32 a3, s32 w, u16 *p, s32 id
         return;
     }
     do {
-        void *e = &sWfcText->unk_000[idx * 0xc];
+        void *e = &sWfcText->fonts[idx * 0xc];
         u32 t = NNS_G2dFontFindGlyphIndex(e, *p);
         if (t == 0xffff) {
             t = ((u16 *)*(void **)e)[1];
@@ -254,28 +254,28 @@ void WfcText_DrawMonospace(s32 a0, s32 a1, s32 a2, s32 a3, s32 w, u16 *p, s32 id
     } while (*p != 0);
 }
 
-void WfcText_DrawTextRect(Unk_ov001_0222558c_Gfx *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g) {
-    NNSi_G2dTextCanvasDrawTextRect(&o->unk_20, a, b, c, d, e, f, g);
+void WfcText_DrawTextRect(WfcTextCanvas *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g) {
+    NNSi_G2dTextCanvasDrawTextRect(&o->charCanvas, a, b, c, d, e, f, g);
 }
 
-void WfcText_Clear(Unk_ov001_0222558c_Gfx *o, s32 a) {
+void WfcText_Clear(WfcTextCanvas *o, s32 a) {
     o->unk_18(o, a);
 }
 
-void WfcText_ArrangeObj(Unk_ov001_0222558c_Gfx *o, s32 a1, s32 a2, void *h, s32 a4) {
+void WfcText_ArrangeObj(WfcTextCanvas *o, s32 a1, s32 a2, void *h, s32 a4) {
     void *e = WfcObj_GetOam(h, 0);
     WfcObj_SetAffineMode(h, -1, 0, 0);
     WfcObj_SetModePalette(h, -1, 0, 0xf);
     WfcObj_SetPriority(h, -1, a4);
-    NNS_G2dArrangeOBJ1D(e, o->unk_36, o->unk_37, a1, a2, 0, o->unk_34, 2);
+    NNS_G2dArrangeOBJ1D(e, o->areaWidth, o->areaHeight, a1, a2, 0, o->charName, 2);
 }
 
 void WfcText_RequestTransfer(void *o) {
     Unk_ov001_0222df44_S *g = sWfcText;
-    if (o == &g->unk_718[0]) {
-        g->unk_794 = 1;
+    if (o == &g->bgCanvases[0]) {
+        g->mainBgDirty = 1;
     } else {
-        g->unk_795 = 1;
+        g->subBgDirty = 1;
     }
 }
 

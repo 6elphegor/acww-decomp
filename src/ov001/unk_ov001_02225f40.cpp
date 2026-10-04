@@ -21,18 +21,18 @@ struct Unk_ov001_02225f40_W {
 
 struct Unk_ov001_02226214_Ent {
     u32 unk_00;
-    u16 unk_04;
-    u16 unk_06;
+    u16 touch;
+    u16 validity;
 };
 
-struct Unk_ov001_0222df54_S {
+struct WfcInputState {
     Unk_ov001_02226214_Ent ent[5];
     Unk_ov001_02225924_Pt pos0;
     Unk_ov001_02225924_Pt pos1;
-    u16 unk_30;
-    u16 unk_32;
-    u16 unk_34;
-    u16 unk_36;
+    u16 heldKeys;
+    u16 pressedKeys;
+    u16 repeatKeys;
+    u16 releasedKeys;
     u8 flag0 : 1;
     u8 flag1 : 1;
     u8 flag2 : 1;
@@ -77,7 +77,7 @@ void WfcInput_Shutdown();
 void WfcInput_Init();
 }
 
-extern "C" Unk_ov001_0222df54_S *sWfcInput = 0;
+extern "C" WfcInputState *sWfcInput = 0;
 extern "C" u8 sWfcTouchRepeatCounter = 0;
 extern "C" u8 sWfcKeyRepeatCounters[16] = {0};
 
@@ -89,7 +89,7 @@ static inline BOOL Unk_ov001_02226214_Flag0() {
 void WfcInput_Init()
 {
     u32 buf[3];
-    sWfcInput = (Unk_ov001_0222df54_S *)WfcHeap_AllocClear(0x3a, 4);
+    sWfcInput = (WfcInputState *)WfcHeap_AllocClear(0x3a, 4);
     if (TP_GetUserInfo(buf) == 0) Fatal_Trap();
     TP_SetCalibrateParam(buf);
     TP_RequestAutoSamplingStartAsync(0, 4, sWfcInput, 5);
@@ -115,7 +115,7 @@ void WfcInput_Update()
 
 void WfcInput_UpdateKeys()
 {
-    Unk_ov001_0222df54_S *p;
+    WfcInputState *p;
     s32 i;
     u8 *cnt;
     u16 cur;
@@ -124,10 +124,10 @@ void WfcInput_UpdateKeys()
     v = *(volatile u16 *)0x4000130 | *(volatile u16 *)0x27fffa8;
     cur = ((v ^ 0x2fff) & 0x2fff);
     cnt = sWfcKeyRepeatCounters;
-    p->unk_32 = (p->unk_30 ^ cur) & cur;
-    sWfcInput->unk_36 = p->unk_30 & (p->unk_30 ^ cur);
-    sWfcInput->unk_30 = cur;
-    sWfcInput->unk_34 = sWfcInput->unk_32;
+    p->pressedKeys = (p->heldKeys ^ cur) & cur;
+    sWfcInput->releasedKeys = p->heldKeys & (p->heldKeys ^ cur);
+    sWfcInput->heldKeys = cur;
+    sWfcInput->repeatKeys = sWfcInput->pressedKeys;
     for (i = 0; i < 14; i++, cnt++) {
         u16 bit = 1 << i;
         if ((cur & bit) == 0) {
@@ -135,9 +135,9 @@ void WfcInput_UpdateKeys()
         } else {
             (*cnt)++;
             if (*cnt == 0x28) {
-                sWfcInput->unk_34 |= bit;
+                sWfcInput->repeatKeys |= bit;
             } else if (*cnt == 0x2f) {
-                sWfcInput->unk_34 |= bit;
+                sWfcInput->repeatKeys |= bit;
                 *cnt = 0x28;
             }
         }
@@ -151,11 +151,11 @@ void WfcInput_UpdateTouch() {
     found = 0;
     u32 n = TP_GetLatestIndexInAuto();
     i = found;
-    Unk_ov001_0222df54_S *s = sWfcInput;
+    WfcInputState *s = sWfcInput;
     *(Unk_ov001_02225f40_W *)&s->pos1 = *(Unk_ov001_02225f40_W *)&s->pos0;
     do {
         Unk_ov001_02226214_Ent *e = &sWfcInput->ent[n];
-        if (e->unk_04 == 1 && e->unk_06 == 0) {
+        if (e->touch == 1 && e->validity == 0) {
             Unk_ov001_02225924_Pt pt;
             found = TRUE;
             TP_GetCalibratedPoint(&pt, e);
@@ -187,27 +187,27 @@ void WfcInput_UpdateTouch() {
 }
 
 BOOL WfcInput_IsKeyHeld(u32 m) {
-    u32 t = m & sWfcInput->unk_30;
+    u32 t = m & sWfcInput->heldKeys;
     return m == t;
 }
 
 BOOL WfcInput_IsKeyPressed(u32 m) {
-    u32 t = m & sWfcInput->unk_32;
+    u32 t = m & sWfcInput->pressedKeys;
     return m == t;
 }
 
 BOOL WfcInput_IsKeyRepeat(u32 m) {
-    u32 t = m & sWfcInput->unk_34;
+    u32 t = m & sWfcInput->repeatKeys;
     return m == t;
 }
 
 BOOL WfcInput_IsKeyReleased(u32 m) {
-    u32 t = m & sWfcInput->unk_36;
+    u32 t = m & sWfcInput->releasedKeys;
     return m == t;
 }
 
 BOOL WfcInput_IsTouchHeldIn(Unk_ov001_02225924_Rect *r) {
-    Unk_ov001_0222df54_S *s = sWfcInput;
+    WfcInputState *s = sWfcInput;
     if (!s->flag0) return FALSE;
     u32 x = s->pos0.x;
     if (r->x > x) return FALSE;
@@ -218,7 +218,7 @@ BOOL WfcInput_IsTouchHeldIn(Unk_ov001_02225924_Rect *r) {
 }
 
 BOOL WfcInput_IsTouchPressedIn(Unk_ov001_02225924_Rect *r) {
-    Unk_ov001_0222df54_S *s = sWfcInput;
+    WfcInputState *s = sWfcInput;
     if (!s->flag1) return FALSE;
     u32 x = s->pos0.x;
     if (r->x > x) return FALSE;
@@ -229,7 +229,7 @@ BOOL WfcInput_IsTouchPressedIn(Unk_ov001_02225924_Rect *r) {
 }
 
 BOOL WfcInput_IsTouchRepeatIn(Unk_ov001_02225924_Rect *r) {
-    Unk_ov001_0222df54_S *s = sWfcInput;
+    WfcInputState *s = sWfcInput;
     if (!s->flag2) return FALSE;
     u32 x = s->pos0.x;
     if (r->x > x) return FALSE;
@@ -240,7 +240,7 @@ BOOL WfcInput_IsTouchRepeatIn(Unk_ov001_02225924_Rect *r) {
 }
 
 BOOL WfcInput_IsTouchReleasedIn(Unk_ov001_02225924_Rect *r) {
-    Unk_ov001_0222df54_S *s = sWfcInput;
+    WfcInputState *s = sWfcInput;
     if (!s->flag3) return FALSE;
     u32 x = s->pos0.x;
     if (r->x > x) return FALSE;
@@ -260,7 +260,7 @@ BOOL WfcInput_IsTouchPressedInBox(Unk_ov001_02225924_Rect *r) {
 }
 
 BOOL WfcInput_GetTouchPos(Unk_ov001_02225924_Pt *out) {
-    Unk_ov001_0222df54_S *s = sWfcInput;
+    WfcInputState *s = sWfcInput;
     if (!s->flag0) {
         *(Unk_ov001_02225f40_W *)out = *(Unk_ov001_02225f40_W *)&s->pos1;
         return FALSE;

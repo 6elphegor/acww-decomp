@@ -48,10 +48,10 @@ class VillagerHouseTex {
 public:
     VillagerHouseTex();
     ~VillagerHouseTex();
-    /* 0x00 */ u32 unk_00[4];
-    /* 0x10 */ u32 unk_10[4];
-    /* 0x20 */ u32 unk_20;
-    /* 0x24 */ u32 unk_24;
+    /* 0x00 */ u32 houseTextures[4];
+    /* 0x10 */ u32 lightTextures[4];
+    /* 0x20 */ u32 doorInAnim;
+    /* 0x24 */ u32 doorOutAnim;
 };
 
 // other modules' methods are reached through their real mangled symbols (object first)
@@ -606,9 +606,9 @@ s32 VillagerHouseTex_Load(VillagerHouseTex *self) {
         s32 a = Field_GetStructureTexSuffix();
         str = File_LoadAllocF(h2, m3, "/str/npcHsTex/%c/house_%c%d%c.nsbtx", c, c, rem, a);
         u32 off = i << 2;
-        u32 *e = &self->unk_00[i];
-        self->unk_00[i] = (u32)NNS_G3dGetTex(str);
-        if (Gfx3d_LoadTex((void *)self->unk_00[i], za)) {
+        u32 *e = &self->houseTextures[i];
+        self->houseTextures[i] = (u32)NNS_G3dGetTex(str);
+        if (Gfx3d_LoadTex((void *)self->houseTextures[i], za)) {
             *e = (u32)Gfx3d_CopyTex((void *)*e, gFieldStructureHeap);
         }
         Mem_Free(str);
@@ -621,9 +621,9 @@ s32 VillagerHouseTex_Load(VillagerHouseTex *self) {
         i = i + 1;
     } while (i < 4);
     File_LoadAlloc("/str/obj_house_i.nsbca", heap, 4, 0);
-    self->unk_20 = (u32)func_021065f8(func_021065dc(), 0);
+    self->doorInAnim = (u32)func_021065f8(func_021065dc(), 0);
     File_LoadAlloc("/str/obj_house_o.nsbca", heap, 4, 0);
-    self->unk_24 = (u32)func_021065f8(func_021065dc(), 0);
+    self->doorOutAnim = (u32)func_021065f8(func_021065dc(), 0);
     return 1;
 }
 
@@ -631,21 +631,21 @@ void VillagerHouseTex_Clear(VillagerHouseTex *o) {
     u32 i;
     s32 z = 0;
     for (i = 0; i < 4; i++) {
-        u32 *e = &o->unk_00[i];
-        o->unk_00[i] = z;
+        u32 *e = &o->houseTextures[i];
+        o->houseTextures[i] = z;
         e[4] = z;
     }
-    o->unk_24 = z;
-    o->unk_20 = o->unk_24;
+    o->doorOutAnim = z;
+    o->doorInAnim = o->doorOutAnim;
 }
 
-s32 VillagerHouseTex_GetHouseTex(VillagerHouseTex *o, u32 i) { return o->unk_00[i & 3]; }
+s32 VillagerHouseTex_GetHouseTex(VillagerHouseTex *o, u32 i) { return o->houseTextures[i & 3]; }
 
-s32 VillagerHouseTex_GetLightTex(VillagerHouseTex *o, u32 i) { return o->unk_10[i & 3]; }
+s32 VillagerHouseTex_GetLightTex(VillagerHouseTex *o, u32 i) { return o->lightTextures[i & 3]; }
 
-s32 VillagerHouseTex_GetDoorInAnim(VillagerHouseTex *o) { return o->unk_20; }
+s32 VillagerHouseTex_GetDoorInAnim(VillagerHouseTex *o) { return o->doorInAnim; }
 
-s32 VillagerHouseTex_GetDoorOutAnim(VillagerHouseTex *o) { return o->unk_24; }
+s32 VillagerHouseTex_GetDoorOutAnim(VillagerHouseTex *o) { return o->doorOutAnim; }
 
 }
 
