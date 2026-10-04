@@ -291,19 +291,8 @@ s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *,
 
 
 
-struct Unk_ov065_02281bf4_Res8 {
-    s32 result;
-    s32 numNicks;
-    char **nicks;
-};
 
 
-struct Unk_ov065_02281bf4_S1 {
-    s32 result;
-    s32 numMatches;
-    s32 moreStatus;
-    Unk_ov065_02281bf4_Rec *matches;
-};
 
 #define ERR3() { GsGp_SetError(h, 1, data_ov065_0228dcec); GsGp_CallErrorCallback(h, 3, 1); return 3; }
 #define ERRMEM(m) { GsGp_SetErrorString(h, m); return 1; }

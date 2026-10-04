@@ -56,4 +56,18 @@ struct Unk_ov065_02281bf4_Res5 {
     /* 0x4 */ s32 profileId;
 };
 
+
+struct Unk_ov065_02281bf4_Res8 {
+    /* 0x00 */ s32 result;
+    /* 0x04 */ s32 numNicks;
+    /* 0x08 */ char **nicks;
+};
+
+struct Unk_ov065_02281bf4_S1 {
+    /* 0x00 */ s32 result;
+    /* 0x04 */ s32 numMatches;
+    /* 0x08 */ s32 moreStatus;
+    /* 0x0c */ Unk_ov065_02281bf4_Rec *matches;
+};
+
 #endif
