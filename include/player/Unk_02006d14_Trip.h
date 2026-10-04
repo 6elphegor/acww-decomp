@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-// Three u32 (Unk_02006d14 field at 0xc4). Used in src/main/unk_02004558.cpp (PlayerActor unit).
+// Three u32 (PlayerActor field at 0xc4). Used in src/main/unk_02004558.cpp (PlayerActor unit).
 
 struct Unk_02006d14_Trip {
     /* 0x0 */ u32 x;

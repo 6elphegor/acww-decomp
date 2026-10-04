@@ -1,6 +1,6 @@
 #include "types.h"
 #include "player/Unk_02006d14_Vec.h"
-#include "player/Unk_02006d14_Blk.h"
+#include "gfx/Mtx43.h"
 #include "net/CommManager.h"
 #include "player/PlayerActor.h"
 
@@ -28,7 +28,7 @@ extern void *gSceneBlockMap;
 }
 
 extern "C" {
-Unk_02006d14 *PlayerActor_Get(u32 idx);
+PlayerActor *PlayerActor_Get(u32 idx);
 }
 
 extern "C" {
@@ -92,11 +92,11 @@ s32 BlockMap_IsBuriedAtPos(void *g, void *v);
 }
 
 extern "C" {
-void _ZN12Unk_02006d1415setShirtTextureEPv(Unk_02006d14 *o, u16 *p);
+void _ZN11PlayerActor15setShirtTextureEPv(PlayerActor *o, u16 *p);
 }
 
 extern "C" {
-void _ZN12Unk_02006d1421requestShirtTexUploadEv(Unk_02006d14 *o);
+void _ZN11PlayerActor21requestShirtTexUploadEv(PlayerActor *o);
 }
 
 extern "C" {
@@ -120,7 +120,7 @@ s32 TalkRequest_IsSaveMenuRunning();
 }
 
 extern "C" {
-void PlayerActor_GetHeldItem(void *out, Unk_02006d14 *o);
+void PlayerActor_GetHeldItem(void *out, PlayerActor *o);
 }
 
 extern "C" {
@@ -144,35 +144,35 @@ void SceneExit_GetDoor(void *a, s32 b, void *c, void *d);
 }
 
 extern "C" {
-s32 PlayerActor_RequestStowItem(Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
+s32 PlayerActor_RequestStowItem(PlayerActor *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
 }
 
 extern "C" {
-s32 PlayerActor_RequestFishReelIn(Unk_02006d14 *o, u32 a, u32 b, s32 c);
+s32 PlayerActor_RequestFishReelIn(PlayerActor *o, u32 a, u32 b, s32 c);
 }
 
 extern "C" {
 s32 PlayerActor_RequestChangeClothes(u16 *p, s32 a, s32 b);
 }
 
-// members of Unk_02006d14 whose symbols.txt names do not fit the method declarations (taken `this` first)
+// members of PlayerActor whose symbols.txt names do not fit the method declarations (taken `this` first)
 extern "C" {
-s32 _ZN12Unk_02006d1416requestHatChangeEPthhh(Unk_02006d14 *o, u16 *p, u32 a, u32 b, u32 c);
-void _ZN12Unk_020102ec10replayAnimEv(Unk_02006d14 *o);
-s32 PlayerActor_GetHairStyle(Unk_02006d14 *o);
-s32 PlayerActor_GetHairColor(Unk_02006d14 *o);
+s32 _ZN11PlayerActor16requestHatChangeEPthhh(PlayerActor *o, u16 *p, u32 a, u32 b, u32 c);
+void _ZN12Unk_020102ec10replayAnimEv(PlayerActor *o);
+s32 PlayerActor_GetHairStyle(PlayerActor *o);
+s32 PlayerActor_GetHairColor(PlayerActor *o);
 }
 
 u32 sPlayerFrontItemDist = 0xccd;
 
 extern "C" u8 *PlayerActor_GetBodyPos(u32 idx) {
-    Unk_02006d14 *o = PlayerActor_Get(idx);
+    PlayerActor *o = PlayerActor_Get(idx);
     if (o) return (u8 *)&o->bodyPos;
     return 0;
 }
 
 extern "C" void PlayerActor_GetSlotHeldItem(u16 *out, u32 idx) {
-    Unk_02006d14 *o = PlayerActor_Get(idx);
+    PlayerActor *o = PlayerActor_Get(idx);
     u16 v[4];
     *out = 0xfff1;
     if (o) {
@@ -182,7 +182,7 @@ extern "C" void PlayerActor_GetSlotHeldItem(u16 *out, u32 idx) {
 }
 
 extern "C" BOOL PlayerActor_SetHoldableItem(u32 a, u32 idx) {
-    Unk_02006d14 *o = PlayerActor_Get(idx);
+    PlayerActor *o = PlayerActor_Get(idx);
     u16 v[8];
     if (!o) return FALSE;
     void *p = PlayerData_GetBySessionSlot(idx);
@@ -227,13 +227,13 @@ extern "C" BOOL PlayerActor_SetClothing(u16 *p, s32 kind, u32 idx) {
         _ZN10PlayerData6setHatEPt(q, p);
         break;
     }
-    Unk_02006d14 *o = PlayerActor_Get(idx);
+    PlayerActor *o = PlayerActor_Get(idx);
     if (!o) return FALSE;
     if (o->animId >= 0xa1) return FALSE;
     switch (kind) {
     case 0:
-        _ZN12Unk_02006d1415setShirtTextureEPv(o, p);
-        _ZN12Unk_02006d1421requestShirtTexUploadEv(o);
+        _ZN11PlayerActor15setShirtTextureEPv(o, p);
+        _ZN11PlayerActor21requestShirtTexUploadEv(o);
         break;
     case 1:
         v1 = *p;
@@ -243,7 +243,7 @@ extern "C" BOOL PlayerActor_SetClothing(u16 *p, s32 kind, u32 idx) {
         v2 = *p;
         s32 r4 = PlayerActor_GetHairStyle(o);
         s32 r3 = PlayerActor_GetHairColor(o);
-        _ZN12Unk_02006d1416requestHatChangeEPthhh(o, &v2, r4, r3, 0);
+        _ZN11PlayerActor16requestHatChangeEPthhh(o, &v2, r4, r3, 0);
         break;
     }
     }
@@ -254,7 +254,7 @@ extern "C" BOOL PlayerActor_SetSwollenFace(s32 a, u32 idx) {
     void *p = PlayerData_GetBySessionSlot(idx);
     if (!p) return FALSE;
     PlayerData_SetStungFace(p, a);
-    Unk_02006d14 *o = PlayerActor_Get(idx);
+    PlayerActor *o = PlayerActor_Get(idx);
     if (!o) return FALSE;
     if (o->animId >= 0xa1) return FALSE;
     u8 *v;
@@ -275,7 +275,7 @@ extern "C" BOOL PlayerActor_SetTan(u32 x, u32 idx) {
 }
 
 extern "C" BOOL PlayerActor_SetHeadTilt(u32 a, u32 b, u32 idx) {
-    Unk_02006d14 *o = PlayerActor_Get(idx);
+    PlayerActor *o = PlayerActor_Get(idx);
     if (o) {
         if (!o->testActionFlag(0x15)) {
             o->setActionFlag(0x15);
@@ -288,7 +288,7 @@ extern "C" BOOL PlayerActor_SetHeadTilt(u32 a, u32 b, u32 idx) {
 }
 
 extern "C" BOOL PlayerActor_GetHeadPos(Unk_02006d14_Vec *out, u32 idx) {
-    Unk_02006d14 *o = PlayerActor_Get(idx);
+    PlayerActor *o = PlayerActor_Get(idx);
     if (o) {
         s32 a = o->headMtx.m[9];
         if (a == 0 && o->headMtx.m[10] == 0 && o->headMtx.m[11] == 0) return FALSE;
@@ -301,13 +301,13 @@ extern "C" BOOL PlayerActor_GetHeadPos(Unk_02006d14_Vec *out, u32 idx) {
     return FALSE;
 }
 
-extern "C" void PlayerActor_GetHandMtx(Unk_02006d14_Blk *out, u32 idx) {
-    Unk_02006d14 *o = PlayerActor_Get(idx);
-    *out = *(Unk_02006d14_Blk *)&o->itemHandMtx;
+extern "C" void PlayerActor_GetHandMtx(Mtx43 *out, u32 idx) {
+    PlayerActor *o = PlayerActor_Get(idx);
+    *out = *(Mtx43 *)&o->itemHandMtx;
 }
 
 extern "C" u16 *PlayerActor_GetItemInFront() {
-    Unk_02006d14 *o = PlayerActor_Get(4);
+    PlayerActor *o = PlayerActor_Get(4);
     u16 *r = 0;
     u32 buf[3];
     s32 a, b;
@@ -332,14 +332,14 @@ extern "C" u16 *PlayerActor_GetItemInFront() {
 }
 
 extern "C" void PlayerActor_SetLocalExitId(s32 *p) {
-    Unk_02006d14 *o = PlayerActor_Get(4);
+    PlayerActor *o = PlayerActor_Get(4);
     if (o) {
         o->exitIndex = *p;
     }
 }
 
 extern "C" void PlayerActor_SetLocalExitKind(s32 *p) {
-    Unk_02006d14 *o = PlayerActor_Get(4);
+    PlayerActor *o = PlayerActor_Get(4);
     if (o) {
         o->exitMode = *p;
     }
@@ -350,7 +350,7 @@ extern "C" void PlayerActor_OnChatOpenNop() {}
 extern "C" void PlayerActor_OnChatCloseNop() {}
 
 extern "C" void PlayerActor_PlayLocalSe(u32 x) {
-    Unk_02006d14 *o = PlayerActor_Get(4);
+    PlayerActor *o = PlayerActor_Get(4);
     if (o) {
         o->playSe(x);
     }

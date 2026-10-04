@@ -27,10 +27,11 @@ struct Unk_02010b08_Time {
     /* 0x4 */ u32 unk_04;
 }; // size 0x8
 
+// packed date (same layout as PlayerData::setLastPlayDate's Unk_0209865c_Bits / Unk_0200f17c_Date)
 struct Unk_02010b08_Bits {
-    /* 0x0 */ u16 unk_a : 7;
-    u16 unk_b : 4;
-    u16 unk_c : 5;
+    /* 0x0 */ u16 year : 7;
+    u16 month : 4;
+    u16 day : 5;
 }; // size 0x2
 
 struct Unk_0201065c_Vec {

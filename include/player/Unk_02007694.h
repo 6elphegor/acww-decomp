@@ -2,8 +2,7 @@
 #define PLAYER_UNK_02007694_H
 
 #include "types.h"
-#include "player/Unk_02007c5c_Mtx.h"
-#include "player/Unk_02007ebc_Mtx.h"
+#include "gfx/Mtx43.h"
 #include "player/Unk_0200bff8_Vec.h"
 #include "player/Unk_0200c2fc.h"
 
@@ -131,7 +130,7 @@ public:
     void func_0200ec30(u32 a);
     void func_0200ecdc(u32 a);
     BOOL func_0200f4c0(u32 a);
-    void func_02002b84(Unk_02007c5c_Mtx *out);
+    void func_02002b84(Mtx43 *out);
     void func_02010a58(s16 *p);
     void func_020105a8(void *a, u8 *b);
     void func_02010564(void *a, u8 *b);
@@ -168,14 +167,14 @@ public:
     /* 0x0c4 */ u8 drawPos[0xd0 - 0xc4];
     /* 0x0d0 */ u16 drawTilt;
     /* 0x0d2 */ u8 unk_d2[0x294 - 0xd2];
-    /* 0x294 */ Unk_02007c5c_Mtx bodyBaseMtx;
+    /* 0x294 */ Mtx43 bodyBaseMtx;
     /* 0x2c4 */ u8 unk_2c4[0x2cc - 0x2c4];
     /* 0x2cc */ u8 bodyAnimCtrl[8];
     /* 0x2d4 */ u32 bodyAnimFrame;
     /* 0x2d8 */ u8 unk_2d8[0x2e0 - 0x2d8];
     /* 0x2e0 */ u8 bodyAnimPlayMode;
     /* 0x2e1 */ u8 unk_2e1[0x694 - 0x2e1];
-    /* 0x694 */ Unk_02007ebc_Mtx itemHandMtx;
+    /* 0x694 */ Mtx43 itemHandMtx;
     /* 0x6c4 */ Unk_0200bff8_Vec footPosA;
     /* 0x6d0 */ Unk_0200bff8_Vec footPosB;
     /* 0x6dc */ u8 headTopPos[0x700 - 0x6dc];

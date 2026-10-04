@@ -2,7 +2,7 @@
 #define PLAYER_UNK_02008E50_MSG_H
 
 #include "types.h"
-#include "player/Unk_02008e48.h"
+#include "player/Unk_02008e50_Pay.h"
 #include "player/Unk_02008f5c.h"
 
 // Player action request messages (action, priority, net sequence, action arguments) of actions 76/77 and of the

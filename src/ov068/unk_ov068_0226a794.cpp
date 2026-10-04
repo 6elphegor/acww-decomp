@@ -210,12 +210,12 @@ s32 _ZN13AnimFrameCtrl10isFinishedEv(void *);
 s32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, s32);
 u32 _ZN12Unk_0200769421getActionDonePriorityEj(void *, u32);
 void _ZN11PlayerActor12requestAct01Ejj(void *, s32, s32);
-void _ZN12Unk_02006d1412requestAct10Esji(void *, s32, s32, s32);
+void _ZN11PlayerActor12requestAct10Esji(void *, s32, s32, s32);
 void *PlayerSession_GetSessionFlags();
 void _ZN12Unk_020102ec11advanceAnimEv(void *);
-void _ZN12Unk_02006d1414playFootstepSeEv(void *);
+void _ZN11PlayerActor14playFootstepSeEv(void *);
 void _ZN12Unk_020102ec13startAnimOnceEijt(void *, s32, s32, s32);
-void _ZN12Unk_02006d1415clearActionFlagEj(void *);
+void _ZN11PlayerActor15clearActionFlagEj(void *);
 void *PlayerActor_GetPlayerData(void *);
 void Clock_GetDateTime(void *);
 void DateTime_SubDays(void *, s32);
@@ -862,7 +862,7 @@ void PlayerActTaxiGetOut::setupTaxiGetOut() {
     Unk_ov068_0226a940_Words w;
     _ZN12Unk_020102ec13startAnimOnceEijt(this, 0x82, 0, 0);
     rotY = 0;
-    _ZN12Unk_02006d1415clearActionFlagEj(this);
+    _ZN11PlayerActor15clearActionFlagEj(this);
     void *r4 = PlayerActor_GetPlayerData(this);
     if (r4 != 0) {
         Unk_ov068_0226a940_Bits bits;
@@ -889,14 +889,14 @@ void PlayerActTaxiGetOut::endTaxiGetOut() {
 void PlayerActTaxiGetOut::mainTaxiGetOutAnim() {
     _ZN12Unk_020102ec11advanceAnimEv(this);
     if (_ZN13AnimFrameCtrl14hasPassedFrameEi(unk_2cc, 0x16) != 0) {
-        _ZN12Unk_02006d1414playFootstepSeEv(this);
+        _ZN11PlayerActor14playFootstepSeEv(this);
     }
 }
 
 void PlayerActTaxiGetOut::mainTaxiGetOutFinish() {
     if (_ZN13AnimFrameCtrl10isFinishedEv(unk_2cc) != 0) {
         actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(this, action);
-        _ZN12Unk_02006d1412requestAct10Esji(this, 0, 5, -1);
+        _ZN11PlayerActor12requestAct10Esji(this, 0, 5, -1);
         *(u8 *)PlayerSession_GetSessionFlags() = 0;
     }
 }
@@ -929,7 +929,7 @@ void PlayerActTaxiGetIn::endTaxiGetIn() {
 void PlayerActTaxiGetIn::mainTaxiGetInAnim() {
     _ZN12Unk_020102ec11advanceAnimEv(this);
     if (_ZN13AnimFrameCtrl14hasPassedFrameEi(unk_2cc, 8) != 0) {
-        _ZN12Unk_02006d1414playFootstepSeEv(this);
+        _ZN11PlayerActor14playFootstepSeEv(this);
     }
 }
 

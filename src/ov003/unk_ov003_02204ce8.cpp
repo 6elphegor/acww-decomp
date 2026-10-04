@@ -15,11 +15,11 @@
 // calls into other modules (the old extern "C" declarations keep their local signatures; the call compiles like the method call)
 #define Unk_02007694_getActionDonePriority _ZN12Unk_0200769421getActionDonePriorityEj
 #define Unk_02007694_requestWaitMenu _ZN12Unk_0200769415requestWaitMenuEjjj
-#define Unk_02008040_requestAct79 _ZN12Unk_0200804012requestAct79Ejj
-#define Unk_02008040_requestAct77 _ZN12Unk_0200804012requestAct77Esjj
-#define Unk_02006d14_requestAct76 _ZN12Unk_02006d1412requestAct76Ehhhjs
-#define Unk_02006d14_act10FaceTalkTarget _ZN12Unk_02006d1419act10FaceTalkTargetEv
-#define Unk_02006d14_requestAct10 _ZN12Unk_02006d1412requestAct10Esji
+#define Unk_02008040_requestAct79 _ZN11PlayerActor12requestAct79Ejj
+#define Unk_02008040_requestAct77 _ZN11PlayerActor12requestAct77Esjj
+#define Unk_02006d14_requestAct76 _ZN11PlayerActor12requestAct76Ehhhjs
+#define Unk_02006d14_act10FaceTalkTarget _ZN11PlayerActor19act10FaceTalkTargetEv
+#define Unk_02006d14_requestAct10 _ZN11PlayerActor12requestAct10Esji
 #define Unk_02007694_requestAct05 _ZN12Unk_0200769412requestAct05Etjj
 #define PlayerActor_requestWalk _ZN11PlayerActor11requestWalkEjjj
 #define PlayerActor_requestWait _ZN11PlayerActor11requestWaitEjjj
@@ -29,36 +29,36 @@
 #define PlayerActor_clearRequests _ZN11PlayerActor13clearRequestsEv
 #define PlayerActor_pushRequest _ZN11PlayerActor11pushRequestEP19PlayerActionRequest
 #define PlayerActor_isLocomotionAction _ZN11PlayerActor18isLocomotionActionEj
-#define Unk_02006d14_isGuestInSession _ZN12Unk_02006d1416isGuestInSessionEv
-#define Unk_02006d14_calcHandMtx _ZN12Unk_02006d1411calcHandMtxEv
-#define Unk_02006d14_netSendTan _ZN12Unk_02006d1410netSendTanEv
-#define Unk_02006d14_netSendClothesChange _ZN12Unk_02006d1420netSendClothesChangeEjj
-#define Unk_02006d14_clearActionFlag _ZN12Unk_02006d1415clearActionFlagEj
-#define Unk_02006d14_setActionFlag _ZN12Unk_02006d1413setActionFlagEj
-#define Unk_02006d14_testActionFlag _ZN12Unk_02006d1414testActionFlagEj
-#define Unk_02006d14_playSeAt _ZN12Unk_02006d148playSeAtEjP17Unk_02006d14_Vec3
-#define Unk_02006d14_playSe _ZN12Unk_02006d146playSeEj
-#define Unk_02006d14_nudgeForward _ZN12Unk_02006d1412nudgeForwardEv
-#define Unk_02006d14_netSyncNearPoint _ZN12Unk_02006d1416netSyncNearPointEP17Unk_02006d14_Vec3
-#define Unk_02006d14_netSyncNearUnit _ZN12Unk_02006d1415netSyncNearUnitEPi
-#define Unk_02006d14_netFollowTransform _ZN12Unk_02006d1418netFollowTransformEv
-#define Unk_02006d14_updateShownItemPos _ZN12Unk_02006d1418updateShownItemPosEjz
-#define Unk_02006d14_playFootstepSe _ZN12Unk_02006d1414playFootstepSeEv
-#define Unk_02006d14_updateFootstepFx _ZN12Unk_02006d1416updateFootstepFxEv
-#define Unk_02006d14_turnAwayFromCamera _ZN12Unk_02006d1418turnAwayFromCameraEi
-#define Unk_02006d14_turnToCamera _ZN12Unk_02006d1412turnToCameraEi
-#define Unk_02006d14_turnToward _ZN12Unk_02006d1410turnTowardEi
-#define Unk_02006d14_getHeldToolKind _ZN12Unk_02006d1415getHeldToolKindEv
-#define Unk_02006d14_getHeldHoldableIndex _ZN12Unk_02006d1420getHeldHoldableIndexEv
-#define Unk_02006d14_requestByFieldAnswer _ZN12Unk_02006d1420requestByFieldAnswerEii
-#define Unk_02006d14_startUnitItemQuery _ZN12Unk_02006d1418startUnitItemQueryEP15Unk_0200f6d4_V2ii
-#define Unk_02006d14_startFieldQuery _ZN12Unk_02006d1415startFieldQueryEiii
-#define Unk_02006d14_getFieldAnswerKind _ZN12Unk_02006d1418getFieldAnswerKindEv
-#define Unk_02006d14_interactAt _ZN12Unk_02006d1410interactAtEi
-#define Unk_02006d14_isPosInReach _ZN12Unk_02006d1412isPosInReachEPij
-#define Unk_02006d14_tryInteract _ZN12Unk_02006d1411tryInteractEv
-#define Unk_02006d14_getTargetWalkSpeed _ZN12Unk_02006d1418getTargetWalkSpeedEv
-#define Unk_02006d14_applyHeldItemPose _ZN12Unk_02006d1417applyHeldItemPoseEiPv
+#define Unk_02006d14_isGuestInSession _ZN11PlayerActor16isGuestInSessionEv
+#define Unk_02006d14_calcHandMtx _ZN11PlayerActor11calcHandMtxEv
+#define Unk_02006d14_netSendTan _ZN11PlayerActor10netSendTanEv
+#define Unk_02006d14_netSendClothesChange _ZN11PlayerActor20netSendClothesChangeEjj
+#define Unk_02006d14_clearActionFlag _ZN11PlayerActor15clearActionFlagEj
+#define Unk_02006d14_setActionFlag _ZN11PlayerActor13setActionFlagEj
+#define Unk_02006d14_testActionFlag _ZN11PlayerActor14testActionFlagEj
+#define Unk_02006d14_playSeAt _ZN11PlayerActor8playSeAtEjP17Unk_02006d14_Vec3
+#define Unk_02006d14_playSe _ZN11PlayerActor6playSeEj
+#define Unk_02006d14_nudgeForward _ZN11PlayerActor12nudgeForwardEv
+#define Unk_02006d14_netSyncNearPoint _ZN11PlayerActor16netSyncNearPointEP17Unk_02006d14_Vec3
+#define Unk_02006d14_netSyncNearUnit _ZN11PlayerActor15netSyncNearUnitEPi
+#define Unk_02006d14_netFollowTransform _ZN11PlayerActor18netFollowTransformEv
+#define Unk_02006d14_updateShownItemPos _ZN11PlayerActor18updateShownItemPosEjz
+#define Unk_02006d14_playFootstepSe _ZN11PlayerActor14playFootstepSeEv
+#define Unk_02006d14_updateFootstepFx _ZN11PlayerActor16updateFootstepFxEv
+#define Unk_02006d14_turnAwayFromCamera _ZN11PlayerActor18turnAwayFromCameraEi
+#define Unk_02006d14_turnToCamera _ZN11PlayerActor12turnToCameraEi
+#define Unk_02006d14_turnToward _ZN11PlayerActor10turnTowardEi
+#define Unk_02006d14_getHeldToolKind _ZN11PlayerActor15getHeldToolKindEv
+#define Unk_02006d14_getHeldHoldableIndex _ZN11PlayerActor20getHeldHoldableIndexEv
+#define Unk_02006d14_requestByFieldAnswer _ZN11PlayerActor20requestByFieldAnswerEii
+#define Unk_02006d14_startUnitItemQuery _ZN11PlayerActor18startUnitItemQueryEP15Unk_0200f6d4_V2ii
+#define Unk_02006d14_startFieldQuery _ZN11PlayerActor15startFieldQueryEiii
+#define Unk_02006d14_getFieldAnswerKind _ZN11PlayerActor18getFieldAnswerKindEv
+#define Unk_02006d14_interactAt _ZN11PlayerActor10interactAtEi
+#define Unk_02006d14_isPosInReach _ZN11PlayerActor12isPosInReachEPij
+#define Unk_02006d14_tryInteract _ZN11PlayerActor11tryInteractEv
+#define Unk_02006d14_getTargetWalkSpeed _ZN11PlayerActor18getTargetWalkSpeedEv
+#define Unk_02006d14_applyHeldItemPose _ZN11PlayerActor17applyHeldItemPoseEiPv
 #define Unk_020102ec_startAnimOnce _ZN12Unk_020102ec13startAnimOnceEijt
 #define Unk_020102ec_startAnim _ZN12Unk_020102ec9startAnimEijt
 #define Unk_020102ec_submitSceneCollider _ZN12Unk_020102ec19submitSceneColliderEv
@@ -179,23 +179,23 @@ s32 Vec_DistXZ(s32 *a, s32 *b);
 extern s32 data_ov003_02230af0[];
 extern s32 sFieldFrontDist[];
 extern void *gSceneBlockMap;
-BOOL PlayerActor_FieldInteractFront(Unk_02006d14 *self, s32 *p);
-s32 PlayerActor_FishFindCastTarget(Unk_02006d14 *self, s32 *out, s32 *in);
-void PlayerActor_RequestAxeSwing(Unk_02006d14 *self, s32 a, s32 b);
-void PlayerActor_RequestShovelReady(Unk_02006d14 *self, s32 a, s32 b);
-void PlayerActor_RequestBugNetSwing(Unk_02006d14 *self, s32 a, s32 b);
-void PlayerActor_RequestFishCast(Unk_02006d14 *self, s32 *v, s32 a, s32 b);
-void PlayerActor_RequestFishCastFail(Unk_02006d14 *self, s32 a, s32 b);
-void PlayerActor_RequestWateringCan(Unk_02006d14 *self, s32 a, s32 b);
-void PlayerActor_RequestSlingshot(Unk_02006d14 *self, s32 a, s32 b);
-void PlayerActor_RequestAct82(Unk_02006d14 *self, s32 a, s32 b);
-void PlayerActor_RequestAct80(Unk_02006d14 *self, s32 a, s32 b);
-void PlayerActor_RequestFirework(Unk_02006d14 *self, s32 a, s32 b);
-void PlayerActor_RequestTreeShake(Unk_02006d14 *self, s32 x, s32 z, s32 f, s32 a, s32 b, s32 c);
-void PlayerActor_RequestUmbrellaSpin(Unk_02006d14 *self, s32 a, s32 b);
-void PlayerActor_RequestAct72(Unk_02006d14 *self, s32 a, s32 b);
-void PlayerActor_OffsetByAngle(Unk_ov003_02204ce8_Vec *out, Unk_02006d14 *o, s32 *in, u16 *ang, s32 *p);
-void PlayerActor_GetFrontUnitCenter(Unk_ov003_02204ce8_Vec *out, Unk_02006d14 *o);
+BOOL PlayerActor_FieldInteractFront(PlayerActor *self, s32 *p);
+s32 PlayerActor_FishFindCastTarget(PlayerActor *self, s32 *out, s32 *in);
+void PlayerActor_RequestAxeSwing(PlayerActor *self, s32 a, s32 b);
+void PlayerActor_RequestShovelReady(PlayerActor *self, s32 a, s32 b);
+void PlayerActor_RequestBugNetSwing(PlayerActor *self, s32 a, s32 b);
+void PlayerActor_RequestFishCast(PlayerActor *self, s32 *v, s32 a, s32 b);
+void PlayerActor_RequestFishCastFail(PlayerActor *self, s32 a, s32 b);
+void PlayerActor_RequestWateringCan(PlayerActor *self, s32 a, s32 b);
+void PlayerActor_RequestSlingshot(PlayerActor *self, s32 a, s32 b);
+void PlayerActor_RequestAct82(PlayerActor *self, s32 a, s32 b);
+void PlayerActor_RequestAct80(PlayerActor *self, s32 a, s32 b);
+void PlayerActor_RequestFirework(PlayerActor *self, s32 a, s32 b);
+void PlayerActor_RequestTreeShake(PlayerActor *self, s32 x, s32 z, s32 f, s32 a, s32 b, s32 c);
+void PlayerActor_RequestUmbrellaSpin(PlayerActor *self, s32 a, s32 b);
+void PlayerActor_RequestAct72(PlayerActor *self, s32 a, s32 b);
+void PlayerActor_OffsetByAngle(Unk_ov003_02204ce8_Vec *out, PlayerActor *o, s32 *in, u16 *ang, s32 *p);
+void PlayerActor_GetFrontUnitCenter(Unk_ov003_02204ce8_Vec *out, PlayerActor *o);
 BOOL Vec_Equal(s32 *a, s32 *b);
 s32 Math_Atan2(s32 a, s32 b);
 BOOL Ground_IsWaterAt(s32 *p);
@@ -209,18 +209,18 @@ struct Unk_ov003_02204f3c_Pad {
     Unk_ov003_02204f3c_Pad() {}
     ~Unk_ov003_02204f3c_Pad() {}
 };
-extern "C" s32 Unk_02006d14_getHeldToolKind(Unk_02006d14 *self);
-extern "C" BOOL Unk_02006d14_isPosInReach(Unk_02006d14 *self, s32 *p, s32 m);
-extern "C" BOOL Unk_02006d14_interactAt(Unk_02006d14 *self, s32 m);
-extern "C" BOOL Unk_02006d14_startFieldQuery(Unk_02006d14 *self, s32 *p, s32 a, s32 b);
-extern "C" BOOL Unk_02006d14_requestByFieldAnswer(Unk_02006d14 *self, s32 *p, s32 a);
-extern "C" s32 Unk_02006d14_getFieldAnswerKind(Unk_02006d14 *self);
+extern "C" s32 Unk_02006d14_getHeldToolKind(PlayerActor *self);
+extern "C" BOOL Unk_02006d14_isPosInReach(PlayerActor *self, s32 *p, s32 m);
+extern "C" BOOL Unk_02006d14_interactAt(PlayerActor *self, s32 m);
+extern "C" BOOL Unk_02006d14_startFieldQuery(PlayerActor *self, s32 *p, s32 a, s32 b);
+extern "C" BOOL Unk_02006d14_requestByFieldAnswer(PlayerActor *self, s32 *p, s32 a);
+extern "C" s32 Unk_02006d14_getFieldAnswerKind(PlayerActor *self);
 
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" BOOL PlayerActor_FieldStartToolAction(Unk_02006d14 *self, s32 mode, s32 *pos);
-extern "C" BOOL PlayerActor_FieldUseTool(Unk_02006d14 *self);
-extern "C" BOOL PlayerActor_FieldInteractAt(Unk_02006d14 *self, s32 a);
+extern "C" BOOL PlayerActor_FieldStartToolAction(PlayerActor *self, s32 mode, s32 *pos);
+extern "C" BOOL PlayerActor_FieldUseTool(PlayerActor *self);
+extern "C" BOOL PlayerActor_FieldInteractAt(PlayerActor *self, s32 a);
 }
 
 namespace ns_022052f4 {
@@ -14260,7 +14260,7 @@ extern "C" BOOL PlayerActor_CheckToolHitActor(Obj *o) {
 }
 
 namespace ns_02204d90 {
-extern "C" BOOL PlayerActor_FieldUseTool(Unk_02006d14 *self) {
+extern "C" BOOL PlayerActor_FieldUseTool(PlayerActor *self) {
     s32 mode = Unk_02006d14_getHeldToolKind(self);
     u16 ang;
     s32 xy[2];
@@ -14454,7 +14454,7 @@ fail:
 }
 
 namespace ns_02204d90 {
-extern "C" BOOL PlayerActor_FieldStartToolAction(Unk_02006d14 *self, s32 mode, s32 *pos) {
+extern "C" BOOL PlayerActor_FieldStartToolAction(PlayerActor *self, s32 mode, s32 *pos) {
     Unk_ov003_02204ce8_Vec a, z, c, z2, t1, t2;
     switch (mode) {
     case 2:
@@ -14506,7 +14506,7 @@ extern "C" BOOL PlayerActor_FieldStartToolAction(Unk_02006d14 *self, s32 mode, s
         z2.y = 0;
         z2.z = 0;
         if (Vec_Equal(pos, &z2.x)) {
-            PlayerActor_GetFrontUnitCenter(&t1, (Unk_02006d14 *)self);
+            PlayerActor_GetFrontUnitCenter(&t1, (PlayerActor *)self);
             pos[0] = t1.x;
             pos[1] = t1.y;
             pos[2] = t1.z;
@@ -14538,7 +14538,7 @@ extern "C" BOOL PlayerActor_FieldStartToolAction(Unk_02006d14 *self, s32 mode, s
 }
 
 namespace ns_02204d90 {
-extern "C" BOOL PlayerActor_FieldInteractAt(Unk_02006d14 *self, s32 a) {
+extern "C" BOOL PlayerActor_FieldInteractAt(PlayerActor *self, s32 a) {
     Unk_ov003_02204ce8_Vec v;
     if (PlayerActor_FieldInteractFront(self, &a)) {
         return TRUE;

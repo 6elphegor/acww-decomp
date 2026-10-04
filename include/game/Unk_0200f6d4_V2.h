@@ -1,7 +1,7 @@
 #ifndef GAME_UNK_0200F6D4_V2_H
 #define GAME_UNK_0200F6D4_V2_H
 
-// 2D unit position (x, z) passed to Unk_02006d14::startUnitItemQuery and FieldAction_RequestToolForAid.
+// 2D unit position (x, z) passed to PlayerActor::startUnitItemQuery and FieldAction_RequestToolForAid.
 // Used by unk_02004558.cpp / unk_02004558_extra.cpp.
 #include "types.h"
 

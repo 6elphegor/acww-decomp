@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-// Window state record reached through Unk_02006d14::window. Used in src/main/unk_02004558.cpp (PlayerActor unit).
+// Window state record reached through PlayerActor::window. Used in src/main/unk_02004558.cpp (PlayerActor unit).
 
 struct Unk_02006d14_Ptr {
     /* 0x0 */ u32 index;

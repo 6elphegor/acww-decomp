@@ -2,7 +2,8 @@
 #define PLAYER_UNK_0200D560_H
 
 // Small player-actor work records of the 0x02004558 unit (unk_02004558.cpp / unk_02004558_extra.cpp):
-// init work (Unk_0200d560::initInitWork), init args (Unk_0200d5b4::setInitArgs) and a request item view.
+// init work (Unk_0200d560::initInitWork), init args (Unk_0200d5b4::setInitArgs; the payload of the init action's
+// PlayerActionRequest).
 #include "types.h"
 
 struct Unk_0200d560 {
@@ -15,10 +16,5 @@ struct Unk_0200d5b4 {
     /* 0x0 */ u32 unk_00;
     void setInitArgs(u32 v);
 };
-
-struct Unk_0200d53c_Item {
-    /* 0x0 */ u8 pad_00[0xc];
-    /* 0xc */ u32 args;
-}; // size 0x10
 
 #endif // PLAYER_UNK_0200D560_H

@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-// Player actor draw position (Actor::drawPos as Unk_02008040 reads it)
+// Player actor draw position (Actor::drawPos as PlayerActor reads it)
 // (src/main/unk_02004558.cpp; also used by src/main/unk_02004558_extra.cpp).
 
 struct Unk_02008074_Vec {
