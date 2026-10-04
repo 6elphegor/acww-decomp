@@ -302,7 +302,7 @@ void NNS_SndStrmSetChannelPan(Strm *st, s32 ch, u32 v)
     SND_SetChannelPan(1 << st->chIdx[ch], v);
 }
 
-// NNSi_SndStrmFree: stop timer, remove PM callbacks, drop from list
+// stop timer, remove PM callbacks, drop from list
 void ForceStopStrm(Strm *st)
 {
     u32 t;

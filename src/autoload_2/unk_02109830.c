@@ -345,7 +345,6 @@ void NNS_SndPlayerSetChannelPriority(Handle *h, u32 b)
     SND_SetPlayerChannelPriority(h->seq->id, b);
 }
 
-// NNS_SndHandleSetTrackPitch-like
 void NNS_SndPlayerSetTrackMute(Handle *h, u32 b, u32 c)
 {
     if (h->seq == 0) {
@@ -434,7 +433,6 @@ BOOL NNS_SndPlayerReadGlobalVariable(s32 a, u16 *out)
     return 1;
 }
 
-// NNS_SndHandleSetTrackMute
 BOOL NNS_SndPlayerWriteVariable(Handle *h, u32 b, u32 c)
 {
     if (h->seq == 0) {
