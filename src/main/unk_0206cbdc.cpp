@@ -150,8 +150,8 @@ public:
     void setLayer(s32 v);
     void loadLetterScreen(u32 v);
 
-    /* 0x208 */ s32 unk_208;
-    /* 0x20c */ s32 unk_20c;
+    /* 0x208 */ s32 recipientNameLength;
+    /* 0x20c */ s32 recipientNameWidth;
 };
 
 extern "C" s32 LetterLayout_SplitBody(void *unused, u8 *a, s32 *b, s32 *c);
@@ -164,7 +164,7 @@ void LetterRenderer::setLayer(s32 v) {
     for (i = 0; i < 4; i++) {
         ((LetterTextLine *)unk_098[i])->setTarget(i * 0x28 + 0x9d, v);
     }
-    unk_208 = 0;
+    recipientNameLength = 0;
 }
 
 void LetterRenderer::release() {
@@ -195,14 +195,14 @@ void LetterRenderer::show(Unk_0206d1d4_Src *src, void *a, void *b, s32 c) {
 }
 
 s32 LetterRenderer::getRecipientNameLength() {
-    return unk_208;
+    return recipientNameLength;
 }
 
 void LetterRenderer::loadRecipientName(void *src) {
     Mem_Clear(unk_1c8, 0x28);
     Letter_GetRecipientNameBytes(src, unk_1c8);
-    unk_208 = Text_GetLength(unk_1c8, 0x28);
-    unk_20c = Text_MeasureWidth(unk_1c8, 0x28);
+    recipientNameLength = Text_GetLength(unk_1c8, 0x28);
+    recipientNameWidth = Text_MeasureWidth(unk_1c8, 0x28);
 }
 
 void LetterRenderer::setGreeting(Unk_0206d1d4_Src *src, u8 *out) {
@@ -220,7 +220,7 @@ void LetterRenderer::setGreeting(Unk_0206d1d4_Src *src, u8 *out) {
         j++;
     }
     k = 0;
-    while (k < unk_208) {
+    while (k < recipientNameLength) {
         out[n] = unk_1c8[k];
         n++;
         k++;
@@ -235,8 +235,8 @@ void LetterRenderer::setGreeting(Unk_0206d1d4_Src *src, u8 *out) {
         n++;
         j++;
     }
-    if (unk_208 > 0) {
-        ((LetterTextLine *)this)->setNameHighlight(src->cnt, unk_208);
+    if (recipientNameLength > 0) {
+        ((LetterTextLine *)this)->setNameHighlight(src->cnt, recipientNameLength);
     }
     EncodedString40 buf;
     EncodedString_SetRaw(&buf, out, 0x28);

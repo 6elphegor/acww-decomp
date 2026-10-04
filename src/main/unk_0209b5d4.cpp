@@ -5,8 +5,8 @@
 
 class Unk_0209c060 {
 public:
-    s32 unk_00;
-    s32 unk_04;
+    s32 type;
+    s32 acreId;
     Unk_0209c060();
     ~Unk_0209c060();
 };

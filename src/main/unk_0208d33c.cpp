@@ -23,8 +23,8 @@ extern u8 data_020d5b0c[];
 extern u8 data_020d467c[];
 
 struct Unk_02089240_Rec {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x00 */ s32 frames;
+    /* 0x04 */ s32 frameCount;
 };
 
 // Sub-object (ctor 0x02089270, dtor 0x0208926c)
@@ -68,8 +68,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class Unk_0208d154_Sub {
@@ -80,7 +80,7 @@ public:
     virtual s32 vfunc_0c();
 
     /* 0x04 */ u8 unk_04[0x2c];
-    /* 0x30 */ s32 unk_30;
+    /* 0x30 */ s32 xOffset;
 };
 
 class NameLabelBalloon : public UiWidget {

@@ -8,7 +8,7 @@ void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void *dtor);
 // 16 x u16 bit matrix
 class FtrSwitchGrid {
 public:
-    u16 unk_00[16];
+    u16 rows[16];
     FtrSwitchGrid();
     ~FtrSwitchGrid();
     void set(u32 x, u32 y, u32 set);
@@ -24,9 +24,9 @@ struct Unk_0205276c_Slot {
 
 class GyroidBeatTable {
 public:
-    Unk_0205276c_Slot unk_00[4];
-    u8 unk_04[1];
-    u8 unk_05[2];
+    Unk_0205276c_Slot positions[4];
+    u8 usedMask[1];
+    u8 beats[2];
     GyroidBeatTable();
     ~GyroidBeatTable();
     BOOL set(u32 x, u32 y, u32 val);
@@ -37,8 +37,8 @@ public:
 
 class RoomFtrState {
 public:
-    FtrSwitchGrid unk_00[2];
-    GyroidBeatTable unk_40;
+    FtrSwitchGrid switchGrids[2];
+    GyroidBeatTable gyroidBeats;
     RoomFtrState();
     ~RoomFtrState();
     BOOL removeGyroidBeat(u32 a, u32 b);
@@ -55,9 +55,9 @@ struct Unk_02052ab4_Vec {
 
 class SpotReservation {
 public:
-    u8 unk_00;
-    s32 unk_04, unk_08, unk_0c;
-    u8 unk_10;
+    u8 active;
+    s32 posX, posY, posZ;
+    u8 sceneId;
     SpotReservation();
     ~SpotReservation();
     BOOL release();
@@ -67,7 +67,7 @@ public:
 
 class SpotReservationTable {
 public:
-    SpotReservation unk_00[4];
+    SpotReservation slots[4];
     ~SpotReservationTable();
     BOOL tryReserve(s32 idx, u32 tag, Unk_02052ab4_Vec *p);
     BOOL isFree(s32 idx, u32 tag, Unk_02052ab4_Vec *p);
@@ -224,43 +224,43 @@ SpotReservation::~SpotReservation() {}
 SpotReservationTable::~SpotReservationTable() {}
 
 void SpotReservation::clear() {
-    unk_00 = 0;
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_0c = 0;
-    unk_10 = 0;
+    active = 0;
+    posX = 0;
+    posY = 0;
+    posZ = 0;
+    sceneId = 0;
 }
 
 BOOL SpotReservation::set(u32 tag, Unk_02052ab4_Vec *p) {
-    unk_00 = 1;
-    unk_04 = p->x;
-    unk_08 = p->y;
-    unk_0c = p->z;
-    unk_10 = tag;
+    active = 1;
+    posX = p->x;
+    posY = p->y;
+    posZ = p->z;
+    sceneId = tag;
     return TRUE;
 }
 
 BOOL SpotReservation::release() {
-    unk_00 = 0;
+    active = 0;
     return TRUE;
 }
 
 BOOL SpotReservationTable::set(s32 idx, u32 tag, Unk_02052ab4_Vec *p) {
-    if (idx < 4) return unk_00[idx].set(tag, p);
+    if (idx < 4) return slots[idx].set(tag, p);
     return TRUE;
 }
 
 BOOL SpotReservationTable::release(s32 idx) {
-    if (idx < 4) return unk_00[idx].release();
+    if (idx < 4) return slots[idx].release();
     return FALSE;
 }
 
 BOOL SpotReservationTable::isFree(s32 idx, u32 tag, Unk_02052ab4_Vec *p) {
     if (idx < 4) {
         for (u32 i = 0; i < 4; i++) {
-            SpotReservation *e = &unk_00[i];
-            if ((s32)i != idx && e->unk_00 != 0 && tag == e->unk_10) {
-                if (func_01ffd028(&e->unk_04, p) < 0x2400) return FALSE;
+            SpotReservation *e = &slots[i];
+            if ((s32)i != idx && e->active != 0 && tag == e->sceneId) {
+                if (func_01ffd028(&e->posX, p) < 0x2400) return FALSE;
             }
         }
         return TRUE;
@@ -278,12 +278,12 @@ FtrSwitchGrid::FtrSwitchGrid() { reset(); }
 FtrSwitchGrid::~FtrSwitchGrid() {}
 
 void FtrSwitchGrid::reset() {
-    for (u32 i = 0; i < 16; i++) unk_00[i] = 0xffff;
+    for (u32 i = 0; i < 16; i++) rows[i] = 0xffff;
 }
 
 BOOL FtrSwitchGrid::test(u32 x, u32 y) {
     x &= 0xf; y &= 0xf;
-    s32 v = unk_00[y];
+    s32 v = rows[y];
     if ((v >> x) & 1) return TRUE;
     return FALSE;
 }
@@ -291,8 +291,8 @@ BOOL FtrSwitchGrid::test(u32 x, u32 y) {
 void FtrSwitchGrid::set(u32 x, u32 y, u32 set) {
     s32 xx = x & 0xf;
     s32 yy = y & 0xf;
-    if (set) unk_00[yy] |= 1 << xx;
-    else unk_00[yy] &= ~(1 << xx);
+    if (set) rows[yy] |= 1 << xx;
+    else rows[yy] &= ~(1 << xx);
 }
 
 GyroidBeatTable::GyroidBeatTable() { clear(); }
@@ -301,18 +301,18 @@ GyroidBeatTable::~GyroidBeatTable() {}
 
 void GyroidBeatTable::clear() {
     for (u32 i = 0; i < 4; i++) {
-        unk_00[i].lo = 0;
-        unk_00[i].hi = 0;
+        positions[i].lo = 0;
+        positions[i].hi = 0;
     }
-    unk_04[0] = 0;
-    for (u32 j = 0; j < 2; j++) unk_05[j] = 0;
+    usedMask[0] = 0;
+    for (u32 j = 0; j < 2; j++) beats[j] = 0;
 }
 
 s32 GyroidBeatTable::get(u32 x, u32 y) {
     for (u32 i = 0; i < 4; i++) {
-        if ((unk_04[i >> 3] >> (i & 7)) & 1) {
-            if (x == unk_00[i].lo && y == unk_00[i].hi) {
-                return (unk_05[i >> 1] >> ((i & 1) << 2)) & 0xf;
+        if ((usedMask[i >> 3] >> (i & 7)) & 1) {
+            if (x == positions[i].lo && y == positions[i].hi) {
+                return (beats[i >> 1] >> ((i & 1) << 2)) & 0xf;
             }
         }
     }
@@ -321,12 +321,12 @@ s32 GyroidBeatTable::get(u32 x, u32 y) {
 
 BOOL GyroidBeatTable::remove(u32 x, u32 y) {
     for (u32 i = 0; i < 4; i++) {
-        if ((unk_04[i >> 3] >> (i & 7)) & 1) {
-            if (x == unk_00[i].lo && y == unk_00[i].hi) {
-                unk_00[i].lo = 0;
-                unk_00[i].hi = 0;
-                unk_04[i >> 3] &= ~(1 << (i & 7));
-                unk_05[i >> 1] &= ~(0xf << ((i & 1) << 2));
+        if ((usedMask[i >> 3] >> (i & 7)) & 1) {
+            if (x == positions[i].lo && y == positions[i].hi) {
+                positions[i].lo = 0;
+                positions[i].hi = 0;
+                usedMask[i >> 3] &= ~(1 << (i & 7));
+                beats[i >> 1] &= ~(0xf << ((i & 1) << 2));
                 return TRUE;
             }
         }
@@ -338,23 +338,23 @@ BOOL GyroidBeatTable::set(u32 x, u32 y, u32 val) {
     if (val >= 16) return FALSE;
     if (get(x, y) == -1) {
         for (u32 i = 0; i < 4; i++) {
-            if (!((unk_04[i >> 3] >> (i & 7)) & 1)) {
+            if (!((usedMask[i >> 3] >> (i & 7)) & 1)) {
                 u32 sh = (i & 1) << 2;
-                unk_00[i].lo = (u8)x;
-                unk_00[i].hi = (u8)y;
-                unk_05[i >> 1] &= ~(0xf << sh);
-                { u32 t = *(volatile u8 *)&unk_05[i >> 1]; t |= (val <<= sh); unk_05[i >> 1] = t; }
-                unk_04[i >> 3] |= 1 << (i & 7);
+                positions[i].lo = (u8)x;
+                positions[i].hi = (u8)y;
+                beats[i >> 1] &= ~(0xf << sh);
+                { u32 t = *(volatile u8 *)&beats[i >> 1]; t |= (val <<= sh); beats[i >> 1] = t; }
+                usedMask[i >> 3] |= 1 << (i & 7);
                 return TRUE;
             }
         }
     } else {
         for (u32 i = 0; i < 4; i++) {
-            if ((unk_04[i >> 3] >> (i & 7)) & 1) {
-                if (x == unk_00[i].lo && y == unk_00[i].hi) {
+            if ((usedMask[i >> 3] >> (i & 7)) & 1) {
+                if (x == positions[i].lo && y == positions[i].hi) {
                     u32 sh = (i & 1) << 2;
-                    unk_05[i >> 1] &= ~(0xf << sh);
-                    { u32 t = *(volatile u8 *)&unk_05[i >> 1]; t |= (val <<= sh); unk_05[i >> 1] = t; }
+                    beats[i >> 1] &= ~(0xf << sh);
+                    { u32 t = *(volatile u8 *)&beats[i >> 1]; t |= (val <<= sh); beats[i >> 1] = t; }
                     return TRUE;
                 }
             }
@@ -368,13 +368,13 @@ RoomFtrState::RoomFtrState() { reset(); }
 RoomFtrState::~RoomFtrState() {}
 
 void RoomFtrState::reset() {
-    for (u32 i = 0; i < 2; i++) unk_00[i].reset();
-    unk_40.clear();
+    for (u32 i = 0; i < 2; i++) switchGrids[i].reset();
+    gyroidBeats.clear();
 }
 
-BOOL RoomFtrState::getSwitch(u32 x, u32 y, u32 idx) { return unk_00[idx].test(x, y); }
+BOOL RoomFtrState::getSwitch(u32 x, u32 y, u32 idx) { return switchGrids[idx].test(x, y); }
 
-void RoomFtrState::setSwitch(u32 x, u32 y, u32 idx, u8 v) { unk_00[idx].set(x, y, v); }
+void RoomFtrState::setSwitch(u32 x, u32 y, u32 idx, u8 v) { switchGrids[idx].set(x, y, v); }
 
 extern "C" void RoomFtrState_ResetAll() {
     for (u32 i = 0; i < 8; i++) sVillagerHouseFtrStates[i].reset();
@@ -393,11 +393,11 @@ extern "C" BOOL RoomFtrState_ResetScene(u32 v) {
 
 extern "C" BOOL RoomFtrState_ResetVillagerHouse(u32 idx) { return RoomFtrState_ResetScene((u8)(data_020d0c08 + idx)); }
 
-s32 RoomFtrState::getGyroidBeat(u32 a, u32 b) { return unk_40.get(a, b); }
+s32 RoomFtrState::getGyroidBeat(u32 a, u32 b) { return gyroidBeats.get(a, b); }
 
-BOOL RoomFtrState::setGyroidBeat(u32 a, u32 b, u32 c) { return unk_40.set(a, b, c); }
+BOOL RoomFtrState::setGyroidBeat(u32 a, u32 b, u32 c) { return gyroidBeats.set(a, b, c); }
 
-BOOL RoomFtrState::removeGyroidBeat(u32 a, u32 b) { return unk_40.remove(a, b); }
+BOOL RoomFtrState::removeGyroidBeat(u32 a, u32 b) { return gyroidBeats.remove(a, b); }
 
 // ---- 0x020514a4..0x020525a8 ----
 

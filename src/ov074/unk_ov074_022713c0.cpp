@@ -286,8 +286,8 @@ public:
     void apply(void *e);
     u32 getTextureData();
     void init(u32 *a, void *b);
-    u32 unk_00;
-    MatTexVramTask unk_04;
+    u32 texBuffer;
+    MatTexVramTask texTask;
 };
 
 class SpNpcBlancaTalk : public SpNpcTalkRequest {
@@ -306,8 +306,8 @@ public:
     void onFaceDrawn();
     void setResultHandler(s32 idx);
 
-    /* 0xac */ SpNpcBlanca *unk_ac;
-    /* 0xb0 */ Fn unk_b0;
+    /* 0xac */ SpNpcBlanca *owner;
+    /* 0xb0 */ Fn resultHandler;
 };
 
 #define MEMBER(name, size) \
@@ -468,8 +468,8 @@ public:
     BOOL setupAct02();
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ SpNpcBlancaTalk unk_658;
-    /* 0x710 */ SpNpcBlancaFaceTexture unk_710;
+    /* 0x658 */ SpNpcBlancaTalk talk;
+    /* 0x710 */ SpNpcBlancaFaceTexture faceTexture;
 };
 
 struct Unk_ov074_02272130_Ent {
@@ -568,8 +568,8 @@ BOOL SpNpcBlanca::vfunc_04() {
     if (SpNpcActor::vfunc_04() == 0) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -577,7 +577,7 @@ BOOL SpNpcBlanca::vfunc_00() {
     if (SpNpcActor::vfunc_00() == 0) {
         return FALSE;
     }
-    unk_710.init(gCurrentHeap, (u8 *)this + 0xec);
+    faceTexture.init(gCurrentHeap, (u8 *)this + 0xec);
     SpNpcBlanca_ChangeAct(this, 3);
     return TRUE;
 }
@@ -586,7 +586,7 @@ BOOL SpNpcBlanca::vfunc_0c() {
     if (SpNpcActor::vfunc_0c() == 0) {
         return FALSE;
     }
-    unk_710.release(gCurrentHeap);
+    faceTexture.release(gCurrentHeap);
     return TRUE;
 }
 
@@ -837,7 +837,7 @@ BOOL SpNpcBlanca::mainAct00() {
 BOOL SpNpcBlanca::mainAct01() { return TRUE; }
 
 BOOL SpNpcBlanca::setupAct04() {
-    u32 a = unk_658.func_02015aac();
+    u32 a = talk.func_02015aac();
     s32 b = rotY;
     if (a != 0) {
         b = NpcActor_getAngleTo(this, a);
@@ -849,9 +849,9 @@ BOOL SpNpcBlanca::setupAct04() {
 BOOL SpNpcBlanca::mainAct04() { return TRUE; }
 
 void SpNpcBlancaTalk::onTaskDone() {
-    if (unk_b0 != 0) {
-        (this->*unk_b0)();
-        unk_b0 = *(Fn *)__ptmf_null;
+    if (resultHandler != 0) {
+        (this->*resultHandler)();
+        resultHandler = *(Fn *)__ptmf_null;
     }
 }// Declarations for data defined further down (definition order sets the data layout)
 extern u32 *data_ov074_022724e4;
@@ -921,7 +921,7 @@ void *data_ov074_02272510[2] = {(void *)_ZN11SpNpcBlanca9mainAct02Ev, 0};
 
 void SpNpcBlancaTalk::setResultHandler(s32 idx) {
     static Fn tbl[2] = {*(Fn *)data_ov074_02272530, *(Fn *)data_ov074_022724f0};
-    unk_b0 = tbl[idx];
+    resultHandler = tbl[idx];
 }
 
 void SpNpcBlancaTalk::onFaceDrawn() {
@@ -930,7 +930,7 @@ void SpNpcBlancaTalk::onFaceDrawn() {
     buf[0] = 0xf;
     if (MenuCtrl_IsResultOk() != 0) {
         buf[0] = 0x1c;
-        unk_ac->unk_710.apply(&unk_ac->model);
+        owner->faceTexture.apply(&owner->model);
     }
     TalkWindowState_setNextMessage(p, buf, ((char *)"sp_npc_mysterycat"));
 }
@@ -955,7 +955,7 @@ SpNpcBlancaTalk::~SpNpcBlancaTalk() {}
 
 void SpNpcBlancaTalk::attachOwner(SpNpcBlanca *o) {
     vfunc_08();
-    unk_ac = o;
+    owner = o;
 }
 
 void SpNpcBlancaTalk::start(TalkStartMsg *out) {
@@ -1012,7 +1012,7 @@ void SpNpcBlancaTalk::onMessageEnd() {
     case 13:
         break;
     case 14:
-        unk_ac->unk_710.apply(&unk_ac->model);
+        owner->faceTexture.apply(&owner->model);
         setSubSceneKind(3, 0);
         openSubScene(2);
         setResultHandler(0);
@@ -1095,8 +1095,8 @@ void SpNpcBlanca::vfunc_4c(s32 a) {
         SpNpcBlanca_ChangeAct(this, 0);
         break;
     case 3:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0(getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0(getPlayerActor(4));
         SpNpcBlanca_ChangeAct(this, 4);
         break;
     case 8:
@@ -1111,14 +1111,14 @@ SpNpcBlancaFaceTexture::SpNpcBlancaFaceTexture() {}
 SpNpcBlancaFaceTexture::~SpNpcBlancaFaceTexture() {}
 
 void SpNpcBlancaFaceTexture::init(u32 *a, void *b) {
-    unk_00 = Heap_Alloc(a, ClothTex_GetBufferSize());
+    texBuffer = Heap_Alloc(a, ClothTex_GetBufferSize());
     apply(b);
 }
 
 u32 SpNpcBlancaFaceTexture::getTextureData() {
     u32 r = 0;
-    if (unk_00 != 0) {
-        r = ClothTex_GetTexThunk(unk_00);
+    if (texBuffer != 0) {
+        r = ClothTex_GetTexThunk(texBuffer);
     }
     return r;
 }
@@ -1129,19 +1129,19 @@ void SpNpcBlancaFaceTexture::apply(void *e) {
     u32 h;
     t = BlancaFaceRecord_getPattern(gSaveBlancaFace);
     if (t != 0) {
-        if (ClothTex_LoadPatternThunk(unk_00, t) != 0) {
+        if (ClothTex_LoadPatternThunk(texBuffer, t) != 0) {
             h = getTextureData();
             if (h != 0) {
-                MatTexVramTask_request(&unk_04, ent->unk_5c, data_ov074_022724e4, h, 0, 0);
+                MatTexVramTask_request(&texTask, ent->unk_5c, data_ov074_022724e4, h, 0, 0);
             }
         }
     }
 }
 
 void SpNpcBlancaFaceTexture::release(u32 *p) {
-    unk_04.cancel();
-    if (unk_00 != 0) {
-        Heap_Free(p, unk_00);
+    texTask.cancel();
+    if (texBuffer != 0) {
+        Heap_Free(p, texBuffer);
     }
 }
 

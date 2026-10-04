@@ -81,9 +81,9 @@ public:
 
 struct Unk_0203e5d0_Node {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ void *unk_0c;
+    /* 0x04 */ Unk_0203e5d0_Node *next;
+    /* 0x08 */ u32 charId;
+    /* 0x0c */ void *owner;
 };
 
 class Character : public Actor {
@@ -266,7 +266,7 @@ public:
     BOOL intersectLine(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, Unk_0202f2ac_V3 *q);
 
     s32 unk_04[9];
-    s32 unk_28, unk_2c, unk_30, unk_34;
+    s32 normal, normalY, normalZ, offset;
 };
 
 class TriangleTrigger : public CollisionTriangle {
@@ -274,9 +274,9 @@ public:
     TriangleTrigger();
     void setupTrigger(Unk_02031e10_Vec *a, Unk_02031e10_Vec *b, Unk_02031e10_Vec *c, s32 d);
 
-    TriangleTrigger *unk_38;
-    s32 unk_3c, unk_40, unk_44;
-    s32 unk_48;
+    TriangleTrigger *next;
+    s32 center, centerY, centerZ;
+    s32 radiusSq;
 };
 
 // ov009 element (vtable 0x0225e280, size 0x54), one per ground-collision triangle
@@ -287,25 +287,25 @@ public:
     BOOL isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_ov009_0225cc24_Obj *o);
     static void *operator new(unsigned long, void *p) { return p; }
 
-    /* 0x4c */ BuildingActor *unk_4c;
-    /* 0x50 */ s32 unk_50;
+    /* 0x4c */ BuildingActor *building;
+    /* 0x50 */ s32 entranceType;
 };
 
 struct Unk_ov009_0225cc24_Obj {
     /* 0x00 */ u8 pad_00[0xc];
-    /* 0x0c */ u16 unk_0c;
+    /* 0x0c */ u16 profile;
     /* 0x0e */ u8 pad_0e[0x8e - 0xe];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0x98 - 0x90];
-    /* 0x98 */ s32 unk_98;
+    /* 0x98 */ s32 speed;
 };
 
 struct Unk_ov009_0225cd48_Item {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
+    /* 0x04 */ s32 offsetX;
+    /* 0x08 */ s32 offsetZ;
+    /* 0x0c */ s32 size;
+    /* 0x10 */ s32 shift;
     /* 0x14 */ s32 unk_14;
     /* 0x18 */ s32 unk_18;
 };
@@ -314,8 +314,8 @@ struct BuildingShadowTable {
     Unk_ov009_0225cd48_Item *getEntry(u32 i);
     u32 getCount();
 
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_ov009_0225cd48_Item unk_04[1];
+    /* 0x00 */ u32 count;
+    /* 0x04 */ Unk_ov009_0225cd48_Item entries[1];
 };
 
 // 0x50-byte record of the static array sBuildingResources (0x22 entries)
@@ -323,20 +323,20 @@ struct BuildingResources {
     BuildingResources();
     ~BuildingResources();
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
-    /* 0x1c */ BuildingShadowTable *unk_1c;
-    /* 0x20 */ s32 unk_20[4];
-    /* 0x30 */ s32 unk_30[4];
-    /* 0x40 */ s32 unk_40;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ s32 unk_48;
-    /* 0x4c */ s32 unk_4c;
+    /* 0x00 */ s32 bmd0;
+    /* 0x04 */ s32 bmd1;
+    /* 0x08 */ s32 bca0;
+    /* 0x0c */ s32 bca1;
+    /* 0x10 */ s32 bca2;
+    /* 0x14 */ s32 tex;
+    /* 0x18 */ s32 lightTex;
+    /* 0x1c */ BuildingShadowTable *shadowTable;
+    /* 0x20 */ s32 btaAnims[4];
+    /* 0x30 */ s32 btpAnims[4];
+    /* 0x40 */ s32 solidCenterX;
+    /* 0x44 */ s32 solidCenterZ;
+    /* 0x48 */ s32 solidSizeX;
+    /* 0x4c */ s32 solidSizeZ;
 };
 
 struct Unk_ov009_0225d2a4_Obj {
@@ -379,7 +379,7 @@ public:
     void activate();
 
     /* 0x00 */ Unk_0213b9c4 unk_00;
-    /* 0x40 */ u8 unk_40;
+    /* 0x40 */ u8 isActive;
 };
 
 class BuildingActor : public Character, public TalkMsgRequest {
@@ -489,40 +489,40 @@ public:
     void execEntryTalkOpen();
     BOOL enterEntryTalkOpen();
 
-    /* 0x130 */ u8 unk_130;
+    /* 0x130 */ u8 doorState;
     /* 0x131 */ u8 pad_131;
-    /* 0x132 */ u16 unk_132;
-    /* 0x134 */ u32 unk_134;
+    /* 0x132 */ u16 itemId;
+    /* 0x134 */ u32 buildingIndex;
     /* 0x138 */ u8 unk_138[0x194 - 0x138];
-    /* 0x194 */ void *unk_194;
+    /* 0x194 */ void *modelRes;
     /* 0x198 */ u8 pad_198[4];
-    /* 0x19c */ Unk_ov009_0225bc88_Blk unk_19c;
+    /* 0x19c */ Unk_ov009_0225bc88_Blk baseMatrix;
     /* 0x1cc */ u8 pad_1cc[0x1d4 - 0x1cc];
     /* 0x1d4 */ u8 unk_1d4[0x1f0 - 0x1d4];
     /* 0x1f0 */ u8 unk_1f0[0x228 - 0x1f0];
-    /* 0x228 */ u32 unk_228;
-    /* 0x22c */ u32 unk_22c;
-    /* 0x230 */ u8 unk_230;
-    /* 0x231 */ u8 unk_231;
-    /* 0x232 */ Unk_ov009_0225bf3c_Flags unk_232;
-    /* 0x233 */ u8 unk_233;
+    /* 0x228 */ u32 gridX;
+    /* 0x22c */ u32 gridZ;
+    /* 0x230 */ u8 exitDelay;
+    /* 0x231 */ u8 colliderFlags;
+    /* 0x232 */ Unk_ov009_0225bf3c_Flags entryFlags;
+    /* 0x233 */ u8 visitRefused;
     /* 0x234 */ u8 unk_234[0x44];
-    /* 0x278 */ s32 unk_278;
-    /* 0x27c */ u8 unk_27c;
+    /* 0x278 */ s32 entryState;
+    /* 0x27c */ u8 closedTalk;
     /* 0x27d */ u8 pad_27d;
-    /* 0x27e */ u16 unk_27e;
-    /* 0x280 */ ObjShadowStrip *unk_280;
-    /* 0x284 */ TouchPickTriangle *unk_284;
-    /* 0x288 */ BuildingCollider *unk_288;
-    /* 0x28c */ u8 unk_28c;
+    /* 0x27e */ u16 warpTimer;
+    /* 0x280 */ ObjShadowStrip *shadows;
+    /* 0x284 */ TouchPickTriangle *collisionShapes;
+    /* 0x288 */ BuildingCollider *colliders;
+    /* 0x28c */ u8 colliderCount;
     /* 0x28d */ u8 pad_28d;
     /* 0x28e */ u8 unk_28e[2];
-    /* 0x290 */ s32 unk_290;
-    /* 0x294 */ s32 unk_294;
-    /* 0x298 */ s32 unk_298;
-    /* 0x29c */ s32 unk_29c;
-    /* 0x2a0 */ s32 unk_2a0;
-    /* 0x2a4 */ Unk_ov009_0225b880_Vec3 unk_2a4;
+    /* 0x290 */ s32 solidCenterX;
+    /* 0x294 */ s32 solidCenterY;
+    /* 0x298 */ s32 solidCenterZ;
+    /* 0x29c */ s32 solidSizeX;
+    /* 0x2a0 */ s32 solidSizeZ;
+    /* 0x2a4 */ Unk_ov009_0225b880_Vec3 entryPos;
 };
 
 typedef void (BuildingActor::*Unk_ov009_0225c290_Fn)();
@@ -778,19 +778,19 @@ static inline BOOL Unk_ov009_0225d858_Is(u16 *p, u32 v) {
 
 struct Unk_ov009_0225df94_Target {
     /* 0x00 */ u8 pad_00[0x2c];
-    /* 0x2c */ BuildingActor *unk_2c;
+    /* 0x2c */ BuildingActor *ptrUser;
 };
 
 struct Unk_ov009_0225df94_Arg {
-    /* 0x00 */ u8 *unk_00;
-    /* 0x04 */ Unk_ov009_0225df94_Target *unk_04;
+    /* 0x00 */ u8 *c;
+    /* 0x04 */ Unk_ov009_0225df94_Target *pRenderObj;
 };
 
 struct Unk_ov009_0225df84_Obj {
     /* 0x00 */ u8 pad_00[0x24];
-    /* 0x24 */ void *unk_24;
+    /* 0x24 */ void *nodeDescCallback;
     /* 0x28 */ u8 pad_28[0x92 - 0x28];
-    /* 0x92 */ u8 unk_92;
+    /* 0x92 */ u8 nodeDescCallbackTiming;
 };
 
 extern "C" void BuildingActor_Create() {
@@ -805,20 +805,20 @@ extern "C" void Building_LocalToWorld(void *p, s32 a, s32 b) {
 
 BuildingResources::BuildingResources() {
     u32 i;
-    unk_00 = 0;
-    unk_04 = 0;
-    unk_14 = 0;
-    unk_18 = 0;
-    unk_1c = 0;
-    unk_08 = 0;
-    unk_0c = 0;
-    unk_10 = 0;
-    unk_40 = 0;
-    unk_44 = 0;
-    unk_48 = 0;
-    unk_4c = 0;
+    bmd0 = 0;
+    bmd1 = 0;
+    tex = 0;
+    lightTex = 0;
+    shadowTable = 0;
+    bca0 = 0;
+    bca1 = 0;
+    bca2 = 0;
+    solidCenterX = 0;
+    solidCenterZ = 0;
+    solidSizeX = 0;
+    solidSizeZ = 0;
     for (i = 0; i < 4; i++) {
-        unk_20[i] = 0;
+        btaAnims[i] = 0;
     }
 }
 
@@ -836,8 +836,8 @@ BuildingResources sBuildingResources[0x22];
 }
 
 extern "C" BOOL BuildingResources_IsLoaded(BuildingResources *e) {
-    if (e->unk_00 != 0 || e->unk_04 != 0 || e->unk_14 != 0 || e->unk_18 != 0 || e->unk_1c != 0 || e->unk_08 != 0 ||
-        e->unk_0c != 0 || e->unk_10 != 0) {
+    if (e->bmd0 != 0 || e->bmd1 != 0 || e->tex != 0 || e->lightTex != 0 || e->shadowTable != 0 || e->bca0 != 0 ||
+        e->bca1 != 0 || e->bca2 != 0) {
         return TRUE;
     }
     return FALSE;
@@ -847,15 +847,15 @@ void BuildingActor::vfunc_60(u32 a, void *b) {
 }
 
 extern "C" void Building_ModelCallback(Unk_ov009_0225df94_Arg *a) {
-    BuildingActor *o = a->unk_04->unk_2c;
+    BuildingActor *o = a->pRenderObj->ptrUser;
     if (o != NULL) {
-        o->vfunc_60(a->unk_00[1], a);
+        o->vfunc_60(a->c[1], a);
     }
 }
 
 extern "C" void Building_InitModelCallback(Unk_ov009_0225df84_Obj *o) {
-    o->unk_24 = (void *)Building_ModelCallback;
-    o->unk_92 = 2;
+    o->nodeDescCallback = (void *)Building_ModelCallback;
+    o->nodeDescCallbackTiming = 2;
 }
 
 extern "C" void *func_ov009_0225df6c(void *unused) {
@@ -869,7 +869,7 @@ extern "C" void *func_ov009_0225df58(void *unused) {
 }
 
 BuildingActor::BuildingActor() {
-    unk_132 = 0xfff1;
+    itemId = 0xfff1;
     func_020548d0(unk_138);
     func_020b2034(unk_1f0);
     func_ov009_0225b94c(unk_234);
@@ -893,11 +893,11 @@ BOOL BuildingActor::vfunc_00() {
     } m;
     Unk_ov009_0225b880_Vec3 v;
     BuildingList_Add(this);
-    unk_228 = position[0] >> 13;
-    unk_22c = position[2] >> 13;
-    Character_setCharId(this, (u16)(((unk_22c & 0xff) << 8) | (unk_228 & 0xff)));
-    unk_132 = *(u32 *)((u8 *)this + 8);
-    unk_134 = unk_132 & 0xfff;
+    gridX = position[0] >> 13;
+    gridZ = position[2] >> 13;
+    Character_setCharId(this, (u16)(((gridZ & 0xff) << 8) | (gridX & 0xff)));
+    itemId = *(u32 *)((u8 *)this + 8);
+    buildingIndex = itemId & 0xfff;
     char *a = vfunc_a4();
     char *bb = vfunc_a8();
     char *c = vfunc_ac();
@@ -913,10 +913,10 @@ BOOL BuildingActor::vfunc_00() {
     func_020e8434(&m, ang);
     createColliders((Unk_ov009_0225bc88_Blk *)&m);
     BuildingResources *r = getResources();
-    BuildingLights_bind(unk_1f0, (void *)(r ? r->unk_00 : 0), 1);
+    BuildingLights_bind(unk_1f0, (void *)(r ? r->bmd0 : 0), 1);
     setInteractionRange(0);
-    if (getDoorPos(&unk_2a4, (s16 *)0)) {
-        unk_2a4.z -= 0x4000;
+    if (getDoorPos(&entryPos, (s16 *)0)) {
+        entryPos.z -= 0x4000;
     }
     BOOL res = func_ov009_0225dd58();
     setEntryState(0);
@@ -930,8 +930,8 @@ BOOL BuildingActor::preExecute() {
     ((BuildingSeEmitter *)unk_234)->activate();
     u16 *p = getItemId();
     if (Unk_ov009_0225d858_Is(p, 0x501d)) {
-        s32 t = BuildingState_Get(unk_132);
-        if (unk_130 != t) {
+        s32 t = BuildingState_Get(itemId);
+        if (doorState != t) {
             vfunc_6c(t);
         }
     }
@@ -946,7 +946,7 @@ BOOL BuildingActor::preExecute() {
     BOOL on = vfunc_9c();
     s32 b = vfunc_a0();
     BuildingLights_setLit(unk_1f0, on, 1, b);
-    BuildingLights_updateLights(unk_1f0, unk_194);
+    BuildingLights_updateLights(unk_1f0, modelRes);
     func_ov009_0225d0d8();
     return TRUE;
 }
@@ -955,13 +955,13 @@ BOOL BuildingActor::vfunc_20(u32 a) {
     Unk_ov009_0225da90_Vec3 v = vfunc_b4();
     u16 *pp = getItemId();
     _ZN17BuildingSeEmitter11setPositionEP23Unk_ov009_0225b880_Vec3(unk_234, (Unk_ov009_0225b880_Vec3 *)&v, *pp);
-    if (unk_231 & 2) {
-        unk_231 |= 8;
+    if (colliderFlags & 2) {
+        colliderFlags |= 8;
     } else {
-        unk_231 &= ~8;
+        colliderFlags &= ~8;
     }
-    unk_231 &= ~2;
-    unk_231 &= ~4;
+    colliderFlags &= ~2;
+    colliderFlags &= ~4;
     func_02002dd0(this, a);
 }
 
@@ -969,10 +969,10 @@ BOOL BuildingActor::preDraw() {
     if (!func_02002d9c(this)) {
         return FALSE;
     }
-    if ((unk_231 & 1) == 0) {
+    if ((colliderFlags & 1) == 0) {
         u16 *p = getItemId();
         BOOL r = Unk_ov009_0225d858_Is(p, 0x500b);
-        if (r || !Camera_IsBlockingFocusView(&unk_290, unk_29c, unk_2a0)) {
+        if (r || !Camera_IsBlockingFocusView(&solidCenterX, solidSizeX, solidSizeZ)) {
             if (vfunc_b0()) {
                 updateMatrix();
             }
@@ -991,9 +991,9 @@ BOOL BuildingActor::preDelete() {
     destroyColliders();
     Model_clearResource(unk_138);
     BuildingList_Remove(this);
-    if (unk_232.f0) {
+    if (entryFlags.f0) {
         CharInteractSync_ReleaseLock();
-        if (Item_IsNookShop(&unk_132)) {
+        if (Item_IsNookShop(&itemId)) {
             NookShop_SetVisitState(1);
         }
     }
@@ -1003,14 +1003,14 @@ BOOL BuildingActor::preDelete() {
 void BuildingActor::initEntryArea() {
     BuildingResources *r = getResources();
     if (r != NULL) {
-        s32 z = position[2] + r->unk_44;
+        s32 z = position[2] + r->solidCenterZ;
         s32 y = position[1];
-        s32 x = position[0] + r->unk_40;
-        unk_290 = x;
-        unk_294 = y;
-        unk_298 = z;
-        unk_29c = r->unk_48;
-        unk_2a0 = r->unk_4c;
+        s32 x = position[0] + r->solidCenterX;
+        solidCenterX = x;
+        solidCenterY = y;
+        solidCenterZ = z;
+        solidSizeX = r->solidSizeX;
+        solidSizeZ = r->solidSizeZ;
     }
 }
 
@@ -1023,7 +1023,7 @@ void BuildingActor::setupAnims() {
     if (getEntranceType() != 0) {
         u16 *p = getItemId();
         if (Unk_ov009_0225d858_Is(p, 0x501d)) {
-            vfunc_6c(BuildingState_Get(unk_132));
+            vfunc_6c(BuildingState_Get(itemId));
         } else {
             vfunc_6c(0);
         }
@@ -1033,7 +1033,7 @@ void BuildingActor::setupAnims() {
 s32 BuildingActor::getViewRangeX() {
     u32 v;
     BOOL in = FALSE;
-    v = unk_132;
+    v = itemId;
     if (v >= 0x5000 && v <= 0x5021) {
         in = TRUE;
     }
@@ -1052,7 +1052,7 @@ s32 BuildingActor::getViewRangeX() {
 s32 BuildingActor::getViewRangeBack() {
     u32 v;
     BOOL in = FALSE;
-    v = unk_132;
+    v = itemId;
     if (v >= 0x5000 && v <= 0x5021) {
         in = TRUE;
     }
@@ -1071,7 +1071,7 @@ s32 BuildingActor::getViewRangeBack() {
 s32 BuildingActor::getViewRangeFront() {
     u32 v;
     BOOL in = FALSE;
-    v = unk_132;
+    v = itemId;
     if (v >= 0x5000 && v <= 0x5021) {
         in = TRUE;
     }
@@ -1090,7 +1090,7 @@ s32 BuildingActor::getViewRangeFront() {
 s32 BuildingActor::func_ov009_0225d708() {
     BuildingResources *r = getResources();
     if (r != NULL) {
-        return r->unk_08;
+        return r->bca0;
     }
     return 0;
 }
@@ -1098,7 +1098,7 @@ s32 BuildingActor::func_ov009_0225d708() {
 s32 BuildingActor::func_ov009_0225d6f0() {
     BuildingResources *r = getResources();
     if (r != NULL) {
-        return r->unk_0c;
+        return r->bca1;
     }
     return 0;
 }
@@ -1106,7 +1106,7 @@ s32 BuildingActor::func_ov009_0225d6f0() {
 s32 BuildingActor::getBca2Anim() {
     BuildingResources *r = getResources();
     if (r != NULL) {
-        return r->unk_10;
+        return r->bca2;
     }
     return 0;
 }
@@ -1115,7 +1115,7 @@ void *BuildingActor::getBtaAnim(u32 idx) {
     if (idx < 4) {
         BuildingResources *r = getResources();
         if (r != NULL) {
-            return (void *)r->unk_20[idx];
+            return (void *)r->btaAnims[idx];
         }
     }
     return 0;
@@ -1124,7 +1124,7 @@ void *BuildingActor::getBtaAnim(u32 idx) {
 s32 BuildingActor::getEntranceType() {
     u32 v;
     BOOL in = FALSE;
-    v = unk_132;
+    v = itemId;
     if (v >= 0x5000 && v <= 0x5021) {
         in = TRUE;
     }
@@ -1162,19 +1162,19 @@ extern "C" BOOL Building_IsNight() {
 }
 
 char *BuildingActor::vfunc_a4() {
-    u32 i = unk_134;
+    u32 i = buildingIndex;
     func_020639e8(sBuildingArcPath, sBuildingArcPathFmt, i, i, Field_GetStructureTexSuffix());
     return sBuildingArcPath;
 }
 
 char *BuildingActor::vfunc_a8() {
-    u32 i = unk_134;
+    u32 i = buildingIndex;
     func_020639e8(sBuildingTexPath, sBuildingTexPathFmt, i, i, Field_GetStructureTexSuffix());
     return sBuildingTexPath;
 }
 
 char *BuildingActor::vfunc_ac() {
-    volatile u16 v = Item_MakeBuilding(unk_134);
+    volatile u16 v = Item_MakeBuilding(buildingIndex);
     switch (v) {
     case 0x500a:
     case 0x5011:
@@ -1182,28 +1182,28 @@ char *BuildingActor::vfunc_ac() {
     case 0x501d:
         return 0;
     }
-    u32 i = unk_134;
+    u32 i = buildingIndex;
     func_020639e8(sBuildingLightTexPath, sBuildingLightTexPathFmt, i, i, Field_GetStructureTexSuffix());
     return sBuildingLightTexPath;
 }
 
 BOOL BuildingActor::setupModel(char *a, char *b, char *c) {
-    if (unk_280 != 0 || unk_194 != 0) {
+    if (shadows != 0 || modelRes != 0) {
         return TRUE;
     }
     loadResources(a, b, c);
     BuildingResources *r = getResources();
-    if (r != NULL && r->unk_00 != 0) {
-        if (Model_setResource(unk_138, (void *)r->unk_00, 0)) {
+    if (r != NULL && r->bmd0 != 0) {
+        if (Model_setResource(unk_138, (void *)r->bmd0, 0)) {
             FieldStructureMgr_GetPlayerHouseTex();
             s32 x = PlayerHouseTex_Get();
-            NNS_G3dBindMdlPltt((void *)r->unk_00, x);
-            if (r->unk_14) {
-                NNS_G3dBindMdlTex((void *)r->unk_00, r->unk_14);
+            NNS_G3dBindMdlPltt((void *)r->bmd0, x);
+            if (r->tex) {
+                NNS_G3dBindMdlTex((void *)r->bmd0, r->tex);
             }
-            if (r->unk_18) {
-                NNS_G3dBindMdlTex((void *)r->unk_00, r->unk_18);
-                NNS_G3dBindMdlPltt((void *)r->unk_00, r->unk_18);
+            if (r->lightTex) {
+                NNS_G3dBindMdlTex((void *)r->bmd0, r->lightTex);
+                NNS_G3dBindMdlPltt((void *)r->bmd0, r->lightTex);
             }
             return TRUE;
         }
@@ -1218,9 +1218,9 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
     if (BuildingResources_IsLoaded(e)) {
         return TRUE;
     }
-    StrBSizeData *h = StrBSize_Get(&unk_132);
+    StrBSizeData *h = StrBSize_Get(&itemId);
     if (h != NULL) {
-        h->getSolidBounds(&e->unk_40, &e->unk_44, &e->unk_48, &e->unk_4c);
+        h->getSolidBounds(&e->solidCenterX, &e->solidCenterZ, &e->solidSizeX, &e->solidSizeZ);
     }
     if (a != NULL) {
         void *data = File_LoadAlloc(a, gFieldStructureHeap, 4, 0);
@@ -1234,22 +1234,22 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
                 void *t;
                 t = func_021012bc(data_ov009_0225e3ec);
                 if (t) {
-                    e->unk_08 = (s32)func_ov009_0225df58(t);
+                    e->bca0 = (s32)func_ov009_0225df58(t);
                 }
                 t = func_021012bc(data_ov009_0225e3fc);
                 if (t) {
-                    e->unk_0c = (s32)func_ov009_0225df58(t);
+                    e->bca1 = (s32)func_ov009_0225df58(t);
                 }
                 t = func_021012bc(data_ov009_0225e40c);
                 if (t) {
-                    e->unk_10 = (s32)func_ov009_0225df58(t);
+                    e->bca2 = (s32)func_ov009_0225df58(t);
                 }
                 i = 0;
                 z1 = i;
                 for (; i < 4; i++) {
                     func_020639e8(b1, data_ov009_0225e41c, i);
                     if (func_021012bc(b1)) {
-                        e->unk_20[i] = (s32)func_02106670(func_02106654(), z1);
+                        e->btaAnims[i] = (s32)func_02106670(func_02106654(), z1);
                     }
                 }
                 i = 0;
@@ -1257,15 +1257,15 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
                 for (; i < 4; i++) {
                     func_020639e8(b2, data_ov009_0225e42c, i);
                     if (func_021012bc(b2)) {
-                        e->unk_30[i] = (s32)func_021066ac(func_02106690(), z2);
+                        e->btpAnims[i] = (s32)func_021066ac(func_02106690(), z2);
                     }
                 }
-                e->unk_00 = (s32)func_ov009_0225df6c(func_021012bc(data_ov009_0225e43c));
+                e->bmd0 = (s32)func_ov009_0225df6c(func_021012bc(data_ov009_0225e43c));
                 t = func_021012bc(data_ov009_0225e44c);
                 if (t) {
-                    e->unk_04 = (s32)func_ov009_0225df6c(t);
+                    e->bmd1 = (s32)func_ov009_0225df6c(t);
                 }
-                e->unk_1c = (BuildingShadowTable *)func_021012bc(data_ov009_0225e45c);
+                e->shadowTable = (BuildingShadowTable *)func_021012bc(data_ov009_0225e45c);
                 func_02101310(&obj);
             }
             result = TRUE;
@@ -1275,9 +1275,9 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
         if (File_Exists(b)) {
             void *r5 = File_LoadAlloc(b, gCurrentHeap, -4, 0);
             if (r5 != NULL) {
-                e->unk_14 = (s32)NNS_G3dGetTex(r5);
-                if (Gfx3d_LoadTex((void *)e->unk_14, 0)) {
-                    e->unk_14 = (s32)Gfx3d_CopyTex((void *)e->unk_14, gFieldStructureHeap);
+                e->tex = (s32)NNS_G3dGetTex(r5);
+                if (Gfx3d_LoadTex((void *)e->tex, 0)) {
+                    e->tex = (s32)Gfx3d_CopyTex((void *)e->tex, gFieldStructureHeap);
                 }
                 Mem_Free(r5);
             }
@@ -1287,9 +1287,9 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
         if (File_Exists(c)) {
             void *r5 = File_LoadAlloc(c, gCurrentHeap, -4, 0);
             if (r5 != NULL) {
-                e->unk_18 = (s32)NNS_G3dGetTex(r5);
-                if (Gfx3d_LoadTexAndPltt((void *)e->unk_18, 0)) {
-                    e->unk_18 = (s32)Gfx3d_CopyTex((void *)e->unk_18, gFieldStructureHeap);
+                e->lightTex = (s32)NNS_G3dGetTex(r5);
+                if (Gfx3d_LoadTexAndPltt((void *)e->lightTex, 0)) {
+                    e->lightTex = (s32)Gfx3d_CopyTex((void *)e->lightTex, gFieldStructureHeap);
                 }
                 Mem_Free(r5);
             }
@@ -1307,22 +1307,22 @@ void BuildingActor::makeCurvedMatrix(Unk_ov009_0225bc88_Blk *out) {
 
 // tiny callees defined last so they stay out of line
 BuildingResources *BuildingActor::getResources() {
-    if (unk_134 < 0x22) {
-        return &sBuildingResources[unk_134];
+    if (buildingIndex < 0x22) {
+        return &sBuildingResources[buildingIndex];
     }
     return NULL;
 }
 
 void BuildingActor::func_ov009_0225d0d8() {
-    if (unk_230 >= 1) {
-        if (unk_230 == 3) {
+    if (exitDelay >= 1) {
+        if (exitDelay == 3) {
             if (PlayerActor_IsInterruptibleByMenu()) {
                 switch (getEntranceType()) {
                 case 2:
                     Field_SetDoorExitMode(1);
                     data_021c1b3c->unk_2d0.setFadeDelay(1);
                     if (PlayerActor_LocalRequestDoorExit()) {
-                        unk_230 = 0;
+                        exitDelay = 0;
                         return;
                     }
                     break;
@@ -1330,30 +1330,30 @@ void BuildingActor::func_ov009_0225d0d8() {
                     Field_SetDoorExitMode(0);
                     data_021c1b3c->unk_2d0.setFadeDelay(2);
                     if (PlayerActor_LocalRequestDoorExit()) {
-                        unk_230 = 0;
+                        exitDelay = 0;
                         return;
                     }
                     break;
                 case 1:
                     Field_SetDoorExitMode(0);
-                    if (Unk_ov009_0225d0d8_Match(&unk_132, 0x5012) || Unk_ov009_0225d0d8_Match(&unk_132, 0x5013)) {
+                    if (Unk_ov009_0225d0d8_Match(&itemId, 0x5012) || Unk_ov009_0225d0d8_Match(&itemId, 0x5013)) {
                         data_021c1b3c->unk_2d0.setFadeDelay(4);
                     } else {
                         data_021c1b3c->unk_2d0.setFadeDelay(3);
                     }
                     if (PlayerActor_LocalRequestDoorExit()) {
-                        unk_230 = 0;
+                        exitDelay = 0;
                         return;
                     }
                     break;
                 default:
-                    unk_230 = 0;
+                    exitDelay = 0;
                     return;
                 }
             }
         }
-        if (unk_230 < 3) {
-            unk_230++;
+        if (exitDelay < 3) {
+            exitDelay++;
         }
     }
 }
@@ -1364,7 +1364,7 @@ void BuildingActor::updateBaseMatrix(Unk_ov009_0225bc88_Blk *out) {
         drawTilt = WorldCurve_ToCurved(&drawPos, position);
         makeCurvedMatrix(&blk);
     }
-    unk_19c = blk;
+    baseMatrix = blk;
     if (out != NULL) {
         *out = blk;
     }
@@ -1373,11 +1373,11 @@ void BuildingActor::updateBaseMatrix(Unk_ov009_0225bc88_Blk *out) {
 void BuildingActor::createShadows(Unk_ov009_0225bc88_Blk *m) {
     BuildingResources *e = getResources();
     if (e != NULL) {
-        if (e->unk_1c != NULL) {
+        if (e->shadowTable != NULL) {
             void *heap = gFieldStructureHeap;
-            u32 n = e->unk_1c->getCount();
-            unk_280 = (ObjShadowStrip *)Heap_Alloc(heap, n * 0x34);
-            ObjShadowStrip *p = unk_280;
+            u32 n = e->shadowTable->getCount();
+            shadows = (ObjShadowStrip *)Heap_Alloc(heap, n * 0x34);
+            ObjShadowStrip *p = shadows;
             u32 i;
             s32 zero;
             i = 0;
@@ -1386,11 +1386,11 @@ void BuildingActor::createShadows(Unk_ov009_0225bc88_Blk *m) {
                 if (p != NULL) {
                     p = p->func_020ac1e0();
                 }
-                Unk_ov009_0225cd48_Item *it = e->unk_1c->getEntry(i);
-                Unk_ov009_0225cb4c_V3 v(it->unk_04, zero, it->unk_08);
+                Unk_ov009_0225cd48_Item *it = e->shadowTable->getEntry(i);
+                Unk_ov009_0225cb4c_V3 v(it->offsetX, zero, it->offsetZ);
                 Unk_ov009_0225b880_Vec3 out;
                 Building_LocalToWorld(&out, (s32)&v, (s32)m);
-                p->build((Vec3 *)&out, it->unk_0c, it->unk_10, it->unk_00, it->unk_14, it->unk_18, (s32)heap);
+                p->build((Vec3 *)&out, it->size, it->shift, it->unk_00, it->unk_14, it->unk_18, (s32)heap);
             }
         }
     }
@@ -1399,13 +1399,13 @@ void BuildingActor::createShadows(Unk_ov009_0225bc88_Blk *m) {
 void BuildingActor::updateShadows(Unk_ov009_0225bc88_Blk *m) {
     BuildingResources *e = getResources();
     if (e != NULL) {
-        ObjShadowStrip *p = unk_280;
+        ObjShadowStrip *p = shadows;
         if (p != NULL) {
             s32 i = 0;
             s32 zero = i;
-            for (; (u32)i < e->unk_1c->getCount(); p++, i++) {
-                Unk_ov009_0225cd48_Item *it = e->unk_1c->getEntry(i);
-                Unk_ov009_0225cb4c_V3 v(it->unk_04, zero, it->unk_08);
+            for (; (u32)i < e->shadowTable->getCount(); p++, i++) {
+                Unk_ov009_0225cd48_Item *it = e->shadowTable->getEntry(i);
+                Unk_ov009_0225cb4c_V3 v(it->offsetX, zero, it->offsetZ);
                 Unk_ov009_0225b880_Vec3 out;
                 Building_LocalToWorld(&out, (s32)&v, (s32)m);
                 p->draw((Vec3 *)&out);
@@ -1417,21 +1417,21 @@ void BuildingActor::updateShadows(Unk_ov009_0225bc88_Blk *m) {
 void BuildingActor::destroyShadows() {
     BuildingResources *e = getResources();
     if (e != NULL) {
-        if (unk_280 != NULL) {
+        if (shadows != NULL) {
             u32 i;
-            for (i = 0; i < e->unk_1c->getCount(); i++) {
+            for (i = 0; i < e->shadowTable->getCount(); i++) {
             }
-            unk_280 = NULL;
+            shadows = NULL;
         }
     }
 }
 
 void BuildingActor::createColliders(Unk_ov009_0225bc88_Blk *m) {
-    unk_28c = 0;
-    StrBSizeData *h = StrBSize_Get(&unk_132);
+    colliderCount = 0;
+    StrBSizeData *h = StrBSize_Get(&itemId);
     if (h != NULL) {
-        unk_28c = h->getTriangleCount();
-        if (unk_28c != 0) {
+        colliderCount = h->getTriangleCount();
+        if (colliderCount != 0) {
             BuildingCollider *e4;
             TouchPickTriangle *e6;
             u8 k;
@@ -1439,12 +1439,12 @@ void BuildingActor::createColliders(Unk_ov009_0225bc88_Blk *m) {
             Unk_ov009_0225b880_Vec3 a, b, c;
             Unk_ov009_0225b880_Vec3 wa, wb, wc;
             Unk_ov009_0225b880_Vec3 la, lb, lc;
-            unk_284 = (TouchPickTriangle *)Heap_Alloc(gFieldStructureHeap, unk_28c * 0x44);
-            unk_288 = (BuildingCollider *)Heap_Alloc(gFieldStructureHeap, unk_28c * 0x54);
-            e4 = unk_288;
-            e6 = unk_284;
+            collisionShapes = (TouchPickTriangle *)Heap_Alloc(gFieldStructureHeap, colliderCount * 0x44);
+            colliders = (BuildingCollider *)Heap_Alloc(gFieldStructureHeap, colliderCount * 0x54);
+            e4 = colliders;
+            e6 = collisionShapes;
             k = BuildingList_IndexOf(this);
-            for (i = 0; i < unk_28c; e4++, e6++, i++) {
+            for (i = 0; i < colliderCount; e4++, e6++, i++) {
                 if (h->getTriangle(&a.x, &b.x, &c.x, i)) {
                     Building_LocalToWorld(&wa, (s32)&a, (s32)m);
                     Building_LocalToWorld(&wb, (s32)&b, (s32)m);
@@ -1455,8 +1455,8 @@ void BuildingActor::createColliders(Unk_ov009_0225bc88_Blk *m) {
                     e6 = new (e6) TouchPickTriangle;
                     Scene_GetTouchPicker()->addTriangle(e6, (Vec3 *)&wa, (Vec3 *)&wb, (Vec3 *)&wc, 7, k);
                     e4 = new (e4) BuildingCollider;
-                    e4->unk_4c = this;
-                    e4->unk_50 = getEntranceType();
+                    e4->building = this;
+                    e4->entranceType = getEntranceType();
                     e4->setupTrigger((Unk_02031e10_Vec *)&la, (Unk_02031e10_Vec *)&lb, (Unk_02031e10_Vec *)&lc, 0x3000);
                     TriangleTrigger_Register(e4);
                 }
@@ -1466,10 +1466,10 @@ void BuildingActor::createColliders(Unk_ov009_0225bc88_Blk *m) {
 }
 
 void BuildingActor::submitColliders() {
-    if ((unk_231 & 1) == 0) {
-        TouchPickTriangle *p = unk_284;
+    if ((colliderFlags & 1) == 0) {
+        TouchPickTriangle *p = collisionShapes;
         if (p != NULL) {
-            for (; p < unk_284 + unk_28c; p++) {
+            for (; p < collisionShapes + colliderCount; p++) {
                 Scene_GetTouchPicker()->pushTriangle(p);
             }
         }
@@ -1478,35 +1478,35 @@ void BuildingActor::submitColliders() {
 
 // ---------------------------------------------------------------- actor
 void BuildingActor::destroyColliders() {
-    if (unk_284 != NULL) {
-        unk_284 = NULL;
+    if (collisionShapes != NULL) {
+        collisionShapes = NULL;
     }
-    BuildingCollider *p = unk_288;
+    BuildingCollider *p = colliders;
     if (p != NULL) {
-        for (; p < unk_288 + unk_28c; p += 2) {
+        for (; p < colliders + colliderCount; p += 2) {
             TriangleTrigger_Unregister(p);
-            p->unk_4c = NULL;
+            p->building = NULL;
         }
-        unk_288 = NULL;
+        colliders = NULL;
     }
-    unk_28c = 0;
+    colliderCount = 0;
 }
 
 u32 BuildingShadowTable::getCount() {
-    return unk_00;
+    return count;
 }
 
 Unk_ov009_0225cd48_Item *BuildingShadowTable::getEntry(u32 i) {
-    return &unk_04[i];
+    return &entries[i];
 }
 
 BuildingCollider::BuildingCollider() {}
 
 void BuildingCollider::onActorNear(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24_Obj *o, s32 off) {
     if (isPlayerAtDoor(a, off, o)) {
-        unk_4c->unk_231 |= 2;
-        if (o->unk_98 >= 0x200) {
-            unk_4c->unk_231 |= 4;
+        building->colliderFlags |= 2;
+        if (o->speed >= 0x200) {
+            building->colliderFlags |= 4;
         }
     }
 }
@@ -1519,14 +1519,14 @@ BOOL BuildingCollider::isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_o
     Unk_ov009_0225b880_Vec3 b;
     Unk_ov009_0225b880_Vec3 c;
     if (o != NULL) {
-        if (unk_4c != NULL) {
-            if (Unk_ov009_0225cc24_IsNine(o->unk_0c)) {
+        if (building != NULL) {
+            if (Unk_ov009_0225cc24_IsNine(o->profile)) {
                 if (PlayerActor_GetActor(4) == o) {
                     s32 d = distanceTo((Unk_0202f2ac_V3 *)v);
                     if (d >= 0) {
                         if (d <= off + 0x666) {
-                            if (unk_4c->getDoorPos(&p, &ang)) {
-                                if (func_020e780c(ang, o->unk_8e) <= 0x1100) {
+                            if (building->getDoorPos(&p, &ang)) {
+                                if (func_020e780c(ang, o->rotY) <= 0x1100) {
                                     a.x = v->x;
                                     a.y = v->y;
                                     a.z = v->z;
@@ -1534,8 +1534,8 @@ BOOL BuildingCollider::isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_o
                                     b.x = a.x;
                                     b.y = a.y;
                                     b.z = a.z;
-                                    b.x = b.x - func_01ffcb0c(unk_28, 0x2000);
-                                    b.z = b.z - func_01ffcb0c(unk_30, 0x2000);
+                                    b.x = b.x - func_01ffcb0c(normal, 0x2000);
+                                    b.z = b.z - func_01ffcb0c(normalZ, 0x2000);
                                     if (intersectLine((Unk_0202f2ac_V3 *)&c, (Unk_0202f2ac_V3 *)&a, (Unk_0202f2ac_V3 *)&b)) {
                                         return TRUE;
                                     }
@@ -1560,8 +1560,8 @@ s32 BuildingActor::vfunc_6c(s32 a) {
     };
     if ((u32)a < 7) {
         if ((this->*tbl[a])()) {
-            if (BuildingState_Set(unk_132, a)) {
-                unk_130 = a;
+            if (BuildingState_Set(itemId, a)) {
+                doorState = a;
                 return TRUE;
             }
         }
@@ -1576,8 +1576,8 @@ void BuildingActor::func_ov009_0225ca98() {
         &BuildingActor::execDoorSlideClose, &BuildingActor::execDoorNoAnimIn,
         &BuildingActor::execDoorNoAnimOut
     };
-    if (unk_130 < 7) {
-        (this->*tbl[unk_130])();
+    if (doorState < 7) {
+        (this->*tbl[doorState])();
     }
 }
 
@@ -1601,28 +1601,28 @@ void BuildingActor::execDoorIdle() {
         s32 st = getEntranceType();
         s32 f = 0;
         if (st == 1 || st == 3) {
-            if ((unk_231 & 4) != 0) {
+            if ((colliderFlags & 4) != 0) {
                 if (vfunc_8c() == 0) {
                     clearTalkStartMode();
-                    unk_27c = 1;
+                    closedTalk = 1;
                 } else {
                     clearTalkStartMode();
-                    unk_27c = 0;
+                    closedTalk = 0;
                 }
                 TalkRequest_AddPlayerTalk6(this, 0);
                 f = 1;
             }
         }
-        if ((unk_231 & 2) != 0 && f == 0) {
+        if ((colliderFlags & 2) != 0 && f == 0) {
             s32 a = TouchPick_GetTappedObject(Scene_GetTouchPicker(), 0, 0);
             s32 b = (s32)PlayerActor_GetActor(4);
             if (b != 0 && b == a) {
                 if (vfunc_8c() == 0) {
                     clearTalkStartMode();
-                    unk_27c = 1;
+                    closedTalk = 1;
                 } else {
                     clearTalkStartMode();
-                    unk_27c = 0;
+                    closedTalk = 0;
                 }
                 TalkRequest_AddPlayerTalk6(this, 0);
             }
@@ -1640,15 +1640,15 @@ BOOL BuildingActor::enterDoorOpenIn() {
             s32 m = 0;
             u16 v[3];
             BOOL ok;
-            if (Item_IsFurniture(&unk_132)) {
+            if (Item_IsFurniture(&itemId)) {
                 v[0] = 0x500d;
-                if (Item_GetFurnitureIndex(&unk_132) == Item_GetFurnitureIndex(&v[0])) {
+                if (Item_GetFurnitureIndex(&itemId) == Item_GetFurnitureIndex(&v[0])) {
                     ok = TRUE;
                 } else {
                     ok = FALSE;
                 }
             } else {
-                if (unk_132 == 0x500d) {
+                if (itemId == 0x500d) {
                     ok = TRUE;
                 } else {
                     ok = FALSE;
@@ -1657,15 +1657,15 @@ BOOL BuildingActor::enterDoorOpenIn() {
             if (ok) {
                 m = 1;
             } else {
-                if (Item_IsFurniture(&unk_132)) {
+                if (Item_IsFurniture(&itemId)) {
                     v[1] = 0x5000;
-                    if (Item_GetFurnitureIndex(&unk_132) == Item_GetFurnitureIndex(&v[1])) {
+                    if (Item_GetFurnitureIndex(&itemId) == Item_GetFurnitureIndex(&v[1])) {
                         ok = TRUE;
                     } else {
                         ok = FALSE;
                     }
                 } else {
-                    if (unk_132 == 0x5000) {
+                    if (itemId == 0x5000) {
                         ok = TRUE;
                     } else {
                         ok = FALSE;
@@ -1674,15 +1674,15 @@ BOOL BuildingActor::enterDoorOpenIn() {
                 if (ok) {
                     m = 2;
                 } else {
-                    if (Item_IsFurniture(&unk_132)) {
+                    if (Item_IsFurniture(&itemId)) {
                         v[2] = 0x500c;
-                        if (Item_GetFurnitureIndex(&unk_132) == Item_GetFurnitureIndex(&v[2])) {
+                        if (Item_GetFurnitureIndex(&itemId) == Item_GetFurnitureIndex(&v[2])) {
                             ok = TRUE;
                         } else {
                             ok = FALSE;
                         }
                     } else {
-                        if (unk_132 == 0x500c) {
+                        if (itemId == 0x500c) {
                             ok = TRUE;
                         } else {
                             ok = FALSE;
@@ -1722,15 +1722,15 @@ BOOL BuildingActor::enterDoorOpenOut() {
             s32 m = 0;
             u16 v[3];
             BOOL ok;
-            if (Item_IsFurniture(&unk_132)) {
+            if (Item_IsFurniture(&itemId)) {
                 v[0] = 0x500d;
-                if (Item_GetFurnitureIndex(&unk_132) == Item_GetFurnitureIndex(&v[0])) {
+                if (Item_GetFurnitureIndex(&itemId) == Item_GetFurnitureIndex(&v[0])) {
                     ok = TRUE;
                 } else {
                     ok = FALSE;
                 }
             } else {
-                if (unk_132 == 0x500d) {
+                if (itemId == 0x500d) {
                     ok = TRUE;
                 } else {
                     ok = FALSE;
@@ -1739,15 +1739,15 @@ BOOL BuildingActor::enterDoorOpenOut() {
             if (ok) {
                 m = 1;
             } else {
-                if (Item_IsFurniture(&unk_132)) {
+                if (Item_IsFurniture(&itemId)) {
                     v[1] = 0x5000;
-                    if (Item_GetFurnitureIndex(&unk_132) == Item_GetFurnitureIndex(&v[1])) {
+                    if (Item_GetFurnitureIndex(&itemId) == Item_GetFurnitureIndex(&v[1])) {
                         ok = TRUE;
                     } else {
                         ok = FALSE;
                     }
                 } else {
-                    if (unk_132 == 0x5000) {
+                    if (itemId == 0x5000) {
                         ok = TRUE;
                     } else {
                         ok = FALSE;
@@ -1756,15 +1756,15 @@ BOOL BuildingActor::enterDoorOpenOut() {
                 if (ok) {
                     m = 2;
                 } else {
-                    if (Item_IsFurniture(&unk_132)) {
+                    if (Item_IsFurniture(&itemId)) {
                         v[2] = 0x500c;
-                        if (Item_GetFurnitureIndex(&unk_132) == Item_GetFurnitureIndex(&v[2])) {
+                        if (Item_GetFurnitureIndex(&itemId) == Item_GetFurnitureIndex(&v[2])) {
                             ok = TRUE;
                         } else {
                             ok = FALSE;
                         }
                     } else {
-                        if (unk_132 == 0x500c) {
+                        if (itemId == 0x500c) {
                             ok = TRUE;
                         } else {
                             ok = FALSE;
@@ -1798,7 +1798,7 @@ BOOL BuildingActor::enterDoorSlideOpen() {
     void *r = (void *)func_ov009_0225d708();
     if (r) {
         BlendAnimModel_initAnim(unk_138, r, 1, 0x1000, 0, 0);
-        if (Item_IsNookShop(&unk_132)) {
+        if (Item_IsNookShop(&itemId)) {
             ((BuildingSeEmitter *)unk_234)->playSe(0x806);
         } else {
             ((BuildingSeEmitter *)unk_234)->playSe(0x808);
@@ -1829,7 +1829,7 @@ void BuildingActor::execDoorSlideClose() {
     if (unk_42 != 0) {
         unk_42--;
         if (unk_42 == 0) {
-            if (Item_IsNookShop(&unk_132)) {
+            if (Item_IsNookShop(&itemId)) {
                 ((BuildingSeEmitter *)unk_234)->playSe(0x807);
             } else {
                 ((BuildingSeEmitter *)unk_234)->playSe(0x809);
@@ -1862,7 +1862,7 @@ BOOL BuildingActor::setEntryState(s32 a) {
     };
     if (a < 9) {
         if ((this->*tbl[a])()) {
-            unk_278 = a;
+            entryState = a;
             return TRUE;
         }
     }
@@ -1877,8 +1877,8 @@ void BuildingActor::updateEntryState() {
         &BuildingActor::execEntryWarp, &BuildingActor::execEntry07,
         &BuildingActor::execEntry08
     };
-    if (unk_278 < 9) {
-        (this->*tbl[unk_278])();
+    if (entryState < 9) {
+        (this->*tbl[entryState])();
     }
 }
 
@@ -1887,23 +1887,23 @@ BOOL BuildingActor::enterEntryIdle() { return TRUE; }
 void BuildingActor::execEntryIdle() {}
 
 BOOL BuildingActor::enterEntryCheck() {
-    if (unk_27c == 0) {
-        BuildingOccupancy_RequestEnter(unk_132);
+    if (closedTalk == 0) {
+        BuildingOccupancy_RequestEnter(itemId);
     }
-    unk_232.f1 = 0;
-    unk_233 = 0;
+    entryFlags.f1 = 0;
+    visitRefused = 0;
     return TRUE;
 }
 
 BOOL BuildingActor::execEntryCheck() {
-    if (unk_27c == 0) {
-        s32 r = BuildingOccupancy_GetAnswer(unk_132);
+    if (closedTalk == 0) {
+        s32 r = BuildingOccupancy_GetAnswer(itemId);
         if (r != 0) {
             s32 v = (r == 2) ? 1 : 0;
-            u8 *p = (u8 *)&unk_232;
+            u8 *p = (u8 *)&entryFlags;
             *p = (*p & ~2) | ((v & 1) << 1);
-            unk_233 = (r == 3) ? 1 : 0;
-            if (unk_232.f1 != 0 || unk_233 != 0) {
+            visitRefused = (r == 3) ? 1 : 0;
+            if (entryFlags.f1 != 0 || visitRefused != 0) {
                 setEntryState(2);
             } else if (getEntranceType() == 1) {
                 setEntryState(7);
@@ -1995,18 +1995,18 @@ void BuildingActor::execEntry05() {
 }
 
 BOOL BuildingActor::enterEntryWarp() {
-    unk_27e = 0;
+    warpTimer = 0;
     return TRUE;
 }
 
 void BuildingActor::execEntryWarp() {
-    unk_27e = unk_27e + 1;
+    warpTimer = warpTimer + 1;
     getEntranceType();
     u32 lim = 0x14;
     if (getEntranceType() == 1) {
         lim += 0xc;
     }
-    if (unk_27e >= lim) {
+    if (warpTimer >= lim) {
         s32 r = getInteriorScene();
         s16 ang;
         Unk_ov009_0225b880_Vec3 v;
@@ -2016,10 +2016,10 @@ void BuildingActor::execEntryWarp() {
                 v.z = v.z + 0x1000;
                 void *o = Scene_GetWarpRequest();
                 s32 k = Scene_GetCurrent();
-                Scene_SetTownReturnPos(o, k, &v, 0xf000000, (s16)(ang + 0x8000), unk_228, unk_22c);
+                Scene_SetTownReturnPos(o, k, &v, 0xf000000, (s16)(ang + 0x8000), gridX, gridZ);
                 getEntranceType();
                 Building_SetLastEntranceType();
-                unk_232.f0 = 1;
+                entryFlags.f0 = 1;
             }
         }
     }
@@ -2056,7 +2056,7 @@ void BuildingActor::execEntry08() {
     }
 }
 
-Unk_ov009_0225b880_Vec3 *BuildingActor::getInteractionPos() { return &unk_2a4; }
+Unk_ov009_0225b880_Vec3 *BuildingActor::getInteractionPos() { return &entryPos; }
 
 BOOL BuildingActor::vfunc_48(Character *a) {
     if (a == NULL) {
@@ -2065,20 +2065,20 @@ BOOL BuildingActor::vfunc_48(Character *a) {
     s32 d = func_020e780c((s16)(rotY + 0x8000), a->rotY);
     if (d <= 0x1000) {
         if (getEntranceType() != 0) {
-            if ((unk_231 & 8) != 0 && getEntranceType() == 2) {
+            if ((colliderFlags & 8) != 0 && getEntranceType() == 2) {
                 if (vfunc_8c() == 0) {
                     clearTalkStartMode();
-                    unk_27c = 1;
+                    closedTalk = 1;
                     return TRUE;
                 }
                 clearTalkStartMode();
-                unk_27c = 0;
+                closedTalk = 0;
                 return TRUE;
             }
         } else if (vfunc_8c() == 0) {
             s32 r = func_020e9650(a->getInteractionPos(), getInteractionPos());
             clearTalkStartMode();
-            unk_27c = 1;
+            closedTalk = 1;
             if (r >= 0x3000) {
                 return FALSE;
             }
@@ -2091,15 +2091,15 @@ BOOL BuildingActor::vfunc_48(Character *a) {
 
 void BuildingActor::onMessageEnd() {
     BOOL ok;
-    if (Item_IsFurniture(&unk_132)) {
+    if (Item_IsFurniture(&itemId)) {
         u16 v = 0x500a;
-        if (Item_GetFurnitureIndex(&unk_132) == Item_GetFurnitureIndex(&v)) {
+        if (Item_GetFurnitureIndex(&itemId) == Item_GetFurnitureIndex(&v)) {
             ok = TRUE;
         } else {
             ok = FALSE;
         }
     } else {
-        if (unk_132 == 0x500a) {
+        if (itemId == 0x500a) {
             ok = TRUE;
         } else {
             ok = FALSE;
@@ -2123,20 +2123,20 @@ void BuildingActor::vfunc_80() {}
 void BuildingActor::vfunc_84() {}
 
 void BuildingActor::updateMatrix() {
-    if (unk_194 != NULL) {
+    if (modelRes != NULL) {
         updateBaseMatrix(0);
         AnimModel_drawAnimated(unk_138, 0);
-        Unk_ov009_0225bc88_Blk t = unk_19c;
+        Unk_ov009_0225bc88_Blk t = baseMatrix;
         updateShadows(&t);
     }
 }
 
 BOOL BuildingActor::getDoorPos(Unk_ov009_0225b880_Vec3 *out, s16 *ang) {
-    if (unk_288 != NULL && unk_28c != 0) {
-        s32 a = func_020e7b98(unk_288->unk_28, unk_288->unk_30);
-        s32 t0 = func_01ffcb0c(0x1000, unk_288->unk_30);
+    if (colliders != NULL && colliderCount != 0) {
+        s32 a = func_020e7b98(colliders->normal, colliders->normalZ);
+        s32 t0 = func_01ffcb0c(0x1000, colliders->normalZ);
         Unk_ov009_0225b880_Vec3 v;
-        v.x = func_01ffcb0c(0x1000, unk_288->unk_28);
+        v.x = func_01ffcb0c(0x1000, colliders->normal);
         v.y = 0;
         v.z = t0;
         if (ang != NULL) {
@@ -2144,7 +2144,7 @@ BOOL BuildingActor::getDoorPos(Unk_ov009_0225b880_Vec3 *out, s16 *ang) {
         }
         if (out != NULL) {
             Unk_ov009_0225b880_Vec3 r;
-            func_01ffd070(&r, TriangleTrigger_getCenter(unk_288), &v);
+            func_01ffd070(&r, TriangleTrigger_getCenter(colliders), &v);
             out->x = r.x;
             out->y = r.y;
             out->z = r.z;
@@ -2162,7 +2162,7 @@ BOOL BuildingActor::getDoorPos(Unk_ov009_0225b880_Vec3 *out, s16 *ang) {
 s32 BuildingActor::getInteriorScene(){
     u32 v;
     BOOL in = FALSE;
-    v = unk_132;
+    v = itemId;
     if (v >= 0x5000 && v <= 0x5021) {
         in = TRUE;
     }
@@ -2181,7 +2181,7 @@ s32 BuildingActor::getInteriorScene(){
 s32 BuildingActor::vfunc_a0(){
     u32 v;
     BOOL in = FALSE;
-    v = unk_132;
+    v = itemId;
     if (v >= 0x5000 && v <= 0x5021) {
         in = TRUE;
     }
@@ -2222,14 +2222,14 @@ BOOL BuildingActor::isOffscreen() {
 }
 
 void BuildingActor::updateOffscreen() {
-    unk_231 = unk_231 & ~1;
+    colliderFlags = colliderFlags & ~1;
     if (isOffscreen()) {
-        unk_231 = unk_231 | 1;
+        colliderFlags = colliderFlags | 1;
     }
 }
 
 BOOL BuildingActor::isDoorIdle() {
-    if (unk_130 == 0) {
+    if (doorState == 0) {
         return TRUE;
     }
     return FALSE;
@@ -2249,7 +2249,7 @@ BOOL BuildingActor::openDoorForEntry() {
 }
 
 BOOL BuildingActor::tryOpenDoorForEntry() {
-    if (unk_278 == 0) {
+    if (entryState == 0) {
         return openDoorForEntry();
     }
     return FALSE;
@@ -2269,23 +2269,23 @@ BOOL BuildingActor::openDoorForExit() {
 }
 
 BOOL BuildingActor::tryOpenDoorForExit() {
-    if (unk_278 == 0) {
+    if (entryState == 0) {
         return openDoorForExit();
     }
     return FALSE;
 }
 
-u16 *BuildingActor::getItemId() { return &unk_132; }
+u16 *BuildingActor::getItemId() { return &itemId; }
 
-u32 BuildingActor::getGridX() { return unk_228; }
+u32 BuildingActor::getGridX() { return gridX; }
 
-u32 BuildingActor::getGridZ() { return unk_22c; }
+u32 BuildingActor::getGridZ() { return gridZ; }
 
 void BuildingActor::callIsLit() { BuildingLights_isLit(unk_1f0); }
 
 
 BuildingSeEmitter::BuildingSeEmitter() {
-    unk_40 = 0;
+    isActive = 0;
 }
 
 extern "C" void *_ZN12Unk_0213b9c4D1Ev(void *p) {
@@ -2295,14 +2295,14 @@ extern "C" void *_ZN12Unk_0213b9c4D1Ev(void *p) {
 }
 
 void BuildingSeEmitter::activate() {
-    if (unk_40 == 0) {
+    if (isActive == 0) {
         func_02003ecc(this);
-        unk_40 = 1;
+        isActive = 1;
     }
 }
 
 void BuildingSeEmitter::setPosition(Unk_ov009_0225b880_Vec3 *v) {
-    if (unk_40 != 0) {
+    if (isActive != 0) {
         Unk_ov009_0225b880_Vec3 t;
         t.x = v->x;
         t.y = v->y;
@@ -2312,20 +2312,20 @@ void BuildingSeEmitter::setPosition(Unk_ov009_0225b880_Vec3 *v) {
 }
 
 void BuildingSeEmitter::deactivate() {
-    if (unk_40 != 0) {
+    if (isActive != 0) {
         func_02003e50(this);
-        unk_40 = 0;
+        isActive = 0;
     }
 }
 
 void BuildingSeEmitter::playSe(u32 a) {
-    if (unk_40 != 0) {
+    if (isActive != 0) {
         func_02003e70(this, a, 0x7f, 0);
     }
 }
 
 void BuildingSeEmitter::playSeHeld(u32 a) {
-    if (unk_40 != 0) {
+    if (isActive != 0) {
         Snd_SeEmitterPlayHeld(this, a, 0x7f, 0);
     }
 }
@@ -2344,9 +2344,9 @@ BOOL BuildingActor::vfunc_b8(Unk_ov009_0225bc88_Blk *out) { return 0; }
 // ---------------------------------------------------------------- data
 
 struct Unk_ov009_0225e260_Entry {
-    void (*unk_00)();
-    u16 unk_04;
-    u16 unk_06;
+    void (*factory)();
+    u16 executePriority;
+    u16 drawPriority;
     s32 unk_08[4];
 };
 

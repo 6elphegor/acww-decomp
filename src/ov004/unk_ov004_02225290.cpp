@@ -41,9 +41,9 @@ struct Unk_ov004_02224ee4_Vec {
 
 struct Unk_0203e5d0_Node {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ void *unk_0c;
+    /* 0x04 */ Unk_0203e5d0_Node *next;
+    /* 0x08 */ u32 charId;
+    /* 0x0c */ void *owner;
 };
 
 class Actor : public GameProc {
@@ -141,11 +141,11 @@ public:
     void RoomObjRes_Load(const char *s);
     void *RoomObjRes_GetModel();
 
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08[13];
-    u32 unk_3c[13];
-    u32 unk_70[13];
+    u32 archive;
+    u32 model;
+    u32 bcas[13];
+    u32 bmas[13];
+    u32 btas[13];
 };
 
 class RoomObjTex {
@@ -156,8 +156,8 @@ public:
     void RoomObjTex_Load(const char *s);
     u32 RoomObjTex_Get();
 
-    u32 unk_00;
-    u8 unk_04;
+    u32 texture;
+    u8 syncState;
 };
 
 class RoomObjSe {
@@ -169,7 +169,7 @@ public:
     void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v);
     void RoomObj_ActivateSe();
 
-    u32 unk_00[0x10];
+    u32 emitter[0x10];
 };
 
 // ---- second base at +0x290 (see src/main/unk_02065f14.cpp)
@@ -223,7 +223,7 @@ public:
 struct BoxCollider {
     virtual void onEdgeContact();
     u8 pad_04[0x94];
-    u8 unk_98;
+    u8 isActive;
 
     BoxCollider();
     ~BoxCollider();
@@ -272,10 +272,10 @@ public:
     void loadResources(char *a, char *b);
     virtual void vfunc_20(u32 a);
 
-    /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ RoomObjRes unk_1a4;
-    /* 0x248 */ RoomObjTex unk_248;
-    /* 0x250 */ RoomObjSe unk_250;
+    /* 0xec */ AnimModel model;
+    /* 0x1a4 */ RoomObjRes res;
+    /* 0x248 */ RoomObjTex tex;
+    /* 0x250 */ RoomObjSe se;
 };
 
 class BarberMachine : public RoomObjActor, public TalkMsgRequest {
@@ -301,8 +301,8 @@ public:
     BOOL enterState01();
     BOOL enterState00();
 
-    /* 0x2d4 */ u32 unk_2d4[0x27]; // a BoxCollider (ctor/dtor called by hand: the original destroys it with D2)
-    /* 0x370 */ u8 unk_370;
+    /* 0x2d4 */ u32 collider[0x27]; // a BoxCollider (ctor/dtor called by hand: the original destroys it with D2)
+    /* 0x370 */ u8 isStartedLocally;
 };
 
 typedef RoomObjActor M;
@@ -310,9 +310,9 @@ typedef Unk_ov004_02224ee4_Vec Vec;
 
 struct Unk_ov004_Scene_Entry {
     void *(*unk_00)();
-    u16 unk_04;
-    u16 unk_06;
-    s32 unk_08[4];
+    u16 executePriority;
+    u16 drawPriority;
+    s32 actorParams[4];
 };
 
 extern "C" BarberMachine *BarberMachine_Create();
@@ -333,25 +333,25 @@ extern "C" BarberMachine *BarberMachine_Create() {
 
 // @2225754
 BarberMachine::BarberMachine() {
-    _ZN11BoxColliderC1Ev(unk_2d4);
+    _ZN11BoxColliderC1Ev(collider);
 }
 
 // @22256d4
 BarberMachine::~BarberMachine() {
-    _ZN11BoxColliderD2Ev(unk_2d4);
+    _ZN11BoxColliderD2Ev(collider);
 }
 
 // @222564c
 BOOL BarberMachine::vfunc_00() {
     sBarberMachine = this;
-    unk_370 = 0;
+    isStartedLocally = 0;
     loadResources("/roomObj/obj_b_machine.arc", "/roomObj/obj_b_machine.nsbtx");
     initCollision();
-    if (RoomObjRes_GetBca(&unk_1a4, 0) != 0) {
-        if (unk_ec.allocAnmObj(gBgHeap) != 0) {
-            s32 r = RoomObjRes_GetBca(&unk_1a4, 0);
-            _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
-            unk_ec.attachAnim();
+    if (RoomObjRes_GetBca(&res, 0) != 0) {
+        if (model.allocAnmObj(gBgHeap) != 0) {
+            s32 r = RoomObjRes_GetBca(&res, 0);
+            _ZN14BlendAnimModel8initAnimEiiitt(&model, r, 1, 0x1000, 0, 0);
+            model.attachAnim();
         }
     }
     return TRUE;
@@ -365,7 +365,7 @@ BOOL BarberMachine::onExecute() {
 
 // @2225628
 BOOL BarberMachine::onDraw() {
-    unk_ec.drawAnimated(0);
+    model.drawAnimated(0);
     return TRUE;
 }
 
@@ -396,7 +396,7 @@ BOOL BarberMachine::changeSyncState(u32 idx) {
                         &BarberMachine::enterState03};
     if (idx < 4) {
         if ((this->*tbl[idx])() != 0) {
-            unk_248.unk_04 = idx;
+            tex.syncState = idx;
             return TRUE;
         }
     }
@@ -408,7 +408,7 @@ void BarberMachine::updateState() {
     typedef void (BarberMachine::*Fn)();
     static Fn tbl[4] = {&BarberMachine::updateState00, &BarberMachine::updateState01, &BarberMachine::updateState02,
                         &BarberMachine::updateState03};
-    u32 i = unk_248.unk_04;
+    u32 i = tex.syncState;
     if (i < 4) {
         (this->*tbl[i])();
     }
@@ -416,8 +416,8 @@ void BarberMachine::updateState() {
 
 // @222548c
 BOOL BarberMachine::enterState00() {
-    s32 r = RoomObjRes_GetBca(&unk_1a4, 0);
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
+    s32 r = RoomObjRes_GetBca(&res, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&model, r, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
@@ -427,77 +427,77 @@ void BarberMachine::updateState00() {
 
 // @2225440
 BOOL BarberMachine::enterState01() {
-    s32 r = RoomObjRes_GetBca(&unk_1a4, 0);
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
-    RoomObj_PlaySe(&unk_250, 0x4d8);
+    s32 r = RoomObjRes_GetBca(&res, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&model, r, 1, 0x1000, 0, 0);
+    RoomObj_PlaySe(&se, 0x4d8);
     return TRUE;
 }
 
 // @22253fc
 void BarberMachine::updateState01() {
-    if (unk_ec.isFinished() != 0) {
-        if (unk_370 == 0) {
+    if (model.isFinished() != 0) {
+        if (isStartedLocally == 0) {
             changeSyncState(2);
         } else {
             RoomObjSync_ChangeState(this, 2);
         }
     } else {
-        unk_ec.stepAnim();
+        model.stepAnim();
     }
 }
 
 // @22253c4
 BOOL BarberMachine::enterState02() {
-    s32 r = RoomObjRes_GetBca(&unk_1a4, 1);
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
+    s32 r = RoomObjRes_GetBca(&res, 1);
+    _ZN14BlendAnimModel8initAnimEiiitt(&model, r, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 // @2225380
 void BarberMachine::updateState02() {
-    if (unk_ec.isFinished() != 0) {
-        if (unk_370 == 0) {
+    if (model.isFinished() != 0) {
+        if (isStartedLocally == 0) {
             changeSyncState(3);
         } else {
             RoomObjSync_ChangeState(this, 3);
         }
     } else {
-        unk_ec.stepAnim();
+        model.stepAnim();
     }
 }
 
 // @222532c
 BOOL BarberMachine::enterState03() {
-    s32 r = RoomObjRes_GetBca(&unk_1a4, 2);
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, r, 1, 0x1000, 0, 0);
-    RoomObj_PlaySe(&unk_250, 0x4d9);
-    unk_370 = 0;
+    s32 r = RoomObjRes_GetBca(&res, 2);
+    _ZN14BlendAnimModel8initAnimEiiitt(&model, r, 1, 0x1000, 0, 0);
+    RoomObj_PlaySe(&se, 0x4d9);
+    isStartedLocally = 0;
     return TRUE;
 }
 
 // @22252fc
 void BarberMachine::updateState03() {
-    if (unk_ec.isFinished() != 0) {
+    if (model.isFinished() != 0) {
         changeSyncState(0);
     } else {
-        unk_ec.stepAnim();
+        model.stepAnim();
     }
 }
 
 // @22252cc
 void BarberMachine::initCollision() {
-    BoxCollider_Register(&unk_2d4, 0x2000, 0x4000, 0x2000, position, 0, 0);
+    BoxCollider_Register(&collider, 0x2000, 0x4000, 0x2000, position, 0, 0);
 }
 
 // @22252bc
 void BarberMachine::removeCollision() {
-    BoxCollider_Unregister(&unk_2d4);
+    BoxCollider_Unregister(&collider);
 }
 
 // @2225290
 extern "C" void BarberMachine_Start() {
     if (RoomObjSync_ChangeState(sBarberMachine, 1) != 0) {
-        sBarberMachine->unk_370 = 1;
+        sBarberMachine->isStartedLocally = 1;
     }
 }
 

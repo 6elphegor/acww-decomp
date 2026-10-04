@@ -37,14 +37,14 @@ struct Unk_ov003_0222eb10_Fl {
 
 struct Unk_ov003_0222eb10_Obj {
     u8 pad_00[8];
-    u32 unk_08;
+    u32 param;
     u8 pad_0c[0x2e4 - 0xc];
-    u8 unk_2e4;
+    u8 colliderContact;
     u8 pad_2e5[0x374 - 0x2e5];
-    Unk_ov003_0222eb10_Fl unk_374;
+    Unk_ov003_0222eb10_Fl snowballFlags;
     u8 pad_376[0x398 - 0x376];
-    s32 unk_398;
-    s32 unk_39c;
+    s32 snowballState;
+    s32 talkAct;
 };
 
 struct Unk_ov003_0222ed20_V3 {
@@ -53,7 +53,7 @@ struct Unk_ov003_0222ed20_V3 {
 
 struct Unk_ov003_0222ed20_Sess {
     u8 pad_00[0x64];
-    u32 unk_64;
+    u32 myAid;
 };
 
 struct Unk_ov003_0222ed20_St {
@@ -127,7 +127,7 @@ Unk_ov003_0222eb10_Obj *sSnowballs[8];
 // ---- functions ----
 
 extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
-    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0 || GroundSeason_IsSnow() == 0) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) != 0 || GroundSeason_IsSnow() == 0) {
         LooseSnowballs_Get();
         LooseSnowballs_reset();
         return;
@@ -229,7 +229,7 @@ extern "C" void SnowballSpawner_SpawnSnowmen(void *self) {
 }
 
 extern "C" BOOL Snowball_Register(Unk_ov003_0222eb10_Obj *p) {
-    Unk_ov003_0222eb10_Obj **s = &sSnowballs[p->unk_08 & 7];
+    Unk_ov003_0222eb10_Obj **s = &sSnowballs[p->param & 7];
     if (*s != 0) {
         return FALSE;
     }
@@ -238,7 +238,7 @@ extern "C" BOOL Snowball_Register(Unk_ov003_0222eb10_Obj *p) {
 }
 
 extern "C" BOOL Snowball_Unregister(Unk_ov003_0222eb10_Obj *p) {
-    Unk_ov003_0222eb10_Obj **s = &sSnowballs[p->unk_08 & 7];
+    Unk_ov003_0222eb10_Obj **s = &sSnowballs[p->param & 7];
     if (*s == p) {
         *s = 0;
         return TRUE;
@@ -250,7 +250,7 @@ extern "C" Unk_ov003_0222eb10_Obj *Snowball_FindByParam(u32 id) {
     u32 i;
     for (i = 0; i < 8; i++) {
         Unk_ov003_0222eb10_Obj *p = sSnowballs[i];
-        if (p != 0 && id == p->unk_08) {
+        if (p != 0 && id == p->param) {
             return p;
         }
     }
@@ -272,16 +272,16 @@ extern "C" BOOL Snowball_TryPushAny(void *self, s32 a, s32 b, s32 c, s32 d) {
 extern "C" void *Snowball_GetLooseBall(u32 id) {
     Unk_ov003_0222eb10_Obj *o = Snowball_FindByParam(id & 1);
     if (o != 0) {
-        if (o->unk_39c == 0) {
-            if (o->unk_398 == 0) {
+        if (o->talkAct == 0) {
+            if (o->snowballState == 0) {
                 BOOL bit;
-                if (o->unk_374.e) {
+                if (o->snowballFlags.e) {
                     bit = TRUE;
                 } else {
                     bit = FALSE;
                 }
                 if (bit == 0) {
-                    if (o->unk_2e4 == 0) {
+                    if (o->colliderContact == 0) {
                         return o;
                     }
                 }

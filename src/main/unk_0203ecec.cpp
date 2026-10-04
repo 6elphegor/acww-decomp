@@ -5,7 +5,7 @@ struct TalkRequestEntry {
     /* 0x00 */ u8 unk_00[0x0c];
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
-    /* 0x14 */ u8 unk_14;
+    /* 0x14 */ u8 inUse;
     /* 0x15 */ u8 unk_15[7];
 };
 

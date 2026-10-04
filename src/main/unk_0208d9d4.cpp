@@ -35,8 +35,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class ScrollKnob : public UiWidget {
@@ -47,10 +47,10 @@ public:
     void getAnimOffset(s32 *a, s32 *b);
 
     /* 0x0c */ s32 layer1;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ SpriteAnim unk_14;
+    /* 0x10 */ s32 posY;
+    /* 0x14 */ SpriteAnim layerAnim1;
     /* 0x28 */ SpriteAnim priority;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x3c */ s32 state;
     /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
@@ -60,16 +60,16 @@ enum Unk_0208d9d4_E { Unk_0208d9d4_E0 = 0 };
 void ScrollKnob::getAnimOffset(s32 *a, s32 *b) {
     s32 x = 0;
     s32 y = 0;
-    if (unk_3c == 2) {
-        x = unk_14.getFrameX(-1);
-        x -= unk_14.getFrameX(0);
-        s32 t = unk_14.getFrameY(-1);
-        y = t - unk_14.getFrameY(0);
-    } else if (unk_3c == 3) {
-        x = unk_14.getFrameX(0);
-        x -= unk_14.getFrameX(-1);
-        s32 t = unk_14.getFrameY(0);
-        y = t - unk_14.getFrameY(-1);
+    if (state == 2) {
+        x = layerAnim1.getFrameX(-1);
+        x -= layerAnim1.getFrameX(0);
+        s32 t = layerAnim1.getFrameY(-1);
+        y = t - layerAnim1.getFrameY(0);
+    } else if (state == 3) {
+        x = layerAnim1.getFrameX(0);
+        x -= layerAnim1.getFrameX(-1);
+        s32 t = layerAnim1.getFrameY(0);
+        y = t - layerAnim1.getFrameY(-1);
     }
     *a = x;
     *b = y;
@@ -82,15 +82,15 @@ void ScrollKnob::setState(s32 idx) {
     a = (Unk_0208d9d4_E)sScrollKnobSeqIds[idx];
     n = (Unk_0208d9d4_E)(a + 1);
     f = sScrollKnobPlayOnce[idx];
-    unk_3c = idx;
-    unk_14.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
-    unk_14.setPlayOnce(f);
-    unk_14.restart();
+    state = idx;
+    layerAnim1.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
+    layerAnim1.setPlayOnce(f);
+    layerAnim1.restart();
     priority.setSeq((SpriteAnimSeq *)(data_020d5b0c + n * 8));
     priority.setPlayOnce(f);
     priority.restart();
     if (idx == 1) {
-        unk_14.setSpeed(0);
+        layerAnim1.setSpeed(0);
         priority.setSpeed(0);
     }
 }

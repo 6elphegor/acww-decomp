@@ -40,8 +40,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class ScrollKnob : public UiWidget {
@@ -56,10 +56,10 @@ public:
     void moveTo(s32 x, s32 y);
 
     /* 0x0c */ s32 layer1;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ SpriteAnim unk_14;
+    /* 0x10 */ s32 posY;
+    /* 0x14 */ SpriteAnim layerAnim1;
     /* 0x28 */ SpriteAnim priority;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x3c */ s32 state;
     /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
@@ -72,41 +72,41 @@ public:
     void updateHidden();
 
     /* 0x00 */ u8 unk_00[0x0c];
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ s32 unk_20;
+    /* 0x0c */ SpriteAnim anim;
+    /* 0x20 */ s32 state;
 };
 
 extern "C" BOOL HudUnkIcon_CanShow();
 
 void HudUnkIcon::updateHidden() {
     if (HudUnkIcon_CanShow() != 0) {
-        unk_20 = 1;
-        unk_0c.setSeq((SpriteAnimSeq *)data_020d468c);
-        unk_0c.setPlayOnce(1);
-        unk_0c.restart();
+        state = 1;
+        anim.setSeq((SpriteAnimSeq *)data_020d468c);
+        anim.setPlayOnce(1);
+        anim.restart();
     }
 }
 
 void HudUnkIcon::updateAppearing() {
-    unk_0c.update();
-    if (unk_0c.isFinished()) {
-        unk_20 = 2;
+    anim.update();
+    if (anim.isFinished()) {
+        state = 2;
     }
 }
 
 void HudUnkIcon::updateShown() {
     if (HudUnkIcon_CanShow() == 0) {
-        unk_20 = 3;
-        unk_0c.setSeq((SpriteAnimSeq *)data_020d4694);
-        unk_0c.setPlayOnce(1);
-        unk_0c.restart();
+        state = 3;
+        anim.setSeq((SpriteAnimSeq *)data_020d4694);
+        anim.setPlayOnce(1);
+        anim.restart();
     }
 }
 
 void HudUnkIcon::updateHiding() {
-    unk_0c.update();
-    if (unk_0c.isFinished()) {
-        unk_20 = 0;
+    anim.update();
+    if (anim.isFinished()) {
+        state = 0;
     }
 }
 
@@ -126,8 +126,8 @@ extern "C" BOOL HudUnkIcon_CanShow() {
     return FALSE;
 }
 
-ScrollKnob::ScrollKnob(u32 flag) : layer1(0), unk_10(0) {
-    unk_3c = 0;
+ScrollKnob::ScrollKnob(u32 flag) : layer1(0), posY(0) {
+    state = 0;
     anim = flag;
     unk_44 = -1;
     setState(0);
@@ -137,15 +137,15 @@ ScrollKnob::~ScrollKnob() {
 }
 
 void ScrollKnob::draw() {
-    if (unk_3c != 0) {
-        void *h0 = unk_14.getCell();
+    if (state != 0) {
+        void *h0 = layerAnim1.getCell();
         void *h1 = priority.getCell();
-        s32 a = unk_14.getFrameX(-1);
-        s32 b = unk_14.getFrameY(-1);
+        s32 a = layerAnim1.getFrameX(-1);
+        s32 b = layerAnim1.getFrameY(-1);
         s32 c = priority.getFrameX(-1);
         s32 d = priority.getFrameY(-1);
         s32 bx = layer1 + getOriginX();
-        s32 by = unk_10 + getOriginY();
+        s32 by = posY + getOriginY();
         if (anim != 0) {
             Oam_DrawCell(0, h0, bx + a, by + b, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
             Oam_DrawCell(0, h1, bx + c, by + d, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
@@ -157,13 +157,13 @@ void ScrollKnob::draw() {
 }
 
 void ScrollKnob::vfunc_0c() {
-    if (unk_3c != 0) {
-        unk_14.update();
+    if (state != 0) {
+        layerAnim1.update();
         priority.update();
     }
 }
 
-void ScrollKnob::moveTo(s32 x, s32 y) { layer1 = x; unk_10 = y; }
+void ScrollKnob::moveTo(s32 x, s32 y) { layer1 = x; posY = y; }
 
 void ScrollKnob::setPriority(s32 v) { unk_44 = v; }
 

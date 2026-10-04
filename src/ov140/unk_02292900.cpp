@@ -190,7 +190,7 @@ typedef void (DistantTownsMenu::*Unk_ov140_02293e04_Fn)();
 
 class DistantTownsMenu : public MenuProc {
 public:
-    DistantTownsMenu() : unk_8e8(), unk_f0c(), unk_f70(), unk_10d4(), unk_16a0() {}
+    DistantTownsMenu() : listPanel(), cursor(), bottomButtons(), screenTask(), textLabels() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -261,32 +261,32 @@ public:
     void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ u8 *unk_94;
-    /* 0x098 */ s32 unk_98;
-    /* 0x09c */ s32 unk_9c;
-    /* 0x0a0 */ s32 unk_a0;
-    /* 0x0a4 */ s32 unk_a4;
-    /* 0x0a8 */ s32 unk_a8;
-    /* 0x0ac */ u8 unk_ac[0x800];
-    /* 0x8ac */ u16 unk_8ac;
-    /* 0x8ae */ u8 unk_8ae;
-    /* 0x8af */ u8 unk_8af[6];
-    /* 0x8b5 */ u8 unk_8b5[0x20];
-    /* 0x8d5 */ u8 unk_8d5[6];
-    /* 0x8db */ u8 unk_8db;
-    /* 0x8dc */ u8 unk_8dc;
-    /* 0x8dd */ u8 unk_8dd;
-    /* 0x8de */ u8 unk_8de;
-    /* 0x8df */ u8 unk_8df;
-    /* 0x8e0 */ u8 unk_8e0[6];
-    /* 0x8e6 */ u8 unk_8e6;
+    /* 0x094 */ u8 *slideY;
+    /* 0x098 */ s32 buttonsSlideY;
+    /* 0x09c */ s32 selectedRow;
+    /* 0x0a0 */ s32 confirmButtonPal;
+    /* 0x0a4 */ s32 quitButtonPal;
+    /* 0x0a8 */ s32 moreButtonPal;
+    /* 0x0ac */ u8 bgScreen[0x800];
+    /* 0x8ac */ u16 flags;
+    /* 0x8ae */ u8 returnState;
+    /* 0x8af */ u8 rowFilled[6];
+    /* 0x8b5 */ u8 listFriendIds[0x20];
+    /* 0x8d5 */ u8 rowFriendIds[6];
+    /* 0x8db */ u8 delayTimer;
+    /* 0x8dc */ u8 cursorSlot;
+    /* 0x8dd */ u8 page;
+    /* 0x8de */ u8 lastPage;
+    /* 0x8df */ u8 townCount;
+    /* 0x8e0 */ u8 rowIcons[6];
+    /* 0x8e6 */ u8 labelCount;
     /* 0x8e7 */ u8 unk_8e7;
-    /* 0x8e8 */ MenuTownListPanel unk_8e8;
-    /* 0xf0c */ MenuCursorBuf0 unk_f0c;
-    /* 0xf70 */ MenuBottomButtons unk_f70;
-    /* 0x10d4 */ BgVramTask unk_10d4;
+    /* 0x8e8 */ MenuTownListPanel listPanel;
+    /* 0xf0c */ MenuCursorBuf0 cursor;
+    /* 0xf70 */ MenuBottomButtons bottomButtons;
+    /* 0x10d4 */ BgVramTask screenTask;
     /* 0x10f8 */ u8 unk_10f8[0x16a0 - 0x10f8];
-    /* 0x16a0 */ LabelString unk_16a0[3];
+    /* 0x16a0 */ LabelString textLabels[3];
 };
 
 extern "C" {
@@ -372,32 +372,32 @@ BOOL DistantTownsMenu::vfunc_0c() {
 
 BOOL DistantTownsMenu::onDraw() {
     if (MenuCtrl_IsButtons()) {
-        unk_f0c.drawWrapped();
+        cursor.drawWrapped();
     }
     if (testFlags(1) == 0) {
         return FALSE;
     }
-    unk_f70.drawAt(unk_98);
-    u8 *base = unk_94 + 0x60;
+    bottomButtons.drawAt(buttonsSlideY);
+    u8 *base = slideY + 0x60;
     Oam_DrawCell(1, data_ov140_02293da4, 0x80, base, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    u32 a = unk_8e8.getCellList(5);
-    u32 b = unk_8e8.getCellList(6);
-    u32 c = unk_8e8.getCellList(7);
-    s32 v = unk_9c;
+    u32 a = listPanel.getCellList(5);
+    u32 b = listPanel.getCellList(6);
+    u32 c = listPanel.getCellList(7);
+    s32 v = selectedRow;
     if (v != -1) {
         Oam_DrawCell(1, data_ov140_02293dcc, 0x80, base + (v << 4), -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     Oam_DrawCell(1, data_ov140_02293e64, 0x80, base, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    Oam_DrawCell(1, (void *)a, 0x80, base, unk_a8, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    Oam_DrawCell(1, (void *)b, 0x80, base, unk_a4, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    Oam_DrawCell(1, (void *)c, 0x80, base, unk_a0, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    unk_8e8.drawTitle(0, (s32)unk_94);
+    Oam_DrawCell(1, (void *)a, 0x80, base, moreButtonPal, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, (void *)b, 0x80, base, quitButtonPal, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, (void *)c, 0x80, base, confirmButtonPal, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    listPanel.drawTitle(0, (s32)slideY);
     if (testFlags(0x20) == 0) {
         void *tbl[5] = {0, data_ov140_02293d40, data_ov140_02293d00, data_ov140_02293d80, data_ov140_02293d88};
         s32 z = 0;
         s32 i;
         for (i = 0; i < 6; base += 0x10, i++) {
-            void *t = tbl[unk_8e0[i]];
+            void *t = tbl[rowIcons[i]];
             if (t != 0) {
                 Oam_DrawCell(1, t, 0x80, base, -1, 2, 0x1000, 0x1000, z, -1, z, z);
             }
@@ -453,7 +453,7 @@ BOOL DistantTownsMenu::execClosed() {
         MenuCtrl_SetResult(0);
     } else {
         MenuCtrl_SetResult(1);
-        MenuCtrl_SetIndex(unk_8d5[unk_9c]);
+        MenuCtrl_SetIndex(rowFriendIds[selectedRow]);
     }
     MenuCtrl_ClearPtrArgs();
     ProcBase_RequestDelete(this);
@@ -464,7 +464,7 @@ void DistantTownsMenu::stateLoad() {
     DistantTownsMenu_SetupBgLayers();
     loadBgGfx();
     loadObjGfx();
-    unk_8e8.createLabels();
+    listPanel.createLabels();
     setTransitionState(1);
 }
 
@@ -505,52 +505,52 @@ void DistantTownsMenu::stateClosing() {
 
 void DistantTownsMenu::updateLayerSlide() {
     applySlideOffset(6, 0, 0);
-    unk_94 = (u8 *)getSlideOffsetY();
+    slideY = (u8 *)getSlideOffsetY();
 }
 
 void DistantTownsMenu::initDistantTowns() {
-    unk_8ac = 0;
-    unk_8e8.init(6, 0x7f);
+    flags = 0;
+    listPanel.init(6, 0x7f);
     s32 i;
     for (i = 0; i < 6; i++) {
-        unk_8af[i] = 0;
-        unk_8e0[i] = 0;
+        rowFilled[i] = 0;
+        rowIcons[i] = 0;
     }
     for (i = 0; i < 0x20; i++) {
-        unk_8b5[i] = 0xff;
+        listFriendIds[i] = 0xff;
     }
     selectRow(-1);
-    unk_a4 = 8;
-    unk_a8 = 9;
-    unk_8dc = 0;
-    unk_8dd = 0;
-    unk_8de = 0;
+    quitButtonPal = 8;
+    moreButtonPal = 9;
+    cursorSlot = 0;
+    page = 0;
+    lastPage = 0;
 }
 
 void DistantTownsMenu::releaseResources() {
-    unk_f70.freeTexts();
-    unk_8e8.release();
-    unk_10d4.cancel();
+    bottomButtons.freeTexts();
+    listPanel.release();
+    screenTask.cancel();
     resetTextLabels();
 }
 
 void DistantTownsMenu::preInputUpdate() {
     preStateUpdate();
-    unk_f0c.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void DistantTownsMenu::postInputUpdate() { postStateUpdate(); }
 
 void DistantTownsMenu::preStateUpdate() {
-    unk_10d4.cancel();
-    unk_f70.freeTexts();
-    unk_8e8.preStateUpdate();
+    screenTask.cancel();
+    bottomButtons.freeTexts();
+    listPanel.preStateUpdate();
     resetTextLabels();
 }
 
 void DistantTownsMenu::postStateUpdate() {
     flushBgScreen();
-    unk_8e8.flushPalette();
+    listPanel.flushPalette();
 }
 
 extern "C" void DistantTownsMenu_SetupBgLayers() {
@@ -564,21 +564,21 @@ extern "C" void DistantTownsMenu_SetupBgLayers() {
 }
 
 void DistantTownsMenu::loadBgGfx() {
-    unk_8e8.loadBgGfx();
-    unk_8e8.clearAllRows();
-    File_LoadToBuffer((void *)"menu/res/d0_bg.bsc", unk_ac, 0x800);
+    listPanel.loadBgGfx();
+    listPanel.clearAllRows();
+    File_LoadToBuffer((void *)"menu/res/d0_bg.bsc", bgScreen, 0x800);
     resetRowScreen();
 }
 
 void DistantTownsMenu::loadObjGfx() {
-    unk_8e8.loadObjGfx();
-    MenuButtons_LoadTextColors(&unk_f70);
+    listPanel.loadObjGfx();
+    MenuButtons_LoadTextColors(&bottomButtons);
 }
 
 void DistantTownsMenu::refreshFriendStatus() {
     u32 c = countListedFriends();
-    if (c != unk_8df) {
-        unk_8df = c;
+    if (c != townCount) {
+        townCount = c;
         drawTownCount();
         refreshPage();
         fadeRows(5);
@@ -605,11 +605,11 @@ void DistantTownsMenu::updateTouch() {
             if (x >= 0x5e && x < 0x9a) {
                 startQuit();
             } else if (x >= 0x9f && x < 0xdb) {
-                if (unk_a0 == 8) {
+                if (confirmButtonPal == 8) {
                     startConfirm();
                 }
             } else if (x >= 0x1d && x < 0x59) {
-                if (unk_a8 == 8) {
+                if (moreButtonPal == 8) {
                     nextPage();
                 }
             }
@@ -638,22 +638,22 @@ void DistantTownsMenu::updateButtons() {
 }
 
 void DistantTownsMenu::updateCursorMove() {
-    if (unk_f0c.isMoving() == 0) {
-        setMainState(unk_8ae);
+    if (cursor.isMoving() == 0) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void DistantTownsMenu::updateCursorPress() {
-    if (unk_f0c.isAnimDone()) {
-        u32 c = unk_8dc;
+    if (cursor.isAnimDone()) {
+        u32 c = cursorSlot;
         if (c == 6) {
-            if (unk_a8 != 8) {
+            if (moreButtonPal != 8) {
                 goto tail;
             }
             nextPage();
         } else if (c == 8) {
-            if (unk_a0 != 8) {
+            if (confirmButtonPal != 8) {
                 goto tail;
             }
             startConfirm();
@@ -676,20 +676,20 @@ void DistantTownsMenu::updateCursorPress() {
 }
 
 void DistantTownsMenu::updateCursorRelease() {
-    if (unk_f0c.isAnimDone()) {
+    if (cursor.isAnimDone()) {
         refreshCursor();
-        setMainState(unk_8ae);
+        setMainState(returnState);
         if (testFlags(8)) {
             clearFlags(8);
-            unk_8dc = 8;
+            cursorSlot = 8;
             moveCursorToTarget();
         }
     }
 }
 
 void DistantTownsMenu::updateCloseDelay() {
-    if (unk_8db != 0) {
-        unk_8db = unk_8db - 1;
+    if (delayTimer != 0) {
+        delayTimer = delayTimer - 1;
     } else {
         hideCursor();
         setPhase(1);
@@ -697,9 +697,9 @@ void DistantTownsMenu::updateCloseDelay() {
 }
 
 void DistantTownsMenu::updatePageFadeOut() {
-    if (unk_8db > 1) {
-        unk_8db = unk_8db - 1;
-        fadeRows(unk_8db);
+    if (delayTimer > 1) {
+        delayTimer = delayTimer - 1;
+        fadeRows(delayTimer);
     } else {
         fadeRows(0);
         refreshPage();
@@ -708,13 +708,13 @@ void DistantTownsMenu::updatePageFadeOut() {
 }
 
 void DistantTownsMenu::updatePageFadeIn() {
-    u32 t = unk_8db;
+    u32 t = delayTimer;
     if (t < 5) {
         fadeRows(t);
-        unk_8db++;
+        delayTimer++;
     } else {
         fadeRows(5);
-        unk_a8 = 8;
+        moreButtonPal = 8;
         if (MenuCtrl_IsTouch()) {
             startTouchInput();
         } else {
@@ -746,8 +746,8 @@ void DistantTownsMenu::resumeInput() {
 
 void DistantTownsMenu::startConfirm() {
     clearFlags(2);
-    unk_a0 = 10;
-    unk_8db = 5;
+    confirmButtonPal = 10;
+    delayTimer = 5;
     setTransitionState(3);
     setMainState(5);
     Snd_PlaySe(0x27);
@@ -755,8 +755,8 @@ void DistantTownsMenu::startConfirm() {
 
 void DistantTownsMenu::startQuit() {
     setFlags(2);
-    unk_a4 = 10;
-    unk_8db = 5;
+    quitButtonPal = 10;
+    delayTimer = 5;
     setTransitionState(3);
     setMainState(5);
     Snd_PlaySe(0x28);
@@ -765,13 +765,13 @@ void DistantTownsMenu::startQuit() {
 void DistantTownsMenu::nextPage() {
     setFlags(0x20);
     setMainState(6);
-    unk_8db = 5;
-    unk_8dd++;
-    if (unk_8dd > unk_8de) {
-        unk_8dd = 0;
+    delayTimer = 5;
+    page++;
+    if (page > lastPage) {
+        page = 0;
     }
     drawPageIndex();
-    unk_a8 = 10;
+    moreButtonPal = 10;
     selectRow(-1);
     Snd_PlaySe(0xc);
 }
@@ -779,13 +779,13 @@ void DistantTownsMenu::nextPage() {
 void DistantTownsMenu::showCursor() {
     s32 x = getCursorTargetX();
     s32 y = getCursorTargetY();
-    unk_f0c.warpTo(x, y);
-    ((MenuCursor *)&unk_f0c)->setAnimIfChanged(7);
+    cursor.warpTo(x, y);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(7);
     refreshCursor();
 }
 
 s32 DistantTownsMenu::getCursorTargetX() {
-    u32 v = unk_8dc;
+    u32 v = cursorSlot;
     if (v == 7) {
         return 0x6a;
     }
@@ -799,7 +799,7 @@ s32 DistantTownsMenu::getCursorTargetX() {
 }
 
 s32 DistantTownsMenu::getCursorTargetY() {
-    u32 v = unk_8dc;
+    u32 v = cursorSlot;
     if ((u8)(v + 0xfa) <= 2) {
         return 0xae;
     }
@@ -807,8 +807,8 @@ s32 DistantTownsMenu::getCursorTargetY() {
 }
 
 void DistantTownsMenu::hideCursor() {
-    ((MenuCursor *)&unk_f0c)->setAnimIfChanged(0);
-    unk_f0c.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void DistantTownsMenu::moveCursorToTarget() {
@@ -819,59 +819,59 @@ void DistantTownsMenu::moveCursorToTarget() {
 
 void DistantTownsMenu::moveCursorTo(s32 a, s32 b) {
     if (testFlags(0x10)) {
-        unk_f0c.moveToEase(a, b, 3, 0);
+        cursor.moveToEase(a, b, 3, 0);
         clearFlags(0x10);
     } else {
-        unk_f0c.moveToEase(a, b, 3, 1);
+        cursor.moveToEase(a, b, 3, 1);
     }
-    unk_8ae = mainState;
+    returnState = mainState;
     setMainState(2);
 }
 
 void DistantTownsMenu::refreshCursor() {
-    unk_f0c.setPoseIdle();
-    unk_f0c.vfunc_0c();
+    cursor.setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 void DistantTownsMenu::pressCursor() {
-    ((MenuCursor *)&unk_f0c)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(3);
 }
 
 void DistantTownsMenu::releaseCursor() {
-    unk_f0c.setPoseRelease();
-    unk_8ae = mainState;
+    cursor.setPoseRelease();
+    returnState = mainState;
     setMainState(4);
 }
 
 BOOL DistantTownsMenu::moveCursorByPad(u32 pad) {
-    u32 old = unk_8dc;
+    u32 old = cursorSlot;
     if (old <= 5) {
         if (MenuKeys_HasUp(pad)) {
-            if (unk_8dc != 0) {
-                unk_8dc--;
+            if (cursorSlot != 0) {
+                cursorSlot--;
             }
         } else if (MenuKeys_HasDown(pad)) {
-            if (unk_8dc < 5) {
-                unk_8dc++;
+            if (cursorSlot < 5) {
+                cursorSlot++;
             } else {
-                unk_8dc = 6;
+                cursorSlot = 6;
             }
         }
     } else {
         if (MenuKeys_HasUp(pad)) {
-            unk_8dc = 5;
+            cursorSlot = 5;
         } else if (MenuKeys_HasLeft(pad)) {
-            if (unk_8dc > 6) {
-                unk_8dc--;
+            if (cursorSlot > 6) {
+                cursorSlot--;
             }
         } else if (MenuKeys_HasRight(pad)) {
-            if (unk_8dc < 8) {
-                unk_8dc++;
+            if (cursorSlot < 8) {
+                cursorSlot++;
             }
         }
     }
-    if (old != unk_8dc) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     return FALSE;
@@ -879,24 +879,24 @@ BOOL DistantTownsMenu::moveCursorByPad(u32 pad) {
 
 void DistantTownsMenu::flushBgScreen() {
     if (testFlags(4)) {
-        if (unk_10d4.requestScreen((u32)unk_ac, 6, 0x800, 0)) {
+        if (screenTask.requestScreen((u32)bgScreen, 6, 0x800, 0)) {
             clearFlags(4);
         }
     }
 }
 
 void DistantTownsMenu::resetRowScreen() {
-    BgScreen_SetRectPalette(unk_ac, 6, 8, 0xf, 0x13, 7);
-    BgScreen_SetRectPalette(unk_ac, 0x11, 8, 0x18, 0x13, 7);
+    BgScreen_SetRectPalette(bgScreen, 6, 8, 0xf, 0x13, 7);
+    BgScreen_SetRectPalette(bgScreen, 0x11, 8, 0x18, 0x13, 7);
     setFlags(4);
 }
 
 void DistantTownsMenu::selectRow(s32 v) {
-    unk_9c = v;
+    selectedRow = v;
     if (v == -1) {
-        unk_a0 = 9;
+        confirmButtonPal = 9;
     } else {
-        unk_a0 = 8;
+        confirmButtonPal = 8;
     }
 }
 
@@ -904,7 +904,7 @@ BOOL DistantTownsMenu::refreshRowIcons() {
     s32 i, k;
     BOOL changed = FALSE;
     u8 *tbl = (u8 *)getFriendList();
-    k = unk_8dd * 6;
+    k = page * 6;
     i = 0;
     s32 z = 0;
     do {
@@ -915,9 +915,9 @@ BOOL DistantTownsMenu::refreshRowIcons() {
         } else {
             v = (tbl + off)[0x192];
         }
-        if (v != unk_8e0[i]) {
+        if (v != rowIcons[i]) {
             changed = TRUE;
-            unk_8e0[i] = v;
+            rowIcons[i] = v;
         }
         k++;
         i++;
@@ -934,28 +934,28 @@ void DistantTownsMenu::refreshPage() {
     resetRowScreen();
     Mem_Clear(l.a, 8);
     Mem_Clear(l.b, 8);
-    s32 j = unk_8dd * 6;
+    s32 j = page * 6;
     u8 *tbl = (u8 *)getFriendList();
     s32 i = 0;
     for (; i < 6; j++, i++) {
         if (j < 0x20) {
-            id = unk_8b5[j];
+            id = listFriendIds[j];
             if (id == 0xff || (off = id * 0x13, rec = tbl + 0x180 + off, !isListedFriend(rec))) {
-                unk_8af[i] = z1;
-                unk_8e0[i] = z1;
-                unk_8e8.clearRow(i);
+                rowFilled[i] = z1;
+                rowIcons[i] = z1;
+                listPanel.clearRow(i);
             } else {
-                unk_8d5[i] = id;
-                unk_8af[i] = 1;
-                unk_8e0[i] = (tbl + off)[0x192];
+                rowFriendIds[i] = id;
+                rowFilled[i] = 1;
+                rowIcons[i] = (tbl + off)[0x192];
                 Mem_Copy(tbl + 0x188 + off, l.a, 8);
                 Mem_Copy(rec, l.b, 8);
-                unk_8e8.setRow(i, l.a);
+                listPanel.setRow(i, l.a);
             }
         } else {
-            unk_8af[i] = z2;
-            unk_8e0[i] = z2;
-            unk_8e8.clearRow(i);
+            rowFilled[i] = z2;
+            rowIcons[i] = z2;
+            listPanel.clearRow(i);
         }
     }
 }
@@ -982,17 +982,17 @@ void DistantTownsMenu::initList() {
         if (isListedFriend(tbl + 0x180 + i * 0x13)) {
             cnt++;
         }
-        unk_8b5[i] = i;
+        listFriendIds[i] = i;
         i++;
     } while (i < 0x20);
-    unk_8dd = 0;
-    unk_8de = 5;
-    unk_8df = cnt;
+    page = 0;
+    lastPage = 5;
+    townCount = cnt;
     drawLastPageIndex();
     drawTownCount();
     drawPageIndex();
-    if (unk_8de != 0) {
-        unk_a8 = 8;
+    if (lastPage != 0) {
+        moreButtonPal = 8;
     }
 }
 
@@ -1007,45 +1007,45 @@ void DistantTownsMenu::fadeRows(s32 t) {
     s32 i;
     for (i = 0; i < 6; i++) {
         s32 col;
-        if (unk_8e0[i] == 4) {
+        if (rowIcons[i] == 4) {
             col = 8;
         } else {
             col = 0xe;
         }
-        unk_8e8.setRowFadeColor(i, t, 5, col);
+        listPanel.setRowFadeColor(i, t, 5, col);
     }
 }
 
 void *DistantTownsMenu::getFriendList() { return Net_GetWifiFriendList(); }
 
 LabelString *DistantTownsMenu::allocTextLabel() {
-    u32 c = unk_8e6;
+    u32 c = labelCount;
     if (c >= 3) {
-        return &unk_16a0[2];
+        return &textLabels[2];
     }
-    unk_8e6 = c + 1;
-    return &unk_16a0[unk_8e6 - 1];
+    labelCount = c + 1;
+    return &textLabels[labelCount - 1];
 }
 
 void DistantTownsMenu::resetTextLabels() {
     s32 i;
-    unk_8e6 = 0;
+    labelCount = 0;
     for (i = 0; i < 3; i++) {
-        unk_16a0[i].destroyLabel();
+        textLabels[i].destroyLabel();
     }
 }
 
 void DistantTownsMenu::drawTownCount() {
     LabelString *w = allocTextLabel();
     u8 buf[3];
-    u32 v = unk_8df;
+    u32 v = townCount;
     if (v < 10) {
         buf[0] = v + 0x35;
         buf[1] = 0;
         buf[2] = 0;
     } else {
         buf[0] = (s32)v / 10 + 0x35;
-        buf[1] = unk_8df % 10 + 0x35;
+        buf[1] = townCount % 10 + 0x35;
         buf[2] = 0;
     }
     String_FromEncodedBytes(w, buf, 3);
@@ -1056,7 +1056,7 @@ void DistantTownsMenu::drawTownCount() {
 void DistantTownsMenu::drawLastPageIndex() {
     LabelString *w = allocTextLabel();
     u8 buf[2];
-    buf[0] = unk_8de + 0x35;
+    buf[0] = lastPage + 0x35;
     buf[1] = 0;
     String_FromEncodedBytes(w, buf, 2);
     w->createSmallLabel(8, 0x1f3, 1, 0xf, 0, 1);
@@ -1066,7 +1066,7 @@ void DistantTownsMenu::drawLastPageIndex() {
 void DistantTownsMenu::drawPageIndex() {
     LabelString *w = allocTextLabel();
     u8 buf[2];
-    buf[0] = unk_8dd + 0x35;
+    buf[0] = page + 0x35;
     buf[1] = 0;
     String_FromEncodedBytes(w, buf, 2);
     w->createSmallLabel(8, 0x1f2, 1, 0xf, 0, 1);
@@ -1074,13 +1074,13 @@ void DistantTownsMenu::drawPageIndex() {
 }
 
 BOOL DistantTownsMenu::testFlags(u32 m) {
-    if (unk_8ac & m) {
+    if (flags & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void DistantTownsMenu::setFlags(u32 m) { unk_8ac = unk_8ac | m; }
+void DistantTownsMenu::setFlags(u32 m) { flags = flags | m; }
 
-void DistantTownsMenu::clearFlags(u32 m) { unk_8ac = unk_8ac & ~m; }
+void DistantTownsMenu::clearFlags(u32 m) { flags = flags & ~m; }
 

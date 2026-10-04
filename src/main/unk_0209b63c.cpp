@@ -7,8 +7,8 @@ public:
 
 class TownAcreCell {
 public:
-    s32 unk_00;
-    s32 unk_04;
+    s32 type;
+    s32 acreId;
     TownAcreCell();
     ~TownAcreCell();
     BOOL setType(s32 v);

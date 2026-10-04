@@ -9,7 +9,7 @@ struct ItemId {
 struct ItemPickSpec {
     ItemPickSpec(s32 a, s32 b);
     ~ItemPickSpec();
-    s32 unk_00, unk_04;
+    s32 listIndex, itemClass;
 };
 struct Letter {
     Letter();
@@ -43,10 +43,10 @@ public:
     void seed(u8 a, u8 b, u8 c);
     void seedFromToday();
 
-    u32 unk_04;
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0a;
+    u32 rngState;
+    u8 year;
+    u8 month;
+    u8 day;
 };
 struct ItemName {
     ItemName(u16 *s);

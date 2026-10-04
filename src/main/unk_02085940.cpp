@@ -111,18 +111,18 @@ extern s32 gGfxMainOnTop;
 #include "types.h"
 
 struct Unk_02085810_Rec {
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ u8 unk_02[8];
-    /* 0x0a */ u8 unk_0a;
-    /* 0x0b */ u8 unk_0b;
+    /* 0x00 */ u16 townId;
+    /* 0x02 */ u8 townName[8];
+    /* 0x0a */ u8 personality;
+    /* 0x0b */ u8 species;
 };
 
 struct Unk_02085810_Base {
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ u8 unk_02[8];
-    /* 0x0a */ u16 unk_0a;
-    /* 0x0c */ u8 unk_0c[8];
-    /* 0x14 */ s8 unk_14;
+    /* 0x00 */ u16 townId;
+    /* 0x02 */ u8 townName[8];
+    /* 0x0a */ u16 playerId;
+    /* 0x0c */ u8 playerName[8];
+    /* 0x14 */ s8 gender;
     /* 0x15 */ u8 unk_15;
 };
 
@@ -162,12 +162,12 @@ struct Unk_020859b4_Pair {
 };
 
 struct Unk_020859b4_Loc {
-    /* 0x00 */ u8 unk_00;
-    /* 0x02 */ u16 unk_02;
-    /* 0x04 */ u16 unk_04;
-    /* 0x06 */ u8 unk_06[3];
-    /* 0x0c */ u32 unk_0c[2];
-    /* 0x14 */ u32 unk_14;
+    /* 0x00 */ u8 letterVariant;
+    /* 0x02 */ u16 trophy;
+    /* 0x04 */ u16 emptyItem;
+    /* 0x06 */ u8 today[3];
+    /* 0x0c */ u32 contestTime[2];
+    /* 0x14 */ u32 now;
     /* 0x18 */ u32 unk_18;
 };
 
@@ -261,13 +261,13 @@ struct Unk_02086328_B8 {
 };
 
 struct ReddLastSale {
-    u16 unk_00;
-    Unk_02086328_B8 unk_02;
-    u16 unk_0a;
-    Unk_02086328_B8 unk_0c;
-    s8 unk_14;
+    u16 townId;
+    Unk_02086328_B8 townName;
+    u16 playerId;
+    Unk_02086328_B8 playerName;
+    s8 gender;
     u8 unk_15;
-    u16 unk_16;
+    u16 item;
     void copyItemFrom(const ReddLastSale *o);
     void setItem(const ReddLastSale *o);
     void setBuyer(const ReddLastSale *o);
@@ -278,10 +278,10 @@ struct ReddLastSale {
 
 // ---- generator object ----
 struct TurnipMarket {
-    u8 unk_00, unk_01, unk_02, unk_03, unk_04, unk_05, unk_06, unk_07;
-    u16 unk_08;
-    u8 unk_0a[14];
-    u8 unk_18;
+    u8 weekStartDay, weekStartMonth, weekStartYear, unk_03, purchaseDay, purchaseMonth, purchaseYear, unk_07;
+    u16 peakPrice;
+    u8 prices[14];
+    u8 pattern;
     void setPurchaseDate(void *src);
     void checkTurnipExpiry();
     void setWeekDate(void *src);
@@ -398,8 +398,8 @@ public:
     void func_02086f0c();
     void func_02086f10();
 
-    s16 unk_00;
-    u8 unk_02;
+    s16 angle;
+    u8 mode;
 };
 
 // ---- 0x02086f14: three bytes
@@ -436,9 +436,9 @@ public:
     void setPos(Unk_02086ec4_Vec3 *v);
     void pickKatiePos();
 
-    s32 unk_00;
-    s32 unk_04;
-    u8 unk_08;
+    s32 posX;
+    s32 posZ;
+    u8 following;
 };
 
 // ---- 0x02087210
@@ -448,9 +448,9 @@ public:
     void func_0208721c();
     void func_02087220();
 
-    s32 unk_00;
-    s32 unk_04;
-    u8 unk_08;
+    s32 posX;
+    s32 posZ;
+    u8 following;
 };
 
 // ---- 0x02087224: big singleton (gSaveData)
@@ -470,10 +470,10 @@ public:
     BlancaFaceRecord *destruct();
     BlancaFaceRecord *construct();
 
-    u32 unk_00[0x228 / 4];
+    u32 pattern[0x228 / 4];
     u16 unk_228;
-    u8 unk_22a;
-    u8 unk_22b;
+    u8 visitState;
+    u8 concept;
 };
 
 // ---- 0x020872fc: flag byte at +0xa
@@ -1409,7 +1409,7 @@ BlancaFaceRecord *BlancaFaceRecord::destruct() {
 }
 
 void BlancaFaceRecord::reset() {
-    unk_22a = 0;
+    visitState = 0;
     resetPattern();
 }
 
@@ -1422,16 +1422,16 @@ void BlancaFaceRecord::resetPattern() {
 
 void *BlancaFaceRecord::getPattern() {}
 
-void BlancaFaceRecord::setState(u32 v) { unk_22a = v; }
+void BlancaFaceRecord::setState(u32 v) { visitState = v; }
 
-u8 BlancaFaceRecord::getState() { return unk_22a; }
+u8 BlancaFaceRecord::getState() { return visitState; }
 
-void BlancaFaceRecord::setConcept(u32 v) { unk_22b = v; }
+void BlancaFaceRecord::setConcept(u32 v) { concept = v; }
 
-u8 BlancaFaceRecord::getConcept() { return unk_22b; }
+u8 BlancaFaceRecord::getConcept() { return concept; }
 
 BOOL BlancaFaceRecord::isBlancaDue() {
-    if (_ZN8SaveData8testFlagEj(gSaveData, 0x13) == 0 && unk_22a == 2) return TRUE;
+    if (_ZN8SaveData8testFlagEj(gSaveData, 0x13) == 0 && visitState == 2) return TRUE;
     return FALSE;
 }
 
@@ -1444,9 +1444,9 @@ void KatieVisitState::func_02087220() {}
 void KatieVisitState::func_0208721c() {}
 
 void KatieVisitState::clear() {
-    unk_00 = 0;
-    unk_04 = 0;
-    unk_08 = 0;
+    posX = 0;
+    posZ = 0;
+    following = 0;
 }
 
 extern "C" BOOL Field_IsClearSpot(s32 x, s32 y, void *map) {
@@ -1523,38 +1523,38 @@ testy2:
         }
     }
 end:
-    unk_08 = 0;
+    following = 0;
 }
 
 void Unk_02086f84::setPos(Unk_02086ec4_Vec3 *v) {
-    unk_00 = v->x;
-    unk_04 = v->z;
+    posX = v->x;
+    posZ = v->z;
 }
 
 void Unk_02086f84::getPos(Unk_02086ec4_Vec3 *out) {
-    out->x = unk_00;
-    out->z = unk_04;
+    out->x = posX;
+    out->z = posZ;
 }
 
 BOOL Unk_02086f84::isFollowing() {
-    if (unk_08 != 0) return TRUE;
+    if (following != 0) return TRUE;
     return FALSE;
 }
 
-void Unk_02086f84::setFollowing() { unk_08 = 1; }
+void Unk_02086f84::setFollowing() { following = 1; }
 
-void Unk_02086f84::clearFollowing() { unk_08 = 0; }
+void Unk_02086f84::clearFollowing() { following = 0; }
 
 void Unk_02086f84::func_02086f90() {
-    unk_00 = 0;
-    unk_04 = 0;
+    posX = 0;
+    posZ = 0;
 }
 
 void Unk_02086f84::func_02086f8c() {}
 
 void Unk_02086f84::clearClosingTime() {
-    unk_00 = 0;
-    unk_04 = 0;
+    posX = 0;
+    posZ = 0;
 }
 
 void Unk_02086f84::func_02086f80() {}
@@ -1594,15 +1594,15 @@ void TownTravelState::func_02086f10() {}
 
 void TownTravelState::func_02086f0c() {}
 
-void TownTravelState::clearMode() { unk_02 = 0; }
+void TownTravelState::clearMode() { mode = 0; }
 
-void TownTravelState::setMode(u32 v) { unk_02 = v; }
+void TownTravelState::setMode(u32 v) { mode = v; }
 
-u8 TownTravelState::getMode() { return unk_02; }
+u8 TownTravelState::getMode() { return mode; }
 
-void TownTravelState::setAngle(s32 v) { unk_00 = v; }
+void TownTravelState::setAngle(s32 v) { angle = v; }
 
-s16 TownTravelState::getAngle() { return unk_00; }
+s16 TownTravelState::getAngle() { return angle; }
 
 void PeteFallState::func_02086eec() {}
 
@@ -1924,15 +1924,15 @@ extern "C" void func_020868c8() {}
 extern "C" void func_020868c4() {}
 
 void TurnipMarket::clear() {
-    unk_18 = 0xff;
-    unk_08 = 0;
-    unk_00 = 1;
-    unk_01 = 1;
-    unk_02 = 0;
+    pattern = 0xff;
+    peakPrice = 0;
+    weekStartDay = 1;
+    weekStartMonth = 1;
+    weekStartYear = 0;
     unk_03 = 0;
-    unk_04 = 1;
-    unk_05 = 1;
-    unk_06 = 0;
+    purchaseDay = 1;
+    purchaseMonth = 1;
+    purchaseYear = 0;
     unk_07 = 0;
 }
 
@@ -1948,13 +1948,13 @@ void TurnipMarket::init() {
 
 u8 TurnipMarket::calcPrice(s32 k, s32 z) {
     s32 t = Random_GlobalBelow2(z);
-    return (u8)((unk_0a[0] * (k + t)) >> 12);
+    return (u8)((prices[0] * (k + t)) >> 12);
 }
 
 void TurnipMarket::fillDecreasing(s32 i, s32 n) {
     s32 k = 0xca4;
     for (; i < n; k -= 0x66, i++) {
-        unk_0a[i] = calcPrice(k, 0x29);
+        prices[i] = calcPrice(k, 0x29);
     }
 }
 
@@ -1973,76 +1973,76 @@ u8 TurnipMarket::calcHighPrice() {
 void TurnipMarket::generateSmallSpike() {
     s32 n = Ns_02086204::Random_GlobalBelow(6) + 7;
     fillDecreasing(2, n - 3);
-    unk_0a[n - 3] = calcMidPrice();
-    unk_0a[n - 2] = calcMidPrice();
-    unk_0a[n] = calcPrice(0x1b33, 0x4f6);
-    unk_0a[n - 1] = calcPrice(0x168f, 0x4a4);
-    unk_0a[n + 1] = calcPrice(0x168f, 0x4a4);
+    prices[n - 3] = calcMidPrice();
+    prices[n - 2] = calcMidPrice();
+    prices[n] = calcPrice(0x1b33, 0x4f6);
+    prices[n - 1] = calcPrice(0x168f, 0x4a4);
+    prices[n + 1] = calcPrice(0x168f, 0x4a4);
     fillDecreasing(n + 2, 0xe);
 }
 
 s32 TurnipMarket::rollPeakPrice() {
     s32 t = Random_GlobalBelow2(0x419a);
-    unk_08 = (unk_0a[0] * (t + 0x2000)) >> 12;
+    peakPrice = (prices[0] * (t + 0x2000)) >> 12;
     return 0;
 }
 
 void TurnipMarket::generateWeek(s32 flag) {
-    if (unk_18 != 0xff) {
+    if (pattern != 0xff) {
         s32 r = Ns_02086204::Random_GlobalBelow(0x65);
-        switch (unk_18) {
+        switch (pattern) {
         case 0:
-            if (r < 0x1e) unk_18 = 1;
-            else if (r < 0x41) unk_18 = 3;
-            else if (r < 0x50) unk_18 = 2;
+            if (r < 0x1e) pattern = 1;
+            else if (r < 0x41) pattern = 3;
+            else if (r < 0x50) pattern = 2;
             break;
         case 1:
-            if (r < 0x14) unk_18 = 3;
-            else if (r < 0x41) unk_18 = 0;
-            else if (r < 0x55) unk_18 = 2;
+            if (r < 0x14) pattern = 3;
+            else if (r < 0x41) pattern = 0;
+            else if (r < 0x55) pattern = 2;
             break;
         case 2:
-            if (r < 0x2d) unk_18 = 1;
-            else if (r < 0x46) unk_18 = 3;
-            else if (r < 0x5f) unk_18 = 0;
+            if (r < 0x2d) pattern = 1;
+            else if (r < 0x46) pattern = 3;
+            else if (r < 0x5f) pattern = 0;
             break;
         case 3:
-            if (r < 0x19) unk_18 = 1;
-            else if (r < 0x46) unk_18 = 0;
-            else if (r < 0x55) unk_18 = 2;
+            if (r < 0x19) pattern = 1;
+            else if (r < 0x46) pattern = 0;
+            else if (r < 0x55) pattern = 2;
             break;
         }
-        if (flag != 0) unk_18 = 2;
+        if (flag != 0) pattern = 2;
     } else {
-        unk_18 = Ns_02086204::Random_GlobalBelow(4);
+        pattern = Ns_02086204::Random_GlobalBelow(4);
     }
-    unk_08 = 0;
-    MI_CpuFill8(&unk_0a[0], 0, 0xe);
-    unk_0a[0] = Ns_02086204::Random_GlobalBelow(0x15) + 0x5a;
-    unk_0a[1] = unk_0a[0];
-    switch (unk_18) {
+    peakPrice = 0;
+    MI_CpuFill8(&prices[0], 0, 0xe);
+    prices[0] = Ns_02086204::Random_GlobalBelow(0x15) + 0x5a;
+    prices[1] = prices[0];
+    switch (pattern) {
     case 0:
-        unk_0a[2] = calcMidPrice();
-        unk_0a[3] = calcLowPrice();
-        unk_0a[4] = calcLowPrice();
-        unk_0a[5] = calcLowPrice();
-        unk_0a[6] = calcMidPrice();
-        unk_0a[7] = calcMidPrice();
-        unk_0a[8] = calcMidPrice();
-        unk_0a[9] = calcLowPrice();
-        unk_0a[10] = calcLowPrice();
-        unk_0a[11] = calcMidPrice();
-        unk_0a[12] = calcMidPrice();
-        unk_0a[13] = calcMidPrice();
+        prices[2] = calcMidPrice();
+        prices[3] = calcLowPrice();
+        prices[4] = calcLowPrice();
+        prices[5] = calcLowPrice();
+        prices[6] = calcMidPrice();
+        prices[7] = calcMidPrice();
+        prices[8] = calcMidPrice();
+        prices[9] = calcLowPrice();
+        prices[10] = calcLowPrice();
+        prices[11] = calcMidPrice();
+        prices[12] = calcMidPrice();
+        prices[13] = calcMidPrice();
         break;
     case 1: {
         s32 n = Ns_02086204::Random_GlobalBelow(4) + 8;
-        unk_0a[n] = rollPeakPrice();
+        prices[n] = rollPeakPrice();
         fillDecreasing(2, n - 2);
-        unk_0a[n - 1] = calcHighPrice();
-        unk_0a[n + 1] = calcHighPrice();
-        unk_0a[n - 2] = calcMidPrice();
-        unk_0a[n + 2] = calcMidPrice();
+        prices[n - 1] = calcHighPrice();
+        prices[n + 1] = calcHighPrice();
+        prices[n - 2] = calcMidPrice();
+        prices[n + 2] = calcMidPrice();
         fillDecreasing(n + 3, 0xe);
         break;
     }
@@ -2063,10 +2063,10 @@ u16 TurnipMarket::getPrice() {
     Clock_GetDateTime(&t);
     if (((u8 *)&t)[2] >= 12) i++;
     s32 k = Clock_GetWeekday();
-    u8 b = unk_0a[k + k + i];
+    u8 b = prices[k + k + i];
     u16 r = b;
     if (r == 0) {
-        u16 v = unk_08;
+        u16 v = peakPrice;
         if (v != 0) r = v;
     }
     return r;
@@ -2124,16 +2124,16 @@ void TurnipMarket::setWeekDate(void *src) {
         MI_CpuCopy8(src, &t, 8);
     }
     if (((u8 *)&t)[2] < 6) DateTime_SubDays(&t, 1);
-    unk_02 = ((u8 *)&t)[5];
-    unk_01 = ((u8 *)&t)[4];
-    unk_00 = ((u8 *)&t)[3];
+    weekStartYear = ((u8 *)&t)[5];
+    weekStartMonth = ((u8 *)&t)[4];
+    weekStartDay = ((u8 *)&t)[3];
 }
 
 void TurnipMarket::checkTurnipExpiry() {
     struct {
         Unk_02086340_T a, b;
     } l;
-    DateTime_Make(&l.a, &unk_04, 6, 0, 0);
+    DateTime_Make(&l.a, &purchaseDay, 6, 0, 0);
     l.b.w0 = 0;
     l.b.w1 = 0;
     Clock_GetDateTime(&l.b);
@@ -2161,14 +2161,14 @@ void TurnipMarket::setPurchaseDate(void *src) {
         MI_CpuCopy8(src, &t, 8);
     }
     if (((u8 *)&t)[2] < 6) DateTime_SubDays(&t, 1);
-    unk_06 = ((u8 *)&t)[5];
-    unk_05 = ((u8 *)&t)[4];
-    unk_04 = ((u8 *)&t)[3];
+    purchaseYear = ((u8 *)&t)[5];
+    purchaseMonth = ((u8 *)&t)[4];
+    purchaseDay = ((u8 *)&t)[3];
 }
 
 ReddLastSale::ReddLastSale() {
     _ZN8PlayerIdC1EPv(this);
-    unk_16 = 0xfff1;
+    item = 0xfff1;
 }
 
 ReddLastSale::~ReddLastSale() {
@@ -2177,7 +2177,7 @@ ReddLastSale::~ReddLastSale() {
 
 void ReddLastSale::clear() {
     Ns_02086204::_ZN8PlayerId5clearEv(this);
-    unk_16 = 0xfff1;
+    item = 0xfff1;
 }
 
 extern "C" void ReddLastSale_Clear(ReddLastSale *p) {
@@ -2187,20 +2187,20 @@ extern "C" void ReddLastSale_Clear(ReddLastSale *p) {
 extern "C" void ReddLastSale_GetBuyer() {}
 
 void ReddLastSale::setBuyer(const ReddLastSale *o) {
-    unk_00 = o->unk_00;
-    unk_02 = o->unk_02;
-    unk_0a = o->unk_0a;
-    unk_0c = o->unk_0c;
-    unk_14 = o->unk_14;
+    townId = o->townId;
+    townName = o->townName;
+    playerId = o->playerId;
+    playerName = o->playerName;
+    gender = o->gender;
     unk_15 = o->unk_15;
 }
 
 void ReddLastSale::setItem(const ReddLastSale *o) {
-    unk_16 = o->unk_00;
+    item = o->townId;
 }
 
 void ReddLastSale::copyItemFrom(const ReddLastSale *o) {
-    unk_00 = o->unk_16;
+    townId = o->item;
 }
 
 extern "C" void func_02086294() {}
@@ -2341,38 +2341,38 @@ void ContestRecord::sendResultLetters() {
     if (_ZN8PlayerId7isValidEv(this) == 0 && _ZN10VillagerId7isValidEv(&unk_16) == 0) return;
     if (unk_37 != 1 && unk_37 != 2 && unk_37 != 3) return;
     Unk_020859b4_Loc l;
-    Clock_GetDate(l.unk_06);
+    Clock_GetDate(l.today);
     if (unk_36 == 0) return;
     if (unk_35 == 0) return;
     if (unk_34 == 0) return;
-    DateTime_Make(l.unk_0c, &unk_34, 6, 0, 0);
-    l.unk_14 = 0;
+    DateTime_Make(l.contestTime, &unk_34, 6, 0, 0);
+    l.now = 0;
     l.unk_18 = 0;
-    Clock_GetDateTime(&l.unk_14);
-    if (((u8 *)&l.unk_14)[2] < 6) {
-        DateTime_SubDays(&l.unk_14, 1);
-        ((u8 *)&l.unk_14)[2] = 6;
-        ((u8 *)&l.unk_14)[1] = 0;
-        ((u8 *)&l.unk_14)[0] = 0;
+    Clock_GetDateTime(&l.now);
+    if (((u8 *)&l.now)[2] < 6) {
+        DateTime_SubDays(&l.now, 1);
+        ((u8 *)&l.now)[2] = 6;
+        ((u8 *)&l.now)[1] = 0;
+        ((u8 *)&l.now)[0] = 0;
     }
-    s32 r6 = DateTime_Compare(&l.unk_14, l.unk_0c, 0x38);
-    if (r6 == 1 && DateTime_DiffDays(l.unk_0c, &l.unk_14) >= 10) goto reset;
-    if (r6 == -1 && DateTime_DiffDays(&l.unk_14, l.unk_0c) >= 10) {
+    s32 r6 = DateTime_Compare(&l.now, l.contestTime, 0x38);
+    if (r6 == 1 && DateTime_DiffDays(l.contestTime, &l.now) >= 10) goto reset;
+    if (r6 == -1 && DateTime_DiffDays(&l.now, l.contestTime) >= 10) {
     reset:
         clear();
         _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
         return;
     }
     if (unk_37 != 3) {
-        if (unk_36 == l.unk_06[2] && unk_35 == l.unk_06[1] && unk_34 == l.unk_06[0]) return;
+        if (unk_36 == l.today[2] && unk_35 == l.today[1] && unk_34 == l.today[0]) return;
     } else {
         s32 r4 = Event_GetDaysSinceStart(0xe);
-        Clock_GetDateTime(&l.unk_14);
+        Clock_GetDateTime(&l.now);
         if (r4 != -1) {
             if (r4 < 7) return;
-            if (r4 == 7 && ((u8 *)&l.unk_14)[2] < 6) return;
+            if (r4 == 7 && ((u8 *)&l.now)[2] < 6) return;
         }
-        if (r6 == 1 && DateTime_DiffDays(l.unk_0c, &l.unk_14) < 1) return;
+        if (r6 == 1 && DateTime_DiffDays(l.contestTime, &l.now) < 1) return;
     }
     if (unk_37 == 3 && _ZN8PlayerId7isValidEv(this) == 0) {
         postResultNotice();
@@ -2386,7 +2386,7 @@ void ContestRecord::sendResultLetters() {
     Unk_02085df0_Rec rec;
     s32 i = 0;
     s32 ok, z10, z14, z1c, z20, z24, z2c;
-    l.unk_00 = 0;
+    l.letterVariant = 0;
     z1c = 0; z14 = 0; z20 = 0; z24 = 0; z2c = 0; z10 = 0;
     for (; i < 4; i++) {
         ok = z10;
@@ -2399,9 +2399,9 @@ void ContestRecord::sendResultLetters() {
             MailText_SetSlotDayOrdinal(1, unk_34);
             s32 f;
             if (Item_IsFurniture(&unk_2e) != 0) {
-                l.unk_04 = 0xfff1;
+                l.emptyItem = 0xfff1;
                 u32 t = Item_GetFurnitureIndex(&unk_2e);
-                f = (t == Item_GetFurnitureIndex(&l.unk_04)) ? 1 : z1c;
+                f = (t == Item_GetFurnitureIndex(&l.emptyItem)) ? 1 : z1c;
             } else {
                 f = (unk_2e == 0xfff1) ? 1 : z20;
             }
@@ -2418,8 +2418,8 @@ void ContestRecord::sendResultLetters() {
             else ok = _ZN17PlayerSpNpcRecord16hasEnteredBugOffEv(r7);
         } else {
             u16 *p = _ZN10PlayerData11getPlayerIdEv(r4);
-            if ((unk_00.unk_00 == p[0] && memcmp((u8 *)this + 2, p + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, p) != 0) || _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(r7) != 0) {
-                l.unk_00 = Random_GlobalBelow(3);
+            if ((unk_00.townId == p[0] && memcmp((u8 *)this + 2, p + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, p) != 0) || _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(r7) != 0) {
+                l.letterVariant = Random_GlobalBelow(3);
                 _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), &rec);
                 _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(r7);
                 MailText_SetSlot(z2c, &rec);
@@ -2429,10 +2429,10 @@ void ContestRecord::sendResultLetters() {
         if (ok == 0) continue;
         if ((u8)(unk_37 + 0xff) <= 1) {
             u16 *q = _ZN10PlayerData11getPlayerIdEv(r4);
-            if (unk_00.unk_00 == q[0] && memcmp((u8 *)this + 2, q + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, q) != 0) {
-                l.unk_00 = Random_GlobalBelow(3);
+            if (unk_00.townId == q[0] && memcmp((u8 *)this + 2, q + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, q) != 0) {
+                l.letterVariant = Random_GlobalBelow(3);
             } else {
-                l.unk_00 = Random_GlobalBelow(3) + 3;
+                l.letterVariant = Random_GlobalBelow(3) + 3;
             }
             _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), &rec);
             MailText_SetSlot(4, &rec);
@@ -2440,11 +2440,11 @@ void ContestRecord::sendResultLetters() {
         u16 *w = _ZN10PlayerData11getPlayerIdEv(r4);
         Letter_ComposeFromMail(&buf, &l, sContestResultMailFiles[unk_37], data_020e0c50, data_020e0c48, w);
         u16 *x = _ZN10PlayerData11getPlayerIdEv(r4);
-        if ((unk_00.unk_00 == x[0] && memcmp((u8 *)this + 2, x + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, x) != 0) || unk_37 == 3) {
-            l.unk_02 = 0x3878;
-            if (unk_37 == 2) l.unk_02 = 0x387c;
-            else if (unk_37 == 3) l.unk_02 = 0x3880;
-            _ZN10LetterView10setPresentEtj(&buf, l.unk_02, 1);
+        if ((unk_00.townId == x[0] && memcmp((u8 *)this + 2, x + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, x) != 0) || unk_37 == 3) {
+            l.trophy = 0x3878;
+            if (unk_37 == 2) l.trophy = 0x387c;
+            else if (unk_37 == 3) l.trophy = 0x3880;
+            _ZN10LetterView10setPresentEtj(&buf, l.trophy, 1);
         }
         LetterDelivery_PutInAddresseeMailbox(&buf);
     }

@@ -81,8 +81,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class ScrollKnob : public UiWidget {
@@ -97,10 +97,10 @@ public:
     void moveTo(s32 x, s32 y);
 
     /* 0x0c */ s32 layer1;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ SpriteAnim unk_14;
+    /* 0x10 */ s32 posY;
+    /* 0x14 */ SpriteAnim layerAnim1;
     /* 0x28 */ SpriteAnim priority;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x3c */ s32 state;
     /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
@@ -117,8 +117,8 @@ public:
     void updateAppearing();
     void updateHidden();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ s32 unk_20;
+    /* 0x0c */ SpriteAnim anim;
+    /* 0x20 */ s32 state;
 };
 
 extern HudUnkIcon sHudUnkIcon;

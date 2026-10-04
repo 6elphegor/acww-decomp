@@ -300,7 +300,7 @@ extern Unk_ov123_SceneEntry sPatternEditorMenuProfile;
 // Vtable 0x022959c4, size 0x5168
 class PatternEditorMenu : public MenuProc {
 public:
-    PatternEditorMenu() : unk_b8(), unk_f8(), unk_1a0(), unk_5004() {}
+    PatternEditorMenu() : paletteLabel(), bgTasks(), cursor(), bottomButtons() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -438,42 +438,42 @@ public:
     void runMainState();
 
     /* 0x91 */ u8 unk_91[3];
-    /* 0x94 */ u32 unk_94;
-    /* 0x98 */ s32 unk_98;
-    /* 0x9c */ u32 unk_9c;
-    /* 0xa0 */ u8 unk_a0;
-    /* 0xa1 */ u8 unk_a1;
-    /* 0xa2 */ u8 unk_a2;
-    /* 0xa3 */ u8 unk_a3;
-    /* 0xa4 */ u8 unk_a4;
-    /* 0xa5 */ u8 unk_a5;
-    /* 0xa6 */ u8 unk_a6;
-    /* 0xa7 */ volatile u8 unk_a7;
-    /* 0xa8 */ u8 unk_a8;
-    /* 0xa9 */ u8 unk_a9;
-    /* 0xaa */ u8 unk_aa;
-    /* 0xab */ u8 unk_ab;
-    /* 0xac */ u8 unk_ac;
-    /* 0xad */ u8 unk_ad;
-    /* 0xae */ u8 unk_ae;
-    /* 0xaf */ u8 unk_af;
-    /* 0xb0 */ u8 unk_b0;
-    /* 0xb1 */ u8 unk_b1;
-    /* 0xb2 */ u8 unk_b2;
-    /* 0xb3 */ u8 unk_b3;
-    /* 0xb4 */ u8 unk_b4;
-    /* 0xb5 */ u8 unk_b5;
+    /* 0x94 */ u32 slideY;
+    /* 0x98 */ s32 confirmScrollY;
+    /* 0x9c */ u32 flags;
+    /* 0xa0 */ u8 returnState;
+    /* 0xa1 */ u8 paletteIndex;
+    /* 0xa2 */ u8 color;
+    /* 0xa3 */ u8 colorMarkerX;
+    /* 0xa4 */ u8 tool;
+    /* 0xa5 */ u8 pressedButton;
+    /* 0xa6 */ u8 flashButtonId;
+    /* 0xa7 */ volatile u8 flashTimer;
+    /* 0xa8 */ u8 penX;
+    /* 0xa9 */ u8 penY;
+    /* 0xaa */ u8 cursorTarget;
+    /* 0xab */ u8 savedCursorTarget;
+    /* 0xac */ u8 cursorMode;
+    /* 0xad */ u8 shapeStartX;
+    /* 0xae */ u8 shapeStartY;
+    /* 0xaf */ u8 canvasCursorX;
+    /* 0xb0 */ u8 canvasCursorY;
+    /* 0xb1 */ u8 hoverTimer;
+    /* 0xb2 */ u8 hoverButton;
+    /* 0xb3 */ u8 moveDelay;
+    /* 0xb4 */ u8 lastTouchX;
+    /* 0xb5 */ u8 lastTouchY;
     /* 0xb6 */ u8 unk_b6[2];
-    /* 0xb8 */ LabelString unk_b8[1];
-    /* 0xf8 */ BgVramTaskPair unk_f8[3];
-    /* 0x1a0 */ MenuCursorBuf0 unk_1a0;
-    /* 0x204 */ u8 unk_204[0xa04 - 0x204];
-    /* 0xa04 */ u8 unk_a04[0x200];
-    /* 0xc04 */ u8 unk_c04[0x200];
-    /* 0xe04 */ u8 unk_e04[0x2e04 - 0xe04];
-    /* 0x2e04 */ u8 unk_2e04[0x200];
-    /* 0x3004 */ u8 unk_3004[0x5004 - 0x3004];
-    /* 0x5004 */ MenuBottomButtons unk_5004;
+    /* 0xb8 */ LabelString paletteLabel[1];
+    /* 0xf8 */ BgVramTaskPair bgTasks[3];
+    /* 0x1a0 */ MenuCursorBuf0 cursor;
+    /* 0x204 */ u8 buttonScreen[0xa04 - 0x204];
+    /* 0xa04 */ u8 canvasA[0x200];
+    /* 0xc04 */ u8 canvasB[0x200];
+    /* 0xe04 */ u8 zoomedCanvas[0x2e04 - 0xe04];
+    /* 0x2e04 */ u8 previewChars[0x200];
+    /* 0x3004 */ u8 canvasChars[0x5004 - 0x3004];
+    /* 0x5004 */ MenuBottomButtons bottomButtons;
 };
 
 // ptmf constants named so their order can be controlled
@@ -681,32 +681,32 @@ BOOL PatternEditorMenu::vfunc_0c() {
 
 BOOL PatternEditorMenu::onDraw() {
     if (MenuCtrl_IsButtons()) {
-        if (unk_ac == 2) {
+        if (cursorMode == 2) {
             if (!testFlags(0x100)) {
-                drawCanvasCursor(unk_af, unk_b0);
+                drawCanvasCursor(canvasCursorX, canvasCursorY);
             }
         } else {
-            unk_1a0.drawWrapped();
+            cursor.drawWrapped();
         }
     }
     if (testFlags(0x100)) {
         drawShapePreview();
     }
-    unk_5004.drawAt(getSlideOffsetY());
+    bottomButtons.drawAt(getSlideOffsetY());
     if (testFlags(1)) {
-        s32 y = unk_98 + (unk_94 + 0x60);
+        s32 y = confirmScrollY + (slideY + 0x60);
         if (MenuCtrl_IsButtons()) {
             Oam_DrawObj(1, (void *)data_ov123_02295828, 0x80, y, -1, -1, 0);
             Oam_DrawCell(1, (void *)data_ov123_0229591c, 0x80, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
-        Oam_DrawCell(1, (void *)data_ov123_0229596c, unk_a3 + 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        if (unk_a1 < 9) {
+        Oam_DrawCell(1, (void *)data_ov123_0229596c, colorMarkerX + 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        if (paletteIndex < 9) {
             Oam_DrawCell(1, (void *)data_ov123_02295848, 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         } else {
             Oam_DrawCell(1, (void *)data_ov123_0229590c, 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         }
         if (MenuCtrl_IsButtons()) {
-            Oam_DrawCell(1, (void *)((u32 *)data_ov123_02295900)[unk_ac], 0x80, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, (void *)((u32 *)data_ov123_02295900)[cursorMode], 0x80, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
     }
     return TRUE;
@@ -771,7 +771,7 @@ BOOL PatternEditorMenu::execClosed() {
 void PatternEditorMenu::stateOpen() {
     setupBgLayers();
     loadBgGfx();
-    unk_a4 = 0x22;
+    tool = 0x22;
     selectTool(0);
     loadObjGfx();
     switch (MenuCtrl_GetMode()) {
@@ -786,7 +786,7 @@ void PatternEditorMenu::stateOpen() {
     buildCanvasChars();
     loadPreviewChars();
     loadCanvasChars();
-    unk_5004.setLayoutNeverMindConfirm();
+    bottomButtons.setLayoutNeverMindConfirm();
     beginSubSlideIn(0xb, 4, 0, 0x30);
     Gfx2d_ShowLayer(6);
     Gfx2d_ShowLayer(4);
@@ -847,7 +847,7 @@ void PatternEditorMenu::stateClosing() {
         setPhase(5);
         Gfx2d_ResetSubBlend();
         clearFlags(1);
-        unk_5004.hide();
+        bottomButtons.hide();
     } else {
         updateLayerSlide();
     }
@@ -856,7 +856,7 @@ void PatternEditorMenu::stateClosing() {
 void PatternEditorMenu::stateConfirmOpen() {
     initSlideOut(0, 0);
     setTransitionState(7);
-    unk_98 = 0;
+    confirmScrollY = 0;
     setFlags(0x400);
 }
 
@@ -864,18 +864,18 @@ void PatternEditorMenu::stateConfirmOpening() {
     if (stepSlideOut(-1)) {
         initSlideIn(0, 0);
         if (testFlags(8)) {
-            unk_5004.setLayoutYesNo07(0x87);
+            bottomButtons.setLayoutYesNo07(0x87);
         } else {
-            unk_5004.setLayoutYesNo07(0x22);
+            bottomButtons.setLayoutYesNo07(0x22);
         }
         setTransitionState(8);
     }
     if (testFlags(0x400)) {
-        if (unk_98 < 0x10) {
-            unk_98 = unk_98 + 2;
+        if (confirmScrollY < 0x10) {
+            confirmScrollY = confirmScrollY + 2;
         } else {
             beginScreenDim();
-            unk_98 = 0x10;
+            confirmScrollY = 0x10;
             clearFlags(0x400);
         }
     }
@@ -888,15 +888,15 @@ void PatternEditorMenu::stateConfirm() {
         resumeConfirmInput();
         if (testFlags(0x400)) {
             beginScreenDim();
-            unk_98 = 0x10;
+            confirmScrollY = 0x10;
             clearFlags(0x400);
         }
     } else if (testFlags(0x400)) {
-        if (unk_98 < 0x10) {
-            unk_98 = unk_98 + 2;
+        if (confirmScrollY < 0x10) {
+            confirmScrollY = confirmScrollY + 2;
         } else {
             beginScreenDim();
-            unk_98 = 0x10;
+            confirmScrollY = 0x10;
             clearFlags(0x400);
         }
     }
@@ -911,19 +911,19 @@ void PatternEditorMenu::stateConfirmClose() {
     }
     initSlideOut(0, 0);
     setTransitionState(0xa);
-    unk_98 = 0x10;
+    confirmScrollY = 0x10;
 }
 
 void PatternEditorMenu::stateConfirmClosing() {
     if (stepSlideOut(-1)) {
         initSlideIn(0, 0);
-        unk_5004.setLayoutNeverMindConfirm();
+        bottomButtons.setLayoutNeverMindConfirm();
         setTransitionState(0xb);
     }
-    if (unk_98 >= 2) {
-        unk_98 = unk_98 - 2;
+    if (confirmScrollY >= 2) {
+        confirmScrollY = confirmScrollY - 2;
     } else {
-        unk_98 = 0;
+        confirmScrollY = 0;
     }
     applyLayerScroll();
 }
@@ -932,47 +932,47 @@ void PatternEditorMenu::stateConfirmBack() {
     if (stepSlideIn(-1)) {
         setPhase(2);
         resumeInput();
-        unk_98 = 0;
-    } else if (unk_98 >= 2) {
-        unk_98 = unk_98 - 2;
+        confirmScrollY = 0;
+    } else if (confirmScrollY >= 2) {
+        confirmScrollY = confirmScrollY - 2;
     } else {
-        unk_98 = 0;
+        confirmScrollY = 0;
     }
     applyLayerScroll();
 }
 
 void PatternEditorMenu::updateLayerSlide() {
-    applySlideOffset(6, 0, unk_98);
-    applySlideOffset(4, 0, unk_98);
-    applySlideOffset(3, 0, unk_98);
-    unk_94 = getSlideOffsetY();
+    applySlideOffset(6, 0, confirmScrollY);
+    applySlideOffset(4, 0, confirmScrollY);
+    applySlideOffset(3, 0, confirmScrollY);
+    slideY = getSlideOffsetY();
 }
 
 void PatternEditorMenu::applyLayerScroll() {
-    Gfx2d_SetLayerOffset(6, 0, -unk_98);
-    Gfx2d_SetLayerOffset(4, 0, -unk_98);
-    Gfx2d_SetLayerOffset(3, 0, -unk_98);
+    Gfx2d_SetLayerOffset(6, 0, -confirmScrollY);
+    Gfx2d_SetLayerOffset(4, 0, -confirmScrollY);
+    Gfx2d_SetLayerOffset(3, 0, -confirmScrollY);
 }
 
 void PatternEditorMenu::initEditor() {
     setColor(1);
-    unk_9c = 0;
-    unk_a6 = 0x22;
+    flags = 0;
+    flashButtonId = 0x22;
     stopButtonFlash();
-    unk_aa = 0;
-    unk_ab = 0;
-    unk_ac = 0;
+    cursorTarget = 0;
+    savedCursorTarget = 0;
+    cursorMode = 0;
     resetShapeDrag();
-    unk_af = 0x10;
-    unk_b0 = 0x10;
+    canvasCursorX = 0x10;
+    canvasCursorY = 0x10;
     MenuCtrl_SetResult(0);
     PlayerActor_RequestAct05();
-    unk_98 = 0;
-    unk_b3 = 0;
+    confirmScrollY = 0;
+    moveDelay = 0;
 }
 
 void PatternEditorMenu::releaseResources() {
-    unk_5004.freeTexts();
+    bottomButtons.freeTexts();
     resetPaletteLabel();
     cancelVramTasks();
     PlayerActor_RequestAct10();
@@ -983,7 +983,7 @@ void PatternEditorMenu::releaseResources() {
 
 void PatternEditorMenu::preInputUpdate() {
     preStateUpdate();
-    MenuCursorBuf0 *p = &unk_1a0;
+    MenuCursorBuf0 *p = &cursor;
     p->vfunc_0c();
 }
 
@@ -992,7 +992,7 @@ void PatternEditorMenu::postInputUpdate() {
 }
 
 void PatternEditorMenu::preStateUpdate() {
-    unk_5004.freeTexts();
+    bottomButtons.freeTexts();
     resetPaletteLabel();
     updateButtonFlash();
 }
@@ -1038,7 +1038,7 @@ void PatternEditorMenu::updateTouch() {
         if (r == 0x21) {
             useToolAtTouch();
         } else if (r != 0x22) {
-            unk_a5 = r;
+            pressedButton = r;
             activateButton();
         }
     }
@@ -1048,11 +1048,11 @@ void PatternEditorMenu::updateConfirmTouch() {
     if (checkSwitchToButtons(1)) {
         startConfirmButtons();
     } else if (Unk_ov123_022946c4_Both()) {
-        if (unk_5004.isTouched(3)) {
-            unk_a5 = 0x1f;
+        if (bottomButtons.isTouched(3)) {
+            pressedButton = 0x1f;
             activateButton();
-        } else if (unk_5004.isTouched(4)) {
-            unk_a5 = 0x20;
+        } else if (bottomButtons.isTouched(4)) {
+            pressedButton = 0x20;
             activateButton();
         }
     }
@@ -1068,8 +1068,8 @@ void PatternEditorMenu::updateTouchStroke() {
     } else {
         clearFlags(0x100000);
         updateStylusStroke();
-        unk_b4 = gTouchCurX;
-        unk_b5 = gTouchCurY;
+        lastTouchX = gTouchCurX;
+        lastTouchY = gTouchCurY;
         if (testFlags(0x100000)) {
             if (!testFlags(0x80000)) {
                 setFlags(0x80000);
@@ -1087,8 +1087,8 @@ void PatternEditorMenu::updateButtons() {
         startTouchInput();
     } else {
         if (moveCursorByPad((void *)takeRepeatedKeys())) {
-            if (unk_ac == 0) {
-                unk_ab = unk_aa;
+            if (cursorMode == 0) {
+                savedCursorTarget = cursorTarget;
             }
             moveCursorToTarget();
         } else {
@@ -1097,11 +1097,11 @@ void PatternEditorMenu::updateButtons() {
                 pressCursor();
             } else if (t & 0x800) {
                 Snd_PlaySe(0x864);
-                if (unk_ac == 0) {
-                    unk_ac = 1;
-                    unk_aa = unk_a2 + 0xd;
+                if (cursorMode == 0) {
+                    cursorMode = 1;
+                    cursorTarget = color + 0xd;
                 } else {
-                    unk_ac = 2;
+                    cursorMode = 2;
                 }
                 resumeInput();
             } else if (!cycleColorByShoulder()) {
@@ -1134,8 +1134,8 @@ void PatternEditorMenu::updateCanvasCursor() {
             setMainState(7);
         } else if (t & 0x800) {
             Snd_PlaySe(0x864);
-            unk_ac = 0;
-            unk_aa = unk_ab;
+            cursorMode = 0;
+            cursorTarget = savedCursorTarget;
             resumeInput();
         } else if (!cycleColorByShoulder()) {
             u32 k = gPad[1];
@@ -1161,10 +1161,10 @@ void PatternEditorMenu::updateCanvasPaint()
         s32 r = takeRepeatedKeys();
         s32 flag = 0;
         if (moveCanvasCursor(r, 1)) {
-            plotBrush(unk_af, unk_b0, unk_a2, unk_a4, 1);
+            plotBrush(canvasCursorX, canvasCursorY, color, tool, 1);
             setFlags(0x40);
             Snd_PlaySe(0x861);
-            if (unk_b3 == 0) {
+            if (moveDelay == 0) {
                 flag = 1;
             } else {
                 Snd_PlaySe(0x860);
@@ -1194,8 +1194,8 @@ void PatternEditorMenu::updateCanvasShape()
     }
     s32 r = takeRepeatedKeys();
     if (moveCanvasCursor(r, 0)) {
-        unk_a8 = unk_af;
-        unk_a9 = unk_b0;
+        penX = canvasCursorX;
+        penY = canvasCursorY;
         return;
     }
     u32 k = gPad[1];
@@ -1208,7 +1208,7 @@ void PatternEditorMenu::updateCanvasShape()
     } else if (k & 0x800) {
         Snd_PlaySe(0x864);
         resetShapeDrag();
-        unk_ac = 0;
+        cursorMode = 0;
         resumeInput();
     } else if (k & 0x400) {
         toggleGrid();
@@ -1235,14 +1235,14 @@ void PatternEditorMenu::updateConfirmButtons()
         startConfirmTouch();
         return;
     }
-    u32 old = unk_aa;
+    u32 old = cursorTarget;
     takeRepeatedKeys();
     if (isRepeatLeft()) {
-        unk_aa = 0x1f;
+        cursorTarget = 0x1f;
     } else if (isRepeatRight()) {
-        unk_aa = 0x20;
+        cursorTarget = 0x20;
     }
-    if (old != unk_aa) {
+    if (old != cursorTarget) {
         moveCursorToTarget();
         return;
     }
@@ -1251,27 +1251,27 @@ void PatternEditorMenu::updateConfirmButtons()
         pressCursor();
     } else if (k & 2) {
         hideCursor();
-        unk_a5 = 0x20;
+        pressedButton = 0x20;
         activateButton();
     } else if (k & 8) {
         hideCursor();
-        unk_a5 = 0x1f;
+        pressedButton = 0x1f;
         activateButton();
     }
 }
 
 void PatternEditorMenu::updateCursorMove()
 {
-    if (unk_1a0.isMoving() == 0) {
-        setMainState(unk_a0);
+    if (cursor.isMoving() == 0) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void PatternEditorMenu::updateCursorPress()
 {
-    if (unk_1a0.isAnimDone()) {
-        unk_a5 = unk_aa;
+    if (cursor.isAnimDone()) {
+        pressedButton = cursorTarget;
         activateButton();
         if (mainState == 0xa) {
             releaseCursor();
@@ -1281,7 +1281,7 @@ void PatternEditorMenu::updateCursorPress()
 
 void PatternEditorMenu::updateCursorRelease()
 {
-    if (unk_1a0.isAnimDone()) {
+    if (cursor.isAnimDone()) {
         refreshCursor();
         setMainState(3);
     }
@@ -1289,12 +1289,12 @@ void PatternEditorMenu::updateCursorRelease()
 
 void PatternEditorMenu::updateBarTransition()
 {
-    if (unk_5004.stepPress()) {
-        if (unk_1a0.getAnim()) {
-            s32 a = unk_5004.getPressOffset();
-            s32 b = unk_5004.getTargetX(-1);
-            s32 c = unk_5004.getTargetY(-1);
-            unk_1a0.warpTo(a + b, a + c);
+    if (bottomButtons.stepPress()) {
+        if (cursor.getAnim()) {
+            s32 a = bottomButtons.getPressOffset();
+            s32 b = bottomButtons.getTargetX(-1);
+            s32 c = bottomButtons.getTargetY(-1);
+            cursor.warpTo(a + b, a + c);
         }
     } else {
         hideCursor();
@@ -1310,11 +1310,11 @@ void PatternEditorMenu::startTouchInput()
 
 void PatternEditorMenu::startButtonInput()
 {
-    if (unk_ac == 2) {
+    if (cursorMode == 2) {
         hideCursor();
         initKeyRepeat(5, 0, 5);
         setMainState(4);
-        Snd_SetPanIfChanged((u8)canvasToScreenX(unk_af));
+        Snd_SetPanIfChanged((u8)canvasToScreenX(canvasCursorX));
     } else {
         showCursor();
         restartKeyRepeat();
@@ -1340,7 +1340,7 @@ void PatternEditorMenu::startConfirmTouch()
 void PatternEditorMenu::startConfirmButtons()
 {
     restartKeyRepeat();
-    unk_aa = 0x20;
+    cursorTarget = 0x20;
     showCursor();
     setMainState(8);
 }
@@ -1358,8 +1358,8 @@ void PatternEditorMenu::askSave()
 {
     Snd_PlaySe(0x29);
     clearFlags(8);
-    if (unk_ac == 2) {
-        unk_ac = 0;
+    if (cursorMode == 2) {
+        cursorMode = 0;
     }
     startBarTransition(6, 9);
 }
@@ -1368,8 +1368,8 @@ void PatternEditorMenu::askQuit()
 {
     Snd_PlaySe(0x2a);
     setFlags(8);
-    if (unk_ac == 2) {
-        unk_ac = 0;
+    if (cursorMode == 2) {
+        cursorMode = 0;
     }
     startBarTransition(6, 8);
 }
@@ -1377,7 +1377,7 @@ void PatternEditorMenu::askQuit()
 void PatternEditorMenu::startBarTransition(u8 a, u8 b)
 {
     setTransitionState(a);
-    unk_5004.setSelected(b);
+    bottomButtons.setSelected(b);
     setMainState(0xc);
 }
 
@@ -1385,8 +1385,8 @@ void PatternEditorMenu::loadFromPlayerPattern()
 {
     void *b = _ZN10PlayerData11getPatternsEv(PlayerData_GetCurrent());
     void *d = _ZN14PlayerPatterns17getPatternByOrderEj(b, MenuCtrl_GetIndex());
-    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(d), unk_a04, 0x200);
-    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(d), unk_c04, 0x200);
+    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(d), canvasA, 0x200);
+    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(d), canvasB, 0x200);
     u8 r = _ZN11PatternInfo10getPaletteEv(_ZN7Pattern7getInfoEv(d));
     setPalette(r);
 }
@@ -1399,7 +1399,7 @@ void PatternEditorMenu::saveToPlayerPattern()
     void *d = _ZN14PlayerPatterns17getPatternByOrderEj(b, c);
     _ZN7Pattern9setPixelsEPv(d, getCanvas());
     _ZN11PatternInfo24setAuthorToCurrentPlayerEv(_ZN7Pattern7getInfoEv(d));
-    _ZN11PatternInfo10setPaletteEj(_ZN7Pattern7getInfoEv(d), unk_a1);
+    _ZN11PatternInfo10setPaletteEj(_ZN7Pattern7getInfoEv(d), paletteIndex);
     s32 e = _ZN12PatternOrder7getSlotEj(_ZN14PlayerPatterns15getPatternOrderEv(b), c);
     u16 *p = _ZN10PlayerData8getShirtEv(a);
     s32 r;
@@ -1425,8 +1425,8 @@ void PatternEditorMenu::saveToPlayerPattern()
 void PatternEditorMenu::loadFromExternalPattern()
 {
     void *o = _ZN16BlancaFaceRecord10getPatternEv(&gSaveBlancaFace);
-    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(o), unk_a04, 0x200);
-    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(o), unk_c04, 0x200);
+    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(o), canvasA, 0x200);
+    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(o), canvasB, 0x200);
     u8 r = _ZN11PatternInfo10getPaletteEv(_ZN7Pattern7getInfoEv(o));
     setPalette(r);
 }
@@ -1436,29 +1436,29 @@ void PatternEditorMenu::saveToExternalPattern()
     void *o = _ZN16BlancaFaceRecord10getPatternEv(&gSaveBlancaFace);
     _ZN7Pattern9setPixelsEPv(o, getCanvas());
     _ZN11PatternInfo24setAuthorToCurrentPlayerEv(_ZN7Pattern7getInfoEv(o));
-    _ZN11PatternInfo10setPaletteEj(_ZN7Pattern7getInfoEv(o), unk_a1);
+    _ZN11PatternInfo10setPaletteEj(_ZN7Pattern7getInfoEv(o), paletteIndex);
 }
 
 void PatternEditorMenu::buildPreviewChars()
 {
-    Gfx2d_LinearToTiles4bpp(getCanvas(), unk_2e04, 4, 4);
+    Gfx2d_LinearToTiles4bpp(getCanvas(), previewChars, 4, 4);
 }
 
 void PatternEditorMenu::loadPreviewChars()
 {
-    Gfx2d_LoadCharRange(unk_2e04, 6, 0x120, 0x120, 0x12f);
+    Gfx2d_LoadCharRange(previewChars, 6, 0x120, 0x120, 0x12f);
 }
 
 void PatternEditorMenu::requestPreviewUpload()
 {
-    _ZN10BgVramTask12requestCharsEjhjjj(unk_f8, unk_2e04, 6, 0x120, 0x120, 0x12f);
+    _ZN10BgVramTask12requestCharsEjhjjj(bgTasks, previewChars, 6, 0x120, 0x120, 0x12f);
 }
 
 void PatternEditorMenu::buildCanvasChars()
 {
     u32 sh, lo, v;
     u32 *src = (u32 *)getCanvas();
-    u32 *dst = (u32 *)unk_e04;
+    u32 *dst = (u32 *)zoomedCanvas;
     s32 j, i, k, m;
     i = 0;
 Li:
@@ -1487,17 +1487,17 @@ Li:
     }
     i++;
     if (i < 0x20) goto Li;
-    Gfx2d_LinearToTiles4bpp(unk_e04, unk_3004, 0x10, 0x10);
+    Gfx2d_LinearToTiles4bpp(zoomedCanvas, canvasChars, 0x10, 0x10);
 }
 
 void PatternEditorMenu::loadCanvasChars()
 {
-    Gfx2d_LoadCharRange(unk_3004, 6, 0x20, 0x20, 0x11f);
+    Gfx2d_LoadCharRange(canvasChars, 6, 0x20, 0x20, 0x11f);
 }
 
 void PatternEditorMenu::requestCanvasUpload()
 {
-    _ZN10BgVramTask12requestCharsEjhjjj((u8 *)this + 0x130, unk_3004, 6, 0x20, 0x20, 0x11f);
+    _ZN10BgVramTask12requestCharsEjhjjj((u8 *)this + 0x130, canvasChars, 6, 0x20, 0x20, 0x11f);
 }
 
 void PatternEditorMenu::flushCanvasGfx()
@@ -1514,19 +1514,19 @@ void PatternEditorMenu::flushCanvasGfx()
 void PatternEditorMenu::requestPaletteUpload()
 {
     void *a = PatternTexCache_Get();
-    void *b = _ZN15PatternTexCache10getPaletteEi(a, unk_a1);
-    _ZN10BgVramTask14requestPaletteEjhj(unk_f8, b, 6, 0xe);
+    void *b = _ZN15PatternTexCache10getPaletteEi(a, paletteIndex);
+    _ZN10BgVramTask14requestPaletteEjhj(bgTasks, b, 6, 0xe);
 }
 
 void PatternEditorMenu::setColor(u8 v)
 {
-    unk_a2 = v;
-    unk_a3 = (v - 1) * 12;
+    color = v;
+    colorMarkerX = (v - 1) * 12;
 }
 
 void PatternEditorMenu::setPalette(u8 a) {
     u8 buf[5];
-    unk_a1 = a;
+    paletteIndex = a;
     requestPaletteUpload();
     if (a < 9) {
         buf[0] = 0x85;
@@ -1535,16 +1535,16 @@ void PatternEditorMenu::setPalette(u8 a) {
     }
     buf[1] = (a + 1) % 10 + 0x35;
     buf[2] = 0;
-    String_FromEncodedBytes(unk_b8, buf, 5);
-    unk_b8[0].createSmallLabel(8, 0x128, 2, 6, 0, 1);
-    unk_b8[0].redrawAligned(0, 0);
+    String_FromEncodedBytes(paletteLabel, buf, 5);
+    paletteLabel[0].createSmallLabel(8, 0x128, 2, 6, 0, 1);
+    paletteLabel[0].redrawAligned(0, 0);
 }
 
 u8 PatternEditorMenu::hitTest(s32 x, s32 y) {
-    if (unk_5004.hitTest(9, x, y)) {
+    if (bottomButtons.hitTest(9, x, y)) {
         return 0x1d;
     }
-    if (unk_5004.hitTest(8, x, y)) {
+    if (bottomButtons.hitTest(8, x, y)) {
         return 0x1e;
     }
     if (x >= 0x8 && x <= 0x28 && y >= 0x18 && y <= 0x38) {
@@ -1606,7 +1606,7 @@ u8 PatternEditorMenu::hitTest(s32 x, s32 y) {
 u8 PatternEditorMenu::hitTestTouch() { return hitTest(gTouchCurX, gTouchCurY); }
 
 void PatternEditorMenu::activateButton() {
-    u32 s = unk_a5;
+    u32 s = pressedButton;
     if (s == 0x1d) {
         askSave();
     } else if (s == 0x1e) {
@@ -1615,7 +1615,7 @@ void PatternEditorMenu::activateButton() {
         selectTool(s);
     } else if (s == 0xc) {
         flashButton(s);
-        setPalette((unk_a1 + 1) & 0xf);
+        setPalette((paletteIndex + 1) & 0xf);
         Snd_PlaySe(0x868);
     } else if (s == 5) {
         flashButton(s);
@@ -1627,7 +1627,7 @@ void PatternEditorMenu::activateButton() {
         if (s == 0xd) {
             toggleGrid();
         }
-        u32 t = unk_a5;
+        u32 t = pressedButton;
         if (t == 0x1f) {
             startBarTransition(2, 3);
             if (testFlags(8)) {
@@ -1648,10 +1648,10 @@ void PatternEditorMenu::activateButton() {
         } else if (t == 0x20) {
             startBarTransition(9, 4);
             if (testFlags(8)) {
-                unk_aa = 0x1e;
+                cursorTarget = 0x1e;
                 Snd_PlaySe(0x29);
             } else {
-                unk_aa = 0x1d;
+                cursorTarget = 0x1d;
                 Snd_PlaySe(0x2a);
             }
         }
@@ -1665,7 +1665,7 @@ s32 PatternEditorMenu::canvasToScreenY(s32 i) { return i * 4 + 10; }
 void PatternEditorMenu::setCanvasPosFromTouch() {
     s32 x = gTouchCurX;
     s32 y = gTouchCurY + 16;
-    if (unk_a4 == 1) {
+    if (tool == 1) {
         x += 2;
         y += 2;
     }
@@ -1681,8 +1681,8 @@ void PatternEditorMenu::setCanvasPosFromTouch() {
     } else if (y > 0x7f) {
         y = 0x7f;
     }
-    unk_a8 = x >> 2;
-    unk_a9 = y >> 2;
+    penX = x >> 2;
+    penY = y >> 2;
 }
 
 u32 PatternEditorMenu::setPixel(u8 x, u8 y, u32 c) {
@@ -2065,25 +2065,25 @@ void PatternEditorMenu::drawStamp(s32 x, s32 y, u32 a, u32 idx) {
 }
 
 void PatternEditorMenu::applyToolAt(u8 x, u8 y) {
-    u32 st = unk_a4;
+    u32 st = tool;
     if (st <= 2) {
-        plotBrush(x, y, unk_a2, st, 1);
+        plotBrush(x, y, color, st, 1);
     } else if (st >= 3 && st <= 4) {
-        drawStamp(x, y, unk_a2, st - 3);
+        drawStamp(x, y, color, st - 3);
         Snd_PlaySe(0x867);
     } else {
         if (st >= 9 && st <= 0xb) {
             Snd_PlaySe(0x867);
         }
-        switch (unk_a4) {
+        switch (tool) {
         case 9:
-            floodFill(x, y, unk_a2);
+            floodFill(x, y, color);
             break;
         case 0xb:
-            fillCanvas(unk_a2);
+            fillCanvas(color);
             break;
         case 0xa:
-            fillWithMask(unk_a2);
+            fillWithMask(color);
             break;
         }
     }
@@ -2091,13 +2091,13 @@ void PatternEditorMenu::applyToolAt(u8 x, u8 y) {
 
 void PatternEditorMenu::useToolAtTouch() {
     setCanvasPosFromTouch();
-    if (unk_a4 >= 6 && unk_a4 <= 8) {
+    if (tool >= 6 && tool <= 8) {
         startShape();
         startStylusStroke();
     } else {
         saveUndoState();
-        applyToolAt(unk_a8, unk_a9);
-        if (unk_a4 <= 2) {
+        applyToolAt(penX, penY);
+        if (tool <= 2) {
             Snd_PlaySe(0x85f);
             Snd_PlaySe(0x861);
             setFlags(0x1000);
@@ -2108,15 +2108,15 @@ void PatternEditorMenu::useToolAtTouch() {
 }
 
 void PatternEditorMenu::useToolAtCursor() {
-    unk_a8 = unk_af;
-    unk_a9 = unk_b0;
-    if (unk_a4 >= 6 && unk_a4 <= 8) {
+    penX = canvasCursorX;
+    penY = canvasCursorY;
+    if (tool >= 6 && tool <= 8) {
         startShape();
         setMainState(6);
     } else {
         saveUndoState();
-        applyToolAt(unk_a8, unk_a9);
-        if (unk_a4 <= 2) {
+        applyToolAt(penX, penY);
+        if (tool <= 2) {
             Snd_PlaySe(0x85f);
             Snd_PlaySe(0x861);
             setMainState(5);
@@ -2127,11 +2127,11 @@ void PatternEditorMenu::useToolAtCursor() {
 
 void PatternEditorMenu::drawPendingShape() {
     if (testFlags(0x100)) {
-        if (unk_a4 >= 6 && unk_a4 <= 8) {
+        if (tool >= 6 && tool <= 8) {
             u8 xa, yhi, xb, yb, xlo, xhi, ylo, ya;
             saveUndoState();
-            xa = unk_a8;
-            xb = unk_ad;
+            xa = penX;
+            xb = shapeStartX;
             if (xb >= xa) {
                 xlo = xa;
                 xhi = xb;
@@ -2139,8 +2139,8 @@ void PatternEditorMenu::drawPendingShape() {
                 xhi = xa;
                 xlo = xb;
             }
-            ya = unk_a9;
-            yb = unk_ae;
+            ya = penY;
+            yb = shapeStartY;
             if (yb >= ya) {
                 ylo = ya;
                 yhi = yb;
@@ -2148,15 +2148,15 @@ void PatternEditorMenu::drawPendingShape() {
                 yhi = ya;
                 ylo = yb;
             }
-            switch (unk_a4) {
+            switch (tool) {
             case 8:
-                drawLine(xb, yb, xa, ya, unk_a2, 0);
+                drawLine(xb, yb, xa, ya, color, 0);
                 break;
             case 6:
-                drawRect(xlo, ylo, xhi, yhi, unk_a2);
+                drawRect(xlo, ylo, xhi, yhi, color);
                 break;
             case 7:
-                drawEllipse(xlo, ylo, xhi, yhi, unk_a2, 0);
+                drawEllipse(xlo, ylo, xhi, yhi, color, 0);
                 break;
             }
             setFlags(0x40);
@@ -2166,60 +2166,60 @@ void PatternEditorMenu::drawPendingShape() {
 }
 
 void PatternEditorMenu::pickColorAtCursor() {
-    setColor(getPixel(unk_af, unk_b0));
+    setColor(getPixel(canvasCursorX, canvasCursorY));
 }
 
 void PatternEditorMenu::setButtonPalette(u32 a, u32 b) {
     if (a <= 0xc) {
         u32 t = sPatternEditorButtonTileY[a];
-        BgScreen_SetRectPalette(&unk_204, sPatternEditorButtonTileX0[a], t, sPatternEditorButtonTileX1[a], t + 2, b);
+        BgScreen_SetRectPalette(&buttonScreen, sPatternEditorButtonTileX0[a], t, sPatternEditorButtonTileX1[a], t + 2, b);
         setFlags(0x10);
     }
 }
 
 void PatternEditorMenu::flushButtonScreen() {
     if (testFlags(0x10)) {
-        if (_ZN10BgVramTask13requestScreenEjhjj(&unk_f8[2], &unk_204, 6, 0x800, 0)) {
+        if (_ZN10BgVramTask13requestScreenEjhjj(&bgTasks[2], &buttonScreen, 6, 0x800, 0)) {
             clearFlags(0x10);
         }
     }
 }
 
 void PatternEditorMenu::selectTool(u32 v) {
-    if (unk_a4 != v) {
-        if (unk_a4 != 0x22) {
-            setButtonPalette(unk_a4, 4);
+    if (tool != v) {
+        if (tool != 0x22) {
+            setButtonPalette(tool, 4);
             Snd_PlaySe(0xb);
         }
-        unk_a4 = v;
-        setButtonPalette(unk_a4, 5);
+        tool = v;
+        setButtonPalette(tool, 5);
     }
 }
 
 void PatternEditorMenu::flashButton(u32 v) {
     stopButtonFlash();
-    unk_a6 = v;
-    unk_a7 = 4;
-    setButtonPalette(unk_a6, 5);
+    flashButtonId = v;
+    flashTimer = 4;
+    setButtonPalette(flashButtonId, 5);
 }
 
 void PatternEditorMenu::stopButtonFlash() {
-    setButtonPalette(unk_a6, 4);
-    unk_a6 = 0x22;
-    unk_a7 = 0;
+    setButtonPalette(flashButtonId, 4);
+    flashButtonId = 0x22;
+    flashTimer = 0;
 }
 
 void PatternEditorMenu::updateButtonFlash() {
-    if (unk_a7 != 0) {
-        unk_a7 = unk_a7 - 1;
-        if (unk_a7 == 0) {
+    if (flashTimer != 0) {
+        flashTimer = flashTimer - 1;
+        if (flashTimer == 0) {
             stopButtonFlash();
         }
     }
 }
 
 void PatternEditorMenu::resetPaletteLabel() {
-    unk_b8[0].destroyLabel();
+    paletteLabel[0].destroyLabel();
 }
 
 void PatternEditorMenu::drawShapeCorner(s32 x, s32 y, u32 i) {
@@ -2241,11 +2241,11 @@ void PatternEditorMenu::drawPreviewDot(s32 x, s32 y) {
 void PatternEditorMenu::drawCanvasCursor(s32 x, s32 y) {
     s32 a = canvasToScreenX(x);
     s32 b = canvasToScreenY(y);
-    void *p = sPatternEditorToolCursors[unk_a4];
+    void *p = sPatternEditorToolCursors[tool];
     if (testFlags(0x800)) {
         p = data_ov123_02295830;
     }
-    if (unk_a4 == 1) {
+    if (tool == 1) {
         a -= 2;
         b -= 2;
     }
@@ -2261,13 +2261,13 @@ void PatternEditorMenu::drawLineEndMarker(s32 x, s32 y) {
 }
 
 void PatternEditorMenu::drawShapePreview() {
-    if (unk_a4 == 8) {
-        drawLineEndMarker(unk_a8, unk_a9);
-        drawLineEndMarker(unk_ad, unk_ae);
-        drawLine(unk_a8, unk_a9, unk_ad, unk_ae, 1, 3);
+    if (tool == 8) {
+        drawLineEndMarker(penX, penY);
+        drawLineEndMarker(shapeStartX, shapeStartY);
+        drawLine(penX, penY, shapeStartX, shapeStartY, 1, 3);
     } else {
-        u8 xlo = unk_ad;
-        u8 xa = unk_a8;
+        u8 xlo = shapeStartX;
+        u8 xa = penX;
         u8 xhi;
         u32 cx0, cx1;
         if (xa >= xlo) {
@@ -2280,8 +2280,8 @@ void PatternEditorMenu::drawShapePreview() {
             xhi = xlo;
             xlo = xa;
         }
-        u8 ylo = unk_ae;
-        u8 ya = unk_a9;
+        u8 ylo = shapeStartY;
+        u8 ya = penY;
         u8 yhi;
         if (ya >= ylo) {
             cx0 = cx0 + 1;
@@ -2292,7 +2292,7 @@ void PatternEditorMenu::drawShapePreview() {
             ylo = ya;
         }
         drawShapeCorner(xa, ya, cx0);
-        drawShapeCorner(unk_ad, unk_ae, cx1);
+        drawShapeCorner(shapeStartX, shapeStartY, cx1);
         u8 i = xlo;
         for (; i <= xhi; i = i + 2) {
             drawPreviewDot(i, ylo);
@@ -2326,8 +2326,8 @@ void PatternEditorMenu::drawShapePreview() {
 void PatternEditorMenu::startShape() {
     Snd_PlaySe(0x866);
     setFlags(0x100);
-    unk_ad = unk_a8;
-    unk_ae = unk_a9;
+    shapeStartX = penX;
+    shapeStartY = penY;
 }
 
 void PatternEditorMenu::resetShapeDrag() {
@@ -2347,17 +2347,17 @@ void PatternEditorMenu::endShapeAndResume() {
 void PatternEditorMenu::cancelVramTasks() {
     s32 i;
     for (i = 0; i < 3; i++) {
-        _ZN10BgVramTask6cancelEv(&unk_f8[i]);
+        _ZN10BgVramTask6cancelEv(&bgTasks[i]);
     }
 }
 
 void PatternEditorMenu::saveUndoState() {
     clearFlags(0x4000);
     if (testFlags(0x80)) {
-        MIi_CpuCopy32(unk_a04, unk_c04, 0x200);
+        MIi_CpuCopy32(canvasA, canvasB, 0x200);
         clearFlags(0x80);
     } else {
-        MIi_CpuCopy32(unk_c04, unk_a04, 0x200);
+        MIi_CpuCopy32(canvasB, canvasA, 0x200);
         setFlags(0x80);
     }
 }
@@ -2380,65 +2380,65 @@ void PatternEditorMenu::toggleUndo() {
 
 u8 *PatternEditorMenu::getCanvas() {
     if (testFlags(0x80)) {
-        return unk_a04;
+        return canvasA;
     }
-    return unk_c04;
+    return canvasB;
 }
 
 void PatternEditorMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    unk_1a0.warpTo(a, b);
-    if ((u8)(unk_aa + 0xe3) <= 1) {
-        ((MenuCursor *)&unk_1a0)->setAnimIfChanged(7);
+    cursor.warpTo(a, b);
+    if ((u8)(cursorTarget + 0xe3) <= 1) {
+        ((MenuCursor *)&cursor)->setAnimIfChanged(7);
     } else {
-        ((MenuCursor *)&unk_1a0)->setAnimIfChanged(1);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     }
     refreshCursor();
 }
 
-u32 PatternEditorMenu::getCursorTargetX() { return sPatternEditorCursorX[unk_aa]; }
+u32 PatternEditorMenu::getCursorTargetX() { return sPatternEditorCursorX[cursorTarget]; }
 
-u32 PatternEditorMenu::getCursorTargetY() { return sPatternEditorCursorY[unk_aa]; }
+u32 PatternEditorMenu::getCursorTargetY() { return sPatternEditorCursorY[cursorTarget]; }
 
 void PatternEditorMenu::hideCursor() {
-    ((MenuCursor *)&unk_1a0)->setAnimIfChanged(0);
-    unk_1a0.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 // small helpers last so they are not inlined into callers
 
 void PatternEditorMenu::refreshCursor() {
-    unk_1a0.setPoseIdle();
-    unk_1a0.vfunc_0c();
+    cursor.setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 void PatternEditorMenu::pressCursor() {
-    ((MenuCursor *)&unk_1a0)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(0xa);
 }
 
 void PatternEditorMenu::releaseCursor() {
-    unk_1a0.setPoseRelease();
+    cursor.setPoseRelease();
     setMainState(0xb);
 }
 
 void PatternEditorMenu::moveCursorToTarget() {
-    if ((u8)(unk_aa + 0xe3) <= 1) {
-        ((MenuCursor *)&unk_1a0)->switchToAnim07();
+    if ((u8)(cursorTarget + 0xe3) <= 1) {
+        ((MenuCursor *)&cursor)->switchToAnim07();
     } else {
-        ((MenuCursor *)&unk_1a0)->switchToAnim01();
+        ((MenuCursor *)&cursor)->switchToAnim01();
     }
     if (testFlags(0x200)) {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        unk_1a0.warpTo(a, b);
+        cursor.warpTo(a, b);
         clearFlags(0x200);
     } else {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        unk_1a0.moveToEase(a, b, 3, 1);
-        unk_a0 = mainState;
+        cursor.moveToEase(a, b, 3, 1);
+        returnState = mainState;
         setMainState(9);
     }
 }
@@ -2447,39 +2447,39 @@ BOOL PatternEditorMenu::moveCursorByPad(void *pad) {
     if (pad == NULL) {
         return FALSE;
     }
-    u32 old = unk_aa;
+    u32 old = cursorTarget;
     if (MenuKeys_HasUp(pad)) {
-        if (unk_aa != 0x1d) {
-            if (unk_aa == 0x1e) {
-                if (unk_ac == 0) {
-                    unk_aa = 5;
+        if (cursorTarget != 0x1d) {
+            if (cursorTarget == 0x1e) {
+                if (cursorMode == 0) {
+                    cursorTarget = 5;
                 } else {
-                    unk_aa = 0x16;
+                    cursorTarget = 0x16;
                 }
                 return TRUE;
             }
         } else {
-            if (unk_ac == 0) {
-                unk_aa = 5;
+            if (cursorMode == 0) {
+                cursorTarget = 5;
             } else {
-                unk_aa = 0x1c;
+                cursorTarget = 0x1c;
             }
             return TRUE;
         }
     }
     if (MenuKeys_HasLeft(pad)) {
-        unk_aa = sPatternEditorNavLeft[unk_aa];
+        cursorTarget = sPatternEditorNavLeft[cursorTarget];
     } else if (MenuKeys_HasRight(pad)) {
-        unk_aa = sPatternEditorNavRight[unk_aa];
+        cursorTarget = sPatternEditorNavRight[cursorTarget];
     }
-    if (old == unk_aa || unk_aa <= 0xb) {
+    if (old == cursorTarget || cursorTarget <= 0xb) {
         if (MenuKeys_HasUp(pad)) {
-            unk_aa = sPatternEditorNavUp[unk_aa];
+            cursorTarget = sPatternEditorNavUp[cursorTarget];
         } else if (MenuKeys_HasDown(pad)) {
-            unk_aa = sPatternEditorNavDown[unk_aa];
+            cursorTarget = sPatternEditorNavDown[cursorTarget];
         }
     }
-    u32 now = unk_aa;
+    u32 now = cursorTarget;
     if (old != now) {
         if (now >= 0xe && now <= 0x1c && old >= 0xe && old <= 0x1c) {
             setFlags(0x200);
@@ -2491,19 +2491,19 @@ BOOL PatternEditorMenu::moveCursorByPad(void *pad) {
 }
 
 BOOL PatternEditorMenu::moveCanvasCursor(s32 unused, s32 flag) {
-    u32 cx = unk_af;
-    u32 cy = unk_b0;
+    u32 cx = canvasCursorX;
+    u32 cy = canvasCursorY;
     u32 t0 = gPad[0];
     if (t0 & 0x20) {
         if (gPad[1] & 0x20) {
-            unk_b3 = 4;
+            moveDelay = 4;
         }
         if (cx != 0) {
             cx = (u8)(cx - 1);
         }
     } else if (t0 & 0x10) {
         if (gPad[1] & 0x10) {
-            unk_b3 = 4;
+            moveDelay = 4;
         }
         if (cx < 0x1f) {
             cx = (u8)(cx + 1);
@@ -2512,37 +2512,37 @@ BOOL PatternEditorMenu::moveCanvasCursor(s32 unused, s32 flag) {
     u32 t1 = *(volatile u16 *)&gPad[0];
     if (t1 & 0x40) {
         if (gPad[1] & 0x40) {
-            unk_b3 = 4;
+            moveDelay = 4;
         }
         if (cy != 0) {
             cy = (u8)(cy - 1);
         }
     } else if (t1 & 0x80) {
         if (gPad[1] & 0x80) {
-            unk_b3 = 4;
+            moveDelay = 4;
         }
         if (cy < 0x1f) {
             cy = (u8)(cy + 1);
         }
     }
-    if (unk_af != cx || unk_b0 != cy) {
-        u32 b3 = unk_b3;
+    if (canvasCursorX != cx || canvasCursorY != cy) {
+        u32 b3 = moveDelay;
         if (b3 == 0) {
         } else if (b3 == 4) {
-            unk_b3 = *(volatile u8 *)&unk_b3 - 1;
+            moveDelay = *(volatile u8 *)&moveDelay - 1;
         } else {
-            unk_b3 = *(volatile u8 *)&unk_b3 - 1;
+            moveDelay = *(volatile u8 *)&moveDelay - 1;
             return FALSE;
         }
-        unk_af = cx;
-        unk_b0 = cy;
+        canvasCursorX = cx;
+        canvasCursorY = cy;
         if (flag == 0) {
             Snd_PlaySe(0x865);
         }
         Snd_SetPanIfChanged((u8)canvasToScreenX(cx));
         return TRUE;
     }
-    unk_b3 = 0;
+    moveDelay = 0;
     return FALSE;
 }
 
@@ -2574,7 +2574,7 @@ void PatternEditorMenu::hideGrid() {
 BOOL PatternEditorMenu::cycleColorByShoulder() {
     u32 t = gPad[1];
     if (t & 0x200) {
-        u32 v = unk_a2;
+        u32 v = color;
         if (v > 1) {
             setColor(v - 1);
         } else {
@@ -2583,7 +2583,7 @@ BOOL PatternEditorMenu::cycleColorByShoulder() {
         return TRUE;
     }
     if (t & 0x100) {
-        u32 v = unk_a2;
+        u32 v = color;
         if (v < 0xf) {
             setColor(v + 1);
         } else {
@@ -2595,29 +2595,29 @@ BOOL PatternEditorMenu::cycleColorByShoulder() {
 }
 
 void PatternEditorMenu::startStylusStroke() {
-    unk_b1 = 0;
-    unk_b2 = 0x22;
+    hoverTimer = 0;
+    hoverButton = 0x22;
     setMainState(2);
     clearFlags(0x2000);
-    unk_b4 = gTouchCurX;
-    unk_b5 = gTouchCurY;
+    lastTouchX = gTouchCurX;
+    lastTouchY = gTouchCurY;
 }
 
 void PatternEditorMenu::updateStylusStroke() {
-    u8 old_a8 = unk_a8;
-    u8 old_a9 = unk_a9;
+    u8 old_a8 = penX;
+    u8 old_a9 = penY;
     setCanvasPosFromTouch();
     if (testFlags(0x1000)) {
-        if (unk_a4 <= 2) {
+        if (tool <= 2) {
             s32 cx = gTouchCurX;
             s32 cy = gTouchCurY;
-            s32 bx = unk_b4;
-            if (cx != bx || cy != unk_b5) {
+            s32 bx = lastTouchX;
+            if (cx != bx || cy != lastTouchY) {
                 s32 d = bx - cx;
                 if (d < 0) {
                     d = -d;
                 }
-                s32 by = unk_b5;
+                s32 by = lastTouchY;
                 if (by > cy) {
                     d = d + (by - cy);
                 } else {
@@ -2626,8 +2626,8 @@ void PatternEditorMenu::updateStylusStroke() {
                 func_02003f4c(d);
                 setFlags(0x100000);
             }
-            if (unk_a8 != old_a8 || unk_a9 != old_a9) {
-                if (drawLine(unk_a8, unk_a9, old_a8, old_a9, unk_a2, unk_a4)) {
+            if (penX != old_a8 || penY != old_a9) {
+                if (drawLine(penX, penY, old_a8, old_a9, color, tool)) {
                     Snd_PlaySe(0x861);
                 }
                 setFlags(0x40);
@@ -2636,29 +2636,29 @@ void PatternEditorMenu::updateStylusStroke() {
     }
     u32 r = hitTestTouch();
     if ((u8)(r + 0xdf) <= 1) {
-        unk_b2 = 0x22;
+        hoverButton = 0x22;
     } else if (testFlags(0x2000)) {
-        if (r != unk_b2) {
+        if (r != hoverButton) {
             clearFlags(0x2000);
-            unk_b1 = 0;
+            hoverTimer = 0;
         }
-    } else if (r == unk_b2) {
-        unk_b1 = unk_b1 + 1;
-        if (unk_b1 >= 0x14) {
+    } else if (r == hoverButton) {
+        hoverTimer = hoverTimer + 1;
+        if (hoverTimer >= 0x14) {
             if (testFlags(0x80000)) {
                 clearFlags(0x80000);
                 clearFlags(0x100000);
                 Snd_StopSe(0x862, 1);
             }
-            unk_a5 = unk_b2;
+            pressedButton = hoverButton;
             activateButton();
             resetShapeDrag();
             clearFlags(0x1000);
             setFlags(0x2000);
         }
     } else {
-        unk_b2 = r;
-        unk_b1 = 0;
+        hoverButton = r;
+        hoverTimer = 0;
     }
 }
 
@@ -2669,7 +2669,7 @@ void PatternEditorMenu::beginScreenDim() {
     }
     Gfx2d_BeginSubObjWinBrightness();
     Gfx2d_SetSubBrightness(-6);
-    unk_5004.enableObjWindow();
+    bottomButtons.enableObjWindow();
     Gfx2d_SetSubWin1Planes(0x1f, 0);
     Gfx2d_EnableSubWindows(2);
     Gfx2d_SetSubWin1Rect(0x40, 0x18, 0xc0, 0x98);
@@ -2679,18 +2679,18 @@ void PatternEditorMenu::beginScreenDim() {
 
 void PatternEditorMenu::endScreenDim() {
     Gfx2d_EndSubObjWinBrightness();
-    unk_5004.disableObjWindow();
+    bottomButtons.disableObjWindow();
     Gfx2d_DisableSubWindows(2);
 }
 
 BOOL PatternEditorMenu::testFlags(u32 mask) {
-    if (unk_9c & mask) {
+    if (flags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void PatternEditorMenu::setFlags(u32 mask) { unk_9c = unk_9c | mask; }
+void PatternEditorMenu::setFlags(u32 mask) { flags = flags | mask; }
 
-void PatternEditorMenu::clearFlags(u32 mask) { unk_9c = unk_9c & ~mask; }
+void PatternEditorMenu::clearFlags(u32 mask) { flags = flags & ~mask; }
 

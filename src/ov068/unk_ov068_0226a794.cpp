@@ -211,13 +211,13 @@ public:
     s32 getBtaAnim(u32 a);
     s32 getBca2Anim();
 
-    /* 0x130 */ u8 unk_130;
+    /* 0x130 */ u8 doorState;
     /* 0x131 */ u8 pad_131;
-    /* 0x132 */ u16 unk_132;
+    /* 0x132 */ u16 itemId;
     /* 0x134 */ u8 pad_134[4];
     /* 0x138 */ u8 unk_138[0x1d4 - 0x138];
     /* 0x1d4 */ u8 unk_1d4[8];
-    /* 0x1dc */ Unk_ov068_0226b5a4_Bits unk_1dc;
+    /* 0x1dc */ Unk_ov068_0226b5a4_Bits doorAnimFrame;
     /* 0x1e0 */ u8 pad_1e0[0x1f0 - 0x1e0];
     /* 0x1f0 */ u8 unk_1f0[0x234 - 0x1f0];
     /* 0x234 */ u8 unk_234[0x278 - 0x234];
@@ -289,30 +289,30 @@ public:
     Unk_ov068_0226b12c_Vec3 getDoorPoint();
     s32 callGetBca2Anim();
 
-    /* 0x2b0 */ s32 unk_2b0;
-    /* 0x2b4 */ s32 unk_2b4;
-    /* 0x2b8 */ s32 unk_2b8;
-    /* 0x2bc */ Unk_ov068_0226acf8_Vec unk_2bc;
-    /* 0x2c8 */ Unk_ov068_0226b12c_Vec3 unk_2c8;
-    /* 0x2d4 */ u16 unk_2d4;
-    /* 0x2d6 */ u8 unk_2d6;
-    /* 0x2d7 */ u8 unk_2d7;
-    /* 0x2d8 */ u8 unk_2d8;
-    /* 0x2d9 */ u8 unk_2d9;
-    /* 0x2da */ u8 unk_2da;
+    /* 0x2b0 */ s32 taxiState;
+    /* 0x2b4 */ s32 townHallGridX;
+    /* 0x2b8 */ s32 townHallGridZ;
+    /* 0x2bc */ Unk_ov068_0226acf8_Vec townHallWalkTarget;
+    /* 0x2c8 */ Unk_ov068_0226b12c_Vec3 carPos;
+    /* 0x2d4 */ u16 warpDelayTimer;
+    /* 0x2d6 */ u8 getInTimer;
+    /* 0x2d7 */ u8 exitWalkDelay;
+    /* 0x2d8 */ u8 departFrameCount;
+    /* 0x2d9 */ u8 getOutFrameCount;
+    /* 0x2da */ u8 ownsTaxiFlags;
     /* 0x2db */ u8 pad_2db;
-    /* 0x2dc */ s32 unk_2dc;
-    /* 0x2e0 */ s32 unk_2e0;
+    /* 0x2dc */ s32 effect41;
+    /* 0x2e0 */ s32 effect42;
 };
 
 struct Unk_ov068_0226b724_Obj {
     /* 0x00 */ u8 pad_00[0x4c];
-    /* 0x4c */ Unk_ov068_0226b12c_Vec3 unk_4c;
+    /* 0x4c */ Unk_ov068_0226b12c_Vec3 trans;
 };
 
 struct Unk_ov068_0226b724_Arg {
     /* 0x00 */ u8 pad_00[0xb4];
-    /* 0xb4 */ Unk_ov068_0226b724_Obj *unk_b4;
+    /* 0xb4 */ Unk_ov068_0226b724_Obj *pJntAnmResult;
 };
 
 struct Unk_ov068_0226a940_Bits {
@@ -482,8 +482,8 @@ s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void *, void *);
 
 struct Unk_ov068_SceneEntry {
     void *(*factory)();
-    u16 unk_04;
-    u16 unk_06;
+    u16 executePriority;
+    u16 drawPriority;
     u32 unk_08;
     u32 unk_0c;
     u32 unk_10;
@@ -512,16 +512,16 @@ KappnTaxi::~KappnTaxi() {
 
 BOOL KappnTaxi::vfunc_70() {
     void *p = PlayerData_GetCurrent();
-    unk_2c8.x = position[0];
-    unk_2c8.y = position[1];
-    unk_2c8.z = position[2];
+    carPos.x = position[0];
+    carPos.y = position[1];
+    carPos.z = position[2];
     if (Taxi_IsArriving()) {
-        unk_2da = 1;
+        ownsTaxiFlags = 1;
         Scene_GetWarpRequest();
         Scene_ResetTownReturnPos();
         setTaxiState(1);
     } else if (Taxi_IsLeaving()) {
-        unk_2da = 1;
+        ownsTaxiFlags = 1;
         if (p) {
             u16 t = 0xfff1;
             _ZN10PlayerData11setHeldItemEPt(p, &t);
@@ -537,7 +537,7 @@ BOOL KappnTaxi::vfunc_70() {
 
 BOOL KappnTaxi::onExecute() {
     updateTaxiState();
-    if (unk_2b0) {
+    if (taxiState) {
         PlayerActor_SetEventLock(1);
     }
     return TRUE;
@@ -548,11 +548,11 @@ BOOL KappnTaxi::onDraw() {
 }
 
 BOOL KappnTaxi::vfunc_0c() {
-    if (unk_2b0) {
+    if (taxiState) {
         TalkRequestFlags_ClearSceneHold();
     }
-    if (unk_2da) {
-        unk_2da = 0;
+    if (ownsTaxiFlags) {
+        ownsTaxiFlags = 0;
         Taxi_ClearArriving();
         Taxi_ClearLeaving();
     }
@@ -560,7 +560,7 @@ BOOL KappnTaxi::vfunc_0c() {
 }
 
 Unk_ov068_0226b12c_Vec3 KappnTaxi::vfunc_b4() {
-    return unk_2c8;
+    return carPos;
 }
 
 s32 KappnTaxi::callGetBca2Anim() {
@@ -568,7 +568,7 @@ s32 KappnTaxi::callGetBca2Anim() {
 }
 
 BOOL KappnTaxi::vfunc_b0() {
-    if (unk_2b0) {
+    if (taxiState) {
         return TRUE;
     }
     return FALSE;
@@ -576,17 +576,17 @@ BOOL KappnTaxi::vfunc_b0() {
 
 void KappnTaxi::vfunc_60(u32 a, void *b) {
     if (a == 0) {
-        Unk_ov068_0226b724_Obj *o = ((Unk_ov068_0226b724_Arg *)b)->unk_b4;
+        Unk_ov068_0226b724_Obj *o = ((Unk_ov068_0226b724_Arg *)b)->pJntAnmResult;
         Unk_ov068_0226b12c_Vec3 v;
         Unk_ov068_0226b12c_Vec3 out;
-        Unk_ov068_0226b12c_Vec3 *pv = &o->unk_4c;
+        Unk_ov068_0226b12c_Vec3 *pv = &o->trans;
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;
         func_01ffd070(&out, &position, &v);
-        unk_2c8.x = out.x;
-        unk_2c8.y = out.y;
-        unk_2c8.z = out.z;
+        carPos.x = out.x;
+        carPos.y = out.y;
+        carPos.z = out.z;
     }
 }
 
@@ -599,9 +599,9 @@ void KappnTaxi::onMessageEnd() {
 
 Unk_ov068_0226b12c_Vec3 KappnTaxi::getDoorPoint() {
     Unk_ov068_0226b12c_Vec3 r;
-    r.x = unk_2c8.x;
-    r.y = unk_2c8.y;
-    r.z = unk_2c8.z;
+    r.x = carPos.x;
+    r.y = carPos.y;
+    r.z = carPos.z;
     r.x += FX_Div(0x19000, 0x64000) - 0xf6;
     return r;
 }
@@ -622,16 +622,16 @@ s32 KappnTaxi::getAngleToPlayer() {
 }
 
 void KappnTaxi::startEffect41() {
-    unk_2dc = Effect_Create(0x41, &unk_2c8, 0, 0);
+    effect41 = Effect_Create(0x41, &carPos, 0, 0);
 }
 
 void KappnTaxi::updateEffect41() {
-    u32 v = unk_1dc.mid;
+    u32 v = doorAnimFrame.mid;
     if (v >= 0x2d && v <= 0x31) {
         if (v == 0x2d) {
             startEffect41();
         }
-        Effect_SetPosition(unk_2dc, &unk_2c8, 0, 0);
+        Effect_SetPosition(effect41, &carPos, 0, 0);
         if (v == 0x31) {
             stopEffect41();
         }
@@ -639,20 +639,20 @@ void KappnTaxi::updateEffect41() {
 }
 
 void KappnTaxi::stopEffect41() {
-    Effect_End(unk_2dc);
+    Effect_End(effect41);
 }
 
 void KappnTaxi::startEffect42() {
-    unk_2e0 = Effect_Create(0x42, &unk_2c8, 0, 0);
+    effect42 = Effect_Create(0x42, &carPos, 0, 0);
 }
 
 void KappnTaxi::updateEffect42() {
-    u32 v = unk_1dc.mid;
+    u32 v = doorAnimFrame.mid;
     if (v >= 0x25 && v <= 0x32) {
         if (v == 0x25) {
             startEffect42();
         }
-        Effect_SetPosition(unk_2e0, &unk_2c8, 0, 0);
+        Effect_SetPosition(effect42, &carPos, 0, 0);
         if (v == 0x32) {
             stopEffect42();
         }
@@ -660,7 +660,7 @@ void KappnTaxi::updateEffect42() {
 }
 
 void KappnTaxi::stopEffect42() {
-    Effect_End(unk_2e0);
+    Effect_End(effect42);
 }
 
 BOOL KappnTaxi::setTaxiState(s32 idx) {
@@ -677,7 +677,7 @@ BOOL KappnTaxi::setTaxiState(s32 idx) {
     };
     if (idx < 0x11) {
         if ((this->*tbl[idx])()) {
-            unk_2b0 = idx;
+            taxiState = idx;
             return TRUE;
         }
     }
@@ -696,8 +696,8 @@ void KappnTaxi::updateTaxiState() {
         &KappnTaxi::execTaxiPlayerGetIn, &KappnTaxi::execTaxiLeaveDrive,
         &KappnTaxi::execTaxiLeaveEnd,
     };
-    if (unk_2b0 < 0x11) {
-        (this->*tbl[unk_2b0])();
+    if (taxiState < 0x11) {
+        (this->*tbl[taxiState])();
     }
 }
 
@@ -740,7 +740,7 @@ void KappnTaxi::execTaxiDoorOpen() {
 }
 
 BOOL KappnTaxi::enterTaxiPlayerGetOut() {
-    unk_2d9 = 0;
+    getOutFrameCount = 0;
     if (KappnTaxi_RequestPlayerGetOut()) {
         _ZN14BlendAnimModel8initAnimEiiitt(unk_138, vfunc_68(), 1, 0x1000, 0, 0);
         _ZN17BuildingSeEmitter6playSeEj(unk_234, 0x88a);
@@ -751,7 +751,7 @@ BOOL KappnTaxi::enterTaxiPlayerGetOut() {
 
 void KappnTaxi::execTaxiPlayerGetOut() {
     if (_ZN13AnimFrameCtrl10isFinishedEv(unk_1d4)) {
-        switch (unk_2d9) {
+        switch (getOutFrameCount) {
         case 0x12:
             PlayerActor_KeepAnimForNextAction();
             PlayerActor_RequestTurnTo(getAngleToPlayer(), 4);
@@ -760,8 +760,8 @@ void KappnTaxi::execTaxiPlayerGetOut() {
             setTaxiState(4);
             break;
         }
-        if (unk_2d9 < 0xc8) {
-            unk_2d9++;
+        if (getOutFrameCount < 0xc8) {
+            getOutFrameCount++;
         }
     } else {
         _ZN9AnimModel8stepAnimEv(unk_138);
@@ -811,7 +811,7 @@ BOOL KappnTaxi::enterTaxiDepart() {
     s32 r1 = callGetBca2Anim();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, r1, 1, 0x1000, 0, 0);
     _ZN17BuildingSeEmitter6playSeEj(unk_234, 0x88b);
-    unk_2d8 = 0;
+    departFrameCount = 0;
     return TRUE;
 }
 
@@ -828,22 +828,22 @@ void KappnTaxi::execTaxiDepart() {
             if (func_020e780c(r4, getAngleToPlayer()) < 0x1200) {
                 PlayerActor_SetHeadTilt(0, (s16)(getAngleToPlayer() - r4), 4);
             } else {
-                if (unk_2d8 < 0xc8) {
-                    unk_2d8 = unk_2d8 + 1;
+                if (departFrameCount < 0xc8) {
+                    departFrameCount = departFrameCount + 1;
                 }
-                if (unk_2d8 == 0x10) {
+                if (departFrameCount == 0x10) {
                     void *q = BuildingList_FindByItem(0x5000);
                     if (q != 0) {
                         s32 l0[1];
                         s32 l1[3];
                         if (_ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(q, l1, l0) != 0) {
-                            unk_2bc.x = l1[0];
-                            unk_2bc.y = l1[1];
-                            s32 *p = &unk_2bc.z;
+                            townHallWalkTarget.x = l1[0];
+                            townHallWalkTarget.y = l1[1];
+                            s32 *p = &townHallWalkTarget.z;
                             *p = l1[2];
                             *p = *p + 0x200;
                             PlayerActor_SetHeadTilt(0, 0, 4);
-                            PlayerActor_RequestWalkTo(&unk_2bc, 0x400, 4);
+                            PlayerActor_RequestWalkTo(&townHallWalkTarget, 0x400, 4);
                         }
                     }
                 }
@@ -863,7 +863,7 @@ void KappnTaxi::execTaxiWaitPlayerWalk() {
 }
 
 BOOL KappnTaxi::enterTaxiEnterTownHall() {
-    if (PlayerActor_LocalRequestDoorEnter(1, &unk_2bc, &unk_2bc.z, -0x8000) != 0) {
+    if (PlayerActor_LocalRequestDoorEnter(1, &townHallWalkTarget, &townHallWalkTarget.z, -0x8000) != 0) {
         return TRUE;
     }
     return FALSE;
@@ -873,24 +873,24 @@ void KappnTaxi::execTaxiEnterTownHall() {
     void *q = BuildingList_FindByItem(0x5000);
     if (q != 0) {
         _ZN13BuildingActor16openDoorForEntryEv(q);
-        unk_2b4 = _ZN13BuildingActor8getGridXEv(q);
-        unk_2b8 = _ZN13BuildingActor8getGridZEv(q);
+        townHallGridX = _ZN13BuildingActor8getGridXEv(q);
+        townHallGridZ = _ZN13BuildingActor8getGridZEv(q);
         setTaxiState(9);
     }
 }
 
 BOOL KappnTaxi::enterTaxiWarpTownHall() {
-    unk_2d4 = 0x14;
+    warpDelayTimer = 0x14;
     return TRUE;
 }
 
 void KappnTaxi::execTaxiWarpTownHall() {
     Unk_ov068_0226acf8_Vec v;
     s16 sv;
-    if (unk_2d4 != 0) {
-        unk_2d4 = unk_2d4 - 1;
+    if (warpDelayTimer != 0) {
+        warpDelayTimer = warpDelayTimer - 1;
     }
-    if (unk_2d4 == 0) {
+    if (warpDelayTimer == 0) {
         void *q = BuildingList_FindByItem(0x5000);
         if (q != 0) {
             if (_ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(q, &v, &sv) != 0) {
@@ -898,7 +898,7 @@ void KappnTaxi::execTaxiWarpTownHall() {
                 v.z = v.z + 0x1000;
                 void *r4 = Scene_GetWarpRequest();
                 void *r1 = Scene_GetCurrent(r4);
-                Scene_SetTownReturnPos(r4, r1, &v, 0xf000000, (s16)(sv + 0x8000), unk_2b4, unk_2b8);
+                Scene_SetTownReturnPos(r4, r1, &v, 0xf000000, (s16)(sv + 0x8000), townHallGridX, townHallGridZ);
                 TalkRequestFlags_ClearSceneHold();
             }
         }
@@ -918,7 +918,7 @@ void KappnTaxi::execTaxiLeave() {
 BOOL KappnTaxi::enterTaxiPlayerExitTownHall() {
     void *q = BuildingList_FindByItem(0x5000);
     if (q != 0) {
-        unk_2d7 = 0x10;
+        exitWalkDelay = 0x10;
         return _ZN13BuildingActor15openDoorForExitEv(q);
     }
     return TRUE;
@@ -930,7 +930,7 @@ void KappnTaxi::execTaxiPlayerExitTownHall() {
         if (_ZN13BuildingActor10isDoorIdleEv(q) != 0) {
             u8 *o = (u8 *)PlayerActor_GetActor(4);
             if (o != 0) {
-                if (unk_2d7 == 0) {
+                if (exitWalkDelay == 0) {
                     Unk_ov068_0226acf8_Vec v;
                     Unk_ov068_0226acf8_Vec *pv = (Unk_ov068_0226acf8_Vec *)(o + 0x5c);
                     v.x = pv->x;
@@ -942,8 +942,8 @@ void KappnTaxi::execTaxiPlayerExitTownHall() {
                     }
                 }
             }
-            if (unk_2d7 != 0) {
-                unk_2d7 = unk_2d7 - 1;
+            if (exitWalkDelay != 0) {
+                exitWalkDelay = exitWalkDelay - 1;
             }
         }
     }
@@ -986,7 +986,7 @@ void KappnTaxi::execTaxiLeaveDoorAnim() {
 }
 
 BOOL KappnTaxi::enterTaxiPlayerGetIn() {
-    unk_2d6 = 0x1e;
+    getInTimer = 0x1e;
     if (KappnTaxi_RequestPlayerGetIn() != 0) {
         return TRUE;
     }
@@ -994,12 +994,12 @@ BOOL KappnTaxi::enterTaxiPlayerGetIn() {
 }
 
 void KappnTaxi::execTaxiPlayerGetIn() {
-    if (unk_2d6 == 0) {
+    if (getInTimer == 0) {
         setTaxiState(0xf);
     }
-    if (unk_2d6 != 0) {
+    if (getInTimer != 0) {
         PlayerActor_SetHeadTilt(0, 0, 4);
-        unk_2d6 = unk_2d6 - 1;
+        getInTimer = getInTimer - 1;
     }
     _ZN9AnimModel8stepAnimEv(unk_138);
 }

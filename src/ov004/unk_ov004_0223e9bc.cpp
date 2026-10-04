@@ -78,8 +78,8 @@ public:
     void placeNookStock();
     BOOL placeItem(u16 *item, s32 code);
 
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ s32 unk_54;
+    /* 0x50 */ s32 nookShop;
+    /* 0x54 */ s32 shopKind;
 };
 
 static inline BOOL Unk_ov004_0223eb8c_Chk(u16 *p) {
@@ -297,18 +297,18 @@ void *data_ov004_0224f274[2] = {(void *)_ZN18Unk_ov004_0223e9bc16setupScene15Sho
 void *data_ov004_0224f264[2] = {(void *)_ZN18Unk_ov004_0223e9bc11setupNoShopEv, 0};
 
 BOOL ShopStockPlacer::vfunc_00() {
-    unk_50 = Scene_GetNookShop();
+    nookShop = Scene_GetNookShop();
     if (Scene_InNookShop()) {
-        unk_54 = 0;
+        shopKind = 0;
     } else if (Scene_GetCurrent() == 0xa) {
-        unk_54 = 1;
+        shopKind = 1;
     } else if (Scene_GetCurrent() == 0xf) {
-        unk_54 = 2;
+        shopKind = 2;
     } else {
-        unk_54 = 3;
+        shopKind = 3;
     }
     static Fn tbl[4] = {*(Fn *)data_ov004_0224f254, *(Fn *)data_ov004_0224f25c, *(Fn *)data_ov004_0224f274, *(Fn *)data_ov004_0224f264};
-    (this->*tbl[unk_54])();
+    (this->*tbl[shopKind])();
     return TRUE;
 }
 

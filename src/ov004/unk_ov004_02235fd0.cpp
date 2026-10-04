@@ -184,32 +184,32 @@ public:
     void setSoundState(s32 v);
     s32 getSoundState();
 
-    /* 0xd4 */ s32 unk_d4;
-    /* 0xd8 */ s32 unk_d8;
-    /* 0xdc */ u32 unk_dc[12];
-    /* 0x10c */ s32 unk_10c;
-    /* 0x110 */ s32 unk_110;
-    /* 0x114 */ u32 unk_114[3];
-    /* 0x120 */ u8 unk_120[0x5c];
-    /* 0x17c */ u32 unk_17c;
+    /* 0xd4 */ s32 crawlSpeed;
+    /* 0xd8 */ s32 jumpSpeed;
+    /* 0xdc */ u32 moveResult[12];
+    /* 0x10c */ s32 roachState;
+    /* 0x110 */ s32 lifeState;
+    /* 0x114 */ u32 sound[3];
+    /* 0x120 */ u8 model[0x5c];
+    /* 0x17c */ u32 modelResMdl;
     /* 0x180 */ u8 pad_180[4];
-    /* 0x184 */ Unk_ov004_02236320_Mtx unk_184;
+    /* 0x184 */ Unk_ov004_02236320_Mtx modelMtx;
     /* 0x1b4 */ u8 unk_1b4[0x24];
-    /* 0x1d8 */ u8 unk_1d8[0x3c];
-    /* 0x214 */ u8 unk_214;
+    /* 0x1d8 */ u8 hitBox[0x3c];
+    /* 0x214 */ u8 isHit;
     /* 0x215 */ u8 pad_215[0x228 - 0x215];
-    /* 0x228 */ s16 unk_228;
-    /* 0x22a */ u8 unk_22a;
+    /* 0x228 */ s16 spawnAngle;
+    /* 0x22a */ u8 isJumping;
     /* 0x22b */ u8 pad_22b;
-    /* 0x22c */ s16 unk_22c;
-    /* 0x22e */ s16 unk_22e;
-    /* 0x230 */ Unk_ov004_02236320_V3 unk_230[2];
-    /* 0x248 */ Unk_ov004_02236320_V3 unk_248[2];
-    /* 0x260 */ s8 unk_260;
+    /* 0x22c */ s16 stateTimer;
+    /* 0x22e */ s16 jumpTimer;
+    /* 0x230 */ Unk_ov004_02236320_V3 probePoints[2];
+    /* 0x248 */ Unk_ov004_02236320_V3 probePrevPoints[2];
+    /* 0x260 */ s8 wallProbe;
     /* 0x261 */ u8 pad_261;
-    /* 0x262 */ u8 unk_262;
-    /* 0x263 */ u8 unk_263;
-    /* 0x264 */ s32 unk_264;
+    /* 0x262 */ u8 wallTurnDir;
+    /* 0x263 */ u8 wantsCrawlSe;
+    /* 0x264 */ s32 soundState;
 };
 
 // vtable 0x0224eb9c, size 0x50
@@ -526,29 +526,29 @@ extern "C" BOOL HouseRoach_LoadCount(void *self) {
 }
 
 HouseRoach::HouseRoach() {
-    volatile u32 *p = unk_114;
-    unk_d4 = 0x614;
-    unk_d8 = 0x6b8;
-    func_020323b0(unk_dc);
+    volatile u32 *p = sound;
+    crawlSpeed = 0x614;
+    jumpSpeed = 0x6b8;
+    func_020323b0(moveResult);
     *p = (u32)data_0213b91c;
     *p = (u32)data_0213b954;
-    func_020548d0(unk_120);
-    func_02088c4c(unk_1d8);
-    func_02135714(unk_230, 2, 12, (void *)FxVec3_Construct, (void *)func_02000c8c);
-    func_02135714(unk_248, 2, 12, (void *)FxVec3_Construct, (void *)func_02000c8c);
-    unk_110 = 1;
-    unk_260 = 0;
-    unk_262 = 0;
-    unk_22e = 0;
-    unk_10c = 3;
+    func_020548d0(model);
+    func_02088c4c(hitBox);
+    func_02135714(probePoints, 2, 12, (void *)FxVec3_Construct, (void *)func_02000c8c);
+    func_02135714(probePrevPoints, 2, 12, (void *)FxVec3_Construct, (void *)func_02000c8c);
+    lifeState = 1;
+    wallProbe = 0;
+    wallTurnDir = 0;
+    jumpTimer = 0;
+    roachState = 3;
 }
 
 HouseRoach::~HouseRoach() {
-    func_021355f0(unk_248, 2, 12, (void *)func_02000c8c);
-    func_021355f0(unk_230, 2, 12, (void *)func_02000c8c);
-    func_02088c34(unk_1d8);
-    func_020548a0(unk_120);
-    func_0203239c(unk_dc);
+    func_021355f0(probePrevPoints, 2, 12, (void *)func_02000c8c);
+    func_021355f0(probePoints, 2, 12, (void *)func_02000c8c);
+    func_02088c34(hitBox);
+    func_020548a0(model);
+    func_0203239c(moveResult);
 }
 
 extern "C" void HouseRoach_FindVillager(void *) {
@@ -560,69 +560,69 @@ extern "C" void HouseRoach_FindVillager(void *) {
 }
 
 s32 HouseRoach::getSoundState() {
-    return unk_264;
+    return soundState;
 }
 
 void HouseRoach::setSoundState(s32 v) {
-    unk_264 = v;
+    soundState = v;
 }
 
 BOOL HouseRoach::setup() {
-    CachedModel_loadCached(unk_120, 0x474f4b49, sHouseRoachModelPath);
+    CachedModel_loadCached(model, 0x474f4b49, sHouseRoachModelPath);
     void *h = FrameHeap_CreateAsCurrent(0x5000, gCurrentHeap);
     ProcBase_SetHeap(this, h);
-    AnimModel_allocAnmObj(unk_120, 0);
+    AnimModel_allocAnmObj(model, 0);
     void *t = File_Load("/insect/51/bug52.nsbva");
     func_020e877c(h);
     Heap_RestoreCurrent();
     void *r = func_021067a4(func_02106788(t), 0);
-    BlendAnimModel_initAnim(unk_120, r, 0, 0x1000, 0, 0);
-    AnimModel_attachAnim(unk_120);
-    Unk_02003c30_callReset(unk_114);
+    BlendAnimModel_initAnim(model, r, 0, 0x1000, 0, 0);
+    AnimModel_attachAnim(model);
+    Unk_02003c30_callReset(sound);
     s16 *q = &moveAngleX;
     q[1] = rotY;
-    unk_228 = q[1];
+    spawnAngle = q[1];
     gravity = -819;
-    speed = unk_d4;
-    unk_22a = 0;
-    unk_263 = 0;
-    unk_264 = 0;
+    speed = crawlSpeed;
+    isJumping = 0;
+    wantsCrawlSe = 0;
+    soundState = 0;
     return TRUE;
 }
 
 void HouseRoach::updateState() {
     Unk_ov004_02236320_V3 v;
-    if (unk_10c != 2) {
+    if (roachState != 2) {
         updateCollision();
     }
-    switch (unk_10c) {
+    switch (roachState) {
     case 0:
         updateCrawl();
         break;
     case 1:
-        speed = unk_d4;
-        if (unk_22c-- > 0) {
+        speed = crawlSpeed;
+        if (stateTimer-- > 0) {
             break;
         }
-        if (unk_22a != 0) {
+        if (isJumping != 0) {
             break;
         }
-        unk_10c = 0;
-        unk_22c = (Random_GlobalBelow(10) + 3) * 20;
+        roachState = 0;
+        stateTimer = (Random_GlobalBelow(10) + 3) * 20;
         break;
     case 2:
         Effect_PlayById(0x50, &position, 0, 0);
         F08(this) = F08(this) - 1;
-        unk_110 = 2;
+        lifeState = 2;
         playSe(2);
         break;
     case 3:
         if (Random_GlobalBelow(100) > 0x32) {
-            unk_10c = 0;
-            unk_22c = (Random_GlobalBelow(10) + 3) * 20;
+            roachState = 0;
+            stateTimer = (Random_GlobalBelow(10) + 3) * 20;
         } else {
-            unk_10c = 1;
-            unk_22c = (Random_GlobalBelow(4) + 3) * 20;
+            roachState = 1;
+            stateTimer = (Random_GlobalBelow(4) + 3) * 20;
         }
         break;
     }
@@ -630,7 +630,7 @@ void HouseRoach::updateState() {
     v.x = position.x;
     v.y = pv->y;
     v.z = pv->z;
-    Unk_02003c40_callUpdateRelative(unk_114, &v);
+    Unk_02003c40_callUpdateRelative(sound, &v);
 }
 
 void HouseRoach::updateCollision() {
@@ -699,11 +699,11 @@ void HouseRoach::updateCollision() {
             fr[i] = BoxCollider_Register((u8 *)&o0 + i * 0x9c, 0x1000, a, b, &v[i], z1, z1);
         }
     }
-    if (unk_10c != 0) {
+    if (roachState != 0) {
         move();
     }
-    updatePosition((Unk_02002cb0_Vec *)&unk_1d8);
-    Collision_Move(&unk_dc, p, &prevPosition, ang, 0x666, this, 0xf);
+    updatePosition((Unk_02002cb0_Vec *)&hitBox);
+    Collision_Move(&moveResult, p, &prevPosition, ang, 0x666, this, 0xf);
     for (i = 0; i < n; i++) {
         if (fr[i] != 0) {
             BoxCollider_Unregister((u8 *)&o0 + i * 0x9c);
@@ -717,22 +717,22 @@ void HouseRoach::updateCollision() {
 
 void HouseRoach::updateAppear() {
     Unk_ov004_02236320_V3 v;
-    speed = unk_d4;
+    speed = crawlSpeed;
     updateCollision();
     position.y = prevPositionY;
     Unk_ov004_02236320_V3 *pv = &position;
     v.x = position.x;
     v.y = pv->y;
     v.z = pv->z;
-    Unk_02003c40_callUpdateRelative(unk_114, &v);
+    Unk_02003c40_callUpdateRelative(sound, &v);
 }
 
 BOOL HouseRoach::execute() {
     u32 t;
-    unk_263 = 0;
+    wantsCrawlSe = 0;
     t = F08(this);
     if (t >= 0x1f) {
-        if (unk_110 == 1) {
+        if (lifeState == 1) {
             if (sHouseRoachVillager == NULL) {
                 HouseRoach_FindVillager(this);
             }
@@ -740,14 +740,14 @@ BOOL HouseRoach::execute() {
             updateHitBox();
             updateState();
             checkHeight();
-            if (unk_22a != 0) {
-                AnimModel_stepAnim(unk_120);
+            if (isJumping != 0) {
+                AnimModel_stepAnim(model);
             }
         } else {
             F08(this) = t - 1;
         }
     } else {
-        if (unk_110 == 1) {
+        if (lifeState == 1) {
             F08(this) = t + 2;
             updateAppear();
         } else {
@@ -758,11 +758,11 @@ BOOL HouseRoach::execute() {
         Unk_ov004_02236320_Mtx buf;
         drawTilt = WorldCurve_ToCurved(&drawPos, &position);
         calcModelMatrix(&buf);
-        unk_184 = buf;
+        modelMtx = buf;
     } else {
         release();
     }
-    if (unk_263 == 0) {
+    if (wantsCrawlSe == 0) {
         setSoundState(0);
     }
     return TRUE;
@@ -771,9 +771,9 @@ BOOL HouseRoach::execute() {
 BOOL HouseRoach::checkHeight() {
     if (position.y >= 0xc00) {
         position.y = prevPositionY;
-        if ((unk_dc[1] & 1) != 0) {
+        if ((moveResult[1] & 1) != 0) {
             u8 buf[0x40];
-            unk_10c = 2;
+            roachState = 2;
             GroundInfo_initAtPos(buf, &position, 0, 0);
             position.y = GroundInfoBase_getHeight(buf, 1);
             GroundInfo_Destruct(buf);
@@ -785,20 +785,20 @@ BOOL HouseRoach::checkHeight() {
 
 BOOL HouseRoach::checkStomped() {
     Unk_ov004_02236320_Ent *pl = (Unk_ov004_02236320_Ent *)PlayerActor_GetActor(4);
-    if (unk_214 != 0) {
-        if (unk_22a == 0) {
+    if (isHit != 0) {
+        if (isJumping == 0) {
             if (pl != NULL) {
                 if (pl->unk_98 > 0) {
-                    if (ActorCollider_isHitByGroup(unk_1d8, 4) != 0) {
-                        unk_10c = 2;
+                    if (ActorCollider_isHitByGroup(hitBox, 4) != 0) {
+                        roachState = 2;
                         return TRUE;
                     }
                 }
             }
             if (sHouseRoachVillager != NULL) {
                 if (sHouseRoachVillager->unk_98 > 0) {
-                    if (ActorCollider_isHitByGroup(unk_1d8, 8) != 0) {
-                        unk_10c = 2;
+                    if (ActorCollider_isHitByGroup(hitBox, 8) != 0) {
+                        roachState = 2;
                         return TRUE;
                     }
                 }
@@ -809,16 +809,16 @@ BOOL HouseRoach::checkStomped() {
 }
 
 BOOL HouseRoach::draw() {
-    if (unk_110 != 4) {
+    if (lifeState != 4) {
         Unk_ov004_02236320_V3 *pv = &position;
         if (F08(this) > 0x1f) {
             F08(this) = 0x1f;
         }
-        Model_setPolygonId(unk_120, 3);
-        NNSi_G3dModifyPolygonAttrMask(unk_17c, 1, 0x1f0000);
-        Model_setAlpha(unk_120, (u8)F08(this));
-        AnimModel_drawAnimated(unk_120, 0);
-        if (F08(this) >= 0x1f && unk_110 == 1) {
+        Model_setPolygonId(model, 3);
+        NNSi_G3dModifyPolygonAttrMask(modelResMdl, 1, 0x1f0000);
+        Model_setAlpha(model, (u8)F08(this));
+        AnimModel_drawAnimated(model, 0);
+        if (F08(this) >= 0x1f && lifeState == 1) {
             CharaShadow_Draw(pv, 0x400, 0x4000, 0x1000);
         }
     }
@@ -826,35 +826,35 @@ BOOL HouseRoach::draw() {
 }
 
 BOOL HouseRoach::release() {
-    CachedModel_release(unk_120);
-    unk_110 = 4;
+    CachedModel_release(model);
+    lifeState = 4;
     F08(this) = 0xffff;
-    Unk_02003c30_callRelease(unk_114);
+    Unk_02003c30_callRelease(sound);
     return TRUE;
 }
 
 void HouseRoach::playSe(u32 sel) {
     switch (sel) {
     case 0:
-        unk_263 = 1;
+        wantsCrawlSe = 1;
         if (getSoundState() == 2) {
-            Unk_02003c40_callRequest(unk_114, 0x1d2);
+            Unk_02003c40_callRequest(sound, 0x1d2);
         } else {
             setSoundState(1);
         }
         break;
     case 1:
-        Unk_02003c40_callRequestSustained(unk_114, 0x1d3);
+        Unk_02003c40_callRequestSustained(sound, 0x1d3);
         break;
     default:
-        Unk_02003c40_callRequestSustained(unk_114, 0x1d4);
+        Unk_02003c40_callRequestSustained(sound, 0x1d4);
         break;
     }
 }
 
 u8 HouseRoach::probeWalls() {
     u8 r6 = 0;
-    Unk_ov004_02236320_V3 *r4r = &unk_230[0];
+    Unk_ov004_02236320_V3 *r4r = &probePoints[0];
     Unk_ov004_02236320_O1 o1;
     u32 o2[16];
     u32 o3[16];
@@ -865,23 +865,23 @@ u8 HouseRoach::probeWalls() {
     func_020323b0(&o1);
     GroundInfo_initAtPos(o2, r4r, r6, r6);
     ang = rotY;
-    if (unk_248[0].x == 0 || unk_248[0].z == 0) {
-        unk_248[0].x = unk_230[0].x;
-        unk_248[0].y = unk_230[0].y;
-        unk_248[0].z = unk_230[0].z;
+    if (probePrevPoints[0].x == 0 || probePrevPoints[0].z == 0) {
+        probePrevPoints[0].x = probePoints[0].x;
+        probePrevPoints[0].y = probePoints[0].y;
+        probePrevPoints[0].z = probePoints[0].z;
     }
-    Collision_Move(&o1, r4r, &unk_248[0], ang, 0x19a, this, 0xf);
+    Collision_Move(&o1, r4r, &probePrevPoints[0], ang, 0x19a, this, 0xf);
     t1 = (s16)(u16)((Unk_ov004_02236320_O1 *)(u32)&o1)->f;
     if (GroundInfoBase_getHeight(o2, 1) > 0x200 || r4r->y > 0x1000 || t1 > 0) {
         r6++;
     }
     GroundInfo_initAtPos(o3, r4r + 1, 0, 0);
-    if (unk_248[1].x == 0 || unk_248[1].z == 0) {
-        unk_248[1].x = unk_230[1].x;
-        unk_248[1].y = unk_230[1].y;
-        unk_248[1].z = unk_230[1].z;
+    if (probePrevPoints[1].x == 0 || probePrevPoints[1].z == 0) {
+        probePrevPoints[1].x = probePoints[1].x;
+        probePrevPoints[1].y = probePoints[1].y;
+        probePrevPoints[1].z = probePoints[1].z;
     }
-    Collision_Move(&o1, r4r + 1, &unk_248[1], ang, 0x19a, this, 0xf);
+    Collision_Move(&o1, r4r + 1, &probePrevPoints[1], ang, 0x19a, this, 0xf);
     t2 = (s16)(u16)((Unk_ov004_02236320_O1 *)(u32)&o1)->f;
     if (GroundInfoBase_getHeight(o3, 1) > 0x200 || r4r[1].y > 0x1000 || t2 > 0) {
         r6 += 2;
@@ -896,26 +896,26 @@ void HouseRoach::setProbePoints(s32 dist, s32 delta) {
     Unk_ov004_02236320_V3 *pv = &position;
     s16 ang = rotY;
     u32 idx;
-    unk_230[0].x = position.x;
-    unk_230[0].y = pv->y;
-    unk_230[0].z = pv->z;
-    unk_230[1].x = position.x;
-    unk_230[1].y = pv->y;
-    unk_230[1].z = pv->z;
-    unk_248[0].x = unk_230[0].x;
-    unk_248[0].y = unk_230[0].y;
-    unk_248[0].z = unk_230[0].z;
-    unk_248[1].x = unk_230[1].x;
-    unk_248[1].y = unk_230[1].y;
-    unk_248[1].z = unk_230[1].z;
+    probePoints[0].x = position.x;
+    probePoints[0].y = pv->y;
+    probePoints[0].z = pv->z;
+    probePoints[1].x = position.x;
+    probePoints[1].y = pv->y;
+    probePoints[1].z = pv->z;
+    probePrevPoints[0].x = probePoints[0].x;
+    probePrevPoints[0].y = probePoints[0].y;
+    probePrevPoints[0].z = probePoints[0].z;
+    probePrevPoints[1].x = probePoints[1].x;
+    probePrevPoints[1].y = probePoints[1].y;
+    probePrevPoints[1].z = probePoints[1].z;
     idx = ((u16)(s16)(ang + delta) >> 4) * 2;
-    unk_230[0].x += (dist * data_02135f44[idx]) / 100;
-    unk_230[0].z += (dist * data_02135f44[idx + 1]) / 100;
-    unk_230[0].y = 0x200;
+    probePoints[0].x += (dist * data_02135f44[idx]) / 100;
+    probePoints[0].z += (dist * data_02135f44[idx + 1]) / 100;
+    probePoints[0].y = 0x200;
     idx = ((u16)(s16)(ang - delta) >> 4) * 2;
-    unk_230[1].x += (dist * data_02135f44[idx]) / 100;
-    unk_230[1].z += (dist * data_02135f44[idx + 1]) / 100;
-    unk_230[1].y = 0x200;
+    probePoints[1].x += (dist * data_02135f44[idx]) / 100;
+    probePoints[1].z += (dist * data_02135f44[idx + 1]) / 100;
+    probePoints[1].y = 0x200;
 }
 
 Unk_ov004_02236320_Ent *HouseRoach::getNearestCharacter() {
@@ -963,17 +963,17 @@ void HouseRoach::updateCrawl() {
         }
         if (o != 0 && res == 0) {
             u8 *q = (u8 *)(o + 0x5c);
-            unk_22c = unk_22c - 1;
+            stateTimer = stateTimer - 1;
             speed = zero;
-            if (unk_22c <= 0) {
-                unk_10c = 1;
-                unk_22c = (Random_GlobalBelow(4) + 1) * 20;
+            if (stateTimer <= 0) {
+                roachState = 1;
+                stateTimer = (Random_GlobalBelow(4) + 1) * 20;
                 res = 1;
             } else if (*(s32 *)(o + 0x98) > 0) {
                 s32 d = func_020e9650(self0, q);
                 if (d < func_01ffcb0c(0x1000, 0x4000)) {
-                    unk_22c = (Random_GlobalBelow(4) + 2) * 20;
-                    unk_10c = 1;
+                    stateTimer = (Random_GlobalBelow(4) + 2) * 20;
+                    roachState = 1;
                     res = 2;
                 }
             }
@@ -990,8 +990,8 @@ void HouseRoach::updateCrawl() {
 }
 
 void HouseRoach::updateHitBox() {
-    ActorPlacedCollider_setupForActorAt(unk_1d8, this, &position, 0x19a, 0x333, 0x81, 0xc, 0, 0xff, 0x1000);
-    ActorCollider_submit(unk_1d8);
+    ActorPlacedCollider_setupForActorAt(hitBox, this, &position, 0x19a, 0x333, 0x81, 0xc, 0, 0xff, 0x1000);
+    ActorCollider_submit(hitBox);
 }
 
 BOOL HouseRoach::move() {
@@ -1000,7 +1000,7 @@ BOOL HouseRoach::move() {
     s32 hit = 0;
     u8 i;
     setProbePoints(0x3c, 0xe38);
-    unk_260 = probeWalls();
+    wallProbe = probeWalls();
     for (i = 0; i < 2; i++) {
         s32 o;
         if (i == 0) {
@@ -1018,45 +1018,45 @@ BOOL HouseRoach::move() {
                         t = -t;
                     }
                     if (t < 0x2aaa) {
-                        unk_22e = unk_22e + 1;
-                        unk_22a = 1;
+                        jumpTimer = jumpTimer + 1;
+                        isJumping = 1;
                         hit = 1;
-                        speed = unk_d8;
+                        speed = jumpSpeed;
                         playSe(1);
                     }
                 }
             }
         }
     }
-    s32 c = unk_22e;
+    s32 c = jumpTimer;
     if (c > 0) {
         s32 k = c << 12;
         s32 r = func_01ffcb0c(0xcd, k);
         p6->y = func_01ffcb0c(0x99a - r, k);
         if (p6->y < 3) {
             p6->y = 3;
-            unk_22e = 0;
-            unk_22a = 0;
-            AnimModel_setFrame(unk_120);
+            jumpTimer = 0;
+            isJumping = 0;
+            AnimModel_setFrame(model);
         } else {
-            unk_22e = unk_22e + 1;
-            AnimModel_stepAnim(unk_120);
+            jumpTimer = jumpTimer + 1;
+            AnimModel_stepAnim(model);
         }
     } else {
-        s32 m = unk_260;
+        s32 m = wallProbe;
         if (m > 0) {
             if (m == 3) {
-                if (unk_262 == 1 || unk_262 == 10) {
+                if (wallTurnDir == 1 || wallTurnDir == 10) {
                     a = (s16)(a - 0xaaa);
                 } else {
                     a = (s16)(a + 0xaaa);
                 }
-            } else if (m == 1 || unk_262 == 1) {
+            } else if (m == 1 || wallTurnDir == 1) {
                 a = (s16)(a - 0xaaa);
-                unk_262 = 1;
-            } else if (m == 2 || unk_262 == 2) {
+                wallTurnDir = 1;
+            } else if (m == 2 || wallTurnDir == 2) {
                 a = (s16)(a + 0xaaa);
-                unk_262 = 2;
+                wallTurnDir = 2;
             }
         } else {
             if (sHouseRoachTurnCounter == 4) {
@@ -1066,8 +1066,8 @@ BOOL HouseRoach::move() {
                 a = (s16)(a - 0xaaa);
             }
             sHouseRoachTurnCounter = sHouseRoachTurnCounter + 1;
-            if (unk_262 < 10) {
-                unk_262 = unk_262 * 10;
+            if (wallTurnDir < 10) {
+                wallTurnDir = wallTurnDir * 10;
             }
         }
         playSe(m > 0 ? 0 : 0);

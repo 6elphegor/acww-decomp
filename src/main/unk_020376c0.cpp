@@ -16,21 +16,21 @@ public:
     void enterReset();
 
     u8 pad_00[0xbc];
-    s32 unk_bc;
-    s32 unk_c0;
+    s32 state;
+    s32 timer;
     s32 unk_c4;
-    u8 unk_c8;
+    u8 modelVisible;
 };
 
 void CommCautionWindowView::enterReset() {
-    unk_bc = 7;
-    unk_c0 = 1;
-    unk_c8 = 1;
+    state = 7;
+    timer = 1;
+    modelVisible = 1;
 }
 
 void CommCautionWindowView::execReset() {
-    unk_c0 = unk_c0 - 1;
-    if (unk_c0 <= 0) {
+    timer = timer - 1;
+    if (timer <= 0) {
         OS_ResetSystem(0);
     }
 }

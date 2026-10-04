@@ -275,8 +275,8 @@ public:
     virtual void vfunc_0c() = 0;
     virtual void setOrigin(s32 a, s32 b);
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class HandCursor : public UiWidget {
@@ -370,7 +370,7 @@ public:
 // Vtable 0x02294d68, size 0x107c
 class DesignTab : public MenuProc {
 public:
-    DesignTab() : unk_2d8(), unk_398(), unk_3fc(), unk_504(), unk_804() {}
+    DesignTab() : nameBalloon(), cursor(), errorMessage(), popup(), bgTasks() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -490,36 +490,36 @@ public:
     void runMainState();
 
     /* 0x91 */ u8 unk_91[3];
-    /* 0x94 */ u8 *unk_94;
-    /* 0x98 */ s32 unk_98;
-    /* 0x9c */ u32 unk_9c;
-    /* 0xa0 */ u16 unk_a0;
-    /* 0xa2 */ u16 unk_a2;
-    /* 0xa4 */ s16 unk_a4;
-    /* 0xa6 */ s16 unk_a6;
-    /* 0xa8 */ s16 unk_a8;
-    /* 0xaa */ s16 unk_aa;
-    /* 0xac */ u8 unk_ac;
-    /* 0xad */ u8 unk_ad;
-    /* 0xae */ u8 unk_ae;
-    /* 0xaf */ u8 unk_af;
-    /* 0xb0 */ u8 unk_b0;
-    /* 0xb1 */ u8 unk_b1;
-    /* 0xb2 */ u8 unk_b2;
-    /* 0xb3 */ u8 unk_b3;
-    /* 0xb4 */ u8 unk_b4;
-    /* 0xb5 */ u8 unk_b5;
-    /* 0xb6 */ u8 unk_b6;
-    /* 0xb7 */ u8 unk_b7;
-    /* 0xb8 */ u8 unk_b8[0xd8 - 0xb8];
-    /* 0xd8 */ u8 unk_d8[0x2d8 - 0xd8];
-    /* 0x2d8 */ TouchPromptBalloon unk_2d8;
-    /* 0x398 */ MenuCursorBuf0 unk_398;
-    /* 0x3fc */ MenuErrorMessage unk_3fc;
-    /* 0x504 */ PopupChoiceMenu unk_504;
-    /* 0x804 */ BgVramTaskPair unk_804[2];
-    /* 0x874 */ u8 unk_874[0x1074 - 0x874];
-    /* 0x1074 */ u8 unk_1074[8];
+    /* 0x94 */ u8 *slideY;
+    /* 0x98 */ s32 dropRequest;
+    /* 0x9c */ u32 disabledTargets;
+    /* 0xa0 */ u16 designItem;
+    /* 0xa2 */ u16 flags;
+    /* 0xa4 */ s16 handX;
+    /* 0xa6 */ s16 handY;
+    /* 0xa8 */ s16 dragOffsetX;
+    /* 0xaa */ s16 dragOffsetY;
+    /* 0xac */ u8 roomMode;
+    /* 0xad */ u8 balloonSlot;
+    /* 0xae */ u8 heldSlot;
+    /* 0xaf */ u8 targetSlot;
+    /* 0xb0 */ u8 highlightedTarget;
+    /* 0xb1 */ u8 cursorSlot;
+    /* 0xb2 */ u8 popupChoice;
+    /* 0xb3 */ u8 popupRow;
+    /* 0xb4 */ u8 returnState;
+    /* 0xb5 */ u8 blinkTarget;
+    /* 0xb6 */ u8 blinkTimer;
+    /* 0xb7 */ u8 equipPart;
+    /* 0xb8 */ u8 clothPalette[0xd8 - 0xb8];
+    /* 0xd8 */ u8 clothImage[0x2d8 - 0xd8];
+    /* 0x2d8 */ TouchPromptBalloon nameBalloon;
+    /* 0x398 */ MenuCursorBuf0 cursor;
+    /* 0x3fc */ MenuErrorMessage errorMessage;
+    /* 0x504 */ PopupChoiceMenu popup;
+    /* 0x804 */ BgVramTaskPair bgTasks[2];
+    /* 0x874 */ u8 mainScreen[0x1074 - 0x874];
+    /* 0x1074 */ u8 slotIcons[8];
 };
 
 typedef void (DesignTab::*Unk_ov121_02294d68_Fn)();
@@ -574,38 +574,38 @@ BOOL DesignTab::vfunc_0c() {
 }
 
 BOOL DesignTab::onDraw() {
-    u8 *p = unk_94;
+    u8 *p = slideY;
     u32 i;
     s32 j;
     s32 *zero = 0;
     if (!testFlags(1)) {
         return TRUE;
     }
-    unk_2d8.vfunc_08();
+    nameBalloon.vfunc_08();
     if (MenuCtrl_IsButtons()) {
-        MenuCursorBase_drawWrapped(&unk_398);
+        MenuCursorBase_drawWrapped(&cursor);
     }
-    PopupChoice_Draw(&unk_504);
+    PopupChoice_Draw(&popup);
     if (testFlags(4)) {
         if (MenuCtrl_IsButtons()) {
             moveDragIconToCursor();
         } else {
             moveDragIconToTouch();
         }
-        u8 *q = unk_1074;
-        u8 s = unk_ae;
+        u8 *q = slotIcons;
+        u8 s = heldSlot;
         sDesignTabIconCell.attr2 = (sDesignTabIconCell.attr2 & 0xfffffc00) | (u16)(q[s] * 4 + 0xc0) & 0x3ff;
-        Oam_DrawObj(1, &sDesignTabIconCell, unk_a4, unk_a6, q[s] + 4, 2, 0);
+        Oam_DrawObj(1, &sDesignTabIconCell, handX, handY, q[s] + 4, 2, 0);
     }
     if (testFlags(8)) {
-        u8 k = unk_af;
+        u8 k = targetSlot;
         s32 y = (s32)(p + getSlotY(k));
         s32 x = getSlotX(k);
         Oam_DrawCell(1, sDesignTabTargetFrameCells, x, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     i = 0;
     for (j = 0; j < 8; j++) {
-        if (testFlags(4) && i == unk_ae) {
+        if (testFlags(4) && i == heldSlot) {
         } else {
             u8 *e = (u8 *)this + j;
             sDesignTabIconCell.attr2 = (sDesignTabIconCell.attr2 & 0xfffffc00) | (u16)(e[0x1074] * 4 + 0xc0) & 0x3ff;
@@ -720,7 +720,7 @@ BOOL DesignTab::requestTab(s32 a) {
     MenuTabBar_selectTab(r, (u8)a);
     transitionState = 2;
     setPhase(1);
-    TouchPromptBalloon_hide(&unk_2d8, 1);
+    TouchPromptBalloon_hide(&nameBalloon, 1);
     if (a != 7) {
         restoreCamera();
     }
@@ -733,13 +733,13 @@ void DesignTab::stateOpen() {
     setupBgLayers();
     loadBgGfx();
     loadPatternIcons();
-    PopupChoice_LoadChoiceBg(&unk_504);
+    PopupChoice_LoadChoiceBg(&popup);
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
     setTransitionState(1);
     setFlags(1);
     applySlideOffset(6, 0, 0);
-    unk_94 = (u8 *)getSlideOffsetY();
+    slideY = (u8 *)getSlideOffsetY();
 }
 
 void DesignTab::stateOpening() {
@@ -748,7 +748,7 @@ void DesignTab::stateOpening() {
         resumeInput();
     }
     applySlideOffset(6, 0, 0);
-    unk_94 = (u8 *)getSlideOffsetY();
+    slideY = (u8 *)getSlideOffsetY();
 }
 
 void DesignTab::stateClose() {
@@ -756,7 +756,7 @@ void DesignTab::stateClose() {
     beginSubSlideOut(8, 0, 0, 0x30);
     setTransitionState(3);
     applySlideOffset(6, 0, 0);
-    unk_94 = (u8 *)getSlideOffsetY();
+    slideY = (u8 *)getSlideOffsetY();
 }
 
 void DesignTab::stateClosing() {
@@ -765,24 +765,24 @@ void DesignTab::stateClosing() {
         setPhase(5);
     } else {
         applySlideOffset(6, 0, 0);
-        unk_94 = (u8 *)getSlideOffsetY();
+        slideY = (u8 *)getSlideOffsetY();
     }
 }
 
 void DesignTab::initDesignTab() {
     u32 i = 0;
     do {
-        unk_1074[i] = i;
+        slotIcons[i] = i;
         i = (u8)(i + 1);
     } while (i < 8);
     u32 z = 0;
-    unk_a2 = z;
-    unk_9c = z;
+    flags = z;
+    disabledTargets = z;
     if (gFieldSceneKind == 0) {
         z = 1;
     }
     if (z != 0) {
-        unk_ac = 0;
+        roomMode = 0;
         disableTarget(9);
         disableTarget(0xa);
         disableTarget(0xb);
@@ -791,19 +791,19 @@ void DesignTab::initDesignTab() {
             disableTarget(0xf);
         }
     } else if (canDecorateRoom()) {
-        unk_ac = 1;
+        roomMode = 1;
         disableTarget(0xf);
     } else {
-        unk_ac = 2;
+        roomMode = 2;
         disableTarget(9);
         disableTarget(0xa);
         disableTarget(0xb);
         disableTarget(0xe);
         disableTarget(0xf);
     }
-    PopupChoiceMenu_init(&unk_504, 3, 1, 0);
-    unk_b0 = 0x18;
-    unk_b1 = 0;
+    PopupChoiceMenu_init(&popup, 3, 1, 0);
+    highlightedTarget = 0x18;
+    cursorSlot = 0;
 }
 
 BOOL DesignTab::canDecorateRoom() {
@@ -818,14 +818,14 @@ BOOL DesignTab::canDecorateRoom() {
 }
 
 void DesignTab::releaseResources() {
-    PopupChoice_ForceClose(&unk_504);
-    BgVramTask_cancel(&unk_804[0]);
-    BgVramTask_cancel(&unk_804[1]);
+    PopupChoice_ForceClose(&popup);
+    BgVramTask_cancel(&bgTasks[0]);
+    BgVramTask_cancel(&bgTasks[1]);
 }
 
 void DesignTab::preInputUpdate() {
     preStateUpdate();
-    unk_398.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void DesignTab::postInputUpdate() {
@@ -837,14 +837,14 @@ void DesignTab::preStateUpdate() {}
 void DesignTab::postStateUpdate() {
     updateTargetBlink();
     if (testFlags(2)) {
-        if (BgVramTask_requestScreen(&unk_804[0], &unk_874[0], 6, 0x800, 0)) {
+        if (BgVramTask_requestScreen(&bgTasks[0], &mainScreen[0], 6, 0x800, 0)) {
             clearFlags(2);
         }
     }
-    if (TouchPromptBalloon_updatePrompt(&unk_2d8)) {
+    if (TouchPromptBalloon_updatePrompt(&nameBalloon)) {
         refreshNameLabel();
     }
-    PopupChoice_Update(&unk_504);
+    PopupChoice_Update(&popup);
 }
 
 void DesignTab::setupBgLayers() {
@@ -856,7 +856,7 @@ void DesignTab::loadBgGfx() {
     u32 *r4 = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/desi/b_myd_bg.bpl", r4, 6, 1, 1, 7);
     Gfx2d_LoadCharFile("menu/desi/b_myd_bg.bch", r4, 6, 0x10, 0x10, 0xc5);
-    File_LoadToBuffer("menu/desi/b_myd_a_bg.bsc", &unk_874[0], 0x800);
+    File_LoadToBuffer("menu/desi/b_myd_a_bg.bsc", &mainScreen[0], 0x800);
     u32 i = 9;
     do {
         if (isTargetDisabled(i)) {
@@ -906,8 +906,8 @@ void DesignTab::updateTouch() {
         u32 r4 = findTouchedSlot();
         if (r4 != 0x18) {
             setMainState(1);
-            unk_ad = r4;
-            TouchPromptBalloon_queueOpen(&unk_2d8);
+            balloonSlot = r4;
+            TouchPromptBalloon_queueOpen(&nameBalloon);
             Snd_PlaySe(0xc);
         }
     }
@@ -916,16 +916,16 @@ void DesignTab::updateTouch() {
 void DesignTab::updateTouchHold() {
     if (gTouchHeld == 0) {
         setMainState(0);
-        TouchPromptBalloon_setAutoCloseTimer(&unk_2d8, 0x3c);
+        TouchPromptBalloon_setAutoCloseTimer(&nameBalloon, 0x3c);
     } else if (hasDragStarted()) {
-        unk_ae = unk_ad;
+        heldSlot = balloonSlot;
         setFlags(4);
-        unk_af = 0x18;
+        targetSlot = 0x18;
         setMainState(2);
-        TouchPromptBalloon_hide(&unk_2d8, 1);
+        TouchPromptBalloon_hide(&nameBalloon, 1);
         Snd_PlaySe(0xd);
     } else {
-        TouchPromptBalloon_commitOpen(&unk_2d8);
+        TouchPromptBalloon_commitOpen(&nameBalloon);
     }
 }
 
@@ -942,8 +942,8 @@ void DesignTab::updateTouchDrag() {
             setMainState(0);
         }
     } else {
-        unk_af = findDropTarget();
-        u32 v = unk_af;
+        targetSlot = findDropTarget();
+        u32 v = targetSlot;
         if (v >= 9 && v <= 0xf) {
             highlightTarget(v);
             setFlags(8);
@@ -966,15 +966,15 @@ void DesignTab::updatePopupTouch() {
     if (checkSwitchToButtons(1)) {
         cursorToPopupTop();
         setMainState(0xc);
-        unk_b1 = unk_af;
+        cursorSlot = targetSlot;
         return;
     }
     if (Unk_ov121_02293f34_Both()) {
-        s32 r6 = PopupChoiceMenuBody_hitTestRowOrLast(&unk_504, gTouchCurX, gTouchCurY);
+        s32 r6 = PopupChoiceMenuBody_hitTestRowOrLast(&popup, gTouchCurX, gTouchCurY);
         if (r6 >= 0) {
             s32 r5 = 1;
-            unk_b2 = getPopupRowValue(r6);
-            switch (unk_b2) {
+            popupChoice = getPopupRowValue(r6);
+            switch (popupChoice) {
             case 0:
             case 1:
             case 2:
@@ -988,7 +988,7 @@ void DesignTab::updatePopupTouch() {
                 r5 = 0;
                 break;
             }
-            PopupChoice_DecideRow(&unk_504, r6, r5);
+            PopupChoice_DecideRow(&popup, r6, r5);
             setMainState(0xf);
         }
     }
@@ -997,19 +997,19 @@ void DesignTab::updatePopupTouch() {
 void DesignTab::updateButtons() {
     if (checkSwitchToTouch()) {
         startTouchInput();
-        TouchPromptBalloon_hide(&unk_2d8, 1);
+        TouchPromptBalloon_hide(&nameBalloon, 1);
     } else if (moveCursorByPad((void *)takeRepeatedKeys(), 0)) {
         updateNameLabel();
         moveCursorToTarget();
-        TouchPromptBalloon_hide(&unk_2d8, 0);
+        TouchPromptBalloon_hide(&nameBalloon, 0);
     } else {
         if (gPad[1] & 1) {
-            TouchPromptBalloon_hide(&unk_2d8, 1);
+            TouchPromptBalloon_hide(&nameBalloon, 1);
             if (getCursorTab() != -1) {
                 pressCursor();
                 return;
             }
-            if (unk_b1 <= 7) {
+            if (cursorSlot <= 7) {
                 startCarry();
                 return;
             }
@@ -1022,7 +1022,7 @@ void DesignTab::updateButtons() {
         } else if (k & 2) {
             requestTab(7);
         } else {
-            TouchPromptBalloon_commitOpen(&unk_2d8);
+            TouchPromptBalloon_commitOpen(&nameBalloon);
         }
     }
 }
@@ -1035,48 +1035,48 @@ void DesignTab::updateCarry() {
         moveCursorToTarget();
     } else {
         if (gPad[1] & 1) {
-            if (!isTargetDisabled(unk_b1)) dropCarry();
+            if (!isTargetDisabled(cursorSlot)) dropCarry();
         }
         if (gPad[1] & 2) cancelCarry();
     }
 }
 
 void DesignTab::updateCursorMove() {
-    if (!MenuCursorBase_isMoving(&unk_398)) {
-        setMainState(unk_b4);
+    if (!MenuCursorBase_isMoving(&cursor)) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void DesignTab::updateCursorPress() {
-    if (HandCursor_isAnimDone(&unk_398)) {
+    if (HandCursor_isAnimDone(&cursor)) {
         s32 r = getCursorTab();
         if (r == -1 || !requestTab(r)) releaseCursor();
     }
 }
 
 void DesignTab::updateCursorRelease() {
-    if (HandCursor_isAnimDone(&unk_398)) {
+    if (HandCursor_isAnimDone(&cursor)) {
         refreshCursor();
         setMainState(4);
     }
 }
 
 void DesignTab::updateGrab() {
-    if (func_ov002_02202928(&unk_398)) {
+    if (func_ov002_02202928(&cursor)) {
         setMainState(0xa);
-        unk_ae = unk_b1;
+        heldSlot = cursorSlot;
         setFlags(4);
         Snd_PlaySe(0xd);
     }
 }
 
 void DesignTab::updateCarryMove() {
-    if (HandCursor_isAnimDone(&unk_398)) setMainState(5);
+    if (HandCursor_isAnimDone(&cursor)) setMainState(5);
 }
 
 void DesignTab::updateDrop() {
-    if (!func_ov002_02202928(&unk_398)) {
+    if (!func_ov002_02202928(&cursor)) {
         clearFlags(4);
         if (testFlags(0x80)) {
             updateNameLabel();
@@ -1084,7 +1084,7 @@ void DesignTab::updateDrop() {
             clearFlags(0x80);
             Snd_PlaySe(0xe);
         } else {
-            unk_af = unk_b1;
+            targetSlot = cursorSlot;
             clearFlags(4);
             if (!dropHeldOnTarget()) {
                 updateNameLabel();
@@ -1100,12 +1100,12 @@ void DesignTab::updatePopupButtons() {
     } else if (checkSwitchToTouch()) {
         hideCursor();
         setMainState(3);
-    } else if (PopupChoice_MoveCursor(&unk_504, takeRepeatedKeys(), &unk_b3, 0)) {
+    } else if (PopupChoice_MoveCursor(&popup, takeRepeatedKeys(), &popupRow, 0)) {
         moveCursorToPopupRow();
     } else {
         u32 k = gPad[1];
         if (k & 1) {
-            MenuCursor_setPosePress(&unk_398);
+            MenuCursor_setPosePress(&cursor);
             setMainState(0xd);
         } else if (k & 2) {
             cancelPopup();
@@ -1116,10 +1116,10 @@ void DesignTab::updatePopupButtons() {
 void DesignTab::updatePopupPress() {
     if (MenuCtrl_IsForceCloseDue()) {
         abortPopup();
-    } else if (HandCursor_isAnimDone(&unk_398)) {
-        unk_b2 = getPopupRowValue(unk_b3);
+    } else if (HandCursor_isAnimDone(&cursor)) {
+        popupChoice = getPopupRowValue(popupRow);
         BOOL r5 = TRUE;
-        switch (unk_b2) {
+        switch (popupChoice) {
         case 0:
         case 1:
         case 2:
@@ -1133,13 +1133,13 @@ void DesignTab::updatePopupPress() {
             r5 = FALSE;
             break;
         }
-        PopupChoice_DecideRow(&unk_504, unk_b3, r5);
+        PopupChoice_DecideRow(&popup, popupRow, r5);
         setMainState(0xf);
     }
 }
 
 void DesignTab::updatePopupOpen() {
-    if (PopupChoiceMenuBody_isOpen(&unk_504)) {
+    if (PopupChoiceMenuBody_isOpen(&popup)) {
         if (MenuCtrl_IsButtons()) {
             cursorToPopupTop();
             setMainState(0xc);
@@ -1150,34 +1150,34 @@ void DesignTab::updatePopupOpen() {
 }
 
 void DesignTab::updatePopupClose() {
-    if (PopupChoice_TickDecideDelay(&unk_504)) {
-        PopupChoice_Close(&unk_504, 0);
-        if (HandCursor_getAnim(&unk_398)) showCursorAtTarget();
+    if (PopupChoice_TickDecideDelay(&popup)) {
+        PopupChoice_Close(&popup, 0);
+        if (HandCursor_getAnim(&cursor)) showCursorAtTarget();
         setMainState(0x10);
     }
 }
 
 void DesignTab::updatePopupDone() {
-    if (PopupChoiceMenuBody_isClosed(&unk_504)) onPopupChoice();
+    if (PopupChoiceMenuBody_isClosed(&popup)) onPopupChoice();
 }
 
 void DesignTab::updateWearRequest() {
-    if (requestWear(unk_b7, unk_a0)) setMainState(0x12);
+    if (requestWear(equipPart, designItem)) setMainState(0x12);
 }
 
 void DesignTab::updateWearWait() {
-    if (isWearDone(unk_b7)) resumeInput();
+    if (isWearDone(equipPart)) resumeInput();
 }
 
 void DesignTab::updateMessage() {
-    if (MenuErrorMessage_update(&unk_3fc, 1)) resumeInput();
+    if (MenuErrorMessage_update(&errorMessage, 1)) resumeInput();
 }
 
 void DesignTab::updateItemPlace() {
-    switch (FieldAction_PollDrop(unk_98)) {
+    switch (FieldAction_PollDrop(dropRequest)) {
     case 1:
         restoreCamera();
-        startTargetBlink(unk_af);
+        startTargetBlink(targetSlot);
         resumeInput();
         break;
     case 2:
@@ -1187,8 +1187,8 @@ void DesignTab::updateItemPlace() {
     default:
         return;
     }
-    FieldAction_Release(unk_98);
-    unk_98 = -1;
+    FieldAction_Release(dropRequest);
+    dropRequest = -1;
 }
 
 void DesignTab::startTouchInput() {
@@ -1198,8 +1198,8 @@ void DesignTab::startTouchInput() {
 
 void DesignTab::startButtonInput() {
     u8 v = 0x18;
-    unk_ae = v;
-    unk_ad = v;
+    heldSlot = v;
+    balloonSlot = v;
     showCursor();
     restartKeyRepeat();
     updateNameLabel();
@@ -1215,7 +1215,7 @@ void DesignTab::openMessageWindow(u32 a, u32 b) {
     u8 buf[1];
     buf[0] = gU8None;
     buf[0] = a;
-    MenuErrorMessage_open(&unk_3fc, buf, b, 0);
+    MenuErrorMessage_open(&errorMessage, buf, b, 0);
     setMainState(0x13);
     hideCursor();
 }
@@ -1234,16 +1234,16 @@ void DesignTab::setTargetPalette(u32 id, u32 s) {
     u32 k = id - 9;
     u32 xv = sDesignTabTargetTileY[k];
     u32 yv = sDesignTabTargetTileX[k];
-    BgScreen_SetRectPalette(unk_874, yv, xv, yv + 3, xv + 3, s);
+    BgScreen_SetRectPalette(mainScreen, yv, xv, yv + 3, xv + 3, s);
     setFlags(2);
 }
 
 void DesignTab::highlightTarget(u32 idx) {
-    u32 old = unk_b0;
+    u32 old = highlightedTarget;
     if (idx != old) {
         if (old != 0x18) setTargetPalette(old, 2);
-        unk_b0 = idx;
-        u32 n = *(volatile u8 *)&unk_b0;
+        highlightedTarget = idx;
+        u32 n = *(volatile u8 *)&highlightedTarget;
         if (n != 0x18) setTargetPalette(n, 6);
     }
 }
@@ -1269,8 +1269,8 @@ u32 DesignTab::findTouchedSlot() {
     u32 y = gTouchCurY;
     u32 r = findSlotAt(x, y, 7);
     if (r != 0x18) {
-        unk_a8 = getSlotX(r) - x;
-        unk_aa = getSlotY(r) - y;
+        dragOffsetX = getSlotX(r) - x;
+        dragOffsetY = getSlotY(r) - y;
     }
     return r;
 }
@@ -1278,17 +1278,17 @@ u32 DesignTab::findTouchedSlot() {
 u32 DesignTab::findDropTarget() {
     u32 x = *(volatile u8 *)&gTouchCurX;
     u32 y = *(volatile u8 *)&gTouchCurY;
-    u32 r = findSlotAt(x + unk_a8, y + unk_aa, 0xf);
+    u32 r = findSlotAt(x + dragOffsetX, y + dragOffsetY, 0xf);
     if (isTargetDisabled(r)) r = 0x18;
     return r;
 }
 
 void DesignTab::disableTarget(u32 i) {
-    unk_9c = unk_9c | (1 << i);
+    disabledTargets = disabledTargets | (1 << i);
 }
 
 BOOL DesignTab::isTargetDisabled(u32 i) {
-    if ((unk_9c & (1 << i)) != 0) return TRUE;
+    if ((disabledTargets & (1 << i)) != 0) return TRUE;
     return FALSE;
 }
 
@@ -1303,15 +1303,15 @@ BOOL DesignTab::hasDragStarted() {
 }
 
 void DesignTab::moveDragIconToTouch() {
-    unk_a4 = unk_a8 + gTouchCurX;
-    unk_a6 = unk_aa + gTouchCurY;
+    handX = dragOffsetX + gTouchCurX;
+    handY = dragOffsetY + gTouchCurY;
 }
 
 BOOL DesignTab::dropHeldOnTarget() {
-    u32 v = unk_af;
+    u32 v = targetSlot;
     if (v <= 7) {
         Snd_PlaySe(0xe);
-        swapPatternSlots(unk_af, unk_ae);
+        swapPatternSlots(targetSlot, heldSlot);
         return FALSE;
     }
     switch (v) {
@@ -1337,7 +1337,7 @@ BOOL DesignTab::dropHeldOnTarget() {
         openPopup();
         return TRUE;
     case 13:
-        switch (unk_ac) {
+        switch (roomMode) {
         case 0:
         case 2:
             equipDesign(0);
@@ -1349,7 +1349,7 @@ BOOL DesignTab::dropHeldOnTarget() {
         }
         return TRUE;
     case 12:
-        switch (unk_ac) {
+        switch (roomMode) {
         case 0:
         case 2:
             equipDesign(1);
@@ -1361,7 +1361,7 @@ BOOL DesignTab::dropHeldOnTarget() {
         }
         return TRUE;
     case 14:
-        switch (unk_ac) {
+        switch (roomMode) {
         case 0:
             equipDesign(2);
             break;
@@ -1386,9 +1386,9 @@ BOOL DesignTab::dropHeldOnTarget() {
 void DesignTab::swapPatternSlots(u32 a, u32 b) {
     if (a != b) {
         PatternOrder_swap(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(PlayerData_GetCurrent())), a, b);
-        u8 t = unk_1074[a];
-        unk_1074[a] = unk_1074[b];
-        unk_1074[b] = t;
+        u8 t = slotIcons[a];
+        slotIcons[a] = slotIcons[b];
+        slotIcons[b] = t;
     }
 }
 
@@ -1397,7 +1397,7 @@ u32 DesignTab::getSlotPattern(u32 i) {
 }
 
 void DesignTab::setPopupChoices(u32 i) {
-    MI_CpuCopy8(sDesignTabPopupChoices[i], unk_504.unk_2f4, 0xb);
+    MI_CpuCopy8(sDesignTabPopupChoices[i], popup.unk_2f4, 0xb);
 }
 
 u32 DesignTab::getPopupRowValue(u32 i) {
@@ -1415,7 +1415,7 @@ void DesignTab::dropOnPlayerFigure() {
         return;
     }
     restoreCamera();
-    u32 u = getSlotPattern(unk_ae);
+    u32 u = getSlotPattern(heldSlot);
     u16 x;
     if (u < 8) {
         x = u + 0x12a8;
@@ -1423,7 +1423,7 @@ void DesignTab::dropOnPlayerFigure() {
         x = 0x12a8;
     }
     w = x;
-    MenuScreen_UploadClothPattern(&w, (void *)&unk_804[1], unk_d8, unk_b8);
+    MenuScreen_UploadClothPattern(&w, (void *)&bgTasks[1], clothImage, clothPalette);
     if (Unk_ov121_02293188_InRange(&v, 0x11a8, 0x12a7)) {
         Pocket_AddItem((u16 *)&v, 0);
     }
@@ -1445,12 +1445,12 @@ void DesignTab::applyRoomDesignA(u32 m) {
         return;
     }
     restoreCamera();
-    RoomWallFloor_SetCarpetDesign(getSlotPattern(unk_ae), m, 1, 1);
+    RoomWallFloor_SetCarpetDesign(getSlotPattern(heldSlot), m, 1, 1);
     if (!Unk_ov121_02293188_InRange(&v, 0x1188, 0x11a7)) {
         Pocket_AddItem((u16 *)&v, 0);
     }
     resumeInput();
-    startTargetBlink(unk_af);
+    startTargetBlink(targetSlot);
 }
 
 void DesignTab::applyRoomDesignB(u32 m) {
@@ -1466,22 +1466,22 @@ void DesignTab::applyRoomDesignB(u32 m) {
         return;
     }
     restoreCamera();
-    RoomWallFloor_SetWallpaperDesign(getSlotPattern(unk_ae), m, 1, 1);
+    RoomWallFloor_SetWallpaperDesign(getSlotPattern(heldSlot), m, 1, 1);
     if (!Unk_ov121_02293188_InRange(&v, 0x1188, 0x11a7)) {
         Pocket_AddItem((u16 *)&v, 0);
     }
     resumeInput();
-    startTargetBlink(unk_af);
+    startTargetBlink(targetSlot);
 }
 
 void DesignTab::equipDesign(u32 m) {
     volatile u16 v;
     u16 w;
     u32 t;
-    unk_b7 = m;
-    t = getWornItem(unk_b7);
+    equipPart = m;
+    t = getWornItem(equipPart);
     v = t;
-    switch (unk_b7) {
+    switch (equipPart) {
     case 0:
         if (Unk_ov121_02293188_InRange(&v, 0x12a8, 0x12af)) {
             t = 0xfff1;
@@ -1509,38 +1509,38 @@ void DesignTab::equipDesign(u32 m) {
     pushCamera();
     u32 u;
     u16 x;
-    switch (unk_b7) {
+    switch (equipPart) {
     case 0:
-        u = getSlotPattern(unk_ae);
+        u = getSlotPattern(heldSlot);
         if (u < 8) {
             x = u + 0x12a8;
         } else {
             x = 0x12a8;
         }
-        unk_a0 = x;
+        designItem = x;
         break;
     case 1:
-        u = getSlotPattern(unk_ae);
+        u = getSlotPattern(heldSlot);
         if (u < 8) {
             x = u + 0x1429;
         } else {
             x = 0x1429;
         }
-        unk_a0 = x;
+        designItem = x;
         break;
     case 2:
-        u = getSlotPattern(unk_ae);
+        u = getSlotPattern(heldSlot);
         if (u < 8) {
             x = u + 0x13a0;
         } else {
             x = 0x13a0;
         }
-        unk_a0 = x;
+        designItem = x;
         break;
     }
-    swapWornItem(unk_b7, unk_a0);
+    swapWornItem(equipPart, designItem);
     setMainState(0x11);
-    startTargetBlink(unk_af);
+    startTargetBlink(targetSlot);
 }
 
 void DesignTab::placeDesignInRoom() {
@@ -1551,18 +1551,18 @@ void DesignTab::placeDesignInRoom() {
         Snd_PlaySe(0x73);
         return;
     }
-    switch (unk_af - 9) {
+    switch (targetSlot - 9) {
     case 4:
-        r = FtrMgr_FindPlacementMyDesignA(&buf, (u8)getSlotPattern(unk_ae), 1);
+        r = FtrMgr_FindPlacementMyDesignA(&buf, (u8)getSlotPattern(heldSlot), 1);
         break;
     case 3:
-        r = FtrMgr_FindPlacementMyDesignD(&buf, (u8)getSlotPattern(unk_ae), 1);
+        r = FtrMgr_FindPlacementMyDesignD(&buf, (u8)getSlotPattern(heldSlot), 1);
         break;
     case 0:
-        r = FtrMgr_FindPlacementMyDesignC(&buf, (u8)getSlotPattern(unk_ae), 1);
+        r = FtrMgr_FindPlacementMyDesignC(&buf, (u8)getSlotPattern(heldSlot), 1);
         break;
     case 5:
-        r = FtrMgr_FindPlacementMyDesignB(&buf, (u8)getSlotPattern(unk_ae), 1);
+        r = FtrMgr_FindPlacementMyDesignB(&buf, (u8)getSlotPattern(heldSlot), 1);
         break;
     case 1:
     case 2:
@@ -1584,19 +1584,19 @@ void DesignTab::placeDesignInRoom() {
         restoreCamera();
         FtrMgr_SpawnFromArg(buf);
         resumeInput();
-        startTargetBlink(unk_af);
+        startTargetBlink(targetSlot);
         break;
     }
 }
 
 void DesignTab::placeDesignItem() {
     s32 t = PlayerData_getIndex(PlayerData_GetCurrent());
-    u32 u = getSlotPattern(unk_ae);
+    u32 u = getSlotPattern(heldSlot);
     u32 x = sDesignItemBase[t];
     x += u;
-    unk_a0 = x;
-    unk_98 = FieldAction_RequestDrop(gCommManager->myAid, unk_a0);
-    if (unk_98 == -1) {
+    designItem = x;
+    dropRequest = FieldAction_RequestDrop(gCommManager->myAid, designItem);
+    if (dropRequest == -1) {
         openMessageWindow(3, 0);
         Snd_PlaySe(0x73);
     } else {
@@ -1605,7 +1605,7 @@ void DesignTab::placeDesignItem() {
 }
 
 void DesignTab::onPopupChoice() {
-    switch (unk_b2) {
+    switch (popupChoice) {
     case 0:
         applyRoomDesignA(0);
         break;
@@ -1637,18 +1637,18 @@ void DesignTab::onPopupChoice() {
 }
 
 void DesignTab::openPopup() {
-    PopupChoiceMenuBody_setRowsFromIds(&unk_504, unk_504.unk_2f4, 0);
-    s32 a = getSlotX(unk_af) - 0x18;
-    s32 b = getSlotY(unk_af) + 0x10;
-    PopupChoiceMenu_placeAt(&unk_504, a, b);
-    PopupChoice_Open(&unk_504, 0);
+    PopupChoiceMenuBody_setRowsFromIds(&popup, popup.unk_2f4, 0);
+    s32 a = getSlotX(targetSlot) - 0x18;
+    s32 b = getSlotY(targetSlot) + 0x10;
+    PopupChoiceMenu_placeAt(&popup, a, b);
+    PopupChoice_Open(&popup, 0);
     setMainState(0xe);
 }
 
 void DesignTab::abortPopup() {
-    unk_b2 = 8;
+    popupChoice = 8;
     showCursorAtTarget();
-    PopupChoice_Close(&unk_504, 0);
+    PopupChoice_Close(&popup, 0);
     setMainState(0x10);
 }
 
@@ -1667,45 +1667,45 @@ void DesignTab::restoreCamera() {
 void DesignTab::refreshNameLabel() {
     u8 a[0x20];
     u8 b[0x28];
-    s32 x = getSlotY(unk_ad);
+    s32 x = getSlotY(balloonSlot);
     x -= 0x84;
     if (MenuCtrl_IsButtons()) {
         x -= 0xa;
     }
-    LabelBalloon_setPos(&unk_2d8, getSlotX(unk_ad) - 0x78, x);
+    LabelBalloon_setPos(&nameBalloon, getSlotX(balloonSlot) - 0x78, x);
     func_02062510(a);
-    PatternInfo_getTitleEncoded(Pattern_getInfo(PlayerPatterns_getPatternByOrder(PlayerData_getPatterns(PlayerData_GetCurrent()), unk_ad)), a);
+    PatternInfo_getTitleEncoded(Pattern_getInfo(PlayerPatterns_getPatternByOrder(PlayerData_getPatterns(PlayerData_GetCurrent()), balloonSlot)), a);
     func_02089f44(b);
     StrBuf_GameToAscii(b, a);
-    LabelBalloon_setText(&unk_2d8, b);
+    LabelBalloon_setText(&nameBalloon, b);
     func_02089f30(b);
     func_020624c0(a);
 }
 
 void DesignTab::updateNameLabel() {
-    u32 t = unk_b1;
+    u32 t = cursorSlot;
     if (t <= 7) {
-        unk_ad = t;
-        TouchPromptBalloon_queueOpen(&unk_2d8);
+        balloonSlot = t;
+        TouchPromptBalloon_queueOpen(&nameBalloon);
     } else {
-        TouchPromptBalloon_cancelQueuedOpen(&unk_2d8);
+        TouchPromptBalloon_cancelQueuedOpen(&nameBalloon);
     }
 }
 
 void DesignTab::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    MenuCursorBase_warpTo(&unk_398, a, b);
+    MenuCursorBase_warpTo(&cursor, a, b);
     if (getCursorTab() != -1) {
-        MenuCursor_setAnimIfChanged(&unk_398, 0xd);
+        MenuCursor_setAnimIfChanged(&cursor, 0xd);
     } else {
-        MenuCursor_setAnimIfChanged(&unk_398, 1);
+        MenuCursor_setAnimIfChanged(&cursor, 1);
     }
     refreshCursor();
 }
 
 s32 DesignTab::getCursorTargetX() {
-    s32 t = getSlotX(unk_b1);
+    s32 t = getSlotX(cursorSlot);
     if (testFlags(0x40)) {
         t += 0x100;
     } else if (testFlags(0x20)) {
@@ -1718,7 +1718,7 @@ s32 DesignTab::getCursorTargetX() {
 }
 
 s32 DesignTab::getCursorTargetY() {
-    s32 t = getSlotY(unk_b1);
+    s32 t = getSlotY(cursorSlot);
     if (getCursorTab() == -1) {
         t -= 0xb;
     }
@@ -1726,103 +1726,103 @@ s32 DesignTab::getCursorTargetY() {
 }
 
 void DesignTab::hideCursor() {
-    MenuCursor_setAnimIfChanged(&unk_398, 0);
-    unk_398.vfunc_0c();
+    MenuCursor_setAnimIfChanged(&cursor, 0);
+    cursor.vfunc_0c();
 }
 
 void DesignTab::moveCursorToTarget() {
     if (testFlags(0x10)) {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        MenuCursorBase_warpTo(&unk_398, a, b);
+        MenuCursorBase_warpTo(&cursor, a, b);
         clearFlags(0x10);
     } else {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        MenuCursorBase_moveToEase(&unk_398, a, b, 3, 1);
-        unk_b4 = mainState;
+        MenuCursorBase_moveToEase(&cursor, a, b, 3, 1);
+        returnState = mainState;
         setMainState(6);
     }
 }
 
 void DesignTab::moveCursorToPopupRow() {
-    s32 a = PopupChoiceMenuBody_getRowX(&unk_504);
-    s32 b = PopupChoiceMenuBody_getRowY(&unk_504, unk_b3);
-    MenuCursorBase_moveToLinear(&unk_398, a, b, 2);
-    unk_b4 = mainState;
+    s32 a = PopupChoiceMenuBody_getRowX(&popup);
+    s32 b = PopupChoiceMenuBody_getRowY(&popup, popupRow);
+    MenuCursorBase_moveToLinear(&cursor, a, b, 2);
+    returnState = mainState;
     setMainState(6);
 }
 
 void DesignTab::cancelPopup() {
-    unk_b2 = 8;
-    unk_b3 = PopupChoice_DecideCancel(&unk_504, 1);
-    s32 a = PopupChoiceMenuBody_getRowX(&unk_504);
-    s32 b = PopupChoiceMenuBody_getRowY(&unk_504, unk_b3);
-    MenuCursorBase_warpTo(&unk_398, a, b);
-    HandCursor_setAnimAtEnd(&unk_398, 8);
+    popupChoice = 8;
+    popupRow = PopupChoice_DecideCancel(&popup, 1);
+    s32 a = PopupChoiceMenuBody_getRowX(&popup);
+    s32 b = PopupChoiceMenuBody_getRowY(&popup, popupRow);
+    MenuCursorBase_warpTo(&cursor, a, b);
+    HandCursor_setAnimAtEnd(&cursor, 8);
     setMainState(0xf);
 }
 
 void DesignTab::cursorToPopupTop() {
-    unk_b3 = 0;
-    s32 a = PopupChoiceMenuBody_getRowX(&unk_504);
-    s32 b = PopupChoiceMenuBody_getRowY(&unk_504, unk_b3);
-    MenuCursorBase_warpTo(&unk_398, a, b);
-    MenuCursor_setAnimIfChanged(&unk_398, 7);
+    popupRow = 0;
+    s32 a = PopupChoiceMenuBody_getRowX(&popup);
+    s32 b = PopupChoiceMenuBody_getRowY(&popup, popupRow);
+    MenuCursorBase_warpTo(&cursor, a, b);
+    MenuCursor_setAnimIfChanged(&cursor, 7);
 }
 
 void DesignTab::showCursorAtTarget() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    MenuCursorBase_warpTo(&unk_398, a, b);
-    MenuCursor_setAnimIfChanged(&unk_398, 1);
+    MenuCursorBase_warpTo(&cursor, a, b);
+    MenuCursor_setAnimIfChanged(&cursor, 1);
 }
 
 void DesignTab::refreshCursor() {
-    MenuCursorBase_setPoseIdle(&unk_398);
-    unk_398.vfunc_0c();
+    MenuCursorBase_setPoseIdle(&cursor);
+    cursor.vfunc_0c();
 }
 
 void DesignTab::pressCursor() {
-    MenuCursor_setPosePress(&unk_398);
+    MenuCursor_setPosePress(&cursor);
     setMainState(7);
 }
 
 void DesignTab::releaseCursor() {
-    MenuCursorBase_setPoseRelease(&unk_398);
+    MenuCursorBase_setPoseRelease(&cursor);
     setMainState(8);
 }
 
 void DesignTab::startCarry() {
-    MenuCursor_setAnimIfChanged(&unk_398, 4);
+    MenuCursor_setAnimIfChanged(&cursor, 4);
     setMainState(9);
 }
 
 void DesignTab::dropCarry() {
-    MenuCursor_setAnimIfChanged(&unk_398, 5);
+    MenuCursor_setAnimIfChanged(&cursor, 5);
     clearFlags(0x80);
     setMainState(0xb);
 }
 
 void DesignTab::cancelCarry() {
-    MenuCursor_setAnimIfChanged(&unk_398, 5);
+    MenuCursor_setAnimIfChanged(&cursor, 5);
     setFlags(0x80);
     setMainState(0xb);
 }
 
 void DesignTab::moveDragIconToCursor() {
-    unk_a4 = MenuCursorBase_getFrameScreenX(&unk_398) - 3;
-    unk_a6 = MenuCursorBase_getFrameScreenY(&unk_398) + 9;
+    handX = MenuCursorBase_getFrameScreenX(&cursor) - 3;
+    handY = MenuCursorBase_getFrameScreenY(&cursor) + 9;
 }
 
 BOOL DesignTab::stepCursorRight(u32 lo, u32 hi) {
-    u32 t = unk_b1;
+    u32 t = cursorSlot;
     if (t >= lo && t <= hi) {
         if (t == hi) {
             setFlags(0x40);
-            unk_b1 = lo;
+            cursorSlot = lo;
         } else {
-            unk_b1 = *(volatile u8 *)&unk_b1 + 1;
+            cursorSlot = *(volatile u8 *)&cursorSlot + 1;
         }
         return TRUE;
     }
@@ -1830,13 +1830,13 @@ BOOL DesignTab::stepCursorRight(u32 lo, u32 hi) {
 }
 
 BOOL DesignTab::stepCursorLeft(u32 lo, u32 hi) {
-    u32 t = unk_b1;
+    u32 t = cursorSlot;
     if (t >= lo && t <= hi) {
         if (t == lo) {
-            unk_b1 = hi;
+            cursorSlot = hi;
             setFlags(0x20);
         } else {
-            unk_b1 = *(volatile u8 *)&unk_b1 - 1;
+            cursorSlot = *(volatile u8 *)&cursorSlot - 1;
         }
         return TRUE;
     }
@@ -1844,25 +1844,25 @@ BOOL DesignTab::stepCursorLeft(u32 lo, u32 hi) {
 }
 
 BOOL DesignTab::cursorRowUp(u32 lo, u32 hi, u32 v) {
-    u32 t = unk_b1;
+    u32 t = cursorSlot;
     if (t >= lo && t <= hi) {
-        unk_b1 = *(volatile u8 *)&unk_b1 + (v - lo);
+        cursorSlot = *(volatile u8 *)&cursorSlot + (v - lo);
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL DesignTab::cursorRowDown(u32 lo, u32 hi, u32 v) {
-    u32 t = unk_b1;
+    u32 t = cursorSlot;
     if (t >= lo && t <= hi) {
-        unk_b1 = *(volatile u8 *)&unk_b1 + (v - lo);
+        cursorSlot = *(volatile u8 *)&cursorSlot + (v - lo);
         return TRUE;
     }
     return FALSE;
 }
 
 s32 DesignTab::getCursorTab() {
-    u32 t = unk_b1;
+    u32 t = cursorSlot;
     if (t >= 0x10 && t <= 0x17) {
         return t - 0x10;
     }
@@ -1871,32 +1871,32 @@ s32 DesignTab::getCursorTab() {
 
 BOOL DesignTab::moveCursorHorizontal(void *pad, u32 f) {
     if (MenuKeys_HasLeft(pad)) {
-        if (unk_b1 == 8) {
-            unk_b1 = 7;
+        if (cursorSlot == 8) {
+            cursorSlot = 7;
             setFlags(0x20);
-        } else if (unk_b1 == 4 && f) {
-            unk_b1 = 8;
+        } else if (cursorSlot == 4 && f) {
+            cursorSlot = 8;
         } else if (!stepCursorLeft(0, 3) && !stepCursorLeft(4, 7) && !stepCursorLeft(9, 0xb) &&
                    !stepCursorLeft(0xc, 0xf)) {
-            u32 t = unk_b1;
+            u32 t = cursorSlot;
             if (t > 0x10 && t <= 0x17) {
-                unk_b1 = *(volatile u8 *)&unk_b1 - 1;
+                cursorSlot = *(volatile u8 *)&cursorSlot - 1;
             }
         }
     } else if (MenuKeys_HasRight(pad)) {
-        if (unk_b1 == 8) {
-            unk_b1 = 4;
-        } else if (unk_b1 == 7 && f) {
-            unk_b1 = 8;
+        if (cursorSlot == 8) {
+            cursorSlot = 4;
+        } else if (cursorSlot == 7 && f) {
+            cursorSlot = 8;
             setFlags(0x40);
-        } else if (unk_b1 == 0xb && MenuKeys_HasDown(pad)) {
-            unk_b1 = 0xf;
+        } else if (cursorSlot == 0xb && MenuKeys_HasDown(pad)) {
+            cursorSlot = 0xf;
             return TRUE;
         } else if (!stepCursorRight(0, 3) && !stepCursorRight(4, 7) && !stepCursorRight(9, 0xb) &&
                    !stepCursorRight(0xc, 0xf)) {
-            u32 t = unk_b1;
+            u32 t = cursorSlot;
             if (t >= 0x10 && t < 0x17) {
-                unk_b1 = *(volatile u8 *)&unk_b1 + 1;
+                cursorSlot = *(volatile u8 *)&cursorSlot + 1;
             }
         }
     }
@@ -1904,39 +1904,39 @@ BOOL DesignTab::moveCursorHorizontal(void *pad, u32 f) {
 }
 
 void DesignTab::moveCursorToTabs() {
-    s32 t = MenuCursorBase_getScreenX(&unk_398);
-    unk_b1 = MenuTabBar_TabFromX(t) + 0x10;
-    MenuCursor_switchToAnim0D(&unk_398);
+    s32 t = MenuCursorBase_getScreenX(&cursor);
+    cursorSlot = MenuTabBar_TabFromX(t) + 0x10;
+    MenuCursor_switchToAnim0D(&cursor);
 }
 
 void DesignTab::moveCursorFromTab(u32 idx) {
-    unk_b1 = sDesignTabTabDownSlot[idx];
-    MenuCursor_switchToAnim01(&unk_398);
+    cursorSlot = sDesignTabTabDownSlot[idx];
+    MenuCursor_switchToAnim01(&cursor);
 }
 
 void DesignTab::moveCursorVertical(void *pad, u32 f) {
     if (MenuKeys_HasUp(pad)) {
-        if (unk_b1 == 8) {
-            unk_b1 = 0;
-        } else if (unk_b1 <= 3) {
+        if (cursorSlot == 8) {
+            cursorSlot = 0;
+        } else if (cursorSlot <= 3) {
             if (f) {
-                unk_b1 = *(volatile u8 *)&unk_b1 + 0xc;
+                cursorSlot = *(volatile u8 *)&cursorSlot + 0xc;
             } else {
                 moveCursorToTabs();
             }
         } else if (!cursorRowUp(4, 7, 0)) {
-            u32 t = unk_b1;
+            u32 t = cursorSlot;
             if (t >= 9 && t <= 0xb) {
                 if (!f) {
                     moveCursorToTabs();
                 }
             } else if (t >= 0xc && t <= 0xf) {
                 if (MenuKeys_HasRight(pad)) {
-                    unk_b1 = *(volatile u8 *)&unk_b1 - 1;
+                    cursorSlot = *(volatile u8 *)&cursorSlot - 1;
                 }
-                unk_b1 = *(volatile u8 *)&unk_b1 - 3;
-                if (unk_b1 > 0xb) {
-                    unk_b1 = 0xb;
+                cursorSlot = *(volatile u8 *)&cursorSlot - 3;
+                if (cursorSlot > 0xb) {
+                    cursorSlot = 0xb;
                 }
             }
         }
@@ -1946,12 +1946,12 @@ void DesignTab::moveCursorVertical(void *pad, u32 f) {
             if (t != -1) {
                 moveCursorFromTab(t);
             } else if (!cursorRowDown(0xc, 0xf, 0)) {
-                u32 b = unk_b1;
+                u32 b = cursorSlot;
                 if (b >= 9 && b <= 0xb) {
                     if (MenuKeys_HasLeft(pad)) {
-                        unk_b1 = *(volatile u8 *)&unk_b1 + 1;
+                        cursorSlot = *(volatile u8 *)&cursorSlot + 1;
                     }
-                    unk_b1 = *(volatile u8 *)&unk_b1 + 3;
+                    cursorSlot = *(volatile u8 *)&cursorSlot + 3;
                 }
             }
         }
@@ -1959,12 +1959,12 @@ void DesignTab::moveCursorVertical(void *pad, u32 f) {
 }
 
 BOOL DesignTab::moveCursorByPad(void *pad, u32 f) {
-    u32 old = unk_b1;
+    u32 old = cursorSlot;
     clearFlags(0x60);
     if (!moveCursorHorizontal(pad, f)) {
         moveCursorVertical(pad, f);
     }
-    if (old != unk_b1) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     return FALSE;
@@ -1972,28 +1972,28 @@ BOOL DesignTab::moveCursorByPad(void *pad, u32 f) {
 
 void DesignTab::startTargetBlink(u32 v) {
     if (testFlags(0x200)) {
-        setTargetPalette(unk_b5, 2);
+        setTargetPalette(blinkTarget, 2);
     }
-    unk_b5 = v;
-    unk_b6 = 0xf;
+    blinkTarget = v;
+    blinkTimer = 0xf;
     setFlags(0x200);
 }
 
 void DesignTab::updateTargetBlink() {
     if (testFlags(0x200)) {
-        if (unk_b6 != 0) {
-            unk_b6 = *(volatile u8 *)&unk_b6 - 1;
-            switch (unk_b6 % 5) {
+        if (blinkTimer != 0) {
+            blinkTimer = *(volatile u8 *)&blinkTimer - 1;
+            switch (blinkTimer % 5) {
             case 0:
-                setTargetPalette(unk_b5, 2);
+                setTargetPalette(blinkTarget, 2);
                 break;
             case 3:
-                setTargetPalette(unk_b5, 6);
+                setTargetPalette(blinkTarget, 6);
                 break;
             }
         } else {
             clearFlags(0x200);
-            setTargetPalette(unk_b5, 2);
+            setTargetPalette(blinkTarget, 2);
         }
     }
 }
@@ -2088,15 +2088,15 @@ BOOL DesignTab::isRoomEditAllowed() {
 }
 
 BOOL DesignTab::testFlags(u32 mask) {
-    if (unk_a2 & mask) {
+    if (flags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void DesignTab::setFlags(u32 mask) { unk_a2 = unk_a2 | mask; }
+void DesignTab::setFlags(u32 mask) { flags = flags | mask; }
 
-void DesignTab::clearFlags(u32 mask) { unk_a2 = unk_a2 & ~mask; }
+void DesignTab::clearFlags(u32 mask) { flags = flags & ~mask; }
 
 extern "C" const u8 sDesignTabPopupChoices[6][0xb] = {
     {0x31, 0x32, 0x33, 0xff, 0xff, 0x00, 0x01, 0x08, 0x08, 0x08, 0x00},

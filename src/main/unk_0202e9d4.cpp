@@ -70,10 +70,10 @@ public:
     s32 calcOffset();
     void set(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c);
 
-    /* 0x04 */ CollisionVec2 unk_04;
-    /* 0x0c */ CollisionVec2 unk_0c;
-    /* 0x14 */ CollisionVec2 unk_14;
-    /* 0x1c */ s32 unk_1c;
+    /* 0x04 */ CollisionVec2 start;
+    /* 0x0c */ CollisionVec2 end;
+    /* 0x14 */ CollisionVec2 normal;
+    /* 0x1c */ s32 offset;
 };
 
 // ---- triangle (vtable 0x020d8ccc) ----
@@ -86,8 +86,8 @@ public:
     virtual BOOL pushBackCrossing(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual BOOL pushOutEdges(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual BOOL collide(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    Unk_0202f2ac_V3 unk_04, unk_10, unk_1c, unk_28;
-    s32 unk_34;
+    Unk_0202f2ac_V3 vertex0, vertex1, vertex2, normal;
+    s32 offset;
     BOOL intersectLine(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, Unk_0202f2ac_V3 *q);
     BOOL intersectSegment(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, Unk_0202f2ac_V3 *q);
     BOOL containsYZ(Unk_0202f2ac_V3 *p);
@@ -100,9 +100,9 @@ public:
 
 class CollisionSegment {
 public:
-    Unk_0202f660_V3 unk_00;
-    Unk_0202f660_V3 unk_0c;
-    Unk_0202f660_V3 unk_18;
+    Unk_0202f660_V3 start;
+    Unk_0202f660_V3 end;
+    Unk_0202f660_V3 dir;
 
     BOOL isBetweenEnds(Unk_0202f660_V3 *pt);
     void projectPoint(Unk_0202f660_V3 *out, Unk_0202f660_V3 *pt);
@@ -116,8 +116,8 @@ public:
 
 class CollisionCircle {
 public:
-    Unk_0202f660_V3 unk_00;
-    s32 unk_0c;
+    Unk_0202f660_V3 center;
+    s32 circleRadius;
 
     BOOL containsXZ(Unk_0202f660_V3 *pt);
     void setCircle(Unk_0202f660_V3 *pos, s32 radius);
@@ -128,7 +128,7 @@ public:
 
 class CollisionCylinder : public CollisionCircle {
 public:
-    s32 unk_10;
+    s32 cylinderHeight;
 
     BOOL clipSegmentSideBounded(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
     BOOL clipSegmentCaps(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
@@ -147,7 +147,7 @@ BOOL CollisionCylinder::clipSegmentCaps(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a
     if (func_020e94f8(&l.D)) {
         s32 dy = l.D.y;
         if ((dy < 0 ? -dy : dy) >= 4) {
-            s32 top = unk_00.y + unk_10;
+            s32 top = center.y + cylinderHeight;
             s32 ay = l.A.y;
             if (ay > top && l.B.y < top) {
                 t1 = FX_Div(top - ay, l.D.y);
@@ -183,8 +183,8 @@ BOOL CollisionCylinder::clipSegmentSideBounded(Unk_0202f660_V3 *out, Unk_0202f66
         struct { Unk_0202f7b8_V3 A, B, C, D; u32 pad[6]; } l;
         l.A = Unk_0202f7b8_V3(a->x, a->y, a->z);
         l.B = Unk_0202f7b8_V3(out->x, out->y, out->z);
-        l.C = Unk_0202f7b8_V3(unk_00.x, unk_00.y, unk_00.z);
-        s32 r = unk_0c;
+        l.C = Unk_0202f7b8_V3(center.x, center.y, center.z);
+        s32 r = circleRadius;
         func_020e9960(&l.D, &l.B, &l.A);
         s32 t = func_01ffcb0c(l.D.z, l.D.z);
         s32 q = func_01ffcb0c(l.D.x, l.D.x);
@@ -207,8 +207,8 @@ BOOL CollisionCylinder::clipSegmentSideBounded(Unk_0202f660_V3 *out, Unk_0202f66
         }
         s32 t1 = -(b + s) >> 1;
         s32 t2 = (s - b) >> 1;
-        ymin = unk_00.y;
-        ymax = ymin + unk_10;
+        ymin = center.y;
+        ymax = ymin + cylinderHeight;
         s32 y, x;
         if ((t1 < 0 ? -t1 : t1) < 4 || (t1 >= 0 && t1 <= 0x1000)) {
             z = l.A.z + func_01ffcb0c(t1, l.D.z);
@@ -242,7 +242,7 @@ CollisionSegment::~CollisionSegment() {}
 
 s32 CollisionSegment::calcDir(Unk_0202f660_V3 *out) {
     Unk_0202f660_V3 tmp;
-    func_020e9960(&tmp, &unk_0c, &unk_00);
+    func_020e9960(&tmp, &end, &start);
     *out = tmp;
     return func_020e94f8(out);
 }
@@ -254,9 +254,9 @@ s32 CollisionSegment::distanceTo(Unk_0202f660_V3 *pt) {
 }
 
 void CollisionSegment::set(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b) {
-    unk_00 = *a;
-    unk_0c = *b;
-    calcDir(&unk_18);
+    start = *a;
+    end = *b;
+    calcDir(&dir);
 }
 
 s32 CollisionSegment::closestPoint(Unk_0202f660_V3 *out, Unk_0202f660_V3 *pt) {
@@ -267,24 +267,24 @@ s32 CollisionSegment::closestPoint(Unk_0202f660_V3 *out, Unk_0202f660_V3 *pt) {
 }
 
 void CollisionSegment::projectPoint(Unk_0202f660_V3 *out, Unk_0202f660_V3 *pt) {
-    s32 a = VEC_DotProduct(&unk_18, pt);
-    s32 t = -(VEC_DotProduct(&unk_18, &unk_00) - a);
+    s32 a = VEC_DotProduct(&dir, pt);
+    s32 t = -(VEC_DotProduct(&dir, &start) - a);
     s32 y, z;
-    z = func_01ffcb0c(unk_18.z, t);
-    z += unk_00.z;
-    y = func_01ffcb0c(unk_18.y, t);
-    y += unk_00.y;
-    s32 x = func_01ffcb0c(unk_18.x, t);
-    out->x = x + unk_00.x;
+    z = func_01ffcb0c(dir.z, t);
+    z += start.z;
+    y = func_01ffcb0c(dir.y, t);
+    y += start.y;
+    s32 x = func_01ffcb0c(dir.x, t);
+    out->x = x + start.x;
     out->y = y;
     out->z = z;
 }
 
 BOOL CollisionSegment::isBetweenEnds(Unk_0202f660_V3 *pt) {
-    s32 a = VEC_DotProduct(&unk_18, &unk_00);
-    s32 b = VEC_DotProduct(&unk_18, pt);
-    s32 c = VEC_DotProduct(&unk_18, &unk_0c);
-    s32 d = VEC_DotProduct(&unk_18, pt);
+    s32 a = VEC_DotProduct(&dir, &start);
+    s32 b = VEC_DotProduct(&dir, pt);
+    s32 c = VEC_DotProduct(&dir, &end);
+    s32 d = VEC_DotProduct(&dir, pt);
     if (func_01ffcb0c(b - a, d - c) > 0) {
         return FALSE;
     }
@@ -295,10 +295,10 @@ BOOL CollisionSegment::isBetweenEnds(Unk_0202f660_V3 *pt) {
 
 
 CollisionTriangle::CollisionTriangle() {
-    unk_28.x = 0;
-    unk_28.y = 0;
-    unk_28.z = 0;
-    unk_34 = 0;
+    normal.x = 0;
+    normal.y = 0;
+    normal.z = 0;
+    offset = 0;
 }
 
 CollisionTriangle::~CollisionTriangle() {}
@@ -317,9 +317,9 @@ BOOL CollisionTriangle::pushBackCrossing(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b,
     Unk_0202f2ac_V3 o;
     BOOL r = FALSE;
     if (distanceTo(a) <= 0 && distanceTo(b) > 0 && intersectSegment(&o, a, b)) {
-        a->x = o.x + func_01ffcb0c(c, unk_28.x);
-        a->y = o.y + func_01ffcb0c(c, unk_28.y);
-        a->z = o.z + func_01ffcb0c(c, unk_28.z);
+        a->x = o.x + func_01ffcb0c(c, normal.x);
+        a->y = o.y + func_01ffcb0c(c, normal.y);
+        a->z = o.z + func_01ffcb0c(c, normal.z);
         r = TRUE;
     }
     return r;
@@ -331,15 +331,15 @@ BOOL CollisionTriangle::pushOutFace(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 
     if (d >= 0 && d <= c + 0x200) {
         if (d < c) {
             Unk_0202f2ac_V3 t, o;
-            func_01ffd070(&t, a, &unk_28);
+            func_01ffd070(&t, a, &normal);
             if (!intersectLine(&o, a, &t)) {
                 goto end;
             }
             if (d < c) {
                 s32 e = c - d;
-                a->x = a->x + func_01ffcb0c(e, unk_28.x);
-                a->y = a->y + func_01ffcb0c(e, unk_28.y);
-                a->z = a->z + func_01ffcb0c(e, unk_28.z);
+                a->x = a->x + func_01ffcb0c(e, normal.x);
+                a->y = a->y + func_01ffcb0c(e, normal.y);
+                a->z = a->z + func_01ffcb0c(e, normal.z);
             }
             result = TRUE;
         } else {
@@ -363,16 +363,16 @@ BOOL CollisionTriangle::pushOutEdges(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32
     }
     result = FALSE;
     if (e < c) {
-        CollisionSegment t0((Unk_0202f660_V3 *)&unk_04, (Unk_0202f660_V3 *)&unk_10);
-        CollisionSegment t1((Unk_0202f660_V3 *)&unk_10, (Unk_0202f660_V3 *)&unk_1c);
-        CollisionSegment t2((Unk_0202f660_V3 *)&unk_1c, (Unk_0202f660_V3 *)&unk_04);
+        CollisionSegment t0((Unk_0202f660_V3 *)&vertex0, (Unk_0202f660_V3 *)&vertex1);
+        CollisionSegment t1((Unk_0202f660_V3 *)&vertex1, (Unk_0202f660_V3 *)&vertex2);
+        CollisionSegment t2((Unk_0202f660_V3 *)&vertex2, (Unk_0202f660_V3 *)&vertex0);
         CollisionSegment *p = &t0;
         for (; p < &t0 + 3; p++) {
             d = p->closestPoint((Unk_0202f660_V3 *)&w, (Unk_0202f660_V3 *)a);
             if (d < c && p->isBetweenEnds((Unk_0202f660_V3 *)a)) {
                 func_020e9960(&v, a, &w);
                 if (func_020e94f8(&v) == 0) {
-                    Unk_0202f2ac_V3 *q = &unk_28;
+                    Unk_0202f2ac_V3 *q = &normal;
                     v = *q;
                     func_020e9888(&v, c);
                 } else {
@@ -396,19 +396,19 @@ extern "C" s32 Collision_CalcTriangleNormal(Unk_0202f2ac_V3 *n, Unk_0202f2ac_V3 
 }
 
 BOOL CollisionTriangle::set(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d) {
-    unk_04 = *a;
-    unk_10 = *b;
-    unk_1c = *c;
-    unk_28 = *d;
-    unk_34 = calcOffset();
+    vertex0 = *a;
+    vertex1 = *b;
+    vertex2 = *c;
+    normal = *d;
+    offset = calcOffset();
     return TRUE;
 }
 
 BOOL CollisionTriangle::containsXZ(Unk_0202f2ac_V3 *p) {
     Unk_0202f2ac_V3 a, b, c;
-    func_020e9960(&a, &unk_04, p);
-    func_020e9960(&b, &unk_10, p);
-    func_020e9960(&c, &unk_1c, p);
+    func_020e9960(&a, &vertex0, p);
+    func_020e9960(&b, &vertex1, p);
+    func_020e9960(&c, &vertex2, p);
     s32 r5 = func_01ffcb0c(a.z, b.x) - func_01ffcb0c(a.x, b.z);
     s32 r4 = func_01ffcb0c(b.z, c.x) - func_01ffcb0c(b.x, c.z);
     s32 r0 = func_01ffcb0c(c.z, a.x) - func_01ffcb0c(c.x, a.z);
@@ -419,25 +419,25 @@ BOOL CollisionTriangle::containsXZ(Unk_0202f2ac_V3 *p) {
 }
 
 s32 CollisionTriangle::calcOffset() {
-    s32 z = func_01ffcb0c(unk_28.z, unk_04.z);
-    s32 x = func_01ffcb0c(unk_28.x, unk_04.x);
-    s32 y = func_01ffcb0c(unk_28.y, unk_04.y);
+    s32 z = func_01ffcb0c(normal.z, vertex0.z);
+    s32 x = func_01ffcb0c(normal.x, vertex0.x);
+    s32 y = func_01ffcb0c(normal.y, vertex0.y);
     return -(z + (x + y));
 }
 
 s32 CollisionTriangle::distanceTo(Unk_0202f2ac_V3 *p) {
-    s32 d = unk_34;
-    s32 z = func_01ffcb0c(unk_28.z, p->z);
-    s32 x = func_01ffcb0c(unk_28.x, p->x);
-    s32 y = func_01ffcb0c(unk_28.y, p->y);
+    s32 d = offset;
+    s32 z = func_01ffcb0c(normal.z, p->z);
+    s32 x = func_01ffcb0c(normal.x, p->x);
+    s32 y = func_01ffcb0c(normal.y, p->y);
     return d + (z + (x + y));
 }
 
 BOOL CollisionTriangle::containsXY(Unk_0202f2ac_V3 *p) {
     Unk_0202f2ac_V3 a, b, c;
-    func_020e9960(&a, &unk_04, p);
-    func_020e9960(&b, &unk_10, p);
-    func_020e9960(&c, &unk_1c, p);
+    func_020e9960(&a, &vertex0, p);
+    func_020e9960(&b, &vertex1, p);
+    func_020e9960(&c, &vertex2, p);
     s32 r5 = func_01ffcb0c(a.x, b.y) - func_01ffcb0c(a.y, b.x);
     s32 r4 = func_01ffcb0c(b.x, c.y) - func_01ffcb0c(b.y, c.x);
     s32 r0 = func_01ffcb0c(c.x, a.y) - func_01ffcb0c(c.y, a.x);
@@ -449,9 +449,9 @@ BOOL CollisionTriangle::containsXY(Unk_0202f2ac_V3 *p) {
 
 BOOL CollisionTriangle::containsYZ(Unk_0202f2ac_V3 *p) {
     Unk_0202f2ac_V3 a, b, c;
-    func_020e9960(&a, &unk_04, p);
-    func_020e9960(&b, &unk_10, p);
-    func_020e9960(&c, &unk_1c, p);
+    func_020e9960(&a, &vertex0, p);
+    func_020e9960(&b, &vertex1, p);
+    func_020e9960(&c, &vertex2, p);
     s32 r5 = func_01ffcb0c(a.y, b.z) - func_01ffcb0c(a.z, b.y);
     s32 r4 = func_01ffcb0c(b.y, c.z) - func_01ffcb0c(b.z, c.y);
     s32 r0 = func_01ffcb0c(c.y, a.z) - func_01ffcb0c(c.z, a.y);
@@ -482,17 +482,17 @@ BOOL CollisionTriangle::intersectLine(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, 
         out->x = p->x + func_01ffcb0c(t, v.x);
         out->y = y;
         out->z = z;
-        if (Unk_0202f2ac_Abs(unk_28.y) >= 4) {
+        if (Unk_0202f2ac_Abs(normal.y) >= 4) {
             if (containsXZ(out)) {
                 return TRUE;
             }
         }
-        if (Unk_0202f2ac_Abs(unk_28.x) >= 4) {
+        if (Unk_0202f2ac_Abs(normal.x) >= 4) {
             if (containsYZ(out)) {
                 return TRUE;
             }
         }
-        if (Unk_0202f2ac_Abs(unk_28.z) >= 4) {
+        if (Unk_0202f2ac_Abs(normal.z) >= 4) {
             if (containsXY(out)) {
                 return TRUE;
             }
@@ -566,18 +566,18 @@ void CollisionVec2::setEdgeNormal(CollisionVec2 *a, CollisionVec2 *b) {
 
 CollisionEdge::CollisionEdge(CollisionVec2 *a, CollisionVec2 *b) {
     CollisionVec2 n;
-    unk_04.set(0, 0);
-    unk_0c.set(0, 0);
-    unk_14.set(0, 0);
+    start.set(0, 0);
+    end.set(0, 0);
+    normal.set(0, 0);
     n.set(0, 0);
     n.setEdgeNormal(a, b);
     set(a, b, &n);
 }
 
 CollisionEdge::CollisionEdge(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c) {
-    unk_04.set(0, 0);
-    unk_0c.set(0, 0);
-    unk_14.set(0, 0);
+    start.set(0, 0);
+    end.set(0, 0);
+    normal.set(0, 0);
     set(a, b, c);
 }
 
@@ -585,43 +585,43 @@ CollisionEdge::CollisionEdge(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *
 CollisionEdge::~CollisionEdge() {}
 
 void CollisionEdge::set(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c) {
-    unk_04.setFrom(a);
-    unk_0c.setFrom(b);
-    unk_14.setFrom(c);
-    unk_1c = calcOffset();
+    start.setFrom(a);
+    end.setFrom(b);
+    normal.setFrom(c);
+    offset = calcOffset();
 }
 
 s32 CollisionEdge::calcOffset() {
-    s32 a = func_01ffcb0c(unk_14.x, unk_04.x);
-    s32 b = func_01ffcb0c(unk_14.y, unk_04.y);
+    s32 a = func_01ffcb0c(normal.x, start.x);
+    s32 b = func_01ffcb0c(normal.y, start.y);
     return -(a + b);
 }
 
 s32 CollisionEdge::distanceTo(CollisionVec2 *p) {
-    s32 d = unk_1c;
-    s32 a = func_01ffcb0c(unk_14.x, p->x);
-    s32 b = func_01ffcb0c(unk_14.y, p->y);
+    s32 d = offset;
+    s32 a = func_01ffcb0c(normal.x, p->x);
+    s32 b = func_01ffcb0c(normal.y, p->y);
     return d + (a + b);
 }
 
 BOOL CollisionEdge::intersectLine(CollisionVec2 *out, CollisionVec2 *a, CollisionVec2 *b) {
     CollisionEdge t(a, b);
-    s32 det = func_01ffcb0c(unk_14.x, t.unk_14.y) - func_01ffcb0c(t.unk_14.x, unk_14.y);
+    s32 det = func_01ffcb0c(normal.x, t.normal.y) - func_01ffcb0c(t.normal.x, normal.y);
     if (Unk_0202f2ac_Abs(det) >= 4) {
-        s32 c = t.unk_1c;
-        s32 g = unk_1c;
-        out->y = FX_Div(func_01ffcb0c(t.unk_14.x, g) - func_01ffcb0c(unk_14.x, c), det);
-        s32 d = unk_14.x;
+        s32 c = t.offset;
+        s32 g = offset;
+        out->y = FX_Div(func_01ffcb0c(t.normal.x, g) - func_01ffcb0c(normal.x, c), det);
+        s32 d = normal.x;
         if (Unk_0202f2ac_Abs(d) >= 4) {
-            s32 e = unk_1c;
-            s32 m = func_01ffcb0c(unk_14.y, out->y);
+            s32 e = offset;
+            s32 m = func_01ffcb0c(normal.y, out->y);
             out->x = FX_Div(-(m + e), d);
             return TRUE;
         } else {
-            s32 f = t.unk_14.x;
+            s32 f = t.normal.x;
             if (Unk_0202f2ac_Abs(f) >= 4) {
-                s32 e = t.unk_1c;
-                s32 m = func_01ffcb0c(t.unk_14.y, out->y);
+                s32 e = t.offset;
+                s32 m = func_01ffcb0c(t.normal.y, out->y);
                 out->x = FX_Div(-(m + e), f);
                 return TRUE;
             }
@@ -634,8 +634,8 @@ BOOL CollisionEdge::intersectSegment(CollisionVec2 *out, CollisionVec2 *a, Colli
     s32 x = distanceTo(a);
     if (func_01ffcb0c(x, distanceTo(b)) < 0) {
         CollisionEdge seg(a, b);
-        s32 y = seg.distanceTo(&unk_04);
-        if (func_01ffcb0c(y, seg.distanceTo(&unk_0c)) < 0) {
+        s32 y = seg.distanceTo(&start);
+        if (func_01ffcb0c(y, seg.distanceTo(&end)) < 0) {
             return intersectLine(out, a, b);
         }
     }
@@ -644,15 +644,15 @@ BOOL CollisionEdge::intersectSegment(CollisionVec2 *out, CollisionVec2 *a, Colli
 
 BOOL CollisionEdge::isBetweenEnds(CollisionVec2 *p) {
     CollisionVec2 d;
-    d.setDiff(&unk_04, &unk_0c);
+    d.setDiff(&start, &end);
     if (d.normalize()) {
         CollisionVec2 n(-d.x, -d.y);
         CollisionVec2 e;
-        e.setSum(&unk_04, &unk_14);
-        CollisionEdge sa(&unk_04, &e, &d);
+        e.setSum(&start, &normal);
+        CollisionEdge sa(&start, &e, &d);
         CollisionVec2 f;
-        f.setSum(&unk_0c, &unk_14);
-        CollisionEdge sb(&unk_0c, &f, &n);
+        f.setSum(&end, &normal);
+        CollisionEdge sb(&end, &f, &n);
         s32 x = sa.distanceTo(p);
         s32 y = sb.distanceTo(p);
         if (x >= 0 && y >= 0) {
@@ -672,7 +672,7 @@ BOOL CollisionEdge::pushOutFace(CollisionVec2 *a, CollisionVec2 *b, s32 c) {
         s32 ad = d < 0 ? -d : d;
         if (ad <= c) {
             if (isBetweenEnds(b) || isBetweenEnds(a)) {
-                CollisionVec2 *q = &unk_14;
+                CollisionVec2 *q = &normal;
                 CollisionVec2 t = *q;
                 t.scale(c - d);
                 a->add(&t);
@@ -698,9 +698,9 @@ BOOL CollisionEdge::pushOutEnds(CollisionVec2 *a, CollisionVec2 *b, s32 c) {
                 return FALSE;
             }
             CollisionVec2 arr[2];
-            q = &unk_04;
+            q = &start;
             arr[0] = *q;
-            q = &unk_0c;
+            q = &end;
             CollisionVec2 *dd = &arr[1];
             *dd = *q;
             for (CollisionVec2 *p = arr; p < arr + 2; p++) {
@@ -709,7 +709,7 @@ BOOL CollisionEdge::pushOutEnds(CollisionVec2 *a, CollisionVec2 *b, s32 c) {
                     CollisionVec2 t;
                     t.setDiff(a, p);
                     if (!t.normalize()) {
-                        q = &unk_14;
+                        q = &normal;
                         t.set(q->x, q->y);
                     } else {
                         c -= dist;
@@ -743,7 +743,7 @@ BOOL CollisionEdge::pushBackCrossing(CollisionVec2 *a, CollisionVec2 *b, s32 c) 
             if (d < 0) {
                 d = -d;
             }
-            CollisionVec2 *q = &unk_14;
+            CollisionVec2 *q = &normal;
             CollisionVec2 t = *q;
             t.scale(d);
             a->add(&t);

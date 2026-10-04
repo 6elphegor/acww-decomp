@@ -63,9 +63,9 @@ struct Unk_ov004_02224ee4_Vec {
 
 struct Unk_0203e5d0_Node {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ void *unk_0c;
+    /* 0x04 */ Unk_0203e5d0_Node *next;
+    /* 0x08 */ u32 charId;
+    /* 0x0c */ void *owner;
 };
 
 class Actor : public GameProc {
@@ -181,11 +181,11 @@ public:
     inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
     inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
 
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08[13];
-    u32 unk_3c[13];
-    u32 unk_70[13];
+    u32 archive;
+    u32 model;
+    u32 bcas[13];
+    u32 bmas[13];
+    u32 btas[13];
 };
 
 class RoomObjTex {
@@ -195,8 +195,8 @@ public:
     inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
     inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
-    u32 unk_00;
-    u8 unk_04;
+    u32 texture;
+    u8 syncState;
 };
 
 class RoomObjSe {
@@ -207,7 +207,7 @@ public:
     inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
     inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
-    u32 unk_00[0x10];
+    u32 emitter[0x10];
 };
 
 class RoomObjActor : public Character {
@@ -228,18 +228,18 @@ public:
     void loadResourcesByName(char *name);
     void loadResources(char *a, char *b);
 
-    /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ RoomObjRes unk_1a4;
-    /* 0x248 */ RoomObjTex unk_248;
-    /* 0x250 */ RoomObjSe unk_250;
+    /* 0xec */ AnimModel model;
+    /* 0x1a4 */ RoomObjRes res;
+    /* 0x248 */ RoomObjTex tex;
+    /* 0x250 */ RoomObjSe se;
 };
 
 
 struct Unk_ov004_Scene_Entry {
     void *(*unk_00)();
-    u16 unk_04;
-    u16 unk_06;
-    s32 unk_08[4];
+    u16 executePriority;
+    u16 drawPriority;
+    s32 actorParams[4];
 };
 
 class BarberPole : public RoomObjActor {

@@ -226,32 +226,32 @@ public:
     void getResources();
     void updateMatrix();
 
-    /* 0x130 */ u8 unk_130;
+    /* 0x130 */ u8 doorState;
     /* 0x131 */ u8 pad_131;
-    /* 0x132 */ u16 unk_132;
+    /* 0x132 */ u16 itemId;
     /* 0x134 */ u8 pad_134[4];
     /* 0x138 */ u8 unk_138[0x194 - 0x138];
-    /* 0x194 */ void *unk_194;
+    /* 0x194 */ void *modelRes;
     /* 0x198 */ u8 pad_198[4];
-    /* 0x19c */ Unk_ov003_Blk unk_19c;
+    /* 0x19c */ Unk_ov003_Blk baseMatrix;
     /* 0x1cc */ u8 pad_1cc[0x1f0 - 0x1cc];
     /* 0x1f0 */ u8 unk_1f0[0x228 - 0x1f0];
-    /* 0x228 */ u32 unk_228;
-    /* 0x22c */ u32 unk_22c;
-    /* 0x230 */ u8 unk_230;
-    /* 0x231 */ u8 unk_231;
-    /* 0x232 */ Unk_ov003_Flags unk_232;
-    /* 0x233 */ u8 unk_233;
+    /* 0x228 */ u32 gridX;
+    /* 0x22c */ u32 gridZ;
+    /* 0x230 */ u8 exitDelay;
+    /* 0x231 */ u8 colliderFlags;
+    /* 0x232 */ Unk_ov003_Flags entryFlags;
+    /* 0x233 */ u8 visitRefused;
     /* 0x234 */ u8 pad_234[0x278 - 0x234];
-    /* 0x278 */ u32 unk_278;
-    /* 0x27c */ u8 unk_27c;
+    /* 0x278 */ u32 entryState;
+    /* 0x27c */ u8 closedTalk;
     /* 0x27d */ u8 pad_27d;
-    /* 0x27e */ u16 unk_27e;
+    /* 0x27e */ u16 warpTimer;
     /* 0x280 */ u8 pad_280[0x288 - 0x280];
-    /* 0x288 */ void *unk_288;
-    /* 0x28c */ u8 unk_28c;
+    /* 0x288 */ void *colliders;
+    /* 0x28c */ u8 colliderCount;
     /* 0x28d */ u8 pad_28d[0x2a4 - 0x28d];
-    /* 0x2a4 */ Unk_ov003_Vec unk_2a4;
+    /* 0x2a4 */ Unk_ov003_Vec entryPos;
     /* 0x2b0 */
 };
 
@@ -355,7 +355,7 @@ void VillagerHouse_Create();
 
 static inline s32 Unk_ov003_02215c7c_Idx(BuildingActor *o) {
     BOOL r = FALSE;
-    u16 v = o->unk_132;
+    u16 v = o->itemId;
     if (v < 0x5001 || v > 0x5008) {
     } else {
         r = TRUE;
@@ -455,7 +455,7 @@ BOOL VillagerHouse::vfunc_70() {
     s32 k = getHouseVariant();
     s32 r7 = VillagerHouseTex_GetHouseTex(FieldStructureMgr_GetVillagerHouseTex(), k);
     s32 r4 = VillagerHouseTex_GetLightTex(FieldStructureMgr_GetVillagerHouseTex(), k);
-    void *g = unk_194;
+    void *g = modelRes;
     if (r7) {
         NNS_G3dBindMdlTex(g, r7);
     }
@@ -475,7 +475,7 @@ BOOL VillagerHouse::vfunc_70() {
                 s32 d = HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco());
                 unk_368.initWithTex(c, d, 0, 0x1000, 0);
                 unk_368.addToRenderObj((u32)_ZN5Model12getRenderObjEv(&unk_2b0));
-                *(Unk_ov003_Blk *)((u8 *)this + 0x314) = unk_19c;
+                *(Unk_ov003_Blk *)((u8 *)this + 0x314) = baseMatrix;
             }
         }
     }
@@ -484,8 +484,8 @@ BOOL VillagerHouse::vfunc_70() {
 
 BOOL VillagerHouse::onExecute() {
     if (HouseLightUpDeco_IsLoaded(FieldStructureMgr_GetLightUpDeco())) {
-        *(Unk_ov003_Blk *)((u8 *)this + 0x314) = unk_19c;
-        if ((unk_231 & 1) == 0) {
+        *(Unk_ov003_Blk *)((u8 *)this + 0x314) = baseMatrix;
+        if ((colliderFlags & 1) == 0) {
             unk_368.step();
             **(u32 **)((u8 *)this + 0x380) = *(u32 *)((u8 *)this + 0x370);
         }
@@ -560,11 +560,11 @@ void VillagerHouse::vfunc_78() {
     setFileName("obj_etc_closed");
     if (func_0207e274(p) == 0) {
         msgIndex = 6;
-    } else if (unk_232.f1) {
+    } else if (entryFlags.f1) {
         setFileName("obj_etc_error");
         msgIndex = 0;
     } else if (void *q = VillagerData_getVillagerId(p)) {
-        if (unk_233 == 0) {
+        if (visitRefused == 0) {
             msgIndex = sVillagerHouseClosedMsgs[VillagerId_GetPersonality(q)];
         } else {
             msgIndex = sVillagerHouseClosedMsgsAlt[VillagerId_GetPersonality(q)];

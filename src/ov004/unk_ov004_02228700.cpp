@@ -63,9 +63,9 @@ struct Unk_ov004_02224ee4_Vec {
 
 struct Unk_0203e5d0_Node {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ void *unk_0c;
+    /* 0x04 */ Unk_0203e5d0_Node *next;
+    /* 0x08 */ u32 charId;
+    /* 0x0c */ void *owner;
 };
 
 class Actor : public GameProc {
@@ -181,11 +181,11 @@ public:
     inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
     inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
 
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08[13];
-    u32 unk_3c[13];
-    u32 unk_70[13];
+    u32 archive;
+    u32 model;
+    u32 bcas[13];
+    u32 bmas[13];
+    u32 btas[13];
 };
 
 class RoomObjTex {
@@ -195,8 +195,8 @@ public:
     inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
     inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
-    u32 unk_00;
-    u8 unk_04;
+    u32 texture;
+    u8 syncState;
 };
 
 class RoomObjSe {
@@ -207,7 +207,7 @@ public:
     inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
     inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
-    u32 unk_00[0x10];
+    u32 emitter[0x10];
 };
 
 class RoomObjActor : public Character {
@@ -228,10 +228,10 @@ public:
     void loadResourcesByName(char *name);
     void loadResources(char *a, char *b);
 
-    /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ RoomObjRes unk_1a4;
-    /* 0x248 */ RoomObjTex unk_248;
-    /* 0x250 */ RoomObjSe unk_250;
+    /* 0xec */ AnimModel model;
+    /* 0x1a4 */ RoomObjRes res;
+    /* 0x248 */ RoomObjTex tex;
+    /* 0x250 */ RoomObjSe se;
 };
 
 
@@ -248,9 +248,9 @@ struct Unk_ov004_02228a40_Mtx {
 
 struct Unk_ov004_Scene_Entry {
     void *(*unk_00)();
-    u16 unk_04;
-    u16 unk_06;
-    s32 unk_08[4];
+    u16 executePriority;
+    u16 drawPriority;
+    s32 actorParams[4];
 };
 
 // the global object at 0x02250f6c: constructed / registered by the unit's __sinit (ctor and dtor are two 2-byte stubs in main)
@@ -280,11 +280,11 @@ public:
     BOOL enterState00();
     void updateState();
 
-    /* 0x290 */ u32 unk_290[0x2e];  // a AnimModel (ctor C1 / dtor D1 by hand)
-    /* 0x348 */ u32 unk_348[0x29];  // a RoomObjRes (C1 / D1 by hand)
-    /* 0x3ec */ u32 unk_3ec;        // helper with plain ctor/dtor functions 02224d60 / 02224d5c
-    /* 0x3f0 */ u8 unk_3f0[0x28];   // a MatTexVramTask (C1 by hand)
-    /* 0x418 */ u32 unk_418[0xa];   // a ModelAnim (C1 / D1 by hand)
+    /* 0x290 */ u32 partModel[0x2e];  // a AnimModel (ctor C1 / dtor D1 by hand)
+    /* 0x348 */ u32 partRes[0x29];  // a RoomObjRes (C1 / D1 by hand)
+    /* 0x3ec */ u32 partTex;        // helper with plain ctor/dtor functions 02224d60 / 02224d5c
+    /* 0x3f0 */ u8 clothTexTask[0x28];   // a MatTexVramTask (C1 by hand)
+    /* 0x418 */ u32 matAnim[0xa];   // a ModelAnim (C1 / D1 by hand)
 };
 
 #define F(T, off) (*(T *)((u8 *)this + off))
@@ -349,47 +349,47 @@ extern "C" SewingMachine *SewingMachine_Create() {
 }
 
 SewingMachine::SewingMachine() {
-    _ZN9AnimModelC1Ev(unk_290);
-    _ZN10RoomObjResC1Ev(unk_348);
-    RoomObjTex_Construct(&unk_3ec);
-    _ZN14MatTexVramTaskC1Ev(unk_3f0);
-    _ZN9ModelAnimC1Ev(unk_418);
+    _ZN9AnimModelC1Ev(partModel);
+    _ZN10RoomObjResC1Ev(partRes);
+    RoomObjTex_Construct(&partTex);
+    _ZN14MatTexVramTaskC1Ev(clothTexTask);
+    _ZN9ModelAnimC1Ev(matAnim);
 }
 
 SewingMachine::~SewingMachine() {
-    _ZN9ModelAnimD1Ev(unk_418);
-    RoomObjTex_Destruct(&unk_3ec);
-    _ZN10RoomObjResD1Ev(unk_348);
-    _ZN9AnimModelD1Ev(unk_290);
+    _ZN9ModelAnimD1Ev(matAnim);
+    RoomObjTex_Destruct(&partTex);
+    _ZN10RoomObjResD1Ev(partRes);
+    _ZN9AnimModelD1Ev(partModel);
 }
 
 BOOL SewingMachine::vfunc_00() {
     sSewingMachine = this;
     loadResources("/roomObj/obj_tailor1.arc", "/roomObj/obj_tailor1.nsbtx");
-    RoomObjRes_Load(unk_348, "/roomObj/obj_tailor2.arc");
-    RoomObjTex_Load(&unk_3ec, "/roomObj/obj_tailor2.nsbtx");
-    _ZN5Model11setResourceEP16Unk_020553f8_Resj(unk_290, RoomObjRes_GetModel(unk_348), 0);
+    RoomObjRes_Load(partRes, "/roomObj/obj_tailor2.arc");
+    RoomObjTex_Load(&partTex, "/roomObj/obj_tailor2.nsbtx");
+    _ZN5Model11setResourceEP16Unk_020553f8_Resj(partModel, RoomObjRes_GetModel(partRes), 0);
     {
-        void *a = RoomObjRes_GetModel(unk_348);
-        NNS_G3dBindMdlTex(a, RoomObjTex_Get(&unk_3ec));
+        void *a = RoomObjRes_GetModel(partRes);
+        NNS_G3dBindMdlTex(a, RoomObjTex_Get(&partTex));
     }
     {
-        void *a = RoomObjRes_GetModel(unk_348);
-        NNS_G3dBindMdlPltt(a, RoomObjTex_Get(&unk_3ec));
+        void *a = RoomObjRes_GetModel(partRes);
+        NNS_G3dBindMdlPltt(a, RoomObjTex_Get(&partTex));
     }
-    if (RoomObjRes_GetBca(&unk_1a4, 0) && _ZN9AnimModel11allocAnmObjEPv(&unk_ec, gBgHeap)) {
-        _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, RoomObjRes_GetBca(&unk_1a4, 0), 0, 0x1000, 0, 0);
-        _ZN9AnimModel10attachAnimEv(&unk_ec);
+    if (RoomObjRes_GetBca(&res, 0) && _ZN9AnimModel11allocAnmObjEPv(&model, gBgHeap)) {
+        _ZN14BlendAnimModel8initAnimEiiitt(&model, RoomObjRes_GetBca(&res, 0), 0, 0x1000, 0, 0);
+        _ZN9AnimModel10attachAnimEv(&model);
         F(u32, 0x198) = 0;
     }
-    if (_ZN9ModelAnim11allocMatAnmEjPv(unk_418, F(u32, 0x148), gBgHeap)) {
-        _ZN9ModelAnim4initEiiit(unk_418, RoomObjRes_GetBta(&unk_1a4, 0), 0, 0x1000, 0);
-        _ZN9ModelAnim14addToRenderObjEj(unk_418, _ZN5Model12getRenderObjEv(&unk_ec));
+    if (_ZN9ModelAnim11allocMatAnmEjPv(matAnim, F(u32, 0x148), gBgHeap)) {
+        _ZN9ModelAnim4initEiiit(matAnim, RoomObjRes_GetBta(&res, 0), 0, 0x1000, 0);
+        _ZN9ModelAnim14addToRenderObjEj(matAnim, _ZN5Model12getRenderObjEv(&model));
         F(u32, 0x428) = 0;
     }
-    if (RoomObjRes_GetBca(unk_348, 0) && _ZN9AnimModel11allocAnmObjEPv(unk_290, gBgHeap)) {
-        _ZN14BlendAnimModel8initAnimEiiitt(unk_290, RoomObjRes_GetBca(unk_348, 0), 0, 0x1000, 0, 0);
-        _ZN9AnimModel10attachAnimEv(unk_290);
+    if (RoomObjRes_GetBca(partRes, 0) && _ZN9AnimModel11allocAnmObjEPv(partModel, gBgHeap)) {
+        _ZN14BlendAnimModel8initAnimEiiitt(partModel, RoomObjRes_GetBca(partRes, 0), 0, 0x1000, 0, 0);
+        _ZN9AnimModel10attachAnimEv(partModel);
         F(u32, 0x33c) = 0;
     }
     {
@@ -403,7 +403,7 @@ BOOL SewingMachine::vfunc_00() {
         ClothTex_LoadItem(&sSewingMachineCloth, &z, 0);
         u32 r5 = F(u32, 0x2ec);
         void *t = ClothTex_GetTex(&sSewingMachineCloth);
-        _ZN14MatTexVramTask7requestEPvjS0_jj(unk_3f0, r5, "w", t, 0, 0);
+        _ZN14MatTexVramTask7requestEPvjS0_jj(clothTexTask, r5, "w", t, 0, 0);
         enterState00();
         _ZN22DateSeededRandomSourceD2Ev(x);
     }
@@ -411,9 +411,9 @@ BOOL SewingMachine::vfunc_00() {
 }
 
 BOOL SewingMachine::onExecute() {
-    _ZN9AnimModel8stepAnimEv(&unk_ec);
-    _ZN9AnimModel8stepAnimEv(unk_290);
-    _ZN13AnimFrameCtrl4stepEv(unk_418);
+    _ZN9AnimModel8stepAnimEv(&model);
+    _ZN9AnimModel8stepAnimEv(partModel);
+    _ZN13AnimFrameCtrl4stepEv(matAnim);
     *F(u32 *, 0x430) = F(u32, 0x420);
     func_020e8388(&data_021f47e0, position[0], position[1], position[2]);
     F(Unk_ov004_02228a40_Mtx, 0xec + 0x64) = data_021f47e0;
@@ -423,15 +423,15 @@ BOOL SewingMachine::onExecute() {
 }
 
 BOOL SewingMachine::onDraw() {
-    _ZN9AnimModel12drawAnimatedEPv(&unk_ec, 0);
-    _ZN9AnimModel12drawAnimatedEPv(unk_290, 0);
+    _ZN9AnimModel12drawAnimatedEPv(&model, 0);
+    _ZN9AnimModel12drawAnimatedEPv(partModel, 0);
     return TRUE;
 }
 
 BOOL SewingMachine::vfunc_0c() {
     releaseResources();
-    RoomObjRes_Free(unk_348);
-    RoomObjTex_Reset(&unk_3ec);
+    RoomObjRes_Free(partRes);
+    RoomObjTex_Reset(&partTex);
     sSewingMachine = 0;
     return TRUE;
 }
@@ -445,7 +445,7 @@ BOOL SewingMachine::changeSyncState(u32 idx) {
     };
     if (idx < 4) {
         if ((this->*tbl[idx])()) {
-            unk_248.unk_04 = idx;
+            tex.syncState = idx;
             return TRUE;
         }
     }
@@ -459,7 +459,7 @@ void SewingMachine::updateState() {
         &SewingMachine::updateState02,
         &SewingMachine::updateState03,
     };
-    u32 i = unk_248.unk_04;
+    u32 i = tex.syncState;
     if (i < 4) {
         (this->*tbl[i])();
     }
@@ -492,7 +492,7 @@ void SewingMachine::updateState02() {
     u32 q = (u16)(t / 0x38);
     if (func_020e77cc((u16)(t - q * 0x38), 0x11, 0x34)) {
         if (!MenuCtrl_IsMenuOpen()) {
-            RoomObj_PlaySeHeld(&unk_250, 0x85e);
+            RoomObj_PlaySeHeld(&se, 0x85e);
         }
     }
 }
@@ -532,7 +532,7 @@ extern "C" BOOL SewingMachine_Stop() {
 extern "C" BOOL SewingMachine_IsStopped() {
     SewingMachine *g = sSewingMachine;
     if (g) {
-        u32 t = g->unk_248.unk_04;
+        u32 t = g->tex.syncState;
         if (t == 3 || t == 0) {
             return TRUE;
         }

@@ -27,7 +27,7 @@ typedef Unk_0203f554_Cal Unk_0203fe18_B4;
 struct Unk_0203f554_Sub {
     u32 flags;
     s32 off;
-    u32 unk_08;
+    u32 hour;
 };
 
 struct Unk_0203f554_Ent {
@@ -56,8 +56,8 @@ public:
     EventDayList();
     ~EventDayList();
 
-    /* 0x00 */ u8 unk_00[4];
-    /* 0x04 */ Unk_0203f408_Entry unk_04[7];
+    /* 0x00 */ u8 date[4];
+    /* 0x04 */ Unk_0203f408_Entry entries[7];
 };
 
 struct Unk_0203f820_Date {
@@ -356,10 +356,10 @@ extern "C" EventCalendarModule *EventCalendarModule_New() {
 }
 
 EventDayList::EventDayList() {
-    unk_00[0] = 1;
-    unk_00[1] = 1;
-    unk_00[2] = 0;
-    unk_00[3] = 0;
+    date[0] = 1;
+    date[1] = 1;
+    date[2] = 0;
+    date[3] = 0;
 }
 
 EventDayList::~EventDayList() {}
@@ -495,7 +495,7 @@ extern "C" void EventRule_GetPlayerBirthday(Unk_0203f554_Sub *e, Unk_0203f554_Ca
         if (p) {
             out->s.b3 = p[1];
             out->s.b2 = p[0];
-            out->s.b1 = e->unk_08;
+            out->s.b1 = e->hour;
         }
     }
 }
@@ -523,7 +523,7 @@ extern "C" void EventRule_GetVillagerBirthday(Unk_0203f554_Sub *e, Unk_0203f554_
         if (p) {
             out->s.b3 = p[0];
             out->s.b2 = p[1];
-            out->s.b1 = e->unk_08;
+            out->s.b1 = e->hour;
         }
     }
 }
@@ -539,7 +539,7 @@ extern "C" Unk_0203f554_Cal EventRule_GetWeekSlotDate(Unk_0203f554_Sub *e, u32 i
             x = p->pr;
             ret.s.b3 = x.b[1];
             ret.s.b2 = x.b[0];
-            ret.s.b1 = e->unk_08;
+            ret.s.b1 = e->hour;
         }
     } else {
         if (id == 0x60) id = 0x40;
@@ -550,7 +550,7 @@ extern "C" Unk_0203f554_Cal EventRule_GetWeekSlotDate(Unk_0203f554_Sub *e, u32 i
                 y = p->pr;
                 ret.s.b3 = y.b[1];
                 ret.s.b2 = y.b[0];
-                ret.s.b1 = e->unk_08;
+                ret.s.b1 = e->hour;
                 break;
             }
         }
@@ -586,7 +586,7 @@ extern "C" Unk_0203f554_Cal EventRule_Resolve(Unk_0203f554_Sub *e, s32 year, Unk
             break;
         }
         ret.s.b2 = EventRule_ResolveDay(e, year, cal, ret.s.b3, id);
-        ret.s.b1 = e->unk_08;
+        ret.s.b1 = e->hour;
         break;
     }
     case 4: {
@@ -603,13 +603,13 @@ extern "C" Unk_0203f554_Cal EventRule_Resolve(Unk_0203f554_Sub *e, s32 year, Unk
             break;
         }
         ret.s.b2 = EventRule_ResolveDay(e, year, cal, ret.s.b3, id);
-        ret.s.b1 = e->unk_08;
+        ret.s.b1 = e->hour;
         break;
     }
     case 0:
         ret.s.b3 = EventRule_ResolveMonth((u32 *)e, year, cal, id);
         ret.s.b2 = EventRule_ResolveDay(e, year, cal, ret.s.b3, id);
-        ret.s.b1 = e->unk_08;
+        ret.s.b1 = e->hour;
         break;
     case 1:
         EventRule_GetPlayerBirthday(e, &ret);
@@ -649,7 +649,7 @@ extern "C" Unk_0203f554_Cal EventRule_Resolve(Unk_0203f554_Sub *e, s32 year, Unk
             }
             ret.s.b2 = r2 + (b - 1) * 7;
         }
-        ret.s.b1 = e->unk_08;
+        ret.s.b1 = e->hour;
         break;
     }
     case 6:
@@ -854,10 +854,10 @@ extern "C" void Event_RefreshToday(s32 x) {
     d.a = 0;
     d.b = 0;
     Clock_GetDateTime(&d);
-    EventSchedule_CollectDay((Unk_0203f554_Ent *)gTodayEvents.unk_04, *(Unk_0203f508_Date *)&d, x);
-    gTodayEvents.unk_00[2] = ((u8 *)&d)[5];
-    gTodayEvents.unk_00[1] = ((u8 *)&d)[4];
-    gTodayEvents.unk_00[0] = ((u8 *)&d)[3];
+    EventSchedule_CollectDay((Unk_0203f554_Ent *)gTodayEvents.entries, *(Unk_0203f508_Date *)&d, x);
+    gTodayEvents.date[2] = ((u8 *)&d)[5];
+    gTodayEvents.date[1] = ((u8 *)&d)[4];
+    gTodayEvents.date[0] = ((u8 *)&d)[3];
 }
 
 extern "C" void Event_RefreshIfDateChanged() {
@@ -865,14 +865,14 @@ extern "C" void Event_RefreshIfDateChanged() {
     d.a = 0;
     d.b = 0;
     Clock_GetDateTime(&d);
-    if (((u8 *)&d)[5] != gTodayEvents.unk_00[2] || ((u8 *)&d)[4] != gTodayEvents.unk_00[1] || ((u8 *)&d)[3] != gTodayEvents.unk_00[0]) {
+    if (((u8 *)&d)[5] != gTodayEvents.date[2] || ((u8 *)&d)[4] != gTodayEvents.date[1] || ((u8 *)&d)[3] != gTodayEvents.date[0]) {
         Event_RefreshToday(0);
     }
 }
 
 extern "C" s32 Event_GetDaysSinceStart(u32 id) {
     s32 r = -1;
-    Unk_0203f408_Entry *e = EventDayList_Find(id, gTodayEvents.unk_04);
+    Unk_0203f408_Entry *e = EventDayList_Find(id, gTodayEvents.entries);
     if (e) {
         Unk_0203f42c_L l;
         l.w[0] = 0;
@@ -946,10 +946,10 @@ extern "C" s32 Event_GetStateAt(s32 a, u8 *p, s32 c) {
     u8 d2[8];
     u8 d3[8];
     u8 tbl[0x58];
-    if (p[5] == gTodayEvents.unk_00[2] && p[4] == gTodayEvents.unk_00[1] && p[3] == gTodayEvents.unk_00[0]) {
+    if (p[5] == gTodayEvents.date[2] && p[4] == gTodayEvents.date[1] && p[3] == gTodayEvents.date[0]) {
         if (c != 0 || Game_IsIntroPeriod() == 0) {
             MI_CpuCopy8(p, d1, 8);
-            r = EventDayList_GetState(a, d1, gTodayEvents.unk_04);
+            r = EventDayList_GetState(a, d1, gTodayEvents.entries);
         }
     } else {
         MI_CpuCopy8(p, d2, 8);
@@ -973,7 +973,7 @@ extern "C" s32 Event_GetState(s32 a, void *b, s32 c) {
     return r;
 }
 
-extern "C" Unk_0203f408_Entry *Event_GetTodayList(void) { return gTodayEvents.unk_04; }
+extern "C" Unk_0203f408_Entry *Event_GetTodayList(void) { return gTodayEvents.entries; }
 
 extern "C" s32 EventSchedule_CollectAtNoon(Unk_0203f554_Ent *out, s32 n, u8 *p) {
     u32 p5;
@@ -1021,7 +1021,7 @@ extern "C" s32 EventSchedule_CollectAtNoon(Unk_0203f554_Ent *out, s32 n, u8 *p) 
 }
 
 extern "C" void Event_GetRange(s32 *a, s32 *b, u32 id) {
-    Unk_0203f408_Entry *e = EventDayList_Find(id, gTodayEvents.unk_04);
+    Unk_0203f408_Entry *e = EventDayList_Find(id, gTodayEvents.entries);
     if (e) {
         *a = e->start;
         *b = e->end;

@@ -307,21 +307,21 @@ extern "C" {
 struct Unk_0204c0f4_Date {
     u8 a, b, c, d;
 };
-struct Unk_0204c1fc_Entry {
-    u16 unk_00;
-    u8 unk_02;
-    s32 unk_04;
-    s32 unk_08;
+struct TownEventRecord {
+    u16 eventId;
+    u8 year;
+    s32 start;
+    s32 end;
 };
 struct Unk_0204c084_Data {
     u8 pad[0x15];
-    s8 unk_15;
+    s8 perfectStreak;
     u8 pad16;
-    u8 unk_17;
+    u8 seasonPeriod;
 };
 struct Unk_0204c0b8_S {
     u8 pad[0x21];
-    s8 unk_21;
+    s8 perfectStreak;
 };
 struct Unk_0204c20c_S {
     u8 pad[0x16];
@@ -332,9 +332,9 @@ struct Unk_0204c21c_S {
     u8 unk_0c[10];
 };
 struct Unk_0204c290_W {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    s32 blocks;
+    s32 width;
+    s32 height;
 };
 BOOL Item_IsFullHeadwear(u16 *p);
 s32 Item_GetId(u16 *p);
@@ -374,7 +374,7 @@ void BlockMap_SetItemAtUnit(Unk_0204c290_W *w, u16 *item, s32 x, s32 y, u32 z);
 extern void *gCommManager;
 extern u8 gSaveData[];
 extern Unk_0204c084_Data data_021ed1b0;
-extern Unk_0204c1fc_Entry gSaveTownEvents[];
+extern TownEventRecord gSaveTownEvents[];
 BOOL Item_IsFish(u16 *p);
 s32 Item_GetFishIndex(u16 *p);
 BOOL Item_IsGyroid(u16 *p);
@@ -392,7 +392,7 @@ u16 Item_MakeFruit(s32 n);
 BOOL Item_Equals(u16 *a, u16 *b);
 s32 NookPoints_GetRankOf(u16 *p);
 s32 TownState_FindEvent(s32 x, u32 id);
-Unk_0204c1fc_Entry *TownState_GetEvent(s32 i);
+TownEventRecord *TownState_GetEvent(s32 i);
 Unk_0204c0f4_Date *TownState_GetPlayerDate(u8 *p, s32 i);
 static inline BOOL Unk_0204b9c0_R(u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -448,7 +448,7 @@ s32 TownState_AddEvent(s32 x, u32 id);
 s32 TownState_FindEvent(s32 x, u32 id);
 void TownState_RemoveEvent(s32 x, u32 id);
 void TownState_ClearEvents();
-Unk_0204c1fc_Entry *TownState_GetEvent(s32 i);
+TownEventRecord *TownState_GetEvent(s32 i);
 void TownState_ClearUnk16(Unk_0204c20c_S *p);
 void TownState_ClearUnk0c(Unk_0204c21c_S *p);
 void TownState_PickNextWeekDate(u8 *dst, u8 *src);
@@ -468,7 +468,7 @@ extern "C" void Town_ReplaceSouthCedars() {
     s32 cx, cy;
     w = TownBlockMap_Get();
     if (w) {
-        s32 *q = &w->unk_04;
+        s32 *q = &w->width;
         wd = q[0] << 4;
         ht = q[1] << 4;
         for (y = 0x30; y < ht; y++) {
@@ -526,16 +526,16 @@ extern "C" void TownState_ClearUnk16(Unk_0204c20c_S *p) { for (s32 i = 0; i < 11
 }
 
 namespace nC {
-extern "C" Unk_0204c1fc_Entry *TownState_GetEvent(s32 i) { return &gSaveTownEvents[i]; }
+extern "C" TownEventRecord *TownState_GetEvent(s32 i) { return &gSaveTownEvents[i]; }
 }
 
 namespace nC {
 extern "C" void TownState_ClearEvents() {
-    Unk_0204c1fc_Entry *e = TownState_GetEvent(0);
+    TownEventRecord *e = TownState_GetEvent(0);
     for (s32 i = 0; i < 4; e++, i++) {
-        e->unk_00 = 0x63;
-        e->unk_04 = 1;
-        e->unk_08 = 1;
+        e->eventId = 0x63;
+        e->start = 1;
+        e->end = 1;
     }
 }
 }
@@ -544,10 +544,10 @@ namespace nC {
 extern "C" void TownState_RemoveEvent(s32 x, u32 id) {
     s32 i = TownState_FindEvent(x, id);
     if (i >= 0) {
-        Unk_0204c1fc_Entry *e = TownState_GetEvent(i);
-        e->unk_00 = 0x63;
-        e->unk_04 = 1;
-        e->unk_08 = 1;
+        TownEventRecord *e = TownState_GetEvent(i);
+        e->eventId = 0x63;
+        e->start = 1;
+        e->end = 1;
     }
 }
 }
@@ -555,9 +555,9 @@ extern "C" void TownState_RemoveEvent(s32 x, u32 id) {
 namespace nC {
 extern "C" s32 TownState_FindEvent(s32 x, u32 id) {
     s32 r = -1;
-    Unk_0204c1fc_Entry *e = TownState_GetEvent(0);
+    TownEventRecord *e = TownState_GetEvent(0);
     for (s32 i = 0; i < 4; e++, i++) {
-        if (id == e->unk_00) { r = i; break; }
+        if (id == e->eventId) { r = i; break; }
     }
     return r;
 }
@@ -569,10 +569,10 @@ extern "C" s32 TownState_AddEvent(s32 x, u32 id) {
     if (i < 0) {
         i = TownState_FindEvent(x, 0x63);
         if (i >= 0) {
-            Unk_0204c1fc_Entry *e = TownState_GetEvent(i);
-            e->unk_00 = id;
-            Event_GetRange(&e->unk_04, &e->unk_08, id);
-            e->unk_02 = Clock_GetYear();
+            TownEventRecord *e = TownState_GetEvent(i);
+            e->eventId = id;
+            Event_GetRange(&e->start, &e->end, id);
+            e->year = Clock_GetYear();
         }
     }
     return i;
@@ -602,7 +602,7 @@ extern "C" BOOL TownState_IsPlayerDateNotToday(u8 *p) {
 namespace nC {
 extern "C" BOOL TownState_IsPerfectStreak15() {
     BOOL r = FALSE;
-    if (data_021ed1b0.unk_15 >= 0xf) r = TRUE;
+    if (data_021ed1b0.perfectStreak >= 0xf) r = TRUE;
     return r;
 }
 }
@@ -610,24 +610,24 @@ extern "C" BOOL TownState_IsPerfectStreak15() {
 namespace nC {
 extern "C" void TownState_UpdatePerfectStreak(Unk_0204c0b8_S *p, s32 k, s32 add) {
     if (k == 4) {
-        s32 v = p->unk_21;
-        if (v < 0) p->unk_21 = 1;
-        else p->unk_21 = v + add;
+        s32 v = p->perfectStreak;
+        if (v < 0) p->perfectStreak = 1;
+        else p->perfectStreak = v + add;
     } else {
-        p->unk_21 = -1;
+        p->perfectStreak = -1;
     }
 }
 }
 
 namespace nC {
-extern "C" u32 TownState_GetSeasonPeriod() { return data_021ed1b0.unk_17; }
+extern "C" u32 TownState_GetSeasonPeriod() { return data_021ed1b0.seasonPeriod; }
 }
 
 namespace nC {
 extern "C" void TownState_SetSeasonPeriod(u32 n) {
     if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         if (n >= 0x17) n = 0x16;
-        data_021ed1b0.unk_17 = n;
+        data_021ed1b0.seasonPeriod = n;
     }
 }
 }

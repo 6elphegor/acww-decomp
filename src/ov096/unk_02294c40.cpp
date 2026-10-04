@@ -72,8 +72,8 @@ public:
     virtual void vfunc_0c() = 0;
     virtual void setOrigin(s32 a, s32 b);
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class Unk_ov096_0229a94c_Virt {

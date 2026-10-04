@@ -74,13 +74,13 @@ public:
     void requestMarker();
     void updateBlink();
 
-    /* 0xbc */ SpriteAnim unk_bc;
-    /* 0xd0 */ s32 unk_d0;
-    /* 0xd4 */ u8 unk_d4;
-    /* 0xd5 */ u8 unk_d5;
-    /* 0xd6 */ u8 unk_d6;
-    /* 0xd7 */ u8 unk_d7;
-    /* 0xd8 */ u8 unk_d8;
+    /* 0xbc */ SpriteAnim markerAnim;
+    /* 0xd0 */ s32 blinkFrame;
+    /* 0xd4 */ u8 markerRequest;
+    /* 0xd5 */ u8 markerShown;
+    /* 0xd6 */ u8 markerDrawn;
+    /* 0xd7 */ u8 markerDrawnPrev;
+    /* 0xd8 */ u8 blinkEnabled;
 };
 
 extern "C" {
@@ -164,16 +164,16 @@ public:
     void release();
     void init();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ FieldInfoLabelBalloon unk_08;
-    /* 0xe4 */ u16 *unk_e4;
-    /* 0xe8 */ u16 unk_e8;
-    /* 0xec */ s32 unk_ec;
-    /* 0xf0 */ s32 unk_f0;
-    /* 0xf4 */ s32 unk_f4;
-    /* 0xf8 */ s32 unk_f8;
-    /* 0xfc */ u8 unk_fc;
-    /* 0xfd */ u8 unk_fd;
+    /* 0x04 */ s32 state;
+    /* 0x08 */ FieldInfoLabelBalloon balloon;
+    /* 0xe4 */ u16 *facingItem;
+    /* 0xe8 */ u16 lastFacingItem;
+    /* 0xec */ s32 netMsg;
+    /* 0xf0 */ s32 timerMsg;
+    /* 0xf4 */ s32 netMsgAltPhase;
+    /* 0xf8 */ s32 msgFrames;
+    /* 0xfc */ u8 netMsgChanged;
+    /* 0xfd */ u8 timerMsgRestarted;
 };
 
 extern const u8 sFieldInfoBalloonTimerMsgs[4];
@@ -189,32 +189,32 @@ const s32 sFieldInfoBalloonSyncKindMsgs[4] = {5, 6, 7, 8};
 FieldInfoBalloon sFieldInfoBalloon;
 
 void FieldInfoLabelBalloon::requestMarker() {
-    unk_d4 = 1;
+    markerRequest = 1;
 }
 
 void FieldInfoLabelBalloon::resetBalloon() {
     _ZN12LabelBalloon5resetEv(this);
-    unk_d4 = 0;
-    unk_d5 = 0;
-    unk_d0 = 0;
-    unk_d6 = 0;
-    unk_d7 = 0;
-    unk_d8 = 0;
+    markerRequest = 0;
+    markerShown = 0;
+    blinkFrame = 0;
+    markerDrawn = 0;
+    markerDrawnPrev = 0;
+    blinkEnabled = 0;
 }
 
 void FieldInfoLabelBalloon::setBlink(u8 v) {
-    unk_d8 = v;
+    blinkEnabled = v;
 }
 
 BOOL FieldInfoLabelBalloon::isBlinkCycleEnd() {
-    if (unk_d8 != 0 && unk_d0 == 0x1d) {
+    if (blinkEnabled != 0 && blinkFrame == 0x1d) {
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL FieldInfoLabelBalloon::isBlinkVisible() {
-    if (unk_d8 != 0 && unk_d0 < 0x19) {
+    if (blinkEnabled != 0 && blinkFrame < 0x19) {
         return TRUE;
     }
     return FALSE;
@@ -223,36 +223,36 @@ BOOL FieldInfoLabelBalloon::isBlinkVisible() {
 void FieldInfoLabelBalloon::restartMarkerAnim() {
     _ZN12LabelBalloon7getAnimEv(this);
     s32 r4 = _ZN10SpriteAnim13getFrameIndexEv();
-    _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(&unk_bc, data_020d5d14);
-    _ZN10SpriteAnim11setPlayOnceEi(&unk_bc, 1);
-    _ZN10SpriteAnim8setSpeedEi(&unk_bc, 0);
-    _ZN10SpriteAnim8setFrameEii(&unk_bc, r4, 0);
-    _ZN10SpriteAnim6updateEv(&unk_bc);
+    _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(&markerAnim, data_020d5d14);
+    _ZN10SpriteAnim11setPlayOnceEi(&markerAnim, 1);
+    _ZN10SpriteAnim8setSpeedEi(&markerAnim, 0);
+    _ZN10SpriteAnim8setFrameEii(&markerAnim, r4, 0);
+    _ZN10SpriteAnim6updateEv(&markerAnim);
 }
 
 void FieldInfoLabelBalloon::updateBlink() {
-    if (unk_d5) {
+    if (markerShown) {
         s32 r = _ZN12LabelBalloon8getStateEv(this);
         if (r == 0) {
-            unk_d4 = 0;
-            unk_d5 = 0;
-            unk_d0 = 0;
+            markerRequest = 0;
+            markerShown = 0;
+            blinkFrame = 0;
         } else if (r == 2) {
-            if (unk_d0 == 0) Snd_PlaySe(0x3d);
+            if (blinkFrame == 0) Snd_PlaySe(0x3d);
             if (FieldInfoBalloon_IsMenuTransition()) {
-                unk_d0 = 0x19;
-            } else if (unk_d8) {
-                unk_d0++;
-                if (unk_d0 >= 0x1e) unk_d0 = 0;
+                blinkFrame = 0x19;
+            } else if (blinkEnabled) {
+                blinkFrame++;
+                if (blinkFrame >= 0x1e) blinkFrame = 0;
             } else {
-                unk_d0 = 1;
+                blinkFrame = 1;
             }
         }
-    } else if (unk_d4) {
-        unk_d4 = 0;
-        unk_d5 = 1;
-        if (FieldInfoBalloon_IsMenuTransition()) unk_d0 = 0x19;
-        else unk_d0 = 0;
+    } else if (markerRequest) {
+        markerRequest = 0;
+        markerShown = 1;
+        if (FieldInfoBalloon_IsMenuTransition()) blinkFrame = 0x19;
+        else blinkFrame = 0;
         restartMarkerAnim();
     }
 }
@@ -288,50 +288,50 @@ extern "C" void FieldInfoBalloon_ShowSyncWaitMsg(s32 arg) {
         }
         if (b && arg < 4) v = sFieldInfoBalloonSyncKindMsgs[arg];
     }
-    if (sFieldInfoBalloon.unk_ec != 10) {
-        sFieldInfoBalloon.unk_ec = v;
+    if (sFieldInfoBalloon.netMsg != 10) {
+        sFieldInfoBalloon.netMsg = v;
         if (v) sFieldInfoBalloon.startNetMsg();
     }
 }
 
 extern "C" void FieldInfoBalloon_ShowSyncKindMsg(s32 i) {
-    sFieldInfoBalloon.unk_ec = sFieldInfoBalloonSyncKindMsgs[i];
+    sFieldInfoBalloon.netMsg = sFieldInfoBalloonSyncKindMsgs[i];
     sFieldInfoBalloon.startNetMsg();
 }
 
 extern "C" void FieldInfoBalloon_ShowCancelled() {
-    sFieldInfoBalloon.unk_ec = 9;
+    sFieldInfoBalloon.netMsg = 9;
     sFieldInfoBalloon.startNetMsg();
 }
 
 extern "C" void FieldInfoBalloon_ShowPleaseWait() {
-    sFieldInfoBalloon.unk_ec = 10;
+    sFieldInfoBalloon.netMsg = 10;
     sFieldInfoBalloon.startNetMsg();
 }
 
-extern "C" void FieldInfoBalloon_ClearNetMsg() { sFieldInfoBalloon.unk_ec = 0; }
+extern "C" void FieldInfoBalloon_ClearNetMsg() { sFieldInfoBalloon.netMsg = 0; }
 
 extern "C" void FieldInfoBalloon_ShowTimerMsg(u32 arg) {
     u32 r = Scene_GetCurrent();
     BOOL ok = FALSE;
     if (!((u8)(r + 0xf4) <= 2 || (u8)(r + 0xd2) <= 1)) ok = TRUE;
     if (ok) {
-        sFieldInfoBalloon.unk_f0 = arg;
+        sFieldInfoBalloon.timerMsg = arg;
         sFieldInfoBalloon.startTimerMsg();
     }
 }
 
 extern "C" void func_020b7870() { Comm_SetShutdownErrorFlag(); }
 
-FieldInfoBalloon::FieldInfoBalloon() : unk_04(0) {
-    unk_e4 = 0;
-    unk_e8 = 0xfff1;
-    unk_ec = 0;
-    unk_f0 = 0;
-    unk_f4 = 0;
-    unk_f8 = 0;
-    unk_fc = 0;
-    unk_fd = 0;
+FieldInfoBalloon::FieldInfoBalloon() : state(0) {
+    facingItem = 0;
+    lastFacingItem = 0xfff1;
+    netMsg = 0;
+    timerMsg = 0;
+    netMsgAltPhase = 0;
+    msgFrames = 0;
+    netMsgChanged = 0;
+    timerMsgRestarted = 0;
 }
 
 FieldInfoBalloon::~FieldInfoBalloon() {}
@@ -345,32 +345,32 @@ extern "C" void FieldInfoBalloon_Update() { sFieldInfoBalloon.update(); }
 extern "C" void FieldInfoBalloon_Draw() { sFieldInfoBalloon.draw(); }
 
 void FieldInfoBalloon::init() {
-    unk_04 = 0;
-    _ZN12LabelBalloon16enableCenterTextEv(&unk_08);
-    unk_e4 = 0;
-    unk_e8 = 0xfff1;
-    unk_ec = 0;
-    unk_f0 = 0;
-    unk_f4 = 0;
-    unk_f8 = 0;
-    unk_fc = 0;
-    unk_fd = 0;
+    state = 0;
+    _ZN12LabelBalloon16enableCenterTextEv(&balloon);
+    facingItem = 0;
+    lastFacingItem = 0xfff1;
+    netMsg = 0;
+    timerMsg = 0;
+    netMsgAltPhase = 0;
+    msgFrames = 0;
+    netMsgChanged = 0;
+    timerMsgRestarted = 0;
 }
 
-void FieldInfoBalloon::release() { unk_08.resetBalloon(); }
+void FieldInfoBalloon::release() { balloon.resetBalloon(); }
 
 void FieldInfoBalloon::update() {
     static void (FieldInfoBalloon::*tbl[4])() = {&FieldInfoBalloon::updateIdle, &FieldInfoBalloon::updateItemName,
                                              &FieldInfoBalloon::updateTimerMsg, &FieldInfoBalloon::updateNetMsg};
     updateFacingItem();
-    (this->*tbl[unk_04])();
-    unk_fd = 0;
-    unk_08.vfunc_0c();
+    (this->*tbl[state])();
+    timerMsgRestarted = 0;
+    balloon.vfunc_0c();
 }
 
 const s16 sFieldInfoBalloonNetMsgFrames[12] = {0, 0x1e, 0x1e, 0, 0, 0x78, 0x78, 0x78, 0x78, 0x63, -1, 0};
 
-void FieldInfoBalloon::draw() { unk_08.draw(); }
+void FieldInfoBalloon::draw() { balloon.draw(); }
 
 void FieldInfoBalloon::updateFacingItem() {
     u16 *p = 0;
@@ -384,9 +384,9 @@ void FieldInfoBalloon::updateFacingItem() {
             if (t != 1) p = 0;
         }
     }
-    if (unk_e4) unk_e8 = *unk_e4;
-    else unk_e8 = 0xfff1;
-    unk_e4 = p;
+    if (facingItem) lastFacingItem = *facingItem;
+    else lastFacingItem = 0xfff1;
+    facingItem = p;
 }
 
 void FieldInfoBalloon::placeOverPlayer() {
@@ -406,143 +406,143 @@ void FieldInfoBalloon::placeOverPlayer() {
         s32 q = FX_Div(0x60000, d);
         s32 r = FX_Div(-q, x.z);
         func_020e9888(&x, r);
-        _ZN12LabelBalloon6setPosEii(&unk_08, x.x >> 12, -x.y >> 12);
+        _ZN12LabelBalloon6setPosEii(&balloon, x.x >> 12, -x.y >> 12);
     }
 }
 
-void FieldInfoBalloon::placeTimerMsg() { _ZN12LabelBalloon6setPosEii(&unk_08, 0, -0x30); }
+void FieldInfoBalloon::placeTimerMsg() { _ZN12LabelBalloon6setPosEii(&balloon, 0, -0x30); }
 
-void FieldInfoBalloon::placeNetMsg() { _ZN12LabelBalloon6setPosEii(&unk_08, 0x12, -0x30); }
+void FieldInfoBalloon::placeNetMsg() { _ZN12LabelBalloon6setPosEii(&balloon, 0x12, -0x30); }
 
 void FieldInfoBalloon::setItemNameText() {
     u32 obj[10];
-    _ZN8ItemNameC1EPt(obj, unk_e4);
-    _ZN12LabelBalloon7setTextEP6StrBuf(&unk_08, obj);
+    _ZN8ItemNameC1EPt(obj, facingItem);
+    _ZN12LabelBalloon7setTextEP6StrBuf(&balloon, obj);
     _ZN8ItemNameD1Ev(obj);
 }
 
 void FieldInfoBalloon::setTimerMsgText() {
-    u8 v = sFieldInfoBalloonTimerMsgs[unk_f0];
+    u8 v = sFieldInfoBalloonTimerMsgs[timerMsg];
     MsgString33 buf;
     String_Load2d(&buf, &v, 0);
-    _ZN12LabelBalloon7setTextEP6StrBuf(&unk_08, &buf);
+    _ZN12LabelBalloon7setTextEP6StrBuf(&balloon, &buf);
 }
 
 void FieldInfoBalloon::setNetMsgText(s32 a) {
     u8 v;
     MsgString33 buf;
-    v = sFieldInfoBalloonNetMsgs[unk_ec];
-    BOOL is1 = unk_ec == 1;
-    BOOL is2 = unk_ec == 2;
+    v = sFieldInfoBalloonNetMsgs[netMsg];
+    BOOL is1 = netMsg == 1;
+    BOOL is2 = netMsg == 2;
     BOOL c = TRUE;
     if (!is1 && !is2) c = FALSE;
-    s32 t = unk_fc;
-    unk_fc = 0;
+    s32 t = netMsgChanged;
+    netMsgChanged = 0;
     if (a) {
-        unk_f4 = 0;
+        netMsgAltPhase = 0;
         t = 1;
     } else if (c) {
         t = 1;
     }
     if (t) {
-        if (unk_f4 == 1) {
+        if (netMsgAltPhase == 1) {
             if (is1) v = 0x93;
             else if (is2) v = 0x94;
         }
         String_Load2d(&buf, &v, 0);
-        _ZN12LabelBalloon7setTextEP6StrBuf(&unk_08, &buf);
+        _ZN12LabelBalloon7setTextEP6StrBuf(&balloon, &buf);
         if (a == 0) {
-            _ZN12LabelBalloon11refreshTextEi(&unk_08, 1);
-            unk_08.restartMarkerAnim();
+            _ZN12LabelBalloon11refreshTextEi(&balloon, 1);
+            balloon.restartMarkerAnim();
         }
     }
     if (c) {
-        unk_f4++;
-        if (unk_f4 >= 2) unk_f4 = 0;
+        netMsgAltPhase++;
+        if (netMsgAltPhase >= 2) netMsgAltPhase = 0;
     }
 }
 
-void FieldInfoBalloon::applyNetMsgBlink() { unk_08.setBlink(sFieldInfoBalloonNetMsgBlink[unk_ec]); }
+void FieldInfoBalloon::applyNetMsgBlink() { balloon.setBlink(sFieldInfoBalloonNetMsgBlink[netMsg]); }
 
 void FieldInfoBalloon::startTimerMsg() {
-    unk_f8 = 0x3c;
-    unk_fd = 1;
+    msgFrames = 0x3c;
+    timerMsgRestarted = 1;
 }
 
 void FieldInfoBalloon::startNetMsg() {
-    unk_f8 = sFieldInfoBalloonNetMsgFrames[unk_ec];
-    unk_fc = 1;
+    msgFrames = sFieldInfoBalloonNetMsgFrames[netMsg];
+    netMsgChanged = 1;
 }
 
 BOOL FieldInfoBalloon::hasTimerMsg() {
-    BOOL r = unk_f0 != 0;
-    if (unk_f8 == 0) r = FALSE;
+    BOOL r = timerMsg != 0;
+    if (msgFrames == 0) r = FALSE;
     return r;
 }
 
 BOOL FieldInfoBalloon::hasNetMsg() {
-    BOOL r = unk_ec != 0;
-    if (unk_f8 == 0) r = FALSE;
+    BOOL r = netMsg != 0;
+    if (msgFrames == 0) r = FALSE;
     return r;
 }
 
-void FieldInfoBalloon::enterIdle() { unk_04 = 0; }
+void FieldInfoBalloon::enterIdle() { state = 0; }
 
 void FieldInfoBalloon::updateIdle() {
     if (hasNetMsg()) {
         placeNetMsg();
         setNetMsgText(1);
         applyNetMsgBlink();
-        if (_ZN12LabelBalloon11requestOpenEv(&unk_08)) enterNetMsg();
+        if (_ZN12LabelBalloon11requestOpenEv(&balloon)) enterNetMsg();
     } else if (hasTimerMsg()) {
         placeTimerMsg();
         setTimerMsgText();
-        unk_08.setBlink(0);
-        if (_ZN12LabelBalloon11requestOpenEv(&unk_08)) enterTimerMsg();
-    } else if (unk_e4 != 0) {
+        balloon.setBlink(0);
+        if (_ZN12LabelBalloon11requestOpenEv(&balloon)) enterTimerMsg();
+    } else if (facingItem != 0) {
         placeOverPlayer();
         setItemNameText();
-        unk_08.setBlink(0);
-        if (_ZN12LabelBalloon11requestOpenEv(&unk_08)) enterItemName();
+        balloon.setBlink(0);
+        if (_ZN12LabelBalloon11requestOpenEv(&balloon)) enterItemName();
     }
 }
 
-void FieldInfoBalloon::enterItemName() { unk_04 = 1; }
+void FieldInfoBalloon::enterItemName() { state = 1; }
 
 void FieldInfoBalloon::updateItemName() {
-    if (_ZN12LabelBalloon8getStateEv(&unk_08) == 0) {
+    if (_ZN12LabelBalloon8getStateEv(&balloon) == 0) {
         enterIdle();
-    } else if (unk_e4 == 0 || (unk_e8 != 0xfff1 && unk_e8 != *unk_e4) || hasNetMsg() != 0 ||
+    } else if (facingItem == 0 || (lastFacingItem != 0xfff1 && lastFacingItem != *facingItem) || hasNetMsg() != 0 ||
                hasTimerMsg() != 0) {
-        _ZN12LabelBalloon12requestCloseEv(&unk_08);
+        _ZN12LabelBalloon12requestCloseEv(&balloon);
     } else {
         placeOverPlayer();
     }
 }
 
-void FieldInfoBalloon::enterTimerMsg() { unk_04 = 2; }
+void FieldInfoBalloon::enterTimerMsg() { state = 2; }
 
 void FieldInfoBalloon::updateTimerMsg() {
-    if (unk_f8 > 0) unk_f8--;
-    if (_ZN12LabelBalloon8getStateEv(&unk_08) == 0) {
+    if (msgFrames > 0) msgFrames--;
+    if (_ZN12LabelBalloon8getStateEv(&balloon) == 0) {
         enterIdle();
-    } else if (hasNetMsg() != 0 || hasTimerMsg() == 0 || unk_fd != 0) {
-        _ZN12LabelBalloon12requestCloseEv(&unk_08);
+    } else if (hasNetMsg() != 0 || hasTimerMsg() == 0 || timerMsgRestarted != 0) {
+        _ZN12LabelBalloon12requestCloseEv(&balloon);
     }
 }
 
 void FieldInfoBalloon::enterNetMsg() {
-    unk_08.requestMarker();
-    unk_04 = 3;
+    balloon.requestMarker();
+    state = 3;
 }
 
 void FieldInfoBalloon::updateNetMsg() {
-    if (unk_f8 > 0) unk_f8--;
-    if (_ZN12LabelBalloon8getStateEv(&unk_08) == 0) {
+    if (msgFrames > 0) msgFrames--;
+    if (_ZN12LabelBalloon8getStateEv(&balloon) == 0) {
         enterIdle();
     } else if (hasNetMsg() == 0) {
-        if (unk_08.isBlinkVisible() == 0) _ZN12LabelBalloon12requestCloseEv(&unk_08);
-    } else if (unk_08.isBlinkCycleEnd() != 0) {
+        if (balloon.isBlinkVisible() == 0) _ZN12LabelBalloon12requestCloseEv(&balloon);
+    } else if (balloon.isBlinkCycleEnd() != 0) {
         setNetMsgText(0);
     }
 }

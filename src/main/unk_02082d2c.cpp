@@ -28,19 +28,19 @@ struct NpcResSlot {
 
 struct Unk_020829b0_Y_dummy;
 struct SpNpcAnimHeapRefSlot : public NpcResSlot {
-    Unk_020829b0_Y unk_04;
+    Unk_020829b0_Y heapRef;
     SpNpcAnimHeapRefSlot();
     ~SpNpcAnimHeapRefSlot();
     void assign();
 };
 
 struct VillagerAnimHeapRefSlot : public NpcResSlot {
-    Unk_02082af0_X unk_04;
+    Unk_02082af0_X heapRef;
     void assign(u32 x);
 };
 
 struct NpcBodyAnimSlot : public NpcResSlot {
-    Unk_02082c54_Z unk_01[3];
+    Unk_02082c54_Z layers[3];
     void assignLayer(s32 a, s32 i);
 };
 
@@ -54,7 +54,7 @@ public:
     s32 findFreeSlot();
     void clearAllSlots();
 
-    /* 0x04 */ s32 unk_04;
+    /* 0x04 */ s32 numSlots;
 };
 
 class VillagerAnimHeapRefPool : public NpcResPool {
@@ -65,7 +65,7 @@ public:
     virtual u8 *getSlot(u32 i);
     Unk_02082af0_X *getHeapRef(u32 i);
 
-    /* 0x08 */ VillagerAnimHeapRefSlot unk_08[8];
+    /* 0x08 */ VillagerAnimHeapRefSlot slots[8];
 };
 
 class NpcBodyAnimPool : public NpcResPool {
@@ -76,7 +76,7 @@ public:
     virtual void occupySlot(u32 i);
     Unk_02082c54_Z *getLayer(u32 i, u32 off);
 
-    /* 0x08 */ NpcBodyAnimSlot unk_08[5];
+    /* 0x08 */ NpcBodyAnimSlot slots[5];
 };
 
 extern "C" {
@@ -294,7 +294,7 @@ NpcResSlot::NpcResSlot() { unk_00 = 0; }
 
 NpcResSlot::~NpcResSlot() {}
 
-NpcResPool::NpcResPool(s32 n) { unk_04 = n; }
+NpcResPool::NpcResPool(s32 n) { numSlots = n; }
 
 NpcResPool::~NpcResPool() {}
 

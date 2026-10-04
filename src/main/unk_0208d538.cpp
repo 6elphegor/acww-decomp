@@ -11,8 +11,8 @@ extern const u8 sHandCursorAnimLoops[0x14];
 extern const s32 sHandCursorAnimSeqIds[0x13];
 
 struct Unk_02089240_Rec {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x00 */ s32 frames;
+    /* 0x04 */ s32 frameCount;
 };
 
 struct SpriteAnimSeq;
@@ -46,8 +46,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class HandCursor : public UiWidget {
@@ -124,10 +124,10 @@ void HandCursor::setAnim(s32 idx) {
 void HandCursor::setAnimAtEnd(s32 idx) {
     setAnim(idx);
     Unk_02089240_Rec *p = layer1.getSeq();
-    layer1.setFrame(p->unk_04 - 1, 0);
+    layer1.setFrame(p->frameCount - 1, 0);
     if (hasLayer2 != 0) {
         Unk_02089240_Rec *q = layer2.getSeq();
-        layer2.setFrame(q->unk_04 - 1, 0);
+        layer2.setFrame(q->frameCount - 1, 0);
     }
 }
 

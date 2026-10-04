@@ -295,7 +295,7 @@ public:
 // Vtable 0x02293b80 (melody / tune editor menu)
 class MelodyMenu : public MenuProc {
 public:
-    MelodyMenu() : unk_ac(), unk_110(), unk_274(), unk_e74() {}
+    MelodyMenu() : cursor(), bottomButtons(), textLabels(), screenTasks() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -388,22 +388,22 @@ public:
     void runMainState();
 
     /* 0x91 */ u8 unk_91[3];
-    /* 0x94 */ s32 unk_94;
-    /* 0x98 */ u16 unk_98;
-    /* 0x9a */ s16 unk_9a;
-    /* 0x9c */ s16 unk_9c;
-    /* 0x9e */ u8 unk_9e;
-    /* 0x9f */ volatile u8 unk_9f;
-    /* 0xa0 */ u8 *unk_a0;
-    /* 0xa4 */ volatile u8 unk_a4;
-    /* 0xa5 */ u8 unk_a5;
+    /* 0x94 */ s32 slideY;
+    /* 0x98 */ u16 flags;
+    /* 0x9a */ s16 activeNote;
+    /* 0x9c */ s16 sendSeq;
+    /* 0x9e */ u8 returnState;
+    /* 0x9f */ volatile u8 labelCount;
+    /* 0xa0 */ u8 *notes;
+    /* 0xa4 */ volatile u8 cursorSlot;
+    /* 0xa5 */ u8 dragStartLevel;
     /* 0xa6 */ u8 unk_a6[2];
-    /* 0xa8 */ s32 unk_a8;
-    /* 0xac */ MenuCursorBuf0 unk_ac;
-    /* 0x110 */ MenuBottomButtons unk_110;
-    /* 0x274 */ LabelString unk_274[16];
-    /* 0x674 */ u8 unk_674[0x800];
-    /* 0xe74 */ BgVramTask unk_e74[1];
+    /* 0xa8 */ s32 dragStartY;
+    /* 0xac */ MenuCursorBuf0 cursor;
+    /* 0x110 */ MenuBottomButtons bottomButtons;
+    /* 0x274 */ LabelString textLabels[16];
+    /* 0x674 */ u8 bgScreen[0x800];
+    /* 0xe74 */ BgVramTask screenTasks[1];
 };
 
 static inline BOOL Unk_ov143_Both() {
@@ -428,11 +428,11 @@ BOOL MelodyMenu::vfunc_0c() {
 
 BOOL MelodyMenu::onDraw() {
     if (MenuCtrl_IsButtons()) {
-        unk_ac.drawWrapped();
+        cursor.drawWrapped();
     }
     if (!testFlags(1)) return FALSE;
-    unk_110.drawAt(getSlideOffsetY());
-    s32 y = unk_94 + 0x60;
+    bottomButtons.drawAt(getSlideOffsetY());
+    s32 y = slideY + 0x60;
     Oam_DrawCell(1, data_ov143_02293980, 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     drawNotes(0x80, y);
     return TRUE;
@@ -488,7 +488,7 @@ void MelodyMenu::stateOpen() {
     Gfx2d_ShowLayer(4);
     updateLayerSlide();
     setFlags(1);
-    unk_110.setLayoutConfirmQuit03();
+    bottomButtons.setLayoutConfirmQuit03();
     setTransitionState(1);
 }
 
@@ -520,14 +520,14 @@ void MelodyMenu::stateClosing() {
 void MelodyMenu::updateLayerSlide() {
     applySlideOffset(6, 0, 0);
     applySlideOffset(4, 0, 0);
-    unk_94 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void MelodyMenu::stateDialogOpen() {
     if (stepSlideOut(-1)) {
         setTransitionState(5);
         initSlideIn(0, 0);
-        ((MenuBottomButtonsBody *)&unk_110)->setLayoutYesNo0D(0x8d);
+        ((MenuBottomButtonsBody *)&bottomButtons)->setLayoutYesNo0D(0x8d);
         beginDialogDim();
     }
 }
@@ -543,7 +543,7 @@ void MelodyMenu::stateDialogClose() {
     if (stepSlideOut(-1)) {
         setTransitionState(7);
         initSlideIn(0, 0);
-        unk_110.setLayoutConfirmQuit03();
+        bottomButtons.setLayoutConfirmQuit03();
     }
 }
 
@@ -555,31 +555,31 @@ void MelodyMenu::stateDialogBack() {
 }
 
 void MelodyMenu::initMelody() {
-    unk_98 = 0;
-    unk_a0 = gMelodyEditPattern;
-    Melody_Unpack(gSaveTownTune, unk_a0);
+    flags = 0;
+    notes = gMelodyEditPattern;
+    Melody_Unpack(gSaveTownTune, notes);
     data_ov143_02293a00.w5.lo = data_ov143_022939e8.w5.lo + 4;
-    unk_9a = -1;
-    unk_a4 = 0;
+    activeNote = -1;
+    cursorSlot = 0;
 }
 
 void MelodyMenu::releaseResources() {
-    unk_e74[0].cancel();
+    screenTasks[0].cancel();
     resetTextLabels();
-    unk_110.freeTexts();
+    bottomButtons.freeTexts();
 }
 
 void MelodyMenu::preInputUpdate() {
     preStateUpdate();
-    unk_ac.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void MelodyMenu::postInputUpdate() { postStateUpdate(); }
 
 void MelodyMenu::preStateUpdate() {
-    unk_e74[0].cancel();
+    screenTasks[0].cancel();
     resetTextLabels();
-    unk_110.freeTexts();
+    bottomButtons.freeTexts();
 }
 
 void MelodyMenu::postStateUpdate() { flushBgScreen(); }
@@ -597,12 +597,12 @@ void MelodyMenu::loadBgGfx() {
     Gfx2d_LoadCharFile((void *)"menu/melody/bg0.bch", h, 6, 0x11, 0x11, 0x9c);
     Gfx2d_LoadPaletteFile((void *)"menu/melody/bg.bpl", h, 6, 1, 1, 6);
     Gfx2d_LoadScreenFile((void *)"menu/melody/a_bg.bsc", h, 6);
-    File_LoadToBuffer((void *)"menu/melody/b_bg.bsc", unk_674, 0x800);
-    Gfx2d_LoadScreen(unk_674, 4, 0x800, 0);
+    File_LoadToBuffer((void *)"menu/melody/b_bg.bsc", bgScreen, 0x800);
+    Gfx2d_LoadScreen(bgScreen, 4, 0x800, 0);
 }
 
 void MelodyMenu::loadObjGfx() {
-    MenuButtons_LoadTextColors(&unk_110);
+    MenuButtons_LoadTextColors(&bottomButtons);
     void *h = gCurrentHeap;
     Gfx2d_LoadCharFile((void *)"menu/melody/obj.bch", h, 8, 0xc0, 0xc0, 0xff);
     Gfx2d_LoadCharFile((void *)"menu/melody/obj2.bch", h, 8, 0x140, 0x140, 0x1bf);
@@ -619,9 +619,9 @@ void MelodyMenu::updateTouch() {
         r = hitTestTarget(gTouchCurX, gTouchCurY);
         if (r != 0x16) {
             activateTarget(r);
-        } else if (((MenuBottomButtonsBody *)&unk_110)->isTouched(1) != 0) {
+        } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(1) != 0) {
             confirmTune();
-        } else if (((MenuBottomButtonsBody *)&unk_110)->isTouched(2) != 0) {
+        } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(2) != 0) {
             startQuit();
         }
     }
@@ -635,15 +635,15 @@ void MelodyMenu::updateNoteDrag() {
         resumeInput();
         return;
     }
-    v = unk_a5 + (unk_a8 - gTouchCurY) / 3;
+    v = dragStartLevel + (dragStartY - gTouchCurY) / 3;
     if (v < 0) v = 0;
     else if (v > 0xf) v = 0xf;
-    idx = unk_a4;
-    cur = unk_a0[idx];
+    idx = cursorSlot;
+    cur = notes[idx];
     nw = noteFromLevel((u8)v);
     if (cur != nw) {
         Melody_PlayNote(nw);
-        unk_a0[idx] = nw;
+        notes[idx] = nw;
     }
 }
 
@@ -673,8 +673,8 @@ void MelodyMenu::updateNoteKeys() {
     if ((gPad[0] & 1) != 0) {
         u32 t = takeRepeatedKeys();
         if (t != 0) {
-            u32 idx = unk_a4;
-            u32 n = levelFromNote(unk_a0[idx]);
+            u32 idx = cursorSlot;
+            u32 n = levelFromNote(notes[idx]);
             u32 old = n;
             if (MenuKeys_HasUp(t) != 0) {
                 if (n < 0xf) n = (u8)(n + 1);
@@ -683,11 +683,11 @@ void MelodyMenu::updateNoteKeys() {
             }
             if (n != old) {
                 s32 a, b;
-                unk_a0[idx] = noteFromLevel(n);
-                Melody_PlayNote(unk_a0[idx]);
+                notes[idx] = noteFromLevel(n);
+                Melody_PlayNote(notes[idx]);
                 a = getCursorTargetX();
                 b = getCursorTargetY();
-                unk_ac.warpTo(a, b);
+                cursor.warpTo(a, b);
             }
         }
     } else {
@@ -697,15 +697,15 @@ void MelodyMenu::updateNoteKeys() {
 }
 
 void MelodyMenu::updateCursorMove() {
-    if (unk_ac.isMoving() == 0) {
-        setMainState(unk_9e);
+    if (cursor.isMoving() == 0) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void MelodyMenu::updateCursorPress() {
-    if (unk_ac.isAnimDone() != 0) {
-        if (activateTarget(unk_a4) == 0) {
+    if (cursor.isAnimDone() != 0) {
+        if (activateTarget(cursorSlot) == 0) {
             setMainState(2);
             releaseCursor();
         }
@@ -713,9 +713,9 @@ void MelodyMenu::updateCursorPress() {
 }
 
 void MelodyMenu::updateCursorRelease() {
-    if (unk_ac.isAnimDone() != 0) {
+    if (cursor.isAnimDone() != 0) {
         refreshCursor();
-        setMainState(unk_9e);
+        setMainState(returnState);
     }
 }
 
@@ -725,9 +725,9 @@ void MelodyMenu::updateConfirmTouch() {
         return;
     }
     if (Unk_ov143_Both()) {
-        if (((MenuBottomButtonsBody *)&unk_110)->isTouched(3) != 0) {
+        if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(3) != 0) {
             confirmEraseAll();
-        } else if (((MenuBottomButtonsBody *)&unk_110)->isTouched(4) != 0) {
+        } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(4) != 0) {
             cancelEraseAll();
         }
     }
@@ -740,14 +740,14 @@ void MelodyMenu::updateConfirmButtons() {
         startConfirmTouch();
         return;
     }
-    old = unk_a4;
+    old = cursorSlot;
     takeRepeatedKeys();
     if (isRepeatLeft() != 0) {
-        unk_a4 = 0x14;
+        cursorSlot = 0x14;
     } else if (isRepeatRight() != 0) {
-        unk_a4 = 0x15;
+        cursorSlot = 0x15;
     }
-    if (old != unk_a4) {
+    if (old != cursorSlot) {
         moveCursorToTarget();
         return;
     }
@@ -766,11 +766,11 @@ void MelodyMenu::updateConfirmButtons() {
 void MelodyMenu::confirmEraseAll() {
     s32 i;
     closeEraseAllDialog();
-    ((MenuBottomButtonsBody *)&unk_110)->setSelected(3);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(3);
     Snd_PlaySe(0x5a);
     i = 0;
     do {
-        unk_a0[i] = 0xf;
+        notes[i] = 0xf;
         i++;
     } while (i < 16);
 }
@@ -778,16 +778,16 @@ void MelodyMenu::confirmEraseAll() {
 void MelodyMenu::cancelEraseAll() {
     closeEraseAllDialog();
     Snd_PlaySe(0x2a);
-    ((MenuBottomButtonsBody *)&unk_110)->setSelected(4);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(4);
 }
 
 void MelodyMenu::updateBarTransition() {
-    if (((MenuBottomButtonsBody *)&unk_110)->stepPress() != 0) {
-        if (unk_ac.getAnim() != 0) {
-            s32 a = ((MenuBottomButtonsBody *)&unk_110)->getPressOffset();
-            s32 b = ((MenuBottomButtonsBody *)&unk_110)->getTargetX(-1);
-            s32 c = ((MenuBottomButtonsBody *)&unk_110)->getTargetY(-1);
-            unk_ac.warpTo(a + (b - 6), a + c);
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress() != 0) {
+        if (cursor.getAnim() != 0) {
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
+            cursor.warpTo(a + (b - 6), a + c);
         }
     } else {
         hideCursor();
@@ -803,7 +803,7 @@ void MelodyMenu::updatePlayback() {
         }
     } else {
         clearFlags(8);
-        unk_9a = v;
+        activeNote = v;
     }
 }
 
@@ -832,7 +832,7 @@ void MelodyMenu::startConfirmTouch() {
 }
 
 void MelodyMenu::startConfirmButtons() {
-    unk_a4 = 0x15;
+    cursorSlot = 0x15;
     showCursor();
     restartKeyRepeat();
     setMainState(8);
@@ -848,10 +848,10 @@ void MelodyMenu::resumeConfirmInput() {
 
 void MelodyMenu::confirmTune() {
     MenuCtrl_SetResult(1);
-    ((MenuBottomButtonsBody *)&unk_110)->setSelected(1);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(1);
     setTransitionState(2);
     setMainState(9);
-    Melody_Pack(gSaveTownTune, unk_a0);
+    Melody_Pack(gSaveTownTune, notes);
     Melody_ApplyEditPattern();
     SaveVillagers_ClearTuneRequester(gSaveVillagers);
     sendTune();
@@ -859,7 +859,7 @@ void MelodyMenu::confirmTune() {
 
 void MelodyMenu::startQuit() {
     MenuCtrl_SetResult(0);
-    ((MenuBottomButtonsBody *)&unk_110)->setSelected(2);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(2);
     setTransitionState(2);
     setMainState(9);
 }
@@ -869,19 +869,19 @@ void MelodyMenu::sendTune() {
     if (gCommManager->isOnline() != 0) {
         CommManager *g;
         buf[0] = 0xc;
-        MI_CpuCopy8(unk_a0, buf + 1, 0x10);
+        MI_CpuCopy8(notes, buf + 1, 0x10);
         g = gCommManager;
         g->beginRecord();
         g->writeRecord(buf, 0x11);
         g->endRecord(0x16, 4);
-        unk_9c = g->getSendSeq();
+        sendSeq = g->getSendSeq();
     }
 }
 
 BOOL MelodyMenu::isTuneSendDone() {
     if (MenuCtrl_IsResultOk() == 0) return TRUE;
     if (gCommManager->isOnline() != 0) {
-        if (Comm_IsSeqConfirmed(unk_9c) == 0) return FALSE;
+        if (Comm_IsSeqConfirmed(sendSeq) == 0) return FALSE;
     }
     return TRUE;
 }
@@ -889,14 +889,14 @@ BOOL MelodyMenu::isTuneSendDone() {
 void MelodyMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    unk_ac.warpTo(a, b);
-    ((MenuCursor *)&unk_ac)->setAnimIfChanged(1);
+    cursor.warpTo(a, b);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     refreshCursor();
 }
 
 s32 MelodyMenu::getCursorTargetX() {
     Unk_ov143_02292898_V v;
-    u32 t = unk_a4;
+    u32 t = cursorSlot;
     if (t <= 0xf) {
         getNotePos(&v.x, t);
         return v.x + 0xa;
@@ -907,20 +907,20 @@ s32 MelodyMenu::getCursorTargetX() {
     case 1:
         return 0x94;
     case 2:
-        return ((MenuBottomButtonsBody *)&unk_110)->getTargetX(1) - 6;
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(1) - 6;
     case 3:
-        return ((MenuBottomButtonsBody *)&unk_110)->getTargetX(2) - 6;
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(2) - 6;
     case 4:
-        return ((MenuBottomButtonsBody *)&unk_110)->getTargetX(3);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(3);
     case 5:
-        return ((MenuBottomButtonsBody *)&unk_110)->getTargetX(4);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(4);
     }
     return 0x80;
 }
 
 s32 MelodyMenu::getCursorTargetY() {
     Unk_ov143_02292898_V v;
-    u32 t = unk_a4;
+    u32 t = cursorSlot;
     if (t <= 0xf) {
         getNotePos(&v.x, t);
         return v.y + 3;
@@ -931,31 +931,31 @@ s32 MelodyMenu::getCursorTargetY() {
     case 1:
         return 0xa0;
     case 2:
-        return ((MenuBottomButtonsBody *)&unk_110)->getTargetY(1);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(1);
     case 3:
-        return ((MenuBottomButtonsBody *)&unk_110)->getTargetY(2);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(2);
     case 4:
-        return ((MenuBottomButtonsBody *)&unk_110)->getTargetY(3);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(3);
     case 5:
-        return ((MenuBottomButtonsBody *)&unk_110)->getTargetY(4);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(4);
     }
     return 0x60;
 }
 
 void MelodyMenu::hideCursor() {
-    ((MenuCursor *)&unk_ac)->setAnimIfChanged(0);
-    unk_ac.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void MelodyMenu::moveCursorToTarget() {
     s32 a, b;
-    switch (unk_a4) {
+    switch (cursorSlot) {
     case 0x12:
     case 0x13:
-        ((MenuCursor *)&unk_ac)->switchToAnim07();
+        ((MenuCursor *)&cursor)->switchToAnim07();
         break;
     default:
-        ((MenuCursor *)&unk_ac)->switchToAnim01();
+        ((MenuCursor *)&cursor)->switchToAnim01();
         break;
     }
     a = getCursorTargetX();
@@ -964,24 +964,24 @@ void MelodyMenu::moveCursorToTarget() {
 }
 
 void MelodyMenu::moveCursorTo(s32 a, s32 b) {
-    unk_ac.moveToEase(a, b, 3, 1);
-    unk_9e = mainState;
+    cursor.moveToEase(a, b, 3, 1);
+    returnState = mainState;
     setMainState(4);
 }
 
 void MelodyMenu::refreshCursor() {
-    unk_ac.setPoseIdle();
-    unk_ac.vfunc_0c();
+    cursor.setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 void MelodyMenu::pressCursor() {
-    ((MenuCursor *)&unk_ac)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(5);
 }
 
 void MelodyMenu::releaseCursor() {
-    unk_ac.setPoseRelease();
-    unk_9e = mainState;
+    cursor.setPoseRelease();
+    returnState = mainState;
     setMainState(6);
 }
 
@@ -1001,16 +1001,16 @@ u32 MelodyMenu::hitTestTarget(s32 x, s32 y) {
 
 BOOL MelodyMenu::activateTarget(u32 idx) {
     if (idx <= 0xf) {
-        unk_9a = idx;
-        unk_a4 = idx;
+        activeNote = idx;
+        cursorSlot = idx;
         if (MenuCtrl_IsTouch()) {
-            unk_a8 = gTouchCurY;
-            unk_a5 = levelFromNote(unk_a0[idx]);
+            dragStartY = gTouchCurY;
+            dragStartLevel = levelFromNote(notes[idx]);
             setMainState(1);
         } else {
             setMainState(3);
         }
-        Melody_PlayNote(unk_a0[idx]);
+        Melody_PlayNote(notes[idx]);
         return TRUE;
     }
     switch (idx) {
@@ -1039,75 +1039,75 @@ BOOL MelodyMenu::activateTarget(u32 idx) {
 
 BOOL MelodyMenu::moveCursorByPad(void *pad) {
     if (pad == NULL) return FALSE;
-    u32 cur = unk_a4;
+    u32 cur = cursorSlot;
     if (cur < 8) {
         if (MenuKeys_HasDown((u32)pad)) {
-            unk_a4 = unk_a4 + 8;
+            cursorSlot = cursorSlot + 8;
         } else if (MenuKeys_HasLeft((u32)pad)) {
-            if (unk_a4 != 0) unk_a4 = unk_a4 - 1;
+            if (cursorSlot != 0) cursorSlot = cursorSlot - 1;
         } else if (MenuKeys_HasRight((u32)pad)) {
-            unk_a4 = unk_a4 + 1;
+            cursorSlot = cursorSlot + 1;
         }
     } else if (cur >= 8 && cur <= 0xf) {
         if (MenuKeys_HasDown((u32)pad)) {
-            s32 t = unk_a4 - 8;
+            s32 t = cursorSlot - 8;
             if (t < 2) {
-                unk_a4 = 0x10;
+                cursorSlot = 0x10;
             } else if (t < 6) {
-                unk_a4 = 0x11;
+                cursorSlot = 0x11;
             } else {
-                unk_a4 = 0x12;
+                cursorSlot = 0x12;
             }
         } else if (MenuKeys_HasUp((u32)pad)) {
-            unk_a4 = unk_a4 - 8;
+            cursorSlot = cursorSlot - 8;
         } else if (MenuKeys_HasLeft((u32)pad)) {
-            unk_a4 = unk_a4 - 1;
+            cursorSlot = cursorSlot - 1;
         } else if (MenuKeys_HasRight((u32)pad)) {
-            if (unk_a4 < 0xf) unk_a4 = unk_a4 + 1;
+            if (cursorSlot < 0xf) cursorSlot = cursorSlot + 1;
         }
     } else {
         switch (cur) {
         case 0x10:
             if (MenuKeys_HasUp((u32)pad)) {
-                unk_a4 = 8;
+                cursorSlot = 8;
             } else if (MenuKeys_HasRight((u32)pad)) {
-                unk_a4 = 0x11;
+                cursorSlot = 0x11;
             }
             break;
         case 0x11:
             if (MenuKeys_HasUp((u32)pad)) {
-                unk_a4 = 0xb;
+                cursorSlot = 0xb;
             } else if (MenuKeys_HasRight((u32)pad)) {
-                unk_a4 = 0x12;
+                cursorSlot = 0x12;
             } else if (MenuKeys_HasLeft((u32)pad)) {
-                unk_a4 = 0x10;
+                cursorSlot = 0x10;
             }
             break;
         case 0x12:
             if (MenuKeys_HasUp((u32)pad)) {
-                unk_a4 = 0xe;
+                cursorSlot = 0xe;
             } else if (MenuKeys_HasDown((u32)pad)) {
-                unk_a4 = 0x13;
+                cursorSlot = 0x13;
             } else if (MenuKeys_HasLeft((u32)pad)) {
-                unk_a4 = 0x11;
+                cursorSlot = 0x11;
             }
             break;
         case 0x13:
             if (MenuKeys_HasUp((u32)pad)) {
-                unk_a4 = 0x12;
+                cursorSlot = 0x12;
             } else if (MenuKeys_HasLeft((u32)pad)) {
-                unk_a4 = 0x11;
+                cursorSlot = 0x11;
             }
             break;
         }
     }
-    if (cur != unk_a4) return TRUE;
+    if (cur != cursorSlot) return TRUE;
     return FALSE;
 }
 
 void MelodyMenu::flushBgScreen() {
     if (testFlags(4)) {
-        if (unk_e74[0].requestScreen((u32)unk_674, 4, 0x800, 0)) {
+        if (screenTasks[0].requestScreen((u32)bgScreen, 4, 0x800, 0)) {
             clearFlags(4);
         }
     }
@@ -1115,17 +1115,17 @@ void MelodyMenu::flushBgScreen() {
 
 void MelodyMenu::paintPlayButton(u32 v) {
     setFlags(4);
-    BgScreen_SetRectPalette(&unk_674, 0xc, 0x12, 0x15, 0x16, v);
+    BgScreen_SetRectPalette(&bgScreen, 0xc, 0x12, 0x15, 0x16, v);
 }
 
 void MelodyMenu::paintEraseAllButton(u32 v) {
     setFlags(4);
-    BgScreen_SetRectPalette(&unk_674, 0, 0x11, 9, 0x17, v);
+    BgScreen_SetRectPalette(&bgScreen, 0, 0x11, 9, 0x17, v);
 }
 
 void MelodyMenu::startPlayback() {
     Melody_PlayEditPattern(0x190);
-    unk_9a = -1;
+    activeNote = -1;
     setMainState(0xa);
     setFlags(2);
     setFlags(8);
@@ -1135,7 +1135,7 @@ void MelodyMenu::startPlayback() {
 
 void MelodyMenu::endPlayback() {
     clearFlags(2);
-    unk_9a = -1;
+    activeNote = -1;
     resumeInput();
     paintPlayButton(3);
 }
@@ -1149,7 +1149,7 @@ void MelodyMenu::openEraseAllDialog() {
 }
 
 void MelodyMenu::closeEraseAllDialog() {
-    unk_a4 = 0x10;
+    cursorSlot = 0x10;
     setMainState(9);
     initSlideOut(0, 0);
     setTransitionState(6);
@@ -1158,18 +1158,18 @@ void MelodyMenu::closeEraseAllDialog() {
 }
 
 LabelString *MelodyMenu::allocTextLabel() {
-    if (unk_9f >= 0x10) {
-        return &unk_274[15];
+    if (labelCount >= 0x10) {
+        return &textLabels[15];
     }
-    unk_9f = unk_9f + 1;
-    return &unk_274[unk_9f - 1];
+    labelCount = labelCount + 1;
+    return &textLabels[labelCount - 1];
 }
 
 void MelodyMenu::resetTextLabels() {
     s32 i;
-    unk_9f = 0;
+    labelCount = 0;
     for (i = 0; i < 16; i++) {
-        unk_274[i].destroyLabel();
+        textLabels[i].destroyLabel();
     }
 }
 
@@ -1209,9 +1209,9 @@ void MelodyMenu::drawNote(u32 idx, s32 x, s32 y) {
 
 void MelodyMenu::drawHighlightedNote(u32 idx, s32 x, s32 y) {
     if (testFlags(2)) {
-        drawPlayingNote(unk_a0[idx], x, y);
+        drawPlayingNote(notes[idx], x, y);
     } else {
-        drawSelectedNote(unk_a0[idx], x, y);
+        drawSelectedNote(notes[idx], x, y);
     }
     Oam_DrawObj(1, data_ov143_02293950, x, y, -1, -1, 0);
 }
@@ -1220,19 +1220,19 @@ void MelodyMenu::drawNotes(s32 x, s32 y) {
     s32 i;
     s32 cx = x;
     for (i = 0; i < 8; i++) {
-        if (i == unk_9a) {
+        if (i == activeNote) {
             drawHighlightedNote(i, cx, y);
         } else {
-            drawNote(unk_a0[i], cx, y);
+            drawNote(notes[i], cx, y);
         }
         cx += 0x18;
     }
     x += 0x10;
     for (; i < 16; i++) {
-        if (i == unk_9a) {
+        if (i == activeNote) {
             drawHighlightedNote(i, x, y + 0x38);
         } else {
-            drawNote(unk_a0[i], x, y + 0x38);
+            drawNote(notes[i], x, y + 0x38);
         }
         x += 0x18;
     }
@@ -1281,7 +1281,7 @@ void MelodyMenu::createNoteLabels() {
 void MelodyMenu::getNotePos(s32 *out, s32 idx) {
     s32 x = 0x1a;
     s32 y = 0x3f;
-    u32 t = levelFromNote(unk_a0[idx]);
+    u32 t = levelFromNote(notes[idx]);
     if (idx < 8) {
         x += idx * 0x18;
         y -= t * 2;
@@ -1296,26 +1296,26 @@ void MelodyMenu::getNotePos(s32 *out, s32 idx) {
 void MelodyMenu::beginDialogDim() {
     Gfx2d_BeginSubObjWinBrightness();
     Gfx2d_SetSubBrightness(-6);
-    ((MenuBottomButtonsBody *)&unk_110)->enableObjWindow();
+    ((MenuBottomButtonsBody *)&bottomButtons)->enableObjWindow();
 }
 
 void MelodyMenu::endDialogDim() {
     Gfx2d_EndSubObjWinBrightness();
-    ((MenuBottomButtonsBody *)&unk_110)->disableObjWindow();
+    ((MenuBottomButtonsBody *)&bottomButtons)->disableObjWindow();
 }
 
 BOOL MelodyMenu::testFlags(u32 mask) {
-    if (unk_98 & mask) return TRUE;
+    if (flags & mask) return TRUE;
     return FALSE;
 }
 
 void MelodyMenu::setFlags(u32 mask) {
-    unk_98 = unk_98 | mask;
+    flags = flags | mask;
 }
 
 // ---------------------------------------------------------------------------------------------
 
 void MelodyMenu::clearFlags(u32 mask) {
-    unk_98 = unk_98 & ~mask;
+    flags = flags & ~mask;
 }
 

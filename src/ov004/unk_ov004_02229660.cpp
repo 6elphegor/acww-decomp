@@ -65,9 +65,9 @@ struct Unk_ov004_02224ee4_Vec {
 
 struct Unk_0203e5d0_Node {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ void *unk_0c;
+    /* 0x04 */ Unk_0203e5d0_Node *next;
+    /* 0x08 */ u32 charId;
+    /* 0x0c */ void *owner;
 };
 
 class Actor : public GameProc {
@@ -183,11 +183,11 @@ public:
     inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
     inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
 
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08[13];
-    u32 unk_3c[13];
-    u32 unk_70[13];
+    u32 archive;
+    u32 model;
+    u32 bcas[13];
+    u32 bmas[13];
+    u32 btas[13];
 };
 
 class RoomObjTex {
@@ -197,8 +197,8 @@ public:
     inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
     inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
-    u32 unk_00;
-    u8 unk_04;
+    u32 texture;
+    u8 syncState;
 };
 
 class RoomObjSe {
@@ -209,7 +209,7 @@ public:
     inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
     inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
-    u32 unk_00[0x10];
+    u32 emitter[0x10];
 };
 
 class RoomObjActor : public Character {
@@ -230,10 +230,10 @@ public:
     void loadResourcesByName(char *name);
     void loadResources(char *a, char *b);
 
-    /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ RoomObjRes unk_1a4;
-    /* 0x248 */ RoomObjTex unk_248;
-    /* 0x250 */ RoomObjSe unk_250;
+    /* 0xec */ AnimModel model;
+    /* 0x1a4 */ RoomObjRes res;
+    /* 0x248 */ RoomObjTex tex;
+    /* 0x250 */ RoomObjSe se;
 };
 
 
@@ -312,7 +312,7 @@ struct Unk_ov004_02229970_Xyz {
 
 struct Unk_ov004_02229970_Glob {
     u8 pad_00[0x68];
-    s32 unk_68;
+    s32 localSlot;
 };
 
 struct Unk_ov004_02229660_Bits {
@@ -321,9 +321,9 @@ struct Unk_ov004_02229660_Bits {
     u32 hi : 4;
 };
 
-struct Unk_ov004_0224e2b8_Str {
-    const u8 *unk_00;
-    u8 unk_04;
+struct PhoneChoiceSet {
+    const u8 *choiceMsgs;
+    u8 numChoices;
 };
 
 struct Unk_ov004_0222a0bc_V3 {
@@ -475,15 +475,15 @@ public:
     void execAct00();
     void enterAct00();
     void changeAct(s32 state);
-    void openChoices(Unk_ov004_0224e2b8_Str *p, s32 v);
+    void openChoices(PhoneChoiceSet *p, s32 v);
 
-    /* 0x2d4 */ u32 unk_2d4[0x27]; // a BoxCollider (ctor C1 / dtor D2 by hand, as the original calls them)
-    /* 0x370 */ u32 unk_370[0xaa]; // a TouchPickBox (ctor C2 / dtor D2 by hand)
-    /* 0x618 */ u32 unk_618[7];    // a TouchPickSphere (ctor C2 / dtor D1 by hand)
-    /* 0x634 */ s32 unk_634;
-    /* 0x638 */ u8 unk_638;
+    /* 0x2d4 */ u32 collider[0x27]; // a BoxCollider (ctor C1 / dtor D2 by hand, as the original calls them)
+    /* 0x370 */ u32 touchBox[0xaa]; // a TouchPickBox (ctor C2 / dtor D2 by hand)
+    /* 0x618 */ u32 touchSphere[7];    // a TouchPickSphere (ctor C2 / dtor D1 by hand)
+    /* 0x634 */ s32 act;
+    /* 0x638 */ u8 isTalking;
     /* 0x639 */ u8 pad_639[3];
-    /* 0x63c */ u32 unk_63c;
+    /* 0x63c */ u32 prevTalkVoice;
 };
 
 #define F(T, off) (*(T *)((u8 *)this + off))
@@ -523,9 +523,9 @@ extern u8 data_ov004_0224e170[3];
 extern u8 data_ov004_0224e174[4];
 extern const char *data_ov004_0224e178;
 extern char sRoomTelephoneMsgFile2[];
-extern Unk_ov004_0224e2b8_Str data_ov004_0224e298;
-extern Unk_ov004_0224e2b8_Str data_ov004_0224e2a0;
-extern Unk_ov004_0224e2b8_Str data_ov004_0224e2a8;
+extern PhoneChoiceSet data_ov004_0224e298;
+extern PhoneChoiceSet data_ov004_0224e2a0;
+extern PhoneChoiceSet data_ov004_0224e2a8;
 extern char sRoomTelephoneArcPath[];
 extern char sRoomTelephoneTexPath[];
 extern RoomTelephone *volatile sRoomTelephone;
@@ -574,9 +574,9 @@ u8 data_ov004_0224e170[3] = { 0x08, 0x11, 0x17 };
 u8 data_ov004_0224e174[4] = { 0x07, 0x08, 0x11, 0x17 };
 char sRoomTelephoneMsgFile2[] = "sp_etc_sequence1";
 const char *data_ov004_0224e178 = sRoomTelephoneMsgFile2;
-Unk_ov004_0224e2b8_Str data_ov004_0224e298 = { data_ov004_0224e174, 4 };
-Unk_ov004_0224e2b8_Str data_ov004_0224e2a0 = { data_ov004_0224e170, 3 };
-Unk_ov004_0224e2b8_Str data_ov004_0224e2a8 = { data_ov004_0224e16c, 2 };
+PhoneChoiceSet data_ov004_0224e298 = { data_ov004_0224e174, 4 };
+PhoneChoiceSet data_ov004_0224e2a0 = { data_ov004_0224e170, 3 };
+PhoneChoiceSet data_ov004_0224e2a8 = { data_ov004_0224e16c, 2 };
 char sRoomTelephoneArcPath[] = "/roomObj/obj_telephone.arc";
 char sRoomTelephoneTexPath[] = "/roomObj/obj_telephone.nsbtx";
 RoomTelephone *volatile sRoomTelephone;
@@ -587,21 +587,21 @@ extern "C" Unk_ov004_SceneEntry sRoomTelephoneProfile = { RoomTelephone_Create, 
 extern "C" void RoomTelephone_PlayAnimHold() {
     RoomTelephone *g = sRoomTelephone;
     if (g) {
-        BlendAnimModel_initAnim(&sRoomTelephone->unk_ec, RoomObjRes_GetBca(&g->unk_1a4, 0), 1, 0x1000, ((Unk_ov004_02229660_Bits *)((u8 *)g + 0x18c))->mid, 0);
+        BlendAnimModel_initAnim(&sRoomTelephone->model, RoomObjRes_GetBca(&g->res, 0), 1, 0x1000, ((Unk_ov004_02229660_Bits *)((u8 *)g + 0x18c))->mid, 0);
     }
 }
 
 extern "C" void RoomTelephone_PlayAnimHangUp() {
     RoomTelephone *g = sRoomTelephone;
     if (g) {
-        BlendAnimModel_initAnim(&sRoomTelephone->unk_ec, RoomObjRes_GetBca(&g->unk_1a4, 0), 3, 0x1000, ((Unk_ov004_02229660_Bits *)((u8 *)g + 0x18c))->mid, 0);
+        BlendAnimModel_initAnim(&sRoomTelephone->model, RoomObjRes_GetBca(&g->res, 0), 3, 0x1000, ((Unk_ov004_02229660_Bits *)((u8 *)g + 0x18c))->mid, 0);
     }
 }
 
 extern "C" void RoomTelephone_PlayAnimPickUp() {
     RoomTelephone *g = sRoomTelephone;
     if (g) {
-        BlendAnimModel_initAnim(&sRoomTelephone->unk_ec, RoomObjRes_GetBca(&g->unk_1a4, 0), 1, 0x1000, 0, 0);
+        BlendAnimModel_initAnim(&sRoomTelephone->model, RoomObjRes_GetBca(&g->res, 0), 1, 0x1000, 0, 0);
     }
 }
 
@@ -617,7 +617,7 @@ extern "C" BOOL RoomTelephone_StartAct0A() {
 extern "C" BOOL RoomTelephone_IsTalking() {
     RoomTelephone *g = sRoomTelephone;
     if (g) {
-        if (g->unk_638) {
+        if (g->isTalking) {
             return TRUE;
         }
         return FALSE;
@@ -667,7 +667,7 @@ void RoomTelephone::execAct0C() {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
     if (p->state == 0) {
         TalkWindowState_detachRequest(p);
-        unk_638 = 0;
+        isTalking = 0;
         changeAct(7);
     }
 }
@@ -678,7 +678,7 @@ void RoomTelephone::execAct0B() {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
     if (p->state == 0) {
         TalkWindowState_detachRequest(p);
-        unk_638 = 0;
+        isTalking = 0;
         changeAct(7);
     }
 }
@@ -695,14 +695,14 @@ void RoomTelephone::execAct0A() {
 
 void RoomTelephone::enterAct0A() {
     openTalk(sRoomTelephoneMsgFile2, 0xe);
-    unk_638 = 1;
+    isTalking = 1;
 }
 
 void RoomTelephone::execAct09() {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
     if (p->state == 0) {
         TalkWindowState_detachRequest(p);
-        unk_638 = 0;
+        isTalking = 0;
         changeAct(7);
     }
 }
@@ -724,7 +724,7 @@ void RoomTelephone::execAct08() {
 }
 
 void RoomTelephone::enterAct08() {
-    unk_638 = 1;
+    isTalking = 1;
 }
 
 void RoomTelephone::execAct07() {
@@ -738,9 +738,9 @@ void RoomTelephone::execAct07() {
         f = FALSE;
     }
     if (f) {
-        TouchPicker_pushBox(Scene_GetTouchPicker(), unk_370);
+        TouchPicker_pushBox(Scene_GetTouchPicker(), touchBox);
         if (Scene_GetCurrent() == 6) {
-            if (gCommManager->unk_68 != 4) {
+            if (gCommManager->localSlot != 4) {
                 return;
             }
         }
@@ -775,7 +775,7 @@ void RoomTelephone::execAct05() {
 
 void RoomTelephone::enterAct05() {
     PlayerActor_LocalRequestPhoneHangUp(this);
-    RoomObj_PlaySe(&unk_250, 0x4d5);
+    RoomObj_PlaySe(&se, 0x4d5);
 }
 
 void RoomTelephone::execAct04() {
@@ -826,7 +826,7 @@ void RoomTelephone::execAct01() {
 
 void RoomTelephone::enterAct01() {
     PlayerActor_LocalRequestPhonePickUp(this);
-    RoomObj_PlaySe(&unk_250, 0x4d4);
+    RoomObj_PlaySe(&se, 0x4d4);
 }
 
 void RoomTelephone::execAct00() {
@@ -838,7 +838,7 @@ void RoomTelephone::execAct00() {
             return;
         }
     }
-    TouchPicker_pushBox(Scene_GetTouchPicker(), unk_370);
+    TouchPicker_pushBox(Scene_GetTouchPicker(), touchBox);
 }
 
 void RoomTelephone::enterAct00() {}
@@ -847,15 +847,15 @@ void RoomTelephone::changeAct(s32 state) {
     if (sRoomTelephoneActTable[state].enter) {
         (this->*sRoomTelephoneActTable[state].enter)();
     }
-    unk_634 = state;
+    act = state;
 }
 
 // ---------------------------------------------------------------- 0x02229e1c
-void RoomTelephone::openChoices(Unk_ov004_0224e2b8_Str *p, s32 v) {
+void RoomTelephone::openChoices(PhoneChoiceSet *p, s32 v) {
     TalkWindowState *m = unk_3c;
     ChoiceList *o = TalkWindowState_getChoiceList(m);
-    const u8 *s = p->unk_00;
-    u8 n = p->unk_04;
+    const u8 *s = p->choiceMsgs;
+    u8 n = p->numChoices;
     s32 z = 0;
     s32 i;
     s32 m1 = -1;
@@ -958,15 +958,15 @@ BOOL RoomTelephone::vfunc_0c() {
 }
 
 BOOL RoomTelephone::onDraw() {
-    AnimModel_drawAnimated(&unk_ec, 0);
+    AnimModel_drawAnimated(&model, 0);
     return TRUE;
 }
 
 BOOL RoomTelephone::onExecute() {
-    if (sRoomTelephoneActTable[unk_634].exit) {
-        (this->*sRoomTelephoneActTable[unk_634].exit)();
+    if (sRoomTelephoneActTable[act].exit) {
+        (this->*sRoomTelephoneActTable[act].exit)();
     }
-    AnimModel_stepAnim(&unk_ec);
+    AnimModel_stepAnim(&model);
     return TRUE;
 }
 
@@ -975,18 +975,18 @@ BOOL RoomTelephone::vfunc_00() {
     position[0] = sRoomTelephonePos[0]; position[1] = sRoomTelephonePos[1]; position[2] = sRoomTelephonePos[2];
     setCharId(0);
     loadResources(sRoomTelephoneArcPath, sRoomTelephoneTexPath);
-    if (RoomObjRes_GetBca(&unk_1a4, 0)) {
-        if (AnimModel_allocAnmObj(&unk_ec, gBgHeap)) {
-            s32 r = RoomObjRes_GetBca(&unk_1a4, 0);
-            BlendAnimModel_initAnim(&unk_ec, r, 3, 0x1000, 0, 0);
-            AnimModel_attachAnim(&unk_ec);
+    if (RoomObjRes_GetBca(&res, 0)) {
+        if (AnimModel_allocAnmObj(&model, gBgHeap)) {
+            s32 r = RoomObjRes_GetBca(&res, 0);
+            BlendAnimModel_initAnim(&model, r, 3, 0x1000, 0, 0);
+            AnimModel_attachAnim(&model);
         }
     }
     Unk_ov004_0222a0bc_V3 v;
     v.v[0] = sRoomTelephonePos[0];
     v.v[1] = sRoomTelephonePos[1];
     v.v[2] = sRoomTelephonePos[2];
-    TouchPicker_addBox(Scene_GetTouchPicker(), unk_370, v.v, 0x2000, 0x2000, 0x2000, 0, 0xd, 0xff);
+    TouchPicker_addBox(Scene_GetTouchPicker(), touchBox, v.v, 0x2000, 0x2000, 0x2000, 0, 0xd, 0xff);
     u8 *const g = gSaveData;
     if (Scene_GetCurrent() == 6) {
         if (SaveData_testFlag(g, 0) == 0) {
@@ -1002,15 +1002,15 @@ BOOL RoomTelephone::vfunc_00() {
 }
 
 RoomTelephone::~RoomTelephone() {
-    _ZN15TouchPickSphereD1Ev(unk_618);
-    _ZN12TouchPickBoxD2Ev(unk_370);
-    _ZN11BoxColliderD2Ev(unk_2d4);
+    _ZN15TouchPickSphereD1Ev(touchSphere);
+    _ZN12TouchPickBoxD2Ev(touchBox);
+    _ZN11BoxColliderD2Ev(collider);
 }
 
 RoomTelephone::RoomTelephone() {
-    _ZN11BoxColliderC1Ev(unk_2d4);
-    _ZN12TouchPickBoxC2Ev(unk_370);
-    _ZN15TouchPickSphereC1Ev(unk_618);
+    _ZN11BoxColliderC1Ev(collider);
+    _ZN12TouchPickBoxC2Ev(touchBox);
+    _ZN15TouchPickSphereC1Ev(touchSphere);
 }
 
 extern "C" RoomTelephone *RoomTelephone_GetInstance() {

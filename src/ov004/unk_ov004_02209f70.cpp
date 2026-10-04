@@ -108,9 +108,9 @@ public:
 
 struct Unk_0203e5d0_Node {
     u32 unk_00;
-    Unk_0203e5d0_Node *unk_04;
-    u32 unk_08;
-    void *unk_0c;
+    Unk_0203e5d0_Node *next;
+    u32 charId;
+    void *owner;
 };
 
 class Character : public Actor {
@@ -351,10 +351,10 @@ struct FtrTopItem {
 
 struct ItemId {
     ItemId() {
-        unk_00 = 0xfff1;
+        id = 0xfff1;
     }
     ~ItemId();
-    u16 unk_00;
+    u16 id;
 };
 
 // ---- 0x022061b4 (member at 0x188)
@@ -427,8 +427,8 @@ public:
 class CollisionEdge {
 public:
     virtual BOOL hasRoundEnds();
-    CollisionVec2 unk_04, unk_0c, unk_14;
-    s32 unk_1c;
+    CollisionVec2 start, end, normal;
+    s32 offset;
     BOOL intersectLine(CollisionVec2 *out, CollisionVec2 *a, CollisionVec2 *b);
     s32 isBetweenEnds(CollisionVec2 *p);
 };
@@ -4455,7 +4455,7 @@ BOOL FtrActor_StepAnims(void *self);
 
 struct Unk_ov004_0220ebd8_Ptr {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ u32 unk_04;
+    /* 0x04 */ u32 state;
     /* 0x08 */ u32 unk_08;
 };
 
@@ -4635,7 +4635,7 @@ u8 FtrStereo::getActSwitchState(u32 a) {
 
 void FtrStereo::execTalkAct05() {
     if (((Unk_ov004_0220ebd8_Ptr *)unk_3c) != NULL) {
-        if (((Unk_ov004_0220ebd8_Ptr *)unk_3c)->unk_04 == 0) {
+        if (((Unk_ov004_0220ebd8_Ptr *)unk_3c)->state == 0) {
             p18::_ZN9Character17detachTalkRequestEi(this, this);
             p18::TalkRequest_SetTargetDone(this);
         }
@@ -4648,7 +4648,7 @@ BOOL FtrStereo::enterTalkAct05() {
 
 BOOL FtrStereo::execTalkAct04() {
     if (((Unk_ov004_0220ebd8_Ptr *)unk_3c) != NULL) {
-        if (((Unk_ov004_0220ebd8_Ptr *)unk_3c)->unk_04 != 0) {
+        if (((Unk_ov004_0220ebd8_Ptr *)unk_3c)->state != 0) {
             setTalkAct(5);
         }
     }
@@ -4923,7 +4923,7 @@ void FtrActor_StepAnims(void *self);
 
 struct Unk_ov004_0220f6e0_Rec {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ u32 unk_04;
+    /* 0x04 */ u32 state;
     /* 0x08 */ u32 unk_08;
 };
 
@@ -6076,8 +6076,8 @@ struct Unk_ov004_02210f0c_V3 {
 // list of up to 4 tile positions (ctor/dtor/methods are defined elsewhere)
 
 struct Unk_ov004_02210f0c_Row {
-    Unk_ov004_02210f0c_V3 *unk_00;
-    u32 unk_04;
+    Unk_ov004_02210f0c_V3 *offsets;
+    u32 count;
 };
 
 namespace p22 {
@@ -6174,10 +6174,10 @@ typedef BOOL (FtrKind07::*Unk_ov004_02211738_Fn)();
 
 // ================================================================ FtrBed ==========
 u32 FtrBed::getLieTiles(void *o) {
-    Unk_ov004_02210f0c_V3 *p = p22::sFtrBedLieOffsets[b22_unk_780].unk_00;
+    Unk_ov004_02210f0c_V3 *p = p22::sFtrBedLieOffsets[b22_unk_780].offsets;
     if (p) {
         u32 i;
-        for (i = 0; i < p22::sFtrBedLieOffsets[b22_unk_780].unk_04; i++) {
+        for (i = 0; i < p22::sFtrBedLieOffsets[b22_unk_780].count; i++) {
             Unk_ov004_02210f0c_V3 v;
             p22::FtrActor_LocalToWorld(this, &v, &p[i]);
             s32 *q = (s32 *)((FtrTilePair *)o)->get(i);
@@ -7538,7 +7538,7 @@ BOOL FtrStorage::enterTalkAct0B() {
 }
 
 BOOL FtrStorage::execTalkAct0A() {
-    if (((Unk_ov004_0220f6e0_Rec *)unk_3c) && ((Unk_ov004_0220f6e0_Rec *)unk_3c)->unk_04 == 0) {
+    if (((Unk_ov004_0220f6e0_Rec *)unk_3c) && ((Unk_ov004_0220f6e0_Rec *)unk_3c)->state == 0) {
         setTalkAct(11);
     }
 }
@@ -7548,7 +7548,7 @@ BOOL FtrStorage::enterTalkAct0A() {
 }
 
 BOOL FtrStorage::execTalkAct09() {
-    if (((Unk_ov004_0220f6e0_Rec *)unk_3c) && ((Unk_ov004_0220f6e0_Rec *)unk_3c)->unk_04 != 0) {
+    if (((Unk_ov004_0220f6e0_Rec *)unk_3c) && ((Unk_ov004_0220f6e0_Rec *)unk_3c)->state != 0) {
         setTalkAct(10);
     }
 }
@@ -7929,8 +7929,8 @@ ItemId sStereoSong;
 
 // ---- .rodata: rows {positions, count} indexed by the object's unk_780 (func_ov004_02210f0c)
 struct Unk_ov004_02240078_Row {
-    FxVec3 *unk_00;
-    u32 unk_04;
+    FxVec3 *offsets;
+    u32 count;
 };
 extern "C" {
 extern const Unk_ov004_02240078_Row sFtrBedLieOffsets[3];
@@ -7943,9 +7943,9 @@ FxVec3 *data_ov004_02249028[3] = {0, data_ov004_0224fc84, data_ov004_0224fc9c};
 // ---- .data: the 34 registration entries {factory, id range, 0, 0xc8000, 0x12c000, 0x258000}; main refers to them by address only
 typedef void (*Unk_ov004_Factory)();
 struct Unk_ov004_SceneEntry {
-    Unk_ov004_Factory unk_00;
-    u16 unk_04;
-    u16 unk_06;
+    Unk_ov004_Factory create;
+    u16 executePriority;
+    u16 drawPriority;
     u32 unk_08[4];
 };
 extern "C" {

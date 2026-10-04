@@ -105,9 +105,9 @@ public:
 
 struct Unk_0203e5d0_Node {
     u32 unk_00;
-    Unk_0203e5d0_Node *unk_04;
-    u32 unk_08;
-    void *unk_0c;
+    Unk_0203e5d0_Node *next;
+    u32 charId;
+    void *owner;
 };
 
 class Character : public Actor {
@@ -348,10 +348,10 @@ struct FtrTopItem {
 
 struct ItemId {
     ItemId() {
-        unk_00 = 0xfff1;
+        id = 0xfff1;
     }
     ~ItemId();
-    u16 unk_00;
+    u16 id;
 };
 
 // ---- 0x022061b4 (member at 0x188)
@@ -424,8 +424,8 @@ public:
 class CollisionEdge {
 public:
     virtual BOOL hasRoundEnds();
-    CollisionVec2 unk_04, unk_0c, unk_14;
-    s32 unk_1c;
+    CollisionVec2 start, end, normal;
+    s32 offset;
     BOOL intersectLine(CollisionVec2 *out, CollisionVec2 *a, CollisionVec2 *b);
     s32 isBetweenEnds(CollisionVec2 *p);
 };

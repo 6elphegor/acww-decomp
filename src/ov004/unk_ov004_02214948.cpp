@@ -189,7 +189,7 @@ public:
 
 struct Unk_ov004_0221572c_Sub {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x04 */ s32 state;
     /* 0x08 */ u32 unk_08;
     u8 pad_0c[8];
     /* 0x14 */ s32 unk_14;
@@ -240,14 +240,14 @@ public:
     void setPartyGreeted();
     BOOL isPartyNotGreeted();
 
-    BirthdayHostVillager *unk_1a0;
+    BirthdayHostVillager *villager;
 };
 
 typedef BOOL (BirthdayHostVillager::*Unk_ov004_0224c034_Fn)();
 
 class BirthdayHostVillager : public VillagerActor {
 public:
-    BirthdayHostVillager() : unk_a48(0xfff1) {}
+    BirthdayHostVillager() : returnGift(0xfff1) {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
@@ -293,18 +293,18 @@ public:
     BOOL setupAct01();
     void mainAct00();
 
-    /* 0x894 */ s32 unk_894;
-    /* 0x898 */ u8 unk_898;
+    /* 0x894 */ s32 act;
+    /* 0x898 */ u8 talkMelodyPlayed;
     /* 0x899 */ u8 pad_899[3];
-    /* 0x89c */ BirthdayHostVillagerTalk unk_89c;
-    /* 0xa40 */ Unk_ov004_0224c034_Fn unk_a40;
-    /* 0xa48 */ u16 unk_a48;
-    /* 0xa4a */ u8 unk_a4a;
-    /* 0xa4b */ u8 unk_a4b;
-    /* 0xa4c */ s16 unk_a4c;
-    /* 0xa4e */ u16 unk_a4e;
-    /* 0xa50 */ s32 unk_a50[3];
-    /* 0xa5c */ s32 unk_a5c[3];
+    /* 0x89c */ BirthdayHostVillagerTalk talk;
+    /* 0xa40 */ Unk_ov004_0224c034_Fn drawFn;
+    /* 0xa48 */ u16 returnGift;
+    /* 0xa4a */ u8 approachTimer;
+    /* 0xa4b */ u8 emotionTimer;
+    /* 0xa4c */ s16 walkAngle;
+    /* 0xa4e */ u16 walkTimer;
+    /* 0xa50 */ s32 waypoint[3];
+    /* 0xa5c */ s32 walkTarget[3];
 };
 
 struct Unk_ov004_022146ec_Actor {
@@ -510,7 +510,7 @@ extern "C" BirthdayHostVillager *BirthdayHostVillager_Get() { return sBirthdayHo
 extern "C" BOOL BirthdayHostVillager_HasReceivedGift() {
     BirthdayHostVillager *o = sBirthdayHostVillager;
     if (o) {
-        return o->unk_89c.hasReceivedGift();
+        return o->talk.hasReceivedGift();
     }
     return FALSE;
 }
@@ -562,13 +562,13 @@ BOOL BirthdayHostVillager::vfunc_04() {
         }
     }
     rotY = 0;
-    NpcActor_setTalkRequest(this, &unk_89c);
-    unk_89c.attachOwner(this);
-    if (!unk_89c.isPartyNotGreeted()) {
+    NpcActor_setTalkRequest(this, &talk);
+    talk.attachOwner(this);
+    if (!talk.isPartyNotGreeted()) {
         changeAct(0);
     } else {
         changeAct(7);
-        unk_89c.setPartyGreeted();
+        talk.setPartyGreeted();
     }
     sBirthdayHostVillager = this;
     return TRUE;
@@ -583,7 +583,7 @@ BOOL BirthdayHostVillager::vfunc_00() {
     if (!func_0202d948(this)) {
         return FALSE;
     }
-    unk_a40 = *(Unk_ov004_0224c034_Fn *)data_ov004_0224befc;
+    drawFn = *(Unk_ov004_0224c034_Fn *)data_ov004_0224befc;
     Unk_02013474_enableFootsteps(&unk_558);
     return TRUE;
 }
@@ -596,8 +596,8 @@ BOOL BirthdayHostVillager::drawModel() {
 }
 
 BOOL BirthdayHostVillager::onDraw() {
-    if (unk_a40) {
-        return (this->*unk_a40)();
+    if (drawFn) {
+        return (this->*drawFn)();
     }
     return TRUE;
 }
@@ -628,7 +628,7 @@ BOOL BirthdayHostVillager::vfunc_48() {
     if (NpcTalkCtrl_isBusy(&unk_618)) {
         return FALSE;
     }
-    if (unk_894 <= 3) {
+    if (act <= 3) {
         return TRUE;
     }
     return FALSE;
@@ -654,13 +654,13 @@ void BirthdayHostVillager::vfunc_4c(s32 a, u32 b) {
         break;
     case 0:
         *((u8 *)this + 0x560) = b;
-        func_02015ab0(&unk_89c, NpcActor_getPlayerActor(this, 4));
+        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
         Camera_FocusOnPoint(&v);
         changeAct(5);
         break;
     case 1:
         *((u8 *)this + 0x560) = b;
-        func_02015ab0(&unk_89c, NpcActor_getPlayerActor(this, 4));
+        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
         Camera_FocusOnPoint(&v);
         changeAct(8);
         break;
@@ -681,10 +681,10 @@ void BirthdayHostVillager::vfunc_4c(s32 a, u32 b) {
 }
 
 void *BirthdayHostVillagerTalk::getPlayerMemory() {
-    if (unk_1a0 != NULL && unk_1a0->villagerData != NULL) {
+    if (villager != NULL && villager->villagerData != NULL) {
         PlayerData_GetCurrent();
         s32 r = PlayerData_getPlayerId();
-        return Villager_FindOrCreateMemory(unk_1a0->villagerData, r);
+        return Villager_FindOrCreateMemory(villager->villagerData, r);
     }
     return NULL;
 }
@@ -742,8 +742,8 @@ void BirthdayHostVillagerTalk::setReceivedGift() {
 
 BOOL BirthdayHostVillagerTalk::isLikedGift(u16 *p) {
     BOOL r;
-    if (unk_1a0 && unk_1a0->villagerData) {
-        u32 c = VillagerPlan_getState(VillagerPlanBlock_GetPlan(Villager_GetPlan(unk_1a0->villagerData)));
+    if (villager && villager->villagerData) {
+        u32 c = VillagerPlan_getState(VillagerPlanBlock_GetPlan(Villager_GetPlan(villager->villagerData)));
         r = FALSE;
         switch (c) {
         case 0:
@@ -785,7 +785,7 @@ void *BirthdayHostVillagerTalk::getFriendship() {
 }
 
 void BirthdayHostVillagerTalk::onTaskDone() {
-    if (unk_1a0->unk_894 == 0xc) {
+    if (villager->act == 0xc) {
         unk_3c->unk_08 = 1;
     }
 }
@@ -793,13 +793,13 @@ void BirthdayHostVillagerTalk::onTaskDone() {
 void BirthdayHostVillagerTalk::update() {
     u8 b0, b1, b2;
     u16 x;
-    if (unk_1a0->unk_894 == 0xb) {
+    if (villager->act == 0xb) {
         if (MenuCtrl_IsFinished()) {
             if (MenuCtrl_IsResultOk() == 0) {
                 unk_3c->unk_08 = 1;
                 b0 = Random_GlobalBelow(2) + 7;
                 TalkWindowState_setNextMessage(unk_3c, &b0, 0);
-                unk_1a0->changeAct(6);
+                villager->changeAct(6);
             } else {
                 void *r6 = MenuCtrl_GetIndex();
                 x = Pocket_GetItem();
@@ -813,7 +813,7 @@ void BirthdayHostVillagerTalk::update() {
                     if (r4 >= 1000) addFriendship(5);
                     if (r4 >= 2000) addFriendship(10);
                     Unk_02014420_requestTakeItem(this, &x, 0, 5, 0);
-                    unk_1a0->changeAct(12);
+                    villager->changeAct(12);
                 } else {
                     b2 = Random_GlobalBelow(2) + 0xb;
                     TalkWindowState_setNextMessage(unk_3c, &b2, 0);
@@ -821,7 +821,7 @@ void BirthdayHostVillagerTalk::update() {
                     if (r4 >= 1000) addFriendship(5);
                     if (r4 >= 2000) addFriendship(5);
                     Unk_02014420_requestTakeItem(this, &x, 0, 5, 0);
-                    unk_1a0->changeAct(12);
+                    villager->changeAct(12);
                 }
             }
         }
@@ -830,14 +830,14 @@ void BirthdayHostVillagerTalk::update() {
 
 void BirthdayHostVillagerTalk::attachOwner(BirthdayHostVillager *owner) {
     VillagerTalk_begin(this, owner, 0x11);
-    unk_1a0 = owner;
+    villager = owner;
 }
 
 void BirthdayHostVillagerTalk::start(void *arg) {
     u8 *out = (u8 *)arg;
-    VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->villagerData), sBirthdayHostMsgFile, 0x28, (void *)"ev_nbirth");
+    VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), sBirthdayHostMsgFile, 0x28, (void *)"ev_nbirth");
     *(u32 *)out = (u32)sBirthdayHostMsgFile;
-    if (unk_1a0->unk_894 == 9) {
+    if (villager->act == 9) {
         out[4] = Random_GlobalBelow(2);
     } else {
         s32 k = 3;
@@ -858,19 +858,19 @@ void BirthdayHostVillagerTalk::start(void *arg) {
             out[4] = Random_GlobalBelow(2) + 4;
             break;
         }
-        BirthdayHostVillager *p = unk_1a0;
-        if (p->unk_89c.unk_3c) {
+        BirthdayHostVillager *p = villager;
+        if (p->talk.unk_3c) {
             if (p && p->villagerData) {
-                ActorTalkRequest_setVillagerNameSlot(&unk_1a0->unk_89c, VillagerData_getVillagerId(p->villagerData), 1);
+                ActorTalkRequest_setVillagerNameSlot(&villager->talk, VillagerData_getVillagerId(p->villagerData), 1);
             }
             s32 i = 0;
-            BirthdayHostVillager **pp = &unk_1a0;
+            BirthdayHostVillager **pp = &villager;
             goto test;
             for (;;) {
                 void *q;
                 q = NpcRegistry_GetVillager(i);
                 if (q && q != *pp) {
-                    ActorTalkRequest_setVillagerNameSlot(&unk_1a0->unk_89c, VillagerData_getVillagerId(*(void **)((u8 *)q + 0x82c)), 0);
+                    ActorTalkRequest_setVillagerNameSlot(&villager->talk, VillagerData_getVillagerId(*(void **)((u8 *)q + 0x82c)), 0);
                     break;
                 }
                 i++;
@@ -929,7 +929,7 @@ void BirthdayHostVillagerTalk::onMessageStart() {
     case 0x10: {
         volatile u16 v;
         v = BirthdayHost_PickReturnGift((s32)getFriendship());
-        unk_1a0->unk_a48 = v;
+        villager->returnGift = v;
         ActorTalkRequest_setItemNameSlot(this, (void *)&v, 1, 7);
         break;
     }
@@ -950,20 +950,20 @@ void BirthdayHostVillagerTalk::onMessageEnd() {
         break;
     case 9:
     case 10:
-        unk_1a0->changeAct(10);
+        villager->changeAct(10);
         break;
     case 11:
     case 12:
     case 13:
     case 14:
         b[1] = Random_GlobalBelow(2) + 0xf;
-        TalkWindowState_setNextMessage(unk_1a0->unk_89c.unk_3c, &b[1], 0);
+        TalkWindowState_setNextMessage(villager->talk.unk_3c, &b[1], 0);
         break;
     case 15:
     case 16:
-        Unk_020d7710_requestGiveItem(this, &unk_1a0->unk_a48, 0, 5, 0);
-        Pocket_AddItem(&unk_1a0->unk_a48, 0);
-        unk_1a0->changeAct(13);
+        Unk_020d7710_requestGiveItem(this, &villager->returnGift, 0, 5, 0);
+        Pocket_AddItem(&villager->returnGift, 0);
+        villager->changeAct(13);
         break;
     case 17:
     case 18:
@@ -981,21 +981,21 @@ void BirthdayHostVillagerTalk::onMessageEnd() {
 
 void BirthdayHostVillagerTalk::onChoice() {
     u8 b[3];
-    s32 r = ChoiceList_getResult(TalkWindowState_getChoiceList(unk_1a0->unk_89c.unk_3c));
+    s32 r = ChoiceList_getResult(TalkWindowState_getChoiceList(villager->talk.unk_3c));
     switch (msgIndex) {
     case 4:
     case 5:
         if (r == 0) {
             if (MenuCtrl_BuildPocketMask((void *)BirthdayHost_GiftFilter)) {
                 b[0] = Random_GlobalBelow(2) + 9;
-                TalkWindowState_setNextMessage(unk_1a0->unk_89c.unk_3c, &b[0], 0);
+                TalkWindowState_setNextMessage(villager->talk.unk_3c, &b[0], 0);
             } else {
                 b[1] = 6;
-                TalkWindowState_setNextMessage(unk_1a0->unk_89c.unk_3c, &b[1], 0);
+                TalkWindowState_setNextMessage(villager->talk.unk_3c, &b[1], 0);
             }
         } else {
             b[2] = Random_GlobalBelow(2) + 7;
-            TalkWindowState_setNextMessage(unk_1a0->unk_89c.unk_3c, &b[2], 0);
+            TalkWindowState_setNextMessage(villager->talk.unk_3c, &b[2], 0);
         }
         break;
     }
@@ -1020,7 +1020,7 @@ BOOL BirthdayHostVillager::changeAct(s32 idx) {
     };
     if (idx < 14) {
         if ((this->*tbl[idx])()) {
-            unk_894 = idx;
+            act = idx;
             return TRUE;
         }
     }
@@ -1044,8 +1044,8 @@ void BirthdayHostVillager::execAct() {
         &BirthdayHostVillager::mainAct0C,
         &BirthdayHostVillager::mainAct0D,
     };
-    if (unk_894 < 14) {
-        (this->*tbl[unk_894])();
+    if (act < 14) {
+        (this->*tbl[act])();
     }
 }
 
@@ -1065,21 +1065,21 @@ void BirthdayHostVillager::mainAct00() {
         return;
     }
     if (NpcActionCtrl_getAction(unk_564) == 0) {
-        if (unk_a4e != 0) {
-            unk_a4e--;
+        if (walkTimer != 0) {
+            walkTimer--;
         }
-        if (unk_a4e == 0) {
-            unk_a4c = Room_PickRandomWalkTarget(unk_a5c, position, rotY);
-            unk_a50[0] = unk_a5c[0];
-            unk_a50[1] = unk_a5c[1];
-            unk_a50[2] = unk_a5c[2];
-            if (unk_a4c != rotY) {
-                if (NpcActionCtrl_requestAction(unk_564, 3, 1, 0, 0, 0, unk_a4c, 0, 0, data_020c6cc8, 0) != 0) {
-                    unk_a4e = Random_GlobalBelow(0x46) + 0x14;
+        if (walkTimer == 0) {
+            walkAngle = Room_PickRandomWalkTarget(walkTarget, position, rotY);
+            waypoint[0] = walkTarget[0];
+            waypoint[1] = walkTarget[1];
+            waypoint[2] = walkTarget[2];
+            if (walkAngle != rotY) {
+                if (NpcActionCtrl_requestAction(unk_564, 3, 1, 0, 0, 0, walkAngle, 0, 0, data_020c6cc8, 0) != 0) {
+                    walkTimer = Random_GlobalBelow(0x46) + 0x14;
                 }
             } else {
-                if (NpcActionCtrl_requestAction(unk_564, 1, 1, unk_a5c[0], unk_a5c[2], 0, 0, 0, 0, data_020c6cc8, 0) != 0) {
-                    unk_a4e = Random_GlobalBelow(0x50) + 0x14;
+                if (NpcActionCtrl_requestAction(unk_564, 1, 1, walkTarget[0], walkTarget[2], 0, 0, 0, 0, data_020c6cc8, 0) != 0) {
+                    walkTimer = Random_GlobalBelow(0x50) + 0x14;
                 }
             }
         } else {
@@ -1089,7 +1089,7 @@ void BirthdayHostVillager::mainAct00() {
         }
     } else if (NpcActionCtrl_getAction(unk_564) == 3) {
         if (NpcActionCtrl_isActionDone(unk_564) != 0) {
-            NpcActionCtrl_requestAction(unk_564, 1, 1, unk_a5c[0], unk_a5c[2], 0, 0, 0, 0, data_020c6cc8, 0);
+            NpcActionCtrl_requestAction(unk_564, 1, 1, walkTarget[0], walkTarget[2], 0, 0, 0, 0, data_020c6cc8, 0);
         }
     } else if (NpcActionCtrl_getAction(unk_564) == 1) {
         switch (NpcActor_findAvoidPos(this, c)) {
@@ -1097,18 +1097,18 @@ void BirthdayHostVillager::mainAct00() {
             NpcActionCtrl_requestStand(unk_564, 1, data_020c6cc8);
             break;
         case 2:
-            unk_a50[0] = c[0];
-            unk_a50[1] = c[1];
-            unk_a50[2] = c[2];
-            NpcMoveCtrl_setWaypoint(unk_350, unk_a50);
+            waypoint[0] = c[0];
+            waypoint[1] = c[1];
+            waypoint[2] = c[2];
+            NpcMoveCtrl_setWaypoint(unk_350, waypoint);
             break;
         default:
-            if (func_020e96ec(unk_a50, unk_a5c) != 0) {
-                unk_a50[0] = unk_a5c[0];
-                unk_a50[1] = unk_a5c[1];
-                unk_a50[2] = unk_a5c[2];
-                NpcMoveCtrl_setWaypoint(unk_350, unk_a5c);
-            } else if (func_020e9650(unk_a5c, position) < 0x200) {
+            if (func_020e96ec(waypoint, walkTarget) != 0) {
+                waypoint[0] = walkTarget[0];
+                waypoint[1] = walkTarget[1];
+                waypoint[2] = walkTarget[2];
+                NpcMoveCtrl_setWaypoint(unk_350, walkTarget);
+            } else if (func_020e9650(walkTarget, position) < 0x200) {
                 NpcActionCtrl_requestStand(unk_564, 1, data_020c6cc8);
             }
             break;
@@ -1133,15 +1133,15 @@ BOOL BirthdayHostVillager::setupAct01() {
 void BirthdayHostVillager::mainAct01() {}
 
 BOOL BirthdayHostVillager::setupAct02() {
-    unk_a4b = 0x1e;
+    emotionTimer = 0x1e;
     return TRUE;
 }
 
 void BirthdayHostVillager::mainAct02() {
-    if (unk_a4b != 0) {
-        unk_a4b--;
+    if (emotionTimer != 0) {
+        emotionTimer--;
     }
-    switch (unk_a4b) {
+    switch (emotionTimer) {
     case 0x14:
         NpcActionCtrl_requestEmotion(unk_564, 1, 3, data_020c6cc8);
         break;
@@ -1155,15 +1155,15 @@ void BirthdayHostVillager::mainAct02() {
 }
 
 BOOL BirthdayHostVillager::setupAct03() {
-    unk_a4b = 0x32;
+    emotionTimer = 0x32;
     return TRUE;
 }
 
 void BirthdayHostVillager::mainAct03() {
-    if (unk_a4b != 0) {
-        unk_a4b--;
+    if (emotionTimer != 0) {
+        emotionTimer--;
     }
-    switch (unk_a4b) {
+    switch (emotionTimer) {
     case 0x28:
         if (Random_GlobalBelow(2) == 0) {
             NpcActionCtrl_requestEmotion(unk_564, 1, 0xa, data_020c6cc8);
@@ -1181,7 +1181,7 @@ void BirthdayHostVillager::mainAct03() {
 }
 
 BOOL BirthdayHostVillager::setupAct04() {
-    if ((u32)(unk_894 - 1) <= 2) {
+    if ((u32)(act - 1) <= 2) {
         NpcActionCtrl_requestEmotion(unk_564, 2, 0, data_020c6cc8);
     }
     return TRUE;
@@ -1208,9 +1208,9 @@ void BirthdayHostVillager::mainAct05() {
 BOOL BirthdayHostVillager::setupAct06() { return TRUE; }
 
 void BirthdayHostVillager::mainAct06() {
-    Unk_ov004_02214a4c_Obj *o = unk_89c.unk_3c;
+    Unk_ov004_02214a4c_Obj *o = talk.unk_3c;
     if (o != 0) {
-        if (o->unk_04 == 0) {
+        if (o->state == 0) {
             TalkRequest_SetTargetDone(this);
         }
     }
@@ -1223,7 +1223,7 @@ void BirthdayHostVillager::mainAct07() {
 }
 
 BOOL BirthdayHostVillager::setupAct08() {
-    unk_a4a = 0x32;
+    approachTimer = 0x32;
     NpcActionCtrl_requestAction(unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
@@ -1249,12 +1249,12 @@ void BirthdayHostVillager::mainAct08() {
         }
     }
     NpcMoveCtrl_setWaypoint(unk_350, &b);
-    if (unk_a4a != 0) {
-        unk_a4a--;
+    if (approachTimer != 0) {
+        approachTimer--;
     }
     r4 = Math_AngleXZ(position, &a);
     r0 = func_020e780c(rotY, r4);
-    if (v <= 0x3000 || unk_a4a == 0) {
+    if (v <= 0x3000 || approachTimer == 0) {
         NpcTalkCtrl_requestTurnAndTalk(unk_618, 0, r4, 0);
         changeAct(9);
     } else if (r0 > 0x2000) {
@@ -1265,21 +1265,21 @@ void BirthdayHostVillager::mainAct08() {
 BOOL BirthdayHostVillager::setupAct09() { return TRUE; }
 
 void BirthdayHostVillager::mainAct09() {
-    Unk_ov004_02214a4c_Obj *o = unk_89c.unk_3c;
+    Unk_ov004_02214a4c_Obj *o = talk.unk_3c;
     if (o != 0) {
-        if (o->unk_04 == 0) {
+        if (o->state == 0) {
             TalkRequest_SetTargetDone(this);
         }
     }
 }
 
 BOOL BirthdayHostVillager::setupAct0A() {
-    unk_89c.unk_3c->unk_14 = 1;
+    talk.unk_3c->unk_14 = 1;
     return TRUE;
 }
 
 void BirthdayHostVillager::mainAct0A() {
-    if (unk_89c.unk_3c->unk_04 == 5) {
+    if (talk.unk_3c->state == 5) {
         if (MenuCtrl_OpenPocketSelect(MenuCtrl_BuildPocketMask((void *)BirthdayHost_GiftFilter), 0xd) != 0) {
             changeAct(0xb);
         }
@@ -1299,16 +1299,16 @@ BOOL BirthdayHostVillager::setupAct0D() { return TRUE; }
 void BirthdayHostVillager::mainAct0D() {
     u8 buf[1];
     buf[0] = Random_GlobalBelow(2) + 0x11;
-    TalkWindowState_setNextMessage(unk_89c.unk_3c, buf, 0);
+    TalkWindowState_setNextMessage(talk.unk_3c, buf, 0);
     changeAct(6);
 }
 
 void BirthdayHostVillager::onTalkMelodyPlayed() {
-    unk_898 = 1;
+    talkMelodyPlayed = 1;
 }
 
 BOOL BirthdayHostVillager::canPlayTalkMelody() {
-    if (unk_898 == 0) {
+    if (talkMelodyPlayed == 0) {
         return TRUE;
     }
     return FALSE;

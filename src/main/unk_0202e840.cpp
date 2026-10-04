@@ -66,11 +66,11 @@ struct Unk_0202e918_Vec3 {
 
 struct Unk_0202e918_Cap {
     u8 pad_00[0x18];
-    s32 unk_18, unk_1c, unk_20;
+    s32 dirX, dirY, dirZ;
 };
 
 struct HitSphere {
-    s32 unk_00, unk_04, unk_08, unk_0c;
+    s32 centerX, centerY, centerZ, radius;
     HitSphere();
     ~HitSphere();
     BOOL intersectSegment(Unk_0202e918_Vec3 *out, Unk_0202e918_Cap *cap);
@@ -82,30 +82,30 @@ u8 sLowBatteryWarned;
 s32 sLowBatteryPollTimer;
 
 HitSphere::HitSphere() {
-    unk_00 = 0;
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_0c = 0;
+    centerX = 0;
+    centerY = 0;
+    centerZ = 0;
+    radius = 0;
 }
 
 HitSphere::~HitSphere() {}
 
 void HitSphere::set(Unk_0202e918_Vec3 *p, s32 r) {
-    unk_00 = p->x;
-    unk_04 = p->y;
-    unk_08 = p->z;
-    unk_0c = r;
+    centerX = p->x;
+    centerY = p->y;
+    centerZ = p->z;
+    radius = r;
 }
 
 BOOL HitSphere::intersectSegment(Unk_0202e918_Vec3 *out, Unk_0202e918_Cap *cap) {
     s32 z;
-    s32 r = unk_0c;
+    s32 r = radius;
     if (_ZN16CollisionSegment10distanceToEP15Unk_0202f660_V3(cap, this) <= r) {
-        z = unk_08 + func_01ffcb0c(cap->unk_20, unk_0c);
-        s32 y = unk_04 + func_01ffcb0c(cap->unk_1c, unk_0c);
-        s32 x = unk_00 + func_01ffcb0c(cap->unk_18, unk_0c);
+        z = centerZ + func_01ffcb0c(cap->dirZ, radius);
+        s32 y = centerY + func_01ffcb0c(cap->dirY, radius);
+        s32 x = centerX + func_01ffcb0c(cap->dirX, radius);
         Unk_0202e918_Vec3 a(x, y, z);
-        Unk_0202e918_Vec3 b(unk_00 - x, unk_04 - y, unk_08 - z);
+        Unk_0202e918_Vec3 b(centerX - x, centerY - y, centerZ - z);
         s64 s1 = func_01ffd028(cap, &a);
         s64 s2 = func_01ffd028(cap, &b);
         if (s1 < s2) {

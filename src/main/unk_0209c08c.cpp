@@ -74,8 +74,8 @@ public:
     s32 getType();
     s32 getAcreId();
 
-    s32 unk_00;
-    s32 unk_04;
+    s32 type;
+    s32 acreId;
 };
 
 // ---- 6x6 cell grid
@@ -97,8 +97,8 @@ public:
     void closeCandidates();
     BOOL openCandidates();
 
-    TownAcreCell unk_00[0x24];
-    RecordFile unk_120;
+    TownAcreCell cells[0x24];
+    RecordFile candidates;
 };
 
 // ---- row helper
@@ -192,9 +192,9 @@ public:
     TexVramSlot *getVramSlot();
     void *getHeap();
 
-    u8 unk_00;
-    void *unk_04;
-    TexVramSlot unk_08;
+    u8 inUse;
+    void *heap;
+    TexVramSlot vramSlot;
 };
 
 // ---- model resource holder (derived from ModelResource)
@@ -207,9 +207,9 @@ public:
     void reset();
     s32 loadFromSlot(ModelSlot *e, const char *name);
 
-    ModelResource unk_00;
-    u8 unk_34;
-    void *unk_38;
+    ModelResource resource;
+    u8 isLoaded;
+    void *slot;
     void *unk_3c;
 };
 
@@ -223,19 +223,19 @@ public:
     void release(u16 *idx);
     ModelSlot *acquire(u16 *idx);
 
-    u16 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    ModelSlot *unk_0c;
-    Unk_0209c1a4_Alloc unk_10;
-    Unk_0209c15c_Fn unk_14;
+    u16 lastFreed;
+    u32 numSlots;
+    u32 numInUse;
+    ModelSlot *slots;
+    Unk_0209c1a4_Alloc allocFunc;
+    Unk_0209c15c_Fn freeFunc;
 };
 // global of the file: 1-byte state with empty inline constructor/destructor (func_0209c0a8 / func_0209c0a4)
 class SavedFadeIn {
 public:
     SavedFadeIn();
     ~SavedFadeIn();
-    u8 unk_00;
+    u8 fadeIn;
 };
 
 SavedFadeIn sSavedFadeIn;
@@ -254,42 +254,42 @@ extern "C" void ModelSlotHandle_Destroy(u16 *p) {
 }
 
 ModelSlot::ModelSlot() {
-    unk_00 = 0;
-    unk_04 = 0;
+    inUse = 0;
+    heap = 0;
 }
 
 void *ModelSlot::getHeap() {
-    return unk_04;
+    return heap;
 }
 
 TexVramSlot *ModelSlot::getVramSlot() {
-    return &unk_08;
+    return &vramSlot;
 }
 
 BOOL ModelSlot::init(void *a, void *b, u32 size, void *extra) {
     if (size) {
-        unk_04 = FrameHeap_Create((size + 3) & ~3, (u32)extra);
+        heap = FrameHeap_Create((size + 3) & ~3, (u32)extra);
     }
     if (a != 0 || b != 0) {
-        if (unk_08.alloc(a, 0, b)) return TRUE;
+        if (vramSlot.alloc(a, 0, b)) return TRUE;
         return FALSE;
     }
     return TRUE;
 }
 
 BOOL ModelSlot::clear() {
-    unk_00 = 0;
-    unk_04 = 0;
+    inUse = 0;
+    heap = 0;
     return TRUE;
 }
 
 ModelSlotPool::ModelSlotPool() {
-    unk_10 = 0;
-    unk_14 = 0;
-    unk_0c = 0;
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_00 = 0xffff;
+    allocFunc = 0;
+    freeFunc = 0;
+    slots = 0;
+    numSlots = 0;
+    numInUse = 0;
+    lastFreed = 0xffff;
 }
 
 ModelSlotPool::~ModelSlotPool() {}
@@ -301,28 +301,28 @@ ModelSlot *ModelSlotPool::acquire(u16 *idx) {
         u16 k;
         u32 n;
         ModelSlot *arr;
-        arr = unk_0c;
+        arr = slots;
         e = arr;
         k = 0;
-        n = unk_04;
+        n = numSlots;
         for (; k < n; e++, k++) {
-            if (e->unk_00 == 0 && k != unk_00) {
-                e->unk_00 = 1;
+            if (e->inUse == 0 && k != lastFreed) {
+                e->inUse = 1;
                 *idx = k;
-                unk_08++;
+                numInUse++;
                 return e;
             }
         }
-        u32 h = unk_00;
+        u32 h = lastFreed;
         ModelSlot *r = &arr[h];
-        if (arr[h].unk_00 == 0) {
-            r->unk_00 = 1;
-            *idx = unk_00;
-            unk_08++;
+        if (arr[h].inUse == 0) {
+            r->inUse = 1;
+            *idx = lastFreed;
+            numInUse++;
             return r;
         }
     } else {
-        if (i < unk_04) return &unk_0c[i];
+        if (i < numSlots) return &slots[i];
         *idx = 0xffff;
     }
     return 0;
@@ -331,30 +331,30 @@ ModelSlot *ModelSlotPool::acquire(u16 *idx) {
 void ModelSlotPool::release(u16 *idx) {
     u32 i = *idx;
     if (i != 0xffff) {
-        ModelSlot *arr = unk_0c;
+        ModelSlot *arr = slots;
         ModelSlot *e = &arr[i];
-        arr[i].unk_00 = 0;
-        unk_00 = *idx;
+        arr[i].inUse = 0;
+        lastFreed = *idx;
         *idx = 0xffff;
-        if (e->unk_04) func_020e885c(e->unk_04);
-        unk_08--;
+        if (e->heap) func_020e885c(e->heap);
+        numInUse--;
     }
 }
 
 BOOL ModelSlotPool::init(u32 n, void *a, void *b, u32 size, Unk_0209c1a4_Alloc alloc, Unk_0209c15c_Fn free) {
     void *mem;
-    unk_10 = alloc;
-    unk_14 = free;
+    allocFunc = alloc;
+    freeFunc = free;
     u32 total = n * ((size + 0x5b) & ~3);
-    unk_04 = n;
+    numSlots = n;
     mem = 0;
-    unk_08 = 0;
-    if (size) mem = unk_10(total, 0);
-    unk_0c = (ModelSlot *)Mem_Alloc(unk_04 * 0x1c);
-    ModelSlot *e = unk_0c;
+    numInUse = 0;
+    if (size) mem = allocFunc(total, 0);
+    slots = (ModelSlot *)Mem_Alloc(numSlots * 0x1c);
+    ModelSlot *e = slots;
     if (e) {
         u32 i;
-        for (i = 0; i < unk_04; i++) {
+        for (i = 0; i < numSlots; i++) {
             e = new (e) ModelSlot;
             if (!e->init(a, b, size, mem)) return FALSE;
             e++;
@@ -364,28 +364,28 @@ BOOL ModelSlotPool::init(u32 n, void *a, void *b, u32 size, Unk_0209c1a4_Alloc a
 }
 
 BOOL ModelSlotPool::destroy() {
-    ModelSlot *e = unk_0c;
+    ModelSlot *e = slots;
     if (e != 0) {
         u32 i;
-        for (i = 0; i < unk_04; i++) {
+        for (i = 0; i < numSlots; i++) {
             e->clear();
             e++;
         }
-        Mem_Free(unk_0c);
+        Mem_Free(slots);
     }
-    if (unk_14) unk_14();
-    unk_10 = 0;
-    unk_14 = 0;
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_00 = 0xffff;
-    unk_0c = 0;
+    if (freeFunc) freeFunc();
+    allocFunc = 0;
+    freeFunc = 0;
+    numSlots = 0;
+    numInUse = 0;
+    lastFreed = 0xffff;
+    slots = 0;
     return TRUE;
 }
 
 PooledModel::PooledModel() {
-    unk_34 = 0;
-    unk_38 = 0;
+    isLoaded = 0;
+    slot = 0;
 }
 
 PooledModel::~PooledModel() {
@@ -393,13 +393,13 @@ PooledModel::~PooledModel() {
 }
 
 s32 PooledModel::loadFromSlot(ModelSlot *e, const char *name) {
-    if (unk_38 == 0) unk_38 = e;
-    if (unk_34 == 0) {
+    if (slot == 0) slot = e;
+    if (isLoaded == 0) {
         TexVramSlot *r = e->getVramSlot();
         void *t = e->getHeap();
-        if (unk_00.loadModel((void *)name, r, t, gCurrentHeap) == 3) unk_34 = 1;
+        if (resource.loadModel((void *)name, r, t, gCurrentHeap) == 3) isLoaded = 1;
     }
-    return unk_34;
+    return isLoaded;
 }
 
 void PooledModel::reset() {
@@ -407,14 +407,14 @@ void PooledModel::reset() {
 }
 
 void PooledModel::unload() {
-    unk_34 = 0;
-    unk_38 = 0;
+    isLoaded = 0;
+    slot = 0;
     unk_3c = 0;
-    unk_00.release();
+    resource.release();
 }
 
 void *PooledModel::getModel() {
-    return unk_00.getModel();
+    return resource.getModel();
 }
 
 SavedFadeIn::SavedFadeIn() {}
@@ -422,11 +422,11 @@ SavedFadeIn::SavedFadeIn() {}
 SavedFadeIn::~SavedFadeIn() {}
 
 extern "C" void Scene_SaveFadeIn(u32 v) {
-    sSavedFadeIn.unk_00 = v;
+    sSavedFadeIn.fadeIn = v;
 }
 
 extern "C" u32 Scene_GetSavedFadeIn() {
-    return sSavedFadeIn.unk_00;
+    return sSavedFadeIn.fadeIn;
 }
 
 struct Unk_0209c3cc_Nib {
@@ -470,7 +470,7 @@ struct Unk_0209c41c_Pack {
 
 struct Unk_0209c614_Actor {
     u8 pad_00[0x5c];
-    Unk_0209c614_Vec unk_5c;
+    Unk_0209c614_Vec position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
 };

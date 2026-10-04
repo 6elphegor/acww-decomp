@@ -333,7 +333,7 @@ class GeneralMenuHeader {
 public:
     GeneralMenuHeader();
     ~GeneralMenuHeader();
-    u32 unk_00[0x94 / 4];
+    u32 titleLabel[0x94 / 4];
 };
 
 // 0x24-byte record object (ctor/dtor in main)

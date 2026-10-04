@@ -34,7 +34,7 @@ class SpNpcBlathersTalk;
 
 struct Unk_ov047_02258e34_Global {
     u8 pad_00[0x64];
-    s32 unk_64;
+    s32 myAid;
 };
 
 struct TalkStartMsg {
@@ -47,7 +47,7 @@ struct Unk_ov047_0225a074_Buf {
     u8 b : 3;
     u8 c : 3;
     u8 pad_01;
-    u16 unk_02;
+    u16 npcHandle;
 };
 
 struct MsgString9B {
@@ -57,14 +57,14 @@ struct MsgString9B {
 };
 
 struct Unk_ov047_0225a3e4_Msg {
-    u8 unk_00;
+    u8 msgIndex;
     u8 pad_01;
-    u16 unk_02;
+    u16 item;
     u16 unk_04;
 };
 
 struct Unk_ov047_0225a5e8_Msg {
-    u8 unk_00;
+    u8 msgIndex;
     u8 pad_01;
     u16 unk_02;
 };
@@ -507,15 +507,15 @@ public:
     void setNextScript(s32 idx);
     void setScript(s32 idx);
 
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ SpNpcBlathers *unk_b0;
-    /* 0xb4 */ Fn unk_b4;
-    /* 0xbc */ Fn unk_bc;
-    /* 0xc4 */ s32 unk_c4;
-    /* 0xc8 */ u8 unk_c8;
+    /* 0xac */ s32 dramaTalk;
+    /* 0xb0 */ SpNpcBlathers *ownerNpc;
+    /* 0xb4 */ Fn script;
+    /* 0xbc */ Fn nextScript;
+    /* 0xc4 */ s32 pocketSlot;
+    /* 0xc8 */ u8 appraisalFlow;
     /* 0xc9 */ u8 pad_c9;
-    /* 0xca */ u16 unk_ca;
-    /* 0xcc */ s32 unk_cc;
+    /* 0xca */ u16 item;
+    /* 0xcc */ s32 nextMsg;
 };
 
 class SpNpcBlathers : public SpNpcActor {
@@ -550,18 +550,18 @@ public:
     void changeAct(s32 state);
 
     s32 unk_654;
-    SpNpcBlathersTalk unk_658;
-    u8 unk_728;
+    SpNpcBlathersTalk talk;
+    u8 dramaShown;
     u8 pad_729;
-    u16 unk_72a;
-    u16 unk_72c;
-    u16 unk_72e;
-    s16 unk_730;
-    u8 unk_732;
+    u16 dramaTimer;
+    u16 standBlend;
+    u16 sleepTimer;
+    s16 homeAngle;
+    u8 isAsleep;
     u8 pad_733;
-    u16 unk_734;
+    u16 sleepBlend;
     s16 pad_736;
-    s32 unk_738;
+    s32 effectHandle;
 };
 
 extern "C" void _ZN17SpNpcBlathersTalk16onDeliveryChoiceEj();
@@ -803,10 +803,10 @@ BOOL SpNpcBlathers::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
-    unk_72c = data_020c6cc8;
-    unk_738 = -1;
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
+    standBlend = data_020c6cc8;
+    effectHandle = -1;
     return TRUE;
 }
 
@@ -815,11 +815,11 @@ BOOL SpNpcBlathers::vfunc_00() {
         return FALSE;
     }
     u8 buf[8];
-    unk_728 = 0;
-    unk_730 = rotY;
-    unk_72a = 0xff;
+    dramaShown = 0;
+    homeAngle = rotY;
+    dramaTimer = 0xff;
     collider.unk_1c |= 2;
-    unk_734 = 0;
+    sleepBlend = 0;
     if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         collider.unk_1c |= 2;
         if (NetArea_IsLocalOwner()) {
@@ -845,9 +845,9 @@ BOOL SpNpcBlathers::vfunc_0c() {
     if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
-    if (unk_738 != -1) {
-        Effect_End(unk_738);
-        unk_738 = -1;
+    if (effectHandle != -1) {
+        Effect_End(effectHandle);
+        effectHandle = -1;
     }
     return TRUE;
 }
@@ -877,23 +877,23 @@ void SpNpcBlathers::changeAct(s32 state) {
 
 BOOL SpNpcBlathers::setupAct00() {
     u8 buf[8];
-    unk_72a = 0xff;
-    NpcActionCtrl_requestStand(&actionCtrl, 1, unk_72c);
-    if (unk_728 == 0) {
+    dramaTimer = 0xff;
+    NpcActionCtrl_requestStand(&actionCtrl, 1, standBlend);
+    if (dramaShown == 0) {
         if (Talk_IsDramaPending(this, buf, 1)) {
-            unk_72a = Random_GlobalBelow(5) * 0x14 + 0x64;
+            dramaTimer = Random_GlobalBelow(5) * 0x14 + 0x64;
         }
     }
-    unk_732 = 0;
-    unk_72c = data_020c6cc8;
-    unk_72e = 0x78;
+    isAsleep = 0;
+    standBlend = data_020c6cc8;
+    sleepTimer = 0x78;
     NpcLookAt_setTarget(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
 BOOL SpNpcBlathers::mainAct00() {
-    if (unk_72a != 0xff) {
-        if (func_020e7500(&unk_72a) == 0) {
+    if (dramaTimer != 0xff) {
+        if (func_020e7500(&dramaTimer) == 0) {
             changeAct(5);
         }
         return TRUE;
@@ -902,15 +902,15 @@ BOOL SpNpcBlathers::mainAct00() {
         Clock_GetTimeOfDay() == 3) {
         return TRUE;
     }
-    if (func_020e7500(&unk_72e) == 0) {
-        unk_734 = 0x18;
+    if (func_020e7500(&sleepTimer) == 0) {
+        sleepBlend = 0x18;
         changeAct(2);
     }
     return TRUE;
 }
 
 BOOL SpNpcBlathers::setupAct01() {
-    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, unk_730, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -924,30 +924,30 @@ BOOL SpNpcBlathers::mainAct01() {
 }
 
 BOOL SpNpcBlathers::setupAct02() {
-    NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0xf0, 0, unk_734, 0);
-    unk_732 = 1;
+    NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0xf0, 0, sleepBlend, 0);
+    isAsleep = 1;
     NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
 BOOL SpNpcBlathers::mainAct02() {
-    if (unk_738 == -1) {
-        unk_738 = Effect_Create(0x3c, (u8 *)this + 0x478, &rotY, 0);
+    if (effectHandle == -1) {
+        effectHandle = Effect_Create(0x3c, (u8 *)this + 0x478, &rotY, 0);
     } else {
-        Effect_SetPosition(unk_738, (u8 *)this + 0x478, &rotY);
+        Effect_SetPosition(effectHandle, (u8 *)this + 0x478, &rotY);
     }
     return TRUE;
 }
 
 BOOL SpNpcBlathers::setupAct03() {
-    NpcActor *p = func_02015aac(&unk_658);
+    NpcActor *p = func_02015aac(&talk);
     s32 r = 0;
     if (p) {
         r = getAngleTo(p);
     }
-    if (unk_738 != -1) {
-        Effect_End(unk_738);
-        unk_738 = -1;
+    if (effectHandle != -1) {
+        Effect_End(effectHandle);
+        effectHandle = -1;
     }
     NpcLookAt_setTarget(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 0);
@@ -956,7 +956,7 @@ BOOL SpNpcBlathers::setupAct03() {
 
 BOOL SpNpcBlathers::mainAct03() {
     if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
-        unk_732 = 0;
+        isAsleep = 0;
         TalkRequest_SetTargetDone(this);
         changeAct(4);
     }
@@ -975,13 +975,13 @@ BOOL SpNpcBlathers::mainAct06() {
         s32 a = 4;
         s32 b = 4;
         u32 x, t;
-        if (NpcActor_netGetSlots(this, &a, &b) && ((x = a), x == (t = gCommManager->unk_64)) && x == b) {
+        if (NpcActor_netGetSlots(this, &a, &b) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
             netSetSlotsIfOwner(1, t, t);
-            unk_658.vfunc_08();
-            func_02015ab0(&unk_658, getPlayerActor(4));
+            talk.vfunc_08();
+            func_02015ab0(&talk, getPlayerActor(4));
             changeAct(3);
         } else if (NetArea_IsLocalOwner() && b == 4) {
-            netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
+            netSetSlotsIfOwner(1, gCommManager->myAid, 4);
             changeAct(0);
         }
     }
@@ -998,7 +998,7 @@ BOOL SpNpcBlathers::mainAct07() {
         s32 a = 4;
         s32 b = 4;
         if (NpcActor_netGetSlots(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
-            netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
+            netSetSlotsIfOwner(1, gCommManager->myAid, 4);
             changeAct(0);
         }
     }
@@ -1013,13 +1013,13 @@ BOOL SpNpcBlathers::mainAct08() { return TRUE; }
 // ---------------------------------------------------------------------------------------------------------------------
 
 void SpNpcBlathersTalk::onTaskDone() {
-    if (unk_b4) {
-        (this->*unk_b4)();
+    if (script) {
+        (this->*script)();
         Fn n = *(Fn *)__ptmf_null;
-        unk_b4 = n;
-        if (unk_bc) {
-            unk_b4 = unk_bc;
-            unk_bc = n;
+        script = n;
+        if (nextScript) {
+            script = nextScript;
+            nextScript = n;
         }
     }
 }
@@ -1038,11 +1038,11 @@ extern "C" void SpNpcBlathersTalk_GetScript(SpNpcBlathersTalk *self, SpNpcBlathe
 }
 
 void SpNpcBlathersTalk::setScript(s32 idx) {
-    SpNpcBlathersTalk_GetScript(this, &unk_b4, idx);
+    SpNpcBlathersTalk_GetScript(this, &script, idx);
 }
 
 void SpNpcBlathersTalk::setNextScript(s32 idx) {
-    SpNpcBlathersTalk_GetScript(this, &unk_bc, idx);
+    SpNpcBlathersTalk_GetScript(this, &nextScript, idx);
 }
 
 extern "C" BOOL SpNpcBlathers_IsDonatableItem(u16 *p, s32 m) {
@@ -1062,65 +1062,65 @@ extern "C" BOOL SpNpcBlathers_IsDonatableItem(u16 *p, s32 m) {
 void SpNpcBlathersTalk::scriptDonationItemChosen() {
     void *o = unk_3c;
     Unk_ov047_0225a5e8_Msg m;
-    m.unk_00 = 0x22;
+    m.msgIndex = 0x22;
     if (MenuCtrl_IsResultOk()) {
         MsgString9B ob;
-        unk_c4 = -1;
-        unk_c4 = MenuCtrl_GetIndex();
-        unk_ca = Pocket_GetItem(unk_c4);
-        if (!Unk_ov047_0225a3e4_Same(&unk_ca, &m.unk_02)) {
-            ActorTalkRequest_setItemNameSlot(this, &unk_ca, 0, 7);
-            if (Unk_ov047_0225a4a8_R(&unk_ca, 0x1549, 0x1549)) {
-                m.unk_00 = 0x21;
+        pocketSlot = -1;
+        pocketSlot = MenuCtrl_GetIndex();
+        item = Pocket_GetItem(pocketSlot);
+        if (!Unk_ov047_0225a3e4_Same(&item, &m.unk_02)) {
+            ActorTalkRequest_setItemNameSlot(this, &item, 0, 7);
+            if (Unk_ov047_0225a4a8_R(&item, 0x1549, 0x1549)) {
+                m.msgIndex = 0x21;
             } else {
                 void *g = data_021ed0a0;
-                if (MuseumData_isDonated(g, &unk_ca) == 0) {
-                    if (Unk_ov047_0225a4a8_R(&unk_ca, 0x450c, 0x45db)) {
-                        unk_c8 = 0;
-                        m.unk_00 = 0x25;
-                    } else if (unk_ca >= 0x3894 && unk_ca <= 0x38e3) {
-                        m.unk_00 = Random_GlobalBelow(3) + 0x2e;
-                    } else if (unk_ca >= 0x12b0 && unk_ca <= 0x12e7) {
-                        if (Unk_ov047_0225a5e8_Idx(unk_ca, 0x12b0, 0x12e7) != 0x34) {
-                            m.unk_00 = 0x32;
+                if (MuseumData_isDonated(g, &item) == 0) {
+                    if (Unk_ov047_0225a4a8_R(&item, 0x450c, 0x45db)) {
+                        appraisalFlow = 0;
+                        m.msgIndex = 0x25;
+                    } else if (item >= 0x3894 && item <= 0x38e3) {
+                        m.msgIndex = Random_GlobalBelow(3) + 0x2e;
+                    } else if (item >= 0x12b0 && item <= 0x12e7) {
+                        if (Unk_ov047_0225a5e8_Idx(item, 0x12b0, 0x12e7) != 0x34) {
+                            m.msgIndex = 0x32;
                         } else {
-                            m.unk_00 = 0x33;
+                            m.msgIndex = 0x33;
                         }
-                    } else if (unk_ca >= 0x12e8 && unk_ca <= 0x131f) {
-                        m.unk_00 = 0x35;
-                    } else if (unk_ca >= 0x38e4 && unk_ca <= 0x3933) {
-                        s32 idx = unk_ca >= 0x38e4 && unk_ca <= 0x3933 ? (s32)(unk_ca - 0x38e4) >> 2 : -1;
-                        unk_ca = (u32)idx < 0x14 ? idx * 4 + 0x3934 : 0x3934;
-                        s32 t = unk_c4;
+                    } else if (item >= 0x12e8 && item <= 0x131f) {
+                        m.msgIndex = 0x35;
+                    } else if (item >= 0x38e4 && item <= 0x3933) {
+                        s32 idx = item >= 0x38e4 && item <= 0x3933 ? (s32)(item - 0x38e4) >> 2 : -1;
+                        item = (u32)idx < 0x14 ? idx * 4 + 0x3934 : 0x3934;
+                        s32 t = pocketSlot;
                         if (t >= 0) {
-                            Pocket_SetItem(&unk_ca, 0, t);
+                            Pocket_SetItem(&item, 0, t);
                         }
-                        m.unk_00 = 0x42;
-                    } else if (unk_ca >= 0x3934 && unk_ca <= 0x3983) {
-                        m.unk_00 = 0x43;
+                        m.msgIndex = 0x42;
+                    } else if (item >= 0x3934 && item <= 0x3983) {
+                        m.msgIndex = 0x43;
                     }
                 } else {
-                    switch (MuseumData_getDonationState(g, &unk_ca)) {
+                    switch (MuseumData_getDonationState(g, &item)) {
                     case 0:
-                        m.unk_00 = 0x39;
+                        m.msgIndex = 0x39;
                         break;
                     case 1:
-                        if (MuseumData_getDonorName(g, &ob, &unk_ca)) {
+                        if (MuseumData_getDonorName(g, &ob, &item)) {
                             TalkWindowState_setSlot(o, 0, &ob);
                         }
-                        m.unk_00 = 0x38;
+                        m.msgIndex = 0x38;
                         break;
                     case 2:
-                        m.unk_00 = 0x37;
+                        m.msgIndex = 0x37;
                         break;
                     }
                 }
             }
-            Unk_02014420_requestTakeItem(this, &unk_ca, 0, 10, 0);
+            Unk_02014420_requestTakeItem(this, &item, 0, 10, 0);
             setNextScript(4);
         }
     } else {
-        unk_ca = 0xfff1;
+        item = 0xfff1;
         Unk_020d7710_requestReopenWindow(this);
     }
     TalkWindowState_setNextMessage(o, &m, sSpNpcBlathersKey);
@@ -1140,14 +1140,14 @@ extern "C" BOOL SpNpcBlathers_IsUnidentifiedFossil(u16 *p, s32 m) {
 void SpNpcBlathersTalk::scriptAppraisalItemChosen() {
     void *o = unk_3c;
     Unk_ov047_0225a5e8_Msg m;
-    m.unk_00 = 0x22;
+    m.msgIndex = 0x22;
     if (MenuCtrl_IsResultOk()) {
-        unk_c4 = MenuCtrl_GetIndex();
-        unk_ca = Pocket_GetItem(unk_c4);
-        Unk_02014420_requestTakeItem(this, &unk_ca, 0, 10, 0);
-        m.unk_00 = 0x19;
+        pocketSlot = MenuCtrl_GetIndex();
+        item = Pocket_GetItem(pocketSlot);
+        Unk_02014420_requestTakeItem(this, &item, 0, 10, 0);
+        m.msgIndex = 0x19;
     } else {
-        unk_ca = 0xfff1;
+        item = 0xfff1;
         Unk_020d7710_requestReopenWindow(this);
     }
     setNextScript(4);
@@ -1183,19 +1183,19 @@ extern "C" BOOL SpNpcBlathers_IsDeliveryItem(u16 *p, s32 m) {
 void SpNpcBlathersTalk::scriptDeliveryItemChosen() {
     void *o = unk_3c;
     Unk_ov047_0225a3e4_Msg m;
-    m.unk_00 = 0xe8;
+    m.msgIndex = 0xe8;
     u32 r7 = (u32)PlayerData_GetCurrent();
     if (MenuCtrl_IsResultOk() && Talk_IsInOwnTown()) {
         s32 r5 = MenuCtrl_GetIndex();
-        m.unk_02 = Pocket_GetItem(r5);
+        m.item = Pocket_GetItem(r5);
         if (r5 >= 0) {
             Pocket_RemoveItem(r5);
         }
-        if (!Unk_ov047_0225a3e4_Same(&m.unk_02, &m.unk_04)) {
-            Unk_02014420_requestTakeItem(this, &m.unk_02, 2, 5, 0);
+        if (!Unk_ov047_0225a3e4_Same(&m.item, &m.unk_04)) {
+            Unk_02014420_requestTakeItem(this, &m.item, 2, 5, 0);
         }
         ErrandRecord_setStep(ParcelErrand_GetRecord(SickVillagerRecord_getParcelErrand(PlayerData_getErrands(r7))), 1);
-        m.unk_00 = 0xe7;
+        m.msgIndex = 0xe7;
     }
     TalkWindowState_setNextMessage(o, &m, sSpNpcBlathersKey);
 }
@@ -1208,7 +1208,7 @@ BOOL SpNpcBlathers::setupAct05() {
 BOOL SpNpcBlathers::mainAct05() {
     if (NpcActionCtrl_getAction(&actionCtrl) == 10) {
         if (NpcActionCtrl_isActionDone(&actionCtrl)) {
-            unk_72c = 0x18;
+            standBlend = 0x18;
             changeAct(0);
         }
     }
@@ -1216,27 +1216,27 @@ BOOL SpNpcBlathers::mainAct05() {
 }
 
 SpNpcBlathersTalk::SpNpcBlathersTalk() {
-    unk_ca = 0xfff1;
+    item = 0xfff1;
 }
 
 SpNpcBlathersTalk::~SpNpcBlathersTalk() {}
 
 void SpNpcBlathersTalk::vfunc_08() {
     ActorTalkRequest::vfunc_08();
-    unk_c4 = -1;
-    unk_ca = 0xfff1;
+    pocketSlot = -1;
+    item = 0xfff1;
     Fn t = *(Fn *)__ptmf_null;
-    unk_b4 = t;
-    unk_bc = t;
+    script = t;
+    nextScript = t;
 }
 
 void SpNpcBlathersTalk::attachOwner(SpNpcBlathers *owner) {
     vfunc_08();
-    unk_b0 = owner;
-    unk_ac = 0;
-    unk_c4 = -1;
-    unk_c8 = 0;
-    unk_ca = 0xfff1;
+    ownerNpc = owner;
+    dramaTalk = 0;
+    pocketSlot = -1;
+    appraisalFlow = 0;
+    item = 0xfff1;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1251,9 +1251,9 @@ void SpNpcBlathersTalk::start(TalkStartMsg *out) {
     void *g = gCommManager;
     Unk_ov047_0225a074_Buf l;
     if (!CommManager_isOnline(g) && *DebugVar_GetPtr(0, 0x4a) == 0) {
-        l.unk_02 = 0xd00c;
-        if (ParcelErrand_IsFor(r7, &l.unk_02)) {
-            if (unk_b0->unk_732 == 0) {
+        l.npcHandle = 0xd00c;
+        if (ParcelErrand_IsFor(r7, &l.npcHandle)) {
+            if (ownerNpc->isAsleep == 0) {
                 out->msgIndex = 0xe6;
             } else {
                 out->msgIndex = 0xe5;
@@ -1261,25 +1261,25 @@ void SpNpcBlathersTalk::start(TalkStartMsg *out) {
             return;
         }
     }
-    if (unk_b0->unk_728 == 0 && unk_ac != 1 && !CommManager_isOnline(g) && *DebugVar_GetPtr(0, 0x4a) == 0) {
-        if (Talk_IsDramaPending(unk_b0, &l, 1)) {
+    if (ownerNpc->dramaShown == 0 && dramaTalk != 1 && !CommManager_isOnline(g) && *DebugVar_GetPtr(0, 0x4a) == 0) {
+        if (Talk_IsDramaPending(ownerNpc, &l, 1)) {
             out->msgKey = sSpNpcBlathersDramaKey;
             out->msgIndex = (sSpNpcBlathersDramaMsgTable + l.b * 6)[l.c];
-            unk_ac = 1;
-            unk_b0->unk_728 = 1;
+            dramaTalk = 1;
+            ownerNpc->dramaShown = 1;
             return;
         }
     }
-    unk_ac = 0;
+    dramaTalk = 0;
     if (Talk_IsInOwnTown() == 0) {
         if (TownSessionState_TestFlag(TownSessionState_Get(), 9) == 0) {
-            if (unk_b0->unk_732 != 0) {
+            if (ownerNpc->isAsleep != 0) {
                 out->msgIndex = 4;
             } else {
                 out->msgIndex = 5;
             }
         } else {
-            if (unk_b0->unk_732 != 0) {
+            if (ownerNpc->isAsleep != 0) {
                 out->msgIndex = 6;
             } else {
                 out->msgIndex = 7;
@@ -1288,31 +1288,31 @@ void SpNpcBlathersTalk::start(TalkStartMsg *out) {
         TownSessionState_SetFlag(TownSessionState_Get(), 9);
     } else if (TownSessionState_TestFlag(TownSessionState_Get(), 9) == 0) {
         if (MuseumData_isComplete(data_021ed0a0)) {
-            if (unk_b0->unk_732 != 0) {
+            if (ownerNpc->isAsleep != 0) {
                 out->msgIndex = 0;
             } else {
                 out->msgIndex = 1;
             }
         } else {
-            if (unk_b0->unk_732 != 0) {
+            if (ownerNpc->isAsleep != 0) {
                 out->msgIndex = 8;
             } else {
                 out->msgIndex = 9;
             }
         }
-        unk_b0->unk_732 = 0;
+        ownerNpc->isAsleep = 0;
         TownSessionState_SetFlag(TownSessionState_Get(), 9);
     } else if (MuseumData_isComplete(data_021ed0a0)) {
-        if (unk_b0->unk_732 != 0) {
+        if (ownerNpc->isAsleep != 0) {
             out->msgIndex = 3;
-            unk_b0->unk_732 = 0;
+            ownerNpc->isAsleep = 0;
         } else {
             out->msgIndex = 2;
         }
     } else {
-        if (unk_b0->unk_732 != 0) {
+        if (ownerNpc->isAsleep != 0) {
             out->msgIndex = 10;
-            unk_b0->unk_732 = 0;
+            ownerNpc->isAsleep = 0;
         } else {
             out->msgIndex = 11;
         }
@@ -1320,16 +1320,16 @@ void SpNpcBlathersTalk::start(TalkStartMsg *out) {
 }
 
 void SpNpcBlathersTalk::commitDonation() {
-    if (!Unk_ov047_022596e8_IsNone(&unk_ca)) {
+    if (!Unk_ov047_022596e8_IsNone(&item)) {
         void *p = PlayerData_GetCurrent();
-        MuseumData_donate(data_021ed0a0, &unk_ca);
+        MuseumData_donate(data_021ed0a0, &item);
         SaveData_setFlag(gSaveData, 0xc);
         Unk_02097ff4_setFlag(p, 8);
-        if (unk_c4 >= 0) {
-            Pocket_RemoveItem(unk_c4);
-            unk_c4 = -1;
+        if (pocketSlot >= 0) {
+            Pocket_RemoveItem(pocketSlot);
+            pocketSlot = -1;
         }
-        unk_ca = 0xfff1;
+        item = 0xfff1;
     }
 }
 
@@ -1381,40 +1381,40 @@ void SpNpcBlathersTalk::onMessageEnd() {
     }
     if ((s32)msgIndex < 0xc) {
         if (SaveData_testFlag(gSaveData, 0xc)) {
-            unk_cc = 0x44;
+            nextMsg = 0x44;
         } else {
-            unk_cc = 0xc;
+            nextMsg = 0xc;
         }
-        hdr[0] = unk_cc;
+        hdr[0] = nextMsg;
         TalkWindowState_setNextMessage(unk_3c, (u8 *)&hdr[0], sSpNpcBlathersKey);
         goto end;
     }
     if (msgIndex == 0x33 || ((s32)msgIndex >= 0x6e && (s32)msgIndex <= 0xa5)) {
         commitDonation();
         if (MuseumData_isInsectsComplete(data_021ed0a0)) {
-            unk_cc = 0x34;
+            nextMsg = 0x34;
         } else {
-            unk_cc = 0x27;
+            nextMsg = 0x27;
         }
         Unk_02014420_requestKeepItem(this);
-        hdr[1] = unk_cc;
+        hdr[1] = nextMsg;
         TalkWindowState_setNextMessage(unk_3c, (u8 *)&hdr[1], sSpNpcBlathersKey);
         goto end;
     }
     if ((s32)msgIndex >= 0xaa && (s32)msgIndex <= 0xe1) {
         commitDonation();
         if (MuseumData_isFishComplete(data_021ed0a0)) {
-            unk_cc = 0x36;
+            nextMsg = 0x36;
         } else {
-            unk_cc = 0x27;
+            nextMsg = 0x27;
         }
         Unk_02014420_requestKeepItem(this);
-        hdr[2] = unk_cc;
+        hdr[2] = nextMsg;
         TalkWindowState_setNextMessage(unk_3c, (u8 *)&hdr[2], sSpNpcBlathersKey);
         goto end;
     }
     p = PlayerData_GetCurrent();
-    unk_cc = 0xff;
+    nextMsg = 0xff;
     static Unk_ov047_02259a8c_Ent tbl[35] = {
         {0x14, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b4d8}, {0x15, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b4d0},
         {0x16, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b4c8}, {0x17, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b4c0},
@@ -1451,48 +1451,48 @@ test:
     s32 v50 = *(volatile u8 *)&msgIndex;
     if (v50 >= 0x50 && v50 <= 0x67) {
         if (MuseumData_isFossilsComplete(data_021ed0a0)) {
-            unk_cc = 0x29;
-        } else if (unk_c8 == 0) {
-            unk_cc = 0x27;
+            nextMsg = 0x29;
+        } else if (appraisalFlow == 0) {
+            nextMsg = 0x27;
         } else {
-            unk_cc = 0x20;
+            nextMsg = 0x20;
         }
-        unk_ca = 0xfff1;
+        item = 0xfff1;
         Unk_02014420_requestKeepItem(this);
     }
     if (msgIndex == 0x25 || msgIndex == 0x2c || msgIndex == 0x2d || msgIndex == 0x69) {
-        if (!Unk_ov047_022596e8_IsNoneT(&unk_ca, *(u16 *)&tt[0])) {
+        if (!Unk_ov047_022596e8_IsNoneT(&item, *(u16 *)&tt[0])) {
             void *g = data_021ed0a0;
             s32 a, b, r;
-            MuseumData_donate(g, &unk_ca);
+            MuseumData_donate(g, &item);
             SaveData_setFlag(gSaveData, 0xc);
             Unk_02097ff4_setFlag(p, 8);
-            if (unk_c4 >= 0) {
-                Pocket_RemoveItem(unk_c4);
-                unk_c4 = -1;
+            if (pocketSlot >= 0) {
+                Pocket_RemoveItem(pocketSlot);
+                pocketSlot = -1;
             }
-            a = Item_GetFossilGroup(&unk_ca);
+            a = Item_GetFossilGroup(&item);
             b = Fossil_CountInGroup(a);
             r = Museum_CountDonatedFossilsInGroup(g, a);
             if (b == 1) {
                 if (msgIndex == 0x2d) {
-                    if (!Unk_ov047_022596e8_IsNoneT(&unk_ca, *(u16 *)&tt[1])) {
-                        unk_cc = (u8)(a + 0x50);
+                    if (!Unk_ov047_022596e8_IsNoneT(&item, *(u16 *)&tt[1])) {
+                        nextMsg = (u8)(a + 0x50);
                     }
                 } else {
-                    unk_cc = 0x2d;
+                    nextMsg = 0x2d;
                 }
             } else if (b == r) {
-                if (!Unk_ov047_022596e8_IsNoneT(&unk_ca, *(u16 *)&tt[2])) {
-                    unk_cc = (u8)(a + 0x50);
+                if (!Unk_ov047_022596e8_IsNoneT(&item, *(u16 *)&tt[2])) {
+                    nextMsg = (u8)(a + 0x50);
                 }
             } else {
-                unk_cc = 0x26;
+                nextMsg = 0x26;
             }
         }
     }
-    if (unk_cc != 0xff) {
-        hdr[3] = unk_cc;
+    if (nextMsg != 0xff) {
+        hdr[3] = nextMsg;
         TalkWindowState_setNextMessage(unk_3c, (u8 *)&hdr[3], sSpNpcBlathersKey);
     }
 end:;
@@ -1517,103 +1517,103 @@ void SpNpcBlathersTalk::returnItemAndShowMenu() {
 
 void SpNpcBlathersTalk::returnItemAndAskShowMore() {
     Unk_02014420_requestReturnItem(this);
-    unk_cc = 0x6b;
+    nextMsg = 0x6b;
 }
 
 void SpNpcBlathersTalk::showMuseumMenu() {
     if (SaveData_testFlag(gSaveData, 0xc)) {
-        unk_cc = 0x46;
+        nextMsg = 0x46;
     } else {
-        unk_cc = 0x45;
+        nextMsg = 0x45;
     }
 }
 
 void SpNpcBlathersTalk::returnHeldItem() {
-    if (unk_ca != 0xfff1) {
+    if (item != 0xfff1) {
         Unk_02014420_requestReturnItem(this);
     }
 }
 
 void SpNpcBlathersTalk::appraiseFossil() {
     u16 bufa, bufb;
-    if (!Unk_ov047_022596e8_IsNone(&unk_ca)) {
+    if (!Unk_ov047_022596e8_IsNone(&item)) {
         void *p = PlayerData_GetCurrent();
         Unk_02097ff4_setFlag(p, 0x35);
         ItemPick_FromRange(&bufb, 0x450c, 0x34, 0, 0, 0, 1, 10, 0, 1);
-        unk_ca = bufb;
-        if (unk_c4 >= 0) {
-            Pocket_SetItem(&unk_ca, 0, unk_c4);
+        item = bufb;
+        if (pocketSlot >= 0) {
+            Pocket_SetItem(&item, 0, pocketSlot);
         }
-        ActorTalkRequest_setItemNameSlot(this, &unk_ca, 0, 7);
-        ItemPick_FromRange(&bufa, 0x450c, 0x34, &unk_ca, 1, 0, 1, 10, 0, 1);
+        ActorTalkRequest_setItemNameSlot(this, &item, 0, 7);
+        ItemPick_FromRange(&bufa, 0x450c, 0x34, &item, 1, 0, 1, 10, 0, 1);
         ActorTalkRequest_setItemNameSlot(this, &bufa, 1, 7);
     }
-    unk_cc = (u8)(Random_GlobalBelow(3) + 0x1a);
+    nextMsg = (u8)(Random_GlobalBelow(3) + 0x1a);
 }
 
 void SpNpcBlathersTalk::afterFossilIdentified() {
-    if (unk_c8 == 0) {
+    if (appraisalFlow == 0) {
         if (CommManager_isOnline(gCommManager) == 0 && *DebugVar_GetPtr(0, 0x4a) == 0 && Talk_IsInOwnTown() != 0 &&
-            MuseumData_isDonated(data_021ed0a0, &unk_ca) == 0) {
-            unk_cc = 0x69;
+            MuseumData_isDonated(data_021ed0a0, &item) == 0) {
+            nextMsg = 0x69;
         } else {
-            unk_cc = 0x6a;
+            nextMsg = 0x6a;
         }
     } else {
-        unk_cc = 0x1d;
+        nextMsg = 0x1d;
     }
 }
 
 void SpNpcBlathersTalk::offerFossilDonation() {
     if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         Unk_02014420_requestReturnItem(this);
-        unk_cc = 0x20;
-    } else if (Talk_IsInOwnTown() != 0 && MuseumData_isDonated(data_021ed0a0, &unk_ca) == 0) {
-        unk_cc = 0x1e;
+        nextMsg = 0x20;
+    } else if (Talk_IsInOwnTown() != 0 && MuseumData_isDonated(data_021ed0a0, &item) == 0) {
+        nextMsg = 0x1e;
     } else {
         Unk_02014420_requestReturnItem(this);
-        unk_cc = 0x20;
+        nextMsg = 0x20;
     }
 }
 
 void SpNpcBlathersTalk::returnAppraisedFossil() {
     Unk_02014420_requestReturnItem(this);
-    unk_cc = 0x20;
+    nextMsg = 0x20;
 }
 
 void SpNpcBlathersTalk::onFossilPartDonated() {
     Unk_02014420_requestKeepItem(this);
     commitDonation();
-    if (unk_c8 == 0) {
-        unk_cc = 0x27;
+    if (appraisalFlow == 0) {
+        nextMsg = 0x27;
     } else {
-        unk_cc = 0x20;
+        nextMsg = 0x20;
     }
 }
 
 void SpNpcBlathersTalk::onExhibitCompleted() {
     if (MuseumData_isComplete(data_021ed0a0)) {
-        unk_cc = 0x2a;
+        nextMsg = 0x2a;
     } else {
-        unk_cc = 0x2b;
+        nextMsg = 0x2b;
     }
 }
 
 void SpNpcBlathersTalk::onPaintingDonated() {
     commitDonation();
     if (MuseumData_isPaintingsComplete(data_021ed0a0)) {
-        unk_cc = 0x31;
+        nextMsg = 0x31;
     } else {
-        unk_cc = 0x27;
+        nextMsg = 0x27;
     }
     Unk_02014420_requestKeepItem(this);
 }
 
 void SpNpcBlathersTalk::showInsectComment() {
     if (msgIndex == 0x32) {
-        if (!Unk_ov047_022596e8_IsNone(&unk_ca)) {
+        if (!Unk_ov047_022596e8_IsNone(&item)) {
             BOOL f = FALSE;
-            u32 v = unk_ca;
+            u32 v = item;
             if (v >= 0x12b0 && v <= 0x12e7) {
                 f = TRUE;
             }
@@ -1623,29 +1623,29 @@ void SpNpcBlathersTalk::showInsectComment() {
             } else {
                 x = -1;
             }
-            unk_cc = (u8)(x + 0x6e);
+            nextMsg = (u8)(x + 0x6e);
         }
     }
 }
 
 void SpNpcBlathersTalk::showFishComment() {
     BOOL eq;
-    if (Item_IsFurniture(&unk_ca)) {
+    if (Item_IsFurniture(&item)) {
         u16 t = 0xfff1;
-        s32 x = Item_GetFurnitureIndex(&unk_ca);
+        s32 x = Item_GetFurnitureIndex(&item);
         if (x == Item_GetFurnitureIndex(&t)) {
             eq = TRUE;
         } else {
             eq = FALSE;
         }
-    } else if (unk_ca == 0xfff1) {
+    } else if (item == 0xfff1) {
         eq = TRUE;
     } else {
         eq = FALSE;
     }
     if (!eq) {
         BOOL f = FALSE;
-        u32 v = unk_ca;
+        u32 v = item;
         if (v >= 0x12e8 && v <= 0x131f) {
             f = TRUE;
         }
@@ -1655,47 +1655,47 @@ void SpNpcBlathersTalk::showFishComment() {
         } else {
             t = -1;
         }
-        unk_cc = (u8)(t + 0xaa);
+        nextMsg = (u8)(t + 0xaa);
     }
 }
 
 void SpNpcBlathersTalk::onAlreadyDonated() {
     BOOL eq;
-    if (Item_IsFurniture(&unk_ca)) {
+    if (Item_IsFurniture(&item)) {
         u16 t = 0xfff1;
-        s32 x = Item_GetFurnitureIndex(&unk_ca);
+        s32 x = Item_GetFurnitureIndex(&item);
         if (x == Item_GetFurnitureIndex(&t)) {
             eq = TRUE;
         } else {
             eq = FALSE;
         }
-    } else if (unk_ca == 0xfff1) {
+    } else if (item == 0xfff1) {
         eq = TRUE;
     } else {
         eq = FALSE;
     }
     if (!eq) {
         BOOL f = FALSE;
-        u32 v = unk_ca;
+        u32 v = item;
         if (v >= 0x450c && v <= 0x45db) {
             f = TRUE;
         }
         if (f) {
-            unk_cc = 0x3a;
+            nextMsg = 0x3a;
         } else if (v >= 0x12b0 && v <= 0x12e7) {
-            unk_cc = 0x3b;
+            nextMsg = 0x3b;
         } else if (v >= 0x12e8 && v <= 0x131f) {
-            unk_cc = 0x3c;
+            nextMsg = 0x3c;
         } else {
-            unk_cc = 0x3d;
+            nextMsg = 0x3d;
         }
     }
 }
 
 void SpNpcBlathersTalk::returnItemAndAskMore() {
     Unk_02014420_requestReturnItem(this);
-    unk_ca = 0xfff1;
-    unk_cc = 0x23;
+    item = 0xfff1;
+    nextMsg = 0x23;
 }
 
 void SpNpcBlathersTalk::openExhibitList() {
@@ -1716,7 +1716,7 @@ void SpNpcBlathersTalk::onChoice(u32 a) {
         u32 i = 0;
         PlayerData_GetCurrent();
         PlayerData_getErrands();
-        if (unk_ac == 1) {
+        if (dramaTalk == 1) {
             i = 1;
         }
         (this->*tbl[i])(a);
@@ -1729,19 +1729,19 @@ void SpNpcBlathersTalk::onDramaChoice(s32 a) {
     if (a <= 0x15) {
         ActorTalkRequest_getChoiceList(this);
         u32 r = ChoiceList_getResult();
-        unk_cc = 0xff;
+        nextMsg = 0xff;
         if (r != 0) {
             if (SaveData_testFlag(gSaveData, 0xc)) {
-                unk_cc = 0x47;
+                nextMsg = 0x47;
             } else {
-                unk_cc = 0x48;
+                nextMsg = 0x48;
             }
-            unk_ac = 0;
-            buf[1] = unk_cc;
+            dramaTalk = 0;
+            buf[1] = nextMsg;
             TalkWindowState_setNextMessage(unk_3c, &buf[1], sSpNpcBlathersKey);
         } else {
-            if (Talk_IsDramaPending(unk_b0, buf, 1)) {
-                Talk_AdvanceDrama(unk_b0, buf);
+            if (Talk_IsDramaPending(ownerNpc, buf, 1)) {
+                Talk_AdvanceDrama(ownerNpc, buf);
             }
         }
     }
@@ -1786,7 +1786,7 @@ extern "C" void *data_ov047_0225b3a8[2] = {(void *)_ZN17SpNpcBlathersTalk17onPai
 void SpNpcBlathersTalk::dispatchChoice(u32 a) {
     ActorTalkRequest_getChoiceList(this);
     u32 arg = ChoiceList_getResult();
-    unk_cc = 0xff;
+    nextMsg = 0xff;
     static Unk_ov047_022592b8_Ent tbl[17] = {
         {0xc, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b390},
         {0xe, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b388},
@@ -1817,9 +1817,9 @@ loop0:
     i++;
 test0:
     if (i < 0x11) goto loop0;
-    if (unk_cc != 0xff) {
+    if (nextMsg != 0xff) {
         Unk_ov047_022592b8_Byte b;
-        b.v = unk_cc;
+        b.v = nextMsg;
         TalkWindowState_setNextMessage(unk_3c, &b, sSpNpcBlathersKey);
     }
 }
@@ -1853,102 +1853,102 @@ void SpNpcBlathersTalk::onMainMenuChoice(s32 a) {
     }
     switch (a) {
     case 0:
-        unk_c8 = 0;
+        appraisalFlow = 0;
         if (Talk_IsInOwnTown()) {
             if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
-                unk_cc = 0x41;
+                nextMsg = 0x41;
             } else {
-                unk_cc = 0x14;
+                nextMsg = 0x14;
             }
         } else {
-            unk_cc = 0x40;
+            nextMsg = 0x40;
         }
         break;
     case 1: {
-        unk_c8 = 0;
+        appraisalFlow = 0;
         u32 r = (u32)PlayerData_GetCurrent();
         if (MenuCtrl_BuildPocketMask(SpNpcBlathers_IsUnidentifiedFossil) == 0) {
-            unk_cc = 0x18;
+            nextMsg = 0x18;
         } else if (Unk_02097ff4_testFlag(r, 0x35) == 0) {
-            unk_c8 = 1;
-            unk_cc = 0x17;
+            appraisalFlow = 1;
+            nextMsg = 0x17;
         } else {
-            unk_c8 = 1;
-            unk_cc = 0x16;
+            appraisalFlow = 1;
+            nextMsg = 0x16;
         }
         break;
     }
     case 2:
         if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
-            unk_cc = 0x4a;
+            nextMsg = 0x4a;
         } else {
-            unk_cc = 0xd;
+            nextMsg = 0xd;
         }
         break;
     case 3: {
         void *g = data_021ed0a0;
         s32 r = MuseumData_getDonationPercent(g);
-        unk_cc = 0x13;
+        nextMsg = 0x13;
         if (r == 0) {
-            unk_cc = 0x10;
+            nextMsg = 0x10;
         } else if (r <= 0x1e000) {
-            unk_cc = 0x11;
+            nextMsg = 0x11;
         } else if (r <= 0x46000) {
-            unk_cc = 0x12;
+            nextMsg = 0x12;
         } else if (MuseumData_isComplete(g)) {
-            unk_cc = 0x49;
+            nextMsg = 0x49;
         }
         break;
     }
     case 4:
-        unk_cc = 0x3f;
+        nextMsg = 0x3f;
         break;
     }
 }
 
 void SpNpcBlathersTalk::onDonationOfferChoice(u32 a) {
     if (a == 0) {
-        unk_cc = 0x14;
+        nextMsg = 0x14;
     }
 }
 
 void SpNpcBlathersTalk::onDonateMoreChoice2(u32 a) {
     if (a == 0) {
-        unk_cc = 0x14;
+        nextMsg = 0x14;
     } else {
-        unk_cc = 0x28;
+        nextMsg = 0x28;
     }
 }
 
 void SpNpcBlathersTalk::onKeepFossilChoice(u32 a) {
     if (a == 0) {
-        unk_cc = 0x2c;
+        nextMsg = 0x2c;
     } else {
-        unk_cc = 0x1f;
+        nextMsg = 0x1f;
     }
 }
 
 void SpNpcBlathersTalk::onAppraiseAnotherChoice(u32 a) {
     if (a == 0) {
         if (MenuCtrl_BuildPocketMask(SpNpcBlathers_IsUnidentifiedFossil) == 0) {
-            unk_cc = 0x18;
+            nextMsg = 0x18;
         } else {
-            unk_cc = 0x16;
+            nextMsg = 0x16;
         }
     } else {
-        unk_cc = 0x3e;
+        nextMsg = 0x3e;
     }
 }
 
 void SpNpcBlathersTalk::onAppraiseDonatedFossilChoice(u32 a) {
     if (a == 0) {
         if (Unk_02097ff4_testFlag((u32)PlayerData_GetCurrent(), 0x35) == 0) {
-            unk_cc = 0x4b;
+            nextMsg = 0x4b;
         } else {
-            unk_cc = 0x19;
+            nextMsg = 0x19;
         }
     } else {
-        unk_cc = 0x15;
+        nextMsg = 0x15;
     }
 }
 
@@ -1956,23 +1956,23 @@ void SpNpcBlathersTalk::onAnythingElseChoice(u32 a) {
     if (a == 0) {
         if (Talk_IsInOwnTown()) {
             if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
-                unk_cc = 0x41;
+                nextMsg = 0x41;
             } else {
-                unk_cc = 0x14;
+                nextMsg = 0x14;
             }
         } else {
-            unk_cc = 0x40;
+            nextMsg = 0x40;
         }
     } else {
-        unk_cc = 0x24;
+        nextMsg = 0x24;
     }
 }
 
 void SpNpcBlathersTalk::onDonateMoreChoice(u32 a) {
     if (a == 0) {
-        unk_cc = 0x14;
+        nextMsg = 0x14;
     } else {
-        unk_cc = 0x28;
+        nextMsg = 0x28;
     }
 }
 
@@ -1982,9 +1982,9 @@ void SpNpcBlathersTalk::onDeliveryChoice(u32 a) {
         Unk_020d7710_openSubScene(this, 0);
         setScript(2);
     } else if (SaveData_testFlag(gSaveData, 0xc)) {
-        unk_cc = 0xea;
+        nextMsg = 0xea;
     } else {
-        unk_cc = 0xe9;
+        nextMsg = 0xe9;
     }
 }
 
@@ -2002,25 +2002,25 @@ void SpNpcBlathers::vfunc_4c(u32 cmd, u32 arg) {
     case 3:
         footstepFx.unk_08 = arg;
         if (arg != 4) {
-            netSetSlotsIfOwner(1, gCommManager->unk_64, arg);
+            netSetSlotsIfOwner(1, gCommManager->myAid, arg);
             changeAct(8);
         } else if (isNetOwner()) {
-            s32 g = gCommManager->unk_64;
+            s32 g = gCommManager->myAid;
             netSetSlotsIfOwner(1, g, g);
             changeAct(8);
         }
         break;
     case 0:
         footstepFx.unk_08 = arg;
-        if (arg != 4 && arg != gCommManager->unk_64) {
+        if (arg != 4 && arg != gCommManager->myAid) {
             netSetSlotsIfOwner(1, arg, arg);
             changeAct(7);
         } else if (isNetOwner()) {
-            s32 g = gCommManager->unk_64;
+            s32 g = gCommManager->myAid;
             netSetSlotsIfOwner(1, g, g);
-            ActorTalkRequest *p = &unk_658;
+            ActorTalkRequest *p = &talk;
             p->vfunc_08();
-            func_02015ab0(&unk_658, getPlayerActor(4));
+            func_02015ab0(&talk, getPlayerActor(4));
             changeAct(3);
         }
         break;
@@ -2028,14 +2028,14 @@ void SpNpcBlathers::vfunc_4c(u32 cmd, u32 arg) {
         if (arg == 4) {
             if (NetArea_IsLocalOwner()) {
                 Unk_ov047_02258e34_Global *gl = gCommManager;
-                netSetSlotsIfOwner(1, gl->unk_64, 4);
+                netSetSlotsIfOwner(1, gl->myAid, 4);
                 if (CommManager_isOnline(gl) || *DebugVar_GetPtr(0, 0x4a) != 0) {
                     changeAct(0);
                 } else {
                     changeAct(1);
                 }
             } else {
-                netSetSlotsIfOwner(1, 4, gCommManager->unk_64);
+                netSetSlotsIfOwner(1, 4, gCommManager->myAid);
                 changeAct(6);
             }
         }
@@ -2047,7 +2047,7 @@ void SpNpcBlathers::vfunc_4c(u32 cmd, u32 arg) {
                 b = 4;
                 if (NpcActor_netGetSlots(this, &a, &b)) {
                     if ((arg != 4 && (s32)arg == b) || arg == 4) {
-                        netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
+                        netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                         changeAct(0);
                     }
                 }

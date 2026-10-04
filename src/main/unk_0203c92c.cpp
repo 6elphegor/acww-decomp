@@ -36,8 +36,8 @@ public:
     BOOL isHiragana();
     void resetValues();
 
-    /* 0x00 */ u8 unk_00;
-    /* 0x01 */ u8 unk_01;
+    /* 0x00 */ u8 options;
+    /* 0x01 */ u8 changedMask;
 };
 
 PlayerOptions sPlayerOptions;
@@ -135,27 +135,27 @@ extern "C" void PlayerOptions_CopyOut(void *src, void *dst) { MI_CpuCopy8(src, d
 extern "C" void PlayerOptions_CopyIn(void *dst, void *src) { MI_CpuCopy8(src, dst, 1); }
 
 BOOL PlayerOptions::isHiragana() {
-    if (((Unk_0203c92c_Bits0 *)&unk_00)->b0) return TRUE;
+    if (((Unk_0203c92c_Bits0 *)&options)->b0) return TRUE;
     return FALSE;
 }
 
-void PlayerOptions::setHiragana() { unk_00 = (unk_00 & ~1) | 1; }
+void PlayerOptions::setHiragana() { options = (options & ~1) | 1; }
 
-void PlayerOptions::clearHiragana() { unk_00 &= ~1; }
+void PlayerOptions::clearHiragana() { options &= ~1; }
 
 BOOL PlayerOptions::isStereo() {
-    if (((Unk_0203c92c_Bits0 *)&unk_00)->b1) return TRUE;
+    if (((Unk_0203c92c_Bits0 *)&options)->b1) return TRUE;
     return FALSE;
 }
 
-void PlayerOptions::setStereo() { unk_00 |= 2; }
+void PlayerOptions::setStereo() { options |= 2; }
 
-void PlayerOptions::clearStereo() { unk_00 &= ~2; }
+void PlayerOptions::clearStereo() { options &= ~2; }
 
-u32 PlayerOptions::getTalkVoice() { return ((Unk_0203c92c_Bits0 *)&unk_00)->b23; }
+u32 PlayerOptions::getTalkVoice() { return ((Unk_0203c92c_Bits0 *)&options)->b23; }
 
 void PlayerOptions::setTalkVoice(u32 v) {
-    unk_00 = (unk_00 & ~0xc) | (((u8)v & 3) << 2);
+    options = (options & ~0xc) | (((u8)v & 3) << 2);
 }
 
 PlayerOptions::PlayerOptions() { PlayerOptions_OnConstruct(); }
@@ -164,29 +164,29 @@ PlayerOptions::~PlayerOptions() { PlayerOptions_OnDestruct(); }
 
 void PlayerOptions::reset() {
     resetValues();
-    unk_01 &= ~1;
-    unk_01 &= ~2;
-    unk_01 &= ~4;
+    changedMask &= ~1;
+    changedMask &= ~2;
+    changedMask &= ~4;
 }
 
 BOOL PlayerOptions::isHiraganaChanged() {
-    if (((Unk_0203c92c_Bits1 *)&unk_01)->b0) return TRUE;
+    if (((Unk_0203c92c_Bits1 *)&changedMask)->b0) return TRUE;
     return FALSE;
 }
 
 BOOL PlayerOptions::isStereoChanged() {
-    if (((Unk_0203c92c_Bits1 *)&unk_01)->b1) return TRUE;
+    if (((Unk_0203c92c_Bits1 *)&changedMask)->b1) return TRUE;
     return FALSE;
 }
 
 BOOL PlayerOptions::isTalkVoiceChanged() {
-    if (((Unk_0203c92c_Bits1 *)&unk_01)->b2) return TRUE;
+    if (((Unk_0203c92c_Bits1 *)&changedMask)->b2) return TRUE;
     return FALSE;
 }
 
-void PlayerOptions::markHiraganaChanged() { unk_01 = (unk_01 & ~1) | 1; }
+void PlayerOptions::markHiraganaChanged() { changedMask = (changedMask & ~1) | 1; }
 
-void PlayerOptions::markStereoChanged() { unk_01 |= 2; }
+void PlayerOptions::markStereoChanged() { changedMask |= 2; }
 
-void PlayerOptions::markTalkVoiceChanged() { unk_01 |= 4; }
+void PlayerOptions::markTalkVoiceChanged() { changedMask |= 4; }
 

@@ -9,16 +9,16 @@ class CameraEventModes;
 
 struct Unk_ov068_02266ab8_Owner {
     u8 pad_00[0x5c];
-    Unk_ov068_02266680_Vec unk_5c;
+    Unk_ov068_02266680_Vec position;
 };
 
 // Camera-mode sub-state at +0x21c of the camera
 struct Unk_ov068_02266680_Sub {
-    u16 unk_00;
-    s16 unk_02;
-    s32 unk_04, unk_08, unk_0c;
-    Unk_ov068_02266680_Vec *unk_10;
-    s32 unk_14;
+    u16 holdTimer;
+    s16 buildingIndex;
+    s32 buildingX, buildingY, buildingZ;
+    Unk_ov068_02266680_Vec *offset;
+    s32 speed;
 };
 
 struct Unk_ov068_022667c4_Ent {
@@ -28,14 +28,14 @@ struct Unk_ov068_022667c4_Ent {
 // Camera object (gCamera); fields used by Camera_UpdateSway and friends
 struct Unk_ov068_0226647c_Cam {
     /* 0x000 */ u8 pad_000[0x174];
-    /* 0x174 */ s16 unk_174;
+    /* 0x174 */ s16 roll;
     /* 0x176 */ u8 pad_176[0x21c - 0x176];
-    /* 0x21c */ s16 unk_21c;
-    /* 0x21e */ s16 unk_21e;
-    /* 0x220 */ u16 unk_220;
-    /* 0x222 */ u16 unk_222;
-    /* 0x224 */ u8 unk_224;
-    /* 0x225 */ u8 unk_225;
+    /* 0x21c */ s16 bobPhase;
+    /* 0x21e */ s16 rollPhase;
+    /* 0x220 */ u16 bobTimer;
+    /* 0x222 */ u16 rollTimer;
+    /* 0x224 */ u8 bobPattern;
+    /* 0x225 */ u8 rollPattern;
 };
 
 struct Unk_ov068_0226647c_Row {
@@ -97,11 +97,11 @@ public:
     BOOL initModeFollowTarget();
 
     u8 pad_00[0x110];
-    s32 unk_110, unk_114, unk_118;
+    s32 targetFocus, targetFocusY, targetFocusZ;
     u8 pad_11c[0x1fc - 0x11c];
-    s32 unk_1fc;
+    s32 prevMode;
     u8 pad_200[0x21c - 0x200];
-    Unk_ov068_02266680_Sub unk_21c;
+    Unk_ov068_02266680_Sub townTour;
 };
 
 extern "C" {
@@ -169,7 +169,7 @@ void CameraEventModes::updateModeFollowTarget() {
     d.y = 0;
     d.z = 0;
     if (o) {
-        Unk_ov068_02266680_Vec *pv = &o->unk_5c;
+        Unk_ov068_02266680_Vec *pv = &o->position;
         d.x = pv->x;
         d.y = pv->y;
         d.z = pv->z;
@@ -186,44 +186,44 @@ BOOL CameraEventModes::initModeTownTour() {
     Camera_FinishBlend();
     void *g = gSceneBlockMap;
     s32 a = 0, b = 0, c = 0, d = 0;
-    Unk_ov068_02266680_Sub *s = &unk_21c;
-    s->unk_00 = 0x3c;
-    s->unk_02 = 0;
+    Unk_ov068_02266680_Sub *s = &townTour;
+    s->holdTimer = 0x3c;
+    s->buildingIndex = 0;
     if (g) {
         e[0] = 0x5014;
         e[1] = 0x501a;
         if (BlockMap_FindItemAllAttr(g, &a, &b, &c, &d, &e[0], &e[1], 1, 0) == 1) {
             Unk_ov068_02266680_Vec pos;
             FieldPos_FromBlockUnitCenter(&pos, a, b, c, d);
-            s->unk_10 = (Unk_ov068_02266680_Vec *)sTownTourOffsets[0];
-            unk_110 = pos.x;
-            unk_114 = pos.y;
-            unk_118 = pos.z;
+            s->offset = (Unk_ov068_02266680_Vec *)sTownTourOffsets[0];
+            targetFocus = pos.x;
+            targetFocusY = pos.y;
+            targetFocusZ = pos.z;
         }
     }
-    s->unk_04 = unk_110;
-    s->unk_08 = unk_114;
-    s->unk_0c = unk_118;
-    unk_110 += s->unk_10->x;
-    unk_114 += s->unk_10->y;
-    unk_118 += s->unk_10->z;
-    s->unk_14 = 0;
+    s->buildingX = targetFocus;
+    s->buildingY = targetFocusY;
+    s->buildingZ = targetFocusZ;
+    targetFocus += s->offset->x;
+    targetFocusY += s->offset->y;
+    targetFocusZ += s->offset->z;
+    s->speed = 0;
     return TRUE;
 }
 
 void CameraEventModes::updateModeTownTour() {
-    Unk_ov068_02266680_Sub *s = &unk_21c;
+    Unk_ov068_02266680_Sub *s = &townTour;
     Unk_ov068_02266680_Vec v;
-    v.x = s->unk_04;
-    v.y = s->unk_08;
-    v.z = s->unk_0c;
-    VEC_Add(&v, s->unk_10, &v);
-    func_020e759c(&s->unk_14, data_ov068_0226fc48, data_ov068_0226fc40);
-    if (func_020e7d4c(&unk_110, &v, data_ov068_0226fc44, s->unk_14, 8) == 0) {
+    v.x = s->buildingX;
+    v.y = s->buildingY;
+    v.z = s->buildingZ;
+    VEC_Add(&v, s->offset, &v);
+    func_020e759c(&s->speed, data_ov068_0226fc48, data_ov068_0226fc40);
+    if (func_020e7d4c(&targetFocus, &v, data_ov068_0226fc44, s->speed, 8) == 0) {
         if (func_020e769c(s, 0, 1) != 0) {
-            s->unk_00 = 0x3c;
-            if (func_020e769c(&s->unk_02, 7, 1) != 0) {
-                s->unk_02 = 0;
+            s->holdTimer = 0x3c;
+            if (func_020e769c(&s->buildingIndex, 7, 1) != 0) {
+                s->buildingIndex = 0;
             }
             void *g = gSceneBlockMap;
             s32 cnt = 0;
@@ -232,7 +232,7 @@ void CameraEventModes::updateModeTownTour() {
             if (g != 0) {
                 Unk_ov068_022667c4_Ent *tbl = (Unk_ov068_022667c4_Ent *)sTownTourBuildings;
                 do {
-                    Unk_ov068_022667c4_Ent *e = &tbl[s->unk_02];
+                    Unk_ov068_022667c4_Ent *e = &tbl[s->buildingIndex];
                     u16 t = e->lo;
                     BOOL r1;
                     if (t >= 0x5001 && t <= 0x5008) {
@@ -242,10 +242,10 @@ void CameraEventModes::updateModeTownTour() {
                     }
                     if (r1) {
                         e->lo++;
-                        if (tbl[s->unk_02].lo > 0x5008) {
-                            tbl[s->unk_02].lo = 0x5001;
+                        if (tbl[s->buildingIndex].lo > 0x5008) {
+                            tbl[s->buildingIndex].lo = 0x5001;
                         }
-                        tbl[s->unk_02].hi = tbl[s->unk_02].lo;
+                        tbl[s->buildingIndex].hi = tbl[s->buildingIndex].lo;
                     } else {
                         BOOL r2;
                         if (t >= 0x500d && t <= 0x5010) {
@@ -255,25 +255,25 @@ void CameraEventModes::updateModeTownTour() {
                         }
                         if (r2) {
                             e->lo++;
-                            if (tbl[s->unk_02].lo > 0x5010) {
-                                tbl[s->unk_02].lo = 0x500d;
+                            if (tbl[s->buildingIndex].lo > 0x5010) {
+                                tbl[s->buildingIndex].lo = 0x500d;
                             }
-                            tbl[s->unk_02].hi = tbl[s->unk_02].lo;
-                            cnt = tbl[s->unk_02].lo - 0x500d;
+                            tbl[s->buildingIndex].hi = tbl[s->buildingIndex].lo;
+                            cnt = tbl[s->buildingIndex].lo - 0x500d;
                         }
                     }
-                    out.a = tbl[s->unk_02].lo;
-                    out.b = tbl[s->unk_02].hi;
-                } while (BlockMap_FindItemAllAttr(g, &a, &b, &c, &d, &out.a, &out.b, sTownTourBuildingAttrs[s->unk_02], 0) == 0);
+                    out.a = tbl[s->buildingIndex].lo;
+                    out.b = tbl[s->buildingIndex].hi;
+                } while (BlockMap_FindItemAllAttr(g, &a, &b, &c, &d, &out.a, &out.b, sTownTourBuildingAttrs[s->buildingIndex], 0) == 0);
                 Unk_ov068_02266680_Vec pos;
                 FieldPos_FromBlockUnitCenter(&pos, a, b, c, d);
-                s->unk_04 = pos.x;
-                s->unk_08 = pos.y;
-                s->unk_0c = pos.z;
-                u8 *bs = (u8 *)sTownTourOffsets[s->unk_02];
+                s->buildingX = pos.x;
+                s->buildingY = pos.y;
+                s->buildingZ = pos.z;
+                u8 *bs = (u8 *)sTownTourOffsets[s->buildingIndex];
                 cnt = cnt * 12;
-                s->unk_10 = (Unk_ov068_02266680_Vec *)(bs + cnt);
-                s->unk_14 = 0;
+                s->offset = (Unk_ov068_02266680_Vec *)(bs + cnt);
+                s->speed = 0;
             }
         }
     }
@@ -302,7 +302,7 @@ void CameraEventModes::updateMode13() {
 BOOL CameraEventModes::initModeSway() {
     _ZN12Unk_020d93b88loadPoseEiP10CameraPose(this, 0x10, 0);
     _ZN12Unk_020d93b814setBlendPresetEi(this, 0);
-    if (unk_1fc == 2) {
+    if (prevMode == 2) {
         Camera_StartBlend();
     } else {
         Camera_FinishBlend();
@@ -314,83 +314,83 @@ BOOL CameraEventModes::initModeSway() {
 
 void CameraEventModes::updateModeSway() {
     Unk_ov068_02266680_Vec v;
-    unk_110 = gVec3Zero.x;
-    unk_114 = gVec3Zero.y;
-    unk_118 = gVec3Zero.z;
-    unk_114 += Camera_UpdateSway((Unk_ov068_0226647c_Cam *)this);
+    targetFocus = gVec3Zero.x;
+    targetFocusY = gVec3Zero.y;
+    targetFocusZ = gVec3Zero.z;
+    targetFocusY += Camera_UpdateSway((Unk_ov068_0226647c_Cam *)this);
     R_TAIL(v)
 }
 
 extern "C" void Camera_SetSwayPattern(Unk_ov068_0226647c_Cam *c, s32 idx) {
-    c->unk_224 = idx;
-    if (c->unk_224 >= 4) {
-        c->unk_224 = 0;
+    c->bobPattern = idx;
+    if (c->bobPattern >= 4) {
+        c->bobPattern = 0;
     }
-    c->unk_220 = kCameraSwayPatterns[c->unk_224].a;
-    c->unk_220 += Random_GlobalBelow(kCameraSwayPatterns[c->unk_224].b);
-    c->unk_21c = 0;
+    c->bobTimer = kCameraSwayPatterns[c->bobPattern].a;
+    c->bobTimer += Random_GlobalBelow(kCameraSwayPatterns[c->bobPattern].b);
+    c->bobPhase = 0;
 }
 
 extern "C" void Camera_SetSwayPattern2(Unk_ov068_0226647c_Cam *c, s32 idx) {
-    c->unk_225 = idx;
-    if (c->unk_225 >= 4) {
-        c->unk_225 = 0;
+    c->rollPattern = idx;
+    if (c->rollPattern >= 4) {
+        c->rollPattern = 0;
     }
-    c->unk_222 = kCameraSwayPatterns[c->unk_225].a;
-    c->unk_222 += Random_GlobalBelow(kCameraSwayPatterns[c->unk_225].b);
-    c->unk_21e = 0;
+    c->rollTimer = kCameraSwayPatterns[c->rollPattern].a;
+    c->rollTimer += Random_GlobalBelow(kCameraSwayPatterns[c->rollPattern].b);
+    c->rollPhase = 0;
 }
 
 extern "C" s32 Camera_UpdateSway(Unk_ov068_0226647c_Cam *c) {
-    if (func_020e7500(&c->unk_220) == 0) {
-        s16 a = c->unk_21c;
+    if (func_020e7500(&c->bobTimer) == 0) {
+        s16 a = c->bobPhase;
         if (a < 0) {
             a = -a;
         }
         if (a < 0x100) {
-            u8 s = c->unk_224;
+            u8 s = c->bobPattern;
             if (s == 0) {
                 if (Random_GlobalBelow(100) < 80) {
-                    c->unk_224 = 1;
+                    c->bobPattern = 1;
                 } else {
-                    c->unk_224 = 2;
+                    c->bobPattern = 2;
                 }
             } else if (s == 2) {
-                c->unk_224 = 1;
+                c->bobPattern = 1;
             } else {
-                c->unk_224 = 0;
+                c->bobPattern = 0;
             }
-            Camera_SetSwayPattern(c, c->unk_224);
+            Camera_SetSwayPattern(c, c->bobPattern);
         }
     }
-    if (func_020e7500(&c->unk_222) == 0) {
-        s16 a = c->unk_21e;
+    if (func_020e7500(&c->rollTimer) == 0) {
+        s16 a = c->rollPhase;
         if (a < 0) {
             a = -a;
         }
         if (a < 0x100) {
-            u8 s = c->unk_225;
+            u8 s = c->rollPattern;
             if (s == 0) {
-                c->unk_225 = 1;
+                c->rollPattern = 1;
             } else if (s == 2) {
-                c->unk_225 = 1;
+                c->rollPattern = 1;
             } else {
-                c->unk_225 = 0;
+                c->rollPattern = 0;
             }
-            Camera_SetSwayPattern2(c, c->unk_225);
+            Camera_SetSwayPattern2(c, c->rollPattern);
         }
     }
-    s32 d = kCameraSwayPatterns[c->unk_225].c;
+    s32 d = kCameraSwayPatterns[c->rollPattern].c;
     if (d != 0) {
-        c->unk_21e = c->unk_21e + d;
-        u32 idx = ((u16)c->unk_21e >> 4) * 2;
-        c->unk_174 = func_01ffcb0c(data_02135f44[idx], kCameraSwayPatterns[c->unk_225].d);
+        c->rollPhase = c->rollPhase + d;
+        u32 idx = ((u16)c->rollPhase >> 4) * 2;
+        c->roll = func_01ffcb0c(data_02135f44[idx], kCameraSwayPatterns[c->rollPattern].d);
     }
-    d = kCameraSwayPatterns[c->unk_224].c;
+    d = kCameraSwayPatterns[c->bobPattern].c;
     if (d != 0) {
-        c->unk_21c = c->unk_21c + d;
-        u32 idx = ((u16)c->unk_21c >> 4) * 2;
-        return func_01ffcb0c(data_02135f44[idx], kCameraSwayPatterns[c->unk_224].d);
+        c->bobPhase = c->bobPhase + d;
+        u32 idx = ((u16)c->bobPhase >> 4) * 2;
+        return func_01ffcb0c(data_02135f44[idx], kCameraSwayPatterns[c->bobPattern].d);
     }
     return 0;
 }

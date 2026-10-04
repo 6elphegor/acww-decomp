@@ -233,11 +233,11 @@ public:
     void attachOwner(s32 v);
     void completePurchase();
 
-    s32 unk_ac;
-    SpNpcRedd *unk_b0;
-    s32 unk_b4;
-    s32 unk_b8;
-    u8 unk_bc;
+    s32 topic;
+    SpNpcRedd *owner;
+    s32 price;
+    s32 redVaseSlot;
+    u8 feeQuoted;
     u8 pad_bd[3];
 };
 
@@ -301,7 +301,7 @@ struct Unk_020f4080 {
 };
 
 struct ItemId {
-    u16 unk_00;
+    u16 id;
     ItemId();
     ~ItemId();
 };
@@ -413,7 +413,7 @@ public:
 
 class SpNpcRedd : public SpNpcActor {
 public:
-    SpNpcRedd() : unk_71a(0xfff1), unk_724(0), unk_728(0) {}
+    SpNpcRedd() : selectedItem(0xfff1), selectedItemX(0), selectedItemZ(0) {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_48();
@@ -452,17 +452,17 @@ public:
     void changeAct(s32 state);
 
     s32 unk_654;
-    SpNpcReddTalk unk_658;
-    u16 unk_718;
-    u16 unk_71a;
-    ItemId unk_71c[3];
-    s32 unk_724;
-    s32 unk_728;
+    SpNpcReddTalk talk;
+    u16 standBlend;
+    u16 selectedItem;
+    ItemId pitchedItems[3];
+    s32 selectedItemX;
+    s32 selectedItemZ;
     u8 unk_72c;
-    u8 unk_72d;
-    u8 unk_72e;
-    u8 unk_72f[5];
-    u8 unk_734[5];
+    u8 approachTimer;
+    u8 boughtSomething;
+    u8 usedPitchMsgs[5];
+    u8 usedThanksMsgs[5];
 };
 
 struct Unk_ov052_0225a2cc_Ent {
@@ -552,11 +552,11 @@ BOOL SpNpcRedd::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner((s32)this);
-    unk_718 = data_020c6cc8;
-    MI_CpuFill8(unk_72f, 0, 5);
-    MI_CpuFill8(unk_734, 0, 5);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner((s32)this);
+    standBlend = data_020c6cc8;
+    MI_CpuFill8(usedPitchMsgs, 0, 5);
+    MI_CpuFill8(usedThanksMsgs, 0, 5);
     _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 2, 0x400, 0x133, 0x199);
     return TRUE;
 }
@@ -571,9 +571,9 @@ BOOL SpNpcRedd::vfunc_00() {
         changeAct(0);
     }
     Ground_LockExit(0);
-    unk_71a = 0xfff1;
+    selectedItem = 0xfff1;
     for (s32 i = 0; i < 3; i++) {
-        unk_71c[i].unk_00 = 0xfff1;
+        pitchedItems[i].id = 0xfff1;
     }
     return TRUE;
 }
@@ -601,7 +601,7 @@ void SpNpcRedd::changeAct(s32 state) {
 }
 
 BOOL SpNpcRedd::setupAct00() {
-    unk_658.setTopic(0);
+    talk.setTopic(0);
     return TRUE;
 }
 
@@ -611,8 +611,8 @@ BOOL SpNpcRedd::mainAct00() {
 }
 
 BOOL SpNpcRedd::setupAct01() {
-    _ZN13NpcActionCtrl12requestStandEjt(&actionCtrl, 1, unk_718);
-    unk_718 = data_020c6cc8;
+    _ZN13NpcActionCtrl12requestStandEjt(&actionCtrl, 1, standBlend);
+    standBlend = data_020c6cc8;
     return TRUE;
 }
 
@@ -761,7 +761,7 @@ BOOL SpNpcRedd::mainAct04() {
 }
 
 BOOL SpNpcRedd::setupAct05() {
-    void *p = unk_658.func_02015aac();
+    void *p = talk.func_02015aac();
     s32 r = 0;
     if (p) {
         r = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -783,7 +783,7 @@ BOOL SpNpcRedd::mainAct05() {
 }
 
 BOOL SpNpcRedd::setupAct06() {
-    void *p = unk_658.func_02015aac();
+    void *p = talk.func_02015aac();
     s32 r = 0;
     if (p) {
         r = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -814,7 +814,7 @@ BOOL SpNpcRedd::setupAct08() { return TRUE; }
 BOOL SpNpcRedd::mainAct08() { return TRUE; }
 
 BOOL SpNpcRedd::setupAct09() {
-    unk_72d = 0x32;
+    approachTimer = 0x32;
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
@@ -839,9 +839,9 @@ BOOL SpNpcRedd::mainAct09() {
         }
     }
     _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &out);
-    if (t <= 0x3000 || func_020e972c(&out, &position) != 0 || func_020e7518(&unk_72d) == 0) {
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0(getPlayerActor(4));
+    if (t <= 0x3000 || func_020e972c(&out, &position) != 0 || func_020e7518(&approachTimer) == 0) {
+        talk.vfunc_08();
+        talk.func_02015ab0(getPlayerActor(4));
         changeAct(5);
     }
     return TRUE;
@@ -856,7 +856,7 @@ BOOL SpNpcRedd::setupAct0A() {
 BOOL SpNpcRedd::mainAct0A() {
     if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 3) {
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            _ZN13NpcActionCtrl12requestStandEjt(&actionCtrl, 1, unk_718);
+            _ZN13NpcActionCtrl12requestStandEjt(&actionCtrl, 1, standBlend);
         }
     }
     TalkRequest_AddPlayerTalk6(this, 0);
@@ -899,14 +899,14 @@ void SpNpcReddTalk::vfunc_08() { ActorTalkRequest::vfunc_08(); }
 
 void SpNpcReddTalk::attachOwner(s32 v) {
     vfunc_08();
-    unk_b0 = (SpNpcRedd *)v;
-    unk_b8 = -1;
-    unk_bc = 0;
+    owner = (SpNpcRedd *)v;
+    redVaseSlot = -1;
+    feeQuoted = 0;
 }
 
-void SpNpcReddTalk::setTopic(s32 v) { unk_ac = v; }
+void SpNpcReddTalk::setTopic(s32 v) { topic = v; }
 
-s32 SpNpcReddTalk::getTopic() { return unk_ac; }
+s32 SpNpcReddTalk::getTopic() { return topic; }
 
 extern "C" BOOL SpNpcRedd_IsSoldOut(void *self) {
     s32 i;
@@ -929,25 +929,25 @@ extern "C" BOOL SpNpcRedd_IsSoldOut(void *self) {
 void SpNpcReddTalk::start(TalkStartMsg *out) {
     u16 x, b, c, k1, k4, k2, k3;
     void *h = PlayerData_GetCurrent();
-    if (unk_ac == 0xc) {
-        out->msgIndex = MSG_ID(unk_ac);
-        out->msgKey = (char *)sSpNpcReddTopicMsgs[unk_ac].name;
+    if (topic == 0xc) {
+        out->msgIndex = MSG_ID(topic);
+        out->msgKey = (char *)sSpNpcReddTopicMsgs[topic].name;
         return;
     }
-    if (unk_ac != 0 && unk_ac != 1 && unk_ac != 2) {
-        u16 *pp = &unk_b0->unk_71a;
+    if (topic != 0 && topic != 1 && topic != 2) {
+        u16 *pp = &owner->selectedItem;
         if (Unk_ov052_022595dc_Eq(pp, &k1)) {
             if (_ZN12Unk_02097ff48testFlagEj(h, 0xc) != 0) {
-                if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 && unk_b8 == -1) {
+                if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 && redVaseSlot == -1) {
                     x = 0x34a8;
-                    unk_b8 = Pocket_FindItem(&x);
+                    redVaseSlot = Pocket_FindItem(&x);
                 }
-                if (unk_b8 >= 0) {
-                    unk_ac = 5;
+                if (redVaseSlot >= 0) {
+                    topic = 5;
                 } else if (SpNpcRedd_IsSoldOut(this)) {
-                    unk_ac = 6;
+                    topic = 6;
                 } else if (Talk_CheckAndSetPlayerFlag(1, 1) == 0) {
-                    unk_ac = 7;
+                    topic = 7;
                 } else {
                     if (_ZN8PlayerId7isValidEv(ReddLastSale_GetBuyer(data_021ed284)) != 0 &&
                         (_ZN12ReddLastSale12copyItemFromEPKS_(&b, data_021ed284), !Unk_ov052_022595dc_Eq(&b, &k2))) {
@@ -957,64 +957,64 @@ void SpNpcReddTalk::start(TalkStartMsg *out) {
                         u16 *r7 = (u16 *)ReddLastSale_GetBuyer(data_021ed284);
                         if (!(r7[0] == r6[0] && memcmp(r7 + 1, r6 + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(r7, r6) != 0)) {
                             _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, ReddLastSale_GetBuyer(data_021ed284), 1);
-                            unk_ac = 8;
+                            topic = 8;
                         } else {
                             _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN10PlayerData11getPlayerIdEv(h), 1);
-                            unk_ac = 9;
+                            topic = 9;
                         }
                     } else {
-                        unk_ac = 0xa;
+                        topic = 0xa;
                     }
                 }
             }
         }
     }
-    if (unk_ac < 0 || unk_ac >= 0xd) {
+    if (topic < 0 || topic >= 0xd) {
         return;
     }
-    out->msgIndex = MSG_ID(unk_ac);
+    out->msgIndex = MSG_ID(topic);
     if (_ZN12Unk_02097ff48testFlagEj(h, 0xc) != 0) {
-        if (unk_ac == 0xa) {
+        if (topic == 0xa) {
             out->msgIndex = Random_GlobalBelow(4) + 0x17;
             if (out->msgIndex == 0x1a) {
                 out->msgIndex = 0x30;
             }
         }
         s32 hit = 0;
-        if (!Unk_ov052_022595dc_Eq(&unk_b0->unk_71a, &k3)) {
-            unk_b4 = Item_GetPrice(&unk_b0->unk_71a) * 2;
-            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &unk_b0->unk_71a, 1, 7);
-            _ZN16ActorTalkRequest13setNumberSlotEijiii(this, unk_b4, 2, 10, 1, 0);
+        if (!Unk_ov052_022595dc_Eq(&owner->selectedItem, &k3)) {
+            price = Item_GetPrice(&owner->selectedItem) * 2;
+            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &owner->selectedItem, 1, 7);
+            _ZN16ActorTalkRequest13setNumberSlotEijiii(this, price, 2, 10, 1, 0);
             s32 i;
             for (i = 0; i < 3; i++) {
                 u16 *p, *q1;
-                q1 = &unk_b0->unk_71c[i].unk_00;
-                p = &unk_b0->unk_71a;
+                q1 = &owner->pitchedItems[i].id;
+                p = &owner->selectedItem;
                 if (Unk_ov052_022595dc_Eq2(p, q1)) {
                     out->msgIndex = 0x1d;
                     break;
                 }
-                u16 *q = &unk_b0->unk_71c[i].unk_00;
+                u16 *q = &owner->pitchedItems[i].id;
                 if (Unk_ov052_022595dc_EqK(q, &k4)) {
                     hit = i;
                 }
             }
             if (out->msgIndex != 0x1d) {
-                s32 idx = SpNpcRedd_PickUnusedFlag(unk_b0, unk_b0->unk_72f, 5);
-                if (unk_b0->unk_72f[idx] == 0) {
-                    unk_b0->unk_72f[idx] = 1;
-                    *(u16 *)((u8 *)unk_b0 + 0x71c + hit * 2) = unk_b0->unk_71a;
+                s32 idx = SpNpcRedd_PickUnusedFlag(owner, owner->usedPitchMsgs, 5);
+                if (owner->usedPitchMsgs[idx] == 0) {
+                    owner->usedPitchMsgs[idx] = 1;
+                    *(u16 *)((u8 *)owner + 0x71c + hit * 2) = owner->selectedItem;
                 }
-                if (SpNpcRedd_CountUnusedFlags(unk_b0, unk_b0->unk_72f, 5) == 0) {
-                    MI_CpuFill8(unk_b0->unk_72f, 0, 5);
-                    unk_b0->unk_72f[idx] = 1;
-                    *(u16 *)((u8 *)unk_b0 + 0x71c + hit * 2) = unk_b0->unk_71a;
+                if (SpNpcRedd_CountUnusedFlags(owner, owner->usedPitchMsgs, 5) == 0) {
+                    MI_CpuFill8(owner->usedPitchMsgs, 0, 5);
+                    owner->usedPitchMsgs[idx] = 1;
+                    *(u16 *)((u8 *)owner + 0x71c + hit * 2) = owner->selectedItem;
                 }
                 out->msgIndex = idx + 0x1e;
             }
         }
     }
-    out->msgKey = (char *)sSpNpcReddTopicMsgs[unk_ac].name;
+    out->msgKey = (char *)sSpNpcReddTopicMsgs[topic].name;
 }
 
 void SpNpcReddTalk::onMessageEnd() {
@@ -1030,7 +1030,7 @@ void SpNpcReddTalk::onMessageEnd() {
         Pocket_AddItem(&v[2], 0);
         msg = 0x2f;
     case 0x2d:
-        unk_b8 = -2;
+        redVaseSlot = -2;
         break;
     case 6:
         if (_ZN12Unk_02097ff48testFlagEj(h, 0xc) == 0) {
@@ -1045,9 +1045,9 @@ void SpNpcReddTalk::onMessageEnd() {
     case 0x10:
         v[3] = 0x149d;
         _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &v[3], 0, 5, 0);
-        unk_b0->unk_71a = 0xfff1;
+        owner->selectedItem = 0xfff1;
         msg = 0x11;
-        NpcActor_ChargePlayer(unk_b0, 0xbb8);
+        NpcActor_ChargePlayer(owner, 0xbb8);
         setTopic(7);
         _ZN12Unk_02097ff47setFlagEj(h, 0xc);
         Talk_CheckAndSetPlayerFlag(1, 1);
@@ -1074,8 +1074,8 @@ void SpNpcReddTalk::onChoice() {
     switch (msgIndex) {
     case 0x2c:
         if (t == 0) {
-            if (unk_b8 >= 0) {
-                Pocket_RemoveItem(unk_b8);
+            if (redVaseSlot >= 0) {
+                Pocket_RemoveItem(redVaseSlot);
                 v[1] = 0x34a8;
                 _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &v[1], 0, 5, 0);
             }
@@ -1085,9 +1085,9 @@ void SpNpcReddTalk::onChoice() {
     case 7:
     case 0x12:
         if (t != 0) {
-            if (NpcActor_CanPlayerPay(unk_b0, 0xbb8) == 0) {
+            if (NpcActor_CanPlayerPay(owner, 0xbb8) == 0) {
                 msg = 0xa;
-            } else if (unk_bc == 0) {
+            } else if (feeQuoted == 0) {
                 msg = 8;
             } else {
                 msg = 0xc;
@@ -1095,7 +1095,7 @@ void SpNpcReddTalk::onChoice() {
         }
         break;
     case 9:
-        unk_bc = 1;
+        feeQuoted = 1;
         if (t == 0) {
             msg = 0xc;
         }
@@ -1107,13 +1107,13 @@ void SpNpcReddTalk::onChoice() {
     case 0x21:
     case 0x22:
         if (t == 0) {
-            if (NpcActor_CanPlayerPay(unk_b0, unk_b4) != 0) {
+            if (NpcActor_CanPlayerPay(owner, price) != 0) {
                 if (Pocket_FindEmpty() >= 0) {
-                    s32 idx = SpNpcRedd_PickUnusedFlag(unk_b0, unk_b0->unk_734, 5);
-                    unk_b0->unk_734[idx] = 1;
-                    if (SpNpcRedd_CountUnusedFlags(unk_b0, unk_b0->unk_734, 5) == 0) {
-                        MI_CpuFill8(unk_b0->unk_734, 0, 5);
-                        unk_b0->unk_734[idx] = 1;
+                    s32 idx = SpNpcRedd_PickUnusedFlag(owner, owner->usedThanksMsgs, 5);
+                    owner->usedThanksMsgs[idx] = 1;
+                    if (SpNpcRedd_CountUnusedFlags(owner, owner->usedThanksMsgs, 5) == 0) {
+                        MI_CpuFill8(owner->usedThanksMsgs, 0, 5);
+                        owner->usedThanksMsgs[idx] = 1;
                     }
                     msg = (u8)(idx + 0x24);
                     break;
@@ -1123,7 +1123,7 @@ void SpNpcReddTalk::onChoice() {
                 msg = 0x29;
             }
         }
-        unk_b0->unk_71a = 0xfff1;
+        owner->selectedItem = 0xfff1;
         break;
     }
     if (msg != 0xff) {
@@ -1133,15 +1133,15 @@ void SpNpcReddTalk::onChoice() {
 }
 
 void SpNpcReddTalk::completePurchase() {
-    NpcActor_ChargePlayer(unk_b0, unk_b4);
-    Pocket_AddItem(&unk_b0->unk_71a, 0);
-    ReddShop_BuyAt(unk_b0->unk_724, unk_b0->unk_728, 0xf);
+    NpcActor_ChargePlayer(owner, price);
+    Pocket_AddItem(&owner->selectedItem, 0);
+    ReddShop_BuyAt(owner->selectedItemX, owner->selectedItemZ, 0xf);
     u8 *const g = data_021ed284;
     _ZN12ReddLastSale8setBuyerEPKS_(g, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
-    _ZN12ReddLastSale7setItemEPKS_(g, &unk_b0->unk_71a);
-    _ZN16ActorTalkRequest13setNumberSlotEijiii(this, unk_b4, 2, 10, 1, 0);
-    unk_b0->unk_71a = 0xfff1;
-    unk_b0->unk_72e = 1;
+    _ZN12ReddLastSale7setItemEPKS_(g, &owner->selectedItem);
+    _ZN16ActorTalkRequest13setNumberSlotEijiii(this, price, 2, 10, 1, 0);
+    owner->selectedItem = 0xfff1;
+    owner->boughtSomething = 1;
 }
 
 BOOL SpNpcRedd::vfunc_48() {
@@ -1165,24 +1165,24 @@ void SpNpcRedd::vfunc_4c(u32 cmd, u32 arg) {
         changeAct(8);
         break;
     case 1:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0(getPlayerActor(4));
-        if (unk_658.getTopic() == 0) {
+        talk.vfunc_08();
+        talk.func_02015ab0(getPlayerActor(4));
+        if (talk.getTopic() == 0) {
             changeAct(5);
-        } else if (unk_658.getTopic() == 1 || unk_658.getTopic() == 2 ||
-                   unk_658.getTopic() == 0xc) {
+        } else if (talk.getTopic() == 1 || talk.getTopic() == 2 ||
+                   talk.getTopic() == 0xc) {
             changeAct(6);
         } else {
             changeAct(9);
         }
         break;
     case 0:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0(getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0(getPlayerActor(4));
         changeAct(5);
         break;
     case 8:
-        if (unk_658.getTopic() == 1 || unk_658.getTopic() == 2) {
+        if (talk.getTopic() == 1 || talk.getTopic() == 2) {
             Unk_ov052_Vec v;
             Unk_ov052_Vec *src = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
             v = *src;
@@ -1191,7 +1191,7 @@ void SpNpcRedd::vfunc_4c(u32 cmd, u32 arg) {
             } else {
                 changeAct(1);
             }
-        } else if (unk_658.getTopic() == 0xc) {
+        } else if (talk.getTopic() == 0xc) {
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         } else {
             changeAct(1);
@@ -1246,9 +1246,9 @@ BOOL SpNpcRedd::pickDisplayItem() {
     if (Unk_ov052_02258f34_Eq(&t[0], &t[1])) {
         return FALSE;
     }
-    unk_71a = t[0];
-    unk_724 = bx;
-    unk_728 = by;
+    selectedItem = t[0];
+    selectedItemX = bx;
+    selectedItemZ = by;
     unk_72c = 0;
     return TRUE;
 }
@@ -1266,10 +1266,10 @@ BOOL SpNpcRedd::tryFarewellTalk() {
     Unk_ov052_Vec *src = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
     *(Unk_ov052_Vec *)&v = *src;
     if (Ground_IsOnLockedExit(&v)) {
-        if (unk_72e == 0) {
-            unk_658.setTopic(1);
+        if (boughtSomething == 0) {
+            talk.setTopic(1);
         } else {
-            unk_658.setTopic(2);
+            talk.setTopic(2);
         }
         TalkRequest_AddPlayerTalk6(this, 0);
         changeAct(0xa);
@@ -1287,7 +1287,7 @@ BOOL SpNpcRedd::tryClosingTimeTalk() {
     buf[1] = 0;
     Clock_GetDateTime(buf);
     if (((u8 *)buf)[2] < 6) {
-        unk_658.setTopic(0xc);
+        talk.setTopic(0xc);
         TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;
     }

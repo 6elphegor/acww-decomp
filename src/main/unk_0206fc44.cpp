@@ -66,7 +66,7 @@ public:
 
     s32 getLength();
 
-    /* 0x0e */ u8 unk_0e[0x29];
+    /* 0x0e */ u8 bytes[0x29];
 };
 
 // String buffer wrapping a text renderer (TextLabel) at +0x3c
@@ -89,8 +89,8 @@ public:
     void setLayerColors(u32 id, u8 x, u8 y);
     void destroyLabel();
 
-    /* 0x12 */ u8 unk_12[0x2a];
-    /* 0x3c */ TextLabel *unk_3c;
+    /* 0x12 */ u8 text[0x2a];
+    /* 0x3c */ TextLabel *label;
 };
 
 struct Unk_0206fd10_Mtx {
@@ -559,7 +559,7 @@ void CpuMtx_MultRotScaledTrans(void *a, Unk_0206fd10_Vec *v, Unk_0206fd10_Vec *w
 
 LabelString::LabelString() {
     clear();
-    unk_3c = NULL;
+    label = NULL;
 }
 
 LabelString::~LabelString() { destroyLabel(); }
@@ -569,9 +569,9 @@ u32 LabelString::capacity() { return 0x2a; }
 u8 *LabelString::data() { return (u8 *)this + 0x12; }
 
 void LabelString::destroyLabel() {
-    if (unk_3c != NULL) {
-        MsgTextLabel_Destroy(unk_3c);
-        unk_3c = NULL;
+    if (label != NULL) {
+        MsgTextLabel_Destroy(label);
+        label = NULL;
     }
 }
 

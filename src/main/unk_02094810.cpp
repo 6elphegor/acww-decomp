@@ -24,18 +24,18 @@ struct Unk_02006d14 {
     u8 pad_68[0x8e - 0x68];
     s16 unk_8e;
     u8 pad_90[0x2d4 - 0x90];
-    s32 unk_2d4;
+    s32 bodyAnimFrame;
     u8 pad_2d8[0x44c - 0x2d8];
-    s32 unk_44c;
-    s32 unk_450;
-    s32 unk_454;
+    s32 headPosX;
+    s32 headPosY;
+    s32 headPosZ;
     u8 pad_458[4];
     u16 headPitchTarget;
     u16 headYawTarget;
     u8 pad_460[0x59c - 0x460];
     u8 heldItemModel[4];
     u8 pad_5a0[0x5c8 - 0x5a0];
-    s32 unk_5c8;
+    s32 fishBobberState;
     u8 pad_5cc[0x694 - 0x5cc];
     Unk_02006d14_Blk itemHandMtx;
     u8 pad_6c4[0x6f0 - 0x6c4];
@@ -669,7 +669,7 @@ extern "C" s32 PlayerActor_GetActionOrSpawnAction()
 extern "C" BOOL PlayerActor_IsChangingClothes()
 {
     Unk_02006d14 *o = PlayerActor_Get(4);
-    if (o && o->action == 7 && o->unk_2d4 < 0x13000) {
+    if (o && o->action == 7 && o->bodyAnimFrame < 0x13000) {
         return TRUE;
     }
     return FALSE;
@@ -942,7 +942,7 @@ extern "C" s32 PlayerActor_RequestAct79() {
         if (_ZN12Unk_02006d1414testActionFlagEj(o, 0xb)) return 0;
         Unk_02094a08_Limit k = Unk_02094a08_LIMIT_5;
         if (!(k > _ZN11PlayerActor19getRequiredPriorityEv(o))) {
-            if (o->action == 0x4f && o->unk_5c8 != 5) {
+            if (o->action == 0x4f && o->fishBobberState != 5) {
                 PlayerActor_RequestFishReelIn(o, 1, 6, -1);
                 return 1;
             }

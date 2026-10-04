@@ -225,36 +225,36 @@ public:
     void getResources();
     void updateMatrix();
 
-    /* 0x130 */ u8 unk_130;
+    /* 0x130 */ u8 doorState;
     /* 0x131 */ u8 pad_131;
-    /* 0x132 */ u16 unk_132;
+    /* 0x132 */ u16 itemId;
     /* 0x134 */ u8 pad_134[4];
     /* 0x138 */ u8 unk_138[0x194 - 0x138];
-    /* 0x194 */ void *unk_194;
+    /* 0x194 */ void *modelRes;
     /* 0x198 */ u8 pad_198[4];
-    /* 0x19c */ Unk_ov003_Blk unk_19c;
+    /* 0x19c */ Unk_ov003_Blk baseMatrix;
     /* 0x1cc */ u8 pad_1cc[0x1f0 - 0x1cc];
     /* 0x1f0 */ u8 unk_1f0[0x228 - 0x1f0];
-    /* 0x228 */ u32 unk_228;
-    /* 0x22c */ u32 unk_22c;
-    /* 0x230 */ u8 unk_230;
-    /* 0x231 */ u8 unk_231;
-    /* 0x232 */ Unk_ov003_Flags unk_232;
-    /* 0x233 */ u8 unk_233;
+    /* 0x228 */ u32 gridX;
+    /* 0x22c */ u32 gridZ;
+    /* 0x230 */ u8 exitDelay;
+    /* 0x231 */ u8 colliderFlags;
+    /* 0x232 */ Unk_ov003_Flags entryFlags;
+    /* 0x233 */ u8 visitRefused;
     /* 0x234 */ u8 pad_234[0x278 - 0x234];
-    /* 0x278 */ u32 unk_278;
-    /* 0x27c */ u8 unk_27c;
+    /* 0x278 */ u32 entryState;
+    /* 0x27c */ u8 closedTalk;
     /* 0x27d */ u8 pad_27d;
-    /* 0x27e */ u16 unk_27e;
+    /* 0x27e */ u16 warpTimer;
     /* 0x280 */ u8 pad_280[0x288 - 0x280];
-    /* 0x288 */ void *unk_288;
-    /* 0x28c */ u8 unk_28c;
+    /* 0x288 */ void *colliders;
+    /* 0x28c */ u8 colliderCount;
     /* 0x28d */ u8 pad_28d[0x2a4 - 0x28d];
-    /* 0x2a4 */ Unk_ov009_0225b880_Vec3 unk_2a4;
+    /* 0x2a4 */ Unk_ov009_0225b880_Vec3 entryPos;
     /* 0x2b0 */
 };
 
-struct Unk_ov003_022141bc_Target {u8 pad_00[4]; u32 unk_04; u32 unk_08;};
+struct Unk_ov003_022141bc_Target {u8 pad_00[4]; u32 state; u32 nextState;};
 struct Unk_ov003_0221475c_Pad {s32 v[2]; Unk_ov003_0221475c_Pad() {} ~Unk_ov003_0221475c_Pad() {}};
 struct Unk_ov003_02214890_Buf {s32 w0,w1;};
 class ReddPassword {public: u32 getPromptText(void *w);};
@@ -461,21 +461,21 @@ BOOL ReddTent::enterTentIdle() {
 
 
 void ReddTent::execTentIdle() {
-    if (unk_231 & 4) {
+    if (colliderFlags & 4) {
         TalkRequest_AddPlayerTalk6(this, 0);
     }
 }
 
 
 BOOL ReddTent::enterTentCheck() {
-    BuildingOccupancy_RequestEnter(unk_132);
-    unk_232.f1 = 0;
+    BuildingOccupancy_RequestEnter(itemId);
+    entryFlags.f1 = 0;
     return TRUE;
 }
 
 
 void ReddTent::execTentCheck() {
-    u32 r = BuildingOccupancy_GetAnswer(unk_132);
+    u32 r = BuildingOccupancy_GetAnswer(itemId);
     if (r != 0) {
         u8 s;
         if (r == 2) {
@@ -483,7 +483,7 @@ void ReddTent::execTentCheck() {
         } else {
             s = 0;
         }
-        unk_232.f1 = s;
+        entryFlags.f1 = s;
         setTentState(2);
     }
 }
@@ -495,11 +495,11 @@ BOOL ReddTent::enterTentTalkOpen() {
     setFileName("sp_npc_fox");
     if (vfunc_8c() == 0) {
         msgIndex = 0x34;
-        if (unk_232.f1 == 0) {
-            BuildingOccupancy_Leave(unk_132, 0);
+        if (entryFlags.f1 == 0) {
+            BuildingOccupancy_Leave(itemId, 0);
         }
     } else {
-        if (unk_232.f1) {
+        if (entryFlags.f1) {
             msgIndex = 0x31;
         } else if (ReddPassword_CurrentPlayerKnows()) {
             msgIndex = 0x32;
@@ -507,7 +507,7 @@ BOOL ReddTent::enterTentTalkOpen() {
             msgIndex = 0;
         }
     }
-    ((Unk_ov003_022141bc_Target *)unk_3c)->unk_08 = 1;
+    ((Unk_ov003_022141bc_Target *)unk_3c)->nextState = 1;
     setNoSpeakerName(0);
     return TRUE;
 }
@@ -516,7 +516,7 @@ BOOL ReddTent::enterTentTalkOpen() {
 void ReddTent::execTentTalkOpen() {
     Unk_ov003_022141bc_Target *t = (Unk_ov003_022141bc_Target *)unk_3c;
     if (t) {
-        if (t->unk_04 != 0) {
+        if (t->state != 0) {
             setTentState(3);
         }
     }
@@ -531,7 +531,7 @@ BOOL ReddTent::enterTentTalk() {
 void ReddTent::execTentTalk() {
     Unk_ov003_022141bc_Target *t = (Unk_ov003_022141bc_Target *)unk_3c;
     if (t) {
-        if (t->unk_04 == 0) {
+        if (t->state == 0) {
             _ZN9Character17detachTalkRequestEi(this, this);
             TalkRequest_SetTargetDone(this);
         }
@@ -545,7 +545,7 @@ BOOL ReddTent::enterTentMenuWait() {
 
 
 void ReddTent::execTentMenuWait() {
-    if (((Unk_ov003_022141bc_Target *)unk_3c)->unk_04 == 5) {
+    if (((Unk_ov003_022141bc_Target *)unk_3c)->state == 5) {
         _ZN8ReddShop11getPasswordEv(data_021ed2c0);
         MenuCtrl_OpenLauncherWithIndex(0xe, _ZN12ReddPassword14getAnswerIndexEv());
         setTentState(5);
@@ -565,14 +565,14 @@ void ReddTent::execTentMenu() {
             ReddPassword_LearnCurrentPlayer();
             r[0] = 3;
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &r[0], "sp_npc_fox");
-            ((Unk_ov003_022141bc_Target *)unk_3c)->unk_08 = 1;
+            ((Unk_ov003_022141bc_Target *)unk_3c)->nextState = 1;
             setTentState(3);
         } else {
             r[1] = 4;
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &r[1], "sp_npc_fox");
-            ((Unk_ov003_022141bc_Target *)unk_3c)->unk_08 = 1;
+            ((Unk_ov003_022141bc_Target *)unk_3c)->nextState = 1;
             setTentState(3);
-            BuildingOccupancy_Leave(unk_132, 0);
+            BuildingOccupancy_Leave(itemId, 0);
         }
     }
 }
@@ -586,7 +586,7 @@ BOOL ReddTent::enterTentGoIn() {
 void ReddTent::execTentGoIn() {
     Unk_ov003_022141bc_Target *t = (Unk_ov003_022141bc_Target *)unk_3c;
     if (t) {
-        if (t->unk_04 == 0) {
+        if (t->state == 0) {
             setTentState(7);
         }
     }
@@ -660,8 +660,8 @@ void ReddTent::execTentWarp() {
                 v.z = v.z + 0x1000;
                 void *o = Scene_GetWarpRequest();
                 s32 r = Scene_GetCurrent();
-                Scene_SetTownReturnPos(o, r, &v, 0xf000000, (s16)(ang + 0x8000), unk_228, unk_22c);
-                unk_232.f0 = 1;
+                Scene_SetTownReturnPos(o, r, &v, 0xf000000, (s16)(ang + 0x8000), gridX, gridZ);
+                entryFlags.f0 = 1;
             }
         }
     }

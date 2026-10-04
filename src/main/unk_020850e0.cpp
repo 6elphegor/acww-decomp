@@ -1,18 +1,18 @@
 #include "types.h"
 
 struct Unk_02085810_Rec {
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ u8 unk_02[8];
-    /* 0x0a */ u8 unk_0a;
-    /* 0x0b */ u8 unk_0b;
+    /* 0x00 */ u16 townId;
+    /* 0x02 */ u8 townName[8];
+    /* 0x0a */ u8 personality;
+    /* 0x0b */ u8 species;
 };
 
 struct Unk_02085810_Base {
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ u8 unk_02[8];
-    /* 0x0a */ u16 unk_0a;
-    /* 0x0c */ u8 unk_0c[8];
-    /* 0x14 */ s8 unk_14;
+    /* 0x00 */ u16 townId;
+    /* 0x02 */ u8 townName[8];
+    /* 0x0a */ u16 playerId;
+    /* 0x0c */ u8 playerName[8];
+    /* 0x14 */ s8 gender;
     /* 0x15 */ u8 unk_15;
 };
 
@@ -46,7 +46,7 @@ public:
 class GroundInfo {
 public:
     u8 pad_00[0x34];
-    s32 unk_34;
+    s32 attr;
     u8 pad_38[8];
     GroundInfo() {}
     GroundInfo *initAtUnit(s32 x, s32 z, s32 a, s32 b);
@@ -377,7 +377,7 @@ extern "C" s32 Contest_IsNextToGroundAttr4(s32 *pos)
     for (i = 0; i < 8; i++) {
         GroundInfo o;
         o.initAtUnit(pos[0] + p[0], pos[1] + p[1], 0, 0);
-        if (o.unk_34 == 4) {
+        if (o.attr == 4) {
             return TRUE;
         }
         p += 2;

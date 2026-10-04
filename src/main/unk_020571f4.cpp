@@ -84,35 +84,35 @@ void func_020f440c(void *p);
 
 class HandOverItem : public GameProc {
 public:
-    HandOverItem() { unk_50 = 0xfff1; func_020f440c(&unk_dc); }
+    HandOverItem() { item = 0xfff1; func_020f440c(&seEmitter); }
 
-    /* 0x50 */ u16 unk_50;
-    /* 0x54 */ s32 unk_54;
-    /* 0x58 */ u8 unk_58;
-    /* 0x5c */ s32 unk_5c;
-    /* 0x60 */ Unk_020dc034_V unk_60;
-    /* 0x6c */ Unk_020dc034_V unk_6c;
-    /* 0x78 */ Unk_020dc034_V unk_78;
-    /* 0x84 */ Unk_020dc034_V unk_84;
-    /* 0x90 */ Unk_020dc034_V unk_90;
-    /* 0x9c */ Unk_020dc034_V unk_9c;
-    /* 0xa8 */ Unk_020dc034_V unk_a8;
+    /* 0x50 */ u16 item;
+    /* 0x54 */ s32 kind;
+    /* 0x58 */ u8 nextMode;
+    /* 0x5c */ s32 variant;
+    /* 0x60 */ Unk_020dc034_V itemPos;
+    /* 0x6c */ Unk_020dc034_V target;
+    /* 0x78 */ Unk_020dc034_V worldOffset;
+    /* 0x84 */ Unk_020dc034_V offset;
+    /* 0x90 */ Unk_020dc034_V moveStep;
+    /* 0x9c */ Unk_020dc034_V basePos;
+    /* 0xa8 */ Unk_020dc034_V scale;
     /* 0xb4 */ s16 unk_b4[3];
     u8 pad_ba[2];
-    /* 0xbc */ s32 unk_bc;
-    /* 0xc0 */ s32 unk_c0;
-    /* 0xc4 */ s32 unk_c4;
-    /* 0xc8 */ u8 unk_c8;
+    /* 0xbc */ s32 reach;
+    /* 0xc0 */ s32 scaleStep;
+    /* 0xc4 */ s32 fishDisplay;
+    /* 0xc8 */ u8 mode;
     u8 pad_c9[3];
     /* 0xcc */ Unk_020dc034_Owner_Base *unk_cc[2];
-    /* 0xd4 */ u8 unk_d4;
-    /* 0xd5 */ u8 unk_d5;
-    /* 0xd6 */ volatile u16 unk_d6;
-    /* 0xd8 */ u8 unk_d8;
-    /* 0xd9 */ u8 unk_d9;
-    /* 0xda */ u8 unk_da;
+    /* 0xd4 */ u8 phase;
+    /* 0xd5 */ u8 takeTimer;
+    /* 0xd6 */ volatile u16 frame;
+    /* 0xd8 */ u8 visible;
+    /* 0xd9 */ u8 busy;
+    /* 0xda */ u8 modeRequest;
     u8 pad_db;
-    /* 0xdc */ Unk_020dc034_Dtor unk_dc;
+    /* 0xdc */ Unk_020dc034_Dtor seEmitter;
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -361,42 +361,42 @@ extern "C" HandOverItem *HandOverItem_Create()
 BOOL HandOverItem::vfunc_00()
 {
     resetState();
-    _ZN12Unk_02003c3013func_02003eccEv(&unk_dc);
+    _ZN12Unk_02003c3013func_02003eccEv(&seEmitter);
     sHandOverItem = this;
     return TRUE;
 }
 
 BOOL HandOverItem::vfunc_0c()
 {
-    _ZN12Unk_02003c3013func_02003e50Ev(&sHandOverItem->unk_dc);
+    _ZN12Unk_02003c3013func_02003e50Ev(&sHandOverItem->seEmitter);
     sHandOverItem = NULL;
     return TRUE;
 }
 
 BOOL HandOverItem::onExecute()
 {
-    if (unk_5c >= 0 && unk_5c < 2) {
-        if (unk_da < 0xc) {
-            unk_c8 = unk_da;
-            unk_d6 = 0;
-            Unk_020dc034_Entry *e = &sHandOverItemActs[unk_c8][unk_5c];
+    if (variant >= 0 && variant < 2) {
+        if (modeRequest < 0xc) {
+            mode = modeRequest;
+            frame = 0;
+            Unk_020dc034_Entry *e = &sHandOverItemActs[mode][variant];
             if (e->a != 0) {
                 (this->*(e->a))();
             }
             clearModeRequest();
         }
-        if (unk_c8 < 0xc) {
-            if (sHandOverItemActs[unk_c8][unk_5c].b != 0) {
-                (this->*(sHandOverItemActs[unk_c8][unk_5c].b))();
+        if (mode < 0xc) {
+            if (sHandOverItemActs[mode][variant].b != 0) {
+                (this->*(sHandOverItemActs[mode][variant].b))();
                 Unk_020dc034_V v;
-                v.x = unk_60.x;
-                v.y = unk_60.y;
-                v.z = unk_60.z;
-                _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(&unk_dc, &v);
+                v.x = itemPos.x;
+                v.y = itemPos.y;
+                v.z = itemPos.z;
+                _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(&seEmitter, &v);
             }
         }
         if (isAwaitingTake()) {
-            func_020e7518(&unk_d5);
+            func_020e7518(&takeTimer);
         }
     }
     return TRUE;
@@ -410,64 +410,64 @@ BOOL HandOverItem::onDraw()
 
 void HandOverItem::resetState()
 {
-    unk_c8 = 0;
+    mode = 0;
     for (s32 i = 0; i < 2; i++) unk_cc[i] = NULL;
-    unk_50 = 0xfff1;
-    unk_58 = 0xc;
-    unk_d6 = 0;
-    unk_d4 = 0;
+    item = 0xfff1;
+    nextMode = 0xc;
+    frame = 0;
+    phase = 0;
     clearModeRequest();
-    unk_84.x = 0;
-    unk_84.y = 0;
-    unk_84.z = 0;
-    unk_78.x = 0;
-    unk_78.y = 0;
-    unk_78.z = 0;
-    unk_a8.x = 0;
-    unk_a8.y = 0;
-    unk_a8.z = 0;
-    unk_d8 = 0;
+    offset.x = 0;
+    offset.y = 0;
+    offset.z = 0;
+    worldOffset.x = 0;
+    worldOffset.y = 0;
+    worldOffset.z = 0;
+    scale.x = 0;
+    scale.y = 0;
+    scale.z = 0;
+    visible = 0;
     setBusy(0);
-    unk_bc = sHandOverReach;
-    unk_c4 = -1;
+    reach = sHandOverReach;
+    fishDisplay = -1;
 }
 
 BOOL HandOverItem::begin(u16 *id, s32 a, u8 b, s32 c, Unk_020dc034_Owner_Base *o0, Unk_020dc034_Owner_Base *o1)
 {
-    if (unk_c8 == 0 && o0 != NULL) {
-        unk_50 = *id;
-        unk_54 = a;
-        unk_58 = b;
-        unk_5c = c;
+    if (mode == 0 && o0 != NULL) {
+        item = *id;
+        kind = a;
+        nextMode = b;
+        variant = c;
         unk_cc[0] = o0;
         unk_cc[1] = o1;
         BOOL x;
-        if (Item_IsFurniture(&unk_50)) {
+        if (Item_IsFurniture(&item)) {
             u16 tmp = 0x1565;
-            x = Item_GetFurnitureIndex(&unk_50) == Item_GetFurnitureIndex(&tmp);
+            x = Item_GetFurnitureIndex(&item) == Item_GetFurnitureIndex(&tmp);
         } else {
-            x = unk_50 == 0x1565;
+            x = item == 0x1565;
         }
         BOOL rr;
-        if (x && unk_54 == 0) {
+        if (x && kind == 0) {
             goto near;
         }
         rr = FALSE;
-        if (unk_50 >= 0x1492 && unk_50 <= 0x14fd) rr = TRUE;
-        if (rr == 1 && unk_54 == 2) {
+        if (item >= 0x1492 && item <= 0x14fd) rr = TRUE;
+        if (rr == 1 && kind == 2) {
         near:
             if (Scene_GetCurrent() == 9 || Scene_GetCurrent() == 0x10) {
-                unk_bc = sHandOverReachFar;
+                reach = sHandOverReachFar;
             } else {
-                unk_bc = sHandOverReach;
+                reach = sHandOverReach;
             }
         } else {
-            unk_bc = sHandOverReach;
+            reach = sHandOverReach;
         }
         BOOL r2 = FALSE;
-        if (unk_50 >= 0x12e8 && unk_50 <= 0x131f) r2 = TRUE;
+        if (item >= 0x12e8 && item <= 0x131f) r2 = TRUE;
         if (r2) {
-            unk_c4 = FishDisplay_Acquire();
+            fishDisplay = FishDisplay_Acquire();
         }
     }
     return FALSE;
@@ -503,9 +503,9 @@ void HandOverItem::clearModeRequest()
 
 void HandOverItem::setModeRequest(u8 v)
 {
-    unk_da = v;
+    modeRequest = v;
     if (v == 1 || v == 7) {
-        unk_d5 = sHandOverTakeTimeout[0];
+        takeTimer = sHandOverTakeTimeout[0];
     }
 }
 
@@ -523,11 +523,11 @@ BOOL HandOverItem::isAwaitingTake()
 {
     BOOL r5 = TRUE;
     BOOL r4 = TRUE;
-    if (unk_c8 != 2) {
-        if (unk_c8 != 1 || HandOverItem_IsModeActive(1) != 0) r4 = FALSE;
+    if (mode != 2) {
+        if (mode != 1 || HandOverItem_IsModeActive(1) != 0) r4 = FALSE;
     }
     if (!r4) {
-        if (unk_c8 != 7 || HandOverItem_IsModeActive(7) != 0) r5 = FALSE;
+        if (mode != 7 || HandOverItem_IsModeActive(7) != 0) r5 = FALSE;
     }
     return r5;
 }
@@ -537,7 +537,7 @@ void HandOverItem_DrawItem(HandOverItem *self, u16 *id, Unk_020dc034_V *p, Unk_0
     BOOL r = FALSE;
     if (*id >= 0x12e8 && *id <= 0x131f) r = TRUE;
     if (r) {
-        s32 c4 = self->unk_c4;
+        s32 c4 = self->fishDisplay;
         if (c4 != -1) {
             s32 idx;
             if (*id >= 0x12e8 && *id <= 0x131f) idx = *id - 0x12e8; else idx = -1;
@@ -571,11 +571,11 @@ void HandOverItem_DrawIcon(void *unused, u32 id, Unk_020dc034_V *p, Unk_020dc034
 
 void HandOverItem::drawItem()
 {
-    if (unk_c8 < 0xc && unk_50 != 0xfff1 && unk_d8 == 1) {
-        if (unk_54 == 2 && !(unk_50 >= 0x1561 && unk_50 <= 0x1564) && !(unk_50 >= 0x155f && unk_50 <= 0x1560)) {
-            HandOverItem_DrawIcon(this, 0x27, &unk_60, (Unk_020dc034_V *)&unk_a8, unk_b4);
+    if (mode < 0xc && item != 0xfff1 && visible == 1) {
+        if (kind == 2 && !(item >= 0x1561 && item <= 0x1564) && !(item >= 0x155f && item <= 0x1560)) {
+            HandOverItem_DrawIcon(this, 0x27, &itemPos, (Unk_020dc034_V *)&scale, unk_b4);
         } else {
-            HandOverItem_DrawItem(this, &unk_50, &unk_60, (Unk_020dc034_V *)&unk_a8, unk_b4);
+            HandOverItem_DrawItem(this, &item, &itemPos, (Unk_020dc034_V *)&scale, unk_b4);
         }
     }
 }
@@ -589,14 +589,14 @@ void HandOverItem::getMasterHoldPos(Unk_020dc034_V *out)
 
 void HandOverItem::setBusy(u32 v)
 {
-    unk_d9 = v;
+    busy = v;
 }
 
 BOOL HandOverItem::setNextModeBy(u8 v, void *p)
 {
     BOOL r = FALSE;
-    if (unk_c8 != 0 && unk_d9 != 1 && isCharAt(p, 0) == 1) {
-        unk_58 = v;
+    if (mode != 0 && busy != 1 && isCharAt(p, 0) == 1) {
+        nextMode = v;
         r = TRUE;
     }
     return r;
@@ -636,74 +636,74 @@ Unk_020dc034_V HandOverItem::getHoldOffset(u32 idx)
 void HandOverItem::startAct01()
 {
     Unk_020dc034_V pos, off;
-    unk_84.x = 0;
-    unk_84.y = 0;
-    unk_84.z = 0;
-    unk_78.x = 0;
-    unk_78.y = 0;
-    unk_78.z = 0;
-    unk_9c.x = 0;
-    unk_9c.y = 0;
-    unk_9c.z = 0;
+    offset.x = 0;
+    offset.y = 0;
+    offset.z = 0;
+    worldOffset.x = 0;
+    worldOffset.y = 0;
+    worldOffset.z = 0;
+    basePos.x = 0;
+    basePos.y = 0;
+    basePos.z = 0;
     pos = *(Unk_020dc034_V *)&data_021c5acc;
-    if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        VEC_Add(&pos, HandOverItem_GetFishHoldOffset((Unk_020593e8_Obj *)unk_cc[0], Fish_GetSizeClass(unk_50 - 0x12e8)), &pos);
+    if (Unk_020586bc_Range(&item, 0x12e8, 0x131f)) {
+        VEC_Add(&pos, HandOverItem_GetFishHoldOffset((Unk_020593e8_Obj *)unk_cc[0], Fish_GetSizeClass(item - 0x12e8)), &pos);
     }
     ::_ZN12HandOverItem13getHoldOffsetEj(&off, this, 0);
     VEC_Add(&pos, &off, &pos);
-    localToWorld(&unk_9c, &pos, 0);
-    unk_a8.x = 0;
-    unk_a8.y = 0;
-    unk_a8.z = 0;
-    unk_d8 = 1;
-    unk_d4 = 0;
+    localToWorld(&basePos, &pos, 0);
+    scale.x = 0;
+    scale.y = 0;
+    scale.z = 0;
+    visible = 1;
+    phase = 0;
     setBusy(1);
 }
 
 void HandOverItem::act01Phase0()
 {
-    getMasterHoldPos(&unk_60);
-    unk_d6 = unk_d6 + 1;
-    if ((s32)unk_d6 >= data_020ca690[(*(volatile u8 *)&unk_d4)]) {
+    getMasterHoldPos(&itemPos);
+    frame = frame + 1;
+    if ((s32)frame >= data_020ca690[(*(volatile u8 *)&phase)]) {
         s32 n, t;
-        (*(volatile u8 *)&unk_d4) = (*(volatile u8 *)&unk_d4) + 1;
+        (*(volatile u8 *)&phase) = (*(volatile u8 *)&phase) + 1;
         n = data_021c5a30[0];
-        t = (unk_9c.x - unk_60.x) / n;
+        t = (basePos.x - itemPos.x) / n;
         if (t < 0) t = -t;
-        unk_90.x = t;
-        t = unk_9c.y / n;
+        moveStep.x = t;
+        t = basePos.y / n;
         if (t < 0) t = -t;
-        unk_90.y = t;
-        t = (unk_9c.z - unk_60.z) / n;
+        moveStep.y = t;
+        t = (basePos.z - itemPos.z) / n;
         if (t < 0) t = -t;
-        unk_90.z = t;
+        moveStep.z = t;
     }
 }
 
 void HandOverItem::act01Phase1()
 {
     Unk_020dc034_V cur;
-    s32 v = unk_a8.x;
-    s32 a = data_020ca6c4[unk_d4];
-    s32 b = data_021c5ae8[unk_d4];
-    if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        s32 k = HandOverItem_GetFishScale(Fish_GetSizeClass(unk_50 - 0x12e8));
+    s32 v = scale.x;
+    s32 a = data_020ca6c4[phase];
+    s32 b = data_021c5ae8[phase];
+    if (Unk_020586bc_Range(&item, 0x12e8, 0x131f)) {
+        s32 k = HandOverItem_GetFishScale(Fish_GetSizeClass(item - 0x12e8));
         a = func_01ffcb0c(a, k);
         b = func_01ffcb0c(b, k);
     }
     func_020e759c(&v, a, b);
     s32 u = v;
-    unk_a8.x = u;
-    unk_a8.y = u;
-    unk_a8.z = u;
+    scale.x = u;
+    scale.y = u;
+    scale.z = u;
     getMasterHoldPos(&cur);
-    func_020e761c(&unk_60.x, unk_9c.x, unk_90.x);
-    func_020e761c(&unk_60.y, cur.y + unk_9c.y, unk_90.y);
-    func_020e761c(&unk_60.z, unk_9c.z, unk_90.z);
-    unk_d6 = unk_d6 + 1;
-    if ((s32)unk_d6 >= data_020ca690[(*(volatile u8 *)&unk_d4)]) {
-        (*(volatile u8 *)&unk_d4) = (*(volatile u8 *)&unk_d4) + 1;
-        if ((*(volatile u8 *)&unk_d4) >= 4) {
+    func_020e761c(&itemPos.x, basePos.x, moveStep.x);
+    func_020e761c(&itemPos.y, cur.y + basePos.y, moveStep.y);
+    func_020e761c(&itemPos.z, basePos.z, moveStep.z);
+    frame = frame + 1;
+    if ((s32)frame >= data_020ca690[(*(volatile u8 *)&phase)]) {
+        (*(volatile u8 *)&phase) = (*(volatile u8 *)&phase) + 1;
+        if ((*(volatile u8 *)&phase) >= 4) {
             setBusy(0);
         }
     }
@@ -717,8 +717,8 @@ void HandOverItem::updateAct01()
         &HandOverItem::act01Phase1,
         &HandOverItem::act01Phase1,
     };
-    if (unk_d4 < 4) {
-        (this->*tbl[unk_d4])();
+    if (phase < 4) {
+        (this->*tbl[phase])();
     }
 }
 
@@ -732,40 +732,40 @@ void HandOverItem::startAct03()
     Unk_020dc034_V cur, pos, off;
     s32 a, b, c;
     getMasterHoldPos(&cur);
-    unk_9c.x = 0;
-    unk_9c.y = 0;
-    unk_9c.z = 0;
+    basePos.x = 0;
+    basePos.y = 0;
+    basePos.z = 0;
     pos = *(Unk_020dc034_V *)&data_021c5a84;
-    if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        VEC_Add(&pos, HandOverItem_GetFishHoldOffset2((Unk_020593e8_Obj *)unk_cc[0], Fish_GetSizeClass(unk_50 - 0x12e8)), &pos);
+    if (Unk_020586bc_Range(&item, 0x12e8, 0x131f)) {
+        VEC_Add(&pos, HandOverItem_GetFishHoldOffset2((Unk_020593e8_Obj *)unk_cc[0], Fish_GetSizeClass(item - 0x12e8)), &pos);
     }
     ::_ZN12HandOverItem13getHoldOffsetEj(&off, this, 0);
     VEC_Add(&pos, &off, &pos);
-    localToWorld(&unk_9c, &pos, 0);
-    unk_6c.x = unk_9c.x;
-    unk_6c.y = cur.y + unk_9c.y;
-    unk_6c.z = unk_9c.z;
-    c = (unk_6c.z - unk_60.z) / 2;
+    localToWorld(&basePos, &pos, 0);
+    target.x = basePos.x;
+    target.y = cur.y + basePos.y;
+    target.z = basePos.z;
+    c = (target.z - itemPos.z) / 2;
     if (c < 0) c = -c;
-    b = (unk_6c.y - unk_60.y) / 2;
+    b = (target.y - itemPos.y) / 2;
     if (b < 0) b = -b;
-    a = (unk_6c.x - unk_60.x) / 2;
+    a = (target.x - itemPos.x) / 2;
     if (a < 0) a = -a;
-    unk_90.x = a;
-    unk_90.y = b;
-    unk_90.z = c;
-    unk_d6 = 0;
+    moveStep.x = a;
+    moveStep.y = b;
+    moveStep.z = c;
+    frame = 0;
     setBusy(1);
 }
 
 void HandOverItem::updateAct03()
 {
-    if ((s32)unk_d6 < 2) {
-        func_020e761c(&unk_60.x, unk_6c.x, unk_90.x);
-        func_020e761c(&unk_60.y, unk_6c.y, unk_90.y);
-        func_020e761c(&unk_60.z, unk_6c.z, unk_90.z);
-        unk_d6 = unk_d6 + 1;
-        if ((s32)unk_d6 >= 2) {
+    if ((s32)frame < 2) {
+        func_020e761c(&itemPos.x, target.x, moveStep.x);
+        func_020e761c(&itemPos.y, target.y, moveStep.y);
+        func_020e761c(&itemPos.z, target.z, moveStep.z);
+        frame = frame + 1;
+        if ((s32)frame >= 2) {
             setBusy(0);
         }
     }
@@ -776,50 +776,50 @@ void HandOverItem::startAct04()
     Unk_020dc034_V cur, pos, off;
     s32 a, b;
     getMasterHoldPos(&cur);
-    unk_9c.x = 0;
-    unk_9c.y = 0;
-    unk_9c.z = 0;
+    basePos.x = 0;
+    basePos.y = 0;
+    basePos.z = 0;
     pos = *(Unk_020dc034_V *)&data_021c5acc;
-    if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        VEC_Add(&pos, HandOverItem_GetFishHoldOffset((Unk_020593e8_Obj *)unk_cc[0], Fish_GetSizeClass(unk_50 - 0x12e8)), &pos);
+    if (Unk_020586bc_Range(&item, 0x12e8, 0x131f)) {
+        VEC_Add(&pos, HandOverItem_GetFishHoldOffset((Unk_020593e8_Obj *)unk_cc[0], Fish_GetSizeClass(item - 0x12e8)), &pos);
     }
     ::_ZN12HandOverItem13getHoldOffsetEj(&off, this, 0);
     VEC_Add(&pos, &off, &pos);
-    localToWorld(&unk_9c, &pos, 0);
-    unk_6c.x = unk_9c.x;
-    unk_6c.y = unk_9c.y;
-    unk_6c.z = unk_9c.z;
-    a = (unk_6c.z - unk_60.z) / 2;
+    localToWorld(&basePos, &pos, 0);
+    target.x = basePos.x;
+    target.y = basePos.y;
+    target.z = basePos.z;
+    a = (target.z - itemPos.z) / 2;
     if (a < 0) a = -a;
-    b = (unk_6c.x - unk_60.x) / 2;
+    b = (target.x - itemPos.x) / 2;
     if (b < 0) b = -b;
-    unk_90.x = b;
-    unk_90.y = 0;
-    unk_90.z = a;
-    unk_d6 = 0;
+    moveStep.x = b;
+    moveStep.y = 0;
+    moveStep.z = a;
+    frame = 0;
     setBusy(1);
 }
 
 void HandOverItem::updateAct04()
 {
     Unk_020dc034_V cur, t;
-    s32 n = unk_d6;
+    s32 n = frame;
     if (n < 9) {
         getMasterHoldPos(&cur);
-        func_020e761c(&unk_60.x, unk_6c.x, unk_90.x);
-        unk_60.y = cur.y + unk_6c.y;
-        func_020e761c(&unk_60.z, unk_6c.z, unk_90.z);
-        unk_d6 = unk_d6 + 1;
-        if ((s32)unk_d6 >= 9) {
-            func_020e9960(&t, &unk_60, &cur);
-            unk_84.x = t.x;
-            unk_84.y = t.y;
-            unk_84.z = t.z;
+        func_020e761c(&itemPos.x, target.x, moveStep.x);
+        itemPos.y = cur.y + target.y;
+        func_020e761c(&itemPos.z, target.z, moveStep.z);
+        frame = frame + 1;
+        if ((s32)frame >= 9) {
+            func_020e9960(&t, &itemPos, &cur);
+            offset.x = t.x;
+            offset.y = t.y;
+            offset.z = t.z;
             setBusy(0);
         }
     } else if (n == 9) {
-        getMasterHoldPos(&unk_60);
-        VEC_Add(&unk_60, &unk_84, &unk_60);
+        getMasterHoldPos(&itemPos);
+        VEC_Add(&itemPos, &offset, &itemPos);
     }
 }
 
@@ -828,76 +828,76 @@ void HandOverItem::startAct0A()
     Unk_020dc034_V cur, t;
     setBusy(0);
     getMasterHoldPos(&cur);
-    func_020e9960(&t, &unk_60, &cur);
-    unk_84.x = t.x;
-    unk_84.y = t.y;
-    unk_84.z = t.z;
-    unk_d6 = 0;
+    func_020e9960(&t, &itemPos, &cur);
+    offset.x = t.x;
+    offset.y = t.y;
+    offset.z = t.z;
+    frame = 0;
 }
 
 void HandOverItem::updateAct0A()
 {
-    getMasterHoldPos(&unk_60);
-    VEC_Add(&unk_60, &unk_84, &unk_60);
+    getMasterHoldPos(&itemPos);
+    VEC_Add(&itemPos, &offset, &itemPos);
 }
 
 void HandOverItem::startAct05()
 {
     Unk_020dc034_V cur, t;
-    unk_6c.x = 0;
-    unk_6c.y = 0;
-    unk_6c.z = 0;
+    target.x = 0;
+    target.y = 0;
+    target.z = 0;
     getMasterHoldPos(&cur);
-    func_020e9960(&t, &unk_60, &cur);
-    unk_84.x = t.x;
-    unk_84.y = t.y;
-    unk_84.z = t.z;
+    func_020e9960(&t, &itemPos, &cur);
+    offset.x = t.x;
+    offset.y = t.y;
+    offset.z = t.z;
     if (unk_cc[0] != NULL) {
-        func_020e93a0(&unk_84, (s16)-unk_cc[0]->unk_8e);
+        func_020e93a0(&offset, (s16)-unk_cc[0]->unk_8e);
     }
-    unk_78.x = 0;
-    unk_78.y = 0;
-    unk_78.z = 0;
+    worldOffset.x = 0;
+    worldOffset.y = 0;
+    worldOffset.z = 0;
     s32 a, b, c;
-    c = unk_84.z / 8;
+    c = offset.z / 8;
     if (c < 0) c = -c;
-    b = unk_84.y / 8;
+    b = offset.y / 8;
     if (b < 0) b = -b;
-    a = unk_84.x / 8;
+    a = offset.x / 8;
     if (a < 0) a = -a;
-    unk_90.x = a;
-    unk_90.y = b;
-    unk_90.z = c;
-    a = unk_a8.x / 8;
+    moveStep.x = a;
+    moveStep.y = b;
+    moveStep.z = c;
+    a = scale.x / 8;
     if (a < 0) a = -a;
-    unk_c0 = a;
+    scaleStep = a;
     setBusy(1);
-    unk_d6 = 0;
-    unk_d4 = 0;
+    frame = 0;
+    phase = 0;
 }
 
 void HandOverItem::updateAct05()
 {
-    s32 v = unk_a8.x;
-    if ((s32)unk_d6 < 8) {
-        getMasterHoldPos(&unk_60);
-        func_020e761c(&v, 0, unk_c0);
+    s32 v = scale.x;
+    if ((s32)frame < 8) {
+        getMasterHoldPos(&itemPos);
+        func_020e761c(&v, 0, scaleStep);
         s32 u = v;
-        unk_a8.x = u;
-        unk_a8.y = u;
-        unk_a8.z = u;
-        func_020e761c(&unk_84.x, 0, unk_90.x);
-        func_020e761c(&unk_84.y, 0, unk_90.y);
-        func_020e761c(&unk_84.z, 0, unk_90.z);
+        scale.x = u;
+        scale.y = u;
+        scale.z = u;
+        func_020e761c(&offset.x, 0, moveStep.x);
+        func_020e761c(&offset.y, 0, moveStep.y);
+        func_020e761c(&offset.z, 0, moveStep.z);
         if (unk_cc[0] != NULL) {
-            unk_78.x = unk_84.x;
-            unk_78.y = unk_84.y;
-            unk_78.z = unk_84.z;
-            func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
+            worldOffset.x = offset.x;
+            worldOffset.y = offset.y;
+            worldOffset.z = offset.z;
+            func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
         }
-        VEC_Add(&unk_60, &unk_78, &unk_60);
-        unk_d6 = unk_d6 + 1;
-        if ((s32)unk_d6 >= 8) {
+        VEC_Add(&itemPos, &worldOffset, &itemPos);
+        frame = frame + 1;
+        if ((s32)frame >= 8) {
             setBusy(0);
         }
     }
@@ -911,21 +911,21 @@ void HandOverItem::startAct07()
 {
     Unk_020dc034_V cur, t;
     getMasterHoldPos(&cur);
-    func_020e9960(&t, &unk_60, &cur);
-    unk_84.x = t.x;
-    unk_84.y = t.y;
-    unk_84.z = t.z;
+    func_020e9960(&t, &itemPos, &cur);
+    offset.x = t.x;
+    offset.y = t.y;
+    offset.z = t.z;
     setBusy(1);
-    unk_d6 = 0;
+    frame = 0;
 }
 
 void HandOverItem::updateAct07()
 {
-    if ((s32)unk_d6 < 9) {
-        getMasterHoldPos(&unk_60);
-        VEC_Add(&unk_60, &unk_84, &unk_60);
-        unk_d6 = unk_d6 + 1;
-        if ((s32)unk_d6 >= 9) {
+    if ((s32)frame < 9) {
+        getMasterHoldPos(&itemPos);
+        VEC_Add(&itemPos, &offset, &itemPos);
+        frame = frame + 1;
+        if ((s32)frame >= 9) {
             setBusy(0);
         }
     }
@@ -934,18 +934,18 @@ void HandOverItem::updateAct07()
 void HandOverItem::startAct08()
 {
     setBusy(1);
-    unk_d6 = 0;
-    if (unk_54 == 2) {
-        unk_54 = 0;
+    frame = 0;
+    if (kind == 2) {
+        kind = 0;
     }
-    Effect_PlayById(0x93, &unk_60, 0, 0);
+    Effect_PlayById(0x93, &itemPos, 0, 0);
 }
 
 void HandOverItem::updateAct08()
 {
-    if ((s32)unk_d6 < 10) {
-        unk_d6 = unk_d6 + 1;
-        if ((s32)unk_d6 >= 10) {
+    if ((s32)frame < 10) {
+        frame = frame + 1;
+        if ((s32)frame >= 10) {
             setBusy(0);
         }
     }
@@ -956,44 +956,44 @@ void HandOverItem::startAct0B()
     Unk_020dc034_V cur, t;
     setBusy(1);
     getMasterHoldPos(&cur);
-    func_020e9960(&t, &unk_60, &cur);
-    unk_84.x = t.x;
-    unk_84.y = t.y;
-    unk_84.z = t.z;
-    unk_d6 = 0;
-    unk_d4 = 0;
+    func_020e9960(&t, &itemPos, &cur);
+    offset.x = t.x;
+    offset.y = t.y;
+    offset.z = t.z;
+    frame = 0;
+    phase = 0;
 }
 
 void HandOverItem::act0BPhase0()
 {
-    if ((s32)unk_d6 < data_020ca67c[unk_d4]) {
-        getMasterHoldPos(&unk_60);
-        VEC_Add(&unk_60, &unk_84, &unk_60);
-        unk_d6 = unk_d6 + 1;
-        if ((s32)unk_d6 >= data_020ca67c[unk_d4]) {
+    if ((s32)frame < data_020ca67c[phase]) {
+        getMasterHoldPos(&itemPos);
+        VEC_Add(&itemPos, &offset, &itemPos);
+        frame = frame + 1;
+        if ((s32)frame >= data_020ca67c[phase]) {
             s32 a, b, c;
-    c = unk_a8.x / data_021c5a24[unk_d4];
+    c = scale.x / data_021c5a24[phase];
             if (c < 0) c = -c;
-            unk_c0 = c;
-            unk_d4 = unk_d4 + 1;
+            scaleStep = c;
+            phase = phase + 1;
         }
     }
 }
 
 void HandOverItem::act0BPhase1()
 {
-    if ((s32)unk_d6 < data_020ca67c[(*(volatile u8 *)&unk_d4)]) {
-        s32 t = unk_a8.x;
-        func_020e761c(&t, 0, unk_c0);
+    if ((s32)frame < data_020ca67c[(*(volatile u8 *)&phase)]) {
+        s32 t = scale.x;
+        func_020e761c(&t, 0, scaleStep);
         s32 u = t;
-        unk_a8.x = u;
-        unk_a8.y = u;
-        unk_a8.z = u;
-        getMasterHoldPos(&unk_60);
-        VEC_Add(&unk_60, &unk_84, &unk_60);
-        unk_d6 = unk_d6 + 1;
-        if ((s32)unk_d6 >= data_020ca67c[(*(volatile u8 *)&unk_d4)]) {
-            (*(volatile u8 *)&unk_d4) = (*(volatile u8 *)&unk_d4) + 1;
+        scale.x = u;
+        scale.y = u;
+        scale.z = u;
+        getMasterHoldPos(&itemPos);
+        VEC_Add(&itemPos, &offset, &itemPos);
+        frame = frame + 1;
+        if ((s32)frame >= data_020ca67c[(*(volatile u8 *)&phase)]) {
+            (*(volatile u8 *)&phase) = (*(volatile u8 *)&phase) + 1;
         }
     }
 }
@@ -1001,7 +1001,7 @@ void HandOverItem::act0BPhase1()
 void HandOverItem::updateAct0B()
 {
     static Unk_020dc034_Fn tbl[2] = { &HandOverItem::act0BPhase0, &HandOverItem::act0BPhase1 };
-    u32 i = unk_d4;
+    u32 i = phase;
     if (i < 2) {
         (this->*tbl[i])();
     }
@@ -1009,47 +1009,47 @@ void HandOverItem::updateAct0B()
 
 void HandOverItem::startAct01V1()
 {
-    unk_84.x = 0;
-    unk_84.y = 0;
-    unk_84.z = 0;
-    unk_78.x = 0;
-    unk_78.y = 0;
-    unk_78.z = 0;
-    unk_a8.x = 0;
-    unk_a8.y = 0;
-    unk_a8.z = 0;
-    unk_d8 = 1;
-    unk_d4 = 0;
-    unk_d6 = 0;
+    offset.x = 0;
+    offset.y = 0;
+    offset.z = 0;
+    worldOffset.x = 0;
+    worldOffset.y = 0;
+    worldOffset.z = 0;
+    scale.x = 0;
+    scale.y = 0;
+    scale.z = 0;
+    visible = 1;
+    phase = 0;
+    frame = 0;
     setBusy(1);
 }
 
 void HandOverItem::act01V1Phase0()
 {
     s32 n = data_020ca680[0];
-    if ((s32)unk_d6 < n) {
-        unk_d6 = unk_d6 + 1;
-        if ((s32)unk_d6 >= n) {
-            unk_84.x = 0;
-            unk_84.y = 0;
-            unk_84.z = 0;
-            unk_78.x = 0;
-            unk_78.y = 0;
-            unk_78.z = 0;
-            unk_6c.x = sPutDownOffset.x;
-            unk_6c.y = sPutDownOffset.y;
-            unk_6c.z = sPutDownOffset.z;
+    if ((s32)frame < n) {
+        frame = frame + 1;
+        if ((s32)frame >= n) {
+            offset.x = 0;
+            offset.y = 0;
+            offset.z = 0;
+            worldOffset.x = 0;
+            worldOffset.y = 0;
+            worldOffset.z = 0;
+            target.x = sPutDownOffset.x;
+            target.y = sPutDownOffset.y;
+            target.z = sPutDownOffset.z;
             s32 a, b, c;
-    c = unk_6c.z / 12;
+    c = target.z / 12;
             if (c < 0) c = -c;
-            b = unk_6c.y / 12;
+            b = target.y / 12;
             if (b < 0) b = -b;
-            a = unk_6c.x / 12;
+            a = target.x / 12;
             if (a < 0) a = -a;
-            unk_90.x = a;
-            unk_90.y = b;
-            unk_90.z = c;
-            unk_d4 = 1;
+            moveStep.x = a;
+            moveStep.y = b;
+            moveStep.z = c;
+            phase = 1;
         }
     }
 }
@@ -1057,53 +1057,53 @@ void HandOverItem::act01V1Phase0()
 void HandOverItem::act01V1Phase1()
 {
     s32 n = data_020ca680[1];
-    if ((s32)unk_d6 < n) {
-        s32 t = unk_a8.x;
-        getMasterHoldPos(&unk_60);
+    if ((s32)frame < n) {
+        s32 t = scale.x;
+        getMasterHoldPos(&itemPos);
         func_020e761c(&t, 0x1000, 0x200);
         s32 u = t;
-        unk_a8.x = u;
-        unk_a8.y = u;
-        unk_a8.z = u;
-        func_020e761c(&unk_84.x, unk_6c.x, unk_90.x);
-        func_020e761c(&unk_84.y, unk_6c.y, unk_90.y);
-        func_020e761c(&unk_84.z, unk_6c.z, unk_90.z);
+        scale.x = u;
+        scale.y = u;
+        scale.z = u;
+        func_020e761c(&offset.x, target.x, moveStep.x);
+        func_020e761c(&offset.y, target.y, moveStep.y);
+        func_020e761c(&offset.z, target.z, moveStep.z);
         if (unk_cc[0] != NULL) {
-            unk_78.x = unk_84.x;
-            unk_78.y = unk_84.y;
-            unk_78.z = unk_84.z;
-            func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
+            worldOffset.x = offset.x;
+            worldOffset.y = offset.y;
+            worldOffset.z = offset.z;
+            func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
         }
-        VEC_Add(&unk_60, &unk_78, &unk_60);
-        unk_d6 = unk_d6 + 1;
-        if ((s32)unk_d6 >= n) {
+        VEC_Add(&itemPos, &worldOffset, &itemPos);
+        frame = frame + 1;
+        if ((s32)frame >= n) {
             static FxVec3 s(0x10000, 0, 0x17000);
             Unk_020dc034_V t2;
             t2.x = 0;
             t2.y = 0;
             t2.z = 0x2000;
             if (Scene_GetCurrent() == 0x10) {
-                unk_6c.x = s.x;
-                unk_6c.y = s.y;
-                unk_6c.z = s.z;
+                target.x = s.x;
+                target.y = s.y;
+                target.z = s.z;
             } else {
                 func_020e93a0(&t2, unk_cc[0]->unk_8e);
                 VEC_Add(&t2, &unk_cc[0]->unk_5c, &t2);
-                FieldPos_SnapToUnitCenter(&unk_6c, &t2);
+                FieldPos_SnapToUnitCenter(&target, &t2);
             }
-            unk_6c.y = unk_6c.y + 0x1000;
+            target.y = target.y + 0x1000;
             s32 m = data_021c5a2c[1];
             s32 a, b, c;
-    c = (unk_6c.z - unk_60.z) / m;
+    c = (target.z - itemPos.z) / m;
             if (c < 0) c = -c;
-            b = (unk_6c.y - unk_60.y) / m;
+            b = (target.y - itemPos.y) / m;
             if (b < 0) b = -b;
-            a = (unk_6c.x - unk_60.x) / m;
+            a = (target.x - itemPos.x) / m;
             if (a < 0) a = -a;
-            unk_90.x = a;
-            unk_90.y = b;
-            unk_90.z = c;
-            unk_d4 = 2;
+            moveStep.x = a;
+            moveStep.y = b;
+            moveStep.z = c;
+            phase = 2;
         }
     }
 }
@@ -1111,24 +1111,24 @@ void HandOverItem::act01V1Phase1()
 void HandOverItem::act01V1Phase2()
 {
     s32 n = data_020ca680[2];
-    if ((s32)unk_d6 < n) {
-        s32 t = unk_a8.x;
+    if ((s32)frame < n) {
+        s32 t = scale.x;
         func_020e761c(&t, 0x1000, 0x200);
         s32 u = t;
-        unk_a8.x = u;
-        unk_a8.y = u;
-        unk_a8.z = u;
-        func_020e761c(&unk_60.x, unk_6c.x, unk_90.x);
-        func_020e761c(&unk_60.y, unk_6c.y, unk_90.y);
-        func_020e761c(&unk_60.z, unk_6c.z, unk_90.z);
-        unk_d6 = unk_d6 + 1;
-        if ((s32)unk_d6 >= n) {
+        scale.x = u;
+        scale.y = u;
+        scale.z = u;
+        func_020e761c(&itemPos.x, target.x, moveStep.x);
+        func_020e761c(&itemPos.y, target.y, moveStep.y);
+        func_020e761c(&itemPos.z, target.z, moveStep.z);
+        frame = frame + 1;
+        if ((s32)frame >= n) {
             BOOL r = FALSE;
-            if (unk_50 >= 0x1492 && unk_50 <= 0x14fd) r = TRUE;
+            if (item >= 0x1492 && item <= 0x14fd) r = TRUE;
             if (r) {
-                func_02003e70(&unk_dc, 0x70, 0x7f, 0);
+                func_02003e70(&seEmitter, 0x70, 0x7f, 0);
             }
-            unk_d4 = 3;
+            phase = 3;
             setBusy(0);
         }
     }
@@ -1137,7 +1137,7 @@ void HandOverItem::act01V1Phase2()
 void HandOverItem::updateAct01V1()
 {
     static Unk_020dc034_Fn tbl[3] = { &HandOverItem::act01V1Phase0, &HandOverItem::act01V1Phase1, &HandOverItem::act01V1Phase2 };
-    u32 i = unk_d4;
+    u32 i = phase;
     if (i < 3) {
         (this->*tbl[i])();
     }
@@ -1151,37 +1151,37 @@ void HandOverItem::startAct02V1()
     t.y = 0;
     t.z = 0x2000;
     if (Scene_GetCurrent() == 0x10) {
-        unk_6c.x = s.x;
-        unk_6c.y = s.y;
-        unk_6c.z = s.z;
+        target.x = s.x;
+        target.y = s.y;
+        target.z = s.z;
     } else {
         func_020e93a0(&t, unk_cc[0]->unk_8e);
         VEC_Add(&t, &unk_cc[0]->unk_5c, &t);
-        FieldPos_SnapToUnitCenter(&unk_6c, &t);
+        FieldPos_SnapToUnitCenter(&target, &t);
     }
-    unk_6c.y = unk_6c.y + 0x1000;
+    target.y = target.y + 0x1000;
     s32 a, b, c;
-    c = (unk_6c.z - unk_60.z) / 4;
+    c = (target.z - itemPos.z) / 4;
     if (c < 0) c = -c;
-    b = (unk_6c.y - unk_60.y) / 4;
+    b = (target.y - itemPos.y) / 4;
     if (b < 0) b = -b;
-    a = (unk_6c.x - unk_60.x) / 4;
+    a = (target.x - itemPos.x) / 4;
     if (a < 0) a = -a;
-    unk_90.x = a;
-    unk_90.y = b;
-    unk_90.z = c;
-    unk_d6 = 0;
+    moveStep.x = a;
+    moveStep.y = b;
+    moveStep.z = c;
+    frame = 0;
     setBusy(1);
 }
 
 void HandOverItem::updateAct02V1()
 {
-    if ((s32)unk_d6 < 4) {
-        func_020e761c(&unk_60.x, unk_6c.x, unk_90.x);
-        func_020e761c(&unk_60.y, unk_6c.y, unk_90.y);
-        func_020e761c(&unk_60.z, unk_6c.z, unk_90.z);
-        unk_d6 = unk_d6 + 1;
-        if ((s32)unk_d6 >= 4) {
+    if ((s32)frame < 4) {
+        func_020e761c(&itemPos.x, target.x, moveStep.x);
+        func_020e761c(&itemPos.y, target.y, moveStep.y);
+        func_020e761c(&itemPos.z, target.z, moveStep.z);
+        frame = frame + 1;
+        if ((s32)frame >= 4) {
             setBusy(0);
         }
     }
@@ -1189,36 +1189,36 @@ void HandOverItem::updateAct02V1()
 
 void HandOverItem::startAct03V1()
 {
-    getMasterHoldPos(&unk_6c);
+    getMasterHoldPos(&target);
     if (unk_cc[0] != NULL) {
-        unk_78.x = sPutDownOffset.x;
-        unk_78.y = sPutDownOffset.y;
-        unk_78.z = sPutDownOffset.z;
-        func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
+        worldOffset.x = sPutDownOffset.x;
+        worldOffset.y = sPutDownOffset.y;
+        worldOffset.z = sPutDownOffset.z;
+        func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
     }
-    VEC_Add(&unk_6c, &unk_78, &unk_6c);
+    VEC_Add(&target, &worldOffset, &target);
     s32 a, b, c;
-    c = (unk_6c.z - unk_60.z) / 2;
+    c = (target.z - itemPos.z) / 2;
     if (c < 0) c = -c;
-    b = (unk_6c.y - unk_60.y) / 2;
+    b = (target.y - itemPos.y) / 2;
     if (b < 0) b = -b;
-    a = (unk_6c.x - unk_60.x) / 2;
+    a = (target.x - itemPos.x) / 2;
     if (a < 0) a = -a;
-    unk_90.x = a;
-    unk_90.y = b;
-    unk_90.z = c;
-    unk_d6 = 0;
+    moveStep.x = a;
+    moveStep.y = b;
+    moveStep.z = c;
+    frame = 0;
     setBusy(1);
 }
 
 void HandOverItem::updateAct03V1()
 {
-    if ((s32)unk_d6 < 2) {
-        func_020e761c(&unk_60.x, unk_6c.x, unk_90.x);
-        func_020e761c(&unk_60.y, unk_6c.y, unk_90.y);
-        func_020e761c(&unk_60.z, unk_6c.z, unk_90.z);
-        unk_d6 = unk_d6 + 1;
-        if ((s32)unk_d6 >= 2) {
+    if ((s32)frame < 2) {
+        func_020e761c(&itemPos.x, target.x, moveStep.x);
+        func_020e761c(&itemPos.y, target.y, moveStep.y);
+        func_020e761c(&itemPos.z, target.z, moveStep.z);
+        frame = frame + 1;
+        if ((s32)frame >= 2) {
             setBusy(0);
         }
     }
@@ -1227,22 +1227,22 @@ void HandOverItem::updateAct03V1()
 void HandOverItem::startAct04V1()
 {
     setBusy(1);
-    unk_d6 = 0;
+    frame = 0;
 }
 
 void HandOverItem::updateAct04V1()
 {
-    if ((s32)unk_d6 < 10) {
-        getMasterHoldPos(&unk_60);
+    if ((s32)frame < 10) {
+        getMasterHoldPos(&itemPos);
         if (unk_cc[0] != NULL) {
-            unk_78.x = sPutDownOffset.x;
-            unk_78.y = sPutDownOffset.y;
-            unk_78.z = sPutDownOffset.z;
-            func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
+            worldOffset.x = sPutDownOffset.x;
+            worldOffset.y = sPutDownOffset.y;
+            worldOffset.z = sPutDownOffset.z;
+            func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
         }
-        VEC_Add(&unk_60, &unk_78, &unk_60);
-        unk_d6 = unk_d6 + 1;
-        if ((s32)unk_d6 >= 10) {
+        VEC_Add(&itemPos, &worldOffset, &itemPos);
+        frame = frame + 1;
+        if ((s32)frame >= 10) {
             setBusy(0);
         }
     }
@@ -1250,61 +1250,61 @@ void HandOverItem::updateAct04V1()
 
 void HandOverItem::startAct05V1()
 {
-    unk_6c.x = 0;
-    unk_6c.y = 0;
-    unk_6c.z = 0;
-    unk_84.x = sPutDownOffset.x;
-    unk_84.y = sPutDownOffset.y;
-    unk_84.z = sPutDownOffset.z;
-    unk_78.x = 0;
-    unk_78.y = 0;
-    unk_78.z = 0;
+    target.x = 0;
+    target.y = 0;
+    target.z = 0;
+    offset.x = sPutDownOffset.x;
+    offset.y = sPutDownOffset.y;
+    offset.z = sPutDownOffset.z;
+    worldOffset.x = 0;
+    worldOffset.y = 0;
+    worldOffset.z = 0;
     s32 a, b, c;
-    c = unk_84.z / 8;
+    c = offset.z / 8;
     if (c < 0) c = -c;
-    b = unk_84.y / 8;
+    b = offset.y / 8;
     if (b < 0) b = -b;
-    a = unk_84.x / 8;
+    a = offset.x / 8;
     if (a < 0) a = -a;
-    unk_90.x = a;
-    unk_90.y = b;
-    unk_90.z = c;
+    moveStep.x = a;
+    moveStep.y = b;
+    moveStep.z = c;
     setBusy(1);
-    unk_d6 = 0;
-    unk_d4 = 0;
+    frame = 0;
+    phase = 0;
 }
 
 void HandOverItem::updateAct05V1(void) {
     static s32 step = Unk_020574cc_Abs(0x1000 / 8);
-    s32 tmp = unk_a8.x;
-    if ((s32)unk_d6 >= 8) {
+    s32 tmp = scale.x;
+    if ((s32)frame >= 8) {
         return;
     }
-    getMasterHoldPos(&unk_60);
+    getMasterHoldPos(&itemPos);
     func_020e761c(&tmp, 0, step);
     s32 t2 = tmp;
-    unk_a8.x = t2;
-    unk_a8.y = t2;
-    unk_a8.z = t2;
-    func_020e761c(&unk_84.x, 0, unk_90.x);
-    func_020e761c(&unk_84.y, 0, unk_90.y);
-    func_020e761c(&unk_84.z, 0, unk_90.z);
+    scale.x = t2;
+    scale.y = t2;
+    scale.z = t2;
+    func_020e761c(&offset.x, 0, moveStep.x);
+    func_020e761c(&offset.y, 0, moveStep.y);
+    func_020e761c(&offset.z, 0, moveStep.z);
     if (unk_cc[0]) {
-        unk_78.x = unk_84.x;
-        unk_78.y = unk_84.y;
-        unk_78.z = unk_84.z;
-        func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
+        worldOffset.x = offset.x;
+        worldOffset.y = offset.y;
+        worldOffset.z = offset.z;
+        func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
     }
-    VEC_Add(&unk_60, &unk_78, &unk_60);
-    unk_d6++;
-    if ((s32)unk_d6 >= 8) {
+    VEC_Add(&itemPos, &worldOffset, &itemPos);
+    frame++;
+    if ((s32)frame >= 8) {
         setBusy(0);
     }
 }
 
 void HandOverItem::startAct07V1(void) {
     setBusy(1);
-    unk_d6 = 0;
+    frame = 0;
 }
 
 void HandOverItem::updateAct07V1(void) {
@@ -1313,101 +1313,101 @@ void HandOverItem::updateAct07V1(void) {
 
 void HandOverItem::startAct09V1(void) {
     setBusy(1);
-    unk_d6 = 0;
-    unk_d4 = 0;
+    frame = 0;
+    phase = 0;
 }
 
 void HandOverItem::act09V1Phase0(void) {
     s32 c, b, a;
     s32 n = data_020ca684[0];
-    if (unk_d6 >= n) {
+    if (frame >= n) {
         return;
     }
-    unk_d6++;
-    if (unk_d6 >= n) {
-        getMasterHoldPos(&unk_6c);
+    frame++;
+    if (frame >= n) {
+        getMasterHoldPos(&target);
         if (unk_cc[0]) {
-            unk_78.x = sPutDownOffset.x;
-            unk_78.y = sPutDownOffset.y;
-            unk_78.z = sPutDownOffset.z;
-            func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
+            worldOffset.x = sPutDownOffset.x;
+            worldOffset.y = sPutDownOffset.y;
+            worldOffset.z = sPutDownOffset.z;
+            func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
         }
-        VEC_Add(&unk_6c, &unk_78, &unk_6c);
+        VEC_Add(&target, &worldOffset, &target);
         u32 d = data_021c5a28[0];
-        a = Unk_020574cc_Abs((unk_6c.z - unk_60.z) / (s32)d);
-        b = Unk_020574cc_Abs((unk_6c.y - unk_60.y) / (s32)d);
-        c = Unk_020574cc_Abs((unk_6c.x - unk_60.x) / (s32)d);
-        unk_90.x = c;
-        unk_90.y = b;
-        unk_90.z = a;
-        unk_d4 = 1;
+        a = Unk_020574cc_Abs((target.z - itemPos.z) / (s32)d);
+        b = Unk_020574cc_Abs((target.y - itemPos.y) / (s32)d);
+        c = Unk_020574cc_Abs((target.x - itemPos.x) / (s32)d);
+        moveStep.x = c;
+        moveStep.y = b;
+        moveStep.z = a;
+        phase = 1;
     }
 }
 
 void HandOverItem::act09V1Phase1(void) {
     s32 c, b, a;
     s32 n = data_020ca684[1];
-    if (unk_d6 >= n) {
+    if (frame >= n) {
         return;
     }
-    getMasterHoldPos(&unk_6c);
+    getMasterHoldPos(&target);
     if (unk_cc[0]) {
-        unk_78.x = sPutDownOffset.x;
-        unk_78.y = sPutDownOffset.y;
-        unk_78.z = sPutDownOffset.z;
-        func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
+        worldOffset.x = sPutDownOffset.x;
+        worldOffset.y = sPutDownOffset.y;
+        worldOffset.z = sPutDownOffset.z;
+        func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
     }
-    VEC_Add(&unk_6c, &unk_78, &unk_6c);
-    func_020e761c(&unk_60.x, unk_6c.x, unk_90.x);
-    func_020e761c(&unk_60.y, unk_6c.y, unk_90.y);
-    func_020e761c(&unk_60.z, unk_6c.z, unk_90.z);
-    unk_d6++;
-    if (unk_d6 >= n) {
-        unk_6c.x = 0;
-        unk_6c.y = 0;
-        unk_6c.z = 0;
-        unk_84.x = sPutDownOffset.x;
-        unk_84.y = sPutDownOffset.y;
-        unk_84.z = sPutDownOffset.z;
-        unk_78.x = 0;
-        unk_78.y = 0;
-        unk_78.z = 0;
-        a = Unk_020574cc_Abs(unk_84.z / 8);
-        b = Unk_020574cc_Abs(unk_84.y / 8);
-        c = Unk_020574cc_Abs(unk_84.x / 8);
-        unk_90.x = c;
-        unk_90.y = b;
-        unk_90.z = a;
-        unk_d4 = 2;
+    VEC_Add(&target, &worldOffset, &target);
+    func_020e761c(&itemPos.x, target.x, moveStep.x);
+    func_020e761c(&itemPos.y, target.y, moveStep.y);
+    func_020e761c(&itemPos.z, target.z, moveStep.z);
+    frame++;
+    if (frame >= n) {
+        target.x = 0;
+        target.y = 0;
+        target.z = 0;
+        offset.x = sPutDownOffset.x;
+        offset.y = sPutDownOffset.y;
+        offset.z = sPutDownOffset.z;
+        worldOffset.x = 0;
+        worldOffset.y = 0;
+        worldOffset.z = 0;
+        a = Unk_020574cc_Abs(offset.z / 8);
+        b = Unk_020574cc_Abs(offset.y / 8);
+        c = Unk_020574cc_Abs(offset.x / 8);
+        moveStep.x = c;
+        moveStep.y = b;
+        moveStep.z = a;
+        phase = 2;
     }
 }
 
 void HandOverItem::act09V1Phase2(void) {
     static s32 step = Unk_020574cc_Abs(0x1000 / data_021c5a28[1]);
-    s32 tmp = unk_a8.x;
+    s32 tmp = scale.x;
     s32 n = data_020ca684[2];
-    if (unk_d6 >= n) {
+    if (frame >= n) {
         return;
     }
-    getMasterHoldPos(&unk_60);
+    getMasterHoldPos(&itemPos);
     func_020e761c(&tmp, 0, step);
     s32 t2 = tmp;
-    unk_a8.x = t2;
-    unk_a8.y = t2;
-    unk_a8.z = t2;
-    func_020e761c(&unk_84.x, 0, unk_90.x);
-    func_020e761c(&unk_84.y, 0, unk_90.y);
-    func_020e761c(&unk_84.z, 0, unk_90.z);
+    scale.x = t2;
+    scale.y = t2;
+    scale.z = t2;
+    func_020e761c(&offset.x, 0, moveStep.x);
+    func_020e761c(&offset.y, 0, moveStep.y);
+    func_020e761c(&offset.z, 0, moveStep.z);
     if (unk_cc[0]) {
-        unk_78.x = unk_84.x;
-        unk_78.y = unk_84.y;
-        unk_78.z = unk_84.z;
-        func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
+        worldOffset.x = offset.x;
+        worldOffset.y = offset.y;
+        worldOffset.z = offset.z;
+        func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
     }
-    VEC_Add(&unk_60, &unk_78, &unk_60);
-    unk_d6++;
-    if (unk_d6 >= n) {
-        unk_d4 = 3;
+    VEC_Add(&itemPos, &worldOffset, &itemPos);
+    frame++;
+    if (frame >= n) {
+        phase = 3;
         setBusy(0);
     }
 }
@@ -1418,7 +1418,7 @@ void HandOverItem::updateAct09V1(void) {
         &HandOverItem::act09V1Phase1,
         &HandOverItem::act09V1Phase2,
     };
-    u32 state = unk_d4;
+    u32 state = phase;
     if (state < 3) {
         (this->*tbl[state])();
     }
@@ -1450,7 +1450,7 @@ extern "C" s32 HandOverItem_RequestMode(u8 a, s32 b) {
 
 extern "C" u8 HandOverItem_GetNextMode(void) {
     if (sHandOverItem) {
-        return sHandOverItem->unk_58;
+        return sHandOverItem->nextMode;
     }
     return 0xc;
 }
@@ -1458,8 +1458,8 @@ extern "C" u8 HandOverItem_GetNextMode(void) {
 extern "C" void HandOverItem_End(s32 a) {
     if (sHandOverItem) {
         if (HandOverItem_IsMaster(a) == 1) {
-            if (sHandOverItem->unk_c4 != -1) {
-                FishDisplay_Release(sHandOverItem->unk_c4);
+            if (sHandOverItem->fishDisplay != -1) {
+                FishDisplay_Release(sHandOverItem->fishDisplay);
             }
             sHandOverItem->resetState();
         }
@@ -1471,10 +1471,10 @@ extern "C" BOOL HandOverItem_CanTake(Unk_02057328_Obj *p) {
     if (p) {
         HandOverItem *g = sHandOverItem;
         if (g) {
-            if (func_020e9650(&p->unk_5c, &g->unk_60) <= g->unk_bc) {
+            if (func_020e9650(&p->unk_5c, &g->itemPos) <= g->reach) {
                 r = TRUE;
             } else if (g->isAwaitingTake()) {
-                if (sHandOverItem->unk_d5 == 0) {
+                if (sHandOverItem->takeTimer == 0) {
                     r = TRUE;
                 }
             }
@@ -1487,7 +1487,7 @@ extern "C" BOOL HandOverItem_GetPos(Unk_020dc034_V *out) {
     BOOL r = FALSE;
     HandOverItem *g = sHandOverItem;
     if (g) {
-        Unk_020dc034_V *pv = &g->unk_60;
+        Unk_020dc034_V *pv = &g->itemPos;
         out->x = pv->x;
         out->y = pv->y;
         out->z = pv->z;
@@ -1508,7 +1508,7 @@ extern "C" BOOL HandOverItem_IsModeActive(u32 a) {
     BOOL r = FALSE;
     HandOverItem *g = sHandOverItem;
     if (g) {
-        if ((g->unk_c8 == a && g->unk_d9 == 1) || g->unk_da == a) {
+        if ((g->mode == a && g->busy == 1) || g->modeRequest == a) {
             r = TRUE;
         }
     }
@@ -1518,7 +1518,7 @@ extern "C" BOOL HandOverItem_IsModeActive(u32 a) {
 extern "C" BOOL HandOverItem_IsActive(void) {
     BOOL r = FALSE;
     if (sHandOverItem) {
-        if (sHandOverItem->unk_c8 != 0) {
+        if (sHandOverItem->mode != 0) {
             r = TRUE;
         }
     }
@@ -1528,7 +1528,7 @@ extern "C" BOOL HandOverItem_IsActive(void) {
 extern "C" void HandOverItem_GetItem(u16 *out) {
     *out = 0xfff1;
     if (sHandOverItem) {
-        *out = sHandOverItem->unk_50;
+        *out = sHandOverItem->item;
     }
 }
 

@@ -36,9 +36,9 @@ struct TouchPickTriangle : CollisionTriangle {
     ~TouchPickTriangle();
     BOOL setupCurved(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
     BOOL setup(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    /* 0x38 */ TouchPickTriangle *unk_38;
-    /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ u8 unk_40;
+    /* 0x38 */ TouchPickTriangle *next;
+    /* 0x3c */ s32 kind;
+    /* 0x40 */ u8 index;
 };
 
 struct TouchPickBox {
@@ -213,9 +213,9 @@ BOOL TouchPickBox::build(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f)
 }
 
 TouchPickTriangle::TouchPickTriangle() {
-    unk_3c = 0;
-    unk_38 = 0;
-    unk_40 = 0xff;
+    kind = 0;
+    next = 0;
+    index = 0xff;
 }
 
 TouchPickTriangle::~TouchPickTriangle() {

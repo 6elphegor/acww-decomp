@@ -50,7 +50,7 @@ struct TalkStartMsg {
 
 struct Unk_02067918 {
     u32 unk_00;
-    s32 unk_04;
+    s32 state;
 };
 
 struct ChoiceList {
@@ -388,9 +388,9 @@ public:
     void setResultHandler(s32 idx);
     void attachOwner(SpNpcKappn *owner);
 
-    SpNpcKappn *unk_ac;
-    Fn unk_b0;
-    s32 unk_b8;
+    SpNpcKappn *ownerNpc;
+    Fn resultHandler;
+    s32 answerBits;
 };
 
 struct Unk_ov051_02259be4_Ent {
@@ -400,7 +400,7 @@ struct Unk_ov051_02259be4_Ent {
 
 class SpNpcKappn : public SpNpcActor {
 public:
-    SpNpcKappn() : unk_658() {}
+    SpNpcKappn() : talk() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
@@ -424,9 +424,9 @@ public:
     void changeAct(s32 state);
 
     s32 unk_654;
-    SpNpcKappnTalk unk_658;
-    u16 unk_714;
-    u8 unk_716;
+    SpNpcKappnTalk talk;
+    u16 startDelay;
+    u8 animTimer;
     u8 pad_717;
 };
 
@@ -562,8 +562,8 @@ BOOL SpNpcKappn::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xfb);
     return TRUE;
 }
@@ -576,7 +576,7 @@ BOOL SpNpcKappn::vfunc_00() {
     changeAct(0);
     collider.unk_1c |= 2;
     TalkRequestFlags_SetSceneHold();
-    unk_714 = 0x29;
+    startDelay = 0x29;
     return TRUE;
 }
 
@@ -597,7 +597,7 @@ BOOL SpNpcKappn::updateAct() {
     if (sSpNpcKappnActTable[unk_654].exit) {
         r = (this->*sSpNpcKappnActTable[unk_654].exit)();
     }
-    if (func_020e7518(&unk_716) == 1) {
+    if (func_020e7518(&animTimer) == 1) {
         _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x8f, 1, data_020c6cc8, 0);
     }
     return r;
@@ -621,7 +621,7 @@ BOOL SpNpcKappn::setupAct00() { return TRUE; }
 
 BOOL SpNpcKappn::mainAct00() {
     if (Unk_ov051_02259b98_IsTwo(gScreenTransition)) {
-        if (func_020e7500(&unk_714) == 0) {
+        if (func_020e7500(&startDelay) == 0) {
             changeAct(1);
         }
     }
@@ -678,11 +678,11 @@ BOOL SpNpcKappn::setupAct04() { return TRUE; }
 // ---------------------------------------------------------------------------------------------------------------------
 // Owner SpNpcKappn
 BOOL SpNpcKappn::mainAct04() {
-    if (TalkWindow_Get(0)->unk_04 == 0) {
+    if (TalkWindow_Get(0)->state == 0) {
         if (Random_GlobalBelow(4) == 0) {
             TaxiInterior_StartDriverAnim();
             Camera_SetSwayPattern3();
-            unk_716 = 10;
+            animTimer = 10;
         }
         ScreenTransition_StartFadeOut(0, 0xf);
         Snd_FadeOutScene();
@@ -697,7 +697,7 @@ SpNpcKappnTalk::~SpNpcKappnTalk() {}
 
 void SpNpcKappnTalk::attachOwner(SpNpcKappn *owner) {
     vfunc_08();
-    unk_ac = owner;
+    ownerNpc = owner;
 }
 
 void SpNpcKappnTalk::onSignalTag(s32 a) {
@@ -716,9 +716,9 @@ void SpNpcKappnTalk::start(TalkStartMsg *out) {
 }
 
 void SpNpcKappnTalk::onTaskDone() {
-    if (unk_b0) {
-        (this->*unk_b0)();
-        unk_b0 = *(Fn *)__ptmf_null;
+    if (resultHandler) {
+        (this->*resultHandler)();
+        resultHandler = *(Fn *)__ptmf_null;
     }
 }
 
@@ -730,7 +730,7 @@ void SpNpcKappnTalk::setResultHandler(s32 idx) {
         *(Fn *)data_ov051_0225a0f4,
         *(Fn *)data_ov051_0225a0ec,
     };
-    unk_b0 = tbl[idx];
+    resultHandler = tbl[idx];
 }
 
 void SpNpcKappnTalk::onTownNameEntered() {
@@ -876,11 +876,11 @@ void SpNpcKappnTalk::applyFaceFromAnswers() {
         u32 r1;
         if (res == 0) {
             off4 = res << 2;
-            v = *(u32 *)(off4 + ((u32)sSpNpcKappnFaceTable + (u32)(unk_ac->unk_658.unk_b8 << 3)));
+            v = *(u32 *)(off4 + ((u32)sSpNpcKappnFaceTable + (u32)(ownerNpc->talk.answerBits << 3)));
             r1 = (u8)v;
         } else {
             off4 = res << 2;
-            v = *(u32 *)(off4 + ((u32)sSpNpcKappnFaceTable + (u32)(unk_ac->unk_658.unk_b8 << 3)));
+            v = *(u32 *)(off4 + ((u32)sSpNpcKappnFaceTable + (u32)(ownerNpc->talk.answerBits << 3)));
             r1 = (u8)(v + 8);
         }
         u8 *base = data_020d0544 + (v << 3);
@@ -893,7 +893,7 @@ void SpNpcKappnTalk::applyFaceFromAnswers() {
         _ZN10PlayerData8setShirtEPt(h, &c);
     }
     unk_3c->setNextMessage(gTalkMsgIndexEnd, 0);
-    unk_ac->changeAct(4);
+    ownerNpc->changeAct(4);
 }
 
 extern "C" void *data_ov051_0225a014[2] = {(void *)_ZN10SpNpcKappn10setupAct00Ev, 0};
@@ -1050,7 +1050,7 @@ void SpNpcKappnTalk::onRainChoice(u32 sel) {
     msg = v;
     unk_3c->setNextMessage(&msg, sSpNpcKappnMsgKey);
     if (sel == 1) {
-        unk_ac->unk_658.unk_b8 += 4;
+        ownerNpc->talk.answerBits += 4;
     }
 }
 
@@ -1059,7 +1059,7 @@ void SpNpcKappnTalk::onPurposeChoice(u32 sel) {
     msg = genderMsg(sSpNpcKappnPurposeReplyMsgs[sel]);
     unk_3c->setNextMessage(&msg, sSpNpcKappnMsgKey);
     if (sel == 1) {
-        unk_ac->unk_658.unk_b8 += 2;
+        ownerNpc->talk.answerBits += 2;
     }
 }
 
@@ -1080,7 +1080,7 @@ void SpNpcKappnTalk::onMoneyChoice(u32 sel) {
     msg = v;
     unk_3c->setNextMessage(&msg, sSpNpcKappnMsgKey);
     if (sel == 1) {
-        unk_ac->unk_658.unk_b8++;
+        ownerNpc->talk.answerBits++;
     }
 }
 

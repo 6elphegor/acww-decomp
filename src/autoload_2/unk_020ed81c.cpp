@@ -63,9 +63,9 @@ public:
     virtual s32 vfunc_08(void *p);
     virtual void vfunc_0c(void *p);
 
-    /* 0x04 */ s16 unk_04;
-    /* 0x06 */ s16 unk_06;
-    /* 0x08 */ void **unk_08;
+    /* 0x04 */ s16 state;
+    /* 0x06 */ s16 cmdIndex;
+    /* 0x08 */ void **cmds;
     /* 0x0c */ u32 unk_0c;
     /* 0x10 */ u16 unk_10;
     /* 0x12 */ s16 unk_12;
@@ -271,13 +271,13 @@ void *SndList_GetNext(void *list, void *obj);
 // PROTOS-END
 
 extern "C" s16 func_020ed81c(Unk_Seq *o, s32 loop) {
-    if (o->unk_08 == NULL || o->unk_04 == 2) return 2;
-    while (((u32 *)o->unk_08)[o->unk_06] != 0) {
-        o->unk_04 = o->vfunc_08(o->unk_08[o->unk_06]);
-        if (o->unk_04 != 2) break;
-        o->unk_06++;
+    if (o->cmds == NULL || o->state == 2) return 2;
+    while (((u32 *)o->cmds)[o->cmdIndex] != 0) {
+        o->state = o->vfunc_08(o->cmds[o->cmdIndex]);
+        if (o->state != 2) break;
+        o->cmdIndex++;
         o->unk_12 = 0;
         if (loop == 0) break;
     }
-    return o->unk_04;
+    return o->state;
 }

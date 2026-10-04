@@ -24,7 +24,7 @@ void NpcResPools_ClearAll();
 }
 
 struct NpcResPool {
-    s32 unk_04;
+    s32 numSlots;
     virtual ~NpcResPool();
     virtual void occupySlot(u32 i) = 0;
     virtual void releaseSlot(u32 i);
@@ -115,7 +115,7 @@ BOOL NpcResHandle::acquire() {
     if (c) {
         if (unk_04 == -1) {
             u32 i = _ZN10NpcResPool12findFreeSlotEv(c);
-            if (i < (u32)c->unk_04) {
+            if (i < (u32)c->numSlots) {
                 unk_04 = i;
                 c->occupySlot(unk_04);
                 r = TRUE;

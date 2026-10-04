@@ -66,8 +66,8 @@ struct Unk_ov083_Vec {
 };
 
 struct Unk_ov068_0226ce70_Out {
-    const char *unk_00;
-    u8 unk_04;
+    const char *msgKey;
+    u8 msgIndex;
 };
 
 struct ChoiceList {
@@ -391,10 +391,10 @@ public:
     void setTalkMode(s32 v);
     void attachOwner(Unk_ov068_0226ccd4_Owner *o);
 
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ SpNpcRoostGuest *unk_b0;
-    /* 0xb4 */ s32 unk_b4;
-    /* 0xb8 */ BgmBeatPhase unk_b8;
+    /* 0xac */ s32 talkMode;
+    /* 0xb0 */ SpNpcRoostGuest *owner;
+    /* 0xb4 */ s32 script;
+    /* 0xb8 */ BgmBeatPhase lastBeatState;
 };
 
 class SpNpcRoostGuest : public SpNpcActor {
@@ -422,16 +422,16 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    /* 0x652 */ u16 unk_652;
+    /* 0x652 */ u16 songItem;
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ s32 unk_658;
-    /* 0x65c */ SpNpcRoostGuestTalk unk_65c;
-    /* 0x72c */ s32 unk_72c;
-    /* 0x730 */ u8 unk_730[0x10];
-    /* 0x740 */ u16 unk_740;
-    /* 0x742 */ u8 unk_742;
-    /* 0x743 */ u8 unk_743;
-    /* 0x744 */ u8 unk_744;
+    /* 0x658 */ s32 act;
+    /* 0x65c */ SpNpcRoostGuestTalk talk;
+    /* 0x72c */ s32 guestType;
+    /* 0x730 */ u8 requestText[0x10];
+    /* 0x740 */ u16 showTimer;
+    /* 0x742 */ u8 showAccepted;
+    /* 0x743 */ u8 isRandomSong;
+    /* 0x744 */ u8 hasSongRequest;
 };
 
 typedef BOOL (SpNpcRoostGuest::*Unk_ov068_0226d39c_Fn)();
@@ -484,9 +484,9 @@ struct Unk_ov068_0226cd18_Ent {
 };
 
 struct Unk_ov068_Scene_Entry {
-    void *(*unk_00)();
-    u16 unk_04;
-    u16 unk_06;
+    void *(*factory)();
+    u16 executePriority;
+    u16 drawPriority;
     s32 unk_08[4];
 };
 extern "C" {
@@ -737,15 +737,15 @@ BOOL SpNpcRoostGuest::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    NpcActor_setTalkRequest(this, &unk_65c);
-    unk_65c.attachOwner((Unk_ov068_0226ccd4_Owner *)this);
+    NpcActor_setTalkRequest(this, &talk);
+    talk.attachOwner((Unk_ov068_0226ccd4_Owner *)this);
     collider.unk_45 = 0;
     d.a = 0;
     d.b = 0;
     Clock_GetDateTime(&d);
     u8 mo = ((u8 *)&d)[2];
     u8 dy = ((u8 *)&d)[1];
-    unk_72c = 8;
+    guestType = 8;
     if (CommManager_isSlotActive(*(void **)gCommManager, *(s32 *)(*(u8 **)gCommManager + 0x64))) {
         return TRUE;
     }
@@ -756,23 +756,23 @@ BOOL SpNpcRoostGuest::vfunc_04() {
     switch (Clock_GetWeekday()) {
     case 6:
         if ((mo == 0x13 && dy >= 0x1e) || mo == 0x14 || mo == 0x15 || mo == 0x16 || (mo == 0x17 && dy <= 0x3b)) {
-            unk_72c = 7;
+            guestType = 7;
             Actor_spawn(0x10, 0, 0, 0, 0);
         }
         break;
     case 0:
         if (mo == 0x15 && dy < 0x37) {
-            unk_72c = 1;
+            guestType = 1;
         }
         break;
     default:
         if (mo == 0x15 && dy < 0x37) {
-            unk_72c = 1;
+            guestType = 1;
         }
         if (mo == 0x17 && dy <= 0x3b) {
             if (RoostGuestRoll_hasLateGuest(g)) {
                 if (NookShop_GetLevel(&data_021ed104) == 3) {
-                    unk_72c = 2;
+                    guestType = 2;
                 }
             }
         }
@@ -781,41 +781,41 @@ BOOL SpNpcRoostGuest::vfunc_04() {
     if (mo == 0xc || (mo == 0xd && dy < 0x1e)) {
         switch (RoostGuestRoll_getNoonGuest(g)) {
         case 2:
-            unk_72c = 5;
+            guestType = 5;
             break;
         case 1:
-            unk_72c = 4;
+            guestType = 4;
             break;
         case 3:
-            unk_72c = 6;
+            guestType = 6;
             break;
         case 4:
-            unk_72c = 3;
+            guestType = 3;
             break;
         }
     }
     if ((mo == 0xe && dy >= 0x1e) || (mo == 0xf && dy <= 0x3b)) {
         switch (RoostGuestRoll_getAfternoonGuest(g)) {
         case 2:
-            unk_72c = 5;
+            guestType = 5;
             break;
         case 1:
-            unk_72c = 4;
+            guestType = 4;
             break;
         case 3:
-            unk_72c = 6;
+            guestType = 6;
             break;
         case 4:
-            unk_72c = 3;
+            guestType = 3;
             break;
         }
     }
     if (mo == 6 && dy < 0x37 && RoostGuestRoll_hasMorningGuest(g)) {
-        unk_72c = 0;
+        guestType = 0;
     }
-    h = sRoostGuestNpcHandles[unk_72c];
+    h = sRoostGuestNpcHandles[guestType];
     NpcActor_setNpcHandle(this, &h);
-    if (unk_72c == 7) {
+    if (guestType == 7) {
         setInteractionRange(0x5000);
         position = 0xf000;
         positionZ = 0x13000;
@@ -839,12 +839,12 @@ BOOL SpNpcRoostGuest::vfunc_00() {
     if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
-    if (unk_72c == 7) {
+    if (guestType == 7) {
         func_02105f90(*(s32 *)((u8 *)this + 0x148), 3);
     }
     changeAct(0);
     collider.unk_1c |= 2;
-    if (unk_72c == 3) {
+    if (guestType == 3) {
         NpcAnimCtrl_playAnim(&animCtrl, this, 0x142, 0, 0, 0x1000, 0, 1);
         ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     }
@@ -856,7 +856,7 @@ BOOL SpNpcRoostGuest::vfunc_0c() {
     if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
-    if (unk_72c == 7) {
+    if (guestType == 7) {
         KkShowFx_Stop();
     }
     return TRUE;
@@ -864,19 +864,19 @@ BOOL SpNpcRoostGuest::vfunc_0c() {
 
 u8 *SpNpcRoostGuest::getTexturePath() {
     using namespace sB;
-    return (u8 *)sRoostGuestTexPaths[unk_72c];
+    return (u8 *)sRoostGuestTexPaths[guestType];
 }
 
 u8 *SpNpcRoostGuest::getModelPath() {
     using namespace sB;
-    return (u8 *)sRoostGuestModelPaths[unk_72c];
+    return (u8 *)sRoostGuestModelPaths[guestType];
 }
 
 BOOL SpNpcRoostGuest::updateAct() {
     using namespace sB;
     BOOL result = FALSE;
-    if (sSpNpcRoostGuestActTable[unk_658].b != NULL) {
-        result = (this->*sSpNpcRoostGuestActTable[unk_658].b)();
+    if (sSpNpcRoostGuestActTable[act].b != NULL) {
+        result = (this->*sSpNpcRoostGuestActTable[act].b)();
     }
     return result;
 }
@@ -888,13 +888,13 @@ void SpNpcRoostGuest::changeAct(s32 state) {
         ok = (this->*sSpNpcRoostGuestActTable[state].a)();
     }
     if (ok) {
-        unk_658 = state;
+        act = state;
     }
 }
 
 BOOL SpNpcRoostGuest::setupAct00() {
     using namespace sB;
-    if (unk_72c == 7) {
+    if (guestType == 7) {
         NpcLookAt_setTarget(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
         NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0x105, 0, data_020c6cc8, 0);
         NpcLookAt_setManualAngles(&lookAt, 0, -0xc18, 0, data_020c6cc4, data_020c6cbc);
@@ -906,16 +906,16 @@ BOOL SpNpcRoostGuest::setupAct00() {
 
 BOOL SpNpcRoostGuest::mainAct00() {
     using namespace sB;
-    if (unk_72c == 8) {
+    if (guestType == 8) {
         ProcBase_RequestDelete(this);
         return TRUE;
     }
-    if (unk_72c == 7) {
+    if (guestType == 7) {
         checkPlayerSeated();
     } else {
         CafeCoffeeSet_StartEffectB(this);
     }
-    if (unk_72c == 6) {
+    if (guestType == 6) {
         CafeCoffeeSet_SetFlagEF8();
     }
     return TRUE;
@@ -923,7 +923,7 @@ BOOL SpNpcRoostGuest::mainAct00() {
 
 BOOL SpNpcRoostGuest::setupAct01() {
     using namespace sB;
-    if (unk_72c == 7) {
+    if (guestType == 7) {
         NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0x102, 0, data_020c6cc8, 0);
     }
     NpcLookAt_setTarget(&lookAt, 4, 0, 0, gVec3Zero, 4, data_020c6d1c, 0);
@@ -991,7 +991,7 @@ BOOL SpNpcRoostGuest::mainAct02() {
 }
 
 SpNpcRoostGuestTalk::SpNpcRoostGuestTalk() {
-    func_020f8134(&unk_b8);
+    func_020f8134(&lastBeatState);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1000,26 +1000,26 @@ SpNpcRoostGuestTalk::~SpNpcRoostGuestTalk() {}
 void SpNpcRoostGuestTalk::attachOwner(Unk_ov068_0226ccd4_Owner *o) {
     using namespace sB;
     vfunc_08();
-    unk_b0 = (SpNpcRoostGuest *)o;
+    owner = (SpNpcRoostGuest *)o;
 }
 
 void SpNpcRoostGuestTalk::setTalkMode(s32 v) {
-    using namespace sB; unk_ac = v; }
+    using namespace sB; talkMode = v; }
 
 s32 SpNpcRoostGuestTalk::getTalkMode() {
-    using namespace sB; return unk_ac; }
+    using namespace sB; return talkMode; }
 
 void SpNpcRoostGuestTalk::start(Unk_ov068_0226ce70_Out *out) {
     using namespace sB;
     u16 h0, h2, h4, h6;
-    unk_b8.unk_00 = -1;
-    unk_b8.unk_01 = -1;
-    unk_b8.unk_02 = -1;
-    unk_b8.unk_03 = -1;
-    unk_b8.unk_04 = -1;
+    lastBeatState.unk_00 = -1;
+    lastBeatState.unk_01 = -1;
+    lastBeatState.unk_02 = -1;
+    lastBeatState.unk_03 = -1;
+    lastBeatState.unk_04 = -1;
     void *p = PlayerData_GetCurrent();
-    out->unk_00 = sRoostGuestMsgFiles[unk_b0->unk_72c];
-    if (unk_b0->unk_72c == 7) {
+    out->msgKey = sRoostGuestMsgFiles[owner->guestType];
+    if (owner->guestType == 7) {
         if (getTalkMode() == 0) {
             Unk_ov068_0226ce70_Date d;
             d.a = 0;
@@ -1034,12 +1034,12 @@ void SpNpcRoostGuestTalk::start(Unk_ov068_0226ce70_Out *out) {
                     ok = TRUE;
                 }
                 if (ok) {
-                    out->unk_04 = 0xe;
+                    out->msgIndex = 0xe;
                 } else {
-                    out->unk_04 = 0x13;
+                    out->msgIndex = 0x13;
                 }
-            } else if (unk_b0->unk_742 != 0) {
-                out->unk_04 = 0;
+            } else if (owner->showAccepted != 0) {
+                out->msgIndex = 0;
             } else if (Talk_CheckAndSetPlayerFlag(0xd, 0) != 0) {
                 h2 = 0x3530;
                 s32 r = Pocket_FindItem(&h2);
@@ -1048,46 +1048,46 @@ void SpNpcRoostGuestTalk::start(Unk_ov068_0226ce70_Out *out) {
                     ok = TRUE;
                 }
                 if (ok) {
-                    out->unk_04 = 0xe;
+                    out->msgIndex = 0xe;
                 } else {
-                    out->unk_04 = 0x12;
+                    out->msgIndex = 0x12;
                 }
             } else if (Unk_02097ff4_testFlag(p, 7) == 0) {
-                out->unk_04 = 1;
+                out->msgIndex = 1;
                 Unk_02097ff4_setFlag(p, 7);
             } else if (Talk_CheckAndSetPlayerFlag(0xc, 1) == 0) {
-                out->unk_04 = 2;
+                out->msgIndex = 2;
             } else {
-                out->unk_04 = 3;
+                out->msgIndex = 3;
             }
         } else {
             if (getTalkMode() == 1) {
                 ItemName a;
                 EncodedString16Buf b;
-                EncodedString_SetRaw(&b, unk_b0->unk_730, 0x10);
+                EncodedString_SetRaw(&b, owner->requestText, 0x10);
                 MsgString_fromEncoded(&a, &b, 0, 0);
                 TalkWindowState_setNamedSlot(unk_3c, 0, &a, 7);
             } else if (getTalkMode() == 2) {
-                h4 = unk_b0->unk_652;
+                h4 = owner->songItem;
                 setItemNameSlot((u32)&h4, 1, 7);
-                h6 = unk_b0->unk_652;
+                h6 = owner->songItem;
                 setItemNameSlot((u32)&h6, 2, 7);
             }
-            out->unk_04 = sKkTalkModeMessages[unk_ac];
-            out->unk_00 = sRoostGuestMsgFiles[unk_b0->unk_72c];
+            out->msgIndex = sKkTalkModeMessages[talkMode];
+            out->msgKey = sRoostGuestMsgFiles[owner->guestType];
         }
     } else {
-        if (Talk_CheckAndSetPlayerFlag(unk_b0->unk_72c + 0x21, 1) == 0) {
-            out->unk_04 = Random_GlobalBelow(3);
+        if (Talk_CheckAndSetPlayerFlag(owner->guestType + 0x21, 1) == 0) {
+            out->msgIndex = Random_GlobalBelow(3);
         } else {
-            out->unk_04 = Random_GlobalBelow(5) + 3;
+            out->msgIndex = Random_GlobalBelow(5) + 3;
         }
     }
 }
 
 void SpNpcRoostGuestTalk::onMessageStart(s32 a) {
     using namespace sB;
-    if (unk_b0->unk_72c == 7) {
+    if (owner->guestType == 7) {
         fillKkSongName(a);
     }
 }
@@ -1097,14 +1097,14 @@ void SpNpcRoostGuestTalk::fillKkSongName(s32 a) {
     switch (msgIndex) {
     case 12:
     case 13: {
-        u16 v = unk_b0->unk_652;
+        u16 v = owner->songItem;
         setItemNameSlot((u32)&v, 1, 7);
         break;
     }
     case 11: {
         ItemName a;
         EncodedString16Buf b;
-        EncodedString_SetRaw(&b, unk_b0->unk_730, 0x10);
+        EncodedString_SetRaw(&b, owner->requestText, 0x10);
         MsgString_fromEncoded(&a, &b, 0, 0);
         TalkWindowState_setNamedSlot(unk_3c, 0, &a, 7);
         break;
@@ -1114,7 +1114,7 @@ void SpNpcRoostGuestTalk::fillKkSongName(s32 a) {
 
 void SpNpcRoostGuestTalk::onMessageEnd(s32 a) {
     using namespace sB;
-    if (unk_b0->unk_72c == 7) {
+    if (owner->guestType == 7) {
         dispatchKkMessageEnd(a);
     }
 }
@@ -1163,13 +1163,13 @@ void SpNpcRoostGuestTalk::onKkAskSongRequest() {
 void SpNpcRoostGuestTalk::onKkStartShow() {
     using namespace sB;
     unk_3c->openMode = 0;
-    unk_b0->unk_740 = 0x2d;
+    owner->showTimer = 0x2d;
     setScript(2);
 }
 
 void SpNpcRoostGuestTalk::onChoice(s32 a) {
     using namespace sA;
-    if (unk_b0->unk_72c == 7) {
+    if (owner->guestType == 7) {
         dispatchKkChoice(a);
     }
 }
@@ -1238,7 +1238,7 @@ extern "C" char sRoostModelPoo[23] = "npc_sp/model/poo.nsbmd";
 void SpNpcRoostGuestTalk::onKkChoiceListen(s32 a) {
     using namespace sA;
     if (a == 0) {
-        unk_b0->unk_742 = 1;
+        owner->showAccepted = 1;
     }
 }
 
@@ -1259,17 +1259,17 @@ void SpNpcRoostGuestTalk::onKkChoiceTradeGuitar(s32 a) {
 void SpNpcRoostGuestTalk::onKkChoiceRequest(s32 a) {
     using namespace sA;
     if (a == 0) {
-        unk_b0->unk_744 = 1;
+        owner->hasSongRequest = 1;
     } else {
-        unk_b0->unk_744 = 0;
-        unk_b0->unk_743 = 0;
-        unk_b0->unk_652 = RoostGuest_PickKKSong(unk_b0);
+        owner->hasSongRequest = 0;
+        owner->isRandomSong = 0;
+        owner->songItem = RoostGuest_PickKKSong(owner);
     }
 }
 
 void SpNpcRoostGuestTalk::update() {
     using namespace sA;
-    s32 i = unk_b4;
+    s32 i = script;
     if (((u8 *)&sKkShowScripts[0].flag)[i * 12] != 0) {
         Unk_ov068_02270780_Ent *e = &sKkShowScripts[i];
         if (e->fn != 0) {
@@ -1280,7 +1280,7 @@ void SpNpcRoostGuestTalk::update() {
 
 void SpNpcRoostGuestTalk::onTaskDone() {
     using namespace sA;
-    s32 i = unk_b4;
+    s32 i = script;
     if (((u8 *)&sKkShowScripts[0].flag)[i * 12] == 0) {
         Unk_ov068_02270780_Ent *e = &sKkShowScripts[i];
         if (e->fn != 0) {
@@ -1292,38 +1292,38 @@ void SpNpcRoostGuestTalk::onTaskDone() {
 
 void SpNpcRoostGuestTalk::setScript(s32 state) {
     using namespace sA;
-    unk_b4 = state;
+    script = state;
 }
 
 void SpNpcRoostGuestTalk::scriptReadSongRequest() {
     using namespace sA;
     u8 cmd;
     u16 tmp;
-    MI_CpuCopy8(MenuCtrl_GetText(), unk_b0->unk_730, 0x10);
+    MI_CpuCopy8(MenuCtrl_GetText(), owner->requestText, 0x10);
     ItemName objA;
     EncodedString16Buf objB;
-    EncodedString_SetRaw(&objB, unk_b0->unk_730, 0x10);
+    EncodedString_SetRaw(&objB, owner->requestText, 0x10);
     MsgString_fromEncoded(&objA, &objB, 0, 0);
     TalkWindowState_setNamedSlot(unk_3c, 0, &objA, 7);
     if (MenuCtrl_IsResultOk()) {
         u32 v;
         u16 h;
-        unk_b0->unk_743 = 0;
+        owner->isRandomSong = 0;
         v = MenuCtrl_GetIndex();
         if (v < 0x46) {
             h = v + 0x1323;
         } else {
             h = 0x1323;
         }
-        unk_b0->unk_652 = h;
-        tmp = unk_b0->unk_652;
+        owner->songItem = h;
+        tmp = owner->songItem;
         setItemNameSlot((u32)&tmp, 1, 7);
     } else {
-        unk_b0->unk_743 = 1;
-        unk_b0->unk_652 = RoostGuest_PickKKSong(unk_b0);
+        owner->isRandomSong = 1;
+        owner->songItem = RoostGuest_PickKKSong(owner);
     }
     cmd = 8;
-    TalkWindowState_setNextMessage(unk_3c, &cmd, sRoostGuestMsgFiles[unk_b0->unk_72c]);
+    TalkWindowState_setNextMessage(unk_3c, &cmd, sRoostGuestMsgFiles[owner->guestType]);
 }
 
 void SpNpcRoostGuestTalk::scriptStartPerformance() {
@@ -1331,16 +1331,16 @@ void SpNpcRoostGuestTalk::scriptStartPerformance() {
     Unk_ov068_0226c870_Pad pad;
     s32 *q = TalkWindow_Get(0);
     if (q[1] == 5) {
-        if (unk_b0->unk_740 == 0x2d) {
+        if (owner->showTimer == 0x2d) {
             LightSwitch_SetOff(0, 0x1e);
             LightSwitch_SetOn(1, 1, 0);
-            NpcLookAt_setManualAngles(&unk_b0->lookAt, 0, -0xc18, 0, 0x276, 0x276);
+            NpcLookAt_setManualAngles(&owner->lookAt, 0, -0xc18, 0, 0x276, 0x276);
         }
-        if (func_020e7500(&unk_b0->unk_740) == 0) {
+        if (func_020e7500(&owner->showTimer) == 0) {
             RoomCamera_KkShowWideShot();
-            unk_b0->unk_654 = 0;
-            if (unk_b0->unk_743 != 0) {
-                unk_b0->unk_654 = Random_GlobalBelow(3) + 0xa9;
+            owner->unk_654 = 0;
+            if (owner->isRandomSong != 0) {
+                owner->unk_654 = Random_GlobalBelow(3) + 0xa9;
                 s16 *r = DebugVar_GetPtr(0, 0x4e);
                 if (*r != 0) {
                     r = DebugVar_GetPtr(0, 0x4e);
@@ -1350,20 +1350,20 @@ void SpNpcRoostGuestTalk::scriptStartPerformance() {
                     } else if (t > 3) {
                         t = 3;
                     }
-                    unk_b0->unk_654 = t + 0xa9;
+                    owner->unk_654 = t + 0xa9;
                 }
             } else {
-                u32 h = unk_b0->unk_652;
+                u32 h = owner->songItem;
                 s32 t;
                 if (h >= 0x1323 && h <= 0x1368) {
                     t = h - 0x1323;
                 } else {
                     t = -1;
                 }
-                unk_b0->unk_654 = t + 0x63;
+                owner->unk_654 = t + 0x63;
             }
-            Bgm_Request(0xf, (u16)unk_b0->unk_654, 0x7f, 0);
-            unk_b8.unk_14 = 0;
+            Bgm_Request(0xf, (u16)owner->unk_654, 0x7f, 0);
+            lastBeatState.unk_14 = 0;
             KkShowFx_Start();
             setScript(3);
         }
@@ -1375,11 +1375,11 @@ void SpNpcRoostGuestTalk::scriptPerform() {
     Unk_ov068_0226c63c_Msg *p = Snd_GetBeatState();
     KkShowFx_Update();
     if (p != NULL) {
-        if (p->unk_03 == 1 && unk_b8.unk_03 == 1) {
+        if (p->unk_03 == 1 && lastBeatState.unk_03 == 1) {
             goto end;
         }
         s32 t4 = p->unk_04;
-        if (t4 != unk_b8.unk_04) {
+        if (t4 != lastBeatState.unk_04) {
             if (t4 == 2) {
                 RoomCamera_KkShowResetShot();
                 KkShowFx_CallUnk1de4();
@@ -1388,59 +1388,59 @@ void SpNpcRoostGuestTalk::scriptPerform() {
             }
         }
         s32 t1 = p->unk_01;
-        if (t1 != unk_b8.unk_01) {
+        if (t1 != lastBeatState.unk_01) {
             if (t1 == -1) {
-                NpcFaceAnim_setMouthTexture(&unk_b0->faceAnim, (u32)sKkMouthM0);
+                NpcFaceAnim_setMouthTexture(&owner->faceAnim, (u32)sKkMouthM0);
             } else {
-                NpcFaceAnim_setMouthTexture(&unk_b0->faceAnim, (u32)sKkMouthTextures[t1]);
+                NpcFaceAnim_setMouthTexture(&owner->faceAnim, (u32)sKkMouthTextures[t1]);
             }
         }
         s32 t2 = p->unk_02;
-        if (t2 != unk_b8.unk_02 || p->unk_00 != unk_b8.unk_00) {
+        if (t2 != lastBeatState.unk_02 || p->unk_00 != lastBeatState.unk_00) {
             if (t2 == 1) {
-                NpcLookAt_setManualAngles(&unk_b0->lookAt, 0, 0, 0, 0x100, 0x200);
+                NpcLookAt_setManualAngles(&owner->lookAt, 0, 0, 0, 0x100, 0x200);
             } else {
-                NpcLookAt_setManualAngles(&unk_b0->lookAt, 0, -0xc18, 0, 0x100, 0x200);
+                NpcLookAt_setManualAngles(&owner->lookAt, 0, -0xc18, 0, 0x100, 0x200);
             }
             u16 v = data_020c6cc8;
-            if (unk_b8.unk_14 == 0) {
+            if (lastBeatState.unk_14 == 0) {
                 v = 0x28;
-                unk_b8.unk_14 = 1;
+                lastBeatState.unk_14 = 1;
             }
             s32 t0 = p->unk_00;
             if (t0 == 3) {
-                NpcActionCtrl_requestPlayAnim(&unk_b0->actionCtrl, 2, 0x103, 0, v, 0);
+                NpcActionCtrl_requestPlayAnim(&owner->actionCtrl, 2, 0x103, 0, v, 0);
             } else if (t0 == 4) {
-                NpcActionCtrl_requestPlayAnim(&unk_b0->actionCtrl, 2, 0x104, 0, v, 0);
+                NpcActionCtrl_requestPlayAnim(&owner->actionCtrl, 2, 0x104, 0, v, 0);
             }
         }
         if ((u8)(s8)(p->unk_00 - 3) <= 1) {
-            unk_b0->model.unk_a4 = 0;
-            unk_b0->model.unk_ac = p->unk_08;
-            ThreeLayerAnimModel_updateLayers3(&unk_b0->model);
-            unk_b0->model.unk_ac = 0;
+            owner->model.unk_a4 = 0;
+            owner->model.unk_ac = p->unk_08;
+            ThreeLayerAnimModel_updateLayers3(&owner->model);
+            owner->model.unk_ac = 0;
         }
         {
             s32 t3 = p->unk_03;
-            if (t3 != unk_b8.unk_03) {
+            if (t3 != lastBeatState.unk_03) {
                 if (t3 == 0) {
                     KkShowFx_Update();
                     KkShowFx_SetParam(0);
                     KkShowFx_CallUnk1f70();
                 }
                 if (p->unk_03 == 1) {
-                    NpcFaceAnim_setMouthTexture(&unk_b0->faceAnim, (u32)sKkMouthM0);
-                    NpcFaceAnim_resumeMouthMaterial(&unk_b0->faceAnim);
-                    NpcActionCtrl_requestStand(&unk_b0->actionCtrl, 2, 0x28);
+                    NpcFaceAnim_setMouthTexture(&owner->faceAnim, (u32)sKkMouthM0);
+                    NpcFaceAnim_resumeMouthMaterial(&owner->faceAnim);
+                    NpcActionCtrl_requestStand(&owner->actionCtrl, 2, 0x28);
                 }
             }
         }
     }
 end:
     KkShowFx_CallUnk1f70();
-    MI_CpuCopy8(p, &unk_b8, 0x14);
+    MI_CpuCopy8(p, &lastBeatState, 0x14);
     if (KkShowFx_GetState()) {
-        unk_b0->unk_740 = 0x14;
+        owner->showTimer = 0x14;
         setScript(4);
     }
 }
@@ -1449,25 +1449,25 @@ void SpNpcRoostGuestTalk::scriptEndPerformance() {
     using namespace sA;
     u8 c0, c1, c2;
     u16 h;
-    if (func_020e7500(&unk_b0->unk_740) == 0) {
-        unk_b0->unk_742 = 0;
-        if (unk_b0->unk_743 != 0) {
+    if (func_020e7500(&owner->showTimer) == 0) {
+        owner->showAccepted = 0;
+        if (owner->isRandomSong != 0) {
             c0 = 0xb;
-            TalkWindowState_setNextMessage(unk_3c, &c0, sRoostGuestMsgFiles[unk_b0->unk_72c]);
+            TalkWindowState_setNextMessage(unk_3c, &c0, sRoostGuestMsgFiles[owner->guestType]);
         } else {
-            h = unk_b0->unk_652;
+            h = owner->songItem;
             if (Pocket_AddItem(&h, 0) == 0) {
                 c1 = 0xd;
-                TalkWindowState_setNextMessage(unk_3c, &c1, sRoostGuestMsgFiles[unk_b0->unk_72c]);
+                TalkWindowState_setNextMessage(unk_3c, &c1, sRoostGuestMsgFiles[owner->guestType]);
             } else {
                 Talk_CheckAndSetPlayerFlag(0xd, 1);
                 c2 = 0xc;
-                TalkWindowState_setNextMessage(unk_3c, &c2, sRoostGuestMsgFiles[unk_b0->unk_72c]);
+                TalkWindowState_setNextMessage(unk_3c, &c2, sRoostGuestMsgFiles[owner->guestType]);
             }
         }
         KkShowFx_Stop();
-        Bgm_Release(unk_b0->unk_654);
-        unk_b0->unk_740 = 0x1e;
+        Bgm_Release(owner->unk_654);
+        owner->showTimer = 0x1e;
         LightSwitch_SetOff(1, 1);
         LightSwitch_SetOn(0, 0x1e, 0);
         setScript(5);
@@ -1476,8 +1476,8 @@ void SpNpcRoostGuestTalk::scriptEndPerformance() {
 
 void SpNpcRoostGuestTalk::scriptRestoreLook() {
     using namespace sA;
-    if (func_020e7500(&unk_b0->unk_740) == 0) {
-        NpcLookAt_setManualAngles(&unk_b0->lookAt, 0, 0, 0x1000, 0x276, 0x276);
+    if (func_020e7500(&owner->showTimer) == 0) {
+        NpcLookAt_setManualAngles(&owner->lookAt, 0, 0, 0x1000, 0x276, 0x276);
         unk_3c->nextState = 1;
         setScript(0);
     }
@@ -1486,7 +1486,7 @@ void SpNpcRoostGuestTalk::scriptRestoreLook() {
 BOOL SpNpcRoostGuest::vfunc_48() {
     using namespace sA;
     BOOL r = FALSE;
-    if (unk_658 == 0) {
+    if (act == 0) {
         r = TRUE;
     }
     return r;
@@ -1496,20 +1496,20 @@ void SpNpcRoostGuest::vfunc_4c(s32 mode) {
     using namespace sA;
     switch (mode) {
     case 0:
-        unk_65c.vfunc_08();
-        unk_65c.func_02015ab0(getPlayerActor(4));
-        if (unk_72c == 7) {
-            unk_65c.setTalkMode(0);
+        talk.vfunc_08();
+        talk.func_02015ab0(getPlayerActor(4));
+        if (guestType == 7) {
+            talk.setTalkMode(0);
         }
         changeAct(1);
         break;
     case 1:
-        unk_65c.vfunc_08();
-        unk_65c.func_02015ab0(getPlayerActor(4));
-        if (unk_744 != 0) {
-            unk_65c.setTalkMode(1);
+        talk.vfunc_08();
+        talk.func_02015ab0(getPlayerActor(4));
+        if (hasSongRequest != 0) {
+            talk.setTalkMode(1);
         } else {
-            unk_65c.setTalkMode(2);
+            talk.setTalkMode(2);
         }
         changeAct(3);
         break;
@@ -1521,7 +1521,7 @@ void SpNpcRoostGuest::vfunc_4c(s32 mode) {
 
 BOOL SpNpcRoostGuest::checkPlayerSeated() {
     using namespace sA;
-    if (unk_742 == 0) {
+    if (showAccepted == 0) {
         return FALSE;
     }
     PlayerData_GetCurrent();
@@ -1548,5 +1548,5 @@ extern "C" u16 RoostGuest_PickKKSong(void *self) {
 }
 
 u32 SpNpcRoostGuest::getGuest() {
-    return unk_72c;
+    return guestType;
 }

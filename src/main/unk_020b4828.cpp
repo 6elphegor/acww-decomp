@@ -41,11 +41,11 @@ struct SceneWarp {
     ~SceneWarp();
     u8 type;      // 0x00
     u8 flag;      // 0x01
-    s16 unk_02;   // 0x02
+    s16 angle;   // 0x02
     Vec3 pos;     // 0x04
-    u32 unk_10;   // 0x10
-    u8 unk_14;    // 0x14
-    u8 unk_15;    // 0x15
+    u32 spawnParam;   // 0x10
+    u8 fadeOut;    // 0x14
+    u8 fadeIn;    // 0x15
     s16 unk_16;   // 0x16
     u8 unk_18;    // 0x18
 };
@@ -55,11 +55,11 @@ struct ScenePos {
     ScenePos();
     ~ScenePos();
     Vec3 pos;     // 0x00
-    u32 unk_0c;   // 0x0c
-    s16 unk_10;   // 0x10
-    u8 unk_12;    // 0x12
-    s8 unk_13;    // 0x13
-    s8 unk_14;    // 0x14
+    u32 spawnParam;   // 0x0c
+    s16 angle;   // 0x10
+    u8 scene;    // 0x12
+    s8 unitX;    // 0x13
+    s8 unitZ;    // 0x14
 };
 
 struct TileTable {
@@ -90,15 +90,15 @@ struct S394 {
 
 struct Unk_020cbb18_t {
     u8 unk_00[0x64];
-    u32 unk_64;
+    u32 myAid;
     u32 f68;
 };
 
 struct Unk_020d0d28_Ent {
-    u8 unk_00;
-    u8 unk_01;
+    u8 month;
+    u8 day;
     u8 unk_02[2];
-    u32 unk_04;
+    u32 phase;
 };
 
 struct B5890 { u8 pad[0x14]; u8 lo : 2; u8 idx : 6; };
@@ -694,12 +694,12 @@ extern "C" u32 GroundSeason_CalcPhase(void) {
     u32 a = buf[1];
     u32 b = buf[0];
     for (u32 i = 0; i < 13; i++) {
-        u32 t = sGroundSeasonDates[i].unk_00;
+        u32 t = sGroundSeasonDates[i].month;
         if (a < t) {
-            return sGroundSeasonDates[i].unk_04;
+            return sGroundSeasonDates[i].phase;
         }
-        if (a == t && b <= sGroundSeasonDates[i].unk_01) {
-            return sGroundSeasonDates[i].unk_04;
+        if (a == t && b <= sGroundSeasonDates[i].day) {
+            return sGroundSeasonDates[i].phase;
         }
     }
     return 0;
@@ -740,7 +740,7 @@ BOOL FieldSceneSteps::stepSetupSystems(u32, u32) {
     Snd_CreateScene();
     Unk_020cbb18_t* p = gCommManager;
     s32 i;
-    if (_ZN11CommManager12isSlotActiveEi(p, p->unk_64)) {
+    if (_ZN11CommManager12isSlotActiveEi(p, p->myAid)) {
         for (i = 0; i < 4; i++) PlayerSession_SetGfxSlot(i, 4);
     } else if (Scene_InUnk6Or7()) {
         _ZN11CommManager14setMemberCountEj(p, 4);
@@ -767,7 +767,7 @@ BOOL FieldSceneSteps::stepSetupSystems(u32, u32) {
         }
     } else if (Scene_GetCurrent() == 0x2c) {
         Unk_020cbb18_t* q = gCommManager;
-        q->unk_64 = 4;
+        q->myAid = 4;
         q->f68 = 4;
         for (i = 3; i >= 0; i--) PlayerSession_ClearDataIndex(i);
     }
@@ -1167,27 +1167,27 @@ extern "C" void ScenePos_Reset(ScenePos* i) {
 }
 
 extern "C" void ScenePos_Set(ScenePos* i, s32 id, Vec3* v, u32 w, s16 s, s32 p, s32 q) {
-    i->unk_12 = id;
+    i->scene = id;
     i->pos.x = v->x;
     i->pos.y = v->y;
     i->pos.z = v->z;
-    i->unk_0c = w;
-    i->unk_10 = s;
-    i->unk_13 = p;
-    i->unk_14 = q;
+    i->spawnParam = w;
+    i->angle = s;
+    i->unitX = p;
+    i->unitZ = q;
 }
 
 extern "C" Vec3* ScenePos_GetPos(ScenePos* i) { return &i->pos; }
 
-extern "C" u32 ScenePos_GetSpawnParam(ScenePos* i) { return i->unk_0c; }
+extern "C" u32 ScenePos_GetSpawnParam(ScenePos* i) { return i->spawnParam; }
 
-extern "C" s32 ScenePos_GetAngle(ScenePos* i) { return i->unk_10; }
+extern "C" s32 ScenePos_GetAngle(ScenePos* i) { return i->angle; }
 
-extern "C" u8 ScenePos_GetScene(ScenePos* i) { return i->unk_12; }
+extern "C" u8 ScenePos_GetScene(ScenePos* i) { return i->scene; }
 
-extern "C" s32 ScenePos_GetUnitX(ScenePos* i) { return i->unk_13; }
+extern "C" s32 ScenePos_GetUnitX(ScenePos* i) { return i->unitX; }
 
-extern "C" s32 ScenePos_GetUnitZ(ScenePos* i) { return i->unk_14; }
+extern "C" s32 ScenePos_GetUnitZ(ScenePos* i) { return i->unitZ; }
 
 extern "C" BOOL SceneId_IsValid(u32 id) {
     if (id < 0x33) return TRUE;
@@ -1199,11 +1199,11 @@ SceneWarp::SceneWarp() {
     pos.x = 0;
     pos.y = 0;
     pos.z = 0;
-    unk_10 = 0;
-    unk_02 = 0;
+    spawnParam = 0;
+    angle = 0;
     flag = 1;
-    unk_14 = 2;
-    unk_15 = 2;
+    fadeOut = 2;
+    fadeIn = 2;
     unk_16 = 0;
     unk_18 = 0;
 }
@@ -1215,10 +1215,10 @@ extern "C" void SceneWarp_Init(SceneWarp* e, u8 id, Vec3* v, u32 w, s16 s, u8 p,
     e->pos.x = v->x;
     e->pos.y = v->y;
     e->pos.z = v->z;
-    e->unk_10 = w;
-    e->unk_02 = s;
-    e->unk_14 = p;
-    e->unk_15 = q;
+    e->spawnParam = w;
+    e->angle = s;
+    e->fadeOut = p;
+    e->fadeIn = q;
     e->unk_16 = r;
     e->unk_18 = t;
 }
@@ -1235,8 +1235,8 @@ extern "C" BOOL SceneWarp_RequestScene(SceneWarp* e, u8 id) {
 extern "C" BOOL SceneWarp_RequestFade(SceneWarp* e, u8 id, u8 p, u8 q) {
     if (e->type == 0x3f) {
         e->type = id;
-        e->unk_14 = p;
-        e->unk_15 = q;
+        e->fadeOut = p;
+        e->fadeIn = q;
         e->flag = 1;
         return TRUE;
     }
@@ -1249,11 +1249,11 @@ extern "C" BOOL SceneWarp_RequestAt(SceneWarp* e, u8 id, Vec3* v, u32 w, s16 s, 
         e->pos.x = v->x;
         e->pos.y = v->y;
         e->pos.z = v->z;
-        e->unk_10 = w;
-        e->unk_02 = s;
+        e->spawnParam = w;
+        e->angle = s;
         e->flag = 0;
-        e->unk_14 = p;
-        e->unk_15 = q;
+        e->fadeOut = p;
+        e->fadeIn = q;
         return TRUE;
     }
     return FALSE;
@@ -1285,8 +1285,8 @@ extern "C" s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, Vec3* pos, u32*
                                 *s = 0;
                                 *x = va;
                                 *y = vb;
-                                *p = e->unk_14;
-                                *q = e->unk_15;
+                                *p = e->fadeOut;
+                                *q = e->fadeIn;
                             }
                             return 3;
                         case 0x3d:
@@ -1300,8 +1300,8 @@ extern "C" s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, Vec3* pos, u32*
                                 *s = 0;
                                 *x = va;
                                 *y = vb;
-                                *p = e->unk_14;
-                                *q = e->unk_15;
+                                *p = e->fadeOut;
+                                *q = e->fadeIn;
                             }
                             return 3;
                         case 0x3f:
@@ -1316,8 +1316,8 @@ extern "C" s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, Vec3* pos, u32*
                             *s = ScenePos_GetAngle(&sSavedScenePos);
                             *x = ScenePos_GetUnitX(&sSavedScenePos);
                             *y = ScenePos_GetUnitZ(&sSavedScenePos);
-                            *p = e->unk_14;
-                            *q = e->unk_15;
+                            *p = e->fadeOut;
+                            *q = e->fadeIn;
                             return 2;
                         case 0x3c:
                             *type = ScenePos_GetScene(&gTownReturnPos);
@@ -1331,8 +1331,8 @@ extern "C" s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, Vec3* pos, u32*
                             *s = ScenePos_GetAngle(&gTownReturnPos);
                             *x = ScenePos_GetUnitX(&gTownReturnPos);
                             *y = ScenePos_GetUnitZ(&gTownReturnPos);
-                            *p = e->unk_14;
-                            *q = e->unk_15;
+                            *p = e->fadeOut;
+                            *q = e->fadeIn;
                             return 3;
                         default:
                             return 1;
@@ -1363,15 +1363,15 @@ extern "C" s32 SceneExit_Resolve(s32 a, s32 id, u8* type, Vec3* pos, u32* w, s16
                             SceneWarp* e = &entries[id];
                             u8 ty = e->type;
                             if (e->pos.y == 0) e->pos.y = 0x200;
-                            if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) && ty == 7) ty = 8;
+                            if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid) && ty == 7) ty = 8;
                             *type = ty;
                             pos->x = e->pos.x;
                             pos->y = e->pos.y;
                             pos->z = e->pos.z;
-                            *w = e->unk_10;
-                            *s = e->unk_02;
-                            *p = e->unk_14;
-                            *q = e->unk_15;
+                            *w = e->spawnParam;
+                            *s = e->angle;
+                            *p = e->fadeOut;
+                            *q = e->fadeIn;
                             return r;
                         }
                     }
@@ -1499,20 +1499,20 @@ extern "C" void FieldScene_Request(s32 a, s32 b) {
 
 extern "C" Vec3* SceneWarp_GetPos(SceneWarp* e) { return &e->pos; }
 
-extern "C" s32 SceneWarp_GetAngle(SceneWarp* e) { return e->unk_02; }
+extern "C" s32 SceneWarp_GetAngle(SceneWarp* e) { return e->angle; }
 
-extern "C" u32 SceneWarp_GetSpawnParam(SceneWarp* e) { return e->unk_10; }
+extern "C" u32 SceneWarp_GetSpawnParam(SceneWarp* e) { return e->spawnParam; }
 
 extern "C" BOOL SceneWarp_HasNoPos(SceneWarp* e) {
     if (e->flag != 0) return TRUE;
     return FALSE;
 }
 
-extern "C" u8 SceneWarp_GetFadeOut(SceneWarp* e) { return e->unk_14; }
+extern "C" u8 SceneWarp_GetFadeOut(SceneWarp* e) { return e->fadeOut; }
 
-extern "C" void SceneWarp_SetFadeOut(SceneWarp* e, u8 v) { e->unk_14 = v; }
+extern "C" void SceneWarp_SetFadeOut(SceneWarp* e, u8 v) { e->fadeOut = v; }
 
-extern "C" u8 SceneWarp_GetFadeIn(SceneWarp* e) { return e->unk_15; }
+extern "C" u8 SceneWarp_GetFadeIn(SceneWarp* e) { return e->fadeIn; }
 
 extern "C" u8 *Scene_GetWarpRequest(void) { return (u8 *)&sSceneWarpRequest; }
 
@@ -1531,7 +1531,7 @@ extern "C" BOOL Scene_NoPlayerInUnsharedScene(void) {
     u32 v;
     s32 i;
     Unk_020cbb18_t *p = gCommManager;
-    if (!_ZN11CommManager12isSlotActiveEi(p, p->unk_64)) {
+    if (!_ZN11CommManager12isSlotActiveEi(p, p->myAid)) {
         v = Scene_GetCurrent();
         if (v == 12 || v == 13 || v == 14 || (u8)(v + 0xd2) <= 1) return FALSE;
     } else {

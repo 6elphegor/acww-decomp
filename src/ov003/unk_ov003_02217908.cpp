@@ -53,12 +53,12 @@ struct Unk_02003c40 {
 };
 
 struct Unk_ov003_02217970_Rec {
-    u8 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
+    u8 found;
+    s32 posX;
+    s32 posY;
+    s32 posZ;
+    s32 distance;
+    s32 kind;
 };
 
 struct Unk_ov003_022179b8_Ent {
@@ -69,7 +69,7 @@ struct Unk_ov003_022179b8_Ent {
 
 struct Unk_ov003_02217a9c_Cell {
     u8 pad_00[0x20];
-    void *unk_20;
+    void *bgModel;
     u8 pad_24[4];
 };
 
@@ -81,7 +81,7 @@ struct Unk_ov003_02217a9c_Grid {
 
 struct Unk_ov003_02217a84_Sub {
     u8 pad_00[0x10];
-    void *unk_10;
+    void *bgObjects;
 };
 
 // 4-byte colour constructors (unreferenced except by __sinit)
@@ -150,7 +150,7 @@ extern "C" void *FieldGround_GetBlockAcre(Unk_ov003_02217970_Rec *r, u32 x, u32 
             c = 0;
         }
         if (c != 0) {
-            return c->unk_20;
+            return c->bgModel;
         }
     }
     return 0;
@@ -159,7 +159,7 @@ extern "C" void *FieldGround_GetBlockAcre(Unk_ov003_02217970_Rec *r, u32 x, u32 
 extern "C" void *FieldGround_GetBlockBgObjects(Unk_ov003_02217970_Rec *r, u32 x, u32 y) {
     Unk_ov003_02217a84_Sub *s = (Unk_ov003_02217a84_Sub *)FieldGround_GetBlockAcre(r, x, y);
     if (s != 0) {
-        return s->unk_10;
+        return s->bgObjects;
     }
     return 0;
 }
@@ -203,13 +203,13 @@ extern "C" Unk_ov003_02217970_Rec *FieldGround_FindSoundSrc(Unk_ov003_02217970_R
 }
 
 extern "C" BOOL FieldGround_ConsiderSoundSrc(Unk_ov003_02217970_Rec *r, s32 d, Unk_ov003_02217910_V3 *p, s32 k) {
-    if (d < r->unk_10) {
-        r->unk_04 = p->x;
-        r->unk_08 = p->y;
-        r->unk_0c = p->z;
-        r->unk_10 = d;
-        r->unk_14 = k;
-        r->unk_00 = 1;
+    if (d < r->distance) {
+        r->posX = p->x;
+        r->posY = p->y;
+        r->posZ = p->z;
+        r->distance = d;
+        r->kind = k;
+        r->found = 1;
         return TRUE;
     }
     return FALSE;
@@ -219,23 +219,23 @@ extern "C" void FieldGround_EndSoundSrc() {
 }
 
 extern "C" void FieldGround_ResetSoundSrc(Unk_ov003_02217970_Rec *r) {
-    r->unk_00 = 0;
-    r->unk_04 = 0;
-    r->unk_08 = 0;
-    r->unk_0c = 0;
-    r->unk_14 = 0x11;
-    r->unk_10 = data_020c8cbc << 3;
+    r->found = 0;
+    r->posX = 0;
+    r->posY = 0;
+    r->posZ = 0;
+    r->kind = 0x11;
+    r->distance = data_020c8cbc << 3;
 }
 
 extern "C" s32 *FieldGround_GetSoundSrcPos(Unk_ov003_02217970_Rec *r) {
-    if (r->unk_00 != 0) {
-        return &r->unk_04;
+    if (r->found != 0) {
+        return &r->posX;
     }
     return 0;
 }
 
 extern "C" s32 FieldGround_GetSoundSrcKind(Unk_ov003_02217970_Rec *r) {
-    return r->unk_14;
+    return r->kind;
 }
 
 extern "C" void FieldGround_InitEnvChannel(void *volatile *p) {

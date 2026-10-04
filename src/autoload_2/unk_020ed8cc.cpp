@@ -12,9 +12,9 @@ public:
     virtual s32 vfunc_08(void *p);
     virtual void vfunc_0c(void *p);
 
-    /* 0x04 */ s16 unk_04;
-    /* 0x06 */ s16 unk_06;
-    /* 0x08 */ void **unk_08;
+    /* 0x04 */ s16 state;
+    /* 0x06 */ s16 cmdIndex;
+    /* 0x08 */ void **cmds;
     /* 0x0c */ u32 unk_0c;
     /* 0x10 */ u16 unk_10;
     /* 0x12 */ s16 unk_12;
@@ -211,12 +211,12 @@ extern "C" void *Snd_GetHeapLevel(void) {
 
 extern "C" void func_020ed8cc(Unk_Seq *o) {
     s16 *pi;
-    if (o->unk_08 == NULL) return;
-    if (o->unk_04 == 0) return;
-    pi = &o->unk_06;
-    o->unk_06 -= 1;
-    while (o->unk_06 >= 0) {
-        o->vfunc_0c(o->unk_08[o->unk_06]);
+    if (o->cmds == NULL) return;
+    if (o->state == 0) return;
+    pi = &o->cmdIndex;
+    o->cmdIndex -= 1;
+    while (o->cmdIndex >= 0) {
+        o->vfunc_0c(o->cmds[o->cmdIndex]);
         *pi -= 1;
     }
 }

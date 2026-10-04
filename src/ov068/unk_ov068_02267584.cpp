@@ -24,12 +24,12 @@ struct Unk_ov068_022678c4_Vv {
 
 struct Unk_ov068_022678c4_Src {
     u8 pad_00[0x268];
-    s32 unk_268;
+    s32 radius;
 };
 
 struct Unk_ov068_022678c4_Rec {
     u8 pad_00[0x8e];
-    u16 unk_8e;
+    u16 rotY;
 };
 
 struct Unk_ov068_02268608_Vec {
@@ -62,28 +62,28 @@ public:
     /* 0x130 */ u8 unk_130[0x204 - 0x130];
     /* 0x204 */ s32 unk_204[3];
     /* 0x210 */ u8 pad_210[0x220 - 0x210];
-    /* 0x220 */ s32 unk_220;
+    /* 0x220 */ s32 targetHeight;
     /* 0x224 */ u8 pad_224[4];
-    /* 0x228 */ s32 unk_228;
+    /* 0x228 */ s32 baseHeight;
     /* 0x22c */ u8 pad_22c[0x23a - 0x22c];
-    /* 0x23a */ s16 unk_23a;
+    /* 0x23a */ s16 heading;
     /* 0x23c */ u8 pad_23c[4];
-    /* 0x240 */ u16 unk_240;
+    /* 0x240 */ u16 targetHeading;
     /* 0x242 */ u8 pad_242[2];
     /* 0x244 */ u16 unk_244;
     /* 0x246 */ u8 pad_246[4];
     /* 0x24a */ u8 unk_24a;
     /* 0x24b */ u8 unk_24b;
     /* 0x24c */ u8 pad_24c;
-    /* 0x24d */ s8 unk_24d;
+    /* 0x24d */ s8 kind;
     /* 0x24e */ u8 pad_24e;
-    /* 0x24f */ u8 unk_24f;
+    /* 0x24f */ u8 frameCounter;
     /* 0x250 */ u8 pad_250;
-    /* 0x251 */ u8 unk_251;
+    /* 0x251 */ u8 behaviorState;
     /* 0x252 */ u8 unk_252;
     /* 0x253 */ u8 pad_253;
-    /* 0x254 */ u8 unk_254;
-    /* 0x255 */ u8 unk_255;
+    /* 0x254 */ u8 alarm;
+    /* 0x255 */ u8 alarmThreshold;
     /* 0x256 */ u8 pad_256[0x268 - 0x256];
     /* 0x268 */ s32 unk_268;
     /* 0x26c */ s32 unk_26c;
@@ -220,20 +220,20 @@ public:
     s32 unk_26c;
     u8 pad_270[0x304 - 0x270];
     s32 unk_304;
-    s32 unk_308;
-    s32 unk_30c;
-    s32 unk_310;
-    s32 unk_314;
+    s32 drawOffsetY;
+    s32 drawOffsetZ;
+    s32 stepX;
+    s32 stepZ;
     u8 pad_318[0x374 - 0x318];
     u16 unk_374;
     u16 pad_376;
-    s32 unk_378;
-    s32 unk_37c;
-    s32 unk_380;
+    s32 targetPosX;
+    s32 targetPosY;
+    s32 targetPosZ;
     u8 pad_384[0x392 - 0x384];
-    s16 unk_392;
-    u8 unk_394;
-    u8 unk_395;
+    s16 wobblePhase;
+    u8 crumbleTimer;
+    u8 stepCount;
 };
 
 class SnowballStateView2 {
@@ -253,33 +253,33 @@ public:
     /* 0x268 */ s32 unk_268;
     /* 0x26c */ s32 unk_26c;
     /* 0x270 */ s32 unk_270;
-    /* 0x274 */ s32 unk_274;
+    /* 0x274 */ s32 collisionFlags;
     /* 0x278 */ u8 pad_278[0x2ec - 0x278];
     /* 0x2ec */ s32 unk_2ec;
     /* 0x2f0 */ s32 unk_2f0;
     /* 0x2f4 */ u8 pad_2f4[0x304 - 0x2f4];
     /* 0x304 */ u32 unk_304;
-    /* 0x308 */ s32 unk_308;
-    /* 0x30c */ u32 unk_30c;
-    /* 0x310 */ s32 unk_310;
-    /* 0x314 */ s32 unk_314;
+    /* 0x308 */ s32 drawOffsetY;
+    /* 0x30c */ u32 drawOffsetZ;
+    /* 0x310 */ s32 stepX;
+    /* 0x314 */ s32 stepZ;
     /* 0x318 */ u8 pad_318[0x324 - 0x318];
     /* 0x324 */ u8 unk_324[0x364 - 0x324];
-    /* 0x364 */ u8 unk_364;
+    /* 0x364 */ u8 fallFrames;
     /* 0x365 */ u8 pad_365[0x374 - 0x365];
     /* 0x374 */ u16 unk_374_lo : 2;
     u16 unk_374_b2 : 2;
     u16 unk_374_b4 : 1;
     u16 unk_374_b5 : 1;
     /* 0x376 */ u8 pad_376[2];
-    /* 0x378 */ s32 unk_378;
-    /* 0x37c */ s32 unk_37c;
-    /* 0x380 */ s32 unk_380;
-    /* 0x384 */ s32 unk_384[3];
+    /* 0x378 */ s32 targetPosX;
+    /* 0x37c */ s32 targetPosY;
+    /* 0x380 */ s32 targetPosZ;
+    /* 0x384 */ s32 holePos[3];
     /* 0x390 */ u8 pad_390[2];
-    /* 0x392 */ u16 unk_392;
+    /* 0x392 */ u16 wobblePhase;
     /* 0x394 */ u8 pad_394;
-    /* 0x395 */ u8 unk_395;
+    /* 0x395 */ u8 stepCount;
     /* 0x396 */ u16 unk_396;
 
     s32 enterSnowballStack();
@@ -513,14 +513,14 @@ s32 SnowballStateView2::enterSnowballFall() {
     velocityY = 0;
     unk_2ec = func_01ffcb0c(unk_2ec, 0x119a);
     unk_2f0 = func_01ffcb0c(unk_2f0, 0x119a);
-    unk_364 = 0;
+    fallFrames = 0;
     Unk_ov068_022678c4_V v(unk_2ec, 0, unk_2f0);
     s32 d = func_020e9688(&v);
     if (d < 0x2b8) {
         if (d == 0) {
             Unk_ov068_022678c4_Rec *r = PlayerActor_GetActor(4);
             if (r) {
-                s32 a = (r->unk_8e >> 4) * 2;
+                s32 a = (r->rotY >> 4) * 2;
                 unk_2ec = func_01ffcb0c(0x2b8, data_02135f44[a]);
                 unk_2f0 = func_01ffcb0c(0x2b8, data_02135f44[a + 1]);
                 position = prevPosition + unk_2ec;
@@ -543,15 +543,15 @@ void SnowballStateView2::execSnowballFall() {
     func_020e7820(&unk_26c, t, 0xcc, t);
     position += unk_2ec;
     positionZ += unk_2f0;
-    if (unk_364 < 0xc) {
+    if (fallFrames < 0xc) {
         velocityY = velocityY + 1;
         positionY -= 0x100;
-        unk_364 = unk_364 + 1;
+        fallFrames = fallFrames + 1;
     } else {
         velocityY = velocityY + (FX_Div(0, 0x2710000) + 0xe9);
         positionY = positionY - velocityY;
     }
-    if (unk_274 & 2) {
+    if (collisionFlags & 2) {
         GroundInfo_initAtPos(buf, &position, 0, 0);
         lim = (s32)buf[15] - unk_268 - 0x200;
         if (positionY < lim) {
@@ -566,7 +566,7 @@ void SnowballStateView2::execSnowballFall() {
 s32 SnowballStateView2::enterSnowballSink() {
     unk_374_b4 = 1;
     unk_374_b5 = 0;
-    unk_392 = 0;
+    wobblePhase = 0;
     u32 ei = param & 1;
     Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
@@ -575,8 +575,8 @@ s32 SnowballStateView2::enterSnowballSink() {
     e[ei & 1].d = 0x800;
     u32 *g = gVec3Zero;
     unk_304 = g[0];
-    unk_308 = g[1];
-    unk_30c = g[2];
+    drawOffsetY = g[1];
+    drawOffsetZ = g[2];
     velocityY = 0;
     return 1;
 }
@@ -591,8 +591,8 @@ void SnowballStateView2::execSnowballSink() {
     position += p[0] >> 5;
     positionZ += p[2] >> 5;
     unk_268 = func_01ffcb0c(unk_268, 0xfd7);
-    unk_308 = func_01ffcb0c(0x100, data_02135f44[(unk_392 >> 4) * 2]);
-    unk_392 = (s16)unk_392 + 0x400;
+    drawOffsetY = func_01ffcb0c(0x100, data_02135f44[(wobblePhase >> 4) * 2]);
+    wobblePhase = (s16)wobblePhase + 0x400;
     if (unk_268 < 0x80) {
         unk_268 = 0;
         ProcBase_RequestDelete(this);
@@ -623,7 +623,7 @@ void SnowballStateView2::execSnowballBreak() {
 s32 SnowballStateView2::enterSnowballHole() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
-    FieldPos_SnapToUnitCenter(unk_384, &position);
+    FieldPos_SnapToUnitCenter(holePos, &position);
     u32 ei = param & 1;
     Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
@@ -636,13 +636,13 @@ s32 SnowballStateView2::enterSnowballHole() {
 void SnowballStateView2::execSnowballHole() {
     unk_26c = unk_268;
     s32 v[3];
-    func_020e9960(v, unk_384, &position);
+    func_020e9960(v, holePos, &position);
     func_020e94f8(v);
     func_020e9888(v, 0x80);
     position += v[0];
     positionZ += v[2];
     _ZN18Unk_ov068_0226821419applySnowballMotionEv(this);
-    s32 d = func_020e9650(&position, unk_384);
+    s32 d = func_020e9650(&position, holePos);
     s32 lim = 0;
     if (d < 0x1000) {
         lim = -((0x1000 - d) / 5);
@@ -664,9 +664,9 @@ s32 SnowballStateView2::enterSnowball05() {
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
     e[ei & 1].d = 0x800;
-    unk_378 = position;
-    unk_37c = positionY;
-    unk_380 = positionZ;
+    targetPosX = position;
+    targetPosY = positionY;
+    targetPosZ = positionZ;
     return 1;
 }
 
@@ -674,7 +674,7 @@ void SnowballStateView2::execSnowball05() {
     unk_2f0 += FX_Div(0, 0x3e8000) + 0x158;
     position += unk_2ec;
     positionZ += unk_2f0;
-    s32 d = positionZ - unk_380;
+    s32 d = positionZ - targetPosZ;
     if (d < 0) {
         d = -d;
     }
@@ -694,7 +694,7 @@ s32 SnowballStateView2::enterSnowballSplash() {
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
     e[ei & 1].d = 0x800;
-    unk_392 = 0;
+    wobblePhase = 0;
     unk_2f0 >>= 1;
     _ZN18Unk_ov068_0226821419spawnSnowballSplashEv(this);
     return 1;
@@ -707,8 +707,8 @@ void SnowballStateView2::execSnowballSplash() {
     position += p[0] >> 5;
     positionZ += p[2] >> 5;
     unk_268 = func_01ffcb0c(unk_268, 0xf85);
-    unk_308 = func_01ffcb0c(0x100, data_02135f44[(unk_392 >> 4) * 2]);
-    unk_392 = (s16)unk_392 + 0x400;
+    drawOffsetY = func_01ffcb0c(0x100, data_02135f44[(wobblePhase >> 4) * 2]);
+    wobblePhase = (s16)wobblePhase + 0x400;
     if (unk_268 < 0x100) {
         unk_268 = 0;
         ProcBase_RequestDelete(this);
@@ -724,28 +724,28 @@ void SnowballStateView2::execSnowballSplash() {
 s32 SnowballStateView2::enterSnowballToSnowman() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
-    FieldPos_SnapToUnitCenter(&unk_378, &position);
+    FieldPos_SnapToUnitCenter(&targetPosX, &position);
     u32 ei = param & 1;
     Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
     e[ei & 1].d = 0x800;
-    unk_310 = FX_Div(unk_378 - position, 0x10000);
-    unk_314 = FX_Div(unk_380 - positionZ, 0x10000);
-    unk_395 = 0;
+    stepX = FX_Div(targetPosX - position, 0x10000);
+    stepZ = FX_Div(targetPosZ - positionZ, 0x10000);
+    stepCount = 0;
     return 1;
 }
 
 void SnowballStateView2::execSnowballToSnowman() {
     unk_26c = unk_268;
-    position += unk_310;
+    position += stepX;
     positionY = 0;
-    positionZ += unk_314;
-    if (unk_395++ >= 0x10) {
-        position = unk_378;
-        positionY = unk_37c;
-        positionZ = unk_380;
+    positionZ += stepZ;
+    if (stepCount++ >= 0x10) {
+        position = targetPosX;
+        positionY = targetPosY;
+        positionZ = targetPosZ;
         void *g = gSceneBlockMap;
         if (g) {
             s32 x, y;
@@ -770,8 +770,8 @@ s32 SnowballStateView2::enterSnowballStack() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
     Unk_ov068_022678c4_Src *o = (Unk_ov068_022678c4_Src *)Snowball_FindOtherInBallState(this);
-    FieldPos_SnapToUnitCenter(&unk_378, (u8 *)o + 0x5c);
-    unk_37c += ((o->unk_268 * 2 - (o->unk_268 >> 3)) - (unk_268 >> 3)) - 0x400;
+    FieldPos_SnapToUnitCenter(&targetPosX, (u8 *)o + 0x5c);
+    targetPosY += ((o->radius * 2 - (o->radius >> 3)) - (unk_268 >> 3)) - 0x400;
     velocityY = -(FX_Div(0, 0x3e8000) + 0x8f2);
     u32 ei = param & 1;
     Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
@@ -779,50 +779,50 @@ s32 SnowballStateView2::enterSnowballStack() {
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
     e[ei & 1].d = 0x800;
-    unk_310 = FX_Div(unk_378 - position, 0x10000);
-    unk_314 = FX_Div(unk_380 - positionZ, 0x10000);
-    unk_395 = 0;
+    stepX = FX_Div(targetPosX - position, 0x10000);
+    stepZ = FX_Div(targetPosZ - positionZ, 0x10000);
+    stepCount = 0;
     func_02003e70(unk_324, 0x81e, 0x7f, 0);
     return 1;
 }
 
 void SnowballStateView1::execSnowballStack() {
     unk_26c = unk_268;
-    position += unk_310;
-    positionZ += unk_314;
+    position += stepX;
+    positionZ += stepZ;
     velocityY += FX_Div(0, 0x2710000) + 0xdf;
     positionY -= velocityY;
     if (velocityY >= 0) {
-        s32 t = unk_37c - 0x200;
+        s32 t = targetPosY - 0x200;
         if (positionY < t) {
             positionY = t;
             Snowball_ChangeState(this, 0xa);
         }
     }
-    if (unk_395++ >= 0x10) {
-        position = unk_378;
-        positionZ = unk_380;
+    if (stepCount++ >= 0x10) {
+        position = targetPosX;
+        positionZ = targetPosZ;
     }
 }
 
 BOOL SnowballStateView1::enterSnowballSettle() {
     unk_374 &= ~0x10;
     unk_374 |= 0x20;
-    unk_392 = 0;
-    velocityY = FX_Div(unk_37c - positionY, 0x1333);
+    wobblePhase = 0;
+    velocityY = FX_Div(targetPosY - positionY, 0x1333);
     return TRUE;
 }
 
 void SnowballStateView1::execSnowballSettle() {
     unk_26c = unk_268;
-    position += unk_310;
-    positionZ += unk_314;
+    position += stepX;
+    positionZ += stepZ;
     positionY += velocityY;
-    if (positionY > unk_37c) {
-        positionY = unk_37c;
+    if (positionY > targetPosY) {
+        positionY = targetPosY;
     }
-    if (unk_395++ >= 0x10) {
-        positionY = unk_37c;
+    if (stepCount++ >= 0x10) {
+        positionY = targetPosY;
         Snowball_ChangeState(this, 0xb);
     }
 }
@@ -832,24 +832,24 @@ BOOL SnowballStateView1::enterSnowballCrumble() {
     unk_374 |= 0x20;
     Snowball_ClearItemAt(&position);
     unk_304 = gVec3Zero[0];
-    unk_308 = gVec3Zero[1];
-    unk_30c = gVec3Zero[2];
-    unk_392 = 0;
-    unk_394 = 0xc;
+    drawOffsetY = gVec3Zero[1];
+    drawOffsetZ = gVec3Zero[2];
+    wobblePhase = 0;
+    crumbleTimer = 0xc;
     return TRUE;
 }
 
 void SnowballStateView1::execSnowballCrumble() {
     s32 a;
     unk_26c = unk_268;
-    a = data_02135f44[((u16)unk_392 >> 4) * 2 + 1];
+    a = data_02135f44[((u16)wobblePhase >> 4) * 2 + 1];
     unk_304 = -func_01ffcb0c(0x100, a);
-    unk_30c = func_01ffcb0c(0x100, a);
-    unk_392 = unk_392 + 0x3800;
-    if (unk_394 != 0) {
-        unk_394--;
+    drawOffsetZ = func_01ffcb0c(0x100, a);
+    wobblePhase = wobblePhase + 0x3800;
+    if (crumbleTimer != 0) {
+        crumbleTimer--;
     }
-    if (unk_394 == 0) {
+    if (crumbleTimer == 0) {
         _ZN18Unk_ov068_0226821418spawnSnowballBreakEv(this);
         ProcBase_RequestDelete(this);
     }
@@ -859,24 +859,24 @@ BOOL SnowballStateView1::enterSnowballCrumble2() {
     unk_374 &= ~0x10;
     unk_374 |= 0x20;
     unk_304 = gVec3Zero[0];
-    unk_308 = gVec3Zero[1];
-    unk_30c = gVec3Zero[2];
-    unk_392 = 0;
-    unk_394 = 0xc;
+    drawOffsetY = gVec3Zero[1];
+    drawOffsetZ = gVec3Zero[2];
+    wobblePhase = 0;
+    crumbleTimer = 0xc;
     return TRUE;
 }
 
 void SnowballStateView1::execSnowballCrumble2() {
     s32 a;
     unk_26c = unk_268;
-    a = data_02135f44[((u16)unk_392 >> 4) * 2 + 1];
+    a = data_02135f44[((u16)wobblePhase >> 4) * 2 + 1];
     unk_304 = func_01ffcb0c(0x100, a);
-    unk_30c = -func_01ffcb0c(0x100, a);
-    unk_392 = unk_392 + 0x5000;
-    if (unk_394 != 0) {
-        unk_394--;
+    drawOffsetZ = -func_01ffcb0c(0x100, a);
+    wobblePhase = wobblePhase + 0x5000;
+    if (crumbleTimer != 0) {
+        crumbleTimer--;
     }
-    if (unk_394 == 0) {
+    if (crumbleTimer == 0) {
         _ZN18Unk_ov068_0226821418spawnSnowballBreakEv(this);
         ProcBase_RequestDelete(this);
     }

@@ -21,8 +21,8 @@ public:
 };
 
 struct ItemPickSpec {
-    u32 unk_00;
-    u32 unk_04;
+    u32 listIndex;
+    u32 itemClass;
     ItemPickSpec() {}
     ~ItemPickSpec();
     void set(s32 a, s32 b);

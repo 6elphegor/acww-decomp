@@ -492,8 +492,8 @@ public:
     /* 0x1c8 */ u8 unk_1c8[0x28];
     /* 0x1f0 */ s32 unk_1f0[5];
     /* 0x204 */ s32 unk_204;
-    /* 0x208 */ s32 unk_208;
-    /* 0x20c */ s32 unk_20c;
+    /* 0x208 */ s32 recipientNameLength;
+    /* 0x20c */ s32 recipientNameWidth;
 };
 
 // ---- free functions ----

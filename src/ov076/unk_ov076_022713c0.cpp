@@ -40,14 +40,14 @@ struct Unk_ov076_Vec {
 };
 
 struct Unk_ov076_02271744_Out {
-    u32 unk_00;
-    u8 unk_04;
+    u32 msgKey;
+    u8 msgIndex;
 };
 
 struct Unk_ov076_02271864_Msg {
-    u8 unk_00;
+    u8 msgIndex;
     u8 unk_01;
-    u16 unk_02;
+    u16 item;
 };
 
 struct Unk_ov076_02271a3c_Bits {
@@ -58,8 +58,8 @@ struct Unk_ov076_02271a3c_Bits {
 
 struct ItemPickSpec {
     void set(s32 a, s32 b);
-    s32 unk_00;
-    s32 unk_04;
+    s32 listIndex;
+    s32 itemClass;
 };
 
 extern "C" {
@@ -201,10 +201,10 @@ public:
     void onScallopPicked();
     void setResultHandler(s32 i);
 
-    s32 unk_ac;
-    SpNpcPascal *unk_b0;
-    u16 unk_b4;
-    Fn unk_b8;
+    s32 topic;
+    SpNpcPascal *owner;
+    u16 giftItem;
+    Fn resultHandler;
 };
 
 #define MEMBER(name, size) \
@@ -402,12 +402,12 @@ public:
     u8 unk_651;
     u8 pad_652[2];
     s32 unk_654;
-    SpNpcPascalTalk unk_658;
-    u8 unk_718;
+    SpNpcPascalTalk talk;
+    u8 giftGiven;
     u8 pad_719;
-    u16 unk_71a;
-    s32 unk_71c;
-    s16 unk_720;
+    u16 homeAngle;
+    s32 diveStartZ;
+    s16 spinSpeed;
     u8 pad_722[2];
 };
 
@@ -481,8 +481,8 @@ BOOL SpNpcPascal::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -491,7 +491,7 @@ BOOL SpNpcPascal::vfunc_00() {
         return FALSE;
     }
     collider.unk_1c |= 2;
-    unk_71a = rotY;
+    homeAngle = rotY;
     changeAct(0);
     return TRUE;
 }
@@ -526,7 +526,7 @@ BOOL SpNpcPascal::setupAct00() {
 BOOL SpNpcPascal::mainAct00() { return TRUE; }
 
 BOOL SpNpcPascal::setupAct01() {
-    void *p = unk_658.func_02015aac();
+    void *p = talk.func_02015aac();
     u32 r = 0;
     if (p != NULL) {
         r = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -546,17 +546,17 @@ BOOL SpNpcPascal::mainAct01() {
 BOOL SpNpcPascal::mainAct02() { return TRUE; }
 
 BOOL SpNpcPascal::setupAct03() {
-    if (unk_718 == 1) {
-        unk_71a = unk_71a + 0x8000;
+    if (giftGiven == 1) {
+        homeAngle = homeAngle + 0x8000;
     }
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, (s16)unk_71a, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, (s16)homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcPascal::mainAct03() {
     if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 3) {
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            if (unk_718 == 0) {
+            if (giftGiven == 0) {
                 changeAct(0);
             } else {
                 changeAct(4);
@@ -576,9 +576,9 @@ BOOL SpNpcPascal::setupAct04() {
     if (t < 0) {
         t = -t;
     }
-    unk_720 = t;
+    spinSpeed = t;
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, (s32)&gVec3Zero, 4, data_020c6d1c, 1);
-    unk_71c = positionZ;
+    diveStartZ = positionZ;
     return TRUE;
 }
 
@@ -592,7 +592,7 @@ BOOL SpNpcPascal::mainAct04() {
             *((u8 *)this + 0x511) = 0;
             *((u8 *)this + 0x510) = 0;
         }
-        func_020e7530(&rotY, 0, unk_720);
+        func_020e7530(&rotY, 0, spinSpeed);
         if (((Unk_ov076_02271a3c_Bits *)((u8 *)this + 0x190))->mid == 0x1b) {
             Unk_ov076_Vec *pv = (Unk_ov076_Vec *)&position;
             v.x = pv->x;
@@ -625,22 +625,22 @@ BOOL SpNpcPascal::mainAct05() {
     rotY = 0;
     _ZN11NpcMoveCtrl14setTargetAngleEs(&moveCtrl, 0);
     positionZ += 0xeb;
-    if (positionZ > unk_71c + 0x14000) {
+    if (positionZ > diveStartZ + 0x14000) {
         ProcBase_RequestDelete(this);
     }
     return TRUE;
 }
 
 void SpNpcPascalTalk::onTaskDone() {
-    if (unk_b8) {
-        (this->*unk_b8)();
-        unk_b8 = *(Fn *)__ptmf_null;
+    if (resultHandler) {
+        (this->*resultHandler)();
+        resultHandler = *(Fn *)__ptmf_null;
     }
 }
 
 void SpNpcPascalTalk::setResultHandler(s32 i) {
     static Fn tbl[1] = {&SpNpcPascalTalk::onScallopPicked};
-    unk_b8 = tbl[i];
+    resultHandler = tbl[i];
 }
 
 extern "C" BOOL SpNpcPascal_IsScallop(u16 *p, s32 x) {
@@ -653,48 +653,48 @@ extern "C" BOOL SpNpcPascal_IsScallop(u16 *p, s32 x) {
 void SpNpcPascalTalk::onScallopPicked() {
     TalkWindowState *r4 = unk_3c;
     Unk_ov076_02271864_Msg m;
-    m.unk_00 = 5;
+    m.msgIndex = 5;
     if (MenuCtrl_IsResultOk()) {
         if (MenuCtrl_GetIndex() >= 0) {
             Pocket_RemoveItem();
         }
-        m.unk_02 = 0x1559;
-        _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &m.unk_02, 0, 5, 0);
-        m.unk_00 = 6;
+        m.item = 0x1559;
+        _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &m.item, 0, 5, 0);
+        m.msgIndex = 6;
     }
-    r4->setNextMessage(&m.unk_00, sSpNpcPascalKey);
+    r4->setNextMessage(&m.msgIndex, sSpNpcPascalKey);
 }
 
 SpNpcPascalTalk::SpNpcPascalTalk() {
-    unk_b4 = 0xfff1;
+    giftItem = 0xfff1;
 }
 
 SpNpcPascalTalk::~SpNpcPascalTalk() {}
 
 void SpNpcPascalTalk::vfunc_08() {
     ActorTalkRequest::vfunc_08();
-    unk_b8 = *(Fn *)__ptmf_null;
+    resultHandler = *(Fn *)__ptmf_null;
 }
 
 void SpNpcPascalTalk::attachOwner(SpNpcPascal *o) {
     vfunc_08();
-    unk_b0 = o;
-    unk_b0->unk_718 = 0;
-    unk_ac = 0;
+    owner = o;
+    owner->giftGiven = 0;
+    topic = 0;
 }
 
 void SpNpcPascalTalk::start(void *a) {
     Unk_ov076_02271744_Out *out = (Unk_ov076_02271744_Out *)a;
     if (MenuCtrl_BuildPocketMask(SpNpcPascal_IsScallop)) {
-        unk_ac = 0;
+        topic = 0;
     } else if (Random_GlobalBelow(2) == 0) {
-        unk_ac = 1;
+        topic = 1;
     } else {
-        unk_ac = 2;
+        topic = 2;
     }
-    if (unk_ac >= 0 && unk_ac < 3) {
-        out->unk_04 = sSpNpcPascalTopicMsgs[unk_ac].b;
-        out->unk_00 = (u32)sSpNpcPascalTopicMsgs[unk_ac].a;
+    if (topic >= 0 && topic < 3) {
+        out->msgIndex = sSpNpcPascalTopicMsgs[topic].b;
+        out->msgKey = (u32)sSpNpcPascalTopicMsgs[topic].a;
     }
 }
 
@@ -722,27 +722,27 @@ void SpNpcPascalTalk::onMessageEnd() {
     case 10:
     case 11:
         if (msgIndex == 10) {
-            unk_b4 = 0x4a38;
+            giftItem = 0x4a38;
         } else {
-            unk_b4 = 0x1373;
+            giftItem = 0x1373;
         }
-        _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &unk_b4, 0, 5, 0);
-        Pocket_AddItem(&unk_b4, 0);
-        unk_b0->unk_718 = 1;
+        _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &giftItem, 0, 5, 0);
+        Pocket_AddItem(&giftItem, 0);
+        owner->giftGiven = 1;
         Talk_CheckAndSetPlayerFlag(0x18, 1);
         code = 0xc;
         break;
     case 12:
         BOOL ok;
-        if (Item_IsFurniture(&unk_b4)) {
+        if (Item_IsFurniture(&giftItem)) {
             v = 0x4a38;
-            if (Item_GetFurnitureIndex(&unk_b4) == Item_GetFurnitureIndex(&v)) {
+            if (Item_GetFurnitureIndex(&giftItem) == Item_GetFurnitureIndex(&v)) {
                 ok = TRUE;
             } else {
                 ok = FALSE;
             }
         } else {
-            if (unk_b4 == 0x4a38) {
+            if (giftItem == 0x4a38) {
                 ok = TRUE;
             } else {
                 ok = FALSE;
@@ -756,33 +756,33 @@ void SpNpcPascalTalk::onMessageEnd() {
         break;
     case 13:
     case 14:
-        if (unk_b0->unk_718 == 0) {
+        if (owner->giftGiven == 0) {
             if (Pocket_FindEmpty() >= 0) {
                 s32 t = Random_GlobalBelow(9);
                 if (t <= 6) {
                     ItemPickSpec o0;
                     o0.set(0, 0x15);
                     ItemPick_One(&oa, &o0, 0, 0, 1, 1, 0);
-                    unk_b4 = oa;
+                    giftItem = oa;
                     ItemPickSpec_Destruct(&o0);
                 } else if (t == 7) {
                     ItemPickSpec o1;
                     o1.set(4, 0x15);
                     ItemPick_One(&ob, &o1, 0, 0, 1, 1, 0);
-                    unk_b4 = ob;
+                    giftItem = ob;
                     ItemPickSpec_Destruct(&o1);
                 } else {
                     ItemPickSpec o2;
                     o2.set(3, 0x15);
                     ItemPick_One(&oc, &o2, 0, 0, 1, 1, 0);
-                    unk_b4 = oc;
+                    giftItem = oc;
                     ItemPickSpec_Destruct(&o2);
                 }
-                _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &unk_b4, 0, 5, 0);
-                Pocket_AddItem(&unk_b4, 0);
+                _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &giftItem, 0, 5, 0);
+                Pocket_AddItem(&giftItem, 0);
                 Talk_CheckAndSetPlayerFlag(0x18, 1);
             }
-            unk_b0->unk_718 = 1;
+            owner->giftGiven = 1;
         }
         EventWeekSlots_MarkPlayer(0x42);
         break;
@@ -847,12 +847,12 @@ BOOL SpNpcPascal::vfunc_48() {
 void SpNpcPascal::vfunc_4c(s32 a) {
     switch (a) {
     case 0:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0((u32)getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(1);
         break;
     case 8:
-        if (unk_718 != 0) {
+        if (giftGiven != 0) {
             changeAct(4);
         } else {
             changeAct(3);

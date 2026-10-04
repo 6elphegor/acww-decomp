@@ -63,9 +63,9 @@ struct Unk_ov004_02224ee4_Vec {
 
 struct Unk_0203e5d0_Node {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ void *unk_0c;
+    /* 0x04 */ Unk_0203e5d0_Node *next;
+    /* 0x08 */ u32 charId;
+    /* 0x0c */ void *owner;
 };
 
 class Actor : public GameProc {
@@ -181,11 +181,11 @@ public:
     inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
     inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
 
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08[13];
-    u32 unk_3c[13];
-    u32 unk_70[13];
+    u32 archive;
+    u32 model;
+    u32 bcas[13];
+    u32 bmas[13];
+    u32 btas[13];
 };
 
 class RoomObjTex {
@@ -195,8 +195,8 @@ public:
     inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
     inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
-    u32 unk_00;
-    u8 unk_04;
+    u32 texture;
+    u8 syncState;
 };
 
 class RoomObjSe {
@@ -207,7 +207,7 @@ public:
     inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
     inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
-    u32 unk_00[0x10];
+    u32 emitter[0x10];
 };
 
 class RoomObjActor : public Character {
@@ -228,36 +228,36 @@ public:
     void loadResourcesByName(char *name);
     void loadResources(char *a, char *b);
 
-    /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ RoomObjRes unk_1a4;
-    /* 0x248 */ RoomObjTex unk_248;
-    /* 0x250 */ RoomObjSe unk_250;
+    /* 0xec */ AnimModel model;
+    /* 0x1a4 */ RoomObjRes res;
+    /* 0x248 */ RoomObjTex tex;
+    /* 0x250 */ RoomObjSe se;
 };
 
 
 struct Unk_ov004_Scene_Entry {
     void *(*unk_00)();
-    u16 unk_04;
-    u16 unk_06;
-    s32 unk_08[4];
+    u16 executePriority;
+    u16 drawPriority;
+    s32 actorParams[4];
 };
 
 // a 4-byte colour record whose constructor is inline (the __sinit of this unit initialises six of them)
 struct Unk_ov004_Rgba {
-    u8 unk_00, unk_01, unk_02, unk_03;
+    u8 red, green, blue, alpha;
     Unk_ov004_Rgba(u8 a, u8 b, u8 c, u8 d) {
-        unk_00 = a;
-        unk_01 = b;
-        unk_02 = c;
-        unk_03 = d;
+        red = a;
+        green = b;
+        blue = c;
+        alpha = d;
     }
 };
 
 struct Unk_ov004_02227728_Rec {
     u16 (*unk_00)(u32);
-    u32 unk_04;
-    const char *unk_08;
-    const char *unk_0c;
+    u32 numItems;
+    const char *arcPath;
+    const char *texPath;
 };
 
 class MuseumDisplay : public RoomObjActor {
@@ -273,32 +273,32 @@ public:
     void selectNodes();
     void setNodeVisibility(s32 c, void *o);
 
-    s8 *unk_290;
+    s8 *shownNodes;
 };
 
 struct Unk_ov004_02227bfc_Out {
     u8 pad_00[0xb8];
-    s32 *unk_b8;
+    s32 *visAnmResult;
 };
 
 struct Unk_ov004_02227cbc_Obj {
     u8 pad_00[0x14];
-    void (*unk_14)(void *);
+    void (*nodeCallback)(void *);
     u8 pad_18[0x8e - 0x14 - 4];
-    u8 unk_8e;
+    u8 nodeCallbackTiming;
 };
 
 struct Unk_ov004_02227ccc_Sub {
     u8 pad_00[0x2c];
-    MuseumDisplay *unk_2c;
+    MuseumDisplay *userPtr;
 };
 struct Unk_ov004_02227ccc_Ctx {
     u8 unk_00;
-    u8 unk_01;
+    u8 operand;
 };
 struct Unk_ov004_02227ccc_Obj {
-    Unk_ov004_02227ccc_Ctx *unk_00;
-    Unk_ov004_02227ccc_Sub *unk_04;
+    Unk_ov004_02227ccc_Ctx *sbcCmd;
+    Unk_ov004_02227ccc_Sub *renderObj;
 };
 
 extern "C" {
@@ -381,16 +381,16 @@ extern "C" const Unk_ov004_02227728_Rec *MuseumDisplay_GetKindInfo(u32 i) {
 }
 
 extern "C" void MuseumDisplay_NodeCallback(Unk_ov004_02227ccc_Obj *o) {
-    MuseumDisplay *b = o->unk_04->unk_2c;
+    MuseumDisplay *b = o->renderObj->userPtr;
     if (b != 0) {
-        b->setNodeVisibility(o->unk_00->unk_01, o);
+        b->setNodeVisibility(o->sbcCmd->operand, o);
     }
 }
 
 extern "C" void MuseumDisplay_InitRenderObj(void *p) {
     Unk_ov004_02227cbc_Obj *o = (Unk_ov004_02227cbc_Obj *)p;
-    o->unk_14 = (void (*)(void *))MuseumDisplay_NodeCallback;
-    o->unk_8e = 2;
+    o->nodeCallback = (void (*)(void *))MuseumDisplay_NodeCallback;
+    o->nodeCallbackTiming = 2;
 }
 
 MuseumDisplay::MuseumDisplay() {}
@@ -399,7 +399,7 @@ MuseumDisplay::~MuseumDisplay() {}
 
 BOOL MuseumDisplay::vfunc_00() {
     const Unk_ov004_02227728_Rec *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
-    loadResources((char *)r->unk_08, (char *)r->unk_0c);
+    loadResources((char *)r->arcPath, (char *)r->texPath);
     _ZN5Model15setInitCallbackEii((u8 *)this + 0xec, (void *)MuseumDisplay_InitRenderObj, this);
     selectNodes();
     return TRUE;
@@ -420,31 +420,31 @@ BOOL MuseumDisplay::vfunc_0c() {
 }
 
 void MuseumDisplay::setNodeVisibility(s32 c, void *o) {
-    *((Unk_ov004_02227bfc_Out *)o)->unk_b8 = isShownNode(c);
+    *((Unk_ov004_02227bfc_Out *)o)->visAnmResult = isShownNode(c);
 }
 
 void MuseumDisplay::selectNodes() {
     const Unk_ov004_02227728_Rec *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
-    unk_290 = (s8 *)Heap_Alloc(gBgHeap, r->unk_04);
+    shownNodes = (s8 *)Heap_Alloc(gBgHeap, r->numItems);
     u32 z = 0;
     u32 i;
-    for (i = 0; i < r->unk_04; i++) {
+    for (i = 0; i < r->numItems; i++) {
         u16 v = r->unk_00(i);
         u32 f = z;
         if (_ZN10MuseumData9isDonatedEPt(data_021ed0a0, &v) != 0) {
             f = 1;
         }
         func_020639e8(sMuseumDisplayNodeName, "p%d_%d", i, f);
-        unk_290[i] = _ZN12G3dResAccess13func_02056fccEi(F(void *, 0x148), sMuseumDisplayNodeName);
+        shownNodes[i] = _ZN12G3dResAccess13func_02056fccEi(F(void *, 0x148), sMuseumDisplayNodeName);
     }
 }
 
 BOOL MuseumDisplay::isShownNode(s32 c) {
     const Unk_ov004_02227728_Rec *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
     u32 i = 0;
-    u32 n = r->unk_04;
+    u32 n = r->numItems;
     for (; i < n; i++) {
-        if (c == unk_290[i]) {
+        if (c == shownNodes[i]) {
             return TRUE;
         }
     }

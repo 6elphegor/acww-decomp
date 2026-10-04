@@ -175,8 +175,8 @@ public:
 
     void attachOwner(SpNpcTortimerCountdown *owner);
 
-    SpNpcTortimerCountdown *unk_ac;
-    s32 unk_b0;
+    SpNpcTortimerCountdown *ownerNpc;
+    s32 massageChairSlot;
 };
 
 #define MEMBER(name, size) \
@@ -367,7 +367,7 @@ public:
 
     u8 unk_651;
     s32 unk_654;
-    SpNpcTortimerCountdownTalk unk_658;
+    SpNpcTortimerCountdownTalk talk;
 };
 
 struct Unk_ov086_02271940_Ent {
@@ -456,8 +456,8 @@ BOOL SpNpcTortimerCountdown::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -502,7 +502,7 @@ BOOL SpNpcTortimerCountdown::setupAct00() {
 BOOL SpNpcTortimerCountdown::mainAct00() { return TRUE; }
 
 BOOL SpNpcTortimerCountdown::setupAct01() {
-    void *p = unk_658.func_02015aac();
+    void *p = talk.func_02015aac();
     s32 x = 0;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -527,8 +527,8 @@ SpNpcTortimerCountdownTalk::~SpNpcTortimerCountdownTalk() {}
 
 void SpNpcTortimerCountdownTalk::attachOwner(SpNpcTortimerCountdown *owner) {
     vfunc_08();
-    unk_ac = owner;
-    unk_b0 = -1;
+    ownerNpc = owner;
+    massageChairSlot = -1;
 }
 
 void SpNpcTortimerCountdownTalk::start(TalkStartMsg *out) {
@@ -538,10 +538,10 @@ void SpNpcTortimerCountdownTalk::start(TalkStartMsg *out) {
     BOOL f;
     _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
     out->a = (u32)"sp_npc_turtle6";
-    if (unk_b0 == -1) {
+    if (massageChairSlot == -1) {
         h = 0x37e0;
-        unk_b0 = Pocket_FindItem(&h);
-        if (unk_b0 >= 0) {
+        massageChairSlot = Pocket_FindItem(&h);
+        if (massageChairSlot >= 0) {
             out->a = (u32)"sp_npc_turtle";
             out->b = 0;
             return;
@@ -610,9 +610,9 @@ void SpNpcTortimerCountdownTalk::onMessageEnd() {
     void *g;
     u32 v, base;
     s32 i;
-    if (unk_b0 >= 0) {
+    if (massageChairSlot >= 0) {
         if (msgIndex == 1 || msgIndex == 4) {
-            unk_b0 = -2;
+            massageChairSlot = -2;
         }
         if (msgIndex == 2) {
             l.h1 = 0x1559;
@@ -681,11 +681,11 @@ void SpNpcTortimerCountdownTalk::onChoice() {
     u8 *s;
     s32 t = getChoiceList()->getResult();
     u8 msg = 0xff;
-    if (unk_b0 >= 0) {
+    if (massageChairSlot >= 0) {
         s = (u8 *)"sp_npc_turtle";
         if (msgIndex == 0 && t == 0) {
-            if (unk_b0 >= 0) {
-                Pocket_RemoveItem(unk_b0);
+            if (massageChairSlot >= 0) {
+                Pocket_RemoveItem(massageChairSlot);
                 h = 0x37e0;
                 _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &h, 0, 5, 0);
             }
@@ -709,8 +709,8 @@ BOOL SpNpcTortimerCountdown::vfunc_48() {
 void SpNpcTortimerCountdown::vfunc_4c(s32 v) {
     switch (v) {
     case 0:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0((u32)getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

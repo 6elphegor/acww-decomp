@@ -195,32 +195,32 @@ public:
     void getResources();
     void updateMatrix();
 
-    /* 0x130 */ u8 unk_130;
+    /* 0x130 */ u8 doorState;
     /* 0x131 */ u8 pad_131;
-    /* 0x132 */ u16 unk_132;
+    /* 0x132 */ u16 itemId;
     /* 0x134 */ u8 pad_134[4];
     /* 0x138 */ u8 unk_138[0x194 - 0x138];
-    /* 0x194 */ s32 unk_194;
+    /* 0x194 */ s32 modelRes;
     /* 0x198 */ u8 pad_198[4];
-    /* 0x19c */ Unk_ov003_Blk unk_19c;
+    /* 0x19c */ Unk_ov003_Blk baseMatrix;
     /* 0x1cc */ u8 pad_1cc[0x1f0 - 0x1cc];
     /* 0x1f0 */ u8 unk_1f0[0x228 - 0x1f0];
-    /* 0x228 */ u32 unk_228;
-    /* 0x22c */ u32 unk_22c;
-    /* 0x230 */ u8 unk_230;
-    /* 0x231 */ u8 unk_231;
-    /* 0x232 */ Unk_ov003_Flags unk_232;
-    /* 0x233 */ u8 unk_233;
+    /* 0x228 */ u32 gridX;
+    /* 0x22c */ u32 gridZ;
+    /* 0x230 */ u8 exitDelay;
+    /* 0x231 */ u8 colliderFlags;
+    /* 0x232 */ Unk_ov003_Flags entryFlags;
+    /* 0x233 */ u8 visitRefused;
     /* 0x234 */ u8 pad_234[0x278 - 0x234];
-    /* 0x278 */ u32 unk_278;
-    /* 0x27c */ u8 unk_27c;
+    /* 0x278 */ u32 entryState;
+    /* 0x27c */ u8 closedTalk;
     /* 0x27d */ u8 pad_27d;
-    /* 0x27e */ u16 unk_27e;
+    /* 0x27e */ u16 warpTimer;
     /* 0x280 */ u8 pad_280[0x288 - 0x280];
-    /* 0x288 */ void *unk_288;
-    /* 0x28c */ u8 unk_28c;
+    /* 0x288 */ void *colliders;
+    /* 0x28c */ u8 colliderCount;
     /* 0x28d */ u8 pad_28d[0x2a4 - 0x28d];
-    /* 0x2a4 */ Unk_ov003_Vec unk_2a4;
+    /* 0x2a4 */ Unk_ov003_Vec entryPos;
     /* 0x2b0 */
 };
 
@@ -437,8 +437,8 @@ BOOL CountdownSign::enterCountdown() {
 
 void CountdownSign::vfunc_74() {
     static Unk_02215614_Fn tbl[3] = { &CountdownSign::execCountdown, &CountdownSign::execNewYear };
-    if (unk_130 < 3) {
-        (this->*tbl[unk_130])();
+    if (doorState < 3) {
+        (this->*tbl[doorState])();
     }
 }
 
@@ -446,8 +446,8 @@ BOOL CountdownSign::vfunc_6c(u32 a) {
     static Unk_02215680_Fn tbl[3] = { &CountdownSign::enterCountdown, &CountdownSign::enterNewYear };
     if (a < 3) {
         if ((this->*tbl[a])()) {
-            if (BuildingState_Set(unk_132, a)) {
-                unk_130 = a;
+            if (BuildingState_Set(itemId, a)) {
+                doorState = a;
                 return TRUE;
             }
         }
@@ -468,7 +468,7 @@ BOOL CountdownSign::vfunc_0c() {
 
 BOOL CountdownSign::postDraw(s32 a) {
     if (a == 2) {
-        if ((unk_231 & 1) == 0) {
+        if ((colliderFlags & 1) == 0) {
             for (u32 i = 0; i < 6; i++) {
                 Unk_ov003_02215748_Ent *p = unk_2d4[i];
                 if (p) {
@@ -516,8 +516,8 @@ BOOL CountdownSign::vfunc_70() {
         i++;
     } while (i < 6);
     _ZN5Model15setInitCallbackEii(unk_138, CountdownSign_ModelCallback, this);
-    unk_2d0 = _ZN12G3dResAccess10findMatIdxEi(unk_194, "m_cbs_Adt");
-    if (_ZN9ModelAnim11allocMatAnmEjPv(&unk_2b0, unk_194, gFieldStructureHeap)) {
+    unk_2d0 = _ZN12G3dResAccess10findMatIdxEi(modelRes, "m_cbs_Adt");
+    if (_ZN9ModelAnim11allocMatAnmEjPv(&unk_2b0, modelRes, gFieldStructureHeap)) {
         s32 r1 = getBtaAnim(0);
         _ZN9ModelAnim4initEiiit(&unk_2b0, r1, 0, 0x1000, 0);
         _ZN9ModelAnim14addToRenderObjEj(&unk_2b0, _ZN5Model12getRenderObjEv(unk_138));

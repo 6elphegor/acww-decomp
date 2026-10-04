@@ -68,9 +68,9 @@ public:
 
 struct Unk_0203e5d0_Node {
     u32 unk_00;
-    Unk_0203e5d0_Node *unk_04;
-    u32 unk_08;
-    void *unk_0c;
+    Unk_0203e5d0_Node *next;
+    u32 charId;
+    void *owner;
 };
 
 class Character : public Actor {
@@ -259,9 +259,9 @@ extern "C" Atm *Atm_GetInstance() {
 // ---------------------------------------------------------------- data
 struct Unk_ov004_Scene_Entry {
     void *(*unk_00)();
-    u16 unk_04;
-    u16 unk_06;
-    s32 unk_08[4];
+    u16 executePriority;
+    u16 drawPriority;
+    s32 actorParams[4];
 };
 
 Atm::Atm() {

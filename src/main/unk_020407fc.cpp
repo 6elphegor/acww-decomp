@@ -18,25 +18,25 @@ public:
     virtual BOOL onExecute();
 
     /* 0x50 */ u32 unk_50;
-    /* 0x54 */ TalkMsgRequest unk_54;
+    /* 0x54 */ TalkMsgRequest msgRequest;
 };
 
 struct Unk_02040754_Time { u8 b[4]; };
 struct Unk_020407fc_Data { u8 b[0x64]; };
 
 struct EventAnnounceState {
-    EventAnnounceState() { unk_00 = 0; unk_04 = 0; unk_01 = 0; }
+    EventAnnounceState() { announceState = 0; msgIndex = 0; isEnd = 0; }
     ~EventAnnounceState();
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
-    u8 unk_04;
+    u8 announceState;
+    u8 isEnd;
+    u8 busy;
+    u8 dayChangePending;
+    u8 msgIndex;
     u8 pad_05[3];
-    s32 unk_08;
+    s32 nextEvent;
 };
 
-struct Unk_02040974_Obj { u8 pad[0x64]; s32 unk_64; };
+struct Unk_02040974_Obj { u8 pad[0x64]; s32 myAid; };
 struct Unk_02040974_Rtc { s32 a; s32 b; };
 struct Unk_02040cac_Rtc { u8 b0; u8 b1; u8 b2; u8 b3; s32 b; };
 union Unk_02040cac_Rtc2 { s32 w[2]; Unk_02040cac_Rtc v; };
@@ -47,12 +47,12 @@ struct Unk_02040ad8_Member {
 };
 struct Unk_02040ad8_Owner {
     u8 pad[0x54];
-    Unk_02040ad8_Member unk_54;
+    Unk_02040ad8_Member msgRequest;
 };
-struct Unk_02040a84_Obj { s32 unk_00; s32 unk_04; s32 unk_08; };
+struct Unk_02040a84_Obj { s32 unk_00; s32 state; s32 nextState; };
 static inline s32 Unk_02040a84_Get(Unk_02040a84_Obj *p)
 {
-    s32 v = p->unk_04;
+    s32 v = p->state;
     return v;
 }
 static inline BOOL Unk_02040ad8_IsTwo(u8 v)
@@ -61,7 +61,7 @@ static inline BOOL Unk_02040ad8_IsTwo(u8 v)
 }
 struct Unk_02040d80_Obj {
     u8 pad[0xc];
-    u16 unk_0c;
+    u16 profile;
 };
 
 extern "C" {
@@ -137,7 +137,7 @@ void EventAnnounce_Request(s32 a, s32 b, s32 c);
 extern Unk_02040974_Obj *gCommManager;
 extern u8 gScreenTransition;
 extern "C" EventAnnouncer *EventAnnouncer_Create();
-struct Unk_020da224_Rec { void *(*unk_00)(); s16 unk_04; s16 unk_06; };
+struct Unk_020da224_Rec { void *(*unk_00)(); s16 executePriority; s16 drawPriority; };
 extern Unk_02040d80_Obj *gActorDefaultParent;
 extern u8 data_021ed170[];
 extern u8 gSaveData[];
@@ -220,7 +220,7 @@ BOOL EventAnnouncer::vfunc_00()
         }
         r5[0x15e29] = 99;
         sEventAnnounceWasOnline = 0;
-        if (Scene_InTownUnk31() != 0 && sEventAnnounceState.unk_03 == 0) {
+        if (Scene_InTownUnk31() != 0 && sEventAnnounceState.dayChangePending == 0) {
             Town_RefreshEventsOffline();
         }
     } else {
@@ -231,7 +231,7 @@ BOOL EventAnnouncer::vfunc_00()
         sEventAnnounceCurEvent = v;
         sEventAnnounceWasOnline = 1;
     }
-    switch (sEventAnnounceState.unk_00) {
+    switch (sEventAnnounceState.announceState) {
     case 0:
         break;
     case 1:
@@ -245,10 +245,10 @@ BOOL EventAnnouncer::vfunc_00()
             EventAnnounce_Reset();
         } else {
             TalkRequestFlags_SetSceneHold();
-            sEventAnnounceState.unk_00 = 5;
-            if (sEventAnnounceState.unk_03 != 0) {
+            sEventAnnounceState.announceState = 5;
+            if (sEventAnnounceState.dayChangePending != 0) {
                 Town_UpdateDay(0);
-                sEventAnnounceState.unk_03 = 0;
+                sEventAnnounceState.dayChangePending = 0;
             }
             v = sEventAnnouncePendingEvent;
             if (v != 99) {
@@ -266,7 +266,7 @@ BOOL EventAnnouncer::onExecute()
     s32 x = (s32)this;
     if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
         EventAnnounce_Update();
-        switch (sEventAnnounceState.unk_00) {
+        switch (sEventAnnounceState.announceState) {
         case 0:
             EventAnnounce_RunIdle(x);
             break;
@@ -301,17 +301,17 @@ BOOL EventAnnouncer::vfunc_0c()
     if (TalkRequestFlags_IsSceneHold()) {
         TalkRequestFlags_ClearSceneHold();
         sEventAnnounceBusy = 0;
-        sEventAnnounceState.unk_00 = 0;
-        sEventAnnounceState.unk_02 = 0;
+        sEventAnnounceState.announceState = 0;
+        sEventAnnounceState.busy = 0;
     }
-    switch (sEventAnnounceState.unk_00) {
+    switch (sEventAnnounceState.announceState) {
     case 0:
         if (sEventAnnounceCurEvent == 99) {
             EventAnnounce_Reset();
         }
         break;
     case 1:
-        sEventAnnounceState.unk_00 = 2;
+        sEventAnnounceState.announceState = 2;
         break;
     }
     if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
@@ -325,9 +325,9 @@ extern "C" void EventAnnounce_Reset(void)
     sEventAnnouncePendingEvent = 99;
     sEventAnnounceCurEvent = 99;
     sEventAnnounceActiveEvent = 99;
-    sEventAnnounceState.unk_00 = 0;
-    sEventAnnounceState.unk_02 = 0;
-    sEventAnnounceState.unk_03 = 0;
+    sEventAnnounceState.announceState = 0;
+    sEventAnnounceState.busy = 0;
+    sEventAnnounceState.dayChangePending = 0;
 }
 
 extern "C" void EventAnnounce_Restart(void)
@@ -355,7 +355,7 @@ extern "C" BOOL EventAnnounce_CanCheck(void)
     if (NetArea_IsUnsharedScene(Scene_GetCurrent()) != 0) {
         return FALSE;
     }
-    if (gActorDefaultParent != 0 && gActorDefaultParent->unk_0c != 6) {
+    if (gActorDefaultParent != 0 && gActorDefaultParent->profile != 6) {
         return FALSE;
     }
     return TRUE;
@@ -442,7 +442,7 @@ extern "C" void EventAnnounce_RunIdle(s32)
 extern "C" void EventAnnounce_RunWaitChimeStart(s32)
 {
     if (Melody_IsBusy() != 0) {
-        sEventAnnounceState.unk_00 = 2;
+        sEventAnnounceState.announceState = 2;
     }
 }
 
@@ -457,11 +457,11 @@ extern "C" BOOL EventAnnounce_RequestWarp(void)
 {
     BOOL r = FALSE;
     if (TalkRequest_AddEventWarp() == 0) {
-        sEventAnnounceState.unk_00 = r;
-        sEventAnnounceState.unk_02 = r;
+        sEventAnnounceState.announceState = r;
+        sEventAnnounceState.busy = r;
     } else {
         r = TRUE;
-        sEventAnnounceState.unk_02 = r;
+        sEventAnnounceState.busy = r;
     }
     return r;
 }
@@ -472,17 +472,17 @@ extern "C" void EventAnnounce_RunWarp(s32)
     s32 r;
     if (TalkRequestFlags_IsEventWarpStarted() == 0) {
         if (TalkRequest_AddEventWarp() == 0) {
-            sEventAnnounceState.unk_00 = 0;
-            sEventAnnounceState.unk_02 = 0;
+            sEventAnnounceState.announceState = 0;
+            sEventAnnounceState.busy = 0;
         }
     } else {
-        s32 v = sEventAnnounceState.unk_08;
+        s32 v = sEventAnnounceState.nextEvent;
         sEventAnnouncePendingEvent = v;
         sEventAnnounceCurEvent = v;
         if (TalkRequestFlags_IsEventWarpReady() != 0 && Melody_IsBusy() == 0) {
             r = TownBlockMap_Get();
             if (r != 0) {
-                if (sEventAnnounceState.unk_04 == 14) {
+                if (sEventAnnounceState.msgIndex == 14) {
                     r = Town_FindGulliverShip(r, buf);
                 } else {
                     r = Town_FindTownHall(r, buf, 0, 0);
@@ -490,8 +490,8 @@ extern "C" void EventAnnounce_RunWarp(s32)
                 if (r != 0) {
                     Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
                     SceneWarp_RequestAt(Scene_GetWarpRequest(), 0x31, buf, 0x400000, 0, 2, 2);
-                    _ZN12BgmSceneFade13func_020353b0Eii(data_021c1b3c + 0x2d0, sEventAnnounceBgmCode, sEventAnnounceState.unk_04);
-                    sEventAnnounceState.unk_00 = 4;
+                    _ZN12BgmSceneFade13func_020353b0Eii(data_021c1b3c + 0x2d0, sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
+                    sEventAnnounceState.announceState = 4;
                     sEventAnnounceBusy = 1;
                 }
             }
@@ -503,25 +503,25 @@ extern "C" void EventAnnounce_RunShowMessage(Unk_02040ad8_Owner *o)
 {
     if (Unk_02040ad8_IsTwo(gScreenTransition)) {
         Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)TalkWindow_Get(0);
-        o->unk_54.vfunc_08();
-        _ZN10MsgRequest11setFileNameEPKc(&o->unk_54, (void *)sEventAnnounceMsgFiles[sEventAnnounceState.unk_01]);
-        *((u8 *)o + 0x72) = sEventAnnounceState.unk_04;
-        _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(p, &o->unk_54);
-        p->unk_08 = 1;
-        sEventAnnounceState.unk_00 = 6;
+        o->msgRequest.vfunc_08();
+        _ZN10MsgRequest11setFileNameEPKc(&o->msgRequest, (void *)sEventAnnounceMsgFiles[sEventAnnounceState.isEnd]);
+        *((u8 *)o + 0x72) = sEventAnnounceState.msgIndex;
+        _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(p, &o->msgRequest);
+        p->nextState = 1;
+        sEventAnnounceState.announceState = 6;
     }
 }
 
 extern "C" void EventAnnounce_RunWaitMessageEnd(s32)
 {
     Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)TalkWindow_Get(0);
-    if (p->unk_04 == 0) {
+    if (p->state == 0) {
         _ZN15TalkWindowState13detachRequestEv(p);
         SceneWarp_RequestExit(Scene_GetWarpRequest(), 20);
-        _ZN12BgmSceneFade13func_02035368Eii(data_021c1b3c + 0x2d0, sEventAnnounceBgmCode, sEventAnnounceState.unk_04);
+        _ZN12BgmSceneFade13func_02035368Eii(data_021c1b3c + 0x2d0, sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
         sEventAnnounceBgmCode = 0;
-        sEventAnnounceState.unk_00 = 0;
-        sEventAnnounceState.unk_02 = 0;
+        sEventAnnounceState.announceState = 0;
+        sEventAnnounceState.busy = 0;
     }
 }
 
@@ -534,7 +534,7 @@ extern "C" void EventAnnounce_SetState(s32 v)
         r = TRUE;
     }
     if (r) {
-        sEventAnnounceState.unk_00 = v;
+        sEventAnnounceState.announceState = v;
     }
 }
 
@@ -553,12 +553,12 @@ extern "C" void EventAnnounce_Request(s32 a, s32 b, s32 c)
         TownSessionState_Get();
         TownSessionState_GetResettiFlag();
         if (_ZN16ResettiVisitFlag5isSetEv()) {
-            if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64)) {
+            if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
                 return;
             }
         }
     }
-    if (sEventAnnounceState.unk_02 != 0) {
+    if (sEventAnnounceState.busy != 0) {
         return;
     }
     r4 = -1;
@@ -572,20 +572,20 @@ extern "C" void EventAnnounce_Request(s32 a, s32 b, s32 c)
         }
         r6 = 2;
     } else if (a == 0x44) {
-        if (sEventAnnounceState.unk_00 == 0) {
+        if (sEventAnnounceState.announceState == 0) {
             r4 = 14;
             sEventAnnounceBgmCode = 0;
             r6 = 2;
         }
     } else if (a < 0) {
-        switch (sEventAnnounceState.unk_00) {
+        switch (sEventAnnounceState.announceState) {
         case 0: {
             Unk_02040974_Rtc t;
             t.a = 0;
             t.b = 0;
             r4 = 15;
             sEventAnnounceBgmCode = 0;
-            sEventAnnounceState.unk_03 = 1;
+            sEventAnnounceState.dayChangePending = 1;
             Clock_GetDateTime(&t);
             if (((u8 *)&t)[1] == 0) {
                 r6 = 1;
@@ -595,15 +595,15 @@ extern "C" void EventAnnounce_Request(s32 a, s32 b, s32 c)
             break;
         }
         case 2:
-            sEventAnnounceState.unk_03 = 1;
+            sEventAnnounceState.dayChangePending = 1;
             break;
         }
     }
     if (r4 >= 0) {
         EventAnnounce_SetState(r6);
-        sEventAnnounceState.unk_04 = r4;
-        sEventAnnounceState.unk_01 = c;
-        sEventAnnounceState.unk_08 = b;
+        sEventAnnounceState.msgIndex = r4;
+        sEventAnnounceState.isEnd = c;
+        sEventAnnounceState.nextEvent = b;
     }
 }
 

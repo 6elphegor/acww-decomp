@@ -12,9 +12,9 @@ public:
     virtual s32 vfunc_08(void *p);
     virtual void vfunc_0c(void *p);
 
-    /* 0x04 */ s16 unk_04;
-    /* 0x06 */ s16 unk_06;
-    /* 0x08 */ void **unk_08;
+    /* 0x04 */ s16 state;
+    /* 0x06 */ s16 cmdIndex;
+    /* 0x08 */ void **cmds;
     /* 0x0c */ u32 unk_0c;
     /* 0x10 */ u16 unk_10;
     /* 0x12 */ s16 unk_12;
@@ -25,9 +25,9 @@ s16 func_020ed81c(Unk_Seq *o, s32 loop);
 }
 
 extern "C" BOOL func_020ed7e4(Unk_Seq *o) {
-    if (o->unk_04 == 1) {
-        o->unk_04 = func_020ed81c(o, 0);
+    if (o->state == 1) {
+        o->state = func_020ed81c(o, 0);
     }
-    if (o->unk_04 == 1) return FALSE;
+    if (o->state == 1) return FALSE;
     return TRUE;
 }

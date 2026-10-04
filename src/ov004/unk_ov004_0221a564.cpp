@@ -121,12 +121,12 @@ struct Unk_ov004_Col {
 
 struct Unk_ov004_SceneEntry {
     void *(*factory)();
-    u16 unk_04;
-    u16 unk_06;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u16 executePriority;
+    u16 drawPriority;
+    u32 actorFlags;
+    u32 cullHeight;
+    u32 cullRadius;
+    u32 cullDepth;
 };
 
 extern SickVillager *sSickVillager;
@@ -489,9 +489,9 @@ public:
     void attachOwner(SickVillager *owner);
     u8 getSickStage();
 
-    /* 0x1a0 */ u8 unk_1a0;
+    /* 0x1a0 */ u8 sickStage;
     /* 0x1a1 */ u8 pad_1a1[3];
-    /* 0x1a4 */ SickVillager *unk_1a4;
+    /* 0x1a4 */ SickVillager *villager;
 };
 
 class SickVillager : public VillagerActor {
@@ -528,19 +528,19 @@ public:
     void blockFurnitureCells();
     BOOL drawModel();
 
-    /* 0x894 */ u8 unk_894;
-    /* 0x895 */ u8 unk_895;
-    /* 0x896 */ u8 unk_896;
+    /* 0x894 */ u8 hasVisitor;
+    /* 0x895 */ u8 isAnswered;
+    /* 0x896 */ u8 talkMelodyPlayed;
     /* 0x897 */ u8 pad_897;
-    /* 0x898 */ u32 unk_898;
-    /* 0x89c */ SickVillagerTalk unk_89c;
-    /* 0xa44 */ Unk_ov004_0224cb98_BFn unk_a44;
-    /* 0xa4c */ RoomFreeUnitMap unk_a4c;
-    /* 0xa6c */ s16 unk_a6c;
-    /* 0xa6e */ u16 unk_a6e;
-    /* 0xa70 */ Unk_ov004_0221a7d4_Vec unk_a70;
-    /* 0xa7c */ Unk_ov004_0221a7d4_Vec unk_a7c;
-    /* 0xa88 */ u8 unk_a88;
+    /* 0x898 */ u32 act;
+    /* 0x89c */ SickVillagerTalk talk;
+    /* 0xa44 */ Unk_ov004_0224cb98_BFn drawFn;
+    /* 0xa4c */ RoomFreeUnitMap freeUnitMap;
+    /* 0xa6c */ s16 walkAngle;
+    /* 0xa6e */ u16 walkTimer;
+    /* 0xa70 */ Unk_ov004_0221a7d4_Vec waypoint;
+    /* 0xa7c */ Unk_ov004_0221a7d4_Vec walkTarget;
+    /* 0xa88 */ u8 emotionTimer;
     /* 0xa89 */ u8 pad_a89[3];
 };
 
@@ -627,11 +627,11 @@ BOOL SickVillager::vfunc_04() {
         return FALSE;
     }
     sSickVillager = this;
-    NpcActor_setTalkRequest(this, &unk_89c);
-    unk_89c.attachOwner(this);
+    NpcActor_setTalkRequest(this, &talk);
+    talk.attachOwner(this);
     u8 *p = (u8 *)SaveVillagers_GetUnk3830(gSaveVillagers);
     *((u8 *)this + 0xa3c) = p[0x8e];
-    if (unk_89c.getSickStage() > 1) {
+    if (talk.getSickStage() > 1) {
         NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0xea);
         NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0xe9);
         NpcMoveCtrl_setSpeedPreset(&moveCtrl, 1, 0xa4, 0x10, 0x10);
@@ -649,7 +649,7 @@ BOOL SickVillager::vfunc_00() {
     if (func_0202d948(this) == 0) {
         return FALSE;
     }
-    unk_a44 = PMB(data_ov004_0224ca68);
+    drawFn = PMB(data_ov004_0224ca68);
     blockFurnitureCells();
     Unk_02013474_enableFootsteps(&footstepFx);
     return TRUE;
@@ -663,8 +663,8 @@ BOOL SickVillager::drawModel() {
 }
 
 BOOL SickVillager::onDraw() {
-    if (unk_a44) {
-        return (this->*unk_a44)();
+    if (drawFn) {
+        return (this->*drawFn)();
     }
     return TRUE;
 }
@@ -718,7 +718,7 @@ BOOL SickVillager::vfunc_48() {
     if (NpcTalkCtrl_isBusy(&talkCtrl)) {
         return FALSE;
     }
-    if (unk_898 > 1) {
+    if (act > 1) {
         return FALSE;
     }
     return TRUE;
@@ -737,7 +737,7 @@ void SickVillager::vfunc_4c(u32 idx, u32 v) {
         break;
     case 0:
         footstepFx.unk_08 = v;
-        func_02015ab0(&unk_89c, NpcActor_getPlayerActor(this, 4));
+        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
         changeAct(3);
         break;
     case 8:
@@ -750,7 +750,7 @@ void SickVillager::vfunc_4c(u32 idx, u32 v) {
     }
 }
 
-u8 SickVillagerTalk::getSickStage() { return unk_1a0; }
+u8 SickVillagerTalk::getSickStage() { return sickStage; }
 
 extern "C" BOOL SickVillager_HasCurrentVisitor(void *o) {
     if (SickVillagerRecord_hasTodaysVisitor(SaveVillagers_GetUnk3830(gSaveVillagers))) {
@@ -766,7 +766,7 @@ extern "C" void SickVillager_SetCurrentVisitor() {
 
 void SickVillagerTalk::attachOwner(SickVillager *owner) {
     VillagerTalk_begin(this, owner, 0x11);
-    unk_1a4 = owner;
+    villager = owner;
 }
 
 void SickVillagerTalk::onTaskDone(u32 a) {
@@ -778,14 +778,14 @@ void SickVillagerTalk::onTaskDone(u32 a) {
 
 void SickVillagerTalk::update() {
     u8 buf[4];
-    SickVillager *o = unk_1a4;
-    if (o->unk_898 == 6) {
+    SickVillager *o = villager;
+    if (o->act == 6) {
         if (MenuCtrl_IsFinished()) {
             if (MenuCtrl_IsResultOk() == 0) {
                 ((Unk_ov004_0221afc4_Msg *)unk_3c)->unk_08 = 1;
                 buf[0] = Random_GlobalBelow(3) + 13;
                 TalkWindowState_setNextMessage(unk_3c, buf, 0);
-                unk_1a4->changeAct(4);
+                villager->changeAct(4);
             } else {
                 MenuCtrl_GetIndex();
                 Pocket_RemoveItem();
@@ -793,7 +793,7 @@ void SickVillagerTalk::update() {
                 TalkWindowState_setNextMessage(unk_3c, &buf[1], 0);
                 *(u16 *)(buf + 2) = 0x155e;
                 Unk_02014420_requestTakeItem(this, buf + 2, 0, 6, 0);
-                unk_1a4->changeAct(7);
+                villager->changeAct(7);
             }
         }
     }
@@ -802,18 +802,18 @@ void SickVillagerTalk::update() {
 void SickVillagerTalk::start(Unk_ov004_0221af1c_Out *out) {
     out->unk_00 = (u32)data_ov004_0225095c;
     getSickStage();
-    if (unk_1a4->mood.severeSickness == 0) {
-        VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a4->villagerData), data_ov004_0225095c, 0x28, "q12_ask1_2");
+    if (villager->mood.severeSickness == 0) {
+        VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_0225095c, 0x28, "q12_ask1_2");
     } else {
-        VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a4->villagerData), data_ov004_0225095c, 0x28, "q12_ask3_5");
+        VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_0225095c, 0x28, "q12_ask3_5");
     }
-    unk_1a4->unk_895 = 0;
+    villager->isAnswered = 0;
     if (SickVillager_HasCurrentVisitor(this)) {
         out->unk_04 = Random_GlobalBelow(3) + 3;
-        unk_1a4->unk_894 = 1;
+        villager->hasVisitor = 1;
     } else {
         out->unk_04 = Random_GlobalBelow(3);
-        unk_1a4->unk_894 = 0;
+        villager->hasVisitor = 0;
     }
 }
 
@@ -828,8 +828,8 @@ void SickVillagerTalk::onMessageStart() {
 
 void SickVillagerTalk::onMessageEnd() {
     u8 b[6];
-    SickVillager *o = unk_1a4;
-    if (o->unk_895 == 0) {
+    SickVillager *o = villager;
+    if (o->isAnswered == 0) {
         switch (msgIndex) {
         case 0:
         case 1:
@@ -887,41 +887,41 @@ void SickVillagerTalk::onMessageEnd() {
 
 s32 SickVillagerTalk::onChoice() {
     u8 buf[6];
-    s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(unk_1a4->unk_89c.unk_3c));
-    if (unk_1a4->mood.severeSickness == 0) {
-        VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a4->villagerData), data_ov004_02250984, 0x28, "q12_sick1_2");
-        unk_1a4->unk_895 = 1;
+    s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(villager->talk.unk_3c));
+    if (villager->mood.severeSickness == 0) {
+        VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_02250984, 0x28, "q12_sick1_2");
+        villager->isAnswered = 1;
     } else {
-        VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a4->villagerData), data_ov004_02250984, 0x28, "q12_sick3_5");
-        unk_1a4->unk_895 = 1;
+        VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_02250984, 0x28, "q12_sick3_5");
+        villager->isAnswered = 1;
     }
-    if (unk_1a4->unk_894 == 0) {
+    if (villager->hasVisitor == 0) {
         switch (t) {
         case 0:
             if (MenuCtrl_BuildPocketMask((void *)SickVillager_IsMedicine) != 0) {
                 buf[0] = Random_GlobalBelow(3) + 7;
-                TalkWindowState_setNextMessage(unk_1a4->unk_89c.unk_3c, &buf[0], data_ov004_02250984);
+                TalkWindowState_setNextMessage(villager->talk.unk_3c, &buf[0], data_ov004_02250984);
             } else {
                 buf[1] = Random_GlobalBelow(3) + 10;
-                TalkWindowState_setNextMessage(unk_1a4->unk_89c.unk_3c, &buf[1], data_ov004_02250984);
+                TalkWindowState_setNextMessage(villager->talk.unk_3c, &buf[1], data_ov004_02250984);
             }
             break;
         case 1:
             buf[2] = Random_GlobalBelow(4);
-            TalkWindowState_setNextMessage(unk_1a4->unk_89c.unk_3c, &buf[2], data_ov004_02250984);
+            TalkWindowState_setNextMessage(villager->talk.unk_3c, &buf[2], data_ov004_02250984);
             break;
         default:
             buf[3] = Random_GlobalBelow(3) + 4;
-            TalkWindowState_setNextMessage(unk_1a4->unk_89c.unk_3c, &buf[3], data_ov004_02250984);
+            TalkWindowState_setNextMessage(villager->talk.unk_3c, &buf[3], data_ov004_02250984);
             break;
         }
     } else {
         if (t == 0) {
             buf[4] = Random_GlobalBelow(3) + 0x13;
-            TalkWindowState_setNextMessage(unk_1a4->unk_89c.unk_3c, &buf[4], data_ov004_02250984);
+            TalkWindowState_setNextMessage(villager->talk.unk_3c, &buf[4], data_ov004_02250984);
         } else {
             buf[5] = Random_GlobalBelow(3) + 4;
-            TalkWindowState_setNextMessage(unk_1a4->unk_89c.unk_3c, &buf[5], data_ov004_02250984);
+            TalkWindowState_setNextMessage(villager->talk.unk_3c, &buf[5], data_ov004_02250984);
         }
     }
 }
@@ -935,7 +935,7 @@ BOOL SickVillager::changeAct(s32 s) {
     };
     if (s < 8) {
         if ((this->*tbl[s])()) {
-            unk_898 = s;
+            act = s;
             return TRUE;
         }
     }
@@ -961,7 +961,7 @@ void SickVillager::execAct() {
         PMV(data_ov004_0224cae0), PMV(data_ov004_0224ca60),
         PMV(data_ov004_0224ca78), PMV(data_ov004_0224ca88),
     };
-    s32 s = unk_898;
+    s32 s = act;
     if (s < 8) {
         (this->*tbl[s])();
     }
@@ -988,31 +988,31 @@ void SickVillager::mainAct00() {
         }
     }
     if (NpcActionCtrl_getAction(&actionCtrl) == 0) {
-        if (unk_a6e != 0) {
-            unk_a6e--;
+        if (walkTimer != 0) {
+            walkTimer--;
         }
-        if (unk_a6e == 0) {
-            unk_a6c = Room_PickRandomWalkTarget(&unk_a7c, (u8 *)this + 0x5c, rotY);
-            unk_a70.x = unk_a7c.x;
-            unk_a70.y = unk_a7c.y;
-            unk_a70.z = unk_a7c.z;
-            if (unk_a6c != rotY) {
-                if (NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, unk_a6c, 0, 0, data_020c6cc8, 0) == 0) {
+        if (walkTimer == 0) {
+            walkAngle = Room_PickRandomWalkTarget(&walkTarget, (u8 *)this + 0x5c, rotY);
+            waypoint.x = walkTarget.x;
+            waypoint.y = walkTarget.y;
+            waypoint.z = walkTarget.z;
+            if (walkAngle != rotY) {
+                if (NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, walkAngle, 0, 0, data_020c6cc8, 0) == 0) {
                     return;
                 }
                 if (mood.severeSickness != 0) {
-                    unk_a6e = Random_GlobalBelow(0x46) + 0x32;
+                    walkTimer = Random_GlobalBelow(0x46) + 0x32;
                 } else {
-                    unk_a6e = Random_GlobalBelow(0x46) + 0x14;
+                    walkTimer = Random_GlobalBelow(0x46) + 0x14;
                 }
             } else {
-                if (NpcActionCtrl_requestAction(&actionCtrl, 1, 1, unk_a7c.x, unk_a7c.z, 0, 0, 0, 0, data_020c6cc8, 0) == 0) {
+                if (NpcActionCtrl_requestAction(&actionCtrl, 1, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0) == 0) {
                     return;
                 }
                 if (mood.severeSickness != 0) {
-                    unk_a6e = Random_GlobalBelow(0x46) + 0x32;
+                    walkTimer = Random_GlobalBelow(0x46) + 0x32;
                 } else {
-                    unk_a6e = Random_GlobalBelow(0x50) + 0x14;
+                    walkTimer = Random_GlobalBelow(0x50) + 0x14;
                 }
             }
         } else {
@@ -1023,7 +1023,7 @@ void SickVillager::mainAct00() {
     } else {
         if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
             if (NpcActionCtrl_isActionDone(&actionCtrl) != 0) {
-                NpcActionCtrl_requestAction(&actionCtrl, 1, 1, unk_a7c.x, unk_a7c.z, 0, 0, 0, 0, data_020c6cc8, 0);
+                NpcActionCtrl_requestAction(&actionCtrl, 1, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0);
             }
         } else if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
             switch (NpcActor_findAvoidPos(this, &v)) {
@@ -1031,14 +1031,14 @@ void SickVillager::mainAct00() {
                 NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8);
                 break;
             case 2:
-                unk_a70 = v;
-                NpcMoveCtrl_setWaypoint(&moveCtrl, &unk_a70);
+                waypoint = v;
+                NpcMoveCtrl_setWaypoint(&moveCtrl, &waypoint);
                 break;
             default:
-                if (func_020e96ec(&unk_a70, &unk_a7c) != 0) {
-                    unk_a70 = unk_a7c;
-                    NpcMoveCtrl_setWaypoint(&moveCtrl, &unk_a7c);
-                } else if (func_020e9650(&unk_a7c, (u8 *)this + 0x5c) < 0x200) {
+                if (func_020e96ec(&waypoint, &walkTarget) != 0) {
+                    waypoint = walkTarget;
+                    NpcMoveCtrl_setWaypoint(&moveCtrl, &walkTarget);
+                } else if (func_020e9650(&walkTarget, (u8 *)this + 0x5c) < 0x200) {
                     changeAct(1);
                 }
                 break;
@@ -1049,20 +1049,20 @@ void SickVillager::mainAct00() {
 
 BOOL SickVillager::setupAct01() {
     if (NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8)) {
-        unk_a88 = 0x46;
+        emotionTimer = 0x46;
         return TRUE;
     }
     return FALSE;
 }
 
 void SickVillager::mainAct01() {
-    switch (unk_a88) {
+    switch (emotionTimer) {
     case 0x45:
         NpcActionCtrl_requestEmotion(&actionCtrl, 1, 7, data_020c6cc8);
         break;
     case 1:
         NpcActionCtrl_requestEmotion(&actionCtrl, 1, 0, data_020c6cc8);
-        unk_a6e = Random_GlobalBelow(0x14) + 0x14;
+        walkTimer = Random_GlobalBelow(0x14) + 0x14;
         break;
     case 0:
         if (changeAct(0)) {
@@ -1070,13 +1070,13 @@ void SickVillager::mainAct01() {
         }
         break;
     }
-    if (unk_a88 != 0) {
-        unk_a88--;
+    if (emotionTimer != 0) {
+        emotionTimer--;
     }
 }
 
 BOOL SickVillager::setupAct02() {
-    if (unk_898 == 1) {
+    if (act == 1) {
         NpcActionCtrl_requestEmotion(&actionCtrl, 2, 0, data_020c6cc8);
     }
     return TRUE;
@@ -1103,7 +1103,7 @@ void SickVillager::mainAct03() {
 BOOL SickVillager::setupAct04() { return TRUE; }
 
 void SickVillager::mainAct04() {
-    Unk_ov004_0221a650_Msg *o = (Unk_ov004_0221a650_Msg *)unk_89c.unk_3c;
+    Unk_ov004_0221a650_Msg *o = (Unk_ov004_0221a650_Msg *)talk.unk_3c;
     if (o != 0) {
         if (o->unk_04 == 0) {
             TalkRequest_SetTargetDone(this);
@@ -1112,12 +1112,12 @@ void SickVillager::mainAct04() {
 }
 
 BOOL SickVillager::setupAct05() {
-    ((Unk_ov004_0221a650_Msg *)unk_89c.unk_3c)->unk_14 = 1;
+    ((Unk_ov004_0221a650_Msg *)talk.unk_3c)->unk_14 = 1;
     return TRUE;
 }
 
 void SickVillager::mainAct05() {
-    Unk_ov004_0221a650_Msg *m = (Unk_ov004_0221a650_Msg *)unk_89c.unk_3c;
+    Unk_ov004_0221a650_Msg *m = (Unk_ov004_0221a650_Msg *)talk.unk_3c;
     if (m->unk_04 == 5) {
         if (MenuCtrl_OpenPocketSelect(MenuCtrl_BuildPocketMask((void *)SickVillager_IsMedicine), 0xd) != 0) {
             changeAct(6);
@@ -1135,10 +1135,10 @@ void SickVillager::mainAct07() {
     changeAct(4);
 }
 
-void SickVillager::onTalkMelodyPlayed() { unk_896 = 1; }
+void SickVillager::onTalkMelodyPlayed() { talkMelodyPlayed = 1; }
 
 BOOL SickVillager::canPlayTalkMelody() {
-    if (unk_896 == 0) {
+    if (talkMelodyPlayed == 0) {
         return TRUE;
     }
     return FALSE;

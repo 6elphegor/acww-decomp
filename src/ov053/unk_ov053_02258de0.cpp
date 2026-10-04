@@ -198,7 +198,7 @@ struct Unk_020f4080 {
 };
 
 struct ItemId {
-    u16 unk_00;
+    u16 id;
     ItemId();
     ~ItemId();
 };
@@ -327,14 +327,14 @@ public:
     u8 getNewHairColor();
     u8 getNewHairStyle();
 
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ SpNpcHarriet *unk_b0;
-    /* 0xb4 */ u8 unk_b4;
-    /* 0xb5 */ u8 unk_b5;
-    /* 0xb6 */ u8 unk_b6;
-    /* 0xb7 */ u8 unk_b7;
-    /* 0xb8 */ u8 unk_b8;
-    /* 0xb9 */ u8 unk_b9;
+    /* 0xac */ s32 topic;
+    /* 0xb0 */ SpNpcHarriet *owner;
+    /* 0xb4 */ u8 crossGenderStyle;
+    /* 0xb5 */ u8 haircutTalkStep;
+    /* 0xb6 */ u8 newHairStyle;
+    /* 0xb7 */ u8 newHairColor;
+    /* 0xb8 */ u8 oldHairStyle;
+    /* 0xb9 */ u8 oldHairColor;
     /* 0xba */ u8 pad_ba[2];
 };
 
@@ -380,12 +380,12 @@ public:
     void changeAct(s32 state);
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ SpNpcHarrietTalk unk_658;
-    /* 0x714 */ u8 unk_714;
-    /* 0x715 */ u8 unk_715;
-    /* 0x716 */ u8 unk_716;
-    /* 0x717 */ u8 unk_717;
-    /* 0x718 */ s16 unk_718;
+    /* 0x658 */ SpNpcHarrietTalk talk;
+    /* 0x714 */ u8 pushBackStep;
+    /* 0x715 */ u8 routeIndex;
+    /* 0x716 */ u8 haircutTimer;
+    /* 0x717 */ u8 bgmReleaseTimer;
+    /* 0x718 */ s16 homeAngle;
 };
 
 struct Unk_ov053_02259ee4_Ent {
@@ -590,8 +590,8 @@ BOOL SpNpcHarriet::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     setCollisionRadius(0x100);
     const Unk_ov053_Vec *d = &data_ov053_0225a1a0;
     _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 2, d->x, d->y, d->z);
@@ -606,9 +606,9 @@ BOOL SpNpcHarriet::vfunc_00() {
     if (_ZN11CommManager8isOnlineEv(g) == 0) {
         Ground_LockExit(0);
     }
-    unk_718 = 0;
+    homeAngle = 0;
     collider.unk_1c |= 2;
-    unk_715 = 0;
+    routeIndex = 0;
     if (_ZN11CommManager8isOnlineEv(g)) {
         changeAct(1);
         return TRUE;
@@ -652,7 +652,7 @@ u8 SpNpcHarrietTalk::getNewHairColor() {
 }
 
 BOOL SpNpcHarriet::setupAct00() {
-    unk_658.setTopic(0);
+    talk.setTopic(0);
     return TRUE;
 }
 
@@ -679,12 +679,12 @@ BOOL SpNpcHarriet::mainAct01() {
 
 BOOL SpNpcHarriet::setupAct02() {
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-    NpcActor *p = (NpcActor *)unk_658.func_02015aac();
+    NpcActor *p = (NpcActor *)talk.func_02015aac();
     s32 r4 = 0;
     if (p) {
         r4 = getAngleTo(p);
     }
-    if (unk_658.getTopic() == 5) {
+    if (talk.getTopic() == 5) {
         Unk_ov053_Vec v;
         Unk_ov053_Vec *pv = (Unk_ov053_Vec *)&position;
         v.x = pv->x;
@@ -692,9 +692,9 @@ BOOL SpNpcHarriet::setupAct02() {
         v.z = pv->z;
         v.y += 0x2000;
         Camera_SetMode16At(&v);
-        unk_717 = 0x1f;
+        bgmReleaseTimer = 0x1f;
     }
-    if (unk_658.getTopic() == 5 || unk_658.getTopic() == 8 || unk_658.getTopic() == 10) {
+    if (talk.getTopic() == 5 || talk.getTopic() == 8 || talk.getTopic() == 10) {
         _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, r4, 1);
         return TRUE;
     } else {
@@ -704,16 +704,16 @@ BOOL SpNpcHarriet::setupAct02() {
 }
 
 BOOL SpNpcHarriet::mainAct02() {
-    if (func_020e7518(&unk_717) == 1) {
+    if (func_020e7518(&bgmReleaseTimer) == 1) {
         Bgm_ReleasePriority(0xe);
     }
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         s32 prev = unk_654;
         Hud_Show();
-        if (unk_658.getTopic() == 4 || unk_658.getTopic() == 3) {
+        if (talk.getTopic() == 4 || talk.getTopic() == 3) {
             changeAct(7);
-        } else if (unk_658.getTopic() == 5 && isWearingHeadItem()) {
-            unk_658.setTopic(9);
+        } else if (talk.getTopic() == 5 && isWearingHeadItem()) {
+            talk.setTopic(9);
             changeAct(6);
             return TRUE;
         } else {
@@ -722,7 +722,7 @@ BOOL SpNpcHarriet::mainAct02() {
                     TalkRequest_SetTargetDone(this);
                     changeAct(3);
                 }
-            } else if (unk_658.getTopic() == 10) {
+            } else if (talk.getTopic() == 10) {
                 if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
                     SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
                     changeAct(3);
@@ -733,7 +733,7 @@ BOOL SpNpcHarriet::mainAct02() {
             }
         }
         if (prev != unk_654) {
-            if (unk_658.getTopic() == 5) {
+            if (talk.getTopic() == 5) {
                 Camera_SetModeDefault();
             }
         }
@@ -746,7 +746,7 @@ BOOL SpNpcHarriet::setupAct03() { return TRUE; }
 BOOL SpNpcHarriet::mainAct03() { return TRUE; }
 
 BOOL SpNpcHarriet::setupAct04() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, unk_718, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -760,31 +760,31 @@ BOOL SpNpcHarriet::mainAct04() {
 }
 
 BOOL SpNpcHarriet::setupAct05() {
-    unk_715 = 0;
+    routeIndex = 0;
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, 0x4000, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcHarriet::mainAct05() {
     if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 6) {
-        const Unk_ov053_Vec *r = &sSpNpcHarrietRouteToStation[unk_715];
+        const Unk_ov053_Vec *r = &sSpNpcHarrietRouteToStation[routeIndex];
         Unk_ov053_Vec v;
         v.x = r->x;
         v.y = r->y;
         v.z = r->z;
         _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &v);
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            unk_715++;
-            u32 off = *(volatile u8 *)&unk_715 * 0xc;
+            routeIndex++;
+            u32 off = *(volatile u8 *)&routeIndex * 0xc;
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
-            if (unk_715 >= 2) {
+            if (routeIndex >= 2) {
                 changeAct(4);
             }
         }
     }
     if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 3) {
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            u32 off = unk_715;
+            u32 off = routeIndex;
             off = off * 0xc;
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
@@ -793,7 +793,7 @@ BOOL SpNpcHarriet::mainAct05() {
 }
 
 BOOL SpNpcHarriet::setupAct06() {
-    unk_715 = 0;
+    routeIndex = 0;
     Unk_ov053_Vec v;
     const Unk_ov053_Vec *p = sSpNpcHarrietRouteToCustomer;
     v.x = p->x;
@@ -806,24 +806,24 @@ BOOL SpNpcHarriet::setupAct06() {
 
 BOOL SpNpcHarriet::mainAct06() {
     if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 6) {
-        const Unk_ov053_Vec *r = &sSpNpcHarrietRouteToCustomer[unk_715];
+        const Unk_ov053_Vec *r = &sSpNpcHarrietRouteToCustomer[routeIndex];
         Unk_ov053_Vec v;
         v.x = r->x;
         v.y = r->y;
         v.z = r->z;
         _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &v);
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            unk_715++;
-            u32 off = *(volatile u8 *)&unk_715 * 0xc;
+            routeIndex++;
+            u32 off = *(volatile u8 *)&routeIndex * 0xc;
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToCustomer + off), *(s32 *)((u8 *)data_ov053_0225a1dc + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
-            if (unk_715 >= 2) {
+            if (routeIndex >= 2) {
                 changeAct(2);
             }
         }
     }
     if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 3) {
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            u32 off = unk_715;
+            u32 off = routeIndex;
             off = off * 0xc;
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToCustomer + off), *(s32 *)((u8 *)data_ov053_0225a1dc + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
@@ -833,32 +833,32 @@ BOOL SpNpcHarriet::mainAct06() {
 
 BOOL SpNpcHarriet::setupAct07() {
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-    unk_715 = 0;
+    routeIndex = 0;
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, 0x4000, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcHarriet::mainAct07() {
     if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 6) {
-        const Unk_ov053_Vec *r = &sSpNpcHarrietRouteToStation[unk_715];
+        const Unk_ov053_Vec *r = &sSpNpcHarrietRouteToStation[routeIndex];
         Unk_ov053_Vec v;
         v.x = r->x;
         v.y = r->y;
         v.z = r->z;
         _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &v);
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            unk_715++;
+            routeIndex++;
             u32 t = data_020c6cc8;
-            u32 off = *(volatile u8 *)&unk_715 * 0xc;
+            u32 off = *(volatile u8 *)&routeIndex * 0xc;
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 6, 1, *(s32 *)((u8 *)sSpNpcHarrietRouteToStation + off), *(s32 *)((u8 *)data_ov053_0225a1c4 + off), 0x800, 0, 0, 0, data_020c6cc8, 0);
-            if (unk_715 >= 2) {
+            if (routeIndex >= 2) {
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, -0x4000, 0, 0, t, 0);
             }
         }
     }
     if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 3) {
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            u32 off = unk_715;
+            u32 off = routeIndex;
             if (off >= 2) {
                 changeAct(8);
             } else {
@@ -871,20 +871,20 @@ BOOL SpNpcHarriet::mainAct07() {
 }
 
 BOOL SpNpcHarriet::setupAct08() {
-    unk_716 = 0x64;
+    haircutTimer = 0x64;
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xf1, 1, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcHarriet::mainAct08() {
-    if (func_020e7518(&unk_716) == 0) {
-        unk_658.setTopic(5);
+    if (func_020e7518(&haircutTimer) == 0) {
+        talk.setTopic(5);
         changeAct(2);
     }
-    if (unk_716 == 0x55) {
+    if (haircutTimer == 0x55) {
         u8 out[2];
-        out[1] = unk_658.getNewHairColor();
-        out[0] = unk_658.getNewHairStyle();
+        out[1] = talk.getNewHairColor();
+        out[0] = talk.getNewHairStyle();
         PlayerActor_LocalRequestHaircutStart(&out[0], &out[1]);
         BarberMachine_Start();
         func_02003ddc(&seEmitter, 0x41, 0x7f, 0);
@@ -898,7 +898,7 @@ BOOL SpNpcHarriet::mainAct08() {
 }
 
 BOOL SpNpcHarriet::setupAct09() {
-    unk_714 = 0;
+    pushBackStep = 0;
     return TRUE;
 }
 
@@ -913,11 +913,11 @@ BOOL SpNpcHarriet::mainAct09() {
     s32 dx = w.x, dy = w.y, dz = w.z;
     FieldPos_ToUnit(&bx2, &by2, &w);
     FieldPos_ToUnit(&bx1, &by1, &v);
-    switch (unk_714) {
+    switch (pushBackStep) {
     case 0:
         if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
             Camera_SetModeDefault();
-            unk_714 = 1;
+            pushBackStep = 1;
         }
         break;
     case 1: {
@@ -926,7 +926,7 @@ BOOL SpNpcHarriet::mainAct09() {
         u.y = dy;
         u.z = dz;
         PlayerActor_RequestWalkTo(&u, 0x266, 4);
-        unk_714 = 2;
+        pushBackStep = 2;
         break;
     }
     case 2:
@@ -953,18 +953,18 @@ SpNpcHarrietTalk::~SpNpcHarrietTalk() {}
 
 void SpNpcHarrietTalk::attachOwner(SpNpcHarriet *o) {
     vfunc_08();
-    unk_b0 = o;
-    unk_ac = 0xe;
+    owner = o;
+    topic = 0xe;
 }
 
 void SpNpcHarrietTalk::setTopic(s32 v) {
-    unk_ac = v;
+    topic = v;
 }
 
 // ---- member small functions (defined late so callers keep bl) ----
 
 s32 SpNpcHarrietTalk::getTopic() {
-    return unk_ac;
+    return topic;
 }
 
 void SpNpcHarrietTalk::start(TalkStartMsg *out) {
@@ -977,13 +977,13 @@ void SpNpcHarrietTalk::start(TalkStartMsg *out) {
         {sSpNpcHarrietMsgKey, 6},    {sSpNpcHarrietMsgKey, 7},
     };
     if (getTopic() == 4) {
-        out->msgKey = tbl[unk_ac].p;
+        out->msgKey = tbl[topic].p;
         out->msgIndex = getQuestionsStartMsg();
     } else {
         if (getTopic() != 0 && getTopic() != 3 && getTopic() != 5 &&
             getTopic() != 7 && getTopic() != 8 && getTopic() != 9 &&
             getTopic() != 10) {
-            if (unk_b0->isSessionPaid() == 0) {
+            if (owner->isSessionPaid() == 0) {
                 if (Talk_CheckAndSetPlayerFlag(0x13, 0) == 0) {
                     if (_ZN12Unk_02097ff48testFlagEj(p, 0xb) == 0) {
                         setTopic(1);
@@ -998,9 +998,9 @@ void SpNpcHarrietTalk::start(TalkStartMsg *out) {
                 setTopic(6);
             }
         }
-        if (unk_ac >= 0 && unk_ac < 0xe) {
-            out->msgIndex = tbl[unk_ac].v;
-            out->msgKey = tbl[unk_ac].p;
+        if (topic >= 0 && topic < 0xe) {
+            out->msgIndex = tbl[topic].v;
+            out->msgKey = tbl[topic].p;
         }
     }
 }
@@ -1008,11 +1008,11 @@ void SpNpcHarrietTalk::start(TalkStartMsg *out) {
 void SpNpcHarrietTalk::onTalkEnd() {
     u32 t = msgIndex;
     if (t == 0xe || t == 0x37) {
-        if ((t == 0xe && unk_b5 == 1) || (t == 0x37 && unk_b5 == 2)) {
+        if ((t == 0xe && haircutTalkStep == 1) || (t == 0x37 && haircutTalkStep == 2)) {
             PlayerActor_LocalRequestSit();
             _ZN17PlayerSpNpcRecord15addHaircutCountEj(_ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent()), 1);
         }
-        unk_b5 = unk_b5 + 1;
+        haircutTalkStep = haircutTalkStep + 1;
     }
 }
 
@@ -1028,18 +1028,18 @@ void SpNpcHarrietTalk::onMessageEnd() {
     u32 msg = 0xff;
     switch (msgIndex) {
     case 0xd:
-        if (unk_b6 == unk_b8 && unk_b7 == unk_b9) {
+        if (newHairStyle == oldHairStyle && newHairColor == oldHairColor) {
             msg = 0x37;
         } else {
             msg = 0xe;
         }
-        unk_b5 = 0;
+        haircutTalkStep = 0;
         break;
     case 0x17:
-        unk_b4 = 1;
+        crossGenderStyle = 1;
         break;
     case 0x18:
-        unk_b4 = 0;
+        crossGenderStyle = 0;
         break;
     case 0x2f:
     case 0x30:
@@ -1050,7 +1050,7 @@ void SpNpcHarrietTalk::onMessageEnd() {
     case 0x35:
     case 0x36: {
         s32 r = _ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(p));
-        if (unk_b4 != 0) {
+        if (crossGenderStyle != 0) {
             if (r == 0) {
                 r = 1;
             } else {
@@ -1058,7 +1058,7 @@ void SpNpcHarrietTalk::onMessageEnd() {
             }
         }
         const u8 *q = &sSpNpcHarrietStyleTable[(msgIndex - 0x2f) * 2];
-        unk_b6 = q[r];
+        newHairStyle = q[r];
         break;
     }
     case 0x40:
@@ -1067,7 +1067,7 @@ void SpNpcHarrietTalk::onMessageEnd() {
         msg = getQuestionsStartMsg();
         break;
     case 0x42:
-        unk_b0->changeAct(9);
+        owner->changeAct(9);
         break;
     case 0xe:
     case 0x37:
@@ -1104,14 +1104,14 @@ void SpNpcHarrietTalk::onChoice() {
         break;
     case 8:
         if (arg == 0) {
-            if (NpcActor_CanPlayerPay(unk_b0, 0xbb8)) {
-                NpcActor_ChargePlayer(unk_b0, 0xbb8);
+            if (NpcActor_CanPlayerPay(owner, 0xbb8)) {
+                NpcActor_ChargePlayer(owner, 0xbb8);
                 msg = 0x3c;
                 TownSessionState_SetFlag(TownSessionState_Get(), 7);
-                unk_b6 = 0;
-                unk_b7 = 0;
-                unk_b8 = _ZN10PlayerData12getHairStyleEv(p);
-                unk_b9 = _ZN10PlayerData12getHairColorEv(p);
+                newHairStyle = 0;
+                newHairColor = 0;
+                oldHairStyle = _ZN10PlayerData12getHairStyleEv(p);
+                oldHairColor = _ZN10PlayerData12getHairColorEv(p);
             } else {
                 msg = 0x3f;
             }
@@ -1120,14 +1120,14 @@ void SpNpcHarrietTalk::onChoice() {
     case 9:
     case 10:
         if (arg != 4) {
-            unk_b7 = sSpNpcHarrietWarmColors[arg];
+            newHairColor = sSpNpcHarrietWarmColors[arg];
             msg = 0xc;
         }
         break;
     case 11:
     case 0x38:
         if (arg != 4) {
-            unk_b7 = sSpNpcHarrietCoolColors[arg];
+            newHairColor = sSpNpcHarrietCoolColors[arg];
             msg = 0xc;
         }
         break;
@@ -1172,25 +1172,25 @@ void SpNpcHarriet::vfunc_4c(u32 cmd, u8 arg) {
         break;
     case 1:
         footstepFx.unk_08 = arg;
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0(getPlayerActor(4));
-        if (unk_658.getTopic() == 4 || unk_658.getTopic() == 3) {
+        talk.vfunc_08();
+        talk.func_02015ab0(getPlayerActor(4));
+        if (talk.getTopic() == 4 || talk.getTopic() == 3) {
             changeAct(6);
         } else {
             changeAct(2);
         }
         break;
     case 0:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0(getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0(getPlayerActor(4));
         changeAct(2);
         break;
     case 8:
-        if (unk_658.getTopic() == 9) {
-            unk_658.setTopic(14);
+        if (talk.getTopic() == 9) {
+            talk.setTopic(14);
             changeAct(5);
-        } else if (unk_658.getTopic() != 10) {
-            unk_658.setTopic(14);
+        } else if (talk.getTopic() != 10) {
+            talk.setTopic(14);
             changeAct(4);
         }
         break;
@@ -1218,12 +1218,12 @@ BOOL SpNpcHarriet::tryChairTalk() {
         }
         if (f != 0 || (x == 5 && by == 0xb)) {
             if (isWearingHeadItem()) {
-                unk_658.setTopic(3);
+                talk.setTopic(3);
             } else {
-                unk_658.setTopic(4);
+                talk.setTopic(4);
             }
         } else {
-            unk_658.setTopic(7);
+            talk.setTopic(7);
         }
         return TRUE;
     }
@@ -1238,7 +1238,7 @@ BOOL SpNpcHarriet::tryLeavePaidTalk() {
     Unk_ov053_Vec *src = (Unk_ov053_Vec *)PlayerActor_GetBodyPos(4);
     *(Unk_ov053_Vec *)&v = *src;
     if (v.z > sSpNpcHarrietExitLine.z) {
-        unk_658.setTopic(8);
+        talk.setTopic(8);
         TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;
     }
@@ -1250,7 +1250,7 @@ BOOL SpNpcHarriet::tryFarewellTalk() {
     Unk_ov053_Vec *src = (Unk_ov053_Vec *)PlayerActor_GetBodyPos(4);
     *(Unk_ov053_Vec *)&v = *src;
     if (Ground_IsOnLockedExit(&v)) {
-        unk_658.setTopic(10);
+        talk.setTopic(10);
         TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;
     }

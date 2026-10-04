@@ -180,9 +180,9 @@ public:
 
     void attachOwner(SpNpcTortimerFlowerFest *owner);
 
-    SpNpcTortimerFlowerFest *unk_ac;
-    s32 unk_b0;
-    u16 unk_b4;
+    SpNpcTortimerFlowerFest *ownerNpc;
+    s32 massageChairSlot;
+    u16 giftItem;
 };
 
 #define MEMBER(name, size) \
@@ -373,9 +373,9 @@ public:
     void changeAct(s32 state);
 
     s32 unk_654;
-    s32 unk_658;
-    SpNpcTortimerFlowerFestTalk unk_65c;
-    u8 unk_714;
+    s32 act;
+    SpNpcTortimerFlowerFestTalk talk;
+    u8 festDay;
 };
 
 struct Unk_ov083_02271858_Ent {
@@ -413,8 +413,8 @@ BOOL SpNpcTortimerFlowerFest::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_65c);
-    unk_65c.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -426,7 +426,7 @@ BOOL SpNpcTortimerFlowerFest::vfunc_00() {
     _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&animCtrl, this, 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.unk_1c |= 2;
-    unk_714 = Event_GetDaysSinceStart(0xe);
+    festDay = Event_GetDaysSinceStart(0xe);
     ContestRecord_BeginFestival(gContestRecord, 0);
     return TRUE;
 }
@@ -437,8 +437,8 @@ u8 *SpNpcTortimerFlowerFest::getModelPath() { return sSpNpcTortimerFlowerFestMod
 
 BOOL SpNpcTortimerFlowerFest::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcTortimerFlowerFestActTable[unk_658].exit != NULL) {
-        result = (this->*sSpNpcTortimerFlowerFestActTable[unk_658].exit)();
+    if (sSpNpcTortimerFlowerFestActTable[act].exit != NULL) {
+        result = (this->*sSpNpcTortimerFlowerFestActTable[act].exit)();
     }
     return result;
 }
@@ -449,7 +449,7 @@ void SpNpcTortimerFlowerFest::changeAct(s32 state) {
         ok = (this->*sSpNpcTortimerFlowerFestActTable[state].enter)();
     }
     if (ok) {
-        unk_658 = state;
+        act = state;
     }
 }
 
@@ -478,7 +478,7 @@ s32 SpNpcTortimerFlowerFest::tickTimer(s32 *p) {
 }
 
 BOOL SpNpcTortimerFlowerFest::setupAct01() {
-    void *p = unk_65c.func_02015aac();
+    void *p = talk.func_02015aac();
     u32 x = 0;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -497,14 +497,14 @@ BOOL SpNpcTortimerFlowerFest::mainAct01() {
 
 BOOL SpNpcTortimerFlowerFest::mainAct02() { return TRUE; }
 
-SpNpcTortimerFlowerFestTalk::SpNpcTortimerFlowerFestTalk() : unk_b4(0xfff1) {}
+SpNpcTortimerFlowerFestTalk::SpNpcTortimerFlowerFestTalk() : giftItem(0xfff1) {}
 
 SpNpcTortimerFlowerFestTalk::~SpNpcTortimerFlowerFestTalk() {}
 
 void SpNpcTortimerFlowerFestTalk::attachOwner(SpNpcTortimerFlowerFest *owner) {
     vfunc_08();
-    unk_ac = owner;
-    unk_b0 = -1;
+    ownerNpc = owner;
+    massageChairSlot = -1;
 }
 
 void SpNpcTortimerFlowerFestTalk::start(TalkStartMsg *out) {
@@ -512,10 +512,10 @@ void SpNpcTortimerFlowerFestTalk::start(TalkStartMsg *out) {
     u32 w[2];
     _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
     out->a = (u32)"sp_npc_turtle3";
-    if (unk_b0 == -1) {
+    if (massageChairSlot == -1) {
         h = 0x37e0;
-        unk_b0 = Pocket_FindItem(&h);
-        if (unk_b0 >= 0) {
+        massageChairSlot = Pocket_FindItem(&h);
+        if (massageChairSlot >= 0) {
             out->a = (u32)"sp_npc_turtle";
             out->b = 0;
             return;
@@ -534,7 +534,7 @@ void SpNpcTortimerFlowerFestTalk::start(TalkStartMsg *out) {
     if (!TownSessionState_TestFlag(TownSessionState_Get(), 1)) {
         u32 c;
         TownSessionState_SetFlag(TownSessionState_Get(), 1);
-        c = *((u8 *)unk_ac + 0x714);
+        c = *((u8 *)ownerNpc + 0x714);
         if (c == 0) {
             out->b = 1;
         } else if (c >= 1 && c <= 5) {
@@ -553,9 +553,9 @@ void SpNpcTortimerFlowerFestTalk::onMessageEnd() {
     u16 h1, h2, h3;
     u8 *s = (u8 *)"sp_npc_turtle3";
     u8 msg = 0xff;
-    if (unk_b0 >= 0) {
+    if (massageChairSlot >= 0) {
         if (msgIndex == 1 || msgIndex == 4) {
-            unk_b0 = -2;
+            massageChairSlot = -2;
         }
         if (msgIndex == 2) {
             h1 = 0x1559;
@@ -572,14 +572,14 @@ void SpNpcTortimerFlowerFestTalk::onMessageEnd() {
                 if (Pocket_FindEmpty() >= 0) {
                     msg = 7;
                     NookShop_PickFlowerBag(&h3);
-                    unk_b4 = h3;
+                    giftItem = h3;
                 }
             }
         }
         if (msgIndex == 7) {
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &unk_b4, 0, 5, 0);
-            Pocket_AddItem(&unk_b4, 0);
-            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &unk_b4, 0, 7);
+            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &giftItem, 0, 5, 0);
+            Pocket_AddItem(&giftItem, 0);
+            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &giftItem, 0, 7);
             msg = 8;
         }
         if (msg != 0xff) {
@@ -596,11 +596,11 @@ void SpNpcTortimerFlowerFestTalk::onChoice() {
     s32 t = getChoiceList()->getResult();
     u8 *s = (u8 *)"sp_npc_turtle3";
     u8 msg = 0xff;
-    if (unk_b0 >= 0) {
+    if (massageChairSlot >= 0) {
         s = (u8 *)"sp_npc_turtle";
         if (msgIndex == 0 && t == 0) {
-            if (unk_b0 >= 0) {
-                Pocket_RemoveItem(unk_b0);
+            if (massageChairSlot >= 0) {
+                Pocket_RemoveItem(massageChairSlot);
                 h = 0x37e0;
                 _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &h, 0, 5, 0);
             }
@@ -636,8 +636,8 @@ BOOL SpNpcTortimerFlowerFest::vfunc_48() {
 void SpNpcTortimerFlowerFest::vfunc_4c(s32 v) {
     switch (v) {
     case 0:
-        unk_65c.vfunc_08();
-        unk_65c.func_02015ab0((u32)getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

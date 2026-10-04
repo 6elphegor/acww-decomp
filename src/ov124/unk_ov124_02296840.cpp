@@ -72,17 +72,17 @@ public:
     void loadBgGfxForStyle(s32 a);
     void loadTitleBg(s32 a, s32 b);
 
-    /* 0x00 */ LabelString unk_00[1];
-    /* 0x40 */ MenuTextButton unk_40;
-    /* 0x90 */ u8 unk_90;
-    /* 0x91 */ u8 unk_91;
+    /* 0x00 */ LabelString titleLabel[1];
+    /* 0x40 */ MenuTextButton iconButton;
+    /* 0x90 */ u8 pictureIndex;
+    /* 0x91 */ u8 objPalette;
 };
 
 extern "C" {
 s32 GeneralMenuHeader_GetStyle();
 }
 
-GeneralMenuHeader::GeneralMenuHeader() : unk_00(), unk_40() {}
+GeneralMenuHeader::GeneralMenuHeader() : titleLabel(), iconButton() {}
 
 GeneralMenuHeader::~GeneralMenuHeader() {}
 
@@ -99,8 +99,8 @@ void GeneralMenuHeader::loadTitleBg(s32 a, s32 b) {
     case 6: String_Load2dMenu(this, 0x49); break;
     default: String_Load2dMenu(this, 0x3a); break;
     }
-    unk_00[0].createLabel(a, 0x11, 0xd, 4, 1, 0);
-    unk_00[0].redrawAligned(1, 0);
+    titleLabel[0].createLabel(a, 0x11, 0xd, 4, 1, 0);
+    titleLabel[0].redrawAligned(1, 0);
 }
 
 void GeneralMenuHeader::loadBgGfxForStyle(s32 a) {
@@ -116,7 +116,7 @@ void GeneralMenuHeader::placeTitleText() {
     case 3: v = 5; break;
     case 4: v = 10; break;
     }
-    unk_00[0].createLabel(3, 0x11, v, 4, 1, 0);
+    titleLabel[0].createLabel(3, 0x11, v, 4, 1, 0);
 }
 
 void GeneralMenuHeader::func_ov124_02296c98() {
@@ -128,7 +128,7 @@ void GeneralMenuHeader::func_ov124_02296c98() {
     case 3:
     case 4: v = 0; break;
     }
-    unk_00[0].redrawAt(v);
+    titleLabel[0].redrawAt(v);
 }
 
 void GeneralMenuHeader::setTitleText(void *s, s32 n) {
@@ -136,7 +136,7 @@ void GeneralMenuHeader::setTitleText(void *s, s32 n) {
 }
 
 void GeneralMenuHeader::func_ov124_02296c7c(u8 a, u8 b, u32 c, u32 d) {
-    unk_00[0].setHighlight(a, b, c, d);
+    titleLabel[0].setHighlight(a, b, c, d);
 }
 
 extern "C" s32 GeneralMenuHeader_GetStyle() {
@@ -163,41 +163,41 @@ void GeneralMenuHeader::loadBgGfx(s32 a, s32 b) {
     case 4:
     case 5:
     case 7:
-    case 8: unk_90 = 0; break;
+    case 8: pictureIndex = 0; break;
     case 6:
-    case 9: unk_90 = 2; break;
-    case 0xb: unk_90 = 1; break;
-    case 0xc: unk_90 = 3; break;
-    case 0xd: unk_90 = 4; break;
-    case 0xe: unk_90 = 7; break;
+    case 9: pictureIndex = 2; break;
+    case 0xb: pictureIndex = 1; break;
+    case 0xc: pictureIndex = 3; break;
+    case 0xd: pictureIndex = 4; break;
+    case 0xe: pictureIndex = 7; break;
     case 0xf:
     case 0x1a:
-    case 0x1b: unk_90 = 5; break;
+    case 0x1b: pictureIndex = 5; break;
     case 0x10:
     case 0x18:
-    case 0x19: unk_90 = 6; break;
-    case 0x11: unk_90 = 8; break;
-    case 0x12: unk_90 = 0xe; break;
-    case 0x13: unk_90 = 0xd; break;
-    case 0x14: unk_90 = 0xc; break;
-    case 0x15: unk_90 = 0xb; break;
-    case 0x16: unk_90 = 9; break;
-    case 0x17: unk_90 = 0xa; break;
-    case 0xa: unk_90 = 0xf; break;
-    default: unk_90 = 0; break;
+    case 0x19: pictureIndex = 6; break;
+    case 0x11: pictureIndex = 8; break;
+    case 0x12: pictureIndex = 0xe; break;
+    case 0x13: pictureIndex = 0xd; break;
+    case 0x14: pictureIndex = 0xc; break;
+    case 0x15: pictureIndex = 0xb; break;
+    case 0x16: pictureIndex = 9; break;
+    case 0x17: pictureIndex = 0xa; break;
+    case 0xa: pictureIndex = 0xf; break;
+    default: pictureIndex = 0; break;
     }
-    if (unk_90 == 0xb || unk_90 == 0xe) {
-        func_020639e8(buf, "menu/han/bg%dE.bch", unk_90);
+    if (pictureIndex == 0xb || pictureIndex == 0xe) {
+        func_020639e8(buf, "menu/han/bg%dE.bch", pictureIndex);
     } else {
-        func_020639e8(buf, "menu/han/bg%d.bch", unk_90);
+        func_020639e8(buf, "menu/han/bg%d.bch", pictureIndex);
     }
     Gfx2d_LoadCharFile(buf, heap, a, 0x113, 0x113, 0x126);
-    Gfx2d_LoadPaletteFileSlot("menu/han/ten0_bg.bpl", heap, a, unk_90, 0xe);
+    Gfx2d_LoadPaletteFileSlot("menu/han/ten0_bg.bpl", heap, a, pictureIndex, 0xe);
     Gfx2d_LoadScreenFile((const char *)sGeneralHeaderScreens[b], heap, a);
 }
 
 void GeneralMenuHeader::loadObjGfx(s32 v) {
-    s32 st = unk_90;
+    s32 st = pictureIndex;
     s32 loc;
     void *heap = gCurrentHeap;
     char *buf = (char *)File_LoadAlloc(sGeneralHeaderObjChars[st / 5], heap, -4, &loc);
@@ -212,42 +212,42 @@ void GeneralMenuHeader::loadObjGfx(s32 v) {
         i++;
     } while (i < 6);
     Heap_Free(heap, buf);
-    Gfx2d_LoadPaletteFileSlot("menu/han/ten0_obj.bpl", heap, 8, unk_90, v);
-    unk_91 = v;
-    unk_40.setup((Unk_ov002_02203c5c_Rec *)data_ov124_02296f90, 14, 2);
+    Gfx2d_LoadPaletteFileSlot("menu/han/ten0_obj.bpl", heap, 8, pictureIndex, v);
+    objPalette = v;
+    iconButton.setup((Unk_ov002_02203c5c_Rec *)data_ov124_02296f90, 14, 2);
     switch (MenuCtrl_GetMode()) {
-    case 0xb: unk_40.setLabelNoShadow(0x3b); break;
-    case 0xf: unk_40.setLabelNoShadow(0xe6); break;
-    case 0x10: unk_40.setLabelNoShadow(0xe7); break;
+    case 0xb: iconButton.setLabelNoShadow(0x3b); break;
+    case 0xf: iconButton.setLabelNoShadow(0xe6); break;
+    case 0x10: iconButton.setLabelNoShadow(0xe7); break;
     case 0x18:
-    case 0x19: unk_40.setLabelNoShadow(0xe9); break;
+    case 0x19: iconButton.setLabelNoShadow(0xe9); break;
     case 0x1a:
-    case 0x1b: unk_40.setLabelNoShadow(0xe8); break;
-    case 0xc: unk_40.setLabelNoShadow(0x42); break;
-    case 0xd: unk_40.setLabelNoShadow(0x44); break;
-    case 0xe: unk_40.setLabelNoShadow(0x48); break;
-    case 0x12: unk_40.setLabelNoShadow(0x4e); break;
-    case 0x13: unk_40.setLabelNoShadow(0x4d); break;
-    case 0x14: unk_40.setLabelNoShadow(0x4f); break;
-    case 0x15: unk_40.setLabelNoShadow(0x45); break;
-    case 0x16: unk_40.setLabelNoShadow(0x46); break;
-    case 0x11: unk_40.setLabelNoShadow(0x4c); break;
-    case 0x17: unk_40.setLabelNoShadow(0x41); break;
+    case 0x1b: iconButton.setLabelNoShadow(0xe8); break;
+    case 0xc: iconButton.setLabelNoShadow(0x42); break;
+    case 0xd: iconButton.setLabelNoShadow(0x44); break;
+    case 0xe: iconButton.setLabelNoShadow(0x48); break;
+    case 0x12: iconButton.setLabelNoShadow(0x4e); break;
+    case 0x13: iconButton.setLabelNoShadow(0x4d); break;
+    case 0x14: iconButton.setLabelNoShadow(0x4f); break;
+    case 0x15: iconButton.setLabelNoShadow(0x45); break;
+    case 0x16: iconButton.setLabelNoShadow(0x46); break;
+    case 0x11: iconButton.setLabelNoShadow(0x4c); break;
+    case 0x17: iconButton.setLabelNoShadow(0x41); break;
     }
 }
 
 void GeneralMenuHeader::drawPlain(s32 x, s32 y) {
-    Oam_DrawCell(1, data_ov124_02296f50, x + 0x80, y + 0x60, unk_91, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov124_02296f50, x + 0x80, y + 0x60, objPalette, 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 void GeneralMenuHeader::drawWithIcon(s32 x, s32 y) {
-    unk_40.drawAt(x, y, -1);
-    Oam_DrawCell(1, data_ov124_02296f70, x + 0x80, y + 0x60, unk_91, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    iconButton.drawAt(x, y, -1);
+    Oam_DrawCell(1, data_ov124_02296f70, x + 0x80, y + 0x60, objPalette, 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 void GeneralMenuHeader::resetFrame() {
-    unk_00[0].destroyLabel();
-    unk_40.freeText();
+    titleLabel[0].destroyLabel();
+    iconButton.freeText();
 }
 
 extern "C" void *sGeneralHeaderScreens[6] = {(void *)data_ov124_02296eac, (void *)data_ov124_02296f10, (void *)data_ov124_02296efc, (void *)data_ov124_02296ee8, (void *)data_ov124_02296e84, (void *)data_ov124_02296ec0};

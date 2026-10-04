@@ -4,12 +4,12 @@
 // unk_02011580.cpp
 struct HudObjGfx {
     u8 unk_00[0x48];
-    s32 unk_48;
-    s32 unk_4c;
-    u8 unk_50[0x200];
-    s32 unk_250;
-    u8 unk_254;
-    u8 unk_255;
+    s32 paletteBuf;
+    s32 charBuf;
+    u8 cameraButtonChars[0x200];
+    s32 pendingCameraButtonScreens;
+    u8 msgUiActive;
+    u8 countdownVariant;
 
     HudObjGfx();
     ~HudObjGfx();
@@ -276,7 +276,7 @@ public:
 // unk_020131a4.cpp
 struct GroundInfo {
     u8 pad_00[0x30];
-    s32 unk_30;
+    s32 waterKind;
     u8 pad_34[0x10];
     GroundInfo(u32 x, u32 y, u32 z, u32 w);
     ~GroundInfo();
@@ -1221,17 +1221,17 @@ struct MsgRequest {
 class Unk_02006d14 : public Unk_02006d14_Prim, public MsgRequest {
 public:
     u8 pad_0f0[0x198 - 0xf0];
-    u32 unk_198;
+    u32 modelAnimFrameStep;
     u8 pad_19c[0x334 - 0x19c];
-    Unk_02016a44_S334 unk_334;
-    Unk_02016a44_S350 unk_350;
-    s32 unk_478;
-    s32 unk_47c;
-    s32 unk_480;
+    Unk_02016a44_S334 animCtrl;
+    Unk_02016a44_S350 moveCtrl;
+    s32 headTopPosX;
+    s32 headTopPosY;
+    s32 headTopPosZ;
     u8 pad_484[0x514 - 0x484];
-    Unk_02016a44_S514 unk_514;
+    Unk_02016a44_S514 seEmitter;
     u8 pad_524[0x628 - 0x524];
-    void *unk_628;
+    void *curHeldTool;
 };
 
 // unk_02016a44.cpp
@@ -7230,9 +7230,9 @@ BOOL Unk_02016a44::setupAct0F(Unk_02006d14 *o) {
     if (HandOverItem_IsActive()) {
         HandOverItem_End(o);
     }
-    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->unk_334, o, 0x28, data_020c6cc8, 1, 0x1000, 0, 0);
+    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 0x28, data_020c6cc8, 1, 0x1000, 0, 0);
     Effect_PlayById2(0x61, &o->unk_5c, 0, 0);
-    func_02003ddc(&o->unk_514, 0x76, 0x7f, 0);
+    func_02003ddc(&o->seEmitter, 0x76, 0x7f, 0);
     nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     unk_04 = 0x14;
     unk_05 = unk_14;
@@ -7252,9 +7252,9 @@ BOOL Unk_02016a44::setupAct10(Unk_02006d14 *o) {
     using namespace nJ;
     if (HandOverItem_IsActive()) {
         if (HandOverItem_RequestMode(5, o)) {
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->unk_334, o, 0x27, data_020c6cc8, 1, 0x1000, 0, 0);
-            func_02003ddc(&o->unk_514, 0x4f, 0x7f, 0);
-            if (_ZN12Unk_02015b8c9getAnimIdEj(&o->unk_334, 1) == 0x139) {
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 0x27, data_020c6cc8, 1, 0x1000, 0, 0);
+            func_02003ddc(&o->seEmitter, 0x4f, 0x7f, 0);
+            if (_ZN12Unk_02015b8c9getAnimIdEj(&o->animCtrl, 1) == 0x139) {
                 _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(&o->unk_ec, 0, 0);
             }
             nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 0);
@@ -7265,9 +7265,9 @@ BOOL Unk_02016a44::setupAct10(Unk_02006d14 *o) {
 
 void Unk_02016a44::postAct10(Unk_02006d14 *o) {
     using namespace nJ;
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(&o->unk_334)) {
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(&o->animCtrl)) {
         HandOverItem_End(o);
-        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->unk_334, o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
         nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 1);
     }
 }
@@ -7276,8 +7276,8 @@ BOOL Unk_02016a44::setupAct11(Unk_02006d14 *o) {
     using namespace nJ;
     if (HandOverItem_IsActive()) {
         if (HandOverItem_RequestMode(7, o)) {
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->unk_334, o, 0x26, data_020c6cc8, 3, 0x1000, 0, 0);
-            if (_ZN12Unk_02015b8c9getAnimIdEj(&o->unk_334, 1) == 0x139) {
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 0x26, data_020c6cc8, 3, 0x1000, 0, 0);
+            if (_ZN12Unk_02015b8c9getAnimIdEj(&o->animCtrl, 1) == 0x139) {
                 _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(&o->unk_ec, 0, 0);
             }
             HandOverItem_SetNextMode(5, o);
@@ -7289,9 +7289,9 @@ BOOL Unk_02016a44::setupAct11(Unk_02006d14 *o) {
 
 void Unk_02016a44::act11Step0(Unk_02006d14 *o) {
     using namespace nJ;
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(&o->unk_334)) {
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(&o->animCtrl)) {
         if (PlayerActor_RequestAct32()) {
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->unk_334, o, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
             unk_98 = 1;
         }
     }
@@ -7300,7 +7300,7 @@ void Unk_02016a44::act11Step0(Unk_02006d14 *o) {
 void Unk_02016a44::act11Step1(Unk_02006d14 *o) {
     using namespace nJ;
     if (!HandOverItem_IsMaster(o)) {
-        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->unk_334, o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
         unk_98 = 2;
     }
 }
@@ -7378,29 +7378,29 @@ BOOL Unk_02016a44::setupAct13(Unk_02006d14 *o) {
     using namespace nJ;
     s32 v[3];
     s16 ang;
-    v[0] = o->unk_478;
-    v[1] = o->unk_47c;
-    v[2] = o->unk_480;
+    v[0] = o->headTopPosX;
+    v[1] = o->headTopPosY;
+    v[2] = o->headTopPosZ;
     ang = o->unk_8e;
     HandOverItem_RequestMode(0xb, o);
-    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->unk_334, o, 0x29, data_020c6cc8, 1, 0x1000, 0, 0);
+    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 0x29, data_020c6cc8, 1, 0x1000, 0, 0);
     unk_ac = Effect_Create(0x40, v, &ang, 0);
-    func_02003ddc(&o->unk_514, 0x6f, 0x7f, 0);
+    func_02003ddc(&o->seEmitter, 0x6f, 0x7f, 0);
     nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     return TRUE;
 }
 
 void Unk_02016a44::act13Step0(Unk_02006d14 *o) {
     using namespace nJ;
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(&o->unk_334)) {
-        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->unk_334, o, 0x2a, 0, 1, 0x1000, 0, 0);
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(&o->animCtrl)) {
+        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 0x2a, 0, 1, 0x1000, 0, 0);
         if (unk_ac != -1) {
             Effect_End(unk_ac);
         }
         unk_98 = 1;
     } else {
         if (unk_ac != -1) {
-            Effect_SetPosition(unk_ac, &o->unk_478, &o->unk_8e, 0);
+            Effect_SetPosition(unk_ac, &o->headTopPosX, &o->unk_8e, 0);
         }
     }
 }
@@ -7415,10 +7415,10 @@ void Unk_02016a44::mainAct13(Unk_02006d14 *o) {
 
 void Unk_02016a44::postAct13(Unk_02006d14 *o) {
     using namespace nJ;
-    if (_ZN12Unk_02015b8c9getAnimIdEj(&o->unk_334, 0) == 0x2a) {
-        if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(&o->unk_334, o)) {
+    if (_ZN12Unk_02015b8c9getAnimIdEj(&o->animCtrl, 0) == 0x2a) {
+        if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(&o->animCtrl, o)) {
             HandOverItem_End(o);
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->unk_334, o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
             nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 1);
         }
     }
@@ -7441,12 +7441,12 @@ BOOL Unk_02016a44::setupAct14(Unk_02006d14 *o) {
     using namespace nJ;
     nJ::_ZN13NpcActionCtrl12getCurParamsEv(this);
     u16 t = data_020c6cc8;
-    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->unk_334, o, 6, data_020c6cc8, 1, 0x1000, 0, 0);
-    if (o->unk_628) {
-        _ZN13HeldToolModel12playIdleAnimEjj(o->unk_628, t, 0);
+    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 6, data_020c6cc8, 1, 0x1000, 0, 0);
+    if (o->curHeldTool) {
+        _ZN13HeldToolModel12playIdleAnimEjj(o->curHeldTool, t, 0);
     }
     Effect_PlayById2(0x61, &o->unk_5c, 0, 0);
-    func_02003ddc(&o->unk_514, 0x76, 0x7f, 0);
+    func_02003ddc(&o->seEmitter, 0x76, 0x7f, 0);
     nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     return TRUE;
 }
@@ -7473,36 +7473,36 @@ BOOL Unk_02016a44::setupAct15(Unk_02006d14 *o) {
         s32 d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
         if (d < 0x29) {
             if (ang != o->unk_8e) {
-                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->unk_350, o, 3, 0, data_020c6cc8);
-                _ZN11NpcMoveCtrl14setTargetAngleEs(&o->unk_350, ang);
+                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->moveCtrl, o, 3, 0, data_020c6cc8);
+                _ZN11NpcMoveCtrl14setTargetAngleEs(&o->moveCtrl, ang);
                 unk_98 = 2;
             } else {
-                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->unk_350, o, 0, 0, data_020c6cc8);
+                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->moveCtrl, o, 0, 0, data_020c6cc8);
                 unk_98 = 0;
             }
-            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->unk_350, gVec3Zero);
-            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->unk_350, gVec3Zero);
+            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, gVec3Zero);
+            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, gVec3Zero);
         } else {
             s32 a = func_020e7b98(dx, dz);
             if (NpcActor_IsFrontAngle((s16)(a - ang))) {
                 if (unk_00 == 2) {
-                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->unk_350, o, 2, 0, data_020c6cc8);
+                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->moveCtrl, o, 2, 0, data_020c6cc8);
                 } else {
-                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->unk_350, o, 1, 0, data_020c6cc8);
+                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->moveCtrl, o, 1, 0, data_020c6cc8);
                 }
                 unk_98 = 1;
             } else {
-                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->unk_350, o, 4, 0, data_020c6cc8);
-                _ZN11NpcMoveCtrl14setTargetAngleEs(&o->unk_350, a);
+                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->moveCtrl, o, 4, 0, data_020c6cc8);
+                _ZN11NpcMoveCtrl14setTargetAngleEs(&o->moveCtrl, a);
                 unk_98 = 3;
             }
-            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->unk_350, v);
-            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->unk_350, v);
+            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, v);
+            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, v);
         }
     } else {
-        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->unk_350, o, 0, 0, data_020c6cc8);
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->unk_350, gVec3Zero);
-        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->unk_350, gVec3Zero);
+        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->moveCtrl, o, 0, 0, data_020c6cc8);
+        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, gVec3Zero);
+        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, gVec3Zero);
         unk_98 = 0;
     }
     return TRUE;
@@ -10161,7 +10161,7 @@ extern "C" BOOL _ZN12Unk_0201281011scanForPathEP16Unk_02012810_VecP17Unk_02012b9
         if (x >= bound[0] || y >= bound[1]) continue;
         if (flag != 0) {
             GroundInfo o(x, y, zero, zero);
-            if (o.unk_30 != 0) cnt++; else cnt = zero;
+            if (o.waterKind != 0) cnt++; else cnt = zero;
             if (cnt >= 4) break;
         }
         if (_ZN8BlockMap12getWalkLinksEii(q, x, y)) {
@@ -11143,7 +11143,7 @@ void HeldToolModel::update(Unk_02006d14 *p) {
     using namespace nA;
     Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
     if (r) {
-        u32 v = p->unk_198;
+        u32 v = p->modelAnimFrameStep;
         Unk_0205dfa4_9c &s = *HeldItemModel_GetModel(r);
         s.unk_10 = v;
         HeldItemModel_Update(r);

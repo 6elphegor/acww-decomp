@@ -1,8 +1,8 @@
 #include "types.h"
 
-struct Unk_0209cbd8 {
-    u32 unk_00;
-    u16 unk_04;
+struct ClockOffset {
+    u32 minutes;
+    u16 seconds;
 };
 
 struct Unk_0209cf28_T {
@@ -15,11 +15,11 @@ struct Unk_0209cf28_T {
 };
 
 struct Unk_0209cc08_T {
-    u8 unk_00, unk_01, unk_02, unk_03;
+    u8 day, month, year, unk_03;
     Unk_0209cc08_T() {
-        unk_00 = 1;
-        unk_01 = 1;
-        unk_02 = 0;
+        day = 1;
+        month = 1;
+        year = 0;
         unk_03 = 0;
     }
 };
@@ -33,12 +33,12 @@ union Unk_0209cdf8_T {
 };
 
 struct ClockDateTime {
-    u8 unk_00; // seconds
-    u8 unk_01; // minutes
-    u8 unk_02; // hours
-    u8 unk_03; // day
-    u8 unk_04; // month
-    u8 unk_05; // year (0..99)
+    u8 second; // seconds
+    u8 minute; // minutes
+    u8 hour; // hours
+    u8 day; // day
+    u8 month; // month
+    u8 year; // year (0..99)
     u8 unk_06;
     u8 unk_07;
 };
@@ -161,7 +161,7 @@ static inline s16 Unk_0209d4c0_Abs16(s16 v) {
 class Unk_0209d5f8 {
 public:
     u32 pad[0x11df0 / 4];
-    u8 unk_11df0;
+    u8 validMarker;
 };
 
 extern "C" void SaveData_Apply(u8 *p) {
@@ -205,18 +205,18 @@ extern "C" void SaveData_Apply(u8 *p) {
 }
 
 extern "C" BOOL LetterStorage_IsValid(Unk_0209d5f8 *p) {
-    if (p->unk_11df0 == 2) {
+    if (p->validMarker == 2) {
         return TRUE;
     }
     return FALSE;
 }
 
 extern "C" void LetterStorage_MarkInterrupted(Unk_0209d5f8 *p) {
-    p->unk_11df0 = 0x1c;
+    p->validMarker = 0x1c;
 }
 
 extern "C" void LetterStorage_MarkValid(Unk_0209d5f8 *p) {
-    p->unk_11df0 = 2;
+    p->validMarker = 2;
 }
 
 extern "C" void Clock_ReadRtc(Unk_0209d4c0_Date *d, Unk_0209d4c0_Time *t) {
@@ -237,12 +237,12 @@ extern "C" void Clock_ReadAdjusted(s32 *out) {
     s32 a = *(s32 *)(data_021ed2d0 + 0x34);
     s16 b = *(s16 *)(data_021ed2d0 + 0x38);
     Unk_0209d4c0_Dt dtl;
-    dtl.unk_05 = d.v[0];
-    dtl.unk_04 = d.v[1];
-    dtl.unk_03 = d.v[2];
-    dtl.unk_02 = t.v[0];
-    dtl.unk_01 = t.v[1];
-    dtl.unk_00 = t.v[2];
+    dtl.year = d.v[0];
+    dtl.month = d.v[1];
+    dtl.day = d.v[2];
+    dtl.hour = t.v[0];
+    dtl.minute = t.v[1];
+    dtl.second = t.v[2];
     if (a < 0) {
         DateTime_SubMinutes(&dtl, Unk_0209d0e4_Abs(a));
     } else {
@@ -254,12 +254,12 @@ extern "C" void Clock_ReadAdjusted(s32 *out) {
     } else {
         DateTime_AddSeconds(&dtl, b);
     }
-    d.v[0] = dtl.unk_05;
-    d.v[1] = dtl.unk_04;
-    d.v[2] = dtl.unk_03;
-    t.v[0] = dtl.unk_02;
-    t.v[1] = dtl.unk_01;
-    t.v[2] = dtl.unk_00;
+    d.v[0] = dtl.year;
+    d.v[1] = dtl.month;
+    d.v[2] = dtl.day;
+    t.v[0] = dtl.hour;
+    t.v[1] = dtl.minute;
+    t.v[2] = dtl.second;
     d.v[3] = Date_GetWeekday((u8)d.v[0], (u8)d.v[1], (u8)d.v[2]);
     Unk_0209d4c0_V4 d3 = d;
     out[0] = d3.v[0]; out[1] = d3.v[1]; out[2] = d3.v[2]; out[3] = d3.v[3];
@@ -270,38 +270,38 @@ extern "C" void Clock_ReadAdjusted(s32 *out) {
 extern "C" void Clock_GetDateTime(ClockDateTime *p) {
     s32 *t = gClock + 4;
     s32 *d = gClock;
-    p->unk_05 = d[0];
-    p->unk_04 = d[1];
-    p->unk_03 = d[2];
-    p->unk_02 = t[0];
-    p->unk_01 = t[1];
-    p->unk_00 = t[2];
+    p->year = d[0];
+    p->month = d[1];
+    p->day = d[2];
+    p->hour = t[0];
+    p->minute = t[1];
+    p->second = t[2];
 }
 
 extern "C" s32 DateTime_Compare(ClockDateTime *a, ClockDateTime *b, u32 mask) {
     if (mask & 0x20) {
-        if (a->unk_05 < b->unk_05) return -1;
-        if (a->unk_05 > b->unk_05) return 1;
+        if (a->year < b->year) return -1;
+        if (a->year > b->year) return 1;
     }
     if (mask & 0x10) {
-        if (a->unk_04 < b->unk_04) return -1;
-        if (a->unk_04 > b->unk_04) return 1;
+        if (a->month < b->month) return -1;
+        if (a->month > b->month) return 1;
     }
     if (mask & 0x8) {
-        if (a->unk_03 < b->unk_03) return -1;
-        if (a->unk_03 > b->unk_03) return 1;
+        if (a->day < b->day) return -1;
+        if (a->day > b->day) return 1;
     }
     if (mask & 0x4) {
-        if (a->unk_02 < b->unk_02) return -1;
-        if (a->unk_02 > b->unk_02) return 1;
+        if (a->hour < b->hour) return -1;
+        if (a->hour > b->hour) return 1;
     }
     if (mask & 0x2) {
-        if (a->unk_01 < b->unk_01) return -1;
-        if (a->unk_01 > b->unk_01) return 1;
+        if (a->minute < b->minute) return -1;
+        if (a->minute > b->minute) return 1;
     }
     if (mask & 0x1) {
-        if (a->unk_00 < b->unk_00) return -1;
-        if (a->unk_00 > b->unk_00) return 1;
+        if (a->second < b->second) return -1;
+        if (a->second > b->second) return 1;
     }
     return 0;
 }
@@ -312,100 +312,100 @@ extern "C" s32 DateTime_DiffDays(ClockDateTime *a, ClockDateTime *b) {
         u8 pad;
         u8 y[3];
     } l;
-    l.x[2] = b->unk_05;
-    l.x[1] = b->unk_04;
-    l.x[0] = b->unk_03;
-    l.y[2] = a->unk_05;
-    l.y[1] = a->unk_04;
-    l.y[0] = a->unk_03;
+    l.x[2] = b->year;
+    l.x[1] = b->month;
+    l.x[0] = b->day;
+    l.y[2] = a->year;
+    l.y[1] = a->month;
+    l.y[0] = a->day;
     return Date_DaysBetween((u8 *)&l.x, (u8 *)&l.y);
 }
 
 extern "C" s32 DateTime_DiffMinutes(ClockDateTime *a, ClockDateTime *b) {
     s32 days = DateTime_DiffDays(a, b);
-    s32 t = (b->unk_02 - a->unk_02) * 60 - a->unk_01;
+    s32 t = (b->hour - a->hour) * 60 - a->minute;
     t += days * 0x5a0;
-    return t + b->unk_01;
+    return t + b->minute;
 }
 
 extern "C" void DateTime_GetWeekStart(ClockDateTime *p, ClockDateTime *q) {
     if (q) {
-        s32 dow = Date_GetWeekday((u8)p->unk_05, (u8)p->unk_04, (u8)p->unk_03);
+        s32 dow = Date_GetWeekday((u8)p->year, (u8)p->month, (u8)p->day);
         if (q != p) {
             MI_CpuCopy8(p, q, 8);
         }
         DateTime_SubDays(q, dow);
-        q->unk_02 = 0;
-        q->unk_01 = 0;
-        q->unk_00 = 0;
+        q->hour = 0;
+        q->minute = 0;
+        q->second = 0;
     }
 }
 
 extern "C" void DateTime_AddYears(ClockDateTime *p, s32 n) {
-    s32 y = p->unk_05 + n;
+    s32 y = p->year + n;
     if (y > 99) {
         y -= 100;
     }
-    p->unk_05 = y;
+    p->year = y;
 }
 
 extern "C" void DateTime_AddMonths(ClockDateTime *p, s32 n) {
-    s32 s = p->unk_04 + n;
+    s32 s = p->month + n;
     if (s > 12) {
         DateTime_AddYears(p, s / 12);
         s = s % 12;
     }
-    p->unk_04 = s;
+    p->month = s;
 }
 
 extern "C" void DateTime_AddDays(ClockDateTime *p, s32 n) {
-    s32 dim = Date_GetDaysInMonth(p->unk_05, p->unk_04);
-    s32 d = p->unk_03 + n;
+    s32 dim = Date_GetDaysInMonth(p->year, p->month);
+    s32 d = p->day + n;
     while (d > dim) {
         d -= dim;
         DateTime_AddMonths(p, 1);
-        dim = Date_GetDaysInMonth(p->unk_05, p->unk_04);
+        dim = Date_GetDaysInMonth(p->year, p->month);
     }
-    p->unk_03 = d;
+    p->day = d;
 }
 
 extern "C" void DateTime_AddHours(ClockDateTime *p, s32 n) {
-    s32 s = p->unk_02 + n;
+    s32 s = p->hour + n;
     if (s >= 24) {
         DateTime_AddDays(p, s / 24);
         s = s % 24;
     }
-    p->unk_02 = s;
+    p->hour = s;
 }
 
 extern "C" void DateTime_AddMinutes(ClockDateTime *p, s32 n) {
-    s32 s = p->unk_01 + n;
+    s32 s = p->minute + n;
     if (s >= 60) {
         DateTime_AddHours(p, s / 60);
         s = s % 60;
     }
-    p->unk_01 = s;
+    p->minute = s;
 }
 
 extern "C" void DateTime_AddSeconds(ClockDateTime *p, s32 n) {
-    s32 s = p->unk_00 + n;
+    s32 s = p->second + n;
     if (s >= 60) {
         DateTime_AddMinutes(p, s / 60);
         s = s % 60;
     }
-    p->unk_00 = s;
+    p->second = s;
 }
 
 extern "C" void DateTime_SubYears(ClockDateTime *p, s32 n) {
-    s32 y = p->unk_05 - n;
+    s32 y = p->year - n;
     if (y < 0) {
         y += 100;
     }
-    p->unk_05 = y;
+    p->year = y;
 }
 
 extern "C" void DateTime_SubMonths(ClockDateTime *p, s32 n) {
-    s32 m = p->unk_04 - n;
+    s32 m = p->month - n;
     if (m < 1) {
         s32 k;
         if (m == 0) {
@@ -418,16 +418,16 @@ extern "C" void DateTime_SubMonths(ClockDateTime *p, s32 n) {
         }
         DateTime_SubYears(p, k);
     }
-    p->unk_04 = m;
+    p->month = m;
 }
 
 extern "C" void DateTime_SubDays(ClockDateTime *p, s32 n) {
-    s32 d = p->unk_03;
+    s32 d = p->day;
     s32 dim;
-    if (p->unk_04 == 1) {
-        dim = Date_GetDaysInMonth(p->unk_05, 12);
+    if (p->month == 1) {
+        dim = Date_GetDaysInMonth(p->year, 12);
     } else {
-        dim = Date_GetDaysInMonth(p->unk_05, (u8)(p->unk_04 - 1));
+        dim = Date_GetDaysInMonth(p->year, (u8)(p->month - 1));
     }
     d -= n;
     while (d <= 0) {
@@ -437,17 +437,17 @@ extern "C" void DateTime_SubDays(ClockDateTime *p, s32 n) {
             d += dim;
         }
         DateTime_SubMonths(p, 1);
-        if (p->unk_04 == 1) {
-            dim = Date_GetDaysInMonth(p->unk_05, 12);
+        if (p->month == 1) {
+            dim = Date_GetDaysInMonth(p->year, 12);
         } else {
-            dim = Date_GetDaysInMonth(p->unk_05, (u8)(p->unk_04 - 1));
+            dim = Date_GetDaysInMonth(p->year, (u8)(p->month - 1));
         }
     }
-    p->unk_03 = d;
+    p->day = d;
 }
 
 extern "C" void DateTime_SubHours(ClockDateTime *p, s32 n) {
-    s32 r = p->unk_02 - n;
+    s32 r = p->hour - n;
     if (r < 0) {
         s32 q;
         r = Unk_0209d0e4_Abs(r);
@@ -459,11 +459,11 @@ extern "C" void DateTime_SubHours(ClockDateTime *p, s32 n) {
         }
         DateTime_SubDays(p, q);
     }
-    p->unk_02 = r;
+    p->hour = r;
 }
 
 extern "C" void DateTime_SubMinutes(ClockDateTime *p, s32 n) {
-    s32 r = p->unk_01 - n;
+    s32 r = p->minute - n;
     if (r < 0) {
         s32 q;
         r = Unk_0209d0e4_Abs(r);
@@ -475,11 +475,11 @@ extern "C" void DateTime_SubMinutes(ClockDateTime *p, s32 n) {
         }
         DateTime_SubHours(p, q);
     }
-    p->unk_01 = r;
+    p->minute = r;
 }
 
 extern "C" void DateTime_SubSeconds(ClockDateTime *t, u32 sub) {
-    s32 r5 = t->unk_00 - sub;
+    s32 r5 = t->second - sub;
     s32 r4;
     if (r5 < 0) {
         if (r5 < 0) {
@@ -493,7 +493,7 @@ extern "C" void DateTime_SubSeconds(ClockDateTime *t, u32 sub) {
         }
         DateTime_SubMinutes(t, r4);
     }
-    t->unk_00 = r5;
+    t->second = r5;
 }
 
 extern "C" void DateTime_Sub(ClockDateTime *t, u8 *p) {
@@ -744,8 +744,8 @@ extern "C" s32 Date_GetSeasonPeriod(Unk_0209cc08_T *p) {
     const u16 *pt;
     s32 i;
     r = 0;
-    s[1] = p->unk_01;
-    s[0] = p->unk_00;
+    s[1] = p->month;
+    s[0] = p->day;
     v = *(u16 *)s;
     pt = sSeasonPeriodEnds;
     i = r;
@@ -760,9 +760,9 @@ extern "C" s32 Date_GetSeasonPeriod(Unk_0209cc08_T *p) {
 
 extern "C" s32 DateTime_GetSeasonPeriod(u8 *p) {
     Unk_0209cc08_T t;
-    t.unk_02 = p[5];
-    t.unk_01 = p[4];
-    t.unk_00 = p[3];
+    t.year = p[5];
+    t.month = p[4];
+    t.day = p[3];
     return Date_GetSeasonPeriod(&t);
 }
 
@@ -773,8 +773,8 @@ extern "C" s32 Date_GetWeatherPeriod(Unk_0209cc08_T *p) {
     const u16 *pt;
     s32 i;
     r = 0;
-    s[1] = p->unk_01;
-    s[0] = p->unk_00;
+    s[1] = p->month;
+    s[0] = p->day;
     v = *(u16 *)s;
     pt = sWeatherPeriodEnds;
     i = r;
@@ -789,9 +789,9 @@ extern "C" s32 Date_GetWeatherPeriod(Unk_0209cc08_T *p) {
 
 extern "C" s32 DateTime_GetWeatherPeriod(u8 *p) {
     Unk_0209cc08_T t;
-    t.unk_02 = p[5];
-    t.unk_01 = p[4];
-    t.unk_00 = p[3];
+    t.year = p[5];
+    t.month = p[4];
+    t.day = p[3];
     return Date_GetWeatherPeriod(&t);
 }
 
@@ -800,9 +800,9 @@ extern "C" u32 Clock_GetTimeSeed() {
     return a[1] | ((gClock[2] << 8) | ((a[2] << 24) | (a[0] << 16)));
 }
 
-extern "C" void ClockOffset_Clear(Unk_0209cbd8 *t) {
-    t->unk_00 = 0;
-    t->unk_04 = 0;
+extern "C" void ClockOffset_Clear(ClockOffset *t) {
+    t->minutes = 0;
+    t->seconds = 0;
 }
 
 extern "C" s32 ClockOffset_CalcMinutes(void *unused, u64 *b) {

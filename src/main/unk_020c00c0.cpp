@@ -13,14 +13,14 @@ static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
 
 struct Unk_020bfe38_Ent {
     u8 unk_00[0x5c];
-    s32 unk_5c;
+    s32 position;
     u8 unk_60[8];
-    s32 unk_68;
+    s32 prevPosition;
 };
 
 struct Unk_020bfec0_Ent {
     u8 unk_00[0x54];
-    s32 unk_54;
+    s32 rainStrength;
 };
 
 struct Unk_020bffc0_Mtx {
@@ -451,21 +451,21 @@ static inline void Unk_020bfe38_Add(s32 *dst, s32 v) {
 class Unk_020bfe30 {
 public:
     /* 0x00 */ u8 unk_00[4];
-    /* 0x04 */ s32 unk_04;
+    /* 0x04 */ s32 state;
     /* 0x08 */ u8 unk_08[4];
-    /* 0x0c */ s32 unk_0c;
+    /* 0x0c */ s32 animSeq;
     /* 0x10 */ u8 unk_10[0x24];
-    /* 0x34 */ Unk_020bfe30_Vec unk_34;
-    /* 0x40 */ Unk_020bfe30_Vec unk_40;
+    /* 0x34 */ Unk_020bfe30_Vec screenPos;
+    /* 0x40 */ Unk_020bfe30_Vec screenVel;
     /* 0x4c */ u8 unk_4c[4];
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ s16 unk_54;
+    /* 0x50 */ s32 scaleY;
+    /* 0x54 */ s16 angle;
     /* 0x56 */ u8 unk_56[2];
-    /* 0x58 */ s32 unk_58;
+    /* 0x58 */ s32 priority;
     /* 0x5c */ u8 unk_5c[4];
-    /* 0x60 */ s32 unk_60;
+    /* 0x60 */ s32 work0;
     /* 0x64 */ u8 unk_64[4];
-    /* 0x68 */ s32 unk_68;
+    /* 0x68 */ s32 work2;
 
     void endRainDrop();
     void updateRainDrop();
@@ -495,18 +495,18 @@ public:
 };
 
 struct WeatherRecord {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
+    u8 day;
+    u8 month;
+    u8 year;
     u8 unk_03;
-    u8 unk_04;
-    u8 unk_05;
-    s8 unk_06;
-    u8 unk_07;
+    u8 todayPattern;
+    u8 tomorrowPattern;
+    s8 hourBase;
+    u8 rained;
 };
 
 struct Unk_020c010c_Ent {
-    u16 unk_00;
+    u16 eventId;
     u8 unk_02[10];
 };
 // prototypes
@@ -526,12 +526,12 @@ extern "C" void Weather_Destruct() {}
 
 extern "C" void Weather_InitNew(WeatherRecord *self) {
     sWeatherPrevDayRain = 0;
-    self->unk_07 = 0;
-    self->unk_00 = 1;
-    self->unk_01 = 1;
-    self->unk_02 = 0;
+    self->rained = 0;
+    self->day = 1;
+    self->month = 1;
+    self->year = 0;
     self->unk_03 = 0;
-    self->unk_00 = 0;
+    self->day = 0;
     Weather_Apply(self);
 }
 
@@ -547,7 +547,7 @@ extern "C" void Weather_Apply(WeatherRecord *self) {
     if (Scene_GetCurrent() == 0x3f) {
         sWeatherRolledAtLoad = Weather_UpdateDaily(self, buf);
         if (sWeatherRolledAtLoad == 0) {
-            sWeatherPrevDayRain = self->unk_07;
+            sWeatherPrevDayRain = self->rained;
         }
     } else {
         if (sWeatherRolledAtLoad != 0) {
@@ -560,9 +560,9 @@ extern "C" void Weather_Apply(WeatherRecord *self) {
         }
         sWeatherRolledAtLoad = 0;
     }
-    self->unk_06 = buf[2] - 6;
-    if (self->unk_06 < 0) {
-        self->unk_06 += 0x18;
+    self->hourBase = buf[2] - 6;
+    if (self->hourBase < 0) {
+        self->hourBase += 0x18;
     }
 }
 
@@ -580,57 +580,57 @@ extern "C" BOOL Weather_UpdateDaily(WeatherRecord *self, void *arg) {
     a[2] = 0;
     a[1] = 0;
     u8 c = a[5];
-    if (self->unk_02 != c || self->unk_01 != a[4] || self->unk_00 != a[3]) {
+    if (self->year != c || self->month != a[4] || self->day != a[3]) {
         ((u32 *)b)[0] = 0;
         ((u32 *)b)[1] = 0;
         result = TRUE;
         ((u32 *)b)[0] = 0;
         ((u32 *)b)[1] = 0;
-        b[5] = self->unk_02;
-        b[4] = self->unk_01;
-        b[3] = self->unk_00;
-        self->unk_02 = c;
-        self->unk_01 = a[4];
-        self->unk_00 = a[3];
+        b[5] = self->year;
+        b[4] = self->month;
+        b[3] = self->day;
+        self->year = c;
+        self->month = a[4];
+        self->day = a[3];
         s32 d = DateTime_DiffMinutes(b, a);
         d = d / 0x5a0;
         if (d > 0) {
             if (d >= 2) {
-                self->unk_04 = Weather_PickPattern(self, a);
+                self->todayPattern = Weather_PickPattern(self, a);
                 DateTime_AddDays(a, result);
-                self->unk_05 = Weather_PickPattern(self, a);
+                self->tomorrowPattern = Weather_PickPattern(self, a);
             } else {
-                self->unk_04 = self->unk_05;
+                self->todayPattern = self->tomorrowPattern;
                 DateTime_AddDays(a, result);
-                self->unk_05 = Weather_PickPattern(self, a);
+                self->tomorrowPattern = Weather_PickPattern(self, a);
             }
         } else if (d < 0) {
             if (d <= -result - 1) {
-                self->unk_04 = Weather_PickPattern(self, a);
+                self->todayPattern = Weather_PickPattern(self, a);
                 DateTime_AddDays(a, result);
-                self->unk_05 = Weather_PickPattern(self, a);
+                self->tomorrowPattern = Weather_PickPattern(self, a);
             } else {
-                self->unk_05 = self->unk_04;
-                self->unk_04 = Weather_PickPattern(self, a);
+                self->tomorrowPattern = self->todayPattern;
+                self->todayPattern = Weather_PickPattern(self, a);
             }
         }
-        sWeatherPrevDayRain = self->unk_07;
-        self->unk_07 = 0;
+        sWeatherPrevDayRain = self->rained;
+        self->rained = 0;
     }
     if (Scene_GetCurrent() != 0x3f) {
         if (GameStart_IsActive()) {
-            self->unk_04 = 4;
+            self->todayPattern = 4;
         } else {
             s32 t = PlayerData_GetCurrent();
             if (t && ((Unk_02097ff4 *)t)->testFlag(1)) {
-                self->unk_04 = 4;
+                self->todayPattern = 4;
             } else {
                 Unk_020c010c_Ent *e = (Unk_020c010c_Ent *)Event_GetTodayList();
                 for (s32 i = 0; i < 7; i++) {
-                    switch (e->unk_00) {
+                    switch (e->eventId) {
                     case 9:
                     case 10:
-                        self->unk_04 = 4;
+                        self->todayPattern = 4;
                         break;
                     }
                     e++;

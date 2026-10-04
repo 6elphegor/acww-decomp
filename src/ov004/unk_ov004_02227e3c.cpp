@@ -63,9 +63,9 @@ struct Unk_ov004_02224ee4_Vec {
 
 struct Unk_0203e5d0_Node {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ void *unk_0c;
+    /* 0x04 */ Unk_0203e5d0_Node *next;
+    /* 0x08 */ u32 charId;
+    /* 0x0c */ void *owner;
 };
 
 class Actor : public GameProc {
@@ -181,11 +181,11 @@ public:
     inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
     inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
 
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08[13];
-    u32 unk_3c[13];
-    u32 unk_70[13];
+    u32 archive;
+    u32 model;
+    u32 bcas[13];
+    u32 bmas[13];
+    u32 btas[13];
 };
 
 class RoomObjTex {
@@ -195,8 +195,8 @@ public:
     inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
     inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
-    u32 unk_00;
-    u8 unk_04;
+    u32 texture;
+    u8 syncState;
 };
 
 class RoomObjSe {
@@ -207,7 +207,7 @@ public:
     inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
     inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
-    u32 unk_00[0x10];
+    u32 emitter[0x10];
 };
 
 class RoomObjActor : public Character {
@@ -228,10 +228,10 @@ public:
     void loadResourcesByName(char *name);
     void loadResources(char *a, char *b);
 
-    /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ RoomObjRes unk_1a4;
-    /* 0x248 */ RoomObjTex unk_248;
-    /* 0x250 */ RoomObjSe unk_250;
+    /* 0xec */ AnimModel model;
+    /* 0x1a4 */ RoomObjRes res;
+    /* 0x248 */ RoomObjTex tex;
+    /* 0x250 */ RoomObjSe se;
 };
 
 
@@ -314,19 +314,19 @@ struct TouchPicker {
 
 struct Unk_ov004_Scene_Entry {
     void *(*unk_00)();
-    u16 unk_04;
-    u16 unk_06;
-    s32 unk_08[4];
+    u16 executePriority;
+    u16 drawPriority;
+    s32 actorParams[4];
 };
 
 // a 4-byte colour record whose constructor is inline (the __sinit of this unit initialises six of them)
 struct Unk_ov004_Rgba {
-    u8 unk_00, unk_01, unk_02, unk_03;
+    u8 red, green, blue, alpha;
     Unk_ov004_Rgba(u8 a, u8 b, u8 c, u8 d) {
-        unk_00 = a;
-        unk_01 = b;
-        unk_02 = c;
-        unk_03 = d;
+        red = a;
+        green = b;
+        blue = c;
+        alpha = d;
     }
 };
 
@@ -371,9 +371,9 @@ public:
     BOOL enterState00();
     void updateState();
 
-    /* 0x2d4 */ u32 unk_2d4[0x27]; // a BoxCollider (ctor/dtor by hand: the original destroys it with D2)
-    /* 0x370 */ u32 unk_370[0xaa]; // a TouchPickBox (ctor C2 / dtor D2 by hand)
-    /* 0x618 */ s32 unk_618;
+    /* 0x2d4 */ u32 collider[0x27]; // a BoxCollider (ctor/dtor by hand: the original destroys it with D2)
+    /* 0x370 */ u32 touchBox[0xaa]; // a TouchPickBox (ctor C2 / dtor D2 by hand)
+    /* 0x618 */ s32 act;
 };
 
 typedef void (RecycleBox::*Unk_ov004_02228008_Fn)();
@@ -454,13 +454,13 @@ extern "C" RecycleBox *RecycleBox_GetInstance() {
 }
 
 RecycleBox::RecycleBox() {
-    _ZN11BoxColliderC1Ev(unk_2d4);
-    _ZN12TouchPickBoxC2Ev(unk_370);
+    _ZN11BoxColliderC1Ev(collider);
+    _ZN12TouchPickBoxC2Ev(touchBox);
 }
 
 RecycleBox::~RecycleBox() {
-    _ZN12TouchPickBoxD2Ev(unk_370);
-    _ZN11BoxColliderD2Ev(unk_2d4);
+    _ZN12TouchPickBoxD2Ev(touchBox);
+    _ZN11BoxColliderD2Ev(collider);
 }
 
 BOOL RecycleBox::vfunc_00() {
@@ -468,10 +468,10 @@ BOOL RecycleBox::vfunc_00() {
     setSyncSlot(0);
     loadResourcesByName("obj_r_box");
     initCollision();
-    if (RoomObjRes_GetBca(&unk_1a4, 0)) {
-        if (_ZN9AnimModel11allocAnmObjEPv(&unk_ec, gBgHeap)) {
-            _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, RoomObjRes_GetBca(&unk_1a4, 0), 1, 0x1000, 0, 0);
-            _ZN9AnimModel10attachAnimEv(&unk_ec);
+    if (RoomObjRes_GetBca(&res, 0)) {
+        if (_ZN9AnimModel11allocAnmObjEPv(&model, gBgHeap)) {
+            _ZN14BlendAnimModel8initAnimEiiitt(&model, RoomObjRes_GetBca(&res, 0), 1, 0x1000, 0, 0);
+            _ZN9AnimModel10attachAnimEv(&model);
         }
     }
     changeAct(0);
@@ -482,12 +482,12 @@ BOOL RecycleBox::vfunc_00() {
 BOOL RecycleBox::onExecute() {
     updateState();
     execAct();
-    Scene_GetTouchPicker()->pushBox((TouchPickBox *)unk_370);
+    Scene_GetTouchPicker()->pushBox((TouchPickBox *)touchBox);
     return TRUE;
 }
 
 BOOL RecycleBox::onDraw() {
-    _ZN9AnimModel12drawAnimatedEPv(&unk_ec, 0);
+    _ZN9AnimModel12drawAnimatedEPv(&model, 0);
     return TRUE;
 }
 
@@ -531,7 +531,7 @@ BOOL RecycleBox::changeSyncState(u32 idx) {
     if (idx < 4) {
         if ((this->*tbl[idx])()) {
             if (_ZN12RoomObjActor14storeSyncStateEv(this, idx)) {
-                unk_248.unk_04 = idx;
+                tex.syncState = idx;
                 return TRUE;
             }
         }
@@ -546,22 +546,22 @@ void RecycleBox::updateState() {
         &RecycleBox::updateState02,
         &RecycleBox::updateState03,
     };
-    u32 i = unk_248.unk_04;
+    u32 i = tex.syncState;
     if (i < 4) {
         (this->*tbl[i])();
     }
 }
 
 BOOL RecycleBox::enterState00() {
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, RoomObjRes_GetBca(&unk_1a4, 0), 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&model, RoomObjRes_GetBca(&res, 0), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 void RecycleBox::updateState00() {}
 
 BOOL RecycleBox::enterState01() {
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, RoomObjRes_GetBca(&unk_1a4, 0), 1, 0x1000, 0, 0);
-    RoomObj_PlaySe(&unk_250, 0x4d6);
+    _ZN14BlendAnimModel8initAnimEiiitt(&model, RoomObjRes_GetBca(&res, 0), 1, 0x1000, 0, 0);
+    RoomObj_PlaySe(&se, 0x4d6);
     return TRUE;
 }
 
@@ -569,20 +569,20 @@ void RecycleBox::updateState01() {
     if (_ZN13AnimFrameCtrl10isFinishedEv((u8 *)this + 0x188)) {
         changeSyncState(2);
     } else {
-        _ZN9AnimModel8stepAnimEv(&unk_ec);
+        _ZN9AnimModel8stepAnimEv(&model);
     }
 }
 
 BOOL RecycleBox::enterState02() {
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, RoomObjRes_GetBca(&unk_1a4, 1), 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(&model, RoomObjRes_GetBca(&res, 1), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 void RecycleBox::updateState02() {}
 
 BOOL RecycleBox::enterState03() {
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_ec, RoomObjRes_GetBca(&unk_1a4, 1), 1, 0x1000, 0, 0);
-    RoomObj_PlaySe(&unk_250, 0x4d7);
+    _ZN14BlendAnimModel8initAnimEiiitt(&model, RoomObjRes_GetBca(&res, 1), 1, 0x1000, 0, 0);
+    RoomObj_PlaySe(&se, 0x4d7);
     return TRUE;
 }
 
@@ -590,7 +590,7 @@ void RecycleBox::updateState03() {
     if (_ZN13AnimFrameCtrl10isFinishedEv((u8 *)this + 0x188)) {
         changeSyncState(0);
     } else {
-        _ZN9AnimModel8stepAnimEv(&unk_ec);
+        _ZN9AnimModel8stepAnimEv(&model);
     }
 }
 
@@ -605,7 +605,7 @@ BOOL RecycleBox::changeAct(s32 m) {
     };
     if (m < 6) {
         if ((this->*tbl[m])()) {
-            unk_618 = m;
+            act = m;
             return TRUE;
         }
     }
@@ -621,8 +621,8 @@ void RecycleBox::execAct() {
         &RecycleBox::execAct04,
         &RecycleBox::execAct05,
     };
-    if (unk_618 < 6) {
-        (this->*tbl[unk_618])();
+    if (act < 6) {
+        (this->*tbl[act])();
     }
 }
 
@@ -667,7 +667,7 @@ void RecycleBox::enterAct03() {
 }
 
 void RecycleBox::execAct03() {
-    if (unk_248.unk_04 == 2) {
+    if (tex.syncState == 2) {
         changeAct(4);
     }
 }
@@ -692,7 +692,7 @@ void RecycleBox::enterAct05() {
 }
 
 void RecycleBox::execAct05() {
-    if (unk_248.unk_04 == 0) {
+    if (tex.syncState == 0) {
         TalkRequest_SetTargetDone(this);
     }
 }
@@ -706,10 +706,10 @@ void RecycleBox::onMessageEnd() {
 void RecycleBox::onChoice(u32 a, u8 b) {}
 
 void RecycleBox::initCollision() {
-    BoxCollider_Register(unk_2d4, 0x2000, 0x4000, 0x2000, (u8 *)this + 0x5c, 0, 0);
-    Scene_GetTouchPicker()->addBox((TouchPickBox *)unk_370, (Vec3 *)((u8 *)this + 0x5c), 0x2000, 0x4000, 0x2000, 0, 0xc, 0xff);
+    BoxCollider_Register(collider, 0x2000, 0x4000, 0x2000, (u8 *)this + 0x5c, 0, 0);
+    Scene_GetTouchPicker()->addBox((TouchPickBox *)touchBox, (Vec3 *)((u8 *)this + 0x5c), 0x2000, 0x4000, 0x2000, 0, 0xc, 0xff);
 }
 
 void RecycleBox::removeCollision() {
-    BoxCollider_Unregister(unk_2d4);
+    BoxCollider_Unregister(collider);
 }

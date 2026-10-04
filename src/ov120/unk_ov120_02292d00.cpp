@@ -166,9 +166,9 @@ class MapViewMarker {
 public:
     MapViewMarker();
     ~MapViewMarker();
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
+    u8 x;
+    u8 y;
+    u8 cell;
 };
 
 class TownMapMarkers {
@@ -232,7 +232,7 @@ typedef void (MapViewerMenu::*Unk_ov120_02295010_Fn)();
 class MapViewerMenu : public MenuProc {
 public:
     MapViewerMenu()
-        : unk_b0(), unk_f8(), unk_438(), unk_480(), unk_24fe(), unk_2507() {}
+        : screenTasks(), textLabels(), scrollKnob(), cursor(), terrainMarkers(), buildingMarkers() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -327,40 +327,40 @@ public:
     void stateOpening();
 
     /* 0x91 */ u8 unk_91[3];
-    /* 0x94 */ u32 unk_94;
-    /* 0x98 */ u16 unk_98;
-    /* 0x9a */ u16 unk_9a;
-    /* 0x9c */ u16 unk_9c;
-    /* 0x9e */ u8 unk_9e;
-    /* 0x9f */ u8 unk_9f;
-    /* 0xa0 */ u8 unk_a0;
-    /* 0xa1 */ u8 unk_a1;
-    /* 0xa2 */ u8 unk_a2;
-    /* 0xa3 */ u8 unk_a3;
-    /* 0xa4 */ u8 unk_a4;
-    /* 0xa5 */ u8 unk_a5;
-    /* 0xa6 */ u8 unk_a6;
-    /* 0xa7 */ u8 unk_a7;
-    /* 0xa8 */ u8 unk_a8;
-    /* 0xa9 */ u8 unk_a9;
-    /* 0xaa */ u8 unk_aa;
-    /* 0xab */ u8 unk_ab;
-    /* 0xac */ u8 unk_ac;
-    /* 0xad */ u8 unk_ad;
-    /* 0xae */ u8 unk_ae;
-    /* 0xaf */ u8 unk_af;
-    /* 0xb0 */ BgVramTask unk_b0[2];
-    /* 0xf8 */ LabelString unk_f8[13];
-    /* 0x438 */ MenuScrollKnob unk_438;
-    /* 0x480 */ MenuCursorBuf0 unk_480;
-    /* 0x4e4 */ u16 unk_4e4[0x400];
-    /* 0xce4 */ u16 unk_ce4[0x400];
-    /* 0x14e4 */ u16 unk_14e4[0x400];
-    /* 0x1ce4 */ u16 unk_1ce4[0x400];
-    /* 0x24e4 */ u8 unk_24e4[13];
-    /* 0x24f1 */ u8 unk_24f1[13];
-    /* 0x24fe */ MapViewMarker unk_24fe[3];
-    /* 0x2507 */ MapViewMarker unk_2507[14];
+    /* 0x94 */ u32 slideY;
+    /* 0x98 */ u16 listScroll;
+    /* 0x9a */ u16 listScrollTarget;
+    /* 0x9c */ u16 flags;
+    /* 0x9e */ u8 selfMarkerX;
+    /* 0x9f */ u8 selfMarkerY;
+    /* 0xa0 */ u8 labelCount;
+    /* 0xa1 */ u8 residentCount;
+    /* 0xa2 */ u8 placeCount;
+    /* 0xa3 */ u8 listTopRow;
+    /* 0xa4 */ u8 knobPos;
+    /* 0xa5 */ u8 dragStartTouchY;
+    /* 0xa6 */ u8 dragStartKnobPos;
+    /* 0xa7 */ u8 blinkTimer;
+    /* 0xa8 */ u8 selectedMarker;
+    /* 0xa9 */ u8 selectedRow;
+    /* 0xaa */ u8 returnState;
+    /* 0xab */ u8 cursorTarget;
+    /* 0xac */ u8 cursorMarker;
+    /* 0xad */ u8 mapCursorX;
+    /* 0xae */ u8 mapCursorY;
+    /* 0xaf */ u8 selfBlinkCounter;
+    /* 0xb0 */ BgVramTask screenTasks[2];
+    /* 0xf8 */ LabelString textLabels[13];
+    /* 0x438 */ MenuScrollKnob scrollKnob;
+    /* 0x480 */ MenuCursorBuf0 cursor;
+    /* 0x4e4 */ u16 frameScreen[0x400];
+    /* 0xce4 */ u16 listScreen[0x400];
+    /* 0x14e4 */ u16 listScreenWork[0x400];
+    /* 0x1ce4 */ u16 listScreenBase[0x400];
+    /* 0x24e4 */ u8 residentEntries[13];
+    /* 0x24f1 */ u8 placeEntries[13];
+    /* 0x24fe */ MapViewMarker terrainMarkers[3];
+    /* 0x2507 */ MapViewMarker buildingMarkers[14];
 };
 
 static inline BOOL IsZero(u8 v) {
@@ -443,12 +443,12 @@ BOOL MapViewerMenu::vfunc_0c() {
 }
 
 BOOL MapViewerMenu::onDraw() {
-    u32 h = unk_94 + 0x60;
+    u32 h = slideY + 0x60;
     if (testFlags(4)) {
         if (testFlags(8)) {
-            ScrollKnob_moveTo(&unk_438, 0x67, unk_94 - 0x12 + unk_a4);
+            ScrollKnob_moveTo(&scrollKnob, 0x67, slideY - 0x12 + knobPos);
         }
-        MenuCursorBase_drawWrapped(&unk_480);
+        MenuCursorBase_drawWrapped(&cursor);
         Oam_DrawCell(1, sMapViewFrameCells, 0x80, h, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         s32 a, b;
         if (testFlags(1)) {
@@ -460,22 +460,22 @@ BOOL MapViewerMenu::onDraw() {
         }
         Oam_DrawCell(1, sMapViewPlacesButtonCells, 0x80, h, a, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         Oam_DrawCell(1, sMapViewResidentsButtonCells, 0x80, h, b, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        u32 t = unk_ac;
+        u32 t = cursorMarker;
         if (t != 0xe) {
             u8 *e = (u8 *)this + t * 3;
             if (e[0x2509] != 0xc) {
-                drawMapIcon(e[0x2507], unk_94 + e[0x2508], 0xb, 0, -1);
+                drawMapIcon(e[0x2507], slideY + e[0x2508], 0xb, 0, -1);
             }
         }
-        unk_af = (unk_af + 1) & 0xf;
-        if ((unk_af & 0xc) != 0) {
-            drawMapIcon(unk_9e, unk_9f + unk_94, 0xa, 0, -1);
+        selfBlinkCounter = (selfBlinkCounter + 1) & 0xf;
+        if ((selfBlinkCounter & 0xc) != 0) {
+            drawMapIcon(selfMarkerX, selfMarkerY + slideY, 0xa, 0, -1);
         }
         for (s32 i = 0; i < 3; i++) {
             u8 *e = (u8 *)this + i * 3;
             u32 c = e[0x2500];
             if (c != 0xc) {
-                drawMapIcon(e[0x24fe], unk_94 + e[0x24ff], (u8)(c & 0x7f), (c & 0x80) ? 1 : 0, -1);
+                drawMapIcon(e[0x24fe], slideY + e[0x24ff], (u8)(c & 0x7f), (c & 0x80) ? 1 : 0, -1);
             }
         }
         for (s32 i = 0; i < 14; i++) {
@@ -483,16 +483,16 @@ BOOL MapViewerMenu::onDraw() {
             u8 *q = e + 0x2509;
             if (*q != 0xc) {
                 s32 v;
-                if (i == unk_a8 && !testFlags(0x100)) {
+                if (i == selectedMarker && !testFlags(0x100)) {
                     v = 8;
                 } else {
                     v = -1;
                 }
-                drawMapIcon(e[0x2507], unk_94 + e[0x2508], *q, 0, v);
+                drawMapIcon(e[0x2507], slideY + e[0x2508], *q, 0, v);
             }
         }
         if (testFlags(8)) {
-            unk_438.vfunc_08();
+            scrollKnob.vfunc_08();
         }
     }
     return TRUE;
@@ -611,43 +611,43 @@ void MapViewerMenu::stateOpen() {
     Gfx2d_ShowLayer(4);
     applySlideOffset(4, 0, 0);
     Gfx2d_ShowLayer(6);
-    applySlideOffset(6, 0, 0x50 - unk_98);
+    applySlideOffset(6, 0, 0x50 - listScroll);
     setFlags(4);
-    unk_94 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
     setTransitionState(4);
 }
 
 void MapViewerMenu::stateOpening() {
     if (stepSlideIn(0)) {
         setPhase(2);
-        unk_ac = 8;
-        unk_ad = unk_2507[unk_ac].unk_00;
-        unk_ae = unk_2507[unk_ac].unk_01;
-        if (*(volatile u8 *)&unk_ae > 4) {
-            unk_ae = *(volatile u8 *)&unk_ae - 4;
+        cursorMarker = 8;
+        mapCursorX = buildingMarkers[cursorMarker].x;
+        mapCursorY = buildingMarkers[cursorMarker].y;
+        if (*(volatile u8 *)&mapCursorY > 4) {
+            mapCursorY = *(volatile u8 *)&mapCursorY - 4;
         } else {
-            unk_ae = 0;
+            mapCursorY = 0;
         }
-        if (*(volatile u8 *)&unk_ad < 0xfc) {
-            unk_ad = *(volatile u8 *)&unk_ad + 4;
+        if (*(volatile u8 *)&mapCursorX < 0xfc) {
+            mapCursorX = *(volatile u8 *)&mapCursorX + 4;
         } else {
-            unk_ad = 0xff;
+            mapCursorX = 0xff;
         }
         setFlags(0x800);
         startButtonInput();
     }
     applySlideOffset(4, 0, 0);
-    applySlideOffset(6, 0, 0x50 - unk_98);
-    unk_94 = getSlideOffsetY();
+    applySlideOffset(6, 0, 0x50 - listScroll);
+    slideY = getSlideOffsetY();
 }
 
 void MapViewerMenu::stateClose() {
     hideCursor();
     beginSubSlideOut(0xa, 0, 0, 0x30);
     applySlideOffset(4, 0, 0);
-    applySlideOffset(6, 0, 0x50 - unk_98);
+    applySlideOffset(6, 0, 0x50 - listScroll);
     setTransitionState(6);
-    unk_94 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void MapViewerMenu::stateClosing() {
@@ -658,24 +658,24 @@ void MapViewerMenu::stateClosing() {
         setPhase(5);
     } else {
         applySlideOffset(4, 0, 0);
-        applySlideOffset(6, 0, 0x50 - unk_98);
-        unk_94 = getSlideOffsetY();
+        applySlideOffset(6, 0, 0x50 - listScroll);
+        slideY = getSlideOffsetY();
     }
 }
 
 void MapViewerMenu::initMapViewer() {
     volatile Unk_ov120_02294634_V v;
-    unk_a0 = 0;
-    unk_9c = 0;
-    unk_98 = 0;
-    unk_9a = 0;
-    unk_a4 = 0;
-    unk_94 = 0;
-    unk_a7 = 0;
-    unk_ab = 0;
-    unk_ad = 0x58;
-    unk_ae = 0x70;
-    unk_ac = 0xe;
+    labelCount = 0;
+    flags = 0;
+    listScroll = 0;
+    listScrollTarget = 0;
+    knobPos = 0;
+    slideY = 0;
+    blinkTimer = 0;
+    cursorTarget = 0;
+    mapCursorX = 0x58;
+    mapCursorY = 0x70;
+    cursorMarker = 0xe;
     selectEntry(0);
     buildEntryLists();
     if (IsZero(gFieldSceneKind)) {
@@ -692,15 +692,15 @@ void MapViewerMenu::initMapViewer() {
     }
     s32 z = (v.z + 0x800) >> 12;
     s32 x = (v.x + 0x800) >> 12;
-    unk_9e = x - 8;
-    unk_9f = z + 13;
-    ScrollKnob_setState(&unk_438, 1);
+    selfMarkerX = x - 8;
+    selfMarkerY = z + 13;
+    ScrollKnob_setState(&scrollKnob, 1);
 }
 
 void MapViewerMenu::releaseResources() {
     resetTextLabels();
-    BgVramTask_cancel(unk_b0);
-    BgVramTask_cancel((unk_b0 + 1));
+    BgVramTask_cancel(screenTasks);
+    BgVramTask_cancel((screenTasks + 1));
 }
 
 void MapViewerMenu::preStateUpdate() {
@@ -710,8 +710,8 @@ void MapViewerMenu::preStateUpdate() {
 void MapViewerMenu::postStateUpdate() {
     if (isListScrolling()) {
         updateListScroll();
-        Gfx2d_SetLayerOffset(6, 0, unk_98 - 0x50);
-        if (unk_a3 != (unk_98 >> 4)) {
+        Gfx2d_SetLayerOffset(6, 0, listScroll - 0x50);
+        if (listTopRow != (listScroll >> 4)) {
             setFlags(0x80);
         }
     }
@@ -721,12 +721,12 @@ void MapViewerMenu::postStateUpdate() {
         clearFlags(0x80);
     }
     if (testFlags(0x20)) {
-        if (BgVramTask_requestScreen((unk_b0 + 1), unk_4e4, 4, 0x800, 0)) {
+        if (BgVramTask_requestScreen((screenTasks + 1), frameScreen, 4, 0x800, 0)) {
             clearFlags(0x20);
         }
     }
     if (testFlags(2)) {
-        if (BgVramTask_requestScreen(unk_b0, unk_ce4, 6, 0x800, 0)) {
+        if (BgVramTask_requestScreen(screenTasks, listScreen, 6, 0x800, 0)) {
             clearFlags(2);
         }
     }
@@ -734,8 +734,8 @@ void MapViewerMenu::postStateUpdate() {
 
 void MapViewerMenu::preInputUpdate() {
     preStateUpdate();
-    unk_438.vfunc_0c();
-    unk_480.vfunc_0c();
+    scrollKnob.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void MapViewerMenu::postInputUpdate() {
@@ -754,10 +754,10 @@ void MapViewerMenu::loadBgGfx() {
     Gfx2d_LoadPaletteFile("menu/map/b_map_bg.bpl", h, 4, 1, 1, 0xf);
     Gfx2d_LoadCharFile("menu/map/b_map_bg_0.bch", h, 4, 0x11, 0x11, 0x5f);
     Gfx2d_LoadCharFile("menu/map/b_map_bg_1.bch", h, 4, 0x230, 0x230, 0x25f);
-    File_LoadToBuffer("menu/map/b_map_a_bg.bsc", unk_4e4, 0x800);
-    Gfx2d_LoadScreen(unk_4e4, 4, 0x800, 0);
-    File_LoadToBuffer("menu/map/b_map_b_bg.bsc", unk_1ce4, 0x800);
-    BgScreen_SetRectPalette(unk_1ce4, 0x13, 0, 0x1c, 1, 4);
+    File_LoadToBuffer("menu/map/b_map_a_bg.bsc", frameScreen, 0x800);
+    Gfx2d_LoadScreen(frameScreen, 4, 0x800, 0);
+    File_LoadToBuffer("menu/map/b_map_b_bg.bsc", listScreenBase, 0x800);
+    BgScreen_SetRectPalette(listScreenBase, 0x13, 0, 0x1c, 1, 4);
 }
 
 extern "C" void *data_ov120_02294f00[2] = {(void *)_ZN13MapViewerMenu17updateKnobReleaseEv, 0};
@@ -788,7 +788,7 @@ void MapViewerMenu::updateTouch() {
     if (Unk_ov120_022942c0_Both()) {
         if (touchListTabs() == 0) {
             if (touchScrollKnob()) {
-                ScrollKnob_setState(&unk_438, 2);
+                ScrollKnob_setState(&scrollKnob, 2);
                 setMainState(1);
             } else if (touchMarker() == 0) {
                 s32 t = touchListRow();
@@ -802,7 +802,7 @@ void MapViewerMenu::updateTouch() {
 
 void MapViewerMenu::updateKnobDrag() {
     if (gTouchHeld == 0) {
-        ScrollKnob_setState(&unk_438, 3);
+        ScrollKnob_setState(&scrollKnob, 3);
         startTouchInput();
     }
     scrollListToTouch();
@@ -815,8 +815,8 @@ void MapViewerMenu::updateButtons() {
     }
     if (moveCursorByPad((void *)takeRepeatedKeys())) {
         if (testFlags(8)) {
-            if (unk_ab >= 2 && unk_ab <= 7) {
-                setListScrollTarget(unk_98 & ~0xf);
+            if (cursorTarget >= 2 && cursorTarget <= 7) {
+                setListScrollTarget(listScroll & ~0xf);
             }
         }
         moveCursorToTarget();
@@ -828,10 +828,10 @@ void MapViewerMenu::updateButtons() {
     } else if ((k & 0x800) != 0) {
         selectEntry(0);
         highlightListRow(0xe);
-        if (unk_ab >= 2 && unk_ab <= 7) {
+        if (cursorTarget >= 2 && cursorTarget <= 7) {
             moveMapCursorToRow();
         }
-        unk_ac = findMarkerAt(unk_ad, unk_ae);
+        cursorMarker = findMarkerAt(mapCursorX, mapCursorY);
         setFlags(0x800);
         setMainState(9);
         moveCursorToTarget();
@@ -839,19 +839,19 @@ void MapViewerMenu::updateButtons() {
 }
 
 void MapViewerMenu::updateCursorMove() {
-    if (MenuCursorBase_isMoving(&unk_480) == 0) {
-        setMainState(unk_aa);
+    if (MenuCursorBase_isMoving(&cursor) == 0) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void MapViewerMenu::updateCursorPress() {
-    if (HandCursor_isAnimDone(&unk_480)) {
+    if (HandCursor_isAnimDone(&cursor)) {
         s32 r = onCursorDecide();
         if (r == 1) {
         } else if (r == 2) {
             setListScroll(0);
-            unk_a3 = 0xff;
+            listTopRow = 0xff;
             releaseCursor();
         } else {
             releaseCursor();
@@ -860,7 +860,7 @@ void MapViewerMenu::updateCursorPress() {
 }
 
 void MapViewerMenu::updateCursorRelease() {
-    if (HandCursor_isAnimDone(&unk_480)) {
+    if (HandCursor_isAnimDone(&cursor)) {
         refreshCursor();
         if (testFlags(0x800)) {
             setMainState(9);
@@ -871,14 +871,14 @@ void MapViewerMenu::updateCursorRelease() {
 }
 
 void MapViewerMenu::updateKnobGrab() {
-    if (ScrollKnob_areAnimsDone(&unk_438)) {
+    if (ScrollKnob_areAnimsDone(&scrollKnob)) {
         setMainState(7);
     }
 }
 
 void MapViewerMenu::updateKnobHold() {
     if ((gPad[0] & 1) == 0) {
-        ScrollKnob_setState(&unk_438, 3);
+        ScrollKnob_setState(&scrollKnob, 3);
         setMainState(8);
     } else {
         scrollListByPad();
@@ -886,7 +886,7 @@ void MapViewerMenu::updateKnobHold() {
 }
 
 void MapViewerMenu::updateKnobRelease() {
-    if (ScrollKnob_areAnimsDone(&unk_438)) {
+    if (ScrollKnob_areAnimsDone(&scrollKnob)) {
         releaseCursor();
         clearFlags(0x1000);
     }
@@ -911,7 +911,7 @@ void MapViewerMenu::startTouchInput() {
 }
 
 void MapViewerMenu::startButtonInput() {
-    ScrollKnob_setState(&unk_438, 1);
+    ScrollKnob_setState(&scrollKnob, 1);
     showCursor();
     restartKeyRepeat();
     if (testFlags(0x800)) {
@@ -924,24 +924,24 @@ void MapViewerMenu::startButtonInput() {
 void MapViewerMenu::clipListScreen() {
     volatile u16 v0, v1, v2, v3;
     s32 off, j, i, n;
-    MIi_CpuCopy16(unk_14e4, unk_ce4, 0x800);
-    n = unk_98 >> 4;
-    unk_a3 = n;
+    MIi_CpuCopy16(listScreenWork, listScreen, 0x800);
+    n = listScroll >> 4;
+    listTopRow = n;
     off = 0x13;
     for (i = 0; i < n; i++) {
         v0 = 0x10;
-        MIi_CpuClear16(v0, unk_ce4 + off, 0x14);
+        MIi_CpuClear16(v0, listScreen + off, 0x14);
         v1 = 0x10;
-        MIi_CpuClear16(v1, unk_ce4 + (off + 0x20), 0x14);
+        MIi_CpuClear16(v1, listScreen + (off + 0x20), 0x14);
         off += 0x40;
     }
     j = n + 7;
     off = j * 0x40 + 0x13;
     for (; j < 13; j++) {
         v2 = 0x10;
-        MIi_CpuClear16(v2, unk_ce4 + off, 0x14);
+        MIi_CpuClear16(v2, listScreen + off, 0x14);
         v3 = 0x10;
-        MIi_CpuClear16(v3, unk_ce4 + (off + 0x20), 0x14);
+        MIi_CpuClear16(v3, listScreen + (off + 0x20), 0x14);
         off += 0x40;
     }
     setFlags(2);
@@ -950,15 +950,15 @@ void MapViewerMenu::clipListScreen() {
 void MapViewerMenu::buildListScreen() {
     s32 i;
     u8 *tbl;
-    MIi_CpuCopy16(unk_1ce4, unk_14e4, 0x800);
+    MIi_CpuCopy16(listScreenBase, listScreenWork, 0x800);
     tbl = getListEntries();
     for (i = 0; i < 13; i++) {
         s32 a = getEntryIconRow(tbl[i], i) * 0x40 + 0x13;
         s32 b = i * 0x40 + 0x13;
-        unk_14e4[b] = unk_1ce4[a];
-        unk_14e4[b + 1] = unk_1ce4[a + 1];
-        unk_14e4[b + 0x20] = unk_1ce4[a + 0x20];
-        unk_14e4[b + 0x21] = unk_1ce4[a + 0x21];
+        listScreenWork[b] = listScreenBase[a];
+        listScreenWork[b + 1] = listScreenBase[a + 1];
+        listScreenWork[b + 0x20] = listScreenBase[a + 0x20];
+        listScreenWork[b + 0x21] = listScreenBase[a + 0x21];
     }
     setFlags(2);
 }
@@ -979,19 +979,19 @@ u32 MapViewerMenu::getEntryIconRow(u32 x, s32 idx) {
 
 void MapViewerMenu::resetTextLabels() {
     s32 i = 0;
-    unk_a0 = 0;
+    labelCount = 0;
     do {
-        LabelString_destroyLabel(&unk_f8[i]);
+        LabelString_destroyLabel(&textLabels[i]);
         i++;
     } while (i < 13);
 }
 
 void *MapViewerMenu::allocTextLabel() {
-    if (unk_a0 >= 13) {
-        return &unk_f8[12];
+    if (labelCount >= 13) {
+        return &textLabels[12];
     }
-    unk_a0 = *(volatile u8 *)&unk_a0 + 1;
-    return &unk_f8[unk_a0 - 1];
+    labelCount = *(volatile u8 *)&labelCount + 1;
+    return &textLabels[labelCount - 1];
 }
 
 void MapViewerMenu::buildEntryLists() {
@@ -999,7 +999,7 @@ void MapViewerMenu::buildEntryLists() {
     s32 m, i;
     m = PlayerDataArray_FindById(gSavePlayers, PlayerData_getPlayerId(PlayerData_GetCurrent()));
     if (m != -1) {
-        unk_24e4[0] = 1;
+        residentEntries[0] = 1;
         n++;
     }
     for (i = 0; i < 4; i++) {
@@ -1009,35 +1009,35 @@ void MapViewerMenu::buildEntryLists() {
         if (!PlayerDataArray_IsUsed(gSavePlayers, i)) {
             continue;
         }
-        unk_24e4[n] = i + 2;
+        residentEntries[n] = i + 2;
         n++;
     }
     for (i = 0; i < 8; i++) {
         if (SaveVillagers_IsOccupied(gSaveVillagers, i)) {
-            unk_24e4[n] = i + 6;
+            residentEntries[n] = i + 6;
             n++;
         }
     }
-    unk_a1 = n;
+    residentCount = n;
     for (; n < 0xd; n++) {
-        unk_24f1[n] = 0;
+        placeEntries[n] = 0;
     }
     n = 0;
     for (i = 0; i < 5; i++) {
-        unk_24f1[n] = i + 0xe;
+        placeEntries[n] = i + 0xe;
         n++;
     }
-    unk_a2 = n;
+    placeCount = n;
     for (; n < 0xd; n++) {
-        unk_24f1[n] = 0;
+        placeEntries[n] = 0;
     }
 }
 
 void MapViewerMenu::layoutListLabels() {
     if (testFlags(1)) {
-        buildEntryLabels(unk_24f1);
+        buildEntryLabels(placeEntries);
     } else {
-        buildEntryLabels(unk_24e4);
+        buildEntryLabels(residentEntries);
     }
 }
 
@@ -1088,23 +1088,23 @@ s32 MapViewerMenu::rebuildList() {
         setFlags(8);
         k = 3;
     }
-    BgScreen_SetRectPalette(unk_4e4, 0x1d, 0xa, 0x1d, 0x15, k);
+    BgScreen_SetRectPalette(frameScreen, 0x1d, 0xa, 0x1d, 0x15, k);
     setFlags(0x20);
-    highlightListRow(unk_a9);
+    highlightListRow(selectedRow);
 }
 
 u8 *MapViewerMenu::getListEntries() {
     if (testFlags(1)) {
-        return unk_24f1;
+        return placeEntries;
     }
-    return unk_24e4;
+    return residentEntries;
 }
 
 s32 MapViewerMenu::getListCount() {
     if (testFlags(1)) {
-        return unk_a2;
+        return placeCount;
     }
-    return unk_a1;
+    return residentCount;
 }
 
 s32 MapViewerMenu::getListScrollMax() {
@@ -1124,7 +1124,7 @@ BOOL MapViewerMenu::touchListRow() {
     if (y < 0x50 || y >= 0xb0) {
         return FALSE;
     }
-    selectEntry(((y + (unk_98 - 0x50)) >> 4) + 0xf);
+    selectEntry(((y + (listScroll - 0x50)) >> 4) + 0xf);
     return TRUE;
 }
 
@@ -1221,14 +1221,14 @@ u32 MapViewerMenu::findMarkerAt(s32 x, s32 y) {
 
 void MapViewerMenu::selectEntry(u8 v) {
     if (v == 0) {
-        unk_a8 = 0xe;
-        unk_a9 = 0xe;
+        selectedMarker = 0xe;
+        selectedRow = 0xe;
         stopBlink();
         return;
     }
     startBlink();
-    unk_a9 = selectionToListRow(v);
-    unk_a8 = selectionToMarker(v);
+    selectedRow = selectionToListRow(v);
+    selectedMarker = selectionToMarker(v);
     if (v >= 1 && v < 0xf) {
         clearFlags(0x200);
         if (testFlags(1)) {
@@ -1249,17 +1249,17 @@ void MapViewerMenu::selectEntry(u8 v) {
     }
     ensureSelectionVisible();
     highlightListRow(0xe);
-    highlightListRow(unk_a9);
+    highlightListRow(selectedRow);
 }
 
 void MapViewerMenu::highlightListRow(u8 v) {
     setFlags(0x80);
     if (v == 0xe) {
-        BgScreen_SetRectPalette(unk_14e4, 0x13, 0, 0x1c, 0x19, 4);
+        BgScreen_SetRectPalette(listScreenWork, 0x13, 0, 0x1c, 0x19, 4);
     } else if (v == 0xd) {
-        BgScreen_SetRectPalette(unk_14e4, 0x13, 0, 0x1c, 7, 3);
+        BgScreen_SetRectPalette(listScreenWork, 0x13, 0, 0x1c, 7, 3);
     } else {
-        BgScreen_SetRectPalette(unk_14e4, 0x13, v * 2, 0x1c, v * 2 + 1, 3);
+        BgScreen_SetRectPalette(listScreenWork, 0x13, v * 2, 0x1c, v * 2 + 1, 3);
     }
 }
 
@@ -1270,9 +1270,9 @@ u32 MapViewerMenu::selectionToListRow(u8 v) {
     if (v >= 1 && v < 9) {
         s32 t = v + 5;
         s32 i = 0;
-        s32 n = unk_a1;
+        s32 n = residentCount;
         for (; i < n; i++) {
-            if (t == unk_24e4[i]) {
+            if (t == residentEntries[i]) {
                 return (u8)i;
             }
         }
@@ -1310,7 +1310,7 @@ u32 MapViewerMenu::selectionToMarker(u8 v) {
 }
 
 void MapViewerMenu::jumpToSelection() {
-    u32 a = unk_a9;
+    u32 a = selectedRow;
     u32 v;
     if (a <= 5 || a == 0xd) {
         v = 0;
@@ -1318,24 +1318,24 @@ void MapViewerMenu::jumpToSelection() {
         v = (a - 5) << 4;
     }
     setListScroll(v);
-    unk_a3 = 0xff;
+    listTopRow = 0xff;
 }
 
 void MapViewerMenu::ensureSelectionVisible() {
-    u32 a = unk_a9;
+    u32 a = selectedRow;
     if (a != 0xe) {
         if (a == 0xd) {
             setListScrollTarget(0);
         } else {
-            if ((s32)a < (unk_98 + 0xf) >> 4) {
+            if ((s32)a < (listScroll + 0xf) >> 4) {
                 setListScrollTarget(a << 4);
             }
-            s32 h = unk_98 >> 4;
+            s32 h = listScroll >> 4;
             s32 lo;
-            if (unk_a9 <= 5) {
+            if (selectedRow <= 5) {
                 lo = 0;
             } else {
-                lo = unk_a9 - 5;
+                lo = selectedRow - 5;
             }
             if (h < lo) {
                 setListScrollTarget(lo << 4);
@@ -1345,13 +1345,13 @@ void MapViewerMenu::ensureSelectionVisible() {
 }
 
 void MapViewerMenu::setListScroll(u32 v) {
-    unk_98 = v;
-    unk_9a = unk_98;
+    listScroll = v;
+    listScrollTarget = listScroll;
     setFlags(0x10);
 }
 
 void MapViewerMenu::setListScrollTarget(u32 v) {
-    unk_9a = v;
+    listScrollTarget = v;
     setFlags(0x10);
 }
 
@@ -1361,26 +1361,26 @@ void MapViewerMenu::updateListScroll() {
     s32 n = getListScrollMax();
     if (n == 0) {
         clearFlags(0x10);
-        unk_a4 = 0;
+        knobPos = 0;
     } else {
-        u32 tg = unk_9a;
-        u32 cur = unk_98;
+        u32 tg = listScrollTarget;
+        u32 cur = listScroll;
         if (cur == tg) {
             clearFlags(0x10);
         } else if (cur < tg) {
-            unk_98 = *(volatile u16 *)&unk_98 + 8;
-            if (unk_98 > unk_9a) {
-                unk_98 = unk_9a;
+            listScroll = *(volatile u16 *)&listScroll + 8;
+            if (listScroll > listScrollTarget) {
+                listScroll = listScrollTarget;
             }
         } else if (cur < 8) {
-            unk_98 = tg;
+            listScroll = tg;
         } else {
-            unk_98 = *(volatile u16 *)&unk_98 - 8;
-            if (unk_98 < unk_9a) {
-                unk_98 = unk_9a;
+            listScroll = *(volatile u16 *)&listScroll - 8;
+            if (listScroll < listScrollTarget) {
+                listScroll = listScrollTarget;
             }
         }
-        unk_a4 = unk_98 * 0x58 / n;
+        knobPos = listScroll * 0x58 / n;
     }
 }
 
@@ -1388,16 +1388,16 @@ BOOL MapViewerMenu::touchScrollKnob() {
     if (!testFlags(8)) {
         return FALSE;
     }
-    if (MenuScrollKnob_hitTest(&unk_438, gTouchCurX, gTouchCurY)) {
-        unk_a5 = gTouchCurY;
-        unk_a6 = unk_a4;
+    if (MenuScrollKnob_hitTest(&scrollKnob, gTouchCurX, gTouchCurY)) {
+        dragStartTouchY = gTouchCurY;
+        dragStartKnobPos = knobPos;
         return TRUE;
     }
     return FALSE;
 }
 
 void MapViewerMenu::scrollListToTouch() {
-    s32 t = unk_a6 + (gTouchCurY - unk_a5);
+    s32 t = dragStartKnobPos + (gTouchCurY - dragStartTouchY);
     if (t < 0) {
         t = 0;
     } else if (t > 0x58) {
@@ -1407,7 +1407,7 @@ void MapViewerMenu::scrollListToTouch() {
 }
 
 void MapViewerMenu::scrollListByPad() {
-    s32 t = unk_9a;
+    s32 t = listScrollTarget;
     u32 keys = gPad[0];
     if (keys & 0x40) {
         t = t - 4;
@@ -1443,23 +1443,23 @@ BOOL MapViewerMenu::touchListTabs() {
         showPlacesList();
     }
     setListScroll(0);
-    unk_a3 = 0xff;
+    listTopRow = 0xff;
     return TRUE;
 }
 
 void MapViewerMenu::updateBlink() {
     if (testFlags(0x40)) {
-        if (unk_a7 != 0) {
-            unk_a7 = *(volatile u8 *)&unk_a7 - 1;
+        if (blinkTimer != 0) {
+            blinkTimer = *(volatile u8 *)&blinkTimer - 1;
         }
-        if (unk_a7 == 0) {
+        if (blinkTimer == 0) {
             if (testFlags(0x200)) {
                 clearFlags(0x100);
             } else {
-                highlightListRow(unk_a9);
+                highlightListRow(selectedRow);
             }
-            unk_a7 = 0xf;
-        } else if (unk_a7 == 5) {
+            blinkTimer = 0xf;
+        } else if (blinkTimer == 5) {
             if (testFlags(0x200)) {
                 setFlags(0x100);
             } else {
@@ -1472,7 +1472,7 @@ void MapViewerMenu::updateBlink() {
 void MapViewerMenu::startBlink() {
     setFlags(0x40);
     clearFlags(0x100);
-    unk_a7 = 0xf;
+    blinkTimer = 0xf;
 }
 
 void MapViewerMenu::stopBlink() {
@@ -1481,24 +1481,24 @@ void MapViewerMenu::stopBlink() {
 }
 
 void MapViewerMenu::showCursor() {
-    if (!testFlags(8) && unk_ab == 8) {
-        unk_ab = 0;
+    if (!testFlags(8) && cursorTarget == 8) {
+        cursorTarget = 0;
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    MenuCursorBase_warpTo(&unk_480, a, b);
-    if (unk_ab >= 2 && unk_ab <= 7) {
-        setListScrollTarget(unk_98 & ~0xf);
+    MenuCursorBase_warpTo(&cursor, a, b);
+    if (cursorTarget >= 2 && cursorTarget <= 7) {
+        setListScrollTarget(listScroll & ~0xf);
     }
-    MenuCursor_setAnimIfChanged(&unk_480, 1);
+    MenuCursor_setAnimIfChanged(&cursor, 1);
     refreshCursor();
 }
 
 s32 MapViewerMenu::getCursorTargetX() {
     if (testFlags(0x800)) {
-        return unk_ad;
+        return mapCursorX;
     }
-    u32 t = unk_ab;
+    u32 t = cursorTarget;
     if (t >= 2 && t <= 7) {
         return 0xa0;
     }
@@ -1509,16 +1509,16 @@ s32 MapViewerMenu::getCursorTargetX() {
         return 0xbc;
     }
     if (t == 8) {
-        return MenuScrollKnob_getGripX(&unk_438);
+        return MenuScrollKnob_getGripX(&scrollKnob);
     }
     return 0x80;
 }
 
 s32 MapViewerMenu::getCursorTargetY() {
     if (testFlags(0x800)) {
-        return unk_ae;
+        return mapCursorY;
     }
-    u32 t = unk_ab;
+    u32 t = cursorTarget;
     if (t >= 2 && t <= 7) {
         return (t - 2) * 16 + 0x58;
     }
@@ -1526,90 +1526,90 @@ s32 MapViewerMenu::getCursorTargetY() {
         return 0x40;
     }
     if (t == 8) {
-        return MenuScrollKnob_getGripY(&unk_438);
+        return MenuScrollKnob_getGripY(&scrollKnob);
     }
     return 0x60;
 }
 
 void MapViewerMenu::hideCursor() {
-    MenuCursor_setAnimIfChanged(&unk_480, 0);
-    unk_480.vfunc_0c();
+    MenuCursor_setAnimIfChanged(&cursor, 0);
+    cursor.vfunc_0c();
 }
 
 void MapViewerMenu::moveCursorToTarget() {
     if (testFlags(0x4000)) {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        MenuCursorBase_warpTo(&unk_480, a, b);
+        MenuCursorBase_warpTo(&cursor, a, b);
         clearFlags(0x4000);
     } else {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        MenuCursorBase_moveToEase(&unk_480, a, b, 3, 1);
-        unk_aa = mainState;
+        MenuCursorBase_moveToEase(&cursor, a, b, 3, 1);
+        returnState = mainState;
         setMainState(3);
     }
 }
 
 void MapViewerMenu::pressCursor() {
-    MenuCursor_setPosePress(&unk_480);
+    MenuCursor_setPosePress(&cursor);
     setMainState(4);
 }
 
 void MapViewerMenu::releaseCursor() {
-    MenuCursorBase_setPoseRelease(&unk_480);
+    MenuCursorBase_setPoseRelease(&cursor);
     setMainState(5);
 }
 
 void MapViewerMenu::refreshCursor() {
-    MenuCursorBase_setPoseIdle(&unk_480);
-    unk_480.vfunc_0c();
+    MenuCursorBase_setPoseIdle(&cursor);
+    cursor.vfunc_0c();
 }
 
 BOOL MapViewerMenu::moveCursorByPad(void *pad) {
-    u32 old = unk_ab;
+    u32 old = cursorTarget;
     if (old >= 2 && old <= 7) {
         if (testFlags(8) && MenuKeys_HasRight(pad)) {
-            unk_ab = 8;
+            cursorTarget = 8;
         } else if (MenuKeys_HasUp(pad)) {
-            if (*(volatile u8 *)&unk_ab > 2) {
-                unk_ab = *(volatile u8 *)&unk_ab - 1;
+            if (*(volatile u8 *)&cursorTarget > 2) {
+                cursorTarget = *(volatile u8 *)&cursorTarget - 1;
             } else {
-                unk_ab = 1;
+                cursorTarget = 1;
             }
         } else if (MenuKeys_HasDown(pad)) {
             s32 n = getListCount() - 1;
-            if (unk_ab < 7 && unk_ab < n + 2) {
-                unk_ab = *(volatile u8 *)&unk_ab + 1;
+            if (cursorTarget < 7 && cursorTarget < n + 2) {
+                cursorTarget = *(volatile u8 *)&cursorTarget + 1;
             }
         }
     } else if (old == 8) {
         if (MenuKeys_HasUp(pad)) {
-            unk_ab = 0;
+            cursorTarget = 0;
         } else if (MenuKeys_HasLeft(pad)) {
-            s32 v = MenuScrollKnob_getGripY(&unk_438);
+            s32 v = MenuScrollKnob_getGripY(&scrollKnob);
             if (v < 0x50) {
                 v = 0x50;
             }
             if (v >= 0xb0) {
                 v = 0xaf;
             }
-            unk_ab = ((v - 0x50) >> 4) + 2;
+            cursorTarget = ((v - 0x50) >> 4) + 2;
         }
     } else if (old <= 1) {
         if (MenuKeys_HasDown(pad)) {
-            unk_ab = 2;
+            cursorTarget = 2;
         } else if (MenuKeys_HasLeft(pad)) {
-            unk_ab = 1;
+            cursorTarget = 1;
         } else if (MenuKeys_HasRight(pad)) {
-            if (unk_ab == 0 && testFlags(8)) {
-                unk_ab = 8;
+            if (cursorTarget == 0 && testFlags(8)) {
+                cursorTarget = 8;
             } else {
-                unk_ab = 0;
+                cursorTarget = 0;
             }
         }
     }
-    if (old != unk_ab) {
+    if (old != cursorTarget) {
         return TRUE;
     }
     return FALSE;
@@ -1617,13 +1617,13 @@ BOOL MapViewerMenu::moveCursorByPad(void *pad) {
 
 s32 MapViewerMenu::onCursorDecide() {
     if (testFlags(0x800)) {
-        selectEntry(unk_ac + 1);
+        selectEntry(cursorMarker + 1);
         return 0;
     }
-    u32 t = unk_ab;
+    u32 t = cursorTarget;
     if (t == 8) {
         setMainState(6);
-        ScrollKnob_setState(&unk_438, 2);
+        ScrollKnob_setState(&scrollKnob, 2);
         setFlags(0x1000);
         return 1;
     } else if (t == 0) {
@@ -1641,34 +1641,34 @@ s32 MapViewerMenu::onCursorDecide() {
         }
         return 0;
     } else if (t >= 2 && t <= 7) {
-        selectEntry(unk_a3 + t + 0xd);
+        selectEntry(listTopRow + t + 0xd);
         return 0;
     }
     return 0;
 }
 
 void MapViewerMenu::moveMapCursorToRow() {
-    u32 idx = selectionToMarker(unk_a3 + unk_ab + 0xd);
+    u32 idx = selectionToMarker(listTopRow + cursorTarget + 0xd);
     u8 *e = (u8 *)this + idx * 3;
     if (e[0x2509] == 0xc) {
-        unk_ad = 0x58;
-        unk_ae = 0x70;
+        mapCursorX = 0x58;
+        mapCursorY = 0x70;
     } else {
-        unk_ad = e[0x2507];
-        unk_ae = e[0x2508];
+        mapCursorX = e[0x2507];
+        mapCursorY = e[0x2508];
     }
 }
 
 BOOL MapViewerMenu::testFlags(u32 mask) {
-    if (unk_9c & mask) {
+    if (flags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void MapViewerMenu::setFlags(u32 mask) { unk_9c = unk_9c | mask; }
+void MapViewerMenu::setFlags(u32 mask) { flags = flags | mask; }
 
-void MapViewerMenu::clearFlags(u32 mask) { unk_9c = unk_9c & ~mask; }
+void MapViewerMenu::clearFlags(u32 mask) { flags = flags & ~mask; }
 
 MapViewMarker::MapViewMarker() {}
 

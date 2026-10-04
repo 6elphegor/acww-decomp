@@ -1,8 +1,8 @@
 #include "types.h"
 
 struct Unk_ov004_0221b6d4_Out {
-    u32 unk_00;
-    u8 unk_04;
+    u32 fileName;
+    u8 msgIndex;
 };
 
 #include "types.h"
@@ -304,7 +304,7 @@ struct Unk_ov004_0221b954_Vec {
 
 struct Unk_ov004_0221b954_Global {
     u8 pad_00[0x64];
-    u32 unk_64;
+    u32 myAid;
 };
 
 struct Unk_ov004_0221cc88_Obj {
@@ -496,10 +496,10 @@ public:
     void setScript(s32 v);
     void attachOwner(s32 v);
 
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ SpNpcBrewster *unk_b0;
-    /* 0xb4 */ u8 unk_b4;
-    /* 0xb5 */ u8 unk_b5;
+    /* 0xac */ s32 scriptIndex;
+    /* 0xb0 */ SpNpcBrewster *owner;
+    /* 0xb4 */ u8 scriptStep;
+    /* 0xb5 */ u8 useMsg30;
     /* 0xb6 */ u8 pad_b6[2];
 };
 
@@ -535,14 +535,14 @@ public:
     void changeAct(s32 idx);
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ SpNpcBrewsterTalk unk_658;
-    /* 0x710 */ s16 unk_710;
+    /* 0x658 */ SpNpcBrewsterTalk talk;
+    /* 0x710 */ s16 homeAngle;
     /* 0x712 */ u8 pad_712[2];
-    /* 0x714 */ u8 unk_714[0x30];
-    /* 0x744 */ u8 unk_744[0x30];
-    /* 0x774 */ s32 unk_774;
-    /* 0x778 */ u16 unk_778;
-    /* 0x77a */ u8 unk_77a;
+    /* 0x714 */ u8 jointMtxE[0x30];
+    /* 0x744 */ u8 jointMtxB[0x30];
+    /* 0x774 */ s32 lookAtTimer;
+    /* 0x778 */ u16 scriptFrame;
+    /* 0x77a */ u8 beatSyncStarted;
     /* 0x77b */ u8 pad_77b;
 };
 
@@ -558,8 +558,8 @@ BOOL SpNpcBrewster::vfunc_04() {
     if (SpNpcActor::vfunc_04() == 0) {
         return FALSE;
     }
-    NpcActor_setTalkRequest(this, &unk_658);
-    unk_658.attachOwner((s32)this);
+    NpcActor_setTalkRequest(this, &talk);
+    talk.attachOwner((s32)this);
     NpcActor_setCollisionRadius(this, 0x100);
     Character_setInteractionRange(this, 0x5000);
     NpcMoveCtrl_setSpeedPreset(&moveCtrl, 2, 0x166, 0xcc, 0x133);
@@ -574,7 +574,7 @@ BOOL SpNpcBrewster::vfunc_00() {
         return FALSE;
     }
     sSpNpcBrewster = this;
-    unk_710 = rotY;
+    homeAngle = rotY;
     collider.unk_1c |= 2;
     if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (NetArea_IsLocalOwner() != 0) {
@@ -585,7 +585,7 @@ BOOL SpNpcBrewster::vfunc_00() {
     } else {
         changeAct(0);
     }
-    if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) == 0) {
         Actor_spawn(0x66, 0xd01d, sSpNpcBrewsterGuestSpawnPos, data_ov004_02240120, 0);
     }
     return TRUE;
@@ -603,8 +603,8 @@ BOOL SpNpcBrewster::onDraw() {
     if (NpcActor::onDraw() == 0) {
         return FALSE;
     }
-    Model_GetJointWorldMtx(&model, unk_714, 0xe);
-    Model_GetJointWorldMtx(&model, unk_744, 0xb);
+    Model_GetJointWorldMtx(&model, jointMtxE, 0xe);
+    Model_GetJointWorldMtx(&model, jointMtxB, 0xb);
     CafeCoffeeSet_SyncToBrewster();
     return TRUE;
 }
@@ -624,11 +624,11 @@ BOOL SpNpcBrewster::updateAct() {
         r = (this->*sSpNpcBrewsterActTable[i].fn2)();
     }
     if (func_020e77cc(Bgm_GetCurrent(), 0x63, 0xab) != 0) {
-        if (unk_77a == 0) {
+        if (beatSyncStarted == 0) {
             if (((model.unk_a4 << 4) >> 16) != 0) {
                 JointBlend_start(&model.unk_b8, 10);
             }
-            unk_77a = 1;
+            beatSyncStarted = 1;
         }
         u8 *q = Snd_GetBeatState();
         if (q != 0) {
@@ -640,7 +640,7 @@ BOOL SpNpcBrewster::updateAct() {
             }
         }
     } else {
-        unk_77a = 0;
+        beatSyncStarted = 0;
     }
     return r;
 }
@@ -656,21 +656,21 @@ void SpNpcBrewster::changeAct(s32 idx) {
 }
 
 BOOL SpNpcBrewster::setupAct00() {
-    unk_774 = 0;
+    lookAtTimer = 0;
     NpcActionCtrl_requestAction(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcBrewster::mainAct00() {
-    if (unk_774 > 0) {
-        unk_774++;
-        if (unk_774 > 0x14) {
+    if (lookAtTimer > 0) {
+        lookAtTimer++;
+        if (lookAtTimer > 0x14) {
             NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
-            unk_774 = -1;
+            lookAtTimer = -1;
         }
-    } else if (unk_774 == 0) {
+    } else if (lookAtTimer == 0) {
         if (*(s16 *)((u8 *)this + 0x3d2) > 0x2000) {
-            unk_774 = 1;
+            lookAtTimer = 1;
         }
     }
     if (CommManager_isOnline(gCommManager) == 0 && *DebugVar_GetPtr(0, 0x4a) == 0) {
@@ -678,7 +678,7 @@ BOOL SpNpcBrewster::mainAct00() {
             TalkRequest_AddPlayerTalk7(this, 0);
         }
     }
-    if (unk_710 != rotY) {
+    if (homeAngle != rotY) {
         changeAct(3);
         return TRUE;
     }
@@ -686,7 +686,7 @@ BOOL SpNpcBrewster::mainAct00() {
 }
 
 BOOL SpNpcBrewster::setupAct01() {
-    void *p = func_02015aac(&unk_658);
+    void *p = func_02015aac(&talk);
     s32 r = 0;
     NpcLookAt_setTarget(&lookAt, 1, r, r, &gVec3Zero, 4, data_020c6d1c, 1);
     if (p != 0) {
@@ -720,7 +720,7 @@ BOOL SpNpcBrewster::mainAct02() {
 }
 
 BOOL SpNpcBrewster::setupAct03() {
-    NpcActionCtrl_requestAction(&actionCtrl, 3, 2, 0, 0, 0, unk_710, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 2, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -753,14 +753,14 @@ BOOL SpNpcBrewster::mainAct05() {
     if (NpcActor_isNetOwner(this) != 0) {
         s32 a = 4;
         s32 b = 4;
-        if (NpcActor_netGetSlots(this, &a, &b) != 0 && a == (s32)gCommManager->unk_64 && a == b) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, gCommManager->unk_64);
-            ((ActorTalkRequest *)&unk_658)->vfunc_08();
+        if (NpcActor_netGetSlots(this, &a, &b) != 0 && a == (s32)gCommManager->myAid && a == b) {
+            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, gCommManager->myAid);
+            ((ActorTalkRequest *)&talk)->vfunc_08();
             s32 r = NpcActor_getPlayerActor(this, 4);
-            func_02015ab0(&unk_658, r);
+            func_02015ab0(&talk, r);
             changeAct(1);
         } else if (NetArea_IsLocalOwner() != 0 && b == 4) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
+            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
             changeAct(0);
         }
     }
@@ -779,7 +779,7 @@ BOOL SpNpcBrewster::mainAct06() {
         if (NpcActor_netGetSlots(this, &a, &b) != 0) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner() != 0) {
-                    NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
+                    NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
                     changeAct(0);
                 }
             }
@@ -805,40 +805,40 @@ SpNpcBrewsterTalk::~SpNpcBrewsterTalk() {}
 
 void SpNpcBrewsterTalk::attachOwner(s32 v) {
     vfunc_08();
-    unk_b0 = (SpNpcBrewster *)v;
+    owner = (SpNpcBrewster *)v;
 }
 
 void SpNpcBrewsterTalk::start(void *arg) {
     Unk_ov004_0221b6d4_Out *out = (Unk_ov004_0221b6d4_Out *)arg;
     void *h = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
     if (GameStart_IsActive() != 0) {
-        out->unk_00 = sSpNpcBrewsterMsgFiles[1];
-        out->unk_04 = 0x1f;
+        out->fileName = sSpNpcBrewsterMsgFiles[1];
+        out->msgIndex = 0x1f;
     } else {
-        out->unk_00 = sSpNpcBrewsterMsgFiles[0];
+        out->fileName = sSpNpcBrewsterMsgFiles[0];
         void *o = Actor_findByProfile(0x66, 0);
         if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
-            out->unk_04 = Random_GlobalBelow(3) + 0x55;
+            out->msgIndex = Random_GlobalBelow(3) + 0x55;
         } else if (Talk_CheckAndSetPlayerFlag(0x17) != 0) {
             if (o != 0 && SpNpcRoostGuest_getGuest(o) == 7) {
-                out->unk_04 = 0x58;
+                out->msgIndex = 0x58;
             } else {
                 s32 c = PlayerSpNpcRecord_getCafeVisits(h) >> 2;
-                out->unk_04 = data_ov004_0224cec8[c] + Random_GlobalBelow(3);
+                out->msgIndex = data_ov004_0224cec8[c] + Random_GlobalBelow(3);
             }
         } else if (PlayerActor_IsInAction(0x28, 4) == 0) {
             if (Talk_CheckAndSetPlayerFlag(0x16, 1) == 0) {
-                out->unk_04 = PlayerSpNpcRecord_getCafeVisits(h) >> 1;
+                out->msgIndex = PlayerSpNpcRecord_getCafeVisits(h) >> 1;
             } else if (o != 0 && SpNpcRoostGuest_getGuest(o) == 7) {
-                out->unk_04 = 0x58;
+                out->msgIndex = 0x58;
             } else {
-                out->unk_04 = (PlayerSpNpcRecord_getCafeVisits(h) >> 2) + 0x49;
+                out->msgIndex = (PlayerSpNpcRecord_getCafeVisits(h) >> 2) + 0x49;
             }
         } else {
             if (Talk_CheckAndSetPlayerFlag(0x17, 0) == 0) {
                 Hud_Hide();
             }
-            out->unk_04 = (PlayerSpNpcRecord_getCafeVisits(h) >> 2) + 0x14;
+            out->msgIndex = (PlayerSpNpcRecord_getCafeVisits(h) >> 2) + 0x14;
         }
     }
 }
@@ -864,7 +864,7 @@ void SpNpcBrewsterTalk::onMessageEnd() {
             goto next1;
         }
         if (msgIndex == 0x2d) {
-            unk_b5 = 1;
+            useMsg30 = 1;
         }
         o->unk_14 = 0;
         setScript(1);
@@ -900,10 +900,10 @@ void SpNpcBrewsterTalk::onChoice() {
     case 0x16:
     case 0x17:
         if (t == 0) {
-            if (NpcActor_CanPlayerPay((s32)unk_b0, 200) == 0) {
+            if (NpcActor_CanPlayerPay((s32)owner, 200) == 0) {
                 r = 0x2f;
             } else {
-                NpcActor_ChargePlayer((s32)unk_b0, 200);
+                NpcActor_ChargePlayer((s32)owner, 200);
                 r = Random_GlobalBelow(2);
                 r = (u8)(r + (((PlayerSpNpcRecord_getCafeVisits(h) >> 2) << 1) + 0x1c));
             }
@@ -920,7 +920,7 @@ void SpNpcBrewsterTalk::onChoice() {
 }
 
 void SpNpcBrewsterTalk::update() {
-    s32 i = unk_ac;
+    s32 i = scriptIndex;
     if (sSpNpcBrewsterTalkScripts[i].flag != 0) {
         if (sSpNpcBrewsterTalkScripts[i].fn != 0) {
             (this->*sSpNpcBrewsterTalkScripts[i].fn)();
@@ -929,7 +929,7 @@ void SpNpcBrewsterTalk::update() {
 }
 
 void SpNpcBrewsterTalk::onTaskDone() {
-    s32 i = unk_ac;
+    s32 i = scriptIndex;
     if (sSpNpcBrewsterTalkScripts[i].flag == 0) {
         if (sSpNpcBrewsterTalkScripts[i].fn != 0) {
             (this->*sSpNpcBrewsterTalkScripts[i].fn)();
@@ -939,112 +939,112 @@ void SpNpcBrewsterTalk::onTaskDone() {
 }
 
 void SpNpcBrewsterTalk::setScript(s32 v) {
-    unk_ac = v;
-    unk_b4 = 0;
+    scriptIndex = v;
+    scriptStep = 0;
 }
 
 void SpNpcBrewsterTalk::runCoffeeScript() {
     TalkWindowState *r6 = unk_3c;
     u8 r7 = (u8)((PlayerSpNpcRecord_getCafeVisits(PlayerData_getSpNpcRecord(PlayerData_GetCurrent())) >> 2) + 0x24);
-    void *r5 = &unk_b0->actionCtrl;
+    void *r5 = &owner->actionCtrl;
     u8 buf;
-    switch (unk_b4) {
+    switch (scriptStep) {
     case 0:
         if (r6->state == 5) {
-            NpcLookAt_setTarget(&unk_b0->lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+            NpcLookAt_setTarget(&owner->lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
             NpcActionCtrl_requestAction(r5, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-            unk_b4 = 1;
+            scriptStep = 1;
         }
         break;
     case 1:
         if (NpcActionCtrl_isActionDone(r5)) {
             NpcActionCtrl_requestPlayAnim(r5, 1, 0xf6, 1, data_020c6cc8, 0);
             CafeCoffeeSet_SetState03();
-            NpcMoveAnimSet_setStandAnim(&unk_b0->moveAnimSet, 0xf3);
-            NpcMoveAnimSet_setWalkAnim(&unk_b0->moveAnimSet, 0xf5);
-            NpcMoveAnimSet_setRunAnim(&unk_b0->moveAnimSet, 0xf5);
-            unk_b4 = 2;
-            unk_b0->unk_778 = 0;
+            NpcMoveAnimSet_setStandAnim(&owner->moveAnimSet, 0xf3);
+            NpcMoveAnimSet_setWalkAnim(&owner->moveAnimSet, 0xf5);
+            NpcMoveAnimSet_setRunAnim(&owner->moveAnimSet, 0xf5);
+            scriptStep = 2;
+            owner->scriptFrame = 0;
         }
         break;
     case 2:
-        unk_b0->unk_778++;
-        if (unk_b0->unk_778 == 5) {
-            func_02003ddc(&unk_b0->seEmitter, 0x4db, 0x7f, 0);
+        owner->scriptFrame++;
+        if (owner->scriptFrame == 5) {
+            func_02003ddc(&owner->seEmitter, 0x4db, 0x7f, 0);
         }
         if (NpcActionCtrl_isActionDone(r5)) {
-            NpcMoveCtrl_setTurnMode(&unk_b0->moveCtrl, 2);
+            NpcMoveCtrl_setTurnMode(&owner->moveCtrl, 2);
             NpcActionCtrl_requestAction(r5, 3, 1, 0, 0, 0, (s16)0x8000, 0, 0, data_020c6cc8, 0);
             CafeCoffeeSet_SetState01();
-            unk_b4 = 3;
+            scriptStep = 3;
         }
         break;
     case 3:
         if (NpcActionCtrl_isActionDone(r5)) {
             NpcActionCtrl_requestAction(r5, 2, 1, 0x19700, 0x14000, 0, 0, 0, 0, data_020c6cc8, 0);
-            unk_b4 = 4;
+            scriptStep = 4;
         }
         break;
     case 4:
         if (NpcActionCtrl_isActionDone(r5)) {
-            NpcMoveCtrl_setTurnMode(&unk_b0->moveCtrl, 0);
+            NpcMoveCtrl_setTurnMode(&owner->moveCtrl, 0);
             NpcActionCtrl_requestAction(r5, 3, 1, 0, 0, 0, (s16)0xc000, 0, 0, data_020c6cc8, 0);
-            unk_b4 = 5;
+            scriptStep = 5;
         }
         break;
     case 5:
         if (NpcActionCtrl_isActionDone(r5)) {
             NpcActionCtrl_requestPlayAnim(r5, 1, 0xf7, 1, data_020c6cc8, 0);
             CafeCoffeeSet_SetState04();
-            unk_b4 = 6;
-            unk_b0->unk_778 = 0;
+            scriptStep = 6;
+            owner->scriptFrame = 0;
         }
         break;
     case 6:
-        unk_b0->unk_778++;
-        if (unk_b0->unk_778 == 0xd) {
-            func_02003ddc(&unk_b0->seEmitter, 0x4dc, 0x7f, 0);
+        owner->scriptFrame++;
+        if (owner->scriptFrame == 0xd) {
+            func_02003ddc(&owner->seEmitter, 0x4dc, 0x7f, 0);
         }
-        if (unk_b0->unk_778 == 0x1e) {
-            func_02003ddc(&unk_b0->seEmitter, 0x4dd, 0x7f, 0);
+        if (owner->scriptFrame == 0x1e) {
+            func_02003ddc(&owner->seEmitter, 0x4dd, 0x7f, 0);
         }
-        if (unk_b0->unk_778 == 0x46) {
-            func_02003ddc(&unk_b0->seEmitter, 0x4de, 0x7f, 0);
+        if (owner->scriptFrame == 0x46) {
+            func_02003ddc(&owner->seEmitter, 0x4de, 0x7f, 0);
         }
         if (NpcActionCtrl_isActionDone(r5)) {
             CafeCoffeeSet_SetState02();
             NpcActionCtrl_requestAction(r5, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-            unk_b4 = 7;
+            scriptStep = 7;
         }
         break;
     case 7:
         if (NpcActionCtrl_isActionDone(r5)) {
             NpcActionCtrl_requestAction(r5, 2, 1, 0x19700, 0x15000, 0, 0, 0, 0, data_020c6cc8, 0);
-            unk_b4 = 8;
+            scriptStep = 8;
         }
         break;
     case 8:
         if (NpcActionCtrl_isActionDone(r5)) {
             NpcActionCtrl_requestAction(r5, 3, 1, 0, 0, 0, (s16)0xc000, 0, 0, data_020c6cc8, 0);
-            unk_b4 = 9;
+            scriptStep = 9;
         }
         break;
     case 9:
         if (NpcActionCtrl_isActionDone(r5)) {
-            NpcLookAt_setTarget(&unk_b0->lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+            NpcLookAt_setTarget(&owner->lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
             NpcActionCtrl_requestPlayAnim(r5, 1, 0xf8, 1, data_020c6cc8, 0);
             CafeCoffeeSet_SetState05();
-            unk_b4 = 10;
-            unk_b0->unk_778 = 0;
+            scriptStep = 10;
+            owner->scriptFrame = 0;
         }
         break;
     case 10:
-        unk_b0->unk_778++;
-        if (unk_b0->unk_778 == 0xf) {
-            func_02003ddc(&unk_b0->seEmitter, 0x4df, 0x7f, 0);
+        owner->scriptFrame++;
+        if (owner->scriptFrame == 0xf) {
+            func_02003ddc(&owner->seEmitter, 0x4df, 0x7f, 0);
         }
-        if (unk_b0->unk_778 == 0x1e) {
-            func_02003ddc(&unk_b0->seEmitter, 0x4e0, 0x7f, 0);
+        if (owner->scriptFrame == 0x1e) {
+            func_02003ddc(&owner->seEmitter, 0x4e0, 0x7f, 0);
         }
         if (NpcActionCtrl_isActionDone(r5)) {
             buf = r7;
@@ -1062,30 +1062,30 @@ void SpNpcBrewsterTalk::runDrinkScript() {
         if (CafeCoffeeSet_GetState() == 5) {
             CafeCoffeeSet_SetState08();
             PlayerActor_LocalRequestDrinkCoffee();
-            unk_b0->unk_778 = 0;
+            owner->scriptFrame = 0;
         }
-        unk_b0->unk_778++;
-        if (unk_b0->unk_778 == 7) {
-            func_02003ddc(&unk_b0->seEmitter, 0x4e1, 0x7f, 0);
+        owner->scriptFrame++;
+        if (owner->scriptFrame == 7) {
+            func_02003ddc(&owner->seEmitter, 0x4e1, 0x7f, 0);
         }
-        if (unk_b0->unk_778 == 0x14) {
-            func_02003ddc(&unk_b0->seEmitter, 0x4e2, 0x7f, 0);
+        if (owner->scriptFrame == 0x14) {
+            func_02003ddc(&owner->seEmitter, 0x4e2, 0x7f, 0);
             Bgm_RequestSilence(0x10, 0x14, 0);
         }
-        if (unk_b0->unk_778 == 0x28) {
-            func_02003ddc(&unk_b0->seEmitter, 0x4e3, 0x7f, 0);
+        if (owner->scriptFrame == 0x28) {
+            func_02003ddc(&owner->seEmitter, 0x4e3, 0x7f, 0);
         }
-        if (unk_b0->unk_778 == 0x46) {
+        if (owner->scriptFrame == 0x46) {
             if (PlayerId_getGender(PlayerData_getPlayerId(PlayerData_GetCurrent())) == 0) {
-                func_02003ddc(&unk_b0->seEmitter, 0x4e4, 0x7f, 0);
+                func_02003ddc(&owner->seEmitter, 0x4e4, 0x7f, 0);
             } else {
-                func_02003ddc(&unk_b0->seEmitter, 0x4e5, 0x7f, 0);
+                func_02003ddc(&owner->seEmitter, 0x4e5, 0x7f, 0);
             }
         }
         if (CafeCoffeeSet_IsAnim0BAtFrame9()) {
             u8 r4;
             u8 buf;
-            if (unk_b5 != 0) {
+            if (useMsg30 != 0) {
                 r4 = 0x30;
             } else {
                 r4 = (u8)(Random_GlobalBelow(0xb) + 0x31);
@@ -1117,69 +1117,69 @@ void SpNpcBrewsterTalk::onWindowClose() {
 void SpNpcBrewsterTalk::runScript03() {
     TalkWindowState *r6 = unk_3c;
     u8 r7 = (u8)((PlayerSpNpcRecord_getCafeVisits(PlayerData_getSpNpcRecord(PlayerData_GetCurrent())) >> 2) + 0x51);
-    void *r5 = &unk_b0->actionCtrl;
+    void *r5 = &owner->actionCtrl;
     u8 buf;
-    switch (unk_b4) {
+    switch (scriptStep) {
     case 0:
         if (r6->state == 5) {
             PlayerActor_LocalPlayAnim98();
             CafeCoffeeSet_SetState09();
-            unk_b4 = 1;
-            unk_b0->unk_778 = 0;
+            scriptStep = 1;
+            owner->scriptFrame = 0;
         }
         break;
     case 1:
-        unk_b0->unk_778++;
-        if (unk_b0->unk_778 == 0xf) {
-            func_02003ddc(&unk_b0->seEmitter, 0x4e6, 0x7f, 0);
+        owner->scriptFrame++;
+        if (owner->scriptFrame == 0xf) {
+            func_02003ddc(&owner->seEmitter, 0x4e6, 0x7f, 0);
         }
-        if (unk_b0->unk_778 == 0x14) {
-            func_02003ddc(&unk_b0->seEmitter, 0x4e7, 0x7f, 0);
+        if (owner->scriptFrame == 0x14) {
+            func_02003ddc(&owner->seEmitter, 0x4e7, 0x7f, 0);
         }
         if (CafeCoffeeSet_IsAnim0CDone()) {
             Camera_UnmuteSe();
-            NpcLookAt_setTarget(&unk_b0->lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+            NpcLookAt_setTarget(&owner->lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
             NpcActionCtrl_requestPlayAnim(r5, 4, 0xf8, 3, data_020c6cc8, 0);
             CafeCoffeeSet_SetState06();
-            unk_b4 = 2;
-            unk_b0->unk_778 = 0;
+            scriptStep = 2;
+            owner->scriptFrame = 0;
         }
         break;
     case 2:
-        unk_b0->unk_778++;
-        if (unk_b0->unk_778 == 0x12) {
-            func_02003ddc(&unk_b0->seEmitter, 0x4e8, 0x7f, 0);
+        owner->scriptFrame++;
+        if (owner->scriptFrame == 0x12) {
+            func_02003ddc(&owner->seEmitter, 0x4e8, 0x7f, 0);
         }
-        if (unk_b0->unk_778 == 0x2d) {
-            func_02003ddc(&unk_b0->seEmitter, 0x4e9, 0x7f, 0);
+        if (owner->scriptFrame == 0x2d) {
+            func_02003ddc(&owner->seEmitter, 0x4e9, 0x7f, 0);
         }
         if (NpcActionCtrl_isActionDone(r5)) {
             CafeCoffeeSet_SetState01();
             NpcActionCtrl_requestAction(r5, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-            unk_b4 = 3;
+            scriptStep = 3;
         }
         break;
     case 3:
         if (NpcActionCtrl_isActionDone(r5)) {
             NpcActionCtrl_requestPlayAnim(r5, 1, 0xf6, 3, data_020c6cc8, 0);
             CafeCoffeeSet_SetState07();
-            NpcMoveAnimSet_setStandAnim(&unk_b0->moveAnimSet, 0xf2);
-            NpcMoveAnimSet_setWalkAnim(&unk_b0->moveAnimSet, 0xf4);
-            NpcMoveAnimSet_setRunAnim(&unk_b0->moveAnimSet, 0xf4);
-            unk_b4 = 4;
-            unk_b0->unk_778 = 0;
+            NpcMoveAnimSet_setStandAnim(&owner->moveAnimSet, 0xf2);
+            NpcMoveAnimSet_setWalkAnim(&owner->moveAnimSet, 0xf4);
+            NpcMoveAnimSet_setRunAnim(&owner->moveAnimSet, 0xf4);
+            scriptStep = 4;
+            owner->scriptFrame = 0;
         }
         break;
     case 4:
-        unk_b0->unk_778++;
-        if (unk_b0->unk_778 == 0xa) {
-            func_02003ddc(&unk_b0->seEmitter, 0x4ea, 0x7f, 0);
+        owner->scriptFrame++;
+        if (owner->scriptFrame == 0xa) {
+            func_02003ddc(&owner->seEmitter, 0x4ea, 0x7f, 0);
         }
         if (NpcActionCtrl_isActionDone(r5)) {
             CafeCoffeeSet_SetState00();
-            NpcLookAt_setTarget(&unk_b0->lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+            NpcLookAt_setTarget(&owner->lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
             NpcActionCtrl_requestAction(r5, 3, 1, 0, 0, 0, (s16)0xc000, 0, 0, data_020c6cc8, 0);
-            unk_b4 = 5;
+            scriptStep = 5;
         }
         break;
     case 5:
@@ -1188,7 +1188,7 @@ void SpNpcBrewsterTalk::runScript03() {
             TalkWindowState_setNextMessage(r6, &buf, sSpNpcBrewsterMsgFiles[0]);
             r6->nextState = 1;
             setScript(0);
-            unk_b5 = 0;
+            useMsg30 = 0;
         }
         break;
     }
@@ -1210,26 +1210,26 @@ void SpNpcBrewster::vfunc_4c(u32 cmd, u32 arg) {
     case 3:
         footstepFx.unk_08 = arg;
         if (arg != 4) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, arg);
+            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, arg);
             changeAct(7);
         } else if (NpcActor_isNetOwner(this)) {
-            s32 g = gCommManager->unk_64;
+            s32 g = gCommManager->myAid;
             NpcActor_netSetSlotsIfOwner(this, 1, g, g);
             changeAct(7);
         }
         break;
     case 1:
         footstepFx.unk_08 = arg;
-        if (arg != 4 && arg != gCommManager->unk_64) {
+        if (arg != 4 && arg != gCommManager->myAid) {
             NpcActor_netSetSlotsIfOwner(this, 1, arg, arg);
             changeAct(6);
         } else if (NpcActor_isNetOwner(this)) {
             Unk_ov004_0221b954_Global *gl = gCommManager;
-            s32 g = gl->unk_64;
+            s32 g = gl->myAid;
             NpcActor_netSetSlotsIfOwner(this, 1, g, g);
-            ActorTalkRequest *p = &unk_658;
+            ActorTalkRequest *p = &talk;
             p->vfunc_08();
-            func_02015ab0(&unk_658, NpcActor_getPlayerActor(this, 4));
+            func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
             if (CommManager_isOnline(gl) || *DebugVar_GetPtr(0, 0x4a) != 0) {
                 changeAct(1);
             } else {
@@ -1239,25 +1239,25 @@ void SpNpcBrewster::vfunc_4c(u32 cmd, u32 arg) {
         break;
     case 0:
         footstepFx.unk_08 = arg;
-        if (arg != 4 && arg != gCommManager->unk_64) {
+        if (arg != 4 && arg != gCommManager->myAid) {
             NpcActor_netSetSlotsIfOwner(this, 1, arg, arg);
             changeAct(6);
         } else if (NpcActor_isNetOwner(this)) {
-            s32 g = gCommManager->unk_64;
+            s32 g = gCommManager->myAid;
             NpcActor_netSetSlotsIfOwner(this, 1, g, g);
-            ActorTalkRequest *p = &unk_658;
+            ActorTalkRequest *p = &talk;
             p->vfunc_08();
-            func_02015ab0(&unk_658, NpcActor_getPlayerActor(this, 4));
+            func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
             changeAct(1);
         }
         break;
     case 8:
         if (arg == 4) {
             if (NetArea_IsLocalOwner()) {
-                NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
+                NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
                 changeAct(3);
             } else {
-                NpcActor_netSetSlotsIfOwner(this, 1, 4, gCommManager->unk_64);
+                NpcActor_netSetSlotsIfOwner(this, 1, 4, gCommManager->myAid);
                 changeAct(5);
             }
         }
@@ -1274,7 +1274,7 @@ void SpNpcBrewster::vfunc_4c(u32 cmd, u32 arg) {
                 }
                 if (arg == 4) {
                 body:
-                    NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
+                    NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
                     changeAct(0);
                 }
             }
@@ -1289,9 +1289,9 @@ void SpNpcBrewster::vfunc_4c(u32 cmd, u32 arg) {
     func_0201b08c(this, cmd, arg);
 }
 
-extern "C" void *SpNpcBrewster_GetJointMtxE() { return &sSpNpcBrewster->unk_714; }
+extern "C" void *SpNpcBrewster_GetJointMtxE() { return &sSpNpcBrewster->jointMtxE; }
 
-extern "C" void *SpNpcBrewster_GetJointMtxB() { return &sSpNpcBrewster->unk_744; }
+extern "C" void *SpNpcBrewster_GetJointMtxB() { return &sSpNpcBrewster->jointMtxB; }
 
 extern "C" u32 SpNpcBrewster_GetAnimFrame() { return ((u32)sSpNpcBrewster->model.unk_a4 << 4) >> 16; }
 

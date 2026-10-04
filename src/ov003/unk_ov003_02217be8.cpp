@@ -71,7 +71,7 @@ public:
 // ---- this overlay's part classes ----
 struct Unk_ov003_02217b78_Ent {
     u8 pad_00[8];
-    Unk_020553f8_Res *unk_08;
+    Unk_020553f8_Res *modelRes;
 };
 
 struct Unk_ov003_02217c3c_P {
@@ -634,7 +634,7 @@ BOOL FieldGroundPiece::setup(Unk_ov003_02217910_V3 *pos, s32 idx) {
     unk_9c.z = pos->z;
     Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)BgModelCache_getAcre(BgModelCache_Get(), sFieldGroundPieceAcres[idx]);
     s32 t = BgModelCache_getGroundTex(BgModelCache_Get());
-    Unk_020553f8_Res *res = e->unk_08;
+    Unk_020553f8_Res *res = e->modelRes;
     ((Model *)&unk_00)->setResourceAndBind(res, t);
     if (unk_b4[0].allocMatAnm((u32)res, gBgHeap)) {
         unk_b4[0].init(BgModelCache_getGroundMatAnm(BgModelCache_Get()), 0, 0x1000, 0);

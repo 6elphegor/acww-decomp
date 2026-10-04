@@ -38,9 +38,9 @@ public:
     void freePalette();
 
     u8 unk_00[0x48];
-    u8 *unk_48;
-    u8 *unk_4c;
-    u8 unk_50[0x200];
+    u8 *paletteBuf;
+    u8 *charBuf;
+    u8 cameraButtonChars[0x200];
 };
 
 extern const char sHudObjCharPathTen2[];
@@ -56,13 +56,13 @@ void HudObjGfxIo::uploadKindChars(s32 which) {
     BOOL w, f1, f2;
     u32 src;
     s32 i;
-    DC_FlushRange(unk_4c, 0x500);
+    DC_FlushRange(charBuf, 0x500);
     w = which == 0;
     f1 = w || which == 1;
     f2 = w || which == 2;
     src = 0x1000;
     for (i = 0; (u32)i < 2; i++, src += 0x400) {
-        u8 *p = unk_4c + i * 0x280;
+        u8 *p = charBuf + i * 0x280;
         if (f1) GX_LoadOBJ(p, src, 0x280);
         if (f2) GXS_LoadOBJ(p, src, 0x280);
     }
@@ -82,7 +82,7 @@ BOOL HudObjGfxIo::loadCameraButtonChars(s32 alt) {
     }
     for (i = 0; (u32)i < 2; i++, src += 0x400) {
         if (!FS_SeekFile(this, src, z1)) ok = z2;
-        if (FS_ReadFile(this, unk_50 + i * 0x100, 0x100) == ~z4) ok = z3;
+        if (FS_ReadFile(this, cameraButtonChars + i * 0x100, 0x100) == ~z4) ok = z3;
     }
     BOOL r = FS_CloseFile(this);
     if (a && ok && r) return TRUE;
@@ -93,13 +93,13 @@ void HudObjGfxIo::uploadCameraButtonChars(s32 which) {
     BOOL w, f1, f2;
     u32 src;
     s32 i;
-    DC_FlushRange(unk_50, 0x200);
+    DC_FlushRange(cameraButtonChars, 0x200);
     w = which == 0;
     f1 = w || which == 1;
     f2 = w || which == 2;
     src = 0x1180;
     for (i = 0; (u32)i < 2; i++, src += 0x400) {
-        u8 *p = unk_50 + i * 0x100;
+        u8 *p = cameraButtonChars + i * 0x100;
         if (f1) GX_LoadOBJ(p, src, 0x100);
         if (f2) GXS_LoadOBJ(p, src, 0x100);
     }
@@ -111,7 +111,7 @@ BOOL HudObjGfxIo::loadLinkIconChars(s32 alt) {
     s32 z1 = 0, z2 = 0, z3 = 0, z4 = 0;
     u32 src;
     s32 i;
-    unk_4c = (u8 *)Mem_AllocTail(0x200);
+    charBuf = (u8 *)Mem_AllocTail(0x200);
     ok = TRUE;
     if (alt != 0) {
         src = 0x200;
@@ -120,7 +120,7 @@ BOOL HudObjGfxIo::loadLinkIconChars(s32 alt) {
     }
     for (i = 0; (u32)i < 2; i++, src += 0x400) {
         if (!FS_SeekFile(this, src, z1)) ok = z2;
-        if (FS_ReadFile(this, unk_4c + i * 0x100, 0x100) == ~z4) ok = z3;
+        if (FS_ReadFile(this, charBuf + i * 0x100, 0x100) == ~z4) ok = z3;
     }
     BOOL r = FS_CloseFile(this);
     if (a && ok && r) return TRUE;
@@ -130,10 +130,10 @@ BOOL HudObjGfxIo::loadLinkIconChars(s32 alt) {
 void HudObjGfxIo::uploadLinkIconChars() {
     u32 src;
     s32 i;
-    DC_FlushRange(unk_4c, 0x200);
+    DC_FlushRange(charBuf, 0x200);
     src = 0x3300;
     for (i = 0; (u32)i < 2; i++, src += 0x400) {
-        u8 *p = unk_4c + i * 0x100;
+        u8 *p = charBuf + i * 0x100;
         GX_LoadOBJ(p, src, 0x100);
         GXS_LoadOBJ(p, src, 0x100);
     }
@@ -149,12 +149,12 @@ BOOL HudObjGfxIo::loadSlideIconChars(s32 alt) {
     s32 z1 = 0, z2 = 0, z3 = 0, z4 = 0;
     u32 src;
     s32 i;
-    unk_4c = (u8 *)Mem_AllocTail(0x80);
+    charBuf = (u8 *)Mem_AllocTail(0x80);
     ok = TRUE;
     src = sSlideIconCharOffsets[alt];
     for (i = 0; (u32)i < 2; i++, src += 0x400) {
         if (!FS_SeekFile(this, src, z1)) ok = z2;
-        if (FS_ReadFile(this, unk_4c + i * 0x40, 0x40) == ~z4) ok = z3;
+        if (FS_ReadFile(this, charBuf + i * 0x40, 0x40) == ~z4) ok = z3;
     }
     BOOL r = FS_CloseFile(this);
     if (a && ok && r) return TRUE;
@@ -164,10 +164,10 @@ BOOL HudObjGfxIo::loadSlideIconChars(s32 alt) {
 void HudObjGfxIo::uploadSlideIconChars() {
     u32 src;
     s32 i;
-    DC_FlushRange(unk_4c, 0x80);
+    DC_FlushRange(charBuf, 0x80);
     src = 0x38c0;
     for (i = 0; (u32)i < 2; i++, src += 0x400) {
-        u8 *p = unk_4c + i * 0x40;
+        u8 *p = charBuf + i * 0x40;
         GX_LoadOBJ(p, src, 0x40);
         GXS_LoadOBJ(p, src, 0x40);
     }

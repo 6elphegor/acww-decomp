@@ -55,8 +55,8 @@ public:
     void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
     void destroyLabel();
 
-    /* 0x12 */ u8 unk_12[0x2a];
-    /* 0x3c */ TextLabel *unk_3c;
+    /* 0x12 */ u8 text[0x2a];
+    /* 0x3c */ TextLabel *label;
 };
 
 class ItemName : public MsgString {
@@ -67,7 +67,7 @@ public:
     virtual u8 *data();
     BOOL setFromItem(u16 *p);
 
-    /* 0x12 */ u8 unk_12[0x11];
+    /* 0x12 */ u8 text[0x11];
 };
 
 // Screen upload helper, 0x24 bytes
@@ -287,7 +287,7 @@ typedef void (CatalogMenu::*Unk_ov142_02294da8_Fn)();
 // Vtable 0x02294da8, size 0x2e10
 class CatalogMenu : public MenuProc {
 public:
-    CatalogMenu() : unk_e8(), unk_14c(), unk_194(), unk_2f8(), unk_678() {}
+    CatalogMenu() : cursor(), scrollKnob(), bottomButtons(), textLabels(), vramTasks() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -415,51 +415,51 @@ public:
     void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ s32 unk_94;
-    /* 0x098 */ u32 unk_98;
-    /* 0x09c */ s32 unk_9c;
-    /* 0x0a0 */ s32 unk_a0;
-    /* 0x0a4 */ s32 unk_a4;
-    /* 0x0a8 */ s32 unk_a8;
-    /* 0x0ac */ s32 unk_ac;
-    /* 0x0b0 */ s32 unk_b0;
-    /* 0x0b4 */ s16 unk_b4;
-    /* 0x0b6 */ u16 unk_b6;
-    /* 0x0b8 */ s16 unk_b8;
-    /* 0x0ba */ u8 unk_ba;
-    /* 0x0bb */ u8 unk_bb;
-    /* 0x0bc */ u8 unk_bc;
-    /* 0x0bd */ u8 unk_bd;
-    /* 0x0be */ u8 unk_be;
-    /* 0x0bf */ u8 unk_bf;
-    /* 0x0c0 */ u8 unk_c0;
-    /* 0x0c1 */ u8 unk_c1;
-    /* 0x0c2 */ u8 unk_c2;
+    /* 0x094 */ s32 slideY;
+    /* 0x098 */ u32 buttonsSlideY;
+    /* 0x09c */ s32 scrollY;
+    /* 0x0a0 */ s32 scrollTargetY;
+    /* 0x0a4 */ s32 scrollMax;
+    /* 0x0a8 */ s32 knobPos;
+    /* 0x0ac */ s32 knobGrabOffset;
+    /* 0x0b0 */ s32 knobLastTickPos;
+    /* 0x0b4 */ s16 topRow;
+    /* 0x0b6 */ u16 flags;
+    /* 0x0b8 */ s16 selectedIndex;
+    /* 0x0ba */ u8 returnState;
+    /* 0x0bb */ u8 labelCount;
+    /* 0x0bc */ u8 curTab;
+    /* 0x0bd */ u8 targetTab;
+    /* 0x0be */ u8 selectedTab;
+    /* 0x0bf */ u8 orderButtonPal;
+    /* 0x0c0 */ u8 cursorSlot;
+    /* 0x0c1 */ u8 tabFadeLevel;
+    /* 0x0c2 */ u8 tabSwitchState;
     /* 0x0c3 */ u8 unk_c3;
-    /* 0x0c4 */ s16 unk_c4[9];
-    /* 0x0d6 */ s16 unk_d6[9];
-    /* 0x0e8 */ MenuCursorBuf0 unk_e8;
-    /* 0x14c */ MenuScrollKnob unk_14c;
-    /* 0x194 */ MenuBottomButtons unk_194;
-    /* 0x2f8 */ LabelString unk_2f8[14];
-    /* 0x678 */ BgVramTask unk_678[4];
-    /* 0x708 */ u16 unk_708[0x800 / 2];
-    /* 0xf08 */ u16 unk_f08[0x88 / 2];
-    /* 0xf90 */ u16 unk_f90[0x88 / 2];
-    /* 0x1018 */ u16 unk_1018[0x200 / 2];
-    /* 0x1218 */ u16 unk_1218[0x40 / 2];
-    /* 0x1258 */ u16 unk_1258[0x140 / 2];
-    /* 0x1398 */ u16 unk_1398[0x80 / 2];
-    /* 0x1418 */ u16 unk_1418[0xfe / 2];
-    /* 0x1516 */ u16 unk_1516[0x68 / 2];
-    /* 0x157e */ u16 unk_157e[9];
-    /* 0x1590 */ u8 unk_1590[0x800];
-    /* 0x1d90 */ u8 unk_1d90[0x800];
-    /* 0x2590 */ u8 unk_2590[0x800];
-    /* 0x2d90 */ u16 unk_2d90[16];
-    /* 0x2db0 */ u16 unk_2db0[16];
-    /* 0x2dd0 */ u16 unk_2dd0[16];
-    /* 0x2df0 */ u16 unk_2df0[16];
+    /* 0x0c4 */ s16 tabOwnedCounts[9];
+    /* 0x0d6 */ s16 tabTotalCounts[9];
+    /* 0x0e8 */ MenuCursorBuf0 cursor;
+    /* 0x14c */ MenuScrollKnob scrollKnob;
+    /* 0x194 */ MenuBottomButtons bottomButtons;
+    /* 0x2f8 */ LabelString textLabels[14];
+    /* 0x678 */ BgVramTask vramTasks[4];
+    /* 0x708 */ u16 furnitureItems[0x800 / 2];
+    /* 0xf08 */ u16 wallpaperItems[0x88 / 2];
+    /* 0xf90 */ u16 carpetItems[0x88 / 2];
+    /* 0x1018 */ u16 shirtItems[0x200 / 2];
+    /* 0x1218 */ u16 umbrellaItems[0x40 / 2];
+    /* 0x1258 */ u16 headwearItems[0x140 / 2];
+    /* 0x1398 */ u16 paperItems[0x80 / 2];
+    /* 0x1418 */ u16 gyroidItems[0xfe / 2];
+    /* 0x1516 */ u16 fossilItems[0x68 / 2];
+    /* 0x157e */ u16 shownRowItems[9];
+    /* 0x1590 */ u8 rowTemplateScreen[0x800];
+    /* 0x1d90 */ u8 listScreen[0x800];
+    /* 0x2590 */ u8 frameScreen[0x800];
+    /* 0x2d90 */ u16 basePalette3[16];
+    /* 0x2db0 */ u16 workPalette3[16];
+    /* 0x2dd0 */ u16 basePalette4[16];
+    /* 0x2df0 */ u16 workPalette4[16];
 };
 
 // Scene registration entry read by main: factory, then two ids
@@ -566,15 +566,15 @@ BOOL CatalogMenu::onDraw() {
     s32 x;
     s32 pal;
     if (MenuCtrl_IsButtons()) {
-        unk_e8.drawWrapped();
+        cursor.drawWrapped();
     }
     if (!testFlags(1)) {
         return FALSE;
     }
-    unk_194.drawAt(unk_98);
-    y = unk_94 + 0x60;
+    bottomButtons.drawAt(buttonsSlideY);
+    y = slideY + 0x60;
     if (!testFlags(0x100)) {
-        MenuScrollKnob *p = &unk_14c;
+        MenuScrollKnob *p = &scrollKnob;
         p->vfunc_08();
         t = testFlags(0x800) ? 9 : 8;
         x = y;
@@ -589,7 +589,7 @@ BOOL CatalogMenu::onDraw() {
     }
     x = 0x10;
     for (i = 0; i < 9; i++, x -= 2) {
-        if (i == unk_bd) {
+        if (i == targetTab) {
             pal = 6;
         } else {
             pal = 7;
@@ -597,17 +597,17 @@ BOOL CatalogMenu::onDraw() {
         Oam_DrawObj(1, (u8 *)data_ov142_02294e08 + x * 8, 0x80, y, pal, 1, 0);
         Oam_DrawObj(1, (u8 *)data_ov142_02294e08 + (x + 1) * 8, 0x80, y, pal, 1, 0);
     }
-    Oam_DrawCell(1, data_ov142_02294d38, 0x80, y, unk_bf, 1, 0x1000, 0x1000, 0, -1, 0, 0);
-    x = y - (unk_9c & 0xf);
+    Oam_DrawCell(1, data_ov142_02294d38, 0x80, y, orderButtonPal, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    x = y - (scrollY & 0xf);
     getTabOwnedCount();
     d = -1;
-    if (unk_bc == unk_be) {
-        d = unk_b8 - unk_b4;
+    if (curTab == selectedTab) {
+        d = selectedIndex - topRow;
         if (d < 0 || d >= 9) {
             d = -1;
         }
     }
-    i = unk_b4;
+    i = topRow;
     for (j = 0; j < 9; i++, x += 0x10, j++) {
         if (i >= 0 && d == j) {
             Oam_DrawCell(1, data_ov142_02294d78, 0x80, x, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
@@ -710,7 +710,7 @@ void CatalogMenu::stateOpen() {
     Gfx2d_ShowLayer(6);
     Gfx2d_ShowLayer(4);
     updateLayerSlide();
-    unk_194.setLayoutSingle05(0x65);
+    bottomButtons.setLayoutSingle05(0x65);
     setTransitionState(1);
 }
 
@@ -748,9 +748,9 @@ void CatalogMenu::stateDialogOpen() {
     if (stepSlideOut(-1)) {
         setTransitionState(5);
         initSlideIn(0, 0);
-        unk_194.setLayoutYesNo0C(0x22);
+        bottomButtons.setLayoutYesNo0C(0x22);
     }
-    unk_98 = getSlideOffsetY();
+    buttonsSlideY = getSlideOffsetY();
 }
 
 void CatalogMenu::stateDialog() {
@@ -758,16 +758,16 @@ void CatalogMenu::stateDialog() {
         resumeConfirmInput();
         setPhase(2);
     }
-    unk_98 = getSlideOffsetY();
+    buttonsSlideY = getSlideOffsetY();
 }
 
 void CatalogMenu::stateDialogClose() {
     if (stepSlideOut(-1)) {
         setTransitionState(7);
         initSlideIn(0, 0);
-        unk_194.setLayoutSingle05(0x65);
+        bottomButtons.setLayoutSingle05(0x65);
     }
-    unk_98 = getSlideOffsetY();
+    buttonsSlideY = getSlideOffsetY();
 }
 
 void CatalogMenu::stateDialogBack() {
@@ -775,32 +775,32 @@ void CatalogMenu::stateDialogBack() {
         resumeInput();
         setPhase(2);
     }
-    unk_98 = getSlideOffsetY();
+    buttonsSlideY = getSlideOffsetY();
 }
 
 // ---- 0x022944c8 ----
 void CatalogMenu::updateLayerSlide() {
     applySlideOffset(6, 0, 0);
-    applySlideOffset(4, 0, 0x20 - unk_9c);
-    unk_94 = getSlideOffsetY();
-    unk_98 = unk_94;
+    applySlideOffset(4, 0, 0x20 - scrollY);
+    slideY = getSlideOffsetY();
+    buttonsSlideY = slideY;
     updateKnobPosition();
 }
 
 void CatalogMenu::initCatalog() {
     s32 i;
     for (i = 0; i < 9; i++) {
-        unk_c4[i] = 0;
-        unk_d6[i] = 0;
+        tabOwnedCounts[i] = 0;
+        tabTotalCounts[i] = 0;
     }
     i = 0;
     for (; i < 9; i++) {
-        unk_157e[i] = 0xfff1;
+        shownRowItems[i] = 0xfff1;
     }
-    unk_b6 = 0;
-    unk_bc = 9;
-    unk_c1 = 3;
-    unk_c2 = 0;
+    flags = 0;
+    curTab = 9;
+    tabFadeLevel = 3;
+    tabSwitchState = 0;
     selectItem(9, -1);
     buildFurnitureList();
     buildWallpaperList();
@@ -811,40 +811,40 @@ void CatalogMenu::initCatalog() {
     buildHeadwearList();
     buildGyroidList();
     buildFossilList();
-    unk_14c.show();
+    scrollKnob.show();
 }
 
 void CatalogMenu::releaseResources() {
     resetTextLabels();
-    unk_194.freeTexts();
-    unk_678[0].cancel();
-    unk_678[1].cancel();
-    unk_678[2].cancel();
-    unk_678[3].cancel();
+    bottomButtons.freeTexts();
+    vramTasks[0].cancel();
+    vramTasks[1].cancel();
+    vramTasks[2].cancel();
+    vramTasks[3].cancel();
 }
 
 void CatalogMenu::preInputUpdate() {
     preStateUpdate();
-    unk_e8.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 extern "C" void CatalogMenu_PostInputUpdate(CatalogMenu *p) { p->postStateUpdate(); }
 
 void CatalogMenu::preStateUpdate() {
-    unk_678[0].cancel();
-    unk_678[1].cancel();
-    unk_678[2].cancel();
-    unk_678[3].cancel();
+    vramTasks[0].cancel();
+    vramTasks[1].cancel();
+    vramTasks[2].cancel();
+    vramTasks[3].cancel();
     resetTextLabels();
-    unk_194.freeTexts();
-    unk_14c.vfunc_0c();
+    bottomButtons.freeTexts();
+    scrollKnob.vfunc_0c();
 }
 
 void CatalogMenu::postStateUpdate() {
     updateTabSwitch();
     updateScrollAnimation();
     flushDirty();
-    unk_14c.updateRelease();
+    scrollKnob.updateRelease();
 }
 
 extern "C" void CatalogMenu_SetupBgLayers(CatalogMenu *) {
@@ -862,14 +862,14 @@ void CatalogMenu::loadBgGfx() {
     Gfx2d_LoadCharFile("menu/catalog/bg0.bch", h, 6, 0x11, 0x11, 0x51);
     Gfx2d_LoadCharFile("menu/catalog/bg1.bch", h, 6, 0x156, 0x156, 0x174);
     Gfx2d_LoadPaletteFile("menu/catalog/bg.bpl", h, 6, 1, 1, 5);
-    File_LoadToBuffer("menu/catalog/bg_3.bpl", unk_2d90, 0x20);
-    File_LoadToBuffer("menu/catalog/bg_4.bpl", unk_2dd0, 0x20);
-    File_LoadToBuffer("menu/catalog/b_bg.bsc", unk_1590, 0x800);
-    File_LoadToBuffer("menu/catalog/a_bg.bsc", unk_2590, 0x800);
+    File_LoadToBuffer("menu/catalog/bg_3.bpl", basePalette3, 0x20);
+    File_LoadToBuffer("menu/catalog/bg_4.bpl", basePalette4, 0x20);
+    File_LoadToBuffer("menu/catalog/b_bg.bsc", rowTemplateScreen, 0x800);
+    File_LoadToBuffer("menu/catalog/a_bg.bsc", frameScreen, 0x800);
 }
 
 void CatalogMenu::loadObjGfx() {
-    MenuButtons_LoadTextColors(&unk_194);
+    MenuButtons_LoadTextColors(&bottomButtons);
     void *h = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/catalog/obj0.bch", h, 8, 0xc0, 0xc0, 0x11f);
     Gfx2d_LoadCharFile("menu/catalog/obj1.bch", h, 8, 0x120, 0x120, 0x17f);
@@ -910,7 +910,7 @@ void CatalogMenu::updateTouch() {
             return;
         }
         if (y >= 0x2c && y <= 0x86) {
-            unk_14c.grab();
+            scrollKnob.grab();
             setMainState(2);
         }
     }
@@ -971,7 +971,7 @@ void CatalogMenu::updateKnobKeys() {
         moveKnobByKey();
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        unk_e8.warpTo(a, b);
+        cursor.warpTo(a, b);
     } else {
         releaseKnob();
         setMainState(6);
@@ -985,7 +985,7 @@ void CatalogMenu::updateKnobKeysEnd() {
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    unk_e8.warpTo(a, b);
+    cursor.warpTo(a, b);
 }
 
 void CatalogMenu::updateArrowKeys() {
@@ -999,15 +999,15 @@ void CatalogMenu::updateArrowKeys() {
 }
 
 void CatalogMenu::updateCursorMove() {
-    if (!unk_e8.isMoving()) {
-        setMainState(unk_ba);
+    if (!cursor.isMoving()) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void CatalogMenu::updateCursorPress() {
-    if (unk_e8.isAnimDone()) {
-        if (!activateTarget(unk_c0)) {
+    if (cursor.isAnimDone()) {
+        if (!activateTarget(cursorSlot)) {
             setMainState(4);
             releaseCursor();
         }
@@ -1015,9 +1015,9 @@ void CatalogMenu::updateCursorPress() {
 }
 
 void CatalogMenu::updateCursorRelease() {
-    if (unk_e8.isAnimDone()) {
+    if (cursor.isAnimDone()) {
         refreshCursor();
-        setMainState(unk_ba);
+        setMainState(returnState);
     }
 }
 
@@ -1027,9 +1027,9 @@ void CatalogMenu::updateConfirmTouch() {
         return;
     }
     if (Both()) {
-        if (unk_194.isTouched(3)) {
+        if (bottomButtons.isTouched(3)) {
             confirmOrder();
-        } else if (unk_194.isTouched(4)) {
+        } else if (bottomButtons.isTouched(4)) {
             cancelOrderConfirm();
         }
     }
@@ -1041,14 +1041,14 @@ void CatalogMenu::updateConfirmButtons() {
         startConfirmTouch();
         return;
     }
-    old = unk_c0;
+    old = cursorSlot;
     takeRepeatedKeys();
     if (isRepeatLeft()) {
-        unk_c0 = 0x17;
+        cursorSlot = 0x17;
     } else if (isRepeatRight()) {
-        unk_c0 = 0x18;
+        cursorSlot = 0x18;
     }
-    if (old != unk_c0) {
+    if (old != cursorSlot) {
         moveCursorToTarget();
         return;
     }
@@ -1071,32 +1071,32 @@ void CatalogMenu::updateConfirmButtons() {
 
 void CatalogMenu::confirmOrder() {
     Snd_PlaySe(0x29);
-    unk_194.setSelected(3);
+    bottomButtons.setSelected(3);
     setMainState(0xd);
     MenuCtrl_SetResult(1);
-    MenuCtrl_SetCatalogItem(*getTabItemPtr(unk_b8));
+    MenuCtrl_SetCatalogItem(*getTabItemPtr(selectedIndex));
     beginClose();
 }
 
 void CatalogMenu::cancelOrderConfirm() {
     Snd_PlaySe(0x2a);
-    unk_194.setSelected(4);
+    bottomButtons.setSelected(4);
     transitionState = 6;
     initSlideOut(0, 0);
     setMainState(0xd);
     setFlags(0x80);
-    unk_c0 = 0x12;
-    unk_bf = 5;
+    cursorSlot = 0x12;
+    orderButtonPal = 5;
     restoreListView();
 }
 
 void CatalogMenu::updateBarTransition() {
-    if (unk_194.stepPress()) {
-        if (unk_e8.getAnim()) {
-            s32 a = unk_194.getPressOffset();
-            s32 b = unk_194.getTargetX(-1);
-            s32 c = unk_194.getTargetY(-1);
-            unk_e8.warpTo(a + b, a + c);
+    if (bottomButtons.stepPress()) {
+        if (cursor.getAnim()) {
+            s32 a = bottomButtons.getPressOffset();
+            s32 b = bottomButtons.getTargetX(-1);
+            s32 c = bottomButtons.getTargetY(-1);
+            cursor.warpTo(a + b, a + c);
         }
     } else {
         hideCursor();
@@ -1113,7 +1113,7 @@ void CatalogMenu::startButtonInput() {
     if (testFlags(0x80)) {
         clearFlags(0x80);
     } else {
-        unk_c0 = 0;
+        cursorSlot = 0;
     }
     showCursor();
     restartKeyRepeat();
@@ -1135,7 +1135,7 @@ void CatalogMenu::startConfirmTouch() {
 }
 
 void CatalogMenu::startConfirmButtons() {
-    unk_c0 = 0x18;
+    cursorSlot = 0x18;
     showCursor();
     restartKeyRepeat();
     setMainState(0xc);
@@ -1160,7 +1160,7 @@ void CatalogMenu::beginClose() {
 }
 
 void CatalogMenu::startOrderConfirm() {
-    unk_bf = 7;
+    orderButtonPal = 7;
     hideCursor();
     setTransitionState(4);
     setPhase(1);
@@ -1171,7 +1171,7 @@ void CatalogMenu::startOrderConfirm() {
 
 void CatalogMenu::startQuit() {
     MenuCtrl_SetResult(0);
-    unk_194.setSelected(6);
+    bottomButtons.setSelected(6);
     setMainState(0xd);
     beginClose();
 }
@@ -1179,13 +1179,13 @@ void CatalogMenu::startQuit() {
 void CatalogMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    unk_e8.warpTo(a, b);
-    ((MenuCursor *)&unk_e8)->setAnimIfChanged(1);
+    cursor.warpTo(a, b);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     refreshCursor();
 }
 
 s32 CatalogMenu::getCursorTargetX() {
-    u32 c = unk_c0;
+    u32 c = cursorSlot;
     if (c <= 8) {
         return 0x17;
     }
@@ -1194,15 +1194,15 @@ s32 CatalogMenu::getCursorTargetX() {
     }
     switch (c - 0x12) {
     case 1:
-        return unk_194.getTargetX(6);
+        return bottomButtons.getTargetX(6);
     case 0:
         return 0xe8;
     case 2:
-        return unk_14c.getGripX();
+        return scrollKnob.getGripX();
     case 5:
-        return unk_194.getTargetX(3);
+        return bottomButtons.getTargetX(3);
     case 6:
-        return unk_194.getTargetX(4);
+        return bottomButtons.getTargetX(4);
     case 3:
     case 4:
         return 0xc0;
@@ -1212,24 +1212,24 @@ s32 CatalogMenu::getCursorTargetX() {
 }
 
 s32 CatalogMenu::getCursorTargetY() {
-    u32 c = unk_c0;
+    u32 c = cursorSlot;
     if (c <= 8) {
         return c * 16 + 0x1f;
     }
     if (c >= 9 && c <= 0x11) {
-        return (c - 9) * 16 + 0x28 - (unk_a0 & 0xf);
+        return (c - 9) * 16 + 0x28 - (scrollTargetY & 0xf);
     }
     switch (c - 0x12) {
     case 1:
-        return unk_194.getTargetY(6);
+        return bottomButtons.getTargetY(6);
     case 0:
         return 0x57;
     case 2:
-        return unk_14c.getGripY();
+        return scrollKnob.getGripY();
     case 5:
-        return unk_194.getTargetY(3);
+        return bottomButtons.getTargetY(3);
     case 6:
-        return unk_194.getTargetY(4);
+        return bottomButtons.getTargetY(4);
     case 3:
         return 0x23;
     case 4:
@@ -1240,16 +1240,16 @@ s32 CatalogMenu::getCursorTargetY() {
 }
 
 void CatalogMenu::hideCursor() {
-    ((MenuCursor *)&unk_e8)->setAnimIfChanged(0);
-    unk_e8.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void CatalogMenu::moveCursorToTarget() {
-    u32 c = unk_c0;
+    u32 c = cursorSlot;
     if (c == 0x13 || (c >= 9 && c <= 0x11)) {
-        ((MenuCursor *)&unk_e8)->switchToAnim07();
+        ((MenuCursor *)&cursor)->switchToAnim07();
     } else {
-        ((MenuCursor *)&unk_e8)->switchToAnim01();
+        ((MenuCursor *)&cursor)->switchToAnim01();
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
@@ -1257,39 +1257,39 @@ void CatalogMenu::moveCursorToTarget() {
 }
 
 void CatalogMenu::moveCursorTo(s32 a, s32 b) {
-    unk_e8.moveToEase(a, b, 3, 1);
-    unk_ba = mainState;
+    cursor.moveToEase(a, b, 3, 1);
+    returnState = mainState;
     setMainState(8);
 }
 
 void CatalogMenu::refreshCursor() {
-    unk_e8.setPoseIdle();
-    unk_e8.vfunc_0c();
+    cursor.setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 void CatalogMenu::pressCursor() {
-    ((MenuCursor *)&unk_e8)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(9);
 }
 
 void CatalogMenu::releaseCursor() {
-    unk_e8.setPoseRelease();
-    unk_ba = mainState;
+    cursor.setPoseRelease();
+    returnState = mainState;
     setMainState(10);
 }
 
 LabelString *CatalogMenu::allocTextLabel() {
-    if (*(volatile u8 *)&unk_bb >= 14) {
-        return &unk_2f8[13];
+    if (*(volatile u8 *)&labelCount >= 14) {
+        return &textLabels[13];
     }
-    *(volatile u8 *)&unk_bb = *(volatile u8 *)&unk_bb + 1;
-    return &unk_2f8[*(volatile u8 *)&unk_bb - 1];
+    *(volatile u8 *)&labelCount = *(volatile u8 *)&labelCount + 1;
+    return &textLabels[*(volatile u8 *)&labelCount - 1];
 }
 
 void CatalogMenu::resetTextLabels() {
     s32 i = 0;
-    unk_bb = 0;
-    LabelString *w = unk_2f8;
+    labelCount = 0;
+    LabelString *w = textLabels;
     for (; i < 14; i++) {
         (w + i)->destroyLabel();
     }
@@ -1301,19 +1301,19 @@ void CatalogMenu::drawItemNames() {
     LabelString *w;
     s32 cnt;
     s32 z4 = 0, z1 = 0, z2 = 0, z3 = 0;
-    s32 cur = unk_b4;
+    s32 cur = topRow;
     u16 *list = getTabItemPtr(cur);
     s32 col = (cur + 9) % 9;
     cnt = getTabOwnedCount();
     for (i = 0; i < 9; i++) {
         w = (LabelString *)z4;
         if (cur < 0 || cur >= cnt) {
-            unk_157e[col] = 0xfff1;
+            shownRowItems[col] = 0xfff1;
             w = allocTextLabel();
             w->clear();
         } else {
-            if (*list != unk_157e[col]) {
-                unk_157e[col] = *list;
+            if (*list != shownRowItems[col]) {
+                shownRowItems[col] = *list;
                 w = allocTextLabel();
                 u16 id = *list;
                 buf.setFromItem(&id);
@@ -1368,17 +1368,17 @@ void CatalogMenu::clearInfoLabel() {
 }
 
 void CatalogMenu::setTab(u8 v) {
-    if (unk_bc != v) {
-        unk_bc = v;
-        unk_bd = v;
-        unk_a4 = (getTabOwnedCount() - 8) << 4;
-        if (unk_a4 < 0) {
-            unk_a4 = 0;
+    if (curTab != v) {
+        curTab = v;
+        targetTab = v;
+        scrollMax = (getTabOwnedCount() - 8) << 4;
+        if (scrollMax < 0) {
+            scrollMax = 0;
         }
         setScrollPos(0);
-        unk_a0 = 0;
+        scrollTargetY = 0;
         syncKnobToScroll();
-        if (unk_a4 == 0) {
+        if (scrollMax == 0) {
             hideScrollBar();
         } else {
             showScrollBar();
@@ -1389,9 +1389,9 @@ void CatalogMenu::setTab(u8 v) {
 }
 
 void CatalogMenu::requestTab(u32 v) {
-    if (v != unk_bd) {
-        unk_bd = v;
-        unk_c2 = 1;
+    if (v != targetTab) {
+        targetTab = v;
+        tabSwitchState = 1;
     }
 }
 
@@ -1401,8 +1401,8 @@ void CatalogMenu::buildFurnitureList() {
     u16 id;
     u32 h;
     s32 i;
-    unk_c4[0] = 0;
-    unk_d6[0] = 0;
+    tabOwnedCounts[0] = 0;
+    tabTotalCounts[0] = 0;
     cur = 0x3000;
     id = 0xfff1;
     h = PlayerData_GetCurrent();
@@ -1430,7 +1430,7 @@ void CatalogMenu::buildFurnitureList() {
         r = (v >= 0x40a4 && v <= 0x4123) ? TRUE : FALSE;
         if (r) goto next;
         if (Item_TestInfoFlag3(&id)) {
-            unk_d6[0] = unk_d6[0] + 1;
+            tabTotalCounts[0] = tabTotalCounts[0] + 1;
             if (Catalog_HasItem(PlayerData_getCatalog(h), &id)) {
                 *(u16 *)((u8 *)this + n * 2 + 0x708) = cur;
                 n++;
@@ -1439,51 +1439,51 @@ void CatalogMenu::buildFurnitureList() {
     next:
         cur = (u16)(cur + 4);
     }
-    unk_c4[0] = n;
+    tabOwnedCounts[0] = n;
 }
 
 void CatalogMenu::buildWallpaperList() {
-    unk_d6[1] = 0;
-    unk_c4[1] = collectCatalogued(unk_f08, 0x1100, 0x44, 1);
+    tabTotalCounts[1] = 0;
+    tabOwnedCounts[1] = collectCatalogued(wallpaperItems, 0x1100, 0x44, 1);
 }
 
 void CatalogMenu::buildCarpetList() {
-    unk_d6[2] = 0;
-    unk_c4[2] = collectCatalogued(unk_f90, 0x1144, 0x44, 2);
+    tabTotalCounts[2] = 0;
+    tabOwnedCounts[2] = collectCatalogued(carpetItems, 0x1144, 0x44, 2);
 }
 
 void CatalogMenu::buildShirtList() {
-    unk_d6[3] = 0;
-    unk_c4[3] = collectCataloguedFurniture(unk_1018, 0x3984, 0x100, 3);
+    tabTotalCounts[3] = 0;
+    tabOwnedCounts[3] = collectCataloguedFurniture(shirtItems, 0x3984, 0x100, 3);
 }
 
 void CatalogMenu::buildUmbrellaList() {
-    unk_d6[4] = 0;
-    unk_c4[4] = collectCataloguedFurniture(unk_1218, 0x3e24, 0x20, 4);
+    tabTotalCounts[4] = 0;
+    tabOwnedCounts[4] = collectCataloguedFurniture(umbrellaItems, 0x3e24, 0x20, 4);
 }
 
 void CatalogMenu::buildPaperList() {
-    unk_d6[6] = 0;
-    unk_c4[6] = collectCataloguedFurniture(unk_1398, 0x1003, 0x40, 6);
+    tabTotalCounts[6] = 0;
+    tabOwnedCounts[6] = collectCataloguedFurniture(paperItems, 0x1003, 0x40, 6);
 }
 
 void CatalogMenu::buildGyroidList() {
-    unk_d6[7] = 0;
-    unk_c4[7] = collectCataloguedFurniture(unk_1418, 0x45dc, 0x7f, 7);
+    tabTotalCounts[7] = 0;
+    tabOwnedCounts[7] = collectCataloguedFurniture(gyroidItems, 0x45dc, 0x7f, 7);
 }
 
 void CatalogMenu::buildFossilList() {
     *(u16 *)((u8 *)this + 0xe6) = 0;
-    s32 n = collectCataloguedFurniture(unk_1516, 0x450c, 0x34, 8);
+    s32 n = collectCataloguedFurniture(fossilItems, 0x450c, 0x34, 8);
     *(u16 *)((u8 *)this + 0xd4) = n;
 }
 
 void CatalogMenu::buildHeadwearList() {
     *(u16 *)((u8 *)this + 0xe0) = 0;
-    s32 a = collectCataloguedFurniture(unk_1258, 0x3fa4, 0x40, 5);
-    s32 b = collectCataloguedFurniture(unk_1258 + a, 0x40a4, 0x20, 5);
+    s32 a = collectCataloguedFurniture(headwearItems, 0x3fa4, 0x40, 5);
+    s32 b = collectCataloguedFurniture(headwearItems + a, 0x40a4, 0x20, 5);
     a += b;
-    s32 c = collectCataloguedFurniture(unk_1258 + a, 0x4124, 0x40, 5);
+    s32 c = collectCataloguedFurniture(headwearItems + a, 0x4124, 0x40, 5);
     *(u16 *)((u8 *)this + 0xce) = a + c;
 }
 
@@ -1496,7 +1496,7 @@ s32 CatalogMenu::collectCataloguedFurniture(u16 *out, u16 start, s32 n, s32 off)
     for (; i < n; i++) {
         tmp = start;
         if (Item_TestInfoFlag3(&tmp)) {
-            q->unk_d6[0] = q->unk_d6[0] + 1;
+            q->tabTotalCounts[0] = q->tabTotalCounts[0] + 1;
             if (Catalog_HasItem(PlayerData_getCatalog(p), &tmp)) {
                 out[cnt] = start;
                 cnt++;
@@ -1516,7 +1516,7 @@ s32 CatalogMenu::collectCatalogued(u16 *out, u16 start, s32 n, s32 off) {
     for (; i < n; i++) {
         tmp = start;
         if (Item_TestInfoFlag3(&tmp)) {
-            q->unk_d6[0] = q->unk_d6[0] + 1;
+            q->tabTotalCounts[0] = q->tabTotalCounts[0] + 1;
             if (Catalog_HasItem(PlayerData_getCatalog(p), &tmp)) {
                 out[cnt] = start;
                 cnt++;
@@ -1528,11 +1528,11 @@ s32 CatalogMenu::collectCatalogued(u16 *out, u16 start, s32 n, s32 off) {
 }
 
 s32 CatalogMenu::getTabTotalCount() {
-    return unk_d6[unk_bc];
+    return tabTotalCounts[curTab];
 }
 
 s32 CatalogMenu::getTabOwnedCount() {
-    return unk_c4[unk_bc];
+    return tabOwnedCounts[curTab];
 }
 
 extern "C" Unk_ov142_SceneEntry sCatalogMenuProfile = {CatalogMenu_Create, 0xb7, 0xbb};
@@ -1549,18 +1549,18 @@ u16 *CatalogMenu::getTabItemPtr(s32 idx) {
     if (idx < 0) {
         idx = 0;
     }
-    return tbl[unk_bc] + idx;
+    return tbl[curTab] + idx;
 }
 
 void CatalogMenu::composeListScreen() {
-    s32 a = unk_b4;
+    s32 a = topRow;
     s32 i = (a + 9) % 9;
     s32 j = a & 0xf;
     volatile u16 fill = 0x10;
-    MIi_CpuClear16(fill, unk_1d90, 0x800);
+    MIi_CpuClear16(fill, listScreen, 0x800);
     s32 z = 0;
     for (s32 n = 0; n < 9; n++) {
-        MIi_CpuCopy16((u8 *)this + 0x1590 + i * 0x80, unk_1d90 + j * 0x80, 0x80);
+        MIi_CpuCopy16((u8 *)this + 0x1590 + i * 0x80, listScreen + j * 0x80, 0x80);
         i++;
         if (i >= 9) {
             i = z;
@@ -1575,7 +1575,7 @@ void CatalogMenu::flushDirty() {
         uploadListScreen();
     }
     if (testFlags(0x10)) {
-        if (unk_678[1].requestScreen((u32)unk_2590, 6, 0x800, 0)) {
+        if (vramTasks[1].requestScreen((u32)frameScreen, 6, 0x800, 0)) {
             clearFlags(0x10);
         }
     }
@@ -1594,31 +1594,31 @@ void CatalogMenu::setScrollPos(s32 v) {
     if (v <= 0) {
         setFlags(0x400);
     }
-    if (v >= unk_a4) {
+    if (v >= scrollMax) {
         setFlags(0x800);
     }
-    unk_9c = v;
-    Gfx2d_SetLayerOffset(4, 0, unk_9c - 0x20);
-    unk_b4 = v >> 4;
+    scrollY = v;
+    Gfx2d_SetLayerOffset(4, 0, scrollY - 0x20);
+    topRow = v >> 4;
     composeListScreen();
     setFlags(4);
 }
 
 void CatalogMenu::updateScrollAnimation() {
-    s32 a = unk_a0;
-    if (unk_9c != a) {
-        if (unk_9c > a) {
-            unk_9c = unk_9c - 6;
-            if (unk_9c < unk_a0) {
-                unk_9c = unk_a0;
+    s32 a = scrollTargetY;
+    if (scrollY != a) {
+        if (scrollY > a) {
+            scrollY = scrollY - 6;
+            if (scrollY < scrollTargetY) {
+                scrollY = scrollTargetY;
             }
         } else {
-            unk_9c = unk_9c + 6;
-            if (unk_9c > unk_a0) {
-                unk_9c = unk_a0;
+            scrollY = scrollY + 6;
+            if (scrollY > scrollTargetY) {
+                scrollY = scrollTargetY;
             }
         }
-        setScrollPos(unk_9c);
+        setScrollPos(scrollY);
         syncKnobToScroll();
     }
 }
@@ -1630,16 +1630,16 @@ void CatalogMenu::uploadListScreen() {
     } else {
         v = 3;
     }
-    BgScreen_SetRectPalette(unk_1d90, 0, 0, 0x1f, 0x1f, v);
-    if (unk_bc == unk_be) {
-        s32 b = unk_b8;
-        s32 d = b - unk_b4;
+    BgScreen_SetRectPalette(listScreen, 0, 0, 0x1f, 0x1f, v);
+    if (curTab == selectedTab) {
+        s32 b = selectedIndex;
+        s32 d = b - topRow;
         if (d >= 0 && d < 9) {
             s32 m = (b & 0xf) * 2;
-            BgScreen_SetRectPalette(unk_1d90, 0, m, 0x1f, m + 1, 4);
+            BgScreen_SetRectPalette(listScreen, 0, m, 0x1f, m + 1, 4);
         }
     }
-    if (unk_678[0].requestScreen((u32)unk_1d90, 4, 0x800, 0)) {
+    if (vramTasks[0].requestScreen((u32)listScreen, 4, 0x800, 0)) {
         clearFlags(2);
     }
 }
@@ -1656,8 +1656,8 @@ BOOL CatalogMenu::activateTarget(u32 a) {
         }
         return FALSE;
     case 0x14:
-        unk_14c.grab();
-        Menu_PlayScrollGrabSe(&unk_14c);
+        scrollKnob.grab();
+        Menu_PlayScrollGrabSe(&scrollKnob);
         setMainState(5);
         return TRUE;
     case 0x17:
@@ -1684,17 +1684,17 @@ BOOL CatalogMenu::activateTarget(u32 a) {
         break;
     }
     if (a <= 8) {
-        if (unk_bd != a) {
+        if (targetTab != a) {
             Snd_PlaySe(0xc);
             requestTab((u8)a);
         }
         return FALSE;
     }
     if (a >= 9 && a <= 0x11) {
-        if (unk_c2 != 0) {
+        if (tabSwitchState != 0) {
             return FALSE;
         }
-        if (selectItem(unk_bc, (s16)(unk_b4 + (a - 9)))) {
+        if (selectItem(curTab, (s16)(topRow + (a - 9)))) {
             Snd_PlaySe(0x29);
         }
     }
@@ -1702,7 +1702,7 @@ BOOL CatalogMenu::activateTarget(u32 a) {
 }
 
 u32 CatalogMenu::hitTestTarget(s32 x, s32 y) {
-    if (unk_194.isTouched(6)) {
+    if (bottomButtons.isTouched(6)) {
         return 0x13;
     }
     if (testFlags(0x20)) {
@@ -1718,7 +1718,7 @@ u32 CatalogMenu::hitTestTarget(s32 x, s32 y) {
     }
     if (x >= 0x38 && x <= 0x9c) {
         if (y >= 0x20 && y < 0xa0) {
-            s32 k = (y - (0x20 - (unk_a0 & 0xf))) >> 4;
+            s32 k = (y - (0x20 - (scrollTargetY & 0xf))) >> 4;
             if (k >= getTabOwnedCount()) {
                 return 0x19;
             }
@@ -1732,15 +1732,15 @@ u32 CatalogMenu::hitTestTarget(s32 x, s32 y) {
 BOOL CatalogMenu::selectItem(u32 a, s32 b) {
     BOOL r = TRUE;
     volatile u16 tmp;
-    if (unk_be == a && unk_b8 == b) {
+    if (selectedTab == a && selectedIndex == b) {
         r = FALSE;
     }
-    unk_be = a;
-    unk_b8 = b;
+    selectedTab = a;
+    selectedIndex = b;
     if (b == -1) {
         clearInfoLabel();
         clearFlags(0x20);
-        unk_bf = 6;
+        orderButtonPal = 6;
         BOOL t;
         if (gFieldSceneKind == 1) {
             t = TRUE;
@@ -1759,12 +1759,12 @@ BOOL CatalogMenu::selectItem(u32 a, s32 b) {
         tmp = v;
         if (Item_TestInfoFlag4((u16 *)&tmp)) {
             drawNotSellingLabel();
-            unk_bf = 6;
+            orderButtonPal = 6;
             clearFlags(0x20);
         } else {
             drawPriceLabel(Item_GetMemberPrice((u16 *)&tmp));
             setFlags(0x20);
-            unk_bf = 5;
+            orderButtonPal = 5;
         }
         BOOL t;
         if (gFieldSceneKind == 1) {
@@ -1782,25 +1782,25 @@ BOOL CatalogMenu::selectItem(u32 a, s32 b) {
 }
 
 void CatalogMenu::targetButtonAtCursor() {
-    if (unk_e8.getScreenY() > 0x89) {
-        unk_c0 = 0x13;
+    if (cursor.getScreenY() > 0x89) {
+        cursorSlot = 0x13;
     } else {
-        unk_c0 = 0x12;
+        cursorSlot = 0x12;
     }
 }
 
 void CatalogMenu::targetScrollAtCursor() {
-    if (unk_e8.getScreenY() < 0x2b) {
-        unk_c0 = 0x15;
-    } else if (unk_e8.getScreenY() > 0x93) {
-        unk_c0 = 0x16;
+    if (cursor.getScreenY() < 0x2b) {
+        cursorSlot = 0x15;
+    } else if (cursor.getScreenY() > 0x93) {
+        cursorSlot = 0x16;
     } else {
-        unk_c0 = 0x14;
+        cursorSlot = 0x14;
     }
 }
 
 void CatalogMenu::targetRightOfList() {
-    if (unk_a4 == 0) {
+    if (scrollMax == 0) {
         targetButtonAtCursor();
     } else {
         targetScrollAtCursor();
@@ -1808,7 +1808,7 @@ void CatalogMenu::targetRightOfList() {
 }
 
 void CatalogMenu::targetLeftOfButtons() {
-    if (unk_a4 == 0) {
+    if (scrollMax == 0) {
         targetRowOrTab();
     } else {
         targetScrollAtCursor();
@@ -1823,25 +1823,25 @@ BOOL CatalogMenu::targetRowAtCursor() {
     if (n > 9) {
         n = 9;
     }
-    s32 y = unk_e8.getScreenY();
+    s32 y = cursor.getScreenY();
     if (y < 0x20) {
         y = 0x20;
     }
     if (y >= 0xa0) {
         y = 0x9f;
     }
-    s32 r = unk_a0 & 0xf;
+    s32 r = scrollTargetY & 0xf;
     s32 k = (y - (0x20 - r)) >> 4;
     if (k >= n) {
         k = n - 1;
     }
-    unk_c0 = k + 9;
+    cursorSlot = k + 9;
     if (r != 0) {
         if (k == 0) {
-            unk_a0 = unk_a0 - r;
+            scrollTargetY = scrollTargetY - r;
         } else if (k == n - 1) {
-            unk_c0 = unk_c0 - 1;
-            unk_a0 = unk_a0 + (0x10 - (unk_a0 & 0xf));
+            cursorSlot = cursorSlot - 1;
+            scrollTargetY = scrollTargetY + (0x10 - (scrollTargetY & 0xf));
         }
     }
     return TRUE;
@@ -1860,7 +1860,7 @@ void CatalogMenu::targetRowOrTab() {
 }
 
 void CatalogMenu::targetTabAtCursor() {
-    s32 t = unk_e8.getScreenY();
+    s32 t = cursor.getScreenY();
     if ((t & 0xf) == 0) {
         t = t - 1;
     }
@@ -1870,11 +1870,11 @@ void CatalogMenu::targetTabAtCursor() {
     if (t >= 0xa8) {
         t = 0xa7;
     }
-    unk_c0 = (t - 0x18) >> 4;
+    cursorSlot = (t - 0x18) >> 4;
 }
 
 BOOL CatalogMenu::moveCursorByPad(u32 pad) {
-    u32 old = unk_c0;
+    u32 old = cursorSlot;
     if (pad == 0) {
         return FALSE;
     }
@@ -1882,12 +1882,12 @@ BOOL CatalogMenu::moveCursorByPad(u32 pad) {
         if (MenuKeys_HasRight(pad)) {
             targetRowOrRight();
         } else if (MenuKeys_HasUp(pad)) {
-            if (unk_c0 != 0) {
-                unk_c0 = *(volatile u8 *)&unk_c0 - 1;
+            if (cursorSlot != 0) {
+                cursorSlot = *(volatile u8 *)&cursorSlot - 1;
             }
         } else if (MenuKeys_HasDown(pad)) {
-            if (unk_c0 < 8) {
-                unk_c0 = *(volatile u8 *)&unk_c0 + 1;
+            if (cursorSlot < 8) {
+                cursorSlot = *(volatile u8 *)&cursorSlot + 1;
             }
         }
     } else if (old >= 9 && old <= 0x11) {
@@ -1896,35 +1896,35 @@ BOOL CatalogMenu::moveCursorByPad(u32 pad) {
         } else if (MenuKeys_HasRight(pad)) {
             targetRightOfList();
         } else if (MenuKeys_HasUp(pad)) {
-            if (unk_c0 > 9) {
-                unk_c0 = *(volatile u8 *)&unk_c0 - 1;
-                if (unk_c0 == 9) {
-                    s32 r = unk_a0 & 0xf;
+            if (cursorSlot > 9) {
+                cursorSlot = *(volatile u8 *)&cursorSlot - 1;
+                if (cursorSlot == 9) {
+                    s32 r = scrollTargetY & 0xf;
                     if (r != 0) {
-                        unk_a0 = unk_a0 - r;
+                        scrollTargetY = scrollTargetY - r;
                     }
                 }
             } else {
-                if (unk_a0 >= 0x10) {
-                    unk_a0 = unk_a0 - 0x10;
+                if (scrollTargetY >= 0x10) {
+                    scrollTargetY = scrollTargetY - 0x10;
                     return TRUE;
                 }
             }
         } else if (MenuKeys_HasDown(pad)) {
-            if (unk_a4 == 0) {
-                if (unk_c0 < getTabOwnedCount() + 8) {
-                    unk_c0 = *(volatile u8 *)&unk_c0 + 1;
+            if (scrollMax == 0) {
+                if (cursorSlot < getTabOwnedCount() + 8) {
+                    cursorSlot = *(volatile u8 *)&cursorSlot + 1;
                 }
-            } else if (unk_c0 < 0x10) {
-                unk_c0 = *(volatile u8 *)&unk_c0 + 1;
+            } else if (cursorSlot < 0x10) {
+                cursorSlot = *(volatile u8 *)&cursorSlot + 1;
             } else {
-                s32 t = unk_a0;
+                s32 t = scrollTargetY;
                 s32 r = t & 0xf;
                 if (r != 0) {
-                    unk_a0 = unk_a0 + (0x10 - r);
+                    scrollTargetY = scrollTargetY + (0x10 - r);
                     return TRUE;
-                } else if (t <= unk_a4 - 0x10) {
-                    unk_a0 = unk_a0 + 0x10;
+                } else if (t <= scrollMax - 0x10) {
+                    scrollTargetY = scrollTargetY + 0x10;
                     return TRUE;
                 }
             }
@@ -1935,60 +1935,60 @@ BOOL CatalogMenu::moveCursorByPad(u32 pad) {
             if (MenuKeys_HasLeft(pad)) {
                 targetLeftOfButtons();
             } else if (MenuKeys_HasUp(pad)) {
-                unk_c0 = 0x12;
+                cursorSlot = 0x12;
             }
             break;
         case 0:
             if (MenuKeys_HasLeft(pad)) {
                 targetLeftOfButtons();
             } else if (MenuKeys_HasDown(pad)) {
-                unk_c0 = 0x13;
+                cursorSlot = 0x13;
             }
             break;
         case 2:
             if (MenuKeys_HasUp(pad)) {
-                unk_c0 = 0x15;
+                cursorSlot = 0x15;
             } else if (MenuKeys_HasDown(pad)) {
-                unk_c0 = 0x16;
+                cursorSlot = 0x16;
             } else if (MenuKeys_HasRight(pad)) {
-                unk_c0 = 0x12;
+                cursorSlot = 0x12;
             } else if (MenuKeys_HasLeft(pad)) {
                 targetRowOrTab();
             }
             break;
         case 3:
             if (MenuKeys_HasDown(pad)) {
-                unk_c0 = 0x14;
+                cursorSlot = 0x14;
             } else if (MenuKeys_HasRight(pad)) {
-                unk_c0 = 0x12;
+                cursorSlot = 0x12;
             } else if (MenuKeys_HasLeft(pad)) {
                 targetRowOrTab();
             }
             break;
         case 4:
             if (MenuKeys_HasUp(pad)) {
-                unk_c0 = 0x14;
+                cursorSlot = 0x14;
             } else if (MenuKeys_HasRight(pad)) {
-                unk_c0 = 0x12;
+                cursorSlot = 0x12;
             } else if (MenuKeys_HasLeft(pad)) {
                 targetRowOrTab();
             } else if (MenuKeys_HasDown(pad)) {
-                unk_c0 = 0x13;
+                cursorSlot = 0x13;
             }
             break;
         }
     }
-    if (old != unk_c0) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL CatalogMenu::tryGrabKnob(s32 x, s32 y) {
-    if (unk_14c.hitTest(x, y)) {
-        unk_ac = unk_a8 - y;
-        unk_14c.grab();
-        unk_b0 = unk_a8;
+    if (scrollKnob.hitTest(x, y)) {
+        knobGrabOffset = knobPos - y;
+        scrollKnob.grab();
+        knobLastTickPos = knobPos;
         return TRUE;
     }
     return FALSE;
@@ -1998,7 +1998,7 @@ void CatalogMenu::dragKnob(s32 v, BOOL c) {
     if (c) {
         v = v - 0x34;
     } else {
-        v = v + unk_ac;
+        v = v + knobGrabOffset;
     }
     if (v < 0) {
         v = 0;
@@ -2007,58 +2007,58 @@ void CatalogMenu::dragKnob(s32 v, BOOL c) {
         v = 0x5a;
     }
     if (c) {
-        func_020e761c(&unk_a8, v, 8);
+        func_020e761c(&knobPos, v, 8);
     } else {
-        unk_a8 = v;
+        knobPos = v;
     }
     syncScrollToKnob();
     updateKnobPosition();
-    s32 d = unk_b0 - unk_a8;
+    s32 d = knobLastTickPos - knobPos;
     if (d >= 4 || d <= -4) {
-        Menu_PlayScrollTickSe(&unk_14c);
-        unk_b0 = unk_a8;
+        Menu_PlayScrollTickSe(&scrollKnob);
+        knobLastTickPos = knobPos;
     }
 }
 
-void CatalogMenu::releaseKnob() { unk_14c.release(); }
+void CatalogMenu::releaseKnob() { scrollKnob.release(); }
 
 void CatalogMenu::moveKnobByKey() {
-    s32 old = unk_a8;
+    s32 old = knobPos;
     u32 k = gPad[0];
     if (k & 0x40) {
-        unk_a8 = unk_a8 - 4;
-        if (unk_a8 < 0) {
-            unk_a8 = 0;
+        knobPos = knobPos - 4;
+        if (knobPos < 0) {
+            knobPos = 0;
         }
     } else if (k & 0x80) {
-        unk_a8 = unk_a8 + 4;
-        if (unk_a8 > 0x5a) {
-            unk_a8 = 0x5a;
+        knobPos = knobPos + 4;
+        if (knobPos > 0x5a) {
+            knobPos = 0x5a;
         }
     }
-    if (old != unk_a8) {
+    if (old != knobPos) {
         syncScrollToKnob();
         updateKnobPosition();
-        Menu_PlayScrollTickSe(&unk_14c);
+        Menu_PlayScrollTickSe(&scrollKnob);
     }
 }
 
 BOOL CatalogMenu::finishKnobRelease() {
-    if (unk_14c.areAnimsDone()) {
-        unk_14c.show();
+    if (scrollKnob.areAnimsDone()) {
+        scrollKnob.show();
         return TRUE;
     }
     return FALSE;
 }
 
 void CatalogMenu::updateKnobPosition() {
-    unk_14c.moveTo(0x38, unk_94 + (unk_a8 - 0x34));
+    scrollKnob.moveTo(0x38, slideY + (knobPos - 0x34));
 }
 
 void CatalogMenu::syncScrollToKnob() {
     s32 v;
-    s32 n = unk_a4;
-    v = func_02133150(unk_a8 * n, 0x5a);
+    s32 n = scrollMax;
+    v = func_02133150(knobPos * n, 0x5a);
     if (v < 0) {
         v = 0;
     }
@@ -2066,18 +2066,18 @@ void CatalogMenu::syncScrollToKnob() {
         v = n;
     }
     setScrollPos(v);
-    unk_a0 = v;
+    scrollTargetY = v;
 }
 
 void CatalogMenu::syncKnobToScroll() {
-    if (unk_a4 > 0) {
-        unk_a8 = func_02133150(unk_9c * 0x5a, unk_a4);
+    if (scrollMax > 0) {
+        knobPos = func_02133150(scrollY * 0x5a, scrollMax);
         updateKnobPosition();
     }
 }
 
 void CatalogMenu::paintScrollBarArea(s32 a) {
-    BgScreen_SetRectPalette(unk_2590, 0x17, 4, 0x18, 0x13, a);
+    BgScreen_SetRectPalette(frameScreen, 0x17, 4, 0x18, 0x13, a);
     setFlags(0x10);
 }
 
@@ -2092,16 +2092,16 @@ void CatalogMenu::hideScrollBar() {
 }
 
 void CatalogMenu::focusSelectedItem() {
-    setTab(unk_be);
-    setScrollPos((unk_b8 - 3) << 4);
-    unk_a0 = unk_9c;
+    setTab(selectedTab);
+    setScrollPos((selectedIndex - 3) << 4);
+    scrollTargetY = scrollY;
     syncKnobToScroll();
     hideScrollBar();
     setFlags(0x200);
 }
 
 void CatalogMenu::restoreListView() {
-    s32 a = unk_b4;
+    s32 a = topRow;
     s32 b = getTabOwnedCount() - 8;
     if (b < 0) {
         b = 0;
@@ -2112,9 +2112,9 @@ void CatalogMenu::restoreListView() {
         a = b;
     }
     setScrollPos(a << 4);
-    unk_a0 = unk_9c;
+    scrollTargetY = scrollY;
     syncKnobToScroll();
-    if (unk_a4 == 0) {
+    if (scrollMax == 0) {
         hideScrollBar();
     } else {
         showScrollBar();
@@ -2129,34 +2129,34 @@ void CatalogMenu::pressDownArrow() { setFlags(0x2000); }
 void CatalogMenu::releaseArrows() { clearFlags(0x3000); }
 
 void CatalogMenu::scrollByArrow() {
-    s32 old = unk_9c;
+    s32 old = scrollY;
     if (testFlags(0x1000)) {
-        s32 r = unk_9c & 0xf;
+        s32 r = scrollY & 0xf;
         if (r != 0) {
-            unk_9c = unk_9c - r;
+            scrollY = scrollY - r;
         } else {
-            unk_9c = unk_9c - 0x10;
+            scrollY = scrollY - 0x10;
         }
-        if (unk_9c < 0) {
-            unk_9c = 0;
+        if (scrollY < 0) {
+            scrollY = 0;
         }
     } else {
-        s32 r = unk_9c & 0xf;
+        s32 r = scrollY & 0xf;
         if (r != 0) {
-            unk_9c = unk_9c + (0x10 - r);
+            scrollY = scrollY + (0x10 - r);
         } else {
-            unk_9c = unk_9c + 0x10;
+            scrollY = scrollY + 0x10;
         }
-        s32 lim = unk_a4;
-        if (unk_9c > lim) {
-            unk_9c = lim;
+        s32 lim = scrollMax;
+        if (scrollY > lim) {
+            scrollY = lim;
         }
     }
-    if (old != unk_9c) {
-        setScrollPos(unk_9c);
-        unk_a0 = unk_9c;
+    if (old != scrollY) {
+        setScrollPos(scrollY);
+        scrollTargetY = scrollY;
         syncKnobToScroll();
-        Menu_PlayScrollTickSe(&unk_14c);
+        Menu_PlayScrollTickSe(&scrollKnob);
     }
 }
 
@@ -2172,48 +2172,48 @@ u16 CatalogMenu::blendColor(s32 x, s32 y, s32 t) {
 }
 
 void CatalogMenu::setTabFadeLevel(u32 t) {
-    MIi_CpuCopy16(unk_2d90, unk_2db0, 0x20);
-    MIi_CpuCopy16(unk_2dd0, unk_2df0, 0x20);
-    unk_2db0[15] = blendColor(unk_2d90[15], unk_2d90[8], t);
-    unk_2df0[15] = blendColor(unk_2dd0[15], unk_2dd0[8], t);
-    unk_678[2].requestPalette((u32)unk_2db0, 4, 3);
-    unk_678[3].requestPalette((u32)unk_2df0, 4, 4);
+    MIi_CpuCopy16(basePalette3, workPalette3, 0x20);
+    MIi_CpuCopy16(basePalette4, workPalette4, 0x20);
+    workPalette3[15] = blendColor(basePalette3[15], basePalette3[8], t);
+    workPalette4[15] = blendColor(basePalette4[15], basePalette4[8], t);
+    vramTasks[2].requestPalette((u32)workPalette3, 4, 3);
+    vramTasks[3].requestPalette((u32)workPalette4, 4, 4);
 }
 
 void CatalogMenu::updateTabSwitch() {
-    switch (unk_c2) {
+    switch (tabSwitchState) {
     case 0:
         return;
     case 1:
-        if (unk_c1 != 0) {
-            unk_c1 = *(volatile u8 *)&unk_c1 - 1;
+        if (tabFadeLevel != 0) {
+            tabFadeLevel = *(volatile u8 *)&tabFadeLevel - 1;
         } else {
-            unk_c2 = 2;
-            setTab(unk_bd);
+            tabSwitchState = 2;
+            setTab(targetTab);
         }
         break;
     case 2:
-        if (unk_c1 < 3) {
-            unk_c1 = *(volatile u8 *)&unk_c1 + 1;
+        if (tabFadeLevel < 3) {
+            tabFadeLevel = *(volatile u8 *)&tabFadeLevel + 1;
         } else {
-            unk_c2 = 0;
+            tabSwitchState = 0;
             return;
         }
         break;
     }
-    setTabFadeLevel(unk_c1);
+    setTabFadeLevel(tabFadeLevel);
 }
 
 BOOL CatalogMenu::testFlags(u32 m) {
-    if (unk_b6 & m) {
+    if (flags & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void CatalogMenu::setFlags(u32 m) { unk_b6 = unk_b6 | m; }
+void CatalogMenu::setFlags(u32 m) { flags = flags | m; }
 
-void CatalogMenu::clearFlags(u32 m) { unk_b6 = unk_b6 & ~m; }
+void CatalogMenu::clearFlags(u32 m) { flags = flags & ~m; }
 
 extern "C" void *data_ov142_02294cd8[2] = {(void *)_ZN11CatalogMenu9stateOpenEv, 0};
 extern "C" u32 data_ov142_02294d38[8] = {0x804b00eb, 0x000064db, 0x406b80eb, 0x000064df,

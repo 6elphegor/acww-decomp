@@ -185,11 +185,11 @@ public:
 
     void attachOwner(SpNpcTortimerBrightNights *owner);
 
-    SpNpcTortimerBrightNights *unk_ac;
-    s32 unk_b0;
-    u8 unk_b4;
+    SpNpcTortimerBrightNights *ownerNpc;
+    s32 massageChairSlot;
+    u8 villagerPageStart;
     u8 pad_b5[3];
-    s32 unk_b8[5];
+    s32 choiceVillagers[5];
 };
 
 #define MEMBER(name, size) \
@@ -381,8 +381,8 @@ public:
     u8 unk_651;
     u8 pad_652[2];
     s32 unk_654;
-    SpNpcTortimerBrightNightsTalk unk_658;
-    u8 unk_724;
+    SpNpcTortimerBrightNightsTalk talk;
+    u8 festDay;
 };
 
 struct Unk_ov085_02271aac_Ent {
@@ -456,8 +456,8 @@ BOOL SpNpcTortimerBrightNights::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -469,7 +469,7 @@ BOOL SpNpcTortimerBrightNights::vfunc_00() {
     _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&animCtrl, this, 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.unk_1c |= 2;
-    unk_724 = Event_GetDaysSinceStart(0x11);
+    festDay = Event_GetDaysSinceStart(0x11);
     u8 *const g = gContestRecord;
     ContestRecord_BeginFestival(g, 1);
     if (!Talk_CheckAndSetPlayerFlag(0x1f, 0)) {
@@ -508,7 +508,7 @@ BOOL SpNpcTortimerBrightNights::setupAct00() {
 BOOL SpNpcTortimerBrightNights::mainAct00() { return TRUE; }
 
 BOOL SpNpcTortimerBrightNights::setupAct01() {
-    void *p = unk_658.func_02015aac();
+    void *p = talk.func_02015aac();
     s32 x = 0;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -535,25 +535,25 @@ void SpNpcTortimerBrightNightsTalk::openVillagerPage() {
     MsgString9B o;
     _ZN10ChoiceList5clearEv(r7);
     for (i = 0; i < 5; i++) {
-        unk_b8[i] = -1;
+        choiceVillagers[i] = -1;
     }
-    if (!_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(gSaveVillagers, unk_b4)))) {
-        unk_b4 = 0;
+    if (!_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(gSaveVillagers, villagerPageStart)))) {
+        villagerPageStart = 0;
     }
-    r6 = unk_b4;
+    r6 = villagerPageStart;
     n = 0;
     for (; r6 < 8 && n < 4; r6++) {
         void *g = SaveVillagers_Get(gSaveVillagers, r6);
         if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(g))) {
             _ZN10VillagerId7getNameEj(_ZN12VillagerData13getVillagerIdEv(g), &o);
             _ZN9MsgString4copyEPS_(_ZN11ChoiceEntry7getTextEv(_ZN10ChoiceList8getEntryEi(r7, n)), &o);
-            unk_b8[n] = r6;
+            choiceVillagers[n] = r6;
             n++;
         }
     }
-    unk_b4 = r6;
-    if (unk_b4 >= 8) {
-        unk_b4 = 0;
+    villagerPageStart = r6;
+    if (villagerPageStart >= 8) {
+        villagerPageStart = 0;
     }
     if (SaveVillagers_Count(gSaveVillagers) > 4) {
         void *p = _ZN10ChoiceList8getEntryEi(r7, n);
@@ -575,24 +575,24 @@ SpNpcTortimerBrightNightsTalk::~SpNpcTortimerBrightNightsTalk() {}
 
 void SpNpcTortimerBrightNightsTalk::attachOwner(SpNpcTortimerBrightNights *owner) {
     vfunc_08();
-    unk_ac = owner;
-    unk_b0 = -1;
+    ownerNpc = owner;
+    massageChairSlot = -1;
 }
 
 void SpNpcTortimerBrightNightsTalk::start(TalkStartMsg *out) {
     u16 h;
     _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
     out->a = (u32)"sp_npc_turtle5";
-    if (unk_b0 == -1) {
+    if (massageChairSlot == -1) {
         h = 0x37e0;
-        unk_b0 = Pocket_FindItem(&h);
-        if (unk_b0 >= 0) {
+        massageChairSlot = Pocket_FindItem(&h);
+        if (massageChairSlot >= 0) {
             out->a = (u32)"sp_npc_turtle";
             out->b = 0;
             return;
         }
     }
-    if (unk_ac->unk_724 == 6) {
+    if (ownerNpc->festDay == 6) {
         if (_ZN8SaveData8testFlagEj(gSaveData, 0x11)) {
             void *g = _ZN13ContestRecord17getHolderVillagerEv(gContestRecord);
             if (_ZN10VillagerId7isValidEv(g)) {
@@ -615,7 +615,7 @@ void SpNpcTortimerBrightNightsTalk::start(TalkStartMsg *out) {
         } else {
             out->b = 4;
             if (!Talk_CheckAndSetPlayerFlag(0x1f, 1)) {
-                switch (unk_ac->unk_724) {
+                switch (ownerNpc->festDay) {
                 case 0:
                     out->b = 0;
                     break;
@@ -641,9 +641,9 @@ void SpNpcTortimerBrightNightsTalk::onMessageEnd() {
     u16 h0, h1;
     u8 *s = (u8 *)"sp_npc_turtle5";
     u32 msg = 0xff;
-    if (unk_b0 >= 0) {
+    if (massageChairSlot >= 0) {
         if (msgIndex == 1 || msgIndex == 4) {
-            unk_b0 = -2;
+            massageChairSlot = -2;
         }
         switch (msgIndex) {
         case 2:
@@ -696,7 +696,7 @@ void SpNpcTortimerBrightNightsTalk::onChoice() {
     s32 t = getChoiceList()->getResult();
     u8 *s = (u8 *)"sp_npc_turtle5";
     u32 msg = 0xff;
-    s32 c = unk_b0;
+    s32 c = massageChairSlot;
     if (c >= 0) {
         s = (u8 *)"sp_npc_turtle";
         if (msgIndex == 0 && t == 0) {
@@ -725,7 +725,7 @@ void SpNpcTortimerBrightNightsTalk::onChoice() {
         case 8:
         case 0x14:
         case 0x15: {
-            s32 *p = &unk_b8[t];
+            s32 *p = &choiceVillagers[t];
             if (*p >= 0) {
                 u8 *g = gContestRecord;
                 MsgString9B o;
@@ -766,8 +766,8 @@ BOOL SpNpcTortimerBrightNights::vfunc_48() {
 void SpNpcTortimerBrightNights::vfunc_4c(s32 v) {
     switch (v) {
     case 0:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0((u32)getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

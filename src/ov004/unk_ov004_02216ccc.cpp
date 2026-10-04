@@ -81,12 +81,12 @@ struct Unk_ov004_022170e0_Global {
 
 struct Unk_ov004_SceneEntry {
     void *(*factory)();
-    u16 unk_04;
-    u16 unk_06;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u16 executePriority;
+    u16 drawPriority;
+    u32 actorFlags;
+    u32 cullHeight;
+    u32 cullRadius;
+    u32 cullDepth;
 };
 
 extern "C" {
@@ -331,12 +331,12 @@ public:
     void changeState(HouseOwnerVillager *o, s32 idx);
     void update(HouseOwnerVillager *o);
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ Unk_ov004_02216ff4_Entry *unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ u8 unk_0c;
+    /* 0x00 */ s32 state;
+    /* 0x04 */ Unk_ov004_02216ff4_Entry *entry;
+    /* 0x08 */ s32 pendingState;
+    /* 0x0c */ u8 step;
     /* 0x0d */ u8 pad_0d[3];
-    /* 0x10 */ s32 unk_10;
+    /* 0x10 */ s32 timer;
 };
 
 class HouseOwnerAiMember : public HouseOwnerAi {
@@ -366,11 +366,11 @@ public:
     BOOL drawModel();
 
     typedef BOOL (HouseOwnerVillager::*Fn)();
-    /* 0x894 */ Fn unk_894;
-    /* 0x89c */ HouseOwnerAiMember unk_89c;
-    /* 0x8b0 */ RoomFreeUnitMap unk_8b0;
-    /* 0x8d0 */ u8 unk_8d0;
-    /* 0x8d4 */ s32 unk_8d4;
+    /* 0x894 */ Fn drawFn;
+    /* 0x89c */ HouseOwnerAiMember ai;
+    /* 0x8b0 */ RoomFreeUnitMap freeUnitMap;
+    /* 0x8d0 */ u8 talkMelodyPlayed;
+    /* 0x8d4 */ s32 talkKind;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -389,9 +389,9 @@ BOOL HouseOwnerVillager::vfunc_04() {
     }
     NpcActor_setTalkRequest(this, &villagerTalk);
     villagerTalk.vfunc_08();
-    RoomFreeUnitMap_Build(&unk_8b0);
-    unk_8d4 = 0;
-    unk_8d0 = 0;
+    RoomFreeUnitMap_Build(&freeUnitMap);
+    talkKind = 0;
+    talkMelodyPlayed = 0;
     void *p = vfunc_64();
     if (p) {
         if (VillagerId_isValid(VillagerData_getVillagerId(p))) {
@@ -408,13 +408,13 @@ BOOL HouseOwnerVillager::vfunc_00() {
     if (!VillagerActor::vfunc_00()) {
         return FALSE;
     }
-    unk_894 = &HouseOwnerVillager::drawModel;
+    drawFn = &HouseOwnerVillager::drawModel;
     Unk_02013474_enableFootsteps(&footstepFx);
     if (NpcActor_isNetOwner(this)) {
-        unk_89c.changeState(this, 0);
+        ai.changeState(this, 0);
         VillagerTalkTopics_updateCatchPlans(this, data_ov004_02240094, data_ov004_02240090, 0);
     } else {
-        unk_89c.changeState(this, 3);
+        ai.changeState(this, 3);
     }
     u32 *g = (u32 *)gCommManager;
     if (!CommManager_isSlotActive(g, g[0x64 / 4])) {
@@ -436,23 +436,23 @@ BOOL HouseOwnerVillager::drawModel() {
 
 BOOL HouseOwnerVillager::onDraw() {
     BOOL r = TRUE;
-    if (unk_894) {
-        r = (this->*unk_894)();
+    if (drawFn) {
+        r = (this->*drawFn)();
     }
     return r;
 }
 
 BOOL HouseOwnerVillager::canPlayTalkMelody() {
-    if (unk_8d0 == 0) {
+    if (talkMelodyPlayed == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void HouseOwnerVillager::onTalkMelodyPlayed() { unk_8d0 = 1; }
+void HouseOwnerVillager::onTalkMelodyPlayed() { talkMelodyPlayed = 1; }
 
 BOOL HouseOwnerVillager::updateAct() {
-    unk_89c.update(this);
+    ai.update(this);
     if (CommManager_isOnline(gCommManager)) {
         if (Unk_02015b8c_getAnimId(&animCtrl, 0) != 6) {
             if (vfunc_64()) {
@@ -483,27 +483,27 @@ BOOL HouseOwnerVillager::updateAct() {
 }
 
 HouseOwnerAiMember::HouseOwnerAiMember() {
-    unk_08 = 5;
-    unk_10 = 0;
+    pendingState = 5;
+    timer = 0;
 }
 
 HouseOwnerAiMember::~HouseOwnerAiMember() {}
 
 void HouseOwnerAi::update(HouseOwnerVillager *o) {
-    if (unk_04 != 0) {
-        (this->*unk_04->update)(o);
+    if (entry != 0) {
+        (this->*entry->update)(o);
     }
-    if (unk_10 > 0) {
-        unk_10--;
+    if (timer > 0) {
+        timer--;
     }
 }
 
 void HouseOwnerAi::changeState(HouseOwnerVillager *o, s32 idx) {
     if (idx >= 0 && idx < 5) {
-        unk_00 = idx;
-        unk_04 = &sHouseOwnerAiStates[unk_00];
-        unk_0c = 0;
-        Unk_ov004_02216ff4_Entry *e = unk_04;
+        state = idx;
+        entry = &sHouseOwnerAiStates[state];
+        step = 0;
+        Unk_ov004_02216ff4_Entry *e = entry;
         if (e != 0 && e->enter != 0) {
             (this->*e->enter)(o);
         }
@@ -511,13 +511,13 @@ void HouseOwnerAi::changeState(HouseOwnerVillager *o, s32 idx) {
 }
 
 void HouseOwnerAi::clearPendingState() {
-    unk_08 = 5;
+    pendingState = 5;
 }
 
 BOOL HouseOwnerAi::applyPendingState(HouseOwnerVillager *o) {
     BOOL r = FALSE;
-    if (unk_08 < 5) {
-        changeState(o, unk_08);
+    if (pendingState < 5) {
+        changeState(o, pendingState);
         clearPendingState();
         r = TRUE;
     }
@@ -539,14 +539,14 @@ BOOL HouseOwnerAi::findStepTarget(s32 *o1, s32 *o2, HouseOwnerVillager *o) {
     px += sHouseOwnerStepDirs[dir].dx;
     py += data_ov004_0225065c[dir].dx;
     if ((u32) * (volatile s32 *)&y < 0xe) {
-        if (RoomFreeUnitMap_TestUpper(&o->unk_8b0, px, py) != 0) {
+        if (RoomFreeUnitMap_TestUpper(&o->freeUnitMap, px, py) != 0) {
             FieldPos_FromUnitCenter(v, px, py);
             *o1 = v[0];
             *o2 = v[2];
             return TRUE;
         }
     } else {
-        if (RoomFreeUnitMap_Test(&o->unk_8b0, px, py) != 0) {
+        if (RoomFreeUnitMap_Test(&o->freeUnitMap, px, py) != 0) {
             FieldPos_FromUnitCenter(v, px, py);
             *o1 = v[0];
             *o2 = v[2];
@@ -567,9 +567,9 @@ extern "C" Unk_ov004_0221745c_Dir sHouseOwnerStepDirs[4] = {
     Unk_ov004_0221745c_Dir(0, 1), Unk_ov004_0221745c_Dir(1, 0), Unk_ov004_0221745c_Dir(0, -1), Unk_ov004_0221745c_Dir(-1, 0)};
 
 BOOL HouseOwnerAi::enterState00(HouseOwnerVillager *o) {
-    o->unk_894 = &HouseOwnerVillager::drawModel;
+    o->drawFn = &HouseOwnerVillager::drawModel;
     NpcActionCtrl_requestAction(&o->actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    unk_10 = 0;
+    timer = 0;
     return TRUE;
 }
 
@@ -589,7 +589,7 @@ BOOL HouseOwnerAi::updateState00(HouseOwnerVillager *o) {
             } else {
                 if (Random_GlobalBelow(3) != 0 && findStepTarget(&a, &b, o) != 0) {
                     NpcActionCtrl_requestAction(sub, 1, 1, a, b, 0, 0, 0, 0, data_020c6cc8, 0);
-                    unk_10 = 0x3c;
+                    timer = 0x3c;
                 } else {
                     s32 v = (s32)(Random_GlobalBelow(4) << 30) >> 16;
                     if (v == o->rotY) {
@@ -602,7 +602,7 @@ BOOL HouseOwnerAi::updateState00(HouseOwnerVillager *o) {
             NpcActionCtrl_requestAction(sub, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     } else {
-        if (unk_10 == 0 && NpcActionCtrl_getAction(sub) == 1) {
+        if (timer == 0 && NpcActionCtrl_getAction(sub) == 1) {
             NpcActionCtrl_requestAction(sub, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
@@ -623,7 +623,7 @@ void HouseOwnerAi::updateState01Step00(HouseOwnerVillager *o) {
     if (NpcTalkCtrl_isBusy(&o->talkCtrl) == 0) {
         VillagerMood_requestApply(&o->mood);
         TalkRequest_SetTargetDone(o);
-        unk_0c = 1;
+        step = 1;
     }
 }
 
@@ -631,8 +631,8 @@ void HouseOwnerAi::updateState01Step01(HouseOwnerVillager *o) {}
 
 BOOL HouseOwnerAi::updateState01(HouseOwnerVillager *o) {
     static Unk_ov004_02216ff4_VFn tbl[2] = {&HouseOwnerAi::updateState01Step00, &HouseOwnerAi::updateState01Step01};
-    if (unk_0c < 2) {
-        (this->*tbl[unk_0c])(o);
+    if (step < 2) {
+        (this->*tbl[step])(o);
     }
     return FALSE;
 }
@@ -640,7 +640,7 @@ BOOL HouseOwnerAi::updateState01(HouseOwnerVillager *o) {
 BOOL HouseOwnerAi::enterState02(HouseOwnerVillager *o) {
     s32 t = NpcActor_getAngleToPlayer(o, o->footstepFx.unk_08);
     NpcActionCtrl_requestAction(&o->actionCtrl, 3, 2, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
-    unk_0c = 0;
+    step = 0;
     return TRUE;
 }
 
@@ -648,15 +648,15 @@ void HouseOwnerAi::updateState02Step00(HouseOwnerVillager *o) {
     if (NpcActionCtrl_getAction(&o->actionCtrl) == 3) {
         if (NpcActionCtrl_isActionDone(&o->actionCtrl) != 0) {
             NpcActionCtrl_requestStand(&o->actionCtrl, 2, data_020c6cc8);
-            unk_0c = 1;
+            step = 1;
         }
     }
 }
 
 BOOL HouseOwnerAi::updateState02(HouseOwnerVillager *o) {
     static Unk_ov004_02216ff4_VFn tbl[1] = {&HouseOwnerAi::updateState02Step00};
-    if (unk_0c < 1) {
-        (this->*tbl[unk_0c])(o);
+    if (step < 1) {
+        (this->*tbl[step])(o);
     }
     return FALSE;
 }
@@ -675,18 +675,18 @@ BOOL HouseOwnerAi::updateState03(HouseOwnerVillager *o) {
         if (NpcActor_netGetSlots(o, &a, &b) != 0 && ((la = a), la == (g = gCommManager->unk_64)) && la == b) {
             NpcActor_netSetSlotsIfOwner(o, 1, g, g);
             if (w != 0 && Villager_GetResidentStatus(w) != 3) {
-                o->unk_8d4 = 12;
+                o->talkKind = 12;
             } else {
-                o->unk_8d4 = 0;
+                o->talkKind = 0;
             }
-            VillagerTalk_begin(&o->villagerTalk, o, o->unk_8d4);
+            VillagerTalk_begin(&o->villagerTalk, o, o->talkKind);
             func_02015ab0(&o->villagerTalk, NpcActor_getPlayerActor(o, 4));
-            o->unk_89c.changeState(o, 1);
+            o->ai.changeState(o, 1);
         } else {
             if (NetArea_IsLocalOwner() != 0 && b == 4) {
                 NpcActor_netSetSlotsIfOwner(o, 1, gCommManager->unk_64, 4);
-                if (o->unk_89c.applyPendingState(o) == 0) {
-                    o->unk_89c.changeState(o, 0);
+                if (o->ai.applyPendingState(o) == 0) {
+                    o->ai.changeState(o, 0);
                 }
             }
         }
@@ -706,8 +706,8 @@ BOOL HouseOwnerAi::updateState04(HouseOwnerVillager *o) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner() != 0) {
                     NpcActor_netSetSlotsIfOwner(o, 1, gCommManager->unk_64, 4);
-                    if (o->unk_89c.applyPendingState(o) == 0) {
-                        o->unk_89c.changeState(o, 0);
+                    if (o->ai.applyPendingState(o) == 0) {
+                        o->ai.changeState(o, 0);
                     }
                 }
             }
@@ -729,7 +729,7 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
         footstepFx.unk_08 = v;
         if (v != 4) {
             NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, v);
-            unk_89c.changeState(this, 2);
+            ai.changeState(this, 2);
         } else {
             if (NpcActor_isNetOwner(this) == 0) {
                 return;
@@ -737,40 +737,40 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
             s32 g = gCommManager->unk_64;
             NpcActor_netSetSlotsIfOwner(this, 1, g, g);
             if (villagerData != 0 && Villager_GetResidentStatus(villagerData) != 3) {
-                unk_8d4 = 12;
+                talkKind = 12;
             } else {
                 switch (VillagerTalk_getEventKind(this)) {
                 case 1:
-                    unk_8d4 = 3;
+                    talkKind = 3;
                     break;
                 case 0:
-                    unk_8d4 = 5;
+                    talkKind = 5;
                     break;
                 case 8:
                 case 9:
-                    unk_8d4 = 11;
+                    talkKind = 11;
                     break;
                 default:
-                    unk_8d4 = 0;
+                    talkKind = 0;
                     break;
                 }
             }
-            unk_89c.changeState(this, 2);
+            ai.changeState(this, 2);
         }
         break;
     case 0:
         footstepFx.unk_08 = v;
         if (v != 4 && v != gCommManager->unk_64) {
             NpcActor_netSetSlotsIfOwner(this, 1, v, v);
-            unk_89c.changeState(this, 4);
+            ai.changeState(this, 4);
         } else {
             if (NpcActor_isNetOwner(this) != 0) {
                 s32 g = gCommManager->unk_64;
                 NpcActor_netSetSlotsIfOwner(this, 1, g, g);
-                VillagerTalk_begin(&villagerTalk, this, unk_8d4);
+                VillagerTalk_begin(&villagerTalk, this, talkKind);
                 func_02015ab0(&villagerTalk, NpcActor_getPlayerActor(this, 4));
-                unk_89c.changeState(this, 1);
-                unk_8d4 = 0;
+                ai.changeState(this, 1);
+                talkKind = 0;
             }
         }
         break;
@@ -778,12 +778,12 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
         if (v == 4) {
             if (NetArea_IsLocalOwner() != 0) {
                 NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
-                if (unk_89c.applyPendingState(this) == 0) {
-                    unk_89c.changeState(this, 0);
+                if (ai.applyPendingState(this) == 0) {
+                    ai.changeState(this, 0);
                 }
             } else {
                 NpcActor_netSetSlotsIfOwner(this, 1, 4, gCommManager->unk_64);
-                unk_89c.changeState(this, 3);
+                ai.changeState(this, 3);
             }
         }
         break;
@@ -805,8 +805,8 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
                     }
                 body:
                     NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
-                    if (unk_89c.applyPendingState(this) == 0) {
-                        unk_89c.changeState(this, 0);
+                    if (ai.applyPendingState(this) == 0) {
+                        ai.changeState(this, 0);
                     }
                 }
             }

@@ -53,9 +53,9 @@ class Character;
 
 struct Unk_0203e5d0_Node {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ Character *unk_0c;
+    /* 0x04 */ Unk_0203e5d0_Node *next;
+    /* 0x08 */ u32 charId;
+    /* 0x0c */ Character *owner;
 };
 
 struct Unk_0203e5d0_List {
@@ -329,8 +329,8 @@ Unk_0203e5d0_List gCharacterList;
 
 Character::Character() {
     charNode.unk_00 = 0;
-    charNode.unk_04 = 0;
-    charNode.unk_08 = 0;
+    charNode.next = 0;
+    charNode.charId = 0;
 }
 
 Character::~Character() {}
@@ -343,8 +343,8 @@ BOOL Character::vfunc_04() {
     if (!Actor::vfunc_04()) {
         return FALSE;
     }
-    charNode.unk_08 = 0;
-    charNode.unk_0c = this;
+    charNode.charId = 0;
+    charNode.owner = this;
     setInteractionRange(0x3000);
     charFlags = 0;
     setTalkStartMode1();
@@ -373,23 +373,23 @@ BOOL Character::preExecute() {
     return FALSE;
 }
 
-u32 Character::getCharId() { return charNode.unk_08; }
+u32 Character::getCharId() { return charNode.charId; }
 
 void Character::setCharId(u32 a) {
-    charNode.unk_08 = a | (*(u16 *)((u8 *)this + 0xc) << 16);
+    charNode.charId = a | (*(u16 *)((u8 *)this + 0xc) << 16);
 }
 
 extern "C" Character *Character_FindByCharId(u32 id) {
     Unk_0203e5d0_Node *n = (Unk_0203e5d0_Node *)PrioList_FindById(&gCharacterList, id);
     if (n) {
-        return n->unk_0c;
+        return n->owner;
     }
     return 0;
 }
 
 extern "C" Character *Character_FindInteractionTarget(Character *self) {
-    for (Unk_0203e5d0_Node *n = gCharacterList.head; n; n = n->unk_04) {
-        Character *o = n->unk_0c;
+    for (Unk_0203e5d0_Node *n = gCharacterList.head; n; n = n->next) {
+        Character *o = n->owner;
         if (o == self) {
             continue;
         }

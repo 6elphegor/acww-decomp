@@ -11,8 +11,8 @@ public:
     virtual void vfunc_0c() = 0;
     virtual void setOrigin(s32 a, s32 b);
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class NameLabelBalloon : public UiWidget {
@@ -200,19 +200,19 @@ public:
     void enterWait();
     void changeState(s32 state);
 
-    /* 0x050 */ HandCursor unk_50;
-    /* 0x09c */ NameLabelBalloon unk_9c[5];
-    /* 0x31c */ u8 unk_31c;
-    /* 0x31d */ u8 unk_31d;
+    /* 0x050 */ HandCursor cursor;
+    /* 0x09c */ NameLabelBalloon nameLabels[5];
+    /* 0x31c */ u8 selectedResident;
+    /* 0x31d */ u8 isPhoneSelected;
     /* 0x31e */ u8 pad_31e[2];
-    /* 0x320 */ s32 unk_320;
-    /* 0x324 */ u16 unk_324;
+    /* 0x320 */ s32 selectState;
+    /* 0x324 */ u16 timer;
     /* 0x326 */ u8 pad_326[2];
-    /* 0x328 */ s32 unk_328;
+    /* 0x328 */ s32 startDateTime;
     /* 0x32c */ s32 unk_32c;
-    /* 0x330 */ s32 unk_330;
-    /* 0x334 */ s32 unk_334;
-    /* 0x338 */ MsgString9B unk_338;
+    /* 0x330 */ s32 cursorX;
+    /* 0x334 */ s32 cursorY;
+    /* 0x338 */ MsgString9B phoneLabel;
 };
 
 // scene registration entry (referenced from main by address only)
@@ -249,7 +249,7 @@ extern "C" ResidentSelect *ResidentSelect_Create() {
     return new ResidentSelect;
 }
 
-ResidentSelect::ResidentSelect() : unk_50(1), unk_328(0), unk_32c(0) {
+ResidentSelect::ResidentSelect() : cursor(1), startDateTime(0), unk_32c(0) {
 }
 
 ResidentSelect::~ResidentSelect() {
@@ -264,15 +264,15 @@ BOOL ResidentSelect::vfunc_00() {
     for (i = 0; i < 4; i++) {
         void *o = PlayerData_GetResident(g + 0xc, i);
         if (o != 0 && PlayerData_isUsed(o) != 0) {
-            unk_31c = i;
+            selectedResident = i;
             break;
         }
     }
     for (i = 0; i < 5; i++) {
-        unk_9c[i].setKind(i);
+        nameLabels[i].setKind(i);
     }
     c = 0x81;
-    String_Load2d(&unk_338, &c, 0);
+    String_Load2d(&phoneLabel, &c, 0);
     if (SaveData_testFlag(g, 0) == 0) {
         changeState(0);
     } else if (InputMode_IsButtons()) {
@@ -280,8 +280,8 @@ BOOL ResidentSelect::vfunc_00() {
     } else {
         changeState(1);
     }
-    unk_31d = 0;
-    Clock_GetDateTime(&unk_328);
+    isPhoneSelected = 0;
+    Clock_GetDateTime(&startDateTime);
     return TRUE;
 }
 
@@ -289,7 +289,7 @@ BOOL ResidentSelect::vfunc_0c() {
     TalkRequestFlags_ClearSceneHold();
     u8 i;
     for (i = 0; i < 5; i++) {
-        unk_9c[i].release();
+        nameLabels[i].release();
     }
     if (MenuCtrl_IsClockEdited()) {
         s32 l[2];
@@ -297,7 +297,7 @@ BOOL ResidentSelect::vfunc_0c() {
         l[0] = 0;
         l[1] = 0;
         Clock_GetDateTime(l);
-        if (DateTime_Compare(&unk_328, l, 0x3f) == -1) {
+        if (DateTime_Compare(&startDateTime, l, 0x3f) == -1) {
             MenuCtrl_SetClockMovedForward();
         } else {
             MenuCtrl_SetClockMovedBack();
@@ -309,17 +309,17 @@ BOOL ResidentSelect::vfunc_0c() {
 BOOL ResidentSelect::onExecute() {
     ResidentSelect_UpdateCursor(this);
     updateNameLabels();
-    if (*(u32 *)((u8 *)sResidentSelectStates + 8 + unk_320 * 16) != 0) {
-        (this->*sResidentSelectStates[unk_320].exit)();
+    if (*(u32 *)((u8 *)sResidentSelectStates + 8 + selectState * 16) != 0) {
+        (this->*sResidentSelectStates[selectState].exit)();
     }
     return TRUE;
 }
 
 BOOL ResidentSelect::onDraw() {
-    unk_50.draw();
+    cursor.draw();
     u8 i;
     for (i = 0; i < 5; i++) {
-        NameLabelBalloon *e = &unk_9c[i];
+        NameLabelBalloon *e = &nameLabels[i];
         e->draw();
     }
     return TRUE;
@@ -329,14 +329,14 @@ void ResidentSelect::changeState(s32 state) {
     if (sResidentSelectStates[state].enter) {
         (this->*sResidentSelectStates[state].enter)();
     }
-    unk_320 = state;
+    selectState = state;
 }
 
 void ResidentSelect::enterWait() {
-    unk_50.setAnim(0);
+    cursor.setAnim(0);
     u8 i;
     for (i = 0; i < 5; i++) {
-        unk_9c[i].requestHide();
+        nameLabels[i].requestHide();
     }
 }
 
@@ -351,10 +351,10 @@ void ResidentSelect::updateWait() {
 }
 
 void ResidentSelect::enterTouchSelect() {
-    unk_50.setAnim(0);
+    cursor.setAnim(0);
     u8 i;
     for (i = 0; i < 5; i++) {
-        unk_9c[i].requestShow();
+        nameLabels[i].requestShow();
     }
 }
 
@@ -368,7 +368,7 @@ void ResidentSelect::updateTouchSelect() {
     if (InputMode_IsTouch() && Unk_ov004_0223e580_BothEf()) {
         if (TouchPickResult_GetTarget(Scene_GetTouchPicker(), out, &a, &c) && a == 1) {
             gCommManager->unk_68 = c;
-            unk_31c = c;
+            selectedResident = c;
             changeState(3);
             return;
         }
@@ -382,10 +382,10 @@ void ResidentSelect::updateTouchSelect() {
 }
 
 void ResidentSelect::enterPadSelect() {
-    unk_50.setAnim(7);
+    cursor.setAnim(7);
     u8 i;
     for (i = 0; i < 5; i++) {
-        unk_9c[i].requestShow();
+        nameLabels[i].requestShow();
     }
 }
 
@@ -409,10 +409,10 @@ void ResidentSelect::updatePadSelect() {
         changeState(1);
         return;
     }
-    if (unk_31d != 0) {
+    if (isPhoneSelected != 0) {
         u16 k = gPad.unk_02;
         if (k & 0x80) {
-            unk_31d = 0;
+            isPhoneSelected = 0;
             goto L500;
         }
         {
@@ -420,7 +420,7 @@ void ResidentSelect::updatePadSelect() {
             if (up == 0 && (k & 0x20) == 0) {
                 goto L500;
             }
-            st = unk_31c;
+            st = selectedResident;
             if (up != 0) {
                 st = 1;
             } else if (k & 0x20) {
@@ -430,11 +430,11 @@ void ResidentSelect::updatePadSelect() {
         if (PlayerActor_GetCharacter(st) == 0) {
             goto L500;
         }
-        unk_31d = 0;
-        unk_31c = st;
+        isPhoneSelected = 0;
+        selectedResident = st;
         goto L500;
     }
-    st = unk_31c;
+    st = selectedResident;
     switch (st) {
     case 0: {
         u16 k = gPad.unk_02;
@@ -446,7 +446,7 @@ void ResidentSelect::updatePadSelect() {
                 st = st + 1;
             }
         } else if (k & 0x40) {
-            unk_31d = 1;
+            isPhoneSelected = 1;
         }
         break;
     }
@@ -460,7 +460,7 @@ void ResidentSelect::updatePadSelect() {
                 st = st - 1;
             }
         } else if (k & 0x40) {
-            unk_31d = 1;
+            isPhoneSelected = 1;
         }
         break;
     }
@@ -473,7 +473,7 @@ void ResidentSelect::updatePadSelect() {
             if (!PlayerActor_GetCharacter(st)) {
                 st = st + 1;
                 if (!PlayerActor_GetCharacter(st)) {
-                    unk_31d = 1;
+                    isPhoneSelected = 1;
                 }
             }
         }
@@ -488,7 +488,7 @@ void ResidentSelect::updatePadSelect() {
             if (!PlayerActor_GetCharacter(st)) {
                 st = st - 1;
                 if (!PlayerActor_GetCharacter(st)) {
-                    unk_31d = 1;
+                    isPhoneSelected = 1;
                 }
             }
         }
@@ -496,16 +496,16 @@ void ResidentSelect::updatePadSelect() {
     }
     }
     if (PlayerActor_GetCharacter(st) != 0) {
-        unk_31c = st;
+        selectedResident = st;
     }
 L500:
     {
         u16 k = gPad.unk_02;
         if ((k & 8) || (k & 1)) {
-            if (unk_31d != 0) {
+            if (isPhoneSelected != 0) {
                 RoomTelephone_StartAct0A();
             } else {
-                g->unk_68 = unk_31c;
+                g->unk_68 = selectedResident;
                 changeState(3);
             }
         }
@@ -514,21 +514,21 @@ L500:
 
 void ResidentSelect::enterDecided() {
     BOOL r = FALSE;
-    u8 v = unk_31c;
+    u8 v = selectedResident;
     if (v == 0 || v == 2) {
         r = TRUE;
     }
     PlayerActor_LocalRequestGetOutOfBed(r, 1);
-    unk_50.setAnim(0);
+    cursor.setAnim(0);
     u8 i;
     for (i = 0; i < 5; i++) {
-        unk_9c[i].requestHide();
+        nameLabels[i].requestHide();
     }
-    unk_324 = 0x19;
+    timer = 0x19;
 }
 
 void ResidentSelect::updateDecided() {
-    if (!func_020e7500(&unk_324)) {
+    if (!func_020e7500(&timer)) {
         changeState(4);
     }
 }
@@ -536,11 +536,11 @@ void ResidentSelect::updateDecided() {
 void ResidentSelect::enterCameraMove() {
     RoomCamera_StartBlendToPlayer(this);
     PlayerActor_RequestTurnTo(0, 4);
-    unk_324 = 5;
+    timer = 5;
 }
 
 void ResidentSelect::updateCameraMove() {
-    if (!func_020e7500(&unk_324)) {
+    if (!func_020e7500(&timer)) {
         changeState(5);
     }
 }
@@ -585,16 +585,16 @@ void ResidentSelect::updateNameLabels() {
                 Camera_ProjectCurvedToScreen(&x, &y, v);
                 x += sResidentLabelOffsets[i].a;
                 y += sResidentLabelOffsets[i].b;
-                NameLabelBalloon *e = &unk_9c[i];
+                NameLabelBalloon *e = &nameLabels[i];
                 e->setOffset(x, y);
                 e->setText(&o);
                 e->vfunc_0c();
             }
         }
     }
-    unk_9c[4].setOffset(sResidentExtraLabelPos.a, sResidentExtraLabelPos.b);
-    unk_9c[4].setText(&unk_338);
-    NameLabelBalloon *e4 = &unk_9c[4];
+    nameLabels[4].setOffset(sResidentExtraLabelPos.a, sResidentExtraLabelPos.b);
+    nameLabels[4].setText(&phoneLabel);
+    NameLabelBalloon *e4 = &nameLabels[4];
     e4->vfunc_0c();
 }
 
@@ -605,15 +605,15 @@ extern "C" void ResidentSelect_UpdateCursor(ResidentSelect *o) {
     z.x = 0;
     z.y = 0;
     z.z = 0;
-    if (o->unk_31d != 0) {
+    if (o->isPhoneSelected != 0) {
         pp = RoomTelephone_GetInstance()->vfunc_50();
     } else {
-        pp = (u8 *)PlayerActor_GetCharacter(o->unk_31c) + 0x5c;
+        pp = (u8 *)PlayerActor_GetCharacter(o->selectedResident) + 0x5c;
     }
     Camera_ProjectCurvedToScreen(&xy[0], &xy[1], pp);
-    if (o->unk_31d == 0) {
-        xy[0] = xy[0] + sResidentCursorOffsets[o->unk_31c * 2];
-        xy[1] = xy[1] + data_ov004_022447f0[o->unk_31c * 2];
+    if (o->isPhoneSelected == 0) {
+        xy[0] = xy[0] + sResidentCursorOffsets[o->selectedResident * 2];
+        xy[1] = xy[1] + data_ov004_022447f0[o->selectedResident * 2];
     } else {
         xy[0] = xy[0] + sResidentCursorExtraOffset[0];
         xy[1] = xy[1] + sResidentCursorExtraOffset[1];
@@ -625,16 +625,16 @@ extern "C" void ResidentSelect_UpdateCursor(ResidentSelect *o) {
         t = FALSE;
     }
     if (t) {
-        if (o->unk_320 == 2) {
-            if (o->unk_330 != xy[0] || o->unk_334 != xy[1]) {
+        if (o->selectState == 2) {
+            if (o->cursorX != xy[0] || o->cursorY != xy[1]) {
                 Snd_PlaySe(0xb);
             }
         }
     }
-    o->unk_50.setPos(xy[0], xy[1]);
-    o->unk_50.vfunc_0c();
-    o->unk_330 = xy[0];
-    o->unk_334 = xy[1];
+    o->cursor.setPos(xy[0], xy[1]);
+    o->cursor.vfunc_0c();
+    o->cursorX = xy[0];
+    o->cursorY = xy[1];
 }
 
 // ---- rodata (defined after the functions so that the compiler cannot fold the loads) ----

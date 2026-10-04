@@ -102,8 +102,8 @@ public:
     void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
     void destroyLabel();
 
-    /* 0x12 */ u8 unk_12[0x2a];
-    /* 0x3c */ void *unk_3c;
+    /* 0x12 */ u8 text[0x2a];
+    /* 0x3c */ void *label;
 };
 
 class EncodedString8B : public EncodedString {

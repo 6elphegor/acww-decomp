@@ -2,7 +2,7 @@
 
 struct HudObjGfx {
     u8 unk_00[0x255];
-    u8 unk_255;
+    u8 countdownVariant;
 
     const char *getPalettePath(s32 mode);
 };
@@ -19,6 +19,6 @@ const char *HudObjGfx::getPalettePath(s32 mode) {
     const char *r = "/a_mes/a_mes_obj_ncl.bin";
     if (mode == 2) r = a;
     else if (mode == 3) r = b;
-    else if (unk_255 != 0) r = c;
+    else if (countdownVariant != 0) r = c;
     return r;
 }

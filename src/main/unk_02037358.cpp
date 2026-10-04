@@ -22,9 +22,9 @@ u8 *sAcreAttrData;
 u32 sAcreAttrSize;
 
 struct Unk_02037478 {
-    u32 unk_00;
+    u32 acreId;
     u8 pad_04[0x20];
-    void *unk_24;
+    void *buried;
 };
 
 struct Marker1 {
@@ -45,12 +45,12 @@ public:
     u32 getAcreId();
     void setAcreId(u32 v);
     u8 *getUnk04();
-    u32 unk_00;
+    u32 acreId;
 };
 
 struct Unk_02037618_Sub {
     u8 pad_00[0xc];
-    u32 unk_0c;
+    u32 collisionData;
 };
 
 class MapBlock {
@@ -59,13 +59,13 @@ public:
     void bindBg(Unk_02037618_Sub *s, u32 t, u32 u);
     void init(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, Unk_02037618_Sub *k2, u32 k3, s32 k4, s32 k5, u32 k6);
 
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    Unk_02037674_V3 unk_0c;
-    s32 unk_18[2];
-    Unk_02037618_Sub *unk_20;
-    s32 unk_24;
+    s32 acreId;
+    s32 blockX;
+    s32 blockZ;
+    Unk_02037674_V3 pos;
+    s32 layers[2];
+    Unk_02037618_Sub *bgModel;
+    s32 buried;
 };
 
 extern "C" u32 AcreAttr_GetType(u32 i);
@@ -76,23 +76,23 @@ extern "C" u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
 extern "C" void Unit_SplitIndex(s32 *a, s32 *b, s32 v);
 
 void MapBlock::clear() {
-    unk_04 = 0;
-    unk_08 = 0;
+    blockX = 0;
+    blockZ = 0;
     for (s32 i = 0; i < 2; i++) {
-        unk_18[i] = 0;
+        layers[i] = 0;
     }
 }
 
 void MapBlock::init(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, Unk_02037618_Sub *k2, u32 k3, s32 k4, s32 k5, u32 k6) {
-    unk_00 = a;
-    unk_0c.x = v->x;
-    unk_0c.y = v->y;
-    unk_0c.z = v->z;
-    unk_18[0] = b;
-    unk_18[1] = k0;
-    unk_24 = k1;
-    unk_04 = k4;
-    unk_08 = k5;
+    acreId = a;
+    pos.x = v->x;
+    pos.y = v->y;
+    pos.z = v->z;
+    layers[0] = b;
+    layers[1] = k0;
+    buried = k1;
+    blockX = k4;
+    blockZ = k5;
     bindBg(k2, k3, k6);
 }
 
@@ -105,12 +105,12 @@ extern "C" void MapBlock_Init(MapBlock *self, s32 a, Unk_02037674_V3 *v, s32 b, 
 }
 
 void MapBlock::bindBg(Unk_02037618_Sub *s, u32 t, u32 u) {
-    unk_20 = s;
-    if (unk_20 != 0) {
-        t = unk_20->unk_0c;
+    bgModel = s;
+    if (bgModel != 0) {
+        t = bgModel->collisionData;
     }
     if (t != 0) {
-        CollisionMap_SetBlock(unk_04, unk_08, t, u);
+        CollisionMap_SetBlock(blockX, blockZ, t, u);
     }
 }
 
@@ -130,9 +130,9 @@ extern "C" MapBlock *MapBlock_NewArray(s32 n, void *heap, s32 x) {
 
 u8 *MapBlockAcre::getUnk04() { return (u8 *)this + 4; }
 
-void MapBlockAcre::setAcreId(u32 v) { unk_00 = v; }
+void MapBlockAcre::setAcreId(u32 v) { acreId = v; }
 
-u32 MapBlockAcre::getAcreId() { return unk_00; }
+u32 MapBlockAcre::getAcreId() { return acreId; }
 
 s32 MapBlockAcre::hasPond() {
     return Acre_HasPond(getAcreId());
@@ -152,7 +152,7 @@ extern "C" BOOL MapBlock_SetItem(void *cell, u16 *t, u32 x, u32 y, u8 z) {
 extern "C" u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z) {
     u16 *r = 0;
     if (z < 2 && x < 0x10 && y < 0x10) {
-        u16 *t = (u16 *)((MapBlock *)cell)->unk_18[z];
+        u16 *t = (u16 *)((MapBlock *)cell)->layers[z];
         if (t != 0) {
             r = t + (x + y * 16);
         }
@@ -179,7 +179,7 @@ extern "C" BOOL MapBlock_FindItemInRange(void *cell, s32 *a, s32 *b, Marker1 *m,
 }
 
 extern "C" u32 MapBlock_GetAttr(Unk_02037478 *o) {
-    return Acre_GetAttr(o->unk_00);
+    return Acre_GetAttr(o->acreId);
 }
 
 extern "C" BOOL MapBlock_HasAllAttr(Unk_02037478 *o, u32 mask) {
@@ -202,16 +202,16 @@ extern "C" BOOL BuriedMask_Clear(void *base, u32 a, u32 b);
 
 extern "C" BOOL MapBlock_SetBuried(Unk_02037478 *o, u32 a, u32 b) {
     BOOL r = FALSE;
-    if (o->unk_24 != 0) {
-        r = BuriedMask_Set(o->unk_24, a, b);
+    if (o->buried != 0) {
+        r = BuriedMask_Set(o->buried, a, b);
     }
     return r;
 }
 
 extern "C" BOOL MapBlock_ClearBuried(Unk_02037478 *o, u32 a, u32 b) {
     BOOL r = FALSE;
-    if (o->unk_24 != 0) {
-        r = BuriedMask_Clear(o->unk_24, a, b);
+    if (o->buried != 0) {
+        r = BuriedMask_Clear(o->buried, a, b);
     }
     return r;
 }

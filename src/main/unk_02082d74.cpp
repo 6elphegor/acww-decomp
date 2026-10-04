@@ -116,7 +116,7 @@ struct Unk_02084ecc_Vec {
 
 struct GroundInfoBase {
     u8 pad_00[0x34];
-    s32 unk_34;
+    s32 attr;
     u8 pad_38[8];
     BOOL getHeight(s32 a);
 };

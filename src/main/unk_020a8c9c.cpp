@@ -111,8 +111,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class SpriteAnim {
@@ -164,10 +164,10 @@ public:
     void moveTo(s32 a, s32 b);
 
     /* 0x0c */ s32 layer1;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ SpriteAnim unk_14;
+    /* 0x10 */ s32 posY;
+    /* 0x14 */ SpriteAnim layerAnim1;
     /* 0x28 */ SpriteAnim priority;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x3c */ s32 state;
     /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
@@ -249,8 +249,8 @@ public:
     s32 getKnobOffsetY();
     void setPos(s32 v);
 
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ ScrollKnob unk_10;
+    /* 0x0c */ s32 value;
+    /* 0x10 */ ScrollKnob knob;
 };
 
 // Vtable 0x020e2c98: menu window base (BG tile map loaded from a file)
@@ -892,15 +892,15 @@ BufferBmgReader sChoiceBmgReader;
 // ---------------------------------------------------------------------------------------------------------------------
 // Functions, from the highest address to the lowest
 
-ChoiceSlider::ChoiceSlider() : unk_0c(0x800), unk_10(1) {
-    unk_10.setPriority(0);
+ChoiceSlider::ChoiceSlider() : value(0x800), knob(1) {
+    knob.setPriority(0);
 }
 
 ChoiceSlider::~ChoiceSlider() {}
 
 void ChoiceSlider::draw() {
-    if (unk_10.getState()) {
-        unk_10.draw();
+    if (knob.getState()) {
+        knob.draw();
         u32 r = *data_020d467c;
         s32 a = getOriginY();
         s32 b = getOriginX();
@@ -911,18 +911,18 @@ void ChoiceSlider::draw() {
 void ChoiceSlider::vfunc_0c() {
     s32 a = getKnobX();
     s32 b = getKnobY();
-    unk_10.moveTo(a, b);
-    unk_10.vfunc_0c();
+    knob.moveTo(a, b);
+    knob.vfunc_0c();
 }
 
 void ChoiceSlider::setOrigin(s32 a, s32 b) {
     UiWidget::setOrigin(a, b);
-    unk_10.setOrigin(a, b);
+    knob.setOrigin(a, b);
 }
 
-void ChoiceSlider::setPos(s32 v) { unk_0c = v; }
+void ChoiceSlider::setPos(s32 v) { value = v; }
 
-s32 ChoiceSlider::getKnobOffsetY() { return -((unk_0c - 0x1000) * 32) >> 12; }
+s32 ChoiceSlider::getKnobOffsetY() { return -((value - 0x1000) * 32) >> 12; }
 
 s32 ChoiceSlider::getKnobX() { return 6; }
 
@@ -932,17 +932,17 @@ s32 ChoiceSlider::getTrackBottom() { return 0x20; }
 
 s32 ChoiceSlider::getTrackTop() { return 0; }
 
-void ChoiceSlider::getKnobAnimOffset(s32 *x, s32 *y) { unk_10.getAnimOffset(x, y); }
+void ChoiceSlider::getKnobAnimOffset(s32 *x, s32 *y) { knob.getAnimOffset(x, y); }
 
-BOOL ChoiceSlider::isKnobAnimDone() { return unk_10.areAnimsDone(); }
+BOOL ChoiceSlider::isKnobAnimDone() { return knob.areAnimsDone(); }
 
-void ChoiceSlider::showKnob() { unk_10.setState(1); }
+void ChoiceSlider::showKnob() { knob.setState(1); }
 
-void ChoiceSlider::hideKnob() { unk_10.setState(0); }
+void ChoiceSlider::hideKnob() { knob.setState(0); }
 
-void ChoiceSlider::startKnobGrab() { unk_10.setState(2); }
+void ChoiceSlider::startKnobGrab() { knob.setState(2); }
 
-void ChoiceSlider::startKnobRelease() { unk_10.setState(3); }
+void ChoiceSlider::startKnobRelease() { knob.setState(3); }
 
 ChoiceHandCursor::ChoiceHandCursor() : HandCursor(1) {
     priority = 0;

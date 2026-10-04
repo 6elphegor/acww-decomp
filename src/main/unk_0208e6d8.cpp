@@ -23,7 +23,7 @@ extern const u16 sBusyIconSe[2];
 
 struct Unk_0208e9d4_Ptr {
     u8 pad[0xc];
-    u16 unk_0c;
+    u16 profile;
 };
 extern "C" Unk_0208e9d4_Ptr *gActorDefaultParent;
 
@@ -57,8 +57,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class TalkBusyIcon : public UiWidget {
@@ -81,14 +81,14 @@ public:
     void requestHide();
     void requestShow(u32 v);
 
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ u16 unk_10;
-    /* 0x12 */ u8 unk_12;
-    /* 0x13 */ u8 unk_13;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
-    /* 0x1c */ s32 unk_1c;
-    /* 0x20 */ u8 unk_20;
+    /* 0x0c */ s32 state;
+    /* 0x10 */ u16 rotation;
+    /* 0x12 */ u8 objWindow;
+    /* 0x13 */ u8 showRequested;
+    /* 0x14 */ s32 posX;
+    /* 0x18 */ s32 posY;
+    /* 0x1c */ s32 seIndex;
+    /* 0x20 */ u8 sePlaying;
 };
 
 class TransitionCommIcon : public UiWidget {
@@ -107,14 +107,14 @@ public:
     void exit();
     void init();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ s32 unk_2c;
-    /* 0x30 */ u64 unk_30;
-    /* 0x38 */ u8 unk_38;
-    /* 0x39 */ u8 unk_39;
+    /* 0x0c */ SpriteAnim anim;
+    /* 0x20 */ s32 state;
+    /* 0x24 */ s32 showDelay;
+    /* 0x28 */ s32 hideDelay;
+    /* 0x2c */ s32 blinkPhase;
+    /* 0x30 */ u64 blinkDeadline;
+    /* 0x38 */ u8 blinkOn;
+    /* 0x39 */ u8 suspended;
 };
 
 class TransitionCommIconProc : public GameProc {
@@ -163,8 +163,8 @@ typedef void (TalkBusyIcon::*Unk_020e10dc_Fn)();
 
 struct Unk_020e10bc_Rec {
     TransitionCommIconProc *(*fn)();
-    s16 unk_04;
-    s16 unk_06;
+    s16 executePriority;
+    s16 drawPriority;
 };
 extern Unk_020e10bc_Rec sTransitionCommIconProfile;
 
@@ -198,23 +198,23 @@ void InputModeIcon::startModeAnim() {
 }
 
 void TalkBusyIcon::requestShow(u32 v) {
-    unk_13 = 1;
-    unk_1c = v;
+    showRequested = 1;
+    seIndex = v;
 }
 
 void TalkBusyIcon::requestHide() {
-    unk_13 = 0;
+    showRequested = 0;
 }
 
 TalkBusyIcon::TalkBusyIcon() {
-    unk_0c = 0;
-    unk_10 = 0;
-    unk_12 = 0;
-    unk_13 = 0;
-    unk_14 = 0;
-    unk_18 = 0;
-    unk_1c = 0;
-    unk_20 = 0;
+    state = 0;
+    rotation = 0;
+    objWindow = 0;
+    showRequested = 0;
+    posX = 0;
+    posY = 0;
+    seIndex = 0;
+    sePlaying = 0;
 }
 
 TalkBusyIcon::~TalkBusyIcon() {
@@ -222,15 +222,15 @@ TalkBusyIcon::~TalkBusyIcon() {
 }
 
 void TalkBusyIcon::draw() {
-    if (unk_0c != 0) {
-        s32 x = unk_14 + getOriginX();
-        s32 y = unk_18 + getOriginY();
+    if (state != 0) {
+        s32 x = posX + getOriginX();
+        s32 y = posY + getOriginY();
         u32 h0 = *data_020d5d0c[0];
         u32 h1 = *data_020d5d0c[4];
-        Oam_DrawCell(0, h0, x, y, -1, -1, 0x1000, 0x1000, unk_10, -1, 0, 0);
+        Oam_DrawCell(0, h0, x, y, -1, -1, 0x1000, 0x1000, rotation, -1, 0, 0);
         Oam_DrawCell(0, h1, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
-        if (unk_12 != 0) {
-            Oam_DrawCell(0, h0, x, y, -1, -1, 0x1000, 0x1000, unk_10, 2, 0, 0);
+        if (objWindow != 0) {
+            Oam_DrawCell(0, h0, x, y, -1, -1, 0x1000, 0x1000, rotation, 2, 0, 0);
             Oam_DrawCell(0, h1, x, y, -1, -1, 0x1000, 0x1000, 0, 2, 0, 0);
         }
     }
@@ -238,8 +238,8 @@ void TalkBusyIcon::draw() {
 
 void TalkBusyIcon::vfunc_0c() {
     static Unk_020e10dc_Fn tbl[2] = {&TalkBusyIcon::updateHidden, &TalkBusyIcon::updateShown};
-    unk_10 += 0x1111;
-    (this->*tbl[unk_0c])();
+    rotation += 0x1111;
+    (this->*tbl[state])();
 }
 
 void TalkBusyIcon::init() { enterHidden(); }
@@ -252,31 +252,31 @@ void TalkBusyIcon::callUpdate() { vfunc_0c(); }
 void TalkBusyIcon::callDraw() { draw(); }
 
 void TalkBusyIcon::setPos(s32 a, s32 b) {
-    unk_14 = a;
-    unk_18 = b;
+    posX = a;
+    posY = b;
 }
 
-void TalkBusyIcon::enterHidden() { unk_0c = 0; }
+void TalkBusyIcon::enterHidden() { state = 0; }
 
 void TalkBusyIcon::updateHidden() {
-    if (unk_13 != 0) {
+    if (showRequested != 0) {
         enterShown();
     }
 }
 
 void TalkBusyIcon::enterShown() {
-    unk_0c = 1;
+    state = 1;
     startSe();
-    if (unk_12 != 0) {
+    if (objWindow != 0) {
         Gfx2d_SetMainObjWinPlanes(0x10);
         Gfx2d_EnableMainWindows(4);
     }
 }
 
 void TalkBusyIcon::updateShown() {
-    if (unk_13 == 0) {
+    if (showRequested == 0) {
         stopSe();
-        if (unk_12 != 0) {
+        if (objWindow != 0) {
             Gfx2d_DisableMainWindows(4);
         }
         enterHidden();
@@ -284,29 +284,29 @@ void TalkBusyIcon::updateShown() {
 }
 
 void TalkBusyIcon::startSe() {
-    u16 v = sBusyIconSe[unk_1c];
-    unk_20 = 1;
+    u16 v = sBusyIconSe[seIndex];
+    sePlaying = 1;
     func_02004008(v);
 }
 
 void TalkBusyIcon::stopSe() {
-    u16 v = sBusyIconSe[unk_1c];
-    if (unk_20 != 0) {
-        unk_20 = 0;
+    u16 v = sBusyIconSe[seIndex];
+    if (sePlaying != 0) {
+        sePlaying = 0;
         Snd_StopSe(v, 1);
     }
 }
 
-TransitionCommIcon::TransitionCommIcon() : unk_20(0), unk_24(0), unk_28(0), unk_2c(0), unk_30(0), unk_38(0), unk_39(0) {}
+TransitionCommIcon::TransitionCommIcon() : state(0), showDelay(0), hideDelay(0), blinkPhase(0), blinkDeadline(0), blinkOn(0), suspended(0) {}
 
 TransitionCommIcon::~TransitionCommIcon() {}
 
 void TransitionCommIcon::draw() {
-    if (unk_38 != 0) {
-        if (unk_39 == 0) {
+    if (blinkOn != 0) {
+        if (suspended == 0) {
             s32 x = getOriginX();
             s32 y = getOriginY();
-            u32 h = (u32)unk_0c.getCell();
+            u32 h = (u32)anim.getCell();
             Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
             Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, 2, 0, 0);
         }
@@ -319,41 +319,41 @@ const u8 sCommIconHideDelays[4] = {5, 5, 5, 1};
 
 void TransitionCommIcon::vfunc_0c() {
     static Unk_020e10f8_Fn tbl[2] = {&TransitionCommIcon::updateHidden, &TransitionCommIcon::updateShown};
-    (this->*tbl[unk_20])();
+    (this->*tbl[state])();
 }
 
 extern "C" void TransitionCommIcon_RequestShow(u32 i) {
-    u32 t = gActorDefaultParent->unk_0c;
+    u32 t = gActorDefaultParent->profile;
     BOOL e = gCommManager->isOnline();
     if (t != 5 && e) {
-        sTransitionCommIcon.unk_24 = sCommIconShowDelays[i];
+        sTransitionCommIcon.showDelay = sCommIconShowDelays[i];
     }
 }
 
 extern "C" void TransitionCommIcon_RequestHide(u32 i) {
-    if (gActorDefaultParent->unk_0c != 5) {
-        sTransitionCommIcon.unk_28 = sCommIconHideDelays[i];
+    if (gActorDefaultParent->profile != 5) {
+        sTransitionCommIcon.hideDelay = sCommIconHideDelays[i];
     }
 }
 
 extern "C" void TransitionCommIcon_Resume() {
-    if (sTransitionCommIcon.unk_20 != 0) {
+    if (sTransitionCommIcon.state != 0) {
         Gfx2d_SetMainObjWinPlanes(0x10);
         Gfx2d_EnableMainWindows(4);
     }
-    sTransitionCommIcon.unk_39 = 0;
+    sTransitionCommIcon.suspended = 0;
 }
 
 extern "C" void TransitionCommIcon_ResumeWinOut() {
-    if (sTransitionCommIcon.unk_20 != 0) {
+    if (sTransitionCommIcon.state != 0) {
         Gfx2d_SetMainObjWinPlanes(0x10);
         Gfx2d_SetMainWinOutPlanes(4);
         Gfx2d_EnableMainWindows(4);
     }
-    sTransitionCommIcon.unk_39 = 0;
+    sTransitionCommIcon.suspended = 0;
 }
 
-extern "C" void TransitionCommIcon_Suspend() { sTransitionCommIcon.unk_39 = 1; }
+extern "C" void TransitionCommIcon_Suspend() { sTransitionCommIcon.suspended = 1; }
 
 extern "C" void TransitionCommIcon_Init() { sTransitionCommIcon.init(); }
 
@@ -365,12 +365,12 @@ extern "C" void TransitionCommIcon_Draw() { sTransitionCommIcon.callDraw(); }
 
 void TransitionCommIcon::init() {
     setupAnim();
-    unk_24 = 0;
-    unk_28 = 0;
-    unk_2c = 0;
-    unk_30 = 0;
-    unk_38 = 0;
-    unk_39 = 0;
+    showDelay = 0;
+    hideDelay = 0;
+    blinkPhase = 0;
+    blinkDeadline = 0;
+    blinkOn = 0;
+    suspended = 0;
 }
 
 void TransitionCommIcon::exit() { enterHidden(); }
@@ -381,55 +381,55 @@ void TransitionCommIcon::callUpdate() { vfunc_0c(); }
 void TransitionCommIcon::callDraw() { draw(); }
 
 void TransitionCommIcon::enterHidden() {
-    unk_20 = 0;
-    unk_24 = 0;
-    unk_38 = 0;
+    state = 0;
+    showDelay = 0;
+    blinkOn = 0;
 }
 
 void TransitionCommIcon::updateHidden() {
-    if (unk_24 > 0) {
-        unk_24--;
-        if (unk_24 <= 0) {
+    if (showDelay > 0) {
+        showDelay--;
+        if (showDelay <= 0) {
             enterShown();
         }
     }
 }
 
 void TransitionCommIcon::enterShown() {
-    unk_20 = 1;
-    unk_28 = 0;
+    state = 1;
+    hideDelay = 0;
     Gfx2d_SetMainObjWinPlanes(0x10);
     Gfx2d_EnableMainWindows(4);
     u64 t = OS_GetTick();
-    unk_2c = 1;
-    unk_30 = t + 0x1991b;
-    unk_38 = 1;
+    blinkPhase = 1;
+    blinkDeadline = t + 0x1991b;
+    blinkOn = 1;
 }
 
 void TransitionCommIcon::updateShown() {
     u64 now = OS_GetTick();
-    if (now >= unk_30) {
-        if (unk_2c == 0) {
-            unk_30 = now + 0x1991b;
-            unk_38 = 1;
-            unk_2c = 1;
-        } else if (unk_2c == 1) {
-            unk_30 = now + 0x1991b;
-            unk_38 = 0;
-            unk_2c = 2;
-        } else if (unk_2c == 2) {
-            unk_30 = now + 0x1991b;
-            unk_38 = 1;
-            unk_2c = 3;
-        } else if (unk_2c == 3) {
-            unk_30 = now + 0x4cb51;
-            unk_38 = 0;
-            unk_2c = 0;
+    if (now >= blinkDeadline) {
+        if (blinkPhase == 0) {
+            blinkDeadline = now + 0x1991b;
+            blinkOn = 1;
+            blinkPhase = 1;
+        } else if (blinkPhase == 1) {
+            blinkDeadline = now + 0x1991b;
+            blinkOn = 0;
+            blinkPhase = 2;
+        } else if (blinkPhase == 2) {
+            blinkDeadline = now + 0x1991b;
+            blinkOn = 1;
+            blinkPhase = 3;
+        } else if (blinkPhase == 3) {
+            blinkDeadline = now + 0x4cb51;
+            blinkOn = 0;
+            blinkPhase = 0;
         }
     }
-    if (unk_28 > 0) {
-        unk_28--;
-        if (unk_28 <= 0) {
+    if (hideDelay > 0) {
+        hideDelay--;
+        if (hideDelay <= 0) {
             Gfx2d_DisableMainWindows(4);
             enterHidden();
         }
@@ -437,9 +437,9 @@ void TransitionCommIcon::updateShown() {
 }
 
 void TransitionCommIcon::setupAnim() {
-    unk_0c.setSeq((SpriteAnimSeq *)data_020d5d34);
-    unk_0c.setPlayOnce(1);
-    unk_0c.restart();
+    anim.setSeq((SpriteAnimSeq *)data_020d5d34);
+    anim.setPlayOnce(1);
+    anim.restart();
 }
 
 extern "C" TransitionCommIconProc *TransitionCommIconProc_Create() { return new TransitionCommIconProc(); }

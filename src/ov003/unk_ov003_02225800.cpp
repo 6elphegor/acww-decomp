@@ -10,11 +10,11 @@ struct Unk_0203389c_Vec {
 class GroundInfoBase {
 public:
     u8 pad_00[0x24];
-    s32 unk_24, unk_28, unk_2c;
-    s32 unk_30;
-    s32 unk_34;
+    s32 flowDir, flowDirY, flowDirZ;
+    s32 waterKind;
+    s32 attr;
     u8 pad_38[4];
-    s32 unk_3c;
+    s32 waterSurfaceY;
     BOOL isBelowWaterSurface(s32 a);
     s32 getHeight(s32 a);
 };
@@ -273,9 +273,9 @@ public:
 
 // ---- TU25 own data (global definitions; the segments below access them through their own typed views)
 struct Unk_ov003_02234a9c_Entry {
-    void *unk_00;
-    u16 unk_04;
-    u16 unk_06;
+    void *create;
+    u16 executePriority;
+    u16 drawPriority;
 };
 
 extern "C" void InsectManager_Create();
@@ -738,33 +738,33 @@ struct Unk_ov003_02234b06_Rec {
 
 struct Unk_ov003_0225980c_Obj {
     u8 pad_000[0x50];
-    Blk unk_50;
+    Blk model;
     u8 pad_80[0xb4 - 0x80];
-    Blk unk_b4;
+    Blk modelBaseRot;
     u8 pad_e4[0x130 - 0xe4];
-    u8 unk_130[0x50];
-    Blk unk_180;
+    u8 pooledModel[0x50];
+    Blk handMtx;
     u8 pad_1b0[0x204 - 0x1b0];
-    V3 unk_204;
-    s32 unk_210;
-    s32 unk_214;
-    s32 unk_218;
-    s32 unk_21c;
+    V3 position;
+    s32 scaleX;
+    s32 scaleY;
+    s32 scaleZ;
+    s32 behaviourWork;
     u8 pad_220[0x22c - 0x220];
-    s32 unk_22c;
+    s32 effectHandle;
     u8 pad_230[2];
-    s16 unk_232;
+    s16 auxTimer;
     u8 pad_234[4];
-    s16 unk_238;
-    s16 unk_23a;
-    s16 unk_23c;
+    s16 rotX;
+    s16 rotY;
+    s16 rotZ;
     u8 pad_23e[4];
-    s16 unk_242;
+    s16 stateTimer;
     u8 pad_244[0x24d - 0x244];
-    s8 unk_24d;
+    s8 kind;
     u8 pad_24e[2];
-    u8 unk_250;
-    u8 unk_251;
+    u8 lifeState;
+    u8 state;
     u8 pad_252[0x25c - 0x252];
 };
 
@@ -879,34 +879,34 @@ typedef Unk_ov003_0225980c_V3 V3;
 struct Unk_ov003_0225980c_Rec {
     u8 pad_000[0x20];
     u8 unk_20[0x174 - 0x20];
-    u8 unk_174[0x1c8 - 0x174];
-    V3 unk_1c8;
-    V3 unk_1d4;
+    u8 seEmitter[0x1c8 - 0x174];
+    V3 homePos;
+    V3 targetPos;
     u8 pad_1e0[0x204 - 0x1e0];
-    V3 unk_204;
+    V3 position;
     u8 pad_210[0x220 - 0x210];
-    s32 unk_220;
-    s32 unk_224;
-    s32 unk_228;
-    s32 unk_22c;
+    s32 targetHeight;
+    s32 disturbRadius;
+    s32 baseHeight;
+    s32 effectHandle;
     u8 pad_230[0x238 - 0x230];
-    u16 unk_238;
-    s16 unk_23a;
-    u16 unk_23c;
+    u16 rotX;
+    s16 rotY;
+    u16 rotZ;
     u8 pad_23e[0x242 - 0x23e];
-    s16 unk_242;
+    s16 stateTimer;
     u8 pad_244[0x246 - 0x244];
-    u8 unk_246;
-    u8 unk_247;
-    u8 unk_248;
-    u8 unk_249;
+    u8 canSing;
+    u8 playerHoldsNet;
+    u8 inUse;
+    u8 inView;
     u8 pad_24a[3];
-    s8 unk_24d;
+    s8 kind;
     u8 pad_24e[2];
-    u8 unk_250;
-    u8 unk_251;
+    u8 lifeState;
+    u8 state;
     u8 pad_252[2];
-    u8 unk_254;
+    u8 alarm;
     u8 pad_255[0x25c - 0x255];
 };
 
@@ -919,7 +919,7 @@ struct Unk_020cbb18_Ptr {
 
 struct Unk_ov003_02234c6c_Ent {
     void (*fn)(Rec *);
-    s32 unk_04;
+    s32 update;
 };
 
 struct Unk_ov003_02234b04_Ent {
@@ -1064,10 +1064,10 @@ struct Unk_ov003_02227cd0_Blk {
 };
 
 struct Unk_ov003_02234b04_Rec {
-    u8 unk_00;
+    u8 hasVisAnim;
     u8 unk_01;
-    u16 unk_02;
-    u16 unk_04;
+    u16 collisionRadius;
+    u16 netRadius;
 };
 
 // One 0x25c-byte entry of the table at sFieldInsects (8 entries)
@@ -1179,8 +1179,8 @@ struct Unk_ov003_022283d0_Own {
 };
 
 struct Unk_ov003_02234c6c_Ent {
-    void (*unk_00)(Rec *);
-    u32 unk_04;
+    void (*init)(Rec *);
+    u32 update;
 };
 
 extern "C" {
@@ -1727,43 +1727,43 @@ typedef Unk_ov003_0225980c_V3 V3;
 // One 0x25c-byte entry of the tables at sSpecialInsects (2), 0225980c (4), 0225a17c (8)
 struct Unk_ov003_0225980c_Rec {
     u8 unk_00[0x50];
-    u8 unk_50[0x9c];       // 0x50 model sub-object
-    u8 unk_ec[4];          // 0xec animation sub-object
-    s32 unk_f0;
-    u32 unk_f4;
+    u8 model[0x9c];       // 0x50 model sub-object
+    u8 animFrameCtrl[4];          // 0xec animation sub-object
+    s32 animNumFrames;
+    u32 animFrame;
     u8 unk_f8[8];
     u8 unk_100;
     u8 pad_101[0x130 - 0x101];
-    u8 unk_130[0x1d4 - 0x130];
-    V3 unk_1d4;
+    u8 pooledModel[0x1d4 - 0x130];
+    V3 targetPos;
     u8 pad_1e0[0x204 - 0x1e0];
-    V3 unk_204;
-    s32 unk_210;
-    s32 unk_214;
-    s32 unk_218;
-    s32 unk_21c;
+    V3 position;
+    s32 scaleX;
+    s32 scaleY;
+    s32 scaleZ;
+    s32 behaviourWork;
     u8 pad_220[8];
-    s32 unk_228;
+    s32 baseHeight;
     u8 pad_22c[0x232 - 0x22c];
-    s16 unk_232;
+    s16 auxTimer;
     u8 pad_234[4];
-    s16 unk_238;
-    s16 unk_23a;
-    s16 unk_23c;
+    s16 rotX;
+    s16 rotY;
+    s16 rotZ;
     u8 pad_23e[4];
-    s16 unk_242;
+    s16 stateTimer;
     u8 pad_244[2];
-    u8 unk_246;
+    u8 canSing;
     u8 pad_247[0x24a - 0x247];
-    u8 unk_24a;
+    u8 isAlarmed;
     u8 unk_24b;
     u8 unk_24c;
-    s8 unk_24d;
+    s8 kind;
     u8 pad_24e[3];
-    u8 unk_251;
-    u8 unk_252;
+    u8 state;
+    u8 cooldownTimer;
     u8 pad_253;
-    u8 unk_254;
+    u8 alarm;
     u8 pad_255[0x25c - 0x255];
 };
 
@@ -2450,45 +2450,45 @@ struct Unk_ov003_0222d350_Bits {
 // One 0x25c-byte entry of the tables at sSpecialInsects / 0225980c / 0225a17c
 struct Unk_ov003_0222d350_Rec {
     u8 unk_00[0x50];                   // 0x00
-    u8 unk_50[0xec - 0x50];            // 0x50
-    u8 unk_ec[4];                      // 0xec
-    Unk_ov003_0222d350_Bits unk_f0;    // 0xf0
-    Unk_ov003_0222d350_Bits unk_f4;    // 0xf4
+    u8 model[0xec - 0x50];            // 0x50
+    u8 animFrameCtrl[4];                      // 0xec
+    Unk_ov003_0222d350_Bits animNumFrames;    // 0xf0
+    Unk_ov003_0222d350_Bits animFrame;    // 0xf4
     u8 unk_f8[4];                      // 0xf8
-    s32 unk_fc;                        // 0xfc
+    s32 animFrameStep;                        // 0xfc
     u8 unk_100[0x1c8 - 0x100];         // 0x100
-    Vec3 unk_1c8;                      // 0x1c8
-    Vec3 unk_1d4;                      // 0x1d4
+    Vec3 homePos;                      // 0x1c8
+    Vec3 targetPos;                      // 0x1d4
     u8 unk_1e0[0x204 - 0x1e0];         // 0x1e0
-    Vec3 unk_204;                      // 0x204
-    u8 unk_210[0x21c - 0x210];         // 0x210
-    s32 unk_21c;                       // 0x21c
-    s32 unk_220;                       // 0x220
-    u8 unk_224[4];                     // 0x224
-    s32 unk_228;                       // 0x228
+    Vec3 position;                      // 0x204
+    u8 scale[0x21c - 0x210];         // 0x210
+    s32 behaviourWork;                       // 0x21c
+    s32 targetHeight;                       // 0x220
+    u8 disturbRadius[4];                     // 0x224
+    s32 baseHeight;                       // 0x228
     u8 unk_22c[0x232 - 0x22c];         // 0x22c
-    s16 unk_232;                       // 0x232
+    s16 auxTimer;                       // 0x232
     u8 unk_234[0x23a - 0x234];         // 0x234
-    s16 unk_23a;                       // 0x23a
+    s16 rotY;                       // 0x23a
     u8 unk_23c[0x240 - 0x23c];         // 0x23c
     s16 unk_240;                       // 0x240
-    s16 unk_242;                       // 0x242
-    s16 unk_244;                       // 0x244
+    s16 stateTimer;                       // 0x242
+    s16 waitTimer;                       // 0x244
     u8 unk_246[0x24a - 0x246];         // 0x246
-    u8 unk_24a;                        // 0x24a
+    u8 isAlarmed;                        // 0x24a
     u8 unk_24b;                        // 0x24b
     u8 unk_24c;                        // 0x24c
-    s8 unk_24d;                        // 0x24d
-    u8 unk_24e;                        // 0x24e
-    u8 unk_24f;                        // 0x24f
-    u8 unk_250;                        // 0x250
-    u8 unk_251;                        // 0x251
-    u8 unk_252;                        // 0x252
-    u8 unk_253;                        // 0x253
-    u8 unk_254;                        // 0x254
-    u8 unk_255;                        // 0x255
+    s8 kind;                        // 0x24d
+    u8 hitCountdown;                        // 0x24e
+    u8 frameCounter;                        // 0x24f
+    u8 lifeState;                        // 0x250
+    u8 state;                        // 0x251
+    u8 cooldownTimer;                        // 0x252
+    u8 turnDelay;                        // 0x253
+    u8 alarm;                        // 0x254
+    u8 alarmThreshold;                        // 0x255
     u8 unk_256;                        // 0x256
-    u8 unk_257;                        // 0x257
+    u8 moveSpeed;                        // 0x257
     u8 unk_258[0x25c - 0x258];         // 0x258
 };
 
@@ -2607,33 +2607,33 @@ struct Unk_ov003_0222dd54_Bits {
 // One 0x25c-byte entry of the tables at sSpecialInsects / 0225980c / 0225a17c
 struct Unk_ov003_0222dd54_Rec {
     u8 unk_00[0x50];                   // 0x00
-    u8 unk_50[0xec - 0x50];            // 0x50
-    u8 unk_ec[4];                      // 0xec
-    Unk_ov003_0222dd54_Bits unk_f0;    // 0xf0
-    Unk_ov003_0222dd54_Bits unk_f4;    // 0xf4
+    u8 model[0xec - 0x50];            // 0x50
+    u8 animFrameCtrl[4];                      // 0xec
+    Unk_ov003_0222dd54_Bits animNumFrames;    // 0xf0
+    Unk_ov003_0222dd54_Bits animFrame;    // 0xf4
     u8 unk_f8[0x174 - 0xf8];           // 0xf8
-    u8 unk_174[0x1d4 - 0x174];         // 0x174
-    V3 unk_1d4;                        // 0x1d4
+    u8 seEmitter[0x1d4 - 0x174];         // 0x174
+    V3 targetPos;                        // 0x1d4
     u8 pad_1e0[0x1ec - 0x1e0];         // 0x1e0
-    V3 unk_1ec[2];                     // 0x1ec
-    V3 unk_204;                        // 0x204
+    V3 feelers[2];                     // 0x1ec
+    V3 position;                        // 0x204
     u8 pad_210[0x21c - 0x210];         // 0x210
-    s32 unk_21c;                       // 0x21c
-    s32 unk_220;                       // 0x220
+    s32 behaviourWork;                       // 0x21c
+    s32 targetHeight;                       // 0x220
     u8 pad_224[0x228 - 0x224];         // 0x224
-    s32 unk_228;                       // 0x228
+    s32 baseHeight;                       // 0x228
     u8 pad_22c[0x23a - 0x22c];         // 0x22c
-    s16 unk_23a;                       // 0x23a
-    s16 unk_23c;                       // 0x23c
+    s16 rotY;                       // 0x23a
+    s16 rotZ;                       // 0x23c
     u8 pad_23e[0x244 - 0x23e];         // 0x23e
-    s16 unk_244;                       // 0x244
+    s16 waitTimer;                       // 0x244
     u8 pad_246[0x24d - 0x246];         // 0x246
-    s8 unk_24d;                        // 0x24d
-    s8 unk_24e;                        // 0x24e
+    s8 kind;                        // 0x24d
+    s8 hitCountdown;                        // 0x24e
     u8 pad_24f[2];                     // 0x24f
-    u8 unk_251;                        // 0x251
+    u8 state;                        // 0x251
     u8 pad_252[2];                     // 0x252
-    u8 unk_254;                        // 0x254
+    u8 alarm;                        // 0x254
     u8 pad_255[0x25c - 0x255];         // 0x255
 };
 
@@ -2735,9 +2735,9 @@ extern "C" s32 Insect_CheckObstacle(Rec *o, s32 a, s32 b);
 namespace s14 {
 // 0x222e500
 extern "C" s32 Insect_CheckObstacle(Rec *o, s32 a, s32 b) {
-    if (!CommManager_isSlotActive(gCommManager, gCommManager->unk_64) || NetArea_IsLocalOwner() || o->unk_251 == 9 || o->unk_251 == 0xb) {
+    if (!CommManager_isSlotActive(gCommManager, gCommManager->unk_64) || NetArea_IsLocalOwner() || o->state == 9 || o->state == 0xb) {
         Insect_SetFeelers(o, a, b);
-        if ((u8)(s8)(o->unk_24d - 0x36) <= 1 && o->unk_251 == 4) {
+        if ((u8)(s8)(o->kind - 0x36) <= 1 && o->state == 4) {
             return Insect_TestFeelersHole(o);
         }
         return Insect_TestFeelers(o);
@@ -2768,8 +2768,8 @@ namespace s14 {
 // 0x222e494
 extern "C" u32 Insect_TestFeelers(Rec *o) {
     u8 r = 0;
-    V3 *p = &o->unk_1ec[0];
-    s32 y = o->unk_204.y;
+    V3 *p = &o->feelers[0];
+    s32 y = o->position.y;
     GroundInfo g0;
     GroundInfo g1;
     g0.initAtPos((Unk_0203389c_Vec *)(p), 0, 0);
@@ -2802,8 +2802,8 @@ namespace s14 {
 // 0x222e420
 extern "C" u32 Insect_TestFeelersHole(Rec *o) {
     u8 r = 0;
-    V3 *p = &o->unk_1ec[0];
-    s32 y = o->unk_204.y;
+    V3 *p = &o->feelers[0];
+    s32 y = o->position.y;
     GroundInfo g0;
     GroundInfo g1;
     s32 v;
@@ -2839,14 +2839,14 @@ namespace s14 {
 // 0x222e33c
 extern "C" BOOL Insect_SetFeelers(Rec *o, s32 a, s32 b) {
     V3 *out;
-    V3 *pos = &o->unk_204;
+    V3 *pos = &o->position;
     s32 h;
-    if (o->unk_24d == 0x35) {
-        h = o->unk_23c;
+    if (o->kind == 0x35) {
+        h = o->rotZ;
     } else {
-        h = o->unk_23a;
+        h = o->rotY;
     }
-    out = &o->unk_1ec[0];
+    out = &o->feelers[0];
     *out = *pos;
     s32 i = ((u16)(s16)(h + b) >> 4) * 2;
     out->x += func_02133150(a * data_02135f44[i], 100);
@@ -2937,8 +2937,8 @@ extern "C" BOOL Insect_IsOverWater(s32 v) {
 namespace s14 {
 // 0x222e2e0
 extern "C" void Insect_CheckTurnCount(Rec *o, s32 n) {
-    s32 t = o->unk_21c & 0xf;
-    if (t > n) o->unk_251 = 9;
+    s32 t = o->behaviourWork & 0xf;
+    if (t > n) o->state = 9;
 }
 }
 #undef Unk_02003c40_callRequest
@@ -2965,7 +2965,7 @@ namespace s14 {
 extern "C" BOOL Insect_SetMoveTarget(Rec *o, u32 ang, s32 d) {
     V3 *dst;
     V3 *src;
-    switch (o->unk_24d) {
+    switch (o->kind) {
     case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
     case 0x25:
         return Insect_SetGroundMoveTarget(o, ang, (u8)(d >> 12));
@@ -2980,8 +2980,8 @@ extern "C" BOOL Insect_SetMoveTarget(Rec *o, u32 ang, s32 d) {
     default:
         break;
     }
-    dst = &o->unk_1d4;
-    src = &o->unk_204;
+    dst = &o->targetPos;
+    src = &o->position;
     s32 idx = ((u16)ang >> 4) * 2;
     dst->x = src->x + func_01ffcb0c(d, data_02135f44[idx]);
     dst->z = src->z + func_01ffcb0c(d, data_02135f44[idx + 1]);
@@ -3021,8 +3021,8 @@ extern "C" BOOL Insect_SetGroundMoveTarget(Rec *o, u32 ang, s32 n) {
     s32 idx = ((u16)ang >> 4) * 2;
     sx = data_02135f44[idx];
     sz = data_02135f44[idx + 1];
-    dst = &o->unk_1d4;
-    src = &o->unk_204;
+    dst = &o->targetPos;
+    src = &o->position;
     lim = src->y;
     if (lim < Ground_GetDefaultY(0)) lim = Ground_GetDefaultY(0);
     i = 1;
@@ -3124,30 +3124,30 @@ namespace s14 {
 extern "C" void Insect_UpdateRest(Rec *o) {
     Insect_CheckAlarm(o);
     if (Insect_TickTimer(o) == 0) {
-        s32 st = o->unk_24d;
+        s32 st = o->kind;
         if (st == 0xa || st == 0x33) {
-            if (o->unk_f4.mid != 0) AnimModel_setFrame(o->unk_50, 0);
+            if (o->animFrame.mid != 0) AnimModel_setFrame(o->model, 0);
             Crawler_Wander(o);
         } else if (st == 0x33) {
         } else {
-            if (Insect_IsOnFlower(&o->unk_204) == 0) o->unk_254 = 0xfe;
-            if (o->unk_f0.mid < 0xc) {
-                AnimFrameCtrl_setup(o->unk_ec, 0x11, 1, 0x1000, 9);
-            } else if (o->unk_f4.mid == 0x10) {
+            if (Insect_IsOnFlower(&o->position) == 0) o->alarm = 0xfe;
+            if (o->animNumFrames.mid < 0xc) {
+                AnimFrameCtrl_setup(o->animFrameCtrl, 0x11, 1, 0x1000, 9);
+            } else if (o->animFrame.mid == 0x10) {
                 if (Random_GlobalBelow(100) > 0x5f) {
-                    AnimFrameCtrl_setup(o->unk_ec, 0x11, 1, 0x1000, 9);
+                    AnimFrameCtrl_setup(o->animFrameCtrl, 0x11, 1, 0x1000, 9);
                 }
             }
         }
     } else {
-        o->unk_251 = 0x13;
-        o->unk_220 = o->unk_228;
-        o->unk_244 = (Random_GlobalBelow(6) + 7) * 20;
-        s32 st = o->unk_24d;
+        o->state = 0x13;
+        o->targetHeight = o->baseHeight;
+        o->waitTimer = (Random_GlobalBelow(6) + 7) * 20;
+        s32 st = o->kind;
         if (st != 0xa && st != 0x33) {
-            AnimFrameCtrl_setup(o->unk_ec, 9, 0, o->unk_21c, 0);
+            AnimFrameCtrl_setup(o->animFrameCtrl, 9, 0, o->behaviourWork, 0);
         } else {
-            AnimModel_setFrame(o->unk_50, 1);
+            AnimModel_setFrame(o->model, 1);
         }
     }
 }
@@ -3230,15 +3230,15 @@ namespace s14 {
 extern "C" BOOL Insect_SplashIfWater(Rec *o) {
     V3 v;
     GroundInfo g;
-    V3 *pv = &o->unk_204;
+    V3 *pv = &o->position;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
     g.initAtPos((Unk_0203389c_Vec *)(&v), 0, 1);
-    if (g.unk_30 != 0) {
-        v.y = g.unk_3c + 0x100;
-        Unk_02003c40_callRequestSustained(o->unk_174, 0x7e5);
-        switch (o->unk_24d) {
+    if (g.waterKind != 0) {
+        v.y = g.waterSurfaceY + 0x100;
+        Unk_02003c40_callRequestSustained(o->seEmitter, 0x7e5);
+        switch (o->kind) {
         case 0xc:
         case 0xd:
         case 0x1e:
@@ -3281,7 +3281,7 @@ namespace s14 {
 // 0x222dd90
 extern "C" BOOL Insect_CheckDigHit(Rec *o, s32 a) {
     s8 i;
-    s8 *p = &o->unk_24e;
+    s8 *p = &o->hitCountdown;
     if (*p <= 0) {
         if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
             for (i = 0; i < 4; i++) {
@@ -3321,12 +3321,12 @@ extern "C" BOOL Insect_CheckDigHit(Rec *o, s32 a) {
 namespace s14 {
 // 0x222dd54
 extern "C" s32 Insect_PlaySe(Rec *o, s32 a, s32 b) {
-    s32 r = Insect_GetSeId(o->unk_24d);
+    s32 r = Insect_GetSeId(o->kind);
     if (r >= 0) {
         if (b != 0) {
-            Unk_02003c40_callRequest(o->unk_174, r);
+            Unk_02003c40_callRequest(o->seEmitter, r);
         } else {
-            Unk_02003c40_callRequestSustained(o->unk_174, r);
+            Unk_02003c40_callRequestSustained(o->seEmitter, r);
         }
     }
 }
@@ -3423,11 +3423,11 @@ extern "C" void Insect_FlutterPullBack(Rec *self, Vec3 *p, s32 a) {
     s16 ang;
     Vec3 v;
     Vec3 *r6;
-    ang = self->unk_23a;
+    ang = self->rotY;
     v = *p;
-    r6 = &self->unk_204;
+    r6 = &self->position;
     func_020e7530(&ang, Math_AngleXZ(r6, p), a);
-    self->unk_23a = ang;
+    self->rotY = ang;
     VEC_Subtract(&v, r6, &v);
     Insect_ClampStepXZ(&v, &v, 1);
     VEC_Add(r6, &v, r6);
@@ -3449,10 +3449,10 @@ extern "C" void Insect_FlutterPullBack(Rec *self, Vec3 *p, s32 a) {
 namespace s13 {
 // 0x222db34
 extern "C" void Insect_SetFlutterTurnDelay(Rec *self) {
-    switch (self->unk_24d) {
+    switch (self->kind) {
     case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
     case 0x25:
-        self->unk_253 = 0x14;
+        self->turnDelay = 0x14;
         break;
     }
 }
@@ -3473,7 +3473,7 @@ extern "C" void Insect_SetFlutterTurnDelay(Rec *self) {
 namespace s13 {
 // 0x222dae0
 extern "C" s32 Insect_GetFlutterLeash(Rec *self) {
-    switch (self->unk_24d) {
+    switch (self->kind) {
     case 0:
     case 1:
     case 2:
@@ -3508,7 +3508,7 @@ extern "C" s32 Insect_GetFlutterLeash(Rec *self) {
 namespace s13 {
 // 0x222da7c
 extern "C" s32 Insect_GetFlutterRange(Rec *self) {
-    switch (self->unk_24d) {
+    switch (self->kind) {
     case 0:
     case 1:
         return 0x5000;
@@ -3544,7 +3544,7 @@ extern "C" s32 Insect_GetFlutterRange(Rec *self) {
 namespace s13 {
 // 0x222da1c
 extern "C" s32 Insect_GetFlutterTargetSpeed(Rec *self) {
-    switch (self->unk_24d) {
+    switch (self->kind) {
     case 0:
     case 1:
     case 2:
@@ -3581,37 +3581,37 @@ namespace s13 {
 // 0x222d7d8
 extern "C" void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f) {
     s32 rnd;
-    Vec3 *r6 = &self->unk_1c8;
-    Vec3 *r10 = &self->unk_1d4;
-    Vec3 *r4 = &self->unk_204;
+    Vec3 *r6 = &self->homePos;
+    Vec3 *r10 = &self->targetPos;
+    Vec3 *r4 = &self->position;
     s32 hit = Insect_CheckObstacle(self, 0x50, 0xe38);
     u32 flag = self->unk_24b;
     rnd = Random_GlobalBelow(100);
     Vec3 t;
     Vec3 d;
     if (hit != 0) {
-        self->unk_23a = Insect_ReflectAngle(self->unk_23a, hit);
+        self->rotY = Insect_ReflectAngle(self->rotY, hit);
         *r6 = *r4;
         {
-            s32 q = self->unk_23a;
+            s32 q = self->rotY;
             Insect_SetMoveTarget(self, q, Insect_GetFlutterRange(self));
         }
         return;
     }
-    if (self->unk_24f % b == 0 && rnd > e) {
+    if (self->frameCounter % b == 0 && rnd > e) {
         self->unk_24b = flag == 0 ? 1 : 0;
     }
-    if (rnd > self->unk_252) {
+    if (rnd > self->cooldownTimer) {
         if (flag != 0) {
             *p = *p + a;
-            self->unk_23a = *p;
+            self->rotY = *p;
         } else {
             *p = *p - a;
-            self->unk_23a = *p;
+            self->rotY = *p;
         }
     }
     Insect_GetDirVec(&t, *p);
-    if (self->unk_24a != 0) {
+    if (self->isAlarmed != 0) {
         s32 m = func_021329d0(0x45a00400);
         r4->x = r4->x + func_01ffcb0c(func_01ffcb0c(f, t.x), m);
         r4->z = r4->z + func_01ffcb0c(func_01ffcb0c(f, t.z), m);
@@ -3632,12 +3632,12 @@ extern "C" void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
                     return;
                 }
             }
-            u8 *q253 = &self->unk_253;
+            u8 *q253 = &self->turnDelay;
             if (*q253 == 0) {
-                s32 s = self->unk_23a;
-                self->unk_23a = s + Insect_RandomTurn(6, 1);
+                s32 s = self->rotY;
+                self->rotY = s + Insect_RandomTurn(6, 1);
                 *r6 = *r4;
-                if (self->unk_24a != 0) {
+                if (self->isAlarmed != 0) {
                     void *e2;
                     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
                         e2 = (void *)Insect_FindNearestPlayer(r4);
@@ -3645,11 +3645,11 @@ extern "C" void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
                         e2 = PlayerActor_GetActor(4);
                     }
                     if (e2 != NULL) {
-                        self->unk_23a = Math_AngleXZ((u8 *)e2 + 0x5c, r4);
+                        self->rotY = Math_AngleXZ((u8 *)e2 + 0x5c, r4);
                     }
                 }
                 {
-                    s32 q = self->unk_23a;
+                    s32 q = self->rotY;
                     Insect_SetMoveTarget(self, q, Insect_GetFlutterRange(self));
                 }
             } else {
@@ -3675,12 +3675,12 @@ extern "C" void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
 namespace s13 {
 // 0x222d75c
 extern "C" void Insect_FlutterBob(Rec *self, s32 a, s32 b, s32 c) {
-    Vec3 *r6 = &self->unk_204;
+    Vec3 *r6 = &self->position;
     s32 r4 = FX_Div(data_02135f44[((u16)a >> 4) * 2], c);
-    if (self->unk_220 != self->unk_228) {
+    if (self->targetHeight != self->baseHeight) {
         b = FX_Div(b, 0x2000);
     }
-    if ((r4 > 0 && r6->y + r4 < b + self->unk_220) || (r4 < 0 && r6->y + r4 > self->unk_220 - b)) {
+    if ((r4 > 0 && r6->y + r4 < b + self->targetHeight) || (r4 < 0 && r6->y + r4 > self->targetHeight - b)) {
         r6->y = r6->y + r4;
     }
 }
@@ -3727,17 +3727,17 @@ extern "C" s32 Insect_CheckAlarm(Rec *self) {
 namespace s13 {
 // 0x222d6a0
 extern "C" void Insect_FleeIfAlarmed(Rec *self, Vec3 *p) {
-    s32 c = self->unk_254;
+    s32 c = self->alarm;
     if (NetArea_IsLocalOwner()) {
-        if (p->x != 0 && self->unk_24a == 0 && c >= self->unk_255) {
-            self->unk_240 = Math_AngleXZ(p, &self->unk_204);
-            self->unk_251 = 7;
-            self->unk_24a = 1;
+        if (p->x != 0 && self->isAlarmed == 0 && c >= self->alarmThreshold) {
+            self->unk_240 = Math_AngleXZ(p, &self->position);
+            self->state = 7;
+            self->isAlarmed = 1;
         }
     } else {
-        if (self->unk_24a == 0 && c >= self->unk_255) {
-            self->unk_24a = 1;
-            self->unk_251 = 7;
+        if (self->isAlarmed == 0 && c >= self->alarmThreshold) {
+            self->isAlarmed = 1;
+            self->state = 7;
         }
     }
 }
@@ -3758,10 +3758,10 @@ extern "C" void Insect_FleeIfAlarmed(Rec *self, Vec3 *p) {
 namespace s13 {
 // 0x222d674
 extern "C" void Insect_FlapWings(Rec *self) {
-    if (self->unk_f4.mid == 1) {
-        AnimModel_setFrame(&self->unk_50, 2);
+    if (self->animFrame.mid == 1) {
+        AnimModel_setFrame(&self->model, 2);
     } else {
-        AnimModel_setFrame(&self->unk_50, 1);
+        AnimModel_setFrame(&self->model, 1);
     }
 }
 }
@@ -3781,15 +3781,15 @@ extern "C" void Insect_FlapWings(Rec *self) {
 namespace s13 {
 // 0x222d530
 extern "C" void Butterfly_Update(Rec *self) {
-    s32 c = self->unk_232;
+    s32 c = self->auxTimer;
     if (c > 0x8c) {
-        self->unk_251 = 9;
+        self->state = 9;
     } else if (Insect_CheckObstacle(self, 0x50, 0xe38) != 0) {
-        self->unk_232 = c + 1;
+        self->auxTimer = c + 1;
     } else {
-        self->unk_232 = 0;
+        self->auxTimer = 0;
     }
-    switch (self->unk_251) {
+    switch (self->state) {
     case 0:
         Insect_FlutterFlight(self);
         break;
@@ -3798,8 +3798,8 @@ extern "C" void Butterfly_Update(Rec *self) {
         break;
     case 9:
     case 11:
-        if (self->unk_f0.mid > 9) {
-            AnimFrameCtrl_setup(&self->unk_ec, 9, 0, 0x1000, 0);
+        if (self->animNumFrames.mid > 9) {
+            AnimFrameCtrl_setup(&self->animFrameCtrl, 9, 0, 0x1000, 0);
         }
         Insect_FlyAwayArc(self, 0x1ccd);
         break;
@@ -3807,12 +3807,12 @@ extern "C" void Butterfly_Update(Rec *self) {
         s32 t;
         Vec3 *src;
         Vec3 *dst;
-        self->unk_251 = 0;
-        self->unk_23a = self->unk_23a + self->unk_240;
-        t = self->unk_23a;
+        self->state = 0;
+        self->rotY = self->rotY + self->unk_240;
+        t = self->rotY;
         if (Insect_SetMoveTarget(self, t, Insect_GetFlutterRange(self)) != 0) {
-            src = &self->unk_204;
-            dst = &self->unk_1c8;
+            src = &self->position;
+            dst = &self->homePos;
             *dst = *src;
         }
         break;
@@ -3821,12 +3821,12 @@ extern "C" void Butterfly_Update(Rec *self) {
         s32 t;
         Vec3 *src;
         Vec3 *dst;
-        self->unk_24a = 0;
-        self->unk_251 = 0;
-        t = self->unk_23a;
+        self->isAlarmed = 0;
+        self->state = 0;
+        t = self->rotY;
         if (Insect_SetMoveTarget(self, t, Insect_GetFlutterRange(self)) != 0) {
-            src = &self->unk_204;
-            dst = &self->unk_1c8;
+            src = &self->position;
+            dst = &self->homePos;
             *dst = *src;
         }
         break;
@@ -3857,24 +3857,24 @@ extern "C" void Insect_FlutterFlight(Rec *self) {
     s16 *r4;
     s32 r6;
 
-    ang = self->unk_23a;
-    r7 = &self->unk_204;
-    r4 = &self->unk_242;
-    if (self->unk_24d != 8 && self->unk_f0.mid > 9) {
-        AnimFrameCtrl_setup(&self->unk_ec, 9, 0, self->unk_21c, 0);
+    ang = self->rotY;
+    r7 = &self->position;
+    r4 = &self->stateTimer;
+    if (self->kind != 8 && self->animNumFrames.mid > 9) {
+        AnimFrameCtrl_setup(&self->animFrameCtrl, 9, 0, self->behaviourWork, 0);
     }
     if (Insect_CheckAlarm(self) == 2) {
-        if (self->unk_24d != 8) {
-            Insect_SetAnimSpeed(self, self->unk_21c);
+        if (self->kind != 8) {
+            Insect_SetAnimSpeed(self, self->behaviourWork);
         } else {
             Insect_SetAnimSpeed(self, 0x1000);
         }
-        self->unk_24a = 0;
+        self->isAlarmed = 0;
     }
-    if (self->unk_24a != 0) {
-        if (self->unk_24d != 8) {
-            s32 t = func_01ffcb0c(self->unk_21c, 0x1333);
-            if (t != self->unk_fc) {
+    if (self->isAlarmed != 0) {
+        if (self->kind != 8) {
+            s32 t = func_01ffcb0c(self->behaviourWork, 0x1333);
+            if (t != self->animFrameStep) {
                 Insect_SetAnimSpeed(self, t);
             }
         } else {
@@ -3887,13 +3887,13 @@ extern "C" void Insect_FlutterFlight(Rec *self) {
             }
         }
     } else {
-        if (self->unk_24d == 8) {
+        if (self->kind == 8) {
             if (Moth_SteerToLight(self, r4, &v) == 0) {
                 return;
             }
         } else {
-            if (self->unk_21c != self->unk_fc) {
-                Insect_SetAnimSpeed(self, self->unk_21c);
+            if (self->behaviourWork != self->animFrameStep) {
+                Insect_SetAnimSpeed(self, self->behaviourWork);
             }
             if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0) {
                 Insect_ApproachFlower(self, &ang);
@@ -3910,10 +3910,10 @@ extern "C" void Insect_FlutterFlight(Rec *self) {
     *r4 = *r4 + 4;
     Insect_FlutterAltitude(self, r4);
     r7->y = r7->y + r6;
-    if (self->unk_24d == 8) {
-        Unk_ov068_02268214_insectWanderSteer(self, &ang, 0xaaa, 0x14, 0x3c, self->unk_257 << 12);
+    if (self->kind == 8) {
+        Unk_ov068_02268214_insectWanderSteer(self, &ang, 0xaaa, 0x14, 0x3c, self->moveSpeed << 12);
     } else {
-        Insect_FlutterSteer(self, &ang, 0x38e, 0x14, 0x3c, self->unk_257 << 12);
+        Insect_FlutterSteer(self, &ang, 0x38e, 0x14, 0x3c, self->moveSpeed << 12);
     }
 }
 }
@@ -3933,8 +3933,8 @@ extern "C" void Insect_FlutterFlight(Rec *self) {
 namespace s13 {
 // 0x222d334
 extern "C" BOOL Insect_TickTimer(Rec *self) {
-    if (self->unk_244 > 0) {
-        self->unk_244--;
+    if (self->waitTimer > 0) {
+        self->waitTimer--;
     } else {
         return TRUE;
     }
@@ -4715,8 +4715,8 @@ extern "C" void Hopper_Jump(Rec *o) {
         GroundInfo g;
         s32 v;
         g.initAtPos((Unk_0203389c_Vec *)(src), 0, 1);
-        if (g.unk_30 != 0) {
-            v = g.unk_3c;
+        if (g.waterKind != 0) {
+            v = g.waterSurfaceY;
             if (o->unk_251 == 0x11) {
                 Insect_SplashIfWater(o);
                 o->unk_242 = 0;
@@ -5283,8 +5283,8 @@ extern "C" void Insect_HopArc(Rec *self, s16 *cnt) {
         s32 n = *cnt;
         pos->y = pos->y + n * (200 - n * 11);
     }
-    if (g.unk_30 != 0) {
-        lim = g.unk_3c;
+    if (g.waterKind != 0) {
+        lim = g.waterSurfaceY;
     } else {
         lim = g.getHeight(0);
         if (lim > 0x4000) {
@@ -5356,7 +5356,7 @@ extern "C" void Insect_EscapeRun(Rec *self, s16 *cnt) {
     if (Insect_SteerAroundObstacle(self)) {
         return;
     }
-    if (g.unk_30 != 0) {
+    if (g.waterKind != 0) {
         if (g.isBelowWaterSurface(pos->y)) {
             Insect_Despawn(self);
             Insect_SplashIfWater(self);
@@ -5779,8 +5779,8 @@ extern "C" void Flea_Update(Rec *self) {
             d2 = *p << 12;
             pos->y = y0 + func_01ffcb0c(0x99a - func_01ffcb0c(0xcd, d2), d2);
         }
-        if (g.unk_30 != 0) {
-            y0 = g.unk_3c;
+        if (g.waterKind != 0) {
+            y0 = g.waterSurfaceY;
         } else {
             y0 = g.getHeight(1);
             y0 += Ground_GetDefaultY(0);
@@ -6004,7 +6004,7 @@ extern "C" BOOL Insect_GroundWalk(Rec *self) {
     g.initAtPos((Unk_0203389c_Vec *)(pos), 0, result);
     s8 r7 = self->unk_24d;
     Insect_GetDirVec(&v, self->unk_23a);
-    if (g.unk_30 != 0) {
+    if (g.waterKind != 0) {
         if (g.isBelowWaterSurface(pos->y)) {
             Insect_Despawn(self);
             Insect_SplashIfWater(self);
@@ -6071,16 +6071,16 @@ extern "C" BOOL Insect_GroundWalk(Rec *self) {
 namespace s08 {
 // 0x222abc0
 extern "C" s32 Insect_GroundWalkNet(Rec *self) {
-    V3 *pos = &self->unk_204;
-    s16 *cnt = &self->unk_242;
+    V3 *pos = &self->position;
+    s16 *cnt = &self->stateTimer;
     s32 ret = 0;
     Unk_ov003_0222abc0_Obj o;
     GroundInfo_initAtPos(&o, pos, ret, 1);
-    V3 *vel = &self->unk_1d4;
+    V3 *vel = &self->targetPos;
     V3 dir;
-    Insect_GetDirVec(&dir, self->unk_23a);
+    Insect_GetDirVec(&dir, self->rotY);
     s32 nang;
-    if (NetArea_IsLocalOwner() != 0 || self->unk_251 == 0x11) {
+    if (NetArea_IsLocalOwner() != 0 || self->state == 0x11) {
         if (o.unk_30 != 0) {
             if (GroundInfoBase_isBelowWaterSurface(&o, pos->y) != 0) {
                 Insect_Despawn(self);
@@ -6096,13 +6096,13 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self) {
         self->unk_24b = 0;
         s32 c = *cnt;
         if (c < 2) {
-            nang = (s16)(self->unk_23a - 0xaaa);
+            nang = (s16)(self->rotY - 0xaaa);
         } else {
             s32 n = c + 1;
             if (n % 4 == 0) {
-                nang = (s16)(self->unk_23a + 0xaaa);
+                nang = (s16)(self->rotY + 0xaaa);
             } else if (n % 2 == 0) {
-                nang = (s16)(self->unk_23a - 0xaaa);
+                nang = (s16)(self->rotY - 0xaaa);
             }
         }
         Insect_SetMoveTarget(self, nang, 0xc000);
@@ -6110,31 +6110,31 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self) {
         return 0;
     }
     s32 r;
-    if (self->unk_24d == 0x1e) {
+    if (self->kind == 0x1e) {
         r = func_020e7d4c(pos, vel, 0x28, 0x1000, 0x19a);
     } else {
         r = func_020e7d4c(pos, vel, 8, 0x1000, 0x52);
     }
     if (r == 0) {
         if (NetArea_IsLocalOwner() != 0) {
-            if (Insect_SetMoveTarget(self, self->unk_23a, 0xc000) == 0) {
-                vel->x += data_02135f44[((u16)self->unk_23a >> 4) * 2];
-                vel->z += data_02135f44[(((u16)self->unk_23a >> 4) * 2 + 1)];
+            if (Insect_SetMoveTarget(self, self->rotY, 0xc000) == 0) {
+                vel->x += data_02135f44[((u16)self->rotY >> 4) * 2];
+                vel->z += data_02135f44[(((u16)self->rotY >> 4) * 2 + 1)];
                 GroundInfo_Destruct(&o);
                 return 0;
             }
         }
     } else {
-        self->unk_23a = Math_AngleXZ(pos, vel);
+        self->rotY = Math_AngleXZ(pos, vel);
     }
     s32 c = *cnt;
     if (c == 0) {
-        s32 a = self->unk_23a;
-        self->unk_23a = a + FX_Div(0x2000, 0x6000);
+        s32 a = self->rotY;
+        self->rotY = a + FX_Div(0x2000, 0x6000);
     } else if (c % 4 == 0) {
-        self->unk_23a = self->unk_23a + 0xaaa;
+        self->rotY = self->rotY + 0xaaa;
     } else if (c % 2 == 0) {
-        self->unk_23a = self->unk_23a - 0xaaa;
+        self->rotY = self->rotY - 0xaaa;
     }
     (*cnt)++;
     self->unk_24b = 1;
@@ -6211,12 +6211,12 @@ extern "C" void Insect_ClampStepXZ(V3 *out, V3 *in, s32 c) {
 namespace s08 {
 // 0x222a8d0
 extern "C" void Spider_Update(Rec *self) {
-    s16 *cnt = &self->unk_242;
-    func_02106020(PooledModel_getModel(self->unk_130), 0);
-    s32 st = self->unk_251;
+    s16 *cnt = &self->stateTimer;
+    func_02106020(PooledModel_getModel(self->pooledModel), 0);
+    s32 st = self->state;
     if (st != 0xb && st != 9) {
         s32 xy[2];
-        V3 q(self->unk_21c, 0, self->unk_204.z + 0x3e8);
+        V3 q(self->behaviourWork, 0, self->position.z + 0x3e8);
         FieldPos_ToUnit(&xy[0], &xy[1], &q);
         void *g = TownBlockMap_Get();
         if (g) {
@@ -6239,22 +6239,22 @@ extern "C" void Spider_Update(Rec *self) {
     case 2:
         if (self->unk_24c != 0) {
             self->unk_24c = 0;
-            self->unk_23c = 0x6b;
+            self->rotZ = 0x6b;
         } else {
             self->unk_24c = 1;
-            self->unk_23c = -0x6b;
+            self->rotZ = -0x6b;
         }
-        if (((self->unk_f4 << 4) >> 16) == 0x38) {
-            self->unk_251 = 0x13;
-            self->unk_23c = 0;
-            self->unk_204.x = self->unk_21c;
-            NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(self->unk_130), 0, 0);
+        if (((self->animFrame << 4) >> 16) == 0x38) {
+            self->state = 0x13;
+            self->rotZ = 0;
+            self->position.x = self->behaviourWork;
+            NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(self->pooledModel), 0, 0);
         }
         break;
     case 1:
-        if (((self->unk_f4 << 4) >> 16) == 0x20) {
-            self->unk_232 = (Random_GlobalBelow(4) + 0xc) * 0x14;
-            self->unk_251 = 0x12;
+        if (((self->animFrame << 4) >> 16) == 0x20) {
+            self->auxTimer = (Random_GlobalBelow(4) + 0xc) * 0x14;
+            self->state = 0x12;
             *cnt = 0;
         }
         break;
@@ -6266,17 +6266,17 @@ extern "C" void Spider_Update(Rec *self) {
         break;
     case 0x12:
         if (Unk_ov068_02268214_spiderSway(self)) {
-            self->unk_23a = 0;
-            self->unk_251 = 2;
-            AnimFrameCtrl_setup(self->unk_ec, 0x39, 1, 0x1000, 0x20);
+            self->rotY = 0;
+            self->state = 2;
+            AnimFrameCtrl_setup(self->animFrameCtrl, 0x39, 1, 0x1000, 0x20);
         }
         break;
     case 0x13:
         if (Unk_ov068_02268214_spiderCheckPlayerHit(self)) {
-            self->unk_251 = 1;
-            self->unk_254 = 0;
-            AnimFrameCtrl_setup(self->unk_ec, 0x21, 1, 0x1000, 0);
-            NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(self->unk_130), 0, 0x1f);
+            self->state = 1;
+            self->alarm = 0;
+            AnimFrameCtrl_setup(self->animFrameCtrl, 0x21, 1, 0x1000, 0);
+            NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(self->pooledModel), 0, 0x1f);
         } else {
             self->unk_100 = 1;
         }
@@ -6304,14 +6304,14 @@ extern "C" void Spider_Update(Rec *self) {
 namespace s08 {
 // 0x222a7d4
 extern "C" void TreeBug_Update(Rec *self) {
-    s16 *cnt = &self->unk_242;
-    u32 st = self->unk_251;
+    s16 *cnt = &self->stateTimer;
+    u32 st = self->state;
     if (st != 0xb && st != 9 && st != 7) {
-        if (self->unk_24d == 0x1f) {
+        if (self->kind == 0x1f) {
             Walkingstick_CheckAlarm(self, cnt);
         } else {
             TreeBug_CheckAlarm(self, cnt);
-            self->unk_24a = 0;
+            self->isAlarmed = 0;
         }
     }
     switch (st) {
@@ -6329,14 +6329,14 @@ extern "C" void TreeBug_Update(Rec *self) {
         (*cnt)++;
         break;
     case 11:
-        if (self->unk_24d != 0x1f) {
+        if (self->kind != 0x1f) {
             TreeBug_FlyOff(self, cnt);
         } else {
             Insect_HopArc(self, cnt);
         }
         break;
     case 7:
-        self->unk_24a = 1;
+        self->isAlarmed = 1;
         TreeBug_DropAndFly(self, cnt);
         break;
     case 8:
@@ -6383,28 +6383,28 @@ extern "C" void TreeBug_Update(Rec *self) {
 namespace s08 {
 // 0x222a6cc
 extern "C" void TreeBug_Idle(Rec *self, s16 *cnt) {
-    if ((u8)(s8)(self->unk_24d - 0x10) <= 4) {
-        u8 f = self->unk_246;
-        if (f != 0 && self->unk_254 < 10) {
-            u8 c = self->unk_252;
+    if ((u8)(s8)(self->kind - 0x10) <= 4) {
+        u8 f = self->canSing;
+        if (f != 0 && self->alarm < 10) {
+            u8 c = self->cooldownTimer;
             if (c == 0 && f != 0) {
                 Insect_PlaySe(self, 0, 1);
             } else {
-                self->unk_252 = c - 1;
+                self->cooldownTimer = c - 1;
             }
         } else {
-            self->unk_252 = 0x3c;
+            self->cooldownTimer = 0x3c;
         }
     } else {
         u8 rnd = Random_GlobalBelow(100);
-        if (self->unk_24d == 9) {
-            u32 st = (self->unk_f4 << 4) >> 16;
+        if (self->kind == 9) {
+            u32 st = (self->animFrame << 4) >> 16;
             if (st == 0xd || st < 9) {
-                AnimFrameCtrl_setup(self->unk_ec, 9, 1, 0, 9);
+                AnimFrameCtrl_setup(self->animFrameCtrl, 9, 1, 0, 9);
             }
             if (*cnt > 0x50) {
                 if (rnd > 0x5c && st < 0xa) {
-                    AnimFrameCtrl_setup(self->unk_ec, 0xe, 1, 0x1000, 9);
+                    AnimFrameCtrl_setup(self->animFrameCtrl, 0xe, 1, 0x1000, 9);
                 }
                 if (*cnt > 0xa0) {
                     *cnt = 0;
@@ -6415,9 +6415,9 @@ extern "C" void TreeBug_Idle(Rec *self, s16 *cnt) {
             (*cnt)++;
             if (*cnt % 0x14 == 0) {
                 if (rnd < 0x55) {
-                    self->unk_251 = 3;
+                    self->state = 3;
                 } else {
-                    self->unk_251 = 2;
+                    self->state = 2;
                 }
                 *cnt = 0;
             }
@@ -6445,22 +6445,22 @@ extern "C" void TreeBug_Idle(Rec *self, s16 *cnt) {
 namespace s08 {
 // 0x222a630
 extern "C" void TreeBug_ClimbUp(Rec *self, s16 *cnt) {
-    s32 ang = self->unk_23a;
-    s32 lim = self->unk_228 + 0x400;
-    V3 *pos = &self->unk_204;
+    s32 ang = self->rotY;
+    s32 lim = self->baseHeight + 0x400;
+    V3 *pos = &self->position;
     s32 c = *cnt;
     if (c >= 8) {
         if (Random_GlobalBelow(100) > 0x46) {
-            self->unk_251 = 1;
+            self->state = 1;
         }
         *cnt = 0;
     } else {
         if (c >= 2 && c < 6) {
             ang = (s16)(ang - 0x16b);
-            self->unk_238 -= 0xb6;
+            self->rotX -= 0xb6;
         } else {
             ang = (s16)(ang + 0x16b);
-            self->unk_238 += 0xb6;
+            self->rotX += 0xb6;
         }
         pos->y += 0x20;
         (*cnt)++;
@@ -6468,7 +6468,7 @@ extern "C" void TreeBug_ClimbUp(Rec *self, s16 *cnt) {
             pos->y = lim;
         }
     }
-    self->unk_23a = ang;
+    self->rotY = ang;
 }
 }
 #undef GroundInfoBase_isBelowWaterSurface
@@ -6491,22 +6491,22 @@ extern "C" void TreeBug_ClimbUp(Rec *self, s16 *cnt) {
 namespace s08 {
 // 0x222a594
 extern "C" void TreeBug_ClimbDown(Rec *self, s16 *cnt) {
-    s32 ang = self->unk_23a;
-    s32 lim = self->unk_228 - 0x100;
-    V3 *pos = &self->unk_204;
+    s32 ang = self->rotY;
+    s32 lim = self->baseHeight - 0x100;
+    V3 *pos = &self->position;
     s32 c = *cnt;
     if (c >= 8) {
         if (Random_GlobalBelow(100) > 0x46) {
-            self->unk_251 = 0x13;
+            self->state = 0x13;
         }
         *cnt = 0;
     } else {
         if (c >= 2 && c < 6) {
             ang = (s16)(ang - 0x16b);
-            self->unk_238 -= 0xb6;
+            self->rotX -= 0xb6;
         } else {
             ang = (s16)(ang + 0x16b);
-            self->unk_238 += 0xb6;
+            self->rotX += 0xb6;
         }
         pos->y -= 0x20;
         (*cnt)++;
@@ -6514,7 +6514,7 @@ extern "C" void TreeBug_ClimbDown(Rec *self, s16 *cnt) {
             pos->y = lim;
         }
     }
-    self->unk_23a = ang;
+    self->rotY = ang;
 }
 }
 #undef GroundInfoBase_isBelowWaterSurface
@@ -6537,7 +6537,7 @@ extern "C" void TreeBug_ClimbDown(Rec *self, s16 *cnt) {
 namespace s08 {
 // 0x222a4a0
 extern "C" void TreeBug_Wiggle(Rec *self, s16 *cnt) {
-    s32 ang = self->unk_23a;
+    s32 ang = self->rotY;
     s32 c = *cnt;
     if (c == 0) {
         if (Random_GlobalBelow(100) < 0x32) {
@@ -6548,26 +6548,26 @@ extern "C" void TreeBug_Wiggle(Rec *self, s16 *cnt) {
     } else if ((c > 0 && c <= 6) || (c > 0x12 && c <= 0x18) || !(c >= -6 || c < -0x12)) {
         if (c > 0) {
             (*cnt)++;
-            self->unk_238 += 0xb6;
+            self->rotX += 0xb6;
         } else {
             (*cnt)--;
-            self->unk_238 -= 0xb6;
+            self->rotX -= 0xb6;
         }
         ang = (s16)(ang + 0x16b);
     } else if ((c > 6 && c <= 0x12) || (c < 0 && c >= -6) || !(c >= -0x12 || c < -0x18)) {
         if (c > 0) {
             (*cnt)++;
-            self->unk_238 -= 0xb6;
+            self->rotX -= 0xb6;
         } else {
             (*cnt)--;
-            self->unk_238 += 0xb6;
+            self->rotX += 0xb6;
         }
         ang = (s16)(ang - 0x16b);
     } else {
         *cnt = 0;
-        self->unk_251 = 0x13;
+        self->state = 0x13;
     }
-    self->unk_23a = ang;
+    self->rotY = ang;
 }
 }
 #undef GroundInfoBase_isBelowWaterSurface
@@ -6593,13 +6593,13 @@ extern "C" void TreeBug_FlyOff(Rec *self, s16 *cnt) {
     s32 t, mode;
     V3 *pos;
     u32 st;
-    pos = &self->unk_204;
-    st = (self->unk_f4 << 4) >> 16;
-    mode = self->unk_24d;
+    pos = &self->position;
+    st = (self->animFrame << 4) >> 16;
+    mode = self->kind;
     t = FX_Div(*cnt << 12, 0x4000);
-    u8 *s = self->unk_50;
+    u8 *s = self->model;
     V3 v;
-    Insect_GetDirVec(&v, self->unk_23a);
+    Insect_GetDirVec(&v, self->rotY);
     if (*cnt == 0) {
         Insect_PlaySe(self, 1, 0);
     }
@@ -6616,7 +6616,7 @@ extern "C" void TreeBug_FlyOff(Rec *self, s16 *cnt) {
         } else if (((*(u32 *)(s + 0xa4) << 4) >> 16) < 0x18) {
             *(u32 *)(s + 0xa4) = 0x18000;
         }
-    } else if (self->unk_24d == 9) {
+    } else if (self->kind == 9) {
         if (*(u8 *)(s + 0xb0) != 0) {
             AnimFrameCtrl_setup(s + 0x9c, 9, 0, 0x1000, 0);
         }
@@ -8821,7 +8821,7 @@ extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode) {
     obj = e->unk_50;
     Model_setResource(obj, PooledModel_getModel(p130), 0);
     rec = &sInsectModelParams[t4];
-    if (rec->unk_00 != 0) {
+    if (rec->hasVisAnim != 0) {
         func_020639e8(l.path, sInsectVisAnimExtFmt, l.name);
     } else {
         func_020639e8(l.path, sInsectJointAnimExtFmt, l.name);
@@ -8845,7 +8845,7 @@ extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode) {
     if (r7 == 0) {
         return;
     }
-    if (rec->unk_00 != 0) {
+    if (rec->hasVisAnim != 0) {
         m = func_021067a4(func_02106788(r7), 0);
     } else {
         m = func_021065f8(func_021065dc(r7), 0);
@@ -8882,8 +8882,8 @@ extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode) {
         Vec3 *pv = &e->unk_210;
         Vec3 sv = *pv;
         Unk_02003c30_callReset(e->unk_174);
-        sInsectBehaviours[t4].unk_00(e);
-        e->unk_170 = (void (*)(Rec *))sInsectBehaviours[t4].unk_04;
+        sInsectBehaviours[t4].init(e);
+        e->unk_170 = (void (*)(Rec *))sInsectBehaviours[t4].update;
         e->unk_250 = 3;
         e->unk_24a[0] = 0;
         Insect_SetModelMatrix(a, e, 0);
@@ -9140,11 +9140,11 @@ extern "C" void Insect_Update(void *a, Rec *e, s32 flags, s32 kind) {
                     _ZN10GroundInfoD1Ev(&w);
                 }
                 if (big) {
-                    Collision_Move(&e->unk_20, &e->unk_204, &v1, e->unk_23a, sInsectModelParams[t4].unk_02, 0, 0xa);
+                    Collision_Move(&e->unk_20, &e->unk_204, &v1, e->unk_23a, sInsectModelParams[t4].collisionRadius, 0, 0xa);
                     goto after;
                 }
             }
-            Collision_Move(&e->unk_20, &e->unk_204, &v1, e->unk_23a, sInsectModelParams[t4].unk_02, 0, 0xb);
+            Collision_Move(&e->unk_20, &e->unk_204, &v1, e->unk_23a, sInsectModelParams[t4].collisionRadius, 0, 0xb);
         }
     after:
         if (e->unk_24d == 0x33 && flags == 0) {
@@ -9161,10 +9161,10 @@ extern "C" void Insect_Update(void *a, Rec *e, s32 flags, s32 kind) {
                 v2.y = v2.y - 0x1800;
             }
         }
-        BugNetTarget_submit(pp, &v2, sInsectModelParams[t4].unk_04, 0xd48, (u8)flags);
+        BugNetTarget_submit(pp, &v2, sInsectModelParams[t4].netRadius, 0xd48, (u8)flags);
     }
 L226:
-    if (sInsectModelParams[t4].unk_00 == 0) {
+    if (sInsectModelParams[t4].hasVisAnim == 0) {
         AnimModel_stepAnim(e->unk_50);
         if ((u8)(s8)(t4 - 0x3a) <= 1) {
             AnimFrameCtrl_step(e);
@@ -9807,14 +9807,14 @@ extern "C" void FieldInsect_UpdateAll(void *a) {
     goto test0;
 loop0:
     {
-        k = o->unk_250;
+        k = o->lifeState;
         V3 *p204;
         V3 *p1d4;
         if (CommManager_isSlotActive(g, g->unk_64)) {
-            p204 = &o->unk_204;
-            p1d4 = &o->unk_1d4;
+            p204 = &o->position;
+            p1d4 = &o->targetPos;
             l.a = neg;
-            if (InsectNetSync_Set(a, l.i, o->unk_24d, p1d4, o->unk_254, 1) == 0) {
+            if (InsectNetSync_Set(a, l.i, o->kind, p1d4, o->alarm, 1) == 0) {
                 l.c = 0;
                 if (InsectNetSync_Get(a, l.i, &l.a, &v18, &v1c, &l.c)) {
                     if (k == 0) {
@@ -9826,21 +9826,21 @@ loop0:
                                 p1d4->x = p204->x;
                                 p1d4->y = p204->y;
                                 p1d4->z = p204->z;
-                                o->unk_24d = t;
-                                o->unk_248 = 1;
-                                o->unk_249 = 0;
-                                { V3 *q = &o->unk_1c8;
-                                o->unk_1c8.x = p204->x;
+                                o->kind = t;
+                                o->inUse = 1;
+                                o->inView = 0;
+                                { V3 *q = &o->homePos;
+                                o->homePos.x = p204->x;
                                 q->y = p204->y;
                                 q->z = p204->z; }
-                                o->unk_250 = 2;
+                                o->lifeState = 2;
                             }
                         }
                     } else {
                         u32 c = l.c;
                         if (c == 0xff || v18 == 1) {
                             if (l.a == 0x1e) {
-                                u32 st = o->unk_251;
+                                u32 st = o->state;
                                 if (st == 9 || st == 0x11) goto sw0;
                             }
                             func_ov003_022287c8(a, o, 1);
@@ -9849,12 +9849,12 @@ loop0:
                             } else {
                                 p1d4->x = v18;
                                 p1d4->z = v1c;
-                                { V3 *q = &o->unk_1c8;
-                                o->unk_1c8.x = p204->x;
+                                { V3 *q = &o->homePos;
+                                o->homePos.x = p204->x;
                                 q->y = p204->y;
                                 q->z = p204->z; }
                             }
-                            o->unk_254 = c;
+                            o->alarm = c;
                         }
                     }
                 }
@@ -9864,7 +9864,7 @@ loop0:
         switch (k) {
         case 2:
             if (NetArea_IsLocalOwner() == 0 && CommManager_isSlotActive(g, g->unk_64)) {
-                if (l.a != o->unk_24d && v18 > 0) {
+                if (l.a != o->kind && v18 > 0) {
                     func_ov003_022287c8(a, o, 1);
                 } else {
                     if (Insect_IsTreeStillThere(a, o)) Insect_LoadModel(a, o, 0);
@@ -9877,39 +9877,39 @@ loop0:
             if (CommManager_isSlotActive(g, g->unk_64)) {
                 if (NetArea_IsLocalOwner() == 0) {
                     if (Insect_IsNetKindMismatch(a, o, l.a, v18, v1c)) {
-                        o->unk_251 = 10;
+                        o->state = 10;
                         func_ov003_022287c8(a, o, 1);
                     }
                 }
-                s32 kind = o->unk_24d;
+                s32 kind = o->kind;
                 if (Insect_GetWeatherReaction(kind, Weather_GetFallingPrecip()) == 5) {
-                    o->unk_246 = 0;
+                    o->canSing = 0;
                 } else {
-                    o->unk_246 = 1;
+                    o->canSing = 1;
                 }
             }
             Insect_Update(a, o, l.i, 1);
             break;
         case 4:
             if (CommManager_isSlotActive(g, g->unk_64) == 0) {
-                o->unk_251 = 10;
+                o->state = 10;
                 func_ov003_022287c8(a, o, 1);
             } else if (NetArea_IsLocalOwner()) {
-                s16 *cnt = &o->unk_242;
-                V3 *pv = &o->unk_204;
+                s16 *cnt = &o->stateTimer;
+                V3 *pv = &o->position;
                 t1.x = pv->x;
                 t1.y = pv->y;
                 t1.z = pv->z;
-                Unk_02003c40_callUpdateRelative(o->unk_174, &t1);
-                if (o->unk_254 != 0xff) {
-                    o->unk_254 = 0xff;
+                Unk_02003c40_callUpdateRelative(o->seEmitter, &t1);
+                if (o->alarm != 0xff) {
+                    o->alarm = 0xff;
                     l.i |= 0x10;
-                    V3 *q1 = &o->unk_1d4;
-                    o->unk_1d4.x = 1;
+                    V3 *q1 = &o->targetPos;
+                    o->targetPos.x = 1;
                     q1->y = 1;
                     q1->z = 1;
-                    V3 *q2 = &o->unk_204;
-                    o->unk_204.x = 1;
+                    V3 *q2 = &o->position;
+                    o->position.x = 1;
                     q2->y = 1;
                     q2->z = 1;
                     CommManager_beginRecord(g);
@@ -9918,17 +9918,17 @@ loop0:
                 }
                 *cnt = *cnt + 1;
                 if (*cnt > 0xc8) {
-                    o->unk_251 = 10;
+                    o->state = 10;
                     func_ov003_022287c8(a, o, 1);
                 }
             } else {
-                V3 *pw = &o->unk_204;
+                V3 *pw = &o->position;
                 t2.x = pw->x;
                 t2.y = pw->y;
                 t2.z = pw->z;
-                Unk_02003c40_callUpdateRelative(o->unk_174, &t2);
-                if (o->unk_254 == 0xff) o->unk_251 = 10;
-                if (o->unk_251 == 10) func_ov003_022287c8(a, o, 1);
+                Unk_02003c40_callUpdateRelative(o->seEmitter, &t2);
+                if (o->alarm == 0xff) o->state = 10;
+                if (o->state == 10) func_ov003_022287c8(a, o, 1);
             }
             break;
         }
@@ -9957,11 +9957,11 @@ test0:
 namespace s03 {
 // 0x2227930
 extern "C" BOOL Insect_IsNetKindMismatch(void *a, Rec *o, s32 c, s32 d, s32 e) {
-    s32 t = o->unk_24d;
+    s32 t = o->kind;
     if (d == 0) return FALSE;
     if (t < 0 || t != c) return TRUE;
     V3 v(d, 0, e);
-    func_020e9650(&o->unk_204, &v);
+    func_020e9650(&o->position, &v);
     return FALSE;
 }
 }
@@ -9983,12 +9983,12 @@ extern "C" BOOL Insect_IsNetKindMismatch(void *a, Rec *o, s32 c, s32 d, s32 e) {
 namespace s03 {
 // 0x22277c0
 extern "C" BOOL Insect_IsTreeStillThere(void *a, Rec *o) {
-    if (o->unk_24d < 0) return FALSE;
-    switch (o->unk_24d) {
+    if (o->kind < 0) return FALSE;
+    switch (o->kind) {
     case 0x9: case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x1f: case 0x21: case 0x22: case 0x23: case 0x24: case 0x26: case 0x27: case 0x28: case 0x29: case 0x2a: case 0x2b: case 0x2c: case 0x2d: case 0x2e: case 0x2f: case 0x34:
     {
         s32 x = 0, y = 0;
-        FieldPos_ToUnit(&x, &y, &o->unk_204);
+        FieldPos_ToUnit(&x, &y, &o->position);
         void *grid = TownBlockMap_Get();
         if (grid == 0) goto yes;
         s32 px = *(volatile s32 *)&x, py = *(volatile s32 *)&y;
@@ -10027,15 +10027,15 @@ extern "C" void SpecialInsect_UpdateAll(void *a) {
     Rec *o = sSpecialInsects;
     u8 i = 0;
     do {
-        switch (o->unk_250) {
+        switch (o->lifeState) {
         case 2:
             Insect_LoadModel(a, o, 1);
             break;
         case 3:
-            if (o->unk_204.x > 0x1000) Insect_Update(a, o, i, 2);
+            if (o->position.x > 0x1000) Insect_Update(a, o, i, 2);
             break;
         case 4:
-            o->unk_251 = 10;
+            o->state = 10;
             func_ov003_022287c8(a, o, 2);
             break;
         }
@@ -10071,14 +10071,14 @@ extern "C" void HeldInsect_UpdateAll(void *a) {
     s32 zero = 0;
     do {
         s32 r = PlayerActor_GetAction(i);
-        if (cur != i && o->unk_251 != 0xb && r != 0x57 && r != 0x58 && r != 0x76 && r != 6) {
-            if (o->unk_24d == 0x39) {
-                Effect_End(o->unk_22c);
-                o->unk_22c = neg;
+        if (cur != i && o->state != 0xb && r != 0x57 && r != 0x58 && r != 0x76 && r != 6) {
+            if (o->kind == 0x39) {
+                Effect_End(o->effectHandle);
+                o->effectHandle = neg;
             }
             func_ov003_022287c8(a, o, 3);
         } else {
-            switch (o->unk_250) {
+            switch (o->lifeState) {
             case 0:
                 break;
             case 1:
@@ -10086,13 +10086,13 @@ extern "C" void HeldInsect_UpdateAll(void *a) {
                 break;
             case 2:
                 Insect_LoadModel(a, o, 2);
-                Collision_Move(&o->unk_20, &o->unk_204, &o->unk_204, o->unk_23a, sInsectModelParams[o->unk_24d].b, zero, 10);
+                Collision_Move(&o->unk_20, &o->position, &o->position, o->rotY, sInsectModelParams[o->kind].b, zero, 10);
                 break;
             case 3:
                 Insect_Update(a, o, i, 3);
                 break;
             case 4:
-                o->unk_251 = 10;
+                o->state = 10;
                 func_ov003_022287c8(a, o, 3);
                 break;
             }
@@ -10122,8 +10122,8 @@ namespace s03 {
 extern "C" BOOL Insect_UsesCollisionMove(void *a, Rec *o) {
     s32 t;
     u32 st;
-    st = o->unk_251;
-    t = o->unk_24d;
+    st = o->state;
+    t = o->kind;
     if (st == 9 || st == 0xb) goto yes;
     if (t != 0x3a && t != 0x3b) {
         Unk_020cbb18_Ptr *g = gCommManager;
@@ -10137,7 +10137,7 @@ cont:
     case 0x9: case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x1f: case 0x21: case 0x22: case 0x24: case 0x26: case 0x27: case 0x28: case 0x29: case 0x2a: case 0x2b: case 0x2c: case 0x2d: case 0x2e: case 0x2f: case 0x32: case 0x34: case 0x35:
         return FALSE;
     case 0x33:
-        if (o->unk_220 == o->unk_228) goto yes;
+        if (o->targetHeight == o->baseHeight) goto yes;
         return FALSE;
     case 0x31:
         if (st != 6) goto yes;
@@ -10168,15 +10168,15 @@ namespace s03 {
 // 0x222746c
 extern "C" void HeldInsect_Release(s32 idx, s32 v) {
     Rec *o = &sHeldInsects[idx];
-    o->unk_251 = 0xb;
-    o->unk_238 = 0;
-    o->unk_23c = 0;
+    o->state = 0xb;
+    o->rotX = 0;
+    o->rotZ = 0;
     Insect_SetScale(o, 100);
-    o->unk_23a = v;
-    s32 st = o->unk_24d;
+    o->rotY = v;
+    s32 st = o->kind;
     if (st >= 0 && st < 0x3c) {
         sInsectBehaviours[st].fn(o);
-        switch (o->unk_24d) {
+        switch (o->kind) {
         case 0xc:
         case 0xd:
         case 0x1b:
@@ -10185,15 +10185,15 @@ extern "C" void HeldInsect_Release(s32 idx, s32 v) {
             Insect_TurnToTarget(o, 1);
             break;
         case 0x39:
-            if (o->unk_22c != -1) {
-                Effect_End(o->unk_22c);
-                o->unk_22c = -1;
+            if (o->effectHandle != -1) {
+                Effect_End(o->effectHandle);
+                o->effectHandle = -1;
             }
             break;
         }
     } else {
         HeldInsect_Remove(idx, 0);
-        o->unk_250 = 4;
+        o->lifeState = 4;
     }
 }
 }
@@ -10216,11 +10216,11 @@ namespace s03 {
 // 0x2227434
 extern "C" u32 HeldInsect_GetStage(s32 idx) {
     Rec *o = &sHeldInsects[idx];
-    if (o->unk_24d < 0) {
-        o->unk_251 = 10;
-        o->unk_250 = 0;
+    if (o->kind < 0) {
+        o->state = 10;
+        o->lifeState = 0;
     }
-    return o->unk_250;
+    return o->lifeState;
 }
 }
 #undef Unk_02003c40_callUpdateRelative
@@ -10244,9 +10244,9 @@ extern "C" s32 InsectPool_Draw(void *a, Rec *o, s32 n) {
     s32 i = 0;
     goto test0;
 loop0:
-    if (o->unk_250 == 3 && o->unk_249 != 0) {
+    if (o->lifeState == 3 && o->inView != 0) {
         if (n == 8) {
-            if (Insect_IsTreeKindForCulling(a, *(u8 *)&o->unk_24d) == 0 || Camera_IsBlockingFocusView(&o->unk_204, 0x2000, 0x2000) == 0) {
+            if (Insect_IsTreeKindForCulling(a, *(u8 *)&o->kind) == 0 || Camera_IsBlockingFocusView(&o->position, 0x2000, 0x2000) == 0) {
                 Insect_Draw(a, o);
             }
         } else {
@@ -10329,7 +10329,7 @@ namespace s02 {
 // 0x2227320
 extern "C" V3 *HeldInsect_GetPos(s32 idx) {
     Obj *o = &sHeldInsects[idx];
-    return &o->unk_204;
+    return &o->position;
 }
 }
 #undef AnimModel_drawAnimated
@@ -10356,31 +10356,31 @@ extern "C" void HeldInsect_Start(s32 t, s32 idx) {
     u8 *e = (u8 *)PlayerActor_GetActor(idx);
     if (e != 0) {
         V3 *pv = (V3 *)(e + 0x5c);
-        V3 *d = &o->unk_204;
+        V3 *d = &o->position;
         d->x = *(s32 *)(e + 0x5c);
         d->y = pv->y;
         d->z = pv->z;
         d->y += 0x1b34;
         s16 ang = *(s16 *)(e + 0x8e);
-        o->unk_23a = ang;
+        o->rotY = ang;
         s32 a = ((u16)ang >> 4) * 2;
-        o->unk_204.x += func_01ffcb0c(0xfae, data_02135f44[a * 1]);
+        o->position.x += func_01ffcb0c(0xfae, data_02135f44[a * 1]);
         d->z += func_01ffcb0c(0xfae, data_02135f44[a + 1]);
     }
-    o->unk_250 = 1;
-    o->unk_251 = 0x10;
+    o->lifeState = 1;
+    o->state = 0x10;
     switch (t) {
     case 0x25:
-        o->unk_24d = 0x39;
+        o->kind = 0x39;
         break;
     case 0x3a:
-        o->unk_24d = 0xb;
+        o->kind = 0xb;
         break;
     case 0x3b:
-        o->unk_24d = 0x18;
+        o->kind = 0x18;
         break;
     default:
-        o->unk_24d = t;
+        o->kind = t;
         break;
     }
 }
@@ -10409,15 +10409,15 @@ extern "C" void Insect_OnNetRemove(s32 id) {
     s32 idx = (u8)(id & 0xf);
     if ((id >> 4) & 1) o = &sFieldInsects[idx];
     else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
-    o->unk_242 = 0;
-    u32 st = o->unk_251;
-    if (Insect_CanHopAway(o->unk_24d) && o->unk_250 != 4 && st != 0x10 && st != 10) {
-        if (st != 0x11 && o->unk_232 > 6) {
-            o->unk_232 = 6;
-            o->unk_251 = 0x11;
+    o->stateTimer = 0;
+    u32 st = o->state;
+    if (Insect_CanHopAway(o->kind) && o->lifeState != 4 && st != 0x10 && st != 10) {
+        if (st != 0x11 && o->auxTimer > 6) {
+            o->auxTimer = 6;
+            o->state = 0x11;
         }
     } else {
-        o->unk_250 = 4;
+        o->lifeState = 4;
     }
 }
 }
@@ -10478,10 +10478,10 @@ extern "C" void Insect_OnClaimGranted(s32 id) {
     s32 idx = (u8)(id & 0xf);
     if ((id >> 4) & 1) o = &sFieldInsects[idx];
     else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
-    if (o->unk_250 == 3) {
-        NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(&o->unk_130), 0, 0);
+    if (o->lifeState == 3) {
+        NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(&o->pooledModel), 0, 0);
     }
-    o->unk_251 = 0x10;
+    o->state = 0x10;
 }
 }
 #undef AnimModel_drawAnimated
@@ -10512,11 +10512,11 @@ extern "C" void HeldInsect_Remove(u8 id, s32 flag) {
         CommManager_writeRecord(g2, &id, 1);
         CommManager_endRecord(g2, 0x30, 4);
     }
-    if (o->unk_22c != -1) {
-        Effect_End(o->unk_22c);
-        o->unk_22c = -1;
+    if (o->effectHandle != -1) {
+        Effect_End(o->effectHandle);
+        o->effectHandle = -1;
     }
-    o->unk_251 = 10;
+    o->state = 10;
 }
 }
 #undef AnimModel_drawAnimated
@@ -10543,23 +10543,23 @@ extern "C" s32 Insect_FinishCatch(u8 id) {
     s32 idx = (u8)(id & 0xf);
     if ((id >> 4) & 1) o = &sFieldInsects[idx];
     else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
-    o->unk_242 = 0;
-    o->unk_250 = 4;
+    o->stateTimer = 0;
+    o->lifeState = 4;
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
         Unk_ov003_02226d54_Net *g = gCommManager;
         CommManager_beginRecord(g);
         CommManager_writeRecord(g, &id, 1);
         CommManager_endRecord(g, 0x30, 4);
     }
-    s32 c = o->unk_24d;
+    s32 c = o->kind;
     switch (c) {
     case 0x3a:
-        o->unk_251 = 8;
-        o->unk_250 = 3;
+        o->state = 8;
+        o->lifeState = 3;
         return 0xb;
     case 0x3b:
-        o->unk_251 = 8;
-        o->unk_250 = 3;
+        o->state = 8;
+        o->lifeState = 3;
         return 0x18;
     }
     return c;
@@ -10637,9 +10637,9 @@ extern "C" void Insect_CancelCatch(s32 id) {
     s32 idx = (u8)(id & 0xf);
     if ((id >> 4) & 1) o = &sFieldInsects[idx];
     else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
-    if (o->unk_251 == 0x10 && o->unk_24d >= 0) {
-        o->unk_251 = 0x13;
-        NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(&o->unk_130), 0, 0x1f);
+    if (o->state == 0x10 && o->kind >= 0) {
+        o->state = 0x13;
+        NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(&o->pooledModel), 0, 0x1f);
     }
 }
 }
@@ -10668,17 +10668,17 @@ extern "C" s32 Insect_TryCatch(u8 id) {
     if ((id >> 4) & 1) o = &sFieldInsects[idx];
     else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
     else return 0;
-    u32 t6 = o->unk_251;
-    u32 c4 = (u8)o->unk_24d;
-    if (c4 == -1 || o->unk_250 != 3 || t6 == 0xb || t6 == 9 || t6 == 0x10) return 0;
+    u32 t6 = o->state;
+    u32 c4 = (u8)o->kind;
+    if (c4 == -1 || o->lifeState != 3 || t6 == 0xb || t6 == 9 || t6 == 0x10) return 0;
     if (c4 == 0x31 || c4 == 0x1e || c4 == 0x35) {
-        if (func_02106020(PooledModel_getModel(&o->unk_130), 0) < 0x1f) return 0;
+        if (func_02106020(PooledModel_getModel(&o->pooledModel), 0) < 0x1f) return 0;
     }
     if (c4 == 0x35 && t6 == 0x13) return 0;
-    s32 c = o->unk_24d;
+    s32 c = o->kind;
     if (c != 0x3a && c != 0x3b) {
-        NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(&o->unk_130), 0, 0);
-        o->unk_251 = 0x10;
+        NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(&o->pooledModel), 0, 0);
+        o->state = 0x10;
     }
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
         if (!NetArea_IsLocalOwner()) {
@@ -10713,14 +10713,14 @@ namespace s02 {
 // 0x2226d08
 extern "C" void Insect_SetScale(Obj *o, s32 v) {
     if (v == 100) {
-        o->unk_210 = 0x1000;
-        o->unk_214 = 0x1000;
-        o->unk_218 = 0x1000;
+        o->scaleX = 0x1000;
+        o->scaleY = 0x1000;
+        o->scaleZ = 0x1000;
     } else {
-        s32 *p = &o->unk_210;
+        s32 *p = &o->scaleX;
         *p = FX_Div(v << 12, 0x64000);
-        o->unk_214 = *p;
-        o->unk_218 = *p;
+        o->scaleY = *p;
+        o->scaleZ = *p;
     }
 }
 }
@@ -10744,17 +10744,17 @@ extern "C" void Insect_SetScale(Obj *o, s32 v) {
 namespace s02 {
 // 0x2226c88
 extern "C" void Insect_Draw(void *a, Obj *o) {
-    s32 *p = &o->unk_210;
+    s32 *p = &o->scaleX;
     if (*p > 0) {
-        void *t = PooledModel_getModel(&o->unk_130);
+        void *t = PooledModel_getModel(&o->pooledModel);
         s32 r = func_02106020(t, 0);
         u32 c;
         r = (31 - r) << 1;
         if (r > 31) c = 0;
         else c = 31 - r;
-        AnimModel_drawAnimated(&o->unk_50, p);
+        AnimModel_drawAnimated(&o->model, p);
         if (Insect_HasShadow(a, o)) {
-            CharaShadow_DrawFaded(&o->unk_204, data_ov003_02234b06[o->unk_24d].a, 0x9000, (u8)c);
+            CharaShadow_DrawFaded(&o->position, data_ov003_02234b06[o->kind].a, 0x9000, (u8)c);
         }
     }
 }
@@ -10779,12 +10779,12 @@ extern "C" void Insect_Draw(void *a, Obj *o) {
 namespace s02 {
 // 0x2226c14
 extern "C" BOOL Insect_HasShadow(void *a, Obj *o) {
-    s32 idx = o->unk_24d;
+    s32 idx = o->kind;
     if (data_ov003_02234b06[idx].a <= 1) return FALSE;
     switch (idx) {
     case 0x1e:
     case 0x31:
-        if (o->unk_251 == 0x13) return FALSE;
+        if (o->state == 0x13) return FALSE;
         return TRUE;
     case 0x18:
     case 0x30:
@@ -10818,20 +10818,20 @@ namespace s02 {
 // 0x2226a9c
 extern "C" void Insect_SetModelMatrix(void *a, Obj *o, s32 flag) {
     V3 v;
-    u8 *pb = (u8 *)&o->unk_50;
-    s32 r6 = WorldCurve_ToCurved(&v, &o->unk_204);
+    u8 *pb = (u8 *)&o->model;
+    s32 r6 = WorldCurve_ToCurved(&v, &o->position);
     if (flag) {
-        data_021f47e0 = o->unk_180;
-        func_020e8434(&data_021f47e0, o->unk_238);
+        data_021f47e0 = o->handMtx;
+        func_020e8434(&data_021f47e0, o->rotX);
     } else {
         func_020e8388(&data_021f47e0, v.x, v.y, v.z);
-        func_020e8434(&data_021f47e0, (s16)(r6 + o->unk_238));
+        func_020e8434(&data_021f47e0, (s16)(r6 + o->rotX));
     }
-    if (o->unk_23a != 0) func_020e8404(&data_021f47e0, o->unk_23a);
-    if (o->unk_23c != 0) func_020e83d4(&data_021f47e0, o->unk_23c);
+    if (o->rotY != 0) func_020e8404(&data_021f47e0, o->rotY);
+    if (o->rotZ != 0) func_020e83d4(&data_021f47e0, o->rotZ);
     pb += 0x64;
     *(Blk *)pb = data_021f47e0;
-    if (flag && o->unk_24d == 0x39) {
+    if (flag && o->kind == 0x39) {
         Blk m = data_021f47e0;
         V3 pos;
         pos.x = m.v[9];
@@ -10848,18 +10848,18 @@ extern "C" void Insect_SetModelMatrix(void *a, Obj *o, s32 flag) {
         u16 arr[2];
         vin.y = 0;
         vin.x = 0;
-        vin.z = func_01ffcb0c(o->unk_210, -0x333);
+        vin.z = func_01ffcb0c(o->scaleX, -0x333);
         MTX_MultVec43(&vin, &m2, &vout);
         pos.x += vout.x;
         pos.y += vout.y;
         pos.z += vout.z;
         WorldCurve_FromCurved(&pos, &pos);
-        if (o->unk_21c == 0) {
-            arr[0] = o->unk_210;
+        if (o->behaviourWork == 0) {
+            arr[0] = o->scaleX;
             *h = Effect_Create(0x3a, &pos, 0, &arr[0]);
-            o->unk_21c = 1;
+            o->behaviourWork = 1;
         } else {
-            arr[1] = o->unk_210;
+            arr[1] = o->scaleX;
             s32 t = *h;
             if (t != -1) Effect_SetPosition(t, &pos, 0, &arr[1]);
         }

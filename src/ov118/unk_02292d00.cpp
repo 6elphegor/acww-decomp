@@ -235,13 +235,13 @@ class MapTabMarker {
 public:
     MapTabMarker();
     ~MapTabMarker();
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
+    u8 x;
+    u8 y;
+    u8 cell;
 };
 
-#define A8V (*(volatile u8 *)&unk_a8)
-#define ACV (*(volatile u8 *)&unk_ac)
+#define A8V (*(volatile u8 *)&blinkTimer)
+#define ACV (*(volatile u8 *)&cursorTarget)
 
 typedef struct MapTab Unk_ov118_022955c8_fwd;
 class MapTab;
@@ -250,7 +250,7 @@ typedef void (MapTab::*Unk_ov118_022955c8_Fn)();
 // Vtable 0x022955c8, size 0x459c
 class MapTab : public MenuProc {
 public:
-    MapTab() : unk_b4(), unk_fc(), unk_43c(), unk_484(), unk_44e8(), unk_4568(), unk_4571() {}
+    MapTab() : screenTasks(), textLabels(), scrollKnob(), cursor(), townMarkers(), terrainMarkers(), buildingMarkers() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -352,45 +352,45 @@ public:
     void runMainState();
 
     /* 0x0091 */ u8 unk_91[3];
-    /* 0x0094 */ s32 unk_94;
-    /* 0x0098 */ u16 unk_98;
-    /* 0x009a */ u16 unk_9a;
-    /* 0x009c */ u16 unk_9c;
-    /* 0x009e */ u8 unk_9e;
-    /* 0x009f */ u8 unk_9f;
-    /* 0x00a0 */ volatile u8 unk_a0;
-    /* 0x00a1 */ u8 unk_a1;
-    /* 0x00a2 */ u8 unk_a2;
-    /* 0x00a3 */ u8 unk_a3;
-    /* 0x00a4 */ u8 unk_a4;
-    /* 0x00a5 */ u8 unk_a5;
-    /* 0x00a6 */ u8 unk_a6;
-    /* 0x00a7 */ u8 unk_a7;
-    /* 0x00a8 */ u8 unk_a8;
-    /* 0x00a9 */ u8 unk_a9;
-    /* 0x00aa */ u8 unk_aa;
-    /* 0x00ab */ u8 unk_ab;
-    /* 0x00ac */ u8 unk_ac;
-    /* 0x00ad */ u8 unk_ad;
-    /* 0x00ae */ u8 unk_ae;
-    /* 0x00af */ u8 unk_af;
-    /* 0x00b0 */ u8 unk_b0;
-    /* 0x00b1 */ u8 unk_b1;
+    /* 0x0094 */ s32 slideY;
+    /* 0x0098 */ u16 listScroll;
+    /* 0x009a */ u16 listScrollTarget;
+    /* 0x009c */ u16 flags;
+    /* 0x009e */ u8 selfMarkerX;
+    /* 0x009f */ u8 selfMarkerY;
+    /* 0x00a0 */ volatile u8 labelCount;
+    /* 0x00a1 */ u8 residentCount;
+    /* 0x00a2 */ u8 placeCount;
+    /* 0x00a3 */ u8 listTopRow;
+    /* 0x00a4 */ u8 knobPos;
+    /* 0x00a5 */ u8 dragStartTouchY;
+    /* 0x00a6 */ u8 knobLastTickPos;
+    /* 0x00a7 */ u8 dragStartKnobPos;
+    /* 0x00a8 */ u8 blinkTimer;
+    /* 0x00a9 */ u8 selectedMarker;
+    /* 0x00aa */ u8 selectedRow;
+    /* 0x00ab */ u8 returnState;
+    /* 0x00ac */ u8 cursorTarget;
+    /* 0x00ad */ u8 cursorMarker;
+    /* 0x00ae */ u8 mapCursorX;
+    /* 0x00af */ u8 mapCursorY;
+    /* 0x00b0 */ u8 playerEntryCount;
+    /* 0x00b1 */ u8 selfBlinkCounter;
     /* 0x00b2 */ u8 unk_b2[2];
-    /* 0x00b4 */ BgVramTask unk_b4[2];
-    /* 0x00fc */ LabelString unk_fc[13];
-    /* 0x043c */ MenuScrollKnob unk_43c;
-    /* 0x0484 */ MenuCursorBuf0 unk_484;
-    /* 0x04e8 */ u8 unk_4e8[0x800];
-    /* 0x0ce8 */ u16 unk_ce8[0x400];
-    /* 0x14e8 */ u16 unk_14e8[0x400];
-    /* 0x1ce8 */ u16 unk_1ce8[0x400];
-    /* 0x24e8 */ u8 unk_24e8[0x2000];
-    /* 0x44e8 */ TownMapMarkers unk_44e8;
-    /* 0x454e */ u8 unk_454e[13];
-    /* 0x455b */ u8 unk_455b[13];
-    /* 0x4568 */ MapTabMarker unk_4568[3];
-    /* 0x4571 */ MapTabMarker unk_4571[14];
+    /* 0x00b4 */ BgVramTask screenTasks[2];
+    /* 0x00fc */ LabelString textLabels[13];
+    /* 0x043c */ MenuScrollKnob scrollKnob;
+    /* 0x0484 */ MenuCursorBuf0 cursor;
+    /* 0x04e8 */ u8 frameScreen[0x800];
+    /* 0x0ce8 */ u16 listScreen[0x400];
+    /* 0x14e8 */ u16 listScreenWork[0x400];
+    /* 0x1ce8 */ u16 listScreenBase[0x400];
+    /* 0x24e8 */ u8 mapChars[0x2000];
+    /* 0x44e8 */ TownMapMarkers townMarkers;
+    /* 0x454e */ u8 residentEntries[13];
+    /* 0x455b */ u8 placeEntries[13];
+    /* 0x4568 */ MapTabMarker terrainMarkers[3];
+    /* 0x4571 */ MapTabMarker buildingMarkers[14];
 };
 
 struct Unk_ov118_02295500 {
@@ -495,19 +495,19 @@ BOOL MapTab::vfunc_0c() {
 }
 
 BOOL MapTab::onDraw() {
-    u32 base = unk_94 + 0x60;
+    u32 base = slideY + 0x60;
     s32 i;
     if (testFlags(4)) {
         if (testFlags(8)) {
-            unk_43c.moveTo(0x67, (unk_94 - 0x12) + unk_a4);
+            scrollKnob.moveTo(0x67, (slideY - 0x12) + knobPos);
         }
         if (MenuCtrl_IsButtons()) {
             if (testFlags(0x1000)) {
-                s32 a = unk_43c.getGripX();
-                s32 b = unk_43c.getGripY();
-                ((MenuCursorBase *)&unk_484)->warpTo(a, b);
+                s32 a = scrollKnob.getGripX();
+                s32 b = scrollKnob.getGripY();
+                ((MenuCursorBase *)&cursor)->warpTo(a, b);
             }
-            ((MenuCursorBase *)&unk_484)->drawWrapped();
+            ((MenuCursorBase *)&cursor)->drawWrapped();
         }
         Oam_DrawCell(1, sMapTabFrameCells, 0x80, base, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         s32 x0, x1;
@@ -521,23 +521,23 @@ BOOL MapTab::onDraw() {
         Oam_DrawCell(1, sMapTabPlacesButtonCells, 0x80, base, x0, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         Oam_DrawCell(1, sMapTabResidentsButtonCells, 0x80, base, x1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         if (MenuCtrl_IsButtons() && testFlags(0x800)) {
-            u32 t = unk_ad;
+            u32 t = cursorMarker;
             if (t != 0xe) {
                 u8 *e = (u8 *)this + t * 3;
                 if (e[0x4573] != 0xc) {
-                    drawMapIcon(e[0x4571], unk_94 + e[0x4572], 0xb, 0, -1);
+                    drawMapIcon(e[0x4571], slideY + e[0x4572], 0xb, 0, -1);
                 }
             }
         }
-        unk_b1 = (unk_b1 + 1) & 0xf;
-        if ((unk_b1 & 0xc) != 0) {
-            drawMapIcon(unk_9e, unk_9f + unk_94, 0xa, 0, -1);
+        selfBlinkCounter = (selfBlinkCounter + 1) & 0xf;
+        if ((selfBlinkCounter & 0xc) != 0) {
+            drawMapIcon(selfMarkerX, selfMarkerY + slideY, 0xa, 0, -1);
         }
         for (i = 0; i < 3; i++) {
             u8 *e = (u8 *)this + i * 3;
             u32 c = e[0x456a];
             if (c != 0xc) {
-                drawMapIcon(e[0x4568], unk_94 + e[0x4569], (u8)(c & 0x7f), (c & 0x80) != 0 ? 1 : 0, -1);
+                drawMapIcon(e[0x4568], slideY + e[0x4569], (u8)(c & 0x7f), (c & 0x80) != 0 ? 1 : 0, -1);
             }
         }
         for (i = 0; i < 14; i++) {
@@ -545,16 +545,16 @@ BOOL MapTab::onDraw() {
             u8 *q = e + 0x4573;
             if (*q != 0xc) {
                 s32 f;
-                if (i == unk_a9 && !testFlags(0x100)) {
+                if (i == selectedMarker && !testFlags(0x100)) {
                     f = 8;
                 } else {
                     f = -1;
                 }
-                drawMapIcon(e[0x4571], unk_94 + e[0x4572], *q, 0, f);
+                drawMapIcon(e[0x4571], slideY + e[0x4572], *q, 0, f);
             }
         }
         if (testFlags(8)) {
-            unk_43c.vfunc_08();
+            scrollKnob.vfunc_08();
         }
     }
     return TRUE;
@@ -741,9 +741,9 @@ void MapTab::stateOpen() {
     Gfx2d_ShowLayer(4);
     applySlideOffset(4, 0, 0);
     Gfx2d_ShowLayer(6);
-    applySlideOffset(6, 0, 0x50 - unk_98);
+    applySlideOffset(6, 0, 0x50 - listScroll);
     setFlags(4);
-    unk_94 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
     setTransitionState(6);
 }
 
@@ -757,17 +757,17 @@ void MapTab::stateOpening() {
         }
     }
     applySlideOffset(4, 0, 0);
-    applySlideOffset(6, 0, 0x50 - unk_98);
-    unk_94 = getSlideOffsetY();
+    applySlideOffset(6, 0, 0x50 - listScroll);
+    slideY = getSlideOffsetY();
 }
 
 void MapTab::stateClose() {
     hideCursor();
     beginSubSlideOut(0xa, 0, 0, 0x30);
     applySlideOffset(4, 0, 0);
-    applySlideOffset(6, 0, 0x50 - unk_98);
+    applySlideOffset(6, 0, 0x50 - listScroll);
     setTransitionState(8);
-    unk_94 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void MapTab::stateClosing() {
@@ -778,25 +778,25 @@ void MapTab::stateClosing() {
         setPhase(5);
     } else {
         applySlideOffset(4, 0, 0);
-        applySlideOffset(6, 0, 0x50 - unk_98);
-        unk_94 = getSlideOffsetY();
+        applySlideOffset(6, 0, 0x50 - listScroll);
+        slideY = getSlideOffsetY();
     }
 }
 
 void MapTab::initMapTab() {
     volatile Unk_ov118_02294a58_Vec v;
     Unk_ov118_02294a58_Vec *p;
-    unk_a0 = 0;
-    unk_9c = 0;
-    unk_98 = 0;
-    unk_9a = 0;
-    unk_a4 = 0;
-    unk_94 = 0;
-    unk_a8 = 0;
-    unk_ac = 8;
-    unk_ae = 0x58;
-    unk_af = 0x70;
-    unk_ad = 0xe;
+    labelCount = 0;
+    flags = 0;
+    listScroll = 0;
+    listScrollTarget = 0;
+    knobPos = 0;
+    slideY = 0;
+    blinkTimer = 0;
+    cursorTarget = 8;
+    mapCursorX = 0x58;
+    mapCursorY = 0x70;
+    cursorMarker = 0xe;
     selectEntry(0);
     buildEntryLists();
     if (Unk_ov118_02294a58_IsZero(gFieldSceneKind)) {
@@ -812,9 +812,9 @@ void MapTab::initMapTab() {
         v.z = p->z;
     }
     s32 z = (v.z + 0x800) >> 12;
-    unk_9e = ((v.x + 0x800) >> 12) - 8;
-    unk_9f = z + 13;
-    unk_43c.setState(1);
+    selfMarkerX = ((v.x + 0x800) >> 12) - 8;
+    selfMarkerY = z + 13;
+    scrollKnob.setState(1);
     if (((MenuTabBar *)ProcBase_GetParent(this))->isJustOpened()) {
         setFlags(0x2000);
     }
@@ -822,8 +822,8 @@ void MapTab::initMapTab() {
 
 void MapTab::releaseResources() {
     resetTextLabels();
-    unk_b4[0].cancel();
-    unk_b4[1].cancel();
+    screenTasks[0].cancel();
+    screenTasks[1].cancel();
 }
 
 void MapTab::preStateUpdate() {
@@ -833,8 +833,8 @@ void MapTab::preStateUpdate() {
 void MapTab::postStateUpdate() {
     if (isListScrolling()) {
         updateListScroll();
-        Gfx2d_SetLayerOffset(6, 0, unk_98 - 0x50);
-        if (unk_a3 != (unk_98 >> 4)) {
+        Gfx2d_SetLayerOffset(6, 0, listScroll - 0x50);
+        if (listTopRow != (listScroll >> 4)) {
             setFlags(0x80);
         }
     }
@@ -844,12 +844,12 @@ void MapTab::postStateUpdate() {
         clearFlags(0x80);
     }
     if (testFlags(0x20)) {
-        if (unk_b4[1].requestScreen((u32)unk_4e8, 4, 0x800, 0)) {
+        if (screenTasks[1].requestScreen((u32)frameScreen, 4, 0x800, 0)) {
             clearFlags(0x20);
         }
     }
     if (testFlags(2)) {
-        if (unk_b4[0].requestScreen((u32)unk_ce8, 6, 0x800, 0)) {
+        if (screenTasks[0].requestScreen((u32)listScreen, 6, 0x800, 0)) {
             clearFlags(2);
         }
     }
@@ -857,8 +857,8 @@ void MapTab::postStateUpdate() {
 
 void MapTab::preInputUpdate() {
     preStateUpdate();
-    unk_43c.vfunc_0c();
-    unk_484.vfunc_0c();
+    scrollKnob.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void MapTab::postInputUpdate() {
@@ -877,10 +877,10 @@ void MapTab::loadBgGfx() {
     Gfx2d_LoadPaletteFile("menu/map/b_map_bg.bpl", p, 4, 1, 1, 0xf);
     Gfx2d_LoadCharFile("menu/map/b_map_bg_0.bch", p, 4, 0x11, 0x11, 0x5f);
     Gfx2d_LoadCharFile("menu/map/b_map_bg_1.bch", p, 4, 0x230, 0x230, 0x25f);
-    File_LoadToBuffer("menu/map/b_map_a_bg.bsc", unk_4e8, 0x800);
-    Gfx2d_LoadScreen(unk_4e8, 4, 0x800, 0);
-    File_LoadToBuffer("menu/map/b_map_b_bg.bsc", unk_1ce8, 0x800);
-    BgScreen_SetRectPalette(unk_1ce8, 0x13, 0, 0x1c, 1, 4);
+    File_LoadToBuffer("menu/map/b_map_a_bg.bsc", frameScreen, 0x800);
+    Gfx2d_LoadScreen(frameScreen, 4, 0x800, 0);
+    File_LoadToBuffer("menu/map/b_map_b_bg.bsc", listScreenBase, 0x800);
+    BgScreen_SetRectPalette(listScreenBase, 0x13, 0, 0x1c, 1, 4);
 }
 
 s32 MapTab::loadMapStep1() {
@@ -898,9 +898,9 @@ s32 MapTab::loadMapStep2() {
 void MapTab::loadMapImage() {
     u8 *a, *b;
     TownMapImage_DrawRowGlobal(3);
-    a = unk_24e8;
-    TownMapMarkers_Clear(&unk_44e8);
-    b = (u8 *)&unk_44e8;
+    a = mapChars;
+    TownMapMarkers_Clear(&townMarkers);
+    b = (u8 *)&townMarkers;
     InventoryBg_ClearDirty(a, b);
     Gfx2d_LoadCharRange(a, 4, 0x60, 0x60, 0x15f);
     setupMarkers(b);
@@ -922,7 +922,7 @@ void MapTab::updateTouch() {
         if (touchListTabs()) {
             Snd_PlaySe(0x36);
         } else if (touchScrollBar()) {
-            unk_43c.grab();
+            scrollKnob.grab();
         } else if (touchMarker()) {
             playSeAtMarker(0x38);
         } else if (touchListRow()) {
@@ -933,19 +933,19 @@ void MapTab::updateTouch() {
 
 void MapTab::updateKnobDrag() {
     if (gTouchHeld == 0) {
-        unk_43c.setState(3);
+        scrollKnob.setState(3);
         startTouchInput();
     }
-    scrollListToKnob(unk_a7 + (gTouchCurY - unk_a5));
+    scrollListToKnob(dragStartKnobPos + (gTouchCurY - dragStartTouchY));
 }
 
 void MapTab::updateBarTap() {
     u32 v;
     if (gTouchHeld == 0) {
-        unk_43c.setState(3);
+        scrollKnob.setState(3);
         startTouchInput();
     }
-    v = unk_a4;
+    v = knobPos;
     func_020e761c(&v, gTouchCurY - 0x54, 8);
     scrollListToKnob(v);
 }
@@ -958,9 +958,9 @@ void MapTab::updateButtons() {
     switch (moveCursorByPad((void *)takeRepeatedKeys())) {
     case 1:
         if (testFlags(8)) {
-            u8 t = unk_ac;
+            u8 t = cursorTarget;
             if (t >= 0xa && t <= 0xf) {
-                setListScrollTarget(unk_98 & ~0xf);
+                setListScrollTarget(listScroll & ~0xf);
             }
         }
         moveCursorToTarget();
@@ -968,7 +968,7 @@ void MapTab::updateButtons() {
     case 2:
         selectEntry(0);
         highlightListRow(0xe);
-        unk_ad = findMarkerAt(unk_ae, unk_af);
+        cursorMarker = findMarkerAt(mapCursorX, mapCursorY);
         setFlags(0x800);
         setMainState(0xa);
         moveCursorToTarget();
@@ -991,19 +991,19 @@ void MapTab::updateButtons() {
 }
 
 void MapTab::updateCursorMove() {
-    if (((MenuCursorBase *)&unk_484)->isMoving() == 0) {
-        setMainState(unk_ab);
+    if (((MenuCursorBase *)&cursor)->isMoving() == 0) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void MapTab::updateCursorPress() {
-    if (_ZN10HandCursor10isAnimDoneEv(&unk_484)) {
+    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
         s32 r = onCursorDecide();
         if (r != 1) {
             if (r == 2) {
                 setListScroll(0);
-                unk_a3 = 0xff;
+                listTopRow = 0xff;
                 releaseCursor();
             } else {
                 releaseCursor();
@@ -1013,7 +1013,7 @@ void MapTab::updateCursorPress() {
 }
 
 void MapTab::updateCursorRelease() {
-    if (_ZN10HandCursor10isAnimDoneEv(&unk_484)) {
+    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
         refreshCursor();
         if (testFlags(0x800)) {
             setMainState(0xa);
@@ -1024,14 +1024,14 @@ void MapTab::updateCursorRelease() {
 }
 
 void MapTab::updateKnobGrab() {
-    if (unk_43c.areAnimsDone()) {
+    if (scrollKnob.areAnimsDone()) {
         setMainState(8);
     }
 }
 
 void MapTab::updateKnobHold() {
     if ((gPad[0] & 1) == 0) {
-        unk_43c.setState(3);
+        scrollKnob.setState(3);
         setMainState(9);
     } else {
         scrollListByPad();
@@ -1039,7 +1039,7 @@ void MapTab::updateKnobHold() {
 }
 
 void MapTab::updateKnobRelease() {
-    if (unk_43c.areAnimsDone()) {
+    if (scrollKnob.areAnimsDone()) {
         releaseCursor();
         clearFlags(0x1000);
     }
@@ -1052,7 +1052,7 @@ void MapTab::updateMapCursor() {
         return;
     }
     trg = gPad[1];
-    if ((trg & 1) && unk_ad != 0xe) {
+    if ((trg & 1) && cursorMarker != 0xe) {
         pressCursor();
         return;
     }
@@ -1064,9 +1064,9 @@ void MapTab::updateMapCursor() {
         requestTab(MenuTabBar_PrevTab(5));
         return;
     }
-    ox = unk_ae;
+    ox = mapCursorX;
     x = ox;
-    oy = unk_af;
+    oy = mapCursorY;
     y = oy;
     cur = gPad[0];
     if (cur & 0x40) {
@@ -1075,8 +1075,8 @@ void MapTab::updateMapCursor() {
         y = oy + 4;
     }
     if (y < 0x30) {
-        unk_ac = MenuTabBar_TabFromX(ox);
-        ((MenuCursor *)&unk_484)->switchToAnim0D();
+        cursorTarget = MenuTabBar_TabFromX(ox);
+        ((MenuCursor *)&cursor)->switchToAnim0D();
         exitMapCursor();
         return;
     }
@@ -1090,23 +1090,23 @@ void MapTab::updateMapCursor() {
         x = 0x18;
     } else if (x > 0x98) {
         if (y < 0x50) {
-            unk_ac = 9;
+            cursorTarget = 9;
         } else {
             y = (y - 0x50) >> 4;
             if (y >= getListCount()) {
                 y = getListCount() - 1;
             }
             y += 0xa;
-            unk_ac = y;
+            cursorTarget = y;
         }
         exitMapCursor();
         return;
     }
     if (x == ox && y == oy) return;
-    unk_ae = x;
-    unk_af = y;
-    unk_ad = findMarkerAt(unk_ae, unk_af);
-    ((MenuCursorBase *)&unk_484)->warpTo(unk_ae, unk_af);
+    mapCursorX = x;
+    mapCursorY = y;
+    cursorMarker = findMarkerAt(mapCursorX, mapCursorY);
+    ((MenuCursorBase *)&cursor)->warpTo(mapCursorX, mapCursorY);
 }
 
 void MapTab::startTouchInput() {
@@ -1115,7 +1115,7 @@ void MapTab::startTouchInput() {
 }
 
 void MapTab::startButtonInput() {
-    unk_43c.setState(1);
+    scrollKnob.setState(1);
     showCursor();
     restartKeyRepeat();
     if (testFlags(0x800)) {
@@ -1136,24 +1136,24 @@ void MapTab::exitMapCursor() {
 void MapTab::clipListScreen() {
     volatile u16 v0, v1, v2, v3;
     s32 off, j, i, n;
-    MIi_CpuCopy16(unk_14e8, unk_ce8, 0x800);
-    n = unk_98 >> 4;
-    unk_a3 = n;
+    MIi_CpuCopy16(listScreenWork, listScreen, 0x800);
+    n = listScroll >> 4;
+    listTopRow = n;
     off = 0x13;
     for (i = 0; i < n; i++) {
         v0 = 0x10;
-        MIi_CpuClear16(v0, unk_ce8 + off, 0x14);
+        MIi_CpuClear16(v0, listScreen + off, 0x14);
         v1 = 0x10;
-        MIi_CpuClear16(v1, unk_ce8 + (off + 0x20), 0x14);
+        MIi_CpuClear16(v1, listScreen + (off + 0x20), 0x14);
         off += 0x40;
     }
     j = n + 7;
     off = j * 0x40 + 0x13;
     for (; j < 13; j++) {
         v2 = 0x10;
-        MIi_CpuClear16(v2, unk_ce8 + off, 0x14);
+        MIi_CpuClear16(v2, listScreen + off, 0x14);
         v3 = 0x10;
-        MIi_CpuClear16(v3, unk_ce8 + (off + 0x20), 0x14);
+        MIi_CpuClear16(v3, listScreen + (off + 0x20), 0x14);
         off += 0x40;
     }
     setFlags(2);
@@ -1162,15 +1162,15 @@ void MapTab::clipListScreen() {
 void MapTab::buildListScreen() {
     s32 i;
     u8 *tbl;
-    MIi_CpuCopy16(unk_1ce8, unk_14e8, 0x800);
+    MIi_CpuCopy16(listScreenBase, listScreenWork, 0x800);
     tbl = getListEntries();
     for (i = 0; i < 13; i++) {
         s32 a = getEntryIconRow(tbl[i], i) * 0x40 + 0x13;
         s32 b = i * 0x40 + 0x13;
-        unk_14e8[b] = unk_1ce8[a];
-        unk_14e8[b + 1] = unk_1ce8[a + 1];
-        unk_14e8[b + 0x20] = unk_1ce8[a + 0x20];
-        unk_14e8[b + 0x21] = unk_1ce8[a + 0x21];
+        listScreenWork[b] = listScreenBase[a];
+        listScreenWork[b + 1] = listScreenBase[a + 1];
+        listScreenWork[b + 0x20] = listScreenBase[a + 0x20];
+        listScreenWork[b + 0x21] = listScreenBase[a + 0x21];
     }
     setFlags(2);
 }
@@ -1191,8 +1191,8 @@ s32 MapTab::getEntryIconRow(u32 x, s32 idx) {
 
 void MapTab::resetTextLabels() {
     s32 i = 0;
-    unk_a0 = 0;
-    LabelString *p = unk_fc;
+    labelCount = 0;
+    LabelString *p = textLabels;
     do {
         (p + i)->destroyLabel();
         i++;
@@ -1200,11 +1200,11 @@ void MapTab::resetTextLabels() {
 }
 
 LabelString *MapTab::allocTextLabel() {
-    if (unk_a0 >= 13) {
-        return &unk_fc[12];
+    if (labelCount >= 13) {
+        return &textLabels[12];
     }
-    unk_a0 = unk_a0 + 1;
-    return &unk_fc[unk_a0 - 1];
+    labelCount = labelCount + 1;
+    return &textLabels[labelCount - 1];
 }
 
 void MapTab::buildEntryLists() {
@@ -1212,7 +1212,7 @@ void MapTab::buildEntryLists() {
     s32 m, i;
     m = PlayerDataArray_FindById(gSavePlayers, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
     if (m != -1) {
-        unk_454e[0] = 1;
+        residentEntries[0] = 1;
         n++;
     }
     for (i = 0; i < 4; i++) {
@@ -1222,36 +1222,36 @@ void MapTab::buildEntryLists() {
         if (!PlayerDataArray_IsUsed(gSavePlayers, i)) {
             continue;
         }
-        unk_454e[n] = i + 2;
+        residentEntries[n] = i + 2;
         n++;
     }
-    unk_b0 = n;
+    playerEntryCount = n;
     for (i = 0; i < 8; i++) {
         if (SaveVillagers_IsOccupied(gSaveVillagers, i)) {
-            unk_454e[n] = i + 6;
+            residentEntries[n] = i + 6;
             n++;
         }
     }
-    unk_a1 = n;
+    residentCount = n;
     for (; n < 0xd; n++) {
-        unk_455b[n] = 0;
+        placeEntries[n] = 0;
     }
     n = 0;
     for (i = 0; i < 5; i++) {
-        unk_455b[n] = i + 0xe;
+        placeEntries[n] = i + 0xe;
         n++;
     }
-    unk_a2 = n;
+    placeCount = n;
     for (; n < 0xd; n++) {
-        unk_455b[n] = 0;
+        placeEntries[n] = 0;
     }
 }
 
 void MapTab::layoutListLabels() {
     if (testFlags(1)) {
-        buildEntryLabels(unk_455b);
+        buildEntryLabels(placeEntries);
     } else {
-        buildEntryLabels(unk_454e);
+        buildEntryLabels(residentEntries);
     }
 }
 
@@ -1302,23 +1302,23 @@ s32 MapTab::rebuildList() {
         setFlags(8);
         k = 3;
     }
-    BgScreen_SetRectPalette(unk_4e8, 0x1d, 0xa, 0x1d, 0x15, k);
+    BgScreen_SetRectPalette(frameScreen, 0x1d, 0xa, 0x1d, 0x15, k);
     setFlags(0x20);
-    highlightListRow(unk_aa);
+    highlightListRow(selectedRow);
 }
 
 u8 *MapTab::getListEntries() {
     if (testFlags(1)) {
-        return unk_455b;
+        return placeEntries;
     }
-    return unk_454e;
+    return residentEntries;
 }
 
 u8 MapTab::getListCount() {
     if (testFlags(1)) {
-        return unk_a2;
+        return placeCount;
     }
-    return unk_a1;
+    return residentCount;
 }
 
 s32 MapTab::getListScrollMax() {
@@ -1339,7 +1339,7 @@ BOOL MapTab::touchListRow() {
     if (y < 0x50 || y >= 0xb0) {
         return FALSE;
     }
-    idx = (y + (unk_98 - 0x50)) >> 4;
+    idx = (y + (listScroll - 0x50)) >> 4;
     if (testFlags(1) && idx == 5) {
         return FALSE;
     }
@@ -1440,14 +1440,14 @@ u8 MapTab::findMarkerAt(s32 x, s32 y) {
 
 void MapTab::selectEntry(u8 v) {
     if (v == 0) {
-        unk_a9 = 0xe;
-        unk_aa = 0xe;
+        selectedMarker = 0xe;
+        selectedRow = 0xe;
         stopBlink();
         return;
     }
     startBlink();
-    unk_aa = selectionToListRow(v);
-    unk_a9 = selectionToMarker(v);
+    selectedRow = selectionToListRow(v);
+    selectedMarker = selectionToMarker(v);
     if (v >= 1 && v < 0xf) {
         clearFlags(0x200);
         if (testFlags(1)) {
@@ -1468,17 +1468,17 @@ void MapTab::selectEntry(u8 v) {
     }
     ensureSelectionVisible();
     highlightListRow(0xe);
-    highlightListRow(unk_aa);
+    highlightListRow(selectedRow);
 }
 
 s32 MapTab::highlightListRow(u32 v) {
     setFlags(0x80);
     if (v == 0xe) {
-        BgScreen_SetRectPalette(unk_14e8, 0x13, 0, 0x1c, 0x19, 4);
+        BgScreen_SetRectPalette(listScreenWork, 0x13, 0, 0x1c, 0x19, 4);
     } else if (v == 0xd) {
-        BgScreen_SetRectPalette(unk_14e8, 0x13, 0, 0x1c, unk_b0 * 2 - 1, 3);
+        BgScreen_SetRectPalette(listScreenWork, 0x13, 0, 0x1c, playerEntryCount * 2 - 1, 3);
     } else {
-        BgScreen_SetRectPalette(unk_14e8, 0x13, v * 2, 0x1c, v * 2 + 1, 3);
+        BgScreen_SetRectPalette(listScreenWork, 0x13, v * 2, 0x1c, v * 2 + 1, 3);
     }
 }
 
@@ -1489,9 +1489,9 @@ u8 MapTab::selectionToListRow(u32 v) {
     if (v >= 1 && v < 9) {
         s32 t = v + 5;
         s32 i = 0;
-        s32 n = unk_a1;
+        s32 n = residentCount;
         for (; i < n; i++) {
-            if (t == unk_454e[i]) {
+            if (t == residentEntries[i]) {
                 return (u8)i;
             }
         }
@@ -1529,7 +1529,7 @@ u8 MapTab::selectionToMarker(u32 v) {
 }
 
 void MapTab::jumpToSelection() {
-    u32 a = unk_aa;
+    u32 a = selectedRow;
     u32 v;
     if (a <= 5 || a == 0xd) {
         v = 0;
@@ -1537,21 +1537,21 @@ void MapTab::jumpToSelection() {
         v = (a - 5) << 4;
     }
     setListScroll(v);
-    unk_a3 = 0xff;
+    listTopRow = 0xff;
 }
 
 void MapTab::ensureSelectionVisible() {
-    u32 c = unk_aa;
+    u32 c = selectedRow;
     if (c != 0xe) {
         if (c == 0xd) {
             setListScrollTarget(0);
         } else {
-            s32 t = (unk_98 + 0xf) >> 4;
+            s32 t = (listScroll + 0xf) >> 4;
             if ((s32)c < t) {
                 setListScrollTarget(c << 4);
             }
-            s32 h = unk_98 >> 4;
-            u32 a = unk_aa;
+            s32 h = listScroll >> 4;
+            u32 a = selectedRow;
             s32 m;
             if (a <= 5) {
                 m = 0;
@@ -1566,13 +1566,13 @@ void MapTab::ensureSelectionVisible() {
 }
 
 void MapTab::setListScroll(u32 v) {
-    unk_98 = v;
-    unk_9a = unk_98;
+    listScroll = v;
+    listScrollTarget = listScroll;
     setFlags(0x10);
 }
 
 void MapTab::setListScrollTarget(u32 v) {
-    unk_9a = v;
+    listScrollTarget = v;
     setFlags(0x10);
 }
 
@@ -1584,26 +1584,26 @@ void MapTab::updateListScroll() {
     s32 n = getListScrollMax();
     if (n == 0) {
         clearFlags(0x10);
-        unk_a4 = 0;
+        knobPos = 0;
     } else {
-        u32 a = ((volatile MapTab *)this)->unk_9a;
-        u32 b = ((volatile MapTab *)this)->unk_98;
+        u32 a = ((volatile MapTab *)this)->listScrollTarget;
+        u32 b = ((volatile MapTab *)this)->listScroll;
         if (b == a) {
             clearFlags(0x10);
         } else if (b < a) {
-            unk_98 = unk_98 + 8;
-            if (unk_98 > unk_9a) {
-                unk_98 = unk_9a;
+            listScroll = listScroll + 8;
+            if (listScroll > listScrollTarget) {
+                listScroll = listScrollTarget;
             }
         } else if (b < 8) {
-            unk_98 = a;
+            listScroll = a;
         } else {
-            unk_98 = unk_98 - 8;
-            if (unk_98 < unk_9a) {
-                unk_98 = unk_9a;
+            listScroll = listScroll - 8;
+            if (listScroll < listScrollTarget) {
+                listScroll = listScrollTarget;
             }
         }
-        unk_a4 = (s32)(unk_98 * 0x58) / n;
+        knobPos = (s32)(listScroll * 0x58) / n;
     }
 }
 
@@ -1614,10 +1614,10 @@ BOOL MapTab::touchScrollBar() {
     }
     x = gTouchCurX;
     y = gTouchCurY;
-    if (unk_43c.hitTest(x, y)) {
-        unk_a5 = y;
-        unk_a7 = unk_a4;
-        unk_a6 = unk_a7;
+    if (scrollKnob.hitTest(x, y)) {
+        dragStartTouchY = y;
+        dragStartKnobPos = knobPos;
+        knobLastTickPos = dragStartKnobPos;
         setMainState(1);
         return TRUE;
     } else if (x > 0xe8 && x < 0xf5 && y > 0x56 && y < 0xae) {
@@ -1634,17 +1634,17 @@ void MapTab::scrollListToKnob(s32 v) {
     } else if (t > 0x58) {
         t = 0x58;
     }
-    s32 d = t - unk_a6;
+    s32 d = t - knobLastTickPos;
     if (d >= 4 || d <= -4) {
-        Menu_PlayScrollTickSe(&unk_43c);
-        unk_a6 = t;
+        Menu_PlayScrollTickSe(&scrollKnob);
+        knobLastTickPos = t;
     }
     s32 m = getListScrollMax();
     setListScroll(_s32_div_f(t * m, 0x58));
 }
 
 void MapTab::scrollListByPad() {
-    s32 pos = unk_9a;
+    s32 pos = listScrollTarget;
     u16 pad = gPad[0];
     if (pad & 0x40) {
         pos -= 4;
@@ -1657,8 +1657,8 @@ void MapTab::scrollListByPad() {
     } else if (pos > m) {
         pos = m;
     }
-    if (pos != unk_9a) {
-        Menu_PlayScrollTickSe(&unk_43c);
+    if (pos != listScrollTarget) {
+        Menu_PlayScrollTickSe(&scrollKnob);
     }
     setListScroll(pos);
 }
@@ -1683,7 +1683,7 @@ s32 MapTab::touchListTabs() {
         showPlacesList();
     }
     setListScroll(0);
-    unk_a3 = 0xff;
+    listTopRow = 0xff;
     return 1;
 }
 
@@ -1692,15 +1692,15 @@ void MapTab::updateBlink() {
         if (A8V != 0) {
             A8V = A8V - 1;
         }
-        u32 v = unk_a8;
+        u32 v = blinkTimer;
         if (v == 0) {
             if (testFlags(0x200)) {
                 clearFlags(0x100);
             } else {
-                highlightListRow(unk_aa);
+                highlightListRow(selectedRow);
             }
-            unk_a8 = 0xf;
-        } else if (unk_a8 == 5) {
+            blinkTimer = 0xf;
+        } else if (blinkTimer == 5) {
             if (testFlags(0x200)) {
                 setFlags(0x100);
             } else {
@@ -1713,7 +1713,7 @@ void MapTab::updateBlink() {
 void MapTab::startBlink() {
     setFlags(0x40);
     clearFlags(0x100);
-    unk_a8 = 0xf;
+    blinkTimer = 0xf;
 }
 
 void MapTab::stopBlink() {
@@ -1722,28 +1722,28 @@ void MapTab::stopBlink() {
 }
 
 void MapTab::showCursor() {
-    if (!testFlags(8) && unk_ac == 0x10) {
-        unk_ac = 8;
+    if (!testFlags(8) && cursorTarget == 0x10) {
+        cursorTarget = 8;
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    ((MenuCursorBase *)&unk_484)->warpTo(a, b);
-    if (unk_ac >= 0xa && unk_ac <= 0xf) {
-        setListScrollTarget(unk_98 & ~0xf);
+    ((MenuCursorBase *)&cursor)->warpTo(a, b);
+    if (cursorTarget >= 0xa && cursorTarget <= 0xf) {
+        setListScrollTarget(listScroll & ~0xf);
     }
-    if (unk_ac <= 7) {
-        ((MenuCursor *)&unk_484)->setAnimIfChanged(0xd);
+    if (cursorTarget <= 7) {
+        ((MenuCursor *)&cursor)->setAnimIfChanged(0xd);
     } else {
-        ((MenuCursor *)&unk_484)->setAnimIfChanged(1);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     }
     refreshCursor();
 }
 
 s32 MapTab::getCursorTargetX() {
     if (testFlags(0x800)) {
-        return unk_ae;
+        return mapCursorX;
     }
-    u32 c = unk_ac;
+    u32 c = cursorTarget;
     if (c >= 0xa && c <= 0xf) {
         return 0xa0;
     }
@@ -1757,16 +1757,16 @@ s32 MapTab::getCursorTargetX() {
         return 0xb4;
     }
     if (c == 0x10) {
-        return unk_43c.getGripX();
+        return scrollKnob.getGripX();
     }
     return 0x80;
 }
 
 s32 MapTab::getCursorTargetY() {
     if (testFlags(0x800)) {
-        return unk_af;
+        return mapCursorY;
     }
-    u32 c = unk_ac;
+    u32 c = cursorTarget;
     if (c >= 0xa && c <= 0xf) {
         return (c - 0xa) * 16 + 0x58;
     }
@@ -1777,63 +1777,63 @@ s32 MapTab::getCursorTargetY() {
         return 8;
     }
     if (c == 0x10) {
-        return unk_43c.getGripY();
+        return scrollKnob.getGripY();
     }
     return 0x60;
 }
 
 void MapTab::hideCursor() {
-    ((MenuCursor *)&unk_484)->setAnimIfChanged(0);
-    unk_484.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void MapTab::moveCursorToTarget() {
     if (testFlags(0x4000)) {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        ((MenuCursorBase *)&unk_484)->warpTo(a, b);
+        ((MenuCursorBase *)&cursor)->warpTo(a, b);
         clearFlags(0x4000);
     } else {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        ((MenuCursorBase *)&unk_484)->moveToEase(a, b, 3, 1);
-        unk_ab = mainState;
+        ((MenuCursorBase *)&cursor)->moveToEase(a, b, 3, 1);
+        returnState = mainState;
         setMainState(4);
     }
 }
 
 void MapTab::pressCursor() {
-    ((MenuCursor *)&unk_484)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(5);
 }
 
 void MapTab::releaseCursor() {
-    ((MenuCursorBase *)&unk_484)->setPoseRelease();
+    ((MenuCursorBase *)&cursor)->setPoseRelease();
     setMainState(6);
 }
 
 void MapTab::refreshCursor() {
-    ((MenuCursorBase *)&unk_484)->setPoseIdle();
-    unk_484.vfunc_0c();
+    ((MenuCursorBase *)&cursor)->setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 s32 MapTab::moveCursorByPad(void *pad) {
-    u32 old = unk_ac;
+    u32 old = cursorTarget;
     if (old <= 7) {
         if (MenuKeys_HasDown(pad)) {
-            s32 cv = unk_ac;
+            s32 cv = cursorTarget;
             if (cv <= 3) {
-                unk_ae = ((MenuCursorBase *)&unk_484)->getScreenX();
-                unk_af = 0x30;
-                ((MenuCursor *)&unk_484)->switchToAnim01();
+                mapCursorX = ((MenuCursorBase *)&cursor)->getScreenX();
+                mapCursorY = 0x30;
+                ((MenuCursor *)&cursor)->switchToAnim01();
                 return 2;
             }
             if (cv >= 5) {
-                unk_ac = 8;
+                cursorTarget = 8;
             } else {
-                unk_ac = 9;
+                cursorTarget = 9;
             }
-            ((MenuCursor *)&unk_484)->switchToAnim01();
+            ((MenuCursor *)&cursor)->switchToAnim01();
         } else if (MenuKeys_HasLeft(pad)) {
             if (ACV != 0) {
                 ACV = ACV - 1;
@@ -1845,72 +1845,72 @@ s32 MapTab::moveCursorByPad(void *pad) {
         }
     } else if (old >= 0xa && old <= 0xf) {
         if (testFlags(8) && MenuKeys_HasRight(pad)) {
-            unk_ac = 0x10;
+            cursorTarget = 0x10;
         } else if (MenuKeys_HasUp(pad)) {
             if (ACV > 0xa) {
                 ACV = ACV - 1;
             } else {
-                u32 h = unk_9a;
+                u32 h = listScrollTarget;
                 if (((s32)h >> 4) > 0) {
                     setListScrollTarget(h - 0x10);
                     return 3;
                 }
-                unk_ac = 9;
+                cursorTarget = 9;
             }
         } else if (MenuKeys_HasDown(pad)) {
             s32 n = getListCount() - 1;
-            u8 c = unk_ac;
+            u8 c = cursorTarget;
             if (c < 0xf) {
                 if (c < n + 0xa) {
                     ACV = ACV + 1;
                 }
             } else {
-                u32 h = unk_9a;
+                u32 h = listScrollTarget;
                 if (((s32)h >> 4) + 5 < n) {
                     setListScrollTarget(h + 0x10);
                     return 3;
                 }
             }
         } else if (MenuKeys_HasLeft(pad)) {
-            unk_ae = 0x98;
-            unk_af = ((MenuCursorBase *)&unk_484)->getScreenY();
+            mapCursorX = 0x98;
+            mapCursorY = ((MenuCursorBase *)&cursor)->getScreenY();
             return 2;
         }
     } else if (old == 0x10) {
         if (MenuKeys_HasUp(pad)) {
-            unk_ac = 8;
+            cursorTarget = 8;
         } else if (MenuKeys_HasLeft(pad)) {
-            s32 v = unk_43c.getGripY();
+            s32 v = scrollKnob.getGripY();
             if (v < 0x50) {
                 v = 0x50;
             }
             if (v >= 0xb0) {
                 v = 0xaf;
             }
-            unk_ac = ((v - 0x50) >> 4) + 0xa;
+            cursorTarget = ((v - 0x50) >> 4) + 0xa;
         }
     } else if ((u8)(old + 0xf8) <= 1) {
         if (MenuKeys_HasUp(pad)) {
-            unk_ac = 5;
-            ((MenuCursor *)&unk_484)->switchToAnim0D();
+            cursorTarget = 5;
+            ((MenuCursor *)&cursor)->switchToAnim0D();
         } else if (MenuKeys_HasDown(pad)) {
-            unk_ac = 0xa;
+            cursorTarget = 0xa;
         } else if (MenuKeys_HasLeft(pad)) {
-            if (unk_ac == 9) {
-                unk_ae = 0x98;
-                unk_af = ((MenuCursorBase *)&unk_484)->getScreenY();
+            if (cursorTarget == 9) {
+                mapCursorX = 0x98;
+                mapCursorY = ((MenuCursorBase *)&cursor)->getScreenY();
                 return 2;
             }
-            unk_ac = 9;
+            cursorTarget = 9;
         } else if (MenuKeys_HasRight(pad)) {
-            if (unk_ac == 8 && testFlags(8)) {
-                unk_ac = 0x10;
+            if (cursorTarget == 8 && testFlags(8)) {
+                cursorTarget = 0x10;
             } else {
-                unk_ac = 8;
+                cursorTarget = 8;
             }
         }
     }
-    if (old != unk_ac) {
+    if (old != cursorTarget) {
         return 1;
     }
     return 0;
@@ -1918,16 +1918,16 @@ s32 MapTab::moveCursorByPad(void *pad) {
 
 s32 MapTab::onCursorDecide() {
     if (testFlags(0x800)) {
-        selectEntry(unk_ad + 1);
+        selectEntry(cursorMarker + 1);
         playSeAtMarker(0x38);
         return 0;
     }
-    u32 s = unk_ac;
+    u32 s = cursorTarget;
     if (s == 0x10) {
         setMainState(7);
-        unk_43c.grab();
+        scrollKnob.grab();
         setFlags(0x1000);
-        Menu_PlayScrollGrabSe(&unk_43c);
+        Menu_PlayScrollGrabSe(&scrollKnob);
         return 1;
     } else if (s == 8) {
         if (testFlags(1)) {
@@ -1951,7 +1951,7 @@ s32 MapTab::onCursorDecide() {
         }
         return 0;
     } else if (s >= 0xa && s <= 0xf) {
-        { u32 t = unk_a3; selectEntry(t + s + 5); };
+        { u32 t = listTopRow; selectEntry(t + s + 5); };
         playSeAtMarker(0x37);
         return 0;
     }
@@ -1959,9 +1959,9 @@ s32 MapTab::onCursorDecide() {
 }
 
 void MapTab::playSeAtMarker(s32 a) {
-    u32 i = unk_a9;
+    u32 i = selectedMarker;
     if (i != 0xe) {
-        s32 v = (unk_4571[i].unk_00 - 0x18) * 2 - 0x7f;
+        s32 v = (buildingMarkers[i].x - 0x18) * 2 - 0x7f;
         if (v < -0x7f) {
             v = -0x7f;
         } else if (v > 0x80) {
@@ -1972,15 +1972,15 @@ void MapTab::playSeAtMarker(s32 a) {
 }
 
 BOOL MapTab::testFlags(u32 m) {
-    if (unk_9c & m) {
+    if (flags & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void MapTab::setFlags(u32 m) { unk_9c = unk_9c | m; }
+void MapTab::setFlags(u32 m) { flags = flags | m; }
 
-void MapTab::clearFlags(u32 m) { unk_9c = unk_9c & ~m; }
+void MapTab::clearFlags(u32 m) { flags = flags & ~m; }
 
 MapTabMarker::MapTabMarker() {}
 

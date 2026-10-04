@@ -4,7 +4,7 @@
 // ---- helper classes (declared elsewhere) ----
 class ItemId {
 public:
-    u16 unk_00;
+    u16 id;
     ItemId();
     ~ItemId();
 };
@@ -192,10 +192,10 @@ struct Unk_0205e184_Big : Unk_0205e184_Pre, Unk_0205e184_Sub {};
 
 class HeldItemModel {
 public:
-    u8 unk_00;
-    u32 unk_04;
-    HeldItemTexAnim unk_08;
-    FishBobber unk_28;
+    u8 slot;
+    u32 scale;
+    HeldItemTexAnim texAnim;
+    FishBobber bobber;
     HeldItemModel();
     ~HeldItemModel();
 };
@@ -461,7 +461,7 @@ extern "C" void HeldItemModels_ReleaseAll(HeldItemModelBank *self) {
         self->unk_28c[i].release();
         HeldItemModels_CancelTexUpload(self, i);
         self->unk_dc[i].clear();
-        self->unk_b44[i].unk_00 = 0xfff1;
+        self->unk_b44[i].id = 0xfff1;
     }
     for (j = 0; j < 9; j++) {
         if (self->unk_24[j]) {
@@ -578,7 +578,7 @@ extern "C" ModelAnim *HeldItemModels_GetTexAnim(HeldItemModelBank *self, u32 idx
 }
 
 extern "C" u16 *HeldItemModels_GetItem(HeldItemModelBank *self, u32 idx) {
-    return &self->unk_b44[idx].unk_00;
+    return &self->unk_b44[idx].id;
 }
 
 extern "C" void HeldItemModels_CancelTexUpload(HeldItemModelBank *self, u32 idx) {
@@ -618,13 +618,13 @@ HeldItemTexAnim::HeldItemTexAnim() {}
 HeldItemTexAnim::~HeldItemTexAnim() {}
 
 HeldItemModel::HeldItemModel() {
-    unk_28.construct();
-    unk_00 = 9;
-    unk_04 = 0x1000;
+    bobber.construct();
+    slot = 9;
+    scale = 0x1000;
 }
 
 HeldItemModel::~HeldItemModel() {
-    unk_28.destruct();
+    bobber.destruct();
 }
 
 extern "C" void HeldItemModels_OnJointCalcPre(Unk_0205e61c_Obj *self) {

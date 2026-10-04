@@ -55,20 +55,20 @@ public:
     void destruct();
     MuseumData *construct();
 
-    u8 unk_00[0x1b];
-    u8 unk_1b[0x1d];
-    u8 unk_38[0x1d];
-    u8 unk_55[0xb];
-    u8 unk_60;
-    u8 unk_61;
-    u8 unk_62;
+    u8 fossilDonors[0x1b];
+    u8 fishDonors[0x1d];
+    u8 insectDonors[0x1d];
+    u8 paintingDonors[0xb];
+    u8 completeDay;
+    u8 completeMonth;
+    u8 completeYear;
     u8 unk_63;
 };
 
 // ======== types of unk_02070790.cpp ========
 struct Unk_02070790_Game {
     u8 pad[0x64];
-    s32 unk_64;
+    s32 myAid;
 };
 struct Unk_02070e4c_Bits {
     u32 a : 4;
@@ -110,7 +110,7 @@ public:
 // ======== types of unk_0207116c.cpp ========
 struct Unk_02071460_Tbl { u8 pad[0xc]; u8 t[1]; };
 struct PatternPaletteFile {
-    u8 *unk_00;
+    u8 *fileData;
     u8 *unk_04[16];
     PatternPaletteFile();
     ~PatternPaletteFile();
@@ -124,8 +124,8 @@ struct PatternTexKeys {
     ~PatternTexKeys();
 };
 struct PatternTexCache {
-    PatternTexKeys unk_00;
-    PatternPaletteFile unk_04;
+    PatternTexKeys texKeys;
+    PatternPaletteFile paletteFile;
     PatternTexCache();
     ~PatternTexCache();
     void reset();
@@ -191,11 +191,11 @@ class PatternInfo : public Unk_020942c8 {
 public:
     PatternInfo();
     ~PatternInfo();
-    Unk_02071b10_Id16 unk_16;
+    Unk_02071b10_Id16 title;
     struct {
         u8 lo : 4;
         u8 hi : 4;
-    } unk_26;
+    } tastePalette;
 
     void setTaste(u32 v);
     u8 getTaste();
@@ -278,14 +278,14 @@ public:
 };
 
 struct PatternPresetInfoFile {
-    RecordFile unk_00;
+    RecordFile file;
     PatternPresetInfoFile();
     ~PatternPresetInfoFile();
 };
 
 // design object sPresetPatternBuffer (0x228 bytes)
 struct PresetPatternBuffer {
-    Pattern unk_00;
+    Pattern pattern;
     PresetPatternBuffer();
     ~PresetPatternBuffer();
 };
@@ -394,10 +394,10 @@ void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *dst, EncodedString16Buf
 }
 BOOL PatternInfo::infoEquals(PatternInfo *o) {
     using namespace n4;
-    if (unk_26.lo == o->unk_26.lo && unk_26.hi == o->unk_26.hi && townId == o->townId &&
+    if (tastePalette.lo == o->tastePalette.lo && tastePalette.hi == o->tastePalette.hi && townId == o->townId &&
         memcmp(&townName, &o->townName, 8) == 0 && U125_calls::_ZN8PlayerId6equalsEPS_(this, o) != 0) {
         for (u32 i = 0; i < 16; i++) {
-            if (unk_16.b[i] != o->unk_16.b[i]) return FALSE;
+            if (title.b[i] != o->title.b[i]) return FALSE;
         }
         return TRUE;
     }
@@ -422,7 +422,7 @@ namespace n4 {
 }
 u8 PatternInfo::getPalette() {
     using namespace n4;
-    u8 f = *(u8 *)&unk_26;
+    u8 f = *(u8 *)&tastePalette;
     u32 t = (u32)(f << 24) >> 28;
     t &= 0xf;
     return t;
@@ -431,7 +431,7 @@ namespace n4 {
 }
 void PatternInfo::setPalette(u32 v) {
     using namespace n4;
-    u8 &f = *(u8 *)&unk_26;
+    u8 &f = *(u8 *)&tastePalette;
     u32 t = v & 0xf;
     f = (f & ~0xf0) | ((u8)t & 0xf) << 4;
 }
@@ -468,13 +468,13 @@ namespace n4 {
 }
 void PatternInfo::getTitleEncoded(EncodedString16Buf *o) {
     using namespace n4;
-    U125_calls::EncodedString_SetRaw(o, unk_16.b, 16);
+    U125_calls::EncodedString_SetRaw(o, title.b, 16);
 }
 namespace n4 {
 }
 void PatternInfo::getTitleRaw(u8 *dst) {
     using namespace n4;
-    *(Unk_02071b10_Id16 *)dst = *(Unk_02071b10_Id16 *)&unk_16;
+    *(Unk_02071b10_Id16 *)dst = *(Unk_02071b10_Id16 *)&title;
 }
 namespace n4 {
 }
@@ -488,25 +488,25 @@ namespace n4 {
 }
 void PatternInfo::setTitleEncoded(EncodedString16Buf *o) {
     using namespace n4;
-    o->copyTo(unk_16.b, 16);
+    o->copyTo(title.b, 16);
 }
 namespace n4 {
 }
 void PatternInfo::setTitleRaw(u8 *src) {
     using namespace n4;
-    *(Unk_02071b10_Id16 *)&unk_16 = *(Unk_02071b10_Id16 *)src;
+    *(Unk_02071b10_Id16 *)&title = *(Unk_02071b10_Id16 *)src;
 }
 namespace n4 {
 }
 u8 PatternInfo::getTaste() {
     using namespace n4;
-    return unk_26.lo;
+    return tastePalette.lo;
 }
 namespace n4 {
 }
 void PatternInfo::setTaste(u32 v) {
     using namespace n4;
-    u8 &f = *(u8 *)&unk_26;
+    u8 &f = *(u8 *)&tastePalette;
     f = (f & ~0xf) | ((u8)v & 0xf);
 }
 namespace n4 {
@@ -971,7 +971,7 @@ extern "C" void TownId_Assign(void *p, void *q);
 extern "C" u16 data_020d03d4;
 struct Unk_021d7350 {
     u16 unk_00;
-    u16 unk_02[1];
+    u16 townId[1];
 };
 extern "C" Unk_021d7350 gSaveData;
 }
@@ -1015,7 +1015,7 @@ extern "C" void TownFlagPattern_InitDefault(void *self) {
         PatternPresetInfo_Apply(g, _ZN7Pattern7getInfoEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self)), 0x10);
         Unk_02071a50_Calls::TownId_Assign(
             PlayerId_GetTownId(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self)))),
-            Unk_02071a50_Calls::gSaveData.unk_02);
+            Unk_02071a50_Calls::gSaveData.townId);
         _ZN8PlayerId5setIdEt(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self))),
                       Unk_02071a50_Calls::data_020d03d4);
         Mem_Free(buf);
@@ -1069,7 +1069,7 @@ extern "C" void *PresetPatternBuffer_Get(void) { return sPresetPatternBuffer; }
 }
 void PatternTexCache::reset() {
     using namespace n3;
-    unk_04.clear();
+    paletteFile.clear();
     PatternTexKeys_Clear(this);
     Unk_020718c0_Calls::PatternTexCache_ClearDirty(this);
 }
@@ -1104,7 +1104,7 @@ namespace n3 {
 void PatternTexCache::load() {
     using namespace n3;
     reset();
-    unk_04.load();
+    paletteFile.load();
     createTextures();
     void *h = gCurrentHeap;
     u8 *a, *b, *c, *d;
@@ -1134,7 +1134,7 @@ namespace n3 {
 }
 void PatternTexCache::unload() {
     using namespace n3;
-    unk_04.unload();
+    paletteFile.unload();
     n3::PatternTexCache_ResetKeys(this);
     void *h = gCurrentHeap;
     if (sPlayerPatternTexWork != 0) {
@@ -1165,13 +1165,13 @@ u32 PatternTexCache::getAbleTexKey(s32 i) {
 namespace n3 {
 }
 u8 *PatternTexCache::getPalette(s32 i) {
-    using namespace n3; return PatternPaletteFile_GetPalette((u8 **)&unk_04, i); }
+    using namespace n3; return PatternPaletteFile_GetPalette((u8 **)&paletteFile, i); }
 namespace n3 {
 extern "C" void *PatternTexCache_Get(void) { return sPatternTexCache; }
 }
 void PatternPaletteFile::clear() {
     using namespace n3;
-    unk_00 = 0;
+    fileData = 0;
     for (u32 i = 0; i < 16; i++) unk_04[i] = 0;
 }
 namespace n3 {
@@ -1186,10 +1186,10 @@ namespace n3 {
 }
 void PatternPaletteFile::load() {
     using namespace n3;
-    if (unk_00 == 0) {
-        unk_00 = (u8 *)File_Load((void *)"/menu/desi/b_myd_ten0_obj.bpl");
-        if (unk_00 != 0) {
-            for (u32 i = 0; i < 16; i++) unk_04[i] = unk_00 + i * 32;
+    if (fileData == 0) {
+        fileData = (u8 *)File_Load((void *)"/menu/desi/b_myd_ten0_obj.bpl");
+        if (fileData != 0) {
+            for (u32 i = 0; i < 16; i++) unk_04[i] = fileData + i * 32;
         }
     }
 }
@@ -1197,9 +1197,9 @@ namespace n3 {
 }
 void PatternPaletteFile::unload() {
     using namespace n3;
-    if (unk_00 != 0) {
-        Mem_Free(unk_00);
-        unk_00 = 0;
+    if (fileData != 0) {
+        Mem_Free(fileData);
+        fileData = 0;
     }
     clear();
 }
@@ -1682,7 +1682,7 @@ extern "C" BOOL PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e) {
 extern "C" s32 PatternSrc_ResolveKind(s32 t) {
     Unk_02070790_Game *g = gCommManager;
     if (_ZN11CommManager8isOnlineEv(g) && t == 9) {
-        return g->unk_64;
+        return g->myAid;
     }
     return t;
 }

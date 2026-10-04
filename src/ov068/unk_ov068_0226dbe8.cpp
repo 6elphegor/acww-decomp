@@ -316,8 +316,8 @@ public:
 class HouseVisitVillager;
 
 struct Unk_ov068_02270a6c_Out {
-    void *unk_00;
-    u8 unk_04;
+    void *msgKey;
+    u8 msgIndex;
 };
 
 struct Unk_ov068_02270a6c_Buf {
@@ -374,9 +374,9 @@ struct Unk_ov068_022708fc_Color {
 };
 
 struct Unk_ov068_Scene_Entry {
-    void *(*unk_00)();
-    u16 unk_04;
-    u16 unk_06;
+    void *(*factory)();
+    u16 executePriority;
+    u16 drawPriority;
     s32 unk_08[4];
 };
 
@@ -475,30 +475,30 @@ public:
     void unlinkFurnitureUnits();
     BOOL drawModel();
 
-    /* 0x894 */ s32 unk_894;
-    /* 0x898 */ HouseVisitVillagerTalk unk_898;
-    /* 0xa3c */ Unk_ov068_02270afc_BFn unk_a3c;
-    /* 0xa44 */ u32 unk_a44;
-    /* 0xa48 */ u8 unk_a48;
+    /* 0x894 */ s32 visitState;
+    /* 0x898 */ HouseVisitVillagerTalk talk;
+    /* 0xa3c */ Unk_ov068_02270afc_BFn drawFn;
+    /* 0xa44 */ u32 roomStars;
+    /* 0xa48 */ u8 walkInTimer;
     /* 0xa49 */ u8 pad_a49;
-    /* 0xa4a */ u16 unk_a4a;
-    /* 0xa4c */ u32 unk_a4c;
-    /* 0xa50 */ u8 unk_a50;
-    /* 0xa51 */ u8 unk_a51;
-    /* 0xa52 */ u8 unk_a52;
+    /* 0xa4a */ u16 wanderTimer;
+    /* 0xa4c */ u32 roomRateFlags;
+    /* 0xa50 */ u8 wantsToLeave;
+    /* 0xa51 */ u8 playerAtExit;
+    /* 0xa52 */ u8 talkTopic;
     /* 0xa53 */ u8 pad_a53;
-    /* 0xa54 */ u8 unk_a54;
+    /* 0xa54 */ u8 talksLeft;
     /* 0xa55 */ u8 pad_a55;
-    /* 0xa56 */ s16 unk_a56;
-    /* 0xa58 */ u8 unk_a58;
-    /* 0xa59 */ s8 unk_a59;
-    /* 0xa5a */ s16 unk_a5a;
-    /* 0xa5c */ s32 unk_a5c;
-    /* 0xa60 */ s32 unk_a60;
-    /* 0xa64 */ s32 unk_a64;
-    /* 0xa68 */ s32 unk_a68;
-    /* 0xa6c */ s32 unk_a6c;
-    /* 0xa70 */ s32 unk_a70;
+    /* 0xa56 */ s16 stayTimer;
+    /* 0xa58 */ u8 leaveTalkDelay;
+    /* 0xa59 */ s8 callTimer;
+    /* 0xa5a */ s16 wanderAngle;
+    /* 0xa5c */ s32 waypointX;
+    /* 0xa60 */ s32 waypointY;
+    /* 0xa64 */ s32 waypointZ;
+    /* 0xa68 */ s32 walkTargetX;
+    /* 0xa6c */ s32 walkTargetY;
+    /* 0xa70 */ s32 walkTargetZ;
 };
 extern "C" {
 void _ZN18HouseVisitVillager17execVisitDoorOpenEv();
@@ -707,8 +707,8 @@ BOOL HouseVisitVillager::vfunc_04() {
         return FALSE;
     }
     sHouseVisitVillager = this;
-    NpcActor_setTalkRequest(this, &unk_898);
-    unk_898.attachOwner(this);
+    NpcActor_setTalkRequest(this, &talk);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -717,27 +717,27 @@ BOOL HouseVisitVillager::vfunc_00() {
     if (func_0202d948(this) == 0) {
         return FALSE;
     }
-    unk_a3c = *(Unk_ov068_02270afc_BFn *)data_ov068_02270a24;
+    drawFn = *(Unk_ov068_02270afc_BFn *)data_ov068_02270a24;
     unlinkFurnitureUnits();
     Unk_02013474_enableFootsteps(&footstepFx);
-    unk_a56 = -1;
-    unk_a54 = 3;
-    unk_a58 = 0xb0;
+    stayTimer = -1;
+    talksLeft = 3;
+    leaveTalkDelay = 0xb0;
     Scene_GetPrevious();
     if (SceneId_IsTown() != 0) {
         setVisitState(0);
-    } else if (HouseVisit_IsCalled(&unk_898) != 0) {
+    } else if (HouseVisit_IsCalled(&talk) != 0) {
         u32 buf[6];
         HouseVisitor_SetPresent();
-        unk_a56 = (Random_GlobalBelow(0x14) + 0x28) * 0x3c;
-        unk_a54 = Random_GlobalBelow(4) + 2;
+        stayTimer = (Random_GlobalBelow(0x14) + 0x28) * 0x3c;
+        talksLeft = Random_GlobalBelow(4) + 2;
         RoomScoreEvaluator_Construct(buf);
-        unk_a4c = (u32)HappyRoom_RateMainRoom(buf, &unk_a44);
+        roomRateFlags = (u32)HappyRoom_RateMainRoom(buf, &roomStars);
         setVisitState(6);
         RoomScoreEvaluator_Destruct(buf);
     } else {
-        unk_a56 = (Random_GlobalBelow(0x28) + 0x3c) * 0x3c;
-        unk_a54 = Random_GlobalBelow(4) + 7;
+        stayTimer = (Random_GlobalBelow(0x28) + 0x3c) * 0x3c;
+        talksLeft = Random_GlobalBelow(4) + 7;
         setVisitState(0);
     }
     return TRUE;
@@ -753,8 +753,8 @@ BOOL HouseVisitVillager::drawModel() {
 
 BOOL HouseVisitVillager::onDraw() {
     using namespace sC;
-    if (unk_a3c) {
-        return (this->*unk_a3c)();
+    if (drawFn) {
+        return (this->*drawFn)();
     }
     return TRUE;
 }
@@ -847,7 +847,7 @@ BOOL HouseVisitVillager::vfunc_48() {
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0) {
         return FALSE;
     }
-    if ((u32)(unk_894 - 5) <= 1) {
+    if ((u32)(visitState - 5) <= 1) {
         return TRUE;
     }
     return FALSE;
@@ -858,31 +858,31 @@ void HouseVisitVillager::vfunc_4c(u32 idx, u32 v) {
     switch (idx) {
     case 3:
         footstepFx.unk_08 = v;
-        if (unk_894 != 0) {
-            if (unk_894 == 5) {
-                unk_a56 = (Random_GlobalBelow(0x28) + 0x3c) * 0x3c;
+        if (visitState != 0) {
+            if (visitState == 5) {
+                stayTimer = (Random_GlobalBelow(0x28) + 0x3c) * 0x3c;
             }
             setVisitState(7);
         }
         break;
     case 0:
         footstepFx.unk_08 = v;
-        unk_898.attachOwner(this);
+        talk.attachOwner(this);
         setVisitState(8);
         break;
     case 1:
         footstepFx.unk_08 = v;
-        unk_898.attachOwner(this);
-        if (unk_894 == 0) {
+        talk.attachOwner(this);
+        if (visitState == 0) {
             setVisitState(1);
         } else {
             setVisitState(8);
         }
         break;
     case 8:
-        unk_a58 = 0x14;
+        leaveTalkDelay = 0x14;
         recordTalkWithPlayer();
-        if (unk_894 != 0xa && unk_894 != 5) {
+        if (visitState != 0xa && visitState != 5) {
             setVisitState(6);
         }
         break;
@@ -950,52 +950,52 @@ void HouseVisitVillagerTalk::attachOwner(HouseVisitVillager *owner) {
 void HouseVisitVillagerTalk::start(void *arg) {
     using namespace sB;
     Unk_ov068_02270a6c_Out *out = (Unk_ov068_02270a6c_Out *)arg;
-    out->unk_00 = sHouseVisitMsgFileName;
-    if (unk_1a0->unk_894 == 1) {
-        unk_1a0->unk_a52 = 1;
+    out->msgKey = sHouseVisitMsgFileName;
+    if (unk_1a0->visitState == 1) {
+        unk_1a0->talkTopic = 1;
         SPEAK((void *)"q10_call");
-        out->unk_04 = Random_GlobalBelow(3);
+        out->msgIndex = Random_GlobalBelow(3);
         HouseVisit_SetCalled(this);
         return;
     }
-    if (unk_1a0->unk_a50 != 0 && unk_1a0->unk_a51 != 0) {
-        unk_1a0->unk_a50 = 0;
+    if (unk_1a0->wantsToLeave != 0 && unk_1a0->playerAtExit != 0) {
+        unk_1a0->wantsToLeave = 0;
     }
-    if (unk_1a0->unk_a50 != 0) {
-        unk_1a0->unk_a52 = 6;
+    if (unk_1a0->wantsToLeave != 0) {
+        unk_1a0->talkTopic = 6;
         SPEAK((void *)"q10_back");
-        out->unk_00 = sHouseVisitMsgFileName;
-        out->unk_04 = Random_GlobalBelow(3);
+        out->msgKey = sHouseVisitMsgFileName;
+        out->msgIndex = Random_GlobalBelow(3);
         return;
     }
-    if (unk_1a0->unk_a51 != 0) {
-        unk_1a0->unk_a52 = 8;
+    if (unk_1a0->playerAtExit != 0) {
+        unk_1a0->talkTopic = 8;
         SPEAK((void *)"q10_wait");
-        out->unk_00 = sHouseVisitMsgFileName;
-        out->unk_04 = Random_GlobalBelow(2);
+        out->msgKey = sHouseVisitMsgFileName;
+        out->msgIndex = Random_GlobalBelow(2);
         return;
     }
     if (HouseVisit_IsDoorTalkDone(this) == 0) {
-        unk_1a0->unk_a52 = 2;
+        unk_1a0->talkTopic = 2;
         SPEAK((void *)"q10_door");
-        out->unk_04 = Random_GlobalBelow(3);
+        out->msgIndex = Random_GlobalBelow(3);
         HouseVisit_SetDoorTalkDone(this);
         return;
     }
     if (HouseVisit_IsFirstTalkPending(this)) {
-        unk_1a0->unk_a52 = 5;
+        unk_1a0->talkTopic = 5;
         SPEAK((void *)"q10_first");
-        out->unk_00 = sHouseVisitMsgFileName;
-        out->unk_04 = Random_GlobalBelow(3);
+        out->msgKey = sHouseVisitMsgFileName;
+        out->msgIndex = Random_GlobalBelow(3);
         HouseVisit_SetFirstTalkDone(this);
         return;
     }
-    if (unk_1a0->unk_a54 != 0) {
-        unk_1a0->unk_a54 = unk_1a0->unk_a54 - 1;
+    if (unk_1a0->talksLeft != 0) {
+        unk_1a0->talksLeft = unk_1a0->talksLeft - 1;
     }
     u32 rnd = Random_GlobalBelow(100);
     s32 v = FtrMgr_PickFurnitureComment(VillagerId_GetPersonality(VillagerData_getVillagerId(unk_1a0->villagerData)));
-    u32 n = unk_1a0->unk_a44;
+    u32 n = unk_1a0->roomStars;
     if (n >= 5) {
         n = 5;
     }
@@ -1008,37 +1008,37 @@ void HouseVisitVillagerTalk::start(void *arg) {
     obj2.fromEncoded(&obj1, 0, 0);
     unk_3c->setSlot(3, &obj2);
     if (rnd < 30 && v != -1) {
-        unk_1a0->unk_a52 = 3;
+        unk_1a0->talkTopic = 3;
         SPEAK((void *)"q10_furniture");
-        out->unk_00 = sHouseVisitMsgFileName;
-        out->unk_04 = v;
+        out->msgKey = sHouseVisitMsgFileName;
+        out->msgIndex = v;
         return;
     }
     if (rnd < 50) {
-        unk_1a0->unk_a52 = 4;
+        unk_1a0->talkTopic = 4;
         SPEAK((void *)"q10_layout");
-        out->unk_00 = sHouseVisitMsgFileName;
-        u32 f = unk_1a0->unk_a4c;
+        out->msgKey = sHouseVisitMsgFileName;
+        u32 f = unk_1a0->roomRateFlags;
         if (f & 1) {
-            out->unk_04 = Random_GlobalBelow(2);
+            out->msgIndex = Random_GlobalBelow(2);
         } else if (f & 2) {
-            out->unk_04 = Random_GlobalBelow(2) + 2;
+            out->msgIndex = Random_GlobalBelow(2) + 2;
         } else if ((f & 4) == 0) {
-            out->unk_04 = Random_GlobalBelow(2) + 4;
+            out->msgIndex = Random_GlobalBelow(2) + 4;
         } else if (f & 0x10) {
-            out->unk_04 = 10;
+            out->msgIndex = 10;
         } else if (f & 0x20) {
-            out->unk_04 = Random_GlobalBelow(2) + 8;
+            out->msgIndex = Random_GlobalBelow(2) + 8;
         } else {
-            out->unk_04 = Random_GlobalBelow(2) + 6;
+            out->msgIndex = Random_GlobalBelow(2) + 6;
         }
         ((Unk_ov068_02270a6c_Bits *)((u8 *)PlayerData_getErrands(PlayerData_GetCurrent()) + 0xa8))->lo = n;
     } else if (rnd < 70) {
-        unk_1a0->unk_a52 = 0;
+        unk_1a0->talkTopic = 0;
         setTopicFns((Unk_020d8938_Tbl *)sHouseVisitTsuTopicTable);
         VillagerTalk::start(out);
     } else {
-        unk_1a0->unk_a52 = 0;
+        unk_1a0->talkTopic = 0;
         setTopicFns((Unk_020d8938_Tbl *)data_021be810);
         VillagerTalk::start(out);
     }
@@ -1046,7 +1046,7 @@ void HouseVisitVillagerTalk::start(void *arg) {
 
 void HouseVisitVillagerTalk::onMessageStart(u32 a) {
     using namespace sB;
-    if (unk_1a0->unk_a52 == 0) {
+    if (unk_1a0->talkTopic == 0) {
         VillagerTalk::onMessageStart(a);
     }
 }
@@ -1055,20 +1055,20 @@ void HouseVisitVillagerTalk::onMessageEnd(u32 a) {
     using namespace sB;
     u8 buf[2];
     HouseVisitVillager *o = unk_1a0;
-    u32 st = o->unk_a52;
+    u32 st = o->talkTopic;
     if (st == 0) {
         VillagerTalk::onMessageEnd(a);
     } else if (o != 0) {
         if (st == 1) {
             o->setVisitState(2);
         } else if (st == 6 || st == 8) {
-            o->unk_a52 = 7;
+            o->talkTopic = 7;
             VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->villagerData), data_ov068_022712b8, 0x28, (void *)"q_bye");
             buf[0] = Random_GlobalBelow(3);
-            unk_1a0->unk_898.unk_3c->setNextMessageIfUnset(buf, data_ov068_022712b8);
+            unk_1a0->talk.unk_3c->setNextMessageIfUnset(buf, data_ov068_022712b8);
         } else if (st == 7) {
             buf[1] = gTalkMsgIndexEnd;
-            unk_1a0->unk_898.unk_3c->setNextMessage(&buf[1], 0);
+            unk_1a0->talk.unk_3c->setNextMessage(&buf[1], 0);
             unk_1a0->setVisitState(10);
             Snd_PlaySe(0x5f);
         }
@@ -1077,7 +1077,7 @@ void HouseVisitVillagerTalk::onMessageEnd(u32 a) {
 
 void HouseVisitVillagerTalk::onChoice(u32 a) {
     using namespace sB;
-    if (unk_1a0->unk_a52 == 0) {
+    if (unk_1a0->talkTopic == 0) {
         VillagerTalk::onChoice(a);
     }
 }
@@ -1099,7 +1099,7 @@ BOOL HouseVisitVillager::setVisitState(s32 idx) {
     };
     if (idx < 11) {
         if ((this->*tbl[idx])()) {
-            unk_894 = idx;
+            visitState = idx;
             return TRUE;
         }
     }
@@ -1157,8 +1157,8 @@ void HouseVisitVillager::updateVisitState() {
         *(Unk_ov068_02270afc_Fn *)data_ov068_02270a1c,
         *(Unk_ov068_02270afc_Fn *)data_ov068_022709ac,
     };
-    if (unk_894 < 11) {
-        (this->*tbl[unk_894])();
+    if (visitState < 11) {
+        (this->*tbl[visitState])();
     }
 }
 
@@ -1173,7 +1173,7 @@ BOOL HouseVisitVillager::enterVisitOutside() {
     q.b = -0x8000;
     rotY = q.b;
     _ZN11NpcMoveCtrl14setTargetAngleEs(&moveCtrl, -0x8000);
-    unk_a3c = data_0213a740;
+    drawFn = data_0213a740;
     collider.unk_44 = 0;
     return TRUE;
 }
@@ -1198,16 +1198,16 @@ void HouseVisitVillager::execVisitOutside() {
 BOOL HouseVisitVillager::enterVisitCall() {
     using namespace sB;
     u32 loc[6];
-    unk_a3c = data_0213a740;
+    drawFn = data_0213a740;
     collider.unk_44 = 0;
     Ground_LockExit(0);
     RoomScoreEvaluator_Construct(loc);
-    unk_a4c = HappyRoom_RateMainRoom(loc, &unk_a44);
+    roomRateFlags = HappyRoom_RateMainRoom(loc, &roomStars);
     HouseVisitor_SetPresent();
     if (vfunc_64()) {
         VillagerState_SetRole(Villager_GetState(vfunc_64()), 2);
     }
-    unk_a59 = 30;
+    callTimer = 30;
     func_02003e70(&seEmitter, 0x4ca, 0x7f, 0);
     RoomScoreEvaluator_Destruct(loc);
     return TRUE;
@@ -1215,25 +1215,25 @@ BOOL HouseVisitVillager::enterVisitCall() {
 
 void HouseVisitVillager::execVisitCall() {
     using namespace sB;
-    if (unk_a59 > 0) {
-        unk_a59 = unk_a59 - 1;
+    if (callTimer > 0) {
+        callTimer = callTimer - 1;
     }
-    if (unk_a59 == 0) {
+    if (callTimer == 0) {
         NpcTalkCtrl_requestTalk(&talkCtrl, 0, 1);
-        unk_a59 = -1;
+        callTimer = -1;
     }
 }
 
 BOOL HouseVisitVillager::enterVisitDoorOpen() {
     using namespace sB;
-    unk_a3c = data_0213a740;
+    drawFn = data_0213a740;
     collider.unk_44 = 1;
     return TRUE;
 }
 
 void HouseVisitVillager::execVisitDoorOpen() {
     using namespace sB;
-    if (unk_898.unk_3c->state == 0) {
+    if (talk.unk_3c->state == 0) {
         func_02003e70(&seEmitter, 0x4cb, 0x7f, 0);
         Building_PlayDoorChime();
         setVisitState(3);
@@ -1242,28 +1242,28 @@ void HouseVisitVillager::execVisitDoorOpen() {
 
 BOOL HouseVisitVillager::enterVisitWalkIn() {
     using namespace sB;
-    unk_a68 = position;
-    unk_a6c = positionY;
-    unk_a70 = positionZ;
-    unk_a70 = unk_a70 - 0x2000;
-    unk_a3c = data_0213a740;
+    walkTargetX = position;
+    walkTargetY = positionY;
+    walkTargetZ = positionZ;
+    walkTargetZ = walkTargetZ - 0x2000;
+    drawFn = data_0213a740;
     collider.unk_44 = 1;
-    unk_a48 = 0x28;
+    walkInTimer = 0x28;
     return TRUE;
 }
 
 void HouseVisitVillager::execVisitWalkIn() {
     using namespace sB;
-    if (unk_a48 == 1) {
-        unk_a3c = *(Unk_ov068_02270afc_BFn *)data_ov068_0227099c;
-        NpcActionCtrl_requestAction(&actionCtrl, 1, 2, unk_a68, unk_a70, 0, 0, 0, 0, 0, 0);
-    } else if (unk_a48 == 0) {
+    if (walkInTimer == 1) {
+        drawFn = *(Unk_ov068_02270afc_BFn *)data_ov068_0227099c;
+        NpcActionCtrl_requestAction(&actionCtrl, 1, 2, walkTargetX, walkTargetZ, 0, 0, 0, 0, 0, 0);
+    } else if (walkInTimer == 0) {
         if (NpcActionCtrl_isActionDone(&actionCtrl)) {
             setVisitState(4);
         }
     }
-    if (unk_a48 != 0) {
-        unk_a48 = unk_a48 - 1;
+    if (walkInTimer != 0) {
+        walkInTimer = walkInTimer - 1;
     }
 }
 
@@ -1285,26 +1285,26 @@ void HouseVisitVillager::execVisitGreetEnd() {
 
 BOOL HouseVisitVillager::enterVisitStay() {
     using namespace sB;
-    unk_a4a = 5;
+    wanderTimer = 5;
     NpcMoveCtrl_setSpeedPreset(&moveCtrl, 1, 0x148, 0x25, 0x25);
-    unk_a56 = 0x258;
+    stayTimer = 0x258;
     return TRUE;
 }
 
 void HouseVisitVillager::execVisitStay() {
     using namespace sB;
     if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
-        if (unk_a56 == 0 || unk_a54 == 0) {
-            if (unk_a58 == 0) {
+        if (stayTimer == 0 || talksLeft == 0) {
+            if (leaveTalkDelay == 0) {
                 TalkRequest_AddPlayerTalk6(this, 0);
-                unk_a50 = 1;
+                wantsToLeave = 1;
                 return;
-            } else if (unk_a58 != 0) {
-                unk_a58 = unk_a58 - 1;
+            } else if (leaveTalkDelay != 0) {
+                leaveTalkDelay = leaveTalkDelay - 1;
             }
         }
-        if (unk_a56 > 0) {
-            unk_a56 = unk_a56 - 1;
+        if (stayTimer > 0) {
+            stayTimer = stayTimer - 1;
         }
     }
     Unk_ov068_02270afc_Vec *p = PlayerActor_GetBodyPos(4);
@@ -1315,7 +1315,7 @@ void HouseVisitVillager::execVisitStay() {
         v.z = p->z;
         if (Ground_IsOnLockedExit(&v)) {
             TalkRequest_AddPlayerTalk6(this, 0);
-            unk_a51 = 1;
+            playerAtExit = 1;
         }
     }
 }
@@ -1335,31 +1335,31 @@ void HouseVisitVillager::execVisitWander() {
     Unk_ov068_02270afc_Vec v;
     Unk_ov068_02270afc_Vec tmp;
     Unk_ov068_02270afc_Vec *pv = (Unk_ov068_02270afc_Vec *)PlayerActor_GetBodyPos(4);
-    if (unk_894 == 6) {
+    if (visitState == 6) {
         if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
-            if (unk_a56 == 0 || unk_a54 == 0) {
-                if (unk_a58 == 0) {
+            if (stayTimer == 0 || talksLeft == 0) {
+                if (leaveTalkDelay == 0) {
                     TalkRequest_AddPlayerTalk6(this, 0);
-                    unk_a50 = 1;
+                    wantsToLeave = 1;
                     return;
                 }
-                if (unk_a58 > 0) {
-                    unk_a58--;
+                if (leaveTalkDelay > 0) {
+                    leaveTalkDelay--;
                 }
             }
-            if (unk_a56 > 0) {
-                unk_a56--;
+            if (stayTimer > 0) {
+                stayTimer--;
             }
         }
     }
-    if (unk_894 == 6) {
+    if (visitState == 6) {
         if (pv != NULL) {
             v.x = pv->x;
             v.y = pv->y;
             v.z = pv->z;
             if (Ground_IsOnLockedExit(&v)) {
                 TalkRequest_AddPlayerTalk6(this, 0);
-                unk_a51 = 1;
+                playerAtExit = 1;
                 return;
             }
         }
@@ -1368,8 +1368,8 @@ void HouseVisitVillager::execVisitWander() {
     if (pv != NULL) {
         d = func_020e9650(pv, &position);
     }
-    if ((*((u8 *)this + 0x508)) != 0 || (unk_894 != 6 && d < 0x2334)) {
-        if (NpcActionCtrl_getAction(&actionCtrl) == 1 || unk_894 == 3) {
+    if ((*((u8 *)this + 0x508)) != 0 || (visitState != 6 && d < 0x2334)) {
+        if (NpcActionCtrl_getAction(&actionCtrl) == 1 || visitState == 3) {
             if (NpcActionCtrl_requestStand(&actionCtrl, 2, data_020c6cc8)) {
                 setVisitWalkSpeed();
                 return;
@@ -1377,24 +1377,24 @@ void HouseVisitVillager::execVisitWander() {
         }
     }
     if (NpcActionCtrl_getAction(&actionCtrl) == 0) {
-        if (unk_a4a != 0) {
-            unk_a4a--;
+        if (wanderTimer != 0) {
+            wanderTimer--;
         }
-        if (unk_a4a == 0) {
-            unk_a5a = Mailbox_execNoMail(&unk_a68, &position, rotY);
-            unk_a5c = unk_a68;
-            unk_a60 = unk_a6c;
-            unk_a64 = unk_a70;
-            if (unk_a5a != rotY) {
-                if (!NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, unk_a5a, 0, 0, data_020c6cc8, 0)) {
+        if (wanderTimer == 0) {
+            wanderAngle = Mailbox_execNoMail(&walkTargetX, &position, rotY);
+            waypointX = walkTargetX;
+            waypointY = walkTargetY;
+            waypointZ = walkTargetZ;
+            if (wanderAngle != rotY) {
+                if (!NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, wanderAngle, 0, 0, data_020c6cc8, 0)) {
                     return;
                 }
-                unk_a4a = Random_GlobalBelow(0x46) + 0x14;
+                wanderTimer = Random_GlobalBelow(0x46) + 0x14;
             } else {
-                if (!NpcActionCtrl_requestAction(&actionCtrl, 1, 1, unk_a68, unk_a70, 0, 0, 0, 0, data_020c6cc8, 0)) {
+                if (!NpcActionCtrl_requestAction(&actionCtrl, 1, 1, walkTargetX, walkTargetZ, 0, 0, 0, 0, data_020c6cc8, 0)) {
                     return;
                 }
-                unk_a4a = Random_GlobalBelow(0x50) + 0x14;
+                wanderTimer = Random_GlobalBelow(0x50) + 0x14;
             }
         } else {
             if (NpcActionCtrl_isActionDone(&actionCtrl)) {
@@ -1403,7 +1403,7 @@ void HouseVisitVillager::execVisitWander() {
         }
     } else if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
         if (NpcActionCtrl_isActionDone(&actionCtrl)) {
-            NpcActionCtrl_requestAction(&actionCtrl, 1, 1, unk_a68, unk_a70, 0, 0, 0, 0, data_020c6cc8, 0);
+            NpcActionCtrl_requestAction(&actionCtrl, 1, 1, walkTargetX, walkTargetZ, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     } else if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
         switch (NpcActor_findAvoidPos(this, &tmp)) {
@@ -1413,18 +1413,18 @@ void HouseVisitVillager::execVisitWander() {
             }
             break;
         case 2:
-            unk_a5c = tmp.x;
-            unk_a60 = tmp.y;
-            unk_a64 = tmp.z;
-            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &unk_a5c);
+            waypointX = tmp.x;
+            waypointY = tmp.y;
+            waypointZ = tmp.z;
+            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &waypointX);
             break;
         default:
-            if (func_020e96ec(&unk_a5c, &unk_a68) != 0) {
-                unk_a5c = unk_a68;
-                unk_a60 = unk_a6c;
-                unk_a64 = unk_a70;
-                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &unk_a68);
-            } else if (func_020e9650(&unk_a68, &position) < 0x200) {
+            if (func_020e96ec(&waypointX, &walkTargetX) != 0) {
+                waypointX = walkTargetX;
+                waypointY = walkTargetY;
+                waypointZ = walkTargetZ;
+                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &walkTargetX);
+            } else if (func_020e9650(&walkTargetX, &position) < 0x200) {
                 NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8);
                 setVisitWalkSpeed();
             }
@@ -1446,7 +1446,7 @@ BOOL HouseVisitVillager::enterVisitTalk() {
     void *p = PlayerActor_GetActor(4);
     if (p != NULL) {
         u32 x = NpcActor_getAngleTo(this, p);
-        if (unk_a50 != 0 || unk_a51 != 0) {
+        if (wantsToLeave != 0 || playerAtExit != 0) {
             NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, x, 1);
         } else {
             NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, x, 0);
@@ -1468,8 +1468,8 @@ BOOL HouseVisitVillager::enterVisitTalkWait() {
 
 void HouseVisitVillager::execVisitTalkWait() {
     using namespace sA;
-    if (unk_898.unk_3c != NULL) {
-        if (unk_898.unk_3c->state == 0) {
+    if (talk.unk_3c != NULL) {
+        if (talk.unk_3c->state == 0) {
             TalkRequest_SetTargetDone(this);
         }
     }
@@ -1482,14 +1482,14 @@ BOOL HouseVisitVillager::enterVisitLeave() {
 
 void HouseVisitVillager::execVisitLeave() {
     using namespace sA;
-    if (unk_898.unk_3c != NULL) {
-        if (unk_898.unk_3c->state == 0) {
+    if (talk.unk_3c != NULL) {
+        if (talk.unk_3c->state == 0) {
             HouseVisitor_ClearPresent();
             if (vfunc_64() != NULL) {
                 VillagerState_ResetRole(Villager_GetState(vfunc_64()));
             }
             HouseVisit_SetFinished(this);
-            if (unk_a50 != 0) {
+            if (wantsToLeave != 0) {
                 Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
                 SceneWarp_RequestExit(Scene_GetWarpRequest(), 6);
             } else {

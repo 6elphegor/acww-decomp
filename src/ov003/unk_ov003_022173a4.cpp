@@ -194,32 +194,32 @@ public:
     void getResources();
     void updateMatrix();
 
-    /* 0x130 */ u8 unk_130;
+    /* 0x130 */ u8 doorState;
     /* 0x131 */ u8 pad_131;
-    /* 0x132 */ u16 unk_132;
+    /* 0x132 */ u16 itemId;
     /* 0x134 */ u8 pad_134[4];
     /* 0x138 */ u8 unk_138[0x194 - 0x138];
-    /* 0x194 */ void *unk_194;
+    /* 0x194 */ void *modelRes;
     /* 0x198 */ u8 pad_198[4];
-    /* 0x19c */ Unk_ov003_Blk unk_19c;
+    /* 0x19c */ Unk_ov003_Blk baseMatrix;
     /* 0x1cc */ u8 pad_1cc[0x1f0 - 0x1cc];
     /* 0x1f0 */ u8 unk_1f0[0x228 - 0x1f0];
-    /* 0x228 */ u32 unk_228;
-    /* 0x22c */ u32 unk_22c;
-    /* 0x230 */ u8 unk_230;
-    /* 0x231 */ u8 unk_231;
-    /* 0x232 */ Unk_ov003_Flags unk_232;
-    /* 0x233 */ u8 unk_233;
+    /* 0x228 */ u32 gridX;
+    /* 0x22c */ u32 gridZ;
+    /* 0x230 */ u8 exitDelay;
+    /* 0x231 */ u8 colliderFlags;
+    /* 0x232 */ Unk_ov003_Flags entryFlags;
+    /* 0x233 */ u8 visitRefused;
     /* 0x234 */ u8 pad_234[0x278 - 0x234];
-    /* 0x278 */ u32 unk_278;
-    /* 0x27c */ u8 unk_27c;
+    /* 0x278 */ u32 entryState;
+    /* 0x27c */ u8 closedTalk;
     /* 0x27d */ u8 pad_27d;
-    /* 0x27e */ u16 unk_27e;
+    /* 0x27e */ u16 warpTimer;
     /* 0x280 */ u8 pad_280[0x288 - 0x280];
-    /* 0x288 */ void *unk_288;
-    /* 0x28c */ u8 unk_28c;
+    /* 0x288 */ void *colliders;
+    /* 0x28c */ u8 colliderCount;
     /* 0x28d */ u8 pad_28d[0x2a4 - 0x28d];
-    /* 0x2a4 */ Unk_ov003_Vec unk_2a4;
+    /* 0x2a4 */ Unk_ov003_Vec entryPos;
     /* 0x2b0 */
 };
 

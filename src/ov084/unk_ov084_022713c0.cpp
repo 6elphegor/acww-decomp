@@ -175,8 +175,8 @@ public:
 
     void attachOwner(SpNpcTortimerFireworks *owner);
 
-    SpNpcTortimerFireworks *unk_ac;
-    s32 unk_b0;
+    SpNpcTortimerFireworks *ownerNpc;
+    s32 massageChairSlot;
     u16 unk_b4;
     u8 pad_b6[2];
 };
@@ -370,8 +370,8 @@ public:
     u8 unk_651;
     u8 pad_652[2];
     s32 unk_654;
-    SpNpcTortimerFireworksTalk unk_658;
-    u8 unk_710;
+    SpNpcTortimerFireworksTalk talk;
+    u8 showWeek;
 };
 
 struct Unk_ov084_02271a40_Ent {
@@ -461,8 +461,8 @@ BOOL SpNpcTortimerFireworks::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -478,7 +478,7 @@ BOOL SpNpcTortimerFireworks::vfunc_00() {
     u8 buf[8];
     Clock_GetDate(buf);
     s32 n = buf[0] - 1;
-    u8 *q = &unk_710;
+    u8 *q = &showWeek;
     *q = n / 7;
     *q = *q + 1;
     return TRUE;
@@ -514,7 +514,7 @@ BOOL SpNpcTortimerFireworks::setupAct00() {
 BOOL SpNpcTortimerFireworks::mainAct00() { return TRUE; }
 
 BOOL SpNpcTortimerFireworks::setupAct01() {
-    void *p = unk_658.func_02015aac();
+    void *p = talk.func_02015aac();
     s32 x = 0;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -541,8 +541,8 @@ SpNpcTortimerFireworksTalk::~SpNpcTortimerFireworksTalk() {}
 
 void SpNpcTortimerFireworksTalk::attachOwner(SpNpcTortimerFireworks *owner) {
     vfunc_08();
-    unk_ac = owner;
-    unk_b0 = -1;
+    ownerNpc = owner;
+    massageChairSlot = -1;
 }
 
 void SpNpcTortimerFireworksTalk::start(TalkStartMsg *out) {
@@ -550,10 +550,10 @@ void SpNpcTortimerFireworksTalk::start(TalkStartMsg *out) {
     u32 loc[2];
     _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
     out->a = (u8 *)"sp_npc_turtle4";
-    if (unk_b0 == -1) {
+    if (massageChairSlot == -1) {
         h[1] = 0x37e0;
-        unk_b0 = Pocket_FindItem(&h[1]);
-        if (unk_b0 >= 0) {
+        massageChairSlot = Pocket_FindItem(&h[1]);
+        if (massageChairSlot >= 0) {
             out->a = (u8 *)"sp_npc_turtle";
             out->b = 0;
             return;
@@ -585,7 +585,7 @@ void SpNpcTortimerFireworksTalk::start(TalkStartMsg *out) {
     } else {
         if (TownSessionState_TestFlag(TownSessionState_Get(), 2) == 0) {
             TownSessionState_SetFlag(TownSessionState_Get(), 2);
-            if (unk_ac->unk_710 == 1) {
+            if (ownerNpc->showWeek == 1) {
                 out->b = 0;
             } else {
                 loc[0] = 0;
@@ -593,13 +593,13 @@ void SpNpcTortimerFireworksTalk::start(TalkStartMsg *out) {
                 Clock_GetDateTime(&loc[0]);
                 s32 r = Date_GetNthWeekdayDay(((u8 *)loc)[5], ((u8 *)loc)[4], 6, 5);
                 if (r == -1) {
-                    if (unk_ac->unk_710 <= 3) {
+                    if (ownerNpc->showWeek <= 3) {
                         out->b = 1;
                     } else {
                         out->b = 2;
                     }
                 } else {
-                    if (unk_ac->unk_710 <= 4) {
+                    if (ownerNpc->showWeek <= 4) {
                         out->b = 1;
                     } else {
                         out->b = 2;
@@ -616,9 +616,9 @@ void SpNpcTortimerFireworksTalk::onMessageEnd() {
     u16 h[7];
     u8 *s = (u8 *)"sp_npc_turtle4";
     u8 msg = 0xff;
-    if (unk_b0 >= 0) {
+    if (massageChairSlot >= 0) {
         if (msgIndex == 1 || msgIndex == 4) {
-            unk_b0 = -2;
+            massageChairSlot = -2;
         }
         if (msgIndex == 2) {
             h[1] = 0x1559;
@@ -706,13 +706,13 @@ void SpNpcTortimerFireworksTalk::onChoice() {
     u8 buf[6];
     u16 h[2];
     u8 msg = 0xff;
-    if (unk_b0 >= 0) {
+    if (massageChairSlot >= 0) {
         u8 *s = (u8 *)"sp_npc_turtle";
         switch (msgIndex) {
         case 0:
             if (t == 0) {
-                if (unk_b0 >= 0) {
-                    Pocket_RemoveItem(unk_b0);
+                if (massageChairSlot >= 0) {
+                    Pocket_RemoveItem(massageChairSlot);
                     h[0] = 0x37e0;
                     _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &h[0], 0, 5, 0);
                 }
@@ -777,8 +777,8 @@ BOOL SpNpcTortimerFireworks::vfunc_48() {
 void SpNpcTortimerFireworks::vfunc_4c(s32 v) {
     switch (v) {
     case 0:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0((u32)getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

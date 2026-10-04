@@ -1,8 +1,8 @@
 #include "types.h"
 
 struct Unk_ov004_0221b6d4_Out {
-    u32 unk_00;
-    u8 unk_04;
+    u32 fileName;
+    u8 msgIndex;
 };
 
 #include "types.h"
@@ -301,7 +301,7 @@ struct Unk_ov004_0221b954_Vec {
 
 struct Unk_ov004_0221b954_Global {
     u8 pad_00[0x64];
-    u32 unk_64;
+    u32 myAid;
 };
 
 class SpNpcBookerTalk;
@@ -454,8 +454,8 @@ public:
     void setScript(s32 v);
     void attachOwner(NpcActor *o);
 
-    /* 0xac */ NpcActor *unk_ac;
-    /* 0xb0 */ s32 unk_b0;
+    /* 0xac */ NpcActor *owner;
+    /* 0xb0 */ s32 scriptIndex;
 };
 
 class SpNpcBooker : public SpNpcActor {
@@ -488,8 +488,8 @@ public:
     void changeAct(s32 state);
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ SpNpcBookerTalk unk_658;
-    /* 0x70c */ s16 unk_70c;
+    /* 0x658 */ SpNpcBookerTalk talk;
+    /* 0x70c */ s16 homeAngle;
     /* 0x70e */ u8 pad_70e[2];
 };
 
@@ -515,8 +515,8 @@ BOOL SpNpcBooker::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    NpcActor_setTalkRequest(this, &unk_658);
-    unk_658.attachOwner(this);
+    NpcActor_setTalkRequest(this, &talk);
+    talk.attachOwner(this);
     NpcActor_setCollisionRadius(this, 0x100);
     NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0xd9);
     NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0xd8);
@@ -530,7 +530,7 @@ BOOL SpNpcBooker::vfunc_00() {
     if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
-    unk_70c = rotY;
+    homeAngle = rotY;
     collider.unk_1c |= 2;
     if (CommManager_isOnline(gCommManager) && Scene_GetCurrent() == 0xb) {
         if (NpcActor_isNetOwner(this)) {
@@ -549,7 +549,7 @@ BOOL SpNpcBooker::vfunc_0c() {
         return FALSE;
     }
     Unk_ov004_0221b954_Global *g = gCommManager;
-    if (CommManager_isSlotActive(g, g->unk_64) && !CommManager_isOnline(g)) {
+    if (CommManager_isSlotActive(g, g->myAid) && !CommManager_isOnline(g)) {
         void *p = gSaveVillagers;
         if (SaveVillagers_GetUnk3830Index(p) != -1) {
             SickVillagerRecord_resetRecord(SaveVillagers_GetUnk3830(p));
@@ -588,10 +588,10 @@ BOOL SpNpcBooker::setupAct00() {
 BOOL SpNpcBooker::mainAct00() { return TRUE; }
 
 BOOL SpNpcBooker::setupAct01() {
-    ActorTalkRequest *p = &unk_658;
+    ActorTalkRequest *p = &talk;
     p->vfunc_08();
-    func_02015ab0(&unk_658, NpcActor_getPlayerActor(this, 4));
-    void *q = func_02015aac(&unk_658);
+    func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+    void *q = func_02015aac(&talk);
     s32 r = 0;
     if (q) {
         r = NpcActor_getAngleTo(this, q);
@@ -616,7 +616,7 @@ BOOL SpNpcBooker::setupAct02() { return TRUE; }
 BOOL SpNpcBooker::mainAct02() { return TRUE; }
 
 BOOL SpNpcBooker::setupAct03() {
-    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, unk_70c, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -638,7 +638,7 @@ BOOL SpNpcBooker::mainAct04() {
         b = 4;
         if (NpcActor_netGetSlots(this, &a, &b)) {
             s32 av = a;
-            s32 g = gCommManager->unk_64;
+            s32 g = gCommManager->myAid;
             if (av == g && av == b) {
                 NpcActor_netSetSlotsIfOwner(this, 1, g, g);
                 changeAct(1);
@@ -646,7 +646,7 @@ BOOL SpNpcBooker::mainAct04() {
             }
         }
         if (NetArea_IsLocalOwner() && b == 4) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
+            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
             changeAct(0);
         }
     }
@@ -661,7 +661,7 @@ BOOL SpNpcBooker::mainAct05() {
         s32 a = 4;
         s32 b = 4;
         if (NpcActor_netGetSlots(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
+            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
             changeAct(3);
         }
     }
@@ -681,25 +681,25 @@ SpNpcBookerTalk::~SpNpcBookerTalk() {}
 
 void SpNpcBookerTalk::attachOwner(NpcActor *o) {
     vfunc_08();
-    unk_ac = o;
+    owner = o;
 }
 
 void SpNpcBookerTalk::start(void *arg) {
     struct Msg {
-        u32 unk_00;
-        u8 unk_04;
+        u32 fileName;
+        u8 msgIndex;
     };
     Msg *out = (Msg *)arg;
     void *g = PlayerData_GetCurrent();
     if (Talk_IsInOwnTown() == 0 || GameStart_IsActive() != 0) {
-        out->unk_04 = Random_GlobalBelow(3) + 8;
+        out->msgIndex = Random_GlobalBelow(3) + 8;
     } else if (Unk_02097ff4_testFlag(g, 0x1b) == 0) {
-        out->unk_04 = 0;
+        out->msgIndex = 0;
         Unk_02097ff4_setFlag(g, 0x1b);
     } else {
-        out->unk_04 = Random_GlobalBelow(4) + 4;
+        out->msgIndex = Random_GlobalBelow(4) + 4;
     }
-    out->unk_00 = sSpNpcBookerMsgFiles[0];
+    out->fileName = sSpNpcBookerMsgFiles[0];
 }
 
 void SpNpcBookerTalk::onMessageEnd() {
@@ -728,7 +728,7 @@ void SpNpcBookerTalk::onChoice() {
     case 0xf:
         if (t == 0) {
             Unk_ov004_0221b954_Global *s = gCommManager;
-            if (CommManager_isSlotActive(s, s->unk_64) != 0) {
+            if (CommManager_isSlotActive(s, s->myAid) != 0) {
                 if (CommManager_isOnline(s) != 0) {
                     s32 q = PlayerData_GetBySessionSlot(JoinHistory_GetLatest());
                     if (q != 0) {
@@ -803,7 +803,7 @@ void SpNpcBookerTalk::onChoice() {
 }
 
 void SpNpcBookerTalk::update() {
-    s32 i = unk_b0;
+    s32 i = scriptIndex;
     if (sSpNpcBookerTalkScripts[i].flag != 0) {
         if (sSpNpcBookerTalkScripts[i].fn != 0) {
             (this->*sSpNpcBookerTalkScripts[i].fn)();
@@ -812,7 +812,7 @@ void SpNpcBookerTalk::update() {
 }
 
 void SpNpcBookerTalk::onTaskDone() {
-    s32 i = unk_b0;
+    s32 i = scriptIndex;
     if (sSpNpcBookerTalkScripts[i].flag == 0) {
         if (sSpNpcBookerTalkScripts[i].fn != 0) {
             (this->*sSpNpcBookerTalkScripts[i].fn)();
@@ -822,7 +822,7 @@ void SpNpcBookerTalk::onTaskDone() {
 }
 
 void SpNpcBookerTalk::setScript(s32 v) {
-    unk_b0 = v;
+    scriptIndex = v;
 }
 
 void SpNpcBookerTalk::runScript01() {
@@ -832,7 +832,7 @@ void SpNpcBookerTalk::runScript01() {
         u32 idx = MenuCtrl_GetIndex();
         s32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(g)), idx);
         PatternSrc_Copy(9, t, 5, 0, 1);
-        func_02003ddc(&unk_ac->seEmitter, 0x50, 0x7f, 0);
+        func_02003ddc(&owner->seEmitter, 0x50, 0x7f, 0);
         buf[0] = 0x18;
         TalkWindowState_setNextMessage(unk_3c, buf, sSpNpcBookerMsgFiles[0]);
     } else {
@@ -853,7 +853,7 @@ void SpNpcBookerTalk::runScript02() {
         u32 idx = MenuCtrl_GetIndex();
         u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(g)), idx);
         PatternSrc_Swap(9, t, 5, 0, 1);
-        func_02003ddc(&unk_ac->seEmitter, 0x50, 0x7f, 0);
+        func_02003ddc(&owner->seEmitter, 0x50, 0x7f, 0);
         u32 x;
         u32 y;
         if (t < 8) {
@@ -932,12 +932,12 @@ void SpNpcBooker::vfunc_4c(u32 cmd, u32 arg) {
     case 3:
         footstepFx.unk_08 = arg;
         if (arg != 4) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, arg);
+            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, arg);
             changeAct(6);
             break;
         }
         if (NpcActor_isNetOwner(this) != 0) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, gCommManager->unk_64);
+            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, gCommManager->myAid);
             changeAct(6);
         }
         break;
@@ -946,23 +946,23 @@ void SpNpcBooker::vfunc_4c(u32 cmd, u32 arg) {
         break;
     case 0:
         footstepFx.unk_08 = arg;
-        if (arg != 4 && arg != gCommManager->unk_64) {
+        if (arg != 4 && arg != gCommManager->myAid) {
             NpcActor_netSetSlotsIfOwner(this, 1, arg, arg);
             changeAct(5);
             break;
         }
         if (NpcActor_isNetOwner(this) != 0) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, gCommManager->unk_64);
+            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, gCommManager->myAid);
             changeAct(1);
         }
         break;
     case 8:
         if (arg == 4) {
             if (NetArea_IsLocalOwner() != 0) {
-                NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
+                NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
                 changeAct(3);
             } else {
-                NpcActor_netSetSlotsIfOwner(this, 1, 4, gCommManager->unk_64);
+                NpcActor_netSetSlotsIfOwner(this, 1, 4, gCommManager->myAid);
                 changeAct(4);
             }
         }
@@ -974,7 +974,7 @@ void SpNpcBooker::vfunc_4c(u32 cmd, u32 arg) {
                 b = 4;
                 if (NpcActor_netGetSlots(this, &a, &b) != 0) {
                     if ((arg != 4 && arg == (u32)b) || arg == 4) {
-                        NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
+                        NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
                         changeAct(0);
                     }
                 }

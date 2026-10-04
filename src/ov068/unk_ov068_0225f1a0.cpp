@@ -183,9 +183,9 @@ struct Unk_ov068_0225f23c_Vec {
 };
 
 struct Unk_ov068_Scene_Entry {
-    void *(*unk_00)();
-    u16 unk_04;
-    u16 unk_06;
+    void *(*factory)();
+    u16 executePriority;
+    u16 drawPriority;
     s32 unk_08[4];
 };
 
@@ -227,15 +227,15 @@ public:
     ~FieldVillagerLook();
     void construct();
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
+    /* 0x00 */ s32 isLocked;
+    /* 0x04 */ s32 targetKind;
+    /* 0x08 */ u8 lookMode;
     /* 0x09 */ u8 pad_09[3];
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ u16 unk_14;
+    /* 0x0c */ s32 targetSlot;
+    /* 0x10 */ s32 targetId;
+    /* 0x14 */ u16 lookTime;
     /* 0x16 */ u8 pad_16[2];
-    /* 0x18 */ Unk_ov068_0226fb80_Fn unk_18;
+    /* 0x18 */ Unk_ov068_0226fb80_Fn drawFn;
 };
 
 // Small timer object at +0x9f0
@@ -249,9 +249,9 @@ public:
     ~FieldVillagerFxTimer();
     void construct();
 
-    /* 0x00 */ s8 unk_00;
+    /* 0x00 */ s8 fleaEffectTimer;
     /* 0x01 */ u8 pad_01;
-    /* 0x02 */ u16 unk_02;
+    /* 0x02 */ u16 holdCount;
 };
 
 // State-machine member at +0x8b4 of FieldVillager (0xfc bytes)
@@ -264,32 +264,32 @@ public:
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
     /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ Unk_ov068_0225f1a0_Ent *unk_14;
-    /* 0x18 */ s32 unk_18;
-    /* 0x1c */ u8 unk_1c;
+    /* 0x10 */ s32 state;
+    /* 0x14 */ Unk_ov068_0225f1a0_Ent *stateEntry;
+    /* 0x18 */ s32 resumeState;
+    /* 0x1c */ u8 step;
     /* 0x1d */ u8 pad_1d[3];
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ s16 unk_2c;
+    /* 0x20 */ s32 stateTimer;
+    /* 0x24 */ s32 cooldown;
+    /* 0x28 */ s32 chatTarget;
+    /* 0x2c */ s16 pitfallTimer;
     /* 0x2e */ u8 pad_2e[6];
-    /* 0x34 */ s16 unk_34;
-    /* 0x36 */ s16 unk_36;
-    /* 0x38 */ u8 unk_38;
+    /* 0x34 */ s16 activityTimer;
+    /* 0x36 */ s16 heldItemCheckTimer;
+    /* 0x38 */ u8 hitCount;
     /* 0x39 */ u8 pad_39;
-    /* 0x3a */ u16 unk_3a;
-    /* 0x3c */ u8 unk_3c[0xd8 - 0x3c];
-    /* 0xd8 */ s16 unk_d8;
-    /* 0xda */ s16 unk_da;
-    /* 0xdc */ s16 unk_dc;
-    /* 0xde */ s16 unk_de;
-    /* 0xe0 */ u8 unk_e0;
+    /* 0x3a */ u16 hitResetTimer;
+    /* 0x3c */ u8 route[0xd8 - 0x3c];
+    /* 0xd8 */ s16 routeTimeout;
+    /* 0xda */ s16 routeStepTimer;
+    /* 0xdc */ s16 lookStopTimer;
+    /* 0xde */ s16 lookStopCooldown;
+    /* 0xe0 */ u8 isAdmiringCatch;
     /* 0xe1 */ u8 pad_e1[3];
-    /* 0xe4 */ s32 unk_e4;
+    /* 0xe4 */ s32 approachTarget;
     /* 0xe8 */ u8 pad_e8[0xf4 - 0xe8];
-    /* 0xf4 */ s32 unk_f4;
-    /* 0xf8 */ s32 unk_f8;
+    /* 0xf4 */ s32 seekPlayerCooldown;
+    /* 0xf8 */ s32 talkUrgeTimer;
 };
 
 // Member at +0x9b0 (0x40 bytes)
@@ -460,10 +460,10 @@ public:
 class FieldVillager : public VillagerActor {
 public:
     inline FieldVillager() {
-        unk_894.construct();
-        unk_8b4.initAi();
-        HeldToolModel_init(&unk_9b0);
-        unk_9f0.construct();
+        look.construct();
+        ai.initAi();
+        HeldToolModel_init(&heldTool);
+        fleaFx.construct();
     }
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
@@ -490,20 +490,20 @@ public:
     void attachHeldItemModel();
     BOOL drawDefault();
 
-    /* 0x894 */ FieldVillagerLook unk_894;
-    /* 0x8b4 */ FieldVillagerAi unk_8b4;
-    /* 0x9b0 */ HeldToolModel unk_9b0;
-    /* 0x9f0 */ FieldVillagerFxTimer unk_9f0;
-    /* 0x9f4 */ Unk_ov068_0225f904_Menu *unk_9f4;
-    /* 0x9f8 */ s32 unk_9f8;
-    /* 0x9fc */ s32 unk_9fc;
-    /* 0xa00 */ u8 unk_a00;
-    /* 0xa01 */ u8 unk_a01;
-    /* 0xa02 */ u16 unk_a02;
-    /* 0xa04 */ u8 unk_a04;
+    /* 0x894 */ FieldVillagerLook look;
+    /* 0x8b4 */ FieldVillagerAi ai;
+    /* 0x9b0 */ HeldToolModel heldTool;
+    /* 0x9f0 */ FieldVillagerFxTimer fleaFx;
+    /* 0x9f4 */ Unk_ov068_0225f904_Menu *talkPartner;
+    /* 0x9f8 */ s32 talkType;
+    /* 0x9fc */ s32 pitfallEffect;
+    /* 0xa00 */ u8 isInPitfall;
+    /* 0xa01 */ u8 wasHitByNet;
+    /* 0xa02 */ u16 pushFrames;
+    /* 0xa04 */ u8 lastCatchSimMinute;
     /* 0xa05 */ u8 unk_a05;
     /* 0xa06 */ u8 pad_a06[2];
-    /* 0xa08 */ s32 unk_a08;
+    /* 0xa08 */ s32 talkReason;
 };
 
 // Owner stand-in used by the state classes (only its vtable is used)
@@ -562,28 +562,28 @@ public:
 class FieldVillagerAiStates {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 unk_1c;
+    /* 0x1c */ u8 step;
     /* 0x1d */ u8 pad_1d[3];
-    /* 0x20 */ s32 unk_20;
+    /* 0x20 */ s32 stateTimer;
     /* 0x24 */ u8 pad_24[4];
-    /* 0x28 */ u8 *unk_28;
-    /* 0x2c */ s16 unk_2c;
+    /* 0x28 */ u8 *chatTarget;
+    /* 0x2c */ s16 pitfallTimer;
     /* 0x2e */ u8 pad_2e[2];
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ s16 unk_34;
-    /* 0x36 */ s16 unk_36;
-    /* 0x38 */ u8 unk_38;
+    /* 0x30 */ s32 pitfallAnimSpeed;
+    /* 0x34 */ s16 activityTimer;
+    /* 0x36 */ s16 heldItemCheckTimer;
+    /* 0x38 */ u8 hitCount;
     /* 0x39 */ u8 pad_39;
-    /* 0x3a */ u16 unk_3a;
-    /* 0x3c */ u8 unk_3c[0xd8 - 0x3c];
-    /* 0xd8 */ s16 unk_d8;
-    /* 0xda */ s16 unk_da;
-    /* 0xdc */ s16 unk_dc;
-    /* 0xde */ s16 unk_de;
-    /* 0xe0 */ u8 unk_e0;
+    /* 0x3a */ u16 hitResetTimer;
+    /* 0x3c */ u8 route[0xd8 - 0x3c];
+    /* 0xd8 */ s16 routeTimeout;
+    /* 0xda */ s16 routeStepTimer;
+    /* 0xdc */ s16 lookStopTimer;
+    /* 0xde */ s16 lookStopCooldown;
+    /* 0xe0 */ u8 isAdmiringCatch;
     /* 0xe1 */ u8 pad_e1[0xf4 - 0xe1];
-    /* 0xf4 */ u32 unk_f4;
-    /* 0xf8 */ u32 unk_f8;
+    /* 0xf4 */ u32 seekPlayerCooldown;
+    /* 0xf8 */ u32 talkUrgeTimer;
 
     s32 execAdmireCatch(Unk_ov068_Owner *o);
     void admireCatchStep1(Unk_ov068_Owner *o);
@@ -639,7 +639,7 @@ struct Unk_ov068_022605f4_Vec : Unk_ov068_02260780_Vec {
 
 struct Unk_ov068_02260780_Own {
     u8 pad_00[0x5c];
-    Unk_ov068_02260780_Vec unk_5c;
+    Unk_ov068_02260780_Vec position;
 };
 
 struct Unk_ov068_02260f90_V3 {
@@ -660,9 +660,9 @@ struct Unk_ov068_02261644_V3 {
 class FieldVillagerAiPutAway {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 unk_1c;
+    /* 0x1c */ u8 step;
     /* 0x1d */ u8 pad_1d[3];
-    /* 0x20 */ s32 unk_20;
+    /* 0x20 */ s32 stateTimer;
 
     s32 execPutAwayItem(Unk_ov068_Owner *o);
     void putAwayItemStep1(Unk_ov068_Owner *o);
@@ -673,7 +673,7 @@ public:
 class FieldVillagerAiTakeOut {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 unk_1c;
+    /* 0x1c */ u8 step;
 
     s32 execTakeOutItem(Unk_ov068_Owner *o);
     void takeOutItemStep1(Unk_ov068_Owner *o);
@@ -684,9 +684,9 @@ public:
 class FieldVillagerAiBirthdayInvite {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 unk_1c;
+    /* 0x1c */ u8 step;
     /* 0x1d */ u8 pad_1d[3];
-    /* 0x20 */ s32 unk_20;
+    /* 0x20 */ s32 stateTimer;
 
     s32 execBirthdayInvite(Unk_ov068_Owner *o);
     void birthdayInviteStep2(Unk_ov068_Owner *o);
@@ -727,15 +727,15 @@ struct Unk_ov068_02262044_Vec {
 class FieldVillagerAiPlayerStates {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 unk_1c;
+    /* 0x1c */ u8 step;
     /* 0x1d */ u8 pad_1d[3];
-    /* 0x20 */ s32 unk_20;
+    /* 0x20 */ s32 stateTimer;
     /* 0x24 */ u8 pad_24[0xe4 - 0x24];
-    /* 0xe4 */ Unk_ov068_02261cd4_Tgt *unk_e4;
-    /* 0xe8 */ s32 unk_e8;
-    /* 0xec */ s32 unk_ec;
-    /* 0xf0 */ s32 unk_f0;
-    /* 0xf4 */ u32 unk_f4;
+    /* 0xe4 */ Unk_ov068_02261cd4_Tgt *approachTarget;
+    /* 0xe8 */ s32 approachStartX;
+    /* 0xec */ s32 approachStartY;
+    /* 0xf0 */ s32 approachStartZ;
+    /* 0xf4 */ u32 seekPlayerCooldown;
 
     s32 execFleaRemoved(Unk_ov068_Owner *o);
     void fleaRemovedStep1(Unk_ov068_Owner *o);
@@ -760,7 +760,7 @@ public:
 class FieldVillagerAiReaction {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 unk_1c;
+    /* 0x1c */ u8 step;
 
     void reactionStep1(Unk_ov068_Owner *o);
     void reactionStep0(Unk_ov068_Owner *o);
@@ -771,28 +771,28 @@ public:
 class FieldVillagerAiChat {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 unk_1c;
+    /* 0x1c */ u8 step;
     /* 0x1d */ u8 pad_1d[3];
-    /* 0x20 */ s32 unk_20;
+    /* 0x20 */ s32 stateTimer;
     /* 0x24 */ u8 pad_24[4];
-    /* 0x28 */ u8 *unk_28;
-    /* 0x2c */ s16 unk_2c;
+    /* 0x28 */ u8 *chatTarget;
+    /* 0x2c */ s16 pitfallTimer;
     /* 0x2e */ u8 pad_2e[2];
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ s16 unk_34;
-    /* 0x36 */ s16 unk_36;
-    /* 0x38 */ u8 unk_38;
+    /* 0x30 */ s32 pitfallAnimSpeed;
+    /* 0x34 */ s16 activityTimer;
+    /* 0x36 */ s16 heldItemCheckTimer;
+    /* 0x38 */ u8 hitCount;
     /* 0x39 */ u8 pad_39;
-    /* 0x3a */ u16 unk_3a;
-    /* 0x3c */ u8 unk_3c[0xd8 - 0x3c];
-    /* 0xd8 */ s16 unk_d8;
-    /* 0xda */ s16 unk_da;
-    /* 0xdc */ s16 unk_dc;
-    /* 0xde */ s16 unk_de;
-    /* 0xe0 */ u8 unk_e0;
+    /* 0x3a */ u16 hitResetTimer;
+    /* 0x3c */ u8 route[0xd8 - 0x3c];
+    /* 0xd8 */ s16 routeTimeout;
+    /* 0xda */ s16 routeStepTimer;
+    /* 0xdc */ s16 lookStopTimer;
+    /* 0xde */ s16 lookStopCooldown;
+    /* 0xe0 */ u8 isAdmiringCatch;
     /* 0xe1 */ u8 pad_e1[0xf4 - 0xe1];
-    /* 0xf4 */ u32 unk_f4;
-    /* 0xf8 */ u32 unk_f8;
+    /* 0xf4 */ u32 seekPlayerCooldown;
+    /* 0xf8 */ u32 talkUrgeTimer;
 
     s32 execChat(Unk_ov068_Owner *o);
     void chatStep3(Unk_ov068_Owner *o);
@@ -854,7 +854,7 @@ struct Unk_ov068_0226392c_V3 {
 class FieldVillagerAiTalk {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 unk_1c;
+    /* 0x1c */ u8 step;
 
     s32 execTalk(Unk_ov068_Owner *o);
     void talkStep1(Unk_ov068_Owner *o);
@@ -865,11 +865,11 @@ public:
 class FieldVillagerAiLeaveHouse {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 unk_1c;
+    /* 0x1c */ u8 step;
     /* 0x1d */ u8 pad_1d[0x34 - 0x1d];
-    /* 0x34 */ s16 unk_34;
+    /* 0x34 */ s16 activityTimer;
     /* 0x36 */ u8 pad_36[0xf8 - 0x36];
-    /* 0xf8 */ s32 unk_f8;
+    /* 0xf8 */ s32 talkUrgeTimer;
 
     s32 execLeaveHouse(Unk_ov068_Owner *o);
     void leaveHouseStep1(Unk_ov068_Owner *o);
@@ -880,7 +880,7 @@ public:
 class FieldVillagerAiAbsent {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 unk_1c;
+    /* 0x1c */ u8 step;
 
     s32 execAbsent(Unk_ov068_Owner *o);
     void absentStep1(Unk_ov068_Owner *o);
@@ -891,28 +891,28 @@ public:
 class FieldVillagerAiInHouse {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 unk_1c;
+    /* 0x1c */ u8 step;
     /* 0x1d */ u8 pad_1d[3];
-    /* 0x20 */ s32 unk_20;
+    /* 0x20 */ s32 stateTimer;
     /* 0x24 */ u8 pad_24[4];
-    /* 0x28 */ u8 *unk_28;
-    /* 0x2c */ s16 unk_2c;
+    /* 0x28 */ u8 *chatTarget;
+    /* 0x2c */ s16 pitfallTimer;
     /* 0x2e */ u8 pad_2e[2];
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ s16 unk_34;
-    /* 0x36 */ s16 unk_36;
-    /* 0x38 */ u8 unk_38;
+    /* 0x30 */ s32 pitfallAnimSpeed;
+    /* 0x34 */ s16 activityTimer;
+    /* 0x36 */ s16 heldItemCheckTimer;
+    /* 0x38 */ u8 hitCount;
     /* 0x39 */ u8 pad_39;
-    /* 0x3a */ u16 unk_3a;
-    /* 0x3c */ u8 unk_3c[0xd8 - 0x3c];
-    /* 0xd8 */ s16 unk_d8;
-    /* 0xda */ s16 unk_da;
-    /* 0xdc */ s16 unk_dc;
-    /* 0xde */ s16 unk_de;
-    /* 0xe0 */ u8 unk_e0;
+    /* 0x3a */ u16 hitResetTimer;
+    /* 0x3c */ u8 route[0xd8 - 0x3c];
+    /* 0xd8 */ s16 routeTimeout;
+    /* 0xda */ s16 routeStepTimer;
+    /* 0xdc */ s16 lookStopTimer;
+    /* 0xde */ s16 lookStopCooldown;
+    /* 0xe0 */ u8 isAdmiringCatch;
     /* 0xe1 */ u8 pad_e1[0xf4 - 0xe1];
-    /* 0xf4 */ u32 unk_f4;
-    /* 0xf8 */ u32 unk_f8;
+    /* 0xf4 */ u32 seekPlayerCooldown;
+    /* 0xf8 */ u32 talkUrgeTimer;
 
     s32 execInHouse(Unk_ov068_Owner *o);
     void inHouseStep1(Unk_ov068_Owner *o);
@@ -991,22 +991,22 @@ public:
     virtual BOOL vfunc_bc();
 
     /* 0x004 */ u8 pad_04[0x5c - 4];
-    /* 0x05c */ Unk_ov068_022649f4_Vec unk_5c;
+    /* 0x05c */ Unk_ov068_022649f4_Vec position;
     /* 0x068 */ u8 pad_68[0x8e - 0x68];
-    /* 0x08e */ s16 unk_8e;
+    /* 0x08e */ s16 rotY;
     /* 0x090 */ u8 pad_90[4];
-    /* 0x094 */ s16 unk_94;
+    /* 0x094 */ s16 moveAngleY;
     /* 0x096 */ u8 pad_96[2];
-    /* 0x098 */ s32 unk_98;
+    /* 0x098 */ s32 speed;
     /* 0x09c */ u8 pad_9c[0x350 - 0x9c];
-    /* 0x350 */ u8 unk_350[0x60];
-    /* 0x3b0 */ u8 unk_3b0[0x5c];
+    /* 0x350 */ u8 moveCtrl[0x60];
+    /* 0x3b0 */ u8 lookAt[0x5c];
     /* 0x40c */ u8 pad_40c[0x564 - 0x40c];
-    /* 0x564 */ u8 unk_564[0x82c - 0x564];
-    /* 0x82c */ void *unk_82c;
+    /* 0x564 */ u8 actionCtrl[0x82c - 0x564];
+    /* 0x82c */ void *villagerData;
     /* 0x830 */ u8 pad_830[0x8b4 - 0x830];
-    /* 0x8b4 */ u8 unk_8b4[0xa01 - 0x8b4];
-    /* 0xa01 */ u8 unk_a01;
+    /* 0x8b4 */ u8 ai[0xa01 - 0x8b4];
+    /* 0xa01 */ u8 wasHitByNet;
 };
 
 struct Unk_ov068_0226506c_Flags {
@@ -1061,14 +1061,14 @@ struct Unk_ov068_02265d34_Vec2 {
 
 struct Unk_ov068_0226647c_Cam {
     /* 0x000 */ u8 pad_000[0x174];
-    /* 0x174 */ s16 unk_174;
+    /* 0x174 */ s16 roll;
     /* 0x176 */ u8 pad_176[0x21c - 0x176];
-    /* 0x21c */ s16 unk_21c;
-    /* 0x21e */ s16 unk_21e;
-    /* 0x220 */ u16 unk_220;
-    /* 0x222 */ u16 unk_222;
-    /* 0x224 */ u8 unk_224;
-    /* 0x225 */ u8 unk_225;
+    /* 0x21c */ s16 bobPhase;
+    /* 0x21e */ s16 rollPhase;
+    /* 0x220 */ u16 bobTimer;
+    /* 0x222 */ u16 rollTimer;
+    /* 0x224 */ u8 bobPattern;
+    /* 0x225 */ u8 rollPattern;
 };
 
 struct Unk_ov068_0226647c_Row {
@@ -1081,11 +1081,11 @@ struct Unk_ov068_0226647c_Row {
 
 struct Unk_ov068_02265ee8_Obj {
     /* 0x00 */ u8 pad_00[0x5c];
-    /* 0x5c */ Unk_ov068_0225f23c_Vec unk_5c;
+    /* 0x5c */ Unk_ov068_0225f23c_Vec position;
     /* 0x68 */ u8 pad_68[0x94 - 0x68];
-    /* 0x94 */ s16 unk_94;
+    /* 0x94 */ s16 moveAngleY;
     /* 0x96 */ u8 pad_96[2];
-    /* 0x98 */ s32 unk_98;
+    /* 0x98 */ s32 speed;
 };
 namespace ns_0225f1a0 {
 extern "C" {
@@ -3318,19 +3318,19 @@ BOOL FieldVillager::vfunc_04() {
     }
     NpcActor_setTalkRequest(this, &villagerTalk);
     villagerTalk.vfunc_08();
-    unk_9f4 = NULL;
-    unk_9f8 = 0;
-    unk_a08 = 3;
+    talkPartner = NULL;
+    talkType = 0;
+    talkReason = 3;
     u16 buf = 0xfff1;
-    if (Unk_ov068_02266320_IsZero(HeldToolModel_load((&unk_9b0), &buf))) {
+    if (Unk_ov068_02266320_IsZero(HeldToolModel_load((&heldTool), &buf))) {
         return FALSE;
     }
-    curHeldTool = (&unk_9b0);
-    unk_9fc = -1;
-    unk_a00 = 0;
-    unk_a01 = 0;
-    unk_a02 = 0;
-    unk_a04 = 0xff;
+    curHeldTool = (&heldTool);
+    pitfallEffect = -1;
+    isInPitfall = 0;
+    wasHitByNet = 0;
+    pushFrames = 0;
+    lastCatchSimMinute = 0xff;
     unk_a05 = 0;
     refreshActivity();
     FieldVillager_UpdateUmbrella(this);
@@ -3343,19 +3343,19 @@ BOOL FieldVillager::vfunc_00() {
     if (func_0202d948(this) == 0) {
         return FALSE;
     }
-    unk_894.unk_18 = data_ov068_0226f870;
-    X_func_ov068_0225f670((&unk_894), this);
+    look.drawFn = data_ov068_0226f870;
+    X_func_ov068_0225f670((&look), this);
     s32 t = VillagerStates_GetBirthdayVisitor();
-    FieldVillagerAi_InitTimers((&unk_8b4));
+    FieldVillagerAi_InitTimers((&ai));
     if (t == Villager_GetIndex(a)) {
-        FieldVillagerAi_ChangeState((&unk_8b4), this, 0xd);
+        FieldVillagerAi_ChangeState((&ai), this, 0xd);
     } else if (VillagerStates_GetBirthdayHost() == Villager_GetIndex(a)) {
-        FieldVillagerAi_ChangeState((&unk_8b4), this, 0xc);
+        FieldVillagerAi_ChangeState((&ai), this, 0xc);
     } else {
         switch (Villager_GetWhereabouts(a)) {
         case 0: {
             u16 buf;
-            FieldVillagerAi_ChangeState((&unk_8b4), this, 0);
+            FieldVillagerAi_ChangeState((&ai), this, 0);
             Npc_GetStateHeldItem(&buf, this);
             if (buf != 0xfff1) {
                 attachHeldItemModel();
@@ -3367,14 +3367,14 @@ BOOL FieldVillager::vfunc_00() {
         case 5:
         case 6:
         case 7:
-            FieldVillagerAi_ChangeState((&unk_8b4), this, 0xc);
+            FieldVillagerAi_ChangeState((&ai), this, 0xc);
             break;
         default:
-            FieldVillagerAi_ChangeState((&unk_8b4), this, 3);
+            FieldVillagerAi_ChangeState((&ai), this, 3);
             break;
         }
     }
-    X_func_ov068_0225f8f0((&unk_9f0));
+    X_func_ov068_0225f8f0((&fleaFx));
     return TRUE;
 }
 
@@ -3384,15 +3384,15 @@ BOOL FieldVillager::drawDefault() {
     if (func_0201b138(this) == 0) {
         return FALSE;
     }
-    HeldToolModel_draw((&unk_9b0), this);
+    HeldToolModel_draw((&heldTool), this);
     return TRUE;
 }
 
 BOOL FieldVillager::onDraw() {
     using namespace ns_02265d34;
     BOOL r = TRUE;
-    if (unk_894.unk_18 != 0) {
-        r = (this->*unk_894.unk_18)();
+    if (look.drawFn != 0) {
+        r = (this->*look.drawFn)();
     } else {
         Unk_ov068_0225f23c_Vec *pv = &position;
         unk_478.x = position.x;
@@ -3413,11 +3413,11 @@ BOOL FieldVillager::vfunc_0c() {
     if (func_0202d8ec(this) == 0) {
         return FALSE;
     }
-    HeldToolModel_release((&unk_9b0));
+    HeldToolModel_release((&heldTool));
     curHeldTool = NULL;
-    if (unk_9fc != -1) {
-        Effect_End(unk_9fc);
-        unk_9fc = -1;
+    if (pitfallEffect != -1) {
+        Effect_End(pitfallEffect);
+        pitfallEffect = -1;
     }
     return TRUE;
 }
@@ -3435,11 +3435,11 @@ BOOL FieldVillager::onToolHit(u16 *p) {
             Villager_HalveTalkUrge(vfunc_64());
         }
         if (Villager_HasFlea(villagerData) != 0) {
-            X_func_ov068_0225f840((&unk_9f0), this);
-            X_func_ov068_0225f838((&unk_9f0), sFleaRemovedHoldFrames);
+            X_func_ov068_0225f840((&fleaFx), this);
+            X_func_ov068_0225f838((&fleaFx), sFleaRemovedHoldFrames);
             result = TRUE;
         } else if (getPlayerMemory() != 0) {
-            unk_a01 = 1;
+            wasHitByNet = 1;
         }
     }
     return result;
@@ -3447,8 +3447,8 @@ BOOL FieldVillager::onToolHit(u16 *p) {
 
 BOOL FieldVillager::vfunc_b0() {
     using namespace ns_02265d34;
-    if (X_func_ov068_0225f83c((&unk_9f0)) != 0) {
-        X_func_ov068_0225f838((&unk_9f0), 0);
+    if (X_func_ov068_0225f83c((&fleaFx)) != 0) {
+        X_func_ov068_0225f838((&fleaFx), 0);
         return TRUE;
     }
     return FALSE;
@@ -3461,10 +3461,10 @@ void FieldVillager::attachHeldItemModel() {
     Npc_GetStateHeldItem(&a, this);
     if (a != 0xfff1) {
         Npc_GetStateHeldItem(&b, this);
-        HeldToolModel_attach((&unk_9b0), this, &b, 0, 0);
-        HeldToolModel_playIdleAnim((&unk_9b0), data_020c6cc8, 0);
-        HeldToolModel_setAnimSpeed((&unk_9b0), 0x1000);
-        unk_9b0.unk_3c = 1;
+        HeldToolModel_attach((&heldTool), this, &b, 0, 0);
+        HeldToolModel_playIdleAnim((&heldTool), data_020c6cc8, 0);
+        HeldToolModel_setAnimSpeed((&heldTool), 0x1000);
+        heldTool.unk_3c = 1;
     }
 }
 
@@ -3488,8 +3488,8 @@ BOOL FieldVillager::isPlayerFacing() {
     using namespace ns_02265d34;
     if (unk_508 != 0 && ActorCollider_isHitByGroup(unk_4cc, 4) != 0) {
         Unk_ov068_02265ee8_Obj *p = (Unk_ov068_02265ee8_Obj *)PlayerActor_GetCharacter(4);
-        if (p != NULL && p->unk_98 != 0) {
-            s16 d = Math_AngleXZ(&p->unk_5c, &position) - p->unk_94;
+        if (p != NULL && p->speed != 0) {
+            s16 d = Math_AngleXZ(&p->position, &position) - p->moveAngleY;
             if (d < 0) {
                 d = -d;
             }
@@ -3503,17 +3503,17 @@ BOOL FieldVillager::isPlayerFacing() {
 
 void FieldVillager::updateStareTimer() {
     using namespace ns_02265d34;
-    if (drawEnabled != 0 && updateEnabled != 0 && unk_894.unk_18 != 0 && NpcTalkCtrl_isBusy(unk_618) == 0 && getPlayerMemory() != 0) {
+    if (drawEnabled != 0 && updateEnabled != 0 && look.drawFn != 0 && NpcTalkCtrl_isBusy(unk_618) == 0 && getPlayerMemory() != 0) {
         if (isPlayerFacing()) {
-            unk_a02++;
-            if ((s32)unk_a02 >= 100) {
-                unk_a02 = 100;
+            pushFrames++;
+            if ((s32)pushFrames >= 100) {
+                pushFrames = 100;
             }
         } else {
-            unk_a02 = 0;
+            pushFrames = 0;
         }
     } else {
-        unk_a02 = 0;
+        pushFrames = 0;
     }
 }
 
@@ -3801,94 +3801,94 @@ BOOL FieldVillager::updateAct() {
     if (p != 0) {
         TalkRepeat_Tick(p, NpcTalkCtrl_isBusy((u8 *)this + 0x618));
     }
-    FieldVillagerAi_Update(&unk_8b4, this);
-    unk_9f0.update(this);
+    FieldVillagerAi_Update(&ai, this);
+    fleaFx.update(this);
     VillagerMood_update(unk_838, this);
-    unk_894.update(this);
+    look.update(this);
     *(u8 *)((u8 *)this + 0xa01) = 0;
     return TRUE;
 }
 
 FieldVillagerAi *FieldVillagerAi::initAi() {
     using namespace ns_02265324;
-    VillagerRoute_resetTarget(unk_3c);
-    unk_e4 = 0;
-    unk_18 = 0x18;
+    VillagerRoute_resetTarget(route);
+    approachTarget = 0;
+    resumeState = 0x18;
     unk_00 = 0x10000;
     unk_04 = 0x10000;
     unk_08 = 0x1a000;
     unk_0c = 0xa000;
-    unk_24 = 0;
-    VillagerRoute_reset(unk_3c);
-    unk_20 = 0;
-    unk_d8 = -1;
-    unk_da = 0;
-    unk_f4 = 0;
-    unk_f8 = 0;
-    unk_28 = 0;
-    unk_34 = 0;
-    unk_36 = -1;
-    unk_2c = 0;
-    unk_38 = 0;
-    unk_3a = 0;
-    unk_dc = 0;
-    unk_de = 0;
-    unk_e0 = 0;
+    cooldown = 0;
+    VillagerRoute_reset(route);
+    stateTimer = 0;
+    routeTimeout = -1;
+    routeStepTimer = 0;
+    seekPlayerCooldown = 0;
+    talkUrgeTimer = 0;
+    chatTarget = 0;
+    activityTimer = 0;
+    heldItemCheckTimer = -1;
+    pitfallTimer = 0;
+    hitCount = 0;
+    hitResetTimer = 0;
+    lookStopTimer = 0;
+    lookStopCooldown = 0;
+    isAdmiringCatch = 0;
     return this;
 }
 
 FieldVillagerAi::~FieldVillagerAi() {
     using namespace ns_02265324;
-    func_020133a4(unk_3c);
+    func_020133a4(route);
 }
 
 namespace ns_02265324 {
 extern "C" {
 void FieldVillagerAi_Update(FieldVillagerAi *self, FieldVillager *o) {
-    if (self->unk_e0 != 0) {
-        if (FieldVillagerAi_IsPlayerShowingCatch(self, self->unk_e0) == 0) {
-            self->unk_e0 = 0;
+    if (self->isAdmiringCatch != 0) {
+        if (FieldVillagerAi_IsPlayerShowingCatch(self, self->isAdmiringCatch) == 0) {
+            self->isAdmiringCatch = 0;
         }
     }
-    if (self->unk_14 != 0) {
-        (self->*(self->unk_14->b))(o);
+    if (self->stateEntry != 0) {
+        (self->*(self->stateEntry->b))(o);
     }
-    if (self->unk_20 > 0) {
-        self->unk_20--;
+    if (self->stateTimer > 0) {
+        self->stateTimer--;
     }
-    if (self->unk_d8 > 0) {
-        self->unk_d8--;
+    if (self->routeTimeout > 0) {
+        self->routeTimeout--;
     }
-    if (self->unk_da > 0) {
-        self->unk_da--;
+    if (self->routeStepTimer > 0) {
+        self->routeStepTimer--;
     }
-    if (self->unk_dc > 0) {
-        self->unk_dc--;
+    if (self->lookStopTimer > 0) {
+        self->lookStopTimer--;
     }
-    if (self->unk_de > 0) {
-        self->unk_de--;
+    if (self->lookStopCooldown > 0) {
+        self->lookStopCooldown--;
     }
-    if (self->unk_24 > 0) {
-        self->unk_24--;
+    if (self->cooldown > 0) {
+        self->cooldown--;
     }
-    if (self->unk_3a != 0) {
-        self->unk_3a--;
+    if (self->hitResetTimer != 0) {
+        self->hitResetTimer--;
     }
     if (NpcTalkCtrl_isBusy((u8 *)o + 0x618) == 0) {
-        if (self->unk_f4 > 0) {
-            self->unk_f4--;
-        } else if (self->unk_f8 > 0) {
-            self->unk_f8--;
+        if (self->seekPlayerCooldown > 0) {
+            self->seekPlayerCooldown--;
+        } else if (self->talkUrgeTimer > 0) {
+            self->talkUrgeTimer--;
         }
-        if (self->unk_34 > 0) {
-            self->unk_34--;
+        if (self->activityTimer > 0) {
+            self->activityTimer--;
         }
-        if (self->unk_36 > 0) {
-            self->unk_36--;
+        if (self->heldItemCheckTimer > 0) {
+            self->heldItemCheckTimer--;
         }
     }
-    if (self->unk_2c > 0) {
-        self->unk_2c--;
+    if (self->pitfallTimer > 0) {
+        self->pitfallTimer--;
     }
 }
 }
@@ -3898,12 +3898,12 @@ namespace ns_02265324 {
 extern "C" {
 void FieldVillagerAi_ChangeState(FieldVillagerAi *self, FieldVillager *o, s32 idx) {
     if (idx >= 0 && idx < 0x18) {
-        self->unk_10 = idx;
-        self->unk_14 = &sFieldVillagerAiTable[self->unk_10];
-        self->unk_1c = 0;
-        if (self->unk_14 != 0) {
-            if (self->unk_14->a != 0) {
-                (self->*(self->unk_14->a))(o);
+        self->state = idx;
+        self->stateEntry = &sFieldVillagerAiTable[self->state];
+        self->step = 0;
+        if (self->stateEntry != 0) {
+            if (self->stateEntry->a != 0) {
+                (self->*(self->stateEntry->a))(o);
             }
         }
     }
@@ -3914,7 +3914,7 @@ void FieldVillagerAi_ChangeState(FieldVillagerAi *self, FieldVillager *o, s32 id
 namespace ns_02265324 {
 extern "C" {
 void FieldVillagerAi_SetResumeState(FieldVillagerAi *self, s32 v) {
-    self->unk_18 = v;
+    self->resumeState = v;
 }
 }
 }
@@ -3922,7 +3922,7 @@ void FieldVillagerAi_SetResumeState(FieldVillagerAi *self, s32 v) {
 namespace ns_02265324 {
 extern "C" {
 void FieldVillagerAi_SaveResumeState(FieldVillagerAi *self) {
-    FieldVillagerAi_SetResumeState(self, self->unk_10);
+    FieldVillagerAi_SetResumeState(self, self->state);
 }
 }
 }
@@ -3930,7 +3930,7 @@ void FieldVillagerAi_SaveResumeState(FieldVillagerAi *self) {
 namespace ns_02265324 {
 extern "C" {
 void FieldVillagerAi_ClearResumeState(FieldVillagerAi *self) {
-    self->unk_18 = 0x18;
+    self->resumeState = 0x18;
 }
 }
 }
@@ -3939,8 +3939,8 @@ namespace ns_02265324 {
 extern "C" {
 s32 FieldVillagerAi_Resume(FieldVillagerAi *self, FieldVillager *o) {
     s32 r = 0;
-    if (self->unk_18 < 0x18) {
-        FieldVillagerAi_ChangeState(self, o, self->unk_18);
+    if (self->resumeState < 0x18) {
+        FieldVillagerAi_ChangeState(self, o, self->resumeState);
         FieldVillagerAi_ClearResumeState(self);
         r = 1;
     }
@@ -3967,7 +3967,7 @@ s32 FieldVillagerAi_CanSeePlayer(FieldVillagerAi *self, FieldVillager *o) {
     }
     s32 res = 0;
     if (Scene_InTownUnk31() == 0) {
-        if (self->unk_f4 <= 0 && k != 0 && p != 0) {
+        if (self->seekPlayerCooldown <= 0 && k != 0 && p != 0) {
             if (NpcActor_getDistanceTo(o, p) <= 0x7000) {
                 s32 d = NpcActor_getRelativeAngleTo(o, p);
                 s32 lim = sSeePlayerArc;
@@ -3985,7 +3985,7 @@ s32 FieldVillagerAi_CanSeePlayer(FieldVillagerAi *self, FieldVillager *o) {
 namespace ns_02265324 {
 extern "C" {
 s32 FieldVillagerAi_IsFreeIdle(FieldVillagerAi *self) {
-    if (FieldVillagerAi_IsState(self, 0) != 0 && self->unk_24 == 0) {
+    if (FieldVillagerAi_IsState(self, 0) != 0 && self->cooldown == 0) {
         return TRUE;
     }
     return FALSE;
@@ -3996,7 +3996,7 @@ s32 FieldVillagerAi_IsFreeIdle(FieldVillagerAi *self) {
 namespace ns_02265324 {
 extern "C" {
 void FieldVillagerAi_StartCooldown(FieldVillagerAi *self) {
-    self->unk_24 = sFieldVillagerAiCooldown;
+    self->cooldown = sFieldVillagerAiCooldown;
 }
 }
 }
@@ -4004,7 +4004,7 @@ void FieldVillagerAi_StartCooldown(FieldVillagerAi *self) {
 namespace ns_02265324 {
 extern "C" {
 s32 FieldVillagerAi_IsState(FieldVillagerAi *self, s32 v) {
-    if (self->unk_10 == v) {
+    if (self->state == v) {
         return TRUE;
     }
     return FALSE;
@@ -4015,8 +4015,8 @@ s32 FieldVillagerAi_IsState(FieldVillagerAi *self, s32 v) {
 namespace ns_02265324 {
 extern "C" {
 void FieldVillagerAi_InitTimers(FieldVillagerAi *self) {
-    self->unk_34 = Random_GlobalBelow(0x1770);
-    self->unk_36 = -1;
+    self->activityTimer = Random_GlobalBelow(0x1770);
+    self->heldItemCheckTimer = -1;
 }
 }
 }
@@ -4029,17 +4029,17 @@ s32 FieldVillagerAi_EnterWander(FieldVillagerAi *self, FieldVillager *o) {
     NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
     Unk_02013474_enableFootsteps((u8 *)o + 0x558);
     X_func_ov068_0225f630((u8 *)o + 0x894, o);
-    if (VillagerRoute_isActive(self->unk_3c) != 0) {
-        VillagerRoute_setStepMode(self->unk_3c, 0);
+    if (VillagerRoute_isActive(self->route) != 0) {
+        VillagerRoute_setStepMode(self->route, 0);
     } else {
         FieldVillagerAi_StartRoute(self, 0, o);
-        self->unk_d8 = -1;
-        self->unk_da = 0;
+        self->routeTimeout = -1;
+        self->routeStepTimer = 0;
     }
     VillagerActor_clearFlag834(o);
     *(u8 *)((u8 *)o + 0x561) = 1;
     *(u8 *)((u8 *)o + 0x562) = 1;
-    self->unk_f8 = -1;
+    self->talkUrgeTimer = -1;
     *(u8 *)((u8 *)o + 0x9ec) = 1;
     VillagerMood_enableEffects((u8 *)o + 0x838);
     return TRUE;
@@ -4094,14 +4094,14 @@ namespace ns_02265324 {
 extern "C" {
 s32 FieldVillagerAi_PickRandomRouteType(FieldVillagerAi *self) {
     s32 k;
-    if (VillagerRoute_isActive(self->unk_3c) != 0) {
+    if (VillagerRoute_isActive(self->route) != 0) {
         k = 2;
     } else {
         k = 3;
     }
     s32 i = Random_GlobalBelow(k);
     s32 r5 = sRandomRouteTypes[i];
-    if (r5 == Unk_02012810_getStage(self->unk_3c)) {
+    if (r5 == Unk_02012810_getStage(self->route)) {
         s32 n = i + 1;
         if (n >= 3) {
             n = 0;
@@ -4155,7 +4155,7 @@ done:
     if (r4 == 7) {
         r4 = FieldVillagerAi_PickRandomRouteType(self);
     }
-    VillagerRoute_start(self->unk_3c, &o->position, r4, a, o);
+    VillagerRoute_start(self->route, &o->position, r4, a, o);
 }
 }
 }
@@ -4186,11 +4186,11 @@ namespace ns_022649f4 {
 extern "C" {
 BOOL FieldVillagerAi_IsAtHomeDoor(FieldVillagerAiStates *self, Unk_ov068_Owner_649 *o) {
     BOOL r;
-    if (VillagerRoute_isActive(self->unk_3c) != 0 && Unk_02012810_getStage(self->unk_3c) == 3) {
+    if (VillagerRoute_isActive(self->route) != 0 && Unk_02012810_getStage(self->route) == 3) {
         u8 *p = (u8 *)VillagerDataItemView_getHousePos(o->vfunc_64());
         Unk_ov068_022649f4_Vec t;
         FieldPos_FromUnitCenter(&t, p[0], p[1] + 1);
-        if (func_020e9650(&t, &o->unk_5c) < 0x800) {
+        if (func_020e9650(&t, &o->position) < 0x800) {
             r = TRUE;
         } else {
             r = FALSE;
@@ -4233,13 +4233,13 @@ BOOL FieldVillagerAi_DirCrossesPlayerTalk(void *self, void *a, Unk_ov068_022649f
 namespace ns_022649f4 {
 extern "C" {
 s32 FieldVillagerAi_HeadingCrossesPlayerTalk(void *self, Unk_ov068_Owner_649 *o) {
-    if (o->unk_98 != 0) {
+    if (o->speed != 0) {
         Unk_ov068_022649f4_Vec t;
         t.x = 0;
         t.y = 0;
         t.z = 0x1000;
-        func_020e93a0(&t, o->unk_94);
-        return FieldVillagerAi_DirCrossesPlayerTalk(self, &o->unk_5c, &t);
+        func_020e93a0(&t, o->moveAngleY);
+        return FieldVillagerAi_DirCrossesPlayerTalk(self, &o->position, &t);
     }
     return 0;
 }
@@ -4288,23 +4288,23 @@ BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, Unk_ov068_02264
     if (o->vfunc_64() != 0) {
         Unk_ov068_0226506c_Flags *fl = (Unk_ov068_0226506c_Flags *)((u8 *)Villager_GetState(o->vfunc_64()) + 0x1d);
         if (fl->f1 != 0) {
-            if (Unk_02012810_getStage(self->unk_3c) != 3) {
-                self->unk_d8 = 0;
+            if (Unk_02012810_getStage(self->route) != 3) {
+                self->routeTimeout = 0;
             }
         }
     }
-    if (VillagerRoute_isActive(self->unk_3c) == 0 || self->unk_d8 == 0) {
+    if (VillagerRoute_isActive(self->route) == 0 || self->routeTimeout == 0) {
         FieldVillagerAi_StartRoute(self, 0, o);
-        self->unk_d8 = -1;
-        self->unk_da = 0;
+        self->routeTimeout = -1;
+        self->routeStepTimer = 0;
     }
-    Unk_ov068_022649f4_Vec *pv = &o->unk_5c;
+    Unk_ov068_022649f4_Vec *pv = &o->position;
     out->x = pv->x;
     out->y = pv->y;
     out->z = pv->z;
-    if (Unk_02012810_runStep(self->unk_3c, out) != 0) {
-        if (self->unk_d8 == -1) {
-            self->unk_d8 = 0x1770;
+    if (Unk_02012810_runStep(self->route, out) != 0) {
+        if (self->routeTimeout == -1) {
+            self->routeTimeout = 0x1770;
         }
     }
     return TRUE;
@@ -4316,8 +4316,8 @@ namespace ns_022649f4 {
 extern "C" {
 BOOL FieldVillagerAi_HandleBlockedMove(void *self, Unk_ov068_Owner_649 *o) {
     BOOL r;
-    u8 *r7 = o->unk_564;
-    u8 *r6 = o->unk_350;
+    u8 *r7 = o->actionCtrl;
+    u8 *r6 = o->moveCtrl;
     u8 buf[12];
     r = FALSE;
     if (NpcMoveCtrl_hasArrived(r6, o, 1) == 0) {
@@ -4348,17 +4348,17 @@ void *FieldVillagerAi_FindChatPartner(void *self, Unk_ov068_Owner_649 *o) {
     s16 lim = data_020c6cc0;
     Unk_ov068_Owner_649 *e;
     s32 i;
-    pos = &o->unk_5c;
+    pos = &o->position;
     for (i = 0; i < 8; i++) {
         e = (Unk_ov068_Owner_649 *)NpcRegistry_GetVillager(i);
         if (e == 0) {
             continue;
         }
-        if (e->unk_82c == 0) {
+        if (e->villagerData == 0) {
             continue;
         }
-        u16 *a = (u16 *)VillagerData_getVillagerId(s->unk_82c);
-        u16 *b = (u16 *)VillagerData_getVillagerId(e->unk_82c);
+        u16 *a = (u16 *)VillagerData_getVillagerId(s->villagerData);
+        u16 *b = (u16 *)VillagerData_getVillagerId(e->villagerData);
         if (b[0] == a[0]) {
             if (memcmp(b + 1, a + 1, 8) == 0) {
                 if (((u8 *)b)[0xb] == ((u8 *)a)[0xb]) {
@@ -4366,11 +4366,11 @@ void *FieldVillagerAi_FindChatPartner(void *self, Unk_ov068_Owner_649 *o) {
                 }
             }
         }
-        if (func_020e9650(pos, &e->unk_5c) >= 0x3000) {
+        if (func_020e9650(pos, &e->position) >= 0x3000) {
             continue;
         }
-        s32 d = Math_AngleXZ(pos, &e->unk_5c);
-        if (NpcLookAt_IsWithin((s16)(d - s->unk_8e), lim) != 0) {
+        s32 d = Math_AngleXZ(pos, &e->position);
+        if (NpcLookAt_IsWithin((s16)(d - s->rotY), lim) != 0) {
             return e;
         }
     }
@@ -4390,7 +4390,7 @@ BOOL FieldVillagerAi_TryStartChat(FieldVillagerAiStates *self, Unk_ov068_Owner_6
                     VillagerTalk_setPartner(o, t);
                     VillagerTalk_setInvitedByPartner(o, 0);
                     FieldVillagerAi_SaveResumeState(self);
-                    FieldVillagerAi_ChangeState(o->unk_8b4, o, 9);
+                    FieldVillagerAi_ChangeState(o->ai, o, 9);
                     return TRUE;
                 }
             }
@@ -4413,10 +4413,10 @@ BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, Unk_ov068_
     void *p;
     s32 m;
 
-    if (NpcActionCtrl_getAction(o->unk_564) != 0) {
+    if (NpcActionCtrl_getAction(o->actionCtrl) != 0) {
         goto fail;
     }
-    if (NpcActionCtrl_isActionDone(o->unk_564) == 0) {
+    if (NpcActionCtrl_isActionDone(o->actionCtrl) == 0) {
         goto fail;
     }
     p = o->vfunc_64();
@@ -4432,8 +4432,8 @@ BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, Unk_ov068_
         }
     }
     Clock_GetDateTime(l.z);
-    s16 t = self->unk_34;
-    if (t == 0 || self->unk_36 == 0) {
+    s16 t = self->activityTimer;
+    if (t == 0 || self->heldItemCheckTimer == 0) {
         if (t == 0) {
             X_func_ov068_02265dc8(o);
             if (p != 0) {
@@ -4443,7 +4443,7 @@ BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, Unk_ov068_
                     }
                 }
             }
-            self->unk_34 = 0x2ee0;
+            self->activityTimer = 0x2ee0;
         }
         Npc_GetStateHeldItem(&l.h[1], o);
         if (l.h[1] == 0xfff1) {
@@ -4462,7 +4462,7 @@ BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, Unk_ov068_
                     }
                 }
             }
-            self->unk_36 = -1;
+            self->heldItemCheckTimer = -1;
             if (W == 0xfff1) {
                 goto fail;
             }
@@ -4476,7 +4476,7 @@ BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, Unk_ov068_
             if (m == 1) {
                 goto fail;
             }
-            self->unk_36 = 0x12c;
+            self->heldItemCheckTimer = 0x12c;
             FieldVillagerAi_ChangeState(self, o, 0x10);
             FieldVillagerAi_SetResumeState(self, 0);
             return TRUE;
@@ -4486,10 +4486,10 @@ BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, Unk_ov068_
         if (Unk_ov068_02264b9c_Same(&l.h[5], &l.h[6]) == 0) {
             FieldVillagerAi_ChangeState(self, o, 0x10);
             FieldVillagerAi_SetResumeState(self, 0);
-            self->unk_36 = 0x12c;
+            self->heldItemCheckTimer = 0x12c;
             return TRUE;
         }
-        self->unk_36 = -1;
+        self->heldItemCheckTimer = -1;
     } else {
         Npc_GetStateHeldItem(&l.h[7], o);
         if (l.h[7] == 0xfff1) {
@@ -4500,7 +4500,7 @@ BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, Unk_ov068_
             VillagerTalk_setSpeakerStateUnk(o, &l.h[8]);
             FieldVillagerAi_ChangeState(self, o, 0xf);
             FieldVillagerAi_SetResumeState(self, 0);
-            self->unk_36 = -1;
+            self->heldItemCheckTimer = -1;
             return TRUE;
         }
         Npc_GetStateHeldItem(&l.h[9], o);
@@ -4508,7 +4508,7 @@ BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, Unk_ov068_
             if (m == 1) {
                 goto fail;
             }
-            self->unk_36 = 0x12c;
+            self->heldItemCheckTimer = 0x12c;
             FieldVillagerAi_ChangeState(self, o, 0x10);
             FieldVillagerAi_SetResumeState(self, 0);
             return TRUE;
@@ -4525,7 +4525,7 @@ BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, Unk_ov068_
             if (m == 1) {
                 FieldVillagerAi_ChangeState(self, o, 0x10);
                 FieldVillagerAi_SetResumeState(self, 0);
-                self->unk_36 = 0x12c;
+                self->heldItemCheckTimer = 0x12c;
                 return TRUE;
             }
         }
@@ -4536,7 +4536,7 @@ BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, Unk_ov068_
         }
         FieldVillagerAi_ChangeState(self, o, 0x10);
         FieldVillagerAi_SetResumeState(self, 0);
-        self->unk_36 = 0x12c;
+        self->heldItemCheckTimer = 0x12c;
         return TRUE;
     }
 fail:
@@ -4575,7 +4575,7 @@ namespace ns_022649f4 {
 extern "C" {
 BOOL FieldVillagerAi_TryFallInPitfall(void *self, Unk_ov068_Owner_649 *o) {
     BOOL r;
-    Unk_ov068_022649f4_Vec *p = &o->unk_5c;
+    Unk_ov068_022649f4_Vec *p = &o->position;
     s32 a, b;
     Unk_ov068_02264ab4_P2 q;
     Unk_ov068_022649f4_Vec t;
@@ -4605,7 +4605,7 @@ BOOL FieldVillagerAi_TryFallInPitfall(void *self, Unk_ov068_Owner_649 *o) {
 namespace ns_022649f4 {
 extern "C" {
 s32 FieldVillagerAi_WasHitByNet(void *self, Unk_ov068_Owner_649 *o) {
-    if (o->unk_a01 != 0) {
+    if (o->wasHitByNet != 0) {
         return TRUE;
     }
     return FALSE;
@@ -4629,15 +4629,15 @@ namespace ns_022649f4 {
 extern "C" {
 BOOL FieldVillagerAi_ShouldAdmireCatch(FieldVillagerAiStates *self, Unk_ov068_Owner_649 *o) {
     u32 r = FieldVillager_GetMood(o);
-    if (self->unk_e0 == 0) {
+    if (self->isAdmiringCatch == 0) {
         switch (r) {
         case 0:
         case 1:
             if (FieldVillagerAi_IsPlayerShowingCatch(self) != 0) {
-                if (o->unk_3b0[0] == 1) {
+                if (o->lookAt[0] == 1) {
                     if (NpcActor_getDistanceToPlayer(o, 4) <= 0x6000) {
-                        if (NpcLookAt_canSeeTarget(o->unk_3b0, o) != 0) {
-                            if (Unk_0201a13c_isOnTarget(o->unk_3b0) != 0) {
+                        if (NpcLookAt_canSeeTarget(o->lookAt, o) != 0) {
+                            if (Unk_0201a13c_isOnTarget(o->lookAt) != 0) {
                                 return TRUE;
                             }
                         }
@@ -4703,7 +4703,7 @@ BOOL FieldVillagerAiStates::execWander(Unk_ov068_Owner *o) {
         goto end;
     }
     if (NpcActionCtrl_isActionDone(r6) != 0) {
-        if (unk_dc > 0) {
+        if (lookStopTimer > 0) {
             u32 t;
             u32 u;
             if (*(s32 *)((u8 *)o + 0x894) != 0) {
@@ -4724,15 +4724,15 @@ BOOL FieldVillagerAiStates::execWander(Unk_ov068_Owner *o) {
                 goto skip;
             }
         reset:
-            unk_dc = 0;
-            unk_de = 0x4b0;
+            lookStopTimer = 0;
+            lookStopCooldown = 0x4b0;
             X_func_ov068_0225f630((u8 *)o + 0x894, o);
         skip:;
         }
-        if (NpcActionCtrl_getAction(r6) == 0 && unk_dc != 0) {
+        if (NpcActionCtrl_getAction(r6) == 0 && lookStopTimer != 0) {
             goto end;
         }
-        unk_dc = 0;
+        lookStopTimer = 0;
         if (func_0201acfc((u8 *)o + 0x3aa) == 2) {
             NpcActionCtrl_requestStand(r6, 1, data_020c6cc8);
             goto end;
@@ -4755,10 +4755,10 @@ BOOL FieldVillagerAiStates::execWander(Unk_ov068_Owner *o) {
                         m = 2;
                     }
                     NpcActionCtrl_requestAction(r6, m, 1, va.x, va.z, 0, 0, 0, 0, data_020c6cc8, 0);
-                    unk_20 = 0x100;
+                    stateTimer = 0x100;
                 } else {
                     NpcActionCtrl_requestAction(r6, 4, 1, va.x, va.z, 0, d, 0, 0, data_020c6cc8, 0);
-                    unk_20 = 0x128;
+                    stateTimer = 0x128;
                 }
                 goto end;
             }
@@ -4772,15 +4772,15 @@ BOOL FieldVillagerAiStates::execWander(Unk_ov068_Owner *o) {
     if (*(u32 *)((u8 *)o + 0x98) != 0) {
         if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 1 || NpcActionCtrl_getAction((u8 *)o + 0x564) == 2 ||
             NpcActionCtrl_getAction((u8 *)o + 0x564) == 4) {
-            if (unk_20 == 0) {
+            if (stateTimer == 0) {
                 NpcActionCtrl_requestStand(r6, 1, data_020c6cc8);
                 goto end;
             }
-            if (unk_de == 0 && *(u32 *)((u8 *)o + 0x894) == 0 && ((u8 *)0 + *(u32 *)((u8 *)o + 0x898)) <= (u8 *)1 &&
+            if (lookStopCooldown == 0 && *(u32 *)((u8 *)o + 0x894) == 0 && ((u8 *)0 + *(u32 *)((u8 *)o + 0x898)) <= (u8 *)1 &&
                 (s32)*(u16 *)((u8 *)o + 0x8a8) > 0xf) {
                 NpcActionCtrl_requestStand(r6, 1, data_020c6cc8);
-                unk_dc = Random_GlobalBelow(200) + 0xa0;
-                unk_de = 0x4b0;
+                lookStopTimer = Random_GlobalBelow(200) + 0xa0;
+                lookStopCooldown = 0x4b0;
                 goto end;
             }
             if (FieldVillagerAi_IsNearPlayerTalkSpot(this, (u8 *)o + 0x5c, 0x8000) != 0 && FieldVillagerAi_HeadingCrossesPlayerTalk(this, o) != 0) {
@@ -4809,17 +4809,17 @@ BOOL FieldVillagerAiStates::enterOffscreen(Unk_ov068_Owner *o) {
     FieldVillager_StopEmotion(o);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
-    unk_20 = 0;
+    stateTimer = 0;
     *(Unk_ov068_022644fc_W *)((u8 *)o + 0x8ac) = *(Unk_ov068_022644fc_W *)__ptmf_null;
     Unk_02013474_disableFootsteps((u8 *)o + 0x558);
-    unk_da = 0;
-    unk_f8 = 0x384;
+    routeStepTimer = 0;
+    talkUrgeTimer = 0x384;
     if (VillagerRoute_isActive((u8 *)this + 0x3c) != 0) {
         VillagerRoute_setStepMode((u8 *)this + 0x3c, 1);
     } else {
         FieldVillagerAi_StartRoute(this, 1, o);
-        unk_d8 = -1;
-        unk_da = 0;
+        routeTimeout = -1;
+        routeStepTimer = 0;
     }
     *((u8 *)o + 0x9ec) = 0;
     VillagerMood_disableEffects((u8 *)o + 0x838);
@@ -4833,16 +4833,16 @@ BOOL FieldVillagerAiStates::execOffscreen(Unk_ov068_Owner *o) {
     } else {
         VillagerTalkTopics_updateCatchPlans(o, data_ov068_0226f13c, data_ov068_0226f0f4, 1);
         FieldVillager_UpdateCatchSim(o);
-        if (unk_f8 == 0) {
+        if (talkUrgeTimer == 0) {
             if ((s32)o->vfunc_64() != 0) {
                 Villager_RaiseTalkUrge((void *)o->vfunc_64(), 0);
             }
-            unk_f8 = 0x384;
+            talkUrgeTimer = 0x384;
         }
-        if (VillagerRoute_isActive((u8 *)this + 0x3c) == 0 || unk_d8 == 0) {
+        if (VillagerRoute_isActive((u8 *)this + 0x3c) == 0 || routeTimeout == 0) {
             FieldVillagerAi_StartRoute(this, 1, o);
-            unk_d8 = -1;
-            unk_da = 0;
+            routeTimeout = -1;
+            routeStepTimer = 0;
         }
         if (VillagerRoute_isActive((u8 *)this + 0x3c) != 0) {
             if (FieldVillagerAi_IsAtHomeDoor(this, o) != 0) {
@@ -4850,13 +4850,13 @@ BOOL FieldVillagerAiStates::execOffscreen(Unk_ov068_Owner *o) {
             } else {
                 if (Unk_02012810_getStage((u8 *)this + 0x3c) != 3 && FieldVillagerAi_ShouldGoHome(this, o) != 0) {
                     VillagerRoute_start((u8 *)this + 0x3c, (u8 *)o + 0x5c, 3, 1, o);
-                    unk_da = 0;
+                    routeStepTimer = 0;
                 }
-                if (unk_da == 0) {
-                    if (Unk_02012810_runStep((u8 *)this + 0x3c, (u8 *)o + 0x5c) != 0 && unk_d8 == -1) {
-                        unk_d8 = 0x1770;
+                if (routeStepTimer == 0) {
+                    if (Unk_02012810_runStep((u8 *)this + 0x3c, (u8 *)o + 0x5c) != 0 && routeTimeout == -1) {
+                        routeTimeout = 0x1770;
                     }
-                    unk_da = 0x28;
+                    routeStepTimer = 0x28;
                 }
             }
         }
@@ -4883,7 +4883,7 @@ void FieldVillagerAiStates::goInHouseStep0(Unk_ov068_Owner *o) {
                 VillagerDataItemView_getHousePos((void *)o->vfunc_64());
                 NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 2, 0x3b, 1, data_020c6cc8, 0);
                 *((u8 *)o + 0x511) = 0;
-                unk_1c = 2;
+                step = 2;
             }
         }
     }
@@ -4897,7 +4897,7 @@ void FieldVillagerAiStates::goInHouseStep1(Unk_ov068_Owner *o) {
                 VillagerDataItemView_getHousePos((void *)o->vfunc_64());
                 NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 2, 0x3b, 1, data_020c6cc8, 0);
                 *((u8 *)o + 0x511) = 0;
-                unk_1c = 2;
+                step = 2;
             }
         }
     }
@@ -4953,8 +4953,8 @@ s32 FieldVillagerAiStates::execGoInHouse(Unk_ov068_Owner *o) {
         sGoInHouseSteps[2] = *(Fn_226410c *)data_ov068_0226fb20;
         sGoInHouseStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 3) {
-        (this->*sGoInHouseSteps[unk_1c])(o);
+    if (step < 3) {
+        (this->*sGoInHouseSteps[step])(o);
     }
     return 0;
 }
@@ -4988,9 +4988,9 @@ BOOL FieldVillagerAiStates::enterInHouse(Unk_ov068_Owner *o) {
     }
     Villager_PlaceReceivedItems(a);
     VillagerActor_setFlag834(o);
-    unk_20 = Random_GlobalBelow(0x28) + 0x258;
+    stateTimer = Random_GlobalBelow(0x28) + 0x258;
     *((u8 *)o + 0x562) = 0;
-    unk_f8 = 0x384;
+    talkUrgeTimer = 0x384;
     VillagerMood_disableEffects((u8 *)o + 0x838);
     *((u8 *)o + 0x9ec) = 0;
     return TRUE;
@@ -4998,7 +4998,7 @@ BOOL FieldVillagerAiStates::enterInHouse(Unk_ov068_Owner *o) {
 
 void FieldVillagerAiInHouse::inHouseStep0(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
-    unk_1c = 1;
+    step = 1;
 }
 
 void FieldVillagerAiInHouse::inHouseStep1(Unk_ov068_Owner *o) {
@@ -5010,17 +5010,17 @@ void FieldVillagerAiInHouse::inHouseStep1(Unk_ov068_Owner *o) {
         if (Villager_IsAsleep(ow, r) == 0) {
             if (Villager_GetState(ow) != 0) {
                 VillagerState_SetPresence(Villager_GetState(ow), r);
-                unk_20 = Random_GlobalBelow(0x28) + 0x258;
+                stateTimer = Random_GlobalBelow(0x28) + 0x258;
             }
             r = TRUE;
         }
-    } else if (unk_20 == 0) {
+    } else if (stateTimer == 0) {
         r = TRUE;
     }
     if (r != 0) {
         if (FieldVillager_IsNearCameraFocus(this, o) != 0) {
             if (NpcActor_isNear(o, PlayerActor_GetCharacter(4), 0x6000) == 0) {
-                VillagerRoute_reset(unk_3c);
+                VillagerRoute_reset(route);
                 FieldVillagerAi_ChangeState(this, o, 4);
             }
         } else {
@@ -5032,7 +5032,7 @@ void FieldVillagerAiInHouse::inHouseStep1(Unk_ov068_Owner *o) {
             Unk_ov068_0226392c_V3 *s = (Unk_ov068_0226392c_V3 *)((u8 *)o + 0x5c);
             Unk_ov068_0226392c_V3 *d = (Unk_ov068_0226392c_V3 *)((u8 *)o + 0x68);
             *d = *s;
-            VillagerRoute_reset(unk_3c);
+            VillagerRoute_reset(route);
             FieldVillagerAi_ChangeState(this, o, 0);
             u16 buf;
             Npc_GetStateHeldItem(&buf, o);
@@ -5040,11 +5040,11 @@ void FieldVillagerAiInHouse::inHouseStep1(Unk_ov068_Owner *o) {
                 X_func_ov068_02265fb4(o);
             }
         }
-    } else if (unk_f8 == 0) {
+    } else if (talkUrgeTimer == 0) {
         if (o->vfunc_64() != 0) {
             Villager_RaiseTalkUrge(o->vfunc_64(), 0);
         }
-        unk_f8 = 0x384;
+        talkUrgeTimer = 0x384;
     }
 }
 
@@ -5056,8 +5056,8 @@ s32 FieldVillagerAiInHouse::execInHouse(Unk_ov068_Owner *o) {
         sInHouseSteps[1] = *(Fn_2263e4c *)data_ov068_0226f948;
         sInHouseStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 2) {
-        (this->*sInHouseSteps[unk_1c])(o);
+    if (step < 2) {
+        (this->*sInHouseSteps[step])(o);
     }
     return 0;
 }
@@ -5087,13 +5087,13 @@ BOOL FieldVillagerAiAbsent::enterAbsent(Unk_ov068_Owner *o) {
 
 void FieldVillagerAiAbsent::absentStep0(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
-    unk_1c = 1;
+    step = 1;
 }
 
 void FieldVillagerAiAbsent::absentStep1(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
     *((u8 *)o + 0x561) = 0;
-    unk_1c = 2;
+    step = 2;
 }
 
 s32 FieldVillagerAiAbsent::execAbsent(Unk_ov068_Owner *o) {
@@ -5104,8 +5104,8 @@ s32 FieldVillagerAiAbsent::execAbsent(Unk_ov068_Owner *o) {
         sAbsentSteps[1] = *(Fn_2263cf0 *)data_ov068_0226f820;
         sAbsentStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 2) {
-        (this->*sAbsentSteps[unk_1c])(o);
+    if (step < 2) {
+        (this->*sAbsentSteps[step])(o);
     }
     return 0;
 }
@@ -5125,7 +5125,7 @@ BOOL FieldVillagerAiLeaveHouse::enterLeaveHouse(Unk_ov068_Owner *o) {
     *d = *s;
     VillagerActor_setFlag834(o);
     *(u32 *)((u8 *)o + 0x4e8) |= 2;
-    unk_f8 = -1;
+    talkUrgeTimer = -1;
     *((u8 *)o + 0x9ec) = 0;
     VillagerMood_disableEffects((u8 *)o + 0x838);
     return TRUE;
@@ -5144,7 +5144,7 @@ void FieldVillagerAiLeaveHouse::leaveHouseStep0(Unk_ov068_Owner *o) {
         *((u8 *)o + 0x561) = 1;
         *((u8 *)o + 0x562) = 1;
         NpcActor_setCollisionRadius(o, 0);
-        unk_1c = 1;
+        step = 1;
     }
 }
 
@@ -5160,7 +5160,7 @@ void FieldVillagerAiLeaveHouse::leaveHouseStep1(Unk_ov068_Owner *o) {
             if (buf != 0xfff1) {
                 FieldVillagerAi_ChangeState(this, o, 0xf);
                 FieldVillagerAi_SetResumeState(this, 0);
-                unk_34 += 0x12c;
+                activityTimer += 0x12c;
             } else {
                 FieldVillagerAi_ChangeState(this, o, 0);
             }
@@ -5196,8 +5196,8 @@ s32 FieldVillagerAiLeaveHouse::execLeaveHouse(Unk_ov068_Owner *o) {
         sLeaveHouseSteps[1] = *(Fn_2263a40 *)data_ov068_0226f848;
         sLeaveHouseStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 2) {
-        (this->*sLeaveHouseSteps[unk_1c])(o);
+    if (step < 2) {
+        (this->*sLeaveHouseSteps[step])(o);
     }
     return 0;
 }
@@ -5230,7 +5230,7 @@ void FieldVillagerAiTalk::talkStep0(Unk_ov068_Owner *o) {
         TalkRequest_SetTargetDone(o);
         VillagerTalk_setPartner(o, 0);
         VillagerTalk_setInvitedByPartner(o, 0);
-        unk_1c = 1;
+        step = 1;
     }
 }
 
@@ -5245,8 +5245,8 @@ s32 FieldVillagerAiTalk::execTalk(Unk_ov068_Owner *o) {
         sTalkSteps[1] = *(Fn_22638c0 *)data_ov068_0226f8e0;
         sTalkStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 2) {
-        (this->*sTalkSteps[unk_1c])(o);
+    if (step < 2) {
+        (this->*sTalkSteps[step])(o);
     }
     return 0;
 }
@@ -5442,7 +5442,7 @@ BOOL FieldVillagerAiChat::tryChatMoodByRelation(Unk_ov068_Owner *o) {
         FieldVillagerAi_AddRandomMood(this, other, sChatBadMoods, 2, 2, 1);
         break;
     }
-    unk_1c = 3;
+    step = 3;
     return TRUE;
 }
 
@@ -5461,7 +5461,7 @@ BOOL FieldVillagerAiChat::tryChatNeutral(Unk_ov068_Owner *o) {
     FieldVillagerAi_AddRandomPairRelation(this, o, sChatNeutralDeltas);
     FieldVillagerAi_AddMood(this, o, 0, 0, 1);
     FieldVillagerAi_AddMood(this, other, 0, 0, 1);
-    unk_1c = 3;
+    step = 3;
     return TRUE;
 }
 
@@ -5532,7 +5532,7 @@ BOOL FieldVillagerAiChat::tryChatSpreadCatchphrase(Unk_ov068_Owner *o) {
     FieldVillagerAi_AddRandomPairRelation(this, o, sChatSpreadCatchphraseDeltas);
     FieldVillagerAi_AddMood(this, o, 1, 2, 1);
     FieldVillagerAi_AddMood(this, other, 1, 2, 1);
-    unk_1c = 3;
+    step = 3;
     return TRUE;
 }
 
@@ -5547,9 +5547,9 @@ BOOL FieldVillagerAiChat::tryChatSpreadShirt(Unk_ov068_Owner *o) {
     s32 x = (s32)o->vfunc_64();
     s32 y = (s32)other->vfunc_64();
     if (FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y) == 0) {
-        unk_28 = (u8 *)other;
+        chatTarget = (u8 *)other;
     } else {
-        unk_28 = (u8 *)o;
+        chatTarget = (u8 *)o;
     }
     BOOL ok = TRUE;
     if (Unk_ov068_02262c20_InRange(VillagerDataProfileView_getShirt(a))) {
@@ -5623,12 +5623,12 @@ BOOL FieldVillagerAiChat::tryChatSpreadShirt(Unk_ov068_Owner *o) {
         FieldVillagerAi_AddMood(this, o, 1, 2, 0);
         FieldVillagerAi_AddMood(this, other, 1, 2, 0);
         h1 = 0x12a8;
-        Unk_02016a44_requestAct14(unk_28 + 0x564, 1, &h1);
-        unk_1c = 2;
+        Unk_02016a44_requestAct14(chatTarget + 0x564, 1, &h1);
+        step = 2;
     } else {
         FieldVillagerAi_AddMood(this, o, 1, 2, 1);
         FieldVillagerAi_AddMood(this, other, 1, 2, 1);
-        unk_1c = 3;
+        step = 3;
     }
     return TRUE;
     }
@@ -5648,9 +5648,9 @@ BOOL FieldVillagerAiChat::tryChatRevertClothes(Unk_ov068_Owner *o) {
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
     if (r == 0) {
-        unk_28 = (u8 *)o;
+        chatTarget = (u8 *)o;
     } else {
-        unk_28 = (u8 *)other;
+        chatTarget = (u8 *)other;
     }
     FieldVillagerAi_AddRandomPairRelation(this, o, sChatRevertClothesDeltas);
     if (Unk_ov068_02262e5c_InRange(VillagerState_GetHeldItem(Villager_GetState(a))) == 0) {
@@ -5679,12 +5679,12 @@ BOOL FieldVillagerAiChat::tryChatRevertClothes(Unk_ov068_Owner *o) {
         FieldVillagerAi_AddRandomMood(this, o, sChatClothesMoods, 4, 2, 0);
         FieldVillagerAi_AddRandomMood(this, other, sChatClothesMoods, 4, 2, 0);
         VillagerDataProfileView_setShirt(a, &v0);
-        Unk_02016a44_requestAct14(unk_28 + 0x564, 1, &v0);
-        unk_1c = 2;
+        Unk_02016a44_requestAct14(chatTarget + 0x564, 1, &v0);
+        step = 2;
     } else {
         FieldVillagerAi_AddRandomMood(this, o, sChatClothesMoods, 4, 2, 1);
         FieldVillagerAi_AddRandomMood(this, other, sChatClothesMoods, 4, 2, 1);
-        unk_1c = 3;
+        step = 3;
     }
     return TRUE;
 }
@@ -5708,7 +5708,7 @@ BOOL FieldVillagerAiChat::tryChatRevertCatchphrase(Unk_ov068_Owner *o) {
     }
     FieldVillagerAi_AddRandomMood(this, o, sChatCatchphraseMoods, 4, 2, 1);
     FieldVillagerAi_AddRandomMood(this, other, sChatCatchphraseMoods, 4, 2, 1);
-    unk_1c = 3;
+    step = 3;
     return TRUE;
 }
 
@@ -5723,9 +5723,9 @@ BOOL FieldVillagerAiChat::tryChatAdoptAblePattern(Unk_ov068_Owner *o) {
     s32 x = (s32)o->vfunc_64();
     s32 y = (s32)other->vfunc_64();
     if (FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y) == 0) {
-        unk_28 = (u8 *)o;
+        chatTarget = (u8 *)o;
     } else {
-        unk_28 = (u8 *)other;
+        chatTarget = (u8 *)other;
     }
     u8 *rec = 0;
     if (Unk_ov068_02262c20_InRange(VillagerDataProfileView_getShirt(a))) {
@@ -5736,7 +5736,7 @@ BOOL FieldVillagerAiChat::tryChatAdoptAblePattern(Unk_ov068_Owner *o) {
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
     FieldVillagerAi_AddPartnerRelation(this, o, sChatAblePatternDeltas);
-    FieldVillagerAi_AddMood(this, unk_28, 1, 2, 0);
+    FieldVillagerAi_AddMood(this, chatTarget, 1, 2, 0);
     u8 *dst = VillagerData_getPattern(a);
     *(Unk_ov068_02262c20_Blk *)dst = *(Unk_ov068_02262c20_Blk *)rec;
     *(u16 *)(dst + 0x200) = *(u16 *)(rec + 0x200);
@@ -5750,8 +5750,8 @@ BOOL FieldVillagerAiChat::tryChatAdoptAblePattern(Unk_ov068_Owner *o) {
     h0 = 0x12a8;
     VillagerDataProfileView_setShirt(a, &h0);
     h1 = 0x12a8;
-    Unk_02016a44_requestAct14(unk_28 + 0x564, 1, &h1);
-    unk_1c = 2;
+    Unk_02016a44_requestAct14(chatTarget + 0x564, 1, &h1);
+    step = 2;
     return TRUE;
     }
     return FALSE;
@@ -5764,7 +5764,7 @@ BOOL FieldVillagerAiChat::enterChat(Unk_ov068_Owner *o) {
     FieldVillager_StopEmotion(o);
     NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 2, 0, (s32)p, gVec3Zero, 4, data_020c6d1c, 1);
-    unk_1c = 0;
+    step = 0;
     VillagerActor_clearFlag834(o);
     FieldVillagerAi_AddMood(this, o, 0, 0, 1);
     VillagerMood_enableEffects((u8 *)o + 0x838);
@@ -5775,12 +5775,12 @@ void FieldVillagerAiChat::chatStep0(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
-        unk_1c = 1;
+        step = 1;
         s32 t = FieldVillagerAi_GetPartnerRelationLevel(this, o);
         if (t < 5) {
-            unk_20 = sChatDurations[t];
+            stateTimer = sChatDurations[t];
         } else {
-            unk_20 = 100;
+            stateTimer = 100;
         }
     } else if (FieldVillagerAi_WasHitByNet(this, o) != 0) {
         Unk_ov068_Owner *p = VillagerTalk_getPartner(o);
@@ -5877,7 +5877,7 @@ void FieldVillagerAiChat::chatStep1(Unk_ov068_Owner *o) {
             if (p != 0) {
                 VillagerActor_setFlag834(p);
             }
-            unk_1c = 3;
+            step = 3;
             return;
         }
         if (isEnemyPairWithPlayerNear(o, t) != 0) {
@@ -5885,7 +5885,7 @@ void FieldVillagerAiChat::chatStep1(Unk_ov068_Owner *o) {
             if (p != 0) {
                 VillagerActor_setFlag834(p);
             }
-            unk_1c = 3;
+            step = 3;
             FieldVillagerAi_AddMood(this, o, 2, 1, 1);
             if (p != 0) {
                 FieldVillagerAi_AddMood(this, p, 2, 1, 1);
@@ -5897,7 +5897,7 @@ void FieldVillagerAiChat::chatStep1(Unk_ov068_Owner *o) {
             if (p != 0) {
                 VillagerActor_setFlag834(p);
             }
-            unk_1c = 3;
+            step = 3;
             return;
         }
         a = 0;
@@ -5912,7 +5912,7 @@ void FieldVillagerAiChat::chatStep1(Unk_ov068_Owner *o) {
                 b = 1;
             }
         }
-        if (unk_20 == 0) {
+        if (stateTimer == 0) {
             if (a != 0) {
                 if (b == 0) {
                     return;
@@ -5922,7 +5922,7 @@ void FieldVillagerAiChat::chatStep1(Unk_ov068_Owner *o) {
                         FieldVillagerAi_AddRandomMood(this, o, sChatNoPlayerMoods, 4, 2, 1);
                         FieldVillagerAi_AddRandomMood(this, p, sChatNoPlayerMoods, 4, 2, 1);
                     }
-                    unk_1c = 3;
+                    step = 3;
                 } else {
                     pickChatOutcome(o);
                 }
@@ -5946,7 +5946,7 @@ void FieldVillagerAiChat::chatStep1(Unk_ov068_Owner *o) {
             }
         } else {
             if (a != 0) {
-                if (unk_20 >= 0x14 && Random_GlobalBelow(0x20) == 0) {
+                if (stateTimer >= 0x14 && Random_GlobalBelow(0x20) == 0) {
                     NpcActionCtrl_requestEmotion((u8 *)o + 0x564, 1, sChatEmotions[Random_GlobalBelow(8)], data_020c6cc8);
                 }
             } else {
@@ -5964,7 +5964,7 @@ void FieldVillagerAiChat::chatStep1(Unk_ov068_Owner *o) {
                 skip2:;
                 }
             }
-            if (b != 0 && unk_20 >= 0x14 && Random_GlobalBelow(0x20) == 0) {
+            if (b != 0 && stateTimer >= 0x14 && Random_GlobalBelow(0x20) == 0) {
                 NpcActionCtrl_requestEmotion((u8 *)p + 0x564, 1, sChatEmotions[Random_GlobalBelow(8)], data_020c6cc8);
             }
         }
@@ -6014,16 +6014,16 @@ void FieldVillagerAiChat::pickChatOutcome(Unk_ov068_Owner *o) {
         }
     }
     if (i == 7) {
-        unk_1c = 3;
+        step = 3;
     }
 }
 
 void FieldVillagerAiChat::chatStep2(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
-    if (NpcActionCtrl_getAction(unk_28 + 0x564) == 0x14 && NpcActionCtrl_isActionDone(unk_28 + 0x564) != 0) {
+    if (NpcActionCtrl_getAction(chatTarget + 0x564) == 0x14 && NpcActionCtrl_isActionDone(chatTarget + 0x564) != 0) {
         VillagerMood_requestApply((u8 *)o + 0x838);
         VillagerMood_requestApply((u8 *)VillagerTalk_getPartner(o) + 0x838);
-        unk_1c = 3;
+        step = 3;
     }
 }
 
@@ -6052,8 +6052,8 @@ s32 FieldVillagerAiChat::execChat(Unk_ov068_Owner *o) {
         sChatSteps[3] = *(Fn_2262414 *)data_ov068_0226fa38;
         sChatStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 4) {
-        (this->*sChatSteps[unk_1c])(o);
+    if (step < 4) {
+        (this->*sChatSteps[step])(o);
     }
     return 0;
 }
@@ -6108,7 +6108,7 @@ void FieldVillagerAiReaction::reactionStep0(Unk_ov068_Owner *o) {
     if (NpcTalkCtrl_isBusy((u8 *)o + 0x618) == 0) {
         TalkRequest_SetTargetDone(o);
         FieldVillagerAi_SetResumeState(this, 0);
-        unk_1c = 1;
+        step = 1;
     }
 }
 
@@ -6123,8 +6123,8 @@ s32 FieldVillagerAiReaction::execReaction(Unk_ov068_Owner *o) {
         sReactionSteps[1] = *(Fn_2262294 *)data_ov068_0226fa60;
         sReactionStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 2) {
-        (this->*sReactionSteps[unk_1c])(o);
+    if (step < 2) {
+        (this->*sReactionSteps[step])(o);
     }
     return 0;
 }
@@ -6132,21 +6132,21 @@ s32 FieldVillagerAiReaction::execReaction(Unk_ov068_Owner *o) {
 BOOL FieldVillagerAiPlayerStates::enterApproach(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     FieldVillager_StopEmotion(o);
-    unk_e4 = (Unk_ov068_02261cd4_Tgt *)PlayerActor_GetCharacter(4);
+    approachTarget = (Unk_ov068_02261cd4_Tgt *)PlayerActor_GetCharacter(4);
     Unk_ov068_02261cd4_Vec *pv = (Unk_ov068_02261cd4_Vec *)((u8 *)o + 0x5c);
-    unk_e8 = *(s32 *)((u8 *)o + 0x5c);
-    unk_ec = pv->y;
-    unk_f0 = pv->z;
+    approachStartX = *(s32 *)((u8 *)o + 0x5c);
+    approachStartY = pv->y;
+    approachStartZ = pv->z;
     NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0xdf, 1, data_020c6cc8, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-    unk_1c = 0;
+    step = 0;
     VillagerActor_clearFlag834(o);
     return TRUE;
 }
 
 BOOL FieldVillagerAiPlayerStates::isNearApproachStart(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
-    if (func_020e96a4((u8 *)o + 0x5c, &unk_e8) <= 0xc000) {
+    if (func_020e96a4((u8 *)o + 0x5c, &approachStartX) <= 0xc000) {
         return TRUE;
     }
     return FALSE;
@@ -6155,8 +6155,8 @@ BOOL FieldVillagerAiPlayerStates::isNearApproachStart(Unk_ov068_Owner *o) {
 BOOL FieldVillagerAiPlayerStates::isTargetInFront(Unk_ov068_Owner *o, s32 r) {
     using namespace ns_02261900;
     BOOL res = FALSE;
-    if (NpcActor_getDistanceTo(o, unk_e4) <= r) {
-        s32 v = NpcActor_getRelativeAngleTo(o, unk_e4);
+    if (NpcActor_getDistanceTo(o, approachTarget) <= r) {
+        s32 v = NpcActor_getRelativeAngleTo(o, approachTarget);
         s32 lim = sSeePlayerArc;
         if (v >= -lim && v <= lim) {
             res = TRUE;
@@ -6167,18 +6167,18 @@ BOOL FieldVillagerAiPlayerStates::isTargetInFront(Unk_ov068_Owner *o, s32 r) {
 
 void FieldVillagerAiPlayerStates::approachStep0(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
-    if (unk_e4 != 0) {
+    if (approachTarget != 0) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             if (isTargetInFront(o, 0x3000) != 0) {
                 NpcActionCtrl_requestAction((u8 *)o + 0x564, 0xb, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-                unk_1c = 2;
-                unk_20 = 0xc8;
+                step = 2;
+                stateTimer = 0xc8;
             } else {
-                Unk_ov068_02261cd4_Tgt *p = unk_e4;
+                Unk_ov068_02261cd4_Tgt *p = approachTarget;
                 Unk_ov068_02261cd4_Vec *pv = (Unk_ov068_02261cd4_Vec *)((u8 *)p + 0x5c);
                 NpcActionCtrl_requestAction((u8 *)o + 0x564, 2, 1, pv->x, pv->z, 0, 0, 0, 0, data_020c6cc8, 0);
-                unk_1c = 1;
-                unk_20 = 0xc8;
+                step = 1;
+                stateTimer = 0xc8;
             }
         } else if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xdf && ((*(u32 *)((u8 *)o + 0x190) << 4) >> 16) == 9) {
             Unk_ov068_02262044_Vec v;
@@ -6193,7 +6193,7 @@ void FieldVillagerAiPlayerStates::approachStep0(Unk_ov068_Owner *o) {
         }
     } else {
         FieldVillagerAi_ChangeState(this, o, 0);
-        unk_f4 = 0x4b0;
+        seekPlayerCooldown = 0x4b0;
         if ((s32)o->vfunc_64() != 0) {
             Villager_AddTalkUrge((s32)o->vfunc_64(), -1);
         }
@@ -6203,33 +6203,33 @@ void FieldVillagerAiPlayerStates::approachStep0(Unk_ov068_Owner *o) {
 void FieldVillagerAiPlayerStates::approachStep1(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     void *q = (u8 *)o + 0x350;
-    if (unk_e4 != 0) {
+    if (approachTarget != 0) {
         if (isTargetInFront(o, 0x3000) != 0) {
             NpcActionCtrl_requestAction((u8 *)o + 0x564, 0xb, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-            unk_1c = 2;
-            unk_20 = 0xc8;
+            step = 2;
+            stateTimer = 0xc8;
         } else if (*(u16 *)((u8 *)o + 0xa02) >= sFieldVillagerPushLimit) {
             FieldVillagerAi_ChangeState(this, o, 0x15);
         } else if (FieldVillagerAi_WasHitByNet(this, o) != 0) {
             FieldVillagerAi_ChangeState(this, o, 0x13);
-        } else if (unk_20 == 0) {
+        } else if (stateTimer == 0) {
             FieldVillagerAi_ChangeState(this, o, 0);
-            unk_f4 = 0x4b0;
+            seekPlayerCooldown = 0x4b0;
             if ((s32)o->vfunc_64() != 0) {
                 Villager_HalveTalkUrge((s32)o->vfunc_64());
             }
         } else if (isNearApproachStart(o) != 0) {
-            NpcMoveCtrl_setWaypoint(q, (u8 *)unk_e4 + 0x5c);
+            NpcMoveCtrl_setWaypoint(q, (u8 *)approachTarget + 0x5c);
         } else {
             FieldVillagerAi_ChangeState(this, o, 0);
-            unk_f4 = 0x4b0;
+            seekPlayerCooldown = 0x4b0;
             if ((s32)o->vfunc_64() != 0) {
                 Villager_HalveTalkUrge((s32)o->vfunc_64());
             }
         }
     } else {
         FieldVillagerAi_ChangeState(this, o, 0);
-        unk_f4 = 0x4b0;
+        seekPlayerCooldown = 0x4b0;
         if ((s32)o->vfunc_64() != 0) {
             Villager_AddTalkUrge((s32)o->vfunc_64(), -1);
         }
@@ -6238,25 +6238,25 @@ void FieldVillagerAiPlayerStates::approachStep1(Unk_ov068_Owner *o) {
 
 void FieldVillagerAiPlayerStates::approachStep2(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
-    if (unk_e4 != 0) {
+    if (approachTarget != 0) {
         if (isTargetInFront(o, 0x5000) == 0) {
-            s32 t = NpcActor_getAngleTo(o, unk_e4);
+            s32 t = NpcActor_getAngleTo(o, approachTarget);
             NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
-            unk_1c = 3;
+            step = 3;
         } else if (*(u16 *)((u8 *)o + 0xa02) >= sFieldVillagerPushLimit) {
             FieldVillagerAi_ChangeState(this, o, 0x15);
         } else if (FieldVillagerAi_WasHitByNet(this, o) != 0) {
             FieldVillagerAi_ChangeState(this, o, 0x13);
-        } else if (unk_20 == 0) {
+        } else if (stateTimer == 0) {
             FieldVillagerAi_ChangeState(this, o, 0);
-            unk_f4 = 0x4b0;
+            seekPlayerCooldown = 0x4b0;
             if ((s32)o->vfunc_64() != 0) {
                 Villager_HalveTalkUrge((s32)o->vfunc_64());
             }
         }
     } else {
         FieldVillagerAi_ChangeState(this, o, 0);
-        unk_f4 = 0x4b0;
+        seekPlayerCooldown = 0x4b0;
         if ((s32)o->vfunc_64() != 0) {
             Villager_AddTalkUrge((s32)o->vfunc_64(), -1);
         }
@@ -6267,8 +6267,8 @@ void FieldVillagerAiPlayerStates::approachStep3(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
-        unk_1c = 4;
-        unk_20 = 10;
+        step = 4;
+        stateTimer = 10;
     } else if (FieldVillagerAi_WasHitByNet(this, o) != 0) {
         FieldVillagerAi_ChangeState(this, o, 0x13);
     }
@@ -6280,17 +6280,17 @@ void FieldVillagerAiPlayerStates::approachStep4(Unk_ov068_Owner *o) {
         FieldVillagerAi_ChangeState(this, o, 0x15);
     } else if (FieldVillagerAi_WasHitByNet(this, o) != 0) {
         FieldVillagerAi_ChangeState(this, o, 0x13);
-    } else if (unk_20 == 0) {
+    } else if (stateTimer == 0) {
         if (isTargetInFront(o, 0x3000) != 0) {
             NpcActionCtrl_requestAction((u8 *)o + 0x564, 0xb, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-            unk_1c = 2;
-            unk_20 = 0xc8;
+            step = 2;
+            stateTimer = 0xc8;
         } else if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 0 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
-            Unk_ov068_02261cd4_Tgt *p = unk_e4;
+            Unk_ov068_02261cd4_Tgt *p = approachTarget;
             Unk_ov068_02261cd4_Vec *pv = (Unk_ov068_02261cd4_Vec *)((u8 *)p + 0x5c);
             NpcActionCtrl_requestAction((u8 *)o + 0x564, 2, 1, pv->x, pv->z, 0, 0, 0, 0, data_020c6cc8, 0);
-            unk_1c = 1;
-            unk_20 = 0xc8;
+            step = 1;
+            stateTimer = 0xc8;
         }
     }
 }
@@ -6306,8 +6306,8 @@ s32 FieldVillagerAiPlayerStates::execApproach(Unk_ov068_Owner *o) {
         sApproachSteps[4] = *(Fn_2261c38 *)data_ov068_0226fb28;
         sApproachStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 5) {
-        (this->*sApproachSteps[unk_1c])(o);
+    if (step < 5) {
+        (this->*sApproachSteps[step])(o);
     }
     return 0;
 }
@@ -6316,12 +6316,12 @@ BOOL FieldVillagerAiPlayerStates::enterFaceTalker(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     FieldVillager_StopEmotion(o);
     if (VillagerTalk_hasPartner(o) != 0 || *(s32 *)((u8 *)o + 0xa08) != 3 || *(u8 *)((u8 *)o + 0xa00) != 0) {
-        unk_1c = 1;
+        step = 1;
     } else {
         s32 t = NpcActor_getAngleToPlayer(o, *(u8 *)((u8 *)o + 0x560));
         NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 2, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
         X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-        unk_1c = 0;
+        step = 0;
     }
     return TRUE;
 }
@@ -6330,7 +6330,7 @@ void FieldVillagerAiPlayerStates::faceTalkerStep0(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 2, data_020c6cc8);
-        unk_1c = 1;
+        step = 1;
     }
 }
 
@@ -6341,8 +6341,8 @@ s32 FieldVillagerAiPlayerStates::execFaceTalker(Unk_ov068_Owner *o) {
         sFaceTalkerSteps[0] = *(Fn_2261ae8 *)data_ov068_0226f808;
         sFaceTalkerStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 1) {
-        (this->*sFaceTalkerSteps[unk_1c])(o);
+    if (step < 1) {
+        (this->*sFaceTalkerSteps[step])(o);
     }
     return 0;
 }
@@ -6375,14 +6375,14 @@ void FieldVillagerAiPlayerStates::fleaRemovedStep0(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
-        unk_1c = 1;
+        step = 1;
     }
 }
 
 void FieldVillagerAiPlayerStates::fleaRemovedStep1(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     if (X_func_ov068_0225f83c((u8 *)o + 0x9f0) == 0) {
-        unk_1c = 2;
+        step = 2;
         FieldVillagerAi_ChangeState(this, o, 0);
     } else if (*(u16 *)((u8 *)o + 0xa02) >= sFieldVillagerPushLimit) {
         X_func_ov068_0225f838((u8 *)o + 0x9f0, 0);
@@ -6401,8 +6401,8 @@ s32 FieldVillagerAiPlayerStates::execFleaRemoved(Unk_ov068_Owner *o) {
         sFleaRemovedSteps[1] = *(Fn_2261900 *)data_ov068_0226f840;
         sFleaRemovedStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 2) {
-        (this->*sFleaRemovedSteps[unk_1c])(o);
+    if (step < 2) {
+        (this->*sFleaRemovedSteps[step])(o);
     }
     return 0;
 }
@@ -6464,7 +6464,7 @@ BOOL FieldVillagerAiBirthdayInvite::enterBirthdayInvite(Unk_ov068_Owner *o) {
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     NpcTalkCtrl_requestTurnAndTalk((u8 *)o + 0x618, 0, v, 1);
     VillagerMood_disableEffects((u8 *)o + 0x838);
-    unk_1c = 0;
+    step = 0;
     return TRUE;
 }
 
@@ -6473,7 +6473,7 @@ void FieldVillagerAiBirthdayInvite::birthdayInviteStep0(Unk_ov068_Owner *o) {
     if (NpcTalkCtrl_isBusy((u8 *)o + 0x618) == 0) {
         Camera_SetModeDefault();
         NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-        unk_1c = 1;
+        step = 1;
     }
 }
 
@@ -6485,18 +6485,18 @@ void FieldVillagerAiBirthdayInvite::birthdayInviteStep1(Unk_ov068_Owner *o) {
         vv.x -= 0x2000;
         vv.z += 0x8000;
         NpcActionCtrl_requestAction((u8 *)o + 0x564, 2, 1, vv.x, vv.z, 0, 0, 0, 0, data_020c6cc8, 0);
-        unk_20 = 0xc8;
-        unk_1c = 2;
+        stateTimer = 0xc8;
+        step = 2;
     }
 }
 
 void FieldVillagerAiBirthdayInvite::birthdayInviteStep2(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
-    if ((NpcActionCtrl_getAction((u8 *)o + 0x564) == 2 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) || unk_20 == 0) {
+    if ((NpcActionCtrl_getAction((u8 *)o + 0x564) == 2 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) || stateTimer == 0) {
         TalkRequest_SetTargetDone(o);
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
         TalkRequestFlags_ClearEventWarpBlock();
-        unk_1c = 3;
+        step = 3;
     }
 }
 
@@ -6509,8 +6509,8 @@ s32 FieldVillagerAiBirthdayInvite::execBirthdayInvite(Unk_ov068_Owner *o) {
         sBirthdayInviteSteps[2] = *(Fn_2261574 *)data_ov068_0226f880;
         sBirthdayInviteStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 3) {
-        (this->*sBirthdayInviteSteps[unk_1c])(o);
+    if (step < 3) {
+        (this->*sBirthdayInviteSteps[step])(o);
     }
     return 0;
 }
@@ -6528,14 +6528,14 @@ BOOL FieldVillagerAiTakeOut::enterTakeOutItem(Unk_ov068_Owner *o) {
         HeldToolModel_playAnim((u8 *)o + 0x9b0, 0x26, w, 1);
         HeldToolModel_setAnimSpeed((u8 *)o + 0x9b0, 0x1000);
         *((u8 *)o + 0x9ec) = 0;
-        unk_1c = 1;
+        step = 1;
     } else {
         u16 w = data_020c6cc8;
         NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0xd6, 3, w, 0);
         HeldToolModel_attach((u8 *)o + 0x9b0, o, pos, 0xd6, w);
         HeldToolModel_setAnimSpeed((u8 *)o + 0x9b0, 0);
         *((u8 *)o + 0x9ec) = 1;
-        unk_1c = 0;
+        step = 0;
     }
     VillagerActor_setFlag834(o);
     func_02003ddc((u8 *)o + 0x514, 0x4f, 0x7f, 0);
@@ -6547,7 +6547,7 @@ void FieldVillagerAiTakeOut::takeOutItemStep0(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xd6) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
-            unk_1c = 2;
+            step = 2;
             if (FieldVillagerAi_Resume(this, o) == 0) {
                 FieldVillagerAi_ChangeState(this, o, 0);
             }
@@ -6572,7 +6572,7 @@ void FieldVillagerAiTakeOut::takeOutItemStep1(Unk_ov068_Owner *o) {
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xcd) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             NpcAnimCtrl_playHoldItemPose((u8 *)o + 0x334, o, (u8 *)o + 0x9b0, 0, 7);
-            unk_1c = 2;
+            step = 2;
             if (FieldVillagerAi_Resume(this, o) == 0) {
                 FieldVillagerAi_ChangeState(this, o, 0);
             }
@@ -6591,8 +6591,8 @@ s32 FieldVillagerAiTakeOut::execTakeOutItem(Unk_ov068_Owner *o) {
         sTakeOutItemSteps[1] = *(Fn_2261290 *)data_ov068_0226f900;
         sTakeOutItemStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 2) {
-        (this->*sTakeOutItemSteps[unk_1c])(o);
+    if (step < 2) {
+        (this->*sTakeOutItemSteps[step])(o);
     }
     return 0;
 }
@@ -6615,14 +6615,14 @@ BOOL FieldVillagerAiPutAway::enterPutAwayItem(Unk_ov068_Owner *o) {
         }
         HeldToolModel_setAnimSpeed((u8 *)o + 0x9b0, 0x1000);
         func_02003ddc((u8 *)o + 0x514, 0x858, 0x7f, 0);
-        unk_1c = 1;
+        step = 1;
     } else {
         u16 w = data_020c6cc8;
         NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0xd6, 1, w, 0);
         HeldToolModel_attach((u8 *)o + 0x9b0, o, pos, 0xd6, w);
         HeldToolModel_setAnimSpeed((u8 *)o + 0x9b0, 0x1000);
         *((u8 *)o + 0x9ec) = 1;
-        unk_1c = 0;
+        step = 0;
     }
     VillagerActor_setFlag834(o);
     func_02003ddc((u8 *)o + 0x514, 0x4f, 0x7f, 0);
@@ -6639,7 +6639,7 @@ void FieldVillagerAiPutAway::putAwayItemStep0(Unk_ov068_Owner *o) {
             u16 t[1];
             t[0] = 0xfff1;
             HeldToolModel_attach((u8 *)o + 0x9b0, o, t, 0, 3);
-            unk_1c = 2;
+            step = 2;
             if (FieldVillagerAi_Resume(this, o) == 0) {
                 FieldVillagerAi_ChangeState(this, o, 0);
             }
@@ -6660,7 +6660,7 @@ void FieldVillagerAiPutAway::putAwayItemStep1(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xcd) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
-            unk_1c = 2;
+            step = 2;
             if (FieldVillagerAi_Resume(this, o) == 0) {
                 FieldVillagerAi_ChangeState(this, o, 0);
             }
@@ -6681,8 +6681,8 @@ s32 FieldVillagerAiPutAway::execPutAwayItem(Unk_ov068_Owner *o) {
         sPutAwayItemSteps[1] = *(Fn_2260f90 *)data_ov068_0226f9a0;
         sPutAwayItemStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 2) {
-        (this->*sPutAwayItemSteps[unk_1c])(o);
+    if (step < 2) {
+        (this->*sPutAwayItemSteps[step])(o);
     }
     return 0;
 }
@@ -6748,7 +6748,7 @@ extern "C" void FieldVillager_StepToward(s32 *p, s32 target, s32 a, s32 spd, s32
 void FieldVillagerAiStates::pitfallStep0(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x127) {
-        Unk_ov068_02260780_Vec *pp = &((Unk_ov068_02260780_Own *)o)->unk_5c;
+        Unk_ov068_02260780_Vec *pp = &((Unk_ov068_02260780_Own *)o)->position;
         Unk_ov068_02260780_Vec loc;
         FieldPos_SnapToUnitCenter(&loc, pp);
         FieldVillager_StepToward(&pp->x, loc.x, 0xe66, 0x1ec, 0x31);
@@ -6758,7 +6758,7 @@ void FieldVillagerAiStates::pitfallStep0(Unk_ov068_Owner *o) {
             if (AnimFrameCtrl_isFinished((u8 *)o + 0x188) != 0) {
                 pitfallStep1(o);
             } else {
-                unk_1c = 1;
+                step = 1;
             }
         }
     }
@@ -6771,9 +6771,9 @@ void FieldVillagerAiStates::pitfallStep1(Unk_ov068_Owner *o) {
             u32 t = data_020c6cc8;
             NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0x128, 1, t, 0);
             Unk_ov068_02260780_Own *ow = (Unk_ov068_02260780_Own *)o;
-            Unk_ov068_02260780_Vec *pv = &ow->unk_5c;
+            Unk_ov068_02260780_Vec *pv = &ow->position;
             Unk_ov068_02260780_Vec v;
-            v.x = ow->unk_5c.x;
+            v.x = ow->position.x;
             v.y = pv->y;
             v.z = pv->z;
             u32 obj[16];
@@ -6792,7 +6792,7 @@ void FieldVillagerAiStates::pitfallStep1(Unk_ov068_Owner *o) {
             func_02003ddc((u8 *)o + 0x514, 0x7e8, 0x7f, 0);
             func_02011cf4((u8 *)o + 0x9b0, t, 1);
             NpcAnimCtrl_playHoldItemPose((u8 *)o + 0x334, o, (u8 *)o + 0x9b0, 0x128, 3);
-            unk_1c = 2;
+            step = 2;
             GroundInfo_Destruct(obj);
         }
     }
@@ -6802,24 +6802,24 @@ void FieldVillagerAiStates::pitfallStep2(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x128) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
-            unk_30 = 0x1400;
+            pitfallAnimSpeed = 0x1400;
             u32 t = data_020c6cc8;
             NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0x129, 0, t, 0);
-            *(s32 *)((u8 *)o + 0x198) = unk_30;
+            *(s32 *)((u8 *)o + 0x198) = pitfallAnimSpeed;
             Unk_02015b8c_setAnimSpeedFixed((u8 *)o + 0x334, 1);
             func_02011c9c((u8 *)o + 0x9b0, t, 0);
-            func_02011b60((u8 *)o + 0x9b0, unk_30);
-            unk_2c = 0x64;
+            func_02011b60((u8 *)o + 0x9b0, pitfallAnimSpeed);
+            pitfallTimer = 0x64;
             Unk_ov068_02260780_Own *ow = (Unk_ov068_02260780_Own *)o;
-            Unk_ov068_02260780_Vec *pv = &ow->unk_5c;
+            Unk_ov068_02260780_Vec *pv = &ow->position;
             Unk_ov068_02260780_Vec v;
-            v.x = ow->unk_5c.x;
+            v.x = ow->position.x;
             v.y = pv->y;
             v.z = pv->z;
             *(s32 *)((u8 *)o + 0x9fc) = Effect_Create(0x4c, &v, 0, 0);
             *(u8 *)((u8 *)o + 0xa00) = 1;
             VillagerActor_clearFlag834(o);
-            unk_1c = 3;
+            step = 3;
         }
     }
 }
@@ -6827,7 +6827,7 @@ void FieldVillagerAiStates::pitfallStep2(Unk_ov068_Owner *o) {
 void FieldVillagerAiStates::pitfallStep3(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x129) {
-        if (unk_2c == 0) {
+        if (pitfallTimer == 0) {
             Unk_02015b8c_setAnimSpeedFixed((u8 *)o + 0x334, 0);
             VillagerActor_setFlag834(o);
             *(u8 *)((u8 *)o + 0xa00) = 0;
@@ -6851,9 +6851,9 @@ void FieldVillagerAiStates::pitfallStep3(Unk_ov068_Owner *o) {
                 NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0x12a, 1, data_020c6cc8, 0);
             }
             Unk_ov068_02260780_Own *ow = (Unk_ov068_02260780_Own *)o;
-            Unk_ov068_02260780_Vec *pv = &ow->unk_5c;
+            Unk_ov068_02260780_Vec *pv = &ow->position;
             Unk_ov068_02260780_Vec v;
-            v.x = ow->unk_5c.x;
+            v.x = ow->position.x;
             v.y = pv->y;
             v.z = pv->z;
             u32 obj[16];
@@ -6870,10 +6870,10 @@ void FieldVillagerAiStates::pitfallStep3(Unk_ov068_Owner *o) {
                 Effect_PlayById(0x90, &v, 0, 0);
             }
             func_02003ddc((u8 *)o + 0x514, 0x7e9, 0x7f, 0);
-            unk_1c = 4;
+            step = 4;
             GroundInfo_Destruct(obj);
         } else {
-            *(s32 *)((u8 *)o + 0x198) = unk_30;
+            *(s32 *)((u8 *)o + 0x198) = pitfallAnimSpeed;
             if (*(s32 *)((u8 *)o + 0x9fc) != -1) {
                 Effect_SetPosition(*(s32 *)((u8 *)o + 0x9fc), (u8 *)o + 0x5c, 0, 0);
             }
@@ -6886,7 +6886,7 @@ void FieldVillagerAiStates::pitfallStep4(Unk_ov068_Owner *o) {
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x12b || Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x12a) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             *(u32 *)((u8 *)o + 0x4e8) &= ~2;
-            unk_1c = 5;
+            step = 5;
             NpcAnimCtrl_playHoldItemPose((u8 *)o + 0x334, o, (u8 *)o + 0x9b0, 0, 3);
             FieldVillagerAi_ChangeState(this, o, 0);
         }
@@ -6904,8 +6904,8 @@ s32 FieldVillagerAiStates::execPitfall(Unk_ov068_Owner *o) {
         sPitfallSteps[4] = *(Fn_2260944 *)data_ov068_0226fa58;
         sPitfallStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 5) {
-        (this->*sPitfallSteps[unk_1c])(o);
+    if (step < 5) {
+        (this->*sPitfallSteps[step])(o);
     }
     return 0;
 }
@@ -6939,9 +6939,9 @@ BOOL FieldVillagerAiStates::enterPitfallClimbOut(Unk_ov068_Owner *o) {
         NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0x12a, 1, data_020c6cc8, 0);
     }
     Unk_ov068_02260780_Own *ow = (Unk_ov068_02260780_Own *)o;
-    Unk_ov068_02260780_Vec *pv = &ow->unk_5c;
+    Unk_ov068_02260780_Vec *pv = &ow->position;
     Unk_ov068_02260780_Vec v;
-    v.x = ow->unk_5c.x;
+    v.x = ow->position.x;
     v.y = pv->y;
     v.z = pv->z;
     u32 obj[16];
@@ -6970,8 +6970,8 @@ s32 FieldVillagerAiStates::execPitfallClimbOut(Unk_ov068_Owner *o) {
         sPitfallClimbOutSteps[0] = *(Fn_226071c *)data_ov068_0226fa78;
         sPitfallClimbOutStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 1) {
-        (this->*sPitfallClimbOutSteps[unk_1c])(o);
+    if (step < 1) {
+        (this->*sPitfallClimbOutSteps[step])(o);
     }
     return 0;
 }
@@ -6986,22 +6986,22 @@ BOOL FieldVillagerAiStates::enterHitByNet(Unk_ov068_Owner *o) {
     u32 r, t;
     t = data_020c6cc8;
     HeldToolModel_playIdleAnim((u8 *)o + 0x9b0, t, 0);
-    if (unk_3a == 0) {
-        unk_38 = 0;
+    if (hitResetTimer == 0) {
+        hitCount = 0;
     }
-    unk_38 = unk_38 + 1;
+    hitCount = hitCount + 1;
     r = 0xeb;
-    if (unk_38 >= 3) {
+    if (hitCount >= 3) {
         r = 0xec;
         TalkRequest_AddPlayerTalk6(o, 0);
         *(s32 *)((u8 *)o + 0xa08) = 1;
         Character_clearTalkStartMode(o);
-        unk_38 = 3;
+        hitCount = 3;
     } else {
         Unk_ov068_02260780_Own *ow = (Unk_ov068_02260780_Own *)o;
-        Unk_ov068_02260780_Vec *pv = &ow->unk_5c;
+        Unk_ov068_02260780_Vec *pv = &ow->position;
         Unk_ov068_022605f4_Vec v;
-        v.x = ow->unk_5c.x;
+        v.x = ow->position.x;
         v.y = pv->y;
         v.z = pv->z;
         void *p = PlayerActor_GetCharacter(4);
@@ -7023,18 +7023,18 @@ BOOL FieldVillagerAiStates::enterHitByNet(Unk_ov068_Owner *o) {
 void FieldVillagerAiStates::hitByNetStep0(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xeb || Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xec) {
-        if (unk_38 >= 3) {
+        if (hitCount >= 3) {
             TalkRequest_AddPlayerTalk6(o, 0);
         }
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
-            if (unk_38 >= 3) {
+            if (hitCount >= 3) {
                 s32 t = NpcActor_getAngleToPlayer(o, 4);
                 NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
-                unk_1c = 1;
+                step = 1;
             } else {
                 Character_setTalkStartMode0(o);
                 FieldVillagerAi_ChangeState(this, o, 0);
-                unk_3a = 0x4b0;
+                hitResetTimer = 0x4b0;
             }
         }
     }
@@ -7045,15 +7045,15 @@ void FieldVillagerAiStates::hitByNetStep1(Unk_ov068_Owner *o) {
     TalkRequest_AddPlayerTalk6(o, 0);
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
-        unk_20 = 0x28;
-        unk_1c = 2;
+        stateTimer = 0x28;
+        step = 2;
     }
 }
 
 void FieldVillagerAiStates::hitByNetStep2(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
-    if (unk_20 == 0) {
-        unk_3a = 0x4b0;
+    if (stateTimer == 0) {
+        hitResetTimer = 0x4b0;
         FieldVillagerAi_ChangeState(this, o, 0);
         Character_setTalkStartMode0(o);
     } else {
@@ -7070,8 +7070,8 @@ s32 FieldVillagerAiStates::execHitByNet(Unk_ov068_Owner *o) {
         sHitByNetSteps[2] = *(Fn_2260450 *)data_ov068_0226f850;
         sHitByNetStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 3) {
-        (this->*sHitByNetSteps[unk_1c])(o);
+    if (step < 3) {
+        (this->*sHitByNetSteps[step])(o);
     }
     return 0;
 }
@@ -7089,7 +7089,7 @@ BOOL FieldVillagerAiStates::enterPushed(Unk_ov068_Owner *o) {
     TalkRequest_AddPlayerTalk6(o, 0);
     *(s32 *)((u8 *)o + 0xa08) = 2;
     Character_clearTalkStartMode(o);
-    unk_1c = 0;
+    step = 0;
     VillagerMood_disableEffects((u8 *)o + 0x838);
     if ((s32)o->vfunc_64() != 0) {
         Villager_HalveTalkUrge((s32)o->vfunc_64());
@@ -7102,14 +7102,14 @@ void FieldVillagerAiStates::pushedStep0(Unk_ov068_Owner *o) {
     TalkRequest_AddPlayerTalk6(o, 0);
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
-        unk_20 = 0x28;
-        unk_1c = 1;
+        stateTimer = 0x28;
+        step = 1;
     }
 }
 
 void FieldVillagerAiStates::pushedStep1(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
-    if (unk_20 == 0) {
+    if (stateTimer == 0) {
         FieldVillagerAi_ChangeState(this, o, 0);
         Character_setTalkStartMode0(o);
     } else {
@@ -7125,8 +7125,8 @@ s32 FieldVillagerAiStates::execPushed(Unk_ov068_Owner *o) {
         sPushedSteps[1] = *(Fn_2260290 *)data_ov068_0226f908;
         sPushedStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 2) {
-        (this->*sPushedSteps[unk_1c])(o);
+    if (step < 2) {
+        (this->*sPushedSteps[step])(o);
     }
     return 0;
 }
@@ -7142,9 +7142,9 @@ BOOL FieldVillagerAiStates::enterHitTalk(Unk_ov068_Owner *o) {
         }
         X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
         NpcTalkCtrl_requestTurnAndTalk((u8 *)o + 0x618, 0, v, 0);
-        unk_1c = 1;
+        step = 1;
     } else {
-        unk_1c = 0;
+        step = 0;
     }
     return TRUE;
 }
@@ -7159,7 +7159,7 @@ void FieldVillagerAiStates::hitTalkStep0(Unk_ov068_Owner *o) {
         }
         X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
         NpcTalkCtrl_requestTurnAndTalk((u8 *)o + 0x618, 0, v, 0);
-        unk_1c = 1;
+        step = 1;
     }
 }
 
@@ -7172,11 +7172,11 @@ void FieldVillagerAiStates::hitTalkStep1(Unk_ov068_Owner *o) {
         VillagerTalk_setPartner(o, 0);
         VillagerTalk_setInvitedByPartner(o, 0);
         FieldVillagerAi_SetResumeState(this, 0);
-        unk_38 = 0;
-        unk_3a = 0;
+        hitCount = 0;
+        hitResetTimer = 0;
         *(s32 *)((u8 *)o + 0xa08) = 3;
-        unk_f4 = 0x4b0;
-        unk_1c = 2;
+        seekPlayerCooldown = 0x4b0;
+        step = 2;
     }
 }
 
@@ -7192,8 +7192,8 @@ s32 FieldVillagerAiStates::execHitTalk(Unk_ov068_Owner *o) {
         sHitTalkSteps[2] = *(Fn_2260068 *)data_ov068_0226fa48;
         sHitTalkStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 3) {
-        (this->*sHitTalkSteps[unk_1c])(o);
+    if (step < 3) {
+        (this->*sHitTalkSteps[step])(o);
     }
     return 0;
 }
@@ -7221,8 +7221,8 @@ void FieldVillagerAiStates::pushTalkStep0(Unk_ov068_Owner *o) {
         FieldVillagerAi_SetResumeState(this, 0);
         VillagerTalk_setInvitedByPartner(o, 0);
         *(s32 *)((u8 *)o + 0xa08) = 3;
-        unk_f4 = 0x4b0;
-        unk_1c = 1;
+        seekPlayerCooldown = 0x4b0;
+        step = 1;
     }
 }
 
@@ -7237,8 +7237,8 @@ s32 FieldVillagerAiStates::execPushTalk(Unk_ov068_Owner *o) {
         sPushTalkSteps[1] = *(Fn_225ff18 *)data_ov068_0226f800;
         sPushTalkStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 2) {
-        (this->*sPushTalkSteps[unk_1c])(o);
+    if (step < 2) {
+        (this->*sPushTalkSteps[step])(o);
     }
     return 0;
 }
@@ -7253,8 +7253,8 @@ BOOL FieldVillagerAiStates::enterAdmireCatch(Unk_ov068_Owner *o) {
     s32 t = NpcActor_getAngleToPlayer(o, 4);
     NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
     VillagerMood_disableEffects((u8 *)o + 0x838);
-    unk_1c = 0;
-    unk_e0 = 1;
+    step = 0;
+    isAdmiringCatch = 1;
     return TRUE;
 }
 
@@ -7262,14 +7262,14 @@ void FieldVillagerAiStates::admireCatchStep0(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         NpcActionCtrl_requestEmotion((u8 *)o + 0x564, 1, 0x1a, data_020c6cc8);
-        unk_20 = 0x14;
-        unk_1c = 1;
+        stateTimer = 0x14;
+        step = 1;
     }
 }
 
 void FieldVillagerAiStates::admireCatchStep1(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
-    if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 8 && NpcActionCtrl_getEmotionId((u8 *)o + 0x564) == 0x1a && unk_20 == 0 &&
+    if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 8 && NpcActionCtrl_getEmotionId((u8 *)o + 0x564) == 0x1a && stateTimer == 0 &&
         FieldVillagerAi_IsPlayerShowingCatch(this) == 0 && ((*(u32 *)((u8 *)o + 0x190) << 4) >> 16) == 0) {
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
         FieldVillagerAi_ChangeState(this, o, 0);
@@ -7284,8 +7284,8 @@ s32 FieldVillagerAiStates::execAdmireCatch(Unk_ov068_Owner *o) {
         sAdmireCatchSteps[1] = *(Fn_225fd54 *)data_ov068_0226f9f0;
         sAdmireCatchStepsGuard = gv_ | 1;
     }
-    if (unk_1c < 2) {
-        (this->*sAdmireCatchSteps[unk_1c])(o);
+    if (step < 2) {
+        (this->*sAdmireCatchSteps[step])(o);
     }
     return 0;
 }
@@ -7334,121 +7334,121 @@ void FieldVillager::vfunc_4c(u32 idx, u32 v) {
     case 3:
         partnerPlayer = v;
         if (VillagerTalk_hasPartner(this)) {
-            unk_9f8 = 1;
-            unk_9f4 = (Unk_ov068_0225f904_Menu *)VillagerTalk_getPartner(this);
-            unk_9f4->vfunc_8c();
-        } else if (FieldVillagerAi_IsState(&unk_8b4, 7)) {
-            unk_9f8 = 2;
-        } else if (unk_a00) {
-            unk_9f8 = 0xe;
+            talkType = 1;
+            talkPartner = (Unk_ov068_0225f904_Menu *)VillagerTalk_getPartner(this);
+            talkPartner->vfunc_8c();
+        } else if (FieldVillagerAi_IsState(&ai, 7)) {
+            talkType = 2;
+        } else if (isInPitfall) {
+            talkType = 0xe;
         } else {
             switch (VillagerTalk_getEventKind(this)) {
             case 1:
-                unk_9f8 = 3;
+                talkType = 3;
                 break;
             case 2:
-                unk_9f8 = 4;
+                talkType = 4;
                 break;
             case 0:
-                unk_9f8 = 5;
+                talkType = 5;
                 break;
             case 3:
-                unk_9f8 = 6;
+                talkType = 6;
                 break;
             case 4:
-                unk_9f8 = 7;
+                talkType = 7;
                 break;
             case 5:
-                unk_9f8 = 8;
+                talkType = 8;
                 break;
             case 6:
-                unk_9f8 = 9;
+                talkType = 9;
                 break;
             case 7:
-                unk_9f8 = 10;
+                talkType = 10;
                 break;
             case 8:
             case 9:
-                unk_9f8 = 11;
+                talkType = 11;
                 break;
             default:
-                unk_9f8 = 0;
+                talkType = 0;
                 break;
             }
         }
-        if (unk_9f8 == 0) {
+        if (talkType == 0) {
             if (FieldVillager_GetTalkRepeat(this)) {
                 TalkRepeat_Count();
             }
         }
-        FieldVillagerAi_ChangeState(&unk_8b4, this, 8);
+        FieldVillagerAi_ChangeState(&ai, this, 8);
         break;
     case 1: {
         s32 r6 = 5;
-        switch (unk_a08) {
+        switch (talkReason) {
         case 0:
             r6 = 0xe;
-            unk_9f8 = 0xd;
+            talkType = 0xd;
             break;
         case 1:
             r6 = 0x14;
-            unk_9f8 = 0xf;
+            talkType = 0xf;
             break;
         case 2:
             r6 = 0x16;
-            unk_9f8 = 0x10;
+            talkType = 0x10;
             break;
         }
-        VillagerTalk_begin((&villagerTalk), this, unk_9f8);
+        VillagerTalk_begin((&villagerTalk), this, talkType);
         func_02015ab0((&villagerTalk), NpcActor_getPlayerActor(this, 4));
-        FieldVillagerAi_ChangeState(&unk_8b4, this, r6);
+        FieldVillagerAi_ChangeState(&ai, this, r6);
         break;
     }
     case 0:
         partnerPlayer = v;
-        VillagerTalk_begin((&villagerTalk), this, unk_9f8);
+        VillagerTalk_begin((&villagerTalk), this, talkType);
         func_02015ab0((&villagerTalk), NpcActor_getPlayerActor(this, 4));
-        if (unk_9f4) {
-            ActorTalkRequest_setPartnerActor((&villagerTalk), unk_9f4);
+        if (talkPartner) {
+            ActorTalkRequest_setPartnerActor((&villagerTalk), talkPartner);
         }
-        FieldVillagerAi_ChangeState(&unk_8b4, this, 5);
-        if (unk_9f8 == 2) {
+        FieldVillagerAi_ChangeState(&ai, this, 5);
+        if (talkType == 2) {
             if (vfunc_64()) {
                 Villager_ClearTalkUrge(vfunc_64());
             }
         }
-        unk_9f4 = NULL;
-        unk_9f8 = 0;
+        talkPartner = NULL;
+        talkType = 0;
         break;
     case 5:
         partnerPlayer = v;
-        FieldVillagerAi_SaveResumeState(&unk_8b4);
-        FieldVillagerAi_ChangeState(&unk_8b4, this, 6);
+        FieldVillagerAi_SaveResumeState(&ai);
+        FieldVillagerAi_ChangeState(&ai, this, 6);
         break;
     case 8: {
         s32 t;
         void *q;
         s32 sv;
-        if (unk_a08 == 0) {
+        if (talkReason == 0) {
             t = Villager_GetWhereabouts(vfunc_64());
             q = VillagerDataItemView_getHousePos(vfunc_64());
             FieldPos_FromUnitCenter(&position, ((u8 *)q)[0], ((u8 *)q)[1]);
             { Unk_ov068_0225f23c_Vec *sp = &position; Unk_ov068_0225f23c_Vec *d = &prevPosition; d->x = sp->x; d->y = sp->y; d->z = sp->z; }
             sv = VillagerStates_GetBirthdayHost();
             if (sv == Villager_GetIndex(vfunc_64()) || (u32)(t - 3) <= 4) {
-                FieldVillagerAi_ChangeState(&unk_8b4, this, 0xc);
+                FieldVillagerAi_ChangeState(&ai, this, 0xc);
             } else {
-                FieldVillagerAi_ChangeState(&unk_8b4, this, 3);
+                FieldVillagerAi_ChangeState(&ai, this, 3);
             }
-            unk_a08 = 3;
-        } else if (unk_a08 == 2) {
-            FieldVillagerAi_ChangeState(&unk_8b4, this, 0);
-            unk_a08 = 3;
-        } else if (unk_a00) {
-            FieldVillagerAi_ChangeState(&unk_8b4, this, 0x12);
+            talkReason = 3;
+        } else if (talkReason == 2) {
+            FieldVillagerAi_ChangeState(&ai, this, 0);
+            talkReason = 3;
+        } else if (isInPitfall) {
+            FieldVillagerAi_ChangeState(&ai, this, 0x12);
         } else {
-            if (FieldVillagerAi_Resume(&unk_8b4, this) == 0) {
-                FieldVillagerAi_ChangeState(&unk_8b4, this, 0);
+            if (FieldVillagerAi_Resume(&ai, this) == 0) {
+                FieldVillagerAi_ChangeState(&ai, this, 0);
             }
             if (FieldVillager_GetTalkRepeat(this)) {
                 TalkRepeat_StartWindow();
@@ -7461,11 +7461,11 @@ void FieldVillager::vfunc_4c(u32 idx, u32 v) {
         break;
     }
     case 4:
-        if (unk_a00) {
-            FieldVillagerAi_ChangeState(&unk_8b4, this, 0x12);
+        if (isInPitfall) {
+            FieldVillagerAi_ChangeState(&ai, this, 0x12);
         } else {
-            if (FieldVillagerAi_Resume(&unk_8b4, this) == 0) {
-                FieldVillagerAi_ChangeState(&unk_8b4, this, 0);
+            if (FieldVillagerAi_Resume(&ai, this) == 0) {
+                FieldVillagerAi_ChangeState(&ai, this, 0);
             }
         }
         break;
@@ -7483,50 +7483,50 @@ FieldVillagerFxTimer::~FieldVillagerFxTimer() {
 
 void FieldVillagerFxTimer::clear() {
     using namespace ns_0225f1a0;
-    unk_00 = -1;
-    unk_02 = 0;
+    fleaEffectTimer = -1;
+    holdCount = 0;
 }
 
 void FieldVillagerFxTimer::update(FieldVillager *o) {
     using namespace ns_0225f1a0;
     Unk_ov068_0225f858_Vec buf;
-    if (unk_00 > 0) {
-        unk_00 = unk_00 - 1;
+    if (fleaEffectTimer > 0) {
+        fleaEffectTimer = fleaEffectTimer - 1;
     }
-    if (unk_02 != 0) {
-        unk_02 = unk_02 - 1;
+    if (holdCount != 0) {
+        holdCount = holdCount - 1;
     }
-    if (unk_00 == 0) {
+    if (fleaEffectTimer == 0) {
         buf.a = o->unk_478.x;
         buf.b = o->unk_478.y;
         buf.c = o->unk_478.z;
         Effect_PlayById(0x81, &buf, 0, 0);
         if (Villager_HasFlea(o->villagerData)) {
-            unk_00 = Random_GlobalBelow(0xf) + 0xf;
+            fleaEffectTimer = Random_GlobalBelow(0xf) + 0xf;
         } else {
-            unk_00 = -1;
+            fleaEffectTimer = -1;
         }
-    } else if (unk_00 == -1) {
+    } else if (fleaEffectTimer == -1) {
         if (Villager_HasFlea(o->villagerData)) {
-            unk_00 = Random_GlobalBelow(10) + 0xf;
+            fleaEffectTimer = Random_GlobalBelow(10) + 0xf;
         }
     }
 }
 
 void FieldVillagerFxTimer::stop(FieldVillager *o) {
     using namespace ns_0225f1a0;
-    unk_00 = -1;
+    fleaEffectTimer = -1;
     Villager_RemoveFlea(o->villagerData);
 }
 
 u32 FieldVillagerFxTimer::getHoldCount() {
     using namespace ns_0225f1a0;
-    return unk_02;
+    return holdCount;
 }
 
 void FieldVillagerFxTimer::setHoldCount(u32 v) {
     using namespace ns_0225f1a0;
-    unk_02 = v;
+    holdCount = v;
 }
 
 BOOL FieldVillager::vfunc_b4() {
@@ -7537,7 +7537,7 @@ BOOL FieldVillager::vfunc_b4() {
     }
     if ((p == NULL && NpcActor_isPlayerNear(this, 0x6000, 4) == 0) || (p != NULL && VillagerMemory_IsUsed(p) != 0)) {
         if (NpcTalkCtrl_isBusy(unk_618) == 0) {
-            if (FieldVillagerAi_IsFreeIdle(&unk_8b4) != 0) {
+            if (FieldVillagerAi_IsFreeIdle(&ai) != 0) {
                 if (VillagerTalk_hasPartner(this) == 0) {
                     if (VillagerTalk_getEventKind(this) == 0xb) {
                         return TRUE;
@@ -7554,8 +7554,8 @@ BOOL FieldVillager::vfunc_b8(u32 idx) {
     if (vfunc_b4()) {
         VillagerTalk_setPartner(this, idx);
         VillagerTalk_setInvitedByPartner(this, 1);
-        FieldVillagerAi_SaveResumeState(&unk_8b4);
-        FieldVillagerAi_ChangeState(&unk_8b4, this, 9);
+        FieldVillagerAi_SaveResumeState(&ai);
+        FieldVillagerAi_ChangeState(&ai, this, 9);
         return TRUE;
     }
     return FALSE;
@@ -7565,10 +7565,10 @@ BOOL FieldVillager::vfunc_bc() {
     using namespace ns_0225f1a0;
     if (VillagerTalk_hasPartner(this)) {
         FieldVillager_StopEmotion(this);
-        if (FieldVillagerAi_Resume(&unk_8b4, this) == 0) {
-            FieldVillagerAi_ChangeState(&unk_8b4, this, 0);
+        if (FieldVillagerAi_Resume(&ai, this) == 0) {
+            FieldVillagerAi_ChangeState(&ai, this, 0);
         }
-        FieldVillagerAi_StartCooldown(&unk_8b4);
+        FieldVillagerAi_StartCooldown(&ai);
         VillagerTalk_setPartner(this, 0);
         VillagerTalk_setInvitedByPartner(this, 0);
         return TRUE;
@@ -7578,18 +7578,18 @@ BOOL FieldVillager::vfunc_bc() {
 
 void FieldVillager::onJoinTalk() {
     using namespace ns_0225f1a0;
-    FieldVillagerAi_ChangeState(&unk_8b4, this, 10);
+    FieldVillagerAi_ChangeState(&ai, this, 10);
 }
 
 void FieldVillager::onLeaveTalk() {
     using namespace ns_0225f1a0;
     VillagerMood_requestApply(unk_838);
-    if (FieldVillagerAi_Resume(&unk_8b4, this) == 0) {
-        FieldVillagerAi_ChangeState(&unk_8b4, this, 0);
+    if (FieldVillagerAi_Resume(&ai, this) == 0) {
+        FieldVillagerAi_ChangeState(&ai, this, 0);
     }
     VillagerTalk_setPartner(this, 0);
     VillagerTalk_setInvitedByPartner(this, 0);
-    FieldVillagerAi_StartCooldown(&unk_8b4);
+    FieldVillagerAi_StartCooldown(&ai);
 }
 
 void FieldVillagerLook::construct() {
@@ -7603,43 +7603,43 @@ FieldVillagerLook::~FieldVillagerLook() {
 void FieldVillagerLook::init(FieldVillager *o) {
     using namespace ns_0225f1a0;
     setLookModeLocked(o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-    unk_04 = 2;
-    unk_0c = -1;
-    unk_10 = -1;
+    targetKind = 2;
+    targetSlot = -1;
+    targetId = -1;
 }
 
 void FieldVillagerLook::resetLook(FieldVillager *o) {
     using namespace ns_0225f1a0;
-    unk_00 = 0;
+    isLocked = 0;
     setLookMode(o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-    unk_04 = 2;
-    unk_0c = -1;
-    unk_10 = -1;
-    unk_14 = 0;
+    targetKind = 2;
+    targetSlot = -1;
+    targetId = -1;
+    lookTime = 0;
 }
 
 void FieldVillagerLook::setLookModeLocked(FieldVillager *o, u32 idx, s32 a, s32 b, void *v, s32 c, s32 d, u8 e) {
     using namespace ns_0225f1a0;
-    unk_00 = 1;
+    isLocked = 1;
     setLookMode(o, idx, a, b, v, c, d, e);
-    unk_04 = 3;
-    unk_0c = -1;
-    unk_10 = -1;
-    unk_14 = 0;
+    targetKind = 3;
+    targetSlot = -1;
+    targetId = -1;
+    lookTime = 0;
 }
 
 void FieldVillagerLook::tickLookTime() {
     using namespace ns_0225f1a0;
-    unk_14++;
-    if (unk_14 > 0x960) {
-        unk_14 = 0x960;
+    lookTime++;
+    if (lookTime > 0x960) {
+        lookTime = 0x960;
     }
 }
 
 void FieldVillagerLook::setLookMode(FieldVillager *o, u32 idx, s32 a, s32 b, void *v, s32 c, s32 d, u8 e) {
     using namespace ns_0225f1a0;
     NpcLookAt_setTarget(o->unk_3b0, idx, a, b, v, c, d, e);
-    unk_08 = idx;
+    lookMode = idx;
 }
 
 s32 FieldVillagerLook::getInsectIfNear(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim) {
@@ -7681,19 +7681,19 @@ BOOL FieldVillagerLook::isSameInsect(u32 a, s32 b) {
 
 void FieldVillagerLook::startLookAtInsect(FieldVillager *o, s32 a, s32 b, Unk_ov068_0225f23c_Vec *v) {
     using namespace ns_0225f1a0;
-    unk_0c = a;
-    unk_10 = b;
+    targetSlot = a;
+    targetId = b;
     setLookMode(o, 3, 0, 0, v, 4, data_020c6d1c, 1);
-    unk_04 = 0;
-    unk_14 = 0;
+    targetKind = 0;
+    lookTime = 0;
 }
 
 void FieldVillagerLook::trackInsect(FieldVillager *o) {
     using namespace ns_0225f1a0;
     Unk_ov068_0225f23c_Vec buf;
-    if (isSameInsect(unk_0c, unk_10)) {
-        s32 r = getInsectIfNear(&buf, unk_0c, &o->position, o->unk_40c);
-        if (r != -1 && r == unk_10) {
+    if (isSameInsect(targetSlot, targetId)) {
+        s32 r = getInsectIfNear(&buf, targetSlot, &o->position, o->unk_40c);
+        if (r != -1 && r == targetId) {
             NpcLookAt_setTargetPos(o->unk_3b0, &buf);
         } else {
             resetLook(o);
@@ -7738,18 +7738,18 @@ BOOL FieldVillagerLook::isSameFish(s32 a, s32 b) {
 
 void FieldVillagerLook::startLookAtFish(FieldVillager *o, s32 a, s32 b, Unk_ov068_0225f23c_Vec *v) {
     using namespace ns_0225f1a0;
-    unk_0c = a;
-    unk_10 = b;
+    targetSlot = a;
+    targetId = b;
     setLookMode(o, 3, 0, 0, v, 4, data_020c6d1c, 1);
-    unk_04 = 1;
-    unk_14 = 0;
+    targetKind = 1;
+    lookTime = 0;
 }
 
 void FieldVillagerLook::trackFish(FieldVillager *o) {
     using namespace ns_0225f1a0;
     Unk_ov068_0225f23c_Vec buf;
-    if (isSameFish(unk_0c, unk_10)) {
-        if (getFishPosIfNear(&buf, unk_0c, &o->position, o->unk_40c)) {
+    if (isSameFish(targetSlot, targetId)) {
+        if (getFishPosIfNear(&buf, targetSlot, &o->position, o->unk_40c)) {
             NpcLookAt_setTargetPos(o->unk_3b0, &buf);
         } else {
             resetLook(o);
@@ -7763,8 +7763,8 @@ void FieldVillagerLook::update(FieldVillager *o) {
     using namespace ns_0225f1a0;
     s32 idx;
     Unk_ov068_0225f23c_Vec buf;
-    if (unk_00 == 0) {
-        u8 a = unk_08;
+    if (isLocked == 0) {
+        u8 a = lookMode;
         u8 b = o->unk_3b0[0];
         if (a == b) {
             switch (a) {
@@ -7790,7 +7790,7 @@ void FieldVillagerLook::update(FieldVillager *o) {
                 if (NpcLookAt_canSeeTarget(o->unk_3b0, o)) {
                     tickLookTime();
                 }
-                switch (unk_04) {
+                switch (targetKind) {
                 case 0:
                     trackInsect(o);
                     break;
@@ -7804,8 +7804,8 @@ void FieldVillagerLook::update(FieldVillager *o) {
                 break;
             }
         } else {
-            unk_00 = 1;
-            unk_04 = 3;
+            isLocked = 1;
+            targetKind = 3;
         }
     }
 }

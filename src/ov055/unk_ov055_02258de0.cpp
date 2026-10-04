@@ -176,7 +176,7 @@ struct Unk_020f4080 {
 };
 
 struct ItemId {
-    u16 unk_00;
+    u16 id;
     ItemId();
     ~ItemId();
 };
@@ -360,8 +360,8 @@ public:
     void attachOwner(SpNpcRover *owner);
     void setScript(s32 v);
 
-    /* 0xac */ SpNpcRover *unk_ac;
-    /* 0xb0 */ s32 unk_b0;
+    /* 0xac */ SpNpcRover *ownerNpc;
+    /* 0xb0 */ s32 script;
 };
 
 struct Unk_ov055_02259234_Ent {
@@ -397,10 +397,10 @@ struct Unk_ov055_022594e0_Ent {
 class SpNpcRover : public SpNpcActor {
 public:
     SpNpcRover() {
-        u8 *p = (u8 *)&unk_710;
+        u8 *p = (u8 *)&sendTransfer;
         _ZN18TownExchangeRecordC1Ev(p);
         _ZN19ReceivedLetterBlockC1Ev(p + 0x84c);
-        p = (u8 *)&unk_1058;
+        p = (u8 *)&recvTransfer;
         _ZN18TownExchangeRecordC1Ev(p);
         _ZN19ReceivedLetterBlockC1Ev(p + 0x84c);
     }
@@ -429,14 +429,14 @@ public:
     void changeAct(s32 state);
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ SpNpcRoverTalk unk_658;
-    /* 0x70c */ u8 unk_70c;
-    /* 0x70d */ u8 unk_70d;
+    /* 0x658 */ SpNpcRoverTalk talk;
+    /* 0x70c */ u8 saveFailed;
+    /* 0x70d */ u8 lidClosed;
     /* 0x70e */ u8 pad_70e[2];
-    /* 0x710 */ TownExchangeRecord unk_710;
-    /* 0xf5c */ ReceivedLetterBlock unk_f5c;
-    /* 0x1058 */ TownExchangeRecord unk_1058;
-    /* 0x18a4 */ ReceivedLetterBlock unk_18a4;
+    /* 0x710 */ TownExchangeRecord sendTransfer;
+    /* 0xf5c */ ReceivedLetterBlock sendLetters;
+    /* 0x1058 */ TownExchangeRecord recvTransfer;
+    /* 0x18a4 */ ReceivedLetterBlock recvLetters;
 };
 
 struct Unk_ov055_SceneEntry {
@@ -504,8 +504,8 @@ BOOL SpNpcRover::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -590,7 +590,7 @@ SpNpcRoverTalk::~SpNpcRoverTalk() {}
 
 void SpNpcRoverTalk::attachOwner(SpNpcRover *owner) {
     vfunc_08();
-    unk_ac = owner;
+    ownerNpc = owner;
 }
 
 void SpNpcRoverTalk::start(TalkStartMsg *out) {
@@ -604,16 +604,16 @@ void SpNpcRoverTalk::onMessageEnd() {
     switch (msgIndex) {
     case 0x39:
         if (func_020e9a18(NetOverlay_AssertOv067()) == 0) {
-            if (unk_ac->unk_70c != 0) {
+            if (ownerNpc->saveFailed != 0) {
                 m[0] = 0x36;
                 _ZN15TalkWindowState14setNextMessageEPhPv(r6, &m[0], sSpNpcRoverMsgKey);
                 break;
             }
             Comm_StartOv067Mode();
-            MI_CpuFill8(&unk_ac->unk_1058, 0, 0x948);
-            SpNpcRover *r4 = unk_ac;
+            MI_CpuFill8(&ownerNpc->recvTransfer, 0, 0x948);
+            SpNpcRover *r4 = ownerNpc;
             NetOverlay_AssertOv067();
-            func_020e9a54(&r4->unk_710, &r4->unk_1058, 0x948);
+            func_020e9a54(&r4->sendTransfer, &r4->recvTransfer, 0x948);
             func_020e9a48(NetOverlay_AssertOv067());
         }
         func_020e9a48(NetOverlay_AssertOv067());
@@ -621,10 +621,10 @@ void SpNpcRoverTalk::onMessageEnd() {
         setScript(1);
         break;
     case 0x3c:
-        unk_ac->applyReceivedData();
+        ownerNpc->applyReceivedData();
         break;
     case 0x3b:
-        unk_ac->restoreOwnTransfer();
+        ownerNpc->restoreOwnTransfer();
         break;
     }
 }
@@ -637,7 +637,7 @@ void SpNpcRoverTalk::onChoice() {
 }
 
 void SpNpcRoverTalk::update() {
-    u32 i = unk_b0;
+    u32 i = script;
     if (data_ov055_022598d4[i].flag != 0) {
         if (sSpNpcRoverTalkScripts[i].fn) {
             (this->*sSpNpcRoverTalkScripts[i].fn)();
@@ -646,7 +646,7 @@ void SpNpcRoverTalk::update() {
 }
 
 void SpNpcRoverTalk::onTaskDone() {
-    u32 i = unk_b0;
+    u32 i = script;
     if (data_ov055_022598d4[i].flag == 0) {
         if (sSpNpcRoverTalkScripts[i].fn) {
             (this->*sSpNpcRoverTalkScripts[i].fn)();
@@ -655,7 +655,7 @@ void SpNpcRoverTalk::onTaskDone() {
     }
 }
 
-void SpNpcRoverTalk::setScript(s32 v) { unk_b0 = v; }
+void SpNpcRoverTalk::setScript(s32 v) { script = v; }
 
 void SpNpcRoverTalk::runTagMode() {
     u8 m[2];
@@ -666,11 +666,11 @@ void SpNpcRoverTalk::runTagMode() {
         k = FALSE;
     }
     BOOL r5 = FALSE;
-    SpNpcRover *own = unk_ac;
-    if (own->unk_70d == 1 && k == 0) {
+    SpNpcRover *own = ownerNpc;
+    if (own->lidClosed == 1 && k == 0) {
         r5 = TRUE;
     }
-    own->unk_70d = k;
+    own->lidClosed = k;
     if (func_020e9a08(NetOverlay_AssertOv067())) {
         Comm_EndOv067Mode();
         m[0] = 0x3c;
@@ -719,19 +719,19 @@ void SpNpcRoverTalk::waitTagModeStop() {
 
 void SpNpcRover::applyReceivedData() {
     TownExchangeRecord *r4 = TownExchange_GetForAid(4);
-    u32 st = unk_18a4.unk_f8;
+    u32 st = recvLetters.unk_f8;
     if (st == 2) {
-        MI_CpuCopy8(&unk_18a4, data_021ecfa8, 0xf8);
+        MI_CpuCopy8(&recvLetters, data_021ecfa8, 0xf8);
         restoreOwnTransfer();
     } else if (st == 1) {
-        MI_CpuCopy8(&unk_1058, r4, 0x84c);
+        MI_CpuCopy8(&recvTransfer, r4, 0x84c);
         r4->incrementCounter();
         r4->setUnkFlag(1);
     }
 }
 
 void SpNpcRover::restoreOwnTransfer() {
-    MI_CpuCopy8(&unk_710, TownExchange_GetForAid(4), 0x84c);
+    MI_CpuCopy8(&sendTransfer, TownExchange_GetForAid(4), 0x84c);
 }
 
 BOOL SpNpcRover::vfunc_48() {
@@ -751,13 +751,13 @@ BOOL SpNpcRover::vfunc_58() {
 void SpNpcRover::vfunc_4c(s32 a) {
     switch (a) {
     case 0:
-        unk_658.vfunc_08();
-        _ZN16ActorTalkRequest13func_02015ab0Ej(&unk_658, getPlayerActor(4));
+        talk.vfunc_08();
+        _ZN16ActorTalkRequest13func_02015ab0Ej(&talk, getPlayerActor(4));
         changeAct(1);
         break;
     case 1:
-        unk_658.vfunc_08();
-        _ZN16ActorTalkRequest13func_02015ab0Ej(&unk_658, getPlayerActor(4));
+        talk.vfunc_08();
+        _ZN16ActorTalkRequest13func_02015ab0Ej(&talk, getPlayerActor(4));
         changeAct(1);
         break;
     case 8:
@@ -769,23 +769,23 @@ void SpNpcRover::vfunc_4c(s32 a) {
 void SpNpcRover::prepareTagData() {
     Constellation_PrepareExchange();
     TownExchangeRecord *r4 = TownExchange_GetForAid(4);
-    MI_CpuCopy8(r4, &unk_710, 0x84c);
-    unk_f5c.unk_f8 = 1;
+    MI_CpuCopy8(r4, &sendTransfer, 0x84c);
+    sendLetters.unk_f8 = 1;
     TownExchange_Clear(r4);
-    if (unk_70c == 0) {
+    if (saveFailed == 0) {
         s32 r = Save_WriteVillagerTransfer();
         if (r == 1 || r == 4) {
-            unk_70c = 1;
+            saveFailed = 1;
         }
     }
 }
 
 void SpNpcRover::saveTagData() {
-    if (unk_70c == 0) {
+    if (saveFailed == 0) {
         TownExchange_GetForAid(4);
         s32 r = Save_WriteVillagerTransfer();
         if (r == 1 || r == 4) {
-            unk_70c = 1;
+            saveFailed = 1;
         }
     }
 }

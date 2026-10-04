@@ -11,11 +11,11 @@ typedef Unk_0203389c_Vec Unk_02093748_Vec;
 class GroundInfo {
 public:
     u8 pad_00[0x24];
-    s32 unk_24, unk_28, unk_2c;
-    s32 unk_30;
-    s32 unk_34;
+    s32 flowDir, flowDirY, flowDirZ;
+    s32 waterKind;
+    s32 attr;
     u8 pad_38[4];
-    s32 unk_3c;
+    s32 waterSurfaceY;
     GroundInfo() {}
     GroundInfo *initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b);
     ~GroundInfo();
@@ -1311,9 +1311,9 @@ extern "C" s32 Effect_SpawnParticleLandings(Unk_02093aa8_Owner *o, s32 p1, s32 p
             pos.y = n->y + n->oy;
             pos.z = n->z + n->oz;
             g.initAtPos(&pos, 0, 0);
-            if (g.unk_30 != 0) {
-                if (pos.y <= g.unk_3c) {
-                    pos.y = g.unk_3c;
+            if (g.waterKind != 0) {
+                if (pos.y <= g.waterSurfaceY) {
+                    pos.y = g.waterSurfaceY;
                     if (p1 != -1) Effect_StartOneShot(p1, 100, &pos, 0, 0, (void *)p2);
                     if (p3 != -1) Effect_StartOneShot(p3, 100, &pos, 0, 0, (void *)s0);
                     n->age = n->lifeTime;
@@ -1354,7 +1354,7 @@ s32 EffectSplEmitter::spawnLandingEffects(s32 id1, void *d1, s32 id2, void *d2, 
             v.y = n->posY + n->originY;
             v.z = n->posZ + n->originZ;
             o.initAtPos(&v, 0, 0);
-            if (o.unk_30 != 0) {
+            if (o.waterKind != 0) {
                 s32 h = _ZN14GroundInfoBase16getWaterSurfaceYEv(&o);
                 if (v.y <= h) {
                     v.y = h;
@@ -1447,7 +1447,7 @@ extern "C" s32 Effect_CreateKind00(s32 a, void *b, u16 *c, s32 d)
     s32 t, result, kind;
     const void *p;
     o.initAtPos((Unk_02093748_Vec *)b, 0, 0);
-    t = o.unk_34;
+    t = o.attr;
     p = data_020e1480;
     result = 3;
     kind = 2;
@@ -1516,7 +1516,7 @@ extern "C" s32 Effect_CreateKind01(s32 a, void *b, void *c, s32 d)
     GroundInfo o;
     s32 t, result;
     o.initAtPos((Unk_02093748_Vec *)b, 0, 0);
-    t = o.unk_34;
+    t = o.attr;
     result = 3;
     if (Unk_020935e8_IsOne(*gFieldSceneKind)) {
         if (t == 9 || t == 3) {
@@ -1586,7 +1586,7 @@ extern "C" s32 Effect_CreateKind06(s32 a, void *b, void *c, s32 d)
     GroundInfo o;
     s32 r, kind;
     o.initAtPos((Unk_02093748_Vec *)b, 0, 0);
-    if (o.unk_34 == 0x13) {
+    if (o.attr == 0x13) {
         kind = 0x2d;
     } else {
         kind = 0x2b;
@@ -1616,7 +1616,7 @@ extern "C" s32 Effect_CreateKind07(s32 a, void *b, void *c, s32 d)
     GroundInfo o;
     s32 r, kind;
     o.initAtPos((Unk_02093748_Vec *)b, 0, 0);
-    if (o.unk_34 == 0x13) {
+    if (o.attr == 0x13) {
         kind = 0x2e;
     } else {
         kind = 0x2c;
@@ -1632,7 +1632,7 @@ extern "C" s32 Effect_CreateKind08(s32 a, void *b, void *c, s32 d)
     GroundInfo o;
     s32 r, kind;
     o.initAtPos((Unk_02093748_Vec *)b, 0, 0);
-    if (o.unk_34 == 0x13) {
+    if (o.attr == 0x13) {
         kind = 0x30;
     } else {
         kind = 0x2f;
@@ -1655,7 +1655,7 @@ extern "C" s32 Effect_CreateKind09(s32 a, void *b, void *c, s32 d)
     GroundInfo o;
     s32 r, kind;
     o.initAtPos((Unk_02093748_Vec *)b, 0, 0);
-    if (o.unk_34 == 0x13) {
+    if (o.attr == 0x13) {
         kind = 0x32;
     } else {
         kind = 0x31;
@@ -1672,7 +1672,7 @@ extern "C" s32 Effect_CreateKind0A(s32 a, void *b, void *c, s32 d)
     GroundInfo o;
     s32 t, result;
     o.initAtPos((Unk_02093748_Vec *)b, 0, 0);
-    t = o.unk_34;
+    t = o.attr;
     result = 3;
     if (Weather_GetFallingPrecip() == 1) {
         _ZN10EffectSlot3setEijP16Unk_020904f0_VecPsS2_s(&(*(Unk_021d0830 *)&gEffectManager[32]), *(u16 *)(g + 0x39c), a, b, c, d, -1);
@@ -1735,8 +1735,8 @@ extern "C" s32 Effect_StartWaterColumn(s32 a, void *b, void *c, s32 d, void *e, 
     s32 result;
     o.initAtPos(v, 0, 0);
     result = 3;
-    if (o.unk_30 != 0) {
-        v->y = o.unk_3c;
+    if (o.waterKind != 0) {
+        v->y = o.waterSurfaceY;
     }
     if (Effect_StartOneShot(0x4a, a, v, c, d, (void *)f) < 3) {
         Effect_StartModel(2, a, v, c, d, fn);

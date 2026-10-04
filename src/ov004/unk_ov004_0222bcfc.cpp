@@ -19,10 +19,10 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL onExecute();
 
-    /* 0x50 */ u8 unk_50;
-    /* 0x51 */ u8 unk_51;
-    /* 0x52 */ u8 unk_52;
-    /* 0x53 */ u8 unk_53;
+    /* 0x50 */ u8 prevSecondDigit;
+    /* 0x51 */ u8 secondDigit;
+    /* 0x52 */ u8 muteFirstTick;
+    /* 0x53 */ u8 midnightSePlayed;
 };
 
 extern "C" {
@@ -49,7 +49,7 @@ NewYearCountdown::NewYearCountdown() {}
 NewYearCountdown::~NewYearCountdown() {}
 
 BOOL NewYearCountdown::vfunc_00() {
-    unk_52 = 1;
+    muteFirstTick = 1;
     return TRUE;
 }
 
@@ -67,29 +67,29 @@ BOOL NewYearCountdown::onExecute() {
                 secs = secs - h * 0xe10;
                 u32 m = secs / 0x3c;
                 secs = secs - m * 0x3c;
-                unk_51 = secs % 10;
-                if (unk_51 != unk_50) {
+                secondDigit = secs % 10;
+                if (secondDigit != prevSecondDigit) {
                     if (h == 0) {
                         if (m == 1 && secs == 0) {
-                            if (unk_52 == 0) Snd_PlaySe(0x62);
+                            if (muteFirstTick == 0) Snd_PlaySe(0x62);
                         } else if (m == 0) {
                             if (secs == 0) {
-                                if (unk_52 == 0) Snd_PlaySe(0x61);
+                                if (muteFirstTick == 0) Snd_PlaySe(0x61);
                             } else if (secs <= 10) {
-                                if (unk_52 == 0) Snd_PlaySe(0x60);
+                                if (muteFirstTick == 0) Snd_PlaySe(0x60);
                             } else {
-                                if (unk_52 == 0) Snd_PlaySe(0x62);
+                                if (muteFirstTick == 0) Snd_PlaySe(0x62);
                             }
                         }
-                        unk_52 = 0;
+                        muteFirstTick = 0;
                     }
                 }
-                unk_50 = unk_51;
+                prevSecondDigit = secondDigit;
             } else if (t.b4 == 1) {
                 if (t.b3 == 1 && t.b2 == 0 && t.b1 == 0 && t.b0 == 0) {
-                    if (unk_53 == 0) {
+                    if (midnightSePlayed == 0) {
                         Snd_PlaySe(0x61);
-                        unk_53 = 1;
+                        midnightSePlayed = 1;
                     }
                 }
             }

@@ -50,9 +50,9 @@ struct Unk_ov046_02258e68_Vec {
 };
 struct Unk_ov046_02258e68_Actor {
     u8 pad_00[0x5c];
-    Unk_ov046_02258e68_Vec unk_5c;
+    Unk_ov046_02258e68_Vec position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
 };
 
 struct ChoiceEntry {
@@ -453,16 +453,16 @@ public:
     void onStargazingDone();
     void setResultHandler(s32 idx);
 
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ u8 *unk_b0;
-    /* 0xb4 */ Unk_ov046_0225aa0c_Fn unk_b4;
-    /* 0xbc */ s32 unk_bc;
-    /* 0xc0 */ u8 unk_c0;
-    /* 0xc1 */ u8 unk_c1;
-    /* 0xc2 */ u8 unk_c2;
+    /* 0xac */ s32 topic;
+    /* 0xb0 */ u8 *owner;
+    /* 0xb4 */ Unk_ov046_0225aa0c_Fn resultHandler;
+    /* 0xbc */ s32 constellationSlot;
+    /* 0xc0 */ u8 listStart;
+    /* 0xc1 */ u8 listRemaining;
+    /* 0xc2 */ u8 listMode;
     /* 0xc3 */ u8 pad_c3;
-    /* 0xc4 */ s32 unk_c4[5];
-    /* 0xd8 */ s32 unk_d8;
+    /* 0xc4 */ s32 listSlots[5];
+    /* 0xd8 */ s32 nextMsg;
 };
 
 class SpNpcCeleste : public SpNpcActor {
@@ -492,13 +492,13 @@ public:
     void changeAct(s32 state);
 
     s32 unk_654;
-    SpNpcCelesteTalk unk_658;
-    u16 unk_734;
-    s16 unk_736;
-    u16 unk_738;
-    u8 unk_73a;
+    SpNpcCelesteTalk talk;
+    u16 sleepTimer;
+    s16 homeAngle;
+    u16 sleepBlend;
+    u8 isAsleep;
     u8 pad_73b;
-    s32 unk_73c;
+    s32 effectHandle;
 };
 
 struct Unk_ov046_0225a398_Ent {
@@ -554,9 +554,9 @@ BOOL SpNpcCeleste::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
-    unk_73c = -1;
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
+    effectHandle = -1;
     return TRUE;
 }
 
@@ -564,10 +564,10 @@ BOOL SpNpcCeleste::vfunc_00() {
     if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
-    unk_736 = rotY;
-    unk_738 = 0;
+    homeAngle = rotY;
+    sleepBlend = 0;
     collider.unk_1c |= 2;
-    unk_658.setTopic(5);
+    talk.setTopic(5);
     if (Clock_GetTimeOfDay() == 2 || Clock_GetTimeOfDay() == 3 || CommManager_isOnline(gCommManager) != 0 ||
         *DebugVar_GetPtr(0, 0x4a) != 0) {
         changeAct(0);
@@ -581,9 +581,9 @@ BOOL SpNpcCeleste::vfunc_0c() {
     if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
-    if (unk_73c != -1) {
-        Effect_End(unk_73c);
-        unk_73c = -1;
+    if (effectHandle != -1) {
+        Effect_End(effectHandle);
+        effectHandle = -1;
     }
     return TRUE;
 }
@@ -613,7 +613,7 @@ void SpNpcCeleste::changeAct(s32 state) {
 
 BOOL SpNpcCeleste::setupAct00() {
     NpcActionCtrl_requestAction(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    unk_734 = 0x78;
+    sleepTimer = 0x78;
     NpcLookAt_setTarget(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
@@ -626,15 +626,15 @@ BOOL SpNpcCeleste::mainAct00() {
         Clock_GetTimeOfDay() == 3) {
         return TRUE;
     }
-    if (func_020e7500(&unk_734) == 0) {
-        unk_738 = 0x18;
+    if (func_020e7500(&sleepTimer) == 0) {
+        sleepBlend = 0x18;
         changeAct(2);
     }
     return TRUE;
 }
 
 BOOL SpNpcCeleste::setupAct01() {
-    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, unk_736, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -648,9 +648,9 @@ BOOL SpNpcCeleste::mainAct01() {
 }
 
 BOOL SpNpcCeleste::setupAct02() {
-    NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0xf0, 0, unk_738, 0);
+    NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0xf0, 0, sleepBlend, 0);
     NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
-    unk_73a = 1;
+    isAsleep = 1;
     return TRUE;
 }
 
@@ -658,23 +658,23 @@ BOOL SpNpcCeleste::mainAct02() {
     if (tryStartTelescopeTalk()) {
         return TRUE;
     }
-    if (unk_73c == -1) {
-        unk_73c = Effect_Create(0x3c, (u8 *)this + 0x478, &rotY, 0);
+    if (effectHandle == -1) {
+        effectHandle = Effect_Create(0x3c, (u8 *)this + 0x478, &rotY, 0);
     } else {
-        Effect_SetPosition(unk_73c, (u8 *)this + 0x478, &rotY);
+        Effect_SetPosition(effectHandle, (u8 *)this + 0x478, &rotY);
     }
     return TRUE;
 }
 
 BOOL SpNpcCeleste::setupAct03() {
-    NpcActor *p = (NpcActor *)unk_658.func_02015aac();
+    NpcActor *p = (NpcActor *)talk.func_02015aac();
     s32 r = 0;
     if (p) {
         r = getAngleTo(p);
     }
-    if (unk_73c != -1) {
-        Effect_End(unk_73c);
-        unk_73c = -1;
+    if (effectHandle != -1) {
+        Effect_End(effectHandle);
+        effectHandle = -1;
     }
     NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 0);
     NpcLookAt_setTarget(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
@@ -683,8 +683,8 @@ BOOL SpNpcCeleste::setupAct03() {
 
 BOOL SpNpcCeleste::mainAct03() {
     if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
-        unk_73a = 0;
-        unk_658.setTopic(5);
+        isAsleep = 0;
+        talk.setTopic(5);
         TalkRequest_SetTargetDone(this);
         changeAct(4);
     }
@@ -705,28 +705,28 @@ void SpNpcCelesteTalk::openConstellationPage() {
     String_Load2d(&b, &v, 0);
     s32 i;
     for (i = 0; i < 5; i++) {
-        unk_c4[i] = -1;
+        listSlots[i] = -1;
     }
-    s32 r6 = unk_c0;
+    s32 r6 = listStart;
     s32 r4 = 0;
-    for (; r6 < 0x10 && r4 < 4 && unk_c1 != 0; r6++) {
+    for (; r6 < 0x10 && r4 < 4 && listRemaining != 0; r6++) {
         if (Constellation_GetName(&a, r6)) {
             MsgString256 c;
             ChoiceEntry *q = r7->getEntry(r4);
             MsgString_appendString(&c, &a);
             MsgString_appendString(&c, &b);
             MsgString_copy(q->getText(), &c);
-            unk_c4[r4] = r6;
+            listSlots[r4] = r6;
             r4++;
-            unk_c1 = unk_c1 - 1;
+            listRemaining = listRemaining - 1;
         }
     }
-    unk_c0 = r6;
-    if (unk_c0 >= 0x10) {
-        unk_c0 = 0xf;
+    listStart = r6;
+    if (listStart >= 0x10) {
+        listStart = 0xf;
     }
     v = 0xf;
-    if (unk_c1 == 0) {
+    if (listRemaining == 0) {
         v = 0x10;
     }
     ChoiceEntry *p = r7->getEntry(r4);
@@ -739,9 +739,9 @@ void SpNpcCelesteTalk::openConstellationPage() {
 }
 
 void SpNpcCelesteTalk::onTaskDone() {
-    if (unk_b4) {
-        (this->*unk_b4)();
-        unk_b4 = NULL;
+    if (resultHandler) {
+        (this->*resultHandler)();
+        resultHandler = NULL;
     }
 }// Declarations for data defined further down (definition order sets the data layout)
 
@@ -787,7 +787,7 @@ void SpNpcCelesteTalk::setResultHandler(s32 idx) {
         &SpNpcCelesteTalk::onConstellationRedrawn,
         &SpNpcCelesteTalk::onConstellationRenamed,
     };
-    unk_b4 = tbl[idx];
+    resultHandler = tbl[idx];
 }
 
 void SpNpcCelesteTalk::onStargazingDone() {
@@ -804,7 +804,7 @@ void SpNpcCelesteTalk::onConstellationDrawn() {
     if (MenuCtrl_IsResultOk()) {
         t.w0 = 0;
         t.w1 = 0;
-        Constellation_GetViewingTime(&t, unk_bc);
+        Constellation_GetViewingTime(&t, constellationSlot);
         setMonthSlot(((u8 *)&t)[4], 2);
         setDaySlot(((u8 *)&t)[3], 3);
         setNumberSlot(((u8 *)&t)[1], 5, 2, 0, 0);
@@ -822,9 +822,9 @@ void SpNpcCelesteTalk::onConstellationDrawn() {
         _ZN15TalkWindowState17setSlotFromStringEiii(o, 8, &msg[1], (u8 *)"st_general");
         msg[0] = 8;
     } else {
-        Constellation_Erase(unk_bc);
-        unk_c1 = 0x10 - Constellation_CountFreeSlots();
-        unk_c0 = 0;
+        Constellation_Erase(constellationSlot);
+        listRemaining = 0x10 - Constellation_CountFreeSlots();
+        listStart = 0;
     }
     o->setNextMessage(msg, sSpNpcCelesteKey);
 }
@@ -836,7 +836,7 @@ void SpNpcCelesteTalk::onConstellationNamed() {
         if (MenuCtrl_IsResultOk()) {
             ConstellationMsgString17 s;
             v = 0xb;
-            Constellation_GetName(&s, unk_bc);
+            Constellation_GetName(&s, constellationSlot);
             unk_3c->setSlot(0, &s);
         }
         o->setNextMessage(&v, sSpNpcCelesteKey);
@@ -849,8 +849,8 @@ void SpNpcCelesteTalk::onConstellationRedrawn() {
     if (MenuCtrl_IsResultOk()) {
         v = 0x38;
     } else {
-        unk_c1 = 0x10 - Constellation_CountFreeSlots();
-        unk_c0 = 0;
+        listRemaining = 0x10 - Constellation_CountFreeSlots();
+        listStart = 0;
         v = 0x1d;
     }
     o->setNextMessage(&v, sSpNpcCelesteKey);
@@ -863,7 +863,7 @@ void SpNpcCelesteTalk::onConstellationRenamed() {
         if (MenuCtrl_IsResultOk()) {
             v = 0x3d;
             ConstellationMsgString17 s;
-            Constellation_GetName(&s, unk_bc);
+            Constellation_GetName(&s, constellationSlot);
             unk_3c->setSlot(0, &s);
         }
         o->setNextMessage(&v, sSpNpcCelesteKey);
@@ -876,19 +876,19 @@ SpNpcCelesteTalk::~SpNpcCelesteTalk() {}
 
 void SpNpcCelesteTalk::vfunc_08() {
     ActorTalkRequest::vfunc_08();
-    unk_b4 = NULL;
-    unk_bc = Constellation_FindFreeSlot();
+    resultHandler = NULL;
+    constellationSlot = Constellation_FindFreeSlot();
 }
 
 void SpNpcCelesteTalk::attachOwner(void *p) {
     vfunc_08();
-    unk_b0 = (u8 *)p;
-    unk_c0 = 0;
-    unk_c1 = 0x10 - Constellation_CountFreeSlots();
+    owner = (u8 *)p;
+    listStart = 0;
+    listRemaining = 0x10 - Constellation_CountFreeSlots();
 }
 
 void SpNpcCelesteTalk::setTopic(s32 v) {
-    unk_ac = v;
+    topic = v;
 }
 
 void SpNpcCelesteTalk::start(TalkStartMsg *out) {
@@ -897,23 +897,23 @@ void SpNpcCelesteTalk::start(TalkStartMsg *out) {
         out->msgIndex = 0x14;
         return;
     }
-    if (unk_ac == 5) {
+    if (topic == 5) {
         if (Talk_CheckAndSetPlayerFlag(2, 1) == 0) {
-            if (unk_b0[0x73a] == 0) {
-                unk_ac = 1;
+            if (owner[0x73a] == 0) {
+                topic = 1;
             } else {
-                unk_ac = 0;
+                topic = 0;
             }
         } else {
-            if (unk_b0[0x73a] == 0) {
-                unk_ac = 3;
+            if (owner[0x73a] == 0) {
+                topic = 3;
             } else {
-                unk_ac = 2;
+                topic = 2;
             }
         }
     }
-    s32 t = unk_ac;
-    if (t == 4 && unk_b0[0x73a] == 0) {
+    s32 t = topic;
+    if (t == 4 && owner[0x73a] == 0) {
         if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
             if (Constellation_CountFreeSlots() < 0x10) {
                 out->msgIndex = 0x13;
@@ -930,13 +930,13 @@ void SpNpcCelesteTalk::start(TalkStartMsg *out) {
         out->msgKey = sSpNpcCelesteKey;
     } else if (t >= 0 && t < 5) {
         out->msgIndex = sSpNpcCelesteTopicMsgs[t].v;
-        out->msgKey = sSpNpcCelesteTopicMsgs[unk_ac].p;
+        out->msgKey = sSpNpcCelesteTopicMsgs[topic].p;
     }
 }
 
 s32 SpNpcCelesteTalk::getFollowUpMenuMsg() {
-    unk_c1 = 0x10 - Constellation_CountFreeSlots();
-    unk_c0 = 0;
+    listRemaining = 0x10 - Constellation_CountFreeSlots();
+    listStart = 0;
     if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (Constellation_CountFreeSlots() < 0x10) {
             return 0x27;
@@ -955,7 +955,7 @@ extern "C" u8 sSpNpcCelesteKey[] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'a', 's',
 void SpNpcCelesteTalk::onMessageEnd() {
     if (GameStart_IsActive() == 0) {
         PlayerData_GetCurrent();
-        unk_d8 = 0xff;
+        nextMsg = 0xff;
         static Unk_ov046_0225aa0c_Row tbl[29] = {
             {0x00, &SpNpcCelesteTalk::announceNewConstellations},
             {0x04, &SpNpcCelesteTalk::showTelescopeMenu},
@@ -997,8 +997,8 @@ void SpNpcCelesteTalk::onMessageEnd() {
                 (this->*t[i].f)();
             }
         }
-        if (unk_d8 != 0xff) {
-            u8 v = unk_d8;
+        if (nextMsg != 0xff) {
+            u8 v = nextMsg;
             unk_3c->setNextMessage(&v, sSpNpcCelesteKey);
         }
     }
@@ -1008,18 +1008,18 @@ void SpNpcCelesteTalk::announceNewConstellations() {
     s32 v = 0;
     if (Constellation_GetNewStatus(&v) == 0) {
         if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
-            unk_d8 = 0x2f;
+            nextMsg = 0x2f;
         } else {
-            unk_d8 = 0x11;
+            nextMsg = 0x11;
         }
     } else {
         if (Constellation_GetNewStatus(&v) == 1) {
             ConstellationMsgString17 s;
             Constellation_GetName(&s, v);
             unk_3c->setSlot(7, &s);
-            unk_d8 = 0x39;
+            nextMsg = 0x39;
         } else {
-            unk_d8 = 0x3a;
+            nextMsg = 0x3a;
         }
         Constellation_ClearNewFlags();
     }
@@ -1028,43 +1028,43 @@ void SpNpcCelesteTalk::announceNewConstellations() {
 void SpNpcCelesteTalk::showTelescopeMenu() {
     if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (Constellation_CountFreeSlots() < 0x10) {
-            unk_d8 = 0x13;
+            nextMsg = 0x13;
         } else {
-            unk_d8 = 0x10;
+            nextMsg = 0x10;
         }
     } else {
         if (Constellation_CountFreeSlots() < 0x10) {
-            unk_d8 = 0x14;
+            nextMsg = 0x14;
         } else {
-            unk_d8 = 1;
+            nextMsg = 1;
         }
     }
 }
 
 void SpNpcCelesteTalk::startConstellationEditor() {
-    unk_bc = Constellation_FindFreeSlot();
-    if (unk_bc >= 0) {
-        setSubSceneKindArg(0x2e, (u8)unk_bc, 0);
+    constellationSlot = Constellation_FindFreeSlot();
+    if (constellationSlot >= 0) {
+        setSubSceneKindArg(0x2e, (u8)constellationSlot, 0);
         openSubScene(3);
         setResultHandler(1);
     } else {
-        unk_d8 = 0x3e;
+        nextMsg = 0x3e;
     }
 }
 
 void SpNpcCelesteTalk::reactToConstellationName() {
     s32 r = Random_GlobalBelow(0x65);
     if (r < 0x46) {
-        unk_d8 = getFollowUpMenuMsg();
+        nextMsg = getFollowUpMenuMsg();
     } else if (r < 0x55) {
-        unk_d8 = 0x32;
+        nextMsg = 0x32;
     } else {
-        unk_d8 = 0x33;
+        nextMsg = 0x33;
     }
 }
 
 void SpNpcCelesteTalk::showFollowUpMenu() {
-    unk_d8 = getFollowUpMenuMsg();
+    nextMsg = getFollowUpMenuMsg();
 }
 
 // ---- unit 2
@@ -1092,7 +1092,7 @@ void SpNpcCelesteTalk::startStargazing() {
 
 void SpNpcCelesteTalk::onChoice() {
     s32 t = getChoiceList()->getResult();
-    unk_d8 = 0xff;
+    nextMsg = 0xff;
     static Unk_ov046_02259480_Ent tbl[26] = {
         {0x01, &SpNpcCelesteTalk::onTelescopeMenuChoice},
         {0x08, &SpNpcCelesteTalk::onViewingTimeChoice},
@@ -1137,17 +1137,17 @@ test:
     if (i < 26) {
         goto loop;
     }
-    if (unk_d8 != 0xff) {
-        u8 b = unk_d8;
+    if (nextMsg != 0xff) {
+        u8 b = nextMsg;
         unk_3c->setNextMessage(&b, sSpNpcCelesteKey);
     }
 }
 
 void SpNpcCelesteTalk::onViewingTimeChoice(s32 a) {
     if (a == 0) {
-        unk_d8 = 9;
+        nextMsg = 9;
     } else {
-        unk_d8 = 0x23;
+        nextMsg = 0x23;
     }
 }
 
@@ -1158,19 +1158,19 @@ void SpNpcCelesteTalk::onConstellationListChoice(s32 idx) {
         u32 w[2];
     } l;
     TalkWindowState *o = unk_3c;
-    unk_bc = unk_c4[idx];
-    if (unk_bc >= 0) {
+    constellationSlot = listSlots[idx];
+    if (constellationSlot >= 0) {
         u32 buf[9];
         _ZN24ConstellationMsgString17C1Ev(buf);
-        Constellation_GetName(buf, unk_bc);
+        Constellation_GetName(buf, constellationSlot);
         unk_3c->setSlot(6, buf);
-        if (unk_c2 == 0) {
-            unk_d8 = 0x19;
-            unk_c0 = 0;
-        } else if (unk_c2 == 1) {
+        if (listMode == 0) {
+            nextMsg = 0x19;
+            listStart = 0;
+        } else if (listMode == 1) {
             l.w[0] = 0;
             l.w[1] = 0;
-            Constellation_GetViewingTime(&l.w, unk_bc);
+            Constellation_GetViewingTime(&l.w, constellationSlot);
             setMonthSlot(((u8 *)l.w)[4], 2);
             setDaySlot(((u8 *)l.w)[3], 3);
             setNumberSlot(((u8 *)l.w)[1], 5, 2, 0, 0);
@@ -1186,27 +1186,27 @@ void SpNpcCelesteTalk::onConstellationListChoice(s32 idx) {
             l.msg = r1;
             _ZN15TalkWindowState17setSlotFromStringEiii(o, 8, &l.msg, (u8 *)"st_general");
             setNumberSlot(t4, 4, 2, 0, 0);
-            unk_d8 = 0x17;
-        } else if (unk_c2 == 2) {
-            setSubSceneKindArg(0x2e, (u8)unk_bc, 0);
+            nextMsg = 0x17;
+        } else if (listMode == 2) {
+            setSubSceneKindArg(0x2e, (u8)constellationSlot, 0);
             openSubScene(3);
             setResultHandler(3);
         }
-        unk_c2 = 0;
+        listMode = 0;
         _ZN24ConstellationMsgString17D1Ev(buf);
     } else {
-        if (unk_c1 == 0) {
-            unk_d8 = getFollowUpMenuMsg();
-            if ((u8)(unk_c2 + 0xff) <= 1) {
+        if (listRemaining == 0) {
+            nextMsg = getFollowUpMenuMsg();
+            if ((u8)(listMode + 0xff) <= 1) {
                 if (Constellation_CountFreeSlots() < 0x10) {
-                    if (unk_c2 == 1) {
-                        unk_d8 = 0x16;
+                    if (listMode == 1) {
+                        nextMsg = 0x16;
                     } else {
-                        unk_d8 = 0x1d;
+                        nextMsg = 0x1d;
                     }
                 }
             }
-            unk_c2 = 0;
+            listMode = 0;
         } else {
             if (msgIndex == 0x15) {
                 goto set3f;
@@ -1216,11 +1216,11 @@ void SpNpcCelesteTalk::onConstellationListChoice(s32 idx) {
             }
             if (msgIndex == 0x1f) {
             set3f:
-                unk_d8 = 0x3f;
+                nextMsg = 0x3f;
             } else if (msgIndex == 0x3f) {
-                unk_d8 = 0x40;
+                nextMsg = 0x40;
             } else if (msgIndex == 0x40) {
-                unk_d8 = 0x41;
+                nextMsg = 0x41;
             }
         }
     }
@@ -1228,140 +1228,140 @@ void SpNpcCelesteTalk::onConstellationListChoice(s32 idx) {
 
 void SpNpcCelesteTalk::func_ov046_022592a4(s32 a) {
     if (a == 0) {
-        unk_d8 = 7;
+        nextMsg = 7;
     } else if (Constellation_CountFreeSlots() < 0x10) {
-        unk_d8 = 0x2a;
+        nextMsg = 0x2a;
     } else {
-        unk_d8 = getFollowUpMenuMsg();
+        nextMsg = getFollowUpMenuMsg();
     }
 }
 
 void SpNpcCelesteTalk::onDiscardNewChoice(s32 a) {
     if (a == 0) {
-        if (unk_bc >= 0) {
-            Constellation_Erase(unk_bc);
+        if (constellationSlot >= 0) {
+            Constellation_Erase(constellationSlot);
         }
-        unk_c1 = 0x10 - Constellation_CountFreeSlots();
-        unk_c0 = 0;
-        unk_d8 = 0x21;
+        listRemaining = 0x10 - Constellation_CountFreeSlots();
+        listStart = 0;
+        nextMsg = 0x21;
     } else {
-        unk_d8 = 9;
+        nextMsg = 9;
     }
 }
 
 void SpNpcCelesteTalk::onTelescopeMenuChoice(s32 a) {
     if (a == 0) {
         if (Constellation_CountFreeSlots() < 0x10) {
-            unk_d8 = 0x18;
+            nextMsg = 0x18;
         } else {
-            unk_d8 = 7;
+            nextMsg = 7;
         }
     } else if (a == 1) {
-        unk_d8 = 0x30;
+        nextMsg = 0x30;
     } else {
-        unk_d8 = 2;
+        nextMsg = 2;
     }
 }
 
 void SpNpcCelesteTalk::onFullMenuChoice(s32 a) {
-    unk_c1 = 0x10 - Constellation_CountFreeSlots();
-    unk_c0 = 0;
+    listRemaining = 0x10 - Constellation_CountFreeSlots();
+    listStart = 0;
     if (a == 0) {
         if (Constellation_CountFreeSlots() < 0x10) {
-            unk_d8 = 0x18;
+            nextMsg = 0x18;
         } else {
-            unk_d8 = 7;
+            nextMsg = 7;
         }
     } else if (a == 1) {
-        unk_d8 = 0x35;
+        nextMsg = 0x35;
     } else if (a == 2) {
-        unk_c1 = 0x10 - Constellation_CountFreeSlots();
+        listRemaining = 0x10 - Constellation_CountFreeSlots();
         u8 z = 0;
-        unk_c0 = z;
-        unk_d8 = 0x1f;
-        unk_c2 = z;
+        listStart = z;
+        nextMsg = 0x1f;
+        listMode = z;
     } else {
-        unk_d8 = 2;
+        nextMsg = 2;
     }
 }
 
 void SpNpcCelesteTalk::onEraseConfirmChoice(s32 a) {
     u32 buf[9];
-    unk_c0 = 0;
+    listStart = 0;
     if (a == 0) {
-        if (unk_bc >= 0) {
+        if (constellationSlot >= 0) {
             _ZN24ConstellationMsgString17C1Ev(buf);
-            Constellation_GetName(buf, unk_bc);
+            Constellation_GetName(buf, constellationSlot);
             unk_3c->setSlot(6, buf);
-            Constellation_Erase(unk_bc);
+            Constellation_Erase(constellationSlot);
             _ZN24ConstellationMsgString17D1Ev(buf);
         }
-        unk_c1 = 0x10 - Constellation_CountFreeSlots();
-        unk_c0 = 0;
-        unk_d8 = 0x1b;
+        listRemaining = 0x10 - Constellation_CountFreeSlots();
+        listStart = 0;
+        nextMsg = 0x1b;
     } else {
-        unk_d8 = getFollowUpMenuMsg();
+        nextMsg = getFollowUpMenuMsg();
     }
 }
 
 void SpNpcCelesteTalk::onMakeOrChangeChoice(s32 a) {
-    unk_c1 = 0x10 - Constellation_CountFreeSlots();
-    unk_c0 = 0;
+    listRemaining = 0x10 - Constellation_CountFreeSlots();
+    listStart = 0;
     if (a == 0) {
         if (Constellation_CountFreeSlots() == 0) {
-            unk_d8 = 0x3e;
+            nextMsg = 0x3e;
         } else {
-            unk_d8 = 7;
+            nextMsg = 7;
         }
     } else if (a == 1) {
-        unk_c2 = 2;
-        unk_d8 = 0x1e;
+        listMode = 2;
+        nextMsg = 0x1e;
     } else {
-        unk_d8 = 0xc;
+        nextMsg = 0xc;
     }
 }
 
 void SpNpcCelesteTalk::onStargazeMenuChoice(s32 a) {
     if (a == 0) {
         if (Constellation_CountFreeSlots() < 0x10) {
-            unk_d8 = 0x35;
+            nextMsg = 0x35;
         } else {
-            unk_d8 = 0x30;
+            nextMsg = 0x30;
         }
     } else {
-        unk_d8 = 2;
+        nextMsg = 2;
     }
 }
 
 void SpNpcCelesteTalk::func_ov046_022590a0(s32 a) {
     if (a == 0) {
-        unk_d8 = 7;
+        nextMsg = 7;
     } else {
-        unk_d8 = 0xc;
+        nextMsg = 0xc;
     }
 }
 
 void SpNpcCelesteTalk::func_ov046_0225904c(s32 a) {
-    unk_c1 = 0x10 - Constellation_CountFreeSlots();
-    unk_c0 = 0;
+    listRemaining = 0x10 - Constellation_CountFreeSlots();
+    listStart = 0;
     if (a == 0) {
-        unk_c2 = 2;
-        unk_d8 = 0x1e;
+        listMode = 2;
+        nextMsg = 0x1e;
     } else if (Constellation_CountFreeSlots() < 0x10) {
-        unk_d8 = 0x25;
+        nextMsg = 0x25;
     } else {
-        unk_d8 = getFollowUpMenuMsg();
+        nextMsg = getFollowUpMenuMsg();
     }
 }
 
 void SpNpcCelesteTalk::onLookOrTimesChoice(s32 a) {
     if (a == 0) {
-        unk_d8 = 0x30;
+        nextMsg = 0x30;
     } else if (a == 1) {
-        unk_c2 = 1;
-        unk_d8 = 0x15;
+        listMode = 1;
+        nextMsg = 0x15;
     } else {
-        unk_d8 = 0x16;
+        nextMsg = 0x16;
     }
 }
 
@@ -1370,9 +1370,9 @@ void SpNpcCelesteTalk::onLookOrTimesChoice(s32 a) {
 
 void SpNpcCelesteTalk::onRenameChoice(s32 a) {
     if (a == 0) {
-        unk_d8 = 0x3b;
+        nextMsg = 0x3b;
     } else {
-        unk_d8 = getFollowUpMenuMsg();
+        nextMsg = getFollowUpMenuMsg();
     }
 }
 
@@ -1391,8 +1391,8 @@ void SpNpcCeleste::vfunc_4c(s32 a) {
     switch (a) {
     case 0:
     case 1:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0((u32)getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(3);
         break;
     case 8:
@@ -1415,25 +1415,25 @@ BOOL SpNpcCeleste::isPlayerAtTelescope() {
         r6 = FALSE;
     }
     if (p == 0 || NpcTalkCtrl_isBusy(&talkCtrl) != 0) {
-        unk_658.setTopic(5);
+        talk.setTopic(5);
         result = FALSE;
         goto end;
     }
-    Unk_ov046_02258e68_Vec *pv = &p->unk_5c;
-    v0.x = p->unk_5c.x;
+    Unk_ov046_02258e68_Vec *pv = &p->position;
+    v0.x = p->position.x;
     v0.y = pv->y;
     v0.z = pv->z;
-    v1.x = p->unk_5c.x;
+    v1.x = p->position.x;
     v1.y = pv->y;
     v1.z = pv->z;
     v1.x = 0x10800;
     v1.z = 0x17000;
     s32 d = func_020e9650(&v0, &v1);
-    s32 a = p->unk_8e;
+    s32 a = p->rotY;
     if (d < 0x1000) {
         a = a & 0xffff;
         if (a < 0x6000 || a > 0xa000) {
-            unk_658.setTopic(5);
+            talk.setTopic(5);
             result = FALSE;
             goto end;
         }
@@ -1460,7 +1460,7 @@ end:
 // ---- unit 1
 BOOL SpNpcCeleste::tryStartTelescopeTalk() {
     if (isPlayerAtTelescope()) {
-        unk_658.setTopic(4);
+        talk.setTopic(4);
         Camera_LockFocusYaw();
         TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;

@@ -1685,8 +1685,8 @@ struct Unk_0204da0c_Size {
     s32 h;
 };
 struct Unk_0204da0c_Map {
-    u32 unk_00;
-    Unk_0204da0c_Size unk_04;
+    u32 blocks;
+    Unk_0204da0c_Size size;
 };
 u16 *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 BOOL Item_IsTreeStage0(u16 *p);
@@ -3750,7 +3750,7 @@ extern "C" void Town_UpdateFlowers(u32 a, void *m) {
     s32 hx, hy;
     s32 x;
     Unk_0204da0c_Size *sz;
-    sz = &((Unk_0204da0c_Map *)m)->unk_04;
+    sz = &((Unk_0204da0c_Map *)m)->size;
     w = sz->w << 4;
     h = sz->h << 4;
     for (y = 0; y < h; y++) {
@@ -3812,7 +3812,7 @@ extern "C" void Town_UpdateFlowersExtraDay(u32 a, void *m, s32 c) {
     s32 h;
     s32 w;
     s32 hx, hy;
-    sz = &((Unk_0204da0c_Map *)m)->unk_04;
+    sz = &((Unk_0204da0c_Map *)m)->size;
     w = sz->w << 4;
     h = sz->h << 4;
     y = 0;

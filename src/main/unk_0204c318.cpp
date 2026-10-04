@@ -6,40 +6,40 @@ struct Unk_0204da0c_Size {
 };
 
 struct Unk_0204da0c_Map {
-    u32 unk_00;
-    Unk_0204da0c_Size unk_04;
+    u32 blocks;
+    Unk_0204da0c_Size size;
 };
 
 struct Unk_0204c3c0_Ver {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
+    u8 day;
+    u8 month;
+    u8 year;
     u8 unk_03;
 };
 
 struct Unk_0204c3f4_Slot {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
+    u8 day;
+    u8 month;
+    u8 year;
     u8 unk_03;
 };
 
 struct TownState {
-    /* 0x00 */ Unk_0204c3c0_Ver unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
-    /* 0x0a */ u8 unk_0a;
+    /* 0x00 */ Unk_0204c3c0_Ver lastUpdate;
+    /* 0x04 */ s32 nativeFruit;
+    /* 0x08 */ u8 nextWeekDay;
+    /* 0x09 */ u8 nextWeekMonth;
+    /* 0x0a */ u8 nextWeekYear;
     /* 0x0b */ u8 unk_0b;
     /* 0x0c */ u8 pad_0c[0x21 - 0x0c];
-    /* 0x21 */ s8 unk_21;
+    /* 0x21 */ s8 perfectStreak;
     /* 0x22 */ u8 unk_22;
     /* 0x23 */ u8 pad_23[0x54 - 0x23];
-    /* 0x54 */ u8 unk_54;
-    /* 0x55 */ u8 unk_55;
-    /* 0x56 */ u8 unk_56;
+    /* 0x54 */ u8 eventUpdateDay;
+    /* 0x55 */ u8 eventUpdateMonth;
+    /* 0x56 */ u8 eventUpdateYear;
     /* 0x57 */ u8 unk_57;
-    /* 0x58 */ Unk_0204c3f4_Slot unk_58[4];
+    /* 0x58 */ Unk_0204c3f4_Slot playerDates[4];
     /* 0x68 */ u8 unk_68;
     /* 0x69 */ u8 unk_69;
     /* 0x6a */ u8 unk_6a;
@@ -80,8 +80,8 @@ extern "C" void Town_SetNativeFruitTrees(TownState *p);
 
 extern "C" void TownState_InitNew(TownState *p) {
     Clock_GetDate(p);
-    p->unk_04 = Random_GlobalBelow(5);
-    Date_GetWeekday(p->unk_00.unk_02, p->unk_00.unk_01, p->unk_00.unk_00);
+    p->nativeFruit = Random_GlobalBelow(5);
+    Date_GetWeekday(p->lastUpdate.year, p->lastUpdate.month, p->lastUpdate.day);
     TownState_PickNextWeekDate(p, p);
     TownState_ClearUnk0c(p);
     TownState_ClearUnk16(p);
@@ -90,17 +90,17 @@ extern "C" void TownState_InitNew(TownState *p) {
     TownState_ClearEvents(p);
     Unk_0204c3f4_Slot *s;
     s32 i;
-    for (s = p->unk_58, i = 0; i < 4; i++) {
-        s->unk_00 = 1;
-        s->unk_01 = 1;
-        s->unk_02 = 0;
+    for (s = p->playerDates, i = 0; i < 4; i++) {
+        s->day = 1;
+        s->month = 1;
+        s->year = 0;
         s->unk_03 = 0;
         s++;
     }
-    p->unk_21 = -1;
-    p->unk_54 = 1;
-    p->unk_55 = 1;
-    p->unk_56 = 0;
+    p->perfectStreak = -1;
+    p->eventUpdateDay = 1;
+    p->eventUpdateMonth = 1;
+    p->eventUpdateYear = 0;
     p->unk_57 = 0;
     Town_InitNew();
     p->unk_6b = 0;
@@ -112,27 +112,27 @@ extern "C" void TownState_InitNew(TownState *p) {
 
 extern "C" void TownState_Reset(TownState *p) {
     Clock_GetDate(p);
-    p->unk_04 = 0;
-    p->unk_08 = 1;
-    p->unk_09 = 1;
-    p->unk_0a = 0;
+    p->nativeFruit = 0;
+    p->nextWeekDay = 1;
+    p->nextWeekMonth = 1;
+    p->nextWeekYear = 0;
     p->unk_0b = 0;
     TownState_ClearUnk0c(p);
     TownState_ClearUnk16(p);
     TownState_ClearEvents(p);
     Unk_0204c3f4_Slot *s;
     s32 i;
-    for (s = p->unk_58, i = 0; i < 4; i++) {
-        s->unk_00 = 1;
-        s->unk_01 = 1;
-        s->unk_02 = 0;
+    for (s = p->playerDates, i = 0; i < 4; i++) {
+        s->day = 1;
+        s->month = 1;
+        s->year = 0;
         s->unk_03 = 0;
         s++;
     }
-    p->unk_21 = -1;
-    p->unk_54 = 1;
-    p->unk_55 = 1;
-    p->unk_56 = 0;
+    p->perfectStreak = -1;
+    p->eventUpdateDay = 1;
+    p->eventUpdateMonth = 1;
+    p->eventUpdateYear = 0;
     p->unk_57 = 0;
 }
 
@@ -140,9 +140,9 @@ extern "C" void TownState_ClampDate(Unk_0204c3c0_Ver *p) {
     Unk_0204c3c0_Ver t;
     Clock_GetDate(&t);
     if (Date_IsAfterOrEqual(&t, p) == 0) {
-        p->unk_00 = t.unk_00;
-        p->unk_01 = t.unk_01;
-        p->unk_02 = t.unk_02;
+        p->day = t.day;
+        p->month = t.month;
+        p->year = t.year;
         p->unk_03 = t.unk_03;
     }
 }
@@ -150,12 +150,12 @@ extern "C" void TownState_ClampDate(Unk_0204c3c0_Ver *p) {
 extern "C" void Town_SetNativeFruitTrees(TownState *p) {
     Unk_0204da0c_Map *m = TownBlockMap_Get();
     if (m) {
-        Unk_0204da0c_Size *sz = &m->unk_04;
+        Unk_0204da0c_Size *sz = &m->size;
         s32 w = sz->w << 4;
         s32 h = sz->h << 4;
         s32 x, y, cx, cy;
         y = 0;
-        u16 v = sNativeFruitTrees[p->unk_04];
+        u16 v = sNativeFruitTrees[p->nativeFruit];
         for (; y < h; y++) {
             x = 0;
             if (w > 0) {

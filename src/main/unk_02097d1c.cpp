@@ -126,11 +126,11 @@ void *_ZN10PlayerData11getPlayerIdEv(...);
 }
 class PlayerInventory {
 public:
-    u8 unk_00[0x988];
-    u8 unk_988[0x52];
-    u16 unk_9da[15];
-    u32 unk_9f8;
-    u32 unk_9fc;
+    u8 letters[0x988];
+    u8 letterDefaults[0x52];
+    u16 pockets[15];
+    u32 wallet;
+    u32 pocketFlags;
 
     s32 getTotalBells(BOOL flag);
     s32 getBellsSpace(s32 n);
@@ -166,7 +166,7 @@ class ItemId {
 public:
     ItemId();
     ~ItemId();
-    u16 unk_00;
+    u16 id;
 };
 
 struct Unk_0209865c_Nib {
@@ -859,11 +859,11 @@ void PlayerInventory::clear()
 {
     s32 i;
     for (i = 0; i < 10; i++) {
-        Letter_Clear(unk_00 + i * 0xf4);
+        Letter_Clear(letters + i * 0xf4);
     }
-    LetterDefaults_Init(unk_988);
+    LetterDefaults_Init(letterDefaults);
     for (i = 0; i < 15; i++) {
-        unk_9da[i] = 0xfff1;
+        pockets[i] = 0xfff1;
     }
     PlayerInventory_SetWallet(this, 0, 1);
 }
@@ -880,7 +880,7 @@ u16 *PlayerInventory::getPocket(s32 idx)
 {
     u16 *r = 0;
     if (Pocket_IsValidIndex(idx) == 1) {
-        r = &unk_9da[idx];
+        r = &pockets[idx];
     }
     return r;
 }
@@ -889,7 +889,7 @@ BOOL PlayerInventory::setPocket(u16 *p, s32 idx, u32 val)
 {
     BOOL r = FALSE;
     if (Pocket_IsValidIndex(idx) == 1) {
-        unk_9da[idx] = *p;
+        pockets[idx] = *p;
         setPocketFlags(idx, val);
         r = TRUE;
     }
@@ -899,7 +899,7 @@ BOOL PlayerInventory::setPocket(u16 *p, s32 idx, u32 val)
 void PlayerInventory::setPocketFlags(s32 idx, u32 val)
 {
     s32 sh = idx << 1;
-    u32 *p = &unk_9fc;
+    u32 *p = &pocketFlags;
     *p = *p & ~(3 << sh);
     *p = *p | (val << sh);
 }
@@ -920,7 +920,7 @@ u32 PlayerInventory::getPocketFlags(s32 idx)
 {
     s32 sh = idx << 1;
     if (Pocket_IsValidIndex(idx) == 1) {
-        return (unk_9fc >> sh) & 3;
+        return (pocketFlags >> sh) & 3;
     }
     return 0;
 }
@@ -945,7 +945,7 @@ void *PlayerInventory::getLetter(s32 idx)
 {
     u8 *r = 0;
     if (Letter_IsValidIndex(idx) == 1) {
-        r = unk_00 + idx * 0xf4;
+        r = letters + idx * 0xf4;
     }
     return r;
 }
@@ -974,7 +974,7 @@ void *PlayerInventory::getEmptyLetter()
 
 void *PlayerInventory::getUnk988()
 {
-    return unk_988;
+    return letterDefaults;
 }
 
 s32 PlayerInventory::getPocketBells()
@@ -1020,7 +1020,7 @@ s32 PlayerInventory::getBellsSpace(s32 n)
 
 s32 PlayerInventory::getTotalBells(BOOL flag)
 {
-    s32 r = unk_9f8;
+    s32 r = wallet;
     if (flag) {
         r += getPocketBells();
     }

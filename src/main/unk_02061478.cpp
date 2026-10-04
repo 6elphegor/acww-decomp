@@ -2,9 +2,9 @@
 
 class ItemId {
 public:
-    ItemId() { unk_00 = 0xfff1; }
+    ItemId() { id = 0xfff1; }
     ~ItemId();
-    u16 unk_00;
+    u16 id;
 };
 
 class RecordFile {
@@ -18,10 +18,10 @@ class ItemInfoTables {
 public:
     ItemInfoTables();
     ~ItemInfoTables();
-    RecordFile unk_00;
-    RecordFile unk_1c;
-    RecordFile unk_38;
-    RecordFile unk_54;
+    RecordFile always;
+    RecordFile indoor;
+    RecordFile dma;
+    RecordFile series;
 };
 
 class EncodedStringBase {
@@ -59,7 +59,7 @@ public:
     virtual u8 *data();
     BOOL copyTo(u8 *out, s32 n);
 
-    /* 0x0e */ u8 unk_0e[16];
+    /* 0x0e */ u8 text[16];
 };
 
 extern "C" {
@@ -400,7 +400,7 @@ static inline BOOL Unk_0206198c_Tail(u32 v, u32 sh) {
 
 BOOL EncodedString16Buf::copyTo(u8 *out, s32 n) {
     if (n >= (s32)capacity()) {
-        MI_CpuCopy8(unk_0e, out, capacity());
+        MI_CpuCopy8(text, out, capacity());
         return TRUE;
     }
     return FALSE;
@@ -410,7 +410,7 @@ ItemInfoTables::ItemInfoTables() {}
 
 ItemInfoTables::~ItemInfoTables() {
     _ZN12InfoTableSet5closeEv(this);
-    _ZN10RecordFile5closeEv(&unk_54);
+    _ZN10RecordFile5closeEv(&series);
 }
 
 s32 ItemInfoTables_Open(void *o) {
@@ -445,8 +445,8 @@ void ItemInfo_CountHoldable() {
     for (i = 0x1000; i < 0x156e; i++) {
         l.a = i;
         if (ItemInfo_IsHoldable(&l.a)) {
-            if (Unk_020622cc_IsFree(&sFirstHoldableItem.unk_00, &l.b)) {
-                sFirstHoldableItem.unk_00 = l.a;
+            if (Unk_020622cc_IsFree(&sFirstHoldableItem.id, &l.b)) {
+                sFirstHoldableItem.id = l.a;
             }
             sHoldableItemCount++;
         }
@@ -689,7 +689,7 @@ extern "C" u32 ItemInfo_GetIndoorUnk0(u16 *p) {
 
 extern "C" u32 Series_GetType(s32 i) {
     if (i < 0x4a) {
-        u8 *r = _ZN10RecordFile9getRecordEj((&gItemInfo.unk_54), i);
+        u8 *r = _ZN10RecordFile9getRecordEj((&gItemInfo.series), i);
         if (r) return *r;
     }
     return 3;
@@ -697,7 +697,7 @@ extern "C" u32 Series_GetType(s32 i) {
 
 extern "C" u32 Series_GetName(s32 i) {
     if (i < 0x4a) {
-        u8 *r = _ZN10RecordFile9getRecordEj((&gItemInfo.unk_54), i);
+        u8 *r = _ZN10RecordFile9getRecordEj((&gItemInfo.series), i);
         if (r) return (u32)r + 1;
     }
     return 0;
@@ -722,7 +722,7 @@ extern "C" void ItemInfo_GetNthHoldable(u16 *out, s32 idx) {
     if (sHoldableItemCount) {
         s32 cnt = 0;
         u16 i;
-        for (i = sFirstHoldableItem.unk_00; i < 0x156e; i++) {
+        for (i = sFirstHoldableItem.id; i < 0x156e; i++) {
             u16 buf;
             buf = i;
             if (ItemInfo_IsHoldable(&buf)) {
@@ -734,7 +734,7 @@ extern "C" void ItemInfo_GetNthHoldable(u16 *out, s32 idx) {
             }
         }
     }
-    *out = sFirstHoldableItem.unk_00;
+    *out = sFirstHoldableItem.id;
 }
 
 extern "C" s32 ItemInfo_GetHoldableIndex(u16 *p) {
@@ -742,7 +742,7 @@ extern "C" s32 ItemInfo_GetHoldableIndex(u16 *p) {
         s32 cnt = 0;
         u16 i;
         BOOL a = FALSE, b = FALSE;
-        for (i = sFirstHoldableItem.unk_00; i < 0x156e; i++) {
+        for (i = sFirstHoldableItem.id; i < 0x156e; i++) {
             u16 buf;
             buf = i;
             if (ItemInfo_IsHoldable(&buf)) {

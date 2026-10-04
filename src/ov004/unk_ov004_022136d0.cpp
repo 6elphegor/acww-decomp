@@ -155,12 +155,12 @@ public:
     BOOL unregisterSelf();
     BOOL registerSelf();
 
-    /* 0x130 */ s32 unk_130;
-    /* 0x134 */ TouchPickSphere unk_134;
-    /* 0x150 */ u8 unk_150;
+    /* 0x130 */ s32 act;
+    /* 0x134 */ TouchPickSphere touchSphere;
+    /* 0x150 */ u8 index;
     /* 0x151 */ u8 pad_151;
-    /* 0x152 */ s16 unk_152;
-    /* 0x154 */ s32 unk_154;
+    /* 0x152 */ s16 signMsgIndex;
+    /* 0x154 */ s32 radius;
 };
 
 typedef void (RoomBoardSign::*Unk_022137c4_Fn)();
@@ -216,20 +216,20 @@ extern "C" RoomBoardSign *RoomBoardSign_Create() {
 }
 
 RoomBoardSign::RoomBoardSign() {
-    _ZN15TouchPickSphereC1Ev(&unk_134);
+    _ZN15TouchPickSphereC1Ev(&touchSphere);
 }
 
 RoomBoardSign::~RoomBoardSign() {
-    _ZN15TouchPickSphereD1Ev(&unk_134);
+    _ZN15TouchPickSphereD1Ev(&touchSphere);
 }
 
 BOOL RoomBoardSign::vfunc_00() {
     RoomBoardSign_ClearRegistry();
-    unk_152 = sRoomBoardSignSpawnMsg;
-    unk_154 = sRoomBoardSignSpawnRadius;
+    signMsgIndex = sRoomBoardSignSpawnMsg;
+    radius = sRoomBoardSignSpawnRadius;
     if (registerSelf()) {
         u32 t = Scene_GetCurrent();
-        setCharId((u16)(unk_150 | (t << 8)));
+        setCharId((u16)(index | (t << 8)));
         changeAct(0);
         return TRUE;
     }
@@ -238,7 +238,7 @@ BOOL RoomBoardSign::vfunc_00() {
 
 BOOL RoomBoardSign::onExecute() {
     execAct();
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &unk_134, position, unk_154, 0x10, unk_150);
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &touchSphere, position, radius, 0x10, index);
     return TRUE;
 }
 
@@ -261,8 +261,8 @@ extern "C" void RoomBoardSign_ClearRegistry() {
 }
 
 BOOL RoomBoardSign::registerSelf() {
-    unk_150 = sRoomBoardSignCount;
-    u32 i = unk_150;
+    index = sRoomBoardSignCount;
+    u32 i = index;
     if (i < 0x40) {
         sRoomBoardSigns[i] = this;
         sRoomBoardSignCount++;
@@ -272,11 +272,11 @@ BOOL RoomBoardSign::registerSelf() {
 }
 
 BOOL RoomBoardSign::unregisterSelf() {
-    u32 i = unk_150;
+    u32 i = index;
     if (i < 0x40) {
         sRoomBoardSigns[i] = 0;
         sRoomBoardSignCount--;
-        unk_150 = 0xff;
+        index = 0xff;
         return TRUE;
     }
     return FALSE;
@@ -284,7 +284,7 @@ BOOL RoomBoardSign::unregisterSelf() {
 
 BOOL RoomBoardSign::vfunc_48(void *a) {
     Character *o = (Character *)a;
-    s32 lim = unk_154 + 0x2ccd;
+    s32 lim = radius + 0x2ccd;
     if (o) {
         if (func_020e9650(o->position, position) < lim) {
             if (func_020e780c((s16)(rotY + 0x8000), o->rotY) < 0x1300) {
@@ -310,7 +310,7 @@ BOOL RoomBoardSign::changeAct(s32 m) {
     static Unk_02213840_Fn tbl[3] = { (Unk_02213840_Fn)&RoomBoardSign::setupAct00, (Unk_02213840_Fn)&RoomBoardSign::setupAct01, (Unk_02213840_Fn)&RoomBoardSign::setupAct02 };
     if (m < 3) {
         if ((this->*tbl[m])()) {
-            unk_130 = m;
+            act = m;
             return TRUE;
         }
     }
@@ -319,8 +319,8 @@ BOOL RoomBoardSign::changeAct(s32 m) {
 
 void RoomBoardSign::execAct() {
     static Unk_022137c4_Fn tbl[3] = { &RoomBoardSign::mainAct00, &RoomBoardSign::mainAct01, &RoomBoardSign::mainAct02 };
-    if (unk_130 < 3) {
-        (this->*tbl[unk_130])();
+    if (act < 3) {
+        (this->*tbl[act])();
     }
 }
 
@@ -341,7 +341,7 @@ BOOL RoomBoardSign::setupAct01() {
     Unk_02213774_Pad pad;
     _ZN9Character17attachTalkRequestEi(this, this);
     setFileName("obj_etc_board");
-    msgIndex = unk_152;
+    msgIndex = signMsgIndex;
     unk_3c->nextState = 1;
     return TRUE;
 }

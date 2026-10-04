@@ -195,11 +195,11 @@ public:
     void scriptWaitForTip();
     void setScript(s32 state);
 
-    s32 unk_ac;
-    u8 unk_b0;
+    s32 script;
+    u8 waitTimer;
     u8 pad_b1[3];
-    SpNpcResetti *unk_b4;
-    u8 unk_b8;
+    SpNpcResetti *ownerNpc;
+    u8 bgmSwitched;
     u8 pad_b9[3];
 };
 
@@ -394,7 +394,7 @@ struct Unk_ov077_02271a84_Pt {
 
 class SpNpcResetti : public SpNpcActor {
 public:
-    SpNpcResetti() : unk_718(0), unk_71c(0) {}
+    SpNpcResetti() : houseUnitX(0), houseUnitZ(0) {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -420,12 +420,12 @@ public:
     BOOL setupAct00();
 
     s32 unk_654;
-    SpNpcResettiTalk unk_658;
-    u8 unk_714;
+    SpNpcResettiTalk talk;
+    u8 lastApologyPhrase;
     u8 pad_715[3];
-    s32 unk_718;
-    s32 unk_71c;
-    s32 unk_720;
+    s32 houseUnitX;
+    s32 houseUnitZ;
+    s32 effectHandle;
 };
 
 struct Unk_ov077_02271d18_Ent {
@@ -527,9 +527,9 @@ BOOL SpNpcResetti::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    unk_714 = 0xff;
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
+    lastApologyPhrase = 0xff;
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xfc);
     _ZN14NpcMoveAnimSet11setWalkAnimEi(&moveAnimSet, 0xfc);
     collider.unk_45 = 0;
@@ -591,7 +591,7 @@ BOOL SpNpcResetti::setupAct00() { return TRUE; }
 BOOL SpNpcResetti::mainAct00() { return TRUE; }
 
 BOOL SpNpcResetti::setupAct01() {
-    void *p = unk_658.func_02015aac();
+    void *p = talk.func_02015aac();
     u16 v = 0;
     if (p != NULL) {
         v = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -629,7 +629,7 @@ BOOL SpNpcResetti::setupAct03() {
             u0 = 0x5014;
             u1 = 0x501a;
             if (BlockMap_FindItemAllAttr(g, &a, &b, &c, &d, &u0, &u1, 1, 0)) {
-                FieldUnit_FromBlockUnit(&unk_718, &unk_71c, a, b, c, d);
+                FieldUnit_FromBlockUnit(&houseUnitX, &houseUnitZ, a, b, c, d);
             }
         }
     }
@@ -657,8 +657,8 @@ BOOL SpNpcResetti::mainAct03() {
     ax = 0;
     az = 0;
     FieldPos_ToUnit(&ax, &az, &v);
-    dx = ax - unk_718;
-    dz = az - unk_71c;
+    dx = ax - houseUnitX;
+    dz = az - houseUnitZ;
     {
         u16 w = _ZN8NpcActor10getAngleToEPS_(this, (void *)pl);
         rotY = w;
@@ -684,11 +684,11 @@ BOOL SpNpcResetti::mainAct03() {
         if (hit) {
             s32 x, z;
             if (i <= 2) {
-                x = pb.x + unk_718;
-                z = pb.y + unk_71c;
+                x = pb.x + houseUnitX;
+                z = pb.y + houseUnitZ;
             } else {
-                x = pa.x + unk_718;
-                z = pa.y + unk_71c;
+                x = pa.x + houseUnitX;
+                z = pa.y + houseUnitZ;
             }
             FieldPos_FromUnitCenter(&position, x, z);
             TalkRequest_AddPlayerTalk7(this, 0);
@@ -699,7 +699,7 @@ BOOL SpNpcResetti::mainAct03() {
 
 BOOL SpNpcResetti::setupAct04() {
     model.unk_ac = 0x1000;
-    unk_720 = Effect_Create(0x30, &position, 0, 0);
+    effectHandle = Effect_Create(0x30, &position, 0, 0);
     func_02003ddc(&seEmitter, 0x7e6, 0x7f, 0);
     collider.unk_44 = 1;
     Bgm_RequestSilence(0x17, 0xf, 0);
@@ -712,14 +712,14 @@ BOOL SpNpcResetti::mainAct04() {
     rotY = v;
     moveAngleY = v;
     if ((s16)model.unk_a4.b.mid == 0xc) {
-        Effect_End(unk_720);
-        unk_720 = -1;
+        Effect_End(effectHandle);
+        effectHandle = -1;
     }
     if (animCtrl.isPlayingAnim(0xfd, &moveAnimSet)) {
         if (actionCtrl.isActionDone()) {
-            if (unk_720 != -1) {
-                Effect_End(unk_720);
-                unk_720 = -1;
+            if (effectHandle != -1) {
+                Effect_End(effectHandle);
+                effectHandle = -1;
             }
             changeAct(1);
             return TRUE;
@@ -742,12 +742,12 @@ BOOL SpNpcResetti::mainAct05() {
     moveAngleY = v;
     f = (s16)model.unk_a4.b.mid;
     if (f == 2) {
-        unk_720 = Effect_Create(0x30, &position, 0, 0);
+        effectHandle = Effect_Create(0x30, &position, 0, 0);
     }
     if (f == 0xc) {
-        if (unk_720 != -1) {
-            Effect_End(unk_720);
-            unk_720 = -1;
+        if (effectHandle != -1) {
+            Effect_End(effectHandle);
+            effectHandle = -1;
         }
     }
     if (animCtrl.isPlayingAnim(0xfe, &moveAnimSet)) {
@@ -755,9 +755,9 @@ BOOL SpNpcResetti::mainAct05() {
             TalkRequest_SetTargetDone(this);
             _ZN16ResettiVisitFlag3setEj(TownSessionState_GetResettiFlag(TownSessionState_Get()), 0);
             ProcBase_RequestDelete(this);
-            if (unk_720 != -1) {
-                Effect_End(unk_720);
-                unk_720 = -1;
+            if (effectHandle != -1) {
+                Effect_End(effectHandle);
+                effectHandle = -1;
             }
             return TRUE;
         }
@@ -766,7 +766,7 @@ BOOL SpNpcResetti::mainAct05() {
 }
 
 void SpNpcResettiTalk::update() {
-    s32 i = unk_ac * 12;
+    s32 i = script * 12;
     if (((u8 *)&sSpNpcResettiTalkScripts[0].pad)[i] != 0) {
         if (((Unk_ov077_022717e0_Rec *)((u8 *)sSpNpcResettiTalkScripts + i))->fn != NULL) {
             (this->*((Unk_ov077_022717e0_Rec *)((u8 *)sSpNpcResettiTalkScripts + i))->fn)();
@@ -775,7 +775,7 @@ void SpNpcResettiTalk::update() {
 }
 
 void SpNpcResettiTalk::onTaskDone() {
-    s32 i = unk_ac * 12;
+    s32 i = script * 12;
     if (((u8 *)&sSpNpcResettiTalkScripts[0].pad)[i] == 0) {
         if (((Unk_ov077_022717e0_Rec *)((u8 *)sSpNpcResettiTalkScripts + i))->fn != NULL) {
             (this->*((Unk_ov077_022717e0_Rec *)((u8 *)sSpNpcResettiTalkScripts + i))->fn)();
@@ -785,12 +785,12 @@ void SpNpcResettiTalk::onTaskDone() {
 }
 
 void SpNpcResettiTalk::setScript(s32 state) {
-    unk_ac = state;
-    unk_b0 = 0x5a;
+    script = state;
+    waitTimer = 0x5a;
 }
 
 void SpNpcResettiTalk::scriptWaitForTip() {
-    if (func_020e7518(&unk_b0) == 0) {
+    if (func_020e7518(&waitTimer) == 0) {
         u8 v = 0x10;
         unk_3c->setNextMessage(&v, sSpNpcResettiMsgKey);
         requestReopenWindow();
@@ -819,10 +819,10 @@ SpNpcResettiTalk::SpNpcResettiTalk() {}
 SpNpcResettiTalk::~SpNpcResettiTalk() {}
 
 void SpNpcResettiTalk::onTalkEnd() {
-    if (unk_b8 == 0) {
+    if (bgmSwitched == 0) {
         Bgm_ReleasePriority(0x17);
         Bgm_Request(0x18, 0x43, 0x7f, 1);
-        unk_b8 = 1;
+        bgmSwitched = 1;
     }
 }
 
@@ -841,7 +841,7 @@ void SpNpcResettiTalk::onWindowClose() {
 
 void SpNpcResettiTalk::attachOwner(SpNpcResetti *owner) {
     vfunc_08();
-    unk_b4 = owner;
+    ownerNpc = owner;
 }
 
 void SpNpcResettiTalk::onSignalTag(s32 a) {
@@ -850,10 +850,10 @@ void SpNpcResettiTalk::onSignalTag(s32 a) {
         PlayerActor_LocalPlayAnim99(this);
         break;
     case 1:
-        func_02003ddc(&unk_b4->seEmitter, 0x7f4, 0x7f, 0);
+        func_02003ddc(&ownerNpc->seEmitter, 0x7f4, 0x7f, 0);
         break;
     case 2:
-        func_02003ddc(&unk_b4->seEmitter, 0x7f5, 0x7f, 0);
+        func_02003ddc(&ownerNpc->seEmitter, 0x7f5, 0x7f, 0);
         break;
     }
 }
@@ -881,14 +881,14 @@ void SpNpcResettiTalk::onMessageStart() {
     if (msgIndex == 0x17) {
         u8 n = Random_GlobalBelow(0x10);
         u8 c;
-        if (n == unk_b4->unk_714) {
+        if (n == ownerNpc->lastApologyPhrase) {
             n = n + 1;
             if (n == 0x10) {
                 n = 0;
             }
         }
-        unk_b4->unk_714 = n;
-        c = unk_b4->unk_714;
+        ownerNpc->lastApologyPhrase = n;
+        c = ownerNpc->lastApologyPhrase;
         _ZN15TalkWindowState17setSlotFromStringEiii(unk_3c, 0, &c, (void *)"st_general");
     }
 }
@@ -900,7 +900,7 @@ void SpNpcResettiTalk::onMessageEnd() {
         setScript(2);
         break;
     case 0x17:
-        setSubSceneKindArg(0xc, unk_b4->unk_714, 0);
+        setSubSceneKindArg(0xc, ownerNpc->lastApologyPhrase, 0);
         openSubScene(3);
         setScript(1);
         break;
@@ -942,8 +942,8 @@ BOOL SpNpcResetti::vfunc_48() { return TRUE; }
 void SpNpcResetti::vfunc_4c(s32 a) {
     switch (a) {
     case 1:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0((u32)getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(4);
         break;
     case 8:

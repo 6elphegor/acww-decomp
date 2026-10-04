@@ -176,8 +176,8 @@ public:
     BOOL isHiragana();
     void resetValues();
 
-    /* 0x00 */ u8 unk_00;
-    /* 0x01 */ u8 unk_01;
+    /* 0x00 */ u8 options;
+    /* 0x01 */ u8 changedMask;
 };
 
 extern "C" PlayerOptions sPlayerOptions;
@@ -220,8 +220,8 @@ struct Catalog {
 };
 
 struct ItemId {
-    u16 unk_00;
-    ItemId() : unk_00(0x11a8) {}
+    u16 id;
+    ItemId() : id(0x11a8) {}
     ~ItemId();
 };
 
@@ -328,7 +328,7 @@ extern "C" BOOL ClothTex_LoadItem(void *self, u16 *p, void *q) {
             return FALSE;
         } else {
             static ItemId def;
-            return ClothTex_LoadItem(self, &def.unk_00, q);
+            return ClothTex_LoadItem(self, &def.id, q);
         }
     }
     return res;

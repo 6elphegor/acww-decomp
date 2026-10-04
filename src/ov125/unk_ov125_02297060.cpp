@@ -182,7 +182,7 @@ public:
     void drawPlain(s32 x, s32 y);
     void loadObjGfx(s32 v);
     void loadTitleBg(s32 a, s32 b);
-    u32 unk_00[0x94 / 4];
+    u32 titleLabel[0x94 / 4];
 };
 
 // Vtable 0x022044e4 (declaration copied from src/ov002/unk_ov002_02200680.cpp; sub-objects opaque)
@@ -239,7 +239,7 @@ typedef void (PatternSelectMenu::*Unk_ov125_02298478_Fn)();
 // Vtable 0x02298478, size 0x6bc (scene overlay on MenuProc; ov124 library object embedded at +0x94)
 class PatternSelectMenu : public MenuProc {
 public:
-    PatternSelectMenu() : unk_94(), unk_128(), unk_428(), unk_4e8(), unk_54c() {}
+    PatternSelectMenu() : header(), popup(), nameBalloon(), cursor(), bottomButtons() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -309,19 +309,19 @@ public:
     void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ GeneralMenuHeader unk_94;
-    /* 0x128 */ PopupChoiceMenu unk_128;
-    /* 0x428 */ TouchPromptBalloon unk_428;
-    /* 0x4e8 */ MenuCursorBuf0 unk_4e8;
-    /* 0x54c */ MenuBottomButtons unk_54c;
-    /* 0x6b0 */ s32 unk_6b0;
-    /* 0x6b4 */ u16 unk_6b4;
-    /* 0x6b6 */ u8 unk_6b6;
-    /* 0x6b7 */ u8 unk_6b7;
-    /* 0x6b8 */ u8 unk_6b8;
-    /* 0x6b9 */ u8 unk_6b9;
-    /* 0x6ba */ u8 unk_6ba;
-    /* 0x6bb */ u8 unk_6bb;
+    /* 0x094 */ GeneralMenuHeader header;
+    /* 0x128 */ PopupChoiceMenu popup;
+    /* 0x428 */ TouchPromptBalloon nameBalloon;
+    /* 0x4e8 */ MenuCursorBuf0 cursor;
+    /* 0x54c */ MenuBottomButtons bottomButtons;
+    /* 0x6b0 */ s32 slideY;
+    /* 0x6b4 */ u16 flags;
+    /* 0x6b6 */ u8 balloonSlot;
+    /* 0x6b7 */ u8 selectedSlot;
+    /* 0x6b8 */ u8 cursorSlot;
+    /* 0x6b9 */ u8 popupChoice;
+    /* 0x6ba */ u8 popupRow;
+    /* 0x6bb */ u8 returnState;
 };
 
 extern "C" u16 sPatternSelectIconCell[4];
@@ -358,17 +358,17 @@ BOOL PatternSelectMenu::vfunc_0c() {
 }
 
 BOOL PatternSelectMenu::onDraw() {
-    s32 r7 = unk_6b0;
+    s32 r7 = slideY;
     if (!testFlags(1)) {
         return FALSE;
     }
-    TouchPromptBalloon *p = &unk_428;
+    TouchPromptBalloon *p = &nameBalloon;
     p->vfunc_08();
     if (MenuCtrl_IsButtons()) {
-        unk_4e8.drawWrapped();
+        cursor.drawWrapped();
     }
-    unk_54c.drawAt(getSlideOffsetY());
-    unk_94.drawPlain(0, r7);
+    bottomButtons.drawAt(getSlideOffsetY());
+    header.drawPlain(0, r7);
     u8 i = 0;
     s32 j = 0;
     s32 z = 0;
@@ -434,13 +434,13 @@ void PatternSelectMenu::stateLoad() {
 }
 
 void PatternSelectMenu::stateOpen() {
-    PopupChoice_LoadChoiceBg(&unk_128);
+    PopupChoice_LoadChoiceBg(&popup);
     loadPatternIcons();
     beginSubSlideIn(0xa, 4, 0, 0x30);
     Gfx2d_ShowLayer(6);
     Gfx2d_ShowLayer(4);
     updateLayerSlide();
-    unk_54c.setLayoutSingle05(0x65);
+    bottomButtons.setLayoutSingle05(0x65);
     setFlags(1);
     setTransitionState(2);
 }
@@ -483,29 +483,29 @@ void PatternSelectMenu::stateClosing() {
 void PatternSelectMenu::updateLayerSlide() {
     applySlideOffset(6, 0, 0);
     applySlideOffset(4, 0, 0);
-    unk_6b0 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void PatternSelectMenu::initPatternSelect() {
-    unk_6b4 = 0;
-    unk_128.init(3, 1, 0);
-    unk_6b6 = 9;
-    unk_6b7 = 9;
+    flags = 0;
+    popup.init(3, 1, 0);
+    balloonSlot = 9;
+    selectedSlot = 9;
     u32 z = 0;
-    unk_6b8 = z;
+    cursorSlot = z;
     MenuCtrl_SetResult(z);
-    unk_428.func_ov002_022006ac(2);
+    nameBalloon.func_ov002_022006ac(2);
 }
 
 void PatternSelectMenu::releaseResources() {
-    PopupChoice_ForceClose(&unk_128);
-    unk_94.resetFrame();
-    unk_54c.freeTexts();
+    PopupChoice_ForceClose(&popup);
+    header.resetFrame();
+    bottomButtons.freeTexts();
 }
 
 void PatternSelectMenu::preInputUpdate() {
     preStateUpdate();
-    MenuCursorBuf0 *p = &unk_4e8;
+    MenuCursorBuf0 *p = &cursor;
     p->vfunc_0c();
 }
 
@@ -514,13 +514,13 @@ void PatternSelectMenu::postInputUpdate() {
 }
 
 void PatternSelectMenu::preStateUpdate() {
-    unk_54c.freeTexts();
-    unk_94.resetFrame();
+    bottomButtons.freeTexts();
+    header.resetFrame();
 }
 
 void PatternSelectMenu::postStateUpdate() {
-    PopupChoice_Update(&unk_128);
-    if (unk_428.updatePrompt()) {
+    PopupChoice_Update(&popup);
+    if (nameBalloon.updatePrompt()) {
         refreshNameLabel();
     }
 }
@@ -536,7 +536,7 @@ extern "C" void PatternSelect_SetupBgLayers() {
 }
 
 void PatternSelectMenu::loadHeaderBg() {
-    unk_94.loadTitleBg(6, 4);
+    header.loadTitleBg(6, 4);
 }
 
 extern "C" void PatternSelect_LoadPatternIcons() {
@@ -569,8 +569,8 @@ extern "C" void PatternSelect_LoadPatternIcons() {
 
 void PatternSelectMenu::loadPatternIcons() {
     PatternSelect_LoadPatternIcons();
-    unk_94.loadObjGfx(4);
-    MenuButtons_LoadTextColors(&unk_54c);
+    header.loadObjGfx(4);
+    MenuButtons_LoadTextColors(&bottomButtons);
 }
 
 void PatternSelectMenu::updateTouch() {
@@ -579,11 +579,11 @@ void PatternSelectMenu::updateTouch() {
     } else if (Unk_ov125_02297bd4_Both()) {
         s32 r = findTouchedSlot();
         if (r == 8) {
-            unk_54c.setSelected(9);
+            bottomButtons.setSelected(9);
             setMainState(10);
         } else if (r != 9) {
             setPopupChoices();
-            unk_6b7 = r;
+            selectedSlot = r;
             openPopup();
         }
     }
@@ -593,12 +593,12 @@ void PatternSelectMenu::updatePopupTouch() {
     if (checkSwitchToButtons(1)) {
         cursorToPopupTop();
         setMainState(3);
-        unk_6b8 = unk_6b7;
+        cursorSlot = selectedSlot;
     } else if (Unk_ov125_02297bd4_Both()) {
-        s32 r = ((PopupChoiceMenuBody *)&unk_128)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
+        s32 r = ((PopupChoiceMenuBody *)&popup)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
         if (r >= 0) {
-            PopupChoice_DecideRow(&unk_128, r, 1);
-            unk_6b9 = getPopupRowValue(r);
+            PopupChoice_DecideRow(&popup, r, 1);
+            popupChoice = getPopupRowValue(r);
             setMainState(8);
         }
     }
@@ -607,32 +607,32 @@ void PatternSelectMenu::updatePopupTouch() {
 void PatternSelectMenu::updateButtons() {
     if (checkSwitchToTouch()) {
         startTouchInput();
-        unk_428.hide(1);
+        nameBalloon.hide(1);
     } else {
         if (moveCursorByPad((void *)takeRepeatedKeys())) {
             updateNameLabel();
             moveCursorToTarget();
-            unk_428.hide(0);
+            nameBalloon.hide(0);
         } else {
             u32 t = gPad[1];
             if (t & 1) {
-                if (unk_6b8 == 8) {
-                    ((MenuCursor *)&unk_4e8)->setPosePress();
+                if (cursorSlot == 8) {
+                    ((MenuCursor *)&cursor)->setPosePress();
                     setMainState(6);
                 } else {
-                    unk_428.hide(1);
+                    nameBalloon.hide(1);
                     setPopupChoices();
-                    unk_6b7 = unk_6b8;
+                    selectedSlot = cursorSlot;
                     openPopup();
                     hideCursor();
                 }
             } else if (t & 2) {
                 hideCursor();
-                unk_54c.setSelected(9);
+                bottomButtons.setSelected(9);
                 setMainState(10);
-                unk_428.hide(1);
+                nameBalloon.hide(1);
             } else {
-                unk_428.commitOpen();
+                nameBalloon.commitOpen();
             }
         }
     }
@@ -643,12 +643,12 @@ void PatternSelectMenu::updatePopupButtons() {
         hideCursor();
         setMainState(1);
     } else {
-        if (PopupChoice_MoveCursor(&unk_128, takeRepeatedKeys(), &unk_6ba, 0)) {
+        if (PopupChoice_MoveCursor(&popup, takeRepeatedKeys(), &popupRow, 0)) {
             moveCursorToPopupRow();
         }
         u32 t = gPad[1];
         if (t & 1) {
-            ((MenuCursor *)&unk_4e8)->setPosePress();
+            ((MenuCursor *)&cursor)->setPosePress();
             setMainState(4);
         } else if (t & 2) {
             cancelPopup();
@@ -657,29 +657,29 @@ void PatternSelectMenu::updatePopupButtons() {
 }
 
 void PatternSelectMenu::updatePopupPress() {
-    if (unk_4e8.isAnimDone()) {
-        PopupChoice_DecideRow(&unk_128, unk_6ba, 1);
-        unk_6b9 = getPopupRowValue(unk_6ba);
+    if (cursor.isAnimDone()) {
+        PopupChoice_DecideRow(&popup, popupRow, 1);
+        popupChoice = getPopupRowValue(popupRow);
         setMainState(8);
     }
 }
 
 void PatternSelectMenu::updateCursorMove() {
-    if (unk_4e8.isMoving() == 0) {
-        setMainState(unk_6bb);
+    if (cursor.isMoving() == 0) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void PatternSelectMenu::updateQuitPress() {
-    if (unk_4e8.isAnimDone()) {
-        unk_54c.setSelected(9);
+    if (cursor.isAnimDone()) {
+        bottomButtons.setSelected(9);
         setMainState(10);
     }
 }
 
 void PatternSelectMenu::updatePopupOpen() {
-    if (((PopupChoiceMenuBody *)&unk_128)->isOpen()) {
+    if (((PopupChoiceMenuBody *)&popup)->isOpen()) {
         if (MenuCtrl_IsButtons()) {
             cursorToPopupTop();
             setMainState(3);
@@ -690,9 +690,9 @@ void PatternSelectMenu::updatePopupOpen() {
 }
 
 void PatternSelectMenu::updatePopupClose() {
-    if (PopupChoice_TickDecideDelay(&unk_128)) {
-        PopupChoice_Close(&unk_128, 0);
-        if (unk_4e8.getAnim()) {
+    if (PopupChoice_TickDecideDelay(&popup)) {
+        PopupChoice_Close(&popup, 0);
+        if (cursor.getAnim()) {
             showCursorAtSlot();
         }
         setMainState(9);
@@ -700,18 +700,18 @@ void PatternSelectMenu::updatePopupClose() {
 }
 
 void PatternSelectMenu::updatePopupDone() {
-    if (((PopupChoiceMenuBody *)&unk_128)->isClosed()) {
+    if (((PopupChoiceMenuBody *)&popup)->isClosed()) {
         onPopupChoice();
     }
 }
 
 void PatternSelectMenu::updateBarTransition() {
-    if (unk_54c.stepPress()) {
-        if (unk_4e8.getAnim()) {
-            s32 a = unk_54c.getPressOffset();
-            s32 b = unk_54c.getTargetX(-1);
-            s32 c = unk_54c.getTargetY(-1);
-            unk_4e8.warpTo(a + b, a + c);
+    if (bottomButtons.stepPress()) {
+        if (cursor.getAnim()) {
+            s32 a = bottomButtons.getPressOffset();
+            s32 b = bottomButtons.getTargetX(-1);
+            s32 c = bottomButtons.getTargetY(-1);
+            cursor.warpTo(a + b, a + c);
         }
     } else {
         closeWithoutChoice();
@@ -724,7 +724,7 @@ void PatternSelectMenu::startTouchInput() {
 }
 
 void PatternSelectMenu::startButtonInput() {
-    unk_6b6 = 9;
+    balloonSlot = 9;
     showCursor();
     restartKeyRepeat();
     updateNameLabel();
@@ -741,7 +741,7 @@ void PatternSelectMenu::resumeInput() {
 
 void PatternSelectMenu::closeWithoutChoice() {
     hideCursor();
-    unk_428.hide(1);
+    nameBalloon.hide(1);
     setFlags(0x10);
     transitionState = 3;
     MenuCtrl_SetResult(0);
@@ -755,7 +755,7 @@ s32 PatternSelectMenu::getSlotY(u32 i) { return sPatternSelectSlotY[i] - 0x10; }
 
 u32 PatternSelectMenu::findTouchedSlot() {
     u8 i;
-    if (unk_54c.isTouched(9)) {
+    if (bottomButtons.isTouched(9)) {
         return 8;
     }
     s32 x = gTouchCurX;
@@ -779,28 +779,28 @@ u32 PatternSelectMenu::findTouchedSlot() {
 void PatternSelectMenu::refreshNameLabel() {
     u8 a[0x20];
     u8 b[0x28];
-    s32 x = getSlotY(unk_6b6);
+    s32 x = getSlotY(balloonSlot);
     x -= 0x84;
     if (MenuCtrl_IsButtons()) {
         x -= 0xa;
     }
-    _ZN12LabelBalloon6setPosEii(&unk_428, getSlotX(unk_6b6) - 0x78, x);
+    _ZN12LabelBalloon6setPosEii(&nameBalloon, getSlotX(balloonSlot) - 0x78, x);
     _ZN18EncodedString16BufC1Ev(a);
-    _ZN11PatternInfo15getTitleEncodedEP18EncodedString16Buf(_ZN7Pattern7getInfoEv(_ZN14PlayerPatterns17getPatternByOrderEj(_ZN10PlayerData11getPatternsEv(PlayerData_GetCurrent()), unk_6b6)), a);
+    _ZN11PatternInfo15getTitleEncodedEP18EncodedString16Buf(_ZN7Pattern7getInfoEv(_ZN14PlayerPatterns17getPatternByOrderEj(_ZN10PlayerData11getPatternsEv(PlayerData_GetCurrent()), balloonSlot)), a);
     _ZN16LabelBalloonTextC1Ev(b);
     StrBuf_GameToAscii(b, a);
-    _ZN12LabelBalloon7setTextEP6StrBuf(&unk_428, b);
+    _ZN12LabelBalloon7setTextEP6StrBuf(&nameBalloon, b);
     _ZN16LabelBalloonTextD1Ev(b);
     _ZN18EncodedString16BufD1Ev(a);
 }
 
 void PatternSelectMenu::updateNameLabel() {
-    u32 v = unk_6b8;
+    u32 v = cursorSlot;
     if (v <= 7) {
-        unk_6b6 = v;
-        unk_428.queueOpen();
+        balloonSlot = v;
+        nameBalloon.queueOpen();
     } else {
-        unk_428.hide(1);
+        nameBalloon.hide(1);
     }
 }
 
@@ -827,21 +827,21 @@ void PatternSelectMenu::setPopupChoices() {
 u32 PatternSelectMenu::getPopupRowValue(u32 i) { return *((u8 *)this + i + 0x421); }
 
 void PatternSelectMenu::openPopup() {
-    ((PopupChoiceMenuBody *)&unk_128)->setRowsFromIds((PopupChoiceIdList *)((u8 *)this + 0x41c), 0);
-    s32 a = getSlotX(unk_6b7) - 0x18;
-    s32 b = getSlotY(unk_6b7) - 0x10;
-    unk_128.placeAbove(a, b);
-    PopupChoice_Open(&unk_128, 0);
+    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds((PopupChoiceIdList *)((u8 *)this + 0x41c), 0);
+    s32 a = getSlotX(selectedSlot) - 0x18;
+    s32 b = getSlotY(selectedSlot) - 0x10;
+    popup.placeAbove(a, b);
+    PopupChoice_Open(&popup, 0);
     setMainState(7);
 }
 
 void PatternSelectMenu::onPopupChoice() {
-    switch (unk_6b9) {
+    switch (popupChoice) {
     case 0:
-        MenuCtrl_SetIndex(unk_6b7);
+        MenuCtrl_SetIndex(selectedSlot);
         MenuCtrl_SetResult(1);
         transitionState = 3;
-        unk_428.hide(1);
+        nameBalloon.hide(1);
         setPhase(1);
         break;
     case 1:
@@ -854,17 +854,17 @@ void PatternSelectMenu::onPopupChoice() {
 void PatternSelectMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    unk_4e8.warpTo(a, b);
-    if (unk_6b8 == 8) {
-        ((MenuCursor *)&unk_4e8)->setAnimIfChanged(7);
+    cursor.warpTo(a, b);
+    if (cursorSlot == 8) {
+        ((MenuCursor *)&cursor)->setAnimIfChanged(7);
     } else {
-        ((MenuCursor *)&unk_4e8)->setAnimIfChanged(1);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     }
     refreshCursor();
 }
 
 s32 PatternSelectMenu::getCursorTargetX() {
-    s32 t = getSlotX(unk_6b8);
+    s32 t = getSlotX(cursorSlot);
     if (testFlags(8)) {
         t += 0x100;
     } else if (testFlags(4)) {
@@ -874,74 +874,74 @@ s32 PatternSelectMenu::getCursorTargetX() {
     return t;
 }
 
-s32 PatternSelectMenu::getCursorTargetY() { return getSlotY(unk_6b8) - 0xb; }
+s32 PatternSelectMenu::getCursorTargetY() { return getSlotY(cursorSlot) - 0xb; }
 
 void PatternSelectMenu::hideCursor() {
-    ((MenuCursor *)&unk_4e8)->setAnimIfChanged(0);
-    unk_4e8.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void PatternSelectMenu::moveCursorToTarget() {
     if (testFlags(2)) {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        unk_4e8.warpTo(a, b);
+        cursor.warpTo(a, b);
         clearFlags(2);
     } else {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        unk_4e8.moveToEase(a, b, 3, 1);
-        unk_6bb = mainState;
+        cursor.moveToEase(a, b, 3, 1);
+        returnState = mainState;
         setMainState(5);
     }
 }
 
 void PatternSelectMenu::moveCursorToPopupRow() {
-    s32 a = ((PopupChoiceMenuBody *)&unk_128)->getRowX();
-    s32 b = ((PopupChoiceMenuBody *)&unk_128)->getRowY(unk_6ba);
-    unk_4e8.moveToLinear(a, b, 2);
-    unk_6bb = mainState;
+    s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
+    cursor.moveToLinear(a, b, 2);
+    returnState = mainState;
     setMainState(5);
 }
 
 void PatternSelectMenu::cancelPopup() {
-    unk_6b9 = 1;
-    unk_6ba = PopupChoice_DecideCancel(&unk_128);
-    s32 a = ((PopupChoiceMenuBody *)&unk_128)->getRowX();
-    s32 b = ((PopupChoiceMenuBody *)&unk_128)->getRowY(unk_6ba);
-    unk_4e8.warpTo(a, b);
-    unk_4e8.setAnimAtEnd(8);
+    popupChoice = 1;
+    popupRow = PopupChoice_DecideCancel(&popup);
+    s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
+    cursor.warpTo(a, b);
+    cursor.setAnimAtEnd(8);
     setMainState(8);
 }
 
 void PatternSelectMenu::showCursorAtSlot() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    unk_4e8.warpTo(a, b);
-    ((MenuCursor *)&unk_4e8)->setAnimIfChanged(1);
+    cursor.warpTo(a, b);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(1);
 }
 
 void PatternSelectMenu::cursorToPopupTop() {
-    unk_6ba = 0;
-    s32 a = ((PopupChoiceMenuBody *)&unk_128)->getRowX();
-    s32 b = ((PopupChoiceMenuBody *)&unk_128)->getRowY(unk_6ba);
-    unk_4e8.warpTo(a, b);
-    ((MenuCursor *)&unk_4e8)->setAnimIfChanged(7);
+    popupRow = 0;
+    s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
+    cursor.warpTo(a, b);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(7);
 }
 
 void PatternSelectMenu::refreshCursor() {
-    unk_4e8.setPoseIdle();
-    unk_4e8.vfunc_0c();
+    cursor.setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 BOOL PatternSelectMenu::stepCursorRight(u32 lo, u32 hi) {
-    u32 v = unk_6b8;
+    u32 v = cursorSlot;
     if (v >= lo && v <= hi) {
         if (v == hi) {
             setFlags(8);
-            unk_6b8 = lo;
+            cursorSlot = lo;
         } else {
-            unk_6b8 = v + 1;
+            cursorSlot = v + 1;
         }
         return TRUE;
     }
@@ -949,13 +949,13 @@ BOOL PatternSelectMenu::stepCursorRight(u32 lo, u32 hi) {
 }
 
 BOOL PatternSelectMenu::stepCursorLeft(u32 lo, u32 hi) {
-    u32 v = unk_6b8;
+    u32 v = cursorSlot;
     if (v >= lo && v <= hi) {
         if (v == lo) {
-            unk_6b8 = hi;
+            cursorSlot = hi;
             setFlags(4);
         } else {
-            unk_6b8 = v - 1;
+            cursorSlot = v - 1;
         }
         return TRUE;
     }
@@ -963,25 +963,25 @@ BOOL PatternSelectMenu::stepCursorLeft(u32 lo, u32 hi) {
 }
 
 BOOL PatternSelectMenu::cursorRowUp(u32 lo, u32 hi, u32 to) {
-    u32 v = unk_6b8;
+    u32 v = cursorSlot;
     if (v >= lo && v <= hi) {
-        unk_6b8 = v + (to - lo);
+        cursorSlot = v + (to - lo);
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL PatternSelectMenu::cursorRowDown(u32 lo, u32 hi, u32 to) {
-    u32 v = unk_6b8;
+    u32 v = cursorSlot;
     if (v >= lo && v <= hi) {
-        unk_6b8 = v + (to - lo);
+        cursorSlot = v + (to - lo);
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL PatternSelectMenu::moveCursorByPad(void *pad) {
-    u32 prev = unk_6b8;
+    u32 prev = cursorSlot;
     clearFlags(0xc);
     if (MenuKeys_HasLeft(pad)) {
         if (!stepCursorLeft(0, 3)) {
@@ -995,37 +995,37 @@ BOOL PatternSelectMenu::moveCursorByPad(void *pad) {
     if (!testFlags(0xc)) {
         if (MenuKeys_HasUp(pad)) {
             if (!cursorRowUp(4, 7, 0)) {
-                if (unk_6b8 == 8) {
-                    unk_6b8 = 7;
-                    ((MenuCursor *)&unk_4e8)->switchToAnim01();
+                if (cursorSlot == 8) {
+                    cursorSlot = 7;
+                    ((MenuCursor *)&cursor)->switchToAnim01();
                 }
             }
         } else if (MenuKeys_HasDown(pad)) {
             if (!cursorRowDown(0, 3, 4)) {
-                u32 t = unk_6b8;
+                u32 t = cursorSlot;
                 if (t >= 4 && t <= 7) {
-                    unk_6b8 = 8;
-                    ((MenuCursor *)&unk_4e8)->switchToAnim07();
+                    cursorSlot = 8;
+                    ((MenuCursor *)&cursor)->switchToAnim07();
                 }
             }
         }
     }
-    if (prev != unk_6b8) {
+    if (prev != cursorSlot) {
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL PatternSelectMenu::testFlags(u32 mask) {
-    if (unk_6b4 & mask) {
+    if (flags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void PatternSelectMenu::setFlags(u32 mask) { unk_6b4 = unk_6b4 | mask; }
+void PatternSelectMenu::setFlags(u32 mask) { flags = flags | mask; }
 
-void PatternSelectMenu::clearFlags(u32 mask) { unk_6b4 = unk_6b4 & ~mask; }
+void PatternSelectMenu::clearFlags(u32 mask) { flags = flags & ~mask; }
 
 extern "C" const u8 sPatternSelectSlotX[9] = {0x28, 0x60, 0x98, 0xd0, 0x38, 0x70, 0xa8, 0xe0, 0xb9};
 extern "C" const u8 sPatternSelectSlotY[9] = {0x7c, 0x7c, 0x7c, 0x7c, 0xa4, 0xa4, 0xa4, 0xa4, 0xd1};

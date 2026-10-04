@@ -80,10 +80,10 @@ static inline BOOL Unk_0205d4e4_IsOne(u8 v) {
 
 class PlayerGlassesModelPool {
 public:
-    void *unk_00[4];
-    TexVramSlot unk_10[4];
-    TexVramTask unk_60[4];
-    u8 unk_d0[4];
+    void *buffers[4];
+    TexVramSlot vramSlots[4];
+    TexVramTask texTasks[4];
+    u8 modelIds[4];
 
     PlayerGlassesModelPool();
     ~PlayerGlassesModelPool();
@@ -170,8 +170,8 @@ extern "C" s32 PlayerGlassesModel_GetPlttVramSize() { return 0x60; }
 PlayerGlassesModelPool::PlayerGlassesModelPool() {
     s32 i;
     for (i = 0; i < 4; i++) {
-        unk_00[i] = NULL;
-        unk_d0[i] = 0x4b;
+        buffers[i] = NULL;
+        modelIds[i] = 0x4b;
     }
 }
 
@@ -181,35 +181,35 @@ void PlayerGlassesModelPool::allocBuffers(void) {
     u32 n = *(u8 *)(gCommManager + 0x6c);
     u32 i;
     for (i = 0; i < n; i++) {
-        unk_10[i].alloc((void *)PlayerGlassesModel_GetTexVramSize(), (void *)PlayerGlassesModel_GetTex4x4VramSize(), (void *)PlayerGlassesModel_GetPlttVramSize());
+        vramSlots[i].alloc((void *)PlayerGlassesModel_GetTexVramSize(), (void *)PlayerGlassesModel_GetTex4x4VramSize(), (void *)PlayerGlassesModel_GetPlttVramSize());
     }
     void *heap = gPlayerGlassesModelHeap;
     for (i = 0; i < n; i++) {
-        unk_00[i] = Heap_AllocAligned(heap, PlayerGlassesModel_GetBufferSize(), 4);
+        buffers[i] = Heap_AllocAligned(heap, PlayerGlassesModel_GetBufferSize(), 4);
     }
 }
 
 void PlayerGlassesModelPool::freeBuffers(void) {
     s32 i;
     for (i = 0; i < 4; i++) {
-        unk_10[i].clear();
+        vramSlots[i].clear();
     }
     for (i = 0; i < 4; i++) {
-        unk_00[i] = NULL;
+        buffers[i] = NULL;
     }
     if (gPlayerGlassesModelHeap) {
         func_020e885c(gPlayerGlassesModelHeap);
     }
     for (i = 0; i < 4; i++) {
-        unk_d0[i] = 0x4b;
+        modelIds[i] = 0x4b;
     }
 }
 
-void *PlayerGlassesModelPool::getBuffer(u32 i) { return unk_00[i]; }
-TexVramSlot *PlayerGlassesModelPool::getVramSlot(u32 i) { return &unk_10[i]; }
-TexVramTask *PlayerGlassesModelPool::getTexTask(u32 i) { return &unk_60[i]; }
-u8 PlayerGlassesModelPool::getModelId(u32 i) { return unk_d0[i]; }
-void PlayerGlassesModelPool::setModelId(u32 i, u32 v) { unk_d0[i] = v; }
+void *PlayerGlassesModelPool::getBuffer(u32 i) { return buffers[i]; }
+TexVramSlot *PlayerGlassesModelPool::getVramSlot(u32 i) { return &vramSlots[i]; }
+TexVramTask *PlayerGlassesModelPool::getTexTask(u32 i) { return &texTasks[i]; }
+u8 PlayerGlassesModelPool::getModelId(u32 i) { return modelIds[i]; }
+void PlayerGlassesModelPool::setModelId(u32 i, u32 v) { modelIds[i] = v; }
 
 extern "C" void PlayerGlassesModelRef_Init(u8 *p) {
     *p = 4;

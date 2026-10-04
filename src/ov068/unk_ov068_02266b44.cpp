@@ -54,22 +54,22 @@ struct Unk_ov068_02266680_Vec {
 
 struct Unk_ov068_02266bd0_Scene {
     u8 pad_00[4];
-    s32 unk_04, unk_08;
+    s32 state, unk_08;
     u8 pad_0c[8];
     s32 unk_14;
 };
 
 struct Unk_ov068_02266f30_Out {
-    void *unk_00;
-    u8 unk_04;
+    void *msgKey;
+    u8 msgIndex;
 };
 
 struct Unk_ov068_02266bd0_Owner {
     u8 pad_00[0x5c];
-    Unk_ov068_02266680_Vec unk_5c;
+    Unk_ov068_02266680_Vec position;
     u8 pad_68[0x564 - 0x68];
-    u8 unk_564[0x1b0];
-    Unk_ov068_02266680_Vec unk_714;
+    u8 actionCtrl[0x1b0];
+    Unk_ov068_02266680_Vec walkTarget;
 };
 
 struct Unk_ov068_0226fd68_Vec {
@@ -78,8 +78,8 @@ struct Unk_ov068_0226fd68_Vec {
 
 struct Unk_ov068_SceneEntry {
     void *(*factory)();
-    u16 unk_04;
-    u16 unk_06;
+    u16 executePriority;
+    u16 drawPriority;
     u32 unk_08;
     u32 unk_0c;
     u32 unk_10;
@@ -352,10 +352,10 @@ public:
     void setScript(s32 a);
     void attachOwner(FieldVillager *o);
 
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ u8 unk_b0;
+    /* 0xac */ s32 script;
+    /* 0xb0 */ u8 scriptStep;
     /* 0xb1 */ u8 pad_b1[3];
-    /* 0xb4 */ FieldVillager *unk_b4;
+    /* 0xb4 */ FieldVillager *owner;
 };
 
 typedef BOOL (SpNpcNookIntro::*Unk_ov068_02267238_Fn)();
@@ -395,13 +395,13 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    SpNpcNookIntroTalk unk_658;
-    u16 unk_710;
+    SpNpcNookIntroTalk talk;
+    u16 startAngle;
     u8 pad_712[2];
-    s32 unk_714;
-    s32 unk_718;
-    s32 unk_71c;
-    u8 unk_720;
+    s32 walkTargetX;
+    s32 walkTargetY;
+    s32 walkTargetZ;
+    u8 actTimer;
     u8 pad_721[3];
 };
 
@@ -467,8 +467,8 @@ BOOL SpNpcNookIntro::vfunc_04() {
         return FALSE;
     }
     NpcActor_setNpcHandle(this, &tbl[NookShop_GetLevel(&data_021ed104)].v);
-    NpcActor_setTalkRequest(this, &unk_658);
-    unk_658.attachOwner((FieldVillager *)this);
+    NpcActor_setTalkRequest(this, &talk);
+    talk.attachOwner((FieldVillager *)this);
     NpcMoveCtrl_setSpeedPreset(&moveCtrl, 2, 0x399, 0x133, 0x199);
     return TRUE;
 }
@@ -513,7 +513,7 @@ BOOL SpNpcNookIntro::vfunc_00() {
         return FALSE;
     }
     changeAct(0);
-    unk_710 = rotY;
+    startAngle = rotY;
     collider.unk_1c |= 2;
     void *p = PlayerData_GetCurrent();
     if (p != NULL) {
@@ -566,7 +566,7 @@ BOOL SpNpcNookIntro::mainAct00() {
 
 BOOL SpNpcNookIntro::setupAct01() {
     u32 x;
-    void *p = func_02015aac(&unk_658);
+    void *p = func_02015aac(&talk);
     x = 0;
     if (p != NULL) {
         x = NpcActor_getAngleTo(this, p);
@@ -598,8 +598,8 @@ BOOL SpNpcNookIntro::setupAct02() {
 
 BOOL SpNpcNookIntro::mainAct02() {
     if (PlayerActor_IsScriptedWalking(4) == 0) {
-        unk_658.vfunc_08();
-        func_02015ab0(&unk_658, NpcActor_getPlayerActor(this, 4));
+        talk.vfunc_08();
+        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
         changeAct(1);
     }
     return TRUE;
@@ -620,18 +620,18 @@ BOOL SpNpcNookIntro::mainAct03() {
 }
 
 BOOL SpNpcNookIntro::setupAct04() {
-    unk_714 = position;
-    unk_718 = positionY;
-    unk_71c = positionZ;
-    unk_714 -= 0x2000;
-    unk_71c += 0xa000;
-    NpcActionCtrl_requestAction(&actionCtrl, 2, 1, unk_714, unk_71c, 0, 0, 0, 0, data_020c6cc8, 0);
-    unk_720 = 0x3c;
+    walkTargetX = position;
+    walkTargetY = positionY;
+    walkTargetZ = positionZ;
+    walkTargetX -= 0x2000;
+    walkTargetZ += 0xa000;
+    NpcActionCtrl_requestAction(&actionCtrl, 2, 1, walkTargetX, walkTargetZ, 0, 0, 0, 0, data_020c6cc8, 0);
+    actTimer = 0x3c;
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::mainAct04() {
-    if (NpcActionCtrl_isActionDone(&actionCtrl) != 0 || func_020e7518(&unk_720) == 0) {
+    if (NpcActionCtrl_isActionDone(&actionCtrl) != 0 || func_020e7518(&actTimer) == 0) {
         TalkRequest_SetTargetDone(this);
         if (PlayerData_GetCurrent()) {
             GameStart_Clear();
@@ -641,12 +641,12 @@ BOOL SpNpcNookIntro::mainAct04() {
 }
 
 BOOL SpNpcNookIntro::setupAct05() {
-    unk_720 = 10;
+    actTimer = 10;
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::mainAct05() {
-    if (func_020e7518(&unk_720) == 0) {
+    if (func_020e7518(&actTimer) == 0) {
         Bgm_ReleasePriority(0x13);
         Bgm_RequestSilence(0x12, 5, 5);
         ProcBase_RequestDelete(this);
@@ -661,7 +661,7 @@ SpNpcNookIntroTalk::~SpNpcNookIntroTalk() {
 
 void SpNpcNookIntroTalk::attachOwner(FieldVillager *o) {
     vfunc_08();
-    unk_b4 = o;
+    owner = o;
 }
 
 void SpNpcNookIntroTalk::start(Unk_ov068_02266f30_Out *out) {
@@ -669,8 +669,8 @@ void SpNpcNookIntroTalk::start(Unk_ov068_02266f30_Out *out) {
     if (p != 0) {
         Unk_02097ff4_clearFlag(p, 0x23);
     }
-    out->unk_00 = sNookIntroMsgFilePtr;
-    out->unk_04 = 0x22;
+    out->msgKey = sNookIntroMsgFilePtr;
+    out->msgIndex = 0x22;
 }
 
 void SpNpcNookIntroTalk::onMessageEnd() {
@@ -726,64 +726,64 @@ void SpNpcNookIntroTalk::onChoice() {
 }
 
 void SpNpcNookIntroTalk::update() {
-    if (data_ov068_0226fe1c[unk_ac].flag != 0) {
-        if (sNookIntroTalkScripts[unk_ac].fn) {
-            (this->*sNookIntroTalkScripts[unk_ac].fn)();
+    if (data_ov068_0226fe1c[script].flag != 0) {
+        if (sNookIntroTalkScripts[script].fn) {
+            (this->*sNookIntroTalkScripts[script].fn)();
         }
     }
 }
 
 void SpNpcNookIntroTalk::onTaskDone() {
-    if (data_ov068_0226fe1c[unk_ac].flag == 0) {
-        if (sNookIntroTalkScripts[unk_ac].fn) {
-            (this->*sNookIntroTalkScripts[unk_ac].fn)();
+    if (data_ov068_0226fe1c[script].flag == 0) {
+        if (sNookIntroTalkScripts[script].fn) {
+            (this->*sNookIntroTalkScripts[script].fn)();
             setScript(0);
         }
     }
 }
 
 void SpNpcNookIntroTalk::setScript(s32 a) {
-    unk_ac = a;
-    unk_b0 = 0;
+    script = a;
+    scriptStep = 0;
 }
 
 void SpNpcNookIntroTalk::runWalkScript() {
-    switch (unk_b0) {
+    switch (scriptStep) {
     case 0:
-        if (unk_3c->unk_04 == 5) {
+        if (unk_3c->state == 5) {
             Bgm_ReleasePriority(0x13);
             Bgm_Request(0x15, 0x47, 0x7f, 1);
             PlayerActor_SetNoFaceTalkTarget(0, 4);
-            Unk_ov068_02266bd0_Owner *o = (Unk_ov068_02266bd0_Owner *)unk_b4;
-            Unk_ov068_02266680_Vec *pv = &o->unk_5c;
-            Unk_ov068_02266680_Vec *pd = &o->unk_714;
+            Unk_ov068_02266bd0_Owner *o = (Unk_ov068_02266bd0_Owner *)owner;
+            Unk_ov068_02266680_Vec *pv = &o->position;
+            Unk_ov068_02266680_Vec *pd = &o->walkTarget;
             pd->x = pv->x;
             pd->y = pv->y;
             pd->z = pv->z;
-            o = (Unk_ov068_02266bd0_Owner *)unk_b4;
-            o->unk_714.x += 0x6000;
-            o = (Unk_ov068_02266bd0_Owner *)unk_b4;
-            NpcActionCtrl_requestAction(o->unk_564, 2, 2, o->unk_714.x, o->unk_714.z, 0, 0, 0, 0, data_020c6cc8, 0);
-            unk_b0 = 1;
+            o = (Unk_ov068_02266bd0_Owner *)owner;
+            o->walkTarget.x += 0x6000;
+            o = (Unk_ov068_02266bd0_Owner *)owner;
+            NpcActionCtrl_requestAction(o->actionCtrl, 2, 2, o->walkTarget.x, o->walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0);
+            scriptStep = 1;
         }
         break;
     case 1: {
-        Unk_ov068_02266bd0_Owner *o = (Unk_ov068_02266bd0_Owner *)unk_b4;
-        if (NpcActionCtrl_isActionDone(o->unk_564) != 0) {
-            o = (Unk_ov068_02266bd0_Owner *)unk_b4;
-            if (NpcActionCtrl_getAction(o->unk_564) == 2) {
-                o = (Unk_ov068_02266bd0_Owner *)unk_b4;
-                NpcActionCtrl_requestAction(o->unk_564, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-                unk_b0 = 2;
+        Unk_ov068_02266bd0_Owner *o = (Unk_ov068_02266bd0_Owner *)owner;
+        if (NpcActionCtrl_isActionDone(o->actionCtrl) != 0) {
+            o = (Unk_ov068_02266bd0_Owner *)owner;
+            if (NpcActionCtrl_getAction(o->actionCtrl) == 2) {
+                o = (Unk_ov068_02266bd0_Owner *)owner;
+                NpcActionCtrl_requestAction(o->actionCtrl, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                scriptStep = 2;
             }
         }
         break;
     }
     case 2: {
-        Unk_ov068_02266bd0_Owner *o = (Unk_ov068_02266bd0_Owner *)unk_b4;
-        if (NpcActionCtrl_isActionDone(o->unk_564) != 0) {
-            o = (Unk_ov068_02266bd0_Owner *)unk_b4;
-            if (NpcActionCtrl_getAction(o->unk_564) == 0) {
+        Unk_ov068_02266bd0_Owner *o = (Unk_ov068_02266bd0_Owner *)owner;
+        if (NpcActionCtrl_isActionDone(o->actionCtrl) != 0) {
+            o = (Unk_ov068_02266bd0_Owner *)owner;
+            if (NpcActionCtrl_getAction(o->actionCtrl) == 0) {
                 Unk_ov068_02266bd0_Scene *sc = unk_3c;
                 volatile u8 buf = gU8None;
                 if (GameStart_IsNewTown() != 0) {
@@ -793,9 +793,9 @@ void SpNpcNookIntroTalk::runWalkScript() {
                 }
                 TalkWindowState_setNextMessage(sc, (u8 *)&buf, sNookIntroMsgFilePtr);
                 sc->unk_08 = 1;
-                o = (Unk_ov068_02266bd0_Owner *)unk_b4;
+                o = (Unk_ov068_02266bd0_Owner *)owner;
                 Unk_ov068_02266680_Vec t;
-                Unk_ov068_02266680_Vec *pt = &o->unk_5c;
+                Unk_ov068_02266680_Vec *pt = &o->position;
                 t.x = pt->x;
                 t.y = pt->y;
                 t.z = pt->z;

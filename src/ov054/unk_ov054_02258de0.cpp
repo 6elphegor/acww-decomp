@@ -54,10 +54,10 @@ struct CommManager {
 
 struct Unk_ov054_0225b0ac_Local {
     u8 unk_00;
-    u8 unk_01;
-    u16 unk_02;
+    u8 hour;
+    u16 npcHandle;
     u16 unk_04;
-    u16 unk_06[3];
+    u16 spawnRot[3];
 };
 
 struct Unk_ov054_02258e58_Sub {
@@ -72,7 +72,7 @@ struct TalkStartMsg {
 
 struct Unk_ov054_0225aa98_Rec {
     s32 unk_00;
-    s32 unk_04;
+    s32 state;
 };
 
 struct Unk_ov054_0225a3cc_Data {
@@ -400,20 +400,20 @@ public:
     void endComm();
     void attachOwner(SpNpcPellyPhyllis *o);
 
-    /* 0xac */ SpNpcPellyPhyllis *unk_ac;
-    /* 0xb0 */ s32 unk_b0;
-    /* 0xb4 */ s32 unk_b4;
-    /* 0xb8 */ u8 unk_b8;
+    /* 0xac */ SpNpcPellyPhyllis *owner;
+    /* 0xb0 */ s32 menuKind;
+    /* 0xb4 */ s32 script;
+    /* 0xb8 */ u8 lettersGivenBack;
     /* 0xb9 */ u8 pad_b9[3];
-    /* 0xbc */ s32 unk_bc;
-    /* 0xc0 */ s32 unk_c0;
-    /* 0xc4 */ u16 unk_c4;
+    /* 0xbc */ s32 savingsBefore;
+    /* 0xc0 */ s32 donationBefore;
+    /* 0xc4 */ u16 netTimer;
     /* 0xc6 */ u8 pad_c6[0x1a8 - 0xc6];
 };
 
 class SpNpcPellyPhyllis : public SpNpcActor {
 public:
-    SpNpcPellyPhyllis() : unk_658() {}
+    SpNpcPellyPhyllis() : talk() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -454,14 +454,14 @@ public:
     void changeAct(s32 state);
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ SpNpcPellyPhyllisTalk unk_658;
-    /* 0x800 */ s16 unk_800;
+    /* 0x658 */ SpNpcPellyPhyllisTalk talk;
+    /* 0x800 */ s16 homeAngle;
     /* 0x802 */ u8 pad_802[2];
-    /* 0x804 */ s32 unk_804;
-    /* 0x808 */ s32 unk_808;
-    /* 0x80c */ u16 unk_80c;
-    /* 0x80e */ u16 unk_80e;
-    /* 0x810 */ u8 unk_810;
+    /* 0x804 */ s32 sister;
+    /* 0x808 */ s32 window;
+    /* 0x80c */ u16 dramaTimer;
+    /* 0x80e */ u16 standBlend;
+    /* 0x810 */ u8 dramaShown;
     /* 0x811 */ u8 pad_811[3];
 };
 
@@ -928,8 +928,8 @@ BOOL SpNpcPellyPhyllis::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     if (isOnline()) {
         BOOL m;
         if (Item_IsFurniture(&unk_ea)) {
@@ -947,41 +947,41 @@ BOOL SpNpcPellyPhyllis::vfunc_04() {
             }
         }
         if (m) {
-            unk_804 = 0;
-            unk_808 = 1;
+            sister = 0;
+            window = 1;
             position = sSpNpcPellyPhyllisCounterPos[1].a;
             positionY = sSpNpcPellyPhyllisCounterPos[1].b;
             positionZ = sSpNpcPellyPhyllisCounterPos[1].c;
-            l.unk_06[0] = 0;
-            l.unk_06[1] = 0;
-            l.unk_06[2] = 0;
+            l.spawnRot[0] = 0;
+            l.spawnRot[1] = 0;
+            l.spawnRot[2] = 0;
             vec.x = sSpNpcPellyPhyllisCounterPos[0].a;
             vec.y = sSpNpcPellyPhyllisCounterPos[0].b;
             vec.z = sSpNpcPellyPhyllisCounterPos[0].c;
-            Actor_spawn(0x7a, sSpNpcPellyPhyllisHandles[1], &vec, &l.unk_06[0], this);
+            Actor_spawn(0x7a, sSpNpcPellyPhyllisHandles[1], &vec, &l.spawnRot[0], this);
         } else {
-            unk_804 = 1;
-            unk_808 = 0;
+            sister = 1;
+            window = 0;
             position = sSpNpcPellyPhyllisCounterPos[0].a;
             positionY = sSpNpcPellyPhyllisCounterPos[0].b;
             positionZ = sSpNpcPellyPhyllisCounterPos[0].c;
         }
     } else {
         Clock_GetMinuteHour(&l);
-        u8 b = l.unk_01;
-        unk_804 = 0;
+        u8 b = l.hour;
+        sister = 0;
         if (!GameStart_IsActive()) {
             if (b >= 0x16 || b < 7) {
-                unk_804 = 1;
+                sister = 1;
             }
         }
         NpcMoveCtrl_setSpeedPreset(&moveCtrl, 2, 0x399, 0xcc, 0x133);
-        l.unk_02 = sSpNpcPellyPhyllisHandles[unk_804];
-        setNpcHandle(&l.unk_02);
-        unk_ea = sSpNpcPellyPhyllisHandles[unk_804];
+        l.npcHandle = sSpNpcPellyPhyllisHandles[sister];
+        setNpcHandle(&l.npcHandle);
+        unk_ea = sSpNpcPellyPhyllisHandles[sister];
     }
     setInteractionRange(0x5000);
-    unk_80e = data_020c6cc8;
+    standBlend = data_020c6cc8;
     return TRUE;
 }
 
@@ -1003,11 +1003,11 @@ BOOL SpNpcPellyPhyllis::vfunc_00() {
             changeAct(2);
         }
     }
-    unk_800 = rotY;
+    homeAngle = rotY;
     collider.unk_1c |= 2;
-    if (unk_804 == 0) {
+    if (sister == 0) {
         Bgm_Request(0x11, 0x55, 0x7f, 0);
-    } else if (unk_804 == 1) {
+    } else if (sister == 1) {
         if (!isOnline()) {
             Bgm_Request(0x11, 0x56, 0x7f, 0);
         }
@@ -1019,9 +1019,9 @@ BOOL SpNpcPellyPhyllis::vfunc_0c() {
     if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
-    if (unk_804 == 0) {
+    if (sister == 0) {
         Bgm_Release(0x55);
-    } else if (unk_804 == 1) {
+    } else if (sister == 1) {
         if (!isOnline()) {
             Bgm_Release(0x56);
         }
@@ -1029,9 +1029,9 @@ BOOL SpNpcPellyPhyllis::vfunc_0c() {
     return TRUE;
 }
 
-u8 *SpNpcPellyPhyllis::getTexturePath() { return ((u8 **)sSpNpcPellyPhyllisTexturePaths)[unk_804]; }
+u8 *SpNpcPellyPhyllis::getTexturePath() { return ((u8 **)sSpNpcPellyPhyllisTexturePaths)[sister]; }
 
-u8 *SpNpcPellyPhyllis::getModelPath() { return ((u8 **)sSpNpcPellyPhyllisModelPaths)[unk_804]; }
+u8 *SpNpcPellyPhyllis::getModelPath() { return ((u8 **)sSpNpcPellyPhyllisModelPaths)[sister]; }
 
 BOOL SpNpcPellyPhyllis::updateAct() {
     BOOL r = FALSE;
@@ -1063,7 +1063,7 @@ BOOL SpNpcPellyPhyllis::updateWindow() {
     a = 0;
     b = 0;
     FieldPos_ToUnit(&a, &b, &v);
-    s32 old = unk_808;
+    s32 old = window;
     s32 i = 0;
     s32 z = i;
     for (; i < 2; i++) {
@@ -1075,12 +1075,12 @@ BOOL SpNpcPellyPhyllis::updateWindow() {
         w.z = q->z;
         FieldPos_ToUnit(&c, &d, &w);
         if (a == c && b == d) {
-            unk_808 = i;
+            window = i;
             break;
         }
     }
     BOOL r;
-    if (old == unk_808) {
+    if (old == window) {
         r = FALSE;
     } else {
         r = TRUE;
@@ -1113,15 +1113,15 @@ BOOL SpNpcPellyPhyllis::mainAct01() {
 }
 
 BOOL SpNpcPellyPhyllis::setupAct02() {
-    NpcActionCtrl_requestStand(&actionCtrl, 1, unk_80e);
-    unk_80c = 0xff;
-    if (unk_810 == 0) {
+    NpcActionCtrl_requestStand(&actionCtrl, 1, standBlend);
+    dramaTimer = 0xff;
+    if (dramaShown == 0) {
         s32 v;
         if (Talk_IsDramaPending(this, &v, 0)) {
-            unk_80c = Random_GlobalBelow(5) * 20 + 100;
+            dramaTimer = Random_GlobalBelow(5) * 20 + 100;
         }
     }
-    unk_80e = data_020c6cc8;
+    standBlend = data_020c6cc8;
     return TRUE;
 }
 
@@ -1129,10 +1129,10 @@ BOOL SpNpcPellyPhyllis::mainAct02() {
     if (!isOnline()) {
         if (updateWindow()) {
             changeAct(3);
-            NpcMoveCtrl_setTurnMode(&moveCtrl, data_ov054_0225b348[unk_808]);
+            NpcMoveCtrl_setTurnMode(&moveCtrl, data_ov054_0225b348[window]);
         }
-        if (unk_80c != 0xff) {
-            if (!func_020e7500(&unk_80c)) {
+        if (dramaTimer != 0xff) {
+            if (!func_020e7500(&dramaTimer)) {
                 changeAct(7);
             }
         }
@@ -1141,7 +1141,7 @@ BOOL SpNpcPellyPhyllis::mainAct02() {
 }
 
 BOOL SpNpcPellyPhyllis::setupAct03() {
-    u32 i = unk_808 * 12;
+    u32 i = window * 12;
     NpcActionCtrl_requestAction(&actionCtrl, 6, 1, *(s32 *)((u8 *)sSpNpcPellyPhyllisCounterPos + i), *(s32 *)(data_ov054_0225b3b4 + i), 0x800, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
@@ -1150,7 +1150,7 @@ BOOL SpNpcPellyPhyllis::mainAct03() {
     isOnline();
     if (updateWindow()) {
         changeAct(3);
-        NpcMoveCtrl_setTurnMode(&moveCtrl, data_ov054_0225b348[unk_808]);
+        NpcMoveCtrl_setTurnMode(&moveCtrl, data_ov054_0225b348[window]);
         return TRUE;
     }
     if (NpcActionCtrl_getAction(&actionCtrl) == 6) {
@@ -1180,7 +1180,7 @@ BOOL SpNpcPellyPhyllis::mainAct05() { return TRUE; }
 
 BOOL SpNpcPellyPhyllis::setupAct06() {
     NpcMoveCtrl_setTurnMode(&moveCtrl, 0);
-    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, unk_800, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -1212,7 +1212,7 @@ BOOL SpNpcPellyPhyllis::mainAct07() {
     v.z = p->z;
     if (NpcActionCtrl_getAction(&actionCtrl) == 10) {
         if (NpcActionCtrl_isActionDone(&actionCtrl)) {
-            unk_80e = 0x18;
+            standBlend = 0x18;
             changeAct(2);
         }
     }
@@ -1224,7 +1224,7 @@ BOOL SpNpcPellyPhyllis::setupAct08() { return TRUE; }
 BOOL SpNpcPellyPhyllis::mainAct08() {
     s32 a, b;
     s32 v[3];
-    if (TalkWindow_Get(0)->unk_04 == 5) {
+    if (TalkWindow_Get(0)->state == 5) {
         Taxi_SetLeaving();
         void *r = TownBlockMap_Get();
         if (r) {
@@ -1246,8 +1246,8 @@ BOOL SpNpcPellyPhyllis::mainAct09() {
         s32 b = 4;
         if (NpcActor_netGetSlots(this, &a, &b) && a == gCommManager->unk_64 && a == b) {
             netSetSlotsIfOwner(1, gCommManager->unk_64, gCommManager->unk_64);
-            unk_658.vfunc_08();
-            func_02015ab0(&unk_658, getPlayerActor(4));
+            talk.vfunc_08();
+            func_02015ab0(&talk, getPlayerActor(4));
             changeAct(4);
         } else if (NetArea_IsLocalOwner() && b == 4) {
             netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
@@ -1285,7 +1285,7 @@ SpNpcPellyPhyllisTalk::~SpNpcPellyPhyllisTalk() {}
 
 void SpNpcPellyPhyllisTalk::attachOwner(SpNpcPellyPhyllis *o) {
     vfunc_08();
-    unk_ac = o;
+    owner = o;
 }
 
 void SpNpcPellyPhyllisTalk::endComm() {
@@ -1300,7 +1300,7 @@ void SpNpcPellyPhyllisTalk::start(TalkStartMsg *out) {
     void *g1 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(g0));
     BOOL r7 = r4;
     u16 v[3];
-    if (unk_ac->isOnline()) {
+    if (owner->isOnline()) {
         r7 = TRUE;
         goto end;
     }
@@ -1324,27 +1324,27 @@ void SpNpcPellyPhyllisTalk::start(TalkStartMsg *out) {
         r4 = 0;
         goto end;
     }
-    if (unk_ac->unk_810 == 0) {
-        if (Talk_IsDramaPending(unk_ac, v, r4)) {
+    if (owner->dramaShown == 0) {
+        if (Talk_IsDramaPending(owner, v, r4)) {
             Unk_ov054_0225a7c4_Bits *b = (Unk_ov054_0225a7c4_Bits *)v;
             out->msgIndex = *(sSpNpcPellyPhyllisDramaMsgTable + b->mid * 6 + b->hi);
             r4 = 1;
-            unk_ac->unk_810 = r4;
+            owner->dramaShown = r4;
             goto end;
         }
     }
     r7 = TRUE;
 end:
     if (r7) {
-        out->msgIndex = sSpNpcPellyPhyllisGreetingMsgs[unk_ac->unk_808];
+        out->msgIndex = sSpNpcPellyPhyllisGreetingMsgs[owner->window];
         r4 = 0;
-        if (unk_ac->unk_808 == 0) {
-            if (unk_ac->isLocalSlotActive()) {
+        if (owner->window == 0) {
+            if (owner->isLocalSlotActive()) {
                 out->msgIndex = 8;
             }
         }
     }
-    out->msgKey = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][r4];
+    out->msgKey = sSpNpcPellyPhyllisMsgKeys[owner->sister][r4];
 }
 
 u32 SpNpcPellyPhyllisTalk::getMailResultMsg() {
@@ -1377,15 +1377,15 @@ u32 SpNpcPellyPhyllisTalk::getMailAcceptedMsg() {
 }
 
 void SpNpcPellyPhyllisTalk::giveBackLetters() {
-    if (unk_b8 == 0) {
+    if (lettersGivenBack == 0) {
         u16 v = 0x1565;
         Unk_020d7710_requestGiveItem(this, &v, 0, 5, 1);
-        unk_b8 = 1;
+        lettersGivenBack = 1;
     }
 }
 
 void SpNpcPellyPhyllisTalk::update() {
-    s32 i = unk_b4;
+    s32 i = script;
     if (data_ov054_0225bb08[i].flag != 0) {
         Unk_ov054_0225b9c4_Ent *e = &sSpNpcPellyPhyllisTalkScripts[i];
         if (e->fn) {
@@ -1395,7 +1395,7 @@ void SpNpcPellyPhyllisTalk::update() {
 }
 
 void SpNpcPellyPhyllisTalk::onTaskDone() {
-    s32 i = unk_b4;
+    s32 i = script;
     if (data_ov054_0225bb08[i].flag == 0) {
         Unk_ov054_0225b9c4_Ent *e = &sSpNpcPellyPhyllisTalkScripts[i];
         if (e->fn) {
@@ -1405,15 +1405,15 @@ void SpNpcPellyPhyllisTalk::onTaskDone() {
 }
 
 void SpNpcPellyPhyllisTalk::setScript(s32 v) {
-    unk_b4 = v;
+    script = v;
 }
 
 void SpNpcPellyPhyllisTalk::onMailLettersDone() {
     void *m = unk_3c;
-    u32 cb = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0];
+    u32 cb = sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     s32 r4 = 0;
     u16 v[2];
-    unk_b8 = r4;
+    lettersGivenBack = r4;
     if (MenuCtrl_IsResultOk()) {
         switch (MenuCtrl_GetPostOfficeOutcome()) {
         case 0:
@@ -1450,7 +1450,7 @@ void SpNpcPellyPhyllisTalk::onMailLettersDone() {
 
 void SpNpcPellyPhyllisTalk::onLetterStorageDone() {
     void *m = unk_3c;
-    u32 cb = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0];
+    u32 cb = sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     u8 buf[1];
     s32 r1;
     if (MenuCtrl_IsResultOk()) {
@@ -1465,7 +1465,7 @@ void SpNpcPellyPhyllisTalk::onLetterStorageDone() {
 
 void SpNpcPellyPhyllisTalk::onDonationEntered() {
     void *m = unk_3c;
-    u32 cb = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0];
+    u32 cb = sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     s32 r4, r6;
     u16 v[3];
     if (MenuCtrl_IsResultOk()) {
@@ -1479,8 +1479,8 @@ void SpNpcPellyPhyllisTalk::onDonationEntered() {
         v[1] = 0x149b;
         Unk_02014420_requestTakeItem(this, &v[1], 0, 5, 1);
         setScript(10);
-        unk_c0 = Donation_GetTotal(Unk_02097ff4_getBankAccount(PlayerData_GetCurrent()));
-        Donation_SetTotal(unk_c0 + r4);
+        donationBefore = Donation_GetTotal(Unk_02097ff4_getBankAccount(PlayerData_GetCurrent()));
+        Donation_SetTotal(donationBefore + r4);
     } else {
         r6 = 0x1c;
         Unk_020d7710_requestReopenWindow(this);
@@ -1492,10 +1492,10 @@ void SpNpcPellyPhyllisTalk::onDonationEntered() {
 
 void SpNpcPellyPhyllisTalk::onTownTuneDone() {
     void *m = unk_3c;
-    u32 cb = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0];
+    u32 cb = sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     u8 buf[1];
     s32 r4;
-    if (unk_ac->isLocalSlotActive()) {
+    if (owner->isLocalSlotActive()) {
         if (MenuCtrl_IsResultOk()) {
             r4 = 0x63;
         } else {
@@ -1515,7 +1515,7 @@ void SpNpcPellyPhyllisTalk::onTownTuneDone() {
 
 void SpNpcPellyPhyllisTalk::onFutureLetterDateEntered() {
     void *m = unk_3c;
-    u32 cb[1] = { sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0]};
+    u32 cb[1] = { sSpNpcPellyPhyllisMsgKeys[owner->sister][0]};
     s32 r4;
     Unk_ov054_0225a3cc_Msg l;
     if (MenuCtrl_IsResultOk()) {
@@ -1540,7 +1540,7 @@ void SpNpcPellyPhyllisTalk::onFutureLetterDateEntered() {
 
 void SpNpcPellyPhyllisTalk::onLoanPaymentEntered() {
     void *m = unk_3c;
-    u32 cb = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0];
+    u32 cb = sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     s32 r5;
     u16 v[2];
     if (MenuCtrl_IsResultOk()) {
@@ -1567,7 +1567,7 @@ void SpNpcPellyPhyllisTalk::onLoanPaymentEntered() {
 
 void SpNpcPellyPhyllisTalk::onSavingsDone() {
     void *m = unk_3c;
-    u32 cb = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0];
+    u32 cb = sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     s32 r4;
     u16 v[3];
     if (MenuCtrl_IsResultOk()) {
@@ -1575,7 +1575,7 @@ void SpNpcPellyPhyllisTalk::onSavingsDone() {
         ActorTalkRequest_setNumberSlot(this, r6, 5, 10, 1, 0);
         ActorTalkRequest_setNumberSlot(this, func_02133150(r6, 200), 6, 10, 1, 0);
         r4 = 0x17;
-        if (r6 > unk_bc) {
+        if (r6 > savingsBefore) {
             v[1] = 0x149b;
             Unk_02014420_requestTakeItem(this, &v[1], 0, 5, 1);
         } else {
@@ -1607,7 +1607,7 @@ extern "C" BOOL SpNpcPellyPhyllis_IsDeliveryItem(u16 *p, s32 k) {
 void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
     void *m = unk_3c;
     void *p;
-    u32 cb = sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0];
+    u32 cb = sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     s32 r4 = 0x51;
     u16 v[3];
     if (MenuCtrl_IsResultOk()) {
@@ -1636,7 +1636,7 @@ void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
             }
             if (!same) {
                 Unk_02014420_requestTakeItem(this, &v[1], 2, 5, 1);
-                if (!ParcelErrand_IsFor(p, &unk_ac->unk_ea)) {
+                if (!ParcelErrand_IsFor(p, &owner->unk_ea)) {
                     r4 = 0x57;
                 } else {
                     r4 = 0x50;
@@ -1651,7 +1651,7 @@ void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
 }
 
 void SpNpcPellyPhyllisTalk::startMailboxSave() {
-    if (unk_ac->canStartSave()) {
+    if (owner->canStartSave()) {
         SaveManager_RequestAct12();
         setScript(9);
     }
@@ -1664,7 +1664,7 @@ void SpNpcPellyPhyllisTalk::waitMailboxSave() {
         TalkWindowState_hideBusyIcon(m);
         TalkWindowState_unlockAdvance(m);
         buf[0] = 2;
-        TalkWindowState_setNextMessage(m, buf, sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0]);
+        TalkWindowState_setNextMessage(m, buf, sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
         setScript(0);
     } else if (SaveManager_IsIdle()) {
         TalkWindowState_hideBusyIcon(m);
@@ -1687,12 +1687,12 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
     u8 i;
     v[0] = 0;
     v[1] = 0;
-    v[2] = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + unk_ac->unk_804 * 12);
+    v[2] = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12);
     s32 n = func_020eae78(Comm_SendEmpty());
-    if (func_020e7500(&unk_c4) == 0) {
+    if (func_020e7500(&netTimer) == 0) {
         endComm();
         buf[0] = 0x37;
-        TalkWindowState_setNextMessage(ctx, buf, (u32)*(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + unk_ac->unk_804 * 12));
+        TalkWindowState_setNextMessage(ctx, buf, (u32)*(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12));
         TalkWindowState_hideBusyIcon(ctx);
         TalkWindowState_unlockAdvance(ctx);
         setScript(0);
@@ -1725,7 +1725,7 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
                         } else {
                             endComm();
                             buf[2] = 0x37;
-                            TalkWindowState_setNextMessage(ctx, &buf[2], (u32)*(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + unk_ac->unk_804 * 12));
+                            TalkWindowState_setNextMessage(ctx, &buf[2], (u32)*(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12));
                             TalkWindowState_hideBusyIcon(ctx);
                             TalkWindowState_unlockAdvance(ctx);
                             setScript(0);
@@ -1742,11 +1742,11 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
 
 void SpNpcPellyPhyllisTalk::waitMoveConnected() {
     void *ctx = unk_3c;
-    if (func_020e7500(&unk_c4) == 0) {
+    if (func_020e7500(&netTimer) == 0) {
         u8 msg;
         endComm();
         msg = 0x37;
-        TalkWindowState_setNextMessage(ctx, &msg, (u32)*(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + unk_ac->unk_804 * 12));
+        TalkWindowState_setNextMessage(ctx, &msg, (u32)*(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12));
         TalkWindowState_hideBusyIcon(ctx);
         TalkWindowState_unlockAdvance(ctx);
         setScript(0);
@@ -1758,7 +1758,7 @@ void SpNpcPellyPhyllisTalk::waitMoveConnected() {
 }
 
 void SpNpcPellyPhyllisTalk::startMoveSave() {
-    if (unk_ac->canStartSave()) {
+    if (owner->canStartSave()) {
         SaveManager_RequestAct1F();
         setScript(0xf);
     }
@@ -1773,7 +1773,7 @@ void SpNpcPellyPhyllisTalk::waitMoveSave() {
         TalkWindowState_hideBusyIcon(ctx);
         TalkWindowState_unlockAdvance(ctx);
         msg = 0x3c;
-        TalkWindowState_setNextMessage(ctx, &msg, (u32)*(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + unk_ac->unk_804 * 12));
+        TalkWindowState_setNextMessage(ctx, &msg, (u32)*(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12));
         setScript(0);
     }
 }
@@ -1813,7 +1813,7 @@ void SpNpcPellyPhyllisTalk::onMessageEnd(s32 a) {
         *(Unk_ov054_0225b9c4_FnI *)data_ov054_0225b798,
         *(Unk_ov054_0225b9c4_FnI *)data_ov054_0225b790,
     };
-    char *s = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + unk_ac->unk_804 * 12);
+    char *s = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12);
     s32 r = strncmp((u8 *)this + 4, s, func_0212a438(s));
     s32 i;
     if (GameStart_IsActive()) {
@@ -1830,7 +1830,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
     void *ctx = unk_3c;
     void *h = PlayerData_GetCurrent();
     void *hd = Unk_02097ff4_getBankAccount(h);
-    char *tbl = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + unk_ac->unk_804 * 12);
+    char *tbl = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12);
     s32 r5 = 0;
     u8 msg;
     u16 half0;
@@ -1890,7 +1890,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
         setScript(6);
         break;
     case 0x16:
-        unk_bc = PlayerBank_GetBalance(hd);
+        savingsBefore = PlayerBank_GetBalance(hd);
         Unk_020d7710_setSubSceneKind(this, 0x3b, 1);
         Unk_020d7710_openSubScene(this, 2);
         setScript(7);
@@ -1927,7 +1927,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
         TalkWindowState_showBusyIcon(ctx, 1);
         NetOverlay_LoadWireless();
         Comm_Start(2, 2, r5);
-        unk_c4 = 0x258;
+        netTimer = 0x258;
         setScript(0xc);
         break;
     case 0x3d:
@@ -2007,7 +2007,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
         break;
     case 0x3c:
         *(u32 *)((u8 *)ctx + 0x14) = 0;
-        unk_ac->changeAct(8);
+        owner->changeAct(8);
         break;
     }
     if (r5 != 0) {
@@ -2020,7 +2020,7 @@ void SpNpcPellyPhyllisTalk::onDramaMsgEnd(s32 a) {}
 
 void SpNpcPellyPhyllisTalk::onSequence4MsgEnd(s32 a) {
     void *ctx = unk_3c;
-    char *tbl = *(char **)((u8 *)data_ov054_0225b974 + unk_ac->unk_804 * 12);
+    char *tbl = *(char **)((u8 *)data_ov054_0225b974 + owner->sister * 12);
     u32 r4 = 0;
     u8 msg;
     switch (msgIndex) {
@@ -2054,7 +2054,7 @@ void SpNpcPellyPhyllisTalk::onChoice(s32 a) {
         *(Unk_ov054_0225b9c4_FnI *)data_ov054_0225b770,
         *(Unk_ov054_0225b9c4_FnI *)data_ov054_0225b768,
     };
-    char *s = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + unk_ac->unk_804 * 12);
+    char *s = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12);
     s32 r = strncmp((u8 *)this + 4, s, func_0212a438(s));
     s32 i;
     if (GameStart_IsActive()) {
@@ -2085,7 +2085,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
             Unk_020d7710_openSubScene(this, 0);
             setScript(0xb);
         } else if (r == 1) {
-            id = data_ov054_0225b344[unk_ac->unk_808];
+            id = data_ov054_0225b344[owner->window];
         }
         break;
     case 0:
@@ -2147,7 +2147,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     }
     if (id != 0xff) {
         m = id;
-        TalkWindowState_setNextMessage(o, &m, (u32)sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0]);
+        TalkWindowState_setNextMessage(o, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
     }
 }
 #else
@@ -2374,14 +2374,14 @@ void SpNpcPellyPhyllisTalk::onDramaChoice(s32 a) {
     s32 t = msgIndex;
     if (t >= 0 && t <= 0x19) {
         if (r == 1) {
-            id = data_ov054_0225b350[unk_ac->unk_808];
+            id = data_ov054_0225b350[owner->window];
             k = 0;
-        } else if (Talk_IsDramaPending(unk_ac, m, 0)) {
-            Talk_AdvanceDrama(unk_ac, m);
+        } else if (Talk_IsDramaPending(owner, m, 0)) {
+            Talk_AdvanceDrama(owner, m);
         }
     }
     if (id != 0xff) {
-        void *name = (void *)sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][k];
+        void *name = (void *)sSpNpcPellyPhyllisMsgKeys[owner->sister][k];
         m[1] = id;
         TalkWindowState_setNextMessage(o, &m[1], (u32)name);
     }
@@ -2406,22 +2406,22 @@ void SpNpcPellyPhyllisTalk::onSequence4Choice(s32 a) {
 void SpNpcPellyPhyllisTalk::openPostOfficeMenu(s32 a) {
     Unk_ov054_02258e58_Sub *o = unk_3c;
     void *g = PlayerData_GetCurrent();
-    unk_b0 = 0;
+    menuKind = 0;
     if (!Talk_IsInOwnTown()) {
-        unk_b0 = 2;
+        menuKind = 2;
     } else if (Unk_02097ff4_testFlag(g, 1) == 0 && HouseData_getDebt(gSaveHouse) != 0) {
-        if (unk_ac->isLocalSlotActive()) {
-            unk_b0 = 4;
+        if (owner->isLocalSlotActive()) {
+            menuKind = 4;
         } else {
-            unk_b0 = 1;
+            menuKind = 1;
         }
     } else {
-        if (unk_ac->isLocalSlotActive()) {
-            unk_b0 = 3;
+        if (owner->isLocalSlotActive()) {
+            menuKind = 3;
         }
     }
-    s32 n = sSpNpcPellyPhyllisMenuSizes[unk_b0];
-    TalkChoiceList_SetIndices(this, sSpNpcPellyPhyllisMenus[unk_b0], n, n - 1);
+    s32 n = sSpNpcPellyPhyllisMenuSizes[menuKind];
+    TalkChoiceList_SetIndices(this, sSpNpcPellyPhyllisMenus[menuKind], n, n - 1);
     TalkWindowState_openChoices(o, 1);
 }
 
@@ -2437,8 +2437,8 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMenuChoice(s32 a) {
                        *(Fn *)data_ov054_0225b818};
     static Fn *tbls[5] = {a2, a3, a1, a4, a5};
     static const s32 cnt[5] = {4, 5, 2, 3, 4};
-    if (idx < cnt[unk_b0]) {
-        (this->*tbls[unk_b0][idx])();
+    if (idx < cnt[menuKind]) {
+        (this->*tbls[menuKind][idx])();
     }
 }
 
@@ -2449,7 +2449,7 @@ void SpNpcPellyPhyllisTalk::startMailLetters() {
 
 void SpNpcPellyPhyllisTalk::showGoodbye() {
     u8 m = 1;
-    TalkWindowState_setNextMessage(unk_3c, &m, (u32)sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0]);
+    TalkWindowState_setNextMessage(unk_3c, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
 }
 
 void SpNpcPellyPhyllisTalk::openLetterStorage() {
@@ -2461,12 +2461,12 @@ void SpNpcPellyPhyllisTalk::openLetterStorage() {
 void SpNpcPellyPhyllisTalk::askLoanPayment() {
     ActorTalkRequest_setNumberSlot(this, HouseData_getDebt(gSaveHouse), 4, 10, 1, 0);
     u8 m = 0x12;
-    TalkWindowState_setNextMessage(unk_3c, &m, (u32)sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0]);
+    TalkWindowState_setNextMessage(unk_3c, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
 }
 
 void SpNpcPellyPhyllisTalk::askSavings() {
     u8 m = 0x16;
-    TalkWindowState_setNextMessage(unk_3c, &m, (u32)sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0]);
+    TalkWindowState_setNextMessage(unk_3c, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
 }
 
 void SpNpcPellyPhyllisTalk::updateDonationLevel(s32 a) {
@@ -2474,7 +2474,7 @@ void SpNpcPellyPhyllisTalk::updateDonationLevel(s32 a) {
     void *g;
     void *h;
     void *name;
-    name = (void *)sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0];
+    name = (void *)sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     g = PlayerData_GetCurrent();
     h = Unk_02097ff4_getBankAccount(g);
     s32 pos = Donation_GetTotal(h);
@@ -2484,7 +2484,7 @@ void SpNpcPellyPhyllisTalk::updateDonationLevel(s32 a) {
         s32 t = sSpNpcPellyPhyllisDonationLevels[i];
         if (pos >= t && pos < sSpNpcPellyPhyllisDonationLevels[i + 1]) {
             PlayerBank_SetDonationLevel(h, i);
-            if (unk_c0 < t) {
+            if (donationBefore < t) {
                 Unk_02097ff4_setFlag(g, 0x16);
                 v = i + 0x1f;
             } else {
@@ -2510,8 +2510,8 @@ BOOL SpNpcPellyPhyllis::vfunc_48(Character *o) {
     cy = 0;
     FieldPos_ToUnit(&bx, &by, &pos);
     Unk_ov054_0225902c_Vec dst;
-    const Unk_ov054_Vec *pd = &sSpNpcPellyPhyllisWindowSpots[unk_808];
-    dst.x = sSpNpcPellyPhyllisWindowSpots[unk_808].x;
+    const Unk_ov054_Vec *pd = &sSpNpcPellyPhyllisWindowSpots[window];
+    dst.x = sSpNpcPellyPhyllisWindowSpots[window].x;
     dst.y = pd->y;
     dst.z = pd->z;
     FieldPos_ToUnit(&cx, &cy, &dst);
@@ -2541,8 +2541,8 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u32 arg) {
         }
         break;
     case 1:
-        unk_658.vfunc_08();
-        func_02015ab0(&unk_658, getPlayerActor(4));
+        talk.vfunc_08();
+        func_02015ab0(&talk, getPlayerActor(4));
         changeAct(1);
         break;
     case 0:
@@ -2553,8 +2553,8 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u32 arg) {
         } else if (isNetOwner()) {
             u32 t = gCommManager->unk_64;
             netSetSlotsIfOwner(1, t, t);
-            unk_658.vfunc_08();
-            func_02015ab0(&unk_658, getPlayerActor(4));
+            talk.vfunc_08();
+            func_02015ab0(&talk, getPlayerActor(4));
             changeAct(4);
         }
         break;
@@ -2587,7 +2587,7 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u32 arg) {
 }
 
 BOOL SpNpcPellyPhyllis::canStartSave() {
-    if (faceAnim.getMouthAnim() == 0xba && SpNpcTortimer2_IsIdle() && unk_658.unk_3c->unk_04 == 2) {
+    if (faceAnim.getMouthAnim() == 0xba && SpNpcTortimer2_IsIdle() && talk.unk_3c->unk_04 == 2) {
         return TRUE;
     }
     return FALSE;

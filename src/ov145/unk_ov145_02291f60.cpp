@@ -105,8 +105,8 @@ public:
     void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
     void destroyLabel();
 
-    /* 0x12 */ u8 unk_12[0x2a];
-    /* 0x3c */ TextLabel *unk_3c;
+    /* 0x12 */ u8 text[0x2a];
+    /* 0x3c */ TextLabel *label;
 };
 
 class ItemName : public MsgString {
@@ -117,7 +117,7 @@ public:
     virtual u8 *data();
     BOOL setFromItem(u16 *p);
 
-    /* 0x12 */ u8 unk_12[0x11];
+    /* 0x12 */ u8 text[0x11];
 };
 
 class BgVramTask {
@@ -293,7 +293,7 @@ extern "C" u32 data_ov145_02293820[32] = {0x20678026, 0x80c8, 0x678018, 0x80e8, 
 // ---- ov145 scene (vtable 0x022937c0), size 0x2188 ----
 class DonationMenu : public MenuProc {
 public:
-    DonationMenu() : unk_c8(), unk_12c(), unk_174(), unk_2d8(), unk_758() {}
+    DonationMenu() : cursor(), scrollKnob(), bottomButtons(), textLabels(), vramTasks() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -379,40 +379,40 @@ public:
     void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ s32 unk_94;
+    /* 0x094 */ s32 slideY;
     /* 0x098 */ u8 unk_98[4];
-    /* 0x09c */ s32 unk_9c;
-    /* 0x0a0 */ s32 unk_a0;
-    /* 0x0a4 */ s32 unk_a4;
-    /* 0x0a8 */ s32 unk_a8;
-    /* 0x0ac */ s32 unk_ac;
-    /* 0x0b0 */ s32 unk_b0;
-    /* 0x0b4 */ u16 unk_b4;
-    /* 0x0b6 */ s16 unk_b6;
-    /* 0x0b8 */ s16 unk_b8[4];
-    /* 0x0c0 */ u8 unk_c0;
-    /* 0x0c1 */ u8 unk_c1;
-    /* 0x0c2 */ u8 unk_c2;
-    /* 0x0c3 */ u8 unk_c3;
-    /* 0x0c4 */ u8 unk_c4;
-    /* 0x0c5 */ u8 unk_c5;
-    /* 0x0c6 */ u8 unk_c6;
+    /* 0x09c */ s32 scrollY;
+    /* 0x0a0 */ s32 scrollTargetY;
+    /* 0x0a4 */ s32 scrollMax;
+    /* 0x0a8 */ s32 knobPos;
+    /* 0x0ac */ s32 knobGrabOffset;
+    /* 0x0b0 */ s32 knobLastTickPos;
+    /* 0x0b4 */ u16 flags;
+    /* 0x0b6 */ s16 topRow;
+    /* 0x0b8 */ s16 tabCounts[4];
+    /* 0x0c0 */ u8 curTab;
+    /* 0x0c1 */ u8 targetTab;
+    /* 0x0c2 */ u8 cursorSlot;
+    /* 0x0c3 */ u8 returnState;
+    /* 0x0c4 */ u8 labelCount;
+    /* 0x0c5 */ u8 tabFadeLevel;
+    /* 0x0c6 */ u8 tabSwitchState;
     /* 0x0c7 */ u8 unk_c7;
-    /* 0x0c8 */ MenuCursorBuf0 unk_c8;
-    /* 0x12c */ MenuScrollKnob unk_12c;
-    /* 0x174 */ MenuBottomButtons unk_174;
-    /* 0x2d8 */ LabelString unk_2d8[18];
-    /* 0x758 */ BgVramTask unk_758[3];
-    /* 0x7c4 */ u8 unk_7c4[0x68];
-    /* 0x82c */ u8 unk_82c[0x70];
-    /* 0x89c */ u8 unk_89c[0x70];
-    /* 0x90c */ u8 unk_90c[0x28];
-    /* 0x934 */ u16 unk_934[9];
-    /* 0x946 */ u8 unk_946[0x800];
-    /* 0x1146 */ u8 unk_1146[0x800];
-    /* 0x1946 */ u8 unk_1946[0x800];
-    /* 0x2146 */ u16 unk_2146[16];
-    /* 0x2166 */ u16 unk_2166[16];
+    /* 0x0c8 */ MenuCursorBuf0 cursor;
+    /* 0x12c */ MenuScrollKnob scrollKnob;
+    /* 0x174 */ MenuBottomButtons bottomButtons;
+    /* 0x2d8 */ LabelString textLabels[18];
+    /* 0x758 */ BgVramTask vramTasks[3];
+    /* 0x7c4 */ u8 fossilItems[0x68];
+    /* 0x82c */ u8 fishItems[0x70];
+    /* 0x89c */ u8 insectItems[0x70];
+    /* 0x90c */ u8 paintingItems[0x28];
+    /* 0x934 */ u16 shownRowItems[9];
+    /* 0x946 */ u8 rowTemplateScreen[0x800];
+    /* 0x1146 */ u8 listScreen[0x800];
+    /* 0x1946 */ u8 frameScreen[0x800];
+    /* 0x2146 */ u16 basePalette[16];
+    /* 0x2166 */ u16 workPalette[16];
 };
 
 static inline BOOL Both() {
@@ -443,22 +443,22 @@ BOOL DonationMenu::onDraw() {
     u8 *p;
     s32 y;
     if (MenuCtrl_IsButtons()) {
-        MenuCursorBase_drawWrapped(&unk_c8);
+        MenuCursorBase_drawWrapped(&cursor);
     }
     if (!testFlags(1)) {
         return FALSE;
     }
-    MenuBottomButtons_drawAt(&unk_174, getSlideOffsetY());
-    y = unk_94 + 0x60;
-    if (unk_a4 > 0) {
-        MenuScrollKnob *q = &unk_12c;
+    MenuBottomButtons_drawAt(&bottomButtons, getSlideOffsetY());
+    y = slideY + 0x60;
+    if (scrollMax > 0) {
+        MenuScrollKnob *q = &scrollKnob;
         q->vfunc_08();
         Oam_DrawCell(1, data_ov145_02293820, 0x80, y, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     p = (u8 *)&data_ov145_02293820[16];
     for (i = 0; i < 4; i++) {
         s32 pal;
-        if (i == unk_c1) {
+        if (i == targetTab) {
             pal = 7;
         } else {
             pal = 5;
@@ -515,16 +515,16 @@ BOOL DonationMenu::execClosed() {
 void DonationMenu::stateOpen() {
     setupBgLayers();
     loadBgGfx();
-    unk_c0 = 4;
+    curTab = 4;
     setTab(3);
-    unk_c1 = 3;
+    targetTab = 3;
     loadObjGfx();
     beginSubSlideIn(0xa, 4, 0, 0x28);
     Gfx2d_ShowLayer(6);
     Gfx2d_ShowLayer(4);
     updateLayerSlide();
     setFlags(1);
-    MenuBottomButtons_setLayoutSingle05(&unk_174, 0x65);
+    MenuBottomButtons_setLayoutSingle05(&bottomButtons, 0x65);
     setTransitionState(1);
 }
 
@@ -555,38 +555,38 @@ void DonationMenu::stateClosing() {
 
 void DonationMenu::updateLayerSlide() {
     applySlideOffset(6, 0, 0);
-    applySlideOffset(4, 0, 0x18 - unk_9c);
-    unk_94 = getSlideOffsetY();
+    applySlideOffset(4, 0, 0x18 - scrollY);
+    slideY = getSlideOffsetY();
     updateKnobPosition();
 }
 
 void DonationMenu::initDonation() {
     s32 i;
-    unk_b4 = 0;
-    unk_c0 = 0;
+    flags = 0;
+    curTab = 0;
     for (i = 0; i < 9; i++) {
-        unk_934[i] = 0xfff1;
+        shownRowItems[i] = 0xfff1;
     }
-    unk_c5 = 3;
-    unk_c6 = 0;
+    tabFadeLevel = 3;
+    tabSwitchState = 0;
     buildFossilList();
     buildPaintingList();
     buildFishList();
     buildInsectList();
-    MenuScrollKnob_show(&unk_12c);
+    MenuScrollKnob_show(&scrollKnob);
 }
 
 void DonationMenu::releaseResources() {
     resetTextLabels();
-    MenuBottomButtons_freeTexts(&unk_174);
-    BgVramTask_cancel(&unk_758[0]);
-    BgVramTask_cancel(&unk_758[1]);
-    BgVramTask_cancel(&unk_758[2]);
+    MenuBottomButtons_freeTexts(&bottomButtons);
+    BgVramTask_cancel(&vramTasks[0]);
+    BgVramTask_cancel(&vramTasks[1]);
+    BgVramTask_cancel(&vramTasks[2]);
 }
 
 void DonationMenu::preInputUpdate() {
     preStateUpdate();
-    MenuCursorBuf0 *p = &unk_c8;
+    MenuCursorBuf0 *p = &cursor;
     p->vfunc_0c();
 }
 
@@ -597,18 +597,18 @@ void DonationMenu::postInputUpdate() {
 
 void DonationMenu::preStateUpdate() {
     resetTextLabels();
-    MenuBottomButtons_freeTexts(&unk_174);
-    BgVramTask_cancel(&unk_758[0]);
-    BgVramTask_cancel(&unk_758[1]);
-    BgVramTask_cancel(&unk_758[2]);
-    unk_12c.vfunc_0c();
+    MenuBottomButtons_freeTexts(&bottomButtons);
+    BgVramTask_cancel(&vramTasks[0]);
+    BgVramTask_cancel(&vramTasks[1]);
+    BgVramTask_cancel(&vramTasks[2]);
+    scrollKnob.vfunc_0c();
 }
 
 void DonationMenu::postStateUpdate() {
     updateTabSwitch();
     updateScrollAnimation();
     flushDirty();
-    MenuScrollKnob_updateRelease(&unk_12c);
+    MenuScrollKnob_updateRelease(&scrollKnob);
 }
 
 void DonationMenu::setupBgLayers() {
@@ -624,14 +624,14 @@ void DonationMenu::loadBgGfx() {
     Gfx2d_LoadCharFile("menu/donation/bg0.bch", heap, 6, 0x11, 0x11, 0x63);
     Gfx2d_LoadCharFile("menu/donation/bg1.bch", heap, 6, 0x26e, 0x26e, 0x27d);
     Gfx2d_LoadPaletteFile("menu/donation/bg.bpl", heap, 6, 1, 1, 7);
-    File_LoadToBuffer("menu/donation/bg_3.bpl", unk_2146, 0x20);
-    File_LoadToBuffer("menu/donation/b_bg.bsc", unk_946, 0x800);
-    File_LoadToBuffer("menu/donation/a_bg.bsc", unk_1946, 0x800);
-    Gfx2d_LoadScreen(unk_1946, 6, 0x800, 0);
+    File_LoadToBuffer("menu/donation/bg_3.bpl", basePalette, 0x20);
+    File_LoadToBuffer("menu/donation/b_bg.bsc", rowTemplateScreen, 0x800);
+    File_LoadToBuffer("menu/donation/a_bg.bsc", frameScreen, 0x800);
+    Gfx2d_LoadScreen(frameScreen, 6, 0x800, 0);
 }
 
 void DonationMenu::loadObjGfx() {
-    MenuButtons_LoadTextColors(&unk_174);
+    MenuButtons_LoadTextColors(&bottomButtons);
     void *heap = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/donation/obj.bch", heap, 8, 0xc0, 0xc0, 0x13f);
     Gfx2d_LoadPaletteFile("menu/donation/obj.bpl", heap, 8, 4, 4, 9);
@@ -643,7 +643,7 @@ void DonationMenu::updateTouch() {
         return;
     }
     if (Both()) {
-        if (MenuBottomButtonsBody_isTouched(&unk_174, 6)) {
+        if (MenuBottomButtonsBody_isTouched(&bottomButtons, 6)) {
             startQuit();
         } else {
             s32 x = gTouchCurX;
@@ -651,11 +651,11 @@ void DonationMenu::updateTouch() {
             s32 r = hitTestTarget(x, y);
             if (r != 6) {
                 activateTarget(r);
-            } else if (unk_a4 > 0) {
+            } else if (scrollMax > 0) {
                 if (tryGrabKnob(x, y)) {
                     setMainState(1);
                 } else if (x >= 0xe4 && x <= 0xec && y >= 0x15 && y <= 0x8d) {
-                    MenuScrollKnob_grab(&unk_12c);
+                    MenuScrollKnob_grab(&scrollKnob);
                     setMainState(2);
                 }
             }
@@ -708,7 +708,7 @@ void DonationMenu::updateKnobKeys() {
         moveKnobByKey();
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        MenuCursorBase_warpTo(&unk_c8, a, b);
+        MenuCursorBase_warpTo(&cursor, a, b);
     } else {
         releaseKnob();
         setMainState(5);
@@ -722,19 +722,19 @@ void DonationMenu::updateKnobKeysEnd() {
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    MenuCursorBase_warpTo(&unk_c8, a, b);
+    MenuCursorBase_warpTo(&cursor, a, b);
 }
 
 void DonationMenu::updateCursorMove() {
-    if (!MenuCursorBase_isMoving(&unk_c8)) {
-        setMainState(unk_c3);
+    if (!MenuCursorBase_isMoving(&cursor)) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void DonationMenu::updateCursorPress() {
-    if (HandCursor_isAnimDone(&unk_c8)) {
-        if (!activateTarget(unk_c2)) {
+    if (HandCursor_isAnimDone(&cursor)) {
+        if (!activateTarget(cursorSlot)) {
             setMainState(3);
             releaseCursor();
         }
@@ -742,19 +742,19 @@ void DonationMenu::updateCursorPress() {
 }
 
 void DonationMenu::updateCursorRelease() {
-    if (HandCursor_isAnimDone(&unk_c8)) {
+    if (HandCursor_isAnimDone(&cursor)) {
         refreshCursor();
-        setMainState(unk_c3);
+        setMainState(returnState);
     }
 }
 
 void DonationMenu::updateBarTransition() {
-    if (MenuBottomButtonsBody_stepPress(&unk_174)) {
-        if (HandCursor_getAnim(&unk_c8)) {
-            s32 a = MenuBottomButtonsBody_getPressOffset(&unk_174);
-            s32 b = MenuBottomButtonsBody_getTargetX(&unk_174, -1);
-            s32 c = MenuBottomButtonsBody_getTargetY(&unk_174, -1);
-            MenuCursorBase_warpTo(&unk_c8, a + b, a + c);
+    if (MenuBottomButtonsBody_stepPress(&bottomButtons)) {
+        if (HandCursor_getAnim(&cursor)) {
+            s32 a = MenuBottomButtonsBody_getPressOffset(&bottomButtons);
+            s32 b = MenuBottomButtonsBody_getTargetX(&bottomButtons, -1);
+            s32 c = MenuBottomButtonsBody_getTargetY(&bottomButtons, -1);
+            MenuCursorBase_warpTo(&cursor, a + b, a + c);
         }
     } else {
         hideCursor();
@@ -768,7 +768,7 @@ void DonationMenu::startTouchInput() {
 }
 
 void DonationMenu::startButtonInput() {
-    unk_c2 = unk_c1;
+    cursorSlot = targetTab;
     showCursor();
     restartKeyRepeat();
     setMainState(3);
@@ -784,16 +784,16 @@ void DonationMenu::resumeInput() {
 
 void DonationMenu::startQuit() {
     MenuCtrl_SetResult(1);
-    MenuBottomButtonsBody_setSelected(&unk_174, 6);
+    MenuBottomButtonsBody_setSelected(&bottomButtons, 6);
     setTransitionState(2);
     setMainState(9);
 }
 
 BOOL DonationMenu::tryGrabKnob(s32 x, s32 y) {
-    if (MenuScrollKnob_hitTest(&unk_12c, x, y)) {
-        unk_ac = unk_a8 - y;
-        MenuScrollKnob_grab(&unk_12c);
-        unk_b0 = unk_a8;
+    if (MenuScrollKnob_hitTest(&scrollKnob, x, y)) {
+        knobGrabOffset = knobPos - y;
+        MenuScrollKnob_grab(&scrollKnob);
+        knobLastTickPos = knobPos;
         return TRUE;
     }
     return FALSE;
@@ -803,7 +803,7 @@ void DonationMenu::dragKnob(s32 a, s32 flag) {
     if (flag) {
         a -= 0x1d;
     } else {
-        a += unk_ac;
+        a += knobGrabOffset;
     }
     if (a < 0) {
         a = 0;
@@ -812,60 +812,60 @@ void DonationMenu::dragKnob(s32 a, s32 flag) {
         a = 0x78;
     }
     if (flag) {
-        func_020e761c(&unk_a8, a, 8);
+        func_020e761c(&knobPos, a, 8);
     } else {
-        unk_a8 = a;
+        knobPos = a;
     }
     syncScrollToKnob();
     updateKnobPosition();
-    s32 d = unk_b0 - unk_a8;
+    s32 d = knobLastTickPos - knobPos;
     if (d >= 4 || d <= -4) {
-        Menu_PlayScrollTickSe(&unk_12c);
-        unk_b0 = unk_a8;
+        Menu_PlayScrollTickSe(&scrollKnob);
+        knobLastTickPos = knobPos;
     }
 }
 
 void DonationMenu::releaseKnob() {
-    MenuScrollKnob_release(&unk_12c);
+    MenuScrollKnob_release(&scrollKnob);
 }
 
 void DonationMenu::moveKnobByKey() {
-    s32 old = unk_a8;
+    s32 old = knobPos;
     u32 k = gPad[0];
     if (k & 0x40) {
-        unk_a8 = unk_a8 - 4;
-        if (unk_a8 < 0) {
-            unk_a8 = 0;
+        knobPos = knobPos - 4;
+        if (knobPos < 0) {
+            knobPos = 0;
         }
     } else if (k & 0x80) {
-        unk_a8 = unk_a8 + 4;
-        if (unk_a8 > 0x78) {
-            unk_a8 = 0x78;
+        knobPos = knobPos + 4;
+        if (knobPos > 0x78) {
+            knobPos = 0x78;
         }
     }
-    if (old != unk_a8) {
+    if (old != knobPos) {
         syncScrollToKnob();
         updateKnobPosition();
-        Menu_PlayScrollTickSe(&unk_12c);
+        Menu_PlayScrollTickSe(&scrollKnob);
     }
 }
 
 BOOL DonationMenu::finishKnobRelease() {
-    if (ScrollKnob_areAnimsDone(&unk_12c)) {
-        MenuScrollKnob_show(&unk_12c);
+    if (ScrollKnob_areAnimsDone(&scrollKnob)) {
+        MenuScrollKnob_show(&scrollKnob);
         return TRUE;
     }
     return FALSE;
 }
 
 void DonationMenu::updateKnobPosition() {
-    ScrollKnob_moveTo(&unk_12c, 0x63, unk_94 + (unk_a8 - 0x4b));
+    ScrollKnob_moveTo(&scrollKnob, 0x63, slideY + (knobPos - 0x4b));
 }
 
 void DonationMenu::syncScrollToKnob() {
     s32 t;
-    s32 n = unk_a4;
-    t = func_02133150(unk_a8 * n, 0x78);
+    s32 n = scrollMax;
+    t = func_02133150(knobPos * n, 0x78);
     if (t < 0) {
         t = 0;
     }
@@ -873,12 +873,12 @@ void DonationMenu::syncScrollToKnob() {
         t = n;
     }
     setScrollPos(t);
-    unk_a0 = t;
+    scrollTargetY = t;
 }
 
 void DonationMenu::syncKnobToScroll() {
-    if (unk_a4 > 0) {
-        unk_a8 = func_02133150(unk_9c * 0x78, unk_a4);
+    if (scrollMax > 0) {
+        knobPos = func_02133150(scrollY * 0x78, scrollMax);
         updateKnobPosition();
     }
 }
@@ -907,73 +907,73 @@ s32 DonationMenu::collectDonatedFurniture(u16 *out, s32 start, s32 n) {
 }
 
 void DonationMenu::buildFossilList() {
-    unk_b8[3] = collectDonatedFurniture((u16 *)unk_7c4, 0x450c, 0x34);
+    tabCounts[3] = collectDonatedFurniture((u16 *)fossilItems, 0x450c, 0x34);
 }
 
 void DonationMenu::buildPaintingList() {
-    unk_b8[0] = collectDonatedFurniture((u16 *)unk_90c, 0x3894, 0x14);
+    tabCounts[0] = collectDonatedFurniture((u16 *)paintingItems, 0x3894, 0x14);
 }
 
 void DonationMenu::buildFishList() {
-    unk_b8[1] = collectDonatedItems((u16 *)unk_82c, 0x12e8, 0x38);
+    tabCounts[1] = collectDonatedItems((u16 *)fishItems, 0x12e8, 0x38);
 }
 
 void DonationMenu::buildInsectList() {
-    unk_b8[2] = collectDonatedItems((u16 *)unk_89c, 0x12b0, 0x38);
+    tabCounts[2] = collectDonatedItems((u16 *)insectItems, 0x12b0, 0x38);
 }
 
 void DonationMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    MenuCursorBase_warpTo(&unk_c8, a, b);
-    if (unk_c2 == 4) {
-        MenuCursor_setAnimIfChanged(&unk_c8, 7);
+    MenuCursorBase_warpTo(&cursor, a, b);
+    if (cursorSlot == 4) {
+        MenuCursor_setAnimIfChanged(&cursor, 7);
     } else {
-        MenuCursor_setAnimIfChanged(&unk_c8, 1);
+        MenuCursor_setAnimIfChanged(&cursor, 1);
     }
     refreshCursor();
 }
 
 s32 DonationMenu::getCursorTargetX() {
-    u32 c = unk_c2;
+    u32 c = cursorSlot;
     if (c <= 3) {
         return (s32)c * -0x24 + 0x94;
     }
     switch (c) {
     case 4:
-        return MenuBottomButtonsBody_getTargetX(&unk_174, 6);
+        return MenuBottomButtonsBody_getTargetX(&bottomButtons, 6);
     case 5:
-        return MenuScrollKnob_getGripX(&unk_12c);
+        return MenuScrollKnob_getGripX(&scrollKnob);
     default:
         return 0x80;
     }
 }
 
 s32 DonationMenu::getCursorTargetY() {
-    u32 c = unk_c2;
+    u32 c = cursorSlot;
     if (c <= 3) {
         return 0xad;
     }
     switch (c) {
     case 4:
-        return MenuBottomButtonsBody_getTargetY(&unk_174, 6);
+        return MenuBottomButtonsBody_getTargetY(&bottomButtons, 6);
     case 5:
-        return MenuScrollKnob_getGripY(&unk_12c);
+        return MenuScrollKnob_getGripY(&scrollKnob);
     default:
         return 0x60;
     }
 }
 
 void DonationMenu::hideCursor() {
-    MenuCursor_setAnimIfChanged(&unk_c8, 0);
-    unk_c8.vfunc_0c();
+    MenuCursor_setAnimIfChanged(&cursor, 0);
+    cursor.vfunc_0c();
 }
 
 void DonationMenu::moveCursorToTarget() {
-    if (unk_c2 == 4) {
-        MenuCursor_switchToAnim07(&unk_c8);
+    if (cursorSlot == 4) {
+        MenuCursor_switchToAnim07(&cursor);
     } else {
-        MenuCursor_switchToAnim01(&unk_c8);
+        MenuCursor_switchToAnim01(&cursor);
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
@@ -981,40 +981,40 @@ void DonationMenu::moveCursorToTarget() {
 }
 
 void DonationMenu::moveCursorTo(s32 a, s32 b) {
-    MenuCursorBase_moveToEase(&unk_c8, a, b, 3, 1);
-    unk_c3 = mainState;
+    MenuCursorBase_moveToEase(&cursor, a, b, 3, 1);
+    returnState = mainState;
     setMainState(6);
 }
 
 void DonationMenu::refreshCursor() {
-    MenuCursorBase_setPoseIdle(&unk_c8);
-    unk_c8.vfunc_0c();
+    MenuCursorBase_setPoseIdle(&cursor);
+    cursor.vfunc_0c();
 }
 
 void DonationMenu::pressCursor() {
-    MenuCursor_setPosePress(&unk_c8);
+    MenuCursor_setPosePress(&cursor);
     setMainState(7);
 }
 
 void DonationMenu::releaseCursor() {
-    MenuCursorBase_setPoseRelease(&unk_c8);
-    unk_c3 = mainState;
+    MenuCursorBase_setPoseRelease(&cursor);
+    returnState = mainState;
     setMainState(8);
 }
 
 LabelString *DonationMenu::allocTextLabel() {
-    if (*(volatile u8 *)&unk_c4 >= 18) {
-        return &unk_2d8[17];
+    if (*(volatile u8 *)&labelCount >= 18) {
+        return &textLabels[17];
     }
-    *(volatile u8 *)&unk_c4 = *(volatile u8 *)&unk_c4 + 1;
-    return &unk_2d8[*(volatile u8 *)&unk_c4 - 1];
+    *(volatile u8 *)&labelCount = *(volatile u8 *)&labelCount + 1;
+    return &textLabels[*(volatile u8 *)&labelCount - 1];
 }
 
 void DonationMenu::resetTextLabels() {
     s32 i = 0;
-    unk_c4 = 0;
+    labelCount = 0;
     for (; i < 18; i++) {
-        unk_2d8[i].destroyLabel();
+        textLabels[i].destroyLabel();
     }
 }
 
@@ -1025,21 +1025,21 @@ void DonationMenu::drawEntryNames() {
     s32 k;
     LabelString *w;
     LabelString *w2;
-    s32 cur = unk_b6;
+    s32 cur = topRow;
     u16 *list = getTabItemPtr(cur);
     s32 col = (cur + 9) % 9;
     s32 cnt = getTabCount();
     for (k = 0; k < 9; k++) {
         w = 0;
         if (cur < 0 || cur >= cnt) {
-            unk_934[col] = 0xfff1;
+            shownRowItems[col] = 0xfff1;
             w = allocTextLabel();
             w->clear();
             w2 = allocTextLabel();
             w2->clear();
         } else {
-            if (*list != unk_934[col]) {
-                unk_934[col] = *list;
+            if (*list != shownRowItems[col]) {
+                shownRowItems[col] = *list;
                 w = allocTextLabel();
                 s[0] = *list;
                 b.setFromItem(&s[0]);
@@ -1073,7 +1073,7 @@ void DonationMenu::flushDirty() {
         uploadListScreen();
     }
     if (testFlags(2)) {
-        if (BgVramTask_requestScreen(&unk_758[1], unk_1946, 6, 0x800, 0)) {
+        if (BgVramTask_requestScreen(&vramTasks[1], frameScreen, 6, 0x800, 0)) {
             clearFlags(2);
         }
     }
@@ -1084,22 +1084,22 @@ void DonationMenu::flushDirty() {
 }
 
 void DonationMenu::setScrollPos(s32 v) {
-    unk_9c = v;
-    Gfx2d_SetLayerOffset(4, 0, unk_9c - 0x18);
-    unk_b6 = (s16)(v >> 4);
+    scrollY = v;
+    Gfx2d_SetLayerOffset(4, 0, scrollY - 0x18);
+    topRow = (s16)(v >> 4);
     composeListScreen();
     setFlags(4);
 }
 
 void DonationMenu::composeListScreen() {
-    s32 cur = unk_b6;
+    s32 cur = topRow;
     s32 r6 = (cur + 9) % 9;
     s32 r4 = cur & 0xf;
     volatile u16 fill = 0x10;
     s32 i;
-    MIi_CpuClear16(fill, unk_1146, 0x800);
+    MIi_CpuClear16(fill, listScreen, 0x800);
     for (i = 0; i < 9; i++) {
-        MIi_CpuCopy16(unk_946 + r6 * 0x80, unk_1146 + r4 * 0x80, 0x80);
+        MIi_CpuCopy16(rowTemplateScreen + r6 * 0x80, listScreen + r4 * 0x80, 0x80);
         r6++;
         if (r6 >= 9) {
             r6 = 0;
@@ -1110,70 +1110,70 @@ void DonationMenu::composeListScreen() {
 }
 
 void DonationMenu::uploadListScreen() {
-    BgScreen_SetRectPalette(unk_1146, 0, 0, 0x1f, 0x1f, 3);
+    BgScreen_SetRectPalette(listScreen, 0, 0, 0x1f, 0x1f, 3);
     s32 n = getTabCount();
     if (n < 9) {
-        BgScreen_SetRectPalette(unk_1146, 0, n * 2, 0x1f, 0x12, 4);
+        BgScreen_SetRectPalette(listScreen, 0, n * 2, 0x1f, 0x12, 4);
     }
-    if (BgVramTask_requestScreen(unk_758, unk_1146, 4, 0x800, 0)) {
+    if (BgVramTask_requestScreen(vramTasks, listScreen, 4, 0x800, 0)) {
         clearFlags(8);
     }
 }
 
 void DonationMenu::updateScrollAnimation() {
-    if (unk_9c != unk_a0) {
-        if (unk_9c > unk_a0) {
-            unk_9c = unk_9c - 4;
-            if (unk_9c < unk_a0) {
-                unk_9c = unk_a0;
+    if (scrollY != scrollTargetY) {
+        if (scrollY > scrollTargetY) {
+            scrollY = scrollY - 4;
+            if (scrollY < scrollTargetY) {
+                scrollY = scrollTargetY;
             }
         } else {
-            unk_9c = unk_9c + 4;
-            if (unk_9c > unk_a0) {
-                unk_9c = unk_a0;
+            scrollY = scrollY + 4;
+            if (scrollY > scrollTargetY) {
+                scrollY = scrollTargetY;
             }
         }
-        setScrollPos(unk_9c);
+        setScrollPos(scrollY);
         syncKnobToScroll();
     }
 }
 
 s32 DonationMenu::getTabCount() {
-    return unk_b8[unk_c0];
+    return tabCounts[curTab];
 }
 
 u16 *DonationMenu::getTabItemPtr(s32 i) {
-    static u16 *tbl[4] = { (u16 *)unk_90c, (u16 *)unk_82c, (u16 *)unk_89c, (u16 *)unk_7c4 };
+    static u16 *tbl[4] = { (u16 *)paintingItems, (u16 *)fishItems, (u16 *)insectItems, (u16 *)fossilItems };
     if (i < 0) {
         i = 0;
     }
-    return tbl[unk_c0] + i;
+    return tbl[curTab] + i;
 }
 
 void DonationMenu::setTab(u8 v) {
-    if (unk_c0 != v) {
-        unk_c0 = v;
-        unk_a4 = (getTabCount() - 8) << 4;
-        if (unk_a4 < 0) {
-            unk_a4 = 0;
+    if (curTab != v) {
+        curTab = v;
+        scrollMax = (getTabCount() - 8) << 4;
+        if (scrollMax < 0) {
+            scrollMax = 0;
         }
         setScrollPos(0);
-        unk_a0 = 0;
+        scrollTargetY = 0;
         syncKnobToScroll();
         updateKnobPosition();
     }
 }
 
 void DonationMenu::requestTab(u8 v) {
-    if (v != unk_c1) {
-        unk_c1 = v;
-        unk_c6 = 1;
+    if (v != targetTab) {
+        targetTab = v;
+        tabSwitchState = 1;
     }
 }
 
 BOOL DonationMenu::activateTarget(u32 t) {
     if (t <= 3) {
-        if (t != unk_c1) {
+        if (t != targetTab) {
             Snd_PlaySe(0xc);
             requestTab((u8)t);
         }
@@ -1184,8 +1184,8 @@ BOOL DonationMenu::activateTarget(u32 t) {
             startQuit();
             return TRUE;
         case 5:
-            MenuScrollKnob_grab(&unk_12c);
-            Menu_PlayScrollGrabSe(&unk_12c);
+            MenuScrollKnob_grab(&scrollKnob);
+            Menu_PlayScrollGrabSe(&scrollKnob);
             setMainState(4);
             return TRUE;
         }
@@ -1208,96 +1208,96 @@ u32 DonationMenu::hitTestTarget(s32 x, s32 y) {
 }
 
 BOOL DonationMenu::moveCursorByPad(u32 pad) {
-    u32 old = unk_c2;
+    u32 old = cursorSlot;
     if (old <= 3) {
         if (MenuKeys_HasLeft(pad)) {
-            if (unk_c2 < 3) {
-                unk_c2 = *(volatile u8 *)&unk_c2 + 1;
+            if (cursorSlot < 3) {
+                cursorSlot = *(volatile u8 *)&cursorSlot + 1;
             }
         } else if (MenuKeys_HasRight(pad)) {
-            if (unk_c2 != 0) {
-                unk_c2 = *(volatile u8 *)&unk_c2 - 1;
+            if (cursorSlot != 0) {
+                cursorSlot = *(volatile u8 *)&cursorSlot - 1;
             } else {
-                unk_c2 = 4;
+                cursorSlot = 4;
             }
         } else if (MenuKeys_HasUp(pad)) {
-            if (unk_a4 > 0) {
-                unk_c2 = 5;
+            if (scrollMax > 0) {
+                cursorSlot = 5;
             }
         }
     } else {
         switch (old) {
         case 4:
             if (MenuKeys_HasUp(pad)) {
-                if (unk_a4 > 0) {
-                    unk_c2 = 5;
+                if (scrollMax > 0) {
+                    cursorSlot = 5;
                 }
             } else if (MenuKeys_HasLeft(pad)) {
-                unk_c2 = 0;
+                cursorSlot = 0;
             }
             break;
         case 5:
             if (MenuKeys_HasDown(pad)) {
-                unk_c2 = 4;
+                cursorSlot = 4;
             } else if (MenuKeys_HasLeft(pad)) {
-                unk_c2 = 0;
+                cursorSlot = 0;
             }
             break;
         }
     }
-    if (old != unk_c2) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     return FALSE;
 }
 
 void DonationMenu::setTabFadeLevel(u32 t) {
-    MIi_CpuCopy16(unk_2146, unk_2166, 0x20);
-    s32 y = unk_2146[7];
+    MIi_CpuCopy16(basePalette, workPalette, 0x20);
+    s32 y = basePalette[7];
     u8 r = y & 0x1f;
     u8 g = (y & 0x3e0) >> 5;
     u8 b = (y & 0x7c00) >> 10;
     s32 n = 3 - t;
-    s32 x = unk_2146[15];
+    s32 x = basePalette[15];
     r = ((u8)(x & 0x1f) * (s32)t + r * n) / 3;
     g = ((u8)((x & 0x3e0) >> 5) * (s32)t + g * n) / 3;
     b = ((u8)((x & 0x7c00) >> 10) * (s32)t + b * n) / 3;
-    unk_2166[15] = r | (g << 5) | (b << 10);
-    BgVramTask_requestPalette(&unk_758[2], unk_2166, 4, 3);
+    workPalette[15] = r | (g << 5) | (b << 10);
+    BgVramTask_requestPalette(&vramTasks[2], workPalette, 4, 3);
 }
 
 void DonationMenu::updateTabSwitch() {
-    switch (unk_c6) {
+    switch (tabSwitchState) {
     case 0:
         return;
     case 1:
-        if (unk_c5 != 0) {
-            unk_c5 = *(volatile u8 *)&unk_c5 - 1;
+        if (tabFadeLevel != 0) {
+            tabFadeLevel = *(volatile u8 *)&tabFadeLevel - 1;
         } else {
-            unk_c6 = 2;
-            setTab(unk_c1);
+            tabSwitchState = 2;
+            setTab(targetTab);
         }
         break;
     case 2:
-        if (unk_c5 < 3) {
-            unk_c5 = *(volatile u8 *)&unk_c5 + 1;
+        if (tabFadeLevel < 3) {
+            tabFadeLevel = *(volatile u8 *)&tabFadeLevel + 1;
         } else {
-            unk_c6 = 0;
+            tabSwitchState = 0;
             return;
         }
         break;
     }
-    setTabFadeLevel(unk_c5);
+    setTabFadeLevel(tabFadeLevel);
 }
 
 BOOL DonationMenu::testFlags(u32 m) {
-    if (unk_b4 & m) {
+    if (flags & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void DonationMenu::setFlags(u32 m) { unk_b4 = unk_b4 | m; }
+void DonationMenu::setFlags(u32 m) { flags = flags | m; }
 
-void DonationMenu::clearFlags(u32 m) { unk_b4 = unk_b4 & ~m; }
+void DonationMenu::clearFlags(u32 m) { flags = flags & ~m; }
 

@@ -6,7 +6,7 @@ inline void *operator new(unsigned long, void *p) {
 
 class RoomItemGrid {
 public:
-    u16 unk_00[0x100];
+    u16 items[0x100];
     RoomItemGrid();
     ~RoomItemGrid();
     RoomItemGrid *getGrid();
@@ -15,22 +15,22 @@ public:
 
 class RoomFtrState {
 public:
-    u8 unk_00[0x48];
+    u8 switchGrids[0x48];
     RoomFtrState();
     ~RoomFtrState();
     void reset();
 };
 
 struct MapBlockEntry {
-    u32 unk_00;
-    u32 unk_04[2];
-    u32 unk_0c;
+    u32 acreId;
+    u32 layers[2];
+    u32 buried;
     MapBlockEntry();
 };
 
 class SongSet {
 public:
-    u8 unk_00[12];
+    u8 bits[12];
     SongSet();
     ~SongSet();
     void clear();
@@ -199,7 +199,7 @@ extern "C" void *_ZN12RoomItemGridD1Ev(void *p) {
 }
 
 void RoomItemGrid::clear() {
-    u16 *p = unk_00;
+    u16 *p = items;
     for (s32 i = 0; i < 0x100; i++) {
         *p++ = 0xfff1;
     }
@@ -230,11 +230,11 @@ void HouseRoom::reset(s32 i) {
         RoomItemGrid *a = layers[0].getGrid();
         RoomItemGrid *b = layers[1].getGrid();
         if (a) {
-            a->unk_00[0xa6] = 0x3808;
-            a->unk_00[0xa9] = 0x374c;
+            a->items[0xa6] = 0x3808;
+            a->items[0xa9] = 0x374c;
         }
         if (b) {
-            b->unk_00[0xa6] = 0x382c;
+            b->items[0xa6] = 0x382c;
             RoomFtrState_SetSwitch(6, 10, 1, 0, 1);
         }
     }
@@ -247,9 +247,9 @@ MapBlockEntry *HouseRoom::buildBlockEntry(void *heap) {
     }
     if (p) {
         for (s32 i = 0; i < 2; i++) {
-            p->unk_04[i] = (u32)layers[i].getGrid();
+            p->layers[i] = (u32)layers[i].getGrid();
         }
-        p->unk_0c = 0;
+        p->buried = 0;
     }
     return p;
 }
@@ -362,7 +362,7 @@ MapBlockEntry *HouseData::buildRoomBlockEntry(s32 idx, void *heap) {
     if (e) {
         p = e->buildBlockEntry(heap);
         if (p) {
-            p->unk_00 = getRoomAcreId(idx);
+            p->acreId = getRoomAcreId(idx);
         }
     }
     return p;
@@ -575,7 +575,7 @@ void SongSet::clear()
     u32 i = 0;
     s32 z = 0;
     for (; i < 9; i++) {
-        unk_00[i] = z;
+        bits[i] = z;
     }
 }
 

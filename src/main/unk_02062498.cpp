@@ -384,7 +384,7 @@ public:
     virtual u8 *data();
     BOOL copyTo(u8 *out, s32 n);
 
-    /* 0x0e */ u8 unk_0e[16];
+    /* 0x0e */ u8 text[16];
 };
 
 // buffer of 0x11 bytes (vtable 0x020dd324)
@@ -400,7 +400,7 @@ public:
     BOOL setSeriesName(s32 idx);
     BOOL setFromItem(u16 *p);
 
-    /* 0x12 */ u8 unk_12[0x11];
+    /* 0x12 */ u8 text[0x11];
 };
 
 EncodedString16Buf::EncodedString16Buf() {
@@ -409,12 +409,12 @@ EncodedString16Buf::EncodedString16Buf() {
 
 EncodedString16Buf::EncodedString16Buf(u8 *src) {
     StrBuf_ClearAlt(this);
-    *(Unk_020dd30c_Buf *)unk_0e = *(Unk_020dd30c_Buf *)src;
+    *(Unk_020dd30c_Buf *)text = *(Unk_020dd30c_Buf *)src;
 }
 
 EncodedString16Buf::~EncodedString16Buf() {}
 
 u32 EncodedString16Buf::capacity() { return 0x10; }
 
-u8 *EncodedString16Buf::data() { return unk_0e; }
+u8 *EncodedString16Buf::data() { return text; }
 

@@ -30,8 +30,8 @@ public:
     s32 getType();
     s32 getAcreId();
 
-    s32 unk_00;
-    s32 unk_04;
+    s32 type;
+    s32 acreId;
 };
 
 // ---- 6x6 cell grid (the same object is TownAcreGrid in the symbol names of two of its methods)
@@ -46,7 +46,7 @@ public:
     BOOL assignAcreIds();
 
     TownAcreCell unk_00[0x24];
-    RecordFile unk_120;
+    RecordFile candidates;
 };
 
 class TownAcreGenerator {
@@ -60,8 +60,8 @@ public:
     void closeCandidates();
     BOOL openCandidates();
 
-    TownAcreCell unk_00[0x24];
-    RecordFile unk_120;
+    TownAcreCell cells[0x24];
+    RecordFile candidates;
 };
 
 // ---- row helper
@@ -80,27 +80,27 @@ extern "C" BOOL Acre_HasPond(u32 v) {
 }
 
 TownAcreCell::TownAcreCell() {
-    unk_00 = 0x36;
-    unk_04 = 0;
+    type = 0x36;
+    acreId = 0;
 }
 
 TownAcreCell::~TownAcreCell() {}
 
 s32 TownAcreCell::getAcreId() {
-    return unk_04;
+    return acreId;
 }
 
 s32 TownAcreCell::getType() {
-    return unk_00;
+    return type;
 }
 
 void TownAcreCell::setAcreId(s32 v) {
-    unk_04 = v;
+    acreId = v;
 }
 
 BOOL TownAcreCell::setType(s32 v) {
     if (v < 0x37) {
-        unk_00 = v;
+        type = v;
         return TRUE;
     }
     return FALSE;
@@ -115,15 +115,15 @@ TownAcreGenerator::TownAcreGenerator() {}
 TownAcreGenerator::~TownAcreGenerator() {}
 
 BOOL TownAcreGenerator::openCandidates() {
-    if (unk_120.open((void *)"/bg/rndCand.bin", 0x10, 0x20c)) {
-        unk_120.loadAll();
+    if (candidates.open((void *)"/bg/rndCand.bin", 0x10, 0x20c)) {
+        candidates.loadAll();
         return TRUE;
     }
     return FALSE;
 }
 
 void TownAcreGenerator::closeCandidates() {
-    unk_120.close();
+    candidates.close();
 }
 
 BOOL TownAcreGenerator::generate(s32 v) {

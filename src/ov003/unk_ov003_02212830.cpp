@@ -202,8 +202,8 @@ typedef Unk_ov003_02212f04_Pos Pos;
 class Unk_ov003_02212830_Ctl {
 public:
     u8 pad_00[4];
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 state;
+    /* 0x08 */ s32 nextState;
 };
 
 class Unk_ov003_02212888_Str {
@@ -226,16 +226,16 @@ struct CollisionState {
     CollisionState();
     ~CollisionState();
     u32 pad_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x04 */ s32 flags;
     u32 pad_08[2];
-    /* 0x10 */ u8 unk_10;
+    /* 0x10 */ u8 numContacts;
     u8 pad_11[0x30 - 0x11];
 };
 
 class GroundInfo {
 public:
     u8 pad_00[0x34];
-    s32 unk_34;
+    s32 attr;
     u8 pad_38[0xc];
     GroundInfo() {}
     GroundInfo *initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b);
@@ -496,9 +496,9 @@ struct Unk_ov003_02213278_Pad {
 
 struct Unk_ov003_022132b4_Tgt {
     u8 pad_00[0x5c];
-    V3 unk_5c;
+    V3 position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
 };
 
 extern "C" void Snowball_Create() {
@@ -590,7 +590,7 @@ BOOL Snowball::vfunc_00() {
     unk_318.x = prevPosition.x;
     unk_318.y = pv->y;
     unk_318.z = pv->z;
-    unk_365 = unk_270.unk_10;
+    unk_365 = unk_270.numContacts;
     Snowball_UpdateMatrix(this, 0, 0);
     _ZN12Unk_02003c3013func_02003eccEv(unk_324);
     clearTalkStartMode();
@@ -747,7 +747,7 @@ extern "C" s32 Snowball_UpdateRolling(Obj *o)
         o->position.y -= 0x200;
     }
     Collision_Move(&o->unk_270, &o->position, &o->prevPosition, 0, o->unk_26c, o, kind);
-    u32 cur = o->unk_270.unk_10;
+    u32 cur = o->unk_270.numContacts;
     if (cur > o->unk_365 && o->unk_39c == 0 && o->unk_398 == 0) {
         func_02003e70(o->unk_324, 0x81d, 0x7f, 0);
     }
@@ -787,7 +787,7 @@ extern "C" s32 Snowball_UpdateRolling(Obj *o)
             } else if (w == 0 && o->unk_398 == 5) {
                 v = n - 0x155;
             } else {
-                s32 q = o->unk_270.unk_04;
+                s32 q = o->unk_270.flags;
                 if (q & 1) {
                     if (o->unk_374.e != 0) {
                         v = n - 0x155;
@@ -811,7 +811,7 @@ extern "C" s32 Snowball_UpdateRolling(Obj *o)
         o->unk_2f0 = 0;
     }
     loc.initAtPos(&o->position, 0, 0);
-    if (loc.unk_34 == 3) {
+    if (loc.attr == 3) {
         if (o->unk_374.i == 0) {
             o->unk_268 = func_01ffcb0c(o->unk_268, (len >> 7) + 0x1000);
             if (o->unk_268 > 0x1400) o->unk_268 = 0x1400;
@@ -893,10 +893,10 @@ extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s
     o->unk_2f0 += v14;
     o->position.x += o->unk_2ec;
     o->position.z += o->unk_2f0;
-    h[1] = p->unk_8e;
+    h[1] = p->rotY;
     func_020e7754(&h[1], ang, 8, 0x2000);
-    V3 *q = &p->unk_5c;
-    pv[0].x = p->unk_5c.x;
+    V3 *q = &p->position;
+    pv[0].x = p->position.x;
     pv[0].y = q->y;
     pv[0].z = q->z;
     pv[1].x = pv[0].x + v10;
@@ -1278,7 +1278,7 @@ BOOL Snowball::setupTalk() {
     }
     setFileName("sp_npc_snowman");
     msgIndex = r;
-    ((Unk_ov003_02212830_Ctl *)unk_3c)->unk_08 = 1;
+    ((Unk_ov003_02212830_Ctl *)unk_3c)->nextState = 1;
     u8 c = 0x26;
     u32 buf[0x46];
     _ZN12MsgString256C1Ev(buf);
@@ -1291,7 +1291,7 @@ BOOL Snowball::setupTalk() {
 
 void Snowball::mainTalk() {
     if (unk_3c) {
-        if (((Unk_ov003_02212830_Ctl *)unk_3c)->unk_04) {
+        if (((Unk_ov003_02212830_Ctl *)unk_3c)->state) {
             changeTalkAct(2);
         }
     }
@@ -1303,7 +1303,7 @@ BOOL Snowball::setupTalkEnd() {
 
 void Snowball::mainTalkEnd() {
     if (unk_3c) {
-        if (((Unk_ov003_02212830_Ctl *)unk_3c)->unk_04 == 0) {
+        if (((Unk_ov003_02212830_Ctl *)unk_3c)->state == 0) {
             _ZN9Character17detachTalkRequestEi(this, this);
             TalkRequest_SetTargetDone(this);
         }

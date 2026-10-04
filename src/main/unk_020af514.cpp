@@ -92,7 +92,7 @@ class SceneMapInfo {
 public:
     void createMapModule();
     u8 pad[6];
-    u16 unk_06;
+    u16 moduleParam;
 };
 
 class SceneSpawnGroup;
@@ -213,7 +213,7 @@ public:
         r->x = q->x;
         r->y = q->y;
         r->z = q->z;
-        *out = unk_10;
+        *out = spawnParam;
     }
 
     u16 unk_00;
@@ -222,7 +222,7 @@ public:
     s16 z;
     Vec3s rot;
     u16 unk_0e;
-    u32 unk_10;
+    u32 spawnParam;
 };
 
 
@@ -376,7 +376,7 @@ BOOL SceneSpawnList::run(u8 *entryIdx, u8 *subIdx, u64 start) {
 }
 
 void SceneMapInfo::createMapModule() {
-    GameProc_CreateChild(0xc, gActorDefaultParent, unk_06, 0);
+    GameProc_CreateChild(0xc, gActorDefaultParent, moduleParam, 0);
 }
 
 void SceneInfo::createSceneMapModule() {

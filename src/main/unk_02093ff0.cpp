@@ -73,10 +73,10 @@ struct Unk_02093aa8_Owner {
 class GroundInfo {
 public:
     u8 pad_00[0x24];
-    s32 unk_24, unk_28, unk_2c;
-    s32 unk_30;
+    s32 flowDir, flowDirY, flowDirZ;
+    s32 waterKind;
     u8 pad_34[8];
-    s32 unk_3c;
+    s32 waterSurfaceY;
     GroundInfo() {}
     GroundInfo *initAtPos(Unk_02093aa8_Vec *v, s32 a, s32 b);
     ~GroundInfo();

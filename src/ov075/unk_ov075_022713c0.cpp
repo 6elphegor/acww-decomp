@@ -233,9 +233,9 @@ public:
     void scriptWakeUp();
     void setScript(s32 v);
 
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ u8 unk_b0;
-    /* 0xb4 */ u8 *unk_b4;
+    /* 0xac */ s32 script;
+    /* 0xb0 */ u8 scriptStep;
+    /* 0xb4 */ u8 *ownerNpc;
 };
 
 #define MEMBER(name, size) \
@@ -427,10 +427,10 @@ public:
     BOOL setupAct00();
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ SpNpcPeteTalk unk_658;
+    /* 0x658 */ SpNpcPeteTalk talk;
     /* 0x710 */ u32 unk_710;
-    /* 0x714 */ u8 unk_714;
-    /* 0x715 */ u8 unk_715;
+    /* 0x714 */ u8 isUp;
+    /* 0x715 */ u8 moveTimer;
 };
 
 struct Unk_ov075_02271e78_Ent {
@@ -557,8 +557,8 @@ BOOL SpNpcPete::vfunc_04() {
     if (SpNpcActor::vfunc_04() == 0) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -642,7 +642,7 @@ BOOL SpNpcPete::mainAct04() {
 }
 
 BOOL SpNpcPete::setupAct05() {
-    unk_715 = 0;
+    moveTimer = 0;
     NpcActionCtrl_requestAction(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     Unk_02013474_enableFootsteps(&footstepFx);
     Unk_02013474_enableFootsteps(&footstepFx);
@@ -778,7 +778,7 @@ BOOL SpNpcPete::tryAvoidObstacle() {
 BOOL SpNpcPete::mainAct05() {
     void *r4 = &actionCtrl;
     s32 r6 = isInCameraBox();
-    func_020e7518(&unk_715);
+    func_020e7518(&moveTimer);
     if (r6 != 0) {
         if (tryAvoidObstacle() == 0) {
             if (NpcActionCtrl_isActionDone(r4) != 0) {
@@ -797,10 +797,10 @@ BOOL SpNpcPete::mainAct05() {
                                 r6 = 2;
                             }
                             NpcActionCtrl_requestAction(r4, r6, 1, a.x, a.z, 0, 0, 0, 0, data_020c6cc8, 0);
-                            unk_715 = 100;
+                            moveTimer = 100;
                         } else {
                             NpcActionCtrl_requestAction(r4, 4, 1, a.x, a.z, 0, r6, 0, 0, data_020c6cc8, 0);
-                            unk_715 = 80;
+                            moveTimer = 80;
                         }
                     } else {
                         Unk_ov075_0227188c_CallA();
@@ -811,7 +811,7 @@ BOOL SpNpcPete::mainAct05() {
             } else {
                 if (speed != 0) {
                     if (NpcActionCtrl_getAction(&actionCtrl) == 1 || NpcActionCtrl_getAction(&actionCtrl) == 2 || NpcActionCtrl_getAction(&actionCtrl) == 4) {
-                        if (unk_715 == 0) {
+                        if (moveTimer == 0) {
                             Unk_ov075_0227188c_CallA();
                         } else {
                             Unk_ov075_Vec3 b;
@@ -832,9 +832,9 @@ BOOL SpNpcPete::mainAct05() {
 }
 
 BOOL SpNpcPete::setupAct01() {
-    void *r4 = unk_658.func_02015aac();
+    void *r4 = talk.func_02015aac();
     s32 r6 = rotY;
-    if (unk_714 != 0) {
+    if (isUp != 0) {
         NpcLookAt_setTarget(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
         collider.unk_1c &= ~2;
     }
@@ -850,7 +850,7 @@ BOOL SpNpcPete::mainAct01() {
 }
 
 BOOL SpNpcPete::setupAct02() {
-    if (unk_714 == 0) {
+    if (isUp == 0) {
         NpcTalkCtrl_requestTalk(&talkCtrl, 0, 0);
     }
     return TRUE;
@@ -869,7 +869,7 @@ BOOL SpNpcPete::mainAct03() {
 }
 
 void SpNpcPeteTalk::update() {
-    s32 i = unk_ac * 12;
+    s32 i = script * 12;
     if (((u8 *)&sSpNpcPeteTalkScripts[0].kind)[i] != 0) {
         Unk_ov075_022722f0_Ent *e = (Unk_ov075_022722f0_Ent *)((u8 *)sSpNpcPeteTalkScripts + i);
         if (e->fn != 0) {
@@ -879,7 +879,7 @@ void SpNpcPeteTalk::update() {
 }
 
 void SpNpcPeteTalk::onTaskDone() {
-    s32 i = unk_ac * 12;
+    s32 i = script * 12;
     if (((u8 *)&sSpNpcPeteTalkScripts[0].kind)[i] == 0) {
         Unk_ov075_022722f0_Ent *e = (Unk_ov075_022722f0_Ent *)((u8 *)sSpNpcPeteTalkScripts + i);
         if (e->fn != 0) {
@@ -890,35 +890,35 @@ void SpNpcPeteTalk::onTaskDone() {
 }
 
 void SpNpcPeteTalk::setScript(s32 v) {
-    unk_ac = v;
-    unk_b0 = 0;
+    script = v;
+    scriptStep = 0;
 }
 
 void SpNpcPeteTalk::scriptWakeUp() {
     u8 *o;
-    switch (unk_b0) {
+    switch (scriptStep) {
     case 0:
         if (unk_3c->state == 5) {
-            NpcActionCtrl_requestPlayAnim(unk_b4 + 0x564, 2, 0xd5, 1, data_020c6cc8, 0);
-            NpcMoveAnimSet_setStandAnim(unk_b4 + 0x2a0, 0);
-            unk_b0 = unk_b0 + 1;
+            NpcActionCtrl_requestPlayAnim(ownerNpc + 0x564, 2, 0xd5, 1, data_020c6cc8, 0);
+            NpcMoveAnimSet_setStandAnim(ownerNpc + 0x2a0, 0);
+            scriptStep = scriptStep + 1;
         }
         break;
     case 1:
-        if (Unk_02015b8c_getAnimId(unk_b4 + 0x334, 0) == 0xd5) {
-            if (NpcActionCtrl_isActionDone(unk_b4 + 0x564) != 0) {
-                u32 r = NpcActor_getAngleToPlayer(unk_b4, 4);
-                NpcActionCtrl_requestAction(unk_b4 + 0x564, 3, 2, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
-                unk_b0 = unk_b0 + 1;
+        if (Unk_02015b8c_getAnimId(ownerNpc + 0x334, 0) == 0xd5) {
+            if (NpcActionCtrl_isActionDone(ownerNpc + 0x564) != 0) {
+                u32 r = NpcActor_getAngleToPlayer(ownerNpc, 4);
+                NpcActionCtrl_requestAction(ownerNpc + 0x564, 3, 2, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
+                scriptStep = scriptStep + 1;
             }
         }
         break;
     case 2:
-        if (NpcActionCtrl_getAction(unk_b4 + 0x564) == 3) {
-            if (NpcActionCtrl_isActionDone(unk_b4 + 0x564) != 0) {
+        if (NpcActionCtrl_getAction(ownerNpc + 0x564) == 3) {
+            if (NpcActionCtrl_isActionDone(ownerNpc + 0x564) != 0) {
                 void *p = PlayerData_GetCurrent();
                 u8 buf[2];
-                unk_b4[0x714] = 1;
+                ownerNpc[0x714] = 1;
                 Unk_020d7710_requestReopenWindow(this);
                 if (Unk_02097ff4_testFlag(p, 6) == 0) {
                     Unk_02097ff4_setFlag(p, 6);
@@ -943,12 +943,12 @@ SpNpcPeteTalk::~SpNpcPeteTalk() {}
 
 void SpNpcPeteTalk::attachOwner(void *owner) {
     vfunc_08();
-    unk_b4 = (u8 *)owner;
+    ownerNpc = (u8 *)owner;
 }
 
 void SpNpcPeteTalk::start(TalkStartMsg *out) {
     out->msgIndex = 0x1a;
-    if (unk_b4[0x714] != 0) {
+    if (ownerNpc[0x714] != 0) {
         if (Unk_02097ff4_testFlag(PlayerData_GetCurrent(), 6) != 0) {
             out->msgIndex = Random_GlobalBelow(4) + 12;
         }
@@ -986,14 +986,14 @@ void SpNpcPete::vfunc_4c(s32 a) {
         SpNpcPete_ChangeAct(this, 2);
         break;
     case 3:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0(NpcActor_getPlayerActor(this, 4));
-        if (unk_714 != 0) {
+        talk.vfunc_08();
+        talk.func_02015ab0(NpcActor_getPlayerActor(this, 4));
+        if (isUp != 0) {
             SpNpcPete_ChangeAct(this, 1);
         }
         break;
     case 8:
-        if (unk_714 == 0) {
+        if (isUp == 0) {
             SpNpcPete_ChangeAct(this, 0);
         } else {
             SpNpcPete_ChangeAct(this, 5);

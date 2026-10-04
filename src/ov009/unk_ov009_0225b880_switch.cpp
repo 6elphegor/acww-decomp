@@ -81,9 +81,9 @@ public:
 
 struct Unk_0203e5d0_Node {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ void *unk_0c;
+    /* 0x04 */ Unk_0203e5d0_Node *next;
+    /* 0x08 */ u32 charId;
+    /* 0x0c */ void *owner;
 };
 
 class Character : public Actor {
@@ -266,7 +266,7 @@ public:
     BOOL intersectLine(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, Unk_0202f2ac_V3 *q);
 
     s32 unk_04[9];
-    s32 unk_28, unk_2c, unk_30, unk_34;
+    s32 normal, normalY, normalZ, offset;
 };
 
 class TriangleTrigger : public CollisionTriangle {
@@ -274,9 +274,9 @@ public:
     TriangleTrigger();
     void setupTrigger(Unk_02031e10_Vec *a, Unk_02031e10_Vec *b, Unk_02031e10_Vec *c, s32 d);
 
-    TriangleTrigger *unk_38;
-    s32 unk_3c, unk_40, unk_44;
-    s32 unk_48;
+    TriangleTrigger *next;
+    s32 center, centerY, centerZ;
+    s32 radiusSq;
 };
 
 // ov009 element (vtable 0x0225e280, size 0x54), one per ground-collision triangle
@@ -287,25 +287,25 @@ public:
     BOOL isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_ov009_0225cc24_Obj *o);
     static void *operator new(unsigned long, void *p) { return p; }
 
-    /* 0x4c */ BuildingActor *unk_4c;
-    /* 0x50 */ s32 unk_50;
+    /* 0x4c */ BuildingActor *building;
+    /* 0x50 */ s32 entranceType;
 };
 
 struct Unk_ov009_0225cc24_Obj {
     /* 0x00 */ u8 pad_00[0xc];
-    /* 0x0c */ u16 unk_0c;
+    /* 0x0c */ u16 profile;
     /* 0x0e */ u8 pad_0e[0x8e - 0xe];
-    /* 0x8e */ s16 unk_8e;
+    /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0x98 - 0x90];
-    /* 0x98 */ s32 unk_98;
+    /* 0x98 */ s32 speed;
 };
 
 struct Unk_ov009_0225cd48_Item {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
+    /* 0x04 */ s32 offsetX;
+    /* 0x08 */ s32 offsetZ;
+    /* 0x0c */ s32 size;
+    /* 0x10 */ s32 shift;
     /* 0x14 */ s32 unk_14;
     /* 0x18 */ s32 unk_18;
 };
@@ -314,8 +314,8 @@ struct BuildingShadowTable {
     Unk_ov009_0225cd48_Item *getEntry(u32 i);
     u32 getCount();
 
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_ov009_0225cd48_Item unk_04[1];
+    /* 0x00 */ u32 count;
+    /* 0x04 */ Unk_ov009_0225cd48_Item entries[1];
 };
 
 // 0x50-byte record of the static array sBuildingResources (0x22 entries)
@@ -323,20 +323,20 @@ struct BuildingResources {
     BuildingResources();
     ~BuildingResources();
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
-    /* 0x1c */ BuildingShadowTable *unk_1c;
-    /* 0x20 */ s32 unk_20[4];
-    /* 0x30 */ s32 unk_30[4];
-    /* 0x40 */ s32 unk_40;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ s32 unk_48;
-    /* 0x4c */ s32 unk_4c;
+    /* 0x00 */ s32 bmd0;
+    /* 0x04 */ s32 bmd1;
+    /* 0x08 */ s32 bca0;
+    /* 0x0c */ s32 bca1;
+    /* 0x10 */ s32 bca2;
+    /* 0x14 */ s32 tex;
+    /* 0x18 */ s32 lightTex;
+    /* 0x1c */ BuildingShadowTable *shadowTable;
+    /* 0x20 */ s32 btaAnims[4];
+    /* 0x30 */ s32 btpAnims[4];
+    /* 0x40 */ s32 solidCenterX;
+    /* 0x44 */ s32 solidCenterZ;
+    /* 0x48 */ s32 solidSizeX;
+    /* 0x4c */ s32 solidSizeZ;
 };
 
 struct Unk_ov009_0225d2a4_Obj {
@@ -379,7 +379,7 @@ public:
     void activate();
 
     /* 0x00 */ Unk_0213b9c4 unk_00;
-    /* 0x40 */ u8 unk_40;
+    /* 0x40 */ u8 isActive;
 };
 
 class BuildingActor : public Character, public TalkMsgRequest {
@@ -489,40 +489,40 @@ public:
     void execEntryTalkOpen();
     BOOL enterEntryTalkOpen();
 
-    /* 0x130 */ u8 unk_130;
+    /* 0x130 */ u8 doorState;
     /* 0x131 */ u8 pad_131;
-    /* 0x132 */ u16 unk_132;
-    /* 0x134 */ u32 unk_134;
+    /* 0x132 */ u16 itemId;
+    /* 0x134 */ u32 buildingIndex;
     /* 0x138 */ u8 unk_138[0x194 - 0x138];
-    /* 0x194 */ void *unk_194;
+    /* 0x194 */ void *modelRes;
     /* 0x198 */ u8 pad_198[4];
-    /* 0x19c */ Unk_ov009_0225bc88_Blk unk_19c;
+    /* 0x19c */ Unk_ov009_0225bc88_Blk baseMatrix;
     /* 0x1cc */ u8 pad_1cc[0x1d4 - 0x1cc];
     /* 0x1d4 */ u8 unk_1d4[0x1f0 - 0x1d4];
     /* 0x1f0 */ u8 unk_1f0[0x228 - 0x1f0];
-    /* 0x228 */ u32 unk_228;
-    /* 0x22c */ u32 unk_22c;
-    /* 0x230 */ u8 unk_230;
-    /* 0x231 */ u8 unk_231;
-    /* 0x232 */ Unk_ov009_0225bf3c_Flags unk_232;
-    /* 0x233 */ u8 unk_233;
+    /* 0x228 */ u32 gridX;
+    /* 0x22c */ u32 gridZ;
+    /* 0x230 */ u8 exitDelay;
+    /* 0x231 */ u8 colliderFlags;
+    /* 0x232 */ Unk_ov009_0225bf3c_Flags entryFlags;
+    /* 0x233 */ u8 visitRefused;
     /* 0x234 */ u8 unk_234[0x44];
-    /* 0x278 */ s32 unk_278;
-    /* 0x27c */ u8 unk_27c;
+    /* 0x278 */ s32 entryState;
+    /* 0x27c */ u8 closedTalk;
     /* 0x27d */ u8 pad_27d;
-    /* 0x27e */ u16 unk_27e;
-    /* 0x280 */ ObjShadowStrip *unk_280;
-    /* 0x284 */ TouchPickTriangle *unk_284;
-    /* 0x288 */ BuildingCollider *unk_288;
-    /* 0x28c */ u8 unk_28c;
+    /* 0x27e */ u16 warpTimer;
+    /* 0x280 */ ObjShadowStrip *shadows;
+    /* 0x284 */ TouchPickTriangle *collisionShapes;
+    /* 0x288 */ BuildingCollider *colliders;
+    /* 0x28c */ u8 colliderCount;
     /* 0x28d */ u8 pad_28d;
     /* 0x28e */ u8 unk_28e[2];
-    /* 0x290 */ s32 unk_290;
-    /* 0x294 */ s32 unk_294;
-    /* 0x298 */ s32 unk_298;
-    /* 0x29c */ s32 unk_29c;
-    /* 0x2a0 */ s32 unk_2a0;
-    /* 0x2a4 */ Unk_ov009_0225b880_Vec3 unk_2a4;
+    /* 0x290 */ s32 solidCenterX;
+    /* 0x294 */ s32 solidCenterY;
+    /* 0x298 */ s32 solidCenterZ;
+    /* 0x29c */ s32 solidSizeX;
+    /* 0x2a0 */ s32 solidSizeZ;
+    /* 0x2a4 */ Unk_ov009_0225b880_Vec3 entryPos;
 };
 
 typedef void (BuildingActor::*Unk_ov009_0225c290_Fn)();
@@ -778,29 +778,29 @@ static inline BOOL Unk_ov009_0225d858_Is(u16 *p, u32 v) {
 
 struct Unk_ov009_0225df94_Target {
     /* 0x00 */ u8 pad_00[0x2c];
-    /* 0x2c */ BuildingActor *unk_2c;
+    /* 0x2c */ BuildingActor *ptrUser;
 };
 
 struct Unk_ov009_0225df94_Arg {
-    /* 0x00 */ u8 *unk_00;
-    /* 0x04 */ Unk_ov009_0225df94_Target *unk_04;
+    /* 0x00 */ u8 *c;
+    /* 0x04 */ Unk_ov009_0225df94_Target *pRenderObj;
 };
 
 struct Unk_ov009_0225df84_Obj {
     /* 0x00 */ u8 pad_00[0x24];
-    /* 0x24 */ void *unk_24;
+    /* 0x24 */ void *nodeDescCallback;
     /* 0x28 */ u8 pad_28[0x92 - 0x28];
-    /* 0x92 */ u8 unk_92;
+    /* 0x92 */ u8 nodeDescCallbackTiming;
 };
 
 void BuildingActor::vfunc_4c(u32 a, u8 b) {
     switch (a) {
     case 6:
-        BuildingOccupancy_Leave(unk_132, 0);
+        BuildingOccupancy_Leave(itemId, 0);
         HouseVisitor_ClearPresent();
         Scene_GetWarpRequest();
         Scene_ResetTownReturnPos();
-        unk_230 = 1;
+        exitDelay = 1;
         break;
     case 0:
     case 1:

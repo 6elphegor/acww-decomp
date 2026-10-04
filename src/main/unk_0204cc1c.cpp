@@ -8,40 +8,40 @@ struct Unk_0204da0c_Size {
 };
 
 struct Unk_0204da0c_Map {
-    u32 unk_00;
-    Unk_0204da0c_Size unk_04;
+    u32 blocks;
+    Unk_0204da0c_Size size;
 };
 
 struct Unk_0204c3c0_Ver {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
+    u8 day;
+    u8 month;
+    u8 year;
     u8 unk_03;
 };
 
 struct Unk_0204c3f4_Slot {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
+    u8 day;
+    u8 month;
+    u8 year;
     u8 unk_03;
 };
 
 struct TownState {
-    /* 0x00 */ Unk_0204c3c0_Ver unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
-    /* 0x0a */ u8 unk_0a;
+    /* 0x00 */ Unk_0204c3c0_Ver lastUpdate;
+    /* 0x04 */ s32 nativeFruit;
+    /* 0x08 */ u8 nextWeekDay;
+    /* 0x09 */ u8 nextWeekMonth;
+    /* 0x0a */ u8 nextWeekYear;
     /* 0x0b */ u8 unk_0b;
     /* 0x0c */ u8 pad_0c[0x21 - 0x0c];
-    /* 0x21 */ s8 unk_21;
+    /* 0x21 */ s8 perfectStreak;
     /* 0x22 */ u8 unk_22;
     /* 0x23 */ u8 pad_23[0x54 - 0x23];
-    /* 0x54 */ u8 unk_54;
-    /* 0x55 */ u8 unk_55;
-    /* 0x56 */ u8 unk_56;
+    /* 0x54 */ u8 eventUpdateDay;
+    /* 0x55 */ u8 eventUpdateMonth;
+    /* 0x56 */ u8 eventUpdateYear;
     /* 0x57 */ u8 unk_57;
-    /* 0x58 */ Unk_0204c3f4_Slot unk_58[4];
+    /* 0x58 */ Unk_0204c3f4_Slot playerDates[4];
     /* 0x68 */ u8 unk_68;
     /* 0x69 */ u8 unk_69;
     /* 0x6a */ u8 unk_6a;
@@ -50,10 +50,10 @@ struct TownState {
 
 extern "C" {
 struct Unk_020b5350_Info {
-    u32 *unk_00;
-    u8 unk_04;
-    u8 unk_05;
-    u16 unk_06;
+    u32 *acreIds;
+    u8 width;
+    u8 height;
+    u16 moduleParam;
 };
 }
 
@@ -68,10 +68,10 @@ public:
     virtual BOOL onDraw();
     virtual ~SceneMapModule();
 
-    /* 0x50 */ u16 unk_50;
+    /* 0x50 */ u16 moduleParam;
     /* 0x52 */ u16 pad_52;
-    /* 0x54 */ u32 *unk_54;
-    /* 0x58 */ s32 unk_58;
+    /* 0x54 */ u32 *ownedGrids;
+    /* 0x58 */ s32 numOwnedGrids;
 
     s32 buildSceneMap(void *heap);
     void getHouseUnk(u32 *out, s32 n);
@@ -110,15 +110,15 @@ struct Unk_0204d0f4_Info {
 };
 
 struct Unk_0204d0a4 {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
-    u32 unk_18;
-    u32 unk_1c;
-    u32 unk_20;
+    u32 blocks;
+    u32 width;
+    u32 height;
+    u32 unitsX;
+    u32 unitsZ;
+    u32 worldWidth;
+    u32 worldHeight;
+    u32 mapSlot;
+    u32 itemGrid;
 };
 
 struct Unk_0204d560_Vec { s32 x, y, z; };
@@ -136,14 +136,14 @@ struct AcreItemGrid {
 };
 
 struct TownBlockMap {
-    u8 *unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
+    u8 *blocks;
+    s32 width;
+    s32 height;
+    s32 unitsX;
+    s32 unitsZ;
+    s32 worldWidth;
+    s32 worldHeight;
+    s32 mapSlot;
     u32 releaseBg();
     void bindBg();
     void updateAcreIds();
@@ -227,14 +227,14 @@ public:
 
 class BlockMap {
 public:
-    void *unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
+    void *blocks;
+    s32 width;
+    s32 height;
+    s32 unitsX;
+    s32 unitsZ;
+    s32 worldWidth;
+    s32 worldHeight;
+    s32 mapSlot;
 
     BOOL build(Unk_0204debc_Entry *e, Unk_0204e1a8_Out *sz, s32 heap);
     void free(s32 heap);
@@ -257,19 +257,19 @@ struct Unk_0204e858_Vec {
 
 struct Unk_0204e858_Cell {
     u8 pad_00[0x24];
-    u16 *unk_24;
+    u16 *buried;
 };
 
 struct Unk_0204e858_Grid {
-    Unk_0204e858_Cell *unk_00;
-    u32 unk_04;
-    u32 unk_08;
+    Unk_0204e858_Cell *blocks;
+    u32 width;
+    u32 height;
 };
 
 struct MapBlockEntry {
-    u32 unk_00;
-    u32 unk_04[2];
-    u32 unk_0c;
+    u32 acreId;
+    u32 layers[2];
+    u32 buried;
     MapBlockEntry();
 };
 
@@ -653,8 +653,8 @@ inline void *operator new(unsigned long, void *p) {
 }
 
 static inline Unk_0204e858_Cell *Unk_0204e858_GetCell(Unk_0204e858_Grid *g, u32 x, u32 y) {
-    if (x < g->unk_04 && y < g->unk_08 && g->unk_00 != NULL) {
-        return &g->unk_00[y * g->unk_04 + x];
+    if (x < g->width && y < g->height && g->blocks != NULL) {
+        return &g->blocks[y * g->width + x];
     }
     return NULL;
 }
@@ -683,12 +683,12 @@ static inline BOOL Unk_0204e8b0_Bit(u16 *m, u32 x, u32 y) {
 extern "C" void BlockMap_DebugStub() {}
 
 extern "C" MapBlockEntry::MapBlockEntry() {
-    u32 *p = unk_04;
-    unk_00 = 0x102a;
+    u32 *p = layers;
+    acreId = 0x102a;
     for (s32 i = 0; i < 2; i++) {
         *p++ = 0;
     }
-    unk_0c = 0;
+    buried = 0;
 }
 
 extern "C" MapBlockEntry *MapBlockEntry_NewArray(s32 n, void *heap) {
@@ -749,7 +749,7 @@ extern "C" void FieldPos_FromBlockUnit(Unk_0204e858_Vec *v, s32 a, s32 b, s32 c,
 extern "C" Unk_0204e858_Cell *BlockMap_FindBlockAllAttr(Unk_0204e858_Grid *g, s32 filter) {
     s32 x, y;
     if (filter != 0) {
-        u32 *sz = &g->unk_04;
+        u32 *sz = &g->width;
         s32 w = sz[0];
         s32 h = sz[1];
         s32 x0 = 0;
@@ -757,8 +757,8 @@ extern "C" Unk_0204e858_Cell *BlockMap_FindBlockAllAttr(Unk_0204e858_Grid *g, s3
         for (y = 0; y < h; y++) {
             for (x = x0; x < w; x++) {
                 Unk_0204e858_Cell *cell;
-                if ((u32)x < g->unk_04 && (u32)y < g->unk_08 && g->unk_00 != NULL) {
-                    cell = &g->unk_00[y * g->unk_04 + x];
+                if ((u32)x < g->width && (u32)y < g->height && g->blocks != NULL) {
+                    cell = &g->blocks[y * g->width + x];
                 } else {
                     cell = nullc;
                 }
@@ -773,7 +773,7 @@ extern "C" Unk_0204e858_Cell *BlockMap_FindBlockAllAttr(Unk_0204e858_Grid *g, s3
 
 extern "C" Unk_0204e858_Cell *BlockMap_FindBlockAnyAttr(Unk_0204e858_Grid *g, s32 filter) {
     s32 x, y;
-    u32 *sz = &g->unk_04;
+    u32 *sz = &g->width;
     s32 w = sz[0];
     s32 h = sz[1];
     s32 x0 = 0;
@@ -781,8 +781,8 @@ extern "C" Unk_0204e858_Cell *BlockMap_FindBlockAnyAttr(Unk_0204e858_Grid *g, s3
     for (y = 0; y < h; y++) {
         for (x = x0; x < w; x++) {
             Unk_0204e858_Cell *cell;
-            if ((u32)x < g->unk_04 && (u32)y < g->unk_08 && g->unk_00 != NULL) {
-                cell = &g->unk_00[y * g->unk_04 + x];
+            if ((u32)x < g->width && (u32)y < g->height && g->blocks != NULL) {
+                cell = &g->blocks[y * g->width + x];
             } else {
                 cell = nullc;
             }
@@ -846,7 +846,7 @@ extern "C" void *BlockMap_SetItemAtUnit(Unk_0204e858_Grid *g, s32 a, s32 x, s32 
 
 extern "C" BOOL BlockMap_FindItemAllAttr(Unk_0204e858_Grid *g, s32 *outx, s32 *outz, s32 a3, s32 p4, s32 p5, s32 p6, s32 filter, s32 p8) {
     s32 x, y;
-    u32 *sz = &g->unk_04;
+    u32 *sz = &g->width;
     s32 w = sz[0];
     s32 h = sz[1];
     s32 x0 = 0;
@@ -854,8 +854,8 @@ extern "C" BOOL BlockMap_FindItemAllAttr(Unk_0204e858_Grid *g, s32 *outx, s32 *o
     for (y = 0; y < h; y++) {
         for (x = x0; x < w; x++) {
             Unk_0204e858_Cell *cell;
-            if ((u32)x < g->unk_04 && (u32)y < g->unk_08 && g->unk_00 != NULL) {
-                cell = &g->unk_00[y * g->unk_04 + x];
+            if ((u32)x < g->width && (u32)y < g->height && g->blocks != NULL) {
+                cell = &g->blocks[y * g->width + x];
             } else {
                 cell = nullc;
             }
@@ -873,7 +873,7 @@ extern "C" BOOL BlockMap_FindItemAllAttr(Unk_0204e858_Grid *g, s32 *outx, s32 *o
 
 extern "C" BOOL BlockMap_FindItemAnyAttr(Unk_0204e858_Grid *g, s32 *outx, s32 *outz, s32 a3, s32 p4, s32 p5, s32 p6, s32 filter, s32 p8) {
     s32 x, y;
-    u32 *sz = &g->unk_04;
+    u32 *sz = &g->width;
     s32 w = sz[0];
     s32 h = sz[1];
     s32 x0 = 0;
@@ -881,8 +881,8 @@ extern "C" BOOL BlockMap_FindItemAnyAttr(Unk_0204e858_Grid *g, s32 *outx, s32 *o
     for (y = 0; y < h; y++) {
         for (x = x0; x < w; x++) {
             Unk_0204e858_Cell *cell;
-            if ((u32)x < g->unk_04 && (u32)y < g->unk_08 && g->unk_00 != NULL) {
-                cell = &g->unk_00[y * g->unk_04 + x];
+            if ((u32)x < g->width && (u32)y < g->height && g->blocks != NULL) {
+                cell = &g->blocks[y * g->width + x];
             } else {
                 cell = nullc;
             }
@@ -933,8 +933,8 @@ extern "C" s32 BlockMap_ClearBuriedAtUnit(Unk_0204e858_Grid *g, s32 x, s32 z) {
 extern "C" s32 BlockMap_IsBuried(Unk_0204e858_Grid *g, u32 hx, u32 hy, u32 lx, u32 ly) {
     Unk_0204e858_Cell *cell = Unk_0204e858_GetCell(g, hx, hy);
     BOOL r = FALSE;
-    if (cell != NULL && cell->unk_24 != NULL) {
-        r = Unk_0204e8b0_Bit(cell->unk_24, lx, ly);
+    if (cell != NULL && cell->buried != NULL) {
+        r = Unk_0204e8b0_Bit(cell->buried, lx, ly);
     }
     return r;
 }
@@ -1076,7 +1076,7 @@ BOOL TownMap::removeStructure(s32 x, s32 y, u16 *p) {
 }
 
 s32 BlockMap::canPlaceItem(s32 a, s32 b) { 
-    CollisionMap_Select(unk_1c); 
+    CollisionMap_Select(mapSlot); 
     s32 r = Ground_CanPlaceItem(a, b); 
     CollisionMap_Select(0); 
     return r; 
@@ -1089,42 +1089,42 @@ void BlockMap::canPlaceItemAtBlockUnit(s32 a, s32 b, s32 c, s32 d) {
 }
 
 s32 BlockMap::isWalkable(s32 a, s32 b) { 
-    CollisionMap_Select(unk_1c); 
+    CollisionMap_Select(mapSlot); 
     s32 r = Ground_IsWalkable(a, b); 
     CollisionMap_Select(0); 
     return r; 
 }
 
 s32 BlockMap::isGrassSurface(s32 a, s32 b) { 
-    CollisionMap_Select(unk_1c); 
+    CollisionMap_Select(mapSlot); 
     s32 r = Ground_IsGrassSurface(a, b); 
     CollisionMap_Select(0); 
     return r; 
 }
 
 s32 BlockMap::isShore(s32 a, s32 b) { 
-    CollisionMap_Select(unk_1c); 
+    CollisionMap_Select(mapSlot); 
     s32 r = Ground_IsShore(a, b); 
     CollisionMap_Select(0); 
     return r; 
 }
 
 s32 BlockMap::getDigKind(s32 a, s32 b) { 
-    CollisionMap_Select(unk_1c); 
+    CollisionMap_Select(mapSlot); 
     s32 r = Ground_GetDigKind(a, b); 
     CollisionMap_Select(0); 
     return r; 
 }
 
 s32 BlockMap::getPlantFlag(s32 a, s32 b) { 
-    CollisionMap_Select(unk_1c); 
+    CollisionMap_Select(mapSlot); 
     s32 r = Ground_GetPlantFlag(a, b); 
     CollisionMap_Select(0); 
     return r; 
 }
 
 s32 BlockMap::getWalkLinks(s32 a, s32 b) { 
-    CollisionMap_Select(unk_1c); 
+    CollisionMap_Select(mapSlot); 
     s32 r = Ground_GetWalkLinks(a, b); 
     CollisionMap_Select(0); 
     return r; 
@@ -1137,7 +1137,7 @@ void BlockMap::getWalkLinksAtPos(void *a) {
 }
 
 s32 BlockMap::clearPlantFlag(s32 a, s32 b) { 
-    CollisionMap_Select(unk_1c); 
+    CollisionMap_Select(mapSlot); 
     s32 r = Ground_ClearPlantFlag(a, b); 
     CollisionMap_Select(0); 
     return r; 
@@ -1145,20 +1145,20 @@ s32 BlockMap::clearPlantFlag(s32 a, s32 b) {
 
 void BlockMap::clear() {
     s32 z = 0;
-    unk_04 = z;
-    unk_08 = z;
-    unk_0c = z;
-    unk_10 = z;
-    unk_00 = (void *)z;
-    unk_1c = z;
+    width = z;
+    height = z;
+    unitsX = z;
+    unitsZ = z;
+    blocks = (void *)z;
+    mapSlot = z;
 }
 
 void BlockMap::free(s32 heap) {
-    if (unk_00) {
-        Ns_0204debc::Heap_Free(heap, unk_00);
-        unk_00 = NULL;
+    if (blocks) {
+        Ns_0204debc::Heap_Free(heap, blocks);
+        blocks = NULL;
     }
-    Ns_0204debc::CollisionMap_Release(unk_1c);
+    Ns_0204debc::CollisionMap_Release(mapSlot);
 }// Declarations for data defined further down (definition order sets the data layout)
 extern TownBlockMap *gTownBlockMap;
 extern char sFgDataFoIndexPath[];
@@ -1210,9 +1210,9 @@ char sFgDataFiIndexPath[] = "fg_data/fi_h.bin";
 BOOL BlockMap::build(Unk_0204debc_Entry *e, Unk_0204e1a8_Out *sz, s32 heap) {
     s32 count = sz->v[0] * sz->v[1];
     BOOL r = FALSE;
-    unk_1c = 0;
-    if (unk_00 == NULL) unk_00 = Ns_0204debc::MapBlock_NewArray(count, heap, 4);
-    if (unk_00) {
+    mapSlot = 0;
+    if (blocks == NULL) blocks = Ns_0204debc::MapBlock_NewArray(count, heap, 4);
+    if (blocks) {
         Unk_0204e1a8_Loc l;
         u8 *buf;
         s32 zero = 0;
@@ -1221,16 +1221,16 @@ BOOL BlockMap::build(Unk_0204debc_Entry *e, Unk_0204e1a8_Out *sz, s32 heap) {
         l.v.x = zero;
         l.v.y = zero;
         l.v.z = zero;
-        buf = (u8 *)unk_00;
-        unk_04 = sz->v[0];
-        unk_08 = sz->v[1];
-        unk_14 = unk_04 * Ns_0204debc::data_020c8cbc;
-        unk_18 = unk_08 * data_020c8cb8;
-        FieldUnit_FromBlockUnit(&unk_0c, &unk_10, unk_04, unk_08, 0, 0);
+        buf = (u8 *)blocks;
+        width = sz->v[0];
+        height = sz->v[1];
+        worldWidth = width * Ns_0204debc::data_020c8cbc;
+        worldHeight = height * data_020c8cb8;
+        FieldUnit_FromBlockUnit(&unitsX, &unitsZ, width, height, 0, 0);
         static TownUnitShapeQuery obj;
-        Ns_0204debc::CollisionMap_Bind(unk_04, unk_08, &obj, unk_1c);
-        for (l.y = 0; l.y < unk_08; l.y++) {
-            for (l.x = 0; l.x < unk_04; l.x++) {
+        Ns_0204debc::CollisionMap_Bind(width, height, &obj, mapSlot);
+        for (l.y = 0; l.y < height; l.y++) {
+            for (l.x = 0; l.x < width; l.x++) {
                 Unk_0204e1a8_Vec w;
                 l.v.x = l.x << 17;
                 l.v.z = l.y << 17;
@@ -1451,12 +1451,12 @@ extern "C" void ItemGrid_Clear(u16 *p) {
 extern "C" void AcreItemGrid_Get() {}
 
 void TownBlockMap::clear() {
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_0c = 0;
-    unk_10 = 0;
-    unk_00 = 0;
-    unk_1c = 1;
+    width = 0;
+    height = 0;
+    unitsX = 0;
+    unitsZ = 0;
+    blocks = 0;
+    mapSlot = 1;
 }
 
 extern "C" BOOL TownBlockMap_Create(void *heap) {
@@ -1485,30 +1485,30 @@ extern "C" s32 TownBlockMap_Destroy(void *heap) {
 BOOL TownBlockMap::build(void *heap) {
      BOOL result; Unk_0204db24_L l; u8 *cell; s32 *q; s32 *tbl; 
     result = FALSE;
-    unk_1c = 1;
-    if (!unk_00) unk_00 = (u8 *)Ns_0204d560::MapBlock_NewArray(0x24, (u32)heap, 4);
+    mapSlot = 1;
+    if (!blocks) blocks = (u8 *)Ns_0204d560::MapBlock_NewArray(0x24, (u32)heap, 4);
     tbl = Ns_0204d560::_ZN7TownMap17buildBlockEntriesEi(Ns_0204d560::gSaveTownMap, heap);
-    if (unk_00 && tbl) {
+    if (blocks && tbl) {
         l.xy[0] = 0;
         l.xy[1] = 0;
         l.v.x = 0;
         l.v.y = 0;
         l.v.z = 0;
-        cell = unk_00;
+        cell = blocks;
         q = tbl;
-        unk_04 = 6;
-        unk_08 = 6;
-        unk_14 = unk_04 * Ns_0204d560::data_020c8cbc;
-        unk_18 = unk_08 * Ns_0204d560::data_020c8cb8;
-        FieldUnit_FromBlockUnit(&unk_0c, &unk_10, unk_04, unk_08, 0, 0);
-        for (l.xy[1] = 0; l.xy[1] < unk_08; l.xy[1]++) {
-            for (l.xy[0] = 0; l.xy[0] < unk_04; l.xy[0]++) {
+        width = 6;
+        height = 6;
+        worldWidth = width * Ns_0204d560::data_020c8cbc;
+        worldHeight = height * Ns_0204d560::data_020c8cb8;
+        FieldUnit_FromBlockUnit(&unitsX, &unitsZ, width, height, 0, 0);
+        for (l.xy[1] = 0; l.xy[1] < height; l.xy[1]++) {
+            for (l.xy[0] = 0; l.xy[0] < width; l.xy[0]++) {
                 l.v.x = l.xy[0] << 17;
                 l.v.z = l.xy[1] << 17;
                 l.w.x = l.v.x;
                 l.w.y = l.v.y;
                 l.w.z = l.v.z;
-                MapBlock_Init(cell, q[0], &l.w, q[1], q[2], q[3], 0, 0, (s32 *)l.xy, unk_1c);
+                MapBlock_Init(cell, q[0], &l.w, q[1], q[2], q[3], 0, 0, (s32 *)l.xy, mapSlot);
                 cell += 0x28;
                 q += 4;
             }
@@ -1520,9 +1520,9 @@ BOOL TownBlockMap::build(void *heap) {
 }
 
 void TownBlockMap::freeBlocks(void *heap) {
-    if (unk_00) {
-        Heap_Free(heap, unk_00);
-        unk_00 = 0;
+    if (blocks) {
+        Heap_Free(heap, blocks);
+        blocks = 0;
     }
 }
 
@@ -1530,9 +1530,9 @@ void TownBlockMap::updateAcreIds() {
     s32 x; u8 *p; s32 y; u8 *c;
     p = TownMap_GetAcres(Ns_0204d560::gSaveTownMap);
     if (p) {
-        c = unk_00;
-        for (y = 0; y < unk_08; y++) {
-            for (x = 0; x < unk_04; x++) {
+        c = blocks;
+        for (y = 0; y < height; y++) {
+            for (x = 0; x < width; x++) {
                 if (c) Ns_0204d560::_ZN12MapBlockAcre9setAcreIdEj(c, *p);
                 c += 0x28;
                 p++;
@@ -1544,12 +1544,12 @@ void TownBlockMap::updateAcreIds() {
 void TownBlockMap::bindBg() {
     s32 x, y;
     Ns_0204d560::func_020e885c(gTownBclHeap);
-    Ns_0204d560::CollisionMap_Bind(unk_04, unk_08, 0, unk_1c);
-    for (y = 0; y < unk_08; y++) {
-        for (x = 0; x < unk_04; x++) {
+    Ns_0204d560::CollisionMap_Bind(width, height, 0, mapSlot);
+    for (y = 0; y < height; y++) {
+        for (x = 0; x < width; x++) {
             u8 *c;
-            if ((u32)x < (u32)unk_04 && (u32)y < (u32)unk_08 && unk_00) {
-                c = unk_00 + (x + y * unk_04) * 0x28;
+            if ((u32)x < (u32)width && (u32)y < (u32)height && blocks) {
+                c = blocks + (x + y * width) * 0x28;
             } else {
                 c = 0;
             }
@@ -1557,14 +1557,14 @@ void TownBlockMap::bindBg() {
                 u32 t = Ns_0204d560::_ZN12MapBlockAcre9getAcreIdEv(c);
                 void *d = gTownBclHeap;
                 Ns_0204d560::BgModelCache_Get(d);
-                Ns_0204d560::_ZN8MapBlock6bindBgEP16Unk_02037618_Subjj(c, 0, Ns_0204d560::BgModel_LoadBcl(t, d), unk_1c);
+                Ns_0204d560::_ZN8MapBlock6bindBgEP16Unk_02037618_Subjj(c, 0, Ns_0204d560::BgModel_LoadBcl(t, d), mapSlot);
             }
         }
     }
 }
 
 u32 TownBlockMap::releaseBg() {
-    return Ns_0204d560::CollisionMap_Release(unk_1c);
+    return Ns_0204d560::CollisionMap_Release(mapSlot);
 }
 
 extern "C" TownBlockMap *TownBlockMap_Get() {
@@ -1678,12 +1678,12 @@ extern "C" BOOL Town_FindGulliverShip(void *a, void *b) {
 }
 
 extern "C" void HouseRoomMap_Clear(Unk_0204d0a4 *p) {
-    p->unk_04 = 0;
-    p->unk_08 = 0;
-    p->unk_0c = 0;
-    p->unk_10 = 0;
-    p->unk_00 = 0;
-    p->unk_1c = 2;
+    p->width = 0;
+    p->height = 0;
+    p->unitsX = 0;
+    p->unitsZ = 0;
+    p->blocks = 0;
+    p->mapSlot = 2;
 }
 
 extern "C" Unk_0204d0a4 *HouseRoomMaps_Get(s32 i) {
@@ -1747,7 +1747,7 @@ extern "C" void HouseRoomMaps_UpdateAll() {
 
 extern "C" void HouseRoomMap_Update(Unk_0204d0a4 *p, s32 i) {
     u32 v = _ZN9HouseData13getRoomAcreIdEi(&Ns_0204cc48::gSaveHouse);
-    if (p->unk_00) _ZN12MapBlockAcre9setAcreIdEj(p->unk_00, v);
+    if (p->blocks) _ZN12MapBlockAcre9setAcreIdEj(p->blocks, v);
 }
 
 extern "C" void HouseRoomMaps_BindBg() {
@@ -1760,9 +1760,9 @@ extern "C" void HouseRoomMaps_BindBg() {
 
 extern "C" void HouseRoomMap_BindBg(Unk_0204d0a4 *p) {
     u32 h;
-    CollisionMap_Bind(p->unk_04, p->unk_08, 0, p->unk_1c);
-    if ((u8 *)p->unk_04 > (u8 *)0 && (u8 *)p->unk_08 > (u8 *)0) {
-        h = p->unk_00;
+    CollisionMap_Bind(p->width, p->height, 0, p->mapSlot);
+    if ((u8 *)p->width > (u8 *)0 && (u8 *)p->height > (u8 *)0) {
+        h = p->blocks;
         if (h != 0) goto join;
     }
     h = 0;
@@ -1771,34 +1771,34 @@ join:
         u32 a = _ZN12MapBlockAcre9getAcreIdEv(h);
         u32 g = gRoomBclHeap;
         BgModelCache_Get();
-        _ZN8MapBlock6bindBgEP16Unk_02037618_Subjj(h, 0, BgModel_LoadBcl(a, g), p->unk_1c);
+        _ZN8MapBlock6bindBgEP16Unk_02037618_Subjj(h, 0, BgModel_LoadBcl(a, g), p->mapSlot);
     }
 }
 
 extern "C" void HouseRoomMap_ReleaseBg(Unk_0204d0a4 *p) {
-    CollisionMap_Release(p->unk_1c);
+    CollisionMap_Release(p->mapSlot);
 }
 
 extern "C" BOOL HouseRoomMap_Init(Unk_0204d0a4 *p, s32 i, void *heap) {
     BOOL r = FALSE;
     Unk_0204d0f4_Info *info;
     struct { Unk_0204d0f4_V3 v, w; } l;
-    p->unk_1c = i + 2;
-    if (!p->unk_00) {
-        p->unk_00 = MapBlock_NewArray(1, heap, 4);
+    p->mapSlot = i + 2;
+    if (!p->blocks) {
+        p->blocks = MapBlock_NewArray(1, heap, 4);
     }
     info = (Unk_0204d0f4_Info *)Ns_0204cc48::_ZN9HouseData19buildRoomBlockEntryEiPv(&Ns_0204cc48::gSaveHouse, i, heap);
-    if (p->unk_00 && info) {
+    if (p->blocks && info) {
         l.v.x = 0; l.v.y = 0; l.v.z = 0;
-        p->unk_04 = 1;
-        p->unk_08 = 1;
-        p->unk_14 = data_020c8cbc;
-        p->unk_18 = data_020c8cb8;
-        Ns_0204cc48::FieldUnit_FromBlockUnit(&p->unk_0c, &p->unk_10, p->unk_04, p->unk_08, 0, 0);
-        CollisionMap_Bind(p->unk_04, p->unk_08, 0, p->unk_1c);
+        p->width = 1;
+        p->height = 1;
+        p->worldWidth = data_020c8cbc;
+        p->worldHeight = data_020c8cb8;
+        Ns_0204cc48::FieldUnit_FromBlockUnit(&p->unitsX, &p->unitsZ, p->width, p->height, 0, 0);
+        CollisionMap_Bind(p->width, p->height, 0, p->mapSlot);
         l.v.x = 0; l.v.z = 0;
         l.w = l.v;
-        _ZN8MapBlock4initEiP15Unk_02037674_V3iiiP16Unk_02037618_Subjiij(p->unk_00, info->a, &l.w, info->b, info->c, info->d, 0, 0, 0, 0, p->unk_1c);
+        _ZN8MapBlock4initEiP15Unk_02037674_V3iiiP16Unk_02037618_Subjiij(p->blocks, info->a, &l.w, info->b, info->c, info->d, 0, 0, 0, 0, p->mapSlot);
         Heap_Free(heap, info);
         r = TRUE;
     }
@@ -1806,20 +1806,20 @@ extern "C" BOOL HouseRoomMap_Init(Unk_0204d0a4 *p, s32 i, void *heap) {
 }
 
 extern "C" void HouseRoomMap_FreeBlocks(Unk_0204d0a4 *p, void *heap) {
-    if (p->unk_00) {
-        Heap_Free(heap, (void *)p->unk_00);
-        p->unk_00 = 0;
+    if (p->blocks) {
+        Heap_Free(heap, (void *)p->blocks);
+        p->blocks = 0;
     }
 }
 
 extern "C" void VillagerRoomMap_Clear(Unk_0204d0a4 *p) {
-    p->unk_04 = 0;
-    p->unk_08 = 0;
-    p->unk_0c = 0;
-    p->unk_10 = 0;
-    p->unk_00 = 0;
-    p->unk_1c = 7;
-    p->unk_20 = 0;
+    p->width = 0;
+    p->height = 0;
+    p->unitsX = 0;
+    p->unitsZ = 0;
+    p->blocks = 0;
+    p->mapSlot = 7;
+    p->itemGrid = 0;
 }
 
 extern "C" Unk_0204d0f4_Info *VillagerRoom_BuildEntry(u16 *dst, u32 b, void *heap) {
@@ -1861,26 +1861,26 @@ extern "C" BOOL VillagerRoomMap_Init(Unk_0204d0a4 *p, u32 a, void *heap) {
     BOOL r = FALSE;
     Unk_0204d0f4_Info *info;
     struct { Unk_0204d0f4_V3 v, w; } l;
-    p->unk_1c = 7;
-    if (!p->unk_00) {
-        p->unk_00 = MapBlock_NewArray(1, heap, -4);
+    p->mapSlot = 7;
+    if (!p->blocks) {
+        p->blocks = MapBlock_NewArray(1, heap, -4);
     }
-    if (!p->unk_20) {
-        p->unk_20 = (u32)ItemGrid_Alloc(heap, -4);
+    if (!p->itemGrid) {
+        p->itemGrid = (u32)ItemGrid_Alloc(heap, -4);
     }
-    info = VillagerRoom_BuildEntry((u16 *)p->unk_20, a, heap);
-    if (p->unk_00 && info && p->unk_20) {
+    info = VillagerRoom_BuildEntry((u16 *)p->itemGrid, a, heap);
+    if (p->blocks && info && p->itemGrid) {
         l.v.x = 0; l.v.y = 0; l.v.z = 0;
-        p->unk_04 = 1;
-        p->unk_08 = 1;
-        p->unk_14 = data_020c8cbc;
-        p->unk_18 = data_020c8cb8;
-        Ns_0204cc48::FieldUnit_FromBlockUnit(&p->unk_0c, &p->unk_10, p->unk_04, p->unk_08, 0, 0);
-        CollisionMap_Bind(p->unk_04, p->unk_08, 0, p->unk_1c);
+        p->width = 1;
+        p->height = 1;
+        p->worldWidth = data_020c8cbc;
+        p->worldHeight = data_020c8cb8;
+        Ns_0204cc48::FieldUnit_FromBlockUnit(&p->unitsX, &p->unitsZ, p->width, p->height, 0, 0);
+        CollisionMap_Bind(p->width, p->height, 0, p->mapSlot);
         l.v.x = 0; l.v.z = 0;
         u32 t = _ZN12BgModelCache10getAcreBclEi(BgModelCache_Get(), info->a);
         l.w = l.v;
-        _ZN8MapBlock4initEiP15Unk_02037674_V3iiiP16Unk_02037618_Subjiij(p->unk_00, info->a, &l.w, info->b, info->c, info->d, 0, t, 0, 0, p->unk_1c);
+        _ZN8MapBlock4initEiP15Unk_02037674_V3iiiP16Unk_02037618_Subjiij(p->blocks, info->a, &l.w, info->b, info->c, info->d, 0, t, 0, 0, p->mapSlot);
         Heap_Free(heap, info);
         r = TRUE;
     }
@@ -1904,15 +1904,15 @@ extern "C" Unk_0204d0a4 *VillagerRoomMap_Create(u32 a, void *heap) {
 }
 
 extern "C" void VillagerRoomMap_Free(Unk_0204d0a4 *p, void *heap) {
-    if (p->unk_00) {
-        Heap_Free(heap, (void *)p->unk_00);
-        p->unk_00 = 0;
+    if (p->blocks) {
+        Heap_Free(heap, (void *)p->blocks);
+        p->blocks = 0;
     }
-    if (p->unk_20) {
-        Heap_Free(heap, (void *)p->unk_20);
-        p->unk_20 = 0;
+    if (p->itemGrid) {
+        Heap_Free(heap, (void *)p->itemGrid);
+        p->itemGrid = 0;
     }
-    CollisionMap_Release(p->unk_1c);
+    CollisionMap_Release(p->mapSlot);
 }
 
 extern "C" void VillagerRoomMap_Destroy(void *heap) {

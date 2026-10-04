@@ -98,13 +98,13 @@ public:
     void destruct();
     MuseumData *construct();
 
-    u8 unk_00[0x1b];
-    u8 unk_1b[0x1d];
-    u8 unk_38[0x1d];
-    u8 unk_55[0xb];
-    u8 unk_60;
-    u8 unk_61;
-    u8 unk_62;
+    u8 fossilDonors[0x1b];
+    u8 fishDonors[0x1d];
+    u8 insectDonors[0x1d];
+    u8 paintingDonors[0xb];
+    u8 completeDay;
+    u8 completeMonth;
+    u8 completeYear;
     u8 unk_63;
 };
 
@@ -125,10 +125,10 @@ void MuseumData::destruct() {}
 
 void MuseumData::clear() {
     u32 i;
-    for (i = 0; i < 0x1b; i++) unk_00[i] = 0;
-    for (i = 0; i < 0x1d; i++) unk_1b[i] = 0;
-    for (i = 0; i < 0x1d; i++) unk_38[i] = 0;
-    for (i = 0; i < 0xb; i++) unk_55[i] = 0;
+    for (i = 0; i < 0x1b; i++) fossilDonors[i] = 0;
+    for (i = 0; i < 0x1d; i++) fishDonors[i] = 0;
+    for (i = 0; i < 0x1d; i++) insectDonors[i] = 0;
+    for (i = 0; i < 0xb; i++) paintingDonors[i] = 0;
 }
 
 void MuseumData::clearEntry(u16 *id) {
@@ -201,7 +201,7 @@ void MuseumData::checkCompletionLetters() {
             ((u32 *)&t)[0] = 0;
             ((u32 *)&t)[1] = 0;
             Clock_GetDateTime(&t);
-            if (unk_62 != t.b5 || unk_61 != t.b4 || unk_60 != t.b3) {
+            if (completeYear != t.b5 || completeMonth != t.b4 || completeDay != t.b3) {
                 if (sendCompletionLetters()) _ZN8SaveData7setFlagEj(gSaveData, 3);
             }
         }
@@ -241,9 +241,9 @@ void MuseumData::donate(u16 *id) {
         t[0] = 0;
         t[1] = 0;
         Clock_GetDateTime(t);
-        unk_62 = ((u8 *)t)[5];
-        unk_61 = ((u8 *)t)[4];
-        unk_60 = ((u8 *)t)[3];
+        completeYear = ((u8 *)t)[5];
+        completeMonth = ((u8 *)t)[4];
+        completeDay = ((u8 *)t)[3];
         unk_63 = 0;
     }
 }

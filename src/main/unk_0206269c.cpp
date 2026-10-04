@@ -65,10 +65,10 @@ public:
     void seed(u8 a, u8 b, u8 c);
     void seedFromToday();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
-    /* 0x0a */ u8 unk_0a;
+    /* 0x04 */ u32 rngState;
+    /* 0x08 */ u8 year;
+    /* 0x09 */ u8 month;
+    /* 0x0a */ u8 day;
 };
 
 // One-byte element (value 0..5), 3-byte rows in sItemClassWeightOrders
@@ -98,20 +98,20 @@ public:
 struct ItemPickSpec {
     ~ItemPickSpec();
     ItemPickSpec() {}
-    ItemPickSpec(const ItemPickSpec &o) { unk_00 = o.unk_00; unk_04 = o.unk_04; }
+    ItemPickSpec(const ItemPickSpec &o) { listIndex = o.listIndex; itemClass = o.itemClass; }
     s32 getClass();
     s32 getList();
     void set(s32 a, s32 b);
 
-    s32 unk_00;
-    s32 unk_04;
+    s32 listIndex;
+    s32 itemClass;
 };
 
 struct ItemPickList {
     u16 (*unk_00)(u32);
     s32 (*unk_04)(u16 *);
     s32 (*unk_08)(u16 *);
-    u32 unk_0c;
+    u32 count;
     s32 (*unk_10)(u16 *);
 };
 
@@ -296,7 +296,7 @@ u8 RandomSource::getDay() {
 }
 
 DateSeededRandomSource::DateSeededRandomSource() {
-    Random_SetSeed(&unk_04, 1);
+    Random_SetSeed(&rngState, 1);
     seedFromToday();
 }
 
@@ -323,24 +323,24 @@ extern "C" u32 ItemPick_CalcDateSeed(u32 a, u32 b, u32 c) {
 }
 
 void DateSeededRandomSource::seed(u8 a, u8 b, u8 c) {
-    unk_08 = a;
-    unk_09 = b;
-    unk_0a = c;
-    Random_SetSeed(&unk_04, ItemPick_CalcDateSeed(a, b, c));
+    year = a;
+    month = b;
+    day = c;
+    Random_SetSeed(&rngState, ItemPick_CalcDateSeed(a, b, c));
 }
 
-u32 DateSeededRandomSource::random(u32 n) { return Random_NextBelow(&unk_04, n); }
+u32 DateSeededRandomSource::random(u32 n) { return Random_NextBelow(&rngState, n); }
 
 void ItemPickSpec::set(s32 a, s32 b) {
-    unk_00 = a;
-    unk_04 = b;
+    listIndex = a;
+    itemClass = b;
 }
 
 ItemPickSpec::~ItemPickSpec() {}
 
-s32 ItemPickSpec::getList() { return unk_00; }
+s32 ItemPickSpec::getList() { return listIndex; }
 
-s32 ItemPickSpec::getClass() { return unk_04; }
+s32 ItemPickSpec::getClass() { return itemClass; }
 
 extern "C" s32 ItemList_MakeFurniture(s32 a) { return Item_MakeFurniture(a, 0); }
 
@@ -439,7 +439,7 @@ extern "C" u32 ItemPick_FromLists(u16 *out, u32 n, ItemPickSpec *tbl, u32 x3, u8
         const ItemPickList *row = sItemPickLists + type;
         u32 m = 0;
         u32 j;
-        for (j = 0; j < row->unk_0c; j++) {
+        for (j = 0; j < row->count; j++) {
             tmp[0] = row->unk_00(j);
             if (kind == row->unk_08(&tmp[0])) {
                 if (ItemPick_SeasonMatches(row->unk_04(&tmp[0]), k)) {
@@ -456,13 +456,13 @@ extern "C" u32 ItemPick_FromLists(u16 *out, u32 n, ItemPickSpec *tbl, u32 x3, u8
             if (a4 != NULL) {
                 return 0;
             }
-            m = row->unk_0c;
+            m = row->count;
             flagB = 1;
         }
         u32 pick = r->random(m);
         u32 found = 0;
         m = 0;
-        for (j = 0; j < row->unk_0c; j++) {
+        for (j = 0; j < row->count; j++) {
             tmp[1] = row->unk_00(j);
             if (kind == row->unk_08(&tmp[1])) {
                 if (ItemPick_SeasonMatches(row->unk_04(&tmp[1]), k)) {
@@ -821,9 +821,9 @@ extern "C" BOOL Item_IsClass4Furniture(u16 *p) {
     return FALSE;
 }
 
-u8 DateSeededRandomSource::getDay() { return unk_0a; }
+u8 DateSeededRandomSource::getDay() { return day; }
 
-u8 DateSeededRandomSource::getMonth() { return unk_09; }
+u8 DateSeededRandomSource::getMonth() { return month; }
 
-u8 DateSeededRandomSource::getYear() { return unk_08; }
+u8 DateSeededRandomSource::getYear() { return year; }
 

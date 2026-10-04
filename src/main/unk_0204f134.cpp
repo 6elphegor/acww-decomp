@@ -1,12 +1,12 @@
 #include "types.h"
 
 struct Unk_0204f178_Item {
-    u8 unk_00, unk_01, unk_02;
+    u8 fishIndex, habitat, weight;
 };
 
 struct Unk_0204f178_Row {
-    Unk_0204f178_Item *unk_00;
-    u8 unk_04;
+    Unk_0204f178_Item *entries;
+    u8 numEntries;
 };
 
 extern "C" {
@@ -195,16 +195,16 @@ extern "C" s32 FishTable_Pick(u32 *out0, u32 *out1, s32 a, s32 b, s32 c) {
         off = 0;
         lim = Random_GlobalBelow(0x64);
     }
-    for (i = 0; i < sFishTablesByPeriod[b - 1][c][a].unk_04 - off; i++) {
-        sum += sFishTablesByPeriod[b - 1][c][a].unk_00[i].unk_02;
+    for (i = 0; i < sFishTablesByPeriod[b - 1][c][a].numEntries - off; i++) {
+        sum += sFishTablesByPeriod[b - 1][c][a].entries[i].weight;
         if (sum > lim) {
             res = i;
             break;
         }
     }
     if (res != -1) {
-        *out0 = sFishTablesByPeriod[b - 1][c][a].unk_00[res].unk_00;
-        *out1 = sFishTablesByPeriod[b - 1][c][a].unk_00[res].unk_01;
+        *out0 = sFishTablesByPeriod[b - 1][c][a].entries[res].fishIndex;
+        *out1 = sFishTablesByPeriod[b - 1][c][a].entries[res].habitat;
         return 1;
     }
     return 0;

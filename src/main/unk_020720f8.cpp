@@ -231,11 +231,11 @@ class PatternInfo : public Unk_020942c8 {
 public:
     PatternInfo();
     ~PatternInfo();
-    Unk_02071b10_Id16 unk_16;
+    Unk_02071b10_Id16 title;
     struct {
         u8 lo : 4;
         u8 hi : 4;
-    } unk_26;
+    } tastePalette;
     u8 pad_27;
 
     void setTaste(u32 v);

@@ -37,7 +37,7 @@ struct Unk_ov003_02217910_V3D {
 
 struct Unk_ov003_02217b78_Ent {
     u8 pad_00[8];
-    Unk_020553f8_Res *unk_08;
+    Unk_020553f8_Res *modelRes;
 };
 
 // 4-byte colour constructors (unreferenced except by __sinit)
@@ -108,7 +108,7 @@ void FieldGroundBackdrop::clear() {
 BOOL FieldGroundBackdrop::init() {
     Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)BgModelCache_getAcre(BgModelCache_Get(), 0x83);
     s32 t = BgModelCache_getGroundTex(BgModelCache_Get());
-    unk_9c = e->unk_08;
+    unk_9c = e->modelRes;
     ((Model *)&unk_00)->setResourceAndBind(unk_9c, t);
     followCamera();
     return TRUE;

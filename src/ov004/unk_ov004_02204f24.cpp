@@ -96,9 +96,9 @@ public:
 
 struct Unk_0203e5d0_Node {
     u32 unk_00;
-    Unk_0203e5d0_Node *unk_04;
-    u32 unk_08;
-    void *unk_0c;
+    Unk_0203e5d0_Node *next;
+    u32 charId;
+    void *owner;
 };
 
 class Character : public Actor {
@@ -336,10 +336,10 @@ struct FtrTopItem {
 
 struct ItemId {
     ItemId() {
-        unk_00 = 0xfff1;
+        id = 0xfff1;
     }
     ~ItemId();
-    u16 unk_00;
+    u16 id;
 };
 
 // ---- 0x022061b4 (member at 0x188)
@@ -412,8 +412,8 @@ public:
 class CollisionEdge {
 public:
     virtual BOOL hasRoundEnds();
-    CollisionVec2 unk_04, unk_0c, unk_14;
-    s32 unk_1c;
+    CollisionVec2 start, end, normal;
+    s32 offset;
     BOOL intersectLine(CollisionVec2 *out, CollisionVec2 *a, CollisionVec2 *b);
     s32 isBetweenEnds(CollisionVec2 *p);
 };
@@ -1417,9 +1417,9 @@ struct Unk_ov004_0224882c_VT {
 
 struct Unk_ov004_Scene_Entry {
     void *(*unk_00)();
-    u16 unk_04;
-    u16 unk_06;
-    s32 unk_08[4];
+    u16 executePriority;
+    u16 drawPriority;
+    s32 actorParams[4];
 };
 struct Unk_ov004_Rgba {
     u8 a, b, c, d;
@@ -3442,7 +3442,7 @@ void FtrCollider::onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32
     if (b != NULL && (void *)b == chk) {
         if (unk_9c != NULL && ((FtrActor *)unk_9c)->isAct(1)) {
             Unk_ov004_02206744_V3 *pv;
-            t20 = func_020e7b98(a->unk_14.x, a->unk_14.y);
+            t20 = func_020e7b98(a->normal.x, a->normal.y);
             t24 = t20 + 0x8000;
             r7 = (u16)(t24 - b->unk_8e);
             pv = &b->unk_68;
@@ -3452,18 +3452,18 @@ void FtrCollider::onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32
             pz = pv->z;
             pos.z = pz;
             v0.set(px, pz);
-            v1.set(pos.x + a->unk_14.x, pos.z + a->unk_14.y);
+            v1.set(pos.x + a->normal.x, pos.z + a->normal.y);
             v2.set(0, 0);
             if ((u32)r7 < 0x1700 || (u32)r7 > 0xe900) {
                 if (a->intersectLine(&v2, &v0, &v1)) {
-                    r7 = FX_Sqrt(a->unk_04.distSq(&v2));
-                    len2 = FX_Sqrt(a->unk_04.distSq(&a->unk_0c));
+                    r7 = FX_Sqrt(a->start.distSq(&v2));
+                    len2 = FX_Sqrt(a->start.distSq(&a->end));
                     if (r7 >= 0x666) {
                         if (r7 <= len2 - 0x666) {
                             if (a->isBetweenEnds(&v2)) {
                                 WallEdge_GetMidpoint(&mid, a);
-                                t1c = mid.y + func_01ffcb0c(a->unk_14.y, c);
-                                s32 x = mid.x + func_01ffcb0c(a->unk_14.x, c);
+                                t1c = mid.y + func_01ffcb0c(a->normal.y, c);
+                                s32 x = mid.x + func_01ffcb0c(a->normal.x, c);
                                 w1.x = x;
                                 w1.y = 0;
                                 w1.z = t1c;
@@ -3472,18 +3472,18 @@ void FtrCollider::onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32
                                 w2.z = t1c;
                                 if (len2 > 0x3000) {
                                     if (r7 < 0x1000) {
-                                        d1.setDiff(&a->unk_0c, &a->unk_04);
+                                        d1.setDiff(&a->end, &a->start);
                                         d1.normalize();
-                                        v2.x = a->unk_04.x + func_01ffcb0c(d1.x, 0x1000);
-                                        v2.y = a->unk_04.y + func_01ffcb0c(d1.y, 0x1000);
+                                        v2.x = a->start.x + func_01ffcb0c(d1.x, 0x1000);
+                                        v2.y = a->start.y + func_01ffcb0c(d1.y, 0x1000);
                                     } else if (r7 > 0x3000) {
-                                        d2.setDiff(&a->unk_0c, &a->unk_04);
+                                        d2.setDiff(&a->end, &a->start);
                                         d2.normalize();
-                                        v2.x = a->unk_04.x + func_01ffcb0c(d2.x, 0x3000);
-                                        v2.y = a->unk_04.y + func_01ffcb0c(d2.y, 0x3000);
+                                        v2.x = a->start.x + func_01ffcb0c(d2.x, 0x3000);
+                                        v2.y = a->start.y + func_01ffcb0c(d2.y, 0x3000);
                                     }
-                                    r7 = v2.y + func_01ffcb0c(a->unk_14.y, c);
-                                    w2.x = v2.x + func_01ffcb0c(a->unk_14.x, c);
+                                    r7 = v2.y + func_01ffcb0c(a->normal.y, c);
+                                    w2.x = v2.x + func_01ffcb0c(a->normal.x, c);
                                     w2.y = 0;
                                     w2.z = r7;
                                 }

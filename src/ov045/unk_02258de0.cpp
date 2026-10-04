@@ -163,8 +163,8 @@ public:
 };
 
 struct Unk_ov045_022590e4_Msg {
-    u32 unk_00;
-    u8 unk_04;
+    u32 msgKey;
+    u8 msgIndex;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -239,8 +239,8 @@ public:
     void setScript(s32 v);
     void attachOwner(SpNpcKatrina *o);
 
-    s32 unk_ac;
-    SpNpcKatrina *unk_b0;
+    s32 script;
+    SpNpcKatrina *owner;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -448,18 +448,18 @@ public:
     void changeAct(s32 state);
 
     s32 unk_654;
-    s32 unk_658;
-    u8 unk_65c[0x30];
-    SpNpcKatrinaTalk unk_68c;
-    u8 unk_740;
-    u8 unk_741;
+    s32 act;
+    u8 jointMtx[0x30];
+    SpNpcKatrinaTalk talk;
+    u8 fortuneMsg;
+    u8 traitMsg;
     u8 pad_742[2];
-    s32 unk_744;
-    u8 unk_748;
+    s32 readingMode;
+    u8 card;
     u8 pad_749[3];
-    s32 unk_74c;
-    s32 unk_750;
-    u8 unk_754;
+    s32 inverted;
+    s32 partnerName;
+    u8 effectTimer;
     u8 pad_755[3];
 };
 
@@ -539,12 +539,12 @@ BOOL SpNpcKatrina::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_68c);
-    unk_68c.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     setCollisionRadius(0x100);
     setInteractionRange(0x5000);
     unk_654 = -1;
-    unk_754 = 0;
+    effectTimer = 0;
     return TRUE;
 }
 
@@ -555,8 +555,8 @@ BOOL SpNpcKatrina::vfunc_00() {
     sSpNpcKatrinaInstance = this;
     changeAct(0);
     collider.unk_1c |= 2;
-    unk_740 = 0xff;
-    unk_741 = 0xff;
+    fortuneMsg = 0xff;
+    traitMsg = 0xff;
     return TRUE;
 }
 
@@ -572,7 +572,7 @@ BOOL SpNpcKatrina::onDraw() {
     if (!NpcActor::onDraw()) {
         return FALSE;
     }
-    Model_GetJointWorldMtx(&model, &unk_65c, 0xe);
+    Model_GetJointWorldMtx(&model, &jointMtx, 0xe);
     TarotProps_Draw();
     return TRUE;
 }
@@ -585,22 +585,22 @@ BOOL SpNpcKatrina::updateAct() {
     s32 t = NpcActionCtrl_getEmotionId(&actionCtrl);
     if (t != 0x1e && t != 0x20) {
     } else if (NpcActionCtrl_isActionDone(&actionCtrl)) {
-        unk_68c.onEventTag(0);
+        talk.onEventTag(0);
     }
     if (unk_654 == -1) {
         if (t == 0x21 && ((((u32)model.unk_a4 << 4) >> 16)) >= 0x12) {
             unk_654 = Effect_Create(0x3d, (u8 *)this + 0x478, 0, 0);
-            unk_754 = 0x16;
+            effectTimer = 0x16;
         }
-    } else if (func_020e7518(&unk_754) == 0) {
+    } else if (func_020e7518(&effectTimer) == 0) {
         Effect_End(unk_654);
         unk_654 = -1;
     } else {
         Effect_SetPosition(unk_654, (u8 *)this + 0x478, 0, 0);
     }
     BOOL r = FALSE;
-    if (sSpNpcKatrinaActTable[unk_658].exit) {
-        r = (this->*sSpNpcKatrinaActTable[unk_658].exit)();
+    if (sSpNpcKatrinaActTable[act].exit) {
+        r = (this->*sSpNpcKatrinaActTable[act].exit)();
     }
     return r;
 }
@@ -611,7 +611,7 @@ void SpNpcKatrina::changeAct(s32 state) {
         ok = (this->*sSpNpcKatrinaActTable[state].enter)();
     }
     if (ok) {
-        unk_658 = state;
+        act = state;
     }
 }
 
@@ -628,7 +628,7 @@ BOOL SpNpcKatrina::mainAct00() {
 }
 
 BOOL SpNpcKatrina::setupAct01() {
-    NpcActor *p = (NpcActor *)unk_68c.func_02015aac();
+    NpcActor *p = (NpcActor *)talk.func_02015aac();
     if (p) {
         getAngleTo(p);
     }
@@ -663,7 +663,7 @@ SpNpcKatrinaTalk::SpNpcKatrinaTalk() {}
 SpNpcKatrinaTalk::~SpNpcKatrinaTalk() {}
 
 void SpNpcKatrinaTalk::onEventTag(s32 a) {
-    if (a != NpcActionCtrl_getEmotionId(&unk_b0->actionCtrl) || NpcActionCtrl_getAction(&unk_b0->actionCtrl) != 8) {
+    if (a != NpcActionCtrl_getEmotionId(&owner->actionCtrl) || NpcActionCtrl_getAction(&owner->actionCtrl) != 8) {
         switch (a) {
         case 0x1e:
             TarotProps_StartAct01();
@@ -682,30 +682,30 @@ void SpNpcKatrinaTalk::onEventTag(s32 a) {
 
 void SpNpcKatrinaTalk::attachOwner(SpNpcKatrina *o) {
     vfunc_08();
-    unk_b0 = o;
+    owner = o;
 }
 
 void SpNpcKatrinaTalk::start(void *arg) {
     Unk_ov045_022590e4_Msg *out = (Unk_ov045_022590e4_Msg *)arg;
-    out->unk_00 = (u32)sSpNpcKatrinaMsgKey;
+    out->msgKey = (u32)sSpNpcKatrinaMsgKey;
     s32 a = Talk_CheckAndSetPlayerFlag(4, 0);
     s32 b = Talk_CheckAndSetPlayerFlag(5, 0);
     s32 c = Talk_CheckAndSetPlayerFlag(6, 0);
     if (b == 0 || a == 0) {
         if (b == 0) {
-            out->unk_04 = 1;
+            out->msgIndex = 1;
         } else {
-            out->unk_04 = 5;
+            out->msgIndex = 5;
         }
     } else {
         if (c == 0) {
-            out->unk_04 = 0x11;
+            out->msgIndex = 0x11;
         } else {
-            out->unk_04 = 0x19;
+            out->msgIndex = 0x19;
         }
     }
-    if (unk_b0->isClosingTime()) {
-        out->unk_04 = 0x13;
+    if (owner->isClosingTime()) {
+        out->msgIndex = 0x13;
     }
 }
 
@@ -721,21 +721,21 @@ void SpNpcKatrinaTalk::onMessageEnd() {
         setScript(1);
         break;
     case 14:
-        unk_b0->drawFortuneCard();
-        sel = unk_b0->unk_740;
+        owner->drawFortuneCard();
+        sel = owner->fortuneMsg;
         break;
     case 16:
-        if (NpcActor_CanPlayerPay(unk_b0, 0x64)) {
-            NpcActor_ChargePlayer(unk_b0, 0x64);
+        if (NpcActor_CanPlayerPay(owner, 0x64)) {
+            NpcActor_ChargePlayer(owner, 0x64);
         }
         sel = 0x16;
         break;
     case 19:
-        unk_b0->changeAct(3);
+        owner->changeAct(3);
         break;
     case 24:
-        if (NpcActor_CanPlayerPay(unk_b0, 10000)) {
-            NpcActor_ChargePlayer(unk_b0, 10000);
+        if (NpcActor_CanPlayerPay(owner, 10000)) {
+            NpcActor_ChargePlayer(owner, 10000);
         }
         PlayerData_setFortune(h, 0);
         Talk_CheckAndSetPlayerFlag(6, 1);
@@ -753,7 +753,7 @@ void SpNpcKatrinaTalk::onMessageEnd() {
     case 23:
         break;
     }
-    u32 cur = unk_b0->unk_741;
+    u32 cur = owner->traitMsg;
     if (cur != 0xff) {
         if (cur == msgIndex) {
             s32 kind;
@@ -763,9 +763,9 @@ void SpNpcKatrinaTalk::onMessageEnd() {
             void *w;
             void *r5;
             sel = 0x10;
-            kind = unk_b0->getFortuneKind();
+            kind = owner->getFortuneKind();
             arg = PlayerData_getPlayerId(PlayerData_GetCurrent());
-            switch (unk_b0->unk_744) {
+            switch (owner->readingMode) {
             case 0:
                 PlayerData_setFortune(h, kind);
                 if (kind == 1) {
@@ -775,7 +775,7 @@ void SpNpcKatrinaTalk::onMessageEnd() {
                 }
                 break;
             case 1:
-                p = SaveVillagers_FindByName((gp + 0x8a3c), unk_b0->unk_750, 10, PlayerData_getPlayerId(h));
+                p = SaveVillagers_FindByName((gp + 0x8a3c), owner->partnerName, 10, PlayerData_getPlayerId(h));
                 if (p != 0) {
                     q = Villager_FindMemoryIndex(p, arg);
                     w = Villager_GetMemory(p, q);
@@ -819,11 +819,11 @@ void SpNpcKatrinaTalk::onMessageEnd() {
                 }
                 break;
             }
-            unk_b0->unk_741 = 0xff;
-            unk_b0->unk_740 = 0xff;
+            owner->traitMsg = 0xff;
+            owner->fortuneMsg = 0xff;
         }
-        if (unk_b0->unk_740 == msgIndex) {
-            sel = unk_b0->unk_741;
+        if (owner->fortuneMsg == msgIndex) {
+            sel = owner->traitMsg;
         }
     }
     if (sel != 0xff) {
@@ -850,7 +850,7 @@ void SpNpcKatrinaTalk::onChoice() {
     case 3:
     case 5:
         if (st == 0) {
-            if (NpcActor_CanPlayerPay(unk_b0, 0x64) == 0) {
+            if (NpcActor_CanPlayerPay(owner, 0x64) == 0) {
                 sel = 6;
             } else {
                 sel = 7;
@@ -866,7 +866,7 @@ void SpNpcKatrinaTalk::onChoice() {
                 sel = 8;
             } else {
                 sel = 0xd;
-                unk_b0->unk_744 = 0;
+                owner->readingMode = 0;
                 Talk_CheckAndSetPlayerFlag(5, 1);
             }
         } else if (st == 1) {
@@ -880,7 +880,7 @@ void SpNpcKatrinaTalk::onChoice() {
     case 10:
         if (st == 0) {
             sel = 0xc;
-            unk_b0->unk_744 = 1;
+            owner->readingMode = 1;
             Talk_CheckAndSetPlayerFlag(4, 1);
         } else {
             sel = 0xb;
@@ -888,7 +888,7 @@ void SpNpcKatrinaTalk::onChoice() {
         break;
     case 0x14:
         if (st == 0) {
-            if (NpcActor_CanPlayerPay(unk_b0, 10000) == 0) {
+            if (NpcActor_CanPlayerPay(owner, 10000) == 0) {
                 sel = 0x15;
             } else {
                 sel = 0x17;
@@ -903,7 +903,7 @@ void SpNpcKatrinaTalk::onChoice() {
 }
 
 void SpNpcKatrinaTalk::update() {
-    s32 i = unk_ac;
+    s32 i = script;
     if (sSpNpcKatrinaTalkScripts[i].flag != 0) {
         if (sSpNpcKatrinaTalkScripts[i].fn != 0) {
             (this->*sSpNpcKatrinaTalkScripts[i].fn)();
@@ -912,7 +912,7 @@ void SpNpcKatrinaTalk::update() {
 }
 
 void SpNpcKatrinaTalk::onTaskDone() {
-    s32 i = unk_ac;
+    s32 i = script;
     if (sSpNpcKatrinaTalkScripts[i].flag == 0) {
         if (sSpNpcKatrinaTalkScripts[i].fn != 0) {
             (this->*sSpNpcKatrinaTalkScripts[i].fn)();
@@ -922,7 +922,7 @@ void SpNpcKatrinaTalk::onTaskDone() {
 }
 
 void SpNpcKatrinaTalk::setScript(s32 v) {
-    unk_ac = v;
+    script = v;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -933,10 +933,10 @@ void SpNpcKatrinaTalk::scriptReadPartnerName() {
     void *o = unk_3c;
     msg = 0xb;
     if (MenuCtrl_IsResultOk()) {
-        unk_b0->unk_750 = MenuCtrl_GetText();
+        owner->partnerName = MenuCtrl_GetText();
         KatrinaMsgString17 src;
         KatrinaEncodedString16 dst;
-        EncodedString_SetRaw(&dst, unk_b0->unk_750, 0x10);
+        EncodedString_SetRaw(&dst, owner->partnerName, 0x10);
         src.fromEncoded(&dst, 0, 0);
         unk_3c->setSlot(0, &src);
         msg = 0xa;
@@ -955,7 +955,7 @@ BOOL SpNpcKatrina::vfunc_48() {
     bx = r;
     by = r;
     FieldPos_ToUnit(&bx, &by, &rec);
-    if (unk_658 == 0) {
+    if (act == 0) {
         s32 x = position;
         if (rec.a > x - 0x1000 && rec.a < x + 0x1000) {
             s32 z = positionZ;
@@ -971,8 +971,8 @@ void SpNpcKatrina::vfunc_4c(s32 cmd, u32 b) {
     switch (cmd) {
     case 0:
     case 1:
-        unk_68c.vfunc_08();
-        unk_68c.func_02015ab0(getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0(getPlayerActor(4));
         changeAct(1);
         break;
     case 8:
@@ -1001,17 +1001,17 @@ extern "C" u32 SpNpcKatrina_GetAnimFrame() {
 }
 
 void SpNpcKatrina::drawFortuneCard() {
-    unk_748 = Random_GlobalBelow(0x16);
+    card = Random_GlobalBelow(0x16);
     if (Random_GlobalBelow(2) == 0) {
-        unk_74c = 0;
+        inverted = 0;
     } else {
-        unk_74c = 1;
+        inverted = 1;
     }
     s32 t = Random_GlobalBelow(2);
-    s32 k = unk_748 * 2 + 0x1a;
+    s32 k = card * 2 + 0x1a;
     k += t;
-    unk_740 = k + unk_74c * 0x2c;
-    unk_741 = unk_748 + 0x72 + unk_74c * 0x16;
+    fortuneMsg = k + inverted * 0x2c;
+    traitMsg = card + 0x72 + inverted * 0x16;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1020,12 +1020,12 @@ void SpNpcKatrina::drawFortuneCard() {
 s32 SpNpcKatrina::getFortuneKind() {
     u8 i;
     for (i = 0; i < 0x11; i++) {
-        if (unk_748 == sSpNpcKatrinaGoodFortuneCards[i].a && unk_74c == sSpNpcKatrinaGoodFortuneCards[i].b) {
+        if (card == sSpNpcKatrinaGoodFortuneCards[i].a && inverted == sSpNpcKatrinaGoodFortuneCards[i].b) {
             return 1;
         }
     }
     for (i = 0; i < 0x15; i++) {
-        if (unk_748 == sSpNpcKatrinaBadFortuneCards[i].a && unk_74c == sSpNpcKatrinaBadFortuneCards[i].b) {
+        if (card == sSpNpcKatrinaBadFortuneCards[i].a && inverted == sSpNpcKatrinaBadFortuneCards[i].b) {
             return 2;
         }
     }

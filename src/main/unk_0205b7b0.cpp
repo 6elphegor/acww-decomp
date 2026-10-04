@@ -5,7 +5,7 @@ static inline u32 AL(u32 v, u32 a) {
     return (v + a - 1) & ~(a - 1);
 }
 
-struct Unk_0205b848_Cfg { u8 pad[0x6c]; u8 unk_6c; };
+struct Unk_0205b848_Cfg { u8 pad[0x6c]; u8 memberCount; };
 
 // sCharaAnimCache object
 struct CharaAnimCache {
@@ -322,7 +322,7 @@ CharaAnimCache::~CharaAnimCache() {}
 
 void CharaAnimCache::allocBuffers() {
     void *heap = sCharaAnimHeap;
-    u32 n = gCommManager->unk_6c;
+    u32 n = gCommManager->memberCount;
     u32 m = Scene_GetMaxPlayers(Scene_GetCurrent());
     if (n < m) m = n;
     u32 k = m ? m : 1;
@@ -537,7 +537,7 @@ extern "C" void MuseumAquariumHeap_Destroy(void) {
 
 extern "C" void CharaAnimHeap_Create(void *parent) {
     u32 s0 = 0, s1 = 0, s2 = 0, s3 = 0;
-    u32 n = gCommManager->unk_6c;
+    u32 n = gCommManager->memberCount;
     u32 a = Scene_GetMaxPlayers(Scene_GetCurrent());
     if (n < a) {
         a = n;
@@ -575,7 +575,7 @@ extern "C" void CharaClothTexHeap_Destroy(void) {
 }
 
 extern "C" void PlayerFaceTexHeap_Create(void *parent) {
-    u32 n = gCommManager->unk_6c;
+    u32 n = gCommManager->memberCount;
     u32 s = 0, t = 0;
     s += ALIGN4(PlayerFaceTex_GetBufferSize());
     t += s * n;
@@ -602,7 +602,7 @@ extern "C" void CharaFaceAnimHeap_Destroy(void) {
 }
 
 extern "C" void PlayerBodyModelHeap_Create(void *parent) {
-    u32 n = gCommManager->unk_6c;
+    u32 n = gCommManager->memberCount;
     u32 s = 0, t = 0;
     s += ALIGN4(PlayerBodyModel_GetBufferSize());
     t += s * n;
@@ -615,7 +615,7 @@ extern "C" void PlayerBodyModelHeap_Destroy(void) {
 }
 
 extern "C" void PlayerHeadModelHeap_Create(void *parent) {
-    u32 n = gCommManager->unk_6c;
+    u32 n = gCommManager->memberCount;
     u32 s = 0, t = 0;
     s += ALIGN4(PlayerHead_GetBufferSize());
     t += s * n;
@@ -628,7 +628,7 @@ extern "C" void PlayerHeadModelHeap_Destroy(void) {
 }
 
 extern "C" void PlayerPaletteHeap_Create(void *parent) {
-    u32 n = gCommManager->unk_6c;
+    u32 n = gCommManager->memberCount;
     u32 s = 0, t = 0;
     s += PlayerPalette_GetSlotSize();
     t += s * n;
@@ -641,7 +641,7 @@ extern "C" void PlayerPaletteHeap_Destroy(void) {
 }
 
 extern "C" void PlayerGlassesModelHeap_Create(void *parent) {
-    u32 n = gCommManager->unk_6c;
+    u32 n = gCommManager->memberCount;
     u32 s = 0, t = 0;
     s += ALIGN4(PlayerGlassesModel_GetBufferSize());
     t += s * n;
@@ -682,7 +682,7 @@ extern "C" void CharaFaceAnimWorkHeap_Destroy(void) {
 }
 
 extern "C" void PlayerBodyAnimHeap_Create(void *parent) {
-    u32 n = gCommManager->unk_6c;
+    u32 n = gCommManager->memberCount;
     u32 s = 0, t = 0;
     s += ALIGN4(PlayerBodyWork_GetHeapSize());
     t += ALIGN4(s + 0x48) * n;

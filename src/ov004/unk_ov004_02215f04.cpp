@@ -193,7 +193,7 @@ public:
 
 struct Unk_ov004_0221572c_Sub {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x04 */ s32 state;
     /* 0x08 */ u32 unk_08;
     u8 pad_0c[8];
     /* 0x14 */ s32 unk_14;
@@ -237,7 +237,7 @@ public:
     BOOL isNotTalkedYet();
     void *getPlayerMemory();
 
-    BirthdayGuestVillager *unk_1a0;
+    BirthdayGuestVillager *villager;
 };
 
 typedef void (BirthdayGuestVillager::*Unk_ov004_0224c228_VFn)();
@@ -276,16 +276,16 @@ public:
     void blockFurnitureCells();
     BOOL drawModel();
 
-    /* 0x894 */ s32 unk_894;
-    /* 0x898 */ BirthdayGuestVillagerTalk unk_898;
-    /* 0xa3c */ Unk_ov004_0224c228_BFn unk_a3c;
-    /* 0xa44 */ u8 unk_a44;
+    /* 0x894 */ s32 act;
+    /* 0x898 */ BirthdayGuestVillagerTalk talk;
+    /* 0xa3c */ Unk_ov004_0224c228_BFn drawFn;
+    /* 0xa44 */ u8 emotionTimer;
     /* 0xa45 */ u8 pad_a45;
-    /* 0xa46 */ u16 unk_a46;
-    /* 0xa48 */ s16 unk_a48;
-    /* 0xa4a */ u16 unk_a4a;
-    /* 0xa4c */ Unk_020d77a4_Vec3 unk_a4c;
-    /* 0xa58 */ Unk_020d77a4_Vec3 unk_a58;
+    /* 0xa46 */ u16 chatCooldown;
+    /* 0xa48 */ s16 walkAngle;
+    /* 0xa4a */ u16 walkTimer;
+    /* 0xa4c */ Unk_020d77a4_Vec3 waypoint;
+    /* 0xa58 */ Unk_020d77a4_Vec3 walkTarget;
 };
 
 // Menu of TU06, seen from here: only what the code in this unit touches.
@@ -293,7 +293,7 @@ class BirthdayHostVillager : public VillagerActor {
 public:
     BOOL changeAct(s32 idx);
 
-    /* 0x894 */ s32 unk_894;
+    /* 0x894 */ s32 act;
 };
 
 typedef Unk_020d77a4_Vec3 Unk_ov004_Vec3;
@@ -534,8 +534,8 @@ BOOL BirthdayGuestVillager::vfunc_04() {
         return FALSE;
     }
     sBirthdayGuestVillager = this;
-    NpcActor_setTalkRequest(this, &unk_898);
-    unk_898.attachOwner(this);
+    NpcActor_setTalkRequest(this, &talk);
+    talk.attachOwner(this);
     changeAct(0);
     return TRUE;
 }
@@ -544,7 +544,7 @@ BOOL BirthdayGuestVillager::vfunc_00() {
     if (!VillagerActor::vfunc_00()) {
         return FALSE;
     }
-    unk_a3c = *(Unk_ov004_0224c228_BFn *)data_ov004_0224c158;
+    drawFn = *(Unk_ov004_0224c228_BFn *)data_ov004_0224c158;
     blockFurnitureCells();
     Unk_02013474_enableFootsteps(unk_558);
     return TRUE;
@@ -558,8 +558,8 @@ BOOL BirthdayGuestVillager::drawModel() {
 }
 
 BOOL BirthdayGuestVillager::onDraw() {
-    if (unk_a3c) {
-        return (this->*unk_a3c)();
+    if (drawFn) {
+        return (this->*drawFn)();
     }
     return TRUE;
 }
@@ -613,7 +613,7 @@ BOOL BirthdayGuestVillager::vfunc_48() {
     if (NpcTalkCtrl_isBusy(unk_618)) {
         return FALSE;
     }
-    if (unk_894 <= 3) {
+    if (act <= 3) {
         return TRUE;
     }
     return FALSE;
@@ -653,10 +653,10 @@ void BirthdayGuestVillager::vfunc_4c(s32 a, u32 b) {
 }
 
 void *BirthdayGuestVillagerTalk::getPlayerMemory() {
-    BirthdayGuestVillager *o = unk_1a0;
+    BirthdayGuestVillager *o = villager;
     if (o && o->villagerData) {
         void *r = PlayerData_getPlayerId(PlayerData_GetCurrent());
-        return Villager_FindOrCreateMemory(unk_1a0->villagerData, r);
+        return Villager_FindOrCreateMemory(villager->villagerData, r);
     }
     return 0;
 }
@@ -681,11 +681,11 @@ void BirthdayGuestVillagerTalk::setTalked() {
 
 void BirthdayGuestVillagerTalk::attachOwner(VillagerActor *owner) {
     VillagerTalk_begin(this, owner, 0x11);
-    unk_1a0 = (BirthdayGuestVillager *)owner;
+    villager = (BirthdayGuestVillager *)owner;
 }
 
 void BirthdayGuestVillagerTalk::start(void *arg) {
-    BirthdayGuestVillager *o = unk_1a0;
+    BirthdayGuestVillager *o = villager;
     u32 *out = (u32 *)arg;
     VillagerId_makeFileName(VillagerData_getVillagerId(o->villagerData), sBirthdayGuestMsgFile, 0x28, (u32)"ev_nbirth");
     out[0] = (u32)sBirthdayGuestMsgFile;
@@ -707,19 +707,19 @@ void BirthdayGuestVillagerTalk::start(void *arg) {
         ((u8 *)arg)[4] = Random_GlobalBelow(2) + 0x1c;
         break;
     }
-    o = unk_1a0;
+    o = villager;
     if (*(void **)((u8 *)o + 0x8d4)) {
         u8 *const g = gSaveData;
         void *p = Scene_GetVillagerHouse();
         if (SaveVillagers_IsOccupied(gSaveVillagers, p)) {
             MsgString9B loc;
-            ActorTalkRequest_setVillagerNameSlot((u8 *)unk_1a0 + 0x898, VillagerData_getVillagerId(SaveVillagers_Get(g + 0x8a3c, p)), 1);
+            ActorTalkRequest_setVillagerNameSlot((u8 *)villager + 0x898, VillagerData_getVillagerId(SaveVillagers_Get(g + 0x8a3c, p)), 1);
         }
-        BirthdayGuestVillager *o2 = unk_1a0;
+        BirthdayGuestVillager *o2 = villager;
         if (o2) {
             void *m = o2->villagerData;
             if (m) {
-                ActorTalkRequest_setVillagerNameSlot((u8 *)unk_1a0 + 0x898, VillagerData_getVillagerId(m), 0);
+                ActorTalkRequest_setVillagerNameSlot((u8 *)villager + 0x898, VillagerData_getVillagerId(m), 0);
             }
         }
     }
@@ -740,7 +740,7 @@ BOOL BirthdayGuestVillager::changeAct(s32 idx) {
     };
     if (idx < 7) {
         if ((this->*tbl[idx])()) {
-            unk_894 = idx;
+            act = idx;
             return TRUE;
         }
     }
@@ -754,7 +754,7 @@ void BirthdayGuestVillager::execAct() {
         &BirthdayGuestVillager::mainAct04, &BirthdayGuestVillager::mainAct05,
         &BirthdayGuestVillager::mainAct06,
     };
-    s32 s = unk_894;
+    s32 s = act;
     if (s < 7) {
         (this->*tbl[s])();
     }
@@ -777,8 +777,8 @@ void BirthdayGuestVillager::mainAct00() {
     } else {
         d = data_020c8cbc;
     }
-    if (unk_a46 != 0) {
-        unk_a46--;
+    if (chatCooldown != 0) {
+        chatCooldown--;
     }
     if (unk_3b0[0x508 - 0x3b0] != 0) {
         if (NpcActionCtrl_getAction(unk_564) == 1) {
@@ -793,41 +793,41 @@ void BirthdayGuestVillager::mainAct00() {
         }
     }
     if (NpcActionCtrl_getAction(unk_564) == 0) {
-        if (unk_a4a != 0) {
-            unk_a4a--;
+        if (walkTimer != 0) {
+            walkTimer--;
         }
-        if (unk_a4a == 0) {
-            unk_a48 = Room_PickRandomWalkTarget(&unk_a58, (Unk_ov004_Vec3 *)position, rotY);
-            unk_a4c.x = unk_a58.x;
-            unk_a4c.y = unk_a58.y;
-            unk_a4c.z = unk_a58.z;
+        if (walkTimer == 0) {
+            walkAngle = Room_PickRandomWalkTarget(&walkTarget, (Unk_ov004_Vec3 *)position, rotY);
+            waypoint.x = walkTarget.x;
+            waypoint.y = walkTarget.y;
+            waypoint.z = walkTarget.z;
             if (a && d >= 0x6000 && Random_GlobalBelow(2) == 0) {
                 d = func_020e7b98(a->pos.x - position[0], a->pos.z - position[2]);
                 s32 df = func_020e780c(rotY, d);
                 Unk_ov004_Vec3 *pa = &a->pos;
                 s32 xx = *(volatile s32 *)&a->pos.x;
-                Unk_ov004_Vec3 *pq = &unk_a58;
+                Unk_ov004_Vec3 *pq = &walkTarget;
                 pq->x = xx;
-                unk_a58.y = pa->y;
-                unk_a58.z = pa->z;
-                unk_a4c.x = pq->x;
-                unk_a4c.y = pq->y;
-                unk_a4c.z = pq->z;
+                walkTarget.y = pa->y;
+                walkTarget.z = pa->z;
+                waypoint.x = pq->x;
+                waypoint.y = pq->y;
+                waypoint.z = pq->z;
                 if (df >= 0x2000) {
-                    unk_a48 = d;
+                    walkAngle = d;
                 }
             }
-            s16 t = unk_a48;
+            s16 t = walkAngle;
             if (t != rotY) {
                 if (!NpcActionCtrl_requestAction(unk_564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0)) {
                     goto end;
                 }
-                unk_a4a = Random_GlobalBelow(0x46) + 0x14;
+                walkTimer = Random_GlobalBelow(0x46) + 0x14;
             } else {
-                if (!NpcActionCtrl_requestAction(unk_564, 1, 1, unk_a58.x, unk_a58.z, 0, 0, 0, 0, data_020c6cc8, 0)) {
+                if (!NpcActionCtrl_requestAction(unk_564, 1, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0)) {
                     goto end;
                 }
-                unk_a4a = Random_GlobalBelow(0x50) + 0x14;
+                walkTimer = Random_GlobalBelow(0x50) + 0x14;
             }
         } else {
             if (NpcActionCtrl_isActionDone(unk_564)) {
@@ -837,7 +837,7 @@ void BirthdayGuestVillager::mainAct00() {
     } else {
         if (NpcActionCtrl_getAction(unk_564) == 3) {
             if (NpcActionCtrl_isActionDone(unk_564)) {
-                NpcActionCtrl_requestAction(unk_564, 1, 1, unk_a58.x, unk_a58.z, 0, 0, 0, 0, data_020c6cc8, 0);
+                NpcActionCtrl_requestAction(unk_564, 1, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0);
             }
         } else if (NpcActionCtrl_getAction(unk_564) == 1) {
             switch (NpcActor_findAvoidPos(this, &v)) {
@@ -845,21 +845,21 @@ void BirthdayGuestVillager::mainAct00() {
                 NpcActionCtrl_requestStand(unk_564, 1, data_020c6cc8);
                 break;
             case 2: {
-                Unk_ov004_Vec3 *pv = &unk_a4c;
+                Unk_ov004_Vec3 *pv = &waypoint;
                 pv->x = v.x;
-                unk_a4c.y = v.y;
-                unk_a4c.z = v.z;
-                NpcMoveCtrl_setWaypoint(unk_350, &unk_a4c);
+                waypoint.y = v.y;
+                waypoint.z = v.z;
+                NpcMoveCtrl_setWaypoint(unk_350, &waypoint);
                 break;
             }
             default:
-                if (func_020e96ec(&unk_a4c, &unk_a58)) {
-                    Unk_ov004_Vec3 *pw = &unk_a58;
-                    unk_a4c.x = pw->x;
-                    unk_a4c.y = unk_a58.y;
-                    unk_a4c.z = unk_a58.z;
+                if (func_020e96ec(&waypoint, &walkTarget)) {
+                    Unk_ov004_Vec3 *pw = &walkTarget;
+                    waypoint.x = pw->x;
+                    waypoint.y = walkTarget.y;
+                    waypoint.z = walkTarget.z;
                     NpcMoveCtrl_setWaypoint(unk_350, pw);
-                } else if (func_020e9650(&unk_a58, position) < 0x200) {
+                } else if (func_020e9650(&walkTarget, position) < 0x200) {
                     NpcActionCtrl_requestStand(unk_564, 1, data_020c6cc8);
                 }
                 break;
@@ -870,20 +870,20 @@ end:;
 }
 
 BOOL BirthdayGuestVillager::setupAct01() {
-    if (unk_a46 == 0) {
+    if (chatCooldown == 0) {
         void *p = &unk_564;
         BirthdayHostVillager *o = BirthdayHostVillager_Get();
         if (o != NULL) {
-            unk_a48 = func_020e7b98(o->position[0] - position[0], o->position[2] - position[2]);
+            walkAngle = func_020e7b98(o->position[0] - position[0], o->position[2] - position[2]);
             BirthdayHostVillager *g = sBirthdayHostVillager;
             BOOL r;
-            if (g != NULL && (u32)g->unk_894 <= 1) {
+            if (g != NULL && (u32)g->act <= 1) {
                 r = g->changeAct(1);
             } else {
                 r = FALSE;
             }
             if (r) {
-                NpcActionCtrl_requestAction(p, 3, 1, 0, 0, 0, unk_a48, 0, 0, data_020c6cc8, 0);
+                NpcActionCtrl_requestAction(p, 3, 1, 0, 0, 0, walkAngle, 0, 0, data_020c6cc8, 0);
                 NpcLookAt_setTarget(&unk_3b0, 2, 0, (s32)o, gVec3Zero, 4, data_020c6d1c, 1);
                 return TRUE;
             }
@@ -893,7 +893,7 @@ BOOL BirthdayGuestVillager::setupAct01() {
 }
 
 void BirthdayGuestVillager::mainAct01() {
-    s32 a = unk_a48;
+    s32 a = walkAngle;
     s32 b = (s16)(a + 0x8000);
     BirthdayHostVillager *o = BirthdayHostVillager_Get();
     if (o != NULL) {
@@ -902,11 +902,11 @@ void BirthdayGuestVillager::mainAct01() {
         if (da <= 0x500 && db <= 0x500) {
             if (Random_GlobalBelow(2)) {
                 if (changeAct(3)) {
-                    unk_a46 = 0x12c;
+                    chatCooldown = 0x12c;
                 }
             } else {
                 if (changeAct(2)) {
-                    unk_a46 = 0x12c;
+                    chatCooldown = 0x12c;
                 }
             }
         }
@@ -916,14 +916,14 @@ void BirthdayGuestVillager::mainAct01() {
 BOOL BirthdayGuestVillager::setupAct02() {
     BirthdayHostVillager *o = sBirthdayHostVillager;
     BOOL r;
-    if (o != NULL && (u32)o->unk_894 <= 1) {
+    if (o != NULL && (u32)o->act <= 1) {
         r = o->changeAct(2);
     } else {
         r = FALSE;
     }
     if (r) {
         if (NpcActionCtrl_requestEmotion(&unk_564, 1, 3, data_020c6cc8)) {
-            unk_a44 = 0x1e;
+            emotionTimer = 0x1e;
             return TRUE;
         }
     }
@@ -931,10 +931,10 @@ BOOL BirthdayGuestVillager::setupAct02() {
 }
 
 void BirthdayGuestVillager::mainAct02() {
-    if (unk_a44 != 0) {
-        unk_a44--;
+    if (emotionTimer != 0) {
+        emotionTimer--;
     }
-    switch (unk_a44) {
+    switch (emotionTimer) {
     case 1:
         NpcActionCtrl_requestEmotion(&unk_564, 1, 0, data_020c6cc8);
         break;
@@ -946,14 +946,14 @@ void BirthdayGuestVillager::mainAct02() {
 BOOL BirthdayGuestVillager::setupAct03() {
     BirthdayHostVillager *o = sBirthdayHostVillager;
     BOOL r;
-    if (o != NULL && (u32)o->unk_894 <= 1) {
+    if (o != NULL && (u32)o->act <= 1) {
         r = o->changeAct(3);
     } else {
         r = FALSE;
     }
     if (r) {
         if (NpcActionCtrl_requestEmotion(&unk_564, 1, 0x1a, data_020c6cc8)) {
-            unk_a44 = 0x32;
+            emotionTimer = 0x32;
             return TRUE;
         }
     }
@@ -961,10 +961,10 @@ BOOL BirthdayGuestVillager::setupAct03() {
 }
 
 void BirthdayGuestVillager::mainAct03() {
-    if (unk_a44 != 0) {
-        unk_a44--;
+    if (emotionTimer != 0) {
+        emotionTimer--;
     }
-    switch (unk_a44) {
+    switch (emotionTimer) {
     case 1:
         NpcActionCtrl_requestEmotion(&unk_564, 1, 0, data_020c6cc8);
         break;
@@ -974,7 +974,7 @@ void BirthdayGuestVillager::mainAct03() {
 }
 
 BOOL BirthdayGuestVillager::setupAct04() {
-    if ((u32)(unk_894 - 1) <= 2) {
+    if ((u32)(act - 1) <= 2) {
         NpcActionCtrl_requestEmotion(&unk_564, 2, 0, data_020c6cc8);
     }
     return TRUE;

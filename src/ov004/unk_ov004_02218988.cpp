@@ -106,12 +106,12 @@ struct Unk_ov004_02219e0c_Obj {
 
 struct Unk_ov004_SceneEntry {
     void *(*factory)();
-    u16 unk_04;
-    u16 unk_06;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u16 executePriority;
+    u16 drawPriority;
+    u32 actorFlags;
+    u32 cullHeight;
+    u32 cullRadius;
+    u32 cullDepth;
 };
 
 extern "C" {
@@ -490,16 +490,16 @@ public:
     void setScript(s32 v);
     void attachOwner(VillagerActor *owner);
 
-    /* 0x1a0 */ FleaMarketBuyerVillager *unk_1a0;
-    /* 0x1a4 */ s32 unk_1a4;
-    /* 0x1a8 */ s32 unk_1a8;
+    /* 0x1a0 */ FleaMarketBuyerVillager *villager;
+    /* 0x1a4 */ s32 offerAmount;
+    /* 0x1a8 */ s32 scriptIndex;
 };
 
 class FleaMarketBuyerVillager : public VillagerActor {
 public:
-    FleaMarketBuyerVillager() : unk_894(0xfff1) {
-        unk_ac8[0] = 0;
-        unk_ac8[1] = 0;
+    FleaMarketBuyerVillager() : targetItem(0xfff1) {
+        startTime[0] = 0;
+        startTime[1] = 0;
     }
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
@@ -538,27 +538,27 @@ public:
     void func_ov004_02219ef4();
     void changeAct(s32 idx);
 
-    /* 0x894 */ u16 unk_894;
+    /* 0x894 */ u16 targetItem;
     /* 0x896 */ u8 pad_896[2];
-    /* 0x898 */ u32 unk_898[3];
-    /* 0x8a4 */ s32 unk_8a4;
-    /* 0x8a8 */ u8 unk_8a8[100];
-    /* 0x90c */ s32 unk_90c;
-    /* 0x910 */ s32 unk_910;
-    /* 0x914 */ FleaMarketBuyerVillagerTalk unk_914;
-    /* 0xac0 */ u8 unk_ac0;
+    /* 0x898 */ u32 targetPos[3];
+    /* 0x8a4 */ s32 targetFtrIndex;
+    /* 0x8a8 */ u8 viewedFurniture[100];
+    /* 0x90c */ s32 act;
+    /* 0x910 */ s32 prevAct;
+    /* 0x914 */ FleaMarketBuyerVillagerTalk talk;
+    /* 0xac0 */ u8 visitStage;
     /* 0xac1 */ u8 pad_ac1[3];
-    /* 0xac4 */ s32 unk_ac4;
-    /* 0xac8 */ u32 unk_ac8[2];
-    /* 0xad0 */ s32 unk_ad0;
-    /* 0xad4 */ u8 unk_ad4;
-    /* 0xad5 */ u8 unk_ad5;
-    /* 0xad6 */ u8 unk_ad6;
-    /* 0xad7 */ u8 unk_ad7;
-    /* 0xad8 */ u8 unk_ad8;
+    /* 0xac4 */ s32 leaveTimer;
+    /* 0xac8 */ u32 startTime[2];
+    /* 0xad0 */ s32 viewDistance;
+    /* 0xad4 */ u8 entryTimer;
+    /* 0xad5 */ u8 callTimer;
+    /* 0xad6 */ u8 talkMelodyPlayed;
+    /* 0xad7 */ u8 callCheckTimer;
+    /* 0xad8 */ u8 purchaseCount;
     /* 0xad9 */ u8 pad_ad9[3];
-    /* 0xadc */ s32 unk_adc;
-    /* 0xae0 */ s32 unk_ae0;
+    /* 0xadc */ s32 furnitureCount;
+    /* 0xae0 */ s32 doorWaitFrames;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -704,8 +704,8 @@ BOOL FleaMarketBuyerVillager::vfunc_04() {
     if (!VillagerActor::vfunc_04()) {
         return FALSE;
     }
-    NpcActor_setTalkRequest(this, &unk_914);
-    unk_914.attachOwner(this);
+    NpcActor_setTalkRequest(this, &talk);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -713,15 +713,15 @@ BOOL FleaMarketBuyerVillager::vfunc_00() {
     if (!VillagerActor::vfunc_00()) {
         return FALSE;
     }
-    unk_894 = 0xfff1;
+    targetItem = 0xfff1;
     Unk_02013474_enableFootsteps(&footstepFx);
-    unk_898[0] = position;
-    unk_898[1] = positionY;
-    unk_898[2] = positionZ;
-    unk_ad0 = 0x3000;
+    targetPos[0] = position;
+    targetPos[1] = positionY;
+    targetPos[2] = positionZ;
+    viewDistance = 0x3000;
     s32 i;
     for (i = 0; i < 100; i++) {
-        unk_8a8[i] = 0xff;
+        viewedFurniture[i] = 0xff;
     }
     NpcLookAt_disable(&lookAt);
     void *o;
@@ -734,20 +734,20 @@ BOOL FleaMarketBuyerVillager::vfunc_00() {
     if (SceneId_IsTownUnk31() != 0 ||
         (vfunc_64() && o && PlayerId_isValid(o) && Villager_FindMemory(vfunc_64(), o) &&
          VillagerMemory_isFleaMarketVisited(Villager_FindMemory(vfunc_64(), o)))) {
-        unk_adc = (s32)FtrActorTable_countUsed(FtrActorTable_GetInstance());
+        furnitureCount = (s32)FtrActorTable_countUsed(FtrActorTable_GetInstance());
         HouseVisitor_SetPresent();
         Ground_LockExit(0);
         FtrMgr_SetSaleMode();
-        Clock_GetDateTime(unk_ac8);
-        unk_ac0 = 2;
+        Clock_GetDateTime(startTime);
+        visitStage = 2;
         changeAct(3);
     } else {
         position = 0x10000;
         prevPosition = 0x10000;
         positionZ = 0x23000;
         prevPositionZ = 0x23000;
-        unk_ad7 = 100;
-        unk_ae0 = 1;
+        callCheckTimer = 100;
+        doorWaitFrames = 1;
         changeAct(0);
     }
     if (vfunc_64()) {
@@ -760,7 +760,7 @@ BOOL FleaMarketBuyerVillager::vfunc_0c() {
     if (!VillagerActor::vfunc_0c()) {
         return FALSE;
     }
-    if (unk_ac0 == 6 || unk_ac0 == 4) {
+    if (visitStage == 6 || visitStage == 4) {
         HouseVisitor_ClearPresent();
         VillagerStates_SetFleaMarketBuyer(-1);
     }
@@ -771,7 +771,7 @@ BOOL FleaMarketBuyerVillager::vfunc_0c() {
 }
 
 BOOL FleaMarketBuyerVillager::onDraw() {
-    if (unk_ac0 != 0) {
+    if (visitStage != 0) {
         NpcActor::onDraw();
     }
     return TRUE;
@@ -779,8 +779,8 @@ BOOL FleaMarketBuyerVillager::onDraw() {
 
 BOOL FleaMarketBuyerVillager::updateAct() {
     BOOL r = FALSE;
-    if (data_ov004_02250858[unk_90c].a) {
-        r = (this->*sFleaMarketBuyerActTable[unk_90c].b)();
+    if (data_ov004_02250858[act].a) {
+        r = (this->*sFleaMarketBuyerActTable[act].b)();
     }
     return r;
 }
@@ -791,8 +791,8 @@ void FleaMarketBuyerVillager::changeAct(s32 idx) {
         ok = (this->*sFleaMarketBuyerActTable[idx].a)();
     }
     if (ok) {
-        unk_910 = unk_90c;
-        unk_90c = idx;
+        prevAct = act;
+        act = idx;
     }
 }
 
@@ -802,18 +802,18 @@ void FleaMarketBuyerVillager::func_ov004_02219ef4() {
 }
 
 BOOL FleaMarketBuyerVillager::setupAct00() {
-    unk_ac0 = 0;
+    visitStage = 0;
     NpcActionCtrl_requestAction(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL FleaMarketBuyerVillager::mainAct00() {
-    if (unk_ad5 == 0) {
-        if (func_020e7518(&unk_ad7)) {
+    if (callTimer == 0) {
+        if (func_020e7518(&callCheckTimer)) {
             return TRUE;
         }
         if (Random_GlobalBelow(0x65) > 0x19) {
-            unk_ad7 = 100;
+            callCheckTimer = 100;
             return TRUE;
         }
         Unk_ov004_02219e0c_Obj *p = (Unk_ov004_02219e0c_Obj *)PlayerActor_GetActor(4);
@@ -825,14 +825,14 @@ BOOL FleaMarketBuyerVillager::mainAct00() {
             v.z = pv->z;
             if (func_020e9650(&v, &position) > 0x8000) {
                 func_02003e70(&seEmitter, 0x4ca, 0x7f, 0);
-                unk_ad5 = 0x1e;
+                callTimer = 0x1e;
             }
         }
     }
-    if (unk_ad5 != 0) {
+    if (callTimer != 0) {
         TalkRequest_AddPlayerTalk6(this, 0);
-        if (unk_ad5 > 1) {
-            func_020e7518(&unk_ad5);
+        if (callTimer > 1) {
+            func_020e7518(&callTimer);
         }
     }
     return TRUE;
@@ -850,7 +850,7 @@ BOOL FleaMarketBuyerVillager::mainAct01() {
             return TRUE;
         }
     }
-    if (unk_ad4 == 0x28) {
+    if (entryTimer == 0x28) {
         func_ov004_02219ef4();
     }
     rotX = 0;
@@ -859,8 +859,8 @@ BOOL FleaMarketBuyerVillager::mainAct01() {
     moveAngleX = 0;
     moveAngleY = -0x8000;
     moveAngleZ = 0;
-    if (func_020e7518(&unk_ad4)) {
-        if (unk_ad4 == 8) {
+    if (func_020e7518(&entryTimer)) {
+        if (entryTimer == 8) {
             position = 0x10000;
             prevPosition = 0x10000;
             positionZ = 0x1f000;
@@ -873,7 +873,7 @@ BOOL FleaMarketBuyerVillager::mainAct01() {
 }
 
 BOOL FleaMarketBuyerVillager::setupAct02() {
-    unk_ad4 = 0;
+    entryTimer = 0;
     return TRUE;
 }
 
@@ -884,7 +884,7 @@ BOOL FleaMarketBuyerVillager::mainAct02() {
     moveAngleX = 0;
     moveAngleY = -0x8000;
     moveAngleZ = 0;
-    u8 c = unk_ad4;
+    u8 c = entryTimer;
     if (c == 1) {
         NpcActionCtrl_requestAction(&actionCtrl, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         TalkRequest_SetTargetDone(this);
@@ -900,10 +900,10 @@ BOOL FleaMarketBuyerVillager::mainAct02() {
         g = func_01ffcb0c(0x4000, data_02135f44[(*(u16 *)&rotY >> 4) * 2 + 1]);
         v.z = g + positionZ;
         NpcActionCtrl_requestAction(&actionCtrl, 1, 2, v.x, v.z, 0, 0, 0, 0, data_020c6cc8, 0);
-        unk_ad4 = 30;
+        entryTimer = 30;
         return TRUE;
     } else {
-        unk_ad4 = c - 1;
+        entryTimer = c - 1;
         return TRUE;
     }
 }
@@ -917,16 +917,16 @@ BOOL FleaMarketBuyerVillager::mainAct03() {
     if (checkLeave()) {
         return TRUE;
     }
-    if (unk_ac0 != 2) {
+    if (visitStage != 2) {
         return TRUE;
     }
     if (pickFurnitureToView()) {
-        s32 r6 = func_020e9650(&position, unk_898);
+        s32 r6 = func_020e9650(&position, targetPos);
         u32 loc0[3];
-        NpcActor_FindFreeUnitNear(loc0, this, unk_898);
-        s32 r1 = Math_AngleXZ(&position, unk_898);
+        NpcActor_FindFreeUnitNear(loc0, this, targetPos);
+        s32 r1 = Math_AngleXZ(&position, targetPos);
         s32 r4 = func_020e780c(rotY, r1);
-        if (r6 > unk_ad0 && func_020e96ec(loc0, &position)) {
+        if (r6 > viewDistance && func_020e96ec(loc0, &position)) {
             changeAct(5);
         } else if (r4 > 0x2000) {
             changeAct(4);
@@ -936,10 +936,10 @@ BOOL FleaMarketBuyerVillager::mainAct03() {
 }
 
 BOOL FleaMarketBuyerVillager::setupAct04() {
-    func_020e9650(&position, unk_898);
+    func_020e9650(&position, targetPos);
     u32 loc1c[3];
-    NpcActor_FindFreeUnitNear(loc1c, this, unk_898);
-    s32 r = Math_AngleXZ(&position, unk_898);
+    NpcActor_FindFreeUnitNear(loc1c, this, targetPos);
+    s32 r = Math_AngleXZ(&position, targetPos);
     NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
@@ -968,9 +968,9 @@ BOOL FleaMarketBuyerVillager::mainAct05() {
     if (checkLeave()) {
         return TRUE;
     }
-    s32 r4 = func_020e9650(&position, unk_898);
-    NpcActor_FindFreeUnitNear(loc24, this, unk_898);
-    if (r4 > unk_ad0 + 0x1000) {
+    s32 r4 = func_020e9650(&position, targetPos);
+    NpcActor_FindFreeUnitNear(loc24, this, targetPos);
+    if (r4 > viewDistance + 0x1000) {
         if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
             NpcActionCtrl_requestAction(&actionCtrl, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
@@ -980,7 +980,7 @@ BOOL FleaMarketBuyerVillager::mainAct05() {
         }
     }
     NpcMoveCtrl_setWaypoint(&moveCtrl, loc24);
-    if (r4 <= unk_ad0 || func_020e972c(loc24, &position)) {
+    if (r4 <= viewDistance || func_020e972c(loc24, &position)) {
         changeAct(3);
     }
     v.x = position;
@@ -999,24 +999,24 @@ BOOL FleaMarketBuyerVillager::mainAct05() {
     s32 r6 = FtrActorGrid_getIndex(FtrActorGrid_GetInstance(), xy[0], xy[1], 1);
     if (isFurnitureForSale(r6)) {
         void *o = FtrActorTable_get(FtrActorTable_GetInstance(), r6);
-        unk_894 = Item_MakeFurniture(FtrActor_GetFtrIndex(), 0);
-        FtrActor_GetCenter(o, unk_898);
+        targetItem = Item_MakeFurniture(FtrActor_GetFtrIndex(), 0);
+        FtrActor_GetCenter(o, targetPos);
         setViewDistance(o);
         pushViewedFurniture(r6);
-        unk_8a4 = r6;
+        targetFtrIndex = r6;
     } else if (isFurnitureForSale(r4b)) {
         void *o = FtrActorTable_get(FtrActorTable_GetInstance(), r4b);
-        unk_894 = Item_MakeFurniture(FtrActor_GetFtrIndex(), 0);
-        FtrActor_GetCenter(o, unk_898);
+        targetItem = Item_MakeFurniture(FtrActor_GetFtrIndex(), 0);
+        FtrActor_GetCenter(o, targetPos);
         setViewDistance(o);
         pushViewedFurniture(r4b);
-        unk_8a4 = r4b;
+        targetFtrIndex = r4b;
     }
     return TRUE;
 }
 
 BOOL FleaMarketBuyerVillager::setupAct07() {
-    s32 a = func_02015aac(&unk_914);
+    s32 a = func_02015aac(&talk);
     s32 b = 0;
     if (a) {
         b = NpcActor_getAngleTo(this, a);
@@ -1032,7 +1032,7 @@ BOOL FleaMarketBuyerVillager::mainAct07() {
     v.y = q[1];
     v.z = q[2];
     if (!NpcTalkCtrl_isBusy(&talkCtrl)) {
-        if (unk_ac0 == 5) {
+        if (visitStage == 5) {
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         } else {
             Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
@@ -1044,39 +1044,39 @@ BOOL FleaMarketBuyerVillager::mainAct07() {
 }
 
 BOOL FleaMarketBuyerVillager::setupAct06() {
-    s32 a = func_02015aac(&unk_914);
+    s32 a = func_02015aac(&talk);
     s32 b = 0;
     if (a) {
         b = NpcActor_getAngleTo(this, a);
     }
     s32 z = 0;
-    unk_ac4 = z;
-    if (unk_ac0) {
+    leaveTimer = z;
+    if (visitStage) {
         NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, z, b, z);
     }
     return TRUE;
 }
 
 BOOL FleaMarketBuyerVillager::mainAct06() {
-    u8 s = unk_ad5;
+    u8 s = callTimer;
     if (s != 0) {
         if (s == 1) {
-            s32 a = func_02015aac(&unk_914);
+            s32 a = func_02015aac(&talk);
             s32 b = 0;
             if (a) {
                 b = NpcActor_getAngleTo(this, a);
             }
             NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, b, 1);
         }
-        func_020e7518(&unk_ad5);
+        func_020e7518(&callTimer);
         return TRUE;
     }
-    Clock_GetDateTime(unk_ac8);
+    Clock_GetDateTime(startTime);
     if (!NpcTalkCtrl_isBusy(&talkCtrl)) {
         TalkRequest_SetTargetDone(this);
-        if (unk_ac0 == 1) {
-            unk_ac0 = 2;
-            unk_ae0 = 0;
+        if (visitStage == 1) {
+            visitStage = 2;
+            doorWaitFrames = 0;
         }
         changeAct(8);
     }
@@ -1094,11 +1094,11 @@ FleaMarketBuyerVillagerTalk::~FleaMarketBuyerVillagerTalk() {}
 void FleaMarketBuyerVillagerTalk::attachOwner(VillagerActor *owner) {
     vfunc_08();
     VillagerTalk_begin(this, owner, 0x11);
-    unk_1a0 = (FleaMarketBuyerVillager *)owner;
+    villager = (FleaMarketBuyerVillager *)owner;
 }
 
 void FleaMarketBuyerVillagerTalk::update() {
-    s32 i = unk_1a8;
+    s32 i = scriptIndex;
     if (sFleaMarketBuyerTalkScripts[i].flag != 0) {
         if (sFleaMarketBuyerTalkScripts[i].fn) {
             (this->*sFleaMarketBuyerTalkScripts[i].fn)();
@@ -1107,7 +1107,7 @@ void FleaMarketBuyerVillagerTalk::update() {
 }
 
 void FleaMarketBuyerVillagerTalk::onTaskDone() {
-    s32 i = unk_1a8;
+    s32 i = scriptIndex;
     if (sFleaMarketBuyerTalkScripts[i].flag == 0) {
         if (sFleaMarketBuyerTalkScripts[i].fn) {
             (this->*sFleaMarketBuyerTalkScripts[i].fn)();
@@ -1116,22 +1116,22 @@ void FleaMarketBuyerVillagerTalk::onTaskDone() {
     }
 }
 
-void FleaMarketBuyerVillagerTalk::setScript(s32 v) { unk_1a8 = v; }
+void FleaMarketBuyerVillagerTalk::setScript(s32 v) { scriptIndex = v; }
 
 void FleaMarketBuyerVillagerTalk::offerPrice() {
     u32 sp8 = (u32)unk_3c;
     u16 buf[2];
     ((u8 *)buf)[0] = Random_GlobalBelow(2) + 8;
-    unk_1a4 = 0;
+    offerAmount = 0;
     if (MenuCtrl_IsFinished()) {
         if (MenuCtrl_IsResultOk()) {
             s32 r6 = 0;
             s32 r4 = r6;
-            u16 *p = &unk_1a0->unk_894;
+            u16 *p = &villager->targetItem;
             if (!Unk_ov004_0221946c_Chk(p, &buf[1])) {
-                unk_1a4 = Item_GetPrice(&unk_1a0->unk_894);
+                offerAmount = Item_GetPrice(&villager->targetItem);
                 if (PlayerData_GetCurrent()) {
-                    r6 = Villager_FindMemory(unk_1a0->villagerData, (void *)PlayerData_getPlayerId(PlayerData_GetCurrent()));
+                    r6 = Villager_FindMemory(villager->villagerData, (void *)PlayerData_getPlayerId(PlayerData_GetCurrent()));
                 }
                 if (r6) {
                     r4 = VillagerMemory_getFriendship(r6);
@@ -1144,44 +1144,44 @@ void FleaMarketBuyerVillagerTalk::offerPrice() {
                 }
                 r4 = FX_Div(func_021329d0(r4), 0x200000);
                 ActorTalkRequest_setNumberSlot(this, MenuCtrl_GetAmount(), 0, 10, 1, 0);
-                r4 = func_01ffcb0c(unk_1a4, r4);
+                r4 = func_01ffcb0c(offerAmount, r4);
                 if (r4 <= 10) {
                     r4 = 10;
                 }
                 if (MenuCtrl_GetAmount() > r4) {
                     ((u8 *)buf)[0] = Random_GlobalBelow(2) + 10;
                 } else {
-                    unk_1a4 = MenuCtrl_GetAmount();
+                    offerAmount = MenuCtrl_GetAmount();
                     ((u8 *)buf)[0] = Random_GlobalBelow(2) + 12;
                     Hud_Hide();
                 }
             }
         }
-        VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->villagerData), data_ov004_022507b0, 0x28, "ev_fmarket3");
+        VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_022507b0, 0x28, "ev_fmarket3");
         TalkWindowState_setNextMessage((void *)sp8, buf, data_ov004_022507b0);
         setScript(0);
     }
 }
 
 void FleaMarketBuyerVillagerTalk::completePurchase() {
-    u16 *p = &unk_1a0->unk_894;
+    u16 *p = &villager->targetItem;
     if (!Unk_ov004_02219378_Chk(p)) {
-        if (unk_1a0->unk_8a4 != -1) {
-            if (VillagerData_getVillagerId(unk_1a0->villagerData)) {
-                void *t = Villager_GetMemorySlotForNew(unk_1a0->villagerData);
+        if (villager->targetFtrIndex != -1) {
+            if (VillagerData_getVillagerId(villager->villagerData)) {
+                void *t = Villager_GetMemorySlotForNew(villager->villagerData);
                 if (t) {
-                    VillagerMemory_setReceivedItem(t, &unk_1a0->unk_894);
+                    VillagerMemory_setReceivedItem(t, &villager->targetItem);
                 }
-                Villager_AddReceivedItem(unk_1a0->villagerData, &unk_1a0->unk_894);
+                Villager_AddReceivedItem(villager->villagerData, &villager->targetItem);
             }
-            FtrMgr_RemoveActorByIndex(unk_1a0->unk_8a4);
+            FtrMgr_RemoveActorByIndex(villager->targetFtrIndex);
             s32 i = 0;
             s32 m1 = ~i;
-            unk_1a0->unk_8a4 = m1;
-            unk_1a0->unk_894 = 0xfff1;
-            unk_1a0->unk_ad8++;
+            villager->targetFtrIndex = m1;
+            villager->targetItem = 0xfff1;
+            villager->purchaseCount++;
             for (; i < 100; i++) {
-                unk_1a0->unk_8a8[i] = 0xff;
+                villager->viewedFurniture[i] = 0xff;
             }
         }
     }
@@ -1191,12 +1191,12 @@ void FleaMarketBuyerVillagerTalk::start(void *arg) {
     Unk_ov004_022191f8_Out *out = (Unk_ov004_022191f8_Out *)arg;
     u16 tmp;
     void *q = PlayerData_getPlayerId(PlayerData_GetCurrent());
-    void *o = Villager_FindOrCreateMemory(unk_1a0->villagerData, q);
+    void *o = Villager_FindOrCreateMemory(villager->villagerData, q);
     if (o != 0) {
         VillagerMemory_RecordTalk(o, 0, 0, 0);
     }
-    FleaMarketBuyerVillager *b = unk_1a0;
-    u32 st = b->unk_ac0;
+    FleaMarketBuyerVillager *b = villager;
+    u32 st = b->visitStage;
     if (st == 5) {
         VillagerId_makeFileName(VillagerData_getVillagerId(b->villagerData), data_ov004_02250800, 0x28, "q10_wait");
         out->unk_00 = (u32)data_ov004_02250800;
@@ -1217,7 +1217,7 @@ void FleaMarketBuyerVillagerTalk::start(void *arg) {
             break;
         case 2: {
             VillagerId_makeFileName(VillagerData_getVillagerId(b->villagerData), data_ov004_02250800, 0x28, "ev_fmarket3");
-            u16 *p = &unk_1a0->unk_894;
+            u16 *p = &villager->targetItem;
             BOOL eq;
             if (Item_IsFurniture(p)) {
                 tmp = 0xfff1;
@@ -1233,10 +1233,10 @@ void FleaMarketBuyerVillagerTalk::start(void *arg) {
                     eq = FALSE;
                 }
             }
-            if (eq || unk_1a0->unk_910 == 5) {
+            if (eq || villager->prevAct == 5) {
                 out->unk_04 = Random_GlobalBelow(2) + 4;
             } else {
-                ActorTalkRequest_setItemNameSlot(this, &unk_1a0->unk_894, 0, 7);
+                ActorTalkRequest_setItemNameSlot(this, &villager->targetItem, 0, 7);
                 out->unk_04 = Random_GlobalBelow(2) + 6;
             }
             break;
@@ -1247,27 +1247,27 @@ void FleaMarketBuyerVillagerTalk::start(void *arg) {
 }
 
 BOOL FleaMarketBuyerVillager::canPlayTalkMelody() {
-    if (Unk_ov004_022191cc_Is1(gFieldSceneKind) == 0 || unk_ad6 == 0) {
+    if (Unk_ov004_022191cc_Is1(gFieldSceneKind) == 0 || talkMelodyPlayed == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
 void FleaMarketBuyerVillager::onTalkMelodyPlayed() {
-    unk_ad6 = 1;
+    talkMelodyPlayed = 1;
 }
 
 void FleaMarketBuyerVillagerTalk::onMessageEnd() {
     u8 buf;
-    FleaMarketBuyerVillager *b = unk_1a0;
-    u32 st = b->unk_ac0;
+    FleaMarketBuyerVillager *b = villager;
+    u32 st = b->visitStage;
     if (st == 5 || st == 3) {
         if (st == 5) {
-            b->unk_ac0 = 6;
+            b->visitStage = 6;
         } else {
-            b->unk_ac0 = 4;
+            b->visitStage = 4;
         }
-        VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->villagerData), data_ov004_02250828, 0x28, "q_bye");
+        VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_02250828, 0x28, "q_bye");
         buf = Random_GlobalBelow(3);
         TalkWindowState_setNextMessage(unk_3c, &buf, data_ov004_02250828);
     } else {
@@ -1284,15 +1284,15 @@ void FleaMarketBuyerVillagerTalk::onMessageEnd() {
                 } else {
                     q = 0;
                 }
-                void *o = unk_1a0->villagerData;
+                void *o = villager->villagerData;
                 if (o != 0 && q != 0) {
                     Villager_SetFleaMarketVisited(o, q);
                 }
-                FleaMarketBuyerVillager **pp = &unk_1a0;
-                (*pp)->unk_ac0 = 1;
-                (*pp)->unk_ad4 = 0x28;
+                FleaMarketBuyerVillager **pp = &villager;
+                (*pp)->visitStage = 1;
+                (*pp)->entryTimer = 0x28;
                 TalkWindowState_setNextMessage(unk_3c, gTalkMsgIndexEnd, 0);
-                unk_1a0->changeAct(1);
+                villager->changeAct(1);
             }
             break;
         case 3:
@@ -1320,7 +1320,7 @@ void FleaMarketBuyerVillagerTalk::onMessageEnd() {
 }
 
 void FleaMarketBuyerVillagerTalk::clearOffer() {
-    unk_1a0->unk_894 = 0xfff1;
+    villager->targetItem = 0xfff1;
 }
 
 void FleaMarketBuyerVillagerTalk::onChoice() {
@@ -1331,8 +1331,8 @@ void FleaMarketBuyerVillagerTalk::onChoice() {
     ActorTalkRequest_getChoiceList(this);
     st = ChoiceList_getResult();
     sel = 0xff;
-    FleaMarketBuyerVillager *b = unk_1a0;
-    if (b->unk_ac0 == 2) {
+    FleaMarketBuyerVillager *b = villager;
+    if (b->visitStage == 2) {
         switch (msgIndex) {
         case 6:
         case 7:
@@ -1356,25 +1356,25 @@ void FleaMarketBuyerVillagerTalk::onChoice() {
             VillagerId_makeFileName(VillagerData_getVillagerId(b->villagerData), data_ov004_022507d8, 0x28, "ev_fmarket3");
             if (st == 0) {
                 void *r7 = PlayerData_getInventory(PlayerData_GetCurrent());
-                st = NpcActor_CheckPayoutFits(unk_1a0, (void *)unk_1a4, 0);
-                tmp = Item_FindMoneyBagForAmount((void *)unk_1a4, 0, 0);
+                st = NpcActor_CheckPayoutFits(villager, (void *)offerAmount, 0);
+                tmp = Item_FindMoneyBagForAmount((void *)offerAmount, 0, 0);
                 if (tmp == 0xfff1) {
                     tmp = 0x1492;
                 }
-                if (PlayerInventory_CanAddBells(r7, (void *)unk_1a4, 1, 0) == 0) {
+                if (PlayerInventory_CanAddBells(r7, (void *)offerAmount, 1, 0) == 0) {
                     sel = (u8)(Random_GlobalBelow(2) + 0x12);
                 } else {
                     switch (st) {
                     case 0:
                         Unk_020d7710_requestGiveItem(this, &tmp, 0, 5, 0);
-                        NpcActor_PayPlayer(unk_1a0, (void *)unk_1a4);
+                        NpcActor_PayPlayer(villager, (void *)offerAmount);
                         sel = (u8)(Random_GlobalBelow(2) + 0xe);
                         completePurchase();
                         break;
                     case 1:
                         Unk_020d7710_requestGiveItem(this, &tmp, 0, 5, 0);
                         sel = (u8)(Random_GlobalBelow(2) + 0xe);
-                        NpcActor_PayPlayer(unk_1a0, (void *)unk_1a4);
+                        NpcActor_PayPlayer(villager, (void *)offerAmount);
                         completePurchase();
                         break;
                     case 2:
@@ -1411,29 +1411,29 @@ BOOL FleaMarketBuyerVillager::vfunc_58() {
 void FleaMarketBuyerVillager::vfunc_4c(s32 cmd, u32 b) {
     switch (cmd) {
     case 1:
-        unk_914.vfunc_08();
-        func_02015ab0(&unk_914, NpcActor_getPlayerActor(this, 4));
-        if (unk_ac0 == 5 || unk_ac0 == 3) {
+        talk.vfunc_08();
+        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+        if (visitStage == 5 || visitStage == 3) {
             changeAct(7);
         } else {
             changeAct(6);
         }
-        if (unk_ac0 == 0) {
+        if (visitStage == 0) {
             FtrActorTable_GetInstance();
-            unk_adc = (s32)FtrActorTable_countUsed();
+            furnitureCount = (s32)FtrActorTable_countUsed();
             HouseVisitor_SetPresent();
             Ground_LockExit(0);
             FtrMgr_SetSaleMode();
-            Clock_GetDateTime(unk_ac8);
+            Clock_GetDateTime(startTime);
         }
         break;
     case 0:
-        unk_914.vfunc_08();
-        func_02015ab0(&unk_914, NpcActor_getPlayerActor(this, 4));
+        talk.vfunc_08();
+        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
         changeAct(6);
         break;
     case 8:
-        if (unk_ac0 == 6) {
+        if (visitStage == 6) {
             Unk_ov004_02218cdc_Rec rec;
             Unk_ov004_02218cdc_Rec *src = (Unk_ov004_02218cdc_Rec *)PlayerActor_GetBodyPos(4);
             rec.a = src->a;
@@ -1457,7 +1457,7 @@ BOOL FleaMarketBuyerVillager::checkLeave() {
     rec.b = src->b;
     rec.c = src->c;
     if (Ground_IsOnLockedExit(&rec)) {
-        unk_ac0 = 5;
+        visitStage = 5;
         TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;
     }
@@ -1465,10 +1465,10 @@ BOOL FleaMarketBuyerVillager::checkLeave() {
         return FALSE;
     }
     {
-        if (unk_ac4 != 0) {
-            unk_ac4 = unk_ac4 - 1;
-            if (unk_ac4 == 1) {
-                unk_ac0 = 3;
+        if (leaveTimer != 0) {
+            leaveTimer = leaveTimer - 1;
+            if (leaveTimer == 1) {
+                visitStage = 3;
                 TalkRequest_AddPlayerTalk6(this, 0);
                 return TRUE;
             }
@@ -1477,14 +1477,14 @@ BOOL FleaMarketBuyerVillager::checkLeave() {
     z[0] = 0;
     z[1] = 0;
     Clock_GetDateTime(z);
-    s32 n = DateTime_DiffMinutes(unk_ac8, z);
+    s32 n = DateTime_DiffMinutes(startTime, z);
     {
-        if (unk_ae0 != 0) {
-            unk_ae0 = unk_ae0 + 1;
+        if (doorWaitFrames != 0) {
+            doorWaitFrames = doorWaitFrames + 1;
         }
     }
-    if (n >= 0x3c || unk_ae0 > 0x258) {
-        unk_ac0 = 3;
+    if (n >= 0x3c || doorWaitFrames > 0x258) {
+        visitStage = 3;
         TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;
     }
@@ -1492,34 +1492,34 @@ BOOL FleaMarketBuyerVillager::checkLeave() {
 }
 
 BOOL FleaMarketBuyerVillager::pickFurnitureToView() {
-    if (!Unk_ov004_02218a48_Eq(&unk_894, 0xfff1)) {
+    if (!Unk_ov004_02218a48_Eq(&targetItem, 0xfff1)) {
         return TRUE;
     }
-    if (unk_adc == 0 || unk_ad8 >= 3) {
-        if (unk_ac4 == 0) {
-            unk_ac4 = 0x258;
+    if (furnitureCount == 0 || purchaseCount >= 3) {
+        if (leaveTimer == 0) {
+            leaveTimer = 0x258;
         }
         return FALSE;
     }
-    s32 start = Random_GlobalBelow(unk_adc);
+    s32 start = Random_GlobalBelow(furnitureCount);
     s32 i = start;
     do {
         if (isFurnitureForSale(i)) {
             void *e = FtrActorTable_get(FtrActorTable_GetInstance(), i);
-            unk_894 = Item_MakeFurniture(FtrActor_GetFtrIndex(e), 0);
-            FtrActor_GetCenter(e, unk_898);
+            targetItem = Item_MakeFurniture(FtrActor_GetFtrIndex(e), 0);
+            FtrActor_GetCenter(e, targetPos);
             setViewDistance(e);
             pushViewedFurniture(i);
-            unk_8a4 = i;
+            targetFtrIndex = i;
             goto ok;
         }
         i++;
-        if (i >= unk_adc) {
+        if (i >= furnitureCount) {
             i = 0;
         }
     } while (i != start);
-    if (unk_ac4 == 0) {
-        unk_ac4 = 0x258;
+    if (leaveTimer == 0) {
+        leaveTimer = 0x258;
     }
     return FALSE;
 ok:
@@ -1551,7 +1551,7 @@ BOOL FleaMarketBuyerVillager::isFurnitureForSale(s32 idx) {
     {
         s32 i;
         for (i = 0; i < 100; i++) {
-            if (idx == unk_8a8[i]) {
+            if (idx == viewedFurniture[i]) {
                 return FALSE;
             }
         }
@@ -1562,22 +1562,22 @@ BOOL FleaMarketBuyerVillager::isFurnitureForSale(s32 idx) {
 void FleaMarketBuyerVillager::pushViewedFurniture(u32 v) {
     s32 i;
     for (i = 0; i < 99; i++) {
-        unk_8a8[i] = unk_8a8[i + 1];
+        viewedFurniture[i] = viewedFurniture[i + 1];
     }
-    unk_8a8[99] = v;
+    viewedFurniture[99] = v;
 }
 
 void FleaMarketBuyerVillager::setViewDistance(void *arg) {
     FtrActor_GetFtrIndex(arg);
     switch (FtrInfo_GetUnk05()) {
     case 0:
-        unk_ad0 = 0x3000;
+        viewDistance = 0x3000;
         break;
     case 1:
-        unk_ad0 = 0x4000;
+        viewDistance = 0x4000;
         break;
     case 2:
-        unk_ad0 = 0x4000;
+        viewDistance = 0x4000;
         break;
     }
 }

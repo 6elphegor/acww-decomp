@@ -14,17 +14,17 @@ struct Unk_020594dc_H {
 };
 
 struct Unk_0205a930_H {
-    u16 unk_00;
+    u16 item;
     Unk_0205a930_H() {}
 };
 
 struct Unk_0205afdc {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    u16 unk_10;
-    u16 unk_12;
+    s32 minX;
+    s32 minZ;
+    s32 maxX;
+    s32 maxZ;
+    u16 wallpaper;
+    u16 carpet;
 };
 
 struct Unk_0205b320_Buf {
@@ -35,20 +35,20 @@ struct Unk_0205b524_T {
     u32 w0, w1;
 };
 
-struct Unk_0205b6e4 {
-    u8 unk_00;
+struct HBlankTask {
+    u8 taskState;
     u8 pad_01[3];
     void (*unk_04)();
     void (*unk_08)();
-    s32 unk_0c;
-    s32 unk_10;
+    s32 param;
+    s32 nextParam;
     void (*unk_14)();
-    Unk_0205b6e4 *unk_18;
+    HBlankTask *next;
 };
 
 class RoomFengShui {
 public:
-    u8 unk_00, unk_01, unk_02;
+    u8 westCount, southCount, eastCount;
     RoomFengShui();
     ~RoomFengShui();
     u8 getWestCount();
@@ -61,12 +61,12 @@ public:
 
 class RoomScoreEvaluator {
 public:
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u16 unk_10;
-    u16 unk_12;
+    u32 minX;
+    u32 minZ;
+    u32 maxX;
+    u32 maxZ;
+    u16 wallpaper;
+    u16 carpet;
     void collectLuckyItems(void *grid);
     s32 calcPenalty(void *grid, u8 *f1, u8 *f2);
     s32 scoreCollection(void *grid, s32 *out);
@@ -317,10 +317,10 @@ u8 FengShui_GetSouthTotal();
 u8 FengShui_GetWestTotal();
 }
 
-extern "C" BOOL HBlank_Replace(Unk_0205b6e4 *t, s32 a, void (*b)()) {
+extern "C" BOOL HBlank_Replace(HBlankTask *t, s32 a, void (*b)()) {
     t->unk_14 = b;
-    t->unk_10 = a;
-    t->unk_00 = 2;
+    t->nextParam = a;
+    t->taskState = 2;
     return TRUE;
 }
 
@@ -441,9 +441,9 @@ extern "C" void FengShui_UpdateHouse() {
 }
 
 void RoomFengShui::clear() {
-    unk_02 = 0;
-    unk_01 = unk_02;
-    unk_00 = unk_01;
+    eastCount = 0;
+    southCount = eastCount;
+    westCount = southCount;
 }
 
 RoomFengShui::RoomFengShui() {
@@ -452,11 +452,11 @@ RoomFengShui::RoomFengShui() {
 
 RoomFengShui::~RoomFengShui() {}
 
-u8 RoomFengShui::getWestCount() { return unk_00; }
+u8 RoomFengShui::getWestCount() { return westCount; }
 
-u8 RoomFengShui::getSouthCount() { return unk_01; }
+u8 RoomFengShui::getSouthCount() { return southCount; }
 
-u8 RoomFengShui::getEastCount() { return unk_02; }
+u8 RoomFengShui::getEastCount() { return eastCount; }
 
 u8 RoomFengShui::countInStrip(s32 m, s32 x0, s32 x1, volatile s32 y0, volatile s32 y1, volatile s32 kind) {
     u32 cnt = 0;
@@ -513,9 +513,9 @@ u8 RoomFengShui::countInStrip(s32 m, s32 x0, s32 x1, volatile s32 y0, volatile s
 void RoomFengShui::evaluate(s32 m) {
     s32 v0, v1, v2, v3;
     RoomMap_GetFloorBounds(&v0, &v1, &v2, &v3, (void *)m);
-    unk_00 = countInStrip(m, v0, v0 + 1, v2, v3, 1);
-    unk_01 = countInStrip(m, v0, v1, v3 - 1, v3, 4);
-    unk_02 = countInStrip(m, v1 - 1, v1, v2, v3, 2);
+    westCount = countInStrip(m, v0, v0 + 1, v2, v3, 1);
+    southCount = countInStrip(m, v0, v1, v3 - 1, v3, 4);
+    eastCount = countInStrip(m, v1 - 1, v1, v2, v3, 2);
 }
 
 extern "C" RoomScoreSource::RoomScoreSource() {}
@@ -584,8 +584,8 @@ extern "C" u32 HappyRoom_CalcLuckyBonus(u32 *p) {
 #pragma thumb reset
 
 extern "C" void RoomScoreEvaluator_Construct(Unk_0205afdc *p) {
-    p->unk_10 = 0xfff1;
-    p->unk_12 = 0xfff1;
+    p->wallpaper = 0xfff1;
+    p->carpet = 0xfff1;
 }
 
 extern "C" void RoomScoreEvaluator_Destruct() {}
@@ -603,13 +603,13 @@ extern "C" u32 HappyRoom_RateMainRoom(Unk_0205afdc *p, s32 *out) {
         for (i = 0; i < 0x4a; i++) sHappyRoomUnk06Masks.w[i] = 0;
         sHappyRoomUnk06Masks.extra = 0;
         MI_CpuFill8(&sHappyRoomSeriesScores, 0, 0x128);
-        RoomMap_GetFloorBounds((s32 *)p, &p->unk_08, &p->unk_04, &p->unk_0c, m);
-        p->unk_10 = 0x1100;
-        p->unk_12 = 0x1144;
+        RoomMap_GetFloorBounds((s32 *)p, &p->maxX, &p->minZ, &p->maxZ, m);
+        p->wallpaper = 0x1100;
+        p->carpet = 0x1144;
         h = _ZN9HouseData7getRoomEi(gSaveHouse, 0);
         if (h != NULL) {
-            p->unk_10 = *_ZN9HouseRoom12getWallpaperEPi(h, 0);
-            p->unk_12 = *_ZN9HouseRoom9getCarpetEPi(h, 0);
+            p->wallpaper = *_ZN9HouseRoom12getWallpaperEPi(h, 0);
+            p->carpet = *_ZN9HouseRoom9getCarpetEPi(h, 0);
         }
         fl[0] = 0;
         fl[1] = 0;
@@ -698,9 +698,9 @@ loop0:
     {
         idx = base + j;
         void *m = source->getRoomMap(idx);
-        p->unk_10 = source->getWallpaper(idx).unk_00;
-        p->unk_12 = source->getCarpet(idx).unk_00;
-        RoomMap_GetFloorBounds((s32 *)p, (s32 *)&p->unk_08, (s32 *)&p->unk_04, (s32 *)&p->unk_0c, m);
+        p->wallpaper = source->getWallpaper(idx).item;
+        p->carpet = source->getCarpet(idx).item;
+        RoomMap_GetFloorBounds((s32 *)p, (s32 *)&p->maxX, (s32 *)&p->minZ, (s32 *)&p->maxZ, m);
         RoomFengShui obj;
         obj.evaluate((s32)m);
         p->scoreSeries(m, 0);
@@ -894,11 +894,11 @@ s32 RoomScoreEvaluator::scoreSeries(void *grid, u32 *out)
     MI_CpuFill8(acc, 0, 0x94);
     max = 0;
     for (layer = 0; layer < 2; layer++) {
-        for (y = unk_04; y <= unk_0c; y++) {
+        for (y = minZ; y <= maxZ; y++) {
             s32 hx, hy;
             u16 *p;
-            x = unk_00;
-            if (x <= unk_08) {
+            x = minX;
+            if (x <= maxX) {
                 goto test0;
             loop0:
                 hx = (s32)x >> 4;
@@ -913,20 +913,20 @@ s32 RoomScoreEvaluator::scoreSeries(void *grid, u32 *out)
                 }
                 x++;
             test0:
-                if (x <= unk_08) goto loop0;
+                if (x <= maxX) goto loop0;
             }
         }
     }
-    if (Unk_0205a6bc_Range(&unk_10, 0x1100, 0x1143)) {
-        s32 k = ItemInfo_GetSeries(&unk_10);
+    if (Unk_0205a6bc_Range(&wallpaper, 0x1100, 0x1143)) {
+        s32 k = ItemInfo_GetSeries(&wallpaper);
         if (Series_GetType(k) == 0) acc[k] |= data_020cab80[0];
     }
-    if (Unk_0205a6bc_Range(&unk_12, 0x1144, 0x1187)) {
-        s32 k = ItemInfo_GetSeries(&unk_12);
+    if (Unk_0205a6bc_Range(&carpet, 0x1144, 0x1187)) {
+        s32 k = ItemInfo_GetSeries(&carpet);
         if (Series_GetType(k) == 0) acc[k] |= data_020cab84[0];
     }
     for (j = 0; j < 0x4a; j++) {
-        if (Series_GetType(ItemInfo_GetSeries(&unk_12)) == 0) {
+        if (Series_GetType(ItemInfo_GetSeries(&carpet)) == 0) {
             u32 cnt = 0;
             u32 k = 0;
             s32 w = acc[j];
@@ -970,14 +970,14 @@ s32 RoomScoreEvaluator::scoreThemes(void *grid)
     s32 lo, hi;
     volatile u32 zeroA, zeroB;
     MI_CpuFill8(acc, 0, 0x94);
-    lo = ItemInfo_GetSeries(&unk_10);
-    hi = ItemInfo_GetSeries(&unk_12);
+    lo = ItemInfo_GetSeries(&wallpaper);
+    hi = ItemInfo_GetSeries(&carpet);
     for (layer = 0; layer < 2; layer++) {
-        for (y = unk_04; y <= unk_0c; y++) {
+        for (y = minZ; y <= maxZ; y++) {
             s32 hx, hy;
             u16 *p;
-            x = unk_00;
-            if (x <= unk_08) {
+            x = minX;
+            if (x <= maxX) {
                 goto test0;
             loop0:
                 hx = (s32)x >> 4;
@@ -992,7 +992,7 @@ s32 RoomScoreEvaluator::scoreThemes(void *grid)
                 }
                 x++;
             test0:
-                if (x <= unk_08) goto loop0;
+                if (x <= maxX) goto loop0;
             }
         }
     }
@@ -1038,11 +1038,11 @@ s32 RoomScoreEvaluator::scoreSets(void *grid)
     MI_CpuFill8(acc, 0, 0x94);
     res = 0;
     for (layer = 0; layer < 2; layer++) {
-        for (y = unk_04; y <= unk_0c; y++) {
+        for (y = minZ; y <= maxZ; y++) {
             s32 hx, hy;
             u16 *p;
-            x = unk_00;
-            if (x <= unk_08) {
+            x = minX;
+            if (x <= maxX) {
                 goto test0;
             loop0:
                 hx = (s32)x >> 4;
@@ -1057,7 +1057,7 @@ s32 RoomScoreEvaluator::scoreSets(void *grid)
                 }
                 x++;
             test0:
-                if (x <= unk_08) goto loop0;
+                if (x <= maxX) goto loop0;
             }
         }
     }
@@ -1086,11 +1086,11 @@ void RoomScoreEvaluator::collectUnk06Kinds(void *grid)
     u8 layer;
     u32 y, x;
     for (layer = 0; layer < 2; layer++) {
-        for (y = unk_04; y <= unk_0c; y++) {
+        for (y = minZ; y <= maxZ; y++) {
             s32 hx, hy;
             u16 *p;
-            x = unk_00;
-            if (x <= unk_08) {
+            x = minX;
+            if (x <= maxX) {
                 goto test0;
             loop0:
                 hx = (s32)x >> 4;
@@ -1110,7 +1110,7 @@ void RoomScoreEvaluator::collectUnk06Kinds(void *grid)
                 }
                 x++;
             test0:
-                if (x <= unk_08) goto loop0;
+                if (x <= maxX) goto loop0;
             }
         }
     }
@@ -1122,11 +1122,11 @@ s32 RoomScoreEvaluator::scoreBasePoints(void *grid)
     u32 y, x;
     s32 total = 0;
     for (layer = 0; layer < 2; layer++) {
-        for (y = unk_04; y <= unk_0c; y++) {
+        for (y = minZ; y <= maxZ; y++) {
             s32 hx, hy;
             u16 *p;
-            x = unk_00;
-            if (x <= unk_08) {
+            x = minX;
+            if (x <= maxX) {
                 goto test0;
             loop0:
                 hx = (s32)x >> 4;
@@ -1137,7 +1137,7 @@ s32 RoomScoreEvaluator::scoreBasePoints(void *grid)
                 }
                 x++;
             test0:
-                if (x <= unk_08) goto loop0;
+                if (x <= maxX) goto loop0;
             }
         }
     }
@@ -1165,11 +1165,11 @@ s32 RoomScoreEvaluator::scoreColorTheme(void *grid)
     }
     n = 0;
     for (layer = 0; layer < 2; layer++) {
-        for (y = unk_04; y <= unk_0c; y++) {
+        for (y = minZ; y <= maxZ; y++) {
             s32 hx, hy;
             u16 *p;
-            x = unk_00;
-            if (x <= unk_08) {
+            x = minX;
+            if (x <= maxX) {
                 goto test0;
             loop0:
                 hx = (s32)x >> 4;
@@ -1194,7 +1194,7 @@ s32 RoomScoreEvaluator::scoreColorTheme(void *grid)
                 }
                 x++;
             test0:
-                if (x <= unk_08) goto loop0;
+                if (x <= maxX) goto loop0;
             }
         }
     }
@@ -1240,9 +1240,9 @@ s32 RoomScoreEvaluator::scoreFlagPairThemes(void *grid, s32 *out1, s32 *out2)
     for (i = 0; i < 24; i++) arr_[i] = 0xffff;
     cnt = 0;
     for (layer = 0; layer < 2; layer++) {
-        for (y = unk_04; y <= unk_0c; y++) {
-            x = unk_00;
-            if (x <= unk_08) {
+        for (y = minZ; y <= maxZ; y++) {
+            x = minX;
+            if (x <= maxX) {
             goto test3;
         loop3:
             {
@@ -1263,7 +1263,7 @@ s32 RoomScoreEvaluator::scoreFlagPairThemes(void *grid, s32 *out1, s32 *out2)
             }
             x++;
         test3:
-            if (x <= unk_08) goto loop3;
+            if (x <= maxX) goto loop3;
             }
         }
     }
@@ -1281,9 +1281,9 @@ s32 RoomScoreEvaluator::scoreFlagPairThemes(void *grid, s32 *out1, s32 *out2)
     for (i = 0; i < 24; i++) arr_[i] = 0xffff;
     cnt = 0;
     for (layer2 = 0; layer2 < 2; layer2++) {
-        for (y = unk_04; y <= unk_0c; y++) {
-            x = unk_00;
-            if (x <= unk_08) {
+        for (y = minZ; y <= maxZ; y++) {
+            x = minX;
+            if (x <= maxX) {
             goto test4;
         loop4:
             {
@@ -1304,7 +1304,7 @@ s32 RoomScoreEvaluator::scoreFlagPairThemes(void *grid, s32 *out1, s32 *out2)
             }
             x++;
         test4:
-            if (x <= unk_08) goto loop4;
+            if (x <= maxX) goto loop4;
             }
         }
     }
@@ -1332,9 +1332,9 @@ s32 RoomScoreEvaluator::scoreCollection(void *grid, s32 *out)
     u32 i;
     MI_CpuFill8(counts, 0, 5);
     for (layer = 0; layer < 2; layer++) {
-        for (y = unk_04; y <= unk_0c; y++) {
-            x = unk_00;
-            if (x <= unk_08) {
+        for (y = minZ; y <= maxZ; y++) {
+            x = minX;
+            if (x <= maxX) {
             goto test2;
         loop2:
             {
@@ -1348,7 +1348,7 @@ s32 RoomScoreEvaluator::scoreCollection(void *grid, s32 *out)
             }
             x++;
         test2:
-            if (x <= unk_08) goto loop2;
+            if (x <= maxX) goto loop2;
             }
         }
     }
@@ -1371,9 +1371,9 @@ s32 RoomScoreEvaluator::calcPenalty(void *grid, u8 *f1, u8 *f2)
     u32 y, x;
     s32 total = 0;
     for (layer = 0; layer < 2; layer++) {
-        for (y = unk_04; y <= unk_0c; y++) {
-            x = unk_00;
-            if (x <= unk_08) {
+        for (y = minZ; y <= maxZ; y++) {
+            x = minX;
+            if (x <= maxX) {
             goto test1;
         loop1:
             {
@@ -1384,10 +1384,10 @@ s32 RoomScoreEvaluator::calcPenalty(void *grid, u8 *f1, u8 *f2)
                     if (Item_IsFurniture(p)) {
                         if (FtrInfo_TestAlwaysFlag4(Item_GetFurnitureIndex(p))) {
                             s32 r = Item_GetFurnitureDirection(p);
-                            if (x == unk_00 && r == 3) { *f1 = 1; total += 100; }
-                            if (x == unk_08 && r == 1) { *f1 = 1; total += 100; }
-                            if (y == unk_04 && r == 2) { *f1 = 1; total += 100; }
-                            if (y == unk_0c && r == 0) { *f1 = 1; total += 100; }
+                            if (x == minX && r == 3) { *f1 = 1; total += 100; }
+                            if (x == maxX && r == 1) { *f1 = 1; total += 100; }
+                            if (y == minZ && r == 2) { *f1 = 1; total += 100; }
+                            if (y == maxZ && r == 0) { *f1 = 1; total += 100; }
                         }
                     } else if (Item_IsNormalItem(p)) {
                         *f2 = 1;
@@ -1397,7 +1397,7 @@ s32 RoomScoreEvaluator::calcPenalty(void *grid, u8 *f1, u8 *f2)
             }
             x++;
         test1:
-            if (x <= unk_08) goto loop1;
+            if (x <= maxX) goto loop1;
             }
         }
     }
@@ -1409,9 +1409,9 @@ void RoomScoreEvaluator::collectLuckyItems(void *grid)
     u8 layer;
     u32 y, x;
     for (layer = 0; layer < 2; layer++) {
-        for (y = unk_04; y <= unk_0c; y++) {
-            x = unk_00;
-            if (x <= unk_08) {
+        for (y = minZ; y <= maxZ; y++) {
+            x = minX;
+            if (x <= maxX) {
             goto test0;
         loop0:
             {
@@ -1427,7 +1427,7 @@ void RoomScoreEvaluator::collectLuckyItems(void *grid)
             }
             x++;
         test0:
-            if (x <= unk_08) goto loop0;
+            if (x <= maxX) goto loop0;
             }
         }
     }

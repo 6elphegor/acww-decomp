@@ -11,8 +11,8 @@ extern u8 data_020d467c[];
 struct SpriteAnimSeq;
 
 struct Unk_02089240_Rec {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x00 */ s32 frames;
+    /* 0x04 */ s32 frameCount;
 };
 
 // Sub-object (ctor 0x02089270, dtor 0x0208926c)
@@ -56,8 +56,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class NameLabelBalloonView {
@@ -74,7 +74,7 @@ public:
     virtual s32 vfunc_0c();
 
     /* 0x04 */ u8 unk_04[0x2c];
-    /* 0x30 */ s32 unk_30;
+    /* 0x30 */ s32 xOffset;
 };
 
 class NameLabelBalloon : public UiWidget {
@@ -240,7 +240,7 @@ void NameLabelBalloon::fitToLabel() {
     if (unk_6c != 0) {
         s32 len = unk_6c->vfunc_0c();
         u32 n = (u32)(len + 7) >> 3;
-        s32 idx = unk_14.getSeq()->unk_04 - 1;
+        s32 idx = unk_14.getSeq()->frameCount - 1;
         s32 t = n - 1;
         if (t < 0) {
             idx = 0;
@@ -248,7 +248,7 @@ void NameLabelBalloon::fitToLabel() {
             idx = t;
         }
         unk_14.setFrame(idx, 0);
-        unk_6c->unk_30 = (u32)(n * 8 - len) >> 1;
+        unk_6c->xOffset = (u32)(n * 8 - len) >> 1;
         if (unk_0c == 0) {
             unk_34 = 0;
         } else {

@@ -199,8 +199,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class LabelBalloon : public UiWidget {
@@ -308,8 +308,8 @@ static inline BOOL Unk_0208a150_IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 typedef void (LabelBalloon::*Unk_020e0d98_Fn)();
 
 UiWidget::UiWidget() {
-    unk_04 = 0x80;
-    unk_08 = 0x60;
+    originX = 0x80;
+    originY = 0x60;
 }
 
 UiWidget::~UiWidget() {}

@@ -66,8 +66,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class SpriteAnim {
@@ -113,7 +113,7 @@ public:
     virtual ~ChatBalloonText();
     virtual u32 capacity();
     virtual u8 *data();
-    /* 0x14 */ u8 unk_14[0x20];
+    /* 0x14 */ u8 text[0x20];
 };
 
 // Text (vtable 0x020d9134), 0x10 bytes
@@ -123,7 +123,7 @@ public:
     virtual ~ChatBalloonName();
     virtual u32 capacity();
     virtual u8 *data();
-    /* 0x04 */ u8 unk_04[9];
+    /* 0x04 */ u8 text[9];
 };
 
 // Player slot, 0xb4 bytes (vtable 0x020d9194)
@@ -156,25 +156,25 @@ public:
     void setMessage(StrBuf *a, MsgString *b, s32 c);
     void updateSlideOffset();
 
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
-    /* 0x1c */ SpriteAnim unk_1c;
-    /* 0x30 */ SpriteAnim unk_30;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ s32 unk_48;
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ ChatBalloonText unk_54;
+    /* 0x0c */ s32 localIndex;
+    /* 0x10 */ s32 palette;
+    /* 0x14 */ s32 nameSeqIndex;
+    /* 0x18 */ s32 textSeqIndex;
+    /* 0x1c */ SpriteAnim nameAnim;
+    /* 0x30 */ SpriteAnim textAnim;
+    /* 0x44 */ s32 stackTargetY;
+    /* 0x48 */ s32 stackY;
+    /* 0x4c */ s32 popOffsetY;
+    /* 0x50 */ s32 slideY;
+    /* 0x54 */ ChatBalloonText text;
     /* 0x88 */ ChatBalloonName unk_88;
-    /* 0x98 */ TextLabel *unk_98;
-    /* 0x9c */ TextLabel *unk_9c;
-    /* 0xa0 */ s32 unk_a0;
-    /* 0xa4 */ s32 unk_a4;
-    /* 0xa8 */ s32 unk_a8;
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ u8 unk_b0;
+    /* 0x98 */ TextLabel *nameLabel;
+    /* 0x9c */ TextLabel *textLabel;
+    /* 0xa0 */ s32 state;
+    /* 0xa4 */ s32 stateTimer;
+    /* 0xa8 */ s32 cooldown;
+    /* 0xac */ s32 request;
+    /* 0xb0 */ u8 visible;
 };
 
 // Slot table (vtable 0x020d9114), 0x2f4 bytes
@@ -201,9 +201,9 @@ public:
     s32 toLocalIndex(s32 idx);
     void post(s32 idx, StrBuf *a, MsgString *b);
 
-    /* 0x004 */ ChatBalloon unk_04[4];
-    /* 0x2d4 */ ChatBalloon *unk_2d4[4];
-    /* 0x2e4 */ ChatBalloon *unk_2e4[4];
+    /* 0x004 */ ChatBalloon balloons[4];
+    /* 0x2d4 */ ChatBalloon *queue[4];
+    /* 0x2e4 */ ChatBalloon *shown[4];
 };
 
 typedef void (ChatBalloon::*Unk_020d9194_Fn)();
@@ -215,8 +215,8 @@ public:
     virtual ~EncodedStringBaseRef();
     virtual u32 capacity();
     virtual u8 *data();
-    /* 0x04 */ u8 *unk_04;
-    /* 0x08 */ u32 unk_08;
+    /* 0x04 */ u8 *buffer;
+    /* 0x08 */ u32 bufferSize;
 };
 
 class ChatBalloonReceiver {
@@ -238,9 +238,9 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
-    /* 0x050 */ ChatQuickMsgInput unk_50;
-    /* 0x054 */ ChatBalloonList unk_54;
-    /* 0x348 */ ChatBalloonReceiver unk_348;
+    /* 0x050 */ ChatQuickMsgInput quickMsgInput;
+    /* 0x054 */ ChatBalloonList balloonList;
+    /* 0x348 */ ChatBalloonReceiver receiver;
 };
 
 // Buffer wrapping external memory
@@ -250,8 +250,8 @@ public:
     virtual ~EncodedStringRef();
     virtual u32 capacity();
     virtual u8 *data();
-    /* 0x10 */ u8 *unk_10;
-    /* 0x14 */ u32 unk_14;
+    /* 0x10 */ u8 *buffer;
+    /* 0x14 */ u32 bufferSize;
 };
 
 // Data
@@ -335,13 +335,13 @@ u32 ChatBalloonText::capacity() { return 0x21; }
 
 u8 *ChatBalloonText::data() { return (u8 *)this + 0x12; }
 
-EncodedStringRef::EncodedStringRef(u8 *data, u32 size) : unk_10(data), unk_14(size) {}
+EncodedStringRef::EncodedStringRef(u8 *data, u32 size) : buffer(data), bufferSize(size) {}
 
 EncodedStringRef::~EncodedStringRef() {}
 
-u32 EncodedStringRef::capacity() { return unk_14; }
+u32 EncodedStringRef::capacity() { return bufferSize; }
 
-u8 *EncodedStringRef::data() { return unk_10; }
+u8 *EncodedStringRef::data() { return buffer; }
 
 ChatBalloonName::ChatBalloonName() { StrBuf_Clear(this); }
 
@@ -351,23 +351,23 @@ u32 ChatBalloonName::capacity() { return 9; }
 
 u8 *ChatBalloonName::data() { return (u8 *)this + 4; }
 
-EncodedStringBaseRef::EncodedStringBaseRef(u8 *data, u32 size) : unk_04(data), unk_08(size) {}
+EncodedStringBaseRef::EncodedStringBaseRef(u8 *data, u32 size) : buffer(data), bufferSize(size) {}
 
 EncodedStringBaseRef::~EncodedStringBaseRef() {}
 
-u32 EncodedStringBaseRef::capacity() { return unk_08; }
+u32 EncodedStringBaseRef::capacity() { return bufferSize; }
 
-u8 *EncodedStringBaseRef::data() { return unk_04; }
+u8 *EncodedStringBaseRef::data() { return buffer; }
 
 ChatBalloon::ChatBalloon()
-    : unk_0c(0), unk_10(0), unk_14(0), unk_18(0), unk_44(0), unk_48(0), unk_4c(0), unk_50(0) {
-    unk_98 = 0;
-    unk_9c = 0;
-    unk_a0 = 0;
-    unk_a4 = 0;
-    unk_a8 = 0;
-    unk_ac = 0;
-    unk_b0 = 0;
+    : localIndex(0), palette(0), nameSeqIndex(0), textSeqIndex(0), stackTargetY(0), stackY(0), popOffsetY(0), slideY(0) {
+    nameLabel = 0;
+    textLabel = 0;
+    state = 0;
+    stateTimer = 0;
+    cooldown = 0;
+    request = 0;
+    visible = 0;
 }
 
 ChatBalloon::~ChatBalloon() {
@@ -376,37 +376,37 @@ ChatBalloon::~ChatBalloon() {
 }
 
 void ChatBalloon::draw() {
-    if (unk_b0 != 0) {
-        if (unk_0c == 0) {
-            void *h = unk_30.getCell();
-            s32 x = getOriginX() + unk_30.getFrameX(-1);
-            s32 y = unk_50 + (unk_4c + (unk_48 + getOriginY()) + unk_30.getFrameY(-1));
-            Oam_DrawCell(0, h, x, y, unk_10, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+    if (visible != 0) {
+        if (localIndex == 0) {
+            void *h = textAnim.getCell();
+            s32 x = getOriginX() + textAnim.getFrameX(-1);
+            s32 y = slideY + (popOffsetY + (stackY + getOriginY()) + textAnim.getFrameY(-1));
+            Oam_DrawCell(0, h, x, y, palette, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         } else {
-            void *h1 = unk_1c.getCell();
-            s32 x1 = getOriginX() + unk_1c.getFrameX(-1);
-            s32 y1 = unk_50 + (unk_4c + (unk_48 + getOriginY()) + unk_1c.getFrameY(-1));
-            void *h2 = unk_30.getCell();
-            s32 x2 = getOriginX() + unk_30.getFrameX(-1);
-            s32 y2 = unk_50 + (unk_4c + (unk_48 + getOriginY()) + unk_30.getFrameY(-1));
-            Oam_DrawCell(2, h1, x1, y1, unk_10, -1, 0x1000, 0x1000, 0, -1, 0, 0);
-            Oam_DrawCell(2, h2, x2, y2, unk_10, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+            void *h1 = nameAnim.getCell();
+            s32 x1 = getOriginX() + nameAnim.getFrameX(-1);
+            s32 y1 = slideY + (popOffsetY + (stackY + getOriginY()) + nameAnim.getFrameY(-1));
+            void *h2 = textAnim.getCell();
+            s32 x2 = getOriginX() + textAnim.getFrameX(-1);
+            s32 y2 = slideY + (popOffsetY + (stackY + getOriginY()) + textAnim.getFrameY(-1));
+            Oam_DrawCell(2, h1, x1, y1, palette, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(2, h2, x2, y2, palette, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
     }
 }
 
 void ChatBalloon::vfunc_0c() {
-    if (unk_a8 > 0) {
-        unk_a8--;
+    if (cooldown > 0) {
+        cooldown--;
     }
     static Unk_020d9194_Fn tbl[4] = {&ChatBalloon::execHidden, &ChatBalloon::execOpen,
                                      &ChatBalloon::execShow, &ChatBalloon::execClose};
-    (this->*tbl[unk_a0])();
-    if (unk_a0 != 0) {
-        if (unk_0c != 0) {
-            unk_1c.update();
+    (this->*tbl[state])();
+    if (state != 0) {
+        if (localIndex != 0) {
+            nameAnim.update();
         }
-        unk_30.update();
+        textAnim.update();
     }
 }
 
@@ -421,86 +421,86 @@ s32 sChatQuickMsgCooldown;
 // 0x020d90d4: scene registration record of ChatBalloonProc_Create (referenced only from the table word 0x020e2158)
 extern "C" ChatBalloonProc *ChatBalloonProc_Create();
 struct Unk_020d90d4_Rec {
-    ChatBalloonProc *(*unk_00)();
-    s16 unk_04;
-    s16 unk_06;
+    ChatBalloonProc *(*create)();
+    s16 executePriority;
+    s16 drawPriority;
 };
 Unk_020d90d4_Rec sChatBalloonProcProfile = {ChatBalloonProc_Create, 0xcb, 0x8d};
 ChatBalloonList *sChatBalloonList;
 
 void ChatBalloon::updateSlideOffset() {
     s32 a, t, t2;
-    if (unk_0c == 0) {
+    if (localIndex == 0) {
         a = MenuCtrl_GetTransitionProgressOrFull();
         t = func_01ffcb0c(0x4c000, a);
         t2 = func_01ffcb0c(0xc0000, 0x1000 - a);
-        unk_50 = (t + t2) >> 12;
+        slideY = (t + t2) >> 12;
     } else {
         a = MenuCtrl_GetTransitionProgress();
         t = func_01ffcb0c(-0x5c000, a);
         t2 = func_01ffcb0c(0x30000, 0x1000 - a);
-        unk_50 = (t + t2) >> 12;
+        slideY = (t + t2) >> 12;
     }
 }
 
 void ChatBalloon::setMessage(StrBuf *a, MsgString *b, s32 c) {
     StrBuf_Copy((StrBuf *)&unk_88, a);
-    unk_54.copy(b);
-    unk_10 = c + 5;
+    text.copy(b);
+    palette = c + 5;
 }
 
 void ChatBalloon::setup(s32 a, s32 b, s32 c) {
-    unk_0c = a;
-    unk_14 = b;
-    unk_18 = c;
+    localIndex = a;
+    nameSeqIndex = b;
+    textSeqIndex = c;
     initSprites();
 }
 
 BOOL ChatBalloon::requestOpen() {
-    BOOL r = unk_a0 == 0 ? TRUE : FALSE;
+    BOOL r = state == 0 ? TRUE : FALSE;
     if (r) {
-        unk_ac = 2;
+        request = 2;
     }
     return r;
 }
 
 BOOL ChatBalloon::requestClose() {
-    BOOL r = unk_a0 != 0 ? TRUE : FALSE;
+    BOOL r = state != 0 ? TRUE : FALSE;
     if (r) {
-        unk_ac = 0;
+        request = 0;
     }
     return r;
 }
 
 void ChatBalloon::refreshLabelsUnk() {
-    if (unk_98 != NULL) {
-        unk_98->copyMode = 3;
-        unk_98->requestRedraw();
+    if (nameLabel != NULL) {
+        nameLabel->copyMode = 3;
+        nameLabel->requestRedraw();
     }
-    if (unk_9c != NULL) {
-        unk_9c->copyMode = 3;
-        unk_9c->requestRedraw();
+    if (textLabel != NULL) {
+        textLabel->copyMode = 3;
+        textLabel->requestRedraw();
     }
 }
 
 void ChatBalloon::reset() {
-    unk_54.clear();
+    text.clear();
     StrBuf_Clear(&unk_88);
     destroyNameLabel();
     destroyTextLabel();
-    unk_a4 = 0;
-    unk_a8 = 0;
-    unk_ac = 0;
+    stateTimer = 0;
+    cooldown = 0;
+    request = 0;
     enterHidden();
 }
 
 void ChatBalloon::enterHidden() {
-    unk_a0 = 0;
-    unk_b0 = 0;
+    state = 0;
+    visible = 0;
 }
 
 void ChatBalloon::execHidden() {
-    if (unk_ac != 0) {
+    if (request != 0) {
         createNameLabel();
         createTextLabel();
         fitToText();
@@ -510,214 +510,214 @@ void ChatBalloon::execHidden() {
 
 void ChatBalloon::enterOpen() {
     s32 a, b;
-    unk_a0 = 1;
-    unk_b0 = 1;
-    if (unk_0c == 0) {
+    state = 1;
+    visible = 1;
+    if (localIndex == 0) {
         a = DebugVar_GetStub(0x136, 2) + 3;
     } else {
         a = DebugVar_GetStub(0x12c, 2) + 3;
     }
-    if (unk_0c == 0) {
+    if (localIndex == 0) {
         b = DebugVar_GetStub(0x136, 3) + 5;
     } else {
         b = DebugVar_GetStub(0x12c, 3) - 5;
     }
-    unk_a4 = a;
-    unk_4c = b;
-    if (unk_0c != 0) {
+    stateTimer = a;
+    popOffsetY = b;
+    if (localIndex != 0) {
         Snd_PlaySe(0x3f);
     }
 }
 
 void ChatBalloon::execOpen() {
     s32 a, b, c;
-    if (unk_0c == 0) {
+    if (localIndex == 0) {
         a = DebugVar_GetStub(0x136, 4) + 2;
     } else {
         a = DebugVar_GetStub(0x12c, 4) + 2;
     }
-    if (unk_0c == 0) {
+    if (localIndex == 0) {
         b = DebugVar_GetStub(0x136, 5) - 6;
     } else {
         b = DebugVar_GetStub(0x12c, 5) + 6;
     }
-    if (unk_0c == 0) {
+    if (localIndex == 0) {
         c = DebugVar_GetStub(0x136, 6) + 2;
     } else {
         c = DebugVar_GetStub(0x12c, 6) - 2;
     }
-    if (unk_a4 > a) {
-        unk_4c += b;
+    if (stateTimer > a) {
+        popOffsetY += b;
     } else {
-        unk_4c += c;
+        popOffsetY += c;
     }
-    unk_a4--;
-    if (unk_a4 <= 0) {
-        unk_4c = 0;
+    stateTimer--;
+    if (stateTimer <= 0) {
+        popOffsetY = 0;
         enterShow();
     }
 }
 
 void ChatBalloon::enterShow() {
     s32 t;
-    unk_a0 = 2;
-    unk_b0 = 1;
-    if (unk_0c == 0) {
+    state = 2;
+    visible = 1;
+    if (localIndex == 0) {
         t = DebugVar_GetStub(0x137, 2) + 0x258;
     } else {
         t = DebugVar_GetStub(0x12d, 2) + 0x258;
     }
-    unk_a4 = t;
+    stateTimer = t;
 }
 
 void ChatBalloon::execShow() {
     s32 t;
-    if (unk_0c == 0) {
+    if (localIndex == 0) {
         t = DebugVar_GetStub(0x137, 3) + 6;
     } else {
         t = DebugVar_GetStub(0x12d, 3) + 6;
     }
-    func_020e761c(&unk_48, unk_44, t);
-    unk_a4--;
-    if (unk_a4 <= 0) {
-        unk_ac = 0;
+    func_020e761c(&stackY, stackTargetY, t);
+    stateTimer--;
+    if (stateTimer <= 0) {
+        request = 0;
     }
-    if (unk_ac == 0) {
+    if (request == 0) {
         enterClose();
     }
 }
 
 void ChatBalloon::enterClose() {
     s32 t;
-    unk_a0 = 3;
-    unk_b0 = 1;
-    if (unk_0c == 0) {
+    state = 3;
+    visible = 1;
+    if (localIndex == 0) {
         t = DebugVar_GetStub(0x138, 2) + 2;
     } else {
         t = DebugVar_GetStub(0x12e, 2) + 2;
     }
-    unk_a4 = t;
+    stateTimer = t;
 }
 
 void ChatBalloon::execClose() {
     s32 t;
-    if (unk_0c == 0) {
+    if (localIndex == 0) {
         t = DebugVar_GetStub(0x138, 3) + 0xb;
     } else {
         t = DebugVar_GetStub(0x12e, 3) - 0xb;
     }
-    unk_4c += t;
-    unk_a4--;
-    if (unk_a4 <= 0) {
+    popOffsetY += t;
+    stateTimer--;
+    if (stateTimer <= 0) {
         destroyNameLabel();
         destroyTextLabel();
         enterHidden();
-        if (unk_0c == 0) {
+        if (localIndex == 0) {
             t = DebugVar_GetStub(0x138, 4);
         } else {
             t = DebugVar_GetStub(0x12e, 4) + 0xa;
         }
-        unk_a8 = t;
+        cooldown = t;
     }
 }
 
 void ChatBalloon::initSprites() {
-    u8 *t = data_020d467c + unk_18 * 8;
-    if (unk_0c != 0) {
-        _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(&unk_1c, data_020d467c + unk_14 * 8);
-        _ZN10SpriteAnim11setPlayOnceEi(&unk_1c, 1);
-        _ZN10SpriteAnim8setSpeedEi(&unk_1c, 0);
+    u8 *t = data_020d467c + textSeqIndex * 8;
+    if (localIndex != 0) {
+        _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(&nameAnim, data_020d467c + nameSeqIndex * 8);
+        _ZN10SpriteAnim11setPlayOnceEi(&nameAnim, 1);
+        _ZN10SpriteAnim8setSpeedEi(&nameAnim, 0);
     }
-    _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(&unk_30, t);
-    _ZN10SpriteAnim11setPlayOnceEi(&unk_30, 1);
-    _ZN10SpriteAnim8setSpeedEi(&unk_30, 0);
+    _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(&textAnim, t);
+    _ZN10SpriteAnim11setPlayOnceEi(&textAnim, 1);
+    _ZN10SpriteAnim8setSpeedEi(&textAnim, 0);
 }
 
 void ChatBalloon::fitToText() {
     u32 w, n, w2, n2;
     s32 pad, hi, lo;
-    if (unk_98 != NULL) {
-        w = unk_98->measureWidth();
+    if (nameLabel != NULL) {
+        w = nameLabel->measureWidth();
         n = (w + 7) >> 3;
         pad = n * 8 - w;
-        hi = _ZN10SpriteAnim6getSeqEv(&unk_1c)[1] - 1;
+        hi = _ZN10SpriteAnim6getSeqEv(&nameAnim)[1] - 1;
         lo = n - 1;
         if (lo < 0) {
             hi = 0;
         } else if (lo <= hi) {
             hi = lo;
         }
-        _ZN10SpriteAnim8setFrameEii(&unk_1c, hi, 0);
-        unk_98->xOffset = pad;
+        _ZN10SpriteAnim8setFrameEii(&nameAnim, hi, 0);
+        nameLabel->xOffset = pad;
     }
-    w2 = unk_9c->measureWidth();
+    w2 = textLabel->measureWidth();
     n2 = (w2 + 7) >> 3;
-    hi = _ZN10SpriteAnim6getSeqEv(&unk_30)[1] - 1;
+    hi = _ZN10SpriteAnim6getSeqEv(&textAnim)[1] - 1;
     lo = n2 - 1;
     if (lo < 0) {
         hi = 0;
     } else if (lo <= hi) {
         hi = lo;
     }
-    _ZN10SpriteAnim8setFrameEii(&unk_30, hi, 0);
-    if (unk_0c == 0 && unk_9c != NULL) {
-        unk_9c->xOffset = (n2 * 8 - w2) >> 1;
+    _ZN10SpriteAnim8setFrameEii(&textAnim, hi, 0);
+    if (localIndex == 0 && textLabel != NULL) {
+        textLabel->xOffset = (n2 * 8 - w2) >> 1;
     }
 }
 
 void ChatBalloon::createNameLabel() {
-    if (unk_0c != 0 && unk_98 == NULL) {
-        unk_98 = MsgTextLabel_CreateVram((*(volatile s32 *)&unk_0c << 3) + 0x1c0, 8, 2);
-        if (unk_98 != NULL) {
-            unk_98->vramLoader = 4;
-            TextLabel *t = unk_98;
+    if (localIndex != 0 && nameLabel == NULL) {
+        nameLabel = MsgTextLabel_CreateVram((*(volatile s32 *)&localIndex << 3) + 0x1c0, 8, 2);
+        if (nameLabel != NULL) {
+            nameLabel->vramLoader = 4;
+            TextLabel *t = nameLabel;
             t->textStart = (u32)((StrBuf *)&unk_88)->data();
             if (gGfxMainOnTop == 0) {
-                unk_98->copyMode = 3;
+                nameLabel->copyMode = 3;
             } else {
-                unk_98->copyMode = 2;
+                nameLabel->copyMode = 2;
             }
-            unk_98->group = 1;
-            unk_98->rowStride1K = 1;
-            unk_98->bgColor = 0xe;
-            unk_98->fgColor = 0xd;
-            unk_98->requestRedraw();
+            nameLabel->group = 1;
+            nameLabel->rowStride1K = 1;
+            nameLabel->bgColor = 0xe;
+            nameLabel->fgColor = 0xd;
+            nameLabel->requestRedraw();
         }
     }
 }
 
 void ChatBalloon::destroyNameLabel() {
-    if (unk_98 != NULL) {
-        MsgTextLabel_Destroy(unk_98);
-        unk_98 = NULL;
+    if (nameLabel != NULL) {
+        MsgTextLabel_Destroy(nameLabel);
+        nameLabel = NULL;
     }
 }
 
 void ChatBalloon::createTextLabel() {
-    if (unk_9c == NULL) {
-        unk_9c = MsgTextLabel_CreateVram((unk_0c << 6) + 0xc0, 0x14, 2);
-        if (unk_9c != NULL) {
-            unk_9c->vramLoader = 4;
-            TextLabel *t = unk_9c;
-            t->textStart = (u32)((MsgString *)&unk_54)->data();
+    if (textLabel == NULL) {
+        textLabel = MsgTextLabel_CreateVram((localIndex << 6) + 0xc0, 0x14, 2);
+        if (textLabel != NULL) {
+            textLabel->vramLoader = 4;
+            TextLabel *t = textLabel;
+            t->textStart = (u32)((MsgString *)&text)->data();
             if (gGfxMainOnTop == 0) {
-                unk_9c->copyMode = 3;
+                textLabel->copyMode = 3;
             } else {
-                unk_9c->copyMode = 2;
+                textLabel->copyMode = 2;
             }
-            unk_9c->group = 1;
-            unk_9c->rowStride1K = 1;
-            unk_9c->bgColor = 0xf;
-            unk_9c->fgColor = 0xd;
-            unk_9c->requestRedraw();
+            textLabel->group = 1;
+            textLabel->rowStride1K = 1;
+            textLabel->bgColor = 0xf;
+            textLabel->fgColor = 0xd;
+            textLabel->requestRedraw();
         }
     }
 }
 
 void ChatBalloon::destroyTextLabel() {
-    if (unk_9c != NULL) {
-        MsgTextLabel_Destroy(unk_9c);
-        unk_9c = NULL;
+    if (textLabel != NULL) {
+        MsgTextLabel_Destroy(textLabel);
+        textLabel = NULL;
     }
 }
 
@@ -736,8 +736,8 @@ extern "C" BOOL ChatBalloon_IsRemoteBusy(void) {
     BOOL r = FALSE;
     s32 i = 0;
     for (; i < 4; i++) {
-        ChatBalloon *p = &sChatBalloonList->unk_04[i];
-        if ((p->unk_0c != 0 && p->unk_a0 != 0) || Unk_02038f10_Pos(p->unk_a8)) {
+        ChatBalloon *p = &sChatBalloonList->balloons[i];
+        if ((p->localIndex != 0 && p->state != 0) || Unk_02038f10_Pos(p->cooldown)) {
             r = TRUE;
             break;
         }
@@ -749,8 +749,8 @@ extern "C" BOOL ChatBalloon_IsOwnBusy(void) {
     BOOL r = FALSE;
     s32 i = 0;
     for (; i < 4; i++) {
-        ChatBalloon *p = &sChatBalloonList->unk_04[i];
-        if ((p->unk_0c == 0 && p->unk_a0 != 0) || Unk_02038f10_Pos(p->unk_a8)) {
+        ChatBalloon *p = &sChatBalloonList->balloons[i];
+        if ((p->localIndex == 0 && p->state != 0) || Unk_02038f10_Pos(p->cooldown)) {
             r = TRUE;
             break;
         }
@@ -765,8 +765,8 @@ extern "C" void ChatBalloon_ClearAll(void) { sChatBalloonList->clear(); }
 ChatBalloonList::ChatBalloonList() {
     s32 i;
     for (i = 0; i < 4; i++) {
-        unk_2d4[i] = NULL;
-        unk_2e4[i] = NULL;
+        queue[i] = NULL;
+        shown[i] = NULL;
     }
 }
 
@@ -774,10 +774,10 @@ ChatBalloonList::~ChatBalloonList() {}
 
 void ChatBalloonList::post(s32 idx, StrBuf *a, MsgString *b) {
     if (idx <= 4) {
-        ChatBalloon *p = &unk_04[toLocalIndex(idx)];
+        ChatBalloon *p = &balloons[toLocalIndex(idx)];
         if (enqueue(p)) {
             p->setMessage(a, b, getColorIndex(idx));
-            if (p->unk_0c == 0) {
+            if (p->localIndex == 0) {
                 ChatBalloon_SendSyncVar(idx, p);
             }
         }
@@ -800,15 +800,15 @@ void ChatBalloonList::dismiss(s32 idx) {
     if (idx <= 4) {
         s32 v = toLocalIndex(idx);
         for (i = 0; i < 4; i++) {
-            ChatBalloon *p = unk_2d4[i];
-            if (p != NULL && v == p->unk_0c) {
-                unk_2d4[i] = NULL;
+            ChatBalloon *p = queue[i];
+            if (p != NULL && v == p->localIndex) {
+                queue[i] = NULL;
                 break;
             }
         }
         for (i = 0; i < 4; i++) {
-            ChatBalloon *p = unk_2e4[i];
-            if (p != NULL && v == p->unk_0c) {
+            ChatBalloon *p = shown[i];
+            if (p != NULL && v == p->localIndex) {
                 p->requestClose();
                 break;
             }
@@ -823,8 +823,8 @@ BOOL ChatBalloonList::enqueue(ChatBalloon *p) {
         ok = TRUE;
     } else {
         for (i = 0; i < 4; i++) {
-            if (unk_2d4[i] == NULL) {
-                unk_2d4[i] = p;
+            if (queue[i] == NULL) {
+                queue[i] = p;
                 ok = TRUE;
                 break;
             }
@@ -838,19 +838,19 @@ BOOL ChatBalloonList::tryShow(ChatBalloon *p) {
     s32 z, i;
     if (isShown(p)) {
         p->requestClose();
-    } else if (!IsPositive(p->unk_a8)) {
+    } else if (!IsPositive(p->cooldown)) {
         for (i = 3, z = 0; i >= 0; i--) {
-            if (unk_2e4[i]) {
-                if (unk_2e4[i]->unk_0c) {
+            if (shown[i]) {
+                if (shown[i]->localIndex) {
                     z += 0x10;
                 }
             } else {
-                unk_2e4[i] = p;
-                if (p->unk_0c == 0) {
+                shown[i] = p;
+                if (p->localIndex == 0) {
                     z = 0;
                 }
-                p->unk_48 = z;
-                p->unk_44 = z;
+                p->stackY = z;
+                p->stackTargetY = z;
                 p->updateSlideOffset();
                 p->requestOpen();
                 result = TRUE;
@@ -864,16 +864,16 @@ BOOL ChatBalloonList::tryShow(ChatBalloon *p) {
 void ChatBalloonList::showQueued() {
     s32 i, j, k;
     for (i = 0; i < 4; i++) {
-        if (unk_2d4[i] && tryShow(unk_2d4[i])) {
-            unk_2d4[i] = NULL;
+        if (queue[i] && tryShow(queue[i])) {
+            queue[i] = NULL;
         }
     }
     for (j = 0; j < 4; j++) {
-        if (unk_2d4[j] == NULL) {
+        if (queue[j] == NULL) {
             for (k = j + 1; k < 4; k++) {
-                if (unk_2d4[k]) {
-                    unk_2d4[j] = unk_2d4[k];
-                    unk_2d4[k] = NULL;
+                if (queue[k]) {
+                    queue[j] = queue[k];
+                    queue[k] = NULL;
                     break;
                 }
             }
@@ -884,9 +884,9 @@ void ChatBalloonList::showQueued() {
 void ChatBalloonList::layoutShown() {
     s32 i, z;
     for (i = 3, z = 0; i >= 0; i--) {
-        ChatBalloon *p = unk_2e4[i];
-        if (p && p->unk_0c) {
-            p->unk_44 = z;
+        ChatBalloon *p = shown[i];
+        if (p && p->localIndex) {
+            p->stackTargetY = z;
             z += 0x10;
         }
     }
@@ -895,17 +895,17 @@ void ChatBalloonList::layoutShown() {
 void ChatBalloonList::removeFinished() {
     s32 i, j, k;
     for (i = 0; i < 4; i++) {
-        ChatBalloon *p = unk_2e4[i];
-        if (p && p->unk_a0 == 0 && p->unk_ac == 0) {
-            unk_2e4[i] = NULL;
+        ChatBalloon *p = shown[i];
+        if (p && p->state == 0 && p->request == 0) {
+            shown[i] = NULL;
         }
     }
     for (j = 0; j < 4; j++) {
-        if (unk_2e4[j] == NULL) {
+        if (shown[j] == NULL) {
             for (k = j + 1; k < 4; k++) {
-                if (unk_2e4[k]) {
-                    unk_2e4[j] = unk_2e4[k];
-                    unk_2e4[k] = NULL;
+                if (shown[k]) {
+                    shown[j] = shown[k];
+                    shown[k] = NULL;
                     break;
                 }
             }
@@ -917,7 +917,7 @@ BOOL ChatBalloonList::isQueued(ChatBalloon *p) {
     BOOL r = FALSE;
     s32 i;
     for (i = 0; i < 4; i++) {
-        if (unk_2d4[i] == p) {
+        if (queue[i] == p) {
             r = TRUE;
             break;
         }
@@ -929,7 +929,7 @@ BOOL ChatBalloonList::isShown(ChatBalloon *p) {
     BOOL r = FALSE;
     s32 i;
     for (i = 0; i < 4; i++) {
-        if (unk_2e4[i] == p) {
+        if (shown[i] == p) {
             r = TRUE;
             break;
         }
@@ -941,7 +941,7 @@ void ChatBalloonList::init() {
     s32 i;
     sChatBalloonList = this;
     for (i = 0; i < 4; i++) {
-        unk_04[i].setup(i, sChatBalloonNameSeqs[i], sChatBalloonTextSeqs[i]);
+        balloons[i].setup(i, sChatBalloonNameSeqs[i], sChatBalloonTextSeqs[i]);
     }
 }
 
@@ -955,7 +955,7 @@ void ChatBalloonList::update() {
     showQueued();
     layoutShown();
     for (i = 0; i < 4; i++) {
-        unk_04[i].vfunc_0c();
+        balloons[i].vfunc_0c();
     }
     removeFinished();
 }
@@ -963,7 +963,7 @@ void ChatBalloonList::update() {
 void ChatBalloonList::draw() {
     s32 i;
     for (i = 3; i >= 0; i--) {
-        ChatBalloon *p = unk_2e4[i];
+        ChatBalloon *p = shown[i];
         if (p) {
             p->updateSlideOffset();
             p->draw();
@@ -974,8 +974,8 @@ void ChatBalloonList::draw() {
 void ChatBalloonList::refreshLabelsUnk() {
     s32 i;
     for (i = 0; i < 4; i++) {
-        if (unk_2e4[i]) {
-            unk_2e4[i]->refreshLabelsUnk();
+        if (shown[i]) {
+            shown[i]->refreshLabelsUnk();
         }
     }
 }
@@ -983,9 +983,9 @@ void ChatBalloonList::refreshLabelsUnk() {
 void ChatBalloonList::clear() {
     s32 i;
     for (i = 0; i < 4; i++) {
-        unk_04[i].reset();
-        unk_2d4[i] = NULL;
-        unk_2e4[i] = NULL;
+        balloons[i].reset();
+        queue[i] = NULL;
+        shown[i] = NULL;
     }
 }
 
@@ -1172,33 +1172,33 @@ ChatBalloonProc::ChatBalloonProc() {}
 ChatBalloonProc::~ChatBalloonProc() {}
 
 BOOL ChatBalloonProc::vfunc_00() {
-    unk_50.init();
-    unk_54.init();
-    unk_348.init();
+    quickMsgInput.init();
+    balloonList.init();
+    receiver.init();
     return TRUE;
 }
 
 BOOL ChatBalloonProc::onExecute() {
-    unk_50.update();
+    quickMsgInput.update();
     if (HudObjGfx_IsMsgUiActive()) {
-        unk_54.update();
+        balloonList.update();
     }
-    unk_348.update();
+    receiver.update();
     return TRUE;
 }
 
 BOOL ChatBalloonProc::onDraw() {
     if (HudObjGfx_IsMsgUiActive()) {
-        unk_54.draw();
+        balloonList.draw();
     }
     return TRUE;
 }
 
 // Main object
 BOOL ChatBalloonProc::vfunc_0c() {
-    unk_348.shutdown();
-    unk_54.shutdown();
-    unk_50.shutdown();
+    receiver.shutdown();
+    balloonList.shutdown();
+    quickMsgInput.shutdown();
     return TRUE;
 }
 

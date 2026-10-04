@@ -27,8 +27,8 @@ struct Unk_02095dcc_Grid {
 
 struct ItemPickSpec {
     void set(s32 a, s32 b);
-    s32 unk_00;
-    s32 unk_04;
+    s32 listIndex;
+    s32 itemClass;
 };
 
 struct Unk_0209579c_Pos {
@@ -48,9 +48,9 @@ struct Unk_0209579c_L {
 };
 
 struct Unk_02096354_Arg {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
+    u32 year;
+    u32 month;
+    u32 day;
 };
 
 struct Unk_020966f8_Rec {
@@ -92,11 +92,11 @@ public:
     u8 *getLastDeliveryTime();
 
     /* 0x000 */ Letter unk_00[10];
-    /* 0x988 */ u8 unk_988;
-    /* 0x989 */ u8 unk_989;
-    /* 0x98a */ u8 unk_98a;
-    /* 0x98b */ u8 unk_98b;
-    /* 0x98c */ u16 unk_98c;
+    /* 0x988 */ u8 lastDeliveryDay;
+    /* 0x989 */ u8 lastDeliveryMonth;
+    /* 0x98a */ u8 lastDeliveryYear;
+    /* 0x98b */ u8 lastDeliveryHour;
+    /* 0x98c */ u16 flags;
     /* 0x98e */ u16 pad_98e;
 };
 
@@ -110,7 +110,7 @@ public:
     void clear();
 
     /* 0x000 */ Letter unk_00[10];
-    /* 0x988 */ u16 unk_988;
+    /* 0x988 */ u16 lastWifiMailId;
     /* 0x98a */ u16 pad_98a;
 };
 
@@ -127,10 +127,10 @@ public:
     BOOL checkLastDate(s32 *v);
     void clear();
 
-    /* 0x00 */ u8 unk_00;
-    /* 0x01 */ u8 unk_01;
-    /* 0x02 */ u8 unk_02;
-    /* 0x03 */ u8 unk_03;
+    /* 0x00 */ u8 lastDay;
+    /* 0x01 */ u8 lastMonth;
+    /* 0x02 */ u8 lastYear;
+    /* 0x03 */ u8 birthdayYearFlags;
     /* 0x04 */ u8 unk_04[15];
     /* 0x13 */ u8 pad_13;
 };
@@ -140,9 +140,9 @@ public:
     void clearFutureLetter();
     u8 *getDeliveryDate();
 
-    /* 0xf4 */ u8 unk_f4;
-    /* 0xf5 */ u8 unk_f5;
-    /* 0xf6 */ u8 unk_f6;
+    /* 0xf4 */ u8 deliveryDay;
+    /* 0xf5 */ u8 deliveryMonth;
+    /* 0xf6 */ u8 deliveryYear;
     /* 0xf7 */ u8 unk_f7;
 };
 
@@ -687,10 +687,10 @@ extern "C" void MotherLetter_OnNewDay(Unk_02096354_Arg *p, s32 n) {
         if (LetterDelivery_IsMailboxFull(-1) == 1) return;
     }
     r4 = PlayerData_GetMotherLetterState(r6);
-    MotherLetter_ResetOtherMonths((u8)p->unk_04);
+    MotherLetter_ResetOtherMonths((u8)p->month);
     if (_ZN17MotherLetterState13checkLastDateEPi(r4, p) != 0) return;
     if (MotherLetter_TrySendBirthday(p) != 0) {
-        _ZN17MotherLetterState21setBirthdayLetterYearEj(r4, (u8)p->unk_00);
+        _ZN17MotherLetterState21setBirthdayLetterYearEj(r4, (u8)p->year);
         _ZN17MotherLetterState11setLastDateEPi(r4, p);
         return;
     }
@@ -712,16 +712,16 @@ extern "C" s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p) {
     void *r6 = PlayerData_GetMotherLetterState(r5);
     u8 *q = _ZN12Unk_02097ff411getBirthdayEv(r5);
     if (*(u16 *)q == 0) return 0;
-    if (p->unk_00 == _ZN17MotherLetterState21getBirthdayLetterYearEv(r6)) return 0;
+    if (p->year == _ZN17MotherLetterState21getBirthdayLetterYearEv(r6)) return 0;
     s32 r;
     Unk_02096484_Rec A;
-    A.d5 = p->unk_00;
+    A.d5 = p->year;
     A.d4 = q[1];
     A.d3 = q[0];
     Unk_02096484_Rec B;
-    B.d5 = p->unk_00;
-    B.d4 = p->unk_04;
-    B.d3 = p->unk_08;
+    B.d5 = p->year;
+    B.d4 = p->month;
+    B.d3 = p->day;
     Unk_02096484_Base C;
     MI_CpuCopy8(&A, &C, 8);
     DateTime_AddDays(&C, 7);
@@ -738,38 +738,38 @@ extern "C" s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p) {
         r = 1;
     }
 end:
-    if (r) r = MotherLetter_SendRandomUnsent(0x20, 2, (u8)p->unk_04, 1);
+    if (r) r = MotherLetter_SendRandomUnsent(0x20, 2, (u8)p->month, 1);
     return r;
 }
 
 extern "C" s32 MotherLetter_TrySendHoliday(Unk_02096354_Arg *p) {
-    s32 c = p->unk_08;
-    s32 b = p->unk_04;
+    s32 c = p->day;
+    s32 b = p->month;
     if (b == c) return MotherLetter_SendRandomUnsent(c * 2 - 2, 2, (u8)b, 1);
     if (b == 4 && c == 1) return MotherLetter_SendRandomUnsent(0x1c, 2, (u8)b, 1);
     if (b == 12 && c == 0x18) return MotherLetter_SendRandomUnsent(0x1e, 2, (u8)b, 1);
     if (b == 6) {
-        if (p->unk_08 == Date_GetNthWeekdayDay((u8)p->unk_00, (u8)b, 0, 3))
-            return MotherLetter_SendRandomUnsent(0x1a, 2, (u8)p->unk_04, 1);
+        if (p->day == Date_GetNthWeekdayDay((u8)p->year, (u8)b, 0, 3))
+            return MotherLetter_SendRandomUnsent(0x1a, 2, (u8)p->month, 1);
     }
-    if (p->unk_04 == 5) {
-        if (p->unk_08 == Date_GetNthWeekdayDay((u8)p->unk_00, (u8)p->unk_04, 0, 2))
-            return MotherLetter_SendRandomUnsent(0x18, 2, (u8)p->unk_04, 1);
+    if (p->month == 5) {
+        if (p->day == Date_GetNthWeekdayDay((u8)p->year, (u8)p->month, 0, 2))
+            return MotherLetter_SendRandomUnsent(0x18, 2, (u8)p->month, 1);
     }
     return 0;
 }
 
 extern "C" s32 MotherLetter_TrySendRandom(Unk_02096354_Arg *p) {
-    s32 r6 = MotherLetter_GetMonthFirst((u8)p->unk_04);
-    s32 r7 = MotherLetter_GetMonthCount((u8)p->unk_04);
+    s32 r6 = MotherLetter_GetMonthFirst((u8)p->month);
+    s32 r7 = MotherLetter_GetMonthCount((u8)p->month);
     s32 r4 = MotherLetter_CountUnsent(r6, r7);
     if (r4 == r7) {
-        return MotherLetter_SendRandomUnsent(r6, r7, (u8)p->unk_04, 0);
+        return MotherLetter_SendRandomUnsent(r6, r7, (u8)p->month, 0);
     }
     if (Random_GlobalBelow(r4 + MotherLetter_CountUnsent(0x22, 0x38)) < r4) {
-        return MotherLetter_SendRandomUnsent(r6, r7, (u8)p->unk_04, 0);
+        return MotherLetter_SendRandomUnsent(r6, r7, (u8)p->month, 0);
     }
-    return MotherLetter_SendRandomUnsent(0x22, 0x38, (u8)p->unk_04, 1);
+    return MotherLetter_SendRandomUnsent(0x22, 0x38, (u8)p->month, 1);
 }
 
 extern "C" u32 MotherLetter_GetMonthFirst(u8 v) { return sMotherMonthLetterFirst[v - 1] + 0x5a; }

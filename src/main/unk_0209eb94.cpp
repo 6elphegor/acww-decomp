@@ -212,7 +212,7 @@ class BlancaFaceRecord {
 public:
     BlancaFaceRecord();
     ~BlancaFaceRecord();
-    u8 unk_00[0x22c];
+    u8 pattern[0x22c];
 };
 
 struct Unk_020a4238_Entry {

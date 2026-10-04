@@ -5,14 +5,14 @@
 // TU28 of ov003: scene 0x02234f10 (+ the camera update 0x0222ef10) and the six colour constants of its header
 struct Unk_ov003_0222ef10_Cam {
     u8 pad_00[0x110];
-    u8 unk_110[8];
-    u32 unk_118;
+    u8 targetFocus[8];
+    u32 targetFocusZ;
     u8 pad_11c[0x1ca - 0x11c];
-    u8 unk_1ca;
+    u8 focusIsPair;
     u8 pad_1cb;
-    u8 unk_1cc[0xc];
-    u8 unk_1d8[0xc];
-    s32 unk_1e4;
+    u8 focusPointA[0xc];
+    u8 focusPointB[0xc];
+    s32 closeUpFactorTarget;
 };
 
 // 4-byte colour constructors (unreferenced except by __sinit)
@@ -74,19 +74,19 @@ extern "C" void FieldCamera_UpdateFocusZoom(Unk_ov003_0222ef10_Cam *cam) {
     void *c = PlayerActor_GetBodyPos(4);
     s32 t;
     s32 v;
-    if (cam->unk_1ca != 0) {
-        v = Camera_CalcTriangleSpan(c, cam->unk_1cc, cam->unk_1d8, cam->unk_110, &t);
+    if (cam->focusIsPair != 0) {
+        v = Camera_CalcTriangleSpan(c, cam->focusPointA, cam->focusPointB, cam->targetFocus, &t);
     } else {
-        v = Camera_CalcPointSpan(c, cam->unk_1cc, cam->unk_110, &t);
+        v = Camera_CalcPointSpan(c, cam->focusPointA, cam->targetFocus, &t);
     }
-    cam->unk_118 = cam->unk_118 + t;
+    cam->targetFocusZ = cam->targetFocusZ + t;
     if (v < 0x4800) {
         v = 0x4800;
     } else if (v > 0xb000) {
         v = 0xb000;
     }
     u32 q = FX_Div(v - 0x4800, 0x6800);
-    cam->unk_1e4 = 0x1000 - q;
+    cam->closeUpFactorTarget = 0x1000 - q;
     Unk_020d93b8_lerpPoses(cam, 0xa, 0, q);
 }
 

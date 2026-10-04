@@ -44,7 +44,7 @@ void func_020a7bd8(void *p);
 extern s32 gGfxMainOnTop;
 extern u8 data_020d4694[];
 extern u8 data_020d468c[];
-struct Unk_0208e13c_Rec { u32 unk_00; u32 unk_04; };
+struct Unk_0208e13c_Rec { u32 frames; u32 frameCount; };
 extern Unk_0208e13c_Rec data_020d5b0c[];
 extern u16 sLabelButtonColorCache[];
 extern u8 sLabelButtonKindTextColors[];
@@ -80,8 +80,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class ScrollKnob : public UiWidget {
@@ -96,10 +96,10 @@ public:
     void moveTo(s32 x, s32 y);
 
     /* 0x0c */ s32 layer1;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ SpriteAnim unk_14;
+    /* 0x10 */ s32 posY;
+    /* 0x14 */ SpriteAnim layerAnim1;
     /* 0x28 */ SpriteAnim priority;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x3c */ s32 state;
     /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
@@ -116,8 +116,8 @@ public:
     void updateAppearing();
     void updateHidden();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ s32 unk_20;
+    /* 0x0c */ SpriteAnim anim;
+    /* 0x20 */ s32 state;
 };
 
 HudUnkIcon sHudUnkIcon;
@@ -165,17 +165,17 @@ extern "C" void HudUnkIcon_Update();
 extern "C" void HudUnkIcon_Draw();
 
 HudUnkIcon::HudUnkIcon() {
-    unk_20 = 0;
+    state = 0;
 }
 
 HudUnkIcon::~HudUnkIcon() {
 }
 
 void HudUnkIcon::draw() {
-    if (unk_20 != 0) {
-        void *h = unk_0c.getCell();
-        s32 x = getOriginX() + unk_0c.getFrameX(-1);
-        s32 y = getOriginY() + unk_0c.getFrameY(-1);
+    if (state != 0) {
+        void *h = anim.getCell();
+        s32 x = getOriginX() + anim.getFrameX(-1);
+        s32 y = getOriginY() + anim.getFrameY(-1);
         Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
 }
@@ -183,10 +183,10 @@ void HudUnkIcon::draw() {
 void HudUnkIcon::vfunc_0c() {
     typedef void (HudUnkIcon::*Fn)();
     static Fn tbl[4] = {&HudUnkIcon::updateHidden, &HudUnkIcon::updateAppearing, &HudUnkIcon::updateShown, &HudUnkIcon::updateHiding};
-    (this->*tbl[unk_20])();
+    (this->*tbl[state])();
 }
 
-extern "C" void HudUnkIcon_Reset() { sHudUnkIcon.unk_20 = 0; }
+extern "C" void HudUnkIcon_Reset() { sHudUnkIcon.state = 0; }
 
 extern "C" void HudUnkIcon_Exit() {}
 

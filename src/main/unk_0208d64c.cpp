@@ -5,8 +5,8 @@ void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, 
 }
 
 struct Unk_02089240_Rec {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x00 */ s32 frames;
+    /* 0x04 */ s32 frameCount;
 };
 
 class SpriteAnim {
@@ -37,8 +37,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class HandCursor : public UiWidget {
@@ -68,21 +68,21 @@ public:
     s32 getState();
 
     /* 0x0c */ s32 layer1;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ SpriteAnim unk_14;
+    /* 0x10 */ s32 posY;
+    /* 0x14 */ SpriteAnim layerAnim1;
     /* 0x28 */ SpriteAnim priority;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x3c */ s32 state;
     /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
 
 s32 ScrollKnob::getState() {
-    return unk_3c;
+    return state;
 }
 
 BOOL ScrollKnob::areAnimsDone() {
     BOOL r;
-    if (unk_14.isFinished() && priority.isFinished()) {
+    if (layerAnim1.isFinished() && priority.isFinished()) {
         r = TRUE;
     } else {
         r = FALSE;

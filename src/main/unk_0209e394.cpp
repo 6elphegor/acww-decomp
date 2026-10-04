@@ -112,9 +112,9 @@ struct Unk_0209e840_Ent {
 };
 
 struct Unk_0209ea1c_Entry {
-    void *unk_00;
-    u16 unk_04;
-    u16 unk_06;
+    void *create;
+    u16 executePriority;
+    u16 drawPriority;
 };
 
 extern "C" SaveMenu *SaveMenu_Create();

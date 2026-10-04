@@ -6,12 +6,12 @@
 
 struct HudObjGfx {
     u8 unk_00[0x48];
-    s32 unk_48;
-    s32 unk_4c;
-    u8 unk_50[0x200];
-    s32 unk_250;
-    u8 unk_254;
-    u8 unk_255;
+    s32 paletteBuf;
+    s32 charBuf;
+    u8 cameraButtonChars[0x200];
+    s32 pendingCameraButtonScreens;
+    u8 msgUiActive;
+    u8 countdownVariant;
 
     HudObjGfx();
     ~HudObjGfx();
@@ -63,12 +63,12 @@ extern "C" const u8 sSceneHudKinds[0x34] = {
 };
 
 HudObjGfx::HudObjGfx() {
-    unk_48 = 0;
-    unk_4c = 0;
-    unk_250 = 3;
-    unk_254 = 0;
-    unk_255 = 0;
-    MI_CpuFill8(&unk_50, 0, 0x200);
+    paletteBuf = 0;
+    charBuf = 0;
+    pendingCameraButtonScreens = 3;
+    msgUiActive = 0;
+    countdownVariant = 0;
+    MI_CpuFill8(&cameraButtonChars, 0, 0x200);
 }
 
 HudObjGfx::~HudObjGfx() {
@@ -90,9 +90,9 @@ extern "C" void HudObjGfx_LoadKind(u32 a, u32 b) { sHudObjGfx.loadKind(a, b); }
 
 extern "C" void HudObjGfx_LoadCameraButton(u32 a, u32 b, u32 c) { sHudObjGfx.loadCameraButton(a, b, c); }
 
-extern "C" void HudObjGfx_SetCountdownVariant(u8 v) { sHudObjGfx.unk_255 = v; }
+extern "C" void HudObjGfx_SetCountdownVariant(u8 v) { sHudObjGfx.countdownVariant = v; }
 
-extern "C" u8 HudObjGfx_GetCountdownVariant(void) { return sHudObjGfx.unk_255; }
+extern "C" u8 HudObjGfx_GetCountdownVariant(void) { return sHudObjGfx.countdownVariant; }
 
 extern "C" void HudObjGfx_LoadLinkIcon(u32 a) { sHudObjGfx.loadLinkIcon(a); }
 
@@ -100,19 +100,19 @@ extern "C" void HudObjGfx_LoadSlideIcon(u32 a) { sHudObjGfx.loadSlideIcon(a); }
 
 extern "C" void HudObjGfx_FlushCameraButton(void) {
     HudObjGfx *p = &sHudObjGfx;
-    if (sHudObjGfx.unk_250 != 3) {
-        _ZN11HudObjGfxIo23uploadCameraButtonCharsEi(p, p->unk_250);
-        p->unk_250 = 3;
+    if (sHudObjGfx.pendingCameraButtonScreens != 3) {
+        _ZN11HudObjGfxIo23uploadCameraButtonCharsEi(p, p->pendingCameraButtonScreens);
+        p->pendingCameraButtonScreens = 3;
     }
 }
 
 extern "C" s32 Hud_GetSceneHudKind(void) { return sSceneHudKinds[Scene_GetCurrent()]; }
 
-extern "C" u8 HudObjGfx_IsMsgUiActive(void) { return sHudObjGfx.unk_254; }
+extern "C" u8 HudObjGfx_IsMsgUiActive(void) { return sHudObjGfx.msgUiActive; }
 
-extern "C" void HudObjGfx_SetMsgUiActive(void) { sHudObjGfx.unk_254 = 1; }
+extern "C" void HudObjGfx_SetMsgUiActive(void) { sHudObjGfx.msgUiActive = 1; }
 
-extern "C" void HudObjGfx_ClearMsgUiActive(void) { sHudObjGfx.unk_254 = 0; }
+extern "C" void HudObjGfx_ClearMsgUiActive(void) { sHudObjGfx.msgUiActive = 0; }
 
 void HudObjGfx::loadForScene(u32 a) {
     HudObjGfx *p = &sHudObjGfx;
@@ -143,7 +143,7 @@ void HudObjGfx::loadCameraButton(u32 a, u32 b, u32 c) {
     HudObjGfx_InitFile(&sHudObjGfx);
     r = _ZN11HudObjGfxIo21loadCameraButtonCharsEi(&sHudObjGfx, a);
     if (b != 0) {
-        unk_250 = c;
+        pendingCameraButtonScreens = c;
     } else if (r != 0) {
         _ZN11HudObjGfxIo23uploadCameraButtonCharsEi(&sHudObjGfx, c);
     }

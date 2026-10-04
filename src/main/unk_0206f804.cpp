@@ -6,7 +6,7 @@ public:
     s32 getLength();
 
     /* 0x00 */ u8 pad_00[0x0e];
-    /* 0x0e */ u8 unk_0e[0x29];
+    /* 0x0e */ u8 bytes[0x29];
 };
 
 extern "C" {
@@ -36,7 +36,7 @@ Unk_0206f804_Fn sCommSubHandlers[24] = {
     CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, func_0206f4d8,
 };
 
-s32 EncodedString41::getLength() { return Text_GetLength(unk_0e, 0x29); }
+s32 EncodedString41::getLength() { return Text_GetLength(bytes, 0x29); }
 
 extern "C" void CommSub_ResetPostReply() { sCommSubPostReply = 0x18; }
 

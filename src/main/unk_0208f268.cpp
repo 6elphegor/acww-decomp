@@ -77,11 +77,11 @@ public:
 class Unk_020dbe7c_Anim {
 public:
     virtual ~Unk_020dbe7c_Anim();
-    /* 0x04 */ u32 unk_04;
+    /* 0x04 */ u32 numFrames;
     /* 0x08 */ u32 unk_08;
-    /* 0x0c */ u32 unk_0c;
-    /* 0x10 */ u32 unk_10;
-    /* 0x14 */ u32 unk_14;
+    /* 0x0c */ u32 prevFrame;
+    /* 0x10 */ u32 frameStep;
+    /* 0x14 */ u32 playMode;
 };
 
 class ModelAnim : public Unk_020dbe7c_Anim {
@@ -110,19 +110,19 @@ public:
     void load(EffectModelGroup *src);
     BOOL loadModel(s32 idx);
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04[3];
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
-    /* 0x1c */ s16 unk_1c;
-    /* 0x1e */ s16 unk_1e;
-    /* 0x20 */ s16 unk_20;
-    /* 0x24 */ AnimModel unk_24;
-    /* 0xdc */ u32 unk_dc;
-    /* 0xe0 */ s32 unk_e0;
-    /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ ModelAnim unk_e8[3];
+    /* 0x00 */ s32 active;
+    /* 0x04 */ s32 position[3];
+    /* 0x10 */ s32 scaleX;
+    /* 0x14 */ s32 scaleY;
+    /* 0x18 */ s32 scaleZ;
+    /* 0x1c */ s16 rotX;
+    /* 0x1e */ s16 rotY;
+    /* 0x20 */ s16 rotZ;
+    /* 0x24 */ AnimModel model;
+    /* 0xdc */ u32 animSlot0Used;
+    /* 0xe0 */ s32 hasMatAnim;
+    /* 0xe4 */ s32 hasJointAnim;
+    /* 0xe8 */ ModelAnim anims[3];
 };
 
 // 0x530-byte group of four entries plus three resource pointers (dtor 0x0208f2e8, ctor 0x0209020c)
@@ -131,9 +131,9 @@ public:
     EffectModelGroup();
     ~EffectModelGroup();
 
-    /* 0x000 */ s32 unk_00;
-    /* 0x004 */ EffectModel unk_04[4];
-    /* 0x524 */ u32 unk_524[3];
+    /* 0x000 */ s32 modelIndex;
+    /* 0x004 */ EffectModel models[4];
+    /* 0x524 */ u32 animFiles[3];
 };
 
 struct EffectEmitterEntry;
@@ -147,13 +147,13 @@ struct Unk_0208f8fc_Obj {
     u8 unk_00[8];
     void *unk_08;
     u8 unk_0c[0x10];
-    u32 unk_1c;
+    u32 stateFlags;
 };
 
 struct EffectEmitterTag {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
+    u8 poolIndex;
+    u8 group;
+    u8 emitterIndex;
     u8 unk_03;
 };
 
@@ -168,8 +168,8 @@ struct EffectEmitterEntry {
 
 struct EffectSplPool {
     EffectSplPool();
-    /* 0x00 */ u8 unk_00;
-    /* 0x04 */ EffectEmitterEntry unk_04[32];
+    /* 0x00 */ u8 cursor;
+    /* 0x04 */ EffectEmitterEntry entries[32];
 };
 
 struct Unk_0208fb20_Sub {
@@ -181,28 +181,28 @@ struct Unk_0208fb20_Obj {
     u8 unk_00[8];
     Unk_0208fb20_Sub *unk_08;
     u8 unk_0c[0x10];
-    u32 unk_1c;
+    u32 stateFlags;
 };
 
 struct EffectSplResEntry {
     u32 unk_00_0 : 1;
     u32 unk_00_1 : 1;
     u32 unk_00_rest : 30;
-    u32 *unk_04;
-    s32 unk_08;
+    u32 *emitterIds;
+    s32 emitterCount;
 };
 
 struct Unk_0208fdcc_A {
     s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
+    s32 posX;
+    s32 posY;
+    s32 posZ;
     u8 unk_10[0x40];
-    u8 unk_50;
+    u8 tintFlags;
 };
 
 struct Unk_0208fdcc_B {
-    Unk_0208fdcc_A *unk_00;
+    Unk_0208fdcc_A *header;
 };
 
 struct EffectSplEmitter {
@@ -219,14 +219,14 @@ struct EffectSplEmitter {
 };
 
 struct Unk_0208ffe4_V {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    s32 x;
+    s32 y;
+    s32 z;
     Unk_0208ffe4_V(s32 a, s32 b, s32 c)
     {
-        unk_00 = a;
-        unk_04 = b;
-        unk_08 = c;
+        x = a;
+        y = b;
+        z = c;
     }
 };
 
@@ -249,14 +249,14 @@ struct Unk_0209002c_Handle {
 
 struct Unk_02090140_Arg {
     u8 pad[0x18];
-    u32 unk_18;
+    u32 resDataSize;
     u32 unk_1c;
-    u8 unk_20[1];
+    u8 resData[1];
 };
 
 struct Unk_02090168_Arg {
     u8 pad[0x50];
-    u32 unk_50;
+    u32 splManager;
 };
 
 class EffectSplProc : public GameProc {
@@ -267,11 +267,11 @@ public:
     virtual BOOL onDraw();
     virtual ~EffectSplProc() {}
 
-    /* 0x50 */ Unk_0209002c_Handle *unk_50;
-    /* 0x54 */ s32 unk_54;
-    /* 0x58 */ EffectSplPool unk_58;
-    /* 0x35c */ EffectModelGroup unk_35c[4];
-    /* 0x181c */ u32 unk_181c[20];
+    /* 0x50 */ Unk_0209002c_Handle *splManager;
+    /* 0x54 */ s32 groupCounter;
+    /* 0x58 */ EffectSplPool pool;
+    /* 0x35c */ EffectModelGroup modelGroups[4];
+    /* 0x181c */ u32 emitterMap[20];
 };
 
 // Ten key/value pairs
@@ -279,8 +279,8 @@ struct EffectSplEmitterMapPair {
     void release();
     void clear();
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x00 */ s32 resId;
+    /* 0x04 */ s32 emitter;
 };
 
 struct EffectSplEmitterMap {
@@ -289,7 +289,7 @@ struct EffectSplEmitterMap {
     void releaseAll();
     void clearAll();
 
-    /* 0x00 */ EffectSplEmitterMapPair unk_00[10];
+    /* 0x00 */ EffectSplEmitterMapPair pairs[10];
 };
 
 // Three-slot resource pointer set (EffectModelGroup::unk_524)
@@ -297,7 +297,7 @@ struct EffectModelAnimFiles {
     void free();
     void load(EffectModelGroup *src);
 
-    /* 0x00 */ u32 unk_00[3];
+    /* 0x00 */ u32 files[3];
 };
 
 extern "C" {
@@ -860,9 +860,9 @@ const u32 sEffectRes57EmitterIds[1] = {0xa2};
 
 static inline void Unk_0208fb20_GetTag(EffectEmitterTag *r, EffectEmitterTag p)
 {
-    r->unk_00 = p.unk_00;
-    r->unk_01 = p.unk_01;
-    r->unk_02 = p.unk_02;
+    r->poolIndex = p.poolIndex;
+    r->group = p.group;
+    r->emitterIndex = p.emitterIndex;
     r->unk_03 = p.unk_03;
 }
 
@@ -900,8 +900,8 @@ extern "C" s32 EffectSpl_LoadArchive(void *unused) {
 }
 
 extern "C" BOOL EffectSpl_LoadTextures(Unk_02090168_Arg *p) {
-    if (SPL_LoadTexByVRAMManager(p->unk_50)) {
-        if (SPL_LoadTexPlttByVRAMManager(p->unk_50)) {
+    if (SPL_LoadTexByVRAMManager(p->splManager)) {
+        if (SPL_LoadTexPlttByVRAMManager(p->splManager)) {
             return TRUE;
         }
     }
@@ -909,10 +909,10 @@ extern "C" BOOL EffectSpl_LoadTextures(Unk_02090168_Arg *p) {
 }
 
 extern "C" void *EffectSpl_CopyResourceData(void *unused, Unk_02090140_Arg *p) {
-    u32 size = p->unk_18;
+    u32 size = p->resDataSize;
     void *r = EffectSpl_Alloc(size);
     if (r) {
-        MI_CpuCopy8(p->unk_20, r, size);
+        MI_CpuCopy8(p->resData, r, size);
     }
     return r;
 }
@@ -924,23 +924,23 @@ BOOL EffectSplProc::vfunc_00()
     s32 r;
 
     sEffectSplProc = this;
-    unk_50 = NULL;
+    splManager = NULL;
     sEffectSplFrmHeap = NULL;
-    unk_54 = 0;
+    groupCounter = 0;
     sEffectSplEmitPos = NULL;
     sEffectSplHeapMem = Mem_Alloc(0xc000);
     if (sEffectSplHeapMem != NULL) {
         sEffectSplFrmHeap = NNS_FndCreateFrmHeapEx(sEffectSplHeapMem, (void *)0xc000, NULL);
-        unk_50 = SPL_Init((void *)EffectSpl_Alloc, 0x20, 0x64, 0x14, 0x15, 0x32);
-        unk_50->unk_30 = 0x8800;
-        if (unk_50 != NULL) {
+        splManager = SPL_Init((void *)EffectSpl_Alloc, 0x20, 0x64, 0x14, 0x15, 0x32);
+        splManager->unk_30 = 0x8800;
+        if (splManager != NULL) {
             h = (void *)EffectSpl_LoadArchive(this);
             if (h != NULL) {
-                func_020f92d4(unk_50, h);
+                func_020f92d4(splManager, h);
                 if (EffectSpl_LoadTextures((Unk_02090168_Arg *)this) != 0) {
                     r = (s32)EffectSpl_CopyResourceData(this, (Unk_02090140_Arg *)h);
                     if (r != 0) {
-                        SPL_Load(unk_50, r);
+                        SPL_Load(splManager, r);
                         result = TRUE;
                     }
                 }
@@ -954,23 +954,23 @@ BOOL EffectSplProc::vfunc_00()
             sEffectSplFrmHeap = NULL;
         }
         if (sEffectSplHeapMem != NULL) {
-            EffectSplPool_ReleaseAll(&unk_58);
+            EffectSplPool_ReleaseAll(&pool);
             Mem_Free(sEffectSplHeapMem);
             sEffectSplHeapMem = NULL;
         }
     } else {
-        MI_CpuFill8(unk_35c, 0, 0x14c0);
-        EffectModels_LoadAll(unk_35c);
-        _ZN19EffectSplEmitterMap8clearAllEv(unk_181c);
+        MI_CpuFill8(modelGroups, 0, 0x14c0);
+        EffectModels_LoadAll(modelGroups);
+        _ZN19EffectSplEmitterMap8clearAllEv(emitterMap);
     }
     return result;
 }
 
 BOOL EffectSplProc::onExecute()
 {
-    EffectSplPool_Update(&unk_58);
-    EffectModels_UpdateAll(unk_35c);
-    SPL_Calc(unk_50);
+    EffectSplPool_Update(&pool);
+    EffectModels_UpdateAll(modelGroups);
+    SPL_Calc(splManager);
     return TRUE;
 }
 
@@ -982,8 +982,8 @@ extern "C" u16 EffectSpl_ToCurvedPos(void *a0, volatile s32 a1, volatile s32 a2,
 
 BOOL EffectSplProc::onDraw()
 {
-    func_020f8cb8(unk_50, gViewMtx, (void *)EffectSpl_ToCurvedPos);
-    EffectModels_DrawAll(unk_35c);
+    func_020f8cb8(splManager, gViewMtx, (void *)EffectSpl_ToCurvedPos);
+    EffectModels_DrawAll(modelGroups);
     return TRUE;
 }
 
@@ -994,12 +994,12 @@ BOOL EffectSplProc::vfunc_0c()
         sEffectSplFrmHeap = NULL;
     }
     if (sEffectSplHeapMem != NULL) {
-        EffectSplPool_ReleaseAll(&unk_58);
+        EffectSplPool_ReleaseAll(&pool);
         Mem_Free(sEffectSplHeapMem);
         sEffectSplHeapMem = NULL;
     }
-    EffectModels_UnloadAll(unk_35c);
-    _ZN19EffectSplEmitterMap10releaseAllEv(unk_181c);
+    EffectModels_UnloadAll(modelGroups);
+    _ZN19EffectSplEmitterMap10releaseAllEv(emitterMap);
     sEffectSplProc = NULL;
     return TRUE;
 }
@@ -1017,7 +1017,7 @@ extern "C" s16 EffectSpl_GetSeasonTint()
 
 extern "C" void EffectSpl_ApplySceneTint(EffectSplEmitter *o)
 {
-    u32 f = o->resource->unk_00->unk_50;
+    u32 f = o->resource->header->tintFlags;
     if ((f & 0x80) != 0) {
         volatile Unk_0208fe0c_U l0, l2, l4, l6, l8, la, lc, le;
         l4.v = SceneLights_GetBaseColor();
@@ -1049,9 +1049,9 @@ extern "C" void EffectSpl_InitEmitterAtPos(EffectSplEmitter *o)
     EffectSpl_ApplySceneTint(o);
     v = sEffectSplEmitPos;
     if (v != NULL) {
-        o->posX = v[0] + o->resource->unk_00->unk_04;
-        o->posY = v[1] + o->resource->unk_00->unk_08;
-        o->posZ = v[2] + o->resource->unk_00->unk_0c;
+        o->posX = v[0] + o->resource->header->posX;
+        o->posY = v[1] + o->resource->header->posY;
+        o->posZ = v[2] + o->resource->header->posZ;
     }
 }
 
@@ -1086,8 +1086,8 @@ extern "C" s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, u32 *p3)
     }
     mgr = sEffectSplProc;
     row = &sEffectResTable[idx];
-    count = row->unk_08;
-    ids = row->unk_04;
+    count = row->emitterCount;
+    ids = row->emitterIds;
     if (p2 != NULL) {
         if (row->unk_00_0 == 1) {
             count = count >> 1;
@@ -1098,18 +1098,18 @@ extern "C" s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, u32 *p3)
     }
     sEffectSplEmitPos = (s32 *)p1;
     if (row->unk_00_1 != 0) {
-        ctx = &mgr->unk_181c;
+        ctx = &mgr->emitterMap;
         i = 0;
         zero18 = 0;
         zero14 = 0;
         for (; i < count; i++) {
             o = (Unk_0208fb20_Obj *)_ZN19EffectSplEmitterMap4findEi(ctx, *ids);
             if (o == NULL) {
-                h = (Unk_0208fb20_Obj *)SPL_CreateWithInitialize(sEffectSplProc->unk_50, *ids, *p3);
+                h = (Unk_0208fb20_Obj *)SPL_CreateWithInitialize(sEffectSplProc->splManager, *ids, *p3);
                 if (h != NULL) {
                     if (_ZN19EffectSplEmitterMap3addEii(ctx, *ids, h) != 0) {
-                        h->unk_1c |= 2;
-                        func_020f8b44(sEffectSplProc->unk_50, h, p1);
+                        h->stateFlags |= 2;
+                        func_020f8b44(sEffectSplProc->splManager, h, p1);
                         sub = h->unk_08;
                         if (p2 != NULL) {
                             sub->unk_20 = p2[zero14];
@@ -1117,7 +1117,7 @@ extern "C" s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, u32 *p3)
                     }
                 }
             } else {
-                func_020f8b44(sEffectSplProc->unk_50, o, p1);
+                func_020f8b44(sEffectSplProc->splManager, o, p1);
                 sub = o->unk_08;
                 if (p2 != NULL) {
                     sub->unk_20 = p2[zero18];
@@ -1128,7 +1128,7 @@ extern "C" s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, u32 *p3)
         }
     } else {
         for (i = 0; i < count; i++) {
-            SPL_CreateWithInitialize(sEffectSplProc->unk_50, *ids, *p3);
+            SPL_CreateWithInitialize(sEffectSplProc->splManager, *ids, *p3);
             ids++;
             p3++;
         }
@@ -1158,8 +1158,8 @@ extern "C" s32 EffectSpl_CreateTracked(s32 idx, s32 p1, s16 *p2, EffectEmitterCb
     pool = (EffectSplPool *)sEffectSplProc;
     pool = (EffectSplPool *)((u8 *)pool + 0x58);
     row = &sEffectResTable[idx];
-    count = row->unk_08;
-    ids = row->unk_04;
+    count = row->emitterCount;
+    ids = row->emitterIds;
     if (p2 != NULL) {
         if (row->unk_00_0 == 1) {
             count = count >> 1;
@@ -1176,15 +1176,15 @@ extern "C" s32 EffectSpl_CreateTracked(s32 idx, s32 p1, s16 *p2, EffectEmitterCb
             e->isActive = 1;
             e->emitterIndex = i;
             Unk_0208fb20_GetTag(&x, e->tag);
-            x.unk_01 = sEffectSplProc->unk_54;
-            x.unk_02 = i;
+            x.group = sEffectSplProc->groupCounter;
+            x.emitterIndex = i;
             Unk_0208fb20_SetTag(e, x);
             EffectEmitterCbs *cb = &e->callbacks;
             if (cb != NULL) {
                 cb->unk_00(e);
             }
         } else {
-            e = EffectSplPool_Alloc(pool, *ids, p1, (s32)p2, p3, sEffectSplProc->unk_54, i);
+            e = EffectSplPool_Alloc(pool, *ids, p1, (s32)p2, p3, sEffectSplProc->groupCounter, i);
             if (e == NULL) {
                 ok = zero;
             }
@@ -1200,32 +1200,32 @@ extern "C" s32 EffectSpl_CreateTracked(s32 idx, s32 p1, s16 *p2, EffectEmitterCb
         p3++;
     }
     sEffectSplEmitPos = NULL;
-    sEffectSplProc->unk_54++;
+    sEffectSplProc->groupCounter++;
     return ok;
 }
 
 extern "C" void EffectModel_Start(s32 a, void (*b)(EffectModel *))
 {
-    EffectModels_Start(sEffectSplProc->unk_35c, a, b);
+    EffectModels_Start(sEffectSplProc->modelGroups, a, b);
 }
 
 extern "C" s32 EffectSplEntry_Start(EffectEmitterEntry *e, s32 id, s32 a2, s32 a3, EffectEmitterCbs *cb, EffectEmitterTag tag)
 {
     s32 r;
     u32 d, c, b;
-    b = tag.unk_01;
-    c = tag.unk_02;
+    b = tag.group;
+    c = tag.emitterIndex;
     d = tag.unk_03;
     r = 0;
-    e->emitter = (Unk_0208f8fc_Obj *)SPL_Create(sEffectSplProc->unk_50, id, a2);
+    e->emitter = (Unk_0208f8fc_Obj *)SPL_Create(sEffectSplProc->splManager, id, a2);
     if (e->emitter != NULL) {
         e->resourceId = id;
         e->isActive = 1;
         e->callbacks.unk_00 = cb->unk_00;
         e->callbacks.unk_04 = cb->unk_04;
-        e->tag.unk_00 = tag.unk_00;
-        e->tag.unk_01 = b;
-        e->tag.unk_02 = c;
+        e->tag.poolIndex = tag.poolIndex;
+        e->tag.group = b;
+        e->tag.emitterIndex = c;
         e->tag.unk_03 = d;
         cb->unk_00(e);
         r = 1;
@@ -1236,7 +1236,7 @@ extern "C" s32 EffectSplEntry_Start(EffectEmitterEntry *e, s32 id, s32 a2, s32 a
 extern "C" void EffectSplEntry_Release(EffectEmitterEntry *e)
 {
     if (e->emitter != NULL) {
-        e->emitter->unk_1c = (e->emitter->unk_1c & ~1) | 1;
+        e->emitter->stateFlags = (e->emitter->stateFlags & ~1) | 1;
     }
     e->resourceId = -1;
 }
@@ -1247,14 +1247,14 @@ EffectSplPool::EffectSplPool()
     EffectSplPool *p = this;
     EffectEmitterEntry *e;
     s32 i;
-    e = p->unk_04;
+    e = p->entries;
     do {
         e->resourceId = -1;
         e++;
-    } while (e != &p->unk_04[32]);
-    p->unk_00 = 0;
+    } while (e != &p->entries[32]);
+    p->cursor = 0;
     for (i = 0; i < 0x20; i++) {
-        p->unk_04[i].resourceId = -1;
+        p->entries[i].resourceId = -1;
     }
 }
 
@@ -1262,7 +1262,7 @@ extern "C" void EffectSplPool_Update(EffectSplPool *p)
 {
     s32 z = 0;
     s32 w = 0;
-    EffectEmitterEntry *e = p->unk_04;
+    EffectEmitterEntry *e = p->entries;
     s32 i;
     for (i = 0; i < 0x20; i++) {
         if (e->resourceId != ~w) {
@@ -1282,7 +1282,7 @@ extern "C" void EffectSplPool_Update(EffectSplPool *p)
                 }
                 if (t == 0) {
                     EffectSplEntry_Release(e);
-                    p->unk_00 = i;
+                    p->cursor = i;
                 }
             }
         }
@@ -1293,13 +1293,13 @@ extern "C" void EffectSplPool_Update(EffectSplPool *p)
 extern "C" void EffectSplPool_ReleaseAll(EffectSplPool *p)
 {
     s32 z = 0;
-    EffectEmitterEntry *e = p->unk_04;
+    EffectEmitterEntry *e = p->entries;
     s32 i;
     for (i = 0; i < 0x20; i++) {
         if (e->resourceId != ~z) {
             e->isActive = 0;
             EffectSplEntry_Release(e);
-            p->unk_00 = i;
+            p->cursor = i;
         }
         e++;
     }
@@ -1307,7 +1307,7 @@ extern "C" void EffectSplPool_ReleaseAll(EffectSplPool *p)
 
 extern "C" EffectEmitterEntry *EffectSplPool_FindInactive(EffectSplPool *p, s32 id)
 {
-    EffectEmitterEntry *e = p->unk_04;
+    EffectEmitterEntry *e = p->entries;
     EffectEmitterEntry *r = NULL;
     s32 i;
     for (i = 0; i < 0x20; i++) {
@@ -1334,19 +1334,19 @@ extern "C" EffectEmitterEntry *EffectSplPool_Alloc(EffectSplPool *p, s32 id, s32
     EffectEmitterTag tag;
     s32 i;
     s32 cur;
-    tag.unk_01 = b;
-    tag.unk_02 = c;
+    tag.group = b;
+    tag.emitterIndex = c;
     for (i = 0; i < 0x20; i++) {
-        cur = p->unk_00;
-        if (p->unk_04[cur].resourceId == -1) {
-            tag.unk_00 = cur;
-            if (EffectSplEntry_Start(&p->unk_04[cur], id, a2, a3, cb, tag)) {
-                r = &p->unk_04[p->unk_00];
-                p->unk_00 = (p->unk_00 + 1) % 0x20;
+        cur = p->cursor;
+        if (p->entries[cur].resourceId == -1) {
+            tag.poolIndex = cur;
+            if (EffectSplEntry_Start(&p->entries[cur], id, a2, a3, cb, tag)) {
+                r = &p->entries[p->cursor];
+                p->cursor = (p->cursor + 1) % 0x20;
             }
             break;
         } else {
-            p->unk_00 = (cur + 1) % 0x20;
+            p->cursor = (cur + 1) % 0x20;
         }
     }
     return r;
@@ -1399,10 +1399,10 @@ extern "C" void EffectModels_Start(EffectModelGroup *b, s32 idx, void (*a)(Effec
 extern "C" void EffectModelGroup_Load(EffectModelGroup *b, s32 a)
 {
     s32 i;
-    b->unk_00 = a;
-    _ZN20EffectModelAnimFiles4loadEP16EffectModelGroup(b->unk_524, b);
+    b->modelIndex = a;
+    _ZN20EffectModelAnimFiles4loadEP16EffectModelGroup(b->animFiles, b);
     for (i = 0; i < 4; i++) {
-        _ZN11EffectModel4loadEP16EffectModelGroup(&b->unk_04[i], b);
+        _ZN11EffectModel4loadEP16EffectModelGroup(&b->models[i], b);
     }
 }
 
@@ -1410,7 +1410,7 @@ extern "C" void EffectModelGroup_Update(EffectModelGroup *b)
 {
     s32 i;
     for (i = 0; i < 4; i++) {
-        _ZN11EffectModel6updateEv(&b->unk_04[i]);
+        _ZN11EffectModel6updateEv(&b->models[i]);
     }
 }
 
@@ -1418,25 +1418,25 @@ extern "C" void EffectModelGroup_Draw(EffectModelGroup *b)
 {
     s32 i;
     for (i = 0; i < 4; i++) {
-        _ZN11EffectModel4drawEv(&b->unk_04[i]);
+        _ZN11EffectModel4drawEv(&b->models[i]);
     }
 }
 
 extern "C" void EffectModelGroup_Unload(EffectModelGroup *b)
 {
     s32 i;
-    _ZN20EffectModelAnimFiles4freeEv(b->unk_524);
+    _ZN20EffectModelAnimFiles4freeEv(b->animFiles);
     for (i = 0; i < 4; i++) {
-        _ZN11EffectModel6unloadEv(&b->unk_04[i]);
+        _ZN11EffectModel6unloadEv(&b->models[i]);
     }
 }
 
 extern "C" void EffectModelGroup_Start(EffectModelGroup *b, void (*a)(EffectModel *))
 {
     s32 i;
-    EffectModel *c = b->unk_04;
+    EffectModel *c = b->models;
     for (i = 0; i < 4; i++) {
-        if (c->unk_00 == 0) {
+        if (c->active == 0) {
             _ZN11EffectModel5startEP16EffectModelGroupPFvPS_E(c, b, a);
             break;
         }
@@ -1445,13 +1445,13 @@ extern "C" void EffectModelGroup_Start(EffectModelGroup *b, void (*a)(EffectMode
 }
 
 void EffectModelAnimFiles::load(EffectModelGroup *src) {
-    s32 idx = src->unk_00;
+    s32 idx = src->modelIndex;
     s32 i;
     for (i = 0; i < 3; i++) {
         if (sEffectModelAnimFiles[idx][i] != 0) {
-            unk_00[i] = File_LoadAlloc(sEffectModelAnimFiles[idx][i], sEffectModelHeap, 4, 0);
+            files[i] = File_LoadAlloc(sEffectModelAnimFiles[idx][i], sEffectModelHeap, 4, 0);
         } else {
-            unk_00[i] = 0;
+            files[i] = 0;
         }
     }
 }
@@ -1460,124 +1460,124 @@ void EffectModelAnimFiles::free() {
     s32 i;
     u32 *z = 0;
     for (i = 0; i < 3; i++) {
-        if (unk_00[i] != 0) {
-            Heap_Free(sEffectModelHeap, (void *)unk_00[i]);
-            unk_00[i] = (u32)z;
+        if (files[i] != 0) {
+            Heap_Free(sEffectModelHeap, (void *)files[i]);
+            files[i] = (u32)z;
         }
     }
 }
 
 BOOL EffectModel::loadModel(s32 idx) {
     BOOL r = TRUE;
-    if (!_ZN11CachedModel10loadCachedEPvS0_(&unk_24, idx + 0x6d656666, sEffectModelFiles[idx])) {
+    if (!_ZN11CachedModel10loadCachedEPvS0_(&model, idx + 0x6d656666, sEffectModelFiles[idx])) {
         r = FALSE;
     }
     return r;
 }
 
 void EffectModel::load(EffectModelGroup *src) {
-    s32 idx = src->unk_00;
-    unk_00 = 0;
+    s32 idx = src->modelIndex;
+    active = 0;
     if (loadModel(idx)) {
-        u32 *r = src->unk_524;
+        u32 *r = src->animFiles;
         if (r[0] != 0) {
-            _ZN11CachedModel16allocJointRecordEPv(&unk_24, sEffectModelHeap);
-            _ZN9AnimModel11allocAnmObjEPv(&unk_24, sEffectModelHeap);
+            _ZN11CachedModel16allocJointRecordEPv(&model, sEffectModelHeap);
+            _ZN9AnimModel11allocAnmObjEPv(&model, sEffectModelHeap);
             s32 t = func_021065f8(func_021065dc((void *)r[0]), 0);
-            _ZN14BlendAnimModel8initAnimEiiitt(&unk_24, t, 1, 0x1000, 0, 0);
-            _ZN9AnimModel10attachAnimEv(&unk_24);
+            _ZN14BlendAnimModel8initAnimEiiitt(&model, t, 1, 0x1000, 0, 0);
+            _ZN9AnimModel10attachAnimEv(&model);
         }
         if (r[1] != 0) {
-            unk_e0 = 1;
-            ModelAnim *e = &unk_e8[1];
-            _ZN9ModelAnim11allocMatAnmEjPv(e, unk_24.unk_5c, sEffectModelHeap);
+            hasMatAnim = 1;
+            ModelAnim *e = &anims[1];
+            _ZN9ModelAnim11allocMatAnmEjPv(e, model.unk_5c, sEffectModelHeap);
             s32 u = func_02106634(func_02106618((void *)r[1]), 0);
             _ZN9ModelAnim4initEiiit(e, u, 1, 0x1000, 0);
-            _ZN9ModelAnim14addToRenderObjEj(e, _ZN5Model12getRenderObjEv(&unk_24));
+            _ZN9ModelAnim14addToRenderObjEj(e, _ZN5Model12getRenderObjEv(&model));
         } else {
-            unk_e0 = 0;
+            hasMatAnim = 0;
         }
         if (r[2] != 0) {
-            unk_e4 = 1;
-            ModelAnim *e = &unk_e8[2];
-            _ZN9ModelAnim13allocJointAnmEjPv(e, unk_24.unk_5c, sEffectModelHeap);
+            hasJointAnim = 1;
+            ModelAnim *e = &anims[2];
+            _ZN9ModelAnim13allocJointAnmEjPv(e, model.unk_5c, sEffectModelHeap);
             s32 u = func_021067a4(func_02106788((void *)r[2]), 0);
             _ZN9ModelAnim4initEiiit(e, u, 1, 0x1000, 0);
-            _ZN9ModelAnim14addToRenderObjEj(e, _ZN5Model12getRenderObjEv(&unk_24));
+            _ZN9ModelAnim14addToRenderObjEj(e, _ZN5Model12getRenderObjEv(&model));
         } else {
-            unk_e4 = 0;
+            hasJointAnim = 0;
         }
     }
 }
 
 void EffectModel::update() {
-    if (unk_00 != 0) {
-        _ZN9AnimModel8stepAnimEv(&unk_24);
+    if (active != 0) {
+        _ZN9AnimModel8stepAnimEv(&model);
         s32 i;
         for (i = 1; i < 3; i++) {
-            if ((&unk_dc)[i] != 0) {
-                _ZN13AnimFrameCtrl4stepEv(&unk_e8[i]);
-                *unk_e8[i].anmObj = unk_e8[i].unk_08;
+            if ((&animSlot0Used)[i] != 0) {
+                _ZN13AnimFrameCtrl4stepEv(&anims[i]);
+                *anims[i].anmObj = anims[i].unk_08;
             }
         }
-        if (_ZN13AnimFrameCtrl10isFinishedEv(unk_24.unk_9c) != 0) {
-            unk_00 = 0;
+        if (_ZN13AnimFrameCtrl10isFinishedEv(model.unk_9c) != 0) {
+            active = 0;
         }
     }
 }
 
 void EffectModel::draw() {
-    if (unk_00 != 0) {
+    if (active != 0) {
         s32 v[3];
-        s32 r = WorldCurve_ToCurved(v, unk_04);
+        s32 r = WorldCurve_ToCurved(v, position);
         func_020e8388(data_021f47e0, v[0], v[1], v[2]);
         func_020e8434(data_021f47e0, r);
-        func_020e8464(data_021f47e0, unk_1c, unk_1e, unk_20);
-        func_020e84f8(data_021f47e0, unk_10, unk_14, unk_18);
-        *(Unk_0208f480_Mtx *)unk_24.unk_64 = *(Unk_0208f480_Mtx *)data_021f47e0;
-        _ZN9AnimModel12drawAnimatedEPv(&unk_24, 0);
+        func_020e8464(data_021f47e0, rotX, rotY, rotZ);
+        func_020e84f8(data_021f47e0, scaleX, scaleY, scaleZ);
+        *(Unk_0208f480_Mtx *)model.unk_64 = *(Unk_0208f480_Mtx *)data_021f47e0;
+        _ZN9AnimModel12drawAnimatedEPv(&model, 0);
         volatile u16 a, b;
         a = SceneLights_GetRoomColor();
         b = a;
-        NNS_G3dMdlSetMdlEmi(unk_24.unk_5c, 0, b);
+        NNS_G3dMdlSetMdlEmi(model.unk_5c, 0, b);
     }
 }
 
 void EffectModel::unload() {
-    _ZN11CachedModel7releaseEv(&unk_24);
+    _ZN11CachedModel7releaseEv(&model);
 }
 
 void EffectModel::start(EffectModelGroup *src, void (*cb)(EffectModel *)) {
-    unk_00 = 1;
-    unk_10 = 0x1000;
-    unk_14 = 0x1000;
-    unk_18 = 0x1000;
-    unk_1c = 0;
-    unk_1e = 0;
-    unk_20 = 0;
-    u32 *r = src->unk_524;
+    active = 1;
+    scaleX = 0x1000;
+    scaleY = 0x1000;
+    scaleZ = 0x1000;
+    rotX = 0;
+    rotY = 0;
+    rotZ = 0;
+    u32 *r = src->animFiles;
     s32 t = func_021065f8(func_021065dc((void *)r[0]), 0);
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_24, t, 1, 0x1000, 0, 0);
-    if (unk_e0 != 0) {
+    _ZN14BlendAnimModel8initAnimEiiitt(&model, t, 1, 0x1000, 0, 0);
+    if (hasMatAnim != 0) {
         s32 u = func_02106634(func_02106618((void *)r[1]), 0);
-        _ZN9ModelAnim4initEiiit(&unk_e8[1], u, 1, 0x1000, 0);
+        _ZN9ModelAnim4initEiiit(&anims[1], u, 1, 0x1000, 0);
     }
-    if (unk_e4 != 0) {
+    if (hasJointAnim != 0) {
         s32 u = func_021067a4(func_02106788((void *)r[2]), 0);
-        _ZN9ModelAnim4initEiiit(&unk_e8[2], u, 1, 0x1000, 0);
+        _ZN9ModelAnim4initEiiit(&anims[2], u, 1, 0x1000, 0);
     }
     cb(this);
 }
 
 void EffectSplEmitterMapPair::clear() {
-    unk_00 = -1;
-    unk_04 = 0;
+    resId = -1;
+    emitter = 0;
 }
 
 void EffectSplEmitterMapPair::release() {}
 
 void EffectSplEmitterMap::clearAll() {
-    EffectSplEmitterMapPair *p = unk_00;
+    EffectSplEmitterMapPair *p = pairs;
     s32 i;
     for (i = 0; i < 10; p++, i++) {
         p->clear();
@@ -1585,7 +1585,7 @@ void EffectSplEmitterMap::clearAll() {
 }
 
 void EffectSplEmitterMap::releaseAll() {
-    EffectSplEmitterMapPair *p = unk_00;
+    EffectSplEmitterMapPair *p = pairs;
     s32 i;
     for (i = 0; i < 10; p++, i++) {
         p->release();
@@ -1593,12 +1593,12 @@ void EffectSplEmitterMap::releaseAll() {
 }
 
 s32 EffectSplEmitterMap::find(s32 key) {
-    EffectSplEmitterMapPair *p = unk_00;
+    EffectSplEmitterMapPair *p = pairs;
     s32 i;
     s32 r = 0;
     for (i = r; i < 10; p++, i++) {
-        if (key == p->unk_00) {
-            r = p->unk_04;
+        if (key == p->resId) {
+            r = p->emitter;
             break;
         }
     }
@@ -1606,13 +1606,13 @@ s32 EffectSplEmitterMap::find(s32 key) {
 }
 
 BOOL EffectSplEmitterMap::add(s32 key, s32 val) {
-    EffectSplEmitterMapPair *p = unk_00;
+    EffectSplEmitterMapPair *p = pairs;
     s32 i;
     BOOL r = FALSE;
     for (i = r; i < 10; p++, i++) {
-        if (p->unk_00 == -1) {
-            p->unk_00 = key;
-            p->unk_04 = val;
+        if (p->resId == -1) {
+            p->resId = key;
+            p->emitter = val;
             r = TRUE;
             break;
         }

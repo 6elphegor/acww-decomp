@@ -63,9 +63,9 @@ struct Unk_ov004_02224ee4_Vec {
 
 struct Unk_0203e5d0_Node {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ void *unk_0c;
+    /* 0x04 */ Unk_0203e5d0_Node *next;
+    /* 0x08 */ u32 charId;
+    /* 0x0c */ void *owner;
 };
 
 class Actor : public GameProc {
@@ -181,11 +181,11 @@ public:
     inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
     inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
 
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08[13];
-    u32 unk_3c[13];
-    u32 unk_70[13];
+    u32 archive;
+    u32 model;
+    u32 bcas[13];
+    u32 bmas[13];
+    u32 btas[13];
 };
 
 class RoomObjTex {
@@ -195,8 +195,8 @@ public:
     inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
     inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
-    u32 unk_00;
-    u8 unk_04;
+    u32 texture;
+    u8 syncState;
 };
 
 class RoomObjSe {
@@ -207,7 +207,7 @@ public:
     inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
     inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
-    u32 unk_00[0x10];
+    u32 emitter[0x10];
 };
 
 class RoomObjActor : public Character {
@@ -228,10 +228,10 @@ public:
     void loadResourcesByName(char *name);
     void loadResources(char *a, char *b);
 
-    /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ RoomObjRes unk_1a4;
-    /* 0x248 */ RoomObjTex unk_248;
-    /* 0x250 */ RoomObjSe unk_250;
+    /* 0xec */ AnimModel model;
+    /* 0x1a4 */ RoomObjRes res;
+    /* 0x248 */ RoomObjTex tex;
+    /* 0x250 */ RoomObjSe se;
 };
 
 
@@ -242,15 +242,15 @@ struct Unk_ov004_02228a40_Mtx {
 // model element (0xb8 bytes), only the members touched from this unit
 struct Unk_ov004_0224e034_M {
     u8 pad_00[0x5c];
-    u32 unk_5c;
+    u32 resMdl;
     u8 pad_60[4];
-    Unk_ov004_02228a40_Mtx unk_64;
+    Unk_ov004_02228a40_Mtx mtx;
     u8 pad_94[0x9c - 0x94];
-    u32 unk_9c;
-    s32 unk_a0;
-    s32 unk_a4;
+    u32 animFrameCtrl;
+    s32 numFrames;
+    s32 curFrame;
     u8 pad_a8[4];
-    s32 unk_ac;
+    s32 frameStep;
     u8 pad_b0[8];
 };
 
@@ -265,19 +265,19 @@ struct Unk_ov004_0224e034_T2 {
 
 struct Unk_ov004_0224e034_E {
     u32 pad_00[2];
-    u32 unk_08;
+    u32 curFrame;
     u32 pad_0c;
-    u32 unk_10;
+    u32 frameStep;
     u32 pad_14;
-    u32 *unk_18;
+    u32 *anmObj;
     u8 pad_1c[0x20 - 0x1c];
 };
 
 struct Unk_ov004_Scene_Entry {
     void *(*unk_00)();
-    u16 unk_04;
-    u16 unk_06;
-    s32 unk_08[4];
+    u16 executePriority;
+    u16 drawPriority;
+    s32 actorParams[4];
 };
 
 class TarotProps : public RoomObjActor {
@@ -303,15 +303,15 @@ public:
     BOOL changeAct(s32 i);
     void drawAtKatrina();
 
-    /* 0x290 */ Unk_ov004_0224e034_M unk_290[3];
-    /* 0x4b8 */ Unk_ov004_0224e034_T1 unk_4b8[3];
-    /* 0x6a4 */ Unk_ov004_0224e034_T2 unk_6a4[3];
-    /* 0x6b0 */ u8 unk_6b0[3];
+    /* 0x290 */ Unk_ov004_0224e034_M partModels[3];
+    /* 0x4b8 */ Unk_ov004_0224e034_T1 partRes[3];
+    /* 0x6a4 */ Unk_ov004_0224e034_T2 partTex[3];
+    /* 0x6b0 */ u8 partVisible[3];
     /* 0x6b3 */ u8 pad_6b3;
-    /* 0x6b4 */ Unk_ov004_0224e034_E unk_6b4;
-    /* 0x6d4 */ u8 unk_6d4;
+    /* 0x6b4 */ Unk_ov004_0224e034_E part1MatAnim;
+    /* 0x6d4 */ u8 modelVisible;
     /* 0x6d5 */ u8 pad_6d5[3];
-    /* 0x6d8 */ s32 unk_6d8;
+    /* 0x6d8 */ s32 act;
 };
 
 typedef void (TarotProps::*Unk_ov004_02229148_Fn)();
@@ -368,17 +368,17 @@ extern "C" TarotProps *TarotProps_Create() {
 }
 
 TarotProps::TarotProps() {
-    __cxa_vec_ctor(unk_290, 3, 0xb8, (void *(*)(void *))_ZN9AnimModelC1Ev, _ZN9AnimModelD1Ev);
-    __cxa_vec_ctor(unk_4b8, 3, 0xa4, (void *(*)(void *))_ZN10RoomObjResC1Ev, _ZN10RoomObjResD1Ev);
-    __cxa_vec_ctor(unk_6a4, 3, 4, (void *(*)(void *))RoomObjTex_Construct, (void *(*)(void *, s32))RoomObjTex_Destruct);
-    _ZN9ModelAnimC1Ev(&unk_6b4);
+    __cxa_vec_ctor(partModels, 3, 0xb8, (void *(*)(void *))_ZN9AnimModelC1Ev, _ZN9AnimModelD1Ev);
+    __cxa_vec_ctor(partRes, 3, 0xa4, (void *(*)(void *))_ZN10RoomObjResC1Ev, _ZN10RoomObjResD1Ev);
+    __cxa_vec_ctor(partTex, 3, 4, (void *(*)(void *))RoomObjTex_Construct, (void *(*)(void *, s32))RoomObjTex_Destruct);
+    _ZN9ModelAnimC1Ev(&part1MatAnim);
 }
 
 TarotProps::~TarotProps() {
-    _ZN9ModelAnimD1Ev(&unk_6b4);
-    __cxa_vec_cleanup(unk_6a4, 3, 4, (void *(*)(void *, s32))RoomObjTex_Destruct);
-    __cxa_vec_cleanup(unk_4b8, 3, 0xa4, _ZN10RoomObjResD1Ev);
-    __cxa_vec_cleanup(unk_290, 3, 0xb8, _ZN9AnimModelD1Ev);
+    _ZN9ModelAnimD1Ev(&part1MatAnim);
+    __cxa_vec_cleanup(partTex, 3, 4, (void *(*)(void *, s32))RoomObjTex_Destruct);
+    __cxa_vec_cleanup(partRes, 3, 0xa4, _ZN10RoomObjResD1Ev);
+    __cxa_vec_cleanup(partModels, 3, 0xb8, _ZN9AnimModelD1Ev);
 }
 
 BOOL TarotProps::vfunc_00() {
@@ -387,29 +387,29 @@ BOOL TarotProps::vfunc_00() {
     loadPart(0, (void *)"/roomObj/obj_tarot2.arc", (void *)"/roomObj/obj_tarot2.nsbtx");
     loadPart(1, (void *)"/roomObj/obj_tarot3.arc", (void *)"/roomObj/obj_tarot3.nsbtx");
     loadPart(2, (void *)"/roomObj/obj_tarot4.arc", (void *)"/roomObj/obj_tarot4.nsbtx");
-    if (RoomObjRes_GetBca(&unk_4b8[2], 0)) {
-        if (_ZN9AnimModel11allocAnmObjEPv(&unk_290[2], gBgHeap)) {
-            _ZN14BlendAnimModel8initAnimEiiitt(&unk_290[2], RoomObjRes_GetBca(&unk_4b8[2], 0), 1, 0x1000, 0, 0);
-            _ZN9AnimModel10attachAnimEv(&unk_290[2]);
-            unk_290[2].unk_ac = 0;
+    if (RoomObjRes_GetBca(&partRes[2], 0)) {
+        if (_ZN9AnimModel11allocAnmObjEPv(&partModels[2], gBgHeap)) {
+            _ZN14BlendAnimModel8initAnimEiiitt(&partModels[2], RoomObjRes_GetBca(&partRes[2], 0), 1, 0x1000, 0, 0);
+            _ZN9AnimModel10attachAnimEv(&partModels[2]);
+            partModels[2].frameStep = 0;
         }
     }
-    if (_ZN9ModelAnim11allocMatAnmEjPv(&unk_6b4, unk_290[1].unk_5c, gBgHeap)) {
-        _ZN9ModelAnim4initEiiit(&unk_6b4, RoomObjRes_GetBta(&unk_4b8[1], 0), 1, 0x1000, 0);
-        _ZN9ModelAnim14addToRenderObjEj(&unk_6b4, _ZN5Model12getRenderObjEv(&unk_290[1]));
-        unk_6b4.unk_10 = 0;
+    if (_ZN9ModelAnim11allocMatAnmEjPv(&part1MatAnim, partModels[1].resMdl, gBgHeap)) {
+        _ZN9ModelAnim4initEiiit(&part1MatAnim, RoomObjRes_GetBta(&partRes[1], 0), 1, 0x1000, 0);
+        _ZN9ModelAnim14addToRenderObjEj(&part1MatAnim, _ZN5Model12getRenderObjEv(&partModels[1]));
+        part1MatAnim.frameStep = 0;
     }
     changeAct(0);
     return TRUE;
 }
 
 BOOL TarotProps::onExecute() {
-    _ZN9AnimModel8stepAnimEv(&unk_290[2]);
-    _ZN13AnimFrameCtrl4stepEv(&unk_6b4);
-    *unk_6b4.unk_18 = unk_6b4.unk_08;
+    _ZN9AnimModel8stepAnimEv(&partModels[2]);
+    _ZN13AnimFrameCtrl4stepEv(&part1MatAnim);
+    *part1MatAnim.anmObj = part1MatAnim.curFrame;
     func_020e8388(&data_021f47e0, position[0], position[1], position[2]);
-    unk_290[1].unk_64 = data_021f47e0;
-    unk_290[2].unk_64 = data_021f47e0;
+    partModels[1].mtx = data_021f47e0;
+    partModels[2].mtx = data_021f47e0;
     execAct();
     return TRUE;
 }
@@ -423,13 +423,13 @@ void TarotProps::drawAtKatrina() {
     u8 i;
     data_021f47e0 = *m;
     F(Unk_ov004_02228a40_Mtx, 0xec + 0x64) = data_021f47e0;
-    unk_290[0].unk_64 = data_021f47e0;
-    if (unk_6d4) {
-        _ZN9AnimModel12drawAnimatedEPv(&unk_ec, 0);
+    partModels[0].mtx = data_021f47e0;
+    if (modelVisible) {
+        _ZN9AnimModel12drawAnimatedEPv(&model, 0);
     }
     for (i = 0; i < 3; i++) {
-        if (unk_6b0[i]) {
-            _ZN9AnimModel12drawAnimatedEPv(&unk_290[i], 0);
+        if (partVisible[i]) {
+            _ZN9AnimModel12drawAnimatedEPv(&partModels[i], 0);
         }
     }
 }
@@ -448,7 +448,7 @@ BOOL TarotProps::changeAct(s32 i) {
                                            &TarotProps::enterAct02, &TarotProps::enterAct03};
     if (i < 4) {
         if ((this->*tbl[i])()) {
-            unk_6d8 = i;
+            act = i;
             return TRUE;
         }
     }
@@ -458,16 +458,16 @@ BOOL TarotProps::changeAct(s32 i) {
 void TarotProps::execAct() {
     static Unk_ov004_02229148_Fn tbl[4] = {&TarotProps::execAct00, &TarotProps::execAct01,
                                            &TarotProps::execAct02, &TarotProps::execAct03};
-    if (unk_6d8 < 4) {
-        (this->*tbl[unk_6d8])();
+    if (act < 4) {
+        (this->*tbl[act])();
     }
 }
 
 BOOL TarotProps::enterAct00() {
     u8 i;
-    unk_6d4 = 0;
+    modelVisible = 0;
     for (i = 0; i < 3; i++) {
-        unk_6b0[i] = 0;
+        partVisible[i] = 0;
     }
     return TRUE;
 }
@@ -475,64 +475,64 @@ BOOL TarotProps::enterAct00() {
 void TarotProps::execAct00() {}
 
 BOOL TarotProps::enterAct01() {
-    unk_6d4 = 1;
-    unk_6b0[0] = 0;
-    unk_6b0[1] = 1;
-    unk_6b0[2] = 0;
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_290[2], RoomObjRes_GetBca(&unk_4b8[2], 0), 1, 0x1000, 0, 0);
-    _ZN9ModelAnim4initEiiit(&unk_6b4, RoomObjRes_GetBta(&unk_4b8[1], 0), 1, 0x1000, 0);
+    modelVisible = 1;
+    partVisible[0] = 0;
+    partVisible[1] = 1;
+    partVisible[2] = 0;
+    _ZN14BlendAnimModel8initAnimEiiitt(&partModels[2], RoomObjRes_GetBca(&partRes[2], 0), 1, 0x1000, 0, 0);
+    _ZN9ModelAnim4initEiiit(&part1MatAnim, RoomObjRes_GetBta(&partRes[1], 0), 1, 0x1000, 0);
     return TRUE;
 }
 
 void TarotProps::execAct01() {
     if (SpNpcKatrina_GetAnimFrame() == 0xb) {
-        unk_6d4 = 0;
-        unk_6b0[2] = 1;
+        modelVisible = 0;
+        partVisible[2] = 1;
     }
 }
 
 BOOL TarotProps::enterAct02() {
-    unk_6d4 = 0;
-    unk_6b0[0] = 0;
-    unk_6b0[1] = 1;
-    unk_6b0[2] = 1;
-    unk_290[2].unk_a4 = (u32)(unk_290[2].unk_a0 >> 12) << 16 >> 4;
-    unk_290[2].unk_ac = 0;
-    unk_6b4.unk_08 = (u32)(*(s32 *)&F(u32, 0x6b8) >> 12) << 16 >> 4;
-    unk_6b4.unk_10 = 0;
+    modelVisible = 0;
+    partVisible[0] = 0;
+    partVisible[1] = 1;
+    partVisible[2] = 1;
+    partModels[2].curFrame = (u32)(partModels[2].numFrames >> 12) << 16 >> 4;
+    partModels[2].frameStep = 0;
+    part1MatAnim.curFrame = (u32)(*(s32 *)&F(u32, 0x6b8) >> 12) << 16 >> 4;
+    part1MatAnim.frameStep = 0;
     return TRUE;
 }
 
 void TarotProps::execAct02() {
     if (SpNpcKatrina_GetAnimFrame() == 9) {
-        unk_6b0[0] = 1;
+        partVisible[0] = 1;
     }
 }
 
 BOOL TarotProps::enterAct03() {
-    unk_6d4 = 0;
-    unk_6b0[0] = 1;
-    unk_6b0[1] = 1;
-    unk_6b0[2] = 1;
-    _ZN14BlendAnimModel8initAnimEiiitt(&unk_290[2], RoomObjRes_GetBca(&unk_4b8[2], 1), 1, 0x1000, 0, 0);
-    _ZN9ModelAnim4initEiiit(&unk_6b4, RoomObjRes_GetBta(&unk_4b8[1], 1), 1, 0x1000, 0);
+    modelVisible = 0;
+    partVisible[0] = 1;
+    partVisible[1] = 1;
+    partVisible[2] = 1;
+    _ZN14BlendAnimModel8initAnimEiiitt(&partModels[2], RoomObjRes_GetBca(&partRes[2], 1), 1, 0x1000, 0, 0);
+    _ZN9ModelAnim4initEiiit(&part1MatAnim, RoomObjRes_GetBta(&partRes[1], 1), 1, 0x1000, 0);
     return TRUE;
 }
 
 void TarotProps::execAct03() {
     if (SpNpcKatrina_GetAnimFrame() == 7) {
-        unk_6b0[0] = 0;
+        partVisible[0] = 0;
     }
     if (SpNpcKatrina_GetAnimFrame() == 0x12) {
-        unk_6b0[2] = 0;
+        partVisible[2] = 0;
     }
     if (SpNpcKatrina_GetAnimFrame() == 0x13) {
-        unk_6d4 = 1;
+        modelVisible = 1;
     }
     if (SpNpcKatrina_GetAnimFrame() == 0x25) {
-        unk_6d4 = 0;
+        modelVisible = 0;
     }
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&unk_290[2].unk_9c)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&partModels[2].animFrameCtrl)) {
         changeAct(0);
     }
 }
@@ -565,11 +565,11 @@ extern "C" void TarotProps_Draw() {
 }
 
 void TarotProps::loadPart(s32 i, void *a, void *b) {
-    Unk_ov004_0224e034_T1 *t1 = &unk_4b8[i];
+    Unk_ov004_0224e034_T1 *t1 = &partRes[i];
     RoomObjRes_Load(t1, (const char *)a);
-    Unk_ov004_0224e034_T2 *t2 = &unk_6a4[i];
+    Unk_ov004_0224e034_T2 *t2 = &partTex[i];
     RoomObjTex_Load(t2, (const char *)b);
-    _ZN5Model11setResourceEP16Unk_020553f8_Resj(&unk_290[i], RoomObjRes_GetModel(t1), 0);
+    _ZN5Model11setResourceEP16Unk_020553f8_Resj(&partModels[i], RoomObjRes_GetModel(t1), 0);
     {
         void *x = RoomObjRes_GetModel(t1);
         NNS_G3dBindMdlTex(x, RoomObjTex_Get(t2));
@@ -581,6 +581,6 @@ void TarotProps::loadPart(s32 i, void *a, void *b) {
 }
 
 void TarotProps::releasePart(s32 i) {
-    RoomObjRes_Free(&unk_4b8[i]);
-    RoomObjTex_Reset(&unk_6a4[i]);
+    RoomObjRes_Free(&partRes[i]);
+    RoomObjTex_Reset(&partTex[i]);
 }

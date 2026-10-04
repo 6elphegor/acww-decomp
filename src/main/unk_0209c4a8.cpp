@@ -12,7 +12,7 @@ struct Unk_0209c614_S {
 };
 
 struct Unk_0209c7a4_T {
-    u8 unk_00, unk_01, unk_02, unk_03;
+    u8 scene, unk_01, unk_02, unk_03;
 };
 
 // 0x24-byte state object at sRoomEntryRequest
@@ -21,18 +21,18 @@ public:
     RoomEntryRequest();
     ~RoomEntryRequest();
 
-    /* 0x00 */ u8 unk_00;
-    /* 0x04 */ Unk_0209c82c_V unk_04;
-    /* 0x10 */ Unk_0209c82c_V unk_10;
-    /* 0x1c */ u16 unk_1c;
-    /* 0x1e */ u8 unk_1e;
-    /* 0x1f */ u8 unk_1f;
-    /* 0x20 */ u8 unk_20;
+    /* 0x00 */ u8 scene;
+    /* 0x04 */ Unk_0209c82c_V pos;
+    /* 0x10 */ Unk_0209c82c_V retreatPos;
+    /* 0x1c */ u16 angle;
+    /* 0x1e */ u8 exitId;
+    /* 0x1f */ u8 result;
+    /* 0x20 */ u8 doorKind;
 };
 
 // one-byte bit set (4 bits), no constructor (also used as a stack copy)
 struct Unk_0209c980_Raw {
-    u8 unk_00;
+    u8 occupantBits;
 };
 
 class SceneOccupants : public Unk_0209c980_Raw {
@@ -54,9 +54,9 @@ extern "C" CommManager *gCommManager;
 class Unk_0209c614_Actor {
 public:
     u8 pad_00[0x5c];
-    Unk_0209c614_Vec unk_5c;
+    Unk_0209c614_Vec position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
 };
 
 extern "C" {
@@ -122,19 +122,19 @@ SceneOccupants::SceneOccupants() {
 SceneOccupantTable::~SceneOccupantTable() {}
 
 extern "C" void SceneOccupants_Clear(Unk_0209c980_Raw *t) {
-    t->unk_00 = 0;
+    t->occupantBits = 0;
 }
 
 extern "C" void SceneOccupants_Add(Unk_0209c980_Raw *t, u32 i) {
-    t->unk_00 |= 1 << (i & 3);
+    t->occupantBits |= 1 << (i & 3);
 }
 
 extern "C" void SceneOccupants_Remove(Unk_0209c980_Raw *t, u32 i) {
-    t->unk_00 &= ~(1 << (i & 3));
+    t->occupantBits &= ~(1 << (i & 3));
 }
 
 extern "C" u32 SceneOccupants_Has(Unk_0209c980_Raw *t, u32 i) {
-    return ((t->unk_00 >> (i & 3)) & 1) != 0 ? TRUE : FALSE;
+    return ((t->occupantBits >> (i & 3)) & 1) != 0 ? TRUE : FALSE;
 }
 
 extern "C" s32 SceneOccupants_Count(Unk_0209c980_Raw *t) {
@@ -152,7 +152,7 @@ SceneOccupants::~SceneOccupants() {}
 
 extern "C" s32 SceneOccupants_CountWith(Unk_0209c980_Raw *t, u32 b) {
     Unk_0209c980_Raw c;
-    c.unk_00 = t->unk_00;
+    c.occupantBits = t->occupantBits;
     SceneOccupants_Add(&c, b);
     return SceneOccupants_Count(&c);
 }
@@ -200,51 +200,51 @@ extern "C" void RoomEntryRequest_Init(RoomEntryRequest *t) {
 }
 
 extern "C" u32 RoomEntryRequest_GetResult(RoomEntryRequest *t) {
-    return t->unk_1f;
+    return t->result;
 }
 
 extern "C" u32 RoomEntryRequest_GetDoorKind(RoomEntryRequest *t) {
-    return t->unk_20;
+    return t->doorKind;
 }
 
 extern "C" void *RoomEntryRequest_GetPos(RoomEntryRequest *t) {
-    return &t->unk_04;
+    return &t->pos;
 }
 
 extern "C" void *RoomEntryRequest_GetRetreatPos(RoomEntryRequest *t) {
-    return &t->unk_10;
+    return &t->retreatPos;
 }
 
 extern "C" void RoomEntryRequest_SetResult(RoomEntryRequest *t, u32 v) {
-    t->unk_1f = v;
+    t->result = v;
 }
 
 extern "C" void RoomEntryRequest_SetExitId(RoomEntryRequest *t, u32 v) {
-    t->unk_1e = v;
+    t->exitId = v;
 }
 
 extern "C" void RoomEntryRequest_SetDoorKind(RoomEntryRequest *t, u32 v) {
-    t->unk_20 = v;
+    t->doorKind = v;
 }
 
 extern "C" void RoomEntryRequest_SetScene(RoomEntryRequest *t, u32 v) {
-    t->unk_00 = v;
+    t->scene = v;
 }
 
 extern "C" void RoomEntryRequest_SetPos(RoomEntryRequest *t, Unk_0209c82c_V *v) {
-    t->unk_04.x = v->x;
-    t->unk_04.y = v->y;
-    t->unk_04.z = v->z;
+    t->pos.x = v->x;
+    t->pos.y = v->y;
+    t->pos.z = v->z;
 }
 
 extern "C" void RoomEntryRequest_SetAngle(RoomEntryRequest *t, u32 v) {
-    t->unk_1c = v;
+    t->angle = v;
 }
 
 extern "C" void RoomEntryRequest_SetRetreatPos(RoomEntryRequest *t, Unk_0209c82c_V *v) {
-    t->unk_10.x = v->x;
-    t->unk_10.y = v->y;
-    t->unk_10.z = v->z;
+    t->retreatPos.x = v->x;
+    t->retreatPos.y = v->y;
+    t->retreatPos.z = v->z;
 }
 
 extern "C" void RoomEntry_Reset() {
@@ -267,7 +267,7 @@ extern "C" s32 RoomEntry_IsExclusiveExit(void *p) {
     s32 b, a;
     u32 c[3];
     if (SceneExit_Resolve(Scene_GetWarpRequest(), (u32)p, (u8 *)&t, (Unk_0209c614_Vec *)c, (u32 *)&a, (u16 *)&b, &t.unk_02, &t.unk_01, 0, 0)) {
-        return RoomEntry_IsExclusiveScene(t.unk_00);
+        return RoomEntry_IsExclusiveScene(t.scene);
     }
     return 0;
 }
@@ -281,11 +281,11 @@ extern "C" BOOL RoomEntry_Request(u32 id) {
     s32 r = SceneExit_Resolve(o, id, &s.a, &v28, &a20, &s.e, &s.c, &s.b, 0, 0);
     RoomEntryRequest_SetResult(&sRoomEntryRequest, 0);
     if (r != 0 && p != 0) {
-        Unk_0209c614_Vec *pv = &p->unk_5c;
+        Unk_0209c614_Vec *pv = &p->position;
         v40.x = pv->x;
         v40.y = pv->y;
         v40.z = pv->z;
-        s32 h = p->unk_8e;
+        s32 h = p->rotY;
         SceneExit_GetDoor(Scene_GetWarpRequest(), id, &a24, &s.f);
         SceneExit_SnapPos(Scene_GetWarpRequest(), id, &v34, &v40);
         RoomEntryRequest_SetExitId(&sRoomEntryRequest, id);

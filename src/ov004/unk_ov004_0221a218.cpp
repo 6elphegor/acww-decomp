@@ -57,12 +57,12 @@ struct Unk_ov004_0221a2d8_Out {
 
 struct Unk_ov004_SceneEntry {
     void *(*factory)();
-    u16 unk_04;
-    u16 unk_06;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u16 executePriority;
+    u16 drawPriority;
+    u32 actorFlags;
+    u32 cullHeight;
+    u32 cullRadius;
+    u32 cullDepth;
 };
 
 extern "C" {
@@ -346,7 +346,7 @@ public:
 
     void attachOwner(CafeVillager *owner);
 
-    /* 0x1a0 */ CafeVillager *unk_1a0;
+    /* 0x1a0 */ CafeVillager *villager;
 };
 
 class CafeVillager : public VillagerActor {
@@ -364,8 +364,8 @@ public:
     BOOL setupAct02();
     void changeAct(s32 idx);
 
-    /* 0x894 */ s32 unk_894;
-    /* 0x898 */ CafeVillagerTalk unk_898;
+    /* 0x894 */ s32 act;
+    /* 0x898 */ CafeVillagerTalk talk;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -403,8 +403,8 @@ BOOL CafeVillager::vfunc_04() {
     NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0x1e);
     NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0x1e);
     NpcMoveAnimSet_setRunAnim(&moveAnimSet, 0x1e);
-    NpcActor_setTalkRequest(this, &unk_898);
-    unk_898.attachOwner(this);
+    NpcActor_setTalkRequest(this, &talk);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -418,8 +418,8 @@ BOOL CafeVillager::vfunc_00() {
 
 BOOL CafeVillager::updateAct() {
     BOOL r = FALSE;
-    if (data_ov004_02250910[unk_894].a) {
-        r = (this->*sCafeVillagerActTable[unk_894].b)();
+    if (data_ov004_02250910[act].a) {
+        r = (this->*sCafeVillagerActTable[act].b)();
     }
     return r;
 }
@@ -430,7 +430,7 @@ void CafeVillager::changeAct(s32 idx) {
         ok = (this->*sCafeVillagerActTable[idx].a)();
     }
     if (ok) {
-        unk_894 = idx;
+        act = idx;
     }
 }
 
@@ -442,7 +442,7 @@ BOOL CafeVillager::setupAct02() {
 BOOL CafeVillager::mainAct02() { return TRUE; }
 
 BOOL CafeVillager::setupAct00() {
-    void *p = func_02015aac(&unk_898);
+    void *p = func_02015aac(&talk);
     s32 v = 0;
     if (p) {
         v = NpcActor_getAngleTo(this, p);
@@ -468,12 +468,12 @@ CafeVillagerTalk::~CafeVillagerTalk() {}
 void CafeVillagerTalk::attachOwner(CafeVillager *owner) {
     vfunc_08();
     VillagerTalk_begin(this, owner, 0x11);
-    unk_1a0 = owner;
+    villager = owner;
 }
 
 void CafeVillagerTalk::start(void *arg) {
     Unk_ov004_0221a2d8_Out *out = (Unk_ov004_0221a2d8_Out *)arg;
-    VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->villagerData), data_ov004_022508e0, 0x28, "ai_shop3");
+    VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_022508e0, 0x28, "ai_shop3");
     out->unk_00 = data_ov004_022508e0;
     out->unk_04 = Random_GlobalBelow(5);
 }
@@ -492,8 +492,8 @@ BOOL CafeVillager::vfunc_48() {
 void CafeVillager::vfunc_4c(s32 a) {
     switch (a) {
     case 0:
-        unk_898.vfunc_08();
-        func_02015ab0(&unk_898, NpcActor_getPlayerActor(this, 4));
+        talk.vfunc_08();
+        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
         changeAct(0);
         break;
     case 8:

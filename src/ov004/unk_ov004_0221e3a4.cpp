@@ -1,8 +1,8 @@
 #include "types.h"
 
 struct Unk_ov004_0221b6d4_Out {
-    u32 unk_00;
-    u8 unk_04;
+    u32 fileName;
+    u8 msgIndex;
 };
 
 #include "types.h"
@@ -296,7 +296,7 @@ public:
 
 struct Unk_ov004_0221b954_Global {
     u8 pad_00[0x64];
-    u32 unk_64;
+    u32 myAid;
 };
 
 class SpNpcTortimer2;
@@ -357,7 +357,7 @@ public:
     void changeAct(s32 state);
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ u8 unk_658;
+    /* 0x658 */ u8 idleLoops;
 };
 
 struct Unk_ov004_SceneEntry {
@@ -419,13 +419,13 @@ void SpNpcTortimer2::changeAct(s32 state) {
 
 BOOL SpNpcTortimer2::setupAct00() {
     NpcActionCtrl_requestAction(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    unk_658 = 0xa;
+    idleLoops = 0xa;
     return TRUE;
 }
 
 BOOL SpNpcTortimer2::mainAct00() {
     if (((u32)model.unk_a4 << 4) >> 16 == (((u32)model.unk_a0 << 4) >> 16) - 1) {
-        if (func_020e7518(&unk_658) == 0 && SaveManager_IsIdle()) {
+        if (func_020e7518(&idleLoops) == 0 && SaveManager_IsIdle()) {
             changeAct(1);
         }
     }

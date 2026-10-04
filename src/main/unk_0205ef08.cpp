@@ -11,10 +11,10 @@ struct Unk_0205f7f4_Mtx {
 class GroundInfo {
 public:
     u8 pad_00[0x24];
-    s32 unk_24, unk_28, unk_2c;
-    s32 unk_30;
+    s32 flowDir, flowDirY, flowDirZ;
+    s32 waterKind;
     u8 pad_34[8];
-    s32 unk_3c;
+    s32 waterSurfaceY;
     GroundInfo() {}
     GroundInfo *initAtPos(Unk_0205f1e8_Vec *v, s32 a, s32 b);
     ~GroundInfo();
@@ -23,10 +23,10 @@ public:
 class Unk_0205f6b4_Obj {
 public:
     u8 pad_00[0x24];
-    s32 unk_24, unk_28, unk_2c;
-    s32 unk_30;
+    s32 flowDir, unk_28, unk_2c;
+    s32 waterKind;
     u8 pad_34[8];
-    s32 unk_3c;
+    s32 waterSurfaceY;
     Unk_0205f6b4_Obj() {}
     Unk_0205f6b4_Obj *func_020339bc(Unk_0205f1e8_Vec *v, s32 a, s32 b);
 };
@@ -108,16 +108,16 @@ public:
     void updateIdle();
 
     u8 pad_00[8];
-    Unk_0205f1e8_Vec unk_08;
-    s32 unk_14;
-    s32 unk_18;
-    Unk_0205f1e8_Vec unk_1c;
-    u8 *unk_28;
-    s32 unk_2c;
-    s32 unk_30;
-    s32 unk_34;
-    u8 unk_38;
-    s32 unk_3c;
+    Unk_0205f1e8_Vec pos;
+    s32 gravity;
+    s32 ySpeed;
+    Unk_0205f1e8_Vec targetPos;
+    u8 *ownerActor;
+    s32 fish;
+    s32 stateTimer;
+    s32 effect;
+    u8 justLanded;
+    s32 ownerAid;
 };
 
 struct PlayerPalettePool {

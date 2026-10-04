@@ -63,9 +63,9 @@ public:
     virtual s32 vfunc_08(void *p);
     virtual void vfunc_0c(void *p);
 
-    /* 0x04 */ s16 unk_04;
-    /* 0x06 */ s16 unk_06;
-    /* 0x08 */ void **unk_08;
+    /* 0x04 */ s16 state;
+    /* 0x06 */ s16 cmdIndex;
+    /* 0x08 */ void **cmds;
     /* 0x0c */ u32 unk_0c;
     /* 0x10 */ u16 unk_10;
     /* 0x12 */ s16 unk_12;

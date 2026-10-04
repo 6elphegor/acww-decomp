@@ -27,8 +27,8 @@ struct Unk_02095dcc_Grid {
 
 struct ItemPickSpec {
     void set(s32 a, s32 b);
-    s32 unk_00;
-    s32 unk_04;
+    s32 listIndex;
+    s32 itemClass;
 };
 
 struct Unk_0209579c_Pos {

@@ -70,7 +70,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x14 */ u8 unk_14[0x40];
+    /* 0x14 */ u8 text[0x40];
 };
 
 class CautionMsgString128 : public MsgString {
@@ -80,7 +80,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x14 */ u8 unk_14[0x80];
+    /* 0x14 */ u8 text[0x80];
 };
 
 // Members of CommCautionWindow, all derived from MsgString
@@ -91,7 +91,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x14 */ u8 unk_14[0x100];
+    /* 0x14 */ u8 text[0x100];
 };
 
 struct Unk_020dbd34_Mtx {
@@ -159,7 +159,7 @@ extern u8 gFontA[];
 
 struct Unk_020d905c_Ptr {
     /* 0x00 */ u32 pad[3];
-    /* 0x0c */ u16 unk_0c;
+    /* 0x0c */ u16 profile;
 };
 extern Unk_020d905c_Ptr *gActorDefaultParent;
 
@@ -220,27 +220,27 @@ public:
     void enterIdle();
     void checkNetError();
 
-    /* 0x004 */ CachedModel unk_04;
-    /* 0x0a0 */ TexVramTask unk_a0;
-    /* 0x0bc */ s32 unk_bc;
-    /* 0x0c0 */ s32 unk_c0;
-    /* 0x0c4 */ s32 unk_c4;
-    /* 0x0c8 */ u8 unk_c8;
-    /* 0x0c9 */ u8 unk_c9;
-    /* 0x0ca */ u8 unk_ca;
-    /* 0x0cb */ u8 unk_cb;
-    /* 0x0cc */ u16 unk_cc;
-    /* 0x0ce */ u16 unk_ce;
-    /* 0x0d0 */ u32 unk_d0;
-    /* 0x0d4 */ u32 unk_d4;
-    /* 0x0d8 */ u32 unk_d8;
-    /* 0x0dc */ u32 unk_dc;
-    /* 0x0e0 */ s32 unk_e0;
-    /* 0x0e4 */ s32 unk_e4;
-    /* 0x0e8 */ CautionMsgString256 unk_e8;
-    /* 0x1fc */ CautionMsgString64 unk_1fc;
-    /* 0x250 */ CautionMsgString128 unk_250;
-    /* 0x2e4 */ u8 unk_2e4[0x800];
+    /* 0x004 */ CachedModel model;
+    /* 0x0a0 */ TexVramTask texUpload;
+    /* 0x0bc */ s32 state;
+    /* 0x0c0 */ s32 timer;
+    /* 0x0c4 */ s32 lineIndex;
+    /* 0x0c8 */ u8 modelVisible;
+    /* 0x0c9 */ u8 errorPending;
+    /* 0x0ca */ u8 planesHidden;
+    /* 0x0cb */ u8 blendRegsDirty;
+    /* 0x0cc */ u16 savedMainBldCnt;
+    /* 0x0ce */ u16 savedSubBldCnt;
+    /* 0x0d0 */ u32 savedMainPlanes;
+    /* 0x0d4 */ u32 savedSubPlanes;
+    /* 0x0d8 */ u32 savedMainWindows;
+    /* 0x0dc */ u32 savedSubWindows;
+    /* 0x0e0 */ s32 countdownX;
+    /* 0x0e4 */ s32 seconds;
+    /* 0x0e8 */ CautionMsgString256 message;
+    /* 0x1fc */ CautionMsgString64 secondsText;
+    /* 0x250 */ CautionMsgString128 lineText;
+    /* 0x2e4 */ u8 lineTiles[0x800];
 };
 
 extern CommCautionWindow sCommCautionWindow;
@@ -354,20 +354,20 @@ u8 *CommCaution_FormatErrorCode() {
 }
 
 CommCautionWindow::CommCautionWindow()
-    : unk_bc(0), unk_c0(0), unk_c4(0), unk_c8(0), unk_c9(0), unk_ca(0), unk_cb(0), unk_cc(0), unk_ce(0), unk_d0(0),
-      unk_d4(0), unk_d8(0), unk_dc(0), unk_e0(0), unk_e4(0) {
-    MI_CpuFill8(unk_2e4, 0x11, 0x800);
+    : state(0), timer(0), lineIndex(0), modelVisible(0), errorPending(0), planesHidden(0), blendRegsDirty(0), savedMainBldCnt(0), savedSubBldCnt(0), savedMainPlanes(0),
+      savedSubPlanes(0), savedMainWindows(0), savedSubWindows(0), countdownX(0), seconds(0) {
+    MI_CpuFill8(lineTiles, 0x11, 0x800);
 }
 
 CommCautionWindow::~CommCautionWindow() {
 }
 
 extern "C" u8 CommCaution_ArePlanesHidden() {
-    return sCommCautionWindow.unk_ca;
+    return sCommCautionWindow.planesHidden;
 }
 
 extern "C" BOOL CommCaution_IsShutDown() {
-    if (sCommCautionWindow.unk_bc >= 5) {
+    if (sCommCautionWindow.state >= 5) {
         return TRUE;
     }
     return FALSE;
@@ -412,17 +412,17 @@ void CommCautionWindow::init() {
         }
     }
     BOOL b;
-    if (gActorDefaultParent->unk_0c == 5) {
+    if (gActorDefaultParent->profile == 5) {
         b = TRUE;
     } else {
         b = FALSE;
     }
     clearPlaneState();
     if (a || b) {
-        _ZN11CachedModel10loadCachedEPvS0_(&unk_04, 0x43617557, (void *)"caution/caution_window.nsbmd");
+        _ZN11CachedModel10loadCachedEPvS0_(&model, 0x43617557, (void *)"caution/caution_window.nsbmd");
         setupModelMatrix();
-        unk_c4 = 0;
-        unk_c8 = 0;
+        lineIndex = 0;
+        modelVisible = 0;
         enterWatch();
     } else {
         enterIdle();
@@ -430,25 +430,25 @@ void CommCautionWindow::init() {
 }
 
 void CommCautionWindow::release() {
-    if (unk_bc != 0) {
-        _ZN11CachedModel7releaseEv(&unk_04);
-        unk_bc = 0;
+    if (state != 0) {
+        _ZN11CachedModel7releaseEv(&model);
+        state = 0;
     }
 }
 
 void CommCautionWindow::update(u8 a) {
-    unk_c9 = a;
+    errorPending = a;
     checkNetError();
     static void (CommCautionWindow::*tbl[8])() = {
         &CommCautionWindow::execIdle, &CommCautionWindow::execWatch, &CommCautionWindow::execDelay,
         &CommCautionWindow::execPrepare, &CommCautionWindow::execCountdown, &CommCautionWindow::execShutdown,
         &CommCautionWindow::execEnded, &CommCautionWindow::execReset,
     };
-    (this->*tbl[unk_bc])();
+    (this->*tbl[state])();
 }
 
 void CommCautionWindow::draw() {
-    if (unk_c8) {
+    if (modelVisible) {
         G3i_PerspectiveW_(0x424, 0xf74, 0x1548, 0xf6, 0x3e800, 0x1000, 0, data_027e00d0);
         data_027e0148[0x7c / 4] &= ~0x50;
         Unk_02037ea0_V a, b, c, d;
@@ -468,40 +468,40 @@ void CommCautionWindow::draw() {
         d.x = r;
         d.y = r;
         d.z = 0x1000;
-        _ZN5Model10drawScaledEPi(&unk_04, &d);
+        _ZN5Model10drawScaledEPi(&model, &d);
     }
 }
 
 void CommCautionWindow::updateBlendRegs() {
-    if (unk_cb) {
-        if (unk_ca) {
-            unk_cc = *(volatile u16 *)0x4000050;
-            unk_ce = *(volatile u16 *)0x4001050;
+    if (blendRegsDirty) {
+        if (planesHidden) {
+            savedMainBldCnt = *(volatile u16 *)0x4000050;
+            savedSubBldCnt = *(volatile u16 *)0x4001050;
             *(volatile u16 *)0x4000050 = 0;
             *(volatile u16 *)0x4001050 = 0;
         } else {
-            *(volatile u16 *)0x4000050 = unk_cc;
-            *(volatile u16 *)0x4001050 = unk_ce;
+            *(volatile u16 *)0x4000050 = savedMainBldCnt;
+            *(volatile u16 *)0x4001050 = savedSubBldCnt;
         }
-        unk_cb = 0;
+        blendRegsDirty = 0;
     }
 }
 
 void CommCautionWindow::setupModelMatrix() {
     func_020e8388(&data_021f47e0, 0, 0, -0x1000, 0, 0, -0x1000);
-    unk_04.unk_64 = data_021f47e0;
+    model.unk_64 = data_021f47e0;
 }
 
 void CommCautionWindow::uploadLine(s32 i) {
-    u8 *b = (u8 *)unk_04.unk_5c;
+    u8 *b = (u8 *)model.unk_5c;
     b += *(s32 *)(b + 8);
     u8 *c = b + *(u16 *)(b + 0xa);
     u32 v = _ZN10G3dMatData10getTexAddrEv(b + *(s32 *)(c + 8));
-    unk_a0.requestTex((u32)unk_2e4, v + (i << 11), 0x800, 2);
+    texUpload.requestTex((u32)lineTiles, v + (i << 11), 0x800, 2);
 }
 
 void CommCautionWindow::clearLines() {
-    MI_CpuFill8(unk_2e4, 0x11, 0x800);
+    MI_CpuFill8(lineTiles, 0x11, 0x800);
     for (s32 i = 0; i < 4; i++) {
         uploadLine(i);
     }
@@ -513,7 +513,7 @@ void CommCautionWindow::renderLine() {
         MsgTextLabel *o = MsgTextLabel_CreateBuffer(buf, 0x20, 2);
         if (o != NULL) {
             o->vramLoader = 5;
-            o->textStart = (u32)unk_250.data();
+            o->textStart = (u32)lineText.data();
             o->group = 2;
             o->copyMode = 0;
             o->font = (GameFontDesc *)gFontA;
@@ -524,10 +524,10 @@ void CommCautionWindow::renderLine() {
             o->requestRedraw();
             u32 w = o->xOffset;
             MsgTextLabel_Destroy(o);
-            if (unk_e4 >= 0 && unk_e0 != 0) {
+            if (seconds >= 0 && countdownX != 0) {
                 renderCountdown(buf, w);
             }
-            Gfx2d_TilesToLinear4bpp(buf, unk_2e4, 0x20, 2);
+            Gfx2d_TilesToLinear4bpp(buf, lineTiles, 0x20, 2);
         }
         Mem_Free(buf);
     }
@@ -535,7 +535,7 @@ void CommCautionWindow::renderLine() {
 
 void CommCautionWindow::renderCountdown(void *buf, s32 x) {
     MsgString25 t;
-    String_FormatNumber(&t, unk_e4, 2, 0, 0, 0);
+    String_FormatNumber(&t, seconds, 2, 0, 0, 0);
     u32 w = TextLabel_MeasureMsgWidth(&t);
     u32 off;
     if (w < 0x10) {
@@ -543,7 +543,7 @@ void CommCautionWindow::renderCountdown(void *buf, s32 x) {
     } else {
         off = 0;
     }
-    s32 px = x + unk_e0 + off;
+    s32 px = x + countdownX + off;
     MsgTextLabel *o = MsgTextLabel_CreateBuffer(buf, 0x20, 2);
     if (o != NULL) {
         o->vramLoader = 5;
@@ -562,54 +562,54 @@ void CommCautionWindow::renderCountdown(void *buf, s32 x) {
 }
 
 void CommCautionWindow::buildLine(u32 a, u32 b) {
-    unk_250.clear();
-    unk_e0 = 0;
-    u8 *r = (u8 *)Msg_SkipLines((char *)unk_e8.data(), a);
+    lineText.clear();
+    countdownX = 0;
+    u8 *r = (u8 *)Msg_SkipLines((char *)message.data(), a);
     if (r != NULL) {
-        unk_250.setLine(r);
-        if (unk_e4 >= 0 && a == 3) {
-            unk_e0 = TextLabel_MeasureMsgWidth(&unk_250);
+        lineText.setLine(r);
+        if (seconds >= 0 && a == 3) {
+            countdownX = TextLabel_MeasureMsgWidth(&lineText);
             Unk_02037b90_S s = *(Unk_02037b90_S *)sCommCautionNumberGap;
-            unk_250.append((u8 *)&s);
-            unk_250.appendString(&unk_1fc);
+            lineText.append((u8 *)&s);
+            lineText.appendString(&secondsText);
         }
         if (b != 0 && a == 3 && sCommCautionShowErrorCode != 0) {
-            unk_250.append(CommCaution_FormatErrorCode());
+            lineText.append(CommCaution_FormatErrorCode());
         }
     }
 }
 
 void CommCautionWindow::clearPlaneState() {
-    unk_ca = 0;
-    unk_d0 = 0;
-    unk_d4 = 0;
-    unk_d8 = 0;
-    unk_dc = 0;
+    planesHidden = 0;
+    savedMainPlanes = 0;
+    savedSubPlanes = 0;
+    savedMainWindows = 0;
+    savedSubWindows = 0;
 }
 
 void CommCautionWindow::hidePlanes() {
-    if (!unk_ca) {
-        unk_ca = 1;
-        unk_d0 = Gfx2d_GetMainPlanes();
-        unk_d4 = Gfx2d_GetSubPlanes();
-        unk_d8 = Gfx2d_GetMainWindows();
-        unk_dc = Gfx2d_GetSubWindows();
+    if (!planesHidden) {
+        planesHidden = 1;
+        savedMainPlanes = Gfx2d_GetMainPlanes();
+        savedSubPlanes = Gfx2d_GetSubPlanes();
+        savedMainWindows = Gfx2d_GetMainWindows();
+        savedSubWindows = Gfx2d_GetSubWindows();
         Gfx2d_SetMainPlanes(1);
         Gfx2d_SetSubPlanes(0);
         Gfx2d_SetMainWindows(0);
         Gfx2d_SetSubWindows(0);
-        unk_cb = 1;
+        blendRegsDirty = 1;
     }
 }
 
 void CommCautionWindow::restorePlanes() {
-    if (unk_ca) {
-        unk_ca = 0;
-        Gfx2d_SetMainPlanes(unk_d0);
-        Gfx2d_SetSubPlanes(unk_d4);
-        Gfx2d_SetMainWindows(unk_d8);
-        Gfx2d_SetSubWindows(unk_dc);
-        unk_cb = 1;
+    if (planesHidden) {
+        planesHidden = 0;
+        Gfx2d_SetMainPlanes(savedMainPlanes);
+        Gfx2d_SetSubPlanes(savedSubPlanes);
+        Gfx2d_SetMainWindows(savedMainWindows);
+        Gfx2d_SetSubWindows(savedSubWindows);
+        blendRegsDirty = 1;
     }
 }
 
@@ -633,19 +633,19 @@ void CommCautionWindow::checkNetError() {
 }
 
 void CommCautionWindow::enterIdle() {
-    unk_bc = 0;
+    state = 0;
 }
 
 void CommCautionWindow::execIdle() {}
 
 void CommCautionWindow::enterWatch() {
-    unk_bc = 1;
-    unk_c8 = 0;
+    state = 1;
+    modelVisible = 0;
     restorePlanes();
 }
 
 void CommCautionWindow::execWatch() {
-    if (unk_c9 != 0) {
+    if (errorPending != 0) {
         if ((_ZN11CommManager20getLatchedErrorFlagsEv(gCommManager) & 0x7c) != 0) {
             hidePlanes();
             enterShutdown();
@@ -656,76 +656,76 @@ void CommCautionWindow::execWatch() {
 }
 
 void CommCautionWindow::enterDelay() {
-    unk_bc = 2;
-    unk_c0 = 0x14;
-    unk_c8 = 0;
+    state = 2;
+    timer = 0x14;
+    modelVisible = 0;
 }
 
 void CommCautionWindow::execDelay() {
-    if (unk_c9 == 0) {
+    if (errorPending == 0) {
         enterWatch();
     } else {
-        unk_c0 = unk_c0 - 1;
-        if (unk_c0 <= 0) {
+        timer = timer - 1;
+        if (timer <= 0) {
             enterPrepare();
         }
     }
 }
 
 void CommCautionWindow::enterPrepare() {
-    unk_bc = 3;
-    unk_c8 = 0;
+    state = 3;
+    modelVisible = 0;
     clearLines();
     hidePlanes();
 }
 
 void CommCautionWindow::execPrepare() {
-    _ZN9MsgString4copyEPS_(&unk_e8, &sCommCautionLagMsg);
+    _ZN9MsgString4copyEPS_(&message, &sCommCautionLagMsg);
     _ZN9MsgString4copyEPS_((u8 *)this + 0x1fc, &sCommCautionSecondsMsg);
     enterCountdown();
 }
 
 void CommCautionWindow::enterCountdown() {
-    unk_bc = 4;
-    unk_c0 = 0x12c;
-    unk_c4 = 0;
-    unk_c8 = 1;
-    unk_e0 = 0;
-    unk_e4 = 0xf;
+    state = 4;
+    timer = 0x12c;
+    lineIndex = 0;
+    modelVisible = 1;
+    countdownX = 0;
+    seconds = 0xf;
 }
 
 void CommCautionWindow::execCountdown() {
-    s32 q = _s32_div_f(unk_c0 + 0x13, 0x14);
+    s32 q = _s32_div_f(timer + 0x13, 0x14);
     BOOL changed;
-    if (unk_e4 != q) {
+    if (seconds != q) {
         changed = TRUE;
     } else {
         changed = FALSE;
     }
-    unk_e4 = q;
-    if (unk_c4 < 4) {
-        buildLine(unk_c4, 0);
+    seconds = q;
+    if (lineIndex < 4) {
+        buildLine(lineIndex, 0);
         renderLine();
-        uploadLine(unk_c4);
-        unk_c4 = unk_c4 + 1;
+        uploadLine(lineIndex);
+        lineIndex = lineIndex + 1;
     } else if (changed) {
         buildLine(3, 0);
         renderLine();
         uploadLine(3);
     }
-    if (unk_c9 == 0) {
+    if (errorPending == 0) {
         enterWatch();
     } else {
-        unk_c0 = unk_c0 - 1;
-        if (unk_c0 <= -0x14) {
+        timer = timer - 1;
+        if (timer <= -0x14) {
             enterShutdown();
         }
     }
 }
 
 void CommCautionWindow::enterShutdown() {
-    unk_bc = 5;
-    unk_c8 = 1;
+    state = 5;
+    modelVisible = 1;
     clearLines();
     muteSound();
     CommCaution_SaveErrorCode();
@@ -734,28 +734,28 @@ void CommCautionWindow::enterShutdown() {
 }
 
 void CommCautionWindow::execShutdown() {
-    _ZN9MsgString4copyEPS_(&unk_e8, &sCommCautionEndedMsg);
+    _ZN9MsgString4copyEPS_(&message, &sCommCautionEndedMsg);
     enterEnded();
 }
 
 void CommCautionWindow::enterEnded() {
-    unk_bc = 6;
-    unk_c4 = 0;
-    unk_c8 = 1;
-    unk_e0 = 0;
-    unk_e4 = -1;
-    unk_c0 = 0x14;
+    state = 6;
+    lineIndex = 0;
+    modelVisible = 1;
+    countdownX = 0;
+    seconds = -1;
+    timer = 0x14;
 }
 
 void CommCautionWindow::execEnded() {
-    if (unk_c4 < 4) {
-        buildLine(unk_c4, 1);
+    if (lineIndex < 4) {
+        buildLine(lineIndex, 1);
         renderLine();
-        uploadLine(unk_c4);
-        unk_c4 = unk_c4 + 1;
+        uploadLine(lineIndex);
+        lineIndex = lineIndex + 1;
     }
-    unk_c0 = unk_c0 - 1;
-    if (unk_c0 <= 0) {
+    timer = timer - 1;
+    if (timer <= 0) {
         BOOL b, a;
         if (gTouchHeld != 0 && gTouchChanged != 0) {
             a = TRUE;

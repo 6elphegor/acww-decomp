@@ -248,18 +248,18 @@ public:
     BOOL unregisterSelf();
     BOOL registerSelf();
 
-    /* 0x130 */ s32 unk_130;
-    /* 0x134 */ TouchPickSphere unk_134;
-    /* 0x150 */ u8 unk_150;
-    /* 0x151 */ u8 unk_151;
+    /* 0x130 */ s32 act;
+    /* 0x134 */ TouchPickSphere touchSphere;
+    /* 0x150 */ u8 index;
+    /* 0x151 */ u8 cursor;
     /* 0x152 */ u8 pad_152[2];
-    /* 0x154 */ s32 unk_154;
-    /* 0x158 */ u32 unk_158;
-    /* 0x15c */ s16 unk_15c;
+    /* 0x154 */ s32 facingArc;
+    /* 0x158 */ u32 kind;
+    /* 0x15c */ s16 infoMsgIndex;
     /* 0x15e */ u8 pad_15e[2];
-    /* 0x160 */ u16 *unk_160;
-    /* 0x164 */ u32 unk_164;
-    /* 0x168 */ u8 unk_168;
+    /* 0x160 */ u16 *items;
+    /* 0x164 */ u32 itemCount;
+    /* 0x168 */ u8 talkCount;
 };
 
 typedef void (MuseumExhibitInfo::*Unk_ov004_02213ea8_Fn)();
@@ -300,41 +300,41 @@ void MuseumExhibitInfo_ClearRegistry(void);
 // Only this function: it needs mwcc 1.2/base (the rest of the unit is in the main file, built with 1.2/sp2).
 BOOL MuseumExhibitInfo::buildItemList() {
     if (isAutoTalkKind() == 0) {
-        u16 **p = &unk_160;
-        *p = (u16 *)Mem_Alloc(unk_164 * 2);
+        u16 **p = &items;
+        *p = (u16 *)Mem_Alloc(itemCount * 2);
         if (*p) {
             u32 i;
-            switch (unk_158) {
+            switch (kind) {
             case 0:
-                for (i = 0; i < unk_164; i++) {
+                for (i = 0; i < itemCount; i++) {
                     u32 v = sMuseumExhibitSpawnList[i];
                     u16 r;
                     if (v < 0x38) r = v + 0x12b0; else r = 0x12b0;
-                    unk_160[i] = r;
+                    items[i] = r;
                 }
                 return TRUE;
             case 1:
-                for (i = 0; i < unk_164; i++) {
+                for (i = 0; i < itemCount; i++) {
                     u32 v = sMuseumExhibitSpawnList[i];
                     u16 r;
                     if (v < 0x38) r = v + 0x12e8; else r = 0x12e8;
-                    unk_160[i] = r;
+                    items[i] = r;
                 }
                 return TRUE;
             case 2:
-                for (i = 0; i < unk_164; i++) {
+                for (i = 0; i < itemCount; i++) {
                     u32 v = sMuseumExhibitSpawnList[i];
                     u32 r;
                     if (v < 0x14) r = v * 4 + 0x3894; else r = 0x3894;
-                    unk_160[i] = r;
+                    items[i] = r;
                 }
                 return TRUE;
             case 3:
-                for (i = 0; i < unk_164; i++) {
+                for (i = 0; i < itemCount; i++) {
                     u32 v = sMuseumExhibitSpawnList[i];
                     u32 r;
                     if (v < 0x34) r = v * 4 + 0x450c; else r = 0x450c;
-                    unk_160[i] = r;
+                    items[i] = r;
                 }
                 return TRUE;
             default:

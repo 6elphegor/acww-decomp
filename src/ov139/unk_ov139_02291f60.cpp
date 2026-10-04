@@ -84,8 +84,8 @@ public:
     void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
     void destroyLabel();
 
-    /* 0x12 */ u8 unk_12[0x2a];
-    /* 0x3c */ void *unk_3c;
+    /* 0x12 */ u8 text[0x2a];
+    /* 0x3c */ void *label;
 };
 
 // Menu layer (size 0xbc)
@@ -97,8 +97,8 @@ public:
     virtual void vfunc_0c() = 0;
     virtual void setOrigin(s32 a, s32 b);
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class LabelBalloon : public UiWidget {
@@ -194,14 +194,14 @@ public:
     void release();
     void init(u8 id, u8 v);
 
-    /* 0x000 */ MenuTitleBalloon unk_00;
-    /* 0x0bc */ LabelString unk_bc[20];
-    /* 0x5bc */ BgVramTask unk_5bc;
-    /* 0x5e0 */ u16 unk_5e0[16];
-    /* 0x600 */ u16 unk_600[16];
-    /* 0x620 */ u16 unk_620;
-    /* 0x622 */ u8 unk_622;
-    /* 0x623 */ u8 unk_623;
+    /* 0x000 */ MenuTitleBalloon titleBalloon;
+    /* 0x0bc */ LabelString textLabels[20];
+    /* 0x5bc */ BgVramTask paletteTask;
+    /* 0x5e0 */ u16 basePalette[16];
+    /* 0x600 */ u16 workPalette[16];
+    /* 0x620 */ u16 flags;
+    /* 0x622 */ u8 bgLayer;
+    /* 0x623 */ u8 labelCount;
 };
 
 MenuTownListPanel::MenuTownListPanel() {}
@@ -209,42 +209,42 @@ MenuTownListPanel::MenuTownListPanel() {}
 MenuTownListPanel::~MenuTownListPanel() {}
 
 void MenuTownListPanel::init(u8 id, u8 v) {
-    unk_622 = id;
-    unk_620 = 0;
-    unk_00.hideNow();
-    unk_00.showText(v, 0x90, 0x18);
-    unk_00.showLayer2();
+    bgLayer = id;
+    flags = 0;
+    titleBalloon.hideNow();
+    titleBalloon.showText(v, 0x90, 0x18);
+    titleBalloon.showLayer2();
 }
 
 void MenuTownListPanel::release() {
     resetTextLabels();
-    unk_5bc.cancel();
+    paletteTask.cancel();
 }
 
 void MenuTownListPanel::preStateUpdate() {
     resetTextLabels();
-    unk_5bc.cancel();
+    paletteTask.cancel();
 }
 
 void MenuTownListPanel::flushPalette() {
     if (testFlags(1)) {
-        if (unk_5bc.requestPalette((u32)unk_600, unk_622, 7)) {
+        if (paletteTask.requestPalette((u32)workPalette, bgLayer, 7)) {
             clearFlags(1);
         }
     }
 }
 
 void MenuTownListPanel::drawTitle(s32 a, s32 b) {
-    unk_00.setPos(a, b);
-    unk_00.draw();
+    titleBalloon.setPos(a, b);
+    titleBalloon.draw();
 }
 
 void MenuTownListPanel::loadBgGfx() {
     u32 h = gCurrentHeap;
-    Gfx2d_LoadCharFile((u32)"menu/res/bg.bch", h, unk_622, 0x11, 0x11, 0x36);
-    Gfx2d_LoadPaletteFile((u32)"menu/res/bg.bpl", h, unk_622, 1, 1, 8);
-    File_LoadToBuffer((void *)"menu/res/bg7.bpl", unk_5e0, 0x20);
-    MIi_CpuCopy16(unk_5e0, unk_600, 0x20);
+    Gfx2d_LoadCharFile((u32)"menu/res/bg.bch", h, bgLayer, 0x11, 0x11, 0x36);
+    Gfx2d_LoadPaletteFile((u32)"menu/res/bg.bpl", h, bgLayer, 1, 1, 8);
+    File_LoadToBuffer((void *)"menu/res/bg7.bpl", basePalette, 0x20);
+    MIi_CpuCopy16(basePalette, workPalette, 0x20);
 }
 
 void MenuTownListPanel::clearAllRows() {
@@ -263,16 +263,16 @@ void MenuTownListPanel::loadObjGfx() {
 }
 
 void MenuTownListPanel::setRowFadeColor(s32 a, s32 x, s32 n, s32 e) {
-    u16 c1 = unk_5e0[15];
+    u16 c1 = basePalette[15];
     u8 r = c1 & 0x1f;
     u8 g = (c1 & 0x3e0) >> 5;
     u8 b = (c1 & 0x7c00) >> 10;
     s32 d = n - x;
-    u16 c2 = unk_5e0[e];
+    u16 c2 = basePalette[e];
     r = ((u8)(c2 & 0x1f) * x + r * d) / n;
     g = ((u8)((c2 & 0x3e0) >> 5) * x + g * d) / n;
     b = ((u8)((c2 & 0x7c00) >> 10) * x + b * d) / n;
-    unk_600[(u8)(0xe - a)] = r | (g << 5) | (b << 10);
+    workPalette[(u8)(0xe - a)] = r | (g << 5) | (b << 10);
     setFlags(1);
 }
 
@@ -314,18 +314,18 @@ void MenuTownListPanel::clearRow(s32 i) {
 
 void MenuTownListPanel::resetTextLabels() {
     s32 i;
-    unk_623 = 0;
+    labelCount = 0;
     for (i = 0; i < 0x14; i++) {
-        unk_bc[i].destroyLabel();
+        textLabels[i].destroyLabel();
     }
 }
 
 LabelString *MenuTownListPanel::allocTextLabel() {
-    if (unk_623 >= 0x14) {
-        return &unk_bc[19];
+    if (labelCount >= 0x14) {
+        return &textLabels[19];
     }
-    unk_623++;
-    return &unk_bc[unk_623 - 1];
+    labelCount++;
+    return &textLabels[labelCount - 1];
 }
 
 
@@ -350,7 +350,7 @@ void MenuTownListPanel::setRowTownName(s32 i, u8 *str, u8 pal) {
         x = pal;
         y = 0xf;
     }
-    t->createLabel(unk_622, a, 0xa, x, y, 0);
+    t->createLabel(bgLayer, a, 0xa, x, y, 0);
     t->redrawAligned(1, 0);
 }
 
@@ -372,22 +372,22 @@ void MenuTownListPanel::setRowPlayerName(s32 i, u8 *str, u8 pal) {
         x = pal;
         y = 0xf;
     }
-    t->createLabel(unk_622, a, 8, x, y, 0);
+    t->createLabel(bgLayer, a, 8, x, y, 0);
     t->redrawAligned(1, 0);
 }
 
 u32 MenuTownListPanel::getCellList(s32 i) { return sTownListCellLists[i]; }
 
 BOOL MenuTownListPanel::testFlags(u32 m) {
-    if (unk_620 & m) {
+    if (flags & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void MenuTownListPanel::setFlags(u32 m) { unk_620 |= m; }
+void MenuTownListPanel::setFlags(u32 m) { flags |= m; }
 
-void MenuTownListPanel::clearFlags(u32 m) { unk_620 &= ~m; }
+void MenuTownListPanel::clearFlags(u32 m) { flags &= ~m; }
 
 
 

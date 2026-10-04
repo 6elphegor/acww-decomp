@@ -268,7 +268,7 @@ public:
 class MusicMenu : public MenuProc {
 public:
     MusicMenu()
-        : unk_c4(), unk_128(), unk_170(), unk_2d4(), unk_514(), unk_55c() {}
+        : cursor(), scrollKnob(), bottomButtons(), textLabels(), screenTasks(), errorMessage() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -364,35 +364,35 @@ public:
     void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ s32 unk_94;
+    /* 0x094 */ s32 slideY;
     /* 0x098 */ u32 unk_98;
-    /* 0x09c */ s32 unk_9c;
-    /* 0x0a0 */ s32 unk_a0;
-    /* 0x0a4 */ s32 unk_a4;
-    /* 0x0a8 */ s32 unk_a8;
-    /* 0x0ac */ s32 unk_ac;
-    /* 0x0b0 */ s32 unk_b0;
-    /* 0x0b4 */ u16 unk_b4;
-    /* 0x0b6 */ s16 unk_b6;
-    /* 0x0b8 */ s16 unk_b8;
-    /* 0x0ba */ s16 unk_ba;
-    /* 0x0bc */ s16 unk_bc;
-    /* 0x0be */ u8 unk_be;
-    /* 0x0bf */ volatile u8 unk_bf;
-    /* 0x0c0 */ u8 unk_c0;
-    /* 0x0c1 */ u8 unk_c1;
+    /* 0x09c */ s32 scrollY;
+    /* 0x0a0 */ s32 scrollTargetY;
+    /* 0x0a4 */ s32 scrollMax;
+    /* 0x0a8 */ s32 knobPos;
+    /* 0x0ac */ s32 knobGrabOffset;
+    /* 0x0b0 */ s32 knobLastTickPos;
+    /* 0x0b4 */ u16 flags;
+    /* 0x0b6 */ s16 topRow;
+    /* 0x0b8 */ s16 songCount;
+    /* 0x0ba */ s16 selectedSong;
+    /* 0x0bc */ s16 playingSong;
+    /* 0x0be */ u8 returnState;
+    /* 0x0bf */ volatile u8 labelCount;
+    /* 0x0c0 */ u8 delayTimer;
+    /* 0x0c1 */ u8 cursorSlot;
     /* 0x0c2 */ u8 unk_c2[2];
-    /* 0x0c4 */ MenuCursorBuf0 unk_c4;
-    /* 0x128 */ MenuScrollKnob unk_128;
-    /* 0x170 */ MenuBottomButtons unk_170;
-    /* 0x2d4 */ LabelString unk_2d4[9];
-    /* 0x514 */ BgVramTask unk_514[2];
-    /* 0x55c */ MenuErrorMessage unk_55c;
-    /* 0x664 */ u16 unk_664[0x46];
-    /* 0x6f0 */ u16 unk_6f0[9];
-    /* 0x702 */ u8 unk_702[0x800];
-    /* 0xf02 */ u8 unk_f02[0x800];
-    /* 0x1702 */ u8 unk_1702[0x802];
+    /* 0x0c4 */ MenuCursorBuf0 cursor;
+    /* 0x128 */ MenuScrollKnob scrollKnob;
+    /* 0x170 */ MenuBottomButtons bottomButtons;
+    /* 0x2d4 */ LabelString textLabels[9];
+    /* 0x514 */ BgVramTask screenTasks[2];
+    /* 0x55c */ MenuErrorMessage errorMessage;
+    /* 0x664 */ u16 songs[0x46];
+    /* 0x6f0 */ u16 shownRowItems[9];
+    /* 0x702 */ u8 rowTemplateScreen[0x800];
+    /* 0xf02 */ u8 listScreen[0x800];
+    /* 0x1702 */ u8 frameScreen[0x802];
 };
 
 static inline BOOL IsZero(u8 v) {
@@ -433,15 +433,15 @@ BOOL MusicMenu::vfunc_0c() {
 
 BOOL MusicMenu::onDraw() {
     if (MenuCtrl_IsButtons()) {
-        MenuCursorBase_drawWrapped(&unk_c4);
+        MenuCursorBase_drawWrapped(&cursor);
     }
     if (!testFlags(1)) {
         return FALSE;
     }
-    MenuBottomButtons_drawAt(&unk_170, getSlideOffsetY());
-    u32 p = unk_94 + 0x60;
-    if (unk_a4 > 0) {
-        unk_128.vfunc_08();
+    MenuBottomButtons_drawAt(&bottomButtons, getSlideOffsetY());
+    u32 p = slideY + 0x60;
+    if (scrollMax > 0) {
+        scrollKnob.vfunc_08();
         Oam_DrawCell(1, data_ov144_02293d70, 0x80, p, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     return TRUE;
@@ -514,7 +514,7 @@ void C::stateOpen() {
     Gfx2d_ShowLayer(4);
     updateLayerSlide();
     setFlags(1);
-    MenuBottomButtons_setLayoutSingle05(&unk_170, 0x65);
+    MenuBottomButtons_setLayoutSingle05(&bottomButtons, 0x65);
     setTransitionState(1);
 }
 
@@ -550,32 +550,32 @@ void C::stateClosing() {
 
 void C::updateLayerSlide() {
     applySlideOffset(6, 0, 0);
-    applySlideOffset(4, 0, 0x18 - unk_9c);
-    unk_94 = getSlideOffsetY();
+    applySlideOffset(4, 0, 0x18 - scrollY);
+    slideY = getSlideOffsetY();
     updateKnobPosition();
 }
 
 void C::initMusic() {
     s32 i = 0;
-    unk_b4 = i;
+    flags = i;
     for (; i < 9; i++) {
-        unk_6f0[i] = 0xfff1;
+        shownRowItems[i] = 0xfff1;
     }
     buildSongList();
     findCurrentSong();
-    MenuScrollKnob_show(&unk_128);
+    MenuScrollKnob_show(&scrollKnob);
 }
 
 void C::releaseResources() {
     resetTextLabels();
-    MenuBottomButtons_freeTexts(&unk_170);
-    BgVramTask_cancel(&unk_514);
-    BgVramTask_cancel(&unk_514[1]);
+    MenuBottomButtons_freeTexts(&bottomButtons);
+    BgVramTask_cancel(&screenTasks);
+    BgVramTask_cancel(&screenTasks[1]);
 }
 
 void C::preInputUpdate() {
     preStateUpdate();
-    unk_c4.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void C::postInputUpdate() {
@@ -584,16 +584,16 @@ void C::postInputUpdate() {
 
 void C::preStateUpdate() {
     resetTextLabels();
-    MenuBottomButtons_freeTexts(&unk_170);
-    BgVramTask_cancel(&unk_514);
-    BgVramTask_cancel(&unk_514[1]);
-    unk_128.vfunc_0c();
+    MenuBottomButtons_freeTexts(&bottomButtons);
+    BgVramTask_cancel(&screenTasks);
+    BgVramTask_cancel(&screenTasks[1]);
+    scrollKnob.vfunc_0c();
 }
 
 void C::postStateUpdate() {
     updateScrollAnimation();
     flushDirty();
-    MenuScrollKnob_updateRelease(&unk_128);
+    MenuScrollKnob_updateRelease(&scrollKnob);
 }
 
 void C::setupBgLayers() {
@@ -611,13 +611,13 @@ void C::loadBgGfx() {
     Gfx2d_LoadCharFile("menu/music/bg0.bch", h, 6, 0x11, 0x11, 0x98);
     Gfx2d_LoadCharFile("menu/music/bg1.bch", h, 6, 0x26e, 0x26e, 0x27e);
     Gfx2d_LoadPaletteFile("menu/music/bg.bpl", h, 6, 1, 1, 0xa);
-    File_LoadToBuffer("menu/music/b_bg.bsc", unk_702, 0x800);
-    File_LoadToBuffer("menu/music/a_bg.bsc", unk_1702, 0x800);
+    File_LoadToBuffer("menu/music/b_bg.bsc", rowTemplateScreen, 0x800);
+    File_LoadToBuffer("menu/music/a_bg.bsc", frameScreen, 0x800);
     refreshButtons();
 }
 
 void C::loadObjGfx() {
-    MenuButtons_LoadTextColors(&unk_170);
+    MenuButtons_LoadTextColors(&bottomButtons);
     u32 h = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/music/obj.bch", h, 8, 0xc0, 0xc0, 0x120);
     Gfx2d_LoadPaletteFile("menu/music/obj.bpl", h, 8, 4, 4, 5);
@@ -636,12 +636,12 @@ void C::updateTouch() {
             activateTarget(r);
             return;
         }
-        if (unk_a4 > 0) {
+        if (scrollMax > 0) {
             if (tryGrabKnob(x, y)) {
                 setMainState(1);
             } else if (x >= 0xcf && x <= 0xdf && y >= 0x1d && y <= 0x93) {
-                MenuScrollKnob_grab(&unk_128);
-                unk_b0 = unk_a8;
+                MenuScrollKnob_grab(&scrollKnob);
+                knobLastTickPos = knobPos;
                 setMainState(2);
             }
         }
@@ -687,7 +687,7 @@ void C::updateKnobKeys() {
         moveKnobByKey();
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        MenuCursorBase_warpTo(&unk_c4, a, b);
+        MenuCursorBase_warpTo(&cursor, a, b);
     } else {
         releaseKnob();
         setMainState(5);
@@ -701,19 +701,19 @@ void C::updateKnobKeysEnd() {
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    MenuCursorBase_warpTo(&unk_c4, a, b);
+    MenuCursorBase_warpTo(&cursor, a, b);
 }
 
 void C::updateCursorMove() {
-    if (!MenuCursorBase_isMoving(&unk_c4)) {
-        setMainState(unk_be);
+    if (!MenuCursorBase_isMoving(&cursor)) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void C::updateCursorPress() {
-    if (HandCursor_isAnimDone(&unk_c4)) {
-        if (!activateTarget(unk_c1)) {
+    if (HandCursor_isAnimDone(&cursor)) {
+        if (!activateTarget(cursorSlot)) {
             setMainState(3);
             releaseCursor();
         }
@@ -721,19 +721,19 @@ void C::updateCursorPress() {
 }
 
 void C::updateCursorRelease() {
-    if (HandCursor_isAnimDone(&unk_c4)) {
+    if (HandCursor_isAnimDone(&cursor)) {
         refreshCursor();
-        setMainState(unk_be);
+        setMainState(returnState);
     }
 }
 
 void C::updateBarTransition() {
-    if (MenuBottomButtonsBody_stepPress(&unk_170)) {
-        if (HandCursor_getAnim(&unk_c4)) {
-            s32 a = MenuBottomButtonsBody_getPressOffset(&unk_170);
-            s32 b = MenuBottomButtonsBody_getTargetX(&unk_170, -1);
-            s32 c = MenuBottomButtonsBody_getTargetY(&unk_170, -1);
-            MenuCursorBase_warpTo(&unk_c4, a + b, a + c);
+    if (MenuBottomButtonsBody_stepPress(&bottomButtons)) {
+        if (HandCursor_getAnim(&cursor)) {
+            s32 a = MenuBottomButtonsBody_getPressOffset(&bottomButtons);
+            s32 b = MenuBottomButtonsBody_getTargetX(&bottomButtons, -1);
+            s32 c = MenuBottomButtonsBody_getTargetY(&bottomButtons, -1);
+            MenuCursorBase_warpTo(&cursor, a + b, a + c);
         }
     } else {
         hideCursor();
@@ -742,35 +742,35 @@ void C::updateBarTransition() {
 }
 
 void C::updateTakeOutDelay() {
-    if (unk_c0 != 0) {
-        unk_c0 = *(volatile u8 *)&unk_c0 - 1;
+    if (delayTimer != 0) {
+        delayTimer = *(volatile u8 *)&delayTimer - 1;
     } else {
-        SongSet_RemoveSong(unk_664[unk_ba]);
-        s32 p = *(volatile s16 *)&unk_ba;
-        s32 q = *(volatile s16 *)&unk_bc;
+        SongSet_RemoveSong(songs[selectedSong]);
+        s32 p = *(volatile s16 *)&selectedSong;
+        s32 q = *(volatile s16 *)&playingSong;
         if (p < q) {
-            unk_bc = q - 1;
+            playingSong = q - 1;
         }
         selectSong(-1);
         buildSongList();
-        unk_a4 = (unk_b8 - 8) << 4;
-        if (unk_a4 < 0) {
-            unk_a4 = 0;
+        scrollMax = (songCount - 8) << 4;
+        if (scrollMax < 0) {
+            scrollMax = 0;
         }
-        s32 t = unk_a4;
-        if (unk_9c > t) {
-            unk_9c = t;
+        s32 t = scrollMax;
+        if (scrollY > t) {
+            scrollY = t;
         }
-        setScrollPos(unk_9c);
-        unk_a0 = unk_9c;
+        setScrollPos(scrollY);
+        scrollTargetY = scrollY;
         syncKnobToScroll();
         resumeInput();
     }
 }
 
 void C::updateCloseDelay() {
-    if (unk_c0 != 0) {
-        unk_c0 = *(volatile u8 *)&unk_c0 - 1;
+    if (delayTimer != 0) {
+        delayTimer = *(volatile u8 *)&delayTimer - 1;
     } else {
         hideCursor();
         setPhase(1);
@@ -778,9 +778,9 @@ void C::updateCloseDelay() {
 }
 
 void C::updateMessage() {
-    if (MenuErrorMessage_update(&unk_55c, 1)) {
+    if (MenuErrorMessage_update(&errorMessage, 1)) {
         resumeInput();
-        HandCursor_enableObjWindow(&unk_c4);
+        HandCursor_enableObjWindow(&cursor);
     }
 }
 
@@ -793,7 +793,7 @@ void MusicMenu::startButtonInput() {
     if (testFlags(0x10)) {
         clearFlags(0x10);
     } else {
-        unk_c1 = 0xb;
+        cursorSlot = 0xb;
     }
     showCursor();
     MenuProc_restartKeyRepeat(this);
@@ -810,26 +810,26 @@ void MusicMenu::resumeInput() {
 
 void MusicMenu::startQuit() {
     MenuCtrl_SetResult(0);
-    MenuBottomButtonsBody_setSelected(&unk_170, 6);
+    MenuBottomButtonsBody_setSelected(&bottomButtons, 6);
     setTransitionState(2);
     setMainState(9);
 }
 
 BOOL MusicMenu::playSelectedSong() {
-    if (unk_ba == -1) {
+    if (selectedSong == -1) {
         return FALSE;
     }
-    if (unk_bc != -1) {
+    if (playingSong != -1) {
         stopSong();
         return FALSE;
     }
     clearFlags(0x20);
-    unk_c0 = 5;
+    delayTimer = 5;
     paintPlayButton(8);
     setMainState(0xb);
-    scrollToSong(unk_ba);
+    scrollToSong(selectedSong);
     MenuCtrl_SetResult(1);
-    MenuCtrl_SetSongItem(unk_664[unk_ba]);
+    MenuCtrl_SetSongItem(songs[selectedSong]);
     setTransitionState(2);
     Snd_PlaySe(0x55);
     return TRUE;
@@ -839,8 +839,8 @@ void MusicMenu::stopSong() {
     if (IsZero(gFieldSceneKind) == 0) {
         FtrMgr_BroadcastStereosAct0();
     }
-    scrollToSong(unk_bc);
-    unk_bc = -1;
+    scrollToSong(playingSong);
+    playingSong = -1;
     setFlags(8);
     refreshButtons();
     resumeInput();
@@ -848,7 +848,7 @@ void MusicMenu::stopSong() {
 }
 
 BOOL MusicMenu::takeOutSong() {
-    if (unk_ba == -1) {
+    if (selectedSong == -1) {
         return FALSE;
     }
     s32 t = Pocket_FindEmpty();
@@ -857,17 +857,17 @@ BOOL MusicMenu::takeOutSong() {
         showMessage(0x10);
         return TRUE;
     }
-    u16 v = unk_664[unk_ba];
+    u16 v = songs[selectedSong];
     Pocket_SetItem(&v, 0, t);
-    if (unk_ba == unk_bc) {
+    if (selectedSong == playingSong) {
         if (IsZero(gFieldSceneKind) == 0) {
             FtrMgr_BroadcastStereosAct0();
         }
-        unk_bc = -1;
+        playingSong = -1;
     }
-    SongSet_RemoveSong(unk_664[unk_ba]);
-    scrollToSong(unk_ba);
-    unk_c0 = 10;
+    SongSet_RemoveSong(songs[selectedSong]);
+    scrollToSong(selectedSong);
+    delayTimer = 10;
     paintTakeOutButton(8);
     setMainState(10);
     setFlags(0x10);
@@ -878,7 +878,7 @@ BOOL MusicMenu::takeOutSong() {
 void MusicMenu::startAddSongs() {
     setFlags(0x20);
     paintAddButton(8);
-    unk_c0 = 5;
+    delayTimer = 5;
     setMainState(0xb);
     setTransitionState(2);
     Snd_PlaySe(0x57);
@@ -886,16 +886,16 @@ void MusicMenu::startAddSongs() {
 
 void MusicMenu::showMessage(u8 v) {
     u8 l = v;
-    MenuErrorMessage_open(&unk_55c, &l, 1, 0);
+    MenuErrorMessage_open(&errorMessage, &l, 1, 0);
     setMainState(0xc);
-    HandCursor_disableObjWindow(&unk_c4);
+    HandCursor_disableObjWindow(&cursor);
 }
 
 BOOL MusicMenu::tryGrabKnob(s32 a, s32 b) {
-    if (MenuScrollKnob_hitTest(&unk_128)) {
-        unk_ac = unk_a8 - b;
-        MenuScrollKnob_grab(&unk_128);
-        unk_b0 = unk_a8;
+    if (MenuScrollKnob_hitTest(&scrollKnob)) {
+        knobGrabOffset = knobPos - b;
+        MenuScrollKnob_grab(&scrollKnob);
+        knobLastTickPos = knobPos;
         return TRUE;
     }
     return FALSE;
@@ -905,7 +905,7 @@ void MusicMenu::dragKnob(s32 x, s32 flag) {
     if (flag) {
         x -= 0x1d;
     } else {
-        x += unk_ac;
+        x += knobGrabOffset;
     }
     if (x < 0) {
         x = 0;
@@ -914,25 +914,25 @@ void MusicMenu::dragKnob(s32 x, s32 flag) {
         x = 0x78;
     }
     if (flag) {
-        func_020e761c(&unk_a8, x, 8);
+        func_020e761c(&knobPos, x, 8);
     } else {
-        unk_a8 = x;
+        knobPos = x;
     }
     syncScrollToKnob();
     updateKnobPosition();
-    s32 d = unk_b0 - unk_a8;
+    s32 d = knobLastTickPos - knobPos;
     if (d >= 4 || d <= -4) {
-        Menu_PlayScrollTickSe(&unk_128);
-        unk_b0 = unk_a8;
+        Menu_PlayScrollTickSe(&scrollKnob);
+        knobLastTickPos = knobPos;
     }
 }
 
 s32 MusicMenu::releaseKnob() {
-    return MenuScrollKnob_release(&unk_128);
+    return MenuScrollKnob_release(&scrollKnob);
 }
 
 void MusicMenu::moveKnobByKey() {
-#define A8 (*(volatile s32 *)&unk_a8)
+#define A8 (*(volatile s32 *)&knobPos)
     s32 old = A8;
     u32 keys = gPad[0];
     if (keys & 0x40) {
@@ -949,27 +949,27 @@ void MusicMenu::moveKnobByKey() {
     if (old != A8) {
         syncScrollToKnob();
         updateKnobPosition();
-        Menu_PlayScrollTickSe(&unk_128);
+        Menu_PlayScrollTickSe(&scrollKnob);
     }
 #undef A8
 }
 
 BOOL MusicMenu::finishKnobRelease() {
-    if (ScrollKnob_areAnimsDone(&unk_128)) {
-        MenuScrollKnob_show(&unk_128);
+    if (ScrollKnob_areAnimsDone(&scrollKnob)) {
+        MenuScrollKnob_show(&scrollKnob);
         return TRUE;
     }
     return FALSE;
 }
 
 void MusicMenu::updateKnobPosition() {
-    ScrollKnob_moveTo(&unk_128, 0x4f, unk_94 + (unk_a8 - 0x4b));
+    ScrollKnob_moveTo(&scrollKnob, 0x4f, slideY + (knobPos - 0x4b));
 }
 
 void MusicMenu::syncScrollToKnob() {
     s32 v;
-    s32 n = unk_a4;
-    v = func_02133150(unk_a8 * n, 0x78);
+    s32 n = scrollMax;
+    v = func_02133150(knobPos * n, 0x78);
     if (v < 0) {
         v = 0;
     }
@@ -977,12 +977,12 @@ void MusicMenu::syncScrollToKnob() {
         v = n;
     }
     setScrollPos(v);
-    unk_a0 = v;
+    scrollTargetY = v;
 }
 
 void MusicMenu::syncKnobToScroll() {
-    if (unk_a4 > 0) {
-        unk_a8 = func_02133150(unk_9c * 0x78, unk_a4);
+    if (scrollMax > 0) {
+        knobPos = func_02133150(scrollY * 0x78, scrollMax);
         updateKnobPosition();
     }
 }
@@ -992,11 +992,11 @@ void MusicMenu::buildSongList() {
     u16 id;
     id = 0x1323;
     i = 0;
-    unk_b8 = 0;
-    s16 *pc = &unk_b8;
+    songCount = 0;
+    s16 *pc = &songCount;
     for (; i < 0x46; i++) {
         if (SongSet_HasSong(id)) {
-            unk_664[unk_b8] = id;
+            songs[songCount] = id;
             *pc = *pc + 1;
         }
         id++;
@@ -1010,7 +1010,7 @@ void MusicMenu::findCurrentSong() {
     u16 id;
     id = 0x1323;
     n = 0;
-    unk_bc = -1;
+    playingSong = -1;
     if (*HouseRoom_GetCurrentSong() != 0xfff1) {
         u16 *pv = HouseRoom_GetCurrentSong();
         if (Unk_ov144_02292c5c_Rng(pv, id, 0x1368)) {
@@ -1021,7 +1021,7 @@ void MusicMenu::findCurrentSong() {
         for (i = 0; i < 0x46; i++) {
             if (SongSet_HasSong(id)) {
                 if (i == target) {
-                    unk_bc = n;
+                    playingSong = n;
                     i = 0x46;
                 }
                 n++;
@@ -1029,44 +1029,44 @@ void MusicMenu::findCurrentSong() {
             id++;
         }
     }
-    unk_ba = unk_bc;
+    selectedSong = playingSong;
 }
 
 void MusicMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    MenuCursorBase_warpTo(&unk_c4, a, b);
-    MenuCursor_setAnimIfChanged(&unk_c4, 1);
+    MenuCursorBase_warpTo(&cursor, a, b);
+    MenuCursor_setAnimIfChanged(&cursor, 1);
     refreshCursor();
 }
 
 s32 MusicMenu::getCursorTargetX() {
-    u32 c = unk_c1;
+    u32 c = cursorSlot;
     if (c <= 8) {
         return 0x48;
     }
     switch (c) {
     case 9:
-        return MenuBottomButtonsBody_getTargetX(&unk_170, 6);
+        return MenuBottomButtonsBody_getTargetX(&bottomButtons, 6);
     case 11:
     case 12:
     case 13:
         return 0x26;
     case 10:
-        return MenuScrollKnob_getGripX(&unk_128);
+        return MenuScrollKnob_getGripX(&scrollKnob);
     default:
         return 0x80;
     }
 }
 
 s32 MusicMenu::getCursorTargetY() {
-    u32 c = unk_c1;
+    u32 c = cursorSlot;
     if (c <= 8) {
-        return c * 16 + 0x20 - (unk_a0 & 0xf);
+        return c * 16 + 0x20 - (scrollTargetY & 0xf);
     }
     switch (c) {
     case 9:
-        return MenuBottomButtonsBody_getTargetY(&unk_170, 6);
+        return MenuBottomButtonsBody_getTargetY(&bottomButtons, 6);
     case 11:
         return 0x2a;
     case 12:
@@ -1074,24 +1074,24 @@ s32 MusicMenu::getCursorTargetY() {
     case 13:
         return 0x65;
     case 10:
-        return MenuScrollKnob_getGripY(&unk_128);
+        return MenuScrollKnob_getGripY(&scrollKnob);
     default:
         return 0x60;
     }
 }
 
 void MusicMenu::hideCursor() {
-    MenuCursor_setAnimIfChanged(&unk_c4, 0);
-    unk_c4.vfunc_0c();
+    MenuCursor_setAnimIfChanged(&cursor, 0);
+    cursor.vfunc_0c();
 }
 
 void MusicMenu::moveCursorToTarget() {
-    if (unk_c1 == 9) {
-        MenuCursor_switchToAnim07(&unk_c4);
-    } else if (unk_c1 <= 8) {
-        MenuCursor_switchToAnim07(&unk_c4);
+    if (cursorSlot == 9) {
+        MenuCursor_switchToAnim07(&cursor);
+    } else if (cursorSlot <= 8) {
+        MenuCursor_switchToAnim07(&cursor);
     } else {
-        MenuCursor_switchToAnim01(&unk_c4);
+        MenuCursor_switchToAnim01(&cursor);
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
@@ -1099,40 +1099,40 @@ void MusicMenu::moveCursorToTarget() {
 }
 
 void MusicMenu::moveCursorTo(s32 a, s32 b) {
-    MenuCursorBase_moveToEase(&unk_c4, a, b, 3, 1);
-    unk_be = mainState;
+    MenuCursorBase_moveToEase(&cursor, a, b, 3, 1);
+    returnState = mainState;
     setMainState(6);
 }
 
 void MusicMenu::refreshCursor() {
-    MenuCursorBase_setPoseIdle(&unk_c4);
-    unk_c4.vfunc_0c();
+    MenuCursorBase_setPoseIdle(&cursor);
+    cursor.vfunc_0c();
 }
 
 void MusicMenu::pressCursor() {
-    MenuCursor_setPosePress(&unk_c4);
+    MenuCursor_setPosePress(&cursor);
     setMainState(7);
 }
 
 void MusicMenu::releaseCursor() {
-    MenuCursorBase_setPoseRelease(&unk_c4);
-    unk_be = mainState;
+    MenuCursorBase_setPoseRelease(&cursor);
+    returnState = mainState;
     setMainState(8);
 }
 
 void *MusicMenu::allocTextLabel() {
-    if (unk_bf >= 9) {
-        return &unk_2d4[8];
+    if (labelCount >= 9) {
+        return &textLabels[8];
     }
-    unk_bf = unk_bf + 1;
-    return &unk_2d4[unk_bf - 1];
+    labelCount = labelCount + 1;
+    return &textLabels[labelCount - 1];
 }
 
 void MusicMenu::resetTextLabels() {
     s32 i = 0;
-    unk_bf = 0;
+    labelCount = 0;
     for (; i < 9; i++) {
-        LabelString_destroyLabel(&unk_2d4[i]);
+        LabelString_destroyLabel(&textLabels[i]);
     }
 }
 
@@ -1146,23 +1146,23 @@ void MusicMenu::drawSongNames() {
     u16 *p;
     s32 slot;
     func_0206267c(buf);
-    idx = unk_b6;
+    idx = topRow;
     if (idx < 0) {
-        p = unk_664;
+        p = songs;
     } else {
-        p = &unk_664[idx];
+        p = &songs[idx];
     }
     slot = (idx + 9) % 9;
-    cnt = unk_b8;
+    cnt = songCount;
     for (i = 0; i < 9; i++) {
         obj = NULL;
         if (idx < 0 || idx >= cnt) {
-            unk_6f0[slot] = 0xfff1;
+            shownRowItems[slot] = 0xfff1;
             obj = allocTextLabel();
             MsgString_clear(obj);
         } else {
-            if (*p != unk_6f0[slot]) {
-                unk_6f0[slot] = *p;
+            if (*p != shownRowItems[slot]) {
+                shownRowItems[slot] = *p;
                 obj = allocTextLabel();
                 t = *p;
                 ItemName_setFromItem(buf, &t);
@@ -1188,7 +1188,7 @@ void MusicMenu::flushDirty() {
         uploadListScreen();
     }
     if (testFlags(2)) {
-        if (BgVramTask_requestScreen(&unk_514[1], &unk_1702, 6, 0x800, 0)) {
+        if (BgVramTask_requestScreen(&screenTasks[1], &frameScreen, 6, 0x800, 0)) {
             clearFlags(2);
         }
     }
@@ -1199,32 +1199,32 @@ void MusicMenu::flushDirty() {
 }
 
 void MusicMenu::initScroll() {
-    unk_a4 = (unk_b8 - 8) << 4;
-    if (unk_a4 < 0) {
-        unk_a4 = 0;
+    scrollMax = (songCount - 8) << 4;
+    if (scrollMax < 0) {
+        scrollMax = 0;
     }
-    scrollToSong(unk_bc);
+    scrollToSong(playingSong);
 }
 
 void MusicMenu::setScrollPos(s32 v) {
-    unk_9c = v;
-    Gfx2d_SetLayerOffset(4, 0, unk_9c - 0x18);
-    unk_b6 = v >> 4;
+    scrollY = v;
+    Gfx2d_SetLayerOffset(4, 0, scrollY - 0x18);
+    topRow = v >> 4;
     composeListScreen();
     setFlags(4);
 }
 
 void MusicMenu::composeListScreen() {
-    s32 n = unk_b6;
+    s32 n = topRow;
     s32 i = (n + 9) % 9;
     s32 j = n & 0xf;
     s32 k;
     volatile u16 fill = 0x10;
-    MIi_CpuClear16(fill, unk_f02, 0x800);
+    MIi_CpuClear16(fill, listScreen, 0x800);
     s32 z = 0;
     k = z;
     do {
-        MIi_CpuCopy16(unk_702 + i * 0x80, unk_f02 + j * 0x80, 0x80);
+        MIi_CpuCopy16(rowTemplateScreen + i * 0x80, listScreen + j * 0x80, 0x80);
         i++;
         if (i >= 9) {
             i = z;
@@ -1238,45 +1238,45 @@ void MusicMenu::composeListScreen() {
 void MusicMenu::paintListRow(s32 idx, u32 col) {
     s32 z = 0;
     if (idx != -1) {
-        s32 d = idx - unk_b6;
+        s32 d = idx - topRow;
         if (d >= 0 && d < 9) {
             s32 y = (idx & 0xf) << 1;
-            BgScreen_SetRectPalette(unk_f02, z, y, 0x1f, y + 1, col);
+            BgScreen_SetRectPalette(listScreen, z, y, 0x1f, y + 1, col);
         }
     }
 }
 
 void MusicMenu::uploadListScreen() {
-    BgScreen_SetRectPalette(unk_f02, 0, 0, 0x1f, 0x1f, 4);
-    if (unk_bc == unk_ba) {
-        paintListRow(unk_bc, 0xa);
+    BgScreen_SetRectPalette(listScreen, 0, 0, 0x1f, 0x1f, 4);
+    if (playingSong == selectedSong) {
+        paintListRow(playingSong, 0xa);
     } else {
-        paintListRow(unk_bc, 9);
-        paintListRow(unk_ba, 5);
+        paintListRow(playingSong, 9);
+        paintListRow(selectedSong, 5);
     }
-    if (BgVramTask_requestScreen(unk_514, unk_f02, 4, 0x800, 0)) {
+    if (BgVramTask_requestScreen(screenTasks, listScreen, 4, 0x800, 0)) {
         clearFlags(8);
     }
 }
 
 void MusicMenu::updateScrollAnimation() {
-    s32 t = unk_a0;
-    s32 c = unk_9c;
+    s32 t = scrollTargetY;
+    s32 c = scrollY;
     if (c != t) {
         if (c > t) {
-            unk_9c = unk_9c - 6;
-            t = unk_a0;
-            if (unk_9c < t) {
-                unk_9c = t;
+            scrollY = scrollY - 6;
+            t = scrollTargetY;
+            if (scrollY < t) {
+                scrollY = t;
             }
         } else {
-            unk_9c = unk_9c + 6;
-            t = unk_a0;
-            if (unk_9c > t) {
-                unk_9c = t;
+            scrollY = scrollY + 6;
+            t = scrollTargetY;
+            if (scrollY > t) {
+                scrollY = t;
             }
         }
-        setScrollPos(unk_9c);
+        setScrollPos(scrollY);
         syncKnobToScroll();
     }
 }
@@ -1295,23 +1295,23 @@ void MusicMenu::setPlayButtonTiles(u16 v) {
 
 void MusicMenu::paintPlayButton(u32 a) {
     setFlags(2);
-    BgScreen_SetRectPalette(unk_1702, 2, 4, 5, 7, a);
+    BgScreen_SetRectPalette(frameScreen, 2, 4, 5, 7, a);
 }
 
 void MusicMenu::paintTakeOutButton(u32 a) {
     setFlags(2);
-    BgScreen_SetRectPalette(unk_1702, 2, 0xf, 5, 0x10, a);
+    BgScreen_SetRectPalette(frameScreen, 2, 0xf, 5, 0x10, a);
 }
 
 void MusicMenu::paintAddButton(u32 a) {
     setFlags(2);
-    BgScreen_SetRectPalette(unk_1702, 2, 0xc, 5, 0xd, a);
+    BgScreen_SetRectPalette(frameScreen, 2, 0xc, 5, 0xd, a);
 }
 
 void MusicMenu::refreshButtons() {
-    if (unk_ba == -1) {
+    if (selectedSong == -1) {
         paintTakeOutButton(7);
-        if (unk_bc == -1) {
+        if (playingSong == -1) {
             setPlayButtonTiles(0x59);
             paintPlayButton(7);
         } else {
@@ -1320,7 +1320,7 @@ void MusicMenu::refreshButtons() {
         }
     } else {
         paintTakeOutButton(6);
-        if (unk_bc == -1) {
+        if (playingSong == -1) {
             setPlayButtonTiles(0x59);
             paintPlayButton(6);
         } else {
@@ -1332,12 +1332,12 @@ void MusicMenu::refreshButtons() {
 
 BOOL MusicMenu::selectSong(s32 v) {
     BOOL r;
-    if (unk_ba == v) {
+    if (selectedSong == v) {
         r = FALSE;
     } else {
         r = TRUE;
     }
-    unk_ba = v;
+    selectedSong = v;
     setFlags(8);
     refreshButtons();
     return r;
@@ -1345,7 +1345,7 @@ BOOL MusicMenu::selectSong(s32 v) {
 
 BOOL MusicMenu::activateTarget(u32 a) {
     if (a <= 8) {
-        if (selectSong(a + unk_b6)) {
+        if (selectSong(a + topRow)) {
             Snd_PlaySe(0x29);
         }
         return FALSE;
@@ -1362,8 +1362,8 @@ BOOL MusicMenu::activateTarget(u32 a) {
         startAddSongs();
         return TRUE;
     case 1:
-        MenuScrollKnob_grab(&unk_128);
-        Menu_PlayScrollGrabSe(&unk_128);
+        MenuScrollKnob_grab(&scrollKnob);
+        Menu_PlayScrollGrabSe(&scrollKnob);
         setMainState(4);
         return TRUE;
     }
@@ -1371,7 +1371,7 @@ BOOL MusicMenu::activateTarget(u32 a) {
 }
 
 u32 MusicMenu::hitTestTarget(s32 x, s32 y) {
-    if (MenuBottomButtonsBody_isTouched(&unk_170, 6)) {
+    if (MenuBottomButtonsBody_isTouched(&bottomButtons, 6)) {
         return 9;
     }
     if (x >= 0x10 && x <= 0x30 && y >= 0x20 && y <= 0x40) {
@@ -1384,8 +1384,8 @@ u32 MusicMenu::hitTestTarget(s32 x, s32 y) {
         return 0xd;
     }
     if (x >= 0x40 && x <= 0xc0 && y >= 0x18 && y < 0x98) {
-        s32 t = (y - (0x18 - (unk_a0 & 0xf))) >> 4;
-        if (t < unk_b8) {
+        s32 t = (y - (0x18 - (scrollTargetY & 0xf))) >> 4;
+        if (t < songCount) {
             return (u8)t;
         }
     }
@@ -1393,18 +1393,18 @@ u32 MusicMenu::hitTestTarget(s32 x, s32 y) {
 }
 
 void MusicMenu::targetButtonAtCursor() {
-    s32 x = MenuCursorBase_getScreenY(&unk_c4);
+    s32 x = MenuCursorBase_getScreenY(&cursor);
     if (x < 0x4c) {
-        unk_c1 = 0xb;
+        cursorSlot = 0xb;
     } else if (x < 0x74) {
-        unk_c1 = 0xd;
+        cursorSlot = 0xd;
     } else {
-        unk_c1 = 0xc;
+        cursorSlot = 0xc;
     }
 }
 
 BOOL MusicMenu::targetRowAtCursor() {
-    s32 n = unk_b8;
+    s32 n = songCount;
     s32 x, r, t;
     if (n == 0) {
         return FALSE;
@@ -1412,25 +1412,25 @@ BOOL MusicMenu::targetRowAtCursor() {
     if (n > 9) {
         n = 9;
     }
-    x = MenuCursorBase_getScreenY(&unk_c4);
+    x = MenuCursorBase_getScreenY(&cursor);
     if (x < 0x20) {
         x = 0x20;
     }
     if (x >= 0xa0) {
         x = 0x9f;
     }
-    r = unk_a0 & 0xf;
+    r = scrollTargetY & 0xf;
     t = (x - (0x20 - r)) >> 4;
     if (t >= n) {
         t = n - 1;
     }
-    unk_c1 = t;
+    cursorSlot = t;
     if (r != 0) {
         if (t == 0) {
-            unk_a0 = unk_a0 - r;
+            scrollTargetY = scrollTargetY - r;
         } else if (t == n - 1) {
-            unk_c1 = unk_c1 - 1;
-            unk_a0 = unk_a0 + (0x10 - (unk_a0 & 0xf));
+            cursorSlot = cursorSlot - 1;
+            scrollTargetY = scrollTargetY + (0x10 - (scrollTargetY & 0xf));
         }
     }
     return TRUE;
@@ -1438,10 +1438,10 @@ BOOL MusicMenu::targetRowAtCursor() {
 
 void MusicMenu::targetRowOrRight() {
     if (!targetRowAtCursor()) {
-        if (unk_a4 > 0) {
-            unk_c1 = 10;
+        if (scrollMax > 0) {
+            cursorSlot = 10;
         } else {
-            unk_c1 = 9;
+            cursorSlot = 9;
         }
     }
 }
@@ -1453,7 +1453,7 @@ void MusicMenu::targetRowOrButton() {
 }
 
 BOOL MusicMenu::moveCursorByPad(u32 pad) {
-    u32 st = unk_c1;
+    u32 st = cursorSlot;
     if (pad == 0) {
         return FALSE;
     }
@@ -1461,89 +1461,89 @@ BOOL MusicMenu::moveCursorByPad(u32 pad) {
         if (MenuKeys_HasLeft(pad)) {
             targetButtonAtCursor();
         } else if (MenuKeys_HasRight(pad)) {
-            if (unk_a4 > 0) {
-                unk_c1 = 10;
+            if (scrollMax > 0) {
+                cursorSlot = 10;
             } else {
-                unk_c1 = 9;
+                cursorSlot = 9;
             }
         } else if (MenuKeys_HasUp(pad)) {
-            if (unk_c1 != 0) {
-                unk_c1 = *(volatile u8 *)&unk_c1 - 1;
-                if (unk_c1 == 0) {
-                    s32 r = unk_a0 & 0xf;
+            if (cursorSlot != 0) {
+                cursorSlot = *(volatile u8 *)&cursorSlot - 1;
+                if (cursorSlot == 0) {
+                    s32 r = scrollTargetY & 0xf;
                     if (r != 0) {
-                        unk_a0 = unk_a0 - r;
+                        scrollTargetY = scrollTargetY - r;
                     }
                 }
             } else {
-                if (unk_a0 >= 0x10) {
-                    unk_a0 = unk_a0 - 0x10;
+                if (scrollTargetY >= 0x10) {
+                    scrollTargetY = scrollTargetY - 0x10;
                     return TRUE;
                 }
             }
         } else if (MenuKeys_HasDown(pad)) {
-            s32 t = unk_a4;
+            s32 t = scrollMax;
             if (t == 0) {
-                if (unk_c1 < unk_b8 - 1) {
-                    unk_c1 = *(volatile u8 *)&unk_c1 + 1;
+                if (cursorSlot < songCount - 1) {
+                    cursorSlot = *(volatile u8 *)&cursorSlot + 1;
                 }
-            } else if (unk_c1 < 7) {
-                unk_c1 = *(volatile u8 *)&unk_c1 + 1;
+            } else if (cursorSlot < 7) {
+                cursorSlot = *(volatile u8 *)&cursorSlot + 1;
             } else {
-                s32 a0 = unk_a0;
+                s32 a0 = scrollTargetY;
                 s32 r = a0 & 0xf;
                 if (r != 0) {
-                    unk_a0 = unk_a0 + (0x10 - r);
+                    scrollTargetY = scrollTargetY + (0x10 - r);
                     return TRUE;
                 } else if (a0 <= t - 0x10) {
-                    unk_a0 = unk_a0 + 0x10;
+                    scrollTargetY = scrollTargetY + 0x10;
                     return TRUE;
                 }
             }
         }
     }
-    switch (unk_c1) {
+    switch (cursorSlot) {
     case 9:
         if (MenuKeys_HasLeft(pad)) {
             targetRowOrButton();
         } else if (MenuKeys_HasUp(pad)) {
-            if (unk_a4 > 0) {
-                unk_c1 = 10;
+            if (scrollMax > 0) {
+                cursorSlot = 10;
             }
         }
         break;
     case 10:
         if (MenuKeys_HasDown(pad)) {
-            unk_c1 = 9;
+            cursorSlot = 9;
         } else if (MenuKeys_HasLeft(pad)) {
             targetRowOrButton();
         }
         break;
     case 11:
         if (MenuKeys_HasDown(pad)) {
-            unk_c1 = 13;
+            cursorSlot = 13;
         } else if (MenuKeys_HasRight(pad)) {
             targetRowOrRight();
         }
         break;
     case 12:
         if (MenuKeys_HasUp(pad)) {
-            unk_c1 = 13;
+            cursorSlot = 13;
         } else if (MenuKeys_HasRight(pad)) {
             targetRowOrRight();
         }
         break;
     case 13:
         if (MenuKeys_HasUp(pad)) {
-            unk_c1 = 11;
+            cursorSlot = 11;
         } else if (MenuKeys_HasDown(pad)) {
-            unk_c1 = 12;
+            cursorSlot = 12;
         } else if (MenuKeys_HasRight(pad)) {
             targetRowOrRight();
         }
         break;
     }
-    if (st != unk_c1) {
+    if (st != cursorSlot) {
         return TRUE;
     }
     return FALSE;
@@ -1551,7 +1551,7 @@ BOOL MusicMenu::moveCursorByPad(u32 pad) {
 
 void MusicMenu::scrollToSong(s32 x) {
     x = x - 3;
-    s32 m = unk_b8 - 8;
+    s32 m = songCount - 8;
     if (m < 0) {
         m = 0;
     }
@@ -1561,19 +1561,19 @@ void MusicMenu::scrollToSong(s32 x) {
         x = m;
     }
     setScrollPos(x << 4);
-    unk_a0 = unk_9c;
+    scrollTargetY = scrollY;
     syncKnobToScroll();
 }
 
 BOOL MusicMenu::testFlags(u32 m) {
-    if (unk_b4 & m) {
+    if (flags & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void MusicMenu::setFlags(u32 m) { unk_b4 = unk_b4 | m; }
+void MusicMenu::setFlags(u32 m) { flags = flags | m; }
 
-void MusicMenu::clearFlags(u32 m) { unk_b4 = unk_b4 & ~m; }
+void MusicMenu::clearFlags(u32 m) { flags = flags & ~m; }
 
 #undef C

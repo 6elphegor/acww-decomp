@@ -23,9 +23,9 @@ public:
 };
 
 struct PlayerBodyModelPool {
-    u32 unk_00[4];
-    TexVramSlot unk_10[4];
-    TexVramTask unk_60[4];
+    u32 buffers[4];
+    TexVramSlot vramSlots[4];
+    TexVramTask texTasks[4];
 
     PlayerBodyModelPool();
     ~PlayerBodyModelPool();
@@ -90,22 +90,22 @@ void PlayerBodyModelPool::allocBuffers() {
         u32 a = PlayerBodyModel_GetTexVramSize();
         u32 b = PlayerBodyModel_GetTex4x4VramSize();
         u32 c = PlayerBodyModel_GetPlttVramSize();
-        unk_10[i].alloc((void *)a, (void *)b, (void *)c);
+        vramSlots[i].alloc((void *)a, (void *)b, (void *)c);
     }
     void *heap = gPlayerBodyModelHeap;
-    for (i = 0; i < cnt; i++) unk_00[i] = (u32)Heap_AllocAligned(heap, PlayerBodyModel_GetBufferSize(), 4);
+    for (i = 0; i < cnt; i++) buffers[i] = (u32)Heap_AllocAligned(heap, PlayerBodyModel_GetBufferSize(), 4);
 }
 
 void PlayerBodyModelPool::freeBuffers() {
-    for (s32 i = 0; i < 4; i++) unk_10[i].clear();
+    for (s32 i = 0; i < 4; i++) vramSlots[i].clear();
     s32 j;
-    for (j = 0; j < 4; j++) unk_00[j] = 0;
+    for (j = 0; j < 4; j++) buffers[j] = 0;
     if (gPlayerBodyModelHeap) func_020e885c(gPlayerBodyModelHeap);
 }
 
-u32 PlayerBodyModelPool::getBuffer(s32 i) { return unk_00[i]; }
-void *PlayerBodyModelPool::getVramSlot(s32 i) { return &unk_10[i]; }
-TexVramTask *PlayerBodyModelPool::getTexTask(s32 i) { return &unk_60[i]; }
+u32 PlayerBodyModelPool::getBuffer(s32 i) { return buffers[i]; }
+void *PlayerBodyModelPool::getVramSlot(s32 i) { return &vramSlots[i]; }
+TexVramTask *PlayerBodyModelPool::getTexTask(s32 i) { return &texTasks[i]; }
 
 extern "C" void PlayerBodyModelRef_Init(u8 *p) { *p = 4; }
 extern "C" void PlayerBodyModelRef_Destruct() {}

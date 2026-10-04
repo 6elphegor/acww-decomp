@@ -65,7 +65,7 @@ class GroundInfoBase {
 public:
     s32 getHeight(s32 flag);
     u8 pad_00[0x3c];
-    s32 unk_3c;
+    s32 waterSurfaceY;
 };
 
 class GroundInfo : public GroundInfoBase {
@@ -165,34 +165,34 @@ public:
     MuseumInsect();
     ~MuseumInsect();
 
-    /* 0x000 */ MuseumInsectAnim unk_00;
-    /* 0x020 */ u8 unk_20;
+    /* 0x000 */ MuseumInsectAnim matAnim;
+    /* 0x020 */ u8 isBumped;
     /* 0x021 */ u8 pad_21[3];
-    /* 0x024 */ void *unk_24;
+    /* 0x024 */ void *sound;
     /* 0x028 */ u8 pad_28[0x34 - 0x28];
-    /* 0x034 */ Unk_ov004_022376f8_V3 unk_34;
+    /* 0x034 */ Unk_ov004_022376f8_V3 targetPos;
     /* 0x040 */ u8 pad_40[0x68 - 0x40];
-    /* 0x068 */ u8 unk_68[0xb0 - 0x68];
-    /* 0x0b0 */ u8 unk_b0[0x114 - 0xb0];
-    /* 0x114 */ Unk_ov004_022376f8_Mtx unk_114;
+    /* 0x068 */ u8 moveResult[0xb0 - 0x68];
+    /* 0x0b0 */ u8 model[0x114 - 0xb0];
+    /* 0x114 */ Unk_ov004_022376f8_Mtx modelMtx;
     /* 0x144 */ u8 pad_144[0x168 - 0x144];
     /* 0x168 */ u16 unk_168;
     /* 0x16a */ u8 pad_16a[0x172 - 0x16a];
-    /* 0x172 */ s16 unk_172;
+    /* 0x172 */ s16 moveState;
     /* 0x174 */ u8 pad_174[4];
-    /* 0x178 */ u8 unk_178[0x18];
-    /* 0x190 */ s16 unk_190;
-    /* 0x192 */ s16 unk_192;
-    /* 0x194 */ s16 unk_194;
-    /* 0x196 */ s8 unk_196;
+    /* 0x178 */ u8 probePoints[0x18];
+    /* 0x190 */ s16 pitch;
+    /* 0x192 */ s16 yaw;
+    /* 0x194 */ s16 roll;
+    /* 0x196 */ s8 insectIndex;
     /* 0x197 */ u8 pad_197;
-    /* 0x198 */ s32 unk_198;
-    /* 0x19c */ Unk_ov004_022376f8_Obj unk_19c;
+    /* 0x198 */ s32 loadState;
+    /* 0x19c */ Unk_ov004_022376f8_Obj hitBox;
     /* 0x1e8 */ u8 unk_1e8[0x284 - 0x1e8];
-    /* 0x284 */ u8 unk_284[4];
-    /* 0x288 */ u8 unk_288[0x2c8 - 0x288];
-    /* 0x2c8 */ Unk_ov004_022376f8_V3 unk_2c8;
-    /* 0x2d4 */ void (*unk_2d4)(MuseumInsect *);
+    /* 0x284 */ u8 modelSlot[4];
+    /* 0x288 */ u8 pooledModel[0x2c8 - 0x288];
+    /* 0x2c8 */ Unk_ov004_022376f8_V3 pos;
+    /* 0x2d4 */ void (*updateFn)(MuseumInsect *);
 };
 
 typedef MuseumInsect Elem_7690;
@@ -813,10 +813,10 @@ public:
     BOOL hasHitBox(u32 id, u8 flag);
     void updateInsect(Elem_7690 *e);
 
-    /* 0x050 */ u8 unk_50[4][0x4c];
-    /* 0x180 */ u8 unk_180[0x18];
-    /* 0x198 */ s32 unk_198;
-    /* 0x19c */ s32 unk_19c;
+    /* 0x050 */ u8 obstacleHitBoxes[4][0x4c];
+    /* 0x180 */ u8 modelPool[0x18];
+    /* 0x198 */ s32 dungBeetleAnimFile;
+    /* 0x19c */ s32 dungBallAnimFile;
 };
 
 extern "C" {
@@ -4793,7 +4793,7 @@ extern "C" BOOL MuseumInsectRoom_AddInsect(u8 *m, s8 v) {
 }
 
 BOOL MuseumInsectRoom::vfunc_00() {
-    ModelSlotPool_init(unk_180, 0x20, 0x400, 0x40, 0x9c4, (void *)MuseumInsectHeap_Create, (void *)MuseumInsectHeap_Destroy, 0);
+    ModelSlotPool_init(modelPool, 0x20, 0x400, 0x40, 0x9c4, (void *)MuseumInsectHeap_Create, (void *)MuseumInsectHeap_Destroy, 0);
     spawnDonatedInsects();
     return TRUE;
 }
@@ -4917,30 +4917,30 @@ void MuseumInsectRoom::updateInsect(Elem_7690 *e) {
     V3_7690 q;
     u32 mode;
     s32 a;
-    if (e->unk_2d4 != 0) {
-        Unk_ov004_022376f8_Obj *obj = &e->unk_19c;
-        V3_7690 *pos = &e->unk_2c8;
-        u8 id = e->unk_196;
+    if (e->updateFn != 0) {
+        Unk_ov004_022376f8_Obj *obj = &e->hitBox;
+        V3_7690 *pos = &e->pos;
+        u8 id = e->insectIndex;
         prev = *pos;
         if (obj->unk_3c != 0) {
             pos->x = pos->x + obj->unk_10;
             pos->z = pos->z + obj->unk_18;
             MuseumInsect_RevertOutOfBounds(this, (u8 *)e, (s32 *)&prev);
             if (ActorCollider_isHitByGroup(obj, 0x40)) {
-                V3_7690 *pv = &e->unk_34;
+                V3_7690 *pv = &e->targetPos;
                 *pv = *pos;
                 if (id == 0x17) {
-                    e->unk_20 = 1;
+                    e->isBumped = 1;
                 }
             } else if (ActorCollider_isHitByGroup(obj, 0x80)) {
-                e->unk_20 = 1;
+                e->isBumped = 1;
             }
         }
-        e->unk_2d4(e);
-        if (hasHitBox(id, e->unk_172)) {
+        e->updateFn(e);
+        if (hasHitBox(id, e->moveState)) {
             p2 = *pos;
             if (id == 0x38) {
-                if (Model_GetJointWorldMtx(e->unk_b0, &buf, 0)) {
+                if (Model_GetJointWorldMtx(e->model, &buf, 0)) {
                     q = buf.unk_24;
                     WorldCurve_FromCurved(&p2, &q);
                 }
@@ -4958,7 +4958,7 @@ void MuseumInsectRoom::updateInsect(Elem_7690 *e) {
                 case 0x0a:
                 case 0x25:
                 case 0x33:
-                    if (e->unk_172 != 0) {
+                    if (e->moveState != 0) {
                         mode = 0x82;
                         break;
                     }
@@ -4967,27 +4967,27 @@ void MuseumInsectRoom::updateInsect(Elem_7690 *e) {
                 }
                 a = sMuseumInsectParams[id].unk_02;
             }
-            Collision_Move(e->unk_68, pos, &prev, e->unk_192, sMuseumInsectParams[id].unk_02, 0, 0xb);
+            Collision_Move(e->moveResult, pos, &prev, e->yaw, sMuseumInsectParams[id].unk_02, 0, 0xb);
             StaticCollider_setupAtPos(obj, &p2, sMuseumInsectParams[id].unk_02, a, mode, 0xc0, 0, 0xff, 0x1000);
             ActorCollider_submit(obj);
         }
         if (sMuseumInsectParams[id].unk_00 == 0) {
-            AnimModel_stepAnim(e->unk_b0);
+            AnimModel_stepAnim(e->model);
             if (id == 0x18) {
                 AnimFrameCtrl_step(e);
-                *e->unk_00.anmObj = e->unk_00.curFrame;
+                *e->matAnim.anmObj = e->matAnim.curFrame;
             }
         }
         if (MuseumInsect_GetSe((s8)id, 0) > 0) {
             t = *pos;
-            Unk_02003c40_callUpdateRelative(&e->unk_24, &t);
+            Unk_02003c40_callUpdateRelative(&e->sound, &t);
         }
-        s32 r = WorldCurve_ToCurved(&out, &e->unk_2c8);
+        s32 r = WorldCurve_ToCurved(&out, &e->pos);
         func_020e8388(&data_021f47e0, out.x, out.y, out.z);
-        func_020e8434(&data_021f47e0, r + e->unk_190);
-        func_020e8404(&data_021f47e0, e->unk_192);
-        func_020e83d4(&data_021f47e0, e->unk_194);
-        e->unk_114 = data_021f47e0;
+        func_020e8434(&data_021f47e0, r + e->pitch);
+        func_020e8404(&data_021f47e0, e->yaw);
+        func_020e83d4(&data_021f47e0, e->roll);
+        e->modelMtx = data_021f47e0;
     }
 }
 
@@ -5053,7 +5053,7 @@ BOOL MuseumInsectRoom::onExecute() {
     sMuseumInsectFrame++;
     updateObstacles();
     for (i = 0; i < 0x20; e++, i++) {
-        switch (e->unk_198) {
+        switch (e->loadState) {
         case 1:
             MuseumInsectRoom_LoadInsect((u8 *)this, (u8 *)e);
             break;
@@ -5116,8 +5116,8 @@ void MuseumInsectRoom::updateObstacles() {
         n = 2;
     }
     for (i = 0; i < n; i++) {
-        StaticCollider_setupAtPos(unk_50[i], &pos[i], sc[i], sb[i], 0x42, 0x80, z, 0xff, 0x1000);
-        ActorCollider_submit(unk_50[i]);
+        StaticCollider_setupAtPos(obstacleHitBoxes[i], &pos[i], sc[i], sb[i], 0x42, 0x80, z, 0xff, 0x1000);
+        ActorCollider_submit(obstacleHitBoxes[i]);
     }
 }
 
@@ -5127,9 +5127,9 @@ BOOL MuseumInsectRoom::onDraw() {
     s32 z1 = 0;
     u8 i = 0;
     for (; i < 0x20; e++, i++) {
-        if (e->unk_198 == 2) {
-            s8 id = e->unk_196;
-            u8 *obj = e->unk_b0;
+        if (e->loadState == 2) {
+            s8 id = e->insectIndex;
+            u8 *obj = e->model;
             if (id == 0x30) {
                 V3_7690 v = sMuseumFleaDrawScale;
                 AnimModel_drawAnimated(obj, &v);
@@ -5137,8 +5137,8 @@ BOOL MuseumInsectRoom::onDraw() {
                 AnimModel_drawAnimated(obj, (void *)z0);
             }
             if (hasShadow(e)) {
-                u32 r = func_02106020((u32)PooledModel_getModel(e->unk_288), z1);
-                CharaShadow_DrawFaded(&e->unk_2c8, sMuseumInsectParams[id].unk_02, 0x9000, (u8)r);
+                u32 r = func_02106020((u32)PooledModel_getModel(e->pooledModel), z1);
+                CharaShadow_DrawFaded(&e->pos, sMuseumInsectParams[id].unk_02, 0x9000, (u8)r);
             }
         }
     }
@@ -5146,14 +5146,14 @@ BOOL MuseumInsectRoom::onDraw() {
 }
 
 BOOL MuseumInsectRoom::hasShadow(Elem_7690 *e) {
-    switch (e->unk_196) {
+    switch (e->insectIndex) {
     case 0x9: case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x18: case 0x19:
     case 0x1f: case 0x21: case 0x22: case 0x23: case 0x24: case 0x26: case 0x27: case 0x28:
     case 0x29: case 0x2a: case 0x2b: case 0x2c: case 0x2d: case 0x2e: case 0x2f: case 0x30:
     case 0x32: case 0x33: case 0x38:
         return FALSE;
     case 0x1e:
-        if (e->unk_172 == 0x19) {
+        if (e->moveState == 0x19) {
             return FALSE;
         }
         return TRUE;
@@ -5166,7 +5166,7 @@ BOOL MuseumInsectRoom::vfunc_0c() {
     for (i = 0; i < 0x20; i++) {
         releaseInsect(i);
     }
-    ModelSlotPool_destroy(unk_180);
+    ModelSlotPool_destroy(modelPool);
     return TRUE;
 }
 
@@ -5218,7 +5218,7 @@ extern "C" Elem_7690 *MuseumInsect_FindScorpion() {
     Elem_7690 *e = sMuseumInsects;
     u8 j;
     for (j = 0; j < 0x20; e++, j++) {
-        if (e->unk_196 == 0x37 && e->unk_198 != 0) {
+        if (e->insectIndex == 0x37 && e->loadState != 0) {
             sMuseumScorpionSlot = j;
             return e;
         }
@@ -5234,7 +5234,7 @@ extern "C" Elem_7690 *MuseumInsect_FindDungBall() {
     Elem_7690 *e = sMuseumInsects;
     u8 j;
     for (j = 0; j < 0x20; e++, j++) {
-        if (e->unk_196 == 0x38 && e->unk_198 != 0) {
+        if (e->insectIndex == 0x38 && e->loadState != 0) {
             sMuseumDungBallSlot = j;
             return e;
         }
@@ -5243,29 +5243,29 @@ extern "C" Elem_7690 *MuseumInsect_FindDungBall() {
 }
 
 MuseumInsect::MuseumInsect() {
-    unk_24 = data_0213b91c;
-    unk_24 = data_0213b954;
-    func_020323b0(unk_68);
-    func_020548d0(unk_b0);
-    func_02135714(unk_178, 2, 0xc, (void *)FxVec3_Construct, (void *)func_02000c8c);
-    func_02088bc8(&unk_19c);
+    sound = data_0213b91c;
+    sound = data_0213b954;
+    func_020323b0(moveResult);
+    func_020548d0(model);
+    func_02135714(probePoints, 2, 0xc, (void *)FxVec3_Construct, (void *)func_02000c8c);
+    func_02088bc8(&hitBox);
     func_02054e3c(unk_1e8);
-    ModelSlotHandle_Init(unk_284);
-    func_0209c140(unk_288);
-    unk_196 = -1;
-    PooledModel_reset(unk_288);
-    unk_2d4 = 0;
-    unk_198 = 0;
+    ModelSlotHandle_Init(modelSlot);
+    func_0209c140(pooledModel);
+    insectIndex = -1;
+    PooledModel_reset(pooledModel);
+    updateFn = 0;
+    loadState = 0;
 }
 
 MuseumInsect::~MuseumInsect() {
-    func_0209c128(unk_288);
-    ModelSlotHandle_Destroy(unk_284);
+    func_0209c128(pooledModel);
+    ModelSlotHandle_Destroy(modelSlot);
     func_02054e24(unk_1e8);
-    func_02088bb0(&unk_19c);
-    func_021355f0(unk_178, 2, 0xc, (void *)func_02000c8c);
-    func_020548a0(unk_b0);
-    func_0203239c(unk_68);
+    func_02088bb0(&hitBox);
+    func_021355f0(probePoints, 2, 0xc, (void *)func_02000c8c);
+    func_020548a0(model);
+    func_0203239c(moveResult);
 }
 
 void MuseumInsectRoom::releaseInsect(s32 idx) {
@@ -5273,11 +5273,11 @@ void MuseumInsectRoom::releaseInsect(s32 idx) {
         Unk_ov004_022375b8_Rec *r = (Unk_ov004_022375b8_Rec *)&sMuseumInsects[idx];
         s32 t = r->unk_196;
         if (t == 0x38) {
-            Mem_Free((void *)unk_19c);
-            unk_19c = 0;
+            Mem_Free((void *)dungBallAnimFile);
+            dungBallAnimFile = 0;
         } else if (t == 0x23) {
-            Mem_Free((void *)unk_198);
-            unk_198 = 0;
+            Mem_Free((void *)dungBeetleAnimFile);
+            dungBeetleAnimFile = 0;
         }
         if (sMuseumInsectParams[t].unk_00 != 0) {
             AnimModel_detachVisAnim(r->unk_b0);
@@ -5293,19 +5293,19 @@ void MuseumInsectRoom::releaseInsect(s32 idx) {
         r->unk_168 = 0;
         r->unk_172 = 0x19;
         PooledModel_unload(r->unk_288);
-        ModelSlotPool_release(unk_180, r->unk_284);
+        ModelSlotPool_release(modelPool, r->unk_284);
         r->unk_2d4 = 0;
     }
 }
 
 MuseumInsectRoom::MuseumInsectRoom() {
-    func_02135714(unk_50, 4, 0x4c, (void *)func_02088bc8, (void *)func_02088bb0);
-    func_0209c2dc(unk_180);
+    func_02135714(obstacleHitBoxes, 4, 0x4c, (void *)func_02088bc8, (void *)func_02088bb0);
+    func_0209c2dc(modelPool);
 }
 
 MuseumInsectRoom::~MuseumInsectRoom() {
-    func_0209c2d8(unk_180);
-    func_021355f0(unk_50, 4, 0x4c, (void *)func_02088bb0);
+    func_0209c2d8(modelPool);
+    func_021355f0(obstacleHitBoxes, 4, 0x4c, (void *)func_02088bb0);
 }
 
 MuseumInsectAnim::MuseumInsectAnim() {

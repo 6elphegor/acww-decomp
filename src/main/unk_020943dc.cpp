@@ -15,16 +15,16 @@ struct Unk_02006d14 {
     u8 pad_68[0x8e - 0x68];
     s16 unk_8e;
     u8 pad_90[0x44c - 0x90];
-    s32 unk_44c;
-    s32 unk_450;
-    s32 unk_454;
+    s32 headPosX;
+    s32 headPosY;
+    s32 headPosZ;
     u8 pad_458[4];
     u16 headPitchTarget;
     u16 headYawTarget;
     u8 pad_460[0x59c - 0x460];
     u8 heldItemModel[4];
     u8 pad_5a0[0x5c8 - 0x5a0];
-    s32 unk_5c8;
+    s32 fishBobberState;
     u8 pad_5cc[0x694 - 0x5cc];
     Unk_02006d14_Blk itemHandMtx;
     u8 pad_6c4[0x6f0 - 0x6c4];
@@ -348,11 +348,11 @@ extern "C" BOOL PlayerActor_SetHeadTilt(u32 a, u32 b, u32 idx) {
 extern "C" BOOL PlayerActor_GetHeadPos(Unk_02006d14_Vec *out, u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
     if (o) {
-        s32 a = o->unk_44c;
-        if (a == 0 && o->unk_450 == 0 && o->unk_454 == 0) return FALSE;
+        s32 a = o->headPosX;
+        if (a == 0 && o->headPosY == 0 && o->headPosZ == 0) return FALSE;
         out->x = a;
-        out->y = o->unk_450;
-        out->z = o->unk_454;
+        out->y = o->headPosY;
+        out->z = o->headPosZ;
         WorldCurve_FromCurved(out, out);
         return TRUE;
     }

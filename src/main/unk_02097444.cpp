@@ -9,13 +9,13 @@ struct ItemId {
 
 struct Unk_02097ac4 {
     u8 pad[0x9f8];
-    s32 unk_9f8;
+    s32 wallet;
 };
 
 struct Unk_020973e4_Pl {
     u8 pad[0x64];
-    u32 unk_64;
-    u32 unk_68;
+    u32 myAid;
+    u32 localSlot;
 };
 
 // 0x228c-byte element (constructor 0x02098be4 and destructor 0x02098af0 belong to another unit)
@@ -193,7 +193,7 @@ extern "C" void PlayerInventory_SetWallet(Unk_02097ac4 *p, s32 v, s32 mode) {
             v = 99999;
         }
     }
-    p->unk_9f8 = v;
+    p->wallet = v;
 }
 
 extern "C" BOOL PlayerInventory_CanAddBells(u8 *p, s32 v, s32 a, s32 b) {
@@ -408,9 +408,9 @@ extern "C" s32 PlayerData_GetGuestSlot(s32 idx) {
 
 extern "C" u32 PlayerData_GetBySessionSlot(u32 a) { return PlayerData_Get(PlayerSession_GetDataIndex(a)); }
 
-extern "C" u32 PlayerData_GetCurrent() { return PlayerData_GetBySessionSlot(gCommManager->unk_68); }
+extern "C" u32 PlayerData_GetCurrent() { return PlayerData_GetBySessionSlot(gCommManager->localSlot); }
 
-extern "C" u32 PlayerData_GetCurrentIndex() { return PlayerSession_GetDataIndex(gCommManager->unk_68); }
+extern "C" u32 PlayerData_GetCurrentIndex() { return PlayerSession_GetDataIndex(gCommManager->localSlot); }
 
 extern "C" u32 PlayerData_Get(s32 idx) {
     u32 r = 0;

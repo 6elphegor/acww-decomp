@@ -384,7 +384,7 @@ public:
     virtual u8 *data();
     BOOL copyTo(u8 *out, s32 n);
 
-    /* 0x0e */ u8 unk_0e[16];
+    /* 0x0e */ u8 text[16];
 };
 
 // buffer of 0x11 bytes (vtable 0x020dd324)
@@ -400,7 +400,7 @@ public:
     BOOL setSeriesName(s32 idx);
     BOOL setFromItem(u16 *p);
 
-    /* 0x12 */ u8 unk_12[0x11];
+    /* 0x12 */ u8 text[0x11];
 };
 
 ItemName::ItemName() {
@@ -453,5 +453,5 @@ u8 ItemName::setString(u8 *str) { return set(str); }
 
 u32 ItemName::capacity() { return 0x11; }
 
-u8 *ItemName::data() { return unk_12; }
+u8 *ItemName::data() { return text; }
 

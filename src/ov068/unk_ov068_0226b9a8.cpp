@@ -78,9 +78,9 @@ struct Unk_ov004_02224ee4_Vec {
 
 struct Unk_0203e5d0_Node {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ void *unk_0c;
+    /* 0x04 */ Unk_0203e5d0_Node *next;
+    /* 0x08 */ u32 charId;
+    /* 0x0c */ void *owner;
 };
 
 class Actor : public GameProc {
@@ -196,11 +196,11 @@ public:
     inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
     inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
 
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08[13];
-    u32 unk_3c[13];
-    u32 unk_70[13];
+    u32 archive;
+    u32 model;
+    u32 bcas[13];
+    u32 bmas[13];
+    u32 btas[13];
 };
 
 class Unk_ov004_02224d60_B {
@@ -210,8 +210,8 @@ public:
     inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
     inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
-    u32 unk_00;
-    u8 unk_04;
+    u32 texture;
+    u8 syncState;
 };
 
 class RoomObjSe {
@@ -222,7 +222,7 @@ public:
     inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
     inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
-    u32 unk_00[0x10];
+    u32 emitter[0x10];
 };
 
 class RoomObjActor : public Character {
@@ -243,10 +243,10 @@ public:
     void loadResourcesByName(char *name);
     void loadResources(char *a, char *b);
 
-    /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ RoomObjRes unk_1a4;
-    /* 0x248 */ Unk_ov004_02224d60_B unk_248;
-    /* 0x250 */ RoomObjSe unk_250;
+    /* 0xec */ AnimModel model;
+    /* 0x1a4 */ RoomObjRes res;
+    /* 0x248 */ Unk_ov004_02224d60_B tex;
+    /* 0x250 */ RoomObjSe se;
 };
 
 struct Unk_ov068_022702b4_Bits {
@@ -273,15 +273,15 @@ struct ModelAnim {
 struct RoomObjTex {
     inline RoomObjTex() { RoomObjTex_Construct(this); }
     inline ~RoomObjTex() { RoomObjTex_Destruct(this); }
-    u32 unk_00;
+    u32 texture;
 };
 
 class TaxiInterior;
 
 struct Unk_ov068_Scene_Entry {
-    void *(*unk_00)();
-    u16 unk_04;
-    u16 unk_06;
+    void *(*factory)();
+    u16 executePriority;
+    u16 drawPriority;
     s32 unk_08[4];
 };
 
@@ -292,22 +292,22 @@ struct Unk_ov068_0226c298_Arg;
 typedef void (*Unk_ov068_0226c298_Fn)(Unk_ov068_0226c298_Arg *);
 struct Unk_ov068_0226c298_Arg {
     /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ Unk_ov068_0226c298_Fn unk_1c;
+    /* 0x1c */ Unk_ov068_0226c298_Fn matCallback;
     /* 0x20 */ u8 pad_20[0x70];
-    /* 0x90 */ u8 unk_90;
+    /* 0x90 */ u8 matCallbackTiming;
 };
 
 struct Unk_ov068_0226c2a8_Inner {
     u8 pad_00;
-    u8 unk_01;
+    u8 matIdx;
 };
 struct Unk_ov068_0226c2a8_Owner {
     u8 pad_00[0x2c];
-    void *unk_2c;
+    void *ptrUser;
 };
 struct Unk_ov068_0226c2a8_Arg {
-    Unk_ov068_0226c2a8_Inner *unk_00;
-    Unk_ov068_0226c2a8_Owner *unk_04;
+    Unk_ov068_0226c2a8_Inner *c;
+    Unk_ov068_0226c2a8_Owner *pRenderObj;
 };
 
 extern "C" {
@@ -360,22 +360,22 @@ public:
     void playBodyAnim(s32 a);
     void loadModels();
 
-    /* 0x290 */ ModelAnim unk_290;
-    /* 0x2b0 */ ModelAnim unk_2b0;
-    /* 0x2d0 */ AnimModel unk_2d0;
-    /* 0x388 */ RoomObjRes unk_388;
-    /* 0x42c */ RoomObjTex unk_42c;
-    /* 0x430 */ u8 unk_430;
+    /* 0x290 */ ModelAnim bodyMatAnim;
+    /* 0x2b0 */ ModelAnim bodyTexAnim;
+    /* 0x2d0 */ AnimModel driverModel;
+    /* 0x388 */ RoomObjRes driverRes;
+    /* 0x42c */ RoomObjTex driverTex;
+    /* 0x430 */ u8 isDriverAnimating;
     /* 0x431 */ u8 pad_431[3];
-    /* 0x434 */ AnimModel unk_434;
-    /* 0x4ec */ RoomObjRes unk_4ec;
-    /* 0x590 */ RoomObjTex unk_590;
-    /* 0x594 */ s32 unk_594;
-    /* 0x598 */ u16 unk_598;
-    /* 0x59a */ s16 unk_59a;
-    /* 0x59c */ s16 unk_59c;
-    /* 0x59e */ s16 unk_59e;
-    /* 0x5a0 */ s16 unk_5a0;
+    /* 0x434 */ AnimModel wheelModel;
+    /* 0x4ec */ RoomObjRes wheelRes;
+    /* 0x590 */ RoomObjTex wheelTex;
+    /* 0x594 */ s32 rainState;
+    /* 0x598 */ u16 rainFadeFrame;
+    /* 0x59a */ s16 rainAlpha;
+    /* 0x59c */ s16 rainAMatIdx;
+    /* 0x59e */ s16 rainBMatIdx;
+    /* 0x5a0 */ s16 splashMatIdx;
     /* 0x5a2 */ u16 pad_5a2;
 };
 
@@ -398,15 +398,15 @@ extern "C" TaxiInterior *TaxiInterior_Create() {
 }
 
 extern "C" void TaxiInterior_ModelCallback(Unk_ov068_0226c2a8_Arg *p) {
-    void *o = p->unk_04->unk_2c;
+    void *o = p->pRenderObj->ptrUser;
     if (o) {
-        TaxiInterior_OnModelNode(o, p->unk_00->unk_01, p);
+        TaxiInterior_OnModelNode(o, p->c->matIdx, p);
     }
 }
 
 extern "C" void TaxiInterior_InitModelCallback(Unk_ov068_0226c298_Arg *p) {
-    p->unk_1c = (Unk_ov068_0226c298_Fn)TaxiInterior_ModelCallback;
-    p->unk_90 = 2;
+    p->matCallback = (Unk_ov068_0226c298_Fn)TaxiInterior_ModelCallback;
+    p->matCallbackTiming = 2;
 }
 
 TaxiInterior::TaxiInterior() {}
@@ -416,10 +416,10 @@ TaxiInterior::~TaxiInterior() {}
 BOOL TaxiInterior::vfunc_00() {
     sTaxiInterior = this;
     loadModels();
-    Model_setInitCallback(&unk_ec, TaxiInterior_InitModelCallback, this);
-    unk_59c = G3dResAccess_findMatIdx((*(u32 *)((u8 *)&unk_ec + 0x5c)), "m_rainA");
-    unk_59e = G3dResAccess_findMatIdx((*(u32 *)((u8 *)&unk_ec + 0x5c)), "m_rainB");
-    unk_5a0 = G3dResAccess_findMatIdx((*(u32 *)((u8 *)&unk_ec + 0x5c)), "m_splash");
+    Model_setInitCallback(&model, TaxiInterior_InitModelCallback, this);
+    rainAMatIdx = G3dResAccess_findMatIdx((*(u32 *)((u8 *)&model + 0x5c)), "m_rainA");
+    rainBMatIdx = G3dResAccess_findMatIdx((*(u32 *)((u8 *)&model + 0x5c)), "m_rainB");
+    splashMatIdx = G3dResAccess_findMatIdx((*(u32 *)((u8 *)&model + 0x5c)), "m_splash");
     setRainState(0);
     func_02004008(0x884);
     func_02004008(0x885);
@@ -428,13 +428,13 @@ BOOL TaxiInterior::vfunc_00() {
 
 BOOL TaxiInterior::onExecute() {
     updateRainState();
-    AnimFrameCtrl_step(&unk_2b0);
-    *unk_2b0.anmObj = unk_2b0.curFrame.v;
-    AnimModel_stepAnim(&unk_ec);
-    AnimFrameCtrl_step(&unk_290);
-    *unk_290.anmObj = unk_290.curFrame.v;
-    if (unk_430) {
-        AnimModel_stepAnim(&unk_2d0);
+    AnimFrameCtrl_step(&bodyTexAnim);
+    *bodyTexAnim.anmObj = bodyTexAnim.curFrame.v;
+    AnimModel_stepAnim(&model);
+    AnimFrameCtrl_step(&bodyMatAnim);
+    *bodyMatAnim.anmObj = bodyMatAnim.curFrame.v;
+    if (isDriverAnimating) {
+        AnimModel_stepAnim(&driverModel);
     }
     s32 t = SpNpcKappn_GetAnimState();
     SpNpcKappn_GetAnimFrame();
@@ -459,26 +459,26 @@ BOOL TaxiInterior::onExecute() {
         k = 5;
         break;
     }
-    TaxiInterior_SetPartAnim(this, k, &unk_434, &unk_4ec, 0, 0x1000, 0, 0);
-    AnimModel_stepAnim(&unk_434);
-    NNS_G3dMdlSetMdlAlpha((*(u32 *)((u8 *)&unk_ec + 0x5c)), unk_59c, unk_59a);
-    NNS_G3dMdlSetMdlAlpha((*(u32 *)((u8 *)&unk_ec + 0x5c)), unk_59e, unk_59a);
-    NNS_G3dMdlSetMdlAlpha((*(u32 *)((u8 *)&unk_ec + 0x5c)), unk_5a0, unk_59a);
+    TaxiInterior_SetPartAnim(this, k, &wheelModel, &wheelRes, 0, 0x1000, 0, 0);
+    AnimModel_stepAnim(&wheelModel);
+    NNS_G3dMdlSetMdlAlpha((*(u32 *)((u8 *)&model + 0x5c)), rainAMatIdx, rainAlpha);
+    NNS_G3dMdlSetMdlAlpha((*(u32 *)((u8 *)&model + 0x5c)), rainBMatIdx, rainAlpha);
+    NNS_G3dMdlSetMdlAlpha((*(u32 *)((u8 *)&model + 0x5c)), splashMatIdx, rainAlpha);
     return TRUE;
 }
 
 BOOL TaxiInterior::onDraw() {
-    AnimModel_drawAnimated(&unk_ec, 0);
-    AnimModel_drawAnimated(&unk_2d0, 0);
-    AnimModel_drawAnimated(&unk_434, 0);
+    AnimModel_drawAnimated(&model, 0);
+    AnimModel_drawAnimated(&driverModel, 0);
+    AnimModel_drawAnimated(&wheelModel, 0);
     return TRUE;
 }
 
 BOOL TaxiInterior::vfunc_0c() {
     sTaxiInterior = 0;
     releaseResources();
-    RoomObj_ReleaseResources(&unk_388, &unk_42c);
-    RoomObj_ReleaseResources(&unk_4ec, &unk_590);
+    RoomObj_ReleaseResources(&driverRes, &driverTex);
+    RoomObj_ReleaseResources(&wheelRes, &wheelTex);
     Snd_StopSe(0x884, 1);
     Snd_StopSe(0x885, 1);
     return TRUE;
@@ -486,46 +486,46 @@ BOOL TaxiInterior::vfunc_0c() {
 
 void TaxiInterior::loadModels() {
     loadResourcesByName("obj_taxi");
-    if ((void *)RoomObjRes_GetBca(&unk_1a4, 0)) {
-        if (AnimModel_allocAnmObj(&unk_ec, gBgHeap)) {
-            BlendAnimModel_initAnim(&unk_ec, (void *)RoomObjRes_GetBca(&unk_1a4, 0), 0, 0x1000, 0, 0);
-            AnimModel_attachAnim(&unk_ec);
+    if ((void *)RoomObjRes_GetBca(&res, 0)) {
+        if (AnimModel_allocAnmObj(&model, gBgHeap)) {
+            BlendAnimModel_initAnim(&model, (void *)RoomObjRes_GetBca(&res, 0), 0, 0x1000, 0, 0);
+            AnimModel_attachAnim(&model);
         }
     }
-    if (RoomObjRes_GetBta(&unk_1a4, 0)) {
-        if (ModelAnim_allocMatAnm(&unk_2b0, (*(u32 *)((u8 *)&unk_ec + 0x5c)), gBgHeap)) {
-            ModelAnim_init(&unk_2b0, RoomObjRes_GetBta(&unk_1a4, 0), 0, 0x1000, 0);
-            ModelAnim_addToRenderObj(&unk_2b0, Model_getRenderObj(&unk_ec));
+    if (RoomObjRes_GetBta(&res, 0)) {
+        if (ModelAnim_allocMatAnm(&bodyTexAnim, (*(u32 *)((u8 *)&model + 0x5c)), gBgHeap)) {
+            ModelAnim_init(&bodyTexAnim, RoomObjRes_GetBta(&res, 0), 0, 0x1000, 0);
+            ModelAnim_addToRenderObj(&bodyTexAnim, Model_getRenderObj(&model));
         }
     }
-    if (RoomObjRes_GetBma(&unk_1a4, 0)) {
-        if (ModelAnim_allocMatAnm(&unk_290, (*(u32 *)((u8 *)&unk_ec + 0x5c)), gBgHeap)) {
-            ModelAnim_init(&unk_290, RoomObjRes_GetBma(&unk_1a4, 0), 0, 0x1000, 0);
-            ModelAnim_addToRenderObj(&unk_290, Model_getRenderObj(&unk_ec));
+    if (RoomObjRes_GetBma(&res, 0)) {
+        if (ModelAnim_allocMatAnm(&bodyMatAnim, (*(u32 *)((u8 *)&model + 0x5c)), gBgHeap)) {
+            ModelAnim_init(&bodyMatAnim, RoomObjRes_GetBma(&res, 0), 0, 0x1000, 0);
+            ModelAnim_addToRenderObj(&bodyMatAnim, Model_getRenderObj(&model));
         }
     }
-    RoomObj_LoadResourcesByName("obj_taxi_fig", &unk_2d0, &unk_388, &unk_42c);
-    if ((void *)RoomObjRes_GetBca(&unk_388, 0)) {
-        if (AnimModel_allocAnmObj(&unk_2d0, gBgHeap)) {
-            BlendAnimModel_initAnim(&unk_2d0, (void *)RoomObjRes_GetBca(&unk_388, 0), 1, 0x1000, 0, 0);
-            AnimModel_attachAnim(&unk_2d0);
+    RoomObj_LoadResourcesByName("obj_taxi_fig", &driverModel, &driverRes, &driverTex);
+    if ((void *)RoomObjRes_GetBca(&driverRes, 0)) {
+        if (AnimModel_allocAnmObj(&driverModel, gBgHeap)) {
+            BlendAnimModel_initAnim(&driverModel, (void *)RoomObjRes_GetBca(&driverRes, 0), 1, 0x1000, 0, 0);
+            AnimModel_attachAnim(&driverModel);
         }
     }
-    RoomObj_LoadResourcesByName("obj_taxi_hdl", &unk_434, &unk_4ec, &unk_590);
-    if ((void *)RoomObjRes_GetBca(&unk_4ec, 0)) {
-        if (AnimModel_allocAnmObj(&unk_434, gBgHeap)) {
-            BlendAnimModel_initAnim(&unk_434, (void *)RoomObjRes_GetBca(&unk_4ec, 0), 0, 0x1000, 0, 0);
-            AnimModel_attachAnim(&unk_434);
+    RoomObj_LoadResourcesByName("obj_taxi_hdl", &wheelModel, &wheelRes, &wheelTex);
+    if ((void *)RoomObjRes_GetBca(&wheelRes, 0)) {
+        if (AnimModel_allocAnmObj(&wheelModel, gBgHeap)) {
+            BlendAnimModel_initAnim(&wheelModel, (void *)RoomObjRes_GetBca(&wheelRes, 0), 0, 0x1000, 0, 0);
+            AnimModel_attachAnim(&wheelModel);
         }
     }
 }
 
 void TaxiInterior::playBodyAnim(s32 a) {
-    void *p = (void *)RoomObjRes_GetBca(&unk_1a4, 0);
-    BlendAnimModel_initAnim(&unk_ec, p, a, 0x1000, ((Unk_ov068_022702b4_Bits *)&unk_ec.unk_a4)->mid, 0);
-    void *r6 = Model_getRenderObj(&unk_ec);
-    void *q = RoomObjRes_GetBma(&unk_1a4, 0);
-    ModelAnim_replace(&unk_290, r6, q, a, 0x1000, unk_290.curFrame.b.mid);
+    void *p = (void *)RoomObjRes_GetBca(&res, 0);
+    BlendAnimModel_initAnim(&model, p, a, 0x1000, ((Unk_ov068_022702b4_Bits *)&model.unk_a4)->mid, 0);
+    void *r6 = Model_getRenderObj(&model);
+    void *q = RoomObjRes_GetBma(&res, 0);
+    ModelAnim_replace(&bodyMatAnim, r6, q, a, 0x1000, bodyMatAnim.curFrame.b.mid);
 }
 
 BOOL TaxiInterior::setRainState(s32 s) {
@@ -536,7 +536,7 @@ BOOL TaxiInterior::setRainState(s32 s) {
     };
     if (s < 3) {
         if ((this->*tbl[s])()) {
-            unk_594 = s;
+            rainState = s;
             return TRUE;
         }
     }
@@ -549,22 +549,22 @@ void TaxiInterior::updateRainState() {
         &TaxiInterior::execRainFading,
         &TaxiInterior::execDry,
     };
-    s32 s = unk_594;
+    s32 s = rainState;
     if (s < 3) {
         (this->*tbl[s])();
     }
 }
 
 BOOL TaxiInterior::enterRaining() {
-    unk_59a = 0x1f;
+    rainAlpha = 0x1f;
     playBodyAnim(0);
     return TRUE;
 }
 
 void TaxiInterior::execRaining() {
-    if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&unk_ec, 0)) {
+    if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&model, 0)) {
         Snd_PlaySe(0x886);
-    } else if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&unk_ec, 0x1c)) {
+    } else if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&model, 0x1c)) {
         Snd_PlaySe(0x887);
     }
 }
@@ -575,24 +575,24 @@ BOOL TaxiInterior::enterRainFading() {
 }
 
 void TaxiInterior::execRainFading() {
-    if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&unk_ec, 0)) {
+    if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&model, 0)) {
         Snd_PlaySe(0x886);
-    } else if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&unk_ec, 0x1c)) {
+    } else if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&model, 0x1c)) {
         Snd_PlaySe(0x887);
     }
-    if (unk_598 % 3 == 0) {
-        if (unk_59a >= 0) {
-            unk_59a = unk_59a - 1;
-            if (unk_59a == 0) {
+    if (rainFadeFrame % 3 == 0) {
+        if (rainAlpha >= 0) {
+            rainAlpha = rainAlpha - 1;
+            if (rainAlpha == 0) {
                 setRainState(2);
             }
         }
     }
-    unk_598++;
+    rainFadeFrame++;
 }
 
 BOOL TaxiInterior::enterDry() {
-    unk_59a = 0;
+    rainAlpha = 0;
     playBodyAnim(1);
     return TRUE;
 }
@@ -610,8 +610,8 @@ extern "C" BOOL TaxiInterior_StopRain() {
 extern "C" BOOL TaxiInterior_StartDriverAnim() {
     TaxiInterior *g = sTaxiInterior;
     if (g) {
-        g->unk_430 = 1;
-        BlendAnimModel_initAnim(&sTaxiInterior->unk_2d0, (void *)RoomObjRes_GetBca(&sTaxiInterior->unk_388, 0), 1, 0x1000, 0, 0);
+        g->isDriverAnimating = 1;
+        BlendAnimModel_initAnim(&sTaxiInterior->driverModel, (void *)RoomObjRes_GetBca(&sTaxiInterior->driverRes, 0), 1, 0x1000, 0, 0);
         return TRUE;
     }
     return FALSE;

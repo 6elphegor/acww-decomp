@@ -10,19 +10,19 @@ struct Unk_0204e858_Vec {
 
 struct Unk_0204e858_Cell {
     u8 pad_00[0x24];
-    u16 *unk_24;
+    u16 *buried;
 };
 
 struct Unk_0204e858_Grid {
-    Unk_0204e858_Cell *unk_00;
-    u32 unk_04;
-    u32 unk_08;
+    Unk_0204e858_Cell *blocks;
+    u32 width;
+    u32 height;
 };
 
 struct MapBlockEntry {
-    u32 unk_00;
-    u32 unk_04[2];
-    u32 unk_0c;
+    u32 acreId;
+    u32 layers[2];
+    u32 buried;
     MapBlockEntry();
 };
 
@@ -37,8 +37,8 @@ struct OverlaySlot {
 OverlaySlot sOverlaySlots[12];
 
 static inline Unk_0204e858_Cell *Unk_0204e858_GetCell(Unk_0204e858_Grid *g, u32 x, u32 y) {
-    if (x < g->unk_04 && y < g->unk_08 && g->unk_00 != NULL) {
-        return &g->unk_00[y * g->unk_04 + x];
+    if (x < g->width && y < g->height && g->blocks != NULL) {
+        return &g->blocks[y * g->width + x];
     }
     return NULL;
 }

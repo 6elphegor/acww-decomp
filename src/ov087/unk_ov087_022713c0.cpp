@@ -175,7 +175,7 @@ public:
 
     void attachOwner(SpNpcCornimer *owner);
 
-    SpNpcCornimer *unk_ac;
+    SpNpcCornimer *ownerNpc;
 };
 
 #define MEMBER(name, size) \
@@ -365,7 +365,7 @@ public:
     void changeAct(s32 state);
 
     s32 unk_654;
-    SpNpcCornimerTalk unk_658;
+    SpNpcCornimerTalk talk;
 };
 
 struct Unk_ov087_02271a6c_Ent {
@@ -507,8 +507,8 @@ BOOL SpNpcCornimer::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -554,7 +554,7 @@ BOOL SpNpcCornimer::setupAct00() {
 BOOL SpNpcCornimer::mainAct00() { return TRUE; }
 
 BOOL SpNpcCornimer::setupAct01() {
-    void *p = unk_658.func_02015aac();
+    void *p = talk.func_02015aac();
     u32 x = 0;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -579,7 +579,7 @@ SpNpcCornimerTalk::~SpNpcCornimerTalk() {}
 
 void SpNpcCornimerTalk::attachOwner(SpNpcCornimer *owner) {
     vfunc_08();
-    unk_ac = owner;
+    ownerNpc = owner;
 }
 
 void SpNpcCornimerTalk::start(TalkStartMsg *out) {
@@ -802,8 +802,8 @@ BOOL SpNpcCornimer::vfunc_48() {
 void SpNpcCornimer::vfunc_4c(u32 a, u32 b) {
     switch (a) {
     case 0:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0((u32)getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

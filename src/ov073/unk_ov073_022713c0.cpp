@@ -33,13 +33,13 @@ struct Unk_ov073_Vec {
 };
 
 struct Unk_ov073_Out {
-    const char *unk_00;
-    u8 unk_04;
+    const char *msgKey;
+    u8 msgIndex;
 };
 
 struct Unk_ov073_02272208_Ent {
-    const char *unk_00;
-    u8 unk_04;
+    const char *msgKey;
+    u8 msgIndex;
 };
 
 struct Unk_ov073_ColorCtor {
@@ -219,12 +219,12 @@ public:
     void onAmountEntered();
     void setResultHandler(s32 i);
 
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ s32 unk_b0;
-    /* 0xb4 */ Fn unk_b4;
-    /* 0xbc */ s32 unk_bc;
-    /* 0xc0 */ s32 unk_c0;
-    /* 0xc4 */ u8 unk_c4;
+    /* 0xac */ s32 topic;
+    /* 0xb0 */ s32 owner;
+    /* 0xb4 */ Fn resultHandler;
+    /* 0xbc */ s32 price;
+    /* 0xc0 */ s32 amount;
+    /* 0xc4 */ u8 boughtSeeds;
 };
 
 #define MEMBER(name, size) \
@@ -418,7 +418,7 @@ public:
     void changeAct(s32 state);
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ SpNpcJoanTalk unk_658;
+    /* 0x658 */ SpNpcJoanTalk talk;
 };
 
 struct Unk_ov073_02271fcc_Ent {
@@ -476,8 +476,8 @@ BOOL SpNpcJoan::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner((s32)this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner((s32)this);
     return TRUE;
 }
 
@@ -728,7 +728,7 @@ BOOL SpNpcJoan::mainAct01() {
 }
 
 BOOL SpNpcJoan::setupAct04() {
-    void *p = unk_658.func_02015aac();
+    void *p = talk.func_02015aac();
     s32 x = rotY;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -742,9 +742,9 @@ BOOL SpNpcJoan::mainAct04() {
 }
 
 void SpNpcJoanTalk::onTaskDone() {
-    if (unk_b4) {
-        (this->*unk_b4)();
-        unk_b4 = *(Fn *)__ptmf_null;
+    if (resultHandler) {
+        (this->*resultHandler)();
+        resultHandler = *(Fn *)__ptmf_null;
     }
 }
 
@@ -760,7 +760,7 @@ Unk_ov073_ColorCtor data_ov073_02272584(31, 20, 20, 31);
 
 void SpNpcJoanTalk::setResultHandler(s32 i) {
     static Fn tbl[1] = { &SpNpcJoanTalk::onAmountEntered };
-    unk_b4 = tbl[i];
+    resultHandler = tbl[i];
 }
 
 void *data_ov073_02272390[2] = {(void *)_ZN9SpNpcJoan9mainAct04Ev, 0};
@@ -798,10 +798,10 @@ void SpNpcJoanTalk::onAmountEntered() {
     buf[0] = 0x11;
     if (MenuCtrl_IsResultOk()) {
         s32 a = MenuCtrl_GetAmount() * 10;
-        unk_c0 = MenuCtrl_GetAmount();
-        unk_bc = a * _ZN12TurnipMarket8getPriceEv(data_021ed29c);
+        amount = MenuCtrl_GetAmount();
+        price = a * _ZN12TurnipMarket8getPriceEv(data_021ed29c);
         _ZN16ActorTalkRequest13setNumberSlotEijiii(this, a, 1, 3, 1, 0);
-        _ZN16ActorTalkRequest13setNumberSlotEijiii(this, unk_bc, 2, 10, 1, 0);
+        _ZN16ActorTalkRequest13setNumberSlotEijiii(this, price, 2, 10, 1, 0);
         buf[0] = 0x13;
     }
     _ZN15TalkWindowState14setNextMessageEPhPv(obj, buf, sSpNpcJoanKey);
@@ -813,7 +813,7 @@ SpNpcJoanTalk::~SpNpcJoanTalk() {}
 
 void SpNpcJoanTalk::vfunc_08() {
     ActorTalkRequest::vfunc_08();
-    unk_b4 = *(Fn *)__ptmf_null;
+    resultHandler = *(Fn *)__ptmf_null;
 }
 
 extern "C" s32 SpNpcJoan_IsEmptyItem(u16 *p) {
@@ -831,13 +831,13 @@ BOOL SpNpcJoanTalk::giveTurnips() {
     u8 buf[8];
     u16 a, b;
     for (; i < 10; i++) {
-        if (unk_c0 >= 10) {
-            unk_c0 = unk_c0 - 10;
+        if (amount >= 10) {
+            amount = amount - 10;
             n++;
         }
     }
     m = n;
-    if (unk_c0 != 0) {
+    if (amount != 0) {
         m = n + 1;
     }
     Pocket_CountMatching(buf, SpNpcJoan_IsEmptyItem);
@@ -849,9 +849,9 @@ BOOL SpNpcJoanTalk::giveTurnips() {
         Pocket_AddItem(&a, 0);
         n--;
     }
-    if (unk_c0 > 0) {
-        unk_c0 = unk_c0 - 1;
-        b = unk_c0 + 0x1531;
+    if (amount > 0) {
+        amount = amount - 1;
+        b = amount + 0x1531;
         Pocket_AddItem(&b, 0);
     }
     return TRUE;
@@ -859,23 +859,23 @@ BOOL SpNpcJoanTalk::giveTurnips() {
 
 void SpNpcJoanTalk::attachOwner(s32 v) {
     vfunc_08();
-    unk_b0 = v;
-    unk_ac = 0;
-    unk_bc = 0;
-    unk_c0 = 0;
-    unk_c4 = 0;
+    owner = v;
+    topic = 0;
+    price = 0;
+    amount = 0;
+    boughtSeeds = 0;
 }
 
 void SpNpcJoanTalk::start(void *p) {
     Unk_ov073_Out *out = (Unk_ov073_Out *)p;
-    if (unk_ac == 0) {
+    if (topic == 0) {
         if (Talk_CheckAndSetPlayerFlag(3, 1)) {
-            unk_ac = 1;
+            topic = 1;
         }
     }
-    if (unk_ac >= 0 && unk_ac < 3) {
-        out->unk_04 = ((u8 *)&sSpNpcJoanTopicMsgs[0].unk_04)[unk_ac * 8];
-        out->unk_00 = (const char *)*(u32 *)((u8 *)sSpNpcJoanTopicMsgs + unk_ac * 8);
+    if (topic >= 0 && topic < 3) {
+        out->msgIndex = ((u8 *)&sSpNpcJoanTopicMsgs[0].msgIndex)[topic * 8];
+        out->msgKey = (const char *)*(u32 *)((u8 *)sSpNpcJoanTopicMsgs + topic * 8);
     }
 }
 
@@ -892,7 +892,7 @@ void SpNpcJoanTalk::onMessageEnd() {
         setResultHandler(0);
         break;
     case 0x15:
-        if (unk_c4 != 0) {
+        if (boughtSeeds != 0) {
             cmd = 0x1a;
         } else {
             cmd = 0x16;
@@ -1015,17 +1015,17 @@ b16:
 b19:
     if (res == 0) {
         s32 t = Pocket_FindEmpty();
-        if (NpcActor_CanPlayerPay(unk_b0, unk_bc) == 0) {
+        if (NpcActor_CanPlayerPay(owner, price) == 0) {
             cmd = 0x1b;
         } else if (t < 0) {
             cmd = 0x1c;
         } else if (giveTurnips() == 0) {
             cmd = 0x14;
         } else {
-            NpcActor_ChargePlayer(unk_b0, unk_bc);
+            NpcActor_ChargePlayer(owner, price);
             a = 0x1531;
             _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &a, 0, 5, 0);
-            unk_c4 = 0;
+            boughtSeeds = 0;
             cmd = 0x15;
         }
     }
@@ -1042,15 +1042,15 @@ b23:
     goto end;
 b25:
     if (res == 0) {
-        if (NpcActor_CanPlayerPay(unk_b0, 0x3e8) == 0) {
+        if (NpcActor_CanPlayerPay(owner, 0x3e8) == 0) {
             cmd = 0x1b;
         } else {
             b = 0x1567;
             if (Pocket_AddItem(&b, 0)) {
                 cmd = 0x15;
-                NpcActor_ChargePlayer(unk_b0, 0x3e8);
+                NpcActor_ChargePlayer(owner, 0x3e8);
                 _ZN8SaveData7setFlagEj(gSaveData, 4);
-                unk_c4 = 1;
+                boughtSeeds = 1;
                 c = 0x1567;
                 _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &c, 0, 5, 0);
             } else {
@@ -1317,8 +1317,8 @@ void SpNpcJoan::vfunc_4c(s32 a) {
         changeAct(0);
         break;
     case 3:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0((u32)getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(4);
         break;
     case 8:

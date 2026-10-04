@@ -73,8 +73,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 extern u8 data_020d5ce4[];
@@ -154,13 +154,13 @@ public:
 typedef void (LabelBalloon::*Unk_020e0d98_Fn)();
 
 void UiWidget::setOrigin(s32 a, s32 b) {
-    unk_04 = a + 0x80;
-    unk_08 = b + 0x60;
+    originX = a + 0x80;
+    originY = b + 0x60;
 }
 
-s32 UiWidget::getOriginX() { return unk_04; }
+s32 UiWidget::getOriginX() { return originX; }
 
-s32 UiWidget::getOriginY() { return unk_08; }
+s32 UiWidget::getOriginY() { return originY; }
 
 LabelBalloonText::LabelBalloonText() { StrBuf_Clear((StrBuf *)this); }
 

@@ -66,7 +66,7 @@ public:
 
     s32 getLength();
 
-    /* 0x0e */ u8 unk_0e[0x29];
+    /* 0x0e */ u8 bytes[0x29];
 };
 
 // String buffer wrapping a text renderer (TextLabel) at +0x3c
@@ -89,8 +89,8 @@ public:
     void setLayerColors(u32 id, u8 x, u8 y);
     void destroyLabel();
 
-    /* 0x12 */ u8 unk_12[0x2a];
-    /* 0x3c */ TextLabel *unk_3c;
+    /* 0x12 */ u8 text[0x2a];
+    /* 0x3c */ TextLabel *label;
 };
 
 struct Unk_0206fd10_Mtx {
@@ -524,106 +524,106 @@ BOOL String_EqualsEncodedBytes(MsgString *a, u8 *b, s32 len);
 
 void LabelString::setLayerColors(u32 id, u8 x, u8 y) {
     s32 t = Gfx2d_GetLayerBgIndex(id);
-    if (unk_3c != NULL) {
-        unk_3c->vramLoader = t;
+    if (label != NULL) {
+        label->vramLoader = t;
         if (Gfx2d_IsMainScreenLayer(id) != 0) {
-            unk_3c->copyMode = 2;
+            label->copyMode = 2;
         } else {
-            unk_3c->copyMode = 1;
+            label->copyMode = 1;
         }
         if (t == 4) {
-            unk_3c->rowStride1K = 1;
+            label->rowStride1K = 1;
         } else {
-            unk_3c->rowStride1K = 0;
+            label->rowStride1K = 0;
         }
-        unk_3c->bgColor = y;
-        unk_3c->fgColor = x;
+        label->bgColor = y;
+        label->fgColor = x;
     }
 }
 
 void LabelString::createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag) {
-    if (unk_3c != NULL) {
+    if (label != NULL) {
         destroyLabel();
     }
-    unk_3c = MsgTextLabel_CreateVram(a, b, 2);
+    label = MsgTextLabel_CreateVram(a, b, 2);
     setLayerColors(id, x, y);
     if (flag != 0) {
-        unk_3c->font = &gFontC;
+        label->font = &gFontC;
     }
 }
 
 void LabelString::createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag) {
-    if (unk_3c != NULL) {
+    if (label != NULL) {
         destroyLabel();
     }
-    unk_3c = MsgTextLabel_CreateVram(a, b, 1);
+    label = MsgTextLabel_CreateVram(a, b, 1);
     setLayerColors(id, x, y);
     if (flag != 0) {
-        unk_3c->font = &gFontD;
+        label->font = &gFontD;
     } else {
-        unk_3c->font = &gFontB;
+        label->font = &gFontB;
     }
 }
 
 void LabelString::createBufferLabel(u32 a, u32 b, u8 x, u8 y) {
-    if (unk_3c != NULL) {
+    if (label != NULL) {
         destroyLabel();
     }
-    unk_3c = MsgTextLabel_CreateBuffer(a, b, 2);
-    if (unk_3c != NULL) {
-        unk_3c->bgColor = y;
-        unk_3c->fgColor = x;
-        unk_3c->group = 2;
+    label = MsgTextLabel_CreateBuffer(a, b, 2);
+    if (label != NULL) {
+        label->bgColor = y;
+        label->fgColor = x;
+        label->group = 2;
     }
 }
 
 void LabelString::redrawAligned(s32 a, s32 b) {
-    TextLabel *o = unk_3c;
+    TextLabel *o = label;
     if (o != NULL) {
         o->textStart = (u32)data();
         if (b != 0) {
-            unk_3c->underline = 1;
+            label->underline = 1;
         } else {
-            unk_3c->underline = 0;
+            label->underline = 0;
         }
         if (a != 0) {
-            unk_3c->alignCenter();
+            label->alignCenter();
         } else {
-            unk_3c->xOffset = 0;
+            label->xOffset = 0;
         }
-        unk_3c->requestRedraw();
+        label->requestRedraw();
     }
 }
 
 void LabelString::redrawOffset(s32 a, s32 b) {
-    TextLabel *o = unk_3c;
+    TextLabel *o = label;
     if (o != NULL) {
         o->textStart = (u32)data();
         if (a != 0) {
-            unk_3c->alignCenter();
+            label->alignCenter();
         } else {
-            unk_3c->xOffset = 0;
+            label->xOffset = 0;
         }
-        unk_3c->xOffset = unk_3c->xOffset + b;
-        unk_3c->requestRedraw();
+        label->xOffset = label->xOffset + b;
+        label->requestRedraw();
     }
 }
 
 void LabelString::redrawRight() {
-    TextLabel *o = unk_3c;
+    TextLabel *o = label;
     if (o != NULL) {
         o->textStart = (u32)data();
-        unk_3c->alignRight();
-        unk_3c->requestRedraw();
+        label->alignRight();
+        label->requestRedraw();
     }
 }
 
 void LabelString::redrawAt(s32 v) {
-    TextLabel *o = unk_3c;
+    TextLabel *o = label;
     if (o != NULL) {
         o->textStart = (u32)data();
-        unk_3c->xOffset = v;
-        unk_3c->requestRedraw();
+        label->xOffset = v;
+        label->requestRedraw();
     }
 }
 
@@ -665,8 +665,8 @@ void String_FromEncodedBytesEx(MsgString *dst, const void *s, s32 len, BOOL a, u
 }
 
 void LabelString::setHighlight(u8 a, u8 b, u32 c, u32 d) {
-    if (unk_3c != NULL) {
-        unk_3c->setHighlight(a, b, c, d);
+    if (label != NULL) {
+        label->setHighlight(a, b, c, d);
     }
 }
 
@@ -674,13 +674,13 @@ BOOL String_EqualsEncodedBytes(MsgString *a, u8 *b, s32 len) {
     EncodedString41 l;
     l.fromMsgString(a);
     s32 n = Text_GetTrimmedLength(b, len);
-    if (n != Text_GetTrimmedLength(l.unk_0e, len)) {
+    if (n != Text_GetTrimmedLength(l.bytes, len)) {
         return FALSE;
     }
     s32 i = 0;
     while (i < n) {
         u32 x = b[i];
-        u32 y = l.unk_0e[i];
+        u32 y = l.bytes[i];
         if (x == 0x8d) {
             x = 0xb1;
         }
@@ -701,7 +701,7 @@ EncodedString41::~EncodedString41() {}
 
 u32 EncodedString41::capacity() { return 0x29; }
 
-u8 *EncodedString41::data() { return unk_0e; }
+u8 *EncodedString41::data() { return bytes; }
 
 static inline u32 Unk_0206fe34_Id(u32 i) {
     if (i < 0x34) {

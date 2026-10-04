@@ -7,7 +7,7 @@ struct NpcResSlot {
 };
 
 struct NpcResPool {
-    s32 unk_04;
+    s32 numSlots;
     NpcResPool(s32 n);
     virtual ~NpcResPool();
     virtual void occupySlot(u32 i) = 0;
@@ -76,12 +76,12 @@ struct Unk_0205c3a4 {
 struct NpcFaceAnimSlot : NpcResSlot {
     NpcFaceAnimSlot();
     ~NpcFaceAnimSlot();
-    CharaFaceAnimRef unk_01;
+    CharaFaceAnimRef faceAnim;
     void assign(u32 id);
 };
 
 struct NpcFaceAnimPool : NpcResPool {
-    NpcFaceAnimSlot unk_08[5];
+    NpcFaceAnimSlot slots[5];
     NpcFaceAnimPool();
     virtual ~NpcFaceAnimPool();
     virtual void occupySlot(u32 i);
@@ -96,12 +96,12 @@ extern "C" NpcFaceAnimPool *NpcFaceAnimPool_Get();
 struct VillagerAnimHeapRefSlot : NpcResSlot {
     VillagerAnimHeapRefSlot();
     ~VillagerAnimHeapRefSlot();
-    VillagerAnimHeapRef unk_04;
+    VillagerAnimHeapRef heapRef;
     void assign(u32 x);
 };
 
 struct VillagerAnimHeapRefPool : NpcResPool {
-    VillagerAnimHeapRefSlot unk_08[8];
+    VillagerAnimHeapRefSlot slots[8];
     VillagerAnimHeapRefPool();
     virtual ~VillagerAnimHeapRefPool();
     virtual void occupySlot(u32 i);
@@ -116,12 +116,12 @@ extern "C" VillagerAnimHeapRefPool *VillagerAnimHeapRefPool_Get();
 struct NpcTexPatBufRefSlot : NpcResSlot {
     NpcTexPatBufRefSlot();
     ~NpcTexPatBufRefSlot();
-    NpcTexPatBufRef unk_04;
+    NpcTexPatBufRef bufRef;
     void assign(u32 id);
 };
 
 struct NpcTexPatBufRefPool : NpcResPool {
-    NpcTexPatBufRefSlot unk_08[5];
+    NpcTexPatBufRefSlot slots[5];
     NpcTexPatBufRefPool();
     virtual ~NpcTexPatBufRefPool();
     virtual void occupySlot(u32 i);
@@ -136,13 +136,13 @@ extern "C" NpcTexPatBufRefPool *NpcTexPatBufRefPool_Get();
 struct NpcClothTexSlot : NpcResSlot {
     NpcClothTexSlot();
     ~NpcClothTexSlot();
-    CharaClothTexRef unk_01;
+    CharaClothTexRef clothTex;
     void assign(u32 id);
     void release();
 };
 
 struct NpcClothTexPool : NpcResPool {
-    NpcClothTexSlot unk_08[5];
+    NpcClothTexSlot slots[5];
     NpcClothTexPool();
     virtual ~NpcClothTexPool();
     virtual void occupySlot(u32 i);
@@ -158,13 +158,13 @@ extern "C" NpcClothTexPool *NpcClothTexPool_Get();
 struct NpcHeldItemModelSlot : NpcResSlot {
     NpcHeldItemModelSlot();
     ~NpcHeldItemModelSlot();
-    HeldItemModel unk_04;
+    HeldItemModel model;
     void unload();
     void load(u32 id, u16 *p);
 };
 
 struct NpcHeldItemModelPool : NpcResPool {
-    NpcHeldItemModelSlot unk_08[5];
+    NpcHeldItemModelSlot slots[5];
     NpcHeldItemModelPool();
     virtual ~NpcHeldItemModelPool();
     virtual void occupySlot(u32 i);
@@ -179,14 +179,14 @@ extern "C" NpcHeldItemModelPool *NpcHeldItemModelPool_Get();
 
 // ---- 0x020e0808
 struct SpNpcAnimHeapRefSlot : NpcResSlot {
-    SpNpcAnimHeapRef unk_04;
+    SpNpcAnimHeapRef heapRef;
     void assign();
     SpNpcAnimHeapRefSlot();
     ~SpNpcAnimHeapRefSlot();
 };
 
 struct SpNpcAnimHeapRefPool : NpcResPool {
-    SpNpcAnimHeapRefSlot unk_08[4];
+    SpNpcAnimHeapRefSlot slots[4];
     SpNpcAnimHeapRefPool();
     virtual ~SpNpcAnimHeapRefPool();
     virtual void occupySlot(u32 i);
@@ -201,12 +201,12 @@ extern "C" SpNpcAnimHeapRefPool *SpNpcAnimHeapRefPool_Get();
 struct NpcTexPatHeapSlot : NpcResSlot {
     NpcTexPatHeapSlot();
     ~NpcTexPatHeapSlot();
-    CharaFaceAnimWorkRef unk_01;
+    CharaFaceAnimWorkRef workRef;
     void assign(u32 id);
 };
 
 struct NpcTexPatHeapPool : NpcResPool {
-    NpcTexPatHeapSlot unk_08[5];
+    NpcTexPatHeapSlot slots[5];
     NpcTexPatHeapPool();
     virtual ~NpcTexPatHeapPool();
     virtual void occupySlot(u32 i);
@@ -221,12 +221,12 @@ extern "C" NpcTexPatHeapPool *NpcTexPatHeapPool_Get();
 struct NpcBodyAnimSlot : NpcResSlot {
     NpcBodyAnimSlot();
     ~NpcBodyAnimSlot();
-    Unk_0205c3a4 unk_01[3];
+    Unk_0205c3a4 layers[3];
     void assignLayer(s32 a, s32 i);
 };
 
 struct NpcBodyAnimPool : NpcResPool {
-    NpcBodyAnimSlot unk_08[5];
+    NpcBodyAnimSlot slots[5];
     NpcBodyAnimPool();
     virtual ~NpcBodyAnimPool();
     virtual NpcBodyAnimSlot *getSlot(u32 i);
@@ -241,14 +241,14 @@ extern const s32 sNpcBodyAnimLayerIdBases[];
 const s32 sNpcBodyAnimLayerIdBases[3] = {4, 0xd, 0x12};
 
 void NpcResPool::clearAllSlots() {
-    for (s32 i = 0; i < unk_04; i++) {
+    for (s32 i = 0; i < numSlots; i++) {
         NpcResSlot *p = getSlot(i);
         if (p) p->unk_00 = 0;
     }
 }
 
 void NpcResPool::releaseSlot(u32 i) {
-    if (i < (u32)unk_04) {
+    if (i < (u32)numSlots) {
         NpcResSlot *p = getSlot(i);
         if (p) p->unk_00 = 0;
     }
@@ -256,7 +256,7 @@ void NpcResPool::releaseSlot(u32 i) {
 
 s32 NpcResPool::findFreeSlot() {
     s32 r = -1;
-    for (s32 i = 0; i < unk_04; i++) {
+    for (s32 i = 0; i < numSlots; i++) {
         NpcResSlot *p = getSlot(i);
         if (p && p->unk_00 == 0) {
             r = i;
@@ -271,7 +271,7 @@ NpcBodyAnimSlot::NpcBodyAnimSlot() {}
 NpcBodyAnimSlot::~NpcBodyAnimSlot() {}
 
 void NpcBodyAnimSlot::assignLayer(s32 a, s32 i) {
-    AnimSlotRef_Assign(&unk_01[i]);
+    AnimSlotRef_Assign(&layers[i]);
 }
 
 NpcBodyAnimPool::NpcBodyAnimPool() : NpcResPool(5) {}
@@ -281,10 +281,10 @@ NpcBodyAnimPool::~NpcBodyAnimPool() {}
 extern "C" NpcBodyAnimPool *NpcBodyAnimPool_Get() { return &sNpcBodyAnimPool; }
 
 void NpcBodyAnimPool::occupySlot(u32 i) {
-    if (i < (u32)unk_04) {
+    if (i < (u32)numSlots) {
         for (s32 k = 0; k < 3; k++) {
-            NpcBodyAnimPool_Get()->unk_08[i].assignLayer(i + sNpcBodyAnimLayerIdBases[k], k);
-            NpcBodyAnimSlot *a = NpcBodyAnimPool_Get()->unk_08;
+            NpcBodyAnimPool_Get()->slots[i].assignLayer(i + sNpcBodyAnimLayerIdBases[k], k);
+            NpcBodyAnimSlot *a = NpcBodyAnimPool_Get()->slots;
             *(u8 *)(i * 4 + (u32)a) = 1;
         }
     }
@@ -292,13 +292,13 @@ void NpcBodyAnimPool::occupySlot(u32 i) {
 
 NpcBodyAnimSlot *NpcBodyAnimPool::getSlot(u32 i) {
     NpcBodyAnimSlot *r = 0;
-    if (i < (u32)unk_04) r = &unk_08[i];
+    if (i < (u32)numSlots) r = &slots[i];
     return r;
 }
 
 Unk_0205c3a4 *NpcBodyAnimPool::getLayer(u32 i, u32 off) {
     Unk_0205c3a4 *r = 0;
-    if (i < (u32)unk_04) r = (Unk_0205c3a4 *)((u8 *)&NpcBodyAnimPool_Get()->unk_08[i] + 1 + off);
+    if (i < (u32)numSlots) r = (Unk_0205c3a4 *)((u8 *)&NpcBodyAnimPool_Get()->slots[i] + 1 + off);
     return r;
 }
 
@@ -307,7 +307,7 @@ VillagerAnimHeapRefSlot::VillagerAnimHeapRefSlot() {}
 VillagerAnimHeapRefSlot::~VillagerAnimHeapRefSlot() {}
 
 void VillagerAnimHeapRefSlot::assign(u32 x) {
-    VillagerAnimHeapRef_Assign(&unk_04);
+    VillagerAnimHeapRef_Assign(&heapRef);
     unk_00 = 1;
 }
 
@@ -318,24 +318,24 @@ VillagerAnimHeapRefPool::~VillagerAnimHeapRefPool() {}
 extern "C" VillagerAnimHeapRefPool *VillagerAnimHeapRefPool_Get() { return &sVillagerAnimHeapRefPool; }
 
 void VillagerAnimHeapRefPool::occupySlot(u32 i) {
-    if (i < (u32)unk_04) {
+    if (i < (u32)numSlots) {
         u32 t = 0;
         t += i;
-        VillagerAnimHeapRefPool_Get()->unk_08[i].assign(t);
+        VillagerAnimHeapRefPool_Get()->slots[i].assign(t);
     }
 }
 
 VillagerAnimHeapRefSlot *VillagerAnimHeapRefPool::getSlot(u32 i) {
     VillagerAnimHeapRefSlot *r = 0;
-    if (i < (u32)unk_04) r = &unk_08[i];
+    if (i < (u32)numSlots) r = &slots[i];
     return r;
 }
 
 VillagerAnimHeapRef *VillagerAnimHeapRefPool::getHeapRef(u32 i) {
     VillagerAnimHeapRef *r = 0;
-    if (i < (u32)unk_04) {
-        VillagerAnimHeapRefSlot *e = &VillagerAnimHeapRefPool_Get()->unk_08[i];
-        r = &e->unk_04;
+    if (i < (u32)numSlots) {
+        VillagerAnimHeapRefSlot *e = &VillagerAnimHeapRefPool_Get()->slots[i];
+        r = &e->heapRef;
     }
     return r;
 }
@@ -345,7 +345,7 @@ SpNpcAnimHeapRefSlot::SpNpcAnimHeapRefSlot() {}
 SpNpcAnimHeapRefSlot::~SpNpcAnimHeapRefSlot() {}
 
 void SpNpcAnimHeapRefSlot::assign() {
-    SpNpcAnimHeapRef_Assign(&unk_04);
+    SpNpcAnimHeapRef_Assign(&heapRef);
     unk_00 = 1;
 }
 
@@ -356,26 +356,26 @@ SpNpcAnimHeapRefPool::~SpNpcAnimHeapRefPool() {}
 extern "C" SpNpcAnimHeapRefPool *SpNpcAnimHeapRefPool_Get() { return &sSpNpcAnimHeapRefPool; }
 
 void SpNpcAnimHeapRefPool::occupySlot(u32 i) {
-    if (i < (u32)unk_04) {
+    if (i < (u32)numSlots) {
         u32 id = 0;
         id += i;
-        _ZN20SpNpcAnimHeapRefSlot6assignEv(&SpNpcAnimHeapRefPool_Get()->unk_08[i], id);
+        _ZN20SpNpcAnimHeapRefSlot6assignEv(&SpNpcAnimHeapRefPool_Get()->slots[i], id);
     }
 }
 
 SpNpcAnimHeapRefSlot *SpNpcAnimHeapRefPool::getSlot(u32 i) {
     SpNpcAnimHeapRefSlot *r = 0;
-    if (i < (u32)unk_04) {
-        r = &unk_08[i];
+    if (i < (u32)numSlots) {
+        r = &slots[i];
     }
     return r;
 }
 
 SpNpcAnimHeapRef *SpNpcAnimHeapRefPool::getHeapRef(u32 i) {
     SpNpcAnimHeapRef *r = 0;
-    if (i < (u32)unk_04) {
-        SpNpcAnimHeapRefSlot *e = &SpNpcAnimHeapRefPool_Get()->unk_08[i];
-        r = &e->unk_04;
+    if (i < (u32)numSlots) {
+        SpNpcAnimHeapRefSlot *e = &SpNpcAnimHeapRefPool_Get()->slots[i];
+        r = &e->heapRef;
     }
     return r;
 }
@@ -385,12 +385,12 @@ NpcClothTexSlot::NpcClothTexSlot() {}
 NpcClothTexSlot::~NpcClothTexSlot() {}
 
 void NpcClothTexSlot::assign(u32 id) {
-    _ZN16CharaClothTexRef6assignEj(&unk_01);
+    _ZN16CharaClothTexRef6assignEj(&clothTex);
     unk_00 = 1;
 }
 
 void NpcClothTexSlot::release() {
-    _ZN16CharaClothTexRef7releaseEv(&unk_01);
+    _ZN16CharaClothTexRef7releaseEv(&clothTex);
     unk_00 = 0;
 }
 
@@ -401,33 +401,33 @@ NpcClothTexPool::~NpcClothTexPool() {}
 extern "C" NpcClothTexPool *NpcClothTexPool_Get() { return &sNpcClothTexPool; }
 
 void NpcClothTexPool::occupySlot(u32 i) {
-    if (i < (u32)unk_04) {
+    if (i < (u32)numSlots) {
         u32 id = 5;
         id += i;
-        NpcClothTexPool_Get()->unk_08[i].assign(id);
+        NpcClothTexPool_Get()->slots[i].assign(id);
     }
 }
 
 void NpcClothTexPool::releaseSlot(u32 i) {
     NpcResPool::releaseSlot(i);
-    if (i < (u32)unk_04) {
-        NpcClothTexPool_Get()->unk_08[i].release();
+    if (i < (u32)numSlots) {
+        NpcClothTexPool_Get()->slots[i].release();
     }
 }
 
 NpcClothTexSlot *NpcClothTexPool::getSlot(u32 i) {
     NpcClothTexSlot *r = 0;
-    if (i < (u32)unk_04) {
-        r = &unk_08[i];
+    if (i < (u32)numSlots) {
+        r = &slots[i];
     }
     return r;
 }
 
 CharaClothTexRef *NpcClothTexPool::getClothTex(u32 i) {
     CharaClothTexRef *r = 0;
-    if (i < (u32)unk_04) {
-        NpcClothTexSlot *e = &NpcClothTexPool_Get()->unk_08[i];
-        r = &e->unk_01;
+    if (i < (u32)numSlots) {
+        NpcClothTexSlot *e = &NpcClothTexPool_Get()->slots[i];
+        r = &e->clothTex;
     }
     return r;
 }
@@ -437,7 +437,7 @@ NpcTexPatBufRefSlot::NpcTexPatBufRefSlot() {}
 NpcTexPatBufRefSlot::~NpcTexPatBufRefSlot() {}
 
 void NpcTexPatBufRefSlot::assign(u32 id) {
-    NpcTexPatBufRef_Assign(&unk_04);
+    NpcTexPatBufRef_Assign(&bufRef);
     unk_00 = 1;
 }
 
@@ -448,26 +448,26 @@ NpcTexPatBufRefPool::~NpcTexPatBufRefPool() {}
 extern "C" NpcTexPatBufRefPool *NpcTexPatBufRefPool_Get() { return &sNpcTexPatBufRefPool; }
 
 void NpcTexPatBufRefPool::occupySlot(u32 i) {
-    if (i < (u32)unk_04) {
+    if (i < (u32)numSlots) {
         u32 id = 0;
         id += i;
-        NpcTexPatBufRefPool_Get()->unk_08[i].assign(id);
+        NpcTexPatBufRefPool_Get()->slots[i].assign(id);
     }
 }
 
 NpcTexPatBufRefSlot *NpcTexPatBufRefPool::getSlot(u32 i) {
     NpcTexPatBufRefSlot *r = 0;
-    if (i < (u32)unk_04) {
-        r = &unk_08[i];
+    if (i < (u32)numSlots) {
+        r = &slots[i];
     }
     return r;
 }
 
 NpcTexPatBufRef *NpcTexPatBufRefPool::getBufRef(u32 i) {
     NpcTexPatBufRef *r = 0;
-    if (i < (u32)unk_04) {
-        NpcTexPatBufRefSlot *e = &NpcTexPatBufRefPool_Get()->unk_08[i];
-        r = &e->unk_04;
+    if (i < (u32)numSlots) {
+        NpcTexPatBufRefSlot *e = &NpcTexPatBufRefPool_Get()->slots[i];
+        r = &e->bufRef;
     }
     return r;
 }
@@ -477,7 +477,7 @@ NpcFaceAnimSlot::NpcFaceAnimSlot() {}
 NpcFaceAnimSlot::~NpcFaceAnimSlot() {}
 
 void NpcFaceAnimSlot::assign(u32 id) {
-    _ZN16CharaFaceAnimRef6assignEj(&unk_01);
+    _ZN16CharaFaceAnimRef6assignEj(&faceAnim);
     unk_00 = 1;
 }
 
@@ -488,26 +488,26 @@ NpcFaceAnimPool::~NpcFaceAnimPool() {}
 extern "C" NpcFaceAnimPool *NpcFaceAnimPool_Get() { return &sNpcFaceAnimPool; }
 
 void NpcFaceAnimPool::occupySlot(u32 i) {
-    if (i < (u32)unk_04) {
+    if (i < (u32)numSlots) {
         u32 id = 4;
         id += i;
-        NpcFaceAnimPool_Get()->unk_08[i].assign(id);
+        NpcFaceAnimPool_Get()->slots[i].assign(id);
     }
 }
 
 NpcFaceAnimSlot *NpcFaceAnimPool::getSlot(u32 i) {
     NpcFaceAnimSlot *r = 0;
-    if (i < (u32)unk_04) {
-        r = &unk_08[i];
+    if (i < (u32)numSlots) {
+        r = &slots[i];
     }
     return r;
 }
 
 CharaFaceAnimRef *NpcFaceAnimPool::getFaceAnim(u32 i) {
     CharaFaceAnimRef *r = 0;
-    if (i < (u32)unk_04) {
-        NpcFaceAnimSlot *e = &NpcFaceAnimPool_Get()->unk_08[i];
-        r = &e->unk_01;
+    if (i < (u32)numSlots) {
+        NpcFaceAnimSlot *e = &NpcFaceAnimPool_Get()->slots[i];
+        r = &e->faceAnim;
     }
     return r;
 }
@@ -517,7 +517,7 @@ NpcTexPatHeapSlot::NpcTexPatHeapSlot() {}
 NpcTexPatHeapSlot::~NpcTexPatHeapSlot() {}
 
 void NpcTexPatHeapSlot::assign(u32 id) {
-    _ZN20CharaFaceAnimWorkRef6assignEj(&unk_01);
+    _ZN20CharaFaceAnimWorkRef6assignEj(&workRef);
     unk_00 = 1;
 }
 
@@ -528,26 +528,26 @@ NpcTexPatHeapPool::~NpcTexPatHeapPool() {}
 extern "C" NpcTexPatHeapPool *NpcTexPatHeapPool_Get() { return &sNpcTexPatHeapPool; }
 
 void NpcTexPatHeapPool::occupySlot(u32 i) {
-    if (i < (u32)unk_04) {
+    if (i < (u32)numSlots) {
         u32 id = 4;
         id += i;
-        NpcTexPatHeapPool_Get()->unk_08[i].assign(id);
+        NpcTexPatHeapPool_Get()->slots[i].assign(id);
     }
 }
 
 NpcTexPatHeapSlot *NpcTexPatHeapPool::getSlot(u32 i) {
     NpcTexPatHeapSlot *r = 0;
-    if (i < (u32)unk_04) {
-        r = &unk_08[i];
+    if (i < (u32)numSlots) {
+        r = &slots[i];
     }
     return r;
 }
 
 CharaFaceAnimWorkRef *NpcTexPatHeapPool::getHeapRef(u32 i) {
     CharaFaceAnimWorkRef *r = 0;
-    if (i < (u32)unk_04) {
-        NpcTexPatHeapSlot *e = &NpcTexPatHeapPool_Get()->unk_08[i];
-        r = &e->unk_01;
+    if (i < (u32)numSlots) {
+        NpcTexPatHeapSlot *e = &NpcTexPatHeapPool_Get()->slots[i];
+        r = &e->workRef;
     }
     return r;
 }
@@ -557,12 +557,12 @@ NpcHeldItemModelSlot::NpcHeldItemModelSlot() {}
 NpcHeldItemModelSlot::~NpcHeldItemModelSlot() {}
 
 void NpcHeldItemModelSlot::load(u32 id, u16 *p) {
-    HeldItemModel_Setup(&unk_04, id, 0, p, 0, 0);
+    HeldItemModel_Setup(&model, id, 0, p, 0, 0);
     unk_00 = 1;
 }
 
 void NpcHeldItemModelSlot::unload() {
-    HeldItemModel_Release(&unk_04);
+    HeldItemModel_Release(&model);
     unk_00 = 0;
 }
 
@@ -579,17 +579,17 @@ void NpcHeldItemModelPool::occupySlot(u32 i) {
 
 void NpcHeldItemModelPool::releaseSlot(u32 i) {
     NpcResPool::releaseSlot(i);
-    if (i < (u32)unk_04) {
-        NpcHeldItemModelPool_Get()->unk_08[i].unload();
+    if (i < (u32)numSlots) {
+        NpcHeldItemModelPool_Get()->slots[i].unload();
     }
 }
 
 BOOL NpcHeldItemModelPool::loadItem(u32 i, u16 *p) {
     BOOL r = FALSE;
-    if (i < (u32)unk_04) {
+    if (i < (u32)numSlots) {
         u32 id = 4;
         id += i;
-        NpcHeldItemModelPool_Get()->unk_08[i].load(id, p);
+        NpcHeldItemModelPool_Get()->slots[i].load(id, p);
         r = TRUE;
     }
     return r;
@@ -597,17 +597,17 @@ BOOL NpcHeldItemModelPool::loadItem(u32 i, u16 *p) {
 
 NpcHeldItemModelSlot *NpcHeldItemModelPool::getSlot(u32 i) {
     NpcHeldItemModelSlot *r = 0;
-    if (i < (u32)unk_04) {
-        r = &unk_08[i];
+    if (i < (u32)numSlots) {
+        r = &slots[i];
     }
     return r;
 }
 
 // ---- 0x020e07ec functions
 HeldItemModel *NpcHeldItemModelPool::getModel(u32 i) {
-    if (i < (u32)unk_04) {
-        NpcHeldItemModelSlot *e = &NpcHeldItemModelPool_Get()->unk_08[i];
-        return &e->unk_04;
+    if (i < (u32)numSlots) {
+        NpcHeldItemModelSlot *e = &NpcHeldItemModelPool_Get()->slots[i];
+        return &e->model;
     }
     return 0;
 }

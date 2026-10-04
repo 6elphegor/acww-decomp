@@ -36,8 +36,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class MsgStringAttr {
@@ -374,13 +374,13 @@ public:
     void resetCellAnims();
     void reset();
 
-    /* 0x0c */ SpriteAnim unk_0c[9];
-    /* 0xc0 */ s32 unk_c0;
-    /* 0xc4 */ s32 unk_c4;
-    /* 0xc8 */ s32 unk_c8;
-    /* 0xcc */ s32 unk_cc;
-    /* 0xd0 */ s32 unk_d0;
-    /* 0xd4 */ u8 unk_d4;
+    /* 0x0c */ SpriteAnim cellAnims[9];
+    /* 0xc0 */ s32 state;
+    /* 0xc4 */ s32 cell;
+    /* 0xc8 */ s32 cellX;
+    /* 0xcc */ s32 cellY;
+    /* 0xd0 */ s32 activeCell;
+    /* 0xd4 */ u8 visible;
 };
 
 // Methods that symbols.txt files under HudCameraGridStates (same object layout as HudCameraGrid)
@@ -411,12 +411,12 @@ public:
 
 class HudCameraButton : public UiWidget {
 public:
-    SpriteAnim unk_0c;
-    s32 unk_20;
-    u8 unk_24;
-    u8 unk_25;
-    u8 unk_26;
-    HudCameraGrid unk_28;
+    SpriteAnim anim;
+    s32 state;
+    u8 gridActive;
+    u8 openedByButton;
+    u8 enabled;
+    HudCameraGrid grid;
 
     HudCameraButton();
     virtual ~HudCameraButton();
@@ -623,8 +623,8 @@ struct Unk_0208a328_Pa {
     u8 unk_00;
     u8 unk_01;
     u8 pad[0x12];
-    u8 unk_14;
-    u8 unk_15;
+    u8 hideRequest;
+    u8 hideRequestB;
 };
 
 class HudController {
@@ -1678,30 +1678,30 @@ void HudCountdownLabels::resetSlide() {
 }
 
 HudCameraGrid::HudCameraGrid() {
-    unk_c0 = 0;
-    unk_c4 = 0;
-    unk_c8 = 0;
-    unk_cc = 0;
-    unk_d0 = 0;
-    unk_d4 = 0;
+    state = 0;
+    cell = 0;
+    cellX = 0;
+    cellY = 0;
+    activeCell = 0;
+    visible = 0;
 }
 
 HudCameraGrid::~HudCameraGrid() { resetCellAnims(); }
 
 void HudCameraGrid::draw() {
-    if (unk_c0 != 0) {
+    if (state != 0) {
         s32 bx = getOriginX();
         s32 by = getOriginY();
         s32 i = 0;
         s32 nb = -1;
         s32 z = 0;
         for (; i < 9; i++) {
-            SpriteAnim *e = &unk_0c[i];
+            SpriteAnim *e = &cellAnims[i];
             void *p = e->getCell();
             if (p != NULL) {
                 s32 sx = e->getFrameX(nb);
                 s32 sy = e->getFrameY(nb);
-                s32 pal = (i == unk_d0) ? 6 : 5;
+                s32 pal = (i == activeCell) ? 6 : 5;
                 Oam_DrawCell(z, p, bx + sx, by + sy, pal, nb, 0x1000, 0x1000, z, nb, z, z);
             }
         }
@@ -1711,52 +1711,52 @@ void HudCameraGrid::draw() {
 void HudCameraGrid::vfunc_0c() {
     static Unk_0208b728_Fn tbl[4] = {(Unk_0208b728_Fn)&HudCameraGridStates::updateClosed, (Unk_0208b728_Fn)&HudCameraGridStates::updateOpening,
                                      (Unk_0208b728_Fn)&HudCameraGridStates::updateOpen, (Unk_0208b728_Fn)&HudCameraGridStates::updateClosing};
-    (((HudCameraGridStates *)this)->*tbl[unk_c0])();
+    (((HudCameraGridStates *)this)->*tbl[state])();
 }
 
 void HudCameraGrid::reset() {
-    unk_d4 = 0;
-    unk_c4 = 0;
-    unk_c8 = 0;
-    unk_cc = 0;
-    unk_d0 = 0;
+    visible = 0;
+    cell = 0;
+    cellX = 0;
+    cellY = 0;
+    activeCell = 0;
     _ZN19HudCameraGridStates11enterClosedEv(this);
 }
 
 void HudCameraGrid::resetCellAnims() {
     s32 i;
     for (i = 0; i < 9; i++) {
-        unk_0c[i].restart();
+        cellAnims[i].restart();
     }
 }
 
 void HudCameraGrid::callUpdate() { vfunc_0c(); }
 
 void HudCameraGrid::callDraw() {
-    if (unk_c0 == 2) {
+    if (state == 2) {
         Input_IsButtonMode();
     }
     draw();
 }
 
-void HudCameraGrid::setVisible(u32 v) { unk_d4 = v; }
+void HudCameraGrid::setVisible(u32 v) { visible = v; }
 
 BOOL HudCameraGrid::isClosed() {
-    if (unk_c0 == 0) {
+    if (state == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL HudCameraGrid::isOpen() {
-    if (unk_c0 == 2) {
+    if (state == 2) {
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL HudCameraGrid::isSettled() {
-    s32 s = unk_c0;
+    s32 s = state;
     BOOL two = (s == 2) ? TRUE : FALSE;
     BOOL r = FALSE;
     if (s == 0) {
@@ -1791,7 +1791,7 @@ BOOL HudCameraGrid::pickCellByTouch() {
         s32 b = q[1] + 0x60;
         if (Input_IsTouchTrigInRect(a, a + 0x10, b, b + 0x10)) {
             r = TRUE;
-            unk_c4 = i;
+            cell = i;
             _ZN19HudCameraGridStates14setPosFromCellEv(this);
             break;
         }
@@ -1951,7 +1951,7 @@ void HudCameraGridStates::updateClosing() {
     }
 }
 
-HudCameraButton::HudCameraButton() : unk_20(0), unk_24(0), unk_25(0), unk_26(0) {
+HudCameraButton::HudCameraButton() : state(0), gridActive(0), openedByButton(0), enabled(0) {
 }
 
 HudCameraButton::~HudCameraButton() {
@@ -1959,14 +1959,14 @@ HudCameraButton::~HudCameraButton() {
 }
 
 void HudCameraButton::draw() {
-    if (unk_20 != 0) {
-        void *v = unk_0c.getCell();
+    if (state != 0) {
+        void *v = anim.getCell();
         if (v != 0) {
-            s32 x = unk_0c.getFrameX(-1);
-            s32 y = unk_0c.getFrameY(-1);
+            s32 x = anim.getFrameX(-1);
+            s32 y = anim.getFrameY(-1);
             s32 bx = getOriginX();
             s32 by = getOriginY();
-            s32 t = ((u32)(unk_20 - 3) <= 2) ? 6 : 5;
+            s32 t = ((u32)(state - 3) <= 2) ? 6 : 5;
             Oam_DrawCell(0, v, bx + x, by + y, t, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
     }
@@ -1979,43 +1979,43 @@ void HudCameraButton::vfunc_0c() {
         (Unk_020e0f2c_Fn)&HudCameraButton::updateGridOpen, (Unk_020e0f2c_Fn)&HudCameraButton::updateGridClosing,
         (Unk_020e0f2c_Fn)&HudCameraButton::updateHiding,
     };
-    (this->*tbl[unk_20])();
+    (this->*tbl[state])();
 }
 
 void HudCameraButton::reset() {
-    unk_26 = 0;
-    unk_24 = 0;
-    unk_25 = 0;
+    enabled = 0;
+    gridActive = 0;
+    openedByButton = 0;
     enterHidden();
-    unk_28.reset();
+    grid.reset();
 }
 
 void HudCameraButton::release() {
-    unk_28.resetCellAnims();
-    unk_0c.restart();
+    grid.resetCellAnims();
+    anim.restart();
 }
 
 void HudCameraButton::callUpdate() {
     vfunc_0c();
-    unk_28.callUpdate();
+    grid.callUpdate();
     updateInputMode();
 }
 
 void HudCameraButton::callDraw() {
     draw();
-    unk_28.callDraw();
+    grid.callDraw();
 }
 
 void HudCameraButton::enable() {
-    unk_26 = 1;
+    enabled = 1;
 }
 
 void HudCameraButton::disable() {
-    unk_26 = 0;
+    enabled = 0;
 }
 
 BOOL HudCameraButton::isHidden() {
-    if (unk_20 == 0 && unk_28.isClosed()) {
+    if (state == 0 && grid.isClosed()) {
         return TRUE;
     }
     return FALSE;
@@ -2033,7 +2033,7 @@ BOOL HudCameraButton::canShow() {
     if (v - 8 <= 7) b = TRUE; else b = FALSE;
     if (v - 0x24 <= 8) c = TRUE; else c = FALSE;
     BOOL r;
-    if (unk_26 != 0 && !a && !b && !c) {
+    if (enabled != 0 && !a && !b && !c) {
         r = TRUE;
     } else {
         r = FALSE;
@@ -2044,7 +2044,7 @@ BOOL HudCameraButton::canShow() {
 BOOL HudCameraButton::isTogglePressed(s32 flag) {
     BOOL r = FALSE;
     BOOL f = r;
-    if (unk_24 != 0) {
+    if (gridActive != 0) {
         if (Input_IsTouchMode()) {
             if (Input_IsAnyKeyTrig()) {
                 f = TRUE;
@@ -2056,11 +2056,11 @@ BOOL HudCameraButton::isTogglePressed(s32 flag) {
         }
     }
     if (!f) {
-        if (unk_28.isSettled()) {
+        if (grid.isSettled()) {
             u32 k = gPad[1];
             if ((k & 0x400) != 0 || (flag != 0 && (k & 2) != 0)) {
                 r = TRUE;
-                unk_25 = 1;
+                openedByButton = 1;
             } else {
                 BOOL c;
                 if (gTouchHeld != 0 && gTouchChanged != 0) {
@@ -2072,7 +2072,7 @@ BOOL HudCameraButton::isTogglePressed(s32 flag) {
                     s32 a = gTouchPressX;
                     if ((s32)gTouchPressY < 16 && a >= 0xc8 && a < 0xe8) {
                         r = TRUE;
-                        unk_25 = 0;
+                        openedByButton = 0;
                     }
                 }
             }
@@ -2082,7 +2082,7 @@ BOOL HudCameraButton::isTogglePressed(s32 flag) {
 }
 
 void HudCameraButton::updateInputMode() {
-    if (unk_24 != 0) {
+    if (gridActive != 0) {
         if (Input_IsTouchMode()) {
             if (Input_IsAnyKeyTrig()) {
                 Input_SetButtonMode();
@@ -2097,7 +2097,7 @@ void HudCameraButton::updateInputMode() {
 }
 
 void HudCameraButton::enterHidden() {
-    unk_20 = 0;
+    state = 0;
 }
 
 void HudCameraButton::updateHidden() {
@@ -2107,26 +2107,26 @@ void HudCameraButton::updateHidden() {
 }
 
 void HudCameraButton::enterAppearing() {
-    unk_20 = 1;
-    unk_0c.setSeq((SpriteAnimSeq *)(data_020d477c));
-    unk_0c.setPlayOnce(1);
-    unk_0c.restart();
+    state = 1;
+    anim.setSeq((SpriteAnimSeq *)(data_020d477c));
+    anim.setPlayOnce(1);
+    anim.restart();
 }
 
 void HudCameraButton::updateAppearing() {
-    unk_0c.update();
-    if (unk_0c.isFinished()) {
+    anim.update();
+    if (anim.isFinished()) {
         enterShown();
     }
 }
 
 void HudCameraButton::enterShown() {
-    unk_20 = 2;
-    unk_25 = 0;
-    unk_0c.setSeq((SpriteAnimSeq *)(data_020d4784));
-    unk_0c.setPlayOnce(1);
-    unk_0c.restart();
-    unk_0c.pause();
+    state = 2;
+    openedByButton = 0;
+    anim.setSeq((SpriteAnimSeq *)(data_020d4784));
+    anim.setPlayOnce(1);
+    anim.restart();
+    anim.pause();
 }
 
 void HudCameraButton::updateShown() {
@@ -2141,10 +2141,10 @@ void HudCameraButton::updateShown() {
 }
 
 void HudCameraButton::enterGridOpening() {
-    unk_20 = 3;
-    unk_28.setVisible(1);
-    unk_24 = 1;
-    if (unk_25 != 0) {
+    state = 3;
+    grid.setVisible(1);
+    gridActive = 1;
+    if (openedByButton != 0) {
         Input_SetButtonMode();
     } else {
         Input_SetTouchMode();
@@ -2153,16 +2153,16 @@ void HudCameraButton::enterGridOpening() {
 }
 
 void HudCameraButton::updateGridOpening() {
-    if (unk_28.isOpen()) {
+    if (grid.isOpen()) {
         enterGridOpen();
     }
 }
 
 void HudCameraButton::enterGridOpen() {
-    unk_20 = 4;
-    unk_0c.setSeq((SpriteAnimSeq *)(data_020d478c));
-    unk_0c.setPlayOnce(1);
-    unk_0c.restart();
+    state = 4;
+    anim.setSeq((SpriteAnimSeq *)(data_020d478c));
+    anim.setPlayOnce(1);
+    anim.restart();
 }
 
 void HudCameraButton::updateGridOpen() {
@@ -2174,29 +2174,29 @@ void HudCameraButton::updateGridOpen() {
 }
 
 void HudCameraButton::enterGridClosing() {
-    unk_20 = 5;
-    unk_28.setVisible(0);
+    state = 5;
+    grid.setVisible(0);
     Snd_PlaySe(0x4b);
 }
 
 void HudCameraButton::updateGridClosing() {
-    if (unk_28.isClosed()) {
+    if (grid.isClosed()) {
         TalkRequest_FinishCameraView();
-        unk_24 = 0;
+        gridActive = 0;
         enterShown();
     }
 }
 
 void HudCameraButton::enterHiding() {
-    unk_20 = 6;
-    unk_0c.setSeq((SpriteAnimSeq *)(data_020d4784));
-    unk_0c.setPlayOnce(1);
-    unk_0c.restart();
+    state = 6;
+    anim.setSeq((SpriteAnimSeq *)(data_020d4784));
+    anim.setPlayOnce(1);
+    anim.restart();
 }
 
 void HudCameraButton::updateHiding() {
-    unk_0c.update();
-    if (unk_0c.isFinished()) {
+    anim.update();
+    if (anim.isFinished()) {
         enterHidden();
     }
 }
@@ -2478,11 +2478,11 @@ extern "C" void Hud_Update() { gHud.update(); }
 
 extern "C" void Hud_Draw() { gHud.draw(); }
 
-extern "C" void Hud_Hide() { ((Unk_0208a328_Pa *)((u8 *)&gHud + 0x300))->unk_14 = 1; }
+extern "C" void Hud_Hide() { ((Unk_0208a328_Pa *)((u8 *)&gHud + 0x300))->hideRequest = 1; }
 
-extern "C" void Hud_Show() { ((Unk_0208a328_Pa *)((u8 *)&gHud + 0x300))->unk_14 = 0; }
+extern "C" void Hud_Show() { ((Unk_0208a328_Pa *)((u8 *)&gHud + 0x300))->hideRequest = 0; }
 
-extern "C" void Hud_ClearHideB() { ((Unk_0208a328_Pa *)((u8 *)&gHud + 0x300))->unk_15 = 0; }
+extern "C" void Hud_ClearHideB() { ((Unk_0208a328_Pa *)((u8 *)&gHud + 0x300))->hideRequestB = 0; }
 
 extern "C" void *Hud_GetCountdown() { return &gHud.countdown; }
 
@@ -2745,9 +2745,9 @@ extern const s32 kNameLabelBalloonKindAnims[5];
 const s32 kNameLabelBalloonKindAnims[5] = {10, 11, 12, 13, 0x28};
 
 struct Unk_020e0e74_Rec {
-    HudProc *(*unk_00)();
-    s16 unk_04;
-    s16 unk_06;
+    HudProc *(*create)();
+    s16 executePriority;
+    s16 drawPriority;
 };
 Unk_020e0e74_Rec sHudProcProfile = {HudProc_Create, 0xca, 0x8e};
 

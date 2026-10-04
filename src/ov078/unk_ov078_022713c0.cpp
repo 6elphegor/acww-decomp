@@ -209,7 +209,7 @@ public:
 };
 
 struct ItemId {
-    u16 unk_00;
+    u16 id;
     ItemId();
     ~ItemId();
 };
@@ -224,9 +224,9 @@ public:
 
     void attachOwner(SpNpcSaharah *owner);
 
-    SpNpcSaharah *unk_ac;
-    s32 unk_b0;
-    ItemId unk_b4[2];
+    SpNpcSaharah *ownerNpc;
+    s32 turbanSlot;
+    ItemId rewardItems[2];
 };
 
 #define MEMBER(name, size) \
@@ -433,7 +433,7 @@ public:
 
     u8 unk_651;
     s32 unk_654;
-    SpNpcSaharahTalk unk_658;
+    SpNpcSaharahTalk talk;
 };
 
 struct Unk_ov078_02272030_Ent {
@@ -537,8 +537,8 @@ BOOL SpNpcSaharah::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -797,7 +797,7 @@ BOOL SpNpcSaharah::mainAct03() {
 }
 
 BOOL SpNpcSaharah::setupAct04() {
-    void *p = unk_658.func_02015aac();
+    void *p = talk.func_02015aac();
     s32 x = rotY;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -814,10 +814,10 @@ SpNpcSaharahTalk::~SpNpcSaharahTalk() {}
 
 void SpNpcSaharahTalk::attachOwner(SpNpcSaharah *owner) {
     vfunc_08();
-    unk_ac = owner;
-    unk_b0 = -1;
+    ownerNpc = owner;
+    turbanSlot = -1;
     for (s32 i = 0; i < 2; i++) {
-        unk_b4[i].unk_00 = 0xfff1;
+        rewardItems[i].id = 0xfff1;
     }
 }
 
@@ -826,11 +826,11 @@ void SpNpcSaharahTalk::start(TalkStartMsg *out) {
     void *g = _ZN18SickVillagerRecord15getParcelErrandEv(_ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent()));
     MsgString9B o;
     out->a = (u32)"sp_npc_camel";
-    if (unk_b0 == -1) {
+    if (turbanSlot == -1) {
         h = 0x13ac;
-        unk_b0 = Pocket_FindItem(&h);
+        turbanSlot = Pocket_FindItem(&h);
     }
-    if (unk_b0 >= 0) {
+    if (turbanSlot >= 0) {
         out->b = 0x14;
         return;
     }
@@ -933,14 +933,14 @@ void SpNpcSaharahTalk::onMessageEnd() {
     case 0xc:
         _ZN12ItemPickSpec3setEii(&o1, 4, 0x23);
         ItemPick_One(&h[1], &o1, msg, msg, 1, 1, msg);
-        unk_b4[0].unk_00 = h[1];
+        rewardItems[0].id = h[1];
         ItemPickSpec_Destruct(&o1);
-        _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &unk_b4[0].unk_00, 1, 7);
+        _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &rewardItems[0].id, 1, 7);
         _ZN12ItemPickSpec3setEii(&o2, 3, 0x23);
         ItemPick_One(&h[2], &o2, msg, msg, 1, 1, msg);
-        unk_b4[1].unk_00 = h[2];
+        rewardItems[1].id = h[2];
         ItemPickSpec_Destruct(&o2);
-        _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &unk_b4[1].unk_00, 2, 7);
+        _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &rewardItems[1].id, 2, 7);
         msg = 0xd;
         break;
     case 0xe:
@@ -948,7 +948,7 @@ void SpNpcSaharahTalk::onMessageEnd() {
         EventWeekSlots_MarkPlayer(0x3e);
         break;
     case 0x15:
-        unk_b0 = -2;
+        turbanSlot = -2;
         break;
     case 0x16:
         h[0] = 0x37e0;
@@ -957,7 +957,7 @@ void SpNpcSaharahTalk::onMessageEnd() {
             h[0] = 0x34a8;
             msg = 0x18;
         }
-        unk_b0 = -2;
+        turbanSlot = -2;
         _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &h[0], 0, 7);
         _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h[0], 0, 5, 0);
         Pocket_AddItem(&h[0], 0);
@@ -992,9 +992,9 @@ void SpNpcSaharahTalk::onChoice() {
     case 0xd:
     case 0x13:
         if (t == 0) {
-            h[0] = unk_b4[0].unk_00;
+            h[0] = rewardItems[0].id;
         } else {
-            h[0] = unk_b4[1].unk_00;
+            h[0] = rewardItems[1].id;
         }
         _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h[0], 0, 5, 0);
         Pocket_AddItem(&h[0], 0);
@@ -1002,8 +1002,8 @@ void SpNpcSaharahTalk::onChoice() {
         break;
     case 0x14:
         if (t == 0) {
-            if (unk_b0 >= 0) {
-                Pocket_RemoveItem(unk_b0);
+            if (turbanSlot >= 0) {
+                Pocket_RemoveItem(turbanSlot);
                 h[1] = 0x13ac;
                 _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &h[1], 0, 5, 0);
             }
@@ -1029,13 +1029,13 @@ BOOL SpNpcSaharah::vfunc_48() {
 void SpNpcSaharah::vfunc_4c(s32 v) {
     switch (v) {
     case 1:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0((u32)getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(0);
         break;
     case 3:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0((u32)getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(4);
         break;
     case 0:

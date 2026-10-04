@@ -52,23 +52,23 @@ struct Unk_ov004_0222c570_Mtx {
 
 // Effect entry, 0x94 bytes, 15 of them at sRoomItemDrops (5 groups of 3)
 struct Unk_ov004_0222bff4_Entry {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u16 unk_08;
-    /* 0x0a */ u16 unk_0a;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ Unk_ov004_P2 unk_10;
-    /* 0x18 */ Unk_ov004_V3 unk_18;
-    /* 0x24 */ Unk_ov004_V3 unk_24;
-    /* 0x30 */ Unk_ov004_V3 unk_30;
-    /* 0x3c */ Unk_ov004_V3 unk_3c;
+    /* 0x00 */ s32 group;
+    /* 0x04 */ s32 state;
+    /* 0x08 */ u16 item;
+    /* 0x0a */ u16 landItem;
+    /* 0x0c */ s32 isStill;
+    /* 0x10 */ Unk_ov004_P2 unit;
+    /* 0x18 */ Unk_ov004_V3 landPos;
+    /* 0x24 */ Unk_ov004_V3 pos;
+    /* 0x30 */ Unk_ov004_V3 velocity;
+    /* 0x3c */ Unk_ov004_V3 scale;
     /* 0x48 */ s16 unk_48;
     /* 0x4a */ s16 unk_4a;
-    /* 0x4c */ u8 unk_4c[0x40];
-    /* 0x8c */ s8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x4c */ u8 seEmitter[0x40];
+    /* 0x8c */ s8 bounceCount;
+    /* 0x8d */ u8 frameCount;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
+    /* 0x8f */ u8 needsSettle;
     /* 0x90 */ u8 unk_90;
     /* 0x91 */ u8 pad_91[3];
 };
@@ -86,7 +86,7 @@ public:
 
 // the 15 effect entries as one object: its implicit destructor is func_ov004_0222c9a0 (__cxa_vec_cleanup), its implicit constructor is inlined in the __sinit
 struct RoomItemDropList {
-    Unk_ov004_0222c9d0 unk_00[15];
+    Unk_ov004_0222c9d0 drops[15];
 };
 
 struct Unk_0209d498_Time {
@@ -95,12 +95,12 @@ struct Unk_0209d498_Time {
 
 struct Unk_ov004_0222c570_Global {
     u8 pad_00[0x5c];
-    Unk_ov004_0222c570_Vec unk_5c;
+    Unk_ov004_0222c570_Vec position;
 };
 
 struct Unk_ov004_0222c570_Comm {
     u8 pad_00[0x64];
-    s32 unk_64;
+    s32 myAid;
 };
 
 class Unk_020dbd44 {
@@ -112,9 +112,9 @@ public:
 
 struct Unk_ov004_0222c880_Model {
     u8 pad_00[0x5c];
-    void *unk_5c;
+    void *resMdl;
     u8 pad_60[4];
-    Unk_ov004_0222c570_Mtx unk_64;
+    Unk_ov004_0222c570_Mtx mtx;
 };
 
 class RoomItemIcons : public GameProc {
@@ -131,8 +131,8 @@ public:
     void drawIconModel(Unk_ov004_0222c880_Model *model, Unk_ov004_0222c570_Mtx m);
     void drawItemModel(u16 id, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz);
 
-    /* 0x050 */ void *unk_50[0x49];
-    /* 0x174 */ Unk_020dbd44 unk_174;
+    /* 0x050 */ void *iconModels[0x49];
+    /* 0x174 */ Unk_020dbd44 modelSet;
 };
 
 // ---------------------------------------------------------------- externs
@@ -215,10 +215,10 @@ extern "C" RoomItemIcons *RoomItemIcons_Create() {
 BOOL RoomItemIcons::loadIconModels() {
     BOOL r = FALSE;
     void *d = (void *)"/fg/icon/icon.nsbmd";
-    if (ModelSet_Load(&unk_174, d ? d : d, r)) {
+    if (ModelSet_Load(&modelSet, d ? d : d, r)) {
         s32 i;
         for (i = 0; i < 0x49; i++) {
-            unk_50[i] = ModelSet_Find(&unk_174, Item_GetIconModelName(i, r));
+            iconModels[i] = ModelSet_Find(&modelSet, Item_GetIconModelName(i, r));
         }
         r = TRUE;
     }
@@ -244,16 +244,16 @@ BOOL RoomItemIcons::onExecute() {
 void RoomItemIcons::drawIconModel(Unk_ov004_0222c880_Model *model, Unk_ov004_0222c570_Mtx m) {
     if (model != NULL) {
         volatile u16 tmp[2];
-        model->unk_64 = m;
+        model->mtx = m;
         Model_drawShapesDirect(model, 0);
         tmp[0] = SceneLights_GetRoomColor();
         tmp[1] = tmp[0];
-        NNS_G3dMdlSetMdlEmi(model->unk_5c, 0, tmp[1]);
+        NNS_G3dMdlSetMdlEmi(model->resMdl, 0, tmp[1]);
     }
 }
 
 Unk_ov004_0222c880_Model *RoomItemIcons::setupIconModel(u32 idx, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz) {
-    Unk_ov004_0222c880_Model *model = (Unk_ov004_0222c880_Model *)unk_50[idx];
+    Unk_ov004_0222c880_Model *model = (Unk_ov004_0222c880_Model *)iconModels[idx];
     Unk_ov004_0222c570_Mtx m;
     s32 t[3];
     u32 r = WorldCurve_ToCurved(t, (void *)&pos);
@@ -338,7 +338,7 @@ BOOL RoomItemIcons::onDraw() {
 }
 
 BOOL RoomItemIcons::vfunc_0c() {
-    ModelSet_Release(&unk_174);
+    ModelSet_Release(&modelSet);
     ItemDropList_Release((Unk_ov004_Entry *)&sRoomItemDrops);
     return TRUE;
 }
@@ -351,13 +351,13 @@ extern "C" BOOL ItemDrop_StartFromLocalPlayer(u16 *p, Unk_ov004_0222c570_Vec *v)
         Unk_ov004_0222c570_Comm *c = gCommManager;
         s32 a;
         if (CommManager_isOnline(c)) {
-            a = c->unk_64;
+            a = c->myAid;
         } else {
             a = 0;
         }
-        Unk_ov004_0222c570_Vec *pv = &o->unk_5c;
+        Unk_ov004_0222c570_Vec *pv = &o->position;
         Unk_ov004_0222c570_Vec pos;
-        pos.x = o->unk_5c.x;
+        pos.x = o->position.x;
         pos.y = pv->y;
         pos.z = pv->z;
         Unk_ov004_0222c570_Vec q;
@@ -403,31 +403,31 @@ extern "C" void Room_SetItemAtUnit(s32 x, s32 y, u16 v, s32 z) {
 }
 
 extern "C" void ItemDrop_Settle(Unk_ov004_Entry *e) {
-    if (e->unk_8f != 0) {
-        e->unk_8f = 0;
+    if (e->needsSettle != 0) {
+        e->needsSettle = 0;
         Unk_ov004_P2 v;
-        v.a = e->unk_10.a;
-        v.b = e->unk_10.b;
+        v.a = e->unit.a;
+        v.b = e->unit.b;
         PendingUnit_ApplyAt(&v, e->unk_90);
     }
 }
 
 extern "C" void ItemDrop_Init(Unk_ov004_Entry *e, s32 idx, Unk_ov004_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 unused, s32 s16v, u32 u8v) {
-    e->unk_00 = idx;
-    e->unk_04 = 1;
-    e->unk_0c = flag;
-    e->unk_10.a = p->a;
-    e->unk_10.b = p->b;
-    e->unk_18.x = b->x;
-    e->unk_18.y = b->y;
-    e->unk_18.z = b->z;
+    e->group = idx;
+    e->state = 1;
+    e->isStill = flag;
+    e->unit.a = p->a;
+    e->unit.b = p->b;
+    e->landPos.x = b->x;
+    e->landPos.y = b->y;
+    e->landPos.z = b->z;
     e->unk_48 = *(s16 *)&s16v;
     e->unk_4a = 0;
     e->unk_8e = 1;
-    e->unk_8f = 1;
+    e->needsSettle = 1;
     e->unk_90 = *(u8 *)&u8v;
-    e->unk_8d = 0;
-    e->unk_8c = 0;
+    e->frameCount = 0;
+    e->bounceCount = 0;
     if (flag == 0) {
         Unk_ov004_V3 la;
         Unk_ov004_V3 lb;
@@ -441,10 +441,10 @@ extern "C" void ItemDrop_Init(Unk_ov004_Entry *e, s32 idx, Unk_ov004_P2 *p, Unk_
 
 extern "C" void ItemDrop_Clear(Unk_ov004_Entry *e) {
     ItemDrop_Settle(e);
-    e->unk_04 = 0;
-    e->unk_0c = 1;
-    e->unk_08 = 0xfff1;
-    e->unk_0a = 0xfff1;
+    e->state = 0;
+    e->isStill = 1;
+    e->item = 0xfff1;
+    e->landItem = 0xfff1;
 }
 
 extern "C" void ItemDrop_SetTrajectory(Unk_ov004_Entry *e, Unk_ov004_P2 *p, Unk_ov004_V3 *from, Unk_ov004_V3 *to, u32 v32) {
@@ -453,22 +453,22 @@ extern "C" void ItemDrop_SetTrajectory(Unk_ov004_Entry *e, Unk_ov004_P2 *p, Unk_
     FieldPos_FromUnitCenter(&t, p->a, p->b);
     if (to->y == 0) {
         s32 z = func_02133150(to->z - from->z, 9);
-        e->unk_30.x = func_02133150(to->x - from->x, 9);
-        e->unk_30.y = 0x1000;
-        e->unk_30.z = z;
+        e->velocity.x = func_02133150(to->x - from->x, 9);
+        e->velocity.y = 0x1000;
+        e->velocity.z = z;
     } else {
         s32 z = func_02133150(to->z - from->z, 12);
-        e->unk_30.x = func_02133150(to->x - from->x, 12);
-        e->unk_30.y = 0x1800;
-        e->unk_30.z = z;
+        e->velocity.x = func_02133150(to->x - from->x, 12);
+        e->velocity.y = 0x1800;
+        e->velocity.z = z;
     }
     u16 v = *(u16 *)&v32;
-    e->unk_08 = v;
-    e->unk_0a = v;
-    e->unk_24.x = from->x;
-    e->unk_24.y = from->y;
-    e->unk_24.z = from->z;
-    e->unk_3c = Unk_ov004_V3(0, 0x1000, 0);
+    e->item = v;
+    e->landItem = v;
+    e->pos.x = from->x;
+    e->pos.y = from->y;
+    e->pos.z = from->z;
+    e->scale = Unk_ov004_V3(0, 0x1000, 0);
     id = v;
     u32 k = (id & 0xf000) >> 12;
     if (k == 3) goto zero;
@@ -476,36 +476,36 @@ extern "C" void ItemDrop_SetTrajectory(Unk_ov004_Entry *e, Unk_ov004_P2 *p, Unk_
     zero:
         e->unk_8e = 0;
     } else {
-        func_02003e70(e->unk_4c, 0x75, 0x7f, 0);
+        func_02003e70(e->seEmitter, 0x75, 0x7f, 0);
     }
 }
 
 extern "C" void ItemDrop_Update(Unk_ov004_Entry *e) {
-    e->unk_3c.x = e->unk_3c.x + 0x19a;
-    if (e->unk_3c.x >= 0x1000) e->unk_3c.x = 0x1000;
-    e->unk_3c.z = e->unk_3c.x;
-    e->unk_30.y = e->unk_30.y - 0x400;
-    VEC_Add(&e->unk_24, &e->unk_30, &e->unk_24);
-    if (e->unk_30.y < 0 && e->unk_24.y < e->unk_18.y) {
-        if (e->unk_8c < 2) {
+    e->scale.x = e->scale.x + 0x19a;
+    if (e->scale.x >= 0x1000) e->scale.x = 0x1000;
+    e->scale.z = e->scale.x;
+    e->velocity.y = e->velocity.y - 0x400;
+    VEC_Add(&e->pos, &e->velocity, &e->pos);
+    if (e->velocity.y < 0 && e->pos.y < e->landPos.y) {
+        if (e->bounceCount < 2) {
             volatile u16 id = 0xfff1;
-            id = e->unk_0a;
+            id = e->landItem;
             BOOL in = FALSE;
             u16 v1 = id;
             u16 v2 = id;
             if (v2 >= 0x1492 && v1 <= 0x14fd) in = TRUE;
-            if (in) func_02003e70(e->unk_4c, 0x70, 0x7f, 0);
+            if (in) func_02003e70(e->seEmitter, 0x70, 0x7f, 0);
         }
-        e->unk_24.y = e->unk_18.y;
-        if (e->unk_8c == 0) {
-            e->unk_8c = 1;
-            e->unk_30.y = 0x600;
-            e->unk_30.x = (e->unk_30.x * 0x4cd) >> 12;
-            e->unk_30.z = (e->unk_30.z * 0x4cd) >> 12;
+        e->pos.y = e->landPos.y;
+        if (e->bounceCount == 0) {
+            e->bounceCount = 1;
+            e->velocity.y = 0x600;
+            e->velocity.x = (e->velocity.x * 0x4cd) >> 12;
+            e->velocity.z = (e->velocity.z * 0x4cd) >> 12;
         } else {
-            e->unk_30.x = 0;
-            e->unk_30.y = 0;
-            e->unk_30.z = 0;
+            e->velocity.x = 0;
+            e->velocity.y = 0;
+            e->velocity.z = 0;
             ItemDrop_Clear(e);
         }
     }
@@ -514,10 +514,10 @@ extern "C" void ItemDrop_Update(Unk_ov004_Entry *e) {
 extern "C" void ItemDropList_Init(Unk_ov004_Entry *e) {
     s32 i;
     for (i = 0; i < 15; e++, i++) {
-        e->unk_04 = 0;
-        e->unk_08 = 0xfff1;
-        e->unk_0a = 0xfff1;
-        func_02003ecc(e->unk_4c);
+        e->state = 0;
+        e->item = 0xfff1;
+        e->landItem = 0xfff1;
+        func_02003ecc(e->seEmitter);
     }
 }
 
@@ -526,14 +526,14 @@ extern "C" void ItemDropList_Update(Unk_ov004_Entry *e) {
     s32 i;
     Unk_ov004_V3 v;
     for (i = 0; i < 15; e++, i++) {
-        if (e->unk_04 == 2) {
-            e->unk_8d = e->unk_8d + 1;
-            id = e->unk_08;
-            if (e->unk_0c == 0) ItemDrop_Update(e);
-            v.x = e->unk_24.x;
-            v.y = e->unk_24.y;
-            v.z = e->unk_24.z;
-            func_02003e80(e->unk_4c, &v);
+        if (e->state == 2) {
+            e->frameCount = e->frameCount + 1;
+            id = e->item;
+            if (e->isStill == 0) ItemDrop_Update(e);
+            v.x = e->pos.x;
+            v.y = e->pos.y;
+            v.z = e->pos.z;
+            func_02003e80(e->seEmitter, &v);
         }
     }
 }
@@ -542,21 +542,21 @@ extern "C" void ItemDropList_Draw(Unk_ov004_Entry *e) {
     volatile u16 id = 0xfff1;
     s32 i;
     for (i = 0; i < 15; e++, i++) {
-        id = e->unk_08;
-        if (e->unk_04 != 0 && id != 0xfff1) {
-            Unk_ov004_V3 *q = &e->unk_3c;
+        id = e->item;
+        if (e->state != 0 && id != 0xfff1) {
+            Unk_ov004_V3 *q = &e->scale;
             Unk_ov004_V3 v;
-            s32 r = WorldCurve_ToCurved(&v, &e->unk_24);
+            s32 r = WorldCurve_ToCurved(&v, &e->pos);
             func_020e8388(data_021f47e0, v.x, v.y, v.z);
             func_020e8434(data_021f47e0, r);
-            func_020e84f8(data_021f47e0, e->unk_3c.x, q->y, q->z);
+            func_020e84f8(data_021f47e0, e->scale.x, q->y, q->z);
             u32 idc = id;
             u32 t = (id & 0xf000) >> 12;
             if (t == 1 || t == 3 || t == 4) {
                 Unk_ov004_V3 pos;
                 Unk_ov004_V3 sc;
-                Unk_ov004_V3 *pv = &e->unk_24;
-                pos.x = e->unk_24.x;
+                Unk_ov004_V3 *pv = &e->pos;
+                pos.x = e->pos.x;
                 pos.y = pv->y;
                 pos.z = pv->z;
                 sc.x = 0x1000;
@@ -571,8 +571,8 @@ extern "C" void ItemDropList_Draw(Unk_ov004_Entry *e) {
 extern "C" void ItemDropList_Release(Unk_ov004_Entry *e) {
     s32 i;
     for (i = 0; i < 15; e++, i++) {
-        if (e->unk_04 != 0) ItemDrop_Clear(e);
-        func_02003e50(e->unk_4c);
+        if (e->state != 0) ItemDrop_Clear(e);
+        func_02003e50(e->seEmitter);
     }
 }
 
@@ -583,7 +583,7 @@ extern "C" s32 ItemDropList_Add(void *base, s32 idx, Unk_ov004_P2 *p, Unk_ov004_
     BOOL r = FALSE;
     s32 i;
     for (i = 0; i < 3; e++, i++) {
-        if (e->unk_04 == 0) {
+        if (e->state == 0) {
             Unk_ov004_V3 la;
             Unk_ov004_V3 lb;
             Unk_ov004_P2 pp;
@@ -591,7 +591,7 @@ extern "C" s32 ItemDropList_Add(void *base, s32 idx, Unk_ov004_P2 *p, Unk_ov004_
             lb = *b;
             pp = *p;
             ItemDrop_Init(e, idx, &pp, &la, &lb, flag, *(u16 *)&idv, g, *(s16 *)&s16v, *(u8 *)&u8v);
-            e->unk_04 = 2;
+            e->state = 2;
             r = TRUE;
             break;
         }

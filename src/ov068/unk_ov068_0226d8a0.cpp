@@ -62,9 +62,9 @@ struct Unk_ov004_02224ee4_Vec {
 
 struct Unk_0203e5d0_Node {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ void *unk_0c;
+    /* 0x04 */ Unk_0203e5d0_Node *next;
+    /* 0x08 */ u32 charId;
+    /* 0x0c */ void *owner;
 };
 
 class Actor : public GameProc {
@@ -180,11 +180,11 @@ public:
     inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
     inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
 
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08[13];
-    u32 unk_3c[13];
-    u32 unk_70[13];
+    u32 archive;
+    u32 model;
+    u32 bcas[13];
+    u32 bmas[13];
+    u32 btas[13];
 };
 
 class Unk_ov004_02224d60_B {
@@ -194,8 +194,8 @@ public:
     inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
     inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
-    u32 unk_00;
-    u8 unk_04;
+    u32 texture;
+    u8 syncState;
 };
 
 class RoomObjSe {
@@ -206,7 +206,7 @@ public:
     inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
     inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
-    u32 unk_00[0x10];
+    u32 emitter[0x10];
 };
 
 class RoomObjActor : public Character {
@@ -227,22 +227,22 @@ public:
     void loadResourcesByName(char *name);
     void loadResources(char *a, char *b);
 
-    /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ RoomObjRes unk_1a4;
-    /* 0x248 */ Unk_ov004_02224d60_B unk_248;
-    /* 0x250 */ RoomObjSe unk_250;
+    /* 0xec */ AnimModel model;
+    /* 0x1a4 */ RoomObjRes res;
+    /* 0x248 */ Unk_ov004_02224d60_B tex;
+    /* 0x250 */ RoomObjSe se;
 };
 
 
 struct Unk_ov068_022708fc_Obj {
     u8 pad[0x18];
-    u8 unk_18;
+    u8 numMat;
 };
 
 struct Unk_ov068_Scene_Entry {
-    void *(*unk_00)();
-    u16 unk_04;
-    u16 unk_06;
+    void *(*factory)();
+    u16 executePriority;
+    u16 drawPriority;
     s32 unk_08[4];
 };
 
@@ -259,7 +259,7 @@ struct Unk_ov068_022708fc_Color {
 struct RoomObjTex {
     inline RoomObjTex() { RoomObjTex_Construct(this); }
     inline ~RoomObjTex() { RoomObjTex_Destruct(this); }
-    u32 unk_00;
+    u32 texture;
 };
 
 extern "C" {
@@ -286,13 +286,13 @@ public:
     BOOL enterHidden();
     void updateFadeState();
 
-    /* 0x290 */ s32 unk_290;
-    /* 0x294 */ s32 unk_294;
-    /* 0x298 */ u8 unk_298;
+    /* 0x290 */ s32 alpha;
+    /* 0x294 */ s32 targetAlpha;
+    /* 0x298 */ u8 chrLoaded;
     /* 0x299 */ u8 pad_299[3];
-    /* 0x29c */ AnimModel unk_29c;
-    /* 0x354 */ RoomObjRes unk_354;
-    /* 0x3f8 */ RoomObjTex unk_3f8;
+    /* 0x29c */ AnimModel chrModel;
+    /* 0x354 */ RoomObjRes chrRes;
+    /* 0x3f8 */ RoomObjTex chrTex;
 };
 
 // colour constants (sinit store order = definition order), the registration entry, the instance pointer
@@ -322,37 +322,37 @@ BOOL RoostCafeSet::vfunc_00() {
     sRoostCafeSet = this;
     setSyncSlot(1);
     loadResourcesByName("obj_ms_cafe");
-    unk_290 = unk_294 = 1;
-    RoomObj_LoadResourcesByName("obj_cf_chr", &unk_29c, &unk_354, &unk_3f8);
+    alpha = targetAlpha = 1;
+    RoomObj_LoadResourcesByName("obj_cf_chr", &chrModel, &chrRes, &chrTex);
     changeSyncState(1);
-    unk_298 = 1;
+    chrLoaded = 1;
     return TRUE;
 }
 
 BOOL RoostCafeSet::onExecute() {
     updateFadeState();
-    if (unk_290 != unk_294) {
-        func_020e761c(&unk_290, unk_294, 2);
+    if (alpha != targetAlpha) {
+        func_020e761c(&alpha, targetAlpha, 2);
     }
-    u32 n = (*(Unk_ov068_022708fc_Obj **)((u8 *)this + 0x148))->unk_18;
+    u32 n = (*(Unk_ov068_022708fc_Obj **)((u8 *)this + 0x148))->numMat;
     for (u32 i = 0; i < n; i++) {
-        NNS_G3dMdlSetMdlAlpha(*(Unk_ov068_022708fc_Obj **)((u8 *)this + 0x148), i, (u8)unk_290);
+        NNS_G3dMdlSetMdlAlpha(*(Unk_ov068_022708fc_Obj **)((u8 *)this + 0x148), i, (u8)alpha);
     }
     return TRUE;
 }
 
 BOOL RoostCafeSet::onDraw() {
-    unk_ec.drawAnimated(0);
-    if (unk_298 != 0) {
-        unk_29c.drawAnimated(0);
+    model.drawAnimated(0);
+    if (chrLoaded != 0) {
+        chrModel.drawAnimated(0);
     }
     return TRUE;
 }
 
 BOOL RoostCafeSet::vfunc_0c() {
     releaseResources();
-    if (unk_298 != 0) {
-        RoomObj_ReleaseResources(&unk_354, &unk_3f8);
+    if (chrLoaded != 0) {
+        RoomObj_ReleaseResources(&chrRes, &chrTex);
     }
     sRoostCafeSet = NULL;
     return TRUE;
@@ -366,7 +366,7 @@ BOOL RoostCafeSet::changeSyncState(u32 v) {
     if (v < 2) {
         if ((this->*tbl[v])()) {
             if (_ZN12RoomObjActor14storeSyncStateEv(this, v)) {
-                unk_248.unk_04 = v;
+                tex.syncState = v;
                 return TRUE;
             }
         }
@@ -379,25 +379,25 @@ void RoostCafeSet::updateFadeState() {
         &RoostCafeSet::execHidden,
         &RoostCafeSet::execShown,
     };
-    if (unk_248.unk_04 < 2) {
-        (this->*tbl[unk_248.unk_04])();
+    if (tex.syncState < 2) {
+        (this->*tbl[tex.syncState])();
     }
 }
 
 BOOL RoostCafeSet::enterHidden() {
-    unk_294 = 1;
+    targetAlpha = 1;
     return TRUE;
 }
 
 void RoostCafeSet::execHidden() {
-    unk_294 = 1;
+    targetAlpha = 1;
 }
 
 BOOL RoostCafeSet::enterShown() {
-    unk_294 = 0x1f;
+    targetAlpha = 0x1f;
     return TRUE;
 }
 
 void RoostCafeSet::execShown() {
-    unk_294 = 0x1f;
+    targetAlpha = 0x1f;
 }

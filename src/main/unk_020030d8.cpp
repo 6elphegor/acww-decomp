@@ -4,9 +4,9 @@
 // 12-byte record with a base class at 0x020639xx (functions VillagerId_Copy..VillagerId_CopyFrom are still free functions)
 
 struct Unk_020030d8 {
-    /* 0x00 */ u8 unk_00[10];
-    /* 0x0a */ u8 unk_0a;
-    /* 0x0b */ u8 unk_0b;
+    /* 0x00 */ u8 townId[10];
+    /* 0x0a */ u8 personality;
+    /* 0x0b */ u8 species;
 };
 
 extern "C" {
@@ -60,8 +60,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 // Vtable at 0x020d5e0c
@@ -82,18 +82,18 @@ public:
     void exit();
     void reset();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ s32 unk_2c;
-    /* 0x30 */ u8 unk_30;
-    /* 0x31 */ u8 unk_31;
-    /* 0x32 */ u8 unk_32;
-    /* 0x33 */ u8 unk_33;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x0c */ SpriteAnim anim;
+    /* 0x20 */ s32 slideOffset;
+    /* 0x24 */ s32 slideStep;
+    /* 0x28 */ s32 lastTransitionProgress;
+    /* 0x2c */ s32 holdTimer;
+    /* 0x30 */ u8 transitionActive;
+    /* 0x31 */ u8 enabled;
+    /* 0x32 */ u8 centered;
+    /* 0x33 */ u8 unfreezeRequest;
+    /* 0x34 */ s32 variant;
+    /* 0x38 */ s32 requestedVariant;
+    /* 0x3c */ s32 showTimer;
 };
 
 // HudLinkIcon: state object at sHudLinkIcon
@@ -110,13 +110,13 @@ struct HudLinkIcon {
     void exit();
     void reset();
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ u8 unk_14;
-    /* 0x15 */ u8 unk_15;
+    /* 0x00 */ s32 level;
+    /* 0x04 */ s32 slideOffset;
+    /* 0x08 */ s32 slideStep;
+    /* 0x0c */ s32 lastTransitionProgress;
+    /* 0x10 */ s32 holdTimer;
+    /* 0x14 */ u8 transitionActive;
+    /* 0x15 */ u8 wifiGfx;
 };
 
 struct Unk_020d467c {
@@ -143,9 +143,9 @@ public:
 };
 
 struct Unk_02003878_Vec {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    s32 x;
+    s32 y;
+    s32 z;
 };
 extern s32 gCamera;
 extern Unk_02003878_Vec gCameraEye;
@@ -164,9 +164,9 @@ void TvSound::callUpdate(s32 a, void *b) {
     if (b != 0) {
         Unk_02003878_Vec v = *(Unk_02003878_Vec *)b;
         if (gCamera != 0) {
-            v.unk_00 = v.unk_00 - gCameraEye.unk_00;
-            v.unk_04 = v.unk_04 - gCameraEye.unk_04;
-            v.unk_08 = v.unk_08 - gCameraEye.unk_08;
+            v.x = v.x - gCameraEye.x;
+            v.y = v.y - gCameraEye.y;
+            v.z = v.z - gCameraEye.z;
             vfunc_08(a, &v);
         }
     } else {
@@ -187,25 +187,25 @@ extern "C" void HudLinkIcon_Update() { sHudLinkIcon.update(); }
 extern "C" void HudLinkIcon_Draw() { sHudLinkIcon.draw(); }
 
 HudLinkIcon::HudLinkIcon() {
-    unk_00 = 3;
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_0c = 0;
-    unk_10 = 0;
-    unk_14 = 0;
-    unk_15 = 0;
+    level = 3;
+    slideOffset = 0;
+    slideStep = 0;
+    lastTransitionProgress = 0;
+    holdTimer = 0;
+    transitionActive = 0;
+    wifiGfx = 0;
 }
 
 HudLinkIcon::~HudLinkIcon() {}
 
 void HudLinkIcon::reset() {
-    unk_00 = 3;
-    unk_08 = 0;
-    unk_04 = sHudIconSlideOffsets[0];
-    unk_0c = 0;
-    unk_10 = 0;
-    unk_14 = 0;
-    unk_15 = 0;
+    level = 3;
+    slideStep = 0;
+    slideOffset = sHudIconSlideOffsets[0];
+    lastTransitionProgress = 0;
+    holdTimer = 0;
+    transitionActive = 0;
+    wifiGfx = 0;
 }
 
 void HudLinkIcon::exit() {}
@@ -214,13 +214,13 @@ void HudLinkIcon::update() {
     if (canShow()) {
         s32 v = Net_GetLinkLevel();
         if (v == 1) {
-            unk_00 = 2;
+            level = 2;
         } else if (v == 2) {
-            unk_00 = 1;
+            level = 1;
         } else if (v == 3) {
-            unk_00 = 0;
+            level = 0;
         } else {
-            unk_00 = 3;
+            level = 3;
         }
     }
     trackMenuTransition();
@@ -229,8 +229,8 @@ void HudLinkIcon::update() {
 }
 
 void HudLinkIcon::draw() {
-    if (unk_08 != 0) {
-        Oam_DrawCell(0, (void *)data_020d467c.unk_08[unk_00][0], unk_04 + 0x80, 0x60, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+    if (slideStep != 0) {
+        Oam_DrawCell(0, (void *)data_020d467c.unk_08[level][0], slideOffset + 0x80, 0x60, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
 }
 
@@ -242,7 +242,7 @@ BOOL HudLinkIcon::canShow() {
             r = TRUE;
         }
     }
-    if (r && unk_10 == 0) {
+    if (r && holdTimer == 0) {
         return TRUE;
     }
     return FALSE;
@@ -259,7 +259,7 @@ BOOL HudLinkIcon::isWifiGfxCurrent() {
         b = FALSE;
         break;
     }
-    if (unk_15 == b) {
+    if (wifiGfx == b) {
         return TRUE;
     }
     return FALSE;
@@ -268,54 +268,54 @@ BOOL HudLinkIcon::isWifiGfxCurrent() {
 void HudLinkIcon::trackMenuTransition() {
     BOOL a = MenuCtrl_IsTransitionActive() ? TRUE : FALSE;
     s32 b = MenuCtrl_GetTransitionProgressOrFull();
-    if (unk_10 > 0) {
-        unk_10--;
+    if (holdTimer > 0) {
+        holdTimer--;
     }
-    if (unk_14 != 0) {
-        if (unk_0c == 0x1000 && b < 0x1000) {
-            unk_10 = 0x17;
+    if (transitionActive != 0) {
+        if (lastTransitionProgress == 0x1000 && b < 0x1000) {
+            holdTimer = 0x17;
         }
     } else if (a) {
-        unk_08 = 0;
-        unk_04 = sHudIconSlideOffsets[0];
-        unk_10 = 0xe;
+        slideStep = 0;
+        slideOffset = sHudIconSlideOffsets[0];
+        holdTimer = 0xe;
     }
-    unk_14 = a;
-    unk_0c = b;
+    transitionActive = a;
+    lastTransitionProgress = b;
 }
 
 void HudLinkIcon::updateSlide() {
     BOOL a = canShow();
     BOOL b = isWifiGfxCurrent();
     if (a && b) {
-        if ((u32)unk_08 < 4) {
-            unk_08++;
-            unk_04 = sHudIconSlideOffsets[unk_08];
+        if ((u32)slideStep < 4) {
+            slideStep++;
+            slideOffset = sHudIconSlideOffsets[slideStep];
         }
-    } else if (unk_08 != 0) {
-        unk_08--;
-        unk_04 = sHudIconSlideOffsets[unk_08];
+    } else if (slideStep != 0) {
+        slideStep--;
+        slideOffset = sHudIconSlideOffsets[slideStep];
     }
-    if (a && !b && unk_08 == 0) {
-        unk_15 = unk_15 == 0 ? 1 : 0;
-        HudObjGfx_LoadLinkIcon(unk_15);
+    if (a && !b && slideStep == 0) {
+        wifiGfx = wifiGfx == 0 ? 1 : 0;
+        HudObjGfx_LoadLinkIcon(wifiGfx);
     }
 }
 
 void HudLinkIcon::func_02003574() {}
 
 HudUnkSlideIcon::HudUnkSlideIcon() {
-    unk_20 = 0;
-    unk_24 = 0;
-    unk_28 = 0;
-    unk_2c = 0;
-    unk_30 = 0;
-    unk_31 = 0;
-    unk_32 = 1;
-    unk_33 = 0;
-    unk_34 = 0;
-    unk_38 = 5;
-    unk_3c = 0;
+    slideOffset = 0;
+    slideStep = 0;
+    lastTransitionProgress = 0;
+    holdTimer = 0;
+    transitionActive = 0;
+    enabled = 0;
+    centered = 1;
+    unfreezeRequest = 0;
+    variant = 0;
+    requestedVariant = 5;
+    showTimer = 0;
 }
 
 HudUnkSlideIcon::~HudUnkSlideIcon() {
@@ -323,17 +323,17 @@ HudUnkSlideIcon::~HudUnkSlideIcon() {
 }
 
 void HudUnkSlideIcon::draw() {
-    if (unk_24 != 0) {
-        void *h = unk_0c.getCell();
+    if (slideStep != 0) {
+        void *h = anim.getCell();
         if (h != 0) {
-            s32 x = getOriginX() + unk_0c.getFrameX(-1);
-            s32 y = getOriginY() + unk_0c.getFrameY(-1);
-            if (unk_32 != 0) {
+            s32 x = getOriginX() + anim.getFrameX(-1);
+            s32 y = getOriginY() + anim.getFrameY(-1);
+            if (centered != 0) {
                 x += 0x78;
                 y += 0x48;
             } else {
-                x += unk_20;
-                y += unk_30 != 0 ? 0x8c : 0;
+                x += slideOffset;
+                y += transitionActive != 0 ? 0x8c : 0;
             }
             Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
@@ -355,22 +355,22 @@ extern "C" void HudUnkSlideIcon_Update() { sHudUnkSlideIcon.callUpdate(); }
 extern "C" void HudUnkSlideIcon_Draw() { sHudUnkSlideIcon.callDraw(); }
 
 void HudUnkSlideIcon::reset() {
-    unk_31 = 0;
-    unk_20 = sHudIconSlideOffsets[0];
-    unk_24 = 0;
-    unk_28 = 0;
-    unk_2c = 0;
-    unk_30 = 0;
-    unk_32 = 1;
+    enabled = 0;
+    slideOffset = sHudIconSlideOffsets[0];
+    slideStep = 0;
+    lastTransitionProgress = 0;
+    holdTimer = 0;
+    transitionActive = 0;
+    centered = 1;
     setAnimFrozen(FALSE);
-    unk_33 = 0;
-    unk_34 = 0;
-    unk_38 = 5;
-    unk_3c = 0;
+    unfreezeRequest = 0;
+    variant = 0;
+    requestedVariant = 5;
+    showTimer = 0;
 }
 
 void HudUnkSlideIcon::exit() {
-    unk_0c.restart();
+    anim.restart();
 }
 
 void HudUnkSlideIcon::callUpdate() {
@@ -382,27 +382,27 @@ void HudUnkSlideIcon::callDraw() {
 }
 
 void HudUnkSlideIcon::setAnimFrozen(BOOL flag) {
-    unk_0c.setSeq((SpriteAnimSeq *)data_020d47a4);
+    anim.setSeq((SpriteAnimSeq *)data_020d47a4);
     if (flag) {
-        unk_0c.setPlayOnce(1);
-        unk_0c.setFrame(1, 0);
-        unk_0c.pause();
+        anim.setPlayOnce(1);
+        anim.setFrame(1, 0);
+        anim.pause();
     } else {
-        unk_0c.setPlayOnce(0);
-        unk_0c.restart();
+        anim.setPlayOnce(0);
+        anim.restart();
     }
-    unk_33 = 0;
+    unfreezeRequest = 0;
 }
 
 BOOL HudUnkSlideIcon::canShow() {
     BOOL r;
-    if (unk_31 != 0 && unk_2c == 0 && unk_3c > 0) {
+    if (enabled != 0 && holdTimer == 0 && showTimer > 0) {
         r = TRUE;
     } else {
         r = FALSE;
     }
     if (r) {
-        if (unk_38 != 5 && unk_38 != unk_34) {
+        if (requestedVariant != 5 && requestedVariant != variant) {
             r = FALSE;
         }
     }
@@ -412,86 +412,86 @@ BOOL HudUnkSlideIcon::canShow() {
 void HudUnkSlideIcon::trackMenuTransition() {
     BOOL a = MenuCtrl_IsTransitionActive() ? TRUE : FALSE;
     s32 b = MenuCtrl_GetTransitionProgressOrFull();
-    if (unk_2c > 0) {
-        unk_2c--;
-        if (unk_2c == 0) {
-            unk_33 = 1;
+    if (holdTimer > 0) {
+        holdTimer--;
+        if (holdTimer == 0) {
+            unfreezeRequest = 1;
         }
     }
-    if (unk_30 != 0) {
-        if (unk_28 == 0x1000 && b < 0x1000) {
-            unk_2c = 0x17;
+    if (transitionActive != 0) {
+        if (lastTransitionProgress == 0x1000 && b < 0x1000) {
+            holdTimer = 0x17;
         }
     } else if (a) {
-        unk_24 = 0;
-        unk_20 = sHudIconSlideOffsets[0];
+        slideStep = 0;
+        slideOffset = sHudIconSlideOffsets[0];
         setAnimFrozen(TRUE);
-        unk_2c = 0xe;
+        holdTimer = 0xe;
     }
-    unk_30 = a;
-    unk_28 = b;
+    transitionActive = a;
+    lastTransitionProgress = b;
 }
 
 void HudUnkSlideIcon::updateSlide() {
-    if (unk_33 != 0) {
+    if (unfreezeRequest != 0) {
         setAnimFrozen(FALSE);
     }
-    if (unk_32 != 0) {
+    if (centered != 0) {
         if (canShow()) {
-            unk_24 = 4;
-            unk_20 = sHudIconSlideOffsets[4];
+            slideStep = 4;
+            slideOffset = sHudIconSlideOffsets[4];
         } else {
-            unk_24 = 0;
-            unk_20 = sHudIconSlideOffsets[0];
+            slideStep = 0;
+            slideOffset = sHudIconSlideOffsets[0];
         }
     } else if (canShow()) {
-        if ((u32)unk_24 < 4) {
-            unk_24++;
-            unk_20 = sHudIconSlideOffsets[unk_24];
-            if (unk_24 == 4) {
+        if ((u32)slideStep < 4) {
+            slideStep++;
+            slideOffset = sHudIconSlideOffsets[slideStep];
+            if (slideStep == 4) {
                 setAnimFrozen(FALSE);
             }
         }
-    } else if (unk_24 != 0) {
-        if (unk_24 == 4) {
+    } else if (slideStep != 0) {
+        if (slideStep == 4) {
             setAnimFrozen(TRUE);
         }
-        unk_24--;
-        unk_20 = sHudIconSlideOffsets[unk_24];
+        slideStep--;
+        slideOffset = sHudIconSlideOffsets[slideStep];
     }
-    if (unk_3c > 0) {
-        unk_3c--;
+    if (showTimer > 0) {
+        showTimer--;
     }
-    unk_0c.update();
+    anim.update();
 }
 
 void HudUnkSlideIcon::applyVariantRequest() {
-    if (unk_24 == 0) {
-        s32 t = unk_38;
-        if (t != 5 && t != unk_34) {
+    if (slideStep == 0) {
+        s32 t = requestedVariant;
+        if (t != 5 && t != variant) {
             HudObjGfx_LoadSlideIcon(t);
-            unk_34 = unk_38;
-            unk_38 = 5;
+            variant = requestedVariant;
+            requestedVariant = 5;
             BOOL b = FALSE;
-            if ((u32)unk_34 <= 4 && ((1 << unk_34) & 0x19) != 0) {
+            if ((u32)variant <= 4 && ((1 << variant) & 0x19) != 0) {
                 b = TRUE;
             }
-            unk_32 = b;
-            unk_33 = 1;
+            centered = b;
+            unfreezeRequest = 1;
         }
     }
 }
 
 extern "C" void VillagerId_CopyFrom(Unk_020030d8 *p, Unk_020030d8 *other) {
     TownId_CopyFrom(p, other);
-    p->unk_0b = other->unk_0b;
-    p->unk_0a = other->unk_0a;
+    p->species = other->species;
+    p->personality = other->personality;
 }
 
 extern "C" void VillagerId_CopyTo(Unk_020030d8 *p, Unk_020030d8 *other) {
     TownId_CopyTo(p, other);
-    other->unk_0b = p->unk_0b;
-    other->unk_0a = p->unk_0a;
+    other->species = p->species;
+    other->personality = p->personality;
 }
 
 extern "C" Unk_020030d8 *VillagerId_Construct(Unk_020030d8 *p) {
@@ -512,8 +512,8 @@ extern "C" Unk_020030d8 *VillagerId_Destruct(Unk_020030d8 *p) {
 
 extern "C" void VillagerId_Clear(Unk_020030d8 *p) {
     TownId_Clear(p);
-    p->unk_0b = 0xff;
-    p->unk_0a = 6;
+    p->species = 0xff;
+    p->personality = 6;
 }
 
 extern "C" void VillagerId_Copy(Unk_020030d8 *dst, Unk_020030d8 *src) {

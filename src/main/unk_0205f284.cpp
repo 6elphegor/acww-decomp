@@ -26,9 +26,9 @@ public:
 // Local scratch object filled by _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii and cleaned by GroundInfo_Destruct.
 struct Unk_0205f92c_Buf {
     u8 pad_00[0x30];
-    s32 unk_30;
+    s32 waterKind;
     u8 pad_34[8];
-    s32 unk_3c;
+    s32 waterSurfaceY;
 };
 
 class FishBobber;
@@ -74,10 +74,10 @@ struct CommManager {
 class GroundInfo {
 public:
     u8 pad_00[0x24];
-    s32 unk_24, unk_28, unk_2c;
-    s32 unk_30;
+    s32 flowDir, flowDirY, flowDirZ;
+    s32 waterKind;
     u8 pad_34[8];
-    s32 unk_3c;
+    s32 waterSurfaceY;
     GroundInfo() {}
     GroundInfo *_ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(Unk_0205f8d4_Vec *v, s32 a, s32 b);
     ~GroundInfo();
@@ -86,10 +86,10 @@ public:
 class Unk_0205f6b4_Obj {
 public:
     u8 pad_00[0x24];
-    s32 unk_24, unk_28, unk_2c;
-    s32 unk_30;
+    s32 flowDir, unk_28, unk_2c;
+    s32 waterKind;
     u8 pad_34[8];
-    s32 unk_3c;
+    s32 waterSurfaceY;
     Unk_0205f6b4_Obj() {}
     Unk_0205f6b4_Obj *_ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(Unk_0205f8d4_Vec *v, s32 a, s32 b);
 };
@@ -195,20 +195,20 @@ public:
     void destruct();
     void construct();
 
-    u8 unk_00;
+    u8 slot;
     u8 pad_01[3];
-    s32 unk_04;
-    Unk_0205f8d4_Vec unk_08;
-    s32 unk_14;
-    s32 unk_18;
-    Unk_0205f8d4_Vec unk_1c;
-    Character *unk_28;
-    void *unk_2c;
-    s32 unk_30;
-    s32 unk_34;
-    u8 unk_38;
+    s32 curState;
+    Unk_0205f8d4_Vec pos;
+    s32 gravity;
+    s32 ySpeed;
+    Unk_0205f8d4_Vec targetPos;
+    Character *ownerActor;
+    void *fish;
+    s32 stateTimer;
+    s32 effect;
+    u8 justLanded;
     u8 pad_39[3];
-    s32 unk_3c;
+    s32 ownerAid;
 };
 
 class FishBobberPool {
@@ -411,11 +411,11 @@ CachedModel *FishBobberPool::getModel(s32 idx)
 
 void FishBobber::construct()
 {
-    unk_00 = 9;
-    unk_28 = 0;
-    unk_2c = 0;
-    unk_34 = -1;
-    unk_3c = -1;
+    slot = 9;
+    ownerActor = 0;
+    fish = 0;
+    effect = -1;
+    ownerAid = -1;
 }
 
 void FishBobber::destruct()
@@ -424,7 +424,7 @@ void FishBobber::destruct()
 
 void FishBobber::attach(u32 id, Character *actor, u32 n)
 {
-    unk_00 = id;
+    slot = id;
     if (n < 3) {
         sFishBobberPool.setBobber(id, this);
         sFishBobberPool.loadModelFile(id, n);
@@ -436,9 +436,9 @@ void FishBobber::attach(u32 id, Character *actor, u32 n)
     sFishBobberPool.relocateTex(id);
     sFishBobberPool.getModel(id)->setFromFile(p);
     if (actor) {
-        unk_28 = actor;
+        ownerActor = actor;
     }
-    unk_04 = 0;
+    curState = 0;
 }
 
 void FishBobber::detach()
@@ -446,7 +446,7 @@ void FishBobber::detach()
     sFishBobberPool.getModel(getSlot())->release();
     sFishBobberPool.cancelTexUpload(getSlot());
     sFishBobberPool.setBobber(getSlot(), 0);
-    unk_00 = 9;
+    slot = 9;
 }
 
 void FishBobberPool::cancelTexUpload(s32 idx)
@@ -495,7 +495,7 @@ FishBobber *FishBobberPool::getFloatingBobber(s32 idx)
         return 0;
     }
     FishBobber *p = unk_750[idx];
-    if (p != 0 && p->unk_04 == 4) {
+    if (p != 0 && p->curState == 4) {
         return p;
     }
     return 0;
@@ -503,27 +503,27 @@ FishBobber *FishBobberPool::getFloatingBobber(s32 idx)
 
 u8 FishBobber::getSlot()
 {
-    return unk_00;
+    return slot;
 }
 
 void FishBobber::setOwnerAid(s32 v)
 {
-    unk_3c = v;
+    ownerAid = v;
 }
 
 void FishBobber::setFish(void *p)
 {
-    unk_2c = p;
+    fish = p;
 }
 
 void *FishBobber::getFish()
 {
-    return unk_2c;
+    return fish;
 }
 
 BOOL FishBobber::isInWater()
 {
-    if ((u32)(unk_04 - 4) <= 1) {
+    if ((u32)(curState - 4) <= 1) {
         return TRUE;
     }
     return FALSE;
@@ -531,60 +531,60 @@ BOOL FishBobber::isInWater()
 
 BOOL FishBobber::tryHook()
 {
-    if (unk_2c == 0) {
+    if (fish == 0) {
         setState(7);
         return FALSE;
     }
-    return FishShadow_TryHook(unk_2c);
+    return FishShadow_TryHook(fish);
 }
 
 BOOL FishBobber::checkReelResult()
 {
-    if (unk_2c == 0) {
+    if (fish == 0) {
         return TRUE;
     }
-    return FishShadow_CheckReelResult(unk_2c);
+    return FishShadow_CheckReelResult(fish);
 }
 
 void FishBobber::nudge()
 {
     Unk_0205f92c_Buf buf;
-    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&buf, &unk_08, 1, 1);
-    if (buf.unk_30 != 0) {
-        unk_08.y = buf.unk_3c + 0xcd;
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&buf, &pos, 1, 1);
+    if (buf.waterKind != 0) {
+        pos.y = buf.waterSurfaceY + 0xcd;
     }
     GroundInfo_Destruct(&buf);
 }
 
 void FishBobber::isCatchLanded()
 {
-    FishCatch_IsLandedForShadow(unk_2c);
+    FishCatch_IsLandedForShadow(fish);
 }
 
 void FishBobber::endCatch()
 {
-    FishCatch_EndForShadow(unk_2c);
-    unk_2c = 0;
+    FishCatch_EndForShadow(fish);
+    fish = 0;
 }
 
 void FishBobber::startCatchLift()
 {
-    FishCatch_StartLift((void *)unk_3c, 0);
-    unk_2c = 0;
+    FishCatch_StartLift((void *)ownerAid, 0);
+    fish = 0;
 }
 
 void FishBobber::setTargetPos(Unk_0205f8d4_Vec *v)
 {
-    unk_1c.x = v->x;
-    unk_1c.y = v->y;
-    unk_1c.z = v->z;
+    targetPos.x = v->x;
+    targetPos.y = v->y;
+    targetPos.z = v->z;
 }
 
 void FishBobber::setPos(Unk_0205f8d4_Vec *v)
 {
-    unk_08.x = v->x;
-    unk_08.y = v->y;
-    unk_08.z = v->z;
+    pos.x = v->x;
+    pos.y = v->y;
+    pos.z = v->z;
 }
 
 void FishBobber::setState(s32 state)
@@ -593,94 +593,94 @@ void FishBobber::setState(s32 state)
     Unk_0205f92c_Buf buf;
     s32 old;
 
-    if (unk_34 != -1) {
-        Effect_End(unk_34);
-        unk_34 = -1;
+    if (effect != -1) {
+        Effect_End(effect);
+        effect = -1;
     }
-    if (unk_28 == 0) {
-        unk_04 = 0;
+    if (ownerActor == 0) {
+        curState = 0;
         return;
     }
-    old = unk_04;
-    unk_04 = state;
-    unk_30 = 0;
-    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&buf, &unk_08, 1, 1);
+    old = curState;
+    curState = state;
+    stateTimer = 0;
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&buf, &pos, 1, 1);
     switch (state) {
     case 1:
-        if (unk_2c != 0) {
-            if (FishShadow_FleeFromPlayer(unk_2c)) {
-                unk_2c = 0;
+        if (fish != 0) {
+            if (FishShadow_FleeFromPlayer(fish)) {
+                fish = 0;
             }
         }
         break;
     case 7: {
         Unk_0205f8d4_Vec a, b;
-        if (!unk_28->vfunc_5c(&unk_1c)) {
-            Unk_0205f8d4_Vec *pv = &unk_28->position;
-            unk_1c.x = pv->x;
-            unk_1c.y = pv->y;
-            unk_1c.z = pv->z;
+        if (!ownerActor->vfunc_5c(&targetPos)) {
+            Unk_0205f8d4_Vec *pv = &ownerActor->position;
+            targetPos.x = pv->x;
+            targetPos.y = pv->y;
+            targetPos.z = pv->z;
         }
-        a.x = unk_1c.x;
-        a.y = unk_1c.y;
-        a.z = unk_1c.z;
-        b.x = unk_08.x;
-        b.y = unk_08.y;
-        b.z = unk_08.z;
-        Fishing_CalcArcSpeed(&a, &b, &unk_14, &unk_18, 1);
-        if (buf.unk_30 != 0) {
-            v.x = unk_08.x;
-            v.y = unk_08.y;
-            v.z = unk_08.z;
-            v.y = buf.unk_3c;
+        a.x = targetPos.x;
+        a.y = targetPos.y;
+        a.z = targetPos.z;
+        b.x = pos.x;
+        b.y = pos.y;
+        b.z = pos.z;
+        Fishing_CalcArcSpeed(&a, &b, &gravity, &ySpeed, 1);
+        if (buf.waterKind != 0) {
+            v.x = pos.x;
+            v.y = pos.y;
+            v.z = pos.z;
+            v.y = buf.waterSurfaceY;
             Effect_Create(0xd, &v, 0, 0);
         }
         break;
     }
     case 8: {
         Unk_0205f8d4_Vec c, d;
-        if (!unk_28->vfunc_5c(&unk_1c)) {
-            Unk_0205f8d4_Vec *pv = &unk_28->position;
-            unk_1c.x = pv->x;
-            unk_1c.y = pv->y;
-            unk_1c.z = pv->z;
+        if (!ownerActor->vfunc_5c(&targetPos)) {
+            Unk_0205f8d4_Vec *pv = &ownerActor->position;
+            targetPos.x = pv->x;
+            targetPos.y = pv->y;
+            targetPos.z = pv->z;
         }
-        c.x = unk_1c.x;
-        c.y = unk_1c.y;
-        c.z = unk_1c.z;
-        d.x = unk_08.x;
-        d.y = unk_08.y;
-        d.z = unk_08.z;
-        Fishing_CalcArcSpeed(&c, &d, &unk_14, &unk_18, 2);
+        c.x = targetPos.x;
+        c.y = targetPos.y;
+        c.z = targetPos.z;
+        d.x = pos.x;
+        d.y = pos.y;
+        d.z = pos.z;
+        Fishing_CalcArcSpeed(&c, &d, &gravity, &ySpeed, 2);
         break;
     }
     case 5:
-        if (buf.unk_30 != 0) {
-            v.x = unk_08.x;
-            v.y = unk_08.y;
-            v.z = unk_08.z;
-            v.y = buf.unk_3c;
+        if (buf.waterKind != 0) {
+            v.x = pos.x;
+            v.y = pos.y;
+            v.z = pos.z;
+            v.y = buf.waterSurfaceY;
             Effect_Create(0x10, &v, 0, 0);
         }
         break;
     case 4:
         if (old == 6) {
-            if (buf.unk_30 != 0) {
-                v.x = unk_08.x;
-                v.y = unk_08.y;
-                v.z = unk_08.z;
-                v.y = buf.unk_3c;
+            if (buf.waterKind != 0) {
+                v.x = pos.x;
+                v.y = pos.y;
+                v.z = pos.z;
+                v.y = buf.waterSurfaceY;
                 Effect_Create(0xf, &v, 0, 0);
             }
         }
         break;
     case 6:
-        if (buf.unk_30 != 0) {
-            v.x = unk_08.x;
-            v.y = unk_08.y;
-            v.z = unk_08.z;
-            v.y = buf.unk_3c;
-            unk_34 = Effect_Create(0x11, &v, 0, 0);
+        if (buf.waterKind != 0) {
+            v.x = pos.x;
+            v.y = pos.y;
+            v.z = pos.z;
+            v.y = buf.waterSurfaceY;
+            effect = Effect_Create(0x11, &v, 0, 0);
         }
         break;
     case 0:
@@ -694,13 +694,13 @@ void FishBobber::setState(s32 state)
 
 void FishBobber::update()
 {
-    sFishBobberPool.pollTexUpload(unk_00);
-    unk_30++;
-    unk_38 = 0;
-    if (unk_04 >= 10) {
+    sFishBobberPool.pollTexUpload(slot);
+    stateTimer++;
+    justLanded = 0;
+    if (curState >= 10) {
         setState(0);
     }
-    (((FishBobberStates *)this)->*sFishBobberStateFns[unk_04])();
+    (((FishBobberStates *)this)->*sFishBobberStateFns[curState])();
 }
 
 extern "C" void FishBobber_Draw(u8 *self, Unk_0205f7f4_Mtx *m, s32 arg)
@@ -752,16 +752,16 @@ void FishBobberStates::updateHeld()
 
 void FishBobberStates::updateCastFail()
 {
-    if (unk_30 < 0xf) {
+    if (stateTimer < 0xf) {
         updateCastSwing();
-    } else if (unk_30 >= 0x15) {
+    } else if (stateTimer >= 0x15) {
         setState(1);
     } else {
-        s16 ang = (s16)(*(s16 *)((u8 *)unk_28 + 0x8e) - 0x1838);
+        s16 ang = (s16)(*(s16 *)((u8 *)ownerActor + 0x8e) - 0x1838);
         u32 idx = (u16)ang >> 4;
         idx = idx * 2;
-        unk_08.x += func_01ffcb0c(data_02135f44[idx], 0x640);
-        unk_08.z += func_01ffcb0c(data_02135f44[idx + 1], 0x640);
+        pos.x += func_01ffcb0c(data_02135f44[idx], 0x640);
+        pos.z += func_01ffcb0c(data_02135f44[idx + 1], 0x640);
     }
 }
 
@@ -769,34 +769,34 @@ void FishBobberStates::updateCast()
 {
     Unk_0205f6b4_Obj o;
     Unk_0205f8d4_Vec v, a, b, c;
-    if (unk_30 < 0xf) {
+    if (stateTimer < 0xf) {
         updateCastSwing();
-        if (unk_30 == 0xe) {
-            a.x = unk_1c.x;
-            a.y = unk_1c.y;
-            a.z = unk_1c.z;
-            b.x = unk_08.x;
-            b.y = unk_08.y;
-            b.z = unk_08.z;
-            Fishing_CalcArcSpeed(&a, &b, &unk_14, &unk_18, 0);
+        if (stateTimer == 0xe) {
+            a.x = targetPos.x;
+            a.y = targetPos.y;
+            a.z = targetPos.z;
+            b.x = pos.x;
+            b.y = pos.y;
+            b.z = pos.z;
+            Fishing_CalcArcSpeed(&a, &b, &gravity, &ySpeed, 0);
         }
     } else {
-        c.x = unk_1c.x;
-        c.y = unk_1c.y;
-        c.z = unk_1c.z;
-        Fishing_StepArc(&c, unk_14, &unk_08, &unk_18, 0);
-        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii((Unk_0205f92c_Buf *)&o, &unk_08, 1, 1);
-        if (o.unk_30 != 0) {
-            s32 y = o.unk_3c;
-            if (y >= unk_08.y) {
+        c.x = targetPos.x;
+        c.y = targetPos.y;
+        c.z = targetPos.z;
+        Fishing_StepArc(&c, gravity, &pos, &ySpeed, 0);
+        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii((Unk_0205f92c_Buf *)&o, &pos, 1, 1);
+        if (o.waterKind != 0) {
+            s32 y = o.waterSurfaceY;
+            if (y >= pos.y) {
                 setState(4);
-                unk_08.y = o.unk_3c - 0x333;
-                v.x = unk_08.x;
-                v.y = unk_08.y;
-                v.z = unk_08.z;
+                pos.y = o.waterSurfaceY - 0x333;
+                v.x = pos.x;
+                v.y = pos.y;
+                v.z = pos.z;
                 v.y = y;
                 Effect_Create(0xc, &v, 0, 0);
-                unk_38 = 1;
+                justLanded = 1;
                 FieldFish_StartCastSplash();
             }
         }
@@ -810,66 +810,66 @@ void FishBobberStates::updateFloat()
     Unk_0205f8d4_Vec base;
     GroundInfo o;
     Unk_0205f8d4_Vec v, w;
-    Unk_0205f8d4_Vec *pb = (Unk_0205f8d4_Vec *)((u8 *)unk_28 + 0x5c);
+    Unk_0205f8d4_Vec *pb = (Unk_0205f8d4_Vec *)((u8 *)ownerActor + 0x5c);
     base.x = pb->x;
     base.y = pb->y;
     base.z = pb->z;
-    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii((Unk_0205f92c_Buf *)&o, &unk_08, 0, 1);
+    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii((Unk_0205f92c_Buf *)&o, &pos, 0, 1);
     ang = 0;
-    if (o.unk_30 != 0) {
-                func_020e9790(&w, (Unk_0205f8d4_Vec *)&o.unk_24, 5);
+    if (o.waterKind != 0) {
+                func_020e9790(&w, (Unk_0205f8d4_Vec *)&o.flowDir, 5);
         ang = func_020e7b98(w.x, w.z);
-        VEC_Add(&unk_08, &w, &unk_08);
-        s32 y = o.unk_3c;
-        s32 c = unk_08.y;
+        VEC_Add(&pos, &w, &pos);
+        s32 y = o.waterSurfaceY;
+        s32 c = pos.y;
         if (c < y + 0x333) {
             s32 lim = y + 0x19a;
             if (c < lim) {
-                unk_08.y = c + 0x66;
-                if (unk_08.y >= lim) {
-                    v.x = unk_08.x;
-                    v.y = unk_08.y;
-                    v.z = unk_08.z;
+                pos.y = c + 0x66;
+                if (pos.y >= lim) {
+                    v.x = pos.x;
+                    v.y = pos.y;
+                    v.z = pos.z;
                     v.y = y;
                     Effect_Create(0xf, &v, 0, 0);
                 }
             } else {
-                unk_08.y = c + 0x66;
+                pos.y = c + 0x66;
             }
         } else {
-            unk_08.y = y + 0x30a;
+            pos.y = y + 0x30a;
         }
     }
-    s32 dist = func_020e9650(&base, &unk_08);
+    s32 dist = func_020e9650(&base, &pos);
     if (dist >= 0x8000) {
-        s32 dx = unk_08.x - base.x;
-        s32 dz = unk_08.z - base.z;
+        s32 dx = pos.x - base.x;
+        s32 dz = pos.z - base.z;
         u32 idx = (u16)func_020e7b98(dx, dz) >> 4;
         idx = idx * 2;
-        unk_08.x = base.x + func_01ffcb0c(0x7f33, data_02135f44[idx]);
-        unk_08.z = base.z + func_01ffcb0c(0x7f33, data_02135f44[idx + 1]);
-        if (o.unk_30 != 0) {
-            v.x = unk_08.x;
-            v.y = unk_08.y;
-            v.z = unk_08.z;
-            v.y = o.unk_3c;
-            if (unk_34 == -1) {
-                unk_34 = Effect_Create(0xe, &v, (u32)&ang, 0);
+        pos.x = base.x + func_01ffcb0c(0x7f33, data_02135f44[idx]);
+        pos.z = base.z + func_01ffcb0c(0x7f33, data_02135f44[idx + 1]);
+        if (o.waterKind != 0) {
+            v.x = pos.x;
+            v.y = pos.y;
+            v.z = pos.z;
+            v.y = o.waterSurfaceY;
+            if (effect == -1) {
+                effect = Effect_Create(0xe, &v, (u32)&ang, 0);
             } else {
-                Effect_SetPosition(unk_34, &v, &ang, 0);
+                Effect_SetPosition(effect, &v, &ang, 0);
             }
         }
     } else {
-        if (unk_34 != -1) {
+        if (effect != -1) {
             if (dist < 0x7e66) {
-                Effect_End(unk_34);
-                unk_34 = -1;
-            } else if (o.unk_30 != 0) {
-                    v.x = unk_08.x;
-                v.y = unk_08.y;
-                v.z = unk_08.z;
-                v.y = o.unk_3c;
-                Effect_SetPosition(unk_34, &v, &ang, 0);
+                Effect_End(effect);
+                effect = -1;
+            } else if (o.waterKind != 0) {
+                    v.x = pos.x;
+                v.y = pos.y;
+                v.z = pos.z;
+                v.y = o.waterSurfaceY;
+                Effect_SetPosition(effect, &v, &ang, 0);
             }
         }
     }
@@ -878,57 +878,57 @@ void FishBobberStates::updateFloat()
 void FishBobberStates::updateBite()
 {
     GroundInfo o;
-        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii((Unk_0205f92c_Buf *)&o, &unk_08, 1, 1);
-    if (o.unk_30 != 0) {
-        s32 lim = o.unk_3c - 0x333;
-        if (unk_08.y > lim) {
-            unk_08.y -= 0x19a;
+        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii((Unk_0205f92c_Buf *)&o, &pos, 1, 1);
+    if (o.waterKind != 0) {
+        s32 lim = o.waterSurfaceY - 0x333;
+        if (pos.y > lim) {
+            pos.y -= 0x19a;
         } else {
-            unk_08.y = lim;
+            pos.y = lim;
         }
     }
 }
 
 void FishBobberStates::updateHooked()
 {
-    if (unk_2c == 0) {
-        if (_ZN11CommManager7isMyAidEj((void *)gCommManager, unk_3c)) {
+    if (fish == 0) {
+        if (_ZN11CommManager7isMyAidEj((void *)gCommManager, ownerAid)) {
             setState(4);
             return;
         }
         GroundInfo o;
-        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii((Unk_0205f92c_Buf *)&o, &unk_08, 1, 1);
-        if (o.unk_30 != 0) {
+        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii((Unk_0205f92c_Buf *)&o, &pos, 1, 1);
+        if (o.waterKind != 0) {
             Unk_0205f8d4_Vec v;
-            v.x = unk_08.x;
-            v.y = unk_08.y;
-            v.z = unk_08.z;
-            v.y = o.unk_3c;
-            if (unk_34 == -1) {
-                unk_34 = Effect_Create(0x11, &v, 0, 0);
+            v.x = pos.x;
+            v.y = pos.y;
+            v.z = pos.z;
+            v.y = o.waterSurfaceY;
+            if (effect == -1) {
+                effect = Effect_Create(0x11, &v, 0, 0);
             } else {
-                Effect_SetPosition(unk_34, &v, 0, 0);
+                Effect_SetPosition(effect, &v, 0, 0);
             }
         }
     } else {
         GroundInfo o;
-        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii((Unk_0205f92c_Buf *)&o, &unk_08, 1, 1);
-        if (o.unk_30 != 0) {
-            s32 lim = o.unk_3c + 0x4cd;
-            if (unk_08.y < lim) {
-                unk_08.y += 0x19a;
+        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii((Unk_0205f92c_Buf *)&o, &pos, 1, 1);
+        if (o.waterKind != 0) {
+            s32 lim = o.waterSurfaceY + 0x4cd;
+            if (pos.y < lim) {
+                pos.y += 0x19a;
             } else {
-                unk_08.y = lim;
+                pos.y = lim;
             }
             Unk_0205f8d4_Vec v;
-            v.x = unk_08.x;
-            v.y = unk_08.y;
-            v.z = unk_08.z;
-            v.y = o.unk_3c;
-            if (unk_34 == -1) {
-                unk_34 = Effect_Create(0x11, &v, 0, 0);
+            v.x = pos.x;
+            v.y = pos.y;
+            v.z = pos.z;
+            v.y = o.waterSurfaceY;
+            if (effect == -1) {
+                effect = Effect_Create(0x11, &v, 0, 0);
             } else {
-                Effect_SetPosition(unk_34, &v, 0, 0);
+                Effect_SetPosition(effect, &v, 0, 0);
             }
         }
     }
@@ -937,10 +937,10 @@ void FishBobberStates::updateHooked()
 void FishBobberStates::updateReelIn()
 {
     Unk_0205f8d4_Vec v;
-    v.x = unk_1c.x;
-    v.y = unk_1c.y;
-    v.z = unk_1c.z;
-    if (Fishing_StepArc(&v, unk_14, &unk_08, &unk_18, 1)) {
+    v.x = targetPos.x;
+    v.y = targetPos.y;
+    v.z = targetPos.z;
+    if (Fishing_StepArc(&v, gravity, &pos, &ySpeed, 1)) {
         setState(1);
     }
 }
@@ -948,30 +948,30 @@ void FishBobberStates::updateReelIn()
 void FishBobberStates::updateEscape()
 {
     Unk_0205f8d4_Vec v;
-    v.x = unk_1c.x;
-    v.y = unk_1c.y;
-    v.z = unk_1c.z;
-    if (Fishing_StepArc(&v, unk_14, &unk_08, &unk_18, 1)) {
+    v.x = targetPos.x;
+    v.y = targetPos.y;
+    v.z = targetPos.z;
+    if (Fishing_StepArc(&v, gravity, &pos, &ySpeed, 1)) {
         setState(1);
     }
 }
 
 void FishBobberStates::updateAct09()
 {
-    unk_08.y += 0x1000;
-    if (unk_08.y >= 0x28000) {
+    pos.y += 0x1000;
+    if (pos.y >= 0x28000) {
         setState(0);
     }
 }
 
 void FishBobberStates::updateCastSwing()
 {
-    s32 d = _s32_div_f(unk_30 * unk_30 * 0x4800, 0xe1);
-    s16 ang = (s16)(*(s16 *)((u8 *)unk_28 + 0x8e) - d);
+    s32 d = _s32_div_f(stateTimer * stateTimer * 0x4800, 0xe1);
+    s16 ang = (s16)(*(s16 *)((u8 *)ownerActor + 0x8e) - d);
     u32 idx = (u16)ang >> 4;
     idx = idx * 2;
-    unk_08.x -= func_01ffcb0c(data_02135f44[idx], 0x2ee);
-    unk_08.z -= func_01ffcb0c(data_02135f44[idx + 1], 0x2ee);
+    pos.x -= func_01ffcb0c(data_02135f44[idx], 0x2ee);
+    pos.z -= func_01ffcb0c(data_02135f44[idx + 1], 0x2ee);
 }
 
 extern "C" void Fishing_CalcArcSpeed(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, s32 *c, s32 *d, u8 mode)

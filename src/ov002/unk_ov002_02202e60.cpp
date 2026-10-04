@@ -211,8 +211,8 @@ public:
     void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
     void destroyLabel();
 
-    /* 0x12 */ u8 unk_12[0x2a];
-    /* 0x3c */ TextLabel *unk_3c;
+    /* 0x12 */ u8 text[0x2a];
+    /* 0x3c */ TextLabel *label;
 };
 
 class UiWidget {
@@ -225,8 +225,8 @@ public:
     s32 getOriginY();
     s32 getOriginX();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ s32 originX;
+    /* 0x08 */ s32 originY;
 };
 
 class LabelBalloon : public UiWidget {
@@ -311,10 +311,10 @@ public:
     void getAnimOffset(s32 *a, s32 *b);
 
     /* 0x0c */ s32 layer1;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ SpriteAnim unk_14;
+    /* 0x10 */ s32 posY;
+    /* 0x14 */ SpriteAnim layerAnim1;
     /* 0x28 */ SpriteAnim priority;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x3c */ s32 state;
     /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
@@ -988,7 +988,7 @@ s32 MenuScrollKnob::getScreenX() {
 }
 
 s32 MenuScrollKnob::getScreenY() {
-    return unk_10 + getOriginY();
+    return posY + getOriginY();
 }
 
 s32 MenuScrollKnob::getGripX() {

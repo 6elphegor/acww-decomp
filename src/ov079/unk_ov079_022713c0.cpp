@@ -217,12 +217,12 @@ public:
     void setResultHandler(s32 idx);
     void loadResultHandler(Fn *dst, s32 idx);
 
-    SpNpcWendell *unk_ac;
-    Fn unk_b0;
-    Fn unk_b8;
-    u16 unk_c0;
+    SpNpcWendell *ownerNpc;
+    Fn resultHandler;
+    Fn nextResultHandler;
+    u16 foodItem;
     u8 pad_c2[2];
-    s32 unk_c4;
+    s32 foodSlot;
 };
 #define MEMBER(name, size) \
     struct name { \
@@ -449,7 +449,7 @@ public:
     u8 unk_651;
     u8 pad_652[2];
     s32 unk_654;
-    SpNpcWendellTalk unk_658;
+    SpNpcWendellTalk talk;
 };
 
 struct Unk_ov079_022725f4_Ent {
@@ -548,15 +548,15 @@ static inline BOOL Unk_ov079_Rng(u16 *p, u32 lo, u32 hi) {
 
 static inline BOOL Unk_ov079_02271718_Chk(SpNpcWendellTalk *o, u16 *slot, u16 val) {
     BOOL r;
-    if (Item_IsFurniture(&o->unk_c0)) {
+    if (Item_IsFurniture(&o->foodItem)) {
         *slot = val;
-        if (Item_GetFurnitureIndex(&o->unk_c0) == Item_GetFurnitureIndex(slot)) {
+        if (Item_GetFurnitureIndex(&o->foodItem) == Item_GetFurnitureIndex(slot)) {
             r = TRUE;
         } else {
             r = FALSE;
         }
     } else {
-        if (o->unk_c0 == val) {
+        if (o->foodItem == val) {
             r = TRUE;
         } else {
             r = FALSE;
@@ -576,8 +576,8 @@ BOOL SpNpcWendell::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.attachOwner(this);
+    setTalkRequest((Unk_0201bc1c *)&talk);
+    talk.attachOwner(this);
     return TRUE;
 }
 
@@ -822,7 +822,7 @@ BOOL SpNpcWendell::mainAct03() {
 }
 
 BOOL SpNpcWendell::setupAct04() {
-    void *p = unk_658.func_02015aac();
+    void *p = talk.func_02015aac();
     s32 x = rotY;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -846,13 +846,13 @@ BOOL SpNpcWendell::mainAct00() {
 BOOL SpNpcWendell::mainAct01() { return TRUE; }
 
 void SpNpcWendellTalk::onTaskDone() {
-    if (unk_b0 != NULL) {
-        (this->*unk_b0)();
+    if (resultHandler != NULL) {
+        (this->*resultHandler)();
         Fn t = *(Fn *)__ptmf_null;
-        unk_b0 = t;
-        if (unk_b8 != NULL) {
-            unk_b0 = unk_b8;
-            unk_b8 = t;
+        resultHandler = t;
+        if (nextResultHandler != NULL) {
+            resultHandler = nextResultHandler;
+            nextResultHandler = t;
         }
     }
 }
@@ -947,11 +947,11 @@ extern "C" FxVec3 sSpNpcWendellSideStepOffsets[2] = {FxVec3(0x800, 0, 0x1000), F
 
 
 void SpNpcWendellTalk::setResultHandler(s32 idx) {
-    loadResultHandler(&unk_b0, idx);
+    loadResultHandler(&resultHandler, idx);
 }
 
 void SpNpcWendellTalk::setNextResultHandler(s32 idx) {
-    loadResultHandler(&unk_b8, idx);
+    loadResultHandler(&nextResultHandler, idx);
 }
 
 BOOL SpNpcWendell_AcceptAnyItem(u16 *p, s32 x) {
@@ -964,13 +964,13 @@ BOOL SpNpcWendell_AcceptAnyItem(u16 *p, s32 x) {
 void SpNpcWendellTalk::onFoodPicked() {
     TalkWindowState *m = unk_3c;
     u8 v = 1;
-    unk_c4 = -1;
+    foodSlot = -1;
     if (MenuCtrl_IsResultOk()) {
-        unk_c4 = MenuCtrl_GetIndex();
-        unk_c0 = Pocket_GetItem(unk_c4);
+        foodSlot = MenuCtrl_GetIndex();
+        foodItem = Pocket_GetItem(foodSlot);
         v = 2;
         BOOL f = FALSE;
-        u16 c = unk_c0;
+        u16 c = foodItem;
         if (c >= 0x12e8 && c <= 0x131f) {
             f = TRUE;
         }
@@ -979,20 +979,20 @@ void SpNpcWendellTalk::onFoodPicked() {
             v = 3;
         }
         BOOL g = FALSE;
-        c = unk_c0;
+        c = foodItem;
         if (c >= 0x136a && c <= 0x136a) {
             g = TRUE;
         }
         if (g || (c >= 0x1373 && c <= 0x1373) || (c >= 0x1375 && c <= 0x1375) || (c >= 0x1377 && c <= 0x1377) ||
             (c >= 0x1379 && c <= 0x1379) || (c >= 0x137b && c <= 0x137b)) {
             v = 0xb;
-            unk_c4 = -1;
+            foodSlot = -1;
         }
-        if (unk_c4 >= 0) {
-            Pocket_RemoveItem(unk_c4);
-            unk_c4 = -1;
+        if (foodSlot >= 0) {
+            Pocket_RemoveItem(foodSlot);
+            foodSlot = -1;
         }
-        _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &unk_c0, 0, 4, 0);
+        _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &foodItem, 0, 4, 0);
         setNextResultHandler(1);
     } else {
         _ZN12Unk_020d771019requestReopenWindowEv(this);
@@ -1038,7 +1038,7 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
             r4 = 0x1f;
         } else {
             BOOL f = FALSE;
-            u32 v = unk_c0;
+            u32 v = foodItem;
             if (v >= 0x1548 && v <= 0x1548) {
                 f = TRUE;
             }
@@ -1048,13 +1048,13 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
                 r4 = 8;
             } else if (v >= 0x1531 && v <= 0x153a) {
                 r4 = 0xa;
-            } else if (Item_GetFishWaterClass(&unk_c0) == 0) {
+            } else if (Item_GetFishWaterClass(&foodItem) == 0) {
                 r4 = (u8)Random_GlobalBelow(8);
-            } else if (Item_GetFishWaterClass(&unk_c0) == 1) {
+            } else if (Item_GetFishWaterClass(&foodItem) == 1) {
                 r4 = (u8)(Random_GlobalBelow(9) + 0xc);
-            } else if (Item_GetFishWaterClass(&unk_c0) == 2) {
+            } else if (Item_GetFishWaterClass(&foodItem) == 2) {
                 r4 = 0x1c;
-            } else if (Unk_ov079_Rng(&unk_c0, 0x1518, 0x151c)) {
+            } else if (Unk_ov079_Rng(&foodItem, 0x1518, 0x151c)) {
                 r4 = 9;
             }
         }
@@ -1110,25 +1110,25 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
 }
 
 SpNpcWendellTalk::SpNpcWendellTalk() {
-    unk_c0 = 0xfff1;
+    foodItem = 0xfff1;
 }
 
 SpNpcWendellTalk::~SpNpcWendellTalk() {}
 
 void SpNpcWendellTalk::vfunc_08() {
     ActorTalkRequest::vfunc_08();
-    unk_c4 = -1;
-    unk_c0 = 0xfff1;
+    foodSlot = -1;
+    foodItem = 0xfff1;
     Fn t = *(Fn *)__ptmf_null;
-    unk_b0 = t;
-    unk_b8 = t;
+    resultHandler = t;
+    nextResultHandler = t;
 }
 
 void SpNpcWendellTalk::attachOwner(SpNpcWendell *owner) {
     vfunc_08();
-    unk_ac = owner;
-    unk_c0 = 0xfff1;
-    unk_c4 = -1;
+    ownerNpc = owner;
+    foodItem = 0xfff1;
+    foodSlot = -1;
 }
 
 void SpNpcWendellTalk::start(TalkStartMsg *out) {
@@ -1159,13 +1159,13 @@ void SpNpcWendellTalk::onMessageEnd() {
         break;
     case 15:
         r = 4;
-        if (Unk_ov079_Rng(&unk_c0, 0x153b, 0x1541)) {
-            unk_c0 = 0x13ac;
+        if (Unk_ov079_Rng(&foodItem, 0x153b, 0x1541)) {
+            foodItem = 0x13ac;
             if (Random_GlobalBelow(2)) {
-                unk_c0 = 0x3530;
+                foodItem = 0x3530;
             }
             r = 9;
-            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &unk_c0, 0, 7);
+            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &foodItem, 0, 7);
         }
         EventWeekSlots_MarkPlayer(0x41);
         break;
@@ -1178,8 +1178,8 @@ void SpNpcWendellTalk::onMessageEnd() {
         _ZN12Unk_0201442017requestReturnItemEv(this);
         break;
     case 9:
-        if (Pocket_AddItem(&unk_c0, 0)) {
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &unk_c0, 0, 5, 0);
+        if (Pocket_AddItem(&foodItem, 0)) {
+            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &foodItem, 0, 5, 0);
         }
         r = 0xa;
         break;
@@ -1234,8 +1234,8 @@ void SpNpcWendell::vfunc_4c(s32 a) {
         changeAct(0);
         break;
     case 3:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0((u32)getPlayerActor(4));
+        talk.vfunc_08();
+        talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(4);
         break;
     case 8:

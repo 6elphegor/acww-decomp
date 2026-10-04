@@ -3,9 +3,9 @@
 // 2-byte element (0xfff1 = none), constructed by __sinit; destructor is in another unit (0x02004b60)
 class ItemId {
 public:
-    u16 unk_00;
+    u16 id;
 
-    ItemId() { unk_00 = 0xfff1; }
+    ItemId() { id = 0xfff1; }
     ~ItemId();
 };
 
@@ -58,7 +58,7 @@ struct Unk_02034320_Pkt {
 };
 
 struct Unk_02034048_Pkt {
-    u16 unk_00;
+    u16 item;
     u16 id : 6;
     u16 f6 : 1;
     u16 f7 : 1;
@@ -99,7 +99,7 @@ extern "C" void *RoomWallFloor_SetWallpaper(u16 *id, s32 a, s32 b, s32 c) {
         }
         return r;
     }
-    return &sRoomWallFloorNoItem.unk_00;
+    return &sRoomWallFloorNoItem.id;
 }
 
 extern "C" void *RoomWallFloor_SetWallpaperDesign(s32 a, s32 b, s32 c, s32 d) {
@@ -118,7 +118,7 @@ extern "C" void *RoomWallFloor_SetCarpet(u16 *id, s32 a, s32 b, s32 c) {
         }
         return r;
     }
-    return &sRoomWallFloorNoItem.unk_00;
+    return &sRoomWallFloorNoItem.id;
 }
 
 extern "C" void *RoomWallFloor_SetCarpetDesign(s32 a, s32 b, s32 c, s32 d) {
@@ -156,15 +156,15 @@ extern "C" void RoomWallFloor_ClearScenes()
 {
     u32 i;
     for (i = 0; i < 0x33; i++) {
-        sSceneCarpets[i].unk_00 = 0xfff1;
-        sSceneWallpapers[i].unk_00 = sSceneCarpets[i].unk_00;
+        sSceneCarpets[i].id = 0xfff1;
+        sSceneWallpapers[i].id = sSceneCarpets[i].id;
     }
 }
 
 extern "C" BOOL RoomWallFloor_SetSceneWallpaper(u32 i, u16 *v)
 {
     if (i < 0x33) {
-        sSceneWallpapers[i].unk_00 = *v;
+        sSceneWallpapers[i].id = *v;
         return TRUE;
     }
     return FALSE;
@@ -173,15 +173,15 @@ extern "C" BOOL RoomWallFloor_SetSceneWallpaper(u32 i, u16 *v)
 extern "C" u16 *RoomWallFloor_GetSceneWallpaper(u32 i)
 {
     if (i < 0x33) {
-        return &sSceneWallpapers[i].unk_00;
+        return &sSceneWallpapers[i].id;
     }
-    return &sRoomWallFloorNoItem.unk_00;
+    return &sRoomWallFloorNoItem.id;
 }
 
 extern "C" BOOL RoomWallFloor_SetSceneCarpet(u32 i, u16 *v)
 {
     if (i < 0x33) {
-        sSceneCarpets[i].unk_00 = *v;
+        sSceneCarpets[i].id = *v;
         return TRUE;
     }
     return FALSE;
@@ -190,14 +190,14 @@ extern "C" BOOL RoomWallFloor_SetSceneCarpet(u32 i, u16 *v)
 extern "C" u16 *RoomWallFloor_GetSceneCarpet(u32 i)
 {
     if (i < 0x33) {
-        return &sSceneCarpets[i].unk_00;
+        return &sSceneCarpets[i].id;
     }
-    return &sRoomWallFloorNoItem.unk_00;
+    return &sRoomWallFloorNoItem.id;
 }
 
 extern "C" void RoomWallFloor_ApplyRecv(Unk_02034048_Pkt *p)
 {
-    u16 tmp = p->unk_00;
+    u16 tmp = p->item;
     u8 id = p->id;
     u32 f7 = p->f7;
     BOOL f6;

@@ -65,9 +65,9 @@ struct Unk_ov004_02224ee4_Vec {
 
 struct Unk_0203e5d0_Node {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ void *unk_0c;
+    /* 0x04 */ Unk_0203e5d0_Node *next;
+    /* 0x08 */ u32 charId;
+    /* 0x0c */ void *owner;
 };
 
 class Actor : public GameProc {
@@ -183,11 +183,11 @@ public:
     inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
     inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
 
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08[13];
-    u32 unk_3c[13];
-    u32 unk_70[13];
+    u32 archive;
+    u32 model;
+    u32 bcas[13];
+    u32 bmas[13];
+    u32 btas[13];
 };
 
 class RoomObjTex {
@@ -197,8 +197,8 @@ public:
     inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
     inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
 
-    u32 unk_00;
-    u8 unk_04;
+    u32 texture;
+    u8 syncState;
 };
 
 class RoomObjSe {
@@ -209,7 +209,7 @@ public:
     inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
     inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
-    u32 unk_00[0x10];
+    u32 emitter[0x10];
 };
 
 class RoomObjActor : public Character {
@@ -230,10 +230,10 @@ public:
     void loadResourcesByName(char *name);
     void loadResources(char *a, char *b);
 
-    /* 0xec */ AnimModel unk_ec;
-    /* 0x1a4 */ RoomObjRes unk_1a4;
-    /* 0x248 */ RoomObjTex unk_248;
-    /* 0x250 */ RoomObjSe unk_250;
+    /* 0xec */ AnimModel model;
+    /* 0x1a4 */ RoomObjRes res;
+    /* 0x248 */ RoomObjTex tex;
+    /* 0x250 */ RoomObjSe se;
 };
 
 
@@ -312,7 +312,7 @@ struct Unk_ov004_02229970_Xyz {
 
 struct Unk_ov004_02229970_Glob {
     u8 pad_00[0x68];
-    s32 unk_68;
+    s32 localSlot;
 };
 
 struct Unk_ov004_02229660_Bits {
@@ -321,9 +321,9 @@ struct Unk_ov004_02229660_Bits {
     u32 hi : 4;
 };
 
-struct Unk_ov004_0224e2b8_Str {
-    const u8 *unk_00;
-    u8 unk_04;
+struct PhoneChoiceSet {
+    const u8 *choiceMsgs;
+    u8 numChoices;
 };
 
 struct Unk_ov004_0222a0bc_V3 {
@@ -475,15 +475,15 @@ public:
     void execAct00();
     void enterAct00();
     void changeAct(s32 state);
-    void openChoices(Unk_ov004_0224e2b8_Str *p, s32 v);
+    void openChoices(PhoneChoiceSet *p, s32 v);
 
-    /* 0x2d4 */ u32 unk_2d4[0x27]; // a BoxCollider (ctor C1 / dtor D2 by hand, as the original calls them)
-    /* 0x370 */ u32 unk_370[0xaa]; // a TouchPickBox (ctor C2 / dtor D2 by hand)
-    /* 0x618 */ u32 unk_618[7];    // a TouchPickSphere (ctor C2 / dtor D1 by hand)
-    /* 0x634 */ s32 unk_634;
-    /* 0x638 */ u8 unk_638;
+    /* 0x2d4 */ u32 collider[0x27]; // a BoxCollider (ctor C1 / dtor D2 by hand, as the original calls them)
+    /* 0x370 */ u32 touchBox[0xaa]; // a TouchPickBox (ctor C2 / dtor D2 by hand)
+    /* 0x618 */ u32 touchSphere[7];    // a TouchPickSphere (ctor C2 / dtor D1 by hand)
+    /* 0x634 */ s32 act;
+    /* 0x638 */ u8 isTalking;
     /* 0x639 */ u8 pad_639[3];
-    /* 0x63c */ u32 unk_63c;
+    /* 0x63c */ u32 prevTalkVoice;
 };
 
 #define F(T, off) (*(T *)((u8 *)this + off))
@@ -523,9 +523,9 @@ extern u8 data_ov004_0224e170[3];
 extern u8 data_ov004_0224e174[4];
 extern const char *data_ov004_0224e178;
 extern char sRoomTelephoneMsgFile2[];
-extern Unk_ov004_0224e2b8_Str data_ov004_0224e298;
-extern Unk_ov004_0224e2b8_Str data_ov004_0224e2a0;
-extern Unk_ov004_0224e2b8_Str data_ov004_0224e2a8;
+extern PhoneChoiceSet data_ov004_0224e298;
+extern PhoneChoiceSet data_ov004_0224e2a0;
+extern PhoneChoiceSet data_ov004_0224e2a8;
 extern char sRoomTelephoneArcPath[];
 extern char sRoomTelephoneTexPath[];
 extern RoomTelephone *volatile sRoomTelephone;
@@ -604,7 +604,7 @@ void RoomTelephone::onChoice(u32 a_, u8 b_) {
         }
         break;
     case 0x11:
-        unk_63c = PlayerOptions_GetTalkVoice();
+        prevTalkVoice = PlayerOptions_GetTalkVoice();
         switch (t) {
         case 0:
             PlayerOptions_SetTalkVoice(r);
@@ -621,7 +621,7 @@ void RoomTelephone::onChoice(u32 a_, u8 b_) {
     case 0x2b:
     case 0x2c:
         if (t == 1) {
-            PlayerOptions_SetTalkVoice(unk_63c);
+            PlayerOptions_SetTalkVoice(prevTalkVoice);
         }
         break;
     }

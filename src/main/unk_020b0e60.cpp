@@ -189,7 +189,7 @@ public:
     void rotateHourHand();
 
     u8 pad[0xb4];
-    Obj_b4 *unk_b4;
+    Obj_b4 *pJntAnmResult;
 };
 
 class LightLevel {
@@ -1130,7 +1130,7 @@ void Unk_020b1ddc::rotateHourHand()
 {
     Mtx33 tmp;
     u8 t[2];
-    Mtx33 *m = &unk_b4->mtx;
+    Mtx33 *m = &pJntAnmResult->mtx;
     Clock_GetMinuteHour(t);
     if (sHourHandFrame != gFrameCounter) {
         s32 rem = t[1] % 0xc;
@@ -1142,30 +1142,30 @@ void Unk_020b1ddc::rotateHourHand()
         sHourHandFrame = gFrameCounter;
     }
     MTX_RotZ33_(&tmp, sHourHandSin, sHourHandCos);
-    if (unk_b4->flags & 2) {
+    if (pJntAnmResult->flags & 2) {
         *m = tmp;
     } else {
         MTX_Concat33(m, &tmp, m);
     }
-    unk_b4->flags &= ~2;
+    pJntAnmResult->flags &= ~2;
 }
 
 void Unk_020b1ddc::rotateMinuteHand()
 {
     Mtx33 tmp;
     u8 t[2];
-    Mtx33 *m = &unk_b4->mtx;
+    Mtx33 *m = &pJntAnmResult->mtx;
     Clock_GetMinuteHour(t);
     s32 rem = t[0] % 0x3c;
     s32 a = -(FX_Div(rem << 12, 0x3c000) * 0xffff >> 12);
     s32 idx = (u16)(s16)a >> 4;
     MTX_RotZ33_(&tmp, data_02135f44[idx * 2], data_02135f44[idx * 2 + 1]);
-    if (unk_b4->flags & 2) {
+    if (pJntAnmResult->flags & 2) {
         *m = tmp;
     } else {
         MTX_Concat33(m, &tmp, m);
     }
-    unk_b4->flags &= ~2;
+    pJntAnmResult->flags &= ~2;
 }
 
 extern "C" void BuildingStates_Reset(void)
