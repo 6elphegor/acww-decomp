@@ -1,0 +1,38 @@
+#ifndef TOWN_COUNTDOWNSIGN_H
+#define TOWN_COUNTDOWNSIGN_H
+
+#include "types.h"
+#include "town/BuildingActor.h"
+#include "gfx/ModelAnim.h"
+
+struct Unk_ov003_02215748_Ent;
+
+// New Year countdown sign (ov003 field object; spawns six CountdownDigit). Defined in
+// src/ov003/unk_ov003_022150ec.cpp (+ _switch, same unit). Size 0x2ec.
+class CountdownSign : public BuildingActor {
+public:
+    CountdownSign();
+    virtual ~CountdownSign();
+    virtual BOOL vfunc_0c();
+    virtual BOOL onExecute();
+    virtual BOOL postDraw(s32 a);
+    virtual s32 vfunc_6c(s32 a);
+    virtual BOOL vfunc_70();
+    virtual void vfunc_74();
+    virtual char *vfunc_a4();
+    virtual char *vfunc_a8();
+    virtual char *vfunc_ac();
+
+    void execNewYear();
+    BOOL enterNewYear();
+    void execCountdown();
+    BOOL enterCountdown();
+
+    /* 0x2b0 */ ModelAnim matAnim;
+    /* 0x2d0 */ s8 alphaMatIdx;
+    /* 0x2d1 */ u8 matAlpha;
+    /* 0x2d2 */ u8 pad_2d2[2];
+    /* 0x2d4 */ Unk_ov003_02215748_Ent *digits[6];
+};
+
+#endif // TOWN_COUNTDOWNSIGN_H

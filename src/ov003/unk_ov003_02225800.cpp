@@ -18,6 +18,7 @@
 #include "gfx/AnimModel.h"
 #include "game/BugNetTarget.h"
 #include "gfx/PooledModel.h"
+#include "town/BuildingActor.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -40,12 +41,6 @@ struct Unk_ov003_Off2 { u8 pad[0x2]; u8 at; };
 
 
 // ---- ov009 actor (only the methods used here)
-class BuildingActor {
-public:
-    s32 callIsLit();
-    u32 getGridZ();
-    u32 getGridX();
-};
 
 // ---- class with vtable 0x02234aac (derived from ModelAnim)
 class InsectMatAnim : public ModelAnim {

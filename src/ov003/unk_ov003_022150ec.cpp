@@ -16,6 +16,10 @@
 #include "actor/Character.h"
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
+#include "town/BuildingActor.h"
+#include "town/KatrinaTent.h"
+#include "town/CountdownDigit.h"
+#include "town/CountdownSign.h"
 
 
 
@@ -28,76 +32,6 @@
 
 class Unk_020b1ddc;
 
-// ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class BuildingActor : public Character, public TalkMsgRequest {
-public:
-    BuildingActor();
-    virtual ~BuildingActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
-    virtual BOOL preDraw();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual VecFx32 *getInteractionPos();
-    virtual void vfunc_60(u32 a, void *p);
-    virtual s32 vfunc_64();
-    virtual s32 vfunc_68();
-    virtual BOOL vfunc_6c(u32 a);
-    virtual BOOL vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
-    virtual void onMessageEnd(u32 attr);
-    virtual BOOL vfunc_8c();
-    virtual BOOL vfunc_90();
-    virtual BOOL vfunc_94();
-    virtual BOOL vfunc_98();
-    virtual BOOL vfunc_9c();
-    virtual s32 vfunc_a0();
-    virtual void vfunc_a4();
-    virtual void vfunc_a8();
-    virtual void vfunc_ac();
-    virtual BOOL vfunc_b0();
-    virtual void vfunc_b4();
-    virtual BOOL vfunc_b8();
-
-    s32 getBtaAnim(u32 a);
-    void getResources();
-    void updateMatrix();
-
-    /* 0x12e */ u16 unk_12e;    // in TalkMsgRequest's tail padding (door-close SE delay in ov009)
-    /* 0x130 */ u8 doorState;
-    /* 0x131 */ u8 pad_131;
-    /* 0x132 */ u16 itemId;
-    /* 0x134 */ u8 pad_134[4];
-    /* 0x138 */ u8 unk_138[0x194 - 0x138];
-    /* 0x194 */ s32 modelRes;
-    /* 0x198 */ u8 pad_198[4];
-    /* 0x19c */ Unk_ov003_Blk baseMatrix;
-    /* 0x1cc */ u8 pad_1cc[0x1f0 - 0x1cc];
-    /* 0x1f0 */ u8 unk_1f0[0x228 - 0x1f0];
-    /* 0x228 */ u32 gridX;
-    /* 0x22c */ u32 gridZ;
-    /* 0x230 */ u8 exitDelay;
-    /* 0x231 */ u8 colliderFlags;
-    /* 0x232 */ Unk_ov003_Flags entryFlags;
-    /* 0x233 */ u8 visitRefused;
-    /* 0x234 */ u8 pad_234[0x278 - 0x234];
-    /* 0x278 */ u32 entryState;
-    /* 0x27c */ u8 closedTalk;
-    /* 0x27d */ u8 pad_27d;
-    /* 0x27e */ u16 warpTimer;
-    /* 0x280 */ u8 pad_280[0x288 - 0x280];
-    /* 0x288 */ void *colliders;
-    /* 0x28c */ u8 colliderCount;
-    /* 0x28d */ u8 pad_28d[0x2a4 - 0x28d];
-    /* 0x2a4 */ Unk_ov003_Vec entryPos;
-    /* 0x2b0 */
-};
 
 
 
@@ -148,72 +82,21 @@ void func_0212899c(void *p, s32 v, u32 n);
 
 
 // ---------------------------------------------------------------- DoorLight
-class CountdownDigit : public BuildingActor {
-public:
-    virtual BOOL vfunc_b0();
-    CountdownDigit();
-    virtual ~CountdownDigit();
-    virtual BOOL onExecute();
-    virtual BOOL vfunc_70();
-    static void *operator new(unsigned long size);
-    static void operator delete(void *p);
-
-    /* 0x2b0 */ u8 digitIndex;
-    /* 0x2b1 */ u8 digit;
-    /* 0x2b2 */ u8 prevDigit;
-    /* 0x2b3 */ u8 pad_2b3;
-    /* 0x2b4 */ ModelAnim matAnim;
-    /* 0x2d4 */ u8 isCounting;
-    /* 0x2d5 */ u8 skipSe;
-    /* 0x2d6 */ u8 pad_2d6[2];
-};
 
 // ---------------------------------------------------------------- Y
 class CountdownSign;
 typedef void (CountdownSign::*Unk_02215614_Fn)();
 typedef BOOL (CountdownSign::*Unk_02215680_Fn)();
 
-class CountdownSign : public BuildingActor {
-public:
-    CountdownSign();
-    virtual ~CountdownSign();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL postDraw(s32 a);
-    virtual BOOL vfunc_6c(u32 a);
-    virtual BOOL vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_a4();
-    virtual void vfunc_a8();
-    virtual void vfunc_ac();
-
-    void execNewYear();
-    BOOL enterNewYear();
-    void execCountdown();
-    BOOL enterCountdown();
-
-    /* 0x2b0 */ ModelAnim matAnim;
-    /* 0x2d0 */ s8 alphaMatIdx;
-    /* 0x2d1 */ u8 matAlpha;
-    /* 0x2d2 */ u8 pad_2d2[2];
-    /* 0x2d4 */ Unk_ov003_02215748_Ent *digits[6];
-};
 
 // ---------------------------------------------------------------- Z
-class KatrinaTent : public BuildingActor {
-public:
-    virtual void vfunc_78();
-    virtual BOOL vfunc_8c();
-
-    /* 0x2b0 */ u8 createHour;
-};
 
 
 // ================================================================
 BOOL CountdownDigit::onExecute() {
     CountdownDigit_Update(this);
     s32 r4 = _ZN5Model12getRenderObjEv(unk_138);
-    s32 r2 = getBtaAnim(0);
+    s32 r2 = (s32)getBtaAnim(0);
     _ZN9ModelAnim7replaceEiiiit(&matAnim, r4, r2, 1, 0x1000, digit);
     return TRUE;
 }
@@ -236,7 +119,7 @@ void CountdownSign::execNewYear() {
 }
 
 BOOL CountdownSign::enterNewYear() {
-    s32 r1 = getBtaAnim(1);
+    s32 r1 = (s32)getBtaAnim(1);
     _ZN9ModelAnim4initEiiit(&matAnim, r1, 0, 0x1000, 0);
     matAlpha = 1;
     return TRUE;
@@ -256,7 +139,7 @@ void CountdownSign::execCountdown() {
 }
 
 BOOL CountdownSign::enterCountdown() {
-    s32 r1 = getBtaAnim(0);
+    s32 r1 = (s32)getBtaAnim(0);
     _ZN9ModelAnim4initEiiit(&matAnim, r1, 0, 0x1000, 0);
     matAlpha = 0x1f;
     return TRUE;
@@ -269,7 +152,8 @@ void CountdownSign::vfunc_74() {
     }
 }
 
-BOOL CountdownSign::vfunc_6c(u32 a) {
+s32 CountdownSign::vfunc_6c(s32 arg) {
+    u32 a = arg;
     static Unk_02215680_Fn tbl[3] = { &CountdownSign::enterCountdown, &CountdownSign::enterNewYear };
     if (a < 3) {
         if ((this->*tbl[a])()) {
@@ -282,9 +166,9 @@ BOOL CountdownSign::vfunc_6c(u32 a) {
     return FALSE;
 }
 
-void CountdownSign::vfunc_ac() { BuildingActor::vfunc_ac(); }
-void CountdownSign::vfunc_a8() { BuildingActor::vfunc_a8(); }
-void CountdownSign::vfunc_a4() { BuildingActor::vfunc_a4(); }
+char *CountdownSign::vfunc_ac() { return BuildingActor::vfunc_ac(); }
+char *CountdownSign::vfunc_a8() { return BuildingActor::vfunc_a8(); }
+char *CountdownSign::vfunc_a4() { return BuildingActor::vfunc_a4(); }
 
 BOOL CountdownSign::vfunc_0c() {
     for (u32 i = 0; i < 6; i++) {
@@ -343,9 +227,9 @@ BOOL CountdownSign::vfunc_70() {
         i++;
     } while (i < 6);
     _ZN5Model15setInitCallbackEii(unk_138, CountdownSign_ModelCallback, this);
-    alphaMatIdx = _ZN12G3dResAccess10findMatIdxEi(modelRes, "m_cbs_Adt");
-    if (_ZN9ModelAnim11allocMatAnmEjPv(&matAnim, modelRes, gFieldStructureHeap)) {
-        s32 r1 = getBtaAnim(0);
+    alphaMatIdx = _ZN12G3dResAccess10findMatIdxEi((s32)modelRes, "m_cbs_Adt");
+    if (_ZN9ModelAnim11allocMatAnmEjPv(&matAnim, (s32)modelRes, gFieldStructureHeap)) {
+        s32 r1 = (s32)getBtaAnim(0);
         _ZN9ModelAnim4initEiiit(&matAnim, r1, 0, 0x1000, 0);
         _ZN9ModelAnim14addToRenderObjEj(&matAnim, _ZN5Model12getRenderObjEv(unk_138));
     }

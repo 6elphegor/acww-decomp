@@ -11,6 +11,7 @@
 #include "snd/TvSound.h"
 #include "game/GroundInfoBase.h"
 #include "game/GroundInfo.h"
+#include "room/FtrActor.h"
 
 // other modules' symbols by their real names
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
@@ -229,78 +230,6 @@ struct Unk_ov004_02233f3c_V3 {
 };
 
 
-// TU02's class: only the members this unit touches
-class FtrActor {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void changeAct();
-    virtual void getActSwitchState();
-    virtual void getActAid();
-    virtual void initModel();
-    virtual void updateActive();
-    virtual void updateAppearRemove();
-    virtual void isVisible();
-    virtual void needsTexCopy();
-    virtual void onRemove();
-    virtual void onMoveStart();
-    virtual void onRotateStart(BOOL v);
-    virtual void onRotateUpdate(BOOL v);
-    virtual BOOL isReady();
-
-    BOOL setAct(s32 idx);
-    BOOL isNotReady();
-    BOOL hasItemOnTop();
-
-    /* 0x04 */ u8 pad_04[0x5c - 4];
-    /* 0x5c */ Unk_ov004_Vec3 position;
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0x14c - 0x90];
-    /* 0x14c */ s32 drawScale;
-    /* 0x150 */ u8 pad_150[0x284 - 0x150];
-    /* 0x284 */ u8 mapLayer;
-    /* 0x285 */ u8 pad_285[0x73c - 0x285];
-    /* 0x73c */ FtrSwitch switchState;
-    /* 0x73e */ u8 pad_73e[0x770 - 0x73e];
-    /* 0x770 */ u32 commentPersonality;
-    /* 0x774 */ s32 commentId;
-    /* 0x778 */ u8 pad_778[4];
-    /* 0x77c */ s32 kind;
-    /* 0x780 */ u8 pad_780[4];
-    /* 0x784 */ s32 hasTopSurface;
-    /* 0x788 */ u8 noCollision;
-    /* 0x789 */ u8 pad_789[3];
-    /* 0x78c */ s32 surfaceHeight;
-    /* 0x790 */ u8 pad_790[0x7b4 - 0x790];
-    /* 0x7b4 */ Unk_ov004_Vec3 centerPos;
-};
 
 
 
@@ -1801,7 +1730,7 @@ extern "C" s32 FtrMgr_SpawnFromArg(FtrActor *self) {
             if ((u32)FtrMgr_CountSwitchedOn(FtrActor_isGyroid) >= 4) {
                 FtrActor *e = FtrMgr_SwitchOffRandom(FtrActor_isGyroid, 0);
                 if (e != NULL) {
-                    e->switchState.set(1, 0);
+                    ((FtrSwitch *)e->switchState)->set(1, 0);
                     FtrSync_RequestToggleGyroid(Scene_GetCurrent(), (u8 *)e + 0x5c, 0);
                 }
             }
@@ -3707,7 +3636,7 @@ extern "C" BOOL FtrMgr_BroadcastStereosAct0() {
     s32 z = 0;
     for (; (u32)i < FtrMgr_GetMaxFurniture(); i++) {
         FtrActor *e = FtrActorTable_GetInstance()->get(i);
-        if (e != NULL && FtrActor_PredIsStereo(e) && e->switchState.isOn()) {
+        if (e != NULL && FtrActor_PredIsStereo(e) && ((FtrSwitch *)e->switchState)->isOn()) {
             FtrSync_ChangeAct(e, z, 0xff, 1);
         }
     }
@@ -3721,8 +3650,8 @@ extern "C" void FtrMgr_SetSwitchAll(u32 v, BOOL (*f)(FtrActor *), s32 a) {
         FtrActor *e = FtrActorTable_GetInstance()->get(i);
         if (e != NULL) {
             if (f == NULL || (f != NULL && f(e))) {
-                if (v != e->switchState.isOn()) {
-                    e->switchState.set(v, a);
+                if (v != ((FtrSwitch *)e->switchState)->isOn()) {
+                    ((FtrSwitch *)e->switchState)->set(v, a);
                 }
             }
         }
@@ -3736,7 +3665,7 @@ extern "C" s32 FtrMgr_CountSwitchedOn(BOOL (*f)(FtrActor *)) {
     for (; i < FtrMgr_GetMaxFurniture(); i++) {
         FtrActor *e = FtrActorTable_GetInstance()->get(i);
         if (e != NULL) {
-            if (f == NULL || (f != NULL && f(e) && e->switchState.isOn())) {
+            if (f == NULL || (f != NULL && f(e) && ((FtrSwitch *)e->switchState)->isOn())) {
                 cnt++;
             }
         }
@@ -3755,9 +3684,9 @@ extern "C" FtrActor *FtrMgr_SwitchOffRandom(BOOL (*f)(FtrActor *), s32 a) {
             FtrActor *e = FtrActorTable_GetInstance()->get(i);
             if (e != NULL) {
                 if (f == NULL || (f != NULL && f(e))) {
-                    if (e->switchState.isOn()) {
+                    if (((FtrSwitch *)e->switchState)->isOn()) {
                         if (cnt == pick) {
-                            e->switchState.set(0, a);
+                            ((FtrSwitch *)e->switchState)->set(0, a);
                             return e;
                         }
                         cnt++;
@@ -3863,7 +3792,7 @@ extern "C" void FtrMgr_NotifyNearestCabinClock(void *) {
             FtrActor *e = FtrActorTable_GetInstance()->get(i);
             if (e != NULL && FtrActor_isCabinClock(e)) {
                 Unk_ov004_Vec3 v0c;
-                Unk_ov004_Vec3 t = e->centerPos;
+                Unk_ov004_Vec3 t = *(Unk_ov004_Vec3 *)e->centerPos;
                 v0c.x = t.x;
                 v0c.y = t.y;
                 v0c.z = t.z;
@@ -3900,7 +3829,7 @@ extern "C" void FtrMgr_NotifyNearestSoundingClock(void *) {
             FtrActor *e = FtrActorTable_GetInstance()->get(i);
             if (e != NULL && FtrActor_isSoundingClock(e)) {
                 Unk_ov004_Vec3 v0c;
-                Unk_ov004_Vec3 t = e->centerPos;
+                Unk_ov004_Vec3 t = *(Unk_ov004_Vec3 *)e->centerPos;
                 v0c.x = t.x;
                 v0c.y = t.y;
                 v0c.z = t.z;
@@ -3942,7 +3871,7 @@ extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
                 FtrActor *e = FtrActorTable_GetInstance()->get(i);
                 if (e != NULL && FtrActor_isTvOn(e)) {
                     Unk_ov004_Vec3 v20;
-                    Unk_ov004_Vec3 t = e->centerPos;
+                    Unk_ov004_Vec3 t = *(Unk_ov004_Vec3 *)e->centerPos;
                     v20.x = t.x;
                     v20.y = t.y;
                     v20.z = t.z;
@@ -3957,7 +3886,7 @@ extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
                 FtrActor *e = FtrActorTable_GetInstance()->get(best);
                 if (e != NULL) {
                     func_ov004_0220e738(e);
-                    Unk_ov004_Vec3 t = e->centerPos;
+                    Unk_ov004_Vec3 t = *(Unk_ov004_Vec3 *)e->centerPos;
                     v8.x = t.x;
                     v8.y = t.y;
                     v8.z = t.z;
@@ -4070,7 +3999,7 @@ extern "C" s32 FtrMgr_FindFacingFurniture(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos,
 extern "C" s32 FtrMgr_FindFurnitureFacingPlayer(s32 *a, s32 *b, u16 *c, u16 *d) {
     FtrActor *o = PlayerActor_GetActor(4);
     if (o != 0) {
-        return FtrMgr_FindFacingFurniture(a, b, &o->position, o->rotY, c, d);
+        return FtrMgr_FindFacingFurniture(a, b, (Unk_ov004_Vec3 *)&o->position, o->rotY, c, d);
     }
     return -1;
 }
@@ -4357,7 +4286,7 @@ testL:
 extern "C" s32 FtrMgr_FindPlacementForPlayer(void *a, u16 *b, u32 c) {
     FtrActor *o = PlayerActor_GetActor(4);
     if (o != 0) {
-        return FtrMgr_FindPlacement(a, b, &o->position, o->rotY, c);
+        return FtrMgr_FindPlacement(a, b, (Unk_ov004_Vec3 *)&o->position, o->rotY, c);
     }
     return 0;
 }

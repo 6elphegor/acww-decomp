@@ -14,6 +14,8 @@
 #include "gfx/Model.h"
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
+#include "snd/BuildingSeEmitter.h"
+#include "town/BuildingActor.h"
 
 
 
@@ -27,77 +29,6 @@
 
 class Unk_020b1ddc;
 
-// ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class BuildingActor : public Character, public TalkMsgRequest {
-public:
-    BuildingActor();
-    virtual ~BuildingActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
-    virtual BOOL preDraw();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual VecFx32 *getInteractionPos();
-    virtual void vfunc_60(u32 a, void *p);
-    virtual s32 vfunc_64();
-    virtual s32 vfunc_68();
-    virtual s32 vfunc_6c(s32 a);
-    virtual BOOL vfunc_70();
-    virtual void vfunc_74();
-    virtual s32 vfunc_78();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
-    virtual void onMessageEnd(u32 attr);
-    virtual BOOL vfunc_8c();
-    virtual BOOL vfunc_90();
-    virtual BOOL vfunc_94();
-    virtual BOOL vfunc_98();
-    virtual BOOL vfunc_9c();
-    virtual s32 vfunc_a0();
-    virtual char *vfunc_a4();
-    virtual char *vfunc_a8();
-    virtual BOOL vfunc_ac();
-    virtual BOOL vfunc_b0();
-    virtual void vfunc_b4();
-    virtual BOOL vfunc_b8(void *a);
-
-    void *getBtaAnim(u32 a);
-    void makeCurvedMatrix(Unk_ov009_0225bc88_Blk *out);
-    void updateMatrix();
-
-    /* 0x12e */ u16 unk_12e;    // in TalkMsgRequest's tail padding (door-close SE delay in ov009)
-    /* 0x130 */ u8 doorState;
-    /* 0x131 */ u8 pad_131;
-    /* 0x132 */ u16 itemId;
-    /* 0x134 */ u8 pad_134[4];
-    /* 0x138 */ u8 unk_138[0x194 - 0x138];
-    /* 0x194 */ void *modelRes;
-    /* 0x198 */ u8 pad_198[4];
-    /* 0x19c */ Unk_ov009_0225bc88_Blk baseMatrix;
-    /* 0x1cc */ u8 pad_1cc[0x1d4 - 0x1cc];
-    /* 0x1d4 */ u8 unk_1d4[0x1f0 - 0x1d4];
-    /* 0x1f0 */ u8 unk_1f0[0x228 - 0x1f0];
-    /* 0x228 */ u32 gridX;
-    /* 0x22c */ u32 gridZ;
-    /* 0x230 */ u8 exitDelay;
-    /* 0x231 */ u8 colliderFlags;
-    /* 0x232 */ Unk_ov003_Flags entryFlags;
-    /* 0x233 */ u8 visitRefused;
-    /* 0x234 */ u8 unk_234[0x278 - 0x234];
-    /* 0x278 */ u32 entryState;
-    /* 0x27c */ u8 closedTalk;
-    /* 0x27d */ u8 pad_27d;
-    /* 0x27e */ u16 warpTimer;
-    /* 0x280 */ u8 pad_280[0x288 - 0x280];
-    /* 0x288 */ void *colliders;
-    /* 0x28c */ u8 colliderCount;
-    /* 0x28d */ u8 pad_28d[0x2a4 - 0x28d];
-    /* 0x2a4 */ Unk_ov003_Vec entryPos;
-    /* 0x2b0 */
-};
 
 // ---- main-module helper classes ----
 
@@ -109,10 +40,6 @@ struct TouchPickSphere {
     u8 pad[0x1c];
 };
 
-class BuildingSeEmitter {
-public:
-    void playSe(u32 a);
-};
 
 struct Unk_ov003_02231e4c_Color {
     u8 a, b, c, d;
@@ -181,7 +108,7 @@ public:
     virtual BOOL vfunc_70();
     virtual void vfunc_74();
     virtual BOOL vfunc_b0();
-    virtual BOOL vfunc_b8(void *a);
+    virtual BOOL vfunc_b8(Unk_ov009_0225bc88_Blk *a);
 
     // state methods (old file 022164d0)
     void execMailGone();
@@ -343,7 +270,7 @@ u32 Mailbox::isUsable() {
     return canUse;
 }
 
-BOOL Mailbox::vfunc_b8(void *a) {
+BOOL Mailbox::vfunc_b8(Unk_ov009_0225bc88_Blk *a) {
     struct {
         s32 a, b, c;
     } v;

@@ -12,6 +12,7 @@
 #include "actor/Character.h"
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
+#include "town/BuildingActor.h"
 
 struct Unk_ov068_0226acf8_Vec {
     s32 x, y, z;
@@ -35,70 +36,11 @@ struct Unk_ov068_0226b12c_Vec3 {
 
 
 
-struct Unk_ov068_0226b5a4_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
 
 
 
 class Unk_020b1ddc;
 
-// ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class BuildingActor : public Character, public TalkMsgRequest {
-public:
-    BuildingActor();
-    virtual ~BuildingActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
-    virtual BOOL preDraw();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual VecFx32 *getInteractionPos();
-    virtual void vfunc_60(u32 a, void *p);
-    virtual s32 vfunc_64();
-    virtual s32 vfunc_68();
-    virtual s32 vfunc_6c(s32 a);
-    virtual BOOL vfunc_70();
-    virtual void func_ov009_0225ca98();
-    virtual void vfunc_78();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
-    virtual void onMessageEnd(u32 attr);
-    virtual BOOL vfunc_8c();
-    virtual BOOL vfunc_90();
-    virtual BOOL vfunc_94();
-    virtual BOOL vfunc_98();
-    virtual BOOL vfunc_9c();
-    virtual s32 vfunc_a0();
-    virtual char *vfunc_a4();
-    virtual char *vfunc_a8();
-    virtual char *vfunc_ac();
-    virtual BOOL vfunc_b0();
-    virtual Unk_ov068_0226b12c_Vec3 vfunc_b4();
-    virtual BOOL vfunc_b8();
-
-    s32 getBtaAnim(u32 a);
-    s32 getBca2Anim();
-
-    /* 0x12e */ u16 unk_12e;    // in TalkMsgRequest's tail padding (door-close SE delay in ov009)
-    /* 0x130 */ u8 doorState;
-    /* 0x131 */ u8 pad_131;
-    /* 0x132 */ u16 itemId;
-    /* 0x134 */ u8 pad_134[4];
-    /* 0x138 */ u8 unk_138[0x1d4 - 0x138];
-    /* 0x1d4 */ u8 unk_1d4[8];
-    /* 0x1dc */ Unk_ov068_0226b5a4_Bits doorAnimFrame;
-    /* 0x1e0 */ u8 pad_1e0[0x1f0 - 0x1e0];
-    /* 0x1f0 */ u8 unk_1f0[0x234 - 0x1f0];
-    /* 0x234 */ u8 unk_234[0x278 - 0x234];
-    /* 0x278 */ u8 pad_278[0x28e - 0x278];
-    /* 0x28e */ u8 unk_28e[0x2b0 - 0x28e];
-};
 
 // Overlay 68 concrete actor (vtable 0x02270110, secondary vtable 0x022701d4), size 0x2e4
 class KappnTaxi : public BuildingActor {
@@ -112,7 +54,7 @@ public:
     virtual BOOL vfunc_70();
     virtual void onMessageEnd(u32 attr);
     virtual BOOL vfunc_b0();
-    virtual Unk_ov068_0226b12c_Vec3 vfunc_b4();
+    virtual Unk_ov009_0225da90_Vec3 vfunc_b4();
     virtual s32 getVoiceType();
 
     // update states
@@ -411,8 +353,12 @@ BOOL KappnTaxi::vfunc_0c() {
     return TRUE;
 }
 
-Unk_ov068_0226b12c_Vec3 KappnTaxi::vfunc_b4() {
-    return carPos;
+Unk_ov009_0225da90_Vec3 KappnTaxi::vfunc_b4() {
+    Unk_ov009_0225da90_Vec3 r;
+    r.x = carPos.x;
+    r.y = carPos.y;
+    r.z = carPos.z;
+    return r;
 }
 
 s32 KappnTaxi::callGetBca2Anim() {

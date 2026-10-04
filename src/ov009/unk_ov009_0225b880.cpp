@@ -23,6 +23,8 @@
 #include "snd/Unk_0213b9c4.h"
 #include "talk/TalkMsgRequest.h"
 #include "talk/TalkWindowState.h"
+#include "snd/BuildingSeEmitter.h"
+#include "town/BuildingActor.h"
 
 
 
@@ -106,162 +108,7 @@ struct Unk_ov009_0225df94_Target;
 
 
 
-class BuildingSeEmitter {
-public:
-    BuildingSeEmitter();
 
-    void playSeHeld(u32 a);
-    void playSe(u32 a);
-    void deactivate();
-    void setPosition(Unk_ov009_0225b880_Vec3 *v);
-    void activate();
-
-    /* 0x00 */ Unk_0213b9c4 unk_00; // the active flag is unk_00.b40 (0x40)
-};
-
-class BuildingActor : public Character, public TalkMsgRequest {
-public:
-    BuildingActor();
-    virtual ~BuildingActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
-    virtual BOOL preDraw();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual VecFx32 *getInteractionPos();
-    virtual void vfunc_60(u32 a, void *b);
-    virtual s32 func_ov009_0225d708();
-    virtual s32 func_ov009_0225d6f0();
-    virtual s32 vfunc_6c(s32 a);
-    virtual BOOL func_ov009_0225dd58();
-    virtual void func_ov009_0225ca98();
-    virtual void vfunc_78();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
-    virtual void onMessageEnd(u32 attr);
-    virtual BOOL vfunc_8c();
-    virtual BOOL vfunc_90();
-    virtual BOOL vfunc_94();
-    virtual BOOL vfunc_98();
-    virtual BOOL vfunc_9c();
-    virtual s32 vfunc_a0();
-    virtual char *vfunc_a4();
-    virtual char *vfunc_a8();
-    virtual char *vfunc_ac();
-    virtual BOOL vfunc_b0();
-    virtual Unk_ov009_0225da90_Vec3 vfunc_b4();
-    virtual BOOL vfunc_b8(Unk_ov009_0225bc88_Blk *out);
-
-    s32 getEntranceType();
-    s32 getViewRangeX();
-    s32 getViewRangeFront();
-    s32 getViewRangeBack();
-    BOOL setEntryState(s32 a);
-    BOOL execEntryCheck();
-    BOOL enterEntryCheck();
-    void execEntryIdle();
-    BOOL enterEntryIdle();
-    void updateEntryState();
-    void execDoorNoAnimOut();
-    BOOL enterDoorNoAnimOut();
-    void execDoorNoAnimIn();
-    BOOL enterDoorNoAnimIn();
-    void execDoorSlideClose();
-    BOOL enterDoorSlideClose();
-    void execDoorSlideOpen();
-    BOOL enterDoorSlideOpen();
-    void execDoorOpenOut();
-    BOOL enterDoorOpenOut();
-    void execDoorOpenIn();
-    BOOL enterDoorOpenIn();
-    void execDoorIdle();
-    BOOL enterDoorIdle();
-
-    void destroyColliders();
-    void submitColliders();
-    void createColliders(Unk_ov009_0225bc88_Blk *m);
-    void destroyShadows();
-    void updateShadows(Unk_ov009_0225bc88_Blk *m);
-    void createShadows(Unk_ov009_0225bc88_Blk *m);
-    void updateBaseMatrix(Unk_ov009_0225bc88_Blk *out);
-    void func_ov009_0225d0d8();
-    BuildingResources *getResources();
-    void makeCurvedMatrix(Unk_ov009_0225bc88_Blk *out);
-    BOOL loadResources(char *a, char *b, char *c);
-    BOOL setupModel(char *a, char *b, char *c);
-    void *getBtaAnim(u32 idx);
-    s32 getBca2Anim();
-    void setupAnims();
-    void initEntryArea();
-
-    BOOL tryOpenDoorForExit();
-    BOOL openDoorForExit();
-    BOOL tryOpenDoorForEntry();
-    BOOL openDoorForEntry();
-    BOOL isDoorIdle();
-    void updateOffscreen();
-    BOOL isOffscreen();
-    void callIsLit();
-    u32 getGridZ();
-    u32 getGridX();
-    u16 *getItemId();
-    s32 getInteriorScene();
-    BOOL getDoorPos(Unk_ov009_0225b880_Vec3 *out, s16 *ang);
-    void updateMatrix();
-    void execEntry08();
-    BOOL enterEntry08();
-    void execEntry07();
-    BOOL enterEntry07();
-    void execEntryWarp();
-    BOOL enterEntryWarp();
-    void execEntry05();
-    BOOL enterEntry05();
-    void execEntry04();
-    BOOL enterEntry04();
-    void execEntryTalk();
-    BOOL enterEntryTalk();
-    void execEntryTalkOpen();
-    BOOL enterEntryTalkOpen();
-
-    /* 0x12e */ u16 unk_12e;    // in TalkMsgRequest's tail padding (door-close SE delay in ov009)
-    /* 0x130 */ u8 doorState;
-    /* 0x131 */ u8 pad_131;
-    /* 0x132 */ u16 itemId;
-    /* 0x134 */ u32 buildingIndex;
-    /* 0x138 */ u8 unk_138[0x194 - 0x138];
-    /* 0x194 */ void *modelRes;
-    /* 0x198 */ u8 pad_198[4];
-    /* 0x19c */ Unk_ov009_0225bc88_Blk baseMatrix;
-    /* 0x1cc */ u8 pad_1cc[0x1d4 - 0x1cc];
-    /* 0x1d4 */ u8 unk_1d4[0x1f0 - 0x1d4];
-    /* 0x1f0 */ u8 unk_1f0[0x228 - 0x1f0];
-    /* 0x228 */ u32 gridX;
-    /* 0x22c */ u32 gridZ;
-    /* 0x230 */ u8 exitDelay;
-    /* 0x231 */ u8 colliderFlags;
-    /* 0x232 */ Unk_ov009_0225bf3c_Flags entryFlags;
-    /* 0x233 */ u8 visitRefused;
-    /* 0x234 */ u8 unk_234[0x44];
-    /* 0x278 */ s32 entryState;
-    /* 0x27c */ u8 closedTalk;
-    /* 0x27d */ u8 pad_27d;
-    /* 0x27e */ u16 warpTimer;
-    /* 0x280 */ ObjShadowStrip *shadows;
-    /* 0x284 */ TouchPickTriangle *collisionShapes;
-    /* 0x288 */ BuildingCollider *colliders;
-    /* 0x28c */ u8 colliderCount;
-    /* 0x28d */ u8 pad_28d;
-    /* 0x28e */ u8 unk_28e[2];
-    /* 0x290 */ s32 solidCenterX;
-    /* 0x294 */ s32 solidCenterY;
-    /* 0x298 */ s32 solidCenterZ;
-    /* 0x29c */ s32 solidSizeX;
-    /* 0x2a0 */ s32 solidSizeZ;
-    /* 0x2a4 */ Unk_ov009_0225b880_Vec3 entryPos;
-};
 
 typedef void (BuildingActor::*Unk_ov009_0225c290_Fn)();
 typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
@@ -346,7 +193,7 @@ void func_02003e70(void *, u32, u32, u32);
 void func_02003e50(void *);
 void func_02003e80(void *, void *);
 void func_02003ecc(void *);
-void BuildingLights_isLit(void *);
+s32 BuildingLights_isLit(void *);
 void AnimModel_drawAnimated(void *, u32);
 s32 func_020e7b98(s32, s32);
 s32 func_01ffcb0c(s32, s32);
@@ -607,7 +454,7 @@ BuildingActor::~BuildingActor() {
     func_020548a0(unk_138);
 }
 
-BOOL BuildingActor::func_ov009_0225dd58() { return TRUE; }
+BOOL BuildingActor::vfunc_70() { return TRUE; }
 
 BOOL BuildingActor::vfunc_00() {
     Unk_ov009_0225bc88_Blk b1;
@@ -642,7 +489,7 @@ BOOL BuildingActor::vfunc_00() {
     if (getDoorPos(&entryPos, (s16 *)0)) {
         entryPos.z -= 0x4000;
     }
-    BOOL res = func_ov009_0225dd58();
+    BOOL res = vfunc_70();
     setEntryState(0);
     return res;
 }
@@ -663,7 +510,7 @@ BOOL BuildingActor::preExecute() {
     if (Scene_GetCurrent() != 0x2c) {
         updateEntryState();
     }
-    func_ov009_0225ca98();
+    vfunc_74();
     if (Scene_GetCurrent() != 0x2c) {
         submitColliders();
     }
@@ -739,9 +586,9 @@ void BuildingActor::initEntryArea() {
 }
 
 void BuildingActor::setupAnims() {
-    if (func_ov009_0225d708() != 0 || func_ov009_0225d6f0() != 0) {
+    if (vfunc_64() != 0 || vfunc_68() != 0) {
         AnimModel_allocAnmObj(unk_138, gFieldStructureHeap);
-        BlendAnimModel_initAnim(unk_138, (void *)func_ov009_0225d708(), 0, 0x1000, 0, 0);
+        BlendAnimModel_initAnim(unk_138, (void *)vfunc_64(), 0, 0x1000, 0, 0);
         AnimModel_attachAnim(unk_138);
     }
     if (getEntranceType() != 0) {
@@ -811,7 +658,7 @@ s32 BuildingActor::getViewRangeFront() {
     return r;
 }
 
-s32 BuildingActor::func_ov009_0225d708() {
+s32 BuildingActor::vfunc_64() {
     BuildingResources *r = getResources();
     if (r != NULL) {
         return r->bca0;
@@ -819,7 +666,7 @@ s32 BuildingActor::func_ov009_0225d708() {
     return 0;
 }
 
-s32 BuildingActor::func_ov009_0225d6f0() {
+s32 BuildingActor::vfunc_68() {
     BuildingResources *r = getResources();
     if (r != NULL) {
         return r->bca1;
@@ -1293,7 +1140,7 @@ s32 BuildingActor::vfunc_6c(s32 a) {
     return FALSE;
 }
 
-void BuildingActor::func_ov009_0225ca98() {
+void BuildingActor::vfunc_74() {
     static Unk_ov009_0225c290_Fn tbl[7] = {
         &BuildingActor::execDoorIdle, &BuildingActor::execDoorOpenIn,
         &BuildingActor::execDoorOpenOut, &BuildingActor::execDoorSlideOpen,
@@ -1309,7 +1156,7 @@ BOOL BuildingActor::enterDoorIdle() {
     switch (getEntranceType()) {
     case 1:
     case 2: {
-        void *r = (void *)func_ov009_0225d708();
+        void *r = (void *)vfunc_64();
         if (r == 0) {
             return FALSE;
         }
@@ -1355,7 +1202,7 @@ void BuildingActor::execDoorIdle() {
 }
 
 BOOL BuildingActor::enterDoorOpenIn() {
-    void *r = (void *)func_ov009_0225d708();
+    void *r = (void *)vfunc_64();
     if (r != 0) {
         BlendAnimModel_initAnim(unk_138, r, 1, 0x1000, 0, 0);
         ((BuildingSeEmitter *)unk_234)->playSe(0x7d1);
@@ -1437,7 +1284,7 @@ void BuildingActor::execDoorOpenIn() {
 }
 
 BOOL BuildingActor::enterDoorOpenOut() {
-    void *r = (void *)func_ov009_0225d6f0();
+    void *r = (void *)vfunc_68();
     if (r != 0) {
         BlendAnimModel_initAnim(unk_138, r, 1, 0x1000, 0, 0);
         ((BuildingSeEmitter *)unk_234)->playSe(0x7d1);
@@ -1519,7 +1366,7 @@ void BuildingActor::execDoorOpenOut() {
 }
 
 BOOL BuildingActor::enterDoorSlideOpen() {
-    void *r = (void *)func_ov009_0225d708();
+    void *r = (void *)vfunc_64();
     if (r) {
         BlendAnimModel_initAnim(unk_138, r, 1, 0x1000, 0, 0);
         if (Item_IsNookShop(&itemId)) {
@@ -1541,7 +1388,7 @@ void BuildingActor::execDoorSlideOpen() {
 
 BOOL BuildingActor::enterDoorSlideClose() {
     unk_12e = 0x1a;
-    void *r = (void *)func_ov009_0225d6f0();
+    void *r = (void *)vfunc_68();
     if (r) {
         BlendAnimModel_initAnim(unk_138, r, 1, 0x1000, 0, 0);
         return TRUE;
@@ -2006,7 +1853,7 @@ u32 BuildingActor::getGridX() { return gridX; }
 
 u32 BuildingActor::getGridZ() { return gridZ; }
 
-void BuildingActor::callIsLit() { BuildingLights_isLit(unk_1f0); }
+s32 BuildingActor::callIsLit() { return BuildingLights_isLit(unk_1f0); }
 
 
 BuildingSeEmitter::BuildingSeEmitter() {
