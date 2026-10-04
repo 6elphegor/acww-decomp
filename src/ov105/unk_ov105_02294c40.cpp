@@ -2,7 +2,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
-#include "player/Unk_02097ff4.h"
+#include "player/PlayerData.h"
 #include "ui/CursorMotion.h"
 #include "talk/TalkWindowState.h"
 #include "item/Letter.h"

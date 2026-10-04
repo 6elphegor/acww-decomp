@@ -6417,7 +6417,7 @@ void ActorTalkRequest::setSlotFromString(u32 a, u32 b, u32 c) {
     _ZN15TalkWindowState17setSlotFromStringEiii(window, a, b, c);
 }
 
-void ActorTalkRequest::onConditionTag() {
+void ActorTalkRequest::onConditionTag(u32 condition, u32 branchCount) {
     using namespace nH;
 }
 

@@ -587,13 +587,13 @@ _ZN12SndSceneBaseD1Ev kind:label(arm) addr:0x020f3040
 func_020f3078 kind:function(arm,size=0x84) addr:0x020f3078
 _ZN12SndSceneBaseC2Ev kind:label(arm) addr:0x020f3078
 func_020f30fc kind:function(arm,size=0xc) addr:0x020f30fc
-_ZN12Unk_0213b9706updateEP4Vec3 kind:label(arm) addr:0x020f30fc
+_ZN13SkySndChannel6updateEP4Vec3 kind:label(arm) addr:0x020f30fc
 func_020f3108 kind:function(arm,size=0xc) addr:0x020f3108
-_ZN12Unk_0213b9707requestEj kind:label(arm) addr:0x020f3108
+_ZN13SkySndChannel7requestEj kind:label(arm) addr:0x020f3108
 func_020f3114 kind:function(arm,size=0xc) addr:0x020f3114
-_ZN12Unk_0213b97016requestSustainedEj kind:label(arm) addr:0x020f3114
+_ZN13SkySndChannel16requestSustainedEj kind:label(arm) addr:0x020f3114
 func_020f3120 kind:function(arm,size=0xc) addr:0x020f3120
-_ZN12Unk_0213b9708vfunc_00Ev kind:label(arm) addr:0x020f3120
+_ZN13SkySndChannel8vfunc_00Ev kind:label(arm) addr:0x020f3120
 func_020f312c kind:function(arm,size=0xc) addr:0x020f312c
 _ZN18CreatureSndChannel8vfunc_00Ev kind:label(arm) addr:0x020f312c
 func_020f3138 kind:function(arm,size=0xc) addr:0x020f3138
@@ -2363,7 +2363,7 @@ _ZTV12SndSceneBase kind:data(any) addr:0x0213b8e0
 _ZTV13SndEnvChannel kind:data(any) addr:0x0213b914
 _ZTV12Unk_0213b938 kind:data(any) addr:0x0213b930
 _ZTV18CreatureSndChannel kind:data(any) addr:0x0213b94c
-_ZTV12Unk_0213b970 kind:data(any) addr:0x0213b968
+_ZTV13SkySndChannel kind:data(any) addr:0x0213b968
 _ZTV18SndSeEmitterKind99 kind:data(any) addr:0x0213b984
 _ZTV12SndSeEmitter kind:data(any) addr:0x0213b9a0
 _ZTV17SndSeEmitterKind2 kind:data(any) addr:0x0213b9bc

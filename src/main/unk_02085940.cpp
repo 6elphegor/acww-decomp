@@ -90,14 +90,14 @@ void *_ZN7PatternC1Ev(void *p);
 s32 _ZN11PatternInfo10setPaletteEj(void *p, s32 v);
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData18getLostChildRecordEv();
-s32 _ZN12Unk_02097ff49clearFlagEj(void *p, s32 v);
+s32 _ZN10PlayerData9clearFlagEj(void *p, s32 v);
 extern void *gSceneBlockMap;
 extern u8 data_021ed31a[];
 extern u32 sKatieSpotRows[];
 extern u8 data_021c47c4_dummy[];
 void *TownId_Construct(void *);
 s32 _ZN11CommManager8isOnlineEv(void *);
-BOOL _ZN12Unk_02097ff48testFlagEj(void *, s32);
+BOOL _ZN10PlayerData8testFlagEj(void *, s32);
 void *_ZN10PlayerData14getDramaRecordEv(void *);
 s32 Date_GetNthWeekdayDay(u8 a, u32 b, u32 c, u32 d);
 void DateTime_AddDays(void *, s32);
@@ -517,14 +517,14 @@ void *_ZN7PatternC1Ev(void *p);
 s32 _ZN11PatternInfo10setPaletteEj(void *p, s32 v);
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData18getLostChildRecordEv();
-s32 _ZN12Unk_02097ff49clearFlagEj(void *p, s32 v);
+s32 _ZN10PlayerData9clearFlagEj(void *p, s32 v);
 extern void *gSceneBlockMap;
 extern u8 data_021ed31a[];
 extern u32 sKatieSpotRows[];
 extern u8 data_021c47c4_dummy[];
 void *TownId_Construct(void *);
 s32 _ZN11CommManager8isOnlineEv(void *);
-BOOL _ZN12Unk_02097ff48testFlagEj(void *, s32);
+BOOL _ZN10PlayerData8testFlagEj(void *, s32);
 void *_ZN10PlayerData14getDramaRecordEv(void *);
 s32 Date_GetNthWeekdayDay(u8 a, u32 b, u32 c, u32 d);
 void DateTime_AddDays(void *, s32);
@@ -615,7 +615,7 @@ s32 Math_IsInRange(s32 a, s32 b, s32 c);
 
 namespace Ns_020874d8 {
 extern "C" {
-void _ZN12Unk_02097ff49clearFlagEj(void *, s32);
+void _ZN10PlayerData9clearFlagEj(void *, s32);
 void MI_CpuCopy8(void *, void *, s32);
 void MI_CpuFill8(void *, s32, s32);
 void Clock_GetDate(void *);
@@ -850,7 +850,7 @@ extern "C" void PlayerSpNpcRecord_SendMissingLetter() {
     MissingLetterLocals l;
     u8 obj[8];
     void *r4 = PlayerData_GetCurrent();
-    if (r4 != NULL && _ZN12Unk_02097ff48testFlagEj(r4, 0x36)) {
+    if (r4 != NULL && _ZN10PlayerData8testFlagEj(r4, 0x36)) {
         _ZN6LetterC1Ev(big);
         l.a = 0;
         l.a = Ns_020874d8::Random_GlobalBelow(3);
@@ -862,7 +862,7 @@ extern "C" void PlayerSpNpcRecord_SendMissingLetter() {
         _ZN10LetterView10setPresentEtj(big, l.h, 1);
         ItemPickSpec_Destruct(obj);
         if (LetterDelivery_QueueOutgoing(big, 0)) {
-            Ns_020874d8::_ZN12Unk_02097ff49clearFlagEj(r4, 0x36);
+            Ns_020874d8::_ZN10PlayerData9clearFlagEj(r4, 0x36);
         }
         _ZN6LetterD1Ev(big);
     }
@@ -896,23 +896,23 @@ void PlayerSpNpcRecord::sendInsuranceLetters() {
     void *obj = PlayerData_GetCurrent();
     _ZN11MsgString9BC1Ev(bufB);
     PlayerSpNpcRecord *r7 = (PlayerSpNpcRecord *)_ZN10PlayerData14getSpNpcRecordEv(obj);
-    if (_ZN12Unk_02097ff48testFlagEj(obj, 0x17)) {
-        if (_ZN12Unk_02097ff48testFlagEj(obj, 0x19)) {
+    if (_ZN10PlayerData8testFlagEj(obj, 0x17)) {
+        if (_ZN10PlayerData8testFlagEj(obj, 0x19)) {
             h[0] = 0x1492;
             s32 r = Ns_020874d8::Random_GlobalBelow(2);
             if (sendInsuranceLetter(r, &h[0])) {
-                Ns_020874d8::_ZN12Unk_02097ff49clearFlagEj(obj, 0x19);
+                Ns_020874d8::_ZN10PlayerData9clearFlagEj(obj, 0x19);
             }
         }
-        if (_ZN12Unk_02097ff48testFlagEj(obj, 0x1a)) {
+        if (_ZN10PlayerData8testFlagEj(obj, 0x1a)) {
             h[1] = 0x1492;
             s32 r = Ns_020874d8::Random_GlobalBelow(2);
             if (sendInsuranceLetter(r + 2, &h[1])) {
-                Ns_020874d8::_ZN12Unk_02097ff49clearFlagEj(obj, 0x1a);
+                Ns_020874d8::_ZN10PlayerData9clearFlagEj(obj, 0x1a);
             }
         }
     }
-    if (_ZN12Unk_02097ff48testFlagEj(obj, 0x18)) {
+    if (_ZN10PlayerData8testFlagEj(obj, 0x18)) {
         if (r7->getInsuranceClaims() >= 1) {
             String_FormatNumber(bufA, r7->getInsuranceClaims(), 10, 0, 0, 0);
             MailText_SetSlot(3, bufA);
@@ -1083,7 +1083,7 @@ extern "C" BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d
         return FALSE;
     }
     void *o = PlayerData_GetCurrent();
-    if (_ZN12Unk_02097ff48testFlagEj(o, 1)) {
+    if (_ZN10PlayerData8testFlagEj(o, 1)) {
         return FALSE;
     }
     if (!Drama_FindScheduledPart(a, b, c, d)) {
@@ -1101,7 +1101,7 @@ extern "C" BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d
     if (d->c == 0) {
         switch (d->a) {
         case 0:
-            if (_ZN12Unk_02097ff48testFlagEj(o, 6)) {
+            if (_ZN10PlayerData8testFlagEj(o, 6)) {
                 return TRUE;
             }
             break;
@@ -1117,7 +1117,7 @@ extern "C" BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d
             }
             break;
         case 1:
-            if (_ZN12Unk_02097ff48testFlagEj(o, 8) || _ZN10MuseumData10isCompleteEv(data_021ed0a0)) {
+            if (_ZN10PlayerData8testFlagEj(o, 8) || _ZN10MuseumData10isCompleteEv(data_021ed0a0)) {
                 return TRUE;
             }
             break;
@@ -1188,7 +1188,7 @@ extern "C" void LostChild_LoadFromTown() {
     if (a != 0 && g != 0) {
         void *b = _ZN10PlayerData18getLostChildRecordEv();
         Ns_02086b7c::MI_CpuCopy8(g + 0x15fca, b, 12);
-        if (Ns_02086b7c::Math_IsInRange(((LostChildRecord *)(g + 0x15fca))->getDaysLeft(), 1, 7) == 0) _ZN12Unk_02097ff49clearFlagEj(a, 0x33);
+        if (Ns_02086b7c::Math_IsInRange(((LostChildRecord *)(g + 0x15fca))->getDaysLeft(), 1, 7) == 0) _ZN10PlayerData9clearFlagEj(a, 0x33);
     }
 }
 

@@ -36,13 +36,6 @@ void func_02133ef8(void *p, u32 n);
 
 class StringBank;
 
-class Unk_Buf {
-public:
-    virtual ~Unk_Buf();
-    virtual u32 vfunc_08();
-    virtual u32 vfunc_0c();
-};
-
 extern "C" {
 BOOL String_CharEqualsIgnoreCase(u32 a, u32 b);
 BOOL String_FormatNumber(MsgString *out, s32 val, s32 width, s32 mode, s32 kind, s32 unused);
@@ -215,7 +208,7 @@ public:
     /* 0x4f0 */ MsgStringAttr attr;
     /* 0x4fc */ u8 output[0x400];
     /* 0x8fc */ MsgString33 slots[11];
-    /* 0xb38 */ Unk_Buf *nameSource;
+    /* 0xb38 */ MsgStringBase *nameSource;
     /* 0xb3c */ TabooCensorWriter censor;
     /* 0xb7c */ MsgCharReader charReader;
     /* 0xbac */ ArticleCacheEntry articles[16];
@@ -414,7 +407,7 @@ void StringExpander::appendTagTail() {
 
 void StringExpander::insertNameChar0() {
     if (nicknameMode) {
-        u32 a = Msg_GetCharAt(bank->nameSource->vfunc_0c(), 0);
+        u32 a = Msg_GetCharAt((u32)bank->nameSource->data(), 0);
         if (capitalizeNext) {
             a = Text_ToUpper(a);
             capitalizeNext = 0;
@@ -431,7 +424,7 @@ void StringExpander::insertNameChar0() {
 
 void StringExpander::insertNameChar1() {
     if (nicknameMode) {
-        u32 a = Msg_GetCharAt(bank->nameSource->vfunc_0c(), 1);
+        u32 a = Msg_GetCharAt((u32)bank->nameSource->data(), 1);
         if (capitalizeNext) {
             a = Text_ToUpper(a);
             capitalizeNext = 0;
@@ -448,7 +441,7 @@ void StringExpander::insertNameChar1() {
 
 void StringExpander::insertNameChar2() {
     if (nicknameMode) {
-        u32 a = Msg_GetCharAt(bank->nameSource->vfunc_0c(), 2);
+        u32 a = Msg_GetCharAt((u32)bank->nameSource->data(), 2);
         if (capitalizeNext) {
             a = Text_ToUpper(a);
             capitalizeNext = 0;
@@ -466,7 +459,7 @@ void StringExpander::insertNameChar2() {
 void StringExpander::insertNameLast2() {
     if (nicknameMode) {
         u32 v, b, a;
-        v = bank->nameSource->vfunc_0c();
+        v = (u32)bank->nameSource->data();
         a = Msg_GetCharFromEnd(v, 0);
         b = Msg_GetCharFromEnd(v, 1);
         if (capitalizeNext) {
@@ -551,7 +544,7 @@ BOOL StringExpander::canCheckName() {
 }
 
 BOOL StringExpander::differsFromName() {
-    u8 *p = (u8 *)bank->nameSource->vfunc_0c();
+    u8 *p = bank->nameSource->data();
     return strcmp(p, (u8 *)bank->output) != 0;
 }
 
@@ -972,7 +965,7 @@ extern "C" BOOL String_MakeNickname(MsgString *buf, u32 x, u8 *key) {
     req.msgIndex = *key;
     req.dest = buf;
     req.nicknameMode = 1;
-    gStringBank.nameSource = (Unk_Buf *)x;
+    gStringBank.nameSource = (MsgStringBase *)x;
     gStringBank.reset();
     BOOL r = gStringBank.load(&req);
     gStringBank.nameSource = 0;

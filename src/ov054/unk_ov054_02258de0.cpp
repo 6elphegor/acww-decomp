@@ -262,9 +262,9 @@ struct SpNpcPellyPhyllisActEntry {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define FutureLetter_getDeliveryDate _ZN12FutureLetter15getDeliveryDateEv
-#define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
-#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
-#define Unk_02097ff4_getBankAccount _ZN12Unk_02097ff414getBankAccountEv
+#define PlayerData_setFlag _ZN10PlayerData7setFlagEj
+#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
+#define PlayerData_getBankAccount _ZN10PlayerData14getBankAccountEv
 #define PlayerData_getErrands _ZN10PlayerData10getErrandsEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define SickVillagerRecord_getParcelErrand _ZN18SickVillagerRecord15getParcelErrandEv
@@ -292,12 +292,12 @@ BOOL SpNpcTortimer2_IsIdle();
 BOOL Talk_IsInOwnTown(...);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 void *PlayerData_GetCurrent();
-void *Unk_02097ff4_getBankAccount(void *g);
+void *PlayerData_getBankAccount(void *g);
 s32 Donation_GetTotal(void *h);
 s32 PlayerBank_GetDonationLevel(void *h);
 void PlayerBank_SetDonationLevel(void *h, u8 i);
-void Unk_02097ff4_setFlag(void *g, s32 v);
-s32 Unk_02097ff4_testFlag(void *g, s32 v);
+void PlayerData_setFlag(void *g, s32 v);
+s32 PlayerData_testFlag(void *g, s32 v);
 s32 TalkWindowState_setNextMessage(void *m, void *buf, u32 cb);
 s32 HouseData_getDebt(void *m);
 void ActorTalkRequest_setNumberSlot(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -744,7 +744,7 @@ BOOL SpNpcPellyPhyllis::onCreate() {
             changeAct(9);
         }
     } else {
-        if (GameStart_IsActive() && Unk_02097ff4_testFlag(r, 9) == 0) {
+        if (GameStart_IsActive() && PlayerData_testFlag(r, 9) == 0) {
             changeAct(0);
         } else {
             changeAct(2);
@@ -1052,13 +1052,13 @@ void SpNpcPellyPhyllisTalk::start(TalkStartMsg *out) {
         goto end;
     }
     if (GameStart_IsActive()) {
-        if (!Unk_02097ff4_testFlag(g0, 9)) {
+        if (!PlayerData_testFlag(g0, 9)) {
             if (GameStart_IsNewTown() || GameStart_IsNewResident()) {
                 out->msgIndex = 0x12;
             } else {
                 out->msgIndex = 0x20;
             }
-            Unk_02097ff4_setFlag(g0, 9);
+            PlayerData_setFlag(g0, 9);
         } else {
             out->msgIndex = 7;
         }
@@ -1226,7 +1226,7 @@ void SpNpcPellyPhyllisTalk::onDonationEntered() {
         v[1] = 0x149b;
         ActorTalkRequest_requestTakeItem(this, &v[1], 0, 5, 1);
         setScript(10);
-        donationBefore = Donation_GetTotal(Unk_02097ff4_getBankAccount(PlayerData_GetCurrent()));
+        donationBefore = Donation_GetTotal(PlayerData_getBankAccount(PlayerData_GetCurrent()));
         Donation_SetTotal(donationBefore + r4);
     } else {
         r6 = 0x1c;
@@ -1318,7 +1318,7 @@ void SpNpcPellyPhyllisTalk::onSavingsDone() {
     s32 r4;
     u16 v[3];
     if (MenuCtrl_IsResultOk()) {
-        s32 r6 = PlayerBank_GetBalance(Unk_02097ff4_getBankAccount(PlayerData_GetCurrent()));
+        s32 r6 = PlayerBank_GetBalance(PlayerData_getBankAccount(PlayerData_GetCurrent()));
         ActorTalkRequest_setNumberSlot(this, r6, 5, 10, 1, 0);
         ActorTalkRequest_setNumberSlot(this, func_02133150(r6, 200), 6, 10, 1, 0);
         r4 = 0x17;
@@ -1577,7 +1577,7 @@ void SpNpcPellyPhyllisTalk::onMessageEnd(u32 a_) {
 void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
     void *ctx = window;
     void *h = PlayerData_GetCurrent();
-    void *hd = Unk_02097ff4_getBankAccount(h);
+    void *hd = PlayerData_getBankAccount(h);
     char *tbl = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12);
     s32 r5 = 0;
     u8 msg;
@@ -1701,7 +1701,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
         }
         break;
     case 0x3e:
-        if (Unk_02097ff4_testFlag(h, 0x20)) {
+        if (PlayerData_testFlag(h, 0x20)) {
             r5 = 0x4b;
             break;
         }
@@ -1746,7 +1746,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
     case 0x4e:
         half1 = 0x1379;
         ActorTalkRequest_requestGiveItem(this, &half1, r5, 5, 1);
-        Unk_02097ff4_setFlag(h, 0x20);
+        PlayerData_setFlag(h, 0x20);
         break;
     case 0x3b:
         TalkWindowState_lockAdvance(ctx);
@@ -1870,14 +1870,14 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     case 0x5d:
     case 0x5e:
         if (r == 2) {
-            if (Unk_02097ff4_testFlag(g, 4) == 0) {
+            if (PlayerData_testFlag(g, 4) == 0) {
                 id = 0x1a;
-                Unk_02097ff4_setFlag(g, 4);
+                PlayerData_setFlag(g, 4);
             } else {
                 id = 0x19;
             }
         } else if (r == 3) {
-            if (Unk_02097ff4_testFlag(g, 1) != 0) {
+            if (PlayerData_testFlag(g, 1) != 0) {
                 id = 0x60;
             } else {
                 id = 0x35;
@@ -2065,13 +2065,13 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     L_r2:
         add r0, r7, #0
         mov r1, #4
-        bl Unk_02097ff4_testFlag
+        bl PlayerData_testFlag
         cmp r0, #0
         bne L_r2_set
         mov r6, #26
         add r0, r7, #0
         mov r1, #4
-        bl Unk_02097ff4_setFlag
+        bl PlayerData_setFlag
         b L_end
     L_r2_set:
         mov r6, #25
@@ -2079,7 +2079,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     L_r3:
         add r0, r7, #0
         mov r1, #1
-        bl Unk_02097ff4_testFlag
+        bl PlayerData_testFlag
         cmp r0, #0
         beq L_r3_clear
         mov r6, #96
@@ -2158,7 +2158,7 @@ void SpNpcPellyPhyllisTalk::openPostOfficeMenu(s32 a) {
     menuKind = 0;
     if (!Talk_IsInOwnTown()) {
         menuKind = 2;
-    } else if (Unk_02097ff4_testFlag(g, 1) == 0 && HouseData_getDebt(gSaveHouse) != 0) {
+    } else if (PlayerData_testFlag(g, 1) == 0 && HouseData_getDebt(gSaveHouse) != 0) {
         if (owner->isLocalSlotActive()) {
             menuKind = 4;
         } else {
@@ -2225,7 +2225,7 @@ void SpNpcPellyPhyllisTalk::updateDonationLevel(s32 a) {
     void *name;
     name = (void *)sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     g = PlayerData_GetCurrent();
-    h = Unk_02097ff4_getBankAccount(g);
+    h = PlayerData_getBankAccount(g);
     s32 pos = Donation_GetTotal(h);
     u8 v = PlayerBank_GetDonationLevel(h) + 0x1f;
     s32 i;
@@ -2234,7 +2234,7 @@ void SpNpcPellyPhyllisTalk::updateDonationLevel(s32 a) {
         if (pos >= t && pos < sSpNpcPellyPhyllisDonationLevels[i + 1]) {
             PlayerBank_SetDonationLevel(h, i);
             if (donationBefore < t) {
-                Unk_02097ff4_setFlag(g, 0x16);
+                PlayerData_setFlag(g, 0x16);
                 v = i + 0x1f;
             } else {
                 v = i + 0x1f;

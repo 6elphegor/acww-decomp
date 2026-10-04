@@ -10,10 +10,9 @@
 #include "gfx/SpriteAnim.h"
 #include "game/WeatherRecord.h"
 #include "item/Letter.h"
-#include "gfx/Unk_020bfe30.h"
 #include "game/FxVec3.h"
 #include "snd/Unk_0213b938.h"
-#include "snd/Unk_0213b970.h"
+#include "snd/SkySndChannel.h"
 #include "game/SkyProc.h"
 #include "actor/Actor.h"
 #include "gfx/Rgb555.h"
@@ -28,11 +27,8 @@ struct MinuteHour;
 struct WeatherManager;
 struct SkyLightingLocals;
 struct Unk_020bacc0_P;
-struct Unk_020bb25c_Ent74;
-class Unk_020bb25c;
 struct SkySpawnRate;
 struct Unk_020bbcc8_Xxx;
-struct Unk_020bbc28;
 struct Letter;
 struct ItemPickSpec;
 struct PickedItem;
@@ -44,7 +40,7 @@ struct SkyObjGfxSlot;
 struct SkyObjGfxLoader;
 struct SkyShotRequest;
 struct SndEnvChannel;
-struct Unk_0213b970;
+struct SkySndChannel;
 struct Unk_0213b938;
 struct FxVec3;
 struct Unk_020bd0a4_Vec3;
@@ -55,9 +51,7 @@ struct SkySprites;
 struct SkyObjGfxDef;
 struct SkyObjCharLayout;
 struct Unk_020bdd94_Out;
-struct Unk_020bdd94;
 struct SkySoundPosBuf;
-struct Unk_021f23d4;
 struct SkyLookAtVec;
 struct Unk_020bee28_Vec2;
 struct Unk_020bf1d8_Vec;
@@ -66,10 +60,7 @@ struct Unk_020bee28_V;
 struct SkyParticleStackPad;
 struct SkyShootingStarStackPad;
 struct Unk_020bfe30_Vec;
-struct Unk_020bfe38_Ent;
-struct Unk_020bfec0_Ent;
 struct Mtx43;
-class Unk_020bfe30;
 struct WeatherRecord;
 struct EventDayEntry;
 struct TalkStartMsg;
@@ -202,65 +193,6 @@ struct SkyShotRequest {
     void clear();
     void set(s32 a, s32 *p, u8 b);
 };
-struct Unk_020bb25c_Ent74 {
-    s32 kind;
-    u8 unk_04[0x5c];
-    u32 work0;
-    u8 unk_64[0x10];
-};
-class Unk_020bb25c {
-public:
-    u8 unk_0000[0xe80];
-    s32 rainbowSpriteKind;
-    u8 unk_0e84[0x14d8 - 0xe84];
-    Unk_020bb25c_Ent74 fireworkSprites[13];
-    u8 unk_1abc[0x2f18 - 0x1abc];
-    u8 minute;
-    u8 hour;
-    u8 unk_2f1a[0x2f29 - 0x2f1a];
-    u8 birdsRequested;
-    u8 unk_2f2a[2];
-    s32 fireworksPattern;
-    s32 fireworksPatternTime;
-    s32 fireworksBigTimer;
-    s32 fireworksSlotTimers[4];
-    s32 fireworksInterval;
-    u8 unk_2f4c[0x2f51 - 0x2f4c];
-    u8 rainbowStrength;
-    u8 unk_2f52[0x2f58 - 0x2f52];
-    SkyShotRequest shotRequests[4];
-    u8 shotSeq[4];
-
-    void fireworksPatternAct0B();
-    void fireworksPatternAct0A();
-    void fireworksPatternAct09();
-    void fireworksPatternAct08();
-    void fireworksPatternAct07();
-    void fireworksPatternAct06();
-    void fireworksPatternAct05();
-    void fireworksPatternAct04();
-    void fireworksPatternAct03();
-    void fireworksPatternAct02();
-    void fireworksPatternAct01();
-    void selectFireworksPattern(s32 mode);
-    void setFireworksTiming(s32 a, s32 b, s32 c);
-    void tickTripleLaunches();
-    void tickPairLaunches();
-    void tickSmallLaunches();
-    void tickLowBigLaunch();
-    void tickBigLaunch();
-    void rollLaunchInterval(s32 *out);
-    void launchFirework(s32 idx, s32 a, s32 b);
-    BOOL canLaunchSmall(s32 idx);
-    BOOL canLaunchBig(s32 idx);
-    void updateBirds();
-    void spawnShots();
-    void updateRainbow();
-
-    BOOL spawn(s32 a, s32 b, s32 c, s32 d);
-    void killKind(s32 a);
-    void applyRainbowBlend();
-};
 enum Unk_020bb8a4_E { Unk_020bb8a4_E_0 = 0 };
 // Row of sRainSpawnRates / sSnowSpawnRates (per precipitation strength): spawn interval = base + Random(random)
 struct SkySpawnRate {
@@ -269,74 +201,6 @@ struct SkySpawnRate {
 };
 struct Unk_020bbcc8_Xxx {
     u32 a, b;
-};
-struct Unk_020bbc28 {
-    char pad_0000[0xe0c];
-    s32 moonSpriteKind;
-    char pad_0e10[0x1464 - 0xe10];
-    s32 visitorSpriteKind;
-    char pad_1468[0x2eb8 - 0x1468];
-    char palette[0x48];
-    s32 spawnInterval;
-    s32 spawnAccum;
-    s32 precipIntensity;
-    s32 snowCounter;
-    char pad_2f10[8];
-    u8 minute;
-    u8 hour;
-    u8 prevMinute;
-    u8 prevHour;
-    s32 second;
-    s32 prevSecond;
-    u8 balloonChance;
-    u8 ufoChance;
-    u8 ufoEventToday;
-    u8 peteEventToday;
-    s32 unk_2f28;
-    s32 fireworksPattern;
-    s32 fireworksPatternTime;
-    s32 fireworksBigTimer;
-    s32 fireworksSlotTimers;
-    s32 fireworksSlotTimers1;
-    s32 fireworksSlotTimers2;
-    s32 fireworksSlotTimers3;
-    s32 fireworksInterval;
-    s32 shootingStarDelay;
-    s32 unk_2f50;
-    char rainStrength[8];
-
-    void updatePete();
-    void updateUfo();
-    void updateBalloon();
-    void updateFireworksShow();
-    void updateMoon();
-    void updateShootingStar();
-    void updateSnow();
-    void updateRain();
-    void spawn(s32 a, s32 b, s32 c, s32 d);
-    void killKind(s32 a);
-    void selectFireworksPattern(s32 a);
-    s32 findKind(s32 a);
-    void updateLightning();
-    void func_020bb490();
-    void func_020bb458();
-    void func_020bb420();
-    void func_020bb3e8();
-    void func_020bb3b0();
-    void func_020bb374();
-    void func_020bb33c();
-    void func_020bb304();
-    void func_020bb2cc();
-    void func_020bb294();
-    void func_020bb25c();
-    void SkySprites_FireworksPatternAct0C();
-    void SkySprites_FireworksPatternAct0D();
-    void SkySprites_FireworksPatternAct0E();
-    void SkySprites_FireworksPatternAct0F();
-    void SkySprites_FireworksPatternAct10();
-    void SkySprites_FireworksPatternAct11();
-    void SkySprites_FireworksPatternAct12();
-    void SkySprites_FireworksPatternAct13();
 };
 // Graphics slot of the sky sprites (SkySprites::gfxSlots, 5): which sky object's characters are loaded into the slot's
 // OBJ VRAM area, by how many sprites it is used, and whether the characters still have to be loaded / uploaded.
@@ -379,7 +243,7 @@ struct SkySprite {
     /* 0x10 */ SpriteAnim anim;
     /* 0x24 */ s32 gfxSlot;
     /* 0x28 */ s32 trackX;
-    /* 0x2c */ u16 wavePhase;
+    /* 0x2c */ s16 wavePhase;
     /* 0x2e */ u8 dir;
     /* 0x2f */ u8 localShot;
     /* 0x30 */ u8 hit;
@@ -418,6 +282,10 @@ struct SkySprite {
     s32 checkShotHit(s32 a, s32 b, s32 c);
     void beginCrossing(s32 a, s32 b);
     s32 advanceCrossing(s32 a, s32 b, s32 c);
+    // kind 0 rain drop
+    void initRainDrop(BOOL flag);
+    void updateRainDrop();
+    void endRainDrop();
     // kind 6 UFO
     void initUfo();
     void updateUfo();
@@ -460,7 +328,7 @@ struct Unk_020bd0a4_Vec3 {
     s32 x, y, z;
 };
 struct SkySePlayer {
-    Unk_0213b970 channels[8];
+    SkySndChannel channels[8];
     FxVec3 positions[8];
     u8 active;
 
@@ -542,8 +410,14 @@ struct SkySprites {
     /* 0x2f0c */ s32 snowCounter;
     /* 0x2f10 */ s32 thunderTimer;
     /* 0x2f14 */ s32 spriteCount;
-    /* 0x2f18 */ u16 minuteHour;     // {minute, hour} of this frame (Clock_GetMinuteHour)
-    /* 0x2f1a */ u16 prevMinuteHour; // ... and of the previous frame
+    union {
+        /* 0x2f18 */ u16 minuteHour;     // {minute, hour} of this frame (Clock_GetMinuteHour)
+        MinuteHour time;
+    };
+    union {
+        /* 0x2f1a */ u16 prevMinuteHour; // ... and of the previous frame
+        MinuteHour prevTime;
+    };
     /* 0x2f1c */ s32 second;
     /* 0x2f20 */ s32 prevSecond;
     /* 0x2f24 */ u8 balloonChance;
@@ -594,6 +468,40 @@ struct SkySprites {
     void updateThunderFlash();
     void updateMoon();
     void updateRainbow();
+    // spawners (event checks run by SkySprites_UpdateEvents)
+    void updateRain();
+    void updateSnow();
+    void updateShootingStar();
+    void updateFireworksShow();
+    void updateBalloon();
+    void updateUfo();
+    void updatePete();
+    void updateBirds();
+    void spawnShots();
+    void applyRainbowBlend();
+    // fireworks show: launch slots 0..3 and the pattern acts (sFireworksPattern* tables)
+    BOOL canLaunchBig(s32 idx);
+    BOOL canLaunchSmall(s32 idx);
+    void launchFirework(s32 idx, s32 a, s32 b);
+    void rollLaunchInterval(s32 *out);
+    void tickBigLaunch();
+    void tickLowBigLaunch();
+    void tickSmallLaunches();
+    void tickPairLaunches();
+    void tickTripleLaunches();
+    void setFireworksTiming(s32 a, s32 b, s32 c);
+    void selectFireworksPattern(s32 mode);
+    void fireworksPatternAct01();
+    void fireworksPatternAct02();
+    void fireworksPatternAct03();
+    void fireworksPatternAct04();
+    void fireworksPatternAct05();
+    void fireworksPatternAct06();
+    void fireworksPatternAct07();
+    void fireworksPatternAct08();
+    void fireworksPatternAct09();
+    void fireworksPatternAct0A();
+    void fireworksPatternAct0B();
 };
 // The original computes the destination address BEFORE loading *p. An enum-typed local is not forwarded by mwcc,
 // so holding the element base in one keeps the address computation where it is written.
@@ -604,37 +512,12 @@ struct SkyObjGfxDef { u32 charFile; u16 charTileA; u16 charTileB; u32 charLayout
 // Row of sSkyObjCharLayouts: where the top and bottom tile runs of a graphic go in its slot
 struct SkyObjCharLayout { u32 topTileX; u32 topTileCount; u32 bottomTileX; u32 bottomTileCount; };
 struct Unk_020bdd94_Out { s32 x; s32 y; s32 z; };
-struct Unk_020bdd94 {
-    /* 0x00 */ u8 unk_00[0x24];
-    /* 0x24 */ s32 gfxSlot;
-    /* 0x28 */ s32 trackX;
-    /* 0x2c */ s16 wavePhase;
-    /* 0x2e */ u8 dir;
-    /* 0x2f */ u8 unk_2f;
-    /* 0x30 */ u8 unk_30[4];
-    /* 0x34 */ s32 screenPosX;
-    /* 0x38 */ s32 screenPosY;
-    /* 0x3c */ s32 screenPosZ;
-    /* 0x40 */ u8 unk_40[0xc];
-    /* 0x4c */ s32 scaleX;
-    /* 0x50 */ s32 scaleY;
-};
 // 16-byte local of SkySprite_RequestSe / RequestSeSustained; SkySprite_GetSoundPos fills the first three words
 struct SkySoundPosBuf {
     /* 0x0 */ s32 x;
     /* 0x4 */ s32 y;
     /* 0x8 */ s32 volume;
     /* 0xc */ s32 unk_0c;
-};
-struct Unk_021f23d4 {
-    /* 0x00 */ u8 unk_00[4];
-    /* 0x04 */ s32 state;
-    /* 0x08 */ u8 unk_08[0x2c];
-    /* 0x34 */ s32 posX;
-    /* 0x38 */ s32 posY;
-    /* 0x3c */ u8 unk_3c[0x8];
-    /* 0x44 */ s32 velY;
-    /* 0x48 */ u8 unk_48[0x2c];
 };
 // gCameraLookAt as SkySprite_ProjectWorldPos reads it, and its local copy (vector object, trivial ctor/dtor)
 struct SkyLookAtVec {
@@ -695,15 +578,15 @@ void _ZN15SkyShotSequence11actPeteFallEv(void);
 void _ZN15SkyShotSequence10actPeteHitEv(void);
 void _ZN9SkySprite7endPeteEv(void);
 void _ZN9SkySprite11initRainbowEv(void);
-void _ZN12Unk_020bb25c21fireworksPatternAct03Ev(void);
-void _ZN12Unk_020bb25c21fireworksPatternAct08Ev(void);
-void _ZN12Unk_020bb25c21fireworksPatternAct05Ev(void);
-void _ZN12Unk_020bb25c21fireworksPatternAct07Ev(void);
+void _ZN10SkySprites21fireworksPatternAct03Ev(void);
+void _ZN10SkySprites21fireworksPatternAct08Ev(void);
+void _ZN10SkySprites21fireworksPatternAct05Ev(void);
+void _ZN10SkySprites21fireworksPatternAct07Ev(void);
 void _ZN9SkySprite15updateLightningEv(void);
 void _ZN15SkyShotSequence14actBalloonDropEv(void);
 void SkySprites_FireworksPatternAct0E(void);
 void SkySprites_FireworksPatternAct12(void);
-void _ZN12Unk_020bb25c21fireworksPatternAct01Ev(void);
+void _ZN10SkySprites21fireworksPatternAct01Ev(void);
 void _ZN9SkySprite8initPeteEv(void);
 void SkySprites_FireworksPatternAct13(void);
 void SkySprite_InitParticle(void);
@@ -715,15 +598,15 @@ void SkySprite_UpdateSnowFlake(void);
 void SkySprites_FireworksPatternAct11(void);
 void _ZN9SkySprite11endFireworkEv(void);
 void _ZN15SkyShotSequence13actBalloonHitEv(void);
-void _ZN12Unk_020bb25c21fireworksPatternAct02Ev(void);
+void _ZN10SkySprites21fireworksPatternAct02Ev(void);
 void _ZN9SkySprite13updateRainbowEv(void);
 void _ZN9SkySprite10updateShotEv(void);
 void _ZN9SkySprite8initShotEj(void);
 void _ZN15SkyShotSequence13actShotFlightEv(void);
 void SkySprites_FireworksPatternAct0D(void);
 void SkySprites_FireworksPatternAct0C(void);
-void _ZN12Unk_020bb25c21fireworksPatternAct09Ev(void);
-void _ZN12Unk_020bb25c21fireworksPatternAct0AEv(void);
+void _ZN10SkySprites21fireworksPatternAct09Ev(void);
+void _ZN10SkySprites21fireworksPatternAct0AEv(void);
 void SkySprites_FireworksPatternAct10(void);
 void _ZN9SkySprite13initLightningEv(void);
 void SkySprite_InitSnowFlake(void);
@@ -732,7 +615,7 @@ void _ZN15SkyShotSequence9actUfoHitEv(void);
 void _ZN15SkyShotSequence13actPeteFallenEv(void);
 void SkySprite_UpdateParticle(void);
 void SkySprite_InitMoon(void);
-void _ZN12Unk_020bb25c21fireworksPatternAct04Ev(void);
+void _ZN10SkySprites21fireworksPatternAct04Ev(void);
 void _ZN9SkySprite7initUfoEv(void);
 void _ZN9SkySprite7endBirdEv(void);
 void _ZN9SkySprite7endShotEv(void);
@@ -742,13 +625,13 @@ void _ZN9SkySprite6endUfoEv(void);
 void SkySprite_EndBalloon(void);
 void SkySprite_EndMoon(void);
 void SkySprite_EndShootingStar(void);
-void _ZN12Unk_020bfe3014updateRainDropEv(void);
-void _ZN12Unk_020bfe3011endRainDropEv(void);
+void _ZN9SkySprite14updateRainDropEv(void);
+void _ZN9SkySprite11endRainDropEv(void);
 void SkySprite_UpdateShootingStar(void);
 void _ZN9SkySprite9updateUfoEv(void);
 void SkySprites_FireworksPatternAct0F(void);
 void _ZN15SkyShotSequence10actUfoFallEv(void);
-void _ZN12Unk_020bb25c21fireworksPatternAct06Ev(void);
+void _ZN10SkySprites21fireworksPatternAct06Ev(void);
 void SkySprite_UpdateMoon(void);
 void SkySprite_UpdateBalloon(void);
 void _ZN9SkySprite10updateBirdEv(void);
@@ -756,8 +639,8 @@ void SkySprite_EndSnowFlake(void);
 void _ZN9SkySprite12initFireworkEj(void);
 void _ZN9SkySprite14updateFireworkEv(void);
 void SkySprite_InitShootingStar(void);
-void _ZN12Unk_020bb25c21fireworksPatternAct0BEv(void);
-void _ZN12Unk_020bfe3012initRainDropEi(void);
+void _ZN10SkySprites21fireworksPatternAct0BEv(void);
+void _ZN9SkySprite12initRainDropEi(void);
 extern const u32 sSkyCloudBgLayer[1];
 extern const u32 sSkyPaletteLayer[1];
 extern const u32 sSkyStarBgLayer[1];
@@ -1093,7 +976,7 @@ extern "C" {
 void VEC_Add(Unk_020bfe30_Vec *a, Unk_020bfe30_Vec *b, Unk_020bfe30_Vec *c);
 }
 extern "C" {
-Unk_020bfe38_Ent *PlayerActor_GetActor(s32 n);
+Actor *PlayerActor_GetActor(s32 n);
 }
 extern "C" {
 u32 Random_GlobalBelow(u32 n);
@@ -1159,7 +1042,7 @@ extern "C" {
 s32 PlayerData_GetCurrent(void);
 }
 extern "C" {
-BOOL _ZN12Unk_02097ff48testFlagEj(s32 a, s32 b);
+BOOL _ZN10PlayerData8testFlagEj(s32 a, s32 b);
 }
 extern "C" {
 u16 *Event_GetTodayList(void);
@@ -1207,7 +1090,7 @@ extern "C" {
 s32 _ZN16ActorTalkRequest15setTownNameSlotEjj(void *p, s32 a, s32 b);
 }
 extern "C" {
-s32 _ZN12Unk_02097ff47setFlagEj(s32 a, s32 b);
+s32 _ZN10PlayerData7setFlagEj(s32 a, s32 b);
 }
 extern "C" {
 void Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
@@ -1332,8 +1215,6 @@ extern s32 sRainParallax[];
 extern "C" {
 extern s32 sRainSideToggle;
 }
-namespace L_021f43e0 { extern "C" { extern struct S { u8 p[0x2f00]; Unk_020bfec0_Ent v; } gSkySprites; } }
-#define data_021f43e0 n13::L_021f43e0::gSkySprites.v
 namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s16 v[1]; } gWeatherManager; } }
 #define data_021f1448 n13::L_021f1448::gWeatherManager.v
 extern "C" {
@@ -1407,21 +1288,21 @@ extern "C" void Sky_ProjectToScreenX(s32 *out, Unk_020bfe30_Vec *in) {
 }
 
 }
-void Unk_020bfe30::initRainDrop(BOOL flag) {
+void SkySprite::initRainDrop(BOOL flag) {
     using namespace n13;
     s32 idx;
     s32 x = (sRainSideToggle * Random_GlobalBelow(0x8a) + 0x80) << 12;
     sRainSideToggle *= -1;
     s32 y = -0x14000 - (Random_GlobalBelow(0x10) << 12);
-    Unk_020bfe30_Vec *p34 = &screenPos;
+    Unk_020bfe30_Vec *p34 = (Unk_020bfe30_Vec *)&screenPos;
     p34->x = x;
     p34->y = y;
     p34->z = 0;
-    s32 mul = data_021f43e0.rainStrength;
+    s32 mul = n00::gSkySprites.rainStrength;
     s32 rr = Random_GlobalBelow(0xaac) - 0x556;
     s32 sh = ((mul * (rr + data_021f1448[0x38 / 2])) << 4) >> 16;
     idx = ((u16)sh >> 4) * 2;
-    Unk_020bfe30_Vec *p40 = &screenVel;
+    Unk_020bfe30_Vec *p40 = (Unk_020bfe30_Vec *)&screenVel;
     s16 *tab = data_02135f44;
     p40->x = tab[idx] * -0x24;
     p40->y = tab[idx + 1] * 0x24;
@@ -1451,18 +1332,18 @@ void Unk_020bfe30::initRainDrop(BOOL flag) {
 namespace n13 {
 
 }
-void Unk_020bfe30::updateRainDrop() {
+void SkySprite::updateRainDrop() {
     using namespace n13;
-    Unk_020bfe30_Vec *p = &screenPos;
-    VEC_Add(p, &screenVel, p);
-    Unk_020bfe38_Ent *e = PlayerActor_GetActor(4);
+    Unk_020bfe30_Vec *p = (Unk_020bfe30_Vec *)&screenPos;
+    VEC_Add(p, (Unk_020bfe30_Vec *)&screenVel, p);
+    Actor *e = PlayerActor_GetActor(4);
     if (e) {
-        s32 d = -(e->position - e->prevPosition);
+        s32 d = -(e->position.x - e->prevPosition.x);
         s32 m = sRainParallax[work2];
         d = (d * m) >> 12;
         p->x += d;
     }
-    if (p->y > (work0 << 12) + 0x100000) {
+    if (p->y > ((s32)work0 << 12) + 0x100000) {
         state = 3;
     } else if (p->x < -0x14000) {
         p->x += 0x11e000;
@@ -1473,13 +1354,12 @@ void Unk_020bfe30::updateRainDrop() {
 namespace n13 {
 
 }
-void Unk_020bfe30::endRainDrop() {
+void SkySprite::endRainDrop() {
     using namespace n13;
     SkySprite_Release(this);
 }
 namespace n13 {
 
-#undef data_021f43e0
 #undef data_021f1448
 }
 
@@ -3173,7 +3053,7 @@ u32 data_020e5440[18] = {0x1f500e5, 0x30b7, 0x30130001, 0x30b7, 0x100d0009, 0x30
 u32 data_020e4634[1] = {0x9};
 u32 data_020e48d4[2] = {0x81f000f0, 0xffff2098};
 void *data_020e47cc[2] = {(void *)SkySprites_FireworksPatternAct0D, 0};
-void *data_020e47e4[2] = {(void *)_ZN12Unk_020bb25c21fireworksPatternAct0AEv, 0};
+void *data_020e47e4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct0AEv, 0};
 void *data_020e4834[2] = {(void *)_ZN9SkySprite10updatePeteEv, 0};
 const u32 sSnowSpawnRates[8] = {0x3e8, 0x7d0, 0x3e8, 0x7d0, 0x320, 0x3e8, 0x258, 0x320};
 void *data_020e472c[2] = {(void *)_ZN15SkyShotSequence13actUfoCrashedEv, 0};
@@ -3314,13 +3194,13 @@ extern "C" {
 void _ZN11SkySePlayer7requestEiiP17Unk_020bd0a4_Vec3(void*, s32, s32, void*);
 }
 extern "C" {
-void SkySprite_GetPos(Unk_020bdd94*, Unk_020bdd94_Out*);
+void SkySprite_GetPos(SkySprite*, Unk_020bdd94_Out*);
 }
 extern "C" {
 s32 SkySprite_MakeSoundPos(Unk_020bdd94_Out*, s32, s32, s32);
 }
 extern "C" {
-void SkySprite_GetSoundPos(Unk_020bdd94*, Unk_020bdd94_Out*);
+void SkySprite_GetSoundPos(SkySprite*, Unk_020bdd94_Out*);
 }
 extern "C" {
 s32 func_01ffcb0c(s32, s32);
@@ -3334,10 +3214,6 @@ s32 FX_Inv(s32);
 extern "C" {
 s32 _s32_div_f(s32, s32);
 }
-namespace L_021f23d4 { extern "C" { extern struct S { u8 p[0xef4]; Unk_021f23d4 v[1]; } gSkySprites; } }
-#define data_021f23d4 n09::L_021f23d4::gSkySprites.v
-namespace L_021f2944 { extern "C" { extern struct S { u8 p[0x1464]; Unk_021f23d4 v[1]; } gSkySprites; } }
-#define data_021f2944 n09::L_021f2944::gSkySprites.v
 extern "C" {
 extern s32 data_020c8cb8;
 }
@@ -3360,7 +3236,7 @@ extern "C" {
 s32 Camera_GetCloseUpFactor();
 }
 extern "C" {
-void SkySprite_ProjectWorldPos(Unk_020bdd94*, Unk_020bdd94_Out*, s32);
+void SkySprite_ProjectWorldPos(SkySprite*, Unk_020bdd94_Out*, s32);
 }
 namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; SkyObjGfxSlot v[1]; } gSkySprites; } }
 #define data_021f3010 n09::L_021f3010::gSkySprites.v
@@ -3368,7 +3244,7 @@ extern "C" {
 extern SkySpriteAnimDef sSkySpriteAnimSeqs[];
 }
 extern "C" {
-void _ZN9SkySprite9resetFreeEv(Unk_020bdd94*);
+void _ZN9SkySprite9resetFreeEv(SkySprite*);
 }
 extern "C" {
 void _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(void*, void*);
@@ -3392,18 +3268,18 @@ extern "C" void SkyObjGfxLoader_FlushChars(u8* p);
 extern "C" BOOL SkyObjGfxLoader_LoadPalettes(u8* p);
 extern "C" BOOL SkyObjGfxLoader_LoadChars(u8* p, s32 idx);
 extern "C" void SkyObjGfxLoader_Init(u8* p);
-extern "C" void SkySprite_RequestSeSustainedOn(Unk_020bdd94* p, s32 a, s32 b);
-extern "C" void SkySprite_RequestSe(Unk_020bdd94* p, s32 a);
-extern "C" void SkySprite_RequestSeSustained(Unk_020bdd94* p, s32 a);
-extern "C" void SkySprite_GetPos(Unk_020bdd94* p, Unk_020bdd94_Out* out);
-extern "C" void SkySprite_GetSoundPos(Unk_020bdd94* p, Unk_020bdd94_Out* out);
+extern "C" void SkySprite_RequestSeSustainedOn(SkySprite* p, s32 a, s32 b);
+extern "C" void SkySprite_RequestSe(SkySprite* p, s32 a);
+extern "C" void SkySprite_RequestSeSustained(SkySprite* p, s32 a);
+extern "C" void SkySprite_GetPos(SkySprite* p, Unk_020bdd94_Out* out);
+extern "C" void SkySprite_GetSoundPos(SkySprite* p, Unk_020bdd94_Out* out);
 extern "C" s32 SkySprite_MakeSoundPos(Unk_020bdd94_Out* out, s32 a, s32 b, s32 c);
-extern "C" BOOL SkySprite_CheckShotHit(Unk_020bdd94* p, s32 a, s32 b, s32 c);
-extern "C" void SkySprite_ProjectCrossing(Unk_020bdd94* p, s32 a);
-extern "C" void SkySprite_ProjectWorldPos(Unk_020bdd94* p, Unk_020bdd94_Out* q, s32 a);
-extern "C" BOOL SkySprite_AdvanceCrossing(Unk_020bdd94* p, s32 a, s32 b, s32 c);
-extern "C" void SkySprite_BeginCrossing(Unk_020bdd94* p, u8 a, s32 b);
-extern "C" void SkySprite_Release(Unk_020bdd94* p);
+extern "C" BOOL SkySprite_CheckShotHit(SkySprite* p, s32 a, s32 b, s32 c);
+extern "C" void SkySprite_ProjectCrossing(SkySprite* p, s32 a);
+extern "C" void SkySprite_ProjectWorldPos(SkySprite* p, Unk_020bdd94_Out* q, s32 a);
+extern "C" BOOL SkySprite_AdvanceCrossing(SkySprite* p, s32 a, s32 b, s32 c);
+extern "C" void SkySprite_BeginCrossing(SkySprite* p, u8 a, s32 b);
+extern "C" void SkySprite_Release(SkySprite* p);
 extern "C" void SkySprite_StartAnim(SkySprite* p);
 
 }
@@ -3445,7 +3321,7 @@ void *sSkySpriteAnimSeqs[138] = {(void *)data_020e5318, (void *)0x4, (void *)0x1
     (void *)data_020e4ab8, (void *)0x1, (void *)0x1, (void *)data_020e5980, (void *)0xf, (void *)0x1,
     (void *)data_020e4ddc, (void *)0x2, 0, (void *)data_020e4ac4, (void *)0x1, (void *)0x1};
 char data_020e50c8[31] = "/sky/d_2d_b_cld_r_a_bg_nsc.bin";
-void *data_020e4964[2] = {(void *)_ZN12Unk_020bfe3011endRainDropEv, 0};
+void *data_020e4964[2] = {(void *)_ZN9SkySprite11endRainDropEv, 0};
 void *data_020e4b30[3] = {(void *)data_020e498c, (void *)0x1, 0};
 u32 data_020e4a54[2] = {0x81f880f0, 0xffff4118};
 u32 data_020e4a3c[2] = {0x1fc80f8, 0xffff0094};
@@ -3474,7 +3350,7 @@ u32 data_020e469c[2] = {0x91f000f0, 0xffff2098};
 char data_020e4e48[30] = "/sky/d_2d_b_cld_b0_bg_nsc.bin";
 u32 data_020e495c[2] = {0x81f000f0, 0xffff2118};
 u32 data_020e4764[2] = {0x81f000f0, 0xffff211c};
-void *data_020e4954[2] = {(void *)_ZN12Unk_020bfe3014updateRainDropEv, 0};
+void *data_020e4954[2] = {(void *)_ZN9SkySprite14updateRainDropEv, 0};
 u32 data_020e4874[2] = {0x81f880f0, 0xffff409e};
 u32 sMoonColors[3];
 char data_020e4e68[30] = "/sky/d_2d_b_cld_f0_bg_nsc.bin";
@@ -3516,7 +3392,7 @@ extern "C" void SkySprite_StartAnim(SkySprite* p) {
     _ZN10SpriteAnim7restartEv(&p->anim);
 }
 
-extern "C" void SkySprite_Release(Unk_020bdd94* p) {
+extern "C" void SkySprite_Release(SkySprite* p) {
     s32 i = p->gfxSlot;
     if (i != 6) {
         SkyObjGfxSlot_Release(&data_021f3010[i]);
@@ -3524,7 +3400,7 @@ extern "C" void SkySprite_Release(Unk_020bdd94* p) {
     _ZN9SkySprite9resetFreeEv(p);
 }
 
-extern "C" void SkySprite_BeginCrossing(Unk_020bdd94* p, u8 a, s32 b) {
+extern "C" void SkySprite_BeginCrossing(SkySprite* p, u8 a, s32 b) {
     p->dir = a;
     s32 v;
     if (p->dir != 0) {
@@ -3536,7 +3412,7 @@ extern "C" void SkySprite_BeginCrossing(Unk_020bdd94* p, u8 a, s32 b) {
     return SkySprite_ProjectCrossing(p, b);
 }
 
-extern "C" BOOL SkySprite_AdvanceCrossing(Unk_020bdd94* p, s32 a, s32 b, s32 c) {
+extern "C" BOOL SkySprite_AdvanceCrossing(SkySprite* p, s32 a, s32 b, s32 c) {
     BOOL r = FALSE;
     if (p->dir != 0) {
         p->trackX += a;
@@ -3552,7 +3428,7 @@ extern "C" BOOL SkySprite_AdvanceCrossing(Unk_020bdd94* p, s32 a, s32 b, s32 c) 
     return r;
 }
 
-extern "C" void SkySprite_ProjectWorldPos(Unk_020bdd94* p, Unk_020bdd94_Out* q, s32 a) {
+extern "C" void SkySprite_ProjectWorldPos(SkySprite* p, Unk_020bdd94_Out* q, s32 a) {
     SkyLookAtVec loc;
     loc.x = gCameraLookAt.x;
     loc.y = gCameraLookAt.y;
@@ -3576,9 +3452,9 @@ extern "C" void SkySprite_ProjectWorldPos(Unk_020bdd94* p, Unk_020bdd94_Out* q, 
         idx = 0;
     }
     idx = func_01ffcb0c(idx, 0x10000);
-    p->screenPosX = sx;
-    p->screenPosY = sy - idx;
-    p->screenPosZ = 0;
+    p->screenPos.x = sx;
+    p->screenPos.y = sy - idx;
+    p->screenPos.z = 0;
     sc = func_01ffcb0c(-0xc00, k) + 0x1000;
     if (sc < 0x400) sc = 0x400;
     else if (sc > 0x1000) sc = 0x1000;
@@ -3588,10 +3464,10 @@ extern "C" void SkySprite_ProjectWorldPos(Unk_020bdd94* p, Unk_020bdd94_Out* q, 
     idx = (u16)p->wavePhase >> 4;
     z = func_01ffcb0c(data_02135f44[idx][0], a);
     z = func_01ffcb0c(z, sc);
-    p->screenPosY += z;
+    p->screenPos.y += z;
 }
 
-extern "C" void SkySprite_ProjectCrossing(Unk_020bdd94* p, s32 a) {
+extern "C" void SkySprite_ProjectCrossing(SkySprite* p, s32 a) {
     Unk_020bdd94_Out t;
     t.x = p->trackX;
     t.y = 0;
@@ -3599,32 +3475,32 @@ extern "C" void SkySprite_ProjectCrossing(Unk_020bdd94* p, s32 a) {
     SkySprite_ProjectWorldPos(p, &t, a);
 }
 
-extern "C" BOOL SkySprite_CheckShotHit(Unk_020bdd94* p, s32 a, s32 b, s32 c) {
+extern "C" BOOL SkySprite_CheckShotHit(SkySprite* p, s32 a, s32 b, s32 c) {
     s32 d;
     s32 w = func_01ffcb0c(a, p->scaleX);
     s32 h = func_01ffcb0c(b, p->scaleY);
     s32 dy = func_01ffcb0c(c, p->scaleY);
     s32 hw = _s32_div_f(w, 2);
     s32 hh = _s32_div_f(h, 2);
-    s32 y = p->screenPosY + dy;
-    s32 x = p->screenPosX;
+    s32 y = p->screenPos.y + dy;
+    s32 x = p->screenPos.x;
     s32 left = x - hw;
     s32 right = x + hw;
     s32 top = y - hh;
     s32 bottom = y + hh;
-    Unk_021f23d4* o = data_021f23d4;
+    SkySprite* o = &n00::gSkySprites.sprites[33];
     BOOL found = FALSE;
-    for (; o < data_021f2944; o++) {
-        if (o->state == 2 && ((u8*)o)[0x2f] != 0) {
-            d = o->velY;
+    for (; o < &n00::gSkySprites.sprites[45]; o++) {
+        if (o->state == 2 && o->localShot != 0) {
+            d = o->screenVel.y;
             if (d < 0) d = -d;
-            s32 xl = o->posX - 0x1000;
-            s32 yt = o->posY - 0x1000;
-            s32 yb = d + (o->posY + 0x1000);
-            s32 xr = o->posX + 0x1000;
+            s32 xl = o->screenPos.x - 0x1000;
+            s32 yt = o->screenPos.y - 0x1000;
+            s32 yb = d + (o->screenPos.y + 0x1000);
+            s32 xr = o->screenPos.x + 0x1000;
             if (left <= xr && right >= xl && top <= yb && bottom >= yt) {
                 found = TRUE;
-                ((u8*)o)[0x30] = 1;
+                o->hit = 1;
             }
         }
     }
@@ -3643,29 +3519,29 @@ extern "C" s32 SkySprite_MakeSoundPos(Unk_020bdd94_Out* out, s32 a, s32 b, s32 c
     return v;
 }
 
-extern "C" void SkySprite_GetSoundPos(Unk_020bdd94* p, Unk_020bdd94_Out* out) {
-    SkySprite_MakeSoundPos(out, p->screenPosX, p->screenPosY, p->scaleX);
+extern "C" void SkySprite_GetSoundPos(SkySprite* p, Unk_020bdd94_Out* out) {
+    SkySprite_MakeSoundPos(out, p->screenPos.x, p->screenPos.y, p->scaleX);
 }
 
-extern "C" void SkySprite_GetPos(Unk_020bdd94* p, Unk_020bdd94_Out* out) {
-    out->x = p->screenPosX;
-    out->y = p->screenPosY;
+extern "C" void SkySprite_GetPos(SkySprite* p, Unk_020bdd94_Out* out) {
+    out->x = p->screenPos.x;
+    out->y = p->screenPos.y;
     out->z = 0;
 }
 
-extern "C" void SkySprite_RequestSeSustained(Unk_020bdd94* p, s32 a) {
+extern "C" void SkySprite_RequestSeSustained(SkySprite* p, s32 a) {
     SkySoundPosBuf out;
     SkySprite_GetSoundPos(p, (Unk_020bdd94_Out*)&out);
     _ZN11SkySePlayer16requestSustainedEiiP17Unk_020bd0a4_Vec3(data_021f44ac, 0, a, &out);
 }
 
-extern "C" void SkySprite_RequestSe(Unk_020bdd94* p, s32 a) {
+extern "C" void SkySprite_RequestSe(SkySprite* p, s32 a) {
     SkySoundPosBuf out;
     SkySprite_GetSoundPos(p, (Unk_020bdd94_Out*)&out);
     _ZN11SkySePlayer7requestEiiP17Unk_020bd0a4_Vec3(data_021f44ac, 0, a, &out);
 }
 
-extern "C" void SkySprite_RequestSeSustainedOn(Unk_020bdd94* p, s32 a, s32 b) {
+extern "C" void SkySprite_RequestSeSustainedOn(SkySprite* p, s32 a, s32 b) {
     Unk_020bdd94_Out out;
     SkySprite_GetPos(p, &out);
     _ZN11SkySePlayer16requestSustainedEiiP17Unk_020bd0a4_Vec3(data_021f44ac, a, b, &out);
@@ -3855,8 +3731,6 @@ extern "C" void SkyObjPalette_Load(SkyObjPalette* p, u8* base, u32 idx) {
 
 #undef data_021f4398
 #undef data_021f44ac
-#undef data_021f23d4
-#undef data_021f2944
 #undef data_021f3010
 }
 
@@ -3931,10 +3805,10 @@ extern "C" {
 void* PlayerData_GetCurrent();
 }
 extern "C" {
-u32 _ZN12Unk_02097ff414getSkyShotHitsEv(void* p);
+u32 _ZN10PlayerData14getSkyShotHitsEv(void* p);
 }
 extern "C" {
-void _ZN12Unk_02097ff414setSkyShotHitsEj(void* p, u8 v);
+void _ZN10PlayerData14setSkyShotHitsEj(void* p, u8 v);
 }
 extern "C" {
 s32 PlayerActor_GetLocalSessionSlot();
@@ -4207,7 +4081,7 @@ void *data_020e4a70[3] = {(void *)data_020e46ec, (void *)0x1, 0};
 void *data_020e48fc[2] = {(void *)_ZN9SkySprite7initUfoEv, 0};
 u8 sSkyLineTablesReady;
 void *data_020e49e4[2] = {(void *)SkySprite_EndSnowFlake, 0};
-void *data_020e47dc[2] = {(void *)_ZN12Unk_020bb25c21fireworksPatternAct09Ev, 0};
+void *data_020e47dc[2] = {(void *)_ZN10SkySprites21fireworksPatternAct09Ev, 0};
 const u8 data_020d0e04[5] = {0xf, 0xe, 0xd, 0xe, 0xd};
 StarTwinkle data_021efc18;
 u32 data_020e47b4[2] = {0x41fb80f0, 0xffff9097};
@@ -4246,14 +4120,14 @@ namespace n08 {
 
 extern "C" void SkyShot_AddHit() {
     void* p = PlayerData_GetCurrent();
-    u32 n = _ZN12Unk_02097ff414getSkyShotHitsEv(p);
+    u32 n = _ZN10PlayerData14getSkyShotHitsEv(p);
     if (n < 0x10) {
-        _ZN12Unk_02097ff414setSkyShotHitsEj(p, n + 1);
+        _ZN10PlayerData14setSkyShotHitsEj(p, n + 1);
     }
 }
 
 extern "C" BOOL SkyShot_HasMaxHits() {
-    return _ZN12Unk_02097ff414getSkyShotHitsEv(PlayerData_GetCurrent()) >= 0x10;
+    return _ZN10PlayerData14getSkyShotHitsEv(PlayerData_GetCurrent()) >= 0x10;
 }
 
 }
@@ -4451,7 +4325,7 @@ namespace n08 {
 }
 void SkySePlayer::resetAll() {
     using namespace n08;
-    for (Unk_0213b970* e = channels; e < (Unk_0213b970*)positions; e++) {
+    for (SkySndChannel* e = channels; e < (SkySndChannel*)positions; e++) {
         e->callReset();
     }
     active = 1;
@@ -4462,7 +4336,7 @@ namespace n08 {
 void SkySePlayer::releaseAll() {
     using namespace n08;
     active = 0;
-    for (Unk_0213b970* e = &channels[7]; e >= channels; e--) {
+    for (SkySndChannel* e = &channels[7]; e >= channels; e--) {
         e->callRelease();
     }
 }
@@ -4496,7 +4370,7 @@ namespace n08 {
 void SkySePlayer::update() {
     using namespace n08;
     if (active) {
-        Unk_0213b970* a = channels;
+        SkySndChannel* a = channels;
         FxVec3* b = positions;
         for (s32 i = 0; i < 8; i++, a++, b++) {
             a->callUpdate(i == 7 ? NULL : b);
@@ -4635,7 +4509,7 @@ extern "C" {
 void *PlayerData_GetResident(void *p, u32 i);
 }
 extern "C" {
-u32 _ZN12Unk_02097ff48testFlagEj(void *p, u32 n);
+u32 _ZN10PlayerData8testFlagEj(void *p, u32 n);
 }
 extern "C" {
 u32 _ZN10PlayerData11getPlayerIdEv(void *p);
@@ -4650,7 +4524,7 @@ extern "C" {
 u32 LetterDelivery_PutInAddresseeMailbox(void *c);
 }
 extern "C" {
-void _ZN12Unk_02097ff49clearFlagEj(void *p, u32 n);
+void _ZN10PlayerData9clearFlagEj(void *p, u32 n);
 }
 extern "C" {
 void ItemPick_One(u16 *ret, ItemPickSpec q, u32 a, u32 b, u32 c, u32 d, u32 e);
@@ -4952,7 +4826,7 @@ void SkySprites::sendWishLetters() {
     s32 i;
     for (i = 0; i < 4; i++) {
         void *o = PlayerData_GetResident(gSavePlayers, i);
-        if (o != NULL && _ZN12Unk_02097ff48testFlagEj(o, 0x32) != 0) {
+        if (o != NULL && _ZN10PlayerData8testFlagEj(o, 0x32) != 0) {
             Letter ctx;
             StarWishLetterVars l;
             l.msgVariant = Random_GlobalBelow(3);
@@ -4961,7 +4835,7 @@ void SkySprites::sendWishLetters() {
             ItemPick_One(&l.present, q, 0, 0, 1, 1, 0);
             _ZN10LetterView10setPresentEtj(&ctx, l.present, 1);
             if (LetterDelivery_PutInAddresseeMailbox(&ctx) != 0) {
-                _ZN12Unk_02097ff49clearFlagEj(o, 0x32);
+                _ZN10PlayerData9clearFlagEj(o, 0x32);
             }
         }
     }
@@ -5162,7 +5036,7 @@ namespace n07 {
 
 // ======== unk_020bbc28.cpp ========
 namespace n06 {
-typedef void (Unk_020bbc28::*Unk_020bbeb8_Fn)();
+typedef void (SkySprites::*Unk_020bbeb8_Fn)();
 extern "C" {
 extern CommManager *gCommManager;
 }
@@ -5237,7 +5111,7 @@ extern "C" {
 void *PlayerData_GetCurrent();
 }
 extern "C" {
-BOOL _ZN12Unk_02097ff48testFlagEj(void *, s32);
+BOOL _ZN10PlayerData8testFlagEj(void *, s32);
 }
 extern "C" {
 BOOL SkyShot_HasMaxHits();
@@ -5250,7 +5124,7 @@ u32 _u32_div_f(u32, u32);
 }
 
 }
-void Unk_020bbc28::updateRain() {
+void SkySprites::updateRain() {
     using namespace n06;
     s32 kind = 0;
     s32 a = n00::gWeatherManager.level;
@@ -5309,12 +5183,12 @@ void Unk_020bbc28::updateRain() {
     if (kind == 4) {
         updateLightning();
     }
-    Math_StepS32Alt(rainStrength, b == 4 ? 0x1000 : 0x800, 2);
+    Math_StepS32Alt(&rainStrength, b == 4 ? 0x1000 : 0x800, 2);
 }
 namespace n06 {
 
 }
-void Unk_020bbc28::updateSnow() {
+void SkySprites::updateSnow() {
     using namespace n06;
     s32 kind = 0;
     s32 a = n00::gWeatherManager.level;
@@ -5403,9 +5277,9 @@ void Unk_020bbc28::updateSnow() {
 namespace n06 {
 
 }
-void Unk_020bbc28::updateShootingStar() {
+void SkySprites::updateShootingStar() {
     using namespace n06;
-    u8 v = hour;
+    u8 v = time.hour;
     BOOL a = TRUE;
     if (v < 0x13 && v >= 4) {
         a = FALSE;
@@ -5437,11 +5311,11 @@ void Unk_020bbc28::updateShootingStar() {
 namespace n06 {
 
 }
-void Unk_020bbc28::updateMoon() {
+void SkySprites::updateMoon() {
     using namespace n06;
-    u8 v = hour;
+    u8 v = time.hour;
     BOOL b;
-    if (moonSpriteKind == 4) {
+    if (sprites[31].kind == 4) {
         b = TRUE;
     } else {
         b = FALSE;
@@ -5499,7 +5373,7 @@ u32 data_020e55c0[20] = {0x300200e8, 0x3094, 0x201000fe, 0x30b6, 0x10000009, 0x3
     0x30b6, 0x1f800eb, 0x3095, 0x300f000c, 0x30b4, 0x200f00ea, 0x30d7, 0x1f200f1, 0x30d7, 0x1ed0004,
     0xffff3097};
 const u32 data_020d0f10[6] = {0xc0c0c0c, 0x60a, 0x0, 0x0, 0x6000000, 0xc0c0c0a};
-void *data_020e46b4[2] = {(void *)_ZN12Unk_020bb25c21fireworksPatternAct07Ev, 0};
+void *data_020e46b4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct07Ev, 0};
 char data_020e5048[31] = "/sky/d_2d_b_cld_r_b_bg_nsc.bin";
 void *data_020e47a4[2] = {(void *)_ZN9SkySprite10updateShotEv, 0};
 u32 sSkyLineScrollY[2];
@@ -5525,7 +5399,7 @@ void *data_020e51c0[9] = {(void *)data_020e4ce4, (void *)0x2, 0, (void *)data_02
 u32 sSkyBlendLineCache[1] = {0xffffffff};
 u32 data_020e4c74[4] = {0x61fc8000, 0x9d, 0x61fc80e0, 0xffff011d};
 u32 data_020e4c84[4] = {0x61fc8000, 0x9c, 0x61fc80e0, 0xffff011c};
-void *data_020e4a4c[2] = {(void *)_ZN12Unk_020bfe3012initRainDropEi, 0};
+void *data_020e4a4c[2] = {(void *)_ZN9SkySprite12initRainDropEi, 0};
 void *data_020e4af4[3] = {(void *)data_020e485c, (void *)0x4, 0};
 void *data_020e4b00[3] = {(void *)data_020e487c, (void *)0x4, 0};
 void *data_020e4ddc[6] = {(void *)data_020e4a3c, (void *)0x2, 0, (void *)data_020e483c, (void *)0x1, 0};
@@ -5546,7 +5420,7 @@ u32 data_020e4630[1] = {0x3d};
 void *sSkyLightParamTables[5] = {(void *)data_020e478c, (void *)data_020e478c, (void *)data_020e4824,
     (void *)data_020e4824, (void *)data_020e4824};
 const u32 sSkyCloudBgLayer[1] = {0x206};
-void *data_020e4794[2] = {(void *)_ZN12Unk_020bb25c21fireworksPatternAct02Ev, 0};
+void *data_020e4794[2] = {(void *)_ZN10SkySprites21fireworksPatternAct02Ev, 0};
 void *data_020e51e4[9] = {(void *)data_020e4b94, (void *)0x2, 0, (void *)data_020e4d14, (void *)0x1, 0,
     (void *)data_020e4d24, (void *)0x1, 0};
 char data_020e50a8[31] = "/sky/d_2d_b_cld_c_a_bg_nsc.bin";
@@ -5554,11 +5428,11 @@ SkySprites gSkySprites;
 void *data_020e4974[2] = {(void *)_ZN9SkySprite9updateUfoEv, 0};
 void *data_020e4994[2] = {(void *)SkySprites_FireworksPatternAct0F, 0};
 u32 data_020e499c[2] = {0x91f000f0, 0xffff2118};
-void *data_020e49b4[2] = {(void *)_ZN12Unk_020bb25c21fireworksPatternAct06Ev, 0};
+void *data_020e49b4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct06Ev, 0};
 void *data_020e4b48[3] = {(void *)data_020e4734, (void *)0x4, 0};
 void *const sSkyObjCharFiles[3] = {(void *)data_020e4dac, (void *)data_020e4df4, 0};
 u32 data_020e477c[2] = {0x81f000f0, 0xffff311c};
-void *data_020e46e4[2] = {(void *)_ZN12Unk_020bb25c21fireworksPatternAct01Ev, 0};
+void *data_020e46e4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct01Ev, 0};
 u32 data_020e4774[2] = {0x1fc00fc, 0xffff0057};
 u32 data_020e492c[2] = {0x91f000f0, 0xffff2118};
 const u32 data_020d0ec8[6] = {0xe0e0e0e, 0x18000e0e, 0x1a191918, 0x1b1b1b1a, 0xe00181a, 0xe0e0e0e};
@@ -5576,7 +5450,7 @@ u32 data_020e5520[20] = {0x300000ed, 0x3094, 0x200a00fc, 0x30b6, 0x10010007, 0x3
 u32 data_020e49f4[2] = {0x81e003e0, 0xffff911c};
 const u32 sParticleTrailScales[23] = {0x5000, 0x16db, 0x1000, 0xe8c, 0xd55, 0xc4f, 0xc4f, 0xc4f, 0xc4f, 0xc4f, 0xc4f,
     0xd55, 0xe8c, 0x1000, 0x11c7, 0x1400, 0x16db, 0x1aab, 0x2000, 0x2800, 0x3555, 0x5000, 0xa000};
-void *data_020e46a4[2] = {(void *)_ZN12Unk_020bb25c21fireworksPatternAct08Ev, 0};
+void *data_020e46a4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct08Ev, 0};
 u32 data_020e48f4[2] = {0x81f880f0, 0xffff409c};
 char data_020e5028[31] = "/sky/d_2d_b_cld_c_b_bg_nsc.bin";
 u32 data_020e4734[2] = {0x81f000f0, 0xffff0114};
@@ -5623,11 +5497,11 @@ void *data_020e57d0[27] = {(void *)data_020e49ec, (void *)0x1, 0, (void *)data_0
 void *data_020e494c[2] = {(void *)SkySprite_EndShootingStar, 0};
 u32 data_020e48bc[2] = {0x81f000f0, 0xffff209c};
 void *data_020e4ab8[3] = {(void *)data_020e47b4, (void *)0x1, 0};
-void *data_020e48e4[2] = {(void *)_ZN12Unk_020bb25c21fireworksPatternAct04Ev, 0};
+void *data_020e48e4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct04Ev, 0};
 char data_020e4f08[30] = "/sky/d_2d_b_cld_r1_bg_nsc.bin";
 u32 data_020e4884[2] = {0x81f000f0, 0xffff2098};
 void *data_020e47bc[2] = {(void *)_ZN15SkyShotSequence13actShotFlightEv, 0};
-void *data_020e4a44[2] = {(void *)_ZN12Unk_020bb25c21fireworksPatternAct0BEv, 0};
+void *data_020e4a44[2] = {(void *)_ZN10SkySprites21fireworksPatternAct0BEv, 0};
 void *data_020e46c4[2] = {(void *)_ZN15SkyShotSequence14actBalloonDropEv, 0};
 u32 sSkyHBlankTask[7];
 void *data_020e468c[2] = {(void *)_ZN9SkySprite11initRainbowEv, 0};
@@ -5754,7 +5628,7 @@ u32 data_020e4854[2] = {0x0, 0xffff00d4};
 void *sSkyFogOffsetTables[5] = {(void *)data_020d1148, (void *)data_020d1148, (void *)data_020d1178,
     (void *)data_020d1178, (void *)data_020d1178};
 void *data_020e4adc[3] = {(void *)data_020e4a5c, (void *)0x4, 0};
-void *data_020e46ac[2] = {(void *)_ZN12Unk_020bb25c21fireworksPatternAct05Ev, 0};
+void *data_020e46ac[2] = {(void *)_ZN10SkySprites21fireworksPatternAct05Ev, 0};
 const u32 sFireworkScaleBigLong[44] = {0x1000, 0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c,
     0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835,
     0x835, 0x835, 0x835, 0x835, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800,
@@ -5776,7 +5650,7 @@ void *data_020e474c[2] = {(void *)SkySprites_FireworksPatternAct11, 0};
 u32 data_020e48ec[2] = {0x81f880f0, 0xffff411a};
 u32 data_020e4b94[4] = {0xb1f88000, 0x9a, 0xb1f880e0, 0xffff011a};
 void *data_020e46d4[2] = {(void *)SkySprites_FireworksPatternAct12, 0};
-void *data_020e4694[2] = {(void *)_ZN12Unk_020bb25c21fireworksPatternAct03Ev, 0};
+void *data_020e4694[2] = {(void *)_ZN10SkySprites21fireworksPatternAct03Ev, 0};
 u32 data_020e48c4[2] = {0x41fb80f0, 0xffff9095};
 u32 data_020e4844[2] = {0x81f000f0, 0xffff211c};
 u32 data_020e483c[2] = {0x1fc80f8, 0xffff0095};
@@ -5802,7 +5676,7 @@ void *data_020e4724[2] = {(void *)SkySprite_EndParticle, 0};
 }
 namespace n06 {
 }
-void Unk_020bbc28::updateFireworksShow() {
+void SkySprites::updateFireworksShow() {
     using namespace n06;
     BOOL r4 = FALSE;
     BOOL r6 = FALSE;
@@ -5815,8 +5689,8 @@ void Unk_020bbc28::updateFireworksShow() {
     Clock_GetDateTime(&s);
     MI_CpuCopy8(&s, &t1, 8);
     if (Event_GetState(0x13, &t1, 1)) {
-        u8 a = hour;
-        u8 b = minute;
+        u8 a = time.hour;
+        u8 b = time.minute;
         s32 c = second;
         if (a < 2) {
             r4 = TRUE;
@@ -5879,34 +5753,34 @@ void Unk_020bbc28::updateFireworksShow() {
         fireworksPattern = 0;
         fireworksPatternTime = 0;
         fireworksBigTimer = 0;
-        fireworksSlotTimers = 0;
-        fireworksSlotTimers1 = 0;
-        fireworksSlotTimers2 = 0;
-        fireworksSlotTimers3 = 0;
+        fireworksSlotTimers[0] = 0;
+        fireworksSlotTimers[1] = 0;
+        fireworksSlotTimers[2] = 0;
+        fireworksSlotTimers[3] = 0;
         fireworksInterval = 0;
     }
 }
 namespace n06 {
 
 }
-void Unk_020bbc28::updateBalloon() {
+void SkySprites::updateBalloon() {
     using namespace n06;
     if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
-        u8 v = hour;
+        u8 v = time.hour;
         if (v >= 0xa && v < 0x10) {
-            if (prevMinute != minute) {
-                if ((u32)minute % 10 == 4) {
-                    if (visitorSpriteKind != 5) {
+            if (prevTime.minute != time.minute) {
+                if ((u32)time.minute % 10 == 4) {
+                    if (sprites[45].kind != 5) {
                         if (balloonChance == 0) {
                             balloonChance = Random_GlobalBelow(8) + 1;
                         }
                         u8 c = balloonChance;
                         if (Random_GlobalBelow(8) < c) {
-                            if (!_ZN12Unk_02097ff48testFlagEj(PlayerData_GetCurrent(), 0x30) && SkyShot_HasMaxHits() && !Random_GlobalBelow(4)) {
+                            if (!_ZN10PlayerData8testFlagEj(PlayerData_GetCurrent(), 0x30) && SkyShot_HasMaxHits() && !Random_GlobalBelow(4)) {
                                 spawn(5, 0x2d, 0, 1);
                             } else {
                                 spawn(5, 0x2d, 0, 0);
-                                _ZN13SkyObjPalette16pickBalloonColorEv(palette);
+                                _ZN13SkyObjPalette16pickBalloonColorEv(&palette);
                             }
                             balloonChance = 1;
                         } else if (c < 8) {
@@ -5921,7 +5795,7 @@ void Unk_020bbc28::updateBalloon() {
 namespace n06 {
 
 }
-void Unk_020bbc28::updateUfo() {
+void SkySprites::updateUfo() {
     using namespace n06;
     if (ufoEventToday != 0) {
         if (_ZN8SaveData8testFlagEj(gSaveData, 9)) {
@@ -5946,14 +5820,14 @@ void Unk_020bbc28::updateUfo() {
     }
     if (ufoEventToday != 0) {
         if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
-            u8 v = minute;
+            u8 v = time.minute;
             u32 m = (u32)v % 10;
-            if (prevMinute != v) {
+            if (prevTime.minute != v) {
                 if (m == 2 || m == 7) {
                     TownSessionState_Get();
                     TownSessionState_GetVisitorFlags();
                     if (!_ZN17VisitorSpawnFlags16isVisitorSpawnedEv()) {
-                        if (visitorSpriteKind != 6) {
+                        if (sprites[45].kind != 6) {
                             if (ufoChance == 0) {
                                 ufoChance = Random_GlobalBelow(8) + 1;
                             }
@@ -5974,7 +5848,7 @@ void Unk_020bbc28::updateUfo() {
 namespace n06 {
 
 }
-void Unk_020bbc28::updatePete() {
+void SkySprites::updatePete() {
     using namespace n06;
     if (peteEventToday != 0) {
         if (NpcRegistry_FindSpNpc(8)) {
@@ -5987,12 +5861,12 @@ void Unk_020bbc28::updatePete() {
         if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
             s32 r = Weather_GetFallingPrecip();
             if (r != 1 && r != 2) {
-                if (hour != prevHour) {
-                    if (hour == 9 || hour == 0x11) {
+                if (time.hour != prevTime.hour) {
+                    if (time.hour == 9 || time.hour == 0x11) {
                         TownSessionState_Get();
                         TownSessionState_GetPeteFall();
                         if (!_ZN13PeteFallState15isVisitorActiveEv()) {
-                            if (visitorSpriteKind != 7) {
+                            if (sprites[45].kind != 7) {
                                 spawn(7, 0x2d, 0, 0);
                             }
                         }
@@ -6047,13 +5921,13 @@ extern "C" void _ZN14SkyShotRequest5clearEv(SkyShotRequest *p);
 extern "C" void _ZN15SkyShotSequence8endWatchEi(void *p, s32 v);
 
 }
-void Unk_020bb25c::updateRainbow() {
+void SkySprites::updateRainbow() {
     using namespace n05;
     rainbowStrength = 0;
     u8 k = data_021ed2b0[0xa];
     if (k >= 0x13 && k <= 0x17) {
-        if (*(data_020d0e04 + k - 0x13) == hour) {
-            s32 n = minute;
+        if (*(data_020d0e04 + k - 0x13) == time.hour) {
+            s32 n = time.minute;
             if (n < 0x2d) {
                 s32 v;
                 if (n <= 0xf) {
@@ -6070,7 +5944,7 @@ void Unk_020bb25c::updateRainbow() {
             }
         }
     }
-    BOOL f = rainbowSpriteKind == 10 ? TRUE : FALSE;
+    BOOL f = sprites[32].kind == 10 ? TRUE : FALSE;
     if (rainbowStrength != 0) {
         applyRainbowBlend();
         if (!f) {
@@ -6085,7 +5959,7 @@ void Unk_020bb25c::updateRainbow() {
 namespace n05 {
 
 }
-void Unk_020bb25c::spawnShots() {
+void SkySprites::spawnShots() {
     using namespace n05;
     SkyShotRequest *p = &shotRequests[0];
     SkyShotRequest *end = p + 4;
@@ -6098,13 +5972,13 @@ void Unk_020bb25c::spawnShots() {
     for (; p < end; p++, slot += 3, i++) {
         if (p->pending != 0) {
             u8 flag = p->golden;
-            if (spawn(0xb, slot, vals[0], i)) {
+            if (spawn(0xb, slot, (VecFx32 *)vals[0], i)) {
                 if (flag != 0) {
-                    spawn(0xb, slot + 1, vals[1], i | 0x10);
-                    spawn(0xb, slot + 2, vals[2], i | 0x20);
+                    spawn(0xb, slot + 1, (VecFx32 *)vals[1], i | 0x10);
+                    spawn(0xb, slot + 2, (VecFx32 *)vals[2], i | 0x20);
                 }
             } else {
-                _ZN15SkyShotSequence8endWatchEi(&shotSeq[0], p->playerSlot);
+                _ZN15SkyShotSequence8endWatchEi(&shotSeq, p->playerSlot);
             }
             _ZN14SkyShotRequest5clearEv(p);
         }
@@ -6113,7 +5987,7 @@ void Unk_020bb25c::spawnShots() {
 namespace n05 {
 
 }
-void Unk_020bb25c::updateBirds() {
+void SkySprites::updateBirds() {
     using namespace n05;
     if (birdsRequested != 0) {
         birdsRequested = 0;
@@ -6160,11 +6034,11 @@ void Unk_020bb25c::updateBirds() {
 namespace n05 {
 
 }
-BOOL Unk_020bb25c::canLaunchBig(s32 idx) {
+BOOL SkySprites::canLaunchBig(s32 idx) {
     using namespace n05;
     BOOL result = TRUE;
-    Unk_020bb25c_Ent74 *p = &fireworkSprites[0];
-    Unk_020bb25c_Ent74 *end = (Unk_020bb25c_Ent74 *)unk_1abc;
+    SkySprite *p = &sprites[46];
+    SkySprite *end = &sprites[59];
     for (; p < end; p++) {
         if (p->kind == 9) {
             u32 f = p->work0;
@@ -6181,11 +6055,11 @@ BOOL Unk_020bb25c::canLaunchBig(s32 idx) {
 namespace n05 {
 
 }
-BOOL Unk_020bb25c::canLaunchSmall(s32 idx) {
+BOOL SkySprites::canLaunchSmall(s32 idx) {
     using namespace n05;
     BOOL result = TRUE;
-    Unk_020bb25c_Ent74 *p = &fireworkSprites[0];
-    Unk_020bb25c_Ent74 *end = (Unk_020bb25c_Ent74 *)unk_1abc;
+    SkySprite *p = &sprites[46];
+    SkySprite *end = &sprites[59];
     for (; p < end; p++) {
         if (p->kind == 9) {
             s32 slot;
@@ -6209,7 +6083,7 @@ BOOL Unk_020bb25c::canLaunchSmall(s32 idx) {
 namespace n05 {
 
 }
-void Unk_020bb25c::launchFirework(s32 idx, s32 a, s32 b) {
+void SkySprites::launchFirework(s32 idx, s32 a, s32 b) {
     using namespace n05;
     if (sSkyOutdoors != 0) {
         Unk_020bb8a4_E fa = (Unk_020bb8a4_E)(a << 31); Unk_020bb8a4_E lo = (Unk_020bb8a4_E)((sFireworkShellTypes[idx] - 0x1d) & 0xf); Unk_020bb8a4_E i8 = (Unk_020bb8a4_E)((idx & 3) << 8); Unk_020bb8a4_E fb = (Unk_020bb8a4_E)(b << 28); spawn(9, 0x3c, 0, fb | (i8 | (lo | fa)));
@@ -6222,7 +6096,7 @@ void Unk_020bb25c::launchFirework(s32 idx, s32 a, s32 b) {
 namespace n05 {
 
 }
-void Unk_020bb25c::rollLaunchInterval(s32 *out) {
+void SkySprites::rollLaunchInterval(s32 *out) {
     using namespace n05;
     s32 r;
     if (fireworksInterval > 0) {
@@ -6235,7 +6109,7 @@ void Unk_020bb25c::rollLaunchInterval(s32 *out) {
 namespace n05 {
 
 }
-void Unk_020bb25c::tickBigLaunch() {
+void SkySprites::tickBigLaunch() {
     using namespace n05;
     fireworksBigTimer = fireworksBigTimer - 1;
     if (fireworksBigTimer <= 0) {
@@ -6249,7 +6123,7 @@ void Unk_020bb25c::tickBigLaunch() {
 namespace n05 {
 
 }
-void Unk_020bb25c::tickLowBigLaunch() {
+void SkySprites::tickLowBigLaunch() {
     using namespace n05;
     fireworksBigTimer = fireworksBigTimer - 1;
     if (fireworksBigTimer <= 0) {
@@ -6263,7 +6137,7 @@ void Unk_020bb25c::tickLowBigLaunch() {
 namespace n05 {
 
 }
-void Unk_020bb25c::tickSmallLaunches() {
+void SkySprites::tickSmallLaunches() {
     using namespace n05;
     s32 *ptrs[4] = {&fireworksSlotTimers[0], &fireworksSlotTimers[1], &fireworksSlotTimers[2], &fireworksSlotTimers[3]};
     s32 **pp = ptrs;
@@ -6282,7 +6156,7 @@ void Unk_020bb25c::tickSmallLaunches() {
 namespace n05 {
 
 }
-void Unk_020bb25c::tickPairLaunches() {
+void SkySprites::tickPairLaunches() {
     using namespace n05;
     s32 *ptrs[4] = {&fireworksSlotTimers[0], &fireworksSlotTimers[1], &fireworksSlotTimers[2], &fireworksSlotTimers[3]};
     s32 **pp = ptrs;
@@ -6321,7 +6195,7 @@ void Unk_020bb25c::tickPairLaunches() {
 namespace n05 {
 
 }
-void Unk_020bb25c::tickTripleLaunches() {
+void SkySprites::tickTripleLaunches() {
     using namespace n05;
     s32 *ptrs[4] = {&fireworksSlotTimers[0], &fireworksSlotTimers[1], &fireworksSlotTimers[2], &fireworksSlotTimers[3]};
     s32 **pp = ptrs;
@@ -6359,7 +6233,7 @@ void Unk_020bb25c::tickTripleLaunches() {
 namespace n05 {
 
 }
-void Unk_020bb25c::setFireworksTiming(s32 a, s32 b, s32 c) {
+void SkySprites::setFireworksTiming(s32 a, s32 b, s32 c) {
     using namespace n05;
     fireworksInterval = a;
     s32 r;
@@ -6373,7 +6247,7 @@ void Unk_020bb25c::setFireworksTiming(s32 a, s32 b, s32 c) {
 namespace n05 {
 
 }
-void Unk_020bb25c::selectFireworksPattern(s32 mode) {
+void SkySprites::selectFireworksPattern(s32 mode) {
     using namespace n05;
     if (mode == 0x14) {
         u32 r = Random_GlobalBelow(100);
@@ -6411,7 +6285,7 @@ void Unk_020bb25c::selectFireworksPattern(s32 mode) {
 namespace n05 {
 
 }
-void Unk_020bb25c::fireworksPatternAct01() {
+void SkySprites::fireworksPatternAct01() {
     using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
@@ -6424,7 +6298,7 @@ void Unk_020bb25c::fireworksPatternAct01() {
 namespace n05 {
 
 }
-void Unk_020bb25c::fireworksPatternAct02() {
+void SkySprites::fireworksPatternAct02() {
     using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
@@ -6437,7 +6311,7 @@ void Unk_020bb25c::fireworksPatternAct02() {
 namespace n05 {
 
 }
-void Unk_020bb25c::fireworksPatternAct03() {
+void SkySprites::fireworksPatternAct03() {
     using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
@@ -6450,7 +6324,7 @@ void Unk_020bb25c::fireworksPatternAct03() {
 namespace n05 {
 
 }
-void Unk_020bb25c::fireworksPatternAct04() {
+void SkySprites::fireworksPatternAct04() {
     using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
@@ -6463,7 +6337,7 @@ void Unk_020bb25c::fireworksPatternAct04() {
 namespace n05 {
 
 }
-void Unk_020bb25c::fireworksPatternAct05() {
+void SkySprites::fireworksPatternAct05() {
     using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
@@ -6476,7 +6350,7 @@ void Unk_020bb25c::fireworksPatternAct05() {
 namespace n05 {
 
 }
-void Unk_020bb25c::fireworksPatternAct06() {
+void SkySprites::fireworksPatternAct06() {
     using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
@@ -6489,7 +6363,7 @@ void Unk_020bb25c::fireworksPatternAct06() {
 namespace n05 {
 
 }
-void Unk_020bb25c::fireworksPatternAct07() {
+void SkySprites::fireworksPatternAct07() {
     using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
@@ -6502,7 +6376,7 @@ void Unk_020bb25c::fireworksPatternAct07() {
 namespace n05 {
 
 }
-void Unk_020bb25c::fireworksPatternAct08() {
+void SkySprites::fireworksPatternAct08() {
     using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
@@ -6515,7 +6389,7 @@ void Unk_020bb25c::fireworksPatternAct08() {
 namespace n05 {
 
 }
-void Unk_020bb25c::fireworksPatternAct09() {
+void SkySprites::fireworksPatternAct09() {
     using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
@@ -6528,7 +6402,7 @@ void Unk_020bb25c::fireworksPatternAct09() {
 namespace n05 {
 
 }
-void Unk_020bb25c::fireworksPatternAct0A() {
+void SkySprites::fireworksPatternAct0A() {
     using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
@@ -6541,7 +6415,7 @@ void Unk_020bb25c::fireworksPatternAct0A() {
 namespace n05 {
 
 }
-void Unk_020bb25c::fireworksPatternAct0B() {
+void SkySprites::fireworksPatternAct0B() {
     using namespace n05; 
     s32 v = fireworksPatternTime; 
     if (v < 0) { 
@@ -6690,61 +6564,61 @@ extern "C" {
 void _ZN10SkySprites18updateThunderFlashEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bbc2819updateFireworksShowEv(void*);
+void _ZN10SkySprites19updateFireworksShowEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bbc2810updateRainEv(void*);
+void _ZN10SkySprites10updateRainEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bbc2810updateSnowEv(void*);
+void _ZN10SkySprites10updateSnowEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bb25c11updateBirdsEv(void*);
+void _ZN10SkySprites11updateBirdsEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bbc2810updateMoonEv(void*);
+void _ZN10SkySprites10updateMoonEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bb25c13updateRainbowEv(void*);
+void _ZN10SkySprites13updateRainbowEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bbc2818updateShootingStarEv(void*);
+void _ZN10SkySprites18updateShootingStarEv(void*);
 }
 extern "C" {
 s32 Scene_GetCurrent();
 }
 extern "C" {
-void _ZN12Unk_020bbc2813updateBalloonEv(void*);
+void _ZN10SkySprites13updateBalloonEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bbc289updateUfoEv(void*);
+void _ZN10SkySprites9updateUfoEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bbc2810updatePeteEv(void*);
+void _ZN10SkySprites10updatePeteEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bb25c10spawnShotsEv(void*);
+void _ZN10SkySprites10spawnShotsEv(void*);
 }
 extern "C" {
 s32 _s32_div_f(s32, s32);
 }
 extern "C" {
-void _ZN12Unk_020bb25c18setFireworksTimingEiii(void*, s32, s32, s32);
+void _ZN10SkySprites18setFireworksTimingEiii(void*, s32, s32, s32);
 }
 extern "C" {
-void _ZN12Unk_020bb25c22selectFireworksPatternEi(void*, s32);
+void _ZN10SkySprites22selectFireworksPatternEi(void*, s32);
 }
 extern "C" {
-s32 _ZN12Unk_020bb25c16tickLowBigLaunchEv(void*);
+s32 _ZN10SkySprites16tickLowBigLaunchEv(void*);
 }
 extern "C" {
-s32 _ZN12Unk_020bb25c17tickSmallLaunchesEv(void*);
+s32 _ZN10SkySprites17tickSmallLaunchesEv(void*);
 }
 extern "C" {
-s32 _ZN12Unk_020bb25c13tickBigLaunchEv(void*);
+s32 _ZN10SkySprites13tickBigLaunchEv(void*);
 }
 extern "C" {
-s32 _ZN12Unk_020bb25c18tickTripleLaunchesEv(void*);
+s32 _ZN10SkySprites18tickTripleLaunchesEv(void*);
 }
 extern "C" {
 void SkySprites_UpdateEventsIndoor(SkySprites*);
@@ -6799,72 +6673,72 @@ extern "C" void SkySprites_FireworksPatternAct0C(SkySprites *obj);
 
 extern "C" void SkySprites_FireworksPatternAct0C(SkySprites *obj) {
     if (obj->fireworksPatternTime < 0) {
-        _ZN12Unk_020bb25c18setFireworksTimingEiii(obj, 0x8c, 0x96, 0x258);
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0x8c, 0x96, 0x258);
     } else if (obj->fireworksPatternTime == 0) {
-        _ZN12Unk_020bb25c22selectFireworksPatternEi(obj, 0x14);
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 0x14);
     }
-    _ZN12Unk_020bb25c18tickTripleLaunchesEv(obj);
+    _ZN10SkySprites18tickTripleLaunchesEv(obj);
 }
 
 extern "C" void SkySprites_FireworksPatternAct0D(SkySprites *obj) {
     if (obj->fireworksPatternTime < 0) {
-        _ZN12Unk_020bb25c18setFireworksTimingEiii(obj, 0, 0x64, 0x96);
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0, 0x64, 0x96);
     } else if (obj->fireworksPatternTime == 0) {
-        _ZN12Unk_020bb25c22selectFireworksPatternEi(obj, 0x14);
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 0x14);
     }
 }
 
 extern "C" void SkySprites_FireworksPatternAct0E(SkySprites *obj) {
     if (obj->fireworksPatternTime < 0) {
-        _ZN12Unk_020bb25c18setFireworksTimingEiii(obj, 0, 0x64, 0);
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0, 0x64, 0);
     } else if (obj->fireworksPatternTime == 0) {
-        _ZN12Unk_020bb25c22selectFireworksPatternEi(obj, 0xf);
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 0xf);
     }
-    _ZN12Unk_020bb25c17tickSmallLaunchesEv(obj);
+    _ZN10SkySprites17tickSmallLaunchesEv(obj);
 }
 
 extern "C" void SkySprites_FireworksPatternAct0F(SkySprites *obj) {
     if (obj->fireworksPatternTime < 0) {
-        _ZN12Unk_020bb25c18setFireworksTimingEiii(obj, 0, 0xc8, 0);
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0, 0xc8, 0);
     } else if (obj->fireworksPatternTime == 0) {
-        _ZN12Unk_020bb25c22selectFireworksPatternEi(obj, 4);
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 4);
     }
-    _ZN12Unk_020bb25c13tickBigLaunchEv(obj);
+    _ZN10SkySprites13tickBigLaunchEv(obj);
 }
 
 extern "C" void SkySprites_FireworksPatternAct10(SkySprites *obj) {
     if (obj->fireworksPatternTime < 0) {
-        _ZN12Unk_020bb25c18setFireworksTimingEiii(obj, 0, 0x64, 0);
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0, 0x64, 0);
     } else if (obj->fireworksPatternTime == 0) {
-        _ZN12Unk_020bb25c22selectFireworksPatternEi(obj, 0x11);
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 0x11);
     }
-    _ZN12Unk_020bb25c13tickBigLaunchEv(obj);
+    _ZN10SkySprites13tickBigLaunchEv(obj);
 }
 
 extern "C" void SkySprites_FireworksPatternAct11(SkySprites *obj) {
     if (obj->fireworksPatternTime < 0) {
-        _ZN12Unk_020bb25c18setFireworksTimingEiii(obj, 0, 0x64, 0);
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0, 0x64, 0);
     } else if (obj->fireworksPatternTime == 0) {
-        _ZN12Unk_020bb25c22selectFireworksPatternEi(obj, 1);
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 1);
     }
-    _ZN12Unk_020bb25c17tickSmallLaunchesEv(obj);
+    _ZN10SkySprites17tickSmallLaunchesEv(obj);
 }
 
 extern "C" void SkySprites_FireworksPatternAct12(SkySprites *obj) {
     if (obj->fireworksPatternTime < 0) {
-        _ZN12Unk_020bb25c18setFireworksTimingEiii(obj, 0, 0xe1, 0);
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0, 0xe1, 0);
     } else if (obj->fireworksPatternTime == 0) {
-        _ZN12Unk_020bb25c22selectFireworksPatternEi(obj, 0x13);
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 0x13);
     }
 }
 
 extern "C" void SkySprites_FireworksPatternAct13(SkySprites *obj) {
     if (obj->fireworksPatternTime < 0) {
-        _ZN12Unk_020bb25c18setFireworksTimingEiii(obj, 0, 0x64, 0);
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0, 0x64, 0);
     } else if (obj->fireworksPatternTime == 0) {
-        _ZN12Unk_020bb25c22selectFireworksPatternEi(obj, 0x10);
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 0x10);
     }
-    _ZN12Unk_020bb25c16tickLowBigLaunchEv(obj);
+    _ZN10SkySprites16tickLowBigLaunchEv(obj);
 }
 
 extern "C" void SkySprites_ApplyRainbowBlend(SkySprites *obj) {
@@ -6905,26 +6779,26 @@ extern "C" void SkySprites_Stop(SkySprites *obj) {
 extern "C" void SkySprites_UpdateEvents(SkySprites *obj) {
     switch (gWeatherManager.precipKind) {
     case 1:
-        _ZN12Unk_020bbc2810updateRainEv(obj);
+        _ZN10SkySprites10updateRainEv(obj);
         break;
     case 2:
-        _ZN12Unk_020bbc2810updateSnowEv(obj);
+        _ZN10SkySprites10updateSnowEv(obj);
         break;
     default:
         obj->precipIntensity = 0;
         obj->snowCounter = 0;
         break;
     }
-    _ZN12Unk_020bb25c11updateBirdsEv(obj);
-    _ZN12Unk_020bbc2810updateMoonEv(obj);
-    _ZN12Unk_020bb25c13updateRainbowEv(obj);
-    _ZN12Unk_020bbc2818updateShootingStarEv(obj);
-    _ZN12Unk_020bbc2819updateFireworksShowEv(obj);
+    _ZN10SkySprites11updateBirdsEv(obj);
+    _ZN10SkySprites10updateMoonEv(obj);
+    _ZN10SkySprites13updateRainbowEv(obj);
+    _ZN10SkySprites18updateShootingStarEv(obj);
+    _ZN10SkySprites19updateFireworksShowEv(obj);
     if (Scene_GetCurrent() != 0x2c) {
-        _ZN12Unk_020bbc2813updateBalloonEv(obj);
-        _ZN12Unk_020bbc289updateUfoEv(obj);
-        _ZN12Unk_020bbc2810updatePeteEv(obj);
-        _ZN12Unk_020bb25c10spawnShotsEv(obj);
+        _ZN10SkySprites13updateBalloonEv(obj);
+        _ZN10SkySprites9updateUfoEv(obj);
+        _ZN10SkySprites10updatePeteEv(obj);
+        _ZN10SkySprites10spawnShotsEv(obj);
     }
 }
 
@@ -6934,7 +6808,7 @@ extern "C" void SkySprites_UpdateEventsIndoor(SkySprites *obj) {
         if (gWeatherManager.precipKind == 1 && gWeatherManager.level == 4) {
             _ZN10SkySprites18updateThunderFlashEv(obj);
         }
-        _ZN12Unk_020bbc2819updateFireworksShowEv(obj);
+        _ZN10SkySprites19updateFireworksShowEv(obj);
     }
 }
 
@@ -8266,7 +8140,7 @@ extern "C" {
 void *PlayerData_GetCurrent(void);
 }
 extern "C" {
-void _ZN12Unk_02097ff47setFlagEj(void *p, u32 x);
+void _ZN10PlayerData7setFlagEj(void *p, u32 x);
 }
 extern "C" {
 void SkySprites_OnStarWish(void *p);
@@ -8960,7 +8834,7 @@ extern "C" u32 Sky_IsShootingStarVisible(void) { return n00::gSkySprites.shootin
 extern "C" void Sky_WishOnShootingStar(void) {
     void *p = PlayerData_GetCurrent();
     if (p != NULL) {
-        _ZN12Unk_02097ff47setFlagEj(p, 0x32);
+        _ZN10PlayerData7setFlagEj(p, 0x32);
         SkySprites_OnStarWish(gSkySprites);
     }
 }

@@ -33,16 +33,6 @@ BOOL VramQueue2d_Enqueue(VramTask *p);
 
 
 
-class Unk_020b8340_Task {
-public:
-    virtual BOOL vfunc_00();
-
-    /* 0x04 */ u8 unk_04[9];
-    /* 0x0d */ u8 state;
-    /* 0x0e */ u8 kind;
-    /* 0x0f */ u8 cost;
-};
-
 BOOL BgVramTaskPair::requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g) {
     prepare();
     kind = 8;
@@ -85,23 +75,23 @@ void VramTask::dequeueTex(void) {
     List_Remove(&sVramQueueTex, (PrioListNode *)this);
 }
 
-static inline Unk_020b8340_Task *Unk_020b8340_First(void **l) {
-    Unk_020b8340_Task *t = (Unk_020b8340_Task *)*l;
-    if (t != 0) t = (Unk_020b8340_Task *)((u8 *)t - 4);
+static inline VramTask *Unk_020b8340_First(void **l) {
+    VramTask *t = (VramTask *)*l;
+    if (t != 0) t = (VramTask *)((u8 *)t - 4);
     return t;
 }
 
 extern "C" void VramQueueTex_Run(void) {
-    Unk_020b8340_Task *r5;
+    VramTask *r5;
     for (r5 = Unk_020b8340_First((void **)&sVramQueueTex); r5 != 0; r5 = Unk_020b8340_First((void **)&sVramQueueTex)) {
         if (*(u16 *)0x4000006 + r5->cost > 0xd4) break;
         BOOL ready = (r5->state == 1) ? TRUE : FALSE;
         if (ready) {
-            if (r5->vfunc_00() != 0) {
+            if (r5->execute() != 0) {
                 r5->state = 2;
             }
         }
-        if (r5 != 0) r5 = (Unk_020b8340_Task *)((u8 *)r5 + 4);
+        if (r5 != 0) r5 = (VramTask *)((u8 *)r5 + 4);
         List_Remove(&sVramQueueTex, r5);
     }
     volatile u16 *vc = (volatile u16 *)0x4000006;
@@ -127,16 +117,16 @@ extern "C" void VramQueue2d_Dequeue(VramTask *p) {
 }
 
 extern "C" void VramQueue2d_Run(void) {
-    Unk_020b8340_Task *r5;
+    VramTask *r5;
     for (r5 = Unk_020b8340_First((void **)&sVramQueue2d); r5 != 0; r5 = Unk_020b8340_First((void **)&sVramQueue2d)) {
         if (*(u16 *)0x4000006 + r5->cost > 0x104) break;
         BOOL ready = (r5->state == 1) ? TRUE : FALSE;
         if (ready) {
-            if (r5->vfunc_00() != 0) {
+            if (r5->execute() != 0) {
                 r5->state = 2;
             }
         }
-        if (r5 != 0) r5 = (Unk_020b8340_Task *)((u8 *)r5 + 4);
+        if (r5 != 0) r5 = (VramTask *)((u8 *)r5 + 4);
         List_Remove(&sVramQueue2d, r5);
     }
 }

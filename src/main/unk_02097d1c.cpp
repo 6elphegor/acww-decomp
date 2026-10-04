@@ -1,5 +1,5 @@
 #include "types.h"
-#include "player/Unk_02097ff4.h"
+#include "player/PlayerData.h"
 #include "item/ItemId.h"
 #include "item/Letter.h"
 #include "save/Pattern.h"
@@ -7,7 +7,6 @@
 #include "player/PlayerInventory.h"
 #include "item/ItemPickSpec.h"
 
-class Unk_02097ff4;
 class PlayerData;
 
 extern "C" {
@@ -204,7 +203,7 @@ void PlayerData::reset() {
     NookPoints_Reset(&nookPoints);
     bed = 0xfff1;
     birthdayTalkYear = 0xff;
-    MI_CpuFill8(&unk_2254, 0xff, 8);
+    MI_CpuFill8(&birthdayNoticeDays, 0xff, 8);
     _ZN21ForeignVillagerRecord5clearEv(&foreignVillagerRecord);
 }
 
@@ -234,7 +233,7 @@ void PlayerData::setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u
     bits.b = 1;
     bits.c = 1;
     setLastPlayDate(bits);
-    ((Unk_02097ff4 *)this)->clearBirthday();
+    clearBirthday();
     shirt = 0x11a8;
     PlayerSpNpcRecord_InitNop(&spNpcRecord);
     faceItem = 0xfff1;
@@ -243,9 +242,9 @@ void PlayerData::setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u
     DramaRecord_Clear(&dramaRecord);
     PlayerBank_Clear(&bank);
     EmotionSlots_Clear(&emotions);
-    ((Unk_02097ff4 *)this)->getDayUpdateDate();
+    getDayUpdateDate();
     Clock_GetDate();
-    MI_CpuFill8(&unk_2254, 0xff, 8);
+    MI_CpuFill8(&birthdayNoticeDays, 0xff, 8);
 }
 
 PlayerId *PlayerData::getPlayerId() { return (PlayerId *)&id; }
@@ -276,13 +275,13 @@ u32 PlayerData::getFortune() { return hairColorTanFortune.hi; }
 
 void PlayerData::setFortune(u8 v) { hairColorTanFortune.hi = v; }
 
-extern "C" void PlayerData_HasStungFace(void *p) { ((Unk_02097ff4 *)p)->testFlag(0); }
+extern "C" void PlayerData_HasStungFace(void *p) { ((PlayerData *)p)->testFlag(0); }
 
 extern "C" void PlayerData_SetStungFace(void *p, u32 flag) {
     if (flag) {
-        ((Unk_02097ff4 *)p)->setFlag(0);
+        ((PlayerData *)p)->setFlag(0);
     } else {
-        ((Unk_02097ff4 *)p)->clearFlag(0);
+        ((PlayerData *)p)->clearFlag(0);
     }
 }
 
@@ -330,9 +329,9 @@ void *PlayerData::getOptions() { return &options; }
 
 void *PlayerData::getErrands() { return &errands; }
 
-void Unk_02097ff4::rerollFlaggedPocketItems()
+void PlayerData::rerollFlaggedPocketItems()
 {
-    if (((PlayerData *)this)->isUsed()) {
+    if (isUsed()) {
         volatile u16 v0;
         u16 v1, v2, v3, v4, v5;
         PlayerInventory *in;
@@ -343,8 +342,8 @@ void Unk_02097ff4::rerollFlaggedPocketItems()
         u32 k = 1;
         s32 z28 = 0, z2c = 0, z40 = 0, z44 = 0, z3c = 0, z34 = 0, z38 = 0, z30 = 0, z4c = 0, z48 = 0, z20 = 0;
         v0 = 0xfff1;
-        ParcelErrand_Clear(_ZN18SickVillagerRecord15getParcelErrandEv(((PlayerData *)this)->getErrands()));
-        in = (PlayerInventory *)((PlayerData *)this)->getInventory();
+        ParcelErrand_Clear(_ZN18SickVillagerRecord15getParcelErrandEv(getErrands()));
+        in = (PlayerInventory *)getInventory();
         p = in->getPocket(0);
         i = 0;
         z28 = 0;
@@ -383,21 +382,21 @@ void Unk_02097ff4::rerollFlaggedPocketItems()
                 }
                 in->setPocket((u16 *)&v0, i, z48);
                 if (v0 != 0xfff1) {
-                    Catalog_SetItem(((PlayerData *)this)->getCatalog(), (u16 *)&v0, z4c, k);
+                    Catalog_SetItem(getCatalog(), (u16 *)&v0, z4c, k);
                 }
             }
         }
     }
 }
 
-void Unk_02097ff4::resetForNewTown()
+void PlayerData::resetForNewTown()
 {
-    if (((PlayerData *)this)->isUsed()) {
-        PlayerInventory *r7 = (PlayerInventory *)((PlayerData *)this)->getInventory();
+    if (isUsed()) {
+        PlayerInventory *r7 = (PlayerInventory *)getInventory();
         u16 *r5 = r7->getPocket(0);
-        PlayerErrandSlot_Clear(PlayerErrands_GetSlot(((PlayerData *)this)->getErrands(), 0));
-        PlayerErrandSlot_Clear(PlayerErrands_GetSlot(((PlayerData *)this)->getErrands(), 1));
-        HouseVisitInvite_Clear((u8 *)((PlayerData *)this)->getErrands() + 0x88);
+        PlayerErrandSlot_Clear(PlayerErrands_GetSlot(getErrands(), 0));
+        PlayerErrandSlot_Clear(PlayerErrands_GetSlot(getErrands(), 1));
+        HouseVisitInvite_Clear((u8 *)getErrands() + 0x88);
         s32 i = 0;
         s32 z = i;
         BOOL zz = i;
@@ -408,7 +407,7 @@ void Unk_02097ff4::resetForNewTown()
                 if (c >= 0x11a8 && c <= 0x12a7) ok = TRUE;
                 if (ok) {
                     r7->setPocket(r5, i, 1);
-                    Catalog_SetItem(((PlayerData *)this)->getCatalog(), r5, z, 1);
+                    Catalog_SetItem(getCatalog(), r5, z, 1);
                 }
             }
         }
@@ -422,24 +421,24 @@ void Unk_02097ff4::resetForNewTown()
     }
 }
 
-void *Unk_02097ff4::getInventoryBackground()
+void *PlayerData::getInventoryBackground()
 {
     return &inventoryBackground;
 }
 
-void Unk_02097ff4::setInventoryBackground(u16 *p)
+void PlayerData::setInventoryBackground(u16 *p)
 {
     inventoryBackground = *p;
 }
 
-s32 Unk_02097ff4::pickOtherResident()
+s32 PlayerData::pickOtherResident()
 {
-    return PlayerDataArray_GetRandomOther(gSavePlayers, ((PlayerData *)this)->getPlayerId());
+    return PlayerDataArray_GetRandomOther(gSavePlayers, getPlayerId());
 }
 
-BOOL Unk_02097ff4::getOtherResidentName(void *q)
+BOOL PlayerData::getOtherResidentName(void *q)
 {
-    ((PlayerData *)this)->getPlayerId();
+    getPlayerId();
     BOOL r = FALSE;
     if (PlayerId_FindResidentIndex() != -1) {
         if (pickOtherResident()) {
@@ -450,9 +449,9 @@ BOOL Unk_02097ff4::getOtherResidentName(void *q)
     return r;
 }
 
-s32 Unk_02097ff4::findUnusedSlot(s32 n)
+s32 PlayerData::findUnusedSlot(s32 n)
 {
-    Unk_02097ff4 *p = this;
+    PlayerData *p = this;
     s32 i = 0;
     s32 r = -1;
     for (; i < n; i++) {
@@ -460,48 +459,48 @@ s32 Unk_02097ff4::findUnusedSlot(s32 n)
             r = i;
             break;
         }
-        p = (Unk_02097ff4 *)((u8 *)p + 0x228c);
+        p = (PlayerData *)((u8 *)p + 0x228c);
     }
     return r;
 }
 
-u8 *Unk_02097ff4::getDayUpdateDate()
+u8 *PlayerData::getDayUpdateDate()
 {
     return dayUpdateDate;
 }
 
-void *Unk_02097ff4::getBankAccount()
+void *PlayerData::getBankAccount()
 {
     return bank;
 }
 
-void *Unk_02097ff4::getEmotions()
+void *PlayerData::getEmotions()
 {
     return emotions;
 }
 
-void *Unk_02097ff4::getBirthday()
+void *PlayerData::getBirthday()
 {
-    return &birthday;
+    return birthday;
 }
 
-void Unk_02097ff4::setBirthday(u32 a, u32 b)
+void PlayerData::setBirthday(u32 a, u32 b)
 {
-    unk_2219 = a;
-    birthday = b;
+    birthday[1] = a;
+    birthday[0] = b;
 }
 
-void Unk_02097ff4::clearBirthday()
+void PlayerData::clearBirthday()
 {
-    *(u16 *)&birthday = 0;
+    *(u16 *)birthday = 0;
 }
 
-void Unk_02097ff4::setBirthdayTalkYear(u32 v)
+void PlayerData::setBirthdayTalkYear(u32 v)
 {
     birthdayTalkYear = v;
 }
 
-u32 Unk_02097ff4::getBirthdayTalkYear()
+u32 PlayerData::getBirthdayTalkYear()
 {
     return birthdayTalkYear;
 }
@@ -509,7 +508,7 @@ u32 Unk_02097ff4::getBirthdayTalkYear()
 extern "C" void PlayerData_UpdateDay()
 {
     u8 *g = gSaveData;
-    Unk_02097ff4 *p = (Unk_02097ff4 *)PlayerData_GetCurrent();
+    PlayerData *p = (PlayerData *)PlayerData_GetCurrent();
     if (p) {
         Unk_020981f8_Pos loc;
         Clock_GetDate(&loc);
@@ -541,12 +540,12 @@ extern "C" void PlayerData_UpdateDay()
     }
 }
 
-u32 Unk_02097ff4::getArbeitTalkCount()
+u32 PlayerData::getArbeitTalkCount()
 {
     return arbeitTalkCount;
 }
 
-void Unk_02097ff4::advanceArbeitTalkCount()
+void PlayerData::advanceArbeitTalkCount()
 {
     arbeitTalkCount += 1;
     if (arbeitTalkCount == 1) {
@@ -557,44 +556,44 @@ void Unk_02097ff4::advanceArbeitTalkCount()
     }
 }
 
-u32 Unk_02097ff4::getSkyShotHits()
+u32 PlayerData::getSkyShotHits()
 {
     return skyShotHits;
 }
 
-void Unk_02097ff4::setSkyShotHits(u32 v)
+void PlayerData::setSkyShotHits(u32 v)
 {
     skyShotHits = v;
 }
 
-u32 Unk_02097ff4::getBirthdayNoticeDay(u32 idx)
+u32 PlayerData::getBirthdayNoticeDay(u32 idx)
 {
     if (idx < 8) {
-        return unk_2254[idx];
+        return birthdayNoticeDays[idx];
     }
     return 0xff;
 }
 
-void Unk_02097ff4::setBirthdayNoticeDay(u32 idx, u32 v)
+void PlayerData::setBirthdayNoticeDay(u32 idx, u32 v)
 {
     if (idx < 8) {
-        unk_2254[idx] = v;
+        birthdayNoticeDays[idx] = v;
     }
 }
 
-void *Unk_02097ff4::getForeignVillagerRecord()
+void *PlayerData::getForeignVillagerRecord()
 {
     return foreignVillagerRecord;
 }
 
-void Unk_02097ff4::sendForeignVillagerLetter()
+void PlayerData::sendForeignVillagerLetter()
 {
-    void *r8 = ((PlayerData *)this)->getPlayerId();
+    void *r8 = getPlayerId();
     if (_ZN8PlayerId7isValidEv()) {
         if (_ZN21ForeignVillagerRecord5isSetEv(foreignVillagerRecord)) {
-            u8 *r7 = unk_2266;
+            u8 *r7 = foreignVillagerRecord + 0xa;
             s32 a;
-            u8 *l10 = (u8 *)&unk_2272;
+            u8 *l10 = foreignVillagerRecord + 0x16;
             u8 o20[0x1c];
             u8 o3c[0x1c];
             u8 o58[0x34];
@@ -606,7 +605,7 @@ void Unk_02097ff4::sendForeignVillagerLetter()
             a = 0;
             b = 10;
             t = 0;
-            if (unk_2272 != 0xfff1) {
+            if (*(u16 *)(foreignVillagerRecord + 0x16) != 0xfff1) {
                 a = 10;
                 b = 5;
             }
@@ -635,7 +634,7 @@ void Unk_02097ff4::sendForeignVillagerLetter()
     }
 }
 
-BOOL Unk_02097ff4::testFlag(u32 bit)
+BOOL PlayerData::testFlag(u32 bit)
 {
     s32 idx = bit >> 5;
     u32 b = bit & 31;
@@ -651,7 +650,7 @@ end:
     return r;
 }
 
-void Unk_02097ff4::setFlag(u32 bit)
+void PlayerData::setFlag(u32 bit)
 {
     s32 idx = bit >> 5;
     u32 b = bit & 31;
@@ -662,7 +661,7 @@ void Unk_02097ff4::setFlag(u32 bit)
     }
 }
 
-void Unk_02097ff4::clearFlag(u32 bit)
+void PlayerData::clearFlag(u32 bit)
 {
     s32 idx = bit >> 5;
     u32 b = bit & 31;

@@ -434,7 +434,7 @@ void Town_ClearBeesReleased(void);
 void Town_SetBeesReleased(void);
 s32 _ZN11CommManager12isSlotActiveEi(void *g, s32 v);
 s32 PlayerData_GetCurrent(void);
-s32 _ZN12Unk_02097ff48testFlagEj(s32 a, s32 b);
+s32 _ZN10PlayerData8testFlagEj(s32 a, s32 b);
 BOOL Item_ToPlantedFieldId(u16 *out, u16 *out2, u16 c);
 void FieldAction_TryMoneyTree(u16 *out, u8 *flag, u16 c);
 BOOL Town_CanReleaseBees(void);
@@ -6987,7 +6987,7 @@ extern "C" void FlowerFx_InitByColor(EffectSplEmitter *p) {
     c2.b = (c4.b * c2.b) / 31;
     p->color = *(u16 *)&c2;
     if (g->mode == 1) {
-        p->unk_68 = 2;
+        p->genInterval = 2;
     }
     if (g->mode == 2) {
         t.x = 0x400;
@@ -7360,7 +7360,7 @@ extern "C" BOOL Town_CanReleaseBees(void) {
     BOOL r = FALSE;
     CommManager *g = *(CommManager **)gCommManager;
     if (_ZN11CommManager12isSlotActiveEi(g, g->myAid) == 0) {
-        if (_ZN12Unk_02097ff48testFlagEj(PlayerData_GetCurrent(), 1) == 0) {
+        if (_ZN10PlayerData8testFlagEj(PlayerData_GetCurrent(), 1) == 0) {
             if (gTownUpdater.beesReleased == 0) {
                 r = TRUE;
             }

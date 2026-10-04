@@ -147,7 +147,7 @@
 #define ContestRecord_setHolderVillager _ZN13ContestRecord17setHolderVillagerEP10VillagerId
 #define ActorCollider_isHitByGroup _ZN13ActorCollider12isHitByGroupEj
 #define PlayerId_isValid _ZN8PlayerId7isValidEv
-#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
+#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define VillagerPlan_isTrendOlderThan _ZN12VillagerPlan16isTrendOlderThanEPvj
 #define VillagerPlan_getState _ZN12VillagerPlan8getStateEv
@@ -1515,7 +1515,7 @@ extern u8 gRandom[];
 }
 extern "C" {
 void *PlayerData_GetCurrent();
-s32 Unk_02097ff4_testFlag(void *, s32);
+s32 PlayerData_testFlag(void *, s32);
 void *Villager_GetState();
 void FieldVillager_StopEmotion(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
@@ -1640,7 +1640,7 @@ s32 func_01ffcb0c(s32, s32);
 void *VillagerDataItemView_getHousePos(void *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
 void *PlayerData_GetCurrent();
-s32 Unk_02097ff4_testFlag(void *, s32);
+s32 PlayerData_testFlag(void *, s32);
 s32 Villager_IsAsleep(void *, s32);
 s32 FieldVillagerAi_DirCrossesPlayerTalk(void *, void *, Unk_ov068_022649f4_Vec *);
 s32 FieldVillagerAi_IsPlayerShowingCatch(void *);
@@ -1770,7 +1770,7 @@ extern u8 sSimCatchClassWeightsPlanned[];
 extern u8 gContestRecord[];
 extern u32 gSceneBlockMap;
 void *Villager_GetState(void *);
-s32 Unk_02097ff4_testFlag(void *, s32);
+s32 PlayerData_testFlag(void *, s32);
 void Clock_GetDateTime(void *);
 void *VillagerData_getVillagerId(void *);
 s32 VillagerId_GetPersonality(void *);
@@ -3932,7 +3932,7 @@ void FieldVillagerAi_StartRoute(FieldVillagerAi *self, s32 a, FieldVillager *o) 
             s32 r6;
             void *t = PlayerData_GetCurrent();
             if (t != 0) {
-                r6 = Unk_02097ff4_testFlag(t, 1);
+                r6 = PlayerData_testFlag(t, 1);
             } else {
                 r6 = 0;
             }
@@ -3972,7 +3972,7 @@ BOOL FieldVillagerAi_ShouldGoHome(void *self, Unk_ov068_Owner_649 *o) {
     void *a = PlayerData_GetCurrent();
     s32 t;
     if (a != 0) {
-        t = Unk_02097ff4_testFlag(a, 1);
+        t = PlayerData_testFlag(a, 1);
     } else {
         t = 0;
     }
@@ -4770,7 +4770,7 @@ BOOL FieldVillagerAiStates::enterInHouse(Unk_ov068_Owner *o) {
     void *p = PlayerData_GetCurrent();
     s32 r7;
     if (p != 0) {
-        r7 = Unk_02097ff4_testFlag(p, 1);
+        r7 = PlayerData_testFlag(p, 1);
     } else {
         r7 = 0;
     }

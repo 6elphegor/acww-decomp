@@ -1,6 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "game/Unk_02033914.h"
+#include "game/GroundInfoBase.h"
 #include "gfx/ObjShadowTexture.h"
 #include "gfx/NNSG3dResTex.h"
 #include "game/Unk_020aebbc.h"
@@ -383,7 +383,7 @@ static inline BOOL IsZ() { if (gFieldSceneKind == 0) return TRUE; return FALSE; 
 extern "C" {
 }
 
-extern "C" void NookShop_Clear(Unk_020aebbc *p);
+extern "C" void NookShop_Clear(NookShop *p);
 
 }
 extern "C" ShopAckCounter::ShopAckCounter() {
@@ -583,7 +583,7 @@ extern "C" BOOL Shop_IsPurchaseSynced() {
 }
 }
 extern "C" NookShop::NookShop() {
-    using namespace n5; NookShop_Clear((Unk_020aebbc *)this); }
+    using namespace n5; NookShop_Clear(this); }
 
 namespace n5 {
 }
@@ -591,7 +591,7 @@ extern "C" Unk_020aec00::Unk_020aec00() {
     using namespace n5; __cxa_vec_cleanup(&e, 0x25, 2, (void *)_ZN6ItemIdD1Ev); }
 
 namespace n5 {
-extern "C" void NookShop_Clear(Unk_020aebbc *p) {
+extern "C" void NookShop_Clear(NookShop *p) {
     NookShop_ClearStock(p);
     p->packedState.level = 0;
     p->sales = 0;
@@ -656,7 +656,7 @@ extern "C" {
 int _ZN10PlayerData6isUsedEv(void*);
 }
 extern "C" {
-int _ZN12Unk_02097ff48testFlagEj(void*, int);
+int _ZN10PlayerData8testFlagEj(void*, int);
 }
 extern "C" {
 int _ZN22DateSeededRandomSource6randomEj(void*, int);
@@ -1076,7 +1076,7 @@ extern "C" void NookShop_UpdateDaily(Obj* self, int force) {
     if (cnt != 0 && cnt != 1) {
         for (i = 0; i < 4; i++) {
             p = PlayerData_GetResident(gSavePlayers, i);
-            if (p != 0 && _ZN10PlayerData6isUsedEv(p) != 0 && _ZN12Unk_02097ff48testFlagEj(p, 1) == 0) {
+            if (p != 0 && _ZN10PlayerData6isUsedEv(p) != 0 && _ZN10PlayerData8testFlagEj(p, 1) == 0) {
                 ok = 0;
                 break;
             }
@@ -1763,7 +1763,7 @@ extern "C" {
 u32 _ZN10PlayerData6isUsedEv();
 }
 extern "C" {
-u32 _ZN12Unk_02097ff48testFlagEj(void *p, u32 n);
+u32 _ZN10PlayerData8testFlagEj(void *p, u32 n);
 }
 extern "C" {
 u32 PlayerDataArray_FindById(void *p, void *q);
@@ -2264,7 +2264,7 @@ extern "C" void ReddShop_SendPasswordLetters() {
             s32 i;
             for (i = 0; i < 4; i++) {
                 void *p = PlayerData_GetResident(gSavePlayers, i);
-                if (p != NULL && _ZN10PlayerData6isUsedEv() != 0 && _ZN12Unk_02097ff48testFlagEj(p, 12) != 0) {
+                if (p != NULL && _ZN10PlayerData6isUsedEv() != 0 && _ZN10PlayerData8testFlagEj(p, 12) != 0) {
                     Letter_ComposeFromMail(&ctx, &r, "sp_npc_foxmail", &data_020e2e44, &data_020e2e48, _ZN10PlayerData11getPlayerIdEv(p));
                     if (LetterDelivery_PutInAddresseeMailbox(&ctx) == 0) {
                         LetterDelivery_QueueOutgoing(&ctx, 0);
@@ -2431,13 +2431,13 @@ extern "C" {
 s32 Ground_GetDefaultY(s32 a);
 }
 extern "C" {
-void func_020339bc(Unk_02033914 *p, Vec3 *pos, s32 a, s32 b);
+void func_020339bc(GroundInfoBase *p, Vec3 *pos, s32 a, s32 b);
 }
 extern "C" {
-s32 func_02033914(Unk_02033914 *p, s32 a);
+s32 func_02033914(GroundInfoBase *p, s32 a);
 }
 extern "C" {
-void GroundInfo_Destruct(Unk_02033914 *p);
+void GroundInfo_Destruct(GroundInfoBase *p);
 }
 extern "C" {
 BOOL Scene_InMuseumRoom(void);
@@ -2755,10 +2755,10 @@ extern "C" {
 void NookPoints_SendMemberLetters(void);
 }
 extern "C" {
-BOOL _ZN12Unk_02097ff48testFlagEj(void *p, u32 i);
+BOOL _ZN10PlayerData8testFlagEj(void *p, u32 i);
 }
 extern "C" {
-void _ZN12Unk_02097ff47setFlagEj(void *p, u32 i);
+void _ZN10PlayerData7setFlagEj(void *p, u32 i);
 }
 extern "C" {
 extern void *gCommManager;
@@ -2879,7 +2879,7 @@ extern "C" void NookPoints_SendMemberLetters(void) {
                 int z = 0;
                 for (i = 0; i < n; i++) {
                     u32 j = i + 0x1c;
-                    if (i < 4 && !_ZN12Unk_02097ff48testFlagEj(r5, j)) {
+                    if (i < 4 && !_ZN10PlayerData8testFlagEj(r5, j)) {
                         u32 obj[0x3d];
                         u8 ib;
                         _ZN6LetterC1Ev(obj);
@@ -2887,7 +2887,7 @@ extern "C" void NookPoints_SendMemberLetters(void) {
                         Letter_ComposeFromMail(obj, &ib, "sp_npc_atm", data_020e2e34, data_020e2e38, _ZN10PlayerData11getPlayerIdEv(r5));
                         _ZN10LetterView10setPresentEtj(obj, kNookMemberGiftItems[i & 3], 1);
                         if (LetterDelivery_QueueOutgoing(obj, z)) {
-                            _ZN12Unk_02097ff47setFlagEj(r5, j);
+                            _ZN10PlayerData7setFlagEj(r5, j);
                         }
                         _ZN6LetterD1Ev(obj);
                     }

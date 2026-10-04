@@ -141,7 +141,7 @@ s32 _ZN10ChoiceList9getResultEv(void *);
 void * _ZN15TalkWindowState13getChoiceListEv(void *);
 s32 CheckInGate_Close();
 s32 Comm_ResetNetSession();
-s32 _ZN12Unk_02097ff48testFlagEj(void *, s32);
+s32 _ZN10PlayerData8testFlagEj(void *, s32);
 BOOL _ZN11CommManager8isOnlineEv(void *);
 BOOL _ZN11CommManager7isMyAidEj(void *, s32);
 BOOL _ZN11CommManager12isSlotActiveEi(void *, s32);
@@ -158,7 +158,7 @@ s32 _ZN15TalkWindowState12showBusyIconEv(void *, s32);
 s32 CheckInGate_IsOpen();
 s32 CheckInGate_Open();
 s32 Talk_IsInOwnTown();
-void _ZN12Unk_02097ff47setFlagEj(void *, s32);
+void _ZN10PlayerData7setFlagEj(void *, s32);
 u32 Clock_GetTimeOfDay();
 void * _ZN10PlayerData13getFriendListEv(void *);
 void * FriendList_GetEntries(void *);
@@ -1054,7 +1054,7 @@ extern "C" BOOL SpNpcCopper_CheckKatieEscort() {
         _ZN15LostChildRecord14clearEscortingEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()));
     skip:
         if (_ZN15LostChildRecord11isEscortingEv(r4)) {
-            _ZN12Unk_02097ff47setFlagEj(h, 0x36);
+            _ZN10PlayerData7setFlagEj(h, 0x36);
             return TRUE;
         }
     }
@@ -2043,9 +2043,9 @@ void SpNpcCopperTalk::start(TalkStartMsg *arg) {
     } else if (getTopic() != 7 && getTopic() != 9 && getTopic() != 0xa) {
         if (Talk_IsInOwnTown() == 0) {
             setTopic(5);
-        } else if (_ZN12Unk_02097ff48testFlagEj(h, 5) == 0) {
+        } else if (_ZN10PlayerData8testFlagEj(h, 5) == 0) {
             setTopic(0);
-            _ZN12Unk_02097ff47setFlagEj(h, 5);
+            _ZN10PlayerData7setFlagEj(h, 5);
         } else {
             s32 t = Clock_GetTimeOfDay() + 1;
             setTopic(t);
@@ -2352,7 +2352,7 @@ void SpNpcCopperTalk::onChoiceMainMenu(s32 p) {
     u32 id = 0xff;
     switch (p) {
     case 0:
-        if (_ZN12Unk_02097ff48testFlagEj(h, 1)) {
+        if (_ZN10PlayerData8testFlagEj(h, 1)) {
             id = 8;
         } else {
             CommManager *g = gCommManager;
@@ -2366,7 +2366,7 @@ void SpNpcCopperTalk::onChoiceMainMenu(s32 p) {
         }
         break;
     case 1:
-        if (_ZN12Unk_02097ff48testFlagEj(h, 1)) {
+        if (_ZN10PlayerData8testFlagEj(h, 1)) {
             id = 0xe;
         } else {
             id = getInviteOrCloseGateMsg();
@@ -2374,7 +2374,7 @@ void SpNpcCopperTalk::onChoiceMainMenu(s32 p) {
         break;
     case 2:
         if (_ZN11CommManager7isMyAidEj(gCommManager, 0) == 0) {
-            if (_ZN12Unk_02097ff48testFlagEj(h, 1)) {
+            if (_ZN10PlayerData8testFlagEj(h, 1)) {
                 id = 8;
             } else {
                 void *s;
@@ -2407,7 +2407,7 @@ void SpNpcCopperTalk::onChoiceHostMenu(s32 p) {
     u32 id = 0xff;
     switch (p) {
     case 0:
-        if (_ZN12Unk_02097ff48testFlagEj(h, 1)) {
+        if (_ZN10PlayerData8testFlagEj(h, 1)) {
             id = 8;
         } else {
             CommManager *g = gCommManager;
@@ -2421,7 +2421,7 @@ void SpNpcCopperTalk::onChoiceHostMenu(s32 p) {
         }
         break;
     case 1:
-        if (_ZN12Unk_02097ff48testFlagEj(h, 1)) {
+        if (_ZN10PlayerData8testFlagEj(h, 1)) {
             id = 0xe;
         } else {
             id = getInviteOrCloseGateMsg();

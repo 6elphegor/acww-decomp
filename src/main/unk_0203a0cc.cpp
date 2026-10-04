@@ -166,7 +166,7 @@ void WorldCurve_Update(void *a, void *b);
 s32 NpcRegistry_PickRandomVillager(s32 a);
 VillagerActor *NpcRegistry_GetVillager(s32 i);
 void *PlayerData_GetCurrent();
-s32 _ZN12Unk_02097ff48testFlagEj(void *s, s32 a);
+s32 _ZN10PlayerData8testFlagEj(void *s, s32 a);
 void *Scene_GetPrevious();
 s32 SceneId_IsHouseRoom(void *a);
 s32 NNS_G3dGetTex();
@@ -434,7 +434,7 @@ BOOL Camera::onCreate() {
     case 0: {
         void *s = PlayerData_GetCurrent();
         if (s) {
-            if (_ZN12Unk_02097ff48testFlagEj(s, 0x23)) {
+            if (_ZN10PlayerData8testFlagEj(s, 0x23)) {
                 if (SceneId_IsHouseRoom(Scene_GetPrevious()) != 0 || (s32)Scene_GetPrevious() == 6) setMode(0xd);
             }
         }

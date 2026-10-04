@@ -56,8 +56,8 @@ void _ZN16ActorTalkRequest15setTownNameSlotEjj(void *self, s32 a, s32 b);
 void *PlayerData_GetCurrent(void);
 void *_ZN10PlayerData18getLostChildRecordEv(void);
 s32 _ZN15LostChildRecord9getTownIdEv(void *p);
-s32 _ZN12Unk_02097ff48testFlagEj(void *p, s32 a);
-void _ZN12Unk_02097ff47setFlagEj(void *p, s32 a);
+s32 _ZN10PlayerData8testFlagEj(void *p, s32 a);
+void _ZN10PlayerData7setFlagEj(void *p, s32 a);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL TalkRequest_SetTargetDone(void *p);
 u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
@@ -421,8 +421,8 @@ void SpNpcKaitlinTalk::start(TalkStartMsg *outp) {
     TalkStartMsg *out = (TalkStartMsg *)outp;
     void *p = PlayerData_GetCurrent();
     out->msgKey = sSpNpcKaitlinMsgKey;
-    if (_ZN12Unk_02097ff48testFlagEj(p, 0x33) == 0) {
-        if (_ZN12Unk_02097ff48testFlagEj(p, 0x39) == 0) {
+    if (_ZN10PlayerData8testFlagEj(p, 0x33) == 0) {
+        if (_ZN10PlayerData8testFlagEj(p, 0x39) == 0) {
             setTopic(0);
         } else {
             setTopic(1);
@@ -436,11 +436,11 @@ void SpNpcKaitlinTalk::start(TalkStartMsg *outp) {
     }
     switch (getTopic()) {
     case 0:
-        _ZN12Unk_02097ff47setFlagEj(p, 0x33);
+        _ZN10PlayerData7setFlagEj(p, 0x33);
         out->msgIndex = 0;
         break;
     case 1:
-        _ZN12Unk_02097ff47setFlagEj(p, 0x33);
+        _ZN10PlayerData7setFlagEj(p, 0x33);
         out->msgIndex = Random_GlobalBelow(3) + 1;
         break;
     case 2:

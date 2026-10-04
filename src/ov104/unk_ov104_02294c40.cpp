@@ -2,7 +2,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
-#include "player/Unk_02097ff4.h"
+#include "player/PlayerData.h"
 #include "ui/CursorMotion.h"
 #include "talk/TalkWindowState.h"
 #include "item/Letter.h"
@@ -507,7 +507,7 @@ BOOL PostOfficeMenu::execClosed() {
         MenuCtrl_SetResult(1);
         r4 = 0;
         if (LetterList_Compact(boxLetters, 10) <= 0) r4 = 4;
-        if (((Unk_02097ff4 *)PlayerData_GetCurrent())->testFlag(1)) {
+        if (((PlayerData *)PlayerData_GetCurrent())->testFlag(1)) {
             r4 |= deliverVillagerLettersNow(boxLetters);
         }
         r4 |= takeFutureLetter(boxLetters);

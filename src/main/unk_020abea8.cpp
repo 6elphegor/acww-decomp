@@ -1,6 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "game/Unk_02033914.h"
+#include "game/GroundInfoBase.h"
 #include "gfx/ObjShadowTexture.h"
 #include "gfx/NNSG3dResTex.h"
 #include "gfx/ObjShadowTexDef.h"

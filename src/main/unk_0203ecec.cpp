@@ -163,7 +163,7 @@ u32 WorldCurve_AngleToDistance(u32 x);
 }
 
 extern "C" {
-u8 *_ZN12Unk_02097ff411getEmotionsEv(s32 p);
+u8 *_ZN10PlayerData11getEmotionsEv(s32 p);
 }
 
 extern "C" {
@@ -295,7 +295,7 @@ extern "C" void EmotionSlots_Clear(u8 *p) {
 
 extern "C" s32 Emotion_CountLearned(void) {
     u8 *p; s32 i, n;
-    p = _ZN12Unk_02097ff411getEmotionsEv(PlayerData_GetCurrent());
+    p = _ZN10PlayerData11getEmotionsEv(PlayerData_GetCurrent());
     n = 0;
     for (i = 0; i < 4; i++) {
         if (EmotionSlots_Get(p, i) != 0xff) {
@@ -307,12 +307,12 @@ extern "C" s32 Emotion_CountLearned(void) {
 
 extern "C" s32 Emotion_FindFreeSlot(void) { return Emotion_FindSlot(0xff); }
 
-extern "C" void Emotion_SetSlot(s32 i, s32 v) { EmotionSlots_Set(_ZN12Unk_02097ff411getEmotionsEv(PlayerData_GetCurrent()), i, v); }
+extern "C" void Emotion_SetSlot(s32 i, s32 v) { EmotionSlots_Set(_ZN10PlayerData11getEmotionsEv(PlayerData_GetCurrent()), i, v); }
 
-extern "C" s32 Emotion_GetSlot(s32 i) { return EmotionSlots_Get(_ZN12Unk_02097ff411getEmotionsEv(PlayerData_GetCurrent()), i); }
+extern "C" s32 Emotion_GetSlot(s32 i) { return EmotionSlots_Get(_ZN10PlayerData11getEmotionsEv(PlayerData_GetCurrent()), i); }
 
 extern "C" s32 Emotion_FindSlot(u32 id) {
-    u8 *p = _ZN12Unk_02097ff411getEmotionsEv(PlayerData_GetCurrent());
+    u8 *p = _ZN10PlayerData11getEmotionsEv(PlayerData_GetCurrent());
     for (s32 i = 0; i < 4; i++) {
         if (id == (u32)EmotionSlots_Get(p, i)) {
             return i;

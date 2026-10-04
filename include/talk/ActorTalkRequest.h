@@ -20,7 +20,7 @@ public:
     ActorTalkRequest();
     virtual ~ActorTalkRequest();
     virtual void resetMsg();
-    virtual void onConditionTag();
+    virtual void onConditionTag(u32 condition, u32 branchCount);
     virtual void onEventTag(u32 id);
     virtual void onTag09_0();
     virtual void onTag09_1();

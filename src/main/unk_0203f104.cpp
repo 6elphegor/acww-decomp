@@ -96,7 +96,7 @@ s32 Backup_GetStatus(void *p);
 s32 EventWeekSlots_UpdateToday(s32 v);
 s32 GameStart_IsActive(void);
 s32 PlayerData_GetCurrent();
-s32 _ZN12Unk_02097ff48testFlagEj(s32 p, s32 v);
+s32 _ZN10PlayerData8testFlagEj(s32 p, s32 v);
 s32 EventWeekSlots_IsSeenToday(...);
 s32 DateTime_DiffMinutes(void *a, void *b);
 s32 DateTime_DiffDays(void *a, void *b);
@@ -120,7 +120,7 @@ void *SaveVillagers_Get(void *, s32);
 s32 SaveVillagers_GetUnk3830Index(void *);
 u8 *Villager_GetBirthday(void *);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
-u8 *_ZN12Unk_02097ff411getBirthdayEv(s32);
+u8 *_ZN10PlayerData11getBirthdayEv(s32);
 
 void Event_RefreshToday(s32);
 void EventSchedule_CollectDay(EventEntryView *, ClockDateTime, s32);
@@ -473,7 +473,7 @@ extern "C" u8 EventRule_ResolveDay(Unk_0203f554_Sub *e, u32 year, EventDate cal,
 
 extern "C" void EventRule_GetPlayerBirthday(Unk_0203f554_Sub *e, EventDate *out) {
     if (PlayerData_GetCurrent()) {
-        u8 *p = _ZN12Unk_02097ff411getBirthdayEv(PlayerData_GetCurrent());
+        u8 *p = _ZN10PlayerData11getBirthdayEv(PlayerData_GetCurrent());
         if (p) {
             out->s.b3 = p[1];
             out->s.b2 = p[0];
@@ -1043,7 +1043,7 @@ extern "C" BOOL Game_IsIntroPeriod(void) {
         r = TRUE;
     } else {
         s32 p = PlayerData_GetCurrent();
-        if (p == 0 || _ZN12Unk_02097ff48testFlagEj(p, 1) != 0) {
+        if (p == 0 || _ZN10PlayerData8testFlagEj(p, 1) != 0) {
             r = TRUE;
         }
     }

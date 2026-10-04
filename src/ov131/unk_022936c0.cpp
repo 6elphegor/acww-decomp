@@ -21,7 +21,7 @@ void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void *PlayerData_GetCurrent();
-void *_ZN12Unk_02097ff414getBankAccountEv();
+void *_ZN10PlayerData14getBankAccountEv();
 void *_ZN10PlayerData12getInventoryEv(void *p);
 s32 MenuCtrl_GetMode();
 void MenuCtrl_SetResult(s32 a);
@@ -510,7 +510,7 @@ void AmountEntryMenu::setupAmounts() {
     s32 lo;
     s32 m = MenuCtrl_GetMode();
     void *p = PlayerData_GetCurrent();
-    void *q = _ZN12Unk_02097ff414getBankAccountEv();
+    void *q = _ZN10PlayerData14getBankAccountEv();
     switch (m) {
     case 0x38:
         hi = 0x98967f;
@@ -568,7 +568,7 @@ void AmountEntryMenu::commitAmount() {
     s32 b = NumberPad_GetTopAmount(&numberPad);
     s32 c = NumberPad_GetBottomAmount(&numberPad);
     void *p = PlayerData_GetCurrent();
-    void *q = _ZN12Unk_02097ff414getBankAccountEv();
+    void *q = _ZN10PlayerData14getBankAccountEv();
     s32 m = MenuCtrl_GetMode();
     switch (m) {
     case 0x36:

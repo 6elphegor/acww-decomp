@@ -77,8 +77,8 @@ extern s16 data_02135f44[];
 extern u32 __ptmf_null[];
 
 void *PlayerData_GetCurrent();
-s32 _ZN12Unk_02097ff48testFlagEj(void *h, s32 n);
-void _ZN12Unk_02097ff47setFlagEj(void *h, s32 n);
+s32 _ZN10PlayerData8testFlagEj(void *h, s32 n);
+void _ZN10PlayerData7setFlagEj(void *h, s32 n);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *h);
 s32 PlayerSpNpcRecord_GetInsuranceDate(void *h);
 void _ZN20PlayerDailyTalkFlags10stampTodayEv(void *h);
@@ -931,13 +931,13 @@ void SpNpcLyleTalk::attachOwner(SpNpcLyle *o) {
 void SpNpcLyleTalk::start(TalkStartMsg *out) {
     BOOL b = FALSE;
     void *h = PlayerData_GetCurrent();
-    if (_ZN12Unk_02097ff48testFlagEj(h, 0x17) != 0) {
+    if (_ZN10PlayerData8testFlagEj(h, 0x17) != 0) {
         s32 v = PlayerSpNpcRecord_GetInsuranceDate(_ZN10PlayerData14getSpNpcRecordEv(h));
         SpNpcLyleDateBuf obj;
         Clock_GetDate(&obj);
         if (Date_DaysBetween(&obj, v) < 1) {
             topic = 1;
-        } else if (_ZN12Unk_02097ff48testFlagEj(h, 0x18) != 0) {
+        } else if (_ZN10PlayerData8testFlagEj(h, 0x18) != 0) {
             if (Talk_CheckAndSetPlayerFlag(0x28, b) != 0) {
                 topic = 2;
             } else {
@@ -974,7 +974,7 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
     case 0x1c:
         Hud_Hide();
         r5 = 0x15;
-        if (_ZN12Unk_02097ff48testFlagEj(h, 0x17) != 0) {
+        if (_ZN10PlayerData8testFlagEj(h, 0x17) != 0) {
             r5 = 0x1d;
         }
         break;
@@ -993,7 +993,7 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
         r5 = (u8)(idx + 0xe);
         questionCount = questionCount + 1;
         if (questionCount >= 4) {
-            if (_ZN12Unk_02097ff48testFlagEj(h, 0x18) == 0) {
+            if (_ZN10PlayerData8testFlagEj(h, 0x18) == 0) {
                 r5 = 0x13;
             } else {
                 r5 = 0x1b;
@@ -1005,14 +1005,14 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
         break;
     }
     case 0x13:
-        if (_ZN12Unk_02097ff48testFlagEj(h, 0x17) == 0) {
+        if (_ZN10PlayerData8testFlagEj(h, 0x17) == 0) {
             r5 = 0x14;
         } else {
             r5 = 0x1c;
         }
         break;
     case 0x18:
-        if (_ZN12Unk_02097ff48testFlagEj(h, 0x17) == 0) {
+        if (_ZN10PlayerData8testFlagEj(h, 0x17) == 0) {
             r5 = 0x19;
         } else {
             r5 = 0x1e;
@@ -1023,7 +1023,7 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
         _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &m.item, 0, 5, 0);
         NpcActor_ChargePlayer(owner, 0xbb8);
         r5 = 0x1a;
-        _ZN12Unk_02097ff47setFlagEj(h, 0x17);
+        _ZN10PlayerData7setFlagEj(h, 0x17);
         _ZN20PlayerDailyTalkFlags10stampTodayEv(_ZN10PlayerData14getSpNpcRecordEv(h));
         break;
     case 0x16:
@@ -1036,7 +1036,7 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
         _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &m.item2, 0, 5, 0);
         NpcActor_ChargePlayer(owner, 0x1770);
         r5 = 0x1f;
-        _ZN12Unk_02097ff47setFlagEj(h, 0x18);
+        _ZN10PlayerData7setFlagEj(h, 0x18);
         break;
     case 0x23:
         _ZN16ActorTalkRequest15setPocketFilterEjjj(this, (u32)SpNpcLyle_IsForgedPainting, 0xd, 1);

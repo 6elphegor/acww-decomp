@@ -4,6 +4,7 @@
 #include "gfx/AnimModel.h"
 #include "gfx/ModelAnim.h"
 #include "gfx/P.h"
+#include "gfx/SPLResource.h"
 #include "gfx/Rgb555.h"
 
 struct Unk_0209002c_Handle;
@@ -130,18 +131,6 @@ struct EffectSplResEntry {
     s32 emitterCount;
 };
 
-struct Unk_0208fdcc_A {
-    s32 unk_00;
-    s32 posX;
-    s32 posY;
-    s32 posZ;
-    u8 unk_10[0x40];
-    u8 tintFlags;
-};
-
-struct Unk_0208fdcc_B {
-    Unk_0208fdcc_A *header;
-};
 
 
 struct Unk_0208ffe4_V {
@@ -932,7 +921,7 @@ extern "C" s16 EffectSpl_GetSeasonTint()
 
 extern "C" void EffectSpl_ApplySceneTint(EffectSplEmitter *o)
 {
-    u32 f = ((Unk_0208fdcc_B *)o->resource)->header->tintFlags;
+    u32 f = o->resource->p_base->tintFlags;
     if ((f & 0x80) != 0) {
         volatile EffectTintColor l0, l2, l4, l6, l8, la, lc, le;
         l4.v = SceneLights_GetBaseColor();
@@ -964,9 +953,9 @@ extern "C" void EffectSpl_InitEmitterAtPos(EffectSplEmitter *o)
     EffectSpl_ApplySceneTint(o);
     v = sEffectSplEmitPos;
     if (v != NULL) {
-        o->posX = v[0] + ((Unk_0208fdcc_B *)o->resource)->header->posX;
-        o->posY = v[1] + ((Unk_0208fdcc_B *)o->resource)->header->posY;
-        o->posZ = v[2] + ((Unk_0208fdcc_B *)o->resource)->header->posZ;
+        o->posX = v[0] + o->resource->p_base->pos.x;
+        o->posY = v[1] + o->resource->p_base->pos.y;
+        o->posZ = v[2] + o->resource->p_base->pos.z;
     }
 }
 

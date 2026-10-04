@@ -8,6 +8,7 @@
 #include "sys/SceneBase.h"
 #include "game/SceneWarp.h"
 #include "game/SceneInfo.h"
+#include "net/CommManager.h"
 #include "sys/ProcProfile.h"
 
 #define reg_4000358 (*(u32 *)0x4000358)
@@ -60,12 +61,6 @@ struct S394 {
     u8 pad27;
 };
 
-struct Unk_020cbb18_t {
-    u8 unk_00[0x64];
-    u32 myAid;
-    u32 f68;
-};
-
 struct GroundSeasonDate {
     u8 month;
     u8 day;
@@ -105,7 +100,7 @@ public:
 extern "C" {
 // ---- data of other units ----
 extern s32 data_020c8cc0;
-extern Unk_020cbb18_t* gCommManager;
+extern CommManager *gCommManager;
 extern u16 gNextSceneProfile;
 extern u8 data_021e5890[];
 extern S2f0* gActorDefaultParent;
@@ -128,8 +123,8 @@ extern u8 data_ov054_0225b7a8[];
 extern u8 data_ov005_0225b79c[];
 
 // ---- functions of other units ----
-BOOL _ZN11CommManager12isSlotActiveEi(Unk_020cbb18_t* p, u32 i);
-BOOL _ZN11CommManager7isMyAidEj(Unk_020cbb18_t* p, u32 i);
+BOOL _ZN11CommManager12isSlotActiveEi(CommManager *p, u32 i);
+BOOL _ZN11CommManager7isMyAidEj(CommManager *p, u32 i);
 void _ZN11CommManager14setMemberCountEj(void*, s32);
 u32 NetArea_GetSlotScene(u32 i);
 void Scene_Request(s32 a, s32 b, s32 c, s32 d);
@@ -667,7 +662,7 @@ BOOL FieldSceneSteps::stepSetupSystems(u32, u32) {
     ScreenTransition_ShowCover();
     TransitionCommIcon_ResumeWinOut();
     Snd_CreateScene();
-    Unk_020cbb18_t* p = gCommManager;
+    CommManager *p = gCommManager;
     s32 i;
     if (_ZN11CommManager12isSlotActiveEi(p, p->myAid)) {
         for (i = 0; i < 4; i++) PlayerSession_SetGfxSlot(i, 4);
@@ -680,10 +675,10 @@ BOOL FieldSceneSteps::stepSetupSystems(u32, u32) {
     }
     if (Scene_InUnk6Or7()) {
         if (Scene_GetCurrent() == 6) {
-            p->f68 = 4;
+            p->localSlot = 4;
             for (i = 3; i >= 0; i--) PlayerSession_SetDataIndex(i, i);
         } else if (Scene_GetCurrent() == 7) {
-            s32 a = p->f68;
+            s32 a = p->localSlot;
             s32 b = PlayerSession_GetDataIndex(a);
             s32 c = 0;
             for (i = 3; i >= 0; i--) {
@@ -695,9 +690,9 @@ BOOL FieldSceneSteps::stepSetupSystems(u32, u32) {
             }
         }
     } else if (Scene_GetCurrent() == 0x2c) {
-        Unk_020cbb18_t* q = gCommManager;
+        CommManager *q = gCommManager;
         q->myAid = 4;
-        q->f68 = 4;
+        q->localSlot = 4;
         for (i = 3; i >= 0; i--) PlayerSession_ClearDataIndex(i);
     }
     return TRUE;
@@ -828,11 +823,11 @@ BOOL FieldScene::onDelete() {
     data_021ce63c = 0;
     if (Scene_GetCurrent() == 6) {
         u32 i = 0;
-        Unk_020cbb18_t* p = gCommManager;
+        CommManager *p = gCommManager;
         for (; i < 4; i++) {
             if (i == 0) {
-                PlayerSession_SetDataIndex(0, p->f68);
-                p->f68 = 0;
+                PlayerSession_SetDataIndex(0, p->localSlot);
+                p->localSlot = 0;
             } else {
                 PlayerSession_ClearDataIndex(i);
             }
@@ -1459,7 +1454,7 @@ extern "C" u8 Scene_GetMaxFurniture(u32 i) { return sSceneMaxFurniture[i]; }
 extern "C" BOOL Scene_NoPlayerInUnsharedScene(void) {
     u32 v;
     s32 i;
-    Unk_020cbb18_t *p = gCommManager;
+    CommManager *p = gCommManager;
     if (!_ZN11CommManager12isSlotActiveEi(p, p->myAid)) {
         v = Scene_GetCurrent();
         if (v == 12 || v == 13 || v == 14 || (u8)(v + 0xd2) <= 1) return FALSE;

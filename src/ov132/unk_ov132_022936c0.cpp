@@ -23,7 +23,7 @@ void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void *PlayerData_GetCurrent();
-void *_ZN12Unk_02097ff414getBankAccountEv(void *p);
+void *_ZN10PlayerData14getBankAccountEv(void *p);
 void *_ZN10PlayerData12getInventoryEv(void *p);
 s32 MenuCtrl_GetMode();
 void MenuCtrl_SetResult(s32 a);
@@ -494,7 +494,7 @@ void BankMenu::startSelect() {
 }
 
 void BankMenu::selectDeposit() {
-    if (PlayerBank_GetBalance(_ZN12Unk_02097ff414getBankAccountEv(PlayerData_GetCurrent())) == 0x3b9ac9ff) {
+    if (PlayerBank_GetBalance(_ZN10PlayerData14getBankAccountEv(PlayerData_GetCurrent())) == 0x3b9ac9ff) {
         showMessage(0xe);
     } else {
         nextMenuId = 0x35;

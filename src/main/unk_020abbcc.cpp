@@ -1,5 +1,5 @@
 #include "types.h"
-#include "game/Unk_02033914.h"
+#include "game/GroundInfoBase.h"
 #include "gfx/NNSG3dResMatData.h"
 #include "game/Vec3.h"
 #include "gfx/SceneLightsCol.h"
@@ -22,9 +22,9 @@ void NNSi_G3dModifyMatFlag(u32 a, u32 b, u32 c);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 void Mtx43_RotateX(void *m, s32 a);
 s32 Ground_GetDefaultY(s32 a);
-void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(Unk_02033914 *p, Vec3 *pos, s32 a, s32 b);
-s32 _ZN14GroundInfoBase9getHeightEi(Unk_02033914 *p, s32 a);
-void GroundInfo_Destruct(Unk_02033914 *p);
+void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(GroundInfoBase *p, Vec3 *pos, s32 a, s32 b);
+s32 _ZN14GroundInfoBase9getHeightEi(GroundInfoBase *p, s32 a);
+void GroundInfo_Destruct(GroundInfoBase *p);
 BOOL Scene_InMuseumRoom(void);
 s32 WorldCurve_ToCurved(Vec3 *out, Vec3 *in);
 Col SceneLights_GetRoomColor(void);
@@ -81,8 +81,8 @@ extern "C" void CharaShadow_DrawFaded(Vec3 *pos, s32 a, s32 b, s32 c) {
 }
 
 extern "C" void CharaShadow_Draw(Vec3 *pos, s32 a, s32 b, s32 c) {
-    Unk_02033914 buf1;
-    Unk_02033914 buf2;
+    GroundInfoBase buf1;
+    GroundInfoBase buf2;
     Vec3 pos2;
     Vec3 out;
     Vec3 scale;

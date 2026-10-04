@@ -25,6 +25,8 @@
 #include "talk/MsgString9C.h"
 #include "talk/ChoiceList.h"
 #include "talk/ChoiceMenu.h"
+#include "talk/ChoiceString.h"
+#include "ui/TalkArrow.h"
 #include "nitro/fs.h"
 #include "net/CommManager.h"
 
@@ -52,10 +54,8 @@ class ChoiceMenu;
 class ChoiceList;
 class ChoiceEntry;
 class BmgReader;
-class Unk_02068f10_Obj;
 class TalkBmgReader;
 struct TalkAdvanceStackPad;
-class Unk_02066978_Owner;
 class TalkTagScannerView;
 class TalkAutoAdvance;
 struct TalkWindowShake;
@@ -66,28 +66,15 @@ class MsgString9C;
 class MsgString9B;
 class MsgString17;
 class MsgString17B;
-struct Unk_02067f44_Sel;
-struct Unk_020682b8_Sub;
 class TalkFrameView;
-class Unk_02068848_Menu;
-struct Unk_02068848_Owner;
 class TalkTagScanner;
 class HouseData;
 class TalkParserCondTags;
-class Unk_020ddcf0_v13;
-class Unk_02069878_Obj;
-struct Unk_02069834_Owner;
 class TalkParserVarTags;
 class TalkParserTags2;
-class Unk_0206a198_Sub;
-struct Unk_0206a198_Owner;
 class TalkParserTags;
 class TalkCharStepper;
 struct TalkParserSpeedState;
-class Unk_0206b950_Obj;
-class MsgString33View;
-struct Unk_0206c4fc_Ent;
-struct Unk_0206c56c_Obj;
 
 extern "C" { extern u8 gTalkMsgIndexNone; }
 
@@ -116,7 +103,7 @@ public:
     void selectByPlayerGender();
     void expandNamedSlot(s32 idx);
     void expandSlot(s32 idx);
-    void pushArticle(Unk_0206c4fc_Ent *e);
+    void pushArticle(MsgString33 *e);
     s32 measureLine(u32 a, BOOL b);
     void tagNamedSlotForm3();
     void tagNamedSlotForm2();
@@ -289,7 +276,7 @@ public:
 
 class TalkTagScanner : public MsgWalker {
 public:
-    TalkTagScanner(Unk_02068848_Owner *owner);
+    TalkTagScanner(TalkWindow *owner);
     virtual ~TalkTagScanner();
     virtual void onTag(u8 *p);
 
@@ -342,7 +329,7 @@ public:
     void selectByPlayerGender();
     void debugPrintMissing(s32 a, const void *b);
 
-    /* 0x24 */ Unk_02068848_Owner *window;
+    /* 0x24 */ TalkWindow *window;
     /* 0x28 */ u8 *unk_28;
     /* 0x2c */ s32 unk_2c;
     /* 0x30 */ s32 unk_30;
@@ -392,10 +379,6 @@ public:
 
 
 
-// library object, 0x34 bytes (polymorphic)
-struct MsgString33View {
-    u8 pad[0x34];
-};
 
 class TalkWindowMsg {
 public:
@@ -453,19 +436,10 @@ public:
     u8 pad_12c4[0xe0];
     /* 0x13a4 */ u8 runner[4];
     u8 pad_13a8[0x8];
-    union {
-        /* 0x13b0 */ Unk_02066978_Owner *unk_13b0;
-        TalkMsgRequest *unk_13b0_v16;
-    };
+    /* 0x13b0 */ TalkMsgRequest *request;
     /* 0x13b4 */ u8 msgAttr[0xc];
-    union {
-        /* 0x13c0 */ u8 unk_13c0[11][0x34];
-        MsgString33View unk_13c0_v16[11];
-    };
-    union {
-        /* 0x15fc */ u8 unk_15fc[4][0x34];
-        MsgString33View unk_15fc_v16[4];
-    };
+    /* 0x13c0 */ MsgString33 slots[11];
+    /* 0x15fc */ MsgString33 namedSlots[4];
     /* 0x16cc */ u32 namedSlotColors[4];
     u8 pad_16dc[0x1c];
     /* 0x16f8 */ u8 voiceInstantByMsg;
@@ -593,7 +567,7 @@ struct TalkWindow {
     TalkMsgBuffer msgBuffer;
     TalkParser parser;
     MsgRunner runner;
-    Unk_02067f44_Sel *request;
+    TalkMsgRequest *request;
     BmgMsgAttr msgAttr;
     MsgString33 slots[11];
     MsgString33 namedSlots[4];
@@ -623,69 +597,10 @@ struct TalkWindow {
 
 
 
-class Unk_02068f10_Obj {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual u8 *vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34(s32 a, s32 b);
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void *vfunc_68();
-};
 
 
 struct TalkAdvanceStackPad { s32 v[2]; TalkAdvanceStackPad() {} ~TalkAdvanceStackPad() {} };
 
-class Unk_02066978_Owner {
-public:
-    virtual ~Unk_02066978_Owner();
-    virtual void vfunc_08();
-    virtual u32 vfunc_0c();
-    virtual void vfunc_10(u32 v);
-    virtual void vfunc_14(u32 v);
-    virtual void vfunc_18(u32 v);
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void *vfunc_68();
-};
 
 class TalkTagScannerView {
 public:
@@ -705,30 +620,13 @@ public:
 };
 
 
-struct Unk_02067f44_Sel {
-    virtual void vfunc_00(); virtual void vfunc_04(); virtual void vfunc_08(); virtual void vfunc_0c();
-    virtual void vfunc_10(); virtual void vfunc_14(); virtual void vfunc_18(); virtual void vfunc_1c();
-    virtual void vfunc_20(); virtual void vfunc_24(); virtual void vfunc_28(); virtual void vfunc_2c();
-    virtual void vfunc_30(); virtual void vfunc_34(); virtual void vfunc_38(); virtual void vfunc_3c();
-    virtual void vfunc_40(); virtual void vfunc_44(); virtual void vfunc_48(); virtual void vfunc_4c();
-    virtual void vfunc_50(); virtual void vfunc_54(); virtual void vfunc_58(); virtual void vfunc_5c();
-    virtual void vfunc_60(); virtual void vfunc_64();
-    virtual void *vfunc_68();
-    virtual s32 vfunc_6c();
-};
 
-struct Unk_020682b8_Sub {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-};
 
 class TalkFrameView {
 public:
     u8 pad_00[0x0c];
-    Unk_020682b8_Sub arrow;
-    u8 pad_10[0x74 - 0x10];
+    TalkArrow arrow;
+    u8 pad_50[0x74 - 0x50];
     s32 scrollX, scrollY, busyIconTimer;
     void drawBusyIcon();
     void updateBusyIcon();
@@ -750,48 +648,8 @@ public:
 
 
 
-class Unk_02068848_Menu {
-public:
-    virtual ~Unk_02068848_Menu();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34(s32 a, s32 b);
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64(u32 v);
-    virtual s32 vfunc_68();
-};
 
 
-struct Unk_02068848_Owner {
-    u8 pad_0000[0x13b0];
-    /* 0x13b0 */ Unk_02068848_Menu *request;
-    u8 pad_13b4[0x13c0 - 0x13b4];
-    /* 0x13c0 */ MsgString33 slots[11];
-    /* 0x15fc */ MsgString33 namedSlots[4];
-    u8 pad_16cc[0x1704 - 0x16cc];
-    /* 0x1704 */ u32 voiceTextColor;
-    u8 pad_1708[0x1710 - 0x1708];
-    /* 0x1710 */ u32 weekday;
-};
 
 
 // Script command handlers: member functions reached through pointer tables at 0x020dd6b4..0x020ddbf8
@@ -860,59 +718,8 @@ public:
     /* 0xd8 */ u8 choiceDeferred;
 };
 
-class Unk_020ddcf0_v13 {
-public:
-    virtual ~Unk_020ddcf0_v13();
-    virtual void resetMsg();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag(s32 v);
-    virtual void onActionTag0();
-    virtual void onActionTag1(u32 v);
-    virtual void onActionTag2(u32 v);
-    virtual void onActionTag3(u32 v);
-    virtual void onActionTag4(u32 v);
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual u32 getSpeakerData();
-    virtual s32 getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    MsgString9 *getSpeakerName();
-};
 
-class Unk_02069878_Obj {
-public:
-    virtual ~Unk_02069878_Obj();
-    virtual void vfunc_08();
-    virtual u8 *vfunc_0c();
-};
 
-struct Unk_02069834_Owner {
-    u8 pad_00[0xb4];
-    /* 0x00b4 */ u8 choiceMenu[0x13b0 - 0xb4];
-    /* 0x13b0 */ Unk_020ddcf0_v13 *request;
-    u8 pad_13b4[0x16f9 - 0x13b4];
-    /* 0x16f9 */ u8 voiceInstantByTag;
-    /* 0x16fa */ u8 voiceInWait;
-    u8 pad_16fb[0x189c - 0x16fb];
-    /* 0x189c */ Unk_02069878_Obj playerName;
-    u8 pad_18a0[0x19d0 - 0x18a0];
-    /* 0x19d0 */ Unk_02069878_Obj greeting;
-};
 
 class TalkParserVarTags : public MsgWalker {
 public:
@@ -955,7 +762,7 @@ public:
     void tagGlyph0();
     void tagNop();
 
-    /* 0x24 */ Unk_02069834_Owner *window;
+    /* 0x24 */ TalkWindow *window;
     u8 pad_28[8];
     /* 0x30 */ s32 printStatus;
     u8 pad_34[4];
@@ -998,29 +805,7 @@ public:
     /* 0x3c */ u32 tagId;
 };
 
-class Unk_0206a198_Sub {
-public:
-    virtual ~Unk_0206a198_Sub();
 
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-};
-
-struct Unk_0206a198_Owner {
-    /* 0x0000 */ u8 pad[0x13b0];
-    /* 0x13b0 */ Unk_0206a198_Sub *request;
-};
 
 class TalkParserTags : public MsgParser {
 public:
@@ -1137,7 +922,7 @@ public:
     void tagGroup01();
     void tagGroup00();
 
-    /* 0x24 */ Unk_0206a198_Owner *window;
+    /* 0x24 */ TalkWindow *window;
     /* 0x28 */ u8 unk_28[0x10];
     /* 0x38 */ u32 tag;
     /* 0x3c */ u32 tagId;
@@ -1147,29 +932,9 @@ public:
     /* 0xd8 */ u8 choiceDeferred;
 };
 
-// polymorphic object seen through the owner's member objects
-struct Unk_0206b950_Obj {
-    virtual ~Unk_0206b950_Obj();
-    virtual void vfunc_08();
-    virtual u8 *vfunc_0c();
-};
 
 
-struct Unk_0206c4fc_Ent {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual u8 *vfunc_0c();
-    u32 unk_04;
-    u8 attr[0x2c];
-};
 
-struct Unk_0206c56c_Obj {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual u8 *vfunc_0c();
-};
 
 
 
@@ -1192,7 +957,7 @@ namespace n17 {
 extern "C" { void func_0206c56c_dummy_unused(); }
 extern "C" { MsgTextLabel *MsgTextLabel_CreateVram(u32 a, u32 len, u32 b); }
 extern "C" { void MsgTextLabel_Destroy(MsgTextLabel *p); }
-extern "C" { Unk_0206c56c_Obj *String_GetArticle(u8 *key); }
+extern "C" { MsgString *String_GetArticle(u8 *key); }
 extern "C" { void *PlayerData_GetCurrent(); }
 extern "C" { void *_ZN10PlayerData11getPlayerIdEv(void *); }
 extern "C" { s32 _ZN8PlayerId9getGenderEv(void *); }
@@ -1267,28 +1032,28 @@ void TalkRenderProcessor::onTag(u8 *p) {
     tag.parse(p);
     dispatchTag();
 }
-void TalkRenderProcessor::pushArticle(Unk_0206c4fc_Ent *e) {
+void TalkRenderProcessor::pushArticle(MsgString33 *e) {
     using namespace n17;
-    u8 *k = e->attr - 0;
-    Unk_0206c56c_Obj *o = 0;
+    u8 *k = (u8 *)&e->attr - 0;
+    MsgString *o = 0;
     if (articleMode == 0) {
         o = String_GetArticle(k + 8);
     } else if (articleMode == 1) {
         o = String_GetArticle(k + 9);
     }
-    if (o != 0) pushText(o->vfunc_0c());
+    if (o != 0) pushText(o->data());
     articleMode = 0;
 }
 void TalkRenderProcessor::expandSlot(s32 idx) {
     using namespace n17;
-    Unk_0206c4fc_Ent *e = (Unk_0206c4fc_Ent *)(window + 0x13c0 + idx * 0x34);
-    pushText(e->vfunc_0c());
+    MsgString33 *e = (MsgString33 *)(window + 0x13c0 + idx * 0x34);
+    pushText(e->data());
     pushArticle(e);
 }
 void TalkRenderProcessor::expandNamedSlot(s32 idx) {
     using namespace n17;
-    Unk_0206c4fc_Ent *e = (Unk_0206c4fc_Ent *)(window + 0x15fc + idx * 0x34);
-    pushText(e->vfunc_0c());
+    MsgString33 *e = (MsgString33 *)(window + 0x15fc + idx * 0x34);
+    pushText(e->data());
     pushArticle(e);
 }
 void TalkRenderProcessor::selectByPlayerGender() {
@@ -1359,9 +1124,6 @@ void TalkRenderProcessor::tagGroup0b() {
 
 // ======== unk_0206b4e4.cpp ========
 #define msgWindow ((TalkWindowMsg *)window)
-#define unk_13b0 unk_13b0_v16
-#define unk_13c0 unk_13c0_v16
-#define unk_15fc unk_15fc_v16
 namespace n16 {
 extern "C" { void MI_CpuFill8(void *, s32, u32); }
 extern "C" { u8 *Text_GetSpecialCharStr5(void); }
@@ -1373,13 +1135,13 @@ extern "C" { u32 Msg_FindTag(u32 a, s32 b, s32 c); }
 extern "C" { BOOL Talk_IsAltTextEnabled(void); }
 extern "C" TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 extern "C" void MsgTextLabel_Destroy(TextLabel *obj);
-extern "C" { Unk_0206b950_Obj *_ZN15TalkWindowState17getNumber1714TextEv(void *); }
-extern "C" { Unk_0206b950_Obj *_ZN15TalkWindowState13getMinuteTextEv(void *); }
-extern "C" { Unk_0206b950_Obj *_ZN15TalkWindowState11getHourTextEv(void *); }
-extern "C" { Unk_0206b950_Obj *_ZN15TalkWindowState14getWeekdayTextEv(void *); }
-extern "C" { Unk_0206b950_Obj *_ZN15TalkWindowState10getDayTextEv(void *); }
-extern "C" { Unk_0206b950_Obj *_ZN15TalkWindowState12getMonthTextEv(void *); }
-extern "C" { Unk_0206b950_Obj *_ZN15TalkWindowState11getYearTextEv(void *); }
+extern "C" { MsgString *_ZN15TalkWindowState17getNumber1714TextEv(void *); }
+extern "C" { MsgString *_ZN15TalkWindowState13getMinuteTextEv(void *); }
+extern "C" { MsgString *_ZN15TalkWindowState11getHourTextEv(void *); }
+extern "C" { MsgString *_ZN15TalkWindowState14getWeekdayTextEv(void *); }
+extern "C" { MsgString *_ZN15TalkWindowState10getDayTextEv(void *); }
+extern "C" { MsgString *_ZN15TalkWindowState12getMonthTextEv(void *); }
+extern "C" { MsgString *_ZN15TalkWindowState11getYearTextEv(void *); }
 typedef void (TalkRenderProcessor::*Unk_0206bd88_Fn)();
 
 }
@@ -1406,7 +1168,7 @@ void TalkRenderProcessor::tagGreeting() {
     if (r) {
         if (msgWindow->buildGreeting()) {
             skip(r - base);
-            pushText(((Unk_0206b950_Obj *)msgWindow->greeting)->vfunc_0c());
+            pushText(((MsgString *)msgWindow->greeting)->data());
         }
     }
 }
@@ -1415,69 +1177,69 @@ void TalkRenderProcessor::tagGreetingEnd() {
 void TalkRenderProcessor::tagPlayerName() {
     using namespace n16;
     msgWindow->buildPlayerName();
-    pushText(((Unk_0206b950_Obj *)msgWindow->playerName)->vfunc_0c());
+    pushText(((MsgString *)msgWindow->playerName)->data());
 }
 void TalkRenderProcessor::tagSpeakerName() {
     using namespace n16;
-    pushText(msgWindow->unk_13b0_v16->getSpeakerName()->data());
+    pushText(msgWindow->request->getSpeakerName()->data());
 }
 void TalkRenderProcessor::tagCatchphrase() {
     using namespace n16;
     msgWindow->buildCatchphrase();
-    pushText(((Unk_0206b950_Obj *)msgWindow->catchphrase)->vfunc_0c());
+    pushText(((MsgString *)msgWindow->catchphrase)->data());
 }
 void TalkRenderProcessor::tagTownName() {
     using namespace n16;
     msgWindow->buildTownName();
-    pushText(((Unk_0206b950_Obj *)msgWindow->townName)->vfunc_0c());
+    pushText(((MsgString *)msgWindow->townName)->data());
 }
 void TalkRenderProcessor::tagYear() {
     using namespace n16;
-    pushText(_ZN15TalkWindowState11getYearTextEv(msgWindow)->vfunc_0c());
+    pushText(_ZN15TalkWindowState11getYearTextEv(msgWindow)->data());
 }
 void TalkRenderProcessor::tagMonth() {
     using namespace n16;
-    pushText(_ZN15TalkWindowState12getMonthTextEv(msgWindow)->vfunc_0c());
+    pushText(_ZN15TalkWindowState12getMonthTextEv(msgWindow)->data());
 }
 void TalkRenderProcessor::tagDay() {
     using namespace n16;
-    pushText(_ZN15TalkWindowState10getDayTextEv(msgWindow)->vfunc_0c());
+    pushText(_ZN15TalkWindowState10getDayTextEv(msgWindow)->data());
 }
 void TalkRenderProcessor::tagWeekday() {
     using namespace n16;
-    pushText(_ZN15TalkWindowState14getWeekdayTextEv(msgWindow)->vfunc_0c());
+    pushText(_ZN15TalkWindowState14getWeekdayTextEv(msgWindow)->data());
 }
 void TalkRenderProcessor::tagHour() {
     using namespace n16;
-    pushText(_ZN15TalkWindowState11getHourTextEv(msgWindow)->vfunc_0c());
+    pushText(_ZN15TalkWindowState11getHourTextEv(msgWindow)->data());
 }
 void TalkRenderProcessor::tagMinute() {
     using namespace n16;
-    pushText(_ZN15TalkWindowState13getMinuteTextEv(msgWindow)->vfunc_0c());
+    pushText(_ZN15TalkWindowState13getMinuteTextEv(msgWindow)->data());
 }
 void TalkRenderProcessor::tagNumber1714() {
     using namespace n16;
-    pushText(_ZN15TalkWindowState17getNumber1714TextEv(msgWindow)->vfunc_0c());
+    pushText(_ZN15TalkWindowState17getNumber1714TextEv(msgWindow)->data());
 }
 void TalkRenderProcessor::tagFriendName() {
     using namespace n16;
     msgWindow->buildFriendName();
-    pushText(((Unk_0206b950_Obj *)msgWindow->friendName)->vfunc_0c());
+    pushText(((MsgString *)msgWindow->friendName)->data());
 }
 void TalkRenderProcessor::tagEnemyName() {
     using namespace n16;
     msgWindow->buildEnemyName();
-    pushText(((Unk_0206b950_Obj *)msgWindow->enemyName)->vfunc_0c());
+    pushText(((MsgString *)msgWindow->enemyName)->data());
 }
 void TalkRenderProcessor::tagRandomVillagerName() {
     using namespace n16;
     msgWindow->buildRandomVillagerName();
-    pushText(((Unk_0206b950_Obj *)msgWindow->randomVillagerName)->vfunc_0c());
+    pushText(((MsgString *)msgWindow->randomVillagerName)->data());
 }
 void TalkRenderProcessor::tagOtherResidentName() {
     using namespace n16;
     msgWindow->buildOtherResidentName();
-    pushText(((Unk_0206b950_Obj *)msgWindow->otherResidentName)->vfunc_0c());
+    pushText(((MsgString *)msgWindow->otherResidentName)->data());
 }
 void TalkRenderProcessor::tagSlot0() {
     using namespace n16; expandSlot(0); }
@@ -1512,22 +1274,22 @@ void TalkRenderProcessor::tagNamedSlot3() {
 void TalkRenderProcessor::tagImpression() {
     using namespace n16;
     msgWindow->buildImpression();
-    pushText(((Unk_0206b950_Obj *)msgWindow->impression)->vfunc_0c());
+    pushText(((MsgString *)msgWindow->impression)->data());
 }
 void TalkRenderProcessor::tagNickname() {
     using namespace n16;
     msgWindow->buildNickname();
-    pushText(((Unk_0206b950_Obj *)msgWindow->nickname)->vfunc_0c());
+    pushText(((MsgString *)msgWindow->nickname)->data());
 }
 void TalkRenderProcessor::tagCompliment() {
     using namespace n16;
     msgWindow->buildCompliment();
-    pushText(((Unk_0206b950_Obj *)msgWindow->compliment)->vfunc_0c());
+    pushText(((MsgString *)msgWindow->compliment)->data());
 }
 void TalkRenderProcessor::tagTrend() {
     using namespace n16;
     msgWindow->buildTrend();
-    pushText(((Unk_0206b950_Obj *)msgWindow->trend)->vfunc_0c());
+    pushText(((MsgString *)msgWindow->trend)->data());
 }
 void TalkRenderProcessor::tagArticleMode1() {
     using namespace n16; articleMode = 1; }
@@ -1536,35 +1298,35 @@ void TalkRenderProcessor::tagArticleMode2() {
 void TalkRenderProcessor::tagSelectByPlayerGender() {
     using namespace n16; selectByPlayerGender(); }
 void TalkRenderProcessor::tagSlotForm0() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (0))); }
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (0))); }
 void TalkRenderProcessor::tagSlotForm1() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (1))); }
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (1))); }
 void TalkRenderProcessor::tagSlotForm2() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (2))); }
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (2))); }
 void TalkRenderProcessor::tagSlotForm3() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (3))); }
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (3))); }
 void TalkRenderProcessor::tagSlotForm4() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (4))); }
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (4))); }
 void TalkRenderProcessor::tagSlotForm5() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (5))); }
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (5))); }
 void TalkRenderProcessor::tagSlotForm6() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (6))); }
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (6))); }
 void TalkRenderProcessor::tagSlotForm7() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (7))); }
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (7))); }
 void TalkRenderProcessor::tagSlotForm8() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (8))); }
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (8))); }
 void TalkRenderProcessor::tagSlotForm9() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (9))); }
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (9))); }
 void TalkRenderProcessor::tagSlotForm10() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (10))); }
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (10))); }
 void TalkRenderProcessor::tagNamedSlotForm0() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_15fc; selectBySlotForm((MsgString *)(p + (0))); }
+    using namespace n16; MsgString33 *p = msgWindow->namedSlots; selectBySlotForm((MsgString *)(p + (0))); }
 void TalkRenderProcessor::tagNamedSlotForm1() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_15fc; selectBySlotForm((MsgString *)(p + (1))); }
+    using namespace n16; MsgString33 *p = msgWindow->namedSlots; selectBySlotForm((MsgString *)(p + (1))); }
 void TalkRenderProcessor::tagNamedSlotForm2() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_15fc; selectBySlotForm((MsgString *)(p + (2))); }
+    using namespace n16; MsgString33 *p = msgWindow->namedSlots; selectBySlotForm((MsgString *)(p + (2))); }
 void TalkRenderProcessor::tagNamedSlotForm3() {
-    using namespace n16; MsgString33View *p = msgWindow->unk_15fc; selectBySlotForm((MsgString *)(p + (3))); }
+    using namespace n16; MsgString33 *p = msgWindow->namedSlots; selectBySlotForm((MsgString *)(p + (3))); }
 // ---- TalkRenderProcessor state handlers
 void TalkRenderProcessor::tagAltText() {
     using namespace n16;
@@ -1708,9 +1470,6 @@ void TalkTextBox::clearLabels() {
     }
 }
 #undef msgWindow
-#undef unk_13b0
-#undef unk_13c0
-#undef unk_15fc
 
 // ======== unk_0206ab74.cpp ========
 #define lineStartWords ((s32 *)lineStarts)
@@ -2278,9 +2037,9 @@ void TalkParserTags::tagGroup07()
 {
     using namespace n14;
     u32 v = tagId;
-    Unk_0206a198_Sub *p = window->request;
+    TalkMsgRequest *p = window->request;
     MsgTag_DtorStub(&tag);
-    p->vfunc_38(v);
+    p->onEventTag(v);
 }
 void TalkParserTags::tagGroup08()
 {
@@ -2322,7 +2081,6 @@ void TalkParserTags::tagGroup0a()
 }
 
 // ======== unk_02069834.cpp ========
-#define TalkMsgRequest Unk_020ddcf0_v13
 namespace n13 {
 extern "C" { u8 *Msg_GetColorTag(s32 i); }
 extern "C" { ChoiceList *_ZN15TalkWindowState13getChoiceListEv(void *p); }
@@ -2390,7 +2148,7 @@ void TalkParserVarTags::tagWait() {
     u16 v[2];
     tag.getArgU16(v);
     waitTimer = v[0] << 12;
-    window->voiceInWait = 1;
+    window->voice.inWait = 1;
 }
 void TalkParserVarTags::tagPageBreak() {
     using namespace n13;
@@ -2401,13 +2159,13 @@ void TalkParserVarTags::tagFastOn() {
     using namespace n13;
     MsgTag_DtorStub(&tag);
     instant = 1;
-    window->voiceInstantByTag = 1;
+    window->voice.instantByTag = 1;
 }
 void TalkParserVarTags::tagFastOff() {
     using namespace n13;
     MsgTag_DtorStub(&tag);
     instant = 0;
-    window->voiceInstantByTag = 0;
+    window->voice.instantByTag = 0;
 }
 void TalkParserVarTags::tagFastLockOn() {
     using namespace n13;
@@ -2426,7 +2184,7 @@ void TalkParserVarTags::tagGreeting() {
     if (p != 0) {
         if (_ZN13TalkWindowMsg13buildGreetingEv(window) != 0) {
             skip(p - base);
-            pushText(window->greeting.vfunc_0c());
+            pushText(window->greeting.data());
         }
     }
 }
@@ -2495,8 +2253,8 @@ void TalkParserVarTags::tagChoice2() {
     MsgString *b2 = b->getText();
     skip(tag.readArgStrings2(a1, a2, b1, b2));
     l->setCount(2);
-    ((ChoiceMenu *)window->choiceMenu)->setListChoices(l);
-    ((ChoiceMenu *)window->choiceMenu)->open();
+    window->choiceMenu.setListChoices(l);
+    window->choiceMenu.open();
     printStatus = 5;
 }
 void TalkParserVarTags::tagChoice3() {
@@ -2514,8 +2272,8 @@ void TalkParserVarTags::tagChoice3() {
     MsgString *c2 = c->getText();
     skip(tag.readArgStrings3(a1, a2, b1, b2, c1, c2));
     l->setCount(3);
-    ((ChoiceMenu *)window->choiceMenu)->setListChoices(l);
-    ((ChoiceMenu *)window->choiceMenu)->open();
+    window->choiceMenu.setListChoices(l);
+    window->choiceMenu.open();
     printStatus = 5;
 }
 void TalkParserVarTags::tagChoice4() {
@@ -2536,8 +2294,8 @@ void TalkParserVarTags::tagChoice4() {
     MsgString *d2 = d->getText();
     skip(tag.readArgStrings4(a1, a2, b1, b2, c1, c2, d1, d2));
     l->setCount(4);
-    ((ChoiceMenu *)window->choiceMenu)->setListChoices(l);
-    ((ChoiceMenu *)window->choiceMenu)->open();
+    window->choiceMenu.setListChoices(l);
+    window->choiceMenu.open();
     printStatus = 5;
 }
 void TalkParserVarTags::tagChoice5() {
@@ -2561,8 +2319,8 @@ void TalkParserVarTags::tagChoice5() {
     MsgString *e2 = e->getText();
     skip(tag.readArgStrings5(a1, a2, b1, b2, c1, c2, d1, d2, e1, e2));
     l->setCount(5);
-    ((ChoiceMenu *)window->choiceMenu)->setListChoices(l);
-    ((ChoiceMenu *)window->choiceMenu)->open();
+    window->choiceMenu.setListChoices(l);
+    window->choiceMenu.open();
     printStatus = 5;
 }
 void TalkParserVarTags::tagChoice2B() {
@@ -2623,7 +2381,7 @@ void TalkParserVarTags::tagPlayerName() {
     using namespace n13;
     _ZN13TalkWindowMsg15buildPlayerNameEv(window);
     pushText(Msg_GetColorTag(textColor));
-    pushText(window->playerName.vfunc_0c());
+    pushText(window->playerName.data());
     pushText(Msg_GetColorTag(5));
 }
 void TalkParserVarTags::tagSpeakerName() {
@@ -2632,7 +2390,6 @@ void TalkParserVarTags::tagSpeakerName() {
     pushText(window->request->getSpeakerName()->data());
     pushText(Msg_GetColorTag(6));
 }
-#undef TalkMsgRequest
 
 // ======== unk_02068f10.cpp ========
 #define data_020dde2c ((char *)"\202i\220e\226\247\223x")
@@ -2665,75 +2422,75 @@ extern "C" { BOOL _ZN13TalkWindowMsg14buildEnemyNameEv(u8 *c); }
 extern "C" { BOOL _ZN13TalkWindowMsg15buildFriendNameEv(u8 *c); }
 extern "C" { BOOL _ZN13TalkWindowMsg16buildCatchphraseEv(u8 *c); }
 extern "C" { void _ZN13TalkWindowMsg13buildTownNameEv(u8 *c); }
-extern "C" { Unk_02068f10_Obj *_ZN15TalkWindowState17getNumber1714TextEv(u8 *c); }
-extern "C" { Unk_02068f10_Obj *_ZN15TalkWindowState13getMinuteTextEv(u8 *c); }
-extern "C" { Unk_02068f10_Obj *_ZN15TalkWindowState11getHourTextEv(u8 *c); }
-extern "C" { Unk_02068f10_Obj *_ZN15TalkWindowState14getWeekdayTextEv(u8 *c); }
-extern "C" { Unk_02068f10_Obj *_ZN15TalkWindowState10getDayTextEv(u8 *c); }
-extern "C" { Unk_02068f10_Obj *_ZN15TalkWindowState12getMonthTextEv(u8 *c); }
-extern "C" { Unk_02068f10_Obj *_ZN15TalkWindowState11getYearTextEv(u8 *c); }
+extern "C" { MsgString *_ZN15TalkWindowState17getNumber1714TextEv(u8 *c); }
+extern "C" { MsgString *_ZN15TalkWindowState13getMinuteTextEv(u8 *c); }
+extern "C" { MsgString *_ZN15TalkWindowState11getHourTextEv(u8 *c); }
+extern "C" { MsgString *_ZN15TalkWindowState14getWeekdayTextEv(u8 *c); }
+extern "C" { MsgString *_ZN15TalkWindowState10getDayTextEv(u8 *c); }
+extern "C" { MsgString *_ZN15TalkWindowState12getMonthTextEv(u8 *c); }
+extern "C" { MsgString *_ZN15TalkWindowState11getYearTextEv(u8 *c); }
 extern "C" { ChoiceList *_ZN15TalkWindowState13getChoiceListEv(u8 *c); }
 extern "C" { u8 *Msg_GetColorTag(s32 i); }
 extern "C" { extern u8 gSaveData[]; }
 extern "C" { extern s32 data_020cbf90; }
 extern "C" { extern u8 gSaveHouse[]; }
 extern "C" { extern u8 data_020cba1c[]; }
-static inline Unk_02068f10_Obj *Sel(u8 *ctx) { return *(Unk_02068f10_Obj **)(ctx + 0x13b0); }
-static inline Unk_02068f10_Obj *At(u8 *ctx, u32 off) { return (Unk_02068f10_Obj *)(ctx + off); }
+static inline TalkMsgRequest *Sel(u8 *ctx) { return *(TalkMsgRequest **)(ctx + 0x13b0); }
+static inline MsgString *At(u8 *ctx, u32 off) { return (MsgString *)(ctx + off); }
 
 }
 void TalkParserCondTags::tagCatchphrase() {
     using namespace n12;
     if (!_ZN13TalkWindowMsg16buildCatchphraseEv(window)) debugPrintMissing(0xb58, data_020ddea4);
-    pushText(At(window, 0x1860)->vfunc_0c());
+    pushText(At(window, 0x1860)->data());
 }
 void TalkParserCondTags::tagTownName() {
     using namespace n12;
     _ZN13TalkWindowMsg13buildTownNameEv(window);
     pushText(Msg_GetColorTag(textColor));
-    pushText(At(window, 0x1880)->vfunc_0c());
+    pushText(At(window, 0x1880)->data());
     pushText(Msg_GetColorTag(8));
 }
 void TalkParserCondTags::tagYear() {
-    using namespace n12; pushText(_ZN15TalkWindowState11getYearTextEv(window)->vfunc_0c()); }
+    using namespace n12; pushText(_ZN15TalkWindowState11getYearTextEv(window)->data()); }
 void TalkParserCondTags::tagMonth() {
-    using namespace n12; pushText(_ZN15TalkWindowState12getMonthTextEv(window)->vfunc_0c()); }
+    using namespace n12; pushText(_ZN15TalkWindowState12getMonthTextEv(window)->data()); }
 void TalkParserCondTags::tagDay() {
-    using namespace n12; pushText(_ZN15TalkWindowState10getDayTextEv(window)->vfunc_0c()); }
+    using namespace n12; pushText(_ZN15TalkWindowState10getDayTextEv(window)->data()); }
 void TalkParserCondTags::tagWeekday() {
-    using namespace n12; pushText(_ZN15TalkWindowState14getWeekdayTextEv(window)->vfunc_0c()); }
+    using namespace n12; pushText(_ZN15TalkWindowState14getWeekdayTextEv(window)->data()); }
 void TalkParserCondTags::tagHour() {
-    using namespace n12; pushText(_ZN15TalkWindowState11getHourTextEv(window)->vfunc_0c()); }
+    using namespace n12; pushText(_ZN15TalkWindowState11getHourTextEv(window)->data()); }
 void TalkParserCondTags::tagMinute() {
-    using namespace n12; pushText(_ZN15TalkWindowState13getMinuteTextEv(window)->vfunc_0c()); }
+    using namespace n12; pushText(_ZN15TalkWindowState13getMinuteTextEv(window)->data()); }
 void TalkParserCondTags::tagNumber1714() {
-    using namespace n12; pushText(_ZN15TalkWindowState17getNumber1714TextEv(window)->vfunc_0c()); }
+    using namespace n12; pushText(_ZN15TalkWindowState17getNumber1714TextEv(window)->data()); }
 void TalkParserCondTags::tagFriendName() {
     using namespace n12;
     if (!_ZN13TalkWindowMsg15buildFriendNameEv(window)) debugPrintMissing(0xbbd, data_020dde94);
     pushText(Msg_GetColorTag(textColor));
-    pushText(At(window, 0x18b8)->vfunc_0c());
+    pushText(At(window, 0x18b8)->data());
     pushText(Msg_GetColorTag(6));
 }
 void TalkParserCondTags::tagEnemyName() {
     using namespace n12;
     if (!_ZN13TalkWindowMsg14buildEnemyNameEv(window)) debugPrintMissing(0xbcd, data_020dde84);
     pushText(Msg_GetColorTag(textColor));
-    pushText(At(window, 0x18d4)->vfunc_0c());
+    pushText(At(window, 0x18d4)->data());
     pushText(Msg_GetColorTag(6));
 }
 void TalkParserCondTags::tagRandomVillagerName() {
     using namespace n12;
     if (!_ZN13TalkWindowMsg23buildRandomVillagerNameEv(window)) debugPrintMissing(0xbdd, data_020dde74);
     pushText(Msg_GetColorTag(textColor));
-    pushText(At(window, 0x18f0)->vfunc_0c());
+    pushText(At(window, 0x18f0)->data());
     pushText(Msg_GetColorTag(6));
 }
 void TalkParserCondTags::tagOtherResidentName() {
     using namespace n12;
     if (!_ZN13TalkWindowMsg22buildOtherResidentNameEv(window)) debugPrintMissing(0xbee, data_020dde64);
     pushText(Msg_GetColorTag(textColor));
-    pushText(At(window, 0x190c)->vfunc_0c());
+    pushText(At(window, 0x190c)->data());
     s32 k = 5;
     if (window[0x19f6] != 0) k = 6;
     pushText(Msg_GetColorTag(k));
@@ -2771,13 +2528,13 @@ void TalkParserCondTags::tagNamedSlot3() {
 void TalkParserCondTags::tagImpression() {
     using namespace n12;
     if (!_ZN13TalkWindowMsg15buildImpressionEv(window)) debugPrintMissing(0xc7d, data_020dde5c);
-    pushText(At(window, 0x195c)->vfunc_0c());
+    pushText(At(window, 0x195c)->data());
 }
 void TalkParserCondTags::tagNickname() {
     using namespace n12;
     if (!_ZN13TalkWindowMsg13buildNicknameEv(window)) debugPrintMissing(0xc8b, data_020dde4c);
     pushText(Msg_GetColorTag(textColor));
-    pushText(At(window, 0x1990)->vfunc_0c());
+    pushText(At(window, 0x1990)->data());
     pushText(Msg_GetColorTag(5));
 }
 void TalkParserCondTags::tagNop0420() {
@@ -2786,13 +2543,13 @@ void TalkParserCondTags::tagCompliment() {
     using namespace n12;
     if (!_ZN13TalkWindowMsg15buildComplimentEv(window)) debugPrintMissing(0xca4, data_020dde40);
     pushText(Msg_GetColorTag(textColor));
-    pushText(At(window, 0x19ac)->vfunc_0c());
+    pushText(At(window, 0x19ac)->data());
     pushText(Msg_GetColorTag(2));
 }
 void TalkParserCondTags::tagTrend() {
     using namespace n12;
     if (!_ZN13TalkWindowMsg10buildTrendEv(window)) debugPrintMissing(0xcb5, data_020dde38);
-    pushText(At(window, 0x1928)->vfunc_0c());
+    pushText(At(window, 0x1928)->data());
 }
 void TalkParserCondTags::tagChoiceSlots() {
     using namespace n12;
@@ -2828,7 +2585,7 @@ void TalkParserCondTags::tagChoiceSlots() {
 void TalkParserCondTags::tagBranchRandom2() {
     using namespace n12;
     u8 r[4];
-    Sel(window)->vfunc_34(0, 2);
+    Sel(window)->onConditionTag(0, 2);
     tag.getArgs2(&r[1], &r[2]);
     u8 *q = &r[1];
     r[0] = q[Random_GlobalBelow(2)];
@@ -2837,7 +2594,7 @@ void TalkParserCondTags::tagBranchRandom2() {
 void TalkParserCondTags::tagBranchRandom3() {
     using namespace n12;
     u8 r[4];
-    Sel(window)->vfunc_34(1, 3);
+    Sel(window)->onConditionTag(1, 3);
     tag.getArgs3(&r[1], &r[2], &r[3]);
     u8 *q = &r[1];
     r[0] = q[Random_GlobalBelow(3)];
@@ -2846,11 +2603,11 @@ void TalkParserCondTags::tagBranchRandom3() {
 void TalkParserCondTags::tagBranchFriendship() {
     using namespace n12;
     u8 r[4];
-    Unk_02068f10_Obj *o = Sel(window);
-    o->vfunc_34(2, 2);
+    TalkMsgRequest *o = Sel(window);
+    o->onConditionTag(2, 2);
     tag.getArgs3(&r[0], &r[2], &r[3]);
     s32 k = 0;
-    void *p = o->vfunc_68();
+    void *p = (void *)o->getSpeakerData();
     PlayerData_GetCurrent();
     if (p) {
         s32 v = _ZN10PlayerData11getPlayerIdEv();
@@ -2867,7 +2624,7 @@ void TalkParserCondTags::tagBranchFriendship() {
 void TalkParserCondTags::tagBranchPlayerGender() {
     using namespace n12;
     u8 r[4];
-    Sel(window)->vfunc_34(3, 2);
+    Sel(window)->onConditionTag(3, 2);
     tag.getArgs2(&r[1], &r[2]);
     PlayerData_GetCurrent();
     _ZN10PlayerData11getPlayerIdEv();
@@ -2881,7 +2638,7 @@ void TalkParserCondTags::tagBranchPlayerGender() {
 void TalkParserCondTags::tagBranchHouseUnk() {
     using namespace n12;
     u8 r[5];
-    Sel(window)->vfunc_34(4, 4);
+    Sel(window)->onConditionTag(4, 4);
     tag.getArgs4(&r[1], &r[2], &r[3], &r[4]);
     s32 t = ((HouseData *)gSaveHouse)->getLevel();
     s32 i;
@@ -2896,7 +2653,7 @@ void TalkParserCondTags::tagBranchHouseUnk() {
 void TalkParserCondTags::tagBranchInsectCount() {
     using namespace n12;
     u8 r[4];
-    Sel(window)->vfunc_34(5, 3);
+    Sel(window)->onConditionTag(5, 3);
     tag.getArgs3(&r[1], &r[2], &r[3]);
     u32 t = Catalog_CountInsects();
     s32 i;
@@ -2910,7 +2667,7 @@ void TalkParserCondTags::tagBranchInsectCount() {
 void TalkParserCondTags::tagBranchFishCount() {
     using namespace n12;
     u8 r[4];
-    Sel(window)->vfunc_34(6, 3);
+    Sel(window)->onConditionTag(6, 3);
     tag.getArgs3(&r[1], &r[2], &r[3]);
     u32 t = Catalog_CountFish();
     s32 i;
@@ -2924,7 +2681,7 @@ void TalkParserCondTags::tagBranchFishCount() {
 void TalkParserCondTags::tagBranchVillagerCount() {
     using namespace n12;
     u8 r[5];
-    Sel(window)->vfunc_34(7, 4);
+    Sel(window)->onConditionTag(7, 4);
     tag.getArgs4(&r[1], &r[2], &r[3], &r[4]);
     u32 g = (u32)gSaveData;
     s32 n;
@@ -2953,13 +2710,13 @@ void TalkParserCondTags::tagBranchVillagerCount() {
 // ======== unk_02068e9c.cpp ========
 #define windowBytes ((u8 *)window)
 namespace n11 {
-static inline Unk_02068f10_Obj *Sel(u8 *ctx) { return *(Unk_02068f10_Obj **)(ctx + 0x13b0); }
+static inline TalkMsgRequest *Sel(u8 *ctx) { return *(TalkMsgRequest **)(ctx + 0x13b0); }
 
 }
 void TalkParser::tagBranchUnk8() {
     using namespace n11;
     u8 r[5];
-    Sel(windowBytes)->vfunc_34(8, 4);
+    Sel(windowBytes)->onConditionTag(8, 4);
     tag.getArgs4(&r[1], &r[2], &r[3], &r[4]);
     s32 v = *(s32 *)(windowBytes + 0x1718);
     s32 i = 0;
@@ -3014,7 +2771,7 @@ void TalkTagScanner::tagBranchWeather() {
     using namespace n10;
     u8 b[4];
     s32 i, r;
-    window->request->vfunc_34(9, 3);
+    window->request->onConditionTag(9, 3);
     msgTag.getArgs3(&b[1], &b[2], &b[3]);
     r = Weather_GetFallingPrecip();
     i = 0;
@@ -3028,7 +2785,7 @@ void TalkTagScanner::tagBranchResidentCount() {
     u8 b[8];
     s32 i, t;
     u8 *g;
-    window->request->vfunc_34(0xa, 4);
+    window->request->onConditionTag(0xa, 4);
     msgTag.getArgs4(&b[1], &b[2], &b[3], &b[4]);
     g = gSaveData;
     if ((u32)g != 0) t = PlayerDataArray_CountUsed(g + 0xc);
@@ -3042,7 +2799,7 @@ void TalkTagScanner::tagBranchResidentCount() {
 void TalkTagScanner::tagBranchWeekday() {
     using namespace n10;
     u8 b[8];
-    window->request->vfunc_34(0xb, 7);
+    window->request->onConditionTag(0xb, 7);
     msgTag.getArgBytes(&b[1], 7);
     u32 v = window->weekday;
     s32 i;
@@ -3054,7 +2811,7 @@ void TalkTagScanner::tagBranchWeekday() {
 void TalkTagScanner::tagBranchVisitor() {
     using namespace n10;
     u8 b[8];
-    window->request->vfunc_34(0xc, 2);
+    window->request->onConditionTag(0xc, 2);
     msgTag.getArgs2(&b[1], &b[2]);
     PlayerData_GetCurrentIndex();
     s32 i;
@@ -3067,13 +2824,13 @@ void TalkTagScanner::tagBranchVisitor() {
 void TalkTagScanner::tagBranchSpecies() {
     using namespace n10;
     u8 b[4];
-    Unk_02068848_Menu *m = window->request;
+    TalkMsgRequest *m = window->request;
     BOOL i;
     s32 res;
-    m->vfunc_34(0xd, 2);
+    m->onConditionTag(0xd, 2);
     msgTag.getArgs3(&b[0], &b[2], &b[3]);
     b[0]--;
-    res = m->vfunc_68();
+    res = m->getSpeakerData();
     i = 0;
     if (res != 0) {
         s32 c = Villager_GetAnimalKind();
@@ -3093,63 +2850,63 @@ void TalkTagScanner::tagNop0802() {
     using namespace n10;}
 void TalkTagScanner::tagSignal09_0() {
     using namespace n10;
-    Unk_02068848_Menu *m = window->request;
+    TalkMsgRequest *m = window->request;
     MsgTag_DtorStub(&msgTag);
-    m->vfunc_3c();
+    m->onTag09_0();
 }
 void TalkTagScanner::tagSignal09_1() {
     using namespace n10;
-    Unk_02068848_Menu *m = window->request;
+    TalkMsgRequest *m = window->request;
     MsgTag_DtorStub(&msgTag);
-    m->vfunc_40();
+    m->onTag09_1();
 }
 void TalkTagScanner::tagSignal09_2() {
     using namespace n10;
-    Unk_02068848_Menu *m = window->request;
+    TalkMsgRequest *m = window->request;
     MsgTag_DtorStub(&msgTag);
-    m->vfunc_44();
+    m->onTag09_2();
 }
 void TalkTagScanner::tagSignal09_3() {
     using namespace n10;
-    Unk_02068848_Menu *m = window->request;
+    TalkMsgRequest *m = window->request;
     MsgTag_DtorStub(&msgTag);
-    m->vfunc_48();
+    m->onTag09_3();
 }
 void TalkTagScanner::tagSignal09_4() {
     using namespace n10;
-    Unk_02068848_Menu *m = window->request;
+    TalkMsgRequest *m = window->request;
     MsgTag_DtorStub(&msgTag);
-    m->vfunc_4c();
+    m->onTag09_4();
 }
 void TalkTagScanner::tagSignal09_5() {
     using namespace n10;
-    Unk_02068848_Menu *m = window->request;
+    TalkMsgRequest *m = window->request;
     MsgTag_DtorStub(&msgTag);
-    m->vfunc_50();
+    m->onTag09_5();
 }
 void TalkTagScanner::tagSignal09_6() {
     using namespace n10;
-    Unk_02068848_Menu *m = window->request;
+    TalkMsgRequest *m = window->request;
     MsgTag_DtorStub(&msgTag);
-    m->vfunc_54();
+    m->onTag09_6();
 }
 void TalkTagScanner::tagSignal09_7() {
     using namespace n10;
-    Unk_02068848_Menu *m = window->request;
+    TalkMsgRequest *m = window->request;
     MsgTag_DtorStub(&msgTag);
-    m->vfunc_58();
+    m->onTag09_7();
 }
 void TalkTagScanner::tagSignal09_8() {
     using namespace n10;
-    Unk_02068848_Menu *m = window->request;
+    TalkMsgRequest *m = window->request;
     MsgTag_DtorStub(&msgTag);
-    m->vfunc_5c();
+    m->onTag09_8();
 }
 void TalkTagScanner::tagSignal09_9() {
     using namespace n10;
-    Unk_02068848_Menu *m = window->request;
+    TalkMsgRequest *m = window->request;
     MsgTag_DtorStub(&msgTag);
-    m->vfunc_60();
+    m->onTag09_9();
 }
 void TalkTagScanner::tagNop0a00() {
     using namespace n10;}
@@ -3247,7 +3004,7 @@ void TalkTagScanner::tagColor() {
     textColor = msgTag.getArgU8();
     _ZN11TalkTextBox9appendTagEPv(unk_28, &msgTag);
     _ZN11TalkTextBox22setRemainingLineColorsEj(unk_28, textColor);
-    window->voiceTextColor = textColor;
+    window->voice.textColor = textColor;
 }
 void TalkTagScanner::tagAltText() {
     using namespace n10;
@@ -3260,7 +3017,7 @@ void TalkTagScanner::tagAltText() {
     _ZN15TalkCharStepper10startUntilEPhjh(mainTextStepper, (u32)c, (u32)b, r == 0);
     skip(a * 2);
 }
-TalkTagScanner::TalkTagScanner(Unk_02068848_Owner *owner) {
+TalkTagScanner::TalkTagScanner(TalkWindow *owner) {
     using namespace n10;
     window = owner;
     unk_28 = 0;
@@ -3296,7 +3053,7 @@ void TalkTagScanner::reportTag() {
     using namespace n10;
     u8 b;
     SUB2C->getArgs1(&b);
-    window->request->vfunc_64(b);
+    window->request->onScannedTag(b);
 }
 TalkFrame *TalkFrame::construct() {
     using namespace n10;
@@ -3552,10 +3309,10 @@ void TalkFrameView::updateArrow()
 {
     using namespace n8;
     _ZN9TalkArrow9setOffsetEii(&arrow, scrollX + 0x55, scrollY + 0x47);
-    arrow.vfunc_0c();
+    arrow.update();
 }
 void TalkFrameView::drawArrow() {
-    using namespace n8; arrow.vfunc_08(); }
+    using namespace n8; arrow.draw(); }
 BOOL TalkFrameView::isArrowHidden()
 {
     using namespace n8;
@@ -3627,7 +3384,7 @@ void TalkVoice::setVoiceType(s32 r)
 void TalkVoice::refreshVoiceType()
 {
     using namespace n8;
-    setVoiceType(window->request->vfunc_6c());
+    setVoiceType(window->request->getVoiceType());
 }
 TalkVoice::TalkVoice(TalkWindow *o)
     : window(o), msgModeOverride(7), msgMode(0), instantByMsg(0), instantByTag(0), inWait(0), voiceOverride(5), voiceType(5), textColor(0)
@@ -3723,7 +3480,7 @@ void TalkVoice::begin()
         r = voiceOverride;
     } else if (getVoiceStyle() == 0) {
         if (msgMode == 3) r = 1;
-        else r = window->request->vfunc_6c();
+        else r = window->request->getVoiceType();
     }
     voiceType = r;
     if (r != 5) Snd_BeginTalk(r);
@@ -3749,7 +3506,7 @@ u8 TalkVoice::getSpeakerMoodIndex()
 {
     using namespace n8;
     u32 i = 0;
-    void *p = window->request->vfunc_68();
+    void *p = (void *)window->request->getSpeakerData();
     if (p) {
         p = Villager_GetState(p);
         if (p) i = VillagerState_GetMood(p);
@@ -3763,7 +3520,7 @@ void TalkVoice::updateVoiceType()
     if (voiceType == 0) {
         if (textColor == 9) r = 4;
     } else if (voiceType == 4) {
-        if (textColor != 9) r = ((TalkWindow *)window)->request->vfunc_6c();
+        if (textColor != 9) r = ((TalkWindow *)window)->request->getVoiceType();
     }
     if (r != 5) setVoiceType(r);
 }
@@ -4299,7 +4056,7 @@ void TalkWindowState::resetTextVars() {
 // ======== unk_020668a0.cpp ========
 #define AT(T, off) (*(T *)((u8 *)this + (off)))
 #define PTR(off) ((void *)((u8 *)this + (off)))
-#define OWNER unk_13b0
+#define OWNER request
 #define M ((BmgReader *)msgBuffer)
 #define data_020ddd7c ((char *)"%s/%s/%s/%s_.bmg")
 #define data_020ddd90 ((char *)"%s/%s/Other/%s_.bmg")
@@ -4329,7 +4086,7 @@ extern "C" { u32 BmgMsgAttr_GetByte05(void *p); }
 extern "C" { void _ZN9MsgRunner5resetEv(void *p); }
 extern "C" { void _ZN9MsgRunner5startEPh(void *p, u32 v); }
 extern "C" { void *_ZN10ChoiceList13getResultAttrEv(void *p); }
-extern "C" { Unk_02066978_Owner *_ZN10ChoiceList13getResultTextEv(void *p); }
+extern "C" { ChoiceString *_ZN10ChoiceList13getResultTextEv(void *p); }
 extern "C" { void _ZN11MsgString339initEmptyEv(void *p); }
 extern "C" { void _ZN9MsgString5clearEv(void *p); }
 extern "C" { void MsgTextLabel_Destroy(void *p); }
@@ -4345,7 +4102,7 @@ extern "C" { void *Villager_GetMemory(void *a, s32 b); }
 extern "C" { void _ZN14VillagerMemory13addFriendshipEi(void *a, s32 b); }
 extern "C" { void *_ZN14VillagerMemory13getFriendshipEv(void *a); }
 extern "C" { void VillagerSync_Friendship(void *a, s32 b, void *c); }
-extern "C" { s32 _ZN12Unk_02097ff420getOtherResidentNameEPv(void *g, void *p); }
+extern "C" { s32 _ZN10PlayerData20getOtherResidentNameEPv(void *g, void *p); }
 extern "C" { void Villager_GetRandomOtherName(void *a, void *b); }
 extern "C" { void Villager_GetEnemyName(void *a, void *b); }
 extern "C" { void Villager_GetFriendName(void *a, void *b); }
@@ -4356,7 +4113,7 @@ extern "C" { void _ZN20VillagerDataItemView16getComplimentForEPvS0_(void *a, voi
 extern "C" { void Villager_GetNicknameFor(void *a, void *b, s32 c); }
 extern "C" { void _ZN23VillagerDataProfileView14getCatchphraseEPvS0_(void *a, void *b, s32 c); }
 extern "C" { void _ZN8PlayerId13getNameStringEP9MsgString(s32 a, void *b); }
-extern "C" { Unk_02066978_Owner *_ZN14TalkMsgRequest14getSpeakerNameEv(void *p); }
+extern "C" { MsgString9 *_ZN14TalkMsgRequest14getSpeakerNameEv(void *p); }
 extern "C" { TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c); }
 
 }
@@ -4376,14 +4133,14 @@ void TalkWindowMsg::clearSlots() {
     using namespace n5;
     s32 i;
     for (i = 0; i < 11; i++) {
-        _ZN11MsgString339initEmptyEv(unk_13c0[i]);
+        _ZN11MsgString339initEmptyEv(&slots[i]);
     }
 }
 void TalkWindowMsg::clearNamedSlots() {
     using namespace n5;
     s32 i;
     for (i = 0; i < 4; i++) {
-        _ZN11MsgString339initEmptyEv(unk_15fc[i]);
+        _ZN11MsgString339initEmptyEv(&namedSlots[i]);
         namedSlotColors[i] = 7;
     }
 }
@@ -4391,7 +4148,7 @@ void TalkWindowMsg::clearCatchphrase() {
     using namespace n5; _ZN9MsgString5clearEv(catchphrase); }
 BOOL TalkWindowMsg::buildCatchphrase() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     _ZN9MsgString5clearEv(catchphrase);
     if (r6 != 0) {
@@ -4421,7 +4178,7 @@ void TalkWindowMsg::clearFriendName() {
     using namespace n5; _ZN9MsgString5clearEv(friendName); }
 BOOL TalkWindowMsg::buildFriendName() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     _ZN9MsgString5clearEv(friendName);
     if (r6 != 0) {
@@ -4434,7 +4191,7 @@ void TalkWindowMsg::clearEnemyName() {
     using namespace n5; _ZN9MsgString5clearEv(enemyName); }
 BOOL TalkWindowMsg::buildEnemyName() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     _ZN9MsgString5clearEv(enemyName);
     if (r6 != 0) {
@@ -4452,7 +4209,7 @@ BOOL TalkWindowMsg::buildRandomVillagerName() {
     using namespace n5;
     BOOL r4 = TRUE;
     if (randomVillagerNameBuilt == 0) {
-        void *r6 = OWNER->vfunc_68();
+        void *r6 = (void *)OWNER->getSpeakerData();
         _ZN9MsgString5clearEv(randomVillagerName);
         if (r6 != 0) {
             Villager_GetRandomOtherName(r6, randomVillagerName);
@@ -4475,8 +4232,8 @@ BOOL TalkWindowMsg::buildOtherResidentName() {
     if (otherResidentNameBuilt == 0) {
         void *g = PlayerData_GetCurrent();
         _ZN9MsgString5clearEv(otherResidentName);
-        if (_ZN12Unk_02097ff420getOtherResidentNameEPv(g, otherResidentName) == 0) {
-            void *r0 = OWNER->vfunc_68();
+        if (_ZN10PlayerData20getOtherResidentNameEPv(g, otherResidentName) == 0) {
+            void *r0 = (void *)OWNER->getSpeakerData();
             if (r0 != 0) {
                 Villager_GetRandomOtherName(r0, otherResidentName);
                 otherResidentIsVillager = r4;
@@ -4492,7 +4249,7 @@ void TalkWindowMsg::clearTrend() {
     using namespace n5; _ZN9MsgString5clearEv(trend); }
 BOOL TalkWindowMsg::buildTrend() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     _ZN9MsgString5clearEv(trend);
     if (r6 != 0) {
@@ -4506,7 +4263,7 @@ void TalkWindowMsg::clearImpression() {
     using namespace n5; _ZN9MsgString5clearEv(impression); }
 BOOL TalkWindowMsg::buildImpression() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     _ZN9MsgString5clearEv(impression);
     if (r6 != 0) {
@@ -4519,7 +4276,7 @@ void TalkWindowMsg::clearNickname() {
     using namespace n5; _ZN9MsgString5clearEv(nickname); }
 BOOL TalkWindowMsg::buildNickname() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     _ZN9MsgString5clearEv(nickname);
     if (r6 != 0) {
@@ -4533,7 +4290,7 @@ void TalkWindowMsg::clearCompliment() {
     using namespace n5; _ZN9MsgString5clearEv(compliment); }
 BOOL TalkWindowMsg::buildCompliment() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     _ZN9MsgString5clearEv(compliment);
     if (r6 != 0) {
@@ -4547,7 +4304,7 @@ void TalkWindowMsg::clearGreeting() {
     using namespace n5; _ZN9MsgString5clearEv(greeting); }
 BOOL TalkWindowMsg::buildGreeting() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     _ZN9MsgString5clearEv(greeting);
     if (r6 != 0) {
@@ -4580,7 +4337,7 @@ BOOL TalkAutoAdvance::tick() {
 void TalkWindowMsg::applyFriendshipDelta(s32 idx) {
     using namespace n5;
     if (idx != 0) {
-        void *r4 = OWNER->vfunc_68();
+        void *r4 = (void *)OWNER->getSpeakerData();
         void *g = PlayerData_GetCurrent();
         if (r4 != 0) {
             s32 r7 = Villager_FindMemoryIndex(r4, _ZN10PlayerData11getPlayerIdEv(g));
@@ -4598,9 +4355,9 @@ void TalkWindowMsg::createNameLabel() {
     if (nameLabel != 0) {
         nameLabel->copyMode = 2;
         nameLabel->bgColor = 0xe;
-        Unk_02066978_Owner *o = _ZN14TalkMsgRequest14getSpeakerNameEv(unk_13b0);
+        MsgString9 *o = _ZN14TalkMsgRequest14getSpeakerNameEv(request);
         TextLabel *t = nameLabel;
-        t->textStart = o->vfunc_0c();
+        t->textStart = (u32)o->data();
         nameLabel->alignCenter();
         nameLabel->fgColor = 2;
         nameLabel->requestRedraw();
@@ -4616,7 +4373,7 @@ void TalkWindowMsg::destroyNameLabel() {
 void TalkWindowMsg::notifyMessageStart() {
     using namespace n5;
     if (startNotifyPending != 0) {
-        OWNER->vfunc_10(BmgMsgAttr_GetByte06(msgAttr));
+        OWNER->onMessageStart(BmgMsgAttr_GetByte06(msgAttr));
         startNotifyPending = 0;
     }
 }
@@ -4624,14 +4381,14 @@ void TalkWindowMsg::notifyMessageEnd() {
     using namespace n5;
     if (endNotifyPending != 0) {
         applyFriendshipDelta(BmgMsgAttr_GetByte05(msgAttr));
-        OWNER->vfunc_14(BmgMsgAttr_GetByte07(msgAttr));
+        OWNER->onMessageEnd(BmgMsgAttr_GetByte07(msgAttr));
         endNotifyPending = 0;
     }
 }
 void TalkWindowMsg::notifyChoice() {
     using namespace n5;
     if (choiceNotifyPending != 0) {
-        OWNER->vfunc_18(BmgMsgAttr_GetByte07(_ZN10ChoiceList13getResultAttrEv(choiceList)));
+        OWNER->onChoice(BmgMsgAttr_GetByte07(_ZN10ChoiceList13getResultAttrEv(choiceList)));
         choiceNotifyPending = 0;
     }
 }
@@ -4663,17 +4420,17 @@ void TalkWindowMsg::startMessage() {
 }
 void TalkWindowMsg::scanMessageTags() {
     using namespace n5;
-    Unk_02066978_Owner *o = _ZN10ChoiceList13getResultTextEv(choiceList);
+    ChoiceString *o = _ZN10ChoiceList13getResultTextEv(choiceList);
     TalkTagScannerView loc(this);
-    ((TalkTagScannerView *)&loc)->scan(o->vfunc_0c());
+    ((TalkTagScannerView *)&loc)->scan((u32)o->data());
 }
 char *TalkWindowMsg::buildMessagePath(const char *a, const char *b) {
     using namespace n5;
     u32 r6 = (u32)b;
     if (r6 == 0) {
-        r6 = OWNER->vfunc_0c();
+        r6 = (u32)OWNER->getMsgDir();
     }
-    const char *r5 = a ? a : (const char *)unk_13b0 + 4;
+    const char *r5 = a ? a : (const char *)request + 4;
     const char *r7 = matchDirPrefix(r5);
     if (r7 != 0) {
         r5 += func_0212a438(r7) + 1;
@@ -4717,7 +4474,7 @@ void TalkWindowMsg::loadMessageAttr() {
     using namespace n5;
     _ZN13TalkMsgBuffer5clearEv(msgBuffer);
     if (M->open(buildMessagePath(0, 0))) {
-        M->loadMessage((u8 *)unk_13b0 + 0x1e);
+        M->loadMessage((u8 *)request + 0x1e);
     }
     BmgMsgAttr_Copy(msgAttr, Bmg_GetMsgAttr(msgBuffer));
     M->close();
@@ -5147,7 +4904,7 @@ void TalkMsgRequest::onActionTag3(u32 arg) {
     using namespace n1;}
 void TalkMsgRequest::onActionTag4(u32 arg) {
     using namespace n1;}
-void TalkMsgRequest::onConditionTag() {
+void TalkMsgRequest::onConditionTag(u32 condition, u32 branchCount) {
     using namespace n1;}
 void TalkMsgRequest::onEventTag(u32 a) {
     using namespace n1;}

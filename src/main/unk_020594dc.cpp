@@ -207,10 +207,10 @@ void _ZN10LetterView10setPresentEtj(void *obj, u32 v, s32 f);
 s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
 s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
 void *PlayerData_GetCurrent();
-s32 _ZN12Unk_02097ff48testFlagEj(void *p, s32 v);
+s32 _ZN10PlayerData8testFlagEj(void *p, s32 v);
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void Letter_ComposeFromMail(void *obj, u8 *b, const void *fmt, void *s, void *s2, void *p);
-s32 _ZN12Unk_02097ff47setFlagEj(void *p, s32 v);
+s32 _ZN10PlayerData7setFlagEj(void *p, s32 v);
 s32 _ZN8BlockMap12canPlaceItemEii(void *grid, s32 x, s32 y);
 s32 _ZN8SaveData8testFlagEj(void *tbl, s32 v);
 void _ZN8SaveData7setFlagEj(void *tbl, s32 v);
@@ -1434,7 +1434,7 @@ extern "C" BOOL HappyRoom_SendScoreLetters(void *self, s32 a, s32 b, s32 c, s32 
         for (i = 0; i < 4; i++) {
             void *p = PlayerData_GetResident(gSavePlayers, i);
             if (p && _ZN10PlayerData6isUsedEv(p)) {
-                if (DebugVar_GetPtr(z, 0x22)[0] != 0 || _ZN12Unk_02097ff48testFlagEj(p, 0xe)) {
+                if (DebugVar_GetPtr(z, 0x22)[0] != 0 || _ZN10PlayerData8testFlagEj(p, 0xe)) {
                     _ZN6LetterC1Ev(objD);
                     by[0] = a;
                     Letter_ComposeFromMail(objD, &by[0], "ev_happyroom", data_020dc088, data_020dc07c, _ZN10PlayerData11getPlayerIdEv(p));
@@ -1473,7 +1473,7 @@ extern "C" void HappyRoom_SendPrizeLetter(void *self, s32 n)
             void *p = PlayerData_GetResident(gSavePlayers, i);
             u32 obj[0x3e];
             u8 b;
-            if (p && _ZN10PlayerData6isUsedEv(p) && _ZN12Unk_02097ff48testFlagEj(p, 0xe) && !LetterDelivery_IsMailboxFull(i)) {
+            if (p && _ZN10PlayerData6isUsedEv(p) && _ZN10PlayerData8testFlagEj(p, 0xe) && !LetterDelivery_IsMailboxFull(i)) {
                 _ZN6LetterC1Ev(obj);
                 b = id;
                 Letter_ComposeFromMail(obj, &b, "ev_happyroom", data_020dc084, data_020dc08c, _ZN10PlayerData11getPlayerIdEv(p));
@@ -1525,12 +1525,12 @@ extern "C" BOOL HappyRoom_SendWelcomeLetter()
     u32 obj[0x3d];
     u8 b;
     void *p = PlayerData_GetCurrent();
-    if (p && _ZN12Unk_02097ff48testFlagEj(p, 3) && !_ZN12Unk_02097ff48testFlagEj(p, 0xe)) {
+    if (p && _ZN10PlayerData8testFlagEj(p, 3) && !_ZN10PlayerData8testFlagEj(p, 0xe)) {
         _ZN6LetterC1Ev(obj);
         b = 0x1b;
         Letter_ComposeFromMail(obj, &b, "ev_happyroom", data_020dc080, data_020dc090, _ZN10PlayerData11getPlayerIdEv(p));
         if (LetterDelivery_PutInAddresseeMailbox(obj)) {
-            _ZN12Unk_02097ff47setFlagEj(p, 0xe);
+            _ZN10PlayerData7setFlagEj(p, 0xe);
             _ZN6LetterD1Ev(obj);
             return TRUE;
         }

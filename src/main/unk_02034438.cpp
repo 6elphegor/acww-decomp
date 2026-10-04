@@ -60,7 +60,7 @@ void Snd_RestoreSubPlayers(void);
 void Snd_MoveBgmVolume(s32 a, s32 b);
 void Snd_StopBgm(s32 a);
 void Snd_PlayBgm(u32 a);
-s32 _ZN12Unk_02097ff48testFlagEj(void *p, s32 id);
+s32 _ZN10PlayerData8testFlagEj(void *p, s32 id);
 s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void _ZN12BgmSceneFade6updateEv(void *p);
 s32 _ZN12BgmSceneFade14hasExitSilenceEv(s32 a);
@@ -318,7 +318,7 @@ void Snd_StopBgm(s32 a);
 void Snd_PlayBgm(u32 a);
 Unk_020358d4_Src *PlayerActor_GetBodyPos(u32 n);
 void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(GroundInfo *p, Unk_020358d4_Src *pos, s32 a, s32 b);
-s32 _ZN12Unk_02097ff48testFlagEj(void *p, s32 id);
+s32 _ZN10PlayerData8testFlagEj(void *p, s32 id);
 s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void _ZN12BgmSceneFade6updateEv(void *p);
 s32 _ZN12BgmSceneFade14hasExitSilenceEv(s32 a);
@@ -467,7 +467,7 @@ extern u32 gCommManager;
 s32 _ZN11CommManager8isOnlineEv(u32 a);
 s32 PlayerData_GetCurrent(void);
 s32 Taxi_IsArriving(void);
-s32 _ZN12Unk_02097ff48testFlagEj(s32 a, s32 b);
+s32 _ZN10PlayerData8testFlagEj(s32 a, s32 b);
 }
 }
 
@@ -807,9 +807,9 @@ void FieldSpecialBgm::start() {
             play(4, 0x45, 1);
         } else if (Taxi_IsLeaving() != 0) {
             play(0xd, 0x4a, 0);
-        } else if (r5 != 0 && (Ns_02035e2c::_ZN12Unk_02097ff48testFlagEj(r5, 0x23) != 0 || (Ns_02035e2c::_ZN12Unk_02097ff48testFlagEj(r5, 1) != 0 && PlayerErrands_IsJobActive(_ZN10PlayerData10getErrandsEv(r5)) == 0))) {
+        } else if (r5 != 0 && (Ns_02035e2c::_ZN10PlayerData8testFlagEj(r5, 0x23) != 0 || (Ns_02035e2c::_ZN10PlayerData8testFlagEj(r5, 1) != 0 && PlayerErrands_IsJobActive(_ZN10PlayerData10getErrandsEv(r5)) == 0))) {
             play(0x1c, 0x46, 0);
-        } else if (r5 != 0 && Ns_02035e2c::_ZN12Unk_02097ff48testFlagEj(r5, 1) != 0) {
+        } else if (r5 != 0 && Ns_02035e2c::_ZN10PlayerData8testFlagEj(r5, 1) != 0) {
             play(0x1d, 0x48, 0);
         }
     }
@@ -1238,7 +1238,7 @@ void RoomBgmClosingView::updateClosingMusic() {
     BOOL a;
     void *p = Ns_020354d8::PlayerData_GetCurrent();
     if (p) {
-        if (_ZN12Unk_02097ff48testFlagEj(p, 0x23) != 0 || _ZN12Unk_02097ff48testFlagEj(p, 1) != 0) {
+        if (_ZN10PlayerData8testFlagEj(p, 0x23) != 0 || _ZN10PlayerData8testFlagEj(p, 1) != 0) {
             a = TRUE;
         } else {
             a = FALSE;

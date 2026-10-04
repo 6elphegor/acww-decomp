@@ -1,6 +1,5 @@
 #include "types.h"
 #include "gfx/Unk_02093aa8_Vec.h"
-#include "gfx/Unk_02093dc8_Obj.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "save/TownId.h"
@@ -110,19 +109,19 @@ s32 Effect_StartOneShot(s32 a, s32 b, void *c, s32 d, s32 e, void *f);
 }
 
 extern "C" {
-void EffectCb_PlaceEmitter(Unk_02093dc8_Obj *o, EffectSlot *e, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+void EffectCb_PlaceEmitter(EffectSplEmitter *o, EffectSlot *e, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
 }
 
 extern "C" {
-s32 EffectCb_PlaceFacingBack(Unk_02093dc8_Obj *o, EffectSlot *e);
+s32 EffectCb_PlaceFacingBack(EffectSplEmitter *o, EffectSlot *e);
 }
 
 extern "C" {
-s32 EffectCb_PlaceFacing(Unk_02093dc8_Obj *o, EffectSlot *e);
+s32 EffectCb_PlaceFacing(EffectSplEmitter *o, EffectSlot *e);
 }
 
 extern "C" {
-s32 EffectCb_InitOneShot(Unk_02093dc8_Obj *o);
+s32 EffectCb_InitOneShot(EffectSplEmitter *o);
 }
 
  // extern "C"

@@ -33,7 +33,7 @@ extern u8 data_021e7f8c[];
 extern u8 data_021eceac[];
 extern u8 gU8None[];
 extern u8 data_020e1d68[];
-extern Unk_02095f38_G data_021ed150;
+extern SaveTownStateView data_021ed150;
 
 extern "C" {
 BOOL func_020729bc(CommManager *p, s32 v);
@@ -92,7 +92,7 @@ u32 PlayerActor_GetNetPosVar(s32 idx);
 }
 
 extern "C" {
-Unk_02095774_Ent *PlayerActor_Get(s32 idx);
+Actor *PlayerActor_Get(s32 idx);
 }
 
 extern "C" {
@@ -116,7 +116,7 @@ ProcBase *func_02002d3c(s32 a, s32 b);
 }
 
 extern "C" {
-Unk_02095774_Ent *PlayerActor_GetActor(s32 idx);
+Actor *PlayerActor_GetActor(s32 idx);
 }
 
 extern "C" {
@@ -346,12 +346,12 @@ BOOL PlayerNetSync::onExecute() {
         i--;
     } while (i >= 0);
     if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
-        Unk_02095774_Ent *o = PlayerActor_GetActor(4);
+        Actor *o = PlayerActor_GetActor(4);
         if (o) {
             s32 n = g->localSlot;
             if (n < 4) {
-                CommSyncVar_SetVar(n + 4, (u8 *)o + 0x8e, 0, 0);
-                CommSyncVar_SetVar(n, o->position, 0, 0);
+                CommSyncVar_SetVar(n + 4, &o->rotY, 0, 0);
+                CommSyncVar_SetVar(n, &o->position, 0, 0);
                 CommSyncVar_SetVar(n + 8, 0, 0, 0);
             }
         }

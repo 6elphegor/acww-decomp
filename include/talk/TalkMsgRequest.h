@@ -28,7 +28,7 @@ public:
     virtual void onActionTag2(u32 arg);     // 0x28
     virtual void onActionTag3(u32 arg);     // 0x2c
     virtual void onActionTag4(u32 arg);     // 0x30
-    virtual void onConditionTag();          // 0x34
+    virtual void onConditionTag(u32 condition, u32 branchCount); // 0x34 (condition tag id, number of branches)
     virtual void onEventTag(u32 id);        // 0x38
     virtual void onTag09_0();               // 0x3c
     virtual void onTag09_1();               // 0x40

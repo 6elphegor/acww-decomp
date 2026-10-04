@@ -115,8 +115,8 @@ s32 Vec_NotEqual(void *a, void *b);
 s32 Vec_Equal(void *a, void *b);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 memcmp(void *a, void *b, s32 n);
-s32 _ZN12Unk_02097ff48testFlagEj(void *h, u32 v);
-void _ZN12Unk_02097ff47setFlagEj(void *h, u32 v);
+s32 _ZN10PlayerData8testFlagEj(void *h, u32 v);
+void _ZN10PlayerData7setFlagEj(void *h, u32 v);
 void *__cxa_vec_ctor(void *, u32, u32, void (*)(void *), void (*)(void *));
 extern u8 data_021ed284[];
 extern u8 data_021ed2c0[];
@@ -679,7 +679,7 @@ void SpNpcReddTalk::start(TalkStartMsg *out) {
     if (topic != 0 && topic != 1 && topic != 2) {
         u16 *pp = &owner->selectedItem;
         if (Unk_ov052_022595dc_Eq(pp, &k1)) {
-            if (_ZN12Unk_02097ff48testFlagEj(h, 0xc) != 0) {
+            if (_ZN10PlayerData8testFlagEj(h, 0xc) != 0) {
                 if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 && redVaseSlot == -1) {
                     x = 0x34a8;
                     redVaseSlot = Pocket_FindItem(&x);
@@ -715,7 +715,7 @@ void SpNpcReddTalk::start(TalkStartMsg *out) {
         return;
     }
     out->msgIndex = MSG_ID(topic);
-    if (_ZN12Unk_02097ff48testFlagEj(h, 0xc) != 0) {
+    if (_ZN10PlayerData8testFlagEj(h, 0xc) != 0) {
         if (topic == 0xa) {
             out->msgIndex = Random_GlobalBelow(4) + 0x17;
             if (out->msgIndex == 0x1a) {
@@ -775,7 +775,7 @@ void SpNpcReddTalk::onMessageEnd(u32) {
         redVaseSlot = -2;
         break;
     case 6:
-        if (_ZN12Unk_02097ff48testFlagEj(h, 0xc) == 0) {
+        if (_ZN10PlayerData8testFlagEj(h, 0xc) == 0) {
             setTopic(3);
         } else {
             setTopic(10);
@@ -791,7 +791,7 @@ void SpNpcReddTalk::onMessageEnd(u32) {
         msg = 0x11;
         NpcActor_ChargePlayer(owner, 0xbb8);
         setTopic(7);
-        _ZN12Unk_02097ff47setFlagEj(h, 0xc);
+        _ZN10PlayerData7setFlagEj(h, 0xc);
         Talk_CheckAndSetPlayerFlag(1, 1);
         break;
     case 0x24:

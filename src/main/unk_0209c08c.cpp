@@ -40,7 +40,6 @@ extern void *gCurrentHeap;
 }
 
 extern "C" {
-struct Unk_0209c614_Actor;
 }
 
 extern "C" {

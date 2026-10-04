@@ -329,7 +329,7 @@ void *PlayerErrands_GetSlot(void *, s32);
 void *PlayerErrandSlot_GetRecord(void *);
 s32 _ZN12ErrandRecord8isActiveEv(void *);
 s32 _ZN12ErrandRecord11getSubGroupEv(void *);
-s32 _ZN12Unk_02097ff48testFlagEj(void *, s32);
+s32 _ZN10PlayerData8testFlagEj(void *, s32);
 void Clock_GetDateTime(void *);
 void *_ZN11SaveRecord412isDateActiveEv(void *);
 BOOL _ZN11CommManager12isSlotActiveEi(CommManager *g, s32 i);
@@ -1562,7 +1562,7 @@ extern "C" s32 Visitor_FindActiveEventEntry(EventVisitorEntry *p, s32 n)
 extern "C" BOOL Visitor_IsNookJobActive()
 {
     void *r = F2::PlayerData_GetCurrent();
-    if (r != 0 && F2::_ZN12Unk_02097ff48testFlagEj(r, 1) != 0)
+    if (r != 0 && F2::_ZN10PlayerData8testFlagEj(r, 1) != 0)
         return TRUE;
     return FALSE;
 }
@@ -1608,7 +1608,7 @@ extern "C" BOOL Visitor_CheckTomNook()
 {
     u16 k;
     void *r4 = F2::PlayerData_GetCurrent();
-    if (F2::Scene_GetCurrent() == 0 && F2::Visitor_IsTaxiActive() == 0 && F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->myAid) == 0 && r4 != 0 && F2::_ZN12Unk_02097ff48testFlagEj(r4, 0x23) != 0) {
+    if (F2::Scene_GetCurrent() == 0 && F2::Visitor_IsTaxiActive() == 0 && F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->myAid) == 0 && r4 != 0 && F2::_ZN10PlayerData8testFlagEj(r4, 0x23) != 0) {
         if (F2::SceneId_IsHouseRoom(F2::Scene_GetPrevious()) != 0 || F2::Scene_GetPrevious() == 6) {
             k = 0xd019;
             return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);

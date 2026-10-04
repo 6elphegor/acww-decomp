@@ -217,8 +217,8 @@ void PlayerActor_LocalSetHeadwearHidden(s32 v);
 void Snd_PlaySe(s32 v);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 s32 Bgm_RequestSilence(s32 a, s32 b, s32 c);
-s32 _ZN12Unk_02097ff48testFlagEj(void *h, s32 v);
-void _ZN12Unk_02097ff47setFlagEj(void *h, s32 v);
+s32 _ZN10PlayerData8testFlagEj(void *h, s32 v);
+void _ZN10PlayerData7setFlagEj(void *h, s32 v);
 s32 Random_GlobalBelow(s32 n);
 void PlayerActor_LocalRequestSit();
 void _ZN17PlayerSpNpcRecord15addHaircutCountEj(void *p, u32 v);
@@ -726,9 +726,9 @@ void SpNpcHarrietTalk::start(TalkStartMsg *out) {
             getTopic() != 10) {
             if (owner->isSessionPaid() == 0) {
                 if (Talk_CheckAndSetPlayerFlag(0x13, 0) == 0) {
-                    if (_ZN12Unk_02097ff48testFlagEj(p, 0xb) == 0) {
+                    if (_ZN10PlayerData8testFlagEj(p, 0xb) == 0) {
                         setTopic(1);
-                        _ZN12Unk_02097ff47setFlagEj(p, 0xb);
+                        _ZN10PlayerData7setFlagEj(p, 0xb);
                     } else {
                         setTopic(2);
                     }

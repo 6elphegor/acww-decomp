@@ -7,7 +7,7 @@
 #include "game/UnitShapeQueryX.h"
 #include "gfx/CachedModel.h"
 #include "field/FieldObjectShapeQuery.h"
-#include "gfx/Unk_02093dc8_Obj.h"
+#include "gfx/SPLResource.h"
 #include "gfx/EffectSplEmitter.h"
 #include "gfx/NNSG3dRS.h"
 #include "field/FieldAction.h"
@@ -21,10 +21,10 @@
 #define SndSeEmitter_callUpdateRelative _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec
 #define SndSeEmitter_callInit _ZN12SndSeEmitter8callInitEv
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
-#define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
+#define PlayerData_setFlag _ZN10PlayerData7setFlagEj
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
-#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
+#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
 #define CachedModel_release _ZN11CachedModel7releaseEv
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
@@ -513,7 +513,7 @@ u32 FieldItemFx_FindLandingUnit(void *p);
 s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 s32 func_02133150(s32 a, s32 b);
 void *PlayerData_GetCurrent(void);
-void Unk_02097ff4_setFlag(void *p, s32 a);
+void PlayerData_setFlag(void *p, s32 a);
 void Field_SetUnitItem(s32 a, s32 b, u32 c, s32 d);
 void Snd_SeEmitterPlayOneShot(void *p, u32 a, u32 b, u32 c);
 void Insect_SpawnBeeSwarm(void *p);
@@ -803,7 +803,7 @@ extern u8 *gFieldObjectManager;
 
 s32 CommManager_isOnline(void *p);
 void *PlayerData_GetCurrent(void);
-s32 Unk_02097ff4_testFlag(void *p, s32 a);
+s32 PlayerData_testFlag(void *p, s32 a);
 void FieldPos_FromUnitCenter(Unk_ov003_0221b8bc_V3 *out, s32 x, s32 z);
 void func_01ffd070(Unk_ov003_0221b8bc_V3 *out, Unk_ov003_0221b8bc_V3 *a, void *m);
 void FieldItemFx_StartBeeHiveDrop(Unk_ov003_0221b8bc *o, s32 id, Unk_ov003_0221b8bc_V2 *a, Unk_ov003_0221b8bc_V3 *b);
@@ -873,27 +873,6 @@ struct Unk_ov003_0221c62c_Vec3 {
 struct Unk_ov003_0221c62c_Pos {
     s32 x, z;
 };
-struct Unk_ov003_0221c91c_B {
-    Unk_02093dc8_Root *header;
-};
-struct Unk_ov003_0221c91c_Tgt {
-    u8 pad_00[0x18];
-    Unk_ov003_0221c91c_B *resource;
-    u8 pad_1c[4];
-    s32 posX;
-    s32 posY;
-    s32 posZ;
-    u8 pad_2c[0x18];
-    s32 unk_44;
-    u8 pad_48[8];
-    s32 unk_50;
-    u8 pad_54[4];
-    u16 unk_58;
-    u8 pad_5a[0xe];
-    u8 unk_68;
-    u8 pad_69[0x17];
-    u8 tintVariant;
-};
 struct Unk_ov003_0221c91c_Pad {
     s32 v[2];
     Unk_ov003_0221c91c_Pad() {}
@@ -904,7 +883,7 @@ typedef TreeLeafFxEntry Rec;
 typedef Unk_ov003_0221c62c_Vec3 Vec3;
 typedef Unk_ov003_0221c62c_Pos Pos;
 typedef TreeLeafFx Set;
-typedef Unk_ov003_0221c91c_Tgt Tgt;
+typedef EffectSplEmitter Tgt;
 typedef TreeLeafFxParams PRec;
 typedef TreeAnim Elem2;
 extern "C" {
@@ -5404,9 +5383,9 @@ namespace ns_0221c220 {
 extern "C" {
 void TreeLeafFx_ApplyParams(Rec *r, Tgt *t) {
     PRec *p = TreeLeafFx_GetParams(r);
-    t->unk_68 = p->unk_04;
-    t->unk_58 = p->unk_06;
-    t->unk_50 = p->unk_08;
+    t->genInterval = p->unk_04;
+    t->particleLife = p->unk_06;
+    t->initVelMagAxis = p->unk_08;
     r->lifeTimer = p->lifeTime;
 }
 }
@@ -5472,9 +5451,9 @@ void TreeLeafFx_UpdatePos(Rec *r, Tgt *t) {
         z = r->posZ;
         break;
     }
-    t->posX = x + t->resource->header->posX;
-    t->posY = y + t->resource->header->posY;
-    t->posZ = z + t->resource->header->posZ;
+    t->posX = x + t->resource->p_base->pos.x;
+    t->posY = y + t->resource->p_base->pos.y;
+    t->posZ = z + t->resource->p_base->pos.z;
 }
 }
 }
@@ -5493,7 +5472,7 @@ void TreeLeafFx_OnEffectInit(EffectEmitterEntry *self) {
     TreeLeafFx_UpdatePos(r, t);
     self->userIndex = i;
     TreeLeafFx_ApplyParams(r, t);
-    t->unk_44 = data_ov003_0222f594[sTreeLeafFx.records[i].treeType][r->treeStage];
+    t->radius = data_ov003_0222f594[sTreeLeafFx.records[i].treeType][r->treeStage];
     t->tintVariant = r->tintVariant;
 }
 }
@@ -6292,7 +6271,7 @@ void Tree_DropBeeHive(Unk_ov003_0221b8bc *o, s32 *p) {
     Unk_ov003_0221b8bc_V3D c;
     Unk_ov003_0221b8bc_V3 e;
     Unk_ov003_0221b8bc_V3 d;
-    if (CommManager_isOnline(gCommManager) == 0 && Unk_02097ff4_testFlag(PlayerData_GetCurrent(), 1) == 0) {
+    if (CommManager_isOnline(gCommManager) == 0 && PlayerData_testFlag(PlayerData_GetCurrent(), 1) == 0) {
         FieldPos_FromUnitCenter(&b, p[0], p[1]);
         Unk_ov003_0221b8bc_V3 *t = data_ov003_0223291c[0];
         t = t + Tree_GetDropSide(o, &b);
@@ -7276,7 +7255,7 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
                 Sky_EndBalloonDrop();
                 if (self->timer == 0) {
                     if (self->item == 0x137b) {
-                        Unk_02097ff4_setFlag(PlayerData_GetCurrent(), 0x30);
+                        PlayerData_setFlag(PlayerData_GetCurrent(), 0x30);
                     }
                     Field_SetUnitItem(self->unitX, self->unitZ, self->item, 0);
                 }

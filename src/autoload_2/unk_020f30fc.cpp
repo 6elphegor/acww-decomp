@@ -6,7 +6,7 @@
 // are one size run, and the compiler's data order (named objects at their definition, vtables last in reverse declaration order, the
 // whole list heapsorted by size; realclass2_work/inv2.py, inv3.py) reproduces the original with all seven in one file, declared in the
 // natural order SndSeEmitter, SndSeEmitterKind1, SndSeEmitterKind99, SndSeEmitterKind2, SndEnvChannel, 938, 954, 970 (as below). The four channel
-// vtables as a file of their own (with or without the bss word gSndPosList) would need Unk_0213b970 / CreatureSndChannel declared before
+// vtables as a file of their own (with or without the bss word gSndPosList) would need SkySndChannel / CreatureSndChannel declared before
 // their base SndEnvChannel, which is impossible.
 // Every function lands on its original address with the original bytes; every old symbols.txt name stays (aliases.txt adds the compiler's
 // names as labels, nothing is renamed). Classes (vtable start / dsd label at +8):
@@ -210,7 +210,7 @@ public:
 };
 
 // vtable 0x0213b968 (data_0213b970)
-class Unk_0213b970 : public SndEnvChannel {
+class SkySndChannel : public SndEnvChannel {
 public:
     virtual void vfunc_00();           // 0x020f3120
     virtual void requestSustained(u32 v);      // 0x020f3114
@@ -699,18 +699,18 @@ void CreatureSndChannel::vfunc_00() {
     SndEnvChannel::vfunc_00();
 }
 
-void Unk_0213b970::vfunc_00() {
+void SkySndChannel::vfunc_00() {
     SndEnvChannel::vfunc_00();
 }
 
-void Unk_0213b970::requestSustained(u32 nv) {
+void SkySndChannel::requestSustained(u32 nv) {
     SndEnvChannel::requestSustained(nv);
 }
 
-void Unk_0213b970::request(u32 nv) {
+void SkySndChannel::request(u32 nv) {
     SndEnvChannel::request(nv);
 }
 
-void Unk_0213b970::update(Vec3 *pos) {
+void SkySndChannel::update(Vec3 *pos) {
     SndEnvChannel::update(pos);
 }

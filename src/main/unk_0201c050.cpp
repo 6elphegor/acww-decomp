@@ -616,11 +616,11 @@ s32 _ZN15PlayerInventory14getPocketFlagsEi(void *, s32);
 s32 _ZN15PlayerInventory15findEmptyPocketEv(u32);
 s32 _ZN15PlayerInventory9setPocketEPtij(void *, void *, s32, s32);
 u16 * _ZN15PlayerInventory9getPocketEi(void *, s32);
-s32 _ZN12Unk_02097ff48testFlagEj(void *, s32);
-void _ZN12Unk_02097ff422advanceArbeitTalkCountEv(u32);
-s32 _ZN12Unk_02097ff418getArbeitTalkCountEv(u32);
-void _ZN12Unk_02097ff419setBirthdayTalkYearEj(void *, u32);
-u8 * _ZN12Unk_02097ff411getBirthdayEv();
+s32 _ZN10PlayerData8testFlagEj(void *, s32);
+void _ZN10PlayerData22advanceArbeitTalkCountEv(u32);
+s32 _ZN10PlayerData18getArbeitTalkCountEv(u32);
+void _ZN10PlayerData19setBirthdayTalkYearEj(void *, u32);
+u8 * _ZN10PlayerData11getBirthdayEv();
 void * _ZN10PlayerData10getErrandsEv(void *);
 void * _ZN10PlayerData17getDailyTalkFlagsEv(void *);
 void * _ZN10PlayerData14getDramaRecordEv(void *);
@@ -6101,7 +6101,7 @@ s32 VillagerTalkTopics::tryAddActiveRequestChoice(void *a, void *b) {
     u32 r4;
     r4 = (u32)PlayerData_GetCurrent();
     res = 0;
-    if (_ZN12Unk_02097ff48testFlagEj((void *)r4, 1) != 0) {
+    if (_ZN10PlayerData8testFlagEj((void *)r4, 1) != 0) {
         goto end;
     }
     r4 = Villager_GetPlayerErrandKind(gSaveVillagers, a, (void *)r4);
@@ -6279,7 +6279,7 @@ BOOL VillagerTalkRequestReplyTopics::tryOfferNewRequest(void *a, void *b) {
     void *s = VillagerState_GetErrand(Villager_GetState(a));
     BOOL r = FALSE;
     if (_ZN12ErrandRecord8isActiveEv(s) != 0) {
-        if (_ZN12Unk_02097ff48testFlagEj(PlayerData_GetCurrent(), 1) == 0) {
+        if (_ZN10PlayerData8testFlagEj(PlayerData_GetCurrent(), 1) == 0) {
             if (Random_GlobalBelow(100) < 30) {
                 switch (_ZN12ErrandRecord8getClassEv(s)) {
                 case 0:
@@ -10813,14 +10813,14 @@ BOOL VillagerTalkTopics::selectTsuStar() {
 }
 
 BOOL VillagerTalkTopics::selectEvArbeit() {
-    s32 r = _ZN12Unk_02097ff418getArbeitTalkCountEv(((u32)PlayerData_GetCurrent()));
+    s32 r = _ZN10PlayerData18getArbeitTalkCountEv(((u32)PlayerData_GetCurrent()));
     if (_ZN11CommManager8isOnlineEv((*(CommManager * *)&gCommManager)) != 0) {
         r = 10;
     }
     if (r < 10) {
         Villager_MakePersonalityFileName(&topicFile, 30, sTalkTopicEvArbeit, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(actor->villagerData)));
         topicIndex = r;
-        _ZN12Unk_02097ff422advanceArbeitTalkCountEv(((u32)PlayerData_GetCurrent()));
+        _ZN10PlayerData22advanceArbeitTalkCountEv(((u32)PlayerData_GetCurrent()));
         customFn0 = (Unk_020238b0_Fn)(data_020d7bd0);
         customFn1 = (Unk_020238b0_Fn)(data_020d7fd8);
         return TRUE;
@@ -12285,7 +12285,7 @@ void VillagerTalkTopics::giveEvBirthPresent() {
     h = 0x3818;
     Pocket_AddItem(&h, 0);
     p = PlayerData_GetCurrent();
-    _ZN12Unk_02097ff419setBirthdayTalkYearEj(p, (u8)(u32)Clock_GetYear());
+    _ZN10PlayerData19setBirthdayTalkYearEj(p, (u8)(u32)Clock_GetYear());
     ((VillagerTalk *)this)->setTopicFns((VillagerTalkTopicFns *)((u8 *)&nZ::sEvBirthTopicTable[4]));
     if (selectFn) {
         (this->*(Unk_0201d2d0_OutFn)selectFn)(&out);
@@ -12593,7 +12593,7 @@ s32 VillagerTalk::attrOpenBirthdayEntry() {
 void VillagerTalk::setConstellationSlots() {
     u8 buf[2];
     PlayerData_GetCurrent();
-    u8 *p = _ZN12Unk_02097ff411getBirthdayEv();
+    u8 *p = _ZN10PlayerData11getBirthdayEv();
     u32 r = Date_GetStarSign(p[1], p[0]);
     _ZN16ActorTalkRequest12setMonthSlotEjj(this, p[1], 0);
     _ZN16ActorTalkRequest10setDaySlotEjj(this, p[0], 1);

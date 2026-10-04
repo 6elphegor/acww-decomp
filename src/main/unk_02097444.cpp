@@ -49,7 +49,7 @@ void *MI_CpuFill8(void *, s32, u32);
 s32 PlayerDataArray_FindById(u8 *base, u16 *p);
 u32 PlayerDataArray_CountUsed(u8 *base);
 u32 Random_GlobalBelow();
-s32 _ZN12Unk_02097ff414findUnusedSlotEi(void *, s32);
+s32 _ZN10PlayerData14findUnusedSlotEi(void *, s32);
 s32 _ZN10PlayerData8getIndexEv(void *);
 void _ZN13PlayerMailbox17setLastWifiMailIdEj(void *, s32);
 s32 _ZN13PlayerMailbox17getLastWifiMailIdEv(void *);
@@ -311,7 +311,7 @@ extern "C" void PlayerDataArray_ResetAll(void *p) {
     for (i = 0; i < 4; i++) _ZN10PlayerData5resetEv((u8 *)p + i * 0x228c);
 }
 
-extern "C" s32 PlayerDataArray_FindUnused(void *p) { return _ZN12Unk_02097ff414findUnusedSlotEi(p, 4); }
+extern "C" s32 PlayerDataArray_FindUnused(void *p) { return _ZN10PlayerData14findUnusedSlotEi(p, 4); }
 
 extern "C" s32 PlayerDataArray_FindById(u8 *base, u16 *p) {
     if (_ZN8PlayerId7isValidEv(p) == 1) {

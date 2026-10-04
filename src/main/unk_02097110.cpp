@@ -23,11 +23,11 @@ extern s32 data_020e1e08;
 extern s32 data_020e1e0c;
 
 s32 PlayerData_GetCurrent(void);
-s32 _ZN12Unk_02097ff414getBankAccountEv(s32);
+s32 _ZN10PlayerData14getBankAccountEv(s32);
 s32 _ZN10PlayerData11getPlayerIdEv(s32);
-s32 _ZN12Unk_02097ff48testFlagEj(s32, s32);
-s32 _ZN12Unk_02097ff49clearFlagEj(s32, s32);
-s32 _ZN12Unk_02097ff47setFlagEj(s32, s32);
+s32 _ZN10PlayerData8testFlagEj(s32, s32);
+s32 _ZN10PlayerData9clearFlagEj(s32, s32);
+s32 _ZN10PlayerData7setFlagEj(s32, s32);
 s32 MenuCtrl_IsClockMovedForward(void);
 void _ZN11MsgString9CC2Ev(void *);
 void _ZN11MsgString9CD1Ev(void *);
@@ -87,7 +87,7 @@ extern "C" void PlayerBank_SetDonationLevel(PlayerBank *p, u32 v) { p->donationL
 
 extern "C" void PlayerBank_PayInterest(s32 n) {
     s32 s = PlayerData_GetCurrent();
-    s32 o = _ZN12Unk_02097ff414getBankAccountEv(s);
+    s32 o = _ZN10PlayerData14getBankAccountEv(s);
     if (MenuCtrl_IsClockMovedForward() == 0) {
         if (n > 0) {
             s32 m = PlayerBank_GetBalance((PlayerBank *)o);
@@ -121,7 +121,7 @@ extern "C" void PlayerBank_PayInterest(s32 n) {
 
 extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
     s32 s = PlayerData_GetCurrent();
-    s32 o = _ZN12Unk_02097ff414getBankAccountEv(s);
+    s32 o = _ZN10PlayerData14getBankAccountEv(s);
     if (n > 0) {
         s32 m = PlayerBank_GetBalance((PlayerBank *)o);
         if (m >= 1000000) {
@@ -141,7 +141,7 @@ extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
                 col = 0x3700;
             }
             s32 bit = k + 0x11;
-            if (_ZN12Unk_02097ff48testFlagEj(s, bit) == 0) {
+            if (_ZN10PlayerData8testFlagEj(s, bit) == 0) {
                 u8 ch;
                 ch = k + 0x15;
                 Letter e;
@@ -152,7 +152,7 @@ extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
                 Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e00, &data_020e1dfc, _ZN10PlayerData11getPlayerIdEv(s));
                 _ZN10LetterView10setPresentEtj(&e, col, 1);
                 if (LetterDelivery_PutInAddresseeMailbox(&e)) {
-                    _ZN12Unk_02097ff47setFlagEj(s, bit);
+                    _ZN10PlayerData7setFlagEj(s, bit);
                 }
                 _ZN11MsgString9CD1Ev(buf);
             }
@@ -167,9 +167,9 @@ extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
 
 extern "C" void PlayerBank_SendDonationLetter(s32 n) {
     s32 s = PlayerData_GetCurrent();
-    s32 o = _ZN12Unk_02097ff414getBankAccountEv(s);
+    s32 o = _ZN10PlayerData14getBankAccountEv(s);
     if (n > 0) {
-        if (_ZN12Unk_02097ff48testFlagEj(s, 0x16)) {
+        if (_ZN10PlayerData8testFlagEj(s, 0x16)) {
             s32 id = PlayerBank_GetDonationLevel((PlayerBank *)o);
             Letter e;
             u8 ch;
@@ -210,7 +210,7 @@ extern "C" void PlayerBank_SendDonationLetter(s32 n) {
                 _ZN10LetterView10setPresentEtj(&e, v, 1);
             }
             if (LetterDelivery_PutInAddresseeMailbox(&e)) {
-                _ZN12Unk_02097ff49clearFlagEj(s, 0x16);
+                _ZN10PlayerData9clearFlagEj(s, 0x16);
             }
         }
     }

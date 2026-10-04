@@ -9,6 +9,7 @@
 struct P;
 struct SPLResource;
 class EffectEmitterEntry;
+class EffectSplEmitter;
 
 struct Unk_020932bc_V16 {
     /* 0x0 */ s16 x, y, z;
@@ -32,6 +33,12 @@ struct EffectEmitterCbs {
     /* 0x4 */ s32 (*unk_04)(EffectEmitterEntry *);
 };
 
+typedef void (*EffectSplEmitterCallback)(EffectSplEmitter *emitter, s32 flag);
+
+// Layout as pokeheartgold's SPLEmitter (include/library/spl_emitter.h) without p_next/p_prev list words in front of the
+// particle lists' two-word heads and without gen_num: radius (0x44) scales the spawn position and length (0x48) the
+// axis offset in the autoload_2 generator (unk_020fc984.cpp), simpleCollisionY (0x5c) is 0x80000000 when off, and the
+// callback at 0x78 is called with flag 1 after the first spawn (EffectCb_AlignFirstParticle).
 class EffectSplEmitter {
 public:
     s32 spawnLandingEffects(s32 id1, void *d1, s32 id2, void *d2, s32 id3, void *d3, s32 id4, void *d4);
@@ -47,13 +54,21 @@ public:
     /* 0x20 */ s32 posX, posY, posZ;
     /* 0x2c */ u8 pad_2c[0x10];
     /* 0x3c */ Unk_020932bc_V16 axis;
-    /* 0x42 */ u8 pad_42[0x18];
+    /* 0x42 */ u8 pad_42[2];
+    /* 0x44 */ s32 radius;           // SPLEmitter radius
+    /* 0x48 */ s32 length;           // SPLEmitter length
+    /* 0x4c */ s32 initVelMagPos;    // SPLEmitter init_vel_mag_pos
+    /* 0x50 */ s32 initVelMagAxis;   // SPLEmitter init_vel_mag_axis
+    /* 0x54 */ s32 baseScale;        // SPLEmitter base_scl
+    /* 0x58 */ u16 particleLife;     // SPLEmitter ptcl_life
     /* 0x5a */ u16 color;
-    /* 0x5c */ s32 unk_5c;
+    /* 0x5c */ s32 simpleCollisionY; // SPLEmitter simple_collision_y
     /* 0x60 */ u8 pad_60[8];
-    /* 0x68 */ u8 unk_68;  // set to 2 by FlowerFx_InitByColor (petal effect kind 1)
-    /* 0x69 */ u8 baseAlpha; // fade: updateKind56Fade sets life * 6
-    /* 0x6a */ u8 pad_6a[0x16];
+    /* 0x68 */ u8 genInterval;       // SPLEmitter etc.gen_intvl (FlowerFx_InitByColor sets 2)
+    /* 0x69 */ u8 baseAlpha;         // etc.base_alp; fade: updateKind56Fade sets life * 6
+    /* 0x6a */ u8 pad_6a[0xe];
+    /* 0x78 */ EffectSplEmitterCallback callback;
+    /* 0x7c */ u8 pad_7c[4];
     /* 0x80 */ u8 tintVariant;
 };
 

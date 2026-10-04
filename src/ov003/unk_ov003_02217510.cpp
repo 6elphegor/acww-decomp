@@ -31,8 +31,8 @@ void *PlayerData_GetCurrent();
 void Clock_GetDateTime(void *p);
 void Clock_GetMinuteHour(void *p);
 BOOL GameStart_IsActive();
-#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
-BOOL Unk_02097ff4_testFlag(void *p, s32 a);
+#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
+BOOL PlayerData_testFlag(void *p, s32 a);
 BOOL NookShop_IsClosedOn(void *p, void *q);
 BOOL NookShop_IsReopenDueNow(void *p);
 void *NookShop_GetRenovation(void *p);
@@ -102,7 +102,7 @@ void ShopBuilding::setupTalkMsg() {
         }
     } else {
         void *x = PlayerData_GetCurrent();
-        if (GameStart_IsActive() || Unk_02097ff4_testFlag(x, 0x23)) {
+        if (GameStart_IsActive() || PlayerData_testFlag(x, 0x23)) {
             setFileName("sp_etc_sequence4");
             msgIndex = 0x15;
         } else if (isClosedToday()) {
@@ -148,10 +148,10 @@ BOOL ShopBuilding::isOpen() {
         return FALSE;
     }
     void *x = PlayerData_GetCurrent();
-    if (GameStart_IsActive() || (x && Unk_02097ff4_testFlag(x, 0x23))) {
+    if (GameStart_IsActive() || (x && PlayerData_testFlag(x, 0x23))) {
         return FALSE;
     }
-    if (x && Unk_02097ff4_testFlag(x, 1)) {
+    if (x && PlayerData_testFlag(x, 1)) {
         return TRUE;
     }
     if (isClosedToday()) {

@@ -1,7 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
-#include "player/Unk_02097ff4.h"
+#include "player/PlayerData.h"
 #include "save/TownExchangeRecord.h"
 #include "menu/MenuProc.h"
 #include "player/PlayerData.h"
@@ -105,7 +105,7 @@ s32 InvItem_IsNotFishInsectOrFlower(u32);
 
 extern "C" s32 PocketMenu_CanDropOutdoor(s32 a, u32 b) {
     InvItemStackPad pad;
-    if (((Unk_02097ff4 *)PlayerData_GetCurrent())->testFlag(1) != 0) {
+    if (((PlayerData *)PlayerData_GetCurrent())->testFlag(1) != 0) {
         if ((b >= 0x14fe && b <= 0x1517) || (b >= 0x151d && b <= 0x151e)) {
             return 0;
         }

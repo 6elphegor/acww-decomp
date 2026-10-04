@@ -146,8 +146,8 @@ u32 Pocket_GetItem(s32 i);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 BOOL MenuCtrl_BuildPocketMask(u32 cb);
-BOOL _ZN12Unk_02097ff48testFlagEj(void *p, u32 n);
-void _ZN12Unk_02097ff47setFlagEj(void *p, u32 n);
+BOOL _ZN10PlayerData8testFlagEj(void *p, u32 n);
+void _ZN10PlayerData7setFlagEj(void *p, u32 n);
 u32 _ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(void *p);
 u32 _ZN17PlayerSpNpcRecord18getAcornsDeliveredEv(void *p);
 void _ZN17PlayerSpNpcRecord18addAcornsDeliveredEi(void *p, s32 n);
@@ -331,9 +331,9 @@ void SpNpcCornimerTalk::start(TalkStartMsg *out) {
     void *g = PlayerData_GetCurrent();
     _ZN10PlayerData10getErrandsEv(g);
     out->msgKey = "sp_npc_acorn";
-    if (_ZN12Unk_02097ff48testFlagEj(g, 0xf) == 0) {
+    if (_ZN10PlayerData8testFlagEj(g, 0xf) == 0) {
         out->msgIndex = 0;
-        _ZN12Unk_02097ff47setFlagEj(g, 0xf);
+        _ZN10PlayerData7setFlagEj(g, 0xf);
         Talk_CheckAndSetPlayerFlag(0x19, 1);
     } else if (Talk_CheckAndSetPlayerFlag(0x19, 1) == 0) {
         out->msgIndex = 2;

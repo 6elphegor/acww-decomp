@@ -67,7 +67,7 @@ s32 Item_GetFurnitureIndex(u16 *);
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData11getPlayerIdEv(void *);
 s32 _ZN8PlayerId7isValidEv(void *);
-s32 _ZN12Unk_02097ff48testFlagEj(void *, s32);
+s32 _ZN10PlayerData8testFlagEj(void *, s32);
 s32 Catalog_HasAllFish();
 s32 Catalog_HasAllInsects();
 void Clock_GetDateTime(void *);
@@ -116,7 +116,7 @@ s32 _ZN10PlayerData6isUsedEv(void *);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *);
 void _ZN17PlayerSpNpcRecord15resetAcornCountEv(void *);
 void _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(void *);
-void _ZN12Unk_02097ff49clearFlagEj(void *, s32);
+void _ZN10PlayerData9clearFlagEj(void *, s32);
 void _ZN17PlayerSpNpcRecord24setEnteredFishingTourneyEi(void *, s32);
 void _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(void *, s32);
 void TownSessionState_SetFlag(void *self, u32 bit);
@@ -219,7 +219,7 @@ extern "C" void ContestRecord_BeginFestival(u8 *self, u32 mode)
             if (o != NULL && _ZN10PlayerData6isUsedEv(o) != 0) {
                 if (mode == 2) {
                     _ZN17PlayerSpNpcRecord15resetAcornCountEv(_ZN10PlayerData14getSpNpcRecordEv(o));
-                    _ZN12Unk_02097ff49clearFlagEj(o, 0xf);
+                    _ZN10PlayerData9clearFlagEj(o, 0xf);
                 } else {
                     _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(_ZN10PlayerData14getSpNpcRecordEv(o));
                 }
@@ -529,9 +529,9 @@ extern "C" void TownSessionState_CheckTortimerReward(void *self)
     void *r5 = PlayerData_GetCurrent();
     if (r5 != NULL) {
         if (_ZN8PlayerId7isValidEv(_ZN10PlayerData11getPlayerIdEv(r5)) != 0) {
-            if (_ZN12Unk_02097ff48testFlagEj(r5, 1) == 0) {
-                if ((_ZN12Unk_02097ff48testFlagEj(r5, 0x21) == 0 && Catalog_HasAllFish() != 0) ||
-                    (_ZN12Unk_02097ff48testFlagEj(r5, 0x22) == 0 && Catalog_HasAllInsects() != 0)) {
+            if (_ZN10PlayerData8testFlagEj(r5, 1) == 0) {
+                if ((_ZN10PlayerData8testFlagEj(r5, 0x21) == 0 && Catalog_HasAllFish() != 0) ||
+                    (_ZN10PlayerData8testFlagEj(r5, 0x22) == 0 && Catalog_HasAllInsects() != 0)) {
                     s32 a[2];
                     s32 b[2];
                     a[0] = 0;

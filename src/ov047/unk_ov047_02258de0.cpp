@@ -137,8 +137,8 @@ s32 _ZN10MuseumData16getDonationStateEPt(void *g, u16 *p);
 s32 _ZN15TalkWindowState14setNextMessageEPhPv(void *self, void *buf, void *name);
 void _ZN15TalkWindowState7setSlotEiPv(void *self, s32 a, void *obj);
 u32 _ZN10ChoiceList9getResultEv();
-void _ZN12Unk_02097ff47setFlagEj(void *p, u32 v);
-BOOL _ZN12Unk_02097ff48testFlagEj(u32 a, u32 b);
+void _ZN10PlayerData7setFlagEj(void *p, u32 v);
+BOOL _ZN10PlayerData8testFlagEj(u32 a, u32 b);
 u32 _ZN10PlayerData10getErrandsEv(...);
 u32 _ZN18SickVillagerRecord15getParcelErrandEv(u32 a);
 void _ZN12ErrandRecord7setStepEh(u32 a, s32 b);
@@ -180,8 +180,8 @@ BOOL _ZN8NpcActor11netGetSlotsEii(void *self, s32 *a, s32 *b);
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
 #define TalkWindowState_setSlot _ZN15TalkWindowState7setSlotEiPv
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-#define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
-#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
+#define PlayerData_setFlag _ZN10PlayerData7setFlagEj
+#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
 #define PlayerData_getErrands _ZN10PlayerData10getErrandsEv
 #define SickVillagerRecord_getParcelErrand _ZN18SickVillagerRecord15getParcelErrandEv
 #define ErrandRecord_setStep _ZN12ErrandRecord7setStepEh
@@ -1066,7 +1066,7 @@ void SpNpcBlathersTalk::commitDonation() {
         void *p = PlayerData_GetCurrent();
         MuseumData_donate(data_021ed0a0, &item);
         SaveData_setFlag(gSaveData, 0xc);
-        Unk_02097ff4_setFlag(p, 8);
+        PlayerData_setFlag(p, 8);
         if (pocketSlot >= 0) {
             Pocket_RemoveItem(pocketSlot);
             pocketSlot = -1;
@@ -1208,7 +1208,7 @@ test:
             s32 a, b, r;
             MuseumData_donate(g, &item);
             SaveData_setFlag(gSaveData, 0xc);
-            Unk_02097ff4_setFlag(p, 8);
+            PlayerData_setFlag(p, 8);
             if (pocketSlot >= 0) {
                 Pocket_RemoveItem(pocketSlot);
                 pocketSlot = -1;
@@ -1280,7 +1280,7 @@ void SpNpcBlathersTalk::appraiseFossil() {
     u16 bufa, bufb;
     if (!Unk_ov047_022596e8_IsNone(&item)) {
         void *p = PlayerData_GetCurrent();
-        Unk_02097ff4_setFlag(p, 0x35);
+        PlayerData_setFlag(p, 0x35);
         ItemPick_FromRange(&bufb, 0x450c, 0x34, 0, 0, 0, 1, 10, 0, 1);
         item = bufb;
         if (pocketSlot >= 0) {
@@ -1611,7 +1611,7 @@ void SpNpcBlathersTalk::onMainMenuChoice(s32 a) {
         u32 r = (u32)PlayerData_GetCurrent();
         if (MenuCtrl_BuildPocketMask(SpNpcBlathers_IsUnidentifiedFossil) == 0) {
             nextMsg = 0x18;
-        } else if (Unk_02097ff4_testFlag(r, 0x35) == 0) {
+        } else if (PlayerData_testFlag(r, 0x35) == 0) {
             appraisalFlow = 1;
             nextMsg = 0x17;
         } else {
@@ -1684,7 +1684,7 @@ void SpNpcBlathersTalk::onAppraiseAnotherChoice(u32 a) {
 
 void SpNpcBlathersTalk::onAppraiseDonatedFossilChoice(u32 a) {
     if (a == 0) {
-        if (Unk_02097ff4_testFlag((u32)PlayerData_GetCurrent(), 0x35) == 0) {
+        if (PlayerData_testFlag((u32)PlayerData_GetCurrent(), 0x35) == 0) {
             nextMsg = 0x4b;
         } else {
             nextMsg = 0x19;

@@ -27,8 +27,8 @@
 
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
-#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
-#define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
+#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
+#define PlayerData_setFlag _ZN10PlayerData7setFlagEj
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define ActorTalkRequest_requestCloseWindow _ZN16ActorTalkRequest18requestCloseWindowEj
 #define ActorTalkRequest_requestReopenWindow _ZN16ActorTalkRequest19requestReopenWindowEv
@@ -74,8 +74,8 @@ struct SpNpcPeteSidestepPos {
 extern "C" {
 void *PlayerData_GetCurrent();
 s32 ChoiceList_getResult();
-s32 Unk_02097ff4_testFlag(void *p, s32 a);
-s32 Unk_02097ff4_setFlag(void *p, s32 a);
+s32 PlayerData_testFlag(void *p, s32 a);
+s32 PlayerData_setFlag(void *p, s32 a);
 s32 Random_GlobalBelow(s32 a);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void ActorTalkRequest_requestCloseWindow(void *self, s32 a);
@@ -662,8 +662,8 @@ void SpNpcPeteTalk::scriptWakeUp() {
                 u8 buf[2];
                 ownerNpc[0x714] = 1;
                 ActorTalkRequest_requestReopenWindow(this);
-                if (Unk_02097ff4_testFlag(p, 6) == 0) {
-                    Unk_02097ff4_setFlag(p, 6);
+                if (PlayerData_testFlag(p, 6) == 0) {
+                    PlayerData_setFlag(p, 6);
                     Talk_CheckAndSetPlayerFlag(0x12, 1);
                     buf[0] = 0x10;
                     window->setNextMessage(buf, (void *)"sp_npc_mpelican");
@@ -691,7 +691,7 @@ void SpNpcPeteTalk::attachOwner(void *owner) {
 void SpNpcPeteTalk::start(TalkStartMsg *out) {
     out->msgIndex = 0x1a;
     if (ownerNpc[0x714] != 0) {
-        if (Unk_02097ff4_testFlag(PlayerData_GetCurrent(), 6) != 0) {
+        if (PlayerData_testFlag(PlayerData_GetCurrent(), 6) != 0) {
             out->msgIndex = Random_GlobalBelow(4) + 12;
         }
     }

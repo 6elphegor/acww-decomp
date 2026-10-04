@@ -31,7 +31,7 @@
 #define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
 #define HandCursor_getAnim _ZN10HandCursor7getAnimEv
 #define HandCursor_setAnimAtEnd _ZN10HandCursor12setAnimAtEndEi
-#define Unk_02097ff4_getInventoryBackground _ZN12Unk_02097ff422getInventoryBackgroundEv
+#define PlayerData_getInventoryBackground _ZN10PlayerData22getInventoryBackgroundEv
 #define PlayerData_getPatterns _ZN10PlayerData11getPatternsEv
 #define PlayerData_setHat _ZN10PlayerData6setHatEPt
 #define PlayerData_getHat _ZN10PlayerData6getHatEv
@@ -107,7 +107,7 @@ void func_02089f44(void *p);
 BOOL HandCursor_isAnimDone(void *p);
 BOOL HandCursor_getAnim(void *p);
 void HandCursor_setAnimAtEnd(void *p, s32 v);
-void *Unk_02097ff4_getInventoryBackground(void *p);
+void *PlayerData_getInventoryBackground(void *p);
 void *PlayerData_getPatterns(void *p);
 void PlayerData_setHat(void *p, u16 *v);
 u16 *PlayerData_getHat(void *p);
@@ -1296,7 +1296,7 @@ void DesignTab::dropOnPlayerFigure() {
     u16 w;
     void *r6 = PlayerData_GetCurrent();
     s32 s = Pocket_FindEmpty();
-    v = *(u16 *)Unk_02097ff4_getInventoryBackground(r6);
+    v = *(u16 *)PlayerData_getInventoryBackground(r6);
     if (Unk_ov121_02293188_InRange(&v, 0x11a8, 0x12a7) && s == -1) {
         openMessageWindow(4, 1);
         return;

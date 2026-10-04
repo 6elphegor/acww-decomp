@@ -80,6 +80,56 @@ public:
     void enterAct00();
     void setState(s32 idx);
     void startTalk(const char *str, u8 flag);
+    // session acts 0x03..0x14 (unk_020a3238.cpp) and 0x19..0x1e (unk_020a1c88.cpp)
+    void enterAct14();
+    void execAct13();
+    void enterAct13();
+    void execAct12();
+    void enterAct12();
+    void execAct11();
+    void enterAct11();
+    void execAct10();
+    void enterAct10();
+    void execAct0F();
+    void enterAct0F();
+    void execAct0E();
+    void enterAct0E();
+    void execAct0D();
+    void enterAct0D();
+    void execAct0C();
+    void enterAct0C();
+    void execAct0B();
+    void enterAct0B();
+    void execAct0A();
+    void enterAct0A();
+    void execAct09();
+    void enterAct09();
+    void execAct08();
+    void enterAct08();
+    void execAct07();
+    void enterAct07();
+    void execAct06();
+    void enterAct06();
+    void execAct05();
+    void enterAct05();
+    void execAct04();
+    void enterAct04();
+    void execAct03();
+    void enterAct1E();
+    void execAct1D();
+    void enterAct1D();
+    void execAct1C();
+    void enterAct1C();
+    void execAct1B();
+    void enterAct1B();
+    void execAct1A();
+    void enterAct1A();
+    void execAct19();
+    // synced save / peer gathering steps (unk_0209f304.cpp)
+    void runSendAct10(u8 *p, u32 base);
+    BOOL allPeersSentAct10();
+    void runGatherPeersInScene(u8 *p, u32 base, u32 x, u32 y);
+    s32 runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8 a7, u32 a8);
 
     /* 0x50 */ s32 act;
     /* 0x54 */ SaveManagerTalk talk;
@@ -95,13 +145,28 @@ public:
     /* 0xc0 */ void *letterStorage;
     /* 0xc4 */ void *townCompressBuf;
     /* 0xc8 */ void *townCompressThread;
-    /* 0xcc */ u8 pad_cc[0xd4 - 0xcc];
+    /* 0xcc */ u16 hostWaitTimer;   // frames the host waits alone before giving up (enterAct1D: 0x258)
+    /* 0xce */ u16 memberMask;
+    /* 0xd0 */ u16 hostMemberMask;
+    /* 0xd2 */ u8 sessionJoined;    // SaveManager_IsSessionJoined
+    /* 0xd3 */ u8 hostDataIndex;
     /* 0xd4 */ u8 sendChunk;
-    /* 0xd5 */ u8 pad_d5[0xd8 - 0xd5];
+    /* 0xd5 */ u8 joinReady;
+    /* 0xd6 */ u8 dateTimeReceived;
+    /* 0xd7 */ u8 pad_d7;
     /* 0xd8 */ u32 hostDateTime;
     /* 0xdc */ u32 hostDateTimeHi;
-    /* 0xe0 */ u8 pad_e0[0xeb - 0xe0];
-    /* 0xeb */ u8 ctrlAct0E[0x12];
+    /* 0xe0 */ u8 joinDone;
+    /* 0xe1 */ u8 ctrlAct12;
+    /* 0xe2 */ u8 recvAct07;
+    /* 0xe3 */ u8 recvAct04[4];
+    /* 0xe7 */ u8 recvAct02[4];
+    /* 0xeb */ u8 ctrlAct0E[4];
+    /* 0xef */ u8 recvAct03;
+    /* 0xf0 */ u8 recvAct06[4];
+    /* 0xf4 */ u8 ctrlAct10[4];
+    /* 0xf8 */ u8 ctrlAct11[4];
+    /* 0xfc */ u8 ctrlAct14Aid;     // aid of the Act14 sender (SaveManager_GetCtrlAct14Aid)
     /* 0xfd */ u8 ctrlAct17;
     /* 0xfe */ u8 freePlayerSlot;
     /* 0xff */ u8 transferDests[4];
@@ -178,22 +243,6 @@ struct TownCompressBuffer {
     void compress();
 };
 
-struct Unk_0209f304 {
-    u8 pad_00[0xb4];
-    void *saveDataCopy;
-    u8 pad_b8[0xeb - 0xb8];
-    u8 ctrlAct0E;
-    u8 pad_ec[0xf4 - 0xec];
-    u8 ctrlAct10[4];
-    u8 pad_f8[0x10a - 0xf8];
-    u8 unk_10a_lo : 4;
-    u8 unk_10a_hi : 4;
-
-    void runSendAct10(u8 *p, u32 base);
-    BOOL allPeersSentAct10();
-    void runGatherPeersInScene(u8 *p, u32 base, u32 x, u32 y);
-    s32 runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8 a7, u32 a8);
-};
 
 namespace NB {
 extern "C" {
@@ -275,8 +324,8 @@ u8 *FriendList_GetEntries(void);
 s32 FriendEntry_GetFriendData(u8 *p);
 u8 *DwcFriendData_GetBytes(s32 p);
 void _ZN11SaveManager9startTalkEPKch(u32 a, void *b, u32 c);
-void _ZN12Unk_02097ff49clearFlagEj(s32 a, u32 b);
-void _ZN12Unk_02097ff47setFlagEj(s32 a, u32 b);
+void _ZN10PlayerData9clearFlagEj(s32 a, u32 b);
+void _ZN10PlayerData7setFlagEj(s32 a, u32 b);
 s32 Hud_GetCountdown(void);
 void _ZN12HudCountdown5startEii(s32 a, u32 b, u32 c);
 u32 _ZN11CommManager7getModeEv(void *g);
@@ -307,12 +356,6 @@ u8 SaveManager_IsEndSessionSave(void);
 
 // ---- unk_0209f638.cpp
 
-struct Unk_0209f638 {
-    u8 pad_00[0xeb];
-    u8 ctrlAct0E[5];
-    u8 recvAct06[0x1f - 5];
-     u8 slotOrder;
-};
 
 struct GuestSlotTriple { s32 v[3]; };
 
@@ -334,17 +377,17 @@ void Comm_EnterCritical();
 void Comm_LeaveCritical();
 BOOL CommCtrl_SendAct0E(s32 a, u32 b);
 BOOL CommCtrl_SendAct13();
-s32 _ZN11SaveManager15verifySlotsStepEv(Unk_0209f638 *p);
-s32 _ZN14SaveSlotWriter12saveSlotStepEi(Unk_0209f638 *p, u32 v);
-void _ZN11SaveManager23restoreVillagerTransferEv(Unk_0209f638 *p);
-void SaveManager_ClearCtrlAct0E(Unk_0209f638 *p);
-void _ZN11SaveManager18showSequence2Msg0AEv(Unk_0209f638 *p);
-void _ZN11SaveManager18showSequence2Msg0BEv(Unk_0209f638 *p);
-void *_ZN11SaveManager15getTransferDestEj(Unk_0209f638 *p, s32 i);
+s32 _ZN11SaveManager15verifySlotsStepEv(SaveManager *p);
+s32 _ZN14SaveSlotWriter12saveSlotStepEi(SaveManager *p, u32 v);
+void _ZN11SaveManager23restoreVillagerTransferEv(SaveManager *p);
+void SaveManager_ClearCtrlAct0E(SaveManager *p);
+void _ZN11SaveManager18showSequence2Msg0AEv(SaveManager *p);
+void _ZN11SaveManager18showSequence2Msg0BEv(SaveManager *p);
+void *_ZN11SaveManager15getTransferDestEj(SaveManager *p, s32 i);
 void _ZN11SaveRecord415markInterruptedEv(void *p);
 void _ZN11SaveRecord416setStateValidAltEv(void *p);
 void LostChild_SaveToTown();
-void Wifi_EndSession(Unk_0209f638 *p);
+void Wifi_EndSession(SaveManager *p);
 TalkWindowState *TalkWindow_Get(s32 i);
 void OS_ResetSystem(s32 v);
 void CommSend_VillagerTransferReply(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
@@ -376,10 +419,10 @@ void *DwcFriendData_GetBytes(void *a);
 void *FriendList_GetEntries(void *a);
 void *FriendEntry_GetFriendData(void *a);
 BOOL Net_IsSameFriendData(void *a, void *b);
-void LostChild_DebugPrint(Unk_0209f638 *p, void *q);
-BOOL Wifi_IsInFriendList(Unk_0209f638 *p, void *a, void *b);
-void LostChild_TryPair(Unk_0209f638 *p, s32 idx);
-void LostChild_ApplyReceived(Unk_0209f638 *p);
+void LostChild_DebugPrint(SaveManager *p, void *q);
+BOOL Wifi_IsInFriendList(SaveManager *p, void *a, void *b);
+void LostChild_TryPair(SaveManager *p, s32 idx);
+void LostChild_ApplyReceived(SaveManager *p);
 }
 }
 
@@ -390,37 +433,6 @@ struct Unk_020cbb18_ff4c {
     volatile s32 localSlot;
 };
 
-struct Unk_021ed3b0 {
-    u8 pad_00[0x50];
-    s32 act;
-    u8 pad_54[0x9d - 0x54];
-    u8 actStep;
-    u8 pad_9e[0xc0 - 0x9e];
-    s32 letterStorage;
-    s32 townCompressBuf;
-    s32 townCompressThread;
-    u8 pad_cc[4];
-    u16 hostMemberMask;
-    u8 unk_d2;
-    u8 hostDataIndex;
-    u8 pad_d4;
-    u8 joinReady;
-    u8 dateTimeReceived;
-    u8 pad_d7;
-    u8 hostDateTime[8];
-    u8 joinDone;
-    u8 ctrlAct12;
-    u8 recvAct07;
-    u8 recvAct04[4];
-    u8 recvAct02[4];
-    u8 ctrlAct0E[4];
-    u8 recvAct03;
-    u8 recvAct06[4];
-    u8 ctrlAct10[4];
-    u8 ctrlAct11[4];
-    u8 unk_fc;
-    u8 unk_fd;
-};
 
 class SaveRecord4 {
 public:
@@ -439,7 +451,7 @@ public:
 namespace ND {
 extern "C" {
 extern Unk_020cbb18_ff4c *gCommManager;
-extern Unk_021ed3b0 *gSaveManager;
+extern SaveManager *gSaveManager;
 extern s32 sGameStartMode;
 extern u8 data_021ed398;
 extern s32 gTownTransferBuf;
@@ -508,7 +520,7 @@ void LetterStorage_MarkInterrupted(s32);
 s32 Backup_Read(void *, void *, u32, u32);
 s32 Save_ReadSlotFooter(s32, SaveRecord4 *);
 BOOL Save_CheckFooterReadError(s32);
-Unk_021ed3b0 *SaveManager_Get();
+SaveManager *SaveManager_Get();
 s32 SaveManager_GetLetterStorage();
 BOOL GameStart_IsMode4();
 BOOL GameStart_IsNewTown();
@@ -644,7 +656,7 @@ void _ZN18TownExchangeRecord16incrementCounterEv(void *p);
 void *PlayerData_GetCurrent(void);
 u32 PlayerData_Get(u32 x);
 s32 PlayerData_GetCurrentIndex(void);
-s32 _ZN12Unk_02097ff49clearFlagEj(void *p, u32 x);
+s32 _ZN10PlayerData9clearFlagEj(void *p, u32 x);
 void *_ZN10PlayerData5resetEv(void *p);
 void SaveData_Apply(void *p);
 void SaveData_Setup(void *p, u32 x);
@@ -663,34 +675,6 @@ void MI_CpuCopy8(const void *src, void *dst, u32 size);
 
 // ---- unk_020a1c88.cpp
 
-class Unk_020a1c88 {
-public:
-    u8 pad_00[0x9d];
-    u8 actStep;
-    u8 pad_9e[0xcc - 0x9e];
-    u16 unk_cc;
-    u16 memberMask;
-    u8 pad_d0[0xe1 - 0xd0];
-    u8 ctrlAct12;
-    u8 recvAct07;
-    u8 pad_e3[0xf0 - 0xe3];
-    u8 recvAct06[8];
-    u8 ctrlAct11[6];
-    u8 freePlayerSlot;
-    u8 pad_ff[0x107 - 0xff];
-    u8 noSaveData;
-
-    void enterAct1E();
-    void execAct1D();
-    void enterAct1D();
-    void execAct1C();
-    void enterAct1C();
-    void execAct1B();
-    void enterAct1B();
-    void execAct1A();
-    void enterAct1A();
-    void execAct19();
-};
 
 namespace NG {
 extern "C" {
@@ -699,26 +683,26 @@ extern u8 gSaveTownId[];
 extern u8 gSavePlayers[];
 extern u8 sSessionResidentIndex;
 extern CommManager *gCommManager;
-s32 SaveManager_GetCtrlAct14Aid(Unk_020a1c88 *self);
-void _ZN11SaveManager8setStateEi(Unk_020a1c88 *self, u32 s);
-BOOL _ZN11SaveManager13func_020a15c8Ej(Unk_020a1c88 *self, u32 a);
-void _ZN11SaveManager13func_020a15f8Ev(Unk_020a1c88 *self);
-BOOL _ZN11SaveManager18isTransferReceivedEj(Unk_020a1c88 *self, s32 a);
-void _ZN11SaveManager22backupVillagerTransferEv(Unk_020a1c88 *self);
-s32 _ZN11SaveManager15getTransferDestEj(Unk_020a1c88 *self, u32 a);
-void NetSession_ReturnToSolo(Unk_020a1c88 *self, u32 a, u32 b);
-void _ZN11SaveManager9startTalkEPKch(Unk_020a1c88 *self, void *a, u32 b);
-BOOL Wifi_EndSession(Unk_020a1c88 *self);
-void VillagerTransfer_PlanRotate(Unk_020a1c88 *self);
-void LostChild_ResetAndPairAll(Unk_020a1c88 *self);
-BOOL _ZN12Unk_0209f30417allPeersSentAct10Ev(Unk_020a1c88 *self);
-BOOL VillagerTransfer_SendReplies(Unk_020a1c88 *self);
-void SaveManager_StartSequence2Talk(Unk_020a1c88 *self);
-void _ZN12Unk_0209f30412runSendAct10EPhj(Unk_020a1c88 *self, u8 *s, u32 a);
-void _ZN12Unk_0209f30421runGatherPeersInSceneEPhjjj(Unk_020a1c88 *self, u8 *s, u32 a, u32 b, u32 c);
-void _ZN12Unk_0209f30419runSyncedSaveClientEPhjjhhhj(Unk_020a1c88 *self, u8 *s, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
-void SaveManager_RunSyncedSaveHost(Unk_020a1c88 *self, u8 *s, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g);
-void SaveManager_RunSessionEnd(Unk_020a1c88 *self, u8 *s, u32 a, u32 b, u32 c, u32 d);
+s32 SaveManager_GetCtrlAct14Aid(SaveManager *self);
+void _ZN11SaveManager8setStateEi(SaveManager *self, u32 s);
+BOOL _ZN11SaveManager13func_020a15c8Ej(SaveManager *self, u32 a);
+void _ZN11SaveManager13func_020a15f8Ev(SaveManager *self);
+BOOL _ZN11SaveManager18isTransferReceivedEj(SaveManager *self, s32 a);
+void _ZN11SaveManager22backupVillagerTransferEv(SaveManager *self);
+s32 _ZN11SaveManager15getTransferDestEj(SaveManager *self, u32 a);
+void NetSession_ReturnToSolo(SaveManager *self, u32 a, u32 b);
+void _ZN11SaveManager9startTalkEPKch(SaveManager *self, void *a, u32 b);
+BOOL Wifi_EndSession(SaveManager *self);
+void VillagerTransfer_PlanRotate(SaveManager *self);
+void LostChild_ResetAndPairAll(SaveManager *self);
+BOOL _ZN11SaveManager17allPeersSentAct10Ev(SaveManager *self);
+BOOL VillagerTransfer_SendReplies(SaveManager *self);
+void SaveManager_StartSequence2Talk(SaveManager *self);
+void _ZN11SaveManager12runSendAct10EPhj(SaveManager *self, u8 *s, u32 a);
+void _ZN11SaveManager21runGatherPeersInSceneEPhjjj(SaveManager *self, u8 *s, u32 a, u32 b, u32 c);
+void _ZN11SaveManager19runSyncedSaveClientEPhjjhhhj(SaveManager *self, u8 *s, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
+void SaveManager_RunSyncedSaveHost(SaveManager *self, u8 *s, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g);
+void SaveManager_RunSessionEnd(SaveManager *self, u8 *s, u32 a, u32 b, u32 c, u32 d);
 BOOL _ZN8SaveData7isValidEv(void *p);
 TalkWindowState *TalkWindow_Get(u32 x);
 u32 Net_GetMemberCount();
@@ -757,27 +741,6 @@ s32 TownExchange_Clear(void *a);
 // ---- unk_020a25d8.cpp
 
 
-struct Unk_020a25d8 {
-    u8 pad_00[0x9d];
-    u8 actStep;
-    u8 pad_9e[0xc8 - 0x9e];
-    u32 townCompressThread;
-    u8 pad_cc[2];
-    u16 memberMask;
-    u16 hostMemberMask;
-    u8 unk_d2;
-    u8 hostDataIndex;
-    u8 sendChunk;
-    u8 joinReady;
-    u8 dateTimeReceived;
-    u8 pad_d7;
-    u8 hostDateTime[8];
-    u8 joinDone;
-    u8 ctrlAct12;
-    u8 pad_e2[0xf0 - 0xe2];
-    u8 recvAct06[8];
-    u8 ctrlAct11[4];
-};
 
 struct SaveDataClockView {
     u8 pad_00[0x38];
@@ -794,25 +757,25 @@ extern u32 data_021ed304;
 extern void *gTownTransferBuf;
 extern u8 gSaveData[];
 extern SaveDataClockView data_021ed2d0;
-void SaveManager_StartGatekeeperTalk(Unk_020a25d8 *p, s32 v);
+void SaveManager_StartGatekeeperTalk(SaveManager *p, s32 v);
 BOOL Comm_IsConnectionLost(u32 v);
 void Comm_SetLostFlag();
 u32 Comm_GetRemoteMask();
 u32 Comm_GetMemberMask();
-BOOL _ZN11SaveManager13func_020a15c8Ej(Unk_020a25d8 *p, s32 v);
-void VillagerTransfer_PlanSwap(Unk_020a25d8 *p);
-void LostChild_ResetAndPairLast(Unk_020a25d8 *p);
-void _ZN12Unk_0209f30421runGatherPeersInSceneEPhjjj(Unk_020a25d8 *p, u8 *st, u32 a, u32 b, u32 c);
-BOOL _ZN12Unk_0209f30417allPeersSentAct10Ev(Unk_020a25d8 *p);
-BOOL VillagerTransfer_SendReplies(Unk_020a25d8 *p);
+BOOL _ZN11SaveManager13func_020a15c8Ej(SaveManager *p, s32 v);
+void VillagerTransfer_PlanSwap(SaveManager *p);
+void LostChild_ResetAndPairLast(SaveManager *p);
+void _ZN11SaveManager21runGatherPeersInSceneEPhjjj(SaveManager *p, u8 *st, u32 a, u32 b, u32 c);
+BOOL _ZN11SaveManager17allPeersSentAct10Ev(SaveManager *p);
+BOOL VillagerTransfer_SendReplies(SaveManager *p);
 s32 NetSession_GetLastSyncSlot();
-u32 _ZN11SaveManager15getTransferDestEj(Unk_020a25d8 *p, s32 v);
+u32 _ZN11SaveManager15getTransferDestEj(SaveManager *p, s32 v);
 void *TownExchange_GetForAid(u32 v);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void TownExchange_Clear(void *p);
-void _ZN11SaveManager22backupVillagerTransferEv(Unk_020a25d8 *p);
+void _ZN11SaveManager22backupVillagerTransferEv(SaveManager *p);
 void JoinHistory_Remove(u32 v);
-void SaveManager_RunSyncedSaveHost(Unk_020a25d8 *p, u8 *st, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g);
+void SaveManager_RunSyncedSaveHost(SaveManager *p, u8 *st, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g);
 BOOL CommCtrl_SendAct12(u32 v);
 void Comm_RemoveMember(u32 v);
 void _Z20NetOverlay_AssertAnyv();
@@ -820,17 +783,17 @@ BOOL Net_IsReadyToSend();
 u32 Net_GetMemberCount();
 void Weather_RerollRainSlant();
 void Town_OnLoad();
-void SaveManager_RunSessionEnd(Unk_020a25d8 *p, u8 *st, u32 a, u32 b, u32 c, u32 d);
-void _ZN11SaveManager13func_020a15f8Ev(Unk_020a25d8 *p);
-void _ZN11SaveManager8setStateEi(Unk_020a25d8 *p, s32 v);
-void _ZN12Unk_0209f30412runSendAct10EPhj(Unk_020a25d8 *p, u8 *st, u32 a);
-BOOL _ZN11SaveManager18isTransferReceivedEj(Unk_020a25d8 *p, s32 v);
-void _ZN12Unk_0209f30419runSyncedSaveClientEPhjjhhhj(Unk_020a25d8 *p, u8 *st, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
+void SaveManager_RunSessionEnd(SaveManager *p, u8 *st, u32 a, u32 b, u32 c, u32 d);
+void _ZN11SaveManager13func_020a15f8Ev(SaveManager *p);
+void _ZN11SaveManager8setStateEi(SaveManager *p, s32 v);
+void _ZN11SaveManager12runSendAct10EPhj(SaveManager *p, u8 *st, u32 a);
+BOOL _ZN11SaveManager18isTransferReceivedEj(SaveManager *p, s32 v);
+void _ZN11SaveManager19runSyncedSaveClientEPhjjhhhj(SaveManager *p, u8 *st, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
 BOOL CommCtrl_SendAct11();
-void NetSession_ReturnToSolo(Unk_020a25d8 *p, u32 a, u32 b);
+void NetSession_ReturnToSolo(SaveManager *p, u32 a, u32 b);
 void NetOverlay_Restore();
 void *PlayerData_GetCurrent();
-void _ZN12Unk_02097ff47setFlagEj(void *p, s32 v);
+void _ZN10PlayerData7setFlagEj(void *p, s32 v);
 void NetSession_SetLastSyncSlot(s32 v);
 void NetArea_SetSlotStatus(u32 a, s32 b, u32 c, u32 d, u32 e);
 void Comm_ResetPeerState(u32 v);
@@ -882,50 +845,6 @@ struct Unk_020a3238_Vec {
     s32 x, y, z;
 };
 
-class Unk_020a3238;
-
-class Unk_020a3238 {
-public:
-    u8 pad_00[0x9d];
-    u8 actStep;
-    u8 pad_9e[0x10a - 0x9e];
-    u8 slotOrder;
-
-    void enterAct14();
-    void execAct13();
-    void enterAct13();
-    void execAct12();
-    void enterAct12();
-    void execAct11();
-    void enterAct11();
-    void execAct10();
-    void enterAct10();
-    void execAct0F();
-    void enterAct0F();
-    void execAct0E();
-    void enterAct0E();
-    void execAct0D();
-    void enterAct0D();
-    void execAct0C();
-    void enterAct0C();
-    void execAct0B();
-    void enterAct0B();
-    void execAct0A();
-    void enterAct0A();
-    void execAct09();
-    void enterAct09();
-    void execAct08();
-    void enterAct08();
-    void execAct07();
-    void enterAct07();
-    void execAct06();
-    void enterAct06();
-    void execAct05();
-    void enterAct05();
-    void execAct04();
-    void enterAct04();
-    void execAct03();
-};
 
 namespace NI {
 extern "C" {
@@ -936,15 +855,15 @@ extern u32 sEraseResidentSlot;
 extern Unk_020a3238_Vec data_020d0788;
 extern Unk_020a3238_Vec data_020d0770;
 extern u8 gSaveVillagers[];
-s32 _ZN11SaveManager15verifySlotsStepEv(Unk_020a3238 *self);
-s32 _ZN14SaveSlotWriter12saveSlotStepEi(Unk_020a3238 *self, u32 n);
-s32 _ZN11SaveManager13func_020a15c8Ej(Unk_020a3238 *self, u32 n);
-void _ZN11SaveManager13func_020a15f8Ev(Unk_020a3238 *self);
-void _ZN11SaveManager18showSequence2Msg0AEv(Unk_020a3238 *self);
-void _ZN11SaveManager8setStateEi(Unk_020a3238 *self, u32 n);
-void _ZN11SaveManager9startTalkEPKch(Unk_020a3238 *self, void *p, u32 n);
-s32 Save_InvalidateAll(Unk_020a3238 *self);
-s32 _ZN14SaveSlotWriter13eraseSlotStepEi(Unk_020a3238 *self, u32 n);
+s32 _ZN11SaveManager15verifySlotsStepEv(SaveManager *self);
+s32 _ZN14SaveSlotWriter12saveSlotStepEi(SaveManager *self, u32 n);
+s32 _ZN11SaveManager13func_020a15c8Ej(SaveManager *self, u32 n);
+void _ZN11SaveManager13func_020a15f8Ev(SaveManager *self);
+void _ZN11SaveManager18showSequence2Msg0AEv(SaveManager *self);
+void _ZN11SaveManager8setStateEi(SaveManager *self, u32 n);
+void _ZN11SaveManager9startTalkEPKch(SaveManager *self, void *p, u32 n);
+s32 Save_InvalidateAll(SaveManager *self);
+s32 _ZN14SaveSlotWriter13eraseSlotStepEi(SaveManager *self, u32 n);
 TalkWindowState *TalkWindow_Get(s32 i);
 s32 Scene_GetWarpRequest();
 void SceneWarp_RequestExit(s32 a, s32 b);
@@ -968,7 +887,7 @@ void VillagerStates_Destroy();
 void SaveManager_StartGatekeeperTalk(void *p, s32 n);
 s32 Constellation_PrepareExchange();
 s32 PlayerData_GetCurrent(void *p);
-void _ZN12Unk_02097ff49clearFlagEj(s32 a, s32 b);
+void _ZN10PlayerData9clearFlagEj(s32 a, s32 b);
 void Clock_Init();
 void SaveVillagers_DailyUpdate(void *p, s32 n);
 s32 TownUpdateThread_Start();
@@ -1017,7 +936,7 @@ s32 _ZN11SaveManager18showSequence2Msg0AEv(void *p);
 s32 _ZN11SaveManager13func_020a15f8Ev(void *p);
 void *PlayerData_GetCurrent(void);
 s32 MenuCtrl_ClearClockChangeFlags(void);
-s32 _ZN12Unk_02097ff49clearFlagEj(void *p, s32 v);
+s32 _ZN10PlayerData9clearFlagEj(void *p, s32 v);
 s32 TownState_ClampDate(void *p);
 s32 SaveVillagers_UpdateAllRoomInfo(void *p);
 s32 Heap_Free(void *heap, void *p);
@@ -1063,40 +982,40 @@ void _ZN11SaveManager9execAct01Ev();
 void _ZN11SaveManager10enterAct02Ev();
 void _ZN11SaveManager9execAct02Ev();
 void _ZN11SaveManager10enterAct03Ev();
-void _ZN12Unk_020a32389execAct03Ev();
-void _ZN12Unk_020a323810enterAct04Ev();
-void _ZN12Unk_020a32389execAct04Ev();
-void _ZN12Unk_020a323810enterAct05Ev();
-void _ZN12Unk_020a32389execAct05Ev();
-void _ZN12Unk_020a323810enterAct06Ev();
-void _ZN12Unk_020a32389execAct06Ev();
-void _ZN12Unk_020a323810enterAct07Ev();
-void _ZN12Unk_020a32389execAct07Ev();
-void _ZN12Unk_020a323810enterAct08Ev();
-void _ZN12Unk_020a32389execAct08Ev();
-void _ZN12Unk_020a323810enterAct09Ev();
-void _ZN12Unk_020a32389execAct09Ev();
-void _ZN12Unk_020a323810enterAct0AEv();
-void _ZN12Unk_020a32389execAct0AEv();
-void _ZN12Unk_020a323810enterAct0BEv();
-void _ZN12Unk_020a32389execAct0BEv();
-void _ZN12Unk_020a323810enterAct0CEv();
-void _ZN12Unk_020a32389execAct0CEv();
-void _ZN12Unk_020a323810enterAct0DEv();
-void _ZN12Unk_020a32389execAct0DEv();
-void _ZN12Unk_020a323810enterAct0EEv();
-void _ZN12Unk_020a32389execAct0EEv();
-void _ZN12Unk_020a323810enterAct0FEv();
-void _ZN12Unk_020a32389execAct0FEv();
-void _ZN12Unk_020a323810enterAct10Ev();
-void _ZN12Unk_020a32389execAct10Ev();
-void _ZN12Unk_020a323810enterAct11Ev();
-void _ZN12Unk_020a32389execAct11Ev();
-void _ZN12Unk_020a323810enterAct12Ev();
-void _ZN12Unk_020a32389execAct12Ev();
-void _ZN12Unk_020a323810enterAct13Ev();
-void _ZN12Unk_020a32389execAct13Ev();
-void _ZN12Unk_020a323810enterAct14Ev();
+void _ZN11SaveManager9execAct03Ev();
+void _ZN11SaveManager10enterAct04Ev();
+void _ZN11SaveManager9execAct04Ev();
+void _ZN11SaveManager10enterAct05Ev();
+void _ZN11SaveManager9execAct05Ev();
+void _ZN11SaveManager10enterAct06Ev();
+void _ZN11SaveManager9execAct06Ev();
+void _ZN11SaveManager10enterAct07Ev();
+void _ZN11SaveManager9execAct07Ev();
+void _ZN11SaveManager10enterAct08Ev();
+void _ZN11SaveManager9execAct08Ev();
+void _ZN11SaveManager10enterAct09Ev();
+void _ZN11SaveManager9execAct09Ev();
+void _ZN11SaveManager10enterAct0AEv();
+void _ZN11SaveManager9execAct0AEv();
+void _ZN11SaveManager10enterAct0BEv();
+void _ZN11SaveManager9execAct0BEv();
+void _ZN11SaveManager10enterAct0CEv();
+void _ZN11SaveManager9execAct0CEv();
+void _ZN11SaveManager10enterAct0DEv();
+void _ZN11SaveManager9execAct0DEv();
+void _ZN11SaveManager10enterAct0EEv();
+void _ZN11SaveManager9execAct0EEv();
+void _ZN11SaveManager10enterAct0FEv();
+void _ZN11SaveManager9execAct0FEv();
+void _ZN11SaveManager10enterAct10Ev();
+void _ZN11SaveManager9execAct10Ev();
+void _ZN11SaveManager10enterAct11Ev();
+void _ZN11SaveManager9execAct11Ev();
+void _ZN11SaveManager10enterAct12Ev();
+void _ZN11SaveManager9execAct12Ev();
+void _ZN11SaveManager10enterAct13Ev();
+void _ZN11SaveManager9execAct13Ev();
+void _ZN11SaveManager10enterAct14Ev();
 void SaveManager_ExecAct14();
 void SaveManager_EnterAct15();
 void SaveManager_ExecAct15();
@@ -1107,16 +1026,16 @@ void SaveManager_ExecAct17();
 void SaveManager_EnterAct18();
 void SaveManager_ExecAct18();
 void SaveManager_EnterAct19();
-void _ZN12Unk_020a1c889execAct19Ev();
-void _ZN12Unk_020a1c8810enterAct1AEv();
-void _ZN12Unk_020a1c889execAct1AEv();
-void _ZN12Unk_020a1c8810enterAct1BEv();
-void _ZN12Unk_020a1c889execAct1BEv();
-void _ZN12Unk_020a1c8810enterAct1CEv();
-void _ZN12Unk_020a1c889execAct1CEv();
-void _ZN12Unk_020a1c8810enterAct1DEv();
-void _ZN12Unk_020a1c889execAct1DEv();
-void _ZN12Unk_020a1c8810enterAct1EEv();
+void _ZN11SaveManager9execAct19Ev();
+void _ZN11SaveManager10enterAct1AEv();
+void _ZN11SaveManager9execAct1AEv();
+void _ZN11SaveManager10enterAct1BEv();
+void _ZN11SaveManager9execAct1BEv();
+void _ZN11SaveManager10enterAct1CEv();
+void _ZN11SaveManager9execAct1CEv();
+void _ZN11SaveManager10enterAct1DEv();
+void _ZN11SaveManager9execAct1DEv();
+void _ZN11SaveManager10enterAct1EEv();
 void _ZN11SaveManager9execAct1EEv();
 void _ZN11SaveManager10enterAct1FEv();
 void _ZN11SaveManager9execAct1FEv();
@@ -1333,7 +1252,7 @@ void SaveManager::enterAct01() {
     void *r5 = NJ::PlayerData_GetCurrent();
     NJ::_ZN11SaveManager9startTalkEPKch(this, (char *)"sp_etc_sequence2", 1);
     NJ::MenuCtrl_ClearClockChangeFlags();
-    NJ::_ZN12Unk_02097ff49clearFlagEj(r5, 2);
+    NJ::_ZN10PlayerData9clearFlagEj(r5, 2);
     NJ::TownState_ClampDate(NJ::gSaveTownState);
     actStep = 0;
 }
@@ -1395,7 +1314,7 @@ void SaveManager::enterAct02() {
     void *r5 = NJ::PlayerData_GetCurrent();
     NJ::_ZN11SaveManager9startTalkEPKch(this, (char *)"sp_npc_gatekeeper", 0x66);
     NJ::MenuCtrl_ClearClockChangeFlags();
-    NJ::_ZN12Unk_02097ff49clearFlagEj(r5, 2);
+    NJ::_ZN10PlayerData9clearFlagEj(r5, 2);
     NJ::TownState_ClampDate(NJ::gSaveTownState);
     actStep = 0;
 }
@@ -1459,7 +1378,7 @@ void SaveManager::enterAct03() {
     actStep = 0;
 }
 
-void Unk_020a3238::execAct03() {
+void SaveManager::execAct03() {
     switch (actStep) {
     case 0:
         if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
@@ -1489,11 +1408,11 @@ void Unk_020a3238::execAct03() {
     }
 }
 
-void Unk_020a3238::enterAct04() {
+void SaveManager::enterAct04() {
     actStep = 0;
 }
 
-void Unk_020a3238::execAct04() {
+void SaveManager::execAct04() {
     switch (actStep) {
     case 0:
         actStep = 1;
@@ -1520,7 +1439,7 @@ void Unk_020a3238::execAct04() {
         break;
     }
     case 4: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 24) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             actStep = 6;
         } else if (r == 0) {
@@ -1529,7 +1448,7 @@ void Unk_020a3238::execAct04() {
         break;
     }
     case 5: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 28) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.lo);
         if (r == 1) {
             actStep = 6;
         } else if (r == 0) {
@@ -1550,12 +1469,12 @@ void Unk_020a3238::execAct04() {
     }
 }
 
-void Unk_020a3238::enterAct05() {
+void SaveManager::enterAct05() {
     NI::_ZN11SaveManager9startTalkEPKch(this, (u32 *)"sp_etc_sequence1", 0xc);
     actStep = 0;
 }
 
-void Unk_020a3238::execAct05() {
+void SaveManager::execAct05() {
     switch (actStep) {
     case 0:
         if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
@@ -1611,7 +1530,7 @@ void Unk_020a3238::execAct05() {
     }
 }
 
-void Unk_020a3238::enterAct06() {
+void SaveManager::enterAct06() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     u8 *d = NI::gSaveData;
     u8 buf[0x1c];
@@ -1629,7 +1548,7 @@ void Unk_020a3238::enterAct06() {
     NI::_ZN11MsgString9BD1Ev(buf);
 }
 
-void Unk_020a3238::execAct06() {
+void SaveManager::execAct06() {
     switch (actStep) {
     case 0:
         if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
@@ -1646,7 +1565,7 @@ void Unk_020a3238::execAct06() {
         break;
     }
     case 2: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 24) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             actStep = 5;
         } else if (r == 0) {
@@ -1655,7 +1574,7 @@ void Unk_020a3238::execAct06() {
         break;
     }
     case 3: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 28) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.lo);
         if (r == 1) {
             actStep = 5;
         } else if (r == 0) {
@@ -1685,12 +1604,12 @@ void Unk_020a3238::execAct06() {
     }
 }
 
-void Unk_020a3238::enterAct07() {
+void SaveManager::enterAct07() {
     NI::_ZN11SaveManager9startTalkEPKch(this, (u32 *)"sp_etc_sequence3", 0x27);
     actStep = 0;
 }
 
-void Unk_020a3238::execAct07() {
+void SaveManager::execAct07() {
     switch (actStep) {
     case 0:
         if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
@@ -1707,7 +1626,7 @@ void Unk_020a3238::execAct07() {
         break;
     }
     case 2: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 24) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             actStep = 4;
         } else if (r == 0) {
@@ -1716,7 +1635,7 @@ void Unk_020a3238::execAct07() {
         break;
     }
     case 3: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 28) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.lo);
         if (r == 1) {
             actStep = 4;
         } else if (r == 0) {
@@ -1737,9 +1656,9 @@ void Unk_020a3238::execAct07() {
     }
 }
 
-void Unk_020a3238::enterAct08() {}
+void SaveManager::enterAct08() {}
 
-void Unk_020a3238::execAct08() {
+void SaveManager::execAct08() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->state == 0) {
         o->detachRequest();
@@ -1748,9 +1667,9 @@ void Unk_020a3238::execAct08() {
     }
 }
 
-void Unk_020a3238::enterAct09() {}
+void SaveManager::enterAct09() {}
 
-void Unk_020a3238::execAct09() {
+void SaveManager::execAct09() {
     Unk_020a3238_Vec v;
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->state == 0) {
@@ -1763,9 +1682,9 @@ void Unk_020a3238::execAct09() {
     }
 }
 
-void Unk_020a3238::enterAct0A() {}
+void SaveManager::enterAct0A() {}
 
-void Unk_020a3238::execAct0A() {
+void SaveManager::execAct0A() {
     Unk_020a3238_Vec v;
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->state == 0) {
@@ -1778,9 +1697,9 @@ void Unk_020a3238::execAct0A() {
     }
 }
 
-void Unk_020a3238::enterAct0B() {}
+void SaveManager::enterAct0B() {}
 
-void Unk_020a3238::execAct0B() {
+void SaveManager::execAct0B() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->state == 0) {
         o->detachRequest();
@@ -1789,9 +1708,9 @@ void Unk_020a3238::execAct0B() {
     }
 }
 
-void Unk_020a3238::enterAct0C() {}
+void SaveManager::enterAct0C() {}
 
-void Unk_020a3238::execAct0C() {
+void SaveManager::execAct0C() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->state == 0) {
         o->detachRequest();
@@ -1811,9 +1730,9 @@ void Unk_020a3238::execAct0C() {
     }
 }
 
-void Unk_020a3238::enterAct0D() {}
+void SaveManager::enterAct0D() {}
 
-void Unk_020a3238::execAct0D() {
+void SaveManager::execAct0D() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->state == 0) {
         o->detachRequest();
@@ -1822,9 +1741,9 @@ void Unk_020a3238::execAct0D() {
     }
 }
 
-void Unk_020a3238::enterAct0E() {}
+void SaveManager::enterAct0E() {}
 
-void Unk_020a3238::execAct0E() {
+void SaveManager::execAct0E() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (Unk_020a3238_Is2(NI::gScreenTransition)) {
         if (o->state == 0) {
@@ -1841,9 +1760,9 @@ void Unk_020a3238::execAct0E() {
     }
 }
 
-void Unk_020a3238::enterAct0F() {}
+void SaveManager::enterAct0F() {}
 
-void Unk_020a3238::execAct0F() {
+void SaveManager::execAct0F() {
     Unk_020a3238_Vec v;
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (Unk_020a3238_Is2(NI::gScreenTransition)) {
@@ -1856,9 +1775,9 @@ void Unk_020a3238::execAct0F() {
     }
 }
 
-void Unk_020a3238::enterAct10() {}
+void SaveManager::enterAct10() {}
 
-void Unk_020a3238::execAct10() {
+void SaveManager::execAct10() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->state == 0) {
         o->detachRequest();
@@ -1871,9 +1790,9 @@ void Unk_020a3238::execAct10() {
     }
 }
 
-void Unk_020a3238::enterAct11() {}
+void SaveManager::enterAct11() {}
 
-void Unk_020a3238::execAct11() {
+void SaveManager::execAct11() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->state == 0) {
         o->detachRequest();
@@ -1882,11 +1801,11 @@ void Unk_020a3238::execAct11() {
     }
 }
 
-void Unk_020a3238::enterAct12() {
+void SaveManager::enterAct12() {
     actStep = 0;
 }
 
-void Unk_020a3238::execAct12() {
+void SaveManager::execAct12() {
     switch (actStep) {
     case 0: {
         s32 r = NI::_ZN11SaveManager15verifySlotsStepEv(this);
@@ -1898,7 +1817,7 @@ void Unk_020a3238::execAct12() {
         break;
     }
     case 1: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 24) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             actStep = 3;
         } else if (r == 0) {
@@ -1923,12 +1842,12 @@ void Unk_020a3238::execAct12() {
     }
 }
 
-void Unk_020a3238::enterAct13() {
-    NI::_ZN12Unk_02097ff49clearFlagEj(NI::PlayerData_GetCurrent(this), 2);
+void SaveManager::enterAct13() {
+    NI::_ZN10PlayerData9clearFlagEj(NI::PlayerData_GetCurrent(this), 2);
     actStep = 0;
 }
 
-void Unk_020a3238::execAct13() {
+void SaveManager::execAct13() {
     switch (actStep) {
     case 0: {
         s32 r = NI::_ZN11SaveManager15verifySlotsStepEv(this);
@@ -1940,7 +1859,7 @@ void Unk_020a3238::execAct13() {
         break;
     }
     case 1: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, (u32)(slotOrder << 24) >> 28);
+        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             actStep = 3;
         } else if (r == 0) {
@@ -1965,12 +1884,12 @@ void Unk_020a3238::execAct13() {
     }
 }
 
-void Unk_020a3238::enterAct14() {
+void SaveManager::enterAct14() {
     NI::SaveManager_StartGatekeeperTalk(this, 1);
     NI::Constellation_PrepareExchange();
 }
 
-extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
+extern "C" void SaveManager_ExecAct14(SaveManager *p) {
     switch (p->actStep) {
     case 0:
         if (NH::Comm_IsConnectionLost(1)) {
@@ -1998,7 +1917,7 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
     case 3:
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
-        } else if (NH::_ZN18TownCompressThread6isDoneEv(p->townCompressThread)) {
+        } else if (NH::_ZN18TownCompressThread6isDoneEv((u32)p->townCompressThread)) {
             BOOL r6 = TRUE;
             s32 r5 = 3;
             for (; r5 >= 0; r5--) {
@@ -2064,10 +1983,10 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
             NH::MI_CpuCopy8(NH::gTownTransferBuf, NH::gSaveData, 0x15fe0);
             u8 buf1[8];
             u8 buf2[8];
-            NH::MI_CpuCopy8(p->hostDateTime, buf1, 8);
+            NH::MI_CpuCopy8(&p->hostDateTime, buf1, 8);
             u32 *const r7p = &NH::data_021ed304;
             u32 r6b = NH::ClockOffset_CalcMinutes(r7p, buf1);
-            NH::MI_CpuCopy8(p->hostDateTime, buf2, 8);
+            NH::MI_CpuCopy8(&p->hostDateTime, buf2, 8);
             u32 h = NH::ClockOffset_CalcSeconds(r7p, buf2);
             *r7p = r6b;
             NH::data_021ed2d0.clockOffsetSeconds = h;
@@ -2081,7 +2000,7 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
             NH::Comm_ResetPeerState(4);
             NH::Melody_SetPacked((u8 *)((u32)NH::gSaveData + 0x15fa8));
             NH::Weather_RerollRainSlant();
-            p->unk_d2 = 1;
+            p->sessionJoined = 1;
             r5->setMode(1);
             p->actStep = 7;
         }
@@ -2115,7 +2034,7 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
     }
 }
 
-extern "C" void SaveManager_EnterAct15(Unk_020a25d8 *p) {
+extern "C" void SaveManager_EnterAct15(SaveManager *p) {
     NH::SaveManager_StartGatekeeperTalk(p, 1);
     if (NH::gCommManager->memberCount == 1) {
         NH::LetterDelivery_DeliverOutgoing();
@@ -2125,7 +2044,7 @@ extern "C" void SaveManager_EnterAct15(Unk_020a25d8 *p) {
     }
 }
 
-extern "C" void SaveManager_ExecAct15(Unk_020a25d8 *p) {
+extern "C" void SaveManager_ExecAct15(SaveManager *p) {
     switch (p->actStep) {
     case 0: {
         u32 r5 = NH::Comm_GetRemoteMask();
@@ -2144,7 +2063,7 @@ extern "C" void SaveManager_ExecAct15(Unk_020a25d8 *p) {
         if (NH::Comm_IsConnectionLost(r5)) {
             NH::Comm_SetLostFlag();
         } else {
-            NH::_ZN12Unk_0209f30421runGatherPeersInSceneEPhjjj(p, &p->actStep, 1, 0xd, 0x2f);
+            NH::_ZN11SaveManager21runGatherPeersInSceneEPhjjj(p, &p->actStep, 1, 0xd, 0x2f);
             if (p->actStep > 2) {
                 NH::NetArea_SetSlotStatus(NH::sJoiningAid, 0xc, 1, 0, 7);
                 CommManager *g = NH::gCommManager;
@@ -2188,7 +2107,7 @@ extern "C" void SaveManager_ExecAct15(Unk_020a25d8 *p) {
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
         } else if (NH::CommSend_SlotStatusAll(NH::sJoiningAid)) {
-            NH::_ZN18TownCompressThread5startEj(p->townCompressThread, 1);
+            NH::_ZN18TownCompressThread5startEj((u32)p->townCompressThread, 1);
             p->sendChunk = 0;
             p->actStep = 8;
         }
@@ -2196,7 +2115,7 @@ extern "C" void SaveManager_ExecAct15(Unk_020a25d8 *p) {
     case 8:
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
-        } else if (NH::_ZN18TownCompressThread6isDoneEv(p->townCompressThread)) {
+        } else if (NH::_ZN18TownCompressThread6isDoneEv((u32)p->townCompressThread)) {
             NH::DC_FlushAll();
             if (NH::CommSend_TownChunk(&p->sendChunk, (u16)(1 << NH::sJoiningAid))) {
                 p->actStep = 9;
@@ -2220,7 +2139,7 @@ extern "C" void SaveManager_ExecAct15(Unk_020a25d8 *p) {
             if (NH::Net_IsReadyToSend()) {
                 if (p->joinDone != 0) {
                     NH::gCommManager->setMode(2);
-                    p->unk_d2 = 1;
+                    p->sessionJoined = 1;
                     NH::JoinHistory_Push(NH::sJoiningAid);
                     p->actStep = 11;
                 }
@@ -2230,11 +2149,11 @@ extern "C" void SaveManager_ExecAct15(Unk_020a25d8 *p) {
     }
 }
 
-extern "C" void SaveManager_EnterAct16(Unk_020a25d8 *p) {
+extern "C" void SaveManager_EnterAct16(SaveManager *p) {
     NH::SaveManager_StartGatekeeperTalk(p, 1);
 }
 
-extern "C" void SaveManager_ExecAct16(Unk_020a25d8 *p) {
+extern "C" void SaveManager_ExecAct16(SaveManager *p) {
     switch (p->actStep) {
     case 0:
         if (NH::Comm_IsConnectionLost(1)) {
@@ -2263,7 +2182,7 @@ extern "C" void SaveManager_ExecAct16(Unk_020a25d8 *p) {
             if (NH::Net_IsReadyToSend()) {
                 if (p->joinDone != 0) {
                     NH::gCommManager->setMode(2);
-                    p->unk_d2 = 1;
+                    p->sessionJoined = 1;
                     p->actStep = 3;
                 }
             }
@@ -2272,13 +2191,13 @@ extern "C" void SaveManager_ExecAct16(Unk_020a25d8 *p) {
     }
 }
 
-extern "C" void SaveManager_EnterAct17(Unk_020a25d8 *p) {
+extern "C" void SaveManager_EnterAct17(SaveManager *p) {
     NH::SaveManager_StartGatekeeperTalk(p, 0);
-    NH::_ZN12Unk_02097ff47setFlagEj(NH::PlayerData_GetCurrent(), 2);
+    NH::_ZN10PlayerData7setFlagEj(NH::PlayerData_GetCurrent(), 2);
     NH::NetSession_SetLastSyncSlot(NH::gCommManager->myAid);
 }
 
-extern "C" void SaveManager_ExecAct17(Unk_020a25d8 *p) {
+extern "C" void SaveManager_ExecAct17(SaveManager *p) {
     switch (p->actStep) {
     case 0:
         if (NH::Comm_IsConnectionLost(1)) {
@@ -2293,7 +2212,7 @@ extern "C" void SaveManager_ExecAct17(Unk_020a25d8 *p) {
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
         } else {
-            NH::_ZN12Unk_0209f30412runSendAct10EPhj(p, &p->actStep, 1);
+            NH::_ZN11SaveManager12runSendAct10EPhj(p, &p->actStep, 1);
         }
         break;
     case 3:
@@ -2312,7 +2231,7 @@ extern "C" void SaveManager_ExecAct17(Unk_020a25d8 *p) {
     case 9:
     case 10:
     case 11:
-        NH::_ZN12Unk_0209f30419runSyncedSaveClientEPhjjhhhj(p, &p->actStep, 4, 0xe, 0x14, 1, 0, 1);
+        NH::_ZN11SaveManager19runSyncedSaveClientEPhjjhhhj(p, &p->actStep, 4, 0xe, 0x14, 1, 0, 1);
         break;
     case 12:
         if (NH::Comm_IsConnectionLost(1)) {
@@ -2369,11 +2288,11 @@ extern "C" void SaveManager_ExecAct17(Unk_020a25d8 *p) {
     }
 }
 
-extern "C" void SaveManager_EnterAct18(Unk_020a25d8 *p) {
+extern "C" void SaveManager_EnterAct18(SaveManager *p) {
     NH::SaveManager_StartGatekeeperTalk(p, 0);
 }
 
-extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
+extern "C" void SaveManager_ExecAct18(SaveManager *p) {
     switch (p->actStep) {
     case 0:
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
@@ -2390,13 +2309,13 @@ extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
         } else {
-            NH::_ZN12Unk_0209f30421runGatherPeersInSceneEPhjjj(p, &p->actStep, 1, 0x2e, 0x2e);
+            NH::_ZN11SaveManager21runGatherPeersInSceneEPhjjj(p, &p->actStep, 1, 0x2e, 0x2e);
         }
         break;
     case 3:
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
-        } else if (NH::_ZN12Unk_0209f30417allPeersSentAct10Ev(p)) {
+        } else if (NH::_ZN11SaveManager17allPeersSentAct10Ev(p)) {
             p->actStep = 4;
         }
         break;
@@ -2526,11 +2445,11 @@ extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
     }
 }
 
-extern "C" void SaveManager_EnterAct19(Unk_020a25d8 *p) {
+extern "C" void SaveManager_EnterAct19(SaveManager *p) {
     NH::SaveManager_StartGatekeeperTalk(p, 0);
 }
 
-void Unk_020a1c88::execAct19() {
+void SaveManager::execAct19() {
     switch (actStep) {
     case 0:
         if (NG::Comm_IsConnectionLost(1)) {
@@ -2545,7 +2464,7 @@ void Unk_020a1c88::execAct19() {
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
         } else {
-            NG::_ZN12Unk_0209f30412runSendAct10EPhj(this, &actStep, 1);
+            NG::_ZN11SaveManager12runSendAct10EPhj(this, &actStep, 1);
         }
         break;
     case 3:
@@ -2564,7 +2483,7 @@ void Unk_020a1c88::execAct19() {
     case 9:
     case 10:
     case 11:
-        NG::_ZN12Unk_0209f30419runSyncedSaveClientEPhjjhhhj(this, &actStep, 4, 0xf, 0x15, 1, 1, 1);
+        NG::_ZN11SaveManager19runSyncedSaveClientEPhjjhhhj(this, &actStep, 4, 0xf, 0x15, 1, 1, 1);
         break;
     case 12:
         if (NG::Comm_IsConnectionLost(1)) {
@@ -2628,11 +2547,11 @@ void Unk_020a1c88::execAct19() {
     }
 }
 
-void Unk_020a1c88::enterAct1A() {
+void SaveManager::enterAct1A() {
     NG::SaveManager_StartSequence2Talk(this);
 }
 
-void Unk_020a1c88::execAct1A() {
+void SaveManager::execAct1A() {
     switch (actStep) {
     case 0:
         if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
@@ -2650,13 +2569,13 @@ void Unk_020a1c88::execAct1A() {
         if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
             NG::Comm_SetLostFlag();
         } else {
-            NG::_ZN12Unk_0209f30421runGatherPeersInSceneEPhjjj(this, &actStep, 1, 0x2e, 0x2e);
+            NG::_ZN11SaveManager21runGatherPeersInSceneEPhjjj(this, &actStep, 1, 0x2e, 0x2e);
         }
         break;
     case 3:
         if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
             NG::Comm_SetLostFlag();
-        } else if (NG::_ZN12Unk_0209f30417allPeersSentAct10Ev(this)) {
+        } else if (NG::_ZN11SaveManager17allPeersSentAct10Ev(this)) {
             actStep = 4;
         }
         break;
@@ -2810,11 +2729,11 @@ void Unk_020a1c88::execAct1A() {
     }
 }
 
-void Unk_020a1c88::enterAct1B() {
+void SaveManager::enterAct1B() {
     NG::SaveManager_StartSequence2Talk(this);
 }
 
-void Unk_020a1c88::execAct1B() {
+void SaveManager::execAct1B() {
     switch (actStep) {
     case 0:
         if (NG::Comm_IsConnectionLost(1)) {
@@ -2828,7 +2747,7 @@ void Unk_020a1c88::execAct1B() {
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
         } else {
-            NG::_ZN12Unk_0209f30412runSendAct10EPhj(this, &actStep, 1);
+            NG::_ZN11SaveManager12runSendAct10EPhj(this, &actStep, 1);
         }
         break;
     case 3:
@@ -2854,7 +2773,7 @@ void Unk_020a1c88::execAct1B() {
         BOOL a, b;
         if (NG::SaveManager_IsEndSessionSave()) a = FALSE; else a = TRUE;
         if (NG::SaveManager_IsEndSessionSave()) b = TRUE; else b = FALSE;
-        NG::_ZN12Unk_0209f30419runSyncedSaveClientEPhjjhhhj(this, &actStep, 4, 0x11, 0x17, b, a, 1);
+        NG::_ZN11SaveManager19runSyncedSaveClientEPhjjhhhj(this, &actStep, 4, 0x11, 0x17, b, a, 1);
         break;
     }
     case 12:
@@ -2950,20 +2869,20 @@ void Unk_020a1c88::execAct1B() {
     }
 }
 
-void Unk_020a1c88::enterAct1C() {
+void SaveManager::enterAct1C() {
     NG::_ZN11SaveManager9startTalkEPKch(this, (u8 *)"sp_etc_sequence1", 0x23);
 }
 
-void Unk_020a1c88::execAct1C() {
+void SaveManager::execAct1C() {
     if (NG::_ZN11SaveManager13func_020a15c8Ej(this, 1)) {
         NG::NetOverlay_LoadWireless();
         NG::_ZN11SaveManager8setStateEi(this, 0x1d);
     }
 }
 
-void Unk_020a1c88::enterAct1D() {
+void SaveManager::enterAct1D() {
     u8 buf[16];
-    unk_cc = 0x258;
+    hostWaitTimer = 0x258;
     NG::Comm_Start(1, 2, 0);
     NG::Comm_SetRecvBuffersAsHost();
     NG::MI_CpuCopy8(NG::TownId_GetName(NG::gSaveTownId), buf, 8);
@@ -2977,7 +2896,7 @@ void Unk_020a1c88::enterAct1D() {
     freePlayerSlot = NG::PlayerDataArray_FindUnused(NG::gSavePlayers);
 }
 
-void Unk_020a1c88::execAct1D() {
+void SaveManager::execAct1D() {
     u8 b[2];
     s32 n = NG::SaveManager_GetCtrlAct14Aid(this);
     if (n > 0 && n < 4) {
@@ -2990,11 +2909,11 @@ void Unk_020a1c88::execAct1D() {
     } else {
         BOOL ok = FALSE;
         if (NG::Net_GetMemberCount() == 2) {
-            unk_cc = ok;
+            hostWaitTimer = ok;
             return;
         }
         if (NG::Net_GetMemberCount() == 1) {
-            if (NG::Math_CountDownU16(&unk_cc) == 0) {
+            if (NG::Math_CountDownU16(&hostWaitTimer) == 0) {
                 ok = TRUE;
             } else {
                 NG::Comm_SendEmpty();
@@ -3016,7 +2935,7 @@ void Unk_020a1c88::execAct1D() {
     }
 }
 
-void Unk_020a1c88::enterAct1E() {
+void SaveManager::enterAct1E() {
     actStep = 0;
     if (NG::_ZN8SaveData7isValidEv(NG::gSaveData) == 0) {
         noSaveData = 1;
@@ -3180,7 +3099,7 @@ void SaveManager::execAct1E() {
 }
 
 void SaveManager::enterAct1F() {
-    NF::Net_GetMyAid(NF::_ZN12Unk_02097ff49clearFlagEj(NF::PlayerData_GetCurrent(), 2));
+    NF::Net_GetMyAid(NF::_ZN10PlayerData9clearFlagEj(NF::PlayerData_GetCurrent(), 2));
     NF::Comm_PrepareJoin();
     actStep = 0;
 }
@@ -3462,13 +3381,13 @@ SaveManagerActEntry sSaveManagerStates[32] = {
     {*(SaveManagerActFn *)data_020e2754, *(SaveManagerActFn *)data_020e2544},
 };
 
-void *data_020e2654[2] = {(void *)NT::_ZN12Unk_020a323810enterAct0BEv, 0};
+void *data_020e2654[2] = {(void *)NT::_ZN11SaveManager10enterAct0BEv, 0};
 
 u8 data_021ed390;
 
 SaveManager *gSaveManager;
 
-void *data_020e2674[2] = {(void *)NT::_ZN12Unk_020a323810enterAct0CEv, 0};
+void *data_020e2674[2] = {(void *)NT::_ZN11SaveManager10enterAct0CEv, 0};
 
 u8 sJoiningAid;
 
@@ -3476,23 +3395,23 @@ void *data_020e2574[2] = {(void *)NT::_ZN11SaveManager10enterAct03Ev, 0};
 
 char *sNetRegion = data_020e24f0;
 
-void *data_020e2624[2] = {(void *)NT::_ZN12Unk_020a32389execAct11Ev, 0};
+void *data_020e2624[2] = {(void *)NT::_ZN11SaveManager9execAct11Ev, 0};
 
 char data_020e2790[] = "forest_mail_USA.bin";
 
 char data_020e24f0[] = "us";
 
-void *data_020e250c[2] = {(void *)NT::_ZN12Unk_020a32389execAct12Ev, 0};
+void *data_020e250c[2] = {(void *)NT::_ZN11SaveManager9execAct12Ev, 0};
 
-void *data_020e2514[2] = {(void *)NT::_ZN12Unk_020a323810enterAct13Ev, 0};
+void *data_020e2514[2] = {(void *)NT::_ZN11SaveManager10enterAct13Ev, 0};
 
 void *data_020e256c[2] = {(void *)NT::SaveManager_EnterAct18, 0};
 
-void *data_020e25d4[2] = {(void *)NT::_ZN12Unk_020a1c8810enterAct1BEv, 0};
+void *data_020e25d4[2] = {(void *)NT::_ZN11SaveManager10enterAct1BEv, 0};
 
 void *data_020e2754[2] = {(void *)NT::_ZN11SaveManager10enterAct1FEv, 0};
 
-void *data_020e25cc[2] = {(void *)NT::_ZN12Unk_020a323810enterAct07Ev, 0};
+void *data_020e25cc[2] = {(void *)NT::_ZN11SaveManager10enterAct07Ev, 0};
 
 s32 sSaveManagerRequest;
 
@@ -3508,75 +3427,75 @@ void *data_020e271c[2] = {(void *)NT::_ZN11SaveManager10enterAct02Ev, 0};
 
 void *data_020e257c[2] = {(void *)NT::SaveManager_EnterAct19, 0};
 
-void *data_020e2584[2] = {(void *)NT::_ZN12Unk_020a1c8810enterAct1AEv, 0};
+void *data_020e2584[2] = {(void *)NT::_ZN11SaveManager10enterAct1AEv, 0};
 
-void *data_020e2704[2] = {(void *)NT::_ZN12Unk_020a32389execAct03Ev, 0};
+void *data_020e2704[2] = {(void *)NT::_ZN11SaveManager9execAct03Ev, 0};
 
-void *data_020e26fc[2] = {(void *)NT::_ZN12Unk_020a323810enterAct04Ev, 0};
+void *data_020e26fc[2] = {(void *)NT::_ZN11SaveManager10enterAct04Ev, 0};
 
-void *data_020e26f4[2] = {(void *)NT::_ZN12Unk_020a32389execAct04Ev, 0};
+void *data_020e26f4[2] = {(void *)NT::_ZN11SaveManager9execAct04Ev, 0};
 
-void *data_020e2594[2] = {(void *)NT::_ZN12Unk_020a1c889execAct1AEv, 0};
+void *data_020e2594[2] = {(void *)NT::_ZN11SaveManager9execAct1AEv, 0};
 
-void *data_020e26e4[2] = {(void *)NT::_ZN12Unk_020a32389execAct05Ev, 0};
+void *data_020e26e4[2] = {(void *)NT::_ZN11SaveManager9execAct05Ev, 0};
 
 u8 sGameStatsReceived;
 
 u8 sAxBbsReceived;
 
-void *data_020e26cc[2] = {(void *)NT::_ZN12Unk_020a1c8810enterAct1EEv, 0};
+void *data_020e26cc[2] = {(void *)NT::_ZN11SaveManager10enterAct1EEv, 0};
 
-void *data_020e26c4[2] = {(void *)NT::_ZN12Unk_020a32389execAct07Ev, 0};
+void *data_020e26c4[2] = {(void *)NT::_ZN11SaveManager9execAct07Ev, 0};
 
-void *data_020e26bc[2] = {(void *)NT::_ZN12Unk_020a323810enterAct08Ev, 0};
+void *data_020e26bc[2] = {(void *)NT::_ZN11SaveManager10enterAct08Ev, 0};
 
-void *data_020e26b4[2] = {(void *)NT::_ZN12Unk_020a32389execAct08Ev, 0};
+void *data_020e26b4[2] = {(void *)NT::_ZN11SaveManager9execAct08Ev, 0};
 
-void *data_020e26ac[2] = {(void *)NT::_ZN12Unk_020a323810enterAct09Ev, 0};
+void *data_020e26ac[2] = {(void *)NT::_ZN11SaveManager10enterAct09Ev, 0};
 
-void *data_020e26a4[2] = {(void *)NT::_ZN12Unk_020a32389execAct09Ev, 0};
+void *data_020e26a4[2] = {(void *)NT::_ZN11SaveManager9execAct09Ev, 0};
 
-void *data_020e269c[2] = {(void *)NT::_ZN12Unk_020a323810enterAct0AEv, 0};
+void *data_020e269c[2] = {(void *)NT::_ZN11SaveManager10enterAct0AEv, 0};
 
-void *data_020e2694[2] = {(void *)NT::_ZN12Unk_020a32389execAct0AEv, 0};
+void *data_020e2694[2] = {(void *)NT::_ZN11SaveManager9execAct0AEv, 0};
 
-void *data_020e268c[2] = {(void *)NT::_ZN12Unk_020a323810enterAct0DEv, 0};
+void *data_020e268c[2] = {(void *)NT::_ZN11SaveManager10enterAct0DEv, 0};
 
-void *data_020e267c[2] = {(void *)NT::_ZN12Unk_020a1c889execAct1DEv, 0};
+void *data_020e267c[2] = {(void *)NT::_ZN11SaveManager9execAct1DEv, 0};
 
 void *gTownTransferBuf;
 
-void *data_020e2684[2] = {(void *)NT::_ZN12Unk_020a32389execAct0CEv, 0};
+void *data_020e2684[2] = {(void *)NT::_ZN11SaveManager9execAct0CEv, 0};
 
 GuestSlotTriple data_020e2770 = {4, 4, 4};
 
-void *data_020e26ec[2] = {(void *)NT::_ZN12Unk_020a323810enterAct05Ev, 0};
+void *data_020e26ec[2] = {(void *)NT::_ZN11SaveManager10enterAct05Ev, 0};
 
-void *data_020e270c[2] = {(void *)NT::_ZN12Unk_020a32389execAct0DEv, 0};
+void *data_020e270c[2] = {(void *)NT::_ZN11SaveManager9execAct0DEv, 0};
 
 void *data_020e273c[2] = {(void *)NT::_ZN11SaveManager10enterAct00Ev, 0};
 
-void *data_020e2744[2] = {(void *)NT::_ZN12Unk_020a32389execAct0EEv, 0};
+void *data_020e2744[2] = {(void *)NT::_ZN11SaveManager9execAct0EEv, 0};
 
-void *data_020e2644[2] = {(void *)NT::_ZN12Unk_020a32389execAct0FEv, 0};
+void *data_020e2644[2] = {(void *)NT::_ZN11SaveManager9execAct0FEv, 0};
 
-void *data_020e263c[2] = {(void *)NT::_ZN12Unk_020a323810enterAct10Ev, 0};
+void *data_020e263c[2] = {(void *)NT::_ZN11SaveManager10enterAct10Ev, 0};
 
-void *data_020e2634[2] = {(void *)NT::_ZN12Unk_020a32389execAct10Ev, 0};
+void *data_020e2634[2] = {(void *)NT::_ZN11SaveManager9execAct10Ev, 0};
 
-void *data_020e253c[2] = {(void *)NT::_ZN12Unk_020a323810enterAct11Ev, 0};
+void *data_020e253c[2] = {(void *)NT::_ZN11SaveManager10enterAct11Ev, 0};
 
-void *data_020e261c[2] = {(void *)NT::_ZN12Unk_020a1c8810enterAct1CEv, 0};
+void *data_020e261c[2] = {(void *)NT::_ZN11SaveManager10enterAct1CEv, 0};
 
 const s32 sSaveSlotSizes[3] = {0x15fe0, 0x15fe0, 0x11df4};
 
-void *data_020e2614[2] = {(void *)NT::_ZN12Unk_020a1c889execAct1BEv, 0};
+void *data_020e2614[2] = {(void *)NT::_ZN11SaveManager9execAct1BEv, 0};
 
 char data_020e277c[] = "forest_bbs_USA.bin";
 
-void *data_020e2604[2] = {(void *)NT::_ZN12Unk_020a32389execAct13Ev, 0};
+void *data_020e2604[2] = {(void *)NT::_ZN11SaveManager9execAct13Ev, 0};
 
-void *data_020e25fc[2] = {(void *)NT::_ZN12Unk_020a323810enterAct14Ev, 0};
+void *data_020e25fc[2] = {(void *)NT::_ZN11SaveManager10enterAct14Ev, 0};
 
 void *data_020e25f4[2] = {(void *)NT::SaveManager_ExecAct14, 0};
 
@@ -3600,17 +3519,17 @@ s32 sEraseResidentSlot;
 
 const Unk_020a3238_Vec data_020d0788 = {0x10000, 0, 0x5000};
 
-void *data_020e259c[2] = {(void *)NT::_ZN12Unk_020a32389execAct06Ev, 0};
+void *data_020e259c[2] = {(void *)NT::_ZN11SaveManager9execAct06Ev, 0};
 
-void *data_020e25a4[2] = {(void *)NT::_ZN12Unk_020a1c889execAct19Ev, 0};
+void *data_020e25a4[2] = {(void *)NT::_ZN11SaveManager9execAct19Ev, 0};
 
 void *data_020e25ac[2] = {(void *)NT::_ZN11SaveManager9execAct02Ev, 0};
 
 const u32 sSaveSlotOffsets[3] = {0, 0x15fe0, 0x2e20c};
 
-void *data_020e264c[2] = {(void *)NT::_ZN12Unk_020a1c889execAct1CEv, 0};
+void *data_020e264c[2] = {(void *)NT::_ZN11SaveManager9execAct1CEv, 0};
 
-void *data_020e265c[2] = {(void *)NT::_ZN12Unk_020a1c8810enterAct1DEv, 0};
+void *data_020e265c[2] = {(void *)NT::_ZN11SaveManager10enterAct1DEv, 0};
 
 GuestSlotTriple data_020e2764 = {3, 3, 3};
 
@@ -3618,13 +3537,13 @@ u8 data_021ed3a4;
 
 char *sAxBbsFileName = data_020e277c;
 
-void *data_020e2714[2] = {(void *)NT::_ZN12Unk_020a323810enterAct0EEv, 0};
+void *data_020e2714[2] = {(void *)NT::_ZN11SaveManager10enterAct0EEv, 0};
 
-void *data_020e274c[2] = {(void *)NT::_ZN12Unk_020a323810enterAct0FEv, 0};
+void *data_020e274c[2] = {(void *)NT::_ZN11SaveManager10enterAct0FEv, 0};
 
 void *data_020e2544[2] = {(void *)NT::_ZN11SaveManager9execAct1FEv, 0};
 
-void *data_020e2504[2] = {(void *)NT::_ZN12Unk_020a323810enterAct12Ev, 0};
+void *data_020e2504[2] = {(void *)NT::_ZN11SaveManager10enterAct12Ev, 0};
 
 u8 sAxMailReceived;
 
@@ -4044,25 +3963,25 @@ extern "C" BOOL SaveManager_IsIdleForRoom(void) {
 }
 
 extern "C" BOOL SaveManager_IsIdleAfterAct13() {
-    Unk_021ed3b0 *g = ND::gSaveManager;
+    SaveManager *g = ND::gSaveManager;
     if (g && g->act == 0) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL SaveManager_HasAct13Failed() {
-    Unk_021ed3b0 *g = ND::gSaveManager;
+    SaveManager *g = ND::gSaveManager;
     if (g && g->act == 0x13 && g->actStep == 3) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL SaveManager_IsIdleAfterAct1F() {
-    Unk_021ed3b0 *g = ND::gSaveManager;
+    SaveManager *g = ND::gSaveManager;
     if (g && g->act == 0) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL SaveManager_HasAct1FFailed() {
-    Unk_021ed3b0 *g = ND::gSaveManager;
+    SaveManager *g = ND::gSaveManager;
     if (g && g->act == 0x1f) {
         u32 t = g->actStep;
         if (t == 0xf || t == 0x14) return TRUE;
@@ -4191,26 +4110,26 @@ extern "C" u32 SaveManager_IsGatePassed() { return ND::data_021ed398; }
 extern "C" void SaveManager_SetGatePassed() { ND::data_021ed398 = 1; }
 
 extern "C" u32 SaveManager_IsSessionJoined() {
-    if (ND::SaveManager_Get()) return ND::SaveManager_Get()->unk_d2;
+    if (ND::SaveManager_Get()) return ND::SaveManager_Get()->sessionJoined;
     return 0;
 }
 
 extern "C" s32 SaveManager_GetLetterStorage() {
     if (ND::gSaveManager == NULL) return 0;
-    return ND::gSaveManager->letterStorage;
+    return (s32)ND::gSaveManager->letterStorage;
 }
 
 extern "C" s32 SaveManager_GetTownCompressBuf() {
     if (ND::gSaveManager == NULL) return 0;
-    return ND::gSaveManager->townCompressBuf;
+    return (s32)ND::gSaveManager->townCompressBuf;
 }
 
 extern "C" s32 SaveManager_GetTownCompressThread() {
     if (ND::gSaveManager == NULL) return 0;
-    return ND::gSaveManager->townCompressThread;
+    return (s32)ND::gSaveManager->townCompressThread;
 }
 
-extern "C" Unk_021ed3b0 *SaveManager_Get() { return ND::gSaveManager; }
+extern "C" SaveManager *SaveManager_Get() { return ND::gSaveManager; }
 
 extern "C" void GameStart_SetNewTown() { ND::sGameStartMode = 1; }
 
@@ -4247,29 +4166,29 @@ extern "C" BOOL GameStart_IsMode4() {
 
 extern "C" void GameStart_Clear() { ND::sGameStartMode = 0; }
 
-extern "C" void SaveManager_SetHostMemberMask(Unk_021ed3b0 *p, u32 v) { p->hostMemberMask = v; }
+extern "C" void SaveManager_SetHostMemberMask(SaveManager *p, u32 v) { p->hostMemberMask = v; }
 
-extern "C" void SaveManager_SetHostDataIndex(Unk_021ed3b0 *p, u32 v) { p->hostDataIndex = v; }
+extern "C" void SaveManager_SetHostDataIndex(SaveManager *p, u32 v) { p->hostDataIndex = v; }
 
-extern "C" void SaveManager_SetJoinDone(Unk_021ed3b0 *p, u32 v) { p->joinDone = v; }
+extern "C" void SaveManager_SetJoinDone(SaveManager *p, u32 v) { p->joinDone = v; }
 
-extern "C" void SaveManager_SetCtrlAct12(Unk_021ed3b0 *p, u32 v) { p->ctrlAct12 = v; }
+extern "C" void SaveManager_SetCtrlAct12(SaveManager *p, u32 v) { p->ctrlAct12 = v; }
 
-extern "C" void SaveManager_SetRecvAct07(Unk_021ed3b0 *p, u32 v) { p->recvAct07 = v; }
+extern "C" void SaveManager_SetRecvAct07(SaveManager *p, u32 v) { p->recvAct07 = v; }
 
-extern "C" void SaveManager_SetJoinReady(Unk_021ed3b0 *p, u32 v) { p->joinReady = v; }
+extern "C" void SaveManager_SetJoinReady(SaveManager *p, u32 v) { p->joinReady = v; }
 
-extern "C" void SaveManager_SetDateTimeReceived(Unk_021ed3b0 *p, u32 v) { p->dateTimeReceived = v; }
+extern "C" void SaveManager_SetDateTimeReceived(SaveManager *p, u32 v) { p->dateTimeReceived = v; }
 
-extern "C" u8 *SaveManager_GetHostDateTime(Unk_021ed3b0 *p) { return p->hostDateTime; }
+extern "C" u8 *SaveManager_GetHostDateTime(SaveManager *p) { return (u8 *)&p->hostDateTime; }
 
-extern "C" void SaveManager_SetRecvAct04(Unk_021ed3b0 *p, s32 i, u32 v) { p->recvAct04[i] = v; }
+extern "C" void SaveManager_SetRecvAct04(SaveManager *p, s32 i, u32 v) { p->recvAct04[i] = v; }
 
-extern "C" void SaveManager_SetRecvAct02(Unk_021ed3b0 *p, s32 i, u32 v) { p->recvAct02[i] = v; }
+extern "C" void SaveManager_SetRecvAct02(SaveManager *p, s32 i, u32 v) { p->recvAct02[i] = v; }
 
-extern "C" void SaveManager_SetCtrlAct0E(Unk_021ed3b0 *p, s32 i, u32 v) { p->ctrlAct0E[i] = v; }
+extern "C" void SaveManager_SetCtrlAct0E(SaveManager *p, s32 i, u32 v) { p->ctrlAct0E[i] = v; }
 
-extern "C" void SaveManager_ClearCtrlAct0E(Unk_021ed3b0 *p) {
+extern "C" void SaveManager_ClearCtrlAct0E(SaveManager *p) {
     s32 i;
     for (i = 3; i >= 0; i--) p->ctrlAct0E[i] = 0;
 }
@@ -4278,22 +4197,22 @@ extern "C" void SaveManager_SetRecvAct03(u32 v) {
     if (ND::gSaveManager) ND::gSaveManager->recvAct03 = v;
 }
 
-extern "C" void SaveManager_SetRecvAct06(Unk_021ed3b0 *p, s32 i, u32 v) { p->recvAct06[i] = v; }
+extern "C" void SaveManager_SetRecvAct06(SaveManager *p, s32 i, u32 v) { p->recvAct06[i] = v; }
 
-extern "C" void SaveManager_SetCtrlAct10(Unk_021ed3b0 *p, s32 i, u32 v) { p->ctrlAct10[i] = v; }
+extern "C" void SaveManager_SetCtrlAct10(SaveManager *p, s32 i, u32 v) { p->ctrlAct10[i] = v; }
 
-extern "C" void SaveManager_SetCtrlAct11(Unk_021ed3b0 *p, s32 i, u32 v) { p->ctrlAct11[i] = v; }
+extern "C" void SaveManager_SetCtrlAct11(SaveManager *p, s32 i, u32 v) { p->ctrlAct11[i] = v; }
 
 extern "C" void SaveManager_SetCtrlAct14Aid(u32 v) {
-    if (ND::gSaveManager) ND::gSaveManager->unk_fc = v;
+    if (ND::gSaveManager) ND::gSaveManager->ctrlAct14Aid = v;
 }
 
 extern "C" u32 SaveManager_GetCtrlAct14Aid() {
-    if (ND::gSaveManager) return ND::gSaveManager->unk_fc;
+    if (ND::gSaveManager) return ND::gSaveManager->ctrlAct14Aid;
     return 4;
 }
 
-extern "C" void SaveManager_SetCtrlAct17(Unk_021ed3b0 *p, u32 v) { p->unk_fd = v; }
+extern "C" void SaveManager_SetCtrlAct17(SaveManager *p, u32 v) { p->ctrlAct17 = v; }
 
 extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
     s32 i;
@@ -4423,7 +4342,7 @@ extern "C" void LostChild_ResetAndPairLast(void *a) {
     ND::LostChild_TryPair(a, ND::NetSession_GetLastSyncSlot());
 }
 
-extern "C" void LostChild_ResetAndPairAll(Unk_0209f638 *self) {
+extern "C" void LostChild_ResetAndPairAll(SaveManager *self) {
     CommManager *o;
     s32 i = 3;
     o = NC::gCommManager;
@@ -4439,9 +4358,9 @@ extern "C" void LostChild_ResetAndPairAll(Unk_0209f638 *self) {
     }
 }
 
-extern "C" void LostChild_DebugPrint(Unk_0209f638 *p, void *q) {}
+extern "C" void LostChild_DebugPrint(SaveManager *p, void *q) {}
 
-extern "C" void LostChild_TryPair(Unk_0209f638 *self, s32 idx) {
+extern "C" void LostChild_TryPair(SaveManager *self, s32 idx) {
     void *r7 = NC::PlayerData_GetBySessionSlot(idx);
     if (r7 == 0) return;
     u32 sa[7];
@@ -4520,7 +4439,7 @@ extern "C" void LostChild_TryPair(Unk_0209f638 *self, s32 idx) {
     return;
 }
 
-extern "C" BOOL Wifi_IsInFriendList(Unk_0209f638 *self, void *a, void *b) {
+extern "C" BOOL Wifi_IsInFriendList(SaveManager *self, void *a, void *b) {
     void *r6 = NC::DwcFriendData_GetBytes(NC::PlayerWifiData_GetOwnFriendData(NC::_ZN10PlayerData15getWifiUserDataEv(a)));
     u8 *r5 = (u8 *)NC::FriendList_GetEntries(NC::_ZN10PlayerData13getFriendListEv(b));
     s32 i;
@@ -4534,7 +4453,7 @@ extern "C" BOOL Wifi_IsInFriendList(Unk_0209f638 *self, void *a, void *b) {
     return FALSE;
 }
 
-extern "C" void LostChild_ApplyReceived(Unk_0209f638 *self) {
+extern "C" void LostChild_ApplyReceived(SaveManager *self) {
     void *p5 = NC::TownExchange_GetForAid(4);
     void *r4 = NC::PlayerData_GetCurrent();
     u32 s1[7];
@@ -4554,7 +4473,7 @@ extern "C" void LostChild_ApplyReceived(Unk_0209f638 *self) {
     NC::_ZN11MsgString9CD1Ev(s1);
 }
 
-extern "C" void VillagerTransfer_SendReplies(Unk_0209f638 *self) {
+extern "C" void VillagerTransfer_SendReplies(SaveManager *self) {
     GuestSlotTriple a = NC::data_020e2764;
     GuestSlotTriple b = NC::data_020e2770;
     s32 i = 2;
@@ -4578,7 +4497,7 @@ extern "C" void VillagerTransfer_SendReplies(Unk_0209f638 *self) {
     NC::CommSend_VillagerTransferReply(a.v[0], b.v[0], a.v[1], b.v[1], a.v[2], b.v[2]);
 }
 
-extern "C" s32 SaveManager_RunSessionEnd(Unk_0209f638 *self, u8 *st, s32 base, s32 base2, u32 mask, u8 a6) {
+extern "C" s32 SaveManager_RunSessionEnd(SaveManager *self, u8 *st, s32 base, s32 base2, u32 mask, u8 a6) {
     u32 cur = *st;
     if (cur == base) {
         if (NC::Comm_IsConnectionLost(mask)) {
@@ -4732,7 +4651,7 @@ extern "C" s32 SaveManager_RunSessionEnd(Unk_0209f638 *self, u8 *st, s32 base, s
     return 0x20;
 }
 
-extern "C" s32 SaveManager_RunSyncedSaveHost(Unk_0209f638 *self, u8 *st, s32 a2, s32 base, u8 a5, u8 a6, s32 a7, u8 a8, u32 a9) {
+extern "C" s32 SaveManager_RunSyncedSaveHost(SaveManager *self, u8 *st, s32 a2, s32 base, u8 a5, u8 a6, s32 a7, u8 a8, u32 a9) {
     CommManager *o5, *o2;
     u32 cur = *st;
     if (cur == base) {
@@ -4758,7 +4677,7 @@ extern "C" s32 SaveManager_RunSyncedSaveHost(Unk_0209f638 *self, u8 *st, s32 a2,
             NC::Comm_SetLostFlag();
             return 0x20;
         }
-        s32 r = NC::_ZN14SaveSlotWriter12saveSlotStepEi(self, (u32)(self->slotOrder << 24) >> 28);
+        s32 r = NC::_ZN14SaveSlotWriter12saveSlotStepEi(self, self->slotOrder.hi);
         if (r == 1) {
             *st = a5;
         } else if (r == 0) {
@@ -4813,7 +4732,7 @@ extern "C" s32 SaveManager_RunSyncedSaveHost(Unk_0209f638 *self, u8 *st, s32 a2,
             NC::Comm_SetLostFlag();
             return 0x20;
         }
-        s32 r = NC::_ZN14SaveSlotWriter12saveSlotStepEi(self, (u32)(self->slotOrder << 24) >> 28);
+        s32 r = NC::_ZN14SaveSlotWriter12saveSlotStepEi(self, self->slotOrder.hi);
         if (r == 1) {
             *st = a5;
         } else if (r == 0) {
@@ -4861,7 +4780,7 @@ extern "C" s32 SaveManager_RunSyncedSaveHost(Unk_0209f638 *self, u8 *st, s32 a2,
     return 0x20;
 }
 
-s32 Unk_0209f304::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8 a7, u32 a8) {
+s32 SaveManager::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8 a7, u32 a8) {
     u32 v = *p;
     s32 r;
     if (v == base) {
@@ -4881,7 +4800,7 @@ s32 Unk_0209f304::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u
             NB::Comm_SetLostFlag();
             return 0x20;
         }
-        r = NB::_ZN14SaveSlotWriter12loadSlotStepEi(this, unk_10a_lo);
+        r = NB::_ZN14SaveSlotWriter12loadSlotStepEi(this, slotOrder.lo);
         if (r == 1) {
             *p = fail;
         } else if (r == 0) {
@@ -4901,7 +4820,7 @@ s32 Unk_0209f304::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u
             NB::Comm_SetLostFlag();
             return 0x20;
         }
-        r = NB::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a_hi);
+        r = NB::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             *p = fail;
         } else if (r == 0) {
@@ -4920,11 +4839,11 @@ s32 Unk_0209f304::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u
             NB::Comm_SetLostFlag();
             return 0x20;
         }
-        if (ctrlAct0E == 1) {
+        if (ctrlAct0E[0] == 1) {
             NB::SaveManager_ClearCtrlAct0E(this);
             NB::_ZN11SaveRecord416setStateValidAltEv(NB::gSaveFooter);
             *p = base + 5;
-        } else if (ctrlAct0E == 2) {
+        } else if (ctrlAct0E[0] == 2) {
             *p = a5;
         }
     } else if (v == base + 5) {
@@ -4932,7 +4851,7 @@ s32 Unk_0209f304::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u
             NB::Comm_SetLostFlag();
             return 0x20;
         }
-        r = NB::_ZN14SaveSlotWriter12saveSlotStepEi(this, unk_10a_hi);
+        r = NB::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             *p = fail;
         } else if (r == 0) {
@@ -4954,16 +4873,16 @@ s32 Unk_0209f304::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u
             NB::Comm_SetLostFlag();
             return 0x20;
         }
-        if (ctrlAct0E == 1) {
+        if (ctrlAct0E[0] == 1) {
             *p = base + 8;
-        } else if (ctrlAct0E == 2) {
+        } else if (ctrlAct0E[0] == 2) {
             *p = a5;
         }
     }
     return 0x20;
 }
 
-void Unk_0209f304::runGatherPeersInScene(u8 *p, u32 base, u32 x, u32 y) {
+void SaveManager::runGatherPeersInScene(u8 *p, u32 base, u32 x, u32 y) {
     u32 v = *p;
     if (v == base) {
         BOOL r = TRUE;
@@ -4991,7 +4910,7 @@ void Unk_0209f304::runGatherPeersInScene(u8 *p, u32 base, u32 x, u32 y) {
     }
 }
 
-BOOL Unk_0209f304::allPeersSentAct10() {
+BOOL SaveManager::allPeersSentAct10() {
     BOOL r = TRUE;
     s32 i = 3;
     u8 *g = NB::gCommManager;
@@ -5004,7 +4923,7 @@ BOOL Unk_0209f304::allPeersSentAct10() {
     return r;
 }
 
-void Unk_0209f304::runSendAct10(u8 *p, u32 base) {
+void SaveManager::runSendAct10(u8 *p, u32 base) {
     u32 v = *p;
     if (v == base) {
         if (NB::_ZN11CommManager7getModeEv(NB::gCommManager) == 1) {
@@ -5021,16 +4940,16 @@ extern "C" void SaveManager_StartGatekeeperTalk(u32 a, u32 b) {
     if (b == 0) {
         NB::_ZN11SaveManager9startTalkEPKch(a, (u8 *)"sp_npc_gatekeeper", 0x69);
     }
-    NB::_ZN12Unk_02097ff49clearFlagEj(NB::PlayerData_GetCurrent(), 2);
+    NB::_ZN10PlayerData9clearFlagEj(NB::PlayerData_GetCurrent(), 2);
     NB::_ZN12HudCountdown5startEii(NB::Hud_GetCountdown(), 0, 1);
 }
 
 extern "C" void SaveManager_StartSequence2Talk(u32 a) {
     NB::_ZN11SaveManager9startTalkEPKch(a, (u8 *)"sp_etc_sequence2", 7);
-    NB::_ZN12Unk_02097ff49clearFlagEj(NB::PlayerData_GetCurrent(), 2);
+    NB::_ZN10PlayerData9clearFlagEj(NB::PlayerData_GetCurrent(), 2);
     if (NB::SaveManager_IsEndSessionSave() != 0) {
         NB::_ZN12HudCountdown5startEii(NB::Hud_GetCountdown(), 0, 1);
-        NB::_ZN12Unk_02097ff47setFlagEj(NB::PlayerData_GetCurrent(), 2);
+        NB::_ZN10PlayerData7setFlagEj(NB::PlayerData_GetCurrent(), 2);
     }
 }
 
@@ -5347,9 +5266,9 @@ void *data_020e25bc[2] = {(void *)NT::_ZN11SaveManager10enterAct01Ev, 0};
 
 u8 sSessionResidentIndex = 7;
 
-void *data_020e266c[2] = {(void *)NT::_ZN12Unk_020a32389execAct0BEv, 0};
+void *data_020e266c[2] = {(void *)NT::_ZN11SaveManager9execAct0BEv, 0};
 
-void *data_020e26dc[2] = {(void *)NT::_ZN12Unk_020a323810enterAct06Ev, 0};
+void *data_020e26dc[2] = {(void *)NT::_ZN11SaveManager10enterAct06Ev, 0};
 
 char data_020e27a4[] = "http://axing.nintendowifi.net/axmail/";
 

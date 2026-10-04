@@ -72,8 +72,8 @@ void FieldPos_SnapToUnitCenter(Unk_020c0acc_Vec *a, Unk_020c0acc_Vec *b);
 void FieldPos_FromUnitCenter(Unk_020c0acc_Vec *a, s32 b, s32 c);
 s32 _ZN10PlayerData18getLostChildRecordEv(void *a);
 BOOL _ZN15LostChildRecord11isEscortingEv(s32 a);
-BOOL _ZN12Unk_02097ff48testFlagEj(void *a, s32 b);
-s32 _ZN12Unk_02097ff47setFlagEj(void *a, s32 b);
+BOOL _ZN10PlayerData8testFlagEj(void *a, s32 b);
+s32 _ZN10PlayerData7setFlagEj(void *a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void TalkRequest_SetTargetDone(void *a);
 void TalkRequestFlags_ClearSceneHold(void);
@@ -211,8 +211,8 @@ BOOL SpNpcKatie::onCreate() {
                 talk.setTopic(5);
                 changeAct(1);
             }
-        } else if (_ZN12Unk_02097ff48testFlagEj(p, 0x33) == 0) {
-            if (_ZN12Unk_02097ff48testFlagEj(p, 0x31) == 0) {
+        } else if (_ZN10PlayerData8testFlagEj(p, 0x33) == 0) {
+            if (_ZN10PlayerData8testFlagEj(p, 0x31) == 0) {
                 talk.setTopic(0);
             } else {
                 talk.setTopic(1);
@@ -626,7 +626,7 @@ BOOL SpNpcKatie::mainAct08() {
             if (_ZN15LostChildRecord13isKaitlinRoleEv() == 1) {
                 _ZN15LostChildRecord5clearEv(x);
             }
-            _ZN12Unk_02097ff47setFlagEj(PlayerData_GetCurrent(), 0x39);
+            _ZN10PlayerData7setFlagEj(PlayerData_GetCurrent(), 0x39);
             _ZN15LostChildRecord5clearEv(_ZN10PlayerData18getLostChildRecordEv((void *)s));
             _ZN15KatieVisitState5clearEv(TownSessionState_GetKatieState(TownSessionState_Get()));
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
@@ -634,7 +634,7 @@ BOOL SpNpcKatie::mainAct08() {
         if (r5 == r6) {
             _ZN15LostChildRecord5clearEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()));
             _ZN15KatieVisitState5clearEv(TownSessionState_GetKatieState(TownSessionState_Get()));
-            _ZN12Unk_02097ff47setFlagEj(PlayerData_GetCurrent(), 0x31);
+            _ZN10PlayerData7setFlagEj(PlayerData_GetCurrent(), 0x31);
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         } else {
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
@@ -675,11 +675,11 @@ void SpNpcKatieTalk::start(TalkStartMsg *out_) {
     out->msgKey = (const char *)sSpNpcKatieMsgKey;
     switch (getTopic()) {
     case 0:
-        _ZN12Unk_02097ff47setFlagEj(t, 0x33);
+        _ZN10PlayerData7setFlagEj(t, 0x33);
         out->msgIndex = 0;
         break;
     case 1:
-        _ZN12Unk_02097ff47setFlagEj(t, 0x33);
+        _ZN10PlayerData7setFlagEj(t, 0x33);
         out->msgIndex = Random_GlobalBelow(3) + 1;
         break;
     case 2:

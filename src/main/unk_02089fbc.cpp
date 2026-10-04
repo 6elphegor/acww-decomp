@@ -258,14 +258,6 @@ public:
 
 
 
-class Unk_0208c478_Obj {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual u32 vfunc_0c();
-    u8 unk_04[0x14];
-};
 
 // Methods that symbols.txt files under HudClockLabels (same object layout as HudClock)
 class HudClockLabels {
@@ -306,10 +298,10 @@ public:
     /* 0x62 */ u8 minute;
     /* 0x63 */ u8 hour;
     /* 0x64 */ s32 weekday;
-    /* 0x68 */ Unk_0208c478_Obj monthText;
-    /* 0x80 */ Unk_0208c478_Obj dayText;
-    /* 0x98 */ Unk_0208c478_Obj hourText;
-    /* 0xb0 */ Unk_0208c478_Obj minuteText;
+    /* 0x68 */ MsgString3 monthText;
+    /* 0x80 */ MsgString3 dayText;
+    /* 0x98 */ MsgString3 hourText;
+    /* 0xb0 */ MsgString3 minuteText;
 };
 
 
@@ -726,7 +718,7 @@ void HudClockLabels::refreshMonth() {
         monthDirty = 0;
         String_FormatNumber(&monthText, month, 2, 0, 0, 1);
         TextLabel *t = monthLabel;
-        t->textStart = monthText.vfunc_0c();
+        t->textStart = (u32)monthText.data();
         monthLabel->alignRight();
         monthLabel->requestRedraw();
     }
@@ -737,7 +729,7 @@ void HudClockLabels::refreshDay() {
         dayDirty = 0;
         String_FormatNumber(&dayText, day, 2, 0, 0, 1);
         TextLabel *t = dayLabel;
-        t->textStart = dayText.vfunc_0c();
+        t->textStart = (u32)dayText.data();
         dayLabel->requestRedraw();
     }
 }
@@ -772,7 +764,7 @@ void HudClockLabels::refreshHour() {
         if (c == 0) c = 12;
         String_FormatNumber(&hourText, c, 2, 0, 0, 1);
         TextLabel *t = hourLabel;
-        t->textStart = hourText.vfunc_0c();
+        t->textStart = (u32)hourText.data();
         hourLabel->alignRight();
         hourLabel->requestRedraw();
     }
@@ -783,7 +775,7 @@ void HudClockLabels::refreshMinute() {
         minuteDirty = 0;
         String_FormatNumber(&minuteText, minute, 2, 6, 0, 1);
         TextLabel *t = minuteLabel;
-        t->textStart = minuteText.vfunc_0c();
+        t->textStart = (u32)minuteText.data();
         minuteLabel->alignCenter();
         minuteLabel->requestRedraw();
     }

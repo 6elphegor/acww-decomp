@@ -3,10 +3,9 @@
 #include "net/CommManager.h"
 #include "gfx/Unk_020bfe30_Vec.h"
 #include "game/EventDayEntry.h"
-#include "player/Unk_02097ff4.h"
+#include "player/PlayerData.h"
 #include "snd/SndEnvChannel.h"
 #include "game/WeatherRecord.h"
-#include "gfx/Unk_020bfe30.h"
 #include "snd/Unk_0213b938.h"
 #include "game/SkyProc.h"
 #include "actor/SpNpcActor.h"
@@ -37,7 +36,6 @@ void VEC_Add(Unk_020bfe30_Vec *a, Unk_020bfe30_Vec *b, Unk_020bfe30_Vec *c);
 }
 
 extern "C" {
-Unk_020bfe38_Ent *PlayerActor_GetActor(s32 n);
 }
 
 extern "C" {
@@ -345,10 +343,6 @@ extern s32 sRainSideToggle;
 }
 
 extern "C" {
-extern Unk_020bfec0_Ent data_021f43e0;
-}
-
-extern "C" {
 extern s16 data_021f1448[];
 }
 
@@ -555,7 +549,7 @@ extern "C" BOOL Weather_UpdateDaily(WeatherRecord *self, void *arg) {
             self->todayPattern = 4;
         } else {
             s32 t = PlayerData_GetCurrent();
-            if (t && ((Unk_02097ff4 *)t)->testFlag(1)) {
+            if (t && ((PlayerData *)t)->testFlag(1)) {
                 self->todayPattern = 4;
             } else {
                 EventDayEntry *e = (EventDayEntry *)Event_GetTodayList();

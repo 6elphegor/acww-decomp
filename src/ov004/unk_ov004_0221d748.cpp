@@ -100,8 +100,8 @@ struct SpNpcBookerActEntry {
 #define PlayerData_getHat _ZN10PlayerData6getHatEv
 #define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
-#define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
+#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
+#define PlayerData_setFlag _ZN10PlayerData7setFlagEj
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define SickVillagerRecord_resetRecord _ZN18SickVillagerRecord11resetRecordEv
@@ -170,8 +170,8 @@ s32 LostAndFound_Count(void);
 s32 Talk_IsInOwnTown(void);
 s32 GameStart_IsActive(void);
 s32 Random_GlobalBelow(s32 n);
-s32 Unk_02097ff4_testFlag(void *p, s32 n);
-void Unk_02097ff4_setFlag(void *p, s32 n);
+s32 PlayerData_testFlag(void *p, s32 n);
+void PlayerData_setFlag(void *p, s32 n);
 s32 CommManager_isOnline(void *p);
 s32 CommManager_isSlotActive(void *p, u32 i);
 s32 NetArea_IsLocalOwner(void);
@@ -432,9 +432,9 @@ void SpNpcBookerTalk::start(TalkStartMsg *arg) {
     void *g = PlayerData_GetCurrent();
     if (Talk_IsInOwnTown() == 0 || GameStart_IsActive() != 0) {
         out->msgIndex = Random_GlobalBelow(3) + 8;
-    } else if (Unk_02097ff4_testFlag(g, 0x1b) == 0) {
+    } else if (PlayerData_testFlag(g, 0x1b) == 0) {
         out->msgIndex = 0;
-        Unk_02097ff4_setFlag(g, 0x1b);
+        PlayerData_setFlag(g, 0x1b);
     } else {
         out->msgIndex = Random_GlobalBelow(4) + 4;
     }

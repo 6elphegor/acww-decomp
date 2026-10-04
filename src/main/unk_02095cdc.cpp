@@ -63,7 +63,7 @@ extern u8 gPlayerSessionTable[];
 extern u8 data_021e7f8c[];
 extern u8 data_021eceac[];
 extern u8 gU8None[];
-extern Unk_02095f38_G data_021ed150;
+extern SaveTownStateView data_021ed150;
 extern u8 sMotherMonthLetterCount[];
 extern u8 sMotherMonthLetterFirst[];
 extern u8 data_021ecfa8[];
@@ -143,7 +143,7 @@ void PlayerActor_Spawn(s32 idx, void *pos, void *rot, u32 flags);
 s32 PlayerActor_GetLocalSessionSlot();
 void PlayerSession_RemovePitfallOnClimbOut(s32 *idx, u8 *b, s32 *v, s32 *c, s32 *d, s32 *e);
 BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
-Unk_02095774_Ent *PlayerActor_GetActor(s32 idx);
+Actor *PlayerActor_GetActor(s32 idx);
 u32 PlayerSession_FindFreeGfxSlot();
 void PlayerSession_SetGfxSlot(s32 idx, u32 v);
 s16 *PlayerSession_GetLastAngle(s32 idx);
@@ -156,7 +156,7 @@ BOOL PlayerActor_GetSlotAngle(s16 *out, s32 a, s32 idx);
 BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx);
 u32 PlayerActor_GetNetStateVar(s32 idx);
 u32 PlayerActor_GetNetPosVar(s32 idx);
-Unk_02095774_Ent *PlayerActor_Get(s32 idx);
+Actor *PlayerActor_Get(s32 idx);
 void BottleLetter_WashUpThrownBottle();
 void BottleLetter_OnNewDay(s32 a);
 s32 BottleLetter_IsBottleInTown();
@@ -234,7 +234,7 @@ void *PlayerData_GetFutureLetter(void *);
 s32 func_02097ff4(s32, s32);
 s32 func_0209801c(s32, s32);
 s32 func_02098044(s32, s32);
-u8 *_ZN12Unk_02097ff411getBirthdayEv(void *);
+u8 *_ZN10PlayerData11getBirthdayEv(void *);
 s32 func_02098320(s32);
 void *_ZN10PlayerData10getCatalogEv(void *a);
 void *_ZN10PlayerData8getIndexEv(void *);
@@ -584,7 +584,7 @@ extern "C" void MotherLetter_OnNewDay(Unk_02096354_Arg *p, s32 n) {
 extern "C" s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p) {
     void *r5 = PlayerData_GetCurrent();
     void *r6 = PlayerData_GetMotherLetterState(r5);
-    u8 *q = _ZN12Unk_02097ff411getBirthdayEv(r5);
+    u8 *q = _ZN10PlayerData11getBirthdayEv(r5);
     if (*(u16 *)q == 0) return 0;
     if (p->year == _ZN17MotherLetterState21getBirthdayLetterYearEv(r6)) return 0;
     s32 r;
@@ -773,7 +773,7 @@ extern "C" u16 MotherLetter_GetPresent(s32 code) {
     case 0x37:
     case 0x38:
     case 0x51: {
-        u16 r4 = Unk_02095f38_F(data_021ed150.unk_58);
+        u16 r4 = Unk_02095f38_F(data_021ed150.nativeFruit);
         s32 n = Random_GlobalBelow(4);
         u32 j;
         for (j = 0; j < 5; j++) {

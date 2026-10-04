@@ -33,7 +33,7 @@ extern u8 data_021e7f8c[];
 extern u8 data_021eceac[];
 extern u8 gU8None[];
 extern u8 data_020e1d68[];
-extern Unk_02095f38_G data_021ed150;
+extern SaveTownStateView data_021ed150;
 
 extern "C" {
 BOOL _ZN11CommManager11isLocalSlotEj(CommManager *p, s32 v);
@@ -92,7 +92,7 @@ u32 PlayerActor_GetNetPosVar(s32 idx);
 }
 
 extern "C" {
-Unk_02095774_Ent *PlayerActor_Get(s32 idx);
+Actor *PlayerActor_Get(s32 idx);
 }
 
 extern "C" {
@@ -116,7 +116,7 @@ ProcBase *_ZN5Actor13findByProfileEjPS_(s32 a, s32 b);
 }
 
 extern "C" {
-Unk_02095774_Ent *PlayerActor_GetActor(s32 idx);
+Actor *PlayerActor_GetActor(s32 idx);
 }
 
 extern "C" {
@@ -399,7 +399,7 @@ BOOL RemotePlayerSpawner::onExecute() {
     j = 0;
     do {
         if (!_ZN11CommManager11isLocalSlotEj(g, j) && !PlayerActor_TestSlotFlag(0x1b, ob)) {
-            Unk_02095774_Ent *e = PlayerActor_GetActor(j);
+            Actor *e = PlayerActor_GetActor(j);
             if (e) {
                 if (!Unk_0209579c_IsTwo(((ProcBase *)e)->state)) {
                     if (PlayerActor_GetSlotAction(&lv2, -1, j)) {

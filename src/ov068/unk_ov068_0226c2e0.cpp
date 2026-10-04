@@ -54,8 +54,8 @@
 #define RoostGuestRoll_getAfternoonGuest _ZN14RoostGuestRoll17getAfternoonGuestEv
 #define RoostGuestRoll_getNoonGuest _ZN14RoostGuestRoll12getNoonGuestEv
 #define RoostGuestRoll_hasMorningGuest _ZN14RoostGuestRoll15hasMorningGuestEv
-#define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
-#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
+#define PlayerData_setFlag _ZN10PlayerData7setFlagEj
+#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
 #define SaveRecord4_isDateActive _ZN11SaveRecord412isDateActiveEv
 #define MsgString_fromEncoded _ZN9MsgString11fromEncodedEP13EncodedStringii
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
@@ -385,8 +385,8 @@ s32 Actor_spawn(u32 a, u32 b, u32 c, u32 d, u32 e);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 s32 Random_GlobalBelow(s32 a);
 s32 Pocket_FindItem(u16 *p);
-s32 Unk_02097ff4_testFlag(void *p, s32 a);
-void Unk_02097ff4_setFlag(void *p, s32 a);
+s32 PlayerData_testFlag(void *p, s32 a);
+void PlayerData_setFlag(void *p, s32 a);
 void ActorTalkRequest_setSubSceneKind(void *self, u32 a, u32 b);
 void ActorTalkRequest_openSubScene(void *self, u32 a);
 void func_0201578c(void *self, u16 *p, s32 a, s32 b);
@@ -766,9 +766,9 @@ void SpNpcRoostGuestTalk::start(TalkStartMsg *out_) {
                 } else {
                     out->msgIndex = 0x12;
                 }
-            } else if (Unk_02097ff4_testFlag(p, 7) == 0) {
+            } else if (PlayerData_testFlag(p, 7) == 0) {
                 out->msgIndex = 1;
-                Unk_02097ff4_setFlag(p, 7);
+                PlayerData_setFlag(p, 7);
             } else if (Talk_CheckAndSetPlayerFlag(0xc, 1) == 0) {
                 out->msgIndex = 2;
             } else {

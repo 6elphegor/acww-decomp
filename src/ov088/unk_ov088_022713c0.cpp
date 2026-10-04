@@ -89,8 +89,8 @@ extern u32 __ptmf_null[];
 void _ZN15TalkWindowState17setSlotFromStringEiii(void *self, s32 idx, u8 *p, void *s);
 s32 _ZN8NpcActor20getNewEmotionToLearnEv(void *self);
 s32 _ZN8NpcActor20getLastTaughtEmotionEv(void *self);
-s32 _ZN12Unk_02097ff48testFlagEj(void *self, u32 v);
-void _ZN12Unk_02097ff47setFlagEj(void *self, u32 v);
+s32 _ZN10PlayerData8testFlagEj(void *self, u32 v);
+void _ZN10PlayerData7setFlagEj(void *self, u32 v);
 void _ZN9MsgString4copyEPS_(void *self, void *o);
 void _ZN13NpcFootstepFx16disableFootstepsEv(void *self);
 void _ZN13NpcFootstepFx15enableFootstepsEv(void *self);
@@ -687,7 +687,7 @@ void SpNpcShrunkTalk::scriptFirstLesson() {
             _ZN15TalkWindowState17setSlotFromStringEiii(window, 0, &b[1], (void *)"st_learn");
             ownerNpc->reactionWindow = 0;
             ownerNpc->waitTimer = 0x14;
-            _ZN12Unk_02097ff47setFlagEj(PlayerData_GetCurrent(), 0x10);
+            _ZN10PlayerData7setFlagEj(PlayerData_GetCurrent(), 0x10);
             b[0] = 0xc;
             ownerNpc->teachEmotion(0, 0x17);
             r4->setNextMessage(&b[0], (void *)"sp_npc_reaction");
@@ -759,7 +759,7 @@ void SpNpcShrunkTalk::attachOwner(SpNpcShrunk *owner) {
 void SpNpcShrunkTalk::start(TalkStartMsg *out) {
     out->msgKey = "sp_npc_reaction";
     out->msgIndex = 1;
-    if (_ZN12Unk_02097ff48testFlagEj(PlayerData_GetCurrent(), 0x10) == 1) {
+    if (_ZN10PlayerData8testFlagEj(PlayerData_GetCurrent(), 0x10) == 1) {
         if (Talk_CheckAndSetPlayerFlag(0xe, 0) == 0) {
             out->msgIndex = Random_GlobalBelow(2) + 0x13;
         } else if (Emotion_CountLearned() == 1) {

@@ -49,7 +49,7 @@ class SpNpcNookIntroTalk;
 #define NpcActor_setNpcHandle _ZN8NpcActor12setNpcHandleEPt
 #define HouseData_getDebt _ZN9HouseData7getDebtEv
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
-#define Unk_02097ff4_clearFlag _ZN12Unk_02097ff49clearFlagEj
+#define PlayerData_clearFlag _ZN10PlayerData9clearFlagEj
 
 
 struct Unk_ov068_02266bd0_Owner {
@@ -87,7 +87,7 @@ void GameStart_Clear();
 BOOL GameStart_IsNewResident();
 BOOL GameStart_IsNewTown();
 s32 PlayerDataArray_CountUsed(void *self);
-void Unk_02097ff4_clearFlag(void *self, s32 a);
+void PlayerData_clearFlag(void *self, s32 a);
 void *HouseData_getDebt(void *self);
 void TalkWindowState_setNextMessage(void *self, void *buf, void *p);
 void ActorTalkRequest_setNumberSlot(void *self, void *a, s32 b, s32 c, s32 d, s32 e);
@@ -313,7 +313,7 @@ BOOL SpNpcNookIntro::onCreate() {
     if (p != NULL) {
         if (!GameStart_IsNewResident()) {
             if (!GameStart_IsNewTown()) {
-                Unk_02097ff4_clearFlag(p, 1);
+                PlayerData_clearFlag(p, 1);
             }
         }
     }
@@ -462,7 +462,7 @@ void SpNpcNookIntroTalk::start(TalkStartMsg *out_) {
     TalkStartMsg *out = (TalkStartMsg *)out_;
     void *p = PlayerData_GetCurrent();
     if (p != 0) {
-        Unk_02097ff4_clearFlag(p, 0x23);
+        PlayerData_clearFlag(p, 0x23);
     }
     out->msgKey = (const char *)sNookIntroMsgFilePtr;
     out->msgIndex = 0x22;

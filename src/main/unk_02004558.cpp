@@ -1199,8 +1199,8 @@ void TalkRequest_FinishPlayerMessage();
 void FieldPos_FromUnitCenter(void* p, u32 a, u32 b);
 u16* BlockMap_GetItemPtrAtPos(void* p, void* q, u32 z);
 void* PlayerData_GetCurrent();
-BOOL _ZN12Unk_02097ff48testFlagEj(void* p, u32 v);
-void _ZN12Unk_02097ff47setFlagEj(void* p, u32 v);
+BOOL _ZN10PlayerData8testFlagEj(void* p, u32 v);
+void _ZN10PlayerData7setFlagEj(void* p, u32 v);
 void PendingUnit_CommitAt(Unk_0200b144_Pos* p, u32 z);
 void PendingUnit_ApplyAt(Unk_0200b144_Pos* p, u32 z);
 void VillagerTrend_NotifyUnk6(void* p);
@@ -6275,18 +6275,18 @@ void PlayerActor::setupPickUp(PlayerActionRequest* item, u32 old) {
             void* q = PlayerData_GetCurrent();
             if (q != NULL) {
                 if (Unk_0200add8_R1(&((PlayerActor *)this)->actionItem, 0x137b, 0x137b)) {
-                    if (_ZN12Unk_02097ff48testFlagEj(q, 0x28) == 0) {
+                    if (_ZN10PlayerData8testFlagEj(q, 0x28) == 0) {
                         Unk_0200b144_Pos p;
-                        _ZN12Unk_02097ff47setFlagEj(q, 0x28);
+                        _ZN10PlayerData7setFlagEj(q, 0x28);
                         p.x = x;
                         p.y = y;
                         _ZN11PlayerActor22requestPickUpFanfareAtEP17Unk_02006d14_Pairhjs(this, &p, flag, 6, -1);
                         return;
                     }
                 } else if (((PlayerActor *)this)->actionItem >= 0x136a && ((PlayerActor *)this)->actionItem <= 0x136a) {
-                    if (_ZN12Unk_02097ff48testFlagEj(q, 0x27) == 0) {
+                    if (_ZN10PlayerData8testFlagEj(q, 0x27) == 0) {
                         Unk_0200b144_Pos p;
-                        _ZN12Unk_02097ff47setFlagEj(q, 0x27);
+                        _ZN10PlayerData7setFlagEj(q, 0x27);
                         p.x = x;
                         p.y = y;
                         _ZN11PlayerActor22requestPickUpFanfareAtEP17Unk_02006d14_Pairhjs(this, &p, flag, 6, -1);

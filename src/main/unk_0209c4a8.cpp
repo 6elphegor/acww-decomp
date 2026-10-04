@@ -2,6 +2,7 @@
 #include "net/CommManager.h"
 #include "room/Unk_0209c41c_Actor.h"
 #include "room/Unk_0209c614_Actor.h"
+#include "actor/Actor.h"
 
 typedef Unk_0209c82c_V Unk_0209c614_Vec;
 
@@ -51,7 +52,7 @@ void *Scene_GetWarpRequest();
 s32 SceneExit_Resolve(void *o, u32 id, u8 *a, Unk_0209c614_Vec *v, u32 *p20, u16 *e, u8 *c, u8 *b, s32 z0, s32 z1);
 s32 Scene_GetCurrent();
 s32 Scene_GetPrevious();
-Unk_0209c614_Actor *PlayerActor_GetActor(u32 n);
+Actor *PlayerActor_GetActor(u32 n);
 
 u32 RoomEntry_IsExclusiveScene(u32 v);
 void RoomEntryRequest_SetRetreatPos(RoomEntryRequest *t, Unk_0209c82c_V *v);
@@ -253,7 +254,7 @@ extern "C" s32 RoomEntry_IsExclusiveExit(void *p) {
 }
 
 extern "C" BOOL RoomEntry_Request(u32 id) {
-    Unk_0209c614_Actor *p = PlayerActor_GetActor(4);
+    Actor *p = PlayerActor_GetActor(4);
     void *o = Scene_GetWarpRequest();
     SceneExitResult s;
     u32 a20, a24;
@@ -261,7 +262,7 @@ extern "C" BOOL RoomEntry_Request(u32 id) {
     s32 r = SceneExit_Resolve(o, id, &s.scene, &v28, &a20, &s.e, &s.fadeOut, &s.fadeIn, 0, 0);
     RoomEntryRequest_SetResult(&sRoomEntryRequest, 0);
     if (r != 0 && p != 0) {
-        Unk_0209c614_Vec *pv = &p->position;
+        Unk_0209c614_Vec *pv = (Unk_0209c614_Vec *)&p->position;
         v40.x = pv->x;
         v40.y = pv->y;
         v40.z = pv->z;

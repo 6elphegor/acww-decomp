@@ -102,9 +102,9 @@
 #define ActorCollider_submit _ZN13ActorCollider6submitEv
 #define HudCountdown_incCountB _ZN12HudCountdown9incCountBEv
 #define HudCountdown_incCountA _ZN12HudCountdown9incCountAEv
-#define Unk_02097ff4_clearFlag _ZN12Unk_02097ff49clearFlagEj
-#define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
-#define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
+#define PlayerData_clearFlag _ZN10PlayerData9clearFlagEj
+#define PlayerData_setFlag _ZN10PlayerData7setFlagEj
+#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
 #define PlayerData_setHeldItem _ZN10PlayerData11setHeldItemEPt
 #define PlayerData_getHeldItem _ZN10PlayerData11getHeldItemEv
 #define PlayerData_setTan _ZN10PlayerData6setTanEh
@@ -568,8 +568,8 @@ void Effect_PlayById(s32 a, V3 *v, s32 b, s32 c);
 s32 PlayerData_GetCurrent();
 void PlayerData_SetStungFace(s32 a, s32 b);
 u8 *PlayerData_getFaceType(s32 a);
-s32 Unk_02097ff4_testFlag(s32 a, s32 b);
-void Unk_02097ff4_setFlag(s32 a, s32 b);
+s32 PlayerData_testFlag(s32 a, s32 b);
+void PlayerData_setFlag(s32 a, s32 b);
 void Character_detachTalkRequest(void *self, TalkMsgRequest *sec);
 void Character_attachTalkRequest(void *self, TalkMsgRequest *sec);
 void Camera_SetMode4();
@@ -700,8 +700,8 @@ void PlayerActor_GetHeldItem(u16 *a, Obj *o);
 s32 CommManager_isLocalSlot(void *g, u32 a);
 s32 Sky_WishOnShootingStar();
 void *PlayerData_GetCurrent();
-s32 Unk_02097ff4_testFlag(void *p, s32 a);
-s32 Unk_02097ff4_setFlag(void *p, s32 a);
+s32 PlayerData_testFlag(void *p, s32 a);
+s32 PlayerData_setFlag(void *p, s32 a);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
 void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
@@ -1358,8 +1358,8 @@ void Character_detachTalkRequest(Obj *o, MsgRequest *s);
 void Character_attachTalkRequest(Obj *o, MsgRequest *s);
 void *PlayerData_GetCurrent();
 void MsgRequest_setFileName(void *p, void *s);
-s32 Unk_02097ff4_testFlag(void *p, s32 a);
-void Unk_02097ff4_setFlag(void *p, s32 a);
+s32 PlayerData_testFlag(void *p, s32 a);
+void PlayerData_setFlag(void *p, s32 a);
 void func_02062650(void *b, void *s);
 void func_0206260c(void *b);
 void TalkWindowState_setNamedSlot(void *a, s32 b, void *c, s32 d);
@@ -3121,11 +3121,11 @@ void *TownSessionState_Get();
 s32 TownSessionState_TestFlag(void *p, s32 a);
 s32 TownSessionState_ClearFlag(void *p, s32 a);
 void *PlayerData_GetCurrent();
-s32 Unk_02097ff4_clearFlag(void *p, s32 a);
+s32 PlayerData_clearFlag(void *p, s32 a);
 s32 TownBbs_UpdateDaily();
 s32 Bgm_RequestSilence(s32 a, s32 b, s32 c);
 s32 Scene_GetCurrent();
-s32 Unk_02097ff4_testFlag(void *p, s32 a);
+s32 PlayerData_testFlag(void *p, s32 a);
 s32 Scene_GetPrevious();
 s32 SceneId_IsHouseRoom(s32 a);
 u32 Building_GetDoorAnimParamAt(void *p);
@@ -4992,7 +4992,7 @@ extern "C" s32 PlayerActor_SetupDoorExit(Obj *o, Msg *m) {
     }
     if (CommManager_isLocalSlot(g, o->sessionSlot)) {
         void *q = PlayerData_GetCurrent();
-        if (Scene_GetCurrent() == 0 && q != 0 && Unk_02097ff4_testFlag(q, 0x23) != 0 &&
+        if (Scene_GetCurrent() == 0 && q != 0 && PlayerData_testFlag(q, 0x23) != 0 &&
             (SceneId_IsHouseRoom(Scene_GetPrevious()) != 0 || Scene_GetPrevious() == 6)) {
             t = 1;
         } else if (TownSessionState_TestFlag(TownSessionState_Get(), 0) != 0) {
@@ -5159,7 +5159,7 @@ extern "C" void PlayerActor_DoorExitCheckEnd(Obj *o) {
     case 3:
         if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             TownSessionState_ClearFlag(TownSessionState_Get(), 5);
-            Unk_02097ff4_clearFlag(PlayerData_GetCurrent(), 1);
+            PlayerData_clearFlag(PlayerData_GetCurrent(), 1);
             TownBbs_UpdateDaily();
         }
         Unk_02006d14_requestAct76(o, 3, 0, 0, 6, -1);
@@ -9920,16 +9920,16 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
         MsgRequest &s = *o;
         MsgRequest_setFileName(&s, (void *)"obj_etc_player");
         if (Unk_ov003_022099d0_R(&o->actionItem, 0x136a, 0x136a)) {
-            if (Unk_02097ff4_testFlag(q, 0x27) == 0) {
+            if (PlayerData_testFlag(q, 0x27) == 0) {
                 o->msgIndex = 0x21;
-                Unk_02097ff4_setFlag(q, 0x27);
+                PlayerData_setFlag(q, 0x27);
                 goto l54;
             }
         }
         if (Unk_ov003_022099d0_R(&o->actionItem, 0x137b, 0x137b)) {
-            if (Unk_02097ff4_testFlag(q, 0x28) == 0) {
+            if (PlayerData_testFlag(q, 0x28) == 0) {
                 o->msgIndex = 0x23;
-                Unk_02097ff4_setFlag(q, 0x28);
+                PlayerData_setFlag(q, 0x28);
                 goto l54;
             }
         }
@@ -11750,8 +11750,8 @@ extern "C" void PlayerActor_TripUpdate(Obj *o) {
                 if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) != 0) {
                     void *p = PlayerData_GetCurrent();
                     if (p != 0) {
-                        if (Unk_02097ff4_testFlag(p, 0x17) != 0) {
-                            Unk_02097ff4_setFlag(p, 0x1a);
+                        if (PlayerData_testFlag(p, 0x17) != 0) {
+                            PlayerData_setFlag(p, 0x1a);
                         }
                     }
                 }
@@ -12307,8 +12307,8 @@ extern "C" void PlayerActor_BeeStingUpdate(Obj *o) {
                 PlayerData_SetStungFace(r5, 1);
                 u8 *q = PlayerData_getFaceType(r5) + 0x10;
                 PlayerFaceTexRef_load((u8 *)&o->faceTex, q);
-                if (Unk_02097ff4_testFlag(r5, 0x17)) {
-                    Unk_02097ff4_setFlag(r5, 0x19);
+                if (PlayerData_testFlag(r5, 0x17)) {
+                    PlayerData_setFlag(r5, 0x19);
                 }
             }
         }

@@ -2,6 +2,7 @@
 #include "net/CommManager.h"
 #include "game/NibblePair.h"
 #include "room/Unk_0209c41c_Actor.h"
+#include "room/RoomObjActor.h"
 
 // TU185: 0x0209c3e0-0x0209c4a8. Three flag bytes in .bss (autoload_3 0x021d7274-0x021d7278) and their accessors.
 
@@ -15,13 +16,13 @@ u8 sRoomObjSyncStates[3];
 
 
 
-extern "C" BOOL RoomObjSync_ChangeState(Unk_0209c41c_Actor *self, u8 v) {
+extern "C" BOOL RoomObjSync_ChangeState(RoomObjActor *self, u8 v) {
     BOOL is1;
     if (gFieldSceneKind == 1) is1 = TRUE;
     else is1 = FALSE;
     if (is1) {
-        if (self->vfunc_60(v)) {
-            u8 idx = *((u8 *)self + 0xea);
+        if (self->changeSyncState(v)) {
+            u8 idx = self->syncSlot;
             if (idx < 3) {
                 if (gCommManager->isOnline()) {
                     NibblePair pk;

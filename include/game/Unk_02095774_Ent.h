@@ -3,15 +3,10 @@
 
 #include "types.h"
 #include "sys/ProcBase.h"
+#include "actor/Actor.h"
 
-// Scene/comm sync helpers shared by src/main/unk_02095794.cpp, unk_02095b1c.cpp and unk_02095cdc.cpp.
-
-struct Unk_02095774_Ent {
-    /* 0x00 */ u8 pad_00[0x5c];
-    /* 0x5c */ s32 position[3];
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 unk_8e;
-};
+// Scene/comm sync helpers shared by src/main/unk_02095794.cpp, unk_02095b1c.cpp and unk_02095cdc.cpp (the player
+// actors they sync are Actor, actor/Actor.h).
 
 
 struct Unk_02095dcc_Grid {
@@ -36,9 +31,11 @@ struct Unk_0209579c_L {
     /* 0x24 */ s32 v2, x2, y2;
 };
 
-struct Unk_02095f38_G {
+// gSaveData view at data_021ed150 (0x54 bytes before gSaveTownState): its +0x58 is TownState::nativeFruit. The code
+// addresses it from data_021ed150, so gSaveTownState cannot be used directly.
+struct SaveTownStateView {
     /* 0x00 */ u8 pad_00[0x58];
-    /* 0x58 */ u32 unk_58;
+    /* 0x58 */ u32 nativeFruit; // TownState::nativeFruit
 };
 
 #endif // GAME_UNK_02095774_ENT_H

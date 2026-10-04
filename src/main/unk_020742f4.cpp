@@ -20,10 +20,6 @@
 
 // ======== types of unk_02075558.cpp ========
 
-struct Unk_02075558_Obj {
-    u32 pad_00[0x19];
-    void *myAid;
-};
 struct Unk_02075bc4_Pt {
     s32 x, y;
 };
@@ -2859,10 +2855,10 @@ extern "C" void CommRecv_PeerNetState(s32 a, s32 b, s32 c, void *d) {
 }
 
 extern "C" void CommRecv_OwnNetState() {
-    Unk_02075558_Obj *o = (Unk_02075558_Obj *)gCommManager;
+    CommManager *o = (CommManager *)gCommManager;
     u8 b;
     _ZN11CommManager10readRecordEPhj(o, &b, 1);
-    NetSession_SetSyncState(o->myAid, b);
+    NetSession_SetSyncState((void *)o->myAid, b);
 }
 
 extern "C" void CommRecv_Act02(s32 a, s32 b, s32 c, s32 d) {

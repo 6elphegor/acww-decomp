@@ -212,7 +212,7 @@ s32 PlayerData_GetCurrent();
 }
 
 extern "C" {
-s32 _ZN12Unk_02097ff414getBankAccountEv();
+s32 _ZN10PlayerData14getBankAccountEv();
 }
 
 extern "C" {
@@ -379,7 +379,7 @@ BOOL SaveMenu::onExecute() {
 
     if (*DebugVar_GetPtr(0, 0x4b) != 0) {
         if (PlayerData_GetCurrent() != 0) {
-            r4 = _ZN12Unk_02097ff414getBankAccountEv();
+            r4 = _ZN10PlayerData14getBankAccountEv();
             switch (*DebugVar_GetPtr(0, 0x4b)) {
             case 0:
                 break;
@@ -403,7 +403,7 @@ BOOL SaveMenu::onExecute() {
     }
     if (*DebugVar_GetPtr(0, 0x4c) != 0) {
         if (PlayerData_GetCurrent() != 0) {
-            _ZN12Unk_02097ff414getBankAccountEv();
+            _ZN10PlayerData14getBankAccountEv();
             if (*DebugVar_GetPtr(0, 0x4c) != 0) {
                 t = *DebugVar_GetPtr(0, 0x4c);
                 if (t < 1) {
