@@ -2,6 +2,8 @@
 #include "text/Unk_02050288.h"
 #include "game/Unk_0206d0a0_Pad.h"
 #include "game/Unk_0206d1d4_Src.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
 
 extern "C" {
 s32 Text_GetLength(void *p, s32 n);
@@ -27,19 +29,7 @@ public:
     virtual ~EncodedStringBase();
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase();
-};
 
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-    s32 form;
-    u8 attrA;
-    u8 attrB;
-};
 
 class MsgString;
 

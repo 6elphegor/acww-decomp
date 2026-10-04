@@ -1,5 +1,8 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgTag.h"
+#include "talk/MsgRunner.h"
 
 class MsgRequest;
 class MsgString;
@@ -74,35 +77,6 @@ extern "C" { extern u8 gTalkMsgIndexNone; }
 
 class ChoiceString;
 
-class MsgTag {
-public:
-    MsgTag();
-    u32 getArgU8();
-    void getAltTextArgs(u32 *a, char **b, char **c);
-    void getStrings3(char **a, char **b, char **c);
-    void getStrings2(char **a, char **b);
-    u32 readArgBytes8Strings2(u8 *a1, u8 *a2, u8 *a3, u8 *s0, u8 *s1, u8 *s2, u8 *s3, u8 *s4, MsgString *s5, MsgString *s6);
-    u32 getTrailingStringsSize();
-    u32 readArgStrings5(u8 *a1, MsgString *a2, u8 *a3, MsgString *s0, u8 *s1, MsgString *s2, u8 *s3,
-                      MsgString *s4, u8 *s5, MsgString *s6);
-    u32 readArgStrings4(u8 *a1, MsgString *a2, u8 *a3, MsgString *s0, u8 *s1, MsgString *s2, u8 *s3,
-                      MsgString *s4);
-    u32 readArgStrings3(u8 *a1, MsgString *a2, u8 *a3, MsgString *s0, u8 *s1, MsgString *s2);
-    u32 readArgStrings2(u8 *a1, MsgString *a2, u8 *a3, MsgString *s0);
-    void getArgU16(u16 *out);
-    void getArgBytes(u8 *buf, s32 n);
-    void getArgs4(u8 *a, u8 *b, u8 *c, u8 *d);
-    void getArgs3(u8 *a, u8 *b, u8 *c);
-    void getArgs2(u8 *a, u8 *b);
-    void getArgs1(u8 *a);
-    void parse(u8 *p);
-
-    /* 0x00 */ s32 group;
-    /* 0x04 */ s32 id;
-    /* 0x08 */ u32 argLen;
-    /* 0x0c */ char *args;
-    /* 0x10 */ u8 *raw;
-};
 
 class MsgParser {
 public:
@@ -452,12 +426,6 @@ public:
     void setVoiceOverride(s32 v);
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-};
 
 class MsgString : public MsgStringBase {
 public:
@@ -797,7 +765,6 @@ public:
     ~MsgString33();
 };
 
-class MsgRunner { public: u32 pad[0xc / 4]; MsgRunner(MsgWalker *p); };
 
 class TalkFrame {
 public:

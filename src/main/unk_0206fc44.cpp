@@ -2,31 +2,18 @@
 #include "text/Unk_02050288.h"
 #include "gfx/Unk_0206fd10_Mtx.h"
 #include "game/Unk_0206f6fc_Pos.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files (see unk_020a6914.cpp)
 
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-    void reset();
-    void copyFrom(MsgStringAttr *other);
-
-    /* 0x04 */ s32 form;
-    /* 0x08 */ u8 attrA;
-    /* 0x09 */ u8 attrB;
-};
 
 class EncodedStringBase {
 public:
     virtual ~EncodedStringBase() {}
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase() {}
-};
 
 class MsgString;
 

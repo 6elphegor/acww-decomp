@@ -1,4 +1,5 @@
 #include "types.h"
+#include "actor/CharaFaceAnimWorkRef.h"
 
 struct CharaFaceAnimWorkPool {
     void *ptr[9];
@@ -26,13 +27,6 @@ u32 NpcSpawn_GetSpNpcSlotCount();
 u32 CharaFaceAnimWork_GetHeapSize();
 }
 
-struct CharaFaceAnimWorkRef {
-    u8 v;
-    CharaFaceAnimWorkRef();
-    ~CharaFaceAnimWorkRef();
-    void *getHeap();
-    void assign(u32 x);
-};
 
 extern "C" void CharaFaceAnimWorkPool_Create() {
     CharaFaceAnimWorkHeap_Create();

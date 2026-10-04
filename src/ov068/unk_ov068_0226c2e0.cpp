@@ -1,6 +1,8 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "actor/Unk_02088d00.h"
+#include "actor/Unk_ov068_SceneEntry.h"
+#include "game/Unk_ov083_Vec.h"
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -62,9 +64,6 @@ public:
 
 struct Unk_0201bc1c;
 
-struct Unk_ov083_Vec {
-    s32 x, y, z;
-};
 
 struct Unk_ov068_0226ce70_Out {
     const char *msgKey;
@@ -474,12 +473,6 @@ struct Unk_ov068_0226cd18_Ent {
     Unk_ov068_0226cd18_Fn fn;
 };
 
-struct Unk_ov068_Scene_Entry {
-    void *(*factory)();
-    u16 executePriority;
-    u16 drawPriority;
-    s32 unk_08[4];
-};
 extern "C" {
 void _ZN19SpNpcRoostGuestTalk22scriptStartPerformanceEv();
 void _ZN19SpNpcRoostGuestTalk17onKkChoiceRequestEi();
@@ -1138,7 +1131,7 @@ extern "C" void *data_ov068_02270384[2] = {(void *)_ZN19SpNpcRoostGuestTalk17onK
 extern "C" void *data_ov068_022703a4[2] = {(void *)_ZN15SpNpcRoostGuest10setupAct01Ev, 0};
 extern "C" void *data_ov068_022703b4[2] = {(void *)_ZN15SpNpcRoostGuest9mainAct03Ev, 0};
 extern "C" char sRoostModelWip[23] = "npc_sp/model/wip.nsbmd";
-extern "C" Unk_ov068_Scene_Entry sSpNpcRoostGuestProfile = {(void *(*)())SpNpcRoostGuest_Create, 0x66, 0x6c, {0, 0x5000, 0x5000, 0x3e800}};
+extern "C" Unk_ov068_Scene_Entry sSpNpcRoostGuestProfile = {(void *(*)())SpNpcRoostGuest_Create, 0x66, 0x6c, 0, 0x5000, 0x5000, 0x3e800};
 extern const u8 sKkTalkModeMessages[4] = {0x00, 0x09, 0x06, 0x00};
 extern "C" void *data_ov068_0227042c[2] = {(void *)_ZN19SpNpcRoostGuestTalk13onKkStartShowEv, 0};
 extern "C" char sRoostMsgCf2[11] = "sp_npc_cf2";

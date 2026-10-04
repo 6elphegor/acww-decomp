@@ -2,6 +2,10 @@
 #include "text/Unk_02050288.h"
 #include "Unk_020d8c7c.h"
 #include "game/Unk_020a88fc_Pad.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
+#include "talk/MsgTag.h"
+#include "talk/MsgRunner.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -367,44 +371,6 @@ extern Unk_020e29e0_Rec sMsgUiProcProfile;
 
 class MsgString;
 
-// Script command token, 0x14 bytes
-class MsgTag {
-public:
-    MsgTag();
-    u8 getArgU8();
-    void getAltTextArgs(u32 *a, char **b, char **c);
-    void getStrings3(char **a, char **b, char **c);
-    void getStrings2(char **a, char **b);
-    s32 getSlotIndex();
-    BOOL isSlotTag();
-    u32 readArgBytes8Strings2(u8 *a1, u8 *a2, u8 *a3, u8 *s0, u8 *s1, u8 *s2, u8 *s3, u8 *s4, MsgString *s5,
-                      MsgString *s6);
-    u32 getTrailingStringsSize();
-    u32 readArgStrings5(u8 *a1, MsgString *a2, u8 *a3, MsgString *s0, u8 *s1, MsgString *s2, u8 *s3,
-                      MsgString *s4, u8 *s5, MsgString *s6);
-    u32 readArgStrings4(u8 *a1, MsgString *a2, u8 *a3, MsgString *s0, u8 *s1, MsgString *s2, u8 *s3,
-                      MsgString *s4);
-    u32 readArgStrings3(u8 *a1, MsgString *a2, u8 *a3, MsgString *s0, u8 *s1, MsgString *s2);
-    u32 readArgStrings2(u8 *a1, MsgString *a2, u8 *a3, MsgString *s0);
-    void getArgU16(u16 *out);
-    void getArgBytes(u8 *buf, s32 n);
-    void getArgs5(u8 *a, u8 *b, u8 *c, u8 *d, u8 *e);
-    void getArgs4(u8 *a, u8 *b, u8 *c, u8 *d);
-    void getArgs3(u8 *a, u8 *b, u8 *c);
-    void getArgs2(u8 *a, u8 *b);
-    void getArgs1(u8 *a);
-    void parse(u8 *p);
-
-    void eq(s32 x, s32 y, u8 *f) {
-        if (group == x && id == y) *f = 1;
-    }
-
-    /* 0x00 */ s32 group;
-    /* 0x04 */ s32 id;
-    /* 0x08 */ u32 argLen;
-    /* 0x0c */ char *args;
-    /* 0x10 */ u8 *raw;
-};
 class MsgParser;
 class MsgStringAttr;
 class MsgProcessor;
@@ -451,11 +417,6 @@ public:
     virtual u32 capacity();
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase() {}
-    virtual u32 capacity();
-};
 
 // Script interpreter root
 class MsgParser {
@@ -481,18 +442,6 @@ public:
     /* 0x08 */ u8 callStack[0x1c];
 };
 
-// 0x020e2a08: small state object (position + two bytes)
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-    void reset();
-    void copyFrom(MsgStringAttr *other);
-
-    /* 0x04 */ s32 form;
-    /* 0x08 */ u8 attrA;
-    /* 0x09 */ u8 attrB;
-};
 
 class MsgProcessor : public MsgParser {
 public:
@@ -700,17 +649,6 @@ struct BmgMsgAttr {
 
 class MsgProcessor;
 
-class MsgRunner {
-public:
-    MsgRunner(MsgWalker *obj);
-    void start(u8 *p);
-    BOOL advance();
-    void reset();
-
-    /* 0x00 */ MsgWalker *walker;
-    /* 0x04 */ u8 *text;
-    /* 0x08 */ u8 *stopPos;
-};
 
 class MsgUiProc : public GameProc {
 public:

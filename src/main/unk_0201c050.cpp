@@ -4,6 +4,7 @@
 #include "game/Unk_0202368c_Obj.h"
 #include "game/Unk_020d77a4_Vec3.h"
 #include "npc/Unk_0202d7f4.h"
+#include "talk/MsgStringBase.h"
 
 
 class VillagerTalk;
@@ -516,10 +517,6 @@ public:
     virtual ~EncodedStringBase() {}
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase() {}
-};
 
 class EncodedString : public EncodedStringBase {
 public:

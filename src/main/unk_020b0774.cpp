@@ -1,4 +1,6 @@
 #include "types.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
 extern u16 sConstellationLineCells[0x718];
 extern char *sStarTwinklePalettePaths[5];
 extern char sStarPalPathB4[0x14];
@@ -21,19 +23,7 @@ public:
     virtual ~EncodedStringBase() {}
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase() {}
-};
 
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-    s32 form;
-    u8 attrA;
-    u8 attrB;
-};
 
 class EncodedString : public EncodedStringBase {
 public:

@@ -1,5 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "game/Unk_ov068_Vec.h"
+#include "game/Unk_ov068_02268214_Flags.h"
 
 #pragma opt_loop_invariants off
 
@@ -110,17 +112,6 @@ struct Unk_ov068_0226a004_Save {
 };
 
 
-struct Unk_ov068_02268214_Flags {
-    u16 f0_1 : 2;
-    u16 f2_3 : 2;
-    u16 f4_5 : 2;
-    u16 f6 : 1;
-    u16 f7 : 1;
-    u16 f8 : 1;
-    u16 f9 : 1;
-    u16 f10 : 1;
-    u16 f11_15 : 5;
-};
 
 
 class Unk_ov068_02268214 {
@@ -205,9 +196,6 @@ public:
     void hovererFly();
 };
 
-struct Unk_ov068_02268608_Vec {
-    s32 x, y, z;
-};
 
 
 extern "C" {

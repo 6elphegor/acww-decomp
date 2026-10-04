@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
+#include "talk/MsgStringBase.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -172,12 +173,6 @@ public:
     /* 0x00 */ u8 unk_00[0x14];
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase() {}
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-};
 
 class LabelBalloonText : public MsgStringBase {
 public:

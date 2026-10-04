@@ -1,4 +1,5 @@
 #include "types.h"
+#include "player/PlayerFaceTexRef.h"
 
 extern "C" {
 extern void *gPlayerFaceTexHeap;
@@ -25,15 +26,6 @@ struct PlayerFaceTexPool {
     void freeBuffers();
 };
 
-struct PlayerFaceTexRef {
-    u8 v;
-    PlayerFaceTexRef();
-    ~PlayerFaceTexRef();
-    void *getBuffer();
-    s32 load(u32 idx);
-    void setSlot(u32 x);
-    void assign(u32 x);
-};
 
 char sPlayerFaceTexPathBuf[0x14];
 PlayerFaceTexPool sPlayerFaceTexPool;

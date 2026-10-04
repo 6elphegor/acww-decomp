@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "actor/Unk_02088d00.h"
+#include "game/Unk_ov083_Vec.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -32,9 +33,6 @@ struct Unk_0201bc1c;
 class SpNpcTortimerFlowerFest;
 class SpNpcTortimerFlowerFestTalk;
 
-struct Unk_ov083_Vec {
-    s32 x, y, z;
-};
 
 struct ChoiceList {
     s32 getResult();

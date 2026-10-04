@@ -1,17 +1,6 @@
 #include "types.h"
+#include "actor/CharaFaceAnimRef.h"
 
-struct CharaFaceAnimRef {
-    u8 v;
-    CharaFaceAnimRef();
-    ~CharaFaceAnimRef();
-    void load(s32 a, s32 b, s32 c, s32 d);
-    s32 loadAnim(s32 a, s32 b, s32 c);
-    void getMouthAnimBuffer();
-    void getEyeAnimBuffer();
-    void getAnimBuffer(u32 j);
-    void setSlot(u32 x);
-    void assign(u32 x);
-};
 
 struct CharaFaceAnimPool {
     u32 ptr[9];

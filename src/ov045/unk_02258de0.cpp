@@ -2,6 +2,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/MsgStringBase.h"
 #undef postCreate
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
@@ -181,12 +182,6 @@ public:
     u8 unk_04[10];
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-};
 
 class MsgString : public MsgStringBase {
 public:

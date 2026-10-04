@@ -2,6 +2,7 @@
 #include "game/Unk_0206d0a0_Pad.h"
 #include "game/Unk_0206d1d4_Src.h"
 #include "sys/Unk_0206d8b8_Pair.h"
+#include "talk/MsgStringAttr.h"
 
 // TU113, first part: 0x0206d3f4-0x0206d470 (the unit's remaining functions are the assembly routine
 // Fatal_SaveRegisters and its caller). Owns its string literal (.data 0x020ddf6c-0x020ddf88).
@@ -15,14 +16,6 @@ public:
     virtual ~EncodedStringBase() {}
 };
 
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-    s32 form;
-    u8 attrA;
-    u8 attrB;
-};
 
 class EncodedString : public EncodedStringBase {
 public:

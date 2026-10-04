@@ -1,9 +1,8 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/Unk_ov068_0226647c_Cam.h"
+#include "game/Unk_ov068_Vec.h"
 
-struct Unk_ov068_02266680_Vec {
-    s32 x, y, z;
-};
 
 class CameraEventModes;
 
@@ -25,26 +24,7 @@ struct Unk_ov068_022667c4_Ent {
     u16 lo, hi;
 };
 
-// Camera object (gCamera); fields used by Camera_UpdateSway and friends
-struct Unk_ov068_0226647c_Cam {
-    /* 0x000 */ u8 pad_000[0x174];
-    /* 0x174 */ s16 roll;
-    /* 0x176 */ u8 pad_176[0x21c - 0x176];
-    /* 0x21c */ s16 bobPhase;
-    /* 0x21e */ s16 rollPhase;
-    /* 0x220 */ u16 bobTimer;
-    /* 0x222 */ u16 rollTimer;
-    /* 0x224 */ u8 bobPattern;
-    /* 0x225 */ u8 rollPattern;
-};
 
-struct Unk_ov068_0226647c_Row {
-    u16 a;
-    u16 b;
-    s16 c;
-    s16 pad;
-    s32 d;
-};
 
 struct Unk_ov068_02266680_Color {
     u8 a, b, c, d;

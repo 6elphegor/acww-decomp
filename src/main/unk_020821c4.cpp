@@ -1,6 +1,9 @@
 #include "types.h"
 #include "npc/NpcResPool.h"
 #include "player/Unk_0205c3a4.h"
+#include "actor/CharaClothTexRef.h"
+#include "actor/CharaFaceAnimRef.h"
+#include "actor/CharaFaceAnimWorkRef.h"
 
 
 
@@ -24,25 +27,10 @@ struct HeldItemModel {
     HeldItemModel();
     ~HeldItemModel();
 };
-struct CharaFaceAnimWorkRef {
-    u8 pad;
-    CharaFaceAnimWorkRef();
-    ~CharaFaceAnimWorkRef();
-};
-struct CharaFaceAnimRef {
-    u8 pad;
-    CharaFaceAnimRef();
-    ~CharaFaceAnimRef();
-};
 struct NpcTexPatBufRef {
     u32 pad;
     NpcTexPatBufRef();
     ~NpcTexPatBufRef();
-};
-struct CharaClothTexRef {
-    u8 pad;
-    CharaClothTexRef();
-    ~CharaClothTexRef();
 };
 struct SpNpcAnimHeapRef {
     u32 slot;

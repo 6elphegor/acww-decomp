@@ -2,6 +2,8 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "npc/Unk_020781ec_Elem.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
 
 
 class VillagerId {
@@ -232,20 +234,7 @@ public:
     virtual ~EncodedStringBase() {}
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase() {}
-};
 
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-
-      s32 form;
-      u8 attrA;
-      u8 attrB;
-};
 
 class MsgString;
 

@@ -1,24 +1,10 @@
 #include "types.h"
 #include "game/Unk_0203ce24_Elem.h"
+#include "talk/MsgTag.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of other units
 
-class MsgTag {
-public:
-    MsgTag();
-    void getStrings3(char **a, char **b, char **c);
-    void getStrings2(char **a, char **b);
-    s32 getSlotIndex();
-    BOOL isSlotTag();
-    void parse(u8 *p);
-
-    /* 0x00 */ s32 group;
-    /* 0x04 */ s32 id;
-    /* 0x08 */ u32 argLen;
-    /* 0x0c */ char *args;
-    /* 0x10 */ u8 *raw;
-};
 
 class MsgRequest {
 public:

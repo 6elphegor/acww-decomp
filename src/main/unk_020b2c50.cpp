@@ -1,5 +1,8 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
+#include "talk/MsgTag.h"
 
 extern "C" {
 u32 Text_ToUpper(u32 key);
@@ -16,24 +19,7 @@ char *Msg_SkipLines(char *p, u32 n);
 void func_02133ef8(void *p, u32 n);
 }
 
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-    void reset();
-    void copyFrom(MsgStringAttr *other);
 
-    /* 0x04 */ s32 form;
-    /* 0x08 */ u8 attrA;
-    /* 0x09 */ u8 attrB;
-};
-
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-};
 
 class MsgString : public MsgStringBase {
 public:
@@ -86,21 +72,6 @@ public:
     /* 0x04 */ u8 unk_04[0xa0];
 };
 
-class MsgTag {
-public:
-    MsgTag();
-    s32 getSlotIndex();
-    BOOL isSlotTag();
-    void getAltTextArgs(u32 *a, char **b, char **c);
-    void getArgs3(u8 *a, u8 *b, u8 *c);
-    void parse(u8 *p);
-
-    /* 0x00 */ s32 group;
-    /* 0x04 */ s32 id;
-    /* 0x08 */ u32 argLen;
-    /* 0x0c */ char *args;
-    /* 0x10 */ char *raw;
-};
 
 class MsgParser {
 public:
@@ -478,7 +449,7 @@ void StringExpander::appendChar() {
 }
 
 void StringExpander::appendRawTag() {
-    char *p = tag.raw;
+    char *p = (char *)tag.raw;
     u32 n = tag.argLen + 5;
     if (0x400 - outLen > n) {
         for (u32 i = 0; i < n; i++) {

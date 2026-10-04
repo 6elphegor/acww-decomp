@@ -1,5 +1,7 @@
 #include "types.h"
 #include "game/Unk_020dd30c_Buf.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
 
 extern "C" {
 extern u8 gItemInfo[];
@@ -326,25 +328,12 @@ extern "C" void *func_0206243c(void *o);
 // ---------------------------------------------------------------------------------------------------------------------
 // Buffer classes
 
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-
-    /* 0x04 */ s32 form;
-    /* 0x08 */ u8 attrA;
-    /* 0x09 */ u8 attrB;
-};
 
 class EncodedStringBase {
 public:
     virtual ~EncodedStringBase() {}
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase() {}
-};
 
 class MsgString;
 

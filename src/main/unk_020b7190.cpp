@@ -1,4 +1,5 @@
 #include "types.h"
+#include "talk/MsgStringBase.h"
 
 struct Vec {
     s32 x, y, z;
@@ -8,12 +9,6 @@ struct Mat {
     s32 m[12];
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-};
 
 class MsgString : public MsgStringBase {
 public:

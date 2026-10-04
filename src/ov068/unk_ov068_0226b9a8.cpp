@@ -3,6 +3,8 @@
 #include "actor/Unk_0203e5d0_Node.h"
 #include "gfx/Unk_02055704.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
+#include "room/Unk_ov004_02224d60_B.h"
+#include "actor/Unk_ov068_SceneEntry.h"
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -191,16 +193,6 @@ public:
     u32 btas[13];
 };
 
-class Unk_ov004_02224d60_B {
-public:
-    inline Unk_ov004_02224d60_B() { RoomObjTex_Construct(this); }
-    inline void RoomObjTex_Reset() { ::RoomObjTex_Reset(this); }
-    inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
-    inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
-
-    u32 texture;
-    u8 syncState;
-};
 
 class RoomObjSe {
 public:
@@ -266,12 +258,6 @@ struct RoomObjTex {
 
 class TaxiInterior;
 
-struct Unk_ov068_Scene_Entry {
-    void *(*factory)();
-    u16 executePriority;
-    u16 drawPriority;
-    s32 unk_08[4];
-};
 
 extern "C" TaxiInterior *sTaxiInterior;
 extern "C" Unk_ov068_Scene_Entry sTaxiInteriorProfile;
@@ -368,7 +354,7 @@ public:
 };
 
 extern "C" TaxiInterior *TaxiInterior_Create();
-extern "C" Unk_ov068_Scene_Entry sTaxiInteriorProfile = {(void *(*)())TaxiInterior_Create, 0x13, 0x17, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" Unk_ov068_Scene_Entry sTaxiInteriorProfile = {(void *(*)())TaxiInterior_Create, 0x13, 0x17, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" {
 TaxiInterior *sTaxiInterior;
 }

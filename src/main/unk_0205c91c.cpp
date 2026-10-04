@@ -1,4 +1,5 @@
 #include "types.h"
+#include "actor/CharaClothTexRef.h"
 
 struct Unk_0205cc70_Pad {
     s32 v[2];
@@ -36,15 +37,6 @@ u32 NpcSpawn_GetSpNpcSlotCount();
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 }
 
-struct CharaClothTexRef {
-    u8 v;
-    CharaClothTexRef();
-    ~CharaClothTexRef();
-    void loadItem(u16 *s, s32 a, s32 b, s32 c);
-    void setSlot(u32 x);
-    void release();
-    void assign(u32 x);
-};
 
 struct CharaClothTexPool {
     u32 ptr[10];

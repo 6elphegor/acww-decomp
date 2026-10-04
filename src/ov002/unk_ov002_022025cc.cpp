@@ -4,6 +4,8 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -157,12 +159,6 @@ public:
     /* 0x00 */ u8 unk_00[0x14];
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase() {}
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-};
 
 class LabelBalloonText : public MsgStringBase {
 public:
@@ -174,17 +170,6 @@ public:
     /* 0x04 */ u8 unk_04[0x24];
 };
 
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-    void reset();
-    void copyFrom(MsgStringAttr *other);
-
-    /* 0x04 */ s32 form;
-    /* 0x08 */ u8 attrA;
-    /* 0x09 */ u8 attrB;
-};
 
 // buffer interface with write position at +4 and member at +8
 class MsgString : public MsgStringBase {

@@ -2,6 +2,8 @@
 #include "types.h"
 #include "npc/Unk_0201a13c.h"
 #include "actor/Unk_02088d00.h"
+#include "game/Unk_ov068_Vec.h"
+#include "actor/Unk_ov068_SceneEntry.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -50,9 +52,6 @@ class SpNpcNookIntroTalk;
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
 #define Unk_02097ff4_clearFlag _ZN12Unk_02097ff49clearFlagEj
 
-struct Unk_ov068_02266680_Vec {
-    s32 x, y, z;
-};
 
 struct Unk_ov068_02266bd0_Scene {
     u8 pad_00[4];
@@ -78,15 +77,6 @@ struct Unk_ov068_0226fd68_Vec {
     s32 x, y, z;
 };
 
-struct Unk_ov068_SceneEntry {
-    void *(*factory)();
-    u16 executePriority;
-    u16 drawPriority;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
-};
 
 // Main's tiny class with an external destructor (one u16 element of the local static table of vfunc_04).
 struct ItemId {

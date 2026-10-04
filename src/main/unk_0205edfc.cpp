@@ -1,5 +1,6 @@
 #include "types.h"
 #include "net/Unk_0205f6f8_Cfg.h"
+#include "player/PlayerBodyWorkRef.h"
 
 
 struct PlayerBodyWorkPool {
@@ -8,10 +9,6 @@ struct PlayerBodyWorkPool {
     ~PlayerBodyWorkPool();
 };
 
-struct PlayerBodyWorkRef {
-    u8 slot;
-    PlayerBodyWorkRef();
-};
 
 extern "C" {
 extern void *gPlayerBodyAnimHeap;

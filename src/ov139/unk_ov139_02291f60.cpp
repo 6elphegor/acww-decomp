@@ -1,4 +1,6 @@
 #include "types.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Declarations from other files
@@ -8,22 +10,7 @@ public:
     virtual ~EncodedStringBase() {}
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase() {}
-};
 
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-    void reset();
-    void copyFrom(MsgStringAttr *other);
-
-    /* 0x04 */ s32 form;
-    /* 0x08 */ u8 attrA;
-    /* 0x09 */ u8 attrB;
-};
 
 class MsgString;
 

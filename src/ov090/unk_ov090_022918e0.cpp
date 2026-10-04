@@ -5,6 +5,7 @@
 #include "text/Unk_02050288.h"
 #include "menu/Unk_ov002_022013a0.h"
 #include "sys/Unk_020b83b0.h"
+#include "talk/MsgStringBase.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -49,12 +50,6 @@ public:
     u8 unk_00[0x14];
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase() {}
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-};
 
 class LabelBalloonText : public MsgStringBase {
 public:

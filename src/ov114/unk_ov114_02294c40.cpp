@@ -1,5 +1,7 @@
 #include "types.h"
 #include "item/ItemIconCache.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
 
 struct Unk_ov114_02294c40_Bits {
     u32 idx : 10;
@@ -192,19 +194,7 @@ void CreatureBook_EndScrollTouch(S *s);
 void CreatureBook_UpdateScrollTouch(S *s, s32 a);
 }
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase() {}
-};
 
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-    s32 form;
-    u8 attrA;
-    u8 attrB;
-};
 
 class MsgString : public MsgStringBase {
 public:

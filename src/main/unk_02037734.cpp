@@ -1,23 +1,11 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
 
 // ---- Classes defined in other files (declarations only) ----
 
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-    /* 0x04 */ s32 form;
-    /* 0x08 */ u8 attrA;
-    /* 0x09 */ u8 attrB;
-};
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-};
 
 class MsgString : public MsgStringBase {
 public:

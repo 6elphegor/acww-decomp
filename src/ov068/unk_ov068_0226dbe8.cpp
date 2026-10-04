@@ -7,6 +7,9 @@
 #include "npc/Unk_02082088.h"
 #include "npc/Unk_0202d5e8.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/MsgStringBase.h"
+#include "gfx/Unk_ov068_022708fc_Color.h"
+#include "actor/Unk_ov068_SceneEntry.h"
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
@@ -346,22 +349,7 @@ struct Unk_ov068_0226eee0_Top : Unk_ov068_0226eee0_P0, Unk_ov068_0226eee0_Mid {}
 typedef void (HouseVisitVillager::*Unk_ov068_02270afc_Fn)();
 typedef BOOL (HouseVisitVillager::*Unk_ov068_02270afc_BFn)();
 
-struct Unk_ov068_022708fc_Color {
-    u8 a, b, c, d;
-    Unk_ov068_022708fc_Color(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
 
-struct Unk_ov068_Scene_Entry {
-    void *(*factory)();
-    u16 executePriority;
-    u16 drawPriority;
-    s32 unk_08[4];
-};
 
 class EncodedString {
 public:
@@ -370,12 +358,6 @@ public:
     virtual u8 *data();
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-};
 
 class MsgString : public MsgStringBase {
 public:
@@ -1105,7 +1087,7 @@ extern "C" void *data_ov068_022709ec[2] = {(void *)_ZN18HouseVisitVillager18ente
 extern "C" void *data_ov068_0227098c[2] = {(void *)_ZN18HouseVisitVillager14enterVisitStayEv, 0};
 extern "C" void *data_ov068_022709dc[2] = {(void *)_ZN18HouseVisitVillager16enterVisitWanderEv, 0};
 extern "C" void *data_ov068_022709b4[2] = {(void *)_ZN18HouseVisitVillager13execVisitStayEv, 0};
-extern "C" Unk_ov068_Scene_Entry sHouseVisitVillagerProfile = {(void *(*)())HouseVisitVillager_Create, 0x82, 0x86, {2, 0x5000, 0x5000, 0x3e800}};
+extern "C" Unk_ov068_Scene_Entry sHouseVisitVillagerProfile = {(void *(*)())HouseVisitVillager_Create, 0x82, 0x86, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov068_022709c4[2] = {(void *)_ZN18HouseVisitVillager18enterVisitTalkWaitEv, 0};
 extern "C" Unk_ov068_022708fc_Color data_ov068_02271298(0x14, 0x14, 0x1f, 0x1f);
 extern "C" Unk_ov068_022708fc_Color data_ov068_022712b0(0x1f, 0x1f, 0x14, 0x1f);

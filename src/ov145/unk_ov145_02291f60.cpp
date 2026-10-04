@@ -3,6 +3,8 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -55,19 +57,7 @@ struct Unk_ov145_SceneEntry {
 };
 
 // ---- main-module classes (copied from src/main) ----
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase() {}
-};
 
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-    /* 0x04 */ s32 form;
-    /* 0x08 */ u8 attrA;
-    /* 0x09 */ u8 attrB;
-};
 
 class MsgString9B {
 public:

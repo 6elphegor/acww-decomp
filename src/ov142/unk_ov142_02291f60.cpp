@@ -3,6 +3,8 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -13,19 +15,7 @@ class CatalogMenu;
 #define func_02133150 _s32_div_f
 
 // ---- main-module classes (copied from src/main) ----
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase() {}
-};
 
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-    /* 0x04 */ s32 form;
-    /* 0x08 */ u8 attrA;
-    /* 0x09 */ u8 attrB;
-};
 
 class MsgString : public MsgStringBase {
 public:

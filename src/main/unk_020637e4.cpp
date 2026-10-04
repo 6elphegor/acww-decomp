@@ -1,4 +1,5 @@
 #include "types.h"
+#include "talk/MsgStringBase.h"
 
 extern "C" {
 void _ZdlPv(void *);
@@ -19,12 +20,6 @@ public:
     /* 0x04 */ u8 unk_04[10];
 };
 
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-};
 
 class MsgString : public MsgStringBase {
 public:

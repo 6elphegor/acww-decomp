@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "actor/Unk_ov068_SceneEntry.h"
 
 struct Unk_ov068_0226acf8_Vec {
     s32 x, y, z;
@@ -480,15 +481,6 @@ s32 KappnTaxi_RequestPlayerGetIn();
 s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void *, void *);
 }
 
-struct Unk_ov068_SceneEntry {
-    void *(*factory)();
-    u16 executePriority;
-    u16 drawPriority;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
-};
 
 extern "C" void KappnTaxi_Create();
 

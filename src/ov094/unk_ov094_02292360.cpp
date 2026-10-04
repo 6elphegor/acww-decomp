@@ -1,46 +1,12 @@
 #include "types.h"
 #include "item/ItemIconCache.h"
+#include "menu/Unk_ov094_Views.h"
 
-struct Unk_ov094_02292360_Obj {
-    s32 shownBells;
-    s32 bellStep;
-    u16 dirtyFlags;
-    u16 bellsColorA;
-    u16 bellsColorB;
-    u8 bgId;
-    u8 paintedHighlight;
-    u8 highlight;
-    u8 blinkHighlight;
-    u8 blinkTimer;
-    u8 bellRollTimer;
-    u8 pictureIndex;
-    u8 unk_15;
-    u8 palette[0x1c];
-    u16 bellsColor;
-};
 
-struct Unk_ov094_022923a4_Pad {
-    s32 v[2];
-    Unk_ov094_022923a4_Pad() {}
-    ~Unk_ov094_022923a4_Pad() {}
-};
 
 #define IN(x, lo, hi) ((x) >= (lo) && (x) <= (hi))
-struct Unk_ov094_02292d6c_Ent8 {
-    u8 b[8];
-};
 
-struct Unk_ov094_02292d6c_Obj38 {
-    u8 b[0x38];
-};
 
-struct Unk_ov094_02292d6c_Rec {
-    u32 unk_00;
-    u32 id : 10;
-    u32 pad : 2;
-    u32 c : 4;
-    u32 hi : 16;
-};
 
 struct InventoryBg {
     /* 0x000 */ u32 unk_00;
@@ -101,30 +67,9 @@ struct InventoryItemGrid {
     virtual ~InventoryItemGrid();
 };
 
-struct Unk_ov094_02293c04_Rec {
-    u8 unk_00[0x26];
-    volatile u8 popTimer;
-    u8 heldScale;
-};
 
-struct Unk_ov094_02293ca0_Obj {
-    s32 unk_00;
-    u8 *volatile letterArray;
-    u32 occupiedBits[2];
-};
 
-struct Unk_ov094_022937e4_Ent {
-    s32 unk_00;
-    u32 attr2;
-};
-struct Unk_ov094_02294bb4_Bits {
-    u32 pad;
-    u16 v;
-};
 
-struct Unk_ov094_Bits8 {
-    u32 words[2];
-};
 
 // Vtable 0x02294bd4
 class LetterGrid {
@@ -440,14 +385,7 @@ void InventoryBg_SetupTextWindows(void *o);
 void InventoryBg_LoadGraphics(void *o);
 }
 
-struct Unk_ov094_0229313c_L {
-    s32 v[4];
-};
 
-struct Unk_ov094_0229334c_Blk {
-    u8 a[0x40];
-    u8 b[0x40];
-};
 
 static inline void Unk_ov094_SetPal(Unk_ov094_02294bb4_Bits *o, s32 pal) {
     o->v = (u16)((o->v & 0xffff0fff) | ((pal & 0xf) << 12));

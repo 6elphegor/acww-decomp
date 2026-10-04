@@ -2,6 +2,7 @@
 #include "game/Unk_0206d0a0_Pad.h"
 #include "game/Unk_0206d1d4_Src.h"
 #include "sys/Unk_0206d8b8_Pair.h"
+#include "talk/MsgStringAttr.h"
 
 extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
@@ -12,14 +13,6 @@ public:
     virtual ~EncodedStringBase() {}
 };
 
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
-    s32 form;
-    u8 attrA;
-    u8 attrB;
-};
 
 class EncodedString : public EncodedStringBase {
 public:

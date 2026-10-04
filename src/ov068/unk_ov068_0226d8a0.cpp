@@ -3,6 +3,9 @@
 #include "actor/Unk_0203e5d0_Node.h"
 #include "gfx/Unk_02055704.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
+#include "room/Unk_ov004_02224d60_B.h"
+#include "gfx/Unk_ov068_022708fc_Color.h"
+#include "actor/Unk_ov068_SceneEntry.h"
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
 // 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
@@ -175,16 +178,6 @@ public:
     u32 btas[13];
 };
 
-class Unk_ov004_02224d60_B {
-public:
-    inline Unk_ov004_02224d60_B() { RoomObjTex_Construct(this); }
-    inline void RoomObjTex_Reset() { ::RoomObjTex_Reset(this); }
-    inline void RoomObjTex_Load(const char *s) { ::RoomObjTex_Load(this, s); }
-    inline u32 RoomObjTex_Get() { return ::RoomObjTex_Get(this); }
-
-    u32 texture;
-    u8 syncState;
-};
 
 class RoomObjSe {
 public:
@@ -227,22 +220,7 @@ struct Unk_ov068_022708fc_Obj {
     u8 numMat;
 };
 
-struct Unk_ov068_Scene_Entry {
-    void *(*factory)();
-    u16 executePriority;
-    u16 drawPriority;
-    s32 unk_08[4];
-};
 
-struct Unk_ov068_022708fc_Color {
-    u8 a, b, c, d;
-    Unk_ov068_022708fc_Color(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
 
 struct RoomObjTex {
     inline RoomObjTex() { RoomObjTex_Construct(this); }
@@ -291,7 +269,7 @@ extern "C" Unk_ov068_022708fc_Color data_ov068_0227126c(0x14, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov068_022708fc_Color data_ov068_02271258(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov068_022708fc_Color data_ov068_0227125c(0x14, 0x18, 0x18, 0x1f);
 extern "C" RoostCafeSet *RoostCafeSet_Create();
-extern "C" Unk_ov068_Scene_Entry sRoostCafeSetProfile = {(void *(*)())RoostCafeSet_Create, 0x10, 0x12, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" Unk_ov068_Scene_Entry sRoostCafeSetProfile = {(void *(*)())RoostCafeSet_Create, 0x10, 0x12, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" {
 RoostCafeSet *sRoostCafeSet;
 }

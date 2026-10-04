@@ -8,6 +8,8 @@
 // with every object named the heapsort order of .data/.bss/.rodata is set by the order of the definitions in nsD (solved by inverting the heapsort),
 // the registration entry sFieldVillagerProfile is defined inside ns_02265d34 (next to the factory it points to), the vtable comes last.
 #include "types.h"
+#include "gfx/Unk_ov068_0226647c_Cam.h"
+#include "actor/Unk_ov068_SceneEntry.h"
 #define X_func_ov068_0225f5f4 _ZN17FieldVillagerLook17setLookModeLockedEP13FieldVillagerjiiPviih
 #define X_func_ov068_0225f630 _ZN17FieldVillagerLook9resetLookEP13FieldVillager
 #define X_func_ov068_0225f670 _ZN17FieldVillagerLook4initEP13FieldVillager
@@ -182,12 +184,6 @@ struct Unk_ov068_0225f23c_Vec {
     s32 x, y, z;
 };
 
-struct Unk_ov068_Scene_Entry {
-    void *(*factory)();
-    u16 executePriority;
-    u16 drawPriority;
-    s32 unk_08[4];
-};
 
 struct Unk_ov068_0225f858_Vec {
     s32 a, b, c;
@@ -1059,25 +1055,7 @@ struct Unk_ov068_02265d34_Vec2 {
     s32 a, b;
 };
 
-struct Unk_ov068_0226647c_Cam {
-    /* 0x000 */ u8 pad_000[0x174];
-    /* 0x174 */ s16 roll;
-    /* 0x176 */ u8 pad_176[0x21c - 0x176];
-    /* 0x21c */ s16 bobPhase;
-    /* 0x21e */ s16 rollPhase;
-    /* 0x220 */ u16 bobTimer;
-    /* 0x222 */ u16 rollTimer;
-    /* 0x224 */ u8 bobPattern;
-    /* 0x225 */ u8 rollPattern;
-};
 
-struct Unk_ov068_0226647c_Row {
-    u16 a;
-    u16 b;
-    s16 c;
-    s16 pad;
-    s32 d;
-};
 
 struct Unk_ov068_02265ee8_Obj {
     /* 0x00 */ u8 pad_00[0x5c];
@@ -3053,7 +3031,7 @@ void *data_ov068_0226f870[2] = {(void *)_ZN13FieldVillager11drawDefaultEv, 0};
 }
 namespace ns_02265d34 {
 extern "C" {
-Unk_ov068_Scene_Entry sFieldVillagerProfile = {(void *(*)())FieldVillager_Create, 0x84, 0x88, {2, 0x5000, 0x5000, 0x3e800}};
+Unk_ov068_Scene_Entry sFieldVillagerProfile = {(void *(*)())FieldVillager_Create, 0x84, 0x88, 2, 0x5000, 0x5000, 0x3e800};
 }
 }
 namespace nsD {

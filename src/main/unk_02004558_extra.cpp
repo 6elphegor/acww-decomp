@@ -51,6 +51,12 @@
 #include "player/Unk_02009a78_Locals.h"
 #include "player/Unk_02009d5c_Sub.h"
 #include "player/Unk_02009f68_Bytes.h"
+#include "player/PlayerFaceTexRef.h"
+#include "player/PlayerBodyWorkRef.h"
+#include "player/PlayerBodyModelRef.h"
+#include "actor/CharaFaceAnimWorkRef.h"
+#include "actor/CharaFaceAnimRef.h"
+#include "actor/CharaClothTexRef.h"
 #include "player/Unk_0205ef98.h"
 #include "player/Unk_0205dfa4_Base.h"
 #include "player/Unk_0205c3a4.h"
@@ -210,17 +216,11 @@ public:
 struct ActorPlacedCollider { ActorPlacedCollider(); ~ActorPlacedCollider(); };
 struct TouchPickCylinder { TouchPickCylinder(); ~TouchPickCylinder(); };
 struct TwoLayerAnimModel { TwoLayerAnimModel(); ~TwoLayerAnimModel(); };
-struct PlayerBodyWorkRef { PlayerBodyWorkRef(); ~PlayerBodyWorkRef(); };
-struct PlayerBodyModelRef { PlayerBodyModelRef(); ~PlayerBodyModelRef(); };
 struct CachedModel { CachedModel(); ~CachedModel(); };
 struct PlayerGlassesModelRef { PlayerGlassesModelRef(); ~PlayerGlassesModelRef(); };
 struct HeldItemModel { HeldItemModel(); ~HeldItemModel(); };
-struct PlayerFaceTexRef { PlayerFaceTexRef(); ~PlayerFaceTexRef(); };
-struct CharaFaceAnimRef { CharaFaceAnimRef(); ~CharaFaceAnimRef(); };
-struct CharaFaceAnimWorkRef { CharaFaceAnimWorkRef(); ~CharaFaceAnimWorkRef(); };
 struct MatTexPatAnim { MatTexPatAnim(); ~MatTexPatAnim(); };
 struct BlinkTimer { BlinkTimer(); ~BlinkTimer(); };
-struct CharaClothTexRef { CharaClothTexRef(); ~CharaClothTexRef(); };
 struct MatTexVramTask { MatTexVramTask(); };
 struct CollisionState { CollisionState(); ~CollisionState(); };
 struct SndSeEmitterKind99 { SndSeEmitterKind99(); ~SndSeEmitterKind99(); };

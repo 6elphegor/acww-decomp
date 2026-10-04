@@ -1,24 +1,12 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files
 
-// 0x020e2a08: small state object (position + two bytes), see unk_020a6914.cpp
-class MsgStringAttr {
-public:
-    MsgStringAttr();
-    virtual ~MsgStringAttr();
 
-    /* 0x04 */ s32 form;
-    /* 0x08 */ u8 attrA;
-    /* 0x09 */ u8 attrB;
-};
-
-class MsgStringBase {
-public:
-    virtual ~MsgStringBase() {}
-};
 
 // Buffer interface with write position at +4, see unk_020a6914.cpp
 class MsgString : public MsgStringBase {
