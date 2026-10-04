@@ -343,7 +343,7 @@ void NpcMoveCtrl_setSpeedPreset(void *, s32, s32, s32, s32);
 s32 TalkRequest_SetTargetDone(void *);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 s32 NpcActionCtrl_isActionDone(void *);
-void func_02003e70(void *, s32, s32, s32);
+void Snd_SeEmitterPlayOneShot(void *, s32, s32, s32);
 void Building_PlayDoorChime();
 void NpcTalkCtrl_requestTalk(void *, s32, s32);
 void RoomScoreEvaluator_Construct(void *);
@@ -929,7 +929,7 @@ BOOL HouseVisitVillager::enterVisitCall() {
         VillagerState_SetRole(Villager_GetState(getVillagerData()), 2);
     }
     callTimer = 30;
-    func_02003e70(&seEmitter, 0x4ca, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot(&seEmitter, 0x4ca, 0x7f, 0);
     RoomScoreEvaluator_Destruct(loc);
     return TRUE;
 }
@@ -955,7 +955,7 @@ BOOL HouseVisitVillager::enterVisitDoorOpen() {
 void HouseVisitVillager::execVisitDoorOpen() {
     using namespace sB;
     if (talk.unk_3c->state == 0) {
-        func_02003e70(&seEmitter, 0x4cb, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot(&seEmitter, 0x4cb, 0x7f, 0);
         Building_PlayDoorChime();
         setVisitState(3);
     }

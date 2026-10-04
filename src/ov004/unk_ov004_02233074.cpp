@@ -439,7 +439,7 @@ void TvSound_callRelease(void *);
 void TvSound_callReset(void *);
 u32 TvSound_GetMaxSize(void);
 void *TvSound_Create(void *, s32);
-s32 func_02003ccc();
+s32 Snd_PosListCanInit();
 void Snd_PosNodeSetPitch(void *, u32);
 void Snd_PosNodeRelease(void *);
 void Snd_SetBgmPan(void *, u32);
@@ -1081,7 +1081,7 @@ void *FtrSoundList::destroy() {
 // @0x22359b4 unk_02235984.cpp
 void FtrSoundList::tryInit() {
     if (isInitialized() == 0) {
-        if (func_02003ccc()) {
+        if (Snd_PosListCanInit()) {
             Snd_PosListInit(this);
             initialized = 1;
         }

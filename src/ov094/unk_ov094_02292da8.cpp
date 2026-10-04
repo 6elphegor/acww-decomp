@@ -66,7 +66,7 @@ void operator delete(void *p);
 extern "C" {
 void Snd_PlaySe(s32 a);
 void Snd_StopSe(s32 a, s32 b);
-void func_02004008(s32 a);
+void Snd_PlaySeOnHandle(s32 a);
 void Gfx2d_LoadCharRange(void *a, s32 b, s32 c, s32 d, s32 e);
 void Gfx2d_LoadScreen(void *a, u32 b, u32 c, s32 d);
 void Gfx2d_LoadCharFile(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);

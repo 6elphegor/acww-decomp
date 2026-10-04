@@ -2,23 +2,18 @@
 #include "snd/TvSound.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "npc/VillagerId.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
-// 12-byte record with a base class at 0x020639xx (functions VillagerId_Copy..VillagerId_CopyFrom are still free functions)
-
-struct Unk_020030d8 {
-    /* 0x00 */ u8 townId[10];
-    /* 0x0a */ u8 personality;
-    /* 0x0b */ u8 species;
-};
+// VillagerId helpers (VillagerId_Copy..VillagerId_CopyFrom are plain functions; its TownId part uses the TownId_* helpers)
 
 extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 size);
-void TownId_Clear(Unk_020030d8 *p);
-void TownId_Destruct(Unk_020030d8 *p);
-void TownId_Construct(Unk_020030d8 *p);
-void TownId_CopyTo(Unk_020030d8 *p, Unk_020030d8 *other);
-void TownId_CopyFrom(Unk_020030d8 *p, Unk_020030d8 *other);
+void TownId_Clear(VillagerId *p);
+void TownId_Destruct(VillagerId *p);
+void TownId_Construct(VillagerId *p);
+void TownId_CopyTo(VillagerId *p, VillagerId *other);
+void TownId_CopyFrom(VillagerId *p, VillagerId *other);
 void HudObjGfx_LoadSlideIcon(u32 a);
 void HudObjGfx_LoadLinkIcon(u32 v);
 BOOL MenuCtrl_IsTransitionActive();
@@ -72,7 +67,7 @@ public:
 struct HudLinkIcon {
     HudLinkIcon();
     ~HudLinkIcon();
-    void func_02003574();
+    void applyVariantRequest();
     void updateSlide();
     void trackMenuTransition();
     BOOL isWifiGfxCurrent();
@@ -91,12 +86,8 @@ struct HudLinkIcon {
     /* 0x15 */ u8 wifiGfx;
 };
 
-struct Unk_020d467c {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ u32 (*unk_08)[3];
-};
-extern Unk_020d467c data_020d467c;
+// HUD sprite animation sequences (entry 1: link-icon frames, one per link level)
+extern SpriteAnimSeq data_020d467c[];
 
 
 struct Unk_02003878_Vec {
@@ -182,12 +173,12 @@ void HudLinkIcon::update() {
     }
     trackMenuTransition();
     updateSlide();
-    func_02003574();
+    applyVariantRequest();
 }
 
 void HudLinkIcon::draw() {
     if (slideStep != 0) {
-        Oam_DrawCell(0, (void *)data_020d467c.unk_08[level][0], slideOffset + 0x80, 0x60, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(0, data_020d467c[1].frames[level].cell, slideOffset + 0x80, 0x60, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
 }
 
@@ -259,7 +250,7 @@ void HudLinkIcon::updateSlide() {
     }
 }
 
-void HudLinkIcon::func_02003574() {}
+void HudLinkIcon::applyVariantRequest() {}
 
 HudUnkSlideIcon::HudUnkSlideIcon() {
     slideOffset = 0;
@@ -439,41 +430,41 @@ void HudUnkSlideIcon::applyVariantRequest() {
     }
 }
 
-extern "C" void VillagerId_CopyFrom(Unk_020030d8 *p, Unk_020030d8 *other) {
+extern "C" void VillagerId_CopyFrom(VillagerId *p, VillagerId *other) {
     TownId_CopyFrom(p, other);
     p->species = other->species;
     p->personality = other->personality;
 }
 
-extern "C" void VillagerId_CopyTo(Unk_020030d8 *p, Unk_020030d8 *other) {
+extern "C" void VillagerId_CopyTo(VillagerId *p, VillagerId *other) {
     TownId_CopyTo(p, other);
     other->species = p->species;
     other->personality = p->personality;
 }
 
-extern "C" Unk_020030d8 *VillagerId_Construct(Unk_020030d8 *p) {
+extern "C" VillagerId *VillagerId_Construct(VillagerId *p) {
     TownId_Construct(p);
     return p;
 }
 
-extern "C" Unk_020030d8 *VillagerId_ConstructCopy(Unk_020030d8 *p, Unk_020030d8 *other) {
+extern "C" VillagerId *VillagerId_ConstructCopy(VillagerId *p, VillagerId *other) {
     TownId_Construct(p);
     VillagerId_CopyFrom(p, other);
     return p;
 }
 
-extern "C" Unk_020030d8 *VillagerId_Destruct(Unk_020030d8 *p) {
+extern "C" VillagerId *VillagerId_Destruct(VillagerId *p) {
     TownId_Destruct(p);
     return p;
 }
 
-extern "C" void VillagerId_Clear(Unk_020030d8 *p) {
+extern "C" void VillagerId_Clear(VillagerId *p) {
     TownId_Clear(p);
     p->species = 0xff;
     p->personality = 6;
 }
 
-extern "C" void VillagerId_Copy(Unk_020030d8 *dst, Unk_020030d8 *src) {
+extern "C" void VillagerId_Copy(VillagerId *dst, VillagerId *src) {
     MI_CpuCopy8(src, dst, 0xc);
 }
 

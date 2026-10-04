@@ -100,8 +100,8 @@ extern u8 data_021f47e0[];
 void _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, const char *f);
 void FishDisplayHeap_Create(void);
 void FishDisplayHeap_Destroy(void);
-void _ZN12Unk_02003c3013func_02003e50Ev(void *p);
-void _ZN12Unk_02003c3013func_02003eccEv(void *p);
+void _ZN12Unk_02003c3010callSeStopEv(void *p);
+void _ZN12Unk_02003c3010callSeInitEv(void *p);
 void _ZN9AnimModel15detachJointAnimEv(void *p);
 void _ZN11PooledModel6unloadEv(void *p);
 void _ZN11CachedModel7releaseEv(void *p);
@@ -118,8 +118,8 @@ void _ZN9AnimModelC1Ev(void *p);
 void _ZN13ModelSlotPoolC1Ev(void *p);
 void *__cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
 void _ZN9AnimModel8stepAnimEv(void *);
-void _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(void *, void *);
-void func_02003e70(void *, u32, u32, u32);
+void _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(void *, void *);
+void Snd_SeEmitterPlayOneShot(void *, u32, u32, u32);
 s32 MI_CpuCopy8(void *src, void *dst, s32 n);
 void NetBuf_UnpackPair20(void *buf, s32 *a, s32 *b);
 }
@@ -259,7 +259,7 @@ BOOL FishDisplay::beginLoad(s32 idx) {
         e->entryState = 2;
         _ZN13ModelSlotPool7acquireEPt(modelPool, e->modelSlot);
         _ZN11PooledModel5resetEv(e->pooledModel);
-        _ZN12Unk_02003c3013func_02003eccEv(e);
+        _ZN12Unk_02003c3010callSeInitEv(e);
         r = TRUE;
     }
     return r;
@@ -269,7 +269,7 @@ void FishDisplay::releaseEntry(s32 idx) {
     if (idx >= 0 && idx < sFishDisplayEntryCount && gFishDisplay != NULL) {
         Unk_0204fd24 *e = (Unk_0204fd24 *)&gFishDisplay->entries[idx];
         if (e->entryState != 0 && e->entryState != 1) {
-            _ZN12Unk_02003c3013func_02003e50Ev(e);
+            _ZN12Unk_02003c3010callSeStopEv(e);
         }
         e->fishId = -1;
         e->entryState = 0;
@@ -330,9 +330,9 @@ BOOL FishDisplay::onExecute() {
                     t.x = p->x;
                     t.y = p->y;
                     t.z = p->z;
-                    _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(e, &t);
+                    _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(e, &t);
                     if (_ZN13AnimFrameCtrl14hasPassedFrameEi((u8 *)e + 0x134, 1)) {
-                        func_02003e70(e, 0x84d, 0x7f, v4);
+                        Snd_SeEmitterPlayOneShot(e, 0x84d, 0x7f, v4);
                     }
                 }
             }

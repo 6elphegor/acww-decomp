@@ -5,7 +5,6 @@
 // per-frame mixer with volume/pan clamping), init, flag helpers, and the list wrappers (NNS_Fnd list functions).
 #include "types.h"
 #include "snd/PlayCtx.h"
-#include "snd/SndSeSystemCfg.h"
 #include "snd/SndSeBytes4.h"
 #include "snd/SndSeGroup.h"
 #include "sys/FndList.h"
@@ -39,7 +38,7 @@ void func_0210a1e8(void *p, s32 v);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 v);
 void func_0210a148(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackPitch(void *p, u32 a, s32 b);
-extern Cfg4 gSndSeSystem;
+extern Player gSndSeSystem;
 void *NNS_FndGetPrevListObject(void *list, void *obj);
 void *NNS_FndGetNextListObject(void *list, void *obj);
 void NNS_FndRemoveListObject(void *list, void *obj);
@@ -249,8 +248,8 @@ extern "C" void SndSeGroup_Init(Group *g) {
             e++;
         } while (i < g->numVoices);
     }
-    Cfg4 *c = &gSndSeSystem;
-    if (!(c->active >= 1 && c->active < 4)) Fatal_Trap();
+    Player *c = &gSndSeSystem;
+    if (!((s32)c->active >= 1 && (s32)c->active < 4)) Fatal_Trap();
 }
 
 extern "C" void SndSeGroup_Finish(Group *g) {

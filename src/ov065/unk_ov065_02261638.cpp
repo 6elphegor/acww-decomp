@@ -116,7 +116,7 @@ s32 Ssl_ReadRecord(Unk_ov065_02264d80_Obj *);
 u64 OS_GetTick(void);
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
-void func_02000b44(u32);
+void OSi_ReferSymbol(u32);
 void OS_SetThreadPriority(void *, u32);
 void OS_JoinThread(void *);
 void OS_DestroyThread(void *);
@@ -225,7 +225,7 @@ s32 IpStack_ReturnTrue(void) {
 }
 
 void IpStack_Init(Unk_ov065_02264a48_Cfg *c) {
-    func_02000b44(0x2000bfc);
+    OSi_ReferSymbol(0x2000bfc);
     u64 seed = *(u64 *)&c->randSeed;
     if (seed != 0) {
         sIpRandState.value = seed;

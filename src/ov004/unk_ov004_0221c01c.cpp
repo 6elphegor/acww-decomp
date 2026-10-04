@@ -175,7 +175,7 @@ void PlayerSpNpcRecord_setCafeVisits(void *p, u32 v);
 void PlayerSpNpcRecord_setSableTalkCount(void *self, u32 v);
 u32 PlayerSpNpcRecord_getSableTalkCount(void *self);
 s32 PlayerId_getGender(void *p);
-void func_02003ddc(void *p, u32 a, u32 b, u32 c);
+void Snd_SeEmitterPlayOneShotAlt(void *p, u32 a, u32 b, u32 c);
 void Camera_UnmuteSe();
 void Bgm_ReleasePriority(u32 a);
 void Bgm_Release(u32 a);
@@ -708,7 +708,7 @@ void SpNpcBrewsterTalk::runCoffeeScript() {
     case 2:
         owner->scriptFrame++;
         if (owner->scriptFrame == 5) {
-            func_02003ddc(&owner->seEmitter, 0x4db, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4db, 0x7f, 0);
         }
         if (NpcActionCtrl_isActionDone(r5)) {
             NpcMoveCtrl_setTurnMode(&owner->moveCtrl, 2);
@@ -741,13 +741,13 @@ void SpNpcBrewsterTalk::runCoffeeScript() {
     case 6:
         owner->scriptFrame++;
         if (owner->scriptFrame == 0xd) {
-            func_02003ddc(&owner->seEmitter, 0x4dc, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4dc, 0x7f, 0);
         }
         if (owner->scriptFrame == 0x1e) {
-            func_02003ddc(&owner->seEmitter, 0x4dd, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4dd, 0x7f, 0);
         }
         if (owner->scriptFrame == 0x46) {
-            func_02003ddc(&owner->seEmitter, 0x4de, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4de, 0x7f, 0);
         }
         if (NpcActionCtrl_isActionDone(r5)) {
             CafeCoffeeSet_SetState02();
@@ -779,10 +779,10 @@ void SpNpcBrewsterTalk::runCoffeeScript() {
     case 10:
         owner->scriptFrame++;
         if (owner->scriptFrame == 0xf) {
-            func_02003ddc(&owner->seEmitter, 0x4df, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4df, 0x7f, 0);
         }
         if (owner->scriptFrame == 0x1e) {
-            func_02003ddc(&owner->seEmitter, 0x4e0, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e0, 0x7f, 0);
         }
         if (NpcActionCtrl_isActionDone(r5)) {
             buf = r7;
@@ -804,20 +804,20 @@ void SpNpcBrewsterTalk::runDrinkScript() {
         }
         owner->scriptFrame++;
         if (owner->scriptFrame == 7) {
-            func_02003ddc(&owner->seEmitter, 0x4e1, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e1, 0x7f, 0);
         }
         if (owner->scriptFrame == 0x14) {
-            func_02003ddc(&owner->seEmitter, 0x4e2, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e2, 0x7f, 0);
             Bgm_RequestSilence(0x10, 0x14, 0);
         }
         if (owner->scriptFrame == 0x28) {
-            func_02003ddc(&owner->seEmitter, 0x4e3, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e3, 0x7f, 0);
         }
         if (owner->scriptFrame == 0x46) {
             if (PlayerId_getGender(PlayerData_getPlayerId(PlayerData_GetCurrent())) == 0) {
-                func_02003ddc(&owner->seEmitter, 0x4e4, 0x7f, 0);
+                Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e4, 0x7f, 0);
             } else {
-                func_02003ddc(&owner->seEmitter, 0x4e5, 0x7f, 0);
+                Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e5, 0x7f, 0);
             }
         }
         if (CafeCoffeeSet_IsAnim0BAtFrame9()) {
@@ -869,10 +869,10 @@ void SpNpcBrewsterTalk::runScript03() {
     case 1:
         owner->scriptFrame++;
         if (owner->scriptFrame == 0xf) {
-            func_02003ddc(&owner->seEmitter, 0x4e6, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e6, 0x7f, 0);
         }
         if (owner->scriptFrame == 0x14) {
-            func_02003ddc(&owner->seEmitter, 0x4e7, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e7, 0x7f, 0);
         }
         if (CafeCoffeeSet_IsAnim0CDone()) {
             Camera_UnmuteSe();
@@ -886,10 +886,10 @@ void SpNpcBrewsterTalk::runScript03() {
     case 2:
         owner->scriptFrame++;
         if (owner->scriptFrame == 0x12) {
-            func_02003ddc(&owner->seEmitter, 0x4e8, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e8, 0x7f, 0);
         }
         if (owner->scriptFrame == 0x2d) {
-            func_02003ddc(&owner->seEmitter, 0x4e9, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e9, 0x7f, 0);
         }
         if (NpcActionCtrl_isActionDone(r5)) {
             CafeCoffeeSet_SetState01();
@@ -911,7 +911,7 @@ void SpNpcBrewsterTalk::runScript03() {
     case 4:
         owner->scriptFrame++;
         if (owner->scriptFrame == 0xa) {
-            func_02003ddc(&owner->seEmitter, 0x4ea, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4ea, 0x7f, 0);
         }
         if (NpcActionCtrl_isActionDone(r5)) {
             CafeCoffeeSet_SetState00();

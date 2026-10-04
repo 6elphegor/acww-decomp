@@ -7,7 +7,7 @@
 
 struct Cell {
     /* 0x00 */ u8 pad_00[0x24];
-    /* 0x24 */ u16 *unk_24;
+    /* 0x24 */ u16 *buriedFlags;
 };
 
 #endif

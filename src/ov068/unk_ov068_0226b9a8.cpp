@@ -129,7 +129,7 @@ extern "C" {
 extern void *gBgHeap;
 BOOL AnimFrameCtrl_hasPassedFrame(void *p, u32 i);
 void Snd_PlaySe(u32 a);
-void func_02004008(u32 a);
+void Snd_PlaySeOnHandle(u32 a);
 void Snd_StopSe(u32 a, u32 b);
 void *RoomObjRes_GetBma(void *p, u32 i);
 void *RoomObjRes_GetBta(void *p, u32 i);
@@ -236,8 +236,8 @@ BOOL TaxiInterior::onCreate() {
     rainBMatIdx = G3dResAccess_findMatIdx((*(u32 *)((u8 *)&model + 0x5c)), "m_rainB");
     splashMatIdx = G3dResAccess_findMatIdx((*(u32 *)((u8 *)&model + 0x5c)), "m_splash");
     setRainState(0);
-    func_02004008(0x884);
-    func_02004008(0x885);
+    Snd_PlaySeOnHandle(0x884);
+    Snd_PlaySeOnHandle(0x885);
     return TRUE;
 }
 

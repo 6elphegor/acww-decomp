@@ -207,7 +207,7 @@ s32 NpcActor_getAngleTo(void *, s32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 u32 *TalkWindow_Get(s32);
 u32 Math_CountDownU8(void *);
-void func_02003e70(void *, u32, u32, u32);
+void Snd_SeEmitterPlayOneShot(void *, u32, u32, u32);
 s32 Building_PlayDoorChime();
 void HouseVisitor_ClearPresent();
 void VillagerStates_SetFleaMarketBuyer(s32);
@@ -562,7 +562,7 @@ void FleaMarketBuyerVillager::changeAct(s32 idx) {
 }
 
 void FleaMarketBuyerVillager::func_ov004_02219ef4() {
-    func_02003e70(&seEmitter, 0x4cb, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot(&seEmitter, 0x4cb, 0x7f, 0);
     Building_PlayDoorChime();
 }
 
@@ -589,7 +589,7 @@ BOOL FleaMarketBuyerVillager::mainAct00() {
             v.y = pv->y;
             v.z = pv->z;
             if (Vec_DistXZ(&v, &position) > 0x8000) {
-                func_02003e70(&seEmitter, 0x4ca, 0x7f, 0);
+                Snd_SeEmitterPlayOneShot(&seEmitter, 0x4ca, 0x7f, 0);
                 callTimer = 0x1e;
             }
         }

@@ -42,7 +42,7 @@ extern void CARDi_ReadRom(u32 dma, u32 src, void *dst, u32 len, void (*cb)(FSArc
 extern void DC_FlushRange(u32 addr, u32 len);
 extern void DC_InvalidateRange(u32 addr, u32 len);
 extern void IC_InvalidateRange(u32 addr, u32 len);
-extern void func_02000934(u32 addr);
+extern void MIi_UncompressBackward(u32 addr);
 extern void Fatal_Trap(void);
 extern void func_0211aeb4(void *digest, const void *data, u32 len, const void *key, u32 keylen);
 extern void DGT_Hash1Reset(MD5Context *ctx);

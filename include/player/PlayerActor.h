@@ -100,7 +100,7 @@ public:
     void netInit();
     void setupInit(Unk_0200d53c_Item *item);
     BOOL requestInit(u32 a, u32 b, u32 c);
-    u8 func_0200d5b8();
+    u8 isInteractPressed();
     s32 getInputDirRelative();
     s32 getInputSideRelative();
     s16 getInputAngle();

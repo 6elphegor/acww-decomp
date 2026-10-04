@@ -89,7 +89,7 @@ void Math_StepAngle(void *a, s32 b, s32 c);
 void ProcBase_RequestDelete(void *self);
 void FieldFish_ScareAround(Unk_ov076_Vec *v, s32 a);
 void Effect_Create(s32 a, Unk_ov076_Vec *v, s32 b, s32 c);
-void func_02003ddc(void *self, s32 a, s32 b, s32 c);
+void Snd_SeEmitterPlayOneShotAlt(void *self, s32 a, s32 b, s32 c);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern u32 gVec3Zero;
@@ -318,7 +318,7 @@ BOOL SpNpcPascal::mainAct03() {
 
 BOOL SpNpcPascal::setupAct04() {
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xf9, 1, 0, 0);
-    func_02003ddc(&seEmitter, 0x814, 0x7f, 0);
+    Snd_SeEmitterPlayOneShotAlt(&seEmitter, 0x814, 0x7f, 0);
     rotY = rotY + 0x8000;
     moveAngleY = rotY;
     _ZN11NpcMoveCtrl14setTargetAngleEs(&moveCtrl, rotY);
@@ -352,7 +352,7 @@ BOOL SpNpcPascal::mainAct04() {
             v.z = v.z + 0x3800;
             FieldFish_ScareAround(&v, 0x5000);
             Effect_Create(0x16, &v, 0, 0);
-            func_02003ddc(&seEmitter, 0x7ed, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(&seEmitter, 0x7ed, 0x7f, 0);
         }
     }
     moveAngleY = rotY;

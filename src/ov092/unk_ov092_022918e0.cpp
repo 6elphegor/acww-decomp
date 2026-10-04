@@ -11,7 +11,7 @@ u32 MenuCtrl_GetMode();
 void MenuScreen_BeginOpen();
 void MenuScreen_SetBackgroundKind(s32 a);
 void Snd_PlaySe(s32 a);
-void func_02003f5c(s32 a);
+void Snd_SetSceneBankVariant(s32 a);
 void Gfx2d_SetSubBgModeState(s32 a);
 void func_0206e60c();
 void MenuCtrl_RequestOpenNested(s32 a);
@@ -486,7 +486,7 @@ void MenuLauncher::initLauncher() {
         Snd_PlaySe(1);
         break;
     case 3:
-        func_02003f5c(1);
+        Snd_SetSceneBankVariant(1);
         break;
     }
     switch (unk_91) {

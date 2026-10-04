@@ -37,7 +37,7 @@ extern u64 OS_GetTick(void);
 extern u64 func_02133100(u64 a, u64 b);
 extern void MATHi_CRC8InitTable(void *table, u32 poly);
 extern s32 MATH_CalcCRC8(void *table, void *data, u32 len);
-extern void func_02000b44(void *p);
+extern void OSi_ReferSymbol(void *p);
 extern s32 OS_SNPrintf(char *buf, u32 size, const char *fmt, ...);
 
 extern const u32 data_0213bba8[];
@@ -201,7 +201,7 @@ static inline u32 orr(u32 a, u32 b) { return a | b; }
 u32 func_021001e0(u8 *p) {
     BOOL r4 = 0;
     s32 r6;
-    func_02000b44((void *)0x02000b84);
+    OSi_ReferSymbol((void *)0x02000b84);
     r6 = func_020ff2e4(p);
     if (func_020ff554()) {
         func_020ff734((u32)p);

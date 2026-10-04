@@ -650,9 +650,9 @@ extern "C" void Snd_FadeOutScene() { gSndScene->vfunc_14(); }
 extern "C" void Snd_PlaySe(u32 a) { SndMgr_PlaySe(gSndMgr, a); }
 
 
-extern "C" void func_02004018(u32 a, u32 b) { SndMgr_PlaySePanned(gSndMgr, a, b); }
+extern "C" void Snd_PlaySePanned(u32 a, u32 b) { SndMgr_PlaySePanned(gSndMgr, a, b); }
 
-extern "C" void func_02004008(u32 a) { SndMgr_PlaySeOnHandle(gSndMgr, a); }
+extern "C" void Snd_PlaySeOnHandle(u32 a) { SndMgr_PlaySeOnHandle(gSndMgr, a); }
 
 extern "C" void Snd_StopSe(u32 a, u32 b) { SndMgr_StopSe(gSndMgr, a, b); }
 
@@ -668,27 +668,27 @@ extern "C" void Snd_SetVoiceType(u32 a) { SndMgr_SetVoiceType(gSndMgr, a); }
 
 extern "C" void func_02003f78() {}
 
-extern "C" void func_02003f5c(u32 a) { gSndScene->vfunc_24(a); }
+extern "C" void Snd_SetSceneBankVariant(u32 a) { gSndScene->vfunc_24(a); }
 
-extern "C" void func_02003f4c(u32 a) { SndMgr_SetSeHandleVolumes(gSndMgr, a); }
+extern "C" void Snd_SetSeHandleVolumes(u32 a) { SndMgr_SetSeHandleVolumes(gSndMgr, a); }
 
 extern "C" void Snd_SetKeySeMode(u32 a) { SndMgr_SetKeySeMode(gSndMgr, a); }
 
 extern "C" void Snd_PlayKeySe(u32 a) { SndMgr_PlayKeySe(gSndMgr, a); }
 
-extern "C" void func_02003f1c(u32 a) { SndMgr_PlayAuxSe(gSndMgr, a); }
+extern "C" void Snd_PlayAuxSe(u32 a) { SndMgr_PlayAuxSe(gSndMgr, a); }
 
-extern "C" void func_02003f0c(u32 a) { SndMgr_PlayAuxSeHeld(gSndMgr, a); }
+extern "C" void Snd_PlayAuxSeHeld(u32 a) { SndMgr_PlayAuxSeHeld(gSndMgr, a); }
 
-extern "C" void func_02003efc() { SndMgr_StopAuxSe(gSndMgr); }
+extern "C" void Snd_StopAuxSe() { SndMgr_StopAuxSe(gSndMgr); }
 
-extern "C" void func_02003eec() { SndMgr_StartBellRollSe(gSndMgr); }
+extern "C" void Snd_StartBellRollSe() { SndMgr_StartBellRollSe(gSndMgr); }
 
-extern "C" void func_02003edc() { SndMgr_StopBellRollSe(gSndMgr); }
+extern "C" void Snd_StopBellRollSe() { SndMgr_StopBellRollSe(gSndMgr); }
 
-void Unk_02003c30::func_02003ecc() { vfunc_08(); }
+void Unk_02003c30::callSeInit() { vfunc_08(); }
 
-void Unk_02003c40::func_02003e80(Unk_02003a6c_Vec *v) {
+void Unk_02003c40::callSeUpdateRelative(Unk_02003a6c_Vec *v) {
     Unk_02003a6c_Vec t;
     if (v != NULL) {
         if (gCamera != 0) {
@@ -702,15 +702,15 @@ void Unk_02003c40::func_02003e80(Unk_02003a6c_Vec *v) {
     }
 }
 
-extern "C" void func_02003e70(u32 a, u32 b, u32 c, u32 d) { func_020f41fc(a, b, c, d); }
+extern "C" void Snd_SeEmitterPlayOneShot(u32 a, u32 b, u32 c, u32 d) { func_020f41fc(a, b, c, d); }
 
 extern "C" void Snd_SeEmitterPlayHeld(u32 a, u32 b, u32 c, u32 d) { func_020f4158(a, b, c, d); }
 
-void Unk_02003c30::func_02003e50() { vfunc_10(); }
+void Unk_02003c30::callSeStop() { vfunc_10(); }
 
-void Unk_02003c30::func_02003e40() { vfunc_08(); }
+void Unk_02003c30::callSeInitAlt() { vfunc_08(); }
 
-void Unk_02003c40::func_02003df4(Unk_02003a6c_Vec *v) {
+void Unk_02003c40::callSeUpdateRelativeAlt(Unk_02003a6c_Vec *v) {
     Unk_02003a6c_Vec t;
     if (v != NULL) {
         if (gCamera != 0) {
@@ -726,9 +726,9 @@ void Unk_02003c40::func_02003df4(Unk_02003a6c_Vec *v) {
 
 extern "C" void Snd_SeEmitterPlayAlternate() { func_020f3f10(); }
 
-extern "C" void func_02003ddc(u32 a, u32 b, u32 c, u32 d) { func_020f41fc(a, b, c, d); }
+extern "C" void Snd_SeEmitterPlayOneShotAlt(u32 a, u32 b, u32 c, u32 d) { func_020f41fc(a, b, c, d); }
 
-void Unk_02003c30::func_02003dcc() { vfunc_10(); }
+void Unk_02003c30::callSeStopAlt() { vfunc_10(); }
 
 extern "C" void Snd_PosListInit() { func_020f39f8(); }
 
@@ -770,7 +770,7 @@ extern "C" void Snd_PosNodeRelease() { func_020f3a34(); }
 
 extern "C" void Snd_PosNodeSetPitch() { func_020f3af0(); }
 
-extern "C" s32 func_02003ccc() { return 1; }
+extern "C" s32 Snd_PosListCanInit() { return 1; }
 
 void Unk_02003c30::callReset() { vfunc_00(); }
 

@@ -12,7 +12,7 @@ s32 Gfx2d_SetMainWinOutPlanes(u32 a);
 s32 Gfx2d_EnableMainWindows(u32 a);
 s32 Gfx2d_DisableMainWindows(u32 a);
 s32 Snd_StopSe(u32 a, u32 b);
-void func_02004008(u32 a);
+void Snd_PlaySeOnHandle(u32 a);
 s32 TalkRequestFlags_IsSceneHold();
 extern u32 data_020d5b0c[][2];
 extern u8 data_020d5d34[];
@@ -244,7 +244,7 @@ void TalkBusyIcon::updateShown() {
 void TalkBusyIcon::startSe() {
     u16 v = sBusyIconSe[seIndex];
     sePlaying = 1;
-    func_02004008(v);
+    Snd_PlaySeOnHandle(v);
 }
 
 void TalkBusyIcon::stopSe() {

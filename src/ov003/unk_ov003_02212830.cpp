@@ -236,7 +236,7 @@ void Quat_Mul(void *a, void *b, void *out);
 void Quat_ToMtx43(void *a, void *out);
 void Quat_Normalize(void *a);
 void Collision_Move(void *self, void *a, void *b, s32 c, s32 d, void *o, s32 k);
-void func_02003e70(void *p, u32 a, u32 b, u32 c);
+void Snd_SeEmitterPlayOneShot(void *p, u32 a, u32 b, u32 c);
 s32 Snd_SeEmitterPlayHeld(void *p, u32 a, u32 b, u32 c);
 void CharaShadow_Draw(void *p, s32 a, s32 b, s32 c);
 void *PlayerActor_GetActor(u32 a);
@@ -274,9 +274,9 @@ void _ZN14SnowmanRecords12markUnplacedEj(void *self, u32 a);
 s32 _ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_(void *self, u32 m, s32 *a, s32 *b, s32 *c, s32 z1, s32 z2, s32 z3);
 void _ZN5Model10drawScaledEPi(void *self, void *v);
 void _ZN11CachedModel10loadCachedEPvS0_(void *self, u32 a, const char *b);
-void _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(void *self, void *v);
-void _ZN12Unk_02003c3013func_02003e50Ev(void *self);
-void _ZN12Unk_02003c3013func_02003eccEv(void *self);
+void _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(void *self, void *v);
+void _ZN12Unk_02003c3010callSeStopEv(void *self);
+void _ZN12Unk_02003c3010callSeInitEv(void *self);
 
 BOOL Snowball_ChangeState(Obj *o, s32 st);
 BOOL Snowball_IsLooseBall(Obj *o);
@@ -410,7 +410,7 @@ BOOL Snowball::onCreate() {
     lastFramePos.z = pv->z;
     prevContactCount = collisionState.contacts.numContacts;
     Snowball_UpdateMatrix(this, 0, 0);
-    _ZN12Unk_02003c3013func_02003eccEv(seEmitter);
+    _ZN12Unk_02003c3010callSeInitEv(seEmitter);
     clearTalkStartMode();
     Snowball_Register(this);
 }
@@ -439,7 +439,7 @@ BOOL Snowball::onExecute() {
     lastFramePos.y = pv->y;
     lastFramePos.z = pv->z;
     V3P sp = *(V3P *)&position;
-    _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(seEmitter, &sp);
+    _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(seEmitter, &sp);
     return TRUE;
 }
 
@@ -494,7 +494,7 @@ BOOL Snowball::onDelete() {
         r = LooseSnowballs_Get();
         r[i & 1].w = sv;
     }
-    _ZN12Unk_02003c3013func_02003e50Ev(seEmitter);
+    _ZN12Unk_02003c3010callSeStopEv(seEmitter);
     Snowball_Unregister(this);
 }
 
@@ -543,7 +543,7 @@ extern "C" void Snowball_UpdateCarry(Obj *o)
         }
         if (o->collider.isHitByGroup(4) != 0 && o->radius < 0xa00) {
             if (o->hitSeLatch == 0) {
-                func_02003e70(o->seEmitter, 0x81c, 0x7f, 0);
+                Snd_SeEmitterPlayOneShot(o->seEmitter, 0x81c, 0x7f, 0);
             }
             o->hitSeLatch = 1;
         } else {
@@ -567,7 +567,7 @@ extern "C" s32 Snowball_UpdateRolling(Obj *o)
     Collision_Move(&o->collisionState, &o->position, &o->prevPosition, 0, o->collisionRadius, o, kind);
     u32 cur = o->collisionState.contacts.numContacts;
     if (cur > o->prevContactCount && o->talkAct == 0 && o->snowballState == 0) {
-        func_02003e70(o->seEmitter, 0x81d, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot(o->seEmitter, 0x81d, 0x7f, 0);
     }
     o->prevContactCount = cur;
     u32 fa = 0x20;

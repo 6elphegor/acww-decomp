@@ -898,9 +898,9 @@ extern "C++" {}
 void _ZN10VillagerId7getNameEj(void *, u32);
 u32 _ZN10VillagerId9getGenderEv(void *);
 s32 _ZN10VillagerId7isValidEv(void *);
-s32 _ZN12Unk_02003c3013func_02003e50Ev(void *);
-s32 _ZN12Unk_02003c3013func_02003eccEv(void *);
-s32 _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(void *, void *);
+s32 _ZN12Unk_02003c3010callSeStopEv(void *);
+s32 _ZN12Unk_02003c3010callSeInitEv(void *);
+s32 _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(void *, void *);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *);
 s32 _ZN12Unk_0201425820requestSwitchSpeakerEh(void *, s32);
 void _ZN12Unk_0201442023requestPlayRandomMelodyEv(void *);
@@ -1071,7 +1071,7 @@ ReddPassword * _ZN8ReddShop11getPasswordEv(void *);
 u16 VillagerId_GetSpecies(void *);
 void Villager_MakePersonalityFileName(void *, s32, u32, u32);
 u8 VillagerId_GetPersonality(void *);
-s32 func_02003e70(void *, u32, u32, u32);
+s32 Snd_SeEmitterPlayOneShot(void *, u32, u32, u32);
 void Snd_PlaySe();
 void NpcActor_OnJointCalc();
 void NpcActor_JointCalcLayer3Cb(Unk_0201c050_Obj *);
@@ -13236,14 +13236,14 @@ void VillagerMood::reset() {
 
 void VillagerMood::start() {
     reset();
-    _ZN12Unk_02003c3013func_02003eccEv(this);
+    _ZN12Unk_02003c3010callSeInitEv(this);
     effectsOn = 1;
     active = 1;
 }
 
 void VillagerMood::stop() {
     if (isActive()) {
-        _ZN12Unk_02003c3013func_02003e50Ev(this);
+        _ZN12Unk_02003c3010callSeStopEv(this);
     }
     active = 0;
 }
@@ -13303,7 +13303,7 @@ void VillagerMood::playMoodEffect(VillagerTalk *s, u32 a, u32 b) {
         v[1] = *(u32 *)((void *)((u8 *)(s) + (0x47c)));
         v[2] = *(u32 *)((void *)((u8 *)(s) + (0x480)));
         h = *(s16 *)((void *)((u8 *)(s) + (0x8e)));
-        func_02003e70(this, b, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot(this, b, 0x7f, 0);
         Effect_Create(a, v, &h, 0);
     }
 }
@@ -13312,7 +13312,7 @@ void VillagerMood::updateSoundPos(VillagerTalk *s) {
     Unk_0201c574_Vec v;
     Unk_0201c574_Vec *p = (Unk_0201c574_Vec *)((void *)((u8 *)(s) + (0x5c)));
     v = *p;
-    _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(this, &v);
+    _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(this, &v);
 }
 
 void VillagerMood::enableEffects() { effectsOn = 1; }

@@ -233,7 +233,7 @@ void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 s32 PlayerActor_IsScriptedWalking(s32 a);
 void PlayerActor_LocalRequestHaircutStart(u8 *a, u8 *b);
 void BarberMachine_Start();
-void func_02003ddc(void *a, u32 b, u32 c, u32 d);
+void Snd_SeEmitterPlayOneShotAlt(void *a, u32 b, u32 c, u32 d);
 BOOL _ZN11NpcAnimCtrl13isPlayingAnimEiPv(void *self, s32 a, void *b);
 }
 
@@ -635,7 +635,7 @@ BOOL SpNpcHarriet::mainAct08() {
         out[0] = talk.getNewHairStyle();
         PlayerActor_LocalRequestHaircutStart(&out[0], &out[1]);
         BarberMachine_Start();
-        func_02003ddc(&seEmitter, 0x41, 0x7f, 0);
+        Snd_SeEmitterPlayOneShotAlt(&seEmitter, 0x41, 0x7f, 0);
     }
     if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&animCtrl, 0xf1, &moveAnimSet)) {
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {

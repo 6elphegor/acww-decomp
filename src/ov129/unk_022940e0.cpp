@@ -39,7 +39,7 @@ void Gfx2d_SetSubBgModeState(s32 a);
 void Gfx2d_SetLayerPriority(s32 a, s32 b);
 void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_LoadCharFile(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_02004008(s32 a);
+void Snd_PlaySeOnHandle(s32 a);
 void Snd_StopSe(s32 a, s32 b);
 void PlayerActor_RequestAct10();
 void BgmTracks_FadeInScene22(void *a);
@@ -675,7 +675,7 @@ void ConstellationEditorMenu::postStateUpdate() {
     if (testFlags(0x40)) {
         if (testFlags(0x20) == 0) {
             setFlags(0x20);
-            func_02004008(0x883);
+            Snd_PlaySeOnHandle(0x883);
         }
     } else if (testFlags(0x20)) {
         clearFlags(0x20);

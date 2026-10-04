@@ -61,7 +61,7 @@ void _ZN12Unk_02086f8412setFollowingEv(void *a);
 s32 _ZN12Unk_02086f8411isFollowingEv(void *a);
 void _ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(void *a, void *b);
 void _ZN12Unk_02086f846setPosEP17Unk_02086ec4_Vec3(void *a, void *b);
-void func_02003e70(void *a, s32 b, s32 c, s32 d);
+void Snd_SeEmitterPlayOneShot(void *a, s32 b, s32 c, s32 d);
 void *PlayerData_GetCurrent(void);
 void *TownSessionState_Get(void);
 void *TownSessionState_GetKatieState(void *a);
@@ -489,7 +489,7 @@ BOOL SpNpcKatie::setupAct06() {
     }
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x122, 1, data_020c6cc8, 0);
     talk.setTopic(4);
-    func_02003e70(&seEmitter, 0x7db, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot(&seEmitter, 0x7db, 0x7f, 0);
     return TRUE;
 }
 

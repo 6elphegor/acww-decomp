@@ -35,7 +35,7 @@ public:
     /* 0xc82 */ u8 pad_c82[2];
     /* 0xc84 */ s32 netSeqAction;
 
-    void func_02005e7c(u32 i);
+    void setShadowForAction(u32 i);
     void syncInputMode(u32 i);
     void processRequests();
     void handleNetEvent();

@@ -76,7 +76,7 @@ extern s16 data_02135f44[];
 void *Snowball_FindOtherInBallState(void *self);
 u8 *LooseSnowballs_Get();
 void FieldPos_SnapToUnitCenter(void *, void *);
-void func_02003e70(void *, s32, s32, s32);
+void Snd_SeEmitterPlayOneShot(void *, s32, s32, s32);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 u16 Item_MakeSnowman(u32);
@@ -180,7 +180,7 @@ void Unk_ov068_02268214::spawnSnowballBreak() {
     v.y = v.y + (radius - 0x400);
     h = FX_Div(radius, 0x1000);
     Effect_Create(0x3e, &v, 0, &h);
-    func_02003e70(seEmitter, 0x81f, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot(seEmitter, 0x81f, 0x7f, 0);
 }
 
 void Unk_ov068_02268214::spawnSnowballSplash() {
@@ -192,7 +192,7 @@ void Unk_ov068_02268214::spawnSnowballSplash() {
     v.y = data_020c7c1c + 0x100;
     h = FX_Div(radius, 0x1000);
     Effect_Create(0x3f, &v, 0, &h);
-    func_02003e70(seEmitter, 0x821, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot(seEmitter, 0x821, 0x7f, 0);
     FieldFish_ScareAround(&position, 0x5000);
 }
 
@@ -608,7 +608,7 @@ s32 SnowballStateView2::enterSnowballStack() {
     stepX = FX_Div(targetPosX - position, 0x10000);
     stepZ = FX_Div(targetPosZ - positionZ, 0x10000);
     stepCount = 0;
-    func_02003e70(seEmitter, 0x81e, 0x7f, 0);
+    Snd_SeEmitterPlayOneShot(seEmitter, 0x81e, 0x7f, 0);
     return 1;
 }
 

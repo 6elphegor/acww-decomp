@@ -5,6 +5,7 @@
 // Generated from 20 earlier source files: one
 // namespace per old file holds that file's own declarations and its view of the object.
 #include "types.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 #include "net/CommManager.h"
 #include "talk/TalkWindowState.h"
 #include "player/Unk_02005294_Vec3.h"
@@ -192,7 +193,7 @@ void FieldInfoBalloon_ClearNetMsg(void);
 BOOL _ZN11CommManager8isOnlineEv(void *p);
 BOOL _ZN11CommManager11isLocalSlotEj(void *p, s32 v);
 void CommSyncVar_SetVar(s32 v, s32 a, s32 b, s32 c);
-void _ZN12Unk_02003c3013func_02003e50Ev(void *p);
+void _ZN12Unk_02003c3010callSeStopEv(void *p);
 void _ZN14MatTexVramTask6cancelEv(void *p);
 void _ZN13MatTexPatAnim7releaseEv(void *p);
 void _ZN11CachedModel7releaseEv(void *p);
@@ -248,8 +249,8 @@ void HeldItemModel_Update(void *obj);
 void PlayerActor_CheckSceneExit(s32 a);
 BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
 s32 Ground_GetDefaultY(s32 a);
-void _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(void *a, void *b);
-void _ZN12Unk_02003c4013func_02003df4EP16Unk_02003a6c_Vec(void *a, void *b);
+void _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(void *a, void *b);
+void _ZN12Unk_02003c4023callSeUpdateRelativeAltEP16Unk_02003a6c_Vec(void *a, void *b);
 void _ZN17TwoLayerAnimModel21onJointCalcPostLayer2EP16Unk_02053a54_Msg(void *a, Unk_020050e0 *b);
 void JointCb_CalcCpuMatrix(void *a, Unk_020050e0 *b, u32 c);
 void JointCb_UseRestTranslation(Unk_020050e0 *a, u32 b);
@@ -650,7 +651,7 @@ void _ZN12Unk_0200769421stopMovementForActionEj(void *, u32 id);
 void _ZN12Unk_0200769417updateBgCheckWorkEjj(void *, u32 id, u32 v);
 void _ZN12Unk_0200769418resetRotXForActionEj(void *, u32 id);
 void _ZN12Unk_020102ec15setBodyColliderEPj(void *, u32* id);
-void _ZN12Unk_02005e7c13func_02005e7cEj(void *, u32 id);
+void _ZN12Unk_02005e7c18setShadowForActionEj(void *, u32 id);
 u32 _ZN12Unk_0200769417getActionPriorityEj(void *, u32 id);
 void _ZN12Unk_02006d1413setActionFlagEj(void *, u32 id);
 void _ZN12Unk_02006d1415clearActionFlagEj(void *, u32 id);
@@ -1418,7 +1419,7 @@ s32 Scene_NoPlayerInUnsharedScene();
 void FieldInfoBalloon_ShowPleaseWait();
 s32 Field_HasExitedBuildingKey();
 void _ZN12NpcEmotionFx5resetEv(void *p);
-void _ZN12Unk_02003c3013func_02003eccEv(void *p);
+void _ZN12Unk_02003c3010callSeInitEv(void *p);
 s32 Ground_GetHeightAt(void *p, s32 a, s32 b);
 void TalkRequest_FinishSceneEntry();
 void _ZN8FaintBgm12startSilenceEv(void *p);
@@ -1687,7 +1688,7 @@ s32 WorldCurve_FromCurved(Unk_02006d14_Vec3 *v);
 BOOL InputMode_IsButtons();
 BOOL InputMode_IsTouch();
 s32 Snd_SeEmitterPlayHeld(void *p, u32 a, s32 b, s32 c);
-s32 func_02003e70(void *p, u32 a, s32 b, s32 c);
+s32 Snd_SeEmitterPlayOneShot(void *p, u32 a, s32 b, s32 c);
 s32 Math_AngleToDir4(s32 a);
 s32 FieldPos_FromUnitCenter(Unk_02006d14_Vec3 *out, s32 x, s32 z);
 s32 Math_ApproachS32(s32 *p, s32 a, s32 b, s32 c, s32 d);
@@ -1870,7 +1871,7 @@ void * PlayerActor_GetGender(void *);
 void * PlayerActor_GetPlayerData(void *);
 void * _ZN12Unk_020102ec7calcTanEj(void *, s32 n);
 void _ZN12Unk_020102ec13initFaceAnimsEv(void *);
-BOOL _ZN11PlayerActor13func_0200d5b8Ev(void *);
+BOOL _ZN11PlayerActor17isInteractPressedEv(void *);
 s32 PlayerActor_GetFaceTexIndex(void *);
 BOOL PlayerActor_GetFaceAltFlag(void *);
 s32 _ZN11PlayerActor17getInputMagnitudeEv(void *);
@@ -3725,7 +3726,7 @@ void Unk_02006d14::requestShirtTexUpload() {
 s32 Unk_02006d14::tryInteract() {
     using namespace nR;
     if (TalkRequestFlags_IsResetti(((Unk_02006d14 *)this)) || _ZN12Unk_02006d1414testActionFlagEj(this, 0x13)) return FALSE;
-    if (_ZN11PlayerActor13func_0200d5b8Ev(this)) {
+    if (_ZN11PlayerActor17isInteractPressedEv(this)) {
         TalkRequest_AddTalk(((Unk_02006d14 *)this), ((Unk_02006d14 *)this)->interactTarget);
         if (((Unk_02006d14 *)this)->interactTarget == 0) {
             if (Character_FindInteractionTarget(((Unk_02006d14 *)this))) return TRUE;
@@ -4376,9 +4377,9 @@ void Unk_02006d14::playSe(u32 a) {
     u32 f = ((Unk_02006d14 *)this)->actorFlags;
     if (!(Unk_0200ec54_Bit(f, 4) && Unk_0200ec54_Bit(f, 2))) {
         if (testActionFlag(0x19)) {
-            func_02003e70(&((Unk_02006d14 *)this)->seEmitterLocal, a, 0x7f, 0);
+            Snd_SeEmitterPlayOneShot(&((Unk_02006d14 *)this)->seEmitterLocal, a, 0x7f, 0);
         } else {
-            func_02003e70(&((Unk_02006d14 *)this)->seEmitterRemote, a, 0x7f, 0);
+            Snd_SeEmitterPlayOneShot(&((Unk_02006d14 *)this)->seEmitterRemote, a, 0x7f, 0);
         }
     }
 }
@@ -4841,7 +4842,7 @@ s32 PlayerActor::getInputDirRelative() {
     return Math_AngleToDir4((s16)(getInputAngle() - ((PlayerActor *)this)->rotY));
 }
 
-u8 PlayerActor::func_0200d5b8() {
+u8 PlayerActor::isInteractPressed() {
     using namespace nN;
     return ((PlayerActor *)this)->interactPressed;
 }
@@ -4967,12 +4968,12 @@ void PlayerActor::startFirstAction(s32 *p) {
     if (!c || Scene_InTown()) {
         _ZN12NpcEmotionFx5resetEv(&((PlayerActor *)this)->emotionFx);
         if (_ZN11CommManager11isLocalSlotEj(gCommManager, ((PlayerActor *)this)->sessionSlot) || (Scene_InUnk6To8() && r4 == 8)) {
-            _ZN12Unk_02003c3013func_02003eccEv(&((PlayerActor *)this)->seEmitterLocal);
+            _ZN12Unk_02003c3010callSeInitEv(&((PlayerActor *)this)->seEmitterLocal);
             ((PlayerActor *)this)->emotionFx.seEmitter = (s32)&((PlayerActor *)this)->seEmitterLocal;
             ((PlayerActor *)this)->emotionFx.useGlobalSe = 1;
             _ZN12Unk_02006d1413setActionFlagEj(this, 0x19);
         } else {
-            _ZN12Unk_02003c3013func_02003eccEv(&((PlayerActor *)this)->seEmitterRemote);
+            _ZN12Unk_02003c3010callSeInitEv(&((PlayerActor *)this)->seEmitterRemote);
             ((PlayerActor *)this)->emotionFx.seEmitter = (s32)&((PlayerActor *)this)->seEmitterRemote;
         }
         _ZN12Unk_02006d1413setActionFlagEj(this, 0xa);
@@ -8310,7 +8311,7 @@ void Unk_02006d14::changeAction(Unk_02006d14_Item* item) {
     _ZN12Unk_0200769417updateBgCheckWorkEjj(this, id, old);
     _ZN12Unk_0200769418resetRotXForActionEj(this, id);
     _ZN12Unk_020102ec15setBodyColliderEPj(this, &id);
-    _ZN12Unk_02005e7c13func_02005e7cEj(this, id);
+    _ZN12Unk_02005e7c18setShadowForActionEj(this, id);
     Unk_02006d14_Data* p = gCommManager;
     if (_ZN11CommManager12isSlotActiveEi(p, p->myAid)) {
         if (!_ZN11CommManager11isLocalSlotEj(p, ((Unk_02006d14 *)this)->sessionSlot)) {
@@ -8448,7 +8449,7 @@ void Unk_02005e7c::syncInputMode(u32 i) {
     }
 }
 
-void Unk_02005e7c::func_02005e7c(u32 i) {
+void Unk_02005e7c::setShadowForAction(u32 i) {
     using namespace nC;
     if (data_020c64c8[i] == 0) {
         shadowSize = 0;
@@ -8560,9 +8561,9 @@ void PlayerActor::doExecute() {
             ((PlayerActor *)this)->sePosZ = ((PlayerActor *)this)->position.z;
         }
         if (_ZN12Unk_02006d1414testActionFlagEj(this, 0x19)) {
-            _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(&((PlayerActor *)this)->seEmitterLocal, &((PlayerActor *)this)->sePosX);
+            _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(&((PlayerActor *)this)->seEmitterLocal, &((PlayerActor *)this)->sePosX);
         } else {
-            _ZN12Unk_02003c4013func_02003df4EP16Unk_02003a6c_Vec(&((PlayerActor *)this)->seEmitterRemote, &((PlayerActor *)this)->sePosX);
+            _ZN12Unk_02003c4023callSeUpdateRelativeAltEP16Unk_02003a6c_Vec(&((PlayerActor *)this)->seEmitterRemote, &((PlayerActor *)this)->sePosX);
         }
     }
     if (((PlayerActor *)this)->prevAction != ((PlayerActor *)this)->action) {
@@ -8725,9 +8726,9 @@ BOOL PlayerActor::doDelete() {
     }
     if (_ZN12Unk_02006d1414testActionFlagEj(this, 0xa)) {
         if (_ZN12Unk_02006d1414testActionFlagEj(this, 0x19)) {
-            _ZN12Unk_02003c3013func_02003e50Ev(&seEmitterLocal);
+            _ZN12Unk_02003c3010callSeStopEv(&seEmitterLocal);
         } else {
-            _ZN12Unk_02003c3013func_02003e50Ev(&seEmitterRemote);
+            _ZN12Unk_02003c3010callSeStopEv(&seEmitterRemote);
         }
         _ZN12Unk_02006d1415clearActionFlagEj(this, 0xa);
     }
@@ -9097,12 +9098,8 @@ u32 data_020d5e48 = 0xccd;
 u32 data_020d5e4c = 0;
 #pragma explicit_zero_data reset
 u32 data_020d5e50 = 0x14000;
-struct Unk_020d6dd4 {
-    void (*f)();
-    u32 w[5];
-};
 void PlayerActor_Create();
-Unk_020d6dd4 sPlayerActorProfile = {PlayerActor_Create, {0xd0009, 0x2, 0x800, 0x800, 0x2b000}};
+Unk_ov004_SceneEntry sPlayerActorProfile = {(void *(*)())PlayerActor_Create, 9, 0xd, 2, 0x800, 0x800, 0x2b000};
 char sPlayerActorErrorMsgFile[] = "obj_etc_error";
 char sPlayerActorMsgFile[] = "obj_etc_player";
 char sPlayerActorGetInsectMsgFile[] = "obj_etc_getinsect";

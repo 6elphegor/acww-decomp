@@ -14,10 +14,10 @@ struct Unk_02003c30 {
     virtual void vfunc_10();
     void callRelease();
     void callReset();
-    void func_02003dcc();
-    void func_02003e40();
-    void func_02003e50();
-    void func_02003ecc();
+    void callSeStopAlt();
+    void callSeInitAlt();
+    void callSeStop();
+    void callSeInit();
 };
 
 #endif

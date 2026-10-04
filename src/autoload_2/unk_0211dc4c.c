@@ -78,7 +78,7 @@ extern u32 data_0213c1c8[];
 
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
-void func_02000b44(void *);
+void OSi_ReferSymbol(void *);
 void Fatal_Trap(void);
 void OS_UnlockCard(u32);
 void OS_LockCard(u32);
@@ -260,7 +260,7 @@ void CARDi_RequestStreamCommandCore(CARDCommon *c) {
     void (*cb)(void *);
     void *arg;
     u32 irq;
-    func_02000b44((void *)0x02000bbc);
+    OSi_ReferSymbol((void *)0x02000bbc);
     do {
         u32 len = c->len;
         if (len > pg) len = pg;
@@ -305,7 +305,7 @@ void CARDi_RequestStreamCommandCore(CARDCommon *c) {
 BOOL CARDi_RequestStreamCommand(u32 a, u32 b, u32 len, void (*cb)(void *), void *arg, BOOL async, u32 g, u32 h, u32 mode) {
     CARDCommon *const c = &data_021fec00;
     u32 irq;
-    func_02000b44((void *)0x02000bbc);
+    OSi_ReferSymbol((void *)0x02000bbc);
     irq = OS_DisableInterrupts();
     while (c->flag & 4) OS_SleepThread(&c->tq);
     c->flag |= 4;
@@ -338,7 +338,7 @@ BOOL CARD_IdentifyBackup(u32 op) {
     void (*cb)(void *);
     void *arg;
     u32 irq;
-    func_02000b44((void *)0x02000bbc);
+    OSi_ReferSymbol((void *)0x02000bbc);
     if (op == 0) Fatal_Trap();
     CARD_CheckEnabled();
     irq = OS_DisableInterrupts();

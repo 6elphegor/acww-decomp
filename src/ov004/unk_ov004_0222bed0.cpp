@@ -7,9 +7,9 @@
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 
-#define func_02003e50 _ZN12Unk_02003c3013func_02003e50Ev
-#define func_02003e80 _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec
-#define func_02003ecc _ZN12Unk_02003c3013func_02003eccEv
+#define Unk_02003c30_callSeStop _ZN12Unk_02003c3010callSeStopEv
+#define Unk_02003c40_callSeUpdateRelative _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec
+#define Unk_02003c30_callSeInit _ZN12Unk_02003c3010callSeInitEv
 #define Model_drawShapesDirect _ZN5Model16drawShapesDirectEPi
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define func_02133150 _s32_div_f
@@ -139,10 +139,10 @@ u32 Item_GetIconModelName(s32 a, s32 b);
 void Town_GetEnvironmentRank();
 void FieldPos_FromUnitCenter(Unk_ov004_V3 *out, s32 a, s32 b);
 s32 FtrMgr_GetSurfaceHeight(s32 a, s32 b);
-void func_02003e50(void *p);
-void func_02003e80(void *p, void *v);
-void func_02003ecc(void *p);
-s32 func_02003e70(void *p, u32 a, u32 b, u32 c);
+void Unk_02003c30_callSeStop(void *p);
+void Unk_02003c40_callSeUpdateRelative(void *p, void *v);
+void Unk_02003c30_callSeInit(void *p);
+s32 Snd_SeEmitterPlayOneShot(void *p, u32 a, u32 b, u32 c);
 void VEC_Add(void *a, void *b, void *c);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 u16 *BlockMap_GetItemPtrAtPos(void *g, void *v, s32 z);
@@ -458,7 +458,7 @@ extern "C" void ItemDrop_SetTrajectory(Unk_ov004_Entry *e, Unk_ov004_P2 *p, Unk_
     zero:
         e->unk_8e = 0;
     } else {
-        func_02003e70(e->seEmitter, 0x75, 0x7f, 0);
+        Snd_SeEmitterPlayOneShot(e->seEmitter, 0x75, 0x7f, 0);
     }
 }
 
@@ -476,7 +476,7 @@ extern "C" void ItemDrop_Update(Unk_ov004_Entry *e) {
             u16 v1 = id;
             u16 v2 = id;
             if (v2 >= 0x1492 && v1 <= 0x14fd) in = TRUE;
-            if (in) func_02003e70(e->seEmitter, 0x70, 0x7f, 0);
+            if (in) Snd_SeEmitterPlayOneShot(e->seEmitter, 0x70, 0x7f, 0);
         }
         e->pos.y = e->landPos.y;
         if (e->bounceCount == 0) {
@@ -499,7 +499,7 @@ extern "C" void ItemDropList_Init(Unk_ov004_Entry *e) {
         e->state = 0;
         e->item = 0xfff1;
         e->landItem = 0xfff1;
-        func_02003ecc(e->seEmitter);
+        Unk_02003c30_callSeInit(e->seEmitter);
     }
 }
 
@@ -515,7 +515,7 @@ extern "C" void ItemDropList_Update(Unk_ov004_Entry *e) {
             v.x = e->pos.x;
             v.y = e->pos.y;
             v.z = e->pos.z;
-            func_02003e80(e->seEmitter, &v);
+            Unk_02003c40_callSeUpdateRelative(e->seEmitter, &v);
         }
     }
 }
@@ -554,7 +554,7 @@ extern "C" void ItemDropList_Release(Unk_ov004_Entry *e) {
     s32 i;
     for (i = 0; i < 15; e++, i++) {
         if (e->state != 0) ItemDrop_Clear(e);
-        func_02003e50(e->seEmitter);
+        Unk_02003c30_callSeStop(e->seEmitter);
     }
 }
 

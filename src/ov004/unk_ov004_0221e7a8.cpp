@@ -323,10 +323,10 @@ s32 PlayerActor_GetHairColor(Obj *o);
 s32 _ZN12Unk_02006d1416requestHatChangeEPthhh(Obj *o, u16 *v, s32 a, s32 b, u32 c);
 void _ZN12Unk_02006d1421requestFaceItemChangeEPt(Obj *o, u16 *v);
 s32 Snd_SeEmitterPlayHeld(s32 a, s32 b, s32 c, s32 d);
-s32 func_02003e70(s32 a, s32 b, s32 c, s32 d);
-s32 _ZN12Unk_02003c3013func_02003e50Ev(s32 a);
-s32 _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(s32 a, V3 *v);
-s32 _ZN12Unk_02003c3013func_02003eccEv(s32 a);
+s32 Snd_SeEmitterPlayOneShot(s32 a, s32 b, s32 c, s32 d);
+s32 _ZN12Unk_02003c3010callSeStopEv(s32 a);
+s32 _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(s32 a, V3 *v);
+s32 _ZN12Unk_02003c3010callSeInitEv(s32 a);
 void func_020f43fc(void *p);
 void func_020f440c(void *p);
 s32 File_LoadAlloc(u32 id, void *g, s32 a, u32 b);
@@ -506,7 +506,7 @@ extern "C" Res *RoomObj_DestructSe(Res *p) {
 }
 
 extern "C" s32 RoomObj_ActivateSe(s32 a) {
-    return _ZN12Unk_02003c3013func_02003eccEv(a);
+    return _ZN12Unk_02003c3010callSeInitEv(a);
 }
 
 extern "C" s32 RoomObj_SetSePos(s32 a, V3 *p) {
@@ -514,15 +514,15 @@ extern "C" s32 RoomObj_SetSePos(s32 a, V3 *p) {
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
-    return _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(a, &v);
+    return _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(a, &v);
 }
 
 extern "C" s32 RoomObj_DeactivateSe(s32 a) {
-    return _ZN12Unk_02003c3013func_02003e50Ev(a);
+    return _ZN12Unk_02003c3010callSeStopEv(a);
 }
 
 extern "C" s32 RoomObj_PlaySe(s32 a, s32 b) {
-    return func_02003e70(a, b, 0x7f, 0);
+    return Snd_SeEmitterPlayOneShot(a, b, 0x7f, 0);
 }
 
 extern "C" s32 RoomObj_PlaySeHeld(s32 a, s32 b) {

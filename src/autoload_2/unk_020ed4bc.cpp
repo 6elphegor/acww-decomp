@@ -15,11 +15,9 @@
 // 0x020ed7e4 / 0x020ed81c / 0x020ed8cc are the command-sequence object (Unk_Seq), one class whose last method lies in the next
 // unit (unk_020ed8cc.cpp); whether Unk_Seq ends this file or starts the next one is not decided by any data, so it is left out.
 #include "types.h"
-#include "sys/PrioNode.h"
 #include "sys/TaskList.h"
 #include "sys/ProcBase.h"
 #include "sys/ListNode.h"
-#include "sys/InfoList.h"
 
 typedef void (ProcBase::*TaskFn)();
 
@@ -39,7 +37,7 @@ BOOL List_InsertAfter(List *list, ListNode *node, ListNode *after);
 void Task_RunDrawPhase(void);
 void Task_RunAllPhases(void);
 
-extern TaskNode *gTaskCurrentNode;
+extern QNode *gTaskCurrentNode;
 extern s32 gTaskPhase;
 extern char data_0213b1a8[];
 extern char data_0213b1b0[];
@@ -60,7 +58,7 @@ extern TaskList gTaskDeleteList;
 // .data / .bss / .rodata order (mwcc heapsorts a file's objects by size over the reverse creation order; solved with
 // realclass2_work/task/srch2.py on the model of linkprep.py, which reproduces this compiler's order exactly). Keep the order.
 // the node to visit next (a callback may delete its own node)
-TaskNode *gTaskCurrentNode;
+QNode *gTaskCurrentNode;
 // the phase being run: 0 NULL, 1 CONNECT, 2 CREATE, 3 EXECUTE, 4 DELETE, 5 DRAW
 s32 gTaskPhase = 1;
 char data_0213b1b0[] = "NULL";
@@ -78,13 +76,13 @@ TaskList gTaskDeleteList(&ProcBase::taskDelete);
 char data_0213b1b8[] = "DELETE";
 
 BOOL TaskTree::run() {
-    TaskNode10 *n;
+    TreeNode *n;
     if (fn == 0) return TRUE;
     n = head;
     while (n != NULL) {
-        TaskNode10 *cur = n;
-        n = (TaskNode10 *)func_01ffcffc(cur);
-        (cur->unk_10->*fn)();
+        TreeNode *cur = n;
+        n = (TreeNode *)func_01ffcffc(cur);
+        (cur->owner->*fn)();
     }
     return TRUE;
 }
@@ -121,25 +119,25 @@ extern "C" void Task_RunFrame(s32 v) {
     }
 }
 
-extern "C" BOOL Task_InsertByPriority(List *list, PrioNode *node) {
-    PrioNode *prev = (PrioNode *)list->head;
-    PrioNode *next;
+extern "C" BOOL Task_InsertByPriority(List *list, QNode *node) {
+    QNode *prev = (QNode *)list->head;
+    QNode *next;
     if (node == NULL) return FALSE;
     if (prev == NULL) return List_PushBack(list, (ListNode *)node);
-    if (prev->unk_0c > node->unk_0c) return List_InsertAfter(list, (ListNode *)node, NULL);
-    while ((next = prev->unk_04) != NULL && next->unk_0c <= ((PrioNodeB *)node)->priority) prev = next;
+    if (prev->priority > node->priority) return List_InsertAfter(list, (ListNode *)node, NULL);
+    while ((next = prev->next) != NULL && next->priority <= ((PrioNodeB *)node)->priority) prev = next;
     return List_InsertAfter(list, (ListNode *)node, (ListNode *)prev);
 }
 
 BOOL TaskList::run() {
-    TaskNode *n;
+    QNode *n;
     if (fn == 0) return TRUE;
     n = head;
     gTaskCurrentNode = n;
     if (n != NULL) {
         do {
-            TaskNode *next = n->unk_04;
-            (n->unk_08->*fn)();
+            QNode *next = n->next;
+            (n->owner->*fn)();
             gTaskCurrentNode = next;
             n = next;
         } while (n != NULL);
@@ -147,27 +145,27 @@ BOOL TaskList::run() {
     return TRUE;
 }
 
-extern "C" void *ProcList_FindById(InfoList *list, u32 id) {
-    InfoNode *n = list->head;
+extern "C" void *ProcList_FindById(QList *list, u32 id) {
+    QNode *n = list->head;
     while (n != NULL) {
-        BOOL ne = (n->unk_08->unk_04 != id);
+        BOOL ne = (n->owner->id != id);
         if (ne == 0) return n;
-        n = n->unk_04;
+        n = n->next;
     }
     return NULL;
 }
 
-extern "C" void *ProcList_FindByProfile(InfoList *list, u32 id, InfoNode *p) {
-    InfoNode *n;
+extern "C" void *ProcList_FindByProfile(QList *list, u32 id, QNode *p) {
+    QNode *n;
     if (p != NULL) {
-        n = p->unk_04;
+        n = p->next;
     } else {
         n = list->head;
     }
     while (n != NULL) {
-        BOOL ne = (n->unk_08->unk_0c != id);
+        BOOL ne = (n->owner->profile != id);
         if (ne == 0) return n;
-        n = n->unk_04;
+        n = n->next;
     }
     return NULL;
 }

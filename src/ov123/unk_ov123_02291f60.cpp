@@ -26,7 +26,7 @@ s32 Gfx2d_DisableSubWindows(s32 a);
 s32 Gfx2d_EnableSubWindows(s32 a);
 s32 Gfx2d_SetSubWin1Planes(s32 a, s32 b);
 s32 Gfx2d_SetSubWin1Rect(s32 a, s32 b, s32 c, s32 d);
-s32 func_02003f4c(s32 a);
+s32 Snd_SetSeHandleVolumes(s32 a);
 s32 Snd_StopSe(s32 a, s32 b);
 s32 Gfx2d_HideLayer(s32 a);
 s32 Gfx2d_ShowLayer(s32 a);
@@ -48,7 +48,7 @@ void Gfx2d_LinearToTiles4bpp(void *p, void *q, s32 a, s32 b);
 void *PatternTexCache_Get();
 void *PlayerData_GetCurrent();
 void *MenuCtrl_GetIndex();
-void func_02004008(s32 a);
+void Snd_PlaySeOnHandle(s32 a);
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
 s32 Gfx2d_LoadPaletteFile(void *, void *, u32, u32, u32, u32);
@@ -62,7 +62,7 @@ void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
 void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ResetSubBlend();
-void func_02003f5c(s32 a);
+void Snd_SetSceneBankVariant(s32 a);
 void PlayerActor_RequestAct10();
 void PlayerActor_RequestAct05();
 s32 PlayerActor_IsChangingClothes();
@@ -842,7 +842,7 @@ void PatternEditorMenu::releaseResources() {
     cancelVramTasks();
     PlayerActor_RequestAct10();
     if (MenuCtrl_GetMode() == 3) {
-        func_02003f5c(0);
+        Snd_SetSceneBankVariant(0);
     }
 }
 
@@ -938,7 +938,7 @@ void PatternEditorMenu::updateTouchStroke() {
         if (testFlags(0x100000)) {
             if (!testFlags(0x80000)) {
                 setFlags(0x80000);
-                func_02004008(0x862);
+                Snd_PlaySeOnHandle(0x862);
             }
         } else if (testFlags(0x80000)) {
             clearFlags(0x80000);
@@ -1038,7 +1038,7 @@ void PatternEditorMenu::updateCanvasPaint()
         if (flag) {
             if (testFlags(0x40000) == 0) {
                 setFlags(0x40000);
-                func_02004008(0x863);
+                Snd_PlaySeOnHandle(0x863);
             }
         } else {
             if (testFlags(0x40000)) {
@@ -2488,7 +2488,7 @@ void PatternEditorMenu::updateStylusStroke() {
                 } else {
                     d = d - (by - cy);
                 }
-                func_02003f4c(d);
+                Snd_SetSeHandleVolumes(d);
                 setFlags(0x100000);
             }
             if (penX != old_a8 || penY != old_a9) {

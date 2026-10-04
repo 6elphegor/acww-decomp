@@ -586,7 +586,7 @@ void Unk_02003c40_callRequestSustained(void *, s32);
 void Unk_02003c40_callUpdateRelative(void *, V3 *);
 void Unk_02003c30_callReset(void *);
 s32 Snd_StopSe(s32, s32);
-void func_02004008(u32 a);
+void Snd_PlaySeOnHandle(u32 a);
 BOOL Collision_ClampToRect(void *p, s32 a, void *c, s32 w, s32 h);
 s32 GroundInfoBase_getHeight(void *o, s32 f);
 void GroundInfo_Destruct(void *o);
@@ -3715,7 +3715,7 @@ extern "C" BOOL _ZN14MuseumAquarium8onCreateEv(Mgr *self)
         MuseumAquarium_CreateSeaFish(self);
         TouchPicker_addBox(Scene_GetTouchPicker(), (u8 *)self + 0x2a8, &sAquariumTankCenterA, 0x26000, 0x4dc3, 0x3800, 0, 0x13, 0);
     }
-    func_02004008(0x4da);
+    Snd_PlaySeOnHandle(0x4da);
     return TRUE;
 }
 

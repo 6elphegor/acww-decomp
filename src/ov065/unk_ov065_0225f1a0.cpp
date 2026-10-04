@@ -37,7 +37,7 @@ extern Unk_ov065_0225f634_Params sSockTcpParams;
 extern Unk_ov065_0225f634_Params sSockSendOnlyParams;
 
 // main module
-void func_02000b44(u32);
+void OSi_ReferSymbol(u32);
 void *MI_CpuFill8(void *, s32, u32);
 s32 _s32_div_f(s32, s32);
 
@@ -69,7 +69,7 @@ Unk_ov065_0225f210_G sIpStackParams;
 
 s32 SockCore_Startup(Unk_ov065_0225f1cc_Cfg *cfg)
 {
-    func_02000b44(0x2000bd4);
+    OSi_ReferSymbol(0x2000bd4);
     if (sSockCoreConfig != NULL) {
         return 0;
     }

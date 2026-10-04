@@ -3,15 +3,12 @@
 #include "sys/Unk_Task.h"
 #include "sys/Unk_Seq.h"
 #include "snd/PlayCtx.h"
-#include "sys/PrioNode.h"
-#include "snd/SndSeSystemCfg.h"
 #include "snd/SndSeBytes4.h"
 #include "snd/BgmObj.h"
 #include "snd/SndSeGroup.h"
 #include "sys/FndList.h"
 #include "sys/TaskList.h"
 #include "sys/ListNode.h"
-#include "sys/InfoList.h"
 #include "snd/Player.h"
 
 
@@ -28,7 +25,7 @@ extern "C" {
 void Fatal_Trap(void);
 BOOL List_PushBack(List *list, ListNode *node);
 BOOL List_InsertAfter(List *list, ListNode *node, ListNode *after);
-extern TaskNode *gTaskCurrentNode;
+extern QNode *gTaskCurrentNode;
 extern s32 gTaskPhase;
 extern TaskList gTaskDrawList;
 extern TaskList gTaskDeleteList;
@@ -88,7 +85,7 @@ extern u8 data_021f5b64, data_021f5b60, data_021f5b48, data_021f5b58, data_021f5
 extern u8 data_021f5b6c, data_021f5b68, sVoicePendingVolume;
 extern u16 sVoicePendingSyllable, data_021f5b74, data_021f5b78;
 extern s32 sVoicePendingPitch;
-extern Cfg4 gSndSeSystem;
+extern Player gSndSeSystem;
 void *NNS_FndGetPrevListObject(void *list, void *obj);
 void *NNS_FndGetNextListObject(void *list, void *obj);
 void NNS_FndRemoveListObject(void *list, void *obj);

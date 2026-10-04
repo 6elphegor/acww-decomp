@@ -6,7 +6,7 @@ void *Heap_Alloc(u32 heap, u32 size);
 }
 
 
-struct Unk_02003878_Obj {
+struct TvSoundVtableView {
     void *vtable;
 };
 extern u32 data_0213bac4[];
@@ -27,7 +27,7 @@ extern u32 data_020c6190[];
 extern const u32 sTvSoundSizes[];
 const u32 sTvSoundSizes[] = {0x10, 0x10, 0x10, 0x10, 0x14, 0x10, 0x10, 0x18, 0x14, 0x10, 0x14, 0x10};
 
-#define MK(sz, vt) { Unk_02003878_Obj *o = (Unk_02003878_Obj *)Heap_Alloc(heap, sz); if (o) { o->vtable = data_0213bac4; o->vtable = vt; } return (TvSound *)o; }
+#define MK(sz, vt) { TvSoundVtableView *o = (TvSoundVtableView *)Heap_Alloc(heap, sz); if (o) { o->vtable = data_0213bac4; o->vtable = vt; } return (TvSound *)o; }
 
 extern "C" TvSound *TvSound_Create(u32 heap, s32 type) {
     switch (type) {

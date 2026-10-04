@@ -3,60 +3,46 @@
 #include "types.h"
 #include "game/Vec3.h"
 #include "town/TownBlockCell.h"
+#include "gfx/Unk_020d93b8.h"
+#include "gfx/HBlankTask.h"
 
 struct Chunk {
-    /* 0x00 */ u8 *unk_00;
-    /* 0x04 */ u8 *unk_04;
+    /* 0x00 */ u8 *attrs;
+    /* 0x04 */ u8 *walkLinks;
 };
 
 struct Grid {
     /* 0x000 */ u8 pad_00[0x124];
-    /* 0x124 */ u32 unk_124;
-    /* 0x128 */ u32 unk_128;
-};
-
-
-struct Cam {
-    /* 0x00 */ u8 pad_00[0x84];
-    /* 0x84 */ Vec3 unk_84;
-    /* 0x90 */ u8 pad_90[0x150 - 0x90];
-    /* 0x150 */ Vec3 unk_150;
-    /* 0x15c */ Vec3 unk_15c;
+    /* 0x124 */ u32 numBlocksX;
+    /* 0x128 */ u32 numBlocksZ;
 };
 
 
 struct CellGrid {
-    /* 0x00 */ Cell *unk_00;
-    /* 0x04 */ s32 unk_04;
-};
-
-struct Node {
-    /* 0x00 */ u8 pad_00[0x0c];
-    /* 0x0c */ void (*unk_0c)(void);
-    /* 0x10 */ u8 pad_10[0x08];
-    /* 0x18 */ Node *unk_18;
+    /* 0x00 */ Cell *cells;
+    /* 0x04 */ s32 w;
 };
 
 struct Kind {
-    u8 unk_00;
+    u8 cmd;
 };
 
 struct Obj {
-    /* 0x00 */ Kind *unk_00;
-    /* 0x04 */ u8 *unk_04;
+    /* 0x00 */ Kind *c;
+    /* 0x04 */ u8 *pRenderObj;
 };
 
 extern "C" {
 extern Grid *gCurCollisionMap;
-extern Node *sHBlankListHead;
+extern HBlankTask *sHBlankListHead;
 void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
 Chunk *func_01ffcb5c(s32 x, s32 z);
-void Camera_GetLookAtOffset(Vec3 *out, Cam *c);
+void Camera_GetLookAtOffset(Vec3 *out, Unk_020d93b8 *c);
 }
 
 static inline Chunk *At(s32 x, s32 z) {
     Grid *g = gCurCollisionMap;
-    if (x >= 0 && z >= 0 && (u32)x < g->unk_124 && (u32)z < g->unk_128) {
+    if (x >= 0 && z >= 0 && (u32)x < g->numBlocksX && (u32)z < g->numBlocksZ) {
         return (Chunk *)((u8 *)g + z * 0x30 + x * 8);
     }
     return 0;
@@ -64,23 +50,24 @@ static inline Chunk *At(s32 x, s32 z) {
 
 extern "C" void HBlank_Handler(void) {
     if (*(vu16 *)0x04000006 < 192) {
-        Node *n = sHBlankListHead;
+        HBlankTask *n = sHBlankListHead;
         if (n != 0) {
             do {
-                if (n->unk_0c != 0) {
-                    n->unk_0c();
+                // HBlankTask::param holds the H-blank callback (HBlank_Add / HBlank_Replace pass it as an s32)
+                if (n->param != 0) {
+                    ((void (*)(void))n->param)();
                 }
-                n = n->unk_18;
+                n = n->next;
             } while (n != 0);
         }
     }
 }
 
 extern "C" BOOL func_01ffcc10(void *a, Obj *o) {
-    if ((o->unk_00->unk_00 & 0x1f) != 6) {
+    if ((o->c->cmd & 0x1f) != 6) {
         return TRUE;
     }
-    if (*(u32 *)(o->unk_04 + 0x34) == 0) {
+    if (*(u32 *)(o->pRenderObj + 0x34) == 0) {
         return TRUE;
     }
     return FALSE;
@@ -89,21 +76,21 @@ extern "C" BOOL func_01ffcc10(void *a, Obj *o) {
 extern "C" BOOL func_01ffcbd8(CellGrid *g, s32 x, s32 z) {
     s32 cx = x >> 4;
     s32 cz = z >> 4;
-    u16 row = g->unk_00[cx + cz * g->unk_04].unk_24[z - (cz << 4)];
+    u16 row = g->cells[cx + cz * g->w].buriedFlags[z - (cz << 4)];
     if ((row & (1 << (x - (cx << 4)))) == 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-extern "C" void Camera_GetLookAtPoint(Vec3 *out, Cam *c) {
+extern "C" void Camera_GetLookAtPoint(Vec3 *out, Unk_020d93b8 *c) {
     Vec3 t;
     Camera_GetLookAtOffset(&t, c);
-    func_01ffd070(out, &c->unk_15c, &t);
+    func_01ffd070(out, (Vec3 *)&c->currentFocus, &t);
 }
 
-extern "C" void Camera_GetLookAtOffset(Vec3 *out, Cam *c) {
-    func_01ffd070(out, &c->unk_150, &c->unk_84);
+extern "C" void Camera_GetLookAtOffset(Vec3 *out, Unk_020d93b8 *c) {
+    func_01ffd070(out, (Vec3 *)&c->currentOffset, (Vec3 *)&c->unk_84);
 }
 
 extern "C" Chunk *func_01ffcb5c(s32 x, s32 z) {
@@ -118,7 +105,7 @@ extern "C" u32 func_01ffcb2c(s32 x, s32 y) {
     Chunk *c = func_01ffcb5c(x >> 4, y >> 4);
     u32 v;
     if (c != 0) {
-        v = c->unk_00[(x & 15) + ((y & 15) << 4)];
+        v = c->attrs[(x & 15) + ((y & 15) << 4)];
     } else {
         v = 21;
     }

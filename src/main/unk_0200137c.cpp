@@ -279,10 +279,6 @@ struct Gfx2dBgScroll {
     s32 subBg2CenterX, subBg2CenterY, subBg2OffsetX, subBg2OffsetY;
 };
 
-struct Unk_020017a4 {
-    u16 unk_00, unk_02, unk_04, unk_06, unk_08, unk_0a, unk_0c, unk_0e;
-};
-
 struct Gfx2dWindowRect {
     u8 left, top, right, bottom, planes;
 };

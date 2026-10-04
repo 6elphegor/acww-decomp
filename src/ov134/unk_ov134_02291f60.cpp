@@ -110,7 +110,7 @@ void Gfx2d_EnableSubWindows(u32 a);
 void Gfx2d_DisableSubWindows(u32 a);
 void Gfx2d_HideLayer(u32 a);
 void Gfx2d_ShowLayer(u32 a);
-void func_02004008(s32 a);
+void Snd_PlaySeOnHandle(s32 a);
 void Snd_StopSe(s32 a, s32 b);
 void Gfx2d_SetSubWin0Planes(u32 a, u32 b);
 u32 Gfx2d_GetLayerPlaneMask(u32 a);
@@ -754,7 +754,7 @@ extern "C" BOOL DateTimePicker_EndHandDrag(DateTimePicker *self) {
         while (self->targetMinutes > self->clockMinutes) {
             self->targetMinutes = self->targetMinutes - 0x2d0;
         }
-        func_02004008(0x54);
+        Snd_PlaySeOnHandle(0x54);
         return TRUE;
     }
     if (self->testFlags(0x80) && self->testFlags(0x20)) {
@@ -763,7 +763,7 @@ extern "C" BOOL DateTimePicker_EndHandDrag(DateTimePicker *self) {
         while (self->targetMinutes < self->clockMinutes) {
             self->targetMinutes = self->targetMinutes + 0x2d0;
         }
-        func_02004008(0x54);
+        Snd_PlaySeOnHandle(0x54);
         return TRUE;
     }
     return FALSE;
@@ -1329,7 +1329,7 @@ extern "C" s32 DateTimePicker_UpdateListClose(DateTimePicker *self) {
             if (self->pickedRowCell != 0) {
                 if (self->applyPickedValue()) {
                     self->listState = 7;
-                    func_02004008(0x54);
+                    Snd_PlaySeOnHandle(0x54);
                 } else {
                     self->listState = 8;
                 }

@@ -1854,7 +1854,7 @@ s32 Ssl_ReadRecord(Unk_ov065_02264d80_Obj *);
 u64 OS_GetTick(void);
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
-void func_02000b44(u32);
+void OSi_ReferSymbol(u32);
 void OS_SetThreadPriority(void *, u32);
 void OS_JoinThread(void *);
 void OS_DestroyThread(void *);
@@ -2054,7 +2054,7 @@ void Ssl_Shutdown(Unk_ov065_02264d80_Obj *o) {
 }
 
 void Ssl_EnableOnCurrentSocket(u32 v) {
-    func_02000b44(0x2000c14);
+    OSi_ReferSymbol(0x2000c14);
     Unk_ov065_02264c44_Sub *s = ((Unk_ov065_02264c44_Thr *)data_021fcc2c.cur)->ipSocket;
     if (s != 0) {
         s->useSsl = v;

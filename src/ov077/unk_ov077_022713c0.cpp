@@ -46,7 +46,7 @@ void TalkRequestFlags_ClearResetti();
 void TalkRequestFlags_SetResetti();
 s32 Math_IsInRange(void *p, u32 lo, u32 hi);
 u32 Random_GlobalBelow(u32 n);
-void func_02003ddc(void *p, u32 a, u32 b, u32 c);
+void Snd_SeEmitterPlayOneShotAlt(void *p, u32 a, u32 b, u32 c);
 void Bgm_Release(s32 a);
 void Bgm_RequestSilence(s32 a, s32 b, s32 c);
 void Bgm_ReleasePriority(s32 a);
@@ -439,7 +439,7 @@ BOOL SpNpcResetti::mainAct03() {
 BOOL SpNpcResetti::setupAct04() {
     model.frameStep = 0x1000;
     effectHandle = Effect_Create(0x30, &position, 0, 0);
-    func_02003ddc(&seEmitter, 0x7e6, 0x7f, 0);
+    Snd_SeEmitterPlayOneShotAlt(&seEmitter, 0x7e6, 0x7f, 0);
     collisionEnabled = 1;
     Bgm_RequestSilence(0x17, 0xf, 0);
     return TRUE;
@@ -469,7 +469,7 @@ BOOL SpNpcResetti::mainAct04() {
 
 BOOL SpNpcResetti::setupAct05() {
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xfe, 1, data_020c6cc8, 0);
-    func_02003ddc(&seEmitter, 0x7e7, 0x7f, 0);
+    Snd_SeEmitterPlayOneShotAlt(&seEmitter, 0x7e7, 0x7f, 0);
     return TRUE;
 }
 
@@ -589,10 +589,10 @@ void SpNpcResettiTalk::onSignalTag(s32 a) {
         PlayerActor_LocalPlayAnim99(this);
         break;
     case 1:
-        func_02003ddc(&ownerNpc->seEmitter, 0x7f4, 0x7f, 0);
+        Snd_SeEmitterPlayOneShotAlt(&ownerNpc->seEmitter, 0x7f4, 0x7f, 0);
         break;
     case 2:
-        func_02003ddc(&ownerNpc->seEmitter, 0x7f5, 0x7f, 0);
+        Snd_SeEmitterPlayOneShotAlt(&ownerNpc->seEmitter, 0x7f5, 0x7f, 0);
         break;
     }
 }

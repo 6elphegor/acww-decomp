@@ -66,7 +66,7 @@ s32 _ZN10BgVramTask13requestScreenEjhjj(void *self, void *b, s32 c, s32 d, s32 e
 s32 Cell_HitTest(void *info, s32 x, s32 y, s32 a, s32 b);
 void Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
 s32 Snd_StopSe(s32 a, s32 b);
-void func_02004008(s32 a);
+void Snd_PlaySeOnHandle(s32 a);
 s32 Snd_SetPanIfChanged(s32 a);
 void Gfx2d_SetLayerOffset(u32 a, s32 b, s32 c);
 void Vec_Sub(Unk_ov127_02291f60_Vec *out, Unk_ov127_02291f60_Vec *a, Unk_ov127_02291f60_Vec *b);
@@ -284,7 +284,7 @@ extern "C" void StarSky_ScrollInDir(Unk_ov127_02291f60 *s, s32 d, s32 e)
     if (ch) {
         if (!StarSky_HasFlags(s, 8)) {
             StarSky_SetFlags(s, 8);
-            func_02004008(0x883);
+            Snd_PlaySeOnHandle(0x883);
         }
     } else {
         if (StarSky_HasFlags(s, 8) == 1) {

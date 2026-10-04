@@ -155,7 +155,7 @@ void *PlayerPatterns_getPatternOrder(void *p);
 u32 PatternOrder_getSlot(void *p, u32 i);
 void PatternSrc_Swap(s32 a, s32 b, s32 c, s32 d, s32 e);
 void PatternSrc_Copy(s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_02003ddc(void *p, s32 a, s32 b, s32 c);
+void Snd_SeEmitterPlayOneShotAlt(void *p, s32 a, s32 b, s32 c);
 u16 *PlayerData_getShirt(void *p);
 u16 *PlayerData_getHat(void *p);
 void PlayerActor_RequestWearShirtAlt(u16 *p);
@@ -573,7 +573,7 @@ void SpNpcBookerTalk::runScript01() {
         u32 idx = MenuCtrl_GetIndex();
         s32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(g)), idx);
         PatternSrc_Copy(9, t, 5, 0, 1);
-        func_02003ddc(&owner->seEmitter, 0x50, 0x7f, 0);
+        Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x50, 0x7f, 0);
         buf[0] = 0x18;
         TalkWindowState_setNextMessage(unk_3c, buf, sSpNpcBookerMsgFiles[0]);
     } else {
@@ -594,7 +594,7 @@ void SpNpcBookerTalk::runScript02() {
         u32 idx = MenuCtrl_GetIndex();
         u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(g)), idx);
         PatternSrc_Swap(9, t, 5, 0, 1);
-        func_02003ddc(&owner->seEmitter, 0x50, 0x7f, 0);
+        Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x50, 0x7f, 0);
         u32 x;
         u32 y;
         if (t < 8) {

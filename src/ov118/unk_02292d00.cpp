@@ -30,7 +30,7 @@ void _ZN11MsgString9CC2Ev(void *self);
 void _ZN11MsgString9CD1Ev(void *self);
 s32 _ZN10PlayerData11getPlayerIdEv(void *self);
 void _ZN9MsgString5clearEv(void *self);
-void func_02004018(u32 a, s32 b);
+void Snd_PlaySePanned(u32 a, s32 b);
 void Snd_PlaySe(u32 v);
 void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
@@ -1831,7 +1831,7 @@ void MapTab::playSeAtMarker(s32 a) {
         } else if (v > 0x80) {
             v = 0x80;
         }
-        func_02004018(a, v);
+        Snd_PlaySePanned(a, v);
     }
 }
 

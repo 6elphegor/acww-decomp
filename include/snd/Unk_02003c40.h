@@ -18,8 +18,8 @@ struct Unk_02003c40 {
     void callRequestSustained(void *a);
     void callUpdate(void *a);
     void callUpdateRelative(Unk_02003a6c_Vec *v);
-    void func_02003df4(Unk_02003a6c_Vec *v);
-    void func_02003e80(Unk_02003a6c_Vec *v);
+    void callSeUpdateRelativeAlt(Unk_02003a6c_Vec *v);
+    void callSeUpdateRelative(Unk_02003a6c_Vec *v);
 };
 
 #endif

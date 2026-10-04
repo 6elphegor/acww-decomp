@@ -55,8 +55,8 @@ s32 PlayerData_GetCurrent();
 s32 _ZN10PlayerData12getInventoryEv();
 s32 _ZN15PlayerInventory13getTotalBellsEi(s32 a, s32 b);
 s32 MenuCtrl_GetHandBells();
-void func_02003edc();
-void func_02003eec();
+void Snd_StopBellRollSe();
+void Snd_StartBellRollSe();
 void Snd_PlaySe(s32 a);
 void String_FormatNumber(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Math_ApproachS32(void *p, s32 a, s32 b, s32 c, s32 d);
@@ -2034,11 +2034,11 @@ void HudWallet::formatValue() {
 void HudWallet::setRolling(BOOL v) {
     if (rolling != 0) {
         if (v == 0) {
-            func_02003edc();
+            Snd_StopBellRollSe();
             Snd_PlaySe(0x2e);
         }
     } else if (v != 0) {
-        func_02003eec();
+        Snd_StartBellRollSe();
     }
     rolling = v;
 }
