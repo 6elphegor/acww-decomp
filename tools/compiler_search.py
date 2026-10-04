@@ -91,7 +91,9 @@ def load_symbols() -> dict[str, tuple[int, int]]:
 
 def load_modules() -> list[tuple[str, int, bytes]]:
     '''Returns (name, base address, code) for ARM9 main and every overlay'''
-    modules = [("main", 0x02000000, (extract_path / "arm9" / "arm9.bin").read_bytes())]
+    modules = [("main", 0x02000000, (extract_path / "arm9" / "arm9.bin").read_bytes()),
+               ("autoload_2", 0x020e7500, (extract_path / "arm9" / "unk_autoload_2.bin").read_bytes()),
+               ("itcm", 0x01ff8000, (extract_path / "arm9" / "itcm.bin").read_bytes())]
     overlays_yaml = (extract_path / "arm9_overlays" / "overlays.yaml").read_text()
     for block in re.split(r"\n  - ", overlays_yaml)[1:]:
         fields = dict(re.findall(r"(\w+): (\S+)", block))
@@ -103,9 +105,10 @@ def load_modules() -> list[tuple[str, int, bytes]]:
 def original_code(name: str, address: int, size: int, modules) -> bytes | None:
     # Overlays share address ranges, so use the module named in the symbol, e.g. func_ov012_02212345
     match = re.match(r"\w+?_(ov\d{3})_", name)
-    wanted = match.group(1) if match else "main"
+    # The ARM9 main module and the library autoloads (autoload_2, itcm) don't overlap
+    wanted = {match.group(1)} if match else {"main", "autoload_2", "itcm"}
     for module_name, base, code in modules:
-        if module_name == wanted and base <= address < base + len(code):
+        if module_name in wanted and base <= address < base + len(code):
             return code[address - base:address - base + size]
     return None
 

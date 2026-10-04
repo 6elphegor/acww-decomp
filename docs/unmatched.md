@@ -13,10 +13,10 @@ Code (`.text`) built from source:
 | Module | `.text` bytes | Built from source | Not built | Functions not built |
 |---|--:|--:|--:|--:|
 | ARM9 main | 797,444 | 797,224 (99.97%) | 220 (data inside `.text`, see below) | 0 of 11,879 |
-| `autoload_2` (NitroSDK, NitroSystem, MSL, runtime, in-house library) | 320,532 | 309,804 (96.7%) | 10,728 | 18 of 2,189 |
+| `autoload_2` (NitroSDK, NitroSystem, MSL, runtime, in-house library) | 320,532 | 309,828 (96.7%) | 10,704 | 17 of 2,189 |
 | ITCM | 23,264 | 22,560 (97.0%) | 704 (624 in 2 functions, 80 of data) | 2 of 158 |
 | Overlays (99 with code) | 1,450,796 | 1,450,796 (100%) | 0 | 0 |
-| **Total** | **2,592,036** | **2,580,384 (99.6%)** | **11,652** | **20** |
+| **Total** | **2,592,036** | **2,580,408 (99.6%)** | **11,628** | **19** |
 
 Data sections owned by a source file:
 
@@ -49,18 +49,17 @@ Most library units were linked with their code only, so most library data is sti
 | `0x0210ae48` | 0x368 | NitroSystem sound | Start a sound capture (sets up the capture and PCM channels) | Register allocation (which of 15 parameters stay on the stack); 158 diff lines. |
 | `0x0210d174` | 0x8b4 | NitroSystem sound | Wave-stream block reader with IMA-ADPCM decoder | Register allocation; the original spills locals differently; several hundred diff lines. Probably needs the original stream-player source. |
 | `0x0210ea0c` | 0x200 | NitroSystem sound | Capture effect callback (sample processing with a clamp to s16) | 67 diff lines: the original rematerialises -32768 for the compare (`mov #32768; rsb`) but keeps the stored -32768 in r9. |
-| `0x0210f900` | 0xac | NitroSDK GX | `GX_SetBankForSubBG` | Only the compare tree of the switch differs. The original groups cases {0, 4} and tests 8 and 12 separately; mwcc's case clustering cannot produce that grouping with any available build. Bodies, case order and registers are right. |
-| `0x0210f9cc` | 0xb8 | NitroSDK GX | `GX_SetBankForARM7` | Same switch-tree difference ({0, 4}, 0x80, 0x180). |
-| `0x0211cbd0` | 0x18 | NitroSDK RTC | Wait while the RTC lock is busy (`while (lock == 1);`) | 2 of 6 words: the original keeps the lock address in `ip`, the attempt in `r1`. |
-| `0x021239ec` | 0x46c | NitroSDK MB | Read a ROM image (from a file or the system ROM header at 0x027ffe00), hash its segments, patch the autoload callback | The last statement's registers are rotated by one (the constant should be in `r0`). |
+| `0x0210f900` | 0xac | NitroSDK GX | `GX_SetBankForSubBG` | Only the compare tree of the switch differs (cases 0, 4, 0x80, 0x180; 4 falls through from 0x180 into 0x80). The original clusters {0, 4} behind a range check and roots the tree at 0x80; every available build (1.2 b56..sp4, 2.0, DSi) roots it at 4. mwcc clusters two cases only when their span max-min+1 is at most 4 ({0, 3} clusters, {0, 4} does not) and three only up to 7, independent of case order, `default`, operand type and -O level; the original's compiler accepts {0, 4} but not {0, 4, 8}. HGSS's SDK (a later compiler) has the same tree, so it is the SDK's compiler, not the source. Bodies, case order and registers are right. |
+| `0x0210f9cc` | 0xb8 | NitroSDK GX | `GX_SetBankForARM7` | Same switch-tree difference: cases 0, 4, 8, 12; the original clusters {0, 4} and roots the tree at 8, mwcc roots it at 4. |
+| `0x021239ec` | 0x46c | NitroSDK MB | `MB_ReadSegment`: read a ROM image (from a file or the system ROM header at 0x027ffe00) into the segment buffer, attach it to the cache, patch the autoload callback | 6 diff lines (3 instructions), the last statement only. The rest matches with: `p`/`rest` set from `buf`/`len` and then advanced by 0x160, the ROM size read through an inline helper (so the header base stays in a register), `file = &tmp` before `top`, and the region loop calling an inline `ReadRegion(&info, r)` (the length is loaded twice). Best last statement `*(u32 *)((u8 *)AutoloadCallback - rom->arm9RamAddr + (u32)cache->list[1].ptr) = 0xe12fff1e;` gives `ldr r0,[r6,#0x48]; ldr r3,=K; ... str r3,[r1,r0]` against the original's `ldr r3,[r6,#0x48]; ldr r0,=K; ... str r0,[r3,r1]`: the constant has to be allocated first. ~100 forms of that statement were tried (operand order and casts, temporaries, inline store helpers, `AutoloadCallback` as array or function). |
 | `0x0212d78c` | 0x4d4 | MSL | Wide-character `parse_format` (`wprintf.c` format-string parser) | Only the dispatch of the conversion `switch` differs (56 diff lines, 16 bytes longer); everything else matches with MSL's `parse_format` (the version without `j`/`t`/`z`/`a`, `c >= 0x80 ? 0 : ...` digit test, `f.conversion_char = c; switch (c)`). The original has a table for cases 100..117 guarded by the lower bound only (`subs r0, r3, #0x64; addpl`) plus a separate test for 120; every available build (1.2, 2.0, DSi) splits off 100 and builds a bounds-checked table for 101..120, whatever the case order. Same family as the switch differences in [`assembly.md`](assembly.md) (probably the missing 1.2/sp1). |
 
 ### ITCM
 
 | Address | Size | What it does | Closest attempt / remaining difference |
 |---|--:|---|---|
-| `0x01ffcd50` | 0x168 | Game H-blank handler, main engine (per-line BG3 affine parameters, DISPCNT bits, blending, palette entries) | 20 diff lines, all in the first block: the original loads the table base before the VCOUNT address, the attempt the other way round. |
-| `0x01ffceb8` | 0x108 | Game H-blank handler, sub engine | 50 diff lines: the original keeps the palette pointer and `0x05000000` in r5/r4 from the start and reads VCOUNT first. |
+| `0x01ffcd50` | 0x168 | Game H-blank handler, main engine (per-line BG3 affine parameters, DISPCNT bits, blending, palette entries) | 20 diff lines, all in the first block: the original loads the table base before the VCOUNT address, the attempt the other way round. Re-tried (M3): the per-line data is `gWeatherManager` +8 (`{s32 x, y; s16 pa}` x 192 x 2 buffers, BG3X/BG3Y/BG3PA), +0x1210 (`u16` BLDALPHA x 192 x 2), +0x1514 (line offset table indexed by +0x151c) and `sSkyGradient` (+0 buffer index, +4 `u16` colours x 192 x 2, +0x304/+0x306 backdrop colours); the backdrop goes through a stack `volatile u16` like `Sky_VBlankMain`. Operand order, statement order, inline `GX_GetVCount`, pointer locals and types do not change the schedule of the first block. |
+| `0x01ffceb8` | 0x108 | Game H-blank handler, sub engine | 50 diff lines: the original keeps the palette pointer and `0x05000000` in r5/r4 from the start and reads VCOUNT first. Re-tried (M3): unlike the main handler, it addresses everything from base registers (`0x04000000`, `0x05000000`, `&sSkyGradient`, `&gWeatherManager` + 8 computed, not pooled); with pointer locals and `(u8 *)w + 8` the instruction multiset matches, only the schedule and two registers differ. |
 
 ## Data that no unit owns
 
@@ -85,7 +84,10 @@ Most library units were linked with their code only, so most library data is sti
   code is linked without them.
 * `autoload_3` (48,680 bytes): mostly library bss from 0x021f4768 to the end, plus a few small objects of main.
 * DTCM `.data` 0x027e0000-0x027e0460.
-* ITCM `.text` 0x01ff8ab4-0x01ff8ad4: a table of the eight NitroSystem texture-SRT functions inside `.text`.
+* ITCM `.text` 0x01ff8ab4-0x01ff8ad4: a table of the eight NitroSystem texture-SRT functions inside `.text`, right after
+  the code of its file (`src/itcm/unk_01ff8228.c`). mwcc puts a `const` table in `.rodata` even under
+  `#pragma define_section`/`#pragma section` (checked), and the ITCM module has no `.rodata` range, so the C unit
+  cannot emit it in place yet.
 * ITCM `.text` 0x01ffd0b4-0x01ffd0e4: six pointer-to-member constants of `ProcBase`'s file (next section).
 
 ## `ProcBase`

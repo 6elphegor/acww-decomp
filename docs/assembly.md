@@ -22,7 +22,7 @@ assembly. It gets a C or C++ attempt, and if it does not match it stays unlinked
 ## How assembly units are written
 
 * One `.s` file per routine or group of routines, under `src/<module>/`, listed in `delinks.txt` as a `complete`
-  unit like any other. There are 69 of them: 52 in `autoload_2`, 13 in ITCM, 3 in main (the secure area, crt0,
+  unit like any other. There are 70 of them: 53 in `autoload_2`, 13 in ITCM, 3 in main (the secure area, crt0,
   and the register-dump routine at 0x0206d470) and 1 in ov065 (two ARM `clz` helpers of the network library).
 * They are assembled with the toolchain's own assembler, `mwasmarm -proc arm5TE -little`, from the same package
   as the compiler (`AS_FLAGS` in `tools/mwcc_config.py`, rule `mwasm` in `tools/configure.py`). A

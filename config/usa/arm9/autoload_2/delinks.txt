@@ -697,6 +697,10 @@ src/autoload_2/unk_0211c8e8.c:
     complete
     .text       start:0x0211c8e8 end:0x0211cbd0
 
+src/autoload_2/unk_0211cbd0.s:
+    complete
+    .text       start:0x0211cbd0 end:0x0211cbe8
+
 src/autoload_2/unk_0211cbe8.c:
     complete
     .text       start:0x0211cbe8 end:0x0211cc7c

@@ -99,7 +99,7 @@ Rerun `configure.py` after adding, removing or renaming a unit, or after changin
   finding where a source file starts and ends.
 * `python3 tools/pipeline/ovdump.py ovNNN` dumps an overlay's `.data` with relocation targets and labels.
 
-### Compare one function (main and overlays)
+### Compare one function
 
 ```
 python3 tools/asmdiff.py scratch.cpp <compiled symbol> --original <symbols.txt name>
@@ -114,8 +114,8 @@ python3 tools/asmdiff.py f.cpp IpStack_TimerThreadMain --version 1.2/sp2p3 \
     --flags "$(cd tools && python3 -c 'from mwcc_config import CC_FLAGS; print(CC_FLAGS)') -O4,p"
 ```
 
-asmdiff only knows main and the overlays. For autoload_2 and ITCM use `linkprep.py compile` and `check` and compare
-`arm-none-eabi-objdump -d` of your object with `maindis.py`.
+asmdiff (and compiler_search) find the original in main, the overlays, `autoload_2` and ITCM. Library and ITCM files
+are mostly ARM: replace `-thumb` by `-nothumb` in the flags (and add the file's `-O4,p`).
 
 ### Check a whole unit
 
