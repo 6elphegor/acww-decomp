@@ -10,8 +10,7 @@
 // link-once, emitted by main's unk_02004558.cpp and autoload_2. Here the destructor is declared out of line so that
 // users do not emit link-once copies of their own; those two units (and main 0202e2d4 / 020119cc / 0201c050, whose inlined NpcActor
 // destructors need it) define it inline after including this header.
-// The NPC actor files (main, ov004, ov045..ov088) hold one by value as NpcActor::seEmitter. (dsd's old name for it,
-// SndSeEmitterKind1, survives only as the C1 function symbol in autoload_2/symbols.txt.)
+// The NPC actor files (main, ov004, ov045..ov088) hold one by value as NpcActor::seEmitter.
 class SndSeEmitterKind1 : public SndSeEmitter {
 public:
     SndSeEmitterKind1();                            // C1 0x020f4080, C2 0x020f40c0
