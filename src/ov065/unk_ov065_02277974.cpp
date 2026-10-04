@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_02277f70_Ctx.h"
 
 typedef long long s64;
 
@@ -20,10 +21,6 @@ struct Unk_ov065_02277d68_Args {
     u8 unk_09;
 };
 
-struct Unk_ov065_02277f70_Ctx {
-    u32 userData;
-    void (*callback)(s32, s32, s32, u32);
-};
 
 typedef void *(*Unk_ov065_02290f98_Fn)(s32, s32, s32);
 typedef void *(*Unk_ov065_02290f94_Fn)(s32, void *, s32);

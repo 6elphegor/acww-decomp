@@ -1,6 +1,8 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/Unk_ov065_0227194c_Out.h"
+#include "net/Unk_ov065_02272428_Sub.h"
+#include "net/Unk_ov065_02277418_Rec.h"
 
 typedef long long s64;
 
@@ -62,19 +64,7 @@ struct Unk_ov065_0229080c {
 };
 
 
-struct Unk_ov065_02272428_Sub {
-    u8 clientIndex;
-    u8 retryCount;
-    u16 peerPort;
-    u32 peerIp;
-    s32 cookie;
-};
 
-struct Unk_ov065_02272428_Rec {
-    u32 unk_00;
-    u16 unk_04;
-    u16 unk_06;
-};
 
 struct Unk_ov065_02290814_Sub {
     u32 transportSocket;
@@ -108,15 +98,6 @@ struct Unk_ov065_02290814 {
     u16 memberConnectPorts[32];
 };
 
-struct Unk_ov065_022726a0_Hdr {
-    u8 magic[4];
-    u32 version;
-    u8 command;
-    u8 argsSize;
-    u16 senderPort;
-    u32 senderIp;
-    u32 senderProfileId;
-};
 
 extern "C" {
 
@@ -1230,24 +1211,6 @@ extern "C" {
 
 // ov065_039: DWC-like send/receive channel table (0x0227702c..0x022778b0)
 
-struct Unk_ov065_02277418_Rec {
-    u8 *sendData;
-    u8 *recvBuffer;
-    s32 recvBufSize;
-    s32 sentBytes;
-    s32 recvBytes;
-    s32 sendSize;
-    s32 recvSize;
-    u8 isSending;
-    u8 recvState;
-    u8 prevRecvState;
-    u8 unk_1f;
-    u16 unk_20;
-    u16 recvType;
-    u32 lastRecvTick;
-    u32 lastRecvTickHi;
-    u32 timeoutMs;
-};
 
 struct Unk_ov065_02290f78 {
     Unk_ov065_02277418_Rec channels[32];
@@ -1271,17 +1234,7 @@ struct Unk_ov065_02277054_Sm {
     u64 lastSendTime;
 };
 
-struct Unk_ov065_022778b0_Rng {
-    u64 value;
-    u64 multiplier;
-    u64 increment;
-};
 
-struct Unk_ov065_0227762c_Hdr {
-    u32 dataSize;
-    u16 frameType;
-    u8 magic[2];
-};
 
 extern "C" {
 extern u8 sDwcMatchServerLock[];

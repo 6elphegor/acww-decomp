@@ -1,6 +1,9 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/Unk_ov065_02261408_Hostent.h"
+#include "net/Unk_ov065_022786bc_Vec.h"
+#include "net/Unk_ov065_02279c7c.h"
+#include "net/Unk_ov065_0227bd20_Ctx.h"
 
 // ov065 TU38: ghttp (2): request post / process / response handlers (0x0227a284..0x0227bd20)
 
@@ -14,100 +17,10 @@ volatile s32 data_ov065_022910e8;
 }
 
 namespace Nm {
-struct Unk_ov065_0227a4e8_Part {
-    s32 type;
-    char *partName;
-    char *data;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-};
 
-struct Unk_ov065_0227a4e8_Slot {
-    Unk_ov065_0227a4e8_Part *part;
-    s32 pos;
-    u32 file;
-    s32 fileLength;
-};
 
-struct Unk_ov065_0227a3f4_List {
-    void *postParts;
-    s32 postPartIndex;
-};
 
-struct Unk_ov065_0227a4e8_Req {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 isMultipart;
-};
 
-struct Unk_ov065_02279c7c {
-    s32 inUse;
-    s32 requestId;
-    s32 serial;
-    s32 requestType;
-    s32 state;
-    void *url;
-    void *serverHost;
-    s32 serverIp;
-    u16 serverPort;
-    void *requestPath;
-    void *extraHeaders;
-    s32 unk_2c;
-    s32 isBlocking;
-    s32 keepAlive;
-    s32 result;
-    void *progressCallback;
-    void *completedCallback;
-    u32 callbackParam;
-    s32 socketHandle;
-    s32 socketError;
-    u32 sendBuf[3];
-    s32 sendBufLength;
-    s32 sendBufReadPos;
-    u32 unk_64[4];
-    u32 recvBuf;
-    u8 *recvBufData;
-    s32 recvBufCapacity;
-    s32 recvBufLength;
-    s32 recvBufReadPos;
-    s32 recvBufGrowBy;
-    u32 unk_8c[3];
-    u32 rawRecvBuf;
-    u8 *rawRecvBufData;
-    u32 unk_a0;
-    s32 rawRecvBufLength;
-    s32 rawRecvBufReadPos;
-    u32 unk_ac[4];
-    u32 bodyBuf;
-    u32 bodyBufData;
-    u32 unk_c4[5];
-    u32 bodyBufKeepData;
-    u32 unk_dc;
-    s32 isUserBodyBuf;
-    s32 httpMajorVersion;
-    s32 httpMinorVersion;
-    s32 statusCode;
-    s32 statusTextIndex;
-    s32 headersIndex;
-    s32 headersEnd;
-    s32 completed;
-    u32 bodyBytesReceived;
-    u32 contentLength;
-    void *redirectUrl;
-    s32 redirectCount;
-    s32 isChunked;
-    u32 chunkHeader[6];
-    s32 isProcessing;
-    s32 connectionClosed;
-    u32 isThrottled;
-    u32 lastThrottleRecvTime;
-    Unk_ov065_0227a4e8_Req *post;
-    void *postParts;
-    s32 postPartIndex;
-    u32 postBytesSent;
-};
 
 extern "C" {
 extern s32 sGsHttpStartupCount;
@@ -178,14 +91,6 @@ s32 GsHttp_SendPostPartString(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c
 namespace Na {
 typedef void (*Unk_ov065_02278740_Dtor)(void *);
 
-struct Unk_ov065_022786bc_Vec {
-    s32 count;
-    s32 capacity;
-    s32 elemSize;
-    s32 growBy;
-    Unk_ov065_02278740_Dtor freeElemFn;
-    u8 *elems;
-};
 
 struct Unk_ov065_0227a884_Rec {
     s32 type;
@@ -494,72 +399,12 @@ void GsHttp_StepHostLookup(Unk_ov065_0227b2a8_Obj *self);
 }
 
 namespace Nh {
-struct Unk_ov065_0227bd20_Ctx {
-    u8 pad_000[0x100];
-    s32 infoCaching;
-    u8 pad_104[4];
-    s32 simulation;
-    u8 pad_10c[0x198 - 0x10c];
-    s32 sessKey;
-    u8 pad_19c[0x1d8 - 0x19c];
-    s32 connectState;
-    u8 pad_1dc[0x1f4 - 0x1dc];
-    char outputBuffer[0x14];
-    s32 unk_208;
-    s32 unk_20c;
-    s32 unk_210;
-    s32 lastStatus;
-    char lastStatusString[0x100];
-    char lastLocationString[0x100];
-    u8 pad_418[0x430 - 0x418];
-    s32 numBuddies;
-};
 
-struct Unk_ov065_0227bd20_Handle {
-    Unk_ov065_0227bd20_Ctx *connection;
-};
 
-struct Unk_ov065_0227bbf4_Url {
-    u8 pad_00[0x14];
-    char *url;
-    char *serverHost;
-    u16 unk_1c;
-    u16 unk_1e;
-    u16 serverPort;
-    u16 unk_22;
-    char *requestPath;
-};
 
-struct Unk_ov065_0227c05c_Src {
-    s32 unk_00;
-    s32 status;
-    char *statusString;
-    char *locationString;
-    s32 ip;
-    s32 port;
-};
 
-struct Unk_ov065_0227c05c_Ent {
-    s32 profileId;
-    s32 unk_04;
-    Unk_ov065_0227c05c_Src *buddyStatus;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-};
 
-struct Unk_ov065_0227c05c_Out {
-    s32 profileId;
-    s32 status;
-    char statusString[0x100];
-    char locationString[0x100];
-    s32 ip;
-    s32 port;
-};
 
-struct Unk_ov065_0227c400_Buf {
-    u32 v[0x81];
-};
 
 typedef void (*Unk_ov065_0227c400_Cb)(void *, void *, void *);
 
@@ -591,9 +436,6 @@ void GsUtil_Free(void *);
 }
 
 extern "C" {
-struct Unk_ov065_0227c4b0_Args {
-    s32 v[4];
-};
 }
 extern "C" {
 BOOL GsHttp_ParseUrl(Unk_ov065_0227bbf4_Url *u);

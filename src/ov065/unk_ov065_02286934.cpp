@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 
 #include "types.h"
+#include "net/Unk_ov065_022786bc_Vec.h"
 
 
 
@@ -259,7 +260,6 @@ struct Unk_ov065_02287348_Ent {
     u8 unk_14[0x2c];
 };
 
-struct Unk_ov065_022786bc_Vec;
 
 typedef Unk_ov065_02287390_Qr Qr;
 typedef Unk_ov065_02287390_Buf Buf;

@@ -1,28 +1,11 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_02277418_Rec.h"
 
 typedef long long s64;
 
 // ov065_039: DWC-like send/receive channel table (0x0227702c..0x022778b0)
 
-struct Unk_ov065_02277418_Rec {
-    u8 *sendData;
-    u8 *recvBuffer;
-    s32 recvBufSize;
-    s32 sentBytes;
-    s32 recvBytes;
-    s32 sendSize;
-    s32 recvSize;
-    u8 isSending;
-    u8 recvState;
-    u8 prevRecvState;
-    u8 unk_1f;
-    u16 unk_20;
-    u16 recvType;
-    u32 lastRecvTick;
-    u32 lastRecvTickHi;
-    u32 timeoutMs;
-};
 
 struct Unk_ov065_02290f78 {
     Unk_ov065_02277418_Rec channels[32];
@@ -34,17 +17,7 @@ struct Unk_ov065_02290f78 {
     u16 unk_612;
 };
 
-struct Unk_ov065_022778b0_Rng {
-    u64 value;
-    u64 multiplier;
-    u64 increment;
-};
 
-struct Unk_ov065_0227762c_Hdr {
-    u32 dataSize;
-    u16 frameType;
-    u8 magic[2];
-};
 
 extern "C" {
 Unk_ov065_02290f78 *sDwcNetChannels;

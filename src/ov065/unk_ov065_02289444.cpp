@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_022786bc_Vec.h"
 
 extern "C" {
 char *data_ov065_0228e954 = "Query Error: ";
@@ -305,7 +306,6 @@ namespace F0228a20c {
 // ov065_069: GameSpy-like login/handshake packet builder & parser 0x0228a20c..0x0228ab0c
 
 struct Unk_ov065_0228a218_Ent;
-struct Unk_ov065_022786bc_Vec;
 
 struct Unk_ov065_0228a218_Rec {
     void *keyName;

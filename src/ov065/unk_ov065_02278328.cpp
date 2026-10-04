@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_022786bc_Vec.h"
 
 // ov065_041: generic vector / hash table / base64 / md5 hex / PRNG (0x022782f4..0x02278c14)
 
@@ -8,14 +9,6 @@ typedef s32 (*Unk_ov065_02278448_Cb)(void *, void *);
 typedef void (*Unk_ov065_02278740_Dtor)(void *);
 typedef s32 (*Unk_ov065_022787c4_Hash)(void *, s32);
 
-struct Unk_ov065_022786bc_Vec {
-    s32 count;
-    s32 capacity;
-    s32 elemSize;
-    s32 growBy;
-    Unk_ov065_02278740_Dtor freeElemFn;
-    u8 *elems;
-};
 
 struct Unk_ov065_02278928_Tbl {
     Unk_ov065_022786bc_Vec **buckets;

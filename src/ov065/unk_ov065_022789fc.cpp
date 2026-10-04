@@ -1,22 +1,11 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0227931c_Owner.h"
 
 typedef long long s64;
 
 // ov065 TU36: GameSpy common (nonport: PRNG/base64/socket wrappers, ghttpBuffer) 0x022789fc..0x0227931c
 
-struct Unk_ov065_02278e64_A {
-    u32 hostName;
-    u32 aliases;
-    s16 addrType;
-    s16 addrLength;
-    u32 addrList;
-};
-struct Unk_ov065_02278e64_B {
-    u32 *firstAddr;
-    u32 listEnd;
-    u8 pad_08[0x10];
-};
 struct Unk_ov065_02291094 {
     u32 hostIp;
     u8 pad_04[0x10];
@@ -55,45 +44,9 @@ s32 OS_SPrintf(char *, char *, s32);
 
 namespace FB {
 
-struct Unk_ov065_02278c64_Sa {
-    u8 b[8];
-};
 
-struct Unk_ov065_02278f0c_Pfd {
-    s32 fd;
-    s16 events;
-    s16 revents;
-};
 
-struct Unk_ov065_0227931c_Owner {
-    u8 pad_00[0x38];
-    s32 result;
-    u8 pad_3c[0x0c];
-    s32 socketHandle;
-    s32 socketError;
-    u8 pad_50[4];
-    char *sendBufData;
-    u8 pad_58[4];
-    s32 sendBufLength;
-    s32 sendBufReadPos;
-    u8 pad_64[0x98];
-    s32 completed;
-    u8 pad_100[0x64];
-    u32 encryptor[6];
-    s32 (*encryptFn)(Unk_ov065_0227931c_Owner *, void *, char *, s32 *, char *, s32 *);
-};
 
-struct Unk_ov065_0227931c_Buf {
-    Unk_ov065_0227931c_Owner *connection;
-    char *data;
-    s32 capacity;
-    s32 length;
-    s32 readPos;
-    s32 growBy;
-    s32 isFixed;
-    s32 keepData;
-    s32 isEncrypted;
-};
 
 
 

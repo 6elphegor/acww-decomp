@@ -1,75 +1,17 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0227bd20_Ctx.h"
+#include "net/Unk_ov065_0227c538_Node.h"
 
 namespace Nb {
 // ov065_047: DWC HTTP/GHI-like API wrappers (0x0227bbf4..0x0227c4b0)
 
-struct Unk_ov065_0227bd20_Ctx {
-    u8 pad_000[0x100];
-    s32 infoCaching;
-    u8 pad_104[4];
-    s32 simulation;
-    u8 pad_10c[0x198 - 0x10c];
-    s32 sessKey;
-    u8 pad_19c[0x1d8 - 0x19c];
-    s32 connectState;
-    u8 pad_1dc[0x1f4 - 0x1dc];
-    char outputBuffer[0x14];
-    s32 unk_208;
-    s32 unk_20c;
-    s32 unk_210;
-    s32 lastStatus;
-    char lastStatusString[0x100];
-    char lastLocationString[0x100];
-    u8 pad_418[0x430 - 0x418];
-    s32 numBuddies;
-};
 
-struct Unk_ov065_0227bd20_Handle {
-    Unk_ov065_0227bd20_Ctx *connection;
-};
 
-struct Unk_ov065_0227bbf4_Url {
-    u8 pad_00[0x14];
-    char *url;
-    char *serverHost;
-    u16 unk_1c;
-    u16 unk_1e;
-    u16 serverPort;
-    u16 unk_22;
-    char *requestPath;
-};
 
-struct Unk_ov065_0227c05c_Src {
-    s32 unk_00;
-    s32 status;
-    char *statusString;
-    char *locationString;
-    s32 ip;
-    s32 port;
-};
 
-struct Unk_ov065_0227c05c_Ent {
-    s32 profileId;
-    s32 unk_04;
-    Unk_ov065_0227c05c_Src *buddyStatus;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-};
 
-struct Unk_ov065_0227c05c_Out {
-    s32 profileId;
-    s32 status;
-    char statusString[0x100];
-    char locationString[0x100];
-    s32 ip;
-    s32 port;
-};
 
-struct Unk_ov065_0227c400_Buf {
-    u32 v[0x81];
-};
 
 typedef void (*Unk_ov065_0227c400_Cb)(void *, void *, void *);
 extern "C" {
@@ -101,29 +43,8 @@ void GsUtil_Free(void *);
 namespace Nc {
 // ov065_048: DWC HTTP/session context (0x0227c538..0x0227ce30)
 
-struct Unk_ov065_0227c538_Pair {
-    s32 func;
-    s32 param;
-};
 
-struct Unk_ov065_0227c538_Sub {
-    s32 unk_00;
-    s32 unk_04;
-    void *unk_08;
-    void *locationString;
-};
 
-struct Unk_ov065_0227c538_Node {
-    s32 unk_00;
-    s32 unk_04;
-    Unk_ov065_0227c538_Sub *unk_08;
-    s32 infoCache;
-    s32 authSig;
-    s32 unk_14;
-    s32 unk_18;
-    s32 result;
-    Unk_ov065_0227c538_Node *next;
-};
 
 struct Unk_ov065_0227c538_Ctx {
     u8 errorString;
@@ -193,10 +114,6 @@ typedef Unk_ov065_0227c538_Ctx Ctx0227;
 extern "C" {
 extern s32 sGsAvailStatus;
 
-struct Unk_ov065_0227c564_Z {
-    s32 x;
-    s32 y;
-};
 
 typedef s32 (*Unk_ov065_0227c564_Fn)(Ctx0227 **, void *, s32);
 
@@ -357,9 +274,6 @@ void GsGp_Disconnect(Ctx0227 **h) {
 }
 
 namespace Nb {
-struct Unk_ov065_0227c4b0_Args {
-    s32 v[4];
-};
 extern "C" {
 s32 GsGp_ProfileSearch(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, Unk_ov065_0227c400_Cb cb, void *arg) {
     Unk_ov065_0227bd20_Ctx *c;

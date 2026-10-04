@@ -1,12 +1,9 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_02277f70_Ctx.h"
 
 // ov065 TU34: GameSpy gsAvailable (0x02277e70..0x02278328)
 
-struct Unk_ov065_02277f70_Ctx {
-    u32 userData;
-    void (*callback)(s32, s32, s32, u32);
-};
 
 struct Unk_ov065_02291024 {
     s32 socket;

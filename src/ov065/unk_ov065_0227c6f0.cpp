@@ -1,31 +1,11 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0227c538_Node.h"
 
 // ov065_048: DWC HTTP/session context (0x0227c538..0x0227ce30)
 
-struct Unk_ov065_0227c538_Pair {
-    s32 func;
-    s32 param;
-};
 
-struct Unk_ov065_0227c538_Sub {
-    s32 unk_00;
-    s32 unk_04;
-    void *unk_08;
-    void *locationString;
-};
 
-struct Unk_ov065_0227c538_Node {
-    s32 unk_00;
-    s32 unk_04;
-    Unk_ov065_0227c538_Sub *unk_08;
-    s32 infoCache;
-    s32 authSig;
-    s32 unk_14;
-    s32 unk_18;
-    s32 result;
-    Unk_ov065_0227c538_Node *next;
-};
 
 struct Unk_ov065_0227c538_Ctx {
     u8 errorString;
@@ -95,10 +75,6 @@ typedef Unk_ov065_0227c538_Ctx Ctx0227;
 extern "C" {
 extern s32 sGsAvailStatus;
 
-struct Unk_ov065_0227c564_Z {
-    s32 x;
-    s32 y;
-};
 
 typedef s32 (*Unk_ov065_0227c564_Fn)(Ctx0227 **, void *, s32);
 

@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 
 #include "types.h"
+#include "net/Unk_ov065_022786bc_Vec.h"
 
 extern "C" { u8 data_ov065_0228e14c[4] = {0xfe, 0xfe, 0, 0}; }
 
@@ -12,7 +13,6 @@ extern "C" {
 
 // ov065_058: GameSpy-style pauthr/getpidr/setpdr reply handling, string buffer helpers (0x022838c4..0x022841a4)
 
-struct Unk_ov065_022786bc_Vec;
 
 struct Unk_ov065_02284100_Buf {
     char *data;

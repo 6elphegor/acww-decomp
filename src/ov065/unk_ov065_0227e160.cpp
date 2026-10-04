@@ -1,5 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0227c538_Node.h"
+#include "net/Unk_ov065_0227d8e0_Ctx.h"
 
 // ov065 TU44: GP gpiConnect.c (0x0227e160..0x0227f2a4)
 
@@ -10,67 +12,12 @@ char data_ov065_0228d1a4[0x40] = "gpcm.gs.nintendowifi.net";
 namespace Na {
 // ov065_050: DWC HTTP socket send/recv + growable string buffer + callback list (0x0227d8e0..0x0227e1c8)
 
-struct Unk_ov065_0227d8e0_Buf {
-    char *buffer;
-    s32 capacity;
-    s32 length;
-    s32 pos;
-};
 
-struct Unk_ov065_0227d8e0_Pair {
-    s32 func;
-    s32 param;
-};
 
-struct Unk_ov065_0227e0e8_Wrap {
-    Unk_ov065_0227d8e0_Pair callback;
-};
 
-struct Unk_ov065_0227d8e0_Node {
-    void (*unk_00)(void *, void *, s32);
-    s32 param;
-    void *arg;
-    s32 argType;
-    void *operationId;
-    Unk_ov065_0227d8e0_Node *next;
-};
 
-struct Unk_ov065_0227d8e0_Ctx {
-    u8 pad_000[0x198];
-    s32 sessKey;
-    s32 userId;
-    s32 profileId;
-    Unk_ov065_0227e0e8_Wrap callbacks[6];
-    s32 cmSocket;
-    s32 connectState;
-    char *recvBuffer;
-    u8 pad_1e0[0x1ec - 0x1e0];
-    char *inputBuffer;
-    u8 pad_1f0[4];
-    Unk_ov065_0227d8e0_Buf outputBuffer;
-    s32 peerSocket;
-    u8 pad_208[0x418 - 0x208];
-    s32 errorCode;
-    s32 fatalError;
-    u8 pad_420[4];
-    void *operationList;
-    u8 pad_428[0x434 - 0x428];
-    void *peerList;
-    Unk_ov065_0227d8e0_Node *callbackList;
-    Unk_ov065_0227d8e0_Node *callbackListTail;
-    void *profileUpdateBuffer;
-    u8 pad_444[0x450 - 0x444];
-    void *userUpdateBuffer;
-};
 
-struct Unk_ov065_0227d8e0_Handle {
-    Unk_ov065_0227d8e0_Ctx *connection;
-};
 
-struct Unk_ov065_0227d8e0_Arg {
-    u8 pad_00[0x10];
-    char *authSig;
-};
 
 struct Unk_ov065_0227dc48_Conn {
     u8 pad_00[8];
@@ -80,38 +27,10 @@ struct Unk_ov065_0227dc48_Conn {
     s32 messageQueue;
 };
 
-struct Unk_ov065_0227dfd8_D3 {
-    u8 pad_00[0x38];
-    s32 numNicks;
-    s32 *nicks;
-    s32 *uniqueNicks;
-};
 
-struct Unk_ov065_0227dfd8_D4 {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-};
 
-struct Unk_ov065_0227dfd8_D9 {
-    s32 unk_00;
-    s32 numNicks;
-    s32 *nicks;
-};
 
-struct Unk_ov065_0227e0e8_G {
-    u8 pad_00[0x18];
-    void *id;
-};
 
-struct Unk_ov065_0227e160_Cb {
-    s32 result;
-    s32 errorCode;
-    void *errorString;
-    s32 isFatal;
-};
 
 typedef Unk_ov065_0227d8e0_Handle Unk_H;
 typedef Unk_ov065_0227d8e0_Ctx Unk_C;
@@ -311,22 +230,7 @@ s32 GsGp_SendLogin(Ctx0227 **, Req0227 *);
 namespace Nc {
 // ov065_052: DWC/GameSpy GP connection setup helpers (0x0227ee64..0x0227f54c)
 
-struct Unk_ov065_0227c538_Pair {
-    s32 func;
-    s32 param;
-};
 
-struct Unk_ov065_0227c538_Node {
-    s32 unk_00;
-    s32 unk_04;
-    void *unk_08;
-    s32 infoCache;
-    char *authSig;
-    s32 unk_14;
-    s32 unk_18;
-    s32 result;
-    Unk_ov065_0227c538_Node *next;
-};
 
 struct Unk_ov065_0227c538_Ctx {
     u8 errorString;

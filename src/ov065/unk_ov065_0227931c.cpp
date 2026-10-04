@@ -1,5 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0227931c_Owner.h"
+#include "net/Unk_ov065_02279c7c.h"
 
 // ov065 TU37: ghttp (1): ghttpBuffer / connection table / ghttpMain (0x0227931c..0x0227a284)
 
@@ -17,45 +19,9 @@ s32 sGsHttpStartupCount;
 }
 
 namespace Ng {
-struct Unk_ov065_02278c64_Sa {
-    u8 b[8];
-};
 
-struct Unk_ov065_02278f0c_Pfd {
-    s32 fd;
-    s16 events;
-    s16 revents;
-};
 
-struct Unk_ov065_0227931c_Owner {
-    u8 pad_00[0x38];
-    s32 result;
-    u8 pad_3c[0x0c];
-    s32 socketHandle;
-    s32 socketError;
-    u8 pad_50[4];
-    char *sendBufData;
-    u8 pad_58[4];
-    s32 sendBufLength;
-    s32 sendBufReadPos;
-    u8 pad_64[0x98];
-    s32 completed;
-    u8 pad_100[0x64];
-    u32 encryptor[6];
-    s32 (*encryptFn)(Unk_ov065_0227931c_Owner *, void *, char *, s32 *, char *, s32 *);
-};
 
-struct Unk_ov065_0227931c_Buf {
-    Unk_ov065_0227931c_Owner *connection;
-    char *data;
-    s32 capacity;
-    s32 length;
-    s32 readPos;
-    s32 growBy;
-    s32 isFixed;
-    s32 keepData;
-    s32 isEncrypted;
-};
 
 extern s32 sGsSockLastError;
 struct Unk_ov065_02291094 {
@@ -64,17 +30,6 @@ struct Unk_ov065_02291094 {
 extern Unk_ov065_02291094 data_ov065_02291094;
 extern u8 data_0213a410[];
 
-struct Unk_ov065_02278e64_A {
-    u32 hostName;
-    u32 aliases;
-    s16 addrType;
-    s16 addrLength;
-    u32 addrList;
-};
-struct Unk_ov065_02278e64_B {
-    u32 *firstAddr;
-    u32 listEnd;
-};
 extern Unk_ov065_02278e64_A sGsLocalHostEnt;
 extern Unk_ov065_02278e64_B data_ov065_022910a8;
 extern u8 data_ov065_0229107c[];
@@ -134,7 +89,6 @@ s32 GsHttpBuf_Grow(Unk_ov065_0227931c_Buf *o, s32 n);
 }
 
 namespace Nc {
-struct Unk_ov065_02279c7c;
 
 typedef void (*Unk_ov065_02279588_Cb1)(u32, u32, u32, u32, u32, u32);
 typedef void (*Unk_ov065_022795d4_Cb2)(u32, u32, u32, u32, u32, u32, u32);
@@ -142,85 +96,6 @@ typedef s32 (*Unk_ov065_0227960c_Cb3)(u32, u32, u32, u32, u32);
 typedef s32 (*Unk_ov065_022798f8_Cb4)(Unk_ov065_02279c7c *, void *, u8 *, s32 *, u8 *, s32 *);
 typedef void (*Unk_ov065_02279a64_Cb5)(Unk_ov065_02279c7c *, void *);
 
-struct Unk_ov065_02279c7c {
-    s32 inUse;
-    s32 requestId;
-    s32 serial;
-    s32 requestType;
-    s32 state;
-    void *url;
-    void *serverHost;
-    s32 serverIp;
-    u16 serverPort;
-    void *requestPath;
-    void *extraHeaders;
-    s32 unk_2c;
-    s32 isBlocking;
-    s32 keepAlive;
-    s32 result;
-    Unk_ov065_022795d4_Cb2 progressCallback;
-    Unk_ov065_0227960c_Cb3 completedCallback;
-    u32 callbackParam;
-    s32 socketHandle;
-    s32 socketError;
-    u32 sendBuf[3];
-    u32 sendBufLength;
-    u32 sendBufReadPos[5];
-    u32 recvBuf;
-    u8 *recvBufData;
-    s32 recvBufCapacity;
-    s32 recvBufLength;
-    s32 recvBufReadPos;
-    s32 recvBufGrowBy;
-    u32 unk_8c[3];
-    u32 rawRecvBuf;
-    u8 *rawRecvBufData;
-    u32 unk_a0;
-    s32 rawRecvBufLength;
-    s32 rawRecvBufReadPos;
-    u32 unk_ac[4];
-    u32 bodyBuf;
-    u32 bodyBufData;
-    u32 unk_c4[5];
-    u32 bodyBufKeepData;
-    u32 unk_dc;
-    s32 isUserBodyBuf;
-    s32 httpMajorVersion;
-    s32 httpMinorVersion;
-    s32 statusCode;
-    s32 statusTextIndex;
-    s32 headersIndex;
-    s32 headersEnd;
-    s32 completed;
-    u32 bodyBytesReceived;
-    u32 contentLength;
-    void *redirectUrl;
-    s32 redirectCount;
-    s32 isChunked;
-    u32 chunkHeader[6];
-    s32 isProcessing;
-    s32 connectionClosed;
-    u32 isThrottled;
-    u32 lastThrottleRecvTime;
-    void *post;
-    u32 postParts;
-    u32 postPartIndex;
-    u32 postBytesSent;
-    u32 postTotalBytes;
-    Unk_ov065_02279588_Cb1 postCallback;
-    u32 postCallbackParam;
-    u32 recvTimeSliceMs;
-    void *proxyHost;
-    u16 proxyPort;
-    u32 encryptor;
-    u32 encryptEnabled;
-    u32 encryptInitialized;
-    u32 encryptSessionReady;
-    u32 encryptStartFn;
-    Unk_ov065_02279a64_Cb5 encryptCleanupFn;
-    u32 encryptFn;
-    Unk_ov065_022798f8_Cb4 decryptFn;
-};
 
 extern "C" {
 extern Unk_ov065_02279c7c **sGsHttpConnections;
@@ -286,100 +161,10 @@ void GsHttp_InitCritical();
 }
 
 namespace Nm {
-struct Unk_ov065_0227a4e8_Part {
-    s32 type;
-    char *partName;
-    char *data;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-};
 
-struct Unk_ov065_0227a4e8_Slot {
-    Unk_ov065_0227a4e8_Part *part;
-    s32 pos;
-    u32 file;
-    s32 fileLength;
-};
 
-struct Unk_ov065_0227a3f4_List {
-    void *postParts;
-    s32 postPartIndex;
-};
 
-struct Unk_ov065_0227a4e8_Req {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 isMultipart;
-};
 
-struct Unk_ov065_02279c7c {
-    s32 inUse;
-    s32 requestId;
-    s32 serial;
-    s32 requestType;
-    s32 state;
-    void *url;
-    void *serverHost;
-    s32 serverIp;
-    u16 serverPort;
-    void *requestPath;
-    void *extraHeaders;
-    s32 unk_2c;
-    s32 isBlocking;
-    s32 keepAlive;
-    s32 result;
-    void *progressCallback;
-    void *completedCallback;
-    u32 callbackParam;
-    s32 socketHandle;
-    s32 socketError;
-    u32 sendBuf[3];
-    s32 sendBufLength;
-    s32 sendBufReadPos;
-    u32 unk_64[4];
-    u32 recvBuf;
-    u8 *recvBufData;
-    s32 recvBufCapacity;
-    s32 recvBufLength;
-    s32 recvBufReadPos;
-    s32 recvBufGrowBy;
-    u32 unk_8c[3];
-    u32 rawRecvBuf;
-    u8 *rawRecvBufData;
-    u32 unk_a0;
-    s32 rawRecvBufLength;
-    s32 rawRecvBufReadPos;
-    u32 unk_ac[4];
-    u32 bodyBuf;
-    u32 bodyBufData;
-    u32 unk_c4[5];
-    u32 bodyBufKeepData;
-    u32 unk_dc;
-    s32 isUserBodyBuf;
-    s32 httpMajorVersion;
-    s32 httpMinorVersion;
-    s32 statusCode;
-    s32 statusTextIndex;
-    s32 headersIndex;
-    s32 headersEnd;
-    s32 completed;
-    u32 bodyBytesReceived;
-    u32 contentLength;
-    void *redirectUrl;
-    s32 redirectCount;
-    s32 isChunked;
-    u32 chunkHeader[6];
-    s32 isProcessing;
-    s32 connectionClosed;
-    u32 isThrottled;
-    u32 lastThrottleRecvTime;
-    Unk_ov065_0227a4e8_Req *post;
-    void *postParts;
-    s32 postPartIndex;
-    u32 postBytesSent;
-};
 
 extern "C" {
 extern s32 sGsHttpStartupCount;
@@ -525,8 +310,8 @@ s32 GsHttp_GetEx(const char *a, const char *b, void *c, s32 d, Unk_ov065_0227a4e
     }
     conn->post = e;
     conn->isBlocking = g;
-    conn->progressCallback = (void *)h;
-    conn->completedCallback = (void *)i;
+    conn->progressCallback = (Unk_ov065_022795d4_Cb2)h;
+    conn->completedCallback = (Unk_ov065_0227960c_Cb3)i;
     conn->callbackParam = j;
     conn->isThrottled = f;
     conn->isUserBodyBuf = (c != 0) ? 1 : 0;
@@ -600,8 +385,8 @@ s32 GsHttp_PostEx(const char *a, const char *b, Unk_ov065_0227a4e8_Req *c, u32 d
     }
     conn->post = c;
     conn->isBlocking = e;
-    conn->progressCallback = (void *)f;
-    conn->completedCallback = (void *)g;
+    conn->progressCallback = (Unk_ov065_022795d4_Cb2)f;
+    conn->completedCallback = (Unk_ov065_0227960c_Cb3)g;
     conn->callbackParam = h;
     conn->isThrottled = d;
     if (c != 0) {
@@ -1109,7 +894,7 @@ namespace Nc {
 extern "C" {
 void GsHttp_CallPostCallback(Unk_ov065_02279c7c *self) {
     if (self->postCallback != 0) {
-        u32 a = GsArray_Count(self->postParts);
+        u32 a = GsArray_Count((u32)self->postParts);
         self->postCallback(self->requestId, self->postBytesSent, self->postTotalBytes, self->postPartIndex, a, self->callbackParam);
     }
 }

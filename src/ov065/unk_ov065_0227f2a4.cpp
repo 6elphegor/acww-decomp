@@ -1,27 +1,13 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0227c538_Node.h"
 
 // ov065 TU45: GP gpiInfo.c (0x0227f2a4..0x02280740)
 
 namespace Na {
 // ov065_052: DWC/GameSpy GP connection setup helpers (0x0227ee64..0x0227f54c)
 
-struct Unk_ov065_0227c538_Pair {
-    s32 func;
-    s32 param;
-};
 
-struct Unk_ov065_0227c538_Node {
-    s32 unk_00;
-    s32 unk_04;
-    void *unk_08;
-    s32 infoCache;
-    char *authSig;
-    s32 unk_14;
-    s32 unk_18;
-    s32 result;
-    Unk_ov065_0227c538_Node *next;
-};
 
 struct Unk_ov065_0227c538_Ctx {
     u8 errorString;

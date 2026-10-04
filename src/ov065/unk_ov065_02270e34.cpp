@@ -5,6 +5,7 @@
 #include "net/Unk_ov065_02270fd4_S.h"
 #include "net/Unk_ov065_0227112c_Cfg.h"
 #include "net/Unk_ov065_0227194c_Out.h"
+#include "net/Unk_ov065_02272428_Sub.h"
 
 typedef long long s64;
 
@@ -340,19 +341,7 @@ struct Unk_ov065_0229080c {
 };
 
 
-struct Unk_ov065_02272428_Sub {
-    u8 clientIndex;
-    u8 retryCount;
-    u16 peerPort;
-    u32 peerIp;
-    s32 cookie;
-};
 
-struct Unk_ov065_02272428_Rec {
-    u32 unk_00;
-    u16 unk_04;
-    u16 unk_06;
-};
 
 struct Unk_ov065_02290814_Sub {
     u32 transportSocket;
@@ -386,15 +375,6 @@ struct Unk_ov065_02290814 {
     u16 memberConnectPorts[32];
 };
 
-struct Unk_ov065_022726a0_Hdr {
-    u8 magic[4];
-    u32 version;
-    u8 command;
-    u8 argsSize;
-    u16 senderPort;
-    u32 senderIp;
-    u32 senderProfileId;
-};
 extern "C" {
 extern Unk_ov065_0229080c *sDwcFriendControl;
 extern Unk_ov065_02290814 *sDwcMatch;

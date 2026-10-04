@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_022786bc_Vec.h"
 
 // ov065 TU47: GP gpiPeer.c (0x02280c08..0x0228176c)
 
@@ -229,7 +230,6 @@ s32 GsGpPeer_Connect(void *h, Unk_ov065_02280854_Node *n);
 namespace Nb {
 // ov065_055: friend/auth connection task list (0x02280e7c..0x0228176c)
 
-struct Unk_ov065_022786bc_Vec;
 
 struct Unk_ov065_02280e7c_Node {
     s32 peerState;
