@@ -306,8 +306,6 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 #define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt   // main
 #define ModelSlot_getVramSlot _ZN9ModelSlot11getVramSlotEv   // main
 #define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv   // main
-#define Unk_020b1ddc_rotateMinuteHand _ZN12Unk_020b1ddc16rotateMinuteHandEv   // main
-#define Unk_020b1ddc_rotateHourHand _ZN12Unk_020b1ddc14rotateHourHandEv   // main
 #define LightLevel_getLevel _ZN10LightLevel8getLevelEv   // main
 #define Math_LerpFx _Z11Math_LerpFxiii   // main
 #define LightLevel_update _ZN10LightLevel6updateEv   // main
@@ -472,8 +470,8 @@ void Effect_PlayById2(u32 id, void *v, u32 a, u32 b);
 void *PlayerActor_GetBodyPos(u32 id);
 void *Math_AngleXZ(void *v, void *cam);
 u32 Scene_InUnk6To8(void);
-void Unk_020b1ddc_rotateHourHand(void *p);
-void Unk_020b1ddc_rotateMinuteHand(void *p);
+void JointCb_RotateClockHourHand(void *p);
+void JointCb_RotateClockMinuteHand(void *p);
 extern u8 gCameraEye[];
 extern u8 gCameraLookAt[];
 BOOL SceneId_IsHouseRoom(u32 a);
@@ -2579,9 +2577,9 @@ BOOL FtrActor::onJointCalcPre() {
 void FtrActor::onJointCalcPost(s32 a, void *b) {
     if (clockHandsValid != 0) {
         if (clockHands == a) {
-            Unk_020b1ddc_rotateHourHand(b);
+            JointCb_RotateClockHourHand(b);
         } else if (clockHandsMinJnt == a) {
-            Unk_020b1ddc_rotateMinuteHand(b);
+            JointCb_RotateClockMinuteHand(b);
         }
     }
 }

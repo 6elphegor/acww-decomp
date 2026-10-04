@@ -38,7 +38,6 @@ struct Unk_ov068_0226b12c_Vec3 {
 
 
 
-class Unk_020b1ddc;
 
 
 // Overlay 68 concrete actor (vtable 0x02270110, secondary vtable 0x022701d4), size 0x2e4

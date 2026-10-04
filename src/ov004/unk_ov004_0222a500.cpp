@@ -50,8 +50,6 @@
 #define HouseRoom_getCarpet _ZN9HouseRoom9getCarpetEPi
 #define HouseRoom_getWallpaper _ZN9HouseRoom12getWallpaperEPi
 #define PatternTexCache_getPlayerTexKey _ZN15PatternTexCache15getPlayerTexKeyEii
-#define Unk_020b1ddc_rotateMinuteHand _ZN12Unk_020b1ddc16rotateMinuteHandEv
-#define Unk_020b1ddc_rotateHourHand _ZN12Unk_020b1ddc14rotateHourHandEv
 #define TouchPicker_addCylinder _ZN11TouchPicker11addCylinderEP17TouchPickCylinderP4Vec3S3_S3_ih
 #define TouchPicker_pushCylinder _ZN11TouchPicker12pushCylinderEP17TouchPickCylinder
 #define MatTexVramTask_request _ZN14MatTexVramTask7requestEPvjS0_jj
@@ -239,8 +237,8 @@ s32 Scene_InUnk6To8(void);
 s32 Scene_InNookShop(void);
 u32 Scene_GetHouseRoom(void);
 void Snd_PlaySe(s32 a);
-void Unk_020b1ddc_rotateHourHand(void *p);
-void Unk_020b1ddc_rotateMinuteHand(void *p);
+void JointCb_RotateClockHourHand(void *p);
+void JointCb_RotateClockMinuteHand(void *p);
 u32 Scene_GetTouchPicker(void);
 u32 TouchPicker_addCylinder(u32 o, void *obj, void *v, s32 a, s32 b, s32 c, s32 d);
 u32 TouchPicker_pushCylinder(u32 o, void *obj);
@@ -993,7 +991,7 @@ extern "C" u16 *RoomShell_GetPrevWallpaper() {
 void RoomShell::onNodeDescCallback(s32 a, NNSG3dRS *b) {
     RoomShellStackPad pad;
     if (hourHandNode == a) {
-        Unk_020b1ddc_rotateHourHand(b);
+        JointCb_RotateClockHourHand(b);
         Unk_ov004_0222a994_Vec *pv = (Unk_ov004_0222a994_Vec *)&b->pJntAnmResult->trans;
         Unk_ov004_0222a994_Vec v;
         v.y = pv->y;
@@ -1003,7 +1001,7 @@ void RoomShell::onNodeDescCallback(s32 a, NNSG3dRS *b) {
         clockPos.y = v.y;
         clockPos.z = v.z;
     } else if (minuteHandNode == a) {
-        Unk_020b1ddc_rotateMinuteHand(b);
+        JointCb_RotateClockMinuteHand(b);
     } else if (hasuNode == a) {
         if (b != 0) {
             NNSG3dJntAnmResult *p = b->pJntAnmResult;

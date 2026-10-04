@@ -1,7 +1,7 @@
 #include "types.h"
 #include "town/BuildingInfo.h"
 #include "gfx/Mtx33.h"
-#include "game/Unk_020b1ddc.h"
+#include "gfx/NNSG3dRS.h"
 #include "item/ItemId.h"
 #include "game/StrBSizeData.h"
 #include "game/LightLevel.h"
@@ -155,11 +155,6 @@ struct BuildingStateStackPad {
 };
 
 
-struct Obj_b4 {
-    u32 flags;
-    u8 pad[0x24];
-    Mtx33 mtx;
-};
 
 
 
@@ -1050,11 +1045,11 @@ BOOL BuildingLights::setLit(BOOL on, s32 a, s32 b) { return switchLight(on, a, b
 
 BOOL BuildingLights::isLit() { return getLevel() ? TRUE : FALSE; }
 
-void Unk_020b1ddc::rotateHourHand()
+extern "C" void JointCb_RotateClockHourHand(NNSG3dRS *rs)
 {
     Mtx33 tmp;
     u8 t[2];
-    Mtx33 *m = &pJntAnmResult->mtx;
+    Mtx33 *m = &rs->pJntAnmResult->rot;
     Clock_GetMinuteHour(t);
     if (sHourHandFrame != gFrameCounter) {
         s32 rem = t[1] % 0xc;
@@ -1066,30 +1061,30 @@ void Unk_020b1ddc::rotateHourHand()
         sHourHandFrame = gFrameCounter;
     }
     MTX_RotZ33_(&tmp, sHourHandSin, sHourHandCos);
-    if (pJntAnmResult->flags & 2) {
+    if (rs->pJntAnmResult->flag & 2) {
         *m = tmp;
     } else {
         MTX_Concat33(m, &tmp, m);
     }
-    pJntAnmResult->flags &= ~2;
+    rs->pJntAnmResult->flag &= ~2;
 }
 
-void Unk_020b1ddc::rotateMinuteHand()
+extern "C" void JointCb_RotateClockMinuteHand(NNSG3dRS *rs)
 {
     Mtx33 tmp;
     u8 t[2];
-    Mtx33 *m = &pJntAnmResult->mtx;
+    Mtx33 *m = &rs->pJntAnmResult->rot;
     Clock_GetMinuteHour(t);
     s32 rem = t[0] % 0x3c;
     s32 a = -(FX_Div(rem << 12, 0x3c000) * 0xffff >> 12);
     s32 idx = (u16)(s16)a >> 4;
     MTX_RotZ33_(&tmp, data_02135f44[idx * 2], data_02135f44[idx * 2 + 1]);
-    if (pJntAnmResult->flags & 2) {
+    if (rs->pJntAnmResult->flag & 2) {
         *m = tmp;
     } else {
         MTX_Concat33(m, &tmp, m);
     }
-    pJntAnmResult->flags &= ~2;
+    rs->pJntAnmResult->flag &= ~2;
 }
 
 extern "C" void BuildingStates_Reset(void)

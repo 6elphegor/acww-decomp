@@ -33,7 +33,6 @@ extern "C" ActorProfile sReddTentProfile = {(void *(*)())ReddTent_Create, 0x1b, 
 
 
 
-class Unk_020b1ddc;
 
 
 

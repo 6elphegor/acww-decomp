@@ -13,6 +13,7 @@
 #include "actor/Character.h"
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
+#include "talk/MsgString256.h"
 
 
 
@@ -67,13 +68,6 @@ struct Unk_ov003_02212f04_Pos {
 };
 typedef Unk_ov003_02212f04_Pos Pos;
 
-class Unk_ov003_02212888_Str {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual s32 vfunc_0c();
-};
 
 
 
@@ -304,13 +298,6 @@ struct Unk_ov003_02213278_Pad {
     s32 v[1];
     Unk_ov003_02213278_Pad() {}
     ~Unk_ov003_02213278_Pad() {}
-};
-
-struct Unk_ov003_022132b4_Tgt {
-    u8 pad_00[0x5c];
-    V3 position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
 };
 
 extern "C" void Snowball_Create() {
@@ -669,14 +656,14 @@ extern "C" s32 Snowball_Break(Obj *o, s32 a)
 }
 
 extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s32 speed, s32 ang) {
-    Unk_ov003_022132b4_Tgt *p;
+    Actor *p;
     s32 v0c, v10, v14;
     s16 h[2];
     V3 pv[3];
     s32 ox, oz;
     s32 dist;
     ang = ang;
-    p = (Unk_ov003_022132b4_Tgt *)PlayerActor_GetActor(4);
+    p = (Actor *)PlayerActor_GetActor(4);
     if (!Scene_InTown()) return FALSE;
     if (!p) return FALSE;
     if (o->talkAct != 0 || o->snowballState != 0) return FALSE;
@@ -707,7 +694,7 @@ extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s
     o->position.z += o->rollVelZ;
     h[1] = p->rotY;
     Math_ApproachS16Div(&h[1], ang, 8, 0x2000);
-    V3 *q = &p->position;
+    VecFx32 *q = &p->position;
     pv[0].x = p->position.x;
     pv[0].y = q->y;
     pv[0].z = q->z;
@@ -1095,7 +1082,7 @@ BOOL Snowball::setupTalk() {
     u32 buf[0x46];
     _ZN12MsgString256C1Ev(buf);
     String_Load(buf, &c, "st_spnpc_name");
-    static_cast<TalkMsgRequest &>(*this).setSpeakerName((u8 *)((Unk_ov003_02212888_Str *)buf)->vfunc_0c(), 0);
+    static_cast<TalkMsgRequest &>(*this).setSpeakerName(((MsgString256 *)buf)->data(), 0);
     snowballFlags.g = 0;
     _ZN12MsgString256D1Ev(buf);
     return TRUE;

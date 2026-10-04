@@ -29,7 +29,6 @@
 
 
 
-class Unk_020b1ddc;
 
 
 // ---- main-module helper classes ----

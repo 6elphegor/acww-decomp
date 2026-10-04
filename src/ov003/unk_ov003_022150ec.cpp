@@ -2,9 +2,7 @@
 // mwcc-flags: -O4,s
 #include "types.h"
 #include "sys/Unk_0209d498_Time.h"
-#include "field/Unk_ov003_02215748_Ent.h"
-#include "gfx/Unk_ov003_02215a04_Obj.h"
-#include "field/Unk_ov003_02215ad8_Str.h"
+#include "gfx/NNSG3dRS.h"
 #include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
@@ -28,7 +26,6 @@
 
 
 
-class Unk_020b1ddc;
 
 
 
@@ -179,7 +176,7 @@ BOOL CountdownSign::postDraw(s32 a) {
     if (a == 2) {
         if ((colliderFlags & 1) == 0) {
             for (u32 i = 0; i < 6; i++) {
-                Unk_ov003_02215748_Ent *p = digits[i];
+                CountdownDigit *p = digits[i];
                 if (p) {
                     if (p->isCounting) {
                         ::_ZN13BuildingActor12updateMatrixEv(p);
@@ -221,7 +218,7 @@ BOOL CountdownSign::initBuilding() {
         v[1] = b;
         v[2] = c;
         sCountdownSpawnIndex = i;
-        digits[i] = (Unk_ov003_02215748_Ent *)_ZN5Actor5spawnEPvS0_S0_S0_S0_(0x26, 0x501f, v, z, z);
+        digits[i] = (CountdownDigit *)_ZN5Actor5spawnEPvS0_S0_S0_S0_(0x26, 0x501f, v, z, z);
         i++;
     } while (i < 6);
     _ZN5Model15setInitCallbackEii(model, CountdownSign_ModelCallback, this);
@@ -250,19 +247,19 @@ CountdownSign::~CountdownSign() {}
 
 // ---------------------------------------------------------------- free functions
 extern "C" {
-void CountdownSign_MaterialCallback(Unk_ov003_02215a04_Obj *o);
-void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, Unk_ov003_02215a04_Obj *o);
+void CountdownSign_MaterialCallback(NNSG3dRS *o);
+void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, NNSG3dRS *o);
 
 void CountdownSign_ModelCallback(void *p) {
-    Unk_ov003_02215a04_Obj *o = (Unk_ov003_02215a04_Obj *)p;
-    o->cbVecFuncMat = (void (*)(void *))CountdownSign_MaterialCallback;
-    o->cbVecTimingMat = 2;
+    NNSG3dRS *o = (NNSG3dRS *)p;
+    o->cbVecFunc[4] = (void *)CountdownSign_MaterialCallback;
+    o->cbVecTiming[4] = 2;
 }
 
-void CountdownSign_MaterialCallback(Unk_ov003_02215a04_Obj *o) {
+void CountdownSign_MaterialCallback(NNSG3dRS *o) {
     NNSG3dRenderObj *s = o->pRenderObj;
     if (s->ptrUser != 0) {
-        CountdownSign_SetMaterialAlpha((CountdownSign *)s->ptrUser, o->c->cmd[1], o);
+        CountdownSign_SetMaterialAlpha((CountdownSign *)s->ptrUser, o->c[1], o);
     }
 }
 
@@ -274,7 +271,7 @@ CountdownSign *CountdownSign_Create() {
     return new CountdownSign();
 }
 
-void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, Unk_ov003_02215a04_Obj *o) {
+void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, NNSG3dRS *o) {
     if (a == self->alphaMatIdx) {
         o->pMatAnmResult->prmPolygonAttr &= ~0x1f0000;
         o->pMatAnmResult->prmPolygonAttr |= (u32)self->matAlpha << 16;

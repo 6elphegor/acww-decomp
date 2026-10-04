@@ -20,7 +20,6 @@
 
 
 
-class Unk_020b1ddc;
 
 
 struct Unk_ov003_022173a8_Glob {

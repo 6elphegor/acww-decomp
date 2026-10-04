@@ -21,7 +21,6 @@
 
 
 
-class Unk_020b1ddc;
 
 
 extern "C" {

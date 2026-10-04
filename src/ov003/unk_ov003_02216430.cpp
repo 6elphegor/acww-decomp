@@ -1,7 +1,6 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU11 (actor 02231aa8): .text 0x02216430-0x022165d0
 #include "types.h"
-#include "game/Unk_020b1ddc.h"
 #include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
@@ -54,7 +53,6 @@
 
 
 
-class Unk_020b1ddc;
 
 
 
@@ -65,6 +63,8 @@ s32 _ZN12G3dResAccess11findNodeIdxEi(void *self, s32 i);
 #define G3dResAccess_findNodeIdx _ZN12G3dResAccess11findNodeIdxEi
 
 extern "C" void TownHall_NodeCallback(NNSG3dRS *a);
+extern "C" void JointCb_RotateClockHourHand(NNSG3dRS *rs);
+extern "C" void JointCb_RotateClockMinuteHand(NNSG3dRS *rs);
 extern "C" void TownHall_Create();
 
 class TownHall : public BuildingActor {
@@ -114,9 +114,9 @@ BOOL TownHall::initBuilding() {
 
 void TownHall::onJointCalcPost(u32 a, void *p) {
     if ((s32)a == hourHandNode) {
-        ((Unk_020b1ddc *)p)->rotateHourHand();
+        JointCb_RotateClockHourHand((NNSG3dRS *)p);
     } else if ((s32)a == minuteHandNode) {
-        ((Unk_020b1ddc *)p)->rotateMinuteHand();
+        JointCb_RotateClockMinuteHand((NNSG3dRS *)p);
     }
 }
 

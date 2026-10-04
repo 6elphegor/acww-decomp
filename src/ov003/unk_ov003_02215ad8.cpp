@@ -2,7 +2,7 @@
 // ov003 TU09 (actor 0223177c): .text 0x02215ad8-0x02215c74
 #include "types.h"
 #include "sys/Unk_0209d498_Time.h"
-#include "field/Unk_ov003_02215ad8_Str.h"
+#include "talk/MsgString9B.h"
 #include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
@@ -54,7 +54,6 @@
 
 
 
-class Unk_020b1ddc;
 
 
 
@@ -125,7 +124,7 @@ void KatrinaTent::setupTalkMsg() {
     func_02094030(buf);
     v[1] = 0xd00a;
     Npc_GetName(buf, &v[1]);
-    setSpeakerName((u8 *)((Unk_ov003_02215ad8_Str *)buf)->vfunc_0c(), 1);
+    setSpeakerName(((MsgString9B *)buf)->data(), 1);
     func_02094018(buf);
 }
 

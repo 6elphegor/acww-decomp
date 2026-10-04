@@ -3,9 +3,7 @@
 #include "types.h"
 #include "sys/Unk_0209d498_Time.h"
 #include "field/Unk_ov003_02214494_Views.h"
-#include "field/Unk_ov003_02215748_Ent.h"
-#include "gfx/Unk_ov003_02215a04_Obj.h"
-#include "field/Unk_ov003_02215ad8_Str.h"
+#include "gfx/NNSG3dRS.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -28,7 +26,6 @@
 
 
 
-class Unk_020b1ddc;
 
 
 
@@ -36,15 +33,6 @@ class Unk_020b1ddc;
 
 
 
-struct Unk_ov003_022150f0_Obj {
-    u8 pad_00[0x2b0];
-    u8 digitIndex;
-    u8 digit;
-    u8 prevDigit;
-    u8 pad_2b3[0x2d4 - 0x2b3];
-    u8 isCounting;
-    u8 skipSe;
-};
 extern "C" s32 Scene_GetCurrent();
 extern "C" {
 extern u8 sCountdownSpawnIndex;
@@ -92,8 +80,8 @@ typedef BOOL (CountdownSign::*Unk_02215680_Fn)();
 
 // ---------------------------------------------------------------- free functions
 extern "C" {
-void CountdownSign_MaterialCallback(Unk_ov003_02215a04_Obj *o);
-void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, Unk_ov003_02215a04_Obj *o);
+void CountdownSign_MaterialCallback(NNSG3dRS *o);
+void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, NNSG3dRS *o);
 }
 
 
@@ -146,7 +134,7 @@ BOOL CountdownDigit::initBuilding() {
 
 
 extern "C" void CountdownDigit_Update(void *arg) {
-    Unk_ov003_022150f0_Obj *o = (Unk_ov003_022150f0_Obj *)arg;
+    CountdownDigit *o = (CountdownDigit *)arg;
     if (o->isCounting != 0) {
         Unk_ov003_02214890_Buf l;
         l.w0 = 0;
