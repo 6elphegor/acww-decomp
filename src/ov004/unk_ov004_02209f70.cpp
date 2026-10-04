@@ -25,6 +25,11 @@
 #include "room/Unk_ov004_02206570_Act.h"
 #include "room/Unk_ov004_View00_Chk.h"
 #include "game/CollisionEdge.h"
+#include "room/FtrTileList.h"
+#include "room/FtrGlowMat.h"
+#include "room/FtrStackLink.h"
+#include "room/FtrTopItem.h"
+#include "game/FxVec3.h"
 // ov004 translation unit 0x02209f70-0x022136d0 (34 classes derived from FtrActor). Built by two compilers:
 // this file's thunks need mwcc 1.2/sp2, FtrSingingInsect::updateActive / vfunc_7c (in the _switch file) need 1.2/base;
 // the functions and data objects are placed by address (config/usa/arm9/overlays/ov004/object_order.txt).
@@ -43,17 +48,6 @@ typedef Unk_ov004_Mtx Unk_ov004_02208284_M;
 typedef Unk_ov004_Mtx Unk_ov004_022077a4_Mtx;
 typedef Unk_ov004_Mtx Unk_ov004_02205eb0_Mtx;
 
-// main class 0x02000c8c (3 words, registered for destruction through __register_global_object)
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3() {}
-    FxVec3(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-    ~FxVec3();
-};
 
 // ================================================================ library chain (as tu01, but slot 08/14 as this class overrides them)
 class ProcBase {
@@ -188,29 +182,12 @@ public:
 
 // ---- 0x02206520: list of up to 4 tile positions
 
-struct FtrTileList {
-    u32 count;
-    Unk_ov004_02206520_Ent tiles[4];
-    Unk_ov004_02206520_Ent *get(s32 i);
-    u32 getCount();
-    BOOL add(u32 a, u32 b);
-    void release();
-    FtrTileList();
-};
 
 
 // ---- 0x02205994: 4 ids + count (member at 0x760)
 
 // ---- 0x02205bcc: model animation slot (base: main class LightLevel)
 
-struct FtrGlowMat : public LightLevel {
-    FtrGlowMat();
-    ~FtrGlowMat();
-    BOOL setLit(BOOL on, s32 a, s32 b);
-    BOOL bindMaterial(G3dResAccess *res, s32 idx, BOOL on);
-    s8 matIdx;
-    G3dResAccess *resMdl;
-};
 
 // ---- 0x02205b14: element view used by the 3-element container (same object as 0x02205bcc)
 
@@ -232,34 +209,8 @@ public:
 // ---- 0x02205d5c (member at 0x73e)
 
 // ---- 0x02205e58 (member at 0x178)
-struct FtrStackLink {
-    ~FtrStackLink();
-    BOOL attachAt(s32 x, s32 y, s16 z);
-    BOOL set(s32 idx, Unk_ov004_02205d8c_Vec *pos, s32 ang);
-    s32 getRelAngle();
-    Unk_ov004_02205d8c_Vec *getRelPos();
-    s32 getParentIndex();
-    BOOL isAttached();
-    void clear();
-    s16 parentIndex;
-    s16 relAngle;
-    Unk_ov004_02205d8c_Vec relPos;
-};
 
 // ---- 0x022062f4 (element of 0x022061b4)
-struct FtrTopItem {
-    FtrTopItem();
-    ~FtrTopItem();
-    BOOL set(u16 *id, Unk_ov004_02205d8c_Vec *pos);
-    u16 *getItem();
-    Unk_ov004_02205d8c_Vec *getPos();
-    void clear();
-    BOOL isSet();
-    void draw(Unk_ov004_02205c80_Obj *o);
-    u16 unk_00;
-    u16 item;
-    Unk_ov004_02205d8c_Vec relPos;
-};
 
 
 // ---- 0x022061b4 (member at 0x188)

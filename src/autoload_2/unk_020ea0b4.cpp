@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 #include "types.h"
+#include "net/HexTable.h"
 
 extern "C" {
 void *Net_Alloc(u32 size, u32 align); // alloc via hook data_021f48f4
@@ -81,9 +82,6 @@ extern u32 data_021f4910[];
 extern u32 sLastErrorCode;
 extern u32 sWifiPingState[];
 extern char sGameStatsSecret[];
-struct HexTable {
-    u8 c[17];
-};
 extern const HexTable data_0213b084;
 extern char data_0213b0c8[];
 extern char data_0213b0d0[];
@@ -114,8 +112,6 @@ extern u32 data_021f48e4;
 extern char data_0213b098[];
 }
 
-// one digest byte as two hex characters (view struct: keeps the loop on the index, see notes)
-struct HexPair { char hi, lo; };
 extern "C" BOOL Net_GameStatsUpload(char *a, void *b, u32 c, u32 d) {
     u32 builder;
     HexTable hex;

@@ -9,6 +9,7 @@
 #include "npc/NpcObstacleProbe.h"
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
+#include "game/FxVec3.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -440,15 +441,6 @@ struct Unk_ov075_Col {
     }
 };
 
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-    ~FxVec3();
-};
 
 extern "C" {
 SpNpcPete *SpNpcPete_Create();

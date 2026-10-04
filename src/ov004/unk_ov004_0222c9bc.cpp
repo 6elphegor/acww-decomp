@@ -5,6 +5,7 @@
 #include "room/Unk_ov004_0222c9d0.h"
 #include "actor/ActorCollider.h"
 #include "snd/SndEnvChannel.h"
+#include "game/FxVec3.h"
 
 // ---------------------------------------------------------------------------------------------------------------
 // Calls into other modules: the old stand-in names are #defined to the real symbols (mangled method names).
@@ -91,12 +92,6 @@ struct Rec {
     u8 unk_10;
 };
 
-// library object with a destructor (two of these are static: sAquariumTankCenterB / d9c)
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
-    ~FxVec3();
-};
 
 // ---- library sub-object with two inline vtable stores (0x0213b91c, 0x0213b954)
 

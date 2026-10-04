@@ -5,24 +5,6 @@
 #include "gfx/SplRes.h"
 #include "gfx/SplEmitterViews.h"
 
-// SPL-style particle manager (continued from G011b): resource header word, bits 24-29 = field types
-struct HdrBits {
-    u32 pad0 : 8;
-    u32 b8 : 1;
-    u32 b9 : 1;
-    u32 b10 : 1;
-    u32 b11 : 1;
-    u32 pad12 : 4;
-    u32 b16 : 1;
-    u32 pad17 : 7;
-    u32 b24 : 1;
-    u32 b25 : 1;
-    u32 b26 : 1;
-    u32 b27 : 1;
-    u32 b28 : 1;
-    u32 b29 : 1;
-    u32 pad30 : 2;
-};
 
 // texture table entry (20 bytes)
 struct TexEnt {
@@ -34,29 +16,8 @@ struct TexEnt {
     u16 h18;
 };
 
-struct Hdr20 {
-    u32 w0;
-    u32 w4;
-    u8 p8[0x14];
-    u32 w1c;
-};
 
 
-// resource header (first word flags)
-struct HdrW {
-    u32 pad0 : 4;
-    u32 k4 : 2;
-    u32 pad6 : 5;
-    u32 b11 : 1;
-    u32 pad12 : 4;
-    u32 b16 : 1;
-    u32 pad17 : 4;
-    u32 b21 : 1;
-    u32 b22 : 1;
-    u32 pad23 : 9;
-    u8 p4[0x3f];
-    u8 c43;
-};
 
 
 struct Res {
@@ -71,14 +32,6 @@ struct Node {
     u8 c2c;
 };
 
-struct Em {
-    u8 p0[8];
-    Node *l8;
-    u8 pc[4];
-    Node *l16;
-    u8 p14[4];
-    Res *res;
-};
 
 struct Mc {
     u8 p0[0x20];
@@ -102,56 +55,10 @@ void func_020fb378(Mc *m, Node *n, u32 a);
 }
 
 
-struct H2 {
-    u16 a;
-    u16 b;
-};
 
 
 
 
-struct EmI {
-    s32 w0;
-    s32 w4;
-    s32 w8;
-    s32 w12;
-    s32 w16;
-    s32 w20;
-    ResB *res;
-    s32 w28;
-    s32 w32;
-    s32 w36;
-    s32 w40;
-    s32 w44;
-    s32 w48;
-    s32 w52;
-    u16 h56;
-    u16 h58;
-    u16 h60;
-    u16 h62;
-    u16 h64;
-    u16 h66;
-    u32 w68;
-    u32 w72;
-    u32 w76;
-    u32 w80;
-    u32 w84;
-    u16 h88;
-    u16 h90;
-    u32 w92;
-    s16 s96;
-    s16 s98;
-    s16 s100;
-    s16 s102;
-    u32 c104 : 8;
-    u32 c105 : 8;
-    u32 f16 : 3;
-    u32 pad104 : 13;
-    u8 p108[12];
-    u32 w120;
-    u32 w124;
-    u32 w128;
-};
 
 
 struct Mt {
@@ -258,27 +165,7 @@ struct V3 {
     s32 z;
 };
 
-// emitter update (spl_calc): own views of the emitter, particle and resource block
-struct HdrU {
-    u32 pad0 : 8;
-    u32 b8 : 1;
-    u32 b9 : 1;
-    u32 b10 : 1;
-    u32 b11 : 1;
-    u32 pad12 : 3;
-    u32 b15 : 1;
-    u32 b16 : 1;
-    u32 pad17 : 13;
-    u32 b30 : 1;
-    u32 b31 : 1;
-};
 
-struct HdrP {
-    u8 p0[0x38];
-    u16 h56;
-    u8 p3a[0x08];
-    u8 c66;
-};
 
 
 
@@ -308,9 +195,6 @@ struct Pt {
     A3 v56;
 };
 
-struct Fi {
-    void (*fn)(Pt *, Pt *, s32 *, void *);
-};
 
 struct ItemU {
     void *fn;
@@ -318,33 +202,7 @@ struct ItemU {
 };
 
 
-struct EFlags {
-    u32 b0 : 1;
-    u32 b1 : 1;
-    u32 b2 : 1;
-    u32 b3 : 1;
-    u32 b4 : 1;
-    u32 pad : 27;
-};
 
-struct EU {
-    u8 p0[8];
-    Pt *l8;
-    u8 pc[4];
-    Pt *l16;
-    u8 p14[4];
-    RU *res;
-    EFlags fl;
-    A3 v32;
-    s32 w44;
-    s32 w48;
-    s32 w52;
-    u16 h56;
-    u8 p3a[0x2e];
-    u8 c104;
-    u8 p69[0x0f];
-    void (*cb)(EU *, u32);
-};
 
 struct MU {
     u8 p0[20];
@@ -359,10 +217,6 @@ struct MU {
 
 typedef void (*FldFn)(Pt *, RU *, u32);
 
-struct FEnt {
-    FldFn fn;
-    u32 arg;
-};
 
 extern "C" {
 void spl_scl_in_out(Pt *, RU *, u32);

@@ -9,6 +9,7 @@
 #include "npc/Unk_0201ac88.h"
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
+#include "game/FxVec3.h"
 
 extern "C" {
 void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
@@ -375,16 +376,6 @@ public:
     u32 unk_70c;
 };
 
-// Destructor lives in another unit (symbol _ZN6FxVec3D1Ev)
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-    ~FxVec3();
-};
 
 struct Unk_021f4624_Color {
     u8 v[4];

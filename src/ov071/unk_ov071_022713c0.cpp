@@ -11,6 +11,7 @@
 #include "npc/Unk_0201ac88.h"
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
+#include "game/FxVec3.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -79,12 +80,6 @@ struct ChoiceList {
     s32 getResult();
 };
 
-// 12-byte vector with a trivial destructor (main 0x02000c8c, renamed to its D1 name)
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
-    ~FxVec3();
-};
 
 extern "C" {
 extern u16 data_020c6cc8;

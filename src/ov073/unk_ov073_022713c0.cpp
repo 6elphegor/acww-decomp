@@ -6,6 +6,7 @@
 #include "npc/NpcObstacleProbe.h"
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
+#include "game/FxVec3.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -54,12 +55,6 @@ struct Unk_ov073_ColorCtor {
     Unk_ov073_ColorCtor(u8 a, u8 b, u8 c, u8 d) : a(a), b(b), c(c), d(d) {}
 };
 
-// 12-byte vector with a trivial destructor (main 0x02000c8c = _ZN6FxVec3D1Ev)
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
-    ~FxVec3();
-};
 
 class SpNpcJoan;
 class SpNpcJoanTalk;

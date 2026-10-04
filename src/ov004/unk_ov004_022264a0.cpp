@@ -9,6 +9,7 @@
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
 #include "gfx/CachedModel.h"
+#include "game/FxVec3.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -285,16 +286,6 @@ public:
 };
 typedef BOOL (ObjB::*Fn)();
 
-// the colour-less 3-word global used by the state machine (inline ctor, dtor is a main stub)
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-    ~FxVec3();
-};
 
 struct Unk_ov004_0224d988_M {
     u8 pad_00[0xa0];

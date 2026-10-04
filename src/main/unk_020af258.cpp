@@ -4,9 +4,9 @@
 #include "game/Unk_020aec00.h"
 #include "game/ShopAckCounter.h"
 #include "item/ShopAckCounter.h"
+#include "game/Elem2a.h"
 
 
-struct Elem2a { Elem2a(); u16 d; };
 struct Elem2b { Elem2b(); ~Elem2b(); u16 d; };
 struct NookShop { u32 vt; Elem2b e[0x25]; NookShop(); };
 

@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "game/FxVec3.h"
 
 struct Unk_020dc034_V {
     s32 x, y, z;
@@ -10,11 +11,6 @@ struct Unk_02058ddc_V {
     Unk_02058ddc_V(const Unk_02058ddc_V &o) : x(o.x), y(o.y), z(o.z) {}
 };
 
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
-    ~FxVec3();
-};
 
 struct Unk_02059384_Rec {
     u8 pad_00[0xc];

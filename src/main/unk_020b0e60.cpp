@@ -4,6 +4,7 @@
 #include "game/StrBSizeData.h"
 #include "game/LightLevel.h"
 #include "game/UnitShapeQueryX.h"
+#include "game/FxVec3.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -108,14 +109,6 @@ typedef ItemId Marker2;
 // Info table of the next unit
 extern Info data_020d0a7c[];
 
-class FxVec3 {
-public:
-    FxVec3() : unk_00(0x10000), unk_04(0), unk_08(0x1e000) {}
-    ~FxVec3();
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-};
 
 inline BOOL isFlag1() {
     return gFieldSceneKind == 1;
@@ -1808,7 +1801,7 @@ extern "C" void Building_PlayDoorChime(void) {
         r = 3;
     }
     if (r != -1) {
-        static FxVec3 obj;
+        static FxVec3 obj(0x10000, 0, 0x1e000);
         Melody_PlayAt(&obj, r);
     }
 }

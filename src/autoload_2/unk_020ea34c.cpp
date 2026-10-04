@@ -2,6 +2,7 @@
 // G002c: network file (WFC / GameSpy stats glue calling overlays 65, 66, 67), autoload_2 0x020ea34c-0x020ea960
 // (21 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL unit: no data defined, everything extern. Continues at 0x020ea960.
 #include "types.h"
+#include "net/HexTable.h"
 
 extern "C" {
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
@@ -53,9 +54,6 @@ struct Ent {
     u8 c;
 };
 extern Ent sWifiPingState[];
-struct HexTable {
-    u8 c[17];
-};
 
 extern u16 sWifiConnectStep;
 extern u8 sNetMode;

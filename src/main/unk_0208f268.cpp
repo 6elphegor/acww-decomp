@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "gfx/EffectSplEmitter.h"
 
 struct Unk_0209002c_Handle;
 
@@ -138,10 +139,6 @@ public:
 
 struct EffectEmitterEntry;
 
-struct EffectEmitterCbs {
-    s32 (*unk_00)(EffectEmitterEntry *);
-    s32 (*unk_04)(EffectEmitterEntry *);
-};
 
 struct Unk_0208f8fc_Obj {
     u8 unk_00[8];
@@ -150,21 +147,7 @@ struct Unk_0208f8fc_Obj {
     u32 stateFlags;
 };
 
-struct EffectEmitterTag {
-    u8 poolIndex;
-    u8 group;
-    u8 emitterIndex;
-    u8 unk_03;
-};
 
-struct EffectEmitterEntry {
-    /* 0x00 */ s32 resourceId;
-    /* 0x04 */ EffectEmitterTag tag;
-    /* 0x08 */ u8 isActive;
-    /* 0x09 */ u8 emitterIndex;
-    /* 0x0c */ Unk_0208f8fc_Obj *emitter;
-    /* 0x10 */ EffectEmitterCbs callbacks;
-};
 
 struct EffectSplPool {
     EffectSplPool();
@@ -205,18 +188,6 @@ struct Unk_0208fdcc_B {
     Unk_0208fdcc_A *header;
 };
 
-struct EffectSplEmitter {
-    u8 unk_00[0x18];
-    Unk_0208fdcc_B *resource;
-    u8 unk_1c[4];
-    s32 posX;
-    s32 posY;
-    s32 posZ;
-    u8 unk_2c[0x2e];
-    u16 color;
-    u8 unk_5c[0x24];
-    u8 tintVariant;
-};
 
 struct Unk_0208ffe4_V {
     s32 x;
@@ -1017,7 +988,7 @@ extern "C" s16 EffectSpl_GetSeasonTint()
 
 extern "C" void EffectSpl_ApplySceneTint(EffectSplEmitter *o)
 {
-    u32 f = o->resource->header->tintFlags;
+    u32 f = ((Unk_0208fdcc_B *)o->resource)->header->tintFlags;
     if ((f & 0x80) != 0) {
         volatile Unk_0208fe0c_U l0, l2, l4, l6, l8, la, lc, le;
         l4.v = SceneLights_GetBaseColor();
@@ -1049,9 +1020,9 @@ extern "C" void EffectSpl_InitEmitterAtPos(EffectSplEmitter *o)
     EffectSpl_ApplySceneTint(o);
     v = sEffectSplEmitPos;
     if (v != NULL) {
-        o->posX = v[0] + o->resource->header->posX;
-        o->posY = v[1] + o->resource->header->posY;
-        o->posZ = v[2] + o->resource->header->posZ;
+        o->posX = v[0] + ((Unk_0208fdcc_B *)o->resource)->header->posX;
+        o->posY = v[1] + ((Unk_0208fdcc_B *)o->resource)->header->posY;
+        o->posZ = v[2] + ((Unk_0208fdcc_B *)o->resource)->header->posZ;
     }
 }
 
@@ -1217,7 +1188,7 @@ extern "C" s32 EffectSplEntry_Start(EffectEmitterEntry *e, s32 id, s32 a2, s32 a
     c = tag.emitterIndex;
     d = tag.unk_03;
     r = 0;
-    e->emitter = (Unk_0208f8fc_Obj *)SPL_Create(sEffectSplProc->splManager, id, a2);
+    e->emitter = (EffectSplEmitter *)SPL_Create(sEffectSplProc->splManager, id, a2);
     if (e->emitter != NULL) {
         e->resourceId = id;
         e->isActive = 1;

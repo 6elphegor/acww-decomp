@@ -14,6 +14,7 @@
 #include "game/WeatherRecord.h"
 #include "item/Letter.h"
 #include "gfx/Unk_020bfe30.h"
+#include "game/FxVec3.h"
 
 // ======== class types (global scope) ========
 struct Unk_021f4400;
@@ -588,11 +589,6 @@ struct Unk_0213b970 : SndEnvChannel {
     void func_02003c50(s32 a);
     void func_02003c60(void* p);
     void func_02003cbc();
-};
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3();
-    ~FxVec3();
 };
 struct Unk_020bd0a4_Vec3 {
     s32 x, y, z;

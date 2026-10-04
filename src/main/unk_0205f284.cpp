@@ -6,11 +6,9 @@
 #include "gfx/Unk_0205f7f4_Mtx.h"
 #include "gfx/TexVramSlot.h"
 #include "gfx/CachedModel.h"
+#include "player/FishBobber.h"
 
 
-struct Unk_0205f8d4_Vec {
-    s32 x, y, z;
-};
 
 // Actor (see Character): virtual at 0x5c fills a position, position at +0x5c.
 class Character : public GameProc {
@@ -144,43 +142,6 @@ BOOL Fishing_StepArc(Unk_0205f8d4_Vec *a, s32 k, Unk_0205f8d4_Vec *b, s32 *c, u8
 void Fishing_CalcArcSpeed(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, s32 *c, s32 *d, u8 mode);
 }
 
-class FishBobber {
-public:
-    void update();
-    void setState(s32 state);
-    void setPos(Unk_0205f8d4_Vec *v);
-    void setTargetPos(Unk_0205f8d4_Vec *v);
-    void startCatchLift();
-    void endCatch();
-    void isCatchLanded();
-    void nudge();
-    BOOL checkReelResult();
-    BOOL tryHook();
-    BOOL isInWater();
-    void *getFish();
-    void setFish(void *p);
-    void setOwnerAid(s32 v);
-    u8 getSlot();
-    void detach();
-    void attach(u32 id, Character *actor, u32 n);
-    void destruct();
-    void construct();
-
-    u8 slot;
-    u8 pad_01[3];
-    s32 curState;
-    Unk_0205f8d4_Vec pos;
-    s32 gravity;
-    s32 ySpeed;
-    Unk_0205f8d4_Vec targetPos;
-    Character *ownerActor;
-    void *fish;
-    s32 stateTimer;
-    s32 effect;
-    u8 justLanded;
-    u8 pad_39[3];
-    s32 ownerAid;
-};
 
 class FishBobberPool {
 public:

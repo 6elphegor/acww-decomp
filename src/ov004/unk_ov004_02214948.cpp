@@ -11,13 +11,10 @@
 #include "actor/Unk_ov004_022146ec_Actor.h"
 #include "npc/Unk_ov004_0221572c_Sub.h"
 #include "game/Unk_ov004_02215c94_V.h"
+#include "game/FxVec3.h"
 #undef postCreate
 
 extern "C" {
-struct FxVec3 : Unk_ov004_02215c94_V {
-    FxVec3(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
-    ~FxVec3();
-};
 }
 
 

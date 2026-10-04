@@ -7,6 +7,7 @@
 #include "game/Unk_0202f7b8_V3.h"
 #include "game/CollisionCircle.h"
 #include "game/CollisionState.h"
+#include "game/FxVec3.h"
 
 struct Unk_0202ff44_V3;
 struct CollisionVisitor;
@@ -97,12 +98,6 @@ struct Unk_0202ea3c : CollisionVec2 {
 };
 
 // ---- 3D vector with the destructor at 0x02000c8c
-struct FxVec3 {
-    s32 unk_00, unk_04, unk_08;
-    FxVec3();
-    FxVec3(s32 a, s32 b, s32 c) { unk_00 = a; unk_04 = b; unk_08 = c; }
-    ~FxVec3();
-};
 extern FxVec3 sCollisionUpVector;
 extern FxVec3 sCollisionQueryMargin;
 extern CollisionWorld sCollisionWorld;
@@ -2203,9 +2198,9 @@ void BoxColliderX::resetBox() {
     a = unk_30;
     b = unk_60;
     for (i = 0; i < 4; i++) {
-        a->unk_00 = 0;
-        a->unk_04 = 0;
-        a->unk_08 = 0;
+        a->x = 0;
+        a->y = 0;
+        a->z = 0;
         _ZN13CollisionVec23setEii(b, 0, 0);
         a++;
         b++;
@@ -2900,7 +2895,7 @@ extern "C" void Collision_Move(Unk_020309d4_Owner *self, Unk_02030e48_Vec *pos, 
     BOOL fl;
     l.A = *pos;
     l.B = *tgt;
-    lim = (sCollisionQueryMargin.unk_00 + arg5) * 2;
+    lim = (sCollisionQueryMargin.x + arg5) * 2;
     dx = l.A.x - tgt->x;
     if (dx < 0) dx = -dx;
     if (lim + dx > 0xc000) goto reset;

@@ -3,6 +3,7 @@
 #include "item/ItemId.h"
 #include "gfx/G3dResAccess.h"
 #include "gfx/MatTexBinder.h"
+#include "game/FxVec3.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 // (called as free functions with the object as first argument; the mangled name is the symbols.txt name)
@@ -46,20 +47,6 @@
 #define MatTexVramTask_cancel _ZN14MatTexVramTask6cancelEv
 
 // ---------------------------------------------------------------- library-side classes (real symbols)
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3() {
-        x = 0;
-        y = 0;
-        z = 0;
-    }
-    FxVec3(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-    ~FxVec3();
-};
 
 
 extern "C" {
@@ -460,7 +447,7 @@ extern "C" FxVec3 sRoomHasuPos;
 extern "C" ItemId sRoomNoItem;
 extern "C" Unk_ov004_SceneEntry sRoomShellProfile = { (void *(*)())RoomShell_Create, 0xe, 0xa };
 extern "C" {
-FxVec3 sRoomHasuPos;
+FxVec3 sRoomHasuPos(0, 0, 0);
 RoomShell *sRoomShell;
 }
 

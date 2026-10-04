@@ -9,6 +9,7 @@
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
 #include "gfx/CachedModel.h"
+#include "game/FxVec3.h"
 
 // Library base class (as include/GameProc.h, but vfunc_20 takes the u32 that ov004's override uses)
 class ProcBase {
@@ -152,15 +153,6 @@ struct Unk_ov004_02225c6c_V3 {
     s32 x, y, z;
 };
 
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-    ~FxVec3();
-};
 
 struct Unk_ov004_02226458_Obj {
     u32 unk_00;

@@ -17,12 +17,8 @@
 #include "types.h"
 #include "snd/BgmBeatPhase.h"
 #include "snd/SndBgmViews.h"
+#include "snd/SndBgmHd.h"
 
-// BGM descriptor: u16 id at +0x38 (240 = a special track whose values are halved)
-struct Hd {
-    u8 pad[0x38];
-    u16 id;
-};
 
 // gSndBgmHandle: BGM info handle, first word = pointer to Hd, queried with func_0210a024(&handle, selector, &out)
 struct Hr {

@@ -21,6 +21,10 @@
 #include "game/BoxCollider.h"
 #include "room/Unk_ov004_02205c80_Obj.h"
 #include "room/Unk_ov004_02206570_Act.h"
+#include "room/FtrTileList.h"
+#include "room/FtrGlowMat.h"
+#include "room/FtrStackLink.h"
+#include "room/FtrTopItem.h"
 
 // ================================================================ plain value types
 
@@ -174,29 +178,12 @@ public:
 
 // ---- 0x02206520: list of up to 4 tile positions
 
-struct FtrTileList {
-    u32 count;
-    Unk_ov004_02206520_Ent tiles[4];
-    Unk_ov004_02206520_Ent *get(s32 i);
-    u32 getCount();
-    BOOL add(u32 a, u32 b);
-    void release();
-    FtrTileList();
-};
 
 
 // ---- 0x02205994: 4 ids + count (member at 0x760)
 
 // ---- 0x02205bcc: model animation slot (base: main class LightLevel)
 
-struct FtrGlowMat : public LightLevel {
-    FtrGlowMat();
-    ~FtrGlowMat();
-    BOOL setLit(BOOL on, s32 a, s32 b);
-    BOOL bindMaterial(G3dResAccess *res, s32 idx, BOOL on);
-    s8 matIdx;
-    G3dResAccess *resMdl;
-};
 
 // ---- 0x02205b14: element view used by the 3-element container (same object as 0x02205bcc)
 
@@ -218,34 +205,8 @@ public:
 // ---- 0x02205d5c (member at 0x73e)
 
 // ---- 0x02205e58 (member at 0x178)
-struct FtrStackLink {
-    ~FtrStackLink();
-    BOOL attachAt(s32 x, s32 y, s16 z);
-    BOOL set(s32 idx, Unk_ov004_02205d8c_Vec *pos, s32 ang);
-    s32 getRelAngle();
-    Unk_ov004_02205d8c_Vec *getRelPos();
-    s32 getParentIndex();
-    BOOL isAttached();
-    void clear();
-    s16 parentIndex;
-    s16 relAngle;
-    Unk_ov004_02205d8c_Vec relPos;
-};
 
 // ---- 0x022062f4 (element of 0x022061b4)
-struct FtrTopItem {
-    FtrTopItem();
-    ~FtrTopItem();
-    BOOL set(u16 *id, Unk_ov004_02205d8c_Vec *pos);
-    u16 *getItem();
-    Unk_ov004_02205d8c_Vec *getPos();
-    void clear();
-    BOOL isSet();
-    void draw(Unk_ov004_02205c80_Obj *o);
-    u16 unk_00;
-    u16 item;
-    Unk_ov004_02205d8c_Vec relPos;
-};
 
 
 // ---- 0x022061b4 (member at 0x188)

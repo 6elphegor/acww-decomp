@@ -4,12 +4,9 @@
 // 0x020f8e70-0x020f9018: resource table loaders (callbacks) and resource layout builder (SPL_Load).
 #include "types.h"
 #include "snd/SndBgmViews.h"
+#include "gfx/SplEmitterViews.h"
+#include "snd/SndBgmHd.h"
 
-// BGM descriptor: u16 id at +0x38 (240 = a special track whose values are halved)
-struct Hd {
-    u8 pad[0x38];
-    u16 id;
-};
 
 
 struct Fo;
@@ -145,24 +142,6 @@ struct Fp {
     u16 h26;
 };
 
-// per-resource header: bits 8-11 and 16 = optional blocks, bits 24-29 = field types (each gets a handler function)
-struct HdrBits {
-    u32 pad0 : 8;
-    u32 b8 : 1;
-    u32 b9 : 1;
-    u32 b10 : 1;
-    u32 b11 : 1;
-    u32 pad12 : 4;
-    u32 b16 : 1;
-    u32 pad17 : 7;
-    u32 b24 : 1;
-    u32 b25 : 1;
-    u32 b26 : 1;
-    u32 b27 : 1;
-    u32 b28 : 1;
-    u32 b29 : 1;
-    u32 pad30 : 2;
-};
 
 struct Item8 {
     void *fn;

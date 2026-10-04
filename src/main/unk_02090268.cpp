@@ -4,6 +4,7 @@
 #include "game/Unk_0203389c_Vec.h"
 #include "gfx/Unk_02093dc8_Obj.h"
 #include "gfx/Unk_02093c28_Obj.h"
+#include "gfx/EffectSplEmitter.h"
 
 typedef Unk_0203389c_Vec Unk_02093aa8_Vec;
 typedef Unk_0203389c_Vec Unk_02093748_Vec;
@@ -400,15 +401,6 @@ struct Unk_020932bc_V32 {
     }
 };
 
-struct Unk_020932bc_V16 {
-    s16 x, y, z;
-    void Set(s32 a, s32 b, s32 c)
-    {
-        x = a;
-        y = b;
-        z = c;
-    }
-};
 
 struct Unk_021d0830 {
     s32 x, y, z;
@@ -449,39 +441,7 @@ struct Unk_02093998_Node {
     s32 originX, originY, originZ;
 };
 
-class EffectSplEmitter {
-public:
-    s32 spawnLandingEffects(s32 id1, void *d1, s32 id2, void *d2, s32 id3, void *d3, s32 id4, void *d4);
-    s32 Effect_SpawnParticleLandings(s32 id1, void *d1, s32 id2, void *d2, s32 id3, void *d3, s32 id4, void *d4);
-    void initKind02();
 
-    u8 pad_00[8];
-    Unk_02093998_Node *particles;
-    s32 particleCount;
-    u8 pad_10[8];
-    Unk_0209355c_Ref *resource;
-    u8 pad_1c[4];
-    s32 posX, posY, posZ;
-    u8 pad_2c[0x10];
-    Unk_020932bc_V16 axis;
-    u8 pad_42[0x1a];
-    s32 unk_5c;
-};
-
-class EffectEmitterEntry {
-public:
-    void updateLanding5F();
-    void updateLanding1F1E();
-    void updateLanding1F1D();
-    void updateLanding1F1EB();
-    void initAxisUpForward();
-    s32 updateLanding(s32 id1, void *d1, s32 id2, void *d2, s32 id3, void *d3, s32 id4, void *d4);
-
-    u8 pad_00[4];
-    Unk_02093914_Id tag;
-    u8 pad_08[4];
-    EffectSplEmitter *emitter;
-};
 
 class EffectModelObj {
 public:
@@ -1328,10 +1288,10 @@ s32 EffectSplEmitter::spawnLandingEffects(s32 id1, void *d1, s32 id2, void *d2, 
 
 s32 EffectEmitterEntry::updateLanding(s32 id1, void *d1, s32 id2, void *d2, s32 id3, void *d3, s32 id4, void *d4)
 { using namespace R6;
-    Unk_02093914_Id id = tag;
+    EffectEmitterTag id = tag;
     BOOL r;
     Unk_02093914_Ent *e;
-    e = &gEffectManager[id.b[0]];
+    e = &gEffectManager[id.poolIndex];
     r = FALSE;
     if (e->handle != -1) {
         if (e->life == -1) {
@@ -1422,7 +1382,7 @@ extern "C" s32 Effect_CreateKind00(s32 a, void *b, u16 *c, s32 d)
 void EffectEmitterEntry::initAxisUpForward()
 { using namespace R6;
     Unk_021d0830 *const g = &(*(Unk_021d0830 *)&gEffectManager[32]);
-    Unk_02093914_Id id = tag;
+    EffectEmitterTag id = tag;
     Unk_02093748_Vec v;
     EffectSplEmitter *p;
     v.x = 0;
@@ -1439,7 +1399,7 @@ void EffectEmitterEntry::initAxisUpForward()
     p = emitter;
     s32 tx = v.x;
     p->axis.Set(tx, ty, tz);
-    MI_CpuCopy8(g, &gEffectManager[id.b[0]], 0x1c);
+    MI_CpuCopy8(g, &gEffectManager[id.poolIndex], 0x1c);
 }
 
 void EffectEmitterEntry::updateLanding1F1D()

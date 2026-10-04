@@ -29,6 +29,7 @@
 // are the implicit derived-to-base conversions when `this` is passed to the extern "C" SndHandle functions of unk_020ede18.cpp, and
 // `h ? h - 4 : 0` in f4010 is static_cast<SndSeEmitter *>(h).
 #include "types.h"
+#include "sys/FndList.h"
 #include "snd/SndSeEmitter.h"
 #include "game/Vec3.h"
 
@@ -49,13 +50,6 @@ struct Glob {
 };
 
 
-// NNS_FndList
-struct FndList {
-    void *head;
-    void *tail;
-    u16 num;
-    u16 offset;
-};
 
 // sound sequence handle (one word; functions in unk_020ede18.cpp and the NNS sound library, plain C names)
 struct SndSeqHandle {

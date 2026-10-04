@@ -10,6 +10,7 @@
 #include "talk/BmgMsgAttr.h"
 #include "talk/MsgParser.h"
 #include "talk/EncodedStringBase.h"
+#include "talk/Flag18.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -601,10 +602,6 @@ public:
 
 
 
-struct Flag18 {
-    u8 pad[0x18];
-    u8 flag;
-};
 
 extern "C" {
 extern BmgInfHeader sBmgInfHeader;

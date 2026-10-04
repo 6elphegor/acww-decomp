@@ -3,6 +3,7 @@
 // mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL unit: no data defined, no vtable, everything extern.
 // Continues G002c (0x020ea34c-0x020ea960); the file ends at 0x020ec848 (tail-call stubs from there on are another file).
 #include "types.h"
+#include "net/HexTable.h"
 
 extern "C" {
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
@@ -148,13 +149,6 @@ extern AllocFn sAllocHook;
 extern FreeFn sFreeHook;
 extern u8 data_021f4950[];
 }
-struct HexPair {
-    u8 hi;
-    u8 lo;
-};
-struct HexTable {
-    u8 c[17];
-};
 extern "C" {
 BOOL DwcMatch_IsServerLocked(void);
 void DwcMatch_ClearServerLock(void);

@@ -22,6 +22,7 @@
 #include "item/ShopPurchaseBits.h"
 #include "item/ShopAckCounter.h"
 #include "item/DateSeededRandomSource.h"
+#include "game/Elem2a.h"
 struct MsgString25 {
     MsgString25();
     ~MsgString25();
@@ -176,7 +177,6 @@ struct Obj {
 // ======== types of unk_020aebbc.cpp ========
 
 
-struct Elem2a { Elem2a(); u16 d; };
 struct NookShop { u32 vt; ItemId e[0x25]; NookShop(); };
 
 extern const s32 sObjShadowCoordShift;

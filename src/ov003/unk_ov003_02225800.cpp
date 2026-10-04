@@ -11,6 +11,7 @@
 #include "snd/SndEnvChannel.h"
 #include "game/GroundInfoBase.h"
 #include "game/CollisionState.h"
+#include "game/FxVec3.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -87,12 +88,6 @@ public:
 };
 
 
-class FxVec3 {
-public:
-    FxVec3();
-    ~FxVec3();
-    u32 pad[3];
-};
 
 
 class Unk_0213b954 : public SndEnvChannel {

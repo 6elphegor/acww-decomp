@@ -15,6 +15,7 @@
 #include "npc/Unk_0201ac88.h"
 #include "npc/NpcMoveAnimSet.h"
 #include "npc/Unk_0201ad18.h"
+#include "game/FxVec3.h"
 
 
 // unk_02011580.cpp
@@ -2102,12 +2103,6 @@ public:
 
 
 struct Unk_020135e4 : Unk_02013474 { Unk_020135e4(); };
-// the two-element vector tables sNpcAvoidOffsets / sNpcObstacleProbeOffsets (constructed and registered by __sinit)
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
-    ~FxVec3();
-};
 // the direction table sRouteDirs (filled by __sinit)
 struct Unk_021be028_Dir {
     s32 x, z;

@@ -2,17 +2,12 @@
 #include "Unk_020d8c7c.h"
 #include "game/Vec3.h"
 #include "gfx/ViewFrustum.h"
+#include "game/FxVec3.h"
 
 #define reg_4000358 (*(u32 *)0x4000358)
 #define reg_4000008 (*(u16 *)0x4000008)
 
 
-// local static of ScenePos_Reset; destructor in another unit
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
-    ~FxVec3();
-};
 
 static inline void setVec(Vec3* o, s32 x, s32 y, s32 z) {
     o->x = x;

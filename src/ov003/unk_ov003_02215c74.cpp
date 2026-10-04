@@ -7,6 +7,7 @@
 #include "game/Unk_ov003_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "talk/TalkWindowState.h"
+#include "game/FxVec3.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -349,16 +350,6 @@ struct Unk_ov003_02215fc0_Rec {
     u8 f : 5;
 };
 
-// 12-byte vector with a trivial destructor (main 0x02000c8c = _ZN6FxVec3D1Ev)
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-    ~FxVec3();
-};
 
 // ============================================================ class VillagerHouse
 class VillagerHouse : public BuildingActor {

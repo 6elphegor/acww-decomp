@@ -12,6 +12,7 @@
 #include "npc/Unk_0201ac88.h"
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
+#include "game/FxVec3.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -443,11 +444,6 @@ struct Unk_ov088_Rgba {
     }
 };
 
-struct FxVec3 {
-    s32 x, y, z;
-    FxVec3(u32 x_, u32 y_, u32 z_) : x(x_), y(y_), z(z_) {}
-    ~FxVec3();
-};
 
 struct Unk_ov088_SceneEntry {
     SpNpcShrunk *(*factory)();

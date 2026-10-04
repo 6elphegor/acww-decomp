@@ -64,4 +64,176 @@ struct B14 {
     u8 c14;
 };
 
+// ---- resource header bit views, emitter views and the field-handler table entry (HdrBits also in unk_020f8b44.cpp)
+
+struct Node;
+struct Res;
+struct ResB;
+struct Pt;
+struct RU;
+
+// resource header word, bits 24-29 = field types
+struct HdrBits {
+    u32 pad0 : 8;
+    u32 b8 : 1;
+    u32 b9 : 1;
+    u32 b10 : 1;
+    u32 b11 : 1;
+    u32 pad12 : 4;
+    u32 b16 : 1;
+    u32 pad17 : 7;
+    u32 b24 : 1;
+    u32 b25 : 1;
+    u32 b26 : 1;
+    u32 b27 : 1;
+    u32 b28 : 1;
+    u32 b29 : 1;
+    u32 pad30 : 2;
+};
+
+struct Hdr20 {
+    /* 0x00 */ u32 w0;
+    /* 0x04 */ u32 w4;
+    /* 0x08 */ u8 p8[0x14];
+    /* 0x1c */ u32 w1c;
+};
+
+// resource header (first word flags)
+struct HdrW {
+    /* 0x00 */ u32 pad0 : 4;
+    u32 k4 : 2;
+    u32 pad6 : 5;
+    u32 b11 : 1;
+    u32 pad12 : 4;
+    u32 b16 : 1;
+    u32 pad17 : 4;
+    u32 b21 : 1;
+    u32 b22 : 1;
+    u32 pad23 : 9;
+    /* 0x04 */ u8 p4[0x3f];
+    /* 0x43 */ u8 c43;
+};
+
+struct H2 {
+    /* 0x0 */ u16 a;
+    /* 0x2 */ u16 b;
+};
+
+struct Em {
+    /* 0x00 */ u8 p0[8];
+    /* 0x08 */ Node *l8;
+    /* 0x0c */ u8 pc[4];
+    /* 0x10 */ Node *l16;
+    /* 0x14 */ u8 p14[4];
+    /* 0x18 */ Res *res;
+};
+
+// three u16 copied as one block
+struct U16x3 {
+    u16 v[3];
+};
+
+struct EmI {
+    /* 0x00 */ s32 w0;
+    /* 0x04 */ s32 w4;
+    /* 0x08 */ s32 w8;
+    /* 0x0c */ s32 w12;
+    /* 0x10 */ s32 w16;
+    /* 0x14 */ s32 w20;
+    /* 0x18 */ ResB *res;
+    /* 0x1c */ s32 w28;
+    /* 0x20 */ s32 w32;
+    /* 0x24 */ s32 w36;
+    /* 0x28 */ s32 w40;
+    /* 0x2c */ s32 w44;
+    /* 0x30 */ s32 w48;
+    /* 0x34 */ s32 w52;
+    /* 0x38 */ u16 h56;
+    /* 0x3a */ u16 h58;
+    /* 0x3c */ U16x3 h60; // u16 h60/h62/h64 in the copies that only declared them
+    /* 0x42 */ u16 h66;
+    /* 0x44 */ u32 w68;
+    /* 0x48 */ u32 w72;
+    /* 0x4c */ u32 w76;
+    /* 0x50 */ u32 w80;
+    /* 0x54 */ u32 w84;
+    /* 0x58 */ u16 h88;
+    /* 0x5a */ u16 h90;
+    /* 0x5c */ u32 w92;
+    /* 0x60 */ s16 s96;
+    /* 0x62 */ s16 s98;
+    /* 0x64 */ s16 s100;
+    /* 0x66 */ s16 s102;
+    /* 0x68 */ u32 c104 : 8;
+    u32 c105 : 8;
+    u32 f16 : 3;
+    u32 pad104 : 13;
+    /* 0x6c */ u8 p108[12];
+    /* 0x78 */ u32 w120;
+    /* 0x7c */ u32 w124;
+    /* 0x80 */ u32 w128;
+};
+
+struct HdrU {
+    u32 pad0 : 8;
+    u32 b8 : 1;
+    u32 b9 : 1;
+    u32 b10 : 1;
+    u32 b11 : 1;
+    u32 pad12 : 3;
+    u32 b15 : 1;
+    u32 b16 : 1;
+    u32 pad17 : 13;
+    u32 b30 : 1;
+    u32 b31 : 1;
+};
+
+struct HdrP {
+    /* 0x00 */ u8 p0[0x38];
+    /* 0x38 */ u16 h56;
+    /* 0x3a */ u8 p3a[0x08];
+    /* 0x42 */ u8 c66;
+};
+
+struct Fi {
+    /* 0x0 */ void (*fn)(Pt *, Pt *, s32 *, void *);
+};
+
+struct EFlags {
+    u32 b0 : 1;
+    u32 b1 : 1;
+    u32 b2 : 1;
+    u32 b3 : 1;
+    u32 b4 : 1;
+    u32 pad : 27;
+};
+
+// emitter (update view), A3 above
+struct EU {
+    /* 0x00 */ u8 p0[8];
+    /* 0x08 */ Pt *l8;
+    /* 0x0c */ u8 pc[4];
+    /* 0x10 */ Pt *l16;
+    /* 0x14 */ u8 p14[4];
+    /* 0x18 */ RU *res;
+    /* 0x1c */ EFlags fl;
+    /* 0x20 */ A3 v32;
+    /* 0x2c */ s32 w44;
+    /* 0x30 */ s32 w48;
+    /* 0x34 */ s32 w52;
+    /* 0x38 */ u16 h56;
+    /* 0x3a */ u8 p3a[0x2e];
+    /* 0x68 */ u8 c104;
+    /* 0x69 */ u8 p69[0x0f];
+    /* 0x78 */ void (*cb)(EU *, u32);
+};
+
+typedef void (*FldFn)(Pt *, RU *, u32);
+
+// field handler table entry
+struct FEnt {
+    /* 0x0 */ FldFn fn;
+    /* 0x4 */ u32 arg;
+};
+
 #endif

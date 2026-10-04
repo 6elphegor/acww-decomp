@@ -2,6 +2,7 @@
 #include "net/CommManager.h"
 #include "net/NetSessionParts.h"
 #include "save/LostChildRecord.h"
+#include "game/FxVec3.h"
 
 // Local copies of the library base classes with the parameters these overrides forward.
 class ProcBase {
@@ -39,18 +40,6 @@ public:
 
 
 
-// Static object registered with the atexit-style helper (class of the destructor at func_02000c8c).
-struct FxVec3 {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    FxVec3() {
-        unk_00 = 0x10000;
-        unk_04 = 0;
-        unk_08 = 0x5000;
-    }
-    ~FxVec3();
-};
 
 struct Unk_020a4778_Id {
     u16 townId;
@@ -1640,7 +1629,7 @@ void NetSessionState::updateSyncClient() {
                 memcmp(p + 1, idb + 2, 8) == 0) {
                 SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2f, 2, 2);
             } else {
-                static FxVec3 s;
+                static FxVec3 s(0x10000, 0, 0x5000);
                 SceneWarp_RequestAt(Scene_GetWarpRequest(), 0xd, &s, 0x800000, 0, 2, 2);
             }
         } else {

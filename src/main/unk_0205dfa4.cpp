@@ -7,6 +7,7 @@
 #include "item/ItemId.h"
 #include "gfx/TexTransfer.h"
 #include "gfx/CachedModel.h"
+#include "player/FishBobber.h"
 
 // ---- helper classes (declared elsewhere) ----
 
@@ -63,12 +64,6 @@ public:
     virtual ~HeldItemTexAnim();
 };
 
-class FishBobber {
-public:
-    u8 pad[0x40];
-    void destruct();
-    void construct();
-};
 
 // ---- manager singleton (sHeldItemModelBank) ----
 class HeldItemModelBank {
