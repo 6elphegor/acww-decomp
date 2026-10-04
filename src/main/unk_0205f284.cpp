@@ -2,7 +2,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
-#include "game/Unk_0205f6b4_Obj.h"
 #include "gfx/Mtx43.h"
 #include "gfx/TexVramSlot.h"
 #include "gfx/CachedModel.h"
@@ -657,7 +656,7 @@ void FishBobberStates::updateCastFail()
 
 void FishBobberStates::updateCast()
 {
-    Unk_0205f6b4_Obj o;
+    GroundInfoBase o; // filled / cleaned by hand: GroundInfo's constructor and destructor are called explicitly
     Unk_0205f8d4_Vec v, a, b, c;
     if (stateTimer < 0xf) {
         updateCastSwing();

@@ -1,6 +1,5 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "actor/Unk_02088d00.h"
 #include "actor/Unk_ov068_SceneEntry.h"
 #include "game/Unk_ov083_Vec.h"
 #include "talk/TalkWindowState.h"

@@ -8,7 +8,7 @@
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/JointBlend.h"
 
-struct Unk_02053a54_Msg;
+struct NNSG3dRS;
 
 class ThreeLayerAnimModel : public TwoLayerAnimModel {
 public:
@@ -20,10 +20,10 @@ public:
     void playLayer3(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g);
     void updateLayers3();
     BOOL allocLayer3Anims(u32 a);
-    void onJointCalcPostLayer3(Unk_02053a54_Msg *m);
-    void applyLayer3Blend(Unk_02053a54_Msg *m);
-    void onJointCalcPreLayer3(Unk_02053a54_Msg *m);
-    void captureLayer3Pose(Unk_02053a54_Msg *m);
+    void onJointCalcPostLayer3(NNSG3dRS *m);
+    void applyLayer3Blend(NNSG3dRS *m);
+    void onJointCalcPreLayer3(NNSG3dRS *m);
+    void captureLayer3Pose(NNSG3dRS *m);
     BOOL isLayer3Joint(u32 i);
     void clearLayer3Joint(u32 i);
     void setLayer3Joint(u32 i);

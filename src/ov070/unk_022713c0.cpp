@@ -1,7 +1,6 @@
 #include "types.h"
 #include "player/PlayerSpNpcRecord.h"
 #include "item/PocketMatches.h"
-#include "actor/Unk_02088d00.h"
 #include "item/ItemId.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"

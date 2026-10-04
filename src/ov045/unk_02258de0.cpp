@@ -1,6 +1,5 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#include "actor/Unk_02088d00.h"
 #include "talk/MsgStringBase.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"

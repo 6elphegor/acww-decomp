@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/GroundInfo.h"
 #include "Unk_020d8c7c.h"
 #include "game/Unk_02034250_Id.h"
 #include "game/Unk_02036c60_Vec.h"
@@ -247,12 +248,6 @@ struct Unk_020355dc_Data {
     u16 profile;
 };
 
-struct Unk_020358d4_Buf {
-    u8 pad_00[0x30];
-    s32 waterKind;
-    s32 attr;
-    u8 pad_38[8];
-};
 
 struct Unk_020358d4_Vec {
     s32 x, y, z;
@@ -332,8 +327,7 @@ void Snd_MoveBgmVolume(s32 a, s32 b);
 void Snd_StopBgm(s32 a);
 void Snd_PlayBgm(u32 a);
 Unk_020358d4_Src *PlayerActor_GetBodyPos(u32 n);
-void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(Unk_020358d4_Buf *p, Unk_020358d4_Src *pos, s32 a, s32 b);
-void GroundInfo_Destruct(Unk_020358d4_Buf *p);
+void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(GroundInfo *p, Unk_020358d4_Src *pos, s32 a, s32 b);
 s32 _ZN12Unk_02097ff48testFlagEj(void *p, s32 id);
 s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void _ZN12BgmSceneFade6updateEv(void *p);
@@ -1458,18 +1452,16 @@ void BgmVolumeMixer::updatePositionDuck(BgmVolumeChannel *e) {
     s32 flag = 0;
     Unk_020358d4_Src *p = PlayerActor_GetBodyPos(4);
     if (p) {
-        Unk_020358d4_Buf b1;
+        GroundInfo b1;
         _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&b1, p, 0, 0);
         s32 k = b1.attr;
         Unk_020358d4_Src v(p->x, p->y, p->z + 0x2000);
-        Unk_020358d4_Buf b2;
+        GroundInfo b2;
         _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&b2, &v, 0, 0);
         s32 m = b2.waterKind;
         if (k == 0x13 || k == 0x16 || m == 1) {
             flag = 1;
         }
-        GroundInfo_Destruct(&b2);
-        GroundInfo_Destruct(&b1);
     }
     if (st == 0) {
         if (flag != 0) {

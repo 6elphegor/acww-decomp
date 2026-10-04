@@ -8,6 +8,7 @@
 #include "talk/MsgWalker.h"
 #include "talk/MailMsgRequest.h"
 #include "talk/MsgString.h"
+#include "talk/MsgString33.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of other units
@@ -38,7 +39,7 @@ s32 _ZN10PlayerData11getPlayerIdEv(void);
 BOOL _ZN8PlayerId9getGenderEv(void);
 void _ZN12BmgReader512D1Ev(void *);
 void _ZN16MailTextExpanderD1Ev(void *);
-void _ZN16MailTextExpanderC1EP18Unk_020d94e8_Owner(void *, void *);
+void _ZN16MailTextExpanderC1EP15MailTextBuilder(void *, void *);
 void _ZN12BmgReader512C1Ev(void *);
 }
 
@@ -77,41 +78,16 @@ public:
     /* 0xa4 */ u8 buffer[0x200];
 };
 
-// Script interpreter (vtable 0x020d94e8)
-struct Unk_020d94e8_Entry {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual u8 *vfunc_0c();
-    u32 unk_04;
-    u32 unk_08;
-    s32 form;
-    u8 unk_10[0x24];
-};
-
-struct Unk_020d94e8_Sub {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual u8 *vfunc_08();
-};
-
-struct Unk_020d94e8_Owner {
-    /* 0x000 */ u8 unk_000[0x5c];
-    /* 0x05c */ u8 unk_05c[0x2a4];
-    /* 0x300 */ s8 output[0x200];
-    /* 0x500 */ u32 namePos;
-    /* 0x504 */ Unk_020d94e8_Entry slots[11];
-};
-
 class MailTextExpander;
 typedef void (MailTextExpander::*Unk_020d94e8_Fn)();
 extern void *data_020d9460[2];
 extern void *data_020d9468[2];
 extern void *data_020d9470[2];
 
+// Script interpreter (vtable 0x020d94e8): expands a mail message into gMailTextBuilder.output
 class MailTextExpander : public MsgWalker {
 public:
-    MailTextExpander(Unk_020d94e8_Owner *owner);
+    MailTextExpander(MailTextBuilder *owner);
     virtual ~MailTextExpander();
     virtual void onBegin();
     virtual void onEnd();
@@ -119,7 +95,7 @@ public:
     virtual void onTag(u8 *p);
     virtual BOOL canContinue();
 
-    void selectBySlotForm(Unk_020d94e8_Entry *e);
+    void selectBySlotForm(MsgString33 *e);
     void selectByUnkCondition(s32 sel);
     void setCapitalizeNext(s32 sel);
     void setUnkMode2(s32 sel);
@@ -130,7 +106,7 @@ public:
     void appendChar();
     u8 expand(u8 flag);
 
-    /* 0x24 */ Unk_020d94e8_Owner *builder;
+    /* 0x24 */ MailTextBuilder *builder;
     /* 0x28 */ MsgTag tag;
     /* 0x3c */ s32 curChar;
     /* 0x40 */ s32 outLen;
@@ -178,7 +154,7 @@ u32 BmgReader512::getBufferSize() {
     return 0x200;
 }
 
-MailTextExpander::MailTextExpander(Unk_020d94e8_Owner *owner) : builder(owner) {
+MailTextExpander::MailTextExpander(MailTextBuilder *owner) : builder(owner) {
     curChar = 0;
     outLen = 0;
     success = 1;
@@ -199,7 +175,7 @@ u8 MailTextExpander::expand(u8 flag) {
     charCount = 0;
     newlineCount = 0;
     reset();
-    begin(((Unk_020d94e8_Sub *)(builder->unk_05c))->vfunc_08());
+    begin((u8 *)((BmgReader *)builder->reader)->getBuffer());
     run(FALSE);
     return success;
 }
@@ -272,8 +248,8 @@ void MailTextExpander::appendChar() {
 
 void MailTextExpander::insertSlot() {
     s32 i = tag.getSlotIndex();
-    Unk_020d94e8_Entry *e = &builder->slots[i];
-    pushText(e->vfunc_0c());
+    MsgString33 *e = (MsgString33 *)&builder->slots[i];
+    pushText(e->data());
     articleMode = 0;
 }
 
@@ -303,8 +279,8 @@ void MailTextExpander::handleGrammarTag() {
         selectByUnkCondition(sel);
     } else if (sel >= 5 && sel <= 15) {
         Unk_0203d134_E en = (Unk_0203d134_E)(sel - 5);
-        Unk_020d94e8_Owner *o = builder;
-        selectBySlotForm(&o->slots[en]);
+        MailTextBuilder *o = builder;
+        selectBySlotForm((MsgString33 *)&o->slots[en]);
     }
 }
 
@@ -336,10 +312,10 @@ void MailTextExpander::selectByUnkCondition(s32 sel) {
     }
 }
 
-void MailTextExpander::selectBySlotForm(Unk_020d94e8_Entry *e) {
+void MailTextExpander::selectBySlotForm(MsgString33 *e) {
     char *a, *b, *c;
     tag.getStrings3(&a, &b, &c);
-    s32 m = e->form;
+    s32 m = e->attr.form;
     if (m == 0) {
         if (a != 0) {
             pushText((u8 *)a);
@@ -434,7 +410,7 @@ extern "C" void MailText_SetSlotMonth(s32 i, s32 x) { String_GetMonthName(&gMail
 extern "C" void MailText_SetSlotDayOrdinal(s32 i, s32 x) { String_GetDayOrdinal(&gMailTextBuilder.slots[i], x); }
 
 MailTextBuilder::MailTextBuilder() {
-    _ZN16MailTextExpanderC1EP18Unk_020d94e8_Owner(this, this);
+    _ZN16MailTextExpanderC1EP15MailTextBuilder(this, this);
     _ZN12BmgReader512C1Ev(&reader);
     namePos = -1;
     __cxa_vec_ctor(slots, 11, 0x34, (void *)_ZN11MsgString33C1Ev, (void *)_ZN11MsgString33D1Ev);

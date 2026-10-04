@@ -12,9 +12,10 @@ struct FishDisplayEntry {
     u8 pad_00[0x40];
     s32 fishId;
     s32 entryState;
-    u8 pad_48[0x44];
+    u8 modelSlot[4];
+    u8 pooledModel[0x40];
     Unk_020db984_Vec3 pos;
-    u8 pad_98[0xb8];
+    u8 model[0xb8];
     Unk_020db984_Vec3 scale;
     s16 rotX, rotY, rotZ;
     u8 pad_162[2];
@@ -23,27 +24,6 @@ struct FishDisplayEntry {
     u8 playSound;
     u8 pad_16a[2];
 };
-
-struct Unk_0204fd24 {
-    /* 0x000 */ u8 unk_00[0x40];
-    /* 0x040 */ s32 fishId;
-    /* 0x044 */ s32 entryState;
-    /* 0x048 */ u8 modelSlot[4];
-    /* 0x04c */ u8 pooledModel[0x40];
-    /* 0x08c */ s32 pos;
-    /* 0x090 */ s32 posY;
-    /* 0x094 */ s32 posZ;
-    /* 0x098 */ u8 model[0xb8];
-    /* 0x150 */ s32 scale;
-    /* 0x154 */ s32 scaleY;
-    /* 0x158 */ s32 scaleZ;
-    /* 0x15c */ u16 rotX;
-    /* 0x15e */ u16 rotY;
-    /* 0x160 */ u16 rotZ;
-    /* 0x164 */ s32 alpha;
-    /* 0x168 */ s32 unk_168;
-};
-
 
 struct FishDisplayRequest {
     u8 kind;
@@ -120,8 +100,8 @@ void NetBuf_UnpackPair20(void *buf, s32 *a, s32 *b);
 }
 
 extern "C" {
-Unk_0204fd24 *FishDisplayEntry_Construct(Unk_0204fd24 *p);
-Unk_0204fd24 *FishDisplayEntry_Destruct(Unk_0204fd24 *p);
+FishDisplayEntry *FishDisplayEntry_Construct(FishDisplayEntry *p);
+FishDisplayEntry *FishDisplayEntry_Destruct(FishDisplayEntry *p);
 FishDisplay *FishDisplay_Create(void);
 }
 
@@ -148,8 +128,8 @@ public:
 };
 
 extern "C" {
-Unk_0204fd24 *FishDisplayEntry_Construct(Unk_0204fd24 *p);
-Unk_0204fd24 *FishDisplayEntry_Destruct(Unk_0204fd24 *p);
+FishDisplayEntry *FishDisplayEntry_Construct(FishDisplayEntry *p);
+FishDisplayEntry *FishDisplayEntry_Destruct(FishDisplayEntry *p);
 FishDisplay *FishDisplay_Create(void);
 }
 
@@ -199,7 +179,7 @@ extern "C" FishDisplay *FishDisplay_Create(void) {
     return new FishDisplay();
 }
 
-extern "C" Unk_0204fd24 *FishDisplayEntry_Construct(Unk_0204fd24 *e) {
+extern "C" FishDisplayEntry *FishDisplayEntry_Construct(FishDisplayEntry *e) {
     SndSeEmitter_ctor(e);
     ModelSlotHandle_Init(e->modelSlot);
     _ZN11PooledModelC1Ev(e->pooledModel);
@@ -207,12 +187,12 @@ extern "C" Unk_0204fd24 *FishDisplayEntry_Construct(Unk_0204fd24 *e) {
     e->fishId = -1;
     e->entryState = 0;
     _ZN11PooledModel5resetEv(e->pooledModel);
-    e->pos = 0x1000;
-    e->posY = 0x1000;
-    e->posZ = 0x1000;
-    e->scale = 0x1000;
-    e->scaleY = 0x1000;
-    e->scaleZ = 0x1000;
+    e->pos.x = 0x1000;
+    e->pos.y = 0x1000;
+    e->pos.z = 0x1000;
+    e->scale.x = 0x1000;
+    e->scale.y = 0x1000;
+    e->scale.z = 0x1000;
     e->rotX = 0;
     e->rotY = 0;
     e->rotZ = 0;
@@ -220,7 +200,7 @@ extern "C" Unk_0204fd24 *FishDisplayEntry_Construct(Unk_0204fd24 *e) {
     return e;
 }
 
-extern "C" Unk_0204fd24 *FishDisplayEntry_Destruct(Unk_0204fd24 *e) {
+extern "C" FishDisplayEntry *FishDisplayEntry_Destruct(FishDisplayEntry *e) {
     _ZN9AnimModelD1Ev(e->model);
     _ZN11PooledModelD1Ev(e->pooledModel);
     ModelSlotHandle_Destroy(e->modelSlot);
@@ -232,7 +212,7 @@ extern "C" s32 FishDisplay_FindFreeEntry(void) {
     s32 i = 0;
     s32 r = -1;
     if (gFishDisplay != NULL) {
-        Unk_0204fd24 *e = (Unk_0204fd24 *)gFishDisplay->entries;
+        FishDisplayEntry *e = gFishDisplay->entries;
         for (; i < sFishDisplayEntryCount; e++, i++) {
             if (e->entryState == 0) {
                 r = i;
@@ -250,7 +230,7 @@ BOOL FishDisplay::beginLoad(s32 idx) {
         return FALSE;
     }
     if (idx != -1) {
-        Unk_0204fd24 *e = (Unk_0204fd24 *)&gFishDisplay->entries[idx];
+        FishDisplayEntry *e = &gFishDisplay->entries[idx];
         e->entryState = 2;
         _ZN13ModelSlotPool7acquireEPt(modelPool, e->modelSlot);
         _ZN11PooledModel5resetEv(e->pooledModel);
@@ -262,7 +242,7 @@ BOOL FishDisplay::beginLoad(s32 idx) {
 
 void FishDisplay::releaseEntry(s32 idx) {
     if (idx >= 0 && idx < sFishDisplayEntryCount && gFishDisplay != NULL) {
-        Unk_0204fd24 *e = (Unk_0204fd24 *)&gFishDisplay->entries[idx];
+        FishDisplayEntry *e = &gFishDisplay->entries[idx];
         if (e->entryState != 0 && e->entryState != 1) {
             _ZN12SndSeEmitter8callStopEv(e);
         }

@@ -2,7 +2,6 @@
 #include "types.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "npc/VillagerClothModel.h"
-#include "actor/Unk_02088d00.h"
 #include "room/RoomFreeUnitMap.h"
 #include "npc/VillagerMood.h"
 #include "snd/SndSeEmitter.h"
@@ -49,7 +48,7 @@ class HouseOwnerVillager;
 #define VillagerMood_update _ZN12VillagerMood6updateEP12VillagerTalk
 #define VillagerMood_requestApply _ZN12VillagerMood12requestApplyEv
 #define VillagerTalk_getEventKind _ZN12VillagerTalk12getEventKindEv
-#define VillagerTalkTopics_updateCatchPlans _ZN18VillagerTalkTopics16updateCatchPlansEPhPvj
+#define VillagerActor_updateCatchPlans _ZN13VillagerActor16updateCatchPlansEPhPvj
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
 #define VillagerClothModel_getItem _ZN18VillagerClothModel7getItemEv
 #define VillagerClothModel_change _ZN18VillagerClothModel6changeEP13VillagerActorPt
@@ -116,7 +115,7 @@ u16 *VillagerClothModel_getItem(void *o);
 s32 Item_IsFurniture(void *p);
 u32 Item_GetFurnitureIndex(void *p);
 void VillagerMood_update(void *o, void *owner);
-void VillagerTalkTopics_updateCatchPlans(void *o, const void *a, const void *b, u32 c);
+void VillagerActor_updateCatchPlans(void *o, const void *a, const void *b, u32 c);
 void TalkRequest_AddPlayerTalk6(void *o, u32 a);
 void RoomFreeUnitMap_Build(void *o);
 void NpcFootstepFx_enableFootsteps(void *o);
@@ -239,7 +238,7 @@ BOOL HouseOwnerVillager::onCreate() {
     NpcFootstepFx_enableFootsteps(&footstepFx);
     if (NpcActor_isNetOwner(this)) {
         ai.changeState(this, 0);
-        VillagerTalkTopics_updateCatchPlans(this, data_ov004_02240094, data_ov004_02240090, 0);
+        VillagerActor_updateCatchPlans(this, data_ov004_02240094, data_ov004_02240090, 0);
     } else {
         ai.changeState(this, 3);
     }

@@ -1,6 +1,5 @@
 #include "types.h"
 #include "net/CommManager.h"
-#include "actor/Unk_02088d00.h"
 #include "talk/TalkStartMsg.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"

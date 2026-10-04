@@ -2,7 +2,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "gfx/Unk_0203bd10_Dtcm.h"
-#include "npc/Unk_0203be94_Obj.h"
+#include "actor/VillagerActor.h"
 #include "game/Unk_021c47c4.h"
 #include "gfx/CameraPose.h"
 #include "gfx/CameraSetup.h"
@@ -179,7 +179,7 @@ void G3i_PerspectiveW_(s32 a, s32 b, s32 c, s32 d, u32 e, u32 f, u32 g, u32 h);
 void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
 void WorldCurve_Update(void *a, void *b);
 s32 NpcRegistry_PickRandomVillager(s32 a);
-Unk_0203be94_Obj *NpcRegistry_GetVillager(s32 i);
+VillagerActor *NpcRegistry_GetVillager(s32 i);
 void *PlayerData_GetCurrent();
 s32 _ZN12Unk_02097ff48testFlagEj(void *s, s32 a);
 void *Scene_GetPrevious();
@@ -399,11 +399,11 @@ BOOL Camera::onCreate() {
     }
     switch (r) {
     case 0x2c: {
-        Unk_0203be94_Obj *p = 0;
+        VillagerActor *p = 0;
         s32 *g = &sCameraFollowVillagerIdx;
         s32 i = *g;
         if (i == 8) {
-            p = (Unk_0203be94_Obj *)NpcRegistry_PickRandomVillager((s32)g);
+            p = (VillagerActor *)NpcRegistry_PickRandomVillager((s32)g);
         } else {
             i = i + 1;
             if (i == 8) {
@@ -412,7 +412,7 @@ BOOL Camera::onCreate() {
                 while (i != sCameraFollowVillagerIdx) {
                     p = NpcRegistry_GetVillager(i);
                     if (p) {
-                        if (p->vfunc_a8()) break;
+                        if (p->isPickable()) break;
                     }
                     i++;
                     if (i == 8) {

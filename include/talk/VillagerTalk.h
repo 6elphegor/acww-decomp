@@ -88,6 +88,7 @@ public:
     void setNextTaskDoneFn(Unk_020d8938_Fn fn);
     void setTaskDoneFn(Unk_020d8938_Fn fn);
     void begin(VillagerActor *owner, u32 idx);
+    void playOwnerIdleAnim(); // topic state: owner stands idle (NpcActionCtrl::requestStand)
     void setSpeakerStateUnk(void *arg);
 
     /* 0x0ac */ Unk_020d8938_Fn selectFn;

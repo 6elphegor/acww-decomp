@@ -50,7 +50,9 @@ public:
     /* 0x42 */ u8 pad_42[0x18];
     /* 0x5a */ u16 color;
     /* 0x5c */ s32 unk_5c;
-    /* 0x60 */ u8 pad_60[0x20];
+    /* 0x60 */ u8 pad_60[8];
+    /* 0x68 */ u8 unk_68;  // set to 2 by FlowerFx_InitByColor (petal effect kind 1)
+    /* 0x69 */ u8 pad_69[0x17];
     /* 0x80 */ u8 tintVariant;
 };
 

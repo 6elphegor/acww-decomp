@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "game/FxVec3.h"
+#include "actor/Character.h"
 
 struct Unk_020dc034_V {
     s32 x, y, z;
@@ -17,42 +18,7 @@ struct FishHoldOffsets {
     u8 altHoldOffset[0xc];
 };
 
-struct Unk_02057328_Obj {
-    u8 unk_00[0x5c];
-    Unk_020dc034_V position;
-};
 
-class Unk_020dc034_Owner_Base {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c(Unk_020dc034_V *out);
-    u8 pad_04[0x5c - 4];
-    Unk_020dc034_V position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-};
 
 class HandOverItem;
 typedef void (HandOverItem::*Unk_020dc034_Fn)();
@@ -62,9 +28,11 @@ struct HandOverItemAct {
     Unk_020dc034_Fn b;
 };
 
-class Unk_020dc034_Dtor {
+// HandOverItem::seEmitter: a 0x40-byte, destructor-only view of SndSeEmitter (snd/SndSeEmitter.h); HandOverItem() runs
+// its constructor by hand (declaring the member as SndSeEmitter changes the code)
+class SndSeEmitterView {
 public:
-    ~Unk_020dc034_Dtor();
+    ~SndSeEmitterView();
     u8 unk_00[0x40];
 };
 
@@ -95,7 +63,7 @@ public:
     /* 0xc4 */ s32 fishDisplay;
     /* 0xc8 */ u8 mode;
     u8 pad_c9[3];
-    /* 0xcc */ Unk_020dc034_Owner_Base *chars[2];
+    /* 0xcc */ Character *chars[2];
     /* 0xd4 */ u8 phase;
     /* 0xd5 */ u8 takeTimer;
     /* 0xd6 */ volatile u16 frame;
@@ -103,7 +71,7 @@ public:
     /* 0xd9 */ u8 busy;
     /* 0xda */ u8 modeRequest;
     u8 pad_db;
-    /* 0xdc */ Unk_020dc034_Dtor seEmitter;
+    /* 0xdc */ SndSeEmitterView seEmitter;
 
     virtual BOOL onCreate();
     virtual BOOL onDelete();
@@ -168,7 +136,7 @@ public:
     void clearModeRequest();
     BOOL switchMaster(void *p);
     BOOL isCharAt(void *p, u32 idx);
-    BOOL begin(u16 *id, s32 a, u8 b, s32 c, Unk_020dc034_Owner_Base *o0, Unk_020dc034_Owner_Base *o1);
+    BOOL begin(u16 *id, s32 a, u8 b, s32 c, Character *o0, Character *o1);
     void resetState();
 };
 
@@ -416,7 +384,7 @@ void HandOverItem::resetState()
     fishDisplay = -1;
 }
 
-BOOL HandOverItem::begin(u16 *id, s32 a, u8 b, s32 c, Unk_020dc034_Owner_Base *o0, Unk_020dc034_Owner_Base *o1)
+BOOL HandOverItem::begin(u16 *id, s32 a, u8 b, s32 c, Character *o0, Character *o1)
 {
     if (mode == 0 && o0 != NULL) {
         item = *id;
@@ -460,7 +428,7 @@ BOOL HandOverItem::begin(u16 *id, s32 a, u8 b, s32 c, Unk_020dc034_Owner_Base *o
 BOOL HandOverItem::isCharAt(void *p, u32 idx)
 {
     if (idx < 2 && chars[idx] != NULL) {
-        if (_ZN9Character9getCharIdEv(p) == _ZN9Character9getCharIdEv(*(Unk_020dc034_Owner_Base **)((u8 *)this + idx * 4 + 0xcc))) {
+        if (_ZN9Character9getCharIdEv(p) == _ZN9Character9getCharIdEv(*(Character **)((u8 *)this + idx * 4 + 0xcc))) {
             return TRUE;
         }
     }
@@ -472,7 +440,7 @@ BOOL HandOverItem::switchMaster(void *p)
     BOOL r = FALSE;
     if (isCharAt(p, 1) == 1) {
         chars[1] = chars[0];
-        chars[0] = (Unk_020dc034_Owner_Base *)p;
+        chars[0] = (Character *)p;
         r = TRUE;
     } else if (isCharAt(p, 0) == 1) {
         r = TRUE;
@@ -567,7 +535,7 @@ void HandOverItem::drawItem()
 void HandOverItem::getMasterHoldPos(Unk_020dc034_V *out)
 {
     if (chars[0] != NULL) {
-        chars[0]->vfunc_5c(out);
+        chars[0]->getHeldItemPos((Unk_020d77a4_Vec3 *)out);
     }
 }
 
@@ -593,8 +561,8 @@ void HandOverItem::localToWorld(Unk_020dc034_V *out, Unk_020dc034_V *in, u32 idx
     out->z = in->z;
     if (idx < 2) {
         if (chars[idx] != NULL) {
-            Vec_RotateY(out, ((Unk_020dc034_Owner_Base *)chars[idx])->rotY);
-            VEC_Add(out, &chars[idx]->position, out);
+            Vec_RotateY(out, chars[idx]->rotY);
+            VEC_Add(out, (Unk_020dc034_V *)&chars[idx]->position, out);
         }
     }
 }
@@ -602,7 +570,7 @@ void HandOverItem::localToWorld(Unk_020dc034_V *out, Unk_020dc034_V *in, u32 idx
 Unk_020dc034_V HandOverItem::getHoldOffset(u32 idx)
 {
     u32 t = 0xd8;
-    Unk_020dc034_Owner_Base *o = chars[idx];
+    Character *o = chars[idx];
     if (o != NULL) {
         t = *(u16 *)((u8 *)o + 0xc);
     }
@@ -1072,7 +1040,7 @@ void HandOverItem::act01V1Phase1()
                 target.z = s.z;
             } else {
                 Vec_RotateY(&t2, chars[0]->rotY);
-                VEC_Add(&t2, &chars[0]->position, &t2);
+                VEC_Add(&t2, (Unk_020dc034_V *)&chars[0]->position, &t2);
                 FieldPos_SnapToUnitCenter(&target, &t2);
             }
             target.y = target.y + 0x1000;
@@ -1140,7 +1108,7 @@ void HandOverItem::startAct02V1()
         target.z = s.z;
     } else {
         Vec_RotateY(&t, chars[0]->rotY);
-        VEC_Add(&t, &chars[0]->position, &t);
+        VEC_Add(&t, (Unk_020dc034_V *)&chars[0]->position, &t);
         FieldPos_SnapToUnitCenter(&target, &t);
     }
     target.y = target.y + 0x1000;
@@ -1411,7 +1379,7 @@ void HandOverItem::updateAct09V1(void) {
 extern "C" s32 HandOverItem_Begin(s32 a, s32 b, u8 c, s32 d, s32 e, s32 f) {
     s32 r = 0;
     if (sHandOverItem) {
-        r = sHandOverItem->begin((u16 *)a, b, c, d, (Unk_020dc034_Owner_Base *)e, (Unk_020dc034_Owner_Base *)f);
+        r = sHandOverItem->begin((u16 *)a, b, c, d, (Character *)e, (Character *)f);
     }
     return r;
 }
@@ -1450,7 +1418,7 @@ extern "C" void HandOverItem_End(s32 a) {
     }
 }
 
-extern "C" BOOL HandOverItem_CanTake(Unk_02057328_Obj *p) {
+extern "C" BOOL HandOverItem_CanTake(Actor *p) {
     BOOL r = FALSE;
     if (p) {
         HandOverItem *g = sHandOverItem;

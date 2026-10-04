@@ -32,15 +32,6 @@ struct EventAnnounceState {
 
 struct Unk_02040974_Obj { u8 pad[0x64]; s32 myAid; };
 struct Unk_02040974_Rtc { s32 a; s32 b; };
-struct Unk_02040ad8_Member {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-};
-struct EventAnnouncerView {
-    u8 pad[0x54];
-    Unk_02040ad8_Member msgRequest;
-};
 struct Unk_02040a84_Obj { s32 unk_00; s32 state; s32 nextState; };
 static inline s32 Unk_02040a84_Get(Unk_02040a84_Obj *p)
 {
@@ -90,7 +81,7 @@ void EventAnnounce_RunIdle(s32);
 void EventAnnounce_RunWaitChimeStart(s32);
 void EventAnnounce_RunWaitChimeEnd(s32);
 void EventAnnounce_RunWarp(s32);
-void EventAnnounce_RunShowMessage(EventAnnouncerView *);
+void EventAnnounce_RunShowMessage(EventAnnouncer *);
 void EventAnnounce_RunWaitMessageEnd(s32);
 void EventAnnounce_Update(void);
 void EventAnnounce_Reset(void);
@@ -275,7 +266,7 @@ BOOL EventAnnouncer::onExecute()
             EventAnnounce_RunIdle(x);
             break;
         case 5:
-            EventAnnounce_RunShowMessage((EventAnnouncerView *)x);
+            EventAnnounce_RunShowMessage((EventAnnouncer *)x);
             break;
         case 6:
             EventAnnounce_RunWaitMessageEnd(x);
@@ -491,11 +482,11 @@ extern "C" void EventAnnounce_RunWarp(s32)
     }
 }
 
-extern "C" void EventAnnounce_RunShowMessage(EventAnnouncerView *o)
+extern "C" void EventAnnounce_RunShowMessage(EventAnnouncer *o)
 {
     if (Unk_02040ad8_IsTwo(gScreenTransition)) {
         Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)TalkWindow_Get(0);
-        o->msgRequest.vfunc_08();
+        o->msgRequest.resetMsg();
         _ZN10MsgRequest11setFileNameEPKc(&o->msgRequest, (void *)sEventAnnounceMsgFiles[sEventAnnounceState.isEnd]);
         *((u8 *)o + 0x72) = sEventAnnounceState.msgIndex;
         _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(p, &o->msgRequest);

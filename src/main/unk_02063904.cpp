@@ -1,5 +1,4 @@
 #include "types.h"
-#include "sys/Unk_02063d18_File.h"
 #include "nitro/fs.h"
 
 typedef char *va_list;
@@ -98,11 +97,11 @@ extern u8 gRandom[];
 }
 
 extern "C" {
-void File_OpenOrPanic(Unk_02063d18_File *f, u32 a);
+void File_OpenOrPanic(FSFile *f, u32 a);
 }
 
 extern "C" {
-BOOL File_Open(Unk_02063d18_File *f, u32 a);
+BOOL File_Open(FSFile *f, u32 a);
 }
 
 extern "C" {
@@ -166,15 +165,15 @@ void BlinkTimer_StartBlink(u8 *p);
 }
 
 extern "C" {
-s32 File_GetDecodedSize(Unk_02063d18_File *f);
+s32 File_GetDecodedSize(FSFile *f);
 }
 
 extern "C" {
-void File_ReadRange(Unk_02063d18_File *f, void *dst, u32 size, u32 off);
+void File_ReadRange(FSFile *f, void *dst, u32 size, u32 off);
 }
 
 extern "C" {
-s32 File_ReadAll(Unk_02063d18_File *f, void *dst, u32 n);
+s32 File_ReadAll(FSFile *f, void *dst, u32 n);
 }
 
 extern "C" {
@@ -240,7 +239,7 @@ enum FileBlockType { Unk_02063d18_T0 = 0, Unk_02063d18_T10 = 0x10, Unk_02063d18_
 extern "C" BOOL File_Exists(u32 a);
 extern "C" void File_ReadRangeByPath(u32 a, void *dst, u32 size, u32 off);
 extern "C" void File_ReadRangeById(FSFileID id, s32 a, s32 b, s32 c);
-extern "C" void File_ReadRange(Unk_02063d18_File *f, void *dst, u32 size, u32 off);
+extern "C" void File_ReadRange(FSFile *f, void *dst, u32 size, u32 off);
 extern "C" s32 File_LoadOverlay(s32 x);
 extern "C" s32 File_UnloadOverlay(s32 x);
 extern "C" void BlinkTimer_Construct();
@@ -276,21 +275,21 @@ extern "C" void TownId_InitWithName(u16 *p, const void *src);
 
 
 extern "C" BOOL File_Exists(u32 a) {
-    Unk_02063d18_File f;
+    FSFile f;
     BOOL r = File_Open(&f, a);
     if (r) FS_CloseFile(&f);
     return r;
 }
 
 extern "C" void File_ReadRangeByPath(u32 a, void *dst, u32 size, u32 off) {
-    Unk_02063d18_File f;
+    FSFile f;
     File_OpenOrPanic(&f, a);
     File_ReadRange(&f, dst, size, off);
     FS_CloseFile(&f);
 }
 
 extern "C" void File_ReadRangeById(FSFileID id, s32 a, s32 b, s32 c) {
-    Unk_02063d18_File f;
+    FSFile f;
     FS_InitFile(&f);
     if (FS_OpenFileFast(&f, id)) {
         File_ReadRange(&f, (void *)a, b, c);
@@ -298,7 +297,7 @@ extern "C" void File_ReadRangeById(FSFileID id, s32 a, s32 b, s32 c) {
     }
 }
 
-extern "C" void File_ReadRange(Unk_02063d18_File *f, void *dst, u32 size, u32 off) {
+extern "C" void File_ReadRange(FSFile *f, void *dst, u32 size, u32 off) {
     FileLzHeader hdr;
     u32 n, nblk, base;
     s32 len, c;
@@ -310,7 +309,7 @@ extern "C" void File_ReadRange(Unk_02063d18_File *f, void *dst, u32 size, u32 of
     if (FS_ReadFile(f, &hdr, 8) == -1) return;
     if (hdr.magic == 0x37375a4c || hdr.magic == 0x4c5a3737) {
         if ((hdr.w & 0xf0) != 0xf0) return;
-        if ((u32)(f->end - f->start) > 0xffff) return;
+        if ((u32)(f->prop.file.end - f->prop.file.start) > 0xffff) return;
         blk = 0x20 << hdr.b.lg;
         sFileBlockCache.tbl[0] = 0;
         n = ((_u32_div_f((hdr.w >> 8) - 1, blk) + 1)) * 2;
@@ -323,8 +322,8 @@ extern "C" void File_ReadRange(Unk_02063d18_File *f, void *dst, u32 size, u32 of
             if (off >= hi) continue;
             lo = blk * i;
             if (end <= lo) continue;
-            if (f->unk_20 != sFileBlockCacheFileId || i != sFileBlockCacheIndex) {
-                sFileBlockCacheFileId = f->unk_20;
+            if (f->prop.file.own_id != sFileBlockCacheFileId || i != sFileBlockCacheIndex) {
+                sFileBlockCacheFileId = f->prop.file.own_id;
                 sFileBlockCacheIndex = i;
                 u16 *tp = sFileBlockCache.tbl + i;
                 u32 t0 = tp[0];

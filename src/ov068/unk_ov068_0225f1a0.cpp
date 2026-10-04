@@ -115,7 +115,7 @@
 #define VillagerTalk_setInvitedByPartner _ZN12VillagerTalk19setInvitedByPartnerEh
 #define VillagerTalk_getPartner _ZN12VillagerTalk10getPartnerEv
 #define VillagerTalk_setPartner _ZN12VillagerTalk10setPartnerEj
-#define VillagerTalkTopics_updateCatchPlans _ZN18VillagerTalkTopics16updateCatchPlansEPhPvj
+#define VillagerActor_updateCatchPlans _ZN13VillagerActor16updateCatchPlansEPhPvj
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
 #define VillagerTalk_setSpeakerStateUnk _ZN12VillagerTalk18setSpeakerStateUnkEPv
 #define VillagerActor_isFlag834 _ZN13VillagerActor9isFlag834Ev
@@ -1582,7 +1582,7 @@ void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, u32, s32);
 void NpcFootstepFx_disableFootsteps(void *);
 s32 FieldVillager_IsNearCameraFocus(void *, void *);
-s32 VillagerTalkTopics_updateCatchPlans(void *, void *, void *, s32);
+s32 VillagerActor_updateCatchPlans(void *, void *, void *, s32);
 void FieldVillager_UpdateCatchSim(void *);
 void Villager_RaiseTalkUrge(void *, s32);
 s32 VillagerRoute_isActive(void *);
@@ -4674,7 +4674,7 @@ BOOL FieldVillagerAiStates::execOffscreen(Unk_ov068_Owner *o) {
     if (FieldVillager_IsNearCameraFocus(this, o) != 0) {
         FieldVillagerAi_ChangeState(this, o, 0);
     } else {
-        VillagerTalkTopics_updateCatchPlans(o, data_ov068_0226f13c, data_ov068_0226f0f4, 1);
+        VillagerActor_updateCatchPlans(o, data_ov068_0226f13c, data_ov068_0226f0f4, 1);
         FieldVillager_UpdateCatchSim(o);
         if (talkUrgeTimer == 0) {
             if ((s32)o->vfunc_64() != 0) {

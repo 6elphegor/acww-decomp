@@ -1,7 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "game/Unk_0202368c_Obj.h"
-#include "actor/Unk_02088d00.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"

@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "game/Vec3.h"
+#include "gfx/GfxFrameHooks.h"
 #include "gfx/ViewFrustum.h"
 #include "game/FxVec3.h"
 #include "game/TouchPicker.h"
@@ -105,13 +106,7 @@ public:
     virtual BOOL onDeleteRequest();
 };
 
-// object sFieldGfxFrameHooks: only a vtable pointer; vfunc_00/04 are defined in another unit, vfunc_08 here
-class GfxFrameHooks {
-public:
-    virtual inline void onPreTask();
-    virtual inline void onPostTask();
-    virtual void onVBlank();
-};
+// object sFieldGfxFrameHooks (gfx/GfxFrameHooks.h): only a vtable pointer; onPreTask/onPostTask are defined in another unit, onVBlank here
 
 // stand-in for the owner of the six pointer-to-member targets of the vfunc_00 table
 class FieldSceneSteps {

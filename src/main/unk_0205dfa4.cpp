@@ -15,7 +15,7 @@
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
 #include "gfx/Mtx43.h"
-#include "gfx/NNSG3dRenderObj.h"
+#include "gfx/NNSG3dRS.h"
 
 // ---- helper classes (declared elsewhere) ----
 
@@ -52,15 +52,6 @@ public:
     ItemId items[9];
 };
 
-struct Unk_0205e61c_Obj {
-    u32 unk_00;
-    NNSG3dRenderObj *pRenderObj;
-    u8 pad_08[0x1c];
-    void *cbVecFuncNodeDesc;
-    u8 pad_28[0x6a];
-    u8 cbVecTimingNodeDesc;
-};
-
 
 struct Unk_0205e310_P {
     u32 pad[6];
@@ -70,26 +61,6 @@ struct Unk_0205e310_P {
 
 struct Unk_0205dfb8_Vec {
     s32 x, y, z;
-};
-
-struct Unk_0205dfb8_P {
-    u8 pad_00[0x2c];
-    u8 *ptrUser;
-};
-
-struct Unk_0205dfb8_Obj {
-    u8 slot;
-    u8 pad_01[3];
-    u32 unk_04;
-    u8 pad_08[8];
-    u32 texAnimCurFrame;
-    u8 pad_14[0xc];
-    u32 *texAnimAnmObj;
-    u32 unk_24;
-    u8 bobber[4];
-    u32 bobberState;
-    u8 pad_30[0x92 - 0x30];
-    u8 unk_92;
 };
 
 
@@ -139,9 +110,9 @@ s32 HeldItemModelHeap_Destroy(void);
 void HeldItemModelHeap_Create(void);
 void HeldItemAnimHeap_Create(u32 x);
 
-void HeldItemModels_OnJointCalcPost(Unk_0205dfb8_Obj *o);
-void HeldItemModel_Update(Unk_0205dfb8_Obj *o);
-void HeldItemModels_OnJointCalcPre(Unk_0205e61c_Obj *self);
+void HeldItemModels_OnJointCalcPost(NNSG3dRS *rs);
+void HeldItemModel_Update(HeldItemModel *o);
+void HeldItemModels_OnJointCalcPre(NNSG3dRS *rs);
 
 void Model_GetJointWorldMtx(void *slot, Mtx43 *out, u32 a);
 void _ZN9AnimModel12drawAnimatedEPv(void *slot, Unk_0205dfb8_Vec *v);
@@ -158,7 +129,7 @@ void _ZN14BlendAnimModel15onJointCalcPostEPS_(void *slot, void *o);
 u32 CharaClothTexPool_GetOwnRef(void);
 void _ZN16CharaClothTexRef8loadItemEPtiii(u32 a, u16 *code, u32 b, u32 c, u32 d);
 u32 CharaClothTexRef_GetBuffer(u32 a);
-void HeldItemModel_GetJointMtx(Mtx43 *out, Unk_0205dfb8_Obj *o, u32 a);
+void HeldItemModel_GetJointMtx(Mtx43 *out, HeldItemModel *o, u32 a);
 void G3dRes_CopyTexByName(u32 a, u32 b, char *c, char *d);
 void G3dRes_CopyPlttByName(u32 a, u32 b, char *c, char *d);
 void _ZN11CachedModel11setFromFileEPv(void *slot, u32 a);
@@ -524,29 +495,29 @@ HeldItemModel::~HeldItemModel() {
     bobber.destruct();
 }
 
-extern "C" void HeldItemModels_OnJointCalcPre(Unk_0205e61c_Obj *self) {
-    HeldItemModel *q = (HeldItemModel *)self->pRenderObj->ptrUser;
+extern "C" void HeldItemModels_OnJointCalcPre(NNSG3dRS *rs) {
+    HeldItemModel *q = (HeldItemModel *)rs->pRenderObj->ptrUser;
     if (q) {
-        HeldItemModels_GetModel(&sHeldItemModelBank, q->slot)->onJointCalcPre((BlendAnimModel *)self);
+        HeldItemModels_GetModel(&sHeldItemModelBank, q->slot)->onJointCalcPre((BlendAnimModel *)rs);
     }
-    self->cbVecFuncNodeDesc = (void *)HeldItemModels_OnJointCalcPost;
-    self->cbVecTimingNodeDesc = 2;
+    rs->cbVecFunc[6] = (void *)HeldItemModels_OnJointCalcPost; // NODEDESC
+    rs->cbVecTiming[6] = 2;
 }
 
-extern "C" void HeldItemModels_OnJointCalcPost(Unk_0205dfb8_Obj *o) {
-    Unk_0205dfb8_P *p = (Unk_0205dfb8_P *)o->unk_04;
+extern "C" void HeldItemModels_OnJointCalcPost(NNSG3dRS *rs) {
+    NNSG3dRenderObj *p = rs->pRenderObj;
     if (p->ptrUser != 0) {
-        _ZN14BlendAnimModel15onJointCalcPostEPS_(HeldItemModels_GetModel(&sHeldItemModelBank, *p->ptrUser), o);
+        _ZN14BlendAnimModel15onJointCalcPostEPS_(HeldItemModels_GetModel(&sHeldItemModelBank, ((HeldItemModel *)p->ptrUser)->slot), rs);
     }
-    o->unk_24 = (u32)HeldItemModels_OnJointCalcPre;
-    o->unk_92 = 1;
+    rs->cbVecFunc[6] = (void *)HeldItemModels_OnJointCalcPre;
+    rs->cbVecTiming[6] = 1;
 }
 
-extern "C" void HeldItemModel_Setup(Unk_0205dfb8_Obj *o, u32 id, u32 x, u16 *code, u32 a5, s32 flag) {
+extern "C" void HeldItemModel_Setup(HeldItemModel *o, u32 id, u32 x, u16 *code, u32 a5, s32 flag) {
     u32 idx;
     u32 s, t;
     o->slot = id;
-    HeldItemModels_SetTexAnim(&sHeldItemModelBank, id, (ModelAnim *)&o->pad_08);
+    HeldItemModels_SetTexAnim(&sHeldItemModelBank, id, &o->texAnim);
     if (*code == 0xfff1) {
         *HeldItemModels_GetItem(&sHeldItemModelBank, id) = 0xfff1;
     } else {
@@ -606,25 +577,25 @@ extern "C" void HeldItemModel_Setup(Unk_0205dfb8_Obj *o, u32 id, u32 x, u16 *cod
     }
 done:
     if (Unk_0205ddc8_In(code, 0x1375, 0x1375)) {
-        _ZN10FishBobber6attachEjP9Characterj(o->bobber, id, x, 1);
+        _ZN10FishBobber6attachEjP9Characterj(&o->bobber, id, x, 1);
     } else if (*code >= 0x1374 && *code <= 0x1374) {
-        _ZN10FishBobber6attachEjP9Characterj(o->bobber, id, x, 0);
+        _ZN10FishBobber6attachEjP9Characterj(&o->bobber, id, x, 0);
     } else if ((*code >= 0x137a && *code <= 0x137a) || (*code >= 0x137b && *code <= 0x137b)) {
-        _ZN10FishBobber6attachEjP9Characterj(o->bobber, id, x, 2);
+        _ZN10FishBobber6attachEjP9Characterj(&o->bobber, id, x, 2);
     } else {
-        _ZN10FishBobber6attachEjP9Characterj(o->bobber, id, x, 3);
+        _ZN10FishBobber6attachEjP9Characterj(&o->bobber, id, x, 3);
     }
     if (Unk_0205ddc8_In(code, 0x1374, 0x1374) || (*code >= 0x1375 && *code <= 0x1375))
-        _ZN10FishBobber8setStateEi(o->bobber, 1);
+        _ZN10FishBobber8setStateEi(&o->bobber, 1);
 }
 
-extern "C" void HeldItemModel_Release(Unk_0205dfb8_Obj *o) {
-    _ZN10FishBobber6detachEv(o->bobber);
+extern "C" void HeldItemModel_Release(HeldItemModel *o) {
+    _ZN10FishBobber6detachEv(&o->bobber);
     u32 id = o->slot;
     if (HeldItem_GetAnimId(HeldItemModels_GetItem(&sHeldItemModelBank, id)) != 0x2b) {
         _ZN9AnimModel15detachJointAnimEv(HeldItemModels_GetModel(&sHeldItemModelBank, id));
-        o->texAnimAnmObj = 0;
-        o->unk_24 = 0;
+        o->texAnim.anmObj = 0;
+        o->texAnim.resMdl = 0;
     }
     HeldItemModels_SetTexAnim(&sHeldItemModelBank, id, 0);
     HeldItemModels_GetModel(&sHeldItemModelBank, id)->release();
@@ -637,33 +608,33 @@ extern "C" void HeldItemModel_Release(Unk_0205dfb8_Obj *o) {
     o->slot = 9;
 }
 
-extern "C" void HeldItemModel_SetItem(Unk_0205dfb8_Obj *o, u16 *code, u32 c) {
+extern "C" void HeldItemModel_SetItem(HeldItemModel *o, u16 *code, u32 c) {
     u32 id = o->slot;
     HeldItemModel_Release(o);
     HeldItemModel_Setup(o, id, 0, code, c, 0);
 }
 
-extern "C" void HeldItemModel_PlayAnim(Unk_0205dfb8_Obj *o, s32 a, u32 b, u32 c) {
+extern "C" void HeldItemModel_PlayAnim(HeldItemModel *o, s32 a, u32 b, u32 c) {
     ((void (*)(HeldItemModelBank *, u32, u32, u32, u32))HeldItemModels_PlayAnim)(&sHeldItemModelBank, o->slot, a, b, c);
     switch (a) {
     case 0x13:
-        _ZN10FishBobber8setStateEi(o->bobber, 1);
+        _ZN10FishBobber8setStateEi(&o->bobber, 1);
         break;
     case 0x15:
-        _ZN10FishBobber8setStateEi(o->bobber, 3);
+        _ZN10FishBobber8setStateEi(&o->bobber, 3);
         break;
     case 0x16:
-        _ZN10FishBobber8setStateEi(o->bobber, 2);
+        _ZN10FishBobber8setStateEi(&o->bobber, 2);
         break;
     case 0x18:
-        _ZN10FishBobber8setStateEi(o->bobber, 6);
+        _ZN10FishBobber8setStateEi(&o->bobber, 6);
         break;
     case 0x19:
     case 0x1b:
-        _ZN10FishBobber8setStateEi(o->bobber, 7);
+        _ZN10FishBobber8setStateEi(&o->bobber, 7);
         break;
     case 0x1a:
-        _ZN10FishBobber8setStateEi(o->bobber, 8);
+        _ZN10FishBobber8setStateEi(&o->bobber, 8);
         break;
     case 0x28:
         HeldItemModels_PlayTexAnim(&sHeldItemModelBank, o->slot, 1, c);
@@ -671,12 +642,12 @@ extern "C" void HeldItemModel_PlayAnim(Unk_0205dfb8_Obj *o, s32 a, u32 b, u32 c)
     }
 }
 
-extern "C" void HeldItemModel_SetAnimSpeed(Unk_0205dfb8_Obj *o, u32 v) {
+extern "C" void HeldItemModel_SetAnimSpeed(HeldItemModel *o, u32 v) {
     AnimFrameCtrl &r = *HeldItemModels_GetModel(&sHeldItemModelBank, o->slot);
     r.frameStep = v;
 }
 
-extern "C" void HeldItemModel_Update(Unk_0205dfb8_Obj *o) {
+extern "C" void HeldItemModel_Update(HeldItemModel *o) {
     u32 id = o->slot;
     if (*HeldItemModels_GetItem(&sHeldItemModelBank, id) != 0xfff1) {
         HeldItemModels_PollTexUpload(&sHeldItemModelBank, id);
@@ -684,15 +655,15 @@ extern "C" void HeldItemModel_Update(Unk_0205dfb8_Obj *o) {
         if (t != 0x2b) {
             _ZN14BlendAnimModel9stepBlendEv(HeldItemModels_GetModel(&sHeldItemModelBank, id));
             if (t == 0x27) {
-                _ZN13AnimFrameCtrl4stepEv(&o->pad_08);
-                *o->texAnimAnmObj = o->texAnimCurFrame;
+                _ZN13AnimFrameCtrl4stepEv(&o->texAnim);
+                *(u32 *)o->texAnim.anmObj = o->texAnim.curFrame;
             }
         }
     }
-    _ZN10FishBobber6updateEv(o->bobber);
+    _ZN10FishBobber6updateEv(&o->bobber);
 }
 
-extern "C" void HeldItemModel_Draw(Unk_0205dfb8_Obj *o, Mtx43 *src) {
+extern "C" void HeldItemModel_Draw(HeldItemModel *o, Mtx43 *src) {
     Unk_0205dfb8_Vec A;
     Mtx43 B;
     Unk_0205dfb8_Vec C;
@@ -704,7 +675,7 @@ extern "C" void HeldItemModel_Draw(Unk_0205dfb8_Obj *o, Mtx43 *src) {
     if (*HeldItemModels_GetItem(&sHeldItemModelBank, id) != 0xfff1) {
         u8 *slot = (u8 *)HeldItemModels_GetModel(&sHeldItemModelBank, id);
         *(Mtx43 *)(slot + 0x64) = *src;
-        u32 t0 = o->unk_04;
+        u32 t0 = o->scale;
         A.x = t0;
         A.y = t0;
         A.z = t0;
@@ -717,24 +688,24 @@ extern "C" void HeldItemModel_Draw(Unk_0205dfb8_Obj *o, Mtx43 *src) {
             HeldItemModel_GetJointMtx(&E, o, 0);
             B = E;
         }
-        FishBobber_Draw(o->bobber, &B, &A);
+        FishBobber_Draw(&o->bobber, &B, &A);
         F.x = B.m[9];
         F.y = B.m[10];
         F.z = B.m[11];
         WorldCurve_FromCurved(&C, &F);
-        switch (o->bobberState) {
+        switch (o->bobber.curState) {
         case 7:
         case 8:
             G.x = C.x;
             G.y = C.y;
             G.z = C.z;
-            _ZN10FishBobber12setTargetPosEP16Unk_0205f8d4_Vec(o->bobber, &G);
+            _ZN10FishBobber12setTargetPosEP16Unk_0205f8d4_Vec(&o->bobber, &G);
             break;
         }
     }
 }
 
-extern "C" void HeldItemModel_GetJointMtx(Mtx43 *out, Unk_0205dfb8_Obj *o, u32 a) {
+extern "C" void HeldItemModel_GetJointMtx(Mtx43 *out, HeldItemModel *o, u32 a) {
     Mtx43 t;
     u32 id = o->slot;
     if (*HeldItemModels_GetItem(&sHeldItemModelBank, id) != 0xfff1) {

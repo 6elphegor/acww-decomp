@@ -1,12 +1,11 @@
 #include "types.h"
 #include "net/CommManager.h"
-#include "town/Unk_020419b4.h"
+#include "town/TownUpdateThread.h"
 #include "game/EventDayEntry.h"
 #include "game/Unk_02042104_Date.h"
 
 
 struct TownJunkInsectFlags { u8 spawnFlies; u8 spawnAnts; u8 pad[2]; };
-struct Unk_02041938 { u8 unk_00[0x10e9]; u8 done; u8 started; };
 
 
 extern u32 data_021fcc2c[];
@@ -32,7 +31,7 @@ void Insect_EnableTrashFlies();
 void Heap_Free(u32, u32);
 s32 OS_IsThreadTerminated();
 void OS_KillThread(u32, u32);
-s32 TownUpdateThread_Kill(Unk_02041938 *p);
+s32 TownUpdateThread_Kill(TownUpdateThread *p);
 void TownUpdateThread_Destroy();
 void TownJunkInsects_InitFromEval(TownJunkInsectFlags *p);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
@@ -59,9 +58,9 @@ u32 DC_FlushAll();
 void Heap_SetThreadHeap(u32 a, u32 b);
 void Town_AdvanceDays(void *r, u8 *a, u8 *b, u32 c, u32 d, u32 e);
 void MI_CpuFill8(void *p, u32 v, u32 n);
-s32 TownUpdateThread_StartCtx(Unk_020419b4 *p);
-void TownUpdateThread_SetArgs(Unk_020419b4 *p, u8 *a, u8 *b, u32 c, u8 d);
-void TownUpdateThread_Init(Unk_020419b4 *p);
+s32 TownUpdateThread_StartCtx(TownUpdateThread *p);
+void TownUpdateThread_SetArgs(TownUpdateThread *p, u8 *a, u8 *b, u32 c, u8 d);
+void TownUpdateThread_Init(TownUpdateThread *p);
 void *Heap_Alloc(u32 heap, u32 size);
 void OS_CreateThread(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
 void OS_WakeupThreadDirect(void *th);
@@ -193,14 +192,14 @@ extern "C" void TownBbs_UpdateDaily() {
 
 extern "C" void TownUpdateThread_Main(u8 *arg) {
     DC_FlushAll();
-    Unk_020419b4 *g = gTownUpdater.updateThread;
+    TownUpdateThread *g = gTownUpdater.updateThread;
     Town_AdvanceDays(&gTownUpdater, arg, arg + 8, *(u32 *)(arg + 0x10), arg[0x14], 1);
     Heap_SetThreadHeap(g->callerThread, g->heap);
     g->done = 1;
     OS_ExitThread();
 }
 
-extern "C" void TownUpdateThread_Init(Unk_020419b4 *p) {
+extern "C" void TownUpdateThread_Init(TownUpdateThread *p) {
     p->hasArgs = 0;
     p->done = 0;
     p->started = 0;
@@ -209,17 +208,17 @@ extern "C" void TownUpdateThread_Init(Unk_020419b4 *p) {
 }
 
 extern "C" void TownUpdateThread_Create() {
-    gTownUpdater.updateThread = (Unk_020419b4 *)Heap_Alloc(gCurrentHeap, 0x10ec);
+    gTownUpdater.updateThread = (TownUpdateThread *)Heap_Alloc(gCurrentHeap, 0x10ec);
     if (gTownUpdater.updateThread != 0) {
         TownUpdateThread_Init(gTownUpdater.updateThread);
     }
 }
 
-extern "C" void TownUpdateThread_SetArgs(Unk_020419b4 *p, u8 *a, u8 *b, u32 c, u8 d) {
-    MI_CpuCopy8(a, p->unk_c8, 8);
-    MI_CpuCopy8(b, p->unk_d0, 8);
-    p->unk_d8 = c;
-    p->unk_dc = d;
+extern "C" void TownUpdateThread_SetArgs(TownUpdateThread *p, u8 *a, u8 *b, u32 c, u8 d) {
+    MI_CpuCopy8(a, p->lastDate, 8);
+    MI_CpuCopy8(b, p->curDate, 8);
+    p->elapsedDays = c;
+    p->prevDayRain = d;
     p->hasArgs = 1;
 }
 
@@ -229,7 +228,7 @@ extern "C" void TownUpdateThread_Request(u8 *a, u8 *b, u32 c, u8 d) {
     }
 }
 
-extern "C" s32 TownUpdateThread_StartCtx(Unk_020419b4 *p) {
+extern "C" s32 TownUpdateThread_StartCtx(TownUpdateThread *p) {
     if (p->hasArgs == 0) {
         return 0;
     }
@@ -237,7 +236,7 @@ extern "C" s32 TownUpdateThread_StartCtx(Unk_020419b4 *p) {
     p->stackGuardHigh = 0x3039;
     p->done = 0;
     p->started = 1;
-    OS_CreateThread(p, (void *)TownUpdateThread_Main, p->unk_c8, &p->stackGuardHigh, 0x1000, 0x1e);
+    OS_CreateThread(p, (void *)TownUpdateThread_Main, p->lastDate, &p->stackGuardHigh, 0x1000, 0x1e);
     p->callerThread = data_021fcc2c[1];
     p->heap = gCurrentHeap;
     Heap_SetThreadHeap(p->callerThread, 0);
@@ -259,7 +258,7 @@ extern "C" s32 TownUpdateThread_Start() {
 
 extern "C" BOOL TownUpdateThread_PollDone() {
     BOOL r = FALSE;
-    Unk_02041938 *p = (Unk_02041938 *)gTownUpdater.updateThread;
+    TownUpdateThread *p = gTownUpdater.updateThread;
     if (p != 0) {
         if (p->done != 0) {
             TownUpdateThread_Destroy();
@@ -269,14 +268,14 @@ extern "C" BOOL TownUpdateThread_PollDone() {
     return r;
 }
 
-extern "C" s32 TownUpdateThread_Kill(Unk_02041938 *p) {
+extern "C" s32 TownUpdateThread_Kill(TownUpdateThread *p) {
     if (p->started != 0) {
         if (OS_IsThreadTerminated() == 0) OS_KillThread((u32)p, 0);
     }
 }
 
 extern "C" void TownUpdateThread_Destroy() {
-    Unk_02041938 *p = (Unk_02041938 *)gTownUpdater.updateThread;
+    TownUpdateThread *p = gTownUpdater.updateThread;
     if (p != 0) {
         TownUpdateThread_Kill(p);
         Heap_Free(gCurrentHeap, (u32)p);

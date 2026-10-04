@@ -20,7 +20,7 @@ struct CollisionVisitor;
 struct Unk_02031304_Vec;
 struct Unk_020314f4_Vec;
 struct UnitShapeQueryX;
-class Unk_02032dc4_Cb;
+struct BoxColliderX;
 class CollisionWorld;
 
 class GroundCell;
@@ -110,7 +110,7 @@ public:
     void setTag(u32 a, u32 b);
 
     u8 attr;
-    Unk_02032dc4_Cb *f_04;
+    BoxColliderX *f_04;
 };
 
 // ---- the two list owners inside sCollisionWorld (empty classes)
@@ -156,11 +156,6 @@ extern "C" void _ZN18WallEdgeListWriter14buildFromCellsEPviiiii(void *a, void *b
 extern "C" void _ZN17FloorTriangleList14buildFromCellsEP14GroundCellGridiiii(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 extern "C" BOOL Collision_GetUnitShape(s32 x, s32 z, s32 *p, s32 *q, s32 *r);
 extern "C" s32 Collision_HasUnitShape(s32 x, s32 z);
-struct Unk_0203081c_B {
-    u8 pad_00[0x34];
-    s32 attr;
-    u8 pad_38[0x0c];
-};
 enum Unk_0203081c_Flags { Unk_0203081c_Flags_0 = 0, Unk_0203081c_Flags_2 = 2, Unk_0203081c_Flags_4 = 4, Unk_0203081c_Flags_All = 0x7fffffff };
 
 // ---------------------------------------------------------------- unk_020308b4.cpp
@@ -215,10 +210,6 @@ struct Unk_0203182c_Vec { s32 x, y, z; };
 struct Unk_02031304_Vec { s32 x, y, z; };
 extern "C" BOOL Collision_GetUnitShape(s32 x, s32 z, s32 *a, s32 *b, s32 *c);
 struct Unk_020314f4_Vec { s32 x, y, z; };
-struct Unk_020d8ce8 {
-    u8 pad_000[0x120];
-    UnitShapeQueryX *shapeQuery;
-};
 struct BoxColliderLinkView {
     u8 pad_00[0x2c];
     BoxColliderLinkView *next;
@@ -262,7 +253,7 @@ struct Unk_02031b90_Vec {
 };
 extern "C" void _ZN16BoxColliderShape15updateTransformEP16Unk_0203182c_VeciS1_(void* self, Unk_02031b90_Vec* a, s32 b, Unk_02031b90_Vec* c);
 struct BoxColliderX {
-    virtual void onEdgeContact();
+    virtual void onEdgeContact(CollisionEdge *edge, s32 arg, s32 r);
     s32 boxPos, boxPosY, boxPosZ;
     s32 size, sizeY, sizeZ;
     s32 scale, scaleY, scaleZ;
@@ -453,10 +444,6 @@ static inline void Unk_02032dc4_Set(Unk_0202f2ac_V3 *p, s32 y, s32 x, s32 z) {
     p->z = z;
 }
 class WallEdge;
-class Unk_02032dc4_Cb {
-public:
-    virtual void vfunc_00(WallEdge *e, s32 arg, s32 r);
-};
 // declared before WallEdge: the three weak vtables (0x020d8d48, d54, d6c) come out in reverse declaration order
 class FloorTriangle : public CollisionTriangleX, public CollisionTagX {
 public:
@@ -499,11 +486,6 @@ public:
     BOOL addTriangle(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d, u32 e, u32 f);
 };
 static inline void Unk_020331a8_SetU(u32 *v, s32 a, s32 b, s32 c) { v[0] = a; v[1] = b; v[2] = c; }
-struct Unk_02033438_G {
-    u8 pad_00[0x132];
-    s16 prevWaveLevel;
-    s16 waveLevel;
-};
 static inline void Unk_02033438_Set(Unk_0202f2ac_V3 *p, s32 x, s32 y, s32 z) {
     p->x = x;
     p->y = y;
@@ -1049,7 +1031,7 @@ CollisionTagX::~CollisionTagX()
 void CollisionTagX::setTag(u32 a, u32 b)
 {
     attr = a;
-    f_04 = (Unk_02032dc4_Cb *)b;
+    f_04 = (BoxColliderX *)b;
 }
 
 void CollisionTagX::copyTag(const CollisionTagX &o)
@@ -1143,7 +1125,7 @@ void GroundInfoBase::setWaveDir(s32 a, s32 b, s32 c)
 }
 
 void GroundInfoCalc::compute(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
-    Unk_02033438_G *g = (Unk_02033438_G *)gCurCollisionMap;
+    CollisionMap *g = gCurCollisionMap;
     s32 gc = g->prevWaveLevel;
     s32 sl = g->waveLevel;
     volatile Unk_0202f2ac_V3 ctr;
@@ -1413,7 +1395,7 @@ BOOL WallEdgeList::collide(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r, Coll
                 if (k != 3) {
                     out->contacts.addContact(Math_Atan2(e->normal.x, e->normal.y), k, e->attr);
                     if (e->f_04) {
-                        e->f_04->vfunc_00(e, arg, r);
+                        e->f_04->onEdgeContact(e, arg, r);
                     }
                 }
                 result = TRUE;
@@ -1437,7 +1419,7 @@ BOOL WallEdgeList::collide(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r, Coll
                 if (k != 3) {
                     out->contacts.addContact(Math_Atan2(e->normal.x, e->normal.y), k, e->attr);
                     if (e->f_04) {
-                        e->f_04->vfunc_00(e, arg, r);
+                        e->f_04->onEdgeContact(e, arg, r);
                     }
                 }
                 result = TRUE;
@@ -1460,7 +1442,7 @@ BOOL WallEdgeList::collide(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r, Coll
                 if (k != 3) {
                     out->contacts.addContact(Math_Atan2(e->normal.x, e->normal.y), k, e->attr);
                     if (e->f_04) {
-                        e->f_04->vfunc_00(e, arg, r);
+                        e->f_04->onEdgeContact(e, arg, r);
                     }
                 }
                 result = TRUE;
@@ -2123,7 +2105,7 @@ void BoxColliderX::setupBox(s32 a, s32 b, s32 c, Unk_02031b90_Vec* p, s16 s, Unk
     isActive = 1;
 }
 
-void BoxColliderX::onEdgeContact() {}
+void BoxColliderX::onEdgeContact(CollisionEdge *edge, s32 arg, s32 r) {}
 
 BoxColliderListOwner::BoxColliderListOwner() {}
 
@@ -2439,7 +2421,7 @@ extern "C" u32 Ground_GetQuadAttr1(s32 x, s32 y, u32 c)
 extern "C" UnitShapeQueryX *Collision_GetShapeQuery()
 {
     static UnitShapeQueryX inst;
-    UnitShapeQueryX *p = ((Unk_020d8ce8 *)gCurCollisionMap)->shapeQuery;
+    UnitShapeQueryX *p = gCurCollisionMap->shapeQuery;
     if (p == 0) p = &inst;
     return p;
 }
@@ -2903,7 +2885,6 @@ extern "C" BOOL Collision_ClampToRect(s32 *p, s32 a, s32 *c, s32 w, s32 h)
 extern "C" s32 Ground_GetHeightAt(Unk_0202ff44_V3 *p, u32 *out, u32 flags0) {
     SegmentHitResult a;
     Unk_0202ff44_V3 v14, v20;
-    Unk_0203081c_B b;
     s32 r;
     CollisionTag_Construct(&a);
     Unk_0203081c_Flags flags = (Unk_0203081c_Flags)(flags0 & ~6);
@@ -2921,10 +2902,11 @@ extern "C" s32 Ground_GetHeightAt(Unk_0202ff44_V3 *p, u32 *out, u32 flags0) {
         CollisionTag_Destruct(&a);
         return r;
     }
-    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&b, p, 0, 0);
-    if (out) *out = b.attr;
-    r = _ZN14GroundInfoBase9getHeightEi(&b, 0);
-    GroundInfo_Destruct(&b);
+    {
+        GroundInfo b((Unk_0203389c_Vec *)p, 0, 0);
+        if (out) *out = b.attr;
+        r = b.getHeight(0);
+    }
     CollisionTag_Destruct(&a);
     return r;
 }

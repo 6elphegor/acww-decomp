@@ -241,10 +241,10 @@ BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
 s32 Ground_GetDefaultY(s32 a);
 void _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(void *a, void *b);
 void _ZN12SndSeEmitter21callUpdateRelativeAltEP16Unk_02003a6c_Vec(void *a, void *b);
-void _ZN17TwoLayerAnimModel21onJointCalcPostLayer2EP16Unk_02053a54_Msg(void *a, NNSG3dRS *b);
+void _ZN17TwoLayerAnimModel21onJointCalcPostLayer2EP8NNSG3dRS(void *a, NNSG3dRS *b);
 void JointCb_CalcCpuMatrix(void *a, NNSG3dRS *b, u32 c);
 void JointCb_UseRestTranslation(NNSG3dRS *a, u32 b);
-void _ZN17TwoLayerAnimModel20onJointCalcPreLayer2EP16Unk_02053a54_Msg(void *a, NNSG3dRS *b);
+void _ZN17TwoLayerAnimModel20onJointCalcPreLayer2EP8NNSG3dRS(void *a, NNSG3dRS *b);
 void PlayerActor_JointCbStart(NNSG3dRS *p);
 void PlayerActor_JointCbPost(NNSG3dRS *p);
 void PlayerActor_JointCbPre(NNSG3dRS *p);
@@ -8567,7 +8567,7 @@ namespace nB {
 extern "C" void PlayerActor_JointCbPre(NNSG3dRS *p) {
     PlayerActor *obj = (PlayerActor *)p->pRenderObj->ptrUser;
     if (obj) {
-        _ZN17TwoLayerAnimModel20onJointCalcPreLayer2EP16Unk_02053a54_Msg(&obj->bodyModel, p);
+        _ZN17TwoLayerAnimModel20onJointCalcPreLayer2EP8NNSG3dRS(&obj->bodyModel, p);
     }
     p->cbVecFunc[6] = (void *)PlayerActor_JointCbPost;
     p->cbVecTiming[6] = 2;
@@ -8602,7 +8602,7 @@ extern "C" void PlayerActor_JointCbPost(NNSG3dRS *p) {
     }
     r6 = (PlayerActor *)p->pRenderObj->ptrUser;
     if (r6) {
-        _ZN17TwoLayerAnimModel21onJointCalcPostLayer2EP16Unk_02053a54_Msg(&r6->bodyModel, p);
+        _ZN17TwoLayerAnimModel21onJointCalcPostLayer2EP8NNSG3dRS(&r6->bodyModel, p);
         if (p->c[1] == 0) {
             if ((u32)(r6->animId - 0x82) <= 1) {
                 NNSG3dJntAnmResult *r = p->pJntAnmResult;

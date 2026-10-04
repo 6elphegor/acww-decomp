@@ -642,7 +642,7 @@ _ZN12SndSeEmitter4initEv kind:function(arm,size=0x34) addr:0x020f4394
 _ZN12SndSeEmitterD2Ev kind:function(arm,size=0x10) addr:0x020f43c8
 _ZN12SndSeEmitterD0Ev kind:function(arm,size=0x24) addr:0x020f43d8
 _ZN12SndSeEmitterD1Ev kind:function(arm,size=0x10) addr:0x020f43fc
-_ZN17Unk_020dc034_DtorD1Ev kind:label(arm) addr:0x020f43fc
+_ZN16SndSeEmitterViewD1Ev kind:label(arm) addr:0x020f43fc
 _ZN12SndSeEmitterC1Ev kind:function(arm,size=0x18) addr:0x020f440c
 _ZN12SndSeEmitterC2Ev kind:function(arm,size=0x18) addr:0x020f4424
 Snd_ClearListenerCallbacks kind:function(arm,size=0x2c) addr:0x020f443c

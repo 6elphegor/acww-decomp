@@ -1,8 +1,9 @@
 #include "types.h"
 #include "net/CommManager.h"
+#include "gfx/EffectSplEmitter.h"
 #include "actor/Actor.h"
 #include "town/TownBlockMap.h"
-#include "town/Unk_020419b4.h"
+#include "town/TownUpdateThread.h"
 #include "game/Unk_02042104_Date.h"
 #include "game/EventDayEntry.h"
 #include "talk/MsgString9BStorage.h"
@@ -146,9 +147,9 @@ extern TownUpdater gTownUpdater;
 extern u32 gCurrentHeap;
 extern u32 data_021fcc2c[];
 s32 TownUpdateThread_Destroy();
-s32 TownUpdateThread_StartCtx(Unk_020419b4 *p);
-void TownUpdateThread_SetArgs(Unk_020419b4 *p, u8 *a, u8 *b, u32 c, u8 d);
-void TownUpdateThread_Init(Unk_020419b4 *p);
+s32 TownUpdateThread_StartCtx(TownUpdateThread *p);
+void TownUpdateThread_SetArgs(TownUpdateThread *p, u8 *a, u8 *b, u32 c, u8 d);
+void TownUpdateThread_Init(TownUpdateThread *p);
 void *Heap_Alloc(u32 heap, u32 size);
 void OS_CreateThread(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
 void Heap_SetThreadHeap(u32 a, u32 b);
@@ -532,10 +533,9 @@ s32 FieldAction_RequestShake(void *a, u16 *id, Unk_020434f0_P *pos, s32 mode);
 namespace nE {
 extern "C" {
 
-struct Unk_02043e94_G { u8 pad_00[0x64]; s32 unk_64; s32 unk_68; };
 struct Unk_02043f04_Pos { s32 x, z; };
 struct Unk_02044014_Vec3 { s32 x, y, z; };
-extern Unk_02043e94_G *gCommManager;
+extern CommManager *gCommManager;
 extern u8 gEffectSplDefaultInitCbs[];
 extern u8 data_020da2a4[];
 extern u8 data_020da2a8[];
@@ -583,22 +583,6 @@ struct Unk_020441f0_Color {
     u16 g : 5;
     u16 b : 5;
 };
-struct Unk_020441f0_P {
-    u8 pad_00[0x18];
-    s32 **unk_18;
-    u8 pad_1c[4];
-    s32 unk_20;
-    s32 unk_24;
-    s32 unk_28;
-    u8 pad_2c[0x3c - 0x2c];
-    s16 unk_3c;
-    s16 unk_3e;
-    s16 unk_40;
-    u8 pad_42[0x5a - 0x42];
-    u16 unk_5a;
-    u8 pad_5c[0x68 - 0x5c];
-    u8 unk_68;
-};
 struct Unk_020441f0_T {
     s32 x, y, z;
 };
@@ -608,8 +592,8 @@ extern u16 *data_020da2c8[];
 u16 Sky_GetLightColor(s32 a);
 void Vec_RotateY(Unk_020441f0_T *t, s32 a);
 s32 Vec_SafeNormalize(Unk_020441f0_T *t);
-void FlowerFx_InitBySpecies(Unk_020441f0_P *p);
-void FlowerFx_InitByColor(Unk_020441f0_P *p);
+void FlowerFx_InitBySpecies(EffectSplEmitter *p);
+void FlowerFx_InitByColor(EffectSplEmitter *p);
 struct Unk_02044490_H6 { u16 a, b, c; };
 extern FieldActionRequest sFieldActions[];
 extern s32 sPendingUnits;
@@ -6820,7 +6804,7 @@ extern "C" void FieldAction_HostProcess(FieldActionRequestMsg *src, u8 flag, s32
             r->state = 3;
         }
     }
-    Unk_02043e94_G *g = gCommManager;
+    CommManager *g = gCommManager;
     _ZN11CommManager11beginRecordEv(g);
     _ZN11CommManager11writeRecordEPhj(g, &e, mask);
     _ZN11CommManager9endRecordEjj(g, 0x32, 4);
@@ -6951,7 +6935,7 @@ extern "C" void FieldAction_ApplyResultOffscreen(FieldActionResultMsg *e, s32 m)
 
 namespace nE {
 extern "C" void FieldAction_OnNetResult(FieldActionResultMsg *e, s32 t) {
-    if (gCommManager->unk_64 == e->aid) {
+    if (gCommManager->myAid == e->aid) {
         FieldActionRequest *r = &sFieldActions[e->requestIndex];
         if (e->accepted == 0) {
             r->state = 3;
@@ -6989,15 +6973,15 @@ extern "C" void FlowerFx_SetParams(FlowerFxParams *g, s32 a, s32 b, s32 c, u8 d,
 }
 
 namespace nE {
-extern "C" void FlowerFx_InitByColor(Unk_020441f0_P *p) {
+extern "C" void FlowerFx_InitByColor(EffectSplEmitter *p) {
     FlowerFxParams *const g = &nZ::gTownUpdater.flowerFx;
     Unk_020441f0_Color c0, c2, c4;
     volatile u16 c6;
     Unk_020441f0_T t;
     Unk_02044014_Vec3 *gv = (Unk_02044014_Vec3 *)((u8 *)g + 8);
-    p->unk_20 = g->pos.x + (*p->unk_18)[1];
-    p->unk_24 = gv->y + (*p->unk_18)[2];
-    p->unk_28 = gv->z + (*p->unk_18)[3];
+    p->posX = g->pos.x + (*(s32 **)p->resource)[1];
+    p->posY = gv->y + (*(s32 **)p->resource)[2];
+    p->posZ = gv->z + (*(s32 **)p->resource)[3];
     *(u16 *)&c0 = Sky_GetLightColor(3);
     c6 = *(u16 *)&c0;
     *(u16 *)&c2 = c6;
@@ -7005,7 +6989,7 @@ extern "C" void FlowerFx_InitByColor(Unk_020441f0_P *p) {
     c2.r = (c4.r * c2.r) / 31;
     c2.g = (c4.g * c2.g) / 31;
     c2.b = (c4.b * c2.b) / 31;
-    p->unk_5a = *(u16 *)&c2;
+    p->color = *(u16 *)&c2;
     if (g->mode == 1) {
         p->unk_68 = 2;
     }
@@ -7016,24 +7000,24 @@ extern "C" void FlowerFx_InitByColor(Unk_020441f0_P *p) {
         Vec_RotateY(&t, g->angle);
         if (Vec_SafeNormalize(&t)) {
             s32 x = t.x, y = t.y, z = t.z;
-            p->unk_3c = x;
-            p->unk_3e = y;
-            p->unk_40 = z;
+            p->axis.x = x;
+            p->axis.y = y;
+            p->axis.z = z;
         }
     }
 }
 }
 
 namespace nE {
-extern "C" void FlowerFx_InitBySpecies(Unk_020441f0_P *p) {
+extern "C" void FlowerFx_InitBySpecies(EffectSplEmitter *p) {
     FlowerFxParams *const g = &nZ::gTownUpdater.flowerFx;
     Unk_020441f0_Color c0, c2, c4;
     volatile u16 c6;
     Unk_020441f0_T t;
     Unk_02044014_Vec3 *gv = (Unk_02044014_Vec3 *)((u8 *)g + 8);
-    p->unk_20 = g->pos.x + (*p->unk_18)[1];
-    p->unk_24 = gv->y + (*p->unk_18)[2];
-    p->unk_28 = gv->z + (*p->unk_18)[3];
+    p->posX = g->pos.x + (*(s32 **)p->resource)[1];
+    p->posY = gv->y + (*(s32 **)p->resource)[2];
+    p->posZ = gv->z + (*(s32 **)p->resource)[3];
     *(u16 *)&c0 = Sky_GetLightColor(3);
     c6 = *(u16 *)&c0;
     *(u16 *)&c2 = c6;
@@ -7045,7 +7029,7 @@ extern "C" void FlowerFx_InitBySpecies(Unk_020441f0_P *p) {
     c2.r = (c4.r * c2.r) / 31;
     c2.g = (c4.g * c2.g) / 31;
     c2.b = (c4.b * c2.b) / 31;
-    p->unk_5a = *(u16 *)&c2;
+    p->color = *(u16 *)&c2;
     if (g->mode == 2) {
         t.x = 0x400;
         t.y = 0x1000;
@@ -7053,9 +7037,9 @@ extern "C" void FlowerFx_InitBySpecies(Unk_020441f0_P *p) {
         Vec_RotateY(&t, g->angle);
         if (Vec_SafeNormalize(&t)) {
             s32 x = t.x, y = t.y, z = t.z;
-            p->unk_3c = x;
-            p->unk_3e = y;
-            p->unk_40 = z;
+            p->axis.x = x;
+            p->axis.y = y;
+            p->axis.z = z;
         }
     }
 }
@@ -7240,9 +7224,9 @@ extern "C" s32 Flower_PlayTrampleFx(Unk_02043f04_Pos *p) {
 
 namespace nE {
 extern "C" s32 Field_AidOrLocal(s32 a) {
-    Unk_02043e94_G *g = gCommManager;
+    CommManager *g = gCommManager;
     if (!_ZN11CommManager8isOnlineEv(g)) {
-        a = g->unk_68;
+        a = g->localSlot;
     }
     return a;
 }
@@ -7259,7 +7243,7 @@ extern "C" s32 Field_AidOrZero(s32 a) {
 
 namespace nE {
 extern "C" s32 Field_IsLocalAid(s32 a) {
-    Unk_02043e94_G *g = gCommManager;
+    CommManager *g = gCommManager;
     if (_ZN11CommManager8isOnlineEv(g) == 0) {
         return TRUE;
     }

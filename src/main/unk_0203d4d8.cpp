@@ -9,34 +9,6 @@
 
 
 
-class Unk_0203e604_Obj {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c(s32 a, s32 b);
-    virtual void vfunc_50();
-    virtual BOOL vfunc_54(Unk_0203e604_Obj *other);
-    virtual BOOL vfunc_58(Unk_0203e604_Obj *other);
-};
-
-
 struct TalkRequestList {
     TalkRequestEntry *head;
     u32 tail;
@@ -63,9 +35,9 @@ extern u8 sCharInteractSyncResult;
 extern s32 gActorDefaultParent;
 extern s32 gCommManager;
 
-Unk_0203e604_Obj *PlayerActor_GetActor(s32 id);
-u32 _ZN9Character9getCharIdEv(Unk_0203e604_Obj *o);
-Unk_0203e604_Obj *Character_FindByCharId(u32 id);
+Character *PlayerActor_GetActor(s32 id);
+u32 _ZN9Character9getCharIdEv(Character *o);
+Character *Character_FindByCharId(u32 id);
 TalkRequestEntry *TalkRequestPool_Alloc();
 void PrioList_Insert(TalkRequestList *l, TalkRequestEntry *t);
 void TalkRequestList_FreeAll(TalkRequestList *l);
@@ -98,9 +70,9 @@ u32 Scene_GetWarpRequest();
 void SceneWarp_RequestExit(u32 a, u32 b);
 BOOL _ZN11CommManager8isOnlineEv(s32 v);
 BOOL PlayerActor_LocalRequestLeaveRoom();
-Unk_0203e604_Obj *Character_FindInteractionTarget(Unk_0203e604_Obj *o);
-BOOL _ZN9Character16checkInteractionEPS_(Unk_0203e604_Obj *a, Unk_0203e604_Obj *b);
-s32 _ZN9Character16getTalkStartModeEv(Unk_0203e604_Obj *o);
+Character *Character_FindInteractionTarget(Character *o);
+BOOL _ZN9Character16checkInteractionEPS_(Character *a, Character *b);
+s32 _ZN9Character16getTalkStartModeEv(Character *o);
 BOOL TalkRequest_AcquireHostLock(TalkRequestEntry *t);
 
 void TalkRequestFlags_Set(u32 mask);
@@ -129,7 +101,7 @@ BOOL TalkRequestFlags_IsSceneHold();
 void TalkRequestFlags_SetEventWarpReady();
 void TalkRequestFlags_SetEventWarpStarted();
 void TalkRequestFlags_Clear(u32 mask);
-void TalkRequest_NotifyTarget(Unk_0203e604_Obj *o, u32 v);
+void TalkRequest_NotifyTarget(Character *o, u32 v);
 BOOL TalkRequest_AcquireTarget(TalkRequestEntry *t);
 BOOL TalkRequest_AcquireAreaTarget(TalkRequestEntry *t);
 void TalkRequest_ReleaseTarget(TalkRequestEntry *t, u32 v);
@@ -277,10 +249,10 @@ extern "C" BOOL TalkRequest_AcquireAreaTarget(TalkRequestEntry *t) {
     switch (r) {
     case 2:
         if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-            Unk_0203e604_Obj *o = Character_FindByCharId(t->targetId);
+            Character *o = Character_FindByCharId(t->targetId);
             if (_ZN9Character12isAreaSyncedEv()) {
                 if (t->result == 1) {
-                    if (!o->vfunc_58(PlayerActor_GetActor(4))) {
+                    if (!o->acceptsSelfRequestedInteraction(PlayerActor_GetActor(4))) {
                         return FALSE;
                     }
                 }
@@ -320,24 +292,24 @@ extern "C" BOOL TalkRequest_AcquireTarget(TalkRequestEntry *t) {
     return TRUE;
 }
 
-extern "C" void TalkRequest_NotifyTarget(Unk_0203e604_Obj *o, u32 v) {
+extern "C" void TalkRequest_NotifyTarget(Character *o, u32 v) {
     if (_ZN9Character12isAreaSyncedEv()) {
         if (CharInteractSync_CheckArea() == 1) {
             CharInteractSync_SendEvent(_ZN9Character9getCharIdEv(o), v);
         }
     }
-    o->vfunc_4c(v, 4);
+    o->onInteractionEvent(v, 4);
 }
 
 extern "C" void TalkRequest_ReleaseTarget(TalkRequestEntry *t, u32 v) {
-    Unk_0203e604_Obj *o = Character_FindByCharId(t->targetId);
+    Character *o = Character_FindByCharId(t->targetId);
     if (o != NULL) {
         if (_ZN9Character12isAreaSyncedEv()) {
             if (CharInteractSync_CheckArea() == 1) {
                 CharInteractSync_SendEvent(t->targetId, v);
             }
         }
-        o->vfunc_4c(v, 4);
+        o->onInteractionEvent(v, 4);
     }
     TalkRequest_SetTalkTarget(0);
     if (t->kind == 7) {
@@ -346,20 +318,20 @@ extern "C" void TalkRequest_ReleaseTarget(TalkRequestEntry *t, u32 v) {
 }
 
 extern "C" BOOL TalkRequest_StartTalk(TalkRequestEntry *t) {
-    Unk_0203e604_Obj *a = Character_FindByCharId(t->targetId);
-    Unk_0203e604_Obj *b = Character_FindByCharId(t->requesterId);
+    Character *a = Character_FindByCharId(t->targetId);
+    Character *b = Character_FindByCharId(t->requesterId);
     if (!PlayerActor_CanStartTalk()) {
         return FALSE;
     }
     t->result = 0;
     if (a == NULL) {
-        Unk_0203e604_Obj *n = Character_FindInteractionTarget(b);
+        Character *n = Character_FindInteractionTarget(b);
         if (n == NULL) {
             return FALSE;
         }
         t->targetId = _ZN9Character9getCharIdEv(n);
     } else if (!_ZN9Character16checkInteractionEPS_(a, b)) {
-        if (a->vfunc_54(b)) {
+        if (a->acceptsInteractionOutOfRange(b)) {
             t->result = 5;
         } else {
             return FALSE;
@@ -373,7 +345,7 @@ extern "C" BOOL TalkRequest_StartTalk(TalkRequestEntry *t) {
 }
 
 extern "C" BOOL TalkRequest_BeginTalk(TalkRequestEntry *t) {
-    Unk_0203e604_Obj *o = Character_FindByCharId(t->targetId);
+    Character *o = Character_FindByCharId(t->targetId);
     switch (t->state) {
     case 0:
     case 1:
@@ -402,7 +374,7 @@ extern "C" BOOL TalkRequest_BeginTalk(TalkRequestEntry *t) {
     }
     switch (t->state) {
     case 2: {
-        o->vfunc_4c(3, 4);
+        o->onInteractionEvent(3, 4);
         s32 r = _ZN9Character16getTalkStartModeEv(o);
         if (t->result == 5) {
             r = 2;
@@ -441,7 +413,7 @@ extern "C" BOOL TalkRequest_StartTalk6(TalkRequestEntry *t) {
 }
 
 extern "C" BOOL TalkRequest_RunTalk(TalkRequestEntry *t) {
-    Unk_0203e604_Obj *o = Character_FindByCharId(t->targetId);
+    Character *o = Character_FindByCharId(t->targetId);
     switch (t->state) {
     case 4:
         if (PlayerActor_IsStowFinished()) {
@@ -481,7 +453,7 @@ extern "C" BOOL TalkRequest_StartTalk7(TalkRequestEntry *t) {
 }
 
 extern "C" BOOL TalkRequest_StartSceneExit(TalkRequestEntry *t) {
-    Unk_0203e604_Obj *o = Character_FindByCharId(t->requesterId);
+    Character *o = Character_FindByCharId(t->requesterId);
     if (!PlayerActor_CanStartTalk()) {
         return FALSE;
     }
@@ -489,7 +461,7 @@ extern "C" BOOL TalkRequest_StartSceneExit(TalkRequestEntry *t) {
         return FALSE;
     }
     if (o != NULL) {
-        o->vfunc_4c(2, 4);
+        o->onInteractionEvent(2, 4);
     }
     SceneWarp_RequestExit(Scene_GetWarpRequest(), t->state);
     return TRUE;
@@ -513,7 +485,7 @@ extern "C" BOOL TalkRequest_BeginEventWarp(TalkRequestEntry *) {
 }
 
 extern "C" BOOL TalkRequest_BeginSceneEntryChar(TalkRequestEntry *t) {
-    Unk_0203e604_Obj *o = Character_FindByCharId(t->requesterId);
+    Character *o = Character_FindByCharId(t->requesterId);
     if (o == NULL) {
         return FALSE;
     }
@@ -539,7 +511,7 @@ extern "C" BOOL TalkRequest_BeginSceneEntryChar(TalkRequestEntry *t) {
         }
     }
     if (t->state == 2) {
-        o->vfunc_4c(6, 4);
+        o->onInteractionEvent(6, 4);
         t->state = 5;
         return TRUE;
     }
@@ -730,7 +702,7 @@ extern "C" BOOL TalkRequest_Add(u32 a, u32 b, u32 c, u32 d, u8 e) {
     return TRUE;
 }
 
-extern "C" BOOL TalkRequest_AddSceneExit(Unk_0203e604_Obj *o, s32 v) {
+extern "C" BOOL TalkRequest_AddSceneExit(Character *o, s32 v) {
     u32 id;
     if (v < 0) {
         return FALSE;
@@ -755,7 +727,7 @@ extern "C" BOOL TalkRequest_FinishLeaveRoom() {
 }
 
 extern "C" BOOL TalkRequest_AddMenu(u8 x) {
-    Unk_0203e604_Obj *o = PlayerActor_GetActor(4);
+    Character *o = PlayerActor_GetActor(4);
     if (o == NULL) {
         return FALSE;
     }
@@ -766,7 +738,7 @@ extern "C" BOOL TalkRequest_AddEventWarp() {
     if (TalkRequestFlags_IsResetti() || TalkRequestFlags_IsEventWarpBlock()) {
         return FALSE;
     }
-    Unk_0203e604_Obj *o = PlayerActor_GetActor(4);
+    Character *o = PlayerActor_GetActor(4);
     if (o == NULL) {
         return FALSE;
     }
@@ -891,15 +863,15 @@ extern "C" BOOL TalkRequest_FinishSceneEntry(void) {
 extern "C" BOOL TalkRequest_AddTalk(u32 a, u32 b) {
     u32 t = 0;
     if (b != 0) {
-        t = _ZN9Character9getCharIdEv((Unk_0203e604_Obj *)b);
+        t = _ZN9Character9getCharIdEv((Character *)b);
     }
-    return TalkRequest_Add(_ZN9Character9getCharIdEv((Unk_0203e604_Obj *)a), t, 2, 3, 0);
+    return TalkRequest_Add(_ZN9Character9getCharIdEv((Character *)a), t, 2, 3, 0);
 }
 
 extern "C" BOOL TalkRequest_AddPlayerTalk6(u32 a, s32 b) {
     if (b == 0) {
         u32 t = _ZN9Character9getCharIdEv(PlayerActor_GetActor(4));
-        return TalkRequest_Add(t, _ZN9Character9getCharIdEv((Unk_0203e604_Obj *)a), 6, 3, 0);
+        return TalkRequest_Add(t, _ZN9Character9getCharIdEv((Character *)a), 6, 3, 0);
     }
     return FALSE;
 }
@@ -907,7 +879,7 @@ extern "C" BOOL TalkRequest_AddPlayerTalk6(u32 a, s32 b) {
 extern "C" BOOL TalkRequest_AddPlayerTalk7(u32 a, s32 b) {
     if (b == 0) {
         u32 t = _ZN9Character9getCharIdEv(PlayerActor_GetActor(4));
-        return TalkRequest_Add(t, _ZN9Character9getCharIdEv((Unk_0203e604_Obj *)a), 7, 3, 0);
+        return TalkRequest_Add(t, _ZN9Character9getCharIdEv((Character *)a), 7, 3, 0);
     }
     return FALSE;
 }
@@ -917,7 +889,7 @@ extern "C" BOOL TalkRequest_SetTargetDone(u32 x) {
         return FALSE;
     }
     TalkRequestEntry *p = gTalkRequestCurrent;
-    u32 v = _ZN9Character9getCharIdEv((Unk_0203e604_Obj *)x);
+    u32 v = _ZN9Character9getCharIdEv((Character *)x);
     if (p->targetId != v) {
         return FALSE;
     }

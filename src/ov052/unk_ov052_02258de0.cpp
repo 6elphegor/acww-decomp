@@ -1,6 +1,5 @@
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "actor/Unk_02088d00.h"
 #include "item/ItemId.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"

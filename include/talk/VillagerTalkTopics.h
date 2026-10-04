@@ -11,7 +11,6 @@ struct Unk_0201d2d0_Out;
 struct FishSpawnRow;
 struct ClockDateTime;
 struct VillagerStateView;
-struct Unk_0202bd3c_Arr;
 
 class VillagerTalkTopics : public VillagerTalkRequestReplyTopics {
 public:
@@ -262,8 +261,6 @@ public:
     BOOL isBeeSwarmOut();
     BOOL hasFallen();
     s32 getGreetingStatus(s32 *out);
-    void updateCatchPlans(u8 *a, void *b, u32 c);
-    void updateFishCatchPlan(void *s1, u8 *tbl, void *p2, u8 p3, Unk_0202bd3c_Arr *arr);
 };
 
 #endif

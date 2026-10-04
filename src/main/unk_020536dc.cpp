@@ -1,5 +1,6 @@
 #include "types.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "gfx/GfxFrameHooks.h"
 
 extern "C" {
 extern volatile u32 gGfxMainOnTop;
@@ -27,14 +28,9 @@ void MIi_CpuClearFast(u32, void *, u32);
 void Gfx_ResetScene();
 }
 
-struct Unk_020536dc_Obj {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-};
 
 extern "C" {
-Unk_020536dc_Obj *gGfxFrameHooks;
+GfxFrameHooks *gGfxFrameHooks;
 }
 
 extern "C" void ThreeLayerAnimModel_ClearLayer3Mask(ThreeLayerAnimModel *o)
@@ -81,7 +77,7 @@ extern "C" void Gfx_PreTaskUpdate()
 {
     Oam_ResetBuffers();
     if (gGfxFrameHooks) {
-        gGfxFrameHooks->vfunc_00();
+        gGfxFrameHooks->onPreTask();
     }
     Gfx3d_BeginFrame();
     Gfx2d_BeginFrame();
@@ -94,7 +90,7 @@ extern "C" void GfxFrameHooks_PostTaskStub()
 extern "C" void Gfx_PostTaskUpdate()
 {
     if (gGfxFrameHooks) {
-        gGfxFrameHooks->vfunc_04();
+        gGfxFrameHooks->onPostTask();
     }
     ScreenTransition_Update();
 }
@@ -110,7 +106,7 @@ extern "C" void Gfx_VBlankFlush()
     Gfx3d_ApplyClearColor();
     Gfx2d_ApplyDisplayControl();
     if (gGfxFrameHooks) {
-        gGfxFrameHooks->vfunc_08();
+        gGfxFrameHooks->onVBlank();
     }
     Gfx2d_FlushRegisters();
 }

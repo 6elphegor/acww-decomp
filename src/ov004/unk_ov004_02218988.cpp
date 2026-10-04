@@ -3,7 +3,6 @@
 #include "types.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "npc/VillagerClothModel.h"
-#include "actor/Unk_02088d00.h"
 #include "npc/VillagerMood.h"
 #include "snd/SndSeEmitter.h"
 #include "npc/NpcAnimCtrl.h"

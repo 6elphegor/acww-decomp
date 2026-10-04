@@ -1376,7 +1376,7 @@ void MTX_RotX33_(MtxFx33 *m, s32 a, s32 b);
 void MTX_Concat33(MtxFx33 *a, MtxFx33 *b, MtxFx33 *out);
 s32 WorldCurve_Apply(Unk_020d77a4_Vec *a, Unk_020d77a4_Vec *b);
 s32 WorldCurve_GetRadius();
-void _ZN19ThreeLayerAnimModel21onJointCalcPostLayer3EP16Unk_02053a54_Msg(void *p, void *q);
+void _ZN19ThreeLayerAnimModel21onJointCalcPostLayer3EP8NNSG3dRS(void *p, void *q);
 void NpcActor_JointCalcLayer3Cb(NNSG3dRS *p);
 void NpcActor_SetJointCallbackNext(NNSG3dRS *self);
 void NpcActor_SetJointCallbackNext(NNSG3dRS *self);
@@ -1896,7 +1896,7 @@ extern "C" void NpcActor_OnJointCalc(NNSG3dRS *self) {
         }
     }
     if (p != NULL) {
-        _ZN19ThreeLayerAnimModel21onJointCalcPostLayer3EP16Unk_02053a54_Msg(&p->model, self);
+        _ZN19ThreeLayerAnimModel21onJointCalcPostLayer3EP8NNSG3dRS(&p->model, self);
     }
     self->cbVecFuncNodeDesc = NpcActor_SetJointCallbackNext;
     self->cbVecTimingNodeDesc = 3;

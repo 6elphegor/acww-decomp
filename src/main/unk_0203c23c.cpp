@@ -1,7 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "gfx/Unk_0203bd10_Dtcm.h"
-#include "npc/Unk_0203be94_Obj.h"
+class VillagerActor;
 #include "gfx/CameraPose.h"
 #include "gfx/FxMtx43.h"
 #include "item/ItemId.h"
@@ -121,7 +121,7 @@ s32 NpcRegistry_PickRandomVillager(s32 a);
 }
 
 extern "C" {
-Unk_0203be94_Obj *NpcRegistry_GetVillager(s32 i);
+VillagerActor *NpcRegistry_GetVillager(s32 i);
 }
 
 extern "C" {

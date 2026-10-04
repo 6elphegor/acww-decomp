@@ -1,5 +1,6 @@
 #include "types.h"
 #include "room/RoomFtrState.h"
+#include "room/FtrActor.h"
 
 extern "C" {
 void *__cxa_vec_ctor(void *p, u32 n, u32 sz, void *ctor, void *dtor);
@@ -36,18 +37,6 @@ public:
     BOOL set(s32 idx, u32 tag, Unk_02052ab4_Vec *p);
 };
 
-struct Unk_02051d24_Obj {
-    virtual s32 v00(); virtual s32 v04(); virtual s32 v08(); virtual s32 v0c();
-    virtual s32 v10(); virtual s32 v14(); virtual s32 v18(); virtual s32 v1c();
-    virtual s32 v20(); virtual s32 v24(); virtual s32 v28(); virtual s32 v2c();
-    virtual s32 v30(); virtual s32 v34(); virtual s32 v38(); virtual s32 v3c();
-    virtual s32 v40(); virtual s32 v44(); virtual s32 v48(); virtual s32 v4c();
-    virtual s32 v50(); virtual s32 v54(); virtual s32 v58(); virtual s32 v5c();
-    virtual s32 v60(); virtual s32 v64(); virtual s32 v68(); virtual s32 v6c();
-    virtual s32 vfunc_70(s32 a, u32 b);
-    virtual s32 vfunc_74(u32 a);
-    virtual u8 vfunc_78();
-};
 
 struct Unk_02052134_W { u32 a:1, b:4, c:4, d:1, e:1, f:16; };
 struct Unk_020520a8_W { u32 a:4, b:4, c:16; };
@@ -92,7 +81,7 @@ extern "C" {
 BOOL _ZN8FtrActor11findOwnTileEPiS0_ii(s32 a, s32 *x, s32 *y, s32 z, s32 w);
 s32 FtrActor_GetLayer(s32 a);
 void *FtrActorGrid_GetInstance();
-Unk_02051d24_Obj *_ZN12FtrActorGrid8getActorEiii(void *self, s32 a, s32 b, s32 c);
+FtrActor *_ZN12FtrActorGrid8getActorEiii(void *self, s32 a, s32 b, s32 c);
 void FtrActor_GetFtrIndex(void *p);
 s32 _ZN8FtrActor9isPreviewEv(void *p);
 s32 FtrActor_PredIsStereo(void *p);
@@ -449,9 +438,9 @@ Unk_0205242c_Item data_021c4e8c[4] = { Unk_0205242c_Item(0, 0), Unk_0205242c_Ite
 
 extern "C" s32 FtrSync_ApplyState(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bool h, volatile u8 i) {
     if (IsOne(gFieldSceneKind) && a == Scene_GetCurrent()) {
-        Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
+        FtrActor *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
         if (o) {
-            return o->vfunc_70(e, i);
+            return o->changeAct(e, i);
         }
     }
     void *t = BlockMap_GetForArea(a);
@@ -534,7 +523,7 @@ extern "C" s32 FtrSync_OnTopItemRecord(s32 a, Unk_020520a8_W *w) {
 extern "C" void FtrSync_ToggleGyroidAt(u8 a, s32 b, s32 c, u8 d, u8 e) {
     if (a == Scene_GetCurrent() && IsOne(gFieldSceneKind)) {
         {
-            Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
+            FtrActor *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
             if (o) {
                 if (_ZN9FtrSwitch4isOnEv((u8 *)o + 0x73c) == 0) {
                     if ((u32)FtrMgr_CountSwitchedOn(_ZN8FtrActor8isGyroidEv) >= 4) {
@@ -586,10 +575,10 @@ extern "C" s32 SpotSync_OnRelease(s32 x) {
 extern "C" s32 FtrSync_SendState(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) {
     u32 w;
     u32 r5 = (g != 4) ? 1 : 0;
-    Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
+    FtrActor *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
     if (!o) return 0;
     if (_ZN11CommManager8isOnlineEv(gCommManager) && o && !_ZN8FtrActor9isPreviewEv(o)) {
-        u32 t = o->vfunc_74(d);
+        u32 t = o->getActSwitchState(d);
         w = (w & ~0x3f) | (Scene_GetCurrent() & 0x3f);
         c = c & 1;
         w = (w & ~0x40) | (c << 6);
@@ -626,11 +615,11 @@ extern "C" s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d) {
 
 extern "C" s32 FtrSync_ChangeActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
     if (!IsOne(gFieldSceneKind)) return 0;
-    Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
+    FtrActor *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
     if (!o) return 0;
-    o->vfunc_70(d, e);
+    o->changeAct(d, e);
     if (g) {
-        return FtrSync_SendState(a, b, c, d, o->vfunc_78(), f, 4);
+        return FtrSync_SendState(a, b, c, d, o->getActAid(), f, 4);
     }
     return 1;
 }

@@ -2,20 +2,11 @@
 #include "types.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/JointBlend.h"
-#include "gfx/NNSG3dRenderObj.h"
+#include "gfx/NNSG3dRS.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
-struct Unk_02053a54_Hdr {
-    u8 unk_00;
-    u8 nodeId;
-};
 
-struct Unk_02053a54_Msg {
-    Unk_02053a54_Hdr *c;
-    u8 pad_04[0xb0];
-    NNSG3dJntAnmResult *pJntAnmResult;
-};
 
 struct NNSG3dAnmObj {
     u32 frame;
@@ -25,13 +16,6 @@ struct NNSG3dAnmObj {
     NNSG3dAnmObj *next;
 };
 
-struct Unk_02054628_Obj {
-    u8 *c;
-    u8 pad_04[0xb0];
-    NNSG3dJntAnmResult *pJntAnmResult;
-    u8 pad_b8[0x1c];
-    u8 *pResNodeInfo;
-};
 
 struct NNSG3dResJntAnm {
     u32 anmHeader;
@@ -414,7 +398,7 @@ void AnimModel::detachAnim()
     }
 }
 
-extern "C" void JointCb_UseRestTranslation(Unk_02054628_Obj *o, s32 x)
+extern "C" void JointCb_UseRestTranslation(NNSG3dRS *o, s32 x)
 {
     u32 idx = o->c[1];
     if (idx >= 2) {
@@ -442,7 +426,7 @@ extern "C" void JointCb_UseRestTranslation(Unk_02054628_Obj *o, s32 x)
     }
 }
 
-extern "C" void JointCb_CalcCpuMatrix(void *unused, Unk_02054628_Obj *o, void *p)
+extern "C" void JointCb_CalcCpuMatrix(void *unused, NNSG3dRS *o, void *p)
 {
     u32 t = *o->c & 0xe0;
     if (t == 0x40) {
@@ -592,15 +576,15 @@ BOOL TwoLayerAnimModel::isLayer2Joint(u32 i) {
     return TRUE;
 }
 
-void TwoLayerAnimModel::captureLayer2Pose(Unk_02053a54_Msg *m) {
+void TwoLayerAnimModel::captureLayer2Pose(NNSG3dRS *m) {
     if (layer2Blend.blendStep != 0) {
         _ZN10JointBlend11capturePoseEP8NNSG3dRS(&layer2Blend, m);
     }
 }
 
-void TwoLayerAnimModel::onJointCalcPreLayer2(Unk_02053a54_Msg *m) {
+void TwoLayerAnimModel::onJointCalcPreLayer2(NNSG3dRS *m) {
     if (func_01ffcc10() == 0) {
-        if (isLayer2Joint(m->c->nodeId)) {
+        if (isLayer2Joint(m->c[1])) {
             AnimModel_SwitchAnmObj(this, layer2AnmObj);
             captureLayer2Pose(m);
         } else {
@@ -610,7 +594,7 @@ void TwoLayerAnimModel::onJointCalcPreLayer2(Unk_02053a54_Msg *m) {
     }
 }
 
-void TwoLayerAnimModel::applyLayer2Blend(Unk_02053a54_Msg *m) {
+void TwoLayerAnimModel::applyLayer2Blend(NNSG3dRS *m) {
     if ((m->pJntAnmResult->flag & 4) != 0) {
         m->pJntAnmResult->trans.x = 0;
         m->pJntAnmResult->trans.y = 0;
@@ -621,9 +605,9 @@ void TwoLayerAnimModel::applyLayer2Blend(Unk_02053a54_Msg *m) {
     }
 }
 
-void TwoLayerAnimModel::onJointCalcPostLayer2(Unk_02053a54_Msg *m) {
+void TwoLayerAnimModel::onJointCalcPostLayer2(NNSG3dRS *m) {
     if (func_01ffcc10() == 0) {
-        if (isLayer2Joint(m->c->nodeId)) {
+        if (isLayer2Joint(m->c[1])) {
             applyLayer2Blend(m);
         } else {
             applyJointBlend((BlendAnimModel *)m);
@@ -744,15 +728,15 @@ BOOL ThreeLayerAnimModel::isLayer3Joint(u32 i) {
     return TRUE;
 }
 
-void ThreeLayerAnimModel::captureLayer3Pose(Unk_02053a54_Msg *m) {
+void ThreeLayerAnimModel::captureLayer3Pose(NNSG3dRS *m) {
     if (layer3Blend.blendStep != 0) {
         _ZN10JointBlend11capturePoseEP8NNSG3dRS(&layer3Blend, m);
     }
 }
 
-void ThreeLayerAnimModel::onJointCalcPreLayer3(Unk_02053a54_Msg *m) {
+void ThreeLayerAnimModel::onJointCalcPreLayer3(NNSG3dRS *m) {
     if (func_01ffcc10() == 0) {
-        u32 t = m->c->nodeId;
+        u32 t = m->c[1];
         u32 v;
         if (t >= 0x20) {
             v = layer3JointMaskHi & (1 << (t - 0x20));
@@ -780,7 +764,7 @@ void ThreeLayerAnimModel::onJointCalcPreLayer3(Unk_02053a54_Msg *m) {
     }
 }
 
-void ThreeLayerAnimModel::applyLayer3Blend(Unk_02053a54_Msg *m) {
+void ThreeLayerAnimModel::applyLayer3Blend(NNSG3dRS *m) {
     if ((m->pJntAnmResult->flag & 4) != 0) {
         m->pJntAnmResult->trans.x = 0;
         m->pJntAnmResult->trans.y = 0;
@@ -791,13 +775,13 @@ void ThreeLayerAnimModel::applyLayer3Blend(Unk_02053a54_Msg *m) {
     }
 }
 
-void ThreeLayerAnimModel::onJointCalcPostLayer3(Unk_02053a54_Msg *m) {
+void ThreeLayerAnimModel::onJointCalcPostLayer3(NNSG3dRS *m) {
     if (func_01ffcc10() == 0) {
         u32 x = layer3JointMaskHi | (layer3JointMask | (layer2JointMask | layer2JointMaskHi));
         if (x == 0) {
             applyJointBlend((BlendAnimModel *)m);
         } else {
-            u32 t = m->c->nodeId;
+            u32 t = m->c[1];
             if ((x & (1 << (t & 0x1f))) == 0) {
                 applyJointBlend((BlendAnimModel *)m);
             } else if (isLayer3Joint(t)) {

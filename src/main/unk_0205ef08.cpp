@@ -1,5 +1,4 @@
 #include "types.h"
-#include "game/Unk_0205f6b4_Obj.h"
 #include "gfx/Mtx43.h"
 #include "game/GroundInfo.h"
 #include "player/FishBobberStates.h"

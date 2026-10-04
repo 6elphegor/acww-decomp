@@ -1,5 +1,5 @@
 #include "types.h"
-#include "sys/Unk_02063d18_File.h"
+#include "nitro/fs.h"
 
 typedef char *va_list;
 #define va_start(ap, parm) ((ap) = (va_list)(((u32)&(parm)) & ~3) + 4)
@@ -40,8 +40,8 @@ void File_LoadF(const char *fmt, ...);
 void File_LoadAllocF(s32 a, s32 b, const char *fmt, ...);
 void File_Load(u32 a);
 BOOL File_LoadOverlayEx(void *file);
-s32 File_GetDecodedSize(Unk_02063d18_File *f);
-s32 File_ReadAll(Unk_02063d18_File *f, void *dst, u32 n);
+s32 File_GetDecodedSize(FSFile *f);
+s32 File_ReadAll(FSFile *f, void *dst, u32 n);
 s32 File_LoadAllocV(s32 a, s32 b, s32 c, const char *fmt, va_list va);
 s32 File_LoadToBuffer(const char *buf, void *a, u32 b);
 }
@@ -68,7 +68,7 @@ void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize) {
     u32 usize;
     u32 hdr[2];
     u32 st[4];
-    Unk_02063d18_File f;
+    FSFile f;
     u32 size;
     void *p;
     s32 r;
@@ -77,7 +77,7 @@ void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize) {
     h = gRootHeap;
     if (heap == 0) heap = gCurrentHeap;
     File_OpenOrPanic(&f, (const char *)path);
-    path = f.end - f.start;
+    path = f.prop.file.end - f.prop.file.start;
     size = path;
     if (size < 8) {
         ret = Heap_AllocAligned(heap, size, align);
@@ -137,17 +137,17 @@ void File_Load(u32 a) {
 }
 
 s32 File_LoadToBuffer(const char *buf, void *a, u32 b) {
-    Unk_02063d18_File f;
+    FSFile f;
     File_OpenOrPanic(&f, buf);
     return File_ReadAll(&f, a, b);
 }
 
-s32 File_ReadAll(Unk_02063d18_File *f, void *dst, u32 n) {
+s32 File_ReadAll(FSFile *f, void *dst, u32 n) {
     s32 ret;
     u32 flags;
     u32 hdr[2];
     u32 st[4];
-    u32 size = f->end - f->start;
+    u32 size = f->prop.file.end - f->prop.file.start;
     ret = size;
     if (size < 8) {
         if (size <= n) {
@@ -223,12 +223,12 @@ void File_LoadToBufferF(u32 a, u32 b, const char *fmt, ...) {
     File_LoadToBuffer(buf, (void *)a, b);
 }
 
-s32 File_GetDecodedSize(Unk_02063d18_File *f) {
+s32 File_GetDecodedSize(FSFile *f) {
     u32 hdr[2];
     s32 e;
-    u32 size = f->end - f->start;
+    u32 size = f->prop.file.end - f->prop.file.start;
     if (size >= 8) {
-        u32 base = f->pos - f->start;
+        u32 base = f->prop.file.pos - f->prop.file.start;
         FS_SeekFile(f, 0, 0);
         e = -1;
         if (FS_ReadFile(f, hdr, 8) == e) goto fail;
@@ -242,7 +242,7 @@ fail:
 }
 
 s32 File_GetDecodedSizeByPath(u32 a) {
-    Unk_02063d18_File f;
+    FSFile f;
     File_OpenOrPanic(&f, (const char *)a);
     s32 r = File_GetDecodedSize(&f);
     FS_CloseFile(&f);

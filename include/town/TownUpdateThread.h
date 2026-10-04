@@ -1,22 +1,24 @@
-#ifndef TOWN_UNK_020419B4_H
-#define TOWN_UNK_020419B4_H
+#ifndef TOWN_TOWNUPDATETHREAD_H
+#define TOWN_TOWNUPDATETHREAD_H
 
 #include "types.h"
 #include "gfx/VecFx32.h"
 
-// Town update thread context (TownUpdateThread_*) and the gTownUpdater global (TownUpdater) that points to it
-// (src/main/unk_02041868.cpp, unk_02041e00.cpp).
+// Town update thread context (0x10ec bytes, allocated by TownUpdateThread_Create): the OS thread (0..0xc0), the caller's
+// thread / heap, the Town_AdvanceDays arguments, the 0x1000-byte thread stack between the two guard words and the
+// done / started flags; and the gTownUpdater global (TownUpdater) that points to it (src/main/unk_02041868.cpp,
+// unk_02041e00.cpp).
 
-struct Unk_020419b4 {
+struct TownUpdateThread {
     /* 0x0000 */ u8 pad00[0x64];
     /* 0x0064 */ s32 threadState;
     /* 0x0068 */ u8 pad68[0xc0 - 0x68];
     /* 0x00c0 */ u32 callerThread;
     /* 0x00c4 */ u32 heap;
-    /* 0x00c8 */ u8 unk_c8[8];
-    /* 0x00d0 */ u8 unk_d0[8];
-    /* 0x00d8 */ u32 unk_d8;
-    /* 0x00dc */ u8 unk_dc;
+    /* 0x00c8 */ u8 lastDate[8];
+    /* 0x00d0 */ u8 curDate[8];
+    /* 0x00d8 */ u32 elapsedDays;
+    /* 0x00dc */ u8 prevDayRain;
     /* 0x00dd */ u8 paddd[3];
     /* 0x00e0 */ u32 stackGuardLow;
     /* 0x00e4 */ u8 pade4[0x10e4 - 0xe4];
@@ -44,7 +46,7 @@ struct TownUpdater {
     /* 0x04 */ FlowerFxParams flowerFx;
     /* 0x1c */ u8 beesReleased;    // Town_SetBeesReleased / Town_ClearBeesReleased / Town_CanReleaseBees
     /* 0x1d */ u8 pad_1d[3];
-    /* 0x20 */ Unk_020419b4 *updateThread;
+    /* 0x20 */ TownUpdateThread *updateThread;
     ~TownUpdater() {}
 };
 

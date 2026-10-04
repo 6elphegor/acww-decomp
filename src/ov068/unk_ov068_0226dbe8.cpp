@@ -1,7 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "npc/VillagerClothModel.h"
-#include "actor/Unk_02088d00.h"
 #include "talk/MsgStringBase.h"
 #include "gfx/Unk_ov068_022708fc_Color.h"
 #include "actor/Unk_ov068_SceneEntry.h"

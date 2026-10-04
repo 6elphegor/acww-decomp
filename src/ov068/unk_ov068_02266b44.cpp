@@ -1,6 +1,5 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "actor/Unk_02088d00.h"
 #include "game/Unk_ov068_Vec.h"
 #include "actor/Unk_ov068_SceneEntry.h"
 #include "item/ItemId.h"

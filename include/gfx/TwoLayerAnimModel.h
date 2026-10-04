@@ -6,7 +6,7 @@
 #include "gfx/AnimModel.h"
 #include "gfx/JointBlend.h"
 
-struct Unk_02053a54_Msg;
+struct NNSG3dRS;
 
 // AnimModel with pose blending between two animations (0xf4 bytes), and the two-layer variant whose second animation
 // drives a joint subset (0x154 bytes; PlayerActor::bodyModel, base of ThreeLayerAnimModel). Both are defined in
@@ -39,10 +39,10 @@ public:
     void drawLayered(u32 a);
     void updateLayers();
     BOOL allocLayerAnims(u32 a);
-    void onJointCalcPostLayer2(Unk_02053a54_Msg *m);
-    void applyLayer2Blend(Unk_02053a54_Msg *m);
-    void onJointCalcPreLayer2(Unk_02053a54_Msg *m);
-    void captureLayer2Pose(Unk_02053a54_Msg *m);
+    void onJointCalcPostLayer2(NNSG3dRS *m);
+    void applyLayer2Blend(NNSG3dRS *m);
+    void onJointCalcPreLayer2(NNSG3dRS *m);
+    void captureLayer2Pose(NNSG3dRS *m);
     BOOL isLayer2Joint(u32 i);
     void clearLayer2Joint(u32 i);
     void setLayer2Joint(u32 i);
