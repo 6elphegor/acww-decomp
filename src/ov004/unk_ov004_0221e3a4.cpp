@@ -85,7 +85,7 @@ s32 NpcAnimCtrl_isPlayingAnim(void *self, s32 a, void *b);
 s32 NpcActionCtrl_isActionDone(void *self);
 void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
 void NpcActionCtrl_requestPlayAnim(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
-s32 func_020e7518(void *self);
+s32 Math_CountDownU8(void *self);
 s32 SaveManager_IsIdle();
 }
 
@@ -169,7 +169,7 @@ BOOL SpNpcTortimer2::setupAct00() {
 
 BOOL SpNpcTortimer2::mainAct00() {
     if (((u32)model.curFrame << 4) >> 16 == (((u32)model.numFrames << 4) >> 16) - 1) {
-        if (func_020e7518(&idleLoops) == 0 && SaveManager_IsIdle()) {
+        if (Math_CountDownU8(&idleLoops) == 0 && SaveManager_IsIdle()) {
             changeAct(1);
         }
     }

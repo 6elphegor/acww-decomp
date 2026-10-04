@@ -35,9 +35,9 @@ extern PmfStatus data_01ffd0dc;
 extern u32 gTaskPhase;
 extern QList gTaskExecuteList, gTaskCreateList, gTaskDrawList, gTaskDeleteList;
 
-void func_020e7968(QList *l, QNode *n);
-void func_020e79a0(QList *l, QNode *n);
-void func_020e7930(QList *l, QNode *n);
+void List_PushBack(QList *l, QNode *n);
+void List_Remove(QList *l, QNode *n);
+void List_PushFront(QList *l, QNode *n);
 void Task_InsertByPriority(QList *l, QNode *n);
 void ProcBase_RequestDelete(ProcBase *p);
 ProcBase *ProcBase_GetParent(ProcBase *p);
@@ -111,12 +111,12 @@ extern "C" BOOL func_01ffd1b4(ProcBase *self) {
     if (self->deletePending != 0) {
         self->deletePending = 0;
         if (isOne(self->state)) {
-            func_020e79a0(&gTaskExecuteList, &self->executeNode);
-            func_020e79a0(&gTaskDrawList, &self->drawNode);
+            List_Remove(&gTaskExecuteList, &self->executeNode);
+            List_Remove(&gTaskDrawList, &self->drawNode);
         } else {
-            func_020e79a0(&gTaskCreateList, &self->executeNode);
+            List_Remove(&gTaskCreateList, &self->executeNode);
         }
-        func_020e7930(&gTaskDeleteList, &self->executeNode);
+        List_PushFront(&gTaskDeleteList, &self->executeNode);
         self->state = 2;
         for (TreeNode *c = self->treeNode.child; c != NULL; c = c->next) {
             ProcBase_RequestDelete(c->owner);
@@ -138,14 +138,14 @@ extern "C" BOOL func_01ffd1b4(ProcBase *self) {
         if (isOne(self->state)) {
             QNode *q = &self->executeNode;
             if (changed(q)) {
-                func_020e79a0(&gTaskExecuteList, &self->executeNode);
+                List_Remove(&gTaskExecuteList, &self->executeNode);
                 q = &self->executeNode;
                 q->priority = q->pendingPriority;
                 Task_InsertByPriority(&gTaskExecuteList, q);
             }
             q = &self->drawNode;
             if (changed(q)) {
-                func_020e79a0(&gTaskDrawList, &self->drawNode);
+                List_Remove(&gTaskDrawList, &self->drawNode);
                 q = &self->drawNode;
                 q->priority = q->pendingPriority;
                 Task_InsertByPriority(&gTaskDrawList, q);
@@ -153,7 +153,7 @@ extern "C" BOOL func_01ffd1b4(ProcBase *self) {
         } else if (!isTwo(self->state)) {
             if (self->createRetry != 0) {
                 self->createRetry = 0;
-                func_020e7968(&gTaskCreateList, &self->executeNode);
+                List_PushBack(&gTaskCreateList, &self->executeNode);
             } else if (self->activatePending != 0) {
                 self->activatePending = 0;
                 Task_InsertByPriority(&gTaskExecuteList, &self->executeNode);

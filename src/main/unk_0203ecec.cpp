@@ -88,7 +88,7 @@ void MI_CpuCopy8(void *src, void *dst, s32 n);
 }
 
 extern "C" {
-s32 func_020e79a0(void *list, void *node);
+s32 List_Remove(void *list, void *node);
 }
 
 extern "C" {
@@ -160,7 +160,7 @@ s32 FX_Sqrt(s32 a);
 }
 
 extern "C" {
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 }
 
 extern "C" {
@@ -374,7 +374,7 @@ extern "C" s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in) {
 
 extern "C" s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in) {
     if (IsOne(gCurSceneInfo->unk_04)) {
-        s32 ang = func_020e7b98(in->z, in->y);
+        s32 ang = Math_Atan2(in->z, in->y);
         out->x = in->x;
         s32 a = func_01ffcb0c(in->z, in->z);
         s32 b = func_01ffcb0c(in->y, in->y);
@@ -394,8 +394,8 @@ extern "C" s16 WorldCurve_GetHorizonAngle(WorldCurve *o) {
         s32 b = func_01ffcb0c(o->y, o->y);
         s32 c = func_01ffcb0c(0x1f576, 0x1f576);
         s32 r = FX_Sqrt(b + a - c);
-        s32 x = func_020e7b98(o->z, o->y);
-        s32 y = func_020e7b98(r, 0x1f576);
+        s32 x = Math_Atan2(o->z, o->y);
+        s32 y = Math_Atan2(r, 0x1f576);
         return x - y;
     }
     return 0;

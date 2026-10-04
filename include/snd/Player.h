@@ -12,7 +12,7 @@ struct Player {
     /* 0x0c */ u32 active;
     /* 0x10 */ u32 unk_10;
     /* 0x14 */ u8 unk_14;
-    /* 0x15 */ Bytes4 unk_15;
+    /* 0x15 */ Bytes4 groupParams;
     /* 0x1c */ u32 heapLevel;
     /* 0x20 */ u8 unk_20[4];
     /* 0x24 */ u8 unk_24[4];

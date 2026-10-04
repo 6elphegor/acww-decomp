@@ -64,15 +64,15 @@ public:
 
 
 extern "C" {
-s32 func_020e7b98(s32 a, s32 b);
-s32 func_020e780c(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 _ZN5Actor8findByIdEj(s32 v);
 void _ZN19ActorFollowCollider10getOwnerIdEv(void *p);
 void ActorCollider_ClearList(void);
-void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
+void Vec_Sub(Vec3 *out, Vec3 *a, Vec3 *b);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_020e9688(Vec3 *v);
+s32 Vec_MagXZ(Vec3 *v);
 }
 
 ActorCollider *gActorColliderList;
@@ -127,8 +127,8 @@ void ActorCollider::onCollide(u32 a, u32 b, u32 c) {}
 
 BOOL ActorCollider::isPushedFromAngle(s32 a) {
     if (isHit != 0) {
-        s32 t = func_020e7b98(pushX, pushZ);
-        if (func_020e780c(t, (s16)(a + 0x8000)) <= 0x2000) {
+        s32 t = Math_Atan2(pushX, pushZ);
+        if (Math_AngleDiffAbs(t, (s16)(a + 0x8000)) <= 0x2000) {
             return TRUE;
         }
         return FALSE;
@@ -212,7 +212,7 @@ extern "C" void ActorCollider_ResolveAll() {
             if (!gActorColliderList->canCollideWith(o)) {
                 continue;
             }
-            func_020e9960(&d, o->getPos(), cv);
+            Vec_Sub(&d, o->getPos(), cv);
             if (d.y < 0) {
                 t = o->height + d.y;
             } else {
@@ -221,7 +221,7 @@ extern "C" void ActorCollider_ResolveAll() {
             if (t <= 0) {
                 continue;
             }
-            len = func_020e9688(&d);
+            len = Vec_MagXZ(&d);
             if (len == 0) {
                 d.x = 0x1000;
                 len = 0x1000;

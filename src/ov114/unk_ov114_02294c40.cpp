@@ -136,7 +136,7 @@ BOOL _ZN10ScrollKnob12areAnimsDoneEv(void *p);
 void _ZN14MenuScrollKnob4showEv(void *p);
 void _ZN14MenuScrollKnob7releaseEv(void *p);
 void Menu_PlayScrollTickSe(void *p);
-void func_020e761c(void *p, s32 a, s32 b);
+void Math_StepS32(void *p, s32 a, s32 b);
 
 s32 Cell_HitTest(void *info, s32 x, s32 y, s32 a, s32 b);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -402,7 +402,7 @@ void CreatureBook_UpdateScrollTouch(S *s, s32 a)
         *p = old + 2;
         break;
     case 3:
-        func_020e761c(p, a - 0x3a, 4);
+        Math_StepS32(p, a - 0x3a, 4);
         break;
     }
     if (s->knobPos < 0) {

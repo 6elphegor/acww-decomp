@@ -140,14 +140,14 @@ s32 Insect_LikesFlower(s32 a, void *b);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *pos);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 s32 Flower_GetSpecies(void *cell);
-s32 func_020e9650(void *a, void *b);
+s32 Vec_DistXZ(void *a, void *b);
 void Insect_AdjustFlowerLandingPos(s32 code, s32 *v);
 void *Snowball_FindOtherInBallState(void *self);
 s32 Snowball_ChangeState(void *o, s32 st);
 s32 Snowball_Break(void *o, s32 a);
-s32 func_020e96a4(void *a, void *b);
-s32 func_020e7b98(s32 x, s32 z);
-s32 func_020e780c(s32 a, s32 b);
+s32 Vec_Distance(void *a, void *b);
+s32 Math_Atan2(s32 x, s32 z);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
 BOOL Item_IsMarker(u16 *p);
 s32 Ground_GetDigKind(s32 x, s32 y);
 s32 func_020af608(void *tbl, s32 a, s32 b, s32 c);
@@ -169,7 +169,7 @@ s32 _ZN13AnimFrameCtrl5setupEihit(void *, s32, s32, s32, s32);
 s32 Insect_PlaySe(void *, s32, s32);
 s32 Insect_FadeOut(BObj *, s32);
 s32 Insect_Despawn(BObj *);
-void func_020e7530(s16 *, s32, s32);
+void Math_StepAngle(s16 *, s32, s32);
 void *PlayerActor_GetActor(s32);
 s32 Insect_UpdateAlarm(BObj *, BVec *);
 s32 Stinger_TryAttack(BObj *, u32, u32, s16 *);
@@ -181,7 +181,7 @@ void Town_ClearBeesReleased();
 void Bee_UpdateSwarmAnim(BVec *, BS50 *, s32);
 void Bee_StretchSwarm(s32 *, s32);
 s32 MenuCtrl_IsMenuOpen(void);
-s32 func_020e7870(s32 *, s32, s32, s32, s32);
+s32 Math_ApproachS32(s32 *, s32, s32, s32, s32);
 void Insect_FlapWings(void *);
 s32 Insect_CheckAlarm(void *);
 void Insect_FlutterBob(void *, s32, s32, s32);
@@ -208,8 +208,8 @@ void *BuildingList_FindByItem(u32);
 s32 _ZN13BuildingActor9callIsLitEv(void *);
 s32 _ZN13BuildingActor8getGridXEv(void *);
 s32 _ZN13BuildingActor8getGridZEv(void *);
-void func_020e9960(void *, void *, void *);
-void func_020e93a0(void *, s32);
+void Vec_Sub(void *, void *, void *);
+void Vec_RotateY(void *, s32);
 void Insect_SetAnimSpeed(void *, s32);
 s32 Ground_GetWaterKind(s32, s32);
 void Effect_PlayById2(s32, void *, void *, s32);
@@ -252,7 +252,7 @@ void Insect_AccumAlarmOffline(DObj *o, u8 *fp, DVec *out) {
         out->x = q->x;
         out->y = q->y;
         out->z = q->z;
-        best = func_020e9650(out, me);
+        best = Vec_DistXZ(out, me);
         Insect_AccumAlarmFromActor(o, &flag, *(s32 *)((u8 *)p + 0x98), best);
         *fp = (*fp & flag) ? 1 : 0;
     }
@@ -266,7 +266,7 @@ void Insect_AccumAlarmOffline(DObj *o, u8 *fp, DVec *out) {
             t.x = q->x;
             t.y = q->y;
             t.z = q->z;
-            d = func_020e9650(&t, me);
+            d = Vec_DistXZ(&t, me);
             Insect_AccumAlarmFromActor(o, &flag, *(s32 *)((u8 *)e + 0x98), d);
             *fp = (*fp & flag) ? 1 : zero;
             if (best > d) {
@@ -403,7 +403,7 @@ void Pondskater_Skate(DObj *o, s16 *p) {
     w.x = 0;
     w.y = 0;
     w.z = 0x29;
-    func_020e93a0(&w, o->heading);
+    Vec_RotateY(&w, o->heading);
     o->pos.x = o->pos.x + func_01ffcb0c((*p * o->moveSpeed) << 12, w.x);
     pos->z = pos->z + func_01ffcb0c((*p * o->moveSpeed) << 12, w.z);
     *p = *p - 1;
@@ -486,7 +486,7 @@ void Dragonfly_FlyToPerch(DObj *o) {
     t = 0;
     x = 0;
     z = 0;
-    d = func_020e9650(pos, v1e0);
+    d = Vec_DistXZ(pos, v1e0);
     cnt = 0;
     FieldPos_ToUnit(&x, &z, v1e0);
     wx = *(volatile s32 *)&x;
@@ -605,7 +605,7 @@ s32 Moth_SteerToLight(DObj *o, u16 *p, DVec *out) {
         Insect_SetAnimSpeed(o, 0x1000);
     } else if (r > 0 && r < 5) {
         DVec t;
-        func_020e9960(&t, pos, &a);
+        Vec_Sub(&t, pos, &a);
         out->x = t.x;
         out->y = t.y;
         out->z = t.z;
@@ -664,7 +664,7 @@ s32 Moth_FindNearestLight(DObj *o, DVec *out) {
                             t.x = tx;
                             t.y = zt;
                             t.z = tz;
-                            d = func_020e9650(&cur, &t);
+                            d = Vec_DistXZ(&cur, &t);
                             if ((cur.z <= tz && best < 0) || d < best) {
                                 best = d;
                                 bx = tx;
@@ -764,7 +764,7 @@ void Unk_ov068_02268214::dungBeetlePushSnowball() {
         Insect_GetDirVec(w2, ang);
         w[0] = w[0] - func_01ffcb0c(w2[0], 0x2666);
         w[2] = w[2] - func_01ffcb0c(w2[2], 0x2666);
-        s32 d = func_020e9650(w, pos);
+        s32 d = Vec_DistXZ(w, pos);
         if (d < r6) {
             pos[0] = pos[0] - w2[0];
             pos[2] = pos[2] - w2[2];
@@ -851,7 +851,7 @@ void Unk_ov068_02268214::mosquitoChase(s16 *p) {
     Insect_FlapWings(this);
     if (tp != 0) {
         u8 *pp = tp + 0x5c;
-        dist = func_020e9650(pp, pos);
+        dist = Vec_DistXZ(pp, pos);
         rnd = (u8)Random_GlobalBelow(0x64);
         s32 c = alarm;
         s32 h = heading;
@@ -936,13 +936,13 @@ void Unk_ov068_02268214::beeSwarmDescend() {
     s32 *v = scale;
     s32 t = v[0];
     BOOL flag = FALSE;
-    if (func_020e7870(&t, 0x1000, 0x200, 0x1000, 0x19a) == 0) {
+    if (Math_ApproachS32(&t, 0x1000, 0x200, 0x1000, 0x19a) == 0) {
         flag = TRUE;
     }
     v[0] = t;
     v[1] = t;
     v[2] = t;
-    if (func_020e7870((s32 *)((u8 *)pos + 4), 0x2800, 0x199, 0x1000, 0x400) == 0 && flag) {
+    if (Math_ApproachS32((s32 *)((u8 *)pos + 4), 0x2800, 0x199, 0x1000, 0x400) == 0 && flag) {
         behaviorState = 0;
         v[0] = 0x1000;
         v[1] = 0x1000;
@@ -998,7 +998,7 @@ void Unk_ov068_02268214::beeChasePlayer() {
     u8 *pp = tp + 0x5c;
     ang = Math_AngleXZ(pos, pp);
     s32 r6 = moveSpeed + unk_21c;
-    dist = func_020e9650(pos, pp);
+    dist = Vec_DistXZ(pos, pp);
     if (dist < 0x1000) {
         behaviorState = 3;
         unk_242 = 0;
@@ -1006,13 +1006,13 @@ void Unk_ov068_02268214::beeChasePlayer() {
     }
     if (*cnt != 0) {
         *cnt = *cnt - 1;
-        func_020e7530(&h, ang, 0xe38);
+        Math_StepAngle(&h, ang, 0xe38);
     } else if (r6 < 0xfa) {
-        func_020e7530(&h, ang, 0x93e);
+        Math_StepAngle(&h, ang, 0x93e);
     } else if (r6 < 0x104) {
-        func_020e7530(&h, ang, 0x7d2);
+        Math_StepAngle(&h, ang, 0x7d2);
     } else {
-        func_020e7530(&h, ang, 0x666);
+        Math_StepAngle(&h, ang, 0x666);
     }
     s32 hh = h;
     s32 diff = _s32_div_f(ang - hh, 0xb6);
@@ -1074,7 +1074,7 @@ void Bee_StingAndLeave(BObj *o) {
             s16 c = o->heading;
             s16 buf = c;
             BVec vec;
-            func_020e7530(&buf, Math_AngleXZ(r6, (u8 *)q + 0x5c), 0x1554);
+            Math_StepAngle(&buf, Math_AngleXZ(r6, (u8 *)q + 0x5c), 0x1554);
             o->heading = buf;
             Insect_GetDirVec(&vec, buf);
             r6->x = r6->x + func_01ffcb0c(0x23000, vec.x);
@@ -1177,7 +1177,7 @@ s32 Stinger_UpdateChase(BObj *o, s16 *p) {
         s16 c = o->alarm;
         if (c > 0) {
             s32 lim = o->alarmRadius;
-            if (func_020e9650(&vec, &o->pos) > lim) {
+            if (Vec_DistXZ(&vec, &o->pos) > lim) {
                 c = c - 3;
                 o->alarm = c > 0 ? c : 0;
             }
@@ -1226,10 +1226,10 @@ s32 Stinger_Threaten(BObj *o, u32 mode, u32 q) {
                 }
             }
             if (o->unk_24b) {
-                if (func_020e9650(v, (void *)q) < 0x2000) {
-                    func_020e7530(&t23a, Math_AngleXZ(v, (void *)q), 0xe38);
+                if (Vec_DistXZ(v, (void *)q) < 0x2000) {
+                    Math_StepAngle(&t23a, Math_AngleXZ(v, (void *)q), 0xe38);
                 } else {
-                    func_020e7530(&t23a, Math_AngleXZ(v, (void *)q), 0x71c);
+                    Math_StepAngle(&t23a, Math_AngleXZ(v, (void *)q), 0x71c);
                 }
                 o->heading = t23a;
             }
@@ -1256,7 +1256,7 @@ s32 Stinger_TryAttack(BObj *o, u32 mode, u32 q, s16 *p) {
     BVec *v = &o->pos;
     if (o->unk_247 != 0 && (*p == 0 || *p > 0x1f) && func_02106020((s32)_ZN11PooledModel8getModelEv(o->pooledModel), 0) == 0x1f) {
         if (mode == 3 || mode == 1) {
-            if (func_020e9650((void *)q, v) < 0x1000) {
+            if (Vec_DistXZ((void *)q, v) < 0x1000) {
                 s16 *pp = &o->unk_23e;
                 if (PlayerActor_LocalFaint(o->kind == 0x37 ? 1 : 0)) {
                     o->behaviorState = 0x13;
@@ -1292,7 +1292,7 @@ s32 Stinger_TryAttack(BObj *o, u32 mode, u32 q, s16 *p) {
         } else if (o->unk_24b) {
             s16 t = o->heading;
             Insect_PlaySe(o, 0, 1);
-            func_020e7530(&t, Math_AngleXZ((void *)q, v), 0x666);
+            Math_StepAngle(&t, Math_AngleXZ((void *)q, v), 0x666);
             o->heading = t;
             o->behaviorState = 7;
         }
@@ -1404,7 +1404,7 @@ BOOL Unk_ov068_02268214::insectFindFlowerTarget(s16 *out, s32 *dist, s32 *pos) {
     } else if (*out < -0x38e) {
         *out = -0x38e;
     }
-    *dist = func_020e9650(pos, p);
+    *dist = Vec_DistXZ(pos, p);
     return TRUE;
     }
     return FALSE;

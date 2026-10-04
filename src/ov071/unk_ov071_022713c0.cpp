@@ -142,7 +142,7 @@ void _ZN10VisitorPos13pickRandomPosEv();
 void Npc_RotateOffsetXZ(Unk_ov071_02271f54_Tmp *t, void *pos, void *p, s32 ang);
 BOOL Npc_IsPosBlocked(Unk_ov071_02271f54_Tmp *t);
 void TalkRequest_SetTargetDone(void *self);
-s32 func_020e96a4(void *a, void *b);
+s32 Vec_Distance(void *a, void *b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *a, s32 b);
@@ -469,7 +469,7 @@ BOOL SpNpcLyle::mainAct05() {
 }
 
 BOOL SpNpcLyle::isNearChaseStart() {
-    if (func_020e96a4(&position, &chaseStart) <= 0xc000) {
+    if (Vec_Distance(&position, &chaseStart) <= 0xc000) {
         return TRUE;
     }
     return FALSE;

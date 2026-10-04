@@ -7,7 +7,7 @@
 #include "actor/Unk_02002f14_Node.h"
 #include "actor/Unk_02002cb0_Vec.h"
 
-extern "C" void func_020e79a0(void *list, void *node);
+extern "C" void List_Remove(void *list, void *node);
 
 // list head (8 bytes, zeroed by an inline constructor: the __sinit of src/main/unk_02002b1c.cpp)
 struct Unk_0213c874 {
@@ -34,7 +34,7 @@ public:
     virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
     virtual BOOL postDraw(s32 status);
-    virtual ~Actor() { func_020e79a0(&gActorList, &listNode); }
+    virtual ~Actor() { List_Remove(&gActorList, &listNode); }
 
     void calcModelMatrix(void *out);
     void updatePosition(Unk_02002cb0_Vec *v);

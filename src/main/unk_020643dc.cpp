@@ -205,9 +205,9 @@ void G3_MultMtx33(void *m);
 void NNS_G3dGlbLightVector(s32 id, s32 x, s32 y, s32 z);
 void NNS_G3dGlbLightColor(s32 id, u32 c);
 u16 Sky_GetLightColor(s32 a);
-void func_020e944c(Unk_02064674_Vec *v, s32 a);
-void func_020e93a0(Unk_02064674_Vec *v, s32 a);
-s32 func_020e94f8(Unk_02064674_Vec *v);
+void Vec_RotateX(Unk_02064674_Vec *v, s32 a);
+void Vec_RotateY(Unk_02064674_Vec *v, s32 a);
+s32 Vec_SafeNormalize(Unk_02064674_Vec *v);
 s32 VEC_Mag(Unk_02064674_Vec *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 void Clock_GetMinuteHour(Unk_02064870_Time *t);
@@ -218,8 +218,8 @@ void Snd_PlaySe(u32 a);
 s32 Scene_GetCurrent(void);
 s32 Scene_InHouseRoom(void);
 void VEC_Normalize(void *a, void *b);
-void func_020e7968(void);
-void func_020e7a10(void *list, void *node, void *prev);
+void List_PushBack(void);
+void List_InsertAfter(void *list, void *node, void *prev);
 
 void Light_ClampDir(Unk_02064674_Vec *in, Unk_02064674_Vec *out);
 void Light_GetViewRotation(void *a, void *b);
@@ -270,18 +270,18 @@ extern "C" BOOL PrioList_Insert(Unk_020652ec_List *list, Unk_020652ec_Node *node
     Unk_020652ec_Node *cur = prev->next;
     while (cur != NULL) {
         if (cur->priority > node->priority) {
-            func_020e7a10(list, node, prev);
+            List_InsertAfter(list, node, prev);
             return TRUE;
         }
         prev = cur;
         cur = cur->next;
     }
-    func_020e7a10(list, node, prev);
+    List_InsertAfter(list, node, prev);
     return TRUE;
 }
 
 extern "C" BOOL func_020652dc(void) {
-    func_020e7968();
+    List_PushBack();
     return TRUE;
 }
 
@@ -606,7 +606,7 @@ void FlashLight::update()
         break;
     }
     if (gCamera) {
-        func_020e944c(&direction, gCamera->getEyeCurveAngle());
+        Vec_RotateX(&direction, gCamera->getEyeCurveAngle());
     }
     v.x = direction.x;
     v.y = direction.y;
@@ -777,7 +777,7 @@ s16 SceneLight::getTimeAngle()
 
 extern "C" void Light_ClampDir(Unk_02064674_Vec *in, Unk_02064674_Vec *out)
 {
-    if (func_020e94f8(in)) {
+    if (Vec_SafeNormalize(in)) {
         if (VEC_Mag(in) >= 0xff0) {
             in->x = func_01ffcb0c(in->x, 0xff0);
             in->y = func_01ffcb0c(in->y, 0xff0);
@@ -797,12 +797,12 @@ void SceneLight::calcDirection(Unk_02064674_Vec *out)
     case 0:
     case 1:
     case 2:
-        func_020e944c(out, dirPitch);
-        func_020e93a0(out, getTimeAngle());
+        Vec_RotateX(out, dirPitch);
+        Vec_RotateY(out, getTimeAngle());
         break;
     default:
-        func_020e944c(out, dirPitch);
-        func_020e93a0(out, dirYaw);
+        Vec_RotateX(out, dirPitch);
+        Vec_RotateY(out, dirYaw);
         break;
     }
 }
@@ -817,7 +817,7 @@ void SceneLight::updateOutdoor()
     v.z = -0x1000;
     calcDirection(&v);
     if (gCamera) {
-        func_020e944c(&v, gCamera->getEyeCurveAngle());
+        Vec_RotateX(&v, gCamera->getEyeCurveAngle());
     }
     *(u16 *)&c0 = Sky_GetLightColor(skyColorId);
     c1 = *(u16 *)&c0;

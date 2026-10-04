@@ -60,7 +60,7 @@ extern "C" {
 void _ZN11CommManager15processReceivedEv(CommManager *);
 }
 extern "C" {
-void func_020ebc34();
+void Net_OnHeapDestroyNop();
 }
 extern "C" {
 s32 NetHeap_Destroy();
@@ -222,7 +222,7 @@ extern "C" {
 void NetHeap_Create(u32, u32);
 }
 extern "C" {
-void func_020ebc38();
+void Net_OnHeapCreatedNop();
 }
 extern "C" {
 void NetArea_SetSlotStatus(u32, u32, u32, u32, u32);
@@ -597,7 +597,7 @@ extern "C" void Comm_CreateHeap(u32 a) {
     }
     gCommManager->maxSyncVarSize = r5;
     NetHeap_Create(0x4b000, a);
-    func_020ebc38();
+    Net_OnHeapCreatedNop();
 }
 extern "C" void Comm_Start(s32 a, u32 b, u32 c) {
     CommManager *o = gCommManager;
@@ -703,7 +703,7 @@ extern "C" void Comm_EndOv067Mode() {
     }
 }
 extern "C" void Comm_DestroyHeap() {
-    func_020ebc34();
+    Net_OnHeapDestroyNop();
     NetHeap_Destroy();
 }
 extern "C" void Comm_ProcessReceived(s32 x) {

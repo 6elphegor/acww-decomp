@@ -34,8 +34,8 @@ struct PrioNodeB { void *a, *b, *c; u16 priority; };
 
 extern "C" {
 void *func_01ffcffc(void *);
-BOOL func_020e7968(List *list, ListNode *node);
-BOOL func_020e7a10(List *list, ListNode *node, ListNode *after);
+BOOL List_PushBack(List *list, ListNode *node);
+BOOL List_InsertAfter(List *list, ListNode *node, ListNode *after);
 void Task_RunDrawPhase(void);
 void Task_RunAllPhases(void);
 
@@ -125,10 +125,10 @@ extern "C" BOOL Task_InsertByPriority(List *list, PrioNode *node) {
     PrioNode *prev = (PrioNode *)list->head;
     PrioNode *next;
     if (node == NULL) return FALSE;
-    if (prev == NULL) return func_020e7968(list, (ListNode *)node);
-    if (prev->unk_0c > node->unk_0c) return func_020e7a10(list, (ListNode *)node, NULL);
+    if (prev == NULL) return List_PushBack(list, (ListNode *)node);
+    if (prev->unk_0c > node->unk_0c) return List_InsertAfter(list, (ListNode *)node, NULL);
     while ((next = prev->unk_04) != NULL && next->unk_0c <= ((PrioNodeB *)node)->priority) prev = next;
-    return func_020e7a10(list, (ListNode *)node, (ListNode *)prev);
+    return List_InsertAfter(list, (ListNode *)node, (ListNode *)prev);
 }
 
 BOOL TaskList::run() {

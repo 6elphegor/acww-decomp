@@ -100,7 +100,7 @@ void _ZN15TalkWindowState11lockAdvanceEv(void *);
 s32 Net_GetMode();
 s32 Net_GetError();
 s32 Net_GetLastErrorCode();
-void func_020ea72c();
+void Net_ClearWifiError();
 void _ZN11MsgString25C1Ev(void *);
 void _ZN11MsgString25D1Ev(void *);
 void String_FormatNumber(void *, s32, s32, s32, s32, s32);
@@ -114,18 +114,18 @@ void _ZN15EncodedString8BD1Ev(void *);
 void _ZN11MsgString9CD1Ev(void *);
 BOOL EncodedString_SetRaw(void *, const void *, s32);
 void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *, void *, s32, s32);
-BOOL func_020e7500(void *);
-s32 func_020e77cc(s32, s32, s32);
+BOOL Math_CountDownU16(void *);
+s32 Math_IsInRange(s32, s32, s32);
 void * _ZN10PlayerData15getWifiUserDataEv(...);
 void * PlayerWifiData_GetOwnFriendData(void *);
 void * DwcFriendData_GetBytes(void *);
 void * PlayerWifiData_GetDwcUserData(...);
 BOOL Save_WritePlayerWifiData();
-BOOL func_020ea3e8(void *);
-void func_020ea3d0(void *, void *);
+BOOL Net_CheckUserDataChanged(void *);
+void Net_MakeOwnFriendData(void *, void *);
 s32 Net_WifiFindFriend(s32);
 s32 Net_WifiConnectToHost(s32);
-s32 func_020ea598(s32);
+s32 Net_WifiGetFriendProfileId(s32);
 BOOL Net_WifiShutdownStepExt(s32);
 BOOL MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
@@ -151,10 +151,10 @@ BOOL AxMail_PollBbs();
 BOOL AxMail_DownloadBbs();
 BOOL AxMail_PollMail();
 BOOL Comm_SendEmpty();
-s32 func_020eae78(s32);
+s32 Net_CountHostCandidates(s32);
 void * Net_GetScanResults(s32);
-s32 func_020ea6c8(void *);
-void * func_020ea6f4(void *);
+s32 Net_GetBeaconGameInfoSize(void *);
+void * Net_GetBeaconGameInfo(void *);
 void Net_ConnectToParent(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 func_02133150(s32, s32);
@@ -173,9 +173,9 @@ BOOL _ZN11CommManager12isSlotActiveEi(void *, s32);
 void NetOverlay_LoadWifi();
 void NetOverlay_Restore();
 void PlayerWifiData_Create(void *);
-s32 func_020e9d94(void *);
-s32 func_020ea3dc(void *);
-s64 func_020ea3c4(...);
+s32 Net_IsWifiConfigValid(void *);
+s32 Net_HasWifiUserId(void *);
+s64 Net_GetOwnFriendKey(...);
 void _ZN11CommManager12setErrorModeEj(void *, s32);
 s32 _ZN15TalkWindowState12hideBusyIconEv(void *);
 s32 _ZN15TalkWindowState13unlockAdvanceEv(void *);
@@ -235,7 +235,7 @@ s32 memcmp(void *, void *, u32);
 void _ZN15LostChildRecord14clearEscortingEv(void *);
 BOOL _ZN15LostChildRecord11isEscortingEv(void *);
 u8 * _ZN5Actor13findByProfileEjPS_(s32, s32);
-s32 func_020e7518(void *);
+s32 Math_CountDownU8(void *);
 s32 _ZN11NpcAnimCtrl13isPlayingAnimEiPv(void *, s32, void *);
 s32 _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *, s32, s32, s32, u32, s32);
 s32 _ZN13NpcActionCtrl12isActionDoneEv(void *);
@@ -256,7 +256,7 @@ s32 Net_WifiStartHost(s32);
 s32 Comm_BeginHostSession();
 void * TownId_GetName(void *);
 void * _ZN8PlayerId7getNameEv(void *);
-void func_020ea720(void *, s32);
+void Net_SetLocalGameInfo(void *, s32);
 Unk_ov048_Vec * PlayerActor_GetBodyPos(s32);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *, s32, s32, s32);
 s32 _ZN10SpNpcActor8vfunc_0cEv();
@@ -671,7 +671,7 @@ void _ZN7PatternD1Ev(void *);
 void _ZN7PatternC1Ev(void *);
 }
 
-#define RNG(v, lo, hi) (func_020e77cc((v), (lo), (hi)) != 0)
+#define RNG(v, lo, hi) (Math_IsInRange((v), (lo), (hi)) != 0)
 
 // ---- b444
 static inline BOOL Unk_ov048_0225b4e4_Is2() {
@@ -905,7 +905,7 @@ BOOL SpNpcCopper::mainAct06() {
         }
         break;
     case 2:
-        if (func_020e7500(&talk.timer) == 0) {
+        if (Math_CountDownU16(&talk.timer) == 0) {
             u8 t = talk.msgIndex;
             if (t == 0x46 || t == 0x6c) {
                 if (Net_GetMode() == 3) {
@@ -919,7 +919,7 @@ BOOL SpNpcCopper::mainAct06() {
                     MI_CpuCopy8(_ZN8PlayerId7getNameEv(_ZN10PlayerData11getPlayerIdEv(h)), buf + 8, 8);
                     buf[0x10] = 0;
                     NetOverlay_AssertWireless();
-                    func_020ea720(buf, 0x11);
+                    Net_SetLocalGameInfo(buf, 0x11);
                     Comm_BeginHostSession();
                     TalkRequest_SetTargetDone(this);
                 }
@@ -954,7 +954,7 @@ BOOL SpNpcCopper::mainAct07() {
         }
         break;
     case 2:
-        if (func_020e7500(&talk.timer) == 0) {
+        if (Math_CountDownU16(&talk.timer) == 0) {
             TalkRequest_SetTargetDone(this);
         }
         break;
@@ -985,7 +985,7 @@ BOOL SpNpcCopper::act08Step1() {
 }
 
 BOOL SpNpcCopper::act08Step2() {
-    if (func_020e7500(&talk.timer) == 0) {
+    if (Math_CountDownU16(&talk.timer) == 0) {
         u8 *base = _ZN5Actor13findByProfileEjPS_(0x73, 0);
         _ZN13NpcActionCtrl13requestActionEjiiissiitt(base + 0x564, 3, 1, 0, 0, 0, 0x4000, 0, 0, data_020c6cc8, 0);
         return TRUE;
@@ -1027,7 +1027,7 @@ BOOL SpNpcCopper::act08Step4() {
     u8 *r6 = base + 0x564;
     u8 *r7 = base + 0x2a0;
     u8 *sp8 = base + 0x3b0;
-    if (func_020e7518(&talk.animTimer) == 0) {
+    if (Math_CountDownU8(&talk.animTimer) == 0) {
         if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(r4, 0x81, r7) == 0) {
             if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(r4, 0x82, r7) == 0) {
                 _ZN13NpcActionCtrl15requestPlayAnimEiijtt(r6, 1, 0x81, 1, data_020c6cc8, 0);
@@ -1048,7 +1048,7 @@ BOOL SpNpcCopper::act08Step4() {
         _ZN9NpcLookAt7disableEv(&lookAt);
         _ZN9NpcLookAt7disableEv(sp8);
     }
-    if (func_020e7500(&talk.timer) == 0) {
+    if (Math_CountDownU16(&talk.timer) == 0) {
         if (unk_654 == 8) {
             if (ScreenTransition_StartFadeOut(2, 0xf)) {
                 Snd_FadeOutScene();
@@ -2202,7 +2202,7 @@ void SpNpcCopperTalk::showAnythingElseMenu() {
 void SpNpcCopperTalk::showWifiIdSavedResult() {
     u8 buf[2];
     if (wifiIdChanged != 0) {
-        setFriendCodeArgs(func_020ea3c4(PlayerWifiData_GetDwcUserData(_ZN10PlayerData15getWifiUserDataEv(PlayerData_GetCurrent()))));
+        setFriendCodeArgs(Net_GetOwnFriendKey(PlayerWifiData_GetDwcUserData(_ZN10PlayerData15getWifiUserDataEv(PlayerData_GetCurrent()))));
         buf[0] = 0x76;
         _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, buf, sSpNpcCopperMsgKey);
     } else {
@@ -2349,8 +2349,8 @@ void SpNpcCopperTalk::checkWifiReady() {
     }
     void *s = PlayerWifiData_GetDwcUserData(_ZN10PlayerData15getWifiUserDataEv(PlayerData_GetCurrent()));
     NetOverlay_LoadWifi();
-    if (func_020ea3dc(s)) {
-        if (func_020e9d94(s)) {
+    if (Net_HasWifiUserId(s)) {
+        if (Net_IsWifiConfigValid(s)) {
             v2 = sCopperWifiStartMsgs[wifiPurpose];
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v2, sSpNpcCopperMsgKey);
         } else {
@@ -2405,10 +2405,10 @@ void SpNpcCopperTalk::onChoiceMainMenu(s32 p) {
                 void *s;
                 NetOverlay_LoadWifi();
                 s = PlayerWifiData_GetDwcUserData(_ZN10PlayerData15getWifiUserDataEv(h));
-                if (func_020e9d94(s)) {
-                    if (func_020ea3dc(s)) {
+                if (Net_IsWifiConfigValid(s)) {
+                    if (Net_HasWifiUserId(s)) {
                         id = 0x29;
-                        s64 t = func_020ea3c4(s);
+                        s64 t = Net_GetOwnFriendKey(s);
                         _ZN15SpNpcCopperTalk17setFriendCodeArgsEx(this, (s32)t, (s32)(t >> 32));
                     } else {
                         id = 0x23;
@@ -2650,7 +2650,7 @@ void SpNpcCopperTalk::startMailDownload() {
 
 void SpNpcCopperTalk::pollMailDownload() {
     if (isSkippableNetError()) {
-        func_020ea72c();
+        Net_ClearWifiError();
         setScript(script + 1);
     } else if (AxMail_PollMail()) {
         setScript(script + 1);
@@ -2667,7 +2667,7 @@ void SpNpcCopperTalk::startBbsDownload() {
 
 void SpNpcCopperTalk::pollBbsDownload() {
     if (isSkippableNetError()) {
-        func_020ea72c();
+        Net_ClearWifiError();
         setScript(script + 1);
     } else if (AxMail_PollBbs()) {
         setScript(script + 1);
@@ -2684,7 +2684,7 @@ void SpNpcCopperTalk::startGameStatsUpload() {
 
 void SpNpcCopperTalk::pollGameStatsUpload() {
     if (isSkippableNetError()) {
-        func_020ea72c();
+        Net_ClearWifiError();
         setScript(script + 1);
     } else if (GameStats_PollUpload()) {
         setScript(script + 1);
@@ -2701,7 +2701,7 @@ void SpNpcCopperTalk::startGameStatsDownload() {
 
 void SpNpcCopperTalk::pollGameStatsDownload() {
     if (isSkippableNetError()) {
-        func_020ea72c();
+        Net_ClearWifiError();
         setScript(script + 1);
     } else if (GameStats_PollDownload()) {
         setScript(script + 1);
@@ -2713,7 +2713,7 @@ BOOL SpNpcCopperTalk::isSkippableNetError() {
     if (v < 0) {
         v = -v;
     }
-    if (func_020e77cc(v, 0x17ed0, 0x182b7)) {
+    if (Math_IsInRange(v, 0x17ed0, 0x182b7)) {
         return TRUE;
     }
     return FALSE;
@@ -2742,8 +2742,8 @@ void SpNpcCopperTalk::onWifiLoggedIn() {
             setScript(5);
         }
     } else {
-        if (func_020ea3e8(r4 + 0x10)) {
-            func_020ea3d0(r4 + 0x10, DwcFriendData_GetBytes(PlayerWifiData_GetOwnFriendData(_ZN10PlayerData15getWifiUserDataEv(r6))));
+        if (Net_CheckUserDataChanged(r4 + 0x10)) {
+            Net_MakeOwnFriendData(r4 + 0x10, DwcFriendData_GetBytes(PlayerWifiData_GetOwnFriendData(_ZN10PlayerData15getWifiUserDataEv(r6))));
             MI_CpuCopy8(r4 + 0x10, PlayerWifiData_GetDwcUserData(_ZN10PlayerData15getWifiUserDataEv(r6)), 0x40);
             if (Save_WritePlayerWifiData() == 0) {
                 mv = 0x75;
@@ -2776,7 +2776,7 @@ void SpNpcCopperTalk::scanForOpenTowns() {
     u32 C[0x1c / 4];
     u32 D[0x1c / 4];
     if (checkScanTimeout() == 0) {
-      n = func_020eae78(Comm_SendEmpty());
+      n = Net_CountHostCandidates(Comm_SendEmpty());
       if (n > 0) {
         arr = (void **)Net_GetScanResults(NetOverlay_AssertWireless());
         _ZN11MsgString9CC2Ev(A);
@@ -2789,10 +2789,10 @@ void SpNpcCopperTalk::scanForOpenTowns() {
             s32 t;
             if (p) {
                 NetOverlay_AssertWireless();
-                t = func_020ea6c8(p);
+                t = Net_GetBeaconGameInfoSize(p);
                 if (t == 0x11) {
                     NetOverlay_AssertWireless();
-                    MI_CpuCopy8(func_020ea6f4(p), &buf[1], t);
+                    MI_CpuCopy8(Net_GetBeaconGameInfo(p), &buf[1], t);
                     if (buf[0x11] == 0) {
                         MI_CpuCopy8(p, unk_b8.unk_2f4, 0xe0);
                         EncodedString_SetRaw(B, &buf[1], 8);
@@ -2823,7 +2823,7 @@ void SpNpcCopperTalk::onFriendListClosed() {
         s32 r5 = MenuCtrl_GetIndex();
         u8 a;
         NetOverlay_AssertWifi();
-        unk_b8.unk_3d4 = func_020ea598(r5);
+        unk_b8.unk_3d4 = Net_WifiGetFriendProfileId(r5);
         a = 0x62;
         _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &a, sSpNpcCopperMsgKey);
         setScript(0);
@@ -2945,7 +2945,7 @@ BOOL SpNpcCopperTalk::checkNetError(s32 flag) {
 }
 
 BOOL SpNpcCopperTalk::checkConnectTimeout() {
-    if (func_020e7500(owner + 0xe3e) == 0) {
+    if (Math_CountDownU16(owner + 0xe3e) == 0) {
         s32 r = getConnectErrorMsg();
         showErrorAndAbort(r, 0);
         return TRUE;
@@ -2954,7 +2954,7 @@ BOOL SpNpcCopperTalk::checkConnectTimeout() {
 }
 
 BOOL SpNpcCopperTalk::checkFindTownTimeout() {
-    if (func_020e7500(owner + 0xe3e) == 0) {
+    if (Math_CountDownU16(owner + 0xe3e) == 0) {
         showErrorAndAbort(0x65, 0);
         return TRUE;
     }
@@ -2962,7 +2962,7 @@ BOOL SpNpcCopperTalk::checkFindTownTimeout() {
 }
 
 BOOL SpNpcCopperTalk::checkWifiLoginError() {
-    if (func_020e7500(owner + 0xe3e) == 0) {
+    if (Math_CountDownU16(owner + 0xe3e) == 0) {
         showErrorAndAbort(0x7a, 1);
         return TRUE;
     }
@@ -2979,7 +2979,7 @@ BOOL SpNpcCopperTalk::checkWifiLoginError() {
 }
 
 BOOL SpNpcCopperTalk::checkScanTimeout() {
-    if (func_020e7500(owner + 0xe3e) == 0) {
+    if (Math_CountDownU16(owner + 0xe3e) == 0) {
         showErrorAndAbort(0x56, 0);
         return TRUE;
     }
@@ -3012,7 +3012,7 @@ void SpNpcCopperTalk::connectToTown() {
     if (checkFindTownTimeout()) {
         return;
     }
-    n = func_020eae78(Comm_SendEmpty());
+    n = Net_CountHostCandidates(Comm_SendEmpty());
     if (n > 0) {
         arr = (void **)Net_GetScanResults(NetOverlay_AssertWireless());
         for (i = z; i < n; i++) {
@@ -3021,10 +3021,10 @@ void SpNpcCopperTalk::connectToTown() {
             BOOL hit;
             if (p) {
                 NetOverlay_AssertWireless();
-                t = func_020ea6c8(p);
+                t = Net_GetBeaconGameInfoSize(p);
                 if (t == 0x11) {
                     NetOverlay_AssertWireless();
-                    MI_CpuCopy8(func_020ea6f4(p), buf, t);
+                    MI_CpuCopy8(Net_GetBeaconGameInfo(p), buf, t);
                     if (buf[0x10] == 0) {
                         if (p[2] == unk_b8.unk_2f4[2] && p[3] == unk_b8.unk_2f4[3] && p[4] == unk_b8.unk_2f4[4] && p[5] == unk_b8.unk_2f4[5] &&
                             p[6] == unk_b8.unk_2f4[6] && p[7] == unk_b8.unk_2f4[7]) {
@@ -3164,7 +3164,7 @@ s32 SpNpcCopperTalk::getWifiLoginResultMsg() {
         PlayerData_GetCurrent();
         _ZN10PlayerData15getWifiUserDataEv();
         PlayerWifiData_GetDwcUserData();
-        s64 t = func_020ea3c4();
+        s64 t = Net_GetOwnFriendKey();
         _ZN15SpNpcCopperTalk17setFriendCodeArgsEx(this, (s32)t, (s32)(t >> 32));
         NetOverlay_Restore();
         break;

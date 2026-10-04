@@ -146,10 +146,10 @@ extern u8 gSaveData[];
 extern u8 gSaveVillagers[];
 extern Unk_0204e858_Grid *gSceneBlockMap;
 BirthdayHostVillager *BirthdayHostVillager_Get(...);
-s32 func_020e9650(void *, void *);
-s32 func_020e96ec(void *, void *);
-s32 func_020e7b98(s32, s32);
-s32 func_020e780c(s32, s32);
+s32 Vec_DistXZ(void *, void *);
+s32 Vec_NotEqual(void *, void *);
+s32 Math_Atan2(s32, s32);
+s32 Math_AngleDiffAbs(s32, s32);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_isActionDone(void *);
 s32 NpcActionCtrl_requestStand(void *, u32, u32);
@@ -300,8 +300,8 @@ extern "C" s32 Room_PickRandomWalkTarget(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *in
                     if (Ground_GetWalkLinks(x, y)) {
                         if (k == pick) {
                             FieldPos_FromUnitCenter(out, x, y);
-                            s32 d = func_020e7b98(out->x - in->x, out->z - in->z);
-                            if (func_020e780c(angle, d) < 0x2000) {
+                            s32 d = Math_Atan2(out->x - in->x, out->z - in->z);
+                            if (Math_AngleDiffAbs(angle, d) < 0x2000) {
                                 d = angle;
                             }
                             return d;
@@ -559,7 +559,7 @@ void BirthdayGuestVillager::mainAct00() {
     Unk_ov004_022162f0_Actor *a = (Unk_ov004_022162f0_Actor *)BirthdayHostVillager_Get(this);
     s32 d;
     if (a) {
-        d = func_020e9650(&a->pos, &position);
+        d = Vec_DistXZ(&a->pos, &position);
     } else {
         d = data_020c8cbc;
     }
@@ -588,8 +588,8 @@ void BirthdayGuestVillager::mainAct00() {
             waypoint.y = walkTarget.y;
             waypoint.z = walkTarget.z;
             if (a && d >= 0x6000 && Random_GlobalBelow(2) == 0) {
-                d = func_020e7b98(a->pos.x - position.x, a->pos.z - position.z);
-                s32 df = func_020e780c(rotY, d);
+                d = Math_Atan2(a->pos.x - position.x, a->pos.z - position.z);
+                s32 df = Math_AngleDiffAbs(rotY, d);
                 Unk_ov004_Vec3 *pa = &a->pos;
                 s32 xx = *(volatile s32 *)&a->pos.x;
                 Unk_ov004_Vec3 *pq = &walkTarget;
@@ -639,13 +639,13 @@ void BirthdayGuestVillager::mainAct00() {
                 break;
             }
             default:
-                if (func_020e96ec(&waypoint, &walkTarget)) {
+                if (Vec_NotEqual(&waypoint, &walkTarget)) {
                     Unk_ov004_Vec3 *pw = &walkTarget;
                     waypoint.x = pw->x;
                     waypoint.y = walkTarget.y;
                     waypoint.z = walkTarget.z;
                     NpcMoveCtrl_setWaypoint((u8 *)&moveCtrl, pw);
-                } else if (func_020e9650(&walkTarget, &position) < 0x200) {
+                } else if (Vec_DistXZ(&walkTarget, &position) < 0x200) {
                     NpcActionCtrl_requestStand((u8 *)&actionCtrl, 1, data_020c6cc8);
                 }
                 break;
@@ -660,7 +660,7 @@ BOOL BirthdayGuestVillager::setupAct01() {
         void *p = &actionCtrl;
         BirthdayHostVillager *o = BirthdayHostVillager_Get();
         if (o != NULL) {
-            walkAngle = func_020e7b98(o->position.x - position.x, o->position.z - position.z);
+            walkAngle = Math_Atan2(o->position.x - position.x, o->position.z - position.z);
             BirthdayHostVillager *g = sBirthdayHostVillager;
             BOOL r;
             if (g != NULL && (u32)g->act <= 1) {
@@ -683,8 +683,8 @@ void BirthdayGuestVillager::mainAct01() {
     s32 b = (s16)(a + 0x8000);
     BirthdayHostVillager *o = BirthdayHostVillager_Get();
     if (o != NULL) {
-        s32 da = func_020e780c(a, rotY);
-        s32 db = func_020e780c(b, o->rotY);
+        s32 da = Math_AngleDiffAbs(a, rotY);
+        s32 db = Math_AngleDiffAbs(b, o->rotY);
         if (da <= 0x500 && db <= 0x500) {
             if (Random_GlobalBelow(2)) {
                 if (changeAct(3)) {

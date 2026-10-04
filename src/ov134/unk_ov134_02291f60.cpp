@@ -117,7 +117,7 @@ u32 Gfx2d_GetLayerPlaneMask(u32 a);
 void Gfx2d_SetSubWinOutPlanes(u32 a);
 s32 Date_GetDaysInMonth(u32 a, u32 b);
 s32 Date_GetWeekday(u32 a, u32 b, u32 c);
-void func_020e761c(void *p, s32 a, s32 b);
+void Math_StepS32(void *p, s32 a, s32 b);
 void DateTime_SubDays(void *p, s32 a);
 void DateTime_AddDays(void *p, s32 a);
 void DateTime_AddMinutes(void *p, s32 a);
@@ -127,7 +127,7 @@ void DateTime_AddHours(void *p, s32 a);
 s32 DateTime_Compare(void *a, void *b, s32 c);
 s32 DateTime_DiffMinutes(void *a, void *b);
 void Clock_GetDateTime(void *p);
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 BOOL MenuKeys_HasRight(u32 v);
 BOOL MenuKeys_HasLeft(u32 v);
 BOOL MenuKeys_HasDown(u32 v);
@@ -813,7 +813,7 @@ extern "C" void DateTimePicker_SetHandsFromMinutes(DateTimePicker *self) {
 }
 
 extern "C" s32 DateTimePicker_AngleAt(void *self, s32 x, s32 y) {
-    return func_020e7b98((x - 0x38) << 12, -(y - 0x34) << 12);
+    return Math_Atan2((x - 0x38) << 12, -(y - 0x34) << 12);
 }
 
 extern "C" s32 DateTimePicker_AngleDeltaAt(DateTimePicker *self, s32 x, s32 y, s32 t) {
@@ -1692,7 +1692,7 @@ void DateTimePicker::dragKnobToward(s32 x) {
     if (x > 0xa0) {
         x = 0xa0;
     }
-    func_020e761c(&knobY, x, 8);
+    Math_StepS32(&knobY, x, 8);
     onKnobMoved();
 }
 

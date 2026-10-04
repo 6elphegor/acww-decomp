@@ -58,7 +58,7 @@ u32 PlayerData_GetCurrent();
 s32 Catalog_HasItem(void *a, u16 *b);
 s32 _s32_div_f(s32 a, s32 b);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_020e761c(void *p, s32 a, s32 b);
+void Math_StepS32(void *p, s32 a, s32 b);
 BOOL MenuCtrl_IsTouch();
 void MenuCtrl_SetCatalogItem(u32 a);
 s32 Gfx2d_LoadCharFile(const void *d, void *heap, s32 a, s32 b, s32 c, s32 e);
@@ -1816,7 +1816,7 @@ void CatalogMenu::dragKnob(s32 v, BOOL c) {
         v = 0x5a;
     }
     if (c) {
-        func_020e761c(&knobPos, v, 8);
+        Math_StepS32(&knobPos, v, 8);
     } else {
         knobPos = v;
     }

@@ -957,7 +957,7 @@ void func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
 s32 Random_GlobalBelow(s32 n);
 void *PlayerActor_GetActor(s32 a);
-s32 func_020e9650(void *a, void *b);
+s32 Vec_DistXZ(void *a, void *b);
 void Clock_GetMinuteHour(void *p);
 void func_0209c2d8(void *p);
 void func_0209c2dc(void *p);
@@ -996,10 +996,10 @@ s32 WorldCurve_ToCurved(void *out, void *in);
 void Collision_Move(void *obj, void *pos, void *prev, s32 a, s32 b, s32 c, s32 d);
 void AnimFrameCtrl_step(void *e);
 void Unk_02003c40_callUpdateRelative(void *obj, void *v);
-void func_020e8388(void *m, s32 x, s32 y, s32 z);
-void func_020e8434(void *m, s16 a);
-void func_020e8404(void *m, s32 a);
-void func_020e83d4(void *m, s32 a);
+void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
+void Mtx43_RotateX(void *m, s16 a);
+void Mtx43_RotateY(void *m, s32 a);
+void Mtx43_RotateZ(void *m, s32 a);
 extern s8 sMuseumScorpionSlot;
 extern s8 sMuseumDungBallSlot;
 extern V3_7690 sMuseumFleaDrawScale;
@@ -1045,30 +1045,30 @@ void func_ov004_02239d18(void *o);
 void AnimModel_setFrame(void *p, s32 a);
 s32 Math_AngleXZ(void *a, void *b);
 extern s16 data_02136744[];
-void func_020e9960(void *out, void *a, void *b);
-s32 func_020e94f8(void *v);
-s32 func_020e95cc(void *a, void *b);
-s32 func_020e7530(void *p, s32 target, s32 step);
+void Vec_Sub(void *out, void *a, void *b);
+s32 Vec_SafeNormalize(void *v);
+s32 Vec_DotXZ(void *a, void *b);
+s32 Math_StepAngle(void *p, s32 target, s32 step);
 void GroundInfo_Destruct(void *p);
 extern s16 data_02135f44[];
 void func_ov004_0223a6e8(void *r, void *out);
 void *func_ov004_0223a570(void *r);
 void MuseumExhibitInfo_SpawnAutoTalk();
-s32 func_020e7870(void *v, s32 a, s32 b, s32 c, s32 d);
-void func_020e98f4(void *out, void *in, s32 s);
+s32 Math_ApproachS32(void *v, s32 a, s32 b, s32 c, s32 d);
+void Vec_ScaleTo(void *out, void *in, s32 s);
 void VEC_Subtract(void *a, void *b, void *c);
 void VEC_Add(void *a, void *b, void *c);
-s32 func_020e7d4c(void *a, void *b, s32 c, s32 d, s32 e);
+s32 Math_ApproachVecXZ(void *a, void *b, s32 c, s32 d, s32 e);
 extern u8 gEffectSplDefaultInitCbs[];
 void EffectSpl_CreateOneShot(u32, void *, s32, void *);
 s32 FX_Div(s32, s32);
 s32 PlayerActor_RequestAct79();
 void func_ov004_02239a4c(void *, s32);
-s32 func_020e7e6c(void *a, void *b, s32 c, s32 d, s32 e);
+s32 Math_ApproachVec(void *a, void *b, s32 c, s32 d, s32 e);
 s32 Effect_PlayById2(s32 a, void *b, void *c, s32 d);
 void Unk_02003c40_callRequest(void *o, s32 id);
 void Unk_02003c40_callRequestSustained(void *o, s32 id);
-void func_020e93a0(void *v, s32 a);
+void Vec_RotateY(void *v, s32 a);
 void func_ov004_02237690(void *p);
 }
 
@@ -1326,7 +1326,7 @@ extern "C" void MuseumInsect_MakeStepDir(void *v_, s32 a) {
     v->x = 0;
     v->y = 0;
     v->z = 0x29;
-    func_020e93a0(v, a);
+    Vec_RotateY(v, a);
 }
 
 extern "C" s16 MuseumInsect_RandHeading() {
@@ -1611,7 +1611,7 @@ extern "C" void MuseumInsect_GetHomeDelta(Unk_ov004_0223ceb8 *self, s16 *a, s32 
     } else if (t < -0x38e) {
         *a = -0x38e;
     }
-    *b = func_020e9650(c, p6);
+    *b = Vec_DistXZ(c, p6);
 }
 
 extern "C" s32 MuseumInsect_GetEscapeHeading(s32 a, s32 b) {
@@ -1654,7 +1654,7 @@ extern "C" void MuseumInsect_TurnToTarget(void *self_, u32 a, s32 b) {
     Unk_ov004_0223ceb8 *self = (Unk_ov004_0223ceb8 *)self_;
     s16 sv[2];
     sv[0] = self->yaw;
-    if (func_020e7530(sv, self->targetAngle, 0xe38) != 0) {
+    if (Math_StepAngle(sv, self->targetAngle, 0xe38) != 0) {
         self->moveState = b;
         self->dirFlag = a;
     }
@@ -1682,7 +1682,7 @@ extern "C" s32 MuseumInsect_UpdateAlertLevel(void *self_, void *out_) {
         out->x = pv->x;
         out->y = pv->y;
         out->z = pv->z;
-        out->d = func_020e9650(&self->position, out);
+        out->d = Vec_DistXZ(&self->position, out);
         s32 t = out->d;
         if (t < 0x2000) {
             r4 += 0x19;
@@ -1907,7 +1907,7 @@ extern "C" void MuseumInsect_DragonflyLand(Obj_c4bc *o)
         b = 0x4e;
         break;
     }
-    if (!func_020e7e6c(r4, r6, b, 0x1000, a)) {
+    if (!Math_ApproachVec(r4, r6, b, 0x1000, a)) {
         o->moveState = 25;
         o->stateTimer = (Random_GlobalBelow(5) + 5) * 20;
         o->isPerched = 1;
@@ -1966,15 +1966,15 @@ extern "C" void MuseumInsect_DragonflyFlyTo(Obj_c4bc *o)
     V3_c4bc *r7 = &o->targetPos;
     V3_c4bc *r4 = &o->position;
     s32 r6 = o->moveSpeed;
-    if (!func_020e7d4c(r4, r7, r6, 0x1000, o->unk_4c)) {
+    if (!Math_ApproachVecXZ(r4, r7, r6, 0x1000, o->unk_4c)) {
         o->moveState = 25;
     } else {
         o->yaw = Math_AngleXZ(r4, r7);
     }
     if (o->dirFlag) {
-        func_020e7870(&r4->y, o->baseHeight, r6, 0x1000, 0xcd);
+        Math_ApproachS32(&r4->y, o->baseHeight, r6, 0x1000, 0xcd);
     } else {
-        if (!func_020e7870(&r4->y, o->baseHeight - 0x1000, r6, 0x1000, 0xcd)) {
+        if (!Math_ApproachS32(&r4->y, o->baseHeight - 0x1000, r6, 0x1000, 0xcd)) {
             o->dirFlag = 1;
         }
     }
@@ -2113,7 +2113,7 @@ extern "C" void MuseumInsect_HopperHop(Obj_c4bc *o)
     sv.z = r4->z;
     r7 = o->moveSpeed;
     if (MuseumInsect_CheckFloorAhead(o) == 0 || o->isBumped != 0) {
-        if (func_020e7d4c(r4, r6, r7, 0x1000, 0x333)) {
+        if (Math_ApproachVecXZ(r4, r6, r7, 0x1000, 0x333)) {
             if (MuseumInsect_ClampToBounds(o, r4)) {
                 r4->x = sv.x;
                 r4->y = sv.y;
@@ -2127,7 +2127,7 @@ extern "C" void MuseumInsect_HopperHop(Obj_c4bc *o)
         *r6 = *r4;
     }
     if (o->dirFlag) {
-        if (!func_020e7870(&r4->y, 0x1400, r7, 0x1000, 0xcd)) {
+        if (!Math_ApproachS32(&r4->y, 0x1400, r7, 0x1000, 0xcd)) {
             o->dirFlag = 0;
         }
     } else {
@@ -2136,7 +2136,7 @@ extern "C" void MuseumInsect_HopperHop(Obj_c4bc *o)
             loc.initAtPos((Unk_0203389c_Vec *)(r4), 0, 1);
             t = loc.getHeight(0);
         }
-        if (!func_020e7870(&r4->y, t, r7, 0x1000, 0x266)) {
+        if (!Math_ApproachS32(&r4->y, t, r7, 0x1000, 0x266)) {
             o->subCounter = (Random_GlobalBelow(9) + 2) * 20;
             o->moveState = 25;
             AnimModel_setFrame(&o->isPerched + 2, 0);
@@ -2330,9 +2330,9 @@ extern "C" void MuseumInsect_MosquitoChase(Obj_bb5c *self, s16 *p)
         V3_bb5c *v = &self->position;
         s32 dist;
         u8 *pb = b + 0x5c;
-        dist = func_020e9650(pb, v);
+        dist = Vec_DistXZ(pb, v);
         l.t = self->yaw;
-        func_020e7530(&l.t, Math_AngleXZ(v, pb), 0x38e);
+        Math_StepAngle(&l.t, Math_AngleXZ(v, pb), 0x38e);
         *p = *p + 0xaaa;
         if (self->isAlerted != 0) {
             s32 c = self->alertLevel;
@@ -2461,7 +2461,7 @@ extern "C" void MuseumInsect_RunFlea(void *self_)
             u8 r = Random_GlobalBelow(0x21) + 0x10;
             V3_bb5c *v = &self->position;
             u8 *pp = p + 0x5c;
-            if (func_020e9650(pp, v) > 0x6000) {
+            if (Vec_DistXZ(pp, v) > 0x6000) {
                 r += 0x10;
             }
             self->yaw = Math_AngleXZ(v, pp);
@@ -2481,7 +2481,7 @@ extern "C" void MuseumInsect_FleaJump(Obj_bb5c *self)
     saved.x = v->x;
     saved.y = v->y;
     saved.z = v->z;
-    func_020e7d4c(v, &self->targetPos, 0xaa, 0x1000, 0x333);
+    Math_ApproachVecXZ(v, &self->targetPos, 0xaa, 0x1000, 0x333);
     if (self->subCounter > 0) {
         s32 k = self->subCounter << 12;
         v->y = func_01ffcb0c(0x99a - func_01ffcb0c(0x7b, k), k);
@@ -2489,7 +2489,7 @@ extern "C" void MuseumInsect_FleaJump(Obj_bb5c *self)
             u8 *p = (u8 *)PlayerActor_GetActor(4);
             s32 n = 20;
             if (p != 0) {
-                if (func_020e9650(p + 0x5c, v) > 0x6000) {
+                if (Vec_DistXZ(p + 0x5c, v) > 0x6000) {
                     n = 0;
                 }
             }
@@ -2516,7 +2516,7 @@ extern "C" void MuseumInsect_RunMoleCricket(void *self_)
         break;
     case 3: {
         s16 t = self->yaw;
-        if (func_020e7530(&t, self->targetAngle, 0x38e) != 0) {
+        if (Math_StepAngle(&t, self->targetAngle, 0x38e) != 0) {
             self->moveState = 4;
         }
         MuseumInsect_PlaySe(self, 2);
@@ -2668,7 +2668,7 @@ extern "C" void MuseumInsect_RunPillBug(void *o_)
     case 3:
         if (MuseumInsect_PillBugCheckCurl(o)) {
             s16 v = o->yaw;
-            if (func_020e7530(&v, o->targetAngle, 0x38e)) {
+            if (Math_StepAngle(&v, o->targetAngle, 0x38e)) {
                 o->moveState = 4;
             }
             o->yaw = v;
@@ -2718,7 +2718,7 @@ extern "C" void MuseumInsect_PillBugWalk(Obj_b1e8 *o)
         V3_b1e8 *r4 = &o->position;
         V3_b1e8 *r6 = &o->targetPos;
         if (MuseumInsect_TickTimer(o) == 0) {
-            if (func_020e7d4c(r4, r6, 0x40, 0x1000, 0x29) == 0) {
+            if (Math_ApproachVecXZ(r4, r6, 0x40, 0x1000, 0x29) == 0) {
                 MuseumInsect_PillBugNextWaypoint(o);
                 o->targetAngle = Math_AngleXZ(r4, r6);
                 o->moveState = 3;
@@ -2913,7 +2913,7 @@ extern "C" void MuseumInsect_RunArachnid(void *o_)
         }
         {
             s16 v = o->yaw;
-            if (func_020e7530(&v, o->targetAngle, 0x71c)) {
+            if (Math_StepAngle(&v, o->targetAngle, 0x71c)) {
                 o->moveState = 4;
             }
             o->yaw = v;
@@ -2954,8 +2954,8 @@ extern "C" BOOL MuseumInsect_FaceEachOther(Obj_b1e8 *a, Obj_b1e8 *b)
     u8 r;
     v[0] = a->yaw;
     v[1] = b->yaw;
-    r = func_020e7530(&v[1], Math_AngleXZ(&b->position, &a->position), 0xaaa);
-    r &= func_020e7530(&v[0], Math_AngleXZ(&a->position, &b->position), 0xaaa);
+    r = Math_StepAngle(&v[1], Math_AngleXZ(&b->position, &a->position), 0xaaa);
+    r &= Math_StepAngle(&v[0], Math_AngleXZ(&a->position, &b->position), 0xaaa);
     a->yaw = v[0];
     b->yaw = v[1];
     if (r) {
@@ -3052,7 +3052,7 @@ extern "C" void MuseumInsect_FightSkirmish(void *r_) {
     s16 *cnt;
     cnt = &r->stateCounter;
     v4c = r->unk_4c;
-    dist = func_020e9650(rp, op);
+    dist = Vec_DistXZ(rp, op);
     f1 = 1;
     f2 = 1;
     s16 *pw = &r->subCounter;
@@ -3078,32 +3078,32 @@ extern "C" void MuseumInsect_FightSkirmish(void *r_) {
         f1 = 0;
         if (*pw <= 0) {
             Unk_ov004_0223a850_Vec w;
-            func_020e98f4(&w, &v2, 0x2000);
+            Vec_ScaleTo(&w, &v2, 0x2000);
             VEC_Add(rp, &w, rp);
         } else {
             Unk_ov004_0223a850_Vec w;
-            func_020e98f4(&w, &v1, 0x2000);
+            Vec_ScaleTo(&w, &v1, 0x2000);
             VEC_Subtract(op, &w, op);
         }
     } else if (v4c < 0x3c && dist < 0xccd) {
         f2 = 0;
         if (*pw <= 0) {
             Unk_ov004_0223a850_Vec w;
-            func_020e98f4(&w, &v2, 0x2000);
+            Vec_ScaleTo(&w, &v2, 0x2000);
             VEC_Subtract(rp, &w, rp);
         } else {
             Unk_ov004_0223a850_Vec w;
-            func_020e98f4(&w, &v1, 0x2000);
+            Vec_ScaleTo(&w, &v1, 0x2000);
             VEC_Add(op, &w, op);
         }
     } else if ((dist > 0x5800 || v4c < 0x50) && dist > 0x99a) {
         if (*pw <= 0) {
             Unk_ov004_0223a850_Vec w;
-            func_020e98f4(&w, &v2, 0xa000);
+            Vec_ScaleTo(&w, &v2, 0xa000);
             VEC_Add(rp, &w, rp);
         } else {
             Unk_ov004_0223a850_Vec w;
-            func_020e98f4(&w, &v1, 0xa000);
+            Vec_ScaleTo(&w, &v1, 0xa000);
             VEC_Add(op, &w, op);
         }
     } else if (dist < 0x5800) {
@@ -3116,11 +3116,11 @@ extern "C" void MuseumInsect_FightSkirmish(void *r_) {
         } else if (v4c < 0x64) {
             if (*pw <= 0) {
                 Unk_ov004_0223a850_Vec w;
-                func_020e98f4(&w, &v2, 0x5000);
+                Vec_ScaleTo(&w, &v2, 0x5000);
                 VEC_Subtract(rp, &w, rp);
             } else {
                 Unk_ov004_0223a850_Vec w;
-                func_020e98f4(&w, &v1, 0x5000);
+                Vec_ScaleTo(&w, &v1, 0x5000);
                 VEC_Subtract(op, &w, op);
             }
         }
@@ -3170,7 +3170,7 @@ extern "C" void MuseumInsect_FightCircleOther(void *r_) {
     } else {
         r->dirFlag = 1;
     }
-    s32 d = func_020e9650(c, a);
+    s32 d = Vec_DistXZ(c, a);
     s32 idx = ((u16)ang >> 4) * 2;
     b->x = a->x + func_01ffcb0c(data_02135f44[idx], d);
     b->z = a->z + func_01ffcb0c(data_02135f44[idx + 1], d);
@@ -3214,7 +3214,7 @@ extern "C" void MuseumInsect_FightCircleSelf(void *r_) {
     } else {
         r->dirFlag = 1;
     }
-    s32 d = func_020e9650(c, b);
+    s32 d = Vec_DistXZ(c, b);
     s32 idx = ((u16)ang >> 4) * 2;
     a->x = b->x + func_01ffcb0c(data_02135f44[idx], d);
     a->z = b->z + func_01ffcb0c(data_02135f44[idx + 1], d);
@@ -3245,7 +3245,7 @@ extern "C" void MuseumInsect_FightClash(void *r_) {
     Unk_ov004_0223a850_Vec *a = &r->position;
     Unk_ov004_0223a850_Vec *b = &o->position;
     s16 *cnt = &r->stateCounter;
-    if (func_020e9650(a, b) < 0x2000) {
+    if (Vec_DistXZ(a, b) < 0x2000) {
         Unk_ov004_0223a850_Vec v1, v2, w1, w2;
         s32 ang1 = Math_AngleXZ(b, a);
         o->yaw = ang1;
@@ -3255,9 +3255,9 @@ extern "C" void MuseumInsect_FightClash(void *r_) {
         r->yaw = ang2;
         MuseumInsect_MakeStepDir(&v2, ang2);
         MuseumInsect_WiggleHeading(r, ang2, *cnt);
-        func_020e98f4(&w1, &v2, 0x4000);
+        Vec_ScaleTo(&w1, &v2, 0x4000);
         VEC_Subtract(a, &w1, a);
-        func_020e98f4(&w2, &v1, 0x4000);
+        Vec_ScaleTo(&w2, &v1, 0x4000);
         VEC_Subtract(b, &w2, b);
         *cnt = *cnt + 1;
     } else if (MuseumInsect_TickTimer(r) != 0) {
@@ -3302,7 +3302,7 @@ extern "C" BOOL MuseumInsect_ArachnidFacePlayer(void *r_) {
         s32 a = Math_AngleXZ(pos, &l);
         ang = r->yaw;
         Unk_ov004_0223aa40_Sub *s = (Unk_ov004_0223aa40_Sub *)((u8 *)r + 0xb0);
-        func_020e7530(&ang, a, 0x38e);
+        Math_StepAngle(&ang, a, 0x38e);
         r->yaw = ang;
         if ((s8)r->insectIndex == 0x37) {
             s32 x = s->numFrames >> 12;
@@ -3334,7 +3334,7 @@ extern "C" void MuseumInsect_RunDungBeetle(void *r_) {
     switch (r->moveState) {
     case 4: {
         u32 tmp = r->animFrameStep;
-        if (func_020e7870(&tmp, 0x1000, 0x66, 0x1000, 0x29) == 0) {
+        if (Math_ApproachS32(&tmp, 0x1000, 0x66, 0x1000, 0x29) == 0) {
             r->moveState = 5;
         }
         r->animFrameStep = tmp;
@@ -3388,7 +3388,7 @@ extern "C" void MuseumInsect_RunCockroach(void *r_) {
         break;
     case 3:
         ang = r->yaw;
-        if (func_020e7530(&ang, r->targetAngle, 0x2000) != 0) {
+        if (Math_StepAngle(&ang, r->targetAngle, 0x2000) != 0) {
             r->moveState = 4;
         }
         r->yaw = ang;
@@ -3409,7 +3409,7 @@ extern "C" void MuseumInsect_RunCockroach(void *r_) {
             if (l.hasPlayer != 0) {
                 if (l.playerSpeed > 0) {
                     if (r->subCounter == 0) {
-                        if (func_020e9650(&l, &r->position) < 0xe66) {
+                        if (Vec_DistXZ(&l, &r->position) < 0xe66) {
                             MuseumExhibitInfo_SpawnAutoTalk();
                             r->unk_4c = 1;
                         }
@@ -3426,20 +3426,20 @@ void Unk_ov004_02239e70::scurry(Unk_ov004_02239e70_V3 *v) {
     s32 res = crawl();
     s16 ang = yaw;
     Unk_ov004_02239e70_V3 d1;
-    func_020e9960(&d1, v, (Unk_ov004_02239e70_V3 *)((u8 *)this + 0x2c8));
+    Vec_Sub(&d1, v, (Unk_ov004_02239e70_V3 *)((u8 *)this + 0x2c8));
     Unk_ov004_02239e70_V3 d0;
     MuseumInsect_MakeStepDir(&d0, ang);
-    func_020e94f8(&d0);
-    func_020e94f8(&d1);
-    s32 dot = func_020e95cc(&d0, &d1);
+    Vec_SafeNormalize(&d0);
+    Vec_SafeNormalize(&d1);
+    s32 dot = Vec_DotXZ(&d0, &d1);
     if (*((u8 *)v + 0x14) != 0 && dot > 0) {
-        if (func_020e9650(pos, v) < 0x1800) {
+        if (Vec_DistXZ(pos, v) < 0x1800) {
             if (dot > data_02136744[1]) {
                 *cnt = *cnt + 1;
             }
-        } else if (func_020e9650(pos, v) < 0x2800) {
+        } else if (Vec_DistXZ(pos, v) < 0x2800) {
             if (res == 0) {
-                func_020e7530(&ang, Math_AngleXZ(v, pos), 0xaaa);
+                Math_StepAngle(&ang, Math_AngleXZ(v, pos), 0xaaa);
                 yaw = ang;
             }
         }
@@ -3611,7 +3611,7 @@ void Unk_ov004_02239e70::runSpider() {
 BOOL Unk_ov004_02239e70::isPlayerNear() {
     u8 *r = (u8 *)PlayerActor_GetActor(4);
     if (r != NULL) {
-        if (func_020e9650(r + 0x5c, &position) < 0x4800) {
+        if (Vec_DistXZ(r + 0x5c, &position) < 0x4800) {
             return TRUE;
         }
     }
@@ -4953,10 +4953,10 @@ void MuseumInsectRoom::updateInsect(Elem_7690 *e) {
             Unk_02003c40_callUpdateRelative(&e->sound, &t);
         }
         s32 r = WorldCurve_ToCurved(&out, &e->position);
-        func_020e8388(&data_021f47e0, out.x, out.y, out.z);
-        func_020e8434(&data_021f47e0, r + e->pitch);
-        func_020e8404(&data_021f47e0, e->yaw);
-        func_020e83d4(&data_021f47e0, e->roll);
+        Mtx43_SetTranslate(&data_021f47e0, out.x, out.y, out.z);
+        Mtx43_RotateX(&data_021f47e0, r + e->pitch);
+        Mtx43_RotateY(&data_021f47e0, e->yaw);
+        Mtx43_RotateZ(&data_021f47e0, e->roll);
         e->modelMtx = data_021f47e0;
     }
 }

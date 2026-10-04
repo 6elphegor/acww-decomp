@@ -90,7 +90,7 @@ BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 Random_GlobalBelow(u32 n);
 s32 Math_AngleXZ(void *p, void *q);
 BOOL NpcActor_IsFrontAngle(s32 v);
-void func_020e7518(void *p);
+void Math_CountDownU8(void *p);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 u32 Random_Next(void *p);
 extern u16 data_020c6cc8;
@@ -455,7 +455,7 @@ BOOL SpNpcSaharah::mainAct02() {
     NpcActionCtrl *p = &actionCtrl;
     Unk_ov078_Vec v, w;
     s32 r6 = isNearCameraTarget();
-    func_020e7518(&unk_651);
+    Math_CountDownU8(&unk_651);
     if (r6 != 0) {
         if (checkCollisionWhileMoving() == 0) {
             if (p->isActionDone() != 0) {

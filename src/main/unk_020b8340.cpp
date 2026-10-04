@@ -6,7 +6,7 @@
 #include "gfx/BgVramTask.h"
 
 extern "C" {
-void func_020e79a0(void *list, void *node);
+void List_Remove(void *list, void *node);
 BOOL PrioList_Insert(void *list, void *node);
 void PrioList_Init(void *list);
 }
@@ -89,7 +89,7 @@ BOOL VramTask::enqueueTex(void) {
 }
 
 void VramTask::dequeueTex(void) {
-    func_020e79a0(&sVramQueueTex, (Unk_020b83b0 *)this);
+    List_Remove(&sVramQueueTex, (Unk_020b83b0 *)this);
 }
 
 static inline Unk_020b8340_Task *Unk_020b8340_First(void **l) {
@@ -109,7 +109,7 @@ extern "C" void VramQueueTex_Run(void) {
             }
         }
         if (r5 != 0) r5 = (Unk_020b8340_Task *)((u8 *)r5 + 4);
-        func_020e79a0(&sVramQueueTex, r5);
+        List_Remove(&sVramQueueTex, r5);
     }
     volatile u16 *vc = (volatile u16 *)0x4000006;
     if (*vc <= 0xd5) {
@@ -130,7 +130,7 @@ extern "C" BOOL VramQueue2d_Enqueue(VramTask *p) {
 extern "C" void VramQueue2d_Dequeue(VramTask *p) {
     u8 *n = (u8 *)p;
     if (n != 0) n = n + 4;
-    func_020e79a0(&sVramQueue2d, n);
+    List_Remove(&sVramQueue2d, n);
 }
 
 extern "C" void VramQueue2d_Run(void) {
@@ -144,7 +144,7 @@ extern "C" void VramQueue2d_Run(void) {
             }
         }
         if (r5 != 0) r5 = (Unk_020b8340_Task *)((u8 *)r5 + 4);
-        func_020e79a0(&sVramQueue2d, r5);
+        List_Remove(&sVramQueue2d, r5);
     }
 }
 

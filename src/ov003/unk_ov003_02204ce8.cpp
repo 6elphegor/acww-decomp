@@ -175,7 +175,7 @@ struct Unk_ov003_02204ce8_Vec {
 
 
 extern "C" {
-s32 func_020e9650(s32 *a, s32 *b);
+s32 Vec_DistXZ(s32 *a, s32 *b);
 extern s32 data_ov003_02230af0[];
 extern s32 sFieldFrontDist[];
 extern void *gSceneBlockMap;
@@ -196,8 +196,8 @@ void PlayerActor_RequestUmbrellaSpin(Unk_02006d14 *self, s32 a, s32 b);
 void PlayerActor_RequestAct72(Unk_02006d14 *self, s32 a, s32 b);
 void PlayerActor_OffsetByAngle(Unk_ov003_02204ce8_Vec *out, Unk_02006d14 *o, s32 *in, u16 *ang, s32 *p);
 void PlayerActor_GetFrontUnitCenter(Unk_ov003_02204ce8_Vec *out, Unk_02006d14 *o);
-BOOL func_020e972c(s32 *a, s32 *b);
-s32 func_020e7b98(s32 a, s32 b);
+BOOL Vec_Equal(s32 *a, s32 *b);
+s32 Math_Atan2(s32 a, s32 b);
 BOOL Ground_IsWaterAt(s32 *p);
 BOOL Sky_IsShootingStarVisible();
 void FieldPos_ToUnit(s32 *a, s32 *b, s32 *c);
@@ -350,8 +350,8 @@ s32 Flower_Trample(V2 *p);
 void PlayerActor_OffsetByAngle(V3 *out, Obj *o, V3 *pos, s16 *ang, void *arg);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void Tree_RequestShake(s32 a, V2 *p, s32 b);
-s32 func_020e972c(V3 *a, V3 *b);
-s32 func_020e7b98(s32 a, s32 b);
+s32 Vec_Equal(V3 *a, V3 *b);
+s32 Math_Atan2(s32 a, s32 b);
 BOOL Ground_IsWaterAt(V3 *v);
 s32 Unk_02006d14_startUnitItemQuery(Obj *o, V2 *p, s32 a, s32 b);
 void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
@@ -513,8 +513,8 @@ void Unk_02006d14_netSendClothesChange(Obj *o, u32 a, u32 b);
 s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, s32 a);
 s32 CommManager_isLocalSlot(void *g, s32 a);
-s32 func_020e7b98(s32 a, s32 b);
-s32 func_020e9650(void *a, void *b);
+s32 Math_Atan2(s32 a, s32 b);
+s32 Vec_DistXZ(void *a, void *b);
 void PlayerActor_TurnAngle(void *a, s32 b);
 void Unk_020102ec_setAngleY(Obj *o, s16 *a);
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
@@ -717,7 +717,7 @@ s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 VEC_Mag(V3 *v);
-void func_020e9960(V3 *out, V3 *a, V3 *b);
+void Vec_Sub(V3 *out, V3 *a, V3 *b);
 s32 FieldItemFx_StartPitfallClose(s32 a, V3 *v);
 s32 PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 
@@ -1078,7 +1078,7 @@ s32 Effect_Create(s32 a, void *b, void *c, s32 d);
 s32 Effect_SetPosition(s32 h, void *a, void *b, s32 c);
 void NetBuf_UnpackTriple20(void *p, s32 *out, s32 *x, s32 *y, s32 *z);
 void NetBuf_PackTriple20(void *p, s32 a, s32 x, s32 y, s32 z);
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 void PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void Tree_RequestShake(u32 a, Pair *p, s32 b);
 void PlayerActor_TreeShakeReleaseSetWork(void *r, s32 a, s32 b, s32 c, u32 d, u32 e);
@@ -1287,7 +1287,7 @@ void FieldPos_FromUnitCenter(V3 *out, s32 a, s32 b);
 void Effect_Create(s32 a, void *b, void *c, s32 d);
 void NetBuf_UnpackPair20(void *a, s32 *b, s32 *c);
 void NetBuf_PackPair20(void *a, s32 b, s32 c);
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 
 void Tree_KeepShaking(s32 a, Pair p);
 void Tree_RequestShake(s32 a, Pair p, s32 b);
@@ -1470,7 +1470,7 @@ void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
 s32 Unk_02006d14_startFieldQuery(Obj *o, V3 *v, s32 a, s32 b);
 void Unk_02006d14_netSyncNearPoint(Obj *o, V3 *v);
 void Unk_02006d14_turnToward(Obj *o, s32 a);
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
 void FieldItemFx_StartFillHole(s32 h, V3 *v);
@@ -1666,7 +1666,7 @@ s32 Unk_02006d14_turnToCamera(Obj *o, s32 a);
 void Unk_02006d14_netSyncNearPoint(Obj *o, V3 *v);
 void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 void NetBuf_WriteU16(void *p, u32 v);
 void Pocket_AddFoundItem(void *p);
 s32 MenuCtrl_OpenPocketsFullDug(u32 v);
@@ -2286,8 +2286,8 @@ s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 void PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_02006d14_testActionFlag(Obj *o, u32 a);
 void Unk_02006d14_clearActionFlag(Obj *o, u32 a);
-s32 func_020e7b98(s32 a, s32 b);
-s32 func_020e9650(void *a, void *b);
+s32 Math_Atan2(s32 a, s32 b);
+s32 Vec_DistXZ(void *a, void *b);
 void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 void FieldPos_SnapToUnitCenter(V3 *out, V3 *in);
@@ -2479,8 +2479,8 @@ void WorldCurve_FromCurved(V3 *a, V3 *b);
 s32 Effect_Create(s32 a, V3 *v, void *p, s32 b);
 void Effect_SetPosition(s32 a, V3 *v, void *p, s32 b);
 void Effect_End(s32 a);
-s16 func_020e7b98(s32 a, s32 b);
-s32 func_020e9650(void *a, void *b);
+s16 Math_Atan2(s32 a, s32 b);
+s32 Vec_DistXZ(void *a, void *b);
 s32 Random_GlobalBelow(s32 a);
 s32 TalkRequest_AddPlayerMessage();
 void Character_attachTalkRequest(Obj *o, MsgRequest *b);
@@ -2674,8 +2674,8 @@ s32 PlayerActor_OffsetByAngle(V3 *out, Obj *o, void *pos, void *ang, void *arg);
 s32 Ground_GetHeightAt(V3 *a, s32 *b, s32 c);
 void FieldPos_SnapToUnitCenter(V3 *a, V3 *b);
 u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
-s32 func_020e7b98(s32 a, s32 b);
-s32 func_020e780c(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 
 s32 Insect_GetCatchResult(s32 a, u32 b);
@@ -2841,8 +2841,8 @@ s32 PlayerActor_BugNetSwingGetSweep(Obj *o, V3 *a, V3 *b, V3 *c);
 s32 PlayerActor_BugNetSwingCheckGround(Obj *o, V3 *a, V3 *b, V3 *c);
 s32 Insect_TryCatch(u32 a);
 void Unk_02006d14_playSe(Obj *o, u32 a);
-s32 func_020e7b98(s32 a, s32 b);
-s32 func_020e780c(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
 void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
 void Unk_020102ec_setSubCollider(Obj *o, V3 *v, s32 a, s32 b);
 void ActorCollider_submit(void *p);
@@ -3227,7 +3227,7 @@ s32 HeldItemModel_PlayAnim(void *p, u32 a, u32 b, u32 c);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 BgmVolumeMixer_startFishDuck(void *p);
 s32 BgmVolumeMixer_endFishDuck(void *p);
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 s32 PlayerActor_TurnAngle(u16 *a, s32 b);
 s32 Unk_020102ec_setAngleY(Obj *o, u16 *a);
 s32 FishBobber_setPos(void *p, V3 *v);
@@ -3672,7 +3672,7 @@ s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 s32 Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
 s32 Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 s32 PlayerActor_Decelerate(s32 a, s32 b);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 s32 Unk_020102ec_setSpeed(Obj *o, s32 *a);
@@ -4541,7 +4541,7 @@ s32 PlayerActor_getRequiredPriority(Obj *o);
 s32 PlayerActor_RequestFishReelIn(Obj *o, s32 a, s32 b, s32 c);
 s32 TalkRequest_AddPlayerMessage();
 s32 PlayerActor_RequestBeeSting(Obj *o, s32 a, s32 b);
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 s32 Unk_02008040_requestAct77(Obj *o, s32 v, s32 a, s32 b);
 s32 PlayerActor_RequestFaint(Obj *o, u8 a, s32 b, s32 c);
 s32 Unk_02006d14_clearActionFlag(Obj *o, s32 a);
@@ -4890,7 +4890,7 @@ namespace ns_02212140 {
 extern "C" s32 PlayerActor_LocalRequestAct77From(V3 *p) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
-        return Unk_02008040_requestAct77(o, func_020e7b98(p->x - o->positionX, p->z - o->positionZ), 6, -1);
+        return Unk_02008040_requestAct77(o, Math_Atan2(p->x - o->positionX, p->z - o->positionZ), 6, -1);
     }
     return 0;
 }
@@ -6793,7 +6793,7 @@ extern "C" s32 PlayerActor_SetupAxeSwing(Obj *o, Arg *a) {
             l.v.z = l.C.z;
         }
     }
-    s32 ang = func_020e7b98(l.v.x - o->bodyPosX, l.v.z - o->bodyPosZ);
+    s32 ang = Math_Atan2(l.v.x - o->bodyPosX, l.v.z - o->bodyPosZ);
     l.D.x = l.v.x;
     l.D.y = l.v.y;
     l.D.z = l.v.z;
@@ -7681,7 +7681,7 @@ extern "C" s32 PlayerActor_SetupFishCast(Obj *o, Arg *a) {
     l.t2.x = x; l.t2.y = 0; l.t2.z = z;
     FishBobber_setTargetPos(o->bobber, &l.t2);
     PlayerActor_FishCastSetNetData(o->netData, l.t1.x, l.t1.z);
-    o->actionWork = func_020e7b98(l.t1.x - o->position, l.t1.z - o->positionZ);
+    o->actionWork = Math_Atan2(l.t1.x - o->position, l.t1.z - o->positionZ);
 }
 }
 
@@ -7921,7 +7921,7 @@ namespace ns_0220e030 {
 extern "C" s32 PlayerActor_FishWaitFaceBobber(Obj *o) {
     u16 t;
     V3 *p = &o->bobberPos;
-    s32 a = func_020e7b98(p->x - o->position, p->z - o->positionZ);
+    s32 a = Math_Atan2(p->x - o->position, p->z - o->positionZ);
     t = o->rotY;
     PlayerActor_TurnAngle(&t, a);
     Unk_020102ec_setAngleY(o, &t);
@@ -8688,7 +8688,7 @@ extern "C" s32 PlayerActor_RequestBugNetSwing(Obj *o, s32 a, s32 b) {
     u16 *p = (u16 *)m.unk_0c_b;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x56, a, b);
     if (o->toolTargetKind == 2) {
-        *p = func_020e7b98(o->toolTargetPosX - o->bodyPosX, o->toolTargetPosZ - o->bodyPosZ);
+        *p = Math_Atan2(o->toolTargetPosX - o->bodyPosX, o->toolTargetPosZ - o->bodyPosZ);
     } else {
         *p = o->rotY;
     }
@@ -8810,11 +8810,11 @@ extern "C" void PlayerActor_BugNetSwingUpdate(Obj *o) {
         v48.x = dx;
         s32 dz = v3c.z - v30.z;
         v48.z = dz;
-        ang = func_020e7b98(dx, dz);
+        ang = Math_Atan2(dx, dz);
     } else {
         ang = 0x7fff;
     }
-    if (func_020e780c(ang, 0) > 0x4000) {
+    if (Math_AngleDiffAbs(ang, 0) > 0x4000) {
         if (Insect_TryCatch(st.c) == 0) return;
         r5->swingHit = 1;
         r5->caughtInsect = st.c;
@@ -8933,10 +8933,10 @@ extern "C" s32 PlayerActor_BugNetSwingCanReach(Obj *o, V3 *a, V3 *b, u8 *c) {
         }
     }
     if (c[0] == 0) {
-        s32 a4 = func_020e7b98(b->x - base.x, b->z - base.z);
-        s32 a5 = func_020e7b98(a->x - base.x, a->z - base.z);
-        s32 t1 = (s16)func_020e780c(a4, 0);
-        s32 t2 = (s16)func_020e780c(a5, 0);
+        s32 a4 = Math_Atan2(b->x - base.x, b->z - base.z);
+        s32 a5 = Math_Atan2(a->x - base.x, a->z - base.z);
+        s32 t1 = (s16)Math_AngleDiffAbs(a4, 0);
+        s32 t2 = (s16)Math_AngleDiffAbs(a5, 0);
         if (t1 == t2) {
             s32 z = b->z;
             s32 bz = base.z;
@@ -9507,8 +9507,8 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
             pos.y = pv->y;
             pos.z = pv->z;
             pos.y = pos.y + 0x1b33;
-            s16 yaw = func_020e7b98(q->x - pos.x, q->z - pos.z);
-            s32 h = func_020e7b98(q->y - pos.y, func_020e9650(q, &pos));
+            s16 yaw = Math_Atan2(q->x - pos.x, q->z - pos.z);
+            s32 h = Math_Atan2(q->y - pos.y, Vec_DistXZ(q, &pos));
             if (h >= 0x1800) {
                 h = 0x1800;
             }
@@ -9781,8 +9781,8 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
             p3.y = pv2->y;
             p3.z = pv2->z;
             p3.y += 0x1b33;
-            s32 yaw = func_020e7b98(q->x - p3.x, q->z - p3.z);
-            s32 hh = func_020e7b98(q->y - p3.y, func_020e9650(q, &p3));
+            s32 yaw = Math_Atan2(q->x - p3.x, q->z - p3.z);
+            s32 hh = Math_Atan2(q->y - p3.y, Vec_DistXZ(q, &p3));
             o->headYaw = yaw;
             if (hh >= 0x1800) {
                 hh = 0x1800;
@@ -9914,7 +9914,7 @@ extern "C" void PlayerActor_SetupShovelReady(Obj *o, RecB *r) {
         pos.z = out.z;
         FieldPos_SnapToUnitCenter(&pos, &pos);
     }
-    s32 h = func_020e7b98(pos.x - o->bodyPosX, pos.z - o->bodyPosZ);
+    s32 h = Math_Atan2(pos.x - o->bodyPosX, pos.z - o->bodyPosZ);
     t.x = pos.x;
     t.y = pos.y;
     t.z = pos.z;
@@ -9937,7 +9937,7 @@ extern "C" void PlayerActor_ShovelReadyTurn(Obj *o) {
     if (o->speed == 0 && r4->hasTarget == 0) {
         V3 t;
         PlayerActor_GetFrontUnitCenter(&t, o);
-        h = func_020e7b98(t.x - o->bodyPosX, t.z - o->bodyPosZ);
+        h = Math_Atan2(t.x - o->bodyPosX, t.z - o->bodyPosZ);
         r4->targetAngle = h;
         r4->hasTarget = 1;
         r4->targetPos.x = t.x;
@@ -11249,7 +11249,7 @@ extern "C" void PlayerActor_SetupBuryItem(Obj *o, Msg *m) {
     r->holeUnitZ = z;
     r->fillMode = k;
     r->answerOk = 0;
-    r->faceAngle = func_020e7b98(v.x - o->position.x, v.z - o->position.z);
+    r->faceAngle = Math_Atan2(v.x - o->position.x, v.z - o->position.z);
     PlayerActor_BuryItemSetNetData(&o->netData, h, (u8)x, (u8)z, k);
     Unk_020102ec_startAnimOnce(o, 0x49, 7, 0);
     Unk_02006d14_clearActionFlag(o, 0xd);
@@ -11324,7 +11324,7 @@ extern "C" void PlayerActor_SetupFillHole(Obj *o, Unk_ov003_02209314_Arg *a) {
     r4->holePos.x = v.x;
     r4->holePos.y = v.y;
     r4->holePos.z = v.z;
-    r4->faceAngle = func_020e7b98(v.x - o->position.x, v.z - o->position.z);
+    r4->faceAngle = Math_Atan2(v.x - o->position.x, v.z - o->position.z);
     switch (o->animId) {
     case 0x4a:
         Unk_020102ec_startAnimOnce(o, 0x51, 3, 0);
@@ -11777,7 +11777,7 @@ extern "C" void PlayerActor_SetupAct66(Obj *o, u8 *m) {
     FieldPos_FromUnitCenter(&pos, a, b);
     d.x = pos.x - o->position.x;
     d.z = pos.z - o->position.z;
-    s32 ang = func_020e7b98(d.x, d.z);
+    s32 ang = Math_Atan2(d.x, d.z);
     PlayerActor_Act66SetWork(r, c, ang, pos);
     p.a = a;
     p.b = b;
@@ -11917,7 +11917,7 @@ extern "C" void PlayerActor_SetupAct67(Obj *o, u8 *m) {
     V3D l(*(s32 *)(m + 0xc), *(s32 *)(q + 4), *(s32 *)(q + 8));
     d.x = l.x - o->position.x;
     d.z = l.z - o->position.z;
-    s32 ang = func_020e7b98(d.x, d.z);
+    s32 ang = Math_Atan2(d.x, d.z);
     PlayerActor_Act67SetWork((RecC *)((u8 *)o + 0x7d0), ang, l);
     Unk_020102ec_startAnimOnce(o, 0x65, 3, 0);
     FieldItemFx_StartHoleShrink(o->sessionSlot, l);
@@ -12045,7 +12045,7 @@ extern "C" void PlayerActor_SetupTreeShake(Obj *o, u8 *m) {
     V3D v(*(s32 *)(m + 0xc), o->position.y, *(s32 *)(q + 4));
     d.x = v.x - o->position.x;
     d.z = v.z - o->position.z;
-    s32 ang = func_020e7b98(d.x, d.z);
+    s32 ang = Math_Atan2(d.x, d.z);
     PlayerActor_TreeShakeSetWork((RecA *)((u8 *)o + 0x7d0), ang, v.x, v.z, b0, b1);
     PlayerActor_TreeShakeSetNetData(o->netData, v.x, v.z, b0 | (b1 << 4));
     if (b1 != 0) {
@@ -12205,7 +12205,7 @@ extern "C" void PlayerActor_SetupTreeShakeRelease(Obj *o, Msg *m) {
     t.z = r2;
     d.x = t.x - o->position.x;
     d.z = r2 - o->position.z;
-    s32 r7 = func_020e7b98(d.x, d.z);
+    s32 r7 = Math_Atan2(d.x, d.z);
     o1 = 0;
     o2 = 0;
     FieldPos_ToUnit(&o1, &o2, &t);
@@ -13138,7 +13138,7 @@ extern "C" void PlayerActor_PitfallStruggleInput(Obj *o) {
         o->actionWork.f0 = s4;
         p->f14 = s8;
         r4 = 0;
-        func_020e9960(&d, &a, &b);
+        Vec_Sub(&d, &a, &b);
         c.x = d.x;
         c.y = d.y;
         c.z = d.z;
@@ -13762,8 +13762,8 @@ extern "C" void PlayerActor_ThrowBottleLook(Obj *o) {
             b.x = pv->x;
             b.y = pv->y;
             b.z = pv->z;
-            s32 yaw = func_020e7b98(a.x - b.x, a.z - b.z);
-            s32 h = func_020e7b98(a.y - b.y, func_020e9650(&a, &b));
+            s32 yaw = Math_Atan2(a.x - b.x, a.z - b.z);
+            s32 h = Math_Atan2(a.y - b.y, Vec_DistXZ(&a, &b));
             if (h > 0) {
                 h = 0;
             }
@@ -13852,8 +13852,8 @@ extern "C" void PlayerActor_FishReleaseLook(Obj *o) {
             b.y = pv->y;
             b.z = pv->z;
             b.y = b.y + 0x1b33;
-            s32 yaw = func_020e7b98(a.x - b.x, a.z - b.z);
-            s32 h = func_020e7b98(a.y - b.y, func_020e9650(&a, &b));
+            s32 yaw = Math_Atan2(a.x - b.x, a.z - b.z);
+            s32 h = Math_Atan2(a.y - b.y, Vec_DistXZ(&a, &b));
             if (h >= 0x1800) {
                 h = 0x1800;
             } else if (h <= -0x1000) {
@@ -14022,10 +14022,10 @@ namespace ns_022052f4 {
 extern "C" BOOL PlayerActor_FishFindCastTarget(Obj *o, V3 *out, V3 *tgt) {
     s16 ang;
     V3 t1, t0;
-    if (func_020e972c(tgt, &o->position)) {
+    if (Vec_Equal(tgt, &o->position)) {
         ang = o->rotY;
     } else {
-        ang = func_020e7b98(tgt->x - o->position.x, tgt->z - o->position.z);
+        ang = Math_Atan2(tgt->x - o->position.x, tgt->z - o->position.z);
     }
     PlayerActor_OffsetByAngle(&t0, o, &o->position, &ang, sFishCastFarDist);
     out->x = t0.x;
@@ -14393,7 +14393,7 @@ after_tile:
     if (self->inputMode == 2) {
         switch (mode) {
         case 1: {
-            ang = func_020e7b98(self->targetPos.x - self->bodyPos.x, self->targetPos.z - self->bodyPos.z);
+            ang = Math_Atan2(self->targetPos.x - self->bodyPos.x, self->targetPos.z - self->bodyPos.z);
             PlayerActor_OffsetByAngle(&l.t, self, &self->position.x, &ang, sFieldFrontDist);
             if (Unk_02006d14_isPosInReach(self, &l.t.x, mode)) {
                 s32 *pa = &self->targetPos.x;
@@ -14470,7 +14470,7 @@ extern "C" BOOL PlayerActor_FieldStartToolAction(Unk_02006d14 *self, s32 mode, s
         z.x = 0;
         z.y = 0;
         z.z = 0;
-        if (func_020e972c(pos, &z.x)) {
+        if (Vec_Equal(pos, &z.x)) {
             s32 *pv = &self->position.x;
             pos[0] = pv[0];
             pos[1] = pv[1];
@@ -14505,7 +14505,7 @@ extern "C" BOOL PlayerActor_FieldStartToolAction(Unk_02006d14 *self, s32 mode, s
         z2.x = 0;
         z2.y = 0;
         z2.z = 0;
-        if (func_020e972c(pos, &z2.x)) {
+        if (Vec_Equal(pos, &z2.x)) {
             PlayerActor_GetFrontUnitCenter(&t1, (Unk_02006d14 *)self);
             pos[0] = t1.x;
             pos[1] = t1.y;
@@ -14515,7 +14515,7 @@ extern "C" BOOL PlayerActor_FieldStartToolAction(Unk_02006d14 *self, s32 mode, s
         a.x = t2.x;
         a.y = t2.y;
         a.z = t2.z;
-        if (func_020e9650(&self->position.x, pos) < 0x2334) {
+        if (Vec_DistXZ(&self->position.x, pos) < 0x2334) {
             if (Unk_02006d14_startFieldQuery(self, &a.x, 1, 0)) {
                 BOOL f;
                 if (Unk_02006d14_getFieldAnswerKind(self) == 1) {

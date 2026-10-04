@@ -66,7 +66,7 @@ s32 FX_Div(s32 a, s32 b);
 }
 
 extern "C" {
-void func_020e9888(void *a, s32 b);
+void Vec_Scale(void *a, s32 b);
 }
 
 extern "C" {

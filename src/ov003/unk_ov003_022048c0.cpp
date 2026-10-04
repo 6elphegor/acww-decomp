@@ -50,8 +50,8 @@ void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
 BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(TouchPicker *self, TouchPickSphere *o, s32 *a, s32 b, s32 c, u8 d);
 BOOL TalkRequest_SetTargetDone(void *p);
-s32 func_020e9650(s32 *a, s32 *b);
-s32 func_020e780c(s32 a, s32 b);
+s32 Vec_DistXZ(s32 *a, s32 *b);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
 TouchPicker *Scene_GetTouchPicker();
 void _ZN15TouchPickSphereC1Ev(TouchPickSphere *self);
 void _ZN15TouchPickSphereD1Ev(TouchPickSphere *self);
@@ -152,8 +152,8 @@ BOOL VillagerBoard::vfunc_48(void *a) {
     clearTalkStartMode();
     Character *o = (Character *)a;
     if (o) {
-        if (func_020e9650(&o->position.x, &position.x) < 0x2333) {
-            if (func_020e780c(-0x8000, o->rotY) <= 0x1100) {
+        if (Vec_DistXZ(&o->position.x, &position.x) < 0x2333) {
+            if (Math_AngleDiffAbs(-0x8000, o->rotY) <= 0x1100) {
                 return TRUE;
             }
         }

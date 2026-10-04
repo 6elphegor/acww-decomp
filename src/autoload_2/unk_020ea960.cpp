@@ -44,13 +44,13 @@ BOOL Net_PollConnected(void);
 BOOL Net_SendNextQueued(void);
 void Net_ClearSendQueue(void);
 BOOL Net_QueueSendToMask(u32 a, u32 b, u16 c, u32 d);
-s32 func_020eaee4(void);
-s32 func_020eaec8(void);
+s32 Net_LocalCountBeacons(void);
+s32 Net_WifiCountFriends(void);
 u32 Net_GetError(void);
 void Net_WaitFrame(void);
 void Net_Free(void *p);
-u32 func_020eb164(void);
-u32 func_020eb12c(void);
+u32 Net_LocalGetLinkLevel(void);
+u32 Net_WifiGetLinkLevel(void);
 BOOL Net_WifiShutdownStep(void);
 BOOL Net_LocalShutdown(void);
 BOOL Net_ShutdownOv067(void);
@@ -111,7 +111,7 @@ void LocalWl_SetEventCallback(void *p);
 void LocalWlMp_Start(void *p);
 void LocalWl_SetRecvCallback(void *p);
 void OS_InitMessageQueue(void *a, void *b, u32 n);
-void func_020ebd04(void);
+void Net_WifiLockServer(void);
 void Net_WifiPingNextPeer(void);
 void Net_WifiCheckHostIdle(void);
 void *Net_DwcAllocHook(u32 a, u32 b, u32 c);
@@ -162,7 +162,7 @@ char *func_021277a4(char *dst, const char *src);
 u32 STD_GetStringLength(const char *s);
 void *MATH_CalcSHA1(void *dst, const void *src, u32 n);
 void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...);
-s64 func_020ea3c4(void *p);
+s64 Net_GetOwnFriendKey(void *p);
 void Net_OnHttpDownloadDone(void *a, void *b, u32 c, void *d);
 void Net_OnGameStatsDownloadDone(void *a, void *b, u32 c, u32 d);
 void Net_OnWifiFriendDeleted(u32 a);
@@ -314,11 +314,11 @@ extern "C" void Net_OnLocalRecv(u32 a, u32 b, u32 c) {
     sRecvCallback(a, b, c);
 }
 
-extern "C" void func_020ec3c4(u32 a) {
+extern "C" void Net_OnWifiClientMatched(u32 a) {
     if (a == 0) data_0213b06c = 0;
 }
 
-extern "C" void func_020ec3c0(void) {
+extern "C" void Net_OnWifiClosedNop(void) {
 }
 
 extern "C" void Net_OnWifiSendDone(u32 a, u32 b) {
@@ -331,13 +331,13 @@ extern "C" void Net_OnWifiRecv(u32 a, u32 b, u32 c) {
     sRecvCallback(a, b, c);
 }
 
-extern "C" void func_020ec310(u32 a, u32 b) {
+extern "C" void Net_OnWifiHostMatched(u32 a, u32 b) {
     if (a != 0) return;
     if (b != 0) return;
     data_021f48cc = (u32)((OS_GetTick() << 6) / 33514);
 }
 
-extern "C" void func_020ec30c(void) {
+extern "C" void Net_WifiCallbackNop(void) {
 }
 
 extern "C" void Net_OnWifiServersUpdated(u32 a) {
@@ -411,18 +411,18 @@ extern "C" void Net_OnGameStatsChallenge(const char *a, u32 b, u32 c, char *d) {
             ((HexPair *)data_021f48a4)[i].lo = hex.c[src[i] & 15];
         }
         data_021f48a4[40] = 0;
-        OS_SNPrintf(data_021f48dc, 0x100, (const char *)data_0213b100, data_021f48e4, func_020ea3c4(sWifiUserData + 16), data_021f48a4, data_021f48a8);
+        OS_SNPrintf(data_021f48dc, 0x100, (const char *)data_0213b100, data_021f48e4, Net_GetOwnFriendKey(sWifiUserData + 16), data_021f48a4, data_021f48a8);
         DwcGsHttp_Get(data_021f48dc, (void *)Net_OnGameStatsDownloadDone, d);
     } else {
         data_0213b068 = 1;
     }
 }
 
-extern "C" void func_020ebe94(u32 a) {
+extern "C" void Net_OnWlxStopped(u32 a) {
     if (a == 0) data_021f48e0 = 1;
 }
 
-extern "C" void func_020ebe80(void) {
+extern "C" void Net_OnWlxExchangeDone(void) {
     data_021f48e8 = 1;
 }
 
@@ -454,7 +454,7 @@ extern "C" void Net_WifiPingNextPeer(void) {
     }
 }
 
-extern "C" void func_020ebd04(void) {
+extern "C" void Net_WifiLockServer(void) {
     u32 v;
     data_021f48cc = 0;
     if (sNetMode != 3) return;
@@ -476,10 +476,10 @@ extern "C" void Net_WifiCheckHostIdle(void) {
     DwcMatch_ClearServerLock();
 }
 
-extern "C" void func_020ebc38(void) {
+extern "C" void Net_OnHeapCreatedNop(void) {
 }
 
-extern "C" void func_020ebc34(void) {
+extern "C" void Net_OnHeapDestroyNop(void) {
 }
 
 extern "C" void Net_Init(u32 a, u32 b, u32 c, u64 d, u8 e, AllocFn f, FreeFn g) {
@@ -593,7 +593,7 @@ extern "C" BOOL Net_WifiConnectStep(void) {
         if (data_0213b06c == 0) {
             DwcNet_SetMaxChunkSize(0x100);
             DwcNet_SetPingCallback((void *)Net_OnWifiPingReply);
-            func_020ebd04();
+            Net_WifiLockServer();
             sWifiConnectStep = 5;
         }
         break;
@@ -714,7 +714,7 @@ extern "C" BOOL Net_WifiShutdownStepExt(void) {
     return Net_WifiShutdownStep();
 }
 
-extern "C" u32 func_020eb164(void) {
+extern "C" u32 Net_LocalGetLinkLevel(void) {
     switch (LocalWl_GetLinkLevel()) {
     case 0:
         break;
@@ -728,16 +728,16 @@ extern "C" u32 func_020eb164(void) {
     return 0;
 }
 
-extern "C" u32 func_020eb12c(void) {
+extern "C" u32 Net_WifiGetLinkLevel(void) {
     if (sWifiConnectStep <= 1) return 0;
     return DwcInet_GetLinkLevel();
 }
 
 extern "C" BOOL Net_GetLinkLevel(void) {
     u32 st = sNetMode;
-    if ((u8)(st + 255) <= 1) return func_020eb164();
+    if ((u8)(st + 255) <= 1) return Net_LocalGetLinkLevel();
     if ((u8)(st + 253) > 1) return FALSE;
-    return func_020eb12c();
+    return Net_WifiGetLinkLevel();
 }
 
 extern "C" BOOL Net_SetRecvBuffer(u32 a, u32 b, u32 c) {
@@ -775,20 +775,20 @@ extern "C" u32 Net_GetMode(void) {
     return sNetMode;
 }
 
-extern "C" s32 func_020eaee4(void) {
+extern "C" s32 Net_LocalCountBeacons(void) {
     if (LocalWl_GetState() != 7) return -1;
     return LocalWl_GetBeaconCount(0);
 }
 
-extern "C" s32 func_020eaec8(void) {
+extern "C" s32 Net_WifiCountFriends(void) {
     return DwcFriend_CountValid(sWifiFriendList, 32);
 }
 
-extern "C" s32 func_020eae78(void) {
+extern "C" s32 Net_CountHostCandidates(void) {
     u32 st = sNetMode;
-    if (st == 2) return func_020eaee4();
+    if (st == 2) return Net_LocalCountBeacons();
     if (st != 4) return -1;
-    return func_020eaec8();
+    return Net_WifiCountFriends();
 }
 
 extern "C" BOOL Net_IsSendIdle(u32 a) {

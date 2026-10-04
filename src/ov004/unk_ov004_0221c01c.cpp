@@ -200,7 +200,7 @@ void Model_GetJointWorldMtx(void *p, void *q, s32 n);
 void ThreeLayerAnimModel_updateLayers3(void *p);
 void JointBlend_start(void *p, s32 n);
 s32 Bgm_GetCurrent(void);
-s32 func_020e77cc(s32 a, s32 b, s32 c);
+s32 Math_IsInRange(s32 a, s32 b, s32 c);
 u8 *Snd_GetBeatState(void);
 // other ov004 units
 void PlayerActor_LocalPlayAnim98();
@@ -361,7 +361,7 @@ BOOL SpNpcBrewster::updateAct() {
     if (data_ov004_02250aa8[i].fn1 != 0) {
         r = (this->*sSpNpcBrewsterActTable[i].fn2)();
     }
-    if (func_020e77cc(Bgm_GetCurrent(), 0x63, 0xab) != 0) {
+    if (Math_IsInRange(Bgm_GetCurrent(), 0x63, 0xab) != 0) {
         if (beatSyncStarted == 0) {
             if ((((u32)model.curFrame << 4) >> 16) != 0) {
                 JointBlend_start((JointBlend *)&model, 10);

@@ -116,10 +116,10 @@ s32 NpcActor_getPlayerActor(void *, u32);
 void NpcMoveCtrl_setTargetAngle(void *, s32);
 void NpcMoveCtrl_setWaypoint(void *, void *);
 void BlockMap_getWalkLinksAtPos(void *, void *);
-s32 func_020e972c(void *, void *);
-s32 func_020e96ec(void *, void *);
-s32 func_020e7518(void *);
-s32 func_020e780c(s32, s32);
+s32 Vec_Equal(void *, void *);
+s32 Vec_NotEqual(void *, void *);
+s32 Math_CountDownU8(void *);
+s32 Math_AngleDiffAbs(s32, s32);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_isActionDone(void *);
 s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
@@ -409,9 +409,9 @@ BOOL FleaMarketSellerVillager::mainAct04() {
     a.y = p->y;
     a.z = p->z;
     r6 = NpcActor_getDistanceToPlayer(this, 4);
-    r4 = func_020e780c(rotY, NpcActor_getAngleToPlayer(this, 4));
+    r4 = Math_AngleDiffAbs(rotY, NpcActor_getAngleToPlayer(this, 4));
     NpcActor_FindFreeUnitNear(&b, this, &a);
-    if (r6 > 0x3000 && func_020e96ec(&b, &position) != 0) {
+    if (r6 > 0x3000 && Vec_NotEqual(&b, &position) != 0) {
         changeAct(6);
     } else {
         if (r4 > 0x2000) {
@@ -446,7 +446,7 @@ BOOL FleaMarketSellerVillager::mainAct05() {
     r4 = NpcActor_getDistanceToPlayer(this, 4);
     r6 = NpcActor_getAngleToPlayer(this, 4);
     NpcActor_FindFreeUnitNear(&b, this, &a);
-    if (r4 > 0x3000 && func_020e96ec(&b, &position) != 0) {
+    if (r4 > 0x3000 && Vec_NotEqual(&b, &position) != 0) {
         changeAct(6);
         return TRUE;
     }
@@ -489,7 +489,7 @@ BOOL FleaMarketSellerVillager::mainAct06() {
         }
     }
     NpcMoveCtrl_setWaypoint(&moveCtrl, &b);
-    if (r4 <= 0x3000 || func_020e972c(&b, &position) != 0) {
+    if (r4 <= 0x3000 || Vec_Equal(&b, &position) != 0) {
         changeAct(4);
     }
     return TRUE;
@@ -572,7 +572,7 @@ BOOL FleaMarketSellerVillager::mainAct07() {
         }
     }
     NpcMoveCtrl_setWaypoint(&moveCtrl, &b);
-    if (r4 <= 0x3000 || func_020e972c(&b, &position) != 0 || func_020e7518(&approachTimer) == 0) {
+    if (r4 <= 0x3000 || Vec_Equal(&b, &position) != 0 || Math_CountDownU8(&approachTimer) == 0) {
         VillagerTalk *pb = &talk;
         pb->vfunc_08();
         func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));

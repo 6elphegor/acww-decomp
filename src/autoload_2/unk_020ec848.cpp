@@ -56,14 +56,14 @@ u32 func_020e8af4(Heap *self);
 void Heap_RestoreCurrent(void);
 void *func_020e877c(Heap *self);
 void func_020e8908(Heap *self, void *p);
-void func_020e7968(QList *l, QNode *n);
-void func_020e79a0(QList *l, QNode *n);
-void func_020e7a7c(TreeNode *root, TreeNode *n);
-void func_020e7af4(TreeNode *root, TreeNode *n, TreeNode *parent);
-TreeNode *func_020e7b80(TreeNode *n);
+void List_PushBack(QList *l, QNode *n);
+void List_Remove(QList *l, QNode *n);
+void TreeNode_Detach(TreeNode *root, TreeNode *n);
+void TreeNode_Attach(TreeNode *root, TreeNode *n, TreeNode *parent);
+TreeNode *TreeNode_Construct(TreeNode *n);
 void Task_InsertByPriority(QList *l, QNode *n);
-void func_020ed8cc(void *p);
-BOOL func_020ed7e4(void *p);
+void CmdSeq_Undo(void *p);
+BOOL CmdSeq_Poll(void *p);
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
 TreeNode *func_01ffcfc0(TreeNode *n);
 TreeNode *func_01ffcffc(TreeNode *n);
@@ -104,7 +104,7 @@ static inline BOOL isTwo(u32 v) {
 
 extern "C" ProcBase *_ZN8ProcBaseC2Ev(ProcBase *self) {
     *(u32 **)self = data_0213b15c;
-    func_020e7b80(&self->treeNode);
+    TreeNode_Construct(&self->treeNode);
     self->treeNode.owner = self;
     self->executeNode.prev = NULL;
     self->executeNode.next = NULL;
@@ -121,7 +121,7 @@ extern "C" ProcBase *_ZN8ProcBaseC2Ev(ProcBase *self) {
     self->param = sProcCreateParam;
     self->profile = sProcCreateProfile;
     self->group = sProcCreateGroup;
-    func_020e7af4(&gProcTree, &self->treeNode, (TreeNode *)sProcCreateParent);
+    TreeNode_Attach(&gProcTree, &self->treeNode, (TreeNode *)sProcCreateParent);
     ProcProfile *d = gProfileTable[self->profile];
     u16 a = d->executePriority;
     QNode *q1 = &self->executeNode;
@@ -159,7 +159,7 @@ extern "C" BOOL _ZN8ProcBase8vfunc_04Ev(ProcBase *self) {
 
 extern "C" void _ZN17Unk_020d8c7c_Base10postCreateEi(ProcBase *self, s32 a) {
     if (a != 2) return;
-    func_020e79a0(&gTaskCreateList, &self->executeNode);
+    List_Remove(&gTaskCreateList, &self->executeNode);
     if (isThree(gTaskPhase)) {
         self->activatePending = 1;
         return;
@@ -174,7 +174,7 @@ extern "C" BOOL _ZN8ProcBase8vfunc_0cEv(ProcBase *self) {
 }
 
 extern "C" BOOL _ZN8ProcBase9preDeleteEv(ProcBase *self) {
-    if ((self->seq == NULL || func_020ed7e4(self->seq) != 0) && self->treeNode.child == NULL) {
+    if ((self->seq == NULL || CmdSeq_Poll(self->seq) != 0) && self->treeNode.child == NULL) {
     } else {
         return FALSE;
     }
@@ -183,10 +183,10 @@ extern "C" BOOL _ZN8ProcBase9preDeleteEv(ProcBase *self) {
 
 extern "C" void _ZN8ProcBase8vfunc_14Ev(ProcBase *self, s32 a) {
     if (a != 2) return;
-    func_020e7a7c(&gProcTree, &self->treeNode);
-    func_020e79a0(&gTaskDeleteList, &self->executeNode);
+    TreeNode_Detach(&gProcTree, &self->treeNode);
+    List_Remove(&gTaskDeleteList, &self->executeNode);
     if (self->unk_4c != NULL) func_020e8c88(self->unk_4c);
-    if (self->seq != NULL) func_020ed8cc(self->seq);
+    if (self->seq != NULL) CmdSeq_Undo(self->seq);
     delete self;
 }
 
@@ -216,7 +216,7 @@ extern "C" void ProcBase_SetExecutePriority(ProcBase *self, u16 v) {
             self->executeNode.pendingPriority = v;
             return;
         }
-        func_020e79a0(&gTaskExecuteList, &self->executeNode);
+        List_Remove(&gTaskExecuteList, &self->executeNode);
         QNode *q = &self->executeNode;
         q->priority = v;
         q->pendingPriority = v;
@@ -234,7 +234,7 @@ extern "C" void ProcBase_SetDrawPriority(ProcBase *self, u16 v) {
             self->drawNode.pendingPriority = v;
             return;
         }
-        func_020e79a0(&gTaskDrawList, &self->drawNode);
+        List_Remove(&gTaskDrawList, &self->drawNode);
         QNode *q = &self->drawNode;
         q->priority = v;
         q->pendingPriority = v;
@@ -384,7 +384,7 @@ extern "C" void ProcBase_StartCreate(ProcBase *self) {
         self->createRetry = 1;
         return;
     }
-    func_020e7968(&gTaskCreateList, &self->executeNode);
+    List_PushBack(&gTaskCreateList, &self->executeNode);
 }
 
 extern "C" void func_020ecb78(ProcBase *self) {
@@ -455,7 +455,7 @@ extern "C" ProcBase *Proc_CreateRoot(u32 a, u32 b, u32 c) {
     return Proc_Create(a, 0, b, c);
 }
 
-extern "C" void func_020ec8b0(void) {
+extern "C" void Main_InitTick(void) {
     OS_InitTick();
 }
 

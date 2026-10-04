@@ -251,11 +251,11 @@ void NpcActor_FindFreeUnitNear(Unk_ov049_0225aba8_Vec *out, void *self, Unk_ov04
 void NpcMoveCtrl_setTargetAngle(void *self, s32 v);
 void NpcMoveCtrl_setWaypoint(void *self, Unk_ov049_0225aba8_Vec *v);
 void BlockMap_getWalkLinksAtPos(void *g, void *v);
-s32 func_020e972c(Unk_ov049_0225aba8_Vec *a, void *b);
-s32 func_020e96ec(Unk_ov049_0225aba8_Vec *a, void *b);
-s32 func_020e7518(void *p);
-s32 func_020e7500(void *p);
-s32 func_020e780c(s32 a, s32 b);
+s32 Vec_Equal(Unk_ov049_0225aba8_Vec *a, void *b);
+s32 Vec_NotEqual(Unk_ov049_0225aba8_Vec *a, void *b);
+s32 Math_CountDownU8(void *p);
+s32 Math_CountDownU16(void *p);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 Scene_GetWarpRequest();
 void SceneWarp_RequestExit(s32 a, s32 b);
 BOOL AbleShop_IsPurchaseSynced();
@@ -828,9 +828,9 @@ BOOL SpNpcMabel::mainAct01() {
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 r6 = getDistanceToPlayer(4);
     s32 t = getAngleToPlayer(4);
-    s32 r4 = func_020e780c(rotY, t);
+    s32 r4 = Math_AngleDiffAbs(rotY, t);
     BlockMap_getWalkLinksAtPos(gSceneBlockMap, &position);
-    if (r6 > 0x5000 && func_020e96ec(&out, &position)) {
+    if (r6 > 0x5000 && Vec_NotEqual(&out, &position)) {
         changeAct(3);
     } else if (r4 > 0x2000) {
         changeAct(2);
@@ -842,7 +842,7 @@ BOOL SpNpcMabel::mainAct01() {
         return TRUE;
     }
     if (dramaPending != 0) {
-        if (func_020e7500(&dramaTimer) == 0) {
+        if (Math_CountDownU16(&dramaTimer) == 0) {
             changeAct(7);
         }
     }
@@ -870,10 +870,10 @@ BOOL SpNpcMabel::mainAct02() {
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 r6 = getDistanceToPlayer(4);
     s32 r4 = getAngleToPlayer(4);
-    func_020e780c(rotY, r4);
+    Math_AngleDiffAbs(rotY, r4);
     BlockMap_getWalkLinksAtPos(gSceneBlockMap, &position);
     if (r6 > 0x5000) {
-        if (func_020e96ec(&out, &position)) {
+        if (Vec_NotEqual(&out, &position)) {
             changeAct(3);
         }
     }
@@ -917,7 +917,7 @@ BOOL SpNpcMabel::mainAct03() {
         }
     }
     NpcMoveCtrl_setWaypoint(&moveCtrl, &out);
-    if (t <= 0x5000 || func_020e972c(&out, &position) != 0) {
+    if (t <= 0x5000 || Vec_Equal(&out, &position) != 0) {
         changeAct(1);
     }
     return TRUE;
@@ -1050,7 +1050,7 @@ BOOL SpNpcMabel::setupAct0A() {
 
 BOOL SpNpcMabel::mainAct0A() {
     s32 t = getAngleToPlayer(4);
-    if (func_020e780c(rotY, t) >= data_020c6cc0) {
+    if (Math_AngleDiffAbs(rotY, t) >= data_020c6cc0) {
         changeAct(0xb);
     } else {
         tryStartShopItemTalk();
@@ -1103,7 +1103,7 @@ BOOL SpNpcMabel::mainAct0D() {
         }
     }
     NpcMoveCtrl_setWaypoint(&moveCtrl, &out);
-    if (t <= 0x5000 || func_020e972c(&out, &position) != 0 || func_020e7518(&approachTimer) == 0) {
+    if (t <= 0x5000 || Vec_Equal(&out, &position) != 0 || Math_CountDownU8(&approachTimer) == 0) {
         talk.vfunc_08();
         func_02015ab0(&talk, getPlayerActor(4));
         changeAct(4);

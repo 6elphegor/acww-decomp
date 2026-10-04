@@ -97,7 +97,7 @@ void ScrollKnob_moveTo(void *p, s32 a, s32 b);
 BOOL ScrollKnob_areAnimsDone(void *p);
 BOOL HandCursor_isAnimDone(void *p);
 BOOL HandCursor_getAnim(void *p);
-void func_020e761c(void *p, s32 a, s32 b);
+void Math_StepS32(void *p, s32 a, s32 b);
 BOOL MenuCtrl_IsTouch();
 s32 Gfx2d_LoadCharFile(const void *d, void *heap, s32 a, s32 b, s32 c, s32 e);
 s32 Gfx2d_LoadPaletteFile(const void *d, void *heap, s32 a, s32 b, s32 c, s32 e);
@@ -685,7 +685,7 @@ void DonationMenu::dragKnob(s32 a, s32 flag) {
         a = 0x78;
     }
     if (flag) {
-        func_020e761c(&knobPos, a, 8);
+        Math_StepS32(&knobPos, a, 8);
     } else {
         knobPos = a;
     }

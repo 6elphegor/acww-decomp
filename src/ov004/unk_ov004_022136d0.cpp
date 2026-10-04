@@ -29,8 +29,8 @@ void _ZN15TouchPickSphereD1Ev(TouchPickSphere *self);
 void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
 BOOL TalkRequest_SetTargetDone(void *p);
-s32 func_020e9650(s32 *a, s32 *b);
-s32 func_020e780c(s32 a, s32 b);
+s32 Vec_DistXZ(s32 *a, s32 *b);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
 TouchPicker *Scene_GetTouchPicker();
 BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(TouchPicker *self, TouchPickSphere *o, void *a, s32 b, s32 c, u8 d);
 u32 Scene_GetCurrent();
@@ -174,8 +174,8 @@ BOOL RoomBoardSign::vfunc_48(void *a) {
     Character *o = (Character *)a;
     s32 lim = radius + 0x2ccd;
     if (o) {
-        if (func_020e9650(&o->position.x, &position.x) < lim) {
-            if (func_020e780c((s16)(rotY + 0x8000), o->rotY) < 0x1300) {
+        if (Vec_DistXZ(&o->position.x, &position.x) < lim) {
+            if (Math_AngleDiffAbs((s16)(rotY + 0x8000), o->rotY) < 0x1300) {
                 return TRUE;
             }
         }

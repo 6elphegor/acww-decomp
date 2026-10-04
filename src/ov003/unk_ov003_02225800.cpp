@@ -428,7 +428,7 @@ void *TownBlockMap_Get();
 s32 Random_GlobalBelow(s32 n);
 BOOL InsectSpawn_FindUnitInBlock(void *a, s32 code, s32 *x, s32 *y, void *obj, u8 flag);
 void *PlayerActor_GetActor(s32 n);
-s32 func_020e9650(void *a, s32 *v);
+s32 Vec_DistXZ(void *a, s32 *v);
 void *MI_CpuCopy8(void *dst, void *src, s32 n);
 s32 Weather_GetFallingPrecip();
 BOOL Town_GetRafflesiaPos(void *buf);
@@ -582,7 +582,7 @@ s32 NetArea_IsLocalOwner(void);
 u8 Insect_GetHabitat(u8 v);
 void *PlayerActor_GetActor(s32 v);
 s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
-s32 func_020e9650(void *a, void *b);
+s32 Vec_DistXZ(void *a, void *b);
 void Mem_Free(void *p);
 s32 Math_AngleXZ(void *a, void *b);
 void ModelSlotPool_destroy(void *p);
@@ -698,10 +698,10 @@ extern s16 data_02135f44[];
 s32 InsectPool_Draw(Obj *self, void *a, s32 n);
 s32 WorldCurve_ToCurved(V3 *out, void *in);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
-s32 func_020e8388(void *m, s32 x, s32 y, s32 z);
-s32 func_020e8404(void *m, s32 a);
-s32 func_020e83d4(void *m, s32 a);
-s32 func_020e8434(void *m, s32 a);
+s32 Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
+s32 Mtx43_RotateY(void *m, s32 a);
+s32 Mtx43_RotateZ(void *m, s32 a);
+s32 Mtx43_RotateX(void *m, s32 a);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 void MTX_MultVec43(V3 *a, Blk *b, V3 *c);
@@ -811,7 +811,7 @@ s32 PlayerActor_GetAction(s32 v);
 void Effect_End(s32 h);
 BOOL Camera_IsBlockingFocusView(void *p, s32 a, s32 b);
 void Collision_Move(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
-s32 func_020e9650(void *a, void *b);
+s32 Vec_DistXZ(void *a, void *b);
 void Unk_02003c40_callUpdateRelative(void *obj, V3 *v);
 void CommManager_beginRecord(CommManager *g);
 void CommManager_writeRecord(CommManager *g, void *buf, s32 n);
@@ -1057,7 +1057,7 @@ BOOL NetArea_IsLocalOwner();
 s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
 void *PlayerActor_GetActor(s32 a);
 Unk_ov003_02227f20_Slot *NpcRegistry_FindVillager(s32 i);
-s32 func_020e9650(void *a, void *b);
+s32 Vec_DistXZ(void *a, void *b);
 void Unk_ov068_02268214_antsAppear(void *p);
 BOOL File_Exists(char *s);
 s32 func_020639e8(char *buf, char *fmt, ...);
@@ -1471,7 +1471,7 @@ s32 Random_GlobalBelow(s32 n);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void *PlayerActor_GetActor(s32 n);
-s32 func_020e9650(void *a, void *b);
+s32 Vec_DistXZ(void *a, void *b);
 s32 AnimFrameCtrl_setup(void *o, s32 a, s32 b, s32 c, s32 d);
 void AnimModel_setFrame(void *o, s32 v);
 void *TownBlockMap_Get(void);
@@ -1604,7 +1604,7 @@ s32 NetArea_IsLocalOwner(void);
 void GroundInfo_initAtPos(Unk_ov003_0222abc0_Obj *o, V3 *p, s32 a, s32 b);
 s32 GroundInfoBase_isBelowWaterSurface(Unk_ov003_0222abc0_Obj *o, s32 v);
 void GroundInfo_Destruct(Unk_ov003_0222abc0_Obj *o);
-s32 func_020e7d4c(V3 *a, V3 *b, s32 c, s32 d, s32 e);
+s32 Math_ApproachVecXZ(V3 *a, V3 *b, s32 c, s32 d, s32 e);
 s32 Math_AngleXZ(V3 *a, V3 *b);
 void Insect_GetDirVec(V3 *out, s32 ang);
 void Insect_PlaySe(Rec *self, s32 a, s32 b);
@@ -1777,7 +1777,7 @@ void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 void AnimModel_setFrame(void *p, s32 v);
 s32 Ground_GetDefaultY(u32 a);
 s32 Random_GlobalBelow(s32 n);
-s32 func_020e7530(s16 *a, s32 b, s32 c);
+s32 Math_StepAngle(s16 *a, s32 b, s32 c);
 BOOL PlayerActor_LocalHoldsNet();
 s32 PlayerActor_GetStrikeCountdownAt(V3 *a, s32 b);
 void Insect_SetScale(Rec *o, s32 v);
@@ -1905,7 +1905,7 @@ s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_AngleXZ(void *a, void *b);
-s32 func_020e9650(void *a, void *b);
+s32 Vec_DistXZ(void *a, void *b);
 void AnimModel_setFrame(void *p, s32 v);
 s32 Ground_GetDefaultY(u32 a);
 void TownJunkInsects_Refresh();
@@ -2034,11 +2034,11 @@ s32 FX_Div(s32 a, s32 b);
 s32 Math_AngleXZ(void *a, void *b);
 void AnimModel_setFrame(void *p, s32 v);
 s32 Ground_GetDefaultY(u32 a);
-s32 func_020e7530(s16 *a, s32 b, s32 c);
+s32 Math_StepAngle(s16 *a, s32 b, s32 c);
 s32 func_02133150(s32 a, s32 b);
-s32 func_020e7d4c(void *a, void *b, s32 c, s32 d, s32 e);
-s32 func_020e7870(void *a, s32 b, s32 c, s32 d, s32 e);
-s32 func_020e9650(void *a, void *b);
+s32 Math_ApproachVecXZ(void *a, void *b, s32 c, s32 d, s32 e);
+s32 Math_ApproachS32(void *a, s32 b, s32 c, s32 d, s32 e);
+s32 Vec_DistXZ(void *a, void *b);
 Unk_02095204_Obj *PlayerActor_GetActor(u32 n);
 void Insect_SetAnimSpeed(Rec *o, s32 a);
 void Crawler_Escape(Rec *o, s16 *p);
@@ -2168,9 +2168,9 @@ s32 Random_GlobalBelow(s32 n);
 s32 func_02133150(s32 a, s32 b);
 void AnimModel_setFrame(void *p, s32 v);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
-s32 func_020e7530(s16 *a, s32 b, s32 c);
-s32 func_020e7d4c(V3 *a, V3 *b, s32 c, s32 d, s32 e);
-s32 func_020e7870(s32 *a, s32 b, s32 c, s32 d, s32 e);
+s32 Math_StepAngle(s16 *a, s32 b, s32 c);
+s32 Math_ApproachVecXZ(V3 *a, V3 *b, s32 c, s32 d, s32 e);
+s32 Math_ApproachS32(s32 *a, s32 b, s32 c, s32 d, s32 e);
 s32 Insect_RandomTurn(u8 a, s32 b);
 void Insect_Despawn(Rec *self);
 s32 Insect_FadeOut(Rec *self, s32 a);
@@ -2284,10 +2284,10 @@ s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(void *a, void *b, void *out);
 void VEC_Subtract(void *a, void *b, void *out);
-void func_020e9960(Vec3 *out, void *a, void *b);
-s32 func_020e9688(Vec3 *v);
-s32 func_020e7d4c(void *a, void *b, s32 c, s32 d, s32 e);
-s32 func_020e7530(s16 *a, s32 b, s32 c);
+void Vec_Sub(Vec3 *out, void *a, void *b);
+s32 Vec_MagXZ(Vec3 *v);
+s32 Math_ApproachVecXZ(void *a, void *b, s32 c, s32 d, s32 e);
+s32 Math_StepAngle(s16 *a, s32 b, s32 c);
 s32 func_021329d0(s32 a);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 void AnimModel_setFrame(void *p, s32 v);
@@ -2447,7 +2447,7 @@ s32 Flower_GetSpecies(s32 a);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 s32 Ground_GetWaterKind(s32 x, s32 y);
-void func_020e93a0(V3 *o, s32 a);
+void Vec_RotateY(V3 *o, s32 a);
 BOOL CommManager_isOnline(void *g);
 u8 *CommManager_getSyncVar(void *g, s32 a);
 void NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
@@ -2653,7 +2653,7 @@ extern "C" void Insect_GetDirVec(V3 *o, s32 a) {
     o->x = 0;
     o->y = 0;
     o->z = 0x29;
-    func_020e93a0(o, a);
+    Vec_RotateY(o, a);
 }
 }
 #undef Unk_02003c40_callRequest
@@ -3196,7 +3196,7 @@ extern "C" void Insect_FlutterPullBack(Rec *self, Vec3 *p, s32 a) {
     ang = self->rotY;
     v = *p;
     r6 = &self->position;
-    func_020e7530(&ang, Math_AngleXZ(r6, p), a);
+    Math_StepAngle(&ang, Math_AngleXZ(r6, p), a);
     self->rotY = ang;
     VEC_Subtract(&v, r6, &v);
     Insect_ClampStepXZ(&v, &v, 1);
@@ -3389,14 +3389,14 @@ extern "C" void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
         r4->x = r4->x + func_01ffcb0c(f, t.x);
         r4->z = r4->z + func_01ffcb0c(f, t.z);
     }
-    func_020e9960(&d, r6, r4);
-    s32 len = func_020e9688(&d);
+    Vec_Sub(&d, r6, r4);
+    s32 len = Vec_MagXZ(&d);
     if (Gt(len, Insect_GetFlutterLeash(self))) {
         Insect_FlutterPullBack(self, r6, 0xaaa);
     }
     {
         s32 k = Insect_GetFlutterTargetSpeed(self);
-        if (func_020e7d4c(r6, r10, 0x28, k + 0x19a, Insect_GetFlutterTargetSpeed(self)) == 0) {
+        if (Math_ApproachVecXZ(r6, r10, 0x28, k + 0x19a, Insect_GetFlutterTargetSpeed(self)) == 0) {
             if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
                 if (NetArea_IsLocalOwner() == 0) {
                     return;
@@ -3650,7 +3650,7 @@ extern "C" void Insect_FlutterFlight(Rec *self) {
         } else {
             void *e = PlayerActor_GetActor(4);
             if (e != NULL) {
-                func_020e9960(&w, r7, (u8 *)e + 0x5c);
+                Vec_Sub(&w, r7, (u8 *)e + 0x5c);
                 v = w;
                 Insect_ClampStepXZ(&v, &v, 3);
                 VEC_Add(r7, &v, r7);
@@ -3991,7 +3991,7 @@ extern "C" void Dragonfly_FlyToTarget(Rec *self) {
     if (self->isAlarmed != 0) {
         s = func_01ffcb0c(s, 0x2000);
     }
-    if (func_020e7d4c(p, q, r6, 0x1000, s) == 0) {
+    if (Math_ApproachVecXZ(p, q, r6, 0x1000, s) == 0) {
         self->state = 0x13;
     } else {
         s32 x, y;
@@ -4006,9 +4006,9 @@ extern "C" void Dragonfly_FlyToTarget(Rec *self) {
         }
     }
     if (self->unk_24c != 0) {
-        func_020e7870(&p->y, self->baseHeight, r6, 0x1ec, 0xcd);
+        Math_ApproachS32(&p->y, self->baseHeight, r6, 0x1ec, 0xcd);
     } else {
-        if (func_020e7870(&p->y, self->baseHeight - 0x1000, r6, 0x333, 0xcd) == 0) {
+        if (Math_ApproachS32(&p->y, self->baseHeight - 0x1000, r6, 0x333, 0xcd) == 0) {
             self->unk_24c = 1;
         }
     }
@@ -4165,7 +4165,7 @@ extern "C" s32 Insect_TurnToTarget(Rec *self, u32 a) {
                     self->behaviourWork = fl;
                 }
             }
-            if (func_020e7530(&ang, self->unk_240, 0xe38) != 0) {
+            if (Math_StepAngle(&ang, self->unk_240, 0xe38) != 0) {
                 self->state = 4;
                 self->unk_24c = a;
                 result = TRUE;
@@ -4202,7 +4202,7 @@ extern "C" void Insect_AccumAlarm(Rec *o, V3 *out, s32 *dist, u8 *flag, u8 a, u8
         out->x = p->position.x;
         out->y = pv->y;
         out->z = pv->z;
-        *dist = func_020e9650(out, &o->position);
+        *dist = Vec_DistXZ(out, &o->position);
         if (b) {
             *flag = 0;
             if (*dist < 0x2000) {
@@ -4466,7 +4466,7 @@ extern "C" void Hopper_Jump(Rec *o) {
         Locust_PlaySe(o);
     }
     if (Insect_CheckObstacle(o, 0x50, 0xe38) == 0) {
-        if (func_020e7d4c(src, dst, q, 0x14000, 0x333) == 0) {
+        if (Math_ApproachVecXZ(src, dst, q, 0x14000, 0x333) == 0) {
             flag = 1;
         } else {
             o->rotY = Math_AngleXZ(src, dst);
@@ -4478,7 +4478,7 @@ extern "C" void Hopper_Jump(Rec *o) {
         dst->z = src->z;
     }
     if (o->unk_24c) {
-        if (!func_020e7870((u8 *)src + 4, 0x1400, q, 0x1000, 0xcd)) {
+        if (!Math_ApproachS32((u8 *)src + 4, 0x1400, q, 0x1000, 0xcd)) {
             o->unk_24c = 0;
         }
     } else {
@@ -4501,7 +4501,7 @@ extern "C" void Hopper_Jump(Rec *o) {
                 v += Ground_GetDefaultY(0);
             }
         }
-        if (!func_020e7870((u8 *)src + 4, v, q, 0x1000, 0x266) && flag != 0 && st != 0xb && st != 9) {
+        if (!Math_ApproachS32((u8 *)src + 4, v, q, 0x1000, 0x266) && flag != 0 && st != 0xb && st != 9) {
             o->auxTimer = (Random_GlobalBelow(9) + 2) * 0x14;
             o->state = 0x13;
             AnimModel_setFrame((u8 *)o + 0x50, 0);
@@ -4679,7 +4679,7 @@ extern "C" void Mosquito_Update(Rec *o) {
         break;
     case 0xf: {
         s16 t = o->rotY;
-        if (func_020e7530(&t, o->unk_240, 0x5b0)) {
+        if (Math_StepAngle(&t, o->unk_240, 0x5b0)) {
             o->state = 0;
         }
         Insect_PlaySe(o, 0, 1);
@@ -4989,7 +4989,7 @@ extern "C" void MoleCricket_CheckDugUp(Rec *self, s16 *cnt) {
         }
     } else {
         if (o != 0) {
-            if (func_020e9650(pos, (u8 *)o + 0x5c) < 0x5000) {
+            if (Vec_DistXZ(pos, (u8 *)o + 0x5c) < 0x5000) {
                 self->cooldownTimer = 0x3c;
             }
         }
@@ -5652,7 +5652,7 @@ extern "C" void Stinger_Update(Rec *self) {
     case 3: {
         volatile u32 w32;
         *(volatile s16 *)&w32 = self->rotY;
-        if (func_020e7530((s16 *)&w32, self->unk_240, 0x666)) {
+        if (Math_StepAngle((s16 *)&w32, self->unk_240, 0x666)) {
             self->state = 4;
         }
         self->rotY = *(volatile s16 *)&w32;
@@ -5881,9 +5881,9 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self) {
     }
     s32 r;
     if (self->kind == 0x1e) {
-        r = func_020e7d4c(pos, vel, 0x28, 0x1000, 0x19a);
+        r = Math_ApproachVecXZ(pos, vel, 0x28, 0x1000, 0x19a);
     } else {
-        r = func_020e7d4c(pos, vel, 8, 0x1000, 0x52);
+        r = Math_ApproachVecXZ(pos, vel, 8, 0x1000, 0x52);
     }
     if (r == 0) {
         if (NetArea_IsLocalOwner() != 0) {
@@ -6646,7 +6646,7 @@ extern "C" void Crawler_Watch(Rec *o, s16 *p) {
     o->isAlarmed = 0;
     Insect_CheckAlarm(o);
     if (r4 != 0) {
-        s32 d = func_020e9650((u8 *)r4 + 0x5c, q);
+        s32 d = Vec_DistXZ((u8 *)r4 + 0x5c, q);
         s32 n = o->alarm;
         s32 st;
         if (d <= 0xccd) {
@@ -9125,7 +9125,7 @@ extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
                     v.z = py;
                     s32 lim = e->disturbRadius;
                     BOOL t;
-                    if (func_020e9650(&e->position, &v) < lim) {
+                    if (Vec_DistXZ(&e->position, &v) < lim) {
                         t = TRUE;
                     } else {
                         t = z1;
@@ -9141,7 +9141,7 @@ extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
             u8 *p = (u8 *)PlayerActor_GetActor(4);
             if (p) {
                 s32 lim = e->disturbRadius;
-                if (func_020e9650(&e->position, p + 0x5c) < lim) {
+                if (Vec_DistXZ(&e->position, p + 0x5c) < lim) {
                     e->alarm = 0xfe;
                 }
             }
@@ -9152,7 +9152,7 @@ extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
                 o = NpcRegistry_FindVillager(i);
                 if (o) {
                     s32 lim = e->disturbRadius;
-                    if (func_020e9650(pv, (u8 *)o + 0x5c) < lim) {
+                    if (Vec_DistXZ(pv, (u8 *)o + 0x5c) < lim) {
                         if (o->vfunc_ac()) {
                             e->alarm = 0xfe;
                         }
@@ -9731,7 +9731,7 @@ extern "C" BOOL Insect_IsNetKindMismatch(void *a, Rec *o, s32 c, s32 d, s32 e) {
     if (d == 0) return FALSE;
     if (t < 0 || t != c) return TRUE;
     V3 v(d, 0, e);
-    func_020e9650(&o->position, &v);
+    Vec_DistXZ(&o->position, &v);
     return FALSE;
 }
 }
@@ -10592,13 +10592,13 @@ extern "C" void Insect_SetModelMatrix(void *a, Obj *o, s32 flag) {
     s32 r6 = WorldCurve_ToCurved(&v, &o->position);
     if (flag) {
         data_021f47e0 = o->handMtx;
-        func_020e8434(&data_021f47e0, o->rotX);
+        Mtx43_RotateX(&data_021f47e0, o->rotX);
     } else {
-        func_020e8388(&data_021f47e0, v.x, v.y, v.z);
-        func_020e8434(&data_021f47e0, (s16)(r6 + o->rotX));
+        Mtx43_SetTranslate(&data_021f47e0, v.x, v.y, v.z);
+        Mtx43_RotateX(&data_021f47e0, (s16)(r6 + o->rotX));
     }
-    if (o->rotY != 0) func_020e8404(&data_021f47e0, o->rotY);
-    if (o->rotZ != 0) func_020e83d4(&data_021f47e0, o->rotZ);
+    if (o->rotY != 0) Mtx43_RotateY(&data_021f47e0, o->rotY);
+    if (o->rotZ != 0) Mtx43_RotateZ(&data_021f47e0, o->rotZ);
     pb += 0x64;
     *(Blk *)pb = data_021f47e0;
     if (flag && o->kind == 0x39) {
@@ -10985,7 +10985,7 @@ extern "C" BOOL Insect_Spawn(s32 obj, s32 kind, u8 sub, s32 flag) {
                 s32 s24 = Snowball_GetRadius(o);
                 s32 s28 = Insect_RandomTurn(0x20, 1);
                 if (q) {
-                    if (func_020e9650((u8 *)q + 0x5c, pos) > 0xc000) {
+                    if (Vec_DistXZ((u8 *)q + 0x5c, pos) > 0xc000) {
                         dst->x = pos->x;
                         dst->y = pos->y;
                         dst->z = pos->z;
@@ -11785,7 +11785,7 @@ extern "C" s32 InsectSpawn_PickPos(u8 *self, void *a, s32 code, u32 flag)
                 v[0] = x;
                 v[1] = 0;
                 v[2] = y;
-                if (func_020e9650((u8 *)b + 0x5c, v) > 0x10000) {
+                if (Vec_DistXZ((u8 *)b + 0x5c, v) > 0x10000) {
                     q = (s32 *)(self + 0x204);
                     q[0] = x;
                     q[2] = y;
@@ -11830,7 +11830,7 @@ extern "C" s32 InsectSpawn_PickPos(u8 *self, void *a, s32 code, u32 flag)
                     v[0] = x;
                     v[1] = zero;
                     v[2] = y;
-                    if (func_020e9650((u8 *)b + 0x5c, v) > 0x10000) {
+                    if (Vec_DistXZ((u8 *)b + 0x5c, v) > 0x10000) {
                         q = (s32 *)(self + 0x204);
                     q[0] = x;
                         q[2] = y;

@@ -159,8 +159,8 @@ s32 TalkRequest_SetTargetDone(void *);
 s32 RoomObjSync_ChangeState(void *, u32);
 s32 MenuCtrl_IsFinished(void);
 s32 MenuCtrl_OpenLauncher(u32);
-s32 func_020e9650(s32 *a, s32 *b);
-s32 func_020e780c(s32 a, s32 b);
+s32 Vec_DistXZ(s32 *a, s32 *b);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *);
 s32 _ZN9AnimModel8stepAnimEv(void *);
 s32 _ZN9AnimModel12drawAnimatedEPv(void *, u32);
@@ -268,8 +268,8 @@ BOOL RecycleBox::vfunc_0c() {
 BOOL RecycleBox::vfunc_48(void *a) {
     Character *o = (Character *)a;
     if (o) {
-        if (func_020e9650(&o->position.x, &position.x) < 0x299a) {
-            if (func_020e780c((s16)(F(s16, 0x8e) + 0x8000), *(s16 *)((u8 *)o + 0x8e)) < 0x1200) {
+        if (Vec_DistXZ(&o->position.x, &position.x) < 0x299a) {
+            if (Math_AngleDiffAbs((s16)(F(s16, 0x8e) + 0x8000), *(s16 *)((u8 *)o + 0x8e)) < 0x1200) {
                 return TRUE;
             }
         }

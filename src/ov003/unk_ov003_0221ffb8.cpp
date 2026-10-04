@@ -889,8 +889,8 @@ void *PlayerActor_GetActor(s32 n);
 void ModelSlotPool_release(void *p, void *q);
 void *ModelSlotPool_acquire(void *p, void *q);
 s32 ModelSlot_getHeap(void *a);
-s64 func_020e9600(void *a, s32 b);
-s32 func_020e9650(void *a, void *b);
+s64 Vec_DistSqXZ(void *a, s32 b);
+s32 Vec_DistXZ(void *a, void *b);
 s32 func_021065dc(s32 a);
 s32 func_02133150(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -959,12 +959,12 @@ void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, v
 void ModelSlotHandle_Destroy(void *p);
 void ModelSlotHandle_Init(void *p);
 s32 Weather_GetFallingPrecip();
-BOOL func_020e7500(void *a);
-s32 func_020e780c(s32, s32);
-s32 func_020e7b98(s32 x, s32 z);
-s32 func_020e8388(void *m, s32 x, s32 y, s32 z);
-s32 func_020e8404(void *m, s32 a);
-s32 func_020e8434(void *m, s32 a);
+BOOL Math_CountDownU16(void *a);
+s32 Math_AngleDiffAbs(s32, s32);
+s32 Math_Atan2(s32 x, s32 z);
+s32 Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
+s32 Mtx43_RotateY(void *m, s32 a);
+s32 Mtx43_RotateX(void *m, s32 a);
 s32 Mem_Free(s32 a);
 void func_020f43fc(void *p);
 void func_020f440c(void *p);
@@ -2073,7 +2073,7 @@ extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
             s = 0x100;
         }
         ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, s, Math_AngleXZ(&self->position, q));
-        d = ((s64 (*)(void *, void *))func_020e9600)(&self->position, q);
+        d = ((s64 (*)(void *, void *))Vec_DistSqXZ)(&self->position, q);
         if ((s64)func_01ffcb0c(dv, dv) >= d) {
             self->biteStepTimer = 0;
             FishBobber_nudge(p);
@@ -2116,7 +2116,7 @@ extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
     }
     {
         sq = base >> 9;
-        s64 d = ((s64 (*)(void *, void *))func_020e9600)(&self->position, q);
+        s64 d = ((s64 (*)(void *, void *))Vec_DistSqXZ)(&self->position, q);
         if (d >= (s64)func_01ffcb0c(sq, sq)) {
             self->rotY = Math_AngleXZ(&self->position, q);
         }
@@ -2756,7 +2756,7 @@ extern "C" BOOL FishShadow_CanSeeBobber(void *self, s32 a1, s32 a2, s32 a3)
     val = (t->p[off] << 12) / 10;
     if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(self, p2, val, val, val)) {
         s32 lim = *(s16 *)(t->p + off + 2);
-        if (func_020e780c(Math_AngleXZ(self, p2), a1) <= lim) {
+        if (Math_AngleDiffAbs(Math_AngleXZ(self, p2), a1) <= lim) {
             result = TRUE;
         }
     }
@@ -3097,7 +3097,7 @@ extern "C" void FishCroak_Idle(Sub_f6 *s, Obj_f6 *o)
     }
     t = ((s32 (*)(s32))PlayerActor_GetBodyPos)(0);
     if (t != 0) {
-        if (((s32 (*)(s32, void *))func_020e9650)(t, &o->position) < 0x8000) {
+        if (((s32 (*)(s32, void *))Vec_DistXZ)(t, &o->position) < 0x8000) {
             s->b3 = 1;
         }
     }
@@ -3113,7 +3113,7 @@ extern "C" void FishCroak_Listen(Sub_f6 *s, Obj_f6 *o)
     }
     t = ((s32 (*)(s32))PlayerActor_GetBodyPos)(0);
     if (t != 0) {
-        if (((s32 (*)(s32, void *))func_020e9650)(t, &o->position) >= 0x8000) {
+        if (((s32 (*)(s32, void *))Vec_DistXZ)(t, &o->position) >= 0x8000) {
             s->b3 = 0;
             return;
         }
@@ -3595,7 +3595,7 @@ extern "C" BOOL FieldFish_StepParabola(V3_f5 *p, V3_f5 *a, V3_f5 *b, s32 n, s32 
     y = b->y;
     mm = m * m;
     t = ((k - (y >> 1)) << 3) / mm;
-    d = func_020e9650(a, b);
+    d = Vec_DistXZ(a, b);
     ang = ((s32 (*)(V3_f5 *, V3_f5 *))Math_AngleXZ)(a, b);
     s32 nn = n * n;
     p->y = a->y + (n * ((y + ((mm * t) >> 1)) / m) - ((nn * t) >> 1));
@@ -3636,7 +3636,7 @@ extern "C" void FishCatch_GetLineEnd(Self_f5 *self, Ent_f5 *ent, V3_f5 *out) {
         out->y = pv->y;
         out->z = pv->z;
     } else {
-        s32 ang = func_020e7b98(self->position.x - out->x, self->position.z - out->z);
+        s32 ang = Math_Atan2(self->position.x - out->x, self->position.z - out->z);
         s32 idx = ((u16)ang >> 4) * 2;
         out->x += func_01ffcb0c(0x4cd, data_02135f44[idx]);
         out->z += func_01ffcb0c(0x4cd, data_02135f44[idx + 1]);
@@ -4194,9 +4194,9 @@ extern "C" void FieldFish_SetModelMatrix(O_f3 *a, void *b, void *dstv, s32 ang) 
     u8 *dst = (u8 *)dstv;
     V3_f3 v;
     s32 r = WorldCurve_Apply(&v);
-    func_020e8388(data_021f47e0, v.x, v.y, v.z);
-    func_020e8434(data_021f47e0, r);
-    func_020e8404(data_021f47e0, ang);
+    Mtx43_SetTranslate(data_021f47e0, v.x, v.y, v.z);
+    Mtx43_RotateX(data_021f47e0, r);
+    Mtx43_RotateY(data_021f47e0, ang);
     struct T { s32 v[12]; };
     *(T *)(dst + 0x64) = *(T *)data_021f47e0;
 }
@@ -4336,7 +4336,7 @@ extern "C" BOOL FieldFish_ScareAround(s32 a, s32 b) {
     for (; i < 6; i++) {
         V3_f3 *pv = &e->position;
         V3_f3 v = *pv;
-        if (((s32 (*)(V3_f3 *, s32))func_020e9650)(&v, a) <= b) {
+        if (((s32 (*)(V3_f3 *, s32))Vec_DistXZ)(&v, a) <= b) {
             if (FishShadow_TryFlee(e, a) != 0) {
                 r = TRUE;
             }
@@ -4530,7 +4530,7 @@ extern "C" BOOL FieldFish_IsPlayerNear(void *self, s32 b, s32 idx) {
     if (o == NULL) {
         return FALSE;
     }
-    if (((long long (*)(void *, s32))func_020e9600)(o + 0x5c, b) <= 0x135c3) {
+    if (((long long (*)(void *, s32))Vec_DistSqXZ)(o + 0x5c, b) <= 0x135c3) {
         return TRUE;
     }
     return FALSE;
@@ -4833,7 +4833,7 @@ extern "C" BOOL FieldFish_IsRainOrSnow(void *self) {
 
 //@ 0x2220388
 extern "C" void FishShadow_TickRespawnTimer(Unk_ov003_02220844_Obj *self) {
-    if (func_020e7500(&self->respawnTimer) == 0) {
+    if (Math_CountDownU16(&self->respawnTimer) == 0) {
         if ((u32)self->state <= 1) {
             self->state = 0;
             u32 b = self->slotIndex;

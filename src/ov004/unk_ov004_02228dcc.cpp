@@ -160,7 +160,7 @@ s32 RoomObjRes_GetBta(void *, u32);
 s32 _ZN9AnimModel12drawAnimatedEPv(void *, u32);
 s32 _ZN9AnimModel8stepAnimEv(void *);
 s32 _ZN13AnimFrameCtrl4stepEv(void *);
-void func_020e8388(void *m, s32 x, s32 y, s32 z);
+void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 s32 _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *, void *, u32);
 s32 NNS_G3dBindMdlTex(void *, u32);
 s32 NNS_G3dBindMdlPltt(void *, u32);
@@ -233,7 +233,7 @@ BOOL TarotProps::onExecute() {
     _ZN9AnimModel8stepAnimEv(&partModels[2]);
     _ZN13AnimFrameCtrl4stepEv(&part1MatAnim);
     *part1MatAnim.anmObj = part1MatAnim.curFrame;
-    func_020e8388(&data_021f47e0, position.x, position.y, position.z);
+    Mtx43_SetTranslate(&data_021f47e0, position.x, position.y, position.z);
     partModels[1].mtx = data_021f47e0;
     partModels[2].mtx = data_021f47e0;
     execAct();

@@ -520,10 +520,10 @@ BOOL Scene_InUnk6Or7();
 BOOL Scene_InUnk6To8();
 BOOL Scene_InHouseRoom();
 void *WallpaperTexBuf_Init(void *);
-s32 func_020e780c(s32 a, s32 b);
-s32 func_020e7b98(s32 a, s32 b);
-void func_020e8388(s32 *m, s32 x, s32 y, s32 z);
-void func_020e8404(s32 *m, s32 a);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
+void Mtx43_SetTranslate(s32 *m, s32 x, s32 y, s32 z);
+void Mtx43_RotateY(s32 *m, s32 a);
 void *Mem_Free(void *p);
 void Heap_Free(void *heap, void *p);
 void *Heap_Alloc(void *heap, s32 size);
@@ -531,10 +531,10 @@ void func_020e885c(void *p);
 void func_020e8c88(void *p);
 void *FrameHeap_Create(u32 size, void *heap);
 u32 ExpHeap_Create(u32, u32);
-s32 func_020e93a0(Unk_ov004_02235528_V3 *, s32);
-s32 func_020e9650(void *a, void *b);
-void func_020e97c8(void *, s32);
-void func_020e9960(void *out, void *a, void *b);
+s32 Vec_RotateY(Unk_ov004_02235528_V3 *, s32);
+s32 Vec_DistXZ(void *a, void *b);
+void Vec_DivScalar(void *, s32);
+void Vec_Sub(void *out, void *a, void *b);
 void ProcBase_RequestDelete(void *p);
 void func_020f3a18(void *);
 void *func_021012bc(const char *name);
@@ -1440,7 +1440,7 @@ Unk_ov004_02235528_V3 *FtrContact::getPlayerPos() {
 s32 FtrContact::getStepDistance() {
     Unk_ov004_02235528_V3 *a = getPlayerPos();
     Unk_ov004_02235528_V3 *b = getPrevPlayerPos();
-    return func_020e9650(a, b);
+    return Vec_DistXZ(a, b);
 }
 
 // @0x22354f4 unk_022350c8.cpp
@@ -1623,7 +1623,7 @@ Unk_ov004_02235528_V3 *FtrContactSet::makeStepVec(s16 v) {
     r.x = 0;
     r.y = 0;
     r.z = 0x2000;
-    func_020e93a0((Unk_ov004_02235528_V3 *)&r, v);
+    Vec_RotateY((Unk_ov004_02235528_V3 *)&r, v);
     return (Unk_ov004_02235528_V3 *)&r;
 }
 
@@ -3962,7 +3962,7 @@ extern "C" s32 FtrMgr_FindFacingFurniture(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos,
                 continue;
             }
             FieldPos_FromUnitCenter((Unk_ov004_Vec3 *)&v40, c2c, c30);
-            if (func_020e9650(pos, &v40) > sFtrPickRangeByLayer[layer & 1]) {
+            if (Vec_DistXZ(pos, &v40) > sFtrPickRangeByLayer[layer & 1]) {
                 continue;
             }
             o = FtrActorGrid_GetInstance()->getActor(c2c, c30, (u8)layer);
@@ -4252,9 +4252,9 @@ loopE:
                 FieldPos_FromUnitCenter((Unk_ov004_Vec3 *)&v7c, q3c, y3c);
                 VEC_Add(&v70, &v7c, &v70);
             }
-            func_020e97c8(&v70, m << 12);
-            func_020e9960(&v88, pos, &v70);
-            if (func_020e780c(dr, func_020e7b98(v88.x, v88.z)) > 0x4000) {
+            Vec_DivScalar(&v70, m << 12);
+            Vec_Sub(&v88, pos, &v70);
+            if (Math_AngleDiffAbs(dr, Math_Atan2(v88.x, v88.z)) > 0x4000) {
                 s16 *p1 = FtrFootprint_GetTileOffset(&buf, 1);
                 s16 *p2 = FtrFootprint_GetTileOffset(&buf, 1);
                 if (Unk_ov004_02233f3c_Ns::FtrMgr_TryPlaceAt(out, px + p1[0], py + p2[1], (r7 + 2) & 3, pl, layer, bx, by) == 3) {
@@ -4541,8 +4541,8 @@ extern "C" BOOL FtrMoveAnim_Start(FtrMoveAnim *r, s32 x, volatile u8 *flag, Unk_
         r->posX = pos->x;
         r->posY = pos->y;
         r->posZ = pos->z;
-        func_020e8388(data_021f47e0, pos->x, pos->y, pos->z);
-        func_020e8404(data_021f47e0, *(s16 *)&e);
+        Mtx43_SetTranslate(data_021f47e0, pos->x, pos->y, pos->z);
+        Mtx43_RotateY(data_021f47e0, *(s16 *)&e);
         r->modelMtx = *(Unk_ov004_02233b3c_Mat *)data_021f47e0;
         return TRUE;
     }

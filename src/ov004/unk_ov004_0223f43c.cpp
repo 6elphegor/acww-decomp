@@ -95,8 +95,8 @@ void Camera_GetLookAtPoint(void *out, Unk_021c3070 *o);
 void VEC_Subtract(void *a, void *b, void *c);
 void VEC_Add(void *a, void *b, void *c);
 void func_01ffd070(void *out, void *a, void *b);
-void func_020e9790(void *out, void *in, s32 s);
-void func_020e93a0(void *v, s32 a);
+void Vec_ShiftRightTo(void *out, void *in, s32 s);
+void Vec_RotateY(void *v, s32 a);
 void Camera_StartBlend(void);
 void Camera_FinishBlend(void);
 void Camera_PlaySe(Unk_021c3070 *o, s32 a);
@@ -335,7 +335,7 @@ void Camera_UpdateMode16(Unk_021c3070 *o) {
     Unk_0223f44c_Vec a, b;
     s32 d;
     func_01ffd070(&a, p, &o->focusPointA);
-    func_020e9790(&b, &a, 1);
+    Vec_ShiftRightTo(&b, &a, 1);
     o->targetFocus.x = b.x;
     o->targetFocus.y = b.y;
     o->targetFocus.z = b.z;
@@ -462,7 +462,7 @@ void Camera_UpdateMode18(Unk_021c3070 *o) {
         {
             Unk_0223f6bc_V3 t(e->w3, 0, e->w4);
             VEC_Add(&o->targetFocus.x, &t, &o->targetFocus.x);
-            func_020e93a0(&t, m->v0);
+            Vec_RotateY(&t, m->v0);
             VEC_Subtract(&o->targetFocus.x, &t, &o->targetFocus.x);
         }
     }

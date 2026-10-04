@@ -103,8 +103,8 @@ s32 InputMode_SetButtons();
 void OverlayMgr_Release(u32);
 void OverlayMgr_Acquire(u32);
 s32 GameProc_CreateChild(u32, u32, u32, u32);
-void func_020e79a0(void *, void *);
-void func_020e7968(void *, u32);
+void List_Remove(void *, void *);
+void List_PushBack(void *, u32);
 void MenuScreen_Update();
 BOOL func_0203d4d4();
 s32 Scene_GetCurrent();
@@ -508,10 +508,10 @@ BOOL MenuManager::onExecute() {
 
 BOOL MenuManager::onDraw() { return TRUE; }
 
-extern "C" void MenuCtrl_AddOpenMenu(u32 v) { func_020e7968(&sOpenMenuList, v); }
+extern "C" void MenuCtrl_AddOpenMenu(u32 v) { List_PushBack(&sOpenMenuList, v); }
 
 extern "C" void MenuCtrl_RemoveOpenMenu(u8 *o) {
-    func_020e79a0(&sOpenMenuList, o);
+    List_Remove(&sOpenMenuList, o);
     MenuCtrl_SetReleasePending(*(*(u8 **)(o + 8) + 0x90));
 }
 

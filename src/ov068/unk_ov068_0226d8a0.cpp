@@ -82,7 +82,7 @@ extern "C" {
 void RoomObj_LoadResourcesByName(char *s, void *a, void *b, void *c);
 void RoomObj_ReleaseResources(void *a, void *b);
 s32 _ZN12RoomObjActor14storeSyncStateEv(void *self, u32 v);
-void func_020e761c(void *dst, s32 v, s32 n);
+void Math_StepS32(void *dst, s32 v, s32 n);
 void NNS_G3dMdlSetMdlAlpha(void *o, u32 i, u32 v);
 }
 
@@ -148,7 +148,7 @@ BOOL RoostCafeSet::vfunc_00() {
 BOOL RoostCafeSet::onExecute() {
     updateFadeState();
     if (alpha != targetAlpha) {
-        func_020e761c(&alpha, targetAlpha, 2);
+        Math_StepS32(&alpha, targetAlpha, 2);
     }
     u32 n = (*(Unk_ov068_022708fc_Obj **)((u8 *)this + 0x148))->numMat;
     for (u32 i = 0; i < n; i++) {

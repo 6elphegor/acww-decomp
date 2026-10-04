@@ -232,7 +232,7 @@ void _ZN8ItemNameC1Ev(void *p);
 void _ZN8ItemNameD1Ev(void *p);
 void _ZN12Unk_0201347416disableFootstepsEv(void *p);
 void _ZN12Unk_0201347415enableFootstepsEv(void *p);
-void func_020e7518(void *p);
+void Math_CountDownU8(void *p);
 s32 Random_Next(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *p);
@@ -488,7 +488,7 @@ BOOL SpNpcWendell::checkCollisionWhileMoving() {
 BOOL SpNpcWendell::mainAct02() {
     void *p = &actionCtrl;
     BOOL a = isNearCameraTarget();
-    func_020e7518(&unk_651);
+    Math_CountDownU8(&unk_651);
     if (a) {
         if (checkCollisionWhileMoving() == 0) {
             if (_ZN13NpcActionCtrl12isActionDoneEv(p)) {

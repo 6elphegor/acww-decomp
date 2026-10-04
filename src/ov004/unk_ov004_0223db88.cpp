@@ -51,7 +51,7 @@ extern void *gSceneBlockMap;
 extern const MuseumInfoPointSet sMuseumInfoPointsByScene[];
 
 s32 FX_Div(s32 a, s32 b);
-s32 func_020e780c(s32 a, s32 b);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 Scene_GetCurrent();
 void MuseumExhibitInfo_Spawn(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
 u32 MuseumInfoPoint_GetItemCount(Rec *r);
@@ -359,7 +359,7 @@ extern "C" void MuseumInfoPoint_Init(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, s3
     } while (i < 4);
     r->angle = FX_Div(sum << 12, cnt << 12) >> 12;
     if (cnt == 2) {
-        if (func_020e780c(last, r->angle) >= 0x4000) {
+        if (Math_AngleDiffAbs(last, r->angle) >= 0x4000) {
             r->angle = r->angle + 0x8000;
         }
     }
@@ -367,7 +367,7 @@ extern "C" void MuseumInfoPoint_Init(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, s3
     i = last;
     do {
         if (((mask >> i) & 1) != 0) {
-            s32 t = func_020e780c((s32)(i << 30) >> 16, r->angle);
+            s32 t = Math_AngleDiffAbs((s32)(i << 30) >> 16, r->angle);
             if (t > last) {
                 last = t;
             }

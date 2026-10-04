@@ -4,7 +4,7 @@
 #include "types.h"
 
 // Command-sequence object: runs a list of commands (cmds) through its virtuals. Its non-virtual helpers are
-// func_020ed81c (src/autoload_2/unk_020ed81c.cpp), func_020ed7e4 (unk_020ed7e4.cpp) and func_020ed8cc (unk_020ed8cc.cpp).
+// CmdSeq_Run (src/autoload_2/unk_020ed81c.cpp), CmdSeq_Poll (unk_020ed7e4.cpp) and CmdSeq_Undo (unk_020ed8cc.cpp).
 class Unk_Seq {
 public:
     virtual void vfunc_00();

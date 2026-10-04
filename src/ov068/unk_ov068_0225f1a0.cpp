@@ -938,7 +938,7 @@ s32 FishShadow_GetFishId(s32);
 s32 FishShadow_GetPos(void *, s32);
 s32 FieldInsect_GetKindAndAlarm(u8 *, u8);
 s32 FieldInsect_GetPosAndKind(void *, u8);
-s32 func_020e9650(void *, void *);
+s32 Vec_DistXZ(void *, void *);
 s32 NpcLookAt_canSeeTarget(void *, void *);
 void NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u8);
 void NpcLookAt_setTargetPos(void *, void *);
@@ -1237,7 +1237,7 @@ s32 VillagerTalk_hasPartner(void *);
 s32 NpcActor_getDistanceTo(void *, void *);
 s32 NpcActor_getRelativeAngleTo(void *, void *);
 s32 NpcActor_getAngleTo(void *, void *);
-s32 func_020e96a4(void *, void *);
+s32 Vec_Distance(void *, void *);
 void NpcMoveCtrl_setWaypoint(void *, void *);
 s32 Unk_02015b8c_getAnimId(void *, s32);
 s32 Random_GlobalBelow(s32);
@@ -1324,7 +1324,7 @@ s32 PlayerData_getPlayerId(...);
 s32 PlayerId_isValid(s32);
 s32 Villager_FindMemory(s32, s32);
 s32 NpcActor_getDistanceTo(void *, void *);
-s32 func_020e9650(void *, void *);
+s32 Vec_DistXZ(void *, void *);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 void VillagerMood_enableEffects(void *);
 void VillagerActor_clearFlag834(void *);
@@ -1574,7 +1574,7 @@ void FieldVillagerAi_ChangeState(void *, void *, s32);
 void FieldVillagerAi_SetResumeState(void *, s32);
 void *VillagerDataItemView_getHousePos(void *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
-void func_020e761c(void *, s32, s32);
+void Math_StepS32(void *, s32, s32);
 void Unk_02013474_playFootstepSe(void *, void *);
 void *Villager_GetIndex(void *);
 s32 VillagerHouse_TryOpenDoorForEntry(void *);
@@ -1636,7 +1636,7 @@ s32 NpcLookAt_canSeeTarget(void *, void *);
 s32 Unk_0201a13c_isOnTarget(void *);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
 void FieldPos_SnapToUnitCenter(void *, void *);
-s32 func_020e9650(void *, void *);
+s32 Vec_DistXZ(void *, void *);
 s32 NpcActor_getNpcIndex(void *);
 s32 FieldAction_RequestPitfallAt(s32, void *);
 s32 FieldAction_PollResult();
@@ -1668,11 +1668,11 @@ s32 Unk_02012810_runStep(void *, void *);
 s32 TalkRequest_IsTalking();
 void *PlayerActor_GetCharacter(s32);
 void *TalkRequest_GetTalkTarget();
-void func_020e9960(void *, void *, void *);
-void func_020e9768(void *, s32);
+void Vec_Sub(void *, void *, void *);
+void Vec_ShiftRight(void *, s32);
 void func_01ffd070(void *, void *, void *);
-void func_020e93a0(void *, s32);
-s32 func_020e96ec(void *, void *);
+void Vec_RotateY(void *, s32);
+s32 Vec_NotEqual(void *, void *);
 s32 func_01ffcb0c(s32, s32);
 void *VillagerDataItemView_getHousePos(void *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
@@ -1760,7 +1760,7 @@ s32 FishShadow_GetFishId(s32);
 s32 FishShadow_GetPos(void *, s32);
 s32 FieldInsect_GetKindAndAlarm(u8 *, u8);
 s32 FieldInsect_GetPosAndKind(void *, u8);
-s32 func_020e9650(void *, void *);
+s32 Vec_DistXZ(void *, void *);
 s32 NpcLookAt_canSeeTarget(void *, void *);
 void NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u8);
 void NpcLookAt_setTargetPos(void *, void *);
@@ -1980,7 +1980,7 @@ void NpcActor_setTalkRequest(void *, void *);
 s32 HeldToolModel_load(void *, void *);
 s32 VillagerState_GetRole(void *);
 void HeldToolModel_init(void *);
-s32 func_020e7500(void *);
+s32 Math_CountDownU16(void *);
 s32 func_01ffcb0c(s32, s32);
 }
 static inline BOOL Unk_ov068_02266320_IsZero(s32 v) {
@@ -4033,7 +4033,7 @@ BOOL FieldVillagerAi_IsAtHomeDoor(FieldVillagerAiStates *self, Unk_ov068_Owner_6
         u8 *p = (u8 *)VillagerDataItemView_getHousePos(o->vfunc_64());
         Unk_ov068_022649f4_Vec t;
         FieldPos_FromUnitCenter(&t, p[0], p[1] + 1);
-        if (func_020e9650(&t, &o->position) < 0x800) {
+        if (Vec_DistXZ(&t, &o->position) < 0x800) {
             r = TRUE;
         } else {
             r = FALSE;
@@ -4050,14 +4050,14 @@ namespace ns_022649f4 {
 extern "C" {
 BOOL FieldVillagerAi_DirCrossesPlayerTalk(void *self, void *a, Unk_ov068_022649f4_Vec *b) {
     if (TalkRequest_IsTalking() != 0) {
-        if (func_020e96ec(b, gVec3Zero) != 0) {
+        if (Vec_NotEqual(b, gVec3Zero) != 0) {
             u8 *p = (u8 *)PlayerActor_GetCharacter(4);
             u8 *q = (u8 *)TalkRequest_GetTalkTarget();
             if (p != 0 && q != 0) {
                 Unk_ov068_022649f4_Vec t1;
                 Unk_ov068_022649f4_Vec t2;
-                func_020e9960(&t1, p + 0x5c, a);
-                func_020e9960(&t2, q + 0x5c, a);
+                Vec_Sub(&t1, p + 0x5c, a);
+                Vec_Sub(&t2, q + 0x5c, a);
                 s32 x = func_01ffcb0c(b->x, t1.z);
                 x -= func_01ffcb0c(b->z, t1.x);
                 s32 y = func_01ffcb0c(b->x, t2.z);
@@ -4081,7 +4081,7 @@ s32 FieldVillagerAi_HeadingCrossesPlayerTalk(void *self, Unk_ov068_Owner_649 *o)
         t.x = 0;
         t.y = 0;
         t.z = 0x1000;
-        func_020e93a0(&t, o->moveAngleY);
+        Vec_RotateY(&t, o->moveAngleY);
         return FieldVillagerAi_DirCrossesPlayerTalk(self, &o->position, &t);
     }
     return 0;
@@ -4093,7 +4093,7 @@ namespace ns_022649f4 {
 extern "C" {
 s32 FieldVillagerAi_PathCrossesPlayerTalk(void *self, void *a, void *b) {
     Unk_ov068_022649f4_Vec t;
-    func_020e9960(&t, a, b);
+    Vec_Sub(&t, a, b);
     return FieldVillagerAi_DirCrossesPlayerTalk(self, b, &t);
 }
 }
@@ -4108,10 +4108,10 @@ BOOL FieldVillagerAi_IsNearPlayerTalkSpot(void *self, void *v, s32 lim) {
         if (a != 0 && b != 0) {
             Unk_ov068_022649f4_Vec t1;
             Unk_ov068_022649f4_Vec t2;
-            func_020e9960(&t1, a + 0x5c, b + 0x5c);
-            func_020e9768(&t1, 1);
+            Vec_Sub(&t1, a + 0x5c, b + 0x5c);
+            Vec_ShiftRight(&t1, 1);
             func_01ffd070(&t2, a + 0x5c, &t1);
-            s32 d = func_020e9650(v, &t2);
+            s32 d = Vec_DistXZ(v, &t2);
             if (d < 0) {
                 d = -d;
             }
@@ -4209,7 +4209,7 @@ void *FieldVillagerAi_FindChatPartner(void *self, Unk_ov068_Owner_649 *o) {
                 }
             }
         }
-        if (func_020e9650(pos, &e->position) >= 0x3000) {
+        if (Vec_DistXZ(pos, &e->position) >= 0x3000) {
             continue;
         }
         s32 d = Math_AngleXZ(pos, &e->position);
@@ -4428,7 +4428,7 @@ BOOL FieldVillagerAi_TryFallInPitfall(void *self, Unk_ov068_Owner_649 *o) {
     FieldPos_ToUnit(&a, &b, p);
     if (FieldVillagerAi_IsBuriedPitfallAt(self, (Unk_ov068_02264ab4_P2 *)&a) != 0) {
         FieldPos_SnapToUnitCenter(&t, p);
-        if (func_020e9650(&t, p) <= 0xb00) {
+        if (Vec_DistXZ(&t, p) <= 0xb00) {
             q.x = a;
             q.y = b;
             s32 idx = FieldAction_RequestPitfallAt((s8)NpcActor_getNpcIndex(o), &q);
@@ -4757,8 +4757,8 @@ void FieldVillagerAiStates::goInHouseStep2(Unk_ov068_Owner *o) {
     }
     u8 *p = (u8 *)VillagerDataItemView_getHousePos((void *)o->vfunc_64());
     FieldPos_FromUnitCenter(&v, p[0], p[1] + 1);
-    func_020e761c((u8 *)o + 0x5c, v.x, 0x400);
-    func_020e761c((u8 *)o + 0x64, v.z, 0x400);
+    Math_StepS32((u8 *)o + 0x5c, v.x, 0x400);
+    Math_StepS32((u8 *)o + 0x64, v.z, 0x400);
     if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x3b) {
         // switch {8,12,22,27,34}: mwcc's own lowering gives a different compare tree, so it is hand-written
         s32 k = (s32)((*(u32 *)((u8 *)o + 0x190) << 4) >> 16);
@@ -5641,7 +5641,7 @@ BOOL FieldVillagerAiChat::isPartnerNear(Unk_ov068_Owner *o) {
     Unk_ov068_Owner *p = VillagerTalk_getPartner(o);
     s32 d = 0;
     if (p != 0) {
-        d = func_020e9650((u8 *)o + 0x5c, (u8 *)p + 0x5c);
+        d = Vec_DistXZ((u8 *)o + 0x5c, (u8 *)p + 0x5c);
     }
     if (d > 0 && d < 0x3c00) {
         return TRUE;
@@ -5989,7 +5989,7 @@ BOOL FieldVillagerAiPlayerStates::enterApproach(Unk_ov068_Owner *o) {
 
 BOOL FieldVillagerAiPlayerStates::isNearApproachStart(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
-    if (func_020e96a4((u8 *)o + 0x5c, &approachStartX) <= 0xc000) {
+    if (Vec_Distance((u8 *)o + 0x5c, &approachStartX) <= 0xc000) {
         return TRUE;
     }
     return FALSE;
@@ -7488,7 +7488,7 @@ void FieldVillagerLook::setLookMode(FieldVillager *o, u32 idx, s32 a, s32 b, voi
 s32 FieldVillagerLook::getInsectIfNear(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim) {
     using namespace ns_0225f1a0;
     s32 t = FieldInsect_GetPosAndKind(v, i);
-    if (t != -1 && func_020e9650(p, v) < lim) {
+    if (t != -1 && Vec_DistXZ(p, v) < lim) {
         return t;
     }
     return -1;
@@ -7548,7 +7548,7 @@ void FieldVillagerLook::trackInsect(FieldVillager *o) {
 
 BOOL FieldVillagerLook::getFishPosIfNear(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim) {
     using namespace ns_0225f1a0;
-    if (FishShadow_GetPos(v, i) && func_020e9650(p, v) < lim) {
+    if (FishShadow_GetPos(v, i) && Vec_DistXZ(p, v) < lim) {
         return TRUE;
     }
     return FALSE;

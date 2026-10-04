@@ -69,8 +69,8 @@ s32 Snd_StopSe(s32 a, s32 b);
 void func_02004008(s32 a);
 s32 Snd_SetPanIfChanged(s32 a);
 void Gfx2d_SetLayerOffset(u32 a, s32 b, s32 c);
-void func_020e9960(Unk_ov127_02291f60_Vec *out, Unk_ov127_02291f60_Vec *a, Unk_ov127_02291f60_Vec *b);
-s32 func_020e9688(Unk_ov127_02291f60_Vec *v);
+void Vec_Sub(Unk_ov127_02291f60_Vec *out, Unk_ov127_02291f60_Vec *a, Unk_ov127_02291f60_Vec *b);
+s32 Vec_MagXZ(Unk_ov127_02291f60_Vec *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 void func_01ffd070(Unk_ov127_02291f60_Vec *out, Unk_ov127_02291f60_Vec *a, Unk_ov127_02291f60_Vec *b);
@@ -432,11 +432,11 @@ extern "C" void StarSky_StepToTarget(Unk_ov127_02291f60 *s)
     l.b.x = bx << 12;
     l.b.y = 0;
     l.b.z = s->targetScrollY << 12;
-    func_020e9960(&l.e, &l.b, &l.a);
+    Vec_Sub(&l.e, &l.b, &l.a);
     l.c.x = l.e.x;
     l.c.y = l.e.y;
     l.c.z = l.e.z;
-    len = func_020e9688(&l.c);
+    len = Vec_MagXZ(&l.c);
     if (len <= 0x8000) {
         StarSky_ClearFlags(s, 4);
         s->scrollX = s->targetScrollX;

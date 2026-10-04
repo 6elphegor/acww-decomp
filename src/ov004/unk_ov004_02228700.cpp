@@ -129,7 +129,7 @@ void RoomObj_PlaySeHeld(void *, u32);
 s32 _ZN9AnimModel12drawAnimatedEPv(void *, u32);
 s32 _ZN9AnimModel8stepAnimEv(void *);
 s32 _ZN13AnimFrameCtrl4stepEv(void *);
-void func_020e8388(void *m, s32 x, s32 y, s32 z);
+void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 s32 _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *, void *, u32);
 s32 NNS_G3dBindMdlTex(void *, u32);
 s32 NNS_G3dBindMdlPltt(void *, u32);
@@ -149,7 +149,7 @@ s32 ClothTex_LoadItem(void *p, void *q, u32 a);
 void *ClothTex_GetTex(void *p);
 s32 _ZN14MatTexVramTask7requestEPvjS0_jj(void *p, u32 a, const char *b, void *c, u32 d, u32 e);
 s32 Math_EaseRampProgress(s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 func_020e77cc(s32 a, s32 b, s32 c);
+s32 Math_IsInRange(s32 a, s32 b, s32 c);
 BOOL MenuCtrl_IsMenuOpen();
 void _ZN9AnimModelC1Ev(void *);
 void _ZN9AnimModelD1Ev(void *);
@@ -240,7 +240,7 @@ BOOL SewingMachine::onExecute() {
     _ZN9AnimModel8stepAnimEv(partModel);
     _ZN13AnimFrameCtrl4stepEv(matAnim);
     *F(u32 *, 0x430) = F(u32, 0x420);
-    func_020e8388(&data_021f47e0, position.x, position.y, position.z);
+    Mtx43_SetTranslate(&data_021f47e0, position.x, position.y, position.z);
     F(Unk_ov004_02228a40_Mtx, 0xec + 0x64) = data_021f47e0;
     F(Unk_ov004_02228a40_Mtx, 0x290 + 0x64) = data_021f47e0;
     updateState();
@@ -315,7 +315,7 @@ BOOL SewingMachine::enterState02() {
 void SewingMachine::updateState02() {
     s32 t = ((Unk_ov004_022288c0_Bits *)((u8 *)this + 0x334))->mid;
     u32 q = (u16)(t / 0x38);
-    if (func_020e77cc((u16)(t - q * 0x38), 0x11, 0x34)) {
+    if (Math_IsInRange((u16)(t - q * 0x38), 0x11, 0x34)) {
         if (!MenuCtrl_IsMenuOpen()) {
             RoomObj_PlaySeHeld(&se, 0x85e);
         }

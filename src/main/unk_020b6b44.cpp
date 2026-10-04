@@ -25,14 +25,14 @@ extern s32 data_020c8cb8;
 extern Mtx43 gViewMtx;
 s32 _ZN12Unk_0203b3509getFovTanEv(s32 a);
 s32 FX_Div(s32 a, s32 b);
-void func_020e94f8(Vec3 *v);
-void func_020e9888(Vec3 *v, s32 s);
+void Vec_SafeNormalize(Vec3 *v);
+void Vec_Scale(Vec3 *v, s32 s);
 void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
 void MTX_Inverse43(Mtx43 *a, Mtx43 *b);
 void MTX_MultVec43(Vec3 *v, Mtx43 *m, Vec3 *out);
-void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
-void func_020e93a0(Vec3 *v, s32 angle);
-void func_020e944c(Vec3 *v, s32 angle);
+void Vec_Sub(Vec3 *out, Vec3 *a, Vec3 *b);
+void Vec_RotateY(Vec3 *v, s32 angle);
+void Vec_RotateX(Vec3 *v, s32 angle);
 s32 WorldCurve_ToCurved(Vec3 *out, Vec3 *in);
 }
 
@@ -73,7 +73,7 @@ extern "C" BOOL TouchPick_HitCylinder(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
     CollisionCylinderX o((Unk_0202f660_V3 *)&v4c, a, b);
     if (o.clipSegmentCaps((Unk_0202f660_V3 *)&v40, (Unk_0202f660_V3 *)&v34) ||
         o.clipSegmentSideBounded((Unk_0202f660_V3 *)&v40, (Unk_0202f660_V3 *)&v34)) {
-        func_020e944c(&v40, ang);
+        Vec_RotateX(&v40, ang);
         s32 rz = v40.z, ry = v40.y, rx = v40.x;
         p->x = rx;
         p->y = ry;
@@ -97,8 +97,8 @@ extern "C" void TouchPick_CalcRay(Basis *out, s32 x, s32 z) {
     t.p.y = -((z << 12) - 0x60000);
     t.p.z = k;
     t.q = t.p;
-    func_020e94f8(&t.q);
-    func_020e9888(&t.q, data_020c8cb8);
+    Vec_SafeNormalize(&t.q);
+    Vec_Scale(&t.q, data_020c8cb8);
     func_01ffd070(&c, &zero, &t.q);
     m = gViewMtx;
     MTX_Inverse43(&m, &m);
@@ -106,9 +106,9 @@ extern "C" void TouchPick_CalcRay(Basis *out, s32 x, s32 z) {
     MTX_MultVec43(&c, &m, &e);
     out->a = d;
     out->b = e;
-    func_020e9960(&f, &out->b, &out->a);
+    Vec_Sub(&f, &out->b, &out->a);
     out->c = f;
-    func_020e94f8(&out->c);
+    Vec_SafeNormalize(&out->c);
 }
 
 TouchPickBox::TouchPickBox() {
@@ -126,10 +126,10 @@ BOOL TouchPickBox::build(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f)
     c[0].z = c[4].z = c[3].z = c[7].z = -hd;
     c[1].z = c[5].z = c[2].z = c[6].z = hd;
     if (angle != 0) {
-        func_020e93a0(&c[0], angle);
-        func_020e93a0(&c[1], angle);
-        func_020e93a0(&c[2], angle);
-        func_020e93a0(&c[3], angle);
+        Vec_RotateY(&c[0], angle);
+        Vec_RotateY(&c[1], angle);
+        Vec_RotateY(&c[2], angle);
+        Vec_RotateY(&c[3], angle);
         c[4] = c[0];
         c[5] = c[1];
         c[6] = c[2];

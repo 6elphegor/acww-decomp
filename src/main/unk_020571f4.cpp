@@ -203,15 +203,15 @@ extern u8 gFieldSceneKind[];
 extern u8 gSaveVillagers[];
 
 void FishDisplay_Release(s32 a);
-s32 func_020e9650(void *a, void *b);
-void func_020e761c(s32 *p, s32 target, s32 step);
-void func_020e93a0(Unk_020dc034_V *v, s32 angle);
+s32 Vec_DistXZ(void *a, void *b);
+void Math_StepS32(s32 *p, s32 target, s32 step);
+void Vec_RotateY(Unk_020dc034_V *v, s32 angle);
 void VEC_Add(Unk_020dc034_V *a, Unk_020dc034_V *b, Unk_020dc034_V *out);
 void FieldPos_SnapToUnitCenter(Unk_020dc034_V *a, Unk_020dc034_V *b);
 s32 Scene_GetCurrent();
 s32 func_02003e70(void *p, u32 a, s32 b, s32 c);
-void func_020e9960(Unk_020dc034_V *out, Unk_020dc034_V *a, Unk_020dc034_V *b);
-void func_020e759c(s32 *p, s32 a, s32 b);
+void Vec_Sub(Unk_020dc034_V *out, Unk_020dc034_V *a, Unk_020dc034_V *b);
+void Math_StepS32Alt(s32 *p, s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_02133150(s32 a, s32 b);
 s32 Fish_GetSizeClass(s32 a);
@@ -228,7 +228,7 @@ s32 FishDisplay_Acquire();
 void _ZN12Unk_02003c3013func_02003e50Ev(void *p);
 void _ZN12Unk_02003c3013func_02003eccEv(void *p);
 void _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(void *p, Unk_020dc034_V *v);
-void func_020e7518(void *p);
+void Math_CountDownU8(void *p);
 void SaveVillagers_Get(void *p, u32 v);
 u32 Villager_GetAnimalKind();
 
@@ -392,7 +392,7 @@ BOOL HandOverItem::onExecute()
             }
         }
         if (isAwaitingTake()) {
-            func_020e7518(&takeTimer);
+            Math_CountDownU8(&takeTimer);
         }
     }
     return TRUE;
@@ -605,7 +605,7 @@ void HandOverItem::localToWorld(Unk_020dc034_V *out, Unk_020dc034_V *in, u32 idx
     out->z = in->z;
     if (idx < 2) {
         if (unk_cc[idx] != NULL) {
-            func_020e93a0(out, ((Unk_020dc034_Owner_Base *)unk_cc[idx])->rotY);
+            Vec_RotateY(out, ((Unk_020dc034_Owner_Base *)unk_cc[idx])->rotY);
             VEC_Add(out, &unk_cc[idx]->position, out);
         }
     }
@@ -687,15 +687,15 @@ void HandOverItem::act01Phase1()
         a = func_01ffcb0c(a, k);
         b = func_01ffcb0c(b, k);
     }
-    func_020e759c(&v, a, b);
+    Math_StepS32Alt(&v, a, b);
     s32 u = v;
     scale.x = u;
     scale.y = u;
     scale.z = u;
     getMasterHoldPos(&cur);
-    func_020e761c(&itemPos.x, basePos.x, moveStep.x);
-    func_020e761c(&itemPos.y, cur.y + basePos.y, moveStep.y);
-    func_020e761c(&itemPos.z, basePos.z, moveStep.z);
+    Math_StepS32(&itemPos.x, basePos.x, moveStep.x);
+    Math_StepS32(&itemPos.y, cur.y + basePos.y, moveStep.y);
+    Math_StepS32(&itemPos.z, basePos.z, moveStep.z);
     frame = frame + 1;
     if ((s32)frame >= data_020ca690[(*(volatile u8 *)&phase)]) {
         (*(volatile u8 *)&phase) = (*(volatile u8 *)&phase) + 1;
@@ -757,9 +757,9 @@ void HandOverItem::startAct03()
 void HandOverItem::updateAct03()
 {
     if ((s32)frame < 2) {
-        func_020e761c(&itemPos.x, target.x, moveStep.x);
-        func_020e761c(&itemPos.y, target.y, moveStep.y);
-        func_020e761c(&itemPos.z, target.z, moveStep.z);
+        Math_StepS32(&itemPos.x, target.x, moveStep.x);
+        Math_StepS32(&itemPos.y, target.y, moveStep.y);
+        Math_StepS32(&itemPos.z, target.z, moveStep.z);
         frame = frame + 1;
         if ((s32)frame >= 2) {
             setBusy(0);
@@ -802,12 +802,12 @@ void HandOverItem::updateAct04()
     s32 n = frame;
     if (n < 9) {
         getMasterHoldPos(&cur);
-        func_020e761c(&itemPos.x, target.x, moveStep.x);
+        Math_StepS32(&itemPos.x, target.x, moveStep.x);
         itemPos.y = cur.y + target.y;
-        func_020e761c(&itemPos.z, target.z, moveStep.z);
+        Math_StepS32(&itemPos.z, target.z, moveStep.z);
         frame = frame + 1;
         if ((s32)frame >= 9) {
-            func_020e9960(&t, &itemPos, &cur);
+            Vec_Sub(&t, &itemPos, &cur);
             offset.x = t.x;
             offset.y = t.y;
             offset.z = t.z;
@@ -824,7 +824,7 @@ void HandOverItem::startAct0A()
     Unk_020dc034_V cur, t;
     setBusy(0);
     getMasterHoldPos(&cur);
-    func_020e9960(&t, &itemPos, &cur);
+    Vec_Sub(&t, &itemPos, &cur);
     offset.x = t.x;
     offset.y = t.y;
     offset.z = t.z;
@@ -844,12 +844,12 @@ void HandOverItem::startAct05()
     target.y = 0;
     target.z = 0;
     getMasterHoldPos(&cur);
-    func_020e9960(&t, &itemPos, &cur);
+    Vec_Sub(&t, &itemPos, &cur);
     offset.x = t.x;
     offset.y = t.y;
     offset.z = t.z;
     if (unk_cc[0] != NULL) {
-        func_020e93a0(&offset, (s16)-unk_cc[0]->rotY);
+        Vec_RotateY(&offset, (s16)-unk_cc[0]->rotY);
     }
     worldOffset.x = 0;
     worldOffset.y = 0;
@@ -877,19 +877,19 @@ void HandOverItem::updateAct05()
     s32 v = scale.x;
     if ((s32)frame < 8) {
         getMasterHoldPos(&itemPos);
-        func_020e761c(&v, 0, scaleStep);
+        Math_StepS32(&v, 0, scaleStep);
         s32 u = v;
         scale.x = u;
         scale.y = u;
         scale.z = u;
-        func_020e761c(&offset.x, 0, moveStep.x);
-        func_020e761c(&offset.y, 0, moveStep.y);
-        func_020e761c(&offset.z, 0, moveStep.z);
+        Math_StepS32(&offset.x, 0, moveStep.x);
+        Math_StepS32(&offset.y, 0, moveStep.y);
+        Math_StepS32(&offset.z, 0, moveStep.z);
         if (unk_cc[0] != NULL) {
             worldOffset.x = offset.x;
             worldOffset.y = offset.y;
             worldOffset.z = offset.z;
-            func_020e93a0(&worldOffset, unk_cc[0]->rotY);
+            Vec_RotateY(&worldOffset, unk_cc[0]->rotY);
         }
         VEC_Add(&itemPos, &worldOffset, &itemPos);
         frame = frame + 1;
@@ -907,7 +907,7 @@ void HandOverItem::startAct07()
 {
     Unk_020dc034_V cur, t;
     getMasterHoldPos(&cur);
-    func_020e9960(&t, &itemPos, &cur);
+    Vec_Sub(&t, &itemPos, &cur);
     offset.x = t.x;
     offset.y = t.y;
     offset.z = t.z;
@@ -952,7 +952,7 @@ void HandOverItem::startAct0B()
     Unk_020dc034_V cur, t;
     setBusy(1);
     getMasterHoldPos(&cur);
-    func_020e9960(&t, &itemPos, &cur);
+    Vec_Sub(&t, &itemPos, &cur);
     offset.x = t.x;
     offset.y = t.y;
     offset.z = t.z;
@@ -980,7 +980,7 @@ void HandOverItem::act0BPhase1()
 {
     if ((s32)frame < data_020ca67c[(*(volatile u8 *)&phase)]) {
         s32 t = scale.x;
-        func_020e761c(&t, 0, scaleStep);
+        Math_StepS32(&t, 0, scaleStep);
         s32 u = t;
         scale.x = u;
         scale.y = u;
@@ -1056,19 +1056,19 @@ void HandOverItem::act01V1Phase1()
     if ((s32)frame < n) {
         s32 t = scale.x;
         getMasterHoldPos(&itemPos);
-        func_020e761c(&t, 0x1000, 0x200);
+        Math_StepS32(&t, 0x1000, 0x200);
         s32 u = t;
         scale.x = u;
         scale.y = u;
         scale.z = u;
-        func_020e761c(&offset.x, target.x, moveStep.x);
-        func_020e761c(&offset.y, target.y, moveStep.y);
-        func_020e761c(&offset.z, target.z, moveStep.z);
+        Math_StepS32(&offset.x, target.x, moveStep.x);
+        Math_StepS32(&offset.y, target.y, moveStep.y);
+        Math_StepS32(&offset.z, target.z, moveStep.z);
         if (unk_cc[0] != NULL) {
             worldOffset.x = offset.x;
             worldOffset.y = offset.y;
             worldOffset.z = offset.z;
-            func_020e93a0(&worldOffset, unk_cc[0]->rotY);
+            Vec_RotateY(&worldOffset, unk_cc[0]->rotY);
         }
         VEC_Add(&itemPos, &worldOffset, &itemPos);
         frame = frame + 1;
@@ -1083,7 +1083,7 @@ void HandOverItem::act01V1Phase1()
                 target.y = s.y;
                 target.z = s.z;
             } else {
-                func_020e93a0(&t2, unk_cc[0]->rotY);
+                Vec_RotateY(&t2, unk_cc[0]->rotY);
                 VEC_Add(&t2, &unk_cc[0]->position, &t2);
                 FieldPos_SnapToUnitCenter(&target, &t2);
             }
@@ -1109,14 +1109,14 @@ void HandOverItem::act01V1Phase2()
     s32 n = data_020ca680[2];
     if ((s32)frame < n) {
         s32 t = scale.x;
-        func_020e761c(&t, 0x1000, 0x200);
+        Math_StepS32(&t, 0x1000, 0x200);
         s32 u = t;
         scale.x = u;
         scale.y = u;
         scale.z = u;
-        func_020e761c(&itemPos.x, target.x, moveStep.x);
-        func_020e761c(&itemPos.y, target.y, moveStep.y);
-        func_020e761c(&itemPos.z, target.z, moveStep.z);
+        Math_StepS32(&itemPos.x, target.x, moveStep.x);
+        Math_StepS32(&itemPos.y, target.y, moveStep.y);
+        Math_StepS32(&itemPos.z, target.z, moveStep.z);
         frame = frame + 1;
         if ((s32)frame >= n) {
             BOOL r = FALSE;
@@ -1151,7 +1151,7 @@ void HandOverItem::startAct02V1()
         target.y = s.y;
         target.z = s.z;
     } else {
-        func_020e93a0(&t, unk_cc[0]->rotY);
+        Vec_RotateY(&t, unk_cc[0]->rotY);
         VEC_Add(&t, &unk_cc[0]->position, &t);
         FieldPos_SnapToUnitCenter(&target, &t);
     }
@@ -1173,9 +1173,9 @@ void HandOverItem::startAct02V1()
 void HandOverItem::updateAct02V1()
 {
     if ((s32)frame < 4) {
-        func_020e761c(&itemPos.x, target.x, moveStep.x);
-        func_020e761c(&itemPos.y, target.y, moveStep.y);
-        func_020e761c(&itemPos.z, target.z, moveStep.z);
+        Math_StepS32(&itemPos.x, target.x, moveStep.x);
+        Math_StepS32(&itemPos.y, target.y, moveStep.y);
+        Math_StepS32(&itemPos.z, target.z, moveStep.z);
         frame = frame + 1;
         if ((s32)frame >= 4) {
             setBusy(0);
@@ -1190,7 +1190,7 @@ void HandOverItem::startAct03V1()
         worldOffset.x = sPutDownOffset.x;
         worldOffset.y = sPutDownOffset.y;
         worldOffset.z = sPutDownOffset.z;
-        func_020e93a0(&worldOffset, unk_cc[0]->rotY);
+        Vec_RotateY(&worldOffset, unk_cc[0]->rotY);
     }
     VEC_Add(&target, &worldOffset, &target);
     s32 a, b, c;
@@ -1210,9 +1210,9 @@ void HandOverItem::startAct03V1()
 void HandOverItem::updateAct03V1()
 {
     if ((s32)frame < 2) {
-        func_020e761c(&itemPos.x, target.x, moveStep.x);
-        func_020e761c(&itemPos.y, target.y, moveStep.y);
-        func_020e761c(&itemPos.z, target.z, moveStep.z);
+        Math_StepS32(&itemPos.x, target.x, moveStep.x);
+        Math_StepS32(&itemPos.y, target.y, moveStep.y);
+        Math_StepS32(&itemPos.z, target.z, moveStep.z);
         frame = frame + 1;
         if ((s32)frame >= 2) {
             setBusy(0);
@@ -1234,7 +1234,7 @@ void HandOverItem::updateAct04V1()
             worldOffset.x = sPutDownOffset.x;
             worldOffset.y = sPutDownOffset.y;
             worldOffset.z = sPutDownOffset.z;
-            func_020e93a0(&worldOffset, unk_cc[0]->rotY);
+            Vec_RotateY(&worldOffset, unk_cc[0]->rotY);
         }
         VEC_Add(&itemPos, &worldOffset, &itemPos);
         frame = frame + 1;
@@ -1277,19 +1277,19 @@ void HandOverItem::updateAct05V1(void) {
         return;
     }
     getMasterHoldPos(&itemPos);
-    func_020e761c(&tmp, 0, step);
+    Math_StepS32(&tmp, 0, step);
     s32 t2 = tmp;
     scale.x = t2;
     scale.y = t2;
     scale.z = t2;
-    func_020e761c(&offset.x, 0, moveStep.x);
-    func_020e761c(&offset.y, 0, moveStep.y);
-    func_020e761c(&offset.z, 0, moveStep.z);
+    Math_StepS32(&offset.x, 0, moveStep.x);
+    Math_StepS32(&offset.y, 0, moveStep.y);
+    Math_StepS32(&offset.z, 0, moveStep.z);
     if (unk_cc[0]) {
         worldOffset.x = offset.x;
         worldOffset.y = offset.y;
         worldOffset.z = offset.z;
-        func_020e93a0(&worldOffset, unk_cc[0]->rotY);
+        Vec_RotateY(&worldOffset, unk_cc[0]->rotY);
     }
     VEC_Add(&itemPos, &worldOffset, &itemPos);
     frame++;
@@ -1326,7 +1326,7 @@ void HandOverItem::act09V1Phase0(void) {
             worldOffset.x = sPutDownOffset.x;
             worldOffset.y = sPutDownOffset.y;
             worldOffset.z = sPutDownOffset.z;
-            func_020e93a0(&worldOffset, unk_cc[0]->rotY);
+            Vec_RotateY(&worldOffset, unk_cc[0]->rotY);
         }
         VEC_Add(&target, &worldOffset, &target);
         u32 d = data_021c5a28[0];
@@ -1351,12 +1351,12 @@ void HandOverItem::act09V1Phase1(void) {
         worldOffset.x = sPutDownOffset.x;
         worldOffset.y = sPutDownOffset.y;
         worldOffset.z = sPutDownOffset.z;
-        func_020e93a0(&worldOffset, unk_cc[0]->rotY);
+        Vec_RotateY(&worldOffset, unk_cc[0]->rotY);
     }
     VEC_Add(&target, &worldOffset, &target);
-    func_020e761c(&itemPos.x, target.x, moveStep.x);
-    func_020e761c(&itemPos.y, target.y, moveStep.y);
-    func_020e761c(&itemPos.z, target.z, moveStep.z);
+    Math_StepS32(&itemPos.x, target.x, moveStep.x);
+    Math_StepS32(&itemPos.y, target.y, moveStep.y);
+    Math_StepS32(&itemPos.z, target.z, moveStep.z);
     frame++;
     if (frame >= n) {
         target.x = 0;
@@ -1386,19 +1386,19 @@ void HandOverItem::act09V1Phase2(void) {
         return;
     }
     getMasterHoldPos(&itemPos);
-    func_020e761c(&tmp, 0, step);
+    Math_StepS32(&tmp, 0, step);
     s32 t2 = tmp;
     scale.x = t2;
     scale.y = t2;
     scale.z = t2;
-    func_020e761c(&offset.x, 0, moveStep.x);
-    func_020e761c(&offset.y, 0, moveStep.y);
-    func_020e761c(&offset.z, 0, moveStep.z);
+    Math_StepS32(&offset.x, 0, moveStep.x);
+    Math_StepS32(&offset.y, 0, moveStep.y);
+    Math_StepS32(&offset.z, 0, moveStep.z);
     if (unk_cc[0]) {
         worldOffset.x = offset.x;
         worldOffset.y = offset.y;
         worldOffset.z = offset.z;
-        func_020e93a0(&worldOffset, unk_cc[0]->rotY);
+        Vec_RotateY(&worldOffset, unk_cc[0]->rotY);
     }
     VEC_Add(&itemPos, &worldOffset, &itemPos);
     frame++;
@@ -1467,7 +1467,7 @@ extern "C" BOOL HandOverItem_CanTake(Unk_02057328_Obj *p) {
     if (p) {
         HandOverItem *g = sHandOverItem;
         if (g) {
-            if (func_020e9650(&p->position, &g->itemPos) <= g->reach) {
+            if (Vec_DistXZ(&p->position, &g->itemPos) <= g->reach) {
                 r = TRUE;
             } else if (g->isAwaitingTake()) {
                 if (sHandOverItem->takeTimer == 0) {

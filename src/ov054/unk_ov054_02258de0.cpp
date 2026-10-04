@@ -356,13 +356,13 @@ void TalkWindowState_hideBusyIcon(void *ctx);
 void TalkWindowState_unlockAdvance(void *ctx);
 void TalkWindowState_showBusyIcon(void *ctx, s32 a);
 void TalkWindowState_setSlot(void *ctx, s32 a, void *p);
-BOOL func_020e7500(void *p);
+BOOL Math_CountDownU16(void *p);
 BOOL Net_PollConnected(s32 a);
 u32 Comm_SendEmpty();
-s32 func_020eae78(u32 a);
+s32 Net_CountHostCandidates(u32 a);
 void *Net_GetScanResults(s32 a);
-s32 func_020ea6c8(void *p);
-void *func_020ea6f4(void *p);
+s32 Net_GetBeaconGameInfoSize(void *p);
+void *Net_GetBeaconGameInfo(void *p);
 BOOL Net_ConnectToParent(void *p);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 void func_02063888(void *p);
@@ -889,7 +889,7 @@ BOOL SpNpcPellyPhyllis::mainAct02() {
             NpcMoveCtrl_setTurnMode(&moveCtrl, data_ov054_0225b348[window]);
         }
         if (dramaTimer != 0xff) {
-            if (!func_020e7500(&dramaTimer)) {
+            if (!Math_CountDownU16(&dramaTimer)) {
                 changeAct(7);
             }
         }
@@ -1445,8 +1445,8 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
     v[0] = 0;
     v[1] = 0;
     v[2] = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12);
-    s32 n = func_020eae78(Comm_SendEmpty());
-    if (func_020e7500(&netTimer) == 0) {
+    s32 n = Net_CountHostCandidates(Comm_SendEmpty());
+    if (Math_CountDownU16(&netTimer) == 0) {
         endComm();
         buf[0] = 0x37;
         TalkWindowState_setNextMessage(ctx, buf, (u32)*(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12));
@@ -1461,10 +1461,10 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
             v[1] = ((void **)v[0])[i];
             if (v[1]) {
                 NetOverlay_AssertWireless();
-                v[3] = (void *)func_020ea6c8(v[1]);
+                v[3] = (void *)Net_GetBeaconGameInfoSize(v[1]);
                 if ((s32)v[3] == 10) {
                     NetOverlay_AssertWireless();
-                    MI_CpuCopy8(func_020ea6f4(v[1]), &buf[3], (s32)v[3]);
+                    MI_CpuCopy8(Net_GetBeaconGameInfo(v[1]), &buf[3], (s32)v[3]);
                     if (buf[12] == 1) {
                         u32 m = 0x38;
                         if (buf[11] == 0) {
@@ -1499,7 +1499,7 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
 
 void SpNpcPellyPhyllisTalk::waitMoveConnected() {
     void *ctx = unk_3c;
-    if (func_020e7500(&netTimer) == 0) {
+    if (Math_CountDownU16(&netTimer) == 0) {
         u8 msg;
         endComm();
         msg = 0x37;

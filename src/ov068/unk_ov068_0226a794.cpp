@@ -234,7 +234,7 @@ void _ZN9AnimModel8stepAnimEv(void *);
 void _ZN14BlendAnimModel8initAnimEiiitt(void *, s32, s32, s32, s32, s32);
 void PlayerActor_SetHeadTilt(s32, s32, s32);
 void *PlayerActor_GetActor(s32);
-s32 func_020e780c(s32, s32);
+s32 Math_AngleDiffAbs(s32, s32);
 void *BuildingList_FindByItem(s32);
 s32 _ZN13BuildingActor10isDoorIdleEv(void *);
 s32 PlayerActor_RequestWalkTo(void *, s32, s32);
@@ -264,9 +264,9 @@ void Effect_End(s32);
 void Effect_SetPosition(s32, void *, s32, s32);
 s32 Effect_Create(s32, void *, s32, s32);
 Unk_ov068_0226b12c_Vec3 *PlayerActor_GetBodyPos(s32);
-void func_020e9960(Unk_ov068_0226b12c_Vec3 *, Unk_ov068_0226b12c_Vec3 *, Unk_ov068_0226b12c_Vec3 *);
+void Vec_Sub(Unk_ov068_0226b12c_Vec3 *, Unk_ov068_0226b12c_Vec3 *, Unk_ov068_0226b12c_Vec3 *);
 void func_01ffd070(Unk_ov068_0226b12c_Vec3 *, void *, Unk_ov068_0226b12c_Vec3 *);
-s32 func_020e7b98(s32, s32);
+s32 Math_Atan2(s32, s32);
 s32 FX_Div(s32, s32);
 void Taxi_ClearArriving();
 void Taxi_ClearLeaving();
@@ -411,8 +411,8 @@ s32 KappnTaxi::getAngleToPlayer() {
         a.y = p->y;
         a.z = p->z;
         Unk_ov068_0226b12c_Vec3 b = getDoorPoint();
-        func_020e9960(&c, &b, &a);
-        return func_020e7b98(c.x, c.z);
+        Vec_Sub(&c, &b, &a);
+        return Math_Atan2(c.x, c.z);
     }
     return 0;
 }
@@ -621,7 +621,7 @@ void KappnTaxi::execTaxiDepart() {
         u8 *o = (u8 *)PlayerActor_GetActor(4);
         if (o != 0) {
             s32 r4 = *(s16 *)(o + 0x8e);
-            if (func_020e780c(r4, getAngleToPlayer()) < 0x1200) {
+            if (Math_AngleDiffAbs(r4, getAngleToPlayer()) < 0x1200) {
                 PlayerActor_SetHeadTilt(0, (s16)(getAngleToPlayer() - r4), 4);
             } else {
                 if (departFrameCount < 0xc8) {
@@ -761,7 +761,7 @@ void KappnTaxi::execTaxiLeaveDoorOpen() {
     u8 *o = (u8 *)PlayerActor_GetActor(4);
     if (o != 0) {
         s32 r4 = *(s16 *)(o + 0x8e);
-        if (func_020e780c(r4, getAngleToPlayer()) < 0x1200) {
+        if (Math_AngleDiffAbs(r4, getAngleToPlayer()) < 0x1200) {
             PlayerActor_SetHeadTilt(0, (s16)(getAngleToPlayer() - r4), 4);
         }
     }

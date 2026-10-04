@@ -94,7 +94,7 @@ void base_vfunc_38(void *self, u32 a);
 void *Scene_GetWarpRequest();
 s32 SceneWarp_RequestExit(void *, s32);
 s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
-s32 func_020e7518(void *p);
+s32 Math_CountDownU8(void *p);
 s32 Effect_Create(u32 kind, void *a, s32 b, s32 c);
 void Effect_End(s32 id);
 void Effect_SetPosition(s32 id, void *pos, s32 a, s32 b);
@@ -353,7 +353,7 @@ BOOL SpNpcKatrina::updateAct() {
             unk_654 = Effect_Create(0x3d, (u8 *)this + 0x478, 0, 0);
             effectTimer = 0x16;
         }
-    } else if (func_020e7518(&effectTimer) == 0) {
+    } else if (Math_CountDownU8(&effectTimer) == 0) {
         Effect_End(unk_654);
         unk_654 = -1;
     } else {

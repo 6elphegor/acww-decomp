@@ -1257,7 +1257,7 @@ s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void MTX_RotY33_(void *out, s32 a, s32 b);
 void MTX_Concat33(void *a, void *b, void *c);
-s32 func_020e761c(s32 *p, s32 target, s32 step);
+s32 Math_StepS32(s32 *p, s32 target, s32 step);
 s32 _ZN12G3dResAccess13func_02056fccEi(u32 a, const char *s);
 void _ZN12Unk_02003c3013func_02003e50Ev(void *p);
 void func_02003e70(void *p, s32 a, s32 b, s32 c);
@@ -1267,8 +1267,8 @@ u32 PatternTexCache_Get(void);
 u32 _ZN15PatternTexCache13getAbleTexKeyEi(u32 a, u32 b);
 s32 _ZN15PatternTexCache21testAndClearAbleDirtyEi(u32 a, u32 b);
 void Model_BindMatTexByIdx(u32 a, const char *s, u32 c, s32 d, s32 e);
-void func_020f5010(void *p);
-void func_020f5014(void *p);
+void MelodyBeat_Destruct(void *p);
+void MelodyBeat_Construct(void *p);
 }
 }
 
@@ -1365,11 +1365,11 @@ BOOL FtrInstrument::initModel() {
 }
 
 FtrInstrument::~FtrInstrument() {
-    p13::func_020f5010(melodyBeat);
+    p13::MelodyBeat_Destruct(melodyBeat);
 }
 
 FtrInstrument::FtrInstrument() {
-    p13::func_020f5014(melodyBeat);
+    p13::MelodyBeat_Construct(melodyBeat);
 }
 
 extern "C" void FtrInstrument_Create() {
@@ -1599,13 +1599,13 @@ BOOL FtrCompass::vfunc_0c() {
 }
 
 BOOL FtrCompass::updateActive() {
-    p13::func_020e761c((s32 *)&swingAmp, 0, 0x5a00);
+    p13::Math_StepS32((s32 *)&swingAmp, 0, 0x5a00);
     if (swingAmp == 0) {
         swingPhase = 0;
     } else {
         swingPhase = swingPhase + 0x960;
     }
-    p13::func_020e761c(&needleAngle, p13::func_01ffcb0c(swingAmp, swingPhase), 0x5a00);
+    p13::Math_StepS32(&needleAngle, p13::func_01ffcb0c(swingAmp, swingPhase), 0x5a00);
     return TRUE;
 }
 
@@ -3938,7 +3938,7 @@ void _ZN11FtrTileListC1Ev(void *);
 void _ZN11FtrTileList7releaseEv(void *);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 void PlayerActor_KeepAnimForNextAction(void);
-void func_020e93a0(void *, s32);
+void Vec_RotateY(void *, s32);
 void _ZN8FtrActorC2Ev(void *);
 void _ZN8FtrActorD2Ev(void *);
 void _ZN8FtrActordlEPv(void *);
@@ -4063,7 +4063,7 @@ void FtrStorage::execFtrAct00() {
             v.x = 0;
             v.y = 0;
             v.z = 0x2000;
-            p20::func_020e93a0(&v, *(s16 *)((u8 *)this + 0x8e));
+            p20::Vec_RotateY(&v, *(s16 *)((u8 *)this + 0x8e));
             volatile Unk_ov004_0220fde4_Pos p;
             p.x = 0;
             p.y = 0;
@@ -4209,8 +4209,8 @@ namespace p21 {
 extern "C" {
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 y);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *v);
-s32 func_020e9650(void *a, void *b);
-void func_020e93a0(void *v, s32 a);
+s32 Vec_DistXZ(void *a, void *b);
+void Vec_RotateY(void *v, s32 a);
 void VEC_Add(void *a, void *b, void *c);
 void *PlayerActor_GetActor(s32 i);
 BOOL FtrMgr_IsFurnitureUsable(void);
@@ -4594,8 +4594,8 @@ void FtrBed::execFtrAct00() {
                     c.x = pl->x;
                     c.y = pv[1];
                     c.z = pv[2];
-                    s32 d0 = p21::func_020e9650(&c, &a);
-                    s32 d1 = p21::func_020e9650(&c, &b);
+                    s32 d0 = p21::Vec_DistXZ(&c, &a);
+                    s32 d1 = p21::Vec_DistXZ(&c, &b);
                     Unk_ov004_02210d58_P sel;
                     if (d0 < d1) {
                         Unk_ov004_02210d58_P *t = q.get(0);
@@ -4610,7 +4610,7 @@ void FtrBed::execFtrAct00() {
                         e.x = 0;
                         e.y = 0;
                         e.z = 0x2000;
-                        p21::func_020e93a0(&e, p21::_ZN10FtrContact12getPushAngleEv(o));
+                        p21::Vec_RotateY(&e, p21::_ZN10FtrContact12getPushAngleEv(o));
                         s32 z = e.z + p21::_ZN10FtrContact15getContactPointEv(o)->unk_08;
                         f.x = e.x + p21::_ZN10FtrContact15getContactPointEv(o)->unk_00;
                         f.y = 0;
@@ -4769,7 +4769,7 @@ void FtrBed::calcStepPos(Unk_ov004_022108f0_V *out, Unk_ov004_022108f0_V *in, s3
     w.x = t.x;
     w.y = t.y;
     w.z = t.z + 0x1000;
-    p21::func_020e93a0(&w, ang);
+    p21::Vec_RotateY(&w, ang);
     p21::VEC_Add(out, &w, out);
 }
 
@@ -4843,7 +4843,7 @@ BOOL Scene_InUnk6To8(void);
 void *_ZN10FtrContact22getClampedContactPointEv(void *o);
 u32 _ZN10FtrContact8getDepthEv(void *o);
 u32 _ZN10FtrContact12getPushAngleEv(void *o);
-void func_020e93a0(void *v, u32 a);
+void Vec_RotateY(void *v, u32 a);
 void VEC_Add(void *a, void *b, void *c);
 void *FtrContactSet_GetInstance(void);
 void *_ZN13FtrContactSet11findContactEPv(void *mgr, void *o);
@@ -5021,7 +5021,7 @@ void FtrSeat::getSitterPos(Unk_ov004_02210f0c_V3 *out, void *o) {
         v.x = 0;
         v.y = 0;
         v.z = t;
-        p22::func_020e93a0(&v, p22::_ZN10FtrContact12getPushAngleEv(o));
+        p22::Vec_RotateY(&v, p22::_ZN10FtrContact12getPushAngleEv(o));
         p22::VEC_Add(out, &v, out);
     }
 }
@@ -5331,7 +5331,7 @@ void _ZN8FtrActorD2Ev(void *);
 void _ZN8FtrActordlEPv(void *);
 void *_ZN8FtrActornwEm(u32);
 void FtrSync_RequestAct(void *, s32, s32, s32);
-void func_020e761c(void *, u32, u32);
+void Math_StepS32(void *, u32, u32);
 extern u8 data_ov004_02240060[];
 extern u8 data_ov004_02240054[];
 }
@@ -5607,7 +5607,7 @@ extern "C" void FtrKind05_Create() {
 
 // ---- class D (0x0224af8c) ----
 void FtrKind04::execFtrAct02() {
-    p23::func_020e761c(&animSpeed, 0, 0xcc);
+    p23::Math_StepS32(&animSpeed, 0, 0xcc);
     if (animSpeed == 0) {
         changeAct(0, 0xff);
     }

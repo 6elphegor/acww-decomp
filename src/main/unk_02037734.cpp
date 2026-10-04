@@ -77,7 +77,7 @@ void Mem_Free(void *p);
 void Gfx2d_TilesToLinear4bpp(void *src, void *dst, s32 w, s32 h);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 u32 _ZN10G3dMatData10getTexAddrEv(void *p);
-void func_020e8388(void *m, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, void *h);
 void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -430,7 +430,7 @@ void CommCautionWindow::updateBlendRegs() {
 }
 
 void CommCautionWindow::setupModelMatrix() {
-    func_020e8388(&data_021f47e0, 0, 0, -0x1000, 0, 0, -0x1000);
+    Mtx43_SetTranslate(&data_021f47e0, 0, 0, -0x1000, 0, 0, -0x1000);
     model.mtx = data_021f47e0;
 }
 

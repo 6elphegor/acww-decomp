@@ -72,11 +72,11 @@ void *MI_CpuCopy8(void *dst, void *src, u32 n);
 void *MI_CpuFill8(void *p, s32 v, u32 n);
 s32 Constellation_PrepareExchange();
 s32 Save_WriteVillagerTransfer();
-s32 func_020e9a08(void *p);
-s32 func_020e9a18(void *p);
-void func_020e9a3c(void *p);
-void func_020e9a48(void *p);
-void func_020e9a54(void *a, void *b, u32 n);
+s32 Net_WlxIsExchangeDone(void *p);
+s32 Net_WlxIsReady(void *p);
+void Net_WlxStopExchange(void *p);
+void Net_WlxStartExchange(void *p);
+void Net_StartOv067(void *a, void *b, u32 n);
 void Snd_PlaySe(s32 v);
 void Comm_EndOv067Mode();
 void Comm_StartOv067Mode();
@@ -343,7 +343,7 @@ void SpNpcRoverTalk::onMessageEnd(u32) {
     void *r6 = unk_3c;
     switch (msgIndex) {
     case 0x39:
-        if (func_020e9a18(NetOverlay_AssertOv067()) == 0) {
+        if (Net_WlxIsReady(NetOverlay_AssertOv067()) == 0) {
             if (ownerNpc->saveFailed != 0) {
                 m[0] = 0x36;
                 _ZN15TalkWindowState14setNextMessageEPhPv(r6, &m[0], sSpNpcRoverMsgKey);
@@ -353,10 +353,10 @@ void SpNpcRoverTalk::onMessageEnd(u32) {
             MI_CpuFill8(&ownerNpc->recv.record, 0, 0x948);
             SpNpcRover *r4 = ownerNpc;
             NetOverlay_AssertOv067();
-            func_020e9a54(&r4->send.record, &r4->recv.record, 0x948);
-            func_020e9a48(NetOverlay_AssertOv067());
+            Net_StartOv067(&r4->send.record, &r4->recv.record, 0x948);
+            Net_WlxStartExchange(NetOverlay_AssertOv067());
         }
-        func_020e9a48(NetOverlay_AssertOv067());
+        Net_WlxStartExchange(NetOverlay_AssertOv067());
         _ZN15TalkWindowState11lockAdvanceEv(r6);
         setScript(1);
         break;
@@ -411,7 +411,7 @@ void SpNpcRoverTalk::runTagMode() {
         r5 = TRUE;
     }
     own->lidClosed = k;
-    if (func_020e9a08(NetOverlay_AssertOv067())) {
+    if (Net_WlxIsExchangeDone(NetOverlay_AssertOv067())) {
         Comm_EndOv067Mode();
         m[0] = 0x3c;
         _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m[0], sSpNpcRoverMsgKey);
@@ -420,7 +420,7 @@ void SpNpcRoverTalk::runTagMode() {
         if ((gPad[1] & 1) == 0 && !Unk_ov055_0225915c_Both() && r5 == 0) {
             return;
         }
-        func_020e9a3c(NetOverlay_AssertOv067());
+        Net_WlxStopExchange(NetOverlay_AssertOv067());
         m[1] = 0x3a;
         _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m[1], sSpNpcRoverMsgKey);
         setScript(3);
@@ -441,14 +441,14 @@ void SpNpcRoverTalk::waitLidOpen() {
 void SpNpcRoverTalk::waitTagModeStop() {
     void *r4 = unk_3c;
     if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) == 0) {
-        if (func_020e9a08(NetOverlay_AssertOv067())) {
+        if (Net_WlxIsExchangeDone(NetOverlay_AssertOv067())) {
             Snd_PlaySe(0x69);
             Comm_EndOv067Mode();
             u8 m = 0x3c;
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m, sSpNpcRoverMsgKey);
         } else {
-            if (func_020e9a18(NetOverlay_AssertOv067()) != 1) {
-                func_020e9a3c(NetOverlay_AssertOv067());
+            if (Net_WlxIsReady(NetOverlay_AssertOv067()) != 1) {
+                Net_WlxStopExchange(NetOverlay_AssertOv067());
                 return;
             }
         }

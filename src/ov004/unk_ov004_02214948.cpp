@@ -105,19 +105,19 @@ s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 void NpcMoveCtrl_setWaypoint(void *, void *);
 s32 Math_AngleXZ(void *, void *);
-s32 func_020e780c(s32, s32);
+s32 Math_AngleDiffAbs(s32, s32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 void *PlayerActor_GetActor(s32);
 s32 NpcActor_getAngleTo(void *, void *);
 s32 NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
 s32 NpcActionCtrl_requestStand(void *, s32, u32);
-s32 func_020e7b98(s32, s32);
+s32 Math_Atan2(s32, s32);
 s32 NpcLookAt_setTarget(void *, s32, s32, void *, void *, s32, s32, s32);
 s32 Random_GlobalBelow(s32);
 s32 NpcActionCtrl_isActionDone(void *);
 s32 NpcActor_findAvoidPos(void *, void *);
-s32 func_020e96ec(void *, void *);
-s32 func_020e9650(void *, void *);
+s32 Vec_NotEqual(void *, void *);
+s32 Vec_DistXZ(void *, void *);
 void TalkWindowState_setNextMessage(void *, void *, s32);
 s32 MenuCtrl_BuildPocketMask(void *);
 s32 MenuCtrl_OpenPocketSelect(s32, u32);
@@ -815,12 +815,12 @@ void BirthdayHostVillager::mainAct00() {
             NpcMoveCtrl_setWaypoint((u8 *)&moveCtrl, waypoint);
             break;
         default:
-            if (func_020e96ec(waypoint, walkTarget) != 0) {
+            if (Vec_NotEqual(waypoint, walkTarget) != 0) {
                 waypoint[0] = walkTarget[0];
                 waypoint[1] = walkTarget[1];
                 waypoint[2] = walkTarget[2];
                 NpcMoveCtrl_setWaypoint((u8 *)&moveCtrl, walkTarget);
-            } else if (func_020e9650(walkTarget, &position) < 0x200) {
+            } else if (Vec_DistXZ(walkTarget, &position) < 0x200) {
                 NpcActionCtrl_requestStand((u8 *)&actionCtrl, 1, data_020c6cc8);
             }
             break;
@@ -834,7 +834,7 @@ BOOL BirthdayHostVillager::setupAct01() {
     if (o != 0) {
         s32 dx = o->pos[0] - position.x;
         s32 dz = o->pos[2] - position.z;
-        s32 ang = func_020e7b98(dx, dz);
+        s32 ang = Math_Atan2(dx, dz);
         NpcActionCtrl_requestAction(m, 3, 1, 0, 0, 0, ang, 0, 0, data_020c6cc8, 0);
         NpcLookAt_setTarget((u8 *)&lookAt, 2, 0, o, gVec3Zero, 4, data_020c6d1c, 1);
         return TRUE;
@@ -965,7 +965,7 @@ void BirthdayHostVillager::mainAct08() {
         approachTimer--;
     }
     r4 = Math_AngleXZ(&position, &a);
-    r0 = func_020e780c(rotY, r4);
+    r0 = Math_AngleDiffAbs(rotY, r4);
     if (v <= 0x3000 || approachTimer == 0) {
         NpcTalkCtrl_requestTurnAndTalk((u8 *)&talkCtrl, 0, r4, 0);
         changeAct(9);

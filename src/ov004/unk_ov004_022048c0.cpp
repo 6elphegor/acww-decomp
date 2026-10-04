@@ -39,7 +39,7 @@ s32 NookPoints_GetToNextRank(u16 *p);
 s32 String_FormatNumber(MsgString25 *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 TouchPicker *Scene_GetTouchPicker();
 BOOL TalkRequest_SetTargetDone(void *p);
-s32 func_020e9650(s32 *a, s32 *b);
+s32 Vec_DistXZ(s32 *a, s32 *b);
 BOOL BoxCollider_Unregister(void *self);
 void BoxCollider_Register(void *self, s32 a, s32 b, s32 c, s32 *p, s16 s, s32 *q);
 void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
@@ -174,7 +174,7 @@ void Atm::setPointTexts() {
 BOOL Atm::vfunc_48(void *a) {
     Character *o = (Character *)a;
     if (o) {
-        if (func_020e9650(&o->position.x, &position.x) < 0x2333) {
+        if (Vec_DistXZ(&o->position.x, &position.x) < 0x2333) {
             u32 d = (u16)(o->rotY - (rotY + 0x8000));
             if (d < 0x1000 || d >= 0xf000) {
                 return TRUE;

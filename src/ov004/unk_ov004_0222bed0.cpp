@@ -149,10 +149,10 @@ u16 *BlockMap_GetItemPtrAtPos(void *g, void *v, s32 z);
 s32 FtrMgr_GetSurfaceHeightAtPos(void *p);
 s32 Item_GetInfoUnk07(u16 *p);
 u32 WorldCurve_ToCurved(void *a, void *b);
-void func_020e8388(void *m, s32 a, s32 b, s32 c);
-void func_020e8434(void *m, s32 a);
-void func_020e8464(void *m, s32 x, s32 y, s32 z);
-void func_020e84f8(void *m, s32 x, s32 y, s32 z);
+void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
+void Mtx43_RotateX(void *m, s32 a);
+void Mtx43_RotateXYZ(void *m, s32 x, s32 y, s32 z);
+void Mtx43_Scale(void *m, s32 x, s32 y, s32 z);
 void Model_drawShapesDirect(void *p, s32 a);
 u16 SceneLights_GetRoomColor();
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, u32 b);
@@ -239,10 +239,10 @@ Unk_ov004_0222c880_Model *RoomItemIcons::setupIconModel(u32 idx, const Unk_ov004
     Unk_ov004_0222c570_Mtx m;
     s32 t[3];
     u32 r = WorldCurve_ToCurved(t, (void *)&pos);
-    func_020e8388(data_021f47e0, t[0], t[1], t[2]);
-    func_020e8434(data_021f47e0, r);
-    func_020e8464(data_021f47e0, rx, ry, rz);
-    func_020e84f8(data_021f47e0, scale.x, scale.y, scale.z);
+    Mtx43_SetTranslate(data_021f47e0, t[0], t[1], t[2]);
+    Mtx43_RotateX(data_021f47e0, r);
+    Mtx43_RotateXYZ(data_021f47e0, rx, ry, rz);
+    Mtx43_Scale(data_021f47e0, scale.x, scale.y, scale.z);
     m = *(Unk_ov004_0222c570_Mtx *)data_021f47e0;
     drawIconModel(model, m);
     return model;
@@ -280,8 +280,8 @@ void RoomItemIcons::drawGridItems(void *grid) {
     for (i = hi; i >= -8; i--) {
         FieldPos_SnapToUnitCenter(&c, &b);
         u32 r = WorldCurve_ToCurved(&d, &c);
-        func_020e8388(data_021f47e0, d.x, d.y, d.z);
-        func_020e8434(data_021f47e0, r);
+        Mtx43_SetTranslate(data_021f47e0, d.x, d.y, d.z);
+        Mtx43_RotateX(data_021f47e0, r);
         for (j = hi; j >= -8; j--) {
             u16 *p = BlockMap_GetItemPtrAtPos(grid, &c, 0);
             if (p != NULL && (s32)(*p & 0xf000) >> 12 == 1) {
@@ -529,9 +529,9 @@ extern "C" void ItemDropList_Draw(Unk_ov004_Entry *e) {
             Unk_ov004_V3 *q = &e->scale;
             Unk_ov004_V3 v;
             s32 r = WorldCurve_ToCurved(&v, &e->pos);
-            func_020e8388(data_021f47e0, v.x, v.y, v.z);
-            func_020e8434(data_021f47e0, r);
-            func_020e84f8(data_021f47e0, e->scale.x, q->y, q->z);
+            Mtx43_SetTranslate(data_021f47e0, v.x, v.y, v.z);
+            Mtx43_RotateX(data_021f47e0, r);
+            Mtx43_Scale(data_021f47e0, e->scale.x, q->y, q->z);
             u32 idc = id;
             u32 t = (id & 0xf000) >> 12;
             if (t == 1 || t == 3 || t == 4) {

@@ -9,7 +9,7 @@ extern "C" {
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
 void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
 
-s64 func_020ea3c4(void *p);
+s64 Net_GetOwnFriendKey(void *p);
 s64 func_020ffc40(void *p);
 s32 func_020ffbd0(void *p, void *q);
 s32 func_020ffdfc(void *p);
@@ -39,12 +39,12 @@ s32 DwcCore_GetLastError(u32 *p);
 s32 Net_WifiFindFriend(u32 a);
 u32 Net_GetLocalError(void);
 u32 Net_GetWifiError(void);
-void func_020ec3c4(void);
-void func_020ec30c(void);
+void Net_OnWifiClientMatched(void);
+void Net_WifiCallbackNop(void);
 void Net_OnWifiSendDone(void);
 void Net_OnWifiRecv(void);
-void func_020ec3c0(void);
-void func_020ec310(void);
+void Net_OnWifiClosedNop(void);
+void Net_OnWifiHostMatched(void);
 extern u8 data_021f488c;
 extern u8 data_021f49e0[];
 extern u32 data_021f4910[];
@@ -109,20 +109,20 @@ extern "C" u32 Net_GetLastErrorCode(void) {
     return sLastErrorCode;
 }
 
-extern "C" s32 func_020ea72c(void) {
+extern "C" s32 Net_ClearWifiError(void) {
     return DwcCore_ClearError();
 }
 
-extern "C" s32 func_020ea720(void) {
+extern "C" s32 Net_SetLocalGameInfo(void) {
     return LocalWl_SetGameInfo();
 }
 
-extern "C" s32 func_020ea6f4(void *p) {
+extern "C" s32 Net_GetBeaconGameInfo(void *p) {
     if (p == NULL) return 0;
     return LocalWl_GetBeaconGameInfo(p);
 }
 
-extern "C" s32 func_020ea6c8(void *p) {
+extern "C" s32 Net_GetBeaconGameInfoSize(void *p) {
     if (p == NULL) return 0;
     return LocalWl_GetBeaconGameInfoSize(p);
 }
@@ -154,7 +154,7 @@ extern "C" s32 Net_WifiFindFriend(u32 a) {
     return DwcFriend_FindIndexByProfileId(a);
 }
 
-extern "C" s32 func_020ea598(u32 a) {
+extern "C" s32 Net_WifiGetFriendProfileId(u32 a) {
     if (sWifiConnectStep < 4) return -1;
     return DwcFriend_GetProfileId(a);
 }
@@ -167,10 +167,10 @@ extern "C" u8 *Net_GetWifiFriendList(void) {
 extern "C" BOOL Net_WifiStartHost(void) {
     if (sWifiConnectStep < 4) return FALSE;
     sNetMode = 3;
-    DwcMatch_SetupGameServer(data_021f488c, (void *)func_020ec310, 0, (void *)func_020ec30c, 0);
+    DwcMatch_SetupGameServer(data_021f488c, (void *)Net_OnWifiHostMatched, 0, (void *)Net_WifiCallbackNop, 0);
     DwcNet_SetSendDoneCallback((void *)Net_OnWifiSendDone);
     DwcNet_SetRecvCallback((void *)Net_OnWifiRecv);
-    DwcConn_SetClosedCallback((void *)func_020ec3c0, 0);
+    DwcConn_SetClosedCallback((void *)Net_OnWifiClosedNop, 0);
     return TRUE;
 }
 
@@ -180,37 +180,37 @@ extern "C" BOOL Net_WifiConnectToHost(u32 a) {
     sNetMode = 4;
     r = Net_WifiFindFriend(a);
     if (r == (u32)-1) return FALSE;
-    DwcMatch_ConnectToFriendServer(r, (void *)func_020ec3c4, 0, (void *)func_020ec30c, 0);
+    DwcMatch_ConnectToFriendServer(r, (void *)Net_OnWifiClientMatched, 0, (void *)Net_WifiCallbackNop, 0);
     DwcNet_SetSendDoneCallback((void *)Net_OnWifiSendDone);
     DwcNet_SetRecvCallback((void *)Net_OnWifiRecv);
-    DwcConn_SetClosedCallback((void *)func_020ec3c0, 0);
+    DwcConn_SetClosedCallback((void *)Net_OnWifiClosedNop, 0);
     return TRUE;
 }
 
-extern "C" void func_020ea418(void *p, u32 v) {
+extern "C" void Net_CreateUserData(void *p, u32 v) {
     func_020ffdd0(p, v);
     func_020ffce8(p);
 }
 
-extern "C" BOOL func_020ea3e8(void *p) {
+extern "C" BOOL Net_CheckUserDataChanged(void *p) {
     if (func_020ffd20(p) == 0) return FALSE;
     func_020ffce8(p);
     return TRUE;
 }
 
-extern "C" s32 func_020ea3dc(void *p) {
+extern "C" s32 Net_HasWifiUserId(void *p) {
     return func_020ffdfc(p);
 }
 
-extern "C" s32 func_020ea3d0(void *p, void *q) {
+extern "C" s32 Net_MakeOwnFriendData(void *p, void *q) {
     return func_020ffbd0(p, q);
 }
 
-extern "C" s64 func_020ea3c4(void *p) {
+extern "C" s64 Net_GetOwnFriendKey(void *p) {
     return func_020ffc40(p);
 }
 
-extern "C" BOOL func_020ea358(u32 ctx, void *out, u64 key) {
+extern "C" BOOL Net_FriendKeyToFriendData(u32 ctx, void *out, u64 key) {
     if (func_02100050(ctx, (u32)key, (u32)(key >> 32)) != 0) {
         func_020ffc18(out, (u32)key, (u32)(key >> 32));
         if (func_020ffc60(ctx, out) > 0) return TRUE;
@@ -218,7 +218,7 @@ extern "C" BOOL func_020ea358(u32 ctx, void *out, u64 key) {
     return FALSE;
 }
 
-extern "C" u64 func_020ea34c(u32 a) {
+extern "C" u64 Net_GetFriendKey(u32 a) {
     return func_020ffcc4(a);
 }
 

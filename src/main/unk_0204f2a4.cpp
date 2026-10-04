@@ -90,11 +90,11 @@ void _ZN14BlendAnimModel8initAnimEiiitt(void *, s32, s32, s32, s32, s32);
 void _ZN9AnimModel10attachAnimEv(void *);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, u32);
 s32 WorldCurve_ToCurved(void *, void *);
-void func_020e8388(void *, s32, s32, s32);
-void func_020e8434(void *, s32);
-void func_020e8464(void *, s32, s32, s32);
-void func_020e8404(void *, s32);
-void func_020e83d4(void *, s32);
+void Mtx43_SetTranslate(void *, s32, s32, s32);
+void Mtx43_RotateX(void *, s32);
+void Mtx43_RotateXYZ(void *, s32, s32, s32);
+void Mtx43_RotateY(void *, s32);
+void Mtx43_RotateZ(void *, s32);
 s32 func_020639e8(char *, const char *, ...);
 extern u8 data_021f47e0[];
 void _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, const char *f);
@@ -361,14 +361,14 @@ void FishDisplay::updateTransform(FishDisplayEntry *e) {
         ang = 0;
         o = v;
     }
-    func_020e8388(data_021f47e0, o.x, o.y, o.z);
-    func_020e8434(data_021f47e0, ang);
+    Mtx43_SetTranslate(data_021f47e0, o.x, o.y, o.z);
+    Mtx43_RotateX(data_021f47e0, ang);
     if (id != 0xf) {
-        func_020e8464(data_021f47e0, e->rotX, e->rotY, e->rotZ);
+        Mtx43_RotateXYZ(data_021f47e0, e->rotX, e->rotY, e->rotZ);
     } else {
-        func_020e8404(data_021f47e0, e->rotY);
-        func_020e83d4(data_021f47e0, e->rotZ);
-        func_020e8434(data_021f47e0, e->rotX);
+        Mtx43_RotateY(data_021f47e0, e->rotY);
+        Mtx43_RotateZ(data_021f47e0, e->rotZ);
+        Mtx43_RotateX(data_021f47e0, e->rotX);
     }
     *(Unk_0204f98c_Mtx *)(m + 0x64) = *(Unk_0204f98c_Mtx *)data_021f47e0;
 }

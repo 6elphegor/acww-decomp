@@ -83,7 +83,7 @@ Unk_0203e604_Obj *Character_FindByCharId(u32 id);
 Unk_0203dad4_Task *TalkRequestPool_Alloc();
 void PrioList_Insert(TalkRequestList *l, Unk_0203dad4_Task *t);
 void TalkRequestList_FreeAll(TalkRequestList *l);
-void func_020e79a0(void *l, void *t);
+void List_Remove(void *l, void *t);
 void NetArea_SendStateToNewOwner();
 void NetArea_SendStateToRequester();
 void Scene_CheckExit();
@@ -653,7 +653,7 @@ extern "C" void TalkRequestQueue_StartNext(Unk_0203dad4_Task *) {
     Unk_0203dbb8_Fn *tbl = sTalkRequestStartFns;
     for (; t != NULL; t = t->next) {
         if (tbl[t->kind](t)) {
-            func_020e79a0(&sTalkRequestList, t);
+            List_Remove(&sTalkRequestList, t);
             gTalkRequestCurrent = t;
             t->phase = 2;
             break;

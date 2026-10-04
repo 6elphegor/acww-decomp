@@ -86,7 +86,7 @@ struct Unk_ov004_0223717c_Vec {
 extern "C" {
 void func_02031c48(void *p);
 void func_02031c10(void *p);
-void func_020e79a0(void *list, void *node);
+void List_Remove(void *list, void *node);
 }
 
 struct Unk_ov004_02236950_Obj {
@@ -207,7 +207,7 @@ void *Item_GetFurnitureIndex(void *p);
 BOOL Item_IsFurniture();
 s32 Random_GlobalBelow(s32 n);
 void *PlayerActor_GetActor(u32 a);
-s32 func_020e9650(void *a, void *b);
+s32 Vec_DistXZ(void *a, void *b);
 void ProcBase_RequestDelete(void *p);
 void *Actor_spawn(u32 a, u32 b, void *c, void *d, void *e);
 void Clock_GetMinuteHour(void *p);
@@ -328,7 +328,7 @@ BOOL HouseRoachManager::onExecute() {
                         last = (s8)i;
                         break;
                     }
-                    s32 d = func_020e9650(q, (u8 *)o + 0x5c);
+                    s32 d = Vec_DistXZ(q, (u8 *)o + 0x5c);
                     if (best > d) {
                         best = d;
                         last = (s8)i;
@@ -912,7 +912,7 @@ void HouseRoach::updateCrawl() {
                 stateTimer = (Random_GlobalBelow(4) + 1) * 20;
                 res = 1;
             } else if (*(s32 *)(o + 0x98) > 0) {
-                s32 d = func_020e9650(self0, q);
+                s32 d = Vec_DistXZ(self0, q);
                 if (d < func_01ffcb0c(0x1000, 0x4000)) {
                     stateTimer = (Random_GlobalBelow(4) + 2) * 20;
                     roachState = 1;
@@ -952,7 +952,7 @@ BOOL HouseRoach::move() {
         }
         if (o != 0 && hit == 0) {
             Unk_ov004_02236320_V3 *q = (Unk_ov004_02236320_V3 *)(o + 0x5c);
-            if (func_020e9650(p6, q) < 0x1800) {
+            if (Vec_DistXZ(p6, q) < 0x1800) {
                 s32 d = Math_AngleXZ(p6, q);
                 if ((d >= 0 && a >= 0) || (d <= 0 && a <= 0)) {
                     s32 t = d - a;

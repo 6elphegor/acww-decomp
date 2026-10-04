@@ -616,8 +616,8 @@ extern u16 *data_020da2ac[];
 extern u16 *data_020da2e4[];
 extern u16 *data_020da2c8[];
 u16 Sky_GetLightColor(s32 a);
-void func_020e93a0(Unk_020441f0_T *t, s32 a);
-s32 func_020e94f8(Unk_020441f0_T *t);
+void Vec_RotateY(Unk_020441f0_T *t, s32 a);
+s32 Vec_SafeNormalize(Unk_020441f0_T *t);
 void FlowerFx_InitBySpecies(Unk_020441f0_P *p);
 void FlowerFx_InitByColor(Unk_020441f0_P *p);
 struct Unk_02044490_E {
@@ -7342,8 +7342,8 @@ extern "C" void FlowerFx_InitByColor(Unk_020441f0_P *p) {
         t.x = 0x400;
         t.y = 0x1000;
         t.z = 0;
-        func_020e93a0(&t, g->unk_14);
-        if (func_020e94f8(&t)) {
+        Vec_RotateY(&t, g->unk_14);
+        if (Vec_SafeNormalize(&t)) {
             s32 x = t.x, y = t.y, z = t.z;
             p->unk_3c = x;
             p->unk_3e = y;
@@ -7379,8 +7379,8 @@ extern "C" void FlowerFx_InitBySpecies(Unk_020441f0_P *p) {
         t.x = 0x400;
         t.y = 0x1000;
         t.z = 0;
-        func_020e93a0(&t, g->unk_14);
-        if (func_020e94f8(&t)) {
+        Vec_RotateY(&t, g->unk_14);
+        if (Vec_SafeNormalize(&t)) {
             s32 x = t.x, y = t.y, z = t.z;
             p->unk_3c = x;
             p->unk_3e = y;

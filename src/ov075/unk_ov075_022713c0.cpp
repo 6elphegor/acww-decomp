@@ -106,7 +106,7 @@ BOOL NpcActor_IsFrontAngle(s16 a);
 u32 NpcActor_getPlayerActor(void *p, s32 n);
 u32 NpcActor_getAngleToPlayer(void *p, s32 n);
 s32 NpcActor_getAngleTo(void *self, void *a);
-void func_020e7518(void *p);
+void Math_CountDownU8(void *p);
 s32 Random_Next(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *out, void *in);
@@ -532,7 +532,7 @@ BOOL SpNpcPete::tryAvoidObstacle() {
 BOOL SpNpcPete::mainAct05() {
     void *r4 = &actionCtrl;
     s32 r6 = isInCameraBox();
-    func_020e7518(&moveTimer);
+    Math_CountDownU8(&moveTimer);
     if (r6 != 0) {
         if (tryAvoidObstacle() == 0) {
             if (NpcActionCtrl_isActionDone(r4) != 0) {

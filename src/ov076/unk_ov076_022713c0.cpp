@@ -85,7 +85,7 @@ s32 MenuCtrl_GetIndex();
 void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 void EventWeekSlots_MarkPlayer(u32 id);
 void TalkRequest_SetTargetDone(void *self);
-void func_020e7530(void *a, s32 b, s32 c);
+void Math_StepAngle(void *a, s32 b, s32 c);
 void ProcBase_RequestDelete(void *self);
 void FieldFish_ScareAround(Unk_ov076_Vec *v, s32 a);
 void Effect_Create(s32 a, Unk_ov076_Vec *v, s32 b, s32 c);
@@ -342,7 +342,7 @@ BOOL SpNpcPascal::mainAct04() {
             *((u8 *)this + 0x511) = 0;
             *((u8 *)this + 0x510) = 0;
         }
-        func_020e7530(&rotY, 0, spinSpeed);
+        Math_StepAngle(&rotY, 0, spinSpeed);
         if (((Unk_ov076_02271a3c_Bits *)((u8 *)this + 0x190))->mid == 0x1b) {
             Unk_ov076_Vec *pv = (Unk_ov076_Vec *)&position;
             v.x = pv->x;

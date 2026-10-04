@@ -253,9 +253,9 @@ u32 SpNpcBrewster_GetAnimFrame(void);
 u32 SpNpcBrewster_GetAnimState(void);
 void *SpNpcBrewster_GetJointMtxB(void);
 void *SpNpcBrewster_GetJointMtxE(void);
-void func_020e8388(void *m, s32 a, s32 b, s32 c);
+void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 void *Bgm_GetCurrent(void);
-s32 func_020e77cc(void *p, u32 a, u32 b);
+s32 Math_IsInRange(void *p, u32 a, u32 b);
 Unk_ov004_022275fc_Sess *Snd_GetBeatState(void);
 s32 Effect_SetPosition(s32 a, void *b, u32 c, u32 d);
 void *Heap_Alloc(void *heap, u32 size);
@@ -496,7 +496,7 @@ BOOL CafeCoffeeSet::vfunc_00() {
 BOOL CafeCoffeeSet::onExecute() {
     ObjB *o = (ObjB *)this;
     u8 i;
-    if (func_020e77cc(Bgm_GetCurrent(), 0x63, 0xab)) {
+    if (Math_IsInRange(Bgm_GetCurrent(), 0x63, 0xab)) {
         Unk_ov004_022275fc_Sess *t = Snd_GetBeatState();
         if (t != NULL) {
             if (t->unk_03 != 1) {
@@ -548,11 +548,11 @@ void CafeCoffeeSet_UpdateMatrices(void *ov) {
     o->part0Mtx = data_021f47e0;
     s32 st = o->serveState;
     if ((u32)(st - 8) <= 1) {
-        func_020e8388(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
+        Mtx43_SetTranslate(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
         o->part1Mtx = data_021f47e0;
     } else if (st == 5) {
         if (o->part1Frame.mid >= 0x10) {
-            func_020e8388(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
+            Mtx43_SetTranslate(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
             o->pourEffectX = 0x16a00;
             o->pourEffectY = 0x1900;
             o->pourEffectZ = 0x15000;
@@ -564,7 +564,7 @@ void CafeCoffeeSet_UpdateMatrices(void *ov) {
         }
     } else if (st == 6) {
         if ((s32)o->part1Frame.mid >= (s32)o->part1FrameCount.mid - 0x2d) {
-            func_020e8388(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
+            Mtx43_SetTranslate(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
             o->pourEffectX = 0x16a00;
             o->pourEffectY = 0x1900;
             o->pourEffectZ = 0x15000;
@@ -583,17 +583,17 @@ void CafeCoffeeSet_UpdateMatrices(void *ov) {
     o->part1Mtx = data_021f47e0;
     st = o->serveState;
     if ((u32)(st - 8) <= 1) {
-        func_020e8388(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
+        Mtx43_SetTranslate(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
         o->part2Mtx = data_021f47e0;
     } else if (st == 5) {
         if (o->part2Frame.mid >= 0x10) {
-            func_020e8388(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
+            Mtx43_SetTranslate(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
         } else {
             data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
         }
     } else if (st == 6) {
         if ((s32)o->part2Frame.mid >= (s32)o->part2FrameCount.mid - 0x2d) {
-            func_020e8388(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
+            Mtx43_SetTranslate(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
         } else {
             data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
         }
@@ -604,16 +604,16 @@ void CafeCoffeeSet_UpdateMatrices(void *ov) {
     if (o->part3Frame.mid >= 0xf && o->part3Frame.mid <= 0x48) {
         data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxE();
     } else {
-        func_020e8388(&data_021f47e0, D5C[0], D5C[1], D5C[2]);
+        Mtx43_SetTranslate(&data_021f47e0, D5C[0], D5C[1], D5C[2]);
     }
     o->part3Mtx = data_021f47e0;
-    func_020e8388(&data_021f47e0, DCD8[0], DCD8[1], DCD8[2]);
+    Mtx43_SetTranslate(&data_021f47e0, DCD8[0], DCD8[1], DCD8[2]);
     o->part4Mtx = data_021f47e0;
     o->part5Mtx = data_021f47e0;
-    func_020e8388(&data_021f47e0, DCF0[0], DCF0[1], DCF0[2]);
+    Mtx43_SetTranslate(&data_021f47e0, DCF0[0], DCF0[1], DCF0[2]);
     o->part6Mtx = data_021f47e0;
     o->part7Mtx = data_021f47e0;
-    func_020e8388(&data_021f47e0, DD08[0], DD08[1], DD08[2]);
+    Mtx43_SetTranslate(&data_021f47e0, DD08[0], DD08[1], DD08[2]);
     o->part8Mtx = data_021f47e0;
     if (o->modelVisible != 0) {
         _ZN9AnimModel12drawAnimatedEPv((u8 *)o + 0xec, NULL);

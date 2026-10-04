@@ -48,7 +48,7 @@ u32 func_0201bcbc(void *p, void *q);
 void func_0201bc28(void *p, void *q);
 void func_0201bda8(void *p, u16 *q);
 u32 NookShop_GetLevel(void *p);
-u32 func_020e7518(void *p);
+u32 Math_CountDownU8(void *p);
 void ProcBase_RequestDelete(void *p);
 void Bgm_ReleasePriority(u32 a);
 void Bgm_Release(u32 a);
@@ -85,12 +85,12 @@ void Snowball_DropDisplacedItem(void *);
 s32 Snowball_Break(void *o, s32 a);
 void GroundInfo_initAtPos(void *, void *, s32, s32);
 s32 GroundInfo_Destruct(void *o);
-void func_020e9960(void *, void *, void *);
-void func_020e94f8(void *);
-void func_020e9888(void *, s32);
-s32 func_020e9650(void *, void *);
-void func_020e7820(void *, s32, s32, s32);
-s32 func_020e9688(void *);
+void Vec_Sub(void *, void *, void *);
+void Vec_SafeNormalize(void *);
+void Vec_Scale(void *, s32);
+s32 Vec_DistXZ(void *, void *);
+void Math_ApproachS32Max(void *, s32, s32, s32);
+s32 Vec_MagXZ(void *);
 Unk_ov068_022678c4_Rec *PlayerActor_GetActor(s32);
 extern s32 data_020c7c1c;
 void func_01ffd070(Unk_ov068_02268608_Vec *out, void *a, void *b);
@@ -107,9 +107,9 @@ s32 Field_FindFlowerNear(void *a, void *b, s32 c);
 s32 Insect_GetFlowerSpeciesMask(s32 a);
 s32 Insect_LikesFlower(s32 a, void *b);
 s32 Flower_GetSpecies(void *cell);
-s32 func_020e96a4(void *a, void *b);
-s32 func_020e7b98(s32 x, s32 z);
-s32 func_020e780c(s32 a, s32 b);
+s32 Vec_Distance(void *a, void *b);
+s32 Math_Atan2(s32 x, s32 z);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
 BOOL Item_IsMarker(u16 *p);
 s32 Ground_GetDigKind(s32 x, s32 y);
 s32 SnowmanRecords_add(void *tbl, s32 a, s32 b, s32 c);
@@ -216,7 +216,7 @@ void Unk_ov068_02268214::execSnowballRoll() {
     if (talkAct == 0 && snowballState == 0 && sum > 0 && radius >= 0xa00 && fl_374.f6 != 0) {
         u8 *o = (u8 *)Snowball_FindOtherInBallState(this);
         if (o != 0 && *(s32 *)(o + 0x268) >= 0xa00) {
-            d = func_020e96a4(&position, o + 0x5c);
+            d = Vec_Distance(&position, o + 0x5c);
             t = FX_Div(0, 0x64000) + 0x400;
             FieldPos_ToUnit(&sx, &sy, o + 0x5c);
             cell = 0xfff1;
@@ -281,10 +281,10 @@ void Unk_ov068_02268214::execSnowballRoll() {
         FieldPos_SnapToUnitCenter(objC, &position);
         u16 *c = BlockMap_GetItemPtrAtPos(grid, &position, 0);
         if (c != 0 && Unk_ov068_02268214_InRange(c) != 0) {
-            if (func_020e9650(objC, &position) < 0x1000) {
+            if (Vec_DistXZ(objC, &position) < 0x1000) {
                 u8 *o = (u8 *)Snowball_FindOtherInBallState(this);
                 if (o != 0 && *(s32 *)(o + 0x39c) == 0 && *(s32 *)(o + 0x398) == 4) {
-                    if (func_020e9650(o + 0x5c, &position) > *(s32 *)(o + 0x268) + radius) {
+                    if (Vec_DistXZ(o + 0x5c, &position) > *(s32 *)(o + 0x268) + radius) {
                         if (Snowball_ChangeState(this, 4) != 0) {
                             GroundInfo_Destruct(objA);
                             return;
@@ -310,9 +310,9 @@ void Unk_ov068_02268214::execSnowballRoll() {
         if (m >= FX_Div(0x12c000, 0x2710000)) {
             n = unk_280;
             if (n != 0) {
-                ang = func_020e7b98(unk_368, unk_36c);
+                ang = Math_Atan2(unk_368, unk_36c);
                 for (i = 0; i < n; i++) {
-                    if (func_020e780c((s16)(unk_27c[i] + 0x8000), ang) < 0x1000) {
+                    if (Math_AngleDiffAbs((s16)(unk_27c[i] + 0x8000), ang) < 0x1000) {
                         if (Snowball_Break(this, 1) != 0) {
                             GroundInfo_Destruct(objA);
                             return;
@@ -341,7 +341,7 @@ s32 SnowballStateView2::enterSnowballFall() {
     rollVelZ = func_01ffcb0c(rollVelZ, 0x119a);
     fallFrames = 0;
     Unk_ov068_022678c4_V v(rollVelX, 0, rollVelZ);
-    s32 d = func_020e9688(&v);
+    s32 d = Vec_MagXZ(&v);
     if (d < 0x2b8) {
         if (d == 0) {
             Unk_ov068_022678c4_Rec *r = PlayerActor_GetActor(4);
@@ -366,7 +366,7 @@ void SnowballStateView2::execSnowballFall() {
     s32 lim;
     s32 t = radius;
     t = t + (t >> 1);
-    func_020e7820(&collisionRadius, t, 0xcc, t);
+    Math_ApproachS32Max(&collisionRadius, t, 0xcc, t);
     position += rollVelX;
     positionZ += rollVelZ;
     if (fallFrames < 0xc) {
@@ -411,7 +411,7 @@ void SnowballStateView2::execSnowballSink() {
     u32 buf[16];
     s32 t = radius;
     t = t + (t >> 1);
-    func_020e7820(&collisionRadius, t, 0x200, t);
+    Math_ApproachS32Max(&collisionRadius, t, 0x200, t);
     GroundInfo_initAtPos(buf, &position, 0, 0);
     s32 *p = (s32 *)&buf[9];
     position += p[0] >> 5;
@@ -462,13 +462,13 @@ s32 SnowballStateView2::enterSnowballHole() {
 void SnowballStateView2::execSnowballHole() {
     collisionRadius = radius;
     s32 v[3];
-    func_020e9960(v, holePos, &position);
-    func_020e94f8(v);
-    func_020e9888(v, 0x80);
+    Vec_Sub(v, holePos, &position);
+    Vec_SafeNormalize(v);
+    Vec_Scale(v, 0x80);
     position += v[0];
     positionZ += v[2];
     _ZN18Unk_ov068_0226821419applySnowballMotionEv(this);
-    s32 d = func_020e9650(&position, holePos);
+    s32 d = Vec_DistXZ(&position, holePos);
     s32 lim = 0;
     if (d < 0x1000) {
         lim = -((0x1000 - d) / 5);

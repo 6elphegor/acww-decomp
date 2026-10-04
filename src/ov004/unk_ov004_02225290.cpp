@@ -50,7 +50,7 @@ void NNS_G3dBindMdlPltt(void *a, u32 b);
 s32 BoxCollider_Unregister(void *p);
 void BoxCollider_Register(void *p, s32 a, s32 b, s32 c, void *d, s32 e, s32 f);
 void func_020566bc(void *p);
-void func_020e7820(void *a, s32 b, s32 c, s32 d);
+void Math_ApproachS32Max(void *a, s32 b, s32 c, s32 d);
 void Snd_PlaySe(s32 a);
 void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);

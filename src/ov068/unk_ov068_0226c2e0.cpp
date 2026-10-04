@@ -308,7 +308,7 @@ Unk_ov068_0226c3b4_Vec *PlayerActor_GetBodyPos(s32 a);
 void FieldPos_ToUnit(s32 *a, s32 *b, Unk_ov068_0226c3b4_Vec *v);
 BOOL PlayerActor_IsInAction(s32 a, s32 b);
 void TalkRequest_AddPlayerTalk7(void *p, s32 a);
-BOOL func_020e7500(void *p);
+BOOL Math_CountDownU16(void *p);
 void NpcLookAt_setManualAngles(void *self, s32 a, s16 b, s16 c, s16 d, s16 e);
 void TalkWindowState_setNextMessage(TalkWindowState *self, u8 *cmd, const char *tbl);
 BOOL Pocket_AddItem(u16 *p, s32 a);
@@ -1062,7 +1062,7 @@ void SpNpcRoostGuestTalk::scriptStartPerformance() {
             LightSwitch_SetOn(1, 1, 0);
             NpcLookAt_setManualAngles(&owner->lookAt, 0, -0xc18, 0, 0x276, 0x276);
         }
-        if (func_020e7500(&owner->showTimer) == 0) {
+        if (Math_CountDownU16(&owner->showTimer) == 0) {
             RoomCamera_KkShowWideShot();
             owner->unk_654 = 0;
             if (owner->isRandomSong != 0) {
@@ -1175,7 +1175,7 @@ void SpNpcRoostGuestTalk::scriptEndPerformance() {
     using namespace sA;
     u8 c0, c1, c2;
     u16 h;
-    if (func_020e7500(&owner->showTimer) == 0) {
+    if (Math_CountDownU16(&owner->showTimer) == 0) {
         owner->showAccepted = 0;
         if (owner->isRandomSong != 0) {
             c0 = 0xb;
@@ -1202,7 +1202,7 @@ void SpNpcRoostGuestTalk::scriptEndPerformance() {
 
 void SpNpcRoostGuestTalk::scriptRestoreLook() {
     using namespace sA;
-    if (func_020e7500(&owner->showTimer) == 0) {
+    if (Math_CountDownU16(&owner->showTimer) == 0) {
         NpcLookAt_setManualAngles(&owner->lookAt, 0, 0, 0x1000, 0x276, 0x276);
         unk_3c->nextState = 1;
         setScript(0);

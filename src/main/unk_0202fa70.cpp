@@ -56,9 +56,9 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_01ffcb2c(...);
 void func_01ffd070(void *out, void *a, void *b);
 void VEC_Subtract(void *a, void *b, void *c);
-void func_020e9960(void *out, void *a, void *b);
-s32 func_020e94f8(void *v);
-void func_020e93a0(void *v, ...);
+void Vec_Sub(void *out, void *a, void *b);
+s32 Vec_SafeNormalize(void *v);
+void Vec_RotateY(void *v, ...);
 
 // functions of this unit that the files declared with different stand-in prototypes
 void Collision_Query(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, CollisionVisitor *visitor, u32 flags, u8 p5, u8 p6);
@@ -131,7 +131,7 @@ public:
 // ---------------------------------------------------------------- unk_0202f600.cpp
 extern "C" s32 FX_Div(s32 a, s32 b);
 extern "C" s32 FX_Sqrt(s32 a);
-extern "C" s32 func_020e9650(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
+extern "C" s32 Vec_DistXZ(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
 struct Unk_0202fe84_Range { s32 lo, hi; };
 struct Unk_0202fe84_Pad { s32 v[6]; Unk_0202fe84_Pad() {} ~Unk_0202fe84_Pad() {} };
 
@@ -261,10 +261,10 @@ struct BoxColliderShape {
 };
 extern u8 data_021f47e0[];
 struct Unk_02031960_V : Unk_0203182c_Vec { Unk_02031960_V(s32 a, s32 b, s32 c) { x = a; y = b; z = c; } };
-extern "C" s32 func_020e96ec(void *a, void *b);
-extern "C" void func_020e8388(void *m, s32 x, s32 y, s32 z);
-extern "C" void func_020e8404(void *m, s32 ang);
-extern "C" void func_020e84f8(void *m, s32 x, s32 y, s32 z);
+extern "C" s32 Vec_NotEqual(void *a, void *b);
+extern "C" void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
+extern "C" void Mtx43_RotateY(void *m, s32 ang);
+extern "C" void Mtx43_Scale(void *m, s32 x, s32 y, s32 z);
 extern "C" void MTX_MultVec43(Unk_0203182c_Vec *p, void *m, Unk_0203182c_Vec *out);
 extern "C" void _ZN13CollisionVec26rotateEs(Unk_02031960_P8 *o, s32 ang);
 extern "C" void _ZN8WallEdgeC1EP13CollisionVec2S1_S1_iijj(void *out, Unk_02031960_P8 *a, Unk_02031960_P8 *b, Unk_02031960_P8 *c, s32 d, s32 e, s32 f, BoxColliderShape *n);
@@ -425,7 +425,7 @@ struct Unk_02032808_V3 {
 extern "C" void _ZN13CollisionVec27setDiffEPS_S0_(Unk_02032808_V2 *out, Unk_02032808_V2 *a, Unk_02032808_V2 *b);
 extern "C" void _ZN13CollisionVec29normalizeEv(Unk_02032808_V2 *v);
 extern "C" void _ZN13CollisionVec213setEdgeNormalEPS_S0_(Unk_02032808_V2 *out, Unk_02032808_V2 *a, Unk_02032808_V2 *b);
-extern "C" s32 func_020e7b98(s32 x, s32 z);
+extern "C" s32 Math_Atan2(s32 x, s32 z);
 extern "C" void _ZN17CollisionContacts10addContactEiii(void *p, s32 ang, s32 a, s32 b);
 struct Unk_02032864_Static : Unk_02032808_V2 {
     inline Unk_02032864_Static(s32 x, s32 z) {
@@ -478,7 +478,7 @@ struct ShapeCylinderList {
 };
 
 // ---------------------------------------------------------------- unk_02032dc4.cpp
-extern "C" s32 func_020e7b98(s32 a, s32 b);
+extern "C" s32 Math_Atan2(s32 a, s32 b);
 extern "C" BOOL GroundAttr_IsWater(s32 id, s32 a);
 extern s32 gCollisionVec2Zero[];
 struct Unk_02032dc4_Out {
@@ -564,7 +564,7 @@ public:
 
 // ---------------------------------------------------------------- unk_0203389c.cpp
 extern "C" s32 FX_Div(s32 a, s32 b);
-extern "C" long long func_020e9600(void *a, void *b);
+extern "C" long long Vec_DistSqXZ(void *a, void *b);
 extern "C" BOOL Collision_GetUnitShape(s32 a, s32 b, s32 *c, s32 *d, s32 *e);
 class CollisionMapIndex {
 public:
@@ -1142,7 +1142,7 @@ s32 GroundInfoBase::getHeight(s32 flag)
         v.y = 0;
         v.z = (z << 13) + 0x1000;
         s32 r7 = a;
-        long long d = func_020e9600(&v, unk_10);
+        long long d = Vec_DistSqXZ(&v, unk_10);
         s32 m = func_01ffcb0c(r7, r7);
         if ((long long)m >= d) {
             return height + b;
@@ -1181,7 +1181,7 @@ void GroundInfoBase::setWaveDir(s32 a, s32 b, s32 c)
     if (b <= 0) {
         v = 0x8000;
     }
-    func_020e93a0(&flowDir, (s16)(c + (s16)v));
+    Vec_RotateY(&flowDir, (s16)(c + (s16)v));
 }
 
 void GroundInfoCalc::compute(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
@@ -1317,7 +1317,7 @@ void GroundInfoCalc::compute(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
                         break;
                     }
                 }
-                func_020e93a0(&flowDir, ang);
+                Vec_RotateY(&flowDir, ang);
             }
         }
         if (waterKind != 0) {
@@ -1453,7 +1453,7 @@ BOOL WallEdgeList::collide(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r, Unk_
                 t1b.z = a.y;
                 s32 k = e->kind;
                 if (k != 3) {
-                    out->contacts.addContact(func_020e7b98(e->normal.x, e->normal.y), k, e->attr);
+                    out->contacts.addContact(Math_Atan2(e->normal.x, e->normal.y), k, e->attr);
                     if (e->f_04) {
                         e->f_04->vfunc_00(e, arg, r);
                     }
@@ -1477,7 +1477,7 @@ BOOL WallEdgeList::collide(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r, Unk_
                 t2b.z = a.y;
                 s32 k = e->kind;
                 if (k != 3) {
-                    out->contacts.addContact(func_020e7b98(e->normal.x, e->normal.y), k, e->attr);
+                    out->contacts.addContact(Math_Atan2(e->normal.x, e->normal.y), k, e->attr);
                     if (e->f_04) {
                         e->f_04->vfunc_00(e, arg, r);
                     }
@@ -1500,7 +1500,7 @@ BOOL WallEdgeList::collide(Unk_0202f2ac_V3 *pos, Unk_0202f2ac_V3 *q, s32 r, Unk_
                 t3b.z = a.y;
                 s32 k = e->kind;
                 if (k != 3) {
-                    out->contacts.addContact(func_020e7b98(e->normal.x, e->normal.y), k, e->attr);
+                    out->contacts.addContact(Math_Atan2(e->normal.x, e->normal.y), k, e->attr);
                     if (e->f_04) {
                         e->f_04->vfunc_00(e, arg, r);
                     }
@@ -1667,8 +1667,8 @@ BOOL ShapeCylinderList::pushOut(Unk_02032808_V3 *pos, s32 x, void *q) {
         d.z = pos->z;
         if (e->pushOut((Unk_0202f660_V3 *)pos, x)) {
             Unk_02032808_V3 t;
-            func_020e9960(&t, pos, (Unk_02032808_V3 *)e);
-            s32 ang = func_020e7b98(t.x, t.z);
+            Vec_Sub(&t, pos, (Unk_02032808_V3 *)e);
+            s32 ang = Math_Atan2(t.x, t.z);
             _ZN17CollisionContacts10addContactEiii((u8 *)q + 0xc, ang, e->kind, e->CollisionTagX::attr);
             r = TRUE;
         }
@@ -2022,7 +2022,7 @@ void SegmentCollisionVisitor::visitCylinders(u8* p) {
             hitNormal.x = x;
             hitNormal.y = 0;
             hitNormal.z = z;
-            func_020e94f8(&hitNormal);
+            Vec_SafeNormalize(&hitNormal);
             hitAttr = ent->tag.attr;
             hasHit = 1;
         }
@@ -2185,8 +2185,8 @@ BOOL BoxColliderShape::updateTransform(Unk_0203182c_Vec *a, s32 ang, Unk_0203182
     s32 cx, cy, cz, dx, dy, dz;
     BOOL result;
     if (ang == angle) {
-        if (func_020e96ec(&boxPos, a) == 0) {
-            if (func_020e96ec(&scale, b) == 0) goto end0;
+        if (Vec_NotEqual(&boxPos, a) == 0) {
+            if (Vec_NotEqual(&scale, b) == 0) goto end0;
         }
     }
     boxPos.x = a->x;
@@ -2214,9 +2214,9 @@ BOOL BoxColliderShape::updateTransform(Unk_0203182c_Vec *a, s32 ang, Unk_0203182
     q->x = -hx;
     q->y = hy;
     q->z = -hz;
-    func_020e8388(data_021f47e0, a->x, a->y, a->z);
-    func_020e8404(data_021f47e0, ang);
-    func_020e84f8(data_021f47e0, b->x, b->y, b->z);
+    Mtx43_SetTranslate(data_021f47e0, a->x, a->y, a->z);
+    Mtx43_RotateY(data_021f47e0, ang);
+    Mtx43_Scale(data_021f47e0, b->x, b->y, b->z);
     p = corners;
     pv = unk_30;
     as = unk_60;
@@ -2324,7 +2324,7 @@ extern "C" BOOL Collision_IsSegmentOutsideBox(Unk_0203182c_Vec *a, Unk_0203182c_
     s32 mask, i;
     pts[0] = c;
     pts[1] = d;
-    func_020e9960(&mn, a, b);
+    Vec_Sub(&mn, a, b);
     func_01ffd070(&mx, a, b);
     mask = 0xff;
     for (i = 0; i < 2; i++) {
@@ -2363,7 +2363,7 @@ extern "C" void BoxCollider_GatherAll(s32 unused, Unk_0203182c_Vec *pos, Unk_020
         c.x = n->boundsCenter.x;
         c.y = n->boundsCenter.y;
         c.z = n->boundsCenter.z;
-        func_020e9960(&d, &c, pos);
+        Vec_Sub(&d, &c, pos);
         if (Unk_02031618_Abs(d.x) >= n->boundsHalfSize.x + size->x) continue;
         if (Unk_02031618_Abs(d.z) >= n->boundsHalfSize.z + size->z) continue;
         if (m2 != 0) {
@@ -2745,7 +2745,7 @@ extern "C" BOOL Ground_FindWaterAlongDir(Unk_02030e48_Vec *out, Unk_02030e48_Vec
         v.x = 0;
         v.y = 0;
         v.z = 0x1000;
-        func_020e93a0(&v, dir);
+        Vec_RotateY(&v, dir);
         for (i = 0; i <= count; i++) {
             s32 t = i;
             s32 u, s, res;
@@ -2884,7 +2884,7 @@ extern "C" void Collision_Move(Unk_020309d4_Owner *self, Unk_02030e48_Vec *pos, 
     }
     _ZN14CollisionState15updateWallFlagsEi(self, hh);
     Unk_02030e48_Vec F;
-    func_020e9960(&F, &l.A, pos);
+    Vec_Sub(&F, &l.A, pos);
     self->moveDelta.x = F.x;
     self->moveDelta.y = F.y;
     self->moveDelta.z = F.z;
@@ -3002,7 +3002,7 @@ extern "C" void Collision_Query(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, Collisio
     Unk_0202ff44_V3 v18, v24, v30, v3c;
     s32 x1, x2, z1, z2;
     BOOL f4 = (flags & 4) ? TRUE : FALSE;
-    func_020e9960(&v18, a, &sCollisionQueryMargin);
+    Vec_Sub(&v18, a, &sCollisionQueryMargin);
     func_01ffd070(&v24, b, &sCollisionQueryMargin);
     x1 = v18.x >> 13;
     z1 = v18.z >> 13;
@@ -3012,7 +3012,7 @@ extern "C" void Collision_Query(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, Collisio
     v30.x >>= 1;
     v30.y >>= 1;
     v30.z >>= 1;
-    func_020e9960(&v3c, &v24, &v18);
+    Vec_Sub(&v3c, &v24, &v18);
     v3c.x >>= 1;
     v3c.y >>= 1;
     v3c.z >>= 1;
@@ -3366,12 +3366,12 @@ void CollisionCylinderX::setCylinder(Unk_0202f660_V3 *pos, s32 radius, s32 heigh
 }
 
 BOOL CollisionCylinderX::pushOut(Unk_0202f660_V3 *pos, s32 r) {
-    s32 d = func_020e9650(&center, pos);
+    s32 d = Vec_DistXZ(&center, pos);
     s32 lim = r + circleRadius;
     if (d < lim) {
         if (pos->y < center.y + cylinderHeight) {
             Unk_0202f7b8_V3 v(pos->x - center.x, 0, pos->z - center.z);
-            if (func_020e94f8(&v)) {
+            if (Vec_SafeNormalize(&v)) {
                 s32 s = r + circleRadius - d;
                 pos->x = pos->x + func_01ffcb0c(v.x, s);
                 pos->z = pos->z + func_01ffcb0c(v.z, s);
@@ -3402,8 +3402,8 @@ BOOL CollisionCylinderX::clipSegmentTop(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a
     if (l.A.y > top) {
         l.B = Unk_0202f7b8_V3(out->x, out->y, out->z);
         if (l.B.y < top) {
-            func_020e9960(&l.D, &l.B, &l.A);
-            if (func_020e94f8(&l.D)) {
+            Vec_Sub(&l.D, &l.B, &l.A);
+            if (Vec_SafeNormalize(&l.D)) {
                 s32 dy = l.D.y;
                 if ((dy < 0 ? -dy : dy) >= 4) {
                     t = FX_Div(top - l.A.y, l.D.y);
@@ -3432,7 +3432,7 @@ BOOL CollisionCylinderX::clipSegmentSide(Unk_0202f660_V3 *out, Unk_0202f660_V3 *
         l.C = Unk_0202f7b8_V3(center.x, center.y, center.z);
         s32 r = circleRadius;
         s32 h = cylinderHeight;
-        func_020e9960(&l.D, &l.B, &l.A);
+        Vec_Sub(&l.D, &l.B, &l.A);
         s32 t = func_01ffcb0c(l.D.z, l.D.z);
         s32 q = func_01ffcb0c(l.D.x, l.D.x);
         q += t;

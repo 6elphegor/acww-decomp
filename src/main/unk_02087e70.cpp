@@ -35,7 +35,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 Oam_GetObjHeight(u32 *p);
 s32 Oam_GetObjWidth(u32 *p);
 s32 WorldCurve_Apply(Vec3 *out, void *in);
-void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
+void Vec_Sub(Vec3 *out, Vec3 *a, Vec3 *b);
 s64 func_01ffd028(void *v, void *p);
 void MIi_CpuCopy32(void *a, void *b, u32 c);
 void MIi_CpuCopyFast(void *a, void *b, u32 c);
@@ -102,7 +102,7 @@ extern "C" BOOL BugNet_HitTest(void *a, void *b, s32 rad, u8 *out) {
     u32 i;
     WorldCurve_Apply(&v1, a);
     WorldCurve_Apply(&v2, b);
-    func_020e9960(&v3, &v2, &v1);
+    Vec_Sub(&v3, &v2, &v1);
     v3.x = FX_Div(v3.x, 0x6000);
     v3.y = FX_Div(v3.y, 0x6000);
     v3.z = FX_Div(v3.z, 0x6000);

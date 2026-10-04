@@ -130,7 +130,7 @@ void SaveManager_RequestAct06();
 void TalkRequestFlags_SetTitleTimeout();
 void InputMode_SetButtons();
 void InputMode_SetTouch();
-BOOL func_020e7500(void *p);
+BOOL Math_CountDownU16(void *p);
 void Bgm_Release(s32 a);
 void Bgm_ReleasePriority(s32 a);
 void Bgm_RequestSilence(s32 a, s32 b, s32 c);
@@ -372,7 +372,7 @@ void TitleScreen::updateWaitStart() {
         }
     }
     if ((u8)(logoState + 0xfc) <= 1) {
-        if (func_020e7500(&idleTimer) == 0) {
+        if (Math_CountDownU16(&idleTimer) == 0) {
             blinkText.requestHide();
             changeState(0xb);
         }

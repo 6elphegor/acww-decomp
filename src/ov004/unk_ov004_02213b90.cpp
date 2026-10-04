@@ -87,8 +87,8 @@ s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void ProcBase_RequestDelete(void *self);
 void *Mem_Alloc(u32 size);
 void Mem_Free(void *p);
-s32 func_020e9650(void *a, void *b);
-s32 func_020e780c(s32 a, s32 b);
+s32 Vec_DistXZ(void *a, void *b);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
 TouchPicker *Scene_GetTouchPicker(void);
 s32 Scene_GetCurrent(void);
 Unk_ov004_022146ec_Actor *PlayerActor_GetCharacter(u32);
@@ -408,8 +408,8 @@ void MuseumExhibitInfo::vfunc_4c(u32 a, u8 b) {
 BOOL MuseumExhibitInfo::vfunc_48(void *a0) {
     Unk_ov004_022142fc_Actor *a = (Unk_ov004_022142fc_Actor *)a0;
     if (a) {
-        if (func_020e9650(a->position, (u8 *)this + 0x5c) < 0x2333) {
-            if (func_020e780c((s16)(*(s16 *)((u8 *)this + 0x8e) + 0x8000), a->rotY) < facingArc) {
+        if (Vec_DistXZ(a->position, (u8 *)this + 0x5c) < 0x2333) {
+            if (Math_AngleDiffAbs((s16)(*(s16 *)((u8 *)this + 0x8e) + 0x8000), a->rotY) < facingArc) {
                 return TRUE;
             }
         }

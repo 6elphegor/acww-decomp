@@ -129,7 +129,7 @@ void func_02109fd0(void *p, u32 a, s32 b);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 b);
 void NNS_SndHandleReleaseSeq(void *p);
 SeqInfo *func_0210b8a0(u32 a, u32 b);
-s32 func_020f4904(Vec3 *p, s32 m);
+s32 Snd_CalcListenerDistance(Vec3 *p, s32 m);
 s32 Snd_DistanceToVolume(s32 x);
 s32 Snd_CalcPan(Vec3 *p, s32 m);
 Pan4500 *Snd_GetVolumeCurve(void);
@@ -418,7 +418,7 @@ BOOL SndPosNode::isFinished() {
 }
 
 void SndPosNode::updatePan() {
-    s32 a = Snd_DistanceToVolume(func_020f4904(&pos, 0));
+    s32 a = Snd_DistanceToVolume(Snd_CalcListenerDistance(&pos, 0));
     s32 b = Snd_CalcPan(&pos, 0);
     NNS_SndPlayerSetVolume(&h, a);
     NNS_SndPlayerSetTrackPan(&h, 255, b);
@@ -445,7 +445,7 @@ void SndPosNode::setBgmPan(Vec3 *p) {
     s32 a;
     SndSeqHandle *bh = &gSndBgmHandle;
     if (!notNull(bh->p)) return;
-    a = Snd_DistanceToVolume(func_020f4904(p, 0));
+    a = Snd_DistanceToVolume(Snd_CalcListenerDistance(p, 0));
     s32 b = Snd_CalcPan(p, 0);
     if (a < 40) a = 40;
     NNS_SndPlayerSetVolume(bh, a);
@@ -523,7 +523,7 @@ void SndPosList::remove(SndPosNode *node) {
 
 void SndPosList::playAt(s32 v, Vec3 *p) {
     Snd_StartSeqArc(v % 1000, 1, &h);
-    s32 a = Snd_DistanceToVolume(func_020f4904(p, 0));
+    s32 a = Snd_DistanceToVolume(Snd_CalcListenerDistance(p, 0));
     s32 b = Snd_CalcPan(p, 0);
     NNS_SndPlayerSetVolume(&h, a);
     NNS_SndPlayerSetTrackPan(&h, 255, b);
@@ -587,7 +587,7 @@ void SndEnvChannel::update(Vec3 *pos) {
     if (flags & 1) {
         switch (v) {
         case 2061:
-            t = func_020f4904(pos, 1);
+            t = Snd_CalcListenerDistance(pos, 1);
             break;
         case 2039:
         case 2040:
@@ -595,7 +595,7 @@ void SndEnvChannel::update(Vec3 *pos) {
         case 2044:
         case 2046:
         case 2047:
-            t = func_020f4904(pos, 2);
+            t = Snd_CalcListenerDistance(pos, 2);
             break;
         case 1230:
         case 2041:
@@ -617,7 +617,7 @@ void SndEnvChannel::update(Vec3 *pos) {
         case 2059:
         case 2060:
         default:
-            t = func_020f4904(pos, 0);
+            t = Snd_CalcListenerDistance(pos, 0);
             break;
         }
         if (t > (Snd_GetVolumeCurve()->w10 >> 12)) {

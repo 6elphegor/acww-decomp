@@ -9,7 +9,7 @@
 struct LetterParty {
     /* 0x00 */ u32 unk_00;
     /* 0x04 */ u8 unk_04[0x12];
-    /* 0x16 */ u8 unk_16;
+    /* 0x16 */ u8 partyType;
     /* 0x17 */ u8 pad_17;
 };
 

@@ -55,7 +55,7 @@ void _ZN6LetterD1Ev(void *p);
 s32 memcmp(void *a, void *b, u32 n);
 s32 _ZN8PlayerId6equalsEPS_(void *a, void *b);
 s32 Clock_GetWeekday();
-s32 func_020e77cc(u32 v, u32 lo, u32 hi);
+s32 Math_IsInRange(u32 v, u32 lo, u32 hi);
 s32 NookShop_GetLevel(void *p);
 void _ZN14RoostGuestRoll4rollEv(void *);
 void *MI_CpuFill8(void *d, s32 v, u32 n);
@@ -526,7 +526,7 @@ void _ZN6LetterD1Ev(void *p);
 s32 memcmp(void *a, void *b, u32 n);
 s32 _ZN8PlayerId6equalsEPS_(void *a, void *b);
 s32 Clock_GetWeekday();
-s32 func_020e77cc(u32 v, u32 lo, u32 hi);
+s32 Math_IsInRange(u32 v, u32 lo, u32 hi);
 s32 NookShop_GetLevel(void *p);
 void _ZN14RoostGuestRoll4rollEv(void *);
 void *MI_CpuFill8(void *d, s32 v, u32 n);
@@ -648,7 +648,7 @@ void *MI_CpuCopy8(void *dst, const void *src, u32 n);
 s32 Random_GlobalBelow(s32 n);
 void FieldPos_FromUnitCenter(Unk_02086ec4_Vec3 *out, s32 x, s32 y);
 s32 FieldUnit_FromBlockUnit(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
-s32 func_020e77cc(s32 a, s32 b, s32 c);
+s32 Math_IsInRange(s32 a, s32 b, s32 c);
 }
 }
 
@@ -1198,7 +1198,7 @@ extern "C" BOOL LostChild_IsKatieDue() {
     if (PlayerData_GetCurrent() != 0) {
         LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData18getLostChildRecordEv();
         if (p->isKaitlinRole() == 0) {
-            if (Ns_02086b7c::func_020e77cc(p->getDaysLeft(), 1, 7) != 0) return TRUE;
+            if (Ns_02086b7c::Math_IsInRange(p->getDaysLeft(), 1, 7) != 0) return TRUE;
         }
     }
     return FALSE;
@@ -1208,7 +1208,7 @@ extern "C" BOOL LostChild_IsKaitlinDue() {
     if (PlayerData_GetCurrent() != 0) {
         LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData18getLostChildRecordEv();
         if (p->isKaitlinRole() == 1) {
-            if (Ns_02086b7c::func_020e77cc(p->getDaysLeft(), 1, 7) != 0) return TRUE;
+            if (Ns_02086b7c::Math_IsInRange(p->getDaysLeft(), 1, 7) != 0) return TRUE;
         }
     }
     return FALSE;
@@ -1227,7 +1227,7 @@ extern "C" void LostChild_LoadFromTown() {
     if (a != 0 && g != 0) {
         void *b = _ZN10PlayerData18getLostChildRecordEv();
         Ns_02086b7c::MI_CpuCopy8(g + 0x15fca, b, 12);
-        if (Ns_02086b7c::func_020e77cc(((LostChildRecord *)(g + 0x15fca))->getDaysLeft(), 1, 7) == 0) _ZN12Unk_02097ff49clearFlagEj(a, 0x33);
+        if (Ns_02086b7c::Math_IsInRange(((LostChildRecord *)(g + 0x15fca))->getDaysLeft(), 1, 7) == 0) _ZN12Unk_02097ff49clearFlagEj(a, 0x33);
     }
 }
 
@@ -2117,31 +2117,31 @@ void RoostGuestRoll::roll() {
     c = Random_GlobalBelow(100);
     switch (Clock_GetWeekday()) {
     case 6:
-        if (func_020e77cc(a, 0, 0x4a)) unk_00_1 = 0;
-        else if (func_020e77cc(a, 0x4b, 0x54)) unk_00_1 = 1;
+        if (Math_IsInRange(a, 0, 0x4a)) unk_00_1 = 0;
+        else if (Math_IsInRange(a, 0x4b, 0x54)) unk_00_1 = 1;
         else unk_00_1 = 2;
-        if (func_020e77cc(b, 0, 0x4a)) unk_00_2 = 0;
-        else if (func_020e77cc(b, 0x4b, 0x54)) unk_00_2 = 1;
+        if (Math_IsInRange(b, 0, 0x4a)) unk_00_2 = 0;
+        else if (Math_IsInRange(b, 0x4b, 0x54)) unk_00_2 = 1;
         else unk_00_2 = 2;
         break;
     case 0:
-        if (func_020e77cc(a, 0, 0x31)) unk_00_1 = 0;
-        else if (func_020e77cc(a, 0x32, 0x3b)) unk_00_1 = 1;
-        else if (func_020e77cc(a, 0x3c, 0x46)) unk_00_1 = 2;
+        if (Math_IsInRange(a, 0, 0x31)) unk_00_1 = 0;
+        else if (Math_IsInRange(a, 0x32, 0x3b)) unk_00_1 = 1;
+        else if (Math_IsInRange(a, 0x3c, 0x46)) unk_00_1 = 2;
         else unk_00_1 = 4;
-        if (func_020e77cc(b, 0, 0x4a)) unk_00_2 = 0;
-        else if (func_020e77cc(b, 0x4b, 0x54)) unk_00_2 = 1;
-        else if (func_020e77cc(b, 0x55, 0x5e)) unk_00_2 = 2;
+        if (Math_IsInRange(b, 0, 0x4a)) unk_00_2 = 0;
+        else if (Math_IsInRange(b, 0x4b, 0x54)) unk_00_2 = 1;
+        else if (Math_IsInRange(b, 0x55, 0x5e)) unk_00_2 = 2;
         else unk_00_2 = 3;
         break;
     default:
-        if (func_020e77cc(a, 0, 0x4a)) unk_00_1 = 0;
-        else if (func_020e77cc(a, 0x4b, 0x55)) unk_00_1 = 1;
+        if (Math_IsInRange(a, 0, 0x4a)) unk_00_1 = 0;
+        else if (Math_IsInRange(a, 0x4b, 0x55)) unk_00_1 = 1;
         else unk_00_1 = 2;
-        if (func_020e77cc(b, 0, 0x4a)) unk_00_2 = 0;
-        else if (func_020e77cc(b, 0x4b, 0x55)) unk_00_2 = 1;
+        if (Math_IsInRange(b, 0, 0x4a)) unk_00_2 = 0;
+        else if (Math_IsInRange(b, 0x4b, 0x55)) unk_00_2 = 1;
         else unk_00_2 = 2;
-        if (func_020e77cc(c, 0, 0x1d) && NookShop_GetLevel(data_021ed104) == 3) unk_00_3 = 1;
+        if (Math_IsInRange(c, 0, 0x1d) && NookShop_GetLevel(data_021ed104) == 3) unk_00_3 = 1;
         else unk_00_3 = 0;
         break;
     }

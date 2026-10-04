@@ -101,7 +101,7 @@ s32 SongSet_HasSong(u32 id);
 void ScrollKnob_moveTo(void *p, s32 a, s32 b);
 s32 ScrollKnob_areAnimsDone(void *p);
 void HandCursor_disableObjWindow(void *p);
-void func_020e761c(void *p, s32 v, s32 n);
+void Math_StepS32(void *p, s32 v, s32 n);
 s32 Pocket_FindEmpty();
 void Pocket_SetItem(u16 *p, s32 a, s32 b);
 void SongSet_RemoveSong(u32 v);
@@ -822,7 +822,7 @@ void MusicMenu::dragKnob(s32 x, s32 flag) {
         x = 0x78;
     }
     if (flag) {
-        func_020e761c(&knobPos, x, 8);
+        Math_StepS32(&knobPos, x, 8);
     } else {
         knobPos = x;
     }

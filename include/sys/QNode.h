@@ -6,7 +6,7 @@
 class ProcBase;
 
 // Priority queue node of the task lists (execute / create / draw / delete); ProcBase embeds two.
-// Inserted with Task_InsertByPriority and the list helpers func_020e7930 / 020e7968 / 020e79a0 (src/autoload_2/unk_020e7500.cpp).
+// Inserted with Task_InsertByPriority and the list helpers List_PushFront / 020e7968 / 020e79a0 (src/autoload_2/unk_020e7500.cpp).
 struct QNode {
     /* 0x00 */ QNode *prev;
     /* 0x04 */ QNode *next;

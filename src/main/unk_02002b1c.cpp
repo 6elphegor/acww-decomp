@@ -158,27 +158,27 @@ void FS_InitFile(void *p);
 }
 
 extern "C" {
-void func_020e79a0(void *list, void *node);
+void List_Remove(void *list, void *node);
 }
 
 extern "C" {
-void func_020e7968(void *list, void *node);
+void List_PushBack(void *list, void *node);
 }
 
 extern "C" {
-void func_020e8388(void *m, s32 a, s32 b, s32 c);
+void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 }
 
 extern "C" {
-void func_020e8434(void *m, s32 a);
+void Mtx43_RotateX(void *m, s32 a);
 }
 
 extern "C" {
-void func_020e8404(void *m, s32 a);
+void Mtx43_RotateY(void *m, s32 a);
 }
 
 extern "C" {
-void func_020e7b98(s32 a, s32 b);
+void Math_Atan2(s32 a, s32 b);
 }
 
 extern "C" {
@@ -281,7 +281,7 @@ Actor::Actor() {
     listNode.prev = 0;
     listNode.next = 0;
     listNode.owner = this;
-    func_020e7968(&gActorList, &listNode);
+    List_PushBack(&gActorList, &listNode);
     Unk_02002f14_S32Vec *v = (Unk_02002f14_S32Vec *)sActorSpawnPos;
     if (v) {
         position.x = v->x;
@@ -423,15 +423,15 @@ void Actor::updatePosition(Unk_02002cb0_Vec *v) {
 }
 
 extern "C" void Math_AngleXZ(s32 *a, s32 *b) {
-    func_020e7b98(b[0] - a[0], b[2] - a[2]);
+    Math_Atan2(b[0] - a[0], b[2] - a[2]);
 }
 
 void Actor::calcModelMatrix(void *out) {
     u32 m[12];
-    func_020e8388(m, drawPos.x, drawPos.y, drawPos.z);
-    func_020e8434(m, (s16)drawTilt);
-    func_020e8404(m, rotY);
-    if (rotX != 0) func_020e8434(m, rotX);
+    Mtx43_SetTranslate(m, drawPos.x, drawPos.y, drawPos.z);
+    Mtx43_RotateX(m, (s16)drawTilt);
+    Mtx43_RotateY(m, rotY);
+    if (rotX != 0) Mtx43_RotateX(m, rotX);
     *(Unk_02002848_Data *)out = *(Unk_02002848_Data *)m;
 }
 

@@ -105,7 +105,7 @@ s16 *DebugVar_GetPtr(s32 a, s32 b);
 s32 Clock_GetTimeOfDay();
 BOOL GameStart_IsActive();
 BOOL NetArea_IsLocalOwner();
-s32 func_020e7500(void *p);
+s32 Math_CountDownU16(void *p);
 s32 strncmp(const char *a, const char *b, u32 n);
 u32 func_0212a438(const char *s);
 
@@ -641,7 +641,7 @@ BOOL SpNpcBlathers::setupAct00() {
 
 BOOL SpNpcBlathers::mainAct00() {
     if (dramaTimer != 0xff) {
-        if (func_020e7500(&dramaTimer) == 0) {
+        if (Math_CountDownU16(&dramaTimer) == 0) {
             changeAct(5);
         }
         return TRUE;
@@ -650,7 +650,7 @@ BOOL SpNpcBlathers::mainAct00() {
         Clock_GetTimeOfDay() == 3) {
         return TRUE;
     }
-    if (func_020e7500(&sleepTimer) == 0) {
+    if (Math_CountDownU16(&sleepTimer) == 0) {
         sleepBlend = 0x18;
         changeAct(2);
     }

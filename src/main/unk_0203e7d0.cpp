@@ -101,7 +101,7 @@ Unk_0203e22c_State *TalkRequestPool_Alloc(void);
 }
 
 extern "C" {
-void func_020e79a0(void *, void *);
+void List_Remove(void *, void *);
 }
 
 extern "C" {
@@ -121,7 +121,7 @@ s32 Math_AngleXZ(Unk_0203e4f0_Vec *, Unk_0203e4f0_Vec *);
 }
 
 extern "C" {
-long long func_020e9630(Unk_0203e4f0_Vec *);
+long long Vec_MagSqXZ(Unk_0203e4f0_Vec *);
 }
 
 extern "C" {

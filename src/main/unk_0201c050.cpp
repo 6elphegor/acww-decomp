@@ -1601,7 +1601,7 @@ s32 Scene_InMuseumRoom();
 s32 SceneId_GetMuseumRoom(s32);
 s32 Scene_InNookShop();
 s32 Weather_GetFallingPrecip();
-s32 func_020e9650(void *, void *);
+s32 Vec_DistXZ(void *, void *);
 void func_020f43fc(void *);
 void func_020f440c(void *);
 void * MI_CpuFill8(void *, s32, u32);
@@ -4393,7 +4393,7 @@ extern "C" s32 func_0202c094(void *a, void *b, s32 c, void *d, s32 e) {
         for (i = 0; i < 8; i++) {
             s32 t = Talk_FindInS8Array(FieldInsect_GetPosAndKind(a, (u8)i), (s8 *)b, c);
             if (t != -1) {
-                if (func_020e9650(d, a) < e) {
+                if (Vec_DistXZ(d, a) < e) {
                     return t;
                 }
             }

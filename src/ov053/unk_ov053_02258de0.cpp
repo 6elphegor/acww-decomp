@@ -184,7 +184,7 @@ s32 Math_AngleXZ(void *a, void *b);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *p, s32 a, s32 b, s32 c);
 NpcActor *func_02015aac(void *self);
-s32 func_020e7518(void *);
+s32 Math_CountDownU8(void *);
 void Bgm_ReleasePriority(u32);
 void Hud_Show();
 BOOL PlayerActor_IsInAction(s32 a, s32 b);
@@ -452,7 +452,7 @@ BOOL SpNpcHarriet::setupAct02() {
 }
 
 BOOL SpNpcHarriet::mainAct02() {
-    if (func_020e7518(&bgmReleaseTimer) == 1) {
+    if (Math_CountDownU8(&bgmReleaseTimer) == 1) {
         Bgm_ReleasePriority(0xe);
     }
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
@@ -625,7 +625,7 @@ BOOL SpNpcHarriet::setupAct08() {
 }
 
 BOOL SpNpcHarriet::mainAct08() {
-    if (func_020e7518(&haircutTimer) == 0) {
+    if (Math_CountDownU8(&haircutTimer) == 0) {
         talk.setTopic(5);
         changeAct(2);
     }

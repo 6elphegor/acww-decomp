@@ -41,7 +41,7 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    /* 0x654 */ s32 unk_654;
+    /* 0x654 */ s32 act;
     /* 0x658 */ SpNpcKatieTalk talk;
     /* 0x70c */ u8 unk_70c;
     /* 0x70d */ u8 escortDeclined;

@@ -191,22 +191,22 @@ void TalkRequest_SetTargetDone(void *);
 void SceneWarp_RequestExit(s32, s32);
 s32 Scene_GetWarpRequest();
 void Scene_SavePlayerPos(s32, s32);
-s32 func_020e9650(void *, void *);
+s32 Vec_DistXZ(void *, void *);
 void NpcActor_FindFreeUnitNear(void *, void *, void *);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_isActionDone(void *);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 void NpcMoveCtrl_setWaypoint(void *, void *);
-s32 func_020e972c(void *, void *);
-s32 func_020e96ec(void *, void *);
-s32 func_020e780c(s32, s32);
+s32 Vec_Equal(void *, void *);
+s32 Vec_NotEqual(void *, void *);
+s32 Math_AngleDiffAbs(s32, s32);
 void FieldPos_ToUnit(s32 *, s32 *, s32 *);
 s32 Math_AngleXZ(void *, void *);
 s32 func_02015aac(void *);
 s32 NpcActor_getAngleTo(void *, s32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 u32 *TalkWindow_Get(s32);
-u32 func_020e7518(void *);
+u32 Math_CountDownU8(void *);
 void func_02003e70(void *, u32, u32, u32);
 s32 Building_PlayDoorChime();
 void HouseVisitor_ClearPresent();
@@ -574,7 +574,7 @@ BOOL FleaMarketBuyerVillager::setupAct00() {
 
 BOOL FleaMarketBuyerVillager::mainAct00() {
     if (callTimer == 0) {
-        if (func_020e7518(&callCheckTimer)) {
+        if (Math_CountDownU8(&callCheckTimer)) {
             return TRUE;
         }
         if (Random_GlobalBelow(0x65) > 0x19) {
@@ -588,7 +588,7 @@ BOOL FleaMarketBuyerVillager::mainAct00() {
             v.x = p->position.x;
             v.y = pv->y;
             v.z = pv->z;
-            if (func_020e9650(&v, &position) > 0x8000) {
+            if (Vec_DistXZ(&v, &position) > 0x8000) {
                 func_02003e70(&seEmitter, 0x4ca, 0x7f, 0);
                 callTimer = 0x1e;
             }
@@ -597,7 +597,7 @@ BOOL FleaMarketBuyerVillager::mainAct00() {
     if (callTimer != 0) {
         TalkRequest_AddPlayerTalk6(this, 0);
         if (callTimer > 1) {
-            func_020e7518(&callTimer);
+            Math_CountDownU8(&callTimer);
         }
     }
     return TRUE;
@@ -624,7 +624,7 @@ BOOL FleaMarketBuyerVillager::mainAct01() {
     moveAngleX = 0;
     moveAngleY = -0x8000;
     moveAngleZ = 0;
-    if (func_020e7518(&entryTimer)) {
+    if (Math_CountDownU8(&entryTimer)) {
         if (entryTimer == 8) {
             position.x = 0x10000;
             prevPosition.x = 0x10000;
@@ -686,12 +686,12 @@ BOOL FleaMarketBuyerVillager::mainAct03() {
         return TRUE;
     }
     if (pickFurnitureToView()) {
-        s32 r6 = func_020e9650(&position, targetPos);
+        s32 r6 = Vec_DistXZ(&position, targetPos);
         u32 loc0[3];
         NpcActor_FindFreeUnitNear(loc0, this, targetPos);
         s32 r1 = Math_AngleXZ(&position, targetPos);
-        s32 r4 = func_020e780c(rotY, r1);
-        if (r6 > viewDistance && func_020e96ec(loc0, &position)) {
+        s32 r4 = Math_AngleDiffAbs(rotY, r1);
+        if (r6 > viewDistance && Vec_NotEqual(loc0, &position)) {
             changeAct(5);
         } else if (r4 > 0x2000) {
             changeAct(4);
@@ -701,7 +701,7 @@ BOOL FleaMarketBuyerVillager::mainAct03() {
 }
 
 BOOL FleaMarketBuyerVillager::setupAct04() {
-    func_020e9650(&position, targetPos);
+    Vec_DistXZ(&position, targetPos);
     u32 loc1c[3];
     NpcActor_FindFreeUnitNear(loc1c, this, targetPos);
     s32 r = Math_AngleXZ(&position, targetPos);
@@ -733,7 +733,7 @@ BOOL FleaMarketBuyerVillager::mainAct05() {
     if (checkLeave()) {
         return TRUE;
     }
-    s32 r4 = func_020e9650(&position, targetPos);
+    s32 r4 = Vec_DistXZ(&position, targetPos);
     NpcActor_FindFreeUnitNear(loc24, this, targetPos);
     if (r4 > viewDistance + 0x1000) {
         if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
@@ -745,7 +745,7 @@ BOOL FleaMarketBuyerVillager::mainAct05() {
         }
     }
     NpcMoveCtrl_setWaypoint(&moveCtrl, loc24);
-    if (r4 <= viewDistance || func_020e972c(loc24, &position)) {
+    if (r4 <= viewDistance || Vec_Equal(loc24, &position)) {
         changeAct(3);
     }
     v.x = position.x;
@@ -833,7 +833,7 @@ BOOL FleaMarketBuyerVillager::mainAct06() {
             }
             NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, b, 1);
         }
-        func_020e7518(&callTimer);
+        Math_CountDownU8(&callTimer);
         return TRUE;
     }
     Clock_GetDateTime(startTime);

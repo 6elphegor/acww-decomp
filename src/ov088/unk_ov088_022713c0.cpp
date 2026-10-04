@@ -58,7 +58,7 @@ BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 Random_GlobalBelow(u32 n);
 s32 Math_AngleXZ(void *p, void *q);
 BOOL NpcActor_IsFrontAngle(s32 v);
-u32 func_020e7518(void *p);
+u32 Math_CountDownU8(void *p);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 u32 Random_Next(void *p);
 extern u16 data_020c6cc8;
@@ -495,7 +495,7 @@ BOOL SpNpcShrunk::mainAct02() {
     NpcActionCtrl *p = &actionCtrl;
     Unk_ov088_Vec v, w;
     s32 r6 = isNearCameraTarget();
-    func_020e7518(&waitTimer);
+    Math_CountDownU8(&waitTimer);
     if (r6 != 0) {
         if (checkCollisionWhileMoving() == 0) {
             if (p->isActionDone() != 0) {
@@ -727,7 +727,7 @@ void SpNpcShrunkTalk::scriptCheckTriggerReaction() {
             ownerNpc->reactionWindow = 0x34;
         }
         if (_ZN19Unk_020133cc_Player20getLastTaughtEmotionEv(ownerNpc) == -1) {
-            if (func_020e7518(&ownerNpc->reactionWindow) > 2) {
+            if (Math_CountDownU8(&ownerNpc->reactionWindow) > 2) {
                 return;
             }
         }
@@ -750,7 +750,7 @@ void SpNpcShrunkTalk::scriptCheckTriggerReaction() {
 }
 
 void SpNpcShrunkTalk::scriptWaitThenEnd() {
-    if (func_020e7518(&ownerNpc->waitTimer) == 0) {
+    if (Math_CountDownU8(&ownerNpc->waitTimer) == 0) {
         setScript(0);
         _ZN12Unk_020d771019requestReopenWindowEv(this);
     }

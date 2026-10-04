@@ -75,7 +75,7 @@ void Gfx2d_LoadScreen(void *a, u32 b, u32 c, u32 d);
 void File_LoadToBuffer(const char *a, void *b, u32 c);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
-void func_020e761c(void *p, s32 a, s32 b);
+void Math_StepS32(void *p, s32 a, s32 b);
 void *PlayerActor_GetBodyPos(s32 a);
 s32 Scene_GetWarpRequest();
 void *ScenePos_GetPos(void *p);
@@ -810,7 +810,7 @@ void MapTab::updateBarTap() {
         startTouchInput();
     }
     v = knobPos;
-    func_020e761c(&v, gTouchCurY - 0x54, 8);
+    Math_StepS32(&v, gTouchCurY - 0x54, 8);
     scrollListToKnob(v);
 }
 

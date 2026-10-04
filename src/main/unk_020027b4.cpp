@@ -159,27 +159,27 @@ void FS_InitFile(void *p);
 }
 
 extern "C" {
-void func_020e79a0(void *list, void *node);
+void List_Remove(void *list, void *node);
 }
 
 extern "C" {
-void func_020e7968(void *list, void *node);
+void List_PushBack(void *list, void *node);
 }
 
 extern "C" {
-void func_020e8388(void *m, s32 a, s32 b, s32 c);
+void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 }
 
 extern "C" {
-void func_020e8434(void *m, s32 a);
+void Mtx43_RotateX(void *m, s32 a);
 }
 
 extern "C" {
-void func_020e8404(void *m, s32 a);
+void Mtx43_RotateY(void *m, s32 a);
 }
 
 extern "C" {
-void func_020e7b98(s32 a, s32 b);
+void Math_Atan2(s32 a, s32 b);
 }
 
 extern "C" {

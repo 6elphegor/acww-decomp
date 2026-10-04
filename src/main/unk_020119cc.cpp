@@ -1743,7 +1743,7 @@ extern s32 sRouteDirs[];
 extern Unk_02012f04_Obj *gSceneBlockMap;
 s32 _ZN8BlockMap17getWalkLinksAtPosEPv(Unk_02012f04_Obj *o, Unk_02012810_Vec *v);
 u32 BlockMap_GetBlockAttr(Unk_02012f04_Obj *o, s32 x, s32 z);
-s32 func_020e9650(Unk_02012810_Vec *a, Unk_02012810_Vec *b);
+s32 Vec_DistXZ(Unk_02012810_Vec *a, Unk_02012810_Vec *b);
 void FieldPos_ToBlockUnit2(Unk_02012b94_Pair *a, Unk_02012b94_Pair *c, Unk_02012810_Vec *v);
 void FieldPos_FromBlockUnitCenter(Unk_02012810_Vec *out, u32 a, u32 b, u32 c, u32 d);
 s32 TownMap_IsUnitWalkable(u32 x, u32 z, Unk_02012f04_Obj *o);
@@ -2009,7 +2009,7 @@ void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *a, Unk_02015fe0_Ve
 void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *a, Unk_02015fe0_Vec *v);
 BOOL NpcActor_IsFrontAngle(s16 a);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 extern u16 data_020c6cc8;
 extern Unk_02015fe0_Vec gVec3Zero;
 static inline BOOL Unk_02015fe0_R(u16 *p, u32 lo, u32 hi) {
@@ -2031,7 +2031,7 @@ void NpcAction_PackItem(void *self, void *a, u16 *b);
 extern volatile u16 data_020c6cc8;
 extern u8 gVec3Zero[];
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 BOOL _ZN8NpcActor15netReadPositionEPiPh(Unk_02006d14 *o, s32 *v, s16 *a);
 BOOL NpcActor_IsFrontAngle(s16 a);
 void _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(Unk_02016a44_S350 *p, Unk_02006d14 *o, u32 a, u32 b, u32 c);
@@ -2289,8 +2289,8 @@ void Effect_End(s32 h);
 s32 Effect_CreateWithParam(u32 id, u32 b, void *a, void *c);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
-void func_020e7530(s16 *p, s32 target, s32 step);
-s32 func_020e96a4(void *a, void *b);
+void Math_StepAngle(s16 *p, s32 target, s32 step);
+s32 Vec_Distance(void *a, void *b);
 s32 NpcFace_PickTalkMouth();
 extern Unk_0201a1e0_Fn sNpcLookAtTypes[6];
 BOOL NpcLookAt_IsWithin(s32 a, s32 b);
@@ -2309,14 +2309,14 @@ extern NpcMoveModeEntry sNpcMoveModeTable[];
 s32 NpcLookAt_GetHeadPos(Unk_0201a734_Obj *self, Unk_0201a334_Vec3 *out);
 Unk_0201a334_Scene *PlayerActor_GetCharacter(s32 h);
 BOOL PlayerActor_GetHeadPos(Unk_0201a334_Vec3 *out, s32 h);
-s32 func_020e7530(s16 *p, s32 v, s32 n);
-s32 func_020e96a4(void *a, void *b);
-s32 func_020e96ec(void *a, void *b);
-s32 func_020e972c(void *a, void *b);
-s32 func_020e7b98(s32 a, s32 b);
-s32 func_020e780c(s32 a, s32 b);
-s32 func_020e9650(void *a, void *b);
-s32 func_020e759c(s32 *p, s32 a, s32 b);
+s32 Math_StepAngle(s16 *p, s32 v, s32 n);
+s32 Vec_Distance(void *a, void *b);
+s32 Vec_NotEqual(void *a, void *b);
+s32 Vec_Equal(void *a, void *b);
+s32 Math_Atan2(s32 a, s32 b);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
+s32 Vec_DistXZ(void *a, void *b);
+s32 Math_StepS32Alt(s32 *p, s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_AngleXZ(void *a, void *b);
 void _ZN5Actor14updatePositionEP16Unk_02002cb0_Vec(void *a, void *b);
@@ -2363,8 +2363,8 @@ s32 PlayerInventory_CanAddBells(void *p, s32 v, s32 n, s32 m);
 u32 _ZN8BlockMap17getWalkLinksAtPosEPv(void *g, Unk_020d77a4_Vec3 *v);
 void FieldPos_SnapToUnitCenter(Unk_020d77a4_Vec3 *out, Unk_020d77a4_Vec3 *in);
 void func_01ffd070(Unk_020d77a4_Vec3 *out, Unk_020d77a4_Vec3 *a, Unk_020d77a4_Vec3 *b);
-s32 func_020e9650(Unk_020d77a4_Vec3 *a, Unk_020d77a4_Vec3 *b);
-void func_020e972c(Unk_020d77a4_Vec3 *a, Unk_020d77a4_Vec3 *b);
+s32 Vec_DistXZ(Unk_020d77a4_Vec3 *a, Unk_020d77a4_Vec3 *b);
+void Vec_Equal(Unk_020d77a4_Vec3 *a, Unk_020d77a4_Vec3 *b);
 s32 TownMap_IsPosWalkable(Unk_020d77a4_Vec3 *v, s32 a);
 void func_02133ef8(void *p, u32 n);
 s32 _ZN11CommManager8isOnlineEv(u8 *g);
@@ -2465,7 +2465,7 @@ void _ZN16ActorTalkRequest13setOwnerActorEP18Unk_02015b8c_Scene(Unk_0201bc1c *a,
 s32 PlayerActor_GetCharacter(u32 id);
 BOOL PlayerActor_GetSlotPosXZ(u8 *a, void *b, void *c, s32 d, u32 e);
 s32 Math_AngleXZ(void *a, void *b);
-s32 func_020e96a4(void *a, void *b);
+s32 Vec_Distance(void *a, void *b);
 BOOL Npc_IsPosBlocked(void *a);
 void Npc_RotateOffsetXZ(void *out, void *a, void *b, s32 c);
 s32 _ZN9NpcLookAt15getObstacleBitsEv(void *p);
@@ -3076,7 +3076,7 @@ s32 NpcActor::getDistanceTo(NpcActor *other) {
     using namespace nR;
     s32 r = 0;
     if (other != NULL) {
-        r = func_020e96a4(&other->position, &position);
+        r = Vec_Distance(&other->position, &position);
     }
     return r;
 }
@@ -3659,7 +3659,7 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
         for (i1 = i1; i1 < 4; i1++) {
             func_01ffd070(&t1, &a, (V3 *)(data_020c6dcc + i1 * 12));
             cand1 = t1;
-            d1 = func_020e9650((V3 *)((u8 *)self + 0x5c), &cand1);
+            d1 = Vec_DistXZ((V3 *)((u8 *)self + 0x5c), &cand1);
             if (_ZN8BlockMap17getWalkLinksAtPosEPv(g, &cand1) && TownMap_IsPosWalkable(&cand1, z0)) {
                 if (bestDist == 0 || bestDist > d1) {
                     bestDist = d1;
@@ -3675,7 +3675,7 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
         }
     } else {
         best2 = best;
-        d0 = func_020e9650(in, &a);
+        d0 = Vec_DistXZ(in, &a);
         func_02133ef8(arr, 0x30);
         u32 ang = *(u16 *)((u8 *)self + 0x8e);
         if (ang >= 0xe000 || ang < 0x2000) {
@@ -3707,14 +3707,14 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
         for (i = z2; i < 4; i++) {
             func_01ffd070(&t3, &a, (V3 *)(data_020c6dcc + i * 12));
             cand2 = t3;
-            d = func_020e9650(in, &cand2);
+            d = Vec_DistXZ(in, &cand2);
             if (i == dir0) {
                 d -= 0x2000;
             } else if (i == dir1) {
                 d += 0x2000;
             }
             for (j = z2; j < 4; j++) {
-                func_020e972c(&cand2, &arr[j]);
+                Vec_Equal(&cand2, &arr[j]);
             }
             if (TownMap_IsPosWalkable(&cand2, z3) && (m0 & data_020c6d84[i])) {
                 if (best2 == 0 || best2 > d) {
@@ -3865,10 +3865,10 @@ void NpcMoveCtrl::applyMovement(Unk_0201a334_Scene *scene) {
         if (hi >= lo) {
             hi = curSpeedPreset.z;
         }
-        func_020e759c(&scene->speed, lo, hi);
+        Math_StepS32Alt(&scene->speed, lo, hi);
         s32 ang = Math_AngleXZ(&scene->position, &destination);
         if (ang == scene->moveAngleY) {
-            s32 d = func_020e9650(&destination, &scene->position);
+            s32 d = Vec_DistXZ(&destination, &scene->position);
             if (d < scene->speed) {
                 scene->speed = d;
             }
@@ -3929,7 +3929,7 @@ s32 NpcMoveCtrl::stepAngle(s16 *p, s16 target, s16 step, u8 mode) {
         switch (mode) {
         case 1:
         case 2:
-            if (func_020e780c(target, *p) <= lim) {
+            if (Math_AngleDiffAbs(target, *p) <= lim) {
                 if ((s16)(*p - target) > 0) {
                     step = (s16)-step;
                 }
@@ -3974,7 +3974,7 @@ void NpcMoveCtrl::updateTurn(Unk_0201a334_Scene *scene) {
 
 void NpcMoveCtrl::setWaypoint(Unk_0201a334_Vec3 *v) {
     using namespace nP;
-    if (func_020e972c(&waypoint, &destination)) {
+    if (Vec_Equal(&waypoint, &destination)) {
         setDestination(v);
     }
     waypoint.x = v->x;
@@ -3999,9 +3999,9 @@ BOOL NpcMoveCtrl::hasArrived(Unk_0201a334_Scene *scene, s32 which) {
     v.y = 0;
     s32 d;
     if (which != 0) {
-        d = func_020e96a4(&v, &waypoint);
+        d = Vec_Distance(&v, &waypoint);
     } else {
-        d = func_020e96a4(&v, &destination);
+        d = Vec_Distance(&v, &destination);
     }
     if (d < arriveDistance) {
         r = TRUE;
@@ -4038,7 +4038,7 @@ Unk_0201a334_Vec3 *NpcMoveCtrl::getDestination() {
 
 s32 NpcMoveCtrl::hasNextLeg() {
     using namespace nP;
-    return func_020e96ec(&waypoint, &destination);
+    return Vec_NotEqual(&waypoint, &destination);
 }
 
 namespace nP {
@@ -4257,8 +4257,8 @@ BOOL NpcLookAt::canSeeTarget(Unk_0201a334_Scene *scene) {
         p = &targetPos;
         break;
     }
-    if (p != 0 && func_020e96ec(p, gVec3Zero) != 0) {
-        s32 d = func_020e96a4(p, &scene->position);
+    if (p != 0 && Vec_NotEqual(p, gVec3Zero) != 0) {
+        s32 d = Vec_Distance(p, &scene->position);
         if (maxDistance == 0 || (d < 0 ? -d : d) < maxDistance) {
             s32 ang = calcYaw(p, &scene->position, scene->rotY);
             if (useYawLimit == 0 || _ZN12Unk_0201a13c16isWithinYawLimitEi(this, ang) != 0) {
@@ -4276,8 +4276,8 @@ s32 NpcLookAt::calcYaw(Unk_0201a334_Vec3 *a, Unk_0201a334_Vec3 *b, s32 c) {
 
 s32 NpcLookAt::calcPitch(Unk_0201a334_Vec3 *a, Unk_0201a334_Vec3 *b, s32 c) {
     using namespace nP;
-    s32 d = func_020e96a4(a, b);
-    return (s16)(func_020e7b98(a->y - b->y, d) - c);
+    s32 d = Vec_Distance(a, b);
+    return (s16)(Math_Atan2(a->y - b->y, d) - c);
 }
 
 s32 NpcLookAt::calcClampedYaw(Unk_0201a334_Vec3 *a, Unk_0201a334_Vec3 *b, s32 c) {
@@ -4326,7 +4326,7 @@ void NpcLookAt::lookAtActor(Unk_0201a334_Scene *scene, Unk_0201a334_Scene *tgt, 
     s32 b = 0;
     onTarget = 0;
     if (tp != 0) {
-        s32 d = func_020e96a4(tp, sp);
+        s32 d = Vec_Distance(tp, sp);
         if (limit == 0 || (d < 0 ? -d : d) < limit) {
             s32 ang = calcYaw(tp, sp, scene->rotY);
             if (!flag || _ZN12Unk_0201a13c16isWithinYawLimitEi(this, ang)) {
@@ -4340,10 +4340,10 @@ void NpcLookAt::lookAtActor(Unk_0201a334_Scene *scene, Unk_0201a334_Scene *tgt, 
         }
     }
     if (yaw != b) {
-        func_020e7530(&yaw, b, yawStep);
+        Math_StepAngle(&yaw, b, yawStep);
     }
     if (pitch != a) {
-        func_020e7530(&pitch, a, pitchStep);
+        Math_StepAngle(&pitch, a, pitchStep);
     }
     if (yaw != b || pitch != a) {
         onTarget = 0;
@@ -4353,10 +4353,10 @@ void NpcLookAt::lookAtActor(Unk_0201a334_Scene *scene, Unk_0201a334_Scene *tgt, 
 void NpcLookAt::relax() {
     using namespace nP;
     if (yaw != 0) {
-        func_020e7530(&yaw, 0, yawStep);
+        Math_StepAngle(&yaw, 0, yawStep);
     }
     if (pitch != 0) {
-        func_020e7530(&pitch, 0, pitchStep);
+        Math_StepAngle(&pitch, 0, pitchStep);
     }
 }
 
@@ -4404,7 +4404,7 @@ void Unk_0201a13c::lookAtPoint(Unk_0201a25c_Src *o) {
     s32 r6 = 0;
     s32 r7 = 0;
     u8 sp[12];
-    s32 d = func_020e96a4(&targetPos, &o->position);
+    s32 d = Vec_Distance(&targetPos, &o->position);
     s32 lim;
     onTarget = 0;
     lim = maxDistance;
@@ -4419,10 +4419,10 @@ void Unk_0201a13c::lookAtPoint(Unk_0201a25c_Src *o) {
         }
     }
     if (yaw != r6) {
-        func_020e7530(&yaw, r6, yawStep);
+        Math_StepAngle(&yaw, r6, yawStep);
     }
     if (pitch != r7) {
-        func_020e7530(&pitch, r7, pitchStep);
+        Math_StepAngle(&pitch, r7, pitchStep);
     }
     if (yaw != r6 || pitch != r7) {
         onTarget = 0;
@@ -4432,10 +4432,10 @@ void Unk_0201a13c::lookAtPoint(Unk_0201a25c_Src *o) {
 void Unk_0201a13c::approachManualAngles() {
     using namespace nO;
     if (yaw != manualYaw) {
-        func_020e7530(&yaw, manualYaw, yawStep);
+        Math_StepAngle(&yaw, manualYaw, yawStep);
     }
     if (pitch != manualPitch) {
-        func_020e7530(&pitch, manualPitch, pitchStep);
+        Math_StepAngle(&pitch, manualPitch, pitchStep);
     }
 }
 
@@ -6680,7 +6680,7 @@ BOOL Unk_02016a44::setupAct15(Unk_02006d14 *o) {
             _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, gVec3Zero);
             _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, gVec3Zero);
         } else {
-            s32 a = func_020e7b98(dx, dz);
+            s32 a = Math_Atan2(dx, dz);
             if (NpcActor_IsFrontAngle((s16)(a - ang))) {
                 if (netMoveMode == 2) {
                     _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->moveCtrl, o, 2, 0, data_020c6cc8);
@@ -6729,7 +6729,7 @@ void Unk_02016360::act15Step0(Unk_02015fe0_Obj *o) {
                 _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->moveCtrl, &gVec3Zero);
             }
         } else {
-            s32 a = func_020e7b98(dx, dz);
+            s32 a = Math_Atan2(dx, dz);
             if (NpcActor_IsFrontAngle(a - ang)) {
                 if (netMoveMode == 2) {
                     _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 2, 0, data_020c6cc8);
@@ -6776,7 +6776,7 @@ void Unk_02016360::act15Step1(Unk_02015fe0_Obj *o) {
                 actStep = 0;
             }
         } else {
-            if (!NpcActor_IsFrontAngle(func_020e7b98(dx, dz) - ang)) {
+            if (!NpcActor_IsFrontAngle(Math_Atan2(dx, dz) - ang)) {
                 _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 3, 0, data_020c6cc8);
                 _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, ang);
                 actStep = 2;
@@ -6825,7 +6825,7 @@ void Unk_02016360::act15Step2(Unk_02015fe0_Obj *o) {
                 if (c == o->rotY) actStep = 0;
             }
         } else {
-            s32 a = func_020e7b98(dx, dz);
+            s32 a = Math_Atan2(dx, dz);
             if (NpcActor_IsFrontAngle(a - ang)) {
                 if (netMoveMode == 2) {
                     _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 2, 0, data_020c6cc8);
@@ -6879,7 +6879,7 @@ void Unk_02016360::act15Step3(Unk_02015fe0_Obj *o) {
                 actStep = 0;
             }
         } else if (d >= 0x29) {
-            s32 a = func_020e7b98(dx, dz);
+            s32 a = Math_Atan2(dx, dz);
             if (NpcActor_IsFrontAngle(a - ang)) {
                 if (netMoveMode == 2) {
                     _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 2, 0, data_020c6cc8);
@@ -9461,7 +9461,7 @@ u32 Unk_02012810::findNearestPath(Unk_02012b94_Pair *out, Unk_02012810_Vec *pos)
         for (s32 i = 0; i < 4; i++) {
             s32 d;
             Unk_02012810_Vec *pc = cand;
-            d = func_020e9650(pos, &pc[i]);
+            d = Vec_DistXZ(pos, &pc[i]);
             if (((mask >> i) & 1) != 0) {
                 if (bestd < 0 || d < bestd) {
                     best = pc[i];
@@ -9725,7 +9725,7 @@ void Unk_02012810::planStep(Unk_02012810_Vec *pos) {
                     if (scanDir(&r, p, cand, &q, o)) {
                         s32 d;
                         FieldPos_FromUnitCenter(&uv, r.x, r.z);
-                        d = func_020e9650(&tv, &uv);
+                        d = Vec_DistXZ(&tv, &uv);
                         if (bestd < 0 || d < bestd) {
                             bx = r.x;
                             bz = r.z;
@@ -9767,7 +9767,7 @@ void Unk_02012810::planStep(Unk_02012810_Vec *pos) {
                     if (scanDir(&r, p, cand2, &q, o)) {
                         s32 d;
                         FieldPos_FromUnitCenter(&uv, r.x, r.z);
-                        d = func_020e9650(&tv, &uv);
+                        d = Vec_DistXZ(&tv, &uv);
                         if (bestd < 0 || d < bestd) {
                             bx = r.x;
                             bz = r.z;

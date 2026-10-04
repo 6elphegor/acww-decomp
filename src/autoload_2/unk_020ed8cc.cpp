@@ -66,7 +66,7 @@ extern "C" void SndSeSystem_Shutdown(Player *o, s32 flag) {
 }
 
 extern "C" void SndSeSystem_UnloadGroup(Player *o) {
-    if (o->unk_15.b0 == 255) Fatal_Trap();
+    if (o->groupParams.b0 == 255) Fatal_Trap();
     if (o->heapLevel == 255) return;
     Snd_RestoreHeapLevel(o->heapLevel);
 }
@@ -164,7 +164,7 @@ extern "C" void *Snd_GetHeapLevel(void) {
 
 // PROTOS-END
 
-extern "C" void func_020ed8cc(Unk_Seq *o) {
+extern "C" void CmdSeq_Undo(Unk_Seq *o) {
     s16 *pi;
     if (o->cmds == NULL) return;
     if (o->state == 0) return;

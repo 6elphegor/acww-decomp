@@ -179,8 +179,8 @@ s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, 
 void VillagerMood_playMood3Effect(void *, void *);
 s32 NpcActor_findAvoidPos(void *, void *);
 void NpcMoveCtrl_setWaypoint(void *, void *);
-s32 func_020e96ec(void *, void *);
-s32 func_020e9650(void *, void *);
+s32 Vec_NotEqual(void *, void *);
+s32 Vec_DistXZ(void *, void *);
 s32 Random_GlobalBelow(s32);
 u16 Room_PickRandomWalkTarget(void *, void *, s32);
 void *SaveVillagers_GetUnk3830(void *);
@@ -796,10 +796,10 @@ void SickVillager::mainAct00() {
                 NpcMoveCtrl_setWaypoint(&moveCtrl, &waypoint);
                 break;
             default:
-                if (func_020e96ec(&waypoint, &walkTarget) != 0) {
+                if (Vec_NotEqual(&waypoint, &walkTarget) != 0) {
                     waypoint = walkTarget;
                     NpcMoveCtrl_setWaypoint(&moveCtrl, &walkTarget);
-                } else if (func_020e9650(&walkTarget, (u8 *)this + 0x5c) < 0x200) {
+                } else if (Vec_DistXZ(&walkTarget, (u8 *)this + 0x5c) < 0x200) {
                     changeAct(1);
                 }
                 break;

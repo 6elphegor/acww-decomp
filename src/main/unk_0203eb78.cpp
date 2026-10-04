@@ -85,7 +85,7 @@ void MI_CpuCopy8(void *src, void *dst, s32 n);
 }
 
 extern "C" {
-s32 func_020e79a0(void *list, void *node);
+s32 List_Remove(void *list, void *node);
 }
 
 extern "C" {
@@ -157,7 +157,7 @@ s32 FX_Sqrt(s32 a);
 }
 
 extern "C" {
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 }
 
 extern "C" {
@@ -332,7 +332,7 @@ extern "C" void TalkRequestList_FreeAll(Unk_0203ebdc_List *l) {
     TalkRequestEntry *p = l->head;
     while (p) {
         TalkRequestEntry *next = *(TalkRequestEntry **)((u8 *)p + 4);
-        func_020e79a0(l, p);
+        List_Remove(l, p);
         TalkRequestEntry_Free(p);
         p = next;
     }

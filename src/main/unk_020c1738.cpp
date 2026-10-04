@@ -46,7 +46,7 @@ s32 Npc_IsPosBlocked(void *v);
 s32 Math_AngleXZ(void *pos, void *v);
 s32 NpcActor_IsFrontAngle(s16 a);
 void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
-void func_020e7518(void *p);
+void Math_CountDownU8(void *p);
 u32 Random_Next(void *p);
 u32 Random_GlobalBelow(u32 n);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -608,7 +608,7 @@ BOOL SpNpcKaitlin::tryAvoidObstacle() {
 BOOL SpNpcKaitlin::mainAct07() {
     void *p564 = &actionCtrl;
     BOOL a = isInCameraView();
-    func_020e7518(&unk_651);
+    Math_CountDownU8(&unk_651);
     if (a) {
         if (!tryAvoidObstacle()) {
             if (_ZN13NpcActionCtrl12isActionDoneEv(p564)) {

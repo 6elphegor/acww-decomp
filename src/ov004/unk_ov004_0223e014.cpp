@@ -89,7 +89,7 @@ void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 void PlayerActor_RequestTurnTo(s32 a, u32 b);
 BOOL SaveManager_IsIdleForRoom(void);
 void SaveManager_RequestAct03(void);
-BOOL func_020e7500(void *p);
+BOOL Math_CountDownU16(void *p);
 BOOL InputMode_IsTouch();
 BOOL InputMode_IsButtons();
 void InputMode_SetTouch(void);
@@ -486,7 +486,7 @@ void ResidentSelect::enterDecided() {
 }
 
 void ResidentSelect::updateDecided() {
-    if (!func_020e7500(&timer)) {
+    if (!Math_CountDownU16(&timer)) {
         changeState(4);
     }
 }
@@ -498,7 +498,7 @@ void ResidentSelect::enterCameraMove() {
 }
 
 void ResidentSelect::updateCameraMove() {
-    if (!func_020e7500(&timer)) {
+    if (!Math_CountDownU16(&timer)) {
         changeState(5);
     }
 }

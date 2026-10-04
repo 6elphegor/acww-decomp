@@ -448,8 +448,8 @@ extern "C" void SndSeGroup_StopHeld(Group *g, s32 a) {
 
 extern "C" BOOL SndSeSystem_LoadGroup(Player *o) {
     u32 id;
-    if (o->unk_15.b0 != 255) {
-        id = Snd_LoadGroup(o->unk_15.b0);
+    if (o->groupParams.b0 != 255) {
+        id = Snd_LoadGroup(o->groupParams.b0);
         if (id == (u32)-1) return FALSE;
     } else {
         id = 255;

@@ -183,7 +183,7 @@ void PlayerOptions_SetTalkVoice(u32 a);
 u32 PlayerOptions_GetTalkVoice();
 void Snd_SetOutputMode(u32 a);
 void PlayerOptions_Commit();
-s32 func_020e9650(s32 *a, s32 *b);
+s32 Vec_DistXZ(s32 *a, s32 *b);
 void PlayerActor_LocalRequestPhoneHangUp(void *p);
 void PlayerActor_LocalRequestPhonePickUp(void *p);
 }

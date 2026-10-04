@@ -632,9 +632,9 @@ s32 Weather_GetFallingPrecip(void);
 
 s32 GroundSeason_IsSnow(void);
 
-void func_020e93a0(Unk_02091404_V *v, s16 a);
+void Vec_RotateY(Unk_02091404_V *v, s16 a);
 
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 
 void EffectCb_AlignFirstParticle2(Unk_02091404_Obj *o, s32 k);
 
@@ -752,11 +752,11 @@ void EffectCb_InitOneShot(void *a);
 
 s32 _s32_div_f(s32 a, s32 b);
 
-void func_020e93a0(Unk_02092388_Vec *v, s16 a);
+void Vec_RotateY(Unk_02092388_Vec *v, s16 a);
 
 void VEC_Add(Unk_02092388_Vec *a, void *b, Unk_02092388_Vec *c);
 
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 
 void EffectKind35_InitParams(Unk_02092528_Outer *o, u8 a, s32 b, s32 c);
 
@@ -824,7 +824,7 @@ void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(void *, void *, s32, s32);
 
 void GroundInfo_Destruct(void *);
 
-s32 func_020e94f8(void *);
+s32 Vec_SafeNormalize(void *);
 
 void EffectSpl_ApplySceneTint(void *);
 
@@ -904,9 +904,9 @@ s32 EffectSpl_ApplySceneTint(void *obj);
 
 void GroundInfo_Destruct(void *o);
 
-void func_020e944c(Unk_02093748_Vec *v, s32 a);
+void Vec_RotateX(Unk_02093748_Vec *v, s32 a);
 
-void func_020e93a0(Unk_02093748_Vec *v, s32 a);
+void Vec_RotateY(Unk_02093748_Vec *v, s32 a);
 
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 
@@ -949,9 +949,9 @@ s32 _ZN10EffectSlot3setEijP16Unk_020904f0_VecPsS2_s(void *, s32, s32, s32, s32, 
 
 s32 _ZN10EffectSlot5clearEv(void *);
 
-void func_020e93a0(void *, s32);
+void Vec_RotateY(void *, s32);
 
-s32 func_020e94f8(void *);
+s32 Vec_SafeNormalize(void *);
 
 void VEC_Add(void *, void *, void *);
 
@@ -1063,7 +1063,7 @@ extern "C" void EffectCb_PlaceEmitter(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e
         v1.x = a->x;
         v1.y = a->y;
         v1.z = a->z;
-        func_020e93a0(&v1, e->angle);
+        Vec_RotateY(&v1, e->angle);
         VEC_Add(&pos, &v1, &pos);
     }
     o->posX = pos.x + o->resource->header->posX;
@@ -1073,8 +1073,8 @@ extern "C" void EffectCb_PlaceEmitter(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e
         v2.x = b->x;
         v2.y = b->y;
         v2.z = b->z;
-        func_020e93a0(&v2, e->angle);
-        if (func_020e94f8(&v2) != 0) {
+        Vec_RotateY(&v2, e->angle);
+        if (Vec_SafeNormalize(&v2) != 0) {
             s32 y = v2.y;
             s32 z = v2.z;
             s32 x = v2.x;
@@ -1382,7 +1382,7 @@ void EffectEmitterEntry::initAxisUpForward()
     p->posY = g->y + p->resource->header->pos.y;
     p->posZ = g->z + p->resource->header->pos.z;
     EffectSpl_ApplySceneTint(emitter);
-    func_020e93a0(&v, g->ang);
+    Vec_RotateY(&v, g->ang);
     s32 ty = v.y;
     s32 tz = v.z;
     p = emitter;
@@ -1449,8 +1449,8 @@ void EffectSplEmitter::initKind02()
     posY = g->y + resource->header->pos.y;
     posZ = g->z + resource->header->pos.z;
     unk_5c = g->y + 0x333;
-    func_020e944c(&v, 0xffffe000);
-    func_020e93a0(&v, ang);
+    Vec_RotateX(&v, 0xffffe000);
+    Vec_RotateY(&v, ang);
     s32 ty = v.y;
     s32 tz = v.z;
     s32 tx = v.x;
@@ -1723,7 +1723,7 @@ extern "C" s32 EffectKind0E_InitEmitter0(Unk_02092830 *p) {
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;
-        if (func_020e94f8(&v) != 0) {
+        if (Vec_SafeNormalize(&v) != 0) {
             s32 vy = v.y;
             s32 vz = v.z;
             Unk_02092da4_B *b2 = p->emitter;
@@ -1763,7 +1763,7 @@ extern "C" s32 EffectKind0E_UpdateEmitter0(Unk_02092830 *p) {
             v.x = pv->x;
             v.y = pv->y;
             v.z = pv->z;
-            if (func_020e94f8(&v) != 0) {
+            if (Vec_SafeNormalize(&v) != 0) {
                 s32 vy = v.y;
                 s32 vz = v.z;
                 Unk_02092da4_B *b2 = p->emitter;
@@ -2130,7 +2130,7 @@ extern "C" s32 EffectKind26_UpdateEmitter0(Unk_02092528_Outer *o) {
         in->posX = e->x + in->resource->header->posX;
         in->posY = e->y + in->resource->header->posY;
         in->posZ = e->z + in->resource->header->posZ;
-        func_020e93a0(&vec, e->ang);
+        Vec_RotateY(&vec, e->ang);
         s32 ty = vec.y;
         s32 tz = vec.z;
         Unk_02092388_Obj *p = o->emitter;
@@ -2198,7 +2198,7 @@ extern "C" void EffectCb_AlignFirstParticle(Unk_02092388_Obj *o, s32 flag) {
     if (flag == 1) {
         Unk_02092388_Node *n = o->particles;
         if (n != 0) {
-            n->rotation = func_020e7b98(o->axisX, o->axisZ);
+            n->rotation = Math_Atan2(o->axisX, o->axisZ);
             o->callback = 0;
         }
     }
@@ -2213,7 +2213,7 @@ extern "C" void EffectCb_PlaceRotatedOffset(Unk_02092388_Obj *o, Unk_02092388_Ve
     t.x = v->x;
     t.y = v->y;
     t.z = v->z;
-    func_020e93a0(&t, *(volatile s16 *)&d->ang);
+    Vec_RotateY(&t, *(volatile s16 *)&d->ang);
     VEC_Add(&t, &d->pos, &t);
     s32 idx = ((u16)a >> 4) * 2;
     o->posX = t.x + o->resource->header->posX;
@@ -2502,7 +2502,7 @@ extern "C" s32 EffectKind35_UpdateRamp(Unk_02091404_Arg *p, s32 a, s32 b, s32 c,
         o->posX = t0 + (*o->resource)->posX;
         o->posY = v.y + (*o->resource)->posY;
         o->posZ = v.z + (*o->resource)->posZ;
-        func_020e93a0(&v2, r->angle);
+        Vec_RotateY(&v2, r->angle);
         s32 vy = v2.y;
         s32 vz = v2.z;
         o = p->emitter;
@@ -2587,7 +2587,7 @@ extern "C" s32 EffectKind35_UpdateEmitter4(Unk_02091404_Arg *p)
         o->posX = t0 + (*o->resource)->posX;
         o->posY = v.y + (*o->resource)->posY;
         o->posZ = v.z + (*o->resource)->posZ;
-        func_020e93a0(&v2, r->angle);
+        Vec_RotateY(&v2, r->angle);
         s32 vy = v2.y;
         s32 vz = v2.z;
         o = p->emitter;
@@ -2720,7 +2720,7 @@ extern "C" void EffectCb_AlignFirstParticle2(Unk_02091404_Obj *o, s32 k)
     if (k == 1) {
         Unk_02091404_Node *n = o->particles;
         if (n != NULL) {
-            n->rotation = func_020e7b98(o->axisX, o->axisZ);
+            n->rotation = Math_Atan2(o->axisX, o->axisZ);
             o->callback = NULL;
         }
     }

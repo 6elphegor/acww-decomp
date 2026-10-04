@@ -7,7 +7,7 @@
 // Ramp gSndVolumeCurve; the 2-byte data_021f5c28 after it starts a new file (objects are sorted by ascending size); its users and those
 // of sMelodyBeatPattern, the 1-byte data_0213b9d8 (after the 0x1c-byte vtables of unk_020f30fc.cpp: new file) and the .rodata tables
 // 0x0213597c.. (after the 0x18-byte name table of the task manager: new file; followed by a 4-byte object: next file) are all in
-// 0x020f4a5c-0x020f5b9c; the pan-curve code (0x020f44f0-0x020f4a5c, with func_020f4904) uses only bss 0x021f5bfc-0x021f5c28.
+// 0x020f4a5c-0x020f5b9c; the pan-curve code (0x020f44f0-0x020f4a5c, with Snd_CalcListenerDistance) uses only bss 0x021f5bfc-0x021f5c28.
 // The unit's own compile reproduces the order of all six objects with the definitions at the end of the file in address order.
 #include "types.h"
 #include "game/Vec3.h"
@@ -104,7 +104,7 @@ s32 FX_Div(s32 a, s32 b);
 
 s32 Snd_DistanceToVolume(s32 x);
 s32 Snd_CalcPan(Vec3 *p, s32 m);
-s32 func_020f4904(Vec3 *p, s32 m);
+s32 Snd_CalcListenerDistance(Vec3 *p, s32 m);
 void MelodyBeat_ApplyPosition(void *obj, Vec3 *pos);
 BOOL MelodyBeat_EndStep(Seq1 *self);
 void MelodyBeat_PlayStep(Seq1 *self, Vec3 *pos);
@@ -474,7 +474,7 @@ extern "C" void MelodyPlayer_PlayAt(Ctl2 *c, Vec3 *pos, u32 mode) {
     u32 a;
     u32 b;
     if ((u8)(c->b3c + 255) <= 1) return;
-    c->b39 = Snd_DistanceToVolume(func_020f4904(pos, 0));
+    c->b39 = Snd_DistanceToVolume(Snd_CalcListenerDistance(pos, 0));
     c->b3a = Snd_CalcPan(pos, 0);
     c->b3c = 4;
     switch (mode) {
@@ -536,11 +536,11 @@ extern "C" void MelodyPlayer_LoadSeqArc(void *c, u32 id) {
 }
 
 // empty
-extern "C" void func_020f5014(void) {
+extern "C" void MelodyBeat_Construct(void) {
 }
 
 // empty
-extern "C" void func_020f5010(void) {
+extern "C" void MelodyBeat_Destruct(void) {
 }
 
 // Seq1: init (pattern table from MelodyPlayer_GetPattern)
@@ -692,7 +692,7 @@ extern "C" BOOL MelodyBeat_EndStep(Seq1 *self) {
 
 // set the volume (id 15) and pan (id 15) of a voice from a position
 extern "C" void MelodyBeat_ApplyPosition(void *obj, Vec3 *pos) {
-    s32 a = Snd_DistanceToVolume(func_020f4904(pos, 0));
+    s32 a = Snd_DistanceToVolume(Snd_CalcListenerDistance(pos, 0));
     s32 b = Snd_CalcPan(pos, 0);
     func_0210a148(obj, 15, a);
     NNS_SndPlayerSetTrackPan(obj, 15, b);

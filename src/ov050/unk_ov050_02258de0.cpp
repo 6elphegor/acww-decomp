@@ -577,12 +577,12 @@ s32 Scene_GetPrevious();
 void *Scene_GetCurrent();
 void *TouchPick_GetTargetObject(void *a, s32 b, s32 c);
 void TouchPick_GetGroundPos(void *a, void *b);
-s32 func_020e7500(void *p);
-s32 func_020e7518(void *p);
-s32 func_020e780c(s32 a, s32 b);
-s32 func_020e96ec(Unk_ov050_0225cd90_Vec *a, void *b);
-s32 func_020e972c(Unk_ov050_0225cd90_Vec *a, void *b);
-void func_020e9960(void *out, void *a, void *b);
+s32 Math_CountDownU16(void *p);
+s32 Math_CountDownU8(void *p);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
+s32 Vec_NotEqual(Unk_ov050_0225cd90_Vec *a, void *b);
+s32 Vec_Equal(Unk_ov050_0225cd90_Vec *a, void *b);
+void Vec_Sub(void *out, void *a, void *b);
 s32 strncmp(const char *a, const char *b, s32 n);
 s32 func_0212a438(const char *s);
 void *FtrActorGrid_getActor(void *self, s32 a, s32 b, s32 c);
@@ -1041,14 +1041,14 @@ BOOL SpNpcNookShop::mainAct01() {
     v.z = pv->z;
     s32 t = getDistanceToPlayer(4);
     s32 a = getAngleToPlayer(4);
-    s32 k = func_020e780c(rotY, a);
+    s32 k = Math_AngleDiffAbs(rotY, a);
     s32 s = getFollowDistance();
     Unk_ov050_0225cd90_Vec out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     if (PlayerActor_IsInAction(0x8b, 4) || PlayerActor_IsInAction(0x8c, 4)) {
         return TRUE;
     }
-    if (t > s && func_020e96ec(&out, &position)) {
+    if (t > s && Vec_NotEqual(&out, &position)) {
         changeAct(3);
     } else if (k > 0x2000) {
         changeAct(2);
@@ -1065,7 +1065,7 @@ BOOL SpNpcNookShop::mainAct01() {
     if (tryItemTalk()) {
         return TRUE;
     }
-    if (dramaPending && func_020e7500(&dramaTimer) == 0) {
+    if (dramaPending && Math_CountDownU16(&dramaTimer) == 0) {
         changeAct(7);
     }
     return TRUE;
@@ -1096,7 +1096,7 @@ BOOL SpNpcNookShop::mainAct02() {
     v.z = pv->z;
     s32 t = getDistanceToPlayer(4);
     s32 b = getAngleToPlayer(4);
-    func_020e780c(rotY, b);
+    Math_AngleDiffAbs(rotY, b);
     s32 s = getFollowDistance();
     Unk_ov050_0225cd90_Vec out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
@@ -1104,7 +1104,7 @@ BOOL SpNpcNookShop::mainAct02() {
         return TRUE;
     }
     if (t > s) {
-        if (func_020e96ec(&out, &position)) {
+        if (Vec_NotEqual(&out, &position)) {
             changeAct(3);
             return TRUE;
         }
@@ -1159,7 +1159,7 @@ BOOL SpNpcNookShop::mainAct03() {
         }
     }
     NpcMoveCtrl_setWaypoint(&moveCtrl, &out);
-    if (t <= s || func_020e972c(&out, &position) != 0) {
+    if (t <= s || Vec_Equal(&out, &position) != 0) {
         changeAct(1);
     }
     return TRUE;
@@ -1415,7 +1415,7 @@ BOOL SpNpcNookShop::setupAct0D() {
 
 BOOL SpNpcNookShop::mainAct0D() {
     s32 t = getAngleToPlayer(4);
-    if (func_020e780c(rotY, t) >= data_020c6cc0) {
+    if (Math_AngleDiffAbs(rotY, t) >= data_020c6cc0) {
         changeAct(0xe);
     } else {
         tryItemTalk();
@@ -1472,7 +1472,7 @@ BOOL SpNpcNookShop::mainAct10() {
         }
     }
     NpcMoveCtrl_setWaypoint(&moveCtrl, &out);
-    if (t <= 0x3000 || func_020e972c(&out, &position) != 0 || func_020e7518(&approachTimer) == 0) {
+    if (t <= 0x3000 || Vec_Equal(&out, &position) != 0 || Math_CountDownU8(&approachTimer) == 0) {
         talk.vfunc_08();
         func_02015ab0(&talk, getPlayerActor(4));
         changeAct(4);
@@ -3883,9 +3883,9 @@ BOOL SpNpcNookShop::isPlayerCloserThanOtherTwin() {
             b.y = pv->y;
             b.z = pv->z;
             Unk_ov050_022590f8_Vec d1, d2;
-            func_020e9960(&d1, &a, &b);
+            Vec_Sub(&d1, &a, &b);
             s32 l1 = VEC_Mag(&d1);
-            func_020e9960(&d2, &a, &position);
+            Vec_Sub(&d2, &a, &position);
             if (VEC_Mag(&d2) < l1) {
                 return TRUE;
             }

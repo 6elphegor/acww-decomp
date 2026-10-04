@@ -80,14 +80,14 @@ BOOL MenuCtrl_IsFinished(void);
 BOOL MenuCtrl_IsResultOk(void);
 const void *Choice_GetBmgName(u32 i);
 Unk_ov046_02258e68_Actor *PlayerActor_GetActor(s32 n);
-s32 func_020e9650(Unk_ov046_02258e68_Vec *a, Unk_ov046_02258e68_Vec *b);
+s32 Vec_DistXZ(Unk_ov046_02258e68_Vec *a, Unk_ov046_02258e68_Vec *b);
 void *Scene_GetTouchPicker();
 s32 TouchPickResult_GetTarget(void *a, void *b, void *c, s32 d);
 void Camera_LockFocusYaw();
 void TalkRequest_AddPlayerTalk6(void *p, s32 v);
 void TalkRequest_SetTargetDone(void *self);
 s32 Clock_GetTimeOfDay();
-s32 func_020e7500(void *p);
+s32 Math_CountDownU16(void *p);
 void Effect_End(s32 h);
 s32 Effect_Create(s32 a, void *b, void *c, s32 d);
 void Effect_SetPosition(s32 h, void *b, void *c);
@@ -350,7 +350,7 @@ BOOL SpNpcCeleste::mainAct00() {
         Clock_GetTimeOfDay() == 3) {
         return TRUE;
     }
-    if (func_020e7500(&sleepTimer) == 0) {
+    if (Math_CountDownU16(&sleepTimer) == 0) {
         sleepBlend = 0x18;
         changeAct(2);
     }
@@ -1152,7 +1152,7 @@ BOOL SpNpcCeleste::isPlayerAtTelescope() {
     v1.z = pv->z;
     v1.x = 0x10800;
     v1.z = 0x17000;
-    s32 d = func_020e9650(&v0, &v1);
+    s32 d = Vec_DistXZ(&v0, &v1);
     s32 a = p->rotY;
     if (d < 0x1000) {
         a = a & 0xffff;

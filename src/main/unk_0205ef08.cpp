@@ -51,18 +51,18 @@ void BlockMap_SetItemAtUnit(void *o, u16 *v, s32 a, s32 b, s32 c);
 void BlockMap_SetBuriedAtUnit(void *o, s32 a, s32 b);
 void BlockMap_ClearBuriedAtUnit(void *o, s32 a, s32 b);
 s32 _s32_div_f(s32 a, s32 b);
-s32 func_020e7870(s32 *dst, s32 src, s32 step, s32 target, s32 lim);
+s32 Math_ApproachS32(s32 *dst, s32 src, s32 step, s32 target, s32 lim);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 s32 Effect_Create(s32 kind, Unk_0205f1e8_Vec *v, void *a, s32 b);
 s32 Effect_SetPosition(s32 h, Unk_0205f1e8_Vec *v, void *a, s32 b);
 s32 Effect_End(s32 h);
-void func_020e9790(Unk_0205f1e8_Vec *out, Unk_0205f1e8_Vec *in, s32 n);
+void Vec_ShiftRightTo(Unk_0205f1e8_Vec *out, Unk_0205f1e8_Vec *in, s32 n);
 void VEC_Add(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b, Unk_0205f1e8_Vec *out);
 void VEC_Subtract(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b, Unk_0205f1e8_Vec *out);
-s32 func_020e9650(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b);
-void func_020e9768(Unk_0205f1e8_Vec *v, s32 n);
-void func_020e8388(Unk_0205f7f4_Mtx *m, s32 x, s32 y, s32 z);
+s32 Vec_DistXZ(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b);
+void Vec_ShiftRight(Unk_0205f1e8_Vec *v, s32 n);
+void Mtx43_SetTranslate(Unk_0205f7f4_Mtx *m, s32 x, s32 y, s32 z);
 void FieldFish_StartCastSplash();
 void *func_0205fd94(u8 *tbl, u32 idx);
 void WorldCurve_FromCurved(void *p, Unk_0205f1e8_Vec *v);
@@ -95,10 +95,10 @@ extern "C" BOOL Fishing_StepArc(Unk_0205f1e8_Vec *a, s32 k, Unk_0205f1e8_Vec *b,
         n = 0xa;
     }
     d = _s32_div_f(0x1000, n);
-    r1 = func_020e7870(&b->x, a->x, d, m, 0x19a);
-    r2 = r1 + func_020e7870(&b->z, a->z, d, m, 0x19a);
+    r1 = Math_ApproachS32(&b->x, a->x, d, m, 0x19a);
+    r2 = r1 + Math_ApproachS32(&b->z, a->z, d, m, 0x19a);
     if (*c < 0 && flag) {
-        func_020e7870(&b->y, a->y, d, 0xccd, 0x52);
+        Math_ApproachS32(&b->y, a->y, d, 0xccd, 0x52);
     } else {
         b->y += *c;
         *c -= k;

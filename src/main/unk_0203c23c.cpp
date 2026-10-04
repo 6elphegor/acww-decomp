@@ -85,7 +85,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 }
 
 extern "C" {
-void func_020e98f4(void *out, void *a, s32 n);
+void Vec_ScaleTo(void *out, void *a, s32 n);
 }
 
 extern "C" {

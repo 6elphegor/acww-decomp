@@ -29,7 +29,7 @@ struct Player {
     /* 0x0c */ u32 active;
     /* 0x10 */ u32 unk_10;
     /* 0x14 */ u8 unk_14;
-    /* 0x15 */ Bytes4 unk_15;
+    /* 0x15 */ Bytes4 groupParams;
     /* 0x1c */ u32 heapLevel;
     /* 0x20 */ u8 unk_20[4];
     /* 0x24 */ u8 unk_24[4];
@@ -37,8 +37,8 @@ struct Player {
 
 extern "C" {
 void Fatal_Trap(void);
-BOOL func_020e7968(List *list, ListNode *node);
-BOOL func_020e7a10(List *list, ListNode *node, ListNode *after);
+BOOL List_PushBack(List *list, ListNode *node);
+BOOL List_InsertAfter(List *list, ListNode *node, ListNode *after);
 extern TaskNode *gTaskCurrentNode;
 extern s32 gTaskPhase;
 extern TaskList gTaskDrawList;
@@ -138,7 +138,7 @@ BOOL func_020ed54c(TaskList *l);
 void Task_RunDrawPhase(void);
 void Task_RunAllPhases(void);
 BOOL func_020ed764(TaskList4 *l);
-s16 func_020ed81c(Unk_Seq *o, s32 loop);
+s16 CmdSeq_Run(Unk_Seq *o, s32 loop);
 void *Snd_GetHeapLevel(void);
 void *Snd_RestoreHeapLevel(u32 a);
 s32 Snd_LoadGroup(u32 a);
@@ -175,7 +175,7 @@ void *SndList_GetNext(void *list, void *obj);
 extern "C" BOOL SndSeSystem_Setup(Player *o, u32 a, u32 b, Bytes4 s) {
     if (o->active != 0) Fatal_Trap();
     if (s.b[0] == 255) Fatal_Trap();
-    o->unk_15 = s;
+    o->groupParams = s;
     if (s.b[3] == 0) {
         if (SndSeSystem_LoadGroup(o) == 0) return FALSE;
     } else {

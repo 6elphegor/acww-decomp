@@ -82,8 +82,8 @@ BOOL _ZN11NpcTalkCtrl6isBusyEv(void *a);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *a, s32 b, s32 c, s32 d);
 BOOL TownMap_FindBuildingAbovePos(Unk_020c0acc_Vec *a, s32 b, s32 c, s32 d);
 void TownMap_IsPosWalkable(Unk_020c0acc_Vec *a, s32 b);
-s32 func_020e9650(void *a, void *b);
-BOOL func_020e7500(void *a);
+s32 Vec_DistXZ(void *a, void *b);
+BOOL Math_CountDownU16(void *a);
 s32 _ZN11NpcFaceAnim12getMouthAnimEv(void *p);
 s32 _ZN15TalkWindowState13getChoiceListEv(void *p);
 s32 _ZN10ChoiceList9getResultEv(void);
@@ -263,8 +263,8 @@ u8 *SpNpcKatie::getModelPath() {
 
 BOOL SpNpcKatie::updateAct() {
     s32 r = 0;
-    if (sSpNpcKatieActTable[unk_654].b != 0) {
-        r = (this->*(sSpNpcKatieActTable[unk_654].b))();
+    if (sSpNpcKatieActTable[act].b != 0) {
+        r = (this->*(sSpNpcKatieActTable[act].b))();
     }
     if (Scene_GetCurrent() == 0) {
         _ZN12Unk_02086f846setPosEP17Unk_02086ec4_Vec3(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
@@ -315,7 +315,7 @@ void SpNpcKatie::changeAct(s32 state) {
             Effect_End(effectHandle);
             effectHandle = -1;
         }
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -414,7 +414,7 @@ BOOL SpNpcKatie::setupAct04() {
 }
 
 BOOL SpNpcKatie::mainAct04() {
-    if (func_020e7500(&waitTimer) == 0) {
+    if (Math_CountDownU16(&waitTimer) == 0) {
         changeAct(5);
     }
     return TRUE;
@@ -461,10 +461,10 @@ BOOL SpNpcKatie::mainAct05() {
             return TRUE;
         }
         v = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
-        d2 = func_020e9650(&prevPos, &position);
+        d2 = Vec_DistXZ(&prevPos, &position);
         prevPos = *(Unk_020bfe30_Vec *)&position;
         if (d2 <= 0x29 || v != 0) {
-            if (func_020e7500(&stuckTimer) == 0) {
+            if (Math_CountDownU16(&stuckTimer) == 0) {
                 changeAct(1);
                 return TRUE;
             }
@@ -747,7 +747,7 @@ void SpNpcKatieTalk::onChoice(u32) {
 extern "C" BOOL SpNpcKatie_IsIdle() {
     SpNpcKatie *p = sSpNpcKatieInstance;
     if (p) {
-        if (_ZN11NpcFaceAnim12getMouthAnimEv(&p->faceAnim) == 0xba && sSpNpcKatieInstance->unk_654 == 0) {
+        if (_ZN11NpcFaceAnim12getMouthAnimEv(&p->faceAnim) == 0xba && sSpNpcKatieInstance->act == 0) {
             return TRUE;
         }
         return FALSE;
@@ -758,7 +758,7 @@ extern "C" BOOL SpNpcKatie_IsIdle() {
 extern "C" void SpNpcKatie_ResetAct() {
     SpNpcKatie *p = sSpNpcKatieInstance;
     if (p) {
-        if (p->unk_654 != 0) {
+        if (p->act != 0) {
             p->changeAct(0);
         }
     }
@@ -767,7 +767,7 @@ extern "C" void SpNpcKatie_ResetAct() {
 extern "C" void SpNpcKatie_ChangeAct05() {
     SpNpcKatie *p = sSpNpcKatieInstance;
     if (p) {
-        if (p->unk_654 != 5) {
+        if (p->act != 5) {
             p->changeAct(5);
         }
     }

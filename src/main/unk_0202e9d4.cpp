@@ -16,13 +16,13 @@ s32 func_01ffcb2c(s32 x, s32 y);
 s32 VEC_DotProduct(void *a, void *b);
 void VEC_Add(void *o, void *a, void *b);
 void func_01ffd070(void *o, void *a, void *b);
-void func_020e93a0(void *v, s16 a);
-void func_020e9960(void *o, void *a, void *b);
-void func_020e9588(void *o, void *a, void *b, void *c);
-s32 func_020e94f8(void *v);
-void func_020e9888(void *v, s32 s);
-s32 func_020e96a4(void *a, void *b);
-s32 func_020e9650(void *a, void *b);
+void Vec_RotateY(void *v, s16 a);
+void Vec_Sub(void *o, void *a, void *b);
+void Vec_CrossCopy(void *o, void *a, void *b, void *c);
+s32 Vec_SafeNormalize(void *v);
+void Vec_Scale(void *v, s32 s);
+s32 Vec_Distance(void *a, void *b);
+s32 Vec_DistXZ(void *a, void *b);
 }
 
 static inline s32 Unk_0202f2ac_Abs(s32 v) { return v < 0 ? -v : v; }
@@ -61,8 +61,8 @@ BOOL CollisionCylinder::clipSegmentCaps(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a
     struct { Unk_0202f7b8_V3 A, B, D, P1, P2; } l;
     l.A = Unk_0202f7b8_V3(a->x, a->y, a->z);
     l.B = Unk_0202f7b8_V3(out->x, out->y, out->z);
-    func_020e9960(&l.D, &l.B, &l.A);
-    if (func_020e94f8(&l.D)) {
+    Vec_Sub(&l.D, &l.B, &l.A);
+    if (Vec_SafeNormalize(&l.D)) {
         s32 dy = l.D.y;
         if ((dy < 0 ? -dy : dy) >= 4) {
             s32 top = center.y + cylinderHeight;
@@ -103,7 +103,7 @@ BOOL CollisionCylinder::clipSegmentSideBounded(Unk_0202f660_V3 *out, Unk_0202f66
         l.B = Unk_0202f7b8_V3(out->x, out->y, out->z);
         l.C = Unk_0202f7b8_V3(center.x, center.y, center.z);
         s32 r = circleRadius;
-        func_020e9960(&l.D, &l.B, &l.A);
+        Vec_Sub(&l.D, &l.B, &l.A);
         s32 t = func_01ffcb0c(l.D.z, l.D.z);
         s32 q = func_01ffcb0c(l.D.x, l.D.x);
         q += t;
@@ -160,15 +160,15 @@ CollisionSegment::~CollisionSegment() {}
 
 s32 CollisionSegment::calcDir(Unk_0202f660_V3 *out) {
     Unk_0202f660_V3 tmp;
-    func_020e9960(&tmp, &end, &start);
+    Vec_Sub(&tmp, &end, &start);
     *out = tmp;
-    return func_020e94f8(out);
+    return Vec_SafeNormalize(out);
 }
 
 s32 CollisionSegment::distanceTo(Unk_0202f660_V3 *pt) {
     Unk_0202f660_V3 tmp;
     projectPoint(&tmp, pt);
-    return func_020e96a4(&tmp, pt);
+    return Vec_Distance(&tmp, pt);
 }
 
 void CollisionSegment::set(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b) {
@@ -181,7 +181,7 @@ s32 CollisionSegment::closestPoint(Unk_0202f660_V3 *out, Unk_0202f660_V3 *pt) {
     Unk_0202f660_V3 tmp;
     projectPoint(&tmp, pt);
     *out = tmp;
-    return func_020e96a4(&tmp, pt);
+    return Vec_Distance(&tmp, pt);
 }
 
 void CollisionSegment::projectPoint(Unk_0202f660_V3 *out, Unk_0202f660_V3 *pt) {
@@ -288,13 +288,13 @@ BOOL CollisionTriangle::pushOutEdges(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32
         for (; p < &t0 + 3; p++) {
             d = p->closestPoint((Unk_0202f660_V3 *)&w, (Unk_0202f660_V3 *)a);
             if (d < c && p->isBetweenEnds((Unk_0202f660_V3 *)a)) {
-                func_020e9960(&v, a, &w);
-                if (func_020e94f8(&v) == 0) {
+                Vec_Sub(&v, a, &w);
+                if (Vec_SafeNormalize(&v) == 0) {
                     Unk_0202f2ac_V3 *q = &normal;
                     v = *q;
-                    func_020e9888(&v, c);
+                    Vec_Scale(&v, c);
                 } else {
-                    func_020e9888(&v, c - d);
+                    Vec_Scale(&v, c - d);
                 }
                 VEC_Add(a, &v, a);
                 result = TRUE;
@@ -307,10 +307,10 @@ BOOL CollisionTriangle::pushOutEdges(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32
 
 extern "C" s32 Collision_CalcTriangleNormal(Unk_0202f2ac_V3 *n, Unk_0202f2ac_V3 *p, Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b) {
     Unk_0202f2ac_V3 u, v, t;
-    func_020e9960(&u, a, p);
-    func_020e9960(&v, b, p);
-    func_020e9588(&t, n, &u, &v);
-    return func_020e94f8(n);
+    Vec_Sub(&u, a, p);
+    Vec_Sub(&v, b, p);
+    Vec_CrossCopy(&t, n, &u, &v);
+    return Vec_SafeNormalize(n);
 }
 
 BOOL CollisionTriangle::set(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d) {
@@ -324,9 +324,9 @@ BOOL CollisionTriangle::set(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac
 
 BOOL CollisionTriangle::containsXZ(Unk_0202f2ac_V3 *p) {
     Unk_0202f2ac_V3 a, b, c;
-    func_020e9960(&a, &vertex0, p);
-    func_020e9960(&b, &vertex1, p);
-    func_020e9960(&c, &vertex2, p);
+    Vec_Sub(&a, &vertex0, p);
+    Vec_Sub(&b, &vertex1, p);
+    Vec_Sub(&c, &vertex2, p);
     s32 r5 = func_01ffcb0c(a.z, b.x) - func_01ffcb0c(a.x, b.z);
     s32 r4 = func_01ffcb0c(b.z, c.x) - func_01ffcb0c(b.x, c.z);
     s32 r0 = func_01ffcb0c(c.z, a.x) - func_01ffcb0c(c.x, a.z);
@@ -353,9 +353,9 @@ s32 CollisionTriangle::distanceTo(Unk_0202f2ac_V3 *p) {
 
 BOOL CollisionTriangle::containsXY(Unk_0202f2ac_V3 *p) {
     Unk_0202f2ac_V3 a, b, c;
-    func_020e9960(&a, &vertex0, p);
-    func_020e9960(&b, &vertex1, p);
-    func_020e9960(&c, &vertex2, p);
+    Vec_Sub(&a, &vertex0, p);
+    Vec_Sub(&b, &vertex1, p);
+    Vec_Sub(&c, &vertex2, p);
     s32 r5 = func_01ffcb0c(a.x, b.y) - func_01ffcb0c(a.y, b.x);
     s32 r4 = func_01ffcb0c(b.x, c.y) - func_01ffcb0c(b.y, c.x);
     s32 r0 = func_01ffcb0c(c.x, a.y) - func_01ffcb0c(c.y, a.x);
@@ -367,9 +367,9 @@ BOOL CollisionTriangle::containsXY(Unk_0202f2ac_V3 *p) {
 
 BOOL CollisionTriangle::containsYZ(Unk_0202f2ac_V3 *p) {
     Unk_0202f2ac_V3 a, b, c;
-    func_020e9960(&a, &vertex0, p);
-    func_020e9960(&b, &vertex1, p);
-    func_020e9960(&c, &vertex2, p);
+    Vec_Sub(&a, &vertex0, p);
+    Vec_Sub(&b, &vertex1, p);
+    Vec_Sub(&c, &vertex2, p);
     s32 r5 = func_01ffcb0c(a.y, b.z) - func_01ffcb0c(a.z, b.y);
     s32 r4 = func_01ffcb0c(b.y, c.z) - func_01ffcb0c(b.z, c.y);
     s32 r0 = func_01ffcb0c(c.y, a.z) - func_01ffcb0c(c.z, a.y);
@@ -393,7 +393,7 @@ BOOL CollisionTriangle::intersectLine(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, 
     if (Unk_0202f2ac_Abs(d) >= 4) {
         Unk_0202f2ac_V3 v;
         s32 t, y, z;
-        func_020e9960(&v, q, p);
+        Vec_Sub(&v, q, p);
         t = FX_Div(s, d);
         z = p->z + func_01ffcb0c(t, v.z);
         y = p->y + func_01ffcb0c(t, v.y);
@@ -469,7 +469,7 @@ BOOL CollisionVec2::normalize() {
 
 void CollisionVec2::rotate(s16 a) {
     Unk_0202f2ac_V3 v(y, x);
-    func_020e93a0(&v, a);
+    Vec_RotateY(&v, a);
     x = v.x;
     y = v.z;
 }

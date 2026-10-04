@@ -85,7 +85,7 @@ void *PlayerData_GetCurrent();
 BOOL TalkRequest_AddPlayerTalk6(void *p, s32 a);
 void TalkRequest_SetTargetDone(void *p);
 u32 NookShop_GetLevel(void *p);
-u32 func_020e7518(void *p);
+u32 Math_CountDownU8(void *p);
 void ProcBase_RequestDelete(void *p);
 void Bgm_ReleasePriority(u32 a);
 void Bgm_Release(u32 a);
@@ -439,7 +439,7 @@ BOOL SpNpcNookIntro::setupAct04() {
 }
 
 BOOL SpNpcNookIntro::mainAct04() {
-    if (NpcActionCtrl_isActionDone(&actionCtrl) != 0 || func_020e7518(&actTimer) == 0) {
+    if (NpcActionCtrl_isActionDone(&actionCtrl) != 0 || Math_CountDownU8(&actTimer) == 0) {
         TalkRequest_SetTargetDone(this);
         if (PlayerData_GetCurrent()) {
             GameStart_Clear();
@@ -454,7 +454,7 @@ BOOL SpNpcNookIntro::setupAct05() {
 }
 
 BOOL SpNpcNookIntro::mainAct05() {
-    if (func_020e7518(&actTimer) == 0) {
+    if (Math_CountDownU8(&actTimer) == 0) {
         Bgm_ReleasePriority(0x13);
         Bgm_RequestSilence(0x12, 5, 5);
         ProcBase_RequestDelete(this);

@@ -183,7 +183,7 @@ void PlayerOptions_SetTalkVoice(u32 a);
 u32 PlayerOptions_GetTalkVoice();
 void Snd_SetOutputMode(u32 a);
 void PlayerOptions_Commit();
-s32 func_020e9650(s32 *a, s32 *b);
+s32 Vec_DistXZ(s32 *a, s32 *b);
 void PlayerActor_LocalRequestPhoneHangUp(void *p);
 void PlayerActor_LocalRequestPhonePickUp(void *p);
 }
@@ -623,7 +623,7 @@ void RoomTelephone::vfunc_4c(u32 a, u8 b) {
 BOOL RoomTelephone::vfunc_48(void *a) {
     Character *o = (Character *)a;
     if (o) {
-        if (func_020e9650(&o->position.x, (s32 *)sRoomTelephonePos) < 0x2333) {
+        if (Vec_DistXZ(&o->position.x, (s32 *)sRoomTelephonePos) < 0x2333) {
             u32 d = (u16)(*(s16 *)((u8 *)o + 0x8e) - (F(s16, 0x8e) + 0x8000));
             if (d < 0x1000 || d >= 0xf000) {
                 return TRUE;

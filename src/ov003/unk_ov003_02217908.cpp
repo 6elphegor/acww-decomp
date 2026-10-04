@@ -67,7 +67,7 @@ extern s32 data_020c8cbc;
 extern u8 data_0213b91c[];
 extern u8 data_0213b938[];
 
-s32 func_020e9650(Unk_ov003_02217910_V3 *a, Unk_ov003_02217910_V3 *b);
+s32 Vec_DistXZ(Unk_ov003_02217910_V3 *a, Unk_ov003_02217910_V3 *b);
 s32 BgMgt_GetCount();
 }
 Unk_ov003_022179b8_Ent BgMgt_GetEntry(u8 *obj, s32 i);
@@ -157,7 +157,7 @@ extern "C" Unk_ov003_02217970_Rec *FieldGround_FindSoundSrc(Unk_ov003_02217970_R
                         p.x = base.x + e.x;
                         p.y = 0;
                         p.z = base.z + e.z;
-                        FieldGround_ConsiderSoundSrc(out, func_020e9650(&p, pos), &p, e.kind);
+                        FieldGround_ConsiderSoundSrc(out, Vec_DistXZ(&p, pos), &p, e.kind);
                     }
                     }
                 }

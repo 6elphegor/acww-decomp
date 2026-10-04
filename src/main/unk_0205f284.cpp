@@ -94,16 +94,16 @@ void BlockMap_SetItemAtUnit(void *o, u16 *v, s32 a, s32 b, s32 c);
 void BlockMap_SetBuriedAtUnit(void *o, s32 a, s32 b);
 void BlockMap_ClearBuriedAtUnit(void *o, s32 a, s32 b);
 s32 _s32_div_f(s32 a, s32 b);
-s32 func_020e7870(s32 *dst, s32 src, s32 step, s32 target, s32 lim);
+s32 Math_ApproachS32(s32 *dst, s32 src, s32 step, s32 target, s32 lim);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_020e7b98(s32 a, s32 b);
+s32 Math_Atan2(s32 a, s32 b);
 s32 Effect_SetPosition(s32 h, Unk_0205f8d4_Vec *v, void *a, s32 b);
-void func_020e9790(Unk_0205f8d4_Vec *out, Unk_0205f8d4_Vec *in, s32 n);
+void Vec_ShiftRightTo(Unk_0205f8d4_Vec *out, Unk_0205f8d4_Vec *in, s32 n);
 void VEC_Add(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, Unk_0205f8d4_Vec *out);
 void VEC_Subtract(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, Unk_0205f8d4_Vec *out);
-s32 func_020e9650(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b);
-void func_020e9768(Unk_0205f8d4_Vec *v, s32 n);
-void func_020e8388(Unk_0205f7f4_Mtx *m, s32 x, s32 y, s32 z);
+s32 Vec_DistXZ(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b);
+void Vec_ShiftRight(Unk_0205f8d4_Vec *v, s32 n);
+void Mtx43_SetTranslate(Unk_0205f7f4_Mtx *m, s32 x, s32 y, s32 z);
 void FieldFish_StartCastSplash();
 void WorldCurve_FromCurved(void *p, Unk_0205f8d4_Vec *v);
 void WorldCurve_ToCurved(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b);
@@ -615,14 +615,14 @@ extern "C" void FishBobber_Draw(u8 *self, Unk_0205f7f4_Mtx *m, s32 arg)
                     t.y = pv->y;
                     t.z = pv->z;
                     VEC_Subtract(&t, &v, &t);
-                    func_020e9768(&t, 3);
+                    Vec_ShiftRight(&t, 3);
                     t.y = 0;
                     VEC_Add(&v, &t, &v);
                 }
             }
             WorldCurve_ToCurved(&v, &v);
             Unk_0205f7f4_Mtx tmp;
-            func_020e8388(&tmp, v.x, v.y, v.z);
+            Mtx43_SetTranslate(&tmp, v.x, v.y, v.z);
             mt = tmp;
         }
         *(Unk_0205f7f4_Mtx *)(e + 0x64) = mt;
@@ -705,8 +705,8 @@ void FishBobberStates::updateFloat()
     _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii((Unk_0205f92c_Buf *)&o, &pos, 0, 1);
     ang = 0;
     if (o.waterKind != 0) {
-                func_020e9790(&w, (Unk_0205f8d4_Vec *)&o.flowDir, 5);
-        ang = func_020e7b98(w.x, w.z);
+                Vec_ShiftRightTo(&w, (Unk_0205f8d4_Vec *)&o.flowDir, 5);
+        ang = Math_Atan2(w.x, w.z);
         VEC_Add(&pos, &w, &pos);
         s32 y = o.waterSurfaceY;
         s32 c = pos.y;
@@ -728,11 +728,11 @@ void FishBobberStates::updateFloat()
             pos.y = y + 0x30a;
         }
     }
-    s32 dist = func_020e9650(&base, &pos);
+    s32 dist = Vec_DistXZ(&base, &pos);
     if (dist >= 0x8000) {
         s32 dx = pos.x - base.x;
         s32 dz = pos.z - base.z;
-        u32 idx = (u16)func_020e7b98(dx, dz) >> 4;
+        u32 idx = (u16)Math_Atan2(dx, dz) >> 4;
         idx = idx * 2;
         pos.x = base.x + func_01ffcb0c(0x7f33, data_02135f44[idx]);
         pos.z = base.z + func_01ffcb0c(0x7f33, data_02135f44[idx + 1]);

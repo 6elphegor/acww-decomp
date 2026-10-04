@@ -33,14 +33,14 @@ s32 func_02133150(s32, s32); // _s32_div_f (called by the compiler for the s16 d
 s32 FX_Div(s32, s32); // FX_Div
 s32 VEC_Mag(const VecFx32 *v); // VEC_Mag
 void VEC_Add(const VecFx32 *a, const VecFx32 *b, VecFx32 *dst); // VEC_Add
-void func_01ffb87c(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotX43_ (Thumb)
+void func_01ffb87c(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotZ43_ (Thumb)
 void MTX_RotY43_(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotY43_ (Thumb)
-void MTX_RotX43_(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotZ43_ (Thumb)
+void MTX_RotX43_(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotX43_ (Thumb)
 void MTX_Scale43_(MtxFx43 *m, s32 x, s32 y, s32 z); // MTX_Scale43_ (Thumb)
 void MTX_Concat43(const MtxFx43 *a, const MtxFx43 *b, MtxFx43 *ab); // MTX_Concat43
-void func_020e9960(VecFx32 *out, const VecFx32 *a, const VecFx32 *b); // out = a - b
-s32 func_020e9688(const VecFx32 *v); // length in the XZ plane
-void func_020e9888(VecFx32 *v, s32 s); // scale
+void Vec_Sub(VecFx32 *out, const VecFx32 *a, const VecFx32 *b); // out = a - b
+s32 Vec_MagXZ(const VecFx32 *v); // length in the XZ plane
+void Vec_Scale(VecFx32 *v, s32 s); // scale
 u16 TP_GetLatestIndexInAuto(void); // TP_GetLatestIndexInAuto
 void TP_GetCalibratedPoint(TPData *dst, const TPData *src); // TP_GetCalibratedPoint
 void TP_Init(void); // TP_Init
@@ -67,13 +67,13 @@ extern u8 data_021f47d0;
 extern u16 sPadPrevHeld; // keys of the previous frame
 extern PadState gPad;
 
-BOOL func_020e7930(List *list, ListNode *node);
-void func_020e7b68(TreeNode *n);
+BOOL List_PushFront(List *list, ListNode *node);
+void TreeNode_Init(TreeNode *n);
 u32 Random_Next(u32 *seed);
-void func_020e82bc(MtxFx43 *m, s32 angle);
-void func_020e8300(MtxFx43 *m, s32 angle);
-void func_020e8344(MtxFx43 *m, s32 angle);
-void func_020e8388(MtxFx43 *m, s32 x, s32 y, s32 z);
+void Mtx43_SetRotZ(MtxFx43 *m, s32 angle);
+void Mtx43_SetRotY(MtxFx43 *m, s32 angle);
+void Mtx43_SetRotX(MtxFx43 *m, s32 angle);
+void Mtx43_SetTranslate(MtxFx43 *m, s32 x, s32 y, s32 z);
 }
 
 // FX_Mul of the SDK
@@ -92,53 +92,53 @@ static inline BOOL PAD_DetectFold(void) {
 #define FX_SinIdx(a) data_02135f44[((a) >> 4) * 2]
 #define FX_CosIdx(a) data_02135f44[((a) >> 4) * 2 + 1]
 
-extern "C" void func_020e8528(MtxFx43 *m, s32 x, s32 y, s32 z) {
+extern "C" void Mtx43_Translate(MtxFx43 *m, s32 x, s32 y, s32 z) {
     MtxFx43 t;
-    func_020e8388(&t, x, y, z);
+    Mtx43_SetTranslate(&t, x, y, z);
     MTX_Concat43(&t, m, m);
 }
 
-extern "C" void func_020e84f8(MtxFx43 *m, s32 x, s32 y, s32 z) {
+extern "C" void Mtx43_Scale(MtxFx43 *m, s32 x, s32 y, s32 z) {
     MtxFx43 t;
     MTX_Scale43_(&t, x, y, z);
     MTX_Concat43(&t, m, m);
 }
 
-extern "C" void func_020e8464(MtxFx43 *m, s32 z, s32 y, s32 x) {
+extern "C" void Mtx43_RotateXYZ(MtxFx43 *m, s32 x, s32 y, s32 z) {
     MtxFx43 t;
-    if (x != 0) {
-        func_020e82bc(&t, x);
+    if (z != 0) {
+        Mtx43_SetRotZ(&t, z);
         MTX_Concat43(&t, m, m);
     }
     if (y != 0) {
-        func_020e8300(&t, y);
+        Mtx43_SetRotY(&t, y);
         MTX_Concat43(&t, m, m);
     }
-    if (z != 0) {
-        func_020e8344(&t, z);
+    if (x != 0) {
+        Mtx43_SetRotX(&t, x);
         MTX_Concat43(&t, m, m);
     }
 }
 
-extern "C" void func_020e8434(MtxFx43 *m, s32 angle) {
+extern "C" void Mtx43_RotateX(MtxFx43 *m, s32 angle) {
     MtxFx43 t;
-    func_020e8344(&t, angle);
+    Mtx43_SetRotX(&t, angle);
     MTX_Concat43(&t, m, m);
 }
 
-extern "C" void func_020e8404(MtxFx43 *m, s32 angle) {
+extern "C" void Mtx43_RotateY(MtxFx43 *m, s32 angle) {
     MtxFx43 t;
-    func_020e8300(&t, angle);
+    Mtx43_SetRotY(&t, angle);
     MTX_Concat43(&t, m, m);
 }
 
-extern "C" void func_020e83d4(MtxFx43 *m, s32 angle) {
+extern "C" void Mtx43_RotateZ(MtxFx43 *m, s32 angle) {
     MtxFx43 t;
-    func_020e82bc(&t, angle);
+    Mtx43_SetRotZ(&t, angle);
     MTX_Concat43(&t, m, m);
 }
 
-extern "C" void func_020e8388(MtxFx43 *m, s32 x, s32 y, s32 z) {
+extern "C" void Mtx43_SetTranslate(MtxFx43 *m, s32 x, s32 y, s32 z) {
     m->m[0][0] = 0x1000;
     m->m[0][1] = 0;
     m->m[0][2] = 0;
@@ -153,19 +153,19 @@ extern "C" void func_020e8388(MtxFx43 *m, s32 x, s32 y, s32 z) {
     m->m[3][2] = z;
 }
 
-extern "C" void func_020e8344(MtxFx43 *m, s32 angle) {
+extern "C" void Mtx43_SetRotX(MtxFx43 *m, s32 angle) {
     MTX_RotX43_(m, FX_SinIdx((u16)angle), FX_CosIdx((u16)angle));
 }
 
-extern "C" void func_020e8300(MtxFx43 *m, s32 angle) {
+extern "C" void Mtx43_SetRotY(MtxFx43 *m, s32 angle) {
     MTX_RotY43_(m, FX_SinIdx((u16)angle), FX_CosIdx((u16)angle));
 }
 
-extern "C" void func_020e82bc(MtxFx43 *m, s32 angle) {
+extern "C" void Mtx43_SetRotZ(MtxFx43 *m, s32 angle) {
     func_01ffb87c(m, FX_SinIdx((u16)angle), FX_CosIdx((u16)angle));
 }
 
-extern "C" void func_020e82b8(void) {
+extern "C" void Gfx_InitNop(void) {
 }
 
 extern "C" void Pad_Update(void) {
@@ -248,13 +248,13 @@ extern "C" u32 Random_NextBelow(u32 *seed, u32 n) {
     return (u32)(((u64)n * Random_Next(seed)) >> 32);
 }
 
-extern "C" s32 func_020e7e6c(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s32 min) {
+extern "C" s32 Math_ApproachVec(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s32 min) {
     VecFx32 d;
     s32 len;
     s32 step;
 
     if (p->x == target->x && p->z == target->z) return 0;
-    func_020e9960(&d, target, p);
+    Vec_Sub(&d, target, p);
     len = VEC_Mag(&d);
     if (len < min) {
         *p = *target;
@@ -270,19 +270,19 @@ extern "C" s32 func_020e7e6c(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s3
     } else if (step < min) {
         step = min;
     }
-    func_020e9888(&d, FX_Div(step, len));
+    Vec_Scale(&d, FX_Div(step, len));
     VEC_Add(p, &d, p);
     return len - step;
 }
 
-extern "C" s32 func_020e7d4c(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s32 min) {
+extern "C" s32 Math_ApproachVecXZ(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s32 min) {
     VecFx32 d;
     s32 len;
     s32 step;
 
     if (p->x == target->x && p->z == target->z) return 0;
-    func_020e9960(&d, target, p);
-    len = func_020e9688(&d);
+    Vec_Sub(&d, target, p);
+    len = Vec_MagXZ(&d);
     if (len < min) {
         p->x = target->x;
         p->z = target->z;
@@ -299,18 +299,18 @@ extern "C" s32 func_020e7d4c(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s3
     } else if (step < min) {
         step = min;
     }
-    func_020e9888(&d, FX_Div(step, len));
+    Vec_Scale(&d, FX_Div(step, len));
     p->x += d.x;
     p->z += d.z;
     return len - step;
 }
 
-extern "C" void func_020e7d2c(void) {
+extern "C" void Main_ResetFrameCounter(void) {
     gFrameCounter = 0;
     data_021f476c = 0;
 }
 
-extern "C" s16 func_020e7b98(s32 x, s32 y) {
+extern "C" s16 Math_Atan2(s32 x, s32 y) {
     s32 r;
     if (x == 0) {
         r = y >= 0 ? 0 : 0x8000;
@@ -350,19 +350,19 @@ extern "C" s16 func_020e7b98(s32 x, s32 y) {
     return r;
 }
 
-extern "C" TreeNode *func_020e7b80(TreeNode *n) {
-    func_020e7b68(n);
+extern "C" TreeNode *TreeNode_Construct(TreeNode *n) {
+    TreeNode_Init(n);
     return n;
 }
 
-extern "C" void func_020e7b68(TreeNode *n) {
+extern "C" void TreeNode_Init(TreeNode *n) {
     n->parent = NULL;
     n->child = NULL;
     n->prev = NULL;
     n->next = NULL;
 }
 
-extern "C" BOOL func_020e7af4(Tree *tree, TreeNode *node, TreeNode *parent) {
+extern "C" BOOL TreeNode_Attach(Tree *tree, TreeNode *node, TreeNode *parent) {
     if (node != NULL) {
         if (parent != NULL) {
             TreeNode *c;
@@ -385,7 +385,7 @@ extern "C" BOOL func_020e7af4(Tree *tree, TreeNode *node, TreeNode *parent) {
     return TRUE;
 }
 
-extern "C" BOOL func_020e7a7c(Tree *tree, TreeNode *node) {
+extern "C" BOOL TreeNode_Detach(Tree *tree, TreeNode *node) {
     if (node != NULL) {
         if (node->child != NULL) return FALSE;
         if (node->prev != NULL) {
@@ -407,9 +407,9 @@ extern "C" BOOL func_020e7a7c(Tree *tree, TreeNode *node) {
     return TRUE;
 }
 
-extern "C" BOOL func_020e7a10(List *list, ListNode *node, ListNode *after) {
+extern "C" BOOL List_InsertAfter(List *list, ListNode *node, ListNode *after) {
     if (after == NULL) {
-        return func_020e7930(list, node);
+        return List_PushFront(list, node);
     }
     if (node != NULL) {
         node->next = after->next;
@@ -426,7 +426,7 @@ extern "C" BOOL func_020e7a10(List *list, ListNode *node, ListNode *after) {
     return TRUE;
 }
 
-extern "C" BOOL func_020e79a0(List *list, ListNode *node) {
+extern "C" BOOL List_Remove(List *list, ListNode *node) {
     if (node != NULL) {
         if (node->prev != NULL) {
             node->prev->next = node->next;
@@ -446,7 +446,7 @@ extern "C" BOOL func_020e79a0(List *list, ListNode *node) {
     return TRUE;
 }
 
-extern "C" BOOL func_020e7968(List *list, ListNode *node) {
+extern "C" BOOL List_PushBack(List *list, ListNode *node) {
     if (node != NULL) {
         if (list->tail != NULL) {
             list->tail->next = node;
@@ -461,7 +461,7 @@ extern "C" BOOL func_020e7968(List *list, ListNode *node) {
     return TRUE;
 }
 
-extern "C" BOOL func_020e7930(List *list, ListNode *node) {
+extern "C" BOOL List_PushFront(List *list, ListNode *node) {
     if (node != NULL) {
         if (list->head != NULL) {
             list->head->prev = node;
@@ -476,7 +476,7 @@ extern "C" BOOL func_020e7930(List *list, ListNode *node) {
     return TRUE;
 }
 
-extern "C" s32 func_020e7870(s32 *p, s32 target, s32 ratio, s32 max, s32 min) {
+extern "C" s32 Math_ApproachS32(s32 *p, s32 target, s32 ratio, s32 max, s32 min) {
     s32 cur = *p;
     s32 d;
     if (cur != target) {
@@ -502,7 +502,7 @@ extern "C" s32 func_020e7870(s32 *p, s32 target, s32 ratio, s32 max, s32 min) {
     return d < 0 ? -d : d;
 }
 
-extern "C" void func_020e7820(s32 *p, s32 target, s32 ratio, s32 max) {
+extern "C" void Math_ApproachS32Max(s32 *p, s32 target, s32 ratio, s32 max) {
     s32 d;
     if (*p == target) return;
     d = FX_Mul(target - *p, ratio);
@@ -514,12 +514,12 @@ extern "C" void func_020e7820(s32 *p, s32 target, s32 ratio, s32 max) {
     *p += d;
 }
 
-extern "C" s32 func_020e780c(s32 a, s32 b) {
+extern "C" s32 Math_AngleDiffAbs(s32 a, s32 b) {
     s16 d = a - b;
     return d < 0 ? -d : d;
 }
 
-extern "C" BOOL func_020e77cc(s32 v, s32 a, s32 b) {
+extern "C" BOOL Math_IsInRange(s32 v, s32 a, s32 b) {
     if (a < b) {
         BOOL r = FALSE;
         do {
@@ -537,7 +537,7 @@ extern "C" BOOL func_020e77cc(s32 v, s32 a, s32 b) {
     }
 }
 
-extern "C" void func_020e7754(s16 *p, s16 target, s16 div, s16 max) {
+extern "C" void Math_ApproachS16Div(s16 *p, s16 target, s16 div, s16 max) {
     s16 d = (s16)(target - *p) / div;
     if (d > max) {
         *p += max;
@@ -550,7 +550,7 @@ extern "C" void func_020e7754(s16 *p, s16 target, s16 div, s16 max) {
     }
 }
 
-extern "C" BOOL func_020e76f8(u8 *p, s16 target, s16 step) {
+extern "C" BOOL Math_StepU8(u8 *p, s16 target, s16 step) {
     if (step != 0) {
         s16 v;
         if (*p > target) step = -step;
@@ -566,7 +566,7 @@ extern "C" BOOL func_020e76f8(u8 *p, s16 target, s16 step) {
     return FALSE;
 }
 
-extern "C" BOOL func_020e769c(s16 *p, s16 target, s16 step) {
+extern "C" BOOL Math_StepS16(s16 *p, s16 target, s16 step) {
     if (step != 0) {
         if (*p > target) step = -step;
         *p += step;
@@ -580,7 +580,7 @@ extern "C" BOOL func_020e769c(s16 *p, s16 target, s16 step) {
     return FALSE;
 }
 
-extern "C" BOOL func_020e761c(s32 *p, s32 target, s32 step) {
+extern "C" BOOL Math_StepS32(s32 *p, s32 target, s32 step) {
     if (step != 0) {
         if (*p > target) step = -step;
         *p += step;
@@ -594,7 +594,7 @@ extern "C" BOOL func_020e761c(s32 *p, s32 target, s32 step) {
     return FALSE;
 }
 
-extern "C" BOOL func_020e759c(s32 *p, s32 target, s32 step) {
+extern "C" BOOL Math_StepS32Alt(s32 *p, s32 target, s32 step) {
     if (step != 0) {
         if (*p > target) step = -step;
         *p += step;
@@ -608,7 +608,7 @@ extern "C" BOOL func_020e759c(s32 *p, s32 target, s32 step) {
     return FALSE;
 }
 
-extern "C" BOOL func_020e7530(s16 *p, s16 target, s16 step) {
+extern "C" BOOL Math_StepAngle(s16 *p, s16 target, s16 step) {
     if (step != 0) {
         if ((s16)(*p - target) > 0) step = -step;
         *p += step;
@@ -622,12 +622,12 @@ extern "C" BOOL func_020e7530(s16 *p, s16 target, s16 step) {
     return FALSE;
 }
 
-extern "C" u8 func_020e7518(u8 *p) {
+extern "C" u8 Math_CountDownU8(u8 *p) {
     if (*p != 0) (*p)--;
     return *p;
 }
 
-extern "C" u16 func_020e7500(u16 *p) {
+extern "C" u16 Math_CountDownU16(u16 *p) {
     if (*p != 0) (*p)--;
     return *p;
 }

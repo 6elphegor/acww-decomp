@@ -94,7 +94,7 @@ void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 b);
 void func_0210a0b8(void *p, s32 v);
 void func_02109fd0(void *p, u32 a, s32 b);
 void func_02109fb4(u32 a, s32 b);
-s32 func_020f4904(u32 a, u32 b);
+s32 Snd_CalcListenerDistance(u32 a, u32 b);
 s32 Snd_DistanceToVolume(s32 d);
 s32 Snd_CalcPan(u32 a, u32 b);
 u32 SND_RecvCommandReply(u32 a);
@@ -259,7 +259,7 @@ extern "C" void BgmSyncSnd_ReadHeader(Rb *r) {
 extern "C" void BgmSyncSnd_UpdatePosition(Rb *r, void *arg) {
     s32 a, b;
     if (arg == 0) return;
-    a = Snd_DistanceToVolume(func_020f4904((u32)arg, 0));
+    a = Snd_DistanceToVolume(Snd_CalcListenerDistance((u32)arg, 0));
     b = Snd_CalcPan((u32)arg, 0);
     NNS_SndPlayerSetVolume(r, a);
     NNS_SndPlayerSetTrackPan(r, 15, b);

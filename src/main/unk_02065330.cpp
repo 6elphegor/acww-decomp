@@ -145,7 +145,7 @@ extern "C" void LetterParty_GetNameBytes(LetterParty *self, void *out) {
     Unk_02065dc8_Obj18 b;
     Unk_02065d5c_Str c;
     Unk_02065dc8_Obj44 d;
-    switch (self->unk_16) {
+    switch (self->partyType) {
     case 0:
     case 4:
     case 5:
@@ -171,7 +171,7 @@ extern "C" void LetterParty_GetNameBytes(LetterParty *self, void *out) {
 extern "C" void LetterParty_GetName(LetterParty *self, void *out) {
     Unk_02065d5c_Str a;
     Unk_02065d5c_Buf18 b;
-    switch (self->unk_16) {
+    switch (self->partyType) {
     case 0:
     case 4:
         break;
@@ -190,36 +190,36 @@ extern "C" void LetterParty_GetName(LetterParty *self, void *out) {
 }
 
 extern "C" LetterParty *LetterParty_AsPlayer(LetterParty *self) {
-    if (self->unk_16 != 1 && self->unk_16 != 2 && self->unk_16 != 6) return 0;
+    if (self->partyType != 1 && self->partyType != 2 && self->partyType != 6) return 0;
     return self;
 }
 
 extern "C" LetterParty *LetterParty_AsVillager(LetterParty *self) {
-    if (self->unk_16 != 3 && self->unk_16 != 5) return 0;
+    if (self->partyType != 3 && self->partyType != 5) return 0;
     return self;
 }
 
 extern "C" void LetterParty_SetVillager(LetterParty *self, void *src) {
-    self->unk_16 = 3;
+    self->partyType = 3;
     VillagerId_CopyTo(src, self);
 }
 
 extern "C" void LetterParty_SetPlayer(LetterParty *self, void *src) {
-    self->unk_16 = 2;
+    self->partyType = 2;
     _ZN8PlayerId6copyToEPS_(src, self);
 }
 
 extern "C" void LetterParty_SetFutureSelf(LetterParty *self, void *src) {
-    self->unk_16 = 1;
+    self->partyType = 1;
     _ZN8PlayerId6copyToEPS_(src, self);
 }
 
-extern "C" void LetterParty_SetBottle(LetterParty *self) { self->unk_16 = 7; }
+extern "C" void LetterParty_SetBottle(LetterParty *self) { self->partyType = 7; }
 
-extern "C" void LetterParty_SetType(LetterParty *self, u32 v) { self->unk_16 = v; }
+extern "C" void LetterParty_SetType(LetterParty *self, u32 v) { self->partyType = v; }
 
 extern "C" u32 LetterParty_IsType(LetterParty *self, u32 t) {
-    if (self->unk_16 == t) return TRUE;
+    if (self->partyType == t) return TRUE;
     return FALSE;
 }
 
@@ -239,7 +239,7 @@ extern "C" void Letter_InitDraft(LetterView *self, u32 v) {
     Letter_Clear(self);
     self->paper = v;
     self->kind = 0;
-    self->sender.unk_16 = 2;
+    self->sender.partyType = 2;
     _ZN8PlayerId6copyToEPS_(_ZN10PlayerData11getPlayerIdEv(r), &self->sender);
     self->setState(1);
     Letter_SetSignature(self, _ZN15PlayerInventory9getUnk988Ev(_ZN10PlayerData12getInventoryEv(r)) + 0x30);
@@ -269,7 +269,7 @@ extern "C" void Letter_SetRecipientResident(LetterView *self) {
 extern "C" void Letter_SetRecipientFutureSelf(LetterView *self) {
     void *a = PlayerData_GetCurrent();
     void *b = _ZN10PlayerData11getPlayerIdEv(a);
-    if (self->recipient.unk_16 != 1) {
+    if (self->recipient.partyType != 1) {
         u8 *c = _ZN15PlayerInventory9getUnk988Ev(_ZN10PlayerData12getInventoryEv(a));
         Mem_Copy(c + 0x18, self->greeting, 0x18);
         self->namePos = c[0x51];
@@ -485,12 +485,12 @@ void LetterView::setState(u32 v) {
 }
 
 BOOL LetterView::isToFutureSelf() {
-    if (recipient.unk_16 == 1) return TRUE;
+    if (recipient.partyType == 1) return TRUE;
     return FALSE;
 }
 
 void LetterView::loadDefaultGreeting() {
-    if ((u8)(recipient.unk_16 + 0xfe) <= 1) return;
+    if ((u8)(recipient.partyType + 0xfe) <= 1) return;
     u8 *p = (u8 *)_ZN15PlayerInventory9getUnk988Ev(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()));
     Mem_Copy(p, greeting, 0x18);
     namePos = p[0x50];

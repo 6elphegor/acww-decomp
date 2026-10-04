@@ -3848,7 +3848,7 @@ extern "C" { s32 Clock_GetMinuteHour(void *p); }
 extern "C" { s32 Clock_GetWeekday(); }
 extern "C" { s32 Clock_GetSecond(); }
 extern "C" { s32 Clock_GetTimeOfDay(); }
-extern "C" { s32 func_020e759c(void *p, s32 a, s32 b); }
+extern "C" { s32 Math_StepS32Alt(void *p, s32 a, s32 b); }
 extern "C" { s32 func_01ffcb0c(s32 a, s32 b); }
 extern "C" { s32 _ZN13TalkFrameView9setScrollEii(void *p, s32 a, s32 b); }
 extern "C" { s32 G2_GetBG2ScrPtr(); }
@@ -4250,7 +4250,7 @@ void TalkWindowState::updateShake() {
     if (shakeAmplitude != 0) {
         BOOL c = TRUE;
         if (state != 3 && state != 2) c = FALSE;
-        BOOL z = func_020e759c(&shakeAmplitude, 0, shakeDecay) != 0 ? TRUE : FALSE;
+        BOOL z = Math_StepS32Alt(&shakeAmplitude, 0, shakeDecay) != 0 ? TRUE : FALSE;
         if (c != 0 && z == 0) {
             shakeAngle = shakeAngle + 0x4000;
             s32 a = func_01ffcb0c(shakeAmplitude, shakeScaleX);

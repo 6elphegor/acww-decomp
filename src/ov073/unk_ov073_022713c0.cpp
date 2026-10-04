@@ -76,7 +76,7 @@ s32 TalkRequest_SetTargetDone(void *p);
 s32 Math_AngleXZ(void *a, void *b);
 s32 NpcActor_IsFrontAngle(s16 a);
 u32 Random_GlobalBelow(u32 n);
-void func_020e7518(void *p);
+void Math_CountDownU8(void *p);
 s32 Random_Next(void *p);
 void *TownSessionState_Get();
 void *TownSessionState_GetVisitorPos(void *p);
@@ -408,7 +408,7 @@ BOOL SpNpcJoan::mainAct02() {
     Unk_ov073_Vec vb;
     void *r4 = &actionCtrl;
     BOOL r6 = isInCameraBox();
-    func_020e7518(&unk_651);
+    Math_CountDownU8(&unk_651);
     if (r6 != 0) {
         if (tryAvoidObstacle() == 0) {
             if (_ZN13NpcActionCtrl12isActionDoneEv(r4)) {

@@ -2413,13 +2413,13 @@ extern "C" {
 void NNSi_G3dModifyMatFlag(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void func_020e8388(void *m, s32 a, s32 b, s32 c);
+void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 }
 extern "C" {
-void func_020e8434(void *m, s32 a);
+void Mtx43_RotateX(void *m, s32 a);
 }
 extern "C" {
-void func_020e84f8(void *m, s32 a, s32 b, s32 c);
+void Mtx43_Scale(void *m, s32 a, s32 b, s32 c);
 }
 extern "C" {
 void MTX_Concat43(void *a, void *b, void *c);

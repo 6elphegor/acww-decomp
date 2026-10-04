@@ -102,7 +102,7 @@ Unk_0203e22c_State *TalkRequestPool_Alloc(void);
 }
 
 extern "C" {
-void func_020e79a0(void *, void *);
+void List_Remove(void *, void *);
 }
 
 extern "C" {
@@ -122,7 +122,7 @@ s32 Math_AngleXZ(VecFx32 *, VecFx32 *);
 }
 
 extern "C" {
-long long func_020e9630(VecFx32 *);
+long long Vec_MagSqXZ(VecFx32 *);
 }
 
 extern "C" {
@@ -240,7 +240,7 @@ BOOL Character::preDelete() {
     if (!Actor::preDelete()) {
         return FALSE;
     }
-    func_020e79a0(&gCharacterList, &charNode);
+    List_Remove(&gCharacterList, &charNode);
     return TRUE;
 }
 
@@ -297,7 +297,7 @@ BOOL Character::isInInteractionRange(Character *other) {
     d.x = other->getInteractionPos()->x - getInteractionPos()->x;
     d.y = other->getInteractionPos()->y - getInteractionPos()->y;
     d.z = other->getInteractionPos()->z - getInteractionPos()->z;
-    if (func_020e9630(&d) < (long long)interactionRangeSq) {
+    if (Vec_MagSqXZ(&d) < (long long)interactionRangeSq) {
         return TRUE;
     }
     return FALSE;

@@ -54,7 +54,7 @@ extern "C" {
 void NpcRegistry_RemoveSpNpc(void *p);
 BOOL _ZN11CommManager8isOnlineEv(u32 v);
 BOOL NetArea_IsLocalOwner();
-BOOL func_020e96ec(void *a, void *b);
+BOOL Vec_NotEqual(void *a, void *b);
 void *_ZN17NpcClothTexHandle19getSpNpcAnimHeapRefEv(void *p);
 BOOL _ZN12NpcResHandle7acquireEv(void *p);
 void _ZN12NpcResHandle7releaseEv(void *p);
@@ -116,7 +116,7 @@ BOOL SpNpcActor::vfunc_00() {
         v.y = 0;
         v.z = 0;
         s = 0;
-        if (_ZN8NpcActor15netReadPositionEPiPh(this, &v, &s) && func_020e96ec(&v, &gVec3Zero)) {
+        if (_ZN8NpcActor15netReadPositionEPiPh(this, &v, &s) && Vec_NotEqual(&v, &gVec3Zero)) {
             Unk_0203e7a4_Vec *p = (Unk_0203e7a4_Vec *)&position;
             p->x = v.x;
             p->y = v.y;

@@ -333,7 +333,7 @@ s32 MatTexBinder_getMaterial(void *self);
 s32 func_02056fcc(void *self, const char *s);
 s32 G3dResAccess_findMatIdx(void *self, const char *s);
 s32 FX_Div(s32 a, s32 b);
-void func_020e8388(void *m, s32 a, s32 b, s32 c);
+void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 u32 SceneLights_GetMatLightMask2();
 s32 Model_setResourceAndBind(void *self, u32 a, u32 b);
 s32 AnimModel_allocAnmObj(void *self, u32 a);
@@ -644,7 +644,7 @@ void RoomShell::initAnims() {
 }
 
 void RoomShell::storeBaseMtx() {
-    func_020e8388(data_021f47e0, 0, 0, 0);
+    Mtx43_SetTranslate(data_021f47e0, 0, 0, 0);
     *(Unk_ov004_0222b430_Mtx *)&model.mtx = *(Unk_ov004_0222b430_Mtx *)data_021f47e0;
 }
 

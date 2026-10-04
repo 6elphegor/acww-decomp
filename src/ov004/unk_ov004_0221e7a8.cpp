@@ -3411,7 +3411,7 @@ extern u8 sAct12Pos[];
 
 s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
 s32 Bgm_GetCurrent(void);
-s32 func_020e77cc(s32 a, s32 b, s32 c);
+s32 Math_IsInRange(s32 a, s32 b, s32 c);
 u8 *Snd_GetBeatState(void);
 void _ZN10JointBlend5startEi(void *p, s32 n);
 void _ZN17TwoLayerAnimModel12updateLayersEv(void *p);
@@ -3819,7 +3819,7 @@ extern "C" void PlayerActor_EndSit(Obj *o) {
 
 extern "C" void PlayerActor_SitUpdateAnim(Obj *o) {
     u8 *p;
-    if (func_020e77cc(Bgm_GetCurrent(), 0x63, 0xab) != 0 && (p = Snd_GetBeatState()) != 0 && (s8)p[3] != 1) {
+    if (Math_IsInRange(Bgm_GetCurrent(), 0x63, 0xab) != 0 && (p = Snd_GetBeatState()) != 0 && (s8)p[3] != 1) {
         Sub *sb = &o->bodyModel;
         Rec *r = &o->actionWork;
         if (r->u.flag == 0) {
@@ -4613,9 +4613,9 @@ void HandOverItem_Begin(void *p, s32 a, u32 b, s32 c, Obj *o, s32 d);
 void PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
 void _ZN12Unk_02006d1416updateFootstepFxEv(Obj *o);
 void _ZN12Unk_02006d1414playFootstepSeEv(Obj *o);
-void func_020e9960(V3 *o, V3 *a, V3 *b);
-s32 func_020e9688(V3 *v);
-s32 func_020e9650(V3 *a, V3 *b);
+void Vec_Sub(V3 *o, V3 *a, V3 *b);
+s32 Vec_MagXZ(V3 *v);
+s32 Vec_DistXZ(V3 *a, V3 *b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a);
 void _ZN14CollisionStateC1Ev(void *p);
@@ -4886,8 +4886,8 @@ extern "C" void PlayerActor_LeaveRoomUpdateAnim(Obj *o) {
     _ZN12Unk_020102ec11advanceAnimEv(o);
     if (o->animId == 1) {
         V3 v;
-        func_020e9960(&v, &o->position, (V3 *)((u8 *)o + 0x68));
-        s32 t = func_01ffcb0c(func_020e9688(&v), 0x3ae1) << 2;
+        Vec_Sub(&v, &o->position, (V3 *)((u8 *)o + 0x68));
+        s32 t = func_01ffcb0c(Vec_MagXZ(&v), 0x3ae1) << 2;
         if (t <= (s32)o->bodyAnimNumFrames) {
             o->bodyAnimFrameStep = t;
         }
@@ -4920,8 +4920,8 @@ extern "C" void PlayerActor_LeaveRoomUpdateHeight(Obj *o) {
     s32 m = r->leaveMode;
     if ((u32)(m - 1) <= 1) {
         Unk_ov004_02220314_V3c v(r->targetX, p->y, r->targetZ);
-        if (func_020e9650((V3 *)&v, p) < 0x1000) {
-            s32 d = FX_Div(0x1000 - func_020e9650((V3 *)&v, p)) * 6;
+        if (Vec_DistXZ((V3 *)&v, p) < 0x1000) {
+            s32 d = FX_Div(0x1000 - Vec_DistXZ((V3 *)&v, p)) * 6;
             if (m == 1) {
                 p->y = p->y + (d >> 5);
             } else {
@@ -6140,9 +6140,9 @@ extern u8 data_ov004_0224d4a8[];
 extern s16 data_02135f44[];
 extern void *gSceneBlockMap;
 
-s32 func_020e9688(V3 *v);
-s32 func_020e9650(void *a, void *b);
-s32 func_020e7b98(s32 a, s32 b);
+s32 Vec_MagXZ(V3 *v);
+s32 Vec_DistXZ(void *a, void *b);
+s32 Math_Atan2(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(void *a, void *b, void *c);
 void func_01ffd070(void *a, void *b, void *c);
@@ -6561,14 +6561,14 @@ extern "C" void PlayerActor_RoomWalkToward(Obj *o, V3 *tgt, s32 *out, s32 *lim) 
     saved = *pv;
     d.x = tgt->x - o->position.x;
     d.z = tgt->z - o->position.z;
-    if (func_020e9688(&d) < 0x1000) {
+    if (Vec_MagXZ(&d) < 0x1000) {
         if (*out <= *lim) {
             PlayerActor_ApproachValue(&o->position.x, tgt->x, 0x800, *lim, 0x31);
             PlayerActor_ApproachValue(&o->position.z, tgt->z, 0x800, *lim, 0x31);
             if (tgt->x == o->position.x && tgt->z == o->position.z) {
                 *out = 0;
             } else {
-                *out = func_020e9650(&o->position, &saved);
+                *out = Vec_DistXZ(&o->position, &saved);
                 V3 *pw = &o->position;
                 *pw = saved;
             }
@@ -6578,7 +6578,7 @@ extern "C" void PlayerActor_RoomWalkToward(Obj *o, V3 *tgt, s32 *out, s32 *lim) 
     } else {
         *out = PlayerActor_Accelerate(*out, *lim);
     }
-    ang = func_020e7b98(d.x, d.z);
+    ang = Math_Atan2(d.x, d.z);
     h = o->rotY;
     if (*out != 0) {
         PlayerActor_TurnAngle(&h, ang);

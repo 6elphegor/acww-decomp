@@ -1361,7 +1361,7 @@ extern "C" {
 s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
-void func_020e9888(void *a, s32 b);
+void Vec_Scale(void *a, s32 b);
 }
 extern "C" {
 s32 __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*dtor)(void *));
@@ -1649,7 +1649,7 @@ extern "C" void Sky_ProjectToScreenX(s32 *out, Unk_020bfe30_Vec *in) {
     MTX_MultVec43(a, &data_021f47e0, b);
     s32 c = _ZN12Unk_0203b3509getFovTanEv(gCamera);
     s32 q = -FX_Div(0x60000, c);
-    func_020e9888(b, FX_Div(q, b[2]));
+    Vec_Scale(b, FX_Div(q, b[2]));
     *out = b[0] + 0x80000;
 }
 
@@ -1829,7 +1829,7 @@ extern "C" {
 void _ZN13SkyObjPalette11setOverrideEiPt(void *, s32, void *);
 }
 extern "C" {
-void func_020e759c(void *, s32, s32);
+void Math_StepS32Alt(void *, s32, s32);
 }
 extern "C" {
 void Clock_GetMinuteHour(void *);
@@ -1850,13 +1850,13 @@ extern "C" {
 s32 FX_Div(s32, s32);
 }
 extern "C" {
-s32 func_020e7b98(s32, s32);
+s32 Math_Atan2(s32, s32);
 }
 extern "C" {
 void SkySprite_RequestSeSustainedOn(void *, s32, s32);
 }
 extern "C" {
-void func_020e9888(void *, s32);
+void Vec_Scale(void *, s32);
 }
 extern "C" {
 BOOL _ZN10SpriteAnim10isFinishedEv(void *);
@@ -2055,7 +2055,7 @@ extern "C" void SkySprite_UpdateParticle(Unk_020bf4b4 *this_) {
     s32 m = this_->work0 & 0xf;
     this_->work1 = this_->work1 + 1;
     if (m == 0) {
-        func_020e9888(&this_->screenVelX, 0xe66);
+        Vec_Scale(&this_->screenVelX, 0xe66);
         VEC_Add(&this_->screenPosX, &this_->screenVelX, &this_->screenPosX);
         if (_ZN10SpriteAnim10isFinishedEv(&this_->anim)) {
             this_->state = 3;
@@ -2091,7 +2091,7 @@ extern "C" void SkySprite_InitShootingStar(Unk_020bf4b4 *this_) {
         x = 0x100000;
         y = Random_GlobalBelow(0x30) << 12;
     }
-    ang = func_020e7b98((Random_GlobalBelow(0x17) + 0x80 << 12) - y, -x);
+    ang = Math_Atan2((Random_GlobalBelow(0x17) + 0x80 << 12) - y, -x);
     k = ((u16)ang >> 4) * 2;
     sn = data_02135f44[k];
     cs = data_02135f44[k + 1];
@@ -2228,7 +2228,7 @@ extern "C" void SkySprite_FadeMoonClarity(Unk_020bf4b4 *this_) {
         f = 0;
     }
     v = this_->work3;
-    func_020e759c(&v, f, 0x100);
+    Math_StepS32Alt(&v, f, 0x100);
     this_->work3 = v;
 }
 
@@ -2352,7 +2352,7 @@ extern "C" {
 void VEC_Add(Unk_020be018_Vec *a, Unk_020be018_Vec *b, Unk_020be018_Vec *out);
 }
 extern "C" {
-void func_020e9888(Unk_020be018_Vec *v, s32 scale);
+void Vec_Scale(Unk_020be018_Vec *v, s32 scale);
 }
 extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
@@ -2570,7 +2570,7 @@ void Unk_020be018::updateUfo()
             sc = 0x1000;
         }
         VEC_Add(&screenVel, (Unk_020be018_Vec *)&v, &screenVel);
-        func_020e9888(&screenVel, sc);
+        Vec_Scale(&screenVel, sc);
         VEC_Add(&screenPos, &screenVel, &screenPos);
     }
     if ((s32)work0 >= 1) {
@@ -2657,7 +2657,7 @@ void Unk_020be018::updatePete()
     }
     if ((s32)work0 >= 6) {
         screenVel.y += 0x59a;
-        func_020e9888(&screenVel, 0x1000);
+        Vec_Scale(&screenVel, 0x1000);
         VEC_Add(&screenPos, &screenVel, &screenPos);
     }
     if ((s32)work0 >= 6 && screenPos.y > 0xd0000) {
@@ -2912,7 +2912,7 @@ extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-void func_020e9888(Unk_020be204_Vec *v, s32 a);
+void Vec_Scale(Unk_020be204_Vec *v, s32 a);
 }
 extern "C" {
 u32 Random_GlobalBelow(u32 n);
@@ -3279,7 +3279,7 @@ void Unk_020be204::updateBird() {
         Unk_020be204_Vec *vel = &screenVel;
         vel->x += work3;
         vel->y += work4;
-        func_020e9888(vel, 0xfc3);
+        Vec_Scale(vel, 0xfc3);
         VEC_Add(pos, vel, pos);
         if (Unk_020be204_Outside(pos)) {
             state = 3;
@@ -4164,7 +4164,7 @@ void* __cxa_vec_ctor(void* array, u32 count, u32 size, void* (*ctor)(void*), voi
 namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; SkySePlayer v; } gSkySprites; } }
 #define data_021f44ac n08::L_021f44ac::gSkySprites.v
 extern "C" {
-void func_020e7530(s16* p, s32 target, s32 step);
+void Math_StepAngle(s16* p, s32 target, s32 step);
 }
 extern "C" {
 void PlayerActor_SetHeadTilt(s32 a, s32 b, s32 c);
@@ -4726,8 +4726,8 @@ namespace n08 {
 }
 void SkyShotSequence::relaxHead(s32 a, s32 b) {
     using namespace n08;
-    func_020e7530(&headPitch, 0, a);
-    func_020e7530(&headYaw, 0, b);
+    Math_StepAngle(&headPitch, 0, a);
+    Math_StepAngle(&headYaw, 0, b);
     PlayerActor_SetHeadTilt(headPitch, headYaw, 4);
 }
 namespace n08 {
@@ -5531,7 +5531,7 @@ extern "C" {
 s32 Scene_GetCurrent();
 }
 extern "C" {
-void func_020e759c(void *, s32, s32);
+void Math_StepS32Alt(void *, s32, s32);
 }
 extern "C" {
 void *PlayerData_GetCurrent();
@@ -5609,7 +5609,7 @@ void Unk_020bbc28::updateRain() {
     if (kind == 4) {
         updateLightning();
     }
-    func_020e759c(rainStrength, b == 4 ? 0x1000 : 0x800, 2);
+    Math_StepS32Alt(rainStrength, b == 4 ? 0x1000 : 0x800, 2);
 }
 namespace n06 {
 
@@ -7584,7 +7584,7 @@ extern "C" {
 void *Mem_AllocTail(s32 n);
 }
 extern "C" {
-void func_020e759c(s32 *p, s32 a, s32 b);
+void Math_StepS32Alt(s32 *p, s32 a, s32 b);
 }
 extern "C" {
 extern u32 gCurrentHeap;
@@ -7666,7 +7666,7 @@ extern "C" void RainSe_FadeVolume(Unk_020ba8cc_Obj *o) {
     } else {
         w = 0x5200;
     }
-    func_020e759c(&o->rainVolume, v, w);
+    Math_StepS32Alt(&o->rainVolume, v, w);
 }
 
 extern "C" BOOL Sky_LoadPaletteFiles() {

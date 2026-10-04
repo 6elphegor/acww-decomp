@@ -279,7 +279,7 @@ void func_01ffcb28(void);
 }
 
 extern "C" {
-void func_020e99a4(void);
+void Math_InitSqrt64(void);
 }
 
 extern "C" {
@@ -331,7 +331,7 @@ void Touch_Init(void);
 }
 
 extern "C" {
-void func_020ec8b0(void);
+void Main_InitTick(void);
 }
 
 extern "C" {
@@ -347,7 +347,7 @@ void Snd_Init(void);
 }
 
 extern "C" {
-void func_020e7d2c(void);
+void Main_ResetFrameCounter(void);
 }
 
 extern "C" {
@@ -564,7 +564,7 @@ extern "C" void Main_InitStub(void) {}
 extern "C" void Main_Init(void) {
     Main_InitStub();
     func_01ffcb28();
-    func_020e99a4();
+    Math_InitSqrt64();
     HBlank_Init();
     Main_InitVBlank();
     OS_SetIrqFunction(2, HBlank_Handler);
@@ -579,11 +579,11 @@ extern "C" void Main_Init(void) {
     OverlayHandle_Load(gOverlayHandle, OVERLAY_69_ID);
     OverlayHandle_Unload(gOverlayHandle);
     Touch_Init();
-    func_020ec8b0();
+    Main_InitTick();
     Heap_CreateProcHeap(0x13fc8, 0);
     Gfx_Init();
     Snd_Init();
-    func_020e7d2c();
+    Main_ResetFrameCounter();
     Clock_Init();
     Field_ResetActions();
     CommCaution_LoadMessages();

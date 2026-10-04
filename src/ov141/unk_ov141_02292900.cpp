@@ -26,10 +26,10 @@ BOOL MenuCtrl_IsButtons();
 void Snd_PlaySe(u32 v);
 void MI_CpuCopy8(void *a, void *b, u32 n);
 void Comm_SendEmpty();
-s32 func_020eae78();
+s32 Net_CountHostCandidates();
 u32 *Net_GetScanResults();
-u32 func_020ea6c8(void *e);
-void *func_020ea6f4(void *e);
+u32 Net_GetBeaconGameInfoSize(void *e);
+void *Net_GetBeaconGameInfo(void *e);
 void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
 void Gfx2d_SetSubBgModeState(s32 a);
@@ -615,7 +615,7 @@ void NearbyTownsMenu::scanTowns() {
     Unk_ov141_02292b94_Buf buf;
     s32 i;
     Comm_SendEmpty();
-    cnt = func_020eae78();
+    cnt = Net_CountHostCandidates();
     for (i = 0; i < 6; i++) {
         if (rowStates[i] == 1) {
             rowStates[i] = 2;
@@ -630,10 +630,10 @@ void NearbyTownsMenu::scanTowns() {
         u32 e = list[j];
         if (e != 0) {
             NetOverlay_AssertWireless();
-            u32 n = func_020ea6c8((void *)e);
+            u32 n = Net_GetBeaconGameInfoSize((void *)e);
             if (n == 0x11) {
                 NetOverlay_AssertWireless();
-                MI_CpuCopy8(func_020ea6f4((void *)e), &buf, n);
+                MI_CpuCopy8(Net_GetBeaconGameInfo((void *)e), &buf, n);
                 if (buf.flag == 0) {
                     s32 idx = findRowByAddress((u8 *)e);
                     if (idx == ~z[1]) {
@@ -641,9 +641,9 @@ void NearbyTownsMenu::scanTowns() {
                         if (idx2 != ~z[2]) {
                             storeTown(idx2, (void *)e);
                             NetOverlay_AssertWireless();
-                            n2 = func_020ea6c8((void *)e);
+                            n2 = Net_GetBeaconGameInfoSize((void *)e);
                             NetOverlay_AssertWireless();
-                            void *q = func_020ea6f4((void *)e);
+                            void *q = Net_GetBeaconGameInfo((void *)e);
                             u8 *dst = rowUserData[idx2];
                             MI_CpuCopy8(q, dst, n2);
                             listPanel.setRow(idx2, dst);

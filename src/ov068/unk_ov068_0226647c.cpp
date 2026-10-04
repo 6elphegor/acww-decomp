@@ -52,12 +52,12 @@ void Camera_StartBlend();
 void Camera_FinishBlend();
 void Camera_GetLookAtPoint(Unk_ov068_02266680_Vec *out, CameraEventModes *self);
 void VEC_Add(Unk_ov068_02266680_Vec *a, void *b, Unk_ov068_02266680_Vec *c);
-void func_020e759c(void *a, s32 b, s32 c);
-s32 func_020e7d4c(void *a, Unk_ov068_02266680_Vec *v, s32 c, s32 d, s32 e);
-s32 func_020e769c(void *a, s32 b, s32 c);
+void Math_StepS32Alt(void *a, s32 b, s32 c);
+s32 Math_ApproachVecXZ(void *a, Unk_ov068_02266680_Vec *v, s32 c, s32 d, s32 e);
+s32 Math_StepS16(void *a, s32 b, s32 c);
 s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
 void FieldPos_FromBlockUnitCenter(Unk_ov068_02266680_Vec *out, s32 a, s32 b, s32 c, s32 d);
-s32 func_020e7500(void *);
+s32 Math_CountDownU16(void *);
 s32 func_01ffcb0c(s32, s32);
 s32 Random_GlobalBelow(s32);
 s32 Camera_UpdateSway(Unk_ov068_0226647c_Cam *c);
@@ -198,11 +198,11 @@ void CameraEventModes::updateModeTownTour() {
     v.y = s->buildingY;
     v.z = s->buildingZ;
     VEC_Add(&v, s->offset, &v);
-    func_020e759c(&s->speed, data_ov068_0226fc48, data_ov068_0226fc40);
-    if (func_020e7d4c(&targetFocus, &v, data_ov068_0226fc44, s->speed, 8) == 0) {
-        if (func_020e769c(s, 0, 1) != 0) {
+    Math_StepS32Alt(&s->speed, data_ov068_0226fc48, data_ov068_0226fc40);
+    if (Math_ApproachVecXZ(&targetFocus, &v, data_ov068_0226fc44, s->speed, 8) == 0) {
+        if (Math_StepS16(s, 0, 1) != 0) {
             s->holdTimer = 0x3c;
-            if (func_020e769c(&s->buildingIndex, 7, 1) != 0) {
+            if (Math_StepS16(&s->buildingIndex, 7, 1) != 0) {
                 s->buildingIndex = 0;
             }
             void *g = gSceneBlockMap;
@@ -322,7 +322,7 @@ extern "C" void Camera_SetSwayPattern2(Unk_ov068_0226647c_Cam *c, s32 idx) {
 }
 
 extern "C" s32 Camera_UpdateSway(Unk_ov068_0226647c_Cam *c) {
-    if (func_020e7500(&c->bobTimer) == 0) {
+    if (Math_CountDownU16(&c->bobTimer) == 0) {
         s16 a = c->bobPhase;
         if (a < 0) {
             a = -a;
@@ -343,7 +343,7 @@ extern "C" s32 Camera_UpdateSway(Unk_ov068_0226647c_Cam *c) {
             Camera_SetSwayPattern(c, c->bobPattern);
         }
     }
-    if (func_020e7500(&c->rollTimer) == 0) {
+    if (Math_CountDownU16(&c->rollTimer) == 0) {
         s16 a = c->rollPhase;
         if (a < 0) {
             a = -a;

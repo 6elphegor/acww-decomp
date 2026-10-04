@@ -38,7 +38,7 @@ extern "C" {
 BOOL MenuCtrl_IsFinished();
 BOOL MenuCtrl_OpenLauncher(u32 a);
 BOOL TalkRequest_SetTargetDone(void *p);
-s32 func_020e780c(s32 a, s32 b);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
 }
 
 class BulletinBoard : public BuildingActor {
@@ -107,7 +107,7 @@ BOOL BulletinBoard::vfunc_48(void *other) {
     Character *a = (Character *)other;
     if (colliderFlags & 8) {
         if (a) {
-            if (func_020e780c((s16)(rotY + 0x8000), a->rotY) < 0x1300) {
+            if (Math_AngleDiffAbs((s16)(rotY + 0x8000), a->rotY) < 0x1300) {
                 clearTalkStartMode();
                 return TRUE;
             }

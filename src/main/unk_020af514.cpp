@@ -189,7 +189,7 @@ BOOL PlayerDataArray_IsUsed(void *, s32);
 u32 PlayerSession_FindFreeGfxSlot();
 void PlayerSession_SetGfxSlot(u32, u32);
 void PlayerActor_Spawn(u32, Vec3 *, Vec3s *, u32);
-void func_020e93a0(Vec3 *, s32);
+void Vec_RotateY(Vec3 *, s32);
 void func_01ffd070(Vec3 *, Vec3 *, Vec3 *);
 
 struct Data020cbb18 {
@@ -255,7 +255,7 @@ BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot_, u32 *o
                     v.x = (i << 10) - 0x800;
                     v.y = 0;
                     v.z = 0;
-                    func_020e93a0(&v, SceneWarp_GetAngle(Scene_GetWarpRequest()));
+                    Vec_RotateY(&v, SceneWarp_GetAngle(Scene_GetWarpRequest()));
                 }
                 Vec3 t;
                 func_01ffd070(&t, SceneWarp_GetPos(Scene_GetWarpRequest()), &v);

@@ -213,7 +213,7 @@ void ChatBalloon_Post(s32 idx, StrBuf *a, MsgString *b);
 TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 void MsgTextLabel_Destroy(TextLabel *obj);
 s32 DebugVar_GetStub(s32 a, s32 b);
-void func_020e761c(void *p, s32 a, s32 b);
+void Math_StepS32(void *p, s32 a, s32 b);
 s32 *_ZN10SpriteAnim6getSeqEv(void *p);
 void _ZN10SpriteAnim8setFrameEii(void *p, s32 a, s32 b);
 void _ZN10SpriteAnim8setSpeedEi(void *p, s32 v);
@@ -498,7 +498,7 @@ void ChatBalloon::execShow() {
     } else {
         t = DebugVar_GetStub(0x12d, 3) + 6;
     }
-    func_020e761c(&stackY, stackTargetY, t);
+    Math_StepS32(&stackY, stackTargetY, t);
     stateTimer--;
     if (stateTimer <= 0) {
         request = 0;

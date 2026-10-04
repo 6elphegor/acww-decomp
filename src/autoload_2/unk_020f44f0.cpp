@@ -3,7 +3,7 @@
 // (src/autoload_2/unk_020f3e50.cpp) minus the channel-object classes 0x020f3e50-0x020f44f0, which RC_020f3e50 now builds as real
 // classes. This is the start of the NEXT source file (sound-position pan / volume curve, listener callbacks; its .data byte
 // data_0213b9d8, bss 0x021f5bfc-0x021f5c2c and main's __sinit 0x020c6094 (FX_Div constants, Ramp clear SndVolumeCurve_Clear) belong to it, see PLAN.md); it stays
-// PARTIAL until that file is reconstructed whole (it continues with G012b 0x020f4a5c-0x020f5b9c and needs func_020f4904).
+// PARTIAL until that file is reconstructed whole (it continues with G012b 0x020f4a5c-0x020f5b9c and needs Snd_CalcListenerDistance).
 #include "types.h"
 #include "game/Vec3.h"
 #include "snd/PlayCtx.h"
@@ -27,7 +27,7 @@ s32 Snd_ListenerVolumeCallback(PlayCtx *p);
 s32 Snd_ListenerPanCallback(PlayCtx *p);
 s32 Snd_DistanceToVolume(s32 x);
 s32 Snd_CalcPan(Vec3 *p, s32 m);
-s32 func_020f4904(Vec3 *p, s32 m);
+s32 Snd_CalcListenerDistance(Vec3 *p, s32 m);
 s32 SndVolumeCurve_Eval(Ramp *r, s32 x);
 }
 
@@ -38,7 +38,7 @@ static inline s32 FX_Mul(s32 a, s32 b) {
 
 // listener callback: distance of the listener at p->source (mode 0)
 extern "C" s32 Snd_ListenerDistanceCallback(PlayCtx *p) {
-    return func_020f4904((Vec3 *)p->source, 0);
+    return Snd_CalcListenerDistance((Vec3 *)p->source, 0);
 }
 
 // volume of the pan curve at x

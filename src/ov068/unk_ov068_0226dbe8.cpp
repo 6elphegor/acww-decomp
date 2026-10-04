@@ -296,11 +296,11 @@ void func_02135558(void *obj, void (*dtor)(void *), void *dso);
 extern u16 data_020c6cc8;
 extern s32 data_020c8cbc;
 
-void func_020e761c(void *dst, s32 v, s32 n);
+void Math_StepS32(void *dst, s32 v, s32 n);
 void NNS_G3dMdlSetMdlAlpha(void *o, u32 i, u32 v);
 s32 Random_GlobalBelow(s32 n);
-s32 func_020e9650(void *a, void *b);
-s32 func_020e96ec(void *a, void *b);
+s32 Vec_DistXZ(void *a, void *b);
+s32 Vec_NotEqual(void *a, void *b);
 void *PlayerActor_GetActor(s32 n);
 void *PlayerActor_GetBodyPos(s32 n);
 BOOL Ground_IsOnLockedExit(void *v);
@@ -353,7 +353,7 @@ void *Villager_GetState(void *);
 void VillagerState_SetRole(void *, s32);
 void RoomScoreEvaluator_Destruct(void *);
 VillagerActor *PlayerActor_GetActor(s32);
-s32 func_020e9650(void *, void *);
+s32 Vec_DistXZ(void *, void *);
 }
 
 extern "C" {
@@ -909,7 +909,7 @@ void HouseVisitVillager::execVisitOutside() {
             v.x = pv->x;
             v.y = pv->y;
             v.z = pv->z;
-            if (func_020e9650(&v, &position) > 0x4e66) {
+            if (Vec_DistXZ(&v, &position) > 0x4e66) {
                 TalkRequest_AddPlayerTalk6(this, 0);
             }
         }
@@ -1087,7 +1087,7 @@ void HouseVisitVillager::execVisitWander() {
     }
     s32 d = data_020c8cbc;
     if (pv != NULL) {
-        d = func_020e9650(pv, &position);
+        d = Vec_DistXZ(pv, &position);
     }
     if ((*((u8 *)this + 0x508)) != 0 || (visitState != 6 && d < 0x2334)) {
         if (NpcActionCtrl_getAction(&actionCtrl) == 1 || visitState == 3) {
@@ -1140,12 +1140,12 @@ void HouseVisitVillager::execVisitWander() {
             _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &waypointX);
             break;
         default:
-            if (func_020e96ec(&waypointX, &walkTargetX) != 0) {
+            if (Vec_NotEqual(&waypointX, &walkTargetX) != 0) {
                 waypointX = walkTargetX;
                 waypointY = walkTargetY;
                 waypointZ = walkTargetZ;
                 _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &walkTargetX);
-            } else if (func_020e9650(&walkTargetX, &position) < 0x200) {
+            } else if (Vec_DistXZ(&walkTargetX, &position) < 0x200) {
                 NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8);
                 setVisitWalkSpeed();
             }

@@ -477,7 +477,7 @@ void Unk_0213b8e8::setupHeaps(u32 a, s32 b) {
     }
     Bytes4 q = data_0213b2c4;
     q.b0 = b;
-    gSndSeSystem.unk_15 = q;
+    gSndSeSystem.groupParams = q;
     SndSeSystem_Setup(&gSndSeSystem, 0, 0, q);
     Snd_InstallListenerCallbacks();
     NNS_SndHeapSaveState(t);

@@ -152,7 +152,7 @@ void func_0206267c(void *p);
 void func_0206260c(void *p);
 u32 NpcActor_getAngleTo(void *p, u32 x);
 void TalkRequest_SetTargetDone(void *p);
-void func_020e7518(void *p);
+void Math_CountDownU8(void *p);
 s32 Random_Next(u8 *p);
 s32 NpcActionCtrl_isActionDone(void *p);
 s32 NpcActionCtrl_getAction(void *p);
@@ -514,7 +514,7 @@ BOOL SpNpcBlanca::mainAct02() {
     void *r4 = P(0x564);
 
     r6 = SpNpcBlanca_IsInCameraBox(this);
-    func_020e7518(P(0x651));
+    Math_CountDownU8(P(0x651));
     if (r6 != 0) {
         if (SpNpcBlanca_TryAvoidObstacle(this) == 0) {
             if (NpcActionCtrl_isActionDone(r4) != 0) {

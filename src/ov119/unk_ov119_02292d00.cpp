@@ -81,8 +81,8 @@ void *PlayerId_GetTownId(void *a);
 void Mem_Copy(void *a, void *b, s32 c);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
 void MIi_CpuCopy16(void *src, void *dst, s32 n);
-BOOL func_020e9d7c(void *p);
-BOOL func_020e9d88(void *p, void *q);
+BOOL Net_GetFriendDataType(void *p);
+BOOL Net_IsSameFriendData(void *p, void *q);
 s32 func_020e9d70(void *p);
 s32 Net_GetMode();
 void *Net_GetWifiFriendList();
@@ -1619,13 +1619,13 @@ s32 FriendRosterTab::syncFromWifiFriendList()
     u32 tmp[3];
     for (i = 0; i < 0x20; i++) {
         MI_CpuCopy8(a + i * 12, tmp, 12);
-        if (func_020e9d7c(tmp) == 0) {
+        if (Net_GetFriendDataType(tmp) == 0) {
             if (DwcFriendData_IsValid(FriendEntry_GetFriendData(b + i * 0x1c)) == 0) {
                 continue;
             }
         }
         u8 *rec = b + i * 0x1c;
-        if (func_020e9d88(tmp, DwcFriendData_GetBytes(FriendEntry_GetFriendData(rec))) != 0) {
+        if (Net_IsSameFriendData(tmp, DwcFriendData_GetBytes(FriendEntry_GetFriendData(rec))) != 0) {
             s32 t = func_020e9d70(tmp);
             if (t == func_020e9d70(DwcFriendData_GetBytes(FriendEntry_GetFriendData(rec)))) {
                 continue;

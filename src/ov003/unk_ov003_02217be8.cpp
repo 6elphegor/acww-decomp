@@ -210,8 +210,8 @@ void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
 s32 Ground_GetSpecialPieceKind(s32, s32);
 void FieldPos_FromBlockUnitCenter(Unk_ov003_02218478_V3 *, s32, s32, s32, s32);
 void *Heap_Alloc(void *, s32);
-void func_020e8388(void *m, s32 x, s32 y, s32 z);
-void func_020e8434(void *m, s32 a);
+void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
+void Mtx43_RotateX(void *m, s32 a);
 s32 Ground_SetWaveLevel();
 s32 FX_Div(s32 a, s32 b);
 s32 TexPatVramAnim_init(void *self, void *hdr, const char *n1, const char *n2, s32 x, s32 y, s32 flag);
@@ -585,8 +585,8 @@ BOOL FieldGroundPiece::setup(Unk_ov003_02217910_V3 *pos, s32 idx) {
     }
     Unk_ov003_02217910_V3 tmp;
     curveAngle = WorldCurve_ToCurved((Unk_ov003_02218478_V3 *)&tmp, (Unk_ov003_02218478_V3 *)&position);
-    func_020e8388(data_021f47e0, position.x, 0, 0);
-    func_020e8434(data_021f47e0, curveAngle);
+    Mtx43_SetTranslate(data_021f47e0, position.x, 0, 0);
+    Mtx43_RotateX(data_021f47e0, curveAngle);
     *(Unk_ov003_02215c7c_Blk *)((u8 *)&model + 0x64) = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
     blockX = pos->x >> 17;
     blockZ = pos->z >> 17;
@@ -648,9 +648,9 @@ BOOL FieldGroundBlock::init(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) {
         matAnims[1].init(BgModelCache_getGroundTexSrtAnm(BgModelCache_Get()), 0, 0x1000, 0);
         matAnims[1].addToRenderObj((u32)((Model *)&model)->getRenderObj());
     }
-    func_020e8388(data_021f47e0, a * data_020c8cbc, 0, 0);
+    Mtx43_SetTranslate(data_021f47e0, a * data_020c8cbc, 0, 0);
     s16 ang = b * WorldCurve_GetAngleScale();
-    func_020e8434(data_021f47e0, ang);
+    Mtx43_RotateX(data_021f47e0, ang);
     *(Unk_ov003_02215c7c_Blk *)((u8 *)&model + 0x64) = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
     if (Acre_GetAttr(acreId) & 8) {
         beachMatIdx = G3dResAccess_findMatIdx(res, (s32)"m_grd_beA");

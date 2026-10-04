@@ -160,7 +160,7 @@ void func_02003e80(void *, void *);
 void func_02003ecc(void *);
 s32 BuildingLights_isLit(void *);
 void AnimModel_drawAnimated(void *, u32);
-s32 func_020e7b98(s32, s32);
+s32 Math_Atan2(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 void func_01ffd070(Unk_ov009_0225b880_Vec3 *, void *, Unk_ov009_0225b880_Vec3 *);
 void *TriangleTrigger_getCenter(void *);
@@ -171,8 +171,8 @@ void BuildingOccupancy_Leave(u32, u32);
 void HouseVisitor_ClearPresent();
 void *Scene_GetWarpRequest();
 void Scene_ResetTownReturnPos();
-s32 func_020e780c(s32, s32);
-s32 func_020e9650(void *, void *);
+s32 Math_AngleDiffAbs(s32, s32);
+s32 Vec_DistXZ(void *, void *);
 s32 *PlayerActor_GetBodyPos(u32);
 BOOL PlayerActor_LocalRequestDoorEnter(u32, s32 *, s32 *, s32);
 BOOL PlayerActor_IsStowFinished();
@@ -210,8 +210,8 @@ BOOL PlayerActor_LocalRequestDoorExit();
 s32 TriangleTrigger_Unregister(void *node);
 void TriangleTrigger_Register(void *node);
 s32 WorldCurve_ToCurved(void *out, void *in);
-void func_020e8388(void *m, s32 a, s32 b, s32 c);
-void func_020e8434(void *m, s32 a);
+void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
+void Mtx43_RotateX(void *m, s32 a);
 BOOL PlayerActor_IsInterruptibleByMenu();
 s32 func_020639e8(char *buf, const char *fmt, ...);
 void *File_LoadAlloc(void *a, void *heap, s32 c, s32 d);
@@ -445,8 +445,8 @@ BOOL BuildingActor::vfunc_00() {
     b2 = b1;
     createShadows(&b2);
     s32 ang = WorldCurve_Apply(&v, &position.x);
-    func_020e8388(&m, v.x, v.y, v.z);
-    func_020e8434(&m, ang);
+    Mtx43_SetTranslate(&m, v.x, v.y, v.z);
+    Mtx43_RotateX(&m, ang);
     createColliders((Unk_ov009_0225bc88_Blk *)&m);
     BuildingResources *r = getResources();
     BuildingLights_bind(unk_1f0, (void *)(r ? r->bmd0 : 0), 1);
@@ -836,8 +836,8 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
 
 void BuildingActor::makeCurvedMatrix(Unk_ov009_0225bc88_Blk *out) {
     Unk_ov009_0225bc88_Blk m;
-    func_020e8388(&m, drawPos.x, drawPos.y, drawPos.z);
-    func_020e8434(&m, (s16)drawTilt);
+    Mtx43_SetTranslate(&m, drawPos.x, drawPos.y, drawPos.z);
+    Mtx43_RotateX(&m, (s16)drawTilt);
     *out = m;
 }
 
@@ -1062,7 +1062,7 @@ BOOL BuildingCollider::isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_o
                     if (d >= 0) {
                         if (d <= off + 0x666) {
                             if (building->getDoorPos(&p, &ang)) {
-                                if (func_020e780c(ang, o->rotY) <= 0x1100) {
+                                if (Math_AngleDiffAbs(ang, o->rotY) <= 0x1100) {
                                     a.x = v->x;
                                     a.y = v->y;
                                     a.z = v->z;
@@ -1599,7 +1599,7 @@ BOOL BuildingActor::vfunc_48(void *other) {
     if (a == NULL) {
         return FALSE;
     }
-    s32 d = func_020e780c((s16)(rotY + 0x8000), a->rotY);
+    s32 d = Math_AngleDiffAbs((s16)(rotY + 0x8000), a->rotY);
     if (d <= 0x1000) {
         if (getEntranceType() != 0) {
             if ((colliderFlags & 8) != 0 && getEntranceType() == 2) {
@@ -1613,7 +1613,7 @@ BOOL BuildingActor::vfunc_48(void *other) {
                 return TRUE;
             }
         } else if (vfunc_8c() == 0) {
-            s32 r = func_020e9650(a->getInteractionPos(), getInteractionPos());
+            s32 r = Vec_DistXZ(a->getInteractionPos(), getInteractionPos());
             clearTalkStartMode();
             closedTalk = 1;
             if (r >= 0x3000) {
@@ -1670,7 +1670,7 @@ void BuildingActor::updateMatrix() {
 
 BOOL BuildingActor::getDoorPos(Unk_ov009_0225b880_Vec3 *out, s16 *ang) {
     if (colliders != NULL && colliderCount != 0) {
-        s32 a = func_020e7b98(colliders->normal.x, colliders->normal.z);
+        s32 a = Math_Atan2(colliders->normal.x, colliders->normal.z);
         s32 t0 = func_01ffcb0c(0x1000, colliders->normal.z);
         Unk_ov009_0225b880_Vec3 v;
         v.x = func_01ffcb0c(0x1000, colliders->normal.x);

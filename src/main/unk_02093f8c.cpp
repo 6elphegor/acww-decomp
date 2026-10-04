@@ -73,11 +73,11 @@ s32 func_02090538(void *);
 }
 
 extern "C" {
-void func_020e93a0(void *, s32);
+void Vec_RotateY(void *, s32);
 }
 
 extern "C" {
-s32 func_020e94f8(void *);
+s32 Vec_SafeNormalize(void *);
 }
 
 extern "C" {

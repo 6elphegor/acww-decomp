@@ -385,7 +385,7 @@ void *PlayerWifiData_GetOwnFriendData(void *a);
 void *DwcFriendData_GetBytes(void *a);
 void *FriendList_GetEntries(void *a);
 void *FriendEntry_GetFriendData(void *a);
-BOOL func_020e9d88(void *a, void *b);
+BOOL Net_IsSameFriendData(void *a, void *b);
 void func_0209fef8(Unk_0209f638 *p, void *q);
 BOOL Wifi_IsInFriendList(Unk_0209f638 *p, void *a, void *b);
 void LostChild_TryPair(Unk_0209f638 *p, s32 idx);
@@ -740,14 +740,14 @@ void SaveManager_RunSessionEnd(Unk_020a1c88 *self, u8 *s, u32 a, u32 b, u32 c, u
 BOOL _ZN8SaveData7isValidEv(void *p);
 TalkWindowState *TalkWindow_Get(u32 x);
 u32 Net_GetMemberCount();
-BOOL func_020e7500(void *p);
+BOOL Math_CountDownU16(void *p);
 BOOL Comm_SendEmpty();
 void Comm_Start(s32 a, u32 b, u32 c);
 void Comm_SetRecvBuffersAsHost();
 void *TownId_GetName(void *p);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 void _Z25NetOverlay_AssertWirelessv();
-void func_020ea720(void *p, u32 n);
+void Net_SetLocalGameInfo(void *p, u32 n);
 u8 PlayerDataArray_FindUnused(void *p);
 void NetOverlay_LoadWireless();
 BOOL Comm_IsConnectionLost(s32 a);
@@ -2991,7 +2991,7 @@ void Unk_020a1c88::enterAct1D() {
         buf[8] = 1;
     }
     NG::_Z25NetOverlay_AssertWirelessv();
-    NG::func_020ea720(buf, 10);
+    NG::Net_SetLocalGameInfo(buf, 10);
     freePlayerSlot = NG::PlayerDataArray_FindUnused(NG::gSavePlayers);
 }
 
@@ -3012,7 +3012,7 @@ void Unk_020a1c88::execAct1D() {
             return;
         }
         if (NG::Net_GetMemberCount() == 1) {
-            if (NG::func_020e7500(&unk_cc) == 0) {
+            if (NG::Math_CountDownU16(&unk_cc) == 0) {
                 ok = TRUE;
             } else {
                 NG::Comm_SendEmpty();
@@ -4546,7 +4546,7 @@ extern "C" BOOL Wifi_IsInFriendList(Unk_0209f638 *self, void *a, void *b) {
     for (i = 0; i < 0x20; i++) {
         void *e = NC::DwcFriendData_GetBytes(NC::FriendEntry_GetFriendData(r5 + i * st));
         if (e) {
-            if (NC::func_020e9d88(r6, e)) return TRUE;
+            if (NC::Net_IsSameFriendData(r6, e)) return TRUE;
         }
     }
     return FALSE;

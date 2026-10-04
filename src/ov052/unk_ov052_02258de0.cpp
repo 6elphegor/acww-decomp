@@ -111,10 +111,10 @@ void *ReddLastSale_GetBuyer(void *p);
 s32 _ZN8PlayerId7isValidEv(void *p);
 s32 _ZN8PlayerId6equalsEPS_(void *a, void *b);
 void NpcActor_FindFreeUnitNear(void *out, void *self, void *v);
-s32 func_020e7518(void *p);
-s32 func_020e780c(s32 a, s32 b);
-s32 func_020e96ec(void *a, void *b);
-s32 func_020e972c(void *a, void *b);
+s32 Math_CountDownU8(void *p);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
+s32 Vec_NotEqual(void *a, void *b);
+s32 Vec_Equal(void *a, void *b);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 memcmp(void *a, void *b, s32 n);
 s32 _ZN12Unk_02097ff48testFlagEj(void *h, u32 v);
@@ -374,10 +374,10 @@ BOOL SpNpcRedd::mainAct01() {
     v.z = pv->z;
     s32 r6 = getDistanceToPlayer(4);
     s32 t = getAngleToPlayer(4);
-    s32 r4 = func_020e780c(rotY, t);
+    s32 r4 = Math_AngleDiffAbs(rotY, t);
     Unk_ov052_Vec out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
-    if (r6 > 0x3000 && func_020e96ec(&out, &position)) {
+    if (r6 > 0x3000 && Vec_NotEqual(&out, &position)) {
         changeAct(3);
     } else if (r4 > 0x2000) {
         changeAct(2);
@@ -414,11 +414,11 @@ BOOL SpNpcRedd::mainAct02() {
     v.z = pv->z;
     s32 r6 = getDistanceToPlayer(4);
     s32 r4 = getAngleToPlayer(4);
-    func_020e780c(rotY, r4);
+    Math_AngleDiffAbs(rotY, r4);
     Unk_ov052_Vec out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     if (r6 > 0x3000) {
-        if (func_020e96ec(&out, &position)) {
+        if (Vec_NotEqual(&out, &position)) {
             changeAct(3);
             return TRUE;
         }
@@ -465,7 +465,7 @@ BOOL SpNpcRedd::mainAct03() {
         }
     }
     _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &out);
-    if (t <= 0x3000 || func_020e972c(&out, &position) != 0) {
+    if (t <= 0x3000 || Vec_Equal(&out, &position) != 0) {
         changeAct(1);
     }
     return TRUE;
@@ -504,7 +504,7 @@ BOOL SpNpcRedd::mainAct04() {
         }
     }
     _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &out);
-    if (t <= 0x3000 || func_020e972c(&out, &position) != 0) {
+    if (t <= 0x3000 || Vec_Equal(&out, &position) != 0) {
         changeAct(1);
     }
     return TRUE;
@@ -589,7 +589,7 @@ BOOL SpNpcRedd::mainAct09() {
         }
     }
     _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &out);
-    if (t <= 0x3000 || func_020e972c(&out, &position) != 0 || func_020e7518(&approachTimer) == 0) {
+    if (t <= 0x3000 || Vec_Equal(&out, &position) != 0 || Math_CountDownU8(&approachTimer) == 0) {
         talk.vfunc_08();
         talk.func_02015ab0(getPlayerActor(4));
         changeAct(5);

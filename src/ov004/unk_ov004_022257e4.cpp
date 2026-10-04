@@ -141,7 +141,7 @@ void _ZN9AnimModel8stepAnimEv(void *);
 void _ZN13AnimFrameCtrl4stepEv(void *);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, u32);
-void func_020e7820(s32 *, s32, s32, s32);
+void Math_ApproachS32Max(s32 *, s32, s32, s32);
 s32 _ZN9AnimModel11allocAnmObjEPv(void *, u32);
 void _ZN9AnimModel10attachAnimEv(void *);
 void _ZN9AnimModel12drawAnimatedEPv(void *, s32);
@@ -573,7 +573,7 @@ void CheckInGate::updateState01() {
     _ZN13AnimFrameCtrl4stepEv(&matAnim);
     *F(u32 *, 0x2a8) = F(u32, 0x298);
     v = F(s32, 0x494);
-    func_020e7820(&v, -0x2000, 0x100, 0x1000);
+    Math_ApproachS32Max(&v, -0x2000, 0x100, 0x1000);
     setDoorOffset(v);
     if (_ZN13AnimFrameCtrl10isFinishedEv(((u8 *)this + 0x188))) {
         changeSyncState(2);
@@ -617,7 +617,7 @@ void CheckInGate::updateState03() {
     _ZN13AnimFrameCtrl4stepEv((u8 *)this + 0x290);
     *(u32 *)*(u32 *)((u8 *)this + 0x2a8) = *(u32 *)((u8 *)this + 0x298);
     u32 t = F(s32, 0x494);
-    func_020e7820((s32 *)&t, 0, 0x100, 0x1000);
+    Math_ApproachS32Max((s32 *)&t, 0, 0x100, 0x1000);
     setDoorOffset(t);
     if (model.isFinished() != 0) {
         changeSyncState(0);

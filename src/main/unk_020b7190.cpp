@@ -55,7 +55,7 @@ void WorldCurve_Apply(void *a, void *b);
 void MTX_MultVec43(void *a, void *b, void *c);
 u32 _ZN12Unk_0203b3509getFovTanEv(u32 a);
 s32 FX_Div(s32 a, s32 b);
-void func_020e9888(void *a, s32 b);
+void Vec_Scale(void *a, s32 b);
 s32 PlayerActor_IsInAction(s32 a, s32 b);
 u16 *PlayerActor_GetItemInFront(void);
 u32 Scene_GetCurrent(void);
@@ -344,7 +344,7 @@ void FieldInfoBalloon::placeOverPlayer() {
         s32 d = _ZN12Unk_0203b3509getFovTanEv(gCamera);
         s32 q = FX_Div(0x60000, d);
         s32 r = FX_Div(-q, x.z);
-        func_020e9888(&x, r);
+        Vec_Scale(&x, r);
         _ZN12LabelBalloon6setPosEii(&balloon, x.x >> 12, -x.y >> 12);
     }
 }

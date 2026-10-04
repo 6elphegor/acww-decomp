@@ -70,12 +70,12 @@ BOOL MenuCtrl_OpenLauncher(u32 a);
 s32 Ground_GetDefaultY(s32 a);
 BOOL PlayerActor_LocalRequestMailboxOpen(void *p);
 u32 WorldCurve_ToCurved(void *out, void *in);
-void func_020e8528(void *m, s32 a, s32 b, s32 c);
+void Mtx43_Translate(void *m, s32 a, s32 b, s32 c);
 void *PlayerData_GetCurrent();
 PlayerMailbox *PlayerData_GetMailbox(void *p);
 BOOL _ZN10LetterView8getStateEv();
-s32 func_020e9650(void *a, void *b);
-s32 func_020e780c(s32 a, s32 b);
+s32 Vec_DistXZ(void *a, void *b);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
 void *Scene_GetTouchPicker();
 void _ZN11TouchPicker10pushSphereEP15TouchPickSphere(void *self, void *o);
 BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(void *self, void *o, void *a, s32 b, s32 c, u8 d);
@@ -221,8 +221,8 @@ BOOL Mailbox::vfunc_48(void *a) {
         return FALSE;
     }
     if (doorState == 2 && a) {
-        if (func_020e9650((u8 *)a + 0x5c, &position) < 0x2333) {
-            if (func_020e780c((s16)(rotY + 0x8000), *(s16 *)((u8 *)a + 0x8e)) < 0x1200) {
+        if (Vec_DistXZ((u8 *)a + 0x5c, &position) < 0x2333) {
+            if (Math_AngleDiffAbs((s16)(rotY + 0x8000), *(s16 *)((u8 *)a + 0x8e)) < 0x1200) {
                 return TRUE;
             }
         }
@@ -276,7 +276,7 @@ BOOL Mailbox::vfunc_b8(Unk_ov009_0225bc88_Blk *a) {
     drawTilt = WorldCurve_ToCurved(&drawPos, &v);
     makeCurvedMatrix((Unk_ov009_0225bc88_Blk *)a);
     *(Unk_ov009_0225bc88_Blk *)data_021f47e0 = *(Unk_ov009_0225bc88_Blk *)a;
-    func_020e8528(data_021f47e0, (s32)0xffffe000, 0, 0x1000);
+    Mtx43_Translate(data_021f47e0, (s32)0xffffe000, 0, 0x1000);
     *(Unk_ov009_0225bc88_Blk *)a = *(Unk_ov009_0225bc88_Blk *)data_021f47e0;
     return TRUE;
 }

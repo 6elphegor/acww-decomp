@@ -638,18 +638,18 @@ void TouchPicker_addBox(void *t, void *a, void *b, s32 c, s32 d, s32 e, s32 f, s
 s32 TouchPicker_pushBox(void *, void *);
 void func_020b6df4(void *p);
 void func_020b6e10(void *p);
-s32 func_020e759c(void *p, s32 a, s32 b);
-s32 func_020e769c(void *p, s32 a, s32 b);
-s32 func_020e7754(void *p, s32 a, s32 b, s32 c);
+s32 Math_StepS32Alt(void *p, s32 a, s32 b);
+s32 Math_StepS16(void *p, s32 a, s32 b);
+s32 Math_ApproachS16Div(void *p, s32 a, s32 b, s32 c);
 s32 Random_Next(void *p);
-void func_020e8388(void *m, s32 a, s32 b, s32 c);
-void func_020e8404(void *, s32);
-void func_020e8434(void *, s32);
+void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
+void Mtx43_RotateY(void *, s32);
+void Mtx43_RotateX(void *, s32);
 void Mem_Free(void *p);
 void Heap_Free(void *, void *);
 void *Heap_Alloc(void *heap, u32 size);
-s64 func_020e9600(void *, void *);
-s32 func_020e96a4(void *a, void *b);
+s64 Vec_DistSqXZ(void *, void *);
+s32 Vec_Distance(void *a, void *b);
 void func_020f43fc(void *p);
 void func_020f440c(void *p);
 s32 func_021065dc(u32 a);
@@ -1312,9 +1312,9 @@ extern "C" void AquariumFish_MoveVertical(E864 *o, s32 a, s32 b, s32 c)
     s32 m = a * o->verticalDir;
     *p = t + m;
     if (*p > b) {
-        func_020e759c(p, o->maxY, a);
+        Math_StepS32Alt(p, o->maxY, a);
     } else if (*p < c) {
-        func_020e759c(p, o->minY, a);
+        Math_StepS32Alt(p, o->minY, a);
     }
 }
 
@@ -1340,9 +1340,9 @@ extern "C" void AquariumFish_UpdatePitchByDir(E864 *o)
     u32 t = o->state;
     if ((u8)(t + 0xff) > 1) {
         if (t == 3) {
-            func_020e7754(&o->pitch, (s16)(o->verticalDir * -6825), 3, 0x222);
+            Math_ApproachS16Div(&o->pitch, (s16)(o->verticalDir * -6825), 3, 0x222);
         } else if (t == 5) {
-            func_020e7754(&o->pitch, 0, 3, 0x222);
+            Math_ApproachS16Div(&o->pitch, 0, 3, 0x222);
         }
     }
 }
@@ -1387,11 +1387,11 @@ extern "C" void AquariumFish_UpdatePitchSmooth(E864 *o, s32 a)
     if ((u8)(o->state + 0xff) > 1) {
         if (o->isLeveling != 0) {
             if (o->pitch != 0) {
-                func_020e7754(&o->pitch, 0, 3, 0x186);
+                Math_ApproachS16Div(&o->pitch, 0, 3, 0x186);
             }
         } else {
             s32 d;
-            func_020e7754(&o->pitch, (s16)(-a * o->verticalDir), 4, 0x186);
+            Math_ApproachS16Div(&o->pitch, (s16)(-a * o->verticalDir), 4, 0x186);
             if (o->state == 5) {
                 o->isLeveling = 1;
             } else {
@@ -1457,8 +1457,8 @@ extern "C" s32 Aquarium_RandRange(s32 a, s32 b)
 extern "C" BOOL Aquarium_TurnTowardHome(void *obj, void *a, void *b, s32 max)
 {
     BOOL r = TRUE;
-    if (func_020e96a4(a, b) > max) {
-        func_020e769c(obj, Math_AngleXZ(a, b), 0x38e);
+    if (Vec_Distance(a, b) > max) {
+        Math_StepS16(obj, Math_AngleXZ(a, b), 0x38e);
         r = FALSE;
     }
     return r;
@@ -1673,7 +1673,7 @@ extern "C" void AquariumJellyfish_DriftOut(E7d4 *o)
         o->driftState = 3;
         o->stateTimer = 0;
     }
-    func_020e769c(&o->unk_1c0, o->avoidAngle, 0x2d8);
+    Math_StepS16(&o->unk_1c0, o->avoidAngle, 0x2d8);
     Aquarium_StepXZ(&o->pos, t, o->unk_1c0);
 }
 
@@ -1685,7 +1685,7 @@ extern "C" void AquariumJellyfish_DriftBack(E7d4 *o) {
         o->stateTimer = 0;
         o->state = 2;
     }
-    func_020e769c(&o->unk_1c0, o->avoidAngle, 0x2d8);
+    Math_StepS16(&o->unk_1c0, o->avoidAngle, 0x2d8);
     Aquarium_StepXZ(&o->pos, t, o->unk_1c0);
 }
 
@@ -1708,8 +1708,8 @@ extern "C" void AquariumJellyfish_BeginPulse(E7d4 *o) {
     o->pulseState = 1;
     o->pulseTimer = 0;
     if (o->pulseBoostCount) {
-        func_020e759c(&o->pulseStep, 0x14, 0x29);
-        func_020e759c(&o->pulseMinScale, 0xccd, 0xcd);
+        Math_StepS32Alt(&o->pulseStep, 0x14, 0x29);
+        Math_StepS32Alt(&o->pulseMinScale, 0xccd, 0xcd);
         o->pulseBoostCount--;
     } else {
         o->pulseStep = 0x14;
@@ -1796,7 +1796,7 @@ extern "C" void _ZN16AquariumFastFish6updateEv(E744 *o) {
 extern "C" void AquariumFastFish_UpdateLap(E744 *o, s32 a, s32 b) {
     if (o->pos.x <= (a + 2) << 12) {
         o->isWallTurning = 1;
-        if (func_020e769c(&o->unk_1c0, 0x4000, 0x38e)) {
+        if (Math_StepS16(&o->unk_1c0, 0x4000, 0x38e)) {
             o->pos.x += 0x19a;
         }
         o->pos.y = ((sAquariumFishParams[o->fishIndex].baseY << 12) >> 6);
@@ -1807,7 +1807,7 @@ extern "C" void AquariumFastFish_UpdateLap(E744 *o, s32 a, s32 b) {
     }
     if (o->pos.x >= (b - 2) << 12) {
         o->isWallTurning = 1;
-        if (func_020e769c(&o->unk_1c0, -0x4000, 0x38e)) {
+        if (Math_StepS16(&o->unk_1c0, -0x4000, 0x38e)) {
             o->pos.x -= 0x19a;
         }
         o->pos.y = ((sAquariumFishParams[o->fishIndex].baseY << 12) >> 6);
@@ -1863,7 +1863,7 @@ extern "C" void _ZN15AquariumBigFish6updateEv(E72c *o) {
 
 extern "C" void AquariumBigFish_UpdatePatrol(E72c *o, s32 a, s32 b) {
     if (o->pos.x <= (a + 2) << 12) {
-        if (func_020e769c(&o->unk_1c0, 0x4000, 0x444)) {
+        if (Math_StepS16(&o->unk_1c0, 0x4000, 0x444)) {
             o->pos.x += 0x133;
         }
         Aquarium_StepXZ(&o->pos, 0x133, o->unk_1c0);
@@ -1873,7 +1873,7 @@ extern "C" void AquariumBigFish_UpdatePatrol(E72c *o, s32 a, s32 b) {
         return;
     }
     if (o->pos.x >= (b - 2) << 12) {
-        if (func_020e769c(&o->unk_1c0, -0x4000, 0x444)) {
+        if (Math_StepS16(&o->unk_1c0, -0x4000, 0x444)) {
             o->pos.x -= 0x133;
         }
         Aquarium_StepXZ(&o->pos, 0x133, o->unk_1c0);
@@ -1883,15 +1883,15 @@ extern "C" void AquariumBigFish_UpdatePatrol(E72c *o, s32 a, s32 b) {
         return;
     }
     if (o->turnDir == 3) {
-        func_020e769c(&o->unk_1c0, 0x4000, 0x444);
+        Math_StepS16(&o->unk_1c0, 0x4000, 0x444);
     } else if (o->turnDir == 10) {
-        func_020e769c(&o->unk_1c0, -0x4000, 0x444);
+        Math_StepS16(&o->unk_1c0, -0x4000, 0x444);
     }
     (o->*sAquariumSwimStates[o->state])();
     if ((u32)(o->fishIndex - 0x35) <= 1) {
-        func_020e759c(&o->pos.z, 0x10800, 0xcd);
+        Math_StepS32Alt(&o->pos.z, 0x10800, 0xcd);
     } else if (o->fishIndex == 0x34) {
-        func_020e759c(&o->pos.z, 0x10000, 0xcd);
+        Math_StepS32Alt(&o->pos.z, 0x10000, 0xcd);
     }
     AquariumFish_EndTurnAnim(o);
     AquariumFish_UpdateAnimSpeed(o, 0x333);
@@ -2269,7 +2269,7 @@ extern "C" void AquariumPiranha_StateSwim(E75c *o) {
         v.x = p->position.x;
         v.y = pv->y;
         v.z = pv->z;
-        if (func_020e9600(&v, &o->pos) < 0x10000) {
+        if (Vec_DistSqXZ(&v, &o->pos) < 0x10000) {
             o->nearPlayerTimer++;
             if (o->nearPlayerTimer > 0xa) {
                 if (p->speed != 0) {
@@ -2295,11 +2295,11 @@ extern "C" void AquariumPiranha_StateApproach(E75c *o) {
     v.x = p->position.x;
     v.y = pv->y;
     v.z = pv->z;
-    func_020e769c(&o->unk_1c0, Math_AngleXZ(&o->pos, (s32 *)&v), 0x222);
+    Math_StepS16(&o->unk_1c0, Math_AngleXZ(&o->pos, (s32 *)&v), 0x222);
     Aquarium_StepXZ(&o->pos, o->maxSpeed, o->unk_1c0);
     if (p->speed != 0) {
-        if (o->pitch != 0) func_020e769c(&o->pitch, 0, 0x222);
-        if (o->pos.y != 0x199a) func_020e759c(&o->pos.y, 0x199a, o->verticalSpeed);
+        if (o->pitch != 0) Math_StepS16(&o->pitch, 0, 0x222);
+        if (o->pos.y != 0x199a) Math_StepS32Alt(&o->pos.y, 0x199a, o->verticalSpeed);
         o->nearPlayerTimer = 0;
     } else {
         AquariumPiranha_BobDepth(o);
@@ -2312,7 +2312,7 @@ extern "C" void AquariumPiranha_StateApproach(E75c *o) {
             return;
         }
     }
-    long long d = func_020e9600(&v, &o->pos);
+    long long d = Vec_DistSqXZ(&v, &o->pos);
     if (d < 0x4000) {
         if ((u8)o->unk_256s != 0) {
             o->subState = 2;
@@ -2331,8 +2331,8 @@ extern "C" void AquariumPiranha_StateBite(E75c *o) {
         o->subState = 0;
         return;
     }
-    if (o->pitch != 0) func_020e769c(&o->pitch, 0, 0x16c);
-    if (o->pos.y != 0x199a) func_020e759c(&o->pos.y, 0x199a, o->verticalSpeed);
+    if (o->pitch != 0) Math_StepS16(&o->pitch, 0, 0x16c);
+    if (o->pos.y != 0x199a) Math_StepS32Alt(&o->pos.y, 0x199a, o->verticalSpeed);
     switch (o->unk_257) {
     case 1:
         AquariumPiranha_BiteLunge(o);
@@ -2344,8 +2344,8 @@ extern "C" void AquariumPiranha_StateBite(E75c *o) {
         AquariumPiranha_BiteIdle(o);
         break;
     }
-    func_020e769c(&o->unk_1c0, Math_AngleXZ(&o->pos, (s32 *)p), 0x222);
-    long long d = func_020e9600(p, &o->pos);
+    Math_StepS16(&o->unk_1c0, Math_AngleXZ(&o->pos, (s32 *)p), 0x222);
+    long long d = Vec_DistSqXZ(p, &o->pos);
     if (0x10000 < d) {
         o->subState = 0;
         o->stateTimer = 0;
@@ -2549,7 +2549,7 @@ extern "C" void _ZN18AquariumHidingFish6updateEv(E6fc *o) {
 }
 
 extern "C" void AquariumHidingFish_UpdateClownfish(E6fc *o) {
-    if (func_020e96a4(&o->pos, o->homePos) <= 0x1000) {
+    if (Vec_Distance(&o->pos, o->homePos) <= 0x1000) {
         o->subState = 1;
     } else {
         o->subState = 0;
@@ -2670,12 +2670,12 @@ extern "C" void AquariumHidingFish_MoveToHideout(E6fc *o, s32 f) {
     }
     if (o->pos.y > o->hideoutY) {
         if (f != 0) {
-            func_020e759c(&o->pos.y, o->hideoutY, o->verticalSpeed << 2);
+            Math_StepS32Alt(&o->pos.y, o->hideoutY, o->verticalSpeed << 2);
         } else {
-            func_020e759c(&o->pos.y, o->hideoutY, o->verticalSpeed);
+            Math_StepS32Alt(&o->pos.y, o->hideoutY, o->verticalSpeed);
         }
     }
-    if (func_020e96a4(&o->pos, &o->hideoutX) <= 0x800) {
+    if (Vec_Distance(&o->pos, &o->hideoutX) <= 0x800) {
         if (o->pos.y <= o->hideoutY) {
             o->unk_256 = 3;
             o->stateTimer = 0;
@@ -2692,8 +2692,8 @@ extern "C" void AquariumHidingFish_MoveToHideout(E6fc *o, s32 f) {
 }
 
 extern "C" void AquariumHidingFish_StayHidden(E6fc *o) {
-    func_020e759c(&o->pos, o->hideoutX, o->maxSpeed);
-    func_020e759c(&o->pos.z, o->hideoutZ, o->maxSpeed);
+    Math_StepS32Alt(&o->pos, o->hideoutX, o->maxSpeed);
+    Math_StepS32Alt(&o->pos.z, o->hideoutZ, o->maxSpeed);
     if (o->stateTimer > o->hideTime) {
         o->unk_256 = 0;
         o->stateTimer = 0;
@@ -3035,7 +3035,7 @@ extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out) {
         if (!Unk_ov004_0222ee2c_Both()) {
             if (t == 0x13) {
                 if (b == 0) {
-                    if (func_020e9600(&e->pos, &v) <= 0x9000) {
+                    if (Vec_DistSqXZ(&e->pos, &v) <= 0x9000) {
                         s32 d = e->pos.y - v.y;
                         if (d < 0) d = -d;
                         if (d <= 0x3000) {
@@ -3046,7 +3046,7 @@ extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out) {
                         }
                     }
                 } else if (b == 1) {
-                    if (func_020e9600(&e->pos, &v) <= 0x9000) {
+                    if (Vec_DistSqXZ(&e->pos, &v) <= 0x9000) {
                         s32 d = e->pos.y - v.y;
                         if (d < 0) d = -d;
                         if (d <= 0x3000) {
@@ -3182,9 +3182,9 @@ extern "C" void AquariumFish_StateRest(E864 *e) {
 extern "C" void AquariumFish_StateFlee(E864 *e) {
     if (e->stateTimer <= 0x28) {
         if ((u8)(e->rank + 0xfc) <= 1) {
-            func_020e7754(&e->unk_1c0, e->fleeAngle, 3, 0xaaa);
+            Math_ApproachS16Div(&e->unk_1c0, e->fleeAngle, 3, 0xaaa);
         } else {
-            func_020e7754(&e->unk_1c0, e->fleeAngle, 2, 0x4000);
+            Math_ApproachS16Div(&e->unk_1c0, e->fleeAngle, 2, 0x4000);
         }
         s32 *p = &e->speed;
         *p = e->maxSpeed;
@@ -3326,7 +3326,7 @@ extern "C" void AquariumFish_UpdateAvoid(E864 *e) {
                         e->verticalDir = 1;
                         e->isAvoiding = 1;
                     }
-                    func_020e769c(&e->unk_1c0, e->avoidAngle, 0x38e);
+                    Math_StepS16(&e->unk_1c0, e->avoidAngle, 0x38e);
                 }
             }
         } else {
@@ -3441,9 +3441,9 @@ extern "C" void AquariumFish_TurnToTarget(E864 *e) {
             if (e->isTurningToTarget != 0) {
                 BOOL r;
                 if (sAquariumFishParams[e->fishIndex].rank >= 4) {
-                    r = func_020e769c(&e->unk_1c0, e->targetAngle, 0x88) ? TRUE : FALSE;
+                    r = Math_StepS16(&e->unk_1c0, e->targetAngle, 0x88) ? TRUE : FALSE;
                 } else {
-                    r = func_020e769c(&e->unk_1c0, e->targetAngle, 0x16c) ? TRUE : FALSE;
+                    r = Math_StepS16(&e->unk_1c0, e->targetAngle, 0x16c) ? TRUE : FALSE;
                 }
                 if (r) {
                     e->isTurningToTarget = 0;
@@ -3571,17 +3571,17 @@ extern "C" void AquariumFish_SteerFromWall(E864 *self)
             s32 a = v;
             if (a < 0) a = -a;
             if (a >= 0x4000) {
-                func_020e769c(&self->unk_1c0, 0x471c, 0x222);
+                Math_StepS16(&self->unk_1c0, 0x471c, 0x222);
             } else {
-                func_020e769c(&self->unk_1c0, 0x38e4, 0x222);
+                Math_StepS16(&self->unk_1c0, 0x38e4, 0x222);
             }
         } else {
             s32 a = v;
             if (a < 0) a = -a;
             if (a <= -0x4000) {
-                func_020e769c(&self->unk_1c0, -0x471c, 0x222);
+                Math_StepS16(&self->unk_1c0, -0x471c, 0x222);
             } else {
-                func_020e769c(&self->unk_1c0, -0x38e4, 0x222);
+                Math_StepS16(&self->unk_1c0, -0x38e4, 0x222);
             }
         }
     }
@@ -4027,9 +4027,9 @@ extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx) {
 extern "C" void MuseumAquarium_CalcFishMtx(Mgr *o, R **p) {
     R *e = *p;
     V3 *v = &e->pos;
-    func_020e8388(&data_021f47e0, v->x, v->y, v->z);
-    func_020e8404(&data_021f47e0, (*p)->unk_1c0);
-    func_020e8434(&data_021f47e0, (*p)->pitch);
+    Mtx43_SetTranslate(&data_021f47e0, v->x, v->y, v->z);
+    Mtx43_RotateY(&data_021f47e0, (*p)->unk_1c0);
+    Mtx43_RotateX(&data_021f47e0, (*p)->pitch);
     e->modelMtx = data_021f47e0;
 }
 

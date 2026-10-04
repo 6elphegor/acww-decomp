@@ -145,7 +145,7 @@ extern "C" void SndMgr_PlaySe(SndMgr *self, s32 id) {
     }
 }
 
-extern "C" void func_020f09d8(SndMgr *self, s32 a) {
+extern "C" void SndMgr_PlaySeOnHandle(SndMgr *self, s32 a) {
     Snd_StartSeqArc(a % 1000, a / 1000, &self->seHandle);
     if (a == 0x862) {
         NNS_SndPlayerSetVolume(&self->seHandle, 0);
@@ -684,7 +684,7 @@ extern "C" void SndMgr_PlayKeySe(SndMgr *self, u32 id) {
     Snd_StartSeqArcDefault(t, 3);
 }
 
-extern "C" void func_020ef93c(SndMgr *self, s32 v) {
+extern "C" void SndMgr_SetSeHandleVolumes(SndMgr *self, s32 v) {
     s32 a;
     s32 b;
     if (v < 0) {
@@ -704,27 +704,27 @@ extern "C" void func_020ef93c(SndMgr *self, s32 v) {
     NNS_SndPlayerSetVolume(&self->unk_40, b);
 }
 
-extern "C" void func_020ef908(SndMgr *self, u32 a) {
+extern "C" void SndMgr_PlayAuxSe(SndMgr *self, u32 a) {
     Snd_StartSeqArcEx(&self->unk_40, 10, -1, -1, 0, a);
 }
 
-extern "C" void func_020ef8d4(SndMgr *self, u32 a) {
+extern "C" void SndMgr_PlayAuxSeHeld(SndMgr *self, u32 a) {
     Snd_StartSeqArcEx(&self->unk_40, 10, -1, -1, 0, a);
 }
 
-extern "C" void func_020ef8c0(SndMgr *self) {
+extern "C" void SndMgr_StopAuxSe(SndMgr *self) {
     Snd_StopHandle(&self->unk_40, 0);
 }
 
-extern "C" void func_020ef8a8(SndMgr *self) {
+extern "C" void SndMgr_StartBellRollSe(SndMgr *self) {
     Snd_StartSeqArc(45, 0, &self->seHandle);
 }
 
-extern "C" void func_020ef894(SndMgr *self) {
+extern "C" void SndMgr_StopBellRollSe(SndMgr *self) {
     SndMgr_StopSe(self, 45, 1);
 }
 
-extern "C" void func_020ef850(SndMgr *self, u16 a, u32 b) {
+extern "C" void SndMgr_PlaySePanned(SndMgr *self, u16 a, u32 b) {
     Snd_StartSeqArc(a, 0, &self->seHandle);
     NNS_SndPlayerSetTrackPan(&self->seHandle, gSndPanTrackMask, b);
 }

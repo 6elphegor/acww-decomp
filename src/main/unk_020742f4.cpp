@@ -1136,19 +1136,19 @@ extern "C" {
 void FS_EndOverlay(void *p);
 }
 extern "C" {
-void func_020e9d94(void);
+void Net_IsWifiConfigValid(void);
 }
 extern "C" {
-void func_020ea3dc(void);
+void Net_HasWifiUserId(void);
 }
 extern "C" {
-void func_020ea3c4(void);
+void Net_GetOwnFriendKey(void);
 }
 extern "C" {
-void func_020ea418(void *p, u32 v);
+void Net_CreateUserData(void *p, u32 v);
 }
 extern "C" {
-void func_020ea3d0(void *p, u32 v);
+void Net_MakeOwnFriendData(void *p, u32 v);
 }
 extern "C" {
 void Mem_Clear(void *p, u32 n);
@@ -1160,19 +1160,19 @@ extern "C" {
 void __cxa_vec_cleanup(void *, u32, u32, void *(*)(void *));
 }
 extern "C" {
-s32 func_020e9d7c(void);
+s32 Net_GetFriendDataType(void);
 }
 extern "C" {
-u64 func_020ea34c(u32 a);
+u64 Net_GetFriendKey(u32 a);
 }
 extern "C" {
-BOOL func_020ea358(u32 ctx, void *out, u64 key);
+BOOL Net_FriendKeyToFriendData(u32 ctx, void *out, u64 key);
 }
 extern "C" {
 void MI_CpuFill8(void *p, u32 v, u32 n);
 }
 extern "C" {
-s32 func_020e9d88(void *p, void *q);
+s32 Net_IsSameFriendData(void *p, void *q);
 }
 extern "C" {
 void _ZN8BbsBoard12getPostCountEv(void *p);
@@ -1417,20 +1417,20 @@ extern "C" void *DwcFriendData_Copy(void *p, void *q) {
 
 extern "C" s32 DwcFriendData_Compare(void *self, Unk_02076f28_T *src) {
     Unk_02076f28_T t = *src;
-    return func_020e9d88(self, &t);
+    return Net_IsSameFriendData(self, &t);
 }
 
 extern "C" void DwcFriendData_Clear(void *p) { MI_CpuFill8(p, 0, 0xc); }
 
 extern "C" BOOL DwcFriendData_IsValid(void) {
-    if (func_020e9d7c() != 0) {
+    if (Net_GetFriendDataType() != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
 extern "C" BOOL DwcFriendData_IsFriendKey(void) {
-    if (func_020e9d7c() == 2) {
+    if (Net_GetFriendDataType() == 2) {
         return TRUE;
     }
     return FALSE;
@@ -1445,7 +1445,7 @@ extern "C" BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, u32 ctx) {
         acc = m + (u32)data[i];
         i++;
     } while (i < 12);
-    if (!func_020ea358(ctx, tmp, acc)) {
+    if (!Net_FriendKeyToFriendData(ctx, tmp, acc)) {
         return FALSE;
     }
     MI_CpuCopy8(tmp, out, 12);
@@ -1455,10 +1455,10 @@ extern "C" BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, u32 ctx) {
 extern "C" BOOL DwcFriendData_ToCodeDigits(u32 a, u8 *buf) {
     u64 v;
     s32 i;
-    if (func_020e9d7c() != 2) {
+    if (Net_GetFriendDataType() != 2) {
         return FALSE;
     }
-    v = func_020ea34c(a);
+    v = Net_GetFriendKey(a);
     for (i = 11; i >= 0; i--) {
         buf[i] = (u8)(v % 10);
         v = v / 10;
@@ -1553,14 +1553,14 @@ extern "C" u8 *PlayerWifiData_Destruct(u8 *p) {
 }
 
 extern "C" void PlayerWifiData_Create(u8 *p) {
-    func_020ea418(p, 0x41444d45);
+    Net_CreateUserData(p, 0x41444d45);
     u32 r = DwcFriendData_GetBytes(p + 0x40);
-    func_020ea3d0(p, r);
+    Net_MakeOwnFriendData(p, r);
 }
-extern "C" void PlayerWifiData_GetFriendCode(void) { func_020ea3c4(); }
-extern "C" void PlayerWifiData_HasUserId(void) { func_020ea3dc(); }
+extern "C" void PlayerWifiData_GetFriendCode(void) { Net_GetOwnFriendKey(); }
+extern "C" void PlayerWifiData_HasUserId(void) { Net_HasWifiUserId(); }
 
-extern "C" void PlayerWifiData_IsConfigValid(void) { func_020e9d94(); }
+extern "C" void PlayerWifiData_IsConfigValid(void) { Net_IsWifiConfigValid(); }
 
 extern "C" void PlayerWifiData_GetDwcUserData(void) {}
 

@@ -329,15 +329,15 @@ void BgmSyncSnd_Init();
 }
 
 extern "C" {
-void func_020ef894(void *);
+void SndMgr_StopBellRollSe(void *);
 }
 
 extern "C" {
-void func_020ef8a8(void *);
+void SndMgr_StartBellRollSe(void *);
 }
 
 extern "C" {
-void func_020ef8c0(void *);
+void SndMgr_StopAuxSe(void *);
 }
 
 extern "C" {
@@ -369,15 +369,15 @@ void func_020f0e2c(void *);
 }
 
 extern "C" {
-void func_020ef8d4(void *, u32);
+void SndMgr_PlayAuxSeHeld(void *, u32);
 }
 
 extern "C" {
-void func_020ef908(void *, u32);
+void SndMgr_PlayAuxSe(void *, u32);
 }
 
 extern "C" {
-void func_020ef93c(void *, u32);
+void SndMgr_SetSeHandleVolumes(void *, u32);
 }
 
 extern "C" {
@@ -421,7 +421,7 @@ void SndMgr_SetVoiceType(void *, u32);
 }
 
 extern "C" {
-void func_020f09d8(void *, u32);
+void SndMgr_PlaySeOnHandle(void *, u32);
 }
 
 extern "C" {
@@ -433,7 +433,7 @@ void func_020f0e08(void *, u32);
 }
 
 extern "C" {
-void func_020ef850(void *, u32, u32);
+void SndMgr_PlaySePanned(void *, u32, u32);
 }
 
 extern "C" {
@@ -650,9 +650,9 @@ extern "C" void Snd_FadeOutScene() { gSndScene->vfunc_14(); }
 extern "C" void Snd_PlaySe(u32 a) { SndMgr_PlaySe(gSndMgr, a); }
 
 
-extern "C" void func_02004018(u32 a, u32 b) { func_020ef850(gSndMgr, a, b); }
+extern "C" void func_02004018(u32 a, u32 b) { SndMgr_PlaySePanned(gSndMgr, a, b); }
 
-extern "C" void func_02004008(u32 a) { func_020f09d8(gSndMgr, a); }
+extern "C" void func_02004008(u32 a) { SndMgr_PlaySeOnHandle(gSndMgr, a); }
 
 extern "C" void Snd_StopSe(u32 a, u32 b) { SndMgr_StopSe(gSndMgr, a, b); }
 
@@ -670,21 +670,21 @@ extern "C" void func_02003f78() {}
 
 extern "C" void func_02003f5c(u32 a) { gSndScene->vfunc_24(a); }
 
-extern "C" void func_02003f4c(u32 a) { func_020ef93c(gSndMgr, a); }
+extern "C" void func_02003f4c(u32 a) { SndMgr_SetSeHandleVolumes(gSndMgr, a); }
 
 extern "C" void Snd_SetKeySeMode(u32 a) { SndMgr_SetKeySeMode(gSndMgr, a); }
 
 extern "C" void Snd_PlayKeySe(u32 a) { SndMgr_PlayKeySe(gSndMgr, a); }
 
-extern "C" void func_02003f1c(u32 a) { func_020ef908(gSndMgr, a); }
+extern "C" void func_02003f1c(u32 a) { SndMgr_PlayAuxSe(gSndMgr, a); }
 
-extern "C" void func_02003f0c(u32 a) { func_020ef8d4(gSndMgr, a); }
+extern "C" void func_02003f0c(u32 a) { SndMgr_PlayAuxSeHeld(gSndMgr, a); }
 
-extern "C" void func_02003efc() { func_020ef8c0(gSndMgr); }
+extern "C" void func_02003efc() { SndMgr_StopAuxSe(gSndMgr); }
 
-extern "C" void func_02003eec() { func_020ef8a8(gSndMgr); }
+extern "C" void func_02003eec() { SndMgr_StartBellRollSe(gSndMgr); }
 
-extern "C" void func_02003edc() { func_020ef894(gSndMgr); }
+extern "C" void func_02003edc() { SndMgr_StopBellRollSe(gSndMgr); }
 
 void Unk_02003c30::func_02003ecc() { vfunc_08(); }
 

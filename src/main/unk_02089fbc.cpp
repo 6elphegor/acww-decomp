@@ -59,8 +59,8 @@ void func_02003edc();
 void func_02003eec();
 void Snd_PlaySe(s32 a);
 void String_FormatNumber(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_020e7870(void *p, s32 a, s32 b, s32 c, s32 d);
-void func_020e759c(void *p, s32 a, s32 b);
+void Math_ApproachS32(void *p, s32 a, s32 b, s32 c, s32 d);
+void Math_StepS32Alt(void *p, s32 a, s32 b);
 MsgTextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 void MsgTextLabel_Destroy(TextLabel *obj);
 BOOL TalkRequest_FinishCameraView();
@@ -851,7 +851,7 @@ void HudClockLabels::updateSlide() {
     } else {
         slideDelay = 0;
     }
-    func_020e7870(&slideY, slideTarget, 0x600, slideSpeed, 0x2300);
+    Math_ApproachS32(&slideY, slideTarget, 0x600, slideSpeed, 0x2300);
 }
 
 void HudClockLabels::resetSlide() {
@@ -1302,7 +1302,7 @@ void HudCountdownLabels::updateSlide() {
         slideDelay = 0;
     }
 end:
-    func_020e7870(&slideY, slideTarget, 0x600, slideSpeed, 0x2300);
+    Math_ApproachS32(&slideY, slideTarget, 0x600, slideSpeed, 0x2300);
 }
 
 void HudCountdownLabels::resetSlide() {
@@ -2015,7 +2015,7 @@ BOOL HudWallet::rollTowardTarget() {
                 d = -d;
             }
             s32 t = (d / 6 + 0x32) / 10;
-            func_020e759c(&shownBells, v, t * 10 + 7);
+            Math_StepS32Alt(&shownBells, v, t * 10 + 7);
             formatValue();
             if (label != NULL) {
                 label->alignRight();
@@ -2084,7 +2084,7 @@ void HudWallet::updateSlide() {
         } else {
             slideDelay = 0;
         }
-        func_020e7870(&slideY, slideTarget, 0x600, slideSpeed, 0x2300);
+        Math_ApproachS32(&slideY, slideTarget, 0x600, slideSpeed, 0x2300);
     } else {
         resetSlide();
     }

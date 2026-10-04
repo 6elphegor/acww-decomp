@@ -83,8 +83,8 @@ s32 TownBlockMap_Get();
 void Town_FindTownHallFront(s32 a, void *p, s32 b, s32 c);
 s32 Scene_GetWarpRequest();
 void SceneWarp_RequestAt(s32 a, s32 b, void *p, u32 c, u32 d, u32 e, u32 f);
-s32 func_020e7500(void *p);
-s32 func_020e7518(void *p);
+s32 Math_CountDownU16(void *p);
+s32 Math_CountDownU8(void *p);
 void TalkRequestFlags_ClearSceneHold();
 void TalkRequestFlags_SetSceneHold();
 s32 Random_GlobalBelow(s32 a);
@@ -359,7 +359,7 @@ BOOL SpNpcKappn::updateAct() {
     if (sSpNpcKappnActTable[unk_654].exit) {
         r = (this->*sSpNpcKappnActTable[unk_654].exit)();
     }
-    if (func_020e7518(&animTimer) == 1) {
+    if (Math_CountDownU8(&animTimer) == 1) {
         _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x8f, 1, data_020c6cc8, 0);
     }
     return r;
@@ -383,7 +383,7 @@ BOOL SpNpcKappn::setupAct00() { return TRUE; }
 
 BOOL SpNpcKappn::mainAct00() {
     if (Unk_ov051_02259b98_IsTwo(gScreenTransition)) {
-        if (func_020e7500(&startDelay) == 0) {
+        if (Math_CountDownU16(&startDelay) == 0) {
             changeAct(1);
         }
     }

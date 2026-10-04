@@ -221,16 +221,16 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 VEC_Mag(void *v);
 void func_01ffd070(void *out, void *a, void *b);
 void MTX_Concat43(void *a, void *b, void *out);
-s32 func_020e9650(void *a, void *b);
-s32 func_020e7b98(s32 a, s32 b);
-s32 func_020e780c(s32 a, s32 b);
-s32 func_020e9960(void *out, void *a, void *b);
-s32 func_020e7820(void *p, s32 a, s32 b, s32 c);
-s32 func_020e9688(void *v);
-s32 func_020e7754(s16 *p, s32 a, s32 b, s32 c);
-void func_020e9888(void *v, s32 ang);
-void func_020e8388(void *m, s32 x, s32 y, s32 z);
-void func_020e8434(void *m, s32 a);
+s32 Vec_DistXZ(void *a, void *b);
+s32 Math_Atan2(s32 a, s32 b);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
+s32 Vec_Sub(void *out, void *a, void *b);
+s32 Math_ApproachS32Max(void *p, s32 a, s32 b, s32 c);
+s32 Vec_MagXZ(void *v);
+s32 Math_ApproachS16Div(s16 *p, s32 a, s32 b, s32 c);
+void Vec_Scale(void *v, s32 ang);
+void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
+void Mtx43_RotateX(void *m, s32 a);
 s32 WorldCurve_ToCurved(void *out, void *in);
 void Quat_Mul(void *a, void *b, void *out);
 void Quat_ToMtx43(void *a, void *out);
@@ -445,7 +445,7 @@ BOOL Snowball::onExecute() {
 
 BOOL Snowball::onDraw() {
     if (gCamera != 0) {
-        if (func_020e9650(gCameraLookAt, &position) <= data_020c8cbc) {
+        if (Vec_DistXZ(gCameraLookAt, &position) <= data_020c8cbc) {
             s32 s = FX_Div(radius, 0x1000);
             V3P v;
             v.x = s;
@@ -512,7 +512,7 @@ extern "C" void Snowball_UpdateMatrix(Obj *o, s32 a, s32 b)
         v1.y = 0;
         v1.z = -data_02135f44[t];
         s32 u = ((s32)((u32)(a << 15) >> 16) >> 4) * 2;
-        func_020e9888(&v1, data_02135f44[u]);
+        Vec_Scale(&v1, data_02135f44[u]);
         q.x = v1.x;
         q.y = v1.y;
         q.z = v1.z;
@@ -526,8 +526,8 @@ extern "C" void Snowball_UpdateMatrix(Obj *o, s32 a, s32 b)
     ex.y = ex.y + o->radius;
     ex.y = ex.y - 0x400;
     s32 ang = WorldCurve_ToCurved(&pv, &ex);
-    func_020e8388(&m, pv.x, pv.y, pv.z);
-    func_020e8434(&m, ang);
+    Mtx43_SetTranslate(&m, pv.x, pv.y, pv.z);
+    Mtx43_RotateX(&m, ang);
     Quat_ToMtx43(&o->rotationQuat, &m2);
     MTX_Concat43(&m2, &m, &m);
     *(Blk *)((u8 *)o + 0x194) = m;
@@ -586,10 +586,10 @@ extern "C" s32 Snowball_UpdateRolling(Obj *o)
     s32 r2 = func_01ffcb0c(t2, s);
     o->collider.setupForActor(o, r2, t2 * 2, fa, 0x2fc, fb, id, o->colliderWeight);
     o->collider.submit();
-    func_020e9960(&d, &o->position, &o->prevPosition);
+    Vec_Sub(&d, &o->position, &o->prevPosition);
     s32 len = VEC_Mag(&d);
     s32 ang = (s16)((FX_Div(len, func_01ffcb0c(0x323d, o->radius)) >> 1) << 4);
-    yaw = func_020e7b98(d.x, d.z);
+    yaw = Math_Atan2(d.x, d.z);
     if (Snowball_IsInBallState(o)) {
         s32 n = VEC_Mag(&d);
         if (n == 0) {
@@ -696,7 +696,7 @@ extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s
     h[0] = ang;
     if (o->snowballFlags.f) {
         h[0] = o->pushAngle;
-        func_020e7754(&h[0], ang, 5, 0x2000);
+        Math_ApproachS16Div(&h[0], ang, 5, 0x2000);
     }
     ox = o->rollVelX;
     oz = o->rollVelZ;
@@ -712,7 +712,7 @@ extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s
     o->position.x += o->rollVelX;
     o->position.z += o->rollVelZ;
     h[1] = p->rotY;
-    func_020e7754(&h[1], ang, 8, 0x2000);
+    Math_ApproachS16Div(&h[1], ang, 8, 0x2000);
     V3 *q = &p->position;
     pv[0].x = p->position.x;
     pv[0].y = q->y;
@@ -720,15 +720,15 @@ extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s
     pv[1].x = pv[0].x + v10;
     pv[1].y = pv[0].y;
     pv[1].z = pv[0].z + v14;
-    dist = func_020e7b98(o->position.x - pv[1].x, o->position.z - pv[1].z);
-    if ((u32)func_020e9650(&o->prevPosition, &pv[1]) > (u32)(o->radius + 0x1000)) {
+    dist = Math_Atan2(o->position.x - pv[1].x, o->position.z - pv[1].z);
+    if ((u32)Vec_DistXZ(&o->prevPosition, &pv[1]) > (u32)(o->radius + 0x1000)) {
         o->position.x -= o->rollVelX;
         o->position.z -= o->rollVelZ;
         o->rollVelX = ox;
         o->rollVelZ = oz;
         return FALSE;
     }
-    s32 r0v = (s16)func_020e780c(dist, ang);
+    s32 r0v = (s16)Math_AngleDiffAbs(dist, ang);
     s32 lim = o->snowballFlags.f ? 0x471c : 0x1000;
     if (r0v > (s16)lim) {
         o->position.x -= o->rollVelX;
@@ -737,15 +737,15 @@ extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s
         o->rollVelZ = oz;
         return FALSE;
     }
-    if ((s16)func_020e780c(h[1], h[0]) > 0x471c) {
+    if ((s16)Math_AngleDiffAbs(h[1], h[0]) > 0x471c) {
         o->position.x -= o->rollVelX;
         o->position.z -= o->rollVelZ;
         o->rollVelX = ox;
         o->rollVelZ = oz;
         return FALSE;
     }
-    func_020e9960(&pv[2], &o->position, &pv[1]);
-    *outAng = func_020e7b98(pv[2].x, pv[2].z);
+    Vec_Sub(&pv[2], &o->position, &pv[1]);
+    *outAng = Math_Atan2(pv[2].x, pv[2].z);
     outPos->x = pv[1].x;
     outPos->y = pv[1].y;
     outPos->z = pv[1].z;
@@ -755,10 +755,10 @@ extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s
     {
         s32 t = FX_Div(o->radius - 0xa00, 0xa00);
         s32 r = func_01ffcb0c(0xc00, 0x1000 - t) + 0x200;
-        func_020e7820(&o->pushSpeed, 0x1000, r, 0x1000);
+        Math_ApproachS32Max(&o->pushSpeed, 0x1000, r, 0x1000);
     }
     V3 d(o->rollVelX, 0, o->rollVelZ);
-    *outVal = func_020e9688(&d) >> 1;
+    *outVal = Vec_MagXZ(&d) >> 1;
     return TRUE;
 }
 
@@ -1040,7 +1040,7 @@ BOOL Snowball::vfunc_48(void *a) {
     clearTalkStartMode();
     lim = func_01ffcb0c(0x2000, FX_Div(0x7d000, 0x64000));
     if (a) {
-        if (func_020e9650((u8 *)a + 0x5c, (u8 *)this + 0x5c) < lim) {
+        if (Vec_DistXZ((u8 *)a + 0x5c, (u8 *)this + 0x5c) < lim) {
             if (snowballState == 11) return TRUE;
         }
     }

@@ -264,9 +264,9 @@ void func_02003e80(void *, void *);
 void func_02003ecc(void *);
 void func_01ffd070(V3 *, void *, void *);
 s32 WorldCurve_ToCurved(V3 *, V3 *);
-void func_020e8388(Blk *m, s32 x, s32 y, s32 z);
-void func_020e8434(Blk *m, s32 a);
-void func_020e84f8(Blk *m, s32 x, s32 y, s32 z);
+void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
+void Mtx43_RotateX(Blk *m, s32 a);
+void Mtx43_Scale(Blk *m, s32 x, s32 y, s32 z);
 s32 PendingUnit_Find(P2 p, s32 z);
 u8 *PendingUnit_Get(s32 i);
 
@@ -781,8 +781,8 @@ void TreeAnim_Reset(Unk_ov003_0221b8bc *o);
 void CachedModel_release(void *p);
 void func_02003e50(void *p);
 s32 WorldCurve_ToCurved(Unk_ov003_0221b8bc_V3 *out, void *v);
-void func_020e8388(void *p, s32 x, s32 y, s32 z);
-void func_020e8434(void *p, s32 a);
+void Mtx43_SetTranslate(void *p, s32 x, s32 y, s32 z);
+void Mtx43_RotateX(void *p, s32 a);
 void AnimModel_drawAnimated(void *p, s32 a);
 u16 SceneLights_GetRoomColor(void);
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, s32 b);
@@ -1107,7 +1107,7 @@ void FieldObj_DrawItemModel(void *g, void *o, V3 *a, V3 *b, s32 c, s16 d, s16 e)
 void FieldObj_DrawItemIcon(void *g, void *o, V3 *a, s32 k, V3 *b, s32 c, s16 d, s16 e);
 void FieldObj_DrawIconModel(void *g, void *o, V3 *a, s32 k, V3 *b, s32 c, s16 d, s16 e);
 s32 Town_GetRafflesiaPos(V3 *o, s32 z);
-void func_020e9960(V3 *out, V3 *a, s32 b);
+void Vec_Sub(V3 *out, V3 *a, s32 b);
 void FieldPos_ToUnit(s32 *x, s32 *z, V3 *v);
 s32 Flower_GetSpecies(u16 *c);
 void ModelSet_Release(void *p);
@@ -1123,8 +1123,8 @@ extern V3 gCameraLookAt;
 extern Blk data_021f47e0;
 void FieldPos_SnapToUnitCenter(V3 *out, V3 *in);
 s32 WorldCurve_ToCurved(V3 *out, V3 *in);
-void func_020e8388(Blk *m, s32 x, s32 y, s32 z);
-void func_020e8434(Blk *m, s32 a);
+void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
+void Mtx43_RotateX(Blk *m, s32 a);
 u16 *BlockMap_GetItemPtrAtPos(void *g, V3 *pos, s32 layer);
 s32 func_01ffcbd8(void *g, s32 x, s32 z);
 s32 Item_GetInfoUnk07(u16 *c);
@@ -1316,8 +1316,8 @@ s32 Item_GetFruitTreeFruit(u16 *p);
 s32 Item_IsTreeGrown(u16 *p);
 s32 LitCedarList_Find(s32 a, s32 b);
 s32 WorldCurve_ToCurved(Unk_ov003_0221e398_V3 *out, Unk_ov003_0221e398_V3 *p);
-void func_020e8388(Blk *m, s32 x, s32 y, s32 z);
-void func_020e8434(Blk *m, s32 a);
+void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
+void Mtx43_RotateX(Blk *m, s32 a);
 s32 func_02133150(s32 a, s32 b);
 
 s32 FieldObj_DrawItemIcon(O *o, u32 id, V3 *p, s32 k, V3 *q, s32 a, s32 b, s32 c);
@@ -1411,10 +1411,10 @@ extern void *data_ov003_02232bd8[];
 extern u8 sFieldObjectModelHeapBuf[];
 
 s32 WorldCurve_ToCurved(V3 *out, V3 *in);
-void func_020e8388(Blk *m, s32 x, s32 y, s32 z);
-void func_020e8434(Blk *m, s32 a);
-void func_020e8464(Blk *m, s32 x, s32 y, s32 z);
-void func_020e84f8(Blk *m, s32 x, s32 y, s32 z);
+void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
+void Mtx43_RotateX(Blk *m, s32 a);
+void Mtx43_RotateXYZ(Blk *m, s32 x, s32 y, s32 z);
+void Mtx43_Scale(Blk *m, s32 x, s32 y, s32 z);
 void func_02105f00(void *p, s32 a);
 void Heap_Free(void *heap, void *p);
 void *ExpHeap_CreateInPlace(void *p, u32 n);
@@ -4423,10 +4423,10 @@ s32 FieldObj_DrawIconModel(Obj *o, u32 idx, V3 *a, s32 b, V3 *c, s32 d, s32 e, s
     Unk_ov003_0221e4d4_Model *m = o->iconModels[idx];
     V3 t;
     s32 ang = WorldCurve_ToCurved(&t, a);
-    func_020e8388(&data_021f47e0, t.x, t.y, t.z);
-    func_020e8434(&data_021f47e0, ang);
-    func_020e8464(&data_021f47e0, *(s16 *)&d, *(s16 *)&e, *(s16 *)&f);
-    func_020e84f8(&data_021f47e0, c->x, c->y, c->z);
+    Mtx43_SetTranslate(&data_021f47e0, t.x, t.y, t.z);
+    Mtx43_RotateX(&data_021f47e0, ang);
+    Mtx43_RotateXYZ(&data_021f47e0, *(s16 *)&d, *(s16 *)&e, *(s16 *)&f);
+    Mtx43_Scale(&data_021f47e0, c->x, c->y, c->z);
     func_02105f00(m->resMdl, b);
     FieldObj_DrawModel(o, m, data_021f47e0);
     return (s32)m;
@@ -4463,10 +4463,10 @@ void FieldObj_DrawItemModel(Obj *o, u32 t, V3 *pos, V3 *scale, s32 rx, s32 ry, s
     V3 v;
     type = t;
     s32 ang = WorldCurve_ToCurved(&v, pos);
-    func_020e8388(&data_021f47e0, v.x, v.y, v.z);
-    func_020e8434(&data_021f47e0, ang);
-    func_020e8464(&data_021f47e0, *(s16 *)&rx, *(s16 *)&ry, *(s16 *)&rz);
-    func_020e84f8(&data_021f47e0, scale->x, scale->y, scale->z);
+    Mtx43_SetTranslate(&data_021f47e0, v.x, v.y, v.z);
+    Mtx43_RotateX(&data_021f47e0, ang);
+    Mtx43_RotateXYZ(&data_021f47e0, *(s16 *)&rx, *(s16 *)&ry, *(s16 *)&rz);
+    Mtx43_Scale(&data_021f47e0, scale->x, scale->y, scale->z);
     if (Unk_ov003_0221e4d4_Chk1(&type)) {
         u16 u = t - 0xd4;
         u16 nv;
@@ -4602,8 +4602,8 @@ extern "C" void FieldObj_DrawCedarLights(O *o, Unk_ov003_0221e398_V3 *t, s32 a, 
     }
     Unk_ov003_0221e398_V3 v;
     s32 r = WorldCurve_ToCurved(&v, t);
-    func_020e8388(&data_021f47e0, v.x, v.y, v.z);
-    func_020e8434(&data_021f47e0, r);
+    Mtx43_SetTranslate(&data_021f47e0, v.x, v.y, v.z);
+    Mtx43_RotateX(&data_021f47e0, r);
     FieldObj_DrawModel(o, q, data_021f47e0);
 }
 }
@@ -4921,8 +4921,8 @@ void FieldObj_DrawUnits(O *o, void *g) {
         FieldPos_SnapToUnitCenter(&l.D, &l.B);
         {
             s32 r4 = WorldCurve_ToCurved(&l.E, &l.D);
-            func_020e8388(&data_021f47e0, l.E.x, l.E.y, l.E.z);
-            func_020e8434(&data_021f47e0, r4);
+            Mtx43_SetTranslate(&data_021f47e0, l.E.x, l.E.y, l.E.z);
+            Mtx43_RotateX(&data_021f47e0, r4);
         }
         l.m = data_021f47e0;
         dist = l.D.z - l.C.z;
@@ -5140,7 +5140,7 @@ s32 Field_IsRafflesiaNear(V3 *out, s32 b) {
     if (r != 0) {
         V3k t;
         V3k tmp;
-        func_020e9960((V3 *)&tmp, out, b);
+        Vec_Sub((V3 *)&tmp, out, b);
         t = tmp;
         s32 sum = t.x * t.x + t.z * t.z;
         if (sum < (s32)0x90000000) {
@@ -6166,8 +6166,8 @@ void TreeAnim_Draw(Unk_ov003_0221b8bc *o) {
         volatile Unk_ov003_0221b8bc_Col2 l;
         Unk_ov003_0221b8bc_V3 v;
         s32 r = WorldCurve_ToCurved(&v, &o->pos);
-        func_020e8388(&data_021f47e0, v.x, v.y, v.z);
-        func_020e8434(&data_021f47e0, r);
+        Mtx43_SetTranslate(&data_021f47e0, v.x, v.y, v.z);
+        Mtx43_RotateX(&data_021f47e0, r);
         o->baseMatrix = data_021f47e0;
         AnimModel_drawAnimated(o->animModel, 0);
         l.a = SceneLights_GetRoomColor();
@@ -7469,9 +7469,9 @@ void FieldItemFxTable_Draw(Ent *e) {
                 l.v68.y = pv->y;
                 l.v68.z = pv->z;
                 ang = WorldCurve_ToCurved(&l.v50, &l.v5c);
-                func_020e8388(&data_021f47e0, l.v50.x, l.v50.y, l.v50.z);
-                func_020e8434(&data_021f47e0, ang);
-                func_020e84f8(&data_021f47e0, l.v68.x, l.v68.y, l.v68.z);
+                Mtx43_SetTranslate(&data_021f47e0, l.v50.x, l.v50.y, l.v50.z);
+                Mtx43_RotateX(&data_021f47e0, ang);
+                Mtx43_Scale(&data_021f47e0, l.v68.x, l.v68.y, l.v68.z);
                 u16 a;
                 if (Unk_ov003_02219e7c_Chk1(&type, tp, a) || (a >= 0x1f && a <= 0x20)) {
                     FieldObj_DrawGrass(gFieldObjectManager, &type, data_021f47e0);

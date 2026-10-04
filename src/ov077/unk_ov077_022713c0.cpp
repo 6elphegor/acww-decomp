@@ -44,14 +44,14 @@ void _ZN14NpcMoveAnimSet11setWalkAnimEi(void *self, s32 a);
 void _ZN14NpcMoveAnimSet12setStandAnimEi(void *self, s32 a);
 void TalkRequestFlags_ClearResetti();
 void TalkRequestFlags_SetResetti();
-s32 func_020e77cc(void *p, u32 lo, u32 hi);
+s32 Math_IsInRange(void *p, u32 lo, u32 hi);
 u32 Random_GlobalBelow(u32 n);
 void func_02003ddc(void *p, u32 a, u32 b, u32 c);
 void Bgm_Release(s32 a);
 void Bgm_RequestSilence(s32 a, s32 b, s32 c);
 void Bgm_ReleasePriority(s32 a);
 void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
-s32 func_020e7518(void *p);
+s32 Math_CountDownU8(void *p);
 BOOL MenuCtrl_IsFinished();
 BOOL MenuCtrl_IsResultOk();
 s32 PlayerActor_GetCharacter(s32 v);
@@ -529,7 +529,7 @@ void SpNpcResettiTalk::setScript(s32 state) {
 }
 
 void SpNpcResettiTalk::scriptWaitForTip() {
-    if (func_020e7518(&waitTimer) == 0) {
+    if (Math_CountDownU8(&waitTimer) == 0) {
         u8 v = 0x10;
         unk_3c->setNextMessage(&v, sSpNpcResettiMsgKey);
         requestReopenWindow();
@@ -662,7 +662,7 @@ void SpNpcResettiTalk::onChoice(u32) {
     case 0x20:
     case 0x21: {
         u32 n = Random_GlobalBelow(0xd);
-        if (func_020e77cc((void *)getChoiceList()->getSliderValue(), n, n + 5) != 0) {
+        if (Math_IsInRange((void *)getChoiceList()->getSliderValue(), n, n + 5) != 0) {
             cmd = 0x22;
         } else {
             cmd = Random_GlobalBelow(2) == 0 ? 0x20 : 0x21;

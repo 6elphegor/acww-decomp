@@ -320,7 +320,7 @@ u32 Scene_GetCurrent(void);
 BOOL Scene_InTown(void);
 BOOL SceneId_IsVillagerHouse(u32 a);
 BOOL SceneId_IsHouseRoom(u32 a);
-void func_020e761c(void *p, s32 a, s32 b);
+void Math_StepS32(void *p, s32 a, s32 b);
 void Mem_Free(void *p);
 void *func_021012bc(char *name);
 void func_02101310(void *file);
@@ -914,7 +914,7 @@ void LightLevel::update()
             }
         }
     } else if (targetLevel != level) {
-        func_020e761c(this, targetLevel, fadeStep);
+        Math_StepS32(this, targetLevel, fadeStep);
     }
 }
 

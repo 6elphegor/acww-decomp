@@ -94,7 +94,7 @@ u8 *Net_GetWifiFriendList();
 BOOL ScrollKnob_areAnimsDone(void *p);
 BOOL HandCursor_isAnimDone(void *p);
 void ScrollKnob_moveTo(void *p, s32 a, s32 b);
-void func_020e761c(void *p, s32 a, s32 b);
+void Math_StepS32(void *p, s32 a, s32 b);
 void Gfx2d_LoadCharFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_LoadPaletteFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_LoadScreenFile(const char *a, void *b, s32 c);
@@ -1206,7 +1206,7 @@ void WfcFriendListMenu::dragKnob(s32 v, BOOL c) {
         v = 0x50;
     }
     if (c) {
-        func_020e761c(&knobPos, v, 8);
+        Math_StepS32(&knobPos, v, 8);
     } else {
         knobPos = v;
     }

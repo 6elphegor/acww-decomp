@@ -245,7 +245,7 @@ void Keyboard_DrawLengthGaugeAt(void *p, u32 a, void *b, u32 c);
 void Keyboard_SetTextFieldPos(void *p, s32 a, s32 b);
 void Keyboard_DrawCaret(void *p, s32 a, s32 b, s32 c);
 void Snd_PlaySe(s32 a);
-void func_020e76f8(void *p, u32 v, u32 n);
+void Math_StepU8(void *p, u32 v, u32 n);
 s32 Text_GetLength(void *p, s32 n);
 void String_FromEncodedBytesEx(void *p, void *q, u32 n, u32 a, u32 b);
 void Text_SplitLines(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g);
@@ -1846,7 +1846,7 @@ extern "C" void BbsWriteMenu_ScrollToTouch(S *s) {
     s32 t = gTouchCurY - 0x18;
     if (t < 0) t = 0;
     if (t > 0x28) t = 0x28;
-    func_020e76f8(&s->scrollKnobY, (u8)t, 2);
+    Math_StepU8(&s->scrollKnobY, (u8)t, 2);
     BbsWriteMenu_SetScrollFromKnob(s, s->scrollKnobY);
 }
 

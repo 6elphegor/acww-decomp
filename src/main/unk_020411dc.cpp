@@ -72,7 +72,7 @@ void Gfx2d_SetMainPlanes(u32);
 void Gfx2d_SetSubPlanes(u32);
 void Gfx2d_SetBrightness(s32);
 s32 CommCaution_ArePlanesHidden();
-s32 func_020e759c(void *, u32, s32);
+s32 Math_StepS32Alt(void *, u32, s32);
 s32 FX_Div(s32, s32);
 void TransitionCommIcon_RequestHide(u32);
 void TransitionCommIcon_RequestShow(u32);
@@ -322,7 +322,7 @@ extern "C" void ScreenTransition_Update() {
     if (v != 0) {
         u32 a = v >= 0 ? 0x1000 : 0;
         if (v < 0) v = -v;
-        if (func_020e759c(&gScreenTransition.progress, a, v) != 0) {
+        if (Math_StepS32Alt(&gScreenTransition.progress, a, v) != 0) {
             gScreenTransition.step = 0;
         }
     }

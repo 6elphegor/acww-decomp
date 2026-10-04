@@ -40,8 +40,8 @@ extern s32 data_020c8cb4;
 extern u8 data_021f47e0[];
 extern Unk_ov003_02217910_V3 gCameraLookAt;
 
-void func_020e8388(void *m, s32 x, s32 y, s32 z);
-void func_020e8434(void *m, s32 a);
+void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
+void Mtx43_RotateX(void *m, s32 a);
 s32 Unk_020d93b8_getEyeCurveAngle(void *self);
 void *BgModelCache_Get();
 void *BgModelCache_getAcre(void *self, s32 i);
@@ -87,8 +87,8 @@ BOOL FieldGroundBackdrop::followCamera() {
         v.x = gCameraLookAt.x;
         v.y = gCameraLookAt.y;
         v.z = gCameraLookAt.z;
-        func_020e8388(data_021f47e0, v.x - data_020c8cb4, 0, 0);
-        func_020e8434(data_021f47e0, Unk_020d93b8_getEyeCurveAngle(cam));
+        Mtx43_SetTranslate(data_021f47e0, v.x - data_020c8cb4, 0, 0);
+        Mtx43_RotateX(data_021f47e0, Unk_020d93b8_getEyeCurveAngle(cam));
         *(Unk_ov003_02215c7c_Blk *)((u8 *)&model + 0x64) = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
         return TRUE;
     }

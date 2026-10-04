@@ -14,7 +14,7 @@ void Gfx3d_BeginFrame();
 void Gfx2d_BeginFrame();
 void Gfx2d_ResetState();
 void Gfx3d_InitEngine();
-void func_020e82b8();
+void Gfx_InitNop();
 void ScreenTransition_Init();
 void GX_SetBankForLCDC(s32);
 void Gfx3d_Init();
@@ -53,7 +53,7 @@ extern "C" void ThreeLayerAnimModel_ClearLayer3Mask(Unk_02053830_Obj *o)
 extern "C" void Gfx_Init()
 {
     volatile u32 b, a, c;
-    func_020e82b8();
+    Gfx_InitNop();
     Gfx_ResetScene();
     ScreenTransition_Init();
     u16 *p = (u16 *)0x4000304;

@@ -88,7 +88,7 @@ void func_0210a148(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, u32 b);
 void NNS_SndPlayerMoveVolume(void *p, u32 a, u32 b);
 void NNS_SndPlayerStopSeq(void *p, u32 a);
-void func_020f4904(void *a, u32 b);
+void Snd_CalcListenerDistance(void *a, u32 b);
 u32 Snd_DistanceToVolume(void);
 u32 Snd_CalcPan(void *a, u32 b);
 }
@@ -134,7 +134,7 @@ void TvSound::updatePosition(void *x) {
         NNS_SndPlayerSetVolume(&b, 0);
         return;
     }
-    func_020f4904(x, 0);
+    Snd_CalcListenerDistance(x, 0);
     r5 = Snd_DistanceToVolume();
     r4 = Snd_CalcPan(x, 0);
     NNS_SndPlayerSetVolume(&a, r5);
