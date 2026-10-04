@@ -1,11 +1,6 @@
 #include "types.h"
+#include "game/Unk_02037674_V3.h"
 
-struct Unk_02037674_V3 {
-    s32 x, y, z;
-};
-struct Unk_02037638_S8 {
-    s32 a, b;
-};
 
 extern "C" {
 void *File_LoadAlloc(const char *, void *, s32, void *);

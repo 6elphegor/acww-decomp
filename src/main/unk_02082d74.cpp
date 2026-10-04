@@ -1,8 +1,8 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "game/Unk_0203389c_Vec.h"
 
-struct Unk_0203389c_Vec { s32 x, y, z; };
 typedef Unk_0203389c_Vec Unk_02083c28_Vec;
 struct VisitorSpawner;
 struct VisitorSchedule;

@@ -1,12 +1,7 @@
 #include "types.h"
+#include "game/Unk_0202f2ac_V3.h"
+#include "game/Unk_0203389c_Vec.h"
 
-struct Unk_0202f660_V3 { s32 x, y, z; };
-struct Unk_0202f2ac_V3 {
-    s32 x, y, z;
-    Unk_0202f2ac_V3() {}
-    Unk_0202f2ac_V3(s32 c, s32 a) : x(a), y(0), z(c) {}
-    Unk_0202f2ac_V3(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
-};
 struct Unk_0202ff44_V3;
 struct CollisionVisitor;
 struct Unk_02031304_Vec;
@@ -670,9 +665,6 @@ public:
 };
 
 // ---------------------------------------------------------------- unk_0203389c.cpp
-struct Unk_0203389c_Vec {
-    s32 x, y, z;
-};
 extern "C" s32 FX_Div(s32 a, s32 b);
 extern "C" long long func_020e9600(void *a, void *b);
 extern "C" BOOL Collision_GetUnitShape(s32 a, s32 b, s32 *c, s32 *d, s32 *e);

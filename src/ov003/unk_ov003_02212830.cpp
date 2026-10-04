@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "game/Unk_0203389c_Vec.h"
 
 class ProcBase {
 public:
@@ -36,9 +37,6 @@ public:
     /* 0x0c */ u8 pad_0c[0x50 - 0xc];
 };
 
-struct Unk_0203389c_Vec {
-    s32 x, y, z;
-};
 typedef Unk_0203389c_Vec Unk_ov003_Vec;
 
 class Actor : public GameProc {

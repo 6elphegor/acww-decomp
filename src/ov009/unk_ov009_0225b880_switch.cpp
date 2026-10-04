@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "game/Unk_0202f2ac_V3.h"
 
 // Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
 // slot 08 is Character::postCreate(int)).
@@ -189,9 +190,6 @@ struct Unk_ov009_0225bb0c_Tmp {
 };
 
 struct Vec3 {
-    s32 x, y, z;
-};
-struct Unk_0202f2ac_V3 {
     s32 x, y, z;
 };
 struct Unk_02031e10_Vec {

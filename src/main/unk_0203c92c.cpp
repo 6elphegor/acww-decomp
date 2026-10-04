@@ -1,20 +1,11 @@
 #include "types.h"
+#include "game/Unk_0203c92c_Bits.h"
 
 extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 
 // ---- flag object at 0x021c3264
-struct Unk_0203c92c_Bits0 {
-    u8 b0 : 1;
-    u8 b1 : 1;
-    u8 b23 : 2;
-};
-struct Unk_0203c92c_Bits1 {
-    u8 b0 : 1;
-    u8 b1 : 1;
-    u8 b2 : 1;
-};
 class PlayerOptions {
 public:
     PlayerOptions();

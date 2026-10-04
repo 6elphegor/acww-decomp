@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/Unk_0202f2ac_V3.h"
 
 struct Vec3 {
     s32 x, y, z;
@@ -12,14 +13,7 @@ struct Basis {
     Vec3 a, b, c;
 };
 
-// the V3 type of the callee CollisionCylinder (symbols.txt mangles it as Unk_0202f660_V3)
-struct Unk_0202f660_V3 {
-    s32 x, y, z;
-};
 
-struct Unk_0202f2ac_V3 {
-    s32 x, y, z;
-};
 
 // base class (symbols.txt: CollisionTriangle); its destructor is called through its D1 symbol (0x0202f620)
 struct CollisionTriangle {

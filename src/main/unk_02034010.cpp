@@ -1,18 +1,6 @@
 #include "types.h"
+#include "game/Unk_02034014.h"
 
-class Unk_02034014 {
-public:
-    Unk_02034014();
-    ~Unk_02034014();
-    void setDefaults();
-    void setEntry(u32 i, s16 a, s16 b);
-    void clear();
-
-    s16 unk_00[3];
-    s16 unk_06[3];
-    s16 unk_0c[3];
-    u8 unk_12;
-};
 
 struct Unk_02034014_Col {
     u8 r, g, b, a;

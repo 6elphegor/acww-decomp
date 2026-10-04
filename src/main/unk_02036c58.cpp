@@ -1,5 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "game/Unk_02036c60_Vec.h"
+#include "game/Unk_02037674_V3.h"
 
 extern "C" {
 void func_02133ef8(void *, u32);
@@ -53,12 +55,6 @@ class BgModelCacheObj;
 extern BgModelCacheObj gBgModelCache;
 extern const u8 sBgHeapSizeByRoom[];
 
-struct Unk_02037674_V3 {
-    s32 x, y, z;
-};
-struct Unk_02037638_S8 {
-    s32 a, b;
-};
 
 struct Unk_0203718c_Ent {
     u32 acreId, arc, mdl, bcl, bsd, jntAnm, matAnm, texSrtAnm, tex, unk_24, mgt, mgtCount;
@@ -92,9 +88,7 @@ public:
     u32 beBPatTex;
 };
 
-struct Unk_02036c60_Vec { s32 x, y, z; };
 
-struct Unk_02036c60_Ent { u8 a; u8 pad; s16 b; s16 c; };
 
 // ---- BgModelCache ----
 struct BgAcreModel {

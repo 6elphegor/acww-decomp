@@ -3,6 +3,7 @@
 // sMuseumInsects[0x20], tables sMuseumInsectParams (0xe4) / sMuseumInsectBehaviors (0x1c8), insect path strings)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "game/Unk_0203389c_Vec.h"
 
 // ---- main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -57,9 +58,6 @@
 #define func_02135714 __cxa_vec_ctor
 
 // ---- main-module classes used by this unit
-struct Unk_0203389c_Vec {
-    s32 x, y, z;
-};
 
 class GroundInfoBase {
 public:

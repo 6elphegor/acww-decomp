@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "net/CommManager.h"
+#include "game/Unk_0202368c_Obj.h"
 
 
 class VillagerTalk;
@@ -604,9 +605,6 @@ struct Unk_0201d2d0_Pair {
     u32 unk_04;
 };
 
-struct Unk_0202368c_Obj {
-    u32 v[2];
-};
 
 struct Unk_020238b0_Out {
     u32 fileName;

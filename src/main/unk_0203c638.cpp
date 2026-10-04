@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/Unk_0203c92c_Bits.h"
 
 // ---- 0x020d94b8 base (MsgRequest at 0x020e2a30)
 class MsgRequest {
@@ -147,16 +148,6 @@ extern "C" Unk_0203ce24_Elem data_021c3784[];
 extern "C" MailTextBuilder gMailTextBuilder;
 
 // ---- flag object at 0x021c3264
-struct Unk_0203c92c_Bits0 {
-    u8 b0 : 1;
-    u8 b1 : 1;
-    u8 b23 : 2;
-};
-struct Unk_0203c92c_Bits1 {
-    u8 b0 : 1;
-    u8 b1 : 1;
-    u8 b2 : 1;
-};
 class PlayerOptions {
 public:
     void markTalkVoiceChanged();

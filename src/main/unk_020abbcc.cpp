@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/Unk_02033914.h"
 
 struct Vec3 {
     s32 x, y, z;
@@ -8,9 +9,6 @@ struct Col {
     u16 v;
 };
 
-struct Unk_02033914 {
-    u8 unk_00[0x40];
-};
 
 struct Mtx43 {
     s32 m[12];

@@ -1,5 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "game/Unk_02034250_Id.h"
+#include "game/Unk_02036c60_Vec.h"
 
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -538,16 +540,9 @@ struct Unk_020d8dbc_Rec {
     s16 b;
 };
 
-struct Unk_02034250_Id {
-    u16 v;
-};
 
 class BgmRequest;
 
-struct Unk_02034320_Pkt {
-    u16 a;
-    u16 b;
-};
 
 class BgmManagerView;
 
@@ -606,9 +601,7 @@ extern "C" {
 struct Unk_021e5890_T { u8 pad[0x14]; u8 groundSeasonBits; };
 }
 
-struct Unk_02036c60_Vec { s32 x, y, z; };
 
-struct Unk_02036c60_Ent { u8 a; u8 pad; s16 b; s16 c; };
 
 // ---- BgModelCache ----
 struct BgAcreModel {

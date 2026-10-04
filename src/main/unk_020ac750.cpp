@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "game/Unk_02033914.h"
 struct ItemId {
     u16 v;
     ItemId();
@@ -107,9 +108,6 @@ struct Unk_020ac0c4_Entry {
     u8 unk_15[3];
 };
 
-struct Unk_02033914 {
-    u8 unk_00[0x40];
-};
 
 struct Mtx43 {
     s32 m[12];

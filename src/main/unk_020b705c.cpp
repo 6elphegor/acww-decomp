@@ -1,8 +1,6 @@
 #include "types.h"
+#include "game/Unk_0202f2ac_V3.h"
 
-struct Unk_0202f660_V3 {
-    s32 x, y, z;
-};
 typedef Unk_0202f660_V3 Vec3;
 
 struct CollisionCylinder {

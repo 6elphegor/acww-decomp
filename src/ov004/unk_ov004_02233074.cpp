@@ -3,6 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "game/Unk_ov004_Vec3.h"
+#include "game/Unk_0203389c_Vec.h"
 
 // other modules' symbols by their real names
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
@@ -307,9 +308,6 @@ public:
     void callUpdate(s32 a, void *b);
 };
 
-struct Unk_0203389c_Vec {
-    s32 x, y, z;
-};
 
 class GroundInfoBase {
 public:

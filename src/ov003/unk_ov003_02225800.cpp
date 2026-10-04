@@ -2,11 +2,9 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/Unk_020cbb18_Ptr.h"
+#include "game/Unk_0203389c_Vec.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
-struct Unk_0203389c_Vec {
-    s32 x, y, z;
-};
 
 class GroundInfoBase {
 public:

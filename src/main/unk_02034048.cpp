@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/Unk_02034250_Id.h"
 
 // 2-byte element (0xfff1 = none), constructed by __sinit; destructor is in another unit (0x02004b60)
 class ItemId {
@@ -9,9 +10,6 @@ public:
     ~ItemId();
 };
 
-struct Unk_02034250_Id {
-    u16 v;
-};
 
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -52,10 +50,6 @@ extern ItemId sSceneCarpets[0x33];
 
 static inline BOOL Unk_020341c0_IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 
-struct Unk_02034320_Pkt {
-    u16 a;
-    u16 b;
-};
 
 struct Unk_02034048_Pkt {
     u16 item;

@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "game/Unk_0201acf8.h"
 
 // unk_02011580.cpp
 struct HudObjGfx {
@@ -2117,15 +2118,6 @@ struct Unk_0201ac88 {
     Unk_0201ac88 *func_0201accc();
 };
 
-// unk_0201ac80.cpp
-struct Unk_0201acf8 {
-    u16 unk_00;
-    u16 unk_02;
-
-    void func_0201acf8(u16 v);
-    s32 func_0201acfc();
-    void func_0201ad18();
-};
 
 // unk_0201ac80.cpp
 struct NpcMoveAnimSet {

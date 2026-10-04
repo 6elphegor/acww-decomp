@@ -32,6 +32,15 @@
 #include "player/Unk_02006d14_Objec.h"
 #include "player/Unk_02007ebc_Mtx.h"
 #include "player/Unk_02007c5c_Mtx.h"
+#include "player/Unk_0200d560.h"
+#include "player/Unk_0200e2c8.h"
+#include "game/Unk_0200f6d4_V2.h"
+#include "player/Unk_0200d64c_Xyz.h"
+#include "game/Unk_0200dde0_Vec3.h"
+#include "player/Unk_0200e7f4_T24.h"
+#include "player/Unk_0200f070_V3.h"
+#include "player/Unk_0200ff08_Obj.h"
+#include "player/Unk_020102ec.h"
 
 class Unk_02006d14;
 class Unk_02007694;
@@ -571,30 +580,10 @@ struct Unk_020d6df4_7d0 {
     void initWalk();
 };
 
-struct Unk_0200d560 {
-    u32 unk_00;
-    u8 modelSetupDone;
-    void initInitWork(u32 v);
-};
 
-struct Unk_0200d5b4 {
-    u32 unk_00;
-    void setInitArgs(u32 v);
-};
 
-struct Unk_0200d53c_Item {
-    u8 pad_00[0xc];
-    u32 args;
-};
 
-struct Unk_0200e2c8 {
-    Unk_0200e2c8();
-    ~Unk_0200e2c8();
-};
 
-struct Unk_0200e248_Blob {
-    s32 v[4];
-};
 
 class PlayerActionRequest : public Unk_0200e2c8 {
 public:
@@ -615,96 +604,8 @@ public:
 };
 
 
-struct Unk_0200f6d4_V2 {
-    s32 x, y;
-    Unk_0200f6d4_V2() {}
-    Unk_0200f6d4_V2(const Unk_0200f6d4_V2 &o) { x = o.x; y = o.y; }
-};
-
-struct Unk_020107c8_Blk {
-    u32 x, y, z;
-};
-
-class Unk_020102ec {
-public:
-    void replayAnim();
-    void startAnimOnce(s32 a, u32 b, u16 c);
-    void switchAnim(s32 a, u32 b, u16 c);
-    void startAnim(s32 a, u32 b, u16 c);
-    void playAnim(s32 a, u32 b, u8 c, s32 d, u32 e, u16 f, s32 g);
-    void setMouthAnim(s32 *a, u8 *b);
-    void setEyeAnim(s32 *a, u8 *b);
-    void setMouthAnimForBody(s32 *a, u8 *b);
-    void setEyeAnimForBody(s32 *a, u8 *b);
-    void initFaceAnims();
-    void submitSceneCollider();
-    void updateCollidersAtDrawPos(u32 *a);
-    void updateBodyCollider();
-    void setSubCollider(u32 a, u32 b, u32 c);
-    void setSubColliderBody(u32 *a);
-    void setBodyColliderAtDrawPos(u32 *a);
-    void setBodyCollider(u32 *a);
-    void setBodyColliderAt(Unk_020107c8_Blk *a, u32 *b);
-    u32 getBodyColliderFlags(u32 *a);
-    void updateMouthAnim();
-    void updateEyeAnim();
-    void updateFaceAnims();
-    void advanceAnim();
-    BOOL netApproachTransform();
-    void moveNoCollision();
-    void moveWithCollision();
-    void setSpeed(u32 *a);
-    void approachRotX();
-    void setRotX(u16 a);
-    void setAngleY(s16 *a);
-    u32 getAnimResIndex(u32 *a);
-    u8 func_02007c50(u32 a);
-    u32 calcTan(u32 a);
-    u8 *P(u32 off) { return (u8 *)this + off; }
 
 
-    u8 pad_00[0x8];
-      u32 param;
-    u8 pad_0c[0x50];
-      s32 positionX;
-      u32 positionY;
-      s32 positionZ;
-    u8 pad_68[0x24];
-      u16 rotX;
-      s16 rotY;
-    u8 pad_90[0x4];
-      s16 moveAngleY;
-    u8 pad_96[0x2];
-      u32 speed;
-    u8 pad_9c[0x238];
-      u32 unk_2d4_lo : 12;
-    u32 unk_2d4_mid : 16;
-    u32 unk_2d4_hi : 4;
-    u8 pad_2d8[0x4];
-      u32 bodyAnimFrameStep;
-      u8 bodyAnimPlayMode;
-    u8 pad_2e1[0x103];
-      s32 headResMdl;
-    u8 pad_3e8[0x308];
-      u32 bodyPosX;
-    u8 pad_6f4[0x4];
-      u32 bodyPosZ;
-    u8 pad_6fc[0x4];
-      s32 animId;
-    u8 pad_704[0x4];
-      u8 animMode;
-    u8 pad_709[0xb];
-      s32 eyeAnimFrame;
-    u8 pad_718[0x28];
-      s32 mouthAnimFrame;
-    u8 pad_744[0x24];
-      s32 eyeAnimId;
-      s32 mouthAnimId;
-    u8 pad_770[0x7c];
-      u32 action;
-    u8 pad_7f0[0xc];
-      u32 sessionSlot;
-};
 
 // ---- unk_020044dc.cpp
 namespace nA {
@@ -3330,7 +3231,6 @@ void _ZN12Unk_02006d1417offsetSpawnBySlotEv(void *);
 namespace nN {
 extern "C" {
 
-struct Unk_0200d64c_Xyz { s32 x, y, z; Unk_0200d64c_Xyz() {} };
 class PlayerActor;
 void AnimSlotRef_Assign(void *p, u32 v);
 void *PlayerBodyModelRef_GetBuffer(void *p);
@@ -3379,7 +3279,6 @@ s32 func_020e7b98(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 FX_Sqrt(s32 a);
-struct Unk_0200d64c_Keys { u16 a; u16 b; s16 c; };
 extern Unk_0200d64c_Keys gPad;
 extern u16 gTouchX;
 extern u16 gTouchY;
@@ -3502,9 +3401,6 @@ BOOL _ZN12Unk_02006d1415getHeldToolKindEv(void *);
 namespace nO {
 extern "C" {
 
-struct Unk_0200dde0_Vec3 {
-    s32 x, y, z;
-};
 typedef PlayerActionRequest Unk_0200e248_Rec;
 s32 PlayerActor_ParamGetSlot(s32);
 s32 PlayerActor_ParamGetAction(s32);
@@ -3673,7 +3569,6 @@ BOOL _ZN12Unk_02006d1420getHeldHoldableIndexEv(void *);
 namespace nP {
 extern "C" {
 
-struct Unk_0200e7f4_T24 { u32 a[12]; };
 extern CommManager *gCommManager;
 extern Unk_0200e7f4_T24 data_021cb69c;
 extern u8 sPlayerActionTalkable[];
@@ -3809,10 +3704,6 @@ s32 _ZN12Unk_02006d1415getHeldToolKindEv(void *);
 namespace nQ {
 extern "C" {
 
-struct Unk_0200f070_V3 { s32 x, y, z; };
-struct Unk_0200f070_M { s32 v[12]; };
-struct Unk_0200f17c_Date { u16 a : 7; u16 b : 4; u16 c : 5; };
-struct Unk_0200f660_S { u16 a; u16 b; };
 extern s16 data_02135f44[];
 extern s32 sPlayerFrontPointDist;
 extern void *gCommManager;
@@ -3939,31 +3830,6 @@ s32 _ZN12Unk_02006d1410turnTowardEi(void *, s32 a);
 namespace nR {
 extern "C" {
 
-struct Unk_0200ff08_Vec { s32 x, y, z; };
-struct Unk_0200ff08_Obj {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual BOOL vfunc_54(void *p);
-};
 inline BOOL Unk_0200f9d4_IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 inline BOOL Unk_020102a0_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 extern u8 gFieldSceneKind;
@@ -4138,27 +4004,6 @@ s32 _ZN11PlayerActor17getInputMagnitudeEv(void *);
 namespace nS {
 extern "C" {
 
-struct Unk_02010924_Msg {
-    u8 scene;
-    s16 netAngle;
-    s16 curAngle;
-};
-struct Unk_02010a58_Blk {
-    u16 rotX;
-    s16 rotY;
-};
-struct Unk_02010b08_Time {
-    u32 unk_00;
-    u32 unk_04;
-};
-struct Unk_02010b08_Bits {
-    u16 unk_a : 7;
-    u16 unk_b : 4;
-    u16 unk_c : 5;
-};
-struct Unk_0201065c_Vec {
-    s32 x, y, z;
-};
 s32 _ZN12Unk_020102ec19setMouthAnimForBodyEPiPh(Unk_020102ec *a, s32 *b, u8 *c);
 extern void *gCommManager;
 extern u8 sPlayerActionColliderFlag2[];
