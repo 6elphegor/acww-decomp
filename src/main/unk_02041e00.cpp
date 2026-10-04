@@ -1,4 +1,5 @@
 #include "types.h"
+#include "net/CommManager.h"
 
 
 struct Unk_0204a768_Pos {
@@ -462,10 +463,6 @@ s32 PlayerData_GetCurrent(void);
 s32 _ZN12Unk_02097ff48testFlagEj(s32 a, s32 b);
 BOOL Item_ToPlantedFieldId(u16 *out, u16 *out2, u16 c);
 void FieldAction_TryMoneyTree(u16 *out, u8 *flag, u16 c);
-struct CommManager {
-    u8 pad[0x64];
-    s32 myAid;
-};
 BOOL Town_CanReleaseBees(void);
 void FieldAction_ResolveBuryItem(void *a, u16 *p, u16 *q, u8 *r, u16 e);
 BOOL Item_IsTreeStage0(volatile u16 *p);
@@ -713,7 +710,6 @@ void FieldAction_HostProcess(Unk_02044774_S *src, u8 flag, s32 t);
 namespace nF {
 extern "C" {
 
-struct CommManager { u8 pad_00[0x64]; s32 myAid; s32 localSlot; };
 struct Unk_020449e8_Pos { s32 x, y; };
 struct Unk_020449e8_Out {
     u8 pad_00[2];

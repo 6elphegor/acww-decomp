@@ -2,6 +2,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -245,14 +246,6 @@ public:
     /* 0x90 */ u8 menuId;
 };
 
-class CommManager {
-public:
-    void endRecord(u32, u32);
-    void writeRecord(u8 *, u32);
-    void beginRecord();
-    s32 getSendSeq();
-    BOOL isOnline();
-};
 
 class LabelBalloon {
 public:

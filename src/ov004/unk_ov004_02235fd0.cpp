@@ -2,6 +2,7 @@
 // ov004 TU33: .text 0x02235fd0-0x02237440 (actor 0224ebec "bug" scene object + scene objects 0224eb9c)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 
 // main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -84,10 +85,6 @@ struct Unk_ov004_0223717c_Vec {
     s32 z;
 };
 
-class CommManager {
-public:
-    BOOL isOnline();
-};
 
 class HouseData {
 public:

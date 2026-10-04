@@ -1,4 +1,5 @@
 #include "types.h"
+#include "net/CommManager.h"
 
 // ======== types of unk_020742f4.cpp ========
 
@@ -1870,7 +1871,6 @@ extern "C" void CommBlock_ReadAct01(u8 *buf) {
 
 // ======== unk_02075e60.cpp ========
 namespace n4 {
-class CommManager;
 extern "C" {
 extern CommManager *gCommManager;
 }
@@ -2071,13 +2071,6 @@ static inline BOOL Unk_02075e60_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 }
 
 
-class CommManager {
-public:
-    /* 0x00 */ u8 slotActive[0x64];
-    /* 0x64 */ s32 myAid;
-    /* 0x68 */ u8 unk_68[0x8];
-    /* 0x70 */ void *syncCompareBuf;
-};
 extern "C" s32 CommBlock_BuildPacket(u32 a) {
     struct { u16 len; u8 hdr[3]; } l;
     _Z20NetOverlay_AssertAnyv();
@@ -3489,7 +3482,6 @@ extern "C" BOOL CommSend_JoinReady() {
 
 // ======== unk_020742f4.cpp ========
 namespace n1 {
-struct CommManager;
 extern "C" {
 extern void (*sCommCtrlHandlers[])(void *, s32, s32);
 }
@@ -3657,11 +3649,6 @@ s32 Clock_GetDateTime(void *);
 }
 
 
-struct CommManager {
-    u8 pad_00[0x64];
-    s32 myAid;
-    volatile s32 localSlot;
-};
 extern "C" s32 CommSend_DateTime(u32 a) {
     _Z20NetOverlay_AssertAnyv();
     if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(a) != 0) {

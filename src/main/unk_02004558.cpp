@@ -5,6 +5,7 @@
 // Generated from 20 earlier source files: one
 // namespace per old file holds that file's own declarations and its view of the object.
 #include "types.h"
+#include "net/CommManager.h"
 
 class Unk_02006d14;
 class Unk_02007694;
@@ -3751,7 +3752,6 @@ BOOL _ZN12Unk_02006d1420getHeldHoldableIndexEv(void *);
 namespace nP {
 extern "C" {
 
-struct CommManager { u8 pad_00[0x64]; s32 myAid; };
 struct Unk_0200e7f4_T24 { u32 a[12]; };
 extern CommManager *gCommManager;
 extern Unk_0200e7f4_T24 data_021cb69c;

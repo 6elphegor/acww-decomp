@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 
 // Element payload types (defined elsewhere)
 struct Unk_020829b0_Y {
@@ -105,7 +106,6 @@ public:
     /* 0x50 */ Unk_02082d74_M freeUnitMap;
 };
 
-struct CommManager { u8 pad_00[0x64]; s32 myAid; BOOL isSlotActive(s32 i); };
 
 struct Unk_02082e80_Cell { u8 pad_00[0x28]; };
 struct Unk_02082e80_Grid {

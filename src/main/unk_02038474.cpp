@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
+#include "net/CommManager.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes owned by other units (declarations only, no inline bodies)
@@ -89,10 +90,6 @@ public:
     u32 pad[0x1c / 4];
 };
 
-struct CommManager {
-    /* 0x00 */ u8 slotActive[0x64];
-    /* 0x64 */ s32 myAid;
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of this unit, in vtable order

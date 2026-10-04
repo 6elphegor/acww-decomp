@@ -1,4 +1,5 @@
 #include "types.h"
+#include "net/CommManager.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -44,14 +45,6 @@ struct Unk_0209c614_S {
 }
 
 // ---- CommManager (comm state; only the methods used here)
-class CommManager {
-public:
-    BOOL isOnline();
-    void beginRecord();
-    void writeRecord(u8 *buf, u32 n);
-    void endRecord(u32 cmd, u32 arg);
-    u32 isMyAid(u32 v);
-};
 
 // ---- RecordFile (cached record table)
 class RecordFile {

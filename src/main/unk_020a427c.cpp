@@ -1,4 +1,5 @@
 #include "types.h"
+#include "net/CommManager.h"
 
 // Local copies of the library base classes with the parameters these overrides forward.
 class ProcBase {
@@ -40,26 +41,6 @@ public:
     u16 *getTownId();
 };
 
-class CommManager {
-public:
-    /* 0x00 */ u8 pad_00[0x64];
-    /* 0x64 */ s32 myAid;
-    BOOL isOnline();
-    BOOL isSlotActive(s32 i);
-    void setSessionMemberMask(u32 v);
-    u32 getErrorFlags();
-    void setErrorFlags(u32 v);
-    void endRecord(u32 a, u32 b);
-    void writeRecord(u8 *p, u32 n);
-    void beginRecord();
-    BOOL isMyAid(u32 v);
-    BOOL getAuxLenB();
-    void clearAuxLenB();
-    void clearAuxLenA();
-    BOOL getLoopbackLen();
-    BOOL getHeldLen();
-    BOOL getDeferredLen();
-};
 
 // Static object registered with the atexit-style helper (class of the destructor at func_02000c8c).
 struct FxVec3 {

@@ -2,6 +2,7 @@
 // The 14 functions of the translation unit 0x02004558-0x0201106c that only mwcc 1.2/base compiles
 // to the original code (see unk_02004558.cpp; same declarations, nothing else is defined here).
 #include "types.h"
+#include "net/CommManager.h"
 
 class Unk_02006d14;
 class Unk_02007694;
@@ -3252,7 +3253,6 @@ BOOL _ZN12Unk_02006d1420getHeldHoldableIndexEv(void *);
 namespace nP {
 extern "C" {
 
-struct CommManager { u8 pad_00[0x64]; s32 myAid; };
 struct Unk_0200e7f4_T24 { u32 a[12]; };
 extern CommManager *gCommManager;
 extern Unk_0200e7f4_T24 data_021cb69c;

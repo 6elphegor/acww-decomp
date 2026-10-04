@@ -1,14 +1,8 @@
 #include "types.h"
+#include "net/CommManager.h"
 
 // TU185: 0x0209c3e0-0x0209c4a8. Three flag bytes in .bss (autoload_3 0x021d7274-0x021d7278) and their accessors.
 
-class CommManager {
-public:
-    BOOL isOnline();
-    void beginRecord();
-    void writeRecord(u8 *buf, u32 n);
-    void endRecord(u32 cmd, u32 arg);
-};
 
 extern "C" {
 extern CommManager *gCommManager;

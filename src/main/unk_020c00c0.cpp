@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 
 struct Unk_020bfe30_Vec {
     s32 x, y, z;
@@ -27,11 +28,6 @@ struct Unk_020bffc0_Mtx {
     s32 m[12];
 };
 
-struct CommManager {
-    u8 slotActive[0x68];
-    s32 localSlot;
-    s32 isOnline();
-};
 
 class Unk_02097ff4 {
 public:

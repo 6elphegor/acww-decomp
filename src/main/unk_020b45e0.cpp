@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 
 extern "C" {
 void AbAllObjGfx_Upload(void);
@@ -14,11 +15,6 @@ void Scene_SetupGraphics(void);
 extern u32 gGfxFrameHooks;
 }
 
-struct CommManager {
-    u8 slotActive[0x64];
-    u32 myAid;
-    BOOL isSlotActive(s32 i);
-};
 
 extern CommManager *gCommManager;
 

@@ -1,14 +1,11 @@
 #include "types.h"
+#include "net/CommManager.h"
 
 struct Unk_020bfe30_Vec {
     s32 x, y, z;
 };
 typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
 
-struct CommManager {
-    u8 slotActive[0x68];
-    s32 localSlot;
-};
 
 class SpNpcKatie;
 

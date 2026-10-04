@@ -3,6 +3,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -127,15 +128,6 @@ public:
     u32 getPresent();
 };
 
-class CommManager {
-public:
-    void endRecord(u32 a, u32 b);
-    void writeRecord(u8 *buf, u32 n);
-    void beginRecord();
-    BOOL isOnline();
-    u32 slotActive[0x64 / 4];
-    u32 myAid;
-};
 extern "C" CommManager *gCommManager;
 
 class TalkWindowState {

@@ -1,20 +1,6 @@
 #include "types.h"
+#include "net/CommManager.h"
 
-struct CommManager {
-    u8 pad_00[0x104];
-    u8 *auxWritePtrA;
-    u8 pad_108[8];
-    u8 *auxWritePtrB;
-
-    void setAuxLenB(u32 v);
-    void clearAuxLenB();
-    u32 getAuxBufB();
-    void appendAuxB(u8 *src, u32 n);
-    void setAuxLenA(u32 v);
-    void clearAuxLenA();
-    u32 getAuxBufA();
-    void flushDeferred();
-};
 
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 n);

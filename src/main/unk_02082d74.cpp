@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 
 struct Unk_0203389c_Vec { s32 x, y, z; };
 typedef Unk_0203389c_Vec Unk_02083c28_Vec;
@@ -42,11 +43,6 @@ struct Unk_02083c28_Rec {
     u8 pad[0x1b];
 };
 
-struct CommManager {
-    u8 pad_00[0x64];
-    s32 myAid;
-    BOOL isSlotActive(s32 i);
-};
 
 
 struct VisitorSpawner {

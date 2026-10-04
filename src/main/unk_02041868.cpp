@@ -1,4 +1,5 @@
 #include "types.h"
+#include "net/CommManager.h"
 
 struct Unk_02042104_Date {
     u8 pad0[3];
@@ -7,7 +8,6 @@ struct Unk_02042104_Date {
 };
 
 struct Unk_02041880_Pair { u8 spawnFlies; u8 spawnAnts; u8 pad[2]; };
-struct CommManager { u8 slotActive[0x64]; u32 myAid; };
 struct Unk_02041938 { u8 unk_00[0x10e9]; u8 done; u8 started; };
 struct Unk_020419b4 {
     u8 pad00[0x64];

@@ -3,6 +3,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -141,14 +142,6 @@ public:
 };
 
 // Global at 0x020cbb18
-class CommManager {
-public:
-    s32 isOnline();
-    void beginRecord();
-    void writeRecord(u8 *p, u32 n);
-    void endRecord(u32 a, u32 b);
-    s16 getSendSeq();
-};
 
 // ov092 singleton returned by ProcBase_GetParent
 class MenuLauncher {

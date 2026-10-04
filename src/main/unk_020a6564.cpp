@@ -1,17 +1,9 @@
 #include "types.h"
+#include "net/CommManager.h"
 
 // TU198: 0x020a6564-0x020a65fc. Dispatches received records to two handlers through a table in .rodata
 // (0x020d07a8-0x020d07b0).
 
-struct CommManager {
-    u8 pad_00[0x104];
-    u8 *auxWritePtrA;
-    u8 pad_108[8];
-    u8 *auxWritePtrB;
-
-    void clearAuxLenA();
-    u32 getAuxBufA();
-};
 
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 n);

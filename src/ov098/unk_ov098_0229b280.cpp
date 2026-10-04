@@ -2,6 +2,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -53,14 +54,6 @@ BOOL PlayerActor_LocalRequestBuryItem(void *a, void *b);
 BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
 }
 
-struct CommManager {
-    u8 pad_00[0x64];
-    s32 myAid;
-    BOOL isOnline();
-    void beginRecord();
-    void writeRecord(u8 *buf, u32 n);
-    void endRecord(u32 cmd, u32 arg);
-};
 extern "C" CommManager *gCommManager;
 
 class PocketMenu;

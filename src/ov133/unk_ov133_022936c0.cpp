@@ -3,6 +3,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -104,11 +105,6 @@ void _ZN14FriendCodeMenu11updateTouchEv();
 extern void *data_ov133_02295298[2];
 }
 
-struct CommManager {
-    s32 isSlotActive(s32 v);
-    u8 pad_00[0x64];
-    s32 myAid;
-};
 
 class PlayerData {
 public:

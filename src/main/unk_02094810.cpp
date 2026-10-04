@@ -1,4 +1,5 @@
 #include "types.h"
+#include "net/CommManager.h"
 
 struct Unk_02006d14_Vec { s32 x, y, z; };
 typedef Unk_02006d14_Vec Unk_02006d14_V3;
@@ -10,11 +11,6 @@ struct Unk_02006d14_Blk { u32 w[12]; };
 enum Unk_02094a08_Limit { Unk_02094a08_LIMIT_5 = 5 };
 enum Unk_02094d60_Limit { Unk_02094d60_LIMIT_5 = 5, Unk_02094d60_LIMIT_6 = 6 };
 
-struct CommManager {
-    u8 pad_00[0x64];
-    s32 myAid;
-    s32 localSlot;
-};
 
 struct Unk_02006d14 {
     u8 pad_00[0x08];

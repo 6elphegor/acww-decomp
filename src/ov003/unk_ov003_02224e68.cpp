@@ -1,6 +1,7 @@
 #pragma opt_loop_invariants off
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 
 struct Unk_ov003_02224ba4_V3 {
     s32 x, y, z;
@@ -34,11 +35,6 @@ static inline BOOL Unk_ov003_02224bc4_Bit(u32 f, u32 m)
     return FALSE;
 }
 
-class CommManager {
-public:
-    BOOL isOnline();
-    BOOL isMyAid(s32 i);
-};
 
 // 0x60-byte entry, table at sBottleThrows
 struct BottleThrow {

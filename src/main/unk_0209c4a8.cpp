@@ -1,4 +1,5 @@
 #include "types.h"
+#include "net/CommManager.h"
 
 struct Unk_0209c82c_V {
     s32 x, y, z;
@@ -41,14 +42,6 @@ public:
     ~SceneOccupants();
 };
 
-class CommManager {
-public:
-    BOOL isOnline();
-    void beginRecord();
-    void writeRecord(u8 *buf, u32 n);
-    void endRecord(u32 cmd, u32 arg);
-    u32 isMyAid(u32 v);
-};
 extern "C" CommManager *gCommManager;
 
 class Unk_0209c614_Actor {

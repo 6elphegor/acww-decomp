@@ -1,6 +1,7 @@
 
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 
 struct Unk_0205f7f4_Mtx {
     s32 v[12];
@@ -67,10 +68,6 @@ public:
     u8 pad_0e[0x0e];
 };
 
-struct CommManager {
-    u8 pad_00[0x6c];
-    u8 memberCount;
-};
 class GroundInfo {
 public:
     u8 pad_00[0x24];

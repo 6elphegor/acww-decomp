@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "net/CommManager.h"
 
 
 class VillagerTalk;
@@ -272,7 +273,6 @@ struct TalkChoiceTable {
     s8 cancelIndex;
 };
 
-struct CommManager { u8 pad[0x64]; u32 myAid; };
 
 struct Unk_0201c050_Parent { u8 pad[0x2c]; void *unk_2c; };
 

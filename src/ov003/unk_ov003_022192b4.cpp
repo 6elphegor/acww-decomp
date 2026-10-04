@@ -2,6 +2,7 @@
 // ov003 TU22 (field objects, .text 0x02219294-0x0221ffb8): 11 unit files merged; every old file is a namespace
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 
 // ================================================================ other modules' real names
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
@@ -171,10 +172,6 @@ struct Unk_ov003_02219654_Obj {
 };
 typedef Unk_ov003_02219578_P2 P2;
 typedef Unk_ov003_02219578_V3 V3;
-struct CommManager {
-    u8 pad_00[0x64];
-    s32 myAid;
-};
 extern "C" {
 
 extern u8 sFieldItemFxTable[];

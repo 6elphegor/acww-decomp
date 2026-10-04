@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 
 // ---- declarations shared by the merged files
 class TalkMsgRequest;
@@ -20,31 +21,6 @@ public:
     /* 0x08 */ u32 nextState;
 };
 
-struct CommManager {
-    /* 0x00 */ u8 slotActive[4];
-    /* 0x04 */ u16 sendSeq;
-    /* 0x06 */ u8 mode;
-    /* 0x07 */ u8 pendingMode;
-    /* 0x08 */ u8 *sendBufs;
-    /* 0x0c */ u32 sendCredits[3];
-    /* 0x18 */ u8 pad_18[0x64 - 0x18];
-    /* 0x64 */ s32 myAid;
-    /* 0x68 */ s32 localSlot;
-    /* 0x6c */ u8 memberCount;
-
-    void setErrorMode(u32 v);
-    void endRecord(u32 a, u32 b);
-    void writeRecord(u8 *src, u32 n);
-    void beginRecord();
-    void setMemberCount(u32 v);
-    BOOL isMyAid(u32 v);
-    BOOL getAckCount(s32 v);
-    u8 getMode();
-    void setMode(u32 v);
-    BOOL isOnline();
-    u32 isSlotActive(s32 i);
-    void setSlotActive(s32 i, u32 v);
-};
 
 class MsgRequest {
 public:

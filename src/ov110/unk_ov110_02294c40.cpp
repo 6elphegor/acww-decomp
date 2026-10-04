@@ -4,6 +4,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -132,14 +133,6 @@ public:
 };
 
 // Comm/session singleton (gCommManager)
-class CommManager {
-public:
-    void endRecord(u32, u32);
-    void writeRecord(u8 *, u32);
-    void beginRecord();
-    s32 getSendSeq();
-    BOOL isOnline();
-};
 
 class InventoryItemGrid {
 public:

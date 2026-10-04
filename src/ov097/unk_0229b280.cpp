@@ -2,6 +2,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -18,11 +19,6 @@ s32 FtrMgr_SpawnFromArg(s32 p);
 BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
 }
 
-struct CommManager {
-    u8 pad_00[0x64];
-    s32 myAid;
-    BOOL isOnline();
-};
 extern "C" CommManager *gCommManager;
 
 class Unk_ov002_022013a0 {

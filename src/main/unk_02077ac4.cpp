@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "net/CommManager.h"
 
 
 class VillagerId {
@@ -15,12 +16,6 @@ public:
     u8 species;
 };
 
-struct CommManager {
-    u8 pad_00[0x64];
-    s32 myAid;
-    u32 isSlotActive(s32 i);
-    BOOL isOnline();
-};
 
 
 struct HousePos {

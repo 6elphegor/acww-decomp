@@ -1,11 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 
-struct CommManager {
-    u8 pad_00[0x64];
-    s32 myAid;
-    s32 localSlot;
-};
 
 struct Unk_02095774_Ent {
     u8 pad_00[0x5c];

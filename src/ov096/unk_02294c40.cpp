@@ -2,6 +2,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -58,11 +59,6 @@ struct Unk_ov096_02297fb8_Msg {
     u8 b;
 };
 
-struct CommManager {
-    u8 pad_00[0x64];
-    s32 myAid;
-    BOOL isOnline();
-};
 
 class UiWidget {
 public:

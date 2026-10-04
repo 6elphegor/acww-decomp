@@ -1,13 +1,6 @@
 #include "types.h"
+#include "net/CommManager.h"
 
-struct CommManager {
-    u8 pad_00[0x104];
-    u8 *auxWritePtrA;
-    u8 pad_108[8];
-    u8 *auxWritePtrB;
-
-    void flushDeferred();
-};
 
 extern CommManager *gCommManager;
 

@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 
 // ======== class types (global scope) ========
 struct Unk_021f4400;
@@ -1512,16 +1513,11 @@ extern SkySprites gSkySprites;
 
 // ======== unk_020bfe30.cpp ========
 namespace n13 {
-struct CommManager;
 static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
     v->x = x;
     v->y = y;
     v->z = z;
 }
-struct CommManager {
-    u8 slotActive[0x68];
-    s32 localSlot;
-};
 extern "C" {
 void SkySprite_Release(void *p);
 }
@@ -5647,13 +5643,8 @@ namespace n07 {
 
 // ======== unk_020bbc28.cpp ========
 namespace n06 {
-struct CommManager;
 struct Unk_021ed2b0;
 struct Unk_021f1448;
-struct CommManager {
-    char pad_00[0x64];
-    s32 myAid;
-};
 struct Unk_021f1448 {
     char pad_00[0x24];
     s32 level;

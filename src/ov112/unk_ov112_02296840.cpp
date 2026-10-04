@@ -3,6 +3,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -120,14 +121,6 @@ public:
 };
 
 // comm/session singleton (gCommManager)
-class CommManager {
-public:
-    BOOL isOnline();
-    s32 getSendSeq();
-    void beginRecord();
-    void writeRecord(u8 *buf, u32 n);
-    void endRecord(u32 a, u32 b);
-};
 
 class PlayerId {
 public:
