@@ -4,6 +4,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "actor/Unk_0203e5d0_Node.h"
 #include "gfx/Unk_02055704.h"
+#include "game/Unk_ov004_02224ee4_Vec.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -61,9 +62,6 @@ public:
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-struct Unk_ov004_02224ee4_Vec {
-    s32 x, y, z;
-};
 
 
 class Actor : public GameProc {

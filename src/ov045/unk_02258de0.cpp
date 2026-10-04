@@ -1,6 +1,7 @@
 #define postCreate() postCreate(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "actor/Unk_02088d00.h"
 #undef postCreate
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
@@ -269,13 +270,6 @@ MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-struct Unk_02088d00 {
-    u8 pad_00[0x1c];
-    u32 groups;
-    u8 pad_20[0x514 - 0x4cc - 0x20];
-    Unk_02088d00();
-    ~Unk_02088d00();
-};
 struct Unk_020135e4 {
     u8 pad_00[8];
     u8 unk_08;

@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "actor/Unk_02088d00.h"
 
 #define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
 #define VillagerId_getName _ZN10VillagerId7getNameEj
@@ -281,13 +282,6 @@ MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-struct Unk_02088d00 {
-    u8 pad_00[0x1c];
-    u32 groups;
-    u8 pad_20[0x514 - 0x4cc - 0x20];
-    Unk_02088d00();
-    ~Unk_02088d00();
-};
 struct Unk_020135e4 {
     u8 pad_00[8];
     u8 unk_08;

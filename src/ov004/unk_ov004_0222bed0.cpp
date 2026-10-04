@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "sys/Unk_0209d498_Time.h"
+#include "room/Unk_ov004_0222c9d0.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 
@@ -76,14 +77,6 @@ struct Unk_ov004_0222bff4_Entry {
 
 typedef Unk_ov004_0222bff4_Entry Unk_ov004_Entry;
 
-// the same 0x94-byte object as the global array element; its constructor and destructor (0x0222c9d0 / 0x0222c9bc) belong to the next unit
-class Unk_ov004_0222c9d0 {
-public:
-    Unk_ov004_0222c9d0();
-    ~Unk_ov004_0222c9d0();
-
-    u8 pad[0x94];
-};
 
 // the 15 effect entries as one object: its implicit destructor is func_ov004_0222c9a0 (__cxa_vec_cleanup), its implicit constructor is inlined in the __sinit
 struct RoomItemDropList {

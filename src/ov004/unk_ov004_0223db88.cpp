@@ -2,10 +2,8 @@
 #include "types.h"
 
 #include "Unk_020d8c7c.h"
+#include "game/Unk_ov004_0223d800_Vec.h"
 
-struct Unk_ov004_0223d800_Vec {
-    s32 x, y, z;
-};
 
 // Spawn-definition record (0x1c bytes).
 struct Unk_ov004_0223df58_Rec {

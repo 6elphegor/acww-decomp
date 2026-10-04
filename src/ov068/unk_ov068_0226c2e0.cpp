@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "actor/Unk_02088d00.h"
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -194,16 +195,6 @@ MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-struct Unk_02088d00 {
-    u8 pad_00[0x1c];
-    u32 groups;
-    u8 pad_20[0x44 - 0x20];
-    u8 collisionEnabled;
-    u8 shadowEnabled;
-    u8 pad_46[2];
-    Unk_02088d00();
-    ~Unk_02088d00();
-};
 struct Unk_020135e4 {
     u8 pad_00[8];
     u8 unk_08;

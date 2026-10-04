@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "game/Unk_0201acf8.h"
+#include "actor/Unk_02088d00.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -323,7 +324,6 @@ MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-MEMBER(Unk_02088d00, 0x514 - 0x4cc);
 struct Unk_020135e4 {
     u8 unk_00[0xc];
     Unk_020135e4();

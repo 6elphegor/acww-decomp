@@ -4,6 +4,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "game/Unk_0203389c_Vec.h"
+#include "game/Unk_ov004_0223d800_Vec.h"
 
 // ---- main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -749,9 +750,6 @@ struct Unk_ov004_0223d020_Rec {
     u8 e;
 };
 
-struct Unk_ov004_0223d800_Vec {
-    s32 x, y, z;
-};
 
 struct Unk_ov004_0223d800_Bounds {
     /* 0x00 */ u8 pad_00[0x58];

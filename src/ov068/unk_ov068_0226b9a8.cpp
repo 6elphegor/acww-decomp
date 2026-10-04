@@ -2,6 +2,7 @@
 #include "types.h"
 #include "actor/Unk_0203e5d0_Node.h"
 #include "gfx/Unk_02055704.h"
+#include "game/Unk_ov004_02224ee4_Vec.h"
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -74,9 +75,6 @@ public:
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-struct Unk_ov004_02224ee4_Vec {
-    s32 x, y, z;
-};
 
 
 class Actor : public GameProc {

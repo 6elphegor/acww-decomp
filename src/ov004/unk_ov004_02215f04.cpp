@@ -9,12 +9,11 @@
 #include "game/Unk_020d77a4_Vec3.h"
 #include "talk/Unk_02015b54.h"
 #include "town/Unk_0204e858_Grid.h"
+#include "npc/Unk_ov004_0221572c_Sub.h"
+#include "game/Unk_ov004_02215c94_V.h"
 #undef postCreate
 
 extern "C" {
-struct Unk_ov004_02215c94_V {
-    s32 x, y, z;
-};
 struct Unk_ov004_02215c94_S : Unk_ov004_02215c94_V {
     Unk_ov004_02215c94_S(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
     ~Unk_ov004_02215c94_S() {}
@@ -154,13 +153,6 @@ public:
     virtual void onTalkEnd();
 };
 
-struct Unk_ov004_0221572c_Sub {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ s32 state;
-    /* 0x08 */ u32 unk_08;
-    u8 pad_0c[8];
-    /* 0x14 */ s32 unk_14;
-};
 
 class VillagerTalk : public TalkMsgRequest {
 public:

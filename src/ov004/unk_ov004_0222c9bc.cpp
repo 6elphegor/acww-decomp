@@ -2,6 +2,7 @@
 // ov004 TU31: 0x0222c9bc-0x02233074 (.text), see notes.txt
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "room/Unk_ov004_0222c9d0.h"
 
 // ---------------------------------------------------------------------------------------------------------------
 // Calls into other modules: the old stand-in names are #defined to the real symbols (mangled method names).
@@ -507,17 +508,6 @@ struct Unk_020f440c_Obj {
     u8 pad[0x48];
 };
 
-class Unk_ov004_0222c9d0 {
-public:
-    Unk_ov004_0222c9d0();
-    ~Unk_ov004_0222c9d0();
-
-    /* 0x00 */ u32 pad_00[4];
-    /* 0x10 */ u32 unk_10;
-    /* 0x14 */ u32 unk_14;
-    /* 0x18 */ u32 pad_18[(0x4c - 0x18) / 4];
-    /* 0x4c */ u8 sound[0x48];
-};
 
 typedef AquariumFish R;
 typedef AquariumSwimFish E864;

@@ -8,6 +8,7 @@
 #include "npc/Unk_02053d3c.h"
 #include "npc/Unk_02082088.h"
 #include "npc/Unk_0202d5e8.h"
+#include "actor/Unk_02088d00.h"
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
 public:
@@ -235,7 +236,6 @@ struct Unk_0201a8bc { Unk_0201a8bc(); u8 pad[2]; };
 struct Unk_0201ad18 { Unk_0201ad18(); u8 pad[6]; };
 struct Unk_0201a794 { Unk_0201a794(); ~Unk_0201a794(); u32 pad[0x68 / 4]; };
 struct NpcSpeechState { NpcSpeechState(); ~NpcSpeechState(); u32 pad[8 / 4]; };
-struct Unk_02088d00 { Unk_02088d00(); ~Unk_02088d00(); u32 pad[0x44 / 4]; u8 collisionEnabled; u8 pad_45[3]; };
 struct Unk_020135e4 { Unk_020135e4(); ~Unk_020135e4(); u8 pad[8]; u8 unk_08; u8 pad_09[2]; u8 unk_0b; };
 struct NpcActionCtrl { NpcActionCtrl(); ~NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };

@@ -4,12 +4,8 @@
 #include "Unk_020d8c7c.h"
 #include "gfx/Unk_ov004_Quad.h"
 #include "actor/Unk_ov004_SceneEntry.h"
+#include "game/Unk_ov004_022091fc_Vec.h"
 
-struct Unk_ov004_022091fc_Vec {
-    s32 x, y, z;
-    Unk_ov004_022091fc_Vec() {}
-    ~Unk_ov004_022091fc_Vec() {}
-};
 
 class Actor : public GameProc {
 public:

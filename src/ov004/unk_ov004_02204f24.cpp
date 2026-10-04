@@ -7,6 +7,7 @@
 #include "actor/Unk_02002f14_Node.h"
 #include "actor/Unk_0203e5d0_Node.h"
 #include "game/Unk_0203e4f0_Vec.h"
+#include "room/FtrActorParts.h"
 
 // ================================================================ plain value types
 struct Vec3 {
@@ -15,9 +16,6 @@ struct Vec3 {
 
 
 typedef Vec3 Unk_ov004_Vec3;
-struct Unk_ov004_02205d8c_Vec {
-    s32 x, y, z;
-};
 typedef Vec3 Unk_ov004_022077a4_Vec3;
 typedef Vec3 Unk_ov004_02208284_V3;
 typedef Unk_ov004_Mtx Unk_ov004_02208284_M;
@@ -182,13 +180,6 @@ struct G3dResAccess {
 };
 
 // ---- 0x02206520: list of up to 4 tile positions
-struct Unk_ov004_02206520_Ent {
-    s32 x, y;
-    Unk_ov004_02206520_Ent() {
-        x = 0;
-        y = 0;
-    }
-};
 
 struct FtrTileList {
     u32 count;
@@ -200,11 +191,6 @@ struct FtrTileList {
     FtrTileList();
 };
 
-struct Unk_ov004_0220650c {
-    u32 count;
-    u32 actors[4];
-    void clear();
-};
 
 // ---- 0x02205994: 4 ids + count (member at 0x760)
 class FtrVisNodes {
@@ -242,20 +228,7 @@ struct FtrGlowMat : public LightLevel {
 };
 
 // ---- 0x02205b14: element view used by the 3-element container (same object as 0x02205bcc)
-struct Unk_ov004_02205b14_Obj {
-    u8 pad[0x18];
-    u8 numMat;
-};
 
-class Unk_ov004_02205b14 {
-public:
-    void updateEmission();
-
-    /* 0x00 */ u8 pad_00[0x14];
-    /* 0x14 */ s8 matIdx;
-    /* 0x15 */ u8 pad_15[3];
-    /* 0x18 */ Unk_ov004_02205b14_Obj *resMdl;
-};
 
 class FtrGlowMatSet {
 public:
@@ -348,10 +321,6 @@ struct FtrTopItems {
 };
 
 // ---- 0x02206398 (member at 0x44 of 0x02206e38; 5 pairs of resource pointers)
-struct Unk_ov004_02208a18_Rec {
-    u32 unk_00;
-    u16 numFrame;
-};
 
 struct FtrAnimSet {
     inline FtrAnimSet() { clear(); }
@@ -408,10 +377,6 @@ public:
     s32 isBetweenEnds(CollisionVec2 *p);
 };
 
-struct Unk_ov004_02206744_V3 {
-    s32 x, y, z;
-    Unk_ov004_02206744_V3() {}
-};
 
 struct Unk_ov004_02206570_Act {
     u8 pad_00[0x5c];
@@ -455,9 +420,6 @@ public:
     void *getTexture(void);
 };
 
-struct Unk_ov004_02206be8_Blk {
-    u32 pad[26];
-};
 
 struct FtrModelRes {
     void *texFile;
@@ -523,24 +485,9 @@ public:
 };
 
 // ================================================================ FtrActor
-struct Unk_ov004_02208980_E {
-    u8 pad_00[8];
-    s32 curFrame;
-    u8 pad_0c[12];
-    s32 *anmObj;
-    u8 pad_1c[4];
-};
 
 
-struct Unk_ov004_02206ec8_Ctx {
-    u8 pad_00[0xb8];
-    u32 *pVisAnmResult;
-};
 
-struct Unk_ov004_02207854_List {
-    u32 count;
-    s32 v[4][2];
-};
 
 class FtrActor;
 typedef FtrActor Self;

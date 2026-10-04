@@ -5,12 +5,12 @@
 #include "Unk_020d8c7c.h"
 #include "gfx/Unk_ov004_Quad.h"
 #include "actor/Unk_ov004_SceneEntry.h"
+#include "game/Unk_ov004_022091fc_Vec.h"
+#include "actor/Unk_ov004_022142fc_Actor.h"
+#include "actor/Unk_ov004_022146ec_Actor.h"
+#include "game/Unk_ov004_022146ec_Bits.h"
+#include "net/Unk_ov004_022146ec_Sing.h"
 
-struct Unk_ov004_022091fc_Vec {
-    s32 x, y, z;
-    Unk_ov004_022091fc_Vec() {}
-    ~Unk_ov004_022091fc_Vec() {}
-};
 
 class Actor : public GameProc {
 public:
@@ -130,30 +130,9 @@ public:
     u32 pad[7];
 };
 
-struct Unk_ov004_022142fc_Actor {
-    u8 pad_00[0x5c];
-    u8 position[0xc];
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-};
 
-struct Unk_ov004_022146ec_Bits {
-    u16 a : 2;
-    u16 b : 6;
-    u16 c : 8;
-};
 
-struct Unk_ov004_022146ec_Actor {
-    u8 pad_00[0x5c];
-    s32 pos[3];
-    u8 pad_68[0x8e - 0x68];
-    u16 ang;
-};
 
-struct Unk_ov004_022146ec_Sing {
-    u8 pad_00[0x64];
-    u32 myAid;
-};
 
 class MuseumExhibitInfo;
 class TouchPicker;

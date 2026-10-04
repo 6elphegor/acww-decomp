@@ -1,12 +1,12 @@
 #include "types.h"
 
-struct Unk_ov004_0221b6d4_Out {
-    u32 fileName;
-    u8 msgIndex;
-};
 
 #include "types.h"
 #include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/Unk_02088d00.h"
+#include "talk/Unk_ov004_0221b6d4_Out.h"
+#include "net/Unk_ov004_0221b954_Global.h"
+#include "game/Unk_ov004_0221b954_Vec.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -161,13 +161,6 @@ MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-struct Unk_02088d00 {
-    u8 pad_00[0x1c];
-    u32 groups;
-    u8 pad_20[0x514 - 0x4cc - 0x20];
-    Unk_02088d00();
-    ~Unk_02088d00();
-};
 struct Unk_020135e4 {
     u8 pad_00[8];
     u8 unk_08;
@@ -299,14 +292,7 @@ public:
     u8 talkMelodyPlayed;
 };
 
-struct Unk_ov004_0221b954_Vec {
-    s32 x, y, z;
-};
 
-struct Unk_ov004_0221b954_Global {
-    u8 pad_00[0x64];
-    u32 myAid;
-};
 
 struct Unk_ov004_0221cc88_Obj {
     u8 pad_00[0x14];
