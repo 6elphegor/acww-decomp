@@ -4,6 +4,7 @@
 #include "game/ConstellationRecord.h"
 #include "gfx/StarTwinkle.h"
 #include "talk/EncodedStringBase.h"
+#include "talk/MsgString.h"
 extern u16 sConstellationLineCells[0x718];
 extern char *sStarTwinklePalettePaths[5];
 extern char sStarPalPathB4[0x14];
@@ -33,16 +34,6 @@ public:
     MsgStringAttr attr;
 };
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    void clear();
-    u32 length;
-    MsgStringAttr attr;
-};
 
 class ConstellationMsgString17 : public MsgString {
 public:

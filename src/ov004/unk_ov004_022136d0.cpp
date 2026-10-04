@@ -6,6 +6,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "game/Unk_ov004_022091fc_Vec.h"
 #include "talk/TalkWindowState.h"
+#include "talk/MsgRequest.h"
 
 
 class Actor : public GameProc {
@@ -50,18 +51,6 @@ public:
 };
 
 
-// Secondary base of the 0x0224882c family (at +0xec). Its vtable 0x020ddcf0 is not overridden by the derived class.
-// Slots 0c/18/24 are named vfunc_s0c/s18/s24 so the derived overrides of the primary chain do not also override them.
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_08();
-    void setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 class TalkMsgRequest : public MsgRequest {
 public:

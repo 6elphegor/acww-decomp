@@ -1,6 +1,9 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "ui/CursorMotion.h"
+#include "menu/InventoryItemGrid.h"
+#include "menu/LetterGrid.h"
+#include "menu/InventoryBg.h"
 
 // ov107: scene overlay (class PocketsFullMenu, vtable 0x02296e78, 0x281c bytes).
 
@@ -128,26 +131,8 @@ public:
     u32 unk_00[0x38 / 4];
 };
 
-class InventoryItemGrid {
-public:
-    InventoryItemGrid();
-    ~InventoryItemGrid();
-    u32 unk_00[0xa60 / 4];
-};
 
-class LetterGrid {
-public:
-    LetterGrid();
-    ~LetterGrid();
-    u32 unk_00[0x28 / 4];
-};
 
-class InventoryBg {
-public:
-    InventoryBg();
-    ~InventoryBg();
-    u32 unk_00[0x15e0 / 4];
-};
 
 class TouchPromptBalloon {
 public:

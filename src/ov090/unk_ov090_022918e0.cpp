@@ -9,6 +9,7 @@
 #include "ui/UiWidget.h"
 #include "snd/BgmVolumeMixer.h"
 #include "gfx/VramTask.h"
+#include "talk/LabelBalloonText.h"
 
 extern "C" {
 void Gfx2d_SetWindowRect(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
@@ -46,15 +47,6 @@ extern u16 gPad[];
 
 
 
-class LabelBalloonText : public MsgStringBase {
-public:
-    LabelBalloonText();
-    virtual ~LabelBalloonText();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x04 */ u8 unk_04[0x24];
-};
 
 
 class LabelBalloon : public UiWidget {

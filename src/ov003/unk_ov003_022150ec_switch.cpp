@@ -11,6 +11,7 @@
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
+#include "gfx/ModelAnim.h"
 
 
 
@@ -189,16 +190,6 @@ public:
 };
 
 
-// 0x20-byte member object (ctor func_02055c88, dtor func_02055c70)
-struct ModelAnim {
-    ModelAnim();
-    ~ModelAnim();
-    u8 pad_00[8];
-    /* 0x08 */ s32 curFrame;
-    u8 pad_0c[0xc];
-    /* 0x18 */ s32 *anmObj;
-    u8 pad_1c[4];
-};
 
 
 

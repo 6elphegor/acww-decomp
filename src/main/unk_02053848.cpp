@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "gfx/AnimFrameCtrl.h"
+#include "gfx/JointBlend.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -102,16 +103,6 @@ public:
 #include "gfx/Unk_020dbd44.h"
 
 
-class JointBlend {
-public:
-    JointBlend();
-    virtual ~JointBlend();
-    u8 unk_bc[0x18];
-    u8 *unk_d4;
-    u8 unk_d8[0x14];
-    u32 unk_ec;
-    s32 unk_f0;
-};
 
 class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:
@@ -638,7 +629,7 @@ BlendAnimModel::~BlendAnimModel() {}
 
 void BlendAnimModel::captureJointPose(BlendAnimModel *x)
 {
-    if (unk_f0 != 0) {
+    if (blendStep != 0) {
         JointBlend &r = *this;
         _ZN10JointBlend11capturePoseEP16Unk_02056160_Arg(&r, x);
     }
@@ -662,7 +653,7 @@ void BlendAnimModel::applyJointBlend(BlendAnimModel *x)
     if (d->unk_00 & 2) {
         MTX_Identity33_(d->rot);
     }
-    if (unk_f0 != 0) {
+    if (blendStep != 0) {
         JointBlend &r = *this;
         _ZN10JointBlend9blendPoseEP16Unk_02056160_Arg(&r, x);
     }
@@ -742,7 +733,7 @@ BOOL TwoLayerAnimModel::isLayer2Joint(u32 i) {
 }
 
 void TwoLayerAnimModel::captureLayer2Pose(Unk_02053a54_Msg *m) {
-    if (layer2Blend.unk_f0 != 0) {
+    if (layer2Blend.blendStep != 0) {
         _ZN10JointBlend11capturePoseEP16Unk_02056160_Arg(&layer2Blend, m);
     }
 }
@@ -765,7 +756,7 @@ void TwoLayerAnimModel::applyLayer2Blend(Unk_02053a54_Msg *m) {
         m->pJntAnmResult->transY = 0;
         m->pJntAnmResult->transZ = 0;
     }
-    if (layer2Blend.unk_f0 != 0) {
+    if (layer2Blend.blendStep != 0) {
         _ZN10JointBlend9blendPoseEP16Unk_02056160_Arg(&layer2Blend, m);
     }
 }
@@ -894,7 +885,7 @@ BOOL ThreeLayerAnimModel::isLayer3Joint(u32 i) {
 }
 
 void ThreeLayerAnimModel::captureLayer3Pose(Unk_02053a54_Msg *m) {
-    if (layer3Blend.unk_f0 != 0) {
+    if (layer3Blend.blendStep != 0) {
         _ZN10JointBlend11capturePoseEP16Unk_02056160_Arg(&layer3Blend, m);
     }
 }
@@ -935,7 +926,7 @@ void ThreeLayerAnimModel::applyLayer3Blend(Unk_02053a54_Msg *m) {
         m->pJntAnmResult->transY = 0;
         m->pJntAnmResult->transZ = 0;
     }
-    if (layer3Blend.unk_f0 != 0) {
+    if (layer3Blend.blendStep != 0) {
         _ZN10JointBlend9blendPoseEP16Unk_02056160_Arg(&layer3Blend, m);
     }
 }

@@ -13,6 +13,10 @@
 #include "talk/TalkWindowState.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "talk/LabelBalloonText.h"
+#include "menu/MenuSlide.h"
+#include "talk/MsgString.h"
+#include "talk/MsgRequest.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
@@ -153,28 +157,8 @@ void _ZN8UiWidget9setOriginEii();
 
 
 
-class LabelBalloonText : public MsgStringBase {
-public:
-    LabelBalloonText();
-    virtual ~LabelBalloonText();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x04 */ u8 unk_04[0x24];
-};
 
 
-// buffer interface with write position at +4 and member at +8
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-
-    /* 0x04 */ u32 length;
-    /* 0x08 */ MsgStringAttr attr;
-};
 
 // String buffer wrapping a text renderer (TextLabel) at +0x3c
 class LabelString : public MsgString {
@@ -303,15 +287,6 @@ public:
     /* 0x0c */ u8 unk_0c[0x64];
 };
 
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_08();
-    void setFileName(const char *src);
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 class TalkMsgRequest : public MsgRequest {
 public:
@@ -365,23 +340,6 @@ public:
 
 
 
-// slider class (vtable 0x022044b4)
-class MenuSlide : public MenuTween {
-public:
-    MenuSlide();
-    virtual ~MenuSlide();
-    s32 offset;
-    s32 extent;
-    s32 edgeDistance;
-    u8 direction;
-    void updateSlideOutHorizontal(s32 mode);
-    void updateSlideOutVertical(s32 mode);
-    BOOL stepSlideIn(s32 mode);
-    void updateSlideInHorizontal(s32 mode);
-    void updateSlideInVertical(s32 mode);
-    s32 getOffsetX();
-    s32 getOffsetY();
-};
 
 // methods of the same slider object that the symbols list under another class name
 class MenuSlideView : public MenuSlide {

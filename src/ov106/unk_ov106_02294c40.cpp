@@ -2,6 +2,10 @@
 #include "Unk_020d8c7c.h"
 #include "ui/CursorMotion.h"
 #include "item/Letter.h"
+#include "menu/InventoryItemGrid.h"
+#include "menu/LetterGrid.h"
+#include "menu/InventoryBg.h"
+#include "ui/LetterRenderer.h"
 
 // ov106: scene overlay (class MailboxMenu, vtable 0x02298180, 0x3f80 bytes).
 
@@ -131,42 +135,8 @@ public:
     u32 unk_00[0x38 / 4];
 };
 
-class InventoryItemGrid {
-public:
-    InventoryItemGrid();
-    ~InventoryItemGrid();
-    u32 unk_00[0xa60 / 4];
-};
 
-class LetterGrid {
-public:
-    LetterGrid();
-    ~LetterGrid();
-    void drawHeldLetter(s32, s32, void *);
-    void drawLetters23(s32, s32);
-    void drawPocketLetters(s32, s32);
-    BOOL isHighlighted(s32);
-    void highlightLetterKinds(u32);
-    void clearLetter(s32);
-    void func_ov094_02294318(s32, s32);
-    void * getLetter(s32);
-    void markSlot(s32);
-    void clearMarks();
-    void setCursorSlot(u32);
-    void clearCursorSlot();
-    void showLetterName(void *, s32);
-    s32 findLetterAt23(s32, s32);
-    void updateCursorLift();
-    void init(s32);
-    u32 unk_00[0x28 / 4];
-};
 
-class InventoryBg {
-public:
-    InventoryBg();
-    ~InventoryBg();
-    u32 unk_00[0x15e0 / 4];
-};
 
 class TouchPromptBalloon {
 public:
@@ -215,15 +185,6 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-class LetterRenderer {
-public:
-    LetterRenderer();
-    ~LetterRenderer();
-    void show(Unk_0206d1d4_Src *, void *, void *, s32);
-    void release();
-    void setLayer(s32);
-    u32 unk_00[0x210 / 4];
-};
 
 class MenuLabelButton {
 public:

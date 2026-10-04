@@ -8,6 +8,7 @@
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
 #include "sys/ProcBase.h"
+#include "npc/NpcActionCtrl.h"
 
 extern "C" {
 u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
@@ -129,13 +130,6 @@ MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 MEMBER(ActorFollowCollider, 0x514 - 0x4cc);
-struct NpcActionCtrl {
-    NpcActionCtrl();
-    BOOL isActionDone();
-    s32 getAction();
-    void requestAction(u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
-    u8 unk_00[0x618 - 0x564];
-};
 struct Unk_02014254 : NpcTalkCtrl {
     Unk_02014254();
 };

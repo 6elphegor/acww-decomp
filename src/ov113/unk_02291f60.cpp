@@ -2,6 +2,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "save/BbsPost.h"
+#include "talk/MsgString.h"
 
 class BbsReadMenu;
 
@@ -76,10 +77,6 @@ public:
     u8 unk_04[0x3c];
 };
 
-class MsgString {
-public:
-    void clear();
-};
 
 // Screen upload helper, 0x24 bytes
 class BgVramTask {

@@ -6,6 +6,8 @@
 #include "talk/MsgStringAttr.h"
 #include "ui/LetterLayout.h"
 #include "talk/EncodedStringBase.h"
+#include "ui/LetterRenderer.h"
+#include "talk/MsgString.h"
 
 extern "C" {
 s32 Text_GetLength(void *p, s32 n);
@@ -41,18 +43,6 @@ public:
     MsgStringAttr attr;
 };
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
-    void clear();
-
-    u32 length;
-    MsgStringAttr attr;
-};
 
 // 0x28-byte destination buffer at +0xe
 class EncodedString40 : public EncodedString {
@@ -98,25 +88,6 @@ public:
 
 
 
-class LetterRenderer : public LetterLayout {
-public:
-    LetterRenderer();
-    ~LetterRenderer();
-    void highlightGreeting(u32 a, u32 b);
-    void setSignature(u8 *data);
-    void setBody(u8 *src, BOOL flag);
-    void setGreeting(Unk_0206d1d4_Src *src, u8 *out);
-    void loadRecipientName(void *src);
-    s32 getRecipientNameLength();
-    void show(Unk_0206d1d4_Src *src, void *a, void *b, s32 c);
-    void redraw();
-    void release();
-    void setLayer(s32 v);
-    void loadLetterScreen(u32 v);
-
-    /* 0x208 */ s32 recipientNameLength;
-    /* 0x20c */ s32 recipientNameWidth;
-};
 
 extern "C" s32 LetterLayout_SplitBody(void *unused, u8 *a, s32 *b, s32 *c);
 

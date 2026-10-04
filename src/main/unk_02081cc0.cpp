@@ -30,48 +30,11 @@ void NpcResPools_ClearAll();
 
 
 
-struct VillagerAnimHeapHandle : NpcResHandleView {
-    VillagerAnimHeapHandle();
-    virtual ~VillagerAnimHeapHandle();
-    virtual NpcResPool *getPool();
-};
 
-struct NpcBodyAnimHandle : NpcResHandleView {
-    NpcBodyAnimHandle();
-    virtual ~NpcBodyAnimHandle();
-    virtual NpcResPool *getPool();
-};
 
-struct NpcResHandle {
-    s8 slot;
-    NpcResHandle();
-    virtual ~NpcResHandle();
-    virtual NpcResPool *getPool() = 0;
-    void *getBodyAnimLayer(u32 off);
-    void release();
-    BOOL acquire();
-};
 
-struct NpcHeldItemModelHandle : NpcResHandle {
-    NpcHeldItemModelHandle();
-    virtual ~NpcHeldItemModelHandle();
-    virtual NpcResPool *getPool();
-    void *getTexPatHeapRef();
-};
 
-struct NpcClothTexHandle : NpcResHandle {
-    NpcClothTexHandle();
-    virtual ~NpcClothTexHandle();
-    virtual NpcResPool *getPool();
-    void *getSpNpcAnimHeapRef();
-};
 
-struct NpcFaceAnimHandle : NpcResHandle {
-    NpcFaceAnimHandle();
-    virtual ~NpcFaceAnimHandle();
-    virtual NpcResPool *getPool();
-    void *getTexPatBufRef();
-};
 
 NpcResHandle::NpcResHandle() : slot(-1) {}
 

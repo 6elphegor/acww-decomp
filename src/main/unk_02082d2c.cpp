@@ -5,6 +5,7 @@
 #include "town/Unk_02082e80_Grid.h"
 #include "npc/SpNpcAnimHeapRefSlot.h"
 #include "npc/VillagerAnimHeapRefSlot.h"
+#include "npc/NpcBodyAnimSlot.h"
 
 // Element payload types (defined elsewhere)
 struct Unk_020829b0_Y {
@@ -23,10 +24,6 @@ struct Unk_02082c54_Z {
 struct Unk_020829b0_Y_dummy;
 
 
-struct NpcBodyAnimSlot : public NpcResSlot {
-    Unk_02082c54_Z layers[3];
-    void assignLayer(s32 a, s32 i);
-};
 
 
 class VillagerAnimHeapRefPool : public NpcResPool {

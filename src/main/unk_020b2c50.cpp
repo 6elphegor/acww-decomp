@@ -5,6 +5,8 @@
 #include "talk/MsgTag.h"
 #include "talk/BmgReader.h"
 #include "talk/MsgParser.h"
+#include "talk/MsgString.h"
+#include "talk/MsgRequest.h"
 
 extern "C" {
 u32 Text_ToUpper(u32 key);
@@ -23,21 +25,6 @@ void func_02133ef8(void *p, u32 n);
 
 
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    u8 appendString(MsgString *other);
-    u8 append(u8 *str);
-    u8 copy(MsgString *other);
-    u8 set(u8 *str);
-    void clear();
-
-    /* 0x04 */ u32 length;
-    /* 0x08 */ MsgStringAttr attr;
-};
 
 class MsgString33 : public MsgString {
 public:
@@ -49,16 +36,6 @@ public:
     /* 0x14 */ u32 unk_14[8];
 };
 
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_08();
-    void setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 
 

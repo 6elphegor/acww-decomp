@@ -1,4 +1,5 @@
 #include "types.h"
+#include "talk/MsgString.h"
 
 class LabelString {
 public:
@@ -12,10 +13,6 @@ public:
     u32 pad[0x10];
 };
 
-class MsgString {
-public:
-    void setLine(u8 *s);
-};
 
 class MsgString193 {
 public:

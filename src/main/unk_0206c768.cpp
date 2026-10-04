@@ -5,6 +5,7 @@
 #include "ui/LetterLayout.h"
 #include "talk/BmgReader.h"
 #include "talk/EncodedStringBase.h"
+#include "talk/MsgString.h"
 
 extern "C" {
 s32 Mem_Copy(void *src, void *dst, s32 n);
@@ -59,18 +60,6 @@ public:
     /* 0x04 */ MsgStringAttr attr;
 };
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
-    void clear();
-
-    /* 0x04 */ u32 length;
-    /* 0x08 */ MsgStringAttr attr;
-};
 
 
 extern "C" BOOL String_Load(MsgString *buf, u8 *key, const char *name);

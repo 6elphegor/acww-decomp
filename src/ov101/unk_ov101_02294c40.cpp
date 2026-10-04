@@ -2,6 +2,9 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "ui/CursorMotion.h"
+#include "menu/InventoryItemGrid.h"
+#include "menu/LetterGrid.h"
+#include "menu/InventoryBg.h"
 
 class PocketItemSelectMenu;
 class MenuLauncher;
@@ -105,32 +108,8 @@ public:
     u32 unk_00[0x38 / 4];
 };
 
-class InventoryItemGrid {
-public:
-    InventoryItemGrid();
-    ~InventoryItemGrid();
-    u32 unk_00[0xa60 / 4];
-};
 
-class LetterGrid {
-public:
-    LetterGrid();
-    ~LetterGrid();
-    void updateCursorLift();
-    void init(s32 a);
-    void highlightLetterKinds(u32 a);
-    void clearMarks();
-    void clearCursorSlot();
-    void drawPocketLetters(s32 a, s32 b);
-    u32 unk_00[0x28 / 4];
-};
 
-class InventoryBg {
-public:
-    InventoryBg();
-    ~InventoryBg();
-    u32 unk_00[0x15e0 / 4];
-};
 
 class LabelBalloon {
 public:

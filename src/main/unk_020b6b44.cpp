@@ -2,11 +2,9 @@
 #include "game/Unk_0202f2ac_V3.h"
 #include "game/Vec3.h"
 #include "game/Basis.h"
+#include "gfx/Mtx43.h"
 
 
-struct Mtx43 {
-    s32 m[12];
-};
 
 
 

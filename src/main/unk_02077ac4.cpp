@@ -8,6 +8,7 @@
 #include "npc/VillagerDataItemView.h"
 #include "talk/EncodedStringBase.h"
 #include "npc/Unk_020781ec_Data.h"
+#include "talk/MsgString.h"
 
 
 
@@ -191,16 +192,6 @@ public:
       MsgStringAttr attr;
 };
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-
-      u32 length;
-      MsgStringAttr attr;
-};
 
 class MsgString17B : public MsgString {
 public:

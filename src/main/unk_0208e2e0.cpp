@@ -3,6 +3,7 @@
 #include "talk/MsgStringAttr.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "talk/MsgString.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -11,16 +12,6 @@ void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, 
 
 
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    void clear();
-    /* 0x04 */ u32 length;
-    /* 0x08 */ MsgStringAttr attr;
-};
 
 
 // Nine-byte buffer view; data at +0x12.

@@ -2,9 +2,10 @@
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/G3dResAccess.h"
 #include "gfx/MatTexBinder.h"
+#include "gfx/ModelAnim.h"
+#include "gfx/MatTexPatAnim.h"
+#include "gfx/JointBlend.h"
 
-struct Unk_020561d8_Vec { s32 x, y, z; };
-struct Unk_020561d8_Mtx { s32 m[9]; };
 
 struct Unk_02055cd0_Ent {
     u8 pad_00[0x22];
@@ -97,14 +98,6 @@ extern "C" s32 G3dRes_FindDictIdx(void *p, s32 a);
 extern "C" void *gCurrentHeap;
 
 
-class ModelAnim : public AnimFrameCtrl {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-
-    u32 anmObj;
-    u32 resMdl;
-};
 
 class MatTexPatTrack {
 public:
@@ -125,41 +118,7 @@ public:
     MatTexPatTrack *construct();
 };
 
-class MatTexPatAnim : public AnimFrameCtrl {
-public:
-    void *resMdl;
-    void *resTex;
-    void *patAnm;
-    u16 patNumFrames;
-    u8 numTracks;
-    MatTexPatTrack *tracks;
 
-    MatTexPatAnim();
-    virtual ~MatTexPatAnim();
-    void pauseMaterial();
-    BOOL setMaterialTex(s32 unused, u32 x);
-    void applyFrame();
-    void update();
-    void setAnim(void *r1, void *r2, u32 r3, u8 p5, void *p6);
-    void release();
-    BOOL init(void *r1, void *r2, u32 r3, void *heap);
-    void clear();
-};
-
-class JointBlend {
-public:
-    Unk_020561d8_Mtx poseRot;
-    Unk_020561d8_Vec poseTrans;
-    s32 blendRatio;
-    s32 blendStep;
-
-    JointBlend();
-    virtual ~JointBlend();
-    void capturePose(Unk_02056160_Arg *x);
-    void blendPose(Unk_02056160_Arg *x);
-    void start(s32 n);
-    BOOL advance();
-};
 
 struct ResName16 {
     char unk_00[17];

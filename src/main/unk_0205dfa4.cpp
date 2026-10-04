@@ -9,6 +9,7 @@
 #include "gfx/CachedModel.h"
 #include "player/FishBobber.h"
 #include "gfx/VramTask.h"
+#include "gfx/ModelAnim.h"
 
 // ---- helper classes (declared elsewhere) ----
 
@@ -42,14 +43,6 @@ public:
 };
 
 
-class ModelAnim : public AnimFrameCtrl {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-    void replace(s32 a, s32 b, s32 c, s32 e, u16 f);
-    u32 anmObj;
-    u32 resMdl;
-};
 
 class HeldItemTexAnim : public ModelAnim {
 public:

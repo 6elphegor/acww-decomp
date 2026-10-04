@@ -6,6 +6,7 @@
 #include "gfx/SplParticleViews.h"
 #include "gfx/VecFx32.h"
 #include "gfx/SplTex.h"
+#include "gfx/MagF.h"
 
 struct MtxFx33 { s32 m[9]; };
 
@@ -77,7 +78,6 @@ struct E {
 
 
 
-struct MagF { s32 x, y, z; s16 force; };
 
 extern "C" {
 extern u32 data_021f5c3c;

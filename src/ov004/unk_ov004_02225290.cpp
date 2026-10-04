@@ -9,6 +9,7 @@
 #include "room/RoomObjTex.h"
 #include "game/BoxCollider.h"
 #include "gfx/CachedModel.h"
+#include "talk/MsgRequest.h"
 // Library base class (as include/GameProc.h, but vfunc_20 takes the u32 that ov004's override uses)
 class ProcBase {
 public:
@@ -110,14 +111,6 @@ public:
 
 
 // ---- second base at +0x290 (see src/main/unk_02065f14.cpp)
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_08();
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 class TalkMsgRequest : public MsgRequest {
 public:

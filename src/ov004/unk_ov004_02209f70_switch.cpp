@@ -30,6 +30,7 @@
 #include "room/FtrTopItem.h"
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
+#include "gfx/ModelAnim.h"
 // The two functions of the ov004 translation unit 0x02209f70-0x022136d0 that need mwcc 1.2/base (signed-halfword
 // switch tables): FtrSingingInsect::updateActive and vfunc_7c. Same declarations as the main file of the unit;
 // nothing else is emitted here (see config/usa/arm9/overlays/ov004/object_order.txt).
@@ -271,13 +272,6 @@ struct Unk_ov004_02206e38 {
 
 // ---- 0x02248804 (array of 4 at 0x7c0)
 
-class ModelAnim : public AnimFrameCtrl {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-    u32 anmObj;
-    u32 resMdl;
-};
 
 class FtrModelAnim : public ModelAnim {
 public:

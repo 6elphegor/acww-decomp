@@ -5,22 +5,13 @@
 #include "save/BlancaFaceRecord.h"
 #include "talk/TalkWindowState.h"
 #include "town/TownBlockMap.h"
+#include "talk/MsgRequest.h"
 
 // ---- declarations shared by the merged files
 class TalkMsgRequest;
 
 
 
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_08();
-    void setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 class TalkMsgRequest : public MsgRequest {
 public:

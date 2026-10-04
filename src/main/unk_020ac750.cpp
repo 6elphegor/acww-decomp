@@ -24,6 +24,9 @@
 #include "item/DateSeededRandomSource.h"
 #include "game/Elem2a.h"
 #include "gfx/Vec3Z.h"
+#include "gfx/Mtx43.h"
+#include "game/Loc488.h"
+#include "gfx/ObjShadowStrip.h"
 struct MsgString25 {
     MsgString25();
     ~MsgString25();
@@ -47,30 +50,8 @@ struct ItemName {
 
 
 
-struct Mtx43 {
-    s32 m[12];
-};
 
 
-class ObjShadowStrip {
-public:
-    void release(s32 heap);
-    void draw(Vec3 *pos);
-    BOOL build(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap);
-    void func_020ac1e0();
-
-    /* 0x00 */ Vec3 basePos;
-    /* 0x0c */ s32 halfWidth;
-    /* 0x10 */ s32 cullExtent;
-    /* 0x14 */ u32 numRows;
-    /* 0x18 */ s32 cachedZ;
-    /* 0x1c */ s32 *rowDepths;
-    /* 0x20 */ s32 texLeftS;
-    /* 0x24 */ s32 texRightS;
-    /* 0x28 */ s32 *rowTexT;
-    /* 0x2c */ Vec3 *rowVertices;
-    /* 0x30 */ Unk_020ac0c4_Entry *texture;
-};
 
 
 
@@ -420,7 +401,6 @@ extern "C" {
 static inline BOOL IsZ() { if (gFieldSceneKind == 0) return TRUE; return FALSE; }
 }
 extern "C" {
-struct Loc488 { u8 a; u8 pad; u16 b; };
 }
 
 extern "C" void NookShop_Clear(Unk_020aebbc *p);

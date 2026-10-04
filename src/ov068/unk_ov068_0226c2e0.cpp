@@ -13,6 +13,7 @@
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
 #include "sys/ProcBase.h"
+#include "npc/NpcActionCtrl.h"
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -159,12 +160,6 @@ MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-struct NpcActionCtrl {
-    NpcActionCtrl();
-    ~NpcActionCtrl();
-    void requestAction(u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
-    u8 unk_00[0x618 - 0x564];
-};
 struct Unk_02014254 {
     Unk_02014254();
     ~Unk_02014254();

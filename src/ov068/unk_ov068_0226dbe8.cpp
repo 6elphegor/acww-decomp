@@ -22,6 +22,7 @@
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
 #include "sys/ProcBase.h"
+#include "npc/NpcActionCtrl.h"
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
@@ -50,7 +51,6 @@
 
 
 struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
-struct NpcActionCtrl { NpcActionCtrl(); ~NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
 
 class Unk_020f4080 : public SndSeEmitter {

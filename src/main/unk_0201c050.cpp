@@ -18,6 +18,7 @@
 #include "npc/Unk_020135e4.h"
 #include "talk/VillagerTalkRequestStartTopics.h"
 #include "sys/ProcBase.h"
+#include "npc/NpcResHandleView.h"
 
 
 class VillagerTalk;
@@ -234,11 +235,6 @@ struct Unk_020d8938_Tbl {
 };
 
 
-struct VillagerAnimHeapHandle {
-    VillagerAnimHeapHandle();
-    ~VillagerAnimHeapHandle();
-    u32 pad[2];
-};
 
 struct Unk_0202e18c_Buf {
     u32 unk_00;

@@ -5,11 +5,9 @@
 #include "game/Basis.h"
 #include "game/TouchPicker.h"
 #include "game/TouchPickSphere.h"
+#include "gfx/Mtx43.h"
 
 
-struct Mtx43 {
-    s32 m[12];
-};
 
 
 struct Plane {

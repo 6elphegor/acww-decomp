@@ -4,6 +4,7 @@
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "talk/EncodedStringBase.h"
+#include "talk/MsgString.h"
 
 #define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
 #define LabelBalloon_showLayer2 _ZN12LabelBalloon10showLayer2Ev
@@ -61,17 +62,6 @@ public:
     /* 0x04 */ MsgStringAttr attr;
 };
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
-    void clear();
-    /* 0x04 */ u32 length;
-    /* 0x08 */ MsgStringAttr attr;
-};
 
 class LabelString : public MsgString {
 public:

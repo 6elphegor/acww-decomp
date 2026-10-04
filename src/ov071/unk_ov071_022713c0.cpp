@@ -13,6 +13,7 @@
 #include "npc/Unk_020135e4.h"
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
+#include "npc/NpcActionCtrl.h"
 
 
 class SpNpcLyle;
@@ -268,15 +269,6 @@ MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-struct NpcActionCtrl {
-    NpcActionCtrl();
-    ~NpcActionCtrl();
-    BOOL isActionDone();
-    s32 getAction();
-    void requestPlayAnim(s32 a, s32 b, u32 c, u16 d, u16 e);
-    void requestEmotion(s32 a, u8 b, u16 c);
-    u8 unk_00[0x618 - 0x564];
-};
 struct Unk_02014254 {
     Unk_02014254();
     ~Unk_02014254();

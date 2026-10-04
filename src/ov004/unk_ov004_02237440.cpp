@@ -6,6 +6,7 @@
 #include "game/Unk_0203389c_Vec.h"
 #include "game/Unk_ov004_0223d800_Vec.h"
 #include "game/GroundInfoBase.h"
+#include "gfx/ModelAnim.h"
 
 // ---- main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -68,18 +69,6 @@ public:
     GroundInfo *initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b);
 };
 
-// library base of the sub-object at +0 of the 0x2d8-byte slot (func_02055cac / func_02055c38)
-class ModelAnim {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-
-    /* 0x04 */ u8 pad_04[4];
-    /* 0x08 */ s32 curFrame;
-    /* 0x0c */ u8 pad_0c[0x18 - 0x0c];
-    /* 0x18 */ s32 *anmObj;
-    /* 0x1c */ u8 pad_1c[4];
-};
 
 // vtable 0x0224ec70
 class MuseumInsectAnim : public ModelAnim {
@@ -4966,7 +4955,7 @@ void MuseumInsectRoom::updateInsect(Elem_7690 *e) {
             AnimModel_stepAnim(e->model);
             if (id == 0x18) {
                 AnimFrameCtrl_step(e);
-                *e->matAnim.anmObj = e->matAnim.curFrame;
+                *(s32 *)e->matAnim.anmObj = e->matAnim.curFrame;
             }
         }
         if (MuseumInsect_GetSe((s8)id, 0) > 0) {

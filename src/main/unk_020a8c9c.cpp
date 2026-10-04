@@ -6,25 +6,13 @@
 #include "ui/UiWidget.h"
 #include "talk/BmgReader.h"
 #include "talk/BmgMsgAttr.h"
+#include "talk/MsgString.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files
 
 
 
-// Buffer interface with write position at +4, see unk_020a6914.cpp
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0; // size
-    virtual u8 *data() = 0; // data
-    u8 copy(MsgString *other);
-    void clear();
-
-    /* 0x04 */ u32 length;
-    /* 0x08 */ MsgStringAttr attr;
-};
 
 
 // 0x33-byte buffer; unk_020a6914.cpp calls this class Unk_020aa8e0 (its constructor)

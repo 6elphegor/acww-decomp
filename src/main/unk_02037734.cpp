@@ -2,25 +2,13 @@
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "talk/MsgTextLabel.h"
+#include "talk/MsgString.h"
 
 // ---- Classes defined in other files (declarations only) ----
 
 
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    u8 appendString(MsgString *other);
-    u8 append(u8 *str);
-    u8 setLine(u8 *str);
-    void clear();
-
-    /* 0x04 */ u32 length;
-    /* 0x08 */ MsgStringAttr attr;
-};
 
 // 0x2c bytes (ctor func_020b4154, dtor func_020b413c)
 class MsgString25 : public MsgString {
@@ -33,13 +21,6 @@ public:
     /* 0x14 */ u32 unk_14[6];
 };
 
-class MsgTextLabel : public TextLabel {
-public:
-    MsgTextLabel(s32 arg1, s32 arg2, s32 arg3);
-    virtual ~MsgTextLabel();
-    virtual void draw();
-    virtual u32 measureWidth();
-};
 
 class TexVramTask {
 public:

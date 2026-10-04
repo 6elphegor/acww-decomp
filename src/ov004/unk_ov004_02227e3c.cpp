@@ -11,6 +11,7 @@
 #include "room/RoomObjTex.h"
 #include "gfx/CachedModel.h"
 #include "game/TouchPicker.h"
+#include "talk/MsgRequest.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -177,16 +178,6 @@ public:
 
 
 // ---------------------------------------------------------------- secondary base at +0x290 (see tu01 / tu18)
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_08();
-    void setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 struct Unk_ov004_0224dd98_Rec {
     u32 unk_00;

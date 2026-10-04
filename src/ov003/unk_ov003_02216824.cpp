@@ -7,6 +7,7 @@
 #include "talk/TalkWindowState.h"
 #include "gfx/Unk_ov009_0225bc88_Blk.h"
 #include "sys/ProcBase.h"
+#include "gfx/ModelAnim.h"
 
 
 
@@ -191,17 +192,6 @@ public:
 
 // ---- main-module helper classes ----
 
-class ModelAnim : public AnimFrameCtrl {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-    void addToRenderObj(u32 a);
-    void init(s32 a, s32 b, s32 c, u16 d);
-    BOOL allocMatAnm(u32 a, void *c);
-
-    s32 *anmObj;
-    u32 resMdl;
-};
 
 class Model {
 public:
@@ -630,7 +620,7 @@ BOOL Mailbox::enterHasMail() {
 
 void Mailbox::execHasMail() {
     matAnim.step();
-    *matAnim.anmObj = matAnim.curFrame;
+    *(s32 *)matAnim.anmObj = matAnim.curFrame;
 }
 
 BOOL Mailbox::enterLidOpen() {
@@ -643,7 +633,7 @@ BOOL Mailbox::enterLidOpen() {
 void Mailbox::execLidOpen() {
     _ZN9AnimModel8stepAnimEv(unk_138);
     matAnim.step();
-    *matAnim.anmObj = matAnim.curFrame;
+    *(s32 *)matAnim.anmObj = matAnim.curFrame;
     if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
         Building_RequestState(this, 4);
     }
@@ -658,7 +648,7 @@ BOOL Mailbox::enterLidOpened() {
 
 void Mailbox::execLidOpened() {
     matAnim.step();
-    *matAnim.anmObj = matAnim.curFrame;
+    *(s32 *)matAnim.anmObj = matAnim.curFrame;
 }
 
 BOOL Mailbox::enterLidClose() {
@@ -680,7 +670,7 @@ void Mailbox::execLidClose() {
         _ZN9AnimModel8stepAnimEv(unk_138);
     }
     matAnim.step();
-    *matAnim.anmObj = matAnim.curFrame;
+    *(s32 *)matAnim.anmObj = matAnim.curFrame;
 }
 
 BOOL Mailbox::enterMailGone() {
@@ -699,6 +689,6 @@ void Mailbox::execMailGone() {
         _ZN9AnimModel8stepAnimEv(unk_138);
     }
     matAnim.step();
-    *matAnim.anmObj = matAnim.curFrame;
+    *(s32 *)matAnim.anmObj = matAnim.curFrame;
 }
 

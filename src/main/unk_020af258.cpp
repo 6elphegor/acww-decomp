@@ -5,6 +5,7 @@
 #include "game/ShopAckCounter.h"
 #include "item/ShopAckCounter.h"
 #include "game/Elem2a.h"
+#include "game/Loc488.h"
 
 
 struct Elem2b { Elem2b(); ~Elem2b(); u16 d; };
@@ -417,6 +418,5 @@ extern "C" void LidSleep_SetFlag(s32 m) { sLidSleepFlags |= m; }
 extern "C" void LidSleep_ClearFlag(s32 m) { sLidSleepFlags &= ~m; }
 
 extern "C" {
-struct Loc488 { u8 a; u8 pad; u16 b; };
 }
 

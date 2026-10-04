@@ -13,6 +13,7 @@
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
 #include "sys/ProcBase.h"
+#include "npc/NpcActionCtrl.h"
 
 
 class FieldVillager;
@@ -118,7 +119,6 @@ struct NpcAnimCtrl { NpcAnimCtrl(); u32 pad[0x1c / 4]; };
 struct NpcSpeechState { NpcSpeechState(); u32 pad[8 / 4]; };
 struct CollisionState { CollisionState(); u32 pad[0x30 / 4]; };
 struct Unk_020f4080 { Unk_020f4080(); u32 pad[0x44 / 4]; };
-struct NpcActionCtrl { NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); u32 pad[0x28 / 4]; };
 
 // ---------------------------------------------------------------------------------------------------------------------

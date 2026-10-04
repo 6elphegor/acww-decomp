@@ -6,6 +6,7 @@
 #include "save/BbsPost.h"
 #include "npc/Unk_020781ec_Data.h"
 #include "save/BbsBoard.h"
+#include "talk/MsgString.h"
 
 // ======== types of unk_020742f4.cpp ========
 
@@ -99,17 +100,6 @@ public:
 
 
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    void clear();
-
-    /* 0x04 */ u32 length;
-    /* 0x08 */ MsgStringAttr attr;
-};
 
 // Source-side text buffer of 0xc1 bytes.
 class MsgString193 : public MsgString {

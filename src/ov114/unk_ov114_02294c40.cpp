@@ -2,6 +2,7 @@
 #include "item/ItemIconCache.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "talk/MsgString.h"
 
 struct Unk_ov114_02294c40_Bits {
     u32 idx : 10;
@@ -196,17 +197,6 @@ void CreatureBook_UpdateScrollTouch(S *s, s32 a);
 
 
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    void clear();
-
-    u32 length;
-    MsgStringAttr attr;
-};
 
 class MsgString406 : public MsgString {
 public:

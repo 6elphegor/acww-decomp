@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "ui/UiWidget.h"
 #include "snd/BgmVolumeMixer.h"
+#include "ui/LetterRenderer.h"
 
 extern "C" {
 void Snd_PlaySe(s32 a);
@@ -23,16 +24,6 @@ class LetterViewMenu;
 
 struct Unk_0206d1d4_Src;
 
-class LetterRenderer {
-public:
-    LetterRenderer();
-    ~LetterRenderer();
-    void show(Unk_0206d1d4_Src *src, void *a, void *b, s32 c);
-    void release();
-    void setLayer(s32 v);
-
-    u32 unk_00[0x210 / 4];
-};
 
 
 

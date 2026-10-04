@@ -47,6 +47,7 @@
 #include "player/Unk_02008100_Msg.h"
 #include "player/Unk_02008190_Ptr.h"
 #include "player/Unk_02008858_Blk.h"
+#include "gfx/MatTexPatAnim.h"
 #include "sys/ProcBase.h"
 #include "player/Unk_02007694.h"
 #include "player/Unk_020093d4.h"
@@ -204,7 +205,6 @@ struct TouchPickCylinder { TouchPickCylinder(); ~TouchPickCylinder(); };
 struct TwoLayerAnimModel { TwoLayerAnimModel(); ~TwoLayerAnimModel(); };
 struct CachedModel { CachedModel(); ~CachedModel(); };
 struct HeldItemModel { HeldItemModel(); ~HeldItemModel(); };
-struct MatTexPatAnim { MatTexPatAnim(); ~MatTexPatAnim(); };
 struct MatTexVramTask { MatTexVramTask(); };
 struct CollisionState { CollisionState(); ~CollisionState(); };
 struct SndSeEmitterKind99 { SndSeEmitterKind99(); ~SndSeEmitterKind99(); };
@@ -3703,9 +3703,7 @@ public:
     CharaFaceAnimRef faceAnimRef;
     CharaFaceAnimWorkRef faceAnimWork;
     MatTexPatAnim eyeTexAnim;
-    u8 pad_70d[0x2b];
     MatTexPatAnim mouthTexAnim;
-    u8 pad_739[0x2b];
     BlinkTimer blinkTimer;
     s32 eyeAnimId;
     s32 mouthAnimId;

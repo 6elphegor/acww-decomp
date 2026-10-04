@@ -12,6 +12,7 @@
 #include "game/GroundInfoBase.h"
 #include "game/CollisionState.h"
 #include "game/FxVec3.h"
+#include "gfx/ModelAnim.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -38,14 +39,6 @@ struct Unk_ov003_Off2 { u8 pad[0x2]; u8 at; };
 
 // ---- main-module classes (declarations only)
 
-class ModelAnim : public AnimFrameCtrl {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-
-    u32 anmObj;
-    u32 resMdl;
-};
 
 // ---- ov009 actor (only the methods used here)
 class BuildingActor {

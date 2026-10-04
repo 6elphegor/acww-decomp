@@ -9,6 +9,7 @@
 #include "talk/TalkWindowState.h"
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
+#include "gfx/ModelAnim.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -219,17 +220,6 @@ public:
 
 // ---- main-module helper classes ----
 
-class ModelAnim : public AnimFrameCtrl {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-    void addToRenderObj(u32 a);
-    void initWithTex(s32 a, s32 b, s32 c, s32 e, u16 f);
-    BOOL allocMatAnm(u32 a, void *c);
-
-    u32 anmObj;
-    u32 resMdl;
-};
 
 class AnimModel {
 public:

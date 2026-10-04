@@ -3,6 +3,7 @@
 #include "Unk_020d8c7c.h"
 #include "field/BottleThrow.h"
 #include "gfx/ModelSlotPool.h"
+#include "gfx/ModelAnim.h"
 
 // TU23 of ov003 (fish actors, scene classes 0223498c / 02234a94): 0x0221ffb8-0x02224e68, static initialiser 0x354 bytes.
 // Merged from ten unit files; every view of the shared objects (sFishShadows etc.) is reached through casts.
@@ -813,14 +814,6 @@ static inline BOOL Unk_ov003_02224bc4_Bit(u32 f, u32 m)
 
 
 
-class ModelAnim {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-    u8 pad_04[0x14];
-    u32 anmObj;
-    u32 resMdl;
-};
 
 class FishFinMatAnim : public ModelAnim {
 public:

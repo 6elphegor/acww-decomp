@@ -5,6 +5,8 @@
 #include "save/TownExchangeRecord.h"
 #include "talk/TalkWindowState.h"
 #include "player/PlayerId.h"
+#include "talk/MsgString.h"
+#include "talk/MsgRequest.h"
 
 struct TitleChoiceSet {
     u8 *msgIds;
@@ -58,10 +60,6 @@ public:
     u8 unk_04[0x20];
 };
 
-class MsgString {
-public:
-    u8 copy(MsgString *other);
-};
 
 
 class MsgString9B {
@@ -107,15 +105,6 @@ extern void *gCurrentHeap;
 
 class TitleScreen;
 
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_08();
-    void setFileName(const char *s);
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 class TalkMsgRequest : public MsgRequest {
 public:

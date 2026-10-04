@@ -9,6 +9,7 @@
 #include "gfx/SplEmitterViews.h"
 #include "gfx/VecFx32.h"
 #include "gfx/SplTex.h"
+#include "gfx/SplViews.h"
 
 
 
@@ -29,12 +30,6 @@ struct Node {
 };
 
 
-struct Mc {
-    u8 p0[0x20];
-    TexEnt *tex;
-    u8 p24[0x10];
-    Em *cur;
-};
 
 extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
@@ -57,9 +52,6 @@ void func_020fb378(Mc *m, Node *n, u32 a);
 
 
 
-struct Mt {
-    s32 m[12];
-};
 
 
 struct Nd {
@@ -79,12 +71,6 @@ struct Nd {
     s32 w64;
 };
 
-struct Mg2 {
-    u8 p0[0x30];
-    u32 w48;
-    EmI *cur;
-    Mt *mt;
-};
 
 
 typedef s32 (*PosCb)(Vec3 *, Vec3);
@@ -153,24 +139,10 @@ struct Pt {
 };
 
 
-struct ItemU {
-    void *fn;
-    void *p4;
-};
 
 
 
 
-struct MU {
-    u8 p0[20];
-    void *freelist;
-    u8 p18[0x14];
-    u32 b0 : 6;
-    u32 b6 : 6;
-    u32 b12 : 6;
-    u32 b18 : 6;
-    u32 pad : 8;
-};
 
 typedef void (*FldFn)(Pt *, RU *, u32);
 

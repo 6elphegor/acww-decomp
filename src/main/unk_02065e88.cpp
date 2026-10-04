@@ -7,6 +7,8 @@
 #include "talk/BmgReader.h"
 #include "talk/BmgMsgAttr.h"
 #include "talk/MsgParser.h"
+#include "talk/MsgTextLabel.h"
+#include "talk/MsgRequest.h"
 
 class MsgRequest;
 class MsgString;
@@ -418,15 +420,6 @@ public:
     virtual u8 *data();
 };
 
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_08();
-    void setFileName(const char *src);
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 class TalkMsgRequest : public MsgRequest {
 public:
@@ -745,18 +738,6 @@ struct TalkWindow {
     TalkWindow();
 };
 
-class MsgTextLabel : public TextLabel {
-public:
-    MsgTextLabel(s32 arg1, s32 arg2, s32 arg3);
-    virtual ~MsgTextLabel();
-    virtual void draw();
-    virtual u32 measureWidth();
-
-    void onChar(u32 c);
-    void onEnd();
-    void onBegin();
-    void setProcessor(MsgProcessor *v);
-};
 
 class ChoiceEntry {
 public:

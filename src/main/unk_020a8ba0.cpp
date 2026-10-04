@@ -11,6 +11,9 @@
 #include "talk/MsgParser.h"
 #include "talk/EncodedStringBase.h"
 #include "talk/Flag18.h"
+#include "talk/MsgTextLabel.h"
+#include "talk/MsgString.h"
+#include "talk/MsgRequest.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -391,27 +394,6 @@ public:
     /* 0x04 */ MsgStringAttr attr;
 };
 
-// buffer interface with write position at +4 and member at +8
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL appendRange(u8 *start, u8 *end);
-    BOOL assignRange(u8 *start, u8 *end);
-    BOOL equals(MsgString *other);
-    u8 appendString(MsgString *other);
-    u8 append(u8 *str);
-    u8 setLine(u8 *str);
-    BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
-    u8 copy(MsgString *other);
-    u8 set(u8 *str);
-    void clear();
-
-    /* 0x04 */ u32 length;
-    /* 0x08 */ MsgStringAttr attr;
-};
 
 class MsgString33 : public MsgString {
 public:
@@ -433,16 +415,6 @@ public:
     /* 0x14 */ u8 unk_14[0x20];
 };
 
-class MsgRequest {
-public:
-    virtual ~MsgRequest();
-    virtual void vfunc_08();
-    MsgRequest();
-    void setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 
 
@@ -484,24 +456,6 @@ public:
 
 class MsgProcessor;
 
-// Text drawn by running a script through MsgProcessor
-class MsgTextLabel : public TextLabel {
-public:
-    MsgTextLabel(s32 arg1, s32 arg2, s32 arg3);
-    MsgTextLabel(u32 arg1, s32 arg2, s32 arg3);
-    virtual ~MsgTextLabel();
-    virtual void draw();
-    virtual u32 measureWidth();
-
-    void onTag(u8 *p);
-    void onChar(u32 c);
-    void onEnd();
-    void onBegin();
-    void setProcessor(MsgProcessor *v);
-
-    /* 0x7c */ u32 mode;
-    /* 0x80 */ MsgProcessor *processor;
-};
 
 class MsgProcessor : public MsgParser {
 public:

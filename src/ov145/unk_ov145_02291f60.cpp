@@ -3,6 +3,7 @@
 #include "Unk_020d8c7c.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "talk/MsgString.h"
 
 class DonationMenu;
 typedef void (DonationMenu::*Unk_ov145_022937c0_Fn)();
@@ -62,18 +63,6 @@ public:
     u8 pad_04[0x18];
 };
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromEncoded(void *src, BOOL a, BOOL b);
-    void copy(MsgString *o);
-    void clear();
-    /* 0x04 */ u32 length;
-    /* 0x08 */ MsgStringAttr attr;
-};
 
 class TextLabel;
 

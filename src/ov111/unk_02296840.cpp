@@ -4,6 +4,7 @@
 #include "text/Unk_02050288.h"
 #include "ui/UiWidget.h"
 #include "player/PlayerId.h"
+#include "talk/MsgString.h"
 
 enum Unk_ov111_022970cc_Status { UNK_OV111_ST_0 = 0, UNK_OV111_ST_1 = 1, UNK_OV111_ST_2 = 2, UNK_OV111_ST_3 = 3 };
 
@@ -17,10 +18,6 @@ public:
     void selectTab(u32 v);
 };
 
-class MsgString {
-public:
-    void fromEncoded(class EncodedString *src, s32 a, s32 b);
-};
 
 
 class PlayerData {

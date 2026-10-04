@@ -20,6 +20,7 @@
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
 #include "sys/ProcBase.h"
+#include "npc/NpcActionCtrl.h"
 
 class CafeVillager;
 
@@ -74,7 +75,6 @@ void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32,
 }
 
 struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
-struct NpcActionCtrl { NpcActionCtrl(); ~NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
 
 class Unk_020f4080 : public SndSeEmitter {

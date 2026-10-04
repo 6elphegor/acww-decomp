@@ -4,21 +4,12 @@
 #include "talk/BmgReader.h"
 #include "talk/MsgParser.h"
 #include "talk/MailTextBuilder.h"
+#include "talk/MsgRequest.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of other units
 
 
-class MsgRequest {
-public:
-    virtual ~MsgRequest();
-    virtual void vfunc_08();
-    MsgRequest();
-    void setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 
 class MsgWalker : public MsgParser {

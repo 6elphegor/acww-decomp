@@ -10,6 +10,7 @@
 #include "npc/NpcObstacleProbe.h"
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
+#include "npc/NpcActionCtrl.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti
@@ -173,12 +174,6 @@ MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-struct NpcActionCtrl {
-    NpcActionCtrl();
-    ~NpcActionCtrl();
-    void requestAction(u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
-    u8 unk_00[0x618 - 0x564];
-};
 struct Unk_02014254 {
     Unk_02014254();
     ~Unk_02014254();

@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "item/Letter.h"
+#include "game/Loc488.h"
 
 
 extern "C" {
@@ -20,7 +21,6 @@ extern u32 data_020e2eb8, data_020e2ebc;
 }
 struct ItemName { ItemName(u16 *s); ~ItemName(); u8 d[0x24]; };
 
-struct Loc488 { u8 a; u8 pad; u16 b; };
 extern "C" void Snowman_SendLetter(u32 idx) {
     if (idx < 13) {
         Loc488 l;

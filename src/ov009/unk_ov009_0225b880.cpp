@@ -13,6 +13,8 @@
 #include "game/Unk_ov009_0225cb4c_V3.h"
 #include "game/TouchPicker.h"
 #include "sys/ProcBase.h"
+#include "talk/MsgRequest.h"
+#include "gfx/ObjShadowStrip.h"
 
 
 
@@ -69,17 +71,6 @@ public:
 };
 
 
-// Real class of the secondary base's first part (vtable 0x020e2a30 in main)
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_08();
-    void setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 // Secondary base at +0xec (vtable 0x020ddcf0 in main)
 class TalkMsgRequest : public MsgRequest {
@@ -138,14 +129,6 @@ struct TouchPickTriangle {
 
 
 
-class ObjShadowStrip {
-public:
-    void draw(Vec3 *pos);
-    BOOL build(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap);
-    ObjShadowStrip *func_020ac1e0();
-
-    u8 pad[0x34];
-};
 
 
 struct BgmManager {

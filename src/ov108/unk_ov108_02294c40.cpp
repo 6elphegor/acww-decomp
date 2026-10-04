@@ -2,6 +2,9 @@
 #include "Unk_020d8c7c.h"
 #include "ui/CursorMotion.h"
 #include "item/Letter.h"
+#include "menu/InventoryItemGrid.h"
+#include "menu/LetterGrid.h"
+#include "menu/InventoryBg.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -138,43 +141,8 @@ public:
     u32 unk_00[0x38 / 4];
 };
 
-class InventoryItemGrid {
-public:
-    InventoryItemGrid();
-    ~InventoryItemGrid();
-    u32 unk_00[0xa60 / 4];
-};
 
-class LetterGrid {
-public:
-    LetterGrid();
-    ~LetterGrid();
 
-    void drawHeldLetter(s32 a, s32 b, void *c);
-    void drawPocketLetters(s32 a, s32 b);
-    s32 isHighlighted(s32 a);
-    void highlightLetterKinds(u32 a);
-    void clearLetter(s32 a);
-    void func_ov094_02294318(s32 a, s32 b);
-    void *getLetter(s32 a);
-    void markSlot(s32 a);
-    void clearMarks();
-    void setCursorSlot(u32 a);
-    void clearCursorSlot();
-    void showLetterName(void *a, s32 b);
-    u32 findPocketLetterAt(s32 a, s32 b);
-    void updateCursorLift();
-    void init(s32 a);
-
-    u32 unk_00[0x28 / 4];
-};
-
-class InventoryBg {
-public:
-    InventoryBg();
-    ~InventoryBg();
-    u32 unk_00[0x160 / 4];
-};
 
 class TouchPromptBalloon {
 public:
@@ -438,7 +406,6 @@ public:
     /* 0x2d8 */ InventoryItemGrid pocketGrid;
     /* 0xd38 */ LetterGrid letterGrid;
     /* 0xd60 */ InventoryBg inventoryBg;
-    /* 0xec0 */ u32 unk_ec0[0x1480 / 4];
     /* 0x2340 */ TouchPromptBalloon nameBalloon;
     /* 0x2400 */ CursorMotion flyMotion;
     /* 0x2418 */ MenuCursorBuf0 cursor;

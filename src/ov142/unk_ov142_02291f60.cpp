@@ -4,6 +4,7 @@
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "room/FtrPreviewer.h"
+#include "talk/MsgString.h"
 
 class CatalogMenu;
 
@@ -14,18 +15,6 @@ class CatalogMenu;
 // ---- main-module classes (copied from src/main) ----
 
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromEncoded(void *src, BOOL a, BOOL b);
-    void copy(MsgString *o);
-    void clear();
-    /* 0x04 */ u32 length;
-    /* 0x08 */ MsgStringAttr attr;
-};
 
 class TextLabel;
 

@@ -18,32 +18,12 @@
 #include "sys/PrioNode.h"
 #include "sys/TaskList.h"
 #include "sys/ProcBase.h"
+#include "sys/ListNode.h"
+#include "sys/InfoList.h"
 
 typedef void (ProcBase::*TaskFn)();
 
-struct ListNode {
-    ListNode *prev;
-    ListNode *next;
-};
-struct List {
-    ListNode *head;
-    ListNode *tail;
-};
 
-struct NodeInfo {
-    u8 pad0[4];
-    u32 unk_04;
-    u8 pad1[4];
-    u16 unk_0c;
-};
-struct InfoNode {
-    InfoNode *unk_00;
-    InfoNode *unk_04;
-    NodeInfo *unk_08;
-};
-struct InfoList {
-    InfoNode *head;
-};
 
 // second view of a priority node (the inserted node's key is read through it inside the loop)
 struct PrioNodeB { void *a, *b, *c; u16 priority; };

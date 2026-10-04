@@ -5,6 +5,7 @@
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "talk/EncodedStringBase.h"
+#include "talk/MsgString.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files (see unk_020a6914.cpp)
@@ -26,19 +27,6 @@ public:
     /* 0x04 */ MsgStringAttr attr;
 };
 
-// buffer interface with write position at +4 and member at +8
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
-    void clear();
-
-    /* 0x04 */ u32 length;
-    /* 0x08 */ MsgStringAttr attr;
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
 

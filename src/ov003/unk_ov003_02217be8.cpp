@@ -5,6 +5,7 @@
 #include "field/Unk_ov003_02217910_V3.h"
 #include "field/Unk_ov003_02217b78_Ent.h"
 #include "gfx/AnimFrameCtrl.h"
+#include "gfx/ModelAnim.h"
 
 // TU19 of ov003: ground part classes 0x02217be8 / 0x02217dbc and the scene 0x02232418 (0x02217be8-0x022187f8)
 
@@ -34,17 +35,6 @@ public:
 };
 
 
-class ModelAnim : public AnimFrameCtrl {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-    void addToRenderObj(u32 a);
-    void init(s32 a, s32 b, s32 c, u16 d);
-    BOOL allocMatAnm(u32 a, void *c);
-
-    s32 *anmObj;
-    u32 resMdl;
-};
 
 class TexPatVramAnim {
 public:
@@ -642,7 +632,7 @@ BOOL FieldGroundPiece::updateAnims() {
         ModelAnim *e = &matAnims[2];
         for (; p < e; p++) {
             p->step();
-            *p->anmObj = p->curFrame;
+            *(s32 *)p->anmObj = p->curFrame;
         }
         return TRUE;
     }
@@ -712,7 +702,7 @@ BOOL FieldGroundBlock::updateAnims() {
     e = &matAnims[2];
     for (; p < e; p++) {
         p->step();
-        *p->anmObj = p->curFrame;
+        *(s32 *)p->anmObj = p->curFrame;
     }
     return TRUE;
 }

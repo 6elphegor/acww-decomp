@@ -3,13 +3,11 @@
 #include "gfx/Unk_021ede90.h"
 #include "game/Vec3.h"
 #include "gfx/SceneLightsCol.h"
+#include "gfx/Mtx43.h"
 
 
 
 
-struct Mtx43 {
-    s32 m[12];
-};
 
 
 class Model {

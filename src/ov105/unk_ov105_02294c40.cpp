@@ -7,6 +7,10 @@
 #include "talk/TalkWindowState.h"
 #include "item/Letter.h"
 #include "player/PlayerId.h"
+#include "menu/InventoryItemGrid.h"
+#include "menu/LetterGrid.h"
+#include "menu/InventoryBg.h"
+#include "ui/LetterRenderer.h"
 
 class LetterStorageMenu;
 class MenuLauncher;
@@ -143,15 +147,6 @@ public:
 };
 
 struct Unk_0206d1d4_Src;
-class LetterRenderer {
-public:
-    LetterRenderer();
-    ~LetterRenderer();
-    void show(Unk_0206d1d4_Src *a, void *b, void *c, s32 d);
-    void release();
-    void setLayer(s32 a);
-    u32 unk_00[0x210 / 4];
-};
 
 class BgVramTask {
 public:
@@ -302,43 +297,6 @@ public:
 
 // ov094 sub-objects ----------------------------------------------------------------------------
 
-class InventoryItemGrid {
-public:
-    InventoryItemGrid();
-    ~InventoryItemGrid();
-    u32 unk_00[0xa60 / 4];
-};
-class LetterGrid {
-public:
-    LetterGrid();
-    ~LetterGrid();
-    void drawHeldLetter(s32 a, s32 b, void *p);
-    void drawLetters2D(s32 a, s32 b);
-    void drawPocketLetters(s32 a, s32 b);
-    BOOL isHighlighted(s32 a);
-    void highlightLetterKinds(u32 a);
-    void clearLetter(s32 a);
-    void func_ov094_02294318(s32 a, s32 b);
-    void *getLetter(s32 a);
-    void markSlot(s32 a);
-    void clearMarks();
-    void setCursorSlot(u32 a);
-    void clearCursorSlot();
-    void showLetterName(void *p, s32 a);
-    u32 findLetterAt2D(s32 a, s32 b);
-    void updateCursorLift();
-    void init(s32 a);
-    u32 unk_00[0x28 / 4];
-    void drawLetters0A(s32, s32);
-    s32 findLetterAt0A(s32, s32);
-    s32 findPocketLetterAt(s32, s32);
-};
-class InventoryBg {
-public:
-    InventoryBg();
-    ~InventoryBg();
-    u32 unk_00[0x15e0 / 4];
-};
 
 class MenuLauncher {
 public:

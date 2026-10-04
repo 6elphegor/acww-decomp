@@ -5,15 +5,8 @@
 #include "types.h"
 #include "sys/TreeNode.h"
 #include "gfx/VecFx32.h"
+#include "sys/ListNode.h"
 
-struct ListNode {
-    ListNode *prev;
-    ListNode *next;
-};
-struct List {
-    ListNode *head;
-    ListNode *tail;
-};
 struct Tree {
     TreeNode *root;
 };

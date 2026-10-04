@@ -5,6 +5,10 @@
 #include "menu/PopupChoiceIdList.h"
 #include "ui/UiWidget.h"
 #include "item/Letter.h"
+#include "menu/InventoryItemGrid.h"
+#include "menu/LetterGrid.h"
+#include "menu/InventoryBg.h"
+#include "ui/LetterRenderer.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -100,15 +104,6 @@ public:
 
 struct Unk_0206d1d4_Src;
 
-class LetterRenderer {
-public:
-    LetterRenderer();
-    ~LetterRenderer();
-    void show(Unk_0206d1d4_Src *a, void *b, void *c, s32 d);
-    void release();
-    void setLayer(s32 a);
-    u32 unk_00[0x210 / 4];
-};
 
 class MenuLauncher {
 public:
@@ -116,40 +111,8 @@ public:
     void setNextRequest(s32 a, s32 b);
 };
 
-class InventoryItemGrid {
-public:
-    InventoryItemGrid();
-    ~InventoryItemGrid();
-    u32 unk_00[0xa60 / 4];
-};
 
-class LetterGrid {
-public:
-    LetterGrid();
-    ~LetterGrid();
-    void drawHeldLetter(s32 a, s32 b, void *c);
-    void drawPocketLetters(s32 a, s32 b);
-    BOOL isHighlighted(s32 a);
-    void clearLetter(s32 a);
-    void func_ov094_02294318(s32 a, s32 b);
-    s32 getLetter(s32 a);
-    void markSlot(s32 a);
-    void clearMarks();
-    void setCursorSlot(u32 a);
-    void clearCursorSlot();
-    void showLetterName(void *a, s32 b);
-    u32 findPocketLetterAt(s32 a, s32 b);
-    void updateCursorLift();
-    void init(s32 a);
-    u32 unk_00[0x28 / 4];
-};
 
-class InventoryBg {
-public:
-    InventoryBg();
-    ~InventoryBg();
-    u32 unk_00[0x15e0 / 4];
-};
 
 class TouchPromptBalloon : public LabelBalloon {
 public:
@@ -1154,7 +1117,7 @@ void PocketLettersMenu::putLetterInSlot(u32 a, void *b) {
 
 BOOL PocketLettersMenu::getSlotLetter(u32 a) {
     if (isLetterSlot(a)) {
-        return letterGrid.getLetter(toLetterIndex(a));
+        return (BOOL)letterGrid.getLetter(toLetterIndex(a));
     }
     return FALSE;
 }
@@ -1285,7 +1248,7 @@ void PocketLettersMenu::pickUpFrom(u32 idx) {
     if (isLetterSlot(idx)) {
         s32 r4 = toLetterIndex(idx);
         handKind = 1;
-        s32 r = letterGrid.getLetter(r4);
+        s32 r = (s32)letterGrid.getLetter(r4);
         Letter_Copy(&heldLetter, (void *)r);
         letterGrid.clearLetter(r4);
     }

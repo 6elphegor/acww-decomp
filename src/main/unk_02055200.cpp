@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/TexVramSlot.h"
+#include "gfx/ModelAnim.h"
 
 struct Unk_020553f8_Res {
     u32 unk_00;
@@ -78,23 +79,6 @@ public:
 };
 
 
-class ModelAnim : public AnimFrameCtrl {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-    void removeFromRenderObj(u32 a);
-    void addToRenderObj(u32 a);
-    void replaceWithTex(s32 a, s32 b, s32 c, u8 d, s32 e, u16 f);
-    void initWithTex(s32 a, s32 b, s32 c, s32 e, u16 f);
-    void replace(s32 a, s32 b, s32 c, s32 e, u16 f);
-    void init(s32 a, s32 b, s32 c, u16 e);
-    void initFromResource(Unk_020553f8_Res *a, void *b, u32 c, u32 d, u16 e);
-    BOOL allocJointAnm(u32 a, void *c);
-    BOOL allocMatAnm(u32 a, void *c);
-
-    u32 anmObj;
-    u32 resMdl;
-};
 
 s32 sResCacheModelCount;
 s32 sResCacheTexCount;

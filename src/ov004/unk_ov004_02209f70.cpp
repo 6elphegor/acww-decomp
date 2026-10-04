@@ -31,6 +31,7 @@
 #include "room/FtrTopItem.h"
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
+#include "gfx/ModelAnim.h"
 // ov004 translation unit 0x02209f70-0x022136d0 (34 classes derived from FtrActor). Built by two compilers:
 // this file's thunks need mwcc 1.2/sp2, FtrSingingInsect::updateActive / vfunc_7c (in the _switch file) need 1.2/base;
 // the functions and data objects are placed by address (config/usa/arm9/overlays/ov004/object_order.txt).
@@ -275,13 +276,6 @@ struct Unk_ov004_02206e38 {
 
 // ---- 0x02248804 (array of 4 at 0x7c0)
 
-class ModelAnim : public AnimFrameCtrl {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-    u32 anmObj;
-    u32 resMdl;
-};
 
 class FtrModelAnim : public ModelAnim {
 public:

@@ -1,16 +1,8 @@
 #include "types.h"
 #include "gfx/AnimFrameCtrl.h"
+#include "gfx/ModelAnim.h"
 
 
-class ModelAnim : public AnimFrameCtrl {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-    BOOL allocMatAnm(u32 a, void *c);
-
-    u32 anmObj;
-    u32 resMdl;
-};
 
 extern "C" {
 u32 NNS_G3dAnmObjCalcSizeRequired(const char *a, u32 b);

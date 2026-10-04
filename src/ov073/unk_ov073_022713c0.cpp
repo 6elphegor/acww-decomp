@@ -8,6 +8,7 @@
 #include "npc/Unk_020135e4.h"
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
+#include "npc/NpcActionCtrl.h"
 
 
 struct Unk_0201bc1c;
@@ -224,11 +225,6 @@ MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-struct NpcActionCtrl {
-    NpcActionCtrl();
-    ~NpcActionCtrl();
-    u8 unk_00[0x618 - 0x564];
-};
 struct Unk_02014254 {
     Unk_02014254();
     ~Unk_02014254();

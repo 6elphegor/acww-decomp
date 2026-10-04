@@ -3,6 +3,9 @@
 #include "Unk_020d8c7c.h"
 #include "ui/CursorMotion.h"
 #include "item/Letter.h"
+#include "menu/InventoryItemGrid.h"
+#include "menu/LetterGrid.h"
+#include "menu/InventoryBg.h"
 
 class PocketMenuUnk;
 struct PopupChoiceIdList;
@@ -101,36 +104,8 @@ public:
 };
 
 
-class InventoryItemGrid {
-public:
-    InventoryItemGrid();
-    ~InventoryItemGrid();
-    u32 unk_00[0xa60 / 4];
-};
 
-class LetterGrid {
-public:
-    LetterGrid();
-    ~LetterGrid();
-    void drawPocketLetters(s32 a, s32 b);
-    BOOL isHighlighted(s32 a);
-    void showLetterName(void *p, s32 a);
-    void markSlot(s32 a);
-    void clearMarks();
-    void setCursorSlot(u32 a);
-    void clearCursorSlot();
-    u32 findPocketLetterAt(s32 a, s32 b);
-    void updateCursorLift();
-    void init(s32 a);
-    u32 unk_00[0x28 / 4];
-};
 
-class InventoryBg {
-public:
-    InventoryBg();
-    ~InventoryBg();
-    u32 unk_00[0x15e0 / 4];
-};
 
 class TouchPromptBalloon {
 public:

@@ -26,6 +26,7 @@
 #include "room/FtrStackLink.h"
 #include "room/FtrTopItem.h"
 #include "sys/ProcBase.h"
+#include "gfx/ModelAnim.h"
 
 // ================================================================ plain value types
 
@@ -287,13 +288,6 @@ struct Unk_ov004_02206e38 {
 
 // ---- 0x02248804 (array of 4 at 0x7c0)
 
-class ModelAnim : public AnimFrameCtrl {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-    u32 anmObj;
-    u32 resMdl;
-};
 
 class FtrModelAnim : public ModelAnim {
 public:

@@ -3,16 +3,9 @@
 #include "Unk_020d8c7c.h"
 #include "talk/TalkWindowState.h"
 #include "save/SaveRecord4.h"
+#include "talk/MsgRequest.h"
 
 
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_08();
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 class TalkMsgRequest : public MsgRequest {
 public:

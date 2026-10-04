@@ -4,6 +4,9 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "ui/CursorMotion.h"
+#include "menu/InventoryItemGrid.h"
+#include "menu/LetterGrid.h"
+#include "menu/InventoryBg.h"
 
 class LostFoundRecycleMenu;
 
@@ -131,34 +134,8 @@ public:
 
 // Comm/session singleton (gCommManager)
 
-class InventoryItemGrid {
-public:
-    InventoryItemGrid();
-    ~InventoryItemGrid();
-//@@CLS_Unk_ov094_02294a50@@
-    u32 unk_00[0xa60 / 4];
-};
 
-class LetterGrid {
-public:
-    LetterGrid();
-    ~LetterGrid();
-    void drawPocketLetters(s32, s32);
-    void highlightLetterKinds(u32);
-    void clearMarks();
-    void clearCursorSlot();
-    void updateCursorLift();
-    void init(s32);
-    u32 unk_00[0x28 / 4];
-};
 
-// 0x15e0 object whose ctor/dtor are plain-named in ov094 (renamed, see renames.txt)
-class InventoryBg {
-public:
-    InventoryBg();
-    ~InventoryBg();
-    u32 unk_00[0x15e0 / 4];
-};
 
 class MenuLauncher {
 public:

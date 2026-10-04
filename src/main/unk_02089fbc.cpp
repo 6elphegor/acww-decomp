@@ -6,6 +6,8 @@
 #include "ui/NameLabelBalloonView.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "talk/MsgTextLabel.h"
+#include "talk/MsgString.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of the unit (declarations of the classes whose vtable another unit owns come first)
@@ -16,25 +18,7 @@ struct SpriteAnimSeq;
 
 
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    void clear();
 
-    /* 0x04 */ u32 length;
-    /* 0x08 */ MsgStringAttr attr;
-};
-
-class MsgTextLabel : public TextLabel {
-public:
-    MsgTextLabel(s32 arg1, s32 arg2, s32 arg3);
-    virtual ~MsgTextLabel();
-    virtual void draw();
-    virtual u32 measureWidth();
-};
 
 class MsgString25 : public StrBuf {
 public:

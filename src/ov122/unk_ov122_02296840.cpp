@@ -1,6 +1,7 @@
 // ov122: scene overlay (class LetterWriteMenu, vtable 0x0229a1b8, 0x4664 bytes): chat keyboard/text-entry list screen.
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "ui/LetterRenderer.h"
 
 class EncodedString;
 
@@ -47,12 +48,6 @@ public:
     u32 unk_04[8];
 };
 
-class LetterRenderer {
-public:
-    LetterRenderer();
-    ~LetterRenderer();
-    u32 unk_00[0x210 / 4];
-};
 
 class HandCursor {
 public:

@@ -9,30 +9,10 @@
 #include "snd/SndSeGroup.h"
 #include "sys/FndList.h"
 #include "sys/TaskList.h"
+#include "sys/ListNode.h"
+#include "sys/InfoList.h"
 
-struct ListNode {
-    ListNode *prev;
-    ListNode *next;
-};
-struct List {
-    ListNode *head;
-    ListNode *tail;
-};
 
-struct NodeInfo {
-    u8 pad0[4];
-    u32 unk_04;
-    u8 pad1[4];
-    u16 unk_0c;
-};
-struct InfoNode {
-    InfoNode *unk_00;
-    InfoNode *unk_04;
-    NodeInfo *unk_08;
-};
-struct InfoList {
-    InfoNode *head;
-};
 
 
 

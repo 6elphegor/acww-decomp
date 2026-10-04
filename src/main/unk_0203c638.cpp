@@ -5,25 +5,12 @@
 #include "item/ItemId.h"
 #include "talk/BmgReader.h"
 #include "talk/MailTextBuilder.h"
+#include "talk/MsgString.h"
+#include "talk/MsgRequest.h"
 
 // ---- 0x020d94b8 base (MsgRequest at 0x020e2a30)
-class MsgRequest {
-public:
-    virtual ~MsgRequest();
-    virtual void vfunc_08();
-    MsgRequest();
-    void setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 
-class MsgString {
-public:
-    BOOL append(u8 *str);
-    BOOL set(u8 *str);
-};
 
 extern "C" {
 void MI_CpuFill8(void *dst, u32 value, u32 size);

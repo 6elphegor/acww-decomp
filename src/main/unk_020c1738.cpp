@@ -11,6 +11,7 @@
 #include "npc/Unk_020135e4.h"
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
+#include "npc/NpcActionCtrl.h"
 
 extern "C" {
 void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
@@ -175,10 +176,6 @@ struct ActorFollowCollider {
     u8 unk_44;
     u8 pad_45[3];
     ActorFollowCollider();
-};
-struct NpcActionCtrl {
-    NpcActionCtrl();
-    u8 unk_00[0x618 - 0x564];
 };
 struct Unk_02014254 : NpcTalkCtrl {
     Unk_02014254();

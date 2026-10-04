@@ -11,6 +11,7 @@
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
+#include "gfx/ModelAnim.h"
 
 
 
@@ -189,16 +190,6 @@ public:
 };
 
 
-// 0x20-byte member object (ctor func_02055c88, dtor func_02055c70)
-struct ModelAnim {
-    ModelAnim();
-    ~ModelAnim();
-    u8 pad_00[8];
-    /* 0x08 */ s32 curFrame;
-    u8 pad_0c[0xc];
-    /* 0x18 */ s32 *anmObj;
-    u8 pad_1c[4];
-};
 
 
 class CountdownDigit; class CountdownSign;
@@ -331,7 +322,7 @@ void CountdownDigit::operator delete(void *p) {}
 // ---------------------------------------------------------------- Y methods
 void CountdownSign::execNewYear() {
     _ZN13AnimFrameCtrl4stepEv(&matAnim);
-    *matAnim.anmObj = matAnim.curFrame;
+    *(s32 *)matAnim.anmObj = matAnim.curFrame;
 }
 
 BOOL CountdownSign::enterNewYear() {
@@ -343,7 +334,7 @@ BOOL CountdownSign::enterNewYear() {
 
 void CountdownSign::execCountdown() {
     _ZN13AnimFrameCtrl4stepEv(&matAnim);
-    *matAnim.anmObj = matAnim.curFrame;
+    *(s32 *)matAnim.anmObj = matAnim.curFrame;
     u32 tm[2];
     tm[0] = 0;
     tm[1] = 0;

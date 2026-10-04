@@ -17,6 +17,9 @@
 #include "npc/Unk_0201ad18.h"
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
+#include "npc/NpcResHandleView.h"
+#include "gfx/MatTexPatAnim.h"
+#include "npc/NpcActionCtrl.h"
 
 
 // unk_02011580.cpp
@@ -1539,19 +1542,6 @@ struct Unk_02018698 {
     s32 setupAct03(C_8698 *c);
 };
 
-// unk_02019020.cpp
-struct NpcActionParams {
-    s32 animId, waypointX, waypointZ, destX, destZ, act07Variant;
-    s16 targetAngle, turnSpeed;
-    u16 blendFrames, animStartFrame;
-    u8 animPlayMode, emotionId;
-    u16 item;
-    s32 handOverKind, handOverPartner;
-    u8 handOverMode;
-    s32 handOverVariant;
-    void *clear();
-    void copyFrom(NpcActionParams *src);
-};
 
 // unk_02019020.cpp
 struct Unk_02019858_Vec { s32 x, y, z; Unk_02019858_Vec(s32 a, s32 b, s32 c) { x = a; y = b; z = c; } };
@@ -1574,82 +1564,11 @@ struct Unk_02019858_Entry {
     Unk_02019858_FnC c;
 };
 
-// unk_02019020.cpp
-struct NpcActionCtrl {
-    NpcActionCtrl();
-    void mainAct02(u8 *o);
-    s32 setupAct02(u8 *o);
-    void mainAct01(u8 *o);
-    s32 setupAct01(u8 *o);
-    void mainAct00();
-    s32 setupAct00(u8 *o);
-    void postUpdate(u8 *arg);
-    void update(u8 *arg);
-    void func_02019468_dummy();
-    void setActionDone(s32 v);
-    void applyPendingAction(u8 *arg);
-    void clearTalking();
-    void setTalking();
-    void requestTalkingOff();
-    void requestTalkingOn();
-    BOOL requestTakeItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, u32 s2);
-    BOOL requestGiveItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, u32 s2);
-    BOOL requestPlayAnim(s32 a, s32 b, u32 c, u16 s0, u16 s1);
-    void requestStand(u32 a, u16 b);
-    BOOL requestEmotion(s32 a, u8 b, u16 c);
-    BOOL requestAct07(s32 a, s32 b, s32 c, s32 d, u16 e);
-    BOOL requestAction(u32 a, s32 b, s32 c, s32 s0, s16 s1, s16 s2, s32 s3, s32 s4, u16 s5, u16 s6);
-    void setPendingAction(s32 a, s32 b);
-    void clearPendingAction();
-    void changeAction(u8 *o, s32 idx, s32 state);
-    NpcActionParams *getCurParams();
-    BOOL isActionDone();
-    u8 getEmotionId();
-    s32 getAction();
-    void startAction(u8 *o, s32 a, s32 b, s32 s0, s32 s1, s16 s2, s32 s3, s32 s4);
-    void func_02019854();
-
-    u8 unk_00[4];
-    u8 netAction;
-    u8 netPriority;
-    u8 netArgs[0xe];
-    s32 priority;
-    u8 isTalking;
-    u8 talkingRequest;
-    u8 pad_1a[2];
-    s32 action;
-    Unk_02019858_Entry *actionEntry;
-    s32 pendingAction;
-    s32 pendingPriority;
-    NpcActionParams pendingParams;
-    NpcActionParams curParams;
-    s32 actionDone;
-    u8 actStep;
-    u8 unk_99;
-    u8 pad_9a[2];
-    s32 moveMode;
-    u16 unk_a0;
-    u8 pad_a2[2];
-    s32 emotionEntry;
-    u8 emotionIntro;
-    u8 emotionId;
-    u8 pad_aa[2];
-    s32 itemEffect;
-    s32 act07Variant;
-};
 
 
-// unk_02019998.cpp
-struct NpcTexPatHeapHandle { NpcTexPatHeapHandle(); ~NpcTexPatHeapHandle(); u32 pad[2]; };
 
-// unk_02019998.cpp
-struct NpcTexPatBufRefHandle { NpcTexPatBufRefHandle(); ~NpcTexPatBufRefHandle(); u32 pad[2]; };
 
-// unk_02019998.cpp
-struct NpcFaceAnimHandle { NpcFaceAnimHandle(); ~NpcFaceAnimHandle(); u32 pad[2]; };
 
-// unk_02019998.cpp
-struct MatTexPatAnim { MatTexPatAnim(); ~MatTexPatAnim(); u32 unk_00; u32 numFrames; u32 curFrame; u32 pad[0x20 / 4]; };
 
 // unk_02019998.cpp
 struct Unk_02019cac_Owner {

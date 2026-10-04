@@ -6,6 +6,7 @@
 #include "actor/CharaFaceAnimWorkRef.h"
 #include "npc/SpNpcAnimHeapRefSlot.h"
 #include "npc/VillagerAnimHeapRefSlot.h"
+#include "npc/NpcBodyAnimSlot.h"
 
 
 
@@ -169,12 +170,6 @@ extern NpcTexPatHeapPool sNpcTexPatHeapPool;
 extern "C" NpcTexPatHeapPool *NpcTexPatHeapPool_Get();
 
 // ---- 0x020e0840
-struct NpcBodyAnimSlot : NpcResSlot {
-    NpcBodyAnimSlot();
-    ~NpcBodyAnimSlot();
-    Unk_0205c3a4 layers[3];
-    void assignLayer(s32 a, s32 i);
-};
 
 struct NpcBodyAnimPool : NpcResPool {
     NpcBodyAnimSlot slots[5];
