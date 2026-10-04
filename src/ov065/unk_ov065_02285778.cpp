@@ -1,6 +1,15 @@
 // mwcc-flags: -O4,p -str reuse
 
 #include "types.h"
+#include "net/Unk_ov065_02285630_Item.h"
+#include "net/Unk_ov065_022856f8_B4.h"
+#include "net/Unk_ov065_022868b0_InAddr.h"
+#include "net/Unk_ov065_02286c74_Ctx.h"
+#include "net/Unk_ov065_02286934_Buf.h"
+#include "net/Unk_ov065_02286bb4_Pkt.h"
+#include "net/Unk_ov065_02286f04_Hostent.h"
+#include "net/Unk_ov065_02287000_Pkt.h"
+#include "net/Unk_ov065_022871ac_List.h"
 
 
 extern "C" { s32 data_ov065_02291504; } //@
@@ -12,28 +21,9 @@ extern "C" {
 
 // ov065_061: SSL/TLS-like handshake state machine (0x02285630..0x02285eb8)
 
-struct Unk_ov065_02285630_Item {
-    s32 offset;
-    s32 len;
-    s32 type;
-    u16 serialNumber;
-    u16 unk_0e;
-};
 
-struct Unk_ov065_02285630_Item8 {
-    u8 pad_00[8];
-    u16 serialNumber;
-};
 
-struct Unk_ov065_02285630_Peer {
-    u8 pad_00[0x20];
-    s32 connectAttemptCallback;
-};
 
-struct Unk_ov065_02285630_Buf {
-    u8 *data;
-    s32 size;
-};
 
 struct Unk_ov065_02285630_Conn {
     s32 remoteIp;
@@ -59,7 +49,6 @@ struct Unk_ov065_02285630_Conn {
     s32 pendingAckTime;
 };
 
-struct Unk_ov065_022856f8_B4 { u8 a, b, c, d; };
 
 typedef Unk_ov065_02285630_Conn Cn;
 typedef Unk_ov065_02285630_Item It;
@@ -325,96 +314,16 @@ extern "C" {
 #define SWAP32(x) ((((x) << 24) & 0xff000000) | ((((x) << 8) & 0xff0000) | ((((x) >> 24) & 0xff) | (((x) >> 8) & 0xff00))))
 #define SWAP16(x) ((((x) >> 8) & 0xff) | (((x) << 8) & 0xff00))
 
-struct Unk_ov065_022868b0_InAddr {
-    u32 addr;
-};
 
-struct Unk_ov065_02286c74_Sa {
-    u8 len;
-    u8 family;
-    u16 port;
-    u32 addr;
-};
 
-typedef void (*Unk_ov065_02286c74_Cb34)(s32 state, void *user);
-typedef void (*Unk_ov065_02286c74_Cb38)(s32 code, s32 fd, void *arg, void *user);
 
-struct Unk_ov065_02286c74_Ctx {
-    s32 negSock;
-    s32 gameSock;
-    u32 cookie;
-    s32 clientIndex;
-    s32 state;
-    s32 initAcked[3];
-    s32 retryCount;
-    s32 maxRetries;
-    u32 retryTime;
-    u32 peerIp;
-    u16 peerPort;
-    u8 gotPeerPing;
-    u8 sentGotPeerPing;
-    Unk_ov065_02286c74_Cb34 unk_34;
-    Unk_ov065_02286c74_Cb38 unk_38;
-    void *userData;
-};
 
-struct Unk_ov065_02286934_Buf14 {
-    u8 b[0x14];
-};
 
-struct Unk_ov065_02286934_Buf15 {
-    u8 b[0x15];
-};
 
-struct Unk_ov065_02286bb4_Magic {
-    u8 b[6];
-};
 
-struct Unk_ov065_02286bb4_Pkt {
-    u8 magic[6];
-    u8 version;
-    u8 type;
-    u32 cookie;
-    u8 peerIp;
-    u8 clientIndex;
-    u8 unk_0e;
-    u8 unk_0f;
-    u8 peerPort;
-    u8 unk_11;
-    u8 gotPeerPing;
-    u8 finished;
-    u8 unk_14;
-};
 
-struct Unk_ov065_02287000_Pkt {
-    u8 magic[6];
-    u8 version;
-    u8 type;
-    u32 cookie;
-    u8 unk_0c;
-    u8 unk_0d;
-    u8 unk_0e;
-    u8 localIp0;
-    u8 localIp1;
-    u8 localIp2;
-    u8 localIp3;
-    u8 localPortHi;
-    u8 localPortLo;
-    char name[0x43];
-};
 
-struct Unk_ov065_02286f04_Hostent {
-    char *name;
-    char **aliases;
-    s16 addrtype;
-    s16 length;
-    u32 **addr_list;
-};
 
-struct Unk_ov065_022871ac_List {
-    u8 pad_00[0xc];
-    u8 *addrList;
-};
 
 extern "C" {
 extern s32 data_ov065_02291504;

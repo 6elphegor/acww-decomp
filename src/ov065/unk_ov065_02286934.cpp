@@ -2,6 +2,17 @@
 
 #include "types.h"
 #include "net/Unk_ov065_022786bc_Vec.h"
+#include "net/Unk_ov065_022868b0_InAddr.h"
+#include "net/Unk_ov065_02286c74_Ctx.h"
+#include "net/Unk_ov065_02286934_Buf.h"
+#include "net/Unk_ov065_02286bb4_Pkt.h"
+#include "net/Unk_ov065_02286f04_Hostent.h"
+#include "net/Unk_ov065_02287000_Pkt.h"
+#include "net/Unk_ov065_022871ac_List.h"
+#include "net/Unk_ov065_02287200_Sa.h"
+#include "net/Unk_ov065_02287348_Ent.h"
+#include "net/Unk_ov065_02287390_Qr.h"
+#include "net/Unk_ov065_0228758c_B4.h"
 
 
 
@@ -15,96 +26,16 @@ extern "C" {
 #define SWAP32(x) ((((x) << 24) & 0xff000000) | ((((x) << 8) & 0xff0000) | ((((x) >> 24) & 0xff) | (((x) >> 8) & 0xff00))))
 #define SWAP16(x) ((((x) >> 8) & 0xff) | (((x) << 8) & 0xff00))
 
-struct Unk_ov065_022868b0_InAddr {
-    u32 addr;
-};
 
-struct Unk_ov065_02286c74_Sa {
-    u8 len;
-    u8 family;
-    u16 port;
-    u32 addr;
-};
 
-typedef void (*Unk_ov065_02286c74_Cb34)(s32 state, void *user);
-typedef void (*Unk_ov065_02286c74_Cb38)(s32 code, s32 fd, void *arg, void *user);
 
-struct Unk_ov065_02286c74_Ctx {
-    s32 negSock;
-    s32 gameSock;
-    u32 cookie;
-    s32 clientIndex;
-    s32 state;
-    s32 initAcked[3];
-    s32 retryCount;
-    s32 maxRetries;
-    u32 retryTime;
-    u32 peerIp;
-    u16 peerPort;
-    u8 gotPeerPing;
-    u8 sentGotPeerPing;
-    Unk_ov065_02286c74_Cb34 unk_34;
-    Unk_ov065_02286c74_Cb38 unk_38;
-    void *userData;
-};
 
-struct Unk_ov065_02286934_Buf14 {
-    u8 b[0x14];
-};
 
-struct Unk_ov065_02286934_Buf15 {
-    u8 b[0x15];
-};
 
-struct Unk_ov065_02286bb4_Magic {
-    u8 b[6];
-};
 
-struct Unk_ov065_02286bb4_Pkt {
-    u8 magic[6];
-    u8 version;
-    u8 type;
-    u32 cookie;
-    u8 peerIp;
-    u8 clientIndex;
-    u8 unk_0e;
-    u8 unk_0f;
-    u8 peerPort;
-    u8 unk_11;
-    u8 gotPeerPing;
-    u8 finished;
-    u8 unk_14;
-};
 
-struct Unk_ov065_02287000_Pkt {
-    u8 magic[6];
-    u8 version;
-    u8 type;
-    u32 cookie;
-    u8 unk_0c;
-    u8 unk_0d;
-    u8 unk_0e;
-    u8 localIp0;
-    u8 localIp1;
-    u8 localIp2;
-    u8 localIp3;
-    u8 localPortHi;
-    u8 localPortLo;
-    char name[0x43];
-};
 
-struct Unk_ov065_02286f04_Hostent {
-    char *name;
-    char **aliases;
-    s16 addrtype;
-    s16 length;
-    u32 **addr_list;
-};
 
-struct Unk_ov065_022871ac_List {
-    u8 pad_00[0xc];
-    u8 *addrList;
-};
 
 extern "C" {
 extern s32 data_ov065_02291504;
@@ -191,74 +122,12 @@ extern "C" {
 
 // ov065_064: GameSpy query-and-report style (0xfe 0xfd packets) server object helpers (0x02287200..0x02287aa4)
 
-struct Unk_ov065_02287390_Buf {
-    u8 data[0x800];
-    s32 len;
-};
 
-struct Unk_ov065_02287390_Qr;
-struct Unk_ov065_02287390_W {
-    u32 v;
-};
 
-typedef s32 (*Unk_ov065_02287390_Cb88)(u32, Unk_ov065_02287390_Buf *, void *);
-typedef s32 (*Unk_ov065_02287390_Cb8c)(u32, s32, Unk_ov065_02287390_Buf *, void *);
-typedef s32 (*Unk_ov065_02287390_Cb94)(s32, u8 *, void *);
-typedef s32 (*Unk_ov065_02287390_Cb98)(s32, void *);
-typedef s32 (*Unk_ov065_02287390_Cb9c)(s32, u8 *, void *);
-typedef s32 (*Unk_ov065_02287390_Cba0)(u32, void *);
-typedef s32 (*Unk_ov065_02287390_Cba4)(u8 *, s32, void *);
 
-struct Unk_ov065_02287390_Qr {
-    s32 sock;
-    u8 gameName[0x80];
-    u8 instanceKey[4];
-    Unk_ov065_02287390_Cb88 unk_88;
-    Unk_ov065_02287390_Cb8c unk_8c;
-    Unk_ov065_02287390_Cb8c unk_90;
-    Unk_ov065_02287390_Cb94 unk_94;
-    Unk_ov065_02287390_Cb98 unk_98;
-    Unk_ov065_02287390_Cb9c unk_9c;
-    Unk_ov065_02287390_Cba0 natNegCallback;
-    Unk_ov065_02287390_Cba4 clientMessageCallback;
-    s32 publicAddressCallback;
-    s32 lastHeartbeatTime;
-    s32 lastKeepAliveTime;
-    s32 stateChangePending;
-    s32 masterState;
-    s32 isPublic;
-    s32 localPort;
-    s32 ownsSocket;
-    s32 natNegEnabled;
-    u8 masterAddr[8];
-    s32 rawPacketCallback;
-    u32 recentMessageKeys[10];
-    s32 messageKeyIndex;
-    s32 publicIp;
-    u16 publicPort;
-    u16 unk_10a;
-    void *userData;
-};
 
-struct Unk_ov065_0228758c_B4 {
-    u8 b[4];
-};
 
-struct Unk_ov065_02287200_Sa {
-    u8 len;
-    u8 family;
-    u16 port;
-    u32 addr;
-};
 
-struct Unk_ov065_02287348_Ent {
-    s32 negSock;
-    s32 gameSock;
-    s32 cookie;
-    s32 clientIndex;
-    s32 state;
-    u8 unk_14[0x2c];
-};
 
 
 typedef Unk_ov065_02287390_Qr Qr;

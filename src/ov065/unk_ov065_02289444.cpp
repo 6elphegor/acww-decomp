@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/Unk_ov065_022786bc_Vec.h"
+#include "net/Unk_ov065_02288ffc_W.h"
 
 extern "C" {
 char *data_ov065_0228e954 = "Query Error: ";
@@ -19,9 +20,6 @@ struct Unk_ov065_02289258_Pad {
     ~Unk_ov065_02289258_Pad() {}
 };
 
-struct Unk_ov065_02288ffc_W {
-    char *v[2];
-};
 
 struct Unk_ov065_0228909c_P {
     u32 a;

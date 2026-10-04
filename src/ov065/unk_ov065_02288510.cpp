@@ -1,70 +1,18 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_02288538_Cipher.h"
+#include "net/Unk_ov065_02288b60_Mgr.h"
 
 // ov065_066: GameSpy transport (RC4-like cipher, connection manager) 0x022884fc..0x02288df0
 
-struct Unk_ov065_02288538_Cipher {
-    u8 s[0x100];
-    u8 i;
-    u8 j;
-    u8 k;
-    u8 l;
-    u8 m;
-};
 
-struct Unk_ov065_02288b60_Sa {
-    u8 len;
-    u8 family;
-    u16 port;
-    u32 addr;
-};
 
-struct Unk_ov065_02288b60_Ent {
-    u32 addr;
-    u16 port;
-    u16 pad_06;
-    u32 addr2;
-    u16 port2;
-    u16 pad_0e;
-    s32 altAddr;
-    u8 stateFlags;
-    u8 listFlags;
-    u16 pad_16;
-    void *keyValues;
-    u32 ping;
-    Unk_ov065_02288b60_Ent *next;
-};
 
-struct Unk_ov065_02288c78_List {
-    Unk_ov065_02288b60_Ent *head;
-    Unk_ov065_02288b60_Ent *tail;
-    s32 count;
-};
 
 struct Unk_ov065_02288b60_Mgr;
-typedef void (*Unk_ov065_02288b60_Cb)(Unk_ov065_02288b60_Mgr *m, s32 code, void *arg, void *user);
 
-struct Unk_ov065_02288b60_Mgr {
-    s32 mode;
-    s32 max;
-    Unk_ov065_02288c78_List active;
-    Unk_ov065_02288c78_List pending;
-    s32 sock;
-    s32 sock2;
-    u32 publicIp;
-    u8 key[0x14];
-    s32 keycount;
-    Unk_ov065_02288b60_Cb cb;
-    void *user;
-};
 
-struct Unk_ov065_02288b60_Buf13 {
-    u8 b[13];
-};
 
-struct Unk_ov065_02288b60_Buf8 {
-    u8 b[8];
-};
 
 extern "C" {
 extern u32 gGsKeyNames[];

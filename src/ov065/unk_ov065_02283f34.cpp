@@ -2,6 +2,10 @@
 
 #include "types.h"
 #include "net/Unk_ov065_022786bc_Vec.h"
+#include "net/Unk_ov065_02284100_Buf.h"
+#include "net/Unk_ov065_0228412c_Obj.h"
+#include "net/Unk_ov065_02285630_Item.h"
+#include "net/Unk_ov065_022856f8_B4.h"
 
 extern "C" { u8 data_ov065_0228e14c[4] = {0xfe, 0xfe, 0, 0}; }
 
@@ -14,27 +18,7 @@ extern "C" {
 // ov065_058: GameSpy-style pauthr/getpidr/setpdr reply handling, string buffer helpers (0x022838c4..0x022841a4)
 
 
-struct Unk_ov065_02284100_Buf {
-    char *data;
-    s32 size;
-    s32 len;
-};
 
-struct Unk_ov065_0228412c_Obj {
-    s32 sock;
-    s32 localIp;
-    s32 localPort;
-    s32 connections;
-    s32 closedConnections;
-    s32 freePending;
-    s32 hasError;
-    s32 callbackLevel;
-    s32 connectAttemptCallback;
-    s32 unk_24;
-    s32 (*unk_28)(Unk_ov065_0228412c_Obj *, Unk_ov065_0228412c_Obj *, s32, s32, s32, s32, s32);
-    s32 (*unk_2c)(Unk_ov065_0228412c_Obj *, Unk_ov065_0228412c_Obj *, s32, s32, s32, s32, s32);
-    s32 (*unk_30)(Unk_ov065_0228412c_Obj *, s32, s32, s32, s32);
-};
 
 extern "C" {
 extern Unk_ov065_022786bc_Vec *sGsPersistRequests;
@@ -448,28 +432,9 @@ extern "C" {
 
 // ov065_061: SSL/TLS-like handshake state machine (0x02285630..0x02285eb8)
 
-struct Unk_ov065_02285630_Item {
-    s32 offset;
-    s32 len;
-    s32 type;
-    u16 serialNumber;
-    u16 unk_0e;
-};
 
-struct Unk_ov065_02285630_Item8 {
-    u8 pad_00[8];
-    u16 serialNumber;
-};
 
-struct Unk_ov065_02285630_Peer {
-    u8 pad_00[0x20];
-    s32 connectAttemptCallback;
-};
 
-struct Unk_ov065_02285630_Buf {
-    u8 *data;
-    s32 size;
-};
 
 struct Unk_ov065_02285630_Conn {
     s32 remoteIp;
@@ -495,7 +460,6 @@ struct Unk_ov065_02285630_Conn {
     s32 pendingAckTime;
 };
 
-struct Unk_ov065_022856f8_B4 { u8 a, b, c, d; };
 
 typedef Unk_ov065_02285630_Conn Cn;
 typedef Unk_ov065_02285630_Item It;

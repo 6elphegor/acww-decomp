@@ -3,98 +3,29 @@
 #include "net/Unk_ov065_02281974_Pair.h"
 #include "net/Unk_ov065_02281790_Ctx.h"
 #include "net/Unk_ov065_02281bf4_Res.h"
+#include "net/Unk_ov065_02282f90_Conn.h"
+#include "net/Unk_ov065_022831c0_Obj.h"
+#include "net/Unk_ov065_022833b4_Pair.h"
+#include "net/Unk_ov065_02283744_Buf.h"
+#include "net/Unk_ov065_022837bc_Ent.h"
 
 // ov065 TU49: GP gpiSearch.c (0x02281a5c..0x02283304)
 
 namespace Nb {
-// ov065_057: search manager connect / parse helpers (0x02282f90..)
-struct Unk_ov065_02282f90_Ctx {
-    char errorString[0x100];
-    u8 pad_100[0x418 - 0x100];
-    s32 errorCode;
-};
 
-struct Unk_ov065_02282f90_Handle {
-    Unk_ov065_02282f90_Ctx *connection;
-};
 
-struct Unk_ov065_02282f90_Conn {
-    s32 searchType;
-    s32 sock;
-    s32 inputBuffer;
-    s32 inputBufferCapacity;
-    s32 inputBufferLength;
-    s32 inputBufferPos;
-    char *outputBuffer;
-    s32 outputBufferCapacity;
-    s32 outputBufferLength;
-    s32 outputBufferPos;
-    char nick[0x1f];
-    char uniqueNick[0x15];
-    char email[0x33];
-    char firstName[0x1f];
-    char lastName[0x1f];
-    u8 pad_cd[0x130 - 0xcd];
-    s32 icqUin;
-    s32 skip;
-    s32 productId;
-    s32 isProcessing;
-    s32 isFinished;
-};
 
-struct Unk_ov065_022831c0_Sock {
-    s32 searchType;
-    s32 sock;
-    char *inputBuffer;
-    s32 inputBufferCapacity;
-};
 
-struct Unk_ov065_022831c0_Obj {
-    s32 type;
-    Unk_ov065_022831c0_Sock *data;
-    s32 isBlocking;
-    s32 callbackFunc;
-    s32 callbackParam;
-    s32 state;
-    s32 id;
-};
 
-struct Unk_ov065_022831c0_Host {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 **addrList;
-};
 
-struct Unk_ov065_022831c0_Addr {
-    u8 unk_00;
-    u8 family;
-    u16 port;
-    u32 addr;
-};
 
-struct Unk_ov065_022833b4_Pair {
-    s32 v[2];
-};
 
 struct Unk_ov065_022833b4_Src {
     u8 pad_00[0xc];
     Unk_ov065_022833b4_Pair callback;
 };
 
-struct Unk_ov065_022837bc_Ent {
-    u32 requestType;
-    s32 localId;
-    s32 profileId;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 userData;
-    void *callback;
-};
 
-struct Unk_ov065_02283744_Buf {
-    u8 b[16];
-};
 
 extern "C" {
 void GsPersist_XorCrypt(char *, s32);
