@@ -14,6 +14,10 @@ Plain lines (`#` starts a comment):
     field  <Class> <offset> <new>       struct field `unk_<offset>` (also `member <Class> <offset> <type> <new>`)
     vfunc  <Class> <old> <new>          virtual method, for the whole hierarchy of the class that introduces it
     vfunc  <Class> slot:0x10 <new>      the same, by vtable offset (0x00/0x04 = destructor)
+    field  <Class> 0x374_b4 <new>       bitfield / suffixed placeholder `unk_374_b4` (`b10_0x768`: `b10_unk_768`)
+    promote <func_X> [<label>]          the real-name kind:label at the function's address becomes its name
+    merge  <OldClass> <ExistingClass>   a placeholder type that is an existing type (typedef, field-less subclass,
+                                        identical layout, view): uses become the existing type, Old is deleted
 
 Batch lines (pipeline_wip/phase1/survey/plan.md "Batch deliverable"), `|`-separated:
 
@@ -22,6 +26,8 @@ Batch lines (pipeline_wip/phase1/survey/plan.md "Batch deliverable"), `|`-separa
     method <Class> <old> <new>   | ...        (= member)
     vfunc <Class> <slot|old> <new> | ...
     member <Struct> <offset> <type> <name> | ...   struct field `unk_<offset>` of that class (type: documentation)
+    promote <func_X> [<label>]   | ...
+    merge <Old> <New>            | ...        (also `class <Old> <New>` when New is an existing type)
     unit <src path> <new path>   | ...                reported only
 
 Old names may be qualified with a module (`ov065:func_ov065_02268c38`, `main:`, `autoload_2:`, `itcm:`, `*:`).
@@ -139,8 +145,12 @@ class Mangled:
             self.encoding(top)
             return
         self.name()
+        n, first = 0, self.i
         while self.i < len(s) and (top or s[self.i] != "E"):
             self.type()
+            n += 1
+        if top:
+            self.params = 0 if (n == 1 and s[first:self.i] == "v") else n
 
     def source_name(self):
         j = self.i
@@ -493,11 +503,18 @@ class Rename:
         self.counts = defaultdict(int)
         self.files = set()
         self.unresolved = []
-        for m in getattr(self, "members", ()):
+        for m in list(getattr(self, "members", ())) + list(getattr(self, "subs", ())):
             m.reset()
 
     def absorb_members(self):
         """counts and problems of the member aliases of a func record (see check_func) become the record's"""
+        for m in getattr(self, "subs", ()):
+            for k, v in m.counts.items():
+                self.counts[f"field {m.old_field} -> {m.new}: {k}"] += v
+            self.files |= m.files
+            self.unresolved += m.unresolved
+            self.notes += m.notes
+            m.counts, m.unresolved, m.notes = defaultdict(int), [], []
         for m in getattr(self, "members", ()):
             for k, v in m.counts.items():
                 self.counts[f"member {m.path[-1]}::{m.new}: {k}"] += v
@@ -512,10 +529,13 @@ class Rename:
         if self.kind == "field":
             if getattr(self, "old_field", None):
                 return f"field {'::'.join(self.path)}::{self.old_field} -> {self.new}"
-            return f"field {'::'.join(self.path)} {self.offset:#04x} -> {self.new}"
+            return f"field {'::'.join(self.path)} " \
+                f"{offset_spelling(self.offset, getattr(self, 'fprefix', None), getattr(self, 'fsuffix', None))} -> {self.new}"
         if self.kind == "vfunc":
             what = self.old if self.slot is None else f"slot:{self.slot:#04x}"
             return f"vfunc {self.path[-1]} {what} -> {self.new}"
+        if self.kind == "class" and getattr(self, "merge", None) is not None:
+            return f"merge {q}{self.old} -> {self.new}"
         return f"{self.kind} {q}{self.old} -> {self.new}"
 
 
@@ -526,6 +546,36 @@ class Report:
 
 
 QUALIFIER = re.compile(r"(\*|main|itcm|dtcm|autoload_\d+|ov\d{3}):(?!:)(.+)$")
+
+
+# a field offset in a record: `0x374`, a bitfield or suffixed placeholder `0x374_b4` (= unk_374_b4), a prefixed
+# per-subclass placeholder `b10_0x768` (= b10_unk_768)
+FIELD_OFF = re.compile(r"(?:([A-Za-z]\w*?)_)?(0x[0-9a-fA-F]+)(?:_(\w+))?")
+UNK_FIELD = re.compile(r"(?:([A-Za-z]\w*?)_)?unk_([0-9a-fA-F]+)(?:_(\w+))?")
+
+
+def parse_field_offset(text):
+    """(offset, prefix, suffix) of a record's field offset, or None"""
+    if text.startswith("slot:"):
+        off = parse_slot(text)
+        return None if off is None else (off, None, None)
+    mo = FIELD_OFF.fullmatch(text)
+    return (int(mo[2], 16), mo[1], mo[3]) if mo else None
+
+
+def unk_parts(name):
+    """(prefix, offset, suffix) of a placeholder field name: `unk_10` (None, 0x10, None), `unk_374_b4` (None, 0x374,
+    'b4'), `b10_unk_768` ('b10', 0x768, None); None for other names"""
+    mo = UNK_FIELD.fullmatch(name)
+    return (mo[1], int(mo[2], 16), mo[3]) if mo else None
+
+
+def offset_spelling(off, prefix=None, suffix=None):
+    return (f"{prefix}_" if prefix else "") + f"{off:#04x}" + (f"_{suffix}" if suffix else "")
+
+
+def unk_spelling(off, prefix=None, suffix=None):
+    return (f"{prefix}_" if prefix else "") + f"unk_{off:02x}" + (f"_{suffix}" if suffix else "")
 
 
 def parse_slot(text):
@@ -566,8 +616,9 @@ def parse_list(path):
         if kind == "unit" and len(f) == 3:
             reports.append(Report("unit", f[1:], where, s, batch, confidence, evidence))
             continue
-        if (kind == "field" and len(f) == 4 and not f[2].startswith(("0x", "slot:"))) or \
-                (kind == "member" and len(f) == 4 and IDENT.fullmatch(f[2]) and not f[2].startswith("0x")):
+        off_form = len(f) >= 3 and parse_field_offset(f[2]) is not None
+        if (kind == "field" and len(f) == 4 and not off_form) or \
+                (kind == "member" and len(f) == 4 and IDENT.fullmatch(f[2]) and not off_form):
             # an existing (meaningful) name: `field <Class> <old> <new>`; `member <Class> <old> <new>` is a field or a
             # method, whichever the class declares (decided in normalize)
             if not all(IDENT.fullmatch(x) for x in f[1].split("::")) or not IDENT.fullmatch(f[3]):
@@ -579,16 +630,47 @@ def parse_list(path):
             r.either = kind == "member"
             renames.append(r)
             continue
-        if (kind == "member" and len(f) >= 4 and f[2].startswith("0x")) or (kind == "field" and len(f) == 4):
-            # struct field: `member <Class> <offset> <type> <name>` (batch format) or `field <Class> <offset> <name>`
-            off = parse_slot(f[2]) if f[2].startswith(("0x", "slot:")) else None
-            if off is None or not all(IDENT.fullmatch(x) for x in f[1].split("::")):
+        if (kind == "member" and len(f) >= 4 and off_form) or (kind == "field" and len(f) == 4):
+            # struct field: `member <Class> <offset> <type> <name>` (batch format) or `field <Class> <offset> <name>`;
+            # the offset may name a bitfield/suffixed placeholder (`0x374_b4`) or a prefixed one (`b10_0x768`)
+            parsed = parse_field_offset(f[2]) if off_form else None
+            if parsed is None or not all(IDENT.fullmatch(x) for x in f[1].split("::")):
                 bad("expected `member <Class> <0xoffset> <type> <name>` (or `<namespace>::<Class>`)")
                 continue
+            off = parsed[0]
             name, dims = re.fullmatch(r"([^\[]*)(.*)", f[-1]).groups()  # `script[2]`: the array belongs to the type
             r = Rename("field", None, None, name, where, s, batch, confidence, evidence)
             r.path, r.offset = tuple(f[1].split("::")), off  # `ns_0220b0f0::Obj`: the copies in that namespace
+            r.fprefix, r.fsuffix = parsed[1], parsed[2]
             r.ftype = (" ".join(f[3:-1]) + dims) if kind == "member" else None
+            renames.append(r)
+            continue
+        if kind == "promote" and len(f) in (2, 3):
+            # `promote <func_X> [<label>]`: the kind:label alias at the function's address that carries its real name
+            # becomes the function's name (symbols.txt, sources, docs)
+            old, qual = f[1], None
+            m = QUALIFIER.match(old)
+            if m:
+                qual, old = m[1], m[2]
+            if not IDENT.fullmatch(old) or (len(f) == 3 and not IDENT.fullmatch(f[2])):
+                bad("expected `promote <function symbol> [<label>]`")
+                continue
+            r = Rename("promote", qual, old, f[2] if len(f) == 3 else None, where, s, batch, confidence, evidence)
+            r.label_given = len(f) == 3
+            renames.append(r)
+            continue
+        if kind == "merge" and len(f) == 3:
+            # `merge <Old> <New>`: the type Old is the existing type New (typedef, field-less subclass, identical layout
+            # or a view of it): every use becomes New and Old's definitions go away
+            old, qual = f[1], None
+            m = QUALIFIER.match(old)
+            if m:
+                qual, old = m[1], m[2]
+            if not IDENT.fullmatch(old) or not IDENT.fullmatch(f[2]):
+                bad("expected `merge <OldClass> <ExistingClass>`")
+                continue
+            r = Rename("class", qual, old, f[2], where, s, batch, confidence, evidence)
+            r.merge_requested = True
             renames.append(r)
             continue
         if kind in ("func", "data", "class") and len(f) == 3:
@@ -634,7 +716,7 @@ def parse_list(path):
                 continue
             renames.append(r)
             continue
-        bad("unknown record (func|data|class|method|member|field|vfunc|unit)")
+        bad("unknown record (func|data|class|merge|promote|method|member|field|vfunc|unit)")
     return renames, reports
 
 
@@ -1185,6 +1267,7 @@ class Index:
         self.sym_components = set()
         self.sym_methods = defaultdict(set)
         self.sym_addr = defaultdict(list)     # (module, address) -> names
+        self.sym_kind = {}                    # (module, name) -> kind field (`function(arm,size=0x2c)`, `label(arm)`)
         self.vtables = {}                     # class -> (module, address of _ZTV)
         self.unparsed = []
         self.files = {}
@@ -1200,11 +1283,12 @@ class Index:
             for a, b in config_fields(p, text):
                 (self.symbols if p.name == "symbols.txt" else self.other_config)[text[a:b]].add(module)
             if p.name == "symbols.txt":
-                for mo in re.finditer(r"^(\S+) kind:\S+ addr:(0x[0-9a-fA-F]+)", text, re.M):
-                    self.sym_addr[(module, int(mo[2], 16))].append(mo[1])
+                for mo in re.finditer(r"^(\S+) kind:(\S+) addr:(0x[0-9a-fA-F]+)", text, re.M):
+                    self.sym_addr[(module, int(mo[3], 16))].append(mo[1])
+                    self.sym_kind[(module, mo[1])] = mo[2]
                     vt = re.fullmatch(r"_ZTV(\d+)([A-Za-z_]\w*)", mo[1])
                     if vt and int(vt[1]) == len(vt[2]):
-                        self.vtables[vt[2]] = (module, int(mo[2], 16))
+                        self.vtables[vt[2]] = (module, int(mo[3], 16))
         for name, mods in list(self.symbols.items()):
             if name.startswith("_Z"):
                 self.add_mangled(name, mods, True)
@@ -1725,8 +1809,14 @@ class Renamer:
         self.field_pairs = defaultdict(dict)        # old field name -> {class: [renames]}
         self.field_decls = defaultdict(dict)        # path -> {position of a declared field name: rename}
         self.leave_unresolved_fields = False
+        self.need_define = defaultdict(dict)        # path -> {call macro: label} (promote records)
+        renames = [x for r in renames for x in [r] + list(getattr(r, "subs", ()))]  # merge: its field records
+        self.exclude = defaultdict(list)            # path -> [(start, end)] declarations a merge deletes
         for r in renames:
-            if r.kind == "func":
+            for p_, spans in (getattr(r, "merge", None) or {}).get("deletes", {}).items():
+                self.exclude[p_] += spans
+        for r in renames:
+            if r.kind in ("func", "promote"):
                 self.funcs[r.old] = r
                 for m in getattr(r, "members", ()):  # member aliases of the same function
                     for path, old in m.pairs:
@@ -1752,6 +1842,11 @@ class Renamer:
                         self.file_pairs[f][old][cls] = r
                         self.any_pairs[old].setdefault(cls, r)
         self.mangled_needed = bool(self.classes or self.mangled_members)
+        self.overloads = {}                         # (class, old method) -> parameter count of the renamed overload
+        for r in renames:
+            for k, v in (getattr(r, "overloads", None) or {}).items():
+                self.overloads[k] = v
+        self.overload_names = {k[1] for k in self.overloads}
         self.produced_candidates = [r for r in renames if r.kind != "func"]
         subs = set(self.funcs) | set(self.classes) | set(self.any_pairs) | set(self.field_pairs)
         self.prefilter = re.compile("|".join(re.escape(s) for s in sorted(subs, key=len, reverse=True))) \
@@ -1825,6 +1920,10 @@ class Renamer:
             cls = tuple(c[3] if c[0] == "name" else None for c in names[:-1])
             for cpath, r in self.mangled_members.get(names[-1][3], ()):
                 if cls[-len(cpath):] == cpath:
+                    want = self.overloads.get((cpath[-1], names[-1][3]))
+                    if want is not None and getattr(m, "params", None) != want:
+                        r.counts["left (other overload)"] += 1
+                        break
                     edits.append((names[-1][1], names[-1][2], r))
                     break
         if not edits:
@@ -1834,7 +1933,8 @@ class Renamer:
             if a < last:
                 continue
             out.append(tok[last:a])
-            out.append(f"{len(r.new)}{r.new}")
+            nn = (getattr(r, "mangled_new", None) or r.new) if r.kind == "class" else r.new
+            out.append(f"{len(nn)}{nn}")
             last = b
             self.hit(r, category, path)
         out.append(tok[last:])
@@ -1933,6 +2033,40 @@ class Renamer:
         for r in {id(x): x for x in pairs.values()}.values():
             r.unresolved.append(f"{where}: `{tok}` ({'receiver ' + cls if cls else 'receiver unknown'})")
         return None
+
+    def overload_check(self, tok, new, seg, end, pos, fm, code, path):
+        """an occurrence of an overloaded method name that decide_method attributed to a renamed class: keep it unless
+        its argument count is the renamed overload's"""
+        recs = [(k, v) for k, v in self.overloads.items() if k[1] == tok]
+        rs = [r for x in self.any_pairs[tok].values() for r in [x] if r.new == new and
+              any(k in (getattr(r, "overloads", None) or {}) for k, _ in recs)]
+        if not rs:
+            return new
+        r = rs[0]
+        want = next(v for k, v in r.overloads.items() if k[1] == tok)
+        if not code or fm is None:
+            r.counts["left (comment, overloaded name)"] += 1
+            return None
+        mo = re.match(r"\s*\(", fm.masked[pos + len(tok):pos + len(tok) + 200])
+        if not mo:
+            r.unresolved.append(f"{path.relative_to(self.repo.root)}:{fm.line(pos)}: `{tok}` without an argument list "
+                                f"(overloaded: which one?)")
+            return None
+        o = pos + len(tok) + mo.end() - 1
+        c = fm.parens.get(o)
+        if c is None:
+            r.unresolved.append(f"{path.relative_to(self.repo.root)}:{fm.line(pos)}: `{tok}(` unbalanced")
+            return None
+        inner = fm.masked[o + 1:c].strip()
+        depth, n = 0, (0 if inner in ("", "void") else 1)
+        for ch in inner:
+            depth += ch in "(<[{"
+            depth -= ch in ")>]}"
+            n += ch == "," and depth == 0
+        if n != want:
+            r.counts["left (other overload)"] += 1
+            return None
+        return new
 
     def decide_field(self, tok, pos, fm, path):
         """new name for a field identifier at pos (code of a source file), or None to keep it"""
@@ -2095,6 +2229,18 @@ class Renamer:
                 if rf is not None:
                     return self.hit(rf, category, path)
                 r = self.funcs.get(tok) or self.classes.get(tok)
+                if r is not None and r.kind == "promote" and self.in_scope(r, module):
+                    if category.startswith("config"):
+                        self.produced[r.new].add(r)
+                        return self.hit(r, category, path)
+                    if category == "src" and code:
+                        if r.macro and not fm.asm:
+                            self.need_define[path][r.macro] = r.new
+                            self.hit(r, "src (call macro)", path)
+                            return r.macro
+                        return self.hit(r, category, path)
+                    self.hit(r, "comment/docs" if category == "src" else category, path)
+                    return r.display
                 if r is not None and getattr(r, "members", None) and category == "src":
                     # the name is also a member alias: occurrences that resolve to the member get the member's name
                     member = self.decide_method(tok, text, a + m.start(), fm, code, path, free_fallback=True)
@@ -2114,6 +2260,8 @@ class Renamer:
                     return self.decide_field(tok, a + m.start(), fm, path) or tok
                 if tok in self.any_pairs:
                     new = self.decide_method(tok, text, a + m.start(), fm, code, path)
+                    if new and tok in self.overload_names:
+                        new = self.overload_check(tok, new, seg, m.end(), a + m.start(), fm, code, path)
                     return new or tok
                 if self.mangled_needed and tok.startswith("_Z"):
                     before = {id(x): sum(x.counts.values()) for x in self.produced_candidates}
@@ -2158,6 +2306,9 @@ class Renamer:
 
     def count_strings(self, text, spans, path):
         for a, b in spans:
+            ls = text.rfind("\n", 0, a) + 1
+            if re.match(r"[ \t]*#[ \t]*include\b", text[ls:a]):
+                continue  # an #include path (`Unk_x.h`): a file name
             for m in TOKEN.finditer(text, a, b):
                 r = self.funcs.get(m[0]) or self.classes.get(m[0])
                 if r:
@@ -2185,7 +2336,21 @@ class Renamer:
             segs = list(code_segments(text, p.suffix == ".s"))
             self.count_strings(text, [(a, b) for a, b, k in segs if k == "string"], p)
             spans = [(a, b, k == "code") for a, b, k in segs if k != "string" and b > a]
+            if self.exclude.get(p):
+                cut = []
+                for a, b, code in spans:
+                    for xa, xb in sorted(self.exclude[p]):
+                        if xb <= a or xa >= b:
+                            continue
+                        if xa > a:
+                            cut.append((a, xa, code))
+                        a = max(a, xb)
+                    if b > a:
+                        cut.append((a, b, code))
+                spans = cut
             new = self.rewrite_text(text, spans, fm.module, "src", p, False, fm)
+            if self.need_define.get(p):
+                new = insert_call_macros(new, self.need_define[p])
             if new != text:
                 changed[p] = new
         for p in repo.docs:
@@ -2195,7 +2360,27 @@ class Renamer:
             new = self.rewrite_text(text, [(0, len(text), False)], None, "docs", p, True)
             if new != text:
                 changed[p] = new
-        return changed
+        return apply_merge_edits(self, changed)
+
+
+def insert_call_macros(text, macros):
+    """`#define <macro> <label>` before the first use of each call macro (promote records), unless the file already
+    defines it so. The line goes before the line of the first use (before a whole #define with continuation lines)"""
+    for macro, label in macros.items():
+        if re.search(r"^[ \t]*#[ \t]*define[ \t]+" + re.escape(macro) + r"[ \t]+" + re.escape(label) + r"[ \t]*$", text, re.M):
+            continue
+        mo = re.search(r"(?<![A-Za-z0-9_$])" + re.escape(macro) + r"(?![A-Za-z0-9_$])", text)
+        if not mo:
+            continue
+        ls = text.rfind("\n", 0, mo.start()) + 1
+        while ls > 0:
+            prev = text.rfind("\n", 0, ls - 1) + 1
+            if not text[prev:ls - 1].rstrip("\r").endswith("\\"):
+                break
+            ls = prev
+        nl = "\r\n" if "\r\n" in text[:ls] else "\n"
+        text = text[:ls] + f"#define {macro} {label}{nl}" + text[ls:]
+    return text
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -2203,7 +2388,7 @@ class Renamer:
 # ---------------------------------------------------------------------------------------------------------------
 
 def valid_new_name(r):
-    if r.kind == "func" and r.new.startswith("_Z"):
+    if r.kind in ("func", "promote") and r.new.startswith("_Z"):
         return parse_mangled(r.new) is not None
     return bool(IDENT.fullmatch(r.new)) and r.new not in KEYWORDS
 
@@ -2241,6 +2426,9 @@ def normalize(r, idx):
             if slot_of(idx, cls, old) is not None:
                 r.kind = "vfunc"
             r.notes.append(f"`{before}` names a method: treated as `{r.label()}`")
+        return
+    if r.kind == "promote" and not r.errors:
+        resolve_promote(r, idx)
         return
     if r.kind != "func" or r.errors:
         return
@@ -2288,6 +2476,159 @@ def normalize(r, idx):
     else:
         r.kind = "member"
     r.notes.append(f"`{before}` names a method: treated as `{r.label()}`")
+
+
+CTOR_MACRO = {"C1": "ctor", "C2": "ctorBase", "C3": "ctorAlloc", "D0": "dtorDeleting", "D1": "dtor", "D2": "dtorBase"}
+
+
+def placeholder_symbol(name):
+    """a symbol name that is itself a placeholder: `func_`/`data_`/an address, or a mangled name with an `Unk_` class,
+    a `func_`/`vfunc_` method or an unparseable form"""
+    if not name.startswith("_Z"):
+        return bool(PLACEHOLDER.fullmatch(name))
+    m = parse_mangled(name)
+    if m is None:
+        return True
+    return any(re.match(r"(?:Unk_|func_|vfunc_)", t) or re.search(r"[0-9a-fA-F]{8}", t) for _, _, t in m.names)
+
+
+def label_names(label):
+    """(macro name, display name, problem) for promoting a kind:label: a method label `_ZN4Heap8setFlagsEj` is used
+    through the call macro `Heap_setFlags` (`#define Heap_setFlags _ZN4Heap8setFlagsEj`), shown as `Heap::setFlags`
+    in comments and docs; constructors/destructors get `<Class>_ctor`/`_dtor`... (see CTOR_MACRO); a plain label is
+    used as it is (macro None)"""
+    if not label.startswith("_Z"):
+        return None, label, None
+    m = parse_mangled(label)
+    if m is None:
+        return None, label, "unparseable mangled name"
+    if not label.startswith("_ZN") or not m.nested:
+        return None, label, None  # a C++ free function: its mangled name is used as it is
+    comps = [c for c in m.nested[0] if c[0] != "targs"]
+    if len(comps) < 2 or any(c[0] != "name" for c in comps[:-1]):
+        return None, label, "not a method of a named class"
+    path = [c[3] for c in comps[:-1]]
+    last = comps[-1]
+    if last[0] == "name":
+        meth = last[3]
+        return "_".join(path) + "_" + meth, "::".join(path) + "::" + meth, None
+    if last[0] == "ctor" and last[3] in CTOR_MACRO:
+        tilde = "~" if last[3].startswith("D") else ""
+        return "_".join(path) + "_" + CTOR_MACRO[last[3]], "::".join(path) + f"::{tilde}{path[-1]}", None
+    return None, label, f"unsupported name component {last[3]}"
+
+
+def resolve_promote(r, idx):
+    """`promote <func_X> [<label>]`: find the function's address and the real-name label there (r.new)"""
+    keys = idx.addresses().get(r.old, set())
+    if r.qual not in (None, "*"):
+        keys = {k for k in keys if k[0] == r.qual}
+    if not keys:
+        r.errors.append(f"{r.where}: {r.old} is not a symbols.txt name" + (f" of {r.qual}" if r.qual not in (None, "*") else ""))
+        return
+    if len(keys) > 1:
+        r.errors.append(f"{r.where}: {r.old} is in the symbols.txt of several modules ({', '.join(sorted(k[0] for k in keys))}); "
+                        f"qualify it")
+        return
+    ((mod, addr),) = keys
+    r.module, r.addr = mod, addr
+    kind = idx.sym_kind.get((mod, r.old), "")
+    if not kind.startswith("function"):
+        r.errors.append(f"{r.where}: {r.old} is a `{kind}` symbol, not the function symbol of {addr:#010x}")
+        return
+    if not PLACEHOLDER.fullmatch(r.old) or (r.old.startswith("_Z") and not placeholder_symbol(r.old)):
+        r.errors.append(f"{r.where}: {r.old} is not a placeholder name")
+        return
+    labels = [n for n in idx.sym_addr[(mod, addr)] if n != r.old and idx.sym_kind.get((mod, n), "").startswith("label")]
+    if r.new is not None:
+        if r.new not in labels:
+            r.errors.append(f"{r.where}: {r.new} is not a kind:label of {addr:#010x} in {mod}'s symbols.txt (labels there: "
+                            f"{', '.join(labels) or 'none'})")
+            return
+        cands = [r.new]
+    else:
+        cands = [n for n in labels if not placeholder_symbol(n)]
+    if r.old.startswith("_Z") and cands:
+        _, disp, _ = label_names(cands[0])
+        r.errors.append(f"{r.where}: {r.old} is a method symbol; its label {cands[0]} ({disp}) cannot be promoted by "
+                        f"renaming (the method's declaration would have to become {disp}): rename it with `method`, "
+                        f"or by hand")
+        return
+    if len(cands) > 1:
+        # the complete-object and base-object variants of one constructor/destructor (C1+C2, D1+D2) share the body:
+        # the complete one (C1/D1) is promoted, the other stays a label
+        kinds = {}
+        for n in cands:
+            mm = parse_mangled(n)
+            last = [c for c in mm.nested[0] if c[0] != "targs"] if mm and mm.nested else []
+            if last and last[-1][0] == "ctor":
+                kinds[n] = (tuple(c[3] for c in last[:-1]), last[-1][3])
+        if len(kinds) == len(cands) and len({k[0] for k in kinds.values()}) == 1:
+            pref = [n for n, k in kinds.items() if k[1] in ("C1", "D1")]
+            if len(pref) == 1 and {k[1][0] for k in kinds.values()} == {pref[0] and kinds[pref[0]][1][0]}:
+                r.notes.append(f"labels {', '.join(cands)}: the complete-object variant {pref[0]} is promoted, the "
+                               f"others stay labels")
+                cands = pref
+    if len(cands) > 1:
+        r.errors.append(f"{r.where}: {r.old} has several real-name labels ({', '.join(cands)}); name the one to promote: "
+                        f"`promote {r.old} <label>`")
+        return
+    if not cands or placeholder_symbol(cands[0]):
+        waiting = [n for n in (cands or labels)]
+        unk = [n for n in waiting if parse_mangled(n) and any(t.startswith("Unk_") for _, _, t in parse_mangled(n).names)
+               and not any(re.match(r"v?func_", t) for _, _, t in parse_mangled(n).names)]
+        if unk:
+            r.errors.append(f"{r.where}: the label of {r.old} ({', '.join(unk)}) names a placeholder class: name the class "
+                            f"first, then promote")
+        elif waiting:
+            r.errors.append(f"{r.where}: the label(s) of {r.old} ({', '.join(waiting)}) are placeholders themselves: "
+                            f"nothing to promote")
+        else:
+            r.errors.append(f"{r.where}: {r.old} has no kind:label alias at {addr:#010x}")
+        return
+    r.new = cands[0]
+    r.macro, r.display, problem = label_names(r.new)
+    if problem:
+        r.errors.append(f"{r.where}: label {r.new}: {problem}")
+
+
+def check_promote(r, idx, allow_existing):
+    in_syms = idx.symbols.get(r.old, set())
+    in_src = idx.tokens.get(r.old, set()) | idx.other_config.get(r.old, set())
+    errors = resolve_scope(r, in_syms, in_src, "symbol")
+    if r.old in idx.sym_methods:
+        errors.append(f"{r.where}: {r.old} is also a method name in mangled symbols (a member alias); promote it by hand")
+    others = idx.addresses().get(r.new, set()) - {(r.module, r.addr)}
+    if others:
+        errors.append(f"{r.where}: {r.new} also names another address ({', '.join(f'{m} {a:#010x}' for m, a in sorted(others))})")
+    errors += paste_errors(r, idx)
+    if r.macro:
+        if r.macro in idx.symbols or r.macro in idx.other_config:
+            errors.append(f"{r.where}: the call macro name {r.macro} is a symbol name")
+        for p, fm in idx.files.items():
+            if r.macro in fm.masked and re.search(r"\b" + re.escape(r.macro) + r"\b", fm.masked) and \
+                    fm.defines.get(r.macro) != r.new:
+                errors.append(f"{r.where}: the call macro name {r.macro} is already used in {p.relative_to(idx.repo.root)} "
+                              f"(not as `#define {r.macro} {r.new}`)")
+                break
+    if not errors:
+        r.notes.append(f"{r.new} ({r.display}) becomes the function symbol of {r.module} {r.addr:#010x}"
+                       + (f"; code calls it through `#define {r.macro} {r.new}`" if r.macro else ""))
+    return errors
+
+
+def paste_errors(r, idx):
+    errors = []
+    for p, fm in idx.files.items():
+        for macro, prefix in getattr(fm, "paste_prefixes", ()):
+            rest = r.old[len(prefix):]
+            if r.old.startswith(prefix) and rest:
+                mo = re.search(r"\b" + re.escape(macro) + r"\s*\(\s*" + re.escape(rest) + r"\s*\)", fm.masked)
+                if mo:
+                    errors.append(f"{r.where}: {r.old} is also spelled by token pasting, `{mo[0]}` with "
+                                  f"`#define {macro}(..) ..{prefix}##..` at {p.relative_to(idx.repo.root)}:"
+                                  f"{fm.line(mo.start())}; expand that use (or the macro) by hand first")
+    return errors
 
 
 def resolve_scope(r, global_mods, src_mods, what, cfg="symbols.txt"):
@@ -2342,15 +2683,7 @@ def check_func(r, idx, allow_existing):
         errors += resolve_scope(r, in_lcf, in_src, "symbol", "lcf_symbols.txt/abs_symbols.txt")
     if not allow_existing and idx.used(r.new):
         errors.append(f"{r.where}: {r.new} is already used ({describe_use(idx, r.new)}); --allow-existing to accept")
-    for p, fm in idx.files.items():
-        for macro, prefix in getattr(fm, "paste_prefixes", ()):
-            rest = r.old[len(prefix):]
-            if r.old.startswith(prefix) and rest:
-                mo = re.search(r"\b" + re.escape(macro) + r"\s*\(\s*" + re.escape(rest) + r"\s*\)", fm.masked)
-                if mo:
-                    errors.append(f"{r.where}: {r.old} is also spelled by token pasting, `{mo[0]}` with "
-                                  f"`#define {macro}(..) ..{prefix}##..` at {p.relative_to(idx.repo.root)}:"
-                                  f"{fm.line(mo.start())}; expand that use (or the macro) by hand first")
+    errors += paste_errors(r, idx)
     if r.old.startswith("_Z"):
         r.notes.append("old name is mangled: only literal uses change (symbols.txt, extern \"C\" declarations)")
     if in_syms and r.old in idx.sym_methods:
@@ -2409,6 +2742,15 @@ def check_free(r, idx, allow_existing):
 
 
 def check_class(r, idx, allow_existing):
+    if getattr(r, "merge_requested", False) or (
+            r.new in idx.classes or any(r.new in getattr(fm, "typedefs", {}) for fm in idx.files.values())):
+        if not getattr(r, "merge_requested", False):
+            r.notes.append(f"{r.new} is an existing type: `class {r.old} {r.new}` is treated as `merge {r.old} {r.new}`")
+        r.merge = {}
+        errs = check_merge(r, idx)
+        if errs:
+            return errs
+        return []
     errors = []
     src_mods = idx.tokens.get(r.old, set()) | idx.components.get(r.old, set())
     if r.old not in idx.sym_components and not src_mods:
@@ -2423,6 +2765,590 @@ def check_class(r, idx, allow_existing):
     if not allow_existing and idx.used(r.new):
         errors.append(f"{r.where}: {r.new} is already used ({describe_use(idx, r.new)}); --allow-existing to accept")
     return errors
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# merge: a placeholder type that is an existing type
+# ---------------------------------------------------------------------------------------------------------------
+
+PAD_FIELD = re.compile(r"(?:[A-Za-z]\w*?_)?_?(?:pad|unused|filler|reserved)\w*")
+
+
+def filler_field(f):
+    """padding of a view: a pad-named field, or an `unk_` byte array (it stands for bytes the view does not use)"""
+    return bool(PAD_FIELD.fullmatch(f.name)) or (
+        unk_parts(f.name) is not None and re.fullmatch(r"(?:unsigned)?(?:u8|s8|char)\[.*", norm_type(f.type) or "") is not None)
+PRIM_ALIGN = {1: 1, 2: 2, 4: 4, 8: 4}
+
+
+def view_typedefs(idx, path):
+    """typedef name -> target, of a file and the headers it includes (transitively; the file's own win)"""
+    cache = idx.__dict__.setdefault("_view_typedefs", {})
+    if path in cache:
+        return cache[path]
+    out, seen, todo = {}, {path}, [path]
+    while todo:
+        q = todo.pop(0)
+        fm = idx.files.get(q)
+        if fm is None:
+            continue
+        for k, v in getattr(fm, "typedefs", {}).items():
+            out.setdefault(k, v)
+        for inc in fm.includes:
+            hp = idx.resolve_include(q, inc)
+            if hp and hp not in seen:
+                seen.add(hp)
+                todo.append(hp)
+    cache[path] = out
+    return out
+
+
+def canonical_type(idx, path, t, old=None, new=None):
+    """a declared type text with typedefs followed (in the file's view) and `old` read as `new`: `fx32` -> `s32`,
+    `Unk_x *` -> `New*` (for comparing two declarations)"""
+    t = norm_type(t)
+    if old:
+        t = re.sub(r"(?<![A-Za-z0-9_])" + re.escape(old) + r"(?![A-Za-z0-9_])", new, t)
+    tds = view_typedefs(idx, path)
+
+    def one(mo):
+        name, seen = mo[0], set()
+        while name in tds and name not in seen and IDENT.fullmatch(norm_type(tds[name]) or "-"):
+            seen.add(name)
+            name = norm_type(tds[name])
+        return name
+    return re.sub(r"[A-Za-z_]\w*", one, t)
+
+
+def field_bits(fm, f):
+    """the bit width of a bitfield declaration, else None"""
+    mo = re.match(r"\s*(?:\[[^\]]*\]\s*)*:\s*(\d+)", fm.masked[f.pos + len(f.name):f.pos + len(f.name) + 40])
+    return int(mo[1]) if mo else None
+
+
+def field_offsets(idx, path, fm, fl):
+    """[(offset or None, Field)] in declaration order: the offset comment, else the offset computed from the
+    previous fields when every type before it has a known size (primitive types, pointers, arrays of them); a
+    field of an anonymous union shares the union's offset. Bitfields stop the computation (offsets after them come
+    from comments only)"""
+    out, cur, known, unions = [], 0, True, {}
+    for f in fl:
+        bits = field_bits(fm, f)
+        size = type_size(canonical_type(idx, path, re.sub(r"\bvolatile\b", "", f.type)))
+        if f.union is not None and f.union in unions:
+            start = unions[f.union][0]
+        else:
+            start = cur if known else None
+            if start is not None and size:
+                base = re.sub(r"\[.*", "", norm_type(re.sub(r"\bvolatile\b", "", f.type)))
+                al = 4 if base.endswith(("*", "&")) else PRIM_ALIGN.get(type_size(canonical_type(idx, path, base)) or 0)
+                if al:
+                    start = (start + al - 1) // al * al
+                else:
+                    start = None
+        off = f.offset if f.offset is not None else start
+        if f.offset is not None and start is not None and f.offset != start and f.union is None:
+            off = f.offset  # comments win; a mismatch shows up as a layout difference against the other class
+        out.append((off, f, bits))
+        if bits is not None:
+            known = False
+        if off is None or not size or bits is not None:
+            known, cur = False, None
+            if f.union is not None:
+                unions.setdefault(f.union, (off, size or 0))
+            continue
+        if f.union is not None:
+            u = unions.setdefault(f.union, (off, 0))
+            unions[f.union] = (u[0], max(u[1], size))
+            cur = u[0] + unions[f.union][1]
+        else:
+            cur, known = off + size, True
+    return out
+
+
+def flat_layout(idx, path, cls, stack=()):
+    """[(offset, Field, bits, file)] of cls and its primary bases (base fields first), from the declaration that path
+    sees (else the one in include/, else the first). The fields of a class with bases have offsets from their offset
+    comments only; a secondary base adds an entry (None, None, None, file): fields not known"""
+    copies = idx.copies(cls)
+    view = idx.view(path).get(cls) if path in idx.files else None
+    x = next((x for x in copies if view is not None and (x[0], x[2][0]) in view.keys), None) or \
+        next((x for x in copies if "include" in x[0].relative_to(idx.repo.root).parts[:1]), None) or \
+        (copies[0] if copies else None)
+    if x is None or cls in stack:
+        return None
+    q, fmq, k, fl = x
+    bases = k[3]
+    if not bases:
+        return [(off, f, bits, q) for off, f, bits in field_offsets(idx, q, fmq, fl)]
+    out = flat_layout(idx, q, bases[0], stack + (cls,))
+    if out is None:
+        return None
+    if len(bases) > 1:
+        out.append((None, None, None, q))
+    return out + [(f.offset, f, field_bits(fmq, f), q) for f in fl]
+
+
+def statement_span(fm, start_hint, end_hint):
+    """(start, end) of the declaration statement around [start_hint, end_hint): from the end of the previous statement
+    (`;`, `}`, `{` or a preprocessor line) to the `;` that ends it, widened to whole lines when it stands alone on its
+    lines (with the `//` comment lines directly above it and a comment after it on its last line)"""
+    m, text = fm.masked, fm.text
+    i = start_hint - 1
+    while i >= 0 and m[i] not in ";{}":
+        if m[i] == "\n":
+            ls = m.rfind("\n", 0, i) + 1
+            if m[ls:i].lstrip().startswith("#"):
+                break
+        i -= 1
+    a = back_ws_forward(m, i + 1)
+    semi = m.find(";", end_hint)
+    if semi < 0:
+        return None
+    b = semi + 1
+    ls = text.rfind("\n", 0, a) + 1
+    le = text.find("\n", b)
+    le = len(text) if le < 0 else le
+    if not m[ls:a].strip() and not m[b:le].strip():
+        a, b = ls, min(le + 1, len(text))
+        # no double blank line where it was: take the blank line after it too when the line before is blank
+        nle = text.find("\n", b)
+        if a > 0 and not text[text.rfind("\n", 0, a - 1) + 1:a].strip() and nle >= 0 and not text[b:nle].strip():
+            b = nle + 1
+        while a > 0:  # comment lines directly above
+            pls = text.rfind("\n", 0, a - 1) + 1
+            line = text[pls:a - 1]
+            if line.strip().startswith("//") and not m[pls:a - 1].strip():
+                a = pls
+            else:
+                break
+    return a, b
+
+
+def merge_shape_errors(r, idx, old, newc, p, fm, k, fl):
+    """problems of one class declaration of old for a merge into newc, and its method declarations to move"""
+    o, c, name, bases, members = k
+    where = f"{p.relative_to(idx.repo.root)}:{fm.line(o)}"
+    errs = []
+    methods = [x for x in members if x[0] == "method"]
+    if any(x[2] or x[4] for x in methods):
+        errs.append(f"{r.where}: {old} declares virtual methods or a destructor ({where}): it is a class of its own")
+    if re.search(r"(?<![\w~])" + re.escape(old) + r"\s*\(", fm.masked[o:c]):
+        errs.append(f"{r.where}: {old} declares a constructor ({where}): it is a class of its own")
+    return errs, methods
+
+
+def check_merge(r, idx):
+    """`merge <Old> <New>` (or `class <Old> <New>` with an existing New): Old is the same type as New"""
+    old, new, root = r.old, r.new, idx.repo.root
+    rel = lambda p: p.relative_to(root)
+    errors = []
+    # New: a class, a typedef of a class, or a type name (builtins only for typedef shapes)
+    new_tds = {fm.typedefs[new] for fm in idx.files.values() if new in getattr(fm, "typedefs", {})}
+    newc = new
+    if new not in idx.classes and new_tds:
+        targets = {norm_type(t) for t in new_tds}
+        newc = targets.pop() if len(targets) == 1 else None
+        seen = set()
+        while newc and newc not in idx.classes and newc not in seen:
+            seen.add(newc)
+            t = {norm_type(fm.typedefs[newc]) for fm in idx.files.values() if newc in getattr(fm, "typedefs", {})}
+            newc = t.pop() if len(t) == 1 else None
+    if new not in idx.classes and not new_tds and new not in TYPE_SIZES:
+        return [f"{r.where}: {new} is not a declared class, struct or typedef: use `class {old} {new}` to give a new name"]
+    if newc == old or old in idx.primary_ancestors(newc or new) or (newc and old in idx.ancestors(newc)):
+        return [f"{r.where}: {old} is a base class of {new}: not the same type"]
+    # scope (as a class rename)
+    src_mods = idx.tokens.get(old, set()) | idx.components.get(old, set())
+    if old not in idx.sym_components and not src_mods:
+        return [f"{r.where}: {old} occurs in no mangled symbols.txt name and no source"]
+    if old in idx.sym_components:
+        r.scope = None
+        if newc is None or newc not in idx.classes:
+            return [f"{r.where}: {old} is part of mangled symbol names but {new} is not a class: merge it by hand"]
+    else:
+        errors += resolve_scope(r, set(), src_mods, "class")
+        if errors:
+            return errors
+    r.mangled_new = newc if newc and newc != new and newc in idx.classes else None
+    in_scope = lambda p: r.scope is None or idx.files[p].module in (r.scope, "include")
+    for vt in ("_ZTV", "_ZTI", "_ZTS"):
+        if f"{vt}{len(old)}{old}" in idx.symbols:
+            return [f"{r.where}: {old} has a {vt} symbol: a class with its own vtable is not {new}"]
+    # mangled names that would need a substitution once Old is spelled New
+    mn = newc if (newc and newc in idx.classes) else new
+    for sym in idx.symbols:
+        if old in sym and sym.startswith("_Z"):
+            mm = parse_mangled(sym)
+            if mm and any(t == old for _, _, t in mm.names) and any(t == mn for _, _, t in mm.names):
+                errors.append(f"{r.where}: {sym} names both {old} and {mn}: as one type it would be mangled with a "
+                              f"substitution (S_); merge it by hand")
+    deletes = defaultdict(list)   # path -> [(start, end)]
+    shapes = defaultdict(int)
+    moves = []                    # method declaration texts of field-less subclasses
+    mapping = {}                  # old field name -> new field name
+    by_value_needed = False
+    # typedefs of Old
+    for p, fm in idx.files.items():
+        if fm.asm or not in_scope(p):
+            continue
+        for at, target in getattr(fm, "typedef_at", {}).get(old, ()):
+            tgt = canonical_type(idx, p, target)
+            want = {norm_type(new), canonical_type(idx, p, new)} | ({newc} if newc else set())
+            if tgt not in want and norm_type(target) not in want:
+                errors.append(f"{r.where}: {old} is a typedef of {target} in {rel(p)}:{fm.line(at)}, not of {new}")
+                continue
+            if fm.masked[at] == "{":
+                # `typedef struct Tag {...} A, Old;`: Old shares the statement with the class
+                errors.append(f"{r.where}: {old} is declared with another type in one statement ({rel(p)}:{fm.line(at)}); "
+                              f"split the declaration first")
+                continue
+            semi = fm.masked.find(";", at)
+            span = statement_span(fm, at, semi)
+            if span:
+                deletes[p].append(span)
+                shapes["typedef"] += 1
+    # forward declarations: they become forward declarations of New (a class), or go away (New is a typedef name)
+    for p, fm in idx.files.items():
+        if fm.asm or not in_scope(p) or new in idx.classes:
+            continue
+        for mo in re.finditer(r"\b(?:struct|class|union)\s+" + re.escape(old) + r"\s*;", fm.masked):
+            if fm.masked[max(0, mo.start() - 8):mo.start()].strip().endswith("typedef") or \
+                    re.search(r"\bfriend\s*$", fm.masked[max(0, mo.start() - 10):mo.start()]):
+                continue
+            span = statement_span(fm, mo.start(), mo.end() - 1)
+            if span:
+                deletes[p].append(span)
+                shapes["forward declaration"] += 1
+    # class declarations of Old
+    copies = [x for x in idx.copies(old) if in_scope(x[0])]
+    new_copies = idx.copies(newc) if newc else []
+    for p, fm, k, fl in copies:
+        o, c, name, bases, members = k
+        where = f"{rel(p)}:{fm.line(o)}"
+        if fm.in_class(o - 1) and any(oo < o < cc and nn != old for oo, cc, nn, *_ in fm.classes):
+            errors.append(f"{r.where}: {old} is declared inside another class ({where}); merge it by hand")
+            continue
+        errs, methods = merge_shape_errors(r, idx, old, newc, p, fm, k, fl)
+        errors += errs
+        if errs:
+            continue
+        base_ok = bases and len(bases) == 1 and (bases[0] == new or bases[0] == newc or
+                                                  canonical_type(idx, p, bases[0]) in (new, newc))
+        if base_ok and not fl:
+            shapes["field-less subclass"] += 1
+            if methods:
+                body = fm.text[o + 1:c]
+                moves.append((p, o, body, [x[1] for x in methods]))
+        elif base_ok:
+            errors.append(f"{r.where}: {old} derives from {new} and adds fields ({where}): not the same type")
+            continue
+        elif bases:
+            errors.append(f"{r.where}: {old} derives from {', '.join(bases)} ({where}), not from {new}")
+            continue
+        else:
+            if methods:
+                errors.append(f"{r.where}: {old} declares fields and methods ({where}); only a field-less subclass's "
+                              f"methods are moved into {new}: move them by hand first")
+                continue
+            if not new_copies:
+                errors.append(f"{r.where}: {new} has no class declaration to compare {old}'s layout with ({where})")
+                continue
+            view = idx.view(p).get(newc)
+            np_ = next((x for x in new_copies if view is not None and (x[0], x[2][0]) in view.keys), None) or \
+                next((x for x in new_copies if "include" in x[0].parts), None) or new_copies[0]
+            nfm, nfl = np_[1], np_[3]
+            sig = lambda path, fmx, fs, a=None, b=None: [(canonical_type(idx, path, f.type, a, b), field_bits(fmx, f),
+                                                          f.union is not None) for f in fs]
+            if not np_[2][3] and fl and sig(p, fm, fl, old, new) == sig(np_[0], nfm, nfl, old, new):
+                shapes["identical layout"] += 1
+                for f, g in zip(fl, nfl):
+                    if f.name != g.name:
+                        if mapping.get(f.name, g.name) != g.name:
+                            errors.append(f"{r.where}: {old}::{f.name} maps to {mapping[f.name]} in one copy and to "
+                                          f"{g.name} in another")
+                        mapping[f.name] = g.name
+                deletes[p].append(statement_span(fm, fm.masked.rfind("\n", 0, o) + 1, c))
+                continue
+            # a view: every field of Old at an offset where New (with its primary bases) has a field of the same type
+            olay = field_offsets(idx, p, fm, fl)
+            if any(b is not None for _, _, b in olay):
+                errors.append(f"{r.where}: {old} ({where}) has bitfields and its field list differs from {new}'s: "
+                              f"compare by hand")
+                continue
+            nlay = flat_layout(idx, p, newc)
+            if nlay is None:
+                errors.append(f"{r.where}: the layout of {new} (with its bases) cannot be read")
+                continue
+            nat = defaultdict(list)
+            for off, g, bits, q in nlay:
+                if off is not None and g is not None:
+                    nat[off].append((g, q, bits))
+            unknown_new = any(off is None for off, _, _, _ in nlay)
+            bad = []
+            for off, f, _ in olay:
+                if filler_field(f):
+                    continue
+                if off is None:
+                    bad.append(f"the offset of {old}::{f.name} is unknown ({rel(p)}:{fm.line(f.pos)}; add an offset "
+                               f"comment)")
+                    continue
+                ft = canonical_type(idx, p, f.type, old, new)
+                g = next((g for g, q, bits in nat.get(off, ()) if bits is None and
+                          canonical_type(idx, q, g.type, old, new) == ft), None)
+                if g is None:
+                    have = ", ".join(f"{g.type} {g.name}" + (f" : {b}" if b else "") for g, q, b in nat.get(off, ())) or \
+                        ("nothing known" if unknown_new else "no field")
+                    bad.append(f"{old}::{f.name} ({f.type} at {off:#x}) has no field of that type in {new} ({have})")
+                    continue
+                if f.name != g.name:
+                    if mapping.get(f.name, g.name) != g.name:
+                        bad.append(f"{old}::{f.name} maps to {mapping[f.name]} in one copy and to {g.name} in another")
+                    mapping[f.name] = g.name
+            if bad:
+                errors.append(f"{r.where}: layouts differ: " + "; ".join(bad[:4]) + (" ..." if len(bad) > 4 else ""))
+                continue
+            shapes["view"] += 1
+            by_value_needed = True
+            deletes[p].append(statement_span(fm, fm.masked.rfind("\n", 0, o) + 1, c))
+            # padding of the view must not be used
+            for off, f, _ in olay:
+                if filler_field(f):
+                    for q in idx.files_with(old):
+                        mo = re.search(r"(?:->|\.)\s*" + re.escape(f.name) + r"\b", idx.files[q].masked)
+                        if mo:
+                            errors.append(f"{r.where}: the padding field {old}::{f.name} ({f.type}) is used "
+                                          f"({rel(q)}:{idx.files[q].line(mo.start())}): the view does not match "
+                                          f"{new}'s fields there")
+                            break
+        if base_ok:
+            deletes[p].append(statement_span(fm, fm.masked.rfind("\n", 0, o) + 1, c))
+    if not copies and not any(deletes.values()):
+        errors.append(f"{r.where}: no declaration of {old} found")
+    if errors:
+        return errors
+    # a view smaller than New must not be used by value (sizeof, new, objects, arrays)
+    if by_value_needed:
+        for p, fm in idx.files.items():
+            if fm.asm or old not in fm.masked:
+                continue
+            for mo in re.finditer(r"\bsizeof\s*\(\s*(?:struct\s+)?" + re.escape(old) + r"\s*\)|\bnew\s+" + re.escape(old)
+                                  + r"\b|(?<![\w:])" + re.escape(old) + r"\s+[A-Za-z_]\w*\s*[\[;=,)]", fm.masked):
+                if any(a <= mo.start() < b for a, b in deletes.get(p, ())):
+                    continue
+                errors.append(f"{r.where}: {old} is a view (its layout is only part of {new}'s) and is used by value: "
+                              f"`{mo[0].strip()}` ({rel(p)}:{fm.line(mo.start())})")
+                break
+    # elaborated `struct Old` when New is a typedef name
+    if new not in idx.classes:
+        for p, fm in idx.files.items():
+            mo = None if fm.asm or old not in fm.masked else re.search(r"\b(?:struct|class|union)\s+" + re.escape(old) + r"\b", fm.masked)
+            if mo and not any(a <= mo.start() < b for a, b in deletes.get(p, ())):
+                errors.append(f"{r.where}: `{mo[0]}` ({rel(p)}:{fm.line(mo.start())}) cannot become `{mo[0].split()[0]} "
+                              f"{new}`: {new} is a typedef; write `{old}` without the keyword first")
+                break
+    # methods of field-less subclasses move into New's (single) definition
+    move_target = None
+    if moves:
+        defs = [x for x in idx.copies(newc)]
+        if len(defs) != 1:
+            errors.append(f"{r.where}: {old} has methods to move into {new}, which has {len(defs)} definitions "
+                          f"(one is needed)")
+        else:
+            move_target = defs[0]
+            have = class_methods(idx, newc)
+            clash = sorted({m for _, _, _, ms in moves for m in ms if m in have})
+            if clash:
+                errors.append(f"{r.where}: {new} already has method(s) {', '.join(clash)}: the moved declarations of "
+                              f"{old} would clash or overload")
+            texts = {re.sub(r"\s+", " ", b).strip() for _, _, b, _ in moves}
+            if len(texts) > 1:
+                errors.append(f"{r.where}: the {len(moves)} declarations of {old} differ; unify them first")
+    if errors:
+        return errors
+    # field names: Old's names become New's (field records on Old, applied in the same run)
+    subs = []
+    for of, nf in sorted(mapping.items()):
+        sub = Rename("field", None, None, nf, r.where, r.raw, r.batch, r.confidence, r.evidence)
+        sub.path, sub.offset, sub.ftype, sub.old_field, sub.parent = (old,), None, None, of, r
+        errs = check_field(sub, idx, True)
+        errs = [e for e in errs if "is a class name" not in e]
+        if errs:
+            errors += [f"{e} (field mapping of the merge)" for e in errs]
+        subs.append(sub)
+    if errors:
+        return errors
+    # every file that uses Old must see New once Old's declarations are gone: New's header is included where it is
+    # not visible yet (also where only the deleted declaration made the file compile)
+    homes = sorted({x[0] for x in idx.copies(newc or new) if "include" in rel(x[0]).parts[:1]} |
+                   {q for q, fm in idx.files.items() if "include" in rel(q).parts[:1] and new in getattr(fm, "typedefs", {})
+                    and new not in idx.classes})
+    add_include = []
+    for q, fm in idx.files.items():
+        if fm.asm or not in_scope(q) or not re.search(r"\b" + re.escape(old) + r"\b", fm.masked):
+            continue
+        if q in deletes and "include" in rel(q).parts[:1]:
+            code = list(fm.masked)
+            for a, b in deletes[q]:
+                code[a:b] = " " * (b - a)
+            if not [ln for ln in "".join(code).splitlines() if ln.strip() and not ln.strip().startswith("#")]:
+                continue  # a header of Old that is deleted: its includers are handled below
+        if old not in idx.view(q) and old not in view_typedefs(idx, q):
+            continue  # Old is only forward-declared there (that declaration becomes one of New)
+        visible = (newc and newc in idx.view(q) and any(k[0] != q or not any(a <= k[1] < b for a, b in deletes.get(q, ()))
+                                                        for k in idx.view(q)[newc].keys)) or \
+            new in view_typedefs(idx, q) or new in TYPE_SIZES
+        if visible:
+            continue
+        if len(homes) != 1:
+            errors.append(f"{r.where}: {rel(q)} uses {old} but does not see {new}, and {new} has "
+                          f"{'no header' if not homes else 'several headers'} to include")
+            break
+        add_include.append(q)
+    if errors:
+        return errors
+    # namespaces whose own declaration of Old goes away: `ns::Old` becomes plain New there (unless ns declares New)
+    spaces = set()
+    for p, spans in deletes.items():
+        fm = idx.files[p]
+        for a, b in spans:
+            ns = fm.namespace_at(a)
+            if ns and not any(fm.namespace_at(k[0]) == ns for k in fm.classes if k[2] == new) and \
+                    not any(fm.namespace_at(at) == ns for at, _ in getattr(fm, "typedef_at", {}).get(new, ())):
+                spaces.add(ns)
+    r.subs = subs
+    r.merge = dict(deletes={p: sorted(set(v)) for p, v in deletes.items()}, unqualify=sorted(spaces),
+                   move=(move_target, moves[0][2], [m for m in moves[0][3]]) if moves else None,
+                   add_include=(str(homes[0].relative_to(root / "include")), add_include) if add_include else None)
+    r.notes.append(f"merged into {new}: " + ", ".join(f"{n} {k}{'s' if n > 1 else ''}" for k, n in sorted(shapes.items())
+                                                      if n) if shapes else f"merged into {new}")
+    if mapping:
+        r.notes.append("fields renamed to " + new + "'s names: " + ", ".join(f"{a} -> {b}" for a, b in sorted(mapping.items())))
+    if moves:
+        r.notes.append(f"methods moved into {new} ({rel(move_target[0])}): {', '.join(moves[0][3])}")
+    if r.mangled_new:
+        r.notes.append(f"{new} is a typedef of {r.mangled_new}: mangled names get {r.mangled_new}")
+    return []
+
+
+def apply_merge_edits(renamer, changed):
+    """after the token rewrite: delete Old's declarations, move a field-less subclass's methods into New, delete
+    headers that are left empty and point their #include lines at the headers they included"""
+    repo, idx = renamer.repo, renamer.idx
+    merges = [r for r in renamer.classes.values() if getattr(r, "merge", None)]
+    if not merges:
+        return changed
+    text_of = lambda p: changed.get(p, repo.read(p))
+    for r in merges:
+        for p, spans in r.merge["deletes"].items():
+            orig = repo.read(p)
+            text = text_of(p)
+            cursor = 0
+            for a, b in spans:
+                snippet = orig[a:b]
+                at = text.find(snippet, cursor)
+                if at < 0:
+                    r.unresolved.append(f"{p.relative_to(repo.root)}: the declaration to delete was changed by another "
+                                        f"record")
+                    continue
+                text = text[:at] + text[at + len(snippet):]
+                cursor = at
+                r.counts["deleted (declaration)"] += 1
+                r.files.add(p)
+            changed[p] = text
+        if r.merge["move"]:
+            (tp, tfm, tk, _), body, names = r.merge["move"]
+            text = text_of(tp)
+            body = re.sub(r"(?<![A-Za-z0-9_])" + re.escape(r.old) + r"(?![A-Za-z0-9_])", r.new, body)
+            masked = "".join(text[a:b] if k == "code" else re.sub(r"[^\n]", " ", text[a:b])
+                             for a, b, k in code_segments(text, False))
+            heads = [mo for mo in CLASS_HEAD.finditer(masked) if mo[2] == (r.mangled_new or r.new)]
+            if len(heads) != 1:
+                r.unresolved.append(f"{tp.relative_to(repo.root)}: cannot find the definition of {r.new} to move "
+                                    f"{', '.join(names)} into")
+                continue
+            o = heads[0].end() - 1
+            c = bracket_pairs(masked, "{", "}").get(o)
+            ls = text.rfind("\n", 0, c) + 1
+            lead = "public:\n" if heads[0][1] == "class" and not re.match(r"\s*(?:public|protected|private)\s*:", body) else ""
+            block = lead + "\n".join(line for line in body.strip("\n").split("\n")) + "\n"
+            if not text[ls:c].strip():
+                text = text[:ls] + block + text[ls:]
+            else:
+                text = text[:c] + "\n" + block + text[c:]
+            changed[tp] = text
+            r.counts["moved (method declarations)"] += len(names)
+            r.files.add(tp)
+    # `ns::Old` where Old was declared in namespace ns: plain New
+    for r in merges:
+        for ns in r.merge.get("unqualify", ()):
+            pat = re.compile(r"(?<![A-Za-z0-9_:])" + re.escape(ns) + r"\s*::\s*" + re.escape(r.new) + r"(?![A-Za-z0-9_])")
+            for p in list(changed):
+                if changed[p] is not None and p.suffix in SOURCE_SUFFIXES and pat.search(changed[p]):
+                    n = len(pat.findall(changed[p]))
+                    changed[p] = pat.sub(r.new, changed[p])
+                    r.counts[f"unqualified ({ns}::{r.old} was a namespace member)"] += n
+    # files that would no longer see New: include New's header after their last #include
+    for r in merges:
+        if not r.merge.get("add_include"):
+            continue
+        spelled, files = r.merge["add_include"]
+        for q in files:
+            qt = text_of(q)
+            if re.search(r'^[ \t]*#[ \t]*include[ \t]+"' + re.escape(spelled) + '"', qt, re.M):
+                continue
+            first = re.search(r"\b" + re.escape(r.new) + r"\b", qt)
+            incs = [mo for mo in re.finditer(r'^[ \t]*#[ \t]*include[ \t]+"([^"]+)"[^\n]*\n', qt, re.M)
+                    if not first or mo.start() < first.start()]
+            # where the file includes a header of Old (deleted below), else after its last #include before the use
+            old_inc = next((mo for mo in incs if idx.resolve_include(q, mo[1]) in r.merge["deletes"]), None)
+            at = old_inc.start() if old_inc else (incs[-1].end() if incs else 0)
+            qt = qt[:at] + f'#include "{spelled}"\n' + qt[at:]
+            changed[q] = qt
+            r.counts["include (sees the merged type)"] += 1
+            r.files.add(q)
+    # headers left without declarations: delete them, includers get their #include lines
+    for r in merges:
+        for p in r.merge["deletes"]:
+            if "include" not in p.relative_to(repo.root).parts[:1] or changed.get(p) is None:
+                continue
+            text = changed[p]
+            code = "".join(text[a:b] for a, b, k in code_segments(text, False) if k == "code")
+            rest = [ln for ln in code.splitlines() if ln.strip() and not ln.strip().startswith("#")]
+            if rest:
+                continue
+            own_incs = re.findall(r'^[ \t]*#[ \t]*include[ \t]+"([^"]+)"', text, re.M)
+            changed[p] = None  # deleted
+            r.counts["deleted (header)"] += 1
+            r.notes.append(f"{p.relative_to(repo.root)} deleted (nothing left); its includers include what it included")
+            for q, fm in idx.files.items():
+                if fm.asm or not any(idx.resolve_include(q, inc) == p for inc in fm.includes):
+                    continue
+                qt = text_of(q)
+                if qt is None:
+                    continue
+                have = {idx.resolve_include(q, inc) or inc for inc in re.findall(r'^[ \t]*#[ \t]*include[ \t]+"([^"]+)"', qt, re.M)}
+
+                def repl(mo):
+                    if idx.resolve_include(q, mo[1]) != p:
+                        return mo[0]
+                    add = []
+                    for inc in own_incs:
+                        hp = idx.resolve_include(p, inc)
+                        key = hp or inc
+                        if key in have or hp == p:
+                            continue
+                        have.add(key)
+                        # the include as the includer would spell it: headers by include/-relative path
+                        spelled = str(hp.relative_to(repo.root / "include")) if hp and hp.is_relative_to(repo.root / "include") else inc
+                        add.append(f'#include "{spelled}"\n')
+                    return "".join(add)
+                qt2 = re.sub(r'^[ \t]*#[ \t]*include[ \t]+"([^"]+)"[^\n]*\n?', repl, qt, flags=re.M)
+                if qt2 != qt:
+                    changed[q] = qt2
+                    r.counts["include (deleted header)"] += 1
+                    r.files.add(q)
+    return changed
 
 
 def slot_of(idx, cls, meth):
@@ -2463,6 +3389,51 @@ def check_new_method(r, idx, classes, allow_existing, files=None, slot=None):
     return errors
 
 
+def mangled_arity(name):
+    m = parse_mangled(name)
+    return getattr(m, "params", None) if m else None
+
+
+def restrict_overloads(r, idx):
+    """a method name with overloads at different addresses (`BuildingActor::preDraw()` slot 0x28 and
+    `preDraw(u32)` slot 0x20): the record renames only the overload it targets. For a vfunc that is the function in
+    the ROM vtable slot (its parameter count then picks the overload in every class of the hierarchy); a member record
+    names no signature and is refused. Mangled names are then renamed only with that parameter count, and source
+    occurrences only where the call / declaration has that many arguments (comments are left)."""
+    errors = []
+    r.overloads = {}
+    target = None
+    for path, n in r.pairs:
+        syms = [x for x in idx.method_symbols(path[-1], n) if not x.startswith("_ZT")]
+        if len({a for x in syms for a in idx.addresses().get(x, ())}) <= 1:
+            continue
+        mine = [x for x in syms if x in getattr(r, "slot_symbols", ())]
+        if r.kind == "vfunc" and mine:
+            ar = {mangled_arity(x) for x in mine}
+            if len(ar) == 1:
+                target = ar.pop()
+    for path, n in r.pairs:
+        syms = [x for x in idx.method_symbols(path[-1], n) if not x.startswith("_ZT")]
+        if len({a for x in syms for a in idx.addresses().get(x, ())}) <= 1:
+            continue
+        cls = "::".join(path)
+        if target is None:
+            errors.append(f"{r.where}: {cls}::{n} is overloaded ({', '.join(sorted(syms))}) and the record does not say "
+                          f"which overload{' (no ROM vtable slot names one)' if r.kind == 'vfunc' else ''}: rename it "
+                          f"by hand")
+            continue
+        others = [x for x in syms if mangled_arity(x) != target]
+        mine = [x for x in syms if mangled_arity(x) == target]
+        if not mine or len({a for x in mine for a in idx.addresses().get(x, ())}) > 1:
+            errors.append(f"{r.where}: {cls}::{n} has overloads with the same number of parameters "
+                          f"({', '.join(sorted(syms))}): rename it by hand")
+            continue
+        r.overloads[(path[-1], n)] = target
+        r.notes.append(f"{cls}::{n} is overloaded: only the {target}-parameter overload is renamed "
+                       f"(left: {', '.join(sorted(others))})")
+    return errors
+
+
 def check_member(r, idx, allow_existing):
     cls, old = r.path[-1], r.old
     known = any(p[-len(r.path):] == r.path for p in idx.methods.get(old, ())) or \
@@ -2480,6 +3451,7 @@ def check_member(r, idx, allow_existing):
     if r.qual and r.qual != "*":
         r.notes.append(f"qualifier {r.qual} ignored: methods are renamed everywhere")
     r.pairs = [(r.path, old)]
+    errors += restrict_overloads(r, idx)
     r.file_pairs = None
     return errors
 
@@ -2529,10 +3501,12 @@ def check_field(r, idx, allow_existing):
     classes derived from it through first bases that declare it themselves, offsets being absolute)"""
     cls, off, root = r.path[-1], r.offset, idx.repo.root
     byname = getattr(r, "old_field", None)  # `field <Class> <old> <new>`: an existing name instead of unk_<offset>
+    pfx, sfx = getattr(r, "fprefix", None), getattr(r, "fsuffix", None)
     if byname:
         matches = lambda name: name == byname
     else:
-        matches = lambda name: unk_offset(name) == off
+        matches = lambda name: unk_parts(name) == (pfx, off, sfx)
+    spelled = byname or unk_spelling(off, pfx, sfx)
     where = lambda p, pos=None: f"{p.relative_to(root)}" + (f":{idx.files[p].line(pos)}" if pos is not None else "")
     ns = r.path[-2] if len(r.path) > 1 else None
     if ns is not None:
@@ -2560,6 +3534,24 @@ def check_field(r, idx, allow_existing):
             return [f"{r.where}: {cls} is a typedef of {', '.join(tds)}; name the class itself"]
         return [f"{r.where}: no class/struct {cls} is declared in the sources (a field of an anonymous struct or of a "
                 f"byte array has no class to name): not applicable"]
+    descendants = idx.primary_descendants(cls) if ns is None else set()
+    if not byname and pfx is None and sfx is None and not any(
+            unk_parts(f.name) == (None, off, None) for c in [cls] + sorted(descendants) for _, _, _, fl in copies_of(c)
+            for f in fl):
+        # no plain unk_<offset>: a bitfield / suffixed (`unk_374_b4`) or prefixed (`b10_unk_768`) placeholder at that
+        # offset is meant if there is exactly one
+        variants = sorted({f.name for c in [cls] + sorted(descendants) for _, _, _, fl in copies_of(c) for f in fl
+                           if (unk_parts(f.name) or (0, None))[1] == off})
+        if len(variants) > 1:
+            return [f"{r.where}: no field unk_{off:02x} in {cls}, but several placeholders at {off:#x}: "
+                    + ", ".join(f"{v} (`{offset_spelling(*unk_parts(v)[1:2], unk_parts(v)[0], unk_parts(v)[2])}`)"
+                                for v in variants) + "; give the offset in that spelling"]
+        if variants:
+            (v,) = variants
+            pfx, sfx = unk_parts(v)[0], unk_parts(v)[2]
+            r.fprefix, r.fsuffix = pfx, sfx
+            spelled = v
+            r.notes.append(f"no unk_{off:02x} in {cls}: the placeholder at {off:#x} is {v}")
     errors = []
     olds = defaultdict(set)     # old field name -> classes
     decls = []                  # (path, position, class)
@@ -2567,13 +3559,12 @@ def check_field(r, idx, allow_existing):
     types = defaultdict(list)   # declared type -> files
     blobs = []                  # copies that declare a byte array (the rest of the class) at that offset
     offsets = defaultdict(set)  # by name: the offsets the declarations give the field (offset comments)
-    descendants = idx.primary_descendants(cls) if ns is None else set()
     for c in [cls] + sorted(descendants):
         for p, fm, k, fl in copies_of(c):
             hits = [f for f in fl if matches(f.name)]
             for f in fl:
-                if not byname and f.offset == off and unk_offset(f.name) != off and not f.name.startswith(("pad", "_pad")) and \
-                        f.name != r.new:
+                if not byname and f.offset == off and not matches(f.name) and not f.name.startswith(("pad", "_pad")) and \
+                        f.name != r.new and not ((pfx or sfx) and (unk_parts(f.name) or (0, None))[1] == off):
                     elsewhere.append(f"{c}::{f.name} ({where(p, f.pos)})")
             if len({f.name for f in hits}) < len(hits):
                 errors.append(f"{r.where}: {c} declares {hits[0].name} twice in {where(p, k[0])} (ambiguous)")
@@ -2607,16 +3598,16 @@ def check_field(r, idx, allow_existing):
                          f"themselves give different offsets ({', '.join(f'{c} {o:#x}' for c, os in sorted(offsets.items()) for o in sorted(os))}): "
                          f"not one field"]
     if blobs and not decls:
-        return errors + [f"{r.where}: every declaration of unk_{off:02x} in {cls} is an array that is not a field of "
+        return errors + [f"{r.where}: every declaration of {spelled} in {cls} is an array that is not a field of "
                          f"type `{r.ftype}`: " + ", ".join(f"`{f.type}` ({where(p, f.pos)})" for p, f, c, o in blobs[:4])]
     if not decls:
-        msg = f"{r.where}: no field unk_{off:02x} in any of the {len(copies)} declarations of {cls}"
+        msg = f"{r.where}: no field {spelled} in any of the {len(copies)} declarations of {cls}"
         if elsewhere:
             msg += f"; declared at {off:#x} under another name: {', '.join(sorted(set(elsewhere))[:4])}"
         for a in (idx.primary_ancestors(cls) if ns is None else ()):
-            hit = next((p for p, fm, k, fl in idx.copies(a) if any(unk_offset(f.name) == off for f in fl)), None)
+            hit = next((p for p, fm, k, fl in idx.copies(a) if any(matches(f.name) for f in fl)), None)
             if hit:
-                msg += f"; base class {a} declares unk_{off:02x} ({where(hit)}): name it there"
+                msg += f"; base class {a} declares {spelled} ({where(hit)}): name it there"
                 break
         return errors + [msg]
     # the same field name in a base class (any declaration): which class's field is meant is ambiguous
@@ -2940,6 +3931,7 @@ def check_vfunc(r, idx, allow_existing):
         if rs is None:
             continue
         names, present = rs
+        r.__dict__.setdefault("slot_symbols", set()).update(names)
         copies = {p: file_class_pairs[(p, d)] for p in class_files.get(d, []) if (p, d) in file_class_pairs}
         if not present:
             pures = [idx.layout(d, p)[s][2] for p in copies]
@@ -3063,6 +4055,7 @@ def check_vfunc(r, idx, allow_existing):
                    f"(old names: {', '.join(all_olds)}); {verified} checked against ROM vtables; "
                    f"{len(file_pairs)} files")
     r.pairs = pairs
+    errors += restrict_overloads(r, idx)
     r.file_pairs = dict(file_pairs)
     r.slot_offset = 4 * s
     return errors
@@ -3143,7 +4136,7 @@ def validate(renames, idx, allow_existing, allow_common=False):
             errs[r].append(f"{r.where}: new name {r.new} is not a valid identifier"
                            + (" or mangled name" if r.kind == "func" else ""))
             continue
-        if r.kind in ("func", "class") and r.new == r.old or getattr(r, "old_field", None) == r.new:
+        if r.kind in ("func", "class", "promote") and r.new == r.old or getattr(r, "old_field", None) == r.new:
             errs[r].append(f"{r.where}: old and new name are the same")
             continue
         if r.qual not in (None, "*") and r.qual not in modules_known(idx):
@@ -3155,7 +4148,7 @@ def validate(renames, idx, allow_existing, allow_common=False):
                 errs[r] += e
                 continue
         check = {"func": check_func, "class": check_class, "member": check_member, "vfunc": check_vfunc,
-                 "free": check_free, "field": check_field}[r.kind]
+                 "free": check_free, "field": check_field, "promote": check_promote}[r.kind]
         errs[r] += check(r, idx, allow_existing)
     errs = defaultdict(list, {r: e for r, e in errs.items() if e})
     check_hierarchy_names(renames, idx, errs)
@@ -3164,9 +4157,10 @@ def validate(renames, idx, allow_existing, allow_common=False):
     for r in renames:
         if errs[r]:
             continue
-        if r.kind in ("func", "class"):
-            olds[(r.kind, r.old)].append(r)
-            news[(r.kind, r.new)].append(r)
+        if r.kind in ("func", "class", "promote"):
+            k = "func" if r.kind == "promote" else r.kind
+            olds[(k, r.old)].append(r)
+            news[(k, r.new)].append(r)
         else:
             for path, old in r.pairs:
                 # a mangled pair only matters if such a mangled name exists (pure slots have none)
@@ -3198,13 +4192,14 @@ def validate(renames, idx, allow_existing, allow_common=False):
                 errs[r].append(f"{r.where}: conflict: {what}{where} is renamed by "
                                f"{', '.join(x.where for x in group if x is not r)} too")
     for (kind, new), group in news.items():
-        if len(group) > 1:
+        if len(group) > 1 and not all(getattr(x, "merge", None) is not None for x in group):
+            # (several placeholder types merged into one existing type is no conflict)
             for r in group:
                 errs[r].append(f"{r.where}: conflict: {', '.join(x.where for x in group if x is not r)} also renames "
                                f"to {new}")
-    old_names = {r.old for r in renames if r.kind in ("func", "class") and not errs[r]}
+    old_names = {r.old for r in renames if r.kind in ("func", "class", "promote") and not errs[r]}
     for r in renames:
-        if r.kind in ("func", "class") and not errs[r] and r.new in old_names:
+        if r.kind in ("func", "class", "promote") and not errs[r] and r.new in old_names:
             errs[r].append(f"{r.where}: new name {r.new} is also renamed in this list (chains and swaps are refused; "
                            f"split them into two batches)")
     return {r: e for r, e in errs.items() if e}
@@ -3266,7 +4261,7 @@ def post_check(renames, changed, produced=None):
     for r in renames:
         by_new[r.new].append(r)
     for p, text in changed.items():
-        if p.name == "symbols.txt":
+        if p.name == "symbols.txt" and text is not None:
             seen = defaultdict(int)
             for a, b in config_fields(p, text):
                 seen[text[a:b]] += 1
@@ -3430,6 +4425,9 @@ def main():
     print(f"{len(active)} renames, {len(changed)} files {'would change' if args.dry_run else 'changed'}")
     if not args.dry_run:
         for p, text in changed.items():
+            if text is None:  # a header a merge left empty
+                p.unlink()
+                continue
             with open(p, "w", encoding="latin-1", newline="") as f:
                 f.write(text)
     finish(0)

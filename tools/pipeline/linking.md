@@ -386,7 +386,7 @@ Build chain: `dsd lcf` -> `bss_units.py` -> `object_order.py` -> `aliases.py` ->
                                                     script defines"
 
 `aliases.txt`: `<module> <existing name> <second name>` adds a label with `tools/pipeline/alias.py`, e.g.
-`autoload_2 func_02132198 _dls` (a compiler helper the symbol table named only by address).
+`autoload_2 _dls _dls` (a compiler helper the symbol table named only by address).
 
 Never alias a signed and an unsigned helper onto one address: the code then links whatever signedness the source
 uses and hides a wrong source. The 64-bit runtime helpers are one routine with four entry points: 0x02132ef8
