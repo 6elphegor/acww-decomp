@@ -300,7 +300,7 @@ HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt) {
     return heap;
 }
 
-// frmheap: AllocFromHead__ExpHeap
+// frmheap: AllocFromHead__FrameHeap
 void *AllocFromHead__FrameHeap(FrmHead *f, u32 size, u32 alignment) {
     u32 head = f->head;
     u32 start = (alignment - 1 + head) & ~(alignment - 1);
@@ -314,7 +314,7 @@ void *AllocFromHead__FrameHeap(FrmHead *f, u32 size, u32 alignment) {
     return (void *)start;
 }
 
-// frmheap: AllocFromTail__ExpHeap
+// frmheap: AllocFromTail__FrameHeap
 void *AllocFromTail__FrameHeap(FrmHead *f, u32 size, u32 alignment) {
     u32 tail = f->tail;
     u32 newTail = (tail - size) & ~(alignment - 1);
