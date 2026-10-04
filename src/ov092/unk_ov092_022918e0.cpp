@@ -1,7 +1,8 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#include "menu/Unk_ov002_022013a0.h"
 #include "snd/BgmVolumeMixer.h"
+#include "menu/MenuSlide.h"
+#include "menu/MenuProc.h"
 
 extern "C" {
 u32 MenuCtrl_GetMode();
@@ -26,51 +27,7 @@ extern u8 *data_021c1b3c;
 
 
 
-class MenuSlideView {
-public:
-    MenuSlideView();
-    ~MenuSlideView();
-    /* 0x00 */ u8 unk_00[0xc];
-    /* 0x0c */ s32 offset;
-    /* 0x10 */ s32 extent;
-    /* 0x14 */ s32 edgeDistance;
-    /* 0x18 */ u8 direction;
-};
 
-class MenuProc : public GameProc {
-public:
-    MenuProc();
-    virtual ~MenuProc();
-    static void *operator new(unsigned long size);
-    static void operator delete(void *p);
-
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL execWaitScreen();
-    virtual BOOL execTransition();
-    virtual BOOL execMain();
-    virtual BOOL execPhase3();
-    virtual BOOL execPhase4();
-    virtual BOOL execClosed();
-
-    void setPhase(u8 v);
-
-    /* 0x50 */ Unk_ov002_022013a0 keyRepeat;
-    /* 0x64 */ u32 openMenuPrev;
-    /* 0x68 */ u32 openMenuNext;
-    /* 0x6c */ MenuProc *openMenuOwner;
-    /* 0x70 */ MenuSlideView slide;
-    /* 0x8c */ u8 transitionState;
-    /* 0x8d */ u8 mainState;
-    /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 phase;
-    /* 0x90 */ u8 menuId;
-};
 
 class MenuLauncher;
 typedef void (MenuLauncher::*Unk_ov092_02291ec8_Fn)();

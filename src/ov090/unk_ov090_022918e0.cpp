@@ -1,7 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
-#include "menu/Unk_ov002_022013a0.h"
 #include "sys/Unk_020b83b0.h"
 #include "talk/MsgStringBase.h"
 #include "gfx/BgTransfer.h"
@@ -10,6 +9,8 @@
 #include "snd/BgmVolumeMixer.h"
 #include "gfx/VramTask.h"
 #include "talk/LabelBalloonText.h"
+#include "menu/MenuSlide.h"
+#include "menu/MenuProc.h"
 
 extern "C" {
 void Gfx2d_SetWindowRect(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
@@ -100,99 +101,11 @@ public:
     /* 0xbe */ volatile u8 autoCloseTimer;
 };
 
-// Sub-object at +0x70 of MenuProc (window / mask helper)
-class MenuSlideView {
-public:
-    MenuSlideView();
-    ~MenuSlideView();
-
-    void setExtent(s32 v);
-    void applyWindow(s32 a);
-    void applyLayerOffset(s32 a, s32 b, s32 c);
-    void initSlideOut(s32 a, s32 mode, s32 dist);
-    void initSlideIn(s32 a, s32 mode, s32 dist);
-    void beginMainSlideOut(s32 a, s32 b, s32 mode, s32 dist);
-    void beginMainSlideIn(s32 a, s32 b, s32 mode, s32 dist);
-    void beginSubSlideOut(s32 a, s32 b, s32 mode, s32 dist);
-    void beginSubSlideIn(s32 a, s32 b, s32 mode, s32 dist);
-    BOOL stepSlideOut(s32 a);
-    void func_ov002_022011ec();
-    BOOL func_ov002_022011cc();
-    void func_ov002_02200fa8(s32 a);
-    void func_ov002_02200fe0(s32 a);
-    BOOL func_ov002_0220102c(s32 a);
-    s32 func_ov002_02201124();
-    s32 func_ov002_02201140();
-
-    /* 0x00 */ u8 unk_00[0xc];
-    /* 0x0c */ s32 offset;
-    /* 0x10 */ s32 extent;
-    /* 0x14 */ s32 edgeDistance;
-    /* 0x18 */ u8 direction;
-};
 
 
 class MenuProc;
 typedef void (MenuProc::*Unk_ov002_02200a68_Fn)();
 
-// Vtable 0x022044e4
-class MenuProc : public GameProc {
-public:
-    MenuProc();
-    virtual ~MenuProc();
-    static void *operator new(unsigned long size);
-    static void operator delete(void *p);
-
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL execWaitScreen();
-    virtual BOOL execTransition();
-    virtual BOOL execMain();
-    virtual BOOL execPhase3();
-    virtual BOOL execPhase4();
-    virtual BOOL execClosed();
-
-    void applySlideOffset(s32 a, s32 b, s32 c);
-    void setSlideExtent(s32 v);
-    void initSlideOut(s32 a, s32 mode);
-    void initSlideIn(s32 a, s32 mode);
-    void beginMainSlideOut(s32 a, s32 b, s32 mode, s32 dist);
-    void beginMainSlideIn(s32 a, s32 b, s32 mode, s32 dist);
-    void beginSubSlideOut(s32 a, s32 b, s32 mode, s32 dist);
-    void beginSubSlideIn(s32 a, s32 b, s32 mode, s32 dist);
-    BOOL stepSlideOut(s32 a);
-    BOOL stepSlideIn(s32 a);
-    s32 getSlideOffsetX();
-    s32 getSlideOffsetY();
-    BOOL checkSwitchToTouch();
-    BOOL checkSwitchToButtons(s32 a);
-    void setTransitionState(u8 v);
-    void setMainState(u8 v);
-    void setPhase(u8 v);
-    void initKeyRepeat(s32 a, s32 b, s32 c);
-    void restartKeyRepeat();
-    BOOL isRepeatRight();
-    BOOL isRepeatLeft();
-    BOOL isRepeatDown();
-    BOOL isRepeatUp();
-    u32 takeRepeatedKeys();
-
-    /* 0x50 */ Unk_ov002_022013a0 keyRepeat;
-    /* 0x64 */ u32 openMenuPrev;
-    /* 0x68 */ u32 openMenuNext;
-    /* 0x6c */ MenuProc *openMenuOwner;
-    /* 0x70 */ MenuSlideView slide;
-    /* 0x8c */ u8 transitionState;
-    /* 0x8d */ u8 mainState;
-    /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 phase;
-    /* 0x90 */ u8 menuId;
-};
 
 // ---------------------------------------------------------------- ov090 declarations
 extern "C" {

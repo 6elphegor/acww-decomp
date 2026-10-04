@@ -1,6 +1,7 @@
 // ov144: scene overlay (class MusicMenu, vtable 0x02293db8): music / stereo menu.
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "menu/MenuProc.h"
 
 class MusicMenu;
 typedef void (MusicMenu::*Unk_ov144_02293db8_Fn)();
@@ -162,58 +163,6 @@ extern "C" Unk_ov144_SceneEntry sMusicMenuProfile = {MusicMenu_Create, 0xb9, 0xb
 extern "C" u32 data_ov144_02293d70[16] = {0x20508028, 0x50c0, 0x508018, 0x50e0, 0x508008, 0x50e0, 0x5080f8, 0x50e0,
                                           0x5080e8, 0x50e0, 0x5080d8, 0x50e0, 0x5080c8, 0x50e0, 0x5080b8, 0xffff50c0};
 
-// Vtable 0x022044e4 (scene base class)
-class MenuProc : public GameProc {
-public:
-    MenuProc();
-    virtual ~MenuProc();
-    static void *operator new(unsigned long size);
-    static void operator delete(void *p);
-
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL execWaitScreen();
-    virtual BOOL execTransition();
-    virtual BOOL execMain();
-    virtual BOOL execPhase3();
-    virtual BOOL execPhase4();
-    virtual BOOL execClosed();
-
-    void applySlideOffset(s32 a, s32 b, s32 c);
-    BOOL stepSlideOut(s32 a);
-    void initSlideIn(s32 a, s32 b);
-    void beginSubSlideOut(s32 a, s32 b, s32 c, s32 d);
-    void setSlideExtent(s32 a);
-    void beginMainSlideIn(s32 a, s32 b, s32 mode, s32 dist);
-    s32 getSlideOffsetX();
-    void beginSubSlideIn(s32 a, s32 b, s32 c, s32 d);
-    BOOL stepSlideIn(s32 a);
-    s32 getSlideOffsetY();
-    void setTransitionState(u8 v);
-    void setMainState(u8 v);
-    void setPhase(u8 v);
-    void func_ov002_02200a68();
-    BOOL checkSwitchToButtons(s32 a);
-    BOOL checkSwitchToTouch();
-    s32 takeRepeatedKeys();
-    void initSlideOut(u32 a, u32 b);
-
-    /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 openMenuPrev;
-    /* 0x68 */ u32 openMenuNext;
-    /* 0x6c */ MenuProc *openMenuOwner;
-    /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 transitionState;
-    /* 0x8d */ u8 mainState;
-    /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 phase;
-    /* 0x90 */ u8 menuId;
-};
 
 class MenuCursorBuf0 {
 public:

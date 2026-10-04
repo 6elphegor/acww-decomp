@@ -3,6 +3,7 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "player/PlayerId.h"
+#include "menu/MenuProc.h"
 
 // Plain view of the scene object used by the extern "C" helpers (offsets only).
 struct Unk_ov112_02296840 {
@@ -220,55 +221,6 @@ public:
     void setNextRequest(s32 a, s32 b);
 };
 
-// Scene base class (declared in src/ov002/unk_ov002_02200680.cpp)
-class MenuProc : public GameProc {
-public:
-    MenuProc();
-    virtual ~MenuProc();
-    static void *operator new(unsigned long size);
-    static void operator delete(void *p);
-
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL execWaitScreen();
-    virtual BOOL execTransition();
-    virtual BOOL execMain();
-    virtual BOOL execPhase3();
-    virtual BOOL execPhase4();
-    virtual BOOL execClosed();
-
-    void applySlideOffset(s32 a, s32 b, s32 c);
-    void setSlideExtent(s32 a);
-    void initSlideIn(s32 a, s32 b);
-    void beginSubSlideOut(s32 a, s32 b, s32 c, s32 d);
-    void beginSubSlideIn(s32 a, s32 b, s32 c, s32 d);
-    BOOL stepSlideOut(s32 a);
-    BOOL stepSlideIn(s32 a);
-    s32 getSlideOffsetY();
-    void restartKeyRepeat();
-    s32 takeRepeatedKeys();
-    s32 checkSwitchToTouch();
-    BOOL checkSwitchToButtons(s32 a);
-    void setTransitionState(u8 v);
-    void setMainState(u8 v);
-    void setPhase(u8 v);
-
-    /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 openMenuPrev;
-    /* 0x68 */ u32 openMenuNext;
-    /* 0x6c */ MenuProc *openMenuOwner;
-    /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 transitionState;
-    /* 0x8d */ u8 mainState;
-    /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 phase;
-    /* 0x90 */ u8 menuId;
-};
 
 // 0x370: ov095 list/text object, size 0x23bc
 class Keyboard {

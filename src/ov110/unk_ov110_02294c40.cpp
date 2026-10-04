@@ -7,6 +7,7 @@
 #include "menu/InventoryItemGrid.h"
 #include "menu/LetterGrid.h"
 #include "menu/InventoryBg.h"
+#include "menu/MenuProc.h"
 
 class LostFoundRecycleMenu;
 
@@ -225,54 +226,6 @@ public:
     u32 unk_04[0x60 / 4];
 };
 
-// Scene base class (declared in src/ov002/unk_ov002_02200680.cpp)
-class MenuProc : public GameProc {
-public:
-    MenuProc();
-    virtual ~MenuProc();
-    static void *operator new(unsigned long size);
-    static void operator delete(void *p);
-
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL execWaitScreen();
-    virtual BOOL execTransition();
-    virtual BOOL execMain();
-    virtual BOOL execPhase3();
-    virtual BOOL execPhase4();
-    virtual BOOL execClosed();
-
-    void applySlideOffset(s32, s32, s32);
-    void setSlideExtent(s32);
-    void beginSubSlideOut(s32, s32, s32, s32);
-    void beginSubSlideIn(s32, s32, s32, s32);
-    s32 stepSlideOut(s32);
-    s32 stepSlideIn(s32);
-    s32 getSlideOffsetY();
-    void restartKeyRepeat();
-    u32 takeRepeatedKeys();
-    u32 checkSwitchToTouch();
-    s32 checkSwitchToButtons(s32);
-    void setTransitionState(u8);
-    void setMainState(u8);
-    void setPhase(u8);
-
-    /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 openMenuPrev;
-    /* 0x68 */ u32 openMenuNext;
-    /* 0x6c */ MenuProc *openMenuOwner;
-    /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 transitionState;
-    /* 0x8d */ u8 mainState;
-    /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 phase;
-    /* 0x90 */ u8 menuId;
-};
 
 typedef void (LostFoundRecycleMenu::*Unk_ov110_02297778_Fn)();
 

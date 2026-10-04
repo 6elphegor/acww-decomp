@@ -28,7 +28,7 @@ public:
     BOOL isLeft();
     BOOL isDown();
     BOOL isUp();
-    u32 take();
+    u8 take();
     void update();
 };
 

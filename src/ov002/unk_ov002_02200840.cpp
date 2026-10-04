@@ -17,6 +17,7 @@
 #include "menu/MenuSlide.h"
 #include "talk/MsgString.h"
 #include "talk/MsgRequest.h"
+#include "menu/MenuProc.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
@@ -341,83 +342,10 @@ public:
 
 
 
-// methods of the same slider object that the symbols list under another class name
-class MenuSlideView : public MenuSlide {
-public:
-    void setExtent(s32 v);
-    void applyWindow(s32 a);
-    void applyLayerOffset(s32 a, s32 b, s32 c);
-    void initSlideOut(s32 a, s32 mode, s32 dist);
-    void initSlideIn(s32 a, s32 mode, s32 dist);
-    void beginMainSlideOut(s32 a, s32 b, s32 mode, s32 dist);
-    void beginMainSlideIn(s32 a, s32 b, s32 mode, s32 dist);
-    void beginSubSlideOut(s32 a, s32 b, s32 mode, s32 dist);
-    void beginSubSlideIn(s32 a, s32 b, s32 mode, s32 dist);
-    BOOL stepSlideOut(s32 a);
-};
 
 class MenuProc;
 typedef void (MenuProc::*Unk_ov002_02200a68_Fn)();
 
-// Vtable 0x022044e4
-class MenuProc : public GameProc {
-public:
-    MenuProc();
-    virtual ~MenuProc();
-    static void *operator new(unsigned long size);
-    static void operator delete(void *p);
-
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL execWaitScreen();
-    virtual BOOL execTransition();
-    virtual BOOL execMain();
-    virtual BOOL execPhase3();
-    virtual BOOL execPhase4();
-    virtual BOOL execClosed();
-
-    void applySlideOffset(s32 a, s32 b, s32 c);
-    void setSlideExtent(s32 v);
-    void initSlideOut(s32 a, s32 mode);
-    void initSlideIn(s32 a, s32 mode);
-    void beginMainSlideOut(s32 a, s32 b, s32 mode, s32 dist);
-    void beginMainSlideIn(s32 a, s32 b, s32 mode, s32 dist);
-    void beginSubSlideOut(s32 a, s32 b, s32 mode, s32 dist);
-    void beginSubSlideIn(s32 a, s32 b, s32 mode, s32 dist);
-    BOOL stepSlideOut(s32 a);
-    BOOL stepSlideIn(s32 a);
-    s32 getSlideOffsetX();
-    s32 getSlideOffsetY();
-    BOOL checkSwitchToTouch();
-    BOOL checkSwitchToButtons(s32 a);
-    void setTransitionState(u8 v);
-    void setMainState(u8 v);
-    void setPhase(u8 v);
-    void initKeyRepeat(s32 a, s32 b, s32 c);
-    void restartKeyRepeat();
-    BOOL isRepeatRight();
-    BOOL isRepeatLeft();
-    BOOL isRepeatDown();
-    BOOL isRepeatUp();
-    u32 takeRepeatedKeys();
-
-    /* 0x50 */ KeyRepeat keyRepeat;
-    /* 0x54 */ u8 unk_54[0x10];
-    /* 0x64 */ u32 openMenuPrev;
-    /* 0x68 */ u32 openMenuNext;
-    /* 0x6c */ MenuProc *openMenuOwner;
-    /* 0x70 */ MenuSlide slide;
-    /* 0x8c */ u8 transitionState;
-    /* 0x8d */ u8 mainState;
-    /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 phase;
-    /* 0x90 */ u8 menuId;
-};
 
 // 8-byte-aligned owner helpers of the menu: text elements
 // Sprite/text pair element (0x50 bytes), vtable 0x022046dc
@@ -809,7 +737,7 @@ void KeyRepeatView::update()
     }
 }
 
-u32 KeyRepeatView::take()
+u8 KeyRepeatView::take()
 {
     takenKeys = pendingKeys;
     pendingKeys = 0;
@@ -1323,7 +1251,7 @@ BOOL MenuProc::checkSwitchToTouch() {
     return FALSE;
 }
 
-u32 MenuProc::takeRepeatedKeys() { return ((KeyRepeatView *)&keyRepeat)->take(); }
+u8 MenuProc::takeRepeatedKeys() { return ((KeyRepeatView *)&keyRepeat)->take(); }
 
 BOOL MenuProc::isRepeatUp() { return ((KeyRepeatView *)&keyRepeat)->isUp(); }
 
