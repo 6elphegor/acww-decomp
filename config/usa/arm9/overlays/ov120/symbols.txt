@@ -90,8 +90,8 @@ _ZN13MapViewerMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x022949e8
 _ZN13MapViewerMenu12runMainStateEv kind:function(thumb,size=0xd8) addr:0x02294a04
 _ZN13MapViewerMenu14execTransitionEv kind:function(thumb,size=0xbc) addr:0x02294adc
 _ZN13MapViewerMenu6onDrawEv kind:function(thumb,size=0x248) addr:0x02294b98
-_ZN13MapViewerMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02294de0
-_ZN13MapViewerMenu8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02294dfc
+_ZN13MapViewerMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02294de0
+_ZN13MapViewerMenu8onCreateEv kind:function(thumb,size=0x20) addr:0x02294dfc
 MapViewerMenu_Create kind:function(thumb,size=0xa4) addr:0x02294e1c
 sMapViewFacilityCells kind:data(any) addr:0x02294ec0
 sMapViewPlaceMarkers kind:data(any) addr:0x02294ec8

@@ -86,7 +86,7 @@ struct Unk_ov004_0224d0a0_Ent {
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
-#define func_0201b08c _ZN8NpcActor8vfunc_4cEi
+#define func_0201b08c _ZN8NpcActor18onInteractionEventEi
 #define NpcActor_netSetSlotsIfOwner _ZN8NpcActor18netSetSlotsIfOwnerEjjjz
 #define NpcActor_isNetOwner _ZN8NpcActor10isNetOwnerEv
 #define NpcActor_netGetSlots _ZN8NpcActor11netGetSlotsEii
@@ -249,12 +249,12 @@ public:
 class SpNpcBrewster : public SpNpcActor {
 public:
     SpNpcBrewster() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 idx, u8 v);
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 idx, u8 v);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -292,8 +292,8 @@ public:
 
 extern "C" SpNpcBrewster *SpNpcBrewster_Create() { return new SpNpcBrewster; }
 
-BOOL SpNpcBrewster::vfunc_04() {
-    if (SpNpcActor::vfunc_04() == 0) {
+BOOL SpNpcBrewster::preCreate() {
+    if (SpNpcActor::preCreate() == 0) {
         return FALSE;
     }
     NpcActor_setTalkRequest(this, &talk);
@@ -307,8 +307,8 @@ BOOL SpNpcBrewster::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcBrewster::vfunc_00() {
-    if (SpNpcActor::vfunc_00() == 0) {
+BOOL SpNpcBrewster::onCreate() {
+    if (SpNpcActor::onCreate() == 0) {
         return FALSE;
     }
     sSpNpcBrewster = this;
@@ -329,8 +329,8 @@ BOOL SpNpcBrewster::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcBrewster::vfunc_0c() {
-    if (SpNpcActor::vfunc_0c() == 0) {
+BOOL SpNpcBrewster::onDelete() {
+    if (SpNpcActor::onDelete() == 0) {
         return FALSE;
     }
     sSpNpcBrewster = 0;
@@ -493,7 +493,7 @@ BOOL SpNpcBrewster::mainAct05() {
         s32 b = 4;
         if (NpcActor_netGetSlots(this, &a, &b) != 0 && a == (s32)gCommManager->myAid && a == b) {
             NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, gCommManager->myAid);
-            ((ActorTalkRequest *)&talk)->vfunc_08();
+            ((ActorTalkRequest *)&talk)->resetMsg();
             s32 r = NpcActor_getPlayerActor(this, 4);
             func_02015ab0(&talk, r);
             changeAct(1);
@@ -542,7 +542,7 @@ SpNpcBrewsterTalk::SpNpcBrewsterTalk() {}
 SpNpcBrewsterTalk::~SpNpcBrewsterTalk() {}
 
 void SpNpcBrewsterTalk::attachOwner(s32 v) {
-    vfunc_08();
+    resetMsg();
     owner = (SpNpcBrewster *)v;
 }
 
@@ -935,14 +935,14 @@ void SpNpcBrewsterTalk::runScript03() {
 // ---------------------------------------------------------------------------------------------------------------------
 // SpNpcBrewsterTalk
 
-BOOL SpNpcBrewster::vfunc_48(void *) {
+BOOL SpNpcBrewster::acceptsInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-void SpNpcBrewster::vfunc_4c(u32 cmd, u8 arg) {
+void SpNpcBrewster::onInteractionEvent(u32 cmd, u8 arg) {
     s32 a, b;
     switch (cmd) {
     case 3:
@@ -966,7 +966,7 @@ void SpNpcBrewster::vfunc_4c(u32 cmd, u8 arg) {
             s32 g = gl->myAid;
             NpcActor_netSetSlotsIfOwner(this, 1, g, g);
             ActorTalkRequest *p = &talk;
-            p->vfunc_08();
+            p->resetMsg();
             func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
             if (CommManager_isOnline(gl) || *DebugVar_GetPtr(0, 0x4a) != 0) {
                 changeAct(1);
@@ -984,7 +984,7 @@ void SpNpcBrewster::vfunc_4c(u32 cmd, u8 arg) {
             s32 g = gCommManager->myAid;
             NpcActor_netSetSlotsIfOwner(this, 1, g, g);
             ActorTalkRequest *p = &talk;
-            p->vfunc_08();
+            p->resetMsg();
             func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
             changeAct(1);
         }

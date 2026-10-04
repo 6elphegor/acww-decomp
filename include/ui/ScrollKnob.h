@@ -12,7 +12,7 @@ public:
     ScrollKnob(u32 flag);                       // C1 0x0208dcb8, C2 0x0208dd00
     virtual ~ScrollKnob();                      // D2 0x0208dc30, D0 0x0208dc5c, D1 0x0208dc8c
     virtual void draw();                        // 0x0208db10
-    virtual void vfunc_0c();                    // 0x0208daf0
+    virtual void update();                    // 0x0208daf0
 
     BOOL areAnimsDone();                        // 0x0208d9a8
     s32 getState();                             // 0x0208d9d0

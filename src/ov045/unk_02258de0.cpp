@@ -194,12 +194,12 @@ struct Unk_ov045_02258fd8_Bits {
 class SpNpcKatrina : public SpNpcActor {
 public:
     SpNpcKatrina() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -296,8 +296,8 @@ const Unk_ov045_02258ee4_Ent sSpNpcKatrinaBadFortuneCards[21] = {
 };
 SpNpcKatrina *sSpNpcKatrinaInstance;
 extern "C" Unk_ov004_SceneEntry sSpNpcKatrinaProfile = {(void *(*)())SpNpcKatrina_Create, 0x70, 0x76, 2, 0x5000, 0x5000, 0x3e800};
-BOOL SpNpcKatrina::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcKatrina::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -309,8 +309,8 @@ BOOL SpNpcKatrina::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcKatrina::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcKatrina::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     sSpNpcKatrinaInstance = this;
@@ -321,8 +321,8 @@ BOOL SpNpcKatrina::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcKatrina::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcKatrina::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     sSpNpcKatrinaInstance = 0;
@@ -443,7 +443,7 @@ void SpNpcKatrinaTalk::onEventTag(u32 a_) {
 }
 
 void SpNpcKatrinaTalk::attachOwner(SpNpcKatrina *o) {
-    vfunc_08();
+    resetMsg();
     owner = o;
 }
 
@@ -706,7 +706,7 @@ void SpNpcKatrinaTalk::scriptReadPartnerName() {
     ((TalkWindowState *)o)->setNextMessage(&msg, sSpNpcKatrinaMsgKey);
 }
 
-BOOL SpNpcKatrina::vfunc_48(void *) {
+BOOL SpNpcKatrina::acceptsInteraction(void *) {
     BOOL r = FALSE;
     Unk_ov045_02259070_Rec *src = (Unk_ov045_02259070_Rec *)PlayerActor_GetBodyPos(4);
     Unk_ov045_02259070_Rec rec;
@@ -729,11 +729,11 @@ BOOL SpNpcKatrina::vfunc_48(void *) {
     return r;
 }
 
-void SpNpcKatrina::vfunc_4c(u32 cmd, u8 b) {
+void SpNpcKatrina::onInteractionEvent(u32 cmd, u8 b) {
     switch (cmd) {
     case 0:
     case 1:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0(getPlayerActor(4));
         changeAct(1);
         break;

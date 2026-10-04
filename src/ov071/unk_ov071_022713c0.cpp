@@ -165,7 +165,7 @@ class SpNpcLyleTalk : public SpNpcTalkRequest {
 public:
     SpNpcLyleTalk();
     virtual ~SpNpcLyleTalk();
-    virtual void vfunc_08();
+    virtual void resetMsg();
     virtual void onMessageEnd(u32 attr);
     virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
@@ -197,11 +197,11 @@ struct Unk_020d77a4_Vec3;
 class SpNpcLyle : public SpNpcActor {
 public:
     SpNpcLyle() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -318,8 +318,8 @@ extern "C" SpNpcLyle *SpNpcLyle_Create() {
 
 s32 SpNpcLyle::getWalkAnimSpeedScale() { return data_020c6cf0 - 0x1000; }
 
-BOOL SpNpcLyle::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcLyle::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -329,8 +329,8 @@ BOOL SpNpcLyle::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcLyle::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcLyle::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&animCtrl, this, 0x141, 0, 0, 0x1000, 0, 1);
@@ -339,8 +339,8 @@ BOOL SpNpcLyle::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcLyle::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcLyle::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     if (EventAnnounce_IsBusy() == 0) {
@@ -919,15 +919,15 @@ SpNpcLyleTalk::SpNpcLyleTalk() {}
 
 SpNpcLyleTalk::~SpNpcLyleTalk() {}
 
-void SpNpcLyleTalk::vfunc_08() {
-    SpNpcTalkRequest::vfunc_08();
+void SpNpcLyleTalk::resetMsg() {
+    SpNpcTalkRequest::resetMsg();
     Unk_ov071_02272ba8_Fn t = *(Unk_ov071_02272ba8_Fn *)__ptmf_null;
     script = t;
     nextScript = t;
 }
 
 void SpNpcLyleTalk::attachOwner(SpNpcLyle *o) {
-    vfunc_08();
+    resetMsg();
     owner = o;
     topic = 0;
     questionCount = 0;
@@ -1177,7 +1177,7 @@ end:
     }
 }
 
-BOOL SpNpcLyle::vfunc_48(void *) {
+BOOL SpNpcLyle::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
@@ -1187,13 +1187,13 @@ BOOL SpNpcLyle::vfunc_48(void *) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-void SpNpcLyle::vfunc_4c(u32 a, u8) {
+void SpNpcLyle::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         changeAct(0);
         break;
     case 3:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(5);
         break;

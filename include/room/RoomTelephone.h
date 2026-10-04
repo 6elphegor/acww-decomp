@@ -13,13 +13,13 @@ struct PhoneChoiceSet;
 class RoomTelephone : public RoomObjActor, public TalkMsgRequest {
 public:
     RoomTelephone();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~RoomTelephone();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL acceptsInteraction(void *a);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual VecFx32 *getInteractionPos();
     virtual void onMessageStart(u32 attr);
     virtual void onMessageEnd(u32 attr);

@@ -59,8 +59,8 @@ _ZN14StargazingMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02294f38
 _ZN14StargazingMenu12runMainStateEv kind:function(thumb,size=0xe8) addr:0x02294f54
 _ZN14StargazingMenu14execTransitionEv kind:function(thumb,size=0x94) addr:0x0229503c
 _ZN14StargazingMenu6onDrawEv kind:function(thumb,size=0x60) addr:0x022950d0
-_ZN14StargazingMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02295130
-_ZN14StargazingMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x0229514c
+_ZN14StargazingMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02295130
+_ZN14StargazingMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x0229514c
 StargazingMenu_Create kind:function(thumb,size=0x5c) addr:0x0229516c
 sNameLabelAnimY kind:data(any) addr:0x022951c8
 sArrowCursorY kind:data(any) addr:0x022951e0

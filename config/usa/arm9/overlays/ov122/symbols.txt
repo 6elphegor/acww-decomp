@@ -142,8 +142,8 @@ _ZN15LetterWriteMenu8execMainEv kind:function(thumb,size=0x2a) addr:0x02299984
 _ZN15LetterWriteMenu12runMainStateEv kind:function(thumb,size=0x1d0) addr:0x022999b0
 _ZN15LetterWriteMenu14execTransitionEv kind:function(thumb,size=0x12c) addr:0x02299b80
 _ZN15LetterWriteMenu6onDrawEv kind:function(thumb,size=0x24c) addr:0x02299cac
-_ZN15LetterWriteMenu8vfunc_0cEv kind:function(thumb,size=0x26) addr:0x02299ef8
-_ZN15LetterWriteMenu8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02299f20
+_ZN15LetterWriteMenu8onDeleteEv kind:function(thumb,size=0x26) addr:0x02299ef8
+_ZN15LetterWriteMenu8onCreateEv kind:function(thumb,size=0x20) addr:0x02299f20
 LetterWriteMenu_Create kind:function(thumb,size=0xc4) addr:0x02299f40
 data_ov122_0229a004 kind:data(any) addr:0x0229a004
 data_ov122_0229a008 kind:data(any) addr:0x0229a008

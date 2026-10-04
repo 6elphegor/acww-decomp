@@ -266,13 +266,13 @@ public:
         startTime[0] = 0;
         startTime[1] = 0;
     }
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual BOOL vfunc_58(void *a);
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
+    virtual BOOL acceptsSelfRequestedInteraction(void *a);
     virtual BOOL updateAct();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
@@ -465,8 +465,8 @@ extern "C" FleaMarketBuyerVillager *FleaMarketBuyerVillager_Create() {
     return new FleaMarketBuyerVillager;
 }
 
-BOOL FleaMarketBuyerVillager::vfunc_04() {
-    if (!VillagerActor::vfunc_04()) {
+BOOL FleaMarketBuyerVillager::preCreate() {
+    if (!VillagerActor::preCreate()) {
         return FALSE;
     }
     NpcActor_setTalkRequest(this, &talk);
@@ -474,8 +474,8 @@ BOOL FleaMarketBuyerVillager::vfunc_04() {
     return TRUE;
 }
 
-BOOL FleaMarketBuyerVillager::vfunc_00() {
-    if (!VillagerActor::vfunc_00()) {
+BOOL FleaMarketBuyerVillager::onCreate() {
+    if (!VillagerActor::onCreate()) {
         return FALSE;
     }
     targetItem = 0xfff1;
@@ -497,8 +497,8 @@ BOOL FleaMarketBuyerVillager::vfunc_00() {
     }
     Scene_GetPrevious();
     if (SceneId_IsTownUnk31() != 0 ||
-        (vfunc_64() && o && PlayerId_isValid(o) && Villager_FindMemory(vfunc_64(), o) &&
-         VillagerMemory_isFleaMarketVisited(Villager_FindMemory(vfunc_64(), o)))) {
+        (getVillagerData() && o && PlayerId_isValid(o) && Villager_FindMemory(getVillagerData(), o) &&
+         VillagerMemory_isFleaMarketVisited(Villager_FindMemory(getVillagerData(), o)))) {
         furnitureCount = (s32)FtrActorTable_countUsed(FtrActorTable_GetInstance());
         HouseVisitor_SetPresent();
         Ground_LockExit(0);
@@ -515,22 +515,22 @@ BOOL FleaMarketBuyerVillager::vfunc_00() {
         doorWaitFrames = 1;
         changeAct(0);
     }
-    if (vfunc_64()) {
-        VillagerState_SetRole(Villager_GetState(vfunc_64()), 2);
+    if (getVillagerData()) {
+        VillagerState_SetRole(Villager_GetState(getVillagerData()), 2);
     }
     return TRUE;
 }
 
-BOOL FleaMarketBuyerVillager::vfunc_0c() {
-    if (!VillagerActor::vfunc_0c()) {
+BOOL FleaMarketBuyerVillager::onDelete() {
+    if (!VillagerActor::onDelete()) {
         return FALSE;
     }
     if (visitStage == 6 || visitStage == 4) {
         HouseVisitor_ClearPresent();
         VillagerStates_SetFleaMarketBuyer(-1);
     }
-    if (vfunc_64()) {
-        VillagerState_ResetRole(Villager_GetState(vfunc_64()));
+    if (getVillagerData()) {
+        VillagerState_ResetRole(Villager_GetState(getVillagerData()));
     }
     return TRUE;
 }
@@ -857,7 +857,7 @@ FleaMarketBuyerVillagerTalk::FleaMarketBuyerVillagerTalk() {}
 FleaMarketBuyerVillagerTalk::~FleaMarketBuyerVillagerTalk() {}
 
 void FleaMarketBuyerVillagerTalk::attachOwner(VillagerActor *owner) {
-    vfunc_08();
+    resetMsg();
     VillagerTalk_begin(this, owner, 0x11);
     villager = (FleaMarketBuyerVillager *)owner;
 }
@@ -1159,24 +1159,24 @@ void FleaMarketBuyerVillagerTalk::onChoice(u32) {
     }
 }
 
-BOOL FleaMarketBuyerVillager::vfunc_48(void *) {
+BOOL FleaMarketBuyerVillager::acceptsInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL FleaMarketBuyerVillager::vfunc_58(void *) {
+BOOL FleaMarketBuyerVillager::acceptsSelfRequestedInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void FleaMarketBuyerVillager::vfunc_4c(u32 cmd, u8 b) {
+void FleaMarketBuyerVillager::onInteractionEvent(u32 cmd, u8 b) {
     switch (cmd) {
     case 1:
-        talk.vfunc_08();
+        talk.resetMsg();
         func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
         if (visitStage == 5 || visitStage == 3) {
             changeAct(7);
@@ -1193,7 +1193,7 @@ void FleaMarketBuyerVillager::vfunc_4c(u32 cmd, u8 b) {
         }
         break;
     case 0:
-        talk.vfunc_08();
+        talk.resetMsg();
         func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
         changeAct(6);
         break;

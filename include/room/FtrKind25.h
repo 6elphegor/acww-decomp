@@ -10,7 +10,7 @@ class FtrKind25 : public FtrActor {
 public:
     FtrKind25();
     virtual ~FtrKind25();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL initModel();
     virtual BOOL updateActive();
 

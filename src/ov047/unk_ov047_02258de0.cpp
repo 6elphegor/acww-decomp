@@ -215,7 +215,7 @@ public:
 
     SpNpcBlathersTalk();
     virtual ~SpNpcBlathersTalk();
-    virtual void vfunc_08();
+    virtual void resetMsg();
     virtual void onMessageEnd(u32 attr);
     virtual void onChoice(u32 a);
     virtual void start(TalkStartMsg *out);
@@ -274,11 +274,11 @@ public:
 class SpNpcBlathers : public SpNpcActor {
 public:
     SpNpcBlathers() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 cmd, u8 arg);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 cmd, u8 arg);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -547,8 +547,8 @@ extern "C" void *SpNpcBlathers_Create() {
     return new SpNpcBlathers();
 }
 
-BOOL SpNpcBlathers::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcBlathers::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -558,8 +558,8 @@ BOOL SpNpcBlathers::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcBlathers::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcBlathers::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     u8 buf[8];
@@ -589,8 +589,8 @@ BOOL SpNpcBlathers::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcBlathers::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcBlathers::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     if (effectHandle != -1) {
@@ -725,7 +725,7 @@ BOOL SpNpcBlathers::mainAct06() {
         u32 x, t;
         if (NpcActor_netGetSlots(this, &a, &b) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
             netSetSlotsIfOwner(1, t, t);
-            talk.vfunc_08();
+            talk.resetMsg();
             func_02015ab0(&talk, getPlayerActor(4));
             changeAct(3);
         } else if (NetArea_IsLocalOwner() && b == 4) {
@@ -969,8 +969,8 @@ SpNpcBlathersTalk::SpNpcBlathersTalk() {
 
 SpNpcBlathersTalk::~SpNpcBlathersTalk() {}
 
-void SpNpcBlathersTalk::vfunc_08() {
-    ActorTalkRequest::vfunc_08();
+void SpNpcBlathersTalk::resetMsg() {
+    ActorTalkRequest::resetMsg();
     pocketSlot = -1;
     item = 0xfff1;
     Fn t = *(Fn *)__ptmf_null;
@@ -979,7 +979,7 @@ void SpNpcBlathersTalk::vfunc_08() {
 }
 
 void SpNpcBlathersTalk::attachOwner(SpNpcBlathers *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = owner;
     dramaTalk = 0;
     pocketSlot = -1;
@@ -1737,14 +1737,14 @@ void SpNpcBlathersTalk::onDeliveryChoice(u32 a) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-BOOL SpNpcBlathers::vfunc_48(void *) {
+BOOL SpNpcBlathers::acceptsInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) || netIsTalkLocked()) {
         return FALSE;
     }
     return TRUE;
 }
 
-void SpNpcBlathers::vfunc_4c(u32 cmd, u8 arg) {
+void SpNpcBlathers::onInteractionEvent(u32 cmd, u8 arg) {
     s32 a, b;
     switch (cmd) {
     case 3:
@@ -1767,7 +1767,7 @@ void SpNpcBlathers::vfunc_4c(u32 cmd, u8 arg) {
             s32 g = gCommManager->myAid;
             netSetSlotsIfOwner(1, g, g);
             ActorTalkRequest *p = &talk;
-            p->vfunc_08();
+            p->resetMsg();
             func_02015ab0(&talk, getPlayerActor(4));
             changeAct(3);
         }

@@ -457,9 +457,9 @@ BOOL MailTextBuilder::load(MailMsgRequest *p) {
     char buf[0x44];
     u32 s = p->getPartDir();
     if (s != 0) {
-        func_020639e8(buf, "%s/%s/%s.bmg", p->vfunc_s0c(), s, (char *)p + 4);
+        func_020639e8(buf, "%s/%s/%s.bmg", p->getMsgDir(), s, (char *)p + 4);
     } else {
-        func_020639e8(buf, "%s/%s.bmg", p->vfunc_s0c(), (char *)p + 4);
+        func_020639e8(buf, "%s/%s.bmg", p->getMsgDir(), (char *)p + 4);
     }
     BOOL a = ((BmgReader *)reader)->open(buf);
     BOOL b = a ? ((BmgReader *)reader)->loadMessage(&p->msgIndex) : 0;
@@ -484,7 +484,7 @@ MailMsgRequest::MailMsgRequest() : folder(0), part(0), dest(0), namePosOut(0) {}
 
 MailMsgRequest::~MailMsgRequest() {}
 
-const char *MailMsgRequest::vfunc_s0c() { return (const char *)sMailFolderDirs[folder]; }
+const char *MailMsgRequest::getMsgDir() { return (const char *)sMailFolderDirs[folder]; }
 
 BOOL MailMsgRequest::isAppendPart() {
     if (part == 6) return TRUE;

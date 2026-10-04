@@ -68,8 +68,8 @@ public:
 
     ShopStockPlacer();
     virtual ~ShopStockPlacer();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
@@ -292,7 +292,7 @@ void *data_ov004_0224f274[2] = {(void *)_ZN18Unk_ov004_0223e9bc16setupScene15Sho
 
 void *data_ov004_0224f264[2] = {(void *)_ZN18Unk_ov004_0223e9bc11setupNoShopEv, 0};
 
-BOOL ShopStockPlacer::vfunc_00() {
+BOOL ShopStockPlacer::onCreate() {
     nookShop = Scene_GetNookShop();
     if (Scene_InNookShop()) {
         shopKind = 0;
@@ -312,7 +312,7 @@ BOOL ShopStockPlacer::onExecute() { return TRUE; }
 
 BOOL ShopStockPlacer::onDraw() { return TRUE; }
 
-BOOL ShopStockPlacer::vfunc_0c() { return TRUE; }
+BOOL ShopStockPlacer::onDelete() { return TRUE; }
 
 BOOL ShopStockPlacer::placeItem(u16 *item, s32 code) {
     u8 *tbl = ShopStock_GetLayout();

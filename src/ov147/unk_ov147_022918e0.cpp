@@ -177,8 +177,8 @@ class TitleScreen : public GameProc {
 public:
     TitleScreen();
     virtual ~TitleScreen();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
 
     void maskLogoCell(u32 *p, s32 x, s32 y);
@@ -258,7 +258,7 @@ TitleScreen::TitleScreen() {}
 
 TitleScreen::~TitleScreen() {}
 
-BOOL TitleScreen::vfunc_00() {
+BOOL TitleScreen::onCreate() {
     talk.setOwner(this);
     PlayerOptions_Get();
     _ZN13PlayerOptions5resetEv();
@@ -281,7 +281,7 @@ BOOL TitleScreen::vfunc_00() {
     return TRUE;
 }
 
-BOOL TitleScreen::vfunc_0c() {
+BOOL TitleScreen::onDelete() {
     stopBgm();
     blinkText.shutdown();
     vramTask.cancel();
@@ -396,7 +396,7 @@ void TitleScreen::enterOpenMenu() {}
 void TitleScreen::updateOpenMenu() {
     if (blinkText.isHidden()) {
         TalkWindowState *r = TalkWindow_Get(0);
-        talk.vfunc_08();
+        talk.resetMsg();
         if (wifiIdErased != 0) {
             talk.setFileName(sTitleTalkFilePtr);
             *((u8 *)this + 0x72) = 0x32;

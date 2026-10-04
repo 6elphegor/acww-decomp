@@ -186,11 +186,11 @@ public:
 
 class HouseOwnerVillager : public VillagerActor {
 public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 idx, u8 v);
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 idx, u8 v);
     virtual BOOL updateAct();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
@@ -215,16 +215,16 @@ extern "C" HouseOwnerVillager *HouseOwnerVillager_Create() {
     return new HouseOwnerVillager;
 }
 
-BOOL HouseOwnerVillager::vfunc_04() {
-    if (!VillagerActor::vfunc_04()) {
+BOOL HouseOwnerVillager::preCreate() {
+    if (!VillagerActor::preCreate()) {
         return FALSE;
     }
     NpcActor_setTalkRequest(this, &villagerTalk);
-    villagerTalk.obj.vfunc_08();
+    villagerTalk.obj.resetMsg();
     RoomFreeUnitMap_Build(&freeUnitMap);
     talkKind = 0;
     talkMelodyPlayed = 0;
-    void *p = vfunc_64();
+    void *p = getVillagerData();
     if (p) {
         if (VillagerId_isValid(VillagerData_getVillagerId(p))) {
             void *t = Villager_GetState(p);
@@ -236,8 +236,8 @@ BOOL HouseOwnerVillager::vfunc_04() {
     return TRUE;
 }
 
-BOOL HouseOwnerVillager::vfunc_00() {
-    if (!VillagerActor::vfunc_00()) {
+BOOL HouseOwnerVillager::onCreate() {
+    if (!VillagerActor::onCreate()) {
         return FALSE;
     }
     drawFn = &HouseOwnerVillager::drawModel;
@@ -250,9 +250,9 @@ BOOL HouseOwnerVillager::vfunc_00() {
     }
     u32 *g = (u32 *)gCommManager;
     if (!CommManager_isSlotActive(g, g[0x64 / 4])) {
-        if (vfunc_64()) {
-            if (VillagerState_GetRole(Villager_GetState(vfunc_64())) == 1) {
-                VillagerState_SetRole(Villager_GetState(vfunc_64()), 0);
+        if (getVillagerData()) {
+            if (VillagerState_GetRole(Villager_GetState(getVillagerData())) == 1) {
+                VillagerState_SetRole(Villager_GetState(getVillagerData()), 0);
             }
         }
     }
@@ -287,8 +287,8 @@ BOOL HouseOwnerVillager::updateAct() {
     ai.update(this);
     if (CommManager_isOnline(gCommManager)) {
         if (Unk_02015b8c_getAnimId(&animCtrl, 0) != 6) {
-            if (vfunc_64()) {
-                u16 *p = (u16 *)VillagerDataProfileView_getShirt(vfunc_64());
+            if (getVillagerData()) {
+                u16 *p = (u16 *)VillagerDataProfileView_getShirt(getVillagerData());
                 u16 *q = VillagerClothModel_getItem(&clothModel);
                 BOOL eq;
                 if (Item_IsFurniture(q)) {
@@ -297,14 +297,14 @@ BOOL HouseOwnerVillager::updateAct() {
                     eq = *q == *p ? TRUE : FALSE;
                 }
                 if (!eq) {
-                    u16 *w = (u16 *)VillagerDataProfileView_getShirt(vfunc_64());
+                    u16 *w = (u16 *)VillagerDataProfileView_getShirt(getVillagerData());
                     BOOL in = FALSE;
                     u16 v = *w;
                     if (v >= 0x11a8 && v <= 0x12a7) {
                         in = TRUE;
                     }
                     if (in) {
-                        VillagerClothModel_change(&clothModel, this, (u16 *)VillagerDataProfileView_getShirt(vfunc_64()));
+                        VillagerClothModel_change(&clothModel, this, (u16 *)VillagerDataProfileView_getShirt(getVillagerData()));
                     }
                 }
             }
@@ -548,14 +548,14 @@ BOOL HouseOwnerAi::updateState04(HouseOwnerVillager *o) {
     return FALSE;
 }
 
-BOOL HouseOwnerVillager::vfunc_48(void *) {
+BOOL HouseOwnerVillager::acceptsInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-void HouseOwnerVillager::vfunc_4c(u32 idx, u8 v) {
+void HouseOwnerVillager::onInteractionEvent(u32 idx, u8 v) {
     switch (idx) {
     case 3:
         partnerPlayer = v;

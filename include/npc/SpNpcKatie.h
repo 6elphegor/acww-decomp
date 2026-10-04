@@ -11,12 +11,12 @@
 class SpNpcKatie : public SpNpcActor {
 public:
     SpNpcKatie() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
     virtual ~SpNpcKatie() {}
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();

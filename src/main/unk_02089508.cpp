@@ -94,7 +94,7 @@ void LabelBalloon::draw() {
     }
 }
 
-void LabelBalloon::vfunc_0c() {
+void LabelBalloon::update() {
     static Unk_020e0d98_Fn tbl[4] = {&LabelBalloon::updateClosed, &LabelBalloon::updateOpening,
                                      &LabelBalloon::updateOpen, &LabelBalloon::updateClosing};
     (this->*tbl[state])();

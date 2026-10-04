@@ -1657,8 +1657,8 @@ extern "C" void SceneBase_SetupGraphics(void) {
     Gfx3d_InitEngine();
 }
 
-BOOL SceneBase::vfunc_04() {
-    if (!ProcBase::vfunc_04()) {
+BOOL SceneBase::preCreate() {
+    if (!ProcBase::preCreate()) {
         return FALSE;
     }
     if (gSceneCreating != 0) {
@@ -1709,7 +1709,7 @@ BOOL SceneBase::preDelete() {
 
 // Group r275, class SceneBase overrides
 
-BOOL SceneBase::vfunc_14(s32 a) {
+BOOL SceneBase::postDelete(s32 a) {
     if (a == 2) {
         sSceneExists = 0;
         if (gSoftResetRequested != 0) {
@@ -1718,7 +1718,7 @@ BOOL SceneBase::vfunc_14(s32 a) {
         gActorDefaultParent = 0;
         Snd_DestroyScene();
     }
-    return ProcBase::vfunc_14(a);
+    return ProcBase::postDelete(a);
 }
 
 BOOL SceneBase::preExecute() {
@@ -1763,7 +1763,7 @@ BOOL SceneBase::preExecute() {
     return TRUE;
 }
 
-BOOL SceneBase::vfunc_20(u32 status) { return ProcBase::vfunc_20(status); }
+BOOL SceneBase::postExecute(u32 status) { return ProcBase::postExecute(status); }
 
 BOOL SceneBase::preDraw() {
     if (ProcBase::preDraw()) {

@@ -71,8 +71,8 @@ class InsectBookTab : public MenuProc {
 public:
     InsectBookTab() : cursor(), bookPanel(), textLabels() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -142,14 +142,14 @@ static inline BOOL Unk_ov116_02296ce8_Both() {
 
 extern "C" InsectBookTab *InsectBookTab_Create() { return new InsectBookTab(); }
 
-BOOL InsectBookTab::vfunc_00() {
+BOOL InsectBookTab::onCreate() {
     initInsectBook();
     setTransitionState(0);
     setPhase(1);
     return TRUE;
 }
 
-BOOL InsectBookTab::vfunc_0c() {
+BOOL InsectBookTab::onDelete() {
     ((MenuTabBar *)ProcBase_GetParent())->onTabMenuClosed();
     releaseResources();
     return TRUE;
@@ -315,7 +315,7 @@ void InsectBookTab::releaseResources() {
 
 void InsectBookTab::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void InsectBookTab::postInputUpdate() {
@@ -513,7 +513,7 @@ s32 InsectBookTab::getCursorTargetY() {
 
 void InsectBookTab::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void InsectBookTab::moveCursorToTarget() {
@@ -536,7 +536,7 @@ void InsectBookTab::moveCursorTo(s32 a, s32 b) {
 
 void InsectBookTab::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void InsectBookTab::pressCursor() {

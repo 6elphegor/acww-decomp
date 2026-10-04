@@ -167,8 +167,8 @@ class PatternEditorMenu : public MenuProc {
 public:
     PatternEditorMenu() : paletteLabel(), bgTasks(), cursor(), bottomButtons() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -531,14 +531,14 @@ extern "C" const u8 sPatternEditorNavDown[36] = {1, 2, 3, 4, 5, 0x1d, 7, 8, 9, 0
 
 extern "C" PatternEditorMenu *PatternEditorMenu_Create() { return new PatternEditorMenu(); }
 
-BOOL PatternEditorMenu::vfunc_00() {
+BOOL PatternEditorMenu::onCreate() {
     initEditor();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL PatternEditorMenu::vfunc_0c() {
+BOOL PatternEditorMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
     releaseResources();
     return TRUE;
@@ -849,7 +849,7 @@ void PatternEditorMenu::releaseResources() {
 void PatternEditorMenu::preInputUpdate() {
     preStateUpdate();
     MenuCursorBuf0 *p = &cursor;
-    p->vfunc_0c();
+    p->update();
 }
 
 void PatternEditorMenu::postInputUpdate() {
@@ -2268,14 +2268,14 @@ u32 PatternEditorMenu::getCursorTargetY() { return sPatternEditorCursorY[cursorT
 
 void PatternEditorMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 // small helpers last so they are not inlined into callers
 
 void PatternEditorMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void PatternEditorMenu::pressCursor() {

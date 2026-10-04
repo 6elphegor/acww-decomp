@@ -97,13 +97,13 @@ public:
     virtual ~Mailbox();
 
     virtual BOOL onExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual s32 vfunc_6c(s32 a);
-    virtual BOOL vfunc_70();
-    virtual void vfunc_74();
-    virtual BOOL vfunc_b0();
-    virtual BOOL vfunc_b8(Unk_ov009_0225bc88_Blk *a);
+    virtual BOOL acceptsInteraction(void *a);
+    virtual void onInteractionEvent(u32 a, u8 b);
+    virtual s32 setDoorState(s32 a);
+    virtual BOOL initBuilding();
+    virtual void updateDoorState();
+    virtual BOOL needsMatrixUpdate();
+    virtual BOOL calcCustomBaseMatrix(Unk_ov009_0225bc88_Blk *a);
 
     // state methods (old file 022164d0)
     void execMailGone();
@@ -169,7 +169,7 @@ Mailbox::~Mailbox() {
     _ZN15TouchPickSphereD1Ev((TouchPickSphere *)touchSphere);
 }
 
-BOOL Mailbox::vfunc_70() {
+BOOL Mailbox::initBuilding() {
     if (getBtaAnim(0)) {
         if (matAnim.allocMatAnm((u32)modelRes, gFieldStructureHeap)) {
             matAnim.init((s32)getBtaAnim(0), 1, 0x1000, 0);
@@ -198,9 +198,9 @@ BOOL Mailbox::vfunc_70() {
     }
     setUseState(0);
     if (isUsable()) {
-        vfunc_6c(0);
+        setDoorState(0);
     } else {
-        vfunc_6c(BuildingState_Get(itemId));
+        setDoorState(BuildingState_Get(itemId));
     }
     return TRUE;
 }
@@ -211,11 +211,11 @@ BOOL Mailbox::onExecute() {
     return TRUE;
 }
 
-BOOL Mailbox::vfunc_b0() {
+BOOL Mailbox::needsMatrixUpdate() {
     return FALSE;
 }
 
-BOOL Mailbox::vfunc_48(void *a) {
+BOOL Mailbox::acceptsInteraction(void *a) {
     _ZN9Character18clearTalkStartModeEv(this, a);
     if (!isUsable()) {
         return FALSE;
@@ -230,7 +230,7 @@ BOOL Mailbox::vfunc_48(void *a) {
     return FALSE;
 }
 
-void Mailbox::vfunc_4c(u32 a, u8 b) {
+void Mailbox::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 0:
     case 1:
@@ -265,7 +265,7 @@ u32 Mailbox::isUsable() {
     return canUse;
 }
 
-BOOL Mailbox::vfunc_b8(Unk_ov009_0225bc88_Blk *a) {
+BOOL Mailbox::calcCustomBaseMatrix(Unk_ov009_0225bc88_Blk *a) {
     struct {
         s32 a, b, c;
     } v;
@@ -373,7 +373,7 @@ s32 Mailbox::execUseClose() {
     }
 }
 
-s32 Mailbox::vfunc_6c(s32 idx) {
+s32 Mailbox::setDoorState(s32 idx) {
     static Unk_ov003_02216cf8_Fn tbl[7] = {
         &Mailbox::enterNoMail, &Mailbox::enterMailArrive,
         &Mailbox::enterHasMail, &Mailbox::enterLidOpen,
@@ -388,7 +388,7 @@ s32 Mailbox::vfunc_6c(s32 idx) {
     return FALSE;
 }
 
-void Mailbox::vfunc_74() {
+void Mailbox::updateDoorState() {
     static Unk_ov003_02216c20_Fn tbl[7] = {
         &Mailbox::execNoMail, &Mailbox::execMailArrive,
         &Mailbox::execHasMail, &Mailbox::execLidOpen,
@@ -403,7 +403,7 @@ void Mailbox::vfunc_74() {
 }
 
 BOOL Mailbox::enterNoMail() {
-    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_64();
+    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorInAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, 0, 0);
     void *r4 = ((Model *)unk_138)->getRenderObj();
     void *r2 = getBtaAnim(0);
@@ -418,7 +418,7 @@ void Mailbox::execNoMail() {
 }
 
 BOOL Mailbox::enterMailArrive() {
-    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_64();
+    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorInAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, 0, 0);
     return TRUE;
 }
@@ -432,8 +432,8 @@ void Mailbox::execMailArrive() {
 }
 
 BOOL Mailbox::enterHasMail() {
-    Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)vfunc_64();
-    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_64();
+    Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)getDoorInAnim();
+    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorInAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, a->numFrame - 1, 0);
     void *r5 = ((Model *)unk_138)->getRenderObj();
     void *r2 = getBtaAnim(0);
@@ -447,7 +447,7 @@ void Mailbox::execHasMail() {
 }
 
 BOOL Mailbox::enterLidOpen() {
-    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_68();
+    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, 0, 0);
     ((BuildingSeEmitter *)unk_234)->playSe(0x819);
     return TRUE;
@@ -463,8 +463,8 @@ void Mailbox::execLidOpen() {
 }
 
 BOOL Mailbox::enterLidOpened() {
-    Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)vfunc_68();
-    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_68();
+    Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
+    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, a->numFrame - 1, 0);
     return TRUE;
 }
@@ -475,8 +475,8 @@ void Mailbox::execLidOpened() {
 }
 
 BOOL Mailbox::enterLidClose() {
-    Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)vfunc_68();
-    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_68();
+    Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
+    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 3, 0x1000, a->numFrame - 1, 0);
     ((BuildingSeEmitter *)unk_234)->playSe(0x81a);
     return TRUE;
@@ -497,8 +497,8 @@ void Mailbox::execLidClose() {
 }
 
 BOOL Mailbox::enterMailGone() {
-    Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)vfunc_64();
-    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_64();
+    Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)getDoorInAnim();
+    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorInAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 3, 0x1000, a->numFrame - 1, 0);
     ((BuildingSeEmitter *)unk_234)->playSe(0x81b);
     return TRUE;

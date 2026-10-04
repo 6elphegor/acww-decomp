@@ -19,8 +19,8 @@
 // Vtable of every actor (original vtable symbol minus 8 bytes, 0x150 bytes):
 //   primary slots 0x00..0xb8 (0xbc bytes), then 8 bytes secondary header, then the secondary vtable of TalkMsgRequest
 //   (D1, D0, 08..74).  Primary slot -> symbol:
-//     00 ov009::vfunc_00      04 Character::vfunc_04   08 Character::postCreate(s32)   0c Base::vfunc_0c
-//     10 ov009::vfunc_10      14 Actor::vfunc_14   18 Base::vfunc_18
+//     00 ov009::vfunc_00      04 Character::preCreate   08 Character::postCreate(s32)   0c Base::vfunc_0c
+//     10 ov009::vfunc_10      14 Actor::postDelete   18 Base::vfunc_18
 //     1c ov009::vfunc_1c   (symbols.txt names it vfunc_24, ALIAS NEEDED)   20 ov009::vfunc_20(u32) (symbols: vfunc_28Ej, ALIAS)
 //     24 Base::vfunc_24       28 ov009::vfunc_28 (symbols: vfunc_30Ev, ALIAS)   2c Actor::postDraw   30..3c Base
 //     40 D1 44 D0   48 ov009::vfunc_48(Character*)   4c ov009::vfunc_4c(u32,u8)   50 ov009::vfunc_50
@@ -29,10 +29,10 @@
 //     func_ov009_0225b880, ALIAS)
 // Aliases (zero-size labels, tools/pipeline/alias.py) the coordinator must add; <existing> -> <new>:
 //   ov009  _ZN13BuildingActor10preExecuteEv           -> _ZN13BuildingActor10preExecuteEv        (0x0225db04)
-//   ov009  _ZN13BuildingActor7preDrawEj           -> _ZN13BuildingActor8vfunc_20Ej        (0x0225da90)
-//   ov009  _ZN13BuildingActor7preDrawEv           -> _ZN13BuildingActor7preDrawEv        (0x0225d9e4)
-//   ov009  func_ov009_0225b884                           -> _ZN13BuildingActor8vfunc_b4Ev        (0x0225b884)
-//   ov009  func_ov009_0225b880                           -> _ZN13BuildingActor8vfunc_b8Ev        (0x0225b880)
+//   ov009  _ZN13BuildingActor11postExecuteEj           -> _ZN13BuildingActor11postExecuteEj        (0x0225da90)
+//   ov009  _ZN13BuildingActor11postExecuteEv           -> _ZN13BuildingActor11postExecuteEv        (0x0225d9e4)
+//   ov009  func_ov009_0225b884                           -> _ZN13BuildingActor11getSoundPosEv        (0x0225b884)
+//   ov009  func_ov009_0225b880                           -> _ZN13BuildingActor20calcCustomBaseMatrixEv        (0x0225b880)
 //   main   TalkMsgRequest slots: the unit uses the TalkMsgRequest slot names (onMessageStart ... onTalkEnd); no
 //          primary-chain class of the family declares a method of these names.
 //   ov003  0x0221445c is _ZThn236_N13BuildingActor12onMessageEndEv, the thunk of ov009::onMessageEnd in slot 0x14 of the secondary
@@ -93,14 +93,14 @@ class GateHouse : public BuildingActor {
 public:
     GateHouse();
     virtual ~GateHouse();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_70();
-    virtual BOOL vfunc_94();
-    virtual char *vfunc_a4();
-    virtual char *vfunc_a8();
-    virtual char *vfunc_ac();
+    virtual BOOL initBuilding();
+    virtual BOOL alignsPlayerToDoor();
+    virtual char *getArcPath();
+    virtual char *getTexPath();
+    virtual char *getLightTexPath();
 
     /* 0x2b0 */ GateHouseFlagTexture flagTexture;
     /* 0x2dc */ u8 pad_2dc[0x59c - 0x2dc];
@@ -130,7 +130,7 @@ GateHouse::GateHouse() {
 GateHouse::~GateHouse() {
 }
 
-BOOL GateHouse::vfunc_70() {
+BOOL GateHouse::initBuilding() {
     void *t = modelRes;
     flagTexture.apply(t, (void *)TownFlag_GetPattern((s32)TownStyleRecordView_getTownFlag(gSaveTownFlag)));
     s32 x;
@@ -152,7 +152,7 @@ BOOL GateHouse::onDraw() {
     return TRUE;
 }
 
-BOOL GateHouse::vfunc_0c() {
+BOOL GateHouse::onDelete() {
     flagTexture.cancelUpload();
     return TRUE;
 }
@@ -167,28 +167,28 @@ extern "C" u32 GateHouse_GetModelName() {
 
 extern "C" Unk_ov003_SceneEntry sGateHouseProfile = { (void *(*)())GateHouse_Create, 0x1c, 0x22, 0, 0xc8000, 0x12c000, 0x258000 };
 
-char *GateHouse::vfunc_a4() {
+char *GateHouse::getArcPath() {
     u32 x = GateHouse_GetModelName();
     s32 y = Field_GetStructureTexSuffix();
     func_020639e8(data_ov003_02235228, "/str/chkp/%s%c.arc", x, y);
     return data_ov003_02235228;
 }
 
-char *GateHouse::vfunc_a8() {
+char *GateHouse::getTexPath() {
     u32 x = GateHouse_GetModelName();
     s32 y = Field_GetStructureTexSuffix();
     func_020639e8(data_ov003_02235204, "/str/chkp/%s%c.nsbtx", x, y);
     return data_ov003_02235204;
 }
 
-char *GateHouse::vfunc_ac() {
+char *GateHouse::getLightTexPath() {
     u32 x = GateHouse_GetModelName();
     s32 y = Field_GetStructureTexSuffix();
     func_020639e8(data_ov003_0223524c, "/str/chkp/%s%c_lt.nsbtx", x, y);
     return data_ov003_0223524c;
 }
 
-BOOL GateHouse::vfunc_94() {
+BOOL GateHouse::alignsPlayerToDoor() {
     return FALSE;
 }
 

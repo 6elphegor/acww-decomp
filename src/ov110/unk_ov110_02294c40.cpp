@@ -190,8 +190,8 @@ public:
     LostFoundRecycleMenu()
         : vramTask(), itemGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), choiceMenu(), errorMessage(), textLabels() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -491,14 +491,14 @@ static inline BOOL R1(u16 *p, u32 lo, u32 hi)
 
 extern "C" LostFoundRecycleMenu *LostFoundRecycleMenu_Create() { return new LostFoundRecycleMenu(); }
 
-BOOL LostFoundRecycleMenu::vfunc_00() {
+BOOL LostFoundRecycleMenu::onCreate() {
     LostFoundRecycleMenu_Init((S *)this);
     setTransitionState(0);
     setPhase(0);
     return TRUE;
 }
 
-BOOL LostFoundRecycleMenu::vfunc_0c() {
+BOOL LostFoundRecycleMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
     LostFoundRecycleMenu_Exit((S *)this);
     return TRUE;
@@ -1673,7 +1673,7 @@ void LostFoundRecycleMenu::placeCursorAtTarget() {
 
 void LostFoundRecycleMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void LostFoundRecycleMenu::pressCursor() {

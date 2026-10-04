@@ -97,7 +97,7 @@ void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, Unk_ov003_02215a
 }
 
 
-BOOL CountdownDigit::vfunc_70() {
+BOOL CountdownDigit::initBuilding() {
     digitIndex = sCountdownSpawnIndex;
     digit = 0;
     setCharId(digitIndex);

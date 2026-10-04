@@ -47,8 +47,8 @@ _ZN15AmountEntryMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02294028
 _ZN15AmountEntryMenu12runMainStateEv kind:function(thumb,size=0xbc) addr:0x02294044
 _ZN15AmountEntryMenu14execTransitionEv kind:function(thumb,size=0x94) addr:0x02294100
 _ZN15AmountEntryMenu6onDrawEv kind:function(thumb,size=0x50) addr:0x02294194
-_ZN15AmountEntryMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x022941e4
-_ZN15AmountEntryMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02294200
+_ZN15AmountEntryMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x022941e4
+_ZN15AmountEntryMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x02294200
 AmountEntryMenu_Create kind:function(thumb,size=0x44) addr:0x02294220
 data_ov131_02294280 kind:data(any) addr:0x02294280
 data_ov131_02294288 kind:data(any) addr:0x02294288

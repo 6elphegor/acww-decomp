@@ -139,11 +139,11 @@ public:
 
 class SpNpcRoostGuest : public SpNpcActor {
 public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -454,11 +454,11 @@ extern "C" SpNpcRoostGuest *SpNpcRoostGuest_Create() {
     return new SpNpcRoostGuest();
 }
 
-BOOL SpNpcRoostGuest::vfunc_04() {
+BOOL SpNpcRoostGuest::preCreate() {
     using namespace sB;
     Unk_ov068_0226ce70_Date d;
     u16 h;
-    if (!SpNpcActor::vfunc_04()) {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     NpcActor_setTalkRequest(this, &talk);
@@ -558,9 +558,9 @@ BOOL SpNpcRoostGuest::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcRoostGuest::vfunc_00() {
+BOOL SpNpcRoostGuest::onCreate() {
     using namespace sB;
-    if (!SpNpcActor::vfunc_00()) {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     if (guestType == 7) {
@@ -575,9 +575,9 @@ BOOL SpNpcRoostGuest::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcRoostGuest::vfunc_0c() {
+BOOL SpNpcRoostGuest::onDelete() {
     using namespace sB;
-    if (!SpNpcActor::vfunc_0c()) {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     if (guestType == 7) {
@@ -721,7 +721,7 @@ SpNpcRoostGuestTalk::~SpNpcRoostGuestTalk() {}
 
 void SpNpcRoostGuestTalk::attachOwner(Unk_ov068_0226ccd4_Owner *o) {
     using namespace sB;
-    vfunc_08();
+    resetMsg();
     owner = (SpNpcRoostGuest *)o;
 }
 
@@ -1209,7 +1209,7 @@ void SpNpcRoostGuestTalk::scriptRestoreLook() {
     }
 }
 
-BOOL SpNpcRoostGuest::vfunc_48(void *) {
+BOOL SpNpcRoostGuest::acceptsInteraction(void *) {
     using namespace sA;
     BOOL r = FALSE;
     if (act == 0) {
@@ -1218,11 +1218,11 @@ BOOL SpNpcRoostGuest::vfunc_48(void *) {
     return r;
 }
 
-void SpNpcRoostGuest::vfunc_4c(u32 mode, u8) {
+void SpNpcRoostGuest::onInteractionEvent(u32 mode, u8) {
     using namespace sA;
     switch (mode) {
     case 0:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0(getPlayerActor(4));
         if (guestType == 7) {
             talk.setTalkMode(0);
@@ -1230,7 +1230,7 @@ void SpNpcRoostGuest::vfunc_4c(u32 mode, u8) {
         changeAct(1);
         break;
     case 1:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0(getPlayerActor(4));
         if (hasSongRequest != 0) {
             talk.setTalkMode(1);

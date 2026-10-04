@@ -43,7 +43,7 @@ void TalkArrow::draw() {
     }
 }
 
-void TalkArrow::vfunc_0c() {
+void TalkArrow::update() {
     if (state != 0) {
         anim.update();
         subAnim.update();

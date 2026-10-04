@@ -113,8 +113,8 @@ _ZN9DesignTab8execMainEv kind:function(thumb,size=0x2a) addr:0x02294754
 _ZN9DesignTab12runMainStateEv kind:function(thumb,size=0x178) addr:0x02294780
 _ZN9DesignTab14execTransitionEv kind:function(thumb,size=0x94) addr:0x022948f8
 _ZN9DesignTab6onDrawEv kind:function(thumb,size=0x194) addr:0x0229498c
-_ZN9DesignTab8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02294b20
-_ZN9DesignTab8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02294b3c
+_ZN9DesignTab8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02294b20
+_ZN9DesignTab8onCreateEv kind:function(thumb,size=0x20) addr:0x02294b3c
 DesignTab_Create kind:function(thumb,size=0x74) addr:0x02294b5c
 sDesignTabTabDownSlot kind:data(any) addr:0x02294bd0
 sDesignTabTargetTileX kind:data(any) addr:0x02294bd8

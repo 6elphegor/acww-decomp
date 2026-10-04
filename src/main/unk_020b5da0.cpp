@@ -8,11 +8,11 @@ extern "C" void Snd_CreateScene(void);
 class DummyScene3 : public SceneBase {
 public:
     DummyScene3() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_30();
+    virtual BOOL onDeleteRequest();
     virtual ~DummyScene3() {}
 };
 
@@ -20,16 +20,16 @@ extern "C" DummyScene3 *DummyScene3_Create(void) {
     return new DummyScene3();
 }
 
-BOOL DummyScene3::vfunc_00() {
+BOOL DummyScene3::onCreate() {
     Snd_CreateScene();
     return TRUE;
 }
 
-BOOL DummyScene3::vfunc_0c() { return TRUE; }
+BOOL DummyScene3::onDelete() { return TRUE; }
 
 BOOL DummyScene3::onExecute() { return TRUE; }
 
 BOOL DummyScene3::onDraw() { return TRUE; }
 
-BOOL DummyScene3::vfunc_30() {}
+BOOL DummyScene3::onDeleteRequest() {}
 

@@ -102,8 +102,8 @@ class PatternSelectMenu : public MenuProc {
 public:
     PatternSelectMenu() : header(), popup(), nameBalloon(), cursor(), bottomButtons() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -202,14 +202,14 @@ static inline BOOL Unk_ov125_02297bd4_Both() {
 
 extern "C" PatternSelectMenu *PatternSelectMenu_Create() { return new PatternSelectMenu(); }
 
-BOOL PatternSelectMenu::vfunc_00() {
+BOOL PatternSelectMenu::onCreate() {
     initPatternSelect();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL PatternSelectMenu::vfunc_0c() {
+BOOL PatternSelectMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
@@ -364,7 +364,7 @@ void PatternSelectMenu::releaseResources() {
 void PatternSelectMenu::preInputUpdate() {
     preStateUpdate();
     MenuCursorBuf0 *p = &cursor;
-    p->vfunc_0c();
+    p->update();
 }
 
 void PatternSelectMenu::postInputUpdate() {
@@ -736,7 +736,7 @@ s32 PatternSelectMenu::getCursorTargetY() { return getSlotY(cursorSlot) - 0xb; }
 
 void PatternSelectMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void PatternSelectMenu::moveCursorToTarget() {
@@ -789,7 +789,7 @@ void PatternSelectMenu::cursorToPopupTop() {
 
 void PatternSelectMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 BOOL PatternSelectMenu::stepCursorRight(u32 lo, u32 hi) {

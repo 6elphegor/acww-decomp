@@ -158,8 +158,8 @@ extern "C" SpNpcKatie *SpNpcKatie_Create(void) {
     return new SpNpcKatie();
 }
 
-BOOL SpNpcKatie::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcKatie::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(this, &talk);
@@ -185,9 +185,9 @@ BOOL SpNpcKatie::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcKatie::vfunc_00() {
+BOOL SpNpcKatie::onCreate() {
     void *p;
-    if (!SpNpcActor::vfunc_00()) {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     sSpNpcKatieInstance = this;
@@ -242,8 +242,8 @@ BOOL SpNpcKatie::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcKatie::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcKatie::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     sSpNpcKatieInstance = NULL;
@@ -277,15 +277,15 @@ BOOL SpNpcKatie::updateAct() {
     return r;
 }
 
-BOOL SpNpcKatie::vfunc_48(void *) {
+BOOL SpNpcKatie::acceptsInteraction(void *) {
     return _ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0;
 }
 
-void SpNpcKatie::vfunc_4c(u32 state, u8) {
+void SpNpcKatie::onInteractionEvent(u32 state, u8) {
     switch (state) {
     case 0:
     case 1:
-        talk.vfunc_08();
+        talk.resetMsg();
         _ZN16ActorTalkRequest13func_02015ab0Ej(&talk, _ZN8NpcActor14getPlayerActorEj(this, 4));
         if (talk.getTopic() != 6) {
             changeAct(3);
@@ -650,7 +650,7 @@ SpNpcKatieTalk::SpNpcKatieTalk() {}
 SpNpcKatieTalk::~SpNpcKatieTalk() {}
 
 void SpNpcKatieTalk::attachOwner(SpNpcKatie *owner) {
-    vfunc_08();
+    resetMsg();
     katie = owner;
 }
 

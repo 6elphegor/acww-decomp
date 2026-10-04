@@ -9,8 +9,8 @@
 class MsgUiProc : public GameProc {
 public:
     MsgUiProc();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~MsgUiProc();

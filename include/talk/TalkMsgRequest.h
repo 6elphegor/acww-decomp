@@ -12,15 +12,13 @@ class TalkWindowState;
 // Defined in src/main/unk_02065e88.cpp (0x02065e88..0x0206609c). The name kind (getNameKind, 0x2c) is
 // speakerName.attr.form.
 // Slot parameters are the ones the talk window passes; symbols.txt names TalkMsgRequest's empty bodies without them,
-// the parameterised names are alias labels. Slot 0x0c is vfunc_s0c (alias label of TalkMsgRequest::vfunc_0c) so that
-// classes that also derive from ProcBase (BuildingActor, FtrActor, RoomObjActor users ...) do not override both
-// slots 0x0c (ProcBase::vfunc_0c) at once.
+// the parameterised names are alias labels.
 class TalkMsgRequest : public MsgRequest {
 public:
     TalkMsgRequest();
     virtual ~TalkMsgRequest();
-    virtual void vfunc_08();                // 0x08
-    virtual const char *vfunc_s0c();        // 0x0c message directory ("/script/ENG/message")
+    virtual void resetMsg();                // 0x08
+    virtual const char *getMsgDir();        // 0x0c message directory ("/script/ENG/message")
     virtual void onMessageStart(u32 attr);  // 0x10 (attr: message attribute byte 6)
     virtual void onMessageEnd(u32 attr);    // 0x14 (attr: message attribute byte 7)
     virtual void onChoice(u32 attr);        // 0x18 (attr: chosen entry's attribute byte 7)

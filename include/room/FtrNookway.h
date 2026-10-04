@@ -9,7 +9,7 @@
 class FtrNookway : public FtrActor {
 public:
     FtrNookway();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual ~FtrNookway();
     virtual BOOL initModel();
     virtual BOOL updateActive();

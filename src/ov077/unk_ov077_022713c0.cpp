@@ -139,12 +139,12 @@ struct Unk_ov077_02271a84_Pt {
 class SpNpcResetti : public SpNpcActor {
 public:
     SpNpcResetti() : houseUnitX(0), houseUnitZ(0) {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -262,8 +262,8 @@ SpNpcResetti *SpNpcResetti_Create() {
     return new SpNpcResetti();
 }
 
-BOOL SpNpcResetti::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcResetti::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     lastApologyPhrase = 0xff;
@@ -276,8 +276,8 @@ BOOL SpNpcResetti::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcResetti::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcResetti::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     collider.groups |= 2;
@@ -288,8 +288,8 @@ BOOL SpNpcResetti::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcResetti::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcResetti::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     TalkRequestFlags_ClearResetti();
@@ -579,7 +579,7 @@ void SpNpcResettiTalk::onWindowClose() {
 }
 
 void SpNpcResettiTalk::attachOwner(SpNpcResetti *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = owner;
 }
 
@@ -676,12 +676,12 @@ void SpNpcResettiTalk::onChoice(u32) {
     }
 }
 
-BOOL SpNpcResetti::vfunc_48(void *) { return TRUE; }
+BOOL SpNpcResetti::acceptsInteraction(void *) { return TRUE; }
 
-void SpNpcResetti::vfunc_4c(u32 a, u8) {
+void SpNpcResetti::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 1:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(4);
         break;

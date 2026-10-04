@@ -100,8 +100,8 @@ struct Unk_ov004_02236950_Obj {
 class HouseRoach : public Actor {
 public:
     HouseRoach();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~HouseRoach();
@@ -157,8 +157,8 @@ public:
 class HouseRoachManager : public GameProc {
 public:
     HouseRoachManager();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual ~HouseRoachManager();
 };
@@ -282,7 +282,7 @@ HouseRoachManager::HouseRoachManager() {
 HouseRoachManager::~HouseRoachManager() {
 }
 
-BOOL HouseRoachManager::vfunc_0c() {
+BOOL HouseRoachManager::onDelete() {
     if (!Scene_InHouseRoom() || gCommManager->isOnline()) return TRUE;
     ((HouseData *)gSaveHouse)->setRoachCount(sHouseRoachTotal);
     sHouseRoachManager = 0;
@@ -340,7 +340,7 @@ BOOL HouseRoachManager::onExecute() {
     return TRUE;
 }
 
-BOOL HouseRoachManager::vfunc_00() {
+BOOL HouseRoachManager::onCreate() {
     if (!Scene_InHouseRoom() || gCommManager->isOnline()) return TRUE;
     sHouseRoachManager = this;
     if (!HouseRoach_LoadCount(this)) return TRUE;
@@ -1025,7 +1025,7 @@ BOOL HouseRoach::onDraw() {
 
 // ---- 0224ebec methods (symbols.txt names 0x2235fd0-0x2236244 after the 0224eb9c class; renamed)
 
-BOOL HouseRoach::vfunc_00() {
+BOOL HouseRoach::onCreate() {
     if (Scene_InHouseRoom()) {
         return setup();
     }
@@ -1036,7 +1036,7 @@ BOOL HouseRoach::onExecute() {
     return execute();
 }
 
-BOOL HouseRoach::vfunc_0c() {
+BOOL HouseRoach::onDelete() {
     return release();
 }
 

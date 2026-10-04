@@ -11,7 +11,7 @@ class FtrComputer : public FtrActor {
 public:
     FtrComputer();
     virtual ~FtrComputer();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 a, u8 b);
     virtual u8 getActSwitchState(u32 a);
     virtual BOOL initModel();

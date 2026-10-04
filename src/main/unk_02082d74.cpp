@@ -1027,7 +1027,7 @@ extern "C" void NpcSpawner_SpawnPlayerHouseVisitor(void *a)
     }
 }
 
-BOOL NpcSpawner::vfunc_00()
+BOOL NpcSpawner::onCreate()
 {
     u8 *a = (u8 *)this;
     u32 saved = F4::sVisitorSpawnTableCount;
@@ -1103,7 +1103,7 @@ BOOL NpcSpawner::vfunc_00()
     return TRUE;
 }
 
-BOOL NpcSpawner::vfunc_0c()
+BOOL NpcSpawner::onDelete()
 {
     F4::_ZN21NpcSpawnerOverlayView21releaseVisitorOverlayEv();
     F4::VisitorSchedule_Clear(F4::sVisitorSchedule);

@@ -128,8 +128,8 @@ public:
     PocketItemSelectMenu()
         : bgTasks(), pocketGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), popup(), errorMessage(), bottomButtons() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -276,14 +276,14 @@ public:
 
 extern "C" PocketItemSelectMenu *PocketItemSelectMenu_Create() { return new PocketItemSelectMenu(); }
 
-BOOL PocketItemSelectMenu::vfunc_00() {
+BOOL PocketItemSelectMenu::onCreate() {
     initParts();
     setTransitionState(0);
     setPhase(0);
     return TRUE;
 }
 
-BOOL PocketItemSelectMenu::vfunc_0c() {
+BOOL PocketItemSelectMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
     releaseResources();
     return TRUE;
@@ -438,7 +438,7 @@ void PocketItemSelectMenu::releaseResources() {
 
 void PocketItemSelectMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void PocketItemSelectMenu::postInputUpdate() {
@@ -1064,7 +1064,7 @@ s32 PocketItemSelectMenu::getCursorTargetY() { return getSlotY(cursorSlot); }
 
 void PocketItemSelectMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void PocketItemSelectMenu::moveCursorToTarget() {
@@ -1117,7 +1117,7 @@ void PocketItemSelectMenu::showCursorAtSlot() {
 
 void PocketItemSelectMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void PocketItemSelectMenu::pressCloseButton() {

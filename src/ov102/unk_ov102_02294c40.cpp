@@ -143,8 +143,8 @@ class ChestMenu : public MenuProc {
 public:
     ChestMenu()
         : vramTask(), itemGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), errorMessage(), textLabels() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -320,14 +320,14 @@ static inline BOOL Unk_ov102_022969bc_Both() {
 
 extern "C" ChestMenu *ChestMenu_Create() { return new ChestMenu(); }
 
-BOOL ChestMenu::vfunc_00() {
+BOOL ChestMenu::onCreate() {
     initMembers();
     setTransitionState(0);
     setPhase(0);
     return TRUE;
 }
 
-BOOL ChestMenu::vfunc_0c() {
+BOOL ChestMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
     releaseResources();
     return TRUE;
@@ -467,7 +467,7 @@ void ChestMenu::transitionAct03() {
             if (cursorSlot < 0x1e || cursorSlot > 0x23) {
                 ((HandCursor *)&cursor)->setAnimAtEnd(4);
             }
-            cursor.vfunc_0c();
+            cursor.update();
             ChestMenu_TrackCursor(this);
             setMainState(4);
         }
@@ -569,7 +569,7 @@ void ChestMenu::releaseResources() {
 
 void ChestMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void ChestMenu::postInputUpdate() {
@@ -1416,7 +1416,7 @@ s32 ChestMenu_GetCursorTargetY(S *s)
 void ChestMenu_HideCursor(S *s)
 {
     ((MenuCursor *)&s->cursor)->setAnimIfChanged(0);
-    s->cursor.vfunc_0c();
+    s->cursor.update();
 }
 
 void ChestMenu_MoveCursorToTarget(S *s)
@@ -1433,7 +1433,7 @@ void ChestMenu_MoveCursorToTarget(S *s)
         s->returnState = s->mainState;
         s->setMainState(5);
         if (s->testFlags(0x100)) {
-            s->cursor.vfunc_0c();
+            s->cursor.update();
             s->clearFlags(0x100);
         }
     }
@@ -1443,7 +1443,7 @@ void ChestMenu_MoveCursorToTarget(S *s)
 void ChestMenu_RefreshCursor(S *s)
 {
     ((MenuCursorBase *)&s->cursor)->setPoseIdle();
-    s->cursor.vfunc_0c();
+    s->cursor.update();
 }
 
 void ChestMenu::pressCursor() {

@@ -307,7 +307,7 @@ PlayerNetSync::PlayerNetSync() {}
 
 PlayerNetSync::~PlayerNetSync() {}
 
-BOOL PlayerNetSync::vfunc_00() { return TRUE; }
+BOOL PlayerNetSync::onCreate() { return TRUE; }
 
 BOOL PlayerNetSync::onExecute() {
     CommManager *g;
@@ -366,5 +366,5 @@ BOOL PlayerNetSync::onExecute() {
 
 BOOL PlayerNetSync::onDraw() { return TRUE; }
 
-BOOL PlayerNetSync::vfunc_0c() { return TRUE; }
+BOOL PlayerNetSync::onDelete() { return TRUE; }
 

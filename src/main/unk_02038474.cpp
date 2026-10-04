@@ -53,7 +53,7 @@ public:
     ChatBalloon();
     virtual ~ChatBalloon();
     virtual void draw();
-    virtual void vfunc_0c();
+    virtual void update();
 
     void destroyTextLabel();
     void createTextLabel();
@@ -154,8 +154,8 @@ class ChatBalloonProc : public GameProc {
 public:
     ChatBalloonProc();
     virtual ~ChatBalloonProc();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
@@ -316,7 +316,7 @@ void ChatBalloon::draw() {
     }
 }
 
-void ChatBalloon::vfunc_0c() {
+void ChatBalloon::update() {
     if (cooldown > 0) {
         cooldown--;
     }
@@ -876,7 +876,7 @@ void ChatBalloonList::update() {
     showQueued();
     layoutShown();
     for (i = 0; i < 4; i++) {
-        balloons[i].vfunc_0c();
+        balloons[i].update();
     }
     removeFinished();
 }
@@ -1092,7 +1092,7 @@ ChatBalloonProc::ChatBalloonProc() {}
 
 ChatBalloonProc::~ChatBalloonProc() {}
 
-BOOL ChatBalloonProc::vfunc_00() {
+BOOL ChatBalloonProc::onCreate() {
     quickMsgInput.init();
     balloonList.init();
     receiver.init();
@@ -1116,7 +1116,7 @@ BOOL ChatBalloonProc::onDraw() {
 }
 
 // Main object
-BOOL ChatBalloonProc::vfunc_0c() {
+BOOL ChatBalloonProc::onDelete() {
     receiver.shutdown();
     balloonList.shutdown();
     quickMsgInput.shutdown();

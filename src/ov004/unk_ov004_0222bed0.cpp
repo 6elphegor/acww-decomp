@@ -107,8 +107,8 @@ struct Unk_ov004_0222c880_Model {
 class RoomItemIcons : public GameProc {
 public:
     RoomItemIcons() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
@@ -207,7 +207,7 @@ BOOL RoomItemIcons::loadIconModels() {
     return r;
 }
 
-BOOL RoomItemIcons::vfunc_00() {
+BOOL RoomItemIcons::onCreate() {
     BOOL r = FALSE;
     if (loadIconModels()) {
         Town_GetEnvironmentRank();
@@ -319,7 +319,7 @@ BOOL RoomItemIcons::onDraw() {
     return TRUE;
 }
 
-BOOL RoomItemIcons::vfunc_0c() {
+BOOL RoomItemIcons::onDelete() {
     ModelSet_Release(&modelSet);
     ItemDropList_Release((Unk_ov004_Entry *)&sRoomItemDrops);
     return TRUE;

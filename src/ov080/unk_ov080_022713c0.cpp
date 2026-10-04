@@ -101,11 +101,11 @@ struct Unk_0201bc1c;
 class SpNpcTortimer : public SpNpcActor {
 public:
     SpNpcTortimer() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -158,8 +158,8 @@ extern "C" SpNpcTortimer *SpNpcTortimer_Create() {
     return new SpNpcTortimer();
 }
 
-BOOL SpNpcTortimer::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcTortimer::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -167,8 +167,8 @@ BOOL SpNpcTortimer::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcTortimer::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcTortimer::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     changeAct(0);
@@ -181,8 +181,8 @@ BOOL SpNpcTortimer::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcTortimer::vfunc_0c() {
-    if (SpNpcActor::vfunc_0c()) {
+BOOL SpNpcTortimer::onDelete() {
+    if (SpNpcActor::onDelete()) {
         return TRUE;
     }
     return FALSE;
@@ -242,7 +242,7 @@ SpNpcTortimerTalk::SpNpcTortimerTalk() {}
 SpNpcTortimerTalk::~SpNpcTortimerTalk() {}
 
 void SpNpcTortimerTalk::attachOwner(SpNpcTortimer *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = owner;
     massageChairSlot = -1;
 }
@@ -384,7 +384,7 @@ void SpNpcTortimerTalk::onChoice(u32) {
     }
 }
 
-BOOL SpNpcTortimer::vfunc_48(void *) {
+BOOL SpNpcTortimer::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (unk_618_func_02014220(&talkCtrl) == 0) {
         r = TRUE;
@@ -392,10 +392,10 @@ BOOL SpNpcTortimer::vfunc_48(void *) {
     return r;
 }
 
-void SpNpcTortimer::vfunc_4c(u32 a, u8 b) {
+void SpNpcTortimer::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 0:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0(getPlayerActor(4));
         changeAct(1);
         break;

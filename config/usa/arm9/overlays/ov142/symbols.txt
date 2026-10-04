@@ -123,8 +123,8 @@ _ZN11CatalogMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02294734
 _ZN11CatalogMenu12runMainStateEv kind:function(thumb,size=0x110) addr:0x02294750
 _ZN11CatalogMenu14execTransitionEv kind:function(thumb,size=0xcc) addr:0x02294860
 _ZN11CatalogMenu6onDrawEv kind:function(thumb,size=0x260) addr:0x0229492c
-_ZN11CatalogMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02294b8c
-_ZN11CatalogMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02294ba8
+_ZN11CatalogMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02294b8c
+_ZN11CatalogMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x02294ba8
 CatalogMenu_Create kind:function(thumb,size=0x84) addr:0x02294bc8
 data_ov142_02294c60 kind:data(any) addr:0x02294c60
 data_ov142_02294c68 kind:data(any) addr:0x02294c68

@@ -104,8 +104,8 @@ class CatalogMenu : public MenuProc {
 public:
     CatalogMenu() : cursor(), scrollKnob(), bottomButtons(), textLabels(), vramTasks() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -353,14 +353,14 @@ extern "C" void *data_ov142_02294d10[2];
 
 extern "C" CatalogMenu *CatalogMenu_Create() { return new CatalogMenu(); }
 
-BOOL CatalogMenu::vfunc_00() {
+BOOL CatalogMenu::onCreate() {
     initCatalog();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL CatalogMenu::vfunc_0c() {
+BOOL CatalogMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
     releaseResources();
     return TRUE;
@@ -634,7 +634,7 @@ void CatalogMenu::releaseResources() {
 
 void CatalogMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 extern "C" void CatalogMenu_PostInputUpdate(CatalogMenu *p) { p->postStateUpdate(); }
@@ -646,7 +646,7 @@ void CatalogMenu::preStateUpdate() {
     vramTasks[3].cancel();
     resetTextLabels();
     bottomButtons.freeTexts();
-    scrollKnob.vfunc_0c();
+    scrollKnob.update();
 }
 
 void CatalogMenu::postStateUpdate() {
@@ -1050,7 +1050,7 @@ s32 CatalogMenu::getCursorTargetY() {
 
 void CatalogMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void CatalogMenu::moveCursorToTarget() {
@@ -1073,7 +1073,7 @@ void CatalogMenu::moveCursorTo(s32 a, s32 b) {
 
 void CatalogMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void CatalogMenu::pressCursor() {

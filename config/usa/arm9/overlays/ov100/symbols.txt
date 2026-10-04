@@ -123,8 +123,8 @@ _ZN12ShopSellMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02297270
 _ZN12ShopSellMenu12runMainStateEv kind:function(thumb,size=0x188) addr:0x0229728c
 _ZN12ShopSellMenu14execTransitionEv kind:function(thumb,size=0xbc) addr:0x02297414
 _ZN12ShopSellMenu6onDrawEv kind:function(thumb,size=0xa0) addr:0x022974d0
-_ZN12ShopSellMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02297570
-_ZN12ShopSellMenu8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x0229758c
+_ZN12ShopSellMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02297570
+_ZN12ShopSellMenu8onCreateEv kind:function(thumb,size=0x20) addr:0x0229758c
 ShopSellMenu_Create kind:function(thumb,size=0xb8) addr:0x022975ac
 data_ov100_02297680 kind:data(any) addr:0x02297680
 data_ov100_02297688 kind:data(any) addr:0x02297688

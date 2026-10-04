@@ -82,7 +82,7 @@ void LabelButton::draw() {
 }
 
 // ---- LabelButton ----
-void LabelButton::vfunc_0c() {
+void LabelButton::update() {
     if (state != 0) {
         layer1.update();
         layer2.update();

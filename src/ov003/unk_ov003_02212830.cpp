@@ -118,12 +118,12 @@ class Snowball : public Character, public TalkMsgRequest {
 public:
     Snowball();
     virtual ~Snowball();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL acceptsInteraction(void *a);
+    virtual void onInteractionEvent(u32 a, u8 b);
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
@@ -367,7 +367,7 @@ void Snowball::operator delete(void *p) {
     }
 }
 
-BOOL Snowball::vfunc_00() {
+BOOL Snowball::onCreate() {
     u32 k = 0xfff1;
     displacedItem = k;
     rotationQuat.x = data_020d0584[0];
@@ -462,7 +462,7 @@ BOOL Snowball::onDraw() {
     return TRUE;
 }
 
-BOOL Snowball::vfunc_0c() {
+BOOL Snowball::onDelete() {
     if (snowballState == 9) {
         void *g = gSceneBlockMap;
         volatile s32 x, y;
@@ -1034,7 +1034,7 @@ void Snowball::execSnowmanHead() {
     if (snowballFlags.g) TalkRequest_AddPlayerTalk6(this, 0);
 }
 
-BOOL Snowball::vfunc_48(void *a) {
+BOOL Snowball::acceptsInteraction(void *a) {
     s32 lim;
     BOOL r;
     clearTalkStartMode();
@@ -1047,7 +1047,7 @@ BOOL Snowball::vfunc_48(void *a) {
     return FALSE;
 }
 
-void Snowball::vfunc_4c(u32 a, u8 b) {
+void Snowball::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 0:
         changeTalkAct(1);

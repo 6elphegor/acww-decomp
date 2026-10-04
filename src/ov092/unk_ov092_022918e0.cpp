@@ -42,7 +42,7 @@ extern "C" MenuLauncher *MenuLauncher_Create() {
 
 extern "C" ProcProfile sMenuLauncherProfile = {(void *(*)())MenuLauncher_Create, 0x90, 0x94};
 
-BOOL MenuLauncher::vfunc_00() {
+BOOL MenuLauncher::onCreate() {
     func_0206e5fc();
     initLauncher();
     Snd_BeginMenuDuck();
@@ -50,7 +50,7 @@ BOOL MenuLauncher::vfunc_00() {
     return TRUE;
 }
 
-BOOL MenuLauncher::vfunc_0c() {
+BOOL MenuLauncher::onDelete() {
     func_0206e5fc();
     MenuScreen_Reset();
     releaseResources();

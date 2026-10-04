@@ -116,8 +116,8 @@ public:
     LetterGiveMenu()
         : heldLetter(), swapLetter(), bgTasks(), pocketGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), popup(), errorMessage(), bottomButtons() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -265,14 +265,14 @@ extern "C" LetterGiveMenu *LetterGiveMenu_Create() { return new LetterGiveMenu()
 // Scene registration entry read by main: factory, then two ids
 extern "C" ProcProfile sLetterGiveMenuProfile = {(void *(*)())LetterGiveMenu_Create, 0x9b, 0x9f};
 
-BOOL LetterGiveMenu::vfunc_00() {
+BOOL LetterGiveMenu::onCreate() {
     initLetterGive();
     setTransitionState(0);
     setPhase(0);
     return TRUE;
 }
 
-BOOL LetterGiveMenu::vfunc_0c() {
+BOOL LetterGiveMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
@@ -418,7 +418,7 @@ void LetterGiveMenu::releaseResources() {
 
 void LetterGiveMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void LetterGiveMenu::postInputUpdate() {
@@ -1057,7 +1057,7 @@ s32 LetterGiveMenu::getCursorTargetY() { return getSlotY(cursorSlot); }
 
 void LetterGiveMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void LetterGiveMenu::moveCursorToTarget() {
@@ -1108,7 +1108,7 @@ void LetterGiveMenu::showCursorAtSlot() {
 
 void LetterGiveMenu::refreshCursor() {
     ((MenuCursorBase *)&cursor)->setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void LetterGiveMenu::pressCloseButton() {

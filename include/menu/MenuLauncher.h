@@ -8,8 +8,8 @@
 // src/ov092/unk_ov092_022918e0.cpp; the other menu overlays call onChildClosed / setNextRequest on it.
 class MenuLauncher : public MenuProc {
 public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();

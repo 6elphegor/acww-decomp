@@ -157,8 +157,8 @@ class MelodyMenu : public MenuProc {
 public:
     MelodyMenu() : cursor(), bottomButtons(), textLabels(), screenTasks() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -273,14 +273,14 @@ static inline BOOL Unk_ov143_Both() {
 
 extern "C" MelodyMenu *MelodyMenu_Create() { return new MelodyMenu(); }
 
-BOOL MelodyMenu::vfunc_00() {
+BOOL MelodyMenu::onCreate() {
     initMelody();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL MelodyMenu::vfunc_0c() {
+BOOL MelodyMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
     releaseResources();
     return TRUE;
@@ -431,7 +431,7 @@ void MelodyMenu::releaseResources() {
 
 void MelodyMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void MelodyMenu::postInputUpdate() { postStateUpdate(); }
@@ -804,7 +804,7 @@ s32 MelodyMenu::getCursorTargetY() {
 
 void MelodyMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void MelodyMenu::moveCursorToTarget() {
@@ -831,7 +831,7 @@ void MelodyMenu::moveCursorTo(s32 a, s32 b) {
 
 void MelodyMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void MelodyMenu::pressCursor() {

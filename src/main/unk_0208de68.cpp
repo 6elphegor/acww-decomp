@@ -86,7 +86,7 @@ void HudUnkIcon::draw() {
     }
 }
 
-void HudUnkIcon::vfunc_0c() {
+void HudUnkIcon::update() {
     typedef void (HudUnkIcon::*Fn)();
     static Fn tbl[4] = {&HudUnkIcon::updateHidden, &HudUnkIcon::updateAppearing, &HudUnkIcon::updateShown, &HudUnkIcon::updateHiding};
     (this->*tbl[state])();
@@ -96,7 +96,7 @@ extern "C" void HudUnkIcon_Reset() { sHudUnkIcon.state = 0; }
 
 extern "C" void HudUnkIcon_Exit() {}
 
-extern "C" void HudUnkIcon_Update() { sHudUnkIcon.vfunc_0c(); }
+extern "C" void HudUnkIcon_Update() { sHudUnkIcon.update(); }
 
 extern "C" void HudUnkIcon_Draw() { sHudUnkIcon.draw(); }
 

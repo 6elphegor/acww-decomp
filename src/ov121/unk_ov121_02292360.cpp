@@ -265,8 +265,8 @@ class DesignTab : public MenuProc {
 public:
     DesignTab() : nameBalloon(), cursor(), errorMessage(), popup(), bgTasks() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -450,14 +450,14 @@ static inline BOOL Unk_ov121_02293f34_Both() {
 
 extern "C" DesignTab *DesignTab_Create() { return new DesignTab(); }
 
-BOOL DesignTab::vfunc_00() {
+BOOL DesignTab::onCreate() {
     initDesignTab();
     setTransitionState(0);
     setPhase(1);
     return TRUE;
 }
 
-BOOL DesignTab::vfunc_0c() {
+BOOL DesignTab::onDelete() {
     func_ov090_02291d2c(ProcBase_GetParent());
     releaseResources();
     return TRUE;
@@ -715,7 +715,7 @@ void DesignTab::releaseResources() {
 
 void DesignTab::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void DesignTab::postInputUpdate() {
@@ -1617,7 +1617,7 @@ s32 DesignTab::getCursorTargetY() {
 
 void DesignTab::hideCursor() {
     MenuCursor_setAnimIfChanged(&cursor, 0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void DesignTab::moveCursorToTarget() {
@@ -1670,7 +1670,7 @@ void DesignTab::showCursorAtTarget() {
 
 void DesignTab::refreshCursor() {
     MenuCursorBase_setPoseIdle(&cursor);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void DesignTab::pressCursor() {

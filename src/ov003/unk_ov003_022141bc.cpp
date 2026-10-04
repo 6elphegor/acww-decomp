@@ -45,12 +45,12 @@ class BulletinBoard : public BuildingActor {
 public:
     BulletinBoard();
     virtual ~BulletinBoard();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual BOOL vfunc_70();
+    virtual BOOL acceptsInteraction(void *a);
+    virtual void onInteractionEvent(u32 a, u8 b);
+    virtual BOOL initBuilding();
 
     void updateBoardState();
     BOOL setBoardState(s32 m);
@@ -85,7 +85,7 @@ BulletinBoard::BulletinBoard() {}
 
 BulletinBoard::~BulletinBoard() {}
 
-BOOL BulletinBoard::vfunc_70() {
+BOOL BulletinBoard::initBuilding() {
     setBoardState(0);
     return TRUE;
 }
@@ -99,11 +99,11 @@ BOOL BulletinBoard::onDraw() {
     return TRUE;
 }
 
-BOOL BulletinBoard::vfunc_0c() {
+BOOL BulletinBoard::onDelete() {
     return TRUE;
 }
 
-BOOL BulletinBoard::vfunc_48(void *other) {
+BOOL BulletinBoard::acceptsInteraction(void *other) {
     Character *a = (Character *)other;
     if (colliderFlags & 8) {
         if (a) {
@@ -116,7 +116,7 @@ BOOL BulletinBoard::vfunc_48(void *other) {
     return FALSE;
 }
 
-void BulletinBoard::vfunc_4c(u32 a, u8 b) {
+void BulletinBoard::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 0:
     case 1:

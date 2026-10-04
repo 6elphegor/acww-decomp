@@ -10,8 +10,8 @@
 class NpcSpawner : public GameProc {
 public:
     NpcSpawner() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
 
     /* 0x50 */ RoomFreeUnitMap freeUnitMap;

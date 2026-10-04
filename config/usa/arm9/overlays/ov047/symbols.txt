@@ -1,9 +1,9 @@
 _ZN13SpNpcBlathersD1Ev kind:function(thumb,size=0x28) addr:0x02258de0
 _ZN13SpNpcBlathersD0Ev kind:function(thumb,size=0x2c) addr:0x02258e08
-_ZN13SpNpcBlathers8vfunc_4cEjj kind:function(thumb,size=0x19c) addr:0x02258e34
-_ZN13SpNpcBlathers8vfunc_4cEjh kind:label(thumb) addr:0x02258e34
-_ZN13SpNpcBlathers8vfunc_48Ev kind:function(thumb,size=0x2c) addr:0x02258fd0
-_ZN13SpNpcBlathers8vfunc_48EPv kind:label(thumb) addr:0x02258fd0
+_ZN13SpNpcBlathers18onInteractionEventEjj kind:function(thumb,size=0x19c) addr:0x02258e34
+_ZN13SpNpcBlathers18onInteractionEventEjh kind:label(thumb) addr:0x02258e34
+_ZN13SpNpcBlathers18acceptsInteractionEv kind:function(thumb,size=0x2c) addr:0x02258fd0
+_ZN13SpNpcBlathers18acceptsInteractionEPv kind:label(thumb) addr:0x02258fd0
 _ZN17SpNpcBlathersTalk16onDeliveryChoiceEj kind:function(thumb,size=0x4c) addr:0x02258ffc
 _ZN17SpNpcBlathersTalk18onDonateMoreChoiceEj kind:function(thumb,size=0x14) addr:0x02259048
 _ZN17SpNpcBlathersTalk20onAnythingElseChoiceEj kind:function(thumb,size=0x54) addr:0x0225905c
@@ -39,7 +39,7 @@ _ZN17SpNpcBlathersTalk12onMessageEndEj kind:label(thumb) addr:0x02259a8c
 _ZN17SpNpcBlathersTalk14commitDonationEv kind:function(thumb,size=0x9c) addr:0x02259fd8
 _ZN17SpNpcBlathersTalk5startEP12TalkStartMsg kind:function(thumb,size=0x218) addr:0x0225a074
 _ZN17SpNpcBlathersTalk11attachOwnerEP13SpNpcBlathers kind:function(thumb,size=0x3c) addr:0x0225a28c
-_ZN17SpNpcBlathersTalk8vfunc_08Ev kind:function(thumb,size=0x50) addr:0x0225a2c8
+_ZN17SpNpcBlathersTalk8resetMsgEv kind:function(thumb,size=0x50) addr:0x0225a2c8
 _ZN17SpNpcBlathersTalkD0Ev kind:function(thumb,size=0x20) addr:0x0225a318
 _ZN17SpNpcBlathersTalkD1Ev kind:function(thumb,size=0x18) addr:0x0225a338
 _ZN17SpNpcBlathersTalkC1Ev kind:function(thumb,size=0x24) addr:0x0225a350
@@ -77,9 +77,9 @@ _ZN13SpNpcBlathers9changeActEi kind:function(thumb,size=0x44) addr:0x0225aeb4
 _ZN13SpNpcBlathers9updateActEv kind:function(thumb,size=0x4c) addr:0x0225aef8
 _ZN13SpNpcBlathers12getModelPathEv kind:function(thumb,size=0x8) addr:0x0225af44
 _ZN13SpNpcBlathers14getTexturePathEv kind:function(thumb,size=0x8) addr:0x0225af4c
-_ZN13SpNpcBlathers8vfunc_0cEv kind:function(thumb,size=0x34) addr:0x0225af54
-_ZN13SpNpcBlathers8vfunc_00Ev kind:function(thumb,size=0xec) addr:0x0225af88
-_ZN13SpNpcBlathers8vfunc_04Ev kind:function(thumb,size=0x4c) addr:0x0225b074
+_ZN13SpNpcBlathers8onDeleteEv kind:function(thumb,size=0x34) addr:0x0225af54
+_ZN13SpNpcBlathers8onCreateEv kind:function(thumb,size=0xec) addr:0x0225af88
+_ZN13SpNpcBlathers9preCreateEv kind:function(thumb,size=0x4c) addr:0x0225b074
 SpNpcBlathers_Create kind:function(thumb,size=0x118) addr:0x0225b0c0
 sSpNpcBlathersDramaMsgTable kind:data(any) addr:0x0225b1d8
 __sinit_ov047_0225b1f8 kind:function(thumb,size=0x10c) addr:0x0225b1f8

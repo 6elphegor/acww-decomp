@@ -19,8 +19,8 @@
 // Vtable of every actor (original vtable symbol minus 8 bytes, 0x150 bytes):
 //   primary slots 0x00..0xb8 (0xbc bytes), then 8 bytes secondary header, then the secondary vtable of TalkMsgRequest
 //   (D1, D0, 08..74).  Primary slot -> symbol:
-//     00 ov009::vfunc_00      04 Character::vfunc_04   08 Character::postCreate(s32)   0c Base::vfunc_0c
-//     10 ov009::vfunc_10      14 Actor::vfunc_14   18 Base::vfunc_18
+//     00 ov009::vfunc_00      04 Character::preCreate   08 Character::postCreate(s32)   0c Base::vfunc_0c
+//     10 ov009::vfunc_10      14 Actor::postDelete   18 Base::vfunc_18
 //     1c ov009::vfunc_1c   (symbols.txt names it vfunc_24, ALIAS NEEDED)   20 ov009::vfunc_20(u32) (symbols: vfunc_28Ej, ALIAS)
 //     24 Base::vfunc_24       28 ov009::vfunc_28 (symbols: vfunc_30Ev, ALIAS)   2c Actor::postDraw   30..3c Base
 //     40 D1 44 D0   48 ov009::vfunc_48(Character*)   4c ov009::vfunc_4c(u32,u8)   50 ov009::vfunc_50
@@ -29,10 +29,10 @@
 //     func_ov009_0225b880, ALIAS)
 // Aliases (zero-size labels, tools/pipeline/alias.py) the coordinator must add; <existing> -> <new>:
 //   ov009  _ZN13BuildingActor10preExecuteEv           -> _ZN13BuildingActor10preExecuteEv        (0x0225db04)
-//   ov009  _ZN13BuildingActor7preDrawEj           -> _ZN13BuildingActor8vfunc_20Ej        (0x0225da90)
-//   ov009  _ZN13BuildingActor7preDrawEv           -> _ZN13BuildingActor7preDrawEv        (0x0225d9e4)
-//   ov009  func_ov009_0225b884                           -> _ZN13BuildingActor8vfunc_b4Ev        (0x0225b884)
-//   ov009  func_ov009_0225b880                           -> _ZN13BuildingActor8vfunc_b8Ev        (0x0225b880)
+//   ov009  _ZN13BuildingActor11postExecuteEj           -> _ZN13BuildingActor11postExecuteEj        (0x0225da90)
+//   ov009  _ZN13BuildingActor11postExecuteEv           -> _ZN13BuildingActor11postExecuteEv        (0x0225d9e4)
+//   ov009  func_ov009_0225b884                           -> _ZN13BuildingActor11getSoundPosEv        (0x0225b884)
+//   ov009  func_ov009_0225b880                           -> _ZN13BuildingActor20calcCustomBaseMatrixEv        (0x0225b880)
 //   main   TalkMsgRequest slots: the unit uses the TalkMsgRequest slot names (onMessageStart ... onTalkEnd); no
 //          primary-chain class of the family declares a method of these names.
 //   ov003  0x0221445c is _ZThn236_N13BuildingActor12onMessageEndEv, the thunk of ov009::onMessageEnd in slot 0x14 of the secondary
@@ -93,11 +93,11 @@ public:
     PlayerHouse();
     virtual ~PlayerHouse();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_70();
-    virtual BOOL vfunc_8c();
-    virtual BOOL vfunc_90();
-    virtual BOOL vfunc_98();
-    virtual BOOL vfunc_9c();
+    virtual BOOL initBuilding();
+    virtual BOOL isOpen();
+    virtual BOOL usesDoorApproach();
+    virtual BOOL playsDoorMelody();
+    virtual BOOL areLightsOn();
 
     void bindHouseTex();
     void loadHouseTex();
@@ -121,7 +121,7 @@ PlayerHouse::PlayerHouse() {}
 
 PlayerHouse::~PlayerHouse() {}
 
-BOOL PlayerHouse::vfunc_70() {
+BOOL PlayerHouse::initBuilding() {
     Unk_ov003_Vec3 v;
     s16 ang;
     loadHouseTex();
@@ -170,7 +170,7 @@ void PlayerHouse::bindHouseTex() {
     }
 }
 
-BOOL PlayerHouse::vfunc_90() {
+BOOL PlayerHouse::usesDoorApproach() {
     PlayerData_GetCurrentIndex();
     if (PlayerData_IsResidentIndex() == 0) {
         return TRUE;
@@ -178,9 +178,9 @@ BOOL PlayerHouse::vfunc_90() {
     return FALSE;
 }
 
-BOOL PlayerHouse::vfunc_9c() { return gSaveHouse.hasRoomFlags(); }
+BOOL PlayerHouse::areLightsOn() { return gSaveHouse.hasRoomFlags(); }
 
-BOOL PlayerHouse::vfunc_8c() { return TRUE; }
+BOOL PlayerHouse::isOpen() { return TRUE; }
 
-BOOL PlayerHouse::vfunc_98() { return TRUE; }
+BOOL PlayerHouse::playsDoorMelody() { return TRUE; }
 

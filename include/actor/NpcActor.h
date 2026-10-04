@@ -33,17 +33,17 @@ class NpcActor : public Character {
 public:
     NpcActor() : npcHandle(0xfff1) {}
     virtual ~NpcActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
     virtual void postCreate(s32 a);
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_30();
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *out);
+    virtual BOOL onDeleteRequest();
+    virtual void onInteractionEvent(u32 a, u8 b);
+    virtual BOOL getHeldItemPos(Unk_020d77a4_Vec3 *out);
     /* 0x60 */ virtual BOOL onToolHit(u16 *item);
-    /* 0x64 */ virtual void *vfunc_64();
+    /* 0x64 */ virtual void *getVillagerData();
     /* 0x68 */ virtual BOOL updateAct();
     /* 0x6c */ virtual u8 *getTexturePath() = 0;
     /* 0x70 */ virtual u8 *getModelPath() = 0;
@@ -57,7 +57,7 @@ public:
     /* 0x90 */ virtual void onLeaveTalk();
     /* 0x94 */ virtual s32 getAct0BAnimA();
     /* 0x98 */ virtual s32 getAct0BAnimB();
-    /* 0x9c */ virtual u16 vfunc_9c();
+    /* 0x9c */ virtual u16 getEmotion0BlendFrames();
     /* 0xa0 */ virtual s32 getTeachableEmotion();
     /* 0xa4 */ virtual void addMood(u32 a, s32 b);
 

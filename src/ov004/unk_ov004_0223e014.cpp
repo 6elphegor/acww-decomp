@@ -135,8 +135,8 @@ static inline BOOL Unk_ov004_0223e2f4_IsMode2() {
 class ResidentSelect : public GameProc {
 public:
     ResidentSelect();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~ResidentSelect();
@@ -213,7 +213,7 @@ ResidentSelect::ResidentSelect() : cursor(1), startDateTime(0), unk_32c(0) {
 ResidentSelect::~ResidentSelect() {
 }
 
-BOOL ResidentSelect::vfunc_00() {
+BOOL ResidentSelect::onCreate() {
     u8 *g;
     u8 c;
     u8 i;
@@ -243,7 +243,7 @@ BOOL ResidentSelect::vfunc_00() {
     return TRUE;
 }
 
-BOOL ResidentSelect::vfunc_0c() {
+BOOL ResidentSelect::onDelete() {
     TalkRequestFlags_ClearSceneHold();
     u8 i;
     for (i = 0; i < 5; i++) {
@@ -546,14 +546,14 @@ void ResidentSelect::updateNameLabels() {
                 NameLabelBalloon *e = &nameLabels[i];
                 e->setOffset(x, y);
                 e->setText(&o);
-                e->vfunc_0c();
+                e->update();
             }
         }
     }
     nameLabels[4].setOffset(sResidentExtraLabelPos.a, sResidentExtraLabelPos.b);
     nameLabels[4].setText(&phoneLabel);
     NameLabelBalloon *e4 = &nameLabels[4];
-    e4->vfunc_0c();
+    e4->update();
 }
 
 extern "C" void ResidentSelect_UpdateCursor(ResidentSelect *o) {
@@ -590,7 +590,7 @@ extern "C" void ResidentSelect_UpdateCursor(ResidentSelect *o) {
         }
     }
     o->cursor.setPos(xy[0], xy[1]);
-    o->cursor.vfunc_0c();
+    o->cursor.update();
     o->cursorX = xy[0];
     o->cursorY = xy[1];
 }

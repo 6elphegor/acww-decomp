@@ -168,8 +168,8 @@ class InsectManager : public GameProc, public Unk_ov003_0222e708 {
 public:
     InsectManager();
     virtual ~InsectManager();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
@@ -8488,7 +8488,7 @@ void InsectManager::freeInsect(Unk_ov003_02228710_Act *e, s32 mode) { using name
 #define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
 #define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 // 0x2228710
-BOOL InsectManager::vfunc_00() { using namespace s05;
+BOOL InsectManager::onCreate() { using namespace s05;
     ModelSlotPool_init(&fieldInsectPool, 8, 0x400, 0x40, 0x9c4, (void *)FieldInsectHeap_Create, (void *)FieldInsectHeap_Destroy, 0);
     ModelSlotPool_init(&specialInsectPool, 2, 0x400, 0x40, 0x6e8, (void *)SpecialInsectHeap_Create, (void *)SpecialInsectHeap_Destroy, 0);
     ModelSlotPool_init(&heldInsectPool, 4, 0x400, 0x40, 0x9c4, (void *)HeldInsectHeap_Create, (void *)HeldInsectHeap_Destroy, 0);
@@ -10694,7 +10694,7 @@ BOOL InsectManager::onDraw() { using namespace s02;
 #define sSpecialInsects (*(Rec (*)[1])&::sSpecialInsects)
 #define sHeldInsects (*(Rec (*)[1])&::sHeldInsects)
 // 0x22269b8
-BOOL InsectManager::vfunc_0c() { using namespace s01;
+BOOL InsectManager::onDelete() { using namespace s01;
     Unk_ov003_022269b8_Obj *obj = (Unk_ov003_022269b8_Obj *)this;
     Rec *pa = sFieldInsects;
     Rec *pb = sSpecialInsects;

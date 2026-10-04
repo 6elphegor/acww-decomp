@@ -9,9 +9,9 @@
 class FtrPhone : public FtrActor {
 public:
     FtrPhone();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual ~FtrPhone();
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL changeAct(u32 a, u8 b);
     virtual u8 getActSwitchState(u32 a);
     virtual BOOL initModel();

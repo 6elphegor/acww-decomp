@@ -10,10 +10,10 @@
 class TalkRequestQueue : public GameProc {
 public:
     TalkRequestQueue() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
-    virtual BOOL vfunc_20(u32 b);
+    virtual BOOL postExecute(u32 b);
     virtual BOOL onDraw();
 };
 

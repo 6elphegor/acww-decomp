@@ -28,8 +28,8 @@ _ZN10MenuTabBar10execPhase3Ev kind:function(thumb,size=0x4) addr:0x02291e2c
 _ZN10MenuTabBar8execMainEv kind:function(thumb,size=0x198) addr:0x02291e30
 _ZN10MenuTabBar14execTransitionEv kind:function(thumb,size=0x80) addr:0x02291fc8
 _ZN10MenuTabBar6onDrawEv kind:function(thumb,size=0x74) addr:0x02292048
-_ZN10MenuTabBar8vfunc_0cEv kind:function(thumb,size=0x1e) addr:0x022920bc
-_ZN10MenuTabBar8vfunc_00Ev kind:function(thumb,size=0x58) addr:0x022920dc
+_ZN10MenuTabBar8onDeleteEv kind:function(thumb,size=0x1e) addr:0x022920bc
+_ZN10MenuTabBar8onCreateEv kind:function(thumb,size=0x58) addr:0x022920dc
 MenuTabBar_Create kind:function(thumb,size=0x4c) addr:0x02292134
 sMenuTabBarProfile kind:data(any) addr:0x022921a0
 data_ov090_022921a8 kind:data(any) addr:0x022921a8

@@ -11,7 +11,7 @@ class FtrCarpetSample : public FtrActor {
 public:
     FtrCarpetSample();
     virtual ~FtrCarpetSample();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL initModel();
     virtual BOOL updateActive();
     virtual BOOL isVisible();

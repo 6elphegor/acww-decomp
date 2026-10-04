@@ -51,8 +51,8 @@ extern u8 gSaveFooter;
 
 class BootLogoScene : public SceneBase {
 public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
 
     void applyLoadedSave();
@@ -73,7 +73,7 @@ public:
 
 extern "C" BootLogoScene *BootLogoScene_Create(void) { return new BootLogoScene; }
 
-BOOL BootLogoScene::vfunc_00() {
+BOOL BootLogoScene::onCreate() {
     gVBlanksPerFrame = 3;
     Snd_CreateScene();
     logoState = 0;
@@ -83,7 +83,7 @@ BOOL BootLogoScene::vfunc_00() {
     return TRUE;
 }
 
-BOOL BootLogoScene::vfunc_0c() {
+BOOL BootLogoScene::onDelete() {
     Heap_Free(bufferHeap, slot0Buffer);
     Heap_Free(bufferHeap, slot1Buffer);
     return TRUE;

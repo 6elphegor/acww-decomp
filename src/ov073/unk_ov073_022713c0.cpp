@@ -125,7 +125,7 @@ public:
 
     SpNpcJoanTalk();
     virtual ~SpNpcJoanTalk();
-    virtual void vfunc_08();
+    virtual void resetMsg();
     virtual void onMessageEnd(u32 attr);
     virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
@@ -156,11 +156,11 @@ struct Unk_020d77a4_Vec3;
 class SpNpcJoan : public SpNpcActor {
 public:
     SpNpcJoan() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -233,8 +233,8 @@ extern "C" SpNpcJoan *SpNpcJoan_Create() {
 
 s32 SpNpcJoan::getWalkAnimSpeedScale() { return data_020c6cf0; }
 
-BOOL SpNpcJoan::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcJoan::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -242,16 +242,16 @@ BOOL SpNpcJoan::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcJoan::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcJoan::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     _ZN10VisitorPos6setPosEii(TownSessionState_GetVisitorPos(TownSessionState_Get()), position.x, position.z);
     return TRUE;
 }
 
-BOOL SpNpcJoan::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcJoan::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     changeAct(3);
@@ -572,8 +572,8 @@ SpNpcJoanTalk::SpNpcJoanTalk() {}
 
 SpNpcJoanTalk::~SpNpcJoanTalk() {}
 
-void SpNpcJoanTalk::vfunc_08() {
-    ActorTalkRequest::vfunc_08();
+void SpNpcJoanTalk::resetMsg() {
+    ActorTalkRequest::resetMsg();
     resultHandler = *(Fn *)__ptmf_null;
 }
 
@@ -619,7 +619,7 @@ BOOL SpNpcJoanTalk::giveTurnips() {
 }
 
 void SpNpcJoanTalk::attachOwner(s32 v) {
-    vfunc_08();
+    resetMsg();
     owner = v;
     topic = 0;
     price = 0;
@@ -1064,7 +1064,7 @@ L_ret:
 }
 #endif
 
-BOOL SpNpcJoan::vfunc_48(void *) {
+BOOL SpNpcJoan::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
@@ -1072,13 +1072,13 @@ BOOL SpNpcJoan::vfunc_48(void *) {
     return r;
 }
 
-void SpNpcJoan::vfunc_4c(u32 a, u8) {
+void SpNpcJoan::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         changeAct(0);
         break;
     case 3:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(4);
         break;

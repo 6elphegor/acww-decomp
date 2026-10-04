@@ -9,8 +9,8 @@
 // src/main/unk_020b8d9c.cpp; constructor and destructor are implicit (emitted there by SkyProc_Create).
 class SkyProc : public GameProc {
 public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 

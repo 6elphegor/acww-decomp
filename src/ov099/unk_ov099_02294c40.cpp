@@ -119,8 +119,8 @@ public:
     PocketMenuUnk()
         : unk_94(), pocketGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), popup(), errorMessage(), unk_2690() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -283,14 +283,14 @@ static inline BOOL Unk_ov099_02296158_Both()
 
 extern "C" PocketMenuUnk *PocketMenuUnk_Create() { return new PocketMenuUnk(); }
 
-BOOL PocketMenuUnk::vfunc_00() {
+BOOL PocketMenuUnk::onCreate() {
     initPocketMenuUnk();
     setTransitionState(0);
     setPhase(0);
     return TRUE;
 }
 
-BOOL PocketMenuUnk::vfunc_0c() {
+BOOL PocketMenuUnk::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
@@ -430,7 +430,7 @@ void PocketMenuUnk::releaseResources() {
 
 void PocketMenuUnk::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void PocketMenuUnk::postInputUpdate() {
@@ -1087,7 +1087,7 @@ s32 PocketMenuUnk::getCursorTargetY() { return PocketMenuUnk_GetTargetY(this, cu
 
 void PocketMenuUnk::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void PocketMenuUnk::func_ov099_0229519c() {
@@ -1130,7 +1130,7 @@ void PocketMenuUnk::placeCursorOnTarget() {
 
 void PocketMenuUnk::func_ov099_022950a8() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void PocketMenuUnk::func_ov099_02295088() {

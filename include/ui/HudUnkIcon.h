@@ -12,7 +12,7 @@ public:
     HudUnkIcon();                           // C1 0x0208dfd0
     virtual ~HudUnkIcon();                  // D0 0x0208df84, D1 0x0208dfac
     virtual void draw();                    // 0x0208df18
-    virtual void vfunc_0c();                // 0x0208de98
+    virtual void update();                // 0x0208de98
 
     void updateHiding();                    // 0x0208ddb8
     void updateShown();                     // 0x0208ddd8

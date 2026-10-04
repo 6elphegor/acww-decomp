@@ -109,8 +109,8 @@ _ZN17PocketLettersMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02296804
 _ZN17PocketLettersMenu12runMainStateEv kind:function(thumb,size=0x1b4) addr:0x02296820
 _ZN17PocketLettersMenu14execTransitionEv kind:function(thumb,size=0xd8) addr:0x022969d4
 _ZN17PocketLettersMenu6onDrawEv kind:function(thumb,size=0xbc) addr:0x02296aac
-_ZN17PocketLettersMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02296b68
-_ZN17PocketLettersMenu8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02296b84
+_ZN17PocketLettersMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02296b68
+_ZN17PocketLettersMenu8onCreateEv kind:function(thumb,size=0x20) addr:0x02296b84
 PocketLettersMenu_Create kind:function(thumb,size=0xc4) addr:0x02296ba4
 data_ov103_02296c80 kind:data(any) addr:0x02296c80
 data_ov103_02296c88 kind:data(any) addr:0x02296c88

@@ -232,7 +232,7 @@ dependencies on the unit's objects; without any such file the build is as before
 
     # comment
     src/ov009/unk_ov009_0225b880.cpp:
-        extra src/ov009/unk_ov009_0225b880_switch.cpp _ZN13BuildingActor8vfunc_4cEjh
+        extra src/ov009/unk_ov009_0225b880_switch.cpp _ZN13BuildingActor18onInteractionEventEjh
         place __arraydtor$303 0x0225e05c
 
 * `<main source>:` — a unit of this overlay's `delinks.txt` (one block per unit; the other units of the overlay

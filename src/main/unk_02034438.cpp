@@ -161,8 +161,8 @@ typedef void (BgmVolumeMixer::*Unk_02035758_Fn)(BgmVolumeChannel *);
 class BgmProc : public GameProc {
 public:
     BgmProc();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual ~BgmProc();
     static BgmProc *create();
@@ -2303,7 +2303,7 @@ BgmProc::BgmProc() {}
 
 BgmProc::~BgmProc() {}
 
-BOOL BgmProc::vfunc_00() {
+BOOL BgmProc::onCreate() {
     bgmManager.init();
     return TRUE;
 }
@@ -2313,7 +2313,7 @@ BOOL BgmProc::onExecute() {
     return TRUE;
 }
 
-BOOL BgmProc::vfunc_0c() {
+BOOL BgmProc::onDelete() {
     bgmManager.exit();
     return TRUE;
 }

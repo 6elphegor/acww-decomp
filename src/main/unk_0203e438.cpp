@@ -217,8 +217,8 @@ extern "C" void Character_ResetList(void) {
     PrioList_Init(&gCharacterList);
 }
 
-BOOL Character::vfunc_04() {
-    if (!Actor::vfunc_04()) {
+BOOL Character::preCreate() {
+    if (!Actor::preCreate()) {
         return FALSE;
     }
     charNode.charId = 0;
@@ -303,27 +303,27 @@ BOOL Character::isInInteractionRange(Character *other) {
     return FALSE;
 }
 
-BOOL Character::vfunc_48(void *a) { return FALSE; }
+BOOL Character::acceptsInteraction(void *a) { return FALSE; }
 
 BOOL Character::checkInteraction(Character *other) {
     if (isInInteractionRange(other)) {
         s16 t = data_020c905c;
         if (isInFacingArcOf(other, -t, t)) {
-            return vfunc_48(other);
+            return acceptsInteraction(other);
         }
     }
     return FALSE;
 }
 
-void Character::vfunc_4c(u32 a, u8 b) {}
+void Character::onInteractionEvent(u32 a, u8 b) {}
 
 VecFx32 *Character::getInteractionPos() { return &position; }
 
 BOOL Character::acceptsInteractionOutOfRange(void *a) { return FALSE; }
 
-BOOL Character::vfunc_58(void *a) { return FALSE; }
+BOOL Character::acceptsSelfRequestedInteraction(void *a) { return FALSE; }
 
-BOOL Character::vfunc_5c(Unk_020d77a4_Vec3 *out) { return FALSE; }
+BOOL Character::getHeldItemPos(Unk_020d77a4_Vec3 *out) { return FALSE; }
 
 void Character::attachTalkRequest(s32 a) { Talk_AttachRequestToWindow0(a); }
 

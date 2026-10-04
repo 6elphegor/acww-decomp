@@ -102,8 +102,8 @@ _ZN20PocketItemSelectMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02296
 _ZN20PocketItemSelectMenu12runMainStateEv kind:function(thumb,size=0x1a4) addr:0x02296670
 _ZN20PocketItemSelectMenu14execTransitionEv kind:function(thumb,size=0xa0) addr:0x02296814
 _ZN20PocketItemSelectMenu6onDrawEv kind:function(thumb,size=0xa0) addr:0x022968b4
-_ZN20PocketItemSelectMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02296954
-_ZN20PocketItemSelectMenu8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02296970
+_ZN20PocketItemSelectMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02296954
+_ZN20PocketItemSelectMenu8onCreateEv kind:function(thumb,size=0x20) addr:0x02296970
 PocketItemSelectMenu_Create kind:function(thumb,size=0xa0) addr:0x02296990
 data_ov101_02296a40 kind:data(any) addr:0x02296a40
 data_ov101_02296a48 kind:data(any) addr:0x02296a48

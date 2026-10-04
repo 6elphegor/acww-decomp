@@ -234,8 +234,8 @@ _ZN10PocketMenu8execMainEv kind:function(thumb,size=0x2a) addr:0x0229a4a0
 _ZN10PocketMenu12runMainStateEv kind:function(thumb,size=0x38c) addr:0x0229a4cc
 _ZN10PocketMenu14execTransitionEv kind:function(thumb,size=0xf4) addr:0x0229a858
 _ZN10PocketMenu6onDrawEv kind:function(thumb,size=0xd8) addr:0x0229a94c
-_ZN10PocketMenu8vfunc_0cEv kind:function(thumb,size=0x20) addr:0x0229aa24
-_ZN10PocketMenu8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x0229aa44
+_ZN10PocketMenu8onDeleteEv kind:function(thumb,size=0x20) addr:0x0229aa24
+_ZN10PocketMenu8onCreateEv kind:function(thumb,size=0x20) addr:0x0229aa44
 PocketMenu_Create kind:function(thumb,size=0xe0) addr:0x0229aa64
 data_ov096_0229ab60 kind:data(any) addr:0x0229ab60
 sPocketMenuProfile kind:data(any) addr:0x0229ab68 ambiguous

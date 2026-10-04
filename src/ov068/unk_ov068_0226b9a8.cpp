@@ -34,9 +34,9 @@
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
 // 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
 // original (0x0224d4e0, 0x70 bytes):
-//   slot 00 ProcBase::vfunc_00        04 M::vfunc_04               08 Character::postCreate(s32)
-//   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::vfunc_14   18 Base::vfunc_18   1c M::vfunc_1c
-//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor8vfunc_20Ej)
+//   slot 00 ProcBase::onCreate        04 M::vfunc_04               08 Character::postCreate(s32)
+//   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::postDelete   18 Base::vfunc_18   1c M::vfunc_1c
+//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor11postExecuteEj)
 //   24 Base::vfunc_24   28 Actor::preDraw   2c Actor::postDraw   30..3c Base   40 D1  44 D0
 //   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::changeSyncState(u32)   64 M::getSoundPos(Vec *)
 // Notes for derived classes:
@@ -159,8 +159,8 @@ class TaxiInterior : public RoomObjActor {
 public:
     TaxiInterior();
     virtual ~TaxiInterior();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
@@ -228,7 +228,7 @@ TaxiInterior::TaxiInterior() {}
 
 TaxiInterior::~TaxiInterior() {}
 
-BOOL TaxiInterior::vfunc_00() {
+BOOL TaxiInterior::onCreate() {
     sTaxiInterior = this;
     loadModels();
     Model_setInitCallback(&model, TaxiInterior_InitModelCallback, this);
@@ -289,7 +289,7 @@ BOOL TaxiInterior::onDraw() {
     return TRUE;
 }
 
-BOOL TaxiInterior::vfunc_0c() {
+BOOL TaxiInterior::onDelete() {
     sTaxiInterior = 0;
     releaseResources();
     RoomObj_ReleaseResources(&driverRes, &driverTex);

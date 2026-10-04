@@ -189,7 +189,7 @@ public:
 
     SpNpcNookShopTalk();
     virtual ~SpNpcNookShopTalk();
-    virtual void vfunc_08();
+    virtual void resetMsg();
     virtual void onMessageEnd(u32 attr);
     virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
@@ -278,11 +278,11 @@ public:
     typedef BOOL (SpNpcNookShop::*Fn)();
 
     SpNpcNookShop() : talk(), selectedItem(0xfff1), selectedItemX(0), selectedItemZ(0) {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 cmd, u8 arg);
-    virtual BOOL vfunc_58(void *a);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 cmd, u8 arg);
+    virtual BOOL acceptsSelfRequestedInteraction(void *a);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -824,8 +824,8 @@ extern "C" SpNpcNookShop *SpNpcNookShop_CreateTimmy() { return new SpNpcNookShop
 
 extern "C" SpNpcNookShop *SpNpcNookShop_CreateTommy() { return new SpNpcNookShop; }
 
-BOOL SpNpcNookShop::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcNookShop::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -873,9 +873,9 @@ BOOL SpNpcNookShop::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcNookShop::vfunc_00() {
+BOOL SpNpcNookShop::onCreate() {
     s32 v;
-    if (!SpNpcActor::vfunc_00()) {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
@@ -1358,7 +1358,7 @@ BOOL SpNpcNookShop::mainAct08() {
         u32 x, t;
         if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
             netSetSlotsIfOwner(1, t, t);
-            talk.vfunc_08();
+            talk.resetMsg();
             func_02015ab0(&talk, getPlayerActor(4));
             BOOL r;
             if (Item_IsFurniture(&selectedItem)) {
@@ -1473,7 +1473,7 @@ BOOL SpNpcNookShop::mainAct10() {
     }
     NpcMoveCtrl_setWaypoint(&moveCtrl, &out);
     if (t <= 0x3000 || Vec_Equal(&out, &position) != 0 || Math_CountDownU8(&approachTimer) == 0) {
-        talk.vfunc_08();
+        talk.resetMsg();
         func_02015ab0(&talk, getPlayerActor(4));
         changeAct(4);
     }
@@ -2128,13 +2128,13 @@ SpNpcNookShopTalk::SpNpcNookShopTalk() {}
 
 SpNpcNookShopTalk::~SpNpcNookShopTalk() {}
 
-void SpNpcNookShopTalk::vfunc_08() {
-    ActorTalkRequest::vfunc_08();
+void SpNpcNookShopTalk::resetMsg() {
+    ActorTalkRequest::resetMsg();
     pendingMenuHandler = *(Fn *)data_0213a740;
 }
 
 void SpNpcNookShopTalk::attachOwner(Unk_ov050_0225b908_Owner *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = (SpNpcNookShop *)owner;
     safeSlot = -1;
 }
@@ -3759,7 +3759,7 @@ s32 SpNpcNookShopTalk::buySelectedItem() {
     VillagerTrend_OnFurnitureBought();
 }
 
-BOOL SpNpcNookShop::vfunc_48(void *) {
+BOOL SpNpcNookShop::acceptsInteraction(void *) {
     if (position.z < data_ov050_0225da40[2]) {
         return FALSE;
     }
@@ -3772,14 +3772,14 @@ BOOL SpNpcNookShop::vfunc_48(void *) {
 // ---------------------------------------------------------------------------------------------------------------------
 // SpNpcNookShop
 
-BOOL SpNpcNookShop::vfunc_58(void *) {
+BOOL SpNpcNookShop::acceptsSelfRequestedInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-void SpNpcNookShop::vfunc_4c(u32 cmd, u8 arg) {
+void SpNpcNookShop::onInteractionEvent(u32 cmd, u8 arg) {
     Unk_020cbb18_Ov050 *g;
     s32 a, b;
     switch (cmd) {
@@ -3802,7 +3802,7 @@ void SpNpcNookShop::vfunc_4c(u32 cmd, u8 arg) {
         } else if (isNetOwner()) {
             g = gCommManager;
             netSetSlotsIfOwner(1, g->myAid, g->myAid);
-            talk.vfunc_08();
+            talk.resetMsg();
             func_02015ab0(&talk, getPlayerActor(4));
             if (talk.getTopic() == 0 || talk.getTopic() == 0x11) {
                 changeAct(4);
@@ -3810,7 +3810,7 @@ void SpNpcNookShop::vfunc_4c(u32 cmd, u8 arg) {
                        talk.getTopic() == 6 || talk.getTopic() == 0x1d) {
                 changeAct(5);
             } else if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
-                talk.vfunc_08();
+                talk.resetMsg();
                 func_02015ab0(&talk, getPlayerActor(4));
                 changeAct(4);
             } else {
@@ -3825,7 +3825,7 @@ void SpNpcNookShop::vfunc_4c(u32 cmd, u8 arg) {
             changeAct(9);
         } else if (isNetOwner()) {
             netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
-            talk.vfunc_08();
+            talk.resetMsg();
             func_02015ab0(&talk, getPlayerActor(4));
             if (isNook()) {
                 talk.setTopic(5);

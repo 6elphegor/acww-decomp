@@ -303,8 +303,8 @@ Actor::Actor() {
     setCullParams(e[3], e[4], e[5]);
 }
 
-BOOL Actor::vfunc_04() {
-    if (ProcBase::vfunc_04()) return TRUE;
+BOOL Actor::preCreate() {
+    if (ProcBase::preCreate()) return TRUE;
     return FALSE;
 }
 
@@ -318,7 +318,7 @@ BOOL Actor::preDelete() {
     return FALSE;
 }
 
-BOOL Actor::vfunc_14(s32 status) { return ProcBase::vfunc_14(status); }
+BOOL Actor::postDelete(s32 status) { return ProcBase::postDelete(status); }
 
 BOOL Actor::preExecute() {
     s32 r4;
@@ -345,7 +345,7 @@ BOOL Actor::preExecute() {
     return TRUE;
 }
 
-BOOL Actor::vfunc_20(u32 status) { return ProcBase::vfunc_20(status); }
+BOOL Actor::postExecute(u32 status) { return ProcBase::postExecute(status); }
 
 BOOL Actor::preDraw() {
     if (!ProcBase::preDraw()) return FALSE;

@@ -143,8 +143,8 @@ struct Unk_02064d6c_Rgb {
 
 class SceneLights : public GameProc {
 public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     void updateBaseColor();
@@ -339,7 +339,7 @@ void SceneLights::setupLights() {
     }
 }
 
-BOOL SceneLights::vfunc_00() {
+BOOL SceneLights::onCreate() {
     gSceneLights = this;
     s32 id = Scene_GetCurrent();
     setupKind = sSceneLightSetupIds[id];
@@ -391,7 +391,7 @@ BOOL SceneLights::onDraw() {
     return TRUE;
 }
 
-BOOL SceneLights::vfunc_0c() {
+BOOL SceneLights::onDelete() {
     flashLight.shutdown();
     gSceneLights = NULL;
     return TRUE;

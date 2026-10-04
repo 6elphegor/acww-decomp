@@ -16,7 +16,7 @@ public:
     LabelBalloon(s32 flag);
     virtual ~LabelBalloon();
     virtual void draw();
-    virtual void vfunc_0c();
+    virtual void update();
 
     void updateScreenClamp();
     void freeLabels();

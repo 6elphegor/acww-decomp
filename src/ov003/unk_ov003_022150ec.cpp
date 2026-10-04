@@ -132,7 +132,7 @@ void CountdownSign::execCountdown() {
     Clock_GetDateTime(tm);
     if (((u8 *)tm)[4] == 1) {
         Snd_PlaySe(0x61);
-        vfunc_6c(1);
+        setDoorState(1);
     }
 }
 
@@ -143,14 +143,14 @@ BOOL CountdownSign::enterCountdown() {
     return TRUE;
 }
 
-void CountdownSign::vfunc_74() {
+void CountdownSign::updateDoorState() {
     static Unk_02215614_Fn tbl[3] = { &CountdownSign::execCountdown, &CountdownSign::execNewYear };
     if (doorState < 3) {
         (this->*tbl[doorState])();
     }
 }
 
-s32 CountdownSign::vfunc_6c(s32 arg) {
+s32 CountdownSign::setDoorState(s32 arg) {
     u32 a = arg;
     static Unk_02215680_Fn tbl[3] = { &CountdownSign::enterCountdown, &CountdownSign::enterNewYear };
     if (a < 3) {
@@ -164,11 +164,11 @@ s32 CountdownSign::vfunc_6c(s32 arg) {
     return FALSE;
 }
 
-char *CountdownSign::vfunc_ac() { return BuildingActor::vfunc_ac(); }
-char *CountdownSign::vfunc_a8() { return BuildingActor::vfunc_a8(); }
-char *CountdownSign::vfunc_a4() { return BuildingActor::vfunc_a4(); }
+char *CountdownSign::getLightTexPath() { return BuildingActor::getLightTexPath(); }
+char *CountdownSign::getTexPath() { return BuildingActor::getTexPath(); }
+char *CountdownSign::getArcPath() { return BuildingActor::getArcPath(); }
 
-BOOL CountdownSign::vfunc_0c() {
+BOOL CountdownSign::onDelete() {
     for (u32 i = 0; i < 6; i++) {
         digits[i] = 0;
     }
@@ -207,7 +207,7 @@ BOOL CountdownSign::onExecute() {
     return TRUE;
 }
 
-BOOL CountdownSign::vfunc_70() {
+BOOL CountdownSign::initBuilding() {
     getResources();
     onExecute();
     s32 z = 0;
@@ -236,9 +236,9 @@ BOOL CountdownSign::vfunc_70() {
     tm[1] = 0;
     Clock_GetDateTime(tm);
     if (((u8 *)tm)[4] == 1) {
-        vfunc_6c(1);
+        setDoorState(1);
     } else {
-        vfunc_6c(0);
+        setDoorState(0);
     }
     return TRUE;
 }
@@ -284,6 +284,6 @@ void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, Unk_ov003_02215a
 
 
 
-BOOL CountdownDigit::vfunc_b0() {
+BOOL CountdownDigit::needsMatrixUpdate() {
     return FALSE;
 }

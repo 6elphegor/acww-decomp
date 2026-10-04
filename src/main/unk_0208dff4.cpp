@@ -67,7 +67,7 @@ public:
     LabelButton(u32 flag);
     virtual ~LabelButton();
     virtual void draw();
-    virtual void vfunc_0c();
+    virtual void update();
 
     void syncTextColor();
     void freeLabel();

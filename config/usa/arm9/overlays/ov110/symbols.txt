@@ -122,8 +122,8 @@ _ZN20LostFoundRecycleMenu13isForcedCloseEv kind:function(thumb,size=0x20) addr:0
 _ZN20LostFoundRecycleMenu12runMainStateEv kind:function(thumb,size=0x188) addr:0x0229728c
 _ZN20LostFoundRecycleMenu14execTransitionEv kind:function(thumb,size=0xbc) addr:0x02297414
 _ZN20LostFoundRecycleMenu6onDrawEv kind:function(thumb,size=0xa4) addr:0x022974d0
-_ZN20LostFoundRecycleMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02297574
-_ZN20LostFoundRecycleMenu8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02297590
+_ZN20LostFoundRecycleMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02297574
+_ZN20LostFoundRecycleMenu8onCreateEv kind:function(thumb,size=0x20) addr:0x02297590
 LostFoundRecycleMenu_Create kind:function(thumb,size=0xc0) addr:0x022975b0
 data_ov110_02297680 kind:data(any) addr:0x02297680
 data_ov110_02297688 kind:data(any) addr:0x02297688

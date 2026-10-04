@@ -76,8 +76,8 @@ class BirthdayMenu : public MenuProc {
 public:
     BirthdayMenu() : cursor(), bottomButtons(), picker() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -159,14 +159,14 @@ static inline BOOL Unk_ov137_Both() {
 
 extern "C" BirthdayMenu *BirthdayMenu_Create() { return new BirthdayMenu(); }
 
-BOOL BirthdayMenu::vfunc_00() {
+BOOL BirthdayMenu::onCreate() {
     initPicker();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL BirthdayMenu::vfunc_0c() {
+BOOL BirthdayMenu::onDelete() {
     _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent());
     releaseResources();
     return TRUE;
@@ -308,7 +308,7 @@ void BirthdayMenu::releaseResources() {
 
 void BirthdayMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void BirthdayMenu::postInputUpdate() {
@@ -648,7 +648,7 @@ s32 BirthdayMenu::getCursorTargetY() {
 
 void BirthdayMenu::hideCursor() {
     U94B->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void BirthdayMenu::moveCursorToTarget() {
@@ -675,7 +675,7 @@ void BirthdayMenu::startCursorMove(s32 a, s32 b) {
 
 void BirthdayMenu::refreshCursor() {
     U94A->setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void BirthdayMenu::pressCursor() {

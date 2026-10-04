@@ -105,8 +105,8 @@ public:
         : errorMessage(), textCharTask(), keyboard(), lineLabels(), scrollKnob(), bottomButtons(), cursor(),
           censorString(), encodedText() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -430,14 +430,14 @@ typedef void (*Unk_ov112_0229782c_Fn)(void *);
 
 extern "C" BbsWriteMenu *BbsWriteMenu_Create() { return new BbsWriteMenu(); }
 
-BOOL BbsWriteMenu::vfunc_00() {
+BOOL BbsWriteMenu::onCreate() {
     init();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL BbsWriteMenu::vfunc_0c() {
+BOOL BbsWriteMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
@@ -782,8 +782,8 @@ void BbsWriteMenu::releaseResources() {
 
 void BbsWriteMenu::preInputUpdate() {
     BbsWriteMenu_UpdateLineLabels((S *)this);
-    scrollKnob.vfunc_0c();
-    cursor.vfunc_0c();
+    scrollKnob.update();
+    cursor.update();
     bottomButtons.freeTexts();
 }
 
@@ -2081,7 +2081,7 @@ void BbsWriteMenu::showCursor() {
 
 void BbsWriteMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void BbsWriteMenu::moveCursorToTarget() {
@@ -2111,7 +2111,7 @@ void BbsWriteMenu::snapCursor() {
         u32 b = Keyboard_GetCursorY(&keyboard);
         cursor.warpTo(a, b);
     }
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void BbsWriteMenu::pressCursor() {
@@ -2127,7 +2127,7 @@ void BbsWriteMenu::releaseCursor() {
 
 void BbsWriteMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void BbsWriteMenu::censorText() {

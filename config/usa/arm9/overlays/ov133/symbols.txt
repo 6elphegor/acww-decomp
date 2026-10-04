@@ -81,8 +81,8 @@ _ZN14FriendCodeMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02294db8
 _ZN14FriendCodeMenu12runMainStateEv kind:function(thumb,size=0x16c) addr:0x02294dd4
 _ZN14FriendCodeMenu14execTransitionEv kind:function(thumb,size=0xa0) addr:0x02294f40
 _ZN14FriendCodeMenu6onDrawEv kind:function(thumb,size=0x90) addr:0x02294fe0
-_ZN14FriendCodeMenu8vfunc_0cEv kind:function(thumb,size=0x2a) addr:0x02295070
-_ZN14FriendCodeMenu8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x0229509c
+_ZN14FriendCodeMenu8onDeleteEv kind:function(thumb,size=0x2a) addr:0x02295070
+_ZN14FriendCodeMenu8onCreateEv kind:function(thumb,size=0x20) addr:0x0229509c
 FriendCodeMenu_Create kind:function(thumb,size=0x80) addr:0x022950bc
 sKeyDigits kind:data(any) addr:0x0229513c
 sKeyColumnX kind:data(any) addr:0x02295148

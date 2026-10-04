@@ -42,13 +42,13 @@ _ZN8MenuProc10execPhase3Ev kind:function(thumb,size=0x4) addr:0x02200b1c
 _ZN8MenuProc8execMainEv kind:function(thumb,size=0x4) addr:0x02200b20
 _ZN8MenuProc14execTransitionEv kind:function(thumb,size=0x4) addr:0x02200b24
 _ZN8MenuProc14execWaitScreenEv kind:function(thumb,size=0x30) addr:0x02200b28
-_ZN8MenuProc8vfunc_20Ev kind:function(thumb,size=0x8) addr:0x02200b58
-_ZN8MenuProc8vfunc_20Ej kind:label(thumb) addr:0x02200b58
+_ZN8MenuProc11postExecuteEv kind:function(thumb,size=0x8) addr:0x02200b58
+_ZN8MenuProc11postExecuteEj kind:label(thumb) addr:0x02200b58
 _ZN8MenuProc10preExecuteEv kind:function(thumb,size=0x18) addr:0x02200b60
-_ZN8MenuProc8vfunc_14Ei kind:function(thumb,size=0x22) addr:0x02200b78
+_ZN8MenuProc10postDeleteEi kind:function(thumb,size=0x22) addr:0x02200b78
 _ZN8MenuProc9preDeleteEv kind:function(thumb,size=0x18) addr:0x02200b9c
 _ZN8MenuProc10postCreateEi kind:function(thumb,size=0x48) addr:0x02200bb4
-_ZN8MenuProc8vfunc_04Ev kind:function(thumb,size=0x30) addr:0x02200bfc
+_ZN8MenuProc9preCreateEv kind:function(thumb,size=0x30) addr:0x02200bfc
 _ZN8MenuProcD2Ev kind:function(thumb,size=0x34) addr:0x02200c2c
 _ZN8MenuProcD0Ev kind:function(thumb,size=0x38) addr:0x02200c60
 _ZN8MenuProcD1Ev kind:function(thumb,size=0x34) addr:0x02200c98
@@ -185,7 +185,7 @@ _ZN12CursorMotion5resetEv kind:function(thumb,size=0x6) addr:0x022027a4
 _ZN12CursorMotionD0Ev kind:function(thumb,size=0x18) addr:0x022027ac
 _ZN12CursorMotionD1Ev kind:function(thumb,size=0xc) addr:0x022027c4
 _ZN12CursorMotionC1Ev kind:function(thumb,size=0xc) addr:0x022027d0
-_ZN14MenuCursorBase8vfunc_0cEv kind:function(thumb,size=0x66) addr:0x022027dc
+_ZN14MenuCursorBase6updateEv kind:function(thumb,size=0x66) addr:0x022027dc
 _ZN14MenuCursorBase11drawWrappedEv kind:function(thumb,size=0x34) addr:0x02202844
 _ZN14MenuCursorBase10getScreenYEv kind:function(thumb,size=0x12) addr:0x02202878
 _ZN14MenuCursorBase10getScreenXEv kind:function(thumb,size=0x12) addr:0x0220288c

@@ -26,7 +26,7 @@ public:
     LabelButton(u8 a, s32 b);                   // C1 0x0208e590, C2 0x0208e604
     virtual ~LabelButton();                     // D2 0x0208e4e4, D0 0x0208e51c, D1 0x0208e558
     virtual void draw();                        // 0x0208e300
-    virtual void vfunc_0c();                    // 0x0208e2e0
+    virtual void update();                    // 0x0208e2e0
 
     void syncTextColor();                       // 0x0208dff4
     void freeLabel();                           // 0x0208e074

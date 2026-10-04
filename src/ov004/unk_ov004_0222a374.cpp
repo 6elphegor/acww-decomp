@@ -22,7 +22,7 @@ struct Unk_ov004_0222a374_Pair {
 class PlayerBedSetter : public GameProc {
 public:
     PlayerBedSetter();
-    virtual BOOL vfunc_00();
+    virtual BOOL onCreate();
     virtual ~PlayerBedSetter();
 };
 
@@ -50,7 +50,7 @@ PlayerBedSetter::PlayerBedSetter() {}
 
 PlayerBedSetter::~PlayerBedSetter() {}
 
-BOOL PlayerBedSetter::vfunc_00() {
+BOOL PlayerBedSetter::onCreate() {
     Room_PlacePlayerBeds();
     return TRUE;
 }

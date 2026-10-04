@@ -12,7 +12,7 @@ class MenuCursorBase : public HandCursor {
 public:
     MenuCursorBase(BOOL flag);
     ~MenuCursorBase();
-    virtual void vfunc_0c();                    // 0x022027dc
+    virtual void update();                    // 0x022027dc
 
     void drawWrapped();                         // 0x02202844
     s32 getScreenY();                           // 0x02202878

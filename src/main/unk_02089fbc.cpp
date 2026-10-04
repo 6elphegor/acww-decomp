@@ -413,7 +413,7 @@ void HudClock::draw() {
     }
 }
 
-void HudClock::vfunc_0c() {
+void HudClock::update() {
     static Unk_020e0f64_Fn tbl[4] = {(Unk_020e0f64_Fn)&HudClock::updateHidden, (Unk_020e0f64_Fn)&HudClock::updateAppearing,
                                      (Unk_020e0f64_Fn)&HudClock::updateShown, (Unk_020e0f64_Fn)&HudClock::updateHiding};
     (this->*tbl[state])();
@@ -434,7 +434,7 @@ void HudClock::release() {
 }
 
 void HudClock::callUpdate() {
-    vfunc_0c();
+    update();
 }
 
 void HudClock::callDraw() {
@@ -904,7 +904,7 @@ void HudCountdown::draw() {
     }
 }
 
-void HudCountdown::vfunc_0c() {
+void HudCountdown::update() {
     _ZN18HudCountdownLabels15updateRemainingEv(this);
     static Unk_020e0f10_Fn tbl[4] = {(Unk_020e0f10_Fn)&HudCountdown::updateHidden, (Unk_020e0f10_Fn)&HudCountdown::updateAppearing,
                                      (Unk_020e0f10_Fn)&HudCountdown::updateShown, (Unk_020e0f10_Fn)&HudCountdown::updateHiding};
@@ -923,7 +923,7 @@ void HudCountdown::release() {
 }
 
 void HudCountdown::callUpdate() {
-    vfunc_0c();
+    update();
 }
 
 void HudCountdown::callDraw() {
@@ -1343,7 +1343,7 @@ void HudCameraGrid::draw() {
     }
 }
 
-void HudCameraGrid::vfunc_0c() {
+void HudCameraGrid::update() {
     static Unk_0208b728_Fn tbl[4] = {(Unk_0208b728_Fn)&HudCameraGridStates::updateClosed, (Unk_0208b728_Fn)&HudCameraGridStates::updateOpening,
                                      (Unk_0208b728_Fn)&HudCameraGridStates::updateOpen, (Unk_0208b728_Fn)&HudCameraGridStates::updateClosing};
     (((HudCameraGridStates *)this)->*tbl[state])();
@@ -1365,7 +1365,7 @@ void HudCameraGrid::resetCellAnims() {
     }
 }
 
-void HudCameraGrid::callUpdate() { vfunc_0c(); }
+void HudCameraGrid::callUpdate() { update(); }
 
 void HudCameraGrid::callDraw() {
     if (state == 2) {
@@ -1607,7 +1607,7 @@ void HudCameraButton::draw() {
     }
 }
 
-void HudCameraButton::vfunc_0c() {
+void HudCameraButton::update() {
     static Unk_020e0f2c_Fn tbl[7] = {
         (Unk_020e0f2c_Fn)&HudCameraButton::updateHidden, (Unk_020e0f2c_Fn)&HudCameraButton::updateAppearing,
         (Unk_020e0f2c_Fn)&HudCameraButton::updateShown, (Unk_020e0f2c_Fn)&HudCameraButton::updateGridOpening,
@@ -1631,7 +1631,7 @@ void HudCameraButton::release() {
 }
 
 void HudCameraButton::callUpdate() {
-    vfunc_0c();
+    update();
     grid.callUpdate();
     updateInputMode();
 }
@@ -1864,7 +1864,7 @@ void HudWallet::draw() {
     }
 }
 
-void HudWallet::vfunc_0c() {
+void HudWallet::update() {
     static Fn tbl[4] = {
         (Fn)&HudWallet::updateHidden, (Fn)&HudWallet::updateAppearing,
         (Fn)&HudWallet::updateShown, (Fn)&HudWallet::updateHiding,
@@ -1886,7 +1886,7 @@ void HudWallet::release() {
 }
 
 void HudWallet::callUpdate() {
-    vfunc_0c();
+    update();
     updateSlide();
 }
 
@@ -2327,7 +2327,7 @@ HudProc::HudProc() {}
 
 HudProc::~HudProc() {}
 
-BOOL HudProc::vfunc_00() {
+BOOL HudProc::onCreate() {
     HudLinkIcon_Reset();
     HudUnkSlideIcon_Reset();
     HudUnkIcon_Reset();
@@ -2335,7 +2335,7 @@ BOOL HudProc::vfunc_00() {
     return TRUE;
 }
 
-BOOL HudProc::vfunc_0c() {
+BOOL HudProc::onDelete() {
     Hud_Exit();
     HudUnkIcon_Exit();
     HudUnkSlideIcon_Exit();

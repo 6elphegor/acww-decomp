@@ -72,7 +72,7 @@ struct Unk_ov004_0221b6d4_Bits {
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define NpcActor_setCollisionRadius _ZN8NpcActor18setCollisionRadiusEi
-#define func_0201b08c _ZN8NpcActor8vfunc_4cEi
+#define func_0201b08c _ZN8NpcActor18onInteractionEventEi
 #define Character_setInteractionRange _ZN9Character19setInteractionRangeEi
 #define SpNpcActor_setColliderSize _ZN10SpNpcActor15setColliderSizeEii
 #define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
@@ -167,10 +167,10 @@ public:
 class SpNpcSable : public SpNpcActor {
 public:
     SpNpcSable() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 idx, u8 v);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 idx, u8 v);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -215,8 +215,8 @@ extern u8 sSpNpcSableTexturePath[];
 
 extern "C" SpNpcSable *SpNpcSable_Create() { return new SpNpcSable; }
 
-BOOL SpNpcSable::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcSable::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     NpcActor_setTalkRequest(this, &talk);
@@ -227,9 +227,9 @@ BOOL SpNpcSable::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcSable::vfunc_00() {
+BOOL SpNpcSable::onCreate() {
     s32 v;
-    if (!SpNpcActor::vfunc_00()) {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     homeAngle = rotY;
@@ -363,7 +363,7 @@ BOOL SpNpcSable::mainAct04() {
             if (av == g && av == b) {
                 NpcActor_netSetSlotsIfOwner(this, 1, g, g);
                 ActorTalkRequest *p = &talk;
-                p->vfunc_08();
+                p->resetMsg();
                 func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
                 changeAct(1);
                 goto end;
@@ -422,7 +422,7 @@ SpNpcSableTalk::SpNpcSableTalk() {}
 SpNpcSableTalk::~SpNpcSableTalk() {}
 
 void SpNpcSableTalk::attachOwner(Unk_ov004_0221b6d4_Owner *o) {
-    vfunc_08();
+    resetMsg();
     owner = o;
 }
 
@@ -501,14 +501,14 @@ void SpNpcSableTalk::onMessageEnd(u32) {}
 
 void SpNpcSableTalk::onChoice(u32) {}
 
-BOOL SpNpcSable::vfunc_48(void *) {
+BOOL SpNpcSable::acceptsInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-void SpNpcSable::vfunc_4c(u32 idx, u8 v) {
+void SpNpcSable::onInteractionEvent(u32 idx, u8 v) {
     switch (idx) {
     case 3:
         partnerPlayer = v;
@@ -532,7 +532,7 @@ void SpNpcSable::vfunc_4c(u32 idx, u8 v) {
             if (NpcActor_isNetOwner(this) != 0) {
                 s32 g = gCommManager->myAid;
                 NpcActor_netSetSlotsIfOwner(this, 1, g, g);
-                talk.vfunc_08();
+                talk.resetMsg();
                 func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
                 changeAct(1);
             }

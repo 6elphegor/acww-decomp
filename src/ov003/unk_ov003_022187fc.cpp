@@ -82,8 +82,8 @@ extern u32 *gCommManager;
 class FieldStructureMgr : public GameProc {
 public:
     FieldStructureMgr();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~FieldStructureMgr();
@@ -205,7 +205,7 @@ FieldStructureMgr::FieldStructureMgr() {
 
 FieldStructureMgr::~FieldStructureMgr() {}
 
-BOOL FieldStructureMgr::vfunc_00() {
+BOOL FieldStructureMgr::onCreate() {
     BuildingList_Init();
     Field_CacheExitedBuildingKey();
     FieldStructureMgr_Register((s32)this);
@@ -224,7 +224,7 @@ BOOL FieldStructureMgr::onExecute() { return TRUE; }
 
 BOOL FieldStructureMgr::onDraw() { return TRUE; }
 
-BOOL FieldStructureMgr::vfunc_0c() {
+BOOL FieldStructureMgr::onDelete() {
     BuildingList_Clear();
     FieldStructureMgr_Unregister((s32)this);
     VillagerHouseTex_Clear(&sVillagerHouseTex);

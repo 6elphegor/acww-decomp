@@ -139,7 +139,7 @@ class SpNpcReddTalk : public SpNpcTalkRequest {
 public:
     SpNpcReddTalk();
     virtual ~SpNpcReddTalk();
-    virtual void vfunc_08();
+    virtual void resetMsg();
     virtual void onMessageEnd(u32 attr);
     virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
@@ -169,11 +169,11 @@ struct Unk_020d77a4_Vec3;
 class SpNpcRedd : public SpNpcActor {
 public:
     SpNpcRedd() : selectedItem(0xfff1), selectedItemX(0), selectedItemZ(0) {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 cmd, u8 arg);
-    virtual BOOL vfunc_58(void *a);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 cmd, u8 arg);
+    virtual BOOL acceptsSelfRequestedInteraction(void *a);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -298,8 +298,8 @@ SpNpcRedd *SpNpcRedd_Create() {
     return new SpNpcRedd();
 }
 
-BOOL SpNpcRedd::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcRedd::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -311,8 +311,8 @@ BOOL SpNpcRedd::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcRedd::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcRedd::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     if (Scene_GetPrevious()) {
@@ -590,7 +590,7 @@ BOOL SpNpcRedd::mainAct09() {
     }
     _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &out);
     if (t <= 0x3000 || Vec_Equal(&out, &position) != 0 || Math_CountDownU8(&approachTimer) == 0) {
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0(getPlayerActor(4));
         changeAct(5);
     }
@@ -645,10 +645,10 @@ SpNpcReddTalk::SpNpcReddTalk() {}
 
 SpNpcReddTalk::~SpNpcReddTalk() {}
 
-void SpNpcReddTalk::vfunc_08() { ActorTalkRequest::vfunc_08(); }
+void SpNpcReddTalk::resetMsg() { ActorTalkRequest::resetMsg(); }
 
 void SpNpcReddTalk::attachOwner(s32 v) {
-    vfunc_08();
+    resetMsg();
     owner = (SpNpcRedd *)v;
     redVaseSlot = -1;
     feeQuoted = 0;
@@ -894,28 +894,28 @@ void SpNpcReddTalk::completePurchase() {
     owner->boughtSomething = 1;
 }
 
-BOOL SpNpcRedd::vfunc_48(void *) {
+BOOL SpNpcRedd::acceptsInteraction(void *) {
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) != 0 || netIsTalkLocked() != 0 || tryItemTalk() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-BOOL SpNpcRedd::vfunc_58(void *) {
+BOOL SpNpcRedd::acceptsSelfRequestedInteraction(void *) {
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-void SpNpcRedd::vfunc_4c(u32 cmd, u8 arg) {
+void SpNpcRedd::onInteractionEvent(u32 cmd, u8 arg) {
     partnerPlayer = arg;
     switch (cmd) {
     case 3:
         changeAct(8);
         break;
     case 1:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0(getPlayerActor(4));
         if (talk.getTopic() == 0) {
             changeAct(5);
@@ -927,7 +927,7 @@ void SpNpcRedd::vfunc_4c(u32 cmd, u8 arg) {
         }
         break;
     case 0:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0(getPlayerActor(4));
         changeAct(5);
         break;

@@ -45,14 +45,14 @@ class KappnTaxi : public BuildingActor {
 public:
     KappnTaxi();
     virtual ~KappnTaxi();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual void vfunc_60(u32 a, void *b);
-    virtual BOOL vfunc_70();
+    virtual void onJointCalcPost(u32 a, void *b);
+    virtual BOOL initBuilding();
     virtual void onMessageEnd(u32 attr);
-    virtual BOOL vfunc_b0();
-    virtual Unk_ov009_0225da90_Vec3 vfunc_b4();
+    virtual BOOL needsMatrixUpdate();
+    virtual Unk_ov009_0225da90_Vec3 getSoundPos();
     virtual s32 getVoiceType();
 
     // update states
@@ -302,7 +302,7 @@ KappnTaxi::KappnTaxi() {
 KappnTaxi::~KappnTaxi() {
 }
 
-BOOL KappnTaxi::vfunc_70() {
+BOOL KappnTaxi::initBuilding() {
     void *p = PlayerData_GetCurrent();
     carPos.x = position.x;
     carPos.y = position.y;
@@ -339,7 +339,7 @@ BOOL KappnTaxi::onDraw() {
     return TRUE;
 }
 
-BOOL KappnTaxi::vfunc_0c() {
+BOOL KappnTaxi::onDelete() {
     if (taxiState) {
         TalkRequestFlags_ClearSceneHold();
     }
@@ -351,7 +351,7 @@ BOOL KappnTaxi::vfunc_0c() {
     return TRUE;
 }
 
-Unk_ov009_0225da90_Vec3 KappnTaxi::vfunc_b4() {
+Unk_ov009_0225da90_Vec3 KappnTaxi::getSoundPos() {
     Unk_ov009_0225da90_Vec3 r;
     r.x = carPos.x;
     r.y = carPos.y;
@@ -363,14 +363,14 @@ s32 KappnTaxi::callGetBca2Anim() {
     return getBca2Anim();
 }
 
-BOOL KappnTaxi::vfunc_b0() {
+BOOL KappnTaxi::needsMatrixUpdate() {
     if (taxiState) {
         return TRUE;
     }
     return FALSE;
 }
 
-void KappnTaxi::vfunc_60(u32 a, void *b) {
+void KappnTaxi::onJointCalcPost(u32 a, void *b) {
     if (a == 0) {
         Unk_ov068_0226b724_Obj *o = ((Unk_ov068_0226b724_Arg *)b)->pJntAnmResult;
         Unk_ov068_0226b12c_Vec3 v;
@@ -502,7 +502,7 @@ s16 sKappnTaxiLeaveTimer;
 }
 
 BOOL KappnTaxi::enterTaxiIdle() {
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, vfunc_64(), 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, getDoorInAnim(), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
@@ -510,7 +510,7 @@ void KappnTaxi::execTaxiIdle() {
 }
 
 BOOL KappnTaxi::enterTaxiArrive() {
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, vfunc_64(), 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, getDoorInAnim(), 1, 0x1000, 0, 0);
     TalkRequestFlags_SetSceneHold();
     return TRUE;
 }
@@ -522,7 +522,7 @@ void KappnTaxi::execTaxiArrive() {
 }
 
 BOOL KappnTaxi::enterTaxiDoorOpen() {
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, vfunc_64(), 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, getDoorInAnim(), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
@@ -538,7 +538,7 @@ void KappnTaxi::execTaxiDoorOpen() {
 BOOL KappnTaxi::enterTaxiPlayerGetOut() {
     getOutFrameCount = 0;
     if (KappnTaxi_RequestPlayerGetOut()) {
-        _ZN14BlendAnimModel8initAnimEiiitt(unk_138, vfunc_68(), 1, 0x1000, 0, 0);
+        _ZN14BlendAnimModel8initAnimEiiitt(unk_138, getDoorOutAnim(), 1, 0x1000, 0, 0);
         _ZN17BuildingSeEmitter6playSeEj(unk_234, 0x88a);
         return TRUE;
     }
@@ -566,7 +566,7 @@ void KappnTaxi::execTaxiPlayerGetOut() {
 
 BOOL KappnTaxi::enterTaxiTalk() {
     u32 *rec = TalkWindow_Get(0);
-    this->TalkMsgRequest::vfunc_08();
+    this->TalkMsgRequest::resetMsg();
     this->setFileName("sp_etc_sequence4");
     BOOL r;
     if (PlayerData_GetCurrent() != 0 && (_ZN10PlayerData11getPlayerIdEv(), _ZN8PlayerId9getGenderEv() == 1)) {
@@ -746,7 +746,7 @@ void KappnTaxi::execTaxiPlayerExitTownHall() {
 }
 
 BOOL KappnTaxi::enterTaxiLeaveDoorOpen() {
-    s32 r1 = vfunc_64();
+    s32 r1 = getDoorInAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, r1, 1, 0x1000, 0, 0);
     return TRUE;
 }
@@ -768,7 +768,7 @@ void KappnTaxi::execTaxiLeaveDoorOpen() {
 }
 
 BOOL KappnTaxi::enterTaxiLeaveDoorAnim() {
-    s32 r1 = vfunc_68();
+    s32 r1 = getDoorOutAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, r1, 1, 0x1000, 0, 0);
     _ZN17BuildingSeEmitter6playSeEj(unk_234, 0x88a);
     return TRUE;

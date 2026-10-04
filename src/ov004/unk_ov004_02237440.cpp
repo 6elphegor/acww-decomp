@@ -775,8 +775,8 @@ struct Unk_ov004_0223d85c_V : V3_d800 {
 class MuseumInsectRoom : public GameProc {
 public:
     MuseumInsectRoom();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~MuseumInsectRoom();
@@ -4762,7 +4762,7 @@ extern "C" BOOL MuseumInsectRoom_AddInsect(u8 *m, s8 v) {
     return z;
 }
 
-BOOL MuseumInsectRoom::vfunc_00() {
+BOOL MuseumInsectRoom::onCreate() {
     ModelSlotPool_init(modelPool, 0x20, 0x400, 0x40, 0x9c4, (void *)MuseumInsectHeap_Create, (void *)MuseumInsectHeap_Destroy, 0);
     spawnDonatedInsects();
     return TRUE;
@@ -5131,7 +5131,7 @@ BOOL MuseumInsectRoom::hasShadow(Elem_7690 *e) {
     return TRUE;
 }
 
-BOOL MuseumInsectRoom::vfunc_0c() {
+BOOL MuseumInsectRoom::onDelete() {
     s32 i;
     for (i = 0; i < 0x20; i++) {
         releaseInsect(i);

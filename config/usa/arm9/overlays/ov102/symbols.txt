@@ -119,8 +119,8 @@ _ZN9ChestMenu8execMainEv kind:function(thumb,size=0x58) addr:0x02297020
 _ZN9ChestMenu12runMainStateEv kind:function(thumb,size=0x12c) addr:0x02297078
 _ZN9ChestMenu14execTransitionEv kind:function(thumb,size=0xe8) addr:0x022971a4
 _ZN9ChestMenu6onDrawEv kind:function(thumb,size=0xa8) addr:0x0229728c
-_ZN9ChestMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02297334
-_ZN9ChestMenu8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02297350
+_ZN9ChestMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02297334
+_ZN9ChestMenu8onCreateEv kind:function(thumb,size=0x20) addr:0x02297350
 ChestMenu_Create kind:function(thumb,size=0xac) addr:0x02297370
 sChestPageSe kind:data(any) addr:0x0229741c
 data_ov102_02297440 kind:data(any) addr:0x02297440

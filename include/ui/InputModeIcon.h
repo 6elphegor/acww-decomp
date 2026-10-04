@@ -12,7 +12,7 @@ public:
     InputModeIcon();                        // C1 0x0208eef8
     virtual ~InputModeIcon();               // D0 0x0208eeac, D1 0x0208eed4
     virtual void draw();                    // 0x0208ef54
-    virtual void vfunc_0c();                // 0x0208ef28
+    virtual void update();                // 0x0208ef28
 
     void startModeAnim();                   // 0x0208ee40
     BOOL isDrawBlocked();                   // 0x0208ee94

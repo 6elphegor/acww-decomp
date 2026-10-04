@@ -391,7 +391,7 @@ void MuseumExhibitInfo::onMessageStart(u32) {
     }
 }
 
-void MuseumExhibitInfo::vfunc_4c(u32 a, u8 b) {
+void MuseumExhibitInfo::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 1:
         changeAct(3);
@@ -405,7 +405,7 @@ void MuseumExhibitInfo::vfunc_4c(u32 a, u8 b) {
     }
 }
 
-BOOL MuseumExhibitInfo::vfunc_48(void *a0) {
+BOOL MuseumExhibitInfo::acceptsInteraction(void *a0) {
     Unk_ov004_022142fc_Actor *a = (Unk_ov004_022142fc_Actor *)a0;
     if (a) {
         if (Vec_DistXZ(a->position, (u8 *)this + 0x5c) < 0x2333) {
@@ -518,7 +518,7 @@ extern "C" void MuseumExhibitInfo_ClearRegistry(void) {
     }
 }
 
-BOOL MuseumExhibitInfo::vfunc_0c() {
+BOOL MuseumExhibitInfo::onDelete() {
     unregisterSelf();
     if (items != 0) {
         Mem_Free(items);
@@ -538,7 +538,7 @@ BOOL MuseumExhibitInfo::onExecute() {
     return TRUE;
 }
 
-BOOL MuseumExhibitInfo::vfunc_00() {
+BOOL MuseumExhibitInfo::onCreate() {
     Unk_ov004_022146ec_Bits l;
     s32 v[3];
     s32 out[3];

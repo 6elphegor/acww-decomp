@@ -6,10 +6,10 @@ _ZN22SpNpcBlancaFaceTexture14getTextureDataEv kind:function(thumb,size=0x1a) add
 _ZN22SpNpcBlancaFaceTexture4initEPjPv kind:function(thumb,size=0x24) addr:0x022714b8
 _ZN22SpNpcBlancaFaceTextureD1Ev kind:function(thumb,size=0x2) addr:0x022714dc
 _ZN22SpNpcBlancaFaceTextureC1Ev kind:function(thumb,size=0x12) addr:0x022714e0
-_ZN11SpNpcBlanca8vfunc_4cEi kind:function(thumb,size=0x50) addr:0x022714f4
-_ZN11SpNpcBlanca8vfunc_4cEjh kind:label(thumb) addr:0x022714f4
-_ZN11SpNpcBlanca8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271544
-_ZN11SpNpcBlanca8vfunc_48EPv kind:label(thumb) addr:0x02271544
+_ZN11SpNpcBlanca18onInteractionEventEi kind:function(thumb,size=0x50) addr:0x022714f4
+_ZN11SpNpcBlanca18onInteractionEventEjh kind:label(thumb) addr:0x022714f4
+_ZN11SpNpcBlanca18acceptsInteractionEv kind:function(thumb,size=0x20) addr:0x02271544
+_ZN11SpNpcBlanca18acceptsInteractionEPv kind:label(thumb) addr:0x02271544
 _ZN15SpNpcBlancaTalk8onChoiceEv kind:function(thumb,size=0x19c) addr:0x02271564
 _ZN15SpNpcBlancaTalk8onChoiceEj kind:label(thumb) addr:0x02271564
 _ZN15SpNpcBlancaTalk12onMessageEndEv kind:function(thumb,size=0xa4) addr:0x02271700
@@ -43,9 +43,9 @@ SpNpcBlanca_ChangeAct kind:function(thumb,size=0x44) addr:0x02272130
 _ZN11SpNpcBlanca9updateActEv kind:function(thumb,size=0x4c) addr:0x02272174
 _ZN11SpNpcBlanca12getModelPathEv kind:function(thumb,size=0x8) addr:0x022721c0
 _ZN11SpNpcBlanca14getTexturePathEv kind:function(thumb,size=0x4) addr:0x022721c8
-_ZN11SpNpcBlanca8vfunc_0cEv kind:function(thumb,size=0x2c) addr:0x022721cc
-_ZN11SpNpcBlanca8vfunc_00Ev kind:function(thumb,size=0x38) addr:0x022721f8
-_ZN11SpNpcBlanca8vfunc_04Ev kind:function(thumb,size=0x30) addr:0x02272230
+_ZN11SpNpcBlanca8onDeleteEv kind:function(thumb,size=0x2c) addr:0x022721cc
+_ZN11SpNpcBlanca8onCreateEv kind:function(thumb,size=0x38) addr:0x022721f8
+_ZN11SpNpcBlanca9preCreateEv kind:function(thumb,size=0x30) addr:0x02272230
 _ZN11SpNpcBlanca21getWalkAnimSpeedScaleEv kind:function(thumb,size=0xc) addr:0x02272260
 SpNpcBlanca_Create kind:function(thumb,size=0x124) addr:0x0227226c
 __sinit_ov074_02272390 kind:function(thumb,size=0x144) addr:0x02272390

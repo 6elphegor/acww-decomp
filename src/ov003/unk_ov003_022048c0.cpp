@@ -64,13 +64,13 @@ class VillagerBoard;
 class VillagerBoard : public Character, public TalkMsgRequest {
 public:
     VillagerBoard();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~VillagerBoard();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL acceptsInteraction(void *a);
+    virtual void onInteractionEvent(u32 a, u8 b);
 
     void mainReadEnd();
     BOOL setupReadEnd();
@@ -114,7 +114,7 @@ VillagerBoard::~VillagerBoard() {
     _ZN15TouchPickSphereD1Ev((TouchPickSphere *)touchSphere);
 }
 
-BOOL VillagerBoard::vfunc_00() {
+BOOL VillagerBoard::onCreate() {
     VillagerBoard_ResetTable();
     setCharId((u16) * (s32 *)((u8 *)this + 8));
     changeAct(0);
@@ -133,7 +133,7 @@ BOOL VillagerBoard::onDraw() {
     return TRUE;
 }
 
-BOOL VillagerBoard::vfunc_0c() {
+BOOL VillagerBoard::onDelete() {
     sVillagerBoards[*(s32 *)((u8 *)this + 8)] = 0;
     sVillagerBoardCount--;
     return TRUE;
@@ -148,7 +148,7 @@ extern "C" void VillagerBoard_ResetTable() {
     }
 }
 
-BOOL VillagerBoard::vfunc_48(void *a) {
+BOOL VillagerBoard::acceptsInteraction(void *a) {
     clearTalkStartMode();
     Character *o = (Character *)a;
     if (o) {
@@ -161,7 +161,7 @@ BOOL VillagerBoard::vfunc_48(void *a) {
     return FALSE;
 }
 
-void VillagerBoard::vfunc_4c(u32 a, u8 b) {
+void VillagerBoard::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 0:
         changeAct(1);

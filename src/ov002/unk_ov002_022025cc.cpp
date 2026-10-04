@@ -51,7 +51,7 @@
 #define LabelButton_setLabelText _ZN11LabelButton12setLabelTextEv
 
 extern "C" {
-BOOL _ZN8ProcBase8vfunc_14Ev(void *self, s32 a);
+BOOL _ZN8ProcBase10postDeleteEv(void *self, s32 a);
 void _ZN8GameProc10postCreateEv(void *self, s32 a);
 void _ZN16MenuTitleBalloon8showTextEhii(void *self, s32 x, s32 a, s32 b);
 void VillagerId_getName(s32 a, void *buf);
@@ -165,7 +165,7 @@ void *_ZN9MenuSlideC1Ev(void *self);
 void *_ZN12CursorMotionC1Ev(void *self);
 void *_ZN12CursorMotionD1Ev(void *self);
 void _ZN10HandCursor4drawEv();
-void _ZN14MenuCursorBase8vfunc_0cEv();
+void _ZN14MenuCursorBase6updateEv();
 void _ZN8UiWidget9setOriginEii();
 }
 
@@ -584,7 +584,7 @@ void MenuCursorBase::drawWrapped() {
     }
 }
 
-void MenuCursorBase::vfunc_0c() {
+void MenuCursorBase::update() {
     motion.update();
     s32 x = motion.getX();
     s32 y = motion.getY();
@@ -596,7 +596,7 @@ void MenuCursorBase::vfunc_0c() {
             setAnim(7);
         }
     }
-    HandCursor::vfunc_0c();
+    HandCursor::update();
 }
 
 CursorMotion::CursorMotion() {}
@@ -737,7 +737,7 @@ extern "C" void *_ZTV14MenuCursorBuf1[7] = {
     (void *)_ZN14MenuCursorBuf1D1Ev,
     (void *)_ZN14MenuCursorBuf1D0Ev,
     (void *)_ZN10HandCursor4drawEv,
-    (void *)_ZN14MenuCursorBase8vfunc_0cEv,
+    (void *)_ZN14MenuCursorBase6updateEv,
     (void *)_ZN8UiWidget9setOriginEii,
 };
 
@@ -747,7 +747,7 @@ extern "C" void *_ZTV14MenuCursorBuf0[7] = {
     (void *)_ZN14MenuCursorBuf0D1Ev,
     (void *)_ZN14MenuCursorBuf0D0Ev,
     (void *)_ZN10HandCursor4drawEv,
-    (void *)_ZN14MenuCursorBase8vfunc_0cEv,
+    (void *)_ZN14MenuCursorBase6updateEv,
     (void *)_ZN8UiWidget9setOriginEii,
 };
 
@@ -757,6 +757,6 @@ extern "C" void *_ZTV10MenuCursor[7] = {
     (void *)_ZN10MenuCursorD1Ev,
     (void *)_ZN10MenuCursorD0Ev,
     (void *)_ZN10HandCursor4drawEv,
-    (void *)_ZN14MenuCursorBase8vfunc_0cEv,
+    (void *)_ZN14MenuCursorBase6updateEv,
     (void *)_ZN8UiWidget9setOriginEii,
 };

@@ -233,7 +233,7 @@ BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, u32);
 // ---------------------------------------------------------------- 0x0224882c allocator
 
 // ---------------------------------------------------------------- FtrNookway
-BOOL FtrNookway::vfunc_0c() { return TRUE; }
+BOOL FtrNookway::onDelete() { return TRUE; }
 BOOL FtrNookway::updateActive() { return TRUE; }
 
 BOOL FtrNookway::initModel() {
@@ -431,7 +431,7 @@ u8 FtrPhone::getActSwitchState(u32 a) {
     return 0;
 }
 
-void FtrPhone::vfunc_4c(u32 a, u8 b) {
+void FtrPhone::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 0:
     case 1:
@@ -443,7 +443,7 @@ void FtrPhone::vfunc_4c(u32 a, u8 b) {
     }
 }
 
-BOOL FtrPhone::vfunc_0c() { return TRUE; }
+BOOL FtrPhone::onDelete() { return TRUE; }
 
 BOOL FtrPhone::updateActive() {
     execTalkAct();
@@ -473,7 +473,7 @@ extern "C" void FtrPhone_Create() {
 }
 
 // ---------------------------------------------------------------- FtrSingingInsect
-BOOL FtrSingingInsect::vfunc_0c() { return TRUE; }
+BOOL FtrSingingInsect::onDelete() { return TRUE; }
 
 
 // ---- part 11: from unk_0220a898.cpp
@@ -611,7 +611,7 @@ u8 FtrComputer::getActSwitchState(u32 a) {
     return 0;
 }
 
-BOOL FtrComputer::vfunc_0c() {
+BOOL FtrComputer::onDelete() {
     return TRUE;
 }
 
@@ -707,7 +707,7 @@ BOOL FtrHeadwear::isVisible() {
     return FALSE;
 }
 
-BOOL FtrHeadwear::vfunc_0c() {
+BOOL FtrHeadwear::onDelete() {
     return TRUE;
 }
 
@@ -745,7 +745,7 @@ extern "C" void FtrHeadwear_Create() {
 // ---------------------------------------------------------------------------------------------------------------------
 // FtrKind25
 
-BOOL FtrKind25::vfunc_0c() {
+BOOL FtrKind25::onDelete() {
     return TRUE;
 }
 
@@ -772,7 +772,7 @@ BOOL FtrCarpetSample::isVisible() {
     return FALSE;
 }
 
-BOOL FtrCarpetSample::vfunc_0c() {
+BOOL FtrCarpetSample::onDelete() {
     return TRUE;
 }
 
@@ -876,7 +876,7 @@ class FtrWallpaperSample : public FtrActor {
 public:
     FtrWallpaperSample();
     virtual ~FtrWallpaperSample();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL initModel();
     virtual BOOL updateActive();
     virtual BOOL isVisible();
@@ -892,7 +892,7 @@ BOOL FtrWallpaperSample::isVisible() {
     return 0;
 }
 
-BOOL FtrWallpaperSample::vfunc_0c() {
+BOOL FtrWallpaperSample::onDelete() {
     return TRUE;
 }
 
@@ -940,7 +940,7 @@ class FtrMetronome : public FtrActor {
 public:
     FtrMetronome();
     virtual ~FtrMetronome();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 a, u8 b);
     virtual u8 getActSwitchState(u32 a);
     virtual BOOL initModel();
@@ -1101,7 +1101,7 @@ u8 FtrMetronome::getActSwitchState(u32 idx) {
     return 0;
 }
 
-BOOL FtrMetronome::vfunc_0c() {
+BOOL FtrMetronome::onDelete() {
     return TRUE;
 }
 
@@ -1143,7 +1143,7 @@ class FtrPiggyBank : public FtrActor {
 public:
     FtrPiggyBank();
     virtual ~FtrPiggyBank();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 a, u8 v);
     virtual BOOL initModel();
     virtual BOOL updateActive();
@@ -1291,7 +1291,7 @@ BOOL FtrPiggyBank::changeAct(u32 a, u8 v) {
     return FALSE;
 }
 
-BOOL FtrPiggyBank::vfunc_0c() {
+BOOL FtrPiggyBank::onDelete() {
     return TRUE;
 }
 
@@ -1319,7 +1319,7 @@ class FtrInstrument : public FtrActor {
 public:
     FtrInstrument();
     virtual ~FtrInstrument();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 a, u8 v);
     virtual BOOL initModel();
     virtual BOOL updateActive();
@@ -1337,7 +1337,7 @@ BOOL FtrInstrument::changeAct(u32 a, u8 v) {
     return TRUE;
 }
 
-BOOL FtrInstrument::vfunc_0c() {
+BOOL FtrInstrument::onDelete() {
     p13::Snd_MelodyBeatStop(melodyBeat);
     return TRUE;
 }
@@ -1381,8 +1381,8 @@ class FtrVillagerPic : public FtrActor {
 public:
     FtrVillagerPic();
     virtual ~FtrVillagerPic();
-    virtual BOOL vfunc_0c();
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL onDelete();
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL initModel();
     virtual BOOL updateActive();
 
@@ -1499,7 +1499,7 @@ BOOL FtrVillagerPic::setTalkAct(s32 idx) {
     return FALSE;
 }
 
-void FtrVillagerPic::vfunc_4c(u32 a, u8 b) {
+void FtrVillagerPic::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 1:
         setTalkAct(1);
@@ -1510,7 +1510,7 @@ void FtrVillagerPic::vfunc_4c(u32 a, u8 b) {
     }
 }
 
-BOOL FtrVillagerPic::vfunc_0c() {
+BOOL FtrVillagerPic::onDelete() {
     return TRUE;
 }
 
@@ -1536,8 +1536,8 @@ class FtrCompass : public FtrActor {
 public:
     FtrCompass();
     virtual ~FtrCompass();
-    virtual BOOL vfunc_0c();
-    virtual void vfunc_6c(s32 a, void *b);
+    virtual BOOL onDelete();
+    virtual void onJointCalcPost(s32 a, void *b);
     virtual BOOL initModel();
     virtual BOOL updateActive();
     virtual void onRotateStart();
@@ -1551,7 +1551,7 @@ public:
     /* 0x84c */ s32 needleAngle;
 };
 
-void FtrCompass::vfunc_6c(s32 a, void *b) {
+void FtrCompass::onJointCalcPost(s32 a, void *b) {
     Unk_ov004_0220c0bc_Obj *p = (Unk_ov004_0220c0bc_Obj *)b;
     if (compassNode == a) {
         s32 *dst = &p->pJntAnmResult->rot[0];
@@ -1594,7 +1594,7 @@ void FtrCompass::onRotateStart() {
     rotateFrames = 0;
 }
 
-BOOL FtrCompass::vfunc_0c() {
+BOOL FtrCompass::onDelete() {
     return TRUE;
 }
 
@@ -1629,7 +1629,7 @@ class FtrDesignDisplay : public FtrActor {
 public:
     FtrDesignDisplay();
     virtual ~FtrDesignDisplay();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL initModel();
     virtual BOOL updateActive();
 
@@ -1638,7 +1638,7 @@ public:
     /* 0x884 */ u8 seEmitterReady;
 };
 
-BOOL FtrDesignDisplay::vfunc_0c() {
+BOOL FtrDesignDisplay::onDelete() {
     if (seEmitterReady) {
         p13::_ZN12Unk_02003c3013func_02003e50Ev(&seEmitter);
     }
@@ -1742,8 +1742,8 @@ public:
     FtrMyDesign();
     virtual ~FtrMyDesign();
 
-    virtual BOOL vfunc_0c();
-    virtual void vfunc_64(s32 a, Unk_ov004_02206ec8_Ctx *b);
+    virtual BOOL onDelete();
+    virtual void onNodeVisCalc(s32 a, Unk_ov004_02206ec8_Ctx *b);
     virtual BOOL initModel();
     virtual BOOL updateActive();
 
@@ -1756,7 +1756,7 @@ public:
     FtrShirt();
     virtual ~FtrShirt();
 
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 a, u8 b);
     virtual u8 getActSwitchState(u32 a);
     virtual BOOL initModel();
@@ -1786,8 +1786,8 @@ class FtrCannon : public FtrActor {
 public:
     FtrCannon();
     virtual ~FtrCannon();
-    virtual BOOL vfunc_0c();
-    virtual void vfunc_6c(s32 a, void *b);
+    virtual BOOL onDelete();
+    virtual void onJointCalcPost(s32 a, void *b);
     virtual BOOL changeAct(u32 a, u8 b);
     virtual BOOL initModel();
     virtual BOOL updateActive();
@@ -1884,13 +1884,13 @@ extern "C" FtrDesignDisplay *FtrDesignDisplay_Create() {
 }
 
 // ---- B ----
-void FtrMyDesign::vfunc_64(s32 a, Unk_ov004_02206ec8_Ctx *b) {
+void FtrMyDesign::onNodeVisCalc(s32 a, Unk_ov004_02206ec8_Ctx *b) {
     if (a == hiddenNode) {
         *((Unk_ov004_0220c534_Arg *)b)->pVisAnmResult = 0;
     }
 }
 
-BOOL FtrMyDesign::vfunc_0c() {
+BOOL FtrMyDesign::onDelete() {
     return TRUE;
 }
 
@@ -2019,7 +2019,7 @@ BOOL FtrShirt::needsTexCopy() {
     return 1;
 }
 
-BOOL FtrShirt::vfunc_0c() {
+BOOL FtrShirt::onDelete() {
     return TRUE;
 }
 
@@ -2116,7 +2116,7 @@ BOOL FtrCannon::changeAct(u32 a, u8 b) {
     return FALSE;
 }
 
-void FtrCannon::vfunc_6c(s32 a, void *b) {
+void FtrCannon::onJointCalcPost(s32 a, void *b) {
     Unk_ov004_0220cca4_Vec v;
     Unk_ov004_0220cca4_Vec o;
     if (p14::_ZN11FtrVisNodes7hasNodeEi(b14_f_760) && ftrAct == 1) {
@@ -2139,7 +2139,7 @@ void FtrCannon::onRemove() {
     playAnim(0, 1, 0x1000, 0);
 }
 
-BOOL FtrCannon::vfunc_0c() {
+BOOL FtrCannon::onDelete() {
     p14::_ZN9FtrSwitch3setEji(b14_f_73c, 0, 0);
     return TRUE;
 }
@@ -2166,7 +2166,7 @@ class FtrKind19 : public FtrActor {
 public:
     FtrKind19();
     virtual ~FtrKind19();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 a, u8 b);
     virtual u8 getActSwitchState(u32 a);
     virtual BOOL initModel();
@@ -2362,7 +2362,7 @@ u8 FtrKind19::getActSwitchState(u32 a) {
     return 0;
 }
 
-BOOL FtrKind19::vfunc_0c() {
+BOOL FtrKind19::onDelete() {
     return TRUE;
 }
 
@@ -2512,9 +2512,9 @@ class FtrGyroid : public FtrActor {
 public:
     FtrGyroid();
     virtual ~FtrGyroid();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_68();
-    virtual void vfunc_6c(s32 idx, void *b);
+    virtual BOOL onDelete();
+    virtual BOOL onJointCalcPre();
+    virtual void onJointCalcPost(s32 idx, void *b);
     virtual BOOL changeAct(u32 idx, u8 x);
     virtual u8 getActSwitchState(u32 idx);
     virtual BOOL initModel();
@@ -2739,7 +2739,7 @@ void FtrGyroid::initSync(u32 v) {
     }
 }
 
-void FtrGyroid::vfunc_6c(s32 idx, void *b) {
+void FtrGyroid::onJointCalcPost(s32 idx, void *b) {
     Unk_ov004_0220dcbc_Obj *o = (Unk_ov004_0220dcbc_Obj *)b;
     u8 *d = o->pResNodeInfo;
     u32 off = *(u16 *)(d + 6);
@@ -2754,11 +2754,11 @@ void FtrGyroid::vfunc_6c(s32 idx, void *b) {
     p16::_ZN14BlendAnimModel15onJointCalcPostEPS_(b16_unk_534, o);
 }
 
-extern "C" BOOL _ZN9FtrGyroid8vfunc_68Ev(FtrGyroid *self, u32 a, void *o) {
+extern "C" BOOL _ZN9FtrGyroid14onJointCalcPreEv(FtrGyroid *self, u32 a, void *o) {
     p16::_ZN14BlendAnimModel14onJointCalcPreEPS_(self->b16_unk_534, o);
 }
 
-BOOL FtrGyroid::vfunc_0c() {
+BOOL FtrGyroid::onDelete() {
     releaseSync();
     return TRUE;
 }
@@ -2846,7 +2846,7 @@ class FtrCart : public FtrActor {
 public:
     FtrCart();
     virtual ~FtrCart();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL initModel();
     virtual BOOL updateActive();
     virtual void onMoveStart();
@@ -2857,7 +2857,7 @@ class FtrTv : public FtrActor {
 public:
     FtrTv();
     virtual ~FtrTv();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 idx, u8 v);
     virtual u8 getActSwitchState(u32 idx);
     virtual BOOL initModel();
@@ -2880,7 +2880,7 @@ class FtrTvVcr : public FtrTv {
 public:
     FtrTvVcr();
     virtual ~FtrTvVcr();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 idx, u8 v);
     virtual u8 getActSwitchState(u32 idx);
     virtual BOOL initModel();
@@ -2902,7 +2902,7 @@ public:
 // ---------------------------------------------------------------- FtrStereo (only one method here)
 
 // ================================================================ FtrCart
-BOOL FtrCart::vfunc_0c() {
+BOOL FtrCart::onDelete() {
     return TRUE;
 }
 
@@ -3024,7 +3024,7 @@ u8 FtrTvVcr::getActSwitchState(u32 idx) {
     return 0;
 }
 
-BOOL FtrTvVcr::vfunc_0c() {
+BOOL FtrTvVcr::onDelete() {
     return TRUE;
 }
 
@@ -3123,7 +3123,7 @@ void FtrTv::func_ov004_0220e738() {
     isNearestTv = 1;
 }
 
-BOOL FtrTv::vfunc_0c() {
+BOOL FtrTv::onDelete() {
     return TRUE;
 }
 
@@ -3192,8 +3192,8 @@ public:
     FtrStereo();
     virtual ~FtrStereo();
 
-    virtual BOOL vfunc_0c();
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL onDelete();
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL changeAct(u32 a, u8 b);
     virtual u8 getActSwitchState(u32 a);
     virtual BOOL initModel();
@@ -3504,7 +3504,7 @@ BOOL FtrStereo::setTalkAct(s32 a) {
     return FALSE;
 }
 
-void FtrStereo::vfunc_4c(u32 a, u8 b) {
+void FtrStereo::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 1:
         if (p18::Scene_InHouseRoom() && p18::FtrActor_TestPlayerUnk()) {
@@ -3543,7 +3543,7 @@ void FtrStereo::startSong(u32 a) {
     }
 }
 
-BOOL FtrStereo::vfunc_0c() {
+BOOL FtrStereo::onDelete() {
     BOOL t = isRemoving();
     stopSong(curSong, t);
     BOOL r = FALSE;
@@ -3664,8 +3664,8 @@ class FtrClock : public FtrActor {
 public:
     FtrClock();
     virtual ~FtrClock();
-    virtual BOOL vfunc_0c();
-    virtual void vfunc_6c(s32 a, void *b);
+    virtual BOOL onDelete();
+    virtual void onJointCalcPost(s32 a, void *b);
     virtual BOOL initModel();
     virtual BOOL updateActive();
 
@@ -3717,7 +3717,7 @@ BOOL Item_IsFurniture(void *);
 }
 }
 
-BOOL FtrClock::vfunc_0c() {
+BOOL FtrClock::onDelete() {
     return TRUE;
 }
 
@@ -3861,8 +3861,8 @@ public:
     FtrStorage();
     virtual ~FtrStorage();
 
-    virtual BOOL vfunc_0c();
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL onDelete();
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL changeAct(u32 a, u8 b);
     virtual u8 getActSwitchState(u32 a);
     virtual BOOL initModel();
@@ -3981,7 +3981,7 @@ s32 FtrStorage::getStorageType() {
     return -1;
 }
 
-void FtrStorage::vfunc_4c(u32 a, u8 b) {
+void FtrStorage::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 1:
         if (p20::Scene_InHouseRoom()) {
@@ -4144,7 +4144,7 @@ BOOL FtrStorage::isReady() {
     return FALSE;
 }
 
-BOOL FtrStorage::vfunc_0c() {
+BOOL FtrStorage::onDelete() {
     return TRUE;
 }
 
@@ -4320,10 +4320,10 @@ class FtrBed : public FtrActor {
 public:
     FtrBed();
     virtual ~FtrBed();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL acceptsInteraction(void *a);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL changeAct(u32 a, u8 v);
     virtual BOOL initModel();
     virtual BOOL updateActive();
@@ -4859,7 +4859,7 @@ class FtrSeat : public FtrActor {
 public:
     FtrSeat();
     virtual ~FtrSeat();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL initModel();
     virtual BOOL updateActive();
 
@@ -4876,7 +4876,7 @@ class FtrKind07 : public FtrActor {
 public:
     FtrKind07();
     virtual ~FtrKind07();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 a, u8 b);
     virtual u8 getActSwitchState(u32 a);
     virtual BOOL initModel();
@@ -4931,7 +4931,7 @@ u32 FtrBed::getSideTiles(void *o) {
     return 0;
 }
 
-BOOL FtrBed::vfunc_0c() {
+BOOL FtrBed::onDelete() {
     return TRUE;
 }
 
@@ -4981,7 +4981,7 @@ BOOL FtrBed::initModel() {
     return TRUE;
 }
 
-BOOL FtrBed::vfunc_48(void *a) {
+BOOL FtrBed::acceptsInteraction(void *a) {
     if (!p22::_ZN11CommManager8isOnlineEv(p22::gCommManager) && isInUse() && useMode != 0) {
         return TRUE;
     }
@@ -5026,7 +5026,7 @@ void FtrSeat::getSitterPos(Unk_ov004_02210f0c_V3 *out, void *o) {
     }
 }
 
-BOOL FtrSeat::vfunc_0c() {
+BOOL FtrSeat::onDelete() {
     return TRUE;
 }
 
@@ -5219,7 +5219,7 @@ u8 FtrKind07::getActSwitchState(u32 a) {
     return 0;
 }
 
-BOOL FtrKind07::vfunc_0c() {
+BOOL FtrKind07::onDelete() {
     return TRUE;
 }
 
@@ -5251,7 +5251,7 @@ class FtrKind06 : public FtrActor {
 public:
     FtrKind06();
     virtual ~FtrKind06();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 a, u8 b);
     virtual u8 getActSwitchState(u32 a);
     virtual BOOL initModel();
@@ -5275,7 +5275,7 @@ class FtrKind05 : public FtrActor {
 public:
     FtrKind05();
     virtual ~FtrKind05();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 a, u8 b);
     virtual u8 getActSwitchState(u32 a);
     virtual BOOL initModel();
@@ -5298,7 +5298,7 @@ class FtrKind04 : public FtrActor {
 public:
     FtrKind04();
     virtual ~FtrKind04();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 idx, u8 v);
     virtual u8 getActSwitchState(u32 idx);
     virtual BOOL initModel();
@@ -5454,7 +5454,7 @@ u8 FtrKind06::getActSwitchState(u32 a) {
     return 0;
 }
 
-BOOL FtrKind06::vfunc_0c() {
+BOOL FtrKind06::onDelete() {
     return TRUE;
 }
 
@@ -5576,7 +5576,7 @@ u8 FtrKind05::getActSwitchState(u32 a) {
     return 0;
 }
 
-BOOL FtrKind05::vfunc_0c() {
+BOOL FtrKind05::onDelete() {
     return TRUE;
 }
 
@@ -5648,7 +5648,7 @@ class FtrKind02 : public FtrActor {
 public:
     FtrKind02();
     virtual ~FtrKind02();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 idx, u8 v);
     virtual BOOL initModel();
     virtual BOOL updateActive();
@@ -5667,7 +5667,7 @@ class FtrKind03 : public FtrActor {
 public:
     FtrKind03();
     virtual ~FtrKind03();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 idx, u8 v);
     virtual u8 getActSwitchState(u32 idx);
     virtual BOOL initModel();
@@ -5751,7 +5751,7 @@ u8 FtrKind04::getActSwitchState(u32 idx) {
     return 0;
 }
 
-BOOL FtrKind04::vfunc_0c() {
+BOOL FtrKind04::onDelete() {
     return TRUE;
 }
 
@@ -5855,7 +5855,7 @@ u8 FtrKind03::getActSwitchState(u32 idx) {
     return 0;
 }
 
-BOOL FtrKind03::vfunc_0c() {
+BOOL FtrKind03::onDelete() {
     return TRUE;
 }
 
@@ -5957,7 +5957,7 @@ BOOL FtrKind02::changeAct(u32 idx, u8 v) {
     return FALSE;
 }
 
-BOOL FtrKind02::vfunc_0c() {
+BOOL FtrKind02::onDelete() {
     ((FtrSwitch *)b24_unk_73c)->set(0, 0);
     return TRUE;
 }
@@ -5987,7 +5987,7 @@ class FtrBasic : public FtrActor {
 public:
     FtrBasic();
     virtual ~FtrBasic();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL changeAct(u32 a, u8 b);
     virtual u8 getActSwitchState(u32 a);
     virtual BOOL initModel();
@@ -6093,7 +6093,7 @@ u8 FtrBasic::getActSwitchState(u32 a) {
     return 0;
 }
 
-BOOL FtrBasic::vfunc_0c() {
+BOOL FtrBasic::onDelete() {
     return TRUE;
 }
 
@@ -6242,8 +6242,8 @@ void FtrStereo::execFtrAct01() {
     }
 }
 
-void FtrClock::vfunc_6c(s32 a, void *b) {
-    FtrActor::vfunc_6c(a, b);
+void FtrClock::onJointCalcPost(s32 a, void *b) {
+    FtrActor::onJointCalcPost(a, b);
 }
 
 void FtrStorage::execTalkAct0B() {
@@ -6525,7 +6525,7 @@ void FtrBed::onMessageEnd(u32) {
     }
 }
 
-void FtrBed::vfunc_4c(u32 a, u8 b) {
+void FtrBed::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 0:
     case 1:

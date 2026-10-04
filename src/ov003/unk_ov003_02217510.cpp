@@ -48,13 +48,13 @@ public:
     ShopBuilding();
     virtual ~ShopBuilding();
 
-    virtual BOOL vfunc_70();
-    virtual void vfunc_78();
-    virtual BOOL vfunc_8c();
-    virtual BOOL vfunc_98();
-    virtual char *vfunc_a4();
-    virtual char *vfunc_a8();
-    virtual char *vfunc_ac();
+    virtual BOOL initBuilding();
+    virtual void setupTalkMsg();
+    virtual BOOL isOpen();
+    virtual BOOL playsDoorMelody();
+    virtual char *getArcPath();
+    virtual char *getTexPath();
+    virtual char *getLightTexPath();
 
     BOOL isClosedToday();
 
@@ -71,24 +71,24 @@ ShopBuilding::ShopBuilding() {
 ShopBuilding::~ShopBuilding() {
 }
 
-BOOL ShopBuilding::vfunc_70() {
+BOOL ShopBuilding::initBuilding() {
     shopLevel = Item_GetNookShopLevel(&itemId);
     return TRUE;
 }
 
-char *ShopBuilding::vfunc_a4() {
-    return BuildingActor::vfunc_a4();
+char *ShopBuilding::getArcPath() {
+    return BuildingActor::getArcPath();
 }
 
-char *ShopBuilding::vfunc_a8() {
-    return BuildingActor::vfunc_a8();
+char *ShopBuilding::getTexPath() {
+    return BuildingActor::getTexPath();
 }
 
-char *ShopBuilding::vfunc_ac() {
-    return BuildingActor::vfunc_ac();
+char *ShopBuilding::getLightTexPath() {
+    return BuildingActor::getLightTexPath();
 }
 
-void ShopBuilding::vfunc_78() {
+void ShopBuilding::setupTalkMsg() {
     struct {
         s32 pad0, pad1;
         s32 a, b;
@@ -137,7 +137,7 @@ void ShopBuilding::vfunc_78() {
     }
 }
 
-BOOL ShopBuilding::vfunc_8c() {
+BOOL ShopBuilding::isOpen() {
     struct {
         u8 a, b, c, d;
     } d;
@@ -186,7 +186,7 @@ BOOL ShopBuilding::isClosedToday() {
     return FALSE;
 }
 
-BOOL ShopBuilding::vfunc_98() {
+BOOL ShopBuilding::playsDoorMelody() {
     return TRUE;
 }
 

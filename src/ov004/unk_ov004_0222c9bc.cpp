@@ -354,8 +354,8 @@ class MuseumAquarium : public GameProc {
 public:
     MuseumAquarium();
     virtual ~MuseumAquarium();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
@@ -831,7 +831,7 @@ extern "C" void AquariumFish_SteerFromWall(E864 *self);
 extern "C" void AquariumFish_LoadParams(E864 *self);
 extern "C" BOOL MuseumAquarium_RequestFishModel(Mgr *self, s32 i);
 extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i);
-extern "C" BOOL _ZN14MuseumAquarium8vfunc_00Ev(Mgr *self);
+extern "C" BOOL _ZN14MuseumAquarium8onCreateEv(Mgr *self);
 extern "C" BOOL MuseumAquarium_CreateFreshwaterFish(Mgr *self);
 extern "C" s32 MuseumAquarium_CreateSeaFish(Mgr *o);
 extern "C" s32 MuseumAquarium_LoadFishAnims(Mgr *o, R **p, s32 idx, s32 n);
@@ -844,7 +844,7 @@ extern "C" void MuseumAquarium_UpdateObstacles(Mgr *o, s32 n);
 extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx);
 extern "C" void MuseumAquarium_CalcFishMtx(Mgr *o, R **p);
 extern "C" s32 _ZN14MuseumAquarium6onDrawEv(Mgr *o);
-extern "C" s32 _ZN14MuseumAquarium8vfunc_0cEv(Mgr *o);
+extern "C" s32 _ZN14MuseumAquarium8onDeleteEv(Mgr *o);
 extern "C" void MuseumAquarium_PlaceFreshwaterFish(Mgr *o);
 extern "C" void MuseumAquarium_PlaceSeaFish(Mgr *self);
 extern "C" void MuseumAquarium_ConfineFish(void *self, R **ctx, s32 type);
@@ -3651,7 +3651,7 @@ extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i)
     }
 }
 
-extern "C" BOOL _ZN14MuseumAquarium8vfunc_00Ev(Mgr *self)
+extern "C" BOOL _ZN14MuseumAquarium8onCreateEv(Mgr *self)
 {
     ModelSlotPool_init((u8 *)self + 0x7f8, 0x38, 0x800, 0x80, 0xc00, (void *)MuseumAquariumHeap_Create, (void *)MuseumAquariumHeap_Destroy, 0);
     sAquariumRoom = (s32)self->param;
@@ -4072,7 +4072,7 @@ extern "C" s32 _ZN14MuseumAquarium6onDrawEv(Mgr *o) {
     return TRUE;
 }
 
-extern "C" s32 _ZN14MuseumAquarium8vfunc_0cEv(Mgr *o) {
+extern "C" s32 _ZN14MuseumAquarium8onDeleteEv(Mgr *o) {
     s32 i = sAquariumFirstFish;
     R **p;
     for (; i < sAquariumEndFish; i++) {

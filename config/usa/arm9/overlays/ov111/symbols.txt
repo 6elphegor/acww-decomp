@@ -98,8 +98,8 @@ _ZN8ChatMenu8execMainEv kind:function(thumb,size=0x2a) addr:0x022985f4
 _ZN8ChatMenu12runMainStateEv kind:function(thumb,size=0x12c) addr:0x02298620
 _ZN8ChatMenu14execTransitionEv kind:function(thumb,size=0xa4) addr:0x0229874c
 _ZN8ChatMenu6onDrawEv kind:function(thumb,size=0x30) addr:0x022987f0
-_ZN8ChatMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02298820
-_ZN8ChatMenu8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x0229883c
+_ZN8ChatMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02298820
+_ZN8ChatMenu8onCreateEv kind:function(thumb,size=0x20) addr:0x0229883c
 ChatMenu_Create kind:function(thumb,size=0x9c) addr:0x0229885c
 data_ov111_02298900 kind:data(any) addr:0x02298900
 data_ov111_02298908 kind:data(any) addr:0x02298908

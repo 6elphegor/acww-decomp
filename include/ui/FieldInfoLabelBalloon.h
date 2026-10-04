@@ -12,7 +12,7 @@ public:
     FieldInfoLabelBalloon();                    // C1 0x020b7cc8
     virtual ~FieldInfoLabelBalloon();           // D0 0x020b7c7c, D1 0x020b7ca4
     virtual void draw();                        // 0x020b7bd0
-    virtual void vfunc_0c();                    // 0x020b7bb0
+    virtual void update();                    // 0x020b7bb0
 
     void restartMarkerAnim();                   // 0x020b7ae4
     BOOL isBlinkVisible();                      // 0x020b7b34

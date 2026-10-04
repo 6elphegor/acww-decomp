@@ -110,10 +110,10 @@ struct Unk_020d77a4_Vec3;
 class SpNpcTortimerFlowerFest : public SpNpcActor {
 public:
     SpNpcTortimerFlowerFest() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 v, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 v, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -158,8 +158,8 @@ extern "C" SpNpcTortimerFlowerFest *SpNpcTortimerFlowerFest_Create() {
     return new SpNpcTortimerFlowerFest();
 }
 
-BOOL SpNpcTortimerFlowerFest::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcTortimerFlowerFest::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -167,8 +167,8 @@ BOOL SpNpcTortimerFlowerFest::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcTortimerFlowerFest::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcTortimerFlowerFest::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     changeAct(0);
@@ -251,7 +251,7 @@ SpNpcTortimerFlowerFestTalk::SpNpcTortimerFlowerFestTalk() : giftItem(0xfff1) {}
 SpNpcTortimerFlowerFestTalk::~SpNpcTortimerFlowerFestTalk() {}
 
 void SpNpcTortimerFlowerFestTalk::attachOwner(SpNpcTortimerFlowerFest *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = owner;
     massageChairSlot = -1;
 }
@@ -374,7 +374,7 @@ void SpNpcTortimerFlowerFestTalk::onChoice(u32) {
     }
 }
 
-BOOL SpNpcTortimerFlowerFest::vfunc_48(void *) {
+BOOL SpNpcTortimerFlowerFest::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
@@ -382,10 +382,10 @@ BOOL SpNpcTortimerFlowerFest::vfunc_48(void *) {
     return r;
 }
 
-void SpNpcTortimerFlowerFest::vfunc_4c(u32 v, u8) {
+void SpNpcTortimerFlowerFest::onInteractionEvent(u32 v, u8) {
     switch (v) {
     case 0:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(1);
         break;

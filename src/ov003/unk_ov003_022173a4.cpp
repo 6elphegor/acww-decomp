@@ -45,9 +45,9 @@ public:
     virtual ~TownSign();
 
     virtual BOOL onDraw();
-    virtual BOOL vfunc_70();
-    virtual void vfunc_78();
-    virtual BOOL vfunc_8c();
+    virtual BOOL initBuilding();
+    virtual void setupTalkMsg();
+    virtual BOOL isOpen();
 
     /* 0x2b0 */ u16 signIndex;
     /* 0x2b2 */ u16 pad_2b2;
@@ -63,7 +63,7 @@ TownSign::TownSign() {
 TownSign::~TownSign() {
 }
 
-BOOL TownSign::vfunc_70() {
+BOOL TownSign::initBuilding() {
     signIndex = Field_GetSpawnedKind1Count();
     return TRUE;
 }
@@ -73,7 +73,7 @@ BOOL TownSign::onDraw() {
     return TRUE;
 }
 
-void TownSign::vfunc_78() {
+void TownSign::setupTalkMsg() {
     u16 v[2];
     u32 obj[9];
     setFileName("obj_etc_board");
@@ -90,7 +90,7 @@ void TownSign::vfunc_78() {
     _ZN8ItemNameD1Ev(obj);
 }
 
-BOOL TownSign::vfunc_8c() {
+BOOL TownSign::isOpen() {
     return FALSE;
 }
 

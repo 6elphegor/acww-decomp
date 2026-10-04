@@ -131,8 +131,8 @@ _ZN17PatternEditorMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02294ed4
 _ZN17PatternEditorMenu12runMainStateEv kind:function(thumb,size=0x104) addr:0x02294ef0
 _ZN17PatternEditorMenu14execTransitionEv kind:function(thumb,size=0x104) addr:0x02294ff4
 _ZN17PatternEditorMenu6onDrawEv kind:function(thumb,size=0x1a0) addr:0x022950f8
-_ZN17PatternEditorMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02295298
-_ZN17PatternEditorMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x022952b4
+_ZN17PatternEditorMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02295298
+_ZN17PatternEditorMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x022952b4
 PatternEditorMenu_Create kind:function(thumb,size=0x70) addr:0x022952d4
 sPatternEditorButtonTileX0 kind:data(any) addr:0x02295344
 sPatternEditorButtonTileX1 kind:data(any) addr:0x02295354

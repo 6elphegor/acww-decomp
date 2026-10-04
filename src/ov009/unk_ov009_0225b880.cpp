@@ -80,7 +80,7 @@ typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
 
 // Real (mangled) symbols of the other modules, reached as plain functions with the object first.
 #define func_02002d9c _ZN5Actor7preDrawEv
-#define func_02002dd0 _ZN5Actor8vfunc_20Ev
+#define func_02002dd0 _ZN5Actor11postExecuteEv
 #define func_0203e638 _ZN9Character10preExecuteEv
 #define func_0203e650 _ZN9Character9preDeleteEv
 #define Character_setCharId _ZN9Character9setCharIdEj
@@ -379,13 +379,13 @@ extern "C" BOOL BuildingResources_IsLoaded(BuildingResources *e) {
     return FALSE;
 }
 
-void BuildingActor::vfunc_60(u32 a, void *b) {
+void BuildingActor::onJointCalcPost(u32 a, void *b) {
 }
 
 extern "C" void Building_ModelCallback(Unk_ov009_0225df94_Arg *a) {
     BuildingActor *o = a->pRenderObj->ptrUser;
     if (o != NULL) {
-        o->vfunc_60(a->c[1], a);
+        o->onJointCalcPost(a->c[1], a);
     }
 }
 
@@ -419,9 +419,9 @@ BuildingActor::~BuildingActor() {
     func_020548a0(unk_138);
 }
 
-BOOL BuildingActor::vfunc_70() { return TRUE; }
+BOOL BuildingActor::initBuilding() { return TRUE; }
 
-BOOL BuildingActor::vfunc_00() {
+BOOL BuildingActor::onCreate() {
     Unk_ov009_0225bc88_Blk b1;
     Unk_ov009_0225bc88_Blk b2;
     struct {
@@ -434,9 +434,9 @@ BOOL BuildingActor::vfunc_00() {
     Character_setCharId(this, (u16)(((gridZ & 0xff) << 8) | (gridX & 0xff)));
     itemId = *(u32 *)((u8 *)this + 8);
     buildingIndex = itemId & 0xfff;
-    char *a = vfunc_a4();
-    char *bb = vfunc_a8();
-    char *c = vfunc_ac();
+    char *a = getArcPath();
+    char *bb = getTexPath();
+    char *c = getLightTexPath();
     setupModel(a, bb, c);
     initEntryArea();
     setupAnims();
@@ -454,7 +454,7 @@ BOOL BuildingActor::vfunc_00() {
     if (getDoorPos(&entryPos, (s16 *)0)) {
         entryPos.z -= 0x4000;
     }
-    BOOL res = vfunc_70();
+    BOOL res = initBuilding();
     setEntryState(0);
     return res;
 }
@@ -468,27 +468,27 @@ BOOL BuildingActor::preExecute() {
     if (Unk_ov009_0225d858_Is(p, 0x501d)) {
         s32 t = BuildingState_Get(itemId);
         if (doorState != t) {
-            vfunc_6c(t);
+            setDoorState(t);
         }
     }
     updateOffscreen();
     if (Scene_GetCurrent() != 0x2c) {
         updateEntryState();
     }
-    vfunc_74();
+    updateDoorState();
     if (Scene_GetCurrent() != 0x2c) {
         submitColliders();
     }
-    BOOL on = vfunc_9c();
-    s32 b = vfunc_a0();
+    BOOL on = areLightsOn();
+    s32 b = hasFlickeringLights();
     BuildingLights_setLit(unk_1f0, on, 1, b);
     BuildingLights_updateLights(unk_1f0, modelRes);
     func_ov009_0225d0d8();
     return TRUE;
 }
 
-BOOL BuildingActor::vfunc_20(u32 a) {
-    Unk_ov009_0225da90_Vec3 v = vfunc_b4();
+BOOL BuildingActor::postExecute(u32 a) {
+    Unk_ov009_0225da90_Vec3 v = getSoundPos();
     u16 *pp = getItemId();
     _ZN17BuildingSeEmitter11setPositionEP23Unk_ov009_0225b880_Vec3(unk_234, (Unk_ov009_0225b880_Vec3 *)&v, *pp);
     if (colliderFlags & 2) {
@@ -509,7 +509,7 @@ BOOL BuildingActor::preDraw() {
         u16 *p = getItemId();
         BOOL r = Unk_ov009_0225d858_Is(p, 0x500b);
         if (r || !Camera_IsBlockingFocusView(&solidCenterX, solidSizeX, solidSizeZ)) {
-            if (vfunc_b0()) {
+            if (needsMatrixUpdate()) {
                 updateMatrix();
             }
             return TRUE;
@@ -551,17 +551,17 @@ void BuildingActor::initEntryArea() {
 }
 
 void BuildingActor::setupAnims() {
-    if (vfunc_64() != 0 || vfunc_68() != 0) {
+    if (getDoorInAnim() != 0 || getDoorOutAnim() != 0) {
         AnimModel_allocAnmObj(unk_138, gFieldStructureHeap);
-        BlendAnimModel_initAnim(unk_138, (void *)vfunc_64(), 0, 0x1000, 0, 0);
+        BlendAnimModel_initAnim(unk_138, (void *)getDoorInAnim(), 0, 0x1000, 0, 0);
         AnimModel_attachAnim(unk_138);
     }
     if (getEntranceType() != 0) {
         u16 *p = getItemId();
         if (Unk_ov009_0225d858_Is(p, 0x501d)) {
-            vfunc_6c(BuildingState_Get(itemId));
+            setDoorState(BuildingState_Get(itemId));
         } else {
-            vfunc_6c(0);
+            setDoorState(0);
         }
     }
 }
@@ -623,7 +623,7 @@ s32 BuildingActor::getViewRangeFront() {
     return r;
 }
 
-s32 BuildingActor::vfunc_64() {
+s32 BuildingActor::getDoorInAnim() {
     BuildingResources *r = getResources();
     if (r != NULL) {
         return r->bca0;
@@ -631,7 +631,7 @@ s32 BuildingActor::vfunc_64() {
     return 0;
 }
 
-s32 BuildingActor::vfunc_68() {
+s32 BuildingActor::getDoorOutAnim() {
     BuildingResources *r = getResources();
     if (r != NULL) {
         return r->bca1;
@@ -676,14 +676,14 @@ s32 BuildingActor::getEntranceType() {
     return r;
 }
 
-BOOL BuildingActor::vfunc_9c() {
-    if (Building_IsNight() && vfunc_8c()) {
+BOOL BuildingActor::areLightsOn() {
+    if (Building_IsNight() && isOpen()) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL BuildingActor::vfunc_8c() { return TRUE; }
+BOOL BuildingActor::isOpen() { return TRUE; }
 
 extern "C" BOOL Building_IsNight() {
     struct {
@@ -697,19 +697,19 @@ extern "C" BOOL Building_IsNight() {
     return TRUE;
 }
 
-char *BuildingActor::vfunc_a4() {
+char *BuildingActor::getArcPath() {
     u32 i = buildingIndex;
     func_020639e8(sBuildingArcPath, sBuildingArcPathFmt, i, i, Field_GetStructureTexSuffix());
     return sBuildingArcPath;
 }
 
-char *BuildingActor::vfunc_a8() {
+char *BuildingActor::getTexPath() {
     u32 i = buildingIndex;
     func_020639e8(sBuildingTexPath, sBuildingTexPathFmt, i, i, Field_GetStructureTexSuffix());
     return sBuildingTexPath;
 }
 
-char *BuildingActor::vfunc_ac() {
+char *BuildingActor::getLightTexPath() {
     volatile u16 v = Item_MakeBuilding(buildingIndex);
     switch (v) {
     case 0x500a:
@@ -896,7 +896,7 @@ void BuildingActor::func_ov009_0225d0d8() {
 
 void BuildingActor::updateBaseMatrix(Unk_ov009_0225bc88_Blk *out) {
     Unk_ov009_0225bc88_Blk blk;
-    if (!vfunc_b8(&blk)) {
+    if (!calcCustomBaseMatrix(&blk)) {
         drawTilt = WorldCurve_ToCurved(&drawPos, &position);
         makeCurvedMatrix(&blk);
     }
@@ -1087,7 +1087,7 @@ BOOL BuildingCollider::isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_o
 }
 
 // ---------------------------------------------------------------- vfunc_6c
-s32 BuildingActor::vfunc_6c(s32 a) {
+s32 BuildingActor::setDoorState(s32 a) {
     static BOOL (BuildingActor::*tbl[7])() = {
         &BuildingActor::enterDoorIdle, &BuildingActor::enterDoorOpenIn,
         &BuildingActor::enterDoorOpenOut, &BuildingActor::enterDoorSlideOpen,
@@ -1105,7 +1105,7 @@ s32 BuildingActor::vfunc_6c(s32 a) {
     return FALSE;
 }
 
-void BuildingActor::vfunc_74() {
+void BuildingActor::updateDoorState() {
     static Unk_ov009_0225c290_Fn tbl[7] = {
         &BuildingActor::execDoorIdle, &BuildingActor::execDoorOpenIn,
         &BuildingActor::execDoorOpenOut, &BuildingActor::execDoorSlideOpen,
@@ -1121,7 +1121,7 @@ BOOL BuildingActor::enterDoorIdle() {
     switch (getEntranceType()) {
     case 1:
     case 2: {
-        void *r = (void *)vfunc_64();
+        void *r = (void *)getDoorInAnim();
         if (r == 0) {
             return FALSE;
         }
@@ -1138,7 +1138,7 @@ void BuildingActor::execDoorIdle() {
         s32 f = 0;
         if (st == 1 || st == 3) {
             if ((colliderFlags & 4) != 0) {
-                if (vfunc_8c() == 0) {
+                if (isOpen() == 0) {
                     clearTalkStartMode();
                     closedTalk = 1;
                 } else {
@@ -1153,7 +1153,7 @@ void BuildingActor::execDoorIdle() {
             s32 a = TouchPick_GetTappedObject(Scene_GetTouchPicker(), 0, 0);
             s32 b = (s32)PlayerActor_GetActor(4);
             if (b != 0 && b == a) {
-                if (vfunc_8c() == 0) {
+                if (isOpen() == 0) {
                     clearTalkStartMode();
                     closedTalk = 1;
                 } else {
@@ -1167,12 +1167,12 @@ void BuildingActor::execDoorIdle() {
 }
 
 BOOL BuildingActor::enterDoorOpenIn() {
-    void *r = (void *)vfunc_64();
+    void *r = (void *)getDoorInAnim();
     if (r != 0) {
         BlendAnimModel_initAnim(unk_138, r, 1, 0x1000, 0, 0);
         ((BuildingSeEmitter *)unk_234)->playSe(0x7d1);
         ((BuildingSeEmitter *)unk_234)->playSe(0x7d2);
-        if (vfunc_98()) {
+        if (playsDoorMelody()) {
             s32 m = 0;
             u16 v[3];
             BOOL ok;
@@ -1229,7 +1229,7 @@ BOOL BuildingActor::enterDoorOpenIn() {
                     }
                 }
             }
-            Unk_ov009_0225da90_Vec3 msg = vfunc_b4();
+            Unk_ov009_0225da90_Vec3 msg = getSoundPos();
             Melody_PlayAt(&msg, m);
         }
         return TRUE;
@@ -1240,7 +1240,7 @@ BOOL BuildingActor::enterDoorOpenIn() {
 void BuildingActor::execDoorOpenIn() {
     AnimModel_stepAnim(unk_138);
     if (AnimFrameCtrl_isFinished(unk_1d4)) {
-        vfunc_6c(0);
+        setDoorState(0);
     } else if (AnimFrameCtrl_hasPassedFrame(unk_1d4, 0x14)) {
         ((BuildingSeEmitter *)unk_234)->playSe(0x7d3);
     } else if (AnimFrameCtrl_hasPassedFrame(unk_1d4, 0x1e)) {
@@ -1249,12 +1249,12 @@ void BuildingActor::execDoorOpenIn() {
 }
 
 BOOL BuildingActor::enterDoorOpenOut() {
-    void *r = (void *)vfunc_68();
+    void *r = (void *)getDoorOutAnim();
     if (r != 0) {
         BlendAnimModel_initAnim(unk_138, r, 1, 0x1000, 0, 0);
         ((BuildingSeEmitter *)unk_234)->playSe(0x7d1);
         ((BuildingSeEmitter *)unk_234)->playSe(0x7d2);
-        if (vfunc_98()) {
+        if (playsDoorMelody()) {
             s32 m = 0;
             u16 v[3];
             BOOL ok;
@@ -1311,7 +1311,7 @@ BOOL BuildingActor::enterDoorOpenOut() {
                     }
                 }
             }
-            Unk_ov009_0225da90_Vec3 msg = vfunc_b4();
+            Unk_ov009_0225da90_Vec3 msg = getSoundPos();
             Melody_PlayAt(&msg, m);
         }
         return TRUE;
@@ -1322,7 +1322,7 @@ BOOL BuildingActor::enterDoorOpenOut() {
 void BuildingActor::execDoorOpenOut() {
     AnimModel_stepAnim(unk_138);
     if (AnimFrameCtrl_isFinished(unk_1d4)) {
-        vfunc_6c(0);
+        setDoorState(0);
     } else if (AnimFrameCtrl_hasPassedFrame(unk_1d4, 0x12)) {
         ((BuildingSeEmitter *)unk_234)->playSe(0x7d3);
     } else if (AnimFrameCtrl_hasPassedFrame(unk_1d4, 0x18)) {
@@ -1331,7 +1331,7 @@ void BuildingActor::execDoorOpenOut() {
 }
 
 BOOL BuildingActor::enterDoorSlideOpen() {
-    void *r = (void *)vfunc_64();
+    void *r = (void *)getDoorInAnim();
     if (r) {
         BlendAnimModel_initAnim(unk_138, r, 1, 0x1000, 0, 0);
         if (Item_IsNookShop(&itemId)) {
@@ -1347,13 +1347,13 @@ BOOL BuildingActor::enterDoorSlideOpen() {
 void BuildingActor::execDoorSlideOpen() {
     AnimModel_stepAnim(unk_138);
     if (AnimFrameCtrl_isFinished(unk_1d4)) {
-        vfunc_6c(4);
+        setDoorState(4);
     }
 }
 
 BOOL BuildingActor::enterDoorSlideClose() {
     unk_12e = 0x1a;
-    void *r = (void *)vfunc_68();
+    void *r = (void *)getDoorOutAnim();
     if (r) {
         BlendAnimModel_initAnim(unk_138, r, 1, 0x1000, 0, 0);
         return TRUE;
@@ -1375,18 +1375,18 @@ void BuildingActor::execDoorSlideClose() {
     if (unk_12e == 0) {
         AnimModel_stepAnim(unk_138);
         if (AnimFrameCtrl_isFinished(unk_1d4)) {
-            vfunc_6c(0);
+            setDoorState(0);
         }
     }
 }
 
 BOOL BuildingActor::enterDoorNoAnimIn() { return TRUE; }
 
-void BuildingActor::execDoorNoAnimIn() { vfunc_6c(0); }
+void BuildingActor::execDoorNoAnimIn() { setDoorState(0); }
 
 BOOL BuildingActor::enterDoorNoAnimOut() { return TRUE; }
 
-void BuildingActor::execDoorNoAnimOut() { vfunc_6c(0); }
+void BuildingActor::execDoorNoAnimOut() { setDoorState(0); }
 
 BOOL BuildingActor::setEntryState(s32 a) {
     static Unk_ov009_0225c360_Fn tbl[9] = {
@@ -1455,13 +1455,13 @@ BOOL BuildingActor::execEntryCheck() {
 BOOL BuildingActor::enterEntryTalkOpen() {
     _ZN9Character17attachTalkRequestEi(this, this);
     unk_3c->nextState = 1;
-    vfunc_78();
+    setupTalkMsg();
     return TRUE;
 }
 
 void BuildingActor::execEntryTalkOpen() {
     if (unk_3c != NULL && unk_3c->state != 0) {
-        vfunc_7c();
+        onTalkOpened();
         setEntryState(3);
     }
 }
@@ -1470,11 +1470,11 @@ BOOL BuildingActor::enterEntryTalk() { return TRUE; }
 
 void BuildingActor::execEntryTalk() {
     if (unk_3c != NULL && unk_3c->state == 0) {
-        vfunc_84();
+        onTalkEnded();
         _ZN9Character17detachTalkRequestEi(this, this);
         TalkRequest_SetTargetDone(this);
     } else {
-        vfunc_80();
+        updateTalk();
     }
 }
 
@@ -1495,13 +1495,13 @@ BOOL BuildingActor::enterEntry05() {
     Unk_ov009_0225b880_Vec3 v;
     if (getDoorPos(&v, &ang)) {
         p4 = v.x;
-        if (vfunc_94() == 0) {
+        if (alignsPlayerToDoor() == 0) {
             s32 *q = PlayerActor_GetBodyPos(4);
             if (q != NULL) {
                 p4 = *q;
             }
         }
-        if (vfunc_90()) {
+        if (usesDoorApproach()) {
             if (PlayerActor_LocalRequestDoorApproach(&p4, &v.z, &ang)) {
                 return TRUE;
             }
@@ -1580,7 +1580,7 @@ void BuildingActor::execEntry08() {
     Unk_ov009_0225b880_Vec3 v;
     if (getDoorPos(&v, &ang)) {
         p4 = v.x;
-        if (vfunc_94() == 0) {
+        if (alignsPlayerToDoor() == 0) {
             s32 *q = PlayerActor_GetBodyPos(4);
             if (q != NULL) {
                 p4 = *q;
@@ -1594,7 +1594,7 @@ void BuildingActor::execEntry08() {
 
 VecFx32 *BuildingActor::getInteractionPos() { return (VecFx32 *)&entryPos; }
 
-BOOL BuildingActor::vfunc_48(void *other) {
+BOOL BuildingActor::acceptsInteraction(void *other) {
     Character *a = (Character *)other;
     if (a == NULL) {
         return FALSE;
@@ -1603,7 +1603,7 @@ BOOL BuildingActor::vfunc_48(void *other) {
     if (d <= 0x1000) {
         if (getEntranceType() != 0) {
             if ((colliderFlags & 8) != 0 && getEntranceType() == 2) {
-                if (vfunc_8c() == 0) {
+                if (isOpen() == 0) {
                     clearTalkStartMode();
                     closedTalk = 1;
                     return TRUE;
@@ -1612,7 +1612,7 @@ BOOL BuildingActor::vfunc_48(void *other) {
                 closedTalk = 0;
                 return TRUE;
             }
-        } else if (vfunc_8c() == 0) {
+        } else if (isOpen() == 0) {
             s32 r = Vec_DistXZ(a->getInteractionPos(), getInteractionPos());
             clearTalkStartMode();
             closedTalk = 1;
@@ -1647,17 +1647,17 @@ void BuildingActor::onMessageEnd(u32) {
     }
 }
 
-void BuildingActor::vfunc_78() {
+void BuildingActor::setupTalkMsg() {
     Unk_ov009_0225bce0_Pad pad;
     setFileName((const char *)sBuildingDefaultMsgFile);
     msgIndex = 0;
 }
 
-void BuildingActor::vfunc_7c() {}
+void BuildingActor::onTalkOpened() {}
 
-void BuildingActor::vfunc_80() {}
+void BuildingActor::updateTalk() {}
 
-void BuildingActor::vfunc_84() {}
+void BuildingActor::onTalkEnded() {}
 
 void BuildingActor::updateMatrix() {
     if (modelRes != NULL) {
@@ -1715,7 +1715,7 @@ s32 BuildingActor::getInteriorScene(){
     return r;
 }
 
-s32 BuildingActor::vfunc_a0(){
+s32 BuildingActor::hasFlickeringLights(){
     u32 v;
     BOOL in = FALSE;
     v = itemId;
@@ -1734,13 +1734,13 @@ s32 BuildingActor::vfunc_a0(){
     return r;
 }
 
-BOOL BuildingActor::vfunc_90() { return FALSE; }
+BOOL BuildingActor::usesDoorApproach() { return FALSE; }
 
-BOOL BuildingActor::vfunc_b0() { return TRUE; }
+BOOL BuildingActor::needsMatrixUpdate() { return TRUE; }
 
-BOOL BuildingActor::vfunc_94() { return TRUE; }
+BOOL BuildingActor::alignsPlayerToDoor() { return TRUE; }
 
-BOOL BuildingActor::vfunc_98() { return FALSE; }
+BOOL BuildingActor::playsDoorMelody() { return FALSE; }
 
 BOOL BuildingActor::isOffscreen() {
     if (gCamera != 0) {
@@ -1775,11 +1775,11 @@ BOOL BuildingActor::isDoorIdle() {
 BOOL BuildingActor::openDoorForEntry() {
     switch (getEntranceType()) {
     case 2:
-        return vfunc_6c(1);
+        return setDoorState(1);
     case 3:
-        return vfunc_6c(5);
+        return setDoorState(5);
     case 1:
-        return vfunc_6c(3);
+        return setDoorState(3);
     default:
         return FALSE;
     }
@@ -1795,11 +1795,11 @@ BOOL BuildingActor::tryOpenDoorForEntry() {
 BOOL BuildingActor::openDoorForExit() {
     switch (getEntranceType()) {
     case 2:
-        return vfunc_6c(2);
+        return setDoorState(2);
     case 3:
-        return vfunc_6c(6);
+        return setDoorState(6);
     case 1:
-        return vfunc_6c(3);
+        return setDoorState(3);
     default:
         return FALSE;
     }
@@ -1867,7 +1867,7 @@ void BuildingSeEmitter::playSeHeld(u32 a) {
     }
 }
 
-Unk_ov009_0225da90_Vec3 BuildingActor::vfunc_b4() {
+Unk_ov009_0225da90_Vec3 BuildingActor::getSoundPos() {
     Unk_ov009_0225da90_Vec3 r;
     r.x = position.x;
     r.y = position.y;
@@ -1876,7 +1876,7 @@ Unk_ov009_0225da90_Vec3 BuildingActor::vfunc_b4() {
 }
 
 // Slots b4 / b8 of the vtable (were free functions func_ov009_0225b884 / func_ov009_0225b880)
-BOOL BuildingActor::vfunc_b8(Unk_ov009_0225bc88_Blk *out) { return 0; }
+BOOL BuildingActor::calcCustomBaseMatrix(Unk_ov009_0225bc88_Blk *out) { return 0; }
 
 // ---------------------------------------------------------------- data
 

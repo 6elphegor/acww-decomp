@@ -148,10 +148,10 @@ struct Unk_020d77a4_Vec3;
 class SpNpcTortimerBugOff : public SpNpcActor {
 public:
     SpNpcTortimerBugOff() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 v, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 v, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -205,8 +205,8 @@ SpNpcTortimerBugOff *SpNpcTortimerBugOff_Create() {
     return new SpNpcTortimerBugOff();
 }
 
-BOOL SpNpcTortimerBugOff::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcTortimerBugOff::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -214,7 +214,7 @@ BOOL SpNpcTortimerBugOff::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcTortimerBugOff::vfunc_00() {
+BOOL SpNpcTortimerBugOff::onCreate() {
     struct {
         u16 w0;
         u16 s2;
@@ -225,7 +225,7 @@ BOOL SpNpcTortimerBugOff::vfunc_00() {
     void *g;
     s32 rnd;
     u32 idx;
-    if (!SpNpcActor::vfunc_00()) {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     changeAct(0);
@@ -404,7 +404,7 @@ SpNpcTortimerBugOffTalk::SpNpcTortimerBugOffTalk() {
 SpNpcTortimerBugOffTalk::~SpNpcTortimerBugOffTalk() {}
 
 void SpNpcTortimerBugOffTalk::attachOwner(SpNpcTortimerBugOff *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = owner;
     beatOwnRecord = 0;
     massageChairSlot = -1;
@@ -635,7 +635,7 @@ void SpNpcTortimerBugOffTalk::onChoice(u32) {
     }
 }
 
-BOOL SpNpcTortimerBugOff::vfunc_48(void *) {
+BOOL SpNpcTortimerBugOff::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
@@ -643,10 +643,10 @@ BOOL SpNpcTortimerBugOff::vfunc_48(void *) {
     return r;
 }
 
-void SpNpcTortimerBugOff::vfunc_4c(u32 v, u8) {
+void SpNpcTortimerBugOff::onInteractionEvent(u32 v, u8) {
     switch (v) {
     case 0:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(1);
         break;

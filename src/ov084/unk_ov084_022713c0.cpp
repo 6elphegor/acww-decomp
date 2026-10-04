@@ -109,10 +109,10 @@ struct Unk_020d77a4_Vec3;
 class SpNpcTortimerFireworks : public SpNpcActor {
 public:
     SpNpcTortimerFireworks() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 v, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 v, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -203,8 +203,8 @@ extern "C" SpNpcTortimerFireworks *SpNpcTortimerFireworks_Create() {
     return new SpNpcTortimerFireworks();
 }
 
-BOOL SpNpcTortimerFireworks::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcTortimerFireworks::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -212,8 +212,8 @@ BOOL SpNpcTortimerFireworks::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcTortimerFireworks::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcTortimerFireworks::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     changeAct(0);
@@ -286,7 +286,7 @@ SpNpcTortimerFireworksTalk::SpNpcTortimerFireworksTalk() {
 SpNpcTortimerFireworksTalk::~SpNpcTortimerFireworksTalk() {}
 
 void SpNpcTortimerFireworksTalk::attachOwner(SpNpcTortimerFireworks *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = owner;
     massageChairSlot = -1;
 }
@@ -511,7 +511,7 @@ void SpNpcTortimerFireworksTalk::onChoice(u32) {
     }
 }
 
-BOOL SpNpcTortimerFireworks::vfunc_48(void *) {
+BOOL SpNpcTortimerFireworks::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
@@ -520,10 +520,10 @@ BOOL SpNpcTortimerFireworks::vfunc_48(void *) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void SpNpcTortimerFireworks::vfunc_4c(u32 v, u8) {
+void SpNpcTortimerFireworks::onInteractionEvent(u32 v, u8) {
     switch (v) {
     case 0:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(1);
         break;

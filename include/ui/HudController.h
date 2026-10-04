@@ -20,7 +20,7 @@ public:
     HudCountdown();
     virtual ~HudCountdown();
     virtual void draw();
-    virtual void vfunc_0c();
+    virtual void update();
 
     u8 canShow();
     void updateHiding();
@@ -82,7 +82,7 @@ public:
     HudCameraGrid();
     virtual ~HudCameraGrid();
     virtual void draw();
-    virtual void vfunc_0c();
+    virtual void update();
 
     BOOL pickCellByTouch();
     BOOL isOtherDeviceTriggered();
@@ -117,7 +117,7 @@ public:
     HudCameraButton();
     virtual ~HudCameraButton();
     virtual void draw();
-    virtual void vfunc_0c();
+    virtual void update();
 
     void updateHiding();
     void enterHiding();
@@ -151,7 +151,7 @@ public:
     HudClock();
     virtual ~HudClock();
     virtual void draw();
-    virtual void vfunc_0c();
+    virtual void update();
 
     void freeLabels();
     void createColonLabel();

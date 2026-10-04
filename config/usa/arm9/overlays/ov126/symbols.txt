@@ -116,8 +116,8 @@ _ZN13NameEntryMenu8execMainEv kind:function(thumb,size=0xe0) addr:0x02299490
 _ZN13NameEntryMenu12runMainStateEv kind:function(thumb,size=0x140) addr:0x02299570
 _ZN13NameEntryMenu14execTransitionEv kind:function(thumb,size=0x104) addr:0x022996b0
 _ZN13NameEntryMenu6onDrawEv kind:function(thumb,size=0xfc) addr:0x022997b4
-_ZN13NameEntryMenu8vfunc_0cEv kind:function(thumb,size=0x44) addr:0x022998b0
-_ZN13NameEntryMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x022998f4
+_ZN13NameEntryMenu8onDeleteEv kind:function(thumb,size=0x44) addr:0x022998b0
+_ZN13NameEntryMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x022998f4
 NameEntryMenu_Create kind:function(thumb,size=0xb8) addr:0x02299914
 data_ov126_022999e0 kind:data(any) addr:0x022999e0 ambiguous
 data_ov126_022999e8 kind:data(any) addr:0x022999e8

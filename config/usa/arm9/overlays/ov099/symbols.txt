@@ -103,8 +103,8 @@ _ZN13PocketMenuUnk10execPhase3Ev kind:function(thumb,size=0x4) addr:0x02296684
 _ZN13PocketMenuUnk8execMainEv kind:function(thumb,size=0x184) addr:0x02296688
 _ZN13PocketMenuUnk14execTransitionEv kind:function(thumb,size=0xa0) addr:0x0229680c
 _ZN13PocketMenuUnk6onDrawEv kind:function(thumb,size=0x90) addr:0x022968ac
-_ZN13PocketMenuUnk8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x0229693c
-_ZN13PocketMenuUnk8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02296958
+_ZN13PocketMenuUnk8onDeleteEv kind:function(thumb,size=0x1a) addr:0x0229693c
+_ZN13PocketMenuUnk8onCreateEv kind:function(thumb,size=0x20) addr:0x02296958
 PocketMenuUnk_Create kind:function(thumb,size=0xa0) addr:0x02296978
 data_ov099_02296a20 kind:data(any) addr:0x02296a20
 data_ov099_02296a28 kind:data(any) addr:0x02296a28

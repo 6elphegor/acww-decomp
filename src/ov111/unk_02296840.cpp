@@ -178,8 +178,8 @@ public:
         : keyboard(), balloonText(), text(), cursor(), errorMessage() {}
     // destructor left implicit
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
@@ -320,14 +320,14 @@ extern "C" ChatMenu *ChatMenu_Create();
 
 extern "C" ChatMenu *ChatMenu_Create() { return new ChatMenu(); }
 
-BOOL ChatMenu::vfunc_00() {
+BOOL ChatMenu::onCreate() {
     ChatMenu_Init(this);
     setTransitionState(0);
     setPhase(1);
     return TRUE;
 }
 
-BOOL ChatMenu::vfunc_0c() {
+BOOL ChatMenu::onDelete() {
     ((MenuTabBar *)ProcBase_GetParent(this))->onTabMenuClosed();
     ChatMenu_Exit(this);
     return TRUE;
@@ -413,7 +413,7 @@ BOOL ChatMenu::onExecute() {
 }
 
 void ChatMenu::preInputUpdate() {
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void ChatMenu::postInputUpdate() {
@@ -1497,7 +1497,7 @@ void ChatMenu::showCursor() {
 
 void ChatMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void ChatMenu::moveCursorToTarget() {
@@ -1521,7 +1521,7 @@ void ChatMenu::snapCursor() {
         s32 b = Keyboard_GetCursorY(&keyboard);
         ((MenuCursorBase *)&cursor)->warpTo(a, b);
     }
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void ChatMenu::pressCursor() {
@@ -1536,7 +1536,7 @@ void ChatMenu::releaseCursor() {
 
 void ChatMenu::returnToKeyNav() {
     ((MenuCursorBase *)&cursor)->setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
     setMainState(3);
 }
 

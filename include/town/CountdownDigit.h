@@ -9,11 +9,11 @@
 // (+ _switch, same unit). Size 0x2d8.
 class CountdownDigit : public BuildingActor {
 public:
-    virtual BOOL vfunc_b0();
+    virtual BOOL needsMatrixUpdate();
     CountdownDigit();
     virtual ~CountdownDigit();
     virtual BOOL onExecute();
-    virtual BOOL vfunc_70();
+    virtual BOOL initBuilding();
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 

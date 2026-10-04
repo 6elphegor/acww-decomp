@@ -173,8 +173,8 @@ public:
     PostOfficeMenu()
         : heldLetter(), swapLetter(), bgTasks(), pocketGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), popup(),
           errorMessage(), letterView(), letterCloseButton(), boxLetters(), pocketLettersBackup(), bottomButtons() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
@@ -383,14 +383,14 @@ extern "C" PostOfficeMenu *PostOfficeMenu_Create();
 
 extern "C" PostOfficeMenu *PostOfficeMenu_Create() { return new PostOfficeMenu(); }
 
-BOOL PostOfficeMenu::vfunc_00() {
+BOOL PostOfficeMenu::onCreate() {
     PostOfficeMenu_InitParts(this);
     setTransitionState(0);
     setPhase(0);
     return TRUE;
 }
 
-BOOL PostOfficeMenu::vfunc_0c() {
+BOOL PostOfficeMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     PostOfficeMenu_ReleaseResources(this);
     return TRUE;
@@ -706,7 +706,7 @@ void PostOfficeMenu_ReleaseResources(S *s) {
 
 void PostOfficeMenu_PreInputUpdate(S *s) {
     PostOfficeMenu_PreStateUpdate(s);
-    ((MenuCursorBuf0 *)&s->cursor)->vfunc_0c();
+    ((MenuCursorBuf0 *)&s->cursor)->update();
 }
 
 void PostOfficeMenu_PostInputUpdate(S *s) {
@@ -1569,7 +1569,7 @@ s32 PostOfficeMenu_GetCursorTargetY(S *s) {
 
 void PostOfficeMenu_HideCursor(S *s) {
     ((MenuCursor *)&s->cursor)->setAnimIfChanged(0);
-    ((MenuCursorBuf0 *)&s->cursor)->vfunc_0c();
+    ((MenuCursorBuf0 *)&s->cursor)->update();
 }
 
 void PostOfficeMenu_MoveCursorToTarget(S *s) {
@@ -1623,7 +1623,7 @@ void PostOfficeMenu_ShowCursorAtSlot(S *s) {
 
 void PostOfficeMenu_RefreshCursor(S *s) {
     s->cursor.setPoseIdle();
-    ((MenuCursorBuf0 *)&s->cursor)->vfunc_0c();
+    ((MenuCursorBuf0 *)&s->cursor)->update();
 }
 
 void PostOfficeMenu_PressButton(S *s) {

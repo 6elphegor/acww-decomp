@@ -454,7 +454,7 @@ MsgUiProc::MsgUiProc() {}
 
 MsgUiProc::~MsgUiProc() {}
 
-BOOL MsgUiProc::vfunc_00() {
+BOOL MsgUiProc::onCreate() {
     InputModeIcon_Init();
     Input_ResetMode();
     AbAllObjGfx_Upload();
@@ -466,7 +466,7 @@ BOOL MsgUiProc::vfunc_00() {
     return TRUE;
 }
 
-BOOL MsgUiProc::vfunc_0c() {
+BOOL MsgUiProc::onDelete() {
     MsgUiProc_HideObjPlane();
     FieldInfoBalloon_Release();
     TalkWindow_DestroyAll();

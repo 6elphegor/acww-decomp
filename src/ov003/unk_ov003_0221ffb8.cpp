@@ -325,8 +325,8 @@ class FieldFishManager : public GameProc {
 public:
     FieldFishManager();
     virtual ~FieldFishManager();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
@@ -3951,7 +3951,7 @@ extern "C" void FishFinModel_Release(u8 *a) {
 
 
 //@ 0x2221524
-BOOL FieldFishManager::vfunc_00() {
+BOOL FieldFishManager::onCreate() {
     u8 *a = (u8 *)this;
     ModelSlotPool_init(a + 0x50, 6, 0, 0, 0x800, (void *)FishShadowHeap_Create, (void *)FishShadowHeap_Destroy, (void *)"fish_sdw");
     ModelSlotPool_init(a + 0x68, 1, 0x400, 0x80, 0x800, (void *)FishFinHeap_Create, (void *)FishFinHeap_Destroy, (void *)"fish_fin");
@@ -4269,7 +4269,7 @@ BOOL FieldFishManager::onDraw() {
 
 
 //@ 0x2220ed0
-BOOL FieldFishManager::vfunc_0c() {
+BOOL FieldFishManager::onDelete() {
     O_f3 *o = (O_f3 *)this;
     FieldFishManager_FreeShadows(o);
     FieldFishManager_FreeCatches((s32)o);

@@ -12,7 +12,7 @@ public:
     TalkArrow(u8 flag);                     // C1 0x020894c0
     virtual ~TalkArrow();                   // D0 0x02089464, D1 0x02089494
     virtual void draw();                    // 0x02089350
-    virtual void vfunc_0c();                // 0x02089330
+    virtual void update();                // 0x02089330
 
     BOOL isAnimDone();                      // 0x02089284
     s32 getState();                         // 0x020892ac

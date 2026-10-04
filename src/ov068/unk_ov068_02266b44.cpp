@@ -180,10 +180,10 @@ struct Unk_ov068_0226fea4_Ent {
 class SpNpcNookIntro : public SpNpcActor {
 public:
     SpNpcNookIntro() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -266,12 +266,12 @@ extern "C" SpNpcNookIntro *SpNpcNookIntro_Create() {
     return new SpNpcNookIntro();
 }
 
-BOOL SpNpcNookIntro::vfunc_04() {
+BOOL SpNpcNookIntro::preCreate() {
     static ItemId tbl[4] = {
         ItemId(0xd019), ItemId(0xd01a),
         ItemId(0xd01b), ItemId(0xd01c)
     };
-    if (!SpNpcActor::vfunc_04()) {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     NpcActor_setNpcHandle(this, &tbl[NookShop_GetLevel(&data_021ed104)].id);
@@ -316,8 +316,8 @@ extern "C" char sNookTexRcs[0x1c] = "npc_sp/model/rcs_tex.nsbtx";
 extern "C" Unk_ov068_SceneEntry sSpNpcNookIntroProfile = {(void *(*)())SpNpcNookIntro_Create, 0x7d, 0x81, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov068_0226fd20[2] = {(void *)_ZN14SpNpcNookIntro10setupAct04Ev, 0};
 
-BOOL SpNpcNookIntro::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcNookIntro::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     changeAct(0);
@@ -406,7 +406,7 @@ BOOL SpNpcNookIntro::setupAct02() {
 
 BOOL SpNpcNookIntro::mainAct02() {
     if (PlayerActor_IsScriptedWalking(4) == 0) {
-        talk.vfunc_08();
+        talk.resetMsg();
         func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
         changeAct(1);
     }
@@ -468,7 +468,7 @@ SpNpcNookIntroTalk::~SpNpcNookIntroTalk() {
 }
 
 void SpNpcNookIntroTalk::attachOwner(FieldVillager *o) {
-    vfunc_08();
+    resetMsg();
     owner = o;
 }
 
@@ -618,7 +618,7 @@ void SpNpcNookIntroTalk::runWalkScript() {
     }
 }
 
-BOOL SpNpcNookIntro::vfunc_48(void *) {
+BOOL SpNpcNookIntro::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (unk_654 == 0) {
         r = TRUE;
@@ -626,7 +626,7 @@ BOOL SpNpcNookIntro::vfunc_48(void *) {
     return r;
 }
 
-void SpNpcNookIntro::vfunc_4c(u32 a, u8) {
+void SpNpcNookIntro::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 1:
         changeAct(2);

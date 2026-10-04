@@ -11,9 +11,9 @@ class SpNpcActor : public NpcActor {
 public:
     SpNpcActor() {}
     virtual ~SpNpcActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
     virtual BOOL preDelete();
     virtual void getName(u32 a);
     virtual u32 getGender();

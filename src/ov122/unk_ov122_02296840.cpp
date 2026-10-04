@@ -241,8 +241,8 @@ public:
         : keyboard(), renderer(), scrollKnob(), cursor(), censorString(), encodedText(),
           addresseeMenu(), bottomButtons(), errorMessage() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -577,14 +577,14 @@ static inline BOOL Unk_ov122_02298b70_Both() {
 
 extern "C" LetterWriteMenu *LetterWriteMenu_Create() { return new LetterWriteMenu(); }
 
-BOOL LetterWriteMenu::vfunc_00() {
+BOOL LetterWriteMenu::onCreate() {
     init();
     setTransitionState(0);
     setPhase(1);
     return TRUE;
 }
 
-BOOL LetterWriteMenu::vfunc_0c() {
+BOOL LetterWriteMenu::onDelete() {
     u32 t = ProcBase_GetParent();
     _ZN10MenuTabBar15onTabMenuClosedEv(t);
     _ZN10MenuTabBar8showTabsEv(t);
@@ -953,8 +953,8 @@ void LetterWriteMenu::releaseResources() {
 
 void LetterWriteMenu::preInputUpdate() {
     preStateUpdate();
-    scrollKnob.vfunc_0c();
-    cursor.vfunc_0c();
+    scrollKnob.update();
+    cursor.update();
 }
 
 void LetterWriteMenu::postInputUpdate() {
@@ -2541,7 +2541,7 @@ void LetterWriteMenu::showCursor() {
 
 void LetterWriteMenu::hideCursor() {
     _ZN10MenuCursor16setAnimIfChangedEi(&cursor, 0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void LetterWriteMenu::moveCursorToTarget() {
@@ -2571,7 +2571,7 @@ void LetterWriteMenu::snapCursor() {
         s32 b = Keyboard_GetCursorY(&keyboard);
         _ZN14MenuCursorBase6warpToEii(&cursor, a, b);
     }
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void LetterWriteMenu::pressCursor() {
@@ -2587,7 +2587,7 @@ void LetterWriteMenu::releaseCursor() {
 
 void LetterWriteMenu::refreshCursor() {
     _ZN14MenuCursorBase11setPoseIdleEv(&cursor);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void LetterWriteMenu::func_ov122_02296aa4() {

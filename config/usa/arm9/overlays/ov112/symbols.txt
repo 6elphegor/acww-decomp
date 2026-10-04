@@ -129,8 +129,8 @@ _ZN12BbsWriteMenu8execMainEv kind:function(thumb,size=0x74) addr:0x022993c0
 _ZN12BbsWriteMenu12runMainStateEv kind:function(thumb,size=0x194) addr:0x02299434
 _ZN12BbsWriteMenu14execTransitionEv kind:function(thumb,size=0x114) addr:0x022995c8
 _ZN12BbsWriteMenu6onDrawEv kind:function(thumb,size=0x1ac) addr:0x022996dc
-_ZN12BbsWriteMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02299888
-_ZN12BbsWriteMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x022998a4
+_ZN12BbsWriteMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02299888
+_ZN12BbsWriteMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x022998a4
 BbsWriteMenu_Create kind:function(thumb,size=0xd8) addr:0x022998c4
 data_ov112_022999a0 kind:data(any) addr:0x022999a0
 data_ov112_022999a8 kind:data(any) addr:0x022999a8

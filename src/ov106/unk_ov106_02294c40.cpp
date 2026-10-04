@@ -173,8 +173,8 @@ public:
         : bgTasks(), pocketGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), popup(), errorMessage(), letterView(),
           letterCloseButton(), mailboxLetters(), unk_32ac(), bottomButtons(), heldLetter(), swapLetter() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -393,14 +393,14 @@ extern "C" ProcProfile sMailboxMenuProfile = {(void *(*)())MailboxMenu_Create, 0
 
 extern "C" MailboxMenu *MailboxMenu_Create() { return new MailboxMenu(); }
 
-BOOL MailboxMenu::vfunc_00() {
+BOOL MailboxMenu::onCreate() {
     initParts();
     setTransitionState(0);
     setPhase(0);
     return TRUE;
 }
 
-BOOL MailboxMenu::vfunc_0c() {
+BOOL MailboxMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
@@ -723,7 +723,7 @@ void MailboxMenu::releaseResources() {
 
 void MailboxMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void MailboxMenu::postInputUpdate() {
@@ -1422,7 +1422,7 @@ void MailboxMenu::startPromptButtonInput() {
     restartKeyRepeat();
     promptChoice = 1;
     ((MenuCursor *)&cursor)->setAnimIfChanged(1);
-    cursor.vfunc_0c();
+    cursor.update();
     s32 t = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(4);
     s32 u = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(4);
     ((MenuCursorBase *)&cursor)->warpTo(t, u);
@@ -1804,7 +1804,7 @@ s32 MailboxMenu::getCursorTargetY() {
 
 void MailboxMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void MailboxMenu::moveCursorToTarget() {
@@ -1865,7 +1865,7 @@ void MailboxMenu::showCursorAtSlot() {
 
 void MailboxMenu::refreshCursor() {
     ((MenuCursorBase *)&cursor)->setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void MailboxMenu::pressCloseButton() {

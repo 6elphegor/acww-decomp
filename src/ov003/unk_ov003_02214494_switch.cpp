@@ -40,10 +40,10 @@ s32 Scene_GetCurrent();
 }
 
 
-void ReddTent::vfunc_4c(u32 a, u8 b) {
+void ReddTent::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 6:
-        BuildingActor::vfunc_4c(a, b);
+        BuildingActor::onInteractionEvent(a, b);
         break;
     case 0:
     case 1:

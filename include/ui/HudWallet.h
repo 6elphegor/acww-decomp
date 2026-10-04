@@ -15,7 +15,7 @@ public:
     HudWallet();
     virtual ~HudWallet();
     virtual void draw();
-    virtual void vfunc_0c();
+    virtual void update();
 
     typedef void (HudWallet::*Fn)();
 

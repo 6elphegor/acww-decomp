@@ -47,8 +47,8 @@ _ZN13InsectBookTab8execMainEv kind:function(thumb,size=0x2a) addr:0x0229707c
 _ZN13InsectBookTab12runMainStateEv kind:function(thumb,size=0xcc) addr:0x022970a8
 _ZN13InsectBookTab14execTransitionEv kind:function(thumb,size=0x94) addr:0x02297174
 _ZN13InsectBookTab6onDrawEv kind:function(thumb,size=0x5c) addr:0x02297208
-_ZN13InsectBookTab8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02297264
-_ZN13InsectBookTab8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02297280
+_ZN13InsectBookTab8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02297264
+_ZN13InsectBookTab8onCreateEv kind:function(thumb,size=0x20) addr:0x02297280
 InsectBookTab_Create kind:function(thumb,size=0x58) addr:0x022972a0
 data_ov116_02297300 kind:data(any) addr:0x02297300
 data_ov116_02297308 kind:data(any) addr:0x02297308

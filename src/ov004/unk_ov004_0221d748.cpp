@@ -77,7 +77,7 @@ struct Unk_ov004_0221e0b4_Ent {
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
-#define func_0201b08c _ZN8NpcActor8vfunc_4cEi
+#define func_0201b08c _ZN8NpcActor18onInteractionEventEi
 #define NpcActor_netSetSlotsIfOwner _ZN8NpcActor18netSetSlotsIfOwnerEjjjz
 #define NpcActor_isNetOwner _ZN8NpcActor10isNetOwnerEv
 #define NpcActor_netGetSlots _ZN8NpcActor11netGetSlotsEii
@@ -207,12 +207,12 @@ public:
 class SpNpcBooker : public SpNpcActor {
 public:
     SpNpcBooker() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 cmd, u8 arg);
-    virtual BOOL vfunc_58(void *p);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 cmd, u8 arg);
+    virtual BOOL acceptsSelfRequestedInteraction(void *p);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -252,8 +252,8 @@ struct Unk_ov004_0221d9bc_Range {
 
 extern "C" SpNpcBooker *SpNpcBooker_Create() { return new SpNpcBooker; }
 
-BOOL SpNpcBooker::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcBooker::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     NpcActor_setTalkRequest(this, &talk);
@@ -267,8 +267,8 @@ BOOL SpNpcBooker::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcBooker::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcBooker::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     homeAngle = rotY;
@@ -285,8 +285,8 @@ BOOL SpNpcBooker::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcBooker::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcBooker::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     CommManager *g = gCommManager;
@@ -330,7 +330,7 @@ BOOL SpNpcBooker::mainAct00() { return TRUE; }
 
 BOOL SpNpcBooker::setupAct01() {
     ActorTalkRequest *p = &talk;
-    p->vfunc_08();
+    p->resetMsg();
     func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
     void *q = func_02015aac(&talk);
     s32 r = 0;
@@ -421,7 +421,7 @@ SpNpcBookerTalk::SpNpcBookerTalk() {}
 SpNpcBookerTalk::~SpNpcBookerTalk() {}
 
 void SpNpcBookerTalk::attachOwner(NpcActor *o) {
-    vfunc_08();
+    resetMsg();
     owner = o;
 }
 
@@ -649,14 +649,14 @@ void SpNpcBookerTalk::runScript03() {
     TalkWindowState_setNextMessage(o, &c, sSpNpcBookerMsgFiles[0]);
 }
 
-BOOL SpNpcBooker::vfunc_48(void *) {
+BOOL SpNpcBooker::acceptsInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-BOOL SpNpcBooker::vfunc_58(void *p) {
+BOOL SpNpcBooker::acceptsSelfRequestedInteraction(void *p) {
     if (netSyncOff != 0) {
         return TRUE;
     }
@@ -666,7 +666,7 @@ BOOL SpNpcBooker::vfunc_58(void *p) {
     return TRUE;
 }
 
-void SpNpcBooker::vfunc_4c(u32 cmd, u8 arg) {
+void SpNpcBooker::onInteractionEvent(u32 cmd, u8 arg) {
     s32 a;
     s32 b;
     switch (cmd) {

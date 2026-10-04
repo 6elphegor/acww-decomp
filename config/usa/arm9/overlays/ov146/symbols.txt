@@ -78,8 +78,8 @@ _ZN17WfcFriendListMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02293914
 _ZN17WfcFriendListMenu12runMainStateEv kind:function(thumb,size=0xd8) addr:0x02293930
 _ZN17WfcFriendListMenu14execTransitionEv kind:function(thumb,size=0x94) addr:0x02293a08
 _ZN17WfcFriendListMenu6onDrawEv kind:function(thumb,size=0x290) addr:0x02293a9c
-_ZN17WfcFriendListMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02293d2c
-_ZN17WfcFriendListMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02293d48
+_ZN17WfcFriendListMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02293d2c
+_ZN17WfcFriendListMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x02293d48
 WfcFriendListMenu_Create kind:function(thumb,size=0x84) addr:0x02293d68
 data_ov146_02293e00 kind:data(any) addr:0x02293e00
 data_ov146_02293e08 kind:data(any) addr:0x02293e08

@@ -84,8 +84,8 @@ class TimeSelectMenu : public MenuProc {
 public:
     TimeSelectMenu() : cursor(), bottomButtons(), picker() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -175,14 +175,14 @@ static inline BOOL Unk_ov136_02295d1c_Both() {
 
 extern "C" TimeSelectMenu *TimeSelectMenu_Create() { return new TimeSelectMenu(); }
 
-BOOL TimeSelectMenu::vfunc_00() {
+BOOL TimeSelectMenu::onCreate() {
     initPicker();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL TimeSelectMenu::vfunc_0c() {
+BOOL TimeSelectMenu::onDelete() {
     _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent());
     releaseResources();
     return TRUE;
@@ -305,7 +305,7 @@ void TimeSelectMenu::releaseResources() {
 
 void TimeSelectMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void TimeSelectMenu::postInputUpdate() { postStateUpdate(); }
@@ -667,7 +667,7 @@ s32 TimeSelectMenu::getCursorTargetY() {
 
 void TimeSelectMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void TimeSelectMenu::moveCursorToTarget() {
@@ -694,7 +694,7 @@ void TimeSelectMenu::startCursorMove(s32 a, s32 b) {
 
 void TimeSelectMenu::refreshCursor() {
     ((MenuCursorBase *)&cursor)->setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void TimeSelectMenu::pressCursor() {

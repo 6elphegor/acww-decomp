@@ -22,17 +22,17 @@ public:
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
-    virtual BOOL vfunc_00();
+    virtual BOOL onCreate();
     virtual void postCreate(s32 a);
     virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
+    virtual BOOL postDelete(s32 a);
     virtual BOOL onExecute();
     virtual BOOL preDraw();
     virtual VecFx32 *getInteractionPos();
-    virtual BOOL vfunc_60();
-    virtual void vfunc_64(s32 a, Unk_ov004_02206ec8_Ctx *b);
-    virtual BOOL vfunc_68();
-    virtual void vfunc_6c(s32 a, void *b);
+    virtual BOOL onMatCalc();
+    virtual void onNodeVisCalc(s32 a, Unk_ov004_02206ec8_Ctx *b);
+    virtual BOOL onJointCalcPre();
+    virtual void onJointCalcPost(s32 a, void *b);
     virtual BOOL changeAct(u32 a, u8 b);
     virtual u8 getActSwitchState(u32 a);
     virtual u8 getActAid();

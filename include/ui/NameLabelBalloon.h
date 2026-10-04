@@ -16,7 +16,7 @@ public:
     NameLabelBalloon();                     // C1 0x0208d4b0
     virtual ~NameLabelBalloon();            // D0 0x0208d44c, D1 0x0208d480
     virtual void draw();                    // 0x0208d3cc
-    virtual void vfunc_0c();                // 0x0208d33c
+    virtual void update();                // 0x0208d33c
 
     void fitToLabel();                      // 0x0208d154
     void applyKindAnim();                   // 0x0208d1bc

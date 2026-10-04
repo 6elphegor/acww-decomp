@@ -13725,7 +13725,7 @@ extern "C" void PlayerActor_ThrowBottleShowItem(Obj *o) {
         s32 f = o->bodyAnimFrame.f;
         if (f >= 6 && f <= 0x19) {
             Unk_02006d14_setActionFlag(o, 0xd);
-            o->vfunc_5c((Unk_020d77a4_Vec3 *)o->shownItemPos);
+            o->getHeldItemPos((Unk_020d77a4_Vec3 *)o->shownItemPos);
             o->shownItem = 0x1520;
             s32 v = (f - 6) * 0x333;
             if (f >= 0xb) {

@@ -294,7 +294,7 @@ extern "C" void DateTimePicker_BeginFrame(S *s) {
     s->listScreenTask.cancel();
     s->listPaletteTask.cancel();
     DateTimePicker_TickFieldFlash(s);
-    s->knob.vfunc_0c();
+    s->knob.update();
 }
 
 extern "C" void DateTimePicker_EndFrame(S *s) {

@@ -297,8 +297,8 @@ class RemotePlayerSpawner : public GameProc {
 public:
     static GameProc *create();
     RemotePlayerSpawner();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~RemotePlayerSpawner();
@@ -318,7 +318,7 @@ RemotePlayerSpawner::RemotePlayerSpawner() {}
 
 RemotePlayerSpawner::~RemotePlayerSpawner() {}
 
-BOOL RemotePlayerSpawner::vfunc_00() { return TRUE; }
+BOOL RemotePlayerSpawner::onCreate() { return TRUE; }
 
 BOOL RemotePlayerSpawner::onExecute() {
     CommManager *g = gCommManager;
@@ -429,5 +429,5 @@ ret1:
 
 BOOL RemotePlayerSpawner::onDraw() { return TRUE; }
 
-BOOL RemotePlayerSpawner::vfunc_0c() { return TRUE; }
+BOOL RemotePlayerSpawner::onDelete() { return TRUE; }
 

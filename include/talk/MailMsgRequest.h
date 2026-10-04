@@ -12,7 +12,7 @@ class MailMsgRequest : public MsgRequest {
 public:
     MailMsgRequest();
     virtual ~MailMsgRequest();
-    virtual const char *vfunc_s0c();    // 0x0c (alias label of _ZN14MailMsgRequest8vfunc_0cEv)
+    virtual const char *getMsgDir();    // 0x0c
     u32 *getNamePosOut();
     MsgString *getDest();
     void setNamePosOut(u32 *v);

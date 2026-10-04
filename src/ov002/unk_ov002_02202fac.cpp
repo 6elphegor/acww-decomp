@@ -50,7 +50,7 @@
 #define LabelButton_setLabelText _ZN11LabelButton12setLabelTextEv
 
 extern "C" {
-BOOL _ZN8ProcBase8vfunc_14Ev(void *self, s32 a);
+BOOL _ZN8ProcBase10postDeleteEv(void *self, s32 a);
 void _ZN8GameProc10postCreateEv(void *self, s32 a);
 void _ZN16MenuTitleBalloon8showTextEhii(void *self, s32 x, s32 a, s32 b);
 void VillagerId_getName(s32 a, void *buf);
@@ -164,7 +164,7 @@ void *_ZN9MenuSlideC1Ev(void *self);
 void *_ZN12CursorMotionC1Ev(void *self);
 void *_ZN12CursorMotionD1Ev(void *self);
 void _ZN10HandCursor4drawEv();
-void _ZN14MenuCursorBase8vfunc_0cEv();
+void _ZN14MenuCursorBase6updateEv();
 void _ZN8UiWidget9setOriginEii();
 }
 
@@ -431,7 +431,7 @@ BOOL MenuErrorMessage::update(s32 a) {
 
 void MenuErrorMessage::startTalk(u8 *a, s32 b) {
     TalkWindowState *p = TalkWindow_Get(1);
-    talk.vfunc_08();
+    talk.resetMsg();
     talk.setFileName("obj_etc_error");
     talk.msgIndex = *a;
     p->attachRequest(&talk);
@@ -573,7 +573,7 @@ s32 MenuLabelButton::getAnchorY(s32 k) {
 
 BOOL MenuLabelButton::stepAnim() {
     if (isAnimDone() == 0) {
-        vfunc_0c();
+        update();
         return TRUE;
     }
     return FALSE;
@@ -595,7 +595,7 @@ void MenuLabelButton::showAt(s32 v, s32 x, s32 y) {
     setPos(0, 0);
     showLayer2();
     setState(1);
-    vfunc_0c();
+    update();
 }
 
 BOOL MenuLabelButton::isTouched() {
@@ -729,14 +729,14 @@ void MenuTitleBalloon::showText(u8 a, s32 b, s32 c) {
     setText((StrBuf *)&t);
     disablePopAnim();
     requestOpen();
-    vfunc_0c();
-    vfunc_0c();
+    update();
+    update();
 }
 
 void MenuTitleBalloon::hideNow() {
     requestClose();
-    vfunc_0c();
-    vfunc_0c();
+    update();
+    update();
 }
 
 MenuBottomButtons::MenuBottomButtons() { layout = 0; }

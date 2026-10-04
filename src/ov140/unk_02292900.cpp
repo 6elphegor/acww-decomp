@@ -66,8 +66,8 @@ class DistantTownsMenu : public MenuProc {
 public:
     DistantTownsMenu() : listPanel(), cursor(), bottomButtons(), screenTask(), textLabels() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -226,14 +226,14 @@ extern "C" u32 data_ov140_02293dcc[12] = {
 
 extern "C" DistantTownsMenu *DistantTownsMenu_Create() { return new DistantTownsMenu(); }
 
-BOOL DistantTownsMenu::vfunc_00() {
+BOOL DistantTownsMenu::onCreate() {
     initDistantTowns();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL DistantTownsMenu::vfunc_0c() {
+BOOL DistantTownsMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
     releaseResources();
     return TRUE;
@@ -405,7 +405,7 @@ void DistantTownsMenu::releaseResources() {
 
 void DistantTownsMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void DistantTownsMenu::postInputUpdate() { postStateUpdate(); }
@@ -677,7 +677,7 @@ s32 DistantTownsMenu::getCursorTargetY() {
 
 void DistantTownsMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void DistantTownsMenu::moveCursorToTarget() {
@@ -699,7 +699,7 @@ void DistantTownsMenu::moveCursorTo(s32 a, s32 b) {
 
 void DistantTownsMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void DistantTownsMenu::pressCursor() {

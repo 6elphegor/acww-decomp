@@ -101,7 +101,7 @@ void ScrollKnob::draw() {
     }
 }
 
-void ScrollKnob::vfunc_0c() {
+void ScrollKnob::update() {
     if (state != 0) {
         layerAnim1.update();
         priority.update();

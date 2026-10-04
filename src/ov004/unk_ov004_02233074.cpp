@@ -371,8 +371,8 @@ public:
 class FurnitureManager : public GameProc {
 public:
     FurnitureManager();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~FurnitureManager();
@@ -797,7 +797,7 @@ FurnitureManager::~FurnitureManager() {
 }
 
 // @0x2235dfc unk_02235984.cpp
-BOOL FurnitureManager::vfunc_00() {
+BOOL FurnitureManager::onCreate() {
     if (Scene_InHouseRoom() || Scene_InVillagerHouse()) {
         sFtrMgrTvSoundEnabled = 1;
     }
@@ -854,7 +854,7 @@ BOOL FurnitureManager::onDraw() {
 }
 
 // @0x2235d1c unk_02235984.cpp
-BOOL FurnitureManager::vfunc_0c() {
+BOOL FurnitureManager::onDelete() {
     soundList.checkInitialized();
     FtrMoveAnim_Unload(&moveAnim);
     if (FtrMgr_GetMaxFurniture() > 1) {

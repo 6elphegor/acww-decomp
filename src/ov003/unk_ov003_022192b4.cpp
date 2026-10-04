@@ -70,8 +70,8 @@ public:
     {
         TreeAnimSet_Construct(&treeAnimSet);
     }
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_00();
+    virtual BOOL onDelete();
+    virtual BOOL onCreate();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
@@ -1551,7 +1551,7 @@ extern "C" { BOOL FieldObj_LoadTurnips(Obj *o); }
 extern "C" { BOOL FieldObj_LoadDesignModels(Obj *o); }
 extern "C" { BOOL FieldObj_LoadDesigns(); }
 extern "C" { BOOL FieldObj_RunLoaders(Obj *o); }
-extern "C" { BOOL _ZN18FieldObjectManager8vfunc_00Ev(Obj *o); }
+extern "C" { BOOL _ZN18FieldObjectManager8onCreateEv(Obj *o); }
 extern "C" { BOOL _ZN18FieldObjectManager9onExecuteEv(Obj *o); }
 extern "C" { s32 FieldObj_DrawIconModel(Obj *o, u32 idx, V3 *a, s32 b, V3 *c, s32 d, s32 e, s32 f); }
 extern "C" { s32 FieldObj_DrawItemIcon(Obj *o, u32 t, V3 *a, s32 b, V3 *c, s32 d, s32 e, s32 f); }
@@ -4381,7 +4381,7 @@ BOOL FieldObj_RunLoaders(Obj *o) {
 
 namespace ns_0221e4d4 {
 extern "C" {
-BOOL _ZN18FieldObjectManager8vfunc_00Ev(Obj *o) {
+BOOL _ZN18FieldObjectManager8onCreateEv(Obj *o) {
     BOOL r = FALSE;
     if (sFieldObjectModelHeap == NULL) {
         sFieldObjectModelHeap = ExpHeap_CreateInPlace(sFieldObjectModelHeapBuf, (u32)(sFieldObjectModelHeapBuf + 0x21400) - (u32)sFieldObjectModelHeapBuf);
@@ -5052,7 +5052,7 @@ s32 _ZN18FieldObjectManager6onDrawEv(u8 *self) {
 }
 }
 
-BOOL FieldObjectManager::vfunc_0c() {
+BOOL FieldObjectManager::onDelete() {
     using ns_0221cb54::gFieldObjectManager;
     using ns_0221cb54::sFieldObjectModelHeap;
     using ns_0221cb54::sFieldObjectAnimHeap;

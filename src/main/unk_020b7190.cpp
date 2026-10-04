@@ -304,7 +304,7 @@ void FieldInfoBalloon::update() {
     updateFacingItem();
     (this->*tbl[state])();
     timerMsgRestarted = 0;
-    balloon.vfunc_0c();
+    balloon.update();
 }
 
 const s16 sFieldInfoBalloonNetMsgFrames[12] = {0, 0x1e, 0x1e, 0, 0, 0x78, 0x78, 0x78, 0x78, 0x63, -1, 0};

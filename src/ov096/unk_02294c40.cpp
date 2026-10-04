@@ -554,14 +554,14 @@ extern "C" PocketMenu *PocketMenu_Create() {
     return new PocketMenu;
 }
 
-BOOL PocketMenu::vfunc_00() {
+BOOL PocketMenu::onCreate() {
     initPocketMenu();
     setTransitionState(0);
     setPhase(1);
     return TRUE;
 }
 
-BOOL PocketMenu::vfunc_0c() {
+BOOL PocketMenu::onDelete() {
     ProcBase_GetParent(this);
     _ZN10MenuTabBar15onTabMenuClosedEv();
     releaseResources();
@@ -3159,7 +3159,7 @@ s32 PocketMenu::getCursorTargetY() {
 
 void PocketMenu::hideCursor() {
     _ZN10MenuCursor16setAnimIfChangedEi(unk_2498, 0);
-    ((UiWidget *)unk_2498)->vfunc_0c();
+    ((UiWidget *)unk_2498)->update();
 }
 
 void PocketMenu::func_ov096_02296854() {
@@ -3209,7 +3209,7 @@ void PocketMenu::placeCursorOnTarget() {
 
 void PocketMenu::func_ov096_022966e8() {
     _ZN14MenuCursorBase11setPoseIdleEv(unk_2498);
-    ((UiWidget *)unk_2498)->vfunc_0c();
+    ((UiWidget *)unk_2498)->update();
 }
 
 void PocketMenu::func_ov096_022966c8() {

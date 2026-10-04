@@ -279,8 +279,8 @@ class FriendRosterTab : public MenuProc {
 public:
     FriendRosterTab() : popup(), textLabels(), helpText(), cursor(), vramTasks(), errorMessage() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -435,14 +435,14 @@ static inline BOOL Unk_ov119_02294a44_Both() {
 
 extern "C" FriendRosterTab *FriendRosterTab_Create() { return new FriendRosterTab(); }
 
-BOOL FriendRosterTab::vfunc_00() {
+BOOL FriendRosterTab::onCreate() {
     initFriendRoster();
     setTransitionState(0);
     setPhase(1);
     return TRUE;
 }
 
-BOOL FriendRosterTab::vfunc_0c() {
+BOOL FriendRosterTab::onDelete() {
     MenuTabBar_onTabMenuClosed(ProcBase_GetParent(this));
     releaseResources();
     return TRUE;
@@ -768,7 +768,7 @@ void FriendRosterTab::postStateUpdate() {
 
 void FriendRosterTab::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void FriendRosterTab::postInputUpdate() { postStateUpdate(); }
@@ -1132,7 +1132,7 @@ s32 FriendRosterTab::getFocusY() {
 
 void FriendRosterTab::hideCursor() {
     U970_B->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void FriendRosterTab::moveCursorToTarget() {
@@ -1193,7 +1193,7 @@ void FriendRosterTab::releaseCursor() {
 
 void FriendRosterTab::refreshCursor() {
     U970_A->setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 BOOL FriendRosterTab::moveFocus(u32 keys) {

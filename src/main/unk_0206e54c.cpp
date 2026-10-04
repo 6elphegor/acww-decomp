@@ -35,8 +35,8 @@ struct Unk_020de060 {
 class MenuManager : public GameProc {
 public:
     MenuManager() {}
-    BOOL vfunc_00();
-    BOOL vfunc_0c();
+    BOOL onCreate();
+    BOOL onDelete();
     BOOL onExecute();
     BOOL onDraw();
 };
@@ -433,7 +433,7 @@ extern "C" MenuManager *MenuManager_Create() { return new MenuManager; }
 
 
 
-BOOL MenuManager::vfunc_00() {
+BOOL MenuManager::onCreate() {
     MenuHeap_Create(0x8c00, 0);
     sMenuLoadedMask[0] = sMenuLoadedMask[1] = sMenuLoadedMask[2] = 0;
     sMenuReleaseMask[0] = sMenuReleaseMask[1] = sMenuReleaseMask[2] = 0;
@@ -449,7 +449,7 @@ BOOL MenuManager::vfunc_00() {
     return TRUE;
 }
 
-BOOL MenuManager::vfunc_0c() {
+BOOL MenuManager::onDelete() {
     sMenuReleaseMask[0] |= sMenuLoadedMask[0];
     sMenuReleaseMask[1] |= sMenuLoadedMask[1];
     sMenuReleaseMask[2] |= sMenuLoadedMask[2];

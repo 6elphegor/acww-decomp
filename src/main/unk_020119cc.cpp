@@ -2437,7 +2437,7 @@ extern s32 gNpcModelHeap;
 extern s16 data_02135f44[];
 BOOL NetArea_IsLocalOwner();
 s32 _ZN9Character10postCreateEi(void *self, s32 x);
-BOOL _ZN9Character8vfunc_04Ev(void *self);
+BOOL _ZN9Character9preCreateEv(void *self);
 s32 _ZN9Character13setAreaSyncedEv(void *self);
 s32 _ZN9Character9setCharIdEj(void *self, u32 v);
 BOOL _ZN11NpcMoveCtrl14setTargetAngleEs(void *p, s32 v);
@@ -3239,7 +3239,7 @@ s32 NpcActor::getAct0BAnimB() {
     return data_020c6d60[i];
 }
 
-u16 NpcActor::vfunc_9c() {
+u16 NpcActor::getEmotion0BlendFrames() {
     using namespace nR;
     return data_020c6cc8;
 }
@@ -3369,10 +3369,10 @@ u8 NpcActor::isUpdating() {
     return updateEnabled;
 }
 
-BOOL NpcActor::vfunc_04() {
+BOOL NpcActor::preCreate() {
     using namespace nR;
     u16 tmp;
-    if (_ZN9Character8vfunc_04Ev(this) == 0) {
+    if (_ZN9Character9preCreateEv(this) == 0) {
         return FALSE;
     }
     tmp = param;
@@ -3399,7 +3399,7 @@ BOOL NpcActor::vfunc_04() {
     return TRUE;
 }
 
-BOOL NpcActor::vfunc_00() {
+BOOL NpcActor::onCreate() {
     using namespace nR;
     if (NetArea_IsLocalOwner() != 0) {
         netSetSlots(1, gCommManager->myAid, 4);
@@ -3596,10 +3596,10 @@ BOOL NpcActor::onDraw() {
     return TRUE;
 }
 
-BOOL NpcActor::vfunc_30() {
+BOOL NpcActor::onDeleteRequest() {
     using namespace nQ;}
 
-BOOL NpcActor::vfunc_0c() {
+BOOL NpcActor::onDelete() {
     using namespace nQ;
     releaseModel();
     _ZN11NpcFaceAnim7releaseEv(&faceAnim);
@@ -3611,7 +3611,7 @@ BOOL NpcActor::vfunc_0c() {
     return TRUE;
 }
 
-BOOL NpcActor::vfunc_5c(Unk_020d77a4_Vec3 *out) {
+BOOL NpcActor::getHeldItemPos(Unk_020d77a4_Vec3 *out) {
     using namespace nQ;
     s32 a = jointMtx.m[9];
     if (a == 0 && jointMtx.m[10] == 0 && jointMtx.m[11] == 0) {
@@ -3624,7 +3624,7 @@ BOOL NpcActor::vfunc_5c(Unk_020d77a4_Vec3 *out) {
     return TRUE;
 }
 
-void NpcActor::vfunc_4c(u32 v, u8) {
+void NpcActor::onInteractionEvent(u32 v, u8) {
     using namespace nQ;
     if (v == 8) {
         PlayerActor_SetNoFaceTalkTarget(0, 4);
@@ -3634,7 +3634,7 @@ void NpcActor::vfunc_4c(u32 v, u8) {
 BOOL NpcActor::onToolHit(u16 *) {
     using namespace nQ; return 0; }
 
-void *NpcActor::vfunc_64() {
+void *NpcActor::getVillagerData() {
     using namespace nQ; return 0; }
 
 namespace nQ {
@@ -7326,9 +7326,9 @@ ActorTalkRequest::~ActorTalkRequest() {
     using namespace nH;
 }
 
-void ActorTalkRequest::vfunc_08() {
+void ActorTalkRequest::resetMsg() {
     using namespace nH;
-    TalkMsgRequest::vfunc_08();
+    TalkMsgRequest::resetMsg();
     unk_44 = 0;
     unk_4c = NULL;
     unk_50 = 0;
@@ -7368,7 +7368,7 @@ void ActorTalkRequest::setPartnerActor(Unk_02015b8c_Scene *p) {
     if (unk_4c != NULL) {
         ActorTalkRequest *q = _ZN8NpcActor14getTalkRequestEv();
         if (q != NULL) {
-            q->vfunc_08();
+            q->resetMsg();
             unk_4c->vfunc_8c();
         }
     }

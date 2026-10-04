@@ -143,8 +143,8 @@ class FriendCodeMenu : public MenuProc {
 public:
     FriendCodeMenu() : labels(), cursor(), bottomButtons(), screenTasks(), errorMessage() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -254,14 +254,14 @@ public:
 
 extern "C" FriendCodeMenu *FriendCodeMenu_Create() { return new FriendCodeMenu(); }
 
-BOOL FriendCodeMenu::vfunc_00() {
+BOOL FriendCodeMenu::onCreate() {
     initState();
     setTransitionState(0);
     setPhase(1);
     return TRUE;
 }
 
-BOOL FriendCodeMenu::vfunc_0c() {
+BOOL FriendCodeMenu::onDelete() {
     MenuTabBar *p = (MenuTabBar *)ProcBase_GetParent();
     if (p->onTabMenuClosed() == 6) {
         p->showTabs();
@@ -512,7 +512,7 @@ void FriendCodeMenu::postStateUpdate() { flushScreens(); }
 
 void FriendCodeMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void FriendCodeMenu::postInputUpdate() { postStateUpdate(); }
@@ -817,7 +817,7 @@ s32 FriendCodeMenu::getCursorTargetY() {
 
 void FriendCodeMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void FriendCodeMenu::moveCursorToTarget() {
@@ -849,7 +849,7 @@ void FriendCodeMenu::releaseCursor() {
 
 void FriendCodeMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 BOOL FriendCodeMenu::moveCursorByPad(u32 keys) {

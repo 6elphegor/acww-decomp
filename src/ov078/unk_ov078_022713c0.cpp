@@ -145,11 +145,11 @@ struct Unk_020d77a4_Vec3;
 class SpNpcSaharah : public SpNpcActor {
 public:
     SpNpcSaharah() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 v, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 v, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -259,8 +259,8 @@ extern "C" SpNpcSaharah *SpNpcSaharah_Create() {
 
 s32 SpNpcSaharah::getWalkAnimSpeedScale() { return data_020c6cf0; }
 
-BOOL SpNpcSaharah::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcSaharah::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -268,16 +268,16 @@ BOOL SpNpcSaharah::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcSaharah::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcSaharah::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     changeAct(3);
     return TRUE;
 }
 
-BOOL SpNpcSaharah::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcSaharah::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     TownSessionState_GetVisitorPos(TownSessionState_Get())->setPos(position.x, position.z);
@@ -539,7 +539,7 @@ SpNpcSaharahTalk::SpNpcSaharahTalk() {}
 SpNpcSaharahTalk::~SpNpcSaharahTalk() {}
 
 void SpNpcSaharahTalk::attachOwner(SpNpcSaharah *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = owner;
     turbanSlot = -1;
     for (s32 i = 0; i < 2; i++) {
@@ -743,7 +743,7 @@ void SpNpcSaharahTalk::onChoice(u32) {
     }
 }
 
-BOOL SpNpcSaharah::vfunc_48(void *) {
+BOOL SpNpcSaharah::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
@@ -752,15 +752,15 @@ BOOL SpNpcSaharah::vfunc_48(void *) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void SpNpcSaharah::vfunc_4c(u32 v, u8) {
+void SpNpcSaharah::onInteractionEvent(u32 v, u8) {
     switch (v) {
     case 1:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(0);
         break;
     case 3:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(4);
         break;

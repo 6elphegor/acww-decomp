@@ -130,7 +130,7 @@ static inline BOOL Unk_ov090_02291aa0_Both() {
 
 extern "C" MenuTabBar *MenuTabBar_Create() { return new MenuTabBar(); }
 
-BOOL MenuTabBar::vfunc_00() {
+BOOL MenuTabBar::onCreate() {
     justOpened = 1;
     func_0206e60c();
     initTabBar();
@@ -147,7 +147,7 @@ BOOL MenuTabBar::vfunc_00() {
     return TRUE;
 }
 
-BOOL MenuTabBar::vfunc_0c() {
+BOOL MenuTabBar::onDelete() {
     MenuScreen_Reset();
     releaseResources();
     Snd_EndMenuDuck();

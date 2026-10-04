@@ -110,8 +110,8 @@ public:
     u8 pad_db;
     /* 0xdc */ Unk_020dc034_Dtor seEmitter;
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
@@ -354,7 +354,7 @@ extern "C" HandOverItem *HandOverItem_Create()
     return new HandOverItem;
 }
 
-BOOL HandOverItem::vfunc_00()
+BOOL HandOverItem::onCreate()
 {
     resetState();
     _ZN12Unk_02003c3013func_02003eccEv(&seEmitter);
@@ -362,7 +362,7 @@ BOOL HandOverItem::vfunc_00()
     return TRUE;
 }
 
-BOOL HandOverItem::vfunc_0c()
+BOOL HandOverItem::onDelete()
 {
     _ZN12Unk_02003c3013func_02003e50Ev(&sHandOverItem->seEmitter);
     sHandOverItem = NULL;

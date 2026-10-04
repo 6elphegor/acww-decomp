@@ -23,8 +23,8 @@
 // Vtable of every actor (original vtable symbol minus 8 bytes, 0x150 bytes):
 //   primary slots 0x00..0xb8 (0xbc bytes), then 8 bytes secondary header, then the secondary vtable of TalkMsgRequest
 //   (D1, D0, 08..74).  Primary slot -> symbol:
-//     00 ov009::vfunc_00      04 Character::vfunc_04   08 Character::postCreate(s32)   0c Base::vfunc_0c
-//     10 ov009::vfunc_10      14 Actor::vfunc_14   18 Base::vfunc_18
+//     00 ov009::vfunc_00      04 Character::preCreate   08 Character::postCreate(s32)   0c Base::vfunc_0c
+//     10 ov009::vfunc_10      14 Actor::postDelete   18 Base::vfunc_18
 //     1c ov009::vfunc_1c   (symbols.txt names it vfunc_24, ALIAS NEEDED)   20 ov009::vfunc_20(u32) (symbols: vfunc_28Ej, ALIAS)
 //     24 Base::vfunc_24       28 ov009::vfunc_28 (symbols: vfunc_30Ev, ALIAS)   2c Actor::postDraw   30..3c Base
 //     40 D1 44 D0   48 ov009::vfunc_48(Character*)   4c ov009::vfunc_4c(u32,u8)   50 ov009::vfunc_50
@@ -33,10 +33,10 @@
 //     func_ov009_0225b880, ALIAS)
 // Aliases (zero-size labels, tools/pipeline/alias.py) the coordinator must add; <existing> -> <new>:
 //   ov009  _ZN13BuildingActor10preExecuteEv           -> _ZN13BuildingActor10preExecuteEv        (0x0225db04)
-//   ov009  _ZN13BuildingActor7preDrawEj           -> _ZN13BuildingActor8vfunc_20Ej        (0x0225da90)
-//   ov009  _ZN13BuildingActor7preDrawEv           -> _ZN13BuildingActor7preDrawEv        (0x0225d9e4)
-//   ov009  func_ov009_0225b884                           -> _ZN13BuildingActor8vfunc_b4Ev        (0x0225b884)
-//   ov009  func_ov009_0225b880                           -> _ZN13BuildingActor8vfunc_b8Ev        (0x0225b880)
+//   ov009  _ZN13BuildingActor11postExecuteEj           -> _ZN13BuildingActor11postExecuteEj        (0x0225da90)
+//   ov009  _ZN13BuildingActor11postExecuteEv           -> _ZN13BuildingActor11postExecuteEv        (0x0225d9e4)
+//   ov009  func_ov009_0225b884                           -> _ZN13BuildingActor11getSoundPosEv        (0x0225b884)
+//   ov009  func_ov009_0225b880                           -> _ZN13BuildingActor20calcCustomBaseMatrixEv        (0x0225b880)
 //   main   TalkMsgRequest slots: the unit uses the TalkMsgRequest slot names (onMessageStart ... onTalkEnd); no
 //          primary-chain class of the family declares a method of these names.
 //   ov003  0x0221445c is _ZThn236_N13BuildingActor12onMessageEndEv, the thunk of ov009::onMessageEnd in slot 0x14 of the secondary
@@ -142,20 +142,20 @@ public:
     VillagerHouse();
     virtual ~VillagerHouse();
 
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual s32 vfunc_64();
-    virtual s32 vfunc_68();
-    virtual BOOL vfunc_70();
-    virtual void vfunc_78();
-    virtual BOOL vfunc_8c();
-    virtual BOOL vfunc_90();
-    virtual BOOL vfunc_98();
-    virtual BOOL vfunc_9c();
-    virtual char *vfunc_a4();
-    virtual char *vfunc_a8();
-    virtual char *vfunc_ac();
+    virtual s32 getDoorInAnim();
+    virtual s32 getDoorOutAnim();
+    virtual BOOL initBuilding();
+    virtual void setupTalkMsg();
+    virtual BOOL isOpen();
+    virtual BOOL usesDoorApproach();
+    virtual BOOL playsDoorMelody();
+    virtual BOOL areLightsOn();
+    virtual char *getArcPath();
+    virtual char *getTexPath();
+    virtual char *getLightTexPath();
 
     char *getModelName();
     u8 getHouseVariant();
@@ -193,7 +193,7 @@ extern "C" const u8 sVillagerHouseClosedMsgs[8] = { 0x10, 0x11, 0x12, 0x0e, 0x0f
 
 extern "C" Unk_ov003_SceneEntry sVillagerHouseProfile = { (void *(*)())VillagerHouse_Create, 0x1d, 0x23, 0, 0xc8000, 0x12c000, 0x258000 };
 
-BOOL VillagerHouse::vfunc_70() {
+BOOL VillagerHouse::initBuilding() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     static FxVec3 v(-0x2000, 0x1000, 0x2000);
     Unk_ov003_Vec tmp;
@@ -248,7 +248,7 @@ BOOL VillagerHouse::onDraw() {
     return TRUE;
 }
 
-BOOL VillagerHouse::vfunc_0c() {
+BOOL VillagerHouse::onDelete() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     sVillagerHouses[idx] = 0;
     return TRUE;
@@ -274,7 +274,7 @@ char *VillagerHouse::getModelName() {
     return data_ov003_022352d4;
 }
 
-char *VillagerHouse::vfunc_a4() {
+char *VillagerHouse::getArcPath() {
     s32 a = getHouseStyle();
     char *s = getModelName();
     s32 e = Field_GetStructureTexSuffix();
@@ -282,7 +282,7 @@ char *VillagerHouse::vfunc_a4() {
     return data_ov003_02235308;
 }
 
-char *VillagerHouse::vfunc_a8() {
+char *VillagerHouse::getTexPath() {
     s32 a = getHouseStyle();
     char *s = getModelName();
     s32 e = Field_GetStructureTexSuffix();
@@ -290,19 +290,19 @@ char *VillagerHouse::vfunc_a8() {
     return data_ov003_02235330;
 }
 
-char *VillagerHouse::vfunc_ac() {
+char *VillagerHouse::getLightTexPath() {
     return 0;
 }
 
-s32 VillagerHouse::vfunc_64() {
+s32 VillagerHouse::getDoorInAnim() {
     return VillagerHouseTex_GetDoorInAnim(FieldStructureMgr_GetVillagerHouseTex());
 }
 
-s32 VillagerHouse::vfunc_68() {
+s32 VillagerHouse::getDoorOutAnim() {
     return VillagerHouseTex_GetDoorOutAnim(FieldStructureMgr_GetVillagerHouseTex());
 }
 
-void VillagerHouse::vfunc_78() {
+void VillagerHouse::setupTalkMsg() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     void *p = SaveVillagers_Get(gSaveVillagers, idx);
     setFileName("obj_etc_closed");
@@ -325,7 +325,7 @@ void VillagerHouse::vfunc_78() {
     _ZN11MsgString9BD1Ev(&l[1]);
 }
 
-BOOL VillagerHouse::vfunc_8c() {
+BOOL VillagerHouse::isOpen() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     void *p = SaveVillagers_Get(gSaveVillagers, idx);
     if (p) {
@@ -341,7 +341,7 @@ BOOL VillagerHouse::vfunc_8c() {
     return FALSE;
 }
 
-BOOL VillagerHouse::vfunc_9c() {
+BOOL VillagerHouse::areLightsOn() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     if (Building_IsNight(this)) {
         void *p = SaveVillagers_Get(gSaveVillagers, idx);
@@ -373,11 +373,11 @@ BOOL VillagerHouse::vfunc_9c() {
     return FALSE;
 }
 
-BOOL VillagerHouse::vfunc_90() {
+BOOL VillagerHouse::usesDoorApproach() {
     return TRUE;
 }
 
-BOOL VillagerHouse::vfunc_98() {
+BOOL VillagerHouse::playsDoorMelody() {
     return TRUE;
 }
 

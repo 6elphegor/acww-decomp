@@ -10,10 +10,10 @@ public:
     ReddTent();
     virtual ~ReddTent();
     virtual BOOL onExecute();
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual BOOL vfunc_70();
+    virtual void onInteractionEvent(u32 a, u8 b);
+    virtual BOOL initBuilding();
     virtual void onMessageEnd(u32 attr);
-    virtual BOOL vfunc_8c();
+    virtual BOOL isOpen();
     virtual void onMessageStart(u32 attr);
     virtual void onChoice(u32 attr);
     virtual s32 getVoiceType();

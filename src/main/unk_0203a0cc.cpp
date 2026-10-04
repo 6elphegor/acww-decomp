@@ -389,7 +389,7 @@ void Unk_020d93b8::setBlendParams(u32 *src) {
     blendEaseOut = src[3];
 }
 
-BOOL Unk_020d93b8::vfunc_00() {
+BOOL Unk_020d93b8::onCreate() {
     gCamera = (Unk_021c3070 *)this;
     resetOffsets();
     presetCol = 1;
@@ -512,7 +512,7 @@ BOOL Unk_020d93b8::onDraw() {
     return CameraBase::onDraw();
 }
 
-BOOL Unk_020d93b8::vfunc_0c() {
+BOOL Unk_020d93b8::onDelete() {
     gCamera = 0;
     return TRUE;
 }

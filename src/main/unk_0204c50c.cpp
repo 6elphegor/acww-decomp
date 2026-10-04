@@ -447,13 +447,13 @@ s32 SceneMapModule::buildSceneMap(void *heap) {
     return TRUE;
 }
 
-BOOL SceneMapModule::vfunc_00() {
+BOOL SceneMapModule::onCreate() {
     if (!buildSceneMap(gCurrentHeap)) return FALSE;
     FengShui_UpdateHouse();
     return TRUE;
 }
 
-BOOL SceneMapModule::vfunc_0c() {
+BOOL SceneMapModule::onDelete() {
     void *heap = gCurrentHeap;
     if (gSceneBlockMap != NULL) {
         freeOwnedGrids(heap);

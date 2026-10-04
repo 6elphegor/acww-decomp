@@ -121,8 +121,8 @@ class MapTab : public MenuProc {
 public:
     MapTab() : screenTasks(), textLabels(), scrollKnob(), cursor(), townMarkers(), terrainMarkers(), buildingMarkers() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -345,14 +345,14 @@ static inline BOOL Unk_ov118_02294a58_IsZero(u8 v) {
 
 extern "C" MapTab *MapTab_Create() { return new MapTab(); }
 
-BOOL MapTab::vfunc_00() {
+BOOL MapTab::onCreate() {
     initMapTab();
     setTransitionState(0);
     setPhase(1);
     return TRUE;
 }
 
-BOOL MapTab::vfunc_0c() {
+BOOL MapTab::onDelete() {
     ((MenuTabBar *)ProcBase_GetParent(this))->onTabMenuClosed();
     releaseResources();
     return TRUE;
@@ -721,8 +721,8 @@ void MapTab::postStateUpdate() {
 
 void MapTab::preInputUpdate() {
     preStateUpdate();
-    scrollKnob.vfunc_0c();
-    cursor.vfunc_0c();
+    scrollKnob.update();
+    cursor.update();
 }
 
 void MapTab::postInputUpdate() {
@@ -1648,7 +1648,7 @@ s32 MapTab::getCursorTargetY() {
 
 void MapTab::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void MapTab::moveCursorToTarget() {
@@ -1678,7 +1678,7 @@ void MapTab::releaseCursor() {
 
 void MapTab::refreshCursor() {
     ((MenuCursorBase *)&cursor)->setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 s32 MapTab::moveCursorByPad(void *pad) {

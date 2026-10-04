@@ -12,7 +12,7 @@ public:
     HandCursor(BOOL flag);              // C1 0x0208d8f0, C2 0x0208d94c
     virtual ~HandCursor();              // D2 0x0208d868, D0 0x0208d894, D1 0x0208d8c4
     virtual void draw();                // 0x0208d678
-    virtual void vfunc_0c();            // 0x0208d64c
+    virtual void update();            // 0x0208d64c
 
     BOOL isAnimDone();                  // 0x0208d4fc
     s32 getAnim();                      // 0x0208d534

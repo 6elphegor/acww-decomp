@@ -71,7 +71,7 @@ extern "C" {
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 RoomObjSync_SetState(u32 v);
 s32 RoomObjSync_GetState(u32 v);
-void _ZN5Actor8vfunc_20Ev(void *o, u32 v);
+void _ZN5Actor11postExecuteEv(void *o, u32 v);
 void _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *m, void *r, u32 z);
 void NNS_G3dBindMdlTex(void *a, u32 b);
 void NNS_G3dBindMdlPltt(void *a, u32 b);
@@ -108,8 +108,8 @@ RoomObjActor::~RoomObjActor() {
     RoomObjTex_Destruct(&tex);
 }
 
-BOOL RoomObjActor::vfunc_04() {
-    if (Character::vfunc_04() == 0) {
+BOOL RoomObjActor::preCreate() {
+    if (Character::preCreate() == 0) {
         return FALSE;
     }
     setCharId(0);
@@ -130,11 +130,11 @@ BOOL RoomObjActor::preExecute() {
     return TRUE;
 }
 
-BOOL RoomObjActor::vfunc_20(u32 a) {
+BOOL RoomObjActor::postExecute(u32 a) {
     Vec out;
     getSoundPos(&out);
     se.RoomObj_SetSePos(&out);
-    _ZN5Actor8vfunc_20Ev(this, a);
+    _ZN5Actor11postExecuteEv(this, a);
 }
 
 BOOL RoomObjActor::preDelete() {

@@ -1758,7 +1758,7 @@ MsgRequest::MsgRequest() {
 
 MsgRequest::~MsgRequest() {}
 
-void MsgRequest::vfunc_08() {
+void MsgRequest::resetMsg() {
     msgIndex = gU8None.v;
     MI_CpuFill8(fileName, 0, 0x1a);
 }

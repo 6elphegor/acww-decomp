@@ -20,8 +20,8 @@ _ZN14LetterViewMenu10execPhase3Ev kind:function(thumb,size=0x4) addr:0x02291cb4
 _ZN14LetterViewMenu8execMainEv kind:function(thumb,size=0x74) addr:0x02291cb8
 _ZN14LetterViewMenu14execTransitionEv kind:function(thumb,size=0xa4) addr:0x02291d2c
 _ZN14LetterViewMenu6onDrawEv kind:function(thumb,size=0x4c) addr:0x02291dd0
-_ZN14LetterViewMenu8vfunc_0cEv kind:function(thumb,size=0x14) addr:0x02291e1c
-_ZN14LetterViewMenu8vfunc_00Ev kind:function(thumb,size=0x24) addr:0x02291e30
+_ZN14LetterViewMenu8onDeleteEv kind:function(thumb,size=0x14) addr:0x02291e1c
+_ZN14LetterViewMenu8onCreateEv kind:function(thumb,size=0x24) addr:0x02291e30
 LetterViewMenu_Create kind:function(thumb,size=0x48) addr:0x02291e54
 data_ov091_02291ea0 kind:data(any) addr:0x02291ea0
 data_ov091_02291ea8 kind:data(any) addr:0x02291ea8

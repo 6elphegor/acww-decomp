@@ -196,7 +196,7 @@ NpcActor *NpcActorRegistry::pickRandomVillager(s32 *idx) {
     s32 i = cnt;
     for (; i < 8; i++) {
         NpcRegistryVillagerSlot *s = &villagers[i];
-        if (isVillagerSlotUsed(s) && ((VillagerActor *)s->actor)->vfunc_a8()) {
+        if (isVillagerSlotUsed(s) && ((VillagerActor *)s->actor)->isPickable()) {
             cnt++;
         }
     }
@@ -204,7 +204,7 @@ NpcActor *NpcActorRegistry::pickRandomVillager(s32 *idx) {
         s32 n = Random_GlobalBelow(cnt);
         for (i = 0; i < 8; i++) {
             NpcRegistryVillagerSlot *s = &villagers[i];
-            if (isVillagerSlotUsed(s) && ((VillagerActor *)s->actor)->vfunc_a8()) {
+            if (isVillagerSlotUsed(s) && ((VillagerActor *)s->actor)->isPickable()) {
                 if (n == 0) {
                     r = s->actor;
                     if (idx) {

@@ -201,8 +201,8 @@ public:
     LetterStorageMenu()
         : heldLetter(), swapLetter(), bgTasks(), pocketGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), popup(),
           errorMessage(), letterView(), letterCloseButton(), storageLetters(), bottomButtons() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -432,14 +432,14 @@ static inline BOOL Unk_ov105_022973c4_Both() {
 
 extern "C" LetterStorageMenu *LetterStorageMenu_Create() { return new LetterStorageMenu(); }
 
-BOOL LetterStorageMenu::vfunc_00() {
+BOOL LetterStorageMenu::onCreate() {
     initParts();
     setTransitionState(0);
     setPhase(0);
     return TRUE;
 }
 
-BOOL LetterStorageMenu::vfunc_0c() {
+BOOL LetterStorageMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
@@ -632,7 +632,7 @@ void LetterStorageMenu::transitionAct03() {
                 if (v < 0x3e || v > 0x40) {
                     cursor.setAnimAtEnd(4);
                 }
-                cursor.vfunc_0c();
+                cursor.update();
                 getHandPos();
                 setMainState(8);
             }
@@ -866,7 +866,7 @@ void LetterStorageMenu::releaseResources() {
 
 void LetterStorageMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void LetterStorageMenu::postInputUpdate() {
@@ -1496,7 +1496,7 @@ void LetterStorageMenu::startPromptButtonInput() {
     restartKeyRepeat();
     promptChoice = 1;
     ((MenuCursor *)&cursor)->setAnimIfChanged(1);
-    cursor.vfunc_0c();
+    cursor.update();
     s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(4);
     s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(4);
     cursor.warpTo(a, b);
@@ -1910,7 +1910,7 @@ s32 LetterStorageMenu::getCursorTargetY() {
 void LetterStorageMenu::hideCursor() {
     S *s = this;
     ((MenuCursor *)&s->cursor)->setAnimIfChanged(0);
-    s->cursor.vfunc_0c();
+    s->cursor.update();
 }
 
 void LetterStorageMenu::moveCursorToTarget() {
@@ -1980,7 +1980,7 @@ void LetterStorageMenu::showCursorAtSlot() {
 void LetterStorageMenu::refreshCursor() {
     S *s = this;
     s->cursor.setPoseIdle();
-    s->cursor.vfunc_0c();
+    s->cursor.update();
 }
 
 void LetterStorageMenu::pressCloseButton() {

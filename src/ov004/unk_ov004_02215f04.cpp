@@ -65,12 +65,12 @@ typedef BOOL (BirthdayGuestVillager::*Unk_ov004_0224c228_BFn)();
 class BirthdayGuestVillager : public VillagerActor {
 public:
     BirthdayGuestVillager() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
     virtual BOOL preDelete();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
@@ -315,8 +315,8 @@ extern "C" s32 Room_PickRandomWalkTarget(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *in
     return angle;
 }
 
-BOOL BirthdayGuestVillager::vfunc_04() {
-    if (!VillagerActor::vfunc_04()) {
+BOOL BirthdayGuestVillager::preCreate() {
+    if (!VillagerActor::preCreate()) {
         return FALSE;
     }
     sBirthdayGuestVillager = this;
@@ -326,8 +326,8 @@ BOOL BirthdayGuestVillager::vfunc_04() {
     return TRUE;
 }
 
-BOOL BirthdayGuestVillager::vfunc_00() {
-    if (!VillagerActor::vfunc_00()) {
+BOOL BirthdayGuestVillager::onCreate() {
+    if (!VillagerActor::onCreate()) {
         return FALSE;
     }
     drawFn = *(Unk_ov004_0224c228_BFn *)data_ov004_0224c158;
@@ -395,7 +395,7 @@ void BirthdayGuestVillager::func_ov004_02216a0c() {
     }
 }
 
-BOOL BirthdayGuestVillager::vfunc_48(void *) {
+BOOL BirthdayGuestVillager::acceptsInteraction(void *) {
     if (NpcTalkCtrl_isBusy((u8 *)&talkCtrl)) {
         return FALSE;
     }
@@ -405,7 +405,7 @@ BOOL BirthdayGuestVillager::vfunc_48(void *) {
     return FALSE;
 }
 
-void BirthdayGuestVillager::vfunc_4c(u32 a, u8 b) {
+void BirthdayGuestVillager::onInteractionEvent(u32 a, u8 b) {
     Unk_ov004_Vec3 v;
     v.x = position.x;
     v.y = position.y;

@@ -85,8 +85,8 @@ class AmountEntryMenu : public MenuProc {
 public:
     AmountEntryMenu() : cursor(), bottomButtons(), numberPad() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -150,14 +150,14 @@ extern "C" AmountEntryMenu *AmountEntryMenu_Create() { return new AmountEntryMen
 // Scene registration entry read by main: factory, then two ids
 extern "C" ProcProfile sAmountEntryMenuProfile = {(void *(*)())AmountEntryMenu_Create, 0xb2, 0xb6};
 
-BOOL AmountEntryMenu::vfunc_00() {
+BOOL AmountEntryMenu::onCreate() {
     initPad();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL AmountEntryMenu::vfunc_0c() {
+BOOL AmountEntryMenu::onDelete() {
     _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent());
     releaseResources();
     return TRUE;
@@ -273,7 +273,7 @@ void AmountEntryMenu::releaseResources() {
 
 void AmountEntryMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void AmountEntryMenu::postInputUpdate() { postStateUpdate(); }
@@ -469,7 +469,7 @@ s32 AmountEntryMenu::getCursorTargetY() { return NumberPad_GetCursorY(&numberPad
 
 void AmountEntryMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void AmountEntryMenu::moveCursorToTarget() {
@@ -491,7 +491,7 @@ void AmountEntryMenu::startCursorMove(s32 a, s32 b) {
 
 void AmountEntryMenu::refreshCursor() {
     ((MenuCursorBase *)&cursor)->setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void AmountEntryMenu::pressCursor() {

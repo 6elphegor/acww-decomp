@@ -183,8 +183,8 @@ public:
     ConstellationEditorMenu()
         : errorMessage(), bottomButtons(), cursor(), twinkle(), skyView() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -318,14 +318,14 @@ public:
 
 extern "C" ConstellationEditorMenu *ConstellationEditorMenu_Create() { return new ConstellationEditorMenu(); }
 
-BOOL ConstellationEditorMenu::vfunc_00() {
+BOOL ConstellationEditorMenu::onCreate() {
     initMembers();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL ConstellationEditorMenu::vfunc_0c() {
+BOOL ConstellationEditorMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
     releaseResources();
     return TRUE;
@@ -613,7 +613,7 @@ void ConstellationEditorMenu::func_ov129_02295d38() {
     restartKeyRepeat();
     confirmChoice = 1;
     ((MenuCursor *)&cursor)->setAnimIfChanged(1);
-    cursor.vfunc_0c();
+    cursor.update();
     s32 t = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(4);
     cursor.warpTo(t, ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(4));
     setMainState(0xc);
@@ -657,7 +657,7 @@ void ConstellationEditorMenu::releaseResources() {
 
 void ConstellationEditorMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void ConstellationEditorMenu::postInputUpdate() {
@@ -1201,7 +1201,7 @@ s32 ConstellationEditorMenu::getCursorTargetY() {
 
 void ConstellationEditorMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void ConstellationEditorMenu::moveCursorToTarget() {
@@ -1225,7 +1225,7 @@ void ConstellationEditorMenu::moveCursorToPos(u32 a, u32 b) {
 
 void ConstellationEditorMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void ConstellationEditorMenu::pressCursor() {

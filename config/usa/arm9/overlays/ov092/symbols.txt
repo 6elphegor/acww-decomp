@@ -13,8 +13,8 @@ _ZN12MenuLauncher10execPhase3Ev kind:function(thumb,size=0x4) addr:0x02291d54
 _ZN12MenuLauncher8execMainEv kind:function(thumb,size=0x68) addr:0x02291d58
 _ZN12MenuLauncher14execTransitionEv kind:function(thumb,size=0x5c) addr:0x02291dc0
 _ZN12MenuLauncher6onDrawEv kind:function(thumb,size=0x4) addr:0x02291e1c
-_ZN12MenuLauncher8vfunc_0cEv kind:function(thumb,size=0x1e) addr:0x02291e20
-_ZN12MenuLauncher8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02291e40
+_ZN12MenuLauncher8onDeleteEv kind:function(thumb,size=0x1e) addr:0x02291e20
+_ZN12MenuLauncher8onCreateEv kind:function(thumb,size=0x1e) addr:0x02291e40
 MenuLauncher_Create kind:function(thumb,size=0x24) addr:0x02291e60
 sMenuLauncherProfile kind:data(any) addr:0x02291ea0 ambiguous
 data_ov092_02291ea8 kind:data(any) addr:0x02291ea8

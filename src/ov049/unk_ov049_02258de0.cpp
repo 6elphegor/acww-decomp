@@ -121,7 +121,7 @@ struct Unk_ov049_022594e0_Rec {
 };
 
 extern "C" {
-void _ZN8NpcActor8vfunc_4cEi(void *self, u32 cmd, s32 arg);
+void _ZN8NpcActor18onInteractionEventEi(void *self, u32 cmd, s32 arg);
 s32 _ZN8NpcActor11netGetSlotsEii(void *self, s32 *a, s32 *b);
 extern Unk_020cbb18_Ov049 *gCommManager;
 extern u8 gTouchPrevHeld[];
@@ -373,11 +373,11 @@ public:
     typedef BOOL (SpNpcMabel::*Fn)();
 
     SpNpcMabel() : selectedItemX(0), selectedItemZ(0), selectedItem(0xfff1) {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 cmd, u8 arg);
-    virtual BOOL vfunc_58(void *a);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 cmd, u8 arg);
+    virtual BOOL acceptsSelfRequestedInteraction(void *a);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -723,8 +723,8 @@ struct Unk_ov049_0225a714_Bits {
 
 extern "C" SpNpcMabel *SpNpcMabel_Create() { return new SpNpcMabel; }
 
-BOOL SpNpcMabel::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcMabel::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -736,9 +736,9 @@ BOOL SpNpcMabel::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcMabel::vfunc_00() {
+BOOL SpNpcMabel::onCreate() {
     s32 v;
-    if (!SpNpcActor::vfunc_00()) {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
@@ -997,7 +997,7 @@ BOOL SpNpcMabel::mainAct08() {
         u32 x, t;
         if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
             netSetSlotsIfOwner(1, t, t);
-            talk.vfunc_08();
+            talk.resetMsg();
             func_02015ab0(&talk, getPlayerActor(4));
             BOOL r;
             if (Item_IsFurniture(&selectedItem)) {
@@ -1104,7 +1104,7 @@ BOOL SpNpcMabel::mainAct0D() {
     }
     NpcMoveCtrl_setWaypoint(&moveCtrl, &out);
     if (t <= 0x5000 || Vec_Equal(&out, &position) != 0 || Math_CountDownU8(&approachTimer) == 0) {
-        talk.vfunc_08();
+        talk.resetMsg();
         func_02015ab0(&talk, getPlayerActor(4));
         changeAct(4);
     }
@@ -1145,7 +1145,7 @@ SpNpcMabelTalk::SpNpcMabelTalk() {}
 SpNpcMabelTalk::~SpNpcMabelTalk() {}
 
 void SpNpcMabelTalk::attachOwner(s32 v) {
-    vfunc_08();
+    resetMsg();
     owner = (SpNpcMabel *)v;
 }
 
@@ -1975,21 +1975,21 @@ void SpNpcMabelTalk::sellItemToPlayer() {
     VillagerTrend_OnClothesBought();
 }
 
-BOOL SpNpcMabel::vfunc_48(void *) {
+BOOL SpNpcMabel::acceptsInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked() != 0 || tryStartShopItemTalk() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-BOOL SpNpcMabel::vfunc_58(void *) {
+BOOL SpNpcMabel::acceptsSelfRequestedInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-void SpNpcMabel::vfunc_4c(u32 cmd, u8 arg) {
+void SpNpcMabel::onInteractionEvent(u32 cmd, u8 arg) {
     Unk_020cbb18_Ov049 *g;
     s32 a, b;
     switch (cmd) {
@@ -2013,15 +2013,15 @@ void SpNpcMabel::vfunc_4c(u32 cmd, u8 arg) {
             g = gCommManager;
             netSetSlotsIfOwner(1, g->myAid, g->myAid);
             if (talk.getTopic() == 1 || talk.getTopic() == 0) {
-                talk.vfunc_08();
+                talk.resetMsg();
                 func_02015ab0(&talk, getPlayerActor(4));
                 changeAct(4);
             } else if (talk.getTopic() == 3) {
-                talk.vfunc_08();
+                talk.resetMsg();
                 func_02015ab0(&talk, getPlayerActor(4));
                 changeAct(5);
             } else if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
-                talk.vfunc_08();
+                talk.resetMsg();
                 func_02015ab0(&talk, getPlayerActor(4));
                 changeAct(4);
             } else {
@@ -2036,7 +2036,7 @@ void SpNpcMabel::vfunc_4c(u32 cmd, u8 arg) {
             changeAct(9);
         } else if (isNetOwner()) {
             netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
-            talk.vfunc_08();
+            talk.resetMsg();
             func_02015ab0(&talk, getPlayerActor(4));
             talk.setTopic(2);
             changeAct(4);
@@ -2076,7 +2076,7 @@ void SpNpcMabel::vfunc_4c(u32 cmd, u8 arg) {
         }
         break;
     }
-    _ZN8NpcActor8vfunc_4cEi(this, cmd, arg);
+    _ZN8NpcActor18onInteractionEventEi(this, cmd, arg);
 }
 
 void SpNpcMabel::setDesignConcept(u32 y) {

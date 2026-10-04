@@ -143,7 +143,7 @@ class SpNpcCelesteTalk : public SpNpcTalkRequest {
 public:
     SpNpcCelesteTalk();
     virtual ~SpNpcCelesteTalk();
-    virtual void vfunc_08();
+    virtual void resetMsg();
     virtual void onMessageEnd(u32 attr);
     virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
@@ -197,12 +197,12 @@ public:
 class SpNpcCeleste : public SpNpcActor {
 public:
     SpNpcCeleste() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual BOOL vfunc_58(void *a);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
+    virtual BOOL acceptsSelfRequestedInteraction(void *a);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -274,8 +274,8 @@ extern "C" void *SpNpcCeleste_Create() {
     return new SpNpcCeleste();
 }
 
-BOOL SpNpcCeleste::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcCeleste::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -284,8 +284,8 @@ BOOL SpNpcCeleste::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcCeleste::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcCeleste::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     homeAngle = rotY;
@@ -301,8 +301,8 @@ BOOL SpNpcCeleste::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcCeleste::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcCeleste::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     if (effectHandle != -1) {
@@ -598,14 +598,14 @@ SpNpcCelesteTalk::SpNpcCelesteTalk() {}
 
 SpNpcCelesteTalk::~SpNpcCelesteTalk() {}
 
-void SpNpcCelesteTalk::vfunc_08() {
-    ActorTalkRequest::vfunc_08();
+void SpNpcCelesteTalk::resetMsg() {
+    ActorTalkRequest::resetMsg();
     resultHandler = NULL;
     constellationSlot = Constellation_FindFreeSlot();
 }
 
 void SpNpcCelesteTalk::attachOwner(void *p) {
-    vfunc_08();
+    resetMsg();
     owner = (u8 *)p;
     listStart = 0;
     listRemaining = 0x10 - Constellation_CountFreeSlots();
@@ -1100,22 +1100,22 @@ void SpNpcCelesteTalk::onRenameChoice(s32 a) {
     }
 }
 
-BOOL SpNpcCeleste::vfunc_48(void *) {
+BOOL SpNpcCeleste::acceptsInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-BOOL SpNpcCeleste::vfunc_58(void *) {
+BOOL SpNpcCeleste::acceptsSelfRequestedInteraction(void *) {
     return NpcTalkCtrl_isBusy(&talkCtrl) == 0 ? TRUE : FALSE;
 }
 
-void SpNpcCeleste::vfunc_4c(u32 a, u8) {
+void SpNpcCeleste::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
     case 1:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(3);
         break;

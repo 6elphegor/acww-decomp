@@ -42,7 +42,7 @@ public:
     HudUnkSlideIcon();
     virtual ~HudUnkSlideIcon();
     virtual void draw();
-    virtual void vfunc_0c();
+    virtual void update();
 
     void applyVariantRequest();
     void updateSlide();
@@ -297,7 +297,7 @@ void HudUnkSlideIcon::draw() {
     }
 }
 
-void HudUnkSlideIcon::vfunc_0c() {
+void HudUnkSlideIcon::update() {
     trackMenuTransition();
     updateSlide();
     applyVariantRequest();
@@ -331,7 +331,7 @@ void HudUnkSlideIcon::exit() {
 }
 
 void HudUnkSlideIcon::callUpdate() {
-    vfunc_0c();
+    update();
 }
 
 void HudUnkSlideIcon::callDraw() {

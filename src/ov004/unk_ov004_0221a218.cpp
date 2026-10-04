@@ -113,10 +113,10 @@ public:
 
 class CafeVillager : public VillagerActor {
 public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL updateAct();
 
     BOOL mainAct01();
@@ -158,8 +158,8 @@ extern "C" CafeVillager *CafeVillager_Create() {
     return new CafeVillager;
 }
 
-BOOL CafeVillager::vfunc_04() {
-    if (!VillagerActor::vfunc_04()) {
+BOOL CafeVillager::preCreate() {
+    if (!VillagerActor::preCreate()) {
         return FALSE;
     }
     NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0x1e);
@@ -170,8 +170,8 @@ BOOL CafeVillager::vfunc_04() {
     return TRUE;
 }
 
-BOOL CafeVillager::vfunc_00() {
-    if (!VillagerActor::vfunc_00()) {
+BOOL CafeVillager::onCreate() {
+    if (!VillagerActor::onCreate()) {
         return FALSE;
     }
     changeAct(2);
@@ -228,7 +228,7 @@ CafeVillagerTalk::CafeVillagerTalk() {}
 CafeVillagerTalk::~CafeVillagerTalk() {}
 
 void CafeVillagerTalk::attachOwner(CafeVillager *owner) {
-    vfunc_08();
+    resetMsg();
     VillagerTalk_begin(this, owner, 0x11);
     villager = owner;
 }
@@ -244,17 +244,17 @@ void CafeVillagerTalk::onMessageEnd(u32) {}
 
 void CafeVillagerTalk::onChoice(u32) {}
 
-BOOL CafeVillager::vfunc_48(void *) {
+BOOL CafeVillager::acceptsInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void CafeVillager::vfunc_4c(u32 a, u8) {
+void CafeVillager::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
-        talk.vfunc_08();
+        talk.resetMsg();
         func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
         changeAct(0);
         break;

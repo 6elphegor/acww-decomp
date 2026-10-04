@@ -18,9 +18,9 @@
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
 // 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
 // original (0x0224d4e0, 0x70 bytes):
-//   slot 00 ProcBase::vfunc_00        04 M::vfunc_04               08 Character::postCreate(s32)
-//   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::vfunc_14   18 Base::vfunc_18   1c M::vfunc_1c
-//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor8vfunc_20Ej)
+//   slot 00 ProcBase::onCreate        04 M::vfunc_04               08 Character::postCreate(s32)
+//   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::postDelete   18 Base::vfunc_18   1c M::vfunc_1c
+//   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN12RoomObjActor11postExecuteEj)
 //   24 Base::vfunc_24   28 Actor::preDraw   2c Actor::postDraw   30..3c Base   40 D1  44 D0
 //   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::changeSyncState(u32)   64 M::getSoundPos(Vec *)
 // Notes for derived classes:
@@ -89,8 +89,8 @@ class SewingMachine : public RoomObjActor {
 public:
     SewingMachine();
     virtual ~SewingMachine();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL changeSyncState(u32 idx);
@@ -188,7 +188,7 @@ SewingMachine::~SewingMachine() {
     _ZN9AnimModelD1Ev(partModel);
 }
 
-BOOL SewingMachine::vfunc_00() {
+BOOL SewingMachine::onCreate() {
     sSewingMachine = this;
     loadResources("/roomObj/obj_tailor1.arc", "/roomObj/obj_tailor1.nsbtx");
     RoomObjRes_Load(partRes, "/roomObj/obj_tailor2.arc");
@@ -253,7 +253,7 @@ BOOL SewingMachine::onDraw() {
     return TRUE;
 }
 
-BOOL SewingMachine::vfunc_0c() {
+BOOL SewingMachine::onDelete() {
     releaseResources();
     RoomObjRes_Free(partRes);
     RoomObjTex_Reset(&partTex);

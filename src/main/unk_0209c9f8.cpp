@@ -42,8 +42,8 @@ void GameProc_CreateChild(u32, s32, s32, s32);
 
 class GameRoot : public GameProc {
 public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 };
@@ -68,7 +68,7 @@ extern "C" void SoftReset_ClearSystems() {
     Text_ResetLabels();
 }
 
-BOOL GameRoot::vfunc_00() {
+BOOL GameRoot::onCreate() {
     gGameRoot = (u32)this;
     StrBSize_Load();
     AcreAttr_Load();
@@ -85,7 +85,7 @@ BOOL GameRoot::vfunc_00() {
     return TRUE;
 }
 
-BOOL GameRoot::vfunc_0c() {
+BOOL GameRoot::onDelete() {
     StrBSize_Unload();
     AcreAttr_Unload();
     FtrInfo_Exit();

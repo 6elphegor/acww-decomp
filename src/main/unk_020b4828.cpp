@@ -98,11 +98,11 @@ struct Unk_020b5d5c_Rec {
 class FieldScene : public SceneBase {
 public:
     FieldScene() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_30();
+    virtual BOOL onDeleteRequest();
 };
 
 // object sFieldGfxFrameHooks: only a vtable pointer; vfunc_00/04 are defined in another unit, vfunc_08 here
@@ -782,7 +782,7 @@ BOOL FieldSceneSteps::stepFinish(u32, u32) {
     return TRUE;
 }
 
-BOOL FieldScene::vfunc_00() {
+BOOL FieldScene::onCreate() {
     FieldSceneSteps* self = (FieldSceneSteps*)this;
     typedef BOOL (FieldSceneSteps::*M)(u32, u32);
     static M tbl[6] = {
@@ -817,7 +817,7 @@ BOOL FieldScene::vfunc_00() {
     return 1;
 }
 
-BOOL FieldScene::vfunc_0c() {
+BOOL FieldScene::onDelete() {
     Bgm_EndSceneBgm();
     Scene_GetTouchPicker();
     _ZN11TouchPicker5resetEv();
@@ -900,7 +900,7 @@ BOOL FieldScene::onDraw() {
     return TRUE;
 }
 
-BOOL FieldScene::vfunc_30() {}
+BOOL FieldScene::onDeleteRequest() {}
 
 extern "C" void Fog_InitDefault(s32 a) {
     Fog_SetTable(a, sDefaultFogTable);

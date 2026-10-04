@@ -11,10 +11,10 @@ public:
     KatrinaTent();
     virtual ~KatrinaTent();
 
-    virtual void vfunc_78();
-    virtual BOOL vfunc_8c();
+    virtual void setupTalkMsg();
+    virtual BOOL isOpen();
     virtual BOOL onExecute();
-    virtual BOOL vfunc_70();
+    virtual BOOL initBuilding();
 
     /* 0x2b0 */ u8 createHour;
     /* 0x2b1 */ u8 pad_2b1[3];

@@ -87,7 +87,7 @@ void HandCursor::draw() {
     }
 }
 
-void HandCursor::vfunc_0c() {
+void HandCursor::update() {
     if (anim != 0) {
         layer1.update();
         if (hasLayer2 != 0) {

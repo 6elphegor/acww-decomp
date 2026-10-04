@@ -153,8 +153,8 @@ public:
     WfcFriendListMenu()
         : cursor(), textPool(), vramTasks(), title(), knob() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -298,14 +298,14 @@ static inline BOOL Unk_ov146_022933bc_Both() {
 
 extern "C" WfcFriendListMenu *WfcFriendListMenu_Create() { return new WfcFriendListMenu(); }
 
-BOOL WfcFriendListMenu::vfunc_00() {
+BOOL WfcFriendListMenu::onCreate() {
     initState();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL WfcFriendListMenu::vfunc_0c() {
+BOOL WfcFriendListMenu::onDelete() {
     ProcBase_GetParent();
     MenuLauncher_onChildClosed();
     releaseResources();
@@ -557,7 +557,7 @@ void WfcFriendListMenu::releaseResources() {
 
 void WfcFriendListMenu::beginMainFrame() {
     beginFrame();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 // thunk: defined before its target so it stays a tail branch
@@ -566,7 +566,7 @@ void WfcFriendListMenu::endFrame() { updateList(); }
 void WfcFriendListMenu::beginFrame() {
     resetTextPool();
     cancelVramTasks();
-    knob.vfunc_0c();
+    knob.update();
 }
 
 void WfcFriendListMenu::updateList() {
@@ -849,7 +849,7 @@ s32 WfcFriendListMenu::getTargetY() {
 
 void WfcFriendListMenu::hideCursor() {
     MenuCursor_setAnimIfChanged(&cursor, 0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void WfcFriendListMenu::moveCursorToTarget() {
@@ -877,7 +877,7 @@ void WfcFriendListMenu::moveCursorTo(s32 a, s32 b) {
 
 void WfcFriendListMenu::setCursorIdle() {
     MenuCursorBase_setPoseIdle(&cursor);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void WfcFriendListMenu::startCursorPress() {

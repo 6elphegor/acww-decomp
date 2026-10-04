@@ -65,8 +65,8 @@ _ZN17PatternSelectMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x022980b8
 _ZN17PatternSelectMenu12runMainStateEv kind:function(thumb,size=0xe8) addr:0x022980d4
 _ZN17PatternSelectMenu14execTransitionEv kind:function(thumb,size=0xa0) addr:0x022981bc
 _ZN17PatternSelectMenu6onDrawEv kind:function(thumb,size=0xcc) addr:0x0229825c
-_ZN17PatternSelectMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02298328
-_ZN17PatternSelectMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02298344
+_ZN17PatternSelectMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02298328
+_ZN17PatternSelectMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x02298344
 PatternSelectMenu_Create kind:function(thumb,size=0x60) addr:0x02298364
 sPatternSelectSlotX kind:data(any) addr:0x022983c4
 sPatternSelectSlotY kind:data(any) addr:0x022983d0

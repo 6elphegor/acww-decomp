@@ -104,8 +104,8 @@ _ZN15FriendRosterTab8execMainEv kind:function(thumb,size=0x2a) addr:0x022950e4
 _ZN15FriendRosterTab12runMainStateEv kind:function(thumb,size=0x150) addr:0x02295110
 _ZN15FriendRosterTab14execTransitionEv kind:function(thumb,size=0xa0) addr:0x02295260
 _ZN15FriendRosterTab6onDrawEv kind:function(thumb,size=0x1ac) addr:0x02295300
-_ZN15FriendRosterTab8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x022954ac
-_ZN15FriendRosterTab8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x022954c8
+_ZN15FriendRosterTab8onDeleteEv kind:function(thumb,size=0x1a) addr:0x022954ac
+_ZN15FriendRosterTab8onCreateEv kind:function(thumb,size=0x20) addr:0x022954c8
 FriendRosterTab_Create kind:function(thumb,size=0x8c) addr:0x022954e8
 data_ov119_02295580 kind:data(any) addr:0x02295580
 data_ov119_02295588 kind:data(any) addr:0x02295588

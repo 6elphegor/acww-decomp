@@ -133,8 +133,8 @@ FishDisplay *FishDisplay_Create(void);
 class FishDisplay : public GameProc {
 public:
     inline FishDisplay();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     ~FishDisplay() {
@@ -280,7 +280,7 @@ void FishDisplay::releaseEntry(s32 idx) {
     }
 }
 
-BOOL FishDisplay::vfunc_00() {
+BOOL FishDisplay::onCreate() {
     if ((s32)param == 0) {
         sFishDisplayEntryCount = 4;
     } else if ((s32)param == 1) {
@@ -468,7 +468,7 @@ BOOL FishDisplay::onDraw() {
     return TRUE;
 }
 
-BOOL FishDisplay::vfunc_0c() {
+BOOL FishDisplay::onDelete() {
     for (s32 i = 0; i < sFishDisplayEntryCount; i++) {
         releaseEntry(i);
     }

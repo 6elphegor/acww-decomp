@@ -344,11 +344,11 @@ void ChoiceSlider::draw() {
     }
 }
 
-void ChoiceSlider::vfunc_0c() {
+void ChoiceSlider::update() {
     s32 a = getKnobX();
     s32 b = getKnobY();
     knob.moveTo(a, b);
-    knob.vfunc_0c();
+    knob.update();
 }
 
 void ChoiceSlider::setOrigin(s32 a, s32 b) {
@@ -619,7 +619,7 @@ ChoiceListWindow::~ChoiceListWindow() {}
 
 void ChoiceListWindow::update() {
     cursor.setPos(5, topY + (cursorRow * 16 - 4));
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void ChoiceListWindow::draw() {
@@ -718,9 +718,9 @@ void ChoiceSliderWindow::update() {
         cursor.setPos(c + 0x46, d + 0x4c);
     }
     okButton.setPos(0x3c, 0x44);
-    cursor.vfunc_0c();
-    okButton.vfunc_0c();
-    slider.vfunc_0c();
+    cursor.update();
+    okButton.update();
+    slider.update();
 }
 
 void ChoiceSliderWindow::draw() {

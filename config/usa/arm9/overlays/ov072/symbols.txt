@@ -1,9 +1,9 @@
 _ZN13SpNpcGulliverD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN13SpNpcGulliverD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
-_ZN13SpNpcGulliver8vfunc_4cEi kind:function(thumb,size=0x60) addr:0x02271414
-_ZN13SpNpcGulliver8vfunc_4cEjh kind:label(thumb) addr:0x02271414
-_ZN13SpNpcGulliver8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271474
-_ZN13SpNpcGulliver8vfunc_48EPv kind:label(thumb) addr:0x02271474
+_ZN13SpNpcGulliver18onInteractionEventEi kind:function(thumb,size=0x60) addr:0x02271414
+_ZN13SpNpcGulliver18onInteractionEventEjh kind:label(thumb) addr:0x02271414
+_ZN13SpNpcGulliver18acceptsInteractionEv kind:function(thumb,size=0x20) addr:0x02271474
+_ZN13SpNpcGulliver18acceptsInteractionEPv kind:label(thumb) addr:0x02271474
 _ZN17SpNpcGulliverTalk8onChoiceEv kind:function(thumb,size=0x12) addr:0x02271494
 _ZN17SpNpcGulliverTalk8onChoiceEj kind:label(thumb) addr:0x02271494
 _ZN17SpNpcGulliverTalk12onMessageEndEv kind:function(thumb,size=0x114) addr:0x022714a8
@@ -33,8 +33,8 @@ _ZN13SpNpcGulliver9changeActEi kind:function(thumb,size=0x44) addr:0x02271fe8
 _ZN13SpNpcGulliver9updateActEv kind:function(thumb,size=0x4c) addr:0x0227202c
 _ZN13SpNpcGulliver12getModelPathEv kind:function(thumb,size=0x8) addr:0x02272078
 _ZN13SpNpcGulliver14getTexturePathEv kind:function(thumb,size=0x8) addr:0x02272080
-_ZN13SpNpcGulliver8vfunc_00Ev kind:function(thumb,size=0x64) addr:0x02272088
-_ZN13SpNpcGulliver8vfunc_04Ev kind:function(thumb,size=0x30) addr:0x022720ec
+_ZN13SpNpcGulliver8onCreateEv kind:function(thumb,size=0x64) addr:0x02272088
+_ZN13SpNpcGulliver9preCreateEv kind:function(thumb,size=0x30) addr:0x022720ec
 SpNpcGulliver_Create kind:function(thumb,size=0x118) addr:0x0227211c
 sSpNpcGulliverTopicMsgs kind:data(any) addr:0x02272234
 data_ov072_02272238 kind:data(any) addr:0x02272238

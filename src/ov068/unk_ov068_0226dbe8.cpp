@@ -54,8 +54,8 @@
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define func_0202d928 _ZN13VillagerActor9preDeleteEv
-#define func_0202d948 _ZN13VillagerActor8vfunc_00Ev
-#define func_0202dab0 _ZN13VillagerActor8vfunc_04Ev
+#define func_0202d948 _ZN13VillagerActor8onCreateEv
+#define func_0202dab0 _ZN13VillagerActor9preCreateEv
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 #define PlayerData_getErrands _ZN10PlayerData10getErrandsEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -157,12 +157,12 @@ public:
 // Owner (vtable 0x02270afc, size 0xa74)
 class HouseVisitVillager : public VillagerActor {
 public:
-    inline HouseVisitVillager() {}    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
+    inline HouseVisitVillager() {}    virtual BOOL onCreate();
+    virtual BOOL preCreate();
     virtual BOOL preDelete();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 idx, u8 v);
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 idx, u8 v);
     virtual BOOL updateAct();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
@@ -422,7 +422,7 @@ extern "C" HouseVisitVillager *HouseVisitVillager_Create() {
     return new HouseVisitVillager;
 }
 
-BOOL HouseVisitVillager::vfunc_04() {
+BOOL HouseVisitVillager::preCreate() {
     using namespace sC;
     if (func_0202dab0(this) == 0) {
         return FALSE;
@@ -433,7 +433,7 @@ BOOL HouseVisitVillager::vfunc_04() {
     return TRUE;
 }
 
-BOOL HouseVisitVillager::vfunc_00() {
+BOOL HouseVisitVillager::onCreate() {
     using namespace sC;
     if (func_0202d948(this) == 0) {
         return FALSE;
@@ -563,7 +563,7 @@ extern "C" void HouseVisit_SetFinished(void *) {
     ErrandRecord_setStep(PlayerData_getErrands(PlayerData_GetCurrent()) + 0x94, 4);
 }
 
-BOOL HouseVisitVillager::vfunc_48(void *) {
+BOOL HouseVisitVillager::acceptsInteraction(void *) {
     using namespace sC;
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0) {
         return FALSE;
@@ -574,7 +574,7 @@ BOOL HouseVisitVillager::vfunc_48(void *) {
     return FALSE;
 }
 
-void HouseVisitVillager::vfunc_4c(u32 idx, u8 v) {
+void HouseVisitVillager::onInteractionEvent(u32 idx, u8 v) {
     using namespace sC;
     switch (idx) {
     case 3:
@@ -925,8 +925,8 @@ BOOL HouseVisitVillager::enterVisitCall() {
     RoomScoreEvaluator_Construct(loc);
     roomRateFlags = HappyRoom_RateMainRoom(loc, &roomStars);
     HouseVisitor_SetPresent();
-    if (vfunc_64()) {
-        VillagerState_SetRole(Villager_GetState(vfunc_64()), 2);
+    if (getVillagerData()) {
+        VillagerState_SetRole(Villager_GetState(getVillagerData()), 2);
     }
     callTimer = 30;
     func_02003e70(&seEmitter, 0x4ca, 0x7f, 0);
@@ -1206,8 +1206,8 @@ void HouseVisitVillager::execVisitLeave() {
     if (talk.unk_3c != NULL) {
         if (talk.unk_3c->state == 0) {
             HouseVisitor_ClearPresent();
-            if (vfunc_64() != NULL) {
-                VillagerState_ResetRole(Villager_GetState(vfunc_64()));
+            if (getVillagerData() != NULL) {
+                VillagerState_ResetRole(Villager_GetState(getVillagerData()));
             }
             HouseVisit_SetFinished(this);
             if (wantsToLeave != 0) {

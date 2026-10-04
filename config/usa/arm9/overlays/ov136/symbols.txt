@@ -60,8 +60,8 @@ _ZN14TimeSelectMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02296008
 _ZN14TimeSelectMenu12runMainStateEv kind:function(thumb,size=0x12c) addr:0x02296024
 _ZN14TimeSelectMenu14execTransitionEv kind:function(thumb,size=0x94) addr:0x02296150
 _ZN14TimeSelectMenu6onDrawEv kind:function(thumb,size=0x54) addr:0x022961e4
-_ZN14TimeSelectMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02296238
-_ZN14TimeSelectMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02296254
+_ZN14TimeSelectMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02296238
+_ZN14TimeSelectMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x02296254
 TimeSelectMenu_Create kind:function(thumb,size=0x44) addr:0x02296274
 sTimeSelectCursorRightTable kind:data(any) addr:0x022962b8
 sTimeSelectCursorLeftTable kind:data(any) addr:0x022962bc

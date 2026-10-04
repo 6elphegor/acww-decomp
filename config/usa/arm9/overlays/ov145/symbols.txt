@@ -79,8 +79,8 @@ _ZN12DonationMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02293408
 _ZN12DonationMenu12runMainStateEv kind:function(thumb,size=0xd8) addr:0x02293424
 _ZN12DonationMenu14execTransitionEv kind:function(thumb,size=0x94) addr:0x022934fc
 _ZN12DonationMenu6onDrawEv kind:function(thumb,size=0xdc) addr:0x02293590
-_ZN12DonationMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x0229366c
-_ZN12DonationMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02293688
+_ZN12DonationMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x0229366c
+_ZN12DonationMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x02293688
 DonationMenu_Create kind:function(thumb,size=0x84) addr:0x022936a8
 data_ov145_02293740 kind:data(any) addr:0x02293740
 data_ov145_02293748 kind:data(any) addr:0x02293748

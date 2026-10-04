@@ -167,11 +167,11 @@ struct Unk_0201bc1c;
 class SpNpcPete : public SpNpcActor {
 public:
     SpNpcPete() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -307,8 +307,8 @@ extern "C" SpNpcPete *SpNpcPete_Create() {
     return new SpNpcPete();
 }
 
-BOOL SpNpcPete::vfunc_04() {
-    if (SpNpcActor::vfunc_04() == 0) {
+BOOL SpNpcPete::preCreate() {
+    if (SpNpcActor::preCreate() == 0) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -316,8 +316,8 @@ BOOL SpNpcPete::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcPete::vfunc_00() {
-    if (SpNpcActor::vfunc_00() == 0) {
+BOOL SpNpcPete::onCreate() {
+    if (SpNpcActor::onCreate() == 0) {
         return FALSE;
     }
     if (PeteFallState_hasFallPos(TownSessionState_GetPeteFall(TownSessionState_Get())) != 0) {
@@ -331,8 +331,8 @@ BOOL SpNpcPete::vfunc_00() {
 
 s32 SpNpcPete::getWalkAnimSpeedScale() { return data_020c6cf0; }
 
-BOOL SpNpcPete::vfunc_0c() {
-    if (SpNpcActor::vfunc_0c() == 0) {
+BOOL SpNpcPete::onDelete() {
+    if (SpNpcActor::onDelete() == 0) {
         return FALSE;
     }
     if (EventAnnounce_IsBusy() == 0) {
@@ -696,7 +696,7 @@ SpNpcPeteTalk::SpNpcPeteTalk() {}
 SpNpcPeteTalk::~SpNpcPeteTalk() {}
 
 void SpNpcPeteTalk::attachOwner(void *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = (u8 *)owner;
 }
 
@@ -723,7 +723,7 @@ void SpNpcPeteTalk::onChoice(u32) {
     s32 r = ChoiceList_getResult();
 }
 
-BOOL SpNpcPete::vfunc_48(void *) {
+BOOL SpNpcPete::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (updateEnabled != 0) {
         if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
@@ -734,13 +734,13 @@ BOOL SpNpcPete::vfunc_48(void *) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void SpNpcPete::vfunc_4c(u32 a, u8) {
+void SpNpcPete::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         SpNpcPete_ChangeAct(this, 2);
         break;
     case 3:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0(NpcActor_getPlayerActor(this, 4));
         if (isUp != 0) {
             SpNpcPete_ChangeAct(this, 1);

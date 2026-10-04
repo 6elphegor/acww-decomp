@@ -59,8 +59,8 @@ _ZN14DateSelectMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02295ff0
 _ZN14DateSelectMenu12runMainStateEv kind:function(thumb,size=0x110) addr:0x0229600c
 _ZN14DateSelectMenu14execTransitionEv kind:function(thumb,size=0x94) addr:0x0229611c
 _ZN14DateSelectMenu6onDrawEv kind:function(thumb,size=0x54) addr:0x022961b0
-_ZN14DateSelectMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02296204
-_ZN14DateSelectMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02296220
+_ZN14DateSelectMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02296204
+_ZN14DateSelectMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x02296220
 DateSelectMenu_Create kind:function(thumb,size=0x44) addr:0x02296240
 sDateSelectCursorLeftTable kind:data(any) addr:0x02296284
 sDateSelectCursorRightTable kind:data(any) addr:0x0229628c

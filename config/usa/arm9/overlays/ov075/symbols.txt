@@ -1,9 +1,9 @@
 _ZN9SpNpcPeteD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN9SpNpcPeteD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
-_ZN9SpNpcPete8vfunc_4cEi kind:function(thumb,size=0x6c) addr:0x02271414
-_ZN9SpNpcPete8vfunc_4cEjh kind:label(thumb) addr:0x02271414
-_ZN9SpNpcPete8vfunc_48Ev kind:function(thumb,size=0x2c) addr:0x02271480
-_ZN9SpNpcPete8vfunc_48EPv kind:label(thumb) addr:0x02271480
+_ZN9SpNpcPete18onInteractionEventEi kind:function(thumb,size=0x6c) addr:0x02271414
+_ZN9SpNpcPete18onInteractionEventEjh kind:label(thumb) addr:0x02271414
+_ZN9SpNpcPete18acceptsInteractionEv kind:function(thumb,size=0x2c) addr:0x02271480
+_ZN9SpNpcPete18acceptsInteractionEPv kind:label(thumb) addr:0x02271480
 _ZN13SpNpcPeteTalk8onChoiceEv kind:function(thumb,size=0x12) addr:0x022714ac
 _ZN13SpNpcPeteTalk8onChoiceEj kind:label(thumb) addr:0x022714ac
 _ZN13SpNpcPeteTalk12onMessageEndEv kind:function(thumb,size=0x24) addr:0x022714c0
@@ -39,10 +39,10 @@ SpNpcPete_ChangeAct kind:function(thumb,size=0x44) addr:0x02271e78
 _ZN9SpNpcPete9updateActEv kind:function(thumb,size=0x4c) addr:0x02271ebc
 _ZN9SpNpcPete12getModelPathEv kind:function(thumb,size=0x8) addr:0x02271f08
 _ZN9SpNpcPete14getTexturePathEv kind:function(thumb,size=0x8) addr:0x02271f10
-_ZN9SpNpcPete8vfunc_0cEv kind:function(thumb,size=0x2c) addr:0x02271f18
+_ZN9SpNpcPete8onDeleteEv kind:function(thumb,size=0x2c) addr:0x02271f18
 _ZN9SpNpcPete21getWalkAnimSpeedScaleEv kind:function(thumb,size=0xc) addr:0x02271f44
-_ZN9SpNpcPete8vfunc_00Ev kind:function(thumb,size=0x4c) addr:0x02271f50
-_ZN9SpNpcPete8vfunc_04Ev kind:function(thumb,size=0x30) addr:0x02271f9c
+_ZN9SpNpcPete8onCreateEv kind:function(thumb,size=0x4c) addr:0x02271f50
+_ZN9SpNpcPete9preCreateEv kind:function(thumb,size=0x30) addr:0x02271f9c
 SpNpcPete_Create kind:function(thumb,size=0x118) addr:0x02271fcc
 __sinit_ov075_022720e4 kind:function(thumb,size=0x174) addr:0x022720e4
 .p__sinit_ov075_022720e4 kind:data(word) addr:0x02272258

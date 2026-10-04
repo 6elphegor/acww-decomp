@@ -51,8 +51,8 @@ public:
         hostDateTime = 0;
         unk_dc = 0;
     }
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
 
     s32 verifyStepChoose();
@@ -1209,7 +1209,7 @@ extern "C" SaveManager *SaveManager_Create() {
     return new SaveManager;
 }
 
-BOOL SaveManager::vfunc_00() {
+BOOL SaveManager::onCreate() {
     if (NJ::Scene_GetCurrent() == 6) {
         if (NJ::TownBlockMap_Get() != 0) {
             NJ::_ZN12TownBlockMap13updateAcreIdsEv(NJ::TownBlockMap_Get());
@@ -1260,7 +1260,7 @@ BOOL SaveManager::vfunc_00() {
     return TRUE;
 }
 
-BOOL SaveManager::vfunc_0c() {
+BOOL SaveManager::onDelete() {
     if (NJ::Scene_GetCurrent() == 6) {
         NJ::SaveVillagers_UpdateAllRoomInfo(NJ::gSaveVillagers);
     }
@@ -4001,7 +4001,7 @@ BOOL SaveSlotWriter::memEqual(u8 *p, u8 *q, s32 n) {
 
 void Unk_020a0990::startTalk(const char *str, u8 flag) {
     TalkWindowState *o = NE::TalkWindow_Get(0);
-    talk.vfunc_08();
+    talk.resetMsg();
     talk.setFileName(str);
     talk.msgIndex = flag;
     o->lockAdvance();

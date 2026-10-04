@@ -102,8 +102,8 @@ _ZN15PocketsFullMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02296948
 _ZN15PocketsFullMenu12runMainStateEv kind:function(thumb,size=0x1a4) addr:0x02296964
 _ZN15PocketsFullMenu14execTransitionEv kind:function(thumb,size=0xa0) addr:0x02296b08
 _ZN15PocketsFullMenu6onDrawEv kind:function(thumb,size=0xa8) addr:0x02296ba8
-_ZN15PocketsFullMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02296c50
-_ZN15PocketsFullMenu8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02296c6c
+_ZN15PocketsFullMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02296c50
+_ZN15PocketsFullMenu8onCreateEv kind:function(thumb,size=0x20) addr:0x02296c6c
 PocketsFullMenu_Create kind:function(thumb,size=0xb4) addr:0x02296c8c
 sFishReleaseProbeAngles kind:data(any) addr:0x02296d40
 data_ov107_02296d4d kind:data(any) addr:0x02296d4d ambiguous

@@ -29,8 +29,8 @@ struct Unk_ov003_0225b738_Col {
 class SnowballSpawner : public GameProc {
 public:
     SnowballSpawner();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~SnowballSpawner();
@@ -98,7 +98,7 @@ SnowballSpawner::SnowballSpawner() {}
 
 SnowballSpawner::~SnowballSpawner() {}
 
-BOOL SnowballSpawner::vfunc_00() {
+BOOL SnowballSpawner::onCreate() {
     SnowballSpawner_SpawnSnowmen(this);
     SnowballSpawner_SpawnLooseBalls(this);
     return TRUE;
@@ -106,4 +106,4 @@ BOOL SnowballSpawner::vfunc_00() {
 
 BOOL SnowballSpawner::onExecute() { return TRUE; }
 BOOL SnowballSpawner::onDraw() { return TRUE; }
-BOOL SnowballSpawner::vfunc_0c() { return TRUE; }
+BOOL SnowballSpawner::onDelete() { return TRUE; }

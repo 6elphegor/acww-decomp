@@ -20,8 +20,8 @@
 // Vtable of every actor (original vtable symbol minus 8 bytes, 0x150 bytes):
 //   primary slots 0x00..0xb8 (0xbc bytes), then 8 bytes secondary header, then the secondary vtable of TalkMsgRequest
 //   (D1, D0, 08..74).  Primary slot -> symbol:
-//     00 ov009::vfunc_00      04 Character::vfunc_04   08 Character::postCreate(s32)   0c Base::vfunc_0c
-//     10 ov009::vfunc_10      14 Actor::vfunc_14   18 Base::vfunc_18
+//     00 ov009::vfunc_00      04 Character::preCreate   08 Character::postCreate(s32)   0c Base::vfunc_0c
+//     10 ov009::vfunc_10      14 Actor::postDelete   18 Base::vfunc_18
 //     1c ov009::vfunc_1c   (symbols.txt names it vfunc_24, ALIAS NEEDED)   20 ov009::vfunc_20(u32) (symbols: vfunc_28Ej, ALIAS)
 //     24 Base::vfunc_24       28 ov009::vfunc_28 (symbols: vfunc_30Ev, ALIAS)   2c Actor::postDraw   30..3c Base
 //     40 D1 44 D0   48 ov009::vfunc_48(Character*)   4c ov009::vfunc_4c(u32,u8)   50 ov009::vfunc_50
@@ -30,10 +30,10 @@
 //     func_ov009_0225b880, ALIAS)
 // Aliases (zero-size labels, tools/pipeline/alias.py) the coordinator must add; <existing> -> <new>:
 //   ov009  _ZN13BuildingActor10preExecuteEv           -> _ZN13BuildingActor10preExecuteEv        (0x0225db04)
-//   ov009  _ZN13BuildingActor7preDrawEj           -> _ZN13BuildingActor8vfunc_20Ej        (0x0225da90)
-//   ov009  _ZN13BuildingActor7preDrawEv           -> _ZN13BuildingActor7preDrawEv        (0x0225d9e4)
-//   ov009  func_ov009_0225b884                           -> _ZN13BuildingActor8vfunc_b4Ev        (0x0225b884)
-//   ov009  func_ov009_0225b880                           -> _ZN13BuildingActor8vfunc_b8Ev        (0x0225b880)
+//   ov009  _ZN13BuildingActor11postExecuteEj           -> _ZN13BuildingActor11postExecuteEj        (0x0225da90)
+//   ov009  _ZN13BuildingActor11postExecuteEv           -> _ZN13BuildingActor11postExecuteEv        (0x0225d9e4)
+//   ov009  func_ov009_0225b884                           -> _ZN13BuildingActor11getSoundPosEv        (0x0225b884)
+//   ov009  func_ov009_0225b880                           -> _ZN13BuildingActor20calcCustomBaseMatrixEv        (0x0225b880)
 //   main   TalkMsgRequest slots: the unit uses the TalkMsgRequest slot names (onMessageStart ... onTalkEnd); no
 //          primary-chain class of the family declares a method of these names.
 //   ov003  0x0221445c is _ZThn236_N13BuildingActor12onMessageEndEv, the thunk of ov009::onMessageEnd in slot 0x14 of the secondary
@@ -81,9 +81,9 @@ public:
     TownHall();
     virtual ~TownHall();
 
-    virtual void vfunc_60(u32 a, void *p);
-    virtual BOOL vfunc_70();
-    virtual BOOL vfunc_98();
+    virtual void onJointCalcPost(u32 a, void *p);
+    virtual BOOL initBuilding();
+    virtual BOOL playsDoorMelody();
 
     /* 0x2b0 */ s8 hourHandNode;
     /* 0x2b1 */ s8 minuteHandNode;
@@ -100,7 +100,7 @@ extern "C" void TownHall_Create() {
 extern "C" void TownHall_NodeCallback(Unk_ov003_0221655c_Src *a) {
     BuildingActor *o = a->pRenderObj->ptrUser;
     if (o) {
-        o->vfunc_60(a->c[1], a);
+        o->onJointCalcPost(a->c[1], a);
     }
 }
 
@@ -112,7 +112,7 @@ TownHall::TownHall() {
 TownHall::~TownHall() {
 }
 
-BOOL TownHall::vfunc_70() {
+BOOL TownHall::initBuilding() {
     hourHandNode = func_02056fcc(modelRes, (s32) "kh_j");
     minuteHandNode = func_02056fcc(modelRes, (s32) "km_j");
     if (hourHandNode != -1 && minuteHandNode != -1) {
@@ -121,7 +121,7 @@ BOOL TownHall::vfunc_70() {
     return TRUE;
 }
 
-void TownHall::vfunc_60(u32 a, void *p) {
+void TownHall::onJointCalcPost(u32 a, void *p) {
     if ((s32)a == hourHandNode) {
         ((Unk_020b1ddc *)p)->rotateHourHand();
     } else if ((s32)a == minuteHandNode) {
@@ -129,7 +129,7 @@ void TownHall::vfunc_60(u32 a, void *p) {
     }
 }
 
-BOOL TownHall::vfunc_98() {
+BOOL TownHall::playsDoorMelody() {
     return TRUE;
 }
 

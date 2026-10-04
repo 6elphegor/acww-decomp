@@ -10,7 +10,7 @@ class FtrSingingInsect : public FtrActor {
 public:
     FtrSingingInsect();
     virtual ~FtrSingingInsect();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL initModel();
     virtual BOOL updateActive();
 

@@ -26,12 +26,12 @@ extern ActorList gActorList;
 class Actor : public GameProc {
 public:
     Actor();
-    virtual BOOL vfunc_04();
+    virtual BOOL preCreate();
     virtual void postCreate(s32 status);
     virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
+    virtual BOOL postDelete(s32 status);
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
+    virtual BOOL postExecute(u32 status);
     virtual BOOL preDraw();
     virtual BOOL postDraw(s32 status);
     virtual ~Actor() { List_Remove(&gActorList, &listNode); }

@@ -318,8 +318,8 @@ class NameEntryMenu : public MenuProc {
 public:
     NameEntryMenu()
         : header(), keyboard(), bottomButtons(), cursor(), suffixLabel(), censorString(), encodedText(), errorMessage() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -531,14 +531,14 @@ extern "C" void *data_ov126_022999f0[2] = {(void *)_ZN13NameEntryMenu9mainAct0EE
 
 extern "C" NameEntryMenu *NameEntryMenu_Create() { return new NameEntryMenu(); }
 
-BOOL NameEntryMenu::vfunc_00() {
+BOOL NameEntryMenu::onCreate() {
     init();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL NameEntryMenu::vfunc_0c() {
+BOOL NameEntryMenu::onDelete() {
     s32 t = MenuCtrl_GetMode();
     if ((u32)t >= 0x18 && (u32)t <= 0x1b) {
         void *h = ProcBase_GetParent(this);
@@ -1707,7 +1707,7 @@ void NameEntryMenu::showCursor() {
 
 void NameEntryMenu::hideCursor() {
     MenuCursor_setAnimIfChanged(&cursor, 0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void NameEntryMenu::moveCursorToTarget() {
@@ -1731,7 +1731,7 @@ void NameEntryMenu::snapCursor() {
         s32 b = Keyboard_GetCursorY(&keyboard);
         MenuCursorBase_warpTo(&cursor, a, b);
     }
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void NameEntryMenu::pressCursor() {
@@ -1747,7 +1747,7 @@ void NameEntryMenu::releaseCursor() {
 
 void NameEntryMenu::refreshCursor() {
     MenuCursorBase_setPoseIdle(&cursor);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 BOOL NameEntryMenu::tryPressKey() {

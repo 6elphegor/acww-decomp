@@ -26,7 +26,7 @@ public:
     ChoiceSlider();
     virtual ~ChoiceSlider();
     virtual void draw();
-    virtual void vfunc_0c();
+    virtual void update();
     virtual void setOrigin(s32 a, s32 b);
 
     void startKnobRelease();

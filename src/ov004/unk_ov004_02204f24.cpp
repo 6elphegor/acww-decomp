@@ -296,7 +296,7 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 
 // ================================================================ real names of the symbols outside this unit
 #define func_02002d9c _ZN5Actor7preDrawEv   // main
-#define func_02002ec0 _ZN5Actor8vfunc_14Ev   // main
+#define func_02002ec0 _ZN5Actor10postDeleteEv   // main
 #define BoxColliderShape_updateTransform _ZN16BoxColliderShape15updateTransformEP16Unk_0203182c_VeciS1_   // main
 #define Character_setCharId _ZN9Character9setCharIdEj   // main
 #define Character_getCharId _ZN9Character9getCharIdEv   // main
@@ -1130,7 +1130,7 @@ FtrActor::~FtrActor() {
 }
 
 // @02209578
-BOOL FtrActor::vfunc_00() {
+BOOL FtrActor::onCreate() {
     Unk_ov004_02209d40_Bits l;
     *(u32 *)&l = *(u32 *)((u8 *)this + 8);
     u32 t = l.e;
@@ -1257,7 +1257,7 @@ BOOL FtrActor::preDelete() {
 }
 
 // @02209294
-BOOL FtrActor::vfunc_14(s32 a) {
+BOOL FtrActor::postDelete(s32 a) {
     if (a == 2) {
         FtrSoundEmitter_release(soundEmitter);
         releaseRoomLight();
@@ -2593,15 +2593,15 @@ extern "C" void FtrActor_GetItemId(u16 *out, FtrActor *o) {
 }
 
 // @02206f38
-BOOL FtrActor::vfunc_60() {
+BOOL FtrActor::onMatCalc() {
 }
 
 // @02206f34
-BOOL FtrActor::vfunc_68() {
+BOOL FtrActor::onJointCalcPre() {
 }
 
 // @02206ef8
-void FtrActor::vfunc_6c(s32 a, void *b) {
+void FtrActor::onJointCalcPost(s32 a, void *b) {
     if (clockHandsValid != 0) {
         if (clockHands == a) {
             Unk_020b1ddc_rotateHourHand(b);
@@ -2612,7 +2612,7 @@ void FtrActor::vfunc_6c(s32 a, void *b) {
 }
 
 // @02206ec8
-void FtrActor::vfunc_64(s32 a, Unk_ov004_02206ec8_Ctx *b) {
+void FtrActor::onNodeVisCalc(s32 a, Unk_ov004_02206ec8_Ctx *b) {
     if (((FtrVisNodes *)(visNodes))->hasNode(a)) {
         u32 v = ((FtrVisNodes *)(visNodes))->isVisible();
         *b->pVisAnmResult = v;

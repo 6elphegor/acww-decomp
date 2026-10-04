@@ -58,8 +58,8 @@ _ZN12BirthdayMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02295f64
 _ZN12BirthdayMenu12runMainStateEv kind:function(thumb,size=0x110) addr:0x02295f80
 _ZN12BirthdayMenu14execTransitionEv kind:function(thumb,size=0x94) addr:0x02296090
 _ZN12BirthdayMenu6onDrawEv kind:function(thumb,size=0x54) addr:0x02296124
-_ZN12BirthdayMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02296178
-_ZN12BirthdayMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02296194
+_ZN12BirthdayMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02296178
+_ZN12BirthdayMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x02296194
 BirthdayMenu_Create kind:function(thumb,size=0x44) addr:0x022961b4
 sBirthdayCursorRightTable kind:data(any) addr:0x022961f8
 sBirthdayCursorLeftTable kind:data(any) addr:0x022961fc

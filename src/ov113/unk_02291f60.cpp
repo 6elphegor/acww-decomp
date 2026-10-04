@@ -83,8 +83,8 @@ class BbsReadMenu : public MenuProc {
 public:
     BbsReadMenu() : bgTasks(), infoLabels(), lineLabels(), cursor() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -168,7 +168,7 @@ static inline BOOL Unk_ov113_02292cc0_Both() {
 
 extern "C" BbsReadMenu *BbsReadMenu_Create() { return new BbsReadMenu(); }
 
-BOOL BbsReadMenu::vfunc_00() {
+BOOL BbsReadMenu::onCreate() {
     G2x_SetBlendBrightnessExt_(0x4000050, 0x1f, 0x20, 0x10, 0x10, 0);
     init();
     setTransitionState(0);
@@ -176,7 +176,7 @@ BOOL BbsReadMenu::vfunc_00() {
     return TRUE;
 }
 
-BOOL BbsReadMenu::vfunc_0c() {
+BOOL BbsReadMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
     releaseResources();
     return TRUE;
@@ -431,7 +431,7 @@ void BbsReadMenu::releaseResources() {
 void BbsReadMenu::preInputUpdate() { preStateUpdate(); }
 
 void BbsReadMenu::preStateUpdate() {
-    cursor.vfunc_0c();
+    cursor.update();
     infoLabels[0].destroyLabel();
     infoLabels[1].destroyLabel();
     infoLabels[2].destroyLabel();
@@ -871,7 +871,7 @@ s32 BbsReadMenu::getFocusY() {
 
 void BbsReadMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void BbsReadMenu::moveCursorToTarget() {
@@ -901,7 +901,7 @@ void BbsReadMenu::releaseCursor() {
 
 void BbsReadMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 BOOL BbsReadMenu::moveFocusByPad(void *pad) {

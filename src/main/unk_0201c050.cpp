@@ -1044,8 +1044,8 @@ void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *, s32, u32, s32, s32, s32)
 void * _ZN16ActorTalkRequest13getChoiceListEv(void *);
 void _ZN16ActorTalkRequest6updateEv(void *);
 s32 _ZN8NpcActor11getNpcIndexEv(void *);
-s32 _ZN8NpcActor8vfunc_00Ev(void *);
-s32 _ZN8NpcActor8vfunc_0cEv(void *);
+s32 _ZN8NpcActor8onCreateEv(void *);
+s32 _ZN8NpcActor8onDeleteEv(void *);
 u32 _ZN12VillagerTalk9getUnk150Ev(void *);
 s32 _ZN9Character9preDeleteEv(void *);
 u32 _ZN11CachedModel16allocJointRecordEPv(void *, u32);
@@ -3021,7 +3021,7 @@ u8 *VillagerActor::getModelPath() {
     return sVillagerModelPathBuf;
 }
 
-void *VillagerActor::vfunc_64() { return villagerData; }
+void *VillagerActor::getVillagerData() { return villagerData; }
 
 void VillagerActor::addMood(u32 a, s32 b) {
     if (mood.isActive()) {
@@ -3029,11 +3029,11 @@ void VillagerActor::addMood(u32 a, s32 b) {
     }
 }
 
-BOOL VillagerActor::vfunc_a8() { return TRUE; }
+BOOL VillagerActor::isPickable() { return TRUE; }
 
 BOOL VillagerActor::vfunc_ac() { return FALSE; }
 
-BOOL VillagerActor::vfunc_b0() { return FALSE; }
+BOOL VillagerActor::consumeFleaRemoved() { return FALSE; }
 
 void VillagerActor::setShirt(u16 *p, BOOL flag) {
     BOOL in = FALSE;
@@ -3042,7 +3042,7 @@ void VillagerActor::setShirt(u16 *p, BOOL flag) {
         in = TRUE;
     }
     if (in || (v >= 0x12a8 && v <= 0x12af)) {
-        void *o = vfunc_64();
+        void *o = getVillagerData();
         ((VillagerClothModel *)(&clothModel))->change((VillagerActor *)this, p);
         if (o != NULL) {
             _ZN23VillagerDataProfileView8setShirtEPt(o, p);
@@ -3053,8 +3053,8 @@ void VillagerActor::setShirt(u16 *p, BOOL flag) {
     }
 }
 
-BOOL VillagerActor::vfunc_04() {
-    if (!NpcActor::vfunc_04()) {
+BOOL VillagerActor::preCreate() {
+    if (!NpcActor::preCreate()) {
         return FALSE;
     }
     attachVillagerData();
@@ -3076,9 +3076,9 @@ BOOL VillagerActor::loadAnimSet() {
     return FALSE;
 }
 
-BOOL VillagerActor::vfunc_00() {
+BOOL VillagerActor::onCreate() {
     u16 h = 0x11a8;
-    if (!_ZN8NpcActor8vfunc_00Ev(this)) {
+    if (!_ZN8NpcActor8onCreateEv(this)) {
         return FALSE;
     }
     if (!_ZN19SpNpcAnimHeapHandle22getVillagerAnimHeapRefEv((u8 *)this + 0x824)) {
@@ -3118,8 +3118,8 @@ BOOL VillagerActor::preDelete() {
     return TRUE;
 }
 
-BOOL VillagerActor::vfunc_0c() {
-    if (!_ZN8NpcActor8vfunc_0cEv(this)) {
+BOOL VillagerActor::onDelete() {
+    if (!_ZN8NpcActor8onDeleteEv(this)) {
         return FALSE;
     }
     _ZN12NpcResHandle7releaseEv((u8 *)this + 0x824);
@@ -3141,20 +3141,20 @@ BOOL VillagerActor::isFlag834() {
 
 extern "C" void Npc_GetStateHeldItem(u16 *out, VillagerTalk *obj) {
     *out = 0xfff1;
-    if (((VillagerActor *)obj)->vfunc_64() != 0) {
-        if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(((VillagerActor *)obj)->vfunc_64())) != 0) {
-            if (Villager_GetState(((VillagerActor *)obj)->vfunc_64()) != 0) {
-                *out = *VillagerState_GetHeldItem(Villager_GetState(((VillagerActor *)obj)->vfunc_64()));
+    if (((VillagerActor *)obj)->getVillagerData() != 0) {
+        if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(((VillagerActor *)obj)->getVillagerData())) != 0) {
+            if (Villager_GetState(((VillagerActor *)obj)->getVillagerData()) != 0) {
+                *out = *VillagerState_GetHeldItem(Villager_GetState(((VillagerActor *)obj)->getVillagerData()));
             }
         }
     }
 }
 
 void VillagerTalk::setSpeakerStateUnk(void *arg) {
-    if (((VillagerActor *)this)->vfunc_64() != 0) {
-        if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(((VillagerActor *)this)->vfunc_64())) != 0) {
-            if (Villager_GetState(((VillagerActor *)this)->vfunc_64()) != 0) {
-                VillagerState_SetHeldItem(Villager_GetState(((VillagerActor *)this)->vfunc_64()), arg);
+    if (((VillagerActor *)this)->getVillagerData() != 0) {
+        if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(((VillagerActor *)this)->getVillagerData())) != 0) {
+            if (Villager_GetState(((VillagerActor *)this)->getVillagerData()) != 0) {
+                VillagerState_SetHeldItem(Villager_GetState(((VillagerActor *)this)->getVillagerData()), arg);
             }
         }
     }
@@ -3255,7 +3255,7 @@ void VillagerTalk::begin(Unk_020d8938_Parent *owner, u32 idx) {
     } else {
         r6 = 0;
     }
-    vfunc_08();
+    resetMsg();
     actor = owner;
     if (idx < 0x11) {
         setTopicFns(&sTalkBeginTopics[idx]);
@@ -4331,9 +4331,9 @@ void VillagerTalkTopics::updateFishCatchPlan(void *s1, u8 *tbl, void *p2, u8 p3,
                 }
                 break;
             }
-            if (((VillagerActor *)this)->vfunc_64()) {
+            if (((VillagerActor *)this)->getVillagerData()) {
                 if (InRange(PlanErrand_GetShownItem(s1), 0x12e8, 0x131f)) {
-                    VillagerSync_Act3F(((VillagerActor *)this)->vfunc_64(), PlanErrand_GetShownItem(s1));
+                    VillagerSync_Act3F(((VillagerActor *)this)->getVillagerData(), PlanErrand_GetShownItem(s1));
                 }
             }
             u32 w0 = arr->unk_00;
@@ -4346,8 +4346,8 @@ void VillagerTalkTopics::updateFishCatchPlan(void *s1, u8 *tbl, void *p2, u8 p3,
 }
 
 void VillagerTalkTopics::updateCatchPlans(u8 *a, void *b, u32 c) {
-    if (((VillagerActor *)this)->vfunc_64()) {
-        void *s = VillagerPlanBlock_GetErrand(Villager_GetPlan(((VillagerActor *)this)->vfunc_64()));
+    if (((VillagerActor *)this)->getVillagerData()) {
+        void *s = VillagerPlanBlock_GetErrand(Villager_GetPlan(((VillagerActor *)this)->getVillagerData()));
         Unk_0202bd3c_Arr arr;
         arr.unk_00 = 0;
         arr.unk_04 = 0;
@@ -13191,11 +13191,11 @@ void VillagerTalk::setInvitedByPartner(u8 v) { ((VillagerActor *)this)->invitedB
 
 u8 VillagerTalk::isInvitedByPartner() { return ((VillagerActor *)this)->invitedByPartner; }
 
-s32 VillagerTalk::vfunc_144() { return 0; }
+s32 VillagerTalk::canAcceptPartnerInvite() { return 0; }
 
-s32 VillagerTalk::vfunc_148() { return 0; }
+s32 VillagerTalk::acceptPartnerInvite() { return 0; }
 
-s32 VillagerTalk::vfunc_14c() { return 0; }
+s32 VillagerTalk::endPartnerTalk() { return 0; }
 
 BOOL VillagerTalk::hasPartner() {
     if (((VillagerActor *)this)->talkPartnerId != 0) {
@@ -13256,7 +13256,7 @@ BOOL VillagerMood::isActive() {
 }
 
 void VillagerMood::setMoodAnimation(VillagerTalk *s, u32 mode) {
-    s32 r = (s32)((VillagerActor *)s)->vfunc_64();
+    s32 r = (s32)((VillagerActor *)s)->getVillagerData();
     if (mode == 4 && r != 0) {
         ((s32 (*)())_ZN12VillagerData13getVillagerIdEv)();
         s32 t = ((s32 (*)())VillagerId_GetPersonality)();

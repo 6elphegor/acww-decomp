@@ -176,11 +176,11 @@ public:
 class SpNpcPellyPhyllis : public SpNpcActor {
 public:
     SpNpcPellyPhyllis() : talk() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *o);
-    virtual void vfunc_4c(u32 cmd, u8 arg);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *o);
+    virtual void onInteractionEvent(u32 cmd, u8 arg);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -679,10 +679,10 @@ extern "C" const u8 sSpNpcPellyPhyllisGreetingMsgs[2] = {0x34, 0};
 
 extern "C" SpNpcPellyPhyllis *SpNpcPellyPhyllis_Create() { return new SpNpcPellyPhyllis; }
 
-BOOL SpNpcPellyPhyllis::vfunc_04() {
+BOOL SpNpcPellyPhyllis::preCreate() {
     Unk_ov054_0225b0ac_Local l;
     Unk_ov054_0225ba54_Vec vec;
-    if (!SpNpcActor::vfunc_04()) {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -742,8 +742,8 @@ BOOL SpNpcPellyPhyllis::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcPellyPhyllis::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcPellyPhyllis::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     void *r = PlayerData_GetCurrent();
@@ -772,8 +772,8 @@ BOOL SpNpcPellyPhyllis::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcPellyPhyllis::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcPellyPhyllis::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     if (sister == 0) {
@@ -1003,7 +1003,7 @@ BOOL SpNpcPellyPhyllis::mainAct09() {
         s32 b = 4;
         if (NpcActor_netGetSlots(this, &a, &b) && a == gCommManager->myAid && a == b) {
             netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
-            talk.vfunc_08();
+            talk.resetMsg();
             func_02015ab0(&talk, getPlayerActor(4));
             changeAct(4);
         } else if (NetArea_IsLocalOwner() && b == 4) {
@@ -1041,7 +1041,7 @@ SpNpcPellyPhyllisTalk::SpNpcPellyPhyllisTalk() {}
 SpNpcPellyPhyllisTalk::~SpNpcPellyPhyllisTalk() {}
 
 void SpNpcPellyPhyllisTalk::attachOwner(SpNpcPellyPhyllis *o) {
-    vfunc_08();
+    resetMsg();
     owner = o;
 }
 
@@ -2255,7 +2255,7 @@ void SpNpcPellyPhyllisTalk::updateDonationLevel(s32 a) {
     TalkWindowState_setNextMessage(o, &m, (u32)name);
 }
 
-BOOL SpNpcPellyPhyllis::vfunc_48(void *other) {
+BOOL SpNpcPellyPhyllis::acceptsInteraction(void *other) {
     Character *o = (Character *)other;
     BOOL r = FALSE;
     s32 bx, by, cx, cy;
@@ -2286,7 +2286,7 @@ BOOL SpNpcPellyPhyllis::vfunc_48(void *other) {
     return r;
 }
 
-void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u8 arg) {
+void SpNpcPellyPhyllis::onInteractionEvent(u32 cmd, u8 arg) {
     s32 a, b;
     switch (cmd) {
     case 3:
@@ -2301,7 +2301,7 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u8 arg) {
         }
         break;
     case 1:
-        talk.vfunc_08();
+        talk.resetMsg();
         func_02015ab0(&talk, getPlayerActor(4));
         changeAct(1);
         break;
@@ -2313,7 +2313,7 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u8 arg) {
         } else if (isNetOwner()) {
             u32 t = gCommManager->myAid;
             netSetSlotsIfOwner(1, t, t);
-            talk.vfunc_08();
+            talk.resetMsg();
             func_02015ab0(&talk, getPlayerActor(4));
             changeAct(4);
         }

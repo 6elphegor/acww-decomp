@@ -271,8 +271,8 @@ public:
     PocketsFullMenu()
         : buryUnitX(0), buryUnitZ(0), bgTasks(), pocketGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), popup(), errorMessage(), bottomButtons() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -430,14 +430,14 @@ void PocketsFullMenu::postInputUpdate();
 
 extern "C" PocketsFullMenu *PocketsFullMenu_Create() { return new PocketsFullMenu(); }
 
-BOOL PocketsFullMenu::vfunc_00() {
+BOOL PocketsFullMenu::onCreate() {
     initParts();
     setTransitionState(0);
     setPhase(0);
     return TRUE;
 }
 
-BOOL PocketsFullMenu::vfunc_0c() {
+BOOL PocketsFullMenu::onDelete() {
     ProcBase_GetParent();
     MenuLauncher_onChildClosed();
     releaseResources();
@@ -609,7 +609,7 @@ void PocketsFullMenu::releaseResources()
 void PocketsFullMenu::preInputUpdate()
 {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void PocketsFullMenu::postInputUpdate()
@@ -1126,7 +1126,7 @@ s32 PocketsFullMenu::getCursorTargetY() {
 
 void PocketsFullMenu::hideCursor() {
     MenuCursor_setAnimIfChanged(&cursor, 0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void PocketsFullMenu::moveCursorToTarget() {
@@ -1183,7 +1183,7 @@ void PocketsFullMenu::showCursorAtSlot() {
 
 void PocketsFullMenu::refreshCursor() {
     MenuCursorBase_setPoseIdle(&cursor);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void PocketsFullMenu::pressCloseButton() {

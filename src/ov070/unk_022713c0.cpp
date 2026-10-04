@@ -99,7 +99,7 @@ class SpNpcGracieTalk : public SpNpcTalkRequest {
 public:
     SpNpcGracieTalk();
     virtual ~SpNpcGracieTalk();
-    virtual void vfunc_08();
+    virtual void resetMsg();
     virtual void onMessageEnd(u32 attr);
     virtual void onChoice(u32 attr);
     virtual void onScannedTag(u32 a);
@@ -127,10 +127,10 @@ public:
 class SpNpcGracie : public SpNpcActor {
 public:
     SpNpcGracie() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -261,8 +261,8 @@ extern "C" SpNpcGracie *SpNpcGracie_Create() {
     return new SpNpcGracie();
 }
 
-BOOL SpNpcGracie::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcGracie::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -271,8 +271,8 @@ BOOL SpNpcGracie::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcGracie::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcGracie::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     changeAct(0);
@@ -330,8 +330,8 @@ BOOL SpNpcGracie::mainAct01() {
 
 BOOL SpNpcGracie::mainAct02() { return TRUE; }
 
-void SpNpcGracieTalk::vfunc_08() {
-    ActorTalkRequest::vfunc_08();
+void SpNpcGracieTalk::resetMsg() {
+    ActorTalkRequest::resetMsg();
     resultHandler = NULL;
 }
 
@@ -453,7 +453,7 @@ SpNpcGracieTalk::SpNpcGracieTalk() {}
 SpNpcGracieTalk::~SpNpcGracieTalk() {}
 
 void SpNpcGracieTalk::attachOwner(SpNpcGracie *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = owner;
     for (s32 i = 0; i < 3; i++) {
         wornItems[i].id = 0xfff1;
@@ -854,7 +854,7 @@ void SpNpcGracieTalk::onChoice(u32) {
     }
 }
 
-BOOL SpNpcGracie::vfunc_48(void *) {
+BOOL SpNpcGracie::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
@@ -863,10 +863,10 @@ BOOL SpNpcGracie::vfunc_48(void *) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void SpNpcGracie::vfunc_4c(u32 a, u8) {
+void SpNpcGracie::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(1);
         break;

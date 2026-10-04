@@ -61,8 +61,8 @@ _ZN15ClockAdjustMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x022960ec
 _ZN15ClockAdjustMenu12runMainStateEv kind:function(thumb,size=0x12c) addr:0x02296108
 _ZN15ClockAdjustMenu14execTransitionEv kind:function(thumb,size=0x94) addr:0x02296234
 _ZN15ClockAdjustMenu6onDrawEv kind:function(thumb,size=0x54) addr:0x022962c8
-_ZN15ClockAdjustMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x0229631c
-_ZN15ClockAdjustMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02296338
+_ZN15ClockAdjustMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x0229631c
+_ZN15ClockAdjustMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x02296338
 ClockAdjustMenu_Create kind:function(thumb,size=0x44) addr:0x02296358
 sClockAdjustCursorLeftTable kind:data(any) addr:0x0229639c
 sClockAdjustCursorRightTable kind:data(any) addr:0x022963a4

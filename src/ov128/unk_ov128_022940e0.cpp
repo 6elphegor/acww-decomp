@@ -150,8 +150,8 @@ public:
     StargazingMenu()
         : closeButton(), cursor(), twinkle(), skyView(), nameLabel() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -238,14 +238,14 @@ public:
 
 extern "C" StargazingMenu *StargazingMenu_Create() { return new StargazingMenu(); }
 
-BOOL StargazingMenu::vfunc_00() {
+BOOL StargazingMenu::onCreate() {
     initMembers();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL StargazingMenu::vfunc_0c() {
+BOOL StargazingMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
     releaseResources();
     return TRUE;
@@ -685,7 +685,7 @@ s32 StargazingMenu::getCursorTargetY() {
 
 void StargazingMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void StargazingMenu::moveCursorToTarget() {
@@ -709,7 +709,7 @@ void StargazingMenu::moveCursorToPos(s32 x, s32 y) {
 
 void StargazingMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void StargazingMenu::pressCursor() {

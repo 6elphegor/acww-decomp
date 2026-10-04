@@ -113,7 +113,7 @@ public:
 
     SpNpcWendellTalk();
     virtual ~SpNpcWendellTalk();
-    virtual void vfunc_08();
+    virtual void resetMsg();
     virtual void onMessageStart(u32 attr);
     virtual void onMessageEnd(u32 attr);
     virtual void onChoice(u32 attr);
@@ -161,11 +161,11 @@ struct Unk_ov079_Rgba {
 class SpNpcWendell : public SpNpcActor {
 public:
     SpNpcWendell() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 v, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 v, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -308,8 +308,8 @@ SpNpcWendell *SpNpcWendell_Create() {
 
 s32 SpNpcWendell::getWalkAnimSpeedScale() { return data_020c6cf0; }
 
-BOOL SpNpcWendell::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcWendell::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -317,16 +317,16 @@ BOOL SpNpcWendell::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcWendell::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcWendell::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     changeAct(3);
     return TRUE;
 }
 
-BOOL SpNpcWendell::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcWendell::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     if (EventAnnounce_IsBusy() == 0) {
@@ -851,8 +851,8 @@ SpNpcWendellTalk::SpNpcWendellTalk() {
 
 SpNpcWendellTalk::~SpNpcWendellTalk() {}
 
-void SpNpcWendellTalk::vfunc_08() {
-    ActorTalkRequest::vfunc_08();
+void SpNpcWendellTalk::resetMsg() {
+    ActorTalkRequest::resetMsg();
     foodSlot = -1;
     foodItem = 0xfff1;
     Fn t = *(Fn *)__ptmf_null;
@@ -861,7 +861,7 @@ void SpNpcWendellTalk::vfunc_08() {
 }
 
 void SpNpcWendellTalk::attachOwner(SpNpcWendell *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = owner;
     foodItem = 0xfff1;
     foodSlot = -1;
@@ -956,7 +956,7 @@ void SpNpcWendellTalk::onChoice(u32) {
     }
 }
 
-BOOL SpNpcWendell::vfunc_48(void *) {
+BOOL SpNpcWendell::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
@@ -964,13 +964,13 @@ BOOL SpNpcWendell::vfunc_48(void *) {
     return r;
 }
 
-void SpNpcWendell::vfunc_4c(u32 a, u8) {
+void SpNpcWendell::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         changeAct(0);
         break;
     case 3:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(4);
         break;

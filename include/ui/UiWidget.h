@@ -10,7 +10,7 @@ public:
     UiWidget();
     virtual ~UiWidget();
     virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
+    virtual void update() = 0;
     virtual void setOrigin(s32 a, s32 b);
     s32 getOriginY();
     s32 getOriginX();

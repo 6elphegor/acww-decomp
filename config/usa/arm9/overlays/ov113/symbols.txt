@@ -55,8 +55,8 @@ _ZN11BbsReadMenu8execMainEv kind:function(thumb,size=0xd4) addr:0x022931f8
 _ZN11BbsReadMenu14execTransitionEv kind:function(thumb,size=0xd8) addr:0x022932cc
 _ZN11BbsReadMenu6onDrawEv kind:function(thumb,size=0xdc) addr:0x022933a4
 _ZN11BbsReadMenu12drawPageDotsEiPi kind:function(thumb,size=0x58) addr:0x02293480
-_ZN11BbsReadMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x022934d8
-_ZN11BbsReadMenu8vfunc_00Ev kind:function(thumb,size=0x3c) addr:0x022934f4
+_ZN11BbsReadMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x022934d8
+_ZN11BbsReadMenu8onCreateEv kind:function(thumb,size=0x3c) addr:0x022934f4
 BbsReadMenu_Create kind:function(thumb,size=0x80) addr:0x02293530
 data_ov113_022935c0 kind:data(any) addr:0x022935c0
 data_ov113_022935c8 kind:data(any) addr:0x022935c8 ambiguous

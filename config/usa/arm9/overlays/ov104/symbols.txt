@@ -146,8 +146,8 @@ _ZN14PostOfficeMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02297ad8
 _ZN14PostOfficeMenu12runMainStateEv kind:function(thumb,size=0x1ec) addr:0x02297af4
 _ZN14PostOfficeMenu14execTransitionEv kind:function(thumb,size=0xf4) addr:0x02297ce0
 _ZN14PostOfficeMenu6onDrawEv kind:function(thumb,size=0xe8) addr:0x02297dd4
-_ZN14PostOfficeMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02297ebc
-_ZN14PostOfficeMenu8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02297ed8
+_ZN14PostOfficeMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02297ebc
+_ZN14PostOfficeMenu8onCreateEv kind:function(thumb,size=0x20) addr:0x02297ed8
 PostOfficeMenu_Create kind:function(thumb,size=0x10c) addr:0x02297ef8
 sPostOfficeMenuProfile kind:data(any) addr:0x02298020 ambiguous
 data_ov104_02298028 kind:data(any) addr:0x02298028

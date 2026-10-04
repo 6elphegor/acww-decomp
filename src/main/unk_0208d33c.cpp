@@ -85,7 +85,7 @@ void NameLabelBalloon::draw() {
     }
 }
 
-void NameLabelBalloon::vfunc_0c() {
+void NameLabelBalloon::update() {
     Fn p0 = &NameLabelBalloon::updateShown;
     static Fn tbl[4] = {&NameLabelBalloon::updateHidden, &NameLabelBalloon::updateAppearing, &NameLabelBalloon::updateShown, &NameLabelBalloon::updateHiding};
     Fn q0 = &NameLabelBalloon::updateShown;

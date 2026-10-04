@@ -82,8 +82,8 @@ class NearbyTownsMenu : public MenuProc {
 public:
     NearbyTownsMenu() : listPanel(), cursor(), bottomButtons(), screenTask() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -167,14 +167,14 @@ extern "C" ProcProfile sNearbyTownsMenuProfile = {(void *(*)())NearbyTownsMenu_C
 
 extern "C" NearbyTownsMenu *NearbyTownsMenu_Create() { return new NearbyTownsMenu(); }
 
-BOOL NearbyTownsMenu::vfunc_00() {
+BOOL NearbyTownsMenu::onCreate() {
     initNearbyTowns();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL NearbyTownsMenu::vfunc_0c() {
+BOOL NearbyTownsMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
@@ -325,7 +325,7 @@ void NearbyTownsMenu::releaseResources() {
 
 void NearbyTownsMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void NearbyTownsMenu::postInputUpdate() {
@@ -534,7 +534,7 @@ s32 NearbyTownsMenu::getCursorTargetY() {
 
 void NearbyTownsMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void NearbyTownsMenu::moveCursorToTarget() {
@@ -556,7 +556,7 @@ void NearbyTownsMenu::moveCursorTo(s32 a, s32 b) {
 
 void NearbyTownsMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void NearbyTownsMenu::pressCursor() {

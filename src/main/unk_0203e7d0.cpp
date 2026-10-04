@@ -347,30 +347,30 @@ extern "C" void CharInteractSync_OnCharMsg(u8 *msg, u32 aid) {
             }
         }
     } else if (msg[0] == 5) {
-        o->vfunc_4c(r6, (u8)aid);
+        o->onInteractionEvent(r6, (u8)aid);
     } else {
         BOOL r5 = FALSE;
         switch (r6) {
         case 0:
-            r5 = o->vfunc_48(w);
+            r5 = o->acceptsInteraction(w);
             break;
         case 5:
             r5 = o->acceptsInteractionOutOfRange(w);
             break;
         case 1:
-            r5 = o->vfunc_58(w);
+            r5 = o->acceptsSelfRequestedInteraction(w);
             break;
         }
         if (!_ZN11CommManager7isMyAidEj(gCommManager, aid)) {
             if (r5) {
-                o->vfunc_4c(3, (u8)aid);
+                o->onInteractionEvent(3, (u8)aid);
                 CharInteractSync_SendReply(1, aid);
             } else {
                 CharInteractSync_SendReply(2, aid);
             }
         } else {
             if (r5) {
-                o->vfunc_4c(3, 4);
+                o->onInteractionEvent(3, 4);
                 sCharInteractSyncResult = 1;
             } else {
                 sCharInteractSyncResult = 2;

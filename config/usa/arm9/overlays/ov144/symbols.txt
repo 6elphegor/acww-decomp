@@ -89,8 +89,8 @@ _ZN9MusicMenu8execMainEv kind:function(thumb,size=0x60) addr:0x02293978
 _ZN9MusicMenu12runMainStateEv kind:function(thumb,size=0x104) addr:0x022939d8
 _ZN9MusicMenu14execTransitionEv kind:function(thumb,size=0x94) addr:0x02293adc
 _ZN9MusicMenu6onDrawEv kind:function(thumb,size=0x90) addr:0x02293b70
-_ZN9MusicMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02293c00
-_ZN9MusicMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02293c1c
+_ZN9MusicMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02293c00
+_ZN9MusicMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x02293c1c
 MusicMenu_Create kind:function(thumb,size=0x8c) addr:0x02293c3c
 sMusicMenuProfile kind:data(any) addr:0x02293ce0 ambiguous
 data_ov144_02293ce8 kind:data(any) addr:0x02293ce8

@@ -51,7 +51,7 @@
 #define LabelButton_setLabelText _ZN11LabelButton12setLabelTextEv
 
 extern "C" {
-BOOL _ZN8ProcBase8vfunc_14Ev(void *self, s32 a);
+BOOL _ZN8ProcBase10postDeleteEv(void *self, s32 a);
 void _ZN8GameProc10postCreateEv(void *self, s32 a);
 void _ZN16MenuTitleBalloon8showTextEhii(void *self, s32 x, s32 a, s32 b);
 void VillagerId_getName(s32 a, void *buf);
@@ -165,7 +165,7 @@ void *_ZN9MenuSlideC1Ev(void *self);
 void *_ZN12CursorMotionC1Ev(void *self);
 void *_ZN12CursorMotionD1Ev(void *self);
 void _ZN10HandCursor4drawEv();
-void _ZN14MenuCursorBase8vfunc_0cEv();
+void _ZN14MenuCursorBase6updateEv();
 void _ZN8UiWidget9setOriginEii();
 }
 
@@ -332,7 +332,7 @@ s32 TouchPromptBalloon::updatePrompt() {
         }
         break;
     }
-    LabelBalloon::vfunc_0c();
+    LabelBalloon::update();
     return r;
 }
 

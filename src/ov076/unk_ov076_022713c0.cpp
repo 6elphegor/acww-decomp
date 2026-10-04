@@ -107,7 +107,7 @@ public:
 
     SpNpcPascalTalk();
     virtual ~SpNpcPascalTalk();
-    virtual void vfunc_08();
+    virtual void resetMsg();
     virtual void onMessageEnd(u32 attr);
     virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
@@ -134,10 +134,10 @@ struct Unk_020d77a4_Vec3;
 class SpNpcPascal : public SpNpcActor {
 public:
     SpNpcPascal() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 v, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 v, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -227,8 +227,8 @@ SpNpcPascal *SpNpcPascal_Create() {
     return new SpNpcPascal();
 }
 
-BOOL SpNpcPascal::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcPascal::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -236,8 +236,8 @@ BOOL SpNpcPascal::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcPascal::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcPascal::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     collider.groups |= 2;
@@ -421,13 +421,13 @@ SpNpcPascalTalk::SpNpcPascalTalk() {
 
 SpNpcPascalTalk::~SpNpcPascalTalk() {}
 
-void SpNpcPascalTalk::vfunc_08() {
-    ActorTalkRequest::vfunc_08();
+void SpNpcPascalTalk::resetMsg() {
+    ActorTalkRequest::resetMsg();
     resultHandler = *(Fn *)__ptmf_null;
 }
 
 void SpNpcPascalTalk::attachOwner(SpNpcPascal *o) {
-    vfunc_08();
+    resetMsg();
     owner = o;
     owner->giftGiven = 0;
     topic = 0;
@@ -580,7 +580,7 @@ void SpNpcPascalTalk::onChoice(u32) {
     }
 }
 
-BOOL SpNpcPascal::vfunc_48(void *) {
+BOOL SpNpcPascal::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (Talk_CheckAndSetPlayerFlag(0x18, r) == 1) {
         return r;
@@ -591,10 +591,10 @@ BOOL SpNpcPascal::vfunc_48(void *) {
     return r;
 }
 
-void SpNpcPascal::vfunc_4c(u32 a, u8) {
+void SpNpcPascal::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(1);
         break;

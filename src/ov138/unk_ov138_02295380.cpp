@@ -85,8 +85,8 @@ class DateSelectMenu : public MenuProc {
 public:
     DateSelectMenu() : cursor(), bottomButtons(), picker() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -163,14 +163,14 @@ extern "C" DateSelectMenu *DateSelectMenu_Create();
 
 extern "C" DateSelectMenu *DateSelectMenu_Create() { return new DateSelectMenu(); }
 
-BOOL DateSelectMenu::vfunc_00() {
+BOOL DateSelectMenu::onCreate() {
     initPicker();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL DateSelectMenu::vfunc_0c() {
+BOOL DateSelectMenu::onDelete() {
     _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent());
     releaseResources();
     return TRUE;
@@ -303,7 +303,7 @@ void DateSelectMenu::releaseResources() {
 
 void DateSelectMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void DateSelectMenu::postInputUpdate() {
@@ -686,7 +686,7 @@ s32 DateSelectMenu::getCursorTargetY() {
 
 void DateSelectMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void DateSelectMenu::moveCursorToTarget() {
@@ -726,7 +726,7 @@ void DateSelectMenu::startCursorMove(s32 a, s32 b) {
 
 void DateSelectMenu::refreshCursor() {
     ((MenuCursorBase *)&cursor)->setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void DateSelectMenu::pressCursor() {

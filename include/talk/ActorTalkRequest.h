@@ -16,7 +16,7 @@ class ActorTalkRequest : public TalkMsgRequest {
 public:
     ActorTalkRequest();
     virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
+    virtual void resetMsg();
     virtual void onConditionTag();
     virtual void onEventTag(u32 id);
     virtual void onTag09_0();

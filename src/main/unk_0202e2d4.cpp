@@ -96,8 +96,8 @@ void SpNpcActor::setColliderSize(s32 a, s32 b) {
     colliderHeight = b;
 }
 
-BOOL SpNpcActor::vfunc_04() {
-    if (!NpcActor::vfunc_04()) {
+BOOL SpNpcActor::preCreate() {
+    if (!NpcActor::preCreate()) {
         return FALSE;
     }
     setColliderSize(0x1000, 0x2000);
@@ -105,8 +105,8 @@ BOOL SpNpcActor::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcActor::vfunc_00() {
-    if (!NpcActor::vfunc_00()) {
+BOOL SpNpcActor::onCreate() {
+    if (!NpcActor::onCreate()) {
         return FALSE;
     }
     if (!NetArea_IsLocalOwner() && _ZN11CommManager8isOnlineEv(gCommManager) && !netSyncOff) {
@@ -156,8 +156,8 @@ BOOL SpNpcActor::preDelete() {
     return TRUE;
 }
 
-BOOL SpNpcActor::vfunc_0c() {
-    if (!NpcActor::vfunc_0c()) {
+BOOL SpNpcActor::onDelete() {
+    if (!NpcActor::onDelete()) {
         return FALSE;
     }
     _ZN12NpcResHandle7releaseEv(&animHeapHandle);

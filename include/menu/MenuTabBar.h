@@ -12,8 +12,8 @@ class MenuTabBar : public MenuProc {
 public:
     inline MenuTabBar() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();

@@ -8,8 +8,8 @@ class EventAnnouncer : public GameProc {
 public:
     EventAnnouncer();
     virtual ~EventAnnouncer();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
 
     /* 0x50 */ u32 unk_50;
@@ -186,7 +186,7 @@ EventAnnouncer::EventAnnouncer() {}
 
 EventAnnouncer::~EventAnnouncer() {}
 
-BOOL EventAnnouncer::vfunc_00()
+BOOL EventAnnouncer::onCreate()
 {
     u8 *r5;
     Unk_02040974_Rtc t;
@@ -288,7 +288,7 @@ BOOL EventAnnouncer::onExecute()
     return TRUE;
 }
 
-BOOL EventAnnouncer::vfunc_0c()
+BOOL EventAnnouncer::onDelete()
 {
     if (EventAnnounce_IsBlockedScene()) {
         return TRUE;

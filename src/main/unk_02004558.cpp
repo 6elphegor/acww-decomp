@@ -4424,7 +4424,7 @@ void Unk_02006d14::loadInputMode() {
     }
 }
 
-BOOL PlayerActor::vfunc_5c(Unk_020d77a4_Vec3 *out) {
+BOOL PlayerActor::getHeldItemPos(Unk_020d77a4_Vec3 *out) {
     using namespace nP;
     u32 a = ((Unk_02006d14 *)this)->itemHandMtx.unk_24;
     if (a == 0 && ((Unk_02006d14 *)this)->itemHandMtx.unk_28 == 0 && ((Unk_02006d14 *)this)->itemHandMtx.unk_2c == 0) {
@@ -8765,7 +8765,7 @@ PlayerActor::PlayerActor()
 PlayerActor::~PlayerActor() {
     using namespace nA;}
 
-BOOL PlayerActor::vfunc_00() {
+BOOL PlayerActor::onCreate() {
     using namespace nA;
     return _ZN11PlayerActor8doCreateEv(this);
 }
@@ -8782,7 +8782,7 @@ BOOL PlayerActor::onDraw() {
     return TRUE;
 }
 
-BOOL PlayerActor::vfunc_0c() {
+BOOL PlayerActor::onDelete() {
     using namespace nA;
     return doDelete();
 }

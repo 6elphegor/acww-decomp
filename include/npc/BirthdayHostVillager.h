@@ -40,13 +40,13 @@ typedef BOOL (BirthdayHostVillager::*Unk_ov004_0224c034_Fn)();
 class BirthdayHostVillager : public VillagerActor {
 public:
     BirthdayHostVillager() : returnGift(0xfff1) {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
     virtual BOOL preDelete();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual BOOL vfunc_58(void *a);
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
+    virtual BOOL acceptsSelfRequestedInteraction(void *a);
     virtual BOOL updateAct();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();

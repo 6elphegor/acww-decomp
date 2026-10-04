@@ -259,15 +259,15 @@ void * _ZN8PlayerId7getNameEv(void *);
 void Net_SetLocalGameInfo(void *, s32);
 Unk_ov048_Vec * PlayerActor_GetBodyPos(s32);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *, s32, s32, s32);
-s32 _ZN10SpNpcActor8vfunc_0cEv();
+s32 _ZN10SpNpcActor8onDeleteEv();
 s32 Scene_GetCurrent();
 void TalkRequestFlags_ClearSceneHold();
-s32 _ZN10SpNpcActor8vfunc_00Ev();
+s32 _ZN10SpNpcActor8onCreateEv();
 s32 _ZN15TownTravelState7getModeEv(void *);
 s32 _ZN15TownTravelState8getAngleEv(void *);
 void _ZN15TownTravelState9clearModeEv(void *);
 void TalkRequestFlags_SetSceneHold();
-s32 _ZN10SpNpcActor8vfunc_04Ev();
+s32 _ZN10SpNpcActor9preCreateEv();
 void TalkRequest_AddPlayerTalk6(void *, s32);
 void _ZN14NpcMoveAnimSet11setWalkAnimEi(void *, s32);
 void _ZN14NpcMoveAnimSet12setStandAnimEi(void *, s32);
@@ -434,12 +434,12 @@ public:
     typedef BOOL (SpNpcCopper::*Fn)();
 
     SpNpcCopper() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 cmd, u8 arg);
-    virtual BOOL vfunc_58(void *a);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 cmd, u8 arg);
+    virtual BOOL acceptsSelfRequestedInteraction(void *a);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -692,8 +692,8 @@ extern "C" SpNpcCopper *SpNpcCopper_Create() {
     return new SpNpcCopper();
 }
 
-BOOL SpNpcCopper::vfunc_04() {
-    if (SpNpcActor::vfunc_04() == 0) {
+BOOL SpNpcCopper::preCreate() {
+    if (SpNpcActor::preCreate() == 0) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -710,8 +710,8 @@ BOOL SpNpcCopper::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcCopper::vfunc_00() {
-    if (SpNpcActor::vfunc_00() == 0) {
+BOOL SpNpcCopper::onCreate() {
+    if (SpNpcActor::onCreate() == 0) {
         return FALSE;
     }
     talk.homeAngle = rotY;
@@ -747,8 +747,8 @@ BOOL SpNpcCopper::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcCopper::vfunc_0c() {
-    if (SpNpcActor::vfunc_0c() == 0) {
+BOOL SpNpcCopper::onDelete() {
+    if (SpNpcActor::onDelete() == 0) {
         return FALSE;
     }
     if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0xe) {
@@ -1408,7 +1408,7 @@ BOOL SpNpcCopper::act09Step1() {
     h = PlayerData_GetBySessionSlot();
     if (PlayerActor_IsScriptedWalking(a) == 0) {
         o = TalkWindow_Get(0);
-        talk.vfunc_08();
+        talk.resetMsg();
         _ZN10MsgRequest11setFileNameEPKc(&talk, (const char *)sSpNpcCopperMsgKey);
         talk.msgIndex = 0x67;
         _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(o, &talk);
@@ -1477,7 +1477,7 @@ BOOL SpNpcCopper::act0BStep0() {
     h = PlayerData_GetBySessionSlot();
     if (Unk_ov048_0225b4e4_Is2()) {
         o = TalkWindow_Get(0);
-        talk.vfunc_08();
+        talk.resetMsg();
         _ZN10MsgRequest11setFileNameEPKc(&talk, (const char *)sSpNpcCopperMsgKey);
         talk.msgIndex = 0x7b;
         _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(o, &talk);
@@ -1936,7 +1936,7 @@ BOOL SpNpcCopper::mainAct0F() {
         s32 x;
         if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b) != 0 && (x = a, u = gCommManager->myAid, x == u) && x == b) {
             netSetSlotsIfOwner(1, u, u);
-            ((ActorTalkRequest *)&talk)->vfunc_08();
+            ((ActorTalkRequest *)&talk)->resetMsg();
             talk.func_02015ab0(getPlayerActor(4));
             SpNpcCopper_ChangeAct(this, 2);
         } else if (NetArea_IsLocalOwner() != 0 && b == 4) {
@@ -1991,7 +1991,7 @@ SpNpcCopperTalk::~SpNpcCopperTalk() {
 }
 
 void SpNpcCopperTalk::attachOwner(u8 *p) {
-    vfunc_08();
+    resetMsg();
     owner = p;
     topic = 0xb;
 }
@@ -3251,14 +3251,14 @@ s32 SpNpcCopper::getWifiErrorMsg(s32 id) {
     return r;
 }
 
-BOOL SpNpcCopper::vfunc_48(void *) {
+BOOL SpNpcCopper::acceptsInteraction(void *) {
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) || netIsTalkLocked()) {
         return FALSE;
     }
     return TRUE;
 }
 
-BOOL SpNpcCopper::vfunc_58(void *) {
+BOOL SpNpcCopper::acceptsSelfRequestedInteraction(void *) {
     if (netSyncOff != 0) {
         return TRUE;
     }
@@ -3268,7 +3268,7 @@ BOOL SpNpcCopper::vfunc_58(void *) {
     return TRUE;
 }
 
-void SpNpcCopper::vfunc_4c(u32 cmd, u8 arg) {
+void SpNpcCopper::onInteractionEvent(u32 cmd, u8 arg) {
     s32 a, b;
     switch (cmd) {
     case 3:
@@ -3283,7 +3283,7 @@ void SpNpcCopper::vfunc_4c(u32 cmd, u8 arg) {
         }
         break;
     case 1: {
-        ((ActorTalkRequest *)&talk)->vfunc_08();
+        ((ActorTalkRequest *)&talk)->resetMsg();
         talk.func_02015ab0(getPlayerActor(4));
         SpNpcCopper_ChangeAct(this, 2);
         break;
@@ -3296,7 +3296,7 @@ void SpNpcCopper::vfunc_4c(u32 cmd, u8 arg) {
         } else if (isNetOwner()) {
             s32 g = gCommManager->myAid;
             netSetSlotsIfOwner(1, g, g);
-            ((ActorTalkRequest *)&talk)->vfunc_08();
+            ((ActorTalkRequest *)&talk)->resetMsg();
             talk.func_02015ab0(getPlayerActor(4));
             SpNpcCopper_ChangeAct(this, 2);
         }

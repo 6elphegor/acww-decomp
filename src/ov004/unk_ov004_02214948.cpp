@@ -76,8 +76,8 @@ u16 Room_PickRandomWalkTarget(void *, void *, s32);
 #define NpcActor_getDistanceToPlayer _ZN8NpcActor19getDistanceToPlayerEj
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
 #define func_0202d928 _ZN13VillagerActor9preDeleteEv
-#define func_0202d948 _ZN13VillagerActor8vfunc_00Ev
-#define func_0202dab0 _ZN13VillagerActor8vfunc_04Ev
+#define func_0202d948 _ZN13VillagerActor8onCreateEv
+#define func_0202dab0 _ZN13VillagerActor9preCreateEv
 #define ItemPickSpec_set _ZN12ItemPickSpec3setEii
 #define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
@@ -252,7 +252,7 @@ extern "C" BOOL BirthdayHost_GiftFilter(u16 *p, s32 flag) {
     return FALSE;
 }
 
-BOOL BirthdayHostVillager::vfunc_04() {
+BOOL BirthdayHostVillager::preCreate() {
     if (!func_0202dab0(this)) {
         return FALSE;
     }
@@ -291,7 +291,7 @@ extern "C" {
 u8 sBirthdayHostMsgFile[0x28];
 }
 
-BOOL BirthdayHostVillager::vfunc_00() {
+BOOL BirthdayHostVillager::onCreate() {
     if (!func_0202d948(this)) {
         return FALSE;
     }
@@ -336,7 +336,7 @@ void BirthdayHostVillager::func_ov004_02215b9c() {
     }
 }
 
-BOOL BirthdayHostVillager::vfunc_48(void *) {
+BOOL BirthdayHostVillager::acceptsInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl)) {
         return FALSE;
     }
@@ -346,14 +346,14 @@ BOOL BirthdayHostVillager::vfunc_48(void *) {
     return FALSE;
 }
 
-BOOL BirthdayHostVillager::vfunc_58(void *) {
+BOOL BirthdayHostVillager::acceptsSelfRequestedInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void BirthdayHostVillager::vfunc_4c(u32 a, u8 b) {
+void BirthdayHostVillager::onInteractionEvent(u32 a, u8 b) {
     Unk_ov004_02215c94_V v;
     v.x = position.x;
     v.y = position.y;

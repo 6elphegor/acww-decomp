@@ -5,11 +5,11 @@ _ZN12SpNpcHarriet17isWearingHeadItemEv kind:function(thumb,size=0x34) addr:0x022
 _ZN12SpNpcHarriet15tryFarewellTalkEv kind:function(thumb,size=0x48) addr:0x02258e7c
 _ZN12SpNpcHarriet16tryLeavePaidTalkEv kind:function(thumb,size=0x54) addr:0x02258ec4
 _ZN12SpNpcHarriet12tryChairTalkEv kind:function(thumb,size=0xc8) addr:0x02258f18
-_ZN12SpNpcHarriet8vfunc_4cEjh kind:function(thumb,size=0xfc) addr:0x02258fe0
-_ZN12SpNpcHarriet8vfunc_58Ev kind:function(thumb,size=0x20) addr:0x022590dc
-_ZN12SpNpcHarriet8vfunc_58EPv kind:label(thumb) addr:0x022590dc
-_ZN12SpNpcHarriet8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x022590fc
-_ZN12SpNpcHarriet8vfunc_48EPv kind:label(thumb) addr:0x022590fc
+_ZN12SpNpcHarriet18onInteractionEventEjh kind:function(thumb,size=0xfc) addr:0x02258fe0
+_ZN12SpNpcHarriet31acceptsSelfRequestedInteractionEv kind:function(thumb,size=0x20) addr:0x022590dc
+_ZN12SpNpcHarriet31acceptsSelfRequestedInteractionEPv kind:label(thumb) addr:0x022590dc
+_ZN12SpNpcHarriet18acceptsInteractionEv kind:function(thumb,size=0x20) addr:0x022590fc
+_ZN12SpNpcHarriet18acceptsInteractionEPv kind:label(thumb) addr:0x022590fc
 _ZN16SpNpcHarrietTalk20getQuestionsStartMsgEv kind:function(thumb,size=0x32) addr:0x0225911c
 _ZN16SpNpcHarrietTalk8onChoiceEv kind:function(thumb,size=0x104) addr:0x02259150
 _ZN16SpNpcHarrietTalk8onChoiceEj kind:label(thumb) addr:0x02259150
@@ -52,8 +52,8 @@ _ZN12SpNpcHarriet9changeActEi kind:function(thumb,size=0x44) addr:0x02259ee4
 _ZN12SpNpcHarriet9updateActEv kind:function(thumb,size=0x4c) addr:0x02259f28
 _ZN12SpNpcHarriet12getModelPathEv kind:function(thumb,size=0x8) addr:0x02259f74
 _ZN12SpNpcHarriet14getTexturePathEv kind:function(thumb,size=0x8) addr:0x02259f7c
-_ZN12SpNpcHarriet8vfunc_00Ev kind:function(thumb,size=0x88) addr:0x02259f84
-_ZN12SpNpcHarriet8vfunc_04Ev kind:function(thumb,size=0x5c) addr:0x0225a00c
+_ZN12SpNpcHarriet8onCreateEv kind:function(thumb,size=0x88) addr:0x02259f84
+_ZN12SpNpcHarriet9preCreateEv kind:function(thumb,size=0x5c) addr:0x0225a00c
 SpNpcHarriet_Create kind:function(thumb,size=0x118) addr:0x0225a068
 sSpNpcHarrietCoolColors kind:data(any) addr:0x0225a180
 sSpNpcHarrietWarmColors kind:data(any) addr:0x0225a184

@@ -64,8 +64,8 @@ class BarberMachine : public RoomObjActor, public TalkMsgRequest {
 public:
     BarberMachine();
     virtual ~BarberMachine();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL changeSyncState(u32 v);
@@ -118,7 +118,7 @@ BarberMachine::~BarberMachine() {
 }
 
 // @222564c
-BOOL BarberMachine::vfunc_00() {
+BOOL BarberMachine::onCreate() {
     sBarberMachine = this;
     isStartedLocally = 0;
     loadResources("/roomObj/obj_b_machine.arc", "/roomObj/obj_b_machine.nsbtx");
@@ -146,7 +146,7 @@ BOOL BarberMachine::onDraw() {
 }
 
 // @2225608
-BOOL BarberMachine::vfunc_0c() {
+BOOL BarberMachine::onDelete() {
     removeCollision();
     releaseResources();
     sBarberMachine = 0;

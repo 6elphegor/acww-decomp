@@ -149,11 +149,11 @@ extern "C" void _ZN8ProcBaseD2Ev(ProcBase *self) {
     *(u32 **)self = data_0213b15c;
 }
 
-extern "C" BOOL _ZN8ProcBase8vfunc_00Ev(ProcBase *self) {
+extern "C" BOOL _ZN8ProcBase8onCreateEv(ProcBase *self) {
     return TRUE;
 }
 
-extern "C" BOOL _ZN8ProcBase8vfunc_04Ev(ProcBase *self) {
+extern "C" BOOL _ZN8ProcBase9preCreateEv(ProcBase *self) {
     return TRUE;
 }
 
@@ -169,7 +169,7 @@ extern "C" void _ZN8ProcBase10postCreateEi(ProcBase *self, s32 a) {
     self->state = 1;
 }
 
-extern "C" BOOL _ZN8ProcBase8vfunc_0cEv(ProcBase *self) {
+extern "C" BOOL _ZN8ProcBase8onDeleteEv(ProcBase *self) {
     return TRUE;
 }
 
@@ -181,7 +181,7 @@ extern "C" BOOL _ZN8ProcBase9preDeleteEv(ProcBase *self) {
     return TRUE;
 }
 
-extern "C" void _ZN8ProcBase8vfunc_14Ev(ProcBase *self, s32 a) {
+extern "C" void _ZN8ProcBase10postDeleteEv(ProcBase *self, s32 a) {
     if (a != 2) return;
     TreeNode_Detach(&gProcTree, &self->treeNode);
     List_Remove(&gTaskDeleteList, &self->executeNode);
@@ -190,7 +190,7 @@ extern "C" void _ZN8ProcBase8vfunc_14Ev(ProcBase *self, s32 a) {
     delete self;
 }
 
-extern "C" BOOL _ZN8ProcBase8vfunc_30Ev(ProcBase *self) {
+extern "C" BOOL _ZN8ProcBase15onDeleteRequestEv(ProcBase *self) {
 }
 
 extern "C" void ProcBase_SetHeap(ProcBase *self, Heap *heap) {
@@ -201,7 +201,7 @@ extern "C" void ProcBase_RequestDelete(ProcBase *self) {
     if (self->deletePending != 0) return;
     if (isTwo(self->state)) return;
     self->deletePending = 1;
-    self->vfunc_30();
+    self->onDeleteRequest();
 }
 
 extern "C" ProcBase *ProcBase_GetParent(ProcBase *self) {
@@ -257,7 +257,7 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
             BOOL ok;
             u32 f = h->regionStart & 0x10;
             if (f) func_020e8b94(h, 0x10, 0x10);
-            ok = self->vfunc_3c();
+            ok = self->allocResources();
             if (f == 0) {
                 if (func_020e8b94(h, 0x10, 0x10) == NULL) ok = FALSE;
             }
@@ -282,7 +282,7 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
         h = FrameHeap_CreateAsCurrent(-1, parent);
         f = h->regionStart & 0x10;
         if (f) func_020e8b94(h, 0x10, 0x10);
-        ok = self->vfunc_3c();
+        ok = self->allocResources();
         if (f == 0) {
             if (func_020e8b94(h, 0x10, 0x10) == NULL) ok = FALSE;
         }
@@ -307,7 +307,7 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
                 BOOL r;
                 func_020e8c94(h);
                 h = NULL;
-                r = self->vfunc_3c();
+                r = self->allocResources();
                 Heap_RestoreCurrent();
                 if (r == 0) {
                     func_020e8c94(h2);
@@ -342,7 +342,7 @@ extern "C" BOOL _ZN8ProcBase10createHeapEv(ProcBase *self, u32 size, Heap *paren
             BOOL ok;
             u32 f = h->regionStart & 0x10;
             if (f) func_020e8b94(h, 0x10, 0x10);
-            ok = self->vfunc_3c();
+            ok = self->allocResources();
             if (f == 0) {
                 if (func_020e8b94(h, 0x10, 0x10) == NULL) ok = FALSE;
             }
@@ -360,7 +360,7 @@ extern "C" BOOL _ZN8ProcBase10createHeapEv(ProcBase *self, u32 size, Heap *paren
     return FALSE;
 }
 
-extern "C" BOOL _ZN8ProcBase8vfunc_3cEv(ProcBase *self) {
+extern "C" BOOL _ZN8ProcBase14allocResourcesEv(ProcBase *self) {
     return TRUE;
 }
 

@@ -151,12 +151,12 @@ struct Unk_ov055_022594e0_Ent {
 class SpNpcRover : public SpNpcActor {
 public:
     SpNpcRover() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual BOOL vfunc_58(void *a);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
+    virtual BOOL acceptsSelfRequestedInteraction(void *a);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -240,8 +240,8 @@ static inline BOOL Unk_ov055_0225915c_Both() {
 
 extern "C" SpNpcRover *SpNpcRover_Create() { return new SpNpcRover; }
 
-BOOL SpNpcRover::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcRover::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -249,8 +249,8 @@ BOOL SpNpcRover::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcRover::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcRover::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     sSpNpcRoverInstance = this;
@@ -262,8 +262,8 @@ BOOL SpNpcRover::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcRover::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcRover::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     sSpNpcRoverInstance = 0;
@@ -329,7 +329,7 @@ SpNpcRoverTalk::SpNpcRoverTalk() {}
 SpNpcRoverTalk::~SpNpcRoverTalk() {}
 
 void SpNpcRoverTalk::attachOwner(SpNpcRover *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = owner;
 }
 
@@ -474,29 +474,29 @@ void SpNpcRover::restoreOwnTransfer() {
     MI_CpuCopy8(&send.record, TownExchange_GetForAid(4), 0x84c);
 }
 
-BOOL SpNpcRover::vfunc_48(void *) {
+BOOL SpNpcRover::acceptsInteraction(void *) {
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-BOOL SpNpcRover::vfunc_58(void *) {
+BOOL SpNpcRover::acceptsSelfRequestedInteraction(void *) {
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-void SpNpcRover::vfunc_4c(u32 a, u8) {
+void SpNpcRover::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
-        talk.vfunc_08();
+        talk.resetMsg();
         _ZN16ActorTalkRequest13func_02015ab0Ej(&talk, getPlayerActor(4));
         changeAct(1);
         break;
     case 1:
-        talk.vfunc_08();
+        talk.resetMsg();
         _ZN16ActorTalkRequest13func_02015ab0Ej(&talk, getPlayerActor(4));
         changeAct(1);
         break;

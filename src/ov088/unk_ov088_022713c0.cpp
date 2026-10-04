@@ -152,11 +152,11 @@ struct Unk_020d77a4_Vec3;
 class SpNpcShrunk : public SpNpcActor {
 public:
     SpNpcShrunk() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 v, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 v, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -297,8 +297,8 @@ extern "C" SpNpcShrunk *SpNpcShrunk_Create() {
 
 s32 SpNpcShrunk::getWalkAnimSpeedScale() { return data_020c6cf0; }
 
-BOOL SpNpcShrunk::vfunc_04() {
-    if (SpNpcActor::vfunc_04() == 0) {
+BOOL SpNpcShrunk::preCreate() {
+    if (SpNpcActor::preCreate() == 0) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -306,16 +306,16 @@ BOOL SpNpcShrunk::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcShrunk::vfunc_00() {
-    if (SpNpcActor::vfunc_00() == 0) {
+BOOL SpNpcShrunk::onCreate() {
+    if (SpNpcActor::onCreate() == 0) {
         return FALSE;
     }
     changeAct(3);
     return TRUE;
 }
 
-BOOL SpNpcShrunk::vfunc_0c() {
-    if (SpNpcActor::vfunc_0c() == 0) {
+BOOL SpNpcShrunk::onDelete() {
+    if (SpNpcActor::onDelete() == 0) {
         return FALSE;
     }
     if (EventAnnounce_IsBusy() == 0) {
@@ -761,7 +761,7 @@ SpNpcShrunkTalk::SpNpcShrunkTalk() {}
 SpNpcShrunkTalk::~SpNpcShrunkTalk() {}
 
 void SpNpcShrunkTalk::attachOwner(SpNpcShrunk *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = owner;
     ownerNpc->reactionWindow = 0;
     MI_CpuFill8(&emotionTaken[0], 0, 0x1e);
@@ -845,7 +845,7 @@ void SpNpcShrunkTalk::onChoice(u32) {
     }
 }
 
-BOOL SpNpcShrunk::vfunc_48(void *) {
+BOOL SpNpcShrunk::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
@@ -853,13 +853,13 @@ BOOL SpNpcShrunk::vfunc_48(void *) {
     return r;
 }
 
-void SpNpcShrunk::vfunc_4c(u32 v, u8) {
+void SpNpcShrunk::onInteractionEvent(u32 v, u8) {
     switch (v) {
     case 0:
         changeAct(0);
         break;
     case 3:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(4);
         break;

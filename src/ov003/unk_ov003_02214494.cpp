@@ -99,7 +99,7 @@ ReddTent::~ReddTent() {
 }
 
 
-BOOL ReddTent::vfunc_70() {
+BOOL ReddTent::initBuilding() {
     Unk_ov003_02214890_Buf l;
     l.w0 = 0;
     l.w1 = 0;
@@ -115,7 +115,7 @@ BOOL ReddTent::onExecute() {
 }
 
 
-BOOL ReddTent::vfunc_8c() {
+BOOL ReddTent::isOpen() {
     Unk_ov003_02214890_Buf l;
     l.w0 = 0;
     l.w1 = 0;
@@ -240,7 +240,7 @@ BOOL ReddTent::enterTentTalkOpen() {
     Unk_ov003_0221475c_Pad pad;
     _ZN9Character17attachTalkRequestEi(this, this);
     setFileName("sp_npc_fox");
-    if (vfunc_8c() == 0) {
+    if (isOpen() == 0) {
         msgIndex = 0x34;
         if (entryFlags.f1 == 0) {
             BuildingOccupancy_Leave(itemId, 0);

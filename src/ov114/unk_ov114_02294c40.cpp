@@ -258,7 +258,7 @@ void CreatureBookPanel::cleanup() {
 void CreatureBookPanel::preUpdate() {
     paletteTask.cancel();
     CreatureBook_CancelIconTasks((S *)this);
-    scrollKnob.vfunc_0c();
+    scrollKnob.update();
     CreatureBook_ClearLabels((S *)this);
 }
 

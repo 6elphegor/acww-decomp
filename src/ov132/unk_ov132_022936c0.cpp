@@ -90,8 +90,8 @@ class BankMenu : public MenuProc {
 public:
     BankMenu() : cursor(), bottomButtons(), labels(), screenTasks(), errorMessage() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -171,14 +171,14 @@ static inline BOOL Unk_ov132_02293d40_Both() {
 
 extern "C" BankMenu *BankMenu_Create() { return new BankMenu(); }
 
-BOOL BankMenu::vfunc_00() {
+BOOL BankMenu::onCreate() {
     initState();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL BankMenu::vfunc_0c() {
+BOOL BankMenu::onDelete() {
     _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent());
     releaseResources();
     return TRUE;
@@ -298,7 +298,7 @@ void BankMenu::releaseResources() {
 
 void BankMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void BankMenu::postInputUpdate() {
@@ -550,7 +550,7 @@ s32 BankMenu::getCursorTargetY() {
 
 void BankMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void BankMenu::moveCursorToTarget() {
@@ -572,7 +572,7 @@ void BankMenu::startCursorMove(s32 a, s32 b) {
 
 void BankMenu::refreshCursor() {
     ((MenuCursorBase *)&cursor)->setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void BankMenu::pressCursor() {

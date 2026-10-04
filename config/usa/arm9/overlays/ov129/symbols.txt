@@ -99,8 +99,8 @@ _ZN23ConstellationEditorMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02
 _ZN23ConstellationEditorMenu12runMainStateEv kind:function(thumb,size=0x120) addr:0x02296138
 _ZN23ConstellationEditorMenu14execTransitionEv kind:function(thumb,size=0x104) addr:0x02296258
 _ZN23ConstellationEditorMenu6onDrawEv kind:function(thumb,size=0xa0) addr:0x0229635c
-_ZN23ConstellationEditorMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x022963fc
-_ZN23ConstellationEditorMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02296418
+_ZN23ConstellationEditorMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x022963fc
+_ZN23ConstellationEditorMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x02296418
 ConstellationEditorMenu_Create kind:function(thumb,size=0x60) addr:0x02296438
 sStarStateColours kind:data(any) addr:0x02296498
 data_ov129_0229649c kind:data(any) addr:0x0229649c

@@ -97,8 +97,8 @@ _ZN6MapTab8execMainEv kind:function(thumb,size=0x2a) addr:0x02294ee8
 _ZN6MapTab12runMainStateEv kind:function(thumb,size=0xe8) addr:0x02294f14
 _ZN6MapTab14execTransitionEv kind:function(thumb,size=0xd8) addr:0x02294ffc
 _ZN6MapTab6onDrawEv kind:function(thumb,size=0x290) addr:0x022950d4
-_ZN6MapTab8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02295364
-_ZN6MapTab8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02295380
+_ZN6MapTab8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02295364
+_ZN6MapTab8onCreateEv kind:function(thumb,size=0x20) addr:0x02295380
 MapTab_Create kind:function(thumb,size=0xb0) addr:0x022953a0
 sMapTabPlaceMarkers kind:data(any) addr:0x02295450
 sMapTabMarkerPlaceRows kind:data(any) addr:0x02295458

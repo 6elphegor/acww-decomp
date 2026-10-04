@@ -1,9 +1,9 @@
 _ZN12SpNpcSaharahD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN12SpNpcSaharahD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
-_ZN12SpNpcSaharah8vfunc_4cEi kind:function(thumb,size=0x8c) addr:0x02271414
-_ZN12SpNpcSaharah8vfunc_4cEjh kind:label(thumb) addr:0x02271414
-_ZN12SpNpcSaharah8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x022714a0
-_ZN12SpNpcSaharah8vfunc_48EPv kind:label(thumb) addr:0x022714a0
+_ZN12SpNpcSaharah18onInteractionEventEi kind:function(thumb,size=0x8c) addr:0x02271414
+_ZN12SpNpcSaharah18onInteractionEventEjh kind:label(thumb) addr:0x02271414
+_ZN12SpNpcSaharah18acceptsInteractionEv kind:function(thumb,size=0x20) addr:0x022714a0
+_ZN12SpNpcSaharah18acceptsInteractionEPv kind:label(thumb) addr:0x022714a0
 _ZN16SpNpcSaharahTalk8onChoiceEv kind:function(thumb,size=0xe0) addr:0x022714c0
 _ZN16SpNpcSaharahTalk8onChoiceEj kind:label(thumb) addr:0x022714c0
 _ZN16SpNpcSaharahTalk12onMessageEndEv kind:function(thumb,size=0x238) addr:0x022715a0
@@ -32,9 +32,9 @@ _ZN12SpNpcSaharah9changeActEi kind:function(thumb,size=0x44) addr:0x02272030
 _ZN12SpNpcSaharah9updateActEv kind:function(thumb,size=0x4c) addr:0x02272074
 _ZN12SpNpcSaharah12getModelPathEv kind:function(thumb,size=0x8) addr:0x022720c0
 _ZN12SpNpcSaharah14getTexturePathEv kind:function(thumb,size=0x8) addr:0x022720c8
-_ZN12SpNpcSaharah8vfunc_0cEv kind:function(thumb,size=0x28) addr:0x022720d0
-_ZN12SpNpcSaharah8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x022720f8
-_ZN12SpNpcSaharah8vfunc_04Ev kind:function(thumb,size=0x30) addr:0x02272118
+_ZN12SpNpcSaharah8onDeleteEv kind:function(thumb,size=0x28) addr:0x022720d0
+_ZN12SpNpcSaharah8onCreateEv kind:function(thumb,size=0x20) addr:0x022720f8
+_ZN12SpNpcSaharah9preCreateEv kind:function(thumb,size=0x30) addr:0x02272118
 _ZN12SpNpcSaharah21getWalkAnimSpeedScaleEv kind:function(thumb,size=0xc) addr:0x02272148
 SpNpcSaharah_Create kind:function(thumb,size=0x118) addr:0x02272154
 __sinit_ov078_0227226c kind:function(thumb,size=0x144) addr:0x0227226c

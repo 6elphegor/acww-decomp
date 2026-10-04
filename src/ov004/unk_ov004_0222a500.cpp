@@ -261,8 +261,8 @@ public:
 class RoomShell : public GameProc {
 public:
     RoomShell();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~RoomShell();
@@ -438,7 +438,7 @@ RoomShell::~RoomShell() {
     _ZN11BoxColliderD2Ev(scene0ACollider);
 }
 
-BOOL RoomShell::vfunc_00() {
+BOOL RoomShell::onCreate() {
     sRoomShell = this;
     entranceColliders.init();
     ((RoomEntranceColliders *)&scene0ACollider)->initScene0A();
@@ -493,7 +493,7 @@ BOOL RoomShell::onDraw() {
     return TRUE;
 }
 
-BOOL RoomShell::vfunc_0c() {
+BOOL RoomShell::onDelete() {
     ((Unk_ov004_0222b15c *)&wallpaper)->release();
     ((RoomScene22Shape *)scene22Shape)->release();
     ((RoomEntranceColliders *)&scene0ACollider)->releaseScene0A();

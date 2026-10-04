@@ -168,8 +168,8 @@ class DonationMenu : public MenuProc {
 public:
     DonationMenu() : cursor(), scrollKnob(), bottomButtons(), textLabels(), vramTasks() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -297,14 +297,14 @@ static inline BOOL Both() {
 
 extern "C" DonationMenu *DonationMenu_Create() { return new DonationMenu(); }
 
-BOOL DonationMenu::vfunc_00() {
+BOOL DonationMenu::onCreate() {
     initDonation();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL DonationMenu::vfunc_0c() {
+BOOL DonationMenu::onDelete() {
     ProcBase_GetParent();
     MenuLauncher_onChildClosed();
     releaseResources();
@@ -460,7 +460,7 @@ void DonationMenu::releaseResources() {
 void DonationMenu::preInputUpdate() {
     preStateUpdate();
     MenuCursorBuf0 *p = &cursor;
-    p->vfunc_0c();
+    p->update();
 }
 
 // ---- 0x022931e4 ----
@@ -474,7 +474,7 @@ void DonationMenu::preStateUpdate() {
     BgVramTask_cancel(&vramTasks[0]);
     BgVramTask_cancel(&vramTasks[1]);
     BgVramTask_cancel(&vramTasks[2]);
-    scrollKnob.vfunc_0c();
+    scrollKnob.update();
 }
 
 void DonationMenu::postStateUpdate() {
@@ -839,7 +839,7 @@ s32 DonationMenu::getCursorTargetY() {
 
 void DonationMenu::hideCursor() {
     MenuCursor_setAnimIfChanged(&cursor, 0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void DonationMenu::moveCursorToTarget() {
@@ -861,7 +861,7 @@ void DonationMenu::moveCursorTo(s32 a, s32 b) {
 
 void DonationMenu::refreshCursor() {
     MenuCursorBase_setPoseIdle(&cursor);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void DonationMenu::pressCursor() {

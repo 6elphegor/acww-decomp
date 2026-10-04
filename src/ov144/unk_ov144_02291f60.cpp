@@ -178,8 +178,8 @@ public:
     MusicMenu()
         : cursor(), scrollKnob(), bottomButtons(), textLabels(), screenTasks(), errorMessage() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -325,14 +325,14 @@ static inline BOOL Unk_ov144_022934cc_Both() {
 
 extern "C" MusicMenu *MusicMenu_Create() { return new MusicMenu(); }
 
-BOOL MusicMenu::vfunc_00() {
+BOOL MusicMenu::onCreate() {
     initMusic();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL MusicMenu::vfunc_0c() {
+BOOL MusicMenu::onDelete() {
     ProcBase_GetParent();
     MenuLauncher_onChildClosed();
     releaseResources();
@@ -483,7 +483,7 @@ void C::releaseResources() {
 
 void C::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void C::postInputUpdate() {
@@ -495,7 +495,7 @@ void C::preStateUpdate() {
     MenuBottomButtons_freeTexts(&bottomButtons);
     BgVramTask_cancel(&screenTasks);
     BgVramTask_cancel(&screenTasks[1]);
-    scrollKnob.vfunc_0c();
+    scrollKnob.update();
 }
 
 void C::postStateUpdate() {
@@ -990,7 +990,7 @@ s32 MusicMenu::getCursorTargetY() {
 
 void MusicMenu::hideCursor() {
     MenuCursor_setAnimIfChanged(&cursor, 0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void MusicMenu::moveCursorToTarget() {
@@ -1014,7 +1014,7 @@ void MusicMenu::moveCursorTo(s32 a, s32 b) {
 
 void MusicMenu::refreshCursor() {
     MenuCursorBase_setPoseIdle(&cursor);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void MusicMenu::pressCursor() {

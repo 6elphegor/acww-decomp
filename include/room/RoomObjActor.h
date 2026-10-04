@@ -16,10 +16,10 @@ class RoomObjActor : public Character {
 public:
     RoomObjActor();
     virtual ~RoomObjActor();
-    virtual BOOL vfunc_04();
+    virtual BOOL preCreate();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
+    virtual BOOL postExecute(u32 a);
     virtual BOOL changeSyncState(u32 v);
     virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
 

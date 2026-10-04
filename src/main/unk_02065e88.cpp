@@ -885,7 +885,7 @@ public:
 class Unk_020ddcf0_v13 {
 public:
     virtual ~Unk_020ddcf0_v13();
-    virtual void vfunc_08();
+    virtual void resetMsg();
     virtual void vfunc_0c();
     virtual void onMessageStart();
     virtual void onMessageEnd();
@@ -5108,9 +5108,9 @@ TalkMsgRequest::TalkMsgRequest() {
 }
 TalkMsgRequest::~TalkMsgRequest() {
     using namespace n3;}
-void TalkMsgRequest::vfunc_08() {
+void TalkMsgRequest::resetMsg() {
     using namespace n3;
-    MsgRequest::vfunc_08();
+    MsgRequest::resetMsg();
     speakerName.clear();
     unk_3c = 0;
     unk_40 = 0;
@@ -5163,7 +5163,7 @@ u32 TalkMsgRequest::isNoSpeakerName() {
     using namespace n1; return unk_40; }
 u32 TalkMsgRequest::getNameKind() {
     using namespace n1; return unk_04[(0x2c - 4) / 4]; }
-const char *TalkMsgRequest::vfunc_s0c() {
+const char *TalkMsgRequest::getMsgDir() {
     using namespace n1; return data_020ddd68; }
 void TalkMsgRequest::onMessageStart(u32 attr) {
     using namespace n1;}

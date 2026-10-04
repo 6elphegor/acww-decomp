@@ -97,8 +97,8 @@ class ClockAdjustMenu : public MenuProc {
 public:
     ClockAdjustMenu() : cursor(), bottomButtons(), picker() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -177,14 +177,14 @@ extern "C" ClockAdjustMenu *ClockAdjustMenu_Create() { return new ClockAdjustMen
 
 extern "C" ProcProfile sClockAdjustMenuProfile = {(void *(*)())ClockAdjustMenu_Create, 0xae, 0xb2};
 
-BOOL ClockAdjustMenu::vfunc_00() {
+BOOL ClockAdjustMenu::onCreate() {
     initPicker();
     transitionState = 0;
     setPhase(0);
     return TRUE;
 }
 
-BOOL ClockAdjustMenu::vfunc_0c() {
+BOOL ClockAdjustMenu::onDelete() {
     _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent());
     releaseResources();
     return TRUE;
@@ -312,7 +312,7 @@ void ClockAdjustMenu::releaseResources() {
 
 void ClockAdjustMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void ClockAdjustMenu::postInputUpdate() {
@@ -718,7 +718,7 @@ s32 ClockAdjustMenu::getCursorTargetY() {
 
 void ClockAdjustMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void ClockAdjustMenu::moveCursorToTarget() {
@@ -746,7 +746,7 @@ void ClockAdjustMenu::startCursorMove(s32 a, s32 b) {
 
 void ClockAdjustMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void ClockAdjustMenu::pressCursor() {

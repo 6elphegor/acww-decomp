@@ -22,8 +22,8 @@ class PocketMenu : public MenuProc {
 public:
     inline PocketMenu();
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();

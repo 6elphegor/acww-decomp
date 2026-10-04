@@ -36,10 +36,10 @@ public:
     GulliverShip();
     virtual ~GulliverShip();
 
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_70();
+    virtual BOOL initBuilding();
 };
 
 extern "C" GulliverShip *GulliverShip_Create() {
@@ -52,7 +52,7 @@ GulliverShip::GulliverShip() {
 GulliverShip::~GulliverShip() {
 }
 
-BOOL GulliverShip::vfunc_70() {
+BOOL GulliverShip::initBuilding() {
     Visitor_ScheduleLow(&sGulliverShipVisitorProfile, Scene_GetCurrent(), &position);
     return TRUE;
 }
@@ -65,7 +65,7 @@ BOOL GulliverShip::onDraw() {
     return TRUE;
 }
 
-BOOL GulliverShip::vfunc_0c() {
+BOOL GulliverShip::onDelete() {
     return TRUE;
 }
 

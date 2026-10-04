@@ -122,8 +122,8 @@ public:
     /* 0x310 */ Unk_ov003_02217948 envChannel;
 
     FieldGround();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~FieldGround();
@@ -290,7 +290,7 @@ FieldGround::~FieldGround() {
     FieldGround_DestroyEnvChannel(&envChannel);
 }
 
-BOOL FieldGround::vfunc_00() {
+BOOL FieldGround::onCreate() {
     backdrop.clear();
     backdrop.init();
     s32 r6 = BgModelCache_getGroundTex(BgModelCache_Get());
@@ -461,7 +461,7 @@ BOOL FieldGround::onDraw() {
     return TRUE;
 }
 
-BOOL FieldGround::vfunc_0c() {
+BOOL FieldGround::onDelete() {
     s32 i, j;
     s32 idx;
     piece.release();

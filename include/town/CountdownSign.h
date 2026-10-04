@@ -13,15 +13,15 @@ class CountdownSign : public BuildingActor {
 public:
     CountdownSign();
     virtual ~CountdownSign();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL postDraw(s32 a);
-    virtual s32 vfunc_6c(s32 a);
-    virtual BOOL vfunc_70();
-    virtual void vfunc_74();
-    virtual char *vfunc_a4();
-    virtual char *vfunc_a8();
-    virtual char *vfunc_ac();
+    virtual s32 setDoorState(s32 a);
+    virtual BOOL initBuilding();
+    virtual void updateDoorState();
+    virtual char *getArcPath();
+    virtual char *getTexPath();
+    virtual char *getLightTexPath();
 
     void execNewYear();
     BOOL enterNewYear();

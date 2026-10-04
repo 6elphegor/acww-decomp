@@ -7,7 +7,7 @@
 extern "C" {
 // Other files
 void *_ZN12LabelBalloon7getAnimEv(void *p);
-void _ZN12LabelBalloon8vfunc_0cEv(void *p);
+void _ZN12LabelBalloon6updateEv(void *p);
 s32 _ZN12LabelBalloon4drawEv(void *p);
 void *_ZN10SpriteAnim7getCellEv(void *p);
 s32 _ZN12LabelBalloon8getDrawXEv(void *p);
@@ -53,8 +53,8 @@ void FieldInfoLabelBalloon::draw() {
     markerDrawn = r4;
 }
 
-void FieldInfoLabelBalloon::vfunc_0c() {
+void FieldInfoLabelBalloon::update() {
     markerDrawnPrev = markerDrawn;
-    _ZN12LabelBalloon8vfunc_0cEv(this);
+    _ZN12LabelBalloon6updateEv(this);
     _ZN21FieldInfoLabelBalloon11updateBlinkEv(this);
 }

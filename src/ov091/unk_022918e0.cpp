@@ -48,8 +48,8 @@ public:
     LetterViewMenu()
         : letterRenderer(), closeButton(), cursor() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -82,7 +82,7 @@ extern "C" LetterViewMenu *LetterViewMenu_Create() { return new LetterViewMenu()
 
 extern "C" ProcProfile sLetterViewMenuProfile = {(void *(*)())LetterViewMenu_Create, 0xa8, 0xac};
 
-BOOL LetterViewMenu::vfunc_00() {
+BOOL LetterViewMenu::onCreate() {
     initLetterView();
     setTransitionState(0);
     setPhase(1);
@@ -90,14 +90,14 @@ BOOL LetterViewMenu::vfunc_00() {
     return TRUE;
 }
 
-BOOL LetterViewMenu::vfunc_0c() {
+BOOL LetterViewMenu::onDelete() {
     releaseResources();
     Snd_EndMenuDuck();
     return TRUE;
 }
 
 BOOL LetterViewMenu::onDraw() {
-    cursor.vfunc_0c();
+    cursor.update();
     s32 r = getSlideOffsetY();
     closeButton.setPos(0, r);
     closeButton.draw();

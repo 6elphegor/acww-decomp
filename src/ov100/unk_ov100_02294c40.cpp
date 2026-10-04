@@ -133,8 +133,8 @@ class ShopSellMenu : public MenuProc {
 public:
     ShopSellMenu()
         : vramTask(), itemGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), choiceMenu(), errorMessage(), textLabels() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -336,14 +336,14 @@ static inline BOOL Unk_ov100_02296b58_Both() {
 
 extern "C" ShopSellMenu *ShopSellMenu_Create() { return new ShopSellMenu(); }
 
-BOOL ShopSellMenu::vfunc_00() {
+BOOL ShopSellMenu::onCreate() {
     ShopSellMenu_Init(this);
     setTransitionState(0);
     setPhase(0);
     return TRUE;
 }
 
-BOOL ShopSellMenu::vfunc_0c() {
+BOOL ShopSellMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
     ShopSellMenu_Exit(this);
     return TRUE;
@@ -548,7 +548,7 @@ extern "C" void ShopSellMenu_Exit(S *s) {
 
 extern "C" void ShopSellMenu_PreInputUpdate(S *s) {
     ShopSellMenu_PreStateUpdate(s);
-    s->cursor.vfunc_0c();
+    s->cursor.update();
 }
 
 extern "C" void ShopSellMenu_PostInputUpdate(S *s) {
@@ -1446,7 +1446,7 @@ extern "C" s32 ShopSellMenu_GetCursorTargetY(S *s)
 extern "C" void ShopSellMenu_HideCursor(S *s)
 {
     ((MenuCursor *)&s->cursor)->setAnimIfChanged(0);
-    ((MenuCursorBuf0 *)&s->cursor)->vfunc_0c();
+    ((MenuCursorBuf0 *)&s->cursor)->update();
 }
 
 extern "C" void ShopSellMenu_MoveCursorToTarget(S *s)
@@ -1457,7 +1457,7 @@ extern "C" void ShopSellMenu_MoveCursorToTarget(S *s)
     s->returnState = s->mainState;
     s->setMainState(8);
     if (s->testFlags(0x100)) {
-        ((MenuCursorBuf0 *)&s->cursor)->vfunc_0c();
+        ((MenuCursorBuf0 *)&s->cursor)->update();
         s->clearFlags(0x100);
     }
 }
@@ -1501,7 +1501,7 @@ extern "C" void ShopSellMenu_PlaceCursorAtTarget(S *s)
 
 void ShopSellMenu::refreshCursor() {
     ((MenuCursorBase *)&cursor)->setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void ShopSellMenu::pressCursor() {

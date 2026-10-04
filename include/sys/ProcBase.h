@@ -17,22 +17,22 @@ public:
     static void operator delete(void *ptr);
 
     ProcBase();
-    virtual BOOL vfunc_00();                // 0x00 create
-    virtual BOOL vfunc_04();                // 0x04 pre-create
+    virtual BOOL onCreate();                // 0x00 create
+    virtual BOOL preCreate();                // 0x04 pre-create
     virtual void postCreate(s32 status);    // 0x08 (body: _ZN8ProcBase10postCreateEi)
-    virtual BOOL vfunc_0c();                // 0x0c delete
+    virtual BOOL onDelete();                // 0x0c delete
     virtual BOOL preDelete();               // 0x10
-    virtual BOOL vfunc_14(s32 status);      // 0x14 post-delete
+    virtual BOOL postDelete(s32 status);      // 0x14 post-delete
     virtual BOOL onExecute();               // 0x18
     virtual BOOL preExecute();              // 0x1c
-    virtual BOOL vfunc_20(u32 status);      // 0x20 post-execute
+    virtual BOOL postExecute(u32 status);      // 0x20 post-execute
     virtual BOOL onDraw();                  // 0x24
     virtual BOOL preDraw();                 // 0x28
     virtual BOOL postDraw(s32 status);      // 0x2c
-    virtual BOOL vfunc_30();                // 0x30 delete requested
+    virtual BOOL onDeleteRequest();                // 0x30 delete requested
     virtual BOOL createHeapFitted();        // 0x34
     virtual BOOL createHeap();              // 0x38
-    virtual BOOL vfunc_3c();                // 0x3c
+    virtual BOOL allocResources();                // 0x3c
     virtual ~ProcBase();                    // 0x40
 
     void taskConnect(); // itcm func_01ffd1b4

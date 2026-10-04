@@ -92,9 +92,9 @@ s32 SaveManager_IsIdle();
 class SpNpcTortimer2 : public SpNpcActor {
 public:
     SpNpcTortimer2() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -112,16 +112,16 @@ public:
 
 extern "C" SpNpcTortimer2 *SpNpcTortimer2_Create() { return new SpNpcTortimer2; }
 
-BOOL SpNpcTortimer2::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcTortimer2::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0xff);
     return TRUE;
 }
 
-BOOL SpNpcTortimer2::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcTortimer2::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     sSpNpcTortimer2 = this;
@@ -131,8 +131,8 @@ BOOL SpNpcTortimer2::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcTortimer2::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcTortimer2::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     sSpNpcTortimer2 = 0;

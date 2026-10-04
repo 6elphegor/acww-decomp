@@ -22,8 +22,8 @@ extern CommManager *gCommManager;
 
 class FieldEntryScene : public SceneBase {
 public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~FieldEntryScene() {}
@@ -51,7 +51,7 @@ void FieldEntryScene::requestField() {
 
 void FieldEntryScene::idle() {}
 
-BOOL FieldEntryScene::vfunc_00() {
+BOOL FieldEntryScene::onCreate() {
     if (gCommManager->isSlotActive(gCommManager->myAid)) {
         step = 0;
     } else {
@@ -64,7 +64,7 @@ BOOL FieldEntryScene::vfunc_00() {
     return TRUE;
 }
 
-BOOL FieldEntryScene::vfunc_0c() {
+BOOL FieldEntryScene::onDelete() {
     gGfxFrameHooks = 0;
     Scene_ShutdownGraphics();
     return TRUE;

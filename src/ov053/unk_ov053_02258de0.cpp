@@ -94,11 +94,11 @@ public:
 class SpNpcHarriet : public SpNpcActor {
 public:
     SpNpcHarriet() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 cmd, u8 arg);
-    virtual BOOL vfunc_58(void *a);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 cmd, u8 arg);
+    virtual BOOL acceptsSelfRequestedInteraction(void *a);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -334,8 +334,8 @@ extern "C" const Unk_ov053_Vec sSpNpcHarrietReturnPos = {0x10000, 0, 0x1b000};
 
 SpNpcHarriet *SpNpcHarriet_Create() { return new SpNpcHarriet; }
 
-BOOL SpNpcHarriet::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcHarriet::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -346,8 +346,8 @@ BOOL SpNpcHarriet::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcHarriet::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcHarriet::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     void *g = gCommManager;
@@ -700,7 +700,7 @@ SpNpcHarrietTalk::SpNpcHarrietTalk() {}
 SpNpcHarrietTalk::~SpNpcHarrietTalk() {}
 
 void SpNpcHarrietTalk::attachOwner(SpNpcHarriet *o) {
-    vfunc_08();
+    resetMsg();
     owner = o;
     topic = 0xe;
 }
@@ -897,21 +897,21 @@ s32 SpNpcHarrietTalk::getQuestionsStartMsg() {
     return 0x3e;
 }
 
-BOOL SpNpcHarriet::vfunc_48(void *) {
+BOOL SpNpcHarriet::acceptsInteraction(void *) {
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL SpNpcHarriet::vfunc_58(void *) {
+BOOL SpNpcHarriet::acceptsSelfRequestedInteraction(void *) {
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void SpNpcHarriet::vfunc_4c(u32 cmd, u8 arg) {
+void SpNpcHarriet::onInteractionEvent(u32 cmd, u8 arg) {
     PlayerData_GetCurrent();
     partnerPlayer = arg;
     switch (cmd) {
@@ -920,7 +920,7 @@ void SpNpcHarriet::vfunc_4c(u32 cmd, u8 arg) {
         break;
     case 1:
         partnerPlayer = arg;
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0(getPlayerActor(4));
         if (talk.getTopic() == 4 || talk.getTopic() == 3) {
             changeAct(6);
@@ -929,7 +929,7 @@ void SpNpcHarriet::vfunc_4c(u32 cmd, u8 arg) {
         }
         break;
     case 0:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0(getPlayerActor(4));
         changeAct(2);
         break;

@@ -1,9 +1,9 @@
 _ZN11SpNpcPascalD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN11SpNpcPascalD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
-_ZN11SpNpcPascal8vfunc_4cEi kind:function(thumb,size=0x58) addr:0x02271414
-_ZN11SpNpcPascal8vfunc_4cEjh kind:label(thumb) addr:0x02271414
-_ZN11SpNpcPascal8vfunc_48Ev kind:function(thumb,size=0x34) addr:0x0227146c
-_ZN11SpNpcPascal8vfunc_48EPv kind:label(thumb) addr:0x0227146c
+_ZN11SpNpcPascal18onInteractionEventEi kind:function(thumb,size=0x58) addr:0x02271414
+_ZN11SpNpcPascal18onInteractionEventEjh kind:label(thumb) addr:0x02271414
+_ZN11SpNpcPascal18acceptsInteractionEv kind:function(thumb,size=0x34) addr:0x0227146c
+_ZN11SpNpcPascal18acceptsInteractionEPv kind:label(thumb) addr:0x0227146c
 _ZN15SpNpcPascalTalk8onChoiceEv kind:function(thumb,size=0x88) addr:0x022714a0
 _ZN15SpNpcPascalTalk8onChoiceEj kind:label(thumb) addr:0x022714a0
 _ZN15SpNpcPascalTalk12onMessageEndEv kind:function(thumb,size=0x21c) addr:0x02271528
@@ -11,7 +11,7 @@ _ZN15SpNpcPascalTalk12onMessageEndEj kind:label(thumb) addr:0x02271528
 _ZN15SpNpcPascalTalk5startEPv kind:function(thumb,size=0x70) addr:0x02271744
 _ZN15SpNpcPascalTalk5startEP12TalkStartMsg kind:label(thumb) addr:0x02271744
 _ZN15SpNpcPascalTalk11attachOwnerEP11SpNpcPascal kind:function(thumb,size=0x30) addr:0x022717b4
-_ZN15SpNpcPascalTalk8vfunc_08Ev kind:function(thumb,size=0x24) addr:0x022717e4
+_ZN15SpNpcPascalTalk8resetMsgEv kind:function(thumb,size=0x24) addr:0x022717e4
 _ZN15SpNpcPascalTalkD0Ev kind:function(thumb,size=0x20) addr:0x02271808
 _ZN15SpNpcPascalTalkD1Ev kind:function(thumb,size=0x18) addr:0x02271828
 _ZN15SpNpcPascalTalkC1Ev kind:function(thumb,size=0x24) addr:0x02271840
@@ -35,8 +35,8 @@ _ZN11SpNpcPascal9changeActEi kind:function(thumb,size=0x44) addr:0x02271d20
 _ZN11SpNpcPascal9updateActEv kind:function(thumb,size=0x4c) addr:0x02271d64
 _ZN11SpNpcPascal12getModelPathEv kind:function(thumb,size=0x8) addr:0x02271db0
 _ZN11SpNpcPascal14getTexturePathEv kind:function(thumb,size=0x8) addr:0x02271db8
-_ZN11SpNpcPascal8vfunc_00Ev kind:function(thumb,size=0x3c) addr:0x02271dc0
-_ZN11SpNpcPascal8vfunc_04Ev kind:function(thumb,size=0x30) addr:0x02271dfc
+_ZN11SpNpcPascal8onCreateEv kind:function(thumb,size=0x3c) addr:0x02271dc0
+_ZN11SpNpcPascal9preCreateEv kind:function(thumb,size=0x30) addr:0x02271dfc
 SpNpcPascal_Create kind:function(thumb,size=0x118) addr:0x02271e2c
 sSpNpcPascalTopicMsgs kind:data(any) addr:0x02271f44
 data_ov076_02271f48 kind:data(any) addr:0x02271f48

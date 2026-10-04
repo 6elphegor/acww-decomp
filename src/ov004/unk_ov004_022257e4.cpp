@@ -81,8 +81,8 @@ class CheckInGate : public RoomObjActor {
 public:
     CheckInGate();
     virtual ~CheckInGate();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL changeSyncState(u32 a);
@@ -228,7 +228,7 @@ CheckInGate::~CheckInGate() {
 }
 
 // @2226158
-BOOL CheckInGate::vfunc_00() {
+BOOL CheckInGate::onCreate() {
     s32 v;
     s32 s = TownSessionState_GetTravelState(TownSessionState_Get());
     RoomObjRes_Load(&res, "/roomObj/obj_check_in.arc");
@@ -288,7 +288,7 @@ BOOL CheckInGate::onDraw() {
 }
 
 // @22260e4
-BOOL CheckInGate::vfunc_0c() {
+BOOL CheckInGate::onDelete() {
     RoomObjRes_Free(&res);
     RoomObjTex_Reset(&tex);
     removeDoorCollision();

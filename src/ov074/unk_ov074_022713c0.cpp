@@ -224,11 +224,11 @@ struct Unk_020d77a4_Vec3;
 class SpNpcBlanca : public SpNpcActor {
 public:
     SpNpcBlanca() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -327,8 +327,8 @@ extern "C" SpNpcBlanca *SpNpcBlanca_Create() {
 
 s32 SpNpcBlanca::getWalkAnimSpeedScale() { return data_020c6cf0; }
 
-BOOL SpNpcBlanca::vfunc_04() {
-    if (SpNpcActor::vfunc_04() == 0) {
+BOOL SpNpcBlanca::preCreate() {
+    if (SpNpcActor::preCreate() == 0) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -336,8 +336,8 @@ BOOL SpNpcBlanca::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcBlanca::vfunc_00() {
-    if (SpNpcActor::vfunc_00() == 0) {
+BOOL SpNpcBlanca::onCreate() {
+    if (SpNpcActor::onCreate() == 0) {
         return FALSE;
     }
     faceTexture.init(gCurrentHeap, (u8 *)this + 0xec);
@@ -345,8 +345,8 @@ BOOL SpNpcBlanca::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcBlanca::vfunc_0c() {
-    if (SpNpcActor::vfunc_0c() == 0) {
+BOOL SpNpcBlanca::onDelete() {
+    if (SpNpcActor::onDelete() == 0) {
         return FALSE;
     }
     faceTexture.release(gCurrentHeap);
@@ -717,7 +717,7 @@ SpNpcBlancaTalk::SpNpcBlancaTalk() {}
 SpNpcBlancaTalk::~SpNpcBlancaTalk() {}
 
 void SpNpcBlancaTalk::attachOwner(SpNpcBlanca *o) {
-    vfunc_08();
+    resetMsg();
     owner = o;
 }
 
@@ -844,7 +844,7 @@ void SpNpcBlancaTalk::onChoice(u32) {
     func_02072064(&l);
 }
 
-BOOL SpNpcBlanca::vfunc_48(void *) {
+BOOL SpNpcBlanca::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         r = TRUE;
@@ -852,13 +852,13 @@ BOOL SpNpcBlanca::vfunc_48(void *) {
     return r;
 }
 
-void SpNpcBlanca::vfunc_4c(u32 a, u8) {
+void SpNpcBlanca::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         SpNpcBlanca_ChangeAct(this, 0);
         break;
     case 3:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0(getPlayerActor(4));
         SpNpcBlanca_ChangeAct(this, 4);
         break;

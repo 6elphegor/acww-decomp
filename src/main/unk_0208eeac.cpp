@@ -64,7 +64,7 @@ extern "C" void InputModeIcon_Init() { sInputModeIcon.init(); }
 
 extern "C" void InputModeIcon_Exit() { sInputModeIcon.exit(); }
 
-extern "C" void InputModeIcon_Update() { sInputModeIcon.vfunc_0c(); }
+extern "C" void InputModeIcon_Update() { sInputModeIcon.update(); }
 
 extern "C" void InputModeIcon_Draw() { sInputModeIcon.draw(); }
 
@@ -79,7 +79,7 @@ void InputModeIcon::draw() {
     }
 }
 
-void InputModeIcon::vfunc_0c() {
+void InputModeIcon::update() {
     if (isVisible != 0) {
         anim.update();
     }

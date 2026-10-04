@@ -163,8 +163,8 @@ _ZN17LetterStorageMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x02297cfc
 _ZN17LetterStorageMenu12runMainStateEv kind:function(thumb,size=0x214) addr:0x02297d18
 _ZN17LetterStorageMenu14execTransitionEv kind:function(thumb,size=0x194) addr:0x02297f2c
 _ZN17LetterStorageMenu6onDrawEv kind:function(thumb,size=0x120) addr:0x022980c0
-_ZN17LetterStorageMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x022981e0
-_ZN17LetterStorageMenu8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x022981fc
+_ZN17LetterStorageMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x022981e0
+_ZN17LetterStorageMenu8onCreateEv kind:function(thumb,size=0x20) addr:0x022981fc
 LetterStorageMenu_Create kind:function(thumb,size=0xf8) addr:0x0229821c
 data_ov105_02298314 kind:data(any) addr:0x02298314
 data_ov105_02298320 kind:data(any) addr:0x02298320

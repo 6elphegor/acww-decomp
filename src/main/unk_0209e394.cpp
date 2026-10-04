@@ -28,8 +28,8 @@ public:
 // vtable 0x020e23fc, size 0xa0
 class SaveMenu : public GameProc {
 public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
 
     void updateSaveB();
@@ -367,12 +367,12 @@ extern "C" SaveMenu *SaveMenu_Create() {
     return p;
 }
 
-BOOL SaveMenu::vfunc_00() {
+BOOL SaveMenu::onCreate() {
     talk.setOwner(this);
     return TRUE;
 }
 
-BOOL SaveMenu::vfunc_0c() {
+BOOL SaveMenu::onDelete() {
     return TRUE;
 }
 
@@ -478,7 +478,7 @@ void SaveMenu::updateOpenTalk() {
     if (TalkRequest_IsSaveMenuRunning() != 0) {
         TalkWindowState *o = TalkWindow_Get(0);
         SaveMenuTalk *p = &talk;
-        p->vfunc_08();
+        p->resetMsg();
         if (GameStart_IsNewTown() != 0 || GameStart_IsNewResident() != 0) {
             _ZN10MsgRequest11setFileNameEPKc(&talk, (u8 *)"sp_etc_sequence4");
             talk.msgIndex = 4;

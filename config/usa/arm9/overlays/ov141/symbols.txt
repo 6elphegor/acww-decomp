@@ -55,8 +55,8 @@ _ZN15NearbyTownsMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x022935c4
 _ZN15NearbyTownsMenu12runMainStateEv kind:function(thumb,size=0xa0) addr:0x022935e0
 _ZN15NearbyTownsMenu14execTransitionEv kind:function(thumb,size=0xa0) addr:0x02293680
 _ZN15NearbyTownsMenu6onDrawEv kind:function(thumb,size=0x144) addr:0x02293720
-_ZN15NearbyTownsMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x02293864
-_ZN15NearbyTownsMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02293880
+_ZN15NearbyTownsMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x02293864
+_ZN15NearbyTownsMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x02293880
 NearbyTownsMenu_Create kind:function(thumb,size=0x54) addr:0x022938a0
 sNearbyTownsMenuProfile kind:data(any) addr:0x02293900 ambiguous
 data_ov141_02293908 kind:data(any) addr:0x02293908

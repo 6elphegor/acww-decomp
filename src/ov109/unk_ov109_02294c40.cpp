@@ -122,8 +122,8 @@ public:
     SongPickMenu()
         : bgTasks(), pocketGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), popup(), errorMessage(), bottomButtons() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -301,14 +301,14 @@ static inline BOOL Unk_ov109_02295c70_Both() {
 
 extern "C" SongPickMenu *SongPickMenu_Create() { return new SongPickMenu(); }
 
-BOOL SongPickMenu::vfunc_00() {
+BOOL SongPickMenu::onCreate() {
     initSongPick();
     setTransitionState(0);
     setPhase(0);
     return TRUE;
 }
 
-BOOL SongPickMenu::vfunc_0c() {
+BOOL SongPickMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
@@ -478,7 +478,7 @@ void SongPickMenu::releaseResources() {
 
 void SongPickMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -954,7 +954,7 @@ s32 SongPickMenu::getCursorTargetY() { return SongPickMenu_GetSlotY((S *)this, c
 
 void SongPickMenu::hideCursor() {
     C220(cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void SongPickMenu::moveCursorToTarget() {
@@ -1007,7 +1007,7 @@ void SongPickMenu::showCursorAtSlot() {
 
 void SongPickMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void SongPickMenu::pressCloseButton() {

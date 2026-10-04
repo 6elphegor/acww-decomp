@@ -124,12 +124,12 @@ struct Unk_020c2194_Entry {
 class SpNpcKaitlin : public SpNpcActor {
 public:
     SpNpcKaitlin() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
     virtual ~SpNpcKaitlin() {}
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -196,8 +196,8 @@ extern "C" SpNpcKaitlin *SpNpcKaitlin_Create() {
     return new SpNpcKaitlin();
 }
 
-BOOL SpNpcKaitlin::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcKaitlin::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     sSpNpcKaitlinInstance = this;
@@ -218,8 +218,8 @@ BOOL SpNpcKaitlin::getWalkAnimSpeedScale() {
     return data_020c6cf0;
 }
 
-BOOL SpNpcKaitlin::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcKaitlin::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     PlayerData_GetCurrent();
@@ -233,8 +233,8 @@ BOOL SpNpcKaitlin::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcKaitlin::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcKaitlin::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     sSpNpcKaitlinInstance = NULL;
@@ -269,17 +269,17 @@ BOOL SpNpcKaitlin::updateAct() {
     return result;
 }
 
-BOOL SpNpcKaitlin::vfunc_48(void *) {
+BOOL SpNpcKaitlin::acceptsInteraction(void *) {
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void SpNpcKaitlin::vfunc_4c(u32 a, u8) {
+void SpNpcKaitlin::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 1:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0(_ZN8NpcActor14getPlayerActorEj(this, 4));
         changeAct(1);
         break;
@@ -287,7 +287,7 @@ void SpNpcKaitlin::vfunc_4c(u32 a, u8) {
         changeAct(1);
         break;
     case 3:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0(_ZN8NpcActor14getPlayerActorEj(this, 4));
         changeAct(9);
         break;
@@ -419,7 +419,7 @@ SpNpcKaitlinTalk::SpNpcKaitlinTalk() {}
 SpNpcKaitlinTalk::~SpNpcKaitlinTalk() {}
 
 void SpNpcKaitlinTalk::attachOwner(void *p) {
-    vfunc_08();
+    resetMsg();
     owner = p;
 }
 

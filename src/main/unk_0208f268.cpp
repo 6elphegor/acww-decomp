@@ -214,8 +214,8 @@ struct Unk_02090168_Arg {
 
 class EffectSplProc : public GameProc {
 public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~EffectSplProc() {}
@@ -870,7 +870,7 @@ extern "C" void *EffectSpl_CopyResourceData(void *unused, Unk_02090140_Arg *p) {
     return r;
 }
 
-BOOL EffectSplProc::vfunc_00()
+BOOL EffectSplProc::onCreate()
 {
     BOOL result = FALSE;
     void *h;
@@ -940,7 +940,7 @@ BOOL EffectSplProc::onDraw()
     return TRUE;
 }
 
-BOOL EffectSplProc::vfunc_0c()
+BOOL EffectSplProc::onDelete()
 {
     if (sEffectSplFrmHeap != NULL) {
         NNS_FndDestroyFrmHeap(sEffectSplFrmHeap);

@@ -44,10 +44,11 @@ public:
     virtual void onTaskDone(u32 id);
 
     // the three functions at 0x0201c7d4..0x0201c7dc: symbols.txt names them as members of this class; they are the
-    // slots vfunc_b4 / vfunc_b8 / vfunc_bc of VillagerActor (labels _ZN13VillagerActor8vfunc_b4Ev ...)
-    s32 vfunc_144();
-    s32 vfunc_148();
-    s32 vfunc_14c();
+    // slots 0xb4 / 0xb8 / 0xbc of VillagerActor (canAcceptPartnerInvite / acceptPartnerInvite / endPartnerTalk; labels
+    // _ZN13VillagerActor22canAcceptPartnerInviteEv ...)
+    s32 canAcceptPartnerInvite();
+    s32 acceptPartnerInvite();
+    s32 endPartnerTalk();
     u8 getEventKind();
     void refreshEventKind();
     BOOL hasPartner();

@@ -1,9 +1,9 @@
 _ZN27SpNpcTortimerFishingTourneyD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN27SpNpcTortimerFishingTourneyD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
-_ZN27SpNpcTortimerFishingTourney8vfunc_4cEi kind:function(thumb,size=0x44) addr:0x02271414
-_ZN27SpNpcTortimerFishingTourney8vfunc_4cEjh kind:label(thumb) addr:0x02271414
-_ZN27SpNpcTortimerFishingTourney8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271458
-_ZN27SpNpcTortimerFishingTourney8vfunc_48EPv kind:label(thumb) addr:0x02271458
+_ZN27SpNpcTortimerFishingTourney18onInteractionEventEi kind:function(thumb,size=0x44) addr:0x02271414
+_ZN27SpNpcTortimerFishingTourney18onInteractionEventEjh kind:label(thumb) addr:0x02271414
+_ZN27SpNpcTortimerFishingTourney18acceptsInteractionEv kind:function(thumb,size=0x20) addr:0x02271458
+_ZN27SpNpcTortimerFishingTourney18acceptsInteractionEPv kind:label(thumb) addr:0x02271458
 _ZN31SpNpcTortimerFishingTourneyTalk8onChoiceEv kind:function(thumb,size=0xb0) addr:0x02271478
 _ZN31SpNpcTortimerFishingTourneyTalk8onChoiceEj kind:label(thumb) addr:0x02271478
 _ZN31SpNpcTortimerFishingTourneyTalk12onMessageEndEv kind:function(thumb,size=0x240) addr:0x02271528
@@ -31,8 +31,8 @@ _ZN27SpNpcTortimerFishingTourney9changeActEi kind:function(thumb,size=0x44) addr
 _ZN27SpNpcTortimerFishingTourney9updateActEv kind:function(thumb,size=0x4c) addr:0x02271ce4
 _ZN27SpNpcTortimerFishingTourney12getModelPathEv kind:function(thumb,size=0x8) addr:0x02271d30
 _ZN27SpNpcTortimerFishingTourney14getTexturePathEv kind:function(thumb,size=0x8) addr:0x02271d38
-_ZN27SpNpcTortimerFishingTourney8vfunc_00Ev kind:function(thumb,size=0x158) addr:0x02271d40
-_ZN27SpNpcTortimerFishingTourney8vfunc_04Ev kind:function(thumb,size=0x30) addr:0x02271e98
+_ZN27SpNpcTortimerFishingTourney8onCreateEv kind:function(thumb,size=0x158) addr:0x02271d40
+_ZN27SpNpcTortimerFishingTourney9preCreateEv kind:function(thumb,size=0x30) addr:0x02271e98
 SpNpcTortimerFishingTourney_Create kind:function(thumb,size=0x118) addr:0x02271ec8
 __sinit_ov081_02271fe0 kind:function(thumb,size=0x5c) addr:0x02271fe0
 .p__sinit_ov081_02271fe0 kind:data(word) addr:0x0227203c

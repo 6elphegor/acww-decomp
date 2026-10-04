@@ -1,9 +1,9 @@
 _ZN13SpNpcCornimerD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN13SpNpcCornimerD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
-_ZN13SpNpcCornimer8vfunc_4cEjj kind:function(thumb,size=0x44) addr:0x02271414
-_ZN13SpNpcCornimer8vfunc_4cEjh kind:label(thumb) addr:0x02271414
-_ZN13SpNpcCornimer8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271458
-_ZN13SpNpcCornimer8vfunc_48EPv kind:label(thumb) addr:0x02271458
+_ZN13SpNpcCornimer18onInteractionEventEjj kind:function(thumb,size=0x44) addr:0x02271414
+_ZN13SpNpcCornimer18onInteractionEventEjh kind:label(thumb) addr:0x02271414
+_ZN13SpNpcCornimer18acceptsInteractionEv kind:function(thumb,size=0x20) addr:0x02271458
+_ZN13SpNpcCornimer18acceptsInteractionEPv kind:label(thumb) addr:0x02271458
 _ZN17SpNpcCornimerTalk8onChoiceEv kind:function(thumb,size=0x1f8) addr:0x02271478
 _ZN17SpNpcCornimerTalk8onChoiceEj kind:label(thumb) addr:0x02271478
 _ZN17SpNpcCornimerTalk12onMessageEndEv kind:function(thumb,size=0x254) addr:0x02271670
@@ -23,8 +23,8 @@ _ZN13SpNpcCornimer9changeActEi kind:function(thumb,size=0x44) addr:0x02271a6c
 _ZN13SpNpcCornimer9updateActEv kind:function(thumb,size=0x4c) addr:0x02271ab0
 _ZN13SpNpcCornimer12getModelPathEv kind:function(thumb,size=0x8) addr:0x02271afc
 _ZN13SpNpcCornimer14getTexturePathEv kind:function(thumb,size=0x8) addr:0x02271b04
-_ZN13SpNpcCornimer8vfunc_00Ev kind:function(thumb,size=0x70) addr:0x02271b0c
-_ZN13SpNpcCornimer8vfunc_04Ev kind:function(thumb,size=0x30) addr:0x02271b7c
+_ZN13SpNpcCornimer8onCreateEv kind:function(thumb,size=0x70) addr:0x02271b0c
+_ZN13SpNpcCornimer9preCreateEv kind:function(thumb,size=0x30) addr:0x02271b7c
 SpNpcCornimer_Create kind:function(thumb,size=0x118) addr:0x02271bac
 sSpNpcCornimerFortuneLines kind:data(any) addr:0x02271cc4
 sSpNpcCornimerPrizeTable kind:data(any) addr:0x02271ce4

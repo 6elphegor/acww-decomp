@@ -49,8 +49,8 @@ _ZN8BankMenu8execMainEv kind:function(thumb,size=0x1c) addr:0x022940a4
 _ZN8BankMenu12runMainStateEv kind:function(thumb,size=0xbc) addr:0x022940c0
 _ZN8BankMenu14execTransitionEv kind:function(thumb,size=0x94) addr:0x0229417c
 _ZN8BankMenu6onDrawEv kind:function(thumb,size=0x3c) addr:0x02294210
-_ZN8BankMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x0229424c
-_ZN8BankMenu8vfunc_00Ev kind:function(thumb,size=0x1e) addr:0x02294268
+_ZN8BankMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x0229424c
+_ZN8BankMenu8onCreateEv kind:function(thumb,size=0x1e) addr:0x02294268
 BankMenu_Create kind:function(thumb,size=0x7c) addr:0x02294288
 sBankMenuCursorXTable kind:data(any) addr:0x02294304
 sBankMenuCursorYTable kind:data(any) addr:0x02294310

@@ -18,8 +18,8 @@
 // Vtable at 0x020e1db0.
 class LetterDeliveryProc : public GameProc {
 public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
@@ -285,7 +285,7 @@ extern "C" LetterDeliveryProc *LetterDeliveryProc_Create() {
     return new LetterDeliveryProc();
 }
 
-BOOL LetterDeliveryProc::vfunc_00() {
+BOOL LetterDeliveryProc::onCreate() {
     deliveryFlags = 0;
     setProcFlag(1);
     return TRUE;
@@ -305,7 +305,7 @@ BOOL LetterDeliveryProc::onDraw() {
     return TRUE;
 }
 
-BOOL LetterDeliveryProc::vfunc_0c() {
+BOOL LetterDeliveryProc::onDelete() {
     return TRUE;
 }
 

@@ -14,11 +14,11 @@ class VillagerActor : public NpcActor {
 public:
     VillagerActor();
     virtual ~VillagerActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
     virtual BOOL preDelete();
-    virtual void *vfunc_64();
+    virtual void *getVillagerData();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual void getName(u32 a);
@@ -28,12 +28,12 @@ public:
     virtual u16 getSpecies();
     virtual void setShirt(u16 *p, BOOL flag);
     virtual void addMood(u32 a, s32 b);
-    /* 0xa8 */ virtual BOOL vfunc_a8();
+    /* 0xa8 */ virtual BOOL isPickable();
     /* 0xac */ virtual BOOL vfunc_ac();
-    /* 0xb0 */ virtual BOOL vfunc_b0();
-    /* 0xb4 */ virtual s32 vfunc_b4();
-    /* 0xb8 */ virtual s32 vfunc_b8(u32 idx); // FieldVillager's override takes the index
-    /* 0xbc */ virtual s32 vfunc_bc();
+    /* 0xb0 */ virtual BOOL consumeFleaRemoved();
+    /* 0xb4 */ virtual s32 canAcceptPartnerInvite();
+    /* 0xb8 */ virtual s32 acceptPartnerInvite(u32 idx); // FieldVillager's override takes the index
+    /* 0xbc */ virtual s32 endPartnerTalk();
 
     BOOL isFlag834();
     void clearFlag834();

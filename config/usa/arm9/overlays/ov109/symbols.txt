@@ -84,8 +84,8 @@ _ZN12SongPickMenu8execMainEv kind:function(thumb,size=0x50) addr:0x02296224
 _ZN12SongPickMenu12runMainStateEv kind:function(thumb,size=0x12c) addr:0x02296274
 _ZN12SongPickMenu14execTransitionEv kind:function(thumb,size=0xa0) addr:0x022963a0
 _ZN12SongPickMenu6onDrawEv kind:function(thumb,size=0xa4) addr:0x02296440
-_ZN12SongPickMenu8vfunc_0cEv kind:function(thumb,size=0x1a) addr:0x022964e4
-_ZN12SongPickMenu8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02296500
+_ZN12SongPickMenu8onDeleteEv kind:function(thumb,size=0x1a) addr:0x022964e4
+_ZN12SongPickMenu8onCreateEv kind:function(thumb,size=0x20) addr:0x02296500
 SongPickMenu_Create kind:function(thumb,size=0xa0) addr:0x02296520
 sSongPickMenuProfile kind:data(any) addr:0x022965e0 ambiguous
 data_ov109_022965e8 kind:data(any) addr:0x022965e8

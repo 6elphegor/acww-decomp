@@ -51,7 +51,7 @@
 #define LabelButton_setLabelText _ZN11LabelButton12setLabelTextEv
 
 extern "C" {
-BOOL _ZN8ProcBase8vfunc_14Ev(void *self, s32 a);
+BOOL _ZN8ProcBase10postDeleteEv(void *self, s32 a);
 void _ZN8GameProc10postCreateEv(void *self, s32 a);
 void _ZN16MenuTitleBalloon8showTextEhii(void *self, s32 x, s32 a, s32 b);
 void VillagerId_getName(s32 a, void *buf);
@@ -165,7 +165,7 @@ void *_ZN9MenuSlideC1Ev(void *self);
 void *_ZN12CursorMotionC1Ev(void *self);
 void *_ZN12CursorMotionD1Ev(void *self);
 void _ZN10HandCursor4drawEv();
-void _ZN14MenuCursorBase8vfunc_0cEv();
+void _ZN14MenuCursorBase6updateEv();
 void _ZN8UiWidget9setOriginEii();
 }
 
@@ -725,8 +725,8 @@ extern "C" void *_ZN8MenuProcC2Ev(MenuProc *self) {
 
 MenuProc::~MenuProc() {}
 
-BOOL MenuProc::vfunc_04() {
-    if (!ProcBase::vfunc_04()) {
+BOOL MenuProc::preCreate() {
+    if (!ProcBase::preCreate()) {
         return FALSE;
     }
     menuId = (s32)param;
@@ -755,11 +755,11 @@ BOOL MenuProc::preDelete() {
     return FALSE;
 }
 
-BOOL MenuProc::vfunc_14(s32 a) {
+BOOL MenuProc::postDelete(s32 a) {
     if (a == 2) {
         MenuCtrl_RemoveOpenMenu(&openMenuPrev);
     }
-    return _ZN8ProcBase8vfunc_14Ev(this, a);
+    return _ZN8ProcBase10postDeleteEv(this, a);
 }
 
 BOOL MenuProc::preExecute() {
@@ -769,7 +769,7 @@ BOOL MenuProc::preExecute() {
     return FALSE;
 }
 
-BOOL MenuProc::vfunc_20(u32 status) { return ProcBase::vfunc_20(status); }
+BOOL MenuProc::postExecute(u32 status) { return ProcBase::postExecute(status); }
 
 BOOL MenuProc::execWaitScreen() {
     if (MenuScreen_IsOpen()) {

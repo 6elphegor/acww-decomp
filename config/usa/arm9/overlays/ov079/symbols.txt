@@ -1,9 +1,9 @@
 _ZN12SpNpcWendellD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN12SpNpcWendellD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
-_ZN12SpNpcWendell8vfunc_4cEi kind:function(thumb,size=0x50) addr:0x02271414
-_ZN12SpNpcWendell8vfunc_4cEjh kind:label(thumb) addr:0x02271414
-_ZN12SpNpcWendell8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271464
-_ZN12SpNpcWendell8vfunc_48EPv kind:label(thumb) addr:0x02271464
+_ZN12SpNpcWendell18onInteractionEventEi kind:function(thumb,size=0x50) addr:0x02271414
+_ZN12SpNpcWendell18onInteractionEventEjh kind:label(thumb) addr:0x02271414
+_ZN12SpNpcWendell18acceptsInteractionEv kind:function(thumb,size=0x20) addr:0x02271464
+_ZN12SpNpcWendell18acceptsInteractionEPv kind:label(thumb) addr:0x02271464
 _ZN16SpNpcWendellTalk8onChoiceEv kind:function(thumb,size=0x68) addr:0x02271484
 _ZN16SpNpcWendellTalk8onChoiceEj kind:label(thumb) addr:0x02271484
 _ZN16SpNpcWendellTalk12onMessageEndEv kind:function(thumb,size=0x10c) addr:0x022714ec
@@ -12,7 +12,7 @@ _ZN16SpNpcWendellTalk14onMessageStartEv kind:function(thumb,size=0x14) addr:0x02
 _ZN16SpNpcWendellTalk14onMessageStartEj kind:label(thumb) addr:0x022715f8
 _ZN16SpNpcWendellTalk5startEP12TalkStartMsg kind:function(thumb,size=0x30) addr:0x0227160c
 _ZN16SpNpcWendellTalk11attachOwnerEP12SpNpcWendell kind:function(thumb,size=0x30) addr:0x0227163c
-_ZN16SpNpcWendellTalk8vfunc_08Ev kind:function(thumb,size=0x50) addr:0x0227166c
+_ZN16SpNpcWendellTalk8resetMsgEv kind:function(thumb,size=0x50) addr:0x0227166c
 _ZN16SpNpcWendellTalkD0Ev kind:function(thumb,size=0x20) addr:0x022716bc
 _ZN16SpNpcWendellTalkD1Ev kind:function(thumb,size=0x18) addr:0x022716dc
 _ZN16SpNpcWendellTalkC1Ev kind:function(thumb,size=0x24) addr:0x022716f4
@@ -44,9 +44,9 @@ _ZN12SpNpcWendell9changeActEi kind:function(thumb,size=0x44) addr:0x022725f4
 _ZN12SpNpcWendell9updateActEv kind:function(thumb,size=0x4c) addr:0x02272638
 _ZN12SpNpcWendell12getModelPathEv kind:function(thumb,size=0x8) addr:0x02272684
 _ZN12SpNpcWendell14getTexturePathEv kind:function(thumb,size=0x8) addr:0x0227268c
-_ZN12SpNpcWendell8vfunc_0cEv kind:function(thumb,size=0x2c) addr:0x02272694
-_ZN12SpNpcWendell8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x022726c0
-_ZN12SpNpcWendell8vfunc_04Ev kind:function(thumb,size=0x30) addr:0x022726e0
+_ZN12SpNpcWendell8onDeleteEv kind:function(thumb,size=0x2c) addr:0x02272694
+_ZN12SpNpcWendell8onCreateEv kind:function(thumb,size=0x20) addr:0x022726c0
+_ZN12SpNpcWendell9preCreateEv kind:function(thumb,size=0x30) addr:0x022726e0
 _ZN12SpNpcWendell21getWalkAnimSpeedScaleEv kind:function(thumb,size=0xc) addr:0x02272710
 SpNpcWendell_Create kind:function(thumb,size=0x118) addr:0x0227271c
 __sinit_ov079_02272834 kind:function(thumb,size=0x144) addr:0x02272834

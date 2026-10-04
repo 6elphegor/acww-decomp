@@ -42,7 +42,7 @@ public:
     TalkBusyIcon();
     virtual ~TalkBusyIcon();
     virtual void draw();
-    virtual void vfunc_0c();
+    virtual void update();
     void stopSe();
     void startSe();
     void updateShown();
@@ -72,7 +72,7 @@ public:
     TransitionCommIcon();
     virtual ~TransitionCommIcon();
     virtual void draw();
-    virtual void vfunc_0c();
+    virtual void update();
     void updateShown();
     void setupAnim();
     void enterShown();
@@ -97,8 +97,8 @@ class TransitionCommIconProc : public GameProc {
 public:
     TransitionCommIconProc();
     virtual ~TransitionCommIconProc();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 };
@@ -194,7 +194,7 @@ void TalkBusyIcon::draw() {
     }
 }
 
-void TalkBusyIcon::vfunc_0c() {
+void TalkBusyIcon::update() {
     static Unk_020e10dc_Fn tbl[2] = {&TalkBusyIcon::updateHidden, &TalkBusyIcon::updateShown};
     rotation += 0x1111;
     (this->*tbl[state])();
@@ -204,7 +204,7 @@ void TalkBusyIcon::init() { enterHidden(); }
 
 void TalkBusyIcon::exit() {}
 
-void TalkBusyIcon::callUpdate() { vfunc_0c(); }
+void TalkBusyIcon::callUpdate() { update(); }
 
 // ---- TalkBusyIcon ----
 void TalkBusyIcon::callDraw() { draw(); }
@@ -275,7 +275,7 @@ const u16 sBusyIconSe[2] = {4, 5};
 const u8 sCommIconShowDelays[4] = {8, 8, 8, 1};
 const u8 sCommIconHideDelays[4] = {5, 5, 5, 1};
 
-void TransitionCommIcon::vfunc_0c() {
+void TransitionCommIcon::update() {
     static Unk_020e10f8_Fn tbl[2] = {&TransitionCommIcon::updateHidden, &TransitionCommIcon::updateShown};
     (this->*tbl[state])();
 }
@@ -333,7 +333,7 @@ void TransitionCommIcon::init() {
 
 void TransitionCommIcon::exit() { enterHidden(); }
 
-void TransitionCommIcon::callUpdate() { vfunc_0c(); }
+void TransitionCommIcon::callUpdate() { update(); }
 
 // ---- TransitionCommIcon ----
 void TransitionCommIcon::callDraw() { draw(); }
@@ -406,12 +406,12 @@ TransitionCommIconProc::TransitionCommIconProc() {}
 
 TransitionCommIconProc::~TransitionCommIconProc() {}
 
-BOOL TransitionCommIconProc::vfunc_00() {
+BOOL TransitionCommIconProc::onCreate() {
     TransitionCommIcon_Init();
     return TRUE;
 }
 
-BOOL TransitionCommIconProc::vfunc_0c() {
+BOOL TransitionCommIconProc::onDelete() {
     TransitionCommIcon_Exit();
     return TRUE;
 }

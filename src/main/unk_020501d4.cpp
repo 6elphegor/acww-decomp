@@ -65,8 +65,8 @@ struct GameFont : GameFontDesc {
 class TextSystemModule : public GameProc {
 public:
     TextSystemModule();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual ~TextSystemModule();
 };
@@ -232,7 +232,7 @@ TextSystemModule::TextSystemModule() {}
 
 TextSystemModule::~TextSystemModule() {}
 
-BOOL TextSystemModule::vfunc_00() {
+BOOL TextSystemModule::onCreate() {
     Text_InitSystem();
     MailCheck_LoadWordList();
     return TRUE;
@@ -243,7 +243,7 @@ BOOL TextSystemModule::onExecute() {
     return TRUE;
 }
 
-BOOL TextSystemModule::vfunc_0c() {
+BOOL TextSystemModule::onDelete() {
     Text_ShutdownSystem();
     return TRUE;
 }

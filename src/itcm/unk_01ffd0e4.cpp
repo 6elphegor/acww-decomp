@@ -90,7 +90,7 @@ extern "C" BOOL _ZN8ProcBase10preExecuteEv(ProcBase *self) {
     return TRUE;
 }
 
-extern "C" BOOL _ZN8ProcBase8vfunc_20Ev(ProcBase *self) {
+extern "C" BOOL _ZN8ProcBase11postExecuteEv(ProcBase *self) {
 }
 
 extern "C" BOOL _ZN8ProcBase6onDrawEv(ProcBase *self) {

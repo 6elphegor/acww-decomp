@@ -28,37 +28,37 @@ class BuildingActor : public Character, public TalkMsgRequest {
 public:
     BuildingActor();
     virtual ~BuildingActor();
-    virtual BOOL vfunc_00();
+    virtual BOOL onCreate();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
+    virtual BOOL postExecute(u32 a);
     virtual BOOL preDraw();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL acceptsInteraction(void *a);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual VecFx32 *getInteractionPos();
-    virtual void vfunc_60(u32 a, void *b);
-    virtual s32 vfunc_64();                                   // bca anim (door open)
-    virtual s32 vfunc_68();                                   // bca anim (door close)
-    virtual s32 vfunc_6c(s32 a);                              // set door state
-    virtual BOOL vfunc_70();
-    virtual void vfunc_74();                                  // update door state
-    virtual void vfunc_78();
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void onJointCalcPost(u32 a, void *b);
+    virtual s32 getDoorInAnim();                                   // bca anim (door open)
+    virtual s32 getDoorOutAnim();                                   // bca anim (door close)
+    virtual s32 setDoorState(s32 a);                              // set door state
+    virtual BOOL initBuilding();
+    virtual void updateDoorState();                                  // update door state
+    virtual void setupTalkMsg();
+    virtual void onTalkOpened();
+    virtual void updateTalk();
+    virtual void onTalkEnded();
     virtual void onMessageEnd(u32 attr);
-    virtual BOOL vfunc_8c();
-    virtual BOOL vfunc_90();
-    virtual BOOL vfunc_94();
-    virtual BOOL vfunc_98();
-    virtual BOOL vfunc_9c();
-    virtual s32 vfunc_a0();
-    virtual char *vfunc_a4();
-    virtual char *vfunc_a8();
-    virtual char *vfunc_ac();
-    virtual BOOL vfunc_b0();
-    virtual Unk_ov009_0225da90_Vec3 vfunc_b4();
-    virtual BOOL vfunc_b8(Unk_ov009_0225bc88_Blk *out);
+    virtual BOOL isOpen();
+    virtual BOOL usesDoorApproach();
+    virtual BOOL alignsPlayerToDoor();
+    virtual BOOL playsDoorMelody();
+    virtual BOOL areLightsOn();
+    virtual s32 hasFlickeringLights();
+    virtual char *getArcPath();
+    virtual char *getTexPath();
+    virtual char *getLightTexPath();
+    virtual BOOL needsMatrixUpdate();
+    virtual Unk_ov009_0225da90_Vec3 getSoundPos();
+    virtual BOOL calcCustomBaseMatrix(Unk_ov009_0225bc88_Blk *out);
 
     s32 getEntranceType();
     s32 getViewRangeX();

@@ -13,16 +13,16 @@ class Character : public Actor {
 public:
     Character();
     virtual ~Character();
-    virtual BOOL vfunc_04();
+    virtual BOOL preCreate();
     virtual void postCreate(s32 status);
     virtual BOOL preDelete();
     virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *other);                       // 0x48 interaction accepted (other: Character)
-    virtual void vfunc_4c(u32 a, u8 b);                       // 0x4c
+    virtual BOOL acceptsInteraction(void *other);                       // 0x48 interaction accepted (other: Character)
+    virtual void onInteractionEvent(u32 a, u8 b);                       // 0x4c
     virtual VecFx32 *getInteractionPos();                     // 0x50
     virtual BOOL acceptsInteractionOutOfRange(void *other);   // 0x54
-    virtual BOOL vfunc_58(void *a);                           // 0x58
-    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *out);            // 0x5c
+    virtual BOOL acceptsSelfRequestedInteraction(void *a);                           // 0x58
+    virtual BOOL getHeldItemPos(Unk_020d77a4_Vec3 *out);            // 0x5c
 
     void clearCharFlags(u32 mask);
     void setCharFlags(u32 mask);

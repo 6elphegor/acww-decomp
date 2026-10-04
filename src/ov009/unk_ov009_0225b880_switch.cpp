@@ -79,7 +79,7 @@ typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
 
 // Real (mangled) symbols of the other modules, reached as plain functions with the object first.
 #define func_02002d9c _ZN5Actor7preDrawEv
-#define func_02002dd0 _ZN5Actor8vfunc_20Ev
+#define func_02002dd0 _ZN5Actor11postExecuteEv
 #define func_0203e638 _ZN9Character10preExecuteEv
 #define func_0203e650 _ZN9Character9preDeleteEv
 #define Character_setCharId _ZN9Character9setCharIdEj
@@ -328,7 +328,7 @@ static inline BOOL Unk_ov009_0225d858_Is(u16 *p, u32 v) {
 
 
 
-void BuildingActor::vfunc_4c(u32 a, u8 b) {
+void BuildingActor::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 6:
         BuildingOccupancy_Leave(itemId, 0);

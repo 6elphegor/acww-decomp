@@ -18,8 +18,8 @@ class Unk_020d93b8 : public CameraBase, public FxMtx43 {
 public:
     Unk_020d93b8() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 

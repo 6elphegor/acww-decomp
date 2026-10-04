@@ -56,12 +56,12 @@ public:
     static void operator delete(void *p);
 
     PlayerActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~PlayerActor();
-    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *out);
+    virtual BOOL getHeldItemPos(Unk_020d77a4_Vec3 *out);
     virtual void onMessageStart(u32 attr);
     virtual void onMessageEnd(u32 attr);
     virtual void onChoice(u32 attr);

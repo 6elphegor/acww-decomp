@@ -70,8 +70,8 @@ class FishBookTab : public MenuProc {
 public:
     FishBookTab() : cursor(), bookPanel(), textLabels() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -146,14 +146,14 @@ extern "C" ProcProfile sFishBookTabProfile = {(void *(*)())FishBookTab_Create, 0
 
 extern "C" FishBookTab *FishBookTab_Create() { return new FishBookTab(); }
 
-BOOL FishBookTab::vfunc_00() {
+BOOL FishBookTab::onCreate() {
     initFishBook();
     setTransitionState(0);
     setPhase(1);
     return TRUE;
 }
 
-BOOL FishBookTab::vfunc_0c() {
+BOOL FishBookTab::onDelete() {
     ((MenuTabBar *)ProcBase_GetParent())->onTabMenuClosed();
     releaseResources();
     return TRUE;
@@ -314,7 +314,7 @@ void FishBookTab::releaseResources() {
 
 void FishBookTab::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void FishBookTab::postInputUpdate() {
@@ -512,7 +512,7 @@ s32 FishBookTab::getCursorTargetY() {
 
 void FishBookTab::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void FishBookTab::moveCursorToTarget() {
@@ -535,7 +535,7 @@ void FishBookTab::moveCursorTo(s32 a, s32 b) {
 
 void FishBookTab::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void FishBookTab::pressCursor() {

@@ -62,8 +62,8 @@ class SickVillager;
 #define VillagerMood_updateSoundPos _ZN12VillagerMood14updateSoundPosEP12VillagerTalk
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
 #define func_0202d928 _ZN13VillagerActor9preDeleteEv
-#define func_0202d948 _ZN13VillagerActor8vfunc_00Ev
-#define func_0202dab0 _ZN13VillagerActor8vfunc_04Ev
+#define func_0202d948 _ZN13VillagerActor8onCreateEv
+#define func_0202dab0 _ZN13VillagerActor9preCreateEv
 #define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
 #define TalkWindowState_openChoices _ZN15TalkWindowState11openChoicesEi
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
@@ -256,12 +256,12 @@ public:
 
 class SickVillager : public VillagerActor {
 public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
     virtual BOOL preDelete();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 idx, u8 v);
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 idx, u8 v);
     virtual BOOL updateAct();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
@@ -382,7 +382,7 @@ extern "C" BOOL SickVillager_IsMedicine(u16 *p, s32 x) {
     return FALSE;
 }
 
-BOOL SickVillager::vfunc_04() {
+BOOL SickVillager::preCreate() {
     if (func_0202dab0(this) == 0) {
         return FALSE;
     }
@@ -405,7 +405,7 @@ BOOL SickVillager::vfunc_04() {
     return TRUE;
 }
 
-BOOL SickVillager::vfunc_00() {
+BOOL SickVillager::onCreate() {
     if (func_0202d948(this) == 0) {
         return FALSE;
     }
@@ -474,7 +474,7 @@ void SickVillager::func_ov004_0221b1b0() {
     }
 }
 
-BOOL SickVillager::vfunc_48(void *) {
+BOOL SickVillager::acceptsInteraction(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl)) {
         return FALSE;
     }
@@ -484,7 +484,7 @@ BOOL SickVillager::vfunc_48(void *) {
     return TRUE;
 }
 
-void SickVillager::vfunc_4c(u32 idx, u8 v) {
+void SickVillager::onInteractionEvent(u32 idx, u8 v) {
     Unk_ov004_0221b0f0_Vec vec;
     vec.x = position.x;
     vec.y = position.y;

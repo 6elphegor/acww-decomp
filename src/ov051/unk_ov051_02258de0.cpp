@@ -169,14 +169,14 @@ class SpNpcKappn : public SpNpcActor {
 public:
     SpNpcKappn() : talk() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
     virtual u16 getSpecies();
-    virtual u16 vfunc_9c();
+    virtual u16 getEmotion0BlendFrames();
 
     BOOL mainAct04();
     BOOL setupAct04();
@@ -320,8 +320,8 @@ struct Unk_ov051_022592e8_Ent {
 
 extern "C" SpNpcKappn *SpNpcKappn_Create() { return new SpNpcKappn; }
 
-BOOL SpNpcKappn::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcKappn::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -330,8 +330,8 @@ BOOL SpNpcKappn::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcKappn::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcKappn::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     sSpNpcKappnInstance = this;
@@ -342,8 +342,8 @@ BOOL SpNpcKappn::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcKappn::vfunc_0c() {
-    if (!SpNpcActor::vfunc_0c()) {
+BOOL SpNpcKappn::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
     TalkRequestFlags_ClearSceneHold();
@@ -377,7 +377,7 @@ void SpNpcKappn::changeAct(s32 state) {
 
 u16 SpNpcKappn::getSpecies() { return 0xffff; }
 
-u16 SpNpcKappn::vfunc_9c() { return 10; }
+u16 SpNpcKappn::getEmotion0BlendFrames() { return 10; }
 
 BOOL SpNpcKappn::setupAct00() { return TRUE; }
 
@@ -458,7 +458,7 @@ SpNpcKappnTalk::SpNpcKappnTalk() {}
 SpNpcKappnTalk::~SpNpcKappnTalk() {}
 
 void SpNpcKappnTalk::attachOwner(SpNpcKappn *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = owner;
 }
 

@@ -87,7 +87,7 @@ void List_Remove(void *l, void *t);
 void NetArea_SendStateToNewOwner();
 void NetArea_SendStateToRequester();
 void Scene_CheckExit();
-void _ZN8ProcBase8vfunc_20Ev(void *a, u32 b);
+void _ZN8ProcBase11postExecuteEv(void *a, u32 b);
 BOOL TalkRequest_IsActive();
 BOOL _ZN9Character12isAreaSyncedEv();
 s32 CharInteractSync_CheckArea();
@@ -233,14 +233,14 @@ extern "C" BOOL TalkRequest_IsActive(void) {
     return FALSE;
 }
 
-BOOL TalkRequestQueue::vfunc_00() {
+BOOL TalkRequestQueue::onCreate() {
     TalkRequestQueue_Reset();
     CharInteractSync_Reset();
     sTalkRequestFlags = 0;
     return TRUE;
 }
 
-BOOL TalkRequestQueue::vfunc_0c() { return TRUE; }
+BOOL TalkRequestQueue::onDelete() { return TRUE; }
 
 extern "C" BOOL TalkRequest_StartMenu(Unk_0203dad4_Task *s) {
     if (!MenuCtrl_IsIdle()) {
@@ -707,13 +707,13 @@ BOOL TalkRequestQueue::onDraw() {
     return TRUE;
 }
 
-BOOL TalkRequestQueue::vfunc_20(u32 b) {
+BOOL TalkRequestQueue::postExecute(u32 b) {
     NetArea_SendStateToNewOwner();
     NetArea_SendStateToRequester();
     if (gActorDefaultParent != 0) {
         Scene_CheckExit();
     }
-    _ZN8ProcBase8vfunc_20Ev(this, b);
+    _ZN8ProcBase11postExecuteEv(this, b);
 }
 
 extern "C" BOOL TalkRequest_IsCurrentKind(u32 x) {

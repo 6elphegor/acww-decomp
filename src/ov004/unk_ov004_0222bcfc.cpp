@@ -10,7 +10,7 @@ class NewYearCountdown : public GameProc {
 public:
     NewYearCountdown();
     virtual ~NewYearCountdown();
-    virtual BOOL vfunc_00();
+    virtual BOOL onCreate();
     virtual BOOL onExecute();
 
     /* 0x50 */ u8 prevSecondDigit;
@@ -42,7 +42,7 @@ extern "C" NewYearCountdown *NewYearCountdown_Create() {
 NewYearCountdown::NewYearCountdown() {}
 NewYearCountdown::~NewYearCountdown() {}
 
-BOOL NewYearCountdown::vfunc_00() {
+BOOL NewYearCountdown::onCreate() {
     muteFirstTick = 1;
     return TRUE;
 }

@@ -15,13 +15,13 @@ public:
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
-    virtual BOOL vfunc_04();
+    virtual BOOL preCreate();
     virtual void postCreate(s32 a);
     virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
+    virtual BOOL postDelete(s32 a);
     virtual BOOL onExecute();
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
+    virtual BOOL postExecute(u32 status);
     virtual BOOL execWaitScreen();          // 0x44 phase 0
     virtual BOOL execTransition();          // 0x48 phase 1
     virtual BOOL execMain();                // 0x4c phase 2

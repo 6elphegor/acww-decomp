@@ -503,7 +503,7 @@ void FishBobber::setState(s32 state)
         break;
     case 7: {
         Unk_0205f8d4_Vec a, b;
-        if (!ownerActor->vfunc_5c((Unk_020d77a4_Vec3 *)&targetPos)) {
+        if (!ownerActor->getHeldItemPos((Unk_020d77a4_Vec3 *)&targetPos)) {
             Unk_0205f8d4_Vec *pv = (Unk_0205f8d4_Vec *)&ownerActor->position;
             targetPos.x = pv->x;
             targetPos.y = pv->y;
@@ -527,7 +527,7 @@ void FishBobber::setState(s32 state)
     }
     case 8: {
         Unk_0205f8d4_Vec c, d;
-        if (!ownerActor->vfunc_5c((Unk_020d77a4_Vec3 *)&targetPos)) {
+        if (!ownerActor->getHeldItemPos((Unk_020d77a4_Vec3 *)&targetPos)) {
             Unk_0205f8d4_Vec *pv = (Unk_0205f8d4_Vec *)&ownerActor->position;
             targetPos.x = pv->x;
             targetPos.y = pv->y;

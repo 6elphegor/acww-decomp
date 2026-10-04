@@ -2,10 +2,10 @@ _ZN11SpNpcShrunkD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN11SpNpcShrunkD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
 _ZN11SpNpcShrunk12teachEmotionEii kind:function(thumb,size=0x18) addr:0x02271414
 _ZN11SpNpcShrunk19getTeachableEmotionEv kind:function(thumb,size=0x20) addr:0x0227142c
-_ZN11SpNpcShrunk8vfunc_4cEi kind:function(thumb,size=0x50) addr:0x0227144c
-_ZN11SpNpcShrunk8vfunc_4cEjh kind:label(thumb) addr:0x0227144c
-_ZN11SpNpcShrunk8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x0227149c
-_ZN11SpNpcShrunk8vfunc_48EPv kind:label(thumb) addr:0x0227149c
+_ZN11SpNpcShrunk18onInteractionEventEi kind:function(thumb,size=0x50) addr:0x0227144c
+_ZN11SpNpcShrunk18onInteractionEventEjh kind:label(thumb) addr:0x0227144c
+_ZN11SpNpcShrunk18acceptsInteractionEv kind:function(thumb,size=0x20) addr:0x0227149c
+_ZN11SpNpcShrunk18acceptsInteractionEPv kind:label(thumb) addr:0x0227149c
 _ZN15SpNpcShrunkTalk8onChoiceEv kind:function(thumb,size=0xa8) addr:0x022714bc
 _ZN15SpNpcShrunkTalk8onChoiceEj kind:label(thumb) addr:0x022714bc
 _ZN15SpNpcShrunkTalk12onMessageEndEv kind:function(thumb,size=0x94) addr:0x02271564
@@ -45,9 +45,9 @@ _ZN11SpNpcShrunk9changeActEi kind:function(thumb,size=0x44) addr:0x02272144
 _ZN11SpNpcShrunk9updateActEv kind:function(thumb,size=0x4c) addr:0x02272188
 _ZN11SpNpcShrunk12getModelPathEv kind:function(thumb,size=0x8) addr:0x022721d4
 _ZN11SpNpcShrunk14getTexturePathEv kind:function(thumb,size=0x8) addr:0x022721dc
-_ZN11SpNpcShrunk8vfunc_0cEv kind:function(thumb,size=0x2c) addr:0x022721e4
-_ZN11SpNpcShrunk8vfunc_00Ev kind:function(thumb,size=0x20) addr:0x02272210
-_ZN11SpNpcShrunk8vfunc_04Ev kind:function(thumb,size=0x30) addr:0x02272230
+_ZN11SpNpcShrunk8onDeleteEv kind:function(thumb,size=0x2c) addr:0x022721e4
+_ZN11SpNpcShrunk8onCreateEv kind:function(thumb,size=0x20) addr:0x02272210
+_ZN11SpNpcShrunk9preCreateEv kind:function(thumb,size=0x30) addr:0x02272230
 _ZN11SpNpcShrunk21getWalkAnimSpeedScaleEv kind:function(thumb,size=0xc) addr:0x02272260
 SpNpcShrunk_Create kind:function(thumb,size=0x118) addr:0x0227226c
 __sinit_ov088_02272384 kind:function(thumb,size=0x184) addr:0x02272384

@@ -61,13 +61,13 @@ extern char *sAtmStringBankPtr;
 class Atm : public Character, public TalkMsgRequest {
 public:
     Atm();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~Atm();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL acceptsInteraction(void *a);
+    virtual void onInteractionEvent(u32 a, u8 b);
     virtual void onMessageStart(u32 attr);
     virtual void onMessageEnd(u32 attr);
     virtual void onChoice(u32 attr);
@@ -121,7 +121,7 @@ Atm::~Atm() {
     _ZN11BoxColliderD2Ev(collider);
 }
 
-BOOL Atm::vfunc_00() {
+BOOL Atm::onCreate() {
     sAtmInstance = this;
     setCharId(0);
     setTalkAct(0);
@@ -139,7 +139,7 @@ BOOL Atm::onDraw() {
     return TRUE;
 }
 
-BOOL Atm::vfunc_0c() {
+BOOL Atm::onDelete() {
     releaseCollision();
     return TRUE;
 }
@@ -171,7 +171,7 @@ void Atm::setPointTexts() {
     }
 }
 
-BOOL Atm::vfunc_48(void *a) {
+BOOL Atm::acceptsInteraction(void *a) {
     Character *o = (Character *)a;
     if (o) {
         if (Vec_DistXZ(&o->position.x, &position.x) < 0x2333) {
@@ -185,7 +185,7 @@ BOOL Atm::vfunc_48(void *a) {
     return FALSE;
 }
 
-void Atm::vfunc_4c(u32 a, u8 b) {
+void Atm::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 0:
         setTalkAct(1);

@@ -112,10 +112,10 @@ struct Unk_020d77a4_Vec3;
 class SpNpcTortimerBrightNights : public SpNpcActor {
 public:
     SpNpcTortimerBrightNights() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 v, u8 b);
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 v, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -195,8 +195,8 @@ extern "C" SpNpcTortimerBrightNights *SpNpcTortimerBrightNights_Create() {
     return new SpNpcTortimerBrightNights();
 }
 
-BOOL SpNpcTortimerBrightNights::vfunc_04() {
-    if (!SpNpcActor::vfunc_04()) {
+BOOL SpNpcTortimerBrightNights::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&talk);
@@ -204,8 +204,8 @@ BOOL SpNpcTortimerBrightNights::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcTortimerBrightNights::vfunc_00() {
-    if (!SpNpcActor::vfunc_00()) {
+BOOL SpNpcTortimerBrightNights::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     changeAct(0);
@@ -317,7 +317,7 @@ SpNpcTortimerBrightNightsTalk::SpNpcTortimerBrightNightsTalk() {}
 SpNpcTortimerBrightNightsTalk::~SpNpcTortimerBrightNightsTalk() {}
 
 void SpNpcTortimerBrightNightsTalk::attachOwner(SpNpcTortimerBrightNights *owner) {
-    vfunc_08();
+    resetMsg();
     ownerNpc = owner;
     massageChairSlot = -1;
 }
@@ -497,7 +497,7 @@ void SpNpcTortimerBrightNightsTalk::onChoice(u32) {
     }
 }
 
-BOOL SpNpcTortimerBrightNights::vfunc_48(void *) {
+BOOL SpNpcTortimerBrightNights::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
@@ -506,10 +506,10 @@ BOOL SpNpcTortimerBrightNights::vfunc_48(void *) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void SpNpcTortimerBrightNights::vfunc_4c(u32 v, u8) {
+void SpNpcTortimerBrightNights::onInteractionEvent(u32 v, u8) {
     switch (v) {
     case 0:
-        talk.vfunc_08();
+        talk.resetMsg();
         talk.func_02015ab0((u32)getPlayerActor(4));
         changeAct(1);
         break;

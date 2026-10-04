@@ -117,8 +117,8 @@ public:
     PocketLettersMenu()
         : bgTasks(), pocketGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), popup(), errorMessage(), letterView(), letterCloseButton(), heldLetter(), swapLetter() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -288,14 +288,14 @@ static inline BOOL Unk_ov103_02295f10_Both()
 
 extern "C" PocketLettersMenu *PocketLettersMenu_Create() { return new PocketLettersMenu(); }
 
-BOOL PocketLettersMenu::vfunc_00() {
+BOOL PocketLettersMenu::onCreate() {
     initParts();
     setTransitionState(0);
     setPhase(0);
     return TRUE;
 }
 
-BOOL PocketLettersMenu::vfunc_0c() {
+BOOL PocketLettersMenu::onDelete() {
     ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
@@ -504,7 +504,7 @@ void PocketLettersMenu::releaseResources() {
 
 void PocketLettersMenu::preInputUpdate() {
     preStateUpdate();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void PocketLettersMenu::postInputUpdate() {
@@ -1131,7 +1131,7 @@ s32 PocketLettersMenu::getCursorTargetY() { return getSlotY(cursorSlot); }
 
 void PocketLettersMenu::hideCursor() {
     ((MenuCursor *)&cursor)->setAnimIfChanged(0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void PocketLettersMenu::moveCursorToTarget() {
@@ -1174,7 +1174,7 @@ void PocketLettersMenu::showCursorAtSlot() {
 
 void PocketLettersMenu::refreshCursor() {
     cursor.setPoseIdle();
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void PocketLettersMenu::func_ov103_02295120() {

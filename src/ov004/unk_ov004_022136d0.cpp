@@ -40,13 +40,13 @@ s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, void *d, void *e);
 class RoomBoardSign : public Character, public TalkMsgRequest {
 public:
     RoomBoardSign();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~RoomBoardSign();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL acceptsInteraction(void *a);
+    virtual void onInteractionEvent(u32 a, u8 b);
 
     void mainAct02();
     BOOL setupAct02();
@@ -111,7 +111,7 @@ RoomBoardSign::~RoomBoardSign() {
     _ZN15TouchPickSphereD1Ev((TouchPickSphere *)touchSphere);
 }
 
-BOOL RoomBoardSign::vfunc_00() {
+BOOL RoomBoardSign::onCreate() {
     RoomBoardSign_ClearRegistry();
     signMsgIndex = sRoomBoardSignSpawnMsg;
     radius = sRoomBoardSignSpawnRadius;
@@ -134,7 +134,7 @@ BOOL RoomBoardSign::onDraw() {
     return TRUE;
 }
 
-BOOL RoomBoardSign::vfunc_0c() {
+BOOL RoomBoardSign::onDelete() {
     unregisterSelf();
     return TRUE;
 }
@@ -170,7 +170,7 @@ BOOL RoomBoardSign::unregisterSelf() {
     return FALSE;
 }
 
-BOOL RoomBoardSign::vfunc_48(void *a) {
+BOOL RoomBoardSign::acceptsInteraction(void *a) {
     Character *o = (Character *)a;
     s32 lim = radius + 0x2ccd;
     if (o) {
@@ -183,7 +183,7 @@ BOOL RoomBoardSign::vfunc_48(void *a) {
     return FALSE;
 }
 
-void RoomBoardSign::vfunc_4c(u32 a, u8 b) {
+void RoomBoardSign::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 0:
         changeAct(1);

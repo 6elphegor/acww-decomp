@@ -8967,7 +8967,7 @@ void Sky_FrameIndoor(void) {
 }
 
 }
-BOOL SkyProc::vfunc_00() {
+BOOL SkyProc::onCreate() {
     using namespace n01;
     u32 r4 = 0;
     u32 v = 0;
@@ -9024,7 +9024,7 @@ BOOL SkyProc::onDraw() {
 namespace n01 {
 
 }
-BOOL SkyProc::vfunc_0c() {
+BOOL SkyProc::onDelete() {
     using namespace n01;
     u32 saved = HBlank_Remove(sSkyHBlankTask);
     s32 i, j, k;

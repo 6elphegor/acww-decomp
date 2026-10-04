@@ -156,8 +156,8 @@ public:
     MapViewerMenu()
         : screenTasks(), textLabels(), scrollKnob(), cursor(), terrainMarkers(), buildingMarkers() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
     virtual BOOL onDraw();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -344,14 +344,14 @@ extern "C" MapViewerMenu *MapViewerMenu_Create();
 
 extern "C" MapViewerMenu *MapViewerMenu_Create() { return new MapViewerMenu(); }
 
-BOOL MapViewerMenu::vfunc_00() {
+BOOL MapViewerMenu::onCreate() {
     initMapViewer();
     setTransitionState(0);
     setPhase(1);
     return TRUE;
 }
 
-BOOL MapViewerMenu::vfunc_0c() {
+BOOL MapViewerMenu::onDelete() {
     ProcBase_GetParent(this);
     MenuLauncher_onChildClosed();
     releaseResources();
@@ -650,8 +650,8 @@ void MapViewerMenu::postStateUpdate() {
 
 void MapViewerMenu::preInputUpdate() {
     preStateUpdate();
-    scrollKnob.vfunc_0c();
-    cursor.vfunc_0c();
+    scrollKnob.update();
+    cursor.update();
 }
 
 void MapViewerMenu::postInputUpdate() {
@@ -1449,7 +1449,7 @@ s32 MapViewerMenu::getCursorTargetY() {
 
 void MapViewerMenu::hideCursor() {
     MenuCursor_setAnimIfChanged(&cursor, 0);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 void MapViewerMenu::moveCursorToTarget() {
@@ -1479,7 +1479,7 @@ void MapViewerMenu::releaseCursor() {
 
 void MapViewerMenu::refreshCursor() {
     MenuCursorBase_setPoseIdle(&cursor);
-    cursor.vfunc_0c();
+    cursor.update();
 }
 
 BOOL MapViewerMenu::moveCursorByPad(void *pad) {

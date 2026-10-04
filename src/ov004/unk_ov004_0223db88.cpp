@@ -70,7 +70,7 @@ s32 Ftr_GetUnk05(void *p);
 class MuseumRoom : public GameProc {
 public:
     MuseumRoom();
-    virtual BOOL vfunc_00();
+    virtual BOOL onCreate();
     virtual BOOL onExecute();
     virtual ~MuseumRoom();
     virtual BOOL setupExhibits();
@@ -417,7 +417,7 @@ MuseumRoom::MuseumRoom() {}
 
 MuseumRoom::~MuseumRoom() {}
 
-BOOL MuseumRoom::vfunc_00() {
+BOOL MuseumRoom::onCreate() {
     spawnInfoPoints();
     setupExhibits();
     return TRUE;

@@ -1013,7 +1013,7 @@ extern "C" void Event_GetRange(s32 *a, s32 *b, u32 id) {
     }
 }
 
-BOOL EventCalendarModule::vfunc_00() {
+BOOL EventCalendarModule::onCreate() {
     if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
         if (sEventsOnlineRefresh) {
             Event_RefreshToday(0);
@@ -1035,7 +1035,7 @@ BOOL EventCalendarModule::onExecute() {
 
 BOOL EventCalendarModule::onDraw() { return TRUE; }
 
-BOOL EventCalendarModule::vfunc_0c() { return TRUE; }
+BOOL EventCalendarModule::onDelete() { return TRUE; }
 
 extern "C" BOOL Game_IsIntroPeriod(void) {
     BOOL r = FALSE;

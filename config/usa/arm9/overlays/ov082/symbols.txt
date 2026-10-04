@@ -1,9 +1,9 @@
 _ZN19SpNpcTortimerBugOffD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN19SpNpcTortimerBugOffD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
-_ZN19SpNpcTortimerBugOff8vfunc_4cEi kind:function(thumb,size=0x44) addr:0x02271414
-_ZN19SpNpcTortimerBugOff8vfunc_4cEjh kind:label(thumb) addr:0x02271414
-_ZN19SpNpcTortimerBugOff8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271458
-_ZN19SpNpcTortimerBugOff8vfunc_48EPv kind:label(thumb) addr:0x02271458
+_ZN19SpNpcTortimerBugOff18onInteractionEventEi kind:function(thumb,size=0x44) addr:0x02271414
+_ZN19SpNpcTortimerBugOff18onInteractionEventEjh kind:label(thumb) addr:0x02271414
+_ZN19SpNpcTortimerBugOff18acceptsInteractionEv kind:function(thumb,size=0x20) addr:0x02271458
+_ZN19SpNpcTortimerBugOff18acceptsInteractionEPv kind:label(thumb) addr:0x02271458
 _ZN23SpNpcTortimerBugOffTalk8onChoiceEv kind:function(thumb,size=0xac) addr:0x02271478
 _ZN23SpNpcTortimerBugOffTalk8onChoiceEj kind:label(thumb) addr:0x02271478
 _ZN23SpNpcTortimerBugOffTalk12onMessageEndEv kind:function(thumb,size=0x288) addr:0x02271524
@@ -32,8 +32,8 @@ _ZN19SpNpcTortimerBugOff9changeActEi kind:function(thumb,size=0x44) addr:0x02271
 _ZN19SpNpcTortimerBugOff9updateActEv kind:function(thumb,size=0x4c) addr:0x02271d28
 _ZN19SpNpcTortimerBugOff12getModelPathEv kind:function(thumb,size=0x8) addr:0x02271d74
 _ZN19SpNpcTortimerBugOff14getTexturePathEv kind:function(thumb,size=0x8) addr:0x02271d7c
-_ZN19SpNpcTortimerBugOff8vfunc_00Ev kind:function(thumb,size=0x178) addr:0x02271d84
-_ZN19SpNpcTortimerBugOff8vfunc_04Ev kind:function(thumb,size=0x30) addr:0x02271efc
+_ZN19SpNpcTortimerBugOff8onCreateEv kind:function(thumb,size=0x178) addr:0x02271d84
+_ZN19SpNpcTortimerBugOff9preCreateEv kind:function(thumb,size=0x30) addr:0x02271efc
 SpNpcTortimerBugOff_Create kind:function(thumb,size=0x118) addr:0x02271f2c
 __sinit_ov082_02272044 kind:function(thumb,size=0x5c) addr:0x02272044
 .p__sinit_ov082_02272044 kind:data(word) addr:0x022720a0
