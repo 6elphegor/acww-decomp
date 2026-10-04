@@ -362,7 +362,7 @@ extern "C" s32 BgMgt_GetCount(s16 *p)
 Unk_02036c60_Vec BgMgt_GetEntry(u8 *base, s32 idx)
 {
     Unk_02036c60_Vec v;
-    Unk_02036c60_Ent *e = (Unk_02036c60_Ent *)(base + 2);
+    BgMgtEntry *e = (BgMgtEntry *)(base + 2);
     v.x = e[idx].a;
     v.y = e[idx].b << 12;
     v.z = e[idx].c << 12;

@@ -1,7 +1,7 @@
 #include "types.h"
-#include "actor/Unk_0203e5d0_Node.h"
+#include "actor/CharacterListNode.h"
 #include "talk/Unk_0203e22c_State.h"
-#include "game/Unk_0203e5d0_List.h"
+#include "game/CharacterList.h"
 #include "net/Unk_0203e938_Net.h"
 #include "sys/ProcBase.h"
 #include "talk/TalkRequestQueue.h"
@@ -15,7 +15,7 @@ class Character;
 
 
 
-extern Unk_0203e5d0_List gCharacterList;
+extern CharacterList gCharacterList;
 extern u32 sCharInteractReservedId;
 extern u32 sCharInteractLockIds[4];
 extern u8 sCharInteractSyncResult;
@@ -203,10 +203,10 @@ Character *Character_FindByCharId(u32 id);
 
 
 
-Unk_0203e5d0_List gCharacterList;
+CharacterList gCharacterList;
 
 Character::Character() {
-    charNode.unk_00 = 0;
+    charNode.prev = 0;
     charNode.next = 0;
     charNode.charId = 0;
 }
@@ -258,7 +258,7 @@ void Character::setCharId(u32 a) {
 }
 
 extern "C" Character *Character_FindByCharId(u32 id) {
-    Unk_0203e5d0_Node *n = (Unk_0203e5d0_Node *)PrioList_FindById(&gCharacterList, id);
+    CharacterListNode *n = (CharacterListNode *)PrioList_FindById(&gCharacterList, id);
     if (n) {
         return n->owner;
     }
@@ -266,7 +266,7 @@ extern "C" Character *Character_FindByCharId(u32 id) {
 }
 
 extern "C" Character *Character_FindInteractionTarget(Character *self) {
-    for (Unk_0203e5d0_Node *n = gCharacterList.head; n; n = n->next) {
+    for (CharacterListNode *n = gCharacterList.head; n; n = n->next) {
         Character *o = n->owner;
         if (o == self) {
             continue;

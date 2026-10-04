@@ -111,7 +111,7 @@ s32 NetSession_GetLastSyncSlot();
 }
 
 extern "C" {
-Unk_0209579c_Rec *_ZN5Actor13findByProfileEjPS_(s32 a, s32 b);
+ProcBase *_ZN5Actor13findByProfileEjPS_(s32 a, s32 b);
 }
 
 extern "C" {
@@ -336,7 +336,7 @@ BOOL RemotePlayerSpawner::onExecute() {
     if (Scene_GetCurrent() == 0x2e) goto ret1;
     if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f || Scene_GetCurrent() == 0xe) {
         if (func_020a03f0()) return TRUE;
-        Unk_0209579c_Rec *rec = _ZN5Actor13findByProfileEjPS_(0x72, 0);
+        ProcBase *rec = _ZN5Actor13findByProfileEjPS_(0x72, 0);
         if (rec == NULL) goto ret1;
         if (Unk_0209579c_IsTwo(rec->state)) goto ret1;
         if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f) {
@@ -406,7 +406,7 @@ BOOL RemotePlayerSpawner::onExecute() {
         if (!_ZN11CommManager11isLocalSlotEj(g, j) && !PlayerActor_TestSlotFlag(0x1b, ob)) {
             Unk_02095774_Ent *e = PlayerActor_GetActor(j);
             if (e) {
-                if (!Unk_0209579c_IsTwo(((Unk_0209579c_Rec *)e)->state)) {
+                if (!Unk_0209579c_IsTwo(((ProcBase *)e)->state)) {
                     if (PlayerActor_GetSlotAction(&lv2, -1, j)) {
                         if (lv2 >= 0x93) {
                             ProcBase_RequestDelete(e);

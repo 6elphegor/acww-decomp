@@ -3,8 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
-#include "actor/Unk_02002cb0_Vec.h"
-#include "actor/Unk_02002f14_Node.h"
+#include "actor/ActorListNode.h"
 #include "actor/Actor.h"
 #include "room/HouseData.h"
 
@@ -644,7 +643,7 @@ void HouseRoach::updateCollision() {
     if (roachState != 0) {
         move();
     }
-    updatePosition((Unk_02002cb0_Vec *)&hitBox);
+    updatePosition((ActorCollider *)&hitBox);
     Collision_Move(&moveResult, p, &prevPosition, ang, 0x666, this, 0xf);
     for (i = 0; i < n; i++) {
         if (fr[i] != 0) {

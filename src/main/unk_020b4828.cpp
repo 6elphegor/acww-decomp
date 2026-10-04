@@ -5,6 +5,7 @@
 #include "game/FxVec3.h"
 #include "game/TouchPicker.h"
 #include "sys/SceneBase.h"
+#include "game/SceneWarp.h"
 
 #define reg_4000358 (*(u32 *)0x4000358)
 #define reg_4000008 (*(u16 *)0x4000008)
@@ -30,21 +31,6 @@ static inline BOOL is1(u8 v) {
     if (v == 1) return TRUE;
     return FALSE;
 }
-
-// 0x1c-byte table entry (constructor func_020b4fc4, destructor func_020b4fc0)
-struct SceneWarp {
-    SceneWarp();
-    ~SceneWarp();
-    u8 type;      // 0x00
-    u8 flag;      // 0x01
-    s16 angle;   // 0x02
-    Vec3 pos;     // 0x04
-    u32 spawnParam;   // 0x10
-    u8 fadeOut;    // 0x14
-    u8 fadeIn;    // 0x15
-    s16 unk_16;   // 0x16
-    u8 unk_18;    // 0x18
-};
 
 // 0x18-byte record (constructor func_020b50a4, destructor func_020b50a0)
 struct ScenePos {

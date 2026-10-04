@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "game/Unk_020b4f8c_Vec.h"
-#include "game/Unk_020b4f8c.h"
+#include "game/SceneWarp.h"
 
 // ov010: map scene tables (a scene record, its entry list, the id grid).
 // Generated from the original image; the definition order below
@@ -31,7 +31,7 @@ struct Unk_ov010_Grid {  // width x height ids
 };
 
 struct Unk_ov010_Objs {
-    Unk_020b4f8c *objs;
+    SceneWarp *objs;
     u32 count;
 };
 

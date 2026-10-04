@@ -31,7 +31,7 @@ struct Unk_0201bc1c;
 // whose derived destructors inline it); the constructor is inline.
 class NpcActor : public Character {
 public:
-    NpcActor() : unk_ea(0xfff1) {}
+    NpcActor() : npcHandle(0xfff1) {}
     virtual ~NpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
@@ -93,7 +93,7 @@ public:
     void releaseModel();
     BOOL loadModel();
 
-    /* 0x0ea */ u16 unk_ea;
+    /* 0x0ea */ u16 npcHandle;
     /* 0x0ec */ ThreeLayerAnimModel model;
     /* 0x2a0 */ Unk_0201ad3c moveAnimSet;
     /* 0x2ac */ NpcFaceAnim faceAnim;

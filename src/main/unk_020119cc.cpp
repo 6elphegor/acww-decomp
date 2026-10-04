@@ -2319,7 +2319,7 @@ s32 Vec_DistXZ(void *a, void *b);
 s32 Math_StepS32Alt(s32 *p, s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_AngleXZ(void *a, void *b);
-void _ZN5Actor14updatePositionEP16Unk_02002cb0_Vec(void *a, void *b);
+void _ZN5Actor14updatePositionEP13ActorCollider(void *a, void *b);
 s32 _ZN12Unk_0201a13c16isWithinYawLimitEi(NpcLookAt *self, s32 v);
 BOOL Npc_IsPosBlocked(Unk_0201a334_Vec3 *pos);
 void Npc_RotateOffsetXZ(Unk_0201a334_Vec3 *out, Unk_0201a334_Vec3 *base, Unk_0201a334_Vec3 *off, u32 ang);
@@ -2940,11 +2940,11 @@ extern "C" void NpcActor_OnJointCalc(Unk_0201be34 *self) {
     Unk_020d77a4_Vec vb;
     if (p != NULL) {
         BOOL isX;
-        if (Item_IsFurniture(&p->unk_ea) != 0) {
+        if (Item_IsFurniture(&p->npcHandle) != 0) {
             tmp[0] = 0xd011;
-            isX = Item_GetFurnitureIndex(&p->unk_ea) == Item_GetFurnitureIndex(&tmp[0]) ? TRUE : FALSE;
+            isX = Item_GetFurnitureIndex(&p->npcHandle) == Item_GetFurnitureIndex(&tmp[0]) ? TRUE : FALSE;
         } else {
-            isX = p->unk_ea == 0xd011 ? TRUE : FALSE;
+            isX = p->npcHandle == 0xd011 ? TRUE : FALSE;
         }
         if (isX && (Scene_InMuseumRoom() == 0 || Scene_GetMuseumRoom() != 1)) {
             if (idx == 0x10) {
@@ -2979,11 +2979,11 @@ extern "C" void NpcActor_OnJointCalc(Unk_0201be34 *self) {
     }
     if (idx == 0 && p != NULL) {
         BOOL isY;
-        if (Item_IsFurniture(&p->unk_ea) != 0) {
+        if (Item_IsFurniture(&p->npcHandle) != 0) {
             tmp[1] = 0xd016;
-            isY = Item_GetFurnitureIndex(&p->unk_ea) == Item_GetFurnitureIndex(&tmp[1]) ? TRUE : FALSE;
+            isY = Item_GetFurnitureIndex(&p->npcHandle) == Item_GetFurnitureIndex(&tmp[1]) ? TRUE : FALSE;
         } else {
-            isY = p->unk_ea == 0xd016 ? TRUE : FALSE;
+            isY = p->npcHandle == 0xd016 ? TRUE : FALSE;
         }
         if (isY) {
             Unk_0201be44_Dst *d = self->pJntAnmResult;
@@ -3044,8 +3044,8 @@ void NpcActor::setNpcIndex(u16 v) {
 
 void NpcActor::setNpcHandle(u16 *p) {
     using namespace nR;
-    unk_ea = *p;
-    setNpcIndex(unk_ea & 0xfff);
+    npcHandle = *p;
+    setNpcIndex(npcHandle & 0xfff);
     _ZN9Character9setCharIdEj(this, getNpcIndex());
 }
 
@@ -3251,7 +3251,7 @@ BOOL NpcActor::isNetOwner() {
     using namespace nR;
     Unk_020d77a4_Global *g = gCommManager;
     if (_ZN11CommManager8isOnlineEv(g) != 0 && netSyncOff == 0) {
-        u8 *p = NpcNetRecord_GetVar(&unk_ea);
+        u8 *p = NpcNetRecord_GetVar(&npcHandle);
         if (p != NULL && p[0] != 0) {
             if ((p[1] == 4 && NetArea_IsLocalOwner() != 0) || p[1] == g->myAid) {
                 return TRUE;
@@ -3265,15 +3265,15 @@ BOOL NpcActor::isNetOwner() {
 
 s32 NpcActor::netSetSlots(s32 a, s32 b, s32 c) {
     using namespace nR;
-    return NpcNetRecord_SetSlotsAndSync(a, b, c, &unk_ea);
+    return NpcNetRecord_SetSlotsAndSync(a, b, c, &npcHandle);
 }
 
 void NpcActor::netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...) {
     using namespace nR;
-    NpcNetRecord_SetSlots(&unk_ea, b, c);
+    NpcNetRecord_SetSlots(&npcHandle, b, c);
     if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid) != 0) {
         if (isNetOwner() != 0) {
-            s32 t = (unk_ea & 0xf000) >> 12;
+            s32 t = (npcHandle & 0xf000) >> 12;
             if (t == 0xe) {
                 CommSyncVar_SetVar(getNpcIndex() + 0xc, &a, 0, 0);
             } else if (t == 0xd) {
@@ -3285,7 +3285,7 @@ void NpcActor::netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...) {
 
 s32 NpcActor::netGetSlots(s32 a, s32 b) {
     using namespace nR;
-    return NpcNetRecord_GetSlots(a, b, &unk_ea);
+    return NpcNetRecord_GetSlots(a, b, &npcHandle);
 }
 
 BOOL NpcActor::netIsTalkLocked() {
@@ -3304,7 +3304,7 @@ BOOL NpcActor::netIsTalkLocked() {
 BOOL NpcActor::getNetUserBytes(u8 *src, u32 n) {
     using namespace nR;
     if (netSyncOff == 0) {
-        u8 *p = NpcNetRecord_GetVar(&unk_ea);
+        u8 *p = NpcNetRecord_GetVar(&npcHandle);
         if (n > 4) {
             n = 4;
         }
@@ -3326,10 +3326,10 @@ void NpcActor::setNetUserBytes(void *dst, s32 n) {
 
 void NpcActor::netSendState(u32 a, ...) {
     using namespace nR;
-    NpcNetRecord_SetState(&unk_ea, Scene_GetCurrent(), &position, rotY, &actionCtrl.netAction, netUserBytes);
+    NpcNetRecord_SetState(&npcHandle, Scene_GetCurrent(), &position, rotY, &actionCtrl.netAction, netUserBytes);
     if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid) != 0) {
         if (isNetOwner() != 0) {
-            s32 t = (unk_ea & 0xf000) >> 12;
+            s32 t = (npcHandle & 0xf000) >> 12;
             if (t == 0xe) {
                 CommSyncVar_SetVar(getNpcIndex() + 0xc, &a, 0, 0);
             } else if (t == 0xd) {
@@ -3342,7 +3342,7 @@ void NpcActor::netSendState(u32 a, ...) {
 BOOL NpcActor::netReadPosition(s32 *a, u8 *b) {
     using namespace nR;
     if (netSyncOff == 0) {
-        u8 *p = NpcNetRecord_GetVar(&unk_ea);
+        u8 *p = NpcNetRecord_GetVar(&npcHandle);
         if (p != NULL) {
             NetBuf_UnpackPair20(p + 4, a, a + 2);
             MI_CpuCopy8(p + 9, b, 2);
@@ -3354,7 +3354,7 @@ BOOL NpcActor::netReadPosition(s32 *a, u8 *b) {
 
 BOOL NpcActor::netReadAction(s32 *a, s32 *b, u8 *c) {
     using namespace nR;
-    u8 *p = NpcNetRecord_GetVar(&unk_ea);
+    u8 *p = NpcNetRecord_GetVar(&npcHandle);
     if (p != NULL) {
         *a = p[0xf];
         *b = p[0x10];
@@ -3410,7 +3410,7 @@ BOOL NpcActor::vfunc_00() {
     maxFallSpeed = 0xffffec00;
     gravity = 0;
     _ZN11NpcMoveCtrl14setTargetAngleEs(&moveCtrl, rotY);
-    emotionFx.effectParam = Npc_GetInfoByte2(&unk_ea);
+    emotionFx.effectParam = Npc_GetInfoByte2(&npcHandle);
     return TRUE;
 }
 
@@ -3874,7 +3874,7 @@ void NpcMoveCtrl::applyMovement(Unk_0201a334_Scene *scene) {
             }
         }
     }
-    _ZN5Actor14updatePositionEP16Unk_02002cb0_Vec(scene, (u8 *)scene + 0x4cc);
+    _ZN5Actor14updatePositionEP13ActorCollider(scene, (u8 *)scene + 0x4cc);
 }
 
 void NpcMoveCtrl::setMoveMode(Unk_0201a334_Scene *scene, s32 mode, s16 ang, u16 extra) {

@@ -319,7 +319,7 @@ BOOL SpNpcSaharah::mainAct00() {
 BOOL SpNpcSaharah::mainAct01() { return TRUE; }
 
 BOOL SpNpcSaharah::setupAct02() {
-    unk_651 = 0;
+    actCounter = 0;
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
     _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
@@ -455,7 +455,7 @@ BOOL SpNpcSaharah::mainAct02() {
     NpcActionCtrl *p = &actionCtrl;
     Unk_ov078_Vec v, w;
     s32 r6 = isNearCameraTarget();
-    Math_CountDownU8(&unk_651);
+    Math_CountDownU8(&actCounter);
     if (r6 != 0) {
         if (checkCollisionWhileMoving() == 0) {
             if (p->isActionDone() != 0) {
@@ -474,11 +474,11 @@ BOOL SpNpcSaharah::mainAct02() {
                             }
                             if (r6 != actionCtrl.getAction()) {
                                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, r6, 1, v.x, v.z, 0, 0, 0, 0, data_020c6cc8, 0);
-                                unk_651 = 0x64;
+                                actCounter = 0x64;
                             }
                         } else if (actionCtrl.getAction() != 4) {
                             _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 4, 1, v.x, v.z, 0, r6, 0, 0, data_020c6cc8, 0);
-                            unk_651 = 0x50;
+                            actCounter = 0x50;
                         }
                     } else {
                         _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -488,7 +488,7 @@ BOOL SpNpcSaharah::mainAct02() {
                 }
             } else if (speed != 0) {
                 if (actionCtrl.getAction() == 1 || actionCtrl.getAction() == 2 || actionCtrl.getAction() == 4) {
-                    if (unk_651 == 0) {
+                    if (actCounter == 0) {
                         _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                     } else {
                         Unk_ov078_Vec *q = _ZN11NpcMoveCtrl14getDestinationEv(&moveCtrl);
@@ -510,7 +510,7 @@ BOOL SpNpcSaharah::mainAct02() {
 
 BOOL SpNpcSaharah::setupAct03() {
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    unk_651 = 0;
+    actCounter = 0;
     _ZN12Unk_0201347416disableFootstepsEv(&footstepFx);
     return TRUE;
 }

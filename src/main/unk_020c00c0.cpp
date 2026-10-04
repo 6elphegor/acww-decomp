@@ -2,7 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "gfx/Unk_020bfe30_Vec.h"
-#include "game/Unk_020c010c_Ent.h"
+#include "game/EventDayEntry.h"
 #include "npc/Unk_020c0538_Out.h"
 #include "player/Unk_02097ff4.h"
 #include "snd/SndEnvChannel.h"
@@ -559,7 +559,7 @@ extern "C" BOOL Weather_UpdateDaily(WeatherRecord *self, void *arg) {
             if (t && ((Unk_02097ff4 *)t)->testFlag(1)) {
                 self->todayPattern = 4;
             } else {
-                Unk_020c010c_Ent *e = (Unk_020c010c_Ent *)Event_GetTodayList();
+                EventDayEntry *e = (EventDayEntry *)Event_GetTodayList();
                 for (s32 i = 0; i < 7; i++) {
                     switch (e->eventId) {
                     case 9:

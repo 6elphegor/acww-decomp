@@ -281,7 +281,7 @@ void SpNpcJoan::changeAct(s32 state) {
 }
 
 BOOL SpNpcJoan::setupAct02() {
-    unk_651 = 0;
+    actCounter = 0;
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
     _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
@@ -408,7 +408,7 @@ BOOL SpNpcJoan::mainAct02() {
     Unk_ov073_Vec vb;
     void *r4 = &actionCtrl;
     BOOL r6 = isInCameraBox();
-    Math_CountDownU8(&unk_651);
+    Math_CountDownU8(&actCounter);
     if (r6 != 0) {
         if (tryAvoidObstacle() == 0) {
             if (_ZN13NpcActionCtrl12isActionDoneEv(r4)) {
@@ -425,11 +425,11 @@ BOOL SpNpcJoan::mainAct02() {
                             }
                             if (k != _ZN13NpcActionCtrl9getActionEv(&actionCtrl)) {
                                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(r4, k, 1, va.x, va.z, 0, 0, 0, 0, data_020c6cc8, 0);
-                                unk_651 = 100;
+                                actCounter = 100;
                             }
                         } else if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) != 4) {
                             _ZN13NpcActionCtrl13requestActionEjiiissiitt(r4, 4, 1, va.x, va.z, 0, t, 0, 0, data_020c6cc8, 0);
-                            unk_651 = 0x50;
+                            actCounter = 0x50;
                         }
                     } else {
                         ZERO_CALL(r4);
@@ -439,7 +439,7 @@ BOOL SpNpcJoan::mainAct02() {
                 }
             } else if (speed != 0) {
                 if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 1 || _ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 2 || _ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 4) {
-                    if (unk_651 == 0) {
+                    if (actCounter == 0) {
                         ZERO_CALL(r4);
                     } else {
                         vb = *_ZN11NpcMoveCtrl14getDestinationEv(&moveCtrl);
@@ -459,7 +459,7 @@ BOOL SpNpcJoan::mainAct02() {
 
 BOOL SpNpcJoan::setupAct03() {
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    unk_651 = 0;
+    actCounter = 0;
     _ZN12Unk_0201347416disableFootstepsEv(&footstepFx);
     return TRUE;
 }

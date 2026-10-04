@@ -3165,7 +3165,7 @@ VillagerActor::VillagerActor() {}
 VillagerActor::~VillagerActor() {}
 
 void VillagerActor::attachVillagerData() {
-    if (((unk_ea & 0xf000) >> 12) == 0xe) {
+    if (((npcHandle & 0xf000) >> 12) == 0xe) {
         villagerData = SaveVillagers_Get(gSaveVillagers, (u16)getNpcIndex());
         if (villagerData != NULL) {
             villagerState = Villager_GetState(villagerData);
@@ -3204,7 +3204,7 @@ BOOL VillagerActor::canPlayTalkMelody() { return TRUE; }
 void VillagerActor::onTalkMelodyPlayed() {}
 
 u16 VillagerActor::getSpecies() {
-    if (((unk_ea & 0xf000) >> 12) == 0xe && villagerData != NULL) {
+    if (((npcHandle & 0xf000) >> 12) == 0xe && villagerData != NULL) {
         return VillagerId_GetSpecies(_ZN12VillagerData13getVillagerIdEv(villagerData));
     }
     return 0xffff;

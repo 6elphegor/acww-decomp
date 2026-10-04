@@ -1,8 +1,8 @@
 #include "types.h"
-#include "actor/Unk_0203e5d0_Node.h"
+#include "actor/CharacterListNode.h"
 #include "game/Unk_0203e4f0_Vec.h"
 #include "talk/Unk_0203e22c_State.h"
-#include "game/Unk_0203e5d0_List.h"
+#include "game/CharacterList.h"
 #include "net/Unk_0203e938_Net.h"
 #include "sys/ProcBase.h"
 #include "actor/Character.h"
@@ -14,7 +14,7 @@
 
 
 
-extern Unk_0203e5d0_List gCharacterList;
+extern CharacterList gCharacterList;
 extern u32 sCharInteractReservedId;
 extern u32 sCharInteractLockIds[4];
 extern u8 sCharInteractSyncResult;

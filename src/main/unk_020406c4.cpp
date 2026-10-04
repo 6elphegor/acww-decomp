@@ -1,5 +1,5 @@
 #include "types.h"
-#include "game/Unk_0203ff50_Slot.h"
+#include "game/EventWeekSlots.h"
 
 
 extern "C" {
@@ -65,7 +65,7 @@ extern "C" BOOL WeekVisitors_ListContains(void *, u8 *p, u32 v)
     return result;
 }
 
-extern "C" s32 WeekVisitors_PickRandom(Unk_0203ff50_Slot *s, u8 *a) {
+extern "C" s32 WeekVisitors_PickRandom(EventWeekSlots *s, u8 *a) {
     s32 ids[7];
     s32 wts[7];
     s32 i;

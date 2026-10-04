@@ -3,7 +3,7 @@
 #include "game/Unk_020d96fc_G.h"
 #include "game/Unk_0203fe18_Date.h"
 #include "game/Unk_0203fe18_B4.h"
-#include "game/Unk_0203ff50_Slot.h"
+#include "game/EventWeekSlots.h"
 #include "game/Unk_020400b0_Big.h"
 #include "game/ReddPassword.h"
 #include "game/ReddShop.h"
@@ -116,63 +116,63 @@ s32 WeekVisitors_FindFreeDays(void*, void*, void*);
 }
 
 extern "C" {
-Unk_0203ff20_Entry* EventWeekSlots_Get(Unk_0203ff50_Slot*, s32);
+EventWeekSlot* EventWeekSlots_Get(EventWeekSlots*, s32);
 }
 
 extern "C" {
-s32 EventWeekSlots_FindId(Unk_0203ff50_Slot*, u32);
+s32 EventWeekSlots_FindId(EventWeekSlots*, u32);
 }
 
 extern "C" {
-Unk_0203ff20_Entry* EventWeekSlots_GetToday(Unk_0203ff50_Slot*);
+EventWeekSlot* EventWeekSlots_GetToday(EventWeekSlots*);
 }
 
 extern "C" {
-void EventWeekSlots_RefreshSeenMask(Unk_0203ff50_Slot*);
+void EventWeekSlots_RefreshSeenMask(EventWeekSlots*);
 }
 
 extern "C" {
-void EventWeekSlots_SyncToday(Unk_0203ff50_Slot*);
+void EventWeekSlots_SyncToday(EventWeekSlots*);
 }
 
 extern "C" {
-void EventWeekSlot_MarkAllPlayers(Unk_0203ff20_Entry*);
+void EventWeekSlot_MarkAllPlayers(EventWeekSlot*);
 }
 
 extern "C" {
-void EventWeekSlot_Clear(Unk_0203ff20_Entry*);
+void EventWeekSlot_Clear(EventWeekSlot*);
 }
 
 extern "C" {
-void EventWeekSlot_Set(Unk_0203ff20_Entry*, u8, Unk_0203fe18_Date*);
+void EventWeekSlot_Set(EventWeekSlot*, u8, Unk_0203fe18_Date*);
 }
 
 extern "C" {
-void EventWeekSlots_ClearWeek(Unk_0203ff50_Slot*);
+void EventWeekSlots_ClearWeek(EventWeekSlots*);
 }
 
 extern "C" {
-s32 WeekVisitors_PickRandom(Unk_0203ff50_Slot*, u8*);
+s32 WeekVisitors_PickRandom(EventWeekSlots*, u8*);
 }
 
 extern "C" {
-void EventWeekSlots_MarkPastDays(Unk_0203ff50_Slot*);
+void EventWeekSlots_MarkPastDays(EventWeekSlots*);
 }
 
 extern "C" {
-void EventWeekSlots_PlaceRedd(Unk_0203ff50_Slot*, s32*, s32*, Unk_0203fe18_Date*);
+void EventWeekSlots_PlaceRedd(EventWeekSlots*, s32*, s32*, Unk_0203fe18_Date*);
 }
 
 extern "C" {
-void EventWeekSlots_PlacePete(Unk_0203ff50_Slot*, s32*, s32*, Unk_0203fe18_Date*);
+void EventWeekSlots_PlacePete(EventWeekSlots*, s32*, s32*, Unk_0203fe18_Date*);
 }
 
 extern "C" {
-void EventWeekSlots_PlaceVisitors(Unk_0203ff50_Slot*, s32*, s32*, u8*, Unk_0203fe18_Date*);
+void EventWeekSlots_PlaceVisitors(EventWeekSlots*, s32*, s32*, u8*, Unk_0203fe18_Date*);
 }
 
 extern "C" {
-void EventWeekSlots_UpdateWeek(Unk_0203ff50_Slot*, s32);
+void EventWeekSlots_UpdateWeek(EventWeekSlots*, s32);
 }
 
 extern "C" {
@@ -183,21 +183,21 @@ extern "C" {
 BOOL EventWeek_IsInUnkWeek(Unk_0203fe18_B4);
 }
 
-#define SLOT ((Unk_0203ff50_Slot *)(gSaveData + 0x15e18))
+#define SLOT ((EventWeekSlots *)(gSaveData + 0x15e18))
 
 // prototypes
-extern "C" void EventWeekSlots_ClearWeek(Unk_0203ff50_Slot *s);
-extern "C" void EventWeekSlots_PlaceVisitors(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, u8 *a, Unk_0203fe18_Date *pd);
-extern "C" void EventWeekSlots_PlacePete(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd);
-extern "C" void EventWeekSlots_PlaceRedd(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd);
-extern "C" void EventWeekSlots_MarkPastDays(Unk_0203ff50_Slot *s);
-extern "C" void EventWeekSlots_UpdateWeek(Unk_0203ff50_Slot *s, s32 flag);
+extern "C" void EventWeekSlots_ClearWeek(EventWeekSlots *s);
+extern "C" void EventWeekSlots_PlaceVisitors(EventWeekSlots *s, s32 *arr, s32 *cnt, u8 *a, Unk_0203fe18_Date *pd);
+extern "C" void EventWeekSlots_PlacePete(EventWeekSlots *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd);
+extern "C" void EventWeekSlots_PlaceRedd(EventWeekSlots *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd);
+extern "C" void EventWeekSlots_MarkPastDays(EventWeekSlots *s);
+extern "C" void EventWeekSlots_UpdateWeek(EventWeekSlots *s, s32 flag);
 extern "C" void EventWeekSlots_Update(void);
 extern "C" void EventWeekSlots_UpdateToday(void);
-extern "C" s32 EventWeekSlots_FindId(Unk_0203ff50_Slot *s, u32 id);
+extern "C" s32 EventWeekSlots_FindId(EventWeekSlots *s, u32 id);
 
-extern "C" void EventWeekSlots_ClearWeek(Unk_0203ff50_Slot *s) {
-    Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, 1);
+extern "C" void EventWeekSlots_ClearWeek(EventWeekSlots *s) {
+    EventWeekSlot *e = EventWeekSlots_Get(s, 1);
     s32 i;
     for (i = 0; i < 5; e++, i++) EventWeekSlot_Clear(e);
     ReddShop *p = &data_021ed2c0;
@@ -207,7 +207,7 @@ extern "C" void EventWeekSlots_ClearWeek(Unk_0203ff50_Slot *s) {
     }
 }
 
-extern "C" void EventWeekSlots_PlaceVisitors(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, u8 *a, Unk_0203fe18_Date *pd) {
+extern "C" void EventWeekSlots_PlaceVisitors(EventWeekSlots *s, s32 *arr, s32 *cnt, u8 *a, Unk_0203fe18_Date *pd) {
     s32 z1 = 0;
     s32 z2 = 0;
     s32 i;
@@ -215,7 +215,7 @@ extern "C" void EventWeekSlots_PlaceVisitors(Unk_0203ff50_Slot *s, s32 *arr, s32
         s32 v = 0x63;
         if (*cnt > 0) {
             s32 r6 = WeekVisitors_PickFreeDay(s, arr, *cnt);
-            Unk_0203ff20_Entry *e;
+            EventWeekSlot *e;
             if (r6 >= 0) {
                 v = WeekVisitors_PickRandom(s, a);
                 arr[r6] = z1;
@@ -236,7 +236,7 @@ extern "C" void EventWeekSlots_PlaceVisitors(Unk_0203ff50_Slot *s, s32 *arr, s32
     }
 }
 
-extern "C" void EventWeekSlots_PlacePete(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd) {
+extern "C" void EventWeekSlots_PlacePete(EventWeekSlots *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd) {
     s32 z1 = 0;
     s32 z2 = 0;
     s32 i;
@@ -244,7 +244,7 @@ extern "C" void EventWeekSlots_PlacePete(Unk_0203ff50_Slot *s, s32 *arr, s32 *cn
         s32 v = 0x63;
         if (*cnt > 0) {
             s32 r6 = WeekVisitors_PickFreeDay(s, arr, *cnt);
-            Unk_0203ff20_Entry *e;
+            EventWeekSlot *e;
             if (r6 >= 0) {
                 v = 0x45;
                 arr[r6] = z1;
@@ -264,7 +264,7 @@ extern "C" void EventWeekSlots_PlacePete(Unk_0203ff50_Slot *s, s32 *arr, s32 *cn
     }
 }
 
-extern "C" void EventWeekSlots_PlaceRedd(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd) {
+extern "C" void EventWeekSlots_PlaceRedd(EventWeekSlots *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd) {
     Unk_0203fe18_B4 x;
     Unk_0203fe18_Date c, d, z, cp;
     if (*cnt > 0) {
@@ -286,7 +286,7 @@ extern "C" void EventWeekSlots_PlaceRedd(Unk_0203ff50_Slot *s, s32 *arr, s32 *cn
             x.b.b3 = c.b4;
             x.b.b2 = c.b3;
             if (!EventWeek_IsInUnkWeek(x)) {
-                Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, r4);
+                EventWeekSlot *e = EventWeekSlots_Get(s, r4);
                 if (e) {
                     ((s32*)&z)[0] = 0;
                     ((s32*)&z)[1] = 0;
@@ -302,7 +302,7 @@ extern "C" void EventWeekSlots_PlaceRedd(Unk_0203ff50_Slot *s, s32 *arr, s32 *cn
     }
 }
 
-extern "C" void EventWeekSlots_MarkPastDays(Unk_0203ff50_Slot *s) {
+extern "C" void EventWeekSlots_MarkPastDays(EventWeekSlots *s) {
     volatile s32 z;
     Unk_0203fe18_Date d, c1, c2;
     u8 arr[84];
@@ -319,7 +319,7 @@ extern "C" void EventWeekSlots_MarkPastDays(Unk_0203ff50_Slot *s) {
     i = 0;
     z = 0;
     for (; i <= r6; i++) {
-        Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, i + 1);
+        EventWeekSlot *e = EventWeekSlots_Get(s, i + 1);
         if (e) {
             if (e->eventId != 0x63) {
                 BOOL ok;
@@ -335,7 +335,7 @@ extern "C" void EventWeekSlots_MarkPastDays(Unk_0203ff50_Slot *s) {
     }
 }
 
-extern "C" void EventWeekSlots_UpdateWeek(Unk_0203ff50_Slot *s, s32 flag) {
+extern "C" void EventWeekSlots_UpdateWeek(EventWeekSlots *s, s32 flag) {
     Unk_0203fe18_Date d;
     long long t;
     u8 a[6];
@@ -351,7 +351,7 @@ extern "C" void EventWeekSlots_UpdateWeek(Unk_0203ff50_Slot *s, s32 flag) {
     sEventWeekLastHour = d.b2;
     DateTime_GetWeekStart(&d, &t);
     if (s->weekStart == 0 || s->weekStart != t || flag != 0) {
-        Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, 1);
+        EventWeekSlot *e = EventWeekSlots_Get(s, 1);
         for (i = 0; i < 5; e++, i++) a[i] = e->eventId;
         a[5] = 0x63;
         EventWeekSlots_ClearWeek(s);
@@ -368,7 +368,7 @@ extern "C" void EventWeekSlots_UpdateWeek(Unk_0203ff50_Slot *s, s32 flag) {
     EventWeekSlots_MarkPastDays(s);
     idx = EventWeekSlots_FindId(s, 0x3d);
     if ((u32)(idx - r6) <= 1) {
-        Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, idx);
+        EventWeekSlot *e = EventWeekSlots_Get(s, idx);
         if (e) {
             if (e->occurred == 0) {
                 ReddShop_SendPasswordLetters();
@@ -379,14 +379,14 @@ extern "C" void EventWeekSlots_UpdateWeek(Unk_0203ff50_Slot *s, s32 flag) {
 }
 
 extern "C" void EventWeekSlots_Update(void) {
-    EventWeekSlots_UpdateWeek((Unk_0203ff50_Slot *)gSaveEventWeekSlots, 0);
+    EventWeekSlots_UpdateWeek((EventWeekSlots *)gSaveEventWeekSlots, 0);
 }
 
 extern "C" void EventWeekSlots_UpdateToday(void) {
     if (Game_IsIntroPeriod() != 1) {
         u8 *g = gSaveData;
         Unk_0203fe18_Date d, c;
-        Unk_0203ff20_Entry *e;
+        EventWeekSlot *e;
         u32 t;
         ((s32*)&d)[0] = 0;
         ((s32*)&d)[1] = 0;
@@ -394,7 +394,7 @@ extern "C" void EventWeekSlots_UpdateToday(void) {
         t = d.b2;
         if (sEventWeekLastHour != t) {
             sEventWeekLastHour = t;
-            e = EventWeekSlots_GetToday((Unk_0203ff50_Slot *)(g + 0x15e18));
+            e = EventWeekSlots_GetToday((EventWeekSlots *)(g + 0x15e18));
             if (e) {
                 u32 id = e->eventId;
                 if (id != 0x63) {
@@ -415,9 +415,9 @@ extern "C" void EventWeekSlots_UpdateToday(void) {
     }
 }
 
-extern "C" s32 EventWeekSlots_FindId(Unk_0203ff50_Slot *s, u32 id) {
+extern "C" s32 EventWeekSlots_FindId(EventWeekSlots *s, u32 id) {
     s32 r = 0;
-    Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, 1);
+    EventWeekSlot *e = EventWeekSlots_Get(s, 1);
     s32 i;
     for (i = 0; i < 5; e++, i++) {
         if (id == e->eventId) {

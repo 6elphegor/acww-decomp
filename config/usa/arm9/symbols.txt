@@ -154,9 +154,9 @@ _ZN5ActorD1Ev kind:function(thumb,size=0x30) addr:0x02002b1c
 _ZN5ActorD0Ev kind:function(thumb,size=0x38) addr:0x02002b4c
 _ZN5Actor15calcModelMatrixEPv kind:function(thumb,size=0x58) addr:0x02002b84
 Math_AngleXZ kind:function(thumb,size=0x18) addr:0x02002bdc
-_ZN5Actor14updatePositionEP16Unk_02002cb0_Vec kind:function(thumb,size=0x1c) addr:0x02002bf4
+_ZN5Actor14updatePositionEP13ActorCollider kind:function(thumb,size=0x1c) addr:0x02002bf4
 _ZN5Actor12calcVelocityEv kind:function(thumb,size=0xa0) addr:0x02002c10
-_ZN5Actor13applyVelocityEP16Unk_02002cb0_Vec kind:function(thumb,size=0x30) addr:0x02002cb0
+_ZN5Actor13applyVelocityEP13ActorCollider kind:function(thumb,size=0x30) addr:0x02002cb0
 _ZN5Actor13setCullParamsEiii kind:function(thumb,size=0x18) addr:0x02002ce0
 _ZN5Actor5spawnEPvS0_S0_S0_S0_ kind:function(thumb,size=0x30) addr:0x02002cf8
 _ZN5Actor17setSpawnTransformEPvS0_ kind:function(thumb,size=0x14) addr:0x02002d28
@@ -6057,8 +6057,7 @@ _ZN10TalkParser15expandNamedSlotEi kind:function(thumb,size=0x60) addr:0x0206ad5
 _ZN18TalkParserCondTags15expandNamedSlotEi kind:label(thumb) addr:0x0206ad58
 _ZN10TalkParser10expandSlotEi kind:function(thumb,size=0x38) addr:0x0206adb8
 _ZN18TalkParserCondTags10expandSlotEi kind:label(thumb) addr:0x0206adb8
-_ZN10TalkParser13expandArticleEP16Unk_0206ad58_Enti kind:function(thumb,size=0x7e) addr:0x0206adf0
-_ZN10TalkParser13expandArticleEP9MsgStringi kind:label(thumb) addr:0x0206adf0
+_ZN10TalkParser13expandArticleEP9MsgStringi kind:function(thumb,size=0x7e) addr:0x0206adf0
 _ZN10TalkParser9stepSpeedEv kind:function(thumb,size=0xf0) addr:0x0206ae70
 _ZN10TalkParser12stepSteppersEv kind:function(thumb,size=0x18) addr:0x0206af60
 _ZN10TalkParser12steppersIdleEv kind:function(thumb,size=0x26) addr:0x0206af78
@@ -8921,10 +8920,8 @@ EffectSpl_LoadTextures kind:function(thumb,size=0x24) addr:0x02090168
 EffectSpl_LoadArchive kind:function(thumb,size=0x10) addr:0x0209018c
 EffectSpl_Alloc kind:function(thumb,size=0x14) addr:0x0209019c
 EffectSplProc_Create kind:function(thumb,size=0x5c) addr:0x020901b0
-_ZN12Unk_0209020cC1Ev kind:function(thumb,size=0x2c) addr:0x0209020c
-_ZN16EffectModelGroupC1Ev kind:label(thumb) addr:0x0209020c
-_ZN12Unk_02090238C1Ev kind:function(thumb,size=0x30) addr:0x02090238
-_ZN11EffectModelC1Ev kind:label(thumb) addr:0x02090238
+_ZN16EffectModelGroupC1Ev kind:function(thumb,size=0x2c) addr:0x0209020c
+_ZN11EffectModelC1Ev kind:function(thumb,size=0x30) addr:0x02090238
 Effect_CreateById kind:function(thumb,size=0x24) addr:0x02090268
 Effect_PlayById2 kind:function(thumb,size=0x24) addr:0x0209028c
 Effect_PlayById kind:function(thumb,size=0x24) addr:0x020902b0
@@ -11582,11 +11579,10 @@ SceneWarp_RequestAt kind:function(thumb,size=0x40) addr:0x020b4f18
 SceneWarp_RequestFade kind:function(thumb,size=0x1e) addr:0x020b4f58
 SceneWarp_RequestScene kind:function(thumb,size=0x14) addr:0x020b4f78
 SceneWarp_Init kind:function(thumb,size=0x34) addr:0x020b4f8c
-_ZN12Unk_020b4f8cC1Eh16Unk_020b4f8c_Vecjshhsh kind:label(thumb) addr:0x020b4f8c
+_ZN9SceneWarpC1Eh16Unk_020b4f8c_Vecjshhsh kind:label(thumb) addr:0x020b4f8c
 func_020b4fc0 kind:function(thumb,size=0x2) addr:0x020b4fc0
 _ZN9SceneWarpD1Ev kind:label(thumb) addr:0x020b4fc0
 _ZN12Unk_020b4fc0D1Ev kind:label(thumb) addr:0x020b4fc0
-_ZN12Unk_020b4f8cD1Ev kind:label(thumb) addr:0x020b4fc0
 _ZN9SceneWarpC1Ev kind:function(thumb,size=0x20) addr:0x020b4fc4
 SceneId_IsValid kind:function(thumb,size=0xc) addr:0x020b4fe4
 ScenePos_GetUnitZ kind:function(thumb,size=0x6) addr:0x020b4ff0

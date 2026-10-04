@@ -340,11 +340,11 @@ _ZN8ProcBase8vfunc_14Ev kind:function(arm,size=0x78) addr:0x020ed1f0
 _ZN8ProcBase8vfunc_14Ei kind:label(arm) addr:0x020ed1f0
 _ZN8ProcBase9preDeleteEv kind:function(arm,size=0x44) addr:0x020ed268
 _ZN8ProcBase8vfunc_0cEv kind:function(arm,size=0x8) addr:0x020ed2ac
-_ZN17Unk_020d8c7c_Base10postCreateEi kind:function(arm,size=0x80) addr:0x020ed2b4
+_ZN8ProcBase10postCreateEi kind:function(arm,size=0x80) addr:0x020ed2b4
 _ZN8ProcBase8vfunc_04Ev kind:function(arm,size=0x8) addr:0x020ed334
 _ZN8ProcBase8vfunc_00Ev kind:function(arm,size=0x8) addr:0x020ed33c
 _ZN8ProcBaseD2Ev kind:function(arm,size=0x10) addr:0x020ed344
-_ZN17Unk_020d8c7c_BaseD0Ev kind:function(arm,size=0x24) addr:0x020ed354
+_ZN8ProcBaseD0Ev kind:function(arm,size=0x24) addr:0x020ed354
 _ZN8ProcBaseC2Ev kind:function(arm,size=0x144) addr:0x020ed378
 ProcList_FindByProfile kind:function(arm,size=0x4c) addr:0x020ed4bc
 ProcList_FindById kind:function(arm,size=0x44) addr:0x020ed508
@@ -853,8 +853,7 @@ func_020f3f38 kind:function(arm,size=0xd8) addr:0x020f3f38
 _ZN12SndSeEmitter15nextAlternateIdEt kind:label(arm) addr:0x020f3f38
 func_020f4010 kind:function(arm,size=0x70) addr:0x020f4010
 _ZN17SndSeEmitterKind18onVolumeEP9SndHandlei kind:label(arm) addr:0x020f4010
-_ZN12Unk_020f4080C1Ev kind:function(arm,size=0x40) addr:0x020f4080
-_ZN17SndSeEmitterKind1C1Ev kind:label(arm) addr:0x020f4080
+_ZN17SndSeEmitterKind1C1Ev kind:function(arm,size=0x40) addr:0x020f4080
 func_020f40c0 kind:function(arm,size=0x40) addr:0x020f40c0
 _ZN17SndSeEmitterKind1C2Ev kind:label(arm) addr:0x020f40c0
 func_020f4100 kind:function(arm,size=0x44) addr:0x020f4100

@@ -1165,7 +1165,7 @@ void SpNpcMabelTalk::start(TalkStartMsg *out) {
         out->msgIndex = 6;
         return;
     }
-    if (getTopic() == 2 && ParcelErrand_IsFor(r6, &owner->unk_ea) != 0) {
+    if (getTopic() == 2 && ParcelErrand_IsFor(r6, &owner->npcHandle) != 0) {
         out->msgIndex = 0x2e;
         out->msgKey = (const char *)sSpNpcMabelMsgKeys[0];
         return;

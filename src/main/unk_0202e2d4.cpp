@@ -35,7 +35,7 @@ void Proc_CreateRoot();
 s32 Proc_CreateChild(u32 a, void *b, u32 c, u32 d);
 s32 func_0211c618(s32 *out);
 void ProcBase_RequestDelete();
-void _ZN17Unk_020d8c7c_Base10postCreateEi(void *self, int a);
+void _ZN8ProcBase10postCreateEi(void *self, int a);
 s32 SpNpc_GetInfoByte0(u16 *p);
 void Npc_GetName(u32 a, u16 *p);
 }
@@ -141,7 +141,7 @@ BOOL SpNpcActor::vfunc_00() {
     }
     _ZN13NpcActionCtrl11startActionEPhiiiisii(&actionCtrl, this, 0, 1, 0, 0, 0, 0, 0);
     _ZN19ActorFollowCollider13setupForActorEPviijjjhi(&collider, this, colliderRadius, colliderHeight, 8, 0x2fc, 3, (u8)getNpcIndex(), 0x1000);
-    if (!NpcRegistry_AddSpNpc(this, &unk_ea)) {
+    if (!NpcRegistry_AddSpNpc(this, &npcHandle)) {
         return FALSE;
     }
     _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
@@ -152,7 +152,7 @@ BOOL SpNpcActor::preDelete() {
     if (!NpcActor::preDelete()) {
         return FALSE;
     }
-    NpcRegistry_RemoveSpNpc(&unk_ea);
+    NpcRegistry_RemoveSpNpc(&npcHandle);
     return TRUE;
 }
 
@@ -164,9 +164,9 @@ BOOL SpNpcActor::vfunc_0c() {
     return TRUE;
 }
 
-void SpNpcActor::getName(u32 a) { Npc_GetName(a, &unk_ea); }
+void SpNpcActor::getName(u32 a) { Npc_GetName(a, &npcHandle); }
 
-u32 SpNpcActor::getGender() { return SpNpc_GetInfoByte0(&unk_ea); }
+u32 SpNpcActor::getGender() { return SpNpc_GetInfoByte0(&npcHandle); }
 
 BOOL SpNpcActor::canPlayTalkMelody() {
     if (!Unk_0202e318_IsOne(gFieldSceneKind) || talkMelodyPlayed == 0) {
@@ -178,7 +178,7 @@ BOOL SpNpcActor::canPlayTalkMelody() {
 void SpNpcActor::onTalkMelodyPlayed() { talkMelodyPlayed = 1; }
 
 u16 SpNpcActor::getSpecies() {
-    u16 v = unk_ea;
+    u16 v = npcHandle;
     if (((v & 0xf000) >> 12) == 0xd) {
         return (v & 0xfff) + 0xc8;
     }

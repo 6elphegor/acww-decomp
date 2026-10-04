@@ -479,7 +479,7 @@ void SpNpcKaitlinTalk::onMessageEnd(u32) {}
 void SpNpcKaitlinTalk::onChoice(u32) {}
 
 BOOL SpNpcKaitlin::setupAct07() {
-    unk_651 = 0;
+    actCounter = 0;
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
     _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
@@ -608,7 +608,7 @@ BOOL SpNpcKaitlin::tryAvoidObstacle() {
 BOOL SpNpcKaitlin::mainAct07() {
     void *p564 = &actionCtrl;
     BOOL a = isInCameraView();
-    Math_CountDownU8(&unk_651);
+    Math_CountDownU8(&actCounter);
     if (a) {
         if (!tryAvoidObstacle()) {
             if (_ZN13NpcActionCtrl12isActionDoneEv(p564)) {
@@ -628,12 +628,12 @@ BOOL SpNpcKaitlin::mainAct07() {
                             }
                             if (k != _ZN13NpcActionCtrl9getActionEv(&actionCtrl)) {
                                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, k, 1, v1.x, v1.z, 0, 0, 0, 0, data_020c6cc8, 0);
-                                unk_651 = 0x64;
+                                actCounter = 0x64;
                             }
                         } else {
                             if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) != 4) {
                                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 4, 1, v1.x, v1.z, 0, ang, 0, 0, data_020c6cc8, 0);
-                                unk_651 = 0x50;
+                                actCounter = 0x50;
                             }
                         }
                     } else {
@@ -645,7 +645,7 @@ BOOL SpNpcKaitlin::mainAct07() {
             } else {
                 if (speed != 0) {
                     if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 1 || _ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 2 || _ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 4) {
-                        if (unk_651 == 0) {
+                        if (actCounter == 0) {
                             _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         } else {
                             Unk_020c17f8_Vec *src = (Unk_020c17f8_Vec *)_ZN11NpcMoveCtrl14getDestinationEv(&moveCtrl);
@@ -672,7 +672,7 @@ BOOL SpNpcKaitlin::mainAct07() {
 
 BOOL SpNpcKaitlin::setupAct08() {
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    unk_651 = 0;
+    actCounter = 0;
     _ZN12Unk_0201347416disableFootstepsEv(&footstepFx);
     return TRUE;
 }

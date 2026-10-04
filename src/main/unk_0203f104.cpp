@@ -1,10 +1,10 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "game/Unk_0203f3a0_L.h"
-#include "game/Unk_0203f408_Entry.h"
+#include "game/EventDayEntry.h"
 #include "game/Unk_0203f42c_L.h"
 #include "game/Unk_0203fe18_Date.h"
-#include "game/Unk_0203ff50_Slot.h"
+#include "game/EventWeekSlots.h"
 #include "game/EventCalendarModule.h"
 
 extern "C" void MI_CpuCopy8(const void *src, void *dst, u32 size);
@@ -57,7 +57,7 @@ public:
     ~EventDayList();
 
     /* 0x00 */ u8 date[4];
-    /* 0x04 */ Unk_0203f408_Entry entries[7];
+    /* 0x04 */ EventDayEntry entries[7];
 };
 
 struct Unk_0203f820_Date {
@@ -107,7 +107,7 @@ s32 Date_GetWeekday(u32, u32, u32);
 s32 Date_GetDaysInMonth(u32, u32);
 s32 Clock_GetWeekday(void);
 s32 PlayerData_GetCurrentIndex(void);
-s32 EventWeekSlots_FindId(Unk_0203ff50_Slot *, u32);
+s32 EventWeekSlots_FindId(EventWeekSlots *, u32);
 s32 EventWeek_IsInLyleWeek(Unk_0203f554_Cal);
 s32 EventWeek_IsInUnkWeek(Unk_0203f554_Cal);
 s32 LostChild_IsKatieDue();
@@ -139,12 +139,12 @@ void EventRule_GetVillagerBirthday(Unk_0203f554_Sub *, Unk_0203f554_Cal *, s32);
 Unk_0203f554_Cal EventRule_GetWeekSlotDate(Unk_0203f554_Sub *, u32, Unk_0203f554_Cal);
 void Event_RefreshIfDateChanged();
 s32 Event_GetStateAt(s32 a, u8 *b, s32 c);
-s32 EventDayList_GetState(s32 a, u8 *b, Unk_0203f408_Entry *c);
-Unk_0203f408_Entry *EventDayList_Find(u32 id, Unk_0203f408_Entry *tbl);
+s32 EventDayList_GetState(s32 a, u8 *b, EventDayEntry *c);
+EventDayEntry *EventDayList_Find(u32 id, EventDayEntry *tbl);
 s32 Game_IsIntroPeriod(void);
-Unk_0203ff20_Entry *EventWeekSlots_Get(Unk_0203ff50_Slot *, s32);
+EventWeekSlot *EventWeekSlots_Get(EventWeekSlots *, s32);
 s32 EventWeekSlots_IsUnavailable(u32, s32);
-void EventWeekSlot_Clear(Unk_0203ff20_Entry *);
+void EventWeekSlot_Clear(EventWeekSlot *);
 }
 
 EventDayList gTodayEvents;
@@ -256,17 +256,17 @@ Unk_0203f554_Tbl sEventSchedule[99] = {
 static inline BOOL IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 static inline BOOL IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 
-extern "C" Unk_0203ff20_Entry *EventWeekSlots_Get(Unk_0203ff50_Slot *s, s32 idx) {
-    Unk_0203ff20_Entry *r = 0;
+extern "C" EventWeekSlot *EventWeekSlots_Get(EventWeekSlots *s, s32 idx) {
+    EventWeekSlot *r = 0;
     if (idx >= 0 && idx <= 6 && idx != 0 && idx != 6) {
         r = s->ent + (idx - 1);
     }
     return r;
 }
 
-extern "C" Unk_0203ff20_Entry *EventWeekSlots_GetToday(Unk_0203ff50_Slot *unused) {
+extern "C" EventWeekSlot *EventWeekSlots_GetToday(EventWeekSlots *unused) {
     u8 *g = gSaveData;
-    Unk_0203ff20_Entry *r = 0;
+    EventWeekSlot *r = 0;
     s32 r4 = Clock_GetWeekday();
     if (r4) {
         Unk_0203fe18_Date d;
@@ -274,14 +274,14 @@ extern "C" Unk_0203ff20_Entry *EventWeekSlots_GetToday(Unk_0203ff50_Slot *unused
         ((s32*)&d)[1] = 0;
         Clock_GetDateTime(&d);
         if (d.b2 < 6) r4--;
-        r = EventWeekSlots_Get((Unk_0203ff50_Slot *)(g + 0x15e18), r4);
+        r = EventWeekSlots_Get((EventWeekSlots *)(g + 0x15e18), r4);
     }
     return r;
 }
 
 extern "C" void EventWeekSlots_MarkPlayer(u32 id) {
-    Unk_0203ff50_Slot *s = (Unk_0203ff50_Slot *)gSaveEventWeekSlots;
-    Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, EventWeekSlots_FindId(s, id));
+    EventWeekSlots *s = (EventWeekSlots *)gSaveEventWeekSlots;
+    EventWeekSlot *e = EventWeekSlots_Get(s, EventWeekSlots_FindId(s, id));
     if (e) {
         if (id == 0x44) {
             e->playerMask = 0xff;
@@ -294,13 +294,13 @@ extern "C" void EventWeekSlots_MarkPlayer(u32 id) {
 
 extern "C" BOOL EventWeekSlots_IsUnavailable(u32 id, s32 idx) {
     BOOL r;
-    Unk_0203ff20_Entry *e;
+    EventWeekSlot *e;
     u8 *g;
     if (id == 0x45) return FALSE;
     g = gSaveData;
     r = FALSE;
     if (id == 0x60) id = 0x40;
-    e = EventWeekSlots_Get((Unk_0203ff50_Slot *)(g + 0x15e18), idx);
+    e = EventWeekSlots_Get((EventWeekSlots *)(g + 0x15e18), idx);
     if (e) {
         if (id != e->eventId) {
             r = TRUE;
@@ -311,7 +311,7 @@ extern "C" BOOL EventWeekSlots_IsUnavailable(u32 id, s32 idx) {
     return r;
 }
 
-extern "C" void EventWeekSlot_Clear(Unk_0203ff20_Entry *e) {
+extern "C" void EventWeekSlot_Clear(EventWeekSlot *e) {
     e->date = 1;
     e->eventId = 0x63;
     e->state = 0;
@@ -319,14 +319,14 @@ extern "C" void EventWeekSlot_Clear(Unk_0203ff20_Entry *e) {
     e->playerMask = 0;
 }
 
-extern "C" void EventWeekSlot_Set(Unk_0203ff20_Entry *e, u8 id, Unk_0203fe18_Date *d) {
+extern "C" void EventWeekSlot_Set(EventWeekSlot *e, u8 id, Unk_0203fe18_Date *d) {
     EventWeekSlot_Clear(e);
     ((u8*)e)[1] = d->b4;
     ((u8*)e)[0] = d->b3;
     e->eventId = id;
 }
 
-extern "C" void EventWeekSlot_MarkAllPlayers(Unk_0203ff20_Entry *e) {
+extern "C" void EventWeekSlot_MarkAllPlayers(EventWeekSlot *e) {
     if (e->eventId != 0x45) {
         e->playerMask = 0xff;
         e->state = 2;
@@ -516,7 +516,7 @@ extern "C" Unk_0203f554_Cal EventRule_GetWeekSlotDate(Unk_0203f554_Sub *e, u32 i
     Unk_0203f554_Cal ret;
     ret.w = 0;
     if (id == 0x45) {
-        Unk_0203fb1c_Rec *p = (Unk_0203fb1c_Rec *)EventWeekSlots_Get((Unk_0203ff50_Slot *)(base + 0x15e18), cal.s.b0);
+        Unk_0203fb1c_Rec *p = (Unk_0203fb1c_Rec *)EventWeekSlots_Get((EventWeekSlots *)(base + 0x15e18), cal.s.b0);
         if (p && id == p->id) {
             x = p->pr;
             ret.s.b3 = x.b[1];
@@ -527,7 +527,7 @@ extern "C" Unk_0203f554_Cal EventRule_GetWeekSlotDate(Unk_0203f554_Sub *e, u32 i
         if (id == 0x60) id = 0x40;
         s32 n = cal.s.b0 - 1;
         for (s32 i = 0; i < 2; n++, i++) {
-            Unk_0203fb1c_Rec *p = (Unk_0203fb1c_Rec *)EventWeekSlots_Get((Unk_0203ff50_Slot *)(base + 0x15e18), n);
+            Unk_0203fb1c_Rec *p = (Unk_0203fb1c_Rec *)EventWeekSlots_Get((EventWeekSlots *)(base + 0x15e18), n);
             if (p && id == p->id) {
                 y = p->pr;
                 ret.s.b3 = y.b[1];
@@ -854,7 +854,7 @@ extern "C" void Event_RefreshIfDateChanged() {
 
 extern "C" s32 Event_GetDaysSinceStart(u32 id) {
     s32 r = -1;
-    Unk_0203f408_Entry *e = EventDayList_Find(id, gTodayEvents.entries);
+    EventDayEntry *e = EventDayList_Find(id, gTodayEvents.entries);
     if (e) {
         Unk_0203f42c_L l;
         l.w[0] = 0;
@@ -876,8 +876,8 @@ extern "C" s32 Event_GetDaysSinceStart(u32 id) {
     return r;
 }
 
-extern "C" Unk_0203f408_Entry *EventDayList_Find(u32 id, Unk_0203f408_Entry *e) {
-    Unk_0203f408_Entry *r = NULL;
+extern "C" EventDayEntry *EventDayList_Find(u32 id, EventDayEntry *e) {
+    EventDayEntry *r = NULL;
     for (s32 i = 0; i < 7; e++, i++) {
         if (e->eventId == id) {
             r = e;
@@ -887,9 +887,9 @@ extern "C" Unk_0203f408_Entry *EventDayList_Find(u32 id, Unk_0203f408_Entry *e) 
     return r;
 }
 
-extern "C" s32 EventDayList_GetState(s32 a, u8 *p, Unk_0203f408_Entry *tbl) {
+extern "C" s32 EventDayList_GetState(s32 a, u8 *p, EventDayEntry *tbl) {
     s32 r = 0;
-    Unk_0203f408_Entry *e = EventDayList_Find(a, tbl);
+    EventDayEntry *e = EventDayList_Find(a, tbl);
     if (e) {
         Unk_0203f3a0_L l;
         u32 z = 0;
@@ -937,7 +937,7 @@ extern "C" s32 Event_GetStateAt(s32 a, u8 *p, s32 c) {
         MI_CpuCopy8(p, d2, 8);
         ((void (*)(void *, void *, s32))EventSchedule_CollectDay)(tbl, d2, 0);
         MI_CpuCopy8(p, d3, 8);
-        r = EventDayList_GetState(a, d3, (Unk_0203f408_Entry *)tbl);
+        r = EventDayList_GetState(a, d3, (EventDayEntry *)tbl);
     }
     return r;
 }
@@ -955,7 +955,7 @@ extern "C" s32 Event_GetState(s32 a, void *b, s32 c) {
     return r;
 }
 
-extern "C" Unk_0203f408_Entry *Event_GetTodayList(void) { return gTodayEvents.entries; }
+extern "C" EventDayEntry *Event_GetTodayList(void) { return gTodayEvents.entries; }
 
 extern "C" s32 EventSchedule_CollectAtNoon(Unk_0203f554_Ent *out, s32 n, u8 *p) {
     u32 p5;
@@ -1003,7 +1003,7 @@ extern "C" s32 EventSchedule_CollectAtNoon(Unk_0203f554_Ent *out, s32 n, u8 *p) 
 }
 
 extern "C" void Event_GetRange(s32 *a, s32 *b, u32 id) {
-    Unk_0203f408_Entry *e = EventDayList_Find(id, gTodayEvents.entries);
+    EventDayEntry *e = EventDayList_Find(id, gTodayEvents.entries);
     if (e) {
         *a = e->start;
         *b = e->end;

@@ -1288,7 +1288,7 @@ BOOL SpNpcNookShop::mainAct07() {
 }
 
 BOOL SpNpcNookShop::setupAct11() {
-    unk_651 = 0;
+    actCounter = 0;
     return TRUE;
 }
 
@@ -1307,11 +1307,11 @@ BOOL SpNpcNookShop::mainAct11() {
     s32 gz = v1.z;
     FieldPos_ToUnit(&a2, &a3, &v1);
     FieldPos_ToUnit(&a0, &a1, &v0);
-    switch (unk_651) {
+    switch (actCounter) {
     case 0:
         if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
             Camera_SetModeDefault();
-            unk_651 = 1;
+            actCounter = 1;
         }
         break;
     case 1: {
@@ -1320,7 +1320,7 @@ BOOL SpNpcNookShop::mainAct11() {
         v2.y = gy;
         v2.z = gz;
         PlayerActor_RequestWalkTo(&v2, 0x266, 4);
-        unk_651 = 2;
+        actCounter = 2;
         break;
     }
     case 2:

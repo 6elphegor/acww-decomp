@@ -4,7 +4,7 @@
 #include "types.h"
 
 // 12-byte vector with a copy constructor (so it is passed by address of a copy); by-value parameter of the
-// Unk_020b4f8c constructor and base of FxVec3.
+// SceneWarp constructor and base of FxVec3.
 struct Unk_020b4f8c_Vec {
     /* 0x0 */ s32 x, y, z;
     Unk_020b4f8c_Vec(s32 a, s32 b, s32 c) {

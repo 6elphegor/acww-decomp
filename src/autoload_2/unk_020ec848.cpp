@@ -3,7 +3,7 @@
 // The tail-call stubs into the "current heap" new/delete, the object factory (Proc_Create: builds a scene object
 // through the table gProfileTable, runs the registered hooks, links it into the object tree) and the library base class
 // ProcBase (members at 0x020ecc6c-0x020ed378; vtable 0x0213b154 stays extern, nothing is defined here).
-// The symbols.txt names of the class members are C++-mangled (_ZN17Unk_020d8c7c_Base...). They are defined here as
+// The symbols.txt names of the class members are C++-mangled (_ZN8ProcBase...). They are defined here as
 // extern "C" functions that carry the mangled identifier verbatim and take the object first (as the game code
 // declares them), so no vtable, D0/D1 or C1 is emitted. Virtual calls go through the declared-only virtuals.
 #include "types.h"
@@ -139,7 +139,7 @@ extern "C" ProcBase *_ZN8ProcBaseC2Ev(ProcBase *self) {
     return self;
 }
 
-extern "C" ProcBase *_ZN17Unk_020d8c7c_BaseD0Ev(ProcBase *self) {
+extern "C" ProcBase *_ZN8ProcBaseD0Ev(ProcBase *self) {
     *(u32 **)self = data_0213b15c;
     _ZN8ProcBasedlEPv(self);
     return self;
@@ -157,7 +157,7 @@ extern "C" BOOL _ZN8ProcBase8vfunc_04Ev(ProcBase *self) {
     return TRUE;
 }
 
-extern "C" void _ZN17Unk_020d8c7c_Base10postCreateEi(ProcBase *self, s32 a) {
+extern "C" void _ZN8ProcBase10postCreateEi(ProcBase *self, s32 a) {
     if (a != 2) return;
     List_Remove(&gTaskCreateList, &self->executeNode);
     if (isThree(gTaskPhase)) {

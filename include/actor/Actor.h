@@ -4,22 +4,22 @@
 #include "types.h"
 #include "sys/ProcBase.h"
 #include "gfx/VecFx32.h"
-#include "actor/Unk_02002f14_Node.h"
-#include "actor/Unk_02002cb0_Vec.h"
+#include "actor/ActorListNode.h"
+class ActorCollider;
 
 extern "C" void List_Remove(void *list, void *node);
 
-// list head (8 bytes, zeroed by an inline constructor: the __sinit of src/main/unk_02002b1c.cpp)
-struct Unk_0213c874 {
+// gActorList head (8 bytes, zeroed by an inline constructor: the __sinit of src/main/unk_02002b1c.cpp)
+struct ActorList {
     u32 head;
     u32 tail;
-    Unk_0213c874() {
+    ActorList() {
         head = 0;
         tail = 0;
     }
 };
 
-extern Unk_0213c874 gActorList;
+extern ActorList gActorList;
 
 // Base of every positioned task object (characters, field objects, room objects); defined in src/main/unk_02002b1c.cpp
 // (vtable emitted with the inline destructor there). Adds no virtual slots, only overrides ProcBase's. Size 0xd4.
@@ -37,16 +37,16 @@ public:
     virtual ~Actor() { List_Remove(&gActorList, &listNode); }
 
     void calcModelMatrix(void *out);
-    void updatePosition(Unk_02002cb0_Vec *v);
+    void updatePosition(ActorCollider *v);
     void calcVelocity();
-    void applyVelocity(Unk_02002cb0_Vec *v);
+    void applyVelocity(ActorCollider *v);
     void setCullParams(s32 a, s32 b, s32 c);
     static void spawn(void *a, void *b, void *c, void *d, void *e);
     static void setSpawnTransform(void *a, void *b);
     static void *findByProfile(u32 id, Actor *o);
     static void *findById(u32 id);
 
-    /* 0x50 */ Unk_02002f14_Node listNode;
+    /* 0x50 */ ActorListNode listNode;
     /* 0x5c */ VecFx32 position;
     /* 0x68 */ VecFx32 prevPosition;
     /* 0x74 */ u8 viewPos[0x18];

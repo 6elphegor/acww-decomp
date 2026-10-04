@@ -3,7 +3,7 @@
 
 #include "types.h"
 #include "actor/Actor.h"
-#include "actor/Unk_0203e5d0_Node.h"
+#include "actor/CharacterListNode.h"
 #include "game/Unk_020d77a4_Vec3.h"
 
 // Actor that can be talked to / interacted with (villagers, special NPCs, players, buildings, interactive field and
@@ -42,7 +42,7 @@ public:
     void setCharId(u32 a);
     u32 getCharId();
 
-    /* 0xd4 */ Unk_0203e5d0_Node charNode;
+    /* 0xd4 */ CharacterListNode charNode;
     /* 0xe4 */ s32 interactionRangeSq;
     /* 0xe8 */ u16 charFlags;
 };

@@ -85,7 +85,7 @@ extern LetterOutbox data_021eb98c;
 extern PlayerMailbox data_021e935c[];
 
 extern "C" {
-Unk_0209579c_Rec *func_02002d3c(s32 a, s32 b);
+ProcBase *func_02002d3c(s32 a, s32 b);
 void VillagerId_Destruct(void *);
 void VillagerId_Construct(void *);
 void VillagerId_CopyFrom(void *, void *);

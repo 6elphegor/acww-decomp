@@ -2,6 +2,7 @@
 #define GAME_UNK_02095774_ENT_H
 
 #include "types.h"
+#include "sys/ProcBase.h"
 
 // Scene/comm sync helpers shared by src/main/unk_02095794.cpp, unk_02095b1c.cpp and unk_02095cdc.cpp.
 
@@ -12,10 +13,6 @@ struct Unk_02095774_Ent {
     /* 0x8e */ s16 unk_8e;
 };
 
-struct Unk_0209579c_Rec {
-    /* 0x00 */ u8 pad_00[0xe];
-    /* 0x0e */ u8 state;
-};
 
 struct Unk_02095dcc_Grid {
     /* 0x00 */ u8 pad_00[0xc];

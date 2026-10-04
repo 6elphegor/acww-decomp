@@ -111,7 +111,7 @@ s32 NetSession_GetLastSyncSlot();
 }
 
 extern "C" {
-Unk_0209579c_Rec *func_02002d3c(s32 a, s32 b);
+ProcBase *func_02002d3c(s32 a, s32 b);
 }
 
 extern "C" {

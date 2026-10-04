@@ -1915,7 +1915,7 @@ BOOL BlinkTimer_Update(void *a);
 BOOL _ZN11PlayerActor18getRemoteTransformEPhPiS1_Pt(Unk_020102ec *a, Unk_02010924_Msg *b, u32 *c, u32 *d, s16 *e);
 BOOL PlayerActor_TurnAngleSlow(s16 *a, s32 b);
 void PlayerActor_ApproachCoord(void *a, u32 b);
-void _ZN5Actor13applyVelocityEP16Unk_02002cb0_Vec(Unk_020102ec *a, void *b);
+void _ZN5Actor13applyVelocityEP13ActorCollider(Unk_020102ec *a, void *b);
 void _ZN14CollisionStateC1Ev(void *a);
 void _ZN14CollisionStateD1Ev(void *a);
 void Collision_Move(void *a, void *b, void *c, s32 d, u32 e, void *f, u32 g);
@@ -3382,7 +3382,7 @@ void Unk_020102ec::moveWithCollision() {
     using namespace nS;
     u8 tmp[0x34];
     u8 *p = P(0x5c);
-    _ZN5Actor13applyVelocityEP16Unk_02002cb0_Vec(this, P(0x170));
+    _ZN5Actor13applyVelocityEP13ActorCollider(this, P(0x170));
     _ZN14CollisionStateC1Ev(tmp);
     s16 h = rotY;
     void *q = _ZN12Unk_0200769416keepsBgCheckWorkEj(this, action) == 0 ? (void *)tmp : (void *)P(0x7a0);
@@ -3393,7 +3393,7 @@ void Unk_020102ec::moveWithCollision() {
 
 void Unk_020102ec::moveNoCollision() {
     using namespace nS;
-    _ZN5Actor13applyVelocityEP16Unk_02002cb0_Vec(this, 0);
+    _ZN5Actor13applyVelocityEP13ActorCollider(this, 0);
     positionY = Ground_GetDefaultY(0);
 }
 

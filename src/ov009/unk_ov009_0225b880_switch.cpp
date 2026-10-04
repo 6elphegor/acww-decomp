@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "game/Unk_0202f2ac_V3.h"
-#include "actor/Unk_0203e5d0_Node.h"
+#include "actor/CharacterListNode.h"
 #include "game/Unk_ov009_0225b880_Vec3.h"
 #include "game/Vec3.h"
 #include "snd/BgmSceneFade.h"

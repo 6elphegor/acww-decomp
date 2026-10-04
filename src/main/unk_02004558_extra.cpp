@@ -1416,7 +1416,7 @@ BOOL BlinkTimer_Update(void *a);
 BOOL _ZN11PlayerActor18getRemoteTransformEPhPiS1_Pt(Unk_020102ec *a, Unk_02010924_Msg *b, u32 *c, u32 *d, s16 *e);
 BOOL PlayerActor_TurnAngleSlow(s16 *a, s32 b);
 void PlayerActor_ApproachCoord(void *a, u32 b);
-void _ZN5Actor13applyVelocityEP16Unk_02002cb0_Vec(Unk_020102ec *a, void *b);
+void _ZN5Actor13applyVelocityEP13ActorCollider(Unk_020102ec *a, void *b);
 void _ZN14CollisionStateC1Ev(void *a);
 void _ZN14CollisionStateD1Ev(void *a);
 void Collision_Move(void *a, void *b, void *c, s32 d, u32 e, void *f, u32 g);

@@ -254,14 +254,14 @@ BOOL ReddTent::enterTentTalkOpen() {
             msgIndex = 0;
         }
     }
-    ((Unk_ov003_022141bc_Target *)unk_3c)->nextState = 1;
+    unk_3c->nextState = 1;
     setNoSpeakerName(0);
     return TRUE;
 }
 
 
 void ReddTent::execTentTalkOpen() {
-    Unk_ov003_022141bc_Target *t = (Unk_ov003_022141bc_Target *)unk_3c;
+    TalkWindowState *t = unk_3c;
     if (t) {
         if (t->state != 0) {
             setTentState(3);
@@ -276,7 +276,7 @@ BOOL ReddTent::enterTentTalk() {
 
 
 void ReddTent::execTentTalk() {
-    Unk_ov003_022141bc_Target *t = (Unk_ov003_022141bc_Target *)unk_3c;
+    TalkWindowState *t = unk_3c;
     if (t) {
         if (t->state == 0) {
             _ZN9Character17detachTalkRequestEi(this, this);
@@ -292,7 +292,7 @@ BOOL ReddTent::enterTentMenuWait() {
 
 
 void ReddTent::execTentMenuWait() {
-    if (((Unk_ov003_022141bc_Target *)unk_3c)->state == 5) {
+    if (unk_3c->state == 5) {
         _ZN8ReddShop11getPasswordEv(data_021ed2c0);
         MenuCtrl_OpenLauncherWithIndex(0xe, _ZN12ReddPassword14getAnswerIndexEv());
         setTentState(5);
@@ -312,12 +312,12 @@ void ReddTent::execTentMenu() {
             ReddPassword_LearnCurrentPlayer();
             r[0] = 3;
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &r[0], "sp_npc_fox");
-            ((Unk_ov003_022141bc_Target *)unk_3c)->nextState = 1;
+            unk_3c->nextState = 1;
             setTentState(3);
         } else {
             r[1] = 4;
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &r[1], "sp_npc_fox");
-            ((Unk_ov003_022141bc_Target *)unk_3c)->nextState = 1;
+            unk_3c->nextState = 1;
             setTentState(3);
             BuildingOccupancy_Leave(itemId, 0);
         }
@@ -331,7 +331,7 @@ BOOL ReddTent::enterTentGoIn() {
 
 
 void ReddTent::execTentGoIn() {
-    Unk_ov003_022141bc_Target *t = (Unk_ov003_022141bc_Target *)unk_3c;
+    TalkWindowState *t = unk_3c;
     if (t) {
         if (t->state == 0) {
             setTentState(7);

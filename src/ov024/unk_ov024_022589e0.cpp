@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "game/Unk_020b4f8c_Vec.h"
-#include "game/Unk_020b4f8c.h"
+#include "game/SceneWarp.h"
 #include "game/FxVec3.h"
 
 // ov024: map scene tables (a scene record, its entry list, the id grid, the static map objects).
@@ -33,7 +33,7 @@ struct Unk_ov024_Grid {  // width x height ids
 };
 
 struct Unk_ov024_Objs {
-    Unk_020b4f8c *objs;
+    SceneWarp *objs;
     u32 count;
 };
 
@@ -63,7 +63,7 @@ extern Unk_ov024_Entry data_ov024_02258b0c[3];
 extern FxVec3 data_ov024_02258b64;
 extern Unk_ov024_Head data_ov024_02258ad0;
 extern Unk_ov024_Rec data_ov024_02258ae0[1];
-extern Unk_020b4f8c data_ov024_02258b70[2];
+extern SceneWarp data_ov024_02258b70[2];
 
 Unk_ov024_Scene data_ov024_02258af4 = {&data_ov024_02258ad0, 0, &data_ov024_02258ad8, &data_ov024_02258ac8, -1, -1};
 
@@ -89,7 +89,7 @@ Unk_ov024_Rec data_ov024_02258ae0[1] = {
     {0x1000009, 0x1a00002, 0x80000000, 0, 0x800000},
 };
 
-Unk_020b4f8c data_ov024_02258b70[2] = {
-    Unk_020b4f8c(0x20, Unk_020b4f8c_Vec(0x17000, 0, 0x14000), 0x23800000, -0x4000, 2, 2, -0x4000, 3),
-    Unk_020b4f8c(0x26, data_ov024_02258b64, 0x23800000, -0x8000, 2, 2, -0x8000, 3),
+SceneWarp data_ov024_02258b70[2] = {
+    SceneWarp(0x20, Unk_020b4f8c_Vec(0x17000, 0, 0x14000), 0x23800000, -0x4000, 2, 2, -0x4000, 3),
+    SceneWarp(0x26, data_ov024_02258b64, 0x23800000, -0x8000, 2, 2, -0x8000, 3),
 };

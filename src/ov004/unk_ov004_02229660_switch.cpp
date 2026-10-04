@@ -5,7 +5,7 @@
 #include "room/Unk_ov004_0224e2b8_Ent.h"
 #include "gfx/Unk_ov004_Quad.h"
 #include "actor/Unk_ov004_SceneEntry.h"
-#include "actor/Unk_0203e5d0_Node.h"
+#include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "room/RoomTelephoneTypes.h"
 #include "gfx/AnimFrameCtrl.h"

@@ -584,7 +584,7 @@ void SnowballStateView2::execSnowballToSnowman() {
             if (c) {
                 displacedItem = *c;
             }
-            u16 v = Item_MakeSnowman(unk_374_lo);
+            u16 v = Item_MakeSnowman(snowmanIndex);
             BlockMap_SetItemAtUnit(g, &v, x, y, 0);
         }
         Snowball_DropDisplacedItem(&displacedItem);

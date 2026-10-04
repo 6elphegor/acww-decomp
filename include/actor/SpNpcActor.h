@@ -29,7 +29,7 @@ public:
     /* 0x648 */ s32 colliderRadius;
     /* 0x64c */ s32 colliderHeight;
     /* 0x650 */ u8 talkMelodyPlayed;
-    /* 0x651 */ u8 unk_651; // used by the derived classes
+    /* 0x651 */ u8 actCounter; // used by the derived classes
 };
 
 #endif

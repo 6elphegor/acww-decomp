@@ -2,9 +2,8 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "gfx/Unk_020bfe30_Vec.h"
-#include "game/Unk_020c010c_Ent.h"
+#include "game/EventDayEntry.h"
 #include "npc/Unk_020c0538_Out.h"
-#include "game/Unk_021ed2b0.h"
 #include "game/Unk_021eff48.h"
 #include "item/Unk_02062f94_Ret.h"
 #include "gfx/StarTwinkle.h"
@@ -115,7 +114,7 @@ struct Unk_020bfec0_Ent;
 struct Unk_020bffc0_Mtx;
 class Unk_020bfe30;
 struct WeatherRecord;
-struct Unk_020c010c_Ent;
+struct EventDayEntry;
 struct Unk_020c0538_Out;
 class SpNpcTalkRequest;
 struct Unk_020c0408_Obj;
@@ -5503,9 +5502,7 @@ extern Unk_020d0f40 sSnowSpawnRates[];
 }
 namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_021f1448 v; } gWeatherManager; } }
 #define data_021f1448 n06::L_021f1448::gWeatherManager.v
-extern "C" {
-extern Unk_021ed2b0 data_021ed2b0;
-}
+namespace L_021ed2b6 { extern "C" { extern struct S { u8 p[6]; WeatherRecord v; } data_021ed2b0; } }
 extern "C" {
 void Clock_GetDateTime(void *);
 }
@@ -5726,7 +5723,7 @@ void Unk_020bbc28::updateShootingStar() {
                 spawn(3, 0x1e, 0, 0);
             }
         } else if (second == 0x1e && second != prevSecond) {
-            if (!Random_GlobalBelow(data_021ed2b0.todayPattern == 0 ? 4 : 0x100)) {
+            if (!Random_GlobalBelow(L_021ed2b6::data_021ed2b0.v.todayPattern == 0 ? 4 : 0x100)) {
                 shootingStarDelay = Random_GlobalBelow(0x258);
             }
         }
@@ -7601,9 +7598,7 @@ extern u32 sCloudCharFiles[];
 extern "C" {
 extern s8 sWeatherHourTable[];
 }
-extern "C" {
-extern Unk_021ed2b0 data_021ed2b0;
-}
+namespace L_021ed2b6 { extern "C" { extern struct S { u8 p[6]; WeatherRecord v; } data_021ed2b0; } }
 extern "C" {
 extern u8 gSaveData[];
 }
@@ -7842,7 +7837,7 @@ void WeatherManager::init() {
     switch (r) {
     case 3:
     case 4:
-        data_021ed2b0.rained = 1;
+        L_021ed2b6::data_021ed2b0.v.rained = 1;
         break;
     }
     setLevels(r, r);
@@ -7966,7 +7961,7 @@ void WeatherManager::updateHourly() {
     t.unk_00 = 0;
     t.unk_04 = 0;
     Clock_GetDateTime(&t);
-    if ((data_021ed2b0.hourBase + 6) % 24 != ((u8 *)&t)[2]) {
+    if ((L_021ed2b6::data_021ed2b0.v.hourBase + 6) % 24 != ((u8 *)&t)[2]) {
         s32 r;
         Weather_UpdateDaily(base + 0x15f66, &t);
         r = getWeatherAtOffset(1);
@@ -7990,8 +7985,8 @@ namespace n03 {
 }
 s32 WeatherManager::getWeatherAtOffset(s32 v) {
     using namespace n03;
-    s32 t = v + data_021ed2b0.hourBase;
-    return getPatternWeather(data_021ed2b0.todayPattern, t % 24);
+    s32 t = v + L_021ed2b6::data_021ed2b0.v.hourBase;
+    return getPatternWeather(L_021ed2b6::data_021ed2b0.v.todayPattern, t % 24);
 }
 namespace n03 {
 

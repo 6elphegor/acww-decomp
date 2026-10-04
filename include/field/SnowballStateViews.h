@@ -73,7 +73,7 @@ public:
     /* 0x324 */ u8 seEmitter[0x364 - 0x324];
     /* 0x364 */ u8 fallFrames;
     /* 0x365 */ u8 pad_365[0x374 - 0x365];
-    /* 0x374 */ u16 unk_374_lo : 2;
+    /* 0x374 */ u16 snowmanIndex : 2;
     u16 unk_374_b2 : 2;
     u16 unk_374_b4 : 1;
     u16 unk_374_b5 : 1;

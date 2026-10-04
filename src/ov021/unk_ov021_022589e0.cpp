@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "game/Unk_020b4f8c_Vec.h"
-#include "game/Unk_020b4f8c.h"
+#include "game/SceneWarp.h"
 #include "game/FxVec3.h"
 
 // ov021: map scene tables (a scene record, its entry list, the id grid, the static map objects).
@@ -33,7 +33,7 @@ struct Unk_ov021_Grid {  // width x height ids
 };
 
 struct Unk_ov021_Objs {
-    Unk_020b4f8c *objs;
+    SceneWarp *objs;
     u32 count;
 };
 
@@ -62,7 +62,7 @@ extern Unk_ov021_Head data_ov021_02258c04;
 extern Unk_ov021_Scene data_ov021_02258c4c;
 extern u32 data_ov021_02258c14[2];
 extern FxVec3 data_ov021_02258cc4;
-extern Unk_020b4f8c data_ov021_02258d0c[7];
+extern SceneWarp data_ov021_02258d0c[7];
 extern Unk_ov021_Rec data_ov021_02258c38[1];
 extern Unk_ov021_Grid data_ov021_02258c1c;
 
@@ -89,14 +89,14 @@ u32 data_ov021_02258c14[2] = {0x100c2, 0x51};
 
 FxVec3 data_ov021_02258cc4(0x10000, 0x200, 0x1d000);
 
-Unk_020b4f8c data_ov021_02258d0c[7] = {
-    Unk_020b4f8c(0x3c, Unk_020b4f8c_Vec(0, 0, 0), 0x800000, 0, 2, 2, 0, 4),
-    Unk_020b4f8c(0x21, Unk_020b4f8c_Vec(0x1b000, 0, 0x1a000), 0x23800000, -0x4000, 2, 2, -0x4000, 2),
-    Unk_020b4f8c(0x29, Unk_020b4f8c_Vec(0x1b000, 0, 0x1e000), 0x23800000, -0x4000, 2, 2, -0x4000, 3),
-    Unk_020b4f8c(0x22, data_ov021_02258cc4, 0x23800000, -0x8000, 2, 2, -0x8000, 1),
-    Unk_020b4f8c(0x27, Unk_020b4f8c_Vec(0x16000, 0, 0x1d000), 0x23800000, -0x8000, 2, 2, -0x8000, 3),
-    Unk_020b4f8c(0x25, Unk_020b4f8c_Vec(0x5000, 0, 0x1a000), 0x23800000, 0x4000, 2, 2, 0x4000, 3),
-    Unk_020b4f8c(0x23, Unk_020b4f8c_Vec(0x5000, 0, 0x1a000), 0x23800000, 0x4000, 2, 2, 0x4000, 3),
+SceneWarp data_ov021_02258d0c[7] = {
+    SceneWarp(0x3c, Unk_020b4f8c_Vec(0, 0, 0), 0x800000, 0, 2, 2, 0, 4),
+    SceneWarp(0x21, Unk_020b4f8c_Vec(0x1b000, 0, 0x1a000), 0x23800000, -0x4000, 2, 2, -0x4000, 2),
+    SceneWarp(0x29, Unk_020b4f8c_Vec(0x1b000, 0, 0x1e000), 0x23800000, -0x4000, 2, 2, -0x4000, 3),
+    SceneWarp(0x22, data_ov021_02258cc4, 0x23800000, -0x8000, 2, 2, -0x8000, 1),
+    SceneWarp(0x27, Unk_020b4f8c_Vec(0x16000, 0, 0x1d000), 0x23800000, -0x8000, 2, 2, -0x8000, 3),
+    SceneWarp(0x25, Unk_020b4f8c_Vec(0x5000, 0, 0x1a000), 0x23800000, 0x4000, 2, 2, 0x4000, 3),
+    SceneWarp(0x23, Unk_020b4f8c_Vec(0x5000, 0, 0x1a000), 0x23800000, 0x4000, 2, 2, 0x4000, 3),
 };
 
 Unk_ov021_Rec data_ov021_02258c38[1] = {

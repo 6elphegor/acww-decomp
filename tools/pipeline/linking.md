@@ -173,10 +173,10 @@ them by hand (the ROM checksum catches any mismatch anyway).
 
 39 overlays have no code of their own: their `delinks.txt` header lists only `.init`, `.ctor`, `.data` and `.bss`
 (ov005-ov008, ov010-ov044: a map scene record, its entry list and id grid, and for ov013-ov029/ov031-ov044 1-7
-static map objects of main's class `Unk_020b4f8c`). Their one source file defines the data under the `symbols.txt`
+static map objects of main's class `SceneWarp`). Their one source file defines the data under the `symbols.txt`
 names; mwcc emits the Thumb `__sinit_<file>` (`.init`) and its `.ctor` word itself from the objects with a
 non-constant initialiser (an aggregate with an `extern u8` element: the byte that `__sinit` copies from ov003/ov004;
-`Unk_020b4f8c` objects built by their out-of-line constructor and registered with `__register_global_object`).
+`SceneWarp` objects built by their out-of-line constructor and registered with `__register_global_object`).
 Their sources were generated from the original image, with the definition order solved against the data layout.
 
 * The spec has no `.text` line: `unit unit.cpp`, then `.init`, `.ctor`, `.data` and (when not empty) `.bss`.

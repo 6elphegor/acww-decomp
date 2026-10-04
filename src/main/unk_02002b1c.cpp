@@ -2,10 +2,10 @@
 #include "Unk_020d8c7c.h"
 #include "gfx/Unk_02002804_Buf.h"
 #include "gfx/Unk_02002848_Data.h"
-#include "actor/Unk_02002cb0_Vec.h"
+#include "actor/ActorCollider.h"
 #include "actor/Unk_02002f14_S16Vec.h"
 #include "actor/Unk_02002f14_S32Vec.h"
-#include "actor/Unk_02002f14_Node.h"
+#include "actor/ActorListNode.h"
 #include "gfx/ViewFrustum.h"
 #include "gfx/AbAllObjGfx.h"
 #include "npc/VillagerId.h"
@@ -243,7 +243,7 @@ extern AbAllObjGfx sAbAllObjGfx;
 
 
 
-Unk_0213c874 gActorList;
+ActorList gActorList;
 void *sActorSpawnPos;
 void *sActorSpawnRot;
 
@@ -357,7 +357,7 @@ BOOL Actor::postDraw(s32 status) { return ProcBase::postDraw(status); }
 
 void *Actor::findById(u32 id) {
     void *r = ProcList_FindById(&gActorList, id);
-    if (r) return ((Unk_02002f14_Node *)r)->owner;
+    if (r) return ((ActorListNode *)r)->owner;
     return 0;
 }
 
@@ -368,7 +368,7 @@ void *Actor::findByProfile(u32 id, Actor *o) {
     } else {
         r = ProcList_FindByProfile(&gActorList, id, 0);
     }
-    if (r) return ((Unk_02002f14_Node *)r)->owner;
+    if (r) return ((ActorListNode *)r)->owner;
     return 0;
 }
 
@@ -390,7 +390,7 @@ void Actor::setCullParams(s32 a, s32 b, s32 c) {
     cullDepth = c;
 }
 
-void Actor::applyVelocity(Unk_02002cb0_Vec *v) {
+void Actor::applyVelocity(ActorCollider *v) {
     VEC_Add(&position, &velocity, &position);
     if (v) {
         position.x = position.x + v->pushX;
@@ -417,7 +417,7 @@ void Actor::calcVelocity() {
     }
 }
 
-void Actor::updatePosition(Unk_02002cb0_Vec *v) {
+void Actor::updatePosition(ActorCollider *v) {
     calcVelocity();
     applyVelocity(v);
 }

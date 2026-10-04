@@ -689,15 +689,15 @@ BOOL SpNpcPellyPhyllis::vfunc_04() {
     talk.attachOwner(this);
     if (isOnline()) {
         BOOL m;
-        if (Item_IsFurniture(&unk_ea)) {
+        if (Item_IsFurniture(&npcHandle)) {
             l.unk_04 = sSpNpcPellyPhyllisHandles[0];
-            if (Item_GetFurnitureIndex(&unk_ea) == Item_GetFurnitureIndex(&l.unk_04)) {
+            if (Item_GetFurnitureIndex(&npcHandle) == Item_GetFurnitureIndex(&l.unk_04)) {
                 m = TRUE;
             } else {
                 m = FALSE;
             }
         } else {
-            if (unk_ea == sSpNpcPellyPhyllisHandles[0]) {
+            if (npcHandle == sSpNpcPellyPhyllisHandles[0]) {
                 m = TRUE;
             } else {
                 m = FALSE;
@@ -735,7 +735,7 @@ BOOL SpNpcPellyPhyllis::vfunc_04() {
         NpcMoveCtrl_setSpeedPreset(&moveCtrl, 2, 0x399, 0xcc, 0x133);
         l.npcHandle = sSpNpcPellyPhyllisHandles[sister];
         setNpcHandle(&l.npcHandle);
-        unk_ea = sSpNpcPellyPhyllisHandles[sister];
+        npcHandle = sSpNpcPellyPhyllisHandles[sister];
     }
     setInteractionRange(0x5000);
     standBlend = data_020c6cc8;
@@ -1393,7 +1393,7 @@ void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
             }
             if (!same) {
                 Unk_02014420_requestTakeItem(this, &v[1], 2, 5, 1);
-                if (!ParcelErrand_IsFor(p, &owner->unk_ea)) {
+                if (!ParcelErrand_IsFor(p, &owner->npcHandle)) {
                     r4 = 0x57;
                 } else {
                     r4 = 0x50;

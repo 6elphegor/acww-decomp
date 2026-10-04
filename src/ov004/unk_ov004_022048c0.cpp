@@ -1,8 +1,8 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "actor/Unk_ov004_SceneEntry.h"
-#include "actor/Unk_02002f14_Node.h"
-#include "actor/Unk_0203e5d0_Node.h"
+#include "actor/ActorListNode.h"
+#include "actor/CharacterListNode.h"
 #include "game/Vec3.h"
 #include "talk/TalkWindowState.h"
 #include "game/TouchPicker.h"

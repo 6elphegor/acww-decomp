@@ -26,7 +26,7 @@ void Proc_CreateRoot();
 s32 Proc_CreateChild(u32 a, void *b, u32 c, u32 d);
 s32 func_0211c618(s32 *out);
 void ProcBase_RequestDelete();
-void _ZN17Unk_020d8c7c_Base10postCreateEi(void *self, int a);
+void _ZN8ProcBase10postCreateEi(void *self, int a);
 }
 
 // ---- sphere (position + radius), vtable-less ----
@@ -111,7 +111,7 @@ void GameProc::postCreate(int a) {
     if (a == 1) {
         ProcBase_RequestDelete();
     }
-    _ZN17Unk_020d8c7c_Base10postCreateEi(this, a);
+    _ZN8ProcBase10postCreateEi(this, a);
 }
 
 extern "C" void GameProc_CreateChild(u32 a, void *b, u32 c, u32 d) { Proc_CreateChild(a, b, c, d); }

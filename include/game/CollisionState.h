@@ -6,11 +6,11 @@
 #include "types.h"
 
 struct CollisionContacts {
-    /* 0x00 */ s16 unk_00[2];
+    /* 0x00 */ s16 angles[2];
     /* 0x04 */ u8 numContacts;
     /* 0x05 */ u8 unk_05[3];
-    /* 0x08 */ s32 unk_08[2];
-    /* 0x10 */ s32 unk_10[2];
+    /* 0x08 */ s32 attrs[2];
+    /* 0x10 */ s32 kinds[2];
 
     CollisionContacts();
     ~CollisionContacts();

@@ -19,7 +19,7 @@ public:
     ProcBase();
     virtual BOOL vfunc_00();                // 0x00 create
     virtual BOOL vfunc_04();                // 0x04 pre-create
-    virtual void postCreate(s32 status);    // 0x08 (body: _ZN17Unk_020d8c7c_Base10postCreateEi)
+    virtual void postCreate(s32 status);    // 0x08 (body: _ZN8ProcBase10postCreateEi)
     virtual BOOL vfunc_0c();                // 0x0c delete
     virtual BOOL preDelete();               // 0x10
     virtual BOOL vfunc_14(s32 status);      // 0x14 post-delete

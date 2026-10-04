@@ -10,7 +10,7 @@ struct Unk_02036c60_Vec {
     /* 0x8 */ s32 z;
 }; // size 0xc
 
-struct Unk_02036c60_Ent {
+struct BgMgtEntry {
     /* 0x0 */ u8 a;
     /* 0x1 */ u8 pad;
     /* 0x2 */ s16 b;

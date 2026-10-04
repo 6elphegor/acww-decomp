@@ -3,7 +3,7 @@
 #include "talk/Unk_0203ebdc_List.h"
 #include "game/Unk_0203ecec_Global.h"
 #include "game/Unk_0203f218_Slot.h"
-#include "game/Unk_0203f408_Entry.h"
+#include "game/EventDayEntry.h"
 #include "talk/TalkRequestEntry.h"
 #include "gfx/WorldCurve.h"
 
@@ -69,7 +69,7 @@ extern u8 gBackup[];
 }
 
 extern "C" {
-extern Unk_0203f408_Entry data_021c3bdc[7];
+extern EventDayEntry data_021c3bdc[7];
 }
 
 extern "C" {
@@ -241,15 +241,15 @@ void EventDayList_Clear(void *a, s32 n);
 }
 
 extern "C" {
-s32 EventSchedule_Match(Unk_0203f408_Entry *out, Unk_0203f218_Slot *e, u32 v, Unk_0203f218_Ver w);
+s32 EventSchedule_Match(EventDayEntry *out, Unk_0203f218_Slot *e, u32 v, Unk_0203f218_Ver w);
 }
 
 extern "C" {
-s32 EventSchedule_IsBlocked(Unk_0203f218_Slot *e, Unk_0203f218_Ver w, Unk_0203f408_Entry *tmp, Unk_0203f408_Entry *out, s32 n, s32 x, s32 y);
+s32 EventSchedule_IsBlocked(Unk_0203f218_Slot *e, Unk_0203f218_Ver w, EventDayEntry *tmp, EventDayEntry *out, s32 n, s32 x, s32 y);
 }
 
 extern "C" {
-void Event_AdjustToDay(Unk_0203f408_Entry *tmp, Unk_0203f218_Ver w);
+void Event_AdjustToDay(EventDayEntry *tmp, Unk_0203f218_Ver w);
 }
 
 extern "C" {
@@ -257,11 +257,11 @@ s32 Event_GetStateAt(s32 a, u8 *b, s32 c);
 }
 
 extern "C" {
-s32 EventDayList_GetState(s32 a, u8 *b, Unk_0203f408_Entry *c);
+s32 EventDayList_GetState(s32 a, u8 *b, EventDayEntry *c);
 }
 
 extern "C" {
-Unk_0203f408_Entry *EventDayList_Find(u32 id, Unk_0203f408_Entry *tbl);
+EventDayEntry *EventDayList_Find(u32 id, EventDayEntry *tbl);
 }
 
 static inline BOOL IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }

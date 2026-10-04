@@ -1142,7 +1142,7 @@ s32 GroundInfoBase::getHeight(s32 flag)
         v.y = 0;
         v.z = (z << 13) + 0x1000;
         s32 r7 = a;
-        long long d = Vec_DistSqXZ(&v, unk_10);
+        long long d = Vec_DistSqXZ(&v, queryPos);
         s32 m = func_01ffcb0c(r7, r7);
         if ((long long)m >= d) {
             return height + b;
@@ -1764,9 +1764,9 @@ CollisionContacts::CollisionContacts() {
 CollisionContacts::~CollisionContacts() {}
 
 void CollisionContacts::clear() {
-    s32* a = unk_08;
-    s32* b = unk_10;
-    s16* p = unk_00;
+    s32* a = attrs;
+    s32* b = kinds;
+    s16* p = angles;
     s32 i;
     numContacts = 0;
     for (i = 0; i < 2; i++) {
@@ -1778,8 +1778,8 @@ void CollisionContacts::clear() {
 }
 
 BOOL CollisionContacts::addContact(s32 a, s32 b, s32 c) {
-    s16* p = unk_00;
-    s32* q = unk_10;
+    s16* p = angles;
+    s32* q = kinds;
     s32 i = 0;
     u8 n = numContacts;
     volatile s32 z = 0;
@@ -1790,9 +1790,9 @@ BOOL CollisionContacts::addContact(s32 a, s32 b, s32 c) {
         }
     }
     if (n < 2) {
-        unk_00[n] = a;
-        unk_10[numContacts] = b;
-        unk_08[numContacts] = c;
+        angles[n] = a;
+        kinds[numContacts] = b;
+        attrs[numContacts] = c;
         numContacts++;
         return TRUE;
     }
@@ -1828,9 +1828,9 @@ void CollisionState::updateWallFlags(s32 v) {
     s32 i = 0;
     s32 base = v + 0x8000;
     for (; i < contacts.numContacts; i++) {
-        u32 d = (u16)(contacts.unk_00[i] - base);
+        u32 d = (u16)(contacts.angles[i] - base);
         if (d < 0x2000 || d >= 0xe000) {
-            if (contacts.unk_10[i] == 2) {
+            if (contacts.kinds[i] == 2) {
                 flags = flags | 0x80;
                 flags = flags | 0x100;
             } else {
@@ -1838,7 +1838,7 @@ void CollisionState::updateWallFlags(s32 v) {
                 flags = flags | 8;
             }
         } else if (d < 0x6000) {
-            if (contacts.unk_10[i] == 2) {
+            if (contacts.kinds[i] == 2) {
                 flags = flags | 0x80;
                 flags = flags | 0x400;
             } else {
@@ -1846,7 +1846,7 @@ void CollisionState::updateWallFlags(s32 v) {
                 flags = flags | 0x20;
             }
         } else if (d < 0xa000) {
-            if (contacts.unk_10[i] == 2) {
+            if (contacts.kinds[i] == 2) {
                 flags = flags | 0x80;
                 flags = flags | 0x800;
             } else {
@@ -1854,7 +1854,7 @@ void CollisionState::updateWallFlags(s32 v) {
                 flags = flags | 0x40;
             }
         } else {
-            if (contacts.unk_10[i] == 2) {
+            if (contacts.kinds[i] == 2) {
                 flags = flags | 0x80;
                 flags = flags | 0x200;
             } else {
@@ -1864,7 +1864,7 @@ void CollisionState::updateWallFlags(s32 v) {
         }
     }
     if (contacts.numContacts == 2) {
-        s32 mid = ((contacts.unk_00[0] + contacts.unk_00[1]) << 15) >> 16;
+        s32 mid = ((contacts.angles[0] + contacts.angles[1]) << 15) >> 16;
         s32 diff = v - (s16)(mid + 0x7fff);
         if (diff < 0) {
             diff = -diff;
@@ -1872,7 +1872,7 @@ void CollisionState::updateWallFlags(s32 v) {
         if (diff < 0x2000) {
             flags = flags | 0x1000;
         }
-        if ((s16)(contacts.unk_00[0] + contacts.unk_00[1]) == 0) {
+        if ((s16)(contacts.angles[0] + contacts.angles[1]) == 0) {
             flags = flags | 0x2000;
         }
     }
