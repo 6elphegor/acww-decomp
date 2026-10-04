@@ -249,11 +249,6 @@ SpNpcResettiActEntry sSpNpcResettiActTable[6] = {
 struct Unk_ov077_02271a84_V3 {
     s32 x, y, z;
 };
-struct Unk_ov077_02271a84_Pl {
-    u8 pad_00[0x5c];
-    Unk_ov077_02271a84_V3 pos;
-};
-
 static inline BOOL Unk_ov077_02271bf4_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 
 SpNpcResetti *SpNpcResetti_Create() {
@@ -374,7 +369,7 @@ BOOL SpNpcResetti::setupAct03() {
 }
 
 BOOL SpNpcResetti::mainAct03() {
-    Unk_ov077_02271a84_Pl *pl = (Unk_ov077_02271a84_Pl *)PlayerActor_GetCharacter(4);
+    Character *pl = (Character *)PlayerActor_GetCharacter(4);
     s32 dx, dz;
     s32 ax, az;
     Unk_ov077_02271a84_V3 v;
@@ -386,7 +381,7 @@ BOOL SpNpcResetti::mainAct03() {
     model.frameStep = 0;
     model.curFrame = 0;
     {
-        Unk_ov077_02271a84_V3 *pv = &pl->pos;
+        VecFx32 *pv = &pl->position;
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;

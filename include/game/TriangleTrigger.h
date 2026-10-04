@@ -8,7 +8,7 @@
 
 struct Unk_02031e10_Vec;
 struct Unk_ov009_0225b880_Vec3;
-struct Unk_ov009_0225cc24_Obj;
+class Actor;
 
 struct TriangleTrigger : CollisionTriangleX {
     /* 0x38 */ TriangleTrigger *next;
@@ -17,7 +17,7 @@ struct TriangleTrigger : CollisionTriangleX {
 
     TriangleTrigger();
     // slot 0x10; the parameter types are those of the override BuildingCollider::onActorNear (ov009)
-    virtual void onActorNear(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24_Obj *o, s32 off) = 0;
+    virtual void onActorNear(Unk_ov009_0225b880_Vec3 *a, Actor *o, s32 off) = 0;
     void setupTrigger(Unk_02031e10_Vec *a, Unk_02031e10_Vec *b, Unk_02031e10_Vec *c, s32 d);
     s32 *getCenter();
     void resetTrigger();

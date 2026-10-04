@@ -1,16 +1,12 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "gfx/Unk_ov068_0226647c_Cam.h"
+#include "gfx/Camera.h"
+#include "actor/Actor.h"
 #include "game/Unk_ov068_Vec.h"
 #include "gfx/DebugColor.h"
 
 
 class CameraEventModes;
-
-struct Unk_ov068_02266ab8_Owner {
-    u8 pad_00[0x5c];
-    Unk_ov068_02266680_Vec position;
-};
 
 // Camera-mode sub-state at +0x21c of the camera
 struct CameraTownTourState {
@@ -51,9 +47,9 @@ void FieldPos_FromBlockUnitCenter(Unk_ov068_02266680_Vec *out, s32 a, s32 b, s32
 s32 Math_CountDownU16(void *);
 s32 func_01ffcb0c(s32, s32);
 s32 Random_GlobalBelow(s32);
-s32 Camera_UpdateSway(Unk_ov068_0226647c_Cam *c);
-void Camera_SetSwayPattern2(Unk_ov068_0226647c_Cam *c, s32 idx);
-void Camera_SetSwayPattern(Unk_ov068_0226647c_Cam *c, s32 idx);
+s32 Camera_UpdateSway(Camera *c);
+void Camera_SetSwayPattern2(Camera *c, s32 idx);
+void Camera_SetSwayPattern(Camera *c, s32 idx);
 }
 
 class CameraEventModes {
@@ -135,12 +131,12 @@ BOOL CameraEventModes::initModeFollowTarget() {
 
 void CameraEventModes::updateModeFollowTarget() {
     Unk_ov068_02266680_Vec d;
-    Unk_ov068_02266ab8_Owner *o = *(Unk_ov068_02266ab8_Owner **)((u8 *)this + 0x21c);
+    Actor *o = *(Actor **)((u8 *)this + 0x21c); // the followed villager (Camera::modeParam, set by main for mode 7)
     d.x = 0;
     d.y = 0;
     d.z = 0;
     if (o) {
-        Unk_ov068_02266680_Vec *pv = &o->position;
+        VecFx32 *pv = &o->position;
         d.x = pv->x;
         d.y = pv->y;
         d.z = pv->z;
@@ -279,7 +275,7 @@ BOOL CameraEventModes::initModeSway() {
         Camera_FinishBlend();
     }
     _ZN6Camera7setFovyEi(this, 0x1c71);
-    Camera_SetSwayPattern((Unk_ov068_0226647c_Cam *)this, 0);
+    Camera_SetSwayPattern((Camera *)this, 0);
     return TRUE;
 }
 
@@ -288,80 +284,80 @@ void CameraEventModes::updateModeSway() {
     targetFocus = gVec3Zero.x;
     targetFocusY = gVec3Zero.y;
     targetFocusZ = gVec3Zero.z;
-    targetFocusY += Camera_UpdateSway((Unk_ov068_0226647c_Cam *)this);
+    targetFocusY += Camera_UpdateSway((Camera *)this);
     R_TAIL(v)
 }
 
-extern "C" void Camera_SetSwayPattern(Unk_ov068_0226647c_Cam *c, s32 idx) {
-    c->bobPattern = idx;
-    if (c->bobPattern >= 4) {
-        c->bobPattern = 0;
+extern "C" void Camera_SetSwayPattern(Camera *c, s32 idx) {
+    c->sway.bobPattern = idx;
+    if (c->sway.bobPattern >= 4) {
+        c->sway.bobPattern = 0;
     }
-    c->bobTimer = kCameraSwayPatterns[c->bobPattern].duration;
-    c->bobTimer += Random_GlobalBelow(kCameraSwayPatterns[c->bobPattern].durationRand);
-    c->bobPhase = 0;
+    c->sway.bobTimer = kCameraSwayPatterns[c->sway.bobPattern].duration;
+    c->sway.bobTimer += Random_GlobalBelow(kCameraSwayPatterns[c->sway.bobPattern].durationRand);
+    c->sway.bobPhase = 0;
 }
 
-extern "C" void Camera_SetSwayPattern2(Unk_ov068_0226647c_Cam *c, s32 idx) {
-    c->rollPattern = idx;
-    if (c->rollPattern >= 4) {
-        c->rollPattern = 0;
+extern "C" void Camera_SetSwayPattern2(Camera *c, s32 idx) {
+    c->sway.rollPattern = idx;
+    if (c->sway.rollPattern >= 4) {
+        c->sway.rollPattern = 0;
     }
-    c->rollTimer = kCameraSwayPatterns[c->rollPattern].duration;
-    c->rollTimer += Random_GlobalBelow(kCameraSwayPatterns[c->rollPattern].durationRand);
-    c->rollPhase = 0;
+    c->sway.rollTimer = kCameraSwayPatterns[c->sway.rollPattern].duration;
+    c->sway.rollTimer += Random_GlobalBelow(kCameraSwayPatterns[c->sway.rollPattern].durationRand);
+    c->sway.rollPhase = 0;
 }
 
-extern "C" s32 Camera_UpdateSway(Unk_ov068_0226647c_Cam *c) {
-    if (Math_CountDownU16(&c->bobTimer) == 0) {
-        s16 a = c->bobPhase;
+extern "C" s32 Camera_UpdateSway(Camera *c) {
+    if (Math_CountDownU16(&c->sway.bobTimer) == 0) {
+        s16 a = c->sway.bobPhase;
         if (a < 0) {
             a = -a;
         }
         if (a < 0x100) {
-            u8 s = c->bobPattern;
+            u8 s = c->sway.bobPattern;
             if (s == 0) {
                 if (Random_GlobalBelow(100) < 80) {
-                    c->bobPattern = 1;
+                    c->sway.bobPattern = 1;
                 } else {
-                    c->bobPattern = 2;
+                    c->sway.bobPattern = 2;
                 }
             } else if (s == 2) {
-                c->bobPattern = 1;
+                c->sway.bobPattern = 1;
             } else {
-                c->bobPattern = 0;
+                c->sway.bobPattern = 0;
             }
-            Camera_SetSwayPattern(c, c->bobPattern);
+            Camera_SetSwayPattern(c, c->sway.bobPattern);
         }
     }
-    if (Math_CountDownU16(&c->rollTimer) == 0) {
-        s16 a = c->rollPhase;
+    if (Math_CountDownU16(&c->sway.rollTimer) == 0) {
+        s16 a = c->sway.rollPhase;
         if (a < 0) {
             a = -a;
         }
         if (a < 0x100) {
-            u8 s = c->rollPattern;
+            u8 s = c->sway.rollPattern;
             if (s == 0) {
-                c->rollPattern = 1;
+                c->sway.rollPattern = 1;
             } else if (s == 2) {
-                c->rollPattern = 1;
+                c->sway.rollPattern = 1;
             } else {
-                c->rollPattern = 0;
+                c->sway.rollPattern = 0;
             }
-            Camera_SetSwayPattern2(c, c->rollPattern);
+            Camera_SetSwayPattern2(c, c->sway.rollPattern);
         }
     }
-    s32 d = kCameraSwayPatterns[c->rollPattern].phaseStep;
+    s32 d = kCameraSwayPatterns[c->sway.rollPattern].phaseStep;
     if (d != 0) {
-        c->rollPhase = c->rollPhase + d;
-        u32 idx = ((u16)c->rollPhase >> 4) * 2;
-        c->roll = func_01ffcb0c(data_02135f44[idx], kCameraSwayPatterns[c->rollPattern].amplitude);
+        c->sway.rollPhase = c->sway.rollPhase + d;
+        u32 idx = ((u16)c->sway.rollPhase >> 4) * 2;
+        c->roll = func_01ffcb0c(data_02135f44[idx], kCameraSwayPatterns[c->sway.rollPattern].amplitude);
     }
-    d = kCameraSwayPatterns[c->bobPattern].phaseStep;
+    d = kCameraSwayPatterns[c->sway.bobPattern].phaseStep;
     if (d != 0) {
-        c->bobPhase = c->bobPhase + d;
-        u32 idx = ((u16)c->bobPhase >> 4) * 2;
-        return func_01ffcb0c(data_02135f44[idx], kCameraSwayPatterns[c->bobPattern].amplitude);
+        c->sway.bobPhase = c->sway.bobPhase + d;
+        u32 idx = ((u16)c->sway.bobPhase >> 4) * 2;
+        return func_01ffcb0c(data_02135f44[idx], kCameraSwayPatterns[c->sway.bobPattern].amplitude);
     }
     return 0;
 }

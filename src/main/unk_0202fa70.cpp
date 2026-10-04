@@ -2049,7 +2049,7 @@ extern "C" void TriangleTrigger_CheckAll(s32* a, s32 b, s32 c) {
     if (p != NULL) {
         for (; p != NULL; p = p->next) {
             if ((s64)p->radiusSq >= func_01ffd028(&p->center, a)) {
-                p->onActorNear((Unk_ov009_0225b880_Vec3 *)a, (Unk_ov009_0225cc24_Obj *)c, b);
+                p->onActorNear((Unk_ov009_0225b880_Vec3 *)a, (Actor *)c, b);
             }
         }
     }

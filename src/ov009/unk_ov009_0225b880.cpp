@@ -59,7 +59,7 @@
 
 
 class BuildingActor;
-struct Unk_ov009_0225cc24_Obj;
+class Actor;
 
 
 
@@ -1038,7 +1038,7 @@ BuildingShadowEntry *BuildingShadowTable::getEntry(u32 i) {
 
 BuildingCollider::BuildingCollider() {}
 
-void BuildingCollider::onActorNear(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24_Obj *o, s32 off) {
+void BuildingCollider::onActorNear(Unk_ov009_0225b880_Vec3 *a, Actor *o, s32 off) {
     if (isPlayerAtDoor(a, off, o)) {
         building->colliderFlags |= 2;
         if (o->speed >= 0x200) {
@@ -1048,7 +1048,7 @@ void BuildingCollider::onActorNear(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc2
 }
 
 // ---------------------------------------------------------------- element
-BOOL BuildingCollider::isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_ov009_0225cc24_Obj *o) {
+BOOL BuildingCollider::isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Actor *o) {
     s16 ang;
     Unk_ov009_0225b880_Vec3 p;
     Unk_ov009_0225b880_Vec3 a;

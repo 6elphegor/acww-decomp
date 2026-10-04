@@ -668,9 +668,9 @@ void InventoryItemGrid_SetSpriteItem(InventoryItemGrid *s, Rec *r, u32 v, s32 m)
 void InventoryItemGrid_UploadIcon(InventoryItemGrid *s, Rec *r, void *dst, s32 c) {
     u32 t = r->id;
     u32 k = InventoryItemGrid_AllocUpload(s);
-    Unk_ov094_0229334c_Blk *e = (Unk_ov094_0229334c_Blk *)((u8 *)s + 4) + k;
-    u8 *p = e->a;
-    u8 *q = e->b;
+    ItemIconUploadChars *e = &s->iconUploadChars[k];
+    u8 *p = e->top;
+    u8 *q = e->bottom;
     MI_CpuCopy8(dst, p, 0x40);
     MI_CpuCopy8((u8 *)dst + 0x400, q, 0x40);
     k *= 0x38;

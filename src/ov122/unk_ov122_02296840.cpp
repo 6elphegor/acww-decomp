@@ -207,7 +207,7 @@ void _ZN12LetterLayout18highlightBodyRangeEjjj(void *self, s32 a, s32 b, s32 c);
 void _ZN14LetterRenderer17highlightGreetingEjj(void *self, s32 a, s32 b, s32 c);
 void _ZN14LetterRenderer12setSignatureEPh(void *self, void *p);
 void _ZN14LetterRenderer7setBodyEPhi(void *self, void *p, u32 b);
-void _ZN14LetterRenderer11setGreetingEP16Unk_0206d1d4_SrcPh(void *self, void *p, void *q);
+void _ZN14LetterRenderer11setGreetingEP10LetterViewPh(void *self, void *p, void *q);
 void _ZN14LetterRenderer6redrawEv(void *self);
 void _ZN14LetterRenderer7releaseEv(void *self);
 void _ZN14LetterRenderer8setLayerEi(void *self, s32 a);
@@ -1020,14 +1020,14 @@ void LetterWriteMenu::redrawText(u32 a, u32 b) {
     u32 flag;
     setFlags(0x1000);
     if (a != 0) {
-        _ZN14LetterRenderer11setGreetingEP16Unk_0206d1d4_SrcPh(&renderer, letter, greetingBuf);
+        _ZN14LetterRenderer11setGreetingEP10LetterViewPh(&renderer, letter, greetingBuf);
         _ZN14LetterRenderer7setBodyEPhi(&renderer, letter + 0x4c, b);
         _ZN14LetterRenderer12setSignatureEPh(&renderer, letter + 0xcc);
     } else {
         switch (editPart) {
         case 0:
         case 1:
-            _ZN14LetterRenderer11setGreetingEP16Unk_0206d1d4_SrcPh(&renderer, letter, greetingBuf);
+            _ZN14LetterRenderer11setGreetingEP10LetterViewPh(&renderer, letter, greetingBuf);
             break;
         case 2:
             _ZN14LetterRenderer7setBodyEPhi(&renderer, letter + 0x4c, b);

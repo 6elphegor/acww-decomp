@@ -32,11 +32,6 @@ class SpNpcBlanca;
 class SpNpcBlancaTalk;
 
 
-struct Unk_ov074_02271450_Ent {
-    u8 pad_00[0x5c];
-    u32 unk_5c;
-};
-
 struct Unk_ov074_02271564_A {
     u16 a;
     u8 b[8];
@@ -873,7 +868,7 @@ u32 SpNpcBlancaFaceTexture::getTextureData() {
 }
 
 void SpNpcBlancaFaceTexture::apply(void *e) {
-    Unk_ov074_02271450_Ent *ent = (Unk_ov074_02271450_Ent *)e;
+    Model *ent = (Model *)e;
     void *t;
     u32 h;
     t = BlancaFaceRecord_getPattern(gSaveBlancaFace);
@@ -881,7 +876,7 @@ void SpNpcBlancaFaceTexture::apply(void *e) {
         if (ClothTex_LoadPatternThunk(texBuffer, t) != 0) {
             h = getTextureData();
             if (h != 0) {
-                MatTexVramTask_request(&texTask, ent->unk_5c, data_ov074_022724e4, h, 0, 0);
+                MatTexVramTask_request(&texTask, (u32)ent->resMdl, data_ov074_022724e4, h, 0, 0);
             }
         }
     }

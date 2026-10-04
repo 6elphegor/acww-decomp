@@ -7,36 +7,12 @@
 #include "talk/MsgString9B.h"
 #include "sys/ProcProfile.h"
 #include "net/CommManager.h"
+#include "room/RoomTelephone.h"
 
 // ---- sub-object declarations (defined in src/main/unk_0208d154.cpp etc.) ----
 
 
 
-
-class Unk_ov004_0224e2b8_Stub {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void *vfunc_50();
-};
 
 struct Unk_ov004_0223e014_Zero {
     s32 x, y, z;
@@ -69,7 +45,7 @@ extern const Unk_ov004_0223e10c_Pair sResidentExtraLabelPos;
 extern const s32 sResidentCursorExtraOffset[];
 extern const s32 sResidentCursorOffsets[];
 #define data_ov004_022447f0 ((const s32 *)((const u8 *)sResidentCursorOffsets + 4))
-Unk_ov004_0224e2b8_Stub *RoomTelephone_GetInstance();
+RoomTelephone *RoomTelephone_GetInstance();
 void Snd_PlaySe(s32 a);
 
 s32 PlayerDataArray_IsUsed(void *, s32);
@@ -556,7 +532,7 @@ extern "C" void ResidentSelect_UpdateCursor(ResidentSelect *o) {
     z.y = 0;
     z.z = 0;
     if (o->isPhoneSelected != 0) {
-        pp = RoomTelephone_GetInstance()->vfunc_50();
+        pp = RoomTelephone_GetInstance()->getInteractionPos();
     } else {
         pp = (u8 *)PlayerActor_GetCharacter(o->selectedResident) + 0x5c;
     }

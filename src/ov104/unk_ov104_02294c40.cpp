@@ -143,7 +143,7 @@ extern "C" CommManager *gCommManager;
 extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 
 
-struct Unk_0206d1d4_Src;
+struct LetterView;
 
 
 
@@ -621,7 +621,7 @@ void PostOfficeMenu::transitionAct06() {
 void PostOfficeMenu::transitionAct07() {
     void *t = getSlotLetter(selectedSlot);
     Letter_MarkRead((u32)t);
-    letterView.show((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
+    letterView.show((LetterView *)t, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     Gfx2d_ShowLayer(4);

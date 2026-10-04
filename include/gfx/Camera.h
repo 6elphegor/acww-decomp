@@ -4,11 +4,13 @@
 // Field/room camera (vtable 0x020d93b0): CameraBase + a 4x3 view matrix, follow/blend offsets, poses and modes.
 // Defined in src/main/unk_0203a0cc.cpp; Unk_0203b350_V is the vector type of its method signatures. The global
 // pointer gCamera points to it; Camera is the name of that view (the extern "C" camera functions of main and ov004).
-// ov004 reads the 4-word mode parameter block at 0x21c as its own struct (by cast), main as {len, ang, vel}.
+// ov004 reads the 4-word mode parameter block at 0x21c as its own struct (by cast), main as {len, ang, vel}, ov068's
+// sway mode as CameraSwayState.
 #include "types.h"
 #include "sys/CameraBase.h"
 #include "gfx/FxMtx43.h"
 #include "gfx/CameraPose.h"
+#include "gfx/CameraSway.h"
 
 struct Unk_0203b350_V {
     s32 x, y, z;
@@ -90,7 +92,8 @@ public:
     /* 0x148 */ s16 current, currentPitch;
     /* 0x14c */ s32 currentDistance, currentOffset, currentOffsetY, currentOffsetZ, currentFocus, currentFocusY, currentFocusZ;
     /* 0x168 */ s32 eye, eyeY, eyeZ;
-    /* 0x174 */ u8 pad_174[0x188 - 0x174];
+    /* 0x174 */ s16 roll; // set by the ov068 sway mode (Camera_UpdateSway)
+    /* 0x176 */ u8 pad_176[0x188 - 0x176];
     /* 0x188 */ s32 lookTarget, lookTargetY, lookTargetZ, lookEye, lookEyeY, lookEyeZ, lookUp, lookUpY, lookUpZ;
     /* 0x1ac */ s16 eyeCurveAngle;
     /* 0x1ae */ s16 pad_1ae;
@@ -105,8 +108,11 @@ public:
     /* 0x1f4 */ u8 viewPushed, focusYawLocked, roomFocusSide, seMuted;
     /* 0x1f8 */ s32 mode, prevMode, startMode;
     /* 0x204 */ s32 restoreFocus, restoreFocusY, restoreFocusZ, restoreEye, restoreEyeY, restoreEyeZ;
-    /* 0x21c */ s32 modeParam;
-    /* 0x220 */ u8 pad_220[0x14];
+    /* 0x21c */ union {
+        s32 modeParam;
+        CameraSwayState sway; // ov068 sway mode
+    };
+    /* 0x228 */ u8 pad_228[0x234 - 0x228];
 };
 
 #endif // GFX_CAMERA_H

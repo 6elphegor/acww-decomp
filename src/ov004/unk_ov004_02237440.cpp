@@ -5,9 +5,13 @@
 #include "gfx/Mtx43.h"
 #include "Unk_020d8c7c.h"
 #include "game/Unk_0203389c_Vec.h"
-#include "game/Unk_ov004_0223d800_Vec.h"
+#include "gfx/VecFx32.h"
 #include "game/GroundInfoBase.h"
 #include "gfx/ModelAnim.h"
+#include "gfx/AnimModel.h"
+#include "game/CollisionState.h"
+#include "snd/CreatureSndChannel.h"
+#include "actor/StaticCollider.h"
 #include "game/GroundInfo.h"
 #include "sys/ProcProfile.h"
 
@@ -87,45 +91,8 @@ struct MinuteHour {
     u8 unk_03;
 };
 
-struct Unk_ov004_022375b8_Rec {
-    /* 0x000 */ u8 pad_00[0x18];
-    /* 0x018 */ s32 matAnmObj;
-    /* 0x01c */ s32 matResMdl;
-    /* 0x020 */ u8 pad_20[4];
-    /* 0x024 */ u8 sound[0xb0 - 0x24];
-    /* 0x0b0 */ u8 model[0x168 - 0xb0];
-    /* 0x168 */ u16 stateCounter;
-    /* 0x16a */ u8 pad_16a[0x172 - 0x16a];
-    /* 0x172 */ u16 moveState;
-    /* 0x174 */ u8 pad_174[0x180 - 0x174];
-    /* 0x180 */ u8 pad_180[0x192 - 0x180];
-    /* 0x192 */ u16 yaw;
-    /* 0x194 */ u8 pad_194[2];
-    /* 0x196 */ s8 insectIndex;
-    /* 0x197 */ u8 pad_197;
-    /* 0x198 */ s32 loadState;
-    /* 0x19c */ u8 pad_19c[0x284 - 0x19c];
-    /* 0x284 */ u16 modelSlot[2];
-    /* 0x288 */ u8 pooledModel[0x2d4 - 0x288];
-    /* 0x2d4 */ s32 updateFn;
-};
-
-struct Unk_ov004_022376f8_V3 {
-    s32 x, y, z;
-};
-
 struct Unk_ov004_022376f8_Mtx {
     s64 v[6];
-};
-
-struct Unk_ov004_022376f8_Obj {
-    u8 pad_00[0x10];
-    s32 pushX;
-    u8 pad_14[4];
-    s32 pushZ;
-    u8 pad_1c[0x3c - 0x1c];
-    u8 isHit;
-    u8 pad_3d[0x4c - 0x3d];
 };
 
 // {flag, s16 value} per id
@@ -135,116 +102,25 @@ struct MuseumInsectParam {
     s16 radius;
 };
 
+struct Unk_ov004_02239988_Vec2 {
+    s32 x, y;
+};
+
+struct Unk_ov004_0223b1e8_Bits {
+    u32 lo : 12;
+    u32 mid : 16;
+    u32 hi : 4;
+};
+
+// Insect slot of the museum insect room (0x2d8 bytes, sMuseumInsects[0x20]). One layout for all 57 species: the
+// setup / update pair of sMuseumInsectBehaviors[insectIndex] initialises and drives it. The CollisionState, the AnimModel
+// and the creature sound are constructed as members; the sub-objects after the model are constructed in the
+// constructor body (probe vectors, hit collider, cached model, model-slot handle, pooled model resource).
 class MuseumInsect {
 public:
     MuseumInsect();
     ~MuseumInsect();
 
-    /* 0x000 */ MuseumInsectAnim matAnim;
-    /* 0x020 */ u8 isBumped;
-    /* 0x021 */ u8 pad_21[3];
-    /* 0x024 */ void *sound;
-    /* 0x028 */ u8 pad_28[0x34 - 0x28];
-    /* 0x034 */ Unk_ov004_022376f8_V3 targetPos;
-    /* 0x040 */ u8 pad_40[0x68 - 0x40];
-    /* 0x068 */ u8 moveResult[0xb0 - 0x68];
-    /* 0x0b0 */ u8 model[0x114 - 0xb0];
-    /* 0x114 */ Unk_ov004_022376f8_Mtx modelMtx;
-    /* 0x144 */ u8 pad_144[0x168 - 0x144];
-    /* 0x168 */ u16 unk_168;
-    /* 0x16a */ u8 pad_16a[0x172 - 0x16a];
-    /* 0x172 */ s16 moveState;
-    /* 0x174 */ u8 pad_174[4];
-    /* 0x178 */ u8 probePoints[0x18];
-    /* 0x190 */ s16 pitch;
-    /* 0x192 */ s16 yaw;
-    /* 0x194 */ s16 roll;
-    /* 0x196 */ s8 insectIndex;
-    /* 0x197 */ u8 pad_197;
-    /* 0x198 */ s32 loadState;
-    /* 0x19c */ Unk_ov004_022376f8_Obj hitBox;
-    /* 0x1e8 */ u8 cachedModel[0x284 - 0x1e8];
-    /* 0x284 */ u8 modelSlot[4];
-    /* 0x288 */ u8 pooledModel[0x2c8 - 0x288];
-    /* 0x2c8 */ Unk_ov004_022376f8_V3 position;
-    /* 0x2d4 */ void (*updateFn)(MuseumInsect *);
-};
-
-typedef MuseumInsect Elem_7690;
-
-typedef Unk_ov004_022376f8_V3 V3_7690;
-
-typedef Unk_ov004_022376f8_Mtx Mtx_7690;
-
-struct MuseumInsectPlaceStackPad {
-    u32 v[0xa9];
-    MuseumInsectPlaceStackPad() {}
-    ~MuseumInsectPlaceStackPad() {}
-};
-
-struct Unk_ov004_02238af4_V3 {
-    s32 x, y, z;
-};
-
-// Actor-like object driven by state tables at 0x0224ed40..0x0224eeb4
-struct Unk_ov004_02238af4 {
-    /* 0x00 */ u8 pad_00[0x10];
-    /* 0x10 */ s32 matAnimFrameStep;
-    /* 0x14 */ u8 pad_14[0x21 - 0x14];
-    /* 0x21 */ u8 isFighting;
-    /* 0x22 */ u8 isActive;
-    /* 0x23 */ u8 pad_23[0x40 - 0x23];
-    /* 0x40 */ Unk_ov004_02238af4_V3 homePos;
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ u8 unk_50;
-    /* 0x51 */ u8 pad_51[0x98 - 0x51];
-    /* 0x98 */ u16 subCounter;
-    /* 0x9a */ u8 pad_9a[0xa4 - 0x9a];
-    /* 0xa4 */ u8 travelDistance;
-    /* 0xa5 */ u8 pad_a5[0xae - 0xa5];
-    /* 0xae */ u8 isPerched;
-    /* 0xaf */ u8 pad_af[0x14c - 0xaf];
-    /* 0x14c */ u8 animFrameCtrl[0x10];
-    /* 0x15c */ s32 animFrameStep;
-    /* 0x160 */ u8 pad_160[0x170 - 0x160];
-    /* 0x170 */ u8 dirFlag;
-    /* 0x171 */ u8 pad_171;
-    /* 0x172 */ s16 moveState;
-    /* 0x174 */ s32 stateTimer;
-    /* 0x178 */ u8 pad_178[0x196 - 0x178];
-    /* 0x196 */ s8 insectIndex;
-    /* 0x197 */ u8 pad_197[0x288 - 0x197];
-    /* 0x288 */ u8 pooledModel[0x40];
-    /* 0x2c8 */ Unk_ov004_02238af4_V3 position;
-};
-
-struct Unk_ov004_02239434_Vec {
-    s32 x, y, z;
-};
-
-struct Unk_ov004_02239988_Vec2 {
-    s32 x, y;
-};
-
-struct MuseumFireflyStackPad {
-    s32 v[3];
-    MuseumFireflyStackPad() {}
-    ~MuseumFireflyStackPad() {}
-};
-
-struct Unk_ov004_02239b6c_Sub {
-    /* 0x00 */ u8 pad_00[0x9c];
-    /* 0x9c */ u32 animFrameCtrl;
-    /* 0xa0 */ u32 numFrames;
-    /* 0xa4 */ u32 curFrame;
-    /* 0xa8 */ u32 pad_a8;
-    /* 0xac */ s32 frameStep;
-    /* 0xb0 */ u8 pad_b0[0xb8 - 0xb0];
-};
-
-
-class Unk_ov004_02239434 {
-public:
     void setupLanternFly();
     void setupEveningCicada();
     void setupWalkerCicada();
@@ -291,114 +167,6 @@ public:
     void reactToPlayer(u16 *out);
     void runWalker();
 
-    /* 0x00 */ u8 pad_00[0x22];
-    /* 0x22 */ u8 isActive;
-    /* 0x23 */ u8 pad_23[0x30 - 0x23];
-    /* 0x30 */ u16 unk_30;
-    /* 0x32 */ u8 pad_32[2];
-    /* 0x34 */ Unk_ov004_02239434_Vec targetPos;
-    /* 0x40 */ Unk_ov004_02239434_Vec homePos;
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ u8 unk_50;
-    /* 0x51 */ u8 pad_51[3];
-    /* 0x54 */ s32 targetHeight;
-    /* 0x58 */ Unk_ov004_02239988_Vec2 boundsMin;
-    /* 0x60 */ Unk_ov004_02239988_Vec2 boundsMax;
-    /* 0x68 */ u8 pad_68[0x98 - 0x68];
-    /* 0x98 */ u16 subCounter;
-    /* 0x9a */ u8 isAlerted;
-    /* 0x9b */ u8 pad_9b;
-    /* 0x9c */ s16 alertLevel;
-    /* 0x9e */ s16 alertThreshold;
-    /* 0xa0 */ s32 alertRange;
-    /* 0xa4 */ s32 travelDistance;
-    /* 0xa8 */ s32 baseHeight;
-    /* 0xac */ u8 pad_ac[2];
-    /* 0xae */ u8 sideDir;
-    /* 0xaf */ u8 pad_af;
-    /* 0xb0 */ Unk_ov004_02239b6c_Sub model;
-    /* 0x168 */ s16 stateCounter;
-    /* 0x16a */ u16 flapPeriod;
-    /* 0x16c */ s32 moveSpeed;
-    /* 0x170 */ u8 dirFlag;
-    /* 0x171 */ u8 pad_171;
-    /* 0x172 */ s16 moveState;
-    /* 0x174 */ s32 stateTimer;
-    /* 0x178 */ u8 pad_178[0x190 - 0x178];
-    /* 0x190 */ s16 pitch;
-    /* 0x192 */ s16 yaw;
-    /* 0x194 */ u8 pad_194[2];
-    /* 0x196 */ s8 insectIndex;
-    /* 0x197 */ u8 pad_197[0x2c8 - 0x197];
-    /* 0x2c8 */ Unk_ov004_02239434_Vec position;
-};
-
-struct Unk_ov004_02239e70_V3 {
-    s32 x, y, z;
-};
-
-struct Unk_ov004_02239e70_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
-
-struct GroundInfoStorage {
-    u32 v[0x44 / 4];
-};
-
-struct MuseumInsectAnimFrameView {
-    u32 vptr;
-    union {
-        u32 unk_04;
-        Unk_ov004_02239e70_Bits unk_04b;
-    };
-    union {
-        s32 unk_08;
-        Unk_ov004_02239e70_Bits curFrameBits;
-    };
-};
-
-struct Unk_ov004_02239e70_Model {
-    u8 pad_00[0x9c];
-    MuseumInsectAnimFrameView anim;
-};
-
-class Unk_ov004_02239e70 {
-public:
-    /* 0x00 */ u8 pad_00[0x22];
-    /* 0x22 */ u8 isActive;
-    /* 0x23 */ u8 pad_23[0x4c - 0x23];
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ u8 cooldown;
-    /* 0x51 */ u8 pad_51[0x98 - 0x51];
-    /* 0x98 */ s16 subCounter;
-    /* 0x9a */ u8 pad_9a[2];
-    /* 0x9c */ s16 alertLevel;
-    /* 0x9e */ s16 alertThreshold;
-    /* 0xa0 */ u8 pad_a0[8];
-    /* 0xa8 */ s32 baseHeight;
-    /* 0xac */ u8 pad_ac[4];
-    /* 0xb0 */ Unk_ov004_02239e70_Model model;
-    /* 0x158 */ u8 pad_158[0x160 - 0x158];
-    /* 0x160 */ u8 unk_160;
-    /* 0x161 */ u8 pad_161[0x168 - 0x161];
-    /* 0x168 */ s16 stateCounter;
-    /* 0x16a */ u8 pad_16a[2];
-    /* 0x16c */ s32 moveSpeed;
-    /* 0x170 */ u8 dirFlag;
-    /* 0x171 */ u8 pad_171;
-    /* 0x172 */ s16 moveState;
-    /* 0x174 */ s32 stateTimer;
-    /* 0x178 */ u8 pad_178[0x190 - 0x178];
-    /* 0x190 */ s16 pitch;
-    /* 0x192 */ s16 yaw;
-    /* 0x194 */ s16 roll;
-    /* 0x196 */ s8 insectIndex;
-    /* 0x197 */ u8 pad_197[0x288 - 0x197];
-    /* 0x288 */ u8 pooledModel[0x40];
-    /* 0x2c8 */ Unk_ov004_02239e70_V3 position;
-
     void runCicada();
     void sidestep(volatile s16 *p);
     void crawlDown(volatile s16 *p);
@@ -409,286 +177,52 @@ public:
     BOOL isPlayerNear();
     void runSpider();
     s32 crawl();
-    void scurry(Unk_ov004_02239e70_V3 *v);
-};
+    void scurry(VecFx32 *v);
 
-struct Unk_ov004_0223a850_Vec {
-    s32 x;
-    s32 y;
-    s32 z;
-};
-
-struct MuseumInsectPlayerInfo {
-    Unk_ov004_0223a850_Vec playerPos;
-    s32 playerSpeed;
-    s32 playerDist;
-    u8 hasPlayer;
-};
-
-struct Unk_ov004_0223aa40_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
-
-struct Unk_ov004_0223aa40_Sub {
-    u8 pad_00[0x9c];
-    u8 animFrameCtrl[4];
-    s32 numFrames;
-    Unk_ov004_0223aa40_Bits curFrame;
-};
-
-struct Unk_ov004_0223a850_Rec {
-    /* 0x000 */ u8 pad_00[0x22];
+    /* 0x000 */ MuseumInsectAnim matAnim;
+    /* 0x020 */ u8 isBumped;
+    /* 0x021 */ u8 isFighting;
     /* 0x022 */ u8 isActive;
-    /* 0x023 */ u8 pad_23[0x34 - 0x23];
-    /* 0x034 */ Unk_ov004_0223a850_Vec targetPos;
-    /* 0x040 */ u8 pad_40[0x4c - 0x40];
-    /* 0x04c */ s32 unk_4c;
-    /* 0x050 */ u8 pad_50[0x98 - 0x50];
+    /* 0x023 */ u8 pad_23;
+    /* 0x024 */ CreatureSndChannel sound;
+    /* 0x030 */ u16 unk_30;
+    /* 0x032 */ u8 pad_32[2];
+    /* 0x034 */ VecFx32 targetPos;
+    /* 0x040 */ VecFx32 homePos;
+    union {
+        // per-species word: butterfly flap-animation speed, mosquito "has bitten" flag, walker turn step, dragonfly
+        // approach step, hopper wall-hit count, pill-bug waypoint, fighting arachnid circle angle, cockroach
+        // "talked" flag, spider rest x
+        /* 0x04c */ s32 speciesWork;
+        /* 0x04c */ s32 flyAnimSpeed;
+        /* 0x04c */ s32 hasBitten;
+    };
+    union {
+        /* 0x050 */ u8 cooldown;
+        /* 0x050 */ u8 wanderThreshold;
+        /* 0x050 */ u8 steerSide;
+    };
+    /* 0x051 */ u8 pad_51[3];
+    /* 0x054 */ s32 targetHeight;
+    /* 0x058 */ Unk_ov004_02239988_Vec2 boundsMin;
+    /* 0x060 */ Unk_ov004_02239988_Vec2 boundsMax;
+    /* 0x068 */ CollisionState moveResult;
     /* 0x098 */ s16 subCounter;
     /* 0x09a */ u8 isAlerted;
     /* 0x09b */ u8 pad_9b;
     /* 0x09c */ s16 alertLevel;
-    /* 0x09e */ u8 pad_9e[0xac - 0x9e];
+    /* 0x09e */ s16 alertThreshold;
+    /* 0x0a0 */ s32 alertRange;
+    /* 0x0a4 */ u8 travelDistance;
+    /* 0x0a5 */ u8 pad_a5[3];
+    /* 0x0a8 */ s32 baseHeight;
     /* 0x0ac */ s16 targetAngle;
-    /* 0x0ae */ u8 pad_ae[0xb0 - 0xae];
-    /* 0x0b0 */ u8 model[0x15c - 0xb0];
-    /* 0x15c */ s32 animFrameStep;
-    /* 0x160 */ u8 pad_160[0x168 - 0x160];
-    /* 0x168 */ s16 stateCounter;
-    /* 0x16a */ u8 pad_16a[0x170 - 0x16a];
-    /* 0x170 */ u8 dirFlag;
-    /* 0x171 */ u8 pad_171;
-    /* 0x172 */ s16 moveState;
-    /* 0x174 */ s32 stateTimer;
-    /* 0x178 */ u8 pad_178[0x192 - 0x178];
-    /* 0x192 */ s16 yaw;
-    /* 0x194 */ u8 pad_194[2];
-    /* 0x196 */ u8 insectIndex;
-    /* 0x197 */ u8 pad_197[0x2c8 - 0x197];
-    /* 0x2c8 */ Unk_ov004_0223a850_Vec position;
-};
-
-struct Unk_ov004_0223b1e8_V3 {
-    s32 x, y, z;
-};
-
-struct Unk_ov004_0223b1e8_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
-
-struct Unk_ov004_0223b1e8_Obj {
-    u8 pad_00[0x21];
-    u8 isFighting;
-    u8 isActive;
-    u8 pad_23[0x34 - 0x23];
-    Unk_ov004_0223b1e8_V3 targetPos;
-    Unk_ov004_0223b1e8_V3 homePos;
-    s32 unk_4c;
-    u8 unk_50;
-    u8 pad_51[0x98 - 0x51];
-    s16 subCounter;
-    u8 isAlerted;
-    u8 pad_9b;
-    s16 alertLevel;
-    s16 alertThreshold;
-    u8 pad_a0[0xac - 0xa0];
-    s16 targetAngle;
-    u8 sideDir;
-    u8 pad_af;
-    u8 model[0x14c - 0xb0];
-    u8 animFrameCtrl[4];
-    s32 animNumFrames;
-    Unk_ov004_0223b1e8_Bits animFrame;
-    u8 pad_158[0x15c - 0x158];
-    s32 animFrameStep;
-    u8 pad_160[0x168 - 0x160];
-    s16 stateCounter;
-    u8 pad_16a[0x16c - 0x16a];
-    s32 moveSpeed;
-    u8 dirFlag;
-    u8 pad_171;
-    s16 moveState;
-    s32 stateTimer;
-    u8 pad_178[0x192 - 0x178];
-    s16 yaw;
-    u8 pad_194[0x196 - 0x194];
-    s8 insectIndex;
-    u8 pad_197[0x2c8 - 0x197];
-    Unk_ov004_0223b1e8_V3 position;
-};
-
-struct Unk_ov004_0223b1e8_Sub {
-    u8 pad_00[0x9c];
-    u8 animFrameCtrl[4];
-    s32 numFrames;
-    Unk_ov004_0223b1e8_Bits curFrame;
-};
-
-struct Unk_ov004_0223b1e8_V3E : Unk_ov004_0223b1e8_V3 {
-    Unk_ov004_0223b1e8_V3E() {}
-};
-
-typedef Unk_ov004_0223b1e8_Sub Sub_b1e8;
-
-typedef Unk_ov004_0223b1e8_Obj Obj_b1e8;
-
-typedef Unk_ov004_0223b1e8_V3 V3_b1e8;
-
-struct Unk_ov004_0223bb5c_V3 {
-    s32 x, y, z;
-};
-
-
-struct Unk_ov004_0223bb5c {
-    u8 pad_00[0x22];
-    u8 isActive;
-    u8 pad_23[0x34 - 0x23];
-    Unk_ov004_0223bb5c_V3 targetPos;
-    Unk_ov004_0223bb5c_V3 homePos;
-    s32 hasBitten;
-    u8 cooldown;
-    u8 pad_51[0x58 - 0x51];
-    s32 boundsMinX;
-    s32 boundsMinZ;
-    s32 boundsMaxX;
-    s32 boundsMaxZ;
-    u8 pad_68[0x98 - 0x68];
-    s16 subCounter;
-    u8 isAlerted;
-    u8 pad_9b;
-    s16 alertLevel;
-    s16 alertThreshold;
-    u8 pad_a0[0xac - 0xa0];
-    s16 targetAngle;
-    u8 pad_ae[0x168 - 0xae];
-    s16 stateCounter;
-    u8 pad_16a[0x16c - 0x16a];
-    s32 moveSpeed;
-    u8 pad_170[2];
-    s16 moveState;
-    s32 stateTimer;
-    u8 pad_178[0x190 - 0x178];
-    s16 pitch;
-    s16 yaw;
-    u8 pad_194[2];
-    s8 insectIndex;
-    u8 pad_197[0x288 - 0x197];
-    u32 pooledModel[16];
-    Unk_ov004_0223bb5c_V3 position;
-};
-
-typedef Unk_ov004_0223bb5c Obj_bb5c;
-
-typedef Unk_ov004_0223bb5c_V3 V3_bb5c;
-
-struct Unk_ov004_0223c4bc_V3 {
-    s32 x, y, z;
-};
-
-struct Unk_ov004_0223c4bc_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
-
-struct Unk_ov004_0223c4bc_Obj {
-    u8 pad_00[0x20];
-    u8 isBumped;
-    u8 isFighting;
-    u8 isActive;
-    u8 pad_23[0x34 - 0x23];
-    Unk_ov004_0223c4bc_V3 targetPos;
-    Unk_ov004_0223c4bc_V3 homePos;
-    s32 unk_4c;
-    u8 unk_50;
-    u8 pad_51[0x98 - 0x51];
-    s16 subCounter;
-    u8 isAlerted;
-    u8 pad_9b;
-    s16 alertLevel;
-    s16 alertThreshold;
-    u8 pad_a0[4];
-    u8 travelDistance;
-    u8 pad_a5[3];
-    s32 baseHeight;
-    s16 targetAngle;
-    u8 isPerched;
-    u8 pad_af;
-    u8 model[0x14c - 0xb0];
-    u8 animFrameCtrl[4];
-    s32 animNumFrames;
-    Unk_ov004_0223c4bc_Bits animFrame;
-    u8 pad_158[0x15c - 0x158];
-    s32 animFrameStep;
-    u8 pad_160[0x168 - 0x160];
-    s16 stateCounter;
-    u8 pad_16a[0x16c - 0x16a];
-    s32 moveSpeed;
-    u8 dirFlag;
-    u8 pad_171;
-    s16 moveState;
-    s32 stateTimer;
-    u8 pad_178[0x192 - 0x178];
-    s16 yaw;
-    u8 pad_194[0x196 - 0x194];
-    s8 insectIndex;
-    u8 pad_197[0x2c8 - 0x197];
-    Unk_ov004_0223c4bc_V3 position;
-};
-
-typedef Unk_ov004_0223c4bc_Obj Obj_c4bc;
-
-typedef Unk_ov004_0223c4bc_V3 V3_c4bc;
-
-static inline s32 Abs_c8d4(s32 x) { if (x < 0) return -x; return x; }
-
-struct V3z_c8d4 { s32 x, y, z; V3z_c8d4() {} ~V3z_c8d4() {} };
-
-struct Unk_ov004_0223ceb8_Vec {
-    s32 x, y, z;
-};
-
-struct Unk_ov004_0223ceb8_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
-
-struct Unk_ov004_0223ceb8_Sub {
-    u8 pad_00[0x9c];
-    u8 animFrameCtrl[4];
-    Unk_ov004_0223ceb8_Bits numFrames;
-    Unk_ov004_0223ceb8_Bits curFrame;
-};
-
-struct Unk_ov004_0223ceb8 {
-    /* 0x00 */ u8 pad_00[0x22];
-    /* 0x22 */ u8 isActive;
-    /* 0x23 */ u8 pad_23;
-    /* 0x24 */ u8 sound[4];
-    /* 0x28 */ u8 pad_28[0x40 - 0x28];
-    /* 0x40 */ Unk_ov004_0223ceb8_Vec homePos;
-    /* 0x4c */ s32 flyAnimSpeed;
-    /* 0x50 */ u8 wanderThreshold;
-    /* 0x51 */ u8 pad_51[3];
-    /* 0x54 */ s32 targetHeight;
-    /* 0x58 */ u8 pad_58[0x9a - 0x58];
-    /* 0x9a */ u8 isAlerted;
-    /* 0x9b */ u8 pad_9b;
-    /* 0x9c */ s16 alertLevel;
-    /* 0x9e */ s16 alertThreshold;
-    /* 0xa0 */ s32 alertRange;
-    /* 0xa4 */ u8 pad_a4[4];
-    /* 0xa8 */ s32 baseHeight;
-    /* 0xac */ s16 targetAngle;
-    /* 0xae */ u8 sideDir;
-    /* 0xaf */ u8 pad_af;
-    /* 0xb0 */ Unk_ov004_0223ceb8_Sub model;
-    /* 0x158 */ u8 pad_158[0x168 - 0x158];
+    union {
+        /* 0x0ae */ u8 sideDir;
+        /* 0x0ae */ u8 isPerched;
+    };
+    /* 0x0af */ u8 pad_af;
+    /* 0x0b0 */ AnimModel model;
     /* 0x168 */ s16 stateCounter;
     /* 0x16a */ s16 flapPeriod;
     /* 0x16c */ s32 moveSpeed;
@@ -696,51 +230,59 @@ struct Unk_ov004_0223ceb8 {
     /* 0x171 */ u8 pad_171;
     /* 0x172 */ s16 moveState;
     /* 0x174 */ s32 stateTimer;
-    /* 0x178 */ u8 pad_178[0x192 - 0x178];
+    /* 0x178 */ VecFx32 probePoints[2];
+    /* 0x190 */ s16 pitch;
     /* 0x192 */ s16 yaw;
-    /* 0x194 */ u8 pad_194[2];
+    /* 0x194 */ s16 roll;
     /* 0x196 */ s8 insectIndex;
-    /* 0x197 */ u8 pad_197[0x2c8 - 0x197];
-    /* 0x2c8 */ Unk_ov004_0223ceb8_Vec position;
+    /* 0x197 */ u8 pad_197;
+    /* 0x198 */ s32 loadState;
+    /* 0x19c */ u8 hitBox[0x4c]; // StaticCollider
+    /* 0x1e8 */ u8 cachedModel[0x284 - 0x1e8];
+    /* 0x284 */ u8 modelSlot[4];
+    /* 0x288 */ u8 pooledModel[0x2c8 - 0x288];
+    /* 0x2c8 */ VecFx32 position;
+    /* 0x2d4 */ void (*updateFn)(MuseumInsect *);
 };
 
+typedef VecFx32 V3_7690;
 
+typedef Unk_ov004_022376f8_Mtx Mtx_7690;
 
-struct Unk_ov004_0223d800_Bounds {
-    /* 0x00 */ u8 pad_00[0x58];
-    /* 0x58 */ s32 boundsMinX;
-    /* 0x5c */ s32 boundsMinZ;
-    /* 0x60 */ s32 boundsMaxX;
-    /* 0x64 */ s32 boundsMaxZ;
+struct MuseumInsectPlaceStackPad {
+    u32 v[0xa9];
+    MuseumInsectPlaceStackPad() {}
+    ~MuseumInsectPlaceStackPad() {}
 };
 
-// Owner actor of size 0x2d8 (array sMuseumInsects[0x20]).
-struct Unk_ov004_0223d994_Obj {
-    /* 0x000 */ u8 pad_000[0x178];
-    /* 0x178 */ Unk_ov004_0223d800_Vec probePoints[2];
-    /* 0x190 */ u8 pad_190[2];
-    /* 0x192 */ s16 yaw;
-    /* 0x194 */ u8 pad_194[2];
-    /* 0x196 */ u8 insectIndex;
-    /* 0x197 */ u8 pad_197[0x2c8 - 0x197];
-    /* 0x2c8 */ Unk_ov004_0223d800_Vec position;
-    /* 0x2d4 */ u8 pad_2d4[4];
+struct MuseumFireflyStackPad {
+    s32 v[3];
+    MuseumFireflyStackPad() {}
+    ~MuseumFireflyStackPad() {}
 };
 
-struct Unk_ov004_0223d8e8_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
+struct GroundInfoStorage {
+    u32 v[0x44 / 4];
 };
 
-struct Unk_ov004_0223d8e8_Sub {
-    u8 pad_00[0xa4];
-    Unk_ov004_0223d8e8_Bits curFrame;
+struct MuseumInsectPlayerInfo {
+    VecFx32 playerPos;
+    s32 playerSpeed;
+    s32 playerDist;
+    u8 hasPlayer;
 };
 
-typedef Unk_ov004_0223d800_Vec V3_d800;
+struct Unk_ov004_0223b1e8_V3E : VecFx32 {
+    Unk_ov004_0223b1e8_V3E() {}
+};
 
-typedef Unk_ov004_0223d994_Obj Obj_d800;
+typedef VecFx32 V3_b1e8;
+
+static inline s32 Abs_c8d4(s32 x) { if (x < 0) return -x; return x; }
+
+struct V3z_c8d4 { s32 x, y, z; V3z_c8d4() {} ~V3z_c8d4() {} };
+
+typedef VecFx32 V3_d800;
 
 struct Unk_ov004_0223d85c_V : V3_d800 {
     Unk_ov004_0223d85c_V(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
@@ -759,10 +301,10 @@ public:
     void releaseInsect(s32 idx);
     BOOL getInsectRoom(u32 idx);
     void spawnDonatedInsects();
-    BOOL hasShadow(Elem_7690 *e);
+    BOOL hasShadow(MuseumInsect *e);
     void updateObstacles();
     BOOL hasHitBox(u32 id, u8 flag);
-    void updateInsect(Elem_7690 *e);
+    void updateInsect(MuseumInsect *e);
 
     /* 0x050 */ u8 obstacleHitBoxes[4][0x4c];
     /* 0x180 */ u8 modelPool[0x18];
@@ -771,70 +313,70 @@ public:
 };
 
 extern "C" {
-void _ZN18Unk_ov004_0223943412setupPerchedEii(void *self, s32 a, s32 b);
-void _ZN18Unk_ov004_0223943410setupFlyerEiiiii(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
-void _ZN18Unk_ov004_022394344initEjiisii(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void _ZN18Unk_ov004_0223943418setBoundsAroundPosEv(void *self);
-void _ZN18Unk_ov004_022394349setBoundsEPiS0_(void *self, s32 *a, s32 *b);
-void _ZN18Unk_ov004_022394346wanderEv(void *self, s32 x);
-void _ZN18Unk_ov004_022394349runWalkerEv(void *self);
-void _ZN18Unk_ov004_02239e709runCicadaEv(void *self);
-void _ZN18Unk_ov004_02239e7010runPerchedEv(void *self);
-void _ZN18Unk_ov004_02239e709runSpiderEv(void *self);
-void * _ZN18Unk_ov004_02239e705crawlEv(void *self);
-void _ZN18Unk_ov004_02239e706scurryEP21Unk_ov004_02239e70_V3(void *self, void *v);
+void _ZN12MuseumInsect12setupPerchedEii(void *self, s32 a, s32 b);
+void _ZN12MuseumInsect10setupFlyerEiiiii(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
+void _ZN12MuseumInsect4initEjiisii(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void _ZN12MuseumInsect18setBoundsAroundPosEv(void *self);
+void _ZN12MuseumInsect9setBoundsEPiS0_(void *self, s32 *a, s32 *b);
+void _ZN12MuseumInsect6wanderEv(void *self, s32 x);
+void _ZN12MuseumInsect9runWalkerEv(void *self);
+void _ZN12MuseumInsect9runCicadaEv(void *self);
+void _ZN12MuseumInsect10runPerchedEv(void *self);
+void _ZN12MuseumInsect9runSpiderEv(void *self);
+void * _ZN12MuseumInsect5crawlEv(void *self);
+void _ZN12MuseumInsect6scurryEP7VecFx32(void *self, void *v);
 void _ZN16MuseumInsectRoomC1Ev(void *self);
 u32 MuseumInsect_GetTimeOfDayBit();
-Elem_7690 *MuseumInsect_FindDungBall();
-Elem_7690 *MuseumInsect_FindScorpion();
+MuseumInsect *MuseumInsect_FindDungBall();
+MuseumInsect *MuseumInsect_FindScorpion();
 void MuseumInsect_RevertOutOfBounds(void *m, u8 *s, s32 *p);
 void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s);
 BOOL MuseumInsectRoom_AddInsect(u8 *m, s8 v);
 s32 MuseumInsectRoom_FindFreeSlot();
 void *MuseumInsectRoom_Create();
 void MuseumInsect_InitPlacement(void *m, u8 *s);
-void MuseumInsect_UpdateDungBeetle(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupDungBeetle(Unk_ov004_02238af4 *o);
+void MuseumInsect_UpdateDungBeetle(MuseumInsect *o);
+void MuseumInsect_SetupDungBeetle(MuseumInsect *o);
 void MuseumInsect_UpdateAnt();
-void MuseumInsect_SetupAnt(Unk_ov004_02238af4 *o);
-void MuseumInsect_UpdateFlea(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupFlea(Unk_ov004_02238af4 *o);
-void MuseumInsect_UpdateBee(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupBee(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupScorpion(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupTarantula(Unk_ov004_02238af4 *o);
-void MuseumInsect_UpdateArachnid(Unk_ov004_02238af4 *o);
-void MuseumInsect_UpdateSpider(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupSpider(Unk_ov004_02238af4 *o);
-void MuseumInsect_UpdateFly(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupFly(Unk_ov004_02238af4 *o);
-void MuseumInsect_UpdateHoneybee(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupHoneybee(Unk_ov004_02238af4 *o);
-void MuseumInsect_UpdatePillBug(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupPillBug(Unk_ov004_02238af4 *o);
-void MuseumInsect_UpdateMoleCricket(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupMoleCricket(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupOrchidMantis(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupMantis(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupLadybug(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupSnail(Unk_ov004_02238af4 *o);
-void MuseumInsect_UpdateWalker(Unk_ov004_02238af4 *o);
-void MuseumInsect_UpdatePondSkater(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupPondSkater(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupBandedDragonfly(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupDarnerDragonfly(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupRedDragonfly(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupDragonfly(Unk_ov004_02238af4 *o, s32 a, s32 b, s32 c, u8 d, u8 e, s32 f);
-void MuseumInsect_UpdateDragonfly(Unk_ov004_02238af4 *o);
-void MuseumInsect_UpdateCockroach(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupCockroach(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupBellCricket(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupMigratoryLocust(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupLongLocust(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupCricket(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupGrasshopper(Unk_ov004_02238af4 *o);
-void MuseumInsect_UpdateHopper(Unk_ov004_02238af4 *o);
-void MuseumInsect_SetupHopper(Unk_ov004_02238af4 *o, s32 a, s32 b, s32 c, u8 d);
+void MuseumInsect_SetupAnt(MuseumInsect *o);
+void MuseumInsect_UpdateFlea(MuseumInsect *o);
+void MuseumInsect_SetupFlea(MuseumInsect *o);
+void MuseumInsect_UpdateBee(MuseumInsect *o);
+void MuseumInsect_SetupBee(MuseumInsect *o);
+void MuseumInsect_SetupScorpion(MuseumInsect *o);
+void MuseumInsect_SetupTarantula(MuseumInsect *o);
+void MuseumInsect_UpdateArachnid(MuseumInsect *o);
+void MuseumInsect_UpdateSpider(MuseumInsect *o);
+void MuseumInsect_SetupSpider(MuseumInsect *o);
+void MuseumInsect_UpdateFly(MuseumInsect *o);
+void MuseumInsect_SetupFly(MuseumInsect *o);
+void MuseumInsect_UpdateHoneybee(MuseumInsect *o);
+void MuseumInsect_SetupHoneybee(MuseumInsect *o);
+void MuseumInsect_UpdatePillBug(MuseumInsect *o);
+void MuseumInsect_SetupPillBug(MuseumInsect *o);
+void MuseumInsect_UpdateMoleCricket(MuseumInsect *o);
+void MuseumInsect_SetupMoleCricket(MuseumInsect *o);
+void MuseumInsect_SetupOrchidMantis(MuseumInsect *o);
+void MuseumInsect_SetupMantis(MuseumInsect *o);
+void MuseumInsect_SetupLadybug(MuseumInsect *o);
+void MuseumInsect_SetupSnail(MuseumInsect *o);
+void MuseumInsect_UpdateWalker(MuseumInsect *o);
+void MuseumInsect_UpdatePondSkater(MuseumInsect *o);
+void MuseumInsect_SetupPondSkater(MuseumInsect *o);
+void MuseumInsect_SetupBandedDragonfly(MuseumInsect *o);
+void MuseumInsect_SetupDarnerDragonfly(MuseumInsect *o);
+void MuseumInsect_SetupRedDragonfly(MuseumInsect *o);
+void MuseumInsect_SetupDragonfly(MuseumInsect *o, s32 a, s32 b, s32 c, u8 d, u8 e, s32 f);
+void MuseumInsect_UpdateDragonfly(MuseumInsect *o);
+void MuseumInsect_UpdateCockroach(MuseumInsect *o);
+void MuseumInsect_SetupCockroach(MuseumInsect *o);
+void MuseumInsect_SetupBellCricket(MuseumInsect *o);
+void MuseumInsect_SetupMigratoryLocust(MuseumInsect *o);
+void MuseumInsect_SetupLongLocust(MuseumInsect *o);
+void MuseumInsect_SetupCricket(MuseumInsect *o);
+void MuseumInsect_SetupGrasshopper(MuseumInsect *o);
+void MuseumInsect_UpdateHopper(MuseumInsect *o);
+void MuseumInsect_SetupHopper(MuseumInsect *o, s32 a, s32 b, s32 c, u8 d);
 s32 MuseumInsect_RandTurn(s32 n);
 void MuseumInsect_ClampStep(void *out_, void *in_, s32 lim);
 void MuseumInsect_RunCockroach(void *r_);
@@ -846,52 +388,52 @@ void MuseumInsect_FightPause(void *r_);
 void MuseumInsect_FightCircleSelf(void *r_);
 void MuseumInsect_FightCircleOther(void *r_);
 void MuseumInsect_FightSkirmish(void *r_);
-BOOL MuseumInsect_UpdateFight(Obj_b1e8 *o);
-BOOL MuseumInsect_FaceEachOther(Obj_b1e8 *a, Obj_b1e8 *b);
+BOOL MuseumInsect_UpdateFight(MuseumInsect *o);
+BOOL MuseumInsect_FaceEachOther(MuseumInsect *a, MuseumInsect *b);
 void MuseumInsect_WiggleHeading(void *o_, s32 a, s32 b);
 void MuseumInsect_RunArachnid(void *o_);
-void MuseumInsect_MothHover(Obj_b1e8 *o);
+void MuseumInsect_MothHover(MuseumInsect *o);
 void MuseumInsect_RunMoth(void *o_);
 void MuseumInsect_GetPillBugWaypoint(void *v_, s32 k);
 void MuseumInsect_PillBugNextWaypoint(void *o_);
-void MuseumInsect_PillBugWalk(Obj_b1e8 *o);
-BOOL MuseumInsect_PillBugCheckCurl(Obj_b1e8 *o);
+void MuseumInsect_PillBugWalk(MuseumInsect *o);
+BOOL MuseumInsect_PillBugCheckCurl(MuseumInsect *o);
 void MuseumInsect_RunPillBug(void *o_);
 s32 MuseumInsect_SteerFromEdges(void *o_);
-void MuseumInsect_MoleCricketCrawl(Obj_bb5c *self, s16 *p);
-void MuseumInsect_MoleCricketJump(Obj_bb5c *self, s16 *p);
-void MuseumInsect_MoleCricketCheckEmerge(Obj_bb5c *self);
+void MuseumInsect_MoleCricketCrawl(MuseumInsect *self, s16 *p);
+void MuseumInsect_MoleCricketJump(MuseumInsect *self, s16 *p);
+void MuseumInsect_MoleCricketCheckEmerge(MuseumInsect *self);
 void MuseumInsect_RunMoleCricket(void *self_);
-void MuseumInsect_FleaJump(Obj_bb5c *self);
+void MuseumInsect_FleaJump(MuseumInsect *self);
 void MuseumInsect_RunFlea(void *self_);
-void MuseumInsect_FlyingInsectFly(Obj_bb5c *self);
+void MuseumInsect_FlyingInsectFly(MuseumInsect *self);
 void MuseumInsect_RunFlyingInsect(void *self_);
-void MuseumInsect_FireflyWander(Obj_bb5c *self);
+void MuseumInsect_FireflyWander(MuseumInsect *self);
 void MuseumInsect_RunFirefly(void *self_);
-void MuseumInsect_MosquitoChase(Obj_bb5c *self, s16 *p);
+void MuseumInsect_MosquitoChase(MuseumInsect *self, s16 *p);
 void MuseumInsect_RunMosquito(void *self_);
 s32 MuseumInsect_RandTurn8(s32 n);
 void MuseumInsect_PondSkaterGlide(void *self_, s16 *p);
-void MuseumInsect_PondSkaterStartGlide(Obj_c4bc *o, s16 *p);
+void MuseumInsect_PondSkaterStartGlide(MuseumInsect *o, s16 *p);
 void MuseumInsect_RunPondSkater(void *o_);
-void MuseumInsect_HopperChirp(Obj_c4bc *o);
-s32 MuseumInsect_HopperAvoidWall(Obj_c4bc *o, s16 *p);
-void MuseumInsect_HopperHop(Obj_c4bc *o);
+void MuseumInsect_HopperChirp(MuseumInsect *o);
+s32 MuseumInsect_HopperAvoidWall(MuseumInsect *o, s16 *p);
+void MuseumInsect_HopperHop(MuseumInsect *o);
 void MuseumInsect_RunHopper(void *o_);
-s32 MuseumInsect_DragonflyPickPerch(Obj_c4bc *o);
-void MuseumInsect_DragonflyAvoidWall(Obj_c4bc *o);
-void MuseumInsect_DragonflyFlyTo(Obj_c4bc *o);
-void MuseumInsect_DragonflyHover(Obj_c4bc *o);
-void MuseumInsect_DragonflyLand(Obj_c4bc *o);
+s32 MuseumInsect_DragonflyPickPerch(MuseumInsect *o);
+void MuseumInsect_DragonflyAvoidWall(MuseumInsect *o);
+void MuseumInsect_DragonflyFlyTo(MuseumInsect *o);
+void MuseumInsect_DragonflyHover(MuseumInsect *o);
+void MuseumInsect_DragonflyLand(MuseumInsect *o);
 void MuseumInsect_RunDragonfly(void *o_);
-void MuseumInsect_ButterflyFlapHeight(Unk_ov004_0223ceb8 *self, s16 *p);
-void MuseumInsect_ButterflyFly(Unk_ov004_0223ceb8 *self);
+void MuseumInsect_ButterflyFlapHeight(MuseumInsect *self, s16 *p);
+void MuseumInsect_ButterflyFly(MuseumInsect *self);
 void MuseumInsect_RunButterfly(void *self_);
 s32 MuseumInsect_UpdateAlertLevel(void *self_, void *out_);
 s32 MuseumInsect_TickAlert(void *self_);
 void MuseumInsect_TurnToTarget(void *self_, u32 a, s32 b);
 s32 MuseumInsect_GetEscapeHeading(s32 a, s32 b);
-void MuseumInsect_GetHomeDelta(Unk_ov004_0223ceb8 *self, s16 *a, s32 *b, Unk_ov004_0223ceb8_Vec *c);
+void MuseumInsect_GetHomeDelta(MuseumInsect *self, s16 *a, s32 *b, VecFx32 *c);
 s32 MuseumInsect_CheckScared(void *self_);
 void MuseumInsect_BobHeight(void *self_, u32 a, s32 b, s32 c);
 void MuseumInsect_Wander(void *self_, s32 a, s32 b, u32 c);
@@ -906,16 +448,14 @@ void MuseumInsect_FlapWings(void *o_);
 void MuseumInsect_PointAtAngle(void *out_, void *base_, u32 ang, s32 rad);
 s16 MuseumInsect_RandHeading();
 void MuseumInsect_MakeStepDir(void *v_, s32 a);
-void MuseumInsect_SetProbePoints(Obj_d800 *o);
-u8 MuseumInsect_ProbeWalls(Obj_d800 *o);
-u8 MuseumInsect_ProbeFloor(Obj_d800 *o);
+void MuseumInsect_SetProbePoints(MuseumInsect *o);
+u8 MuseumInsect_ProbeWalls(MuseumInsect *o);
+u8 MuseumInsect_ProbeFloor(MuseumInsect *o);
 u8 MuseumInsect_CheckWallsAhead(void *o_);
 u8 MuseumInsect_CheckFloorAhead(void *o_);
 extern u8 gCurrentHeap[];
-extern u8 data_0213b91c[];
-extern u8 data_0213b954[];
 extern MuseumInsectParam sMuseumInsectParams[];
-extern Elem_7690 sMuseumInsects[0x20];
+extern MuseumInsect sMuseumInsects[0x20];
 BOOL AnimModel_allocAnmObj(void *self, u32 a);
 u32 func_02106788(u32 a);
 u32 func_021067a4(u32 a, s32 b);
@@ -1049,43 +589,43 @@ void func_ov004_02237690(void *p);
 
 
 extern "C" {
-void _ZN18Unk_ov004_0223943415setupLanternFlyEv(void *self);
-void _ZN18Unk_ov004_0223943418setupEveningCicadaEv(void *self);
-void _ZN18Unk_ov004_0223943417setupWalkerCicadaEv(void *self);
-void _ZN18Unk_ov004_0223943417setupRobustCicadaEv(void *self);
-void _ZN18Unk_ov004_0223943416setupBrownCicadaEv(void *self);
-void _ZN18Unk_ov004_0223943412updateCicadaEv(void *self);
-void _ZN18Unk_ov004_0223943416setupOakSilkMothEv(void *self);
-void _ZN18Unk_ov004_0223943417setupWalkingstickEv(void *self);
-void _ZN18Unk_ov004_0223943418setupGoliathBeetleEv(void *self);
-void _ZN18Unk_ov004_0223943417setupScarabBeetleEv(void *self);
-void _ZN18Unk_ov004_0223943416setupRainbowStagEv(void *self);
-void _ZN18Unk_ov004_0223943419setupLonghornBeetleEv(void *self);
-void _ZN18Unk_ov004_0223943416setupFruitBeetleEv(void *self);
-void _ZN18Unk_ov004_0223943416setupJewelBeetleEv(void *self);
-void _ZN18Unk_ov004_0223943416setupGiantBeetleEv(void *self);
-void _ZN18Unk_ov004_0223943415setupStagBeetleEv(void *self);
-void _ZN18Unk_ov004_0223943418setupSawStagBeetleEv(void *self);
-void _ZN18Unk_ov004_0223943419setupDynastidBeetleEv(void *self);
-void _ZN18Unk_ov004_0223943416setupAtlasBeetleEv(void *self);
-void _ZN18Unk_ov004_0223943419setupElephantBeetleEv(void *self);
-void _ZN18Unk_ov004_0223943419setupHerculesBeetleEv(void *self);
-void _ZN18Unk_ov004_0223943413updatePerchedEv(void *self);
-void _ZN18Unk_ov004_0223943414updateMosquitoEv(void *self);
-void _ZN18Unk_ov004_0223943413setupMosquitoEv(void *self);
-void _ZN18Unk_ov004_0223943413updateFireflyEv(void *self);
-void _ZN18Unk_ov004_0223943412setupFireflyEv(void *self);
-void _ZN18Unk_ov004_022394349setupMothEv(void *self);
-void _ZN18Unk_ov004_0223943410updateMothEv(void *self);
-void _ZN18Unk_ov004_0223943413setupBirdwingEv(void *self);
-void _ZN18Unk_ov004_0223943411setupAgriasEv(void *self);
-void _ZN18Unk_ov004_0223943412setupEmperorEv(void *self);
-void _ZN18Unk_ov004_0223943412setupMonarchEv(void *self);
-void _ZN18Unk_ov004_0223943412setupPeacockEv(void *self);
-void _ZN18Unk_ov004_0223943419setupTigerButterflyEv(void *self);
-void _ZN18Unk_ov004_0223943420setupYellowButterflyEv(void *self);
-void _ZN18Unk_ov004_0223943420setupCommonButterflyEv(void *self);
-void _ZN18Unk_ov004_0223943415updateButterflyEv(void *self);
+void _ZN12MuseumInsect15setupLanternFlyEv(void *self);
+void _ZN12MuseumInsect18setupEveningCicadaEv(void *self);
+void _ZN12MuseumInsect17setupWalkerCicadaEv(void *self);
+void _ZN12MuseumInsect17setupRobustCicadaEv(void *self);
+void _ZN12MuseumInsect16setupBrownCicadaEv(void *self);
+void _ZN12MuseumInsect12updateCicadaEv(void *self);
+void _ZN12MuseumInsect16setupOakSilkMothEv(void *self);
+void _ZN12MuseumInsect17setupWalkingstickEv(void *self);
+void _ZN12MuseumInsect18setupGoliathBeetleEv(void *self);
+void _ZN12MuseumInsect17setupScarabBeetleEv(void *self);
+void _ZN12MuseumInsect16setupRainbowStagEv(void *self);
+void _ZN12MuseumInsect19setupLonghornBeetleEv(void *self);
+void _ZN12MuseumInsect16setupFruitBeetleEv(void *self);
+void _ZN12MuseumInsect16setupJewelBeetleEv(void *self);
+void _ZN12MuseumInsect16setupGiantBeetleEv(void *self);
+void _ZN12MuseumInsect15setupStagBeetleEv(void *self);
+void _ZN12MuseumInsect18setupSawStagBeetleEv(void *self);
+void _ZN12MuseumInsect19setupDynastidBeetleEv(void *self);
+void _ZN12MuseumInsect16setupAtlasBeetleEv(void *self);
+void _ZN12MuseumInsect19setupElephantBeetleEv(void *self);
+void _ZN12MuseumInsect19setupHerculesBeetleEv(void *self);
+void _ZN12MuseumInsect13updatePerchedEv(void *self);
+void _ZN12MuseumInsect14updateMosquitoEv(void *self);
+void _ZN12MuseumInsect13setupMosquitoEv(void *self);
+void _ZN12MuseumInsect13updateFireflyEv(void *self);
+void _ZN12MuseumInsect12setupFireflyEv(void *self);
+void _ZN12MuseumInsect9setupMothEv(void *self);
+void _ZN12MuseumInsect10updateMothEv(void *self);
+void _ZN12MuseumInsect13setupBirdwingEv(void *self);
+void _ZN12MuseumInsect11setupAgriasEv(void *self);
+void _ZN12MuseumInsect12setupEmperorEv(void *self);
+void _ZN12MuseumInsect12setupMonarchEv(void *self);
+void _ZN12MuseumInsect12setupPeacockEv(void *self);
+void _ZN12MuseumInsect19setupTigerButterflyEv(void *self);
+void _ZN12MuseumInsect20setupYellowButterflyEv(void *self);
+void _ZN12MuseumInsect20setupCommonButterflyEv(void *self);
+void _ZN12MuseumInsect15updateButterflyEv(void *self);
 }
 
 extern "C" ProcProfile sMuseumInsectRoomProfile = {MuseumInsectRoom_Create, 0xbe, 0xc1};
@@ -1152,27 +692,27 @@ extern "C" MuseumInsectParam sMuseumInsectParams[57] = {
     {0, 0, 0xb00},
 };
 extern "C" MuseumInsectBehavior sMuseumInsectBehaviors[57] = {
-    {(void (*)(void *))_ZN18Unk_ov004_0223943420setupCommonButterflyEv, (u32)_ZN18Unk_ov004_0223943415updateButterflyEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943420setupYellowButterflyEv, (u32)_ZN18Unk_ov004_0223943415updateButterflyEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943419setupTigerButterflyEv, (u32)_ZN18Unk_ov004_0223943415updateButterflyEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943412setupPeacockEv, (u32)_ZN18Unk_ov004_0223943415updateButterflyEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943412setupMonarchEv, (u32)_ZN18Unk_ov004_0223943415updateButterflyEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943412setupEmperorEv, (u32)_ZN18Unk_ov004_0223943415updateButterflyEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943411setupAgriasEv, (u32)_ZN18Unk_ov004_0223943415updateButterflyEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943413setupBirdwingEv, (u32)_ZN18Unk_ov004_0223943415updateButterflyEv},
-    {(void (*)(void *))_ZN18Unk_ov004_022394349setupMothEv, (u32)_ZN18Unk_ov004_0223943410updateMothEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943416setupOakSilkMothEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect20setupCommonButterflyEv, (u32)_ZN12MuseumInsect15updateButterflyEv},
+    {(void (*)(void *))_ZN12MuseumInsect20setupYellowButterflyEv, (u32)_ZN12MuseumInsect15updateButterflyEv},
+    {(void (*)(void *))_ZN12MuseumInsect19setupTigerButterflyEv, (u32)_ZN12MuseumInsect15updateButterflyEv},
+    {(void (*)(void *))_ZN12MuseumInsect12setupPeacockEv, (u32)_ZN12MuseumInsect15updateButterflyEv},
+    {(void (*)(void *))_ZN12MuseumInsect12setupMonarchEv, (u32)_ZN12MuseumInsect15updateButterflyEv},
+    {(void (*)(void *))_ZN12MuseumInsect12setupEmperorEv, (u32)_ZN12MuseumInsect15updateButterflyEv},
+    {(void (*)(void *))_ZN12MuseumInsect11setupAgriasEv, (u32)_ZN12MuseumInsect15updateButterflyEv},
+    {(void (*)(void *))_ZN12MuseumInsect13setupBirdwingEv, (u32)_ZN12MuseumInsect15updateButterflyEv},
+    {(void (*)(void *))_ZN12MuseumInsect9setupMothEv, (u32)_ZN12MuseumInsect10updateMothEv},
+    {(void (*)(void *))_ZN12MuseumInsect16setupOakSilkMothEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
     {(void (*)(void *))MuseumInsect_SetupHoneybee, (u32)MuseumInsect_UpdateHoneybee},
     {(void (*)(void *))MuseumInsect_SetupBee, (u32)MuseumInsect_UpdateBee},
     {(void (*)(void *))MuseumInsect_SetupLongLocust, (u32)MuseumInsect_UpdateHopper},
     {(void (*)(void *))MuseumInsect_SetupMigratoryLocust, (u32)MuseumInsect_UpdateHopper},
     {(void (*)(void *))MuseumInsect_SetupMantis, (u32)MuseumInsect_UpdateWalker},
     {(void (*)(void *))MuseumInsect_SetupOrchidMantis, (u32)MuseumInsect_UpdateWalker},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943416setupBrownCicadaEv, (u32)_ZN18Unk_ov004_0223943412updateCicadaEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943417setupRobustCicadaEv, (u32)_ZN18Unk_ov004_0223943412updateCicadaEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943417setupWalkerCicadaEv, (u32)_ZN18Unk_ov004_0223943412updateCicadaEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943418setupEveningCicadaEv, (u32)_ZN18Unk_ov004_0223943412updateCicadaEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943415setupLanternFlyEv, (u32)_ZN18Unk_ov004_0223943412updateCicadaEv},
+    {(void (*)(void *))_ZN12MuseumInsect16setupBrownCicadaEv, (u32)_ZN12MuseumInsect12updateCicadaEv},
+    {(void (*)(void *))_ZN12MuseumInsect17setupRobustCicadaEv, (u32)_ZN12MuseumInsect12updateCicadaEv},
+    {(void (*)(void *))_ZN12MuseumInsect17setupWalkerCicadaEv, (u32)_ZN12MuseumInsect12updateCicadaEv},
+    {(void (*)(void *))_ZN12MuseumInsect18setupEveningCicadaEv, (u32)_ZN12MuseumInsect12updateCicadaEv},
+    {(void (*)(void *))_ZN12MuseumInsect15setupLanternFlyEv, (u32)_ZN12MuseumInsect12updateCicadaEv},
     {(void (*)(void *))MuseumInsect_SetupRedDragonfly, (u32)MuseumInsect_UpdateDragonfly},
     {(void (*)(void *))MuseumInsect_SetupDarnerDragonfly, (u32)MuseumInsect_UpdateDragonfly},
     {(void (*)(void *))MuseumInsect_SetupBandedDragonfly, (u32)MuseumInsect_UpdateDragonfly},
@@ -1183,26 +723,26 @@ extern "C" MuseumInsectBehavior sMuseumInsectBehaviors[57] = {
     {(void (*)(void *))MuseumInsect_SetupBellCricket, (u32)MuseumInsect_UpdateHopper},
     {(void (*)(void *))MuseumInsect_SetupGrasshopper, (u32)MuseumInsect_UpdateHopper},
     {(void (*)(void *))MuseumInsect_SetupMoleCricket, (u32)MuseumInsect_UpdateMoleCricket},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943417setupWalkingstickEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect17setupWalkingstickEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
     {(void (*)(void *))MuseumInsect_SetupLadybug, (u32)MuseumInsect_UpdateWalker},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943416setupFruitBeetleEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943417setupScarabBeetleEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect16setupFruitBeetleEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect17setupScarabBeetleEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
     {(void (*)(void *))MuseumInsect_SetupDungBeetle, (u32)MuseumInsect_UpdateDungBeetle},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943418setupGoliathBeetleEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943412setupFireflyEv, (u32)_ZN18Unk_ov004_0223943413updateFireflyEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943416setupJewelBeetleEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943419setupLonghornBeetleEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943418setupSawStagBeetleEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943415setupStagBeetleEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943416setupGiantBeetleEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943416setupRainbowStagEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943419setupDynastidBeetleEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943416setupAtlasBeetleEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943419setupElephantBeetleEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943419setupHerculesBeetleEv, (u32)_ZN18Unk_ov004_0223943413updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect18setupGoliathBeetleEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect12setupFireflyEv, (u32)_ZN12MuseumInsect13updateFireflyEv},
+    {(void (*)(void *))_ZN12MuseumInsect16setupJewelBeetleEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect19setupLonghornBeetleEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect18setupSawStagBeetleEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect15setupStagBeetleEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect16setupGiantBeetleEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect16setupRainbowStagEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect19setupDynastidBeetleEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect16setupAtlasBeetleEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect19setupElephantBeetleEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
+    {(void (*)(void *))_ZN12MuseumInsect19setupHerculesBeetleEv, (u32)_ZN12MuseumInsect13updatePerchedEv},
     {(void (*)(void *))MuseumInsect_SetupFlea, (u32)MuseumInsect_UpdateFlea},
     {(void (*)(void *))MuseumInsect_SetupPillBug, (u32)MuseumInsect_UpdatePillBug},
-    {(void (*)(void *))_ZN18Unk_ov004_0223943413setupMosquitoEv, (u32)_ZN18Unk_ov004_0223943414updateMosquitoEv},
+    {(void (*)(void *))_ZN12MuseumInsect13setupMosquitoEv, (u32)_ZN12MuseumInsect14updateMosquitoEv},
     {(void (*)(void *))MuseumInsect_SetupFly, (u32)MuseumInsect_UpdateFly},
     {(void (*)(void *))MuseumInsect_SetupCockroach, (u32)MuseumInsect_UpdateCockroach},
     {(void (*)(void *))MuseumInsect_SetupSpider, (u32)MuseumInsect_UpdateSpider},
@@ -1213,21 +753,21 @@ extern "C" MuseumInsectBehavior sMuseumInsectBehaviors[57] = {
 extern "C" {
 u8 sMuseumInsectFrame;
 }
-Elem_7690 sMuseumInsects[0x20];
+MuseumInsect sMuseumInsects[0x20];
 
 extern "C" u8 MuseumInsect_CheckFloorAhead(void *o_) {
-    Obj_d800 *o = (Obj_d800 *)o_;
+    MuseumInsect *o = (MuseumInsect *)o_;
     MuseumInsect_SetProbePoints(o);
     return MuseumInsect_ProbeFloor(o);
 }
 
 extern "C" u8 MuseumInsect_CheckWallsAhead(void *o_) {
-    Obj_d800 *o = (Obj_d800 *)o_;
+    MuseumInsect *o = (MuseumInsect *)o_;
     MuseumInsect_SetProbePoints(o);
     return MuseumInsect_ProbeWalls(o);
 }
 
-extern "C" u8 MuseumInsect_ProbeFloor(Obj_d800 *o) {
+extern "C" u8 MuseumInsect_ProbeFloor(MuseumInsect *o) {
     u8 b = o->insectIndex;
     u8 r = 0;
     V3_d800 *p = &o->probePoints[0];
@@ -1237,7 +777,7 @@ extern "C" u8 MuseumInsect_ProbeFloor(Obj_d800 *o) {
         g.initAtPos((Unk_0203389c_Vec *)(p), 0, 1);
         d = g.getHeight(1);
     }
-    if (d <= 0 || d > p->y || (b == 0x1e && MuseumInsect_ClampToBounds((Unk_ov004_0223d800_Bounds *)o, p) != 0)) {
+    if (d <= 0 || d > p->y || (b == 0x1e && MuseumInsect_ClampToBounds((MuseumInsect *)o, p) != 0)) {
         r++;
     }
     {
@@ -1245,13 +785,13 @@ extern "C" u8 MuseumInsect_ProbeFloor(Obj_d800 *o) {
         g.initAtPos((Unk_0203389c_Vec *)(p + 1), 0, 1);
         d = g.getHeight(1);
     }
-    if (d <= 0 || d > p[1].y || (b == 0x1e && MuseumInsect_ClampToBounds((Unk_ov004_0223d800_Bounds *)o, p + 1) != 0)) {
+    if (d <= 0 || d > p[1].y || (b == 0x1e && MuseumInsect_ClampToBounds((MuseumInsect *)o, p + 1) != 0)) {
         r = r + 2;
     }
     return r;
 }
 
-extern "C" u8 MuseumInsect_ProbeWalls(Obj_d800 *o) {
+extern "C" u8 MuseumInsect_ProbeWalls(MuseumInsect *o) {
     u8 r = 0;
     V3_d800 *p = &o->probePoints[0];
     s32 lim = o->position.y;
@@ -1270,7 +810,7 @@ extern "C" u8 MuseumInsect_ProbeWalls(Obj_d800 *o) {
     return r;
 }
 
-extern "C" void MuseumInsect_SetProbePoints(Obj_d800 *o) {
+extern "C" void MuseumInsect_SetProbePoints(MuseumInsect *o) {
     V3_d800 *b = &o->position;
     s32 a = o->yaw;
     V3_d800 *out = o->probePoints;
@@ -1319,9 +859,9 @@ extern "C" void MuseumInsect_PointAtAngle(void *out_, void *base_, u32 ang, s32 
 }
 
 extern "C" void MuseumInsect_FlapWings(void *o_) {
-    u8 *o = (u8 *)o_;
-    Unk_ov004_0223d8e8_Sub *p = (Unk_ov004_0223d8e8_Sub *)(o + 0xb0);
-    if (p->curFrame.mid == 1) {
+    MuseumInsect *o = (MuseumInsect *)o_;
+    AnimModel *p = &o->model;
+    if (((Unk_ov004_0223b1e8_Bits &)p->curFrame).mid == 1) {
         AnimModel_setFrame(p, 2);
     } else {
         AnimModel_setFrame(p, 1);
@@ -1365,16 +905,16 @@ extern "C" BOOL MuseumInsect_RevertIfOffFloor(void *o_, void *v_) {
 }
 
 extern "C" u8 MuseumInsect_ClampToBounds(void *o_, void *v_) {
-    Unk_ov004_0223d800_Bounds *o = (Unk_ov004_0223d800_Bounds *)o_;
+    MuseumInsect *o = (MuseumInsect *)o_;
     V3_d800 *v = (V3_d800 *)v_;
     u8 r;
     s32 *q;
     s32 *p;
-    q = &o->boundsMaxX;
-    p = &o->boundsMinX;
+    q = &o->boundsMax.x;
+    p = &o->boundsMin.x;
     r = 0;
-    if (v->x < o->boundsMinX) {
-        v->x = o->boundsMinX;
+    if (v->x < o->boundsMin.x) {
+        v->x = o->boundsMin.x;
         r = 1;
     } else if (v->x > q[0]) {
         v->x = q[0];
@@ -1391,12 +931,12 @@ extern "C" u8 MuseumInsect_ClampToBounds(void *o_, void *v_) {
 }
 
 extern "C" void MuseumInsect_ApproachHome(void *self_) {
-    Unk_ov004_0223ceb8 *self = (Unk_ov004_0223ceb8 *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     if (MuseumInsect_TickTimer(self) != 0) {
-        Unk_ov004_0223ceb8_Vec *r4 = &self->position;
+        VecFx32 *r4 = &self->position;
         s16 a;
         s32 b;
-        Unk_ov004_0223ceb8_Vec c;
+        VecFx32 c;
         MuseumInsect_GetHomeDelta(self, &a, &b, &c);
         if (b <= 0x400 && r4->y <= c.y + 0x200 && r4->y >= c.y - 0x200) {
             self->moveState = 6;
@@ -1422,21 +962,21 @@ extern "C" void MuseumInsect_ApproachHome(void *self_) {
 }
 
 extern "C" void MuseumInsect_StateRest(void *self_) {
-    Unk_ov004_0223ceb8 *self = (Unk_ov004_0223ceb8 *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     u8 st = *(u8 *)&self->insectIndex;
     MuseumInsect_CheckScared(self);
     if (MuseumInsect_TickTimer(self) == 0 || self->isActive == 0) {
         if (self->isAlerted == 0) {
             if (st == 0xa || st == 0x33) {
-                if (self->model.curFrame.mid != 0) {
+                if (((Unk_ov004_0223b1e8_Bits &)self->model.curFrame).mid != 0) {
                     AnimModel_setFrame(&self->model, 0);
                 }
-            } else if (self->model.numFrames.mid < 0xc) {
-                AnimFrameCtrl_setup(self->model.animFrameCtrl, 0x11, 1, 0x1000, 9);
-            } else if (self->model.curFrame.mid == 0x10) {
+            } else if (((Unk_ov004_0223b1e8_Bits &)self->model.numFrames).mid < 0xc) {
+                AnimFrameCtrl_setup(&(AnimFrameCtrl &)self->model, 0x11, 1, 0x1000, 9);
+            } else if (((Unk_ov004_0223b1e8_Bits &)self->model.curFrame).mid == 0x10) {
                 if (self->isActive != 0 || sMuseumInsectFrame % 10 == 0) {
                     if (Random_GlobalBelow(100) > 0x5f) {
-                        AnimFrameCtrl_setup(self->model.animFrameCtrl, 0x11, 1, 0x1000, 9);
+                        AnimFrameCtrl_setup(&(AnimFrameCtrl &)self->model, 0x11, 1, 0x1000, 9);
                     }
                 }
             }
@@ -1447,14 +987,14 @@ extern "C" void MuseumInsect_StateRest(void *self_) {
     self->targetHeight = self->baseHeight;
     self->stateTimer = (Random_GlobalBelow(10) + 0x10) * 20;
     if (st != 0xa && st != 0x33) {
-        AnimFrameCtrl_setup(self->model.animFrameCtrl, 9, 0, self->flyAnimSpeed, 0);
+        AnimFrameCtrl_setup(&(AnimFrameCtrl &)self->model, 9, 0, self->flyAnimSpeed, 0);
     } else {
         AnimModel_setFrame(&self->model, 1);
     }
 }
 
 extern "C" s32 MuseumInsect_TickTimer(void *self_) {
-    Unk_ov004_0223ceb8 *self = (Unk_ov004_0223ceb8 *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     s32 t = (s16)self->stateTimer;
     if (t > 0) {
         self->stateTimer = t - 1;
@@ -1464,13 +1004,13 @@ extern "C" s32 MuseumInsect_TickTimer(void *self_) {
 }
 
 extern "C" BOOL MuseumInsect_PlaySe(void *self_, s32 b) {
-    Unk_ov004_0223ceb8 *self = (Unk_ov004_0223ceb8 *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     s32 id = MuseumInsect_GetSe(self->insectIndex, b);
     if (id >= 0) {
         if (b == 1) {
-            SndEnvChannel_callRequestSustained(self->sound, id);
+            SndEnvChannel_callRequestSustained(&self->sound, id);
         } else {
-            SndEnvChannel_callRequest(self->sound, id);
+            SndEnvChannel_callRequest(&self->sound, id);
         }
         return TRUE;
     }
@@ -1505,12 +1045,12 @@ extern "C" s32 MuseumInsect_GetSe(s32 a, s32 b) {
 }
 
 extern "C" void MuseumInsect_Wander(void *self_, s32 a, s32 b, u32 c) {
-    Unk_ov004_0223ceb8 *self = (Unk_ov004_0223ceb8 *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     s32 r6 = self->yaw;
     u8 r7 = self->sideDir;
     u32 rnd = (u8)Random_GlobalBelow(100);
-    Unk_ov004_0223ceb8_Vec *v = &self->position;
-    Unk_ov004_0223ceb8_Vec o;
+    VecFx32 *v = &self->position;
+    VecFx32 o;
     if (sMuseumInsectFrame % b == 0 && rnd > c) {
         if (r7 == 0) {
             r7 = 1;
@@ -1538,9 +1078,9 @@ extern "C" void MuseumInsect_Wander(void *self_, s32 a, s32 b, u32 c) {
 }
 
 extern "C" void MuseumInsect_BobHeight(void *self_, u32 a, s32 b, s32 c) {
-    Unk_ov004_0223ceb8 *self = (Unk_ov004_0223ceb8 *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     s32 r5;
-    Unk_ov004_0223ceb8_Vec *v = &self->position;
+    VecFx32 *v = &self->position;
     s32 idx = ((u16)a >> 4) * 2;
     r5 = FX_Div(data_02135f44[idx], c);
     s32 r7 = b;
@@ -1553,7 +1093,7 @@ extern "C" void MuseumInsect_BobHeight(void *self_, u32 a, s32 b, s32 c) {
 }
 
 extern "C" s32 MuseumInsect_CheckScared(void *self_) {
-    Unk_ov004_0223ceb8 *self = (Unk_ov004_0223ceb8 *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     MuseumInsectPlayerInfo rec;
     s32 r = MuseumInsect_UpdateAlertLevel(self, &rec);
     if (rec.hasPlayer != 0 && self->isAlerted == 0 && self->alertLevel >= self->alertThreshold) {
@@ -1566,9 +1106,9 @@ extern "C" s32 MuseumInsect_CheckScared(void *self_) {
     return r;
 }
 
-extern "C" void MuseumInsect_GetHomeDelta(Unk_ov004_0223ceb8 *self, s16 *a, s32 *b, Unk_ov004_0223ceb8_Vec *c) {
-    Unk_ov004_0223ceb8_Vec *p6 = &self->position;
-    Unk_ov004_0223ceb8_Vec *pv = &self->homePos;
+extern "C" void MuseumInsect_GetHomeDelta(MuseumInsect *self, s16 *a, s32 *b, VecFx32 *c) {
+    VecFx32 *p6 = &self->position;
+    VecFx32 *pv = &self->homePos;
     c->x = pv->x;
     c->y = pv->y;
     c->z = pv->z;
@@ -1620,7 +1160,7 @@ extern "C" s32 MuseumInsect_GetEscapeHeading(s32 a, s32 b) {
 }
 
 extern "C" void MuseumInsect_TurnToTarget(void *self_, u32 a, s32 b) {
-    Unk_ov004_0223ceb8 *self = (Unk_ov004_0223ceb8 *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     s16 sv[2];
     sv[0] = self->yaw;
     if (Math_StepAngle(sv, self->targetAngle, 0xe38) != 0) {
@@ -1631,13 +1171,13 @@ extern "C" void MuseumInsect_TurnToTarget(void *self_, u32 a, s32 b) {
 }
 
 extern "C" s32 MuseumInsect_TickAlert(void *self_) {
-    Unk_ov004_0223ceb8 *self = (Unk_ov004_0223ceb8 *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     MuseumInsectPlayerInfo rec;
     return MuseumInsect_UpdateAlertLevel(self, &rec);
 }
 
 extern "C" s32 MuseumInsect_UpdateAlertLevel(void *self_, void *out_) {
-    Unk_ov004_0223ceb8 *self = (Unk_ov004_0223ceb8 *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     MuseumInsectPlayerInfo *out = (MuseumInsectPlayerInfo *)out_;
     volatile s32 old;
     s16 r4 = self->alertLevel;
@@ -1647,7 +1187,7 @@ extern "C" s32 MuseumInsect_UpdateAlertLevel(void *self_, void *out_) {
     if (p != 0) {
         out->hasPlayer = 1;
         out->playerSpeed = *(s32 *)(p + 0x98);
-        Unk_ov004_0223ceb8_Vec *pv = (Unk_ov004_0223ceb8_Vec *)(p + 0x5c);
+        VecFx32 *pv = (VecFx32 *)(p + 0x5c);
         out->playerPos.x = pv->x;
         out->playerPos.y = pv->y;
         out->playerPos.z = pv->z;
@@ -1690,7 +1230,7 @@ extern "C" s32 MuseumInsect_UpdateAlertLevel(void *self_, void *out_) {
 }
 
 extern "C" void MuseumInsect_RunButterfly(void *self_) {
-    Unk_ov004_0223ceb8 *self = (Unk_ov004_0223ceb8 *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     switch (self->moveState) {
     case 0:
         MuseumInsect_ButterflyFly(self);
@@ -1706,14 +1246,14 @@ extern "C" void MuseumInsect_RunButterfly(void *self_) {
     }
 }
 
-extern "C" void MuseumInsect_ButterflyFly(Unk_ov004_0223ceb8 *self) {
-    Unk_ov004_0223ceb8_Vec *v = &self->position;
+extern "C" void MuseumInsect_ButterflyFly(MuseumInsect *self) {
+    VecFx32 *v = &self->position;
     s16 *pa = &self->stateCounter;
     s32 t = *pa;
     t = t * (0x44 - t * 5);
-    Unk_ov004_0223ceb8_Sub *sb = &self->model;
-    if (sb->numFrames.mid > 9) {
-        AnimFrameCtrl_setup(sb->animFrameCtrl, 9, 0, self->flyAnimSpeed, 0);
+    AnimModel *sb = &self->model;
+    if (((Unk_ov004_0223b1e8_Bits &)sb->numFrames).mid > 9) {
+        AnimFrameCtrl_setup(&(AnimFrameCtrl &)*sb, 9, 0, self->flyAnimSpeed, 0);
     }
     if (self->dirFlag != 0 && t >= 0) {
         t = func_01ffcb0c(t, 0x2000);
@@ -1727,11 +1267,11 @@ extern "C" void MuseumInsect_ButterflyFly(Unk_ov004_0223ceb8 *self) {
     MuseumInsect_Wander(self, 0xaaa, 0x14, 0x3c);
 }
 
-extern "C" void MuseumInsect_ButterflyFlapHeight(Unk_ov004_0223ceb8 *self, s16 *p) {
+extern "C" void MuseumInsect_ButterflyFlapHeight(MuseumInsect *self, s16 *p) {
     s32 hi = 0x300;
     s32 a = self->baseHeight;
     u8 flag = self->dirFlag;
-    Unk_ov004_0223ceb8_Vec *v = &self->position;
+    VecFx32 *v = &self->position;
     s32 b = self->targetHeight;
     if (a != b) {
         a = b;
@@ -1762,7 +1302,7 @@ extern "C" void MuseumInsect_ButterflyFlapHeight(Unk_ov004_0223ceb8 *self, s16 *
 
 extern "C" void MuseumInsect_RunDragonfly(void *o_)
 {
-    Obj_c4bc *o = (Obj_c4bc *)o_;
+    MuseumInsect *o = (MuseumInsect *)o_;
     u8 st = (u8)o->moveState;
     if (st != 0x19) {
         MuseumInsect_FlapWings(o);
@@ -1825,12 +1365,12 @@ extern "C" void MuseumInsect_RunDragonfly(void *o_)
         } else if (o->isPerched != 0) {
             if (sMuseumInsectFrame % 20 == 0) {
                 u32 r = (u8)Random_GlobalBelow(100);
-                if (o->animFrame.mid == 0 && r > 0x5c) {
+                if (((Unk_ov004_0223b1e8_Bits &)o->model.curFrame).mid == 0 && r > 0x5c) {
                     AnimModel_setFrame(&o->model, 2);
                 } else if (r > 0x32) {
                     AnimModel_setFrame(&o->model, 0);
                 }
-            } else if (o->animFrame.mid != 0) {
+            } else if (((Unk_ov004_0223b1e8_Bits &)o->model.curFrame).mid != 0) {
                 MuseumInsect_FlapWings(o);
             }
             MuseumInsect_CheckScared(o);
@@ -1857,10 +1397,10 @@ extern "C" void MuseumInsect_RunDragonfly(void *o_)
     o->isBumped = 0;
 }
 
-extern "C" void MuseumInsect_DragonflyLand(Obj_c4bc *o)
+extern "C" void MuseumInsect_DragonflyLand(MuseumInsect *o)
 {
-    V3_c4bc *r4 = &o->position;
-    V3_c4bc *r6 = &o->homePos;
+    VecFx32 *r4 = &o->position;
+    VecFx32 *r6 = &o->homePos;
     s32 a, b;
     switch (o->insectIndex) {
     case 0x15:
@@ -1885,10 +1425,10 @@ extern "C" void MuseumInsect_DragonflyLand(Obj_c4bc *o)
     }
 }
 
-extern "C" void MuseumInsect_DragonflyHover(Obj_c4bc *o)
+extern "C" void MuseumInsect_DragonflyHover(MuseumInsect *o)
 {
     s16 *r6 = &o->stateCounter;
-    V3_c4bc *r4 = &o->position;
+    VecFx32 *r4 = &o->position;
     if (*r6 <= 0) {
         s16 t = o->moveState;
         if ((u16)(s16)(t - 12) <= 1) {
@@ -1930,12 +1470,12 @@ extern "C" void MuseumInsect_DragonflyHover(Obj_c4bc *o)
     }
 }
 
-extern "C" void MuseumInsect_DragonflyFlyTo(Obj_c4bc *o)
+extern "C" void MuseumInsect_DragonflyFlyTo(MuseumInsect *o)
 {
-    V3_c4bc *r7 = &o->targetPos;
-    V3_c4bc *r4 = &o->position;
+    VecFx32 *r7 = &o->targetPos;
+    VecFx32 *r4 = &o->position;
     s32 r6 = o->moveSpeed;
-    if (!Math_ApproachVecXZ(r4, r7, r6, 0x1000, o->unk_4c)) {
+    if (!Math_ApproachVecXZ(r4, r7, r6, 0x1000, o->speciesWork)) {
         o->moveState = 25;
     } else {
         o->yaw = Math_AngleXZ(r4, r7);
@@ -1949,7 +1489,7 @@ extern "C" void MuseumInsect_DragonflyFlyTo(Obj_c4bc *o)
     }
 }
 
-extern "C" void MuseumInsect_DragonflyAvoidWall(Obj_c4bc *o)
+extern "C" void MuseumInsect_DragonflyAvoidWall(MuseumInsect *o)
 {
     s32 r = MuseumInsect_CheckWallsAhead(o);
     if (r != 0) {
@@ -1972,10 +1512,10 @@ extern "C" void MuseumInsect_DragonflyAvoidWall(Obj_c4bc *o)
     }
 }
 
-extern "C" s32 MuseumInsect_DragonflyPickPerch(Obj_c4bc *o)
+extern "C" s32 MuseumInsect_DragonflyPickPerch(MuseumInsect *o)
 {
     V3z_c8d4 a, b;
-    V3_c4bc *p;
+    VecFx32 *p;
     s32 r5, r4, r3, r2, s0, s4;
     s32 d1, d2;
     p = &o->position;
@@ -2008,14 +1548,14 @@ extern "C" s32 MuseumInsect_DragonflyPickPerch(Obj_c4bc *o)
     d1 = Abs_c8d4(p->x - r5) + Abs_c8d4(p->z - r4);
     d2 = Abs_c8d4(p->x - r3) + Abs_c8d4(p->z - r2);
     if (d1 < d2) {
-        V3_c4bc *q = &o->homePos;
+        VecFx32 *q = &o->homePos;
         q->x = r5;
         q->y = s0;
         q->z = r4;
         return d1;
     }
     {
-        V3_c4bc *q = &o->homePos;
+        VecFx32 *q = &o->homePos;
         q->x = r3;
         q->y = s4;
         q->z = r2;
@@ -2025,7 +1565,7 @@ extern "C" s32 MuseumInsect_DragonflyPickPerch(Obj_c4bc *o)
 
 extern "C" void MuseumInsect_RunHopper(void *o_)
 {
-    Obj_c4bc *o = (Obj_c4bc *)o_;
+    MuseumInsect *o = (MuseumInsect *)o_;
     switch (o->moveState) {
     case 3:
     case 15:
@@ -2070,11 +1610,11 @@ extern "C" void MuseumInsect_RunHopper(void *o_)
     o->isBumped = 0;
 }
 
-extern "C" void MuseumInsect_HopperHop(Obj_c4bc *o)
+extern "C" void MuseumInsect_HopperHop(MuseumInsect *o)
 {
-    V3_c4bc *r6 = &o->targetPos;
-    V3_c4bc *r4 = &o->position;
-    volatile V3_c4bc sv;
+    VecFx32 *r6 = &o->targetPos;
+    VecFx32 *r4 = &o->position;
+    volatile VecFx32 sv;
     s32 t;
     s32 r7;
     sv.x = r4->x;
@@ -2108,7 +1648,7 @@ extern "C" void MuseumInsect_HopperHop(Obj_c4bc *o)
         if (!Math_ApproachS32(&r4->y, t, r7, 0x1000, 0x266)) {
             o->subCounter = (Random_GlobalBelow(9) + 2) * 20;
             o->moveState = 25;
-            AnimModel_setFrame(&o->isPerched + 2, 0);
+            AnimModel_setFrame(&o->model, 0);
             *r6 = *r4;
             if (o->isAlerted != 0) {
                 o->alertLevel = (u8)(o->alertThreshold - 10);
@@ -2118,7 +1658,7 @@ extern "C" void MuseumInsect_HopperHop(Obj_c4bc *o)
     }
 }
 
-extern "C" s32 MuseumInsect_HopperAvoidWall(Obj_c4bc *o, s16 *p)
+extern "C" s32 MuseumInsect_HopperAvoidWall(MuseumInsect *o, s16 *p)
 {
     s32 r = MuseumInsect_CheckFloorAhead(o);
     if (r != 0) {
@@ -2129,13 +1669,13 @@ extern "C" s32 MuseumInsect_HopperAvoidWall(Obj_c4bc *o, s16 *p)
         MuseumInsect_PointAtAngle(&o->targetPos, &o->position, t, (o->travelDistance + rn) << 12);
         o->targetAngle = Math_AngleXZ(&o->position, &o->targetPos);
         o->moveState = 15;
-        o->unk_4c++;
+        o->speciesWork++;
         *p = 0;
     }
     return r;
 }
 
-extern "C" void MuseumInsect_HopperChirp(Obj_c4bc *o)
+extern "C" void MuseumInsect_HopperChirp(MuseumInsect *o)
 {
     switch (o->insectIndex) {
     case 0x1b:
@@ -2150,7 +1690,7 @@ extern "C" void MuseumInsect_HopperChirp(Obj_c4bc *o)
 
 extern "C" void MuseumInsect_RunPondSkater(void *o_)
 {
-    Obj_c4bc *o = (Obj_c4bc *)o_;
+    MuseumInsect *o = (MuseumInsect *)o_;
     switch (o->moveState) {
     case 3:
     case 15:
@@ -2172,7 +1712,7 @@ extern "C" void MuseumInsect_RunPondSkater(void *o_)
     }
 }
 
-extern "C" void MuseumInsect_PondSkaterStartGlide(Obj_c4bc *o, s16 *p)
+extern "C" void MuseumInsect_PondSkaterStartGlide(MuseumInsect *o, s16 *p)
 {
     s16 a, t;
     s16 r4;
@@ -2195,10 +1735,10 @@ extern "C" void MuseumInsect_PondSkaterStartGlide(Obj_c4bc *o, s16 *p)
         o->moveState = 4;
     }
     if (o->moveState == 4) {
-        V3_c4bc v;
+        VecFx32 v;
         o->yaw = r4;
         *p = Random_GlobalBelow(8) + 8;
-        V3_c4bc *sp_ = &o->position;
+        VecFx32 *sp_ = &o->position;
         v.x = sp_->x;
         v.y = sp_->y;
         v.z = sp_->z;
@@ -2209,21 +1749,21 @@ extern "C" void MuseumInsect_PondSkaterStartGlide(Obj_c4bc *o, s16 *p)
 
 extern "C" void MuseumInsect_PondSkaterGlide(void *self_, s16 *p)
 {
-    Obj_bb5c *self = (Obj_bb5c *)self_;
-    V3_bb5c d;
-    volatile V3_bb5c saved;
-    V3_bb5c *v = &self->position;
+    MuseumInsect *self = (MuseumInsect *)self_;
+    VecFx32 d;
+    volatile VecFx32 saved;
+    VecFx32 *v = &self->position;
     saved.x = v->x;
     saved.y = v->y;
     saved.z = v->z;
-    s32 *hi = &self->boundsMaxX;
-    s32 *lo = &self->boundsMinX;
+    s32 *hi = &self->boundsMax.x;
+    s32 *lo = &self->boundsMin.x;
     MuseumInsect_MakeStepDir(&d, self->yaw);
     self->position.x += func_01ffcb0c((*p * self->moveSpeed) << 12, d.x);
     v->z += func_01ffcb0c((*p * self->moveSpeed) << 12, d.z);
     v->y = 0x200;
     *p = *p - 1;
-    if (self->position.x < self->boundsMinX || self->position.x > hi[0] || v->z < lo[1] || v->z > hi[1]) {
+    if (self->position.x < self->boundsMin.x || self->position.x > hi[0] || v->z < lo[1] || v->z > hi[1]) {
         s32 base = -0x8000;
         v->x = saved.x;
         v->y = saved.y;
@@ -2276,7 +1816,7 @@ extern "C" s32 MuseumInsect_RandTurn8(s32 n)
 
 extern "C" void MuseumInsect_RunMosquito(void *self_)
 {
-    Obj_bb5c *self = (Obj_bb5c *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     MuseumInsect_FlapWings(self);
     MuseumInsect_PlaySe(self, 0);
     if (self->moveState == 0) {
@@ -2286,17 +1826,17 @@ extern "C" void MuseumInsect_RunMosquito(void *self_)
     }
 }
 
-extern "C" void MuseumInsect_MosquitoChase(Obj_bb5c *self, s16 *p)
+extern "C" void MuseumInsect_MosquitoChase(MuseumInsect *self, s16 *p)
 {
     u8 *b;
     struct {
         s16 t;
         s16 pad;
     } l;
-    V3_bb5c d;
+    VecFx32 d;
     b = (u8 *)PlayerActor_GetActor(4);
     if (b != 0) {
-        V3_bb5c *v = &self->position;
+        VecFx32 *v = &self->position;
         s32 dist;
         u8 *pb = b + 0x5c;
         dist = Vec_DistXZ(pb, v);
@@ -2339,9 +1879,9 @@ extern "C" void MuseumInsect_MosquitoChase(Obj_bb5c *self, s16 *p)
 
 extern "C" void MuseumInsect_RunFirefly(void *self_)
 {
-    Obj_bb5c *self = (Obj_bb5c *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     if (self->isActive == 0) {
-        _ZN18Unk_ov004_02239e7010runPerchedEv(self);
+        _ZN12MuseumInsect10runPerchedEv(self);
     } else if (self->moveState == 0) {
         MuseumInsect_FireflyWander(self);
         MuseumInsect_ClampToBounds(self, &self->position);
@@ -2351,7 +1891,7 @@ extern "C" void MuseumInsect_RunFirefly(void *self_)
     }
 }
 
-extern "C" void MuseumInsect_FireflyWander(Obj_bb5c *self)
+extern "C" void MuseumInsect_FireflyWander(MuseumInsect *self)
 {
     MuseumInsect_Wander(self, 0x38e, 0x28, 0x50);
     s32 r = Random_GlobalBelow(4);
@@ -2361,7 +1901,7 @@ extern "C" void MuseumInsect_FireflyWander(Obj_bb5c *self)
 
 extern "C" void MuseumInsect_RunFlyingInsect(void *self_)
 {
-    Obj_bb5c *self = (Obj_bb5c *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     switch (self->moveState) {
     case 0:
         MuseumInsect_PlaySe(self, 0);
@@ -2369,7 +1909,7 @@ extern "C" void MuseumInsect_RunFlyingInsect(void *self_)
         break;
     case 6:
         if (self->insectIndex == 10) {
-            _ZN18Unk_ov004_022394346wanderEv(self, self->insectIndex);
+            _ZN12MuseumInsect6wanderEv(self, self->insectIndex);
         }
         MuseumInsect_StateRest(self);
         break;
@@ -2383,7 +1923,7 @@ extern "C" void MuseumInsect_RunFlyingInsect(void *self_)
         self->isAlerted = 0;
         self->moveState = 0;
         if (self->insectIndex == 0x33) {
-            V3_bb5c *p = &self->homePos;
+            VecFx32 *p = &self->homePos;
             if (Random_GlobalBelow(100) > 50) {
                 p->x = 0xef00;
                 p->z = 0xc900;
@@ -2397,7 +1937,7 @@ extern "C" void MuseumInsect_RunFlyingInsect(void *self_)
     }
 }
 
-extern "C" void MuseumInsect_FlyingInsectFly(Obj_bb5c *self)
+extern "C" void MuseumInsect_FlyingInsectFly(MuseumInsect *self)
 {
     s16 *q = &self->subCounter;
     MuseumInsect_FlapWings(self);
@@ -2421,14 +1961,14 @@ extern "C" void MuseumInsect_FlyingInsectFly(Obj_bb5c *self)
 
 extern "C" void MuseumInsect_RunFlea(void *self_)
 {
-    Obj_bb5c *self = (Obj_bb5c *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     if (self->moveState == 4) {
         MuseumInsect_FleaJump(self);
     } else if (MuseumInsect_TickTimer(self) != 0) {
         u8 *p = (u8 *)PlayerActor_GetActor(4);
         if (p != 0) {
             u8 r = Random_GlobalBelow(0x21) + 0x10;
-            V3_bb5c *v = &self->position;
+            VecFx32 *v = &self->position;
             u8 *pp = p + 0x5c;
             if (Vec_DistXZ(pp, v) > 0x6000) {
                 r += 0x10;
@@ -2442,11 +1982,11 @@ extern "C" void MuseumInsect_RunFlea(void *self_)
     }
 }
 
-extern "C" void MuseumInsect_FleaJump(Obj_bb5c *self)
+extern "C" void MuseumInsect_FleaJump(MuseumInsect *self)
 {
     s16 *q = &self->subCounter;
-    V3_bb5c *v = &self->position;
-    V3_bb5c saved;
+    VecFx32 *v = &self->position;
+    VecFx32 saved;
     saved.x = v->x;
     saved.y = v->y;
     saved.z = v->z;
@@ -2474,7 +2014,7 @@ extern "C" void MuseumInsect_FleaJump(Obj_bb5c *self)
 
 extern "C" void MuseumInsect_RunMoleCricket(void *self_)
 {
-    Obj_bb5c *self = (Obj_bb5c *)self_;
+    MuseumInsect *self = (MuseumInsect *)self_;
     switch (self->moveState) {
     case 4:
         MuseumInsect_PlaySe(self, 2);
@@ -2495,8 +2035,8 @@ extern "C" void MuseumInsect_RunMoleCricket(void *self_)
     case 16:
         if (MuseumInsect_TickTimer(self) != 0) {
             self->moveState = 25;
-            V3_bb5c *sp = &self->targetPos;
-            V3_bb5c *dp = &self->position;
+            VecFx32 *sp = &self->targetPos;
+            VecFx32 *dp = &self->position;
             dp->x = self->targetPos.x;
             dp->y = sp->y;
             dp->z = sp->z;
@@ -2508,11 +2048,11 @@ extern "C" void MuseumInsect_RunMoleCricket(void *self_)
     }
 }
 
-extern "C" void MuseumInsect_MoleCricketCheckEmerge(Obj_bb5c *self)
+extern "C" void MuseumInsect_MoleCricketCheckEmerge(MuseumInsect *self)
 {
     u32 idx;
     s32 c;
-    V3_bb5c *v;
+    VecFx32 *v;
     MuseumInsectPlayerInfo o;
     v = &self->position;
     idx = (u8)self->alertLevel;
@@ -2532,8 +2072,8 @@ extern "C" void MuseumInsect_MoleCricketCheckEmerge(Obj_bb5c *self)
             self->subCounter = (Random_GlobalBelow(11) + 5) * 20;
             self->yaw = Math_AngleXZ(&o, v);
             NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(self->pooledModel), 0, 31);
-            V3_bb5c *sp = &self->position;
-            V3_bb5c *dp = &self->targetPos;
+            VecFx32 *sp = &self->position;
+            VecFx32 *dp = &self->targetPos;
             self->targetPos.x = sp->x;
             dp->y = sp->y;
             dp->z = sp->z;
@@ -2541,11 +2081,11 @@ extern "C" void MuseumInsect_MoleCricketCheckEmerge(Obj_bb5c *self)
     }
 }
 
-extern "C" void MuseumInsect_MoleCricketJump(Obj_bb5c *self, s16 *p)
+extern "C" void MuseumInsect_MoleCricketJump(MuseumInsect *self, s16 *p)
 {
-    V3_bb5c *v = &self->position;
+    VecFx32 *v = &self->position;
     s32 k = (self->moveSpeed + 2) << 12;
-    V3_bb5c d;
+    VecFx32 d;
     MuseumInsect_MakeStepDir(&d, self->yaw);
     self->position.x += func_01ffcb0c(k, d.x);
     v->z += func_01ffcb0c(k, d.z);
@@ -2570,12 +2110,12 @@ extern "C" void MuseumInsect_MoleCricketJump(Obj_bb5c *self, s16 *p)
     }
 }
 
-extern "C" void MuseumInsect_MoleCricketCrawl(Obj_bb5c *self, s16 *p)
+extern "C" void MuseumInsect_MoleCricketCrawl(MuseumInsect *self, s16 *p)
 {
     s16 *q = &self->subCounter;
     if (self->subCounter > 0) {
         *q = self->subCounter - 1;
-        _ZN18Unk_ov004_02239e705crawlEv(self);
+        _ZN12MuseumInsect5crawlEv(self);
         MuseumInsect_ClampToBounds(self, &self->position);
         if (*q > 5) {
             if (sMuseumInsectFrame % 8 == 0) {
@@ -2598,8 +2138,8 @@ extern "C" void MuseumInsect_MoleCricketCrawl(Obj_bb5c *self, s16 *p)
 
 extern "C" s32 MuseumInsect_SteerFromEdges(void *o_)
 {
-    Obj_b1e8 *o = (Obj_b1e8 *)o_;
-    u8 r4 = o->unk_50;
+    MuseumInsect *o = (MuseumInsect *)o_;
+    u8 r4 = o->steerSide;
     u32 r0;
     s16 r1;
     if (o->insectIndex == 0x34) {
@@ -2626,13 +2166,13 @@ extern "C" s32 MuseumInsect_SteerFromEdges(void *o_)
     } else if (r4 < 10) {
         r4 = r4 * 10;
     }
-    o->unk_50 = r4;
+    o->steerSide = r4;
     return r0;
 }
 
 extern "C" void MuseumInsect_RunPillBug(void *o_)
 {
-    Obj_b1e8 *o = (Obj_b1e8 *)o_;
+    MuseumInsect *o = (MuseumInsect *)o_;
     switch (o->moveState) {
     case 3:
         if (MuseumInsect_PillBugCheckCurl(o)) {
@@ -2648,8 +2188,8 @@ extern "C" void MuseumInsect_RunPillBug(void *o_)
         break;
     default:
         if (MuseumInsect_TickTimer(o) && MuseumInsect_PillBugCheckCurl(o)) {
-            if (o->animFrame.mid != 1) {
-                AnimModel_setFrame(o->model, 1);
+            if (((Unk_ov004_0223b1e8_Bits &)o->model.curFrame).mid != 1) {
+                AnimModel_setFrame(&o->model, 1);
             }
             o->stateCounter = 0;
             o->moveState = 4;
@@ -2659,26 +2199,26 @@ extern "C" void MuseumInsect_RunPillBug(void *o_)
     }
 }
 
-extern "C" BOOL MuseumInsect_PillBugCheckCurl(Obj_b1e8 *o)
+extern "C" BOOL MuseumInsect_PillBugCheckCurl(MuseumInsect *o)
 {
-    s32 r4 = o->unk_50;
+    s32 r4 = o->cooldown;
     MuseumInsect_TickAlert(o);
     if (o->alertLevel < o->alertThreshold && r4 < 2) {
-        AnimModel_setFrame(o->model, 1);
+        AnimModel_setFrame(&o->model, 1);
         goto yes;
     }
     if (r4 == 0) {
-        o->unk_50 = 0x3c;
+        o->cooldown = 0x3c;
     } else if (r4 > 1) {
-        o->unk_50 = r4 - 1;
+        o->cooldown = r4 - 1;
     }
-    AnimModel_setFrame(o->model, 0);
+    AnimModel_setFrame(&o->model, 0);
     return FALSE;
 yes:
     return TRUE;
 }
 
-extern "C" void MuseumInsect_PillBugWalk(Obj_b1e8 *o)
+extern "C" void MuseumInsect_PillBugWalk(MuseumInsect *o)
 {
     if (!MuseumInsect_PillBugCheckCurl(o)) {
         return;
@@ -2709,8 +2249,8 @@ extern "C" void MuseumInsect_PillBugWalk(Obj_b1e8 *o)
 
 extern "C" void MuseumInsect_PillBugNextWaypoint(void *o_)
 {
-    Obj_b1e8 *o = (Obj_b1e8 *)o_;
-    u32 st = (u8)o->unk_4c;
+    MuseumInsect *o = (MuseumInsect *)o_;
+    u32 st = (u8)o->speciesWork;
     u32 nx;
     if (st == 0 && o->dirFlag == 0) {
         o->dirFlag = 1;
@@ -2733,7 +2273,7 @@ extern "C" void MuseumInsect_PillBugNextWaypoint(void *o_)
             nx = (u8)(st - 1);
         }
     }
-    o->unk_4c = nx;
+    o->speciesWork = nx;
     MuseumInsect_GetPillBugWaypoint(&o->targetPos, nx);
 }
 
@@ -2771,7 +2311,7 @@ extern "C" void MuseumInsect_GetPillBugWaypoint(void *v_, s32 k)
 
 extern "C" void MuseumInsect_RunMoth(void *o_)
 {
-    Obj_b1e8 *o = (Obj_b1e8 *)o_;
+    MuseumInsect *o = (MuseumInsect *)o_;
     if (o->moveState == 0) {
         MuseumInsect_MothHover(o);
     } else if (o->isActive != 0) {
@@ -2780,12 +2320,12 @@ extern "C" void MuseumInsect_RunMoth(void *o_)
         o->stateCounter = 0;
     } else if (sMuseumInsectFrame % 40 == 0) {
         if (Random_GlobalBelow(100) > 80) {
-            AnimFrameCtrl_setup(o->animFrameCtrl, 8, 1, 0x1000, 0);
+            AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 8, 1, 0x1000, 0);
         }
     }
 }
 
-extern "C" void MuseumInsect_MothHover(Obj_b1e8 *o)
+extern "C" void MuseumInsect_MothHover(MuseumInsect *o)
 {
     u8 r6 = o->sideDir;
     V3_b1e8 *r4 = &o->position;
@@ -2835,7 +2375,7 @@ extern "C" void MuseumInsect_MothHover(Obj_b1e8 *o)
 
 extern "C" void MuseumInsect_RunArachnid(void *o_)
 {
-    Obj_b1e8 *o = (Obj_b1e8 *)o_;
+    MuseumInsect *o = (MuseumInsect *)o_;
     if (o->isFighting != 0) {
         if (!MuseumInsect_UpdateFight(o)) {
             return;
@@ -2845,11 +2385,11 @@ extern "C" void MuseumInsect_RunArachnid(void *o_)
             return;
         }
         if (o->insectIndex == 0x37) {
-            u32 t = o->animFrame.mid;
+            u32 t = ((Unk_ov004_0223b1e8_Bits &)o->model.curFrame).mid;
             if (t > 3) {
-                AnimFrameCtrl_setup(o->animFrameCtrl, 3, 3, 0x1000, t);
+                AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 3, 3, 0x1000, t);
             } else if (t == 3) {
-                AnimFrameCtrl_setup(o->animFrameCtrl, 3, 0, 0x1000, 0);
+                AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 3, 0, 0x1000, 0);
             }
         }
     }
@@ -2908,7 +2448,7 @@ extern "C" void MuseumInsect_RunArachnid(void *o_)
 
 extern "C" void MuseumInsect_WiggleHeading(void *o_, s32 a, s32 b)
 {
-    Obj_b1e8 *o = (Obj_b1e8 *)o_;
+    MuseumInsect *o = (MuseumInsect *)o_;
     if (b % 4 == 0) {
         o->yaw = a + 0x71c;
     } else if (b % 2 == 0) {
@@ -2917,7 +2457,7 @@ extern "C" void MuseumInsect_WiggleHeading(void *o_, s32 a, s32 b)
     MuseumInsect_PlaySe(o, 0);
 }
 
-extern "C" BOOL MuseumInsect_FaceEachOther(Obj_b1e8 *a, Obj_b1e8 *b)
+extern "C" BOOL MuseumInsect_FaceEachOther(MuseumInsect *a, MuseumInsect *b)
 {
     s16 v[2];
     u8 r;
@@ -2933,23 +2473,23 @@ extern "C" BOOL MuseumInsect_FaceEachOther(Obj_b1e8 *a, Obj_b1e8 *b)
     return FALSE;
 }
 
-extern "C" BOOL MuseumInsect_UpdateFight(Obj_b1e8 *o)
+extern "C" BOOL MuseumInsect_UpdateFight(MuseumInsect *o)
 {
     MuseumInsect_ClampToBounds(o, &o->position);
     if (o->insectIndex == 0x37) {
-        Sub_b1e8 *b = (Sub_b1e8 *)((u8 *)o + 0xb0);
-        s32 t = b->numFrames >> 12;
-        if ((u16)t < 11 && b->curFrame.mid <= 2) {
-            AnimFrameCtrl_setup(b->animFrameCtrl, 11, 1, 0x1000, 3);
-        } else if ((u16)t < 14 && b->curFrame.mid < 11) {
-            AnimFrameCtrl_setup(b->animFrameCtrl, 14, 0, 0x1000, 10);
-        } else if ((u16)t > 11 && b->curFrame.mid == 13) {
+        AnimModel *b = &o->model;
+        s32 t = (s32)b->numFrames >> 12;
+        if ((u16)t < 11 && ((Unk_ov004_0223b1e8_Bits &)b->curFrame).mid <= 2) {
+            AnimFrameCtrl_setup(&(AnimFrameCtrl &)*b, 11, 1, 0x1000, 3);
+        } else if ((u16)t < 14 && ((Unk_ov004_0223b1e8_Bits &)b->curFrame).mid < 11) {
+            AnimFrameCtrl_setup(&(AnimFrameCtrl &)*b, 14, 0, 0x1000, 10);
+        } else if ((u16)t > 11 && ((Unk_ov004_0223b1e8_Bits &)b->curFrame).mid == 13) {
             AnimModel_setFrame(b, 10);
         }
         return FALSE;
     }
     if (o->moveState == 0x19) {
-        Obj_b1e8 *p = ((Obj_b1e8 *)MuseumInsect_FindScorpion());
+        MuseumInsect *p = ((MuseumInsect *)MuseumInsect_FindScorpion());
         u32 r = (u8)Random_GlobalBelow(100);
         s16 *q = &o->subCounter;
         if (!MuseumInsect_FaceEachOther(o, p)) {
@@ -2994,9 +2534,9 @@ extern "C" BOOL MuseumInsect_UpdateFight(Obj_b1e8 *o)
         } else {
             o->stateTimer = (Random_GlobalBelow(8) + 1) * 20;
             o->moveState = 24;
-            p->animFrameStep = 0;
+            p->model.frameStep = 0;
         }
-        o->unk_4c = 0;
+        o->speciesWork = 0;
         *q = Random_GlobalBelow(5) + 5;
         if (Random_GlobalBelow(100) > 50) {
             *q = -*q;
@@ -3009,10 +2549,10 @@ extern "C" BOOL MuseumInsect_UpdateFight(Obj_b1e8 *o)
 }
 
 extern "C" void MuseumInsect_FightSkirmish(void *r_) {
-    Unk_ov004_0223a850_Rec *r = (Unk_ov004_0223a850_Rec *)r_;
-    Unk_ov004_0223a850_Rec *o = ((Unk_ov004_0223a850_Rec *)MuseumInsect_FindScorpion());
-    Unk_ov004_0223a850_Vec *rp = &r->position;
-    Unk_ov004_0223a850_Vec *op = &o->position;
+    MuseumInsect *r = (MuseumInsect *)r_;
+    MuseumInsect *o = ((MuseumInsect *)MuseumInsect_FindScorpion());
+    VecFx32 *rp = &r->position;
+    VecFx32 *op = &o->position;
     s32 a1 = Math_AngleXZ(op, rp);
     s32 v4c;
     s32 dist;
@@ -3020,18 +2560,18 @@ extern "C" void MuseumInsect_FightSkirmish(void *r_) {
     s32 f2;
     s16 *cnt;
     cnt = &r->stateCounter;
-    v4c = r->unk_4c;
+    v4c = r->speciesWork;
     dist = Vec_DistXZ(rp, op);
     f1 = 1;
     f2 = 1;
     s16 *pw = &r->subCounter;
-    Unk_ov004_0223a850_Vec v1, v2;
+    VecFx32 v1, v2;
     MuseumInsect_MakeStepDir(&v1, a1);
     s32 a2 = Math_AngleXZ(rp, op);
     MuseumInsect_MakeStepDir(&v2, a2);
     if (sMuseumInsectFrame % 15 == 0) {
         v4c = Random_GlobalBelow(100);
-        r->unk_4c = v4c;
+        r->speciesWork = v4c;
         *pw = Random_GlobalBelow(5) + 5;
         if (Random_GlobalBelow(100) > 0x32) {
             *pw = -*pw;
@@ -3046,32 +2586,32 @@ extern "C" void MuseumInsect_FightSkirmish(void *r_) {
     if (v4c < 0x1e && dist < 0xccd) {
         f1 = 0;
         if (*pw <= 0) {
-            Unk_ov004_0223a850_Vec w;
+            VecFx32 w;
             Vec_ScaleTo(&w, &v2, 0x2000);
             VEC_Add(rp, &w, rp);
         } else {
-            Unk_ov004_0223a850_Vec w;
+            VecFx32 w;
             Vec_ScaleTo(&w, &v1, 0x2000);
             VEC_Subtract(op, &w, op);
         }
     } else if (v4c < 0x3c && dist < 0xccd) {
         f2 = 0;
         if (*pw <= 0) {
-            Unk_ov004_0223a850_Vec w;
+            VecFx32 w;
             Vec_ScaleTo(&w, &v2, 0x2000);
             VEC_Subtract(rp, &w, rp);
         } else {
-            Unk_ov004_0223a850_Vec w;
+            VecFx32 w;
             Vec_ScaleTo(&w, &v1, 0x2000);
             VEC_Add(op, &w, op);
         }
     } else if ((dist > 0x5800 || v4c < 0x50) && dist > 0x99a) {
         if (*pw <= 0) {
-            Unk_ov004_0223a850_Vec w;
+            VecFx32 w;
             Vec_ScaleTo(&w, &v2, 0xa000);
             VEC_Add(rp, &w, rp);
         } else {
-            Unk_ov004_0223a850_Vec w;
+            VecFx32 w;
             Vec_ScaleTo(&w, &v1, 0xa000);
             VEC_Add(op, &w, op);
         }
@@ -3084,11 +2624,11 @@ extern "C" void MuseumInsect_FightSkirmish(void *r_) {
             }
         } else if (v4c < 0x64) {
             if (*pw <= 0) {
-                Unk_ov004_0223a850_Vec w;
+                VecFx32 w;
                 Vec_ScaleTo(&w, &v2, 0x5000);
                 VEC_Subtract(rp, &w, rp);
             } else {
-                Unk_ov004_0223a850_Vec w;
+                VecFx32 w;
                 Vec_ScaleTo(&w, &v1, 0x5000);
                 VEC_Subtract(op, &w, op);
             }
@@ -3112,14 +2652,14 @@ extern "C" void MuseumInsect_FightSkirmish(void *r_) {
 }
 
 extern "C" void MuseumInsect_FightCircleOther(void *r_) {
-    Unk_ov004_0223a850_Rec *r = (Unk_ov004_0223a850_Rec *)r_;
-    Unk_ov004_0223a850_Rec *o = ((Unk_ov004_0223a850_Rec *)MuseumInsect_FindScorpion());
-    Unk_ov004_0223a850_Vec *a = &r->position;
-    Unk_ov004_0223a850_Vec *b = &o->position;
-    Unk_ov004_0223a850_Vec *c = &o->targetPos;
+    MuseumInsect *r = (MuseumInsect *)r_;
+    MuseumInsect *o = ((MuseumInsect *)MuseumInsect_FindScorpion());
+    VecFx32 *a = &r->position;
+    VecFx32 *b = &o->position;
+    VecFx32 *c = &o->targetPos;
     s32 ang = Math_AngleXZ(a, b);
     s16 *cnt = &r->stateCounter;
-    s32 v4c = r->unk_4c;
+    s32 v4c = r->speciesWork;
     if (sMuseumInsectFrame % 10 == 0) {
         if (Random_GlobalBelow(100) > 0x32) {
             r->dirFlag = 1;
@@ -3147,7 +2687,7 @@ extern "C" void MuseumInsect_FightCircleOther(void *r_) {
     s32 res = Math_AngleXZ(b, a);
     o->yaw = res;
     MuseumInsect_WiggleHeading(o, res, *cnt);
-    r->unk_4c = v4c;
+    r->speciesWork = v4c;
     *cnt = *cnt + 1;
     if (MuseumInsect_TickTimer(r) != 0) {
         r->moveState = 0x19;
@@ -3156,14 +2696,14 @@ extern "C" void MuseumInsect_FightCircleOther(void *r_) {
 }
 
 extern "C" void MuseumInsect_FightCircleSelf(void *r_) {
-    Unk_ov004_0223a850_Rec *r = (Unk_ov004_0223a850_Rec *)r_;
-    Unk_ov004_0223a850_Rec *o = ((Unk_ov004_0223a850_Rec *)MuseumInsect_FindScorpion());
-    Unk_ov004_0223a850_Vec *a = &r->position;
-    Unk_ov004_0223a850_Vec *b = &o->position;
-    Unk_ov004_0223a850_Vec *c = &r->targetPos;
+    MuseumInsect *r = (MuseumInsect *)r_;
+    MuseumInsect *o = ((MuseumInsect *)MuseumInsect_FindScorpion());
+    VecFx32 *a = &r->position;
+    VecFx32 *b = &o->position;
+    VecFx32 *c = &r->targetPos;
     s32 ang = Math_AngleXZ(b, a);
     s16 *cnt = &r->stateCounter;
-    s32 v4c = r->unk_4c;
+    s32 v4c = r->speciesWork;
     if (sMuseumInsectFrame % 10 == 0) {
         if (Random_GlobalBelow(100) > 0x32) {
             r->dirFlag = 1;
@@ -3191,7 +2731,7 @@ extern "C" void MuseumInsect_FightCircleSelf(void *r_) {
     s32 res = Math_AngleXZ(a, b);
     r->yaw = res;
     MuseumInsect_WiggleHeading(r, res, *cnt);
-    r->unk_4c = v4c;
+    r->speciesWork = v4c;
     *cnt = *cnt + 1;
     if (MuseumInsect_TickTimer(r) != 0) {
         r->moveState = 0x19;
@@ -3200,22 +2740,22 @@ extern "C" void MuseumInsect_FightCircleSelf(void *r_) {
 }
 
 extern "C" void MuseumInsect_FightPause(void *r_) {
-    Unk_ov004_0223a850_Rec *r = (Unk_ov004_0223a850_Rec *)r_;
+    MuseumInsect *r = (MuseumInsect *)r_;
     if (MuseumInsect_TickTimer(r) != 0) {
         r->moveState = 0x19;
-        ((Unk_ov004_0223a850_Rec *)MuseumInsect_FindScorpion())->animFrameStep = 0x1000;
+        ((MuseumInsect *)MuseumInsect_FindScorpion())->model.frameStep = 0x1000;
         r->stateCounter = 0;
     }
 }
 
 extern "C" void MuseumInsect_FightClash(void *r_) {
-    Unk_ov004_0223a850_Rec *r = (Unk_ov004_0223a850_Rec *)r_;
-    Unk_ov004_0223a850_Rec *o = ((Unk_ov004_0223a850_Rec *)MuseumInsect_FindScorpion());
-    Unk_ov004_0223a850_Vec *a = &r->position;
-    Unk_ov004_0223a850_Vec *b = &o->position;
+    MuseumInsect *r = (MuseumInsect *)r_;
+    MuseumInsect *o = ((MuseumInsect *)MuseumInsect_FindScorpion());
+    VecFx32 *a = &r->position;
+    VecFx32 *b = &o->position;
     s16 *cnt = &r->stateCounter;
     if (Vec_DistXZ(a, b) < 0x2000) {
-        Unk_ov004_0223a850_Vec v1, v2, w1, w2;
+        VecFx32 v1, v2, w1, w2;
         s32 ang1 = Math_AngleXZ(b, a);
         o->yaw = ang1;
         MuseumInsect_MakeStepDir(&v1, ang1);
@@ -3236,8 +2776,8 @@ extern "C" void MuseumInsect_FightClash(void *r_) {
 }
 
 extern "C" void MuseumInsect_ArachnidWalk(void *r_) {
-    Unk_ov004_0223a850_Rec *r = (Unk_ov004_0223a850_Rec *)r_;
-    void *p = _ZN18Unk_ov004_02239e705crawlEv(r);
+    MuseumInsect *r = (MuseumInsect *)r_;
+    void *p = _ZN12MuseumInsect5crawlEv(r);
     if (MuseumInsect_ClampToBounds(r, &r->position) != 0) {
         r->moveState = 3;
         return;
@@ -3261,25 +2801,25 @@ extern "C" void MuseumInsect_ArachnidWalk(void *r_) {
 }
 
 extern "C" BOOL MuseumInsect_ArachnidFacePlayer(void *r_) {
-    Unk_ov004_0223a850_Rec *r = (Unk_ov004_0223a850_Rec *)r_;
+    MuseumInsect *r = (MuseumInsect *)r_;
     MuseumInsectPlayerInfo l;
     s16 ang;
     s32 t = MuseumInsect_UpdateAlertLevel(r, &l);
-    Unk_ov004_0223a850_Vec *pos = &r->position;
+    VecFx32 *pos = &r->position;
     s16 *pw = &r->subCounter;
     if (l.hasPlayer != 0 && (t == 3 || *pw != 0)) {
         s32 a = Math_AngleXZ(pos, &l);
         ang = r->yaw;
-        Unk_ov004_0223aa40_Sub *s = (Unk_ov004_0223aa40_Sub *)((u8 *)r + 0xb0);
+        AnimModel *s = &r->model;
         Math_StepAngle(&ang, a, 0x38e);
         r->yaw = ang;
         if ((s8)r->insectIndex == 0x37) {
-            s32 x = s->numFrames >> 12;
-            if ((u16)x < 0xb && s->curFrame.mid <= 2) {
-                AnimFrameCtrl_setup(s->animFrameCtrl, 0xb, 1, 0x1000, 3);
-            } else if ((u16)x < 0xe && s->curFrame.mid < 0xa) {
-                AnimFrameCtrl_setup(s->animFrameCtrl, 0xe, 0, 0x1000, 0xa);
-            } else if (s->curFrame.mid == 0xd && (u16)x > 0xa) {
+            s32 x = (s32)s->numFrames >> 12;
+            if ((u16)x < 0xb && ((Unk_ov004_0223b1e8_Bits &)s->curFrame).mid <= 2) {
+                AnimFrameCtrl_setup(&(AnimFrameCtrl &)*s, 0xb, 1, 0x1000, 3);
+            } else if ((u16)x < 0xe && ((Unk_ov004_0223b1e8_Bits &)s->curFrame).mid < 0xa) {
+                AnimFrameCtrl_setup(&(AnimFrameCtrl &)*s, 0xe, 0, 0x1000, 0xa);
+            } else if (((Unk_ov004_0223b1e8_Bits &)s->curFrame).mid == 0xd && (u16)x > 0xa) {
                 AnimModel_setFrame(s, 0xa);
             }
         }
@@ -3294,25 +2834,25 @@ extern "C" BOOL MuseumInsect_ArachnidFacePlayer(void *r_) {
 }
 
 extern "C" void MuseumInsect_RunDungBeetle(void *r_) {
-    Unk_ov004_0223a850_Rec *r = (Unk_ov004_0223a850_Rec *)r_;
-    Unk_ov004_0223a850_Rec *p;
+    MuseumInsect *r = (MuseumInsect *)r_;
+    MuseumInsect *p;
     u8 c = r->insectIndex;
     if (c == 0x23) {
-        p = ((Unk_ov004_0223a850_Rec *)MuseumInsect_FindDungBall());
+        p = ((MuseumInsect *)MuseumInsect_FindDungBall());
     }
     switch (r->moveState) {
     case 4: {
-        u32 tmp = r->animFrameStep;
+        u32 tmp = r->model.frameStep;
         if (Math_ApproachS32(&tmp, 0x1000, 0x66, 0x1000, 0x29) == 0) {
             r->moveState = 5;
         }
-        r->animFrameStep = tmp;
+        r->model.frameStep = tmp;
         break;
     }
     case 5:
         if (MuseumInsect_TickTimer(r) != 0) {
             r->moveState = 0x19;
-            r->animFrameStep = 0;
+            r->model.frameStep = 0;
             if (c == 0x23) {
                 s16 v = (Random_GlobalBelow(3) + 2) * 0x14;
                 if (r->isActive == 0) {
@@ -3344,7 +2884,7 @@ extern "C" void MuseumInsect_RunDungBeetle(void *r_) {
 }
 
 extern "C" void MuseumInsect_RunCockroach(void *r_) {
-    Unk_ov004_0223a850_Rec *r = (Unk_ov004_0223a850_Rec *)r_;
+    MuseumInsect *r = (MuseumInsect *)r_;
     MuseumInsectPlayerInfo l;
     s16 ang;
     s32 t = MuseumInsect_UpdateAlertLevel(r, &l);
@@ -3353,7 +2893,7 @@ extern "C" void MuseumInsect_RunCockroach(void *r_) {
     }
     switch (r->moveState) {
     case 4:
-        _ZN18Unk_ov004_02239e706scurryEP21Unk_ov004_02239e70_V3(r, &l);
+        _ZN12MuseumInsect6scurryEP7VecFx32(r, &l);
         break;
     case 3:
         ang = r->yaw;
@@ -3373,14 +2913,14 @@ extern "C" void MuseumInsect_RunCockroach(void *r_) {
         }
         break;
     }
-    if (r->unk_4c == 0) {
+    if (r->speciesWork == 0) {
         if (l.hasPlayer != 0) {
             if (l.hasPlayer != 0) {
                 if (l.playerSpeed > 0) {
                     if (r->subCounter == 0) {
                         if (Vec_DistXZ(&l, &r->position) < 0xe66) {
                             MuseumExhibitInfo_SpawnAutoTalk();
-                            r->unk_4c = 1;
+                            r->speciesWork = 1;
                         }
                     }
                 }
@@ -3389,14 +2929,14 @@ extern "C" void MuseumInsect_RunCockroach(void *r_) {
     }
 }
 
-void Unk_ov004_02239e70::scurry(Unk_ov004_02239e70_V3 *v) {
+void MuseumInsect::scurry(VecFx32 *v) {
     s16 *cnt = &subCounter;
-    Unk_ov004_02239e70_V3 *pos = &position;
+    VecFx32 *pos = &position;
     s32 res = crawl();
     s16 ang = yaw;
-    Unk_ov004_02239e70_V3 d1;
-    Vec_Sub(&d1, v, (Unk_ov004_02239e70_V3 *)((u8 *)this + 0x2c8));
-    Unk_ov004_02239e70_V3 d0;
+    VecFx32 d1;
+    Vec_Sub(&d1, v, (VecFx32 *)((u8 *)this + 0x2c8));
+    VecFx32 d0;
     MuseumInsect_MakeStepDir(&d0, ang);
     Vec_SafeNormalize(&d0);
     Vec_SafeNormalize(&d1);
@@ -3427,7 +2967,7 @@ void Unk_ov004_02239e70::scurry(Unk_ov004_02239e70_V3 *v) {
         MuseumInsect_PlaySe(this, 1);
     } else {
         MuseumInsect_PlaySe(this, 0);
-        if (model.anim.curFrameBits.mid != 0) {
+        if (((Unk_ov004_0223b1e8_Bits &)model.curFrame).mid != 0) {
             AnimModel_setFrame(&model, 0);
         }
     }
@@ -3437,9 +2977,9 @@ void Unk_ov004_02239e70::scurry(Unk_ov004_02239e70_V3 *v) {
     }
 }
 
-s32 Unk_ov004_02239e70::crawl() {
-    Unk_ov004_02239e70_V3 *pos = &position;
-    Unk_ov004_02239e70_V3 saved;
+s32 MuseumInsect::crawl() {
+    VecFx32 *pos = &position;
+    VecFx32 saved;
     saved.x = pos->x;
     saved.y = pos->y;
     saved.z = pos->z;
@@ -3447,7 +2987,7 @@ s32 Unk_ov004_02239e70::crawl() {
     s32 speed = 5;
     s32 res = MuseumInsect_SteerFromEdges(this);
     u32 st = *(u8 *)&insectIndex;
-    Unk_ov004_02239e70_V3 dir;
+    VecFx32 dir;
     s32 hit, a, c, mul, k;
     MuseumInsect_MakeStepDir(&dir, yaw);
     if (st == 0x1e) {
@@ -3503,8 +3043,8 @@ s32 Unk_ov004_02239e70::crawl() {
 }
 
 extern "C" void MuseumInsect_ClampStep(void *out_, void *in_, s32 lim) {
-    Unk_ov004_02239e70_V3 *out = (Unk_ov004_02239e70_V3 *)out_;
-    Unk_ov004_02239e70_V3 *in = (Unk_ov004_02239e70_V3 *)in_;
+    VecFx32 *out = (VecFx32 *)out_;
+    VecFx32 *in = (VecFx32 *)in_;
     s32 l = func_01ffcb0c(lim << 12, 0x40);
     out->x = in->x;
     out->y = in->y;
@@ -3524,7 +3064,7 @@ extern "C" void MuseumInsect_ClampStep(void *out_, void *in_, s32 lim) {
     }
 }
 
-void Unk_ov004_02239e70::runSpider() {
+void MuseumInsect::runSpider() {
     s16 *cnt = &subCounter;
     switch (moveState) {
     case 2: {
@@ -3535,17 +3075,17 @@ void Unk_ov004_02239e70::runSpider() {
             dirFlag = 1;
             roll = -0x5b;
         }
-        if (model.anim.curFrameBits.mid == 0x38) {
+        if (((Unk_ov004_0223b1e8_Bits &)model.curFrame).mid == 0x38) {
             moveState = 0x19;
             roll = 0;
-            position.x = unk_4c;
+            position.x = speciesWork;
             NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(pooledModel), 0, 0);
             subCounter = (Random_GlobalBelow(4) + 3) * 20;
         }
         break;
     }
     case 1:
-        if (model.anim.curFrameBits.mid == 0x20) {
+        if (((Unk_ov004_0223b1e8_Bits &)model.curFrame).mid == 0x20) {
             subCounter = (Random_GlobalBelow(3) + 2) * 20;
             moveState = 0x12;
             stateCounter = 0;
@@ -3555,7 +3095,7 @@ void Unk_ov004_02239e70::runSpider() {
         if (swing(&stateCounter) && *cnt <= 0) {
             yaw = 0;
             moveState = 2;
-            AnimFrameCtrl_setup(&model.anim, 0x39, 1, 0x1000, 0x20);
+            AnimFrameCtrl_setup(&(AnimFrameCtrl &)model, 0x39, 1, 0x1000, 0x20);
         } else {
             *cnt = *cnt - 1;
         }
@@ -3567,17 +3107,17 @@ void Unk_ov004_02239e70::runSpider() {
             } else {
                 moveState = 1;
                 alertLevel = 0;
-                AnimFrameCtrl_setup(&model.anim, 0x21, 1, 0x1000, 0);
+                AnimFrameCtrl_setup(&(AnimFrameCtrl &)model, 0x21, 1, 0x1000, 0);
                 NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(pooledModel), 0, 0x1f);
             }
         } else {
-            unk_160 = 1;
+            model.playMode = 1;
         }
         break;
     }
 }
 
-BOOL Unk_ov004_02239e70::isPlayerNear() {
+BOOL MuseumInsect::isPlayerNear() {
     u8 *r = (u8 *)PlayerActor_GetActor(4);
     if (r != NULL) {
         if (Vec_DistXZ(r + 0x5c, &position) < 0x4800) {
@@ -3587,7 +3127,7 @@ BOOL Unk_ov004_02239e70::isPlayerNear() {
     return FALSE;
 }
 
-BOOL Unk_ov004_02239e70::swing(s16 *p) {
+BOOL MuseumInsect::swing(s16 *p) {
     s32 a = yaw;
     if (*p == 0) {
         if (Random_GlobalBelow(100) > 0x32) {
@@ -3612,7 +3152,7 @@ BOOL Unk_ov004_02239e70::swing(s16 *p) {
     return TRUE;
 }
 
-void Unk_ov004_02239e70::runPerched() {
+void MuseumInsect::runPerched() {
     switch (moveState) {
     case 3:
         sidestep(&stateCounter);
@@ -3647,31 +3187,31 @@ void Unk_ov004_02239e70::runPerched() {
     }
 }
 
-void Unk_ov004_02239e70::animSilkMoth() {
-    u32 r = model.anim.curFrameBits.mid;
+void MuseumInsect::animSilkMoth() {
+    u32 r = ((Unk_ov004_0223b1e8_Bits &)model.curFrame).mid;
     if (r == 0xd || r < 9) {
-        AnimFrameCtrl_setup(&model.anim, 9, 1, 0, 9);
+        AnimFrameCtrl_setup(&(AnimFrameCtrl &)model, 9, 1, 0, 9);
     }
     if (sMuseumInsectFrame > 0x50) {
         if (isActive != 0) {
             if (Random_GlobalBelow(100) > 0x5c) {
                 if (r < 0xa) {
-                    AnimFrameCtrl_setup(&model.anim, 0xe, 1, 0x1000, 9);
+                    AnimFrameCtrl_setup(&(AnimFrameCtrl &)model, 0xe, 1, 0x1000, 9);
                 }
             }
         } else if (sMuseumInsectFrame % 5 == 0) {
             if (Random_GlobalBelow(100) > 0x5c) {
                 if (r < 0xa) {
-                    AnimFrameCtrl_setup(&model.anim, 0xe, 1, 0x1000, 9);
+                    AnimFrameCtrl_setup(&(AnimFrameCtrl &)model, 0xe, 1, 0x1000, 9);
                 }
             }
         }
     }
 }
 
-void Unk_ov004_02239e70::crawlUp(volatile s16 *p) {
+void MuseumInsect::crawlUp(volatile s16 *p) {
     s32 lim = baseHeight + 0x400;
-    Unk_ov004_02239e70_V3 *pos = &position;
+    VecFx32 *pos = &position;
     s32 v = *p;
     if ((v >= 0 && v < 2) || (v >= 6 && v < 8)) {
         *p = *p + 1;
@@ -3698,9 +3238,9 @@ void Unk_ov004_02239e70::crawlUp(volatile s16 *p) {
     }
 }
 
-void Unk_ov004_02239e70::crawlDown(volatile s16 *p) {
+void MuseumInsect::crawlDown(volatile s16 *p) {
     s32 lim = baseHeight - 0x100;
-    Unk_ov004_02239e70_V3 *pos = &position;
+    VecFx32 *pos = &position;
     s32 v = *p;
     if ((v >= 0 && v < 2) || (v >= 6 && v < 8)) {
         *p = *p + 1;
@@ -3727,7 +3267,7 @@ void Unk_ov004_02239e70::crawlDown(volatile s16 *p) {
     }
 }
 
-void Unk_ov004_02239e70::sidestep(volatile s16 *p) {
+void MuseumInsect::sidestep(volatile s16 *p) {
     s32 a = yaw;
     s32 v = *p;
     if (v == 0) {
@@ -3763,21 +3303,21 @@ void Unk_ov004_02239e70::sidestep(volatile s16 *p) {
     yaw = a;
 }
 
-void Unk_ov004_02239e70::runCicada() {
+void MuseumInsect::runCicada() {
     MuseumInsect_TickAlert(this);
     if (insectIndex == 0x14) {
-        Unk_ov004_02239e70_Model *p = &model;
+        AnimModel *p = &model;
         if (alertLevel >= alertThreshold || cooldown != 0) {
-            if (p->anim.curFrameBits.mid == 0) {
-                AnimFrameCtrl_setup(&p->anim, 4, 1, 0x1000, 0);
+            if (((Unk_ov004_0223b1e8_Bits &)p->curFrame).mid == 0) {
+                AnimFrameCtrl_setup(&(AnimFrameCtrl &)*p, 4, 1, 0x1000, 0);
                 cooldown = 0x3c;
             } else if (cooldown != 0) {
                 cooldown = cooldown - 1;
             }
         } else {
-            s32 v = p->anim.unk_08 >> 12;
-            if ((u16)v != 0 || p->anim.unk_04b.mid != 0) {
-                AnimFrameCtrl_setup(&p->anim, 0, 3, 0x1000, (u16)v);
+            s32 v = p->curFrame >> 12;
+            if ((u16)v != 0 || ((Unk_ov004_0223b1e8_Bits &)p->numFrames).mid != 0) {
+                AnimFrameCtrl_setup(&(AnimFrameCtrl &)*p, 0, 3, 0x1000, (u16)v);
             }
         }
     }
@@ -3794,7 +3334,7 @@ void Unk_ov004_02239e70::runCicada() {
     }
 }
 
-void Unk_ov004_02239434::runWalker()
+void MuseumInsect::runWalker()
 {
     volatile s16 *p = &stateCounter;
     s32 v;
@@ -3833,13 +3373,13 @@ void Unk_ov004_02239434::runWalker()
     }
 }
 
-void Unk_ov004_02239434::reactToPlayer(u16 *out)
+void MuseumInsect::reactToPlayer(u16 *out)
 {
     MuseumInsectPlayerInfo buf;
     MuseumInsect_UpdateAlertLevel(this, &buf);
     if (buf.hasPlayer == 0) return;
     s32 r6 = alertLevel;
-    Unk_ov004_02239b6c_Sub *r4 = &model;
+    AnimModel *r4 = &model;
     if (buf.playerDist <= 0xccd) {
         *out = 0;
         return;
@@ -3847,27 +3387,27 @@ void Unk_ov004_02239434::reactToPlayer(u16 *out)
     s32 c = insectIndex;
     u8 n;
     if ((u8)(s8)(c - 0xe) <= 1) {
-        if (unk_50 != 0) {
+        if (cooldown != 0) {
             yaw = Math_AngleXZ(&position, &buf);
             moveState = 0x19;
         }
         if (r6 > 0x14) {
-            AnimFrameCtrl_setup(&r4->animFrameCtrl, 9, 1, 0x1000, (u32)(r4->curFrame << 4) >> 16);
-            unk_50 = 0x3c;
-        } else if ((n = unk_50) != 0) {
-            unk_50 = n - 1;
+            AnimFrameCtrl_setup(&(AnimFrameCtrl &)*r4, 9, 1, 0x1000, (u32)(r4->curFrame << 4) >> 16);
+            cooldown = 0x3c;
+        } else if ((n = cooldown) != 0) {
+            cooldown = n - 1;
         } else if (buf.playerDist < alertRange) {
             u32 t = (u32)(r4->curFrame << 4) >> 16;
             if (t == 0) {
-                AnimFrameCtrl_setup(&r4->animFrameCtrl, 4, 1, 0x1000, 0);
-                unk_50 = 0x3c;
+                AnimFrameCtrl_setup(&(AnimFrameCtrl &)*r4, 4, 1, 0x1000, 0);
+                cooldown = 0x3c;
             } else if (t > 4) {
-                AnimFrameCtrl_setup(&r4->animFrameCtrl, 4, 3, 0x1000, t);
+                AnimFrameCtrl_setup(&(AnimFrameCtrl &)*r4, 4, 3, 0x1000, t);
             }
         } else {
             u32 t = (u32)(r4->curFrame << 4) >> 16;
             if (t != 0) {
-                AnimFrameCtrl_setup(&r4->animFrameCtrl, 0, 3, 0x1000, t);
+                AnimFrameCtrl_setup(&(AnimFrameCtrl &)*r4, 0, 3, 0x1000, t);
             }
         }
     } else if (c == 0x1a) {
@@ -3878,31 +3418,31 @@ void Unk_ov004_02239434::reactToPlayer(u16 *out)
             } else if (t == 1) {
                 AnimModel_setFrame(r4, 0);
                 moveState = 0x19;
-                unk_50 = 0x3c;
+                cooldown = 0x3c;
             }
         } else {
             s32 h = (s32)r4->curFrame >> 12;
-            if ((u16)h == 0 && unk_50 == 0) {
+            if ((u16)h == 0 && cooldown == 0) {
                 AnimModel_setFrame(r4, 1);
             } else if ((u16)h == 1) {
                 AnimModel_setFrame(r4, 2);
-            } else if ((n = unk_50) != 0) {
-                unk_50 = n - 1;
+            } else if ((n = cooldown) != 0) {
+                cooldown = n - 1;
             }
         }
     }
 }
 
-void Unk_ov004_02239434::wander()
+void MuseumInsect::wander()
 {
     s32 *p60 = &boundsMax.x;
     s32 *p58 = &boundsMin.x;
     s32 ang = yaw;
     u32 flip = sideDir;
-    Unk_ov004_02239434_Vec *pos = &position;
+    VecFx32 *pos = &position;
     struct {
-        Unk_ov004_02239434_Vec v;
-        Unk_ov004_02239434_Vec sv;
+        VecFx32 v;
+        VecFx32 sv;
     } l;
     l.sv.x = pos->x;
     l.sv.y = pos->y;
@@ -3913,9 +3453,9 @@ void Unk_ov004_02239434::wander()
             sideDir = flip;
         }
         if (flip) {
-            ang = (s16)(ang + (s16)unk_4c);
+            ang = (s16)(ang + (s16)speciesWork);
         } else {
-            ang = (s16)(ang - (s16)unk_4c);
+            ang = (s16)(ang - (s16)speciesWork);
         }
     }
     MuseumInsect_MakeStepDir(&l.v, ang);
@@ -3938,7 +3478,7 @@ extern "C" s32 MuseumInsect_RandTurn(s32 n)
     return (s16)func_01ffcb0c(0x38e, (Random_GlobalBelow(n * 2 + 1) - n) << 12);
 }
 
-void Unk_ov004_02239434::setBounds(s32 *a, s32 *b)
+void MuseumInsect::setBounds(s32 *a, s32 *b)
 {
     s32 y1 = func_01ffcb0c(a[1] << 12, 0x100);
     s32 x1 = func_01ffcb0c(a[0] << 12, 0x100);
@@ -3952,9 +3492,9 @@ void Unk_ov004_02239434::setBounds(s32 *a, s32 *b)
     b2->y = y2;
 }
 
-void Unk_ov004_02239434::setBoundsAroundPos()
+void MuseumInsect::setBoundsAroundPos()
 {
-    Unk_ov004_02239434_Vec *o = &position;
+    VecFx32 *o = &position;
     s32 ay = o->z - 0x200;
     Unk_ov004_02239988_Vec2 *a = &boundsMin;
     a->x = o->x - 0x900;
@@ -3965,10 +3505,10 @@ void Unk_ov004_02239434::setBoundsAroundPos()
     b->y = by;
 }
 
-void Unk_ov004_02239434::init(u32 a, s32 b, s32 c, s16 d, s32 e, s32 f)
+void MuseumInsect::init(u32 a, s32 b, s32 c, s16 d, s32 e, s32 f)
 {
-    Unk_ov004_02239434_Vec *o = &position;
-    Unk_ov004_02239434_Vec *dv = &targetPos;
+    VecFx32 *o = &position;
+    VecFx32 *dv = &targetPos;
     dv->x = o->x;
     dv->y = o->y;
     dv->z = o->z;
@@ -3977,7 +3517,7 @@ void Unk_ov004_02239434::init(u32 a, s32 b, s32 c, s16 d, s32 e, s32 f)
     pitch = c;
     alertThreshold = a;
     alertRange = func_01ffcb0c(b << 12, 0x100);
-    unk_4c = 0;
+    speciesWork = 0;
     moveSpeed = f;
     unk_30 = 0;
     alertLevel = 0;
@@ -3987,23 +3527,23 @@ void Unk_ov004_02239434::init(u32 a, s32 b, s32 c, s16 d, s32 e, s32 f)
     isAlerted = 0;
 }
 
-void Unk_ov004_02239434::updateButterfly() { MuseumInsect_RunButterfly(this); }
+void MuseumInsect::updateButterfly() { MuseumInsect_RunButterfly(this); }
 
-void Unk_ov004_02239434::setupFlyer(s32 a, s32 b, s32 c, s32 d, s32 e)
+void MuseumInsect::setupFlyer(s32 a, s32 b, s32 c, s32 d, s32 e)
 {
     s32 t = func_01ffcb0c((c + 8) << 12, 0x1000);
     s32 r = func_01ffcb0c(t, 0x100);
-    Unk_ov004_02239434_Vec *s = &position;
-    Unk_ov004_02239434_Vec *dst = &homePos;
+    VecFx32 *s = &position;
+    VecFx32 *dst = &homePos;
     dst->x = s->x;
     dst->y = s->y;
     dst->z = s->z;
     init(a, b, 0, 0, 0, d);
-    unk_50 = 0x28;
+    cooldown = 0x28;
     stateTimer = (Random_GlobalBelow(10) + 0x10) * 0x14;
     flapPeriod = (u8)Random_GlobalBelow(0x12);
     dirFlag = 1;
-    unk_4c = e;
+    speciesWork = e;
     subCounter = 0;
     baseHeight = r;
     targetHeight = r;
@@ -4011,61 +3551,61 @@ void Unk_ov004_02239434::setupFlyer(s32 a, s32 b, s32 c, s32 d, s32 e)
         moveState = 6;
         s32 c2 = insectIndex;
         if (c2 != 0xa && c2 != 0x33) {
-            AnimFrameCtrl_setup(&model.animFrameCtrl, 0x11, 1, 0x1000, 9);
+            AnimFrameCtrl_setup(&(AnimFrameCtrl &)model, 0x11, 1, 0x1000, 9);
         } else {
             AnimModel_setFrame(&model, 0);
         }
     }
 }
 
-void Unk_ov004_02239434::setupCommonButterfly() { setupFlyer(0xc8, 0x50, 0x25, 6, 0x119a); }
+void MuseumInsect::setupCommonButterfly() { setupFlyer(0xc8, 0x50, 0x25, 6, 0x119a); }
 
-void Unk_ov004_02239434::setupYellowButterfly() { setupFlyer(0xc8, 0x50, 0x25, 6, 0x119a); }
+void MuseumInsect::setupYellowButterfly() { setupFlyer(0xc8, 0x50, 0x25, 6, 0x119a); }
 
-void Unk_ov004_02239434::setupTigerButterfly() { setupFlyer(0xc8, 0x50, 0x28, 7, 0x1000); }
+void MuseumInsect::setupTigerButterfly() { setupFlyer(0xc8, 0x50, 0x28, 7, 0x1000); }
 
-void Unk_ov004_02239434::setupPeacock() { setupFlyer(0xc8, 0x50, 0x28, 7, 0x1000); }
+void MuseumInsect::setupPeacock() { setupFlyer(0xc8, 0x50, 0x28, 7, 0x1000); }
 
-void Unk_ov004_02239434::setupMonarch() { setupFlyer(0xc8, 0x50, 0x2d, 7, 0xe66); }
+void MuseumInsect::setupMonarch() { setupFlyer(0xc8, 0x50, 0x2d, 7, 0xe66); }
 
-void Unk_ov004_02239434::setupEmperor() { setupFlyer(0xc8, 0x50, 0x14, 9, 0x1000); }
+void MuseumInsect::setupEmperor() { setupFlyer(0xc8, 0x50, 0x14, 9, 0x1000); }
 
-void Unk_ov004_02239434::setupAgrias() { setupFlyer(0xc8, 0x50, 0x2d, 0xf, 0x1000); }
+void MuseumInsect::setupAgrias() { setupFlyer(0xc8, 0x50, 0x2d, 0xf, 0x1000); }
 
-void Unk_ov004_02239434::setupBirdwing() { setupFlyer(0xc8, 0x50, 0x2d, 8, 0x1000); }
+void MuseumInsect::setupBirdwing() { setupFlyer(0xc8, 0x50, 0x2d, 8, 0x1000); }
 
-void Unk_ov004_02239434::updateMoth() { MuseumInsect_RunMoth(this); }
+void MuseumInsect::updateMoth() { MuseumInsect_RunMoth(this); }
 
-void Unk_ov004_02239434::setupMoth()
+void MuseumInsect::setupMoth()
 {
-    Unk_ov004_02239434_Vec *d = &homePos;
+    VecFx32 *d = &homePos;
     init(0x96, 0x28, 1, (s16)0x8000, 0, 9);
     if (isActive == 0) {
         pitch = 0x2aa8;
     }
-    unk_50 = 0x3c;
+    cooldown = 0x3c;
     flapPeriod = (u8)Random_GlobalBelow(0x12);
     dirFlag = 1;
     targetHeight = 0;
-    Unk_ov004_02239434_Vec *s = &position;
+    VecFx32 *s = &position;
     d->x = s->x;
     d->y = s->y;
     d->z = s->z;
     if (isActive == 0) {
-        AnimFrameCtrl_setup(&model.animFrameCtrl, 8, 1, 0x1000, 0);
+        AnimFrameCtrl_setup(&(AnimFrameCtrl &)model, 8, 1, 0x1000, 0);
     }
 }
 
-void Unk_ov004_02239434::setupFirefly()
+void MuseumInsect::setupFirefly()
 {
     MuseumFireflyStackPad pad;
     if (isActive) {
-        Unk_ov004_02239434_Vec *v = &position;
+        VecFx32 *v = &position;
         v->x = 0x7a00;
         v->y = 0x2d00;
         v->z = 0x12c00;
         init(0x5a, 0x50, 0, 0, 0, 4);
-        unk_50 = 0x3c;
+        cooldown = 0x3c;
         s32 a[2];
         s32 b[2];
         a[0] = 0;
@@ -4078,146 +3618,146 @@ void Unk_ov004_02239434::setupFirefly()
     }
 }
 
-void Unk_ov004_02239434::updateFirefly() { MuseumInsect_RunFirefly(this); }
+void MuseumInsect::updateFirefly() { MuseumInsect_RunFirefly(this); }
 
-void Unk_ov004_02239434::setupMosquito() { init(0, 0, 0, 0, 0, 0xb); }
+void MuseumInsect::setupMosquito() { init(0, 0, 0, 0, 0, 0xb); }
 
-void Unk_ov004_02239434::updateMosquito() { MuseumInsect_RunMosquito(this); }
+void MuseumInsect::updateMosquito() { MuseumInsect_RunMosquito(this); }
 
-void Unk_ov004_02239434::setupPerched(s32 a, s32 b)
+void MuseumInsect::setupPerched(s32 a, s32 b)
 {
     init(a, b, 0x3556, (s16)0x8000, 0, 0);
-    unk_50 = 0;
+    cooldown = 0;
 }
 
-void Unk_ov004_02239434::updatePerched() { _ZN18Unk_ov004_02239e7010runPerchedEv(this); }
+void MuseumInsect::updatePerched() { _ZN12MuseumInsect10runPerchedEv(this); }
 
-void Unk_ov004_02239434::setupHerculesBeetle() { setupPerched(0x5a, 0x3c); }
+void MuseumInsect::setupHerculesBeetle() { setupPerched(0x5a, 0x3c); }
 
-void Unk_ov004_02239434::setupElephantBeetle() { setupPerched(0x5a, 0x3c); }
+void MuseumInsect::setupElephantBeetle() { setupPerched(0x5a, 0x3c); }
 
-void Unk_ov004_02239434::setupAtlasBeetle() { setupPerched(0x5a, 0x3c); }
+void MuseumInsect::setupAtlasBeetle() { setupPerched(0x5a, 0x3c); }
 
-void Unk_ov004_02239434::setupDynastidBeetle() { setupPerched(0x64, 0x3c); }
+void MuseumInsect::setupDynastidBeetle() { setupPerched(0x64, 0x3c); }
 
-void Unk_ov004_02239434::setupSawStagBeetle() { setupPerched(0x64, 0x3c); }
+void MuseumInsect::setupSawStagBeetle() { setupPerched(0x64, 0x3c); }
 
-void Unk_ov004_02239434::setupStagBeetle() { setupPerched(0x64, 0x3c); }
+void MuseumInsect::setupStagBeetle() { setupPerched(0x64, 0x3c); }
 
-void Unk_ov004_02239434::setupGiantBeetle() { setupPerched(0x5a, 0x3c); }
+void MuseumInsect::setupGiantBeetle() { setupPerched(0x5a, 0x3c); }
 
-void Unk_ov004_02239434::setupJewelBeetle() { setupPerched(0x82, 0x3c); }
+void MuseumInsect::setupJewelBeetle() { setupPerched(0x82, 0x3c); }
 
-void Unk_ov004_02239434::setupFruitBeetle() { setupPerched(0x82, 0x3c); }
+void MuseumInsect::setupFruitBeetle() { setupPerched(0x82, 0x3c); }
 
-void Unk_ov004_02239434::setupLonghornBeetle() { setupPerched(0x82, 0x3c); }
+void MuseumInsect::setupLonghornBeetle() { setupPerched(0x82, 0x3c); }
 
-void Unk_ov004_02239434::setupRainbowStag() { setupPerched(0x82, 0x3c); }
+void MuseumInsect::setupRainbowStag() { setupPerched(0x82, 0x3c); }
 
-void Unk_ov004_02239434::setupScarabBeetle() { setupPerched(0x5a, 0x3c); }
+void MuseumInsect::setupScarabBeetle() { setupPerched(0x5a, 0x3c); }
 
-void Unk_ov004_02239434::setupGoliathBeetle() { setupPerched(0x5a, 0x3c); }
+void MuseumInsect::setupGoliathBeetle() { setupPerched(0x5a, 0x3c); }
 
-void Unk_ov004_02239434::setupWalkingstick() { setupPerched(0x28, 0x78); }
+void MuseumInsect::setupWalkingstick() { setupPerched(0x28, 0x78); }
 
-void Unk_ov004_02239434::setupOakSilkMoth()
+void MuseumInsect::setupOakSilkMoth()
 {
     setupPerched(0x96, 0x46);
-    AnimFrameCtrl_setup(&model.animFrameCtrl, (u32)(model.numFrames << 4) >> 16, 1, 0x1000, 0);
+    AnimFrameCtrl_setup(&(AnimFrameCtrl &)model, (u32)(model.numFrames << 4) >> 16, 1, 0x1000, 0);
 }
 
-void Unk_ov004_02239434::updateCicada() { _ZN18Unk_ov004_02239e709runCicadaEv(this); }
+void MuseumInsect::updateCicada() { _ZN12MuseumInsect9runCicadaEv(this); }
 
-void Unk_ov004_02239434::setupBrownCicada() { setupPerched(0xc8, 0x3c); }
+void MuseumInsect::setupBrownCicada() { setupPerched(0xc8, 0x3c); }
 
-void Unk_ov004_02239434::setupRobustCicada() { setupPerched(0xc8, 0x3c); }
+void MuseumInsect::setupRobustCicada() { setupPerched(0xc8, 0x3c); }
 
-void Unk_ov004_02239434::setupWalkerCicada() { setupPerched(0xc8, 0x3c); }
+void MuseumInsect::setupWalkerCicada() { setupPerched(0xc8, 0x3c); }
 
-void Unk_ov004_02239434::setupEveningCicada() { setupPerched(0xc8, 0x3c); }
+void MuseumInsect::setupEveningCicada() { setupPerched(0xc8, 0x3c); }
 
-void Unk_ov004_02239434::setupLanternFly()
+void MuseumInsect::setupLanternFly()
 {
     setupPerched(0xc8, 0x50);
     model.frameStep = 0;
 }
 
-extern "C" void MuseumInsect_SetupHopper(Unk_ov004_02238af4 *o, s32 a, s32 b, s32 c, u8 d) {
+extern "C" void MuseumInsect_SetupHopper(MuseumInsect *o, s32 a, s32 b, s32 c, u8 d) {
     s32 t = MuseumInsect_RandHeading();
-    _ZN18Unk_ov004_022394344initEjiisii(o, a, b, 0, t, 0, 0x1000 / c);
+    _ZN12MuseumInsect4initEjiisii(o, a, b, 0, t, 0, 0x1000 / c);
     o->subCounter = (Random_GlobalBelow(9) + 2) * 20;
     o->travelDistance = d;
 }
 
-extern "C" void MuseumInsect_UpdateHopper(Unk_ov004_02238af4 *o) { MuseumInsect_RunHopper(o); }
+extern "C" void MuseumInsect_UpdateHopper(MuseumInsect *o) { MuseumInsect_RunHopper(o); }
 
-extern "C" void MuseumInsect_SetupGrasshopper(Unk_ov004_02238af4 *o) {
+extern "C" void MuseumInsect_SetupGrasshopper(MuseumInsect *o) {
     MuseumInsect_SetupHopper(o, 0x3c, 0x46, 6, 1);
     s32 a[2], b[2];
     a[0] = 0x104;
     a[1] = 0xc2;
     b[0] = 0x1be;
     b[1] = 0x15a;
-    _ZN18Unk_ov004_022394349setBoundsEPiS0_(o, a, b);
+    _ZN12MuseumInsect9setBoundsEPiS0_(o, a, b);
 }
 
-extern "C" void MuseumInsect_SetupCricket(Unk_ov004_02238af4 *o) {
+extern "C" void MuseumInsect_SetupCricket(MuseumInsect *o) {
     MuseumInsect_SetupHopper(o, 0x3c, 0x46, 6, 1);
     s32 a[2], b[2];
     a[0] = 0x104;
     a[1] = 0xc2;
     b[0] = 0x1be;
     b[1] = 0x15a;
-    _ZN18Unk_ov004_022394349setBoundsEPiS0_(o, a, b);
+    _ZN12MuseumInsect9setBoundsEPiS0_(o, a, b);
 }
 
-extern "C" void MuseumInsect_SetupLongLocust(Unk_ov004_02238af4 *o) {
+extern "C" void MuseumInsect_SetupLongLocust(MuseumInsect *o) {
     MuseumInsect_SetupHopper(o, 0x3c, 0x50, 8, 2);
     s32 a[2], b[2];
     a[0] = 0x104;
     a[1] = 0xc2;
     b[0] = 0x1be;
     b[1] = 0x15a;
-    _ZN18Unk_ov004_022394349setBoundsEPiS0_(o, a, b);
+    _ZN12MuseumInsect9setBoundsEPiS0_(o, a, b);
 }
 
-extern "C" void MuseumInsect_SetupMigratoryLocust(Unk_ov004_02238af4 *o) {
+extern "C" void MuseumInsect_SetupMigratoryLocust(MuseumInsect *o) {
     MuseumInsect_SetupHopper(o, 0x3c, 0x50, 8, 3);
     s32 a[2], b[2];
     a[0] = 0x104;
     a[1] = 0xc2;
     b[0] = 0x1be;
     b[1] = 0x15a;
-    _ZN18Unk_ov004_022394349setBoundsEPiS0_(o, a, b);
+    _ZN12MuseumInsect9setBoundsEPiS0_(o, a, b);
 }
 
-extern "C" void MuseumInsect_SetupBellCricket(Unk_ov004_02238af4 *o) {
+extern "C" void MuseumInsect_SetupBellCricket(MuseumInsect *o) {
     MuseumInsect_SetupHopper(o, 0x3c, 0x46, 8, 1);
     s32 a[2], b[2];
     a[0] = 0x104;
     a[1] = 0xc2;
     b[0] = 0x1be;
     b[1] = 0x15a;
-    _ZN18Unk_ov004_022394349setBoundsEPiS0_(o, a, b);
+    _ZN12MuseumInsect9setBoundsEPiS0_(o, a, b);
 }
 
-extern "C" void MuseumInsect_SetupCockroach(Unk_ov004_02238af4 *o) {
-    _ZN18Unk_ov004_022394344initEjiisii(o, 0x3c, 0x46, 0, MuseumInsect_RandHeading(), 0, 0x26);
+extern "C" void MuseumInsect_SetupCockroach(MuseumInsect *o) {
+    _ZN12MuseumInsect4initEjiisii(o, 0x3c, 0x46, 0, MuseumInsect_RandHeading(), 0, 0x26);
     o->stateTimer = (Random_GlobalBelow(10) + 3) * 20;
     o->subCounter = 0;
 }
 
-extern "C" void MuseumInsect_UpdateCockroach(Unk_ov004_02238af4 *o) { MuseumInsect_RunCockroach(o); }
+extern "C" void MuseumInsect_UpdateCockroach(MuseumInsect *o) { MuseumInsect_RunCockroach(o); }
 
-extern "C" void MuseumInsect_UpdateDragonfly(Unk_ov004_02238af4 *o) { MuseumInsect_RunDragonfly(o); }
+extern "C" void MuseumInsect_UpdateDragonfly(MuseumInsect *o) { MuseumInsect_RunDragonfly(o); }
 
-extern "C" void MuseumInsect_SetupDragonfly(Unk_ov004_02238af4 *o, s32 a, s32 b, s32 c, u8 d, u8 e, s32 f) {
+extern "C" void MuseumInsect_SetupDragonfly(MuseumInsect *o, s32 a, s32 b, s32 c, u8 d, u8 e, s32 f) {
     s32 t = MuseumInsect_RandHeading();
-    _ZN18Unk_ov004_022394344initEjiisii(o, a, b, 0, t, c, 0x1000 / d);
+    _ZN12MuseumInsect4initEjiisii(o, a, b, 0, t, c, 0x1000 / d);
     o->travelDistance = e;
-    o->unk_4c = f;
-    Unk_ov004_02238af4_V3 *sv = &o->position;
-    Unk_ov004_02238af4_V3 *dv = &o->homePos;
+    o->speciesWork = f;
+    VecFx32 *sv = &o->position;
+    VecFx32 *dv = &o->homePos;
     dv->x = sv->x;
     dv->y = sv->y;
     dv->z = sv->z;
@@ -4230,9 +3770,9 @@ extern "C" void MuseumInsect_SetupDragonfly(Unk_ov004_02238af4 *o, s32 a, s32 b,
     o->isPerched = 1;
 }
 
-extern "C" void MuseumInsect_SetupRedDragonfly(Unk_ov004_02238af4 *o) {
+extern "C" void MuseumInsect_SetupRedDragonfly(MuseumInsect *o) {
     if (Random_GlobalBelow(100) > 50) {
-        Unk_ov004_02238af4_V3 *v = &o->position;
+        VecFx32 *v = &o->position;
         v->x = 0x1a600;
         v->y = 0x1400;
         v->z = 0x13c00;
@@ -4240,9 +3780,9 @@ extern "C" void MuseumInsect_SetupRedDragonfly(Unk_ov004_02238af4 *o) {
     MuseumInsect_SetupDragonfly(o, 0xc8, 0x3c, 0x28, 0x14, 1, 0xcd);
 }
 
-extern "C" void MuseumInsect_SetupDarnerDragonfly(Unk_ov004_02238af4 *o) {
+extern "C" void MuseumInsect_SetupDarnerDragonfly(MuseumInsect *o) {
     if (Random_GlobalBelow(100) > 50) {
-        Unk_ov004_02238af4_V3 *v = &o->position;
+        VecFx32 *v = &o->position;
         v->x = 0x16600;
         v->y = 0x1400;
         v->z = 0x14200;
@@ -4250,9 +3790,9 @@ extern "C" void MuseumInsect_SetupDarnerDragonfly(Unk_ov004_02238af4 *o) {
     MuseumInsect_SetupDragonfly(o, 0xc8, 0x28, 0x2d, 0x1e, 3, 0x19a);
 }
 
-extern "C" void MuseumInsect_SetupBandedDragonfly(Unk_ov004_02238af4 *o) {
+extern "C" void MuseumInsect_SetupBandedDragonfly(MuseumInsect *o) {
     if (Random_GlobalBelow(100) > 50) {
-        Unk_ov004_02238af4_V3 *v = &o->position;
+        VecFx32 *v = &o->position;
         v->x = 0x12b00;
         v->y = 0x1a00;
         v->z = 0xda00;
@@ -4260,14 +3800,14 @@ extern "C" void MuseumInsect_SetupBandedDragonfly(Unk_ov004_02238af4 *o) {
     MuseumInsect_SetupDragonfly(o, 0x64, 0x28, 0x32, 0x78, 0x1e, 0x266);
 }
 
-extern "C" void MuseumInsect_SetupPondSkater(Unk_ov004_02238af4 *o) {
-    _ZN18Unk_ov004_022394344initEjiisii(o, 0x28, 0x50, 0, 0, 0, 1);
+extern "C" void MuseumInsect_SetupPondSkater(MuseumInsect *o) {
+    _ZN12MuseumInsect4initEjiisii(o, 0x28, 0x50, 0, 0, 0, 1);
     s32 a[2], b[2];
     a[0] = 0x62;
     a[1] = 0x11a;
     b[0] = 0x92;
     b[1] = 0x13e;
-    _ZN18Unk_ov004_022394349setBoundsEPiS0_(o, a, b);
+    _ZN12MuseumInsect9setBoundsEPiS0_(o, a, b);
     if (o->isActive != 0) {
         s32 t = Random_GlobalBelow(0x14);
         t *= Random_GlobalBelow(3);
@@ -4279,59 +3819,59 @@ extern "C" void MuseumInsect_SetupPondSkater(Unk_ov004_02238af4 *o) {
     }
 }
 
-extern "C" void MuseumInsect_UpdatePondSkater(Unk_ov004_02238af4 *o) { MuseumInsect_RunPondSkater(o); }
+extern "C" void MuseumInsect_UpdatePondSkater(MuseumInsect *o) { MuseumInsect_RunPondSkater(o); }
 
-extern "C" void MuseumInsect_UpdateWalker(Unk_ov004_02238af4 *o) { _ZN18Unk_ov004_022394349runWalkerEv(o); }
+extern "C" void MuseumInsect_UpdateWalker(MuseumInsect *o) { _ZN12MuseumInsect9runWalkerEv(o); }
 
-extern "C" void MuseumInsect_SetupSnail(Unk_ov004_02238af4 *o) {
-    _ZN18Unk_ov004_022394344initEjiisii(o, 0xc8, 0x3c, 0, MuseumInsect_RandHeading(), 0, 1);
-    _ZN18Unk_ov004_0223943418setBoundsAroundPosEv(o);
-    o->unk_4c = 0x38e;
+extern "C" void MuseumInsect_SetupSnail(MuseumInsect *o) {
+    _ZN12MuseumInsect4initEjiisii(o, 0xc8, 0x3c, 0, MuseumInsect_RandHeading(), 0, 1);
+    _ZN12MuseumInsect18setBoundsAroundPosEv(o);
+    o->speciesWork = 0x38e;
 }
 
-extern "C" void MuseumInsect_SetupLadybug(Unk_ov004_02238af4 *o) {
-    _ZN18Unk_ov004_022394344initEjiisii(o, 0x50, 0x3c, 0, MuseumInsect_RandHeading(), 0, 0x20);
-    _ZN18Unk_ov004_0223943418setBoundsAroundPosEv(o);
-    o->unk_4c = 0x71c;
+extern "C" void MuseumInsect_SetupLadybug(MuseumInsect *o) {
+    _ZN12MuseumInsect4initEjiisii(o, 0x50, 0x3c, 0, MuseumInsect_RandHeading(), 0, 0x20);
+    _ZN12MuseumInsect18setBoundsAroundPosEv(o);
+    o->speciesWork = 0x71c;
 }
 
-extern "C" void MuseumInsect_SetupMantis(Unk_ov004_02238af4 *o) {
-    _ZN18Unk_ov004_022394344initEjiisii(o, 0xa0, 0x3c, 0, MuseumInsect_RandHeading(), 0, 0x20);
-    _ZN18Unk_ov004_0223943418setBoundsAroundPosEv(o);
-    o->unk_4c = 0x71c;
+extern "C" void MuseumInsect_SetupMantis(MuseumInsect *o) {
+    _ZN12MuseumInsect4initEjiisii(o, 0xa0, 0x3c, 0, MuseumInsect_RandHeading(), 0, 0x20);
+    _ZN12MuseumInsect18setBoundsAroundPosEv(o);
+    o->speciesWork = 0x71c;
 }
 
-extern "C" void MuseumInsect_SetupOrchidMantis(Unk_ov004_02238af4 *o) {
-    _ZN18Unk_ov004_022394344initEjiisii(o, 0xa0, 0x46, 0, MuseumInsect_RandHeading(), 0, 0x20);
-    _ZN18Unk_ov004_0223943418setBoundsAroundPosEv(o);
-    o->unk_4c = 0x71c;
+extern "C" void MuseumInsect_SetupOrchidMantis(MuseumInsect *o) {
+    _ZN12MuseumInsect4initEjiisii(o, 0xa0, 0x46, 0, MuseumInsect_RandHeading(), 0, 0x20);
+    _ZN12MuseumInsect18setBoundsAroundPosEv(o);
+    o->speciesWork = 0x71c;
 }
 
-extern "C" void MuseumInsect_SetupMoleCricket(Unk_ov004_02238af4 *o) {
-    _ZN18Unk_ov004_022394344initEjiisii(o, 0xc8, 0x3c, 0, 0, 0, 0);
+extern "C" void MuseumInsect_SetupMoleCricket(MuseumInsect *o) {
+    _ZN12MuseumInsect4initEjiisii(o, 0xc8, 0x3c, 0, 0, 0, 0);
     NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(&o->pooledModel), 0, 0);
     s32 a[2], b[2];
     a[0] = 0xa6;
     a[1] = 0x106;
     b[0] = 0xfc;
     b[1] = 0x150;
-    _ZN18Unk_ov004_022394349setBoundsEPiS0_(o, a, b);
+    _ZN12MuseumInsect9setBoundsEPiS0_(o, a, b);
 }
 
-extern "C" void MuseumInsect_UpdateMoleCricket(Unk_ov004_02238af4 *o) { MuseumInsect_RunMoleCricket(o); }
+extern "C" void MuseumInsect_UpdateMoleCricket(MuseumInsect *o) { MuseumInsect_RunMoleCricket(o); }
 
-extern "C" void MuseumInsect_SetupPillBug(Unk_ov004_02238af4 *o) {
+extern "C" void MuseumInsect_SetupPillBug(MuseumInsect *o) {
     u8 t = Random_GlobalBelow(5);
     if (Random_GlobalBelow(100) > 50) {
         o->dirFlag = 0;
     } else {
         o->dirFlag = 1;
     }
-    o->unk_4c = t;
-    _ZN18Unk_ov004_022394344initEjiisii(o, 0x50, 0x50, 0, 0, 0, 1);
+    o->speciesWork = t;
+    _ZN12MuseumInsect4initEjiisii(o, 0x50, 0x50, 0, 0, 0, 1);
     MuseumInsect_GetPillBugWaypoint(&o->position, t);
     MuseumInsect_PillBugNextWaypoint(o);
-    o->unk_50 = 0;
+    o->cooldown = 0;
     if (Random_GlobalBelow(100) > 50) {
         o->stateTimer = (Random_GlobalBelow(9) + 4) * 20;
         o->moveState = 4;
@@ -4341,41 +3881,41 @@ extern "C" void MuseumInsect_SetupPillBug(Unk_ov004_02238af4 *o) {
     }
 }
 
-extern "C" void MuseumInsect_UpdatePillBug(Unk_ov004_02238af4 *o) { MuseumInsect_RunPillBug(o); }
+extern "C" void MuseumInsect_UpdatePillBug(MuseumInsect *o) { MuseumInsect_RunPillBug(o); }
 
-extern "C" void MuseumInsect_SetupHoneybee(Unk_ov004_02238af4 *o) {
-    _ZN18Unk_ov004_0223943410setupFlyerEiiiii(o, 0x78, 0x3c, 0x25, 8, 0x1000);
-    _ZN18Unk_ov004_0223943418setBoundsAroundPosEv(o);
+extern "C" void MuseumInsect_SetupHoneybee(MuseumInsect *o) {
+    _ZN12MuseumInsect10setupFlyerEiiiii(o, 0x78, 0x3c, 0x25, 8, 0x1000);
+    _ZN12MuseumInsect18setBoundsAroundPosEv(o);
 }
 
-extern "C" void MuseumInsect_UpdateHoneybee(Unk_ov004_02238af4 *o) { MuseumInsect_RunFlyingInsect(o); }
+extern "C" void MuseumInsect_UpdateHoneybee(MuseumInsect *o) { MuseumInsect_RunFlyingInsect(o); }
 
-extern "C" void MuseumInsect_SetupFly(Unk_ov004_02238af4 *o) {
-    _ZN18Unk_ov004_0223943410setupFlyerEiiiii(o, 0x1e, 0x14, 0x28, 0xf, 0x1000);
-    o->unk_4c = 0x71c;
-    Unk_ov004_02238af4_V3 *sv = &o->position;
-    Unk_ov004_02238af4_V3 *dv = &o->homePos;
+extern "C" void MuseumInsect_SetupFly(MuseumInsect *o) {
+    _ZN12MuseumInsect10setupFlyerEiiiii(o, 0x1e, 0x14, 0x28, 0xf, 0x1000);
+    o->speciesWork = 0x71c;
+    VecFx32 *sv = &o->position;
+    VecFx32 *dv = &o->homePos;
     dv->x = sv->x;
     dv->y = sv->y;
     dv->z = sv->z;
     o->homePos.y = 0xb00;
 }
 
-extern "C" void MuseumInsect_UpdateFly(Unk_ov004_02238af4 *o) { MuseumInsect_RunFlyingInsect(o); }
+extern "C" void MuseumInsect_UpdateFly(MuseumInsect *o) { MuseumInsect_RunFlyingInsect(o); }
 
-extern "C" void MuseumInsect_SetupSpider(Unk_ov004_02238af4 *o) {
-    _ZN18Unk_ov004_022394344initEjiisii(o, 0x5a, 0x40, 0, 0, 0, 0xf);
-    o->unk_4c = o->position.x;
+extern "C" void MuseumInsect_SetupSpider(MuseumInsect *o) {
+    _ZN12MuseumInsect4initEjiisii(o, 0x5a, 0x40, 0, 0, 0, 0xf);
+    o->speciesWork = o->position.x;
 }
 
-extern "C" void MuseumInsect_UpdateSpider(Unk_ov004_02238af4 *o) { _ZN18Unk_ov004_02239e709runSpiderEv(o); }
+extern "C" void MuseumInsect_UpdateSpider(MuseumInsect *o) { _ZN12MuseumInsect9runSpiderEv(o); }
 
-extern "C" void MuseumInsect_UpdateArachnid(Unk_ov004_02238af4 *o) { MuseumInsect_RunArachnid(o); }
+extern "C" void MuseumInsect_UpdateArachnid(MuseumInsect *o) { MuseumInsect_RunArachnid(o); }
 
-extern "C" void MuseumInsect_SetupTarantula(Unk_ov004_02238af4 *o) {
-    _ZN18Unk_ov004_022394344initEjiisii(o, 0x50, 0x50, 0, MuseumInsect_RandHeading(), 0, 5);
+extern "C" void MuseumInsect_SetupTarantula(MuseumInsect *o) {
+    _ZN12MuseumInsect4initEjiisii(o, 0x50, 0x50, 0, MuseumInsect_RandHeading(), 0, 5);
     o->dirFlag = 0;
-    Unk_ov004_02238af4 *p = ((Unk_ov004_02238af4 *)MuseumInsect_FindScorpion());
+    MuseumInsect *p = ((MuseumInsect *)MuseumInsect_FindScorpion());
     if (p != 0) {
         s32 a[2], b[2];
         o->isFighting = 1;
@@ -4384,7 +3924,7 @@ extern "C" void MuseumInsect_SetupTarantula(Unk_ov004_02238af4 *o) {
         a[1] = 0x10c;
         b[0] = 0x14c;
         b[1] = 0x148;
-        _ZN18Unk_ov004_022394349setBoundsEPiS0_(o, a, b);
+        _ZN12MuseumInsect9setBoundsEPiS0_(o, a, b);
     } else {
         s32 a[2], b[2];
         if (o->isActive != 0) {
@@ -4396,20 +3936,20 @@ extern "C" void MuseumInsect_SetupTarantula(Unk_ov004_02238af4 *o) {
         a[1] = 0xc2;
         b[0] = 0x1be;
         b[1] = 0x15a;
-        _ZN18Unk_ov004_022394349setBoundsEPiS0_(o, a, b);
+        _ZN12MuseumInsect9setBoundsEPiS0_(o, a, b);
     }
 }
 
-extern "C" void MuseumInsect_SetupScorpion(Unk_ov004_02238af4 *o) {
-    _ZN18Unk_ov004_022394344initEjiisii(o, 0x50, 0x50, 0, MuseumInsect_RandHeading(), 0, 5);
+extern "C" void MuseumInsect_SetupScorpion(MuseumInsect *o) {
+    _ZN12MuseumInsect4initEjiisii(o, 0x50, 0x50, 0, MuseumInsect_RandHeading(), 0, 5);
     o->dirFlag = 0;
-    AnimFrameCtrl_setup(&o->animFrameCtrl, 3, 0, 0x1000, 0);
+    AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 3, 0, 0x1000, 0);
     s32 a[2], b[2];
     a[0] = 0x104;
     a[1] = 0xc2;
     b[0] = 0x1be;
     b[1] = 0x15a;
-    _ZN18Unk_ov004_022394349setBoundsEPiS0_(o, a, b);
+    _ZN12MuseumInsect9setBoundsEPiS0_(o, a, b);
     if (o->isActive != 0) {
         o->stateTimer = (s16)((Random_GlobalBelow(6) + 1) * 20);
     } else {
@@ -4417,29 +3957,29 @@ extern "C" void MuseumInsect_SetupScorpion(Unk_ov004_02238af4 *o) {
     }
 }
 
-extern "C" void MuseumInsect_SetupBee(Unk_ov004_02238af4 *o) { _ZN18Unk_ov004_0223943412setupPerchedEii(o, 0x5a, 0x3c); }
+extern "C" void MuseumInsect_SetupBee(MuseumInsect *o) { _ZN12MuseumInsect12setupPerchedEii(o, 0x5a, 0x3c); }
 
-extern "C" void MuseumInsect_UpdateBee(Unk_ov004_02238af4 *o) { _ZN18Unk_ov004_02239e7010runPerchedEv(o); }
+extern "C" void MuseumInsect_UpdateBee(MuseumInsect *o) { _ZN12MuseumInsect10runPerchedEv(o); }
 
-extern "C" void MuseumInsect_SetupFlea(Unk_ov004_02238af4 *o) {
-    _ZN18Unk_ov004_022394344initEjiisii(o, 0x28, 0x1e, 0, 0, 0, 0xf);
+extern "C" void MuseumInsect_SetupFlea(MuseumInsect *o) {
+    _ZN12MuseumInsect4initEjiisii(o, 0x28, 0x1e, 0, 0, 0, 0xf);
     o->stateTimer = (s16)Random_GlobalBelow(0x1e) + 10;
 }
 
-extern "C" void MuseumInsect_UpdateFlea(Unk_ov004_02238af4 *o) { MuseumInsect_RunFlea(o); }
+extern "C" void MuseumInsect_UpdateFlea(MuseumInsect *o) { MuseumInsect_RunFlea(o); }
 
-extern "C" void MuseumInsect_SetupAnt(Unk_ov004_02238af4 *o) {
-    _ZN18Unk_ov004_022394344initEjiisii(o, 0x28, 0x1e, 0, 0, 0, 0xf);
+extern "C" void MuseumInsect_SetupAnt(MuseumInsect *o) {
+    _ZN12MuseumInsect4initEjiisii(o, 0x28, 0x1e, 0, 0, 0, 0xf);
     if (o->isActive == 0) {
-        o->matAnimFrameStep = 0x666;
+        o->matAnim.frameStep = 0x666;
     }
 }
 
 extern "C" void MuseumInsect_UpdateAnt() {}
 
-extern "C" void MuseumInsect_SetupDungBeetle(Unk_ov004_02238af4 *o) {
+extern "C" void MuseumInsect_SetupDungBeetle(MuseumInsect *o) {
     if (o->insectIndex == 0x23) {
-        Unk_ov004_02238af4 *p = ((Unk_ov004_02238af4 *)MuseumInsect_FindDungBall());
+        MuseumInsect *p = ((MuseumInsect *)MuseumInsect_FindDungBall());
         if (Random_GlobalBelow(100) > 50) {
             s32 v = (s16)((Random_GlobalBelow(9) + 4) * 20);
             o->stateTimer = v;
@@ -4453,16 +3993,16 @@ extern "C" void MuseumInsect_SetupDungBeetle(Unk_ov004_02238af4 *o) {
             }
             o->stateTimer = v;
             p->stateTimer = v;
-            o->animFrameStep = 0;
+            o->model.frameStep = 0;
             o->moveState = 0x19;
             p->moveState = 0x19;
         }
     } else if (o->moveState == 0x19) {
-        o->animFrameStep = 0;
+        o->model.frameStep = 0;
     }
 }
 
-extern "C" void MuseumInsect_UpdateDungBeetle(Unk_ov004_02238af4 *o) { MuseumInsect_RunDungBeetle(o); }
+extern "C" void MuseumInsect_UpdateDungBeetle(MuseumInsect *o) { MuseumInsect_RunDungBeetle(o); }
 
 extern "C" void MuseumInsect_InitPlacement(void *m, u8 *s) {
     MuseumInsectPlaceStackPad pad;
@@ -4847,7 +4387,7 @@ extern "C" void MuseumInsect_RevertOutOfBounds(void *m, u8 *s, s32 *p) {
     if (v[2] < lo[1] || v[2] > hi[1]) v[2] = p[2];
 }
 
-void MuseumInsectRoom::updateInsect(Elem_7690 *e) {
+void MuseumInsectRoom::updateInsect(MuseumInsect *e) {
     V3_7690 prev;
     V3_7690 p2;
     Mtx43 buf;
@@ -4857,7 +4397,7 @@ void MuseumInsectRoom::updateInsect(Elem_7690 *e) {
     u32 mode;
     s32 a;
     if (e->updateFn != 0) {
-        Unk_ov004_022376f8_Obj *obj = &e->hitBox;
+        StaticCollider *obj = (StaticCollider *)e->hitBox;
         V3_7690 *pos = &e->position;
         u8 id = e->insectIndex;
         prev = *pos;
@@ -4879,7 +4419,7 @@ void MuseumInsectRoom::updateInsect(Elem_7690 *e) {
         if (hasHitBox(id, e->moveState)) {
             p2 = *pos;
             if (id == 0x38) {
-                if (Model_GetJointWorldMtx(e->model, &buf, 0)) {
+                if (Model_GetJointWorldMtx(&e->model, &buf, 0)) {
                     q = *(V3_7690 *)&buf.m[9];
                     WorldCurve_FromCurved(&p2, &q);
                 }
@@ -4906,12 +4446,12 @@ void MuseumInsectRoom::updateInsect(Elem_7690 *e) {
                 }
                 a = sMuseumInsectParams[id].radius;
             }
-            Collision_Move(e->moveResult, pos, &prev, e->yaw, sMuseumInsectParams[id].radius, 0, 0xb);
+            Collision_Move(&e->moveResult, pos, &prev, e->yaw, sMuseumInsectParams[id].radius, 0, 0xb);
             StaticCollider_setupAtPos(obj, &p2, sMuseumInsectParams[id].radius, a, mode, 0xc0, 0, 0xff, 0x1000);
             ActorCollider_submit(obj);
         }
         if (sMuseumInsectParams[id].useVisAnim == 0) {
-            AnimModel_stepAnim(e->model);
+            AnimModel_stepAnim(&e->model);
             if (id == 0x18) {
                 AnimFrameCtrl_step(e);
                 *(s32 *)e->matAnim.anmObj = e->matAnim.curFrame;
@@ -4926,7 +4466,7 @@ void MuseumInsectRoom::updateInsect(Elem_7690 *e) {
         Mtx43_RotateX(&data_021f47e0, r + e->pitch);
         Mtx43_RotateY(&data_021f47e0, e->yaw);
         Mtx43_RotateZ(&data_021f47e0, e->roll);
-        e->modelMtx = data_021f47e0;
+        *(Mtx_7690 *)&e->model.mtx = data_021f47e0;
     }
 }
 
@@ -4988,7 +4528,7 @@ BOOL MuseumInsectRoom::onExecute() {
             r[i] = BoxCollider_Register(&obj0[i * 0x9c], 0x1000, 0x4000, 0x6000, &rect[i], z, z);
         }
     }
-    Elem_7690 *e = sMuseumInsects;
+    MuseumInsect *e = sMuseumInsects;
     sMuseumInsectFrame++;
     updateObstacles();
     for (i = 0; i < 0x20; e++, i++) {
@@ -5061,14 +4601,14 @@ void MuseumInsectRoom::updateObstacles() {
 }
 
 BOOL MuseumInsectRoom::onDraw() {
-    Elem_7690 *e = sMuseumInsects;
+    MuseumInsect *e = sMuseumInsects;
     s32 z0 = 0;
     s32 z1 = 0;
     u8 i = 0;
     for (; i < 0x20; e++, i++) {
         if (e->loadState == 2) {
             s8 id = e->insectIndex;
-            u8 *obj = e->model;
+            u8 *obj = (u8 *)&e->model;
             if (id == 0x30) {
                 V3_7690 v = sMuseumFleaDrawScale;
                 AnimModel_drawAnimated(obj, &v);
@@ -5084,7 +4624,7 @@ BOOL MuseumInsectRoom::onDraw() {
     return TRUE;
 }
 
-BOOL MuseumInsectRoom::hasShadow(Elem_7690 *e) {
+BOOL MuseumInsectRoom::hasShadow(MuseumInsect *e) {
     switch (e->insectIndex) {
     case 0x9: case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x18: case 0x19:
     case 0x1f: case 0x21: case 0x22: case 0x23: case 0x24: case 0x26: case 0x27: case 0x28:
@@ -5149,12 +4689,12 @@ BOOL MuseumInsectRoom::getInsectRoom(u32 idx) {
     return TRUE;
 }
 
-extern "C" Elem_7690 *MuseumInsect_FindScorpion() {
+extern "C" MuseumInsect *MuseumInsect_FindScorpion() {
     s32 i = sMuseumScorpionSlot;
     if (i >= 0) {
         return &sMuseumInsects[i];
     }
-    Elem_7690 *e = sMuseumInsects;
+    MuseumInsect *e = sMuseumInsects;
     u8 j;
     for (j = 0; j < 0x20; e++, j++) {
         if (e->insectIndex == 0x37 && e->loadState != 0) {
@@ -5165,12 +4705,12 @@ extern "C" Elem_7690 *MuseumInsect_FindScorpion() {
     return 0;
 }
 
-extern "C" Elem_7690 *MuseumInsect_FindDungBall() {
+extern "C" MuseumInsect *MuseumInsect_FindDungBall() {
     s32 i = sMuseumDungBallSlot;
     if (i >= 0) {
         return &sMuseumInsects[i];
     }
-    Elem_7690 *e = sMuseumInsects;
+    MuseumInsect *e = sMuseumInsects;
     u8 j;
     for (j = 0; j < 0x20; e++, j++) {
         if (e->insectIndex == 0x38 && e->loadState != 0) {
@@ -5182,10 +4722,6 @@ extern "C" Elem_7690 *MuseumInsect_FindDungBall() {
 }
 
 MuseumInsect::MuseumInsect() {
-    sound = data_0213b91c;
-    sound = data_0213b954;
-    func_020323b0(moveResult);
-    func_020548d0(model);
     func_02135714(probePoints, 2, 0xc, (void *)FxVec3_Construct, (void *)func_02000c8c);
     func_02088bc8(&hitBox);
     func_02054e3c(cachedModel);
@@ -5203,13 +4739,11 @@ MuseumInsect::~MuseumInsect() {
     func_02054e24(cachedModel);
     func_02088bb0(&hitBox);
     func_021355f0(probePoints, 2, 0xc, (void *)func_02000c8c);
-    func_020548a0(model);
-    func_0203239c(moveResult);
 }
 
 void MuseumInsectRoom::releaseInsect(s32 idx) {
     if (idx >= 0 && idx < 0x20) {
-        Unk_ov004_022375b8_Rec *r = (Unk_ov004_022375b8_Rec *)&sMuseumInsects[idx];
+        MuseumInsect *r = (MuseumInsect *)&sMuseumInsects[idx];
         s32 t = r->insectIndex;
         if (t == 0x38) {
             Mem_Free((void *)dungBallAnimFile);
@@ -5219,13 +4753,13 @@ void MuseumInsectRoom::releaseInsect(s32 idx) {
             dungBeetleAnimFile = 0;
         }
         if (sMuseumInsectParams[t].useVisAnim != 0) {
-            AnimModel_detachVisAnim(r->model);
+            AnimModel_detachVisAnim(&r->model);
         } else {
-            AnimModel_detachJointAnim(r->model);
+            AnimModel_detachJointAnim(&r->model);
         }
-        r->matAnmObj = 0;
-        r->matResMdl = 0;
-        SndEnvChannel_callRelease(r->sound);
+        r->matAnim.anmObj = 0;
+        r->matAnim.resMdl = 0;
+        SndEnvChannel_callRelease(&r->sound);
         r->insectIndex = -1;
         r->yaw = 0;
         r->loadState = 0;

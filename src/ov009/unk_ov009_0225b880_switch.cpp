@@ -56,7 +56,7 @@
 
 
 class BuildingActor;
-struct Unk_ov009_0225cc24_Obj;
+class Actor;
 
 
 

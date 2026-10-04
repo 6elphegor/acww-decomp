@@ -38,14 +38,6 @@ class SpNpcGracie;
 class SpNpcGracieTalk;
 
 
-struct Unk_ov070_02271478_Save {
-    u8 pad_00[0x720];
-    u8 askedQuestions[0x14];
-    u8 questionCount;
-};
-
-
-
 struct SpNpcGracieLetterVars {
     u8 letterLevel;
     u8 msgIndex;

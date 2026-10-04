@@ -28,7 +28,7 @@ extern u16 gPad[];
 
 class LetterViewMenu;
 
-struct Unk_0206d1d4_Src;
+struct LetterView;
 
 
 
@@ -138,7 +138,7 @@ void LetterViewMenu::stateLoad() {
     Snd_PlaySe(1);
     ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->setMenuDuck(0);
     Gfx2d_SetMainBgModeState(0);
-    letterRenderer.show((Unk_0206d1d4_Src *)MenuCtrl_GetArg(), 0, (void *)2, 1);
+    letterRenderer.show((LetterView *)MenuCtrl_GetArg(), 0, (void *)2, 1);
     beginMainSlideIn(0xa, 0, 0, 0x30);
     Gfx2d_ShowLayer(0);
     applySlideOffset(0, 0, 0);

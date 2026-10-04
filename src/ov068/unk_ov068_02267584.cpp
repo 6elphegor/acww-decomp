@@ -4,6 +4,7 @@
 #include "game/Unk_ov068_02268214_Flags.h"
 #include "game/Unk_ov068_02268214.h"
 #include "field/SnowballStateViews.h"
+#include "actor/Actor.h"
 
 #define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
@@ -25,19 +26,6 @@ struct Unk_ov068_022678c4_V {
 struct Unk_ov068_022678c4_Vv {
     s32 x, y, z;
 };
-
-struct Unk_ov068_022678c4_Src {
-    u8 pad_00[0x268];
-    s32 radius;
-};
-
-struct Unk_ov068_022678c4_Rec {
-    u8 pad_00[0x8e];
-    u16 rotY;
-};
-
-
-
 
 extern "C" {
 void *PlayerData_GetCurrent();
@@ -91,7 +79,7 @@ void Vec_Scale(void *, s32);
 s32 Vec_DistXZ(void *, void *);
 void Math_ApproachS32Max(void *, s32, s32, s32);
 s32 Vec_MagXZ(void *);
-Unk_ov068_022678c4_Rec *PlayerActor_GetActor(s32);
+Actor *PlayerActor_GetActor(s32);
 extern s32 data_020c7c1c;
 void func_01ffd070(Unk_ov068_02268608_Vec *out, void *a, void *b);
 void Effect_Create(s32 a, void *v, s32 b, void *h);
@@ -344,9 +332,9 @@ s32 SnowballStateView2::enterSnowballFall() {
     s32 d = Vec_MagXZ(&v);
     if (d < 0x2b8) {
         if (d == 0) {
-            Unk_ov068_022678c4_Rec *r = PlayerActor_GetActor(4);
+            Actor *r = PlayerActor_GetActor(4);
             if (r) {
-                s32 a = (r->rotY >> 4) * 2;
+                s32 a = ((u16)r->rotY >> 4) * 2;
                 rollVelX = func_01ffcb0c(0x2b8, data_02135f44[a]);
                 rollVelZ = func_01ffcb0c(0x2b8, data_02135f44[a + 1]);
                 position = prevPosition + rollVelX;
@@ -595,7 +583,7 @@ void SnowballStateView2::execSnowballToSnowman() {
 s32 SnowballStateView2::enterSnowballStack() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
-    Unk_ov068_022678c4_Src *o = (Unk_ov068_022678c4_Src *)Snowball_FindOtherInBallState(this);
+    SnowballStateView2 *o = (SnowballStateView2 *)Snowball_FindOtherInBallState(this);
     FieldPos_SnapToUnitCenter(&targetPosX, (u8 *)o + 0x5c);
     targetPosY += ((o->radius * 2 - (o->radius >> 3)) - (radius >> 3)) - 0x400;
     velocityY = -(FX_Div(0, 0x3e8000) + 0x8f2);

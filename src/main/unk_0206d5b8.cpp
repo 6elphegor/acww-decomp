@@ -1,6 +1,5 @@
 #include "types.h"
 #include "game/Unk_0206d0a0_Pad.h"
-#include "game/Unk_0206d1d4_Src.h"
 #include "sys/Unk_0206d8b8_Pair.h"
 #include "talk/MsgStringAttr.h"
 #include "sys/RecordFile.h"

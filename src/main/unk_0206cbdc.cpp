@@ -1,7 +1,7 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
 #include "game/Unk_0206d0a0_Pad.h"
-#include "game/Unk_0206d1d4_Src.h"
+#include "item/LetterView.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "talk/EncodedStringBase.h"
@@ -66,7 +66,7 @@ void LetterRenderer::redraw() {
     redrawAll();
 }
 
-void LetterRenderer::show(Unk_0206d1d4_Src *src, void *a, void *b, s32 c) {
+void LetterRenderer::show(LetterView *src, void *a, void *b, s32 c) {
     Gfx2d_HideLayer(b);
     Gfx2d_SetLayerPriority(b, 1);
     Gfx2d_SetLayerControl(b, 0, 0, 0);
@@ -95,7 +95,7 @@ void LetterRenderer::loadRecipientName(void *src) {
     recipientNameWidth = Text_MeasureWidth(recipientName, 0x28);
 }
 
-void LetterRenderer::setGreeting(Unk_0206d1d4_Src *src, u8 *out) {
+void LetterRenderer::setGreeting(LetterView *src, u8 *out) {
     u8 tmp[0x28];
     s32 n, j, k;
     greetingLine.clearText();
@@ -104,8 +104,8 @@ void LetterRenderer::setGreeting(Unk_0206d1d4_Src *src, u8 *out) {
     }
     n = 0;
     j = n;
-    while (n < src->cnt) {
-        out[n] = src->name[j];
+    while (n < src->namePos) {
+        out[n] = src->greeting[j];
         n++;
         j++;
     }
@@ -118,7 +118,7 @@ void LetterRenderer::setGreeting(Unk_0206d1d4_Src *src, u8 *out) {
     k = 0;
     while (n < 0x28) {
         if (j < 0x18) {
-            out[n] = src->name[j];
+            out[n] = src->greeting[j];
         } else {
             out[n] = k;
         }
@@ -126,7 +126,7 @@ void LetterRenderer::setGreeting(Unk_0206d1d4_Src *src, u8 *out) {
         j++;
     }
     if (recipientNameLength > 0) {
-        greetingLine.setNameHighlight(src->cnt, recipientNameLength);
+        greetingLine.setNameHighlight(src->namePos, recipientNameLength);
     }
     EncodedString40 buf;
     EncodedString_SetRaw(&buf, out, 0x28);

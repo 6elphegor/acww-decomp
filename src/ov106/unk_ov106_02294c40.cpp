@@ -114,7 +114,7 @@ void MailboxMenu_SetupBgLayers();
 
 class LetterView;
 class LetterRenderer;
-class Unk_0206d1d4_Src;
+class LetterView;
 class PlayerMailbox;
 class PlayerData;
 class Letter;
@@ -625,7 +625,7 @@ void MailboxMenu::transitionAct07() {
     void *t = getSlotLetter(selectedSlot);
     registerLetterPaper(t);
     Letter_MarkRead(t);
-    ((LetterRenderer *)&letterView)->show((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
+    ((LetterRenderer *)&letterView)->show((LetterView *)t, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     Gfx2d_ShowLayer(4);

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "save/Pattern.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
 #include "npc/NpcResHandleView.h"
@@ -41,12 +42,6 @@ struct Unk_ov048_0225b278_Vec {
     s32 x, y, z;
 };
 
-struct Unk_ov048_0225b278_Ent {
-    u8 pad_00[0x5c];
-    Unk_ov048_0225b278_Vec position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-};
 
 
 // Two-step storage for the three model/sequence name pointers (their strings are named arrays below).
@@ -175,7 +170,7 @@ void * Scene_GetWarpRequest();
 s32 SceneWarp_RequestFade(void *, s32, s32, s32);
 void * TownSessionState_Get();
 void * TownSessionState_GetTravelState(void *);
-Unk_ov048_0225b278_Ent * PlayerActor_GetActor(s32);
+Actor *PlayerActor_GetActor(s32);
 void FieldPos_ToUnit(s32 *, s32 *, Unk_ov048_0225b278_Vec *);
 void _ZN15TownTravelState7setModeEj(void *, s32);
 void _ZN15TownTravelState8setAngleEi(void *, s32);
@@ -271,15 +266,6 @@ s32 NetOverlay_AssertAny();
 
 
 
-struct Unk_ov048_M0 {
-    u8 pad_00[0x2e0 - 0xb8];
-    u8 unk_2e0[0x14];
-    u8 unk_2f4[0xe0];
-    s32 unk_3d4;
-};
-struct Unk_ov048_M1 { u8 unk_00[0x108]; };
-struct Unk_ov048_M2 { u8 unk_00[0xd4]; };
-struct Unk_ov048_M3 { u8 unk_00[0x22c]; };
 
 // Dialog-state sub object embedded in the scene (vtable data_ov048_0225cbc8).
 class SpNpcCopperTalk : public ActorTalkRequest {
@@ -381,10 +367,15 @@ public:
     s32 topic;
     s32 script;
     u8 *owner;
-    Unk_ov048_M0 unk_b8;
-    Unk_ov048_M1 mail;
-    Unk_ov048_M2 bbsNotice;
-    Unk_ov048_M3 blancaFace;
+    /* 0x0b8 */ Pattern pattern;
+    /* 0x2e0 */ u8 unk_2e0[0x14];
+    /* 0x2f4 */ u8 hostBeacon[0xe0];
+    /* 0x3d4 */ s32 hostFriendId;
+    // Raw storage: constructed in the ctor body by plain calls after the Pattern member (AxMail_Construct /
+    // AxBbsNotice_Construct are C functions, so a BlancaFaceRecord member would be constructed before them).
+    /* 0x3d8 */ u8 mail[0x108];        // AxMail
+    /* 0x4e0 */ u8 bbsNotice[0xd4];    // AxBbsNotice
+    /* 0x5b4 */ u8 blancaFace[0x22c];  // BlancaFaceRecord
     u8 wifiIdChanged;
     u8 saveDone;
     u8 syncPayload;
@@ -1832,10 +1823,10 @@ BOOL SpNpcCopper::mainAct0C() {
         s32 a, b;
         s32 s;
         Unk_ov048_0225b278_Vec v;
-        Unk_ov048_0225b278_Ent *e;
+        Actor *e;
         h = TownSessionState_GetTravelState(TownSessionState_Get());
         e = PlayerActor_GetActor(4);
-        Unk_ov048_0225b278_Vec *pv = &e->position;
+        VecFx32 *pv = &e->position;
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;
@@ -1863,10 +1854,10 @@ BOOL SpNpcCopper::mainAct0D() {
         s32 a, b;
         s32 s;
         Unk_ov048_0225b278_Vec v;
-        Unk_ov048_0225b278_Ent *e;
+        Actor *e;
         h = TownSessionState_GetTravelState(TownSessionState_Get());
         e = PlayerActor_GetActor(4);
-        Unk_ov048_0225b278_Vec *pv = &e->position;
+        VecFx32 *pv = &e->position;
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;
@@ -1952,7 +1943,6 @@ BOOL SpNpcCopper::mainAct10() {
 }
 
 SpNpcCopperTalk::SpNpcCopperTalk() {
-    _ZN7PatternC1Ev(&unk_b8);
     AxMail_Construct(&mail);
     AxBbsNotice_Construct(&bbsNotice);
     _ZN16BlancaFaceRecord9constructEv(&blancaFace);
@@ -1962,7 +1952,6 @@ SpNpcCopperTalk::~SpNpcCopperTalk() {
     _ZN16BlancaFaceRecord8destructEv(&blancaFace);
     AxBbsNotice_Destruct(&bbsNotice);
     AxMail_Destruct(&mail);
-    _ZN7PatternD1Ev(&unk_b8);
 }
 
 void SpNpcCopperTalk::attachOwner(u8 *p) {
@@ -2123,7 +2112,7 @@ void SpNpcCopperTalk::startTownSearch() {
 }
 
 void SpNpcCopperTalk::openTownList() {
-    setSelectionList((u32)unk_b8.unk_2f4, (u32)unk_b8.unk_2e0, 0);
+    setSelectionList((u32)hostBeacon, (u32)unk_2e0, 0);
     openSubScene(4);
     setScript(3);
 }
@@ -2152,7 +2141,7 @@ void SpNpcCopperTalk::startWifiVisit() {
     } else {
         s32 t;
         lockWindow(1);
-        t = unk_b8.unk_3d4;
+        t = hostFriendId;
         NetOverlay_AssertWifi();
         Net_WifiConnectToHost(t);
         *(u16 *)(owner + 0xe3e) = 0x960;
@@ -2702,7 +2691,7 @@ void SpNpcCopperTalk::onWifiLoggedIn() {
     s32 mv;
     if (msgIndex == 0x62) {
         u8 *r6b = _ZN11CommManager17getWifiFriendListEv(g);
-        s32 h = unk_b8.unk_3d4;
+        s32 h = hostFriendId;
         s32 k;
         NetOverlay_AssertWifi();
         k = Net_WifiFindFriend(h);
@@ -2710,7 +2699,7 @@ void SpNpcCopperTalk::onWifiLoggedIn() {
         if (e[0x190] != 6 || k == -1) {
             showErrorAndAbort(0x78, 1);
         } else {
-            h = unk_b8.unk_3d4;
+            h = hostFriendId;
             NetOverlay_AssertWifi();
             Net_WifiConnectToHost(h);
             *(u16 *)(owner + 0xe3e) = 0x960;
@@ -2769,7 +2758,7 @@ void SpNpcCopperTalk::scanForOpenTowns() {
                     NetOverlay_AssertWireless();
                     MI_CpuCopy8(Net_GetBeaconGameInfo(p), &buf[1], t);
                     if (buf[0x11] == 0) {
-                        MI_CpuCopy8(p, unk_b8.unk_2f4, 0xe0);
+                        MI_CpuCopy8(p, hostBeacon, 0xe0);
                         EncodedString_SetRaw(B, &buf[1], 8);
                         _ZN9MsgString11fromEncodedEP13EncodedStringii(A, B, 0, 0);
                         EncodedString_SetRaw(D, &buf[9], 8);
@@ -2798,7 +2787,7 @@ void SpNpcCopperTalk::onFriendListClosed() {
         s32 r5 = MenuCtrl_GetIndex();
         u8 a;
         NetOverlay_AssertWifi();
-        unk_b8.unk_3d4 = Net_WifiGetFriendProfileId(r5);
+        hostFriendId = Net_WifiGetFriendProfileId(r5);
         a = 0x62;
         _ZN15TalkWindowState14setNextMessageEPhPv(window, &a, sSpNpcCopperMsgKey);
         setScript(0);
@@ -3001,8 +2990,8 @@ void SpNpcCopperTalk::connectToTown() {
                     NetOverlay_AssertWireless();
                     MI_CpuCopy8(Net_GetBeaconGameInfo(p), buf, t);
                     if (buf[0x10] == 0) {
-                        if (p[2] == unk_b8.unk_2f4[2] && p[3] == unk_b8.unk_2f4[3] && p[4] == unk_b8.unk_2f4[4] && p[5] == unk_b8.unk_2f4[5] &&
-                            p[6] == unk_b8.unk_2f4[6] && p[7] == unk_b8.unk_2f4[7]) {
+                        if (p[2] == hostBeacon[2] && p[3] == hostBeacon[3] && p[4] == hostBeacon[4] && p[5] == hostBeacon[5] &&
+                            p[6] == hostBeacon[6] && p[7] == hostBeacon[7]) {
                             hit = TRUE;
                         } else {
                             hit = z;

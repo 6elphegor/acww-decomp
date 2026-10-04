@@ -144,7 +144,7 @@ extern "C" CommManager *gCommManager;
 extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 
 
-struct Unk_0206d1d4_Src;
+struct LetterView;
 
 
 
@@ -691,7 +691,7 @@ void LetterStorageMenu::transitionAct07() {
         break;
     }
     Letter_MarkRead((u32)p);
-    letterView.show((Unk_0206d1d4_Src *)p, (void *)3, (void *)4, 1);
+    letterView.show((LetterView *)p, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     Gfx2d_ShowLayer(4);

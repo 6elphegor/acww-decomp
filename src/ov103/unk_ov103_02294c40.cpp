@@ -88,7 +88,7 @@ s32 LetterGrid_GetSlotX(void *p, u32 a);
 
 
 
-struct Unk_0206d1d4_Src;
+struct LetterView;
 
 
 
@@ -437,7 +437,7 @@ void PocketLettersMenu::transitionAct04() {
 void PocketLettersMenu::transitionAct05() {
     s32 t = getSlotLetter(selectedSlot);
     Letter_MarkRead();
-    letterView.show((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
+    letterView.show((LetterView *)t, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     applySlideOffset(3, 0, 0);

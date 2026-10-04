@@ -4,13 +4,20 @@
 #include "types.h"
 #include "item/ItemIconCache.h"
 
+// Staging copy of one 16x16 item icon for a BG VRAM upload: the top and the bottom 8-pixel character rows (0x40 bytes
+// each, copied from the icon's character data at +0 and +0x400 by InventoryItemGrid_UploadIcon).
+struct ItemIconUploadChars {
+    /* 0x00 */ u8 top[0x40];
+    /* 0x40 */ u8 bottom[0x40];
+};
+
 // 0xa60-byte item grid of the inventory-style menus (ov094 code, members of the ov096..ov110 menus).
 // Ctor/dtor in src/ov094/unk_ov094_02292da8.cpp; the rest are plain-named InventoryItemGrid_* functions in ov094.
 struct InventoryItemGrid {
     InventoryItemGrid();
     virtual ~InventoryItemGrid();
 
-    /* 0x004 */ u8 iconUploadChars[0x180];
+    /* 0x004 */ ItemIconUploadChars iconUploadChars[3];
     /* 0x184 */ ItemIconCache iconCache;
     /* 0x98c */ u8 iconUploadTasks[0xa8];
     /* 0xa34 */ u16 *boxItems;

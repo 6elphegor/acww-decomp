@@ -52,14 +52,6 @@ class SpNpcNookIntroTalk;
 #define PlayerData_clearFlag _ZN10PlayerData9clearFlagEj
 
 
-struct Unk_ov068_02266bd0_Owner {
-    u8 pad_00[0x5c];
-    Unk_ov068_02266680_Vec position;
-    u8 pad_68[0x564 - 0x68];
-    u8 actionCtrl[0x1b0];
-    Unk_ov068_02266680_Vec walkTarget;
-};
-
 struct Unk_ov068_0226fd68_Vec {
     s32 x, y, z;
 };
@@ -143,12 +135,12 @@ public:
 
     void runWalkScript();
     void setScript(s32 a);
-    void attachOwner(FieldVillager *o);
+    void attachOwner(SpNpcNookIntro *o);
 
     /* 0xac */ s32 script;
     /* 0xb0 */ u8 scriptStep;
     /* 0xb1 */ u8 pad_b1[3];
-    /* 0xb4 */ FieldVillager *owner;
+    /* 0xb4 */ SpNpcNookIntro *owner;
 };
 
 typedef BOOL (SpNpcNookIntro::*SpNpcNookIntroActFn)();
@@ -262,7 +254,7 @@ BOOL SpNpcNookIntro::preCreate() {
     }
     NpcActor_setNpcHandle(this, &tbl[NookShop_GetLevel(&data_021ed104)].id);
     NpcActor_setTalkRequest(this, &talk);
-    talk.attachOwner((FieldVillager *)this);
+    talk.attachOwner(this);
     NpcMoveCtrl_setSpeedPreset(&moveCtrl, 2, 0x399, 0x133, 0x199);
     return TRUE;
 }
@@ -453,7 +445,7 @@ SpNpcNookIntroTalk::SpNpcNookIntroTalk() {}
 SpNpcNookIntroTalk::~SpNpcNookIntroTalk() {
 }
 
-void SpNpcNookIntroTalk::attachOwner(FieldVillager *o) {
+void SpNpcNookIntroTalk::attachOwner(SpNpcNookIntro *o) {
     resetMsg();
     owner = o;
 }
@@ -549,36 +541,36 @@ void SpNpcNookIntroTalk::runWalkScript() {
             Bgm_ReleasePriority(0x13);
             Bgm_Request(0x15, 0x47, 0x7f, 1);
             PlayerActor_SetNoFaceTalkTarget(0, 4);
-            Unk_ov068_02266bd0_Owner *o = (Unk_ov068_02266bd0_Owner *)owner;
-            Unk_ov068_02266680_Vec *pv = &o->position;
-            Unk_ov068_02266680_Vec *pd = &o->walkTarget;
+            SpNpcNookIntro *o = owner;
+            VecFx32 *pv = &o->position;
+            Unk_ov068_02266680_Vec *pd = (Unk_ov068_02266680_Vec *)&o->walkTargetX;
             pd->x = pv->x;
             pd->y = pv->y;
             pd->z = pv->z;
-            o = (Unk_ov068_02266bd0_Owner *)owner;
-            o->walkTarget.x += 0x6000;
-            o = (Unk_ov068_02266bd0_Owner *)owner;
-            NpcActionCtrl_requestAction(o->actionCtrl, 2, 2, o->walkTarget.x, o->walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0);
+            o = owner;
+            o->walkTargetX += 0x6000;
+            o = owner;
+            NpcActionCtrl_requestAction(&o->actionCtrl, 2, 2, o->walkTargetX, o->walkTargetZ, 0, 0, 0, 0, data_020c6cc8, 0);
             scriptStep = 1;
         }
         break;
     case 1: {
-        Unk_ov068_02266bd0_Owner *o = (Unk_ov068_02266bd0_Owner *)owner;
-        if (NpcActionCtrl_isActionDone(o->actionCtrl) != 0) {
-            o = (Unk_ov068_02266bd0_Owner *)owner;
-            if (NpcActionCtrl_getAction(o->actionCtrl) == 2) {
-                o = (Unk_ov068_02266bd0_Owner *)owner;
-                NpcActionCtrl_requestAction(o->actionCtrl, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        SpNpcNookIntro *o = owner;
+        if (NpcActionCtrl_isActionDone(&o->actionCtrl) != 0) {
+            o = owner;
+            if (NpcActionCtrl_getAction(&o->actionCtrl) == 2) {
+                o = owner;
+                NpcActionCtrl_requestAction(&o->actionCtrl, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 scriptStep = 2;
             }
         }
         break;
     }
     case 2: {
-        Unk_ov068_02266bd0_Owner *o = (Unk_ov068_02266bd0_Owner *)owner;
-        if (NpcActionCtrl_isActionDone(o->actionCtrl) != 0) {
-            o = (Unk_ov068_02266bd0_Owner *)owner;
-            if (NpcActionCtrl_getAction(o->actionCtrl) == 0) {
+        SpNpcNookIntro *o = owner;
+        if (NpcActionCtrl_isActionDone(&o->actionCtrl) != 0) {
+            o = owner;
+            if (NpcActionCtrl_getAction(&o->actionCtrl) == 0) {
                 TalkWindowState *sc = (TalkWindowState *)window;
                 volatile u8 buf = gU8None;
                 if (GameStart_IsNewTown() != 0) {
@@ -588,9 +580,9 @@ void SpNpcNookIntroTalk::runWalkScript() {
                 }
                 TalkWindowState_setNextMessage(sc, (u8 *)&buf, sNookIntroMsgFilePtr);
                 sc->nextState = 1;
-                o = (Unk_ov068_02266bd0_Owner *)owner;
+                o = owner;
                 Unk_ov068_02266680_Vec t;
-                Unk_ov068_02266680_Vec *pt = &o->position;
+                VecFx32 *pt = &o->position;
                 t.x = pt->x;
                 t.y = pt->y;
                 t.z = pt->z;

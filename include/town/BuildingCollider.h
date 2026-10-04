@@ -8,13 +8,13 @@
 
 class BuildingActor;
 struct Unk_ov009_0225b880_Vec3;
-struct Unk_ov009_0225cc24_Obj;
+class Actor;
 
 class BuildingCollider : public TriangleTrigger {
 public:
     BuildingCollider();
-    virtual void onActorNear(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24_Obj *o, s32 off);
-    BOOL isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_ov009_0225cc24_Obj *o);
+    virtual void onActorNear(Unk_ov009_0225b880_Vec3 *a, Actor *o, s32 off);
+    BOOL isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Actor *o);
     static void *operator new(unsigned long, void *p) { return p; }
 
     /* 0x4c */ BuildingActor *building;

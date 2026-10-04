@@ -40,12 +40,6 @@ typedef void (SpNpcCelesteTalk::*SpNpcCelesteChoiceFn)(s32);
 struct Unk_ov046_02258e68_Vec {
     s32 x, y, z;
 };
-struct Unk_ov046_02258e68_Actor {
-    u8 pad_00[0x5c];
-    Unk_ov046_02258e68_Vec position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-};
 
 
 
@@ -74,7 +68,7 @@ BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL MenuCtrl_IsFinished(void);
 BOOL MenuCtrl_IsResultOk(void);
 const void *Choice_GetBmgName(u32 i);
-Unk_ov046_02258e68_Actor *PlayerActor_GetActor(s32 n);
+Actor *PlayerActor_GetActor(s32 n);
 s32 Vec_DistXZ(Unk_ov046_02258e68_Vec *a, Unk_ov046_02258e68_Vec *b);
 void *Scene_GetTouchPicker();
 s32 TouchPickResult_GetTarget(void *a, void *b, void *c, s32 d);
@@ -1117,7 +1111,7 @@ BOOL SpNpcCeleste::isPlayerAtTelescope() {
     u32 out;
     u32 buf[3];
     BOOL result;
-    Unk_ov046_02258e68_Actor *p = PlayerActor_GetActor(4);
+    Actor *p = PlayerActor_GetActor(4);
     BOOL r6;
     if (Unk_ov046_02258e68_Both()) {
         r6 = TRUE;
@@ -1129,7 +1123,7 @@ BOOL SpNpcCeleste::isPlayerAtTelescope() {
         result = FALSE;
         goto end;
     }
-    Unk_ov046_02258e68_Vec *pv = &p->position;
+    VecFx32 *pv = &p->position;
     v0.x = p->position.x;
     v0.y = pv->y;
     v0.z = pv->z;

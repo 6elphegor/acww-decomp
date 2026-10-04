@@ -267,7 +267,7 @@ public:
     /* 0x0be */ u8 addressee;
     /* 0x0bf */ u8 bellsPanelMode;
     /* 0x0c0 */ u8 useOnPlayerKind;
-    /* 0x0c1 */ u8 removeBlinkTimer;
+    /* 0x0c1 */ volatile u8 removeBlinkTimer;
     /* 0x0c2 */ volatile u8 optionsOpenDelay;
     /* 0x0c3 */ u8 unk_c3;
     /* 0x0c4 */ s32 fieldRequest;

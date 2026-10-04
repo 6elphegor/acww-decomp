@@ -11,7 +11,7 @@
 #include "gfx/Camera.h"
 #include "game/SceneInfo.h"
 #include "sys/ProcProfile.h"
-#include "gfx/Unk_ov068_0226647c_Cam.h"
+#include "gfx/CameraSway.h"
 #include "gfx/DebugColor.h"
 
 typedef Unk_0203b350_V V3;

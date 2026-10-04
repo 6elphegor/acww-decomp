@@ -1,16 +1,12 @@
 #include "types.h"
 #include "game/StarSkyView.h"
+#include "game/ConstellationRecord.h"
 
 // File-wide: mwcc samples this pragma at end of TU, so it cannot be scoped to one function.
 #pragma opt_loop_invariants off
 
 struct Unk_ov127_02291f60_Vec {
     s32 x, y, z;
-};
-
-struct Unk_ov127_02291fcc {
-    u8 unk_00[0x26];
-    u16 unk_26[16];
 };
 
 extern "C" u8 sTestedConstellationStars[0x11];
@@ -39,8 +35,8 @@ void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
 void Constellation_HighlightAll(void *p);
 void _ZN10BgVramTaskC1Ev(void *self);
 
-Unk_ov127_02291fcc *Constellation_GetRecordAlt(s32 i);
-Unk_ov127_02291fcc *Constellation_GetRecord(s32 i);
+ConstellationRecord *Constellation_GetRecordAlt(s32 i);
+ConstellationRecord *Constellation_GetRecord(s32 i);
 s32 Constellation_CellToScreenIndex(s32 x, s32 y);
 void Constellation_SetLinePalette(void *p);
 void _ZN10BgVramTask6cancelEv(void *self);
@@ -58,7 +54,7 @@ s32 FX_Div(s32 a, s32 b);
 void func_01ffd070(Unk_ov127_02291f60_Vec *out, Unk_ov127_02291f60_Vec *a, Unk_ov127_02291f60_Vec *b);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
-void StarSky_CollectStars(Unk_ov127_02291fcc *p, u8 *out);
+void StarSky_CollectStars(ConstellationRecord *p, u8 *out);
 u8 *StarSky_GetLineStars(u16 i);
 u32 StarSky_GetStarY(s32 i);
 u32 StarSky_GetStarX(s32 i);
@@ -586,12 +582,12 @@ extern "C" s32 StarSky_FindConstellationByLine(u16 v)
 {
     s32 i, j;
     for (i = 0; i < 16; i++) {
-        Unk_ov127_02291fcc *q = Constellation_GetRecord(i);
+        ConstellationRecord *q = Constellation_GetRecord(i);
         if (q == 0) {
             continue;
         }
         for (j = 0; j < 16; j++) {
-            if (v == q->unk_26[j]) {
+            if (v == q->lines[j]) {
                 return i;
             }
         }
@@ -599,7 +595,7 @@ extern "C" s32 StarSky_FindConstellationByLine(u16 v)
     return -1;
 }
 
-extern "C" void StarSky_CollectStars(Unk_ov127_02291fcc *p, u8 *out)
+extern "C" void StarSky_CollectStars(ConstellationRecord *p, u8 *out)
 {
     s32 i, k, j, n;
     u8 *q;
@@ -608,7 +604,7 @@ extern "C" void StarSky_CollectStars(Unk_ov127_02291fcc *p, u8 *out)
     }
     n = 0;
     for (i = 0; i < 16; i++) {
-        u32 v = p->unk_26[i];
+        u32 v = p->lines[i];
         if (v == 0xffff) {
             continue;
         }
@@ -996,12 +992,12 @@ extern "C" u8 data_ov127_02293fd4[32] = {
     0x50, 0x40, 0xf0, 0xa1, 0xc2, 0x60, 0x00, 0x00, 0xa0, 0x40, 0xf0, 0x81, 0xc2, 0x60, 0xff, 0xff,
 };
 
-extern "C" BOOL StarSky_IsConstellationFree(Unk_ov127_02291fcc *p)
+extern "C" BOOL StarSky_IsConstellationFree(ConstellationRecord *p)
 {
     s32 i, j, k;
     StarSky_CollectStars(p, sTestedConstellationStars);
     for (i = 0; i < 16; i++) {
-        Unk_ov127_02291fcc *q = Constellation_GetRecordAlt(i);
+        ConstellationRecord *q = Constellation_GetRecordAlt(i);
         if (q == 0) {
             continue;
         }

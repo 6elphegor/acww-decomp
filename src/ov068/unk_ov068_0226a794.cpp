@@ -12,6 +12,8 @@
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
 #include "gfx/DebugColor.h"
+#include "gfx/NNSG3dRS.h"
+#include "gfx/NNSG3dRenderObj.h"
 
 struct Unk_ov068_0226acf8_Vec {
     s32 x, y, z;
@@ -118,16 +120,6 @@ public:
     /* 0x2db */ u8 pad_2db;
     /* 0x2dc */ s32 effect41;
     /* 0x2e0 */ s32 effect42;
-};
-
-struct Unk_ov068_0226b724_Obj {
-    /* 0x00 */ u8 pad_00[0x4c];
-    /* 0x4c */ Unk_ov068_0226b12c_Vec3 trans;
-};
-
-struct Unk_ov068_0226b724_Arg {
-    /* 0x00 */ u8 pad_00[0xb4];
-    /* 0xb4 */ Unk_ov068_0226b724_Obj *pJntAnmResult;
 };
 
 struct Unk_ov068_0226a940_Bits {
@@ -362,10 +354,10 @@ BOOL KappnTaxi::needsMatrixUpdate() {
 
 void KappnTaxi::onJointCalcPost(u32 a, void *b) {
     if (a == 0) {
-        Unk_ov068_0226b724_Obj *o = ((Unk_ov068_0226b724_Arg *)b)->pJntAnmResult;
+        NNSG3dJntAnmResult *o = ((NNSG3dRS *)b)->pJntAnmResult;
         Unk_ov068_0226b12c_Vec3 v;
         Unk_ov068_0226b12c_Vec3 out;
-        Unk_ov068_0226b12c_Vec3 *pv = &o->trans;
+        VecFx32 *pv = &o->trans;
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;

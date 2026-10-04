@@ -20,72 +20,12 @@
 class PocketMenu;
 typedef void (PocketMenu::*Unk_ov096_0229aea8_Fn)();
 
-// plain-function view of the scene object (the free functions in 0x02297b14..0x02298d34 take it)
-struct Unk_ov096_02294c40 {
-    u8 unk_00[0x8d];
-    u8 mainState;
-    u8 unk_8e[0x9c - 0x8e];
-    s32 grabOffsetX;
-    s32 grabOffsetY;
-    s32 handX;
-    s32 handY;
-    u16 handItem;
-    u16 auxItem;
-    u8 handItemFlags;
-    u8 handKind;
-    u8 touchedTarget;
-    u8 balloonTarget;
-    u8 handSource;
-    u8 cursorTarget;
-    u8 actionTarget;
-    u8 unk_b7;
-    u8 unk_b8;
-    u8 swapTarget;
-    u8 returnState;
-    u8 chosenAction;
-    u8 unk_bc;
-    u8 addresseePage;
-    u8 addressee;
-    u8 bellsPanelMode;
-    u8 useOnPlayerKind;
-    volatile u8 removeBlinkTimer;
-    u8 optionsOpenDelay;
-    u8 unk_c3;
-    s32 fieldRequest;
-    u8 unk_c8[0x358 - 0xc8];
-    u8 s_358[0x23c0 - 0x358];
-    u8 s_23c0[0x2480 - 0x23c0];
-    u8 s_2480[0x2498 - 0x2480];
-    u8 s_2498[0x24fc - 0x2498];
-    u8 s_24fc[0x27f0 - 0x24fc];
-    u8 s_27f0[0x27fc - 0x27f0];
-    u8 s_27fc[0x2b14 - 0x27fc];
-    u8 s_2b14[0x2c8c - 0x2b14];
-    u8 s_2c8c[8];
-};
-typedef Unk_ov096_02294c40 S;
-
 struct Unk_ov096_02297fb8_Msg {
     u8 a;
     u8 b;
 };
 
 
-
-class Unk_ov096_0229a94c_Virt {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-};
-
-class Unk_ov096_02299eec_Obj {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-};
 
 static inline BOOL IsZero(u8 v)
 {
@@ -114,45 +54,45 @@ static inline BOOL Unk_ov096_022968bc_InRange(volatile u16 *p, u32 lo, u32 hi) {
 
 extern "C" {
 void _ZN10PocketMenu18withdrawFromWalletEt(void *self, s32 a);
-s32 _ZN10PocketMenu10clearFlagsEj(S *s, u32 a);
-s32 _ZN10PocketMenu8setFlagsEj(S *s, u32 a);
-s32 _ZN10PocketMenu9testFlagsEj(S *s, u32 a);
-void _ZN10PocketMenu13wearHeldShirtEv(S *s);
-void _ZN10PocketMenu16requestCameraPopEv(S *s);
-void _ZN10PocketMenu17requestCameraPushEv(S *s);
-void _ZN10PocketMenu18writeLetterOnPaperEv(S *s);
-void _ZN10PocketMenu17openAddresseePageEi(S *s, u32 a);
-void _ZN10PocketMenu14addItemOptionsEi(S *s, u32 a);
-void _ZN10PocketMenu15runChosenActionEv(S *s);
-void _ZN10PocketMenu19placeCursorOnTargetEv(S *s);
-void _ZN10PocketMenu20cursorToPopupDefaultEv(S *s);
-void _ZN10PocketMenu10hideCursorEv(S *s);
-void _ZN10PocketMenu19cursorToPopupBottomEv(S *s);
-void _ZN10PocketMenu10showCursorEv(S *s);
-s32 _ZN10PocketMenu10mergeItemsEPtiS0_h(S *s, void *a, u32 b, u16 *c, s32 d);
-void _ZN10PocketMenu15depositToWalletEt(S *s, u32 a);
-s32 _ZN10PocketMenu14getWalletBellsEv(S *s);
-s32 _ZN10PocketMenu14depositHeldBagEv(S *s);
-void _ZN10PocketMenu17cancelUseOnPlayerEv(S *s);
-s32 _ZN10PocketMenu17isUseOnPlayerBusyEi(S *s, u32 a);
-s32 _ZN10PocketMenu18requestUseOnPlayerEit(S *s, u32 a, u32 b);
-u32 _ZN10PocketMenu12swapEquippedEit(S *s, u32 a, u32 b);
-void _ZN10PocketMenu16startUseOnPlayerEv(S *s);
-void _ZN10PocketMenu9clearHandEv(S *s);
-s32 _ZN10PocketMenu12dropHeldItemEv(S *s);
-void _ZN10PocketMenu10returnHandEj(S *s, u32 a);
-void _ZN10PocketMenu11putHandBackEjj(S *s, u32 a, u32 b);
-void _ZN10PocketMenu10pickUpItemEj(S *s, u32 a);
-void _ZN10PocketMenu6pickUpEj(S *s, u32 a);
-void _ZN10PocketMenu11setHandItemEjj(S *s, u32 a, u32 b);
-void _ZN10PocketMenu17syncHandFromMoverEv(S *s);
-void _ZN10PocketMenu18syncHandFromCursorEv(S *s);
-void _ZN10PocketMenu17syncHandFromTouchEv(S *s);
-void _ZN10PocketMenu18updateLabelBalloonEv(S *s);
-void _ZN10PocketMenu15highlightTargetEj(S *s, u32 a);
-void _ZN10PocketMenu15clearHighlightsEv(S *s);
-void _ZN10PocketMenu12selectTargetEj(S *s, u32 a);
-void _ZN10PocketMenu14clearSelectionEv(S *s);
+s32 _ZN10PocketMenu10clearFlagsEj(PocketMenu *s, u32 a);
+s32 _ZN10PocketMenu8setFlagsEj(PocketMenu *s, u32 a);
+s32 _ZN10PocketMenu9testFlagsEj(PocketMenu *s, u32 a);
+void _ZN10PocketMenu13wearHeldShirtEv(PocketMenu *s);
+void _ZN10PocketMenu16requestCameraPopEv(PocketMenu *s);
+void _ZN10PocketMenu17requestCameraPushEv(PocketMenu *s);
+void _ZN10PocketMenu18writeLetterOnPaperEv(PocketMenu *s);
+void _ZN10PocketMenu17openAddresseePageEi(PocketMenu *s, u32 a);
+void _ZN10PocketMenu14addItemOptionsEi(PocketMenu *s, u32 a);
+void _ZN10PocketMenu15runChosenActionEv(PocketMenu *s);
+void _ZN10PocketMenu19placeCursorOnTargetEv(PocketMenu *s);
+void _ZN10PocketMenu20cursorToPopupDefaultEv(PocketMenu *s);
+void _ZN10PocketMenu10hideCursorEv(PocketMenu *s);
+void _ZN10PocketMenu19cursorToPopupBottomEv(PocketMenu *s);
+void _ZN10PocketMenu10showCursorEv(PocketMenu *s);
+s32 _ZN10PocketMenu10mergeItemsEPtiS0_h(PocketMenu *s, void *a, u32 b, u16 *c, s32 d);
+void _ZN10PocketMenu15depositToWalletEt(PocketMenu *s, u32 a);
+s32 _ZN10PocketMenu14getWalletBellsEv(PocketMenu *s);
+s32 _ZN10PocketMenu14depositHeldBagEv(PocketMenu *s);
+void _ZN10PocketMenu17cancelUseOnPlayerEv(PocketMenu *s);
+s32 _ZN10PocketMenu17isUseOnPlayerBusyEi(PocketMenu *s, u32 a);
+s32 _ZN10PocketMenu18requestUseOnPlayerEit(PocketMenu *s, u32 a, u32 b);
+u32 _ZN10PocketMenu12swapEquippedEit(PocketMenu *s, u32 a, u32 b);
+void _ZN10PocketMenu16startUseOnPlayerEv(PocketMenu *s);
+void _ZN10PocketMenu9clearHandEv(PocketMenu *s);
+s32 _ZN10PocketMenu12dropHeldItemEv(PocketMenu *s);
+void _ZN10PocketMenu10returnHandEj(PocketMenu *s, u32 a);
+void _ZN10PocketMenu11putHandBackEjj(PocketMenu *s, u32 a, u32 b);
+void _ZN10PocketMenu10pickUpItemEj(PocketMenu *s, u32 a);
+void _ZN10PocketMenu6pickUpEj(PocketMenu *s, u32 a);
+void _ZN10PocketMenu11setHandItemEjj(PocketMenu *s, u32 a, u32 b);
+void _ZN10PocketMenu17syncHandFromMoverEv(PocketMenu *s);
+void _ZN10PocketMenu18syncHandFromCursorEv(PocketMenu *s);
+void _ZN10PocketMenu17syncHandFromTouchEv(PocketMenu *s);
+void _ZN10PocketMenu18updateLabelBalloonEv(PocketMenu *s);
+void _ZN10PocketMenu15highlightTargetEj(PocketMenu *s, u32 a);
+void _ZN10PocketMenu15clearHighlightsEv(PocketMenu *s);
+void _ZN10PocketMenu12selectTargetEj(PocketMenu *s, u32 a);
+void _ZN10PocketMenu14clearSelectionEv(PocketMenu *s);
 extern CommManager *gCommManager;
 extern u8 gFieldSceneKind;
 extern u8 gU8None;
@@ -202,7 +142,7 @@ void *_ZN11InventoryBgD1Ev(void *p);
 void *_ZN10LetterGridD1Ev(void *p);
 void *_ZN17InventoryItemGridD1Ev(void *p);
 void Letter_Copy(void *dst, void *src);
-void _ZN14LetterRenderer4showEP16Unk_0206d1d4_SrcPvS2_i(void *p, void *q, s32 a, s32 b, s32 c);
+void _ZN14LetterRenderer4showEP10LetterViewPvS2_i(void *p, void *q, s32 a, s32 b, s32 c);
 void _ZN14LetterRenderer7releaseEv(void *p);
 void _ZN14LetterRenderer8setLayerEi(void *p, s32 a);
 void MenuScreen_UploadClothPattern(void *a, void *b, void *c, void *d);
@@ -398,78 +338,78 @@ void _ZN10LetterGrid14showLetterNameEPvi(void *p, void *q, s32 a);
 s32 _ZN10LetterGrid18findPocketLetterAtEii(void *p);
 void _ZN10LetterGrid16updateCursorLiftEv(void *p);
 void _ZN10LetterGrid4initEi(void *p, s32 a);
-void *PocketMenu_GetLetter(S *s, u32 id);
-s32 PocketMenu_GetItemFlags(S *s, u32 id);
-u32 PocketMenu_GetItem(S *s, u32 id);
-s32 PocketMenu_IsSlotEmpty(S *s, u32 id);
-s32 PocketMenu_IsSlotDisabled(S *s, u32 id);
-s32 PocketMenu_GetTargetY(S *s, u32 id);
-s32 PocketMenu_GetTargetX(S *s, u32 id);
-s32 PocketMenu_HitWalletAmount(S *s, s32 x, s32 y);
-BOOL PocketMenu_HitWalletIcon(S *s, s32 x, s32 y);
-BOOL PocketMenu_HitPlayer(S *s, s32 x, s32 y);
-s32 PocketMenu_HitSpecialTarget(S *s, s32 x, s32 y);
-BOOL PocketMenu_HitShirtBox(S *s, s32 x, s32 y);
-void PocketMenu_SetLetter(S *s, u32 id, void *p);
-s32 PocketMenu_DropLetterAt(S *s, u32 id);
-u32 PocketMenu_HitLetter(S *s, s32 a, s32 b, s32 c);
-u32 PocketMenu_LetterIndexToTarget(S *s, u32 id);
-u32 PocketMenu_TargetToLetterIndex(S *s, u32 id);
-u32 PocketMenu_FindEmptyPocket(S *s);
-void PocketMenu_ClearLetter(S *s, u32 id);
-void PocketMenu_ClearSlotItem(S *s, u32 id);
-void PocketMenu_SetSlotItem(S *s, u32 id, u32 a, u32 b);
-s32 PocketMenu_DropItemAt(S *s, u32 id);
-u32 PocketMenu_HitPocket(S *s, s32 a, s32 b, s32 c);
-u32 PocketMenu_PocketIndexToTarget(S *s, u32 id);
-u32 PocketMenu_TargetToGridIndex(S *s, u32 id);
-void PocketMenu_MoveCursorToTab(S *s);
-u32 PocketMenu_IsSpecialTarget(S *s, u32 id);
-u32 PocketMenu_IsTabTarget(S *s, u32 id);
-u32 PocketMenu_IsLetterTarget(S *s, u32 id);
-u32 PocketMenu_IsPocketTarget(S *s, u32 id);
-void PocketMenu_CancelVramTasks(S *s);
-void PocketMenu_StartRemoveBlink(S *s);
-void PocketMenu_ShowMessage(S *s, u32 a, u32 b, u32 c);
-void PocketMenu_FlyItemTo(S *s, u32 a, u32 b, u32 c, u8 d);
-void PocketMenu_FlyHandTo(S *s, u32 a, u32 b);
-void PocketMenu_PrepareTouchOptions(S *s);
-void PocketMenu_EnterAddresseeButtons(S *s);
-void PocketMenu_EnterAddresseeTouch(S *s);
-void PocketMenu_ReturnToIdle(S *s);
-void PocketMenu_EnterButtonIdle(S *s);
-void PocketMenu_EnterTouchIdle(S *s);
-void _ZN10PocketMenu9mainAct2FEv(S *s);
-void _ZN10PocketMenu9mainAct27Ev(S *s);
-s32 PocketMenu_TickOptionDecide(S *s);
-void _ZN10PocketMenu9mainAct1CEv(S *s);
+void *PocketMenu_GetLetter(PocketMenu *s, u32 id);
+s32 PocketMenu_GetItemFlags(PocketMenu *s, u32 id);
+u32 PocketMenu_GetItem(PocketMenu *s, u32 id);
+s32 PocketMenu_IsSlotEmpty(PocketMenu *s, u32 id);
+s32 PocketMenu_IsSlotDisabled(PocketMenu *s, u32 id);
+s32 PocketMenu_GetTargetY(PocketMenu *s, u32 id);
+s32 PocketMenu_GetTargetX(PocketMenu *s, u32 id);
+s32 PocketMenu_HitWalletAmount(PocketMenu *s, s32 x, s32 y);
+BOOL PocketMenu_HitWalletIcon(PocketMenu *s, s32 x, s32 y);
+BOOL PocketMenu_HitPlayer(PocketMenu *s, s32 x, s32 y);
+s32 PocketMenu_HitSpecialTarget(PocketMenu *s, s32 x, s32 y);
+BOOL PocketMenu_HitShirtBox(PocketMenu *s, s32 x, s32 y);
+void PocketMenu_SetLetter(PocketMenu *s, u32 id, void *p);
+s32 PocketMenu_DropLetterAt(PocketMenu *s, u32 id);
+u32 PocketMenu_HitLetter(PocketMenu *s, s32 a, s32 b, s32 c);
+u32 PocketMenu_LetterIndexToTarget(PocketMenu *s, u32 id);
+u32 PocketMenu_TargetToLetterIndex(PocketMenu *s, u32 id);
+u32 PocketMenu_FindEmptyPocket(PocketMenu *s);
+void PocketMenu_ClearLetter(PocketMenu *s, u32 id);
+void PocketMenu_ClearSlotItem(PocketMenu *s, u32 id);
+void PocketMenu_SetSlotItem(PocketMenu *s, u32 id, u32 a, u32 b);
+s32 PocketMenu_DropItemAt(PocketMenu *s, u32 id);
+u32 PocketMenu_HitPocket(PocketMenu *s, s32 a, s32 b, s32 c);
+u32 PocketMenu_PocketIndexToTarget(PocketMenu *s, u32 id);
+u32 PocketMenu_TargetToGridIndex(PocketMenu *s, u32 id);
+void PocketMenu_MoveCursorToTab(PocketMenu *s);
+u32 PocketMenu_IsSpecialTarget(PocketMenu *s, u32 id);
+u32 PocketMenu_IsTabTarget(PocketMenu *s, u32 id);
+u32 PocketMenu_IsLetterTarget(PocketMenu *s, u32 id);
+u32 PocketMenu_IsPocketTarget(PocketMenu *s, u32 id);
+void PocketMenu_CancelVramTasks(PocketMenu *s);
+void PocketMenu_StartRemoveBlink(PocketMenu *s);
+void PocketMenu_ShowMessage(PocketMenu *s, u32 a, u32 b, u32 c);
+void PocketMenu_FlyItemTo(PocketMenu *s, u32 a, u32 b, u32 c, u8 d);
+void PocketMenu_FlyHandTo(PocketMenu *s, u32 a, u32 b);
+void PocketMenu_PrepareTouchOptions(PocketMenu *s);
+void PocketMenu_EnterAddresseeButtons(PocketMenu *s);
+void PocketMenu_EnterAddresseeTouch(PocketMenu *s);
+void PocketMenu_ReturnToIdle(PocketMenu *s);
+void PocketMenu_EnterButtonIdle(PocketMenu *s);
+void PocketMenu_EnterTouchIdle(PocketMenu *s);
+void _ZN10PocketMenu9mainAct2FEv(PocketMenu *s);
+void _ZN10PocketMenu9mainAct27Ev(PocketMenu *s);
+s32 PocketMenu_TickOptionDecide(PocketMenu *s);
+void _ZN10PocketMenu9mainAct1CEv(PocketMenu *s);
 s32 PocketMenu_CanEditRoom(void *self);
 s32 PocketMenu_RequestDropIndoor(void *self, s32 a);
 void PocketMenu_AddRoomItemOptions(void *scene, s32 a);
 void _ZN10PocketMenu15addBottleOptionEv(void *scene);
 void _ZN10PocketMenu15addFieldOptionsEt(void *scene, s32 a);
 s32 PocketMenu_CanDropOutdoor(void *self, s32 a);
-void PocketMenu_StartButtonDrag(S *s, u32 a);
-void PocketMenu_StartTouchDrag(S *s, u32 a);
-void PocketMenu_BeginTouchOnTarget(S *s, u32 a);
-void PocketMenu_EnterAddresseeInput(S *s);
-void _ZN10PocketMenu9mainAct29Ev(S *s);
-void _ZN10PocketMenu9mainAct28Ev(S *s);
-void _ZN10PocketMenu9mainAct32Ev(S *s);
-void _ZN10PocketMenu9mainAct31Ev(S *s);
-void _ZN10PocketMenu9mainAct2BEv(S *s);
-void _ZN10PocketMenu9mainAct2AEv(S *s);
-void _ZN10PocketMenu9mainAct26Ev(S *s);
-void _ZN10PocketMenu9mainAct25Ev(S *s);
-void _ZN10PocketMenu9mainAct24Ev(S *s);
-void _ZN10PocketMenu9mainAct23Ev(S *s);
-void _ZN10PocketMenu9mainAct22Ev(S *s);
-void _ZN10PocketMenu9mainAct21Ev(S *s);
-void _ZN10PocketMenu9mainAct20Ev(S *s);
-void _ZN10PocketMenu9mainAct1FEv(S *s);
-void _ZN10PocketMenu9mainAct1EEv(S *s);
-void _ZN10PocketMenu9mainAct1DEv(S *s);
-void _ZN10PocketMenu9mainAct1BEv(S *s);
+void PocketMenu_StartButtonDrag(PocketMenu *s, u32 a);
+void PocketMenu_StartTouchDrag(PocketMenu *s, u32 a);
+void PocketMenu_BeginTouchOnTarget(PocketMenu *s, u32 a);
+void PocketMenu_EnterAddresseeInput(PocketMenu *s);
+void _ZN10PocketMenu9mainAct29Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct28Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct32Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct31Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct2BEv(PocketMenu *s);
+void _ZN10PocketMenu9mainAct2AEv(PocketMenu *s);
+void _ZN10PocketMenu9mainAct26Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct25Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct24Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct23Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct22Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct21Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct20Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct1FEv(PocketMenu *s);
+void _ZN10PocketMenu9mainAct1EEv(PocketMenu *s);
+void _ZN10PocketMenu9mainAct1DEv(PocketMenu *s);
+void _ZN10PocketMenu9mainAct1BEv(PocketMenu *s);
 s32 _ZN10HandCursor12setAnimAtEndEi(void *self, s32);
 void _ZN11LabelButton8setStateEi(void *self, s32);
 u32 _ZN19PopupChoiceMenuBody11getRowCountEv(void *self);
@@ -575,7 +515,7 @@ BOOL PocketMenu::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    ((Unk_ov096_0229a94c_Virt *)unk_23c0)->vfunc_08();
+    (&m_23c0)->draw();
     if (MenuCtrl_IsButtons()) {
         _ZN14MenuCursorBase11drawWrappedEv(unk_2498);
     }
@@ -588,7 +528,7 @@ BOOL PocketMenu::onDraw() {
     }
     if (testFlags(0x100)) {
         _ZN11LabelButton6setPosEii(unk_2b14, 0, getSlideOffsetY());
-        ((Unk_ov096_0229a94c_Virt *)unk_2b14)->vfunc_08();
+        (&m_2b14)->draw();
     }
     return TRUE;
 }
@@ -778,7 +718,7 @@ void PocketMenu::stateSlideIn() {
 void PocketMenu::stateWaitSlideIn() {
     if (stepSlideIn(0)) {
         setPhase(2);
-        PocketMenu_ReturnToIdle((S *)this);
+        PocketMenu_ReturnToIdle(this);
     }
     applySlideOffset(6, 0, 0);
     slideY = getSlideOffsetY();
@@ -812,7 +752,7 @@ void PocketMenu::stateWaitSlideOut() {
 void PocketMenu::stateOpenLetterView() {
     void *r4 = getActionLetter();
     Letter_MarkRead();
-    _ZN14LetterRenderer4showEP16Unk_0206d1d4_SrcPvS2_i(unk_2904, r4, 3, 4, 1);
+    _ZN14LetterRenderer4showEP10LetterViewPvS2_i(unk_2904, r4, 3, 4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     applySlideOffset(3, 0, 0);
@@ -890,7 +830,7 @@ void PocketMenu::initPocketMenu() {
 }
 
 void PocketMenu::releaseResources() {
-    PocketMenu_CancelVramTasks((S *)this);
+    PocketMenu_CancelVramTasks(this);
     InventoryBg_Exit(unk_de0);
     InventoryItemGrid_Exit(unk_358);
     PopupChoice_ForceClose(unk_24fc);
@@ -899,7 +839,7 @@ void PocketMenu::releaseResources() {
 
 void PocketMenu::preInputUpdate() {
     preStateUpdate();
-    ((Unk_ov096_02299eec_Obj *)unk_2498)->vfunc_0c();
+    (&m_2498)->update();
 }
 
 void PocketMenu::postInputUpdate() {
@@ -907,7 +847,7 @@ void PocketMenu::postInputUpdate() {
 }
 
 void PocketMenu::preStateUpdate() {
-    PocketMenu_CancelVramTasks((S *)this);
+    PocketMenu_CancelVramTasks(this);
     InventoryBg_PreUpdate(unk_de0);
     InventoryItemGrid_PreUpdate(unk_358);
     _ZN10LetterGrid16updateCursorLiftEv(unk_db8);
@@ -934,25 +874,25 @@ void PocketMenu::loadObjGraphics() {
 void PocketMenu::mainAct00() {
     if (checkSwitchToButtons(1)) {
         cursorTarget = 0;
-        PocketMenu_EnterButtonIdle((S *)this);
+        PocketMenu_EnterButtonIdle(this);
     } else if (Unk_ov096_02299778_Both()) {
         u8 a = gTouchCurX;
         u8 b = gTouchCurY;
-        s32 t = PocketMenu_HitPocket((S *)this, a, b, 1);
+        s32 t = PocketMenu_HitPocket(this, a, b, 1);
         if (t != 0x26) {
-            PocketMenu_BeginTouchOnTarget((S *)this, t);
+            PocketMenu_BeginTouchOnTarget(this, t);
             return;
         }
-        t = PocketMenu_HitLetter((S *)this, a, b, 1);
+        t = PocketMenu_HitLetter(this, a, b, 1);
         if (t != 0x26) {
-            PocketMenu_BeginTouchOnTarget((S *)this, t);
+            PocketMenu_BeginTouchOnTarget(this, t);
             return;
         }
-        if (PocketMenu_HitWalletIcon((S *)this, a, b)) {
+        if (PocketMenu_HitWalletIcon(this, a, b)) {
             openTargetOptions(0x25, 0);
             return;
         }
-        switch (PocketMenu_HitWalletAmount((S *)this, a, b)) {
+        switch (PocketMenu_HitWalletAmount(this, a, b)) {
         case 1:
             openTargetOptions(0x27, 0);
             break;
@@ -961,7 +901,7 @@ void PocketMenu::mainAct00() {
             InventoryBg_SetBellsPanelMode(unk_de0, bellsPanelMode);
             break;
         default:
-            if (PocketMenu_HitPlayer((S *)this, a, b)) {
+            if (PocketMenu_HitPlayer(this, a, b)) {
                 openTargetOptions(0x24, 0);
             }
             break;
@@ -982,7 +922,7 @@ void PocketMenu::mainAct01() {
     }
     if (testFlags(4) == 0) goto stop;
     if (hasTouchMoved()) {
-        PocketMenu_StartTouchDrag((S *)this, touchedTarget);
+        PocketMenu_StartTouchDrag(this, touchedTarget);
         return;
     }
     if (testFlags(0x10000) != 0) goto stop;
@@ -1005,7 +945,7 @@ void PocketMenu::mainAct02() {
         setMainState(4);
     } else if (testFlags(4)) {
         if (hasTouchMoved()) {
-            PocketMenu_StartTouchDrag((S *)this, touchedTarget);
+            PocketMenu_StartTouchDrag(this, touchedTarget);
             PopupChoice_Close(unk_24fc, 0);
             _ZN18TouchPromptBalloon4hideEi(unk_23c0, 1);
         }
@@ -1053,39 +993,39 @@ void PocketMenu::mainAct05() {
     clearHighlights();
     s32 x = handX + 8;
     s32 y = handY + 8;
-    s32 t = PocketMenu_HitPocket((S *)this, x, y, 0);
+    s32 t = PocketMenu_HitPocket(this, x, y, 0);
     if (t == 0x26) {
-        t = PocketMenu_HitLetter((S *)this, x, y, 0);
+        t = PocketMenu_HitLetter(this, x, y, 0);
     }
     if (t != 0x26) {
         if (gTouchHeld == 0) {
             if (checkSwap(t, handSource) == 0) {
-                if (PocketMenu_IsLetterTarget((S *)this, t)) {
+                if (PocketMenu_IsLetterTarget(this, t)) {
                     requestCameraPop();
                 }
-                PocketMenu_DropItemAt((S *)this, t);
+                PocketMenu_DropItemAt(this, t);
                 if (mainState == 5) {
-                    PocketMenu_ReturnToIdle((S *)this);
+                    PocketMenu_ReturnToIdle(this);
                 }
-                if (PocketMenu_IsPocketTarget((S *)this, t) == 0 && PocketMenu_IsLetterTarget((S *)this, t) == 0) {
+                if (PocketMenu_IsPocketTarget(this, t) == 0 && PocketMenu_IsLetterTarget(this, t) == 0) {
                     return;
                 }
                 Inventory_PlayPutDownSe();
             } else {
-                PocketMenu_FlyHandTo((S *)this, handSource, 4);
+                PocketMenu_FlyHandTo(this, handSource, 4);
             }
         } else {
             highlightTarget(t);
         }
     } else {
-        t = PocketMenu_HitSpecialTarget((S *)this, x, y);
+        t = PocketMenu_HitSpecialTarget(this, x, y);
         if (t != 0x26) {
             if (gTouchHeld == 0) {
                 if ((u8)(t + 0xde) <= 1) {
                     if (canDropHeldItem() == 0) {
-                        PocketMenu_FlyHandTo((S *)this, handSource, 4);
+                        PocketMenu_FlyHandTo(this, handSource, 4);
                     } else if (dropHeldItem()) {
-                        PocketMenu_ReturnToIdle((S *)this);
+                        PocketMenu_ReturnToIdle(this);
                     }
                 } else if (t == 0x24) {
                     useOnPlayerKind = getUseOnPlayerKind();
@@ -1093,7 +1033,7 @@ void PocketMenu::mainAct05() {
                     if (v < 1) {
                         cancelUseOnPlayer();
                     } else if (v == 1) {
-                        PocketMenu_FlyHandTo((S *)this, handSource, 4);
+                        PocketMenu_FlyHandTo(this, handSource, 4);
                     } else {
                         startUseOnPlayer();
                     }
@@ -1101,27 +1041,27 @@ void PocketMenu::mainAct05() {
                     if (isHoldingMoneyBag(0)) {
                         depositHeldBag();
                     } else {
-                        PocketMenu_FlyHandTo((S *)this, handSource, 4);
+                        PocketMenu_FlyHandTo(this, handSource, 4);
                     }
                 } else {
-                    PocketMenu_FlyHandTo((S *)this, handSource, 4);
+                    PocketMenu_FlyHandTo(this, handSource, 4);
                 }
             } else {
                 highlightTarget(t);
             }
-        } else if (PocketMenu_HitShirtBox((S *)this, x, y)) {
+        } else if (PocketMenu_HitShirtBox(this, x, y)) {
             if (gTouchHeld == 0) {
                 if (isHoldingShirt()) {
                     wearHeldShirt();
-                    PocketMenu_ReturnToIdle((S *)this);
+                    PocketMenu_ReturnToIdle(this);
                 } else {
-                    PocketMenu_FlyHandTo((S *)this, handSource, 4);
+                    PocketMenu_FlyHandTo(this, handSource, 4);
                 }
             } else {
                 highlightTarget(0x21);
             }
         } else if (gTouchHeld == 0) {
-            PocketMenu_FlyHandTo((S *)this, handSource, 4);
+            PocketMenu_FlyHandTo(this, handSource, 4);
         }
     }
 }
@@ -1133,19 +1073,19 @@ void PocketMenu::mainAct06() {
     } else {
         syncHandFromTouch();
         clearHighlights();
-        s32 t = PocketMenu_HitLetter((S *)this, handX + 8, handY + 8, 0);
+        s32 t = PocketMenu_HitLetter(this, handX + 8, handY + 8, 0);
         if (t != 0x26) {
             if (gTouchHeld == 0) {
-                if (((s32 (*)(S *))PocketMenu_DropLetterAt)((S *)this) == 0) {
-                    PocketMenu_FlyHandTo((S *)this, handSource, 4);
+                if (((s32 (*)(PocketMenu *))PocketMenu_DropLetterAt)(this) == 0) {
+                    PocketMenu_FlyHandTo(this, handSource, 4);
                 }
                 Inventory_PlayPutDownSe();
-                PocketMenu_ReturnToIdle((S *)this);
+                PocketMenu_ReturnToIdle(this);
             } else {
                 highlightTarget(t);
             }
         } else if (gTouchHeld == 0) {
-            PocketMenu_FlyHandTo((S *)this, handSource, 4);
+            PocketMenu_FlyHandTo(this, handSource, 4);
         }
     }
 }
@@ -1164,7 +1104,7 @@ void PocketMenu::mainAct08() {
     if (MenuCtrl_IsForceCloseDue()) {
         closeAddresseeList();
     } else if (checkSwitchToButtons(1)) {
-        PocketMenu_EnterAddresseeButtons((S *)this);
+        PocketMenu_EnterAddresseeButtons(this);
     } else if (Unk_ov096_02299778_Both()) {
         s32 t = _ZN19PopupChoiceMenuBody10hitTestRowEii(unk_24fc, gTouchCurX, gTouchCurY);
         if (t >= 0) {
@@ -1187,10 +1127,10 @@ void PocketMenu::mainAct09() {
         setMainState(0);
         InventoryBg_SetBellsPanelMode(unk_de0, 0);
     } else if (isTouchHeldFor(4)) {
-        PocketMenu_BeginTouchOnTarget((S *)this, 0x25);
+        PocketMenu_BeginTouchOnTarget(this, 0x25);
         grabOffsetX = -8;
         grabOffsetY = -8;
-        PocketMenu_StartTouchDrag((S *)this, 0x25);
+        PocketMenu_StartTouchDrag(this, 0x25);
         setFlags(0x4000);
         InventoryBg_SetBellsPanelMode(unk_de0, bellsPanelMode);
     }
@@ -1198,7 +1138,7 @@ void PocketMenu::mainAct09() {
 
 void PocketMenu::mainAct0A() {
     if (checkSwitchToTouch()) {
-        PocketMenu_EnterTouchIdle((S *)this);
+        PocketMenu_EnterTouchIdle(this);
         _ZN18TouchPromptBalloon4hideEi(unk_23c0, 1);
     } else {
         s32 t = takeRepeatedKeys();
@@ -1209,11 +1149,11 @@ void PocketMenu::mainAct0A() {
         } else {
             u32 k = gPad[1];
             if (k & 1) {
-                if (PocketMenu_IsPocketTarget((S *)this, cursorTarget) || PocketMenu_IsLetterTarget((S *)this, cursorTarget)) {
-                    if (PocketMenu_IsSlotEmpty((S *)this, cursorTarget) == 0) {
+                if (PocketMenu_IsPocketTarget(this, cursorTarget) || PocketMenu_IsLetterTarget(this, cursorTarget)) {
+                    if (PocketMenu_IsSlotEmpty(this, cursorTarget) == 0) {
                         openTargetOptions(cursorTarget, 0);
                     }
-                } else if (PocketMenu_IsTabTarget((S *)this, cursorTarget)) {
+                } else if (PocketMenu_IsTabTarget(this, cursorTarget)) {
                     pressTab();
                 } else if (cursorTarget == 0x25) {
                     openTargetOptions(0x25, 0);
@@ -1252,7 +1192,7 @@ void PocketMenu::mainAct0B() {
                     }
                     requestCameraPop();
                     beginPutDownAt(cursorTarget);
-                } else if (PocketMenu_IsSpecialTarget((S *)this, cursorTarget)) {
+                } else if (PocketMenu_IsSpecialTarget(this, cursorTarget)) {
                     u32 b = cursorTarget;
                     if (b == 0x24) {
                         useOnPlayerKind = getUseOnPlayerKind();
@@ -1269,19 +1209,19 @@ void PocketMenu::mainAct0B() {
                         }
                     }
                 } else if (checkPlace(cursorTarget, handItem, handItemFlags) == 0) {
-                    if (PocketMenu_IsLetterTarget((S *)this, cursorTarget)) {
+                    if (PocketMenu_IsLetterTarget(this, cursorTarget)) {
                         requestCameraPop();
                     }
-                    if (PocketMenu_IsPocketTarget((S *)this, cursorTarget)) {
+                    if (PocketMenu_IsPocketTarget(this, cursorTarget)) {
                         u16 v;
                         u32 w;
-                        v = PocketMenu_GetItem((S *)this, cursorTarget);
-                        w = PocketMenu_GetItemFlags((S *)this, cursorTarget);
-                        if (_ZN10PocketMenu10mergeItemsEPtiS0_h((S *)this, &handItem, handItemFlags, &v, w) == 0) {
-                            InventoryItemGrid_SetSlotItem(unk_358, PocketMenu_TargetToGridIndex((S *)this, cursorTarget), v, w);
+                        v = PocketMenu_GetItem(this, cursorTarget);
+                        w = PocketMenu_GetItemFlags(this, cursorTarget);
+                        if (_ZN10PocketMenu10mergeItemsEPtiS0_h(this, &handItem, handItemFlags, &v, w) == 0) {
+                            InventoryItemGrid_SetSlotItem(unk_358, PocketMenu_TargetToGridIndex(this, cursorTarget), v, w);
                         }
                     }
-                    if (PocketMenu_GetItem((S *)this, cursorTarget) == 0xfff1) {
+                    if (PocketMenu_GetItem(this, cursorTarget) == 0xfff1) {
                         beginPutDownAt(cursorTarget);
                     } else {
                         if (swapTarget != 0x26 && isHoldingMoneyBag(1)) {
@@ -1326,7 +1266,7 @@ void PocketMenu::mainAct0C() {
         } else {
             u32 k = gPad[1];
             if (k & 1) {
-                if (PocketMenu_IsSlotEmpty((S *)this, cursorTarget)) {
+                if (PocketMenu_IsSlotEmpty(this, cursorTarget)) {
                     beginPutDownAt(cursorTarget);
                 } else {
                     beginSwapAt(cursorTarget);
@@ -1400,7 +1340,7 @@ void PocketMenu::mainAct11() {
 
 void PocketMenu::mainAct12() {
     if (_ZN14MenuCursorBase10isGrippingEv(unk_2498)) {
-        PocketMenu_StartButtonDrag((S *)this, cursorTarget);
+        PocketMenu_StartButtonDrag(this, cursorTarget);
         setMainState(0x13);
     }
 }
@@ -1420,11 +1360,11 @@ void PocketMenu::mainAct14() {
             placeHandAt(a);
             if (testFlags(0x2000)) {
                 setHandItem(auxItem, 0);
-                PocketMenu_FlyHandTo((S *)this, swapTarget, 4);
+                PocketMenu_FlyHandTo(this, swapTarget, 4);
                 clearFlags(0x2000);
             }
         } else {
-            PocketMenu_FlyHandTo((S *)this, a, 4);
+            PocketMenu_FlyHandTo(this, a, 4);
         }
         if (mainState == 0x14) {
             updateLabelBalloon();
@@ -1496,7 +1436,7 @@ void PocketMenu::mainAct19() {
     if (MenuCtrl_IsForceCloseDue()) {
         closeAddresseeList();
     } else if (checkSwitchToTouch()) {
-        PocketMenu_EnterAddresseeTouch((S *)this);
+        PocketMenu_EnterAddresseeTouch(this);
     } else {
         s32 t = takeRepeatedKeys();
         if (PopupChoice_MoveCursor(unk_24fc, t, &popupRow, 0)) {
@@ -1522,7 +1462,7 @@ void PocketMenu::mainAct1A() {
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct1BEv(S *s)
+extern "C" void _ZN10PocketMenu9mainAct1BEv(PocketMenu *s)
 {
     if (_ZN12CursorMotion6updateEv((u8 *)s + 0x2480)) {
         if (PocketMenu_IsSpecialTarget(s, s->handSource) || _ZN10PocketMenu9testFlagsEj(s, 0x2000)) {
@@ -1537,7 +1477,7 @@ extern "C" void _ZN10PocketMenu9mainAct1BEv(S *s)
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct1CEv(S *s)
+extern "C" void _ZN10PocketMenu9mainAct1CEv(PocketMenu *s)
 {
     _ZN10PocketMenu11putHandBackEjj(s, s->handSource, 1);
     if (_ZN10PocketMenu9testFlagsEj(s, 0x2000)) {
@@ -1549,7 +1489,7 @@ extern "C" void _ZN10PocketMenu9mainAct1CEv(S *s)
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct1DEv(S *s)
+extern "C" void _ZN10PocketMenu9mainAct1DEv(PocketMenu *s)
 {
     if (_ZN19PopupChoiceMenuBody6isOpenEv((u8 *)s + 0x24fc)) {
         if (MenuCtrl_IsButtons()) {
@@ -1561,12 +1501,12 @@ extern "C" void _ZN10PocketMenu9mainAct1DEv(S *s)
     }
 }
 
-extern "C" s32 PocketMenu_TickOptionDecide(S *s)
+extern "C" s32 PocketMenu_TickOptionDecide(PocketMenu *s)
 {
-    if (PopupChoice_TickDecideDelay(s->s_24fc)) {
-        PopupChoice_Close(s->s_24fc, 0);
-        _ZN18TouchPromptBalloon4hideEi(s->s_23c0, 1);
-        if (_ZN10HandCursor7getAnimEv(s->s_2498)) {
+    if (PopupChoice_TickDecideDelay(&s->m_24fc)) {
+        PopupChoice_Close(&s->m_24fc, 0);
+        _ZN18TouchPromptBalloon4hideEi(&s->m_23c0, 1);
+        if (_ZN10HandCursor7getAnimEv(&s->m_2498)) {
             _ZN10PocketMenu19placeCursorOnTargetEv(s);
         }
         return 1;
@@ -1574,21 +1514,21 @@ extern "C" s32 PocketMenu_TickOptionDecide(S *s)
     return 0;
 }
 
-extern "C" void _ZN10PocketMenu9mainAct1EEv(S *s)
+extern "C" void _ZN10PocketMenu9mainAct1EEv(PocketMenu *s)
 {
     if (PocketMenu_TickOptionDecide(s)) {
         _ZN8MenuProc12setMainStateEh(s, 0x1f);
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct1FEv(S *s)
+extern "C" void _ZN10PocketMenu9mainAct1FEv(PocketMenu *s)
 {
     if (_ZN19PopupChoiceMenuBody8isClosedEv((u8 *)s + 0x24fc)) {
         _ZN10PocketMenu15runChosenActionEv(s);
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct20Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct20Ev(PocketMenu *s)
 {
     if (_ZN16MenuErrorMessage6updateEi((u8 *)s + 0x27fc, 1)) {
         _ZN8MenuProc12setMainStateEh(s, s->returnState);
@@ -1596,12 +1536,12 @@ extern "C" void _ZN10PocketMenu9mainAct20Ev(S *s)
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct21Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct21Ev(PocketMenu *s)
 {
-    if (_ZN15MenuLabelButton8stepAnimEv(s->s_2b14)) {
-        if (_ZN10HandCursor7getAnimEv(s->s_2498)) {
-            s32 r4 = _ZN15MenuLabelButton10getAnchorXEi(s->s_2b14, 1);
-            _ZN14MenuCursorBase6warpToEii(s->s_2498, r4, _ZN15MenuLabelButton10getAnchorYEi(s->s_2b14, 1));
+    if (_ZN15MenuLabelButton8stepAnimEv(&s->m_2b14)) {
+        if (_ZN10HandCursor7getAnimEv(&s->m_2498)) {
+            s32 r4 = _ZN15MenuLabelButton10getAnchorXEi(&s->m_2b14, 1);
+            _ZN14MenuCursorBase6warpToEii(&s->m_2498, r4, _ZN15MenuLabelButton10getAnchorYEi(&s->m_2b14, 1));
         }
     } else {
         _ZN10PocketMenu10hideCursorEv(s);
@@ -1610,14 +1550,14 @@ extern "C" void _ZN10PocketMenu9mainAct21Ev(S *s)
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct22Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct22Ev(PocketMenu *s)
 {
     if (_ZN19PopupChoiceMenuBody6isOpenEv((u8 *)s + 0x24fc)) {
         PocketMenu_EnterAddresseeInput(s);
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct23Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct23Ev(PocketMenu *s)
 {
     if (PocketMenu_TickOptionDecide(s)) {
         _ZN10PocketMenu10hideCursorEv(s);
@@ -1625,18 +1565,18 @@ extern "C" void _ZN10PocketMenu9mainAct23Ev(S *s)
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct24Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct24Ev(PocketMenu *s)
 {
-    if (_ZN19PopupChoiceMenuBody8isClosedEv(s->s_24fc)) {
+    if (_ZN19PopupChoiceMenuBody8isClosedEv(&s->m_24fc)) {
         if (_ZN10PocketMenu9testFlagsEj(s, 0x200)) {
-            if (_ZN19PopupChoiceMenuBody16getAddresseeKindEj(s->s_24fc, s->addressee) == 1) {
+            if (_ZN19PopupChoiceMenuBody16getAddresseeKindEj(&s->m_24fc, s->addressee) == 1) {
                 _ZN10PocketMenu18writeLetterOnPaperEv(s);
                 return;
             }
         }
-        if (_ZN19PopupChoiceMenuBody14applyAddresseeEPvj(s->s_24fc, (void *)MenuCtrl_GetArg(), s->addressee) == 2) {
+        if (_ZN19PopupChoiceMenuBody14applyAddresseeEPvj(&s->m_24fc, (void *)MenuCtrl_GetArg(), s->addressee) == 2) {
             s->addresseePage = s->addresseePage + 1;
-            if (s->addresseePage >= _ZN19PopupChoiceMenuBody12getPageCountEv(s->s_24fc)) {
+            if (s->addresseePage >= _ZN19PopupChoiceMenuBody12getPageCountEv(&s->m_24fc)) {
                 s->addresseePage = 0;
             }
             _ZN10PocketMenu17openAddresseePageEi(s, 0);
@@ -1646,7 +1586,7 @@ extern "C" void _ZN10PocketMenu9mainAct24Ev(S *s)
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct25Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct25Ev(PocketMenu *s)
 {
     u32 r4;
     s->handX = PocketMenu_GetTargetX(s, 0x24);
@@ -1662,7 +1602,7 @@ extern "C" void _ZN10PocketMenu9mainAct25Ev(S *s)
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct26Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct26Ev(PocketMenu *s)
 {
     if (InventoryBg_UpdateBlink((u8 *)s + 0xde0)) {
         _ZN10PocketMenu9clearHandEv(s);
@@ -1680,7 +1620,7 @@ extern "C" void _ZN10PocketMenu9mainAct26Ev(S *s)
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct27Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct27Ev(PocketMenu *s)
 {
     if (_ZN10PocketMenu17isUseOnPlayerBusyEi(s, s->useOnPlayerKind) == 0) {
         _ZN10PocketMenu9clearHandEv(s);
@@ -1689,7 +1629,7 @@ extern "C" void _ZN10PocketMenu9mainAct27Ev(S *s)
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct2AEv(S *s)
+extern "C" void _ZN10PocketMenu9mainAct2AEv(PocketMenu *s)
 {
     if (LetterGrid_UpdatePopAnim((u8 *)s + 0xdb8)) {
         _ZN10PocketMenu9clearHandEv(s);
@@ -1697,7 +1637,7 @@ extern "C" void _ZN10PocketMenu9mainAct2AEv(S *s)
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct2BEv(S *s)
+extern "C" void _ZN10PocketMenu9mainAct2BEv(PocketMenu *s)
 {
     if (InventoryItemGrid_UpdatePresentAnim((u8 *)s + 0x358)) {
         void *p = PlayerData_GetCurrent();
@@ -1713,14 +1653,14 @@ extern "C" void _ZN10PocketMenu9mainAct2BEv(S *s)
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct2FEv(S *s)
+extern "C" void _ZN10PocketMenu9mainAct2FEv(PocketMenu *s)
 {
     if (PlayerActor_IsInAct05()) {
         PocketMenu_ReturnToIdle(s);
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct31Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct31Ev(PocketMenu *s)
 {
     u16 t;
     Snd_PlaySe(0x40);
@@ -1732,7 +1672,7 @@ extern "C" void _ZN10PocketMenu9mainAct31Ev(S *s)
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct32Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct32Ev(PocketMenu *s)
 {
     if (s->removeBlinkTimer != 0) {
         s32 r;
@@ -1754,7 +1694,7 @@ extern "C" void _ZN10PocketMenu9mainAct32Ev(S *s)
     }
 }
 
-extern "C" void _ZN10PocketMenu9mainAct28Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct28Ev(PocketMenu *s)
 {
     switch (FieldAction_PollDrop(s->fieldRequest)) {
     case 1:
@@ -1781,7 +1721,7 @@ extern "C" void _ZN10PocketMenu9mainAct28Ev(S *s)
     s->fieldRequest = -1;
 }
 
-extern "C" void _ZN10PocketMenu9mainAct29Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct29Ev(PocketMenu *s)
 {
     switch (FieldAction_PollResult(s->fieldRequest)) {
     case 1:
@@ -1808,14 +1748,14 @@ extern "C" void _ZN10PocketMenu9mainAct29Ev(S *s)
     s->fieldRequest = -1;
 }
 
-extern "C" void PocketMenu_EnterTouchIdle(S *s)
+extern "C" void PocketMenu_EnterTouchIdle(PocketMenu *s)
 {
     _ZN10PocketMenu10hideCursorEv(s);
     _ZN10PocketMenu14clearSelectionEv(s);
     _ZN8MenuProc12setMainStateEh(s, 0);
 }
 
-extern "C" void PocketMenu_EnterButtonIdle(S *s)
+extern "C" void PocketMenu_EnterButtonIdle(PocketMenu *s)
 {
     s->balloonTarget = 0x26;
     _ZN10PocketMenu10showCursorEv(s);
@@ -1825,7 +1765,7 @@ extern "C" void PocketMenu_EnterButtonIdle(S *s)
     _ZN10PocketMenu12selectTargetEj(s, s->cursorTarget);
 }
 
-extern "C" void PocketMenu_ReturnToIdle(S *s)
+extern "C" void PocketMenu_ReturnToIdle(PocketMenu *s)
 {
     if (MenuCtrl_IsTouch()) {
         PocketMenu_EnterTouchIdle(s);
@@ -1834,19 +1774,19 @@ extern "C" void PocketMenu_ReturnToIdle(S *s)
     }
 }
 
-extern "C" void PocketMenu_EnterAddresseeTouch(S *s)
+extern "C" void PocketMenu_EnterAddresseeTouch(PocketMenu *s)
 {
     _ZN10PocketMenu10hideCursorEv(s);
     _ZN8MenuProc12setMainStateEh(s, 8);
 }
 
-extern "C" void PocketMenu_EnterAddresseeButtons(S *s)
+extern "C" void PocketMenu_EnterAddresseeButtons(PocketMenu *s)
 {
     _ZN10PocketMenu19cursorToPopupBottomEv(s);
     _ZN8MenuProc12setMainStateEh(s, 0x19);
 }
 
-extern "C" void PocketMenu_EnterAddresseeInput(S *s)
+extern "C" void PocketMenu_EnterAddresseeInput(PocketMenu *s)
 {
     if (MenuCtrl_IsTouch()) {
         PocketMenu_EnterAddresseeTouch(s);
@@ -1855,19 +1795,19 @@ extern "C" void PocketMenu_EnterAddresseeInput(S *s)
     }
 }
 
-extern "C" void PocketMenu_PrepareTouchOptions(S *s)
+extern "C" void PocketMenu_PrepareTouchOptions(PocketMenu *s)
 {
     _ZN10PocketMenu10clearFlagsEj(s, 0x10000);
     if (PocketMenu_IsPocketTarget(s, s->touchedTarget)) {
-        ChoiceIdList_Clear(s->s_27f0, 0x22);
+        ChoiceIdList_Clear(s->optionList, 0x22);
         _ZN10PocketMenu14addItemOptionsEi(s, s->touchedTarget);
-        if (ChoiceIdList_Count(s->s_27f0) == 0) {
+        if (ChoiceIdList_Count(s->optionList) == 0) {
             _ZN10PocketMenu8setFlagsEj(s, 0x10000);
         }
     }
 }
 
-extern "C" void PocketMenu_BeginTouchOnTarget(S *s, u32 a)
+extern "C" void PocketMenu_BeginTouchOnTarget(PocketMenu *s, u32 a)
 {
     s32 r6, r7;
     s->touchedTarget = a;
@@ -1877,8 +1817,8 @@ extern "C" void PocketMenu_BeginTouchOnTarget(S *s, u32 a)
     s->grabOffsetX = PocketMenu_GetTargetX(s, s->touchedTarget) - r6;
     s->grabOffsetY = PocketMenu_GetTargetY(s, s->touchedTarget) - r7;
     s->balloonTarget = a;
-    _ZN18TouchPromptBalloon9queueOpenEv(s->s_23c0);
-    _ZN18TouchPromptBalloon10commitOpenEv(s->s_23c0);
+    _ZN18TouchPromptBalloon9queueOpenEv(&s->m_23c0);
+    _ZN18TouchPromptBalloon10commitOpenEv(&s->m_23c0);
     s->optionsOpenDelay = 2;
     PocketMenu_PrepareTouchOptions(s);
     if (PocketMenu_IsSlotDisabled(s, a)) {
@@ -1892,7 +1832,7 @@ extern "C" void PocketMenu_BeginTouchOnTarget(S *s, u32 a)
     Inventory_PlayTouchSe();
 }
 
-extern "C" void PocketMenu_StartTouchDrag(S *s, u32 a)
+extern "C" void PocketMenu_StartTouchDrag(PocketMenu *s, u32 a)
 {
     s->handSource = a;
     _ZN18TouchPromptBalloon4hideEi((u8 *)s + 0x23c0, 1);
@@ -1912,7 +1852,7 @@ extern "C" void PocketMenu_StartTouchDrag(S *s, u32 a)
 }
 
 // ===== unit 02298430 =====
-extern "C" void PocketMenu_StartButtonDrag(S *s, u32 a)
+extern "C" void PocketMenu_StartButtonDrag(PocketMenu *s, u32 a)
 {
     s->handSource = a;
     _ZN18TouchPromptBalloon4hideEi((u8 *)s + 0x23c0, 1);
@@ -1933,22 +1873,22 @@ extern "C" void PocketMenu_StartButtonDrag(S *s, u32 a)
     Inventory_PlayPickUpSe();
 }
 
-extern "C" void PocketMenu_FlyHandTo(S *s, u32 a, u32 b)
+extern "C" void PocketMenu_FlyHandTo(PocketMenu *s, u32 a, u32 b)
 {
     s32 t;
     s32 u;
 
     s->handSource = a;
-    _ZN12CursorMotion6setPosEii(s->s_2480, s->handX, s->handY);
+    _ZN12CursorMotion6setPosEii(&s->m_2480, s->handX, s->handY);
     t = PocketMenu_GetTargetX(s, a);
     u = PocketMenu_GetTargetY(s, a);
-    _ZN12CursorMotion11startLinearEiii(s->s_2480, t, u, b);
-    _ZN12CursorMotion6updateEv(s->s_2480);
+    _ZN12CursorMotion11startLinearEiii(&s->m_2480, t, u, b);
+    _ZN12CursorMotion6updateEv(&s->m_2480);
     _ZN10PocketMenu17syncHandFromMoverEv(s);
     _ZN8MenuProc12setMainStateEh(s, 0x1b);
 }
 
-extern "C" void PocketMenu_FlyItemTo(S *s, u32 a, u32 b, u32 c, u8 d)
+extern "C" void PocketMenu_FlyItemTo(PocketMenu *s, u32 a, u32 b, u32 c, u8 d)
 {
     _ZN10PocketMenu11setHandItemEjj(s, c, d);
     s->handX = PocketMenu_GetTargetX(s, a);
@@ -1956,7 +1896,7 @@ extern "C" void PocketMenu_FlyItemTo(S *s, u32 a, u32 b, u32 c, u8 d)
     PocketMenu_FlyHandTo(s, b, 4);
 }
 
-extern "C" void PocketMenu_ShowMessage(S *s, u32 a, u32 b, u32 c)
+extern "C" void PocketMenu_ShowMessage(PocketMenu *s, u32 a, u32 b, u32 c)
 {
     Unk_ov096_02297fb8_Msg m;
 
@@ -1972,13 +1912,13 @@ extern "C" void PocketMenu_ShowMessage(S *s, u32 a, u32 b, u32 c)
     _ZN10HandCursor16disableObjWindowEv((u8 *)s + 0x2498);
 }
 
-extern "C" void PocketMenu_StartRemoveBlink(S *s)
+extern "C" void PocketMenu_StartRemoveBlink(PocketMenu *s)
 {
     s->removeBlinkTimer = 0xe;
     _ZN8MenuProc12setMainStateEh(s, 0x32);
 }
 
-extern "C" void PocketMenu_CancelVramTasks(S *s)
+extern "C" void PocketMenu_CancelVramTasks(PocketMenu *s)
 {
     s32 i = 0;
     u8 *p = (u8 *)s + 0x2e8;
@@ -1987,7 +1927,7 @@ extern "C" void PocketMenu_CancelVramTasks(S *s)
     }
 }
 
-extern "C" u32 PocketMenu_IsPocketTarget(S *s, u32 id)
+extern "C" u32 PocketMenu_IsPocketTarget(PocketMenu *s, u32 id)
 {
     if (id <= 0xe) {
         return 1;
@@ -1995,7 +1935,7 @@ extern "C" u32 PocketMenu_IsPocketTarget(S *s, u32 id)
     return 0;
 }
 
-extern "C" u32 PocketMenu_IsLetterTarget(S *s, u32 id)
+extern "C" u32 PocketMenu_IsLetterTarget(PocketMenu *s, u32 id)
 {
     if (id >= 0xf && id <= 0x18) {
         return 1;
@@ -2003,7 +1943,7 @@ extern "C" u32 PocketMenu_IsLetterTarget(S *s, u32 id)
     return 0;
 }
 
-extern "C" u32 PocketMenu_IsTabTarget(S *s, u32 id)
+extern "C" u32 PocketMenu_IsTabTarget(PocketMenu *s, u32 id)
 {
     if (id >= 0x19 && id <= 0x20) {
         return 1;
@@ -2011,7 +1951,7 @@ extern "C" u32 PocketMenu_IsTabTarget(S *s, u32 id)
     return 0;
 }
 
-extern "C" u32 PocketMenu_IsSpecialTarget(S *s, u32 id)
+extern "C" u32 PocketMenu_IsSpecialTarget(PocketMenu *s, u32 id)
 {
     if (id >= 0x22 && id <= 0x25) {
         return 1;
@@ -2019,13 +1959,13 @@ extern "C" u32 PocketMenu_IsSpecialTarget(S *s, u32 id)
     return 0;
 }
 
-extern "C" void PocketMenu_MoveCursorToTab(S *s)
+extern "C" void PocketMenu_MoveCursorToTab(PocketMenu *s)
 {
     _ZN14MenuCursorBase10getScreenXEv((u8 *)s + 0x2498);
     s->cursorTarget = MenuTabBar_TabFromX() + 0x19;
 }
 
-extern "C" u32 PocketMenu_TargetToGridIndex(S *s, u32 id)
+extern "C" u32 PocketMenu_TargetToGridIndex(PocketMenu *s, u32 id)
 {
     if (PocketMenu_IsPocketTarget(s, id)) {
         return (u8)id;
@@ -2036,7 +1976,7 @@ extern "C" u32 PocketMenu_TargetToGridIndex(S *s, u32 id)
     return 0;
 }
 
-extern "C" u32 PocketMenu_PocketIndexToTarget(S *s, u32 id)
+extern "C" u32 PocketMenu_PocketIndexToTarget(PocketMenu *s, u32 id)
 {
     if (id <= 0xe) {
         return (u8)id;
@@ -2044,7 +1984,7 @@ extern "C" u32 PocketMenu_PocketIndexToTarget(S *s, u32 id)
     return 0x26;
 }
 
-extern "C" u32 PocketMenu_HitPocket(S *s, s32 a, s32 b, s32 c)
+extern "C" u32 PocketMenu_HitPocket(PocketMenu *s, s32 a, s32 b, s32 c)
 {
     s32 r = InventoryItemGrid_FindPocketSlotAt((u8 *)s + 0x358);
     if (r != 0x23) {
@@ -2056,7 +1996,7 @@ extern "C" u32 PocketMenu_HitPocket(S *s, s32 a, s32 b, s32 c)
     return 0x26;
 }
 
-extern "C" s32 PocketMenu_DropItemAt(S *s, u32 id)
+extern "C" s32 PocketMenu_DropItemAt(PocketMenu *s, u32 id)
 {
     u16 v;
 
@@ -2099,7 +2039,7 @@ extern "C" s32 PocketMenu_DropItemAt(S *s, u32 id)
     return 0;
 }
 
-extern "C" void PocketMenu_SetSlotItem(S *s, u32 id, u32 a, u32 b)
+extern "C" void PocketMenu_SetSlotItem(PocketMenu *s, u32 id, u32 a, u32 b)
 {
     if (PocketMenu_IsPocketTarget(s, id)) {
         u32 t = PocketMenu_TargetToGridIndex(s, id);
@@ -2112,21 +2052,21 @@ extern "C" void PocketMenu_SetSlotItem(S *s, u32 id, u32 a, u32 b)
     }
 }
 
-extern "C" void PocketMenu_ClearSlotItem(S *s, u32 id)
+extern "C" void PocketMenu_ClearSlotItem(PocketMenu *s, u32 id)
 {
     if (PocketMenu_IsPocketTarget(s, id) || PocketMenu_IsLetterTarget(s, id)) {
         PocketMenu_SetSlotItem(s, id, 0xfff1, 0);
     }
 }
 
-extern "C" void PocketMenu_ClearLetter(S *s, u32 id)
+extern "C" void PocketMenu_ClearLetter(PocketMenu *s, u32 id)
 {
     if (PocketMenu_IsLetterTarget(s, id)) {
         _ZN10LetterGrid11clearLetterEi((u8 *)s + 0xdb8, PocketMenu_TargetToLetterIndex(s, id));
     }
 }
 
-extern "C" u32 PocketMenu_FindEmptyPocket(S *s)
+extern "C" u32 PocketMenu_FindEmptyPocket(PocketMenu *s)
 {
     s32 r = Pocket_FindEmpty();
     if (r == -1) {
@@ -2135,7 +2075,7 @@ extern "C" u32 PocketMenu_FindEmptyPocket(S *s)
     return (u8)r;
 }
 
-extern "C" u32 PocketMenu_TargetToLetterIndex(S *s, u32 id)
+extern "C" u32 PocketMenu_TargetToLetterIndex(PocketMenu *s, u32 id)
 {
     if (id >= 0xf && id <= 0x18) {
         return (u8)(id - 0xf);
@@ -2143,7 +2083,7 @@ extern "C" u32 PocketMenu_TargetToLetterIndex(S *s, u32 id)
     return 0;
 }
 
-extern "C" u32 PocketMenu_LetterIndexToTarget(S *s, u32 id)
+extern "C" u32 PocketMenu_LetterIndexToTarget(PocketMenu *s, u32 id)
 {
     if (id <= 9) {
         return (u8)(id + 0xf);
@@ -2151,7 +2091,7 @@ extern "C" u32 PocketMenu_LetterIndexToTarget(S *s, u32 id)
     return 0x26;
 }
 
-extern "C" u32 PocketMenu_HitLetter(S *s, s32 a, s32 b, s32 c)
+extern "C" u32 PocketMenu_HitLetter(PocketMenu *s, s32 a, s32 b, s32 c)
 {
     s32 r = _ZN10LetterGrid18findPocketLetterAtEii((u8 *)s + 0xdb8);
     if (r != 0x37) {
@@ -2163,24 +2103,24 @@ extern "C" u32 PocketMenu_HitLetter(S *s, s32 a, s32 b, s32 c)
     return 0x26;
 }
 
-extern "C" s32 PocketMenu_DropLetterAt(S *s, u32 id)
+extern "C" s32 PocketMenu_DropLetterAt(PocketMenu *s, u32 id)
 {
     if (!PocketMenu_IsSlotEmpty(s, id)) {
-        Letter_Copy(s->s_2c8c, PocketMenu_GetLetter(s, id));
-        PocketMenu_SetLetter(s, s->handSource, s->s_2c8c);
+        Letter_Copy(&s->m_2c8c, PocketMenu_GetLetter(s, id));
+        PocketMenu_SetLetter(s, s->handSource, &s->m_2c8c);
     }
     _ZN10PocketMenu11putHandBackEjj(s, id, 1);
     return 1;
 }
 
-extern "C" void PocketMenu_SetLetter(S *s, u32 id, void *p)
+extern "C" void PocketMenu_SetLetter(PocketMenu *s, u32 id, void *p)
 {
     if (PocketMenu_IsLetterTarget(s, id)) {
         _ZN10LetterGrid9setLetterEii((u8 *)s + 0xdb8, PocketMenu_TargetToLetterIndex(s, id), p);
     }
 }
 
-extern "C" BOOL PocketMenu_HitShirtBox(S *s, s32 x, s32 y)
+extern "C" BOOL PocketMenu_HitShirtBox(PocketMenu *s, s32 x, s32 y)
 {
     if (x < 4 || x >= 0x1c) {
         return FALSE;
@@ -2191,7 +2131,7 @@ extern "C" BOOL PocketMenu_HitShirtBox(S *s, s32 x, s32 y)
     return TRUE;
 }
 
-extern "C" s32 PocketMenu_HitSpecialTarget(S *s, s32 x, s32 y)
+extern "C" s32 PocketMenu_HitSpecialTarget(PocketMenu *s, s32 x, s32 y)
 {
     if (PocketMenu_HitPlayer(s, x, y)) {
         return 0x24;
@@ -2218,7 +2158,7 @@ extern "C" s32 PocketMenu_HitSpecialTarget(S *s, s32 x, s32 y)
     return 0x26;
 }
 
-extern "C" BOOL PocketMenu_HitPlayer(S *s, s32 x, s32 y)
+extern "C" BOOL PocketMenu_HitPlayer(PocketMenu *s, s32 x, s32 y)
 {
     if (x > 0x88 && x < 0xa8 && y > 0x20 && y < 0x50) {
         return TRUE;
@@ -2226,15 +2166,15 @@ extern "C" BOOL PocketMenu_HitPlayer(S *s, s32 x, s32 y)
     return FALSE;
 }
 
-extern "C" BOOL PocketMenu_HitWalletIcon(S *s, s32 x, s32 y)
+extern "C" BOOL PocketMenu_HitWalletIcon(PocketMenu *s, s32 x, s32 y)
 {
-    if (InventoryItemGrid_HitTestSlot21(s->s_358, x, y)) {
+    if (InventoryItemGrid_HitTestSlot21(&s->m_358, x, y)) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" s32 PocketMenu_HitWalletAmount(S *s, s32 x, s32 y)
+extern "C" s32 PocketMenu_HitWalletAmount(PocketMenu *s, s32 x, s32 y)
 {
     s32 v;
 
@@ -2264,7 +2204,7 @@ extern "C" s32 PocketMenu_HitWalletAmount(S *s, s32 x, s32 y)
     return 2;
 }
 
-extern "C" s32 PocketMenu_GetTargetX(S *s, u32 id)
+extern "C" s32 PocketMenu_GetTargetX(PocketMenu *s, u32 id)
 {
     if (PocketMenu_IsPocketTarget(s, id)) {
         return InventoryItemGrid_GetSlotX((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
@@ -2281,7 +2221,7 @@ extern "C" s32 PocketMenu_GetTargetX(S *s, u32 id)
     return 0;
 }
 
-extern "C" s32 PocketMenu_GetTargetY(S *s, u32 id)
+extern "C" s32 PocketMenu_GetTargetY(PocketMenu *s, u32 id)
 {
     if (PocketMenu_IsPocketTarget(s, id)) {
         return InventoryItemGrid_GetSlotY((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
@@ -2301,7 +2241,7 @@ extern "C" s32 PocketMenu_GetTargetY(S *s, u32 id)
     return 0;
 }
 
-extern "C" s32 PocketMenu_IsSlotDisabled(S *s, u32 id)
+extern "C" s32 PocketMenu_IsSlotDisabled(PocketMenu *s, u32 id)
 {
     if (PocketMenu_IsPocketTarget(s, id)) {
         return InventoryItemGrid_IsSlotDisabled((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
@@ -2312,7 +2252,7 @@ extern "C" s32 PocketMenu_IsSlotDisabled(S *s, u32 id)
     return 0;
 }
 
-extern "C" s32 PocketMenu_IsSlotEmpty(S *s, u32 id)
+extern "C" s32 PocketMenu_IsSlotEmpty(PocketMenu *s, u32 id)
 {
     if (PocketMenu_IsPocketTarget(s, id)) {
         return InventoryItemGrid_IsSlotEmpty((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
@@ -2323,7 +2263,7 @@ extern "C" s32 PocketMenu_IsSlotEmpty(S *s, u32 id)
     return 1;
 }
 
-extern "C" u32 PocketMenu_GetItem(S *s, u32 id)
+extern "C" u32 PocketMenu_GetItem(PocketMenu *s, u32 id)
 {
     if (PocketMenu_IsPocketTarget(s, id)) {
         return InventoryItemGrid_GetSlotItem((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
@@ -2340,7 +2280,7 @@ extern "C" u32 PocketMenu_GetItem(S *s, u32 id)
     return 0xfff1;
 }
 
-extern "C" s32 PocketMenu_GetItemFlags(S *s, u32 id)
+extern "C" s32 PocketMenu_GetItemFlags(PocketMenu *s, u32 id)
 {
     if (PocketMenu_IsPocketTarget(s, id)) {
         return InventoryItemGrid_GetSlotFlags((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
@@ -2353,7 +2293,7 @@ extern "C" s32 PocketMenu_GetItemFlags(S *s, u32 id)
 }
 
 // ===== unit 02297b14 =====
-extern "C" void *PocketMenu_GetLetter(S *s, u32 id)
+extern "C" void *PocketMenu_GetLetter(PocketMenu *s, u32 id)
 {
     if (PocketMenu_IsLetterTarget(s, id)) {
     } else {
@@ -2364,11 +2304,11 @@ extern "C" void *PocketMenu_GetLetter(S *s, u32 id)
 
 s32 PocketMenu::checkPlace(u32 a, u32 b, u32 c) {
     u16 tmp = 0xfff1;
-    if (PocketMenu_IsPocketTarget((S *)this, a)) {
+    if (PocketMenu_IsPocketTarget(this, a)) {
         return 0;
     }
-    if (PocketMenu_IsLetterTarget((S *)this, a)) {
-        if (PocketMenu_IsSlotEmpty((S *)this, a)) {
+    if (PocketMenu_IsLetterTarget(this, a)) {
+        if (PocketMenu_IsSlotEmpty(this, a)) {
             return 6;
         }
         if (c == 1) {
@@ -2377,7 +2317,7 @@ s32 PocketMenu::checkPlace(u32 a, u32 b, u32 c) {
         if (c == 2) {
             return 1;
         }
-        void *p = PocketMenu_GetLetter((S *)this, a);
+        void *p = PocketMenu_GetLetter(this, a);
         if (_ZN10LetterView10getPresentEv(p) != 0xfff1) {
             return 3;
         }
@@ -2418,14 +2358,14 @@ s32 PocketMenu::checkPlace(u32 a, u32 b, u32 c) {
 s32 PocketMenu::checkSwap(u32 a, u32 b) {
     s32 r = checkPlace(a, handItem, handItemFlags);
     if (r == 0) {
-        u16 t = PocketMenu_GetItem((S *)this, a);
+        u16 t = PocketMenu_GetItem(this, a);
         if (t == 0xfff1) {
             return 0;
         }
-        u32 v = PocketMenu_GetItemFlags((S *)this, a);
+        u32 v = PocketMenu_GetItemFlags(this, a);
         if (b == 0x25) {
             u16 t2 = handItem;
-            r = _ZN10PocketMenu10mergeItemsEPtiS0_h((S *)this, &t2, handItemFlags, &t, v);
+            r = _ZN10PocketMenu10mergeItemsEPtiS0_h(this, &t2, handItemFlags, &t, v);
             if ((u32)(r - 2) <= 1) {
                 return 6;
             }
@@ -2484,12 +2424,12 @@ void PocketMenu::clearSelection() {
 }
 
 void PocketMenu::selectTarget(u32 a) {
-    if (PocketMenu_IsPocketTarget((S *)this, a)) {
-        s32 s = PocketMenu_TargetToGridIndex((S *)this, a);
+    if (PocketMenu_IsPocketTarget(this, a)) {
+        s32 s = PocketMenu_TargetToGridIndex(this, a);
         _ZN10LetterGrid15clearCursorSlotEv(unk_db8);
         InventoryItemGrid_SetCursorSlot(unk_358, s);
-    } else if (PocketMenu_IsLetterTarget((S *)this, a)) {
-        s32 s = PocketMenu_TargetToLetterIndex((S *)this, a);
+    } else if (PocketMenu_IsLetterTarget(this, a)) {
+        s32 s = PocketMenu_TargetToLetterIndex(this, a);
         InventoryItemGrid_ClearCursorSlot(unk_358);
         _ZN10LetterGrid13setCursorSlotEj(unk_db8, s);
     } else {
@@ -2505,11 +2445,11 @@ void PocketMenu::clearHighlights() {
 }
 
 void PocketMenu::highlightTarget(u32 a) {
-    if (PocketMenu_IsPocketTarget((S *)this, a)) {
-        InventoryItemGrid_MarkSlot(unk_358, PocketMenu_TargetToGridIndex((S *)this, a));
-    } else if (PocketMenu_IsLetterTarget((S *)this, a)) {
-        _ZN10LetterGrid8markSlotEi(unk_db8, PocketMenu_TargetToLetterIndex((S *)this, a));
-    } else if (PocketMenu_IsSpecialTarget((S *)this, a)) {
+    if (PocketMenu_IsPocketTarget(this, a)) {
+        InventoryItemGrid_MarkSlot(unk_358, PocketMenu_TargetToGridIndex(this, a));
+    } else if (PocketMenu_IsLetterTarget(this, a)) {
+        _ZN10LetterGrid8markSlotEi(unk_db8, PocketMenu_TargetToLetterIndex(this, a));
+    } else if (PocketMenu_IsSpecialTarget(this, a)) {
         switch (a) {
         case 0x25:
             InventoryItemGrid_MarkSlot(unk_358, 0x21);
@@ -2553,31 +2493,31 @@ BOOL PocketMenu::isTouchHeldFor(s32 v) {
 }
 
 void PocketMenu::positionLabelBalloon() {
-    s32 x = PocketMenu_GetTargetX((S *)this, balloonTarget) - 0x6d;
-    s32 y = PocketMenu_GetTargetY((S *)this, balloonTarget) - 0x78;
+    s32 x = PocketMenu_GetTargetX(this, balloonTarget) - 0x6d;
+    s32 y = PocketMenu_GetTargetY(this, balloonTarget) - 0x78;
     if (MenuCtrl_IsButtons()) {
         y -= 8;
     }
     _ZN12LabelBalloon6setPosEii(unk_23c0, x, y);
-    if (PocketMenu_IsPocketTarget((S *)this, balloonTarget)) {
-        s32 s = PocketMenu_TargetToGridIndex((S *)this, balloonTarget);
+    if (PocketMenu_IsPocketTarget(this, balloonTarget)) {
+        s32 s = PocketMenu_TargetToGridIndex(this, balloonTarget);
         InventoryItemGrid_ShowSlotName(unk_358, unk_23c0, s);
-    } else if (PocketMenu_IsLetterTarget((S *)this, balloonTarget)) {
-        s32 s = PocketMenu_TargetToLetterIndex((S *)this, balloonTarget);
+    } else if (PocketMenu_IsLetterTarget(this, balloonTarget)) {
+        s32 s = PocketMenu_TargetToLetterIndex(this, balloonTarget);
         _ZN10LetterGrid14showLetterNameEPvi(unk_db8, unk_23c0, s);
     }
 }
 
 void PocketMenu::updateLabelBalloon() {
-    if (PocketMenu_IsPocketTarget((S *)this, cursorTarget) || PocketMenu_IsLetterTarget((S *)this, cursorTarget)) {
-        if (PocketMenu_IsSlotEmpty((S *)this, cursorTarget)) {
+    if (PocketMenu_IsPocketTarget(this, cursorTarget) || PocketMenu_IsLetterTarget(this, cursorTarget)) {
+        if (PocketMenu_IsSlotEmpty(this, cursorTarget)) {
             _ZN18TouchPromptBalloon16cancelQueuedOpenEv(unk_23c0);
         } else {
             balloonTarget = cursorTarget;
             _ZN18TouchPromptBalloon9queueOpenEv(unk_23c0);
         }
     }
-    if (PocketMenu_IsTabTarget((S *)this, cursorTarget) || PocketMenu_IsSpecialTarget((S *)this, cursorTarget)) {
+    if (PocketMenu_IsTabTarget(this, cursorTarget) || PocketMenu_IsSpecialTarget(this, cursorTarget)) {
         _ZN18TouchPromptBalloon16cancelQueuedOpenEv(unk_23c0);
     }
 }
@@ -2619,15 +2559,15 @@ void PocketMenu::setHandItem(u32 a, u32 b) {
 
 void PocketMenu::pickUpItemFrom(u32 a) {
     handKind = 2;
-    handItem = PocketMenu_GetItem((S *)this, a);
-    handItemFlags = PocketMenu_GetItemFlags((S *)this, a);
-    PocketMenu_ClearSlotItem((S *)this, a);
+    handItem = PocketMenu_GetItem(this, a);
+    handItemFlags = PocketMenu_GetItemFlags(this, a);
+    PocketMenu_ClearSlotItem(this, a);
     InventoryItemGrid_SetHeldItem(unk_358, handItem, handItemFlags);
     updateHandPrice();
 }
 
 void PocketMenu::pickUpLetter(u32 a) {
-    s32 r = PocketMenu_TargetToLetterIndex((S *)this, a);
+    s32 r = PocketMenu_TargetToLetterIndex(this, a);
     handKind = 1;
     void *p = _ZN10LetterGrid9getLetterEi(unk_db8, r);
     Letter_Copy(unk_2b98, p);
@@ -2635,9 +2575,9 @@ void PocketMenu::pickUpLetter(u32 a) {
 }
 
 void PocketMenu::pickUp(u32 a) {
-    if (PocketMenu_IsPocketTarget((S *)this, a)) {
+    if (PocketMenu_IsPocketTarget(this, a)) {
         pickUpItemFrom(a);
-    } else if (PocketMenu_IsLetterTarget((S *)this, a)) {
+    } else if (PocketMenu_IsLetterTarget(this, a)) {
         pickUpLetter(a);
     } else if (a == 0x25) {
         pickUpItemFrom(a);
@@ -2646,7 +2586,7 @@ void PocketMenu::pickUp(u32 a) {
 }
 
 void PocketMenu::pickUpItem(u32 a) {
-    if (PocketMenu_IsPocketTarget((S *)this, a) || PocketMenu_IsLetterTarget((S *)this, a)) {
+    if (PocketMenu_IsPocketTarget(this, a) || PocketMenu_IsLetterTarget(this, a)) {
         pickUpItemFrom(a);
     }
 }
@@ -2654,10 +2594,10 @@ void PocketMenu::pickUpItem(u32 a) {
 void PocketMenu::putHandBack(u32 k, u32 f) {
     switch (handKind) {
     case 1:
-        PocketMenu_SetLetter((S *)this, k, unk_2b98);
+        PocketMenu_SetLetter(this, k, unk_2b98);
         break;
     case 2:
-        PocketMenu_SetSlotItem((S *)this, k, handItem, handItemFlags);
+        PocketMenu_SetSlotItem(this, k, handItem, handItemFlags);
         break;
     }
     if (f != 0) {
@@ -2669,10 +2609,10 @@ void PocketMenu::returnHand(u32 f) {
     if (checkPlaceHand(handSource) == 0) {
         putHandBack(handSource, f);
     } else if (swapTarget != 0x26) {
-        u32 a = PocketMenu_GetItem((S *)this, swapTarget);
-        u32 b = PocketMenu_GetItemFlags((S *)this, swapTarget);
+        u32 a = PocketMenu_GetItem(this, swapTarget);
+        u32 b = PocketMenu_GetItemFlags(this, swapTarget);
         putHandBack(swapTarget, 1);
-        PocketMenu_SetSlotItem((S *)this, handSource, a, b);
+        PocketMenu_SetSlotItem(this, handSource, a, b);
         swapTarget = 0x26;
     }
 }
@@ -2682,13 +2622,13 @@ void PocketMenu::swapHandWith(u32 a) {
     case 1:
         Letter_Copy(unk_2c8c, unk_2b98);
         pickUp(a);
-        PocketMenu_SetLetter((S *)this, a, unk_2c8c);
+        PocketMenu_SetLetter(this, a, unk_2c8c);
         break;
     case 2: {
         u32 x = handItem;
         u32 y = handItemFlags;
         pickUpItem(a);
-        PocketMenu_SetSlotItem((S *)this, a, x, y);
+        PocketMenu_SetSlotItem(this, a, x, y);
         break;
     }
     }
@@ -2698,10 +2638,10 @@ s32 PocketMenu::placeHandAt(u32 a) {
     s32 r;
     switch (handKind) {
     case 2:
-        r = PocketMenu_DropItemAt((S *)this, a);
+        r = PocketMenu_DropItemAt(this, a);
         break;
     case 1:
-        r = PocketMenu_DropLetterAt((S *)this, a);
+        r = PocketMenu_DropLetterAt(this, a);
         break;
     default:
         r = 0;
@@ -2712,8 +2652,8 @@ s32 PocketMenu::placeHandAt(u32 a) {
 
 s32 PocketMenu::dropHeldItem() {
     if (!canDropHeldItem()) {
-        PocketMenu_ReturnToIdle((S *)this);
-        PocketMenu_ShowMessage((S *)this, 9, 0xff, 1);
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 9, 0xff, 1);
         returnHand(1);
         return 0;
     }
@@ -2756,7 +2696,7 @@ void PocketMenu::clearHand() {
 
 void PocketMenu::startUseOnPlayer() {
     setMainState(0x25);
-    _ZN10PocketMenu9mainAct25Ev((S *)this);
+    _ZN10PocketMenu9mainAct25Ev(this);
     clearFlags(0x8000);
 }
 
@@ -2932,10 +2872,10 @@ BOOL PocketMenu::isUseOnPlayerBusy(s32 k) {
 }
 
 void PocketMenu::cancelUseOnPlayer() {
-    PocketMenu_ReturnToIdle((S *)this);
+    PocketMenu_ReturnToIdle(this);
     returnHand(1);
     if (useOnPlayerKind == 0) {
-        PocketMenu_ShowMessage((S *)this, 7, 0xff, 1);
+        PocketMenu_ShowMessage(this, 7, 0xff, 1);
     }
 }
 
@@ -2954,11 +2894,11 @@ BOOL PocketMenu::depositHeldBag() {
     u32 r = depositToWallet(handItem);
     if (r == 0xfff1) {
         clearHand();
-        PocketMenu_ReturnToIdle((S *)this);
+        PocketMenu_ReturnToIdle(this);
     } else {
         handItem = r;
         InventoryItemGrid_SetHeldItem(unk_358 + 0, handItem, handItemFlags);
-        PocketMenu_FlyHandTo((S *)this, handSource, 4);
+        PocketMenu_FlyHandTo(this, handSource, 4);
     }
     return TRUE;
 }
@@ -3125,7 +3065,7 @@ void PocketMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
     _ZN14MenuCursorBase6warpToEii(unk_2498, a, b);
-    if (PocketMenu_IsTabTarget((S *)this, cursorTarget)) {
+    if (PocketMenu_IsTabTarget(this, cursorTarget)) {
         _ZN10MenuCursor16setAnimIfChangedEi(unk_2498, 0xd);
     } else {
         _ZN10MenuCursor16setAnimIfChangedEi(unk_2498, 1);
@@ -3142,7 +3082,7 @@ void PocketMenu::cursorToPopupBottom() {
 }
 
 s32 PocketMenu::getCursorTargetX() {
-    s32 t = PocketMenu_GetTargetX((S *)this, cursorTarget);
+    s32 t = PocketMenu_GetTargetX(this, cursorTarget);
     if (testFlags(0x20)) {
         t += 0x100;
     } else if (testFlags(0x10)) {
@@ -3154,7 +3094,7 @@ s32 PocketMenu::getCursorTargetX() {
 // ===== unit 022968bc =====
 
 s32 PocketMenu::getCursorTargetY() {
-    return PocketMenu_GetTargetY((S *)this, cursorTarget);
+    return PocketMenu_GetTargetY(this, cursorTarget);
 }
 
 void PocketMenu::hideCursor() {
@@ -3261,8 +3201,8 @@ s32 PocketMenu::requestDropItem(s32 a) {
     if (Unk_ov096_0229652c_IsZero(gFieldSceneKind)) {
         fieldRequest = FieldAction_RequestDrop(gCommManager->myAid, a);
         if (fieldRequest == -1) {
-            PocketMenu_ReturnToIdle((S *)this);
-            PocketMenu_ShowMessage((S *)this, 3, 0xff, 0);
+            PocketMenu_ReturnToIdle(this);
+            PocketMenu_ShowMessage(this, 3, 0xff, 0);
             Snd_PlaySe(0x73);
             return 0;
         }
@@ -3276,10 +3216,10 @@ s32 PocketMenu::requestDropItem(s32 a) {
 
 void PocketMenu::actionDropItem() {
     u32 t = actionTarget;
-    s32 r6 = PocketMenu_GetItem((S *)this, t);
+    s32 r6 = PocketMenu_GetItem(this, t);
     if (!canDropItem(r6)) {
-        PocketMenu_ReturnToIdle((S *)this);
-        PocketMenu_ShowMessage((S *)this, 9, 0xff, 1);
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 9, 0xff, 1);
     } else {
         s32 r = requestDropItem(r6);
         if (r != 0) {
@@ -3287,9 +3227,9 @@ void PocketMenu::actionDropItem() {
                 setMainState(0x28);
                 setFlags(0x1000);
             } else {
-                s32 x = PocketMenu_TargetToGridIndex((S *)this, t);
+                s32 x = PocketMenu_TargetToGridIndex(this, t);
                 InventoryItemGrid_ClearSlot(unk_358, x);
-                PocketMenu_ReturnToIdle((S *)this);
+                PocketMenu_ReturnToIdle(this);
             }
         }
     }
@@ -3309,23 +3249,23 @@ void PocketMenu::actionEditLetter() {
 }
 
 void PocketMenu::actionTakeAttachment() {
-    s32 r6 = PocketMenu_FindEmptyPocket((S *)this);
+    s32 r6 = PocketMenu_FindEmptyPocket(this);
     if (r6 == 0x26) {
-        PocketMenu_ReturnToIdle((S *)this);
-        PocketMenu_ShowMessage((S *)this, 0xb, 0xff, 1);
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 0xb, 0xff, 1);
     } else {
-        s32 a = PocketMenu_GetItemFlags((S *)this, actionTarget);
-        s32 b = PocketMenu_GetItem((S *)this, actionTarget);
-        PocketMenu_ClearSlotItem((S *)this, actionTarget);
-        ((void (*)(S *, u32, u32, u32, s32))PocketMenu_FlyItemTo)((S *)this, actionTarget, r6, b, a);
+        s32 a = PocketMenu_GetItemFlags(this, actionTarget);
+        s32 b = PocketMenu_GetItem(this, actionTarget);
+        PocketMenu_ClearSlotItem(this, actionTarget);
+        ((void (*)(PocketMenu *, u32, u32, u32, s32))PocketMenu_FlyItemTo)(this, actionTarget, r6, b, a);
     }
 }
 
 BOOL PocketMenu::allocLetterSlot() {
     s32 t = Inventory_FindEmptyLetter();
     if (t == -1) {
-        PocketMenu_ReturnToIdle((S *)this);
-        PocketMenu_ShowMessage((S *)this, 2, 0xff, 1);
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 2, 0xff, 1);
         return FALSE;
     }
     MenuCtrl_SetSavedSlot(actionTarget);
@@ -3347,7 +3287,7 @@ void PocketMenu::actionAct08() {
         s32 t = (s32)getActionLetter();
         Letter_InitBottleDraft();
         MenuCtrl_SetArg((void *)t);
-        PocketMenu_ClearSlotItem((S *)this, paperTarget);
+        PocketMenu_ClearSlotItem(this, paperTarget);
         requestTab(8);
         hideTabBar();
     }
@@ -3370,13 +3310,13 @@ void PocketMenu::actionTakeOutBells() {
         v = Item_FindMoneyBagForAmount(0x2710, 0, 0);
         break;
     }
-    r = PocketMenu_FindEmptyPocket((S *)this);
+    r = PocketMenu_FindEmptyPocket(this);
     if (r == 0x26) {
-        PocketMenu_ReturnToIdle((S *)this);
-        PocketMenu_ShowMessage((S *)this, 0xc, 0xff, 1);
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 0xc, 0xff, 1);
     } else {
         _ZN10PocketMenu18withdrawFromWalletEt(this, v);
-        ((void (*)(S *, u32, u32, u32, s32))PocketMenu_FlyItemTo)((S *)this, 0x25, r, v, 0);
+        ((void (*)(PocketMenu *, u32, u32, u32, s32))PocketMenu_FlyItemTo)(this, 0x25, r, v, 0);
     }
 }
 
@@ -3403,13 +3343,13 @@ void PocketMenu::actionTakeOff() {
         }
         break;
     default:
-        PocketMenu_ReturnToIdle((S *)this);
+        PocketMenu_ReturnToIdle(this);
         return;
     }
-    s32 r = PocketMenu_FindEmptyPocket((S *)this);
+    s32 r = PocketMenu_FindEmptyPocket(this);
     if (ok && r == 0x26) {
-        PocketMenu_ReturnToIdle((S *)this);
-        PocketMenu_ShowMessage((S *)this, 0xa, 0xff, 0);
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 0xa, 0xff, 0);
         Snd_PlaySe(0x73);
         return;
     }
@@ -3423,8 +3363,8 @@ void PocketMenu::actionTakeOff() {
 void PocketMenu::actionUnwrapItem() {
     u32 t = actionTarget;
     pickUpItemFrom(t);
-    handX = PocketMenu_GetTargetX((S *)this, t);
-    handY = PocketMenu_GetTargetY((S *)this, t);
+    handX = PocketMenu_GetTargetX(this, t);
+    handY = PocketMenu_GetTargetY(this, t);
     if (MenuCtrl_IsButtons()) {
         handX = handX - 2;
         handY = handY - 2;
@@ -3436,8 +3376,8 @@ void PocketMenu::actionUnwrapItem() {
 void PocketMenu::actionAct09() {
     u32 t = actionTarget;
     pickUpLetter(t);
-    handX = PocketMenu_GetTargetX((S *)this, t);
-    handY = PocketMenu_GetTargetY((S *)this, t);
+    handX = PocketMenu_GetTargetX(this, t);
+    handY = PocketMenu_GetTargetY(this, t);
     if (MenuCtrl_IsButtons()) {
         handX = handX - 2;
         handY = handY - 2;
@@ -3450,7 +3390,7 @@ void PocketMenu::actionAct0A() { openConfirmList(); }
 
 void PocketMenu::actionAct1A() {
     setMainState(0x31);
-    _ZN10PocketMenu9mainAct31Ev((S *)this);
+    _ZN10PocketMenu9mainAct31Ev(this);
 }
 
 void PocketMenu::actionOpenCountdownMenu() {
@@ -3488,14 +3428,14 @@ void PocketMenu::setCountdown(s32 n) {
 
 void PocketMenu::actionStopCountdown() {
     setCountdown(0);
-    PocketMenu_ReturnToIdle((S *)this);
+    PocketMenu_ReturnToIdle(this);
 }
 
 // ===== unit 02295f94 =====
 
 void PocketMenu::actionStartCountdown() {
     setCountdown(chosenAction - 0x1c);
-    PocketMenu_ReturnToIdle((S *)this);
+    PocketMenu_ReturnToIdle(this);
 }
 
 void PocketMenu::runChosenAction() {
@@ -3504,7 +3444,7 @@ void PocketMenu::runChosenAction() {
         requestCameraPop();
     }
     if (chosenAction == 0x22) {
-        PocketMenu_ReturnToIdle((S *)this);
+        PocketMenu_ReturnToIdle(this);
         return;
     }
     static Unk_ov096_0229aea8_Fn tbl[34] = {
@@ -3532,8 +3472,8 @@ void PocketMenu::showOptionList(s32 a) {
     u32 r6;
     s32 r2;
     _ZN19PopupChoiceMenuBody14setRowsFromIdsEP17PopupChoiceIdListi(unk_24fc, optionList, testFlags(0x40000));
-    r6 = PocketMenu_GetTargetX((S *)this, actionTarget);
-    r2 = PocketMenu_GetTargetY((S *)this, actionTarget);
+    r6 = PocketMenu_GetTargetX(this, actionTarget);
+    r2 = PocketMenu_GetTargetY(this, actionTarget);
     if (actionTarget == 0x25) {
         _ZN15PopupChoiceMenu10placeAboveEii(unk_24fc, 0x68, 0x68);
     } else if (a != 0) {
@@ -3595,8 +3535,8 @@ void PocketMenu::addItemOptions(s32 a) {
     if (MenuCtrl_IsButtons()) {
         ChoiceIdList_Add(optionList, 0, 0);
     }
-    s32 r4 = PocketMenu_GetItemFlags((S *)this, a);
-    a = PocketMenu_GetItem((S *)this, a);
+    s32 r4 = PocketMenu_GetItemFlags(this, a);
+    a = PocketMenu_GetItem(this, a);
     v = a;
     if (r4 == 0) {
         if (Unk_ov096_02295a44_Range(&v, 0x156c, 0x156c)) {
@@ -3641,7 +3581,7 @@ void PocketMenu::addItemOptions(s32 a) {
 }
 
 void PocketMenu::addLetterOptions(s32 a) {
-    void *o = PocketMenu_GetLetter((S *)this, a);
+    void *o = PocketMenu_GetLetter(this, a);
     if (MenuCtrl_IsButtons()) {
         ChoiceIdList_Add(optionList, 0, 1);
     }
@@ -3713,9 +3653,9 @@ void PocketMenu::openTargetOptions(u32 a, s32 b) {
     clearFlags(0x40000);
     actionTarget = a;
     ChoiceIdList_Clear(optionList, 0x22);
-    if (PocketMenu_IsPocketTarget((S *)this, a)) {
+    if (PocketMenu_IsPocketTarget(this, a)) {
         addItemOptions(a);
-    } else if (PocketMenu_IsLetterTarget((S *)this, a)) {
+    } else if (PocketMenu_IsLetterTarget(this, a)) {
         addLetterOptions(a);
     } else if (a == 0x25) {
         addTakeOutBellsOptions();
@@ -3725,7 +3665,7 @@ void PocketMenu::openTargetOptions(u32 a, s32 b) {
         return;
     }
     if (ChoiceIdList_Count(optionList) == 0) {
-        if (PocketMenu_IsPocketTarget((S *)this, a) || PocketMenu_IsLetterTarget((S *)this, a)) {
+        if (PocketMenu_IsPocketTarget(this, a) || PocketMenu_IsLetterTarget(this, a)) {
             ChoiceIdList_Add(optionList, 0x7c, 0x22);
         } else if (a == 0x25 || a == 0x27) {
             ChoiceIdList_Add(optionList, 0x7b, 0x22);
@@ -3741,7 +3681,7 @@ void PocketMenu::openTargetOptions(u32 a, s32 b) {
         _ZN18TouchPromptBalloon4hideEi(unk_23c0, 1);
     }
     showOptionList(b);
-    if (PocketMenu_IsPocketTarget((S *)this, a) == 0 && a != 0x24) {
+    if (PocketMenu_IsPocketTarget(this, a) == 0 && a != 0x24) {
         requestCameraPop();
     }
 }
@@ -3808,7 +3748,7 @@ void PocketMenu::moveCursorInPockets(void *pad, s32 mode) {
             }
         }
     }
-    if (PocketMenu_IsPocketTarget((S *)this, cursorTarget)) {
+    if (PocketMenu_IsPocketTarget(this, cursorTarget)) {
         if (!testFlags(0x30)) {
             if (MenuKeys_HasUp(pad)) {
                 if (row > 0) {
@@ -3892,13 +3832,13 @@ void PocketMenu::moveCursorInLetters(void *pad, s32 mode) {
             }
         }
     }
-    if (PocketMenu_IsLetterTarget((S *)this, cursorTarget)) {
+    if (PocketMenu_IsLetterTarget(this, cursorTarget)) {
         if (!testFlags(0x30)) {
             if (MenuKeys_HasUp(pad)) {
                 if (row > 0) {
                     cursorTarget = cursorTarget - 2;
                 } else if (mode == 0) {
-                    PocketMenu_MoveCursorToTab((S *)this);
+                    PocketMenu_MoveCursorToTab(this);
                     _ZN10MenuCursor14switchToAnim0DEv(unk_2498);
                 }
             } else if (MenuKeys_HasDown(pad)) {
@@ -3949,7 +3889,7 @@ void PocketMenu::moveCursorInPlayerArea(void *pad, s32 mode) {
             cursorTarget = 0xf;
         } else if (MenuKeys_HasUp(pad)) {
             if (mode == 0) {
-                PocketMenu_MoveCursorToTab((S *)this);
+                PocketMenu_MoveCursorToTab(this);
                 _ZN10MenuCursor14switchToAnim0DEv(unk_2498);
             }
         } else if (MenuKeys_HasDown(pad)) {
@@ -3990,7 +3930,7 @@ void PocketMenu::moveCursorInPlayerArea(void *pad, s32 mode) {
             }
         } else if (MenuKeys_HasUp(pad)) {
             if (mode == 0) {
-                PocketMenu_MoveCursorToTab((S *)this);
+                PocketMenu_MoveCursorToTab(this);
                 _ZN10MenuCursor14switchToAnim0DEv(unk_2498);
             }
         } else if (MenuKeys_HasDown(pad)) {
@@ -4005,13 +3945,13 @@ BOOL PocketMenu::moveCursorByPad(void *pad, s32 mode) {
     if (pad == 0) {
         return FALSE;
     }
-    if (PocketMenu_IsPocketTarget((S *)this, cursorTarget)) {
+    if (PocketMenu_IsPocketTarget(this, cursorTarget)) {
         moveCursorInPockets(pad, mode);
-    } else if (PocketMenu_IsLetterTarget((S *)this, cursorTarget)) {
+    } else if (PocketMenu_IsLetterTarget(this, cursorTarget)) {
         moveCursorInLetters(pad, mode);
-    } else if (PocketMenu_IsTabTarget((S *)this, cursorTarget)) {
+    } else if (PocketMenu_IsTabTarget(this, cursorTarget)) {
         moveCursorInTabs(pad, mode);
-    } else if (PocketMenu_IsSpecialTarget((S *)this, cursorTarget)) {
+    } else if (PocketMenu_IsSpecialTarget(this, cursorTarget)) {
         moveCursorInPlayerArea(pad, mode);
     } else if (cursorTarget == 0x21) {
         if (MenuKeys_HasRight(pad)) {
@@ -4046,12 +3986,12 @@ void PocketMenu::closeLetterViewAndMenu() {
     setFlags(0x20000);
 }
 
-void *PocketMenu::getActionLetter() { return PocketMenu_GetLetter((S *)this, actionTarget); }
+void *PocketMenu::getActionLetter() { return PocketMenu_GetLetter(this, actionTarget); }
 
 void PocketMenu::writeLetterOnPaper() {
     u16 v;
     void *r4 = getActionLetter();
-    v = PocketMenu_GetItem((S *)this, paperTarget);
+    v = PocketMenu_GetItem(this, paperTarget);
     s32 r6 = Item_GetPaperIndex(&v);
     Letter_InitDraft(r4, (u8)r6);
     _ZN19PopupChoiceMenuBody14applyAddresseeEPvj(unk_24fc, r4, addressee);
@@ -4065,7 +4005,7 @@ void PocketMenu::writeLetterOnPaper() {
     } else {
         r2 = Item_MakePaper(r6, n - 1);
     }
-    PocketMenu_SetSlotItem((S *)this, paperTarget, r2, 0);
+    PocketMenu_SetSlotItem(this, paperTarget, r2, 0);
 }
 
 void PocketMenu::requestCameraPush() {

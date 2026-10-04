@@ -292,15 +292,6 @@ void Keyboard_DrawCaret(void *p, s32 a, s32 b, s32 c);
 
 
 
-// Embedded polymorphic sub-object at +0x3e64 (vfunc_0c is called by func_ov126_02298ea4)
-class Unk_ov126_02298ea4_Sub {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-};
-
 static inline BOOL Unk_ov126_02298c4c_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) {
         return TRUE;
@@ -878,7 +869,7 @@ void NameEntryMenu::releaseResources() {
 
 void NameEntryMenu::preInputUpdate() {
     preStateUpdate();
-    ((Unk_ov126_02298ea4_Sub *)&cursor)->vfunc_0c();
+    (&cursor)->update();
 }
 
 void NameEntryMenu::postInputUpdate() {

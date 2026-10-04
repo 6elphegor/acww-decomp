@@ -43,9 +43,4 @@ struct OamAffineMtx {
     /* 0x00 */ s32 v[4];
 };
 
-struct Unk_ov094_0229334c_Blk {
-    /* 0x00 */ u8 a[0x40];
-    /* 0x40 */ u8 b[0x40];
-};
-
 #endif

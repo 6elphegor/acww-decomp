@@ -5,6 +5,7 @@
 #include "gfx/NNSG3dRS.h"
 #include "town/BuildingInfo.h"
 #include "gfx/DebugColor.h"
+#include "actor/Actor.h"
 
 // Helper records of the ov009 building actor unit (unk_ov009_0225b880.cpp and its _switch twin).
 class BuildingActor;
@@ -24,15 +25,6 @@ struct Unk_ov009_0225bce0_Pad {
     /* 0x0 */ s32 v[2];
     Unk_ov009_0225bce0_Pad() {}
     ~Unk_ov009_0225bce0_Pad() {}
-};
-
-struct Unk_ov009_0225cc24_Obj {
-    /* 0x00 */ u8 pad_00[0xc];
-    /* 0x0c */ u16 profile;
-    /* 0x0e */ u8 pad_0e[0x8e - 0xe];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0x98 - 0x90];
-    /* 0x98 */ s32 speed;
 };
 
 struct BuildingShadowEntry {
