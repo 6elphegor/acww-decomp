@@ -21,6 +21,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 #define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
 #define VillagerId_getName _ZN10VillagerId7getNameEj
@@ -163,11 +164,6 @@ struct Unk_ov050_MsgRow {
     u8 pad[3];
 };
 
-struct Unk_ov050_SceneEntry {
-    SpNpcNookShop *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 
 struct Unk_0201bc1c;
@@ -1632,9 +1628,9 @@ extern "C" void *data_ov050_0225dee8[2];
 extern "C" void *data_ov050_0225dfe0[2];
 extern "C" void *data_ov050_0225dfd0[2];
 extern "C" void *data_ov050_0225e178[2];
-extern "C" Unk_ov050_SceneEntry sSpNpcNookShopProfile;
-extern "C" Unk_ov050_SceneEntry sSpNpcTimmyProfile;
-extern "C" Unk_ov050_SceneEntry sSpNpcTommyProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcNookShopProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcTimmyProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcTommyProfile;
 extern "C" Unk_ov050_0225d1d4_Ent sSpNpcNookShopActTable[19];// Declarations for data defined further down (definition order sets the data layout)
 extern "C" void *data_ov050_0225de48[2];
 extern "C" void *data_ov050_0225de10[2];
@@ -1652,9 +1648,9 @@ extern "C" void *data_ov050_0225de98[2];
 extern "C" char sSpNpcNookShopKey[];
 extern "C" char *sSpNpcNookShopTexturePaths[5];
 extern "C" char *sSpNpcNookShopModelPaths[5];
-extern "C" Unk_ov050_SceneEntry sSpNpcNookShopProfile;
-extern "C" Unk_ov050_SceneEntry sSpNpcTimmyProfile;
-extern "C" Unk_ov050_SceneEntry sSpNpcTommyProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcNookShopProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcTimmyProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcTommyProfile;
 extern "C" Unk_ov050_0225d1d4_Ent sSpNpcNookShopActTable[19];
 extern "C" void *data_ov050_0225dec0[2];
 extern "C" void *data_ov050_0225e090[2];
@@ -1895,9 +1891,9 @@ extern "C" void *data_ov050_0225def8[2];
 extern "C" void *data_ov050_0225de48[2];
 extern "C" void *data_ov050_0225dee8[2];
 extern "C" char sSpNpcNookShopTwinsKey[];
-extern "C" Unk_ov050_SceneEntry sSpNpcNookShopProfile;
-extern "C" Unk_ov050_SceneEntry sSpNpcTimmyProfile;
-extern "C" Unk_ov050_SceneEntry sSpNpcTommyProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcNookShopProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcTimmyProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcTommyProfile;
 extern "C" void *data_ov050_0225deb0[2];
 extern "C" void *data_ov050_0225dfa0[2];
 extern "C" void *data_ov050_0225e0a0[2];
@@ -3353,11 +3349,11 @@ extern "C" void *data_ov050_0225dee8[2] = {(void *)_ZN17SpNpcNookShopTalk16onMai
 
 extern "C" char sSpNpcNookShopTwinsKey[] = "sp_npc_twins";
 
-extern "C" Unk_ov050_SceneEntry sSpNpcNookShopProfile = {SpNpcNookShop_Create, 0x76, 0x7b, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcNookShopProfile = {(void *(*)())SpNpcNookShop_Create, 0x76, 0x7b, 2, 0x5000, 0x5000, 0x3e800};
 
-extern "C" Unk_ov050_SceneEntry sSpNpcTimmyProfile = {SpNpcNookShop_CreateTimmy, 0x75, 0x7a, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcTimmyProfile = {(void *(*)())SpNpcNookShop_CreateTimmy, 0x75, 0x7a, 2, 0x5000, 0x5000, 0x3e800};
 
-extern "C" Unk_ov050_SceneEntry sSpNpcTommyProfile = {SpNpcNookShop_CreateTommy, 0x74, 0x79, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcTommyProfile = {(void *(*)())SpNpcNookShop_CreateTommy, 0x74, 0x79, 2, 0x5000, 0x5000, 0x3e800};
 
 void SpNpcNookShopTalk::onShopChoice() {
     ActorTalkRequest_getChoiceList(this);

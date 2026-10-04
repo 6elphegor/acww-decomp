@@ -4,6 +4,7 @@
 #include "ui/UiWidget.h"
 #include "ui/ScrollKnob.h"
 #include "ui/HudUnkIcon.h"
+#include "talk/MsgString.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -39,12 +40,10 @@ TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 
 extern "C" {
 void MsgTextLabel_Destroy(TextLabel *obj);
+// MsgString::copy called with only `this`: the source string is the caller's second argument, still in r1
+void _ZN9MsgString4copyEPS_(MsgString *self);
 }
 
-class MsgString {
-public:
-    static void copy(MsgString *p);
-};
 
 extern s32 gGfxMainOnTop;
 extern u8 data_020d4694[];
@@ -107,7 +106,7 @@ void LabelButton::hideLayer2() { layer2Hidden = 1; }
 void LabelButton::showLayer2() { layer2Hidden = 0; }
 
 void LabelButton::setLabelText() {
-    MsgString::copy((MsgString *)&text);
+    _ZN9MsgString4copyEPS_((MsgString *)&text);
     TextLabel *o = label;
     if (o != NULL) {
         o->textStart = (u32)text.data();

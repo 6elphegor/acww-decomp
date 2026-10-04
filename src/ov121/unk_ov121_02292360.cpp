@@ -10,6 +10,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 #define func_020624c0 _ZN18EncodedString16BufD1Ev
 #define func_02062510 _ZN18EncodedString16BufC1Ev
@@ -418,11 +419,6 @@ public:
 
 typedef void (DesignTab::*Unk_ov121_02294d68_Fn)();
 
-struct Unk_ov121_SceneEntry {
-    DesignTab *(*create)();
-    u16 a;
-    u16 b;
-};
 extern "C" DesignTab *DesignTab_Create();
 
 static inline BOOL Unk_ov121_02293188_InRange(volatile u16 *p, u32 lo, u32 hi) {
@@ -515,7 +511,7 @@ BOOL DesignTab::onDraw() {
 }
 
 // Scene registration entry read by main: factory, then two ids
-extern "C" Unk_ov121_SceneEntry sDesignTabProfile = {DesignTab_Create, 0xa4, 0xa8};
+extern "C" ProcProfile sDesignTabProfile = {(void *(*)())DesignTab_Create, 0xa4, 0xa8};
 
 extern "C" Unk_ov121_02294c80 sDesignTabIconCell = {0x81f000f0, 0x40c0, 0xffff};
 

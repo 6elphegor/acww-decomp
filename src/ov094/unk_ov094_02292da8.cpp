@@ -3,6 +3,7 @@
 #include "menu/Unk_ov094_Views.h"
 #include "menu/InventoryItemGrid.h"
 #include "menu/LetterGrid.h"
+#include "menu/InventoryBg.h"
 
 
 
@@ -10,38 +11,7 @@
 
 
 
-struct InventoryBg {
-    /* 0x000 */ u32 unk_00;
-    /* 0x004 */ u8 bellStep[0x4];
-    /* 0x008 */ u16 dirtyFlags;
-    /* 0x00a */ u8 unk_0a[4];
-    /* 0x00e */ u8 bgId;
-    /* 0x00f */ u8 paintedHighlight;
-    /* 0x010 */ u8 highlight;
-    /* 0x011 */ u8 unk_11[3];
-    /* 0x014 */ u8 pictureIndex;
-    /* 0x015 */ u8 unk_15[0x23];
-    /* 0x038 */ u8 vramTasks[0xa8];
-    /* 0x0e0 */ u8 textWindows[0x80];
-    /* 0x160 */ u8 screenData[0x24];
-    /* 0x184 */ u8 unk_184[0x808];
-    /* 0x98c */ Unk_ov094_02292d6c_Obj38 unk_98c[3];
-    /* 0xa34 */ u16 *unk_a34;
-    /* 0xa38 */ u32 unk_a38[2];
-    /* 0xa40 */ u32 unk_a40[2];
-    /* 0xa48 */ u32 unk_a48[2];
-    /* 0xa50 */ s32 unk_a50;
-    /* 0xa54 */ u16 unk_a54;
-    /* 0xa56 */ u8 unk_a56;
-    /* 0xa57 */ u8 unk_a57;
-    /* 0xa58 */ u8 unk_a58;
-    /* 0xa59 */ u8 unk_a59;
-    /* 0xa5a */ u8 unk_a5a;
-    /* 0xa5b */ u8 unk_a5b;
-    /* 0xa5c */ u8 unk_a5c;
-};
 
-typedef InventoryBg S;
 typedef Unk_ov094_02292d6c_Ent8 Ent8;
 typedef Unk_ov094_02292d6c_Rec Rec;
 
@@ -183,46 +153,46 @@ extern u16 sLetterIconChars[];
 }
 
 extern "C" {
-void InventoryBg_LoadBg(S *s, s32 flag);
-void InventoryBg_Load(S *s, s32 flag);
-void InventoryBg_Init(S *s, u32 v);
-S *_ZN11InventoryBgD1Ev(S *s);
-S *_ZN11InventoryBgC1Ev(S *s);
+void InventoryBg_LoadBg(InventoryBg *s, s32 flag);
+void InventoryBg_Load(InventoryBg *s, s32 flag);
+void InventoryBg_Init(InventoryBg *s, u32 v);
+InventoryBg *_ZN11InventoryBgD1Ev(InventoryBg *s);
+InventoryBg *_ZN11InventoryBgC1Ev(InventoryBg *s);
 BOOL InventoryItemGrid_TestBit(u32 *bits, s32 i);
 void InventoryItemGrid_ClearBit(u32 *bits, s32 i);
 void InventoryItemGrid_SetBit(u32 *bits, s32 i);
 void InventoryItemGrid_ClearBits(u32 *bits);
-s32 InventoryItemGrid_GetPresentAnimScale(S *s);
-BOOL InventoryItemGrid_UpdatePresentAnim(S *s);
-void InventoryItemGrid_EndPresentAnim(S *s);
-void InventoryItemGrid_StartPresentAnim(S *s, u32 v, s32 m);
-u32 InventoryItemGrid_AllocUpload(S *s);
-void InventoryItemGrid_CancelUploads(S *s);
+s32 InventoryItemGrid_GetPresentAnimScale(InventoryItemGrid *s);
+BOOL InventoryItemGrid_UpdatePresentAnim(InventoryItemGrid *s);
+void InventoryItemGrid_EndPresentAnim(InventoryItemGrid *s);
+void InventoryItemGrid_StartPresentAnim(InventoryItemGrid *s, u32 v, s32 m);
+u32 InventoryItemGrid_AllocUpload(InventoryItemGrid *s);
+void InventoryItemGrid_CancelUploads(InventoryItemGrid *s);
 u32 InventoryItemGrid_GetScale(u32 i);
-Ent8 *InventoryItemGrid_GetSlotSprite(S *s, s32 i);
-void InventoryItemGrid_DrawSlot(S *s, Ent8 *e, s32 idx, s32 x, s32 y);
-void InventoryItemGrid_DrawFocus(S *s, s32 a, s32 b);
-void InventoryItemGrid_DrawUnderlay(S *s, s32 a, s32 b, s32 c);
-void InventoryItemGrid_DrawMark(S *s, s32 a, s32 b);
-BOOL InventoryItemGrid_IsSlotEmpty(S *s, s32 i);
-void InventoryItemGrid_DrawHeldItem(S *s, s32 x, s32 y);
-void InventoryItemGrid_DrawExtraMarks(S *s, s32 x, s32 y);
-void InventoryItemGrid_DrawBox(S *s, s32 x, s32 y);
-void InventoryItemGrid_DrawPocketsClipped(S *s, s32 x, s32 y, s32 w);
-void InventoryItemGrid_DrawPockets(S *s, s32 x, s32 y);
-void InventoryItemGrid_DisableSlot(S *s, s32 i);
-void InventoryItemGrid_DisableSlotRange(S *s, u8 i, u8 e);
-BOOL InventoryItemGrid_IsSlotDisabled(S *s, s32 i);
-void InventoryItemGrid_UploadIcon(S *s, Rec *r, void *dst, s32 c);
-void InventoryItemGrid_SetSpriteItem(S *s, Rec *r, u32 v, s32 m);
-void InventoryItemGrid_SetHeldItem(S *s, Rec *r, s32 m);
-void InventoryItemGrid_RefreshSlot(S *s, s32 i);
-void InventoryItemGrid_SetSlotItem(S *s, s32 i, u32 v, s32 x);
-void InventoryItemGrid_ClearSlot(S *s, s32 i);
-u32 InventoryItemGrid_GetSlotFlags(S *s, s32 i);
-u16 InventoryItemGrid_GetSlotItem(S *s, s32 i);
-void InventoryItemGrid_MarkSlot(S *s, s32 i);
-void InventoryItemGrid_ClearMarks(S *s);
+Ent8 *InventoryItemGrid_GetSlotSprite(InventoryItemGrid *s, s32 i);
+void InventoryItemGrid_DrawSlot(InventoryItemGrid *s, Ent8 *e, s32 idx, s32 x, s32 y);
+void InventoryItemGrid_DrawFocus(InventoryItemGrid *s, s32 a, s32 b);
+void InventoryItemGrid_DrawUnderlay(InventoryItemGrid *s, s32 a, s32 b, s32 c);
+void InventoryItemGrid_DrawMark(InventoryItemGrid *s, s32 a, s32 b);
+BOOL InventoryItemGrid_IsSlotEmpty(InventoryItemGrid *s, s32 i);
+void InventoryItemGrid_DrawHeldItem(InventoryItemGrid *s, s32 x, s32 y);
+void InventoryItemGrid_DrawExtraMarks(InventoryItemGrid *s, s32 x, s32 y);
+void InventoryItemGrid_DrawBox(InventoryItemGrid *s, s32 x, s32 y);
+void InventoryItemGrid_DrawPocketsClipped(InventoryItemGrid *s, s32 x, s32 y, s32 w);
+void InventoryItemGrid_DrawPockets(InventoryItemGrid *s, s32 x, s32 y);
+void InventoryItemGrid_DisableSlot(InventoryItemGrid *s, s32 i);
+void InventoryItemGrid_DisableSlotRange(InventoryItemGrid *s, u8 i, u8 e);
+BOOL InventoryItemGrid_IsSlotDisabled(InventoryItemGrid *s, s32 i);
+void InventoryItemGrid_UploadIcon(InventoryItemGrid *s, Rec *r, void *dst, s32 c);
+void InventoryItemGrid_SetSpriteItem(InventoryItemGrid *s, Rec *r, u32 v, s32 m);
+void InventoryItemGrid_SetHeldItem(InventoryItemGrid *s, Rec *r, s32 m);
+void InventoryItemGrid_RefreshSlot(InventoryItemGrid *s, s32 i);
+void InventoryItemGrid_SetSlotItem(InventoryItemGrid *s, s32 i, u32 v, s32 x);
+void InventoryItemGrid_ClearSlot(InventoryItemGrid *s, s32 i);
+u32 InventoryItemGrid_GetSlotFlags(InventoryItemGrid *s, s32 i);
+u16 InventoryItemGrid_GetSlotItem(InventoryItemGrid *s, s32 i);
+void InventoryItemGrid_MarkSlot(InventoryItemGrid *s, s32 i);
+void InventoryItemGrid_ClearMarks(InventoryItemGrid *s);
 void InventoryItemGrid_SetCursorSlot(InventoryItemGrid *o, u32 v);
 void InventoryItemGrid_ClearCursorSlot(InventoryItemGrid *o);
 s32 InventoryItemGrid_GetCursorLift(InventoryItemGrid *o);
@@ -410,7 +380,7 @@ void InventoryItemGrid_Init(InventoryItemGrid *o, u32 a)
 
 void InventoryItemGrid_PreUpdate(InventoryItemGrid *o)
 {
-    InventoryItemGrid_CancelUploads((S *)o);
+    InventoryItemGrid_CancelUploads(o);
     u8 v = o->cursorLiftTimer;
     if (v != 0) {
         o->cursorLiftTimer = v - 1;
@@ -419,7 +389,7 @@ void InventoryItemGrid_PreUpdate(InventoryItemGrid *o)
 
 void InventoryItemGrid_Exit(void *o)
 {
-    InventoryItemGrid_CancelUploads((S *)o);
+    InventoryItemGrid_CancelUploads((InventoryItemGrid *)o);
 }
 
 u32 InventoryItemGrid_FindPocketSlotAt(void *o, s32 a, s32 b)
@@ -447,7 +417,7 @@ u32 InventoryItemGrid_FindSlotInRange(void *o, s32 a, s32 b, s32 c, s32 d, u8 s,
 {
     s32 i = s;
     for (; i <= e; i++) {
-        void *p = InventoryItemGrid_GetSlotSprite((S *)o, i);
+        void *p = InventoryItemGrid_GetSlotSprite((InventoryItemGrid *)o, i);
         s32 x = Oam_GetObjX(p);
         if (a < x && x < c) {
             s32 y = Oam_GetObjY(p);
@@ -464,7 +434,7 @@ s32 InventoryItemGrid_HitTestSlot(void *o, s32 a, s32 b, s32 c)
     s32 a1 = a - 0x7c;
     s32 b1 = b - 0x74;
     s32 b2 = b - 0x5c;
-    void *e = InventoryItemGrid_GetSlotSprite((S *)o, c);
+    void *e = InventoryItemGrid_GetSlotSprite((InventoryItemGrid *)o, c);
     s32 x = Oam_GetObjX(e);
     if (a - 0x94 < x && x < a1) {
         s32 y = Oam_GetObjY(e);
@@ -482,7 +452,7 @@ void InventoryItemGrid_LoadSlotIcon(InventoryItemGrid *o, s32 k, u16 *p, s32 a)
     } else {
         InventoryItemGrid_SetBit((u32 *)(o->occupiedBits), k);
         s32 r = InventoryItemGrid_GetIconIndex(o, p, a);
-        Unk_ov094_022937e4_Ent *e = (Unk_ov094_022937e4_Ent *)InventoryItemGrid_GetSlotSprite((S *)o, k);
+        Unk_ov094_022937e4_Ent *e = (Unk_ov094_022937e4_Ent *)InventoryItemGrid_GetSlotSprite(o, k);
         s32 c = (u32)(e->attr2 << 22) >> 22;
         u8 *q = o->iconCache.getIconChars(r);
         Gfx2d_LoadCharRange(q, 8, c, c, c + 1);
@@ -579,22 +549,22 @@ void InventoryItemGrid_SetBalloonItemName(void *o, void *dst, u16 *p, s32 mode)
 
 void InventoryItemGrid_ShowSlotName(void *o, s32 a, s32 b)
 {
-    u32 r = InventoryItemGrid_GetSlotItem((S *)o, b);
+    u32 r = InventoryItemGrid_GetSlotItem((InventoryItemGrid *)o, b);
     volatile u16 t = 0xfff1;
     t = r;
     if (t != 0xfff1) {
-        InventoryItemGrid_SetBalloonItemName(o, (void *)a, (u16 *)&t, InventoryItemGrid_GetSlotFlags((S *)o, b));
+        InventoryItemGrid_SetBalloonItemName(o, (void *)a, (u16 *)&t, InventoryItemGrid_GetSlotFlags((InventoryItemGrid *)o, b));
     }
 }
 
 s32 InventoryItemGrid_GetSlotX(void *o, s32 i)
 {
-    return Oam_GetObjX(InventoryItemGrid_GetSlotSprite((S *)o, i)) + 0x80;
+    return Oam_GetObjX(InventoryItemGrid_GetSlotSprite((InventoryItemGrid *)o, i)) + 0x80;
 }
 
 s32 InventoryItemGrid_GetSlotY(void *o, s32 i)
 {
-    return Oam_GetObjY(InventoryItemGrid_GetSlotSprite((S *)o, i)) + 0x60;
+    return Oam_GetObjY(InventoryItemGrid_GetSlotSprite((InventoryItemGrid *)o, i)) + 0x60;
 }
 
 BOOL InventoryItemGrid_IsCursorSlot(InventoryItemGrid *o, s32 v)
@@ -617,7 +587,7 @@ void InventoryItemGrid_ClearCursorSlot(InventoryItemGrid *o)
 
 void InventoryItemGrid_SetCursorSlot(InventoryItemGrid *o, u32 v)
 {
-    if (InventoryItemGrid_IsSlotDisabled((S *)o, (u8)v)) {
+    if (InventoryItemGrid_IsSlotDisabled(o, (u8)v)) {
         InventoryItemGrid_ClearCursorSlot(o);
     } else if (o->cursorSlot != v) {
         o->cursorSlot = v;
@@ -625,21 +595,21 @@ void InventoryItemGrid_SetCursorSlot(InventoryItemGrid *o, u32 v)
     }
 }
 
-void InventoryItemGrid_ClearMarks(S *s) {
-    InventoryItemGrid_ClearBits((u32 *)(s->unk_a40));
+void InventoryItemGrid_ClearMarks(InventoryItemGrid *s) {
+    InventoryItemGrid_ClearBits((u32 *)(s->markedBits));
 }
 
-void InventoryItemGrid_MarkSlot(S *s, s32 i) {
-    InventoryItemGrid_SetBit((u32 *)(s->unk_a40), i);
+void InventoryItemGrid_MarkSlot(InventoryItemGrid *s, s32 i) {
+    InventoryItemGrid_SetBit((u32 *)(s->markedBits), i);
 }
 
-u16 InventoryItemGrid_GetSlotItem(S *s, s32 i) {
+u16 InventoryItemGrid_GetSlotItem(InventoryItemGrid *s, s32 i) {
     s32 t = PlayerData_getInventory(PlayerData_GetCurrent());
     if (i >= 0 && i <= 0xe) {
         return PlayerInventory_getPocket(t, 0)[i];
     }
     if (i >= 0xf && i <= 0x1d) {
-        u16 *p = s->unk_a34;
+        u16 *p = s->boxItems;
         if (p) {
             return p[i - 0xf];
         }
@@ -647,54 +617,54 @@ u16 InventoryItemGrid_GetSlotItem(S *s, s32 i) {
     return 0xfff1;
 }
 
-u32 InventoryItemGrid_GetSlotFlags(S *s, s32 i) {
+u32 InventoryItemGrid_GetSlotFlags(InventoryItemGrid *s, s32 i) {
     if (i >= 0 && i <= 0xe) {
         return (u8)PlayerInventory_getPocketFlags(PlayerData_getInventory(PlayerData_GetCurrent()), i);
     }
     return 0;
 }
 
-void InventoryItemGrid_ClearSlot(S *s, s32 i) {
+void InventoryItemGrid_ClearSlot(InventoryItemGrid *s, s32 i) {
     InventoryItemGrid_SetSlotItem(s, i, 0xfff1, 0);
-    InventoryItemGrid_ClearBit((u32 *)(s->unk_a38), i);
+    InventoryItemGrid_ClearBit((u32 *)(s->occupiedBits), i);
 }
 
-void InventoryItemGrid_SetSlotItem(S *s, s32 i, u32 v, s32 x) {
+void InventoryItemGrid_SetSlotItem(InventoryItemGrid *s, s32 i, u32 v, s32 x) {
     volatile u16 w = 0xfff1;
     w = v;
     if (i >= 0 && i <= 0xe) {
         Pocket_SetItem((u16 *)&w, x, i);
     } else if (i >= 0xf && i <= 0x1d) {
-        s->unk_a34[i - 0xf] = v;
+        s->boxItems[i - 0xf] = v;
     }
 }
 
-void InventoryItemGrid_RefreshSlot(S *s, s32 i) {
+void InventoryItemGrid_RefreshSlot(InventoryItemGrid *s, s32 i) {
     Ent8 *e = InventoryItemGrid_GetSlotSprite(s, i);
     u16 v = InventoryItemGrid_GetSlotItem(s, i);
     u32 c = InventoryItemGrid_GetSlotFlags(s, i);
     volatile u16 t = v;
     if (t == 0xfff1) {
-        InventoryItemGrid_ClearBit((u32 *)(s->unk_a38), i);
+        InventoryItemGrid_ClearBit((u32 *)(s->occupiedBits), i);
     } else {
-        InventoryItemGrid_SetBit((u32 *)(s->unk_a38), i);
+        InventoryItemGrid_SetBit((u32 *)(s->occupiedBits), i);
         InventoryItemGrid_SetSpriteItem(s, (Rec *)e, v, c);
     }
 }
 
-void InventoryItemGrid_SetHeldItem(S *s, Rec *r, s32 m) {
+void InventoryItemGrid_SetHeldItem(InventoryItemGrid *s, Rec *r, s32 m) {
     InventoryItemGrid_SetSpriteItem(s, (Rec *)sHeldItemSprite, (u32)r, m);
 }
 
-void InventoryItemGrid_SetSpriteItem(S *s, Rec *r, u32 v, s32 m) {
+void InventoryItemGrid_SetSpriteItem(InventoryItemGrid *s, Rec *r, u32 v, s32 m) {
     u16 w = v;
     s32 idx = InventoryItemGrid_GetIconIndex(s, &w, m);
-    void *d = ((ItemIconCache *)s->unk_184)->getIconChars(idx);
-    u32 c = InventoryItemGrid_GetIconPalette(s->unk_184, idx);
+    void *d = s->iconCache.getIconChars(idx);
+    u32 c = InventoryItemGrid_GetIconPalette(&s->iconCache, idx);
     InventoryItemGrid_UploadIcon(s, r, d, c);
 }
 
-void InventoryItemGrid_UploadIcon(S *s, Rec *r, void *dst, s32 c) {
+void InventoryItemGrid_UploadIcon(InventoryItemGrid *s, Rec *r, void *dst, s32 c) {
     u32 t = r->id;
     u32 k = InventoryItemGrid_AllocUpload(s);
     Unk_ov094_0229334c_Blk *e = (Unk_ov094_0229334c_Blk *)((u8 *)s + 4) + k;
@@ -703,27 +673,27 @@ void InventoryItemGrid_UploadIcon(S *s, Rec *r, void *dst, s32 c) {
     MI_CpuCopy8(dst, p, 0x40);
     MI_CpuCopy8((u8 *)dst + 0x400, q, 0x40);
     k *= 0x38;
-    BgVramTaskPair_requestCharPair((u8 *)s->unk_98c + k, p, q, 8, t, t + 1, t + 0x20, t + 0x21);
+    BgVramTaskPair_requestCharPair(s->iconUploadTasks + k, p, q, 8, t, t + 1, t + 0x20, t + 0x21);
     c &= 0xf;
     ((u32 *)r)[1] = (((u32 *)r)[1] & 0xffff0fff) | (c << 12);
 }
 
-BOOL InventoryItemGrid_IsSlotDisabled(S *s, s32 i) {
-    return InventoryItemGrid_TestBit((u32 *)(s->unk_a48), i);
+BOOL InventoryItemGrid_IsSlotDisabled(InventoryItemGrid *s, s32 i) {
+    return InventoryItemGrid_TestBit((u32 *)(s->disabledBits), i);
 }
 
-void InventoryItemGrid_DisableSlotRange(S *s, u8 i, u8 e) {
+void InventoryItemGrid_DisableSlotRange(InventoryItemGrid *s, u8 i, u8 e) {
     while (i <= e) {
         InventoryItemGrid_DisableSlot(s, i);
         i++;
     }
 }
 
-void InventoryItemGrid_DisableSlot(S *s, s32 i) {
-    InventoryItemGrid_SetBit((u32 *)(s->unk_a48), i);
+void InventoryItemGrid_DisableSlot(InventoryItemGrid *s, s32 i) {
+    InventoryItemGrid_SetBit((u32 *)(s->disabledBits), i);
 }
 
-void InventoryItemGrid_DrawPockets(S *s, s32 x, s32 y) {
+void InventoryItemGrid_DrawPockets(InventoryItemGrid *s, s32 x, s32 y) {
     Ent8 *e = InventoryItemGrid_GetSlotSprite(s, 0);
     s32 i;
     for (i = 0; i <= 0xe; e++, i++) {
@@ -731,7 +701,7 @@ void InventoryItemGrid_DrawPockets(S *s, s32 x, s32 y) {
     }
 }
 
-void InventoryItemGrid_DrawPocketsClipped(S *s, s32 x, s32 y, s32 w) {
+void InventoryItemGrid_DrawPocketsClipped(InventoryItemGrid *s, s32 x, s32 y, s32 w) {
     Ent8 *e = InventoryItemGrid_GetSlotSprite(s, 0);
     s32 i;
     for (i = 0; i <= 0xe; e++, i++) {
@@ -741,7 +711,7 @@ void InventoryItemGrid_DrawPocketsClipped(S *s, s32 x, s32 y, s32 w) {
     }
 }
 
-void InventoryItemGrid_DrawBox(S *s, s32 x, s32 y) {
+void InventoryItemGrid_DrawBox(InventoryItemGrid *s, s32 x, s32 y) {
     Ent8 *e = InventoryItemGrid_GetSlotSprite(s, 0xf);
     s32 i;
     for (i = 0xf; i <= 0x1d; e++, i++) {
@@ -749,43 +719,43 @@ void InventoryItemGrid_DrawBox(S *s, s32 x, s32 y) {
     }
 }
 
-void InventoryItemGrid_DrawExtraMarks(S *s, s32 x, s32 y) {
-    if (InventoryItemGrid_TestBit((u32 *)(s->unk_a40), 0x21)) {
+void InventoryItemGrid_DrawExtraMarks(InventoryItemGrid *s, s32 x, s32 y) {
+    if (InventoryItemGrid_TestBit((u32 *)(s->markedBits), 0x21)) {
         Ent8 *e = InventoryItemGrid_GetSlotSprite(s, 0x21);
         s32 a = x + Oam_GetObjX(e) + 0x80;
         s32 b = y + Oam_GetObjY(e) + 0x60;
         InventoryItemGrid_DrawMark(s, a, b);
     }
-    if (InventoryItemGrid_TestBit((u32 *)(s->unk_a40), 0x22)) {
+    if (InventoryItemGrid_TestBit((u32 *)(s->markedBits), 0x22)) {
         InventoryItemGrid_DrawMark(s, x + 4, y + 0xac);
     }
 }
 
-void InventoryItemGrid_DrawHeldItem(S *s, s32 x, s32 y) {
+void InventoryItemGrid_DrawHeldItem(InventoryItemGrid *s, s32 x, s32 y) {
     s32 a = x + Oam_GetObjX(sHeldItemSprite);
     s32 b = y + Oam_GetObjY(sHeldItemSprite);
-    u32 v = InventoryItemGrid_GetScale(s->unk_a59);
+    u32 v = InventoryItemGrid_GetScale(s->heldScale);
     if (v != 0) {
         if (v == 0x1000) {
-            Oam_DrawObj(1, sHeldItemSprite, x, y, -1, s->unk_a50, 0);
+            Oam_DrawObj(1, sHeldItemSprite, x, y, -1, s->objPriority, 0);
         } else {
             Unk_ov094_0229313c_L l;
             l.v[0] = v;
             l.v[1] = 0;
             l.v[2] = 0;
             l.v[3] = v;
-            Oam_DrawObj(1, sHeldItemSprite, x, y, -1, s->unk_a50, &l);
+            Oam_DrawObj(1, sHeldItemSprite, x, y, -1, s->objPriority, &l);
         }
     }
     InventoryItemGrid_DrawUnderlay(s, a, b, -1);
-    if (s->unk_a5c) {
+    if (s->showHeldFocus) {
         InventoryItemGrid_DrawFocus(s, a, b);
     }
 }
 
-BOOL InventoryItemGrid_IsSlotEmpty(S *s, s32 i) {
+BOOL InventoryItemGrid_IsSlotEmpty(InventoryItemGrid *s, s32 i) {
     BOOL r;
-    if (InventoryItemGrid_TestBit((u32 *)(s->unk_a38), i)) {
+    if (InventoryItemGrid_TestBit((u32 *)(s->occupiedBits), i)) {
         r = FALSE;
     } else {
         r = TRUE;
@@ -793,19 +763,19 @@ BOOL InventoryItemGrid_IsSlotEmpty(S *s, s32 i) {
     return r;
 }
 
-void InventoryItemGrid_DrawMark(S *s, s32 a, s32 b) {
-    Oam_DrawObj(1, data_ov094_02294a68, a - 8, b - 8, -1, s->unk_a50, 0);
+void InventoryItemGrid_DrawMark(InventoryItemGrid *s, s32 a, s32 b) {
+    Oam_DrawObj(1, data_ov094_02294a68, a - 8, b - 8, -1, s->objPriority, 0);
 }
 
-void InventoryItemGrid_DrawUnderlay(S *s, s32 a, s32 b, s32 c) {
-    Oam_DrawObj(1, sItemGridMarkSprites, a - 8, b - 8, c, s->unk_a50, 0);
+void InventoryItemGrid_DrawUnderlay(InventoryItemGrid *s, s32 a, s32 b, s32 c) {
+    Oam_DrawObj(1, sItemGridMarkSprites, a - 8, b - 8, c, s->objPriority, 0);
 }
 
-void InventoryItemGrid_DrawFocus(S *s, s32 a, s32 b) {
-    Oam_DrawObj(1, data_ov094_02294a60, a - 8, b - 8, -1, s->unk_a50, 0);
+void InventoryItemGrid_DrawFocus(InventoryItemGrid *s, s32 a, s32 b) {
+    Oam_DrawObj(1, data_ov094_02294a60, a - 8, b - 8, -1, s->objPriority, 0);
 }
 
-void InventoryItemGrid_DrawSlot(S *s, Ent8 *e, s32 idx, s32 x, s32 y) {
+void InventoryItemGrid_DrawSlot(InventoryItemGrid *s, Ent8 *e, s32 idx, s32 x, s32 y) {
     s32 a = x + Oam_GetObjX(e);
     s32 b = y + Oam_GetObjY(e);
     s32 off = 0;
@@ -814,15 +784,15 @@ void InventoryItemGrid_DrawSlot(S *s, Ent8 *e, s32 idx, s32 x, s32 y) {
         a += off;
         b += off;
     }
-    if (InventoryItemGrid_TestBit((u32 *)(s->unk_a40), idx)) {
+    if (InventoryItemGrid_TestBit((u32 *)(s->markedBits), idx)) {
         InventoryItemGrid_DrawMark(s, a, b);
     }
-    if (InventoryItemGrid_TestBit((u32 *)(s->unk_a38), idx)) {
+    if (InventoryItemGrid_TestBit((u32 *)(s->occupiedBits), idx)) {
         s32 c = -1;
         if (InventoryItemGrid_IsSlotDisabled(s, (u8)idx)) {
             c = 0xe;
         }
-        Oam_DrawObj(1, e, x + off, y + off, c, s->unk_a50, 0);
+        Oam_DrawObj(1, e, x + off, y + off, c, s->objPriority, 0);
         InventoryItemGrid_DrawUnderlay(s, a, b, c);
         if (InventoryItemGrid_IsCursorSlot((InventoryItemGrid *)s, idx)) {
             InventoryItemGrid_DrawFocus(s, a, b);
@@ -830,7 +800,7 @@ void InventoryItemGrid_DrawSlot(S *s, Ent8 *e, s32 idx, s32 x, s32 y) {
     }
 }
 
-Ent8 *InventoryItemGrid_GetSlotSprite(S *s, s32 i) {
+Ent8 *InventoryItemGrid_GetSlotSprite(InventoryItemGrid *s, s32 i) {
     return &sItemGridSlotSprites[i];
 }
 
@@ -841,60 +811,60 @@ u32 InventoryItemGrid_GetScale(u32 i) {
     return sItemScaleTable[i];
 }
 
-void InventoryItemGrid_CancelUploads(S *s) {
+void InventoryItemGrid_CancelUploads(InventoryItemGrid *s) {
     s32 i;
     for (i = 0; i < 3; i++) {
-        BgVramTask_cancel(&s->unk_98c[i]);
+        BgVramTask_cancel(&((Unk_ov094_02292d6c_Obj38 *)s->iconUploadTasks)[i]);
     }
-    s->unk_a58 = 0;
+    s->numIconUploads = 0;
 }
 
-u32 InventoryItemGrid_AllocUpload(S *s) {
-    u32 v = s->unk_a58;
+u32 InventoryItemGrid_AllocUpload(InventoryItemGrid *s) {
+    u32 v = s->numIconUploads;
     if (v >= 3) {
         return 2;
     }
-    s->unk_a58 = v + 1;
+    s->numIconUploads = v + 1;
     return v;
 }
 
-void InventoryItemGrid_StartPresentAnim(S *s, u32 v, s32 m) {
-    s->unk_a54 = v;
-    s->unk_a5a = 0;
+void InventoryItemGrid_StartPresentAnim(InventoryItemGrid *s, u32 v, s32 m) {
+    s->presentItem = v;
+    s->presentAnimStep = 0;
     if (m == 1) {
-        s->unk_a5b = 0;
+        s->presentVariant = 0;
     } else {
-        s->unk_a5b = 1;
+        s->presentVariant = 1;
     }
     if (MenuCtrl_IsTouch()) {
-        s->unk_a5c = 0;
+        s->showHeldFocus = 0;
     }
 }
 
-void InventoryItemGrid_EndPresentAnim(S *s) {
-    s->unk_a59 = 10;
-    s->unk_a5c = 1;
+void InventoryItemGrid_EndPresentAnim(InventoryItemGrid *s) {
+    s->heldScale = 10;
+    s->showHeldFocus = 1;
 }
 
-BOOL InventoryItemGrid_UpdatePresentAnim(S *s) {
-    u32 st = s->unk_a5a;
+BOOL InventoryItemGrid_UpdatePresentAnim(InventoryItemGrid *s) {
+    u32 st = s->presentAnimStep;
     if (st < 6) {
         u32 v = sPresentAnimFrames[st];
         if (v != 0xff) {
-            s32 r = _ZN13ItemIconCache15getPresentCharsEi(s->unk_184, v, s->unk_a5b);
+            s32 r = _ZN13ItemIconCache15getPresentCharsEi(&s->iconCache, v, s->presentVariant);
             InventoryItemGrid_UploadIcon(s, (Rec *)sHeldItemSprite, (void *)r, 8);
         }
-        s->unk_a5a++;
+        s->presentAnimStep++;
     } else if (st < 8) {
-        s->unk_a59 = InventoryItemGrid_GetPresentAnimScale(s);
-        s->unk_a5a++;
+        s->heldScale = InventoryItemGrid_GetPresentAnimScale(s);
+        s->presentAnimStep++;
     } else if (st == 8) {
-        InventoryItemGrid_SetHeldItem(s, (Rec *)s->unk_a54, 0);
-        s->unk_a59 = 0;
-        s->unk_a5a++;
+        InventoryItemGrid_SetHeldItem(s, (Rec *)s->presentItem, 0);
+        s->heldScale = 0;
+        s->presentAnimStep++;
     } else if (st < 0xc) {
-        s->unk_a59 = InventoryItemGrid_GetPresentAnimScale(s);
-        s->unk_a5a++;
+        s->heldScale = InventoryItemGrid_GetPresentAnimScale(s);
+        s->presentAnimStep++;
     } else {
         InventoryItemGrid_EndPresentAnim(s);
         return TRUE;
@@ -902,8 +872,8 @@ BOOL InventoryItemGrid_UpdatePresentAnim(S *s) {
     return FALSE;
 }
 
-s32 InventoryItemGrid_GetPresentAnimScale(S *s) {
-    return sPresentAnimScales[s->unk_a5a - 6];
+s32 InventoryItemGrid_GetPresentAnimScale(InventoryItemGrid *s) {
+    return sPresentAnimScales[s->presentAnimStep - 6];
 }
 
 void InventoryItemGrid_ClearBits(u32 *bits) {

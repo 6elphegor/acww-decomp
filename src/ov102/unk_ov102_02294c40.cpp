@@ -15,6 +15,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 void Gfx2d_ShowLayer(u32 x);
@@ -248,11 +249,6 @@ public:
 
 typedef ChestMenu S;
 
-struct Unk_ov102_SceneEntry {
-    ChestMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" ChestMenu *ChestMenu_Create();
 extern "C" void ChestMenu_SetupBgLayers();
@@ -357,11 +353,11 @@ BOOL ChestMenu::onDraw() {
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov102_SceneEntry sChestMenuProfile;
+extern "C" ProcProfile sChestMenuProfile;
 extern "C" const u16 sChestPageSe[6];
 extern "C" Unk_ov102_02297580_Ent sChestPageTabSprites[18];
 
-extern "C" Unk_ov102_SceneEntry sChestMenuProfile = {ChestMenu_Create, 0x95, 0x99};
+extern "C" ProcProfile sChestMenuProfile = {(void *(*)())ChestMenu_Create, 0x95, 0x99};
 
 extern "C" const u16 sChestPageSe[6] = {0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23};
 

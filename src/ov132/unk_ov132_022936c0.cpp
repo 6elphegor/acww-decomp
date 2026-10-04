@@ -6,6 +6,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 extern u8 gSaveHouse[];
@@ -158,11 +159,6 @@ public:
     /* 0x1432 */ u8 selectTimer;
 };
 
-struct Unk_ov132_SceneEntry {
-    BankMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" BankMenu *BankMenu_Create();
 
@@ -198,11 +194,11 @@ BOOL BankMenu::onDraw() {
     bottomButtons.drawAt(getSlideOffsetY());
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov132_SceneEntry sBankMenuProfile;
+extern "C" ProcProfile sBankMenuProfile;
 extern "C" const s32 sBankMenuCursorYTable[3];
 extern "C" const s32 sBankMenuCursorXTable[3];
 
-extern "C" Unk_ov132_SceneEntry sBankMenuProfile = {BankMenu_Create, 0xb3, 0xb7};
+extern "C" ProcProfile sBankMenuProfile = {(void *(*)())BankMenu_Create, 0xb3, 0xb7};
 
 BOOL BankMenu::execTransition() {
     static Unk_ov132_02294390_Fn tbl[4] = {

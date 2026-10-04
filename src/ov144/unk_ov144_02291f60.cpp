@@ -8,6 +8,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 class MusicMenu;
 typedef void (MusicMenu::*Unk_ov144_02293db8_Fn)();
@@ -62,11 +63,6 @@ typedef void (MusicMenu::*Unk_ov144_02293db8_Fn)();
 #define MenuBottomButtons_drawAt _ZN17MenuBottomButtons6drawAtEi
 #define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
 
-struct Unk_ov144_SceneEntry {
-    MusicMenu *(*fn)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" {
 extern u16 gPad[];
@@ -165,7 +161,7 @@ void Oam_DrawCell(u32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 
 BOOL MenuCtrl_IsButtons();
 }
 
-extern "C" Unk_ov144_SceneEntry sMusicMenuProfile = {MusicMenu_Create, 0xb9, 0xbd};
+extern "C" ProcProfile sMusicMenuProfile = {(void *(*)())MusicMenu_Create, 0xb9, 0xbd};
 extern "C" u32 data_ov144_02293d70[16] = {0x20508028, 0x50c0, 0x508018, 0x50e0, 0x508008, 0x50e0, 0x5080f8, 0x50e0,
                                           0x5080e8, 0x50e0, 0x5080d8, 0x50e0, 0x5080c8, 0x50e0, 0x5080b8, 0xffff50c0};
 

@@ -11,6 +11,7 @@
 #include "sys/TreeNode.h"
 #include "sys/QNode.h"
 #include "sys/ProcBase.h"
+#include "sys/ProcProfile.h"
 
 
 class ProcBase;
@@ -24,11 +25,6 @@ struct P2 {
 };
 
 
-struct SceneDesc {
-    ProcBase *(*unk_00)(void);
-    u16 executePriority;
-    u16 drawPriority;
-};
 
 extern "C" {
 extern Heap *gCurrentHeap;
@@ -47,7 +43,7 @@ extern u32 data_0213b15c[];
 extern u32 gTaskPhase;
 extern TreeNode gProcTree;
 extern QList gTaskExecuteList, gTaskCreateList, gTaskDrawList, gTaskDeleteList;
-extern SceneDesc **gProfileTable;
+extern ProcProfile **gProfileTable;
 
 void Heap_Free(Heap *heap, void *p);
 void *Heap_Alloc(Heap *heap, u32 size);
@@ -126,7 +122,7 @@ extern "C" ProcBase *_ZN8ProcBaseC2Ev(ProcBase *self) {
     self->profile = sProcCreateProfile;
     self->group = sProcCreateGroup;
     func_020e7af4(&gProcTree, &self->treeNode, (TreeNode *)sProcCreateParent);
-    SceneDesc *d = gProfileTable[self->profile];
+    ProcProfile *d = gProfileTable[self->profile];
     u16 a = d->executePriority;
     QNode *q1 = &self->executeNode;
     q1->priority = a;
@@ -427,7 +423,7 @@ extern "C" ProcBase *Proc_Create(u32 a, TreeNode *parent, u32 c, u32 d) {
     gProcCreateStep = 2;
     Proc_SetCreateParams(a, parent, c, d);
     gProcCreateStep = 3;
-    ProcBase *r = gProfileTable[a]->unk_00();
+    ProcBase *r = (ProcBase *)gProfileTable[a]->create();
     if (r == NULL) {
         gProcCreateStep = 0;
         gProcCreateProfile = 0xffff;

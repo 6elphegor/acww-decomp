@@ -18,12 +18,13 @@ struct InventoryItemGrid {
     /* 0xa40 */ u8 markedBits[8];
     /* 0xa48 */ u8 disabledBits[8];
     /* 0xa50 */ u32 objPriority;
-    /* 0xa54 */ u8 presentItem[2];
+    /* 0xa54 */ u16 presentItem;
     /* 0xa56 */ u8 cursorSlot;
     /* 0xa57 */ u8 cursorLiftTimer;
     /* 0xa58 */ u8 numIconUploads;
     /* 0xa59 */ u8 heldScale;
-    /* 0xa5a */ u8 unk_a5a[2];
+    /* 0xa5a */ u8 presentAnimStep;
+    /* 0xa5b */ u8 presentVariant;
     /* 0xa5c */ u8 showHeldFocus;
 };
 

@@ -7,6 +7,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/CreatureBookPanel.h"
 #include "menu/MenuTabBar.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -139,14 +140,9 @@ static inline BOOL Unk_ov115_02296ce8_Both() {
     return FALSE;
 }
 
-struct Unk_ov115_SceneEntry {
-    void *factory;
-    u16 a;
-    u16 b;
-};
 
 extern "C" FishBookTab *FishBookTab_Create();
-extern "C" Unk_ov115_SceneEntry sFishBookTabProfile = {(void *)FishBookTab_Create, 0x9f, 0xa3};
+extern "C" ProcProfile sFishBookTabProfile = {(void *(*)())FishBookTab_Create, 0x9f, 0xa3};
 
 extern "C" FishBookTab *FishBookTab_Create() { return new FishBookTab(); }
 

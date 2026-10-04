@@ -2,6 +2,7 @@
 #include "net/CommManager.h"
 #include "player/Unk_02006d14_Vec.h"
 #include "player/Unk_02006d14_Blk.h"
+#include "player/PlayerActor.h"
 
 typedef Unk_02006d14_Vec Unk_02006d14_V3;
 
@@ -12,44 +13,6 @@ enum Unk_02094a08_Limit { Unk_02094a08_LIMIT_5 = 5 };
 enum Unk_02094d60_Limit { Unk_02094d60_LIMIT_5 = 5, Unk_02094d60_LIMIT_6 = 6 };
 
 
-struct Unk_02006d14 {
-    u8 pad_00[0x08];
-    u32 param;
-    u8 pad_0c[0x5c - 0x0c];
-    Unk_02006d14_Vec position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0x2d4 - 0x90];
-    s32 bodyAnimFrame;
-    u8 pad_2d8[0x44c - 0x2d8];
-    s32 headPosX;
-    s32 headPosY;
-    s32 headPosZ;
-    u8 pad_458[4];
-    u16 headPitchTarget;
-    u16 headYawTarget;
-    u8 pad_460[0x59c - 0x460];
-    u8 heldItemModel[4];
-    u8 pad_5a0[0x5c8 - 0x5a0];
-    s32 fishBobberState;
-    u8 pad_5cc[0x694 - 0x5cc];
-    Unk_02006d14_Blk itemHandMtx;
-    u8 pad_6c4[0x6f0 - 0x6c4];
-    u8 bodyPos[0x10];
-    s32 animId;
-    u8 pad_704[0x709 - 0x704];
-    u8 faceTex[0x7ec - 0x709];
-    s32 action;
-    u8 pad_7f0[0x7f8 - 0x7f0];
-    u32 actionPriority;
-    u8 pad_7fc[4];
-    s32 exitIndex;
-    s32 exitMode;
-    u8 pad_808[0x8e7 - 0x808];
-    s8 pendingAct76Kind;
-    u8 pad_8e8[0xc80 - 0x8e8];
-    s16 netSeq;
-};
 
 struct Unk_02095338_E { u32 a, b, c; };
 struct Unk_02095338_D { u16 a : 7; u16 b : 4; u16 c : 5; };
@@ -591,7 +554,7 @@ extern "C" s32 PlayerActor_GetResumeTransform(Unk_02006d14_V3 *out, s16 *outAng)
         s16 ang;
         s32 st;
         {
-            Unk_02006d14_V3 *pv = &o->position;
+            Unk_02006d14_V3 *pv = (Unk_02006d14_V3 *)&o->position;
             saved = *pv;
         }
         ang = o->rotY;
@@ -614,7 +577,7 @@ extern "C" s32 PlayerActor_GetResumeTransform(Unk_02006d14_V3 *out, s16 *outAng)
             st = 2;
             PlayerActor_OffsetByAngle(&tmp, o, &saved, (u16 *)&o->rotY, (s32 *)&data_020d0428);
             {
-                Unk_02006d14_V3 *pv = &o->position;
+                Unk_02006d14_V3 *pv = (Unk_02006d14_V3 *)&o->position;
                 *pv = tmp;
             }
             break;
@@ -638,7 +601,7 @@ extern "C" s32 PlayerActor_GetResumeTransform(Unk_02006d14_V3 *out, s16 *outAng)
             break;
         }
         {
-            Unk_02006d14_V3 *pv = &o->position;
+            Unk_02006d14_V3 *pv = (Unk_02006d14_V3 *)&o->position;
             *out = *pv;
             *outAng = o->rotY;
             *pv = saved;
@@ -665,7 +628,7 @@ extern "C" s32 PlayerActor_GetActionOrSpawnAction()
 extern "C" BOOL PlayerActor_IsChangingClothes()
 {
     Unk_02006d14 *o = PlayerActor_Get(4);
-    if (o && o->action == 7 && o->bodyAnimFrame < 0x13000) {
+    if (o && o->action == 7 && o->bodyModel.curFrame < 0x13000) {
         return TRUE;
     }
     return FALSE;
@@ -938,7 +901,7 @@ extern "C" s32 PlayerActor_RequestAct79() {
         if (_ZN12Unk_02006d1414testActionFlagEj(o, 0xb)) return 0;
         Unk_02094a08_Limit k = Unk_02094a08_LIMIT_5;
         if (!(k > _ZN11PlayerActor19getRequiredPriorityEv(o))) {
-            if (o->action == 0x4f && o->fishBobberState != 5) {
+            if (o->action == 0x4f && o->heldItemModel.bobber.curState != 5) {
                 PlayerActor_RequestFishReelIn(o, 1, 6, -1);
                 return 1;
             }
@@ -992,7 +955,7 @@ extern "C" s32 PlayerActor_LocalRequestExitWalkOut() {
                 SceneExit_GetDoor(Scene_GetWarpRequest(), r5, &pad, &h);
             }
             s32 t = Math_AngleToDir4(h);
-            Unk_02006d14_Vec *pv = &o->position;
+            Unk_02006d14_Vec *pv = (Unk_02006d14_Vec *)&o->position;
             v.x = o->position.x;
             v.y = pv->y;
             v.z = pv->z;

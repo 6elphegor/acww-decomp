@@ -4,6 +4,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/DateTimePicker.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 extern const u8 sDateSelectCursorLeftTable[5];
@@ -157,11 +158,6 @@ public:
     /* 0x260 */ DateTimePicker picker;
 };
 
-struct Unk_ov138_SceneEntry {
-    DateSelectMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" DateSelectMenu *DateSelectMenu_Create();
 
@@ -199,7 +195,7 @@ extern "C" const u8 sDateSelectCursorUpTable[5];
 extern "C" const u8 sDateSelectCursorLeftTable[5];
 extern "C" const u8 sDateSelectCursorRightTable[5];
 extern "C" const s32 sDateSelectCursorYTable[5];
-extern "C" Unk_ov138_SceneEntry sDateSelectMenuProfile;
+extern "C" ProcProfile sDateSelectMenuProfile;
 
 extern "C" const s32 sDateSelectCursorXTable[5] = {0xd6, 0x68, 0xa6, 0, 0};
 
@@ -786,5 +782,5 @@ extern "C" const u8 sDateSelectCursorRightTable[5] __attribute__((aligned(4))) =
 
 extern "C" const s32 sDateSelectCursorYTable[5] = {0x70, 0x70, 0x70, 0, 0};
 
-extern "C" Unk_ov138_SceneEntry sDateSelectMenuProfile = {DateSelectMenu_Create, 0xb1, 0xb5};
+extern "C" ProcProfile sDateSelectMenuProfile = {(void *(*)())DateSelectMenu_Create, 0xb1, 0xb5};
 

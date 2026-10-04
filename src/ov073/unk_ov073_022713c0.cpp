@@ -21,6 +21,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -191,11 +192,6 @@ struct Unk_ov073_02271fcc_Ent {
     BOOL (SpNpcJoan::*exit)();
 };
 
-struct Unk_ov073_SceneEntry {
-    SpNpcJoan *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 extern "C" {
 extern char sSpNpcJoanKey[12];
@@ -209,7 +205,7 @@ typedef BOOL (SpNpcJoan::*Unk_ov073_022724c0_Fn)();
 extern Unk_ov073_02271fcc_Ent sSpNpcJoanActTable[5];
 extern FxVec3 sSpNpcJoanSidestepOffsets[2];   // [1] is at 0x022725c8
 extern "C" {
-extern Unk_ov073_SceneEntry sSpNpcJoanProfile;
+extern Unk_ov004_SceneEntry sSpNpcJoanProfile;
 extern void *data_ov073_02272388[2];
 extern void *data_ov073_02272390[2];
 extern void *data_ov073_02272398[2];
@@ -538,7 +534,7 @@ Unk_ov073_ColorCtor data_ov073_0227258c(31, 31, 20, 31);
 void *data_ov073_022723a8[2] = {(void *)_ZN9SpNpcJoan9mainAct01Ev, 0};
 void *data_ov073_022723a0[2] = {(void *)_ZN9SpNpcJoan9mainAct00Ev, 0};
 void *data_ov073_02272398[2] = {(void *)_ZN9SpNpcJoan10setupAct04Ev, 0};
-Unk_ov073_SceneEntry sSpNpcJoanProfile = {SpNpcJoan_Create, 0x6f, 0x75, 2, 0x5000, 0x5000, 0x3e800};
+Unk_ov004_SceneEntry sSpNpcJoanProfile = {(void *(*)())SpNpcJoan_Create, 0x6f, 0x75, 2, 0x5000, 0x5000, 0x3e800};
 Unk_ov073_ColorCtor data_ov073_02272594(20, 31, 20, 31);
 Unk_ov073_ColorCtor data_ov073_02272580(20, 31, 31, 31);
 Unk_ov073_ColorCtor data_ov073_02272588(20, 24, 24, 31);

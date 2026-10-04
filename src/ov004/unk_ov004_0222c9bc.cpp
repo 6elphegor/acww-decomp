@@ -10,6 +10,7 @@
 #include "gfx/V3.h"
 #include "snd/Unk_0213b954.h"
 #include "actor/StaticCollider.h"
+#include "sys/ProcProfile.h"
 
 // ---------------------------------------------------------------------------------------------------------------
 // Calls into other modules: the old stand-in names are #defined to the real symbols (mangled method names).
@@ -514,11 +515,6 @@ struct PairFn {
     Fn b;
 };
 
-struct Unk_ov004_SceneEntry {
-    void *fn;
-    u16 a;
-    u16 b;
-};
 
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -883,7 +879,7 @@ extern void *data_ov004_0224e6a0[2];
 extern void *data_ov004_0224e6a8[2];
 extern void *data_ov004_0224e6b0[2];
 extern void *data_ov004_0224e6b8[2];
-extern Unk_ov004_SceneEntry sMuseumAquariumProfile;
+extern ProcProfile sMuseumAquariumProfile;
 extern void *data_ov004_0224e6c8[2];
 extern void *data_ov004_0224e6d0[2];
 extern void *data_ov004_0224e6d8[2];
@@ -4353,7 +4349,7 @@ void *data_ov004_0224e640[2] = {(void *)MuseumAquarium_FishStateLoad, 0};
 void *data_ov004_0224e650[2] = {(void *)AquariumPiranha_StateBite, 0};
 void *data_ov004_0224e658[2] = {(void *)AquariumPiranha_StateApproach, 0};
 void *data_ov004_0224e6c8[2] = {(void *)AquariumFish_StateNone, 0};
-Unk_ov004_SceneEntry sMuseumAquariumProfile = {(void *)MuseumAquarium_Create, 0xc3, 0xc4};
+ProcProfile sMuseumAquariumProfile = {(void *(*)())MuseumAquarium_Create, 0xc3, 0xc4};
 void *data_ov004_0224e6b8[2] = {(void *)AquariumFish_StateStartFast, 0};
 E834 *sAquariumFrog;
 void *data_ov004_0224e690[2] = {(void *)AquariumFish_StateFlee, 0};

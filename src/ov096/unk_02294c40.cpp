@@ -15,6 +15,7 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "menu/PocketMenu.h"
+#include "sys/ProcProfile.h"
 
 class PocketMenu;
 typedef void (PocketMenu::*Unk_ov096_0229aea8_Fn)();
@@ -504,14 +505,9 @@ static inline BOOL Unk_ov096_02299778_Both() {
 #define unk_2c8c ((u8 *)&m_2c8c)
 #define unk_27fc ((u8 *)&errorMessage)
 
-struct Unk_ov096_SceneEntry {
-    PocketMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" PocketMenu *PocketMenu_Create();
-extern "C" Unk_ov096_SceneEntry sPocketMenuProfile = {PocketMenu_Create, 0x91, 0x95};
+extern "C" ProcProfile sPocketMenuProfile = {(void *(*)())PocketMenu_Create, 0x91, 0x95};
 
 static inline BOOL Unk_ov096_0229619c_Range(volatile u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;

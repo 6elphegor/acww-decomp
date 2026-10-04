@@ -25,6 +25,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -449,11 +450,6 @@ struct Unk_ov047_0225aeb4_Ent {
     BOOL (SpNpcBlathers::*exit)();
 };
 
-struct Unk_ov047_SceneEntry {
-    void *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 extern "C" void *SpNpcBlathers_Create();
 extern "C" BOOL SpNpcBlathers_IsDeliveryItem(u16 *p, s32 m);
@@ -466,7 +462,7 @@ extern "C" void SpNpcBlathersTalk_GetScript(SpNpcBlathersTalk *self, SpNpcBlathe
 extern "C" u8 sSpNpcBlathersModelPath[];
 extern "C" u8 sSpNpcBlathersTexturePath[];
 extern "C" const u8 sSpNpcBlathersDramaMsgTable[32];
-extern "C" Unk_ov047_SceneEntry sSpNpcBlathersProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcBlathersProfile;
 extern Unk_ov047_0225aeb4_Ent sSpNpcBlathersActTable[9];
 
 struct Unk_ov047_022592b8_Byte {
@@ -1117,7 +1113,7 @@ extern "C" void *data_ov047_0225b520[2] = {(void *)_ZN17SpNpcBlathersTalk20retur
 extern "C" void *data_ov047_0225b518[2] = {(void *)_ZN17SpNpcBlathersTalk24scriptDonationItemChosenEv, 0};
 extern "C" void *data_ov047_0225b510[2] = {(void *)_ZN17SpNpcBlathersTalk25scriptAppraisalItemChosenEv, 0};
 extern "C" void *data_ov047_0225b508[2] = {(void *)_ZN17SpNpcBlathersTalk24scriptDeliveryItemChosenEv, 0};
-extern "C" Unk_ov047_SceneEntry sSpNpcBlathersProfile = {SpNpcBlathers_Create, 0x6e, 0x74, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcBlathersProfile = {(void *(*)())SpNpcBlathers_Create, 0x6e, 0x74, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov047_0225b4f8[2] = {(void *)_ZN17SpNpcBlathersTalk21scriptCloseItemSelectEv, 0};
 extern "C" void *data_ov047_0225b400[2] = {(void *)_ZN17SpNpcBlathersTalk15openExhibitListEv, 0};
 

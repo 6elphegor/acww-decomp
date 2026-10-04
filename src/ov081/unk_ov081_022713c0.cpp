@@ -27,6 +27,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -214,11 +215,6 @@ extern u8 sSpNpcTortimerFishingTourneyModelPath[];
 BOOL SpNpcTortimerFishingTourney_IsFish(u16 *p, s32 x);
 }
 
-struct Unk_ov081_SceneEntry {
-    SpNpcTortimerFishingTourney *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 extern "C" SpNpcTortimerFishingTourney *SpNpcTortimerFishingTourney_Create();
 
 extern "C" {
@@ -239,7 +235,7 @@ extern "C" void *data_ov081_02272078[2];
 extern "C" void *data_ov081_02272080[2];
 extern "C" void *data_ov081_02272088[2];
 extern "C" void *data_ov081_02272090[2];
-extern "C" Unk_ov081_SceneEntry sSpNpcTortimerFishingTourneyProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcTortimerFishingTourneyProfile;
 
 // ---------------------------------------------------------------------------------------------------------------------
 SpNpcTortimerFishingTourney *SpNpcTortimerFishingTourney_Create() {
@@ -357,7 +353,7 @@ void SpNpcTortimerFishingTourneyTalk::onTaskDone(u32) {
     }
 }
 
-extern "C" Unk_ov081_SceneEntry sSpNpcTortimerFishingTourneyProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcTortimerFishingTourneyProfile;
 
 
 
@@ -367,7 +363,7 @@ extern "C" void *data_ov081_02272078[2] = {(void *)_ZN27SpNpcTortimerFishingTour
 
 extern "C" void *data_ov081_02272070[2] = {(void *)_ZN31SpNpcTortimerFishingTourneyTalk17scriptCatchChosenEv, 0};
 
-extern "C" Unk_ov081_SceneEntry sSpNpcTortimerFishingTourneyProfile = {SpNpcTortimerFishingTourney_Create, 0x57, 0x5e, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcTortimerFishingTourneyProfile = {(void *(*)())SpNpcTortimerFishingTourney_Create, 0x57, 0x5e, 2, 0x5000, 0x5000, 0x3e800};
 
 void SpNpcTortimerFishingTourneyTalk::pickScript(Fn *slot, s32 i) {
     static Fn tbl[2] = {*(Fn *)data_ov081_02272070, *(Fn *)data_ov081_02272068};

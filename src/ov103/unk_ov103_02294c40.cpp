@@ -21,6 +21,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -284,11 +285,6 @@ static inline BOOL Unk_ov103_02295f10_Both()
     return FALSE;
 }
 
-struct Unk_ov103_SceneEntry {
-    PocketLettersMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" PocketLettersMenu *PocketLettersMenu_Create() { return new PocketLettersMenu(); }
 
@@ -327,11 +323,11 @@ BOOL PocketLettersMenu::onDraw() {
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov103_SceneEntry sPocketLettersMenuProfile;
+extern "C" ProcProfile sPocketLettersMenuProfile;
 
 // ---------------------------------------------------------------------------------------------
 
-extern "C" Unk_ov103_SceneEntry sPocketLettersMenuProfile = {PocketLettersMenu_Create, 0x96, 0x9a};
+extern "C" ProcProfile sPocketLettersMenuProfile = {(void *(*)())PocketLettersMenu_Create, 0x96, 0x9a};
 
 BOOL PocketLettersMenu::execTransition() {
     static Unk_ov103_02296da0_Fn tbl[9] = {

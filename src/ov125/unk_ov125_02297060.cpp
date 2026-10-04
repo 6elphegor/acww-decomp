@@ -9,6 +9,7 @@
 #include "menu/GeneralMenuHeader.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/PopupChoiceMenu.h"
+#include "sys/ProcProfile.h"
 
 struct PopupChoiceIdList;
 
@@ -187,13 +188,8 @@ public:
 };
 
 extern "C" u16 sPatternSelectIconCell[4];
-struct Unk_ov125_SceneEntry {
-    PatternSelectMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 extern "C" PatternSelectMenu *PatternSelectMenu_Create();
-extern "C" Unk_ov125_SceneEntry sPatternSelectMenuProfile = {PatternSelectMenu_Create, 0xaa, 0xae};
+extern "C" ProcProfile sPatternSelectMenuProfile = {(void *(*)())PatternSelectMenu_Create, 0xaa, 0xae};
 u16 sPatternSelectIconCell[4] = {0x00f0, 0x81f0, 0x40c0, 0xffff};
 // Data order: this unit is placed object by object (see object_order.txt).
 

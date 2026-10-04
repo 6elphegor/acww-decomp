@@ -6,8 +6,8 @@
 
 struct Unk_0206d1d4_Src;
 
-// 0x210-byte letter renderer: LetterLayout plus the recipient name metrics. Defined in src/main/unk_0206cbdc.cpp
-// (unk_0206d3f4 / unk_0206d5b8 keep their own copies, which spell the base as by-value text-line members).
+// 0x210-byte letter renderer: LetterLayout plus the recipient name metrics. Defined in src/main/unk_0206cbdc.cpp; the
+// constructor/destructor (0x0206d438 / 0x0206d40c) are in src/main/unk_0206d3f4.cpp.
 class LetterRenderer : public LetterLayout {
 public:
     LetterRenderer();

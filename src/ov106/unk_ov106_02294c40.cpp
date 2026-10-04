@@ -21,17 +21,13 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 // ov106: scene overlay (class MailboxMenu, vtable 0x02298180, 0x3f80 bytes).
 
 class MailboxMenu;
 typedef void (MailboxMenu::*Unk_ov106_02298180_Fn)();
 
-struct Unk_ov106_SceneEntry {
-    void *factory;
-    u16 a;
-    u16 b;
-};
 
 extern "C" {
 s32 _ZN10LetterGrid18findPocketLetterAtEii(void *self);
@@ -393,7 +389,7 @@ static inline BOOL Unk_ov106_02297294_Both() {
     return FALSE;
 }
 
-extern "C" Unk_ov106_SceneEntry sMailboxMenuProfile = {(void *)MailboxMenu_Create, 0x99, 0x9d};
+extern "C" ProcProfile sMailboxMenuProfile = {(void *(*)())MailboxMenu_Create, 0x99, 0x9d};
 
 extern "C" MailboxMenu *MailboxMenu_Create() { return new MailboxMenu(); }
 

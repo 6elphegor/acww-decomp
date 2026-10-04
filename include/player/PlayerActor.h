@@ -4,8 +4,8 @@
 // The player object (PlayerActor, 0xc9c bytes, vtable 0x020d6dec) and the two method sets of the same object that
 // symbols.txt names Unk_02006d14 / Unk_02008040. All of it is defined in src/main/unk_02004558.cpp and
 // unk_02004558_extra.cpp (one translation unit built by two compilers).
-// TalkMsgRequest is talk/TalkMsgRequest.h. The including unit defines SndSeEmitterKind1's destructor inline (its
-// link-once D1/D0 are emitted there) before including this header.
+// TalkMsgRequest is talk/TalkMsgRequest.h. The player unit defines SndSeEmitterKind1's destructor inline (its link-once
+// D1/D0 are emitted there).
 #include "types.h"
 #include "actor/Character.h"
 #include "talk/TalkMsgRequest.h"
@@ -33,6 +33,8 @@
 #include "player/Unk_0205c3a4.h"
 #include "player/Unk_0205ef98.h"
 #include "player/Unk_020080e8.h"
+#include "snd/SndSeEmitterKind1.h"
+#include "snd/SndSeEmitterKind99.h"
 
 struct Unk_02006d14_Item;
 struct Unk_02006d14_Pair;
@@ -225,7 +227,7 @@ public:
     /* 0x8e4 */ u8 tripCooldown;
     /* 0x8e5 */ u8 alpha;
     /* 0x8e6 */ u8 lastInputSide;
-    /* 0x8e7 */ u8 pendingAct76Kind;
+    /* 0x8e7 */ s8 pendingAct76Kind;
     /* 0x8e8 */ u8 netPickUpDelay;
     /* 0x8e9 */ u8 pad_8e9[3];
     /* 0x8ec */ Unk_020080e8 netData;       // per-action net payload (also read through per-action views)
@@ -239,7 +241,7 @@ public:
     /* 0x930 */ PlayerActionRequest requests[30];
     /* 0xc78 */ s32 requestCount;
     /* 0xc7c */ s32 bestRequest;
-    /* 0xc80 */ u16 netSeq;
+    /* 0xc80 */ s16 netSeq;
     /* 0xc82 */ u8 pad_c82[2];
     /* 0xc84 */ s32 netSeqAction;
     /* 0xc88 */ s32 faceItemState;

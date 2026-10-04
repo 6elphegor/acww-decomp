@@ -4,6 +4,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/NumberPad.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 extern u8 gSaveHouse[];
@@ -145,14 +146,9 @@ public:
 
 extern "C" AmountEntryMenu *AmountEntryMenu_Create() { return new AmountEntryMenu(); }
 
-struct Unk_ov131_SceneEntry {
-    AmountEntryMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 // Scene registration entry read by main: factory, then two ids
-extern "C" Unk_ov131_SceneEntry sAmountEntryMenuProfile = {AmountEntryMenu_Create, 0xb2, 0xb6};
+extern "C" ProcProfile sAmountEntryMenuProfile = {(void *(*)())AmountEntryMenu_Create, 0xb2, 0xb6};
 
 BOOL AmountEntryMenu::vfunc_00() {
     initPad();

@@ -4,7 +4,7 @@
 #include "types.h"
 
 // 0x15e0-byte background/bells panel of the inventory-style menus (members of the ov096..ov110 menus).
-// Ctor/dtor are plain-named in src/ov094/unk_ov094_02292360.cpp (the ov094 units still use their own merged view `S`).
+// Ctor/dtor are plain-named in src/ov094/unk_ov094_02292360.cpp; the InventoryBg_* functions are in ov094.
 class InventoryBg {
 public:
     InventoryBg();

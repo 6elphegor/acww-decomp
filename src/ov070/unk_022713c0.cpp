@@ -30,6 +30,8 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "item/ItemPickSpec.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -43,11 +45,6 @@ struct Unk_ov070_02271478_Save {
     u8 questionCount;
 };
 
-struct ItemPickSpec {
-    void set(s32 a, s32 b);
-    s32 listIndex;
-    s32 itemClass;
-};
 
 
 struct Unk_ov070_02271524_Out {
@@ -82,11 +79,6 @@ struct Unk_ov070_Color {
     Unk_ov070_Color(u8 a, u8 b, u8 c, u8 d) : a(a), b(b), c(c), d(d) {}
 };
 
-struct Unk_ov070_SceneEntry {
-    SpNpcGracie *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 
 
@@ -189,7 +181,6 @@ void PlayerActor_RequestWearHatAlt(u16 *p);
 void PlayerActor_RequestWearFaceItemAlt(u16 *p);
 void PlayerActor_RequestWearShirtAlt(u16 *p);
 void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
-void ItemPickSpec_Destruct(ItemPickSpec *o);
 void Pocket_AddItem(u16 *, s32);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
@@ -215,7 +206,7 @@ void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" Unk_ov070_Color data_ov070_022728c8;
 extern "C" u8 sSpNpcGracieTexturePath[];
-extern "C" Unk_ov070_SceneEntry sSpNpcGracieProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcGracieProfile;
 extern "C" u8 sSpNpcGracieModelPath[];
 extern "C" u32 data_ov070_022726e4[1];
 extern "C" u32 data_ov070_022726e0[1];
@@ -395,7 +386,7 @@ extern "C" Unk_ov070_Color data_ov070_022728c4 = Unk_ov070_Color(0x14, 0x18, 0x1
 
 extern "C" u8 sSpNpcGracieModelPath[] = "npc_sp/model/grf.nsbmd";
 
-extern "C" Unk_ov070_SceneEntry sSpNpcGracieProfile = {SpNpcGracie_Create, 0x6c, 0x72, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcGracieProfile = {(void *(*)())SpNpcGracie_Create, 0x6c, 0x72, 2, 0x5000, 0x5000, 0x3e800};
 
 extern "C" Unk_ov070_02272334_Ent sSpNpcGracieActTable[3] = {
     {&SpNpcGracie::setupAct00, &SpNpcGracie::mainAct00},
@@ -679,18 +670,20 @@ BOOL SpNpcGracieTalk::dressUpPlayer() {
     u16 o;
     u16 pp;
     if ((&sSpNpcGracieOutfitTiers[0].bonusChance)[idx * 16] >= (u8)Random_GlobalBelow(0x65)) {
-        ItemPickSpec o1;
-        o1.set(2, 0x22);
-        ItemPick_One(&o, &o1, 0, 0, 1, 1, 0);
-        a = o;
-        ItemPickSpec_Destruct(&o1);
+        {
+            ItemPickSpec o1;
+            o1.set(2, 0x22);
+            ItemPick_One(&o, &o1, 0, 0, 1, 1, 0);
+            a = o;
+        }
         res = TRUE;
     } else {
-        ItemPickSpec o2;
-        o2.set(2, 0);
-        ItemPick_One(&pp, &o2, 0, 0, 1, 1, 0);
-        a = pp;
-        ItemPickSpec_Destruct(&o2);
+        {
+            ItemPickSpec o2;
+            o2.set(2, 0);
+            ItemPick_One(&pp, &o2, 0, 0, 1, 1, 0);
+            a = pp;
+        }
         res = FALSE;
     }
     if (!Unk_ov070_IsNone(&a)) {

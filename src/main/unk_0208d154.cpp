@@ -4,6 +4,8 @@
 #include "ui/NameLabelBalloonView.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "ui/NameLabelBalloon.h"
+#include "talk/MsgString.h"
 
 extern "C" {
 void GX_LoadOBJPltt(void *a, u32 b, u32 c);
@@ -17,60 +19,10 @@ struct SpriteAnimSeq;
 
 
 
-// Sub-object at +0x38 of NameLabelBalloon (0x34 bytes, ctor 0x02039b04, dtor 0x02039aec)
-class MsgString {
-public:
-    MsgString();
-    ~MsgString();
-    void copy(MsgString *p);
-
-    /* 0x00 */ u32 unk_00[13];
-};
 
 
 
 
-class NameLabelBalloon : public UiWidget {
-public:
-    typedef void (NameLabelBalloon::*Fn)();
-
-    NameLabelBalloon();
-    virtual ~NameLabelBalloon();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    void fitToLabel();
-    void applyKindAnim();
-    void updateHiding();
-    void enterHiding();
-    void updateShown();
-    void enterShown();
-    void updateAppearing();
-    void enterAppearing();
-    void updateHidden();
-    void enterHidden();
-    static void loadKind4Palette();
-    BOOL requestHide();
-    BOOL requestShow();
-    void setText(void *p);
-    void setOffset(s32 a, s32 b);
-    void release();
-    void setKind(s32 a);
-
-    /* 0x0c */ s32 kind;
-    /* 0x10 */ s32 seqIndex;
-    /* 0x14 */ SpriteAnim anim;
-    /* 0x28 */ s32 offsetX;
-    /* 0x2c */ s32 offsetY;
-    /* 0x30 */ s32 slideY;
-    /* 0x34 */ s32 alignX;
-    /* 0x38 */ MsgString text;
-    /* 0x6c */ Unk_0208d154_Sub *textLabel;
-    /* 0x70 */ s32 state;
-    /* 0x74 */ s32 showRequested;
-    /* 0x78 */ s32 stateTimer;
-    /* 0x7c */ u8 isVisible;
-};
 
 void NameLabelBalloon::setKind(s32 a) {
     kind = a;

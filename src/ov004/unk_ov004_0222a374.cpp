@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "sys/ProcProfile.h"
 
 // ---------------------------------------------------------------- PlayerBedSetter
 struct Unk_0204e858_Grid;
@@ -17,11 +18,6 @@ struct Unk_ov004_0222a374_Pair {
     }
 };
 
-struct Unk_ov004_SceneEntry {
-    void *(*factory)();
-    u16 a;
-    u16 b;
-};
 
 class PlayerBedSetter : public GameProc {
 public:
@@ -44,7 +40,7 @@ void BlockMap_SetItemAtUnit(Unk_0204e858_Grid *g, Unk_ov004_0222a374_Loc *l, s32
 extern "C" PlayerBedSetter *PlayerBedSetter_Create();
 extern "C" void Room_PlacePlayerBeds();
 
-extern "C" Unk_ov004_SceneEntry sPlayerBedSetterProfile = { (void *(*)())PlayerBedSetter_Create, 0x2b, 0x31 };
+extern "C" ProcProfile sPlayerBedSetterProfile = { (void *(*)())PlayerBedSetter_Create, 0x2b, 0x31 };
 
 extern "C" PlayerBedSetter *PlayerBedSetter_Create() {
     return new PlayerBedSetter;

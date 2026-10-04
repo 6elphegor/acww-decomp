@@ -13,6 +13,7 @@
 #include "gfx/AnimModel.h"
 #include "gfx/ModelAnim.h"
 #include "room/RoomObjActor.h"
+#include "room/RoomObjTexAuto.h"
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -95,13 +96,6 @@ union Unk_ov068_022702b4_Word {
     Unk_ov068_022702b4_Bits b;
 };
 
-// 4-byte texture slot with an inline destructor (the ov004 RoomObjTex of room/RoomObjTex.h has none: its owners destroy
-// it by hand); named apart so that room/RoomObjActor.h can be included
-struct RoomObjTexAuto {
-    inline RoomObjTexAuto() { RoomObjTex_Construct(this); }
-    inline ~RoomObjTexAuto() { RoomObjTex_Destruct(this); }
-    u32 texture;
-};
 
 class TaxiInterior;
 

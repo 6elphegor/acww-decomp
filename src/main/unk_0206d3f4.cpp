@@ -6,6 +6,8 @@
 #include "talk/EncodedStringBase.h"
 #include "talk/EncodedString.h"
 #include "talk/EncodedString40.h"
+#include "ui/LetterRenderer.h"
+#include "ui/LetterTextLine.h"
 
 // TU113, first part: 0x0206d3f4-0x0206d470 (the unit's remaining functions are the assembly routine
 // Fatal_SaveRegisters and its caller). Owns its string literal (.data 0x020ddf6c-0x020ddf88).
@@ -18,23 +20,6 @@ extern u32 OVERLAY_65_ID[];
 
 
 
-// ---- 0x4c-byte object (ctor func_0206ce50, dtor func_0206ce30) ----
-class LetterTextLine {
-public:
-    LetterTextLine();
-    ~LetterTextLine();
-    s32 setNameHighlight(u8 a, u8 b);
-    s32 setHighlight(u8 a, u8 b);
-    void clearText();
-    void setTextWithMarks(EncodedString *buf, s32 flag);
-    void setText(EncodedString *buf);
-    void setTarget(u16 id, s32 arg);
-    s32 func_0206ce98();
-    void func_0206ced0();
-    void LetterLayout_SplitBody(u8 *src, s32 *offs, s32 *idx);
-
-    u8 pad_00[0x4c];
-};
 
 
 
@@ -141,32 +126,6 @@ void *Main_DwcAlloc(u32 a, void *p, u32 n);
 }
 
 
-
-// ---- LetterRenderer : LetterTextLine ----
-class LetterRenderer : public LetterTextLine {
-public:
-    LetterRenderer();
-    ~LetterRenderer();
-    void highlightGreeting(u32 a, u32 b);
-    void setSignature(u8 *data);
-    void setBody(u8 *src, BOOL flag);
-    void setGreeting(Unk_0206d1d4_Src *src, u8 *out);
-    void loadRecipientName(void *src);
-    s32 getRecipientNameLength();
-    void show(Unk_0206d1d4_Src *src, void *a, void *b, s32 c);
-    void redraw();
-    void release();
-    void setLayer(s32 v);
-    void loadLetterScreen(u32 v);
-
-    /* 0x4c */ LetterTextLine unk_4c;
-    /* 0x98 */ LetterTextLine bodyLines[4];
-    /* 0x1c8 */ u8 recipientName[0x28];
-    /* 0x1f0 */ s32 bodyLineStarts[5];
-    /* 0x204 */ s32 bodyLineCount;
-    /* 0x208 */ s32 recipientNameLength;
-    /* 0x20c */ s32 recipientNameWidth;
-};
 
 LetterRenderer::LetterRenderer() {}
 

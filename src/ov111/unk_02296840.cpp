@@ -17,6 +17,7 @@
 #include "menu/Keyboard.h"
 #include "menu/MenuErrorMessage.h"
 #include "menu/MenuTabBar.h"
+#include "sys/ProcProfile.h"
 
 enum Unk_ov111_022970cc_Status { UNK_OV111_ST_0 = 0, UNK_OV111_ST_1 = 1, UNK_OV111_ST_2 = 2, UNK_OV111_ST_3 = 3 };
 
@@ -314,11 +315,6 @@ static inline BOOL Both() {
     return FALSE;
 }
 
-struct Unk_ov111_SceneEntry {
-    ChatMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" ChatMenu *ChatMenu_Create();
 
@@ -346,7 +342,7 @@ BOOL ChatMenu::onDraw() {
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov111_SceneEntry data_ov111_02298920;
+extern "C" ProcProfile data_ov111_02298920;
 extern "C" char data_ov111_022989c8[];
 extern "C" char data_ov111_022989e0[];
 extern "C" char data_ov111_022989f8[];
@@ -354,7 +350,7 @@ extern "C" char data_ov111_02298a10[];
 extern "C" u32 sChatSendAnimScreens[4];
 
 // Scene registration entry read by main: factory, then two ids
-extern "C" Unk_ov111_SceneEntry data_ov111_02298920 = {ChatMenu_Create, 0x9e, 0xa2};
+extern "C" ProcProfile data_ov111_02298920 = {(void *(*)())ChatMenu_Create, 0x9e, 0xa2};
 
 // Data order: this unit is placed object by object (see object_order.txt).
 

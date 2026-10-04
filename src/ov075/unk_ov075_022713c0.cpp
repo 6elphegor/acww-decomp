@@ -24,6 +24,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
@@ -210,11 +211,6 @@ struct Unk_ov075_022722f0_Ent {
     u8 kind;
 };
 
-struct Unk_ov075_SceneEntry {
-    SpNpcPete *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 struct Unk_ov075_Col {
     u8 r, g, b, a;
@@ -265,7 +261,7 @@ extern Unk_ov075_022722f0_Ent sSpNpcPeteTalkScripts[2];
 extern u8 data_ov075_022722f8[];
 extern Unk_ov075_02271e78_Ent sSpNpcPeteActTable[6];
 extern FxVec3 sSpNpcPeteSidestepOffsets[2];
-extern Unk_ov075_SceneEntry sSpNpcPeteProfile;
+extern Unk_ov004_SceneEntry sSpNpcPeteProfile;
 }
 
 typedef BOOL (SpNpcPete::*Unk_ov075_Fn)();
@@ -275,7 +271,7 @@ typedef void (SpNpcPeteTalk::*Unk_ov075_InnerFn)();
 void *data_ov075_02272278[2] = {(void *)_ZN9SpNpcPete9mainAct04Ev, 0};
 u8 sSpNpcPeteTexturePath[] = "npc_sp/model/plb_tex.nsbtx";
 void *data_ov075_02272270[2] = {(void *)_ZN9SpNpcPete10setupAct04Ev, 0};
-Unk_ov075_SceneEntry sSpNpcPeteProfile = {SpNpcPete_Create, 0x54, 0x5b, 2, 0x5000, 0x5000, 0x3e800};
+Unk_ov004_SceneEntry sSpNpcPeteProfile = {(void *(*)())SpNpcPete_Create, 0x54, 0x5b, 2, 0x5000, 0x5000, 0x3e800};
 void *data_ov075_02272260[2] = {(void *)_ZN9SpNpcPete9mainAct02Ev, 0};
 Unk_ov075_Col data_ov075_0227248c(31, 20, 20, 31);
 Unk_ov075_Col data_ov075_02272494(20, 20, 31, 31);

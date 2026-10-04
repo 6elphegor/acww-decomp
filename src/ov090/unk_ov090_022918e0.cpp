@@ -17,6 +17,7 @@
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuErrorMessage.h"
 #include "menu/MenuTabBar.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 void Gfx2d_SetWindowRect(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
@@ -119,11 +120,6 @@ s32 MenuTabBar_HitTestTouch();
 
 extern "C" u8 sTabSwitchCooldown;
 extern "C" u32 sTabBarOamCells[32];
-struct Unk_ov090_SceneEntry {
-    void *factory;
-    u16 a;
-    u16 b;
-};
 
 static inline BOOL Unk_ov090_02291aa0_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) {
@@ -172,10 +168,10 @@ BOOL MenuTabBar::onDraw() {
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov090_SceneEntry sMenuTabBarProfile;
+extern "C" ProcProfile sMenuTabBarProfile;
 extern "C" u32 sTabBarOamCells[32];
 
-extern "C" Unk_ov090_SceneEntry sMenuTabBarProfile = {(void *)MenuTabBar_Create, 0x8f, 0x93};
+extern "C" ProcProfile sMenuTabBarProfile = {(void *(*)())MenuTabBar_Create, 0x8f, 0x93};
 
 extern "C" u32 sTabBarOamCells[32] = {
     0x404900a1, 0x0000f092, 0x005980a1, 0x0000f094, 0x41b300a1, 0x0000f080, 0x01c380a1, 0x0000f082, 0x41cc00a1, 0x0000f083, 0x01dc80a1, 0x0000f085, 0x41e500a1, 0x0000f086, 0x01f580a1, 0x0000f088, 0x41fe00a1, 0x0000f089, 0x000e80a1, 0x0000f08b, 0x401700a1, 0x0000f08c, 0x002780a1, 0x0000f08e, 0x403000a1, 0x0000f08f, 0x004080a1, 0x0000f091, 0x406700a1, 0x0000f095, 0x007780a1, 0xfffff097

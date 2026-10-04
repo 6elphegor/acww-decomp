@@ -27,6 +27,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 
@@ -145,11 +146,6 @@ struct Unk_ov053_02259ee4_Ent {
     BOOL (SpNpcHarriet::*exit)();
 };
 
-struct Unk_ov053_SceneEntry {
-    SpNpcHarriet *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 extern "C" {
 extern const u8 sSpNpcHarrietCoolColors[];
@@ -166,7 +162,7 @@ extern const void *sSpNpcHarrietMsgKey;
 extern char sSpNpcHarrietKey[];
 extern u8 sSpNpcHarrietModelPath[];
 extern u8 sSpNpcHarrietTexturePath[];
-extern Unk_ov053_SceneEntry sSpNpcHarrietProfile;
+extern Unk_ov004_SceneEntry sSpNpcHarrietProfile;
 extern Unk_ov053_02259ee4_Ent sSpNpcHarrietActTable[11];
 #define data_ov053_0225a62c ((Unk_ov053_02259ee4_Ent *)((u8 *)sSpNpcHarrietActTable + 8))
 SpNpcHarriet *SpNpcHarriet_Create();
@@ -289,7 +285,7 @@ extern "C" void *data_ov053_0225a3e4[2];
 extern "C" void *data_ov053_0225a3ec[2];
 
 extern "C" void *data_ov053_0225a374[2] = {(void *)_ZN12SpNpcHarriet10setupAct09Ev, 0};
-extern "C" Unk_ov053_SceneEntry sSpNpcHarrietProfile = {SpNpcHarriet_Create, 0x61, 0x68, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcHarrietProfile = {(void *(*)())SpNpcHarriet_Create, 0x61, 0x68, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov053_0225a39c[2] = {(void *)_ZN12SpNpcHarriet9mainAct06Ev, 0};
 extern "C" void *data_ov053_0225a38c[2] = {(void *)_ZN12SpNpcHarriet9mainAct0AEv, 0};
 extern "C" const void *sSpNpcHarrietMsgKey = sSpNpcHarrietKey;

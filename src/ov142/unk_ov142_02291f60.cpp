@@ -15,6 +15,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuScrollKnob.h"
 #include "menu/MenuBottomButtons.h"
+#include "sys/ProcProfile.h"
 
 class CatalogMenu;
 
@@ -276,12 +277,6 @@ public:
     /* 0x2df0 */ u16 workPalette4[16];
 };
 
-// Scene registration entry read by main: factory, then two ids
-struct Unk_ov142_SceneEntry {
-    CatalogMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 static inline BOOL Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) {
@@ -1349,7 +1344,7 @@ s32 CatalogMenu::getTabOwnedCount() {
     return tabOwnedCounts[curTab];
 }
 
-extern "C" Unk_ov142_SceneEntry sCatalogMenuProfile = {CatalogMenu_Create, 0xb7, 0xbb};
+extern "C" ProcProfile sCatalogMenuProfile = {(void *(*)())CatalogMenu_Create, 0xb7, 0xbb};
 extern "C" void *data_ov142_02294c80[2] = {(void *)_ZN11CatalogMenu19updateCursorReleaseEv, 0};
 extern "C" void *data_ov142_02294cc0[2] = {(void *)_ZN11CatalogMenu16updateArrowTouchEv, 0};
 extern "C" void *data_ov142_02294ca8[2] = {(void *)_ZN11CatalogMenu14updateKnobKeysEv, 0};

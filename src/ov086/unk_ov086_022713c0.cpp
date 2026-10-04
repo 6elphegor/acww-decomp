@@ -26,6 +26,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 #pragma opt_loop_invariants off
 
@@ -156,11 +157,6 @@ extern Unk_ov086_02271940_Ent sSpNpcTortimerCountdownActTable[3];
 
 extern "C" char sSpNpcTortimerCountdownFortuneStrKey[];
 extern "C" char sSpNpcTortimerCountdownFortuneStr2Key[];
-struct Unk_ov086_SceneEntry {
-    SpNpcTortimerCountdown *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 extern "C" SpNpcTortimerCountdown *SpNpcTortimerCountdown_Create();
 extern "C" u32 data_ov086_02271c24 = 0x1d;
 extern "C" u32 data_ov086_02271c20 = 0xe;
@@ -186,7 +182,7 @@ Unk_ov086_02271940_Ent sSpNpcTortimerCountdownActTable[3] = {
 };
 extern "C" char sSpNpcTortimerCountdownFortuneStr2Key[] = "st_fortune2";
 extern "C" u8 sSpNpcTortimerCountdownModelPath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','.','n','s','b','m','d',0};
-extern "C" Unk_ov086_SceneEntry sSpNpcTortimerCountdownProfile = {SpNpcTortimerCountdown_Create, 0x5c, 0x63, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcTortimerCountdownProfile = {(void *(*)())SpNpcTortimerCountdown_Create, 0x5c, 0x63, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" u8 sSpNpcTortimerCountdownTexturePath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','_','t','e','x','.','n','s','b','t','x',0};
 
 struct Unk_ov086_022716b0_A {

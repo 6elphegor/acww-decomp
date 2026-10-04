@@ -15,6 +15,7 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -260,14 +261,9 @@ public:
 
 extern "C" LetterGiveMenu *LetterGiveMenu_Create() { return new LetterGiveMenu(); }
 
-struct Unk_ov108_SceneEntry {
-    LetterGiveMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 // Scene registration entry read by main: factory, then two ids
-extern "C" Unk_ov108_SceneEntry sLetterGiveMenuProfile = {LetterGiveMenu_Create, 0x9b, 0x9f};
+extern "C" ProcProfile sLetterGiveMenuProfile = {(void *(*)())LetterGiveMenu_Create, 0x9b, 0x9f};
 
 BOOL LetterGiveMenu::vfunc_00() {
     initLetterGive();

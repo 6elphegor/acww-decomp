@@ -29,6 +29,7 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 class LetterStorageMenu;
 class MenuLauncher;
@@ -181,7 +182,6 @@ struct Unk_ov105_Ent {
     u32 a;
     u32 b;
 };
-struct Unk_ov105_SceneEntry;
 extern "C" const u16 data_ov105_02298314[3];
 extern "C" Unk_ov105_Ent data_ov105_02298544[9];
 extern "C" char data_ov105_022984e4[];
@@ -411,12 +411,6 @@ public:
     /* 0x728c */ MenuBottomButtons bottomButtons;
 };
 
-// Scene registration entry read by main: factory, then two ids
-struct Unk_ov105_SceneEntry {
-    LetterStorageMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" {
 void LetterStorageMenu_SetupBgLayers();
@@ -486,8 +480,8 @@ BOOL LetterStorageMenu::onDraw() {
 extern "C" const u16 data_ov105_02298314[3];
 extern "C" Unk_ov105_Ent data_ov105_02298544[9];
 extern "C" const char *sLetterStoragePageChars[3];
-extern "C" Unk_ov105_SceneEntry sLetterStorageMenuProfile;// Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov105_SceneEntry sLetterStorageMenuProfile;
+extern "C" ProcProfile sLetterStorageMenuProfile;// Declarations for data defined further down (definition order sets the data layout)
+extern "C" ProcProfile sLetterStorageMenuProfile;
 extern "C" char data_ov105_02298524[];
 extern "C" const char *sLetterStoragePageChars[3];
 extern "C" char data_ov105_02298504[];
@@ -495,7 +489,7 @@ extern "C" const u16 data_ov105_02298314[3];
 extern "C" char data_ov105_022984e4[];
 extern "C" Unk_ov105_Ent data_ov105_02298544[9];
 
-extern "C" Unk_ov105_SceneEntry sLetterStorageMenuProfile = {LetterStorageMenu_Create, 0x98, 0x9c};
+extern "C" ProcProfile sLetterStorageMenuProfile = {(void *(*)())LetterStorageMenu_Create, 0x98, 0x9c};
 
 extern "C" char data_ov105_02298524[] = "menu/inventory/b_itm_post2.bch";
 

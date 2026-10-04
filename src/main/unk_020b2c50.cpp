@@ -8,6 +8,7 @@
 #include "talk/MsgString.h"
 #include "talk/MsgRequest.h"
 #include "talk/MsgWalker.h"
+#include "talk/MsgString33.h"
 
 extern "C" {
 u32 Text_ToUpper(u32 key);
@@ -27,15 +28,6 @@ void func_02133ef8(void *p, u32 n);
 
 
 
-class MsgString33 : public MsgString {
-public:
-    MsgString33();
-    virtual ~MsgString33();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x14 */ u32 unk_14[8];
-};
 
 
 

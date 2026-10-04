@@ -5,6 +5,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/DateTimePicker.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 extern const u8 sClockAdjustCursorLeftTable[7];
@@ -173,13 +174,8 @@ public:
 
 extern "C" ClockAdjustMenu *ClockAdjustMenu_Create() { return new ClockAdjustMenu(); }
 
-struct Unk_ov135_SceneEntry {
-    ClockAdjustMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
-extern "C" Unk_ov135_SceneEntry sClockAdjustMenuProfile = {ClockAdjustMenu_Create, 0xae, 0xb2};
+extern "C" ProcProfile sClockAdjustMenuProfile = {(void *(*)())ClockAdjustMenu_Create, 0xae, 0xb2};
 
 BOOL ClockAdjustMenu::vfunc_00() {
     initPicker();

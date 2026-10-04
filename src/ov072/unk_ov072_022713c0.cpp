@@ -26,6 +26,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -171,11 +172,6 @@ struct Unk_ov072_02271fe8_Ent {
     BOOL (SpNpcGulliver::*exit)();
 };
 
-struct Unk_ov072_SceneEntry {
-    SpNpcGulliver *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 extern "C" {
 extern u8 sSpNpcGulliverKey[12];
@@ -213,7 +209,7 @@ Unk_ov072_02271fe8_Ent sSpNpcGulliverActTable[4] = {
     {NULL, &SpNpcGulliver::mainAct03},
 };
 
-extern "C" Unk_ov072_SceneEntry sSpNpcGulliverProfile = {SpNpcGulliver_Create, 0x60, 0x67, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcGulliverProfile = {(void *(*)())SpNpcGulliver_Create, 0x60, 0x67, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" {
 const Unk_ov072_02272234_Ent sSpNpcGulliverTopicMsgs[8] = {
     {(const char *)sSpNpcGulliverKey, 0},

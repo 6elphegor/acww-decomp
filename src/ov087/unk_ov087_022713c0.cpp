@@ -26,6 +26,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 #pragma opt_loop_invariants off
 
@@ -166,17 +167,12 @@ extern const Unk_ov087_02271cc4_Ent sSpNpcCornimerFortuneLines[4];
 extern Unk_ov087_02271a6c_Ent sSpNpcCornimerActTable[3];
 }
 
-struct Unk_ov087_SceneEntry {
-    SpNpcCornimer *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 extern "C" SpNpcCornimer *SpNpcCornimer_Create();
 extern "C" char sSpNpcCornimerFortuneStrKey[];
 extern "C" char sSpNpcCornimerFortuneStr2Key[];
 extern "C" u32 data_ov087_02271d84 = 0xe;
 extern "C" u8 sSpNpcCornimerTexturePath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','d','n','k','_','t','e','x','.','n','s','b','t','x',0};
-extern "C" Unk_ov087_SceneEntry sSpNpcCornimerProfile = {SpNpcCornimer_Create, 0x5f, 0x66, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcCornimerProfile = {(void *(*)())SpNpcCornimer_Create, 0x5f, 0x66, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" char sSpNpcCornimerFortuneStrKey[] = "st_fortune";
 extern "C" const Unk_ov087_02271cc4_Ent sSpNpcCornimerFortuneLines[4] = {
     {sSpNpcCornimerFortuneStrKey, 0}, {sSpNpcCornimerFortuneStr2Key, 1}, {sSpNpcCornimerFortuneStr2Key, 2}, {sSpNpcCornimerFortuneStr2Key, 3},

@@ -15,6 +15,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 class PocketMenuUnk;
 struct PopupChoiceIdList;
@@ -269,13 +270,8 @@ void PocketMenuUnk_EnterTouchIdle(S *s);
 S *PocketMenuUnk_Create();
 }
 
-struct Unk_ov099_SceneEntry {
-    S *(*create)();
-    u16 a;
-    u16 b;
-};
 
-extern "C" Unk_ov099_SceneEntry sPocketMenuUnkProfile = {PocketMenuUnk_Create, 0x92, 0x96};
+extern "C" ProcProfile sPocketMenuUnkProfile = {(void *(*)())PocketMenuUnk_Create, 0x92, 0x96};
 
 static inline BOOL Unk_ov099_02296158_Both()
 {

@@ -9,6 +9,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 extern u16 gPad[];
@@ -314,11 +315,6 @@ public:
     /* 0x2f20 */ u8 lineStates[0x1c8];
 };
 
-struct Unk_ov129_SceneEntry {
-    ConstellationEditorMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" ConstellationEditorMenu *ConstellationEditorMenu_Create() { return new ConstellationEditorMenu(); }
 
@@ -371,7 +367,7 @@ extern "C" void *data_ov129_022965a8[2];
 extern "C" void *data_ov129_022965a0[2];
 extern "C" const s32 data_ov129_022964bc[5];
 extern "C" void *data_ov129_02296578[2];
-extern "C" Unk_ov129_SceneEntry sConstellationEditorMenuProfile;
+extern "C" ProcProfile sConstellationEditorMenuProfile;
 extern "C" void *data_ov129_02296568[2];
 extern "C" void *data_ov129_02296560[2];
 extern "C" void *data_ov129_02296558[2];
@@ -1798,7 +1794,7 @@ void ConstellationEditorMenu::clearFlags(u32 mask) { stateFlags = stateFlags & ~
 
 extern "C" void *data_ov129_02296578[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct0BEv, 0};
 
-extern "C" Unk_ov129_SceneEntry sConstellationEditorMenuProfile = {ConstellationEditorMenu_Create, 0xad, 0xb1};
+extern "C" ProcProfile sConstellationEditorMenuProfile = {(void *(*)())ConstellationEditorMenu_Create, 0xad, 0xb1};
 
 extern "C" void *data_ov129_02296568[2] = {(void *)_ZN23ConstellationEditorMenu16updateCursorMoveEv, 0};
 

@@ -25,6 +25,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -224,11 +225,6 @@ struct Unk_ov052_0225a2cc_Ent {
     BOOL (SpNpcRedd::*exit)();
 };
 
-struct Unk_ov052_SceneEntry {
-    SpNpcRedd *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 struct Unk_ov052_MsgRow {
     const char *name;
@@ -243,7 +239,7 @@ extern Unk_ov052_0225a2cc_Ent sSpNpcReddActTable[11];
 #define MSG_ID(i) (((u8 (*)[8])((u8 *)sSpNpcReddTopicMsgs + 4))[i][0])
 extern u8 sSpNpcReddModelPath[];
 extern u8 sSpNpcReddTexturePath[];
-extern Unk_ov052_SceneEntry sSpNpcReddProfile;
+extern Unk_ov004_SceneEntry sSpNpcReddProfile;
 SpNpcRedd *SpNpcRedd_Create();
 BOOL SpNpcRedd_IsSoldOut(void *self);
 s32 SpNpcRedd_PickUnusedFlag(void *self, u8 *buf, s32 n);
@@ -1052,7 +1048,7 @@ BOOL SpNpcRedd::tryClosingTimeTalk() {
 extern "C" char sSpNpcReddKey[] = "sp_npc_fox";
 extern "C" u8 sSpNpcReddModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'f', 'o', 'x', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" u8 sSpNpcReddTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'f', 'o', 'x', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" Unk_ov052_SceneEntry sSpNpcReddProfile = {SpNpcRedd_Create, 0x55, 0x5c, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcReddProfile = {(void *(*)())SpNpcRedd_Create, 0x55, 0x5c, 2, 0x5000, 0x5000, 0x3e800};
 
 extern "C" const Unk_ov052_MsgRow sSpNpcReddTopicMsgs[13] = {
     {sSpNpcReddKey, 0x06, {0, 0, 0}}, {sSpNpcReddKey, 0x1c, {0, 0, 0}}, {sSpNpcReddKey, 0x1b, {0, 0, 0}},

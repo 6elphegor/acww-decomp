@@ -4,9 +4,7 @@
 #include "game/Unk_0206d1d4_Src.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
-#include "ui/LetterLayout.h"
 #include "talk/EncodedStringBase.h"
-#include "ui/LetterRenderer.h"
 #include "talk/MsgString.h"
 #include "talk/EncodedString.h"
 
@@ -38,6 +36,8 @@ class MsgString;
 
 #include "talk/EncodedString40.h"
 #include "ui/LetterTextLine.h"
+#include "ui/LetterLayout.h"
+#include "ui/LetterRenderer.h"
 
 
 
@@ -49,10 +49,10 @@ extern "C" s32 LetterLayout_SplitBody(void *unused, u8 *a, s32 *b, s32 *c);
 // ---- LetterRenderer
 void LetterRenderer::setLayer(s32 v) {
     s32 i;
-    ((LetterTextLine *)this)->setTarget(0x75, v);
-    ((LetterTextLine *)headerLines + 1)->setTarget(0x180, v);
+    greetingLine.setTarget(0x75, v);
+    signatureLine.setTarget(0x180, v);
     for (i = 0; i < 4; i++) {
-        ((LetterTextLine *)bodyLines[i])->setTarget(i * 0x28 + 0x9d, v);
+        bodyLines[i].setTarget(i * 0x28 + 0x9d, v);
     }
     recipientNameLength = 0;
 }
@@ -98,7 +98,7 @@ void LetterRenderer::loadRecipientName(void *src) {
 void LetterRenderer::setGreeting(Unk_0206d1d4_Src *src, u8 *out) {
     u8 tmp[0x28];
     s32 n, j, k;
-    ((LetterTextLine *)this)->clearText();
+    greetingLine.clearText();
     if (out == 0) {
         out = tmp;
     }
@@ -126,11 +126,11 @@ void LetterRenderer::setGreeting(Unk_0206d1d4_Src *src, u8 *out) {
         j++;
     }
     if (recipientNameLength > 0) {
-        ((LetterTextLine *)this)->setNameHighlight(src->cnt, recipientNameLength);
+        greetingLine.setNameHighlight(src->cnt, recipientNameLength);
     }
     EncodedString40 buf;
     EncodedString_SetRaw(&buf, out, 0x28);
-    ((LetterTextLine *)this)->setText(&buf);
+    greetingLine.setText(&buf);
 }
 
 void LetterRenderer::setBody(u8 *src, BOOL flag) {
@@ -144,7 +144,7 @@ void LetterRenderer::setBody(u8 *src, BOOL flag) {
     zero = 0;
     for (; i < 4; i++) {
         s32 diff = bodyLineStarts[i + 1] - bodyLineStarts[i];
-        LetterTextLine *cell = (LetterTextLine *)bodyLines[i];
+        LetterTextLine *cell = &bodyLines[i];
         cell->clearText();
         if (diff != 0) {
             EncodedString_SetRaw(&buf, src + bodyLineStarts[i], diff);
@@ -164,15 +164,15 @@ void LetterRenderer::setBody(u8 *src, BOOL flag) {
 
 void LetterRenderer::setSignature(u8 *data) {
     EncodedString40 buf;
-    ((LetterTextLine *)headerLines + 1)->clearText();
+    signatureLine.clearText();
     EncodedString_SetRaw(&buf, data, 0x20);
-    ((LetterTextLine *)headerLines + 1)->setText(&buf);
+    signatureLine.setText(&buf);
 }
 
 void LetterRenderer::highlightGreeting(u32 a, u32 b) {
     Unk_0206d0a0_Pad pad;
     u32 u;
-    ((LetterTextLine *)this)->setHighlight(a, b, u);
+    greetingLine.setHighlight(a, b, u);
 }
 
 void LetterLayout::highlightBodyRange(u32 a, u32 b, u32 c) {
@@ -187,7 +187,7 @@ void LetterLayout::highlightBodyRange(u32 a, u32 b, u32 c) {
             if (a < end) {
                 if (end > a + b) cnt = b;
                 else cnt = len - (a - pos);
-                ((LetterTextLine *)bodyLines[i])->setHighlight(a - pos, cnt, c);
+                bodyLines[i].setHighlight(a - pos, cnt, c);
                 a = (u8)end;
                 b -= cnt;
                 if (b == 0) break;
@@ -248,19 +248,19 @@ s32 LetterLayout::getBodyLineOfPos(s32 v) {
 
 void LetterLayout::freeAllLabels() {
     s32 i;
-    ((LetterTextLine *)this)->freeLabel();
-    ((LetterTextLine *)((u8 *)this + 0x4c))->freeLabel();
+    greetingLine.freeLabel();
+    signatureLine.freeLabel();
     for (i = 0; i < 4; i++) {
-        ((LetterTextLine *)bodyLines[i])->freeLabel();
+        bodyLines[i].freeLabel();
     }
 }
 
 void LetterLayout::redrawAll() {
     s32 i;
-    ((LetterTextLine *)this)->redrawIfDirty(0);
-    ((LetterTextLine *)((u8 *)this + 0x4c))->redrawIfDirty(1);
+    greetingLine.redrawIfDirty(0);
+    signatureLine.redrawIfDirty(1);
     for (i = 0; i < 4; i++) {
-        ((LetterTextLine *)bodyLines[i])->redrawIfDirty(0);
+        bodyLines[i].redrawIfDirty(0);
     }
 }
 

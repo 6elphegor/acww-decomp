@@ -8,6 +8,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 // Calls into other modules' class methods: extern "C" functions named by the real mangled symbol (self first).
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
@@ -493,13 +494,8 @@ extern "C" void *data_ov119_022955a0[2];
 extern "C" void *data_ov119_02295580[2];
 extern "C" void *data_ov119_02295600[2];
 extern "C" u32 data_ov119_02295680[10];
-struct Unk_ov119_SceneEntry {
-    FriendRosterTab *(*create)();
-    u16 a;
-    u16 b;
-};
 extern "C" FriendRosterTab *FriendRosterTab_Create();
-extern "C" Unk_ov119_SceneEntry sFriendRosterTabProfile;
+extern "C" ProcProfile sFriendRosterTabProfile;
 extern "C" void *data_ov119_02295638[2];
 extern "C" void *data_ov119_02295630[2];
 extern "C" u32 data_ov119_022956d0[10];
@@ -557,7 +553,7 @@ extern "C" void *data_ov119_02295600[2] = {(void *)_ZN15FriendRosterTab9mainAct0
 
 extern "C" u32 data_ov119_02295680[10] = {0x404d00e7, 0x000044c2, 0x804240e5, 0x0000450b, 0x006280e5, 0x0000450f, 0x404240f5, 0x0000454b, 0x006200f5, 0xffff454f};
 
-extern "C" Unk_ov119_SceneEntry sFriendRosterTabProfile = {FriendRosterTab_Create, 0xa2, 0xa6};
+extern "C" ProcProfile sFriendRosterTabProfile = {(void *(*)())FriendRosterTab_Create, 0xa2, 0xa6};
 
 extern "C" void *data_ov119_02295638[2] = {(void *)_ZN15FriendRosterTab9stateOpenEv, 0};
 

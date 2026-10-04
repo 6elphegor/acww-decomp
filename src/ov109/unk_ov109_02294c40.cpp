@@ -15,6 +15,7 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 class SongPickMenu;
 struct Unk_ov109_02295570;
@@ -251,13 +252,8 @@ u32 SongPickMenu_HitTestSlot(S *s, u32 a, u32 b, s32 c);
 SongPickMenu *SongPickMenu_Create();
 }
 
-struct Unk_ov109_SceneEntry {
-    SongPickMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
-extern "C" Unk_ov109_SceneEntry sSongPickMenuProfile = {SongPickMenu_Create, 0x9c, 0xa0};
+extern "C" ProcProfile sSongPickMenuProfile = {(void *(*)())SongPickMenu_Create, 0x9c, 0xa0};
 
 // Layout of the scene object as seen by the out-of-class functions
 struct Unk_ov109_02295570 {

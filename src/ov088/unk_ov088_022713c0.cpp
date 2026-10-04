@@ -30,6 +30,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -208,11 +209,6 @@ struct Unk_ov088_Rgba {
 };
 
 
-struct Unk_ov088_SceneEntry {
-    SpNpcShrunk *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 extern "C" SpNpcShrunk *SpNpcShrunk_Create();
 
 typedef void (SpNpcShrunkTalk::*Unk_ov088_02272618_Fn)();
@@ -267,7 +263,7 @@ extern "C" void *data_ov088_02272578[2] = {(void *)_ZN11SpNpcShrunk9mainAct00Ev,
 extern "C" u8 sSpNpcShrunkModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'u', 'p', 'a', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" void *data_ov088_02272568[2] = {(void *)_ZN11SpNpcShrunk10setupAct00Ev, 0};
 extern "C" Unk_ov088_Rgba data_ov088_022727b0(20, 31, 31, 31);
-extern "C" Unk_ov088_SceneEntry sSpNpcShrunkProfile = {SpNpcShrunk_Create, 0x62, 0x69, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcShrunkProfile = {(void *(*)())SpNpcShrunk_Create, 0x62, 0x69, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov088_02272520[2] = {(void *)_ZN11SpNpcShrunk10setupAct02Ev, 0};
 extern "C" void *data_ov088_02272548[2] = {(void *)_ZN15SpNpcShrunkTalk26scriptCheckTriggerReactionEv, 0};
 extern "C" Unk_ov088_Rgba data_ov088_022727ac(20, 24, 24, 31);

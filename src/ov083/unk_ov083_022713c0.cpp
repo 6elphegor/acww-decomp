@@ -26,6 +26,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -149,13 +150,8 @@ Unk_ov083_02271858_Ent sSpNpcTortimerFlowerFestActTable[3] = {
 extern "C" u8 sSpNpcTortimerFlowerFestTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 extern "C" u8 sSpNpcTortimerFlowerFestModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
 
-struct Unk_ov083_SceneEntry {
-    SpNpcTortimerFlowerFest *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 extern "C" SpNpcTortimerFlowerFest *SpNpcTortimerFlowerFest_Create();
-extern "C" Unk_ov083_SceneEntry sSpNpcTortimerFlowerFestProfile = {SpNpcTortimerFlowerFest_Create, 0x59, 0x60, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcTortimerFlowerFestProfile = {(void *(*)())SpNpcTortimerFlowerFest_Create, 0x59, 0x60, 2, 0x5000, 0x5000, 0x3e800};
 
 
 extern "C" SpNpcTortimerFlowerFest *SpNpcTortimerFlowerFest_Create() {

@@ -23,6 +23,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/MsgString.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -245,15 +246,6 @@ struct Unk_ov045_02259810_Ent {
     BOOL (SpNpcKatrina::*exit)();
 };
 
-struct Unk_ov045_SceneEntry {
-    SpNpcKatrina *(*factory)();
-    u16 a;
-    u16 b;
-    s32 c;
-    s32 d;
-    s32 e;
-    s32 f;
-};
 
 extern "C" {
 extern const Unk_ov045_02258ee4_Ent sSpNpcKatrinaGoodFortuneCards[17];
@@ -303,7 +295,7 @@ const Unk_ov045_02258ee4_Ent sSpNpcKatrinaBadFortuneCards[21] = {
     {0x15, 1},
 };
 SpNpcKatrina *sSpNpcKatrinaInstance;
-extern "C" Unk_ov045_SceneEntry sSpNpcKatrinaProfile = {SpNpcKatrina_Create, 0x70, 0x76, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcKatrinaProfile = {(void *(*)())SpNpcKatrina_Create, 0x70, 0x76, 2, 0x5000, 0x5000, 0x3e800};
 BOOL SpNpcKatrina::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;

@@ -7,6 +7,7 @@
 #include "talk/MsgRequest.h"
 #include "talk/MsgWalker.h"
 #include "talk/MailMsgRequest.h"
+#include "talk/MsgString.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of other units
@@ -16,11 +17,6 @@
 
 
 
-class MsgString {
-public:
-    BOOL append(u8 *str);
-    BOOL set(u8 *str);
-};
 
 extern "C" {
 void MI_CpuFill8(void *dst, u32 value, u32 size);
@@ -475,9 +471,9 @@ BOOL MailTextBuilder::load(MailMsgRequest *p) {
         BOOL m = p->isAppendPart();
         ok &= _ZN16MailTextExpander6expandEh(this, out != 0 ? TRUE : FALSE);
         if (m) {
-            ok &= q->append(output);
+            ok &= (BOOL)q->append(output);
         } else {
-            ok &= q->set(output);
+            ok &= (BOOL)q->set(output);
         }
         if (out) *out = namePos;
     }

@@ -2,68 +2,10 @@
 #include "player/Unk_02006d14_Vec.h"
 #include "player/Unk_02006d14_Blk.h"
 #include "net/CommManager.h"
+#include "player/PlayerActor.h"
 
 
-// An enum-typed local keeps the constant in a callee-saved register across the call.
-// func_020085f0 is declared with the enum parameter (real type u32) so the argument is
-// passed with `movs r1, r5` instead of `adds r1, r5, #0`.
-enum Unk_02094a08_Limit { Unk_02094a08_LIMIT_5 = 5 };
 
-struct Unk_02006d14 {
-    u8 pad_00[0x5c];
-    Unk_02006d14_Vec position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0x44c - 0x90];
-    s32 headPosX;
-    s32 headPosY;
-    s32 headPosZ;
-    u8 pad_458[4];
-    u16 headPitchTarget;
-    u16 headYawTarget;
-    u8 pad_460[0x59c - 0x460];
-    u8 heldItemModel[4];
-    u8 pad_5a0[0x5c8 - 0x5a0];
-    s32 fishBobberState;
-    u8 pad_5cc[0x694 - 0x5cc];
-    Unk_02006d14_Blk itemHandMtx;
-    u8 pad_6c4[0x6f0 - 0x6c4];
-    u8 bodyPos[0x10];
-    s32 animId;
-    u8 pad_704[0x709 - 0x704];
-    u8 faceTex[0x7ec - 0x709];
-    s32 action;
-    u8 pad_7f0[0x7f8 - 0x7f0];
-    u32 actionPriority;
-    u8 pad_7fc[4];
-    s32 exitIndex;
-    s32 exitMode;
-    u8 pad_808[0x8e7 - 0x808];
-    s8 pendingAct76Kind;
-
-    void playSe(u32 a);
-    void setActionFlag(u32 a);
-    BOOL testActionFlag(u32 a);
-    u32 func_02007c08(u32 a);
-    s32 requestEmotion(u32 a, u32 b, u32 c, s32 d);
-    s32 requestAct13(u32 a, s32 b);
-    s32 requestAct10(u32 a, u32 b, s32 c);
-    s32 requestFaceItemChange(u16 *p);
-    s32 getHeldToolKind();
-    s32 getHeldHoldableIndex();
-    s32 func_0200e1ac();
-    s32 func_020085f0(Unk_02094a08_Limit a, s32 b);
-    s32 requestAct32(u32 a, s32 b);
-    s32 requestAct30(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
-    s32 requestTurnTo(s32 a, u32 b, s32 c);
-    s32 requestWalkTo(Unk_02006d14_Vec *v, u32 a, u32 b, s32 c);
-    s32 func_02008100(u16 *p, u32 a, s32 b);
-    s32 requestChangeHeldItem(u32 a, u32 b, s32 c);
-    s32 func_0200c2b4(u32 a, u32 b, u32 c, u32 d, s32 e);
-    s32 requestAct76(u32 a, u32 b, u32 c, u32 d, s32 e);
-    s32 func_0200ce98(u32 a, u32 b, s32 c);
-    s32 PlayerActor_RequestExitWalkOut(Unk_02006d14_Vec *v, u32 a, s32 b);
-};
 
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -122,7 +64,7 @@ void _ZN10PlayerData11setHeldItemEPt(void *p, u16 *v);
 }
 
 extern "C" {
-void _ZN16PlayerFaceTexRef4loadEj(u8 *p, u8 *v);
+void _ZN16PlayerFaceTexRef4loadEj(PlayerFaceTexRef *p, u8 *v);
 }
 
 extern "C" {
@@ -166,11 +108,11 @@ void ItemInfo_GetNthHoldable(u16 *out, u32 v);
 }
 
 extern "C" {
-void HeldItemModel_SetItem(u8 *p, u16 *v, void *z);
+void HeldItemModel_SetItem(HeldItemModel *p, u16 *v, void *z);
 }
 
 extern "C" {
-void HeldItemModel_Update(u8 *p);
+void HeldItemModel_Update(HeldItemModel *p);
 }
 
 extern "C" {
@@ -225,7 +167,7 @@ u32 sPlayerFrontItemDist = 0xccd;
 
 extern "C" u8 *PlayerActor_GetBodyPos(u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
-    if (o) return o->bodyPos;
+    if (o) return (u8 *)&o->bodyPos;
     return 0;
 }
 
@@ -258,14 +200,14 @@ extern "C" BOOL PlayerActor_SetHoldableItem(u32 a, u32 idx) {
         v[3] = 0xfff1;
         _ZN10PlayerData11setHeldItemEPt(p, &v[3]);
         v[4] = 0xfff1;
-        HeldItemModel_SetItem(o->heldItemModel, &v[4], 0);
+        HeldItemModel_SetItem(&o->heldItemModel, &v[4], 0);
         _ZN12Unk_020102ec10replayAnimEv(o);
     } else {
         ItemInfo_GetNthHoldable(&v[0], a - 1);
         _ZN10PlayerData11setHeldItemEPt(p, &v[0]);
-        HeldItemModel_SetItem(o->heldItemModel, &v[0], p);
+        HeldItemModel_SetItem(&o->heldItemModel, &v[0], p);
         _ZN12Unk_020102ec10replayAnimEv(o);
-        HeldItemModel_Update(o->heldItemModel);
+        HeldItemModel_Update(&o->heldItemModel);
     }
     return TRUE;
 }
@@ -321,7 +263,7 @@ extern "C" BOOL PlayerActor_SetSwollenFace(s32 a, u32 idx) {
     } else {
         v = _ZN10PlayerData11getFaceTypeEv(p);
     }
-    _ZN16PlayerFaceTexRef4loadEj(&o->faceTex[0], v);
+    _ZN16PlayerFaceTexRef4loadEj(&o->faceTex, v);
     return TRUE;
 }
 
@@ -348,11 +290,11 @@ extern "C" BOOL PlayerActor_SetHeadTilt(u32 a, u32 b, u32 idx) {
 extern "C" BOOL PlayerActor_GetHeadPos(Unk_02006d14_Vec *out, u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
     if (o) {
-        s32 a = o->headPosX;
-        if (a == 0 && o->headPosY == 0 && o->headPosZ == 0) return FALSE;
+        s32 a = o->headMtx.unk_24;
+        if (a == 0 && o->headMtx.unk_28 == 0 && o->headMtx.unk_2c == 0) return FALSE;
         out->x = a;
-        out->y = o->headPosY;
-        out->z = o->headPosZ;
+        out->y = o->headMtx.unk_28;
+        out->z = o->headMtx.unk_2c;
         WorldCurve_FromCurved(out, out);
         return TRUE;
     }
@@ -361,7 +303,7 @@ extern "C" BOOL PlayerActor_GetHeadPos(Unk_02006d14_Vec *out, u32 idx) {
 
 extern "C" void PlayerActor_GetHandMtx(Unk_02006d14_Blk *out, u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
-    *out = o->itemHandMtx;
+    *out = *(Unk_02006d14_Blk *)&o->itemHandMtx;
 }
 
 extern "C" u16 *PlayerActor_GetItemInFront() {

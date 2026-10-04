@@ -10,16 +10,12 @@
 #include "item/LetterOutbox.h"
 #include "item/FutureLetter.h"
 #include "item/BottleLetterRecord.h"
+#include "item/ItemPickSpec.h"
 
 
 
 
 
-struct ItemPickSpec {
-    void set(s32 a, s32 b);
-    s32 listIndex;
-    s32 itemClass;
-};
 
 
 
@@ -101,7 +97,6 @@ Unk_02095dcc_Grid *TownBlockMap_Get();
 void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 void ItemPick_FromRange(u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
-void ItemPickSpec_Destruct(ItemPickSpec *o);
 void func_0206338c(s32 a, s32 b);
 void func_02063870(void *);
 void func_02063888(void *);
@@ -748,18 +743,18 @@ extern "C" u8 *MotherLetter_GetFileName(s32 a) {
 
 extern "C" u16 MotherLetter_GetPresent(s32 code) {
     u16 buf[4];
-    ItemPickSpec o1;
-    ItemPickSpec o2;
     buf[0] = 0xfff1;
     switch (code) {
     case 0x23:
     case 0x32:
     case 0x5f:
     case 0x73:
-        o1.set(2, 0);
-        ItemPick_One(&buf[1], &o1, 0, 0, 1, 1, 0);
-        buf[0] = buf[1];
-        ItemPickSpec_Destruct(&o1);
+        {
+            ItemPickSpec o1;
+            o1.set(2, 0);
+            ItemPick_One(&buf[1], &o1, 0, 0, 1, 1, 0);
+            buf[0] = buf[1];
+        }
         return buf[0];
     case 0x4a:
         ItemPick_FromRange(&buf[2], 0x1380, 0x20, 0, 0, 0, 1, 10, 0, 1);
@@ -767,10 +762,12 @@ extern "C" u16 MotherLetter_GetPresent(s32 code) {
         return buf[0];
     case 0x1e:
     case 0x1f:
-        o2.set(0, 0);
-        ItemPick_One(&buf[3], &o2, 0, 0, 1, 1, 0);
-        buf[0] = buf[3];
-        ItemPickSpec_Destruct(&o2);
+        {
+            ItemPickSpec o2;
+            o2.set(0, 0);
+            ItemPick_One(&buf[3], &o2, 0, 0, 1, 1, 0);
+            buf[0] = buf[3];
+        }
         return buf[0];
     case 0x25:
     case 0x37:

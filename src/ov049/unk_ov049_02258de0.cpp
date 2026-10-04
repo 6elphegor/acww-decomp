@@ -21,6 +21,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -460,11 +461,6 @@ struct Unk_ov049_0225a590_Ent {
     SpNpcMabelTalk::Fn0 fn;
 };
 
-struct Unk_ov049_SceneEntry {
-    SpNpcMabel *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 extern "C" {
 extern char *sSpNpcMabelMsgKeys[3];
@@ -631,7 +627,7 @@ extern "C" Unk_ov049_0225b458_Ent sSpNpcMabelActTable[16];
 extern "C" void *data_ov049_0225ba68[2];
 extern "C" const u8 sSpNpcMabelDramaMsgTable[28];
 extern "C" void *data_ov049_0225bb18[2];
-extern "C" Unk_ov049_SceneEntry sSpNpcMabelProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcMabelProfile;
 
 extern "C" void *data_ov049_0225bba8[2] = {(void *)_ZN10SpNpcMabel9mainAct09Ev, 0};
 
@@ -2242,4 +2238,4 @@ extern "C" const u8 sSpNpcMabelDramaMsgTable[28] = {0x00, 0x01, 0x02, 0x03, 0xfe
 
 extern "C" void *data_ov049_0225bb18[2] = {(void *)_ZN14SpNpcMabelTalk22dispatchShopMessageEndEv, 0};
 
-extern "C" Unk_ov049_SceneEntry sSpNpcMabelProfile = {SpNpcMabel_Create, 0x79, 0x7d, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcMabelProfile = {(void *(*)())SpNpcMabel_Create, 0x79, 0x7d, 2, 0x5000, 0x5000, 0x3e800};

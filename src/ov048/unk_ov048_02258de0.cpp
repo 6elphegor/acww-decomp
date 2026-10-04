@@ -21,6 +21,7 @@
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -1212,11 +1213,6 @@ extern "C" void _ZN11SpNpcCopper9mainAct01Ev();
 extern "C" void _ZN11SpNpcCopper10setupAct01Ev();
 extern "C" void _ZN11SpNpcCopper9mainAct00Ev();
 extern "C" void _ZN11SpNpcCopper10setupAct00Ev();
-struct Unk_ov048_SceneEntry {
-    SpNpcCopper *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 extern "C" SpNpcCopper *SpNpcCopper_Create();
 
 // Declarations for data defined further down (definition order sets the data layout)
@@ -1363,7 +1359,7 @@ extern "C" void *sSpNpcCopperModelPathPtr;
 extern "C" const Unk_ov048_Vec sCopperTurnBackPos;
 extern "C" const Unk_ov048_Vec sCopperSendOffExitPos;
 extern "C" char sSpNpcCopperTexturePath[];
-extern "C" Unk_ov048_SceneEntry sSpNpcCopperProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcCopperProfile;
 extern "C" const Unk_ov048_Vec sCopperSendOffWalkPos;
 extern "C" const Unk_ov048_Vec sCopperArrivalWalkPos;
 
@@ -2556,7 +2552,7 @@ void SpNpcCopperTalk::onChoiceUnk5F(s32 p) {
 }
 extern "C" char sSpNpcCopperTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'p', 'l', 'c', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 
-extern "C" Unk_ov048_SceneEntry sSpNpcCopperProfile = {SpNpcCopper_Create, 0x72, 0x77, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcCopperProfile = {(void *(*)())SpNpcCopper_Create, 0x72, 0x77, 2, 0x5000, 0x5000, 0x3e800};
 
 extern "C" const Unk_ov048_Vec sCopperSendOffWalkPos = {0x10000, 0x0, 0x13000};
 

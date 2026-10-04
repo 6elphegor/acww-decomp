@@ -2,17 +2,13 @@
 #include "types.h"
 #include "game/Unk_020b4f8c_Vec.h"
 #include "game/Unk_020b4f8c.h"
+#include "game/FxVec3.h"
 
 // TU20 of ov003: the 21 static entries (0x22355c4, 0x1c bytes each) built by the 0x534-byte static initialiser, their
 // tables (used by ov005/ov006) and the 4-byte accessor PlayerHouseTex_Get (0x022187f8-0x022187fc)
 
 // 12-byte vector with a copy constructor (so it is passed by address of a copy)
 
-// vector object with an out-of-line (main) destructor 0x02000c8c
-struct FxVec3 : Unk_020b4f8c_Vec {
-    FxVec3(s32 a, s32 b, s32 c) : Unk_020b4f8c_Vec(a, b, c) {}
-    ~FxVec3();
-};
 
 // 0x1c-byte entry: constructor 0x020b4f8c, destructor 0x020b4fc0 (both in main, see aliases.txt)
 

@@ -4,6 +4,7 @@
 #include "menu/MenuSlide.h"
 #include "menu/MenuProc.h"
 #include "menu/MenuLauncher.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 u32 MenuCtrl_GetMode();
@@ -38,13 +39,8 @@ extern "C" MenuLauncher *MenuLauncher_Create() {
     return new MenuLauncher();
 }
 
-struct Unk_ov092_SceneEntry {
-    MenuLauncher *(*create)();
-    u16 a;
-    u16 b;
-};
 
-extern "C" Unk_ov092_SceneEntry sMenuLauncherProfile = {MenuLauncher_Create, 0x90, 0x94};
+extern "C" ProcProfile sMenuLauncherProfile = {(void *(*)())MenuLauncher_Create, 0x90, 0x94};
 
 BOOL MenuLauncher::vfunc_00() {
     func_0206e5fc();

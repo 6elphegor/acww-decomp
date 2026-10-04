@@ -9,6 +9,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuTownListPanel.h"
+#include "sys/ProcProfile.h"
 
 class NearbyTownsMenu;
 
@@ -162,13 +163,7 @@ public:
     /* 0x1670 */ u8 cursorSlot;
 };
 
-// Scene registration entry read by main: factory, then two ids
-struct Unk_ov141_SceneEntry {
-    NearbyTownsMenu *(*create)();
-    u16 a;
-    u16 b;
-};
-extern "C" Unk_ov141_SceneEntry sNearbyTownsMenuProfile = {NearbyTownsMenu_Create, 0xb6, 0xba};
+extern "C" ProcProfile sNearbyTownsMenuProfile = {(void *(*)())NearbyTownsMenu_Create, 0xb6, 0xba};
 
 extern "C" NearbyTownsMenu *NearbyTownsMenu_Create() { return new NearbyTownsMenu(); }
 

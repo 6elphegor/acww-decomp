@@ -4,6 +4,8 @@
 #include "ui/UiWidget.h"
 #include "ui/LabelBalloon.h"
 #include "ui/FieldInfoLabelBalloon.h"
+#include "talk/MsgString.h"
+#include "talk/MsgString33.h"
 
 struct Vec {
     s32 x, y, z;
@@ -14,22 +16,7 @@ struct Mat {
 };
 
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-};
 
-class MsgString33 : public MsgString {
-public:
-    MsgString33();
-    virtual ~MsgString33();
-    virtual u32 capacity();
-    virtual u8 *data();
-    u8 unk_04[0x30];
-};
 
 
 

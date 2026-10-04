@@ -3,16 +3,12 @@
 #include "net/CommManager.h"
 #include "game/Unk_02095774_Ent.h"
 #include "net/PlayerNetSync.h"
+#include "item/ItemPickSpec.h"
 
 
 
 
 
-struct ItemPickSpec {
-    void set(s32 a, s32 b);
-    s32 listIndex;
-    s32 itemClass;
-};
 
 
 
@@ -283,7 +279,6 @@ void ItemPick_FromRange(u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h,
 }
 
 extern "C" {
-void ItemPickSpec_Destruct(ItemPickSpec *o);
 }
 
 inline BOOL Unk_02095dcc_R(u16 *p, u32 lo, u32 hi) {

@@ -1,6 +1,8 @@
 #include "types.h"
 #include "talk/MsgStringBase.h"
 #include "talk/EncodedString.h"
+#include "talk/MsgString.h"
+#include "talk/MsgString9C.h"
 
 extern "C" {
 void _ZdlPv(void *);
@@ -12,22 +14,7 @@ class MsgString;
 
 
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
-};
 
-class MsgString9C : public MsgString {
-public:
-    MsgString9C();
-    virtual ~MsgString9C();
-    virtual u32 capacity();
-    virtual u8 *data();
-};
 
 class EncodedString8B : public EncodedString {
 public:

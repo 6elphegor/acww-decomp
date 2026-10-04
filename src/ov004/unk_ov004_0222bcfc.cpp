@@ -1,13 +1,9 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "sys/Unk_0209d498_Time.h"
+#include "sys/ProcProfile.h"
 
 
-struct Unk_ov004_SceneEntry {
-    void *(*factory)();
-    u16 a;
-    u16 b;
-};
 
 // size 0x54
 class NewYearCountdown : public GameProc {
@@ -37,7 +33,7 @@ extern "C" const u8 sNewYearCountdownScenes[0x34] = {
     0, 1, 0, 0
 };
 
-extern "C" Unk_ov004_SceneEntry sNewYearCountdownProfile = { (void *(*)())NewYearCountdown_Create, 0x2a, 0x30 };
+extern "C" ProcProfile sNewYearCountdownProfile = { (void *(*)())NewYearCountdown_Create, 0x2a, 0x30 };
 
 extern "C" NewYearCountdown *NewYearCountdown_Create() {
     return new NewYearCountdown;

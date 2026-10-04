@@ -3,6 +3,7 @@
 #include "menu/Unk_ov094_Views.h"
 #include "menu/InventoryItemGrid.h"
 #include "menu/LetterGrid.h"
+#include "menu/InventoryBg.h"
 
 
 
@@ -10,38 +11,7 @@
 
 
 
-struct InventoryBg {
-    /* 0x000 */ u32 unk_00;
-    /* 0x004 */ u8 bellStep[0x4];
-    /* 0x008 */ u16 dirtyFlags;
-    /* 0x00a */ u8 unk_0a[4];
-    /* 0x00e */ u8 bgId;
-    /* 0x00f */ u8 paintedHighlight;
-    /* 0x010 */ u8 highlight;
-    /* 0x011 */ u8 unk_11[3];
-    /* 0x014 */ u8 pictureIndex;
-    /* 0x015 */ u8 unk_15[0x23];
-    /* 0x038 */ u8 vramTasks[0xa8];
-    /* 0x0e0 */ u8 textWindows[0x80];
-    /* 0x160 */ u8 screenData[0x24];
-    /* 0x184 */ u8 unk_184[0x808];
-    /* 0x98c */ Unk_ov094_02292d6c_Obj38 unk_98c[3];
-    /* 0xa34 */ u16 *unk_a34;
-    /* 0xa38 */ u32 unk_a38[2];
-    /* 0xa40 */ u32 unk_a40[2];
-    /* 0xa48 */ u32 unk_a48[2];
-    /* 0xa50 */ s32 unk_a50;
-    /* 0xa54 */ u16 unk_a54;
-    /* 0xa56 */ u8 unk_a56;
-    /* 0xa57 */ u8 unk_a57;
-    /* 0xa58 */ u8 unk_a58;
-    /* 0xa59 */ u8 unk_a59;
-    /* 0xa5a */ u8 unk_a5a;
-    /* 0xa5b */ u8 unk_a5b;
-    /* 0xa5c */ u8 unk_a5c;
-};
 
-typedef InventoryBg S;
 typedef Unk_ov094_02292d6c_Ent8 Ent8;
 typedef Unk_ov094_02292d6c_Rec Rec;
 
@@ -183,46 +153,46 @@ extern u16 sLetterIconChars[];
 }
 
 extern "C" {
-void InventoryBg_LoadBg(S *s, s32 flag);
-void InventoryBg_Load(S *s, s32 flag);
-void InventoryBg_Init(S *s, u32 v);
-S *_ZN11InventoryBgD1Ev(S *s);
-S *_ZN11InventoryBgC1Ev(S *s);
+void InventoryBg_LoadBg(InventoryBg *s, s32 flag);
+void InventoryBg_Load(InventoryBg *s, s32 flag);
+void InventoryBg_Init(InventoryBg *s, u32 v);
+InventoryBg *_ZN11InventoryBgD1Ev(InventoryBg *s);
+InventoryBg *_ZN11InventoryBgC1Ev(InventoryBg *s);
 BOOL InventoryItemGrid_TestBit(u32 *bits, s32 i);
 void InventoryItemGrid_ClearBit(u32 *bits, s32 i);
 void InventoryItemGrid_SetBit(u32 *bits, s32 i);
 void InventoryItemGrid_ClearBits(u32 *bits);
-s32 InventoryItemGrid_GetPresentAnimScale(S *s);
-BOOL InventoryItemGrid_UpdatePresentAnim(S *s);
-void InventoryItemGrid_EndPresentAnim(S *s);
-void InventoryItemGrid_StartPresentAnim(S *s, u32 v, s32 m);
-u32 InventoryItemGrid_AllocUpload(S *s);
-void InventoryItemGrid_CancelUploads(S *s);
+s32 InventoryItemGrid_GetPresentAnimScale(InventoryItemGrid *s);
+BOOL InventoryItemGrid_UpdatePresentAnim(InventoryItemGrid *s);
+void InventoryItemGrid_EndPresentAnim(InventoryItemGrid *s);
+void InventoryItemGrid_StartPresentAnim(InventoryItemGrid *s, u32 v, s32 m);
+u32 InventoryItemGrid_AllocUpload(InventoryItemGrid *s);
+void InventoryItemGrid_CancelUploads(InventoryItemGrid *s);
 u32 InventoryItemGrid_GetScale(u32 i);
-Ent8 *InventoryItemGrid_GetSlotSprite(S *s, s32 i);
-void InventoryItemGrid_DrawSlot(S *s, Ent8 *e, s32 idx, s32 x, s32 y);
-void InventoryItemGrid_DrawFocus(S *s, s32 a, s32 b);
-void InventoryItemGrid_DrawUnderlay(S *s, s32 a, s32 b, s32 c);
-void InventoryItemGrid_DrawMark(S *s, s32 a, s32 b);
-BOOL InventoryItemGrid_IsSlotEmpty(S *s, s32 i);
-void InventoryItemGrid_DrawHeldItem(S *s, s32 x, s32 y);
-void InventoryItemGrid_DrawExtraMarks(S *s, s32 x, s32 y);
-void InventoryItemGrid_DrawBox(S *s, s32 x, s32 y);
-void InventoryItemGrid_DrawPocketsClipped(S *s, s32 x, s32 y, s32 w);
-void InventoryItemGrid_DrawPockets(S *s, s32 x, s32 y);
-void InventoryItemGrid_DisableSlot(S *s, s32 i);
-void InventoryItemGrid_DisableSlotRange(S *s, u8 i, u8 e);
-BOOL InventoryItemGrid_IsSlotDisabled(S *s, s32 i);
-void InventoryItemGrid_UploadIcon(S *s, Rec *r, void *dst, s32 c);
-void InventoryItemGrid_SetSpriteItem(S *s, Rec *r, u32 v, s32 m);
-void InventoryItemGrid_SetHeldItem(S *s, Rec *r, s32 m);
-void InventoryItemGrid_RefreshSlot(S *s, s32 i);
-void InventoryItemGrid_SetSlotItem(S *s, s32 i, u32 v, s32 x);
-void InventoryItemGrid_ClearSlot(S *s, s32 i);
-u32 InventoryItemGrid_GetSlotFlags(S *s, s32 i);
-u16 InventoryItemGrid_GetSlotItem(S *s, s32 i);
-void InventoryItemGrid_MarkSlot(S *s, s32 i);
-void InventoryItemGrid_ClearMarks(S *s);
+Ent8 *InventoryItemGrid_GetSlotSprite(InventoryItemGrid *s, s32 i);
+void InventoryItemGrid_DrawSlot(InventoryItemGrid *s, Ent8 *e, s32 idx, s32 x, s32 y);
+void InventoryItemGrid_DrawFocus(InventoryItemGrid *s, s32 a, s32 b);
+void InventoryItemGrid_DrawUnderlay(InventoryItemGrid *s, s32 a, s32 b, s32 c);
+void InventoryItemGrid_DrawMark(InventoryItemGrid *s, s32 a, s32 b);
+BOOL InventoryItemGrid_IsSlotEmpty(InventoryItemGrid *s, s32 i);
+void InventoryItemGrid_DrawHeldItem(InventoryItemGrid *s, s32 x, s32 y);
+void InventoryItemGrid_DrawExtraMarks(InventoryItemGrid *s, s32 x, s32 y);
+void InventoryItemGrid_DrawBox(InventoryItemGrid *s, s32 x, s32 y);
+void InventoryItemGrid_DrawPocketsClipped(InventoryItemGrid *s, s32 x, s32 y, s32 w);
+void InventoryItemGrid_DrawPockets(InventoryItemGrid *s, s32 x, s32 y);
+void InventoryItemGrid_DisableSlot(InventoryItemGrid *s, s32 i);
+void InventoryItemGrid_DisableSlotRange(InventoryItemGrid *s, u8 i, u8 e);
+BOOL InventoryItemGrid_IsSlotDisabled(InventoryItemGrid *s, s32 i);
+void InventoryItemGrid_UploadIcon(InventoryItemGrid *s, Rec *r, void *dst, s32 c);
+void InventoryItemGrid_SetSpriteItem(InventoryItemGrid *s, Rec *r, u32 v, s32 m);
+void InventoryItemGrid_SetHeldItem(InventoryItemGrid *s, Rec *r, s32 m);
+void InventoryItemGrid_RefreshSlot(InventoryItemGrid *s, s32 i);
+void InventoryItemGrid_SetSlotItem(InventoryItemGrid *s, s32 i, u32 v, s32 x);
+void InventoryItemGrid_ClearSlot(InventoryItemGrid *s, s32 i);
+u32 InventoryItemGrid_GetSlotFlags(InventoryItemGrid *s, s32 i);
+u16 InventoryItemGrid_GetSlotItem(InventoryItemGrid *s, s32 i);
+void InventoryItemGrid_MarkSlot(InventoryItemGrid *s, s32 i);
+void InventoryItemGrid_ClearMarks(InventoryItemGrid *s);
 void InventoryItemGrid_SetCursorSlot(InventoryItemGrid *o, u32 v);
 void InventoryItemGrid_ClearCursorSlot(InventoryItemGrid *o);
 s32 InventoryItemGrid_GetCursorLift(InventoryItemGrid *o);

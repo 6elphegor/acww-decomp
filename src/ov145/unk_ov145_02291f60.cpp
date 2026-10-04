@@ -12,6 +12,7 @@
 #include "menu/MenuScrollKnob.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
+#include "sys/ProcProfile.h"
 
 class DonationMenu;
 typedef void (DonationMenu::*Unk_ov145_022937c0_Fn)();
@@ -55,11 +56,6 @@ typedef void (DonationMenu::*Unk_ov145_022937c0_Fn)();
 #define MenuLauncher_onChildClosed _ZN12MenuLauncher13onChildClosedEv
 #define MenuLauncher_setNextRequest _ZN12MenuLauncher14setNextRequestEii
 
-struct Unk_ov145_SceneEntry {
-    DonationMenu *(*fn)();
-    u16 a;
-    u16 b;
-};
 
 // ---- main-module classes (copied from src/main) ----
 
@@ -161,7 +157,7 @@ void MenuBottomButtons_drawAt(void *p, s32 a);
 void MenuCursorBase_drawWrapped(void *p);
 }
 
-extern "C" Unk_ov145_SceneEntry sDonationMenuProfile = {DonationMenu_Create, 0xba, 0xbe};
+extern "C" ProcProfile sDonationMenuProfile = {(void *(*)())DonationMenu_Create, 0xba, 0xbe};
 extern "C" u32 data_ov145_02293820[32] = {0x20678026, 0x80c8, 0x678018, 0x80e8, 0x678008, 0x80e8, 0x6780f8, 0x80e8,
                                           0x6780e8, 0x80e8, 0x6780d8, 0x80e8, 0x6780c8, 0x80e8, 0x6780ba, 0xffff80c8,
                                           0x400d0045, 0x5106, 0x8005003d, 0xffff50c0, 0x41e80045, 0x5104, 0x81e0003d, 0xffff50c0,

@@ -12,6 +12,7 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
 #include "menu/MenuTabBar.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 extern const u8 sKeyDigits[12];
@@ -250,11 +251,6 @@ public:
     /* 0x1300 */ MenuErrorMessage errorMessage;
 };
 
-struct Unk_ov133_SceneEntry {
-    FriendCodeMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" FriendCodeMenu *FriendCodeMenu_Create() { return new FriendCodeMenu(); }
 
@@ -314,7 +310,7 @@ extern "C" void *data_ov133_02295248[2];
 extern "C" const u32 sKeyRowY[12];
 extern "C" void *data_ov133_02295228[2];
 extern "C" void *data_ov133_02295218[2];
-extern "C" Unk_ov133_SceneEntry sFriendCodeMenuProfile;
+extern "C" ProcProfile sFriendCodeMenuProfile;
 
 extern "C" void *data_ov133_02295220[2] = {(void *)_ZN14FriendCodeMenu17updateCursorPressEv, 0};
 
@@ -1388,4 +1384,4 @@ extern "C" void *data_ov133_02295228[2] = {(void *)_ZN14FriendCodeMenu19updateCu
 
 extern "C" void *data_ov133_02295218[2] = {(void *)_ZN14FriendCodeMenu12stateClosingEv, 0};
 
-extern "C" Unk_ov133_SceneEntry sFriendCodeMenuProfile = {FriendCodeMenu_Create, 0xb4, 0xb8};
+extern "C" ProcProfile sFriendCodeMenuProfile = {(void *(*)())FriendCodeMenu_Create, 0xb4, 0xb8};

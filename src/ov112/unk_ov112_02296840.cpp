@@ -21,6 +21,7 @@
 #include "menu/Keyboard.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 // Plain view of the scene object used by the extern "C" helpers (offsets only).
 struct Unk_ov112_02296840 {
@@ -411,11 +412,6 @@ extern "C" void BbsWriteMenu_LoadBg(S *s);
 extern "C" void BbsWriteMenu_SetupBgLayers(S *s);
 extern "C" void BbsWriteMenu_PostInput(S *s);
 
-struct Unk_ov112_SceneEntry {
-    BbsWriteMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" BbsWriteMenu *BbsWriteMenu_Create();
 
@@ -486,13 +482,13 @@ BOOL BbsWriteMenu::onDraw() {
     bottomButtons.drawAt(buttonsSlideY);
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov112_SceneEntry data_ov112_022999b8;
+extern "C" ProcProfile data_ov112_022999b8;
 extern "C" u32 data_ov112_02299ad8[12];
 extern "C" u32 data_ov112_02299ac0[2];
 
 // Data definition order is chosen so mwcc emits the objects in the original order
 
-extern "C" Unk_ov112_SceneEntry data_ov112_022999b8 = {BbsWriteMenu_Create, 0xa6, 0xaa};
+extern "C" ProcProfile data_ov112_022999b8 = {(void *(*)())BbsWriteMenu_Create, 0xa6, 0xaa};
 
 extern "C" u32 data_ov112_02299ad8[12] = {
     0x006180b4, 0x0000a0c0, 0x206180e4, 0x0000a0c0, 0x006100c4, 0x0000a0e0,

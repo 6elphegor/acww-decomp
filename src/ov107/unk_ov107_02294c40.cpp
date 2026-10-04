@@ -11,17 +11,13 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 // ov107: scene overlay (class PocketsFullMenu, vtable 0x02296e78, 0x281c bytes).
 
 class PocketsFullMenu;
 typedef void (PocketsFullMenu::*Unk_ov107_02296e78_Fn)();
 
-struct Unk_ov107_SceneEntry {
-    void *factory;
-    u16 a;
-    u16 b;
-};
 
 // Other modules' methods, called with the object first (the real symbol is the mangled name).
 #define TouchPromptBalloon_setAutoCloseTimer _ZN18TouchPromptBalloon17setAutoCloseTimerEh
@@ -467,10 +463,10 @@ BOOL PocketsFullMenu::onDraw() {
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov107_SceneEntry sPocketsFullMenuProfile;
+extern "C" ProcProfile sPocketsFullMenuProfile;
 extern "C" const s16 sFishReleaseProbeAngles[8];
 
-extern "C" Unk_ov107_SceneEntry sPocketsFullMenuProfile = {(void *)PocketsFullMenu_Create, 0x9a, 0x9e};
+extern "C" ProcProfile sPocketsFullMenuProfile = {(void *(*)())PocketsFullMenu_Create, 0x9a, 0x9e};
 
 BOOL PocketsFullMenu::execTransition() {
     static Unk_ov107_02296e78_Fn tbl[5] = {

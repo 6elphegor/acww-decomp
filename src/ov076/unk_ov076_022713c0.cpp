@@ -24,6 +24,8 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "item/ItemPickSpec.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -52,11 +54,6 @@ struct Unk_ov076_02271a3c_Bits {
     u32 hi : 4;
 };
 
-struct ItemPickSpec {
-    void set(s32 a, s32 b);
-    s32 listIndex;
-    s32 itemClass;
-};
 
 extern "C" {
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
@@ -86,7 +83,6 @@ s32 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, s32));
 s32 MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
 void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
-void ItemPickSpec_Destruct(ItemPickSpec *o);
 void EventWeekSlots_MarkPlayer(u32 id);
 void TalkRequest_SetTargetDone(void *self);
 void func_020e7530(void *a, s32 b, s32 c);
@@ -175,11 +171,6 @@ struct Unk_ov076_02271d20_Ent {
     BOOL (SpNpcPascal::*exit)();
 };
 
-struct Unk_ov076_SceneEntry {
-    SpNpcPascal *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 struct Unk_ov076_02271f44_Ent {
     const char *a;
@@ -523,19 +514,16 @@ void SpNpcPascalTalk::onMessageEnd(u32) {
                     o0.set(0, 0x15);
                     ItemPick_One(&oa, &o0, 0, 0, 1, 1, 0);
                     giftItem = oa;
-                    ItemPickSpec_Destruct(&o0);
                 } else if (t == 7) {
                     ItemPickSpec o1;
                     o1.set(4, 0x15);
                     ItemPick_One(&ob, &o1, 0, 0, 1, 1, 0);
                     giftItem = ob;
-                    ItemPickSpec_Destruct(&o1);
                 } else {
                     ItemPickSpec o2;
                     o2.set(3, 0x15);
                     ItemPick_One(&oc, &o2, 0, 0, 1, 1, 0);
                     giftItem = oc;
-                    ItemPickSpec_Destruct(&o2);
                 }
                 _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &giftItem, 0, 5, 0);
                 Pocket_AddItem(&giftItem, 0);
@@ -629,7 +617,7 @@ extern "C" u8 sSpNpcPascalKey[16] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'o', 't'
 
 extern "C" u8 sSpNpcPascalModelPath[24] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 's', 'e', 'o', '.', 'n', 's', 'b', 'm', 'd', 0};
 
-extern "C" Unk_ov076_SceneEntry sSpNpcPascalProfile = {SpNpcPascal_Create, 0x68, 0x6e, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcPascalProfile = {(void *(*)())SpNpcPascal_Create, 0x68, 0x6e, 2, 0x5000, 0x5000, 0x3e800};
 
 extern "C" u8 sSpNpcPascalTexturePath[28] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 's', 'e', 'o', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 

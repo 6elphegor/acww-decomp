@@ -8,6 +8,7 @@
 #include "ui/LabelButton.h"
 #include "menu/MenuLabelButton.h"
 #include "menu/MenuCursor.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 void Snd_PlaySe(s32 a);
@@ -78,13 +79,8 @@ public:
 
 extern "C" LetterViewMenu *LetterViewMenu_Create() { return new LetterViewMenu(); }
 
-struct Unk_ov091_SceneEntry {
-    LetterViewMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
-extern "C" Unk_ov091_SceneEntry sLetterViewMenuProfile = {LetterViewMenu_Create, 0xa8, 0xac};
+extern "C" ProcProfile sLetterViewMenuProfile = {(void *(*)())LetterViewMenu_Create, 0xa8, 0xac};
 
 BOOL LetterViewMenu::vfunc_00() {
     initLetterView();

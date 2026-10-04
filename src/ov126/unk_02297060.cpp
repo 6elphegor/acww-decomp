@@ -13,6 +13,7 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/Keyboard.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 #define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
 #define func_0206260c _ZN8ItemNameD1Ev
@@ -311,11 +312,6 @@ class NameEntryMenu;
 typedef void (NameEntryMenu::*Unk_ov126_02299ae8_Fn)();
 
 class NameEntryMenu;
-struct Unk_ov126_SceneEntry {
-    NameEntryMenu *(*factory)();
-    u16 a;
-    u16 b;
-};
 
 // Vtable 0x02299ae8, size 0x40c8
 class NameEntryMenu : public MenuProc {
@@ -472,7 +468,7 @@ public:
 
 // Named data: their definition order sets the .data order (compiler-generated constants would not reproduce it).
 extern "C" NameEntryMenu *NameEntryMenu_Create();
-extern "C" Unk_ov126_SceneEntry data_ov126_022999e0 = {NameEntryMenu_Create, 0xab, 0xaf};
+extern "C" ProcProfile data_ov126_022999e0 = {(void *(*)())NameEntryMenu_Create, 0xab, 0xaf};
 extern "C" u32 data_ov126_02299ad0[4] = {0x802040c8, 0x000051c0, 0x404000c8, 0xffff51c4};
 extern "C" void _ZN13NameEntryMenu15transitionAct01Ev();
 extern "C" void *data_ov126_02299ac0[2] = {(void *)_ZN13NameEntryMenu15transitionAct01Ev, 0};

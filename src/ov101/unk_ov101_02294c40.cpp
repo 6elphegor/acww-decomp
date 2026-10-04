@@ -15,6 +15,7 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 class PocketItemSelectMenu;
 class MenuLauncher;
@@ -310,17 +311,12 @@ BOOL PocketItemSelectMenu::onDraw() {
 
 extern "C" PocketItemSelectMenu *PocketItemSelectMenu_Create();
 
-struct Unk_ov101_SceneEntry {
-    PocketItemSelectMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov101_SceneEntry sPocketItemSelectMenuProfile;
+extern "C" ProcProfile sPocketItemSelectMenuProfile;
 
 // Scene registration entry read by main: factory, then two ids
-extern "C" Unk_ov101_SceneEntry sPocketItemSelectMenuProfile = {PocketItemSelectMenu_Create, 0x94, 0x98};
+extern "C" ProcProfile sPocketItemSelectMenuProfile = {(void *(*)())PocketItemSelectMenu_Create, 0x94, 0x98};
 
 BOOL PocketItemSelectMenu::execTransition() {
     static Unk_ov101_02296b38_Fn tbl[5] = {

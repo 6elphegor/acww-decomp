@@ -8,6 +8,7 @@
 #include "game/TouchPickCylinder.h"
 #include "gfx/AnimModel.h"
 #include "gfx/ModelAnim.h"
+#include "sys/ProcProfile.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 // (called as free functions with the object as first argument; the mangled name is the symbols.txt name)
@@ -103,11 +104,6 @@ struct Unk_ov004_0222a994_Pad {
     ~Unk_ov004_0222a994_Pad() {}
 };
 
-struct Unk_ov004_SceneEntry {
-    void *(*factory)();
-    u16 a;
-    u16 b;
-};
 
 struct Unk_ov004_0222a6c0_Fx {
     /* 0x00 */ u32 flag;
@@ -418,7 +414,7 @@ extern "C" const char *sRoomCarpetMatName;
 extern "C" const char *sRoomWallpaperMatName;
 extern "C" FxVec3 sRoomHasuPos;
 extern "C" ItemId sRoomNoItem;
-extern "C" Unk_ov004_SceneEntry sRoomShellProfile = { (void *(*)())RoomShell_Create, 0xe, 0xa };
+extern "C" ProcProfile sRoomShellProfile = { (void *(*)())RoomShell_Create, 0xe, 0xa };
 extern "C" {
 FxVec3 sRoomHasuPos(0, 0, 0);
 RoomShell *sRoomShell;

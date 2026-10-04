@@ -2,6 +2,7 @@
 #include "types.h"
 #include "game/Unk_020b4f8c_Vec.h"
 #include "game/Unk_020b4f8c.h"
+#include "game/FxVec3.h"
 
 // ov021: map scene tables (a scene record, its entry list, the id grid, the static map objects).
 // Generated from the original image; the definition order below
@@ -9,11 +10,6 @@
 
 // 12-byte vector with a copy constructor (so it is passed by address of a copy)
 
-// vector object with an out-of-line (main) destructor 0x02000c8c
-struct FxVec3 : Unk_020b4f8c_Vec {
-    FxVec3(s32 a, s32 b, s32 c) : Unk_020b4f8c_Vec(a, b, c) {}
-    ~FxVec3();
-};
 
 // 0x1c-byte map object: constructor 0x020b4f8c, destructor 0x020b4fc0 (both in main)
 

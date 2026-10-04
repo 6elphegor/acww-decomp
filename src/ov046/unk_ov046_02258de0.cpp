@@ -28,6 +28,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -234,11 +235,6 @@ struct Unk_ov046_0225a398_Ent {
     BOOL (SpNpcCeleste::*exit)();
 };
 
-struct Unk_ov046_SceneEntry {
-    void *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 extern "C" void *SpNpcCeleste_Create();
 struct Unk_ov046_Quad {
@@ -259,7 +255,7 @@ extern "C" Unk_ov046_Quad data_ov046_0225ae0c;
 extern "C" u8 sSpNpcCelesteModelPath[];
 extern "C" u8 sSpNpcCelesteTexturePath[];
 extern "C" const Unk_ov046_0225a650_Entry sSpNpcCelesteTopicMsgs[5];
-extern "C" Unk_ov046_SceneEntry sSpNpcCelesteProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcCelesteProfile;
 extern Unk_ov046_0225a398_Ent sSpNpcCelesteActTable[5];
 extern "C" u8 sSpNpcCelesteKey[];
 
@@ -497,7 +493,7 @@ extern "C" const Unk_ov046_0225a650_Entry sSpNpcCelesteTopicMsgs[5] = {
     {sSpNpcCelesteKey, 4},
 };
 
-extern "C" Unk_ov046_SceneEntry sSpNpcCelesteProfile = {SpNpcCeleste_Create, 0x6d, 0x73, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcCelesteProfile = {(void *(*)())SpNpcCeleste_Create, 0x6d, 0x73, 2, 0x5000, 0x5000, 0x3e800};
 
 Unk_ov046_0225a398_Ent sSpNpcCelesteActTable[5] = {
     {&SpNpcCeleste::setupAct00, &SpNpcCeleste::mainAct00},

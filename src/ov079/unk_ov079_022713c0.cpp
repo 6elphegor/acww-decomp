@@ -28,6 +28,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -197,17 +198,12 @@ struct Unk_ov079_022725f4_Ent {
     BOOL (SpNpcWendell::*exit)();
 };
 
-struct Unk_ov079_SceneEntry {
-    SpNpcWendell *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 extern "C" {
 extern Unk_ov079_022725f4_Ent sSpNpcWendellActTable[5];
 extern u8 sSpNpcWendellModelPath[];
 extern u8 sSpNpcWendellTexturePath[];
-extern Unk_ov079_SceneEntry sSpNpcWendellProfile;
+extern Unk_ov004_SceneEntry sSpNpcWendellProfile;
 SpNpcWendell *SpNpcWendell_Create();
 BOOL SpNpcWendell_AcceptAnyItem(u16 *p, s32 x);
 }
@@ -635,7 +631,7 @@ extern "C" void *data_ov079_02272988[2] = {(void *)_ZN16SpNpcWendellTalk15result
 
 extern "C" u8 sSpNpcWendellTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'w', 'r', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 
-extern "C" Unk_ov079_SceneEntry sSpNpcWendellProfile = {SpNpcWendell_Create, 0x6b, 0x71, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcWendellProfile = {(void *(*)())SpNpcWendell_Create, 0x6b, 0x71, 2, 0x5000, 0x5000, 0x3e800};
 
 extern "C" Unk_ov079_Rgba data_ov079_02272b80(31, 20, 20, 31);
 

@@ -7,6 +7,7 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 extern u8 gSaveBlancaFace;
@@ -115,11 +116,6 @@ struct Unk_ov123_02293010_Q {
     Unk_ov123_02293010_Q() {}
 };
 
-struct Unk_ov123_SceneEntry {
-    void *factory;
-    u16 a;
-    u16 b;
-};
 
 class PatternEditorMenu;
 typedef void (PatternEditorMenu::*Unk_ov123_022959c4_Fn)();
@@ -163,7 +159,7 @@ extern Unk_ov123_022958c0 data_ov123_022958c0;
 extern u16 *sStampBitmaps[4];
 extern void *sPatternEditorToolCursors[12];
 extern void *data_ov123_02295900[3];
-extern Unk_ov123_SceneEntry sPatternEditorMenuProfile;
+extern ProcProfile sPatternEditorMenuProfile;
 }
 
 // Vtable 0x022959c4, size 0x5168
@@ -421,7 +417,7 @@ extern "C" void *data_ov123_02295878[2] = {(void *)_ZN17PatternEditorMenu11state
 
 extern "C" void *data_ov123_02295860[2] = {(void *)_ZN17PatternEditorMenu16stateConfirmOpenEv, 0};
 
-extern "C" Unk_ov123_SceneEntry sPatternEditorMenuProfile = {(void *)PatternEditorMenu_Create, 0xa9, 0xad};
+extern "C" ProcProfile sPatternEditorMenuProfile = {(void *(*)())PatternEditorMenu_Create, 0xa9, 0xad};
 
 extern "C" void *data_ov123_02295890[2] = {(void *)_ZN17PatternEditorMenu16updateEyedropperEv, 0};
 

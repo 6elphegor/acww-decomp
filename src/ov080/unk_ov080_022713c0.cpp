@@ -23,6 +23,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti
@@ -131,22 +132,13 @@ Unk_ov080_022718c0_Ent sSpNpcTortimerActTable[3] = {
     {NULL, &SpNpcTortimer::mainAct02},
 };
 
-struct Unk_ov080_SceneEntry {
-    SpNpcTortimer *(*factory)();
-    u16 a;
-    u16 b;
-    s32 c;
-    s32 d;
-    s32 e;
-    s32 f;
-};
 
 extern "C" SpNpcTortimer *SpNpcTortimer_Create();
 
 extern "C" {
 u8 sSpNpcTortimerTexturePath[27] = "npc_sp/model/ttl_tex.nsbtx";
 u8 sSpNpcTortimerModelPath[23] = "npc_sp/model/ttl.nsbmd";
-Unk_ov080_SceneEntry sSpNpcTortimerProfile = {SpNpcTortimer_Create, 0x56, 0x5d, 2, 0x5000, 0x5000, 0x3e800};
+Unk_ov004_SceneEntry sSpNpcTortimerProfile = {(void *(*)())SpNpcTortimer_Create, 0x56, 0x5d, 2, 0x5000, 0x5000, 0x3e800};
 }
 
 

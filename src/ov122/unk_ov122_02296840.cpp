@@ -17,6 +17,7 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 class EncodedString;
 
@@ -423,11 +424,6 @@ public:
 };
 
 extern "C" void LetterWriteMenu_SetupBgLayers();
-struct Unk_ov122_SceneEntry {
-    LetterWriteMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 extern "C" LetterWriteMenu *LetterWriteMenu_Create();
 // Scene registration entry read by main: factory, then two ids
 // Named data: their definition order sets the .data order (compiler-generated constants would not reproduce it).
@@ -435,7 +431,7 @@ extern "C" const u8 data_ov122_0229a004[4] = {3, 4, 0, 0};
 
 extern "C" const u16 data_ov122_0229a010[6] = {0x27, 0x29, 0x29, 0x27, 0x2a, 0};
 
-extern "C" Unk_ov122_SceneEntry data_ov122_0229a130 = {LetterWriteMenu_Create, 0xa5, 0xa9};
+extern "C" ProcProfile data_ov122_0229a130 = {(void *(*)())LetterWriteMenu_Create, 0xa5, 0xa9};
 
 extern "C" const u8 data_ov122_0229a008[8] = {0, 9, 9, 3, 4, 0, 0, 0};
 

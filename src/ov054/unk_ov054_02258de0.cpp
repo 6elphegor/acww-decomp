@@ -23,6 +23,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -233,11 +234,6 @@ struct Unk_ov054_0225aef4_Ent {
     Unk_ov054_0225ba54_Fn exit;
 };
 
-struct Unk_ov054_SceneEntry {
-    SpNpcPellyPhyllis *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
@@ -468,7 +464,7 @@ extern char sSpNpcPellyPhyllisSequence4Key[];
 extern void *sSpNpcPellyPhyllisMenus[5];
 extern u8 sSpNpcPellyModelPath[];
 extern u8 sSpNpcPhyllisModelPath[];
-extern Unk_ov054_SceneEntry sSpNpcPellyPhyllisProfile;
+extern Unk_ov004_SceneEntry sSpNpcPellyPhyllisProfile;
 extern u32 sSpNpcPellyPhyllisMsgKeys[2][3];
 extern u8 sSpNpcPellyTexturePath[];
 extern u8 sSpNpcPhyllisTexturePath[];
@@ -2366,7 +2362,7 @@ s32 SpNpcPellyPhyllis::isOnline() {
 }
 
 // Data, second part (see the note at the first part)
-extern "C" Unk_ov054_SceneEntry sSpNpcPellyPhyllisProfile = {SpNpcPellyPhyllis_Create, 0x7a, 0x7e, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcPellyPhyllisProfile = {(void *(*)())SpNpcPellyPhyllis_Create, 0x7a, 0x7e, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov054_0225b7c8[2] = {(void *)_ZN17SpNpcPellyPhyllis9mainAct03Ev, 0};
 extern "C" void *data_ov054_0225b7c0[2] = {(void *)_ZN21SpNpcPellyPhyllisTalk11endHandItemEv, 0};
 extern "C" u8 *sSpNpcPellyPhyllisModelPaths[2] = {sSpNpcPellyModelPath, sSpNpcPhyllisModelPath};

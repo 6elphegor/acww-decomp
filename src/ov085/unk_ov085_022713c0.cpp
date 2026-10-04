@@ -26,6 +26,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 #pragma opt_loop_invariants off
 
@@ -137,11 +138,6 @@ struct Unk_ov085_02271aac_Ent {
     BOOL (SpNpcTortimerBrightNights::*exit)();
 };
 
-struct Unk_ov085_SceneEntry {
-    SpNpcTortimerBrightNights *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 extern "C" {
 void *PlayerData_GetCurrent();
@@ -193,7 +189,7 @@ Unk_ov085_02271aac_Ent sSpNpcTortimerBrightNightsActTable[3] = {
 };
 extern "C" u8 sSpNpcTortimerBrightNightsTexturePath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','_','t','e','x','.','n','s','b','t','x',0};
 extern "C" u8 sSpNpcTortimerBrightNightsModelPath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','.','n','s','b','m','d',0};
-extern "C" Unk_ov085_SceneEntry sSpNpcTortimerBrightNightsProfile = {SpNpcTortimerBrightNights_Create, 0x5b, 0x62, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcTortimerBrightNightsProfile = {(void *(*)())SpNpcTortimerBrightNights_Create, 0x5b, 0x62, 2, 0x5000, 0x5000, 0x3e800};
 
 extern "C" SpNpcTortimerBrightNights *SpNpcTortimerBrightNights_Create() {
     return new SpNpcTortimerBrightNights();

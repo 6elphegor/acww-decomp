@@ -14,6 +14,7 @@
 #include "menu/MenuTitleBalloon.h"
 #include "menu/MenuScrollKnob.h"
 #include "menu/MenuCursor.h"
+#include "sys/ProcProfile.h"
 
 #define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
 #define LabelBalloon_showLayer2 _ZN12LabelBalloon10showLayer2Ev
@@ -50,11 +51,6 @@
 class WfcFriendListMenu;
 typedef void (WfcFriendListMenu::*Unk_ov146_02294080_Fn)();
 
-struct Unk_ov146_SceneEntry {
-    WfcFriendListMenu *(*fn)();
-    u16 a;
-    u16 b;
-};
 
 // ---- main-module classes (copied from src/main/unk_0206f53c.cpp / unk_02062fd4.cpp) ----
 
@@ -325,7 +321,7 @@ extern "C" void *data_ov146_02293e10[2];
 extern "C" u32 data_ov146_02293e48[2];
 extern "C" void *data_ov146_02293e08[2];
 extern "C" u32 data_ov146_02293f90[8];
-extern "C" Unk_ov146_SceneEntry sWfcFriendListMenuProfile;
+extern "C" ProcProfile sWfcFriendListMenuProfile;
 extern "C" void *data_ov146_02293e60[2];
 extern "C" void *data_ov146_02293e30[2];
 extern "C" u32 sWfcRowCells[12];
@@ -416,7 +412,7 @@ extern "C" void *data_ov146_02293e08[2] = {(void *)_ZN17WfcFriendListMenu15execK
 
 extern "C" u32 data_ov146_02293f90[8] = {0x0006003a, 0x0000c5d5, 0x01ff003a, 0x0000c5d5, 0x01f8003a, 0x0000c5d5, 0x01f1003a, 0xffffd5d5};
 
-extern "C" Unk_ov146_SceneEntry sWfcFriendListMenuProfile = {WfcFriendListMenu_Create, 0xbb, 0xbf};
+extern "C" ProcProfile sWfcFriendListMenuProfile = {(void *(*)())WfcFriendListMenu_Create, 0xbb, 0xbf};
 
 extern "C" void *data_ov146_02293e60[2] = {(void *)_ZN17WfcFriendListMenu12execDragKnobEv, 0};
 

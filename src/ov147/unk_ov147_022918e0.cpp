@@ -13,6 +13,7 @@
 #include "player/PlayerData.h"
 #include "talk/ChoiceList.h"
 #include "talk/TalkMsgRequest.h"
+#include "sys/ProcProfile.h"
 
 struct TitleChoiceSet {
     u8 *msgIds;
@@ -71,11 +72,6 @@ class TitleScreen;
 
 
 
-struct Unk_ov147_SceneEntry {
-    TitleScreen *(*factory)();
-    u16 executePriority;
-    u16 drawPriority;
-};
 
 typedef void (TitleScreen::*Unk_ov147_022933e8_Fn)();
 struct TitleStateEntry {
@@ -974,7 +970,7 @@ void TitleScreen::maskLogoCell(u32 *p, s32 x, s32 y) {
 extern "C" u32 sTitleLogoHideMasks[7][8] = { 0 };
 extern "C" u16 sTitleLogoScreen[0x400] = { 0 };
 extern "C" u8 sTitleLogoMask2[0x1e0] = { 0 };
-extern "C" Unk_ov147_SceneEntry sTitleScreenProfile = { TitleScreen_Create, 0xd4, 0xcf };
+extern "C" ProcProfile sTitleScreenProfile = { (void *(*)())TitleScreen_Create, 0xd4, 0xcf };
 extern "C" char *sTitleTalkFilePtr = sTitleTalkFile;
 extern "C" u32 sTitleLogoCharsWork[0x1c0][8] = { 0 };
 extern "C" u32 sTitleLogoChars[0x1c0][8] = { 0 };

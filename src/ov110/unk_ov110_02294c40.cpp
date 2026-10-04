@@ -17,6 +17,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 class LostFoundRecycleMenu;
 
@@ -468,16 +469,11 @@ void LostFoundRecycleMenu_Exit(S *s);
 void LostFoundRecycleMenu_Init(S *s);
 }
 
-struct Unk_ov110_SceneEntry {
-    LostFoundRecycleMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" LostFoundRecycleMenu *LostFoundRecycleMenu_Create();
 
 // Scene registration entry read by main: factory, then two ids
-extern "C" Unk_ov110_SceneEntry sLostFoundRecycleMenuProfile = {LostFoundRecycleMenu_Create, 0x9d, 0xa1};
+extern "C" ProcProfile sLostFoundRecycleMenuProfile = {(void *(*)())LostFoundRecycleMenu_Create, 0x9d, 0xa1};
 
 static inline BOOL Unk_ov110_02296b1c_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) return TRUE;

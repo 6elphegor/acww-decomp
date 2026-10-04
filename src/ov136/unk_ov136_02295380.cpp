@@ -4,6 +4,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/DateTimePicker.h"
+#include "sys/ProcProfile.h"
 
 class DateTimePicker;
 
@@ -75,11 +76,6 @@ void DateTimePicker_Init(DateTimePicker *p, s32 a, s32 b, s32 c, s32 d);
 class TimeSelectMenu;
 typedef void (TimeSelectMenu::*Unk_ov136_022963b0_Fn)();
 
-struct Unk_ov136_SceneEntry {
-    TimeSelectMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" TimeSelectMenu *TimeSelectMenu_Create();
 
@@ -161,7 +157,7 @@ public:
     /* 0x2823 */ u8 cursorSlot;
 };
 
-extern "C" Unk_ov136_SceneEntry sTimeSelectMenuProfile;
+extern "C" ProcProfile sTimeSelectMenuProfile;
 
 static inline BOOL Unk_ov136_02295c0c_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) {
@@ -204,7 +200,7 @@ BOOL TimeSelectMenu::onDraw() {
     bottomButtons.drawAt(getSlideOffsetY());
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov136_SceneEntry sTimeSelectMenuProfile;
+extern "C" ProcProfile sTimeSelectMenuProfile;
 extern "C" const s32 sTimeSelectCursorXTable[3];
 extern "C" const s32 sTimeSelectCursorYTable[3];
 extern "C" const u8 sTimeSelectCursorLeftTable[3];
@@ -212,7 +208,7 @@ extern "C" const u8 sTimeSelectCursorRightTable[3];
 extern "C" const u8 sTimeSelectCursorUpTable[3];
 extern "C" const u8 sTimeSelectCursorDownTable[3];
 
-extern "C" Unk_ov136_SceneEntry sTimeSelectMenuProfile = {TimeSelectMenu_Create, 0xaf, 0xb3};
+extern "C" ProcProfile sTimeSelectMenuProfile = {(void *(*)())TimeSelectMenu_Create, 0xaf, 0xb3};
 
 BOOL TimeSelectMenu::execTransition() {
     static Unk_ov136_022963b0_Fn tbl[4] = {

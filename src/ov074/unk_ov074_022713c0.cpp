@@ -24,6 +24,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -253,11 +254,6 @@ struct Unk_ov074_02272130_Ent {
     BOOL (SpNpcBlanca::*exit)();
 };
 
-struct Unk_ov074_SceneEntry {
-    SpNpcBlanca *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 struct Unk_ov074_Col {
     u8 r, g, b, a;
@@ -282,7 +278,7 @@ s32 SpNpcBlanca_IsInFocusBox(void *self, void *a, void *b);
 extern u8 sSpNpcBlancaModelPath[];
 extern Unk_ov074_02272130_Ent sSpNpcBlancaActTable[5];
 extern FxVec3 sSpNpcBlancaSidestepOffsets[2];
-extern Unk_ov074_SceneEntry sSpNpcBlancaProfile;
+extern Unk_ov004_SceneEntry sSpNpcBlancaProfile;
 extern Unk_ov074_Col data_ov074_022726e4;
 extern Unk_ov074_Col data_ov074_022726f4;
 extern Unk_ov074_Col data_ov074_022726e0;
@@ -624,7 +620,7 @@ void SpNpcBlancaTalk::onTaskDone(u32) {
 extern u32 *data_ov074_022724e4;
 extern u32 sSpNpcBlancaFaceMaterialName;
 extern u8 sSpNpcBlancaModelPath[];
-extern Unk_ov074_SceneEntry sSpNpcBlancaProfile;
+extern Unk_ov004_SceneEntry sSpNpcBlancaProfile;
 extern void *data_ov074_022724e8[2];
 extern void *data_ov074_022724f0[2];
 extern void *data_ov074_022724f8[2];
@@ -662,7 +658,7 @@ Unk_ov074_Col data_ov074_022726f4(20, 20, 31, 31);
 Unk_ov074_Col data_ov074_022726e0(31, 31, 20, 31);
 void *data_ov074_022724f0[2] = {(void *)_ZN15SpNpcBlancaTalk15onConceptChosenEv, 0};
 Unk_ov074_Col data_ov074_022726f8(20, 31, 20, 31);
-Unk_ov074_SceneEntry sSpNpcBlancaProfile = {SpNpcBlanca_Create, 0x67, 0x6d, 2, 0x5000, 0x5000, 0x3e800};
+Unk_ov004_SceneEntry sSpNpcBlancaProfile = {(void *(*)())SpNpcBlanca_Create, 0x67, 0x6d, 2, 0x5000, 0x5000, 0x3e800};
 Unk_ov074_Col data_ov074_022726e8(20, 31, 31, 31);
 Unk_ov074_Col data_ov074_022726f0(20, 24, 24, 31);
 void *data_ov074_02272518[2] = {(void *)_ZN11SpNpcBlanca10setupAct03Ev, 0};

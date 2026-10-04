@@ -25,6 +25,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -194,12 +195,7 @@ u8 *sSpNpcResettiMsgKey = sSpNpcResettiKey;
 u8 sSpNpcResettiModelPath[23] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','m','o','l','.','n','s','b','m','d',0};
 u8 sSpNpcResettiTexturePath[27] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','m','o','l','_','t','e','x','.','n','s','b','t','x',0};
 
-struct Unk_ov077_SceneEntry {
-    SpNpcResetti *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
-Unk_ov077_SceneEntry sSpNpcResettiProfile = {SpNpcResetti_Create, 0x65, 0x6b, 2, 0x5000, 0x5000, 0x3e800};
+Unk_ov004_SceneEntry sSpNpcResettiProfile = {(void *(*)())SpNpcResetti_Create, 0x65, 0x6b, 2, 0x5000, 0x5000, 0x3e800};
 
 extern "C" {
 void _ZN12SpNpcResetti9mainAct04Ev();

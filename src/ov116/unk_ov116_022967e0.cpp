@@ -7,6 +7,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/CreatureBookPanel.h"
 #include "menu/MenuTabBar.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -53,11 +54,6 @@ void CreatureBook_DrawRows(void *p, s32 a);
 
 class InsectBookTab;
 
-struct Unk_ov116_SceneEntry {
-    InsectBookTab *(*create)();
-    u16 a;
-    u16 b;
-};
 
 
 
@@ -174,9 +170,9 @@ BOOL InsectBookTab::onDraw() {
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov116_SceneEntry sInsectBookTabProfile;
+extern "C" ProcProfile sInsectBookTabProfile;
 
-extern "C" Unk_ov116_SceneEntry sInsectBookTabProfile = {InsectBookTab_Create, 0xa0, 0xa4};
+extern "C" ProcProfile sInsectBookTabProfile = {(void *(*)())InsectBookTab_Create, 0xa0, 0xa4};
 
 BOOL InsectBookTab::execTransition() {
     static Unk_ov116_02297378_Fn tbl[4] = {

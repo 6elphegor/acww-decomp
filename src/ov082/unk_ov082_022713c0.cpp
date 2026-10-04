@@ -26,6 +26,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -197,11 +198,6 @@ extern u8 sSpNpcTortimerBugOffModelPath[];
 BOOL SpNpcTortimerBugOff_IsInsect(u16 *p, s32 x);
 }
 
-struct Unk_ov082_SceneEntry {
-    SpNpcTortimerBugOff *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 extern "C" SpNpcTortimerBugOff *SpNpcTortimerBugOff_Create();
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -331,10 +327,10 @@ void SpNpcTortimerBugOffTalk::onTaskDone(u32) {
 }// Declarations for data defined further down (definition order sets the data layout)
 extern Unk_ov082_02271ce4_Ent sSpNpcTortimerBugOffActTable[3];
 extern "C" u8 sSpNpcTortimerBugOffTexturePath[];
-extern "C" Unk_ov082_SceneEntry sSpNpcTortimerBugOffProfile;
+extern "C" Unk_ov004_SceneEntry sSpNpcTortimerBugOffProfile;
 extern "C" u8 sSpNpcTortimerBugOffModelPath[];
 
-extern "C" Unk_ov082_SceneEntry sSpNpcTortimerBugOffProfile = {SpNpcTortimerBugOff_Create, 0x58, 0x5f, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcTortimerBugOffProfile = {(void *(*)())SpNpcTortimerBugOff_Create, 0x58, 0x5f, 2, 0x5000, 0x5000, 0x3e800};
 
 extern "C" u8 sSpNpcTortimerBugOffTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 

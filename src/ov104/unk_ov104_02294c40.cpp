@@ -28,6 +28,7 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 class PostOfficeMenu;
 class MenuLauncher;
@@ -321,12 +322,6 @@ public:
     /* 0x3e1c */ MenuBottomButtons bottomButtons;
 };
 
-// Scene registration entry read by main: factory, then two ids
-struct Unk_ov104_SceneEntry {
-    PostOfficeMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" {
 void PostOfficeMenu_RestorePocketLetters(S *s);
@@ -426,9 +421,9 @@ BOOL PostOfficeMenu::onDraw() {
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov104_SceneEntry sPostOfficeMenuProfile;
+extern "C" ProcProfile sPostOfficeMenuProfile;
 
-extern "C" Unk_ov104_SceneEntry sPostOfficeMenuProfile = {PostOfficeMenu_Create, 0x97, 0x9b};
+extern "C" ProcProfile sPostOfficeMenuProfile = {(void *(*)())PostOfficeMenu_Create, 0x97, 0x9b};
 
 BOOL PostOfficeMenu::execTransition() {
     static Unk_ov104_02298170_Fn tbl[11] = {

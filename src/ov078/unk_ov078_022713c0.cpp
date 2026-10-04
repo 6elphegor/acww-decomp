@@ -31,6 +31,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 struct Unk_0201bc1c;
@@ -181,11 +182,6 @@ struct Unk_ov078_02272030_Ent {
 };
 typedef BOOL (SpNpcSaharah::*Unk_ov078_Fn)();
 
-struct Unk_ov078_SceneEntry {
-    SpNpcSaharah *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 struct Unk_ov078_Col {
     u8 a, b, c, d;
@@ -226,14 +222,14 @@ extern Unk_ov078_Col data_ov078_022725c0;
 extern FxVec3 sSpNpcSaharahSideStepOffsets[2];
 extern u8 sSpNpcSaharahModelPath[];
 extern u8 sSpNpcSaharahTexturePath[];
-extern Unk_ov078_SceneEntry sSpNpcSaharahProfile;
+extern Unk_ov004_SceneEntry sSpNpcSaharahProfile;
 SpNpcSaharah *SpNpcSaharah_Create();
 }
 
 Unk_ov078_Col data_ov078_022725c4(0x1f, 0x14, 0x14, 0x1f);
 extern "C" void *data_ov078_022723e0[2] = {(void *)_ZN12SpNpcSaharah9mainAct01Ev, 0};
 extern "C" void *data_ov078_022723d8[2] = {(void *)_ZN12SpNpcSaharah9mainAct03Ev, 0};
-extern "C" Unk_ov078_SceneEntry sSpNpcSaharahProfile = {SpNpcSaharah_Create, 0x6a, 0x70, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcSaharahProfile = {(void *(*)())SpNpcSaharah_Create, 0x6a, 0x70, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov078_022723c0[2] = {(void *)_ZN12SpNpcSaharah10setupAct02Ev, 0};
 extern "C" void *data_ov078_022723d0[2] = {(void *)_ZN12SpNpcSaharah10setupAct03Ev, 0};
 Unk_ov078_Col data_ov078_022725d0(0x14, 0x14, 0x1f, 0x1f);

@@ -9,6 +9,7 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
+#include "sys/ProcProfile.h"
 
 struct Unk_ov143_02293b38_E {
     u32 w0;
@@ -48,11 +49,6 @@ struct Unk_ov143_0229334c_E {
 };
 
 class MelodyMenu;
-struct Unk_ov143_SceneEntry {
-    MelodyMenu *(*fn)();
-    u16 a;
-    u16 b;
-};
 
 struct Unk_ov143_02292898_V {
     s32 x, y, z;
@@ -133,7 +129,7 @@ BOOL MenuKeys_HasUp(u32 pad);
 }
 
 
-extern "C" Unk_ov143_SceneEntry sMelodyMenuProfile = {MelodyMenu_Create, 0xb8, 0xbc};
+extern "C" ProcProfile sMelodyMenuProfile = {(void *(*)())MelodyMenu_Create, 0xb8, 0xbc};
 extern "C" Unk_ov143_02293980_T data_ov143_02293980[2] = {{0x8188404a, {192, 48}}, {0x81a8404a, {196, 4194288}}};
 extern "C" u32 data_ov143_02293950[2] = {0x1a000f0, 0xffffc0de};
 extern "C" Unk_ov143_0229334c_E data_ov143_022939e8 = {0x419800cf, 0xc0c9, 0x1a880cf, 0xc0cb, 0x819a00df, {0x144, 0x2c}, 0xffff};

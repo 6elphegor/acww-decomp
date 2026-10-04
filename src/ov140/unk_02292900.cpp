@@ -10,6 +10,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuTownListPanel.h"
+#include "sys/ProcProfile.h"
 
 class DistantTownsMenu;
 
@@ -179,11 +180,6 @@ static inline BOOL Unk_ov140_02293450_Both() {
     return FALSE;
 }
 
-struct Unk_ov140_SceneEntry {
-    DistantTownsMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 // Data definition order is chosen so mwcc emits the objects in the original order
 
@@ -212,7 +208,7 @@ extern "C" u32 data_ov140_02293e64[84] = {
 };
 
 // Scene registration entry read by main (0x020e2100): factory, then two ids
-extern "C" Unk_ov140_SceneEntry sDistantTownsMenuProfile = {DistantTownsMenu_Create, 0xb5, 0xb9};
+extern "C" ProcProfile sDistantTownsMenuProfile = {(void *(*)())DistantTownsMenu_Create, 0xb5, 0xb9};
 
 extern "C" u32 data_ov140_02293d80[2] = {0x804840e0, 0xffffc1c8};
 

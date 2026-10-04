@@ -24,6 +24,7 @@
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 
 class SpNpcKappn;
@@ -209,11 +210,6 @@ extern Unk_ov051_02259be4_Ent sSpNpcKappnActTable[];
 extern SpNpcKappn *sSpNpcKappnInstance;
 }
 
-struct Unk_ov051_SceneEntry {
-    SpNpcKappn *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 extern "C" SpNpcKappn *SpNpcKappn_Create();
 
 
@@ -888,7 +884,7 @@ extern "C" void *data_ov051_0225a04c[2] = {(void *)_ZN14SpNpcKappnTalk21askAfter
 extern "C" void *data_ov051_0225a10c[2] = {(void *)_ZN10SpNpcKappn9mainAct01Ev, 0};
 extern "C" void *data_ov051_0225a03c[2] = {(void *)_ZN14SpNpcKappnTalk14askDestinationEv, 0};
 extern "C" void *data_ov051_0225a01c[2] = {(void *)_ZN14SpNpcKappnTalk14askDestinationEv, 0};
-extern "C" Unk_ov051_SceneEntry sSpNpcKappnProfile = {SpNpcKappn_Create, 0x7b, 0x7f, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcKappnProfile = {(void *(*)())SpNpcKappn_Create, 0x7b, 0x7f, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov051_0225a05c[2] = {(void *)_ZN14SpNpcKappnTalk22askAfterGirlCorrectionEv, 0};
 extern "C" void *data_ov051_0225a0bc[2] = {(void *)_ZN14SpNpcKappnTalk19openPlayerNameEntryEv, 0};
 extern "C" void *data_ov051_0225a0cc[2] = {(void *)_ZN14SpNpcKappnTalk13onMoneyChoiceEj, 0};

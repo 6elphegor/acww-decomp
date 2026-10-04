@@ -8,6 +8,7 @@
 #include "ui/LabelString.h"
 #include "menu/MenuTextButton.h"
 #include "menu/MenuCursor.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 extern u8 gTouchHeld;
@@ -142,11 +143,6 @@ extern void *data_ov128_022951f8[2];
 class StargazingMenu;
 typedef void (StargazingMenu::*Unk_ov128_022954e0_Fn)();
 
-struct Unk_ov128_SceneEntry {
-    StargazingMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 // Vtable 0x022954e0, size 0x2d1c
 class StargazingMenu : public MenuProc {
@@ -296,7 +292,7 @@ extern "C" void *data_ov128_022951f8[2] = {(void *)_ZN14StargazingMenu9mainAct0A
 extern "C" void *data_ov128_02295230[2] = {(void *)_ZN14StargazingMenu9mainAct04Ev, 0};
 extern "C" u32 data_ov128_02295268[6] = {0x4188004c, 0x50c6, 0x5190004c, 0x8106, 0x4180004c, 0xffff8106};
 extern "C" u32 data_ov128_02295418[16] = {0x8188404c, 0x50c6, 0x81a8404c, 0x50ca, 0x81c8404c, 0x50ce, 0x1e8804c, 0x50d2, 0x81b9404c, 0x8107, 0x819c404c, 0x8107, 0x91d8404c, 0x8106, 0x8180404c, 0xffff8106};
-extern "C" Unk_ov128_SceneEntry sStargazingMenuProfile = {StargazingMenu_Create, 0xac, 0xb0};
+extern "C" ProcProfile sStargazingMenuProfile = {(void *(*)())StargazingMenu_Create, 0xac, 0xb0};
 extern "C" u32 data_ov128_022952f8[10] = {0x8188404c, 0x50c6, 0x81a8404c, 0x50ca, 0x8198404c, 0x8107, 0x91b0404c, 0x8106, 0x8180404c, 0xffff8106};
 extern "C" void *data_ov128_02295220[2] = {(void *)_ZN14StargazingMenu9mainAct02Ev, 0};
 extern "C" void *data_ov128_02295238[2] = {(void *)_ZN14StargazingMenu9mainAct00Ev, 0};

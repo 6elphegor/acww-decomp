@@ -4,6 +4,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/DateTimePicker.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 extern const u8 sBirthdayCursorRightTable[4];
@@ -185,11 +186,6 @@ BOOL BirthdayMenu::onDraw() {
     return TRUE;
 }
 
-struct Unk_ov137_SceneEntry {
-    BirthdayMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" const u8 sBirthdayCursorLeftTable[4];
@@ -197,7 +193,7 @@ extern "C" const s32 sBirthdayCursorXTable[3];
 extern "C" const s32 sBirthdayCursorYTable[3];
 extern "C" const u8 sBirthdayCursorUpTable[4];
 extern "C" const u8 sBirthdayCursorDownTable[4];
-extern "C" Unk_ov137_SceneEntry sBirthdayMenuProfile;
+extern "C" ProcProfile sBirthdayMenuProfile;
 extern "C" const u8 sBirthdayCursorRightTable[4];// Declarations for data defined further down (definition order sets the data layout)
 extern "C" const s32 sBirthdayCursorXTable[3];
 extern "C" const u8 sBirthdayCursorRightTable[4];
@@ -205,7 +201,7 @@ extern "C" const u8 sBirthdayCursorLeftTable[4];
 extern "C" const u8 sBirthdayCursorUpTable[4];
 extern "C" const u8 sBirthdayCursorDownTable[4];
 extern "C" const s32 sBirthdayCursorYTable[3];
-extern "C" Unk_ov137_SceneEntry sBirthdayMenuProfile;
+extern "C" ProcProfile sBirthdayMenuProfile;
 
 extern "C" const s32 sBirthdayCursorXTable[3] = {0x60, 0xac, 0};
 
@@ -735,4 +731,4 @@ extern "C" const u8 sBirthdayCursorDownTable[4] = {2, 2, 2, 0};
 
 extern "C" const s32 sBirthdayCursorYTable[3] = {0x78, 0x78, 0};
 
-extern "C" Unk_ov137_SceneEntry sBirthdayMenuProfile = {BirthdayMenu_Create, 0xb0, 0xb4};
+extern "C" ProcProfile sBirthdayMenuProfile = {(void *(*)())BirthdayMenu_Create, 0xb0, 0xb4};

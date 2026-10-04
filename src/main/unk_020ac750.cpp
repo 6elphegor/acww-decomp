@@ -29,11 +29,8 @@
 #include "gfx/ObjShadowStrip.h"
 #include "game/ReddShop.h"
 #include "game/NookShop.h"
-struct MsgString25 {
-    MsgString25();
-    ~MsgString25();
-    u8 d[0x30];
-};
+#include "talk/MsgString.h"
+#include "talk/MsgString25.h"
 
 
 struct ItemName {
@@ -62,13 +59,6 @@ struct ItemName {
 
 // ---- externs ----
 
-class MsgString {  // base of ReddPasswordString
-public:
-    MsgString();
-    virtual ~MsgString();
-    void clear();
-    u8 unk_04[0x30];
-};
 
 // ---- ReddPasswordString : MsgString ----
 class ReddPasswordString : public MsgString {
@@ -76,7 +66,9 @@ public:
     ReddPasswordString();
     virtual ~ReddPasswordString();
     virtual u32 capacity();
-    virtual void *data();
+    virtual u8 *data();
+
+    /* 0x12 */ u8 text[0x21];
 };
 
 
@@ -1923,7 +1915,7 @@ namespace n2 {
 }
 
 
-void *ReddPasswordString::data() {
+u8 *ReddPasswordString::data() {
     using namespace n2;
     return (u8 *)this + 0x12;
 }

@@ -9,6 +9,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuScrollKnob.h"
 #include "menu/MenuTabBar.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 BOOL _ZN10HandCursor10isAnimDoneEv(void *self);
@@ -271,11 +272,6 @@ struct Unk_ov118_02295500 {
     u16 unk_6;
 };
 
-struct Unk_ov118_SceneEntry {
-    MapTab *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" MapTab *MapTab_Create();
 
@@ -321,7 +317,7 @@ extern "C" void *data_ov118_022954c0[2];
 extern "C" void *data_ov118_022954c8[2];
 extern "C" void *data_ov118_022954e0[2];
 extern "C" void *data_ov118_022954b0[2];
-extern "C" Unk_ov118_SceneEntry sMapTabProfile;
+extern "C" ProcProfile sMapTabProfile;
 extern "C" Unk_ov118_02295500 sMapTabIconCell;
 extern "C" const u8 sMapTabPlaceMarkers[5];
 extern "C" const u8 sMapTabMarkerPlaceRows[5];
@@ -485,7 +481,7 @@ extern "C" void *data_ov118_022954e0[2] = {(void *)_ZN6MapTab17updateKnobRelease
 
 extern "C" void *data_ov118_022954c8[2] = {(void *)_ZN6MapTab14updateKnobHoldEv, 0};
 
-extern "C" Unk_ov118_SceneEntry sMapTabProfile = {MapTab_Create, 0xa1, 0xa5};
+extern "C" ProcProfile sMapTabProfile = {(void *(*)())MapTab_Create, 0xa1, 0xa5};
 
 extern "C" void *data_ov118_022954b0[2] = {(void *)_ZN6MapTab15updateMapCursorEv, 0};
 

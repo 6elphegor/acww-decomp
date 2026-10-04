@@ -3,6 +3,7 @@
 #include "sys/Unk_0209d498_Time.h"
 #include "room/Unk_ov004_0222c9d0.h"
 #include "gfx/Unk_020dbd44.h"
+#include "sys/ProcProfile.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 
@@ -179,15 +180,10 @@ s32 ItemDropList_Add(void *base, s32 idx, Unk_ov004_P2 *p, Unk_ov004_V3 *a, Unk_
 s32 ItemDrop_Start(s32 idx, u32 v, Unk_ov004_V3 *a, Unk_ov004_V3 *b, u32 f);
 }
 
-struct Unk_ov004_SceneEntry {
-    void *(*factory)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" RoomItemIcons *RoomItemIcons_Create();
 
-extern "C" Unk_ov004_SceneEntry sRoomItemIconsProfile = { (void *(*)())RoomItemIcons_Create, 0x8b, 0xd2 };
+extern "C" ProcProfile sRoomItemIconsProfile = { (void *(*)())RoomItemIcons_Create, 0x8b, 0xd2 };
 extern "C" {
 RoomItemIcons *sRoomItemIcons;
 RoomItemDropList sRoomItemDrops;

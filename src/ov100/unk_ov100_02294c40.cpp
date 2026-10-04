@@ -15,6 +15,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 void Gfx2d_ShowLayer(u32 x);
@@ -237,11 +238,6 @@ public:
 
 typedef ShopSellMenu S;
 
-struct Unk_ov100_SceneEntry {
-    ShopSellMenu *(*create)();
-    u16 a;
-    u16 b;
-};
 
 extern "C" ShopSellMenu *ShopSellMenu_Create();
 
@@ -372,10 +368,10 @@ BOOL ShopSellMenu::onDraw() {
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov100_SceneEntry sShopSellMenuProfile;
+extern "C" ProcProfile sShopSellMenuProfile;
 
 // Scene registration entry read by main (0x020e2100 etc.): factory, then two ids
-extern "C" Unk_ov100_SceneEntry sShopSellMenuProfile = {ShopSellMenu_Create, 0x93, 0x97};
+extern "C" ProcProfile sShopSellMenuProfile = {(void *(*)())ShopSellMenu_Create, 0x93, 0x97};
 
 BOOL ShopSellMenu::execTransition() {
     static Unk_ov100_02297778_Fn tbl[7] = {
