@@ -1,9 +1,8 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_02288538_Cipher.h"
-#include "net/Unk_ov065_02288b60_Mgr.h"
-#include "net/Unk_ov065_02288ffc_W.h"
-#include "net/Unk_ov065_02289460_Obj.h"
+#include "net/GsSrvListCryptState.h"
+#include "net/GsSrvQueryEngine.h"
+#include "net/GsSrvBrowser.h"
 
 extern "C" {
 char *data_ov065_0228e928[2] = {"queryid", "final"};
@@ -26,8 +25,8 @@ namespace F022884fc {
 extern "C" {
 extern u32 gGsKeyNames[];
 extern u8 data_ov065_0228e8fc[];
-extern Unk_ov065_02288b60_Buf13 data_ov065_0228e904;
-extern Unk_ov065_02288b60_Buf8 data_ov065_0228e914;
+extern GsSrvQueryBasicInfoStr data_ov065_0228e904;
+extern GsSrvQueryStatusStr data_ov065_0228e914;
 extern s32 sGsAvailStatus;
 extern u32 data_ov065_022918a8;
 extern u8 data_0213a410[];
@@ -53,10 +52,10 @@ void GsServer_ParseQr2Reply(void *e, u8 *buf, s32 n);
 void GsServer_ParseQr1Reply(void *e, u8 *buf);
 }
 
-typedef Unk_ov065_02288538_Cipher Cipher;
-typedef Unk_ov065_02288b60_Mgr Mgr;
-typedef Unk_ov065_02288b60_Ent Ent;
-typedef Unk_ov065_02288c78_List List;
+typedef GsSrvListCryptState Cipher;
+typedef GsSrvQueryEngine Mgr;
+typedef GsServer Ent;
+typedef GsSrvQueue List;
 typedef Unk_ov065_02288b60_Sa Sa;
 
 extern "C" {
@@ -164,17 +163,17 @@ s32 GsSrvList_Receive(void *);
 s32 GsSrvList_SendNatNegCookie(void *, s32, s32, s32);
 s32 GsSrvList_SendServerMessage(void *, s32, s32, s32, s32);
 
-s32 GsServer_SetStringValue(Unk_ov065_02289174_Ctx *a, char *k, char *v);
+s32 GsServer_SetStringValue(GsServer *a, char *k, char *v);
 char *GsUtil_StrTok(char *s, s32 ch);
 s32 GsServer_IsKeyAllowed(char *s);
 s32 GsServer_GetStringValue(void *a, char *k, s32 d);
 s32 GsSrvBrowser_Halt(void *o);
 s32 GsSrvBrowser_Think(void *o);
 s32 GsSrvBrowser_UpdateListEx(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
-void GsSrvBrowser_OnQueryEvent(void *, s32, Unk_ov065_02289578_Pkt *, Unk_ov065_02289460_Obj *);
-void GsSrvBrowser_OnListEvent(Unk_ov065_02289578_Sub *, s32, Unk_ov065_02289578_Pkt *, Unk_ov065_02289460_Obj *);
+void GsSrvBrowser_OnQueryEvent(void *, s32, GsServer *, GsSrvBrowser *);
+void GsSrvBrowser_OnListEvent(GsSrvList *, s32, GsServer *, GsSrvBrowser *);
 s32 GsSrvList_Think(void *);
-s32 GsSrvList_ThinkLan(Unk_ov065_02289720_Sub *);
+s32 GsSrvList_ThinkLan(GsSrvList *);
 s32 GsStrPool_CompareCb(char **, char **);
 s32 GsStrPool_FreeEntryCb(void **);
 s32 GsStrPool_HashCb(void **);
@@ -185,7 +184,7 @@ s32 GsStrPool_HashCb(void **);
 namespace F02288e2c {
 extern "C" {
 s32 GsSrvBrowser_UpdateListEx(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e) {
-    Unk_ov065_02289460_Obj *o = (Unk_ov065_02289460_Obj *)op;
+    GsSrvBrowser *o = (GsSrvBrowser *)op;
     char buf[0x100] = {0};
     s32 i;
     s32 j;
@@ -193,7 +192,7 @@ s32 GsSrvBrowser_UpdateListEx(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s3
     s32 t;
     i = 0;
     o->disconnectOnComplete = b;
-    o->numQueryKeys = 0;
+    o->engine.keycount = 0;
     j = 0;
     if (n > 0) {
         do {
@@ -206,10 +205,10 @@ s32 GsSrvBrowser_UpdateListEx(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s3
             j++;
         } while (j < n);
     }
-    r = GsSrvList_SendListRequest(&o->serverList, buf, c, d, e);
+    r = GsSrvList_SendListRequest(&o->list, buf, c, d, e);
     if (r == 0 && a == 0) {
         t = 10;
-        while (o->serverList == 3 || (o->numActiveQueries > 0 && r == 0)) {
+        while (o->list.state == 3 || (o->engine.active.count > 0 && r == 0)) {
             GsUtil_Sleep(t);
             r = GsSrvBrowser_Think(o);
         }
@@ -228,28 +227,28 @@ s32 GsSrvBrowser_UpdateList(void *o, s32 a, s32 b, u8 *c, s32 e, s32 f, s32 g) {
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_SendMessage(Unk_ov065_02289460_Obj *o, s32 a, u16 b, s32 c, s32 e) {
+s32 GsSrvBrowser_SendMessage(GsSrvBrowser *o, s32 a, u16 b, s32 c, s32 e) {
     s32 x = GsSock_InetAddr(a);
-    return GsSrvList_SendServerMessage(&o->serverList, x, Unk_ov065_02289044_Htons(b), c, e);
+    return GsSrvList_SendServerMessage(&o->list, x, Unk_ov065_02289044_Htons(b), c, e);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_SendNatNegCookie(Unk_ov065_02289460_Obj *o, s32 a, u16 b, s32 c) {
+s32 GsSrvBrowser_SendNatNegCookie(GsSrvBrowser *o, s32 a, u16 b, s32 c) {
     s32 x = GsSock_InetAddr(a);
-    return GsSrvList_SendNatNegCookie(&o->serverList, x, Unk_ov065_02289044_Htons(b), c);
+    return GsSrvList_SendNatNegCookie(&o->list, x, Unk_ov065_02289044_Htons(b), c);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-void GsSrvBrowser_RemoveServer(Unk_ov065_02289460_Obj *o) {
-    s32 r = GsSrvList_FindServer(&o->serverList);
+void GsSrvBrowser_RemoveServer(GsSrvBrowser *o) {
+    s32 r = GsSrvList_FindServer(&o->list);
     if (r != -1) {
-        GsSrvList_RemoveServerAt(&o->serverList, r);
+        GsSrvList_RemoveServerAt(&o->list, r);
     }
 }
 }
@@ -259,7 +258,7 @@ namespace F02288e2c {
 extern "C" {
 s32 GsSrvBrowser_Think(void *o) {
     GsSrvQuery_Think(o);
-    return GsSrvList_Think(&((Unk_ov065_02289460_Obj *)o)->serverList);
+    return GsSrvList_Think(&((GsSrvBrowser *)o)->list);
 }
 }
 }
@@ -267,7 +266,7 @@ s32 GsSrvBrowser_Think(void *o) {
 namespace F02288e2c {
 extern "C" {
 s32 GsSrvBrowser_Halt(void *o) {
-    GsSrvList_Disconnect(&((Unk_ov065_02289460_Obj *)o)->serverList);
+    GsSrvList_Disconnect(&((GsSrvBrowser *)o)->list);
     return GsSrvQuery_Clear(o);
 }
 }
@@ -275,42 +274,42 @@ s32 GsSrvBrowser_Halt(void *o) {
 
 namespace F02288e2c {
 extern "C" {
-void GsSrvBrowser_Clear(Unk_ov065_02289460_Obj *o) {
+void GsSrvBrowser_Clear(GsSrvBrowser *o) {
     GsSrvBrowser_Halt(o);
-    GsSrvList_ClearServers(&o->serverList);
+    GsSrvList_ClearServers(&o->list);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_GetServer(Unk_ov065_02289460_Obj *o) {
-    return GsSrvList_GetServer(&o->serverList);
+s32 GsSrvBrowser_GetServer(GsSrvBrowser *o) {
+    return GsSrvList_GetServer(&o->list);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_GetServerCount(Unk_ov065_02289460_Obj *o) {
-    return GsSrvList_Count(&o->serverList);
+s32 GsSrvBrowser_GetServerCount(GsSrvBrowser *o) {
+    return GsSrvList_Count(&o->list);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_Sort(Unk_ov065_02289460_Obj *o) {
-    Unk_ov065_02289258_Pad pad;
-    GsSrvList_Sort(&o->serverList);
+s32 GsSrvBrowser_Sort(GsSrvBrowser *o) {
+    GsSrvSortStackPad pad;
+    GsSrvList_Sort(&o->list);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_GetPublicIp(Unk_ov065_02289460_Obj *o) {
-    return o->myPublicIp;
+s32 GsSrvBrowser_GetPublicIp(GsSrvBrowser *o) {
+    return o->list.myPublicIp;
 }
 }
 }
@@ -365,8 +364,8 @@ void GsStrPool_FreeIfEmpty() {
 
 namespace F02288e2c {
 extern "C" {
-void GsServer_Free(Unk_ov065_02289174_Ctx **pp) {
-    Unk_ov065_02289174_Ctx *q = *pp;
+void GsServer_Free(GsServer **pp) {
+    GsServer *q = *pp;
     GsHash_Free(q->keyValues);
     q->keyValues = NULL;
     GsUtil_Free(q);
@@ -376,8 +375,8 @@ void GsServer_Free(Unk_ov065_02289174_Ctx **pp) {
 
 namespace F02288e2c {
 extern "C" {
-s32 GsServer_SetStringValue(Unk_ov065_02289174_Ctx *a, char *k, char *v) {
-    Unk_ov065_02289174_KV kv;
+s32 GsServer_SetStringValue(GsServer *a, char *k, char *v) {
+    GsServerKeyValue kv;
     kv.key = GsStrPool_Add(0, k);
     kv.value = GsStrPool_Add(0, v);
     return GsHash_Insert(a->keyValues, &kv);
@@ -390,7 +389,7 @@ extern "C" {
 void GsServer_SetIntValue(void *a, char *b) {
     char buf[0x14];
     OS_SPrintf(buf, "%d");
-    GsServer_SetStringValue((Unk_ov065_02289174_Ctx *)a, b, buf);
+    GsServer_SetStringValue((GsServer *)a, b, buf);
 }
 }
 }
@@ -398,13 +397,13 @@ void GsServer_SetIntValue(void *a, char *b) {
 namespace F02288e2c {
 extern "C" {
 s32 GsServer_GetStringValue(void *a, char *k, s32 d) {
-    Unk_ov065_0228911c_Ent *e;
+    GsServerKeyValue *e;
     s32 key[2];
     if (a == NULL) {
         return 0;
     }
     key[0] = (s32)k;
-    e = (Unk_ov065_0228911c_Ent *)GsHash_Find(((Unk_ov065_02289174_Ctx *)a)->keyValues, key);
+    e = (GsServerKeyValue *)GsHash_Find(((GsServer *)a)->keyValues, key);
     if (e != NULL) {
         d = e->value;
     }
@@ -459,7 +458,7 @@ s32 GsServer_GetPublicIp(s32 *o) {
 
 namespace F02288e2c {
 extern "C" {
-u16 GsServer_GetPublicPort(Unk_ov065_02289044_Hdr *o) {
+u16 GsServer_GetPublicPort(GsServer *o) {
     return Unk_ov065_02289044_Htons(o->port);
 }
 }
@@ -467,7 +466,7 @@ u16 GsServer_GetPublicPort(Unk_ov065_02289044_Hdr *o) {
 
 namespace F02288e2c {
 extern "C" {
-u16 GsServer_GetPortRaw(Unk_ov065_02289044_Hdr *o) {
+u16 GsServer_GetPortRaw(GsServer *o) {
     return o->port;
 }
 }
@@ -475,7 +474,7 @@ u16 GsServer_GetPortRaw(Unk_ov065_02289044_Hdr *o) {
 
 namespace F02288e2c {
 extern "C" {
-BOOL GsServer_HasPrivateAddress(Unk_ov065_02289044_Hdr *o) {
+BOOL GsServer_HasPrivateAddress(GsServer *o) {
     if ((o->listFlags & 2) == 2) {
         return TRUE;
     }
@@ -494,7 +493,7 @@ s32 GsServer_GetPrivateIp(s32 *o) {
 
 namespace F02288e2c {
 extern "C" {
-u16 GsServer_GetPrivatePort(Unk_ov065_02289044_Hdr *o) {
+u16 GsServer_GetPrivatePort(GsServer *o) {
     return Unk_ov065_02289044_Htons(o->port2);
 }
 }
@@ -502,16 +501,16 @@ u16 GsServer_GetPrivatePort(Unk_ov065_02289044_Hdr *o) {
 
 namespace F02288e2c {
 extern "C" {
-void GsServer_SetNextFree(Unk_ov065_0228903c_Obj *o, s32 v) {
-    o->next = v;
+void GsServer_SetNextFree(GsServer *o, s32 v) {
+    o->next = (GsServer *)v;
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsServer_GetNextFree(Unk_ov065_0228903c_Obj *o) {
-    return o->next;
+s32 GsServer_GetNextFree(GsServer *o) {
+    return (s32)o->next;
 }
 }
 }
@@ -519,7 +518,7 @@ s32 GsServer_GetNextFree(Unk_ov065_0228903c_Obj *o) {
 namespace F02288e2c {
 extern "C" {
 s32 GsServer_IsKeyAllowed(char *s) {
-    Unk_ov065_02288ffc_W l = *(Unk_ov065_02288ffc_W *)data_ov065_0228e928;
+    GsServerIgnoredKeys l = *(GsServerIgnoredKeys *)data_ov065_0228e928;
     u32 i;
     char **p = l.v;
     for (i = 0; i < 2; i++) {
@@ -570,7 +569,7 @@ out:
 
 namespace F02288e2c {
 extern "C" {
-void GsServer_ParseQr1Reply(Unk_ov065_02289174_Ctx *c, char *s) {
+void GsServer_ParseQr1Reply(GsServer *c, char *s) {
     char *k;
     char *v;
     k = GsUtil_StrTok(s + 1, 0x5c);
@@ -592,7 +591,7 @@ void GsServer_ParseQr1Reply(Unk_ov065_02289174_Ctx *c, char *s) {
 
 namespace F02288e2c {
 extern "C" {
-void GsServer_ParseQr2Reply(Unk_ov065_02289174_Ctx *c, char *p, s32 len) {
+void GsServer_ParseQr2Reply(GsServer *c, char *p, s32 len) {
     s32 r;
     char *q;
     char *name;

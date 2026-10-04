@@ -3,8 +3,7 @@
 #include "net/Unk_ov065_02282f90_Conn.h"
 #include "net/Unk_ov065_022831c0_Obj.h"
 #include "net/Unk_ov065_022833b4_Pair.h"
-#include "net/Unk_ov065_02283744_Buf.h"
-#include "net/Unk_ov065_022837bc_Ent.h"
+#include "net/GsPersist.h"
 #include "net/Unk_ov065_022833b4_Src.h"
 
 // ov065 TU50: GP gpiTransfer/gpiUnique/gpiUtility (0x02283304..0x02283720)
@@ -107,10 +106,6 @@ extern "C" {
 
 
 
-typedef void (*Unk_ov065_022837bc_Cb0)(s32, s32, s32, void *, s32);
-typedef void (*Unk_ov065_022837bc_Cb1)(s32, s32, s32, s32, s32, s32, void *, s32, s32);
-typedef void (*Unk_ov065_022837bc_Cb2)(s32, s32, s32, s32, s32, s32, s32);
-typedef void (*Unk_ov065_022837bc_Cb3)(s32, s32, s32, s32);
 
 
 

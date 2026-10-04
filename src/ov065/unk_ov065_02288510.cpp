@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_02288538_Cipher.h"
-#include "net/Unk_ov065_02288b60_Mgr.h"
+#include "net/GsSrvListCryptState.h"
+#include "net/GsSrvQueryEngine.h"
 
 // ov065_066: GameSpy transport (RC4-like cipher, connection manager) 0x022884fc..0x02288df0
 
@@ -9,7 +9,7 @@
 
 
 
-struct Unk_ov065_02288b60_Mgr;
+struct GsSrvQueryEngine;
 
 
 
@@ -40,10 +40,10 @@ void GsServer_ParseQr2Reply(void *e, u8 *buf, s32 n);
 void GsServer_ParseQr1Reply(void *e, u8 *buf);
 }
 
-typedef Unk_ov065_02288538_Cipher Cipher;
-typedef Unk_ov065_02288b60_Mgr Mgr;
-typedef Unk_ov065_02288b60_Ent Ent;
-typedef Unk_ov065_02288c78_List List;
+typedef GsSrvListCryptState Cipher;
+typedef GsSrvQueryEngine Mgr;
+typedef GsServer Ent;
+typedef GsSrvQueue List;
 typedef Unk_ov065_02288b60_Sa Sa;
 
 extern "C" {
@@ -137,7 +137,7 @@ void GsSrvQuery_SendQuery(Mgr *m, Ent *e) {
     }
 }
 
-void GsSrvQuery_Init(Mgr *m, s32 max, s32 mode, s32 force, Unk_ov065_02288b60_Cb cb, void *user) {
+void GsSrvQuery_Init(Mgr *m, s32 max, s32 mode, s32 force, GsSrvQueryEngineCallback cb, void *user) {
     if (force != 0 || sGsAvailStatus == 1) {
         GsSock_StartupStub();
         m->mode = mode;

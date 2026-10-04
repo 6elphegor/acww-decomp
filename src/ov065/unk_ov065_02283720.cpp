@@ -5,10 +5,8 @@
 #include "net/Unk_ov065_02282f90_Conn.h"
 #include "net/Unk_ov065_022831c0_Obj.h"
 #include "net/Unk_ov065_022833b4_Pair.h"
-#include "net/Unk_ov065_02283744_Buf.h"
-#include "net/Unk_ov065_022837bc_Ent.h"
-#include "net/Unk_ov065_02284100_Buf.h"
-#include "net/Unk_ov065_0228412c_Obj.h"
+#include "net/GsPersist.h"
+#include "net/GsTransport.h"
 #include "net/Unk_ov065_022833b4_Src.h"
 
 extern "C" u8 data_ov065_0228df8c[16];
@@ -132,10 +130,6 @@ extern "C" {
 
 
 
-typedef void (*Unk_ov065_022837bc_Cb0)(s32, s32, s32, void *, s32);
-typedef void (*Unk_ov065_022837bc_Cb1)(s32, s32, s32, s32, s32, s32, void *, s32, s32);
-typedef void (*Unk_ov065_022837bc_Cb2)(s32, s32, s32, s32, s32, s32, s32);
-typedef void (*Unk_ov065_022837bc_Cb3)(s32, s32, s32, s32);
 
 
 
@@ -190,7 +184,7 @@ void GsUtil_Free(void *);
 void *GsUtil_Realloc(void *, s32);
 void *GsUtil_Alloc(s32);
 s32 GsUtil_GetTimeMs(u8 *);
-void GsTransport_FreeSocket(Unk_ov065_0228412c_Obj *);
+void GsTransport_FreeSocket(GsTransportSocket *);
 
 void GsPersist_HandleAuthReply(char *, s32);
 void GsPersist_HandleGetPidReply(char *, s32);
@@ -547,21 +541,21 @@ s32 GsPersist_ProcessReceived(char *p, s32 n) {
 namespace N02282f90 { extern "C" {
 s32 GsPersist_CompleteRequest(s32 idx, s32 a, s32 b, void *p3, s32 p4) {
     if (idx >= 0 && idx < GsArray_Count(sGsPersistRequests)) {
-        Unk_ov065_022837bc_Ent *e = (Unk_ov065_022837bc_Ent *)GsArray_At(sGsPersistRequests, idx);
+        GsPersistRequest *e = (GsPersistRequest *)GsArray_At(sGsPersistRequests, idx);
         void *cb = e->callback;
         if (cb != NULL) {
             switch (e->requestType) {
             case 0:
-                ((Unk_ov065_022837bc_Cb0)cb)(e->localId, e->profileId, a, p3, e->userData);
+                ((GsPersistAuthCallback)cb)(e->localId, e->profileId, a, p3, e->userData);
                 break;
             case 1:
-                ((Unk_ov065_022837bc_Cb1)cb)(e->localId, e->profileId, e->unk_0c, e->unk_10, a, b, p3, p4, e->userData);
+                ((GsPersistDataCallback)cb)(e->localId, e->profileId, e->persistType, e->dataIndex, a, b, p3, p4, e->userData);
                 break;
             case 2:
-                ((Unk_ov065_022837bc_Cb2)cb)(e->localId, e->profileId, e->unk_0c, e->unk_10, a, b, e->userData);
+                ((GsPersistSaveCallback)cb)(e->localId, e->profileId, e->persistType, e->dataIndex, a, b, e->userData);
                 break;
             case 3:
-                ((Unk_ov065_022837bc_Cb3)cb)(e->localId, e->profileId, a, e->userData);
+                ((GsPersistProfileCallback)cb)(e->localId, e->profileId, a, e->userData);
                 break;
             }
         }
@@ -578,7 +572,7 @@ void GsPersist_FailAllRequests(void) {
         s32 i = GsArray_Count(sGsPersistRequests) - 1;
         if (i >= 0) {
             do {
-                Unk_ov065_02283744_Buf buf = *(Unk_ov065_02283744_Buf *)data_ov065_0228df7c;
+                GsPersistErrorMsg buf = *(GsPersistErrorMsg *)data_ov065_0228df7c;
                 sGsPersistXorKey = data_ov065_0228df9c;
                 GsPersist_XorCrypt((char *)&buf, 15);
                 GsPersist_CompleteRequest(i, 0, 0, &buf, 0);

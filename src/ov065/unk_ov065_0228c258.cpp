@@ -1,15 +1,8 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/SslRootCa.h"
 
 // CA certificate 7 of the DWC auth library: public exponent, descriptor, name, RSA modulus.
-struct Unk_ov065_0228c25c_Ca {
-    const char *name;
-    s32 modulus_len;
-    const u8 *modulus;
-    s32 exponent_len;
-    const u8 *exponent;
-};
-
 extern "C" {
 u8 data_ov065_0228c258[4] = {
     0x01, 0x00, 0x01, 0x00,
@@ -34,5 +27,5 @@ u8 data_ov065_0228c2f0[128] = {
     0x43, 0xde, 0xc3, 0xf5, 0x21, 0x6d, 0x54, 0x9f, 0x5d, 0xc3, 0x58, 0xe1, 0xc0, 0xe4, 0xd9, 0x5b,
     0xb0, 0xb8, 0xdc, 0xb4, 0x7b, 0xdf, 0x36, 0x3a, 0xc2, 0xb5, 0x66, 0x22, 0x12, 0xd6, 0x87, 0x0d,
 };
-Unk_ov065_0228c25c_Ca sRootCaThawteServer = {data_ov065_0228c270, 0x80, data_ov065_0228c2f0, 3, data_ov065_0228c258};
+SslRootCa sRootCaThawteServer = {data_ov065_0228c270, 0x80, data_ov065_0228c2f0, 3, data_ov065_0228c258};
 }

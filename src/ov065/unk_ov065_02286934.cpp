@@ -2,17 +2,13 @@
 
 #include "types.h"
 #include "net/Unk_ov065_022786bc_Vec.h"
-#include "net/Unk_ov065_022868b0_InAddr.h"
-#include "net/Unk_ov065_02286c74_Ctx.h"
-#include "net/Unk_ov065_02286934_Buf.h"
-#include "net/Unk_ov065_02286bb4_Pkt.h"
+#include "net/GsInAddr.h"
+#include "net/GsNatNeg.h"
 #include "net/Unk_ov065_02286f04_Hostent.h"
-#include "net/Unk_ov065_02287000_Pkt.h"
 #include "net/Unk_ov065_022871ac_List.h"
 #include "net/Unk_ov065_02287200_Sa.h"
-#include "net/Unk_ov065_02287348_Ent.h"
-#include "net/Unk_ov065_02287390_Qr.h"
-#include "net/Unk_ov065_0228758c_B4.h"
+#include "net/GsQr.h"
+#include "net/GsBytes.h"
 
 
 
@@ -61,7 +57,7 @@ s32 OS_SNPrintf(char *buf, s32 n, const char *fmt, ...);
 char *func_02127838(char *dst, const char *src);
 u32 STD_GetStringLength(const char *s);
 
-char *Sock_InetNtoA(Unk_ov065_022868b0_InAddr a);
+char *Sock_InetNtoA(GsInAddr a);
 Unk_ov065_02286f04_Hostent *Sock_GetHostByName(const char *name);
 s32 GsArray_At(void *list, s32 i);
 s32 GsArray_Count(void *list);
@@ -76,23 +72,23 @@ s32 GsSock_CanRead(s32 fd);
 u32 GsUtil_GetTimeMs();
 s32 GsNatNeg_HasMagic();
 s32 GsNatNeg_SendTo(s32 fd, u32 addr, u32 port, void *buf, s32 len);
-s32 GsNatNeg_Remove(Unk_ov065_02286c74_Ctx *ctx);
+s32 GsNatNeg_Remove(GsNatNegotiator *ctx);
 s32 GsNatNeg_Add();
-Unk_ov065_02286c74_Ctx *GsNatNeg_FindByCookie(u32 cookie);
+GsNatNegotiator *GsNatNeg_FindByCookie(u32 cookie);
 
 u32 GsNatNeg_GetLocalIp();
 u32 GsNatNeg_GetLocalPort(s32 fd);
-void GsNatNeg_SendInit(Unk_ov065_02286c74_Ctx *ctx);
-void GsNatNeg_SendPeerPing(Unk_ov065_02286c74_Ctx *ctx);
+void GsNatNeg_SendInit(GsNatNegotiator *ctx);
+void GsNatNeg_SendPeerPing(GsNatNegotiator *ctx);
 u32 GsNatNeg_ResolveHost(const char *name);
 u32 GsNatNeg_ResolveServer(const char *name, const char *s);
 s32 GsNatNeg_ResolveServers();
 void GsNatNeg_Cancel(u32 cookie);
-void GsNatNeg_Process(Unk_ov065_02286c74_Ctx *ctx);
-void GsNatNeg_SendConnectAck(Unk_ov065_02286c74_Ctx *ctx, Unk_ov065_02286c74_Sa *sa);
-void GsNatNeg_HandleConnect(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void GsNatNeg_HandlePeerPing(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void GsNatNeg_HandleServerReply(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
+void GsNatNeg_Process(GsNatNegotiator *ctx);
+void GsNatNeg_SendConnectAck(GsNatNegotiator *ctx, Unk_ov065_02286c74_Sa *sa);
+void GsNatNeg_HandleConnect(GsNatNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
+void GsNatNeg_HandlePeerPing(GsNatNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
+void GsNatNeg_HandleServerReply(GsNatNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
 void GsNatNeg_HandlePacket(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa);
 }
 
@@ -130,9 +126,9 @@ extern "C" {
 
 
 
-typedef Unk_ov065_02287390_Qr Qr;
-typedef Unk_ov065_02287390_Buf Buf;
-typedef Unk_ov065_02287348_Ent Ent;
+typedef GsQrContext Qr;
+typedef GsQrBuffer Buf;
+typedef GsNatNegotiator Ent;
 typedef Unk_ov065_022786bc_Vec Vec;
 
 extern "C" {
@@ -169,7 +165,7 @@ void *GsArray_At(Vec *, s32);
 void GsArray_Append(Vec *, void *);
 void GsArray_RemoveAt(Vec *, s32);
 Vec *GsArray_New(s32, s32, void *);
-char *Sock_InetNtoA(Unk_ov065_02287390_W);
+char *Sock_InetNtoA(GsInAddr);
 void GsQr_BeginPacket(Buf *, s32, u8 *);
 void GsQr_BufAppendString(Buf *, const char *);
 void GsQr_BufAppendInt(Buf *, s32);
@@ -331,8 +327,8 @@ extern "C" u32 GsNatNeg_GetLocalPort(s32 fd) {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_SendInit(Unk_ov065_02286c74_Ctx *ctx) {
-    Unk_ov065_02287000_Pkt pkt;
+extern "C" void GsNatNeg_SendInit(GsNatNegotiator *ctx) {
+    GsNatNegInitPacket pkt;
     u8 *p = (u8 *)&pkt;
     const u8 *m = (const u8 *)data_ov065_0228e16c;
     p[0] = m[0];
@@ -382,8 +378,8 @@ extern "C" void GsNatNeg_SendInit(Unk_ov065_02286c74_Ctx *ctx) {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_SendPeerPing(Unk_ov065_02286c74_Ctx *ctx) {
-    Unk_ov065_02286bb4_Pkt pkt;
+extern "C" void GsNatNeg_SendPeerPing(GsNatNegotiator *ctx) {
+    GsNatNegPacket pkt;
     u8 *d = (u8 *)&pkt;
     const u8 *m = (const u8 *)data_ov065_0228e16c;
     d[0] = m[0];
@@ -462,15 +458,15 @@ extern "C" s32 GsNatNeg_Start(u32 a, u32 b, s32 c, s32 d, void *e, void *f) {
     if (GsNatNeg_ResolveServers() == 0) {
         return 3;
     }
-    Unk_ov065_02286c74_Ctx *ctx = (Unk_ov065_02286c74_Ctx *)GsNatNeg_Add();
+    GsNatNegotiator *ctx = (GsNatNegotiator *)GsNatNeg_Add();
     if (ctx == NULL) {
         return 1;
     }
     ctx->gameSock = a;
     ctx->clientIndex = c;
     ctx->cookie = b;
-    ctx->unk_34 = (Unk_ov065_02286c74_Cb34)d;
-    ctx->unk_38 = (Unk_ov065_02286c74_Cb38)e;
+    ctx->progressCallback = (GsNatNegProgressCallback)d;
+    ctx->completedCallback = (GsNatNegCompletedCallback)e;
     ctx->userData = f;
     ctx->negSock = GsSock_Socket(2, 2, 0);
     ctx->retryCount = 0;
@@ -491,7 +487,7 @@ extern "C" s32 GsNatNeg_Start(u32 a, u32 b, s32 c, s32 d, void *e, void *f) {
 extern "C" { u32 sGsNatNegServer2; } //@
 namespace N022868b0 { extern "C" {
 extern "C" void GsNatNeg_Cancel(u32 cookie) {
-    Unk_ov065_02286c74_Ctx *ctx = GsNatNeg_FindByCookie(cookie);
+    GsNatNegotiator *ctx = GsNatNeg_FindByCookie(cookie);
     if (ctx != NULL) {
         if (ctx->negSock != -1) {
             GsSock_Close(ctx->negSock);
@@ -503,7 +499,7 @@ extern "C" void GsNatNeg_Cancel(u32 cookie) {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_Process(Unk_ov065_02286c74_Ctx *ctx) {
+extern "C" void GsNatNeg_Process(GsNatNegotiator *ctx) {
     Unk_ov065_02286c74_Sa from;
     s32 len;
     Unk_ov065_02286c74_Sa out;
@@ -529,7 +525,7 @@ extern "C" void GsNatNeg_Process(Unk_ov065_02286c74_Ctx *ctx) {
         if (GsUtil_GetTimeMs() > ctx->retryTime) {
             s32 a = ctx->retryCount;
             if (a > ctx->maxRetries) {
-                ctx->unk_38(2, -1, 0, ctx->userData);
+                ctx->completedCallback(2, -1, 0, ctx->userData);
                 GsNatNeg_Cancel(ctx->cookie);
             } else {
                 ctx->retryCount = a + 1;
@@ -548,7 +544,7 @@ extern "C" void GsNatNeg_Process(Unk_ov065_02286c74_Ctx *ctx) {
                 u16 p = ctx->peerPort;
                 out.port = SWAP16(p);
                 out.addr = ctx->peerIp;
-                ctx->unk_38(0, ctx->negSock, &out, ctx->userData);
+                ctx->completedCallback(0, ctx->negSock, &out, ctx->userData);
                 ctx->negSock = -1;
             }
             GsNatNeg_Cancel(ctx->cookie);
@@ -556,7 +552,7 @@ extern "C" void GsNatNeg_Process(Unk_ov065_02286c74_Ctx *ctx) {
     }
     if (ctx->state == 1) {
         if (GsUtil_GetTimeMs() > ctx->retryTime) {
-            ctx->unk_38(1, -1, 0, ctx->userData);
+            ctx->completedCallback(1, -1, 0, ctx->userData);
             GsNatNeg_Cancel(ctx->cookie);
         }
     }
@@ -568,15 +564,15 @@ extern "C" void GsNatNeg_ProcessAll() {
     if (sGsNatNegList != NULL) {
         s32 i;
         for (i = GsArray_Count(sGsNatNegList) - 1; i >= 0; i--) {
-            GsNatNeg_Process((Unk_ov065_02286c74_Ctx *)GsArray_At(sGsNatNegList, i));
+            GsNatNeg_Process((GsNatNegotiator *)GsArray_At(sGsNatNegList, i));
         }
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_SendConnectAck(Unk_ov065_02286c74_Ctx *ctx, Unk_ov065_02286c74_Sa *sa) {
-    Unk_ov065_02286bb4_Pkt pkt;
+extern "C" void GsNatNeg_SendConnectAck(GsNatNegotiator *ctx, Unk_ov065_02286c74_Sa *sa) {
+    GsNatNegPacket pkt;
     u8 *d = (u8 *)&pkt;
     const u8 *m = data_ov065_0228e16c;
     d[0] = m[0];
@@ -597,7 +593,7 @@ extern "C" void GsNatNeg_SendConnectAck(Unk_ov065_02286c74_Ctx *ctx, Unk_ov065_0
 
 extern "C" { u32 data_ov065_02291534; } //@
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_HandleConnect(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void GsNatNeg_HandleConnect(GsNatNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
     if (pkt[0x13] == 0) {
         GsNatNeg_SendConnectAck(ctx, sa);
     }
@@ -610,7 +606,7 @@ extern "C" void GsNatNeg_HandleConnect(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk
             } else if (r == 2) {
                 code = 2;
             }
-            ctx->unk_38(code, -1, 0, ctx->userData);
+            ctx->completedCallback(code, -1, 0, ctx->userData);
             GsNatNeg_Cancel(ctx->cookie);
         } else {
             ctx->peerIp = *(u32 *)&pkt[0xc];
@@ -618,7 +614,7 @@ extern "C" void GsNatNeg_HandleConnect(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk
             ctx->peerPort = SWAP16(p);
             ctx->retryCount = 0;
             ctx->state = 2;
-            ctx->unk_34(ctx->state, ctx->userData);
+            ctx->progressCallback(ctx->state, ctx->userData);
             GsNatNeg_SendPeerPing(ctx);
         }
     }
@@ -626,7 +622,7 @@ extern "C" void GsNatNeg_HandleConnect(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_HandlePeerPing(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void GsNatNeg_HandlePeerPing(GsNatNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
     if (ctx->state >= 2) {
         ctx->peerIp = sa->addr;
         u16 p = sa->port;
@@ -643,7 +639,7 @@ extern "C" void GsNatNeg_HandlePeerPing(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Un
             ctx->state = 3;
             ctx->retryTime = GsUtil_GetTimeMs() + 5000;
             if (ctx->gameSock != -1) {
-                ctx->unk_38(0, ctx->gameSock, sa, ctx->userData);
+                ctx->completedCallback(0, ctx->gameSock, sa, ctx->userData);
             }
         } else if (pkt[0x13] == 0) {
             GsNatNeg_SendPeerPing(ctx);
@@ -653,7 +649,7 @@ extern "C" void GsNatNeg_HandlePeerPing(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Un
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_HandleServerReply(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void GsNatNeg_HandleServerReply(GsNatNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
     switch (pkt[7]) {
     case 1: {
         u32 i = pkt[0xc];
@@ -663,7 +659,7 @@ extern "C" void GsNatNeg_HandleServerReply(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt,
                 if (ctx->gameSock == -1 || ctx->initAcked[0] != 0) {
                     ctx->state = 1;
                     ctx->retryTime = GsUtil_GetTimeMs() + 10000;
-                    ctx->unk_34(ctx->state, ctx->userData);
+                    ctx->progressCallback(ctx->state, ctx->userData);
                 }
             }
         }
@@ -681,8 +677,8 @@ extern "C" void GsNatNeg_HandleServerReply(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt,
 
 namespace N022868b0 { extern "C" {
 extern "C" void GsNatNeg_HandlePacket(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa) {
-    Unk_ov065_02286934_Buf14 h;
-    Unk_ov065_02286934_Buf15 g;
+    GsNatNegConnectPktBuf h;
+    GsNatNegReplyPktBuf g;
     if (GsNatNeg_HasMagic() == 0) {
         return;
     }
@@ -691,9 +687,9 @@ extern "C" void GsNatNeg_HandlePacket(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *s
         if (len < 0x14) {
             return;
         }
-        h = *(Unk_ov065_02286934_Buf14 *)pkt;
+        h = *(GsNatNegConnectPktBuf *)pkt;
         u32 c = *(u32 *)&h.b[8];
-        Unk_ov065_02286c74_Ctx *ctx = GsNatNeg_FindByCookie(SWAP32(c));
+        GsNatNegotiator *ctx = GsNatNeg_FindByCookie(SWAP32(c));
         if (ctx == NULL) {
             return;
         }
@@ -706,9 +702,9 @@ extern "C" void GsNatNeg_HandlePacket(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *s
         if (len < 0x15) {
             return;
         }
-        g = *(Unk_ov065_02286934_Buf15 *)pkt;
+        g = *(GsNatNegReplyPktBuf *)pkt;
         u32 c = *(u32 *)&g.b[8];
-        Unk_ov065_02286c74_Ctx *ctx = GsNatNeg_FindByCookie(SWAP32(c));
+        GsNatNegotiator *ctx = GsNatNeg_FindByCookie(SWAP32(c));
         if (ctx == NULL) {
             return;
         }

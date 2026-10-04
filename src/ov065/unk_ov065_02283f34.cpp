@@ -2,11 +2,8 @@
 
 #include "types.h"
 #include "net/Unk_ov065_022786bc_Vec.h"
-#include "net/Unk_ov065_02284100_Buf.h"
-#include "net/Unk_ov065_0228412c_Obj.h"
-#include "net/Unk_ov065_02285630_Item.h"
-#include "net/Unk_ov065_022856f8_B4.h"
-#include "net/Unk_ov065_02285630_Conn.h"
+#include "net/GsTransport.h"
+#include "net/GsBytes.h"
 
 extern "C" { u8 data_ov065_0228e14c[4] = {0xfe, 0xfe, 0, 0}; }
 
@@ -58,7 +55,7 @@ void GsUtil_Free(void *);
 void *GsUtil_Realloc(void *, s32);
 void *GsUtil_Alloc(s32);
 s32 GsUtil_GetTimeMs(u8 *);
-void GsTransport_FreeSocket(Unk_ov065_0228412c_Obj *);
+void GsTransport_FreeSocket(GsTransportSocket *);
 
 void GsPersist_HandleAuthReply(char *, s32);
 void GsPersist_HandleGetPidReply(char *, s32);
@@ -108,68 +105,8 @@ extern "C" {
 
 // ov065_059: GT2-like connection callbacks / state (0x02284240..0x02284a80)
 
-struct Unk_ov065_02284240_Sock {
-    u8 pad_00[8];
-    u16 localPort;
-    u8 pad_0a[2];
-    void *connections;
-    void *closedConnections;
-    s32 freePending;
-    u8 pad_18[4];
-    s32 callbackLevel;
-    s32 (*unk_20)(Unk_ov065_02284240_Sock *, void *, s32, s32, s32, s32, s32);
-    s32 (*unk_24)(Unk_ov065_02284240_Sock *);
-};
-
-struct Unk_ov065_02284240_Conn;
-
-typedef s32 (*Unk_ov065_02284240_Filter)(Unk_ov065_02284240_Conn *, s32, u32, u32, u32);
-
-struct Unk_ov065_02284240_Blob {
-    s32 v[4];
-};
-
-struct Unk_ov065_02284240_Conn {
-    s32 remoteIp;
-    u16 remotePort;
-    u8 pad_06[2];
-    Unk_ov065_02284240_Sock *socket;
-    s32 state;
-    s32 initiated;
-    s32 freeAtAcceptReject;
-    s32 connectResult;
-    u32 startTime;
-    u32 connectTimeout;
-    s32 callbackLevel;
-    s32 (*unk_28)(Unk_ov065_02284240_Conn *, s32, s32, s32);
-    s32 (*unk_2c)(Unk_ov065_02284240_Conn *, s32, s32, s32);
-    s32 (*unk_30)(Unk_ov065_02284240_Conn *, s32);
-    s32 (*unk_34)(Unk_ov065_02284240_Conn *, s32);
-    void *initialMessage;
-    s32 initialMessageLen;
-    s32 userData;
-    void *incomingBuffer;
-    u8 pad_48[8];
-    void *outgoingBuffer;
-    s32 outgoingBufferSize;
-    s32 outgoingBufferLen;
-    void *incomingMessages;
-    void *outgoingMessages;
-    u8 pad_64[0x88 - 0x64];
-    u32 lastSendTime;
-    u8 pad_8c[4];
-    s32 pendingAck;
-    u32 pendingAckTime;
-    void *sendFilters;
-    void *receiveFilters;
-};
-
-struct Unk_ov065_02284908_Buf {
-    u32 v[9];
-};
-
 namespace Unk_ov065_02284a80_Ns {
-extern "C" s32 GsTransport_NewOutgoing(Unk_ov065_02284240_Sock *s, Unk_ov065_02284240_Conn **pc, u32 ip, u32 port);
+extern "C" s32 GsTransport_NewOutgoing(GsTransportSocket *s, GsTransportConn **pc, u32 ip, u32 port);
 }
 
 extern "C" {
@@ -199,28 +136,28 @@ extern s32 GsTransport_Think(void *);
 extern s32 GsTransport_SendMessage(void *, s32, s32, s32);
 extern s32 GsTransport_ResendMessage(void *, void *);
 extern void GsTransport_SendClosed(void *);
-extern s32 GsTransport_SendPing(Unk_ov065_02284240_Conn *);
+extern s32 GsTransport_SendPing(GsTransportConn *);
 extern s32 GsTransport_SendAck(void *);
 extern s32 GsTransport_SendKeepAlive(void *);
 extern void GsTransport_SendClose(void *);
 extern void GsTransport_SendReject(void *, s32, s32);
 extern void GsTransport_SendAccept(void *);
 
-s32 GsTransport_CallRecvFilter(Unk_ov065_02284240_Conn *c, s32 a, u32 msg, u32 len, u32 rel);
-s32 GsTransport_CallSendFilter(Unk_ov065_02284240_Conn *c, s32 a, u32 msg, u32 len, u32 rel);
-s32 GsTransport_CallClosedCb(Unk_ov065_02284240_Conn *c, s32 a);
-s32 GsTransport_CallConnectedCb(Unk_ov065_02284240_Conn *c, s32 a, s32 b, s32 d);
-void GsTransport_MarkClosed(Unk_ov065_02284240_Conn *c, ...);
-void GsTransport_CloseConnection(Unk_ov065_02284240_Conn *c, s32 x);
-s32 GsTransport_CheckKeepAlive(Unk_ov065_02284240_Conn *c, u32 t);
-s32 GsTransport_CheckAck(Unk_ov065_02284240_Conn *c, u32 t);
-s32 GsTransport_ResendUnacked(Unk_ov065_02284240_Conn *c, u32 t);
-s32 GsTransport_CheckConnectTimeout(Unk_ov065_02284240_Conn *c, u32 t);
-s32 GsTransport_SendRaw(Unk_ov065_02284240_Conn *c, u32 a, u32 b);
-s32 GsTransport_StartConnect(Unk_ov065_02284240_Conn *c, s32 msg, s32 len, Unk_ov065_02284240_Blob *x);
-s32 GsTransport_NewOutgoing(Unk_ov065_02284240_Sock *s, Unk_ov065_02284240_Conn **pc, u32 ip, u32 port);
-void GsTransport_CloseAllCb(Unk_ov065_02284240_Conn **p);
-void GsTransport_CloseHard(Unk_ov065_02284240_Conn *c);
+s32 GsTransport_CallRecvFilter(GsTransportConn *c, s32 a, u32 msg, u32 len, u32 rel);
+s32 GsTransport_CallSendFilter(GsTransportConn *c, s32 a, u32 msg, u32 len, u32 rel);
+s32 GsTransport_CallClosedCb(GsTransportConn *c, s32 a);
+s32 GsTransport_CallConnectedCb(GsTransportConn *c, s32 a, s32 b, s32 d);
+void GsTransport_MarkClosed(GsTransportConn *c, ...);
+void GsTransport_CloseConnection(GsTransportConn *c, s32 x);
+s32 GsTransport_CheckKeepAlive(GsTransportConn *c, u32 t);
+s32 GsTransport_CheckAck(GsTransportConn *c, u32 t);
+s32 GsTransport_ResendUnacked(GsTransportConn *c, u32 t);
+s32 GsTransport_CheckConnectTimeout(GsTransportConn *c, u32 t);
+s32 GsTransport_SendRaw(GsTransportConn *c, u32 a, u32 b);
+s32 GsTransport_StartConnect(GsTransportConn *c, s32 msg, s32 len, GsTransportConnCallbacks *x);
+s32 GsTransport_NewOutgoing(GsTransportSocket *s, GsTransportConn **pc, u32 ip, u32 port);
+void GsTransport_CloseAllCb(GsTransportConn **p);
+void GsTransport_CloseHard(GsTransportConn *c);
 
 
 
@@ -267,62 +204,10 @@ extern "C" {
 
 // ov065_060: GameSpy-style (SOCKS5-like) connection handshake builders and UDP receive path (0x02284b8c..0x02285440)
 
-struct Unk_ov065_02284c0c_Vec;
+typedef GsTransportSocket Sock;
 
-struct Unk_ov065_02284c0c_Buf {
-    u8 *data;
-    s32 size;
-    s32 len;
-};
-
-struct Unk_ov065_02285398_Sock;
-typedef Unk_ov065_02285398_Sock Sock;
-
-struct Unk_ov065_02284c0c_Conn {
-    s32 remoteIp;
-    u16 remotePort;
-    u16 unk_06;
-    Sock *socket;
-    s32 state;
-    s32 initiated;
-    s32 freeAtAcceptReject;
-    s32 connectResult;
-    u32 startTime;
-    u32 connectTimeout;
-    s32 callbackLevel;
-    s32 connectedCallback;
-    s32 receivedCallback;
-    s32 closedCallback;
-    s32 pingCallback;
-    u32 unk_38[6];
-    Unk_ov065_02284c0c_Buf outgoingBuffer;
-    s32 incomingMessages;
-    Unk_ov065_02284c0c_Vec *outgoingMessages;
-    u16 serialNumber;
-    u16 expectedSerialNumber;
-    u32 response[8];
-    s32 lastSendTime;
-    s32 challengeTime;
-    s32 pendingAck;
-};
-
-struct Unk_ov065_02285398_Sock {
-    s32 sock;
-    s32 localIp;
-    s32 localPort;
-    s32 connections;
-    s32 closedConnections;
-    s32 freePending;
-    s32 hasError;
-    s32 callbackLevel;
-    s32 connectAttemptCallback;
-    s32 socketErrorCallback;
-    s32 sendDumpCallback;
-    s32 receiveDumpCallback;
-};
-
-typedef Unk_ov065_02284c0c_Conn Conn;
-typedef Unk_ov065_02284c0c_Buf Buf;
+typedef GsTransportConn Conn;
+typedef GsTransportBuffer Buf;
 
 extern "C" {
 extern u8 data_ov065_0228e14c[];
@@ -348,9 +233,9 @@ s32 GsTransport_BufAppendU16(Buf *, s32);
 s32 GsTransport_BufAppendU8(Buf *, s32);
 s32 GsTransport_BufFreeSpace(Buf *);
 s32 GsTransport_BufRemove(Buf *, s32, s32);
-s32 GsArray_Count(Unk_ov065_02284c0c_Vec *);
-void *GsArray_At(Unk_ov065_02284c0c_Vec *, s32);
-void GsArray_Append(Unk_ov065_02284c0c_Vec *, void *);
+s32 GsArray_Count(void *);
+void *GsArray_At(void *, s32);
+void GsArray_Append(void *, void *);
 s32 GsTransport_AbortConnection(Conn *);
 s32 GsSock_CanRead(s32);
 s32 GsSock_RecvFrom(s32, u8 *, s32, s32, void *, s32 *);
@@ -402,13 +287,6 @@ s32 GsTransport_SendReject(Conn *, u8 *, s32);
 
 
 
-struct Unk_ov065_02285264_Rec {
-    s32 offset;
-    s32 len;
-    s32 serialNumber;
-    s32 lastSendTime;
-};
-
 
 struct Unk_ov065_022852b8_Addr {
     u16 unk_00;
@@ -439,8 +317,8 @@ extern "C" {
 
 
 
-typedef Unk_ov065_02285630_Conn Cn;
-typedef Unk_ov065_02285630_Item It;
+typedef GsTransportConn Cn;
+typedef GsTransportInMsg It;
 
 extern "C" {
 
@@ -519,17 +397,17 @@ s32 GsTransport_HandleReliableData(Cn *c, void *p, s32 n);
 namespace N02285630 { extern "C" {
 BOOL GsTransport_HandlePong(Cn *c, void *p, s32 n)
 {
-    Unk_ov065_022856f8_B4 t;
+    GsBytes4 t;
     s32 now;
     if (c->pingCallback == 0) return TRUE;
     if (n != 8) return TRUE;
     if (memcmp(p, (u8 *)"time", 4) != 0) return TRUE;
     u32 a = (u32)&t;
-    Unk_ov065_022856f8_B4 *q = (Unk_ov065_022856f8_B4 *)((u8 *)p + 4);
-    ((Unk_ov065_022856f8_B4 *)a)->a = q->a;
-    ((Unk_ov065_022856f8_B4 *)a)->b = q->b;
-    ((Unk_ov065_022856f8_B4 *)a)->c = q->c;
-    ((Unk_ov065_022856f8_B4 *)a)->d = q->d;
+    GsBytes4 *q = (GsBytes4 *)((u8 *)p + 4);
+    ((GsBytes4 *)a)->b[0] = q->b[0];
+    ((GsBytes4 *)a)->b[1] = q->b[1];
+    ((GsBytes4 *)a)->b[2] = q->b[2];
+    ((GsBytes4 *)a)->b[3] = q->b[3];
     now = ((s32 (*)(void *))GsUtil_GetTimeMs)((void *)a);
     if (GsTransport_CallPingCb(c, now - *(s32 *)&t) != 0) return TRUE;
     return FALSE;
@@ -711,7 +589,7 @@ s32 GsTransport_ReceiveAll(Sock *s) {
 
 namespace N02284b8c { extern "C" {
 s32 GsTransport_AddOutRecord(Conn *o, u32 seq, s32 need) {
-    Unk_ov065_02285264_Rec r = {0, 0, 0, 0};
+    GsTransportOutMsg r = {0, 0, 0, 0};
     r.offset = o->outgoingBuffer.len;
     r.len = need;
     *(u16 *)&r.serialNumber = seq;
@@ -1087,11 +965,11 @@ s32 GsTransport_Reject(Conn *o, s32 a, s32 b) {
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_Connect(Unk_ov065_02284240_Sock *s, Unk_ov065_02284240_Conn **out, u32 host, s32 p3, s32 p4, s32 p5, s32 p6, s32 p7)
+s32 GsTransport_Connect(GsTransportSocket *s, GsTransportConn **out, u32 host, s32 p3, s32 p4, s32 p5, s32 p6, s32 p7)
 {
     u32 port;
     u16 port16;
-    Unk_ov065_02284240_Conn *conn;
+    GsTransportConn *conn;
     u32 ip;
     s32 r;
 
@@ -1107,7 +985,7 @@ s32 GsTransport_Connect(Unk_ov065_02284240_Sock *s, Unk_ov065_02284240_Conn **ou
         return r;
     }
     conn->connectTimeout = p5;
-    r = GsTransport_StartConnect(conn, p3, p4, (Unk_ov065_02284240_Blob *)p6);
+    r = GsTransport_StartConnect(conn, p3, p4, (GsTransportConnCallbacks *)p6);
     if (r != 0) {
         GsTransport_Release(conn);
         return r;
@@ -1141,7 +1019,7 @@ s32 GsTransport_Connect(Unk_ov065_02284240_Sock *s, Unk_ov065_02284240_Conn **ou
 } }
 
 namespace N02284240 { extern "C" {
-void GsTransport_Send(Unk_ov065_02284240_Conn *c, s32 msg, s32 len, s32 p3)
+void GsTransport_Send(GsTransportConn *c, s32 msg, s32 len, s32 p3)
 {
     if (c->state == 5) {
         GsTransport_FixMessage(&msg, &len);
@@ -1155,35 +1033,35 @@ void GsTransport_Send(Unk_ov065_02284240_Conn *c, s32 msg, s32 len, s32 p3)
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_Ping(Unk_ov065_02284240_Conn *c)
+s32 GsTransport_Ping(GsTransportConn *c)
 {
     return GsTransport_SendPing(c);
 }
 } }
 
 namespace N02284240 { extern "C" {
-void GsTransport_CloseHard(Unk_ov065_02284240_Conn *c)
+void GsTransport_CloseHard(GsTransportConn *c)
 {
     GsTransport_CloseConnection(c, 1);
 }
 } }
 
 namespace N02284240 { extern "C" {
-void GsTransport_CloseAllCb(Unk_ov065_02284240_Conn **p)
+void GsTransport_CloseAllCb(GsTransportConn **p)
 {
     GsTransport_CloseHard(*p);
 }
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_CloseAll(Unk_ov065_02284240_Sock *s)
+s32 GsTransport_CloseAll(GsTransportSocket *s)
 {
     return GsHash_ForEach((s32)s->connections, (void *)GsTransport_CloseAllCb, 0);
 }
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_GetState(Unk_ov065_02284240_Conn *c)
+s32 GsTransport_GetState(GsTransportConn *c)
 {
     s32 s = c->state;
     if (s < 5) {
@@ -1200,49 +1078,49 @@ s32 GsTransport_GetState(Unk_ov065_02284240_Conn *c)
 } }
 
 namespace N02284240 { extern "C" {
-u32 GsTransport_GetLocalPort(Unk_ov065_02284240_Sock *c)
+u32 GsTransport_GetLocalPort(GsTransportSocket *c)
 {
     return c->localPort;
 }
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_GetSendFreeSpace(Unk_ov065_02284240_Conn *c)
+s32 GsTransport_GetSendFreeSpace(GsTransportConn *c)
 {
-    return c->outgoingBufferSize - c->outgoingBufferLen;
+    return c->outgoingBuffer.size - c->outgoingBuffer.len;
 }
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_GetRemoteIp(Unk_ov065_02284240_Conn *c)
+s32 GsTransport_GetRemoteIp(GsTransportConn *c)
 {
     return c->remoteIp;
 }
 } }
 
 namespace N02284240 { extern "C" {
-void GsTransport_SetUnknownSenderCallback(Unk_ov065_02284240_Conn *c, s32 v)
+void GsTransport_SetUnknownSenderCallback(GsTransportSocket *c, s32 v)
 {
-    *(s32 *)&c->unk_30 = v;
+    *(s32 *)&c->unrecognizedMessageCallback = v;
 }
 } }
 
 namespace N02284240 { extern "C" {
-void GsTransport_SetUserData(Unk_ov065_02284240_Conn *c, s32 v)
+void GsTransport_SetUserData(GsTransportConn *c, s32 v)
 {
     c->userData = v;
 }
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_GetUserData(Unk_ov065_02284240_Conn *c)
+s32 GsTransport_GetUserData(GsTransportConn *c)
 {
     return c->userData;
 }
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_NewOutgoing(Unk_ov065_02284240_Sock *s, Unk_ov065_02284240_Conn **pc, u32 ip, u32 port)
+s32 GsTransport_NewOutgoing(GsTransportSocket *s, GsTransportConn **pc, u32 ip, u32 port)
 {
     s32 r = GsTransport_NewConnection(s, pc, ip, port);
     if (r != 0) {
@@ -1255,7 +1133,7 @@ s32 GsTransport_NewOutgoing(Unk_ov065_02284240_Sock *s, Unk_ov065_02284240_Conn 
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_NewIncoming(Unk_ov065_02284240_Sock *s, Unk_ov065_02284240_Conn **pc, u32 ip, u32 port)
+s32 GsTransport_NewIncoming(GsTransportSocket *s, GsTransportConn **pc, u32 ip, u32 port)
 {
     s32 r = GsTransport_NewConnection(s, pc, ip, port);
     if (r != 0) {
@@ -1268,9 +1146,9 @@ s32 GsTransport_NewIncoming(Unk_ov065_02284240_Sock *s, Unk_ov065_02284240_Conn 
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_StartConnect(Unk_ov065_02284240_Conn *c, s32 msg, s32 len, Unk_ov065_02284240_Blob *x)
+s32 GsTransport_StartConnect(GsTransportConn *c, s32 msg, s32 len, GsTransportConnCallbacks *x)
 {
-    Unk_ov065_02284908_Buf buf;
+    GsTransportChallengeBuf buf;
     GsTransport_FixMessage(&msg, &len);
     if (len > 0) {
         c->initialMessage = GsUtil_Alloc(len);
@@ -1281,7 +1159,7 @@ s32 GsTransport_StartConnect(Unk_ov065_02284240_Conn *c, s32 msg, s32 len, Unk_o
         c->initialMessageLen = len;
     }
     if (x != NULL) {
-        *(Unk_ov065_02284240_Blob *)&c->unk_28 = *x;
+        *(GsTransportConnCallbacks *)&c->connectedCallback = *x;
     }
     GsTransport_MakeChallenge(&buf);
     GsUtil_MakeResponse32((u8 *)c + 0x68, &buf);
@@ -1292,7 +1170,7 @@ s32 GsTransport_StartConnect(Unk_ov065_02284240_Conn *c, s32 msg, s32 len, Unk_o
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_DoAccept(Unk_ov065_02284240_Conn *c, Unk_ov065_02284240_Blob *x)
+s32 GsTransport_DoAccept(GsTransportConn *c, GsTransportConnCallbacks *x)
 {
     if (c->freeAtAcceptReject != 0) {
         c->freeAtAcceptReject = 0;
@@ -1306,14 +1184,14 @@ s32 GsTransport_DoAccept(Unk_ov065_02284240_Conn *c, Unk_ov065_02284240_Blob *x)
     GsTransport_SendAccept(c);
     c->state = 5;
     if (x != NULL) {
-        *(Unk_ov065_02284240_Blob *)&c->unk_28 = *x;
+        *(GsTransportConnCallbacks *)&c->connectedCallback = *x;
     }
     return TRUE;
 }
 } }
 
 namespace N02284240 { extern "C" {
-void GsTransport_DoReject(Unk_ov065_02284240_Conn *c, s32 msg, s32 len)
+void GsTransport_DoReject(GsTransportConn *c, s32 msg, s32 len)
 {
     c->freeAtAcceptReject = 0;
     if (c->state == 4) {
@@ -1325,7 +1203,7 @@ void GsTransport_DoReject(Unk_ov065_02284240_Conn *c, s32 msg, s32 len)
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_SendRaw(Unk_ov065_02284240_Conn *c, u32 a, u32 b)
+s32 GsTransport_SendRaw(GsTransportConn *c, u32 a, u32 b)
 {
     if (GsTransport_SendTo(c->socket, c->remoteIp, c->remotePort, a, b) == 0) {
         return FALSE;
@@ -1336,7 +1214,7 @@ s32 GsTransport_SendRaw(Unk_ov065_02284240_Conn *c, u32 a, u32 b)
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_CheckConnectTimeout(Unk_ov065_02284240_Conn *c, u32 t)
+s32 GsTransport_CheckConnectTimeout(GsTransportConn *c, u32 t)
 {
     if (c->state < 5) {
         BOOL r = FALSE;
@@ -1365,7 +1243,7 @@ s32 GsTransport_CheckConnectTimeout(Unk_ov065_02284240_Conn *c, u32 t)
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_ResendUnacked(Unk_ov065_02284240_Conn *c, u32 t)
+s32 GsTransport_ResendUnacked(GsTransportConn *c, u32 t)
 {
     s32 n = GsArray_Count(c->outgoingMessages);
     s32 i;
@@ -1383,7 +1261,7 @@ s32 GsTransport_ResendUnacked(Unk_ov065_02284240_Conn *c, u32 t)
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_CheckAck(Unk_ov065_02284240_Conn *c, u32 t)
+s32 GsTransport_CheckAck(GsTransportConn *c, u32 t)
 {
     if (c->pendingAck == 0) {
         return TRUE;
@@ -1399,7 +1277,7 @@ s32 GsTransport_CheckAck(Unk_ov065_02284240_Conn *c, u32 t)
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_CheckKeepAlive(Unk_ov065_02284240_Conn *c, u32 t)
+s32 GsTransport_CheckKeepAlive(GsTransportConn *c, u32 t)
 {
     u32 d = t - c->lastSendTime;
     if (d > 30000) {
@@ -1412,7 +1290,7 @@ s32 GsTransport_CheckKeepAlive(Unk_ov065_02284240_Conn *c, u32 t)
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_ThinkConnection(Unk_ov065_02284240_Conn *c, u32 t)
+s32 GsTransport_ThinkConnection(GsTransportConn *c, u32 t)
 {
     if (GsTransport_CheckConnectTimeout(c, t) == 0) {
         return FALSE;
@@ -1431,7 +1309,7 @@ s32 GsTransport_ThinkConnection(Unk_ov065_02284240_Conn *c, u32 t)
 } }
 
 namespace N02284240 { extern "C" {
-void GsTransport_CloseConnection(Unk_ov065_02284240_Conn *c, s32 x)
+void GsTransport_CloseConnection(GsTransportConn *c, s32 x)
 {
     if (x != 0) {
         if (c->state < 7) {
@@ -1448,7 +1326,7 @@ void GsTransport_CloseConnection(Unk_ov065_02284240_Conn *c, s32 x)
 } }
 
 namespace N02284240 { extern "C" {
-void GsTransport_MarkClosed(Unk_ov065_02284240_Conn *c, ...)
+void GsTransport_MarkClosed(GsTransportConn *c, ...)
 {
     if (c->state != 7) {
         c->state = 7;
@@ -1459,16 +1337,16 @@ void GsTransport_MarkClosed(Unk_ov065_02284240_Conn *c, ...)
 } }
 
 namespace N02284240 { extern "C" {
-void GsTransport_FreeConnection(Unk_ov065_02284240_Conn *c)
+void GsTransport_FreeConnection(GsTransportConn *c)
 {
     if (c->initialMessage != NULL) {
         GsUtil_Free(c->initialMessage);
     }
-    if (c->incomingBuffer != NULL) {
-        GsUtil_Free(c->incomingBuffer);
+    if (c->incomingBuffer.data != NULL) {
+        GsUtil_Free(c->incomingBuffer.data);
     }
-    if (c->outgoingBuffer != NULL) {
-        GsUtil_Free(c->outgoingBuffer);
+    if (c->outgoingBuffer.data != NULL) {
+        GsUtil_Free(c->outgoingBuffer.data);
     }
     if (c->incomingMessages != NULL) {
         GsArray_Free(c->incomingMessages);
@@ -1487,16 +1365,16 @@ void GsTransport_FreeConnection(Unk_ov065_02284240_Conn *c)
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_CallSocketErrorCb(Unk_ov065_02284240_Sock *s)
+s32 GsTransport_CallSocketErrorCb(GsTransportSocket *s)
 {
     if (s == NULL) {
         return TRUE;
     }
-    if (s->unk_24 == NULL) {
+    if (s->socketErrorCallback == NULL) {
         return TRUE;
     }
     s->callbackLevel++;
-    s->unk_24(s);
+    s->socketErrorCallback(s);
     s->callbackLevel--;
     if (s->freePending != 0 && s->callbackLevel == 0) {
         GsTransport_FreeSocket(s);
@@ -1507,12 +1385,12 @@ s32 GsTransport_CallSocketErrorCb(Unk_ov065_02284240_Sock *s)
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_CallConnectAttemptCb(Unk_ov065_02284240_Sock *s, Unk_ov065_02284240_Conn *c, s32 a, s32 b, s32 p4, s32 p5, s32 p6)
+s32 GsTransport_CallConnectAttemptCb(GsTransportSocket *s, GsTransportConn *c, s32 a, s32 b, s32 p4, s32 p5, s32 p6)
 {
     if (s == NULL || c == NULL) {
         return TRUE;
     }
-    if (s->unk_20 == NULL) {
+    if (s->connectAttemptCallback == NULL) {
         return TRUE;
     }
     if (p6 == 0 || p5 == 0) {
@@ -1521,7 +1399,7 @@ s32 GsTransport_CallConnectAttemptCb(Unk_ov065_02284240_Sock *s, Unk_ov065_02284
     }
     s->callbackLevel++;
     c->callbackLevel++;
-    s->unk_20(s, c, a, b, p4, p5, p6);
+    s->connectAttemptCallback(s, c, a, b, p4, p5, p6);
     s->callbackLevel--;
     c->callbackLevel--;
     if (s->freePending != 0 && s->callbackLevel == 0) {
@@ -1533,13 +1411,13 @@ s32 GsTransport_CallConnectAttemptCb(Unk_ov065_02284240_Sock *s, Unk_ov065_02284
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_CallConnectedCb(Unk_ov065_02284240_Conn *c, s32 a, s32 b, s32 d)
+s32 GsTransport_CallConnectedCb(GsTransportConn *c, s32 a, s32 b, s32 d)
 {
     if (c == NULL) {
         return TRUE;
     }
     c->connectResult = a;
-    if (c->unk_28 == NULL) {
+    if (c->connectedCallback == NULL) {
         return TRUE;
     }
     if (d == 0 || b == 0) {
@@ -1548,7 +1426,7 @@ s32 GsTransport_CallConnectedCb(Unk_ov065_02284240_Conn *c, s32 a, s32 b, s32 d)
     }
     c->callbackLevel++;
     c->socket->callbackLevel++;
-    c->unk_28(c, a, b, d);
+    c->connectedCallback(c, a, b, d);
     c->callbackLevel--;
     c->socket->callbackLevel--;
     if (c->socket->freePending != 0 && c->socket->callbackLevel == 0) {
@@ -1560,12 +1438,12 @@ s32 GsTransport_CallConnectedCb(Unk_ov065_02284240_Conn *c, s32 a, s32 b, s32 d)
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_CallReceivedCb(Unk_ov065_02284240_Conn *c, s32 a, s32 b, s32 d)
+s32 GsTransport_CallReceivedCb(GsTransportConn *c, s32 a, s32 b, s32 d)
 {
     if (c == NULL) {
         return TRUE;
     }
-    if (c->unk_2c == NULL) {
+    if (c->receivedCallback == NULL) {
         return TRUE;
     }
     if (b == 0 || a == 0) {
@@ -1574,7 +1452,7 @@ s32 GsTransport_CallReceivedCb(Unk_ov065_02284240_Conn *c, s32 a, s32 b, s32 d)
     }
     c->callbackLevel++;
     c->socket->callbackLevel++;
-    c->unk_2c(c, a, b, d);
+    c->receivedCallback(c, a, b, d);
     c->callbackLevel--;
     c->socket->callbackLevel--;
     if (c->socket->freePending != 0 && c->socket->callbackLevel == 0) {
@@ -1586,17 +1464,17 @@ s32 GsTransport_CallReceivedCb(Unk_ov065_02284240_Conn *c, s32 a, s32 b, s32 d)
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_CallClosedCb(Unk_ov065_02284240_Conn *c, s32 a)
+s32 GsTransport_CallClosedCb(GsTransportConn *c, s32 a)
 {
     if (c == NULL) {
         return TRUE;
     }
-    if (c->unk_30 == NULL) {
+    if (c->closedCallback == NULL) {
         return TRUE;
     }
     c->callbackLevel++;
     c->socket->callbackLevel++;
-    c->unk_30(c, a);
+    c->closedCallback(c, a);
     c->callbackLevel--;
     c->socket->callbackLevel--;
     if (c->socket->freePending != 0 && c->socket->callbackLevel == 0) {
@@ -1608,17 +1486,17 @@ s32 GsTransport_CallClosedCb(Unk_ov065_02284240_Conn *c, s32 a)
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_CallPingCb(Unk_ov065_02284240_Conn *c, s32 a)
+s32 GsTransport_CallPingCb(GsTransportConn *c, s32 a)
 {
     if (c == NULL) {
         return TRUE;
     }
-    if (c->unk_34 == NULL) {
+    if (c->pingCallback == NULL) {
         return TRUE;
     }
     c->callbackLevel++;
     c->socket->callbackLevel++;
-    c->unk_34(c, a);
+    c->pingCallback(c, a);
     c->callbackLevel--;
     c->socket->callbackLevel--;
     if (c->socket->freePending != 0 && c->socket->callbackLevel == 0) {
@@ -1630,13 +1508,13 @@ s32 GsTransport_CallPingCb(Unk_ov065_02284240_Conn *c, s32 a)
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_CallSendFilter(Unk_ov065_02284240_Conn *c, s32 a, u32 msg, u32 len, u32 rel)
+s32 GsTransport_CallSendFilter(GsTransportConn *c, s32 a, u32 msg, u32 len, u32 rel)
 {
-    Unk_ov065_02284240_Filter *f;
+    GsTransportFilterCallback *f;
     if (c == NULL) {
         return TRUE;
     }
-    f = (Unk_ov065_02284240_Filter *)GsArray_At(c->sendFilters, a);
+    f = (GsTransportFilterCallback *)GsArray_At(c->sendFilters, a);
     if (f == NULL) {
         return TRUE;
     }
@@ -1658,13 +1536,13 @@ s32 GsTransport_CallSendFilter(Unk_ov065_02284240_Conn *c, s32 a, u32 msg, u32 l
 } }
 
 namespace N02284240 { extern "C" {
-s32 GsTransport_CallRecvFilter(Unk_ov065_02284240_Conn *c, s32 a, u32 msg, u32 len, u32 rel)
+s32 GsTransport_CallRecvFilter(GsTransportConn *c, s32 a, u32 msg, u32 len, u32 rel)
 {
-    Unk_ov065_02284240_Filter *f;
+    GsTransportFilterCallback *f;
     if (c == NULL) {
         return TRUE;
     }
-    f = (Unk_ov065_02284240_Filter *)GsArray_At(c->receiveFilters, a);
+    f = (GsTransportFilterCallback *)GsArray_At(c->receiveFilters, a);
     if (f == NULL) {
         return TRUE;
     }
@@ -1686,15 +1564,15 @@ s32 GsTransport_CallRecvFilter(Unk_ov065_02284240_Conn *c, s32 a, u32 msg, u32 l
 } }
 
 namespace N022838c4 { extern "C" {
-s32 GsTransport_CallDumpCb(Unk_ov065_0228412c_Obj *o, Unk_ov065_0228412c_Obj *x, s32 u2, s32 u3, s32 s4, s32 s5, s32 s6, s32 s7) {
-    s32 (*f)(Unk_ov065_0228412c_Obj *, Unk_ov065_0228412c_Obj *, s32, s32, s32, s32, s32);
+s32 GsTransport_CallDumpCb(GsTransportSocket *o, GsTransportConn *x, s32 u2, s32 u3, s32 s4, s32 s5, s32 s6, s32 s7) {
+    GsTransportDumpCallback f;
     if (o == 0) {
         return 1;
     }
     if (s7 != 0) {
-        f = o->unk_28;
+        f = o->sendDumpCallback;
     } else {
-        f = o->unk_2c;
+        f = o->receiveDumpCallback;
     }
     if (f == 0) {
         return 1;
@@ -1705,12 +1583,12 @@ s32 GsTransport_CallDumpCb(Unk_ov065_0228412c_Obj *o, Unk_ov065_0228412c_Obj *x,
     }
     o->callbackLevel++;
     if (x != 0) {
-        x->unk_24++;
+        x->callbackLevel++;
     }
     f(o, x, u2, u3, s4, s5, s6);
     o->callbackLevel--;
     if (x != 0) {
-        x->unk_24--;
+        x->callbackLevel--;
     }
     if (o->freePending != 0 && o->callbackLevel == 0) {
         GsTransport_FreeSocket(o);
@@ -1721,12 +1599,12 @@ s32 GsTransport_CallDumpCb(Unk_ov065_0228412c_Obj *o, Unk_ov065_0228412c_Obj *x,
 } }
 
 namespace N022838c4 { extern "C" {
-s32 GsTransport_CallUnknownSenderCb(Unk_ov065_0228412c_Obj *o, s32 a1, s32 a2, s32 a3, s32 a4, s32 *out) {
+s32 GsTransport_CallUnknownSenderCb(GsTransportSocket *o, s32 a1, s32 a2, s32 a3, s32 a4, s32 *out) {
     *out = 0;
     if (o == 0) {
         return 1;
     }
-    if (o->unk_30 == 0) {
+    if (o->unrecognizedMessageCallback == 0) {
         return 1;
     }
     if (a4 == 0 || a3 == 0) {
@@ -1734,7 +1612,7 @@ s32 GsTransport_CallUnknownSenderCb(Unk_ov065_0228412c_Obj *o, s32 a1, s32 a2, s
         a4 = 0;
     }
     o->callbackLevel++;
-    *out = o->unk_30(o, a1, a2, a3, a4);
+    *out = o->unrecognizedMessageCallback(o, a1, a2, a3, a4);
     o->callbackLevel--;
     if (o->freePending != 0 && o->callbackLevel == 0) {
         GsTransport_FreeSocket(o);
@@ -1745,8 +1623,8 @@ s32 GsTransport_CallUnknownSenderCb(Unk_ov065_0228412c_Obj *o, s32 a1, s32 a2, s
 } }
 
 namespace N022838c4 { extern "C" {
-s32 GsTransport_BufAlloc(Unk_ov065_02284100_Buf *b, s32 size) {
-    b->data = (char *)GsUtil_Alloc(size);
+s32 GsTransport_BufAlloc(GsTransportBuffer *b, s32 size) {
+    b->data = (u8 *)GsUtil_Alloc(size);
     if (b->data == 0) {
         return 0;
     }
@@ -1756,26 +1634,26 @@ s32 GsTransport_BufAlloc(Unk_ov065_02284100_Buf *b, s32 size) {
 } }
 
 namespace N022838c4 { extern "C" {
-s32 GsTransport_BufFreeSpace(Unk_ov065_02284100_Buf *b) {
+s32 GsTransport_BufFreeSpace(GsTransportBuffer *b) {
     return b->size - b->len;
 }
 } }
 
 namespace N022838c4 { extern "C" {
-void GsTransport_BufAppendU8(Unk_ov065_02284100_Buf *b, s32 v) {
+void GsTransport_BufAppendU8(GsTransportBuffer *b, s32 v) {
     b->data[b->len++] = v;
 }
 } }
 
 namespace N022838c4 { extern "C" {
-void GsTransport_BufAppendU16(Unk_ov065_02284100_Buf *b, s32 v) {
+void GsTransport_BufAppendU16(GsTransportBuffer *b, s32 v) {
     b->data[b->len++] = v >> 8;
     b->data[b->len++] = v;
 }
 } }
 
 namespace N022838c4 { extern "C" {
-void GsTransport_BufAppend(Unk_ov065_02284100_Buf *b, char *s, s32 n) {
+void GsTransport_BufAppend(GsTransportBuffer *b, char *s, s32 n) {
     if (s != 0 && n != 0) {
         if (n == -1) {
             n = STD_GetStringLength(s);
@@ -1787,7 +1665,7 @@ void GsTransport_BufAppend(Unk_ov065_02284100_Buf *b, char *s, s32 n) {
 } }
 
 namespace N022838c4 { extern "C" {
-void GsTransport_BufRemove(Unk_ov065_02284100_Buf *b, s32 pos, s32 n) {
+void GsTransport_BufRemove(GsTransportBuffer *b, s32 pos, s32 n) {
     if (pos == -1) {
         pos = b->len - n;
     }

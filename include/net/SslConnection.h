@@ -2,6 +2,7 @@
 #define NET_SSLCONNECTION_H
 
 #include "types.h"
+#include "net/SslRootCa.h"
 #include "net/SslSession.h"
 
 // SSL 3.0 connection state of an IpSocket (IpSocket +0x0c, 0x804 bytes): handshake randoms and hashes, record
@@ -25,15 +26,6 @@ struct SslRsaPrivateKey {
     /* 0x24 */ u8 *exponentQ;
     /* 0x28 */ s32 coefficientLen;
     /* 0x2c */ u8 *coefficient;
-};
-
-// Root CA entry (SslCert_FindRootCa matches caName against the issuer name; SslCert_VerifySignature).
-struct SslRootCa {
-    /* 0x00 */ u32 caName;
-    /* 0x04 */ s32 modulusLen;
-    /* 0x08 */ u8 *modulus;
-    /* 0x0c */ s32 exponentLen;
-    /* 0x10 */ u8 *exponent;
 };
 
 // Server certificate given to the SSL server side (Ssl_SendServerHello).
