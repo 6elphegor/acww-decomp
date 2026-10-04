@@ -74,6 +74,7 @@ public:
     /* 0x04 */ EffectEmitterTag tag;
     /* 0x08 */ u8 isActive;
     /* 0x09 */ u8 emitterIndex;
+    /* 0x0a */ u8 userIndex;  // scratch byte for the owner's callbacks (e.g. ov003 TreeLeafFx: record index)
     /* 0x0c */ EffectSplEmitter *emitter;
     /* 0x10 */ EffectEmitterCbs callbacks;
 };

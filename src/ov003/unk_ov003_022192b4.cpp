@@ -8,6 +8,9 @@
 #include "gfx/CachedModel.h"
 #include "field/FieldObjectShapeQuery.h"
 #include "gfx/Unk_02093dc8_Obj.h"
+#include "gfx/EffectSplEmitter.h"
+#include "gfx/NNSG3dRS.h"
+#include "field/FieldAction.h"
 
 // ================================================================ other modules' real names
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
@@ -55,12 +58,88 @@ extern "C" {
 void TreeAnimSet_Construct(void *p);
 }
 
-// the sub-object at +0x4b20: constructed by the explicit call in the scene constructor, destroyed by the implicit member
-// destructor, which is the function at 0x0221c4e4
+// One falling-leaf / seasonal particle effect started by a shaken tree (TreeLeafFx_SetRecord); treeType 3 = free.
+struct TreeLeafFxEntry {
+    /* 0x00 */ s32 treeType;
+    /* 0x04 */ s32 isLeaves;
+    /* 0x08 */ s32 motionType;
+    /* 0x0c */ u8 treeStage;
+    /* 0x0d */ s8 lifeTimer;
+    /* 0x0e */ s8 frame;
+    /* 0x0f */ u8 animKind;
+    /* 0x10 */ s32 tintVariant;
+    /* 0x14 */ s32 posX;
+    /* 0x18 */ s32 posY;
+    /* 0x1c */ s32 posZ;
+};
+
+// sTreeLeafFx: the two leaf effect records (TreeLeafFx_*).
+struct TreeLeafFx {
+    /* 0x00 */ TreeLeafFxEntry records[2];
+    /* 0x40 */ s32 spawnIndex;
+};
+
+// Per tree type / motion / stage / leaves table entry (TreeLeafFx_GetParams); the last three values go to the SPL
+// emitter (TreeLeafFx_ApplyParams: +0x68, +0x58, +0x50).
+struct TreeLeafFxParams {
+    /* 0x00 */ s32 lifeTime;
+    /* 0x04 */ u16 unk_04;
+    /* 0x06 */ u16 unk_06;
+    /* 0x08 */ s16 unk_08;
+};
+
+// Effect callbacks of the two emitters of a leaf effect (data_ov003_02232b48/b78, EffectSpl_CreateTracked).
+struct TreeLeafFxCbs {
+    /* 0x00 */ EffectEmitterCbs emitters[2];
+};
+
+// 0x14c-byte animated tree (shake / chop animation of one tree model, TreeAnim_*). The AnimModel and the
+// SndSeEmitter are built by TreeAnim_Construct and torn down by TreeAnim_Destruct (raw storage here).
+struct TreeAnim {
+    /* 0x000 */ s32 active;
+    /* 0x004 */ s32 sessionSlot;
+    /* 0x008 */ u8 animModel[0xb8];
+    /* 0x0c0 */ s32 posX;
+    /* 0x0c4 */ s32 posY;
+    /* 0x0c8 */ s32 posZ;
+    /* 0x0cc */ s32 unitX;
+    /* 0x0d0 */ s32 unitZ;
+    /* 0x0d4 */ s32 animKind;
+    /* 0x0d8 */ s32 alpha;
+    /* 0x0dc */ s32 leafSpawnCount;
+    /* 0x0e0 */ u8 seEmitter[0x40];
+    /* 0x120 */ s32 unk_120[6];
+    /* 0x138 */ s32 unk_138[3];
+    /* 0x144 */ TreeLeafFxEntry *leafRecord;
+    /* 0x148 */ TreeLeafFxEntry *seasonalRecord;
+};
+
+// unit x / z pair (A01 vector-shape candidate); TreeAnimRequest member, also used by ns_0221aed4
+struct Unk_ov003_0221aed4_Raw2 {
+    s32 x, z;
+};
+
+// Queued tree animation (TreeAnimSet_Request -> TreeAnimSet_ProcessRequest / TreeAnimRequest_Resolve).
+struct TreeAnimRequest {
+    /* 0x00 */ s32 active;
+    /* 0x04 */ s32 sessionSlot;
+    /* 0x08 */ Unk_ov003_0221aed4_Raw2 unit;
+    /* 0x10 */ s32 animKind;
+    /* 0x14 */ s32 isChop;
+};
+
+// the sub-object at +0x4b20: constructed by the explicit call in the scene constructor (TreeAnimSet_Construct),
+// destroyed by the implicit member destructor, which is the function at 0x0221c4e4
 class TreeAnimSet {
 public:
     ~TreeAnimSet();
-    u8 pad[0x6a70 - 0x4b20];
+    /* 0x0000 */ TreeAnim treeAnims[3][4];
+    /* 0x0f90 */ TreeAnim cedarAnims[4];
+    /* 0x14c0 */ TreeAnim litCedarAnims[3];
+    /* 0x18a4 */ TreeAnim palmAnims[4];
+    /* 0x1dd4 */ TreeAnimRequest requests[5];
+    /* 0x1e4c */ u32 animFiles[8][4];   // TreeAnimSet_LoadAnims: loaded .nsbca files
+    /* 0x1ecc */ u32 anims[8][4];       // ... and their first animation
 };
 
 
@@ -96,6 +175,7 @@ public:
     /* 0x4b00 */ ModelSet stoneModelSet;
     /* 0x4b10 */ ModelSet stumpModelSet;
     /* 0x4b20 */ TreeAnimSet treeAnimSet;
+    /* 0x6a6c */ s32 frameCounter;
 };
 
 struct FieldItemFx {
@@ -383,7 +463,7 @@ struct Unk_ov003_0221a4a0 {
     /* 0x00 */ u32 sessionSlot;
     /* 0x04 */ s32 active;
     /* 0x08 */ u16 item;
-    /* 0x0a */ u16 unk_0a;
+    /* 0x0a */ u16 pendingItem;
     /* 0x0c */ s32 kind;
     /* 0x10 */ s32 unitX;
     /* 0x14 */ s32 unitZ;
@@ -504,9 +584,6 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self);
 }
 
 namespace ns_0221aed4 {
-struct Unk_ov003_0221aed4_Raw2 {
-    s32 x, z;
-};
 struct Unk_ov003_0221aed4_P2 {
     s32 x, z;
     Unk_ov003_0221aed4_P2(s32 a, s32 b) { x = a; z = b; }
@@ -532,7 +609,7 @@ struct Unk_ov003_0221aed4_Fx {
     /* 0x00 */ s32 sessionSlot;
     /* 0x04 */ s32 active;
     /* 0x08 */ u16 item;
-    /* 0x0a */ u16 unk_0a;
+    /* 0x0a */ u16 pendingItem;
     /* 0x0c */ s32 kind;
     /* 0x10 */ s32 unitX;
     /* 0x14 */ s32 unitZ;
@@ -561,27 +638,9 @@ struct Unk_ov003_0221aed4_Fx {
     /* 0xa0 */ u8 pendingApply;
     /* 0xa1 */ u8 pendingCommit;
 };
-struct Unk_ov003_0221b4b8_Obj {
-    /* 0x00 */ s32 active;
-    /* 0x04 */ s32 sessionSlot;
-    /* 0x08 */ Unk_ov003_0221aed4_Raw2 unit;
-    /* 0x10 */ s32 animKind;
-};
-struct Unk_ov003_0221b5e4_Sub {
-    u8 pad[0xd4];
-    u32 animKind;
-};
-struct Unk_ov003_0221b5e4_Mid {
-    u8 pad[0x2c];
-    Unk_ov003_0221b5e4_Sub *ptrUser;
-};
-struct Unk_ov003_0221b5e4_Kind {
-    u8 unk_00;
-    u8 nodeId;
-};
 struct Unk_ov003_0221b5e4_Obj {
-    /* 0x00 */ Unk_ov003_0221b5e4_Kind *unk_00;
-    /* 0x04 */ Unk_ov003_0221b5e4_Mid *unk_04;
+    /* 0x00 */ s32 unk_00;
+    /* 0x04 */ s32 unk_04;
     /* 0x08 */ u8 animModel[0xb0];
     /* 0xb8 */ s32 *pVisAnmResult;
     /* 0xbc */ u8 pad_bc[4];
@@ -604,11 +663,6 @@ struct Unk_ov003_0221b7d4_Pos {
     s32 x, y, z;
     Unk_ov003_0221b7d4_Pos() {}
 };
-struct Unk_ov003_0221b7d4_Ent {
-    u8 pad_00[8];
-    u16 unit;
-    u16 unk_0a;
-};
 extern "C" {
 
 extern u8 *gFieldObjectManager;
@@ -629,7 +683,7 @@ s32 Weed_SpawnPullFx(void *c, void *p);
 s32 DeadTurnip_SpawnDigFx(void *p);
 s32 func_02133150(s32 a, s32 b);
 s32 PendingUnit_Find(void *p, s32 a);
-Unk_ov003_0221b7d4_Ent *PendingUnit_Get(s32 i);
+PendingUnit *PendingUnit_Get(s32 i);
 s32 PendingUnit_FindBySlot(u8 a, s32 b);
 s32 PendingUnit_ApplyAt(void *p, s32 z);
 s32 PendingUnit_CommitAt(void *p, s32 z);
@@ -676,11 +730,11 @@ extern "C" void Tree_DropItems(u16 *cell, s32 a, P2 p);
 extern "C" void TreeAnim_DropItems(Unk_ov003_0221b5e4_Obj *self, void *cell);
 extern "C" s32 TreeAnim_Start(Unk_ov003_0221b5e4_Obj *self, s32 a, P2 p, s32 kind, s32 idx, s32 last);
 extern "C" void TreeAnim_Reset(Unk_ov003_0221b5e4_Obj *self);
-extern "C" void TreeAnim_ModelCallback(Unk_ov003_0221b5e4_Obj *self);
+extern "C" void TreeAnim_ModelCallback(NNSG3dRS *rs);
 extern "C" void TreeAnimSet_LoadAnims(u32 (*arr)[4]);
 extern "C" void TreeAnimSet_FreeAnims(u32 (*arr)[4]);
 extern "C" s32 TreeAnimSet_GetAnimPath(void *self, u32 a, u32 b);
-extern "C" void TreeAnimRequest_Resolve(Unk_ov003_0221b4b8_Obj *self);
+extern "C" void TreeAnimRequest_Resolve(TreeAnimRequest *self);
 extern "C" void FieldItemFx_ReleasePending(Unk_ov003_0221aed4_Fx *self);
 extern "C" void FieldItemFx_Init(Unk_ov003_0221aed4_Fx *self, s32 a, P2 p, V3 pos, s32 kind, u16 w, s32 x, s16 y, s32 z);
 extern "C" void FieldItemFx_Finish(Unk_ov003_0221aed4_Fx *self);
@@ -710,17 +764,10 @@ struct Unk_ov003_0221b8bc_Col {
 struct Unk_ov003_0221b8bc_Col2 {
     u16 a, b;
 };
-struct Unk_ov003_0221b8bc_Blk {
-    s32 v[12];
-};
 struct Unk_ov003_0221b8bc_Bits {
     u32 a : 12;
     u32 b : 16;
     u32 c : 4;
-};
-struct Unk_ov003_0221b8bc_Sub {
-    u8 pad_00[0xd];
-    u8 lifeTimer;
 };
 struct Unk_ov003_0221b8bc {
     /* 0x00 */ u32 active;
@@ -728,7 +775,7 @@ struct Unk_ov003_0221b8bc {
     /* 0x08 */ u8 animModel[0x5c];
     /* 0x64 */ void *resMdl;
     /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov003_0221b8bc_Blk baseMatrix;
+    /* 0x6c */ Mtx43 baseMatrix;
     /* 0x9c */ u8 unk_9c[0x10];
     /* 0xac */ Unk_ov003_0221b8bc_Bits animFrame;
     /* 0xb0 */ u8 unk_b0[8];
@@ -741,22 +788,15 @@ struct Unk_ov003_0221b8bc {
     /* 0xd8 */ s32 alpha;
     /* 0xdc */ s32 leafSpawnCount;
     /* 0xe0 */ u8 seEmitter[0x64];
-    /* 0x144 */ Unk_ov003_0221b8bc_Sub *leafRecord;
-    /* 0x148 */ Unk_ov003_0221b8bc_Sub *seasonalRecord;
-};
-struct Unk_ov003_0221c030_Ent {
-    /* 0x00 */ s32 active;
-    /* 0x04 */ s32 sessionSlot;
-    /* 0x08 */ s32 unit[2];
-    /* 0x10 */ s32 animKind;
-    /* 0x14 */ s32 isChop;
+    /* 0x144 */ TreeLeafFxEntry *leafRecord;
+    /* 0x148 */ TreeLeafFxEntry *seasonalRecord;
 };
 extern "C" {
 
 extern void *gCommManager;
 extern Unk_ov003_0221b8bc_V3 *data_ov003_0223291c[];
 extern u16 sTreeFruitItems[];
-extern Unk_ov003_0221b8bc_Blk data_021f47e0;
+extern Mtx43 data_021f47e0;
 extern s32 sTreeLeafFx;
 extern s32 sFieldObjectAnimHeap;
 extern u8 *gFieldObjectManager;
@@ -807,13 +847,13 @@ Unk_ov003_0221b8bc *TreeAnimSet_GetInstance(void *a, u16 *cell, s32 n, s32 f);
 s32 Item_IsTreeGrown(u16 *p);
 s32 Town_CanReleaseBees(void);
 void PendingUnit_ApplyAt(Unk_ov003_0221b8bc_V2 *p, s32 a);
-void TreeAnimRequest_Resolve(Unk_ov003_0221c030_Ent *e);
+void TreeAnimRequest_Resolve(TreeAnimRequest *e);
 void TreeAnim_Start(Unk_ov003_0221b8bc *a, s32 id, Unk_ov003_0221b8bc_V2 *p, s32 c, s32 n, s32 d);
 
 s32 Tree_GetDropSide(Unk_ov003_0221b8bc *o, Unk_ov003_0221b8bc_V3 *p);
 }
 // ---- prototypes of this file's functions
-extern "C" { void TreeAnimSet_ProcessRequest(void *a, Unk_ov003_0221c030_Ent *o); }
+extern "C" { void TreeAnimSet_ProcessRequest(void *a, TreeAnimRequest *o); }
 extern "C" { void TreeAnimSet_Request(u8 *a, s32 id, s32 *pos, s32 c, s32 d); }
 extern "C" { void Tree_KeepShaking(s32 id, s32 *pos); }
 extern "C" { void TreeAnim_Init(Unk_ov003_0221b8bc *o); }
@@ -827,66 +867,11 @@ extern "C" { void Tree_DropBeeHive(Unk_ov003_0221b8bc *o, s32 *p); }
 }
 
 namespace ns_0221c220 {
-struct Unk_ov003_0221c220_Elem {
-    u8 pad[0x14c];
-};
-struct Unk_ov003_0221c53c_Slot {
-    s32 active;
-    s32 sessionSlot;
-    s32 unitX;
-    s32 unitZ;
-    s32 animKind;
-    s32 isChop;
-    Unk_ov003_0221c53c_Slot() {
-        unitX = 0;
-        unitZ = 0;
-    }
-};
-struct Unk_ov003_0221c220_Big {
-    Unk_ov003_0221c220_Elem treeAnims[3][4];
-    Unk_ov003_0221c220_Elem cedarAnims[4];
-    Unk_ov003_0221c220_Elem unk_14c0[3];
-    Unk_ov003_0221c220_Elem palmAnims[4];
-    Unk_ov003_0221c53c_Slot requests[5];
-    u8 animFiles[4];
-};
-struct Unk_ov003_0221c2d8_Elem {
-    u8 pad_00[8];
-    u8 animModel[0xc4];
-    s32 unitX;
-    s32 unitZ;
-    u8 pad_d4[0xc];
-    u8 seEmitter[0x40];
-    s32 unk_120[6];
-};
 struct Unk_ov003_0221c62c_Vec3 {
     s32 x, y, z;
 };
 struct Unk_ov003_0221c62c_Pos {
     s32 x, z;
-};
-struct Unk_ov003_0221c62c_Rec {
-    s32 treeType;
-    s32 isLeaves;
-    s32 motionType;
-    u8 treeStage;
-    s8 lifeTimer;
-    s8 frame;
-    u8 animKind;
-    s32 tintVariant;
-    s32 posX;
-    s32 posY;
-    s32 posZ;
-};
-struct Unk_ov003_0221c608_Set {
-    Unk_ov003_0221c62c_Rec records[2];
-    s32 spawnIndex;
-};
-struct Unk_ov003_0221ca7c_P {
-    s32 lifeTime;
-    u16 unk_04;
-    u16 unk_06;
-    s16 unk_08;
 };
 struct Unk_ov003_0221c91c_B {
     Unk_02093dc8_Root *header;
@@ -909,28 +894,19 @@ struct Unk_ov003_0221c91c_Tgt {
     u8 pad_69[0x17];
     u8 tintVariant;
 };
-struct Unk_ov003_0221c858_Obj {
-    u8 pad_00[0xa];
-    u8 unk_0a;
-    u8 pad_0b;
-    Unk_ov003_0221c91c_Tgt *emitter;
-};
 struct Unk_ov003_0221c91c_Pad {
     s32 v[2];
     Unk_ov003_0221c91c_Pad() {}
     ~Unk_ov003_0221c91c_Pad() {}
 };
-struct Unk_ov003_0221c62c_Quad {
-    s32 v[4];
-};
-typedef Unk_ov003_0221c220_Big Big;
-typedef Unk_ov003_0221c62c_Rec Rec;
+typedef TreeAnimSet Big;
+typedef TreeLeafFxEntry Rec;
 typedef Unk_ov003_0221c62c_Vec3 Vec3;
 typedef Unk_ov003_0221c62c_Pos Pos;
-typedef Unk_ov003_0221c608_Set Set;
+typedef TreeLeafFx Set;
 typedef Unk_ov003_0221c91c_Tgt Tgt;
-typedef Unk_ov003_0221ca7c_P PRec;
-typedef Unk_ov003_0221c2d8_Elem Elem2;
+typedef TreeLeafFxParams PRec;
+typedef TreeAnim Elem2;
 extern "C" {
 
 void TreeAnimSet_FreeAnims(void *p);
@@ -964,8 +940,8 @@ extern s16 data_02135f44[];
 extern u8 data_ov003_0222f4c8[];
 extern u8 data_ov003_0222f534[];
 extern s32 data_ov003_0222f298[];
-extern Unk_ov003_0221c62c_Quad data_ov003_02232b48;
-extern Unk_ov003_0221c62c_Quad data_ov003_02232b78;
+extern TreeLeafFxCbs data_ov003_02232b48;
+extern TreeLeafFxCbs data_ov003_02232b78;
 extern PRec ****data_ov003_02232928[];
 extern s32 data_ov003_022335c0[];
 extern void *gSceneBlockMap;
@@ -984,9 +960,9 @@ Rec *TreeLeafFx_SpawnLeaves(Set *self, s32 p1, u32 p2, u16 *p3, Pos *p4, s32 p5)
 Rec *TreeLeafFx_SpawnSeasonal(Set *self, s32 p1, u32 p2, u16 *p3, Pos *p4, s32 p5);
 void TreeLeafFx_GetTreeType(Set *self, Rec *r, s32 *o1, s32 *o2, Vec3 *out, u16 *tile, Pos *pos);
 Rec *TreeLeafFx_FindFree(Set *self);
-s32 TreeLeafFx_OnEffectUpdate(Unk_ov003_0221c858_Obj *self);
-s32 TreeLeafFx_OnEffectStep(Unk_ov003_0221c858_Obj *self);
-void TreeLeafFx_OnEffectInit(Unk_ov003_0221c858_Obj *self);
+s32 TreeLeafFx_OnEffectUpdate(EffectEmitterEntry *self);
+s32 TreeLeafFx_OnEffectStep(EffectEmitterEntry *self);
+void TreeLeafFx_OnEffectInit(EffectEmitterEntry *self);
 void TreeLeafFx_UpdatePos(Rec *r, Tgt *t);
 void TreeLeafFx_ApplyParams(Rec *r, Tgt *t);
 PRec *TreeLeafFx_GetParams(Rec *r);
@@ -1001,9 +977,9 @@ extern "C" { void TreeLeafFx_SetRecord(Rec *r, s32 a1, s32 a2, s32 a3, u32 c, Ve
 extern "C" { PRec *TreeLeafFx_GetParams(Rec *r); }
 extern "C" { void TreeLeafFx_ApplyParams(Rec *r, Tgt *t); }
 extern "C" { void TreeLeafFx_UpdatePos(Rec *r, Tgt *t); }
-extern "C" { void TreeLeafFx_OnEffectInit(Unk_ov003_0221c858_Obj *self); }
-extern "C" { s32 TreeLeafFx_OnEffectStep(Unk_ov003_0221c858_Obj *self); }
-extern "C" { s32 TreeLeafFx_OnEffectUpdate(Unk_ov003_0221c858_Obj *self); }
+extern "C" { void TreeLeafFx_OnEffectInit(EffectEmitterEntry *self); }
+extern "C" { s32 TreeLeafFx_OnEffectStep(EffectEmitterEntry *self); }
+extern "C" { s32 TreeLeafFx_OnEffectUpdate(EffectEmitterEntry *self); }
 extern "C" { Rec *TreeLeafFx_FindFree(Set *self); }
 extern "C" { void TreeLeafFx_GetTreeType(Set *self, Rec *r, s32 *o1, s32 *o2, Vec3 *out, u16 *tile, Pos *pos); }
 extern "C" { Rec *TreeLeafFx_SpawnSeasonal(Set *self, s32 p1, u32 p2, u16 *p3, Pos *p4, s32 p5); }
@@ -1068,11 +1044,6 @@ typedef Unk_ov003_0221cb54_V3 V3;
 typedef Unk_ov003_0221cb54_Raw2 R2;
 typedef Unk_ov003_0221cb54_Col Col;
 inline Unk_ov003_0221cb54_P2::Unk_ov003_0221cb54_P2(Unk_ov003_0221cb54_Col *c) { x = (s32)c->a >> 8; z = c->b & 0xff; }
-struct Unk_ov003_0221cb54_Rec {
-    u8 pad_00[8];
-    u16 unit;
-    u16 item;
-};
 extern "C" {
 
 extern u8 *gCommManager;
@@ -1085,7 +1056,7 @@ extern u8 *gSceneBlockMap;
 extern u8 *gCamera;
 
 s32 PendingUnit_FindBySlot(u8 a, u8 b);
-Unk_ov003_0221cb54_Rec *PendingUnit_Get();
+PendingUnit *PendingUnit_Get();
 void FieldItemFx_StartStrikeShake(u32 a, u32 b, P2 p);
 void FieldItemFx_StartStrikeEject(u32 a, u32 b, P2 p, V3 v);
 void FieldPos_FromUnitCenter(V3 *out, s32 x, s32 z);
@@ -1358,10 +1329,7 @@ struct Unk_ov003_0221e4d4_Blk {
 };
 typedef Unk_ov003_0221e4d4_V3 V3;
 typedef Unk_ov003_0221e4d4_Blk Blk;
-struct Unk_ov003_0221e4d4_Elem {
-    u8 pad[0x9c];
-};
-typedef Unk_ov003_0221e4d4_Elem Elem;
+typedef CachedModel Elem;
 struct Unk_ov003_0221e4d4_Model {
     u8 pad_00[0x5c];
     void *resMdl;
@@ -1557,10 +1525,7 @@ extern "C" { void FieldObj_DrawItemModel(Obj *o, u32 t, V3 *pos, V3 *scale, s32 
 }
 
 namespace ns_0221ede8 {
-struct Unk_ov003_0221efb4_Elem {
-    u8 pad[0x9c];
-};
-typedef Unk_ov003_0221efb4_Elem Elem;
+typedef CachedModel Elem;
 struct Unk_ov003_0221f674_Seg {
     u8 pad_00[8];
     Elem e;
@@ -1680,7 +1645,7 @@ extern "C" {
 
 void TreeAnimSet_Construct(void *p);
 }
-struct Unk_ov003_0221fda8_Ent {
+struct FieldObjShapeCategory {
     u8 *shapes;
     u8 category;
     u8 unk_05;
@@ -1716,7 +1681,7 @@ extern u32 *data_ov003_022328d4[];
 extern void *data_ov003_022328b0[];
 extern void **data_ov003_022328ec[];
 extern void *data_ov003_02234604[];
-extern Unk_ov003_0221fda8_Ent data_ov003_0222f4b8[];
+extern FieldObjShapeCategory data_ov003_0222f4b8[];
 
 BOOL CachedModel_loadWithTex(void *obj, void *res, void *name, void *tex, u32 d, u32 e, s32 f);
 BOOL ModelSet_Load(void *t, void *file, void *heap);
@@ -3299,7 +3264,7 @@ u8 *FieldObj_GetShapeRecord(u8 *p)
         s32 hi = v & 0xf000;
         s32 tag = hi >> 12;
         s32 lo = v & 0xfff;
-        Unk_ov003_0221fda8_Ent *e = data_ov003_0222f4b8;
+        FieldObjShapeCategory *e = data_ov003_0222f4b8;
         for (; e->shapes != NULL; e++) {
             if (tag == e->category) {
                 if (e->shapeCount > lo) {
@@ -5193,7 +5158,7 @@ s32 Tree_IsPendingStump(void *o, P2 pos) {
     s32 idx = PendingUnit_FindForAid(o, pos, 0);
     if (idx >= 0) {
         volatile u16 v = 0xfff1;
-        v = ((Unk_ov003_0221cb54_Rec *(*)(s32))PendingUnit_Get)(idx)->item;
+        v = ((PendingUnit *(*)(s32))PendingUnit_Get)(idx)->item;
         BOOL f1 = TRUE, f2 = TRUE, f3 = TRUE, f0 = FALSE;
         u32 t = v;
         if (v >= 0x2b && t <= 0x2e) f0 = TRUE;
@@ -5351,15 +5316,15 @@ extern "C" {
 void FieldItemFx_StartStrikeResult(P2 pos) {
     u32 t = *(u32 *)(gCommManager + 0x64);
     if (PendingUnit_FindBySlot(t, 4) >= 0) {
-        Unk_ov003_0221cb54_Rec *r = PendingUnit_Get();
+        PendingUnit *r = PendingUnit_Get();
         FieldItemFx_StartStrikeShake(t, r->item, pos);
     }
     if (PendingUnit_FindBySlot(t, 3) >= 0) {
-        Unk_ov003_0221cb54_Rec *r = PendingUnit_Get();
+        PendingUnit *r = PendingUnit_Get();
         V3 v;
         FieldPos_FromUnitCenter(&v, pos.x, pos.z);
         Col c;
-        c.c = r->unit;
+        c.c = r->unit.v;
         u16 tt = c.c;
         c.b = tt;
         c.a = tt;
@@ -5516,17 +5481,17 @@ void TreeLeafFx_UpdatePos(Rec *r, Tgt *t) {
 
 namespace ns_0221c220 {
 extern "C" {
-void TreeLeafFx_OnEffectInit(Unk_ov003_0221c858_Obj *self) {
+void TreeLeafFx_OnEffectInit(EffectEmitterEntry *self) {
     s32 i;
-    Tgt *t = self->emitter;
+    Tgt *t = (Tgt *)self->emitter;
     Rec *r;
     EffectCb_InitAtPos(self);
-    self->unk_0a = sTreeLeafFx.spawnIndex;
+    self->userIndex = sTreeLeafFx.spawnIndex;
     i = sTreeLeafFx.spawnIndex;
     if (i < 0) i = 0;
     r = &sTreeLeafFx.records[i];
     TreeLeafFx_UpdatePos(r, t);
-    self->unk_0a = i;
+    self->userIndex = i;
     TreeLeafFx_ApplyParams(r, t);
     t->unk_44 = data_ov003_0222f594[sTreeLeafFx.records[i].treeType][r->treeStage];
     t->tintVariant = r->tintVariant;
@@ -5536,8 +5501,8 @@ void TreeLeafFx_OnEffectInit(Unk_ov003_0221c858_Obj *self) {
 
 namespace ns_0221c220 {
 extern "C" {
-s32 TreeLeafFx_OnEffectStep(Unk_ov003_0221c858_Obj *self) {
-    Rec *rec = &sTreeLeafFx.records[self->unk_0a];
+s32 TreeLeafFx_OnEffectStep(EffectEmitterEntry *self) {
+    Rec *rec = &sTreeLeafFx.records[self->userIndex];
     s32 t = rec->lifeTimer;
     if (t - 1 < 0) rec->treeType = 3;
     rec->lifeTimer = t - 1;
@@ -5549,14 +5514,14 @@ s32 TreeLeafFx_OnEffectStep(Unk_ov003_0221c858_Obj *self) {
 
 namespace ns_0221c220 {
 extern "C" {
-s32 TreeLeafFx_OnEffectUpdate(Unk_ov003_0221c858_Obj *self) {
+s32 TreeLeafFx_OnEffectUpdate(EffectEmitterEntry *self) {
     BOOL r = TRUE;
     EffectCb_UpdateTint(self);
-    Rec *rec = &sTreeLeafFx.records[self->unk_0a];
+    Rec *rec = &sTreeLeafFx.records[self->userIndex];
     if (rec->treeType == 3) {
         r = FALSE;
     } else {
-        TreeLeafFx_UpdatePos(rec, self->emitter);
+        TreeLeafFx_UpdatePos(rec, (Tgt *)self->emitter);
     }
     return r;
 }
@@ -5619,7 +5584,7 @@ void TreeLeafFx_GetTreeType(Set *self, Rec *r, s32 *o1, s32 *o2, Vec3 *out, u16 
 namespace ns_0221c220 {
 extern "C" {
 Rec *TreeLeafFx_SpawnSeasonal(Set *self, s32 p1, u32 p2, u16 *p3, Pos *p4, s32 p5) {
-    Unk_ov003_0221c62c_Quad q = data_ov003_02232b48;
+    TreeLeafFxCbs q = data_ov003_02232b48;
     Rec *r = 0;
     if (data_ov003_0222f4c8[TownState_GetSeasonPeriod()] != 0) {
         r = TreeLeafFx_FindFree(self);
@@ -5649,7 +5614,7 @@ Rec *TreeLeafFx_SpawnSeasonal(Set *self, s32 p1, u32 p2, u16 *p3, Pos *p4, s32 p
 namespace ns_0221c220 {
 extern "C" {
 Rec *TreeLeafFx_SpawnLeaves(Set *self, s32 p1, u32 p2, u16 *p3, Pos *p4, s32 p5) {
-    Unk_ov003_0221c62c_Quad q = data_ov003_02232b78;
+    TreeLeafFxCbs q = data_ov003_02232b78;
     Rec *r = TreeLeafFx_FindFree(self);
     if (r != 0) {
         s32 v14, v18;
@@ -5710,15 +5675,15 @@ extern "C" {
 Big *TreeAnimSet_Construct(Big *self) {
     func_02135714(self, 12, 0x14c, (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
     func_02135714(self->cedarAnims, 4, 0x14c, (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
-    func_02135714(self->unk_14c0, 3, 0x14c, (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
+    func_02135714(self->litCedarAnims, 3, 0x14c, (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
     func_02135714(self->palmAnims, 4, 0x14c, (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
     {
-        Unk_ov003_0221c53c_Slot *s = self->requests;
+        TreeAnimRequest *s = self->requests;
         do {
-            s->unitX = 0;
-            s->unitZ = 0;
-            s = (Unk_ov003_0221c53c_Slot *)((u8 *)s + 0x18);
-        } while (s != (Unk_ov003_0221c53c_Slot *)self->animFiles);
+            s->unit.x = 0;
+            s->unit.z = 0;
+            s = (TreeAnimRequest *)((u8 *)s + 0x18);
+        } while (s != (TreeAnimRequest *)self->animFiles);
     }
     return self;
 }
@@ -5729,7 +5694,7 @@ namespace ns_0221c220 {
 extern "C" {
 Big *_ZN11TreeAnimSetD1Ev(Big *self) {
     func_021355f0(self->palmAnims, 4, 0x14c, (void *)TreeAnim_Destruct);
-    func_021355f0(self->unk_14c0, 3, 0x14c, (void *)TreeAnim_Destruct);
+    func_021355f0(self->litCedarAnims, 3, 0x14c, (void *)TreeAnim_Destruct);
     func_021355f0(self->cedarAnims, 4, 0x14c, (void *)TreeAnim_Destruct);
     func_021355f0(self, 12, 0x14c, (void *)TreeAnim_Destruct);
     return self;
@@ -5833,7 +5798,7 @@ u8 *TreeAnimSet_GetInstance(Big *self, u16 *p, s32 a, s32 b) {
 
 namespace ns_0221b8bc {
 extern "C" {
-void TreeAnimSet_ProcessRequest(void *a, Unk_ov003_0221c030_Ent *o) {
+void TreeAnimSet_ProcessRequest(void *a, TreeAnimRequest *o) {
     s32 w;
     u16 *cell;
     s32 x, z, n;
@@ -5846,7 +5811,7 @@ void TreeAnimSet_ProcessRequest(void *a, Unk_ov003_0221c030_Ent *o) {
         TreeAnimRequest_Resolve(o);
         return;
     }
-    q = o->unit;
+    q = &o->unit.x;
     x = q[0];
     z = q[1];
     hx = x >> 4;
@@ -5856,7 +5821,7 @@ void TreeAnimSet_ProcessRequest(void *a, Unk_ov003_0221c030_Ent *o) {
         TreeAnimRequest_Resolve(o);
         return;
     }
-    q = o->unit;
+    q = &o->unit.x;
     x = q[0];
     z = q[1];
     w = o->animKind;
@@ -5902,14 +5867,14 @@ void TreeAnimSet_Request(u8 *a, s32 id, s32 *pos, s32 c, s32 d) {
         s32 hy = z >> 4;
         u16 *cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), z - (hy << 4), 0);
         if (cell != 0) {
-            Unk_ov003_0221c030_Ent *e;
+            TreeAnimRequest *e;
             s32 f1, f2;
             u32 v;
             Unk_ov003_0221b8bc_V2 t;
             if (CommManager_isOnline(gCommManager) == 0) {
                 id = 0;
             }
-            e = (Unk_ov003_0221c030_Ent *)(a + 0x1dd4 + id * 0x18);
+            e = (TreeAnimRequest *)(a + 0x1dd4 + id * 0x18);
             if (e->active != 0) {
                 f1 = 0;
                 v = *cell;
@@ -5950,7 +5915,7 @@ void TreeAnimSet_Request(u8 *a, s32 id, s32 *pos, s32 c, s32 d) {
                 if (v >= 0x57 && v <= 0x5b) {
                     goto set;
                 }
-                if (((volatile s32 *)pos)[0] == e->unit[0] && ((volatile s32 *)pos)[1] == e->unit[1]) {
+                if (((volatile s32 *)pos)[0] == e->unit.x && ((volatile s32 *)pos)[1] == e->unit.z) {
                     return;
                 }
                 t.x = pos[0];
@@ -5962,8 +5927,8 @@ void TreeAnimSet_Request(u8 *a, s32 id, s32 *pos, s32 c, s32 d) {
             e->active = 1;
             e->sessionSlot = id;
             s32 tz = pos[1];
-            e->unit[0] = pos[0];
-            e->unit[1] = tz;
+            e->unit.x = pos[0];
+            e->unit.z = tz;
             e->animKind = c;
             e->isChop = d;
         }
@@ -6136,10 +6101,10 @@ void TreeAnim_Update(Unk_ov003_0221b8bc *o) {
                             Unk_ov003_0221b8bc_V2 a, b;
                             a.x = o->unitX;
                             a.z = o->unitZ;
-                            o->leafRecord = (Unk_ov003_0221b8bc_Sub *)TreeLeafFx_SpawnLeaves(&sTreeLeafFx, o->animKind, n - 1, cell, &a, o->leafSpawnCount);
+                            o->leafRecord = (TreeLeafFxEntry *)TreeLeafFx_SpawnLeaves(&sTreeLeafFx, o->animKind, n - 1, cell, &a, o->leafSpawnCount);
                             b.x = o->unitX;
                             b.z = o->unitZ;
-                            o->seasonalRecord = (Unk_ov003_0221b8bc_Sub *)TreeLeafFx_SpawnSeasonal(&sTreeLeafFx, o->animKind, n - 1, cell, &b, o->leafSpawnCount);
+                            o->seasonalRecord = (TreeLeafFxEntry *)TreeLeafFx_SpawnSeasonal(&sTreeLeafFx, o->animKind, n - 1, cell, &b, o->leafSpawnCount);
                             o->leafSpawnCount = o->leafSpawnCount + 1;
                         }
                     }
@@ -6365,7 +6330,7 @@ extern "C" void Tree_DropSpecial(u16 *cell, s32 a, P2 p)
         FieldPos_FromUnitCenter(&d, p.x, p.z);
         s32 idx = Tree_GetDropSide(a, &d);
         tbl = tbl + idx;
-        Unk_ov003_0221b7d4_Ent *e = PendingUnit_Get(rec);
+        PendingUnit *e = PendingUnit_Get(rec);
         Unk_ov003_0221aed4_Raw3 pos;
         s32 px = d.x + tbl->x;
         *(volatile s32 *)&pos.x = px;
@@ -6374,16 +6339,16 @@ extern "C" void Tree_DropSpecial(u16 *cell, s32 a, P2 p)
         s32 pz = d.z + tbl->z;
         *(volatile s32 *)&pos.z = pz;
         volatile u16 tt[3];
-        tt[2] = e->unit;
+        tt[2] = e->unit.v;
         u16 vv = tt[2];
         tt[1] = vv;
         tt[0] = vv;
         s32 hi = tt[0] >> 8;
         s32 lo = tt[1] & 0xff;
         if (fl == 0) {
-            FieldItemFx_StartTreeDrop(a, e->unk_0a, P2(hi, lo), V3(px, py, pz), 0, 0);
+            FieldItemFx_StartTreeDrop(a, e->item, P2(hi, lo), V3(px, py, pz), 0, 0);
         } else {
-            FieldItemFx_StartTreeDropFloat(a, e->unk_0a, P2(hi, lo), V3(px, py, pz), 0);
+            FieldItemFx_StartTreeDropFloat(a, e->item, P2(hi, lo), V3(px, py, pz), 0);
         }
     }
 }
@@ -6428,7 +6393,7 @@ extern "C" s32 TreeAnim_Start(Unk_ov003_0221b5e4_Obj *self, s32 a, P2 p, s32 kin
         AnimModel_attachAnim(&self->animModel);
     }
     self->animKind = kind;
-    self->unk_04 = (Unk_ov003_0221b5e4_Mid *)a;
+    self->unk_04 = a;
     self->unit.x = p.x;
     self->unit.z = p.z;
     Unk_ov003_0221b65c_Tmp t;
@@ -6458,16 +6423,16 @@ extern "C" void TreeAnim_Reset(Unk_ov003_0221b5e4_Obj *self)
 }
 
 namespace ns_0221aed4 {
-extern "C" void TreeAnim_ModelCallback(Unk_ov003_0221b5e4_Obj *self)
+extern "C" void TreeAnim_ModelCallback(NNSG3dRS *rs)
 {
-    Unk_ov003_0221b5e4_Sub *s = self->unk_04->ptrUser;
-    if (self->unk_00->nodeId == 2) {
+    TreeAnim *s = (TreeAnim *)rs->pRenderObj->ptrUser;
+    if (rs->c[1] == 2) {
         switch (s->animKind) {
         case 0:
         case 1:
         case 2:
         case 3:
-            *self->pVisAnmResult = 0;
+            *(s32 *)rs->pVisAnmResult = 0;
             break;
         }
     }
@@ -6520,7 +6485,7 @@ extern "C" s32 TreeAnimSet_GetAnimPath(void *self, u32 a, u32 b)
 }
 
 namespace ns_0221aed4 {
-extern "C" void TreeAnimRequest_Resolve(Unk_ov003_0221b4b8_Obj *self)
+extern "C" void TreeAnimRequest_Resolve(TreeAnimRequest *self)
 {
     if (self->animKind != 1) {
         void *g = TownBlockMap_Get();
@@ -6583,9 +6548,9 @@ extern "C" void FieldItemFx_Init(Unk_ov003_0221aed4_Fx *self, s32 a, P2 p, V3 po
         t.z = self->unitZ;
         s32 i = PendingUnit_Find(&t, 0);
         if (i >= 0) {
-            self->unk_0a = PendingUnit_Get(i)->unk_0a;
+            self->pendingItem = PendingUnit_Get(i)->item;
         } else {
-            self->unk_0a = 0xfff1;
+            self->pendingItem = 0xfff1;
         }
     }
     self->item = w;
@@ -6648,7 +6613,7 @@ extern "C" void FieldItemFx_Finish(Unk_ov003_0221aed4_Fx *self)
     self->active = 0;
     self->kind = 0xf;
     self->item = 0xfff1;
-    self->unk_0a = 0xfff1;
+    self->pendingItem = 0xfff1;
 }
 }
 
@@ -6658,7 +6623,7 @@ extern "C" void FieldItemFx_Clear(Unk_ov003_0221aed4_Fx *self)
     self->active = 0;
     self->kind = 0xf;
     self->item = 0xfff1;
-    self->unk_0a = 0xfff1;
+    self->pendingItem = 0xfff1;
 }
 }
 
@@ -6842,14 +6807,14 @@ extern "C" void FieldItemFx_UpdateHoleClose(Unk_ov003_0221a4a0 *self)
         Unk_ov003_0221a4a0_V2 pos;
         tmp = 0xfff1;
         self->scaleX = 0;
-        tmp = self->unk_0a;
+        tmp = self->pendingItem;
         u32 v;
         if (Unk_ov003_0221ad84_Chk(&tmp, v) || (v >= 0x26 && v <= 0x2a) || (v >= 0x5d && v <= 0x61) ||
             (v >= 0x2f && v <= 0x56) || (v >= 0x57 && v <= 0x5b) || (v >= 0x66 && v <= 0x68) || v == 0x69 ||
             (v >= 0x6a && v <= 0x6c) || v == 0x6d || (v >= 0xc8 && v <= 0xcf) || (v >= 0xd4 && v <= 0xda)) {
             pos.a = self->unitX;
             pos.b = self->unitZ;
-            if (FieldItemFx_StartPop(self->sessionSlot, self->unk_0a, &pos)) {
+            if (FieldItemFx_StartPop(self->sessionSlot, self->pendingItem, &pos)) {
                 self->pendingApply = 0;
                 FieldItemFx_Finish(self);
             }
@@ -7155,7 +7120,7 @@ extern "C" void FieldItemFx_UpdatePlant(Unk_ov003_0221a4a0 *self)
         if (self->step == 0) {
             BOOL r = FALSE;
             tmp = 0xfff1;
-            tmp = self->unk_0a;
+            tmp = self->pendingItem;
             u32 a = tmp;
             u32 c = tmp;
             if (c >= 0x1492 && a <= 0x14fd) {
