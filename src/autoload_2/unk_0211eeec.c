@@ -51,12 +51,6 @@ typedef struct {
     WMOtherElement element[16];
 } WMOtherElements;
 
-typedef struct {
-    u8 _00[0x3c];
-    u16 f3c;
-    u16 f3e;
-} WMBssDesc;
-
 extern CardCommon data_021fec00;
 extern u32 data_021ff240[];
 extern int (*data_021ff464)(void);

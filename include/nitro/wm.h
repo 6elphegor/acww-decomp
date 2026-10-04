@@ -33,4 +33,26 @@ struct WMMsg {
     };
 };
 
+// WM bss description (0xc0 = WM_SIZE_BSSDESC): scan results, WM_GetOtherElements, the WifiAp found-AP list.
+typedef struct WMBssDesc {
+    /* 0x00 */ u16 length;
+    /* 0x02 */ u16 rssi;
+    /* 0x04 */ u8 bssid[6];
+    /* 0x0a */ u16 ssidLength;
+    /* 0x0c */ u8 ssid[32];
+    /* 0x2c */ u16 capaInfo;
+    /* 0x2e */ struct {
+        u16 basic;
+        u16 support;
+    } rateSet;
+    /* 0x32 */ u16 beaconPeriod;
+    /* 0x34 */ u16 dtimPeriod;
+    /* 0x36 */ u16 channel;
+    /* 0x38 */ u16 cfpPeriod;
+    /* 0x3a */ u16 cfpMaxDuration;
+    /* 0x3c */ u16 gameInfoLength;
+    /* 0x3e */ u16 otherElementCount;
+    /* 0x40 */ u8 gameInfo[0x80]; // WMGameInfo
+} WMBssDesc;
+
 #endif

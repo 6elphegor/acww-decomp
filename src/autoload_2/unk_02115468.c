@@ -1,4 +1,5 @@
 // mwcc-flags: -nothumb -O4,p
+#include "nitro/os_rtc.h"
 // NitroSDK OS reset / owner info (os_reset.c, os_ownerInfo.c), autoload_2 0x02115468-0x0211565c (the former unit 0x02114ef4-0x0211565c split into its files by
 // their bss). ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
@@ -25,24 +26,13 @@ typedef struct {
     OSAlarm *tail;
 } OSAlarmQueue;
 
-typedef struct {
-    u8 favoriteColor;
-    u8 birthMonth;
-    u8 birthDay;
-    u8 unk3;
-    u16 nickName[10];
-    u16 nickNameLength;
-    u16 comment[26];
-    u16 commentLength;
-} OSOwnerInfo;
-
 // user data block in the shared area (0x027ffc80)
 typedef struct {
     u8 pad0[2];
-    u8 birthMonth : 4;
+    u8 favoriteColor : 4;
     u8 pad2 : 4;
+    u8 birthMonth;
     u8 birthDay;
-    u8 unk4;
     u8 pad5;
     u16 nickName[10];
     u8 nickNameLength;
@@ -50,7 +40,7 @@ typedef struct {
     u16 comment[26];
     u8 commentLength;
     u8 pad51[0x13];
-    u16 favoriteColor : 3;
+    u16 language : 3;
 } OSSharedUserInfo;
 
 extern OSAlarmQueue data_021fcf30; // OSi_AlarmQueue
@@ -98,10 +88,10 @@ void OS_GetMacAddress(u8 *macAddr) {
 // OS_GetOwnerInfo
 void OS_GetOwnerInfo(OSOwnerInfo *info) {
     OSSharedUserInfo *src = (OSSharedUserInfo *)0x027ffc80;
+    info->language = src->language;
     info->favoriteColor = src->favoriteColor;
     info->birthMonth = src->birthMonth;
     info->birthDay = src->birthDay;
-    info->unk3 = src->unk4;
     info->nickNameLength = src->nickNameLength;
     info->commentLength = src->commentLength;
     MIi_CpuCopy16(src->nickName, info->nickName, 20);

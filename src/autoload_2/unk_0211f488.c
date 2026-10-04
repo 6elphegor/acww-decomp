@@ -51,12 +51,6 @@ typedef struct {
     WMOtherElement element[16];
 } WMOtherElements;
 
-typedef struct {
-    u8 _00[0x3c];
-    u16 f3c;
-    u16 f3e;
-} WMBssDesc;
-
 extern CardCommon data_021fec00;
 extern u32 data_021ff240[];
 extern int (*data_021ff464)(void);
@@ -152,11 +146,11 @@ WMOtherElements WM_GetOtherElements(WMBssDesc *b) {
     u8 curr_elem_len;
     u8 elems_len;
     u8 cal_elems_len;
-    if (b->f3c != 0) {
+    if (b->gameInfoLength != 0) {
         elems.count = 0;
         return elems;
     }
-    elems.count = (u8)b->f3e;
+    elems.count = (u8)b->otherElementCount;
     if (elems.count == 0) return elems;
     if (elems.count > 16) elems.count = 16;
     p_elem = (u8 *)b + 64;

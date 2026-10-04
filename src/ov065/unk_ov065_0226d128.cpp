@@ -1,14 +1,12 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_0226d158_Owner.h"
-#include "net/Unk_ov065_02290600_Obj.h"
-#include "net/Unk_ov065_02290600_S.h"
+#include "net/DwcHttp.h"
+#include "net/NasAuthWork.h"
+#include "nitro/os_rtc.h"
 
 typedef unsigned long long u64;
 typedef long long s64;
 
-typedef void *(*Unk_ov065_0226dd2c_Alloc)(const char *, u32);
-typedef void (*Unk_ov065_0226dd2c_Free)(const char *, void *, u32);
 
 
 
@@ -19,17 +17,11 @@ typedef void (*Unk_ov065_0226dd2c_Free)(const char *, void *, u32);
 
 
 
-typedef Unk_ov065_02290600_S S;
+typedef NasAuthWork S;
 
-struct Unk_ov065_0228b778 {
-    char *url;
-    u32 method;
-    u32 userRecvBuffer;
-    u32 recvBufferSize;
-    Unk_ov065_0226dd2c_Alloc allocFunc;
-    Unk_ov065_0226dd2c_Free freeFunc;
-    s32 useTestServer;
-    s32 timeoutMs;
+// Word view of NasAuthParams for the struct copy in NasAuth_Start (a copy of the field-typed struct compiles differently).
+struct NasAuthParamsWords {
+    u32 v[11];
 };
 
 // the same symbol is called with and without its argument
@@ -42,7 +34,7 @@ extern "C" s32 DwcHttp_Destroy(void *p);
 
 extern "C" {
 extern S *sNasAuth;
-extern Unk_ov065_02290604_S sNasUserId;
+extern NasUserIdInfo sNasUserId;
 extern u32 data_0220064c;
 extern char sNasLangCode01[4];
 extern char sNasLangCode03[4];
@@ -53,7 +45,7 @@ extern char sNasLangCode00[4];
 extern char sNasLangCode06[4];
 extern char *sNasLangCodeTable[7];
 extern char sNasDefaultUrl[0x20];
-extern Unk_ov065_0228b778 sNasHttpParams;
+extern DwcHttpParams sNasHttpParams;
 
 extern s32 memcmp(const void *a, const void *b, u32 n);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
@@ -104,7 +96,7 @@ extern s32 DwcHttp_Abort(void);
 extern s32 NasBase64_Decode(const char *s, s32 len, char *dst, u32 size);
 
 void NasAuth_SetState(s32 v);
-s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226d158_Kv *a3, s32 a4, s32 a5);
+s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, DwcHttpField *a3, s32 a4, s32 a5);
 s32 NasAuth_ParseResponse(void);
 s32 NasAuth_HandleResponse(void);
 void NasAuth_ThreadMain(void);
@@ -115,20 +107,20 @@ void NasAuth_JoinThread(void);
 void NasAuth_Destroy(void);
 void NasAuth_Abort(void);
 void NasAuth_StartThread(void);
-s32 NasAuth_Start(Unk_ov065_0226dd2c_Cfg *cfg, u32 a);
+s32 NasAuth_Start(NasAuthParams *cfg, u32 a);
 void NasAuth_SetServerUrl(char *s);
 }
 
 extern "C" {
 char sNasLangCode04[4] = "04";
-Unk_ov065_02290604_S sNasUserId;
+NasUserIdInfo sNasUserId;
 char sNasLangCode01[4] = "01";
 char sNasLangCode06[4] = "06";
 char sNasDefaultUrl[0x20] = "https://nas.nintendowifi.net/ac";
 char sNasLangCode00[4] = "00";
 char sNasLangCode05[4] = "05";
 char sNasLangCode02[4] = "02";
-Unk_ov065_0228b778 sNasHttpParams = {sNasDefaultUrl, 0, 0, 0x1000, 0, 0, 0, 0x4e20};
+DwcHttpParams sNasHttpParams = {sNasDefaultUrl, 0, 0, 0x1000, 0, 0, 0, 0x4e20};
 char sNasLangCode03[4] = "03";
 S *sNasAuth;
 char *sNasLangCodeTable[7] = {sNasLangCode00, sNasLangCode01, sNasLangCode02,
@@ -142,25 +134,25 @@ void NasAuth_SetServerUrl(char *s) {
     sNasHttpParams.url = s;
 }
 
-s32 NasAuth_Start(Unk_ov065_0226dd2c_Cfg *cfg, u32 a) {
+s32 NasAuth_Start(NasAuthParams *cfg, u32 a) {
     if (sNasAuth != NULL) {
         return 2;
     }
-    void *p = ((Unk_ov065_0226dd2c_Alloc)cfg->v[9])("DWCAuth", 0x13e0);
+    void *p = cfg->allocFunc("DWCAuth", 0x13e0);
     if (p == NULL) {
         return 2;
     }
     sNasAuth = (S *)p;
     MI_CpuFill8(p, 0, 0x13e0);
-    sNasAuth->http = (Unk_ov065_02290600_Obj *)a;
+    sNasAuth->http = (DwcHttp *)a;
     MI_CpuFill8(&sNasAuth->resultCode, 0, 0x1c4);
     sNasAuth->resultCode = -1;
-    sNasAuth->config = *cfg;
+    *(NasAuthParamsWords *)&sNasAuth->config = *(NasAuthParamsWords *)cfg;
     *((u8 *)sNasAuth + 0x1e0) = 0;
     *((u8 *)sNasAuth + 0x1e1) = 0;
     *((u8 *)sNasAuth + 0x1ed) = 0;
-    sNasHttpParams.allocFunc = (Unk_ov065_0226dd2c_Alloc)cfg->v[9];
-    sNasHttpParams.freeFunc = (Unk_ov065_0226dd2c_Free)cfg->v[10];
+    sNasHttpParams.allocFunc = cfg->allocFunc;
+    sNasHttpParams.freeFunc = cfg->freeFunc;
     sNasAuth->state = NasAuth_SendRequest(1);
     if (sNasAuth->state == 0) {
         NasAuth_StartThread();
@@ -198,7 +190,7 @@ void NasAuth_Destroy(void) {
         if (sNasAuth->http) {
             Unk_ov065_0226e4dc_A::DwcHttp_Destroy();
         }
-        ((Unk_ov065_0226dd2c_Free)sNasAuth->config.v[10])("DWCauth", sNasAuth, 0);
+        sNasAuth->config.freeFunc("DWCauth", sNasAuth, 0);
         sNasAuth = NULL;
     }
 }
@@ -247,7 +239,7 @@ s32 NasAuth_SendRequest(s32 a) {
     }
     sNasAuth->state = NasAuth_BuildRequest(
         sNasAuth->http, (char *)sNasAuth + 0x1e2, (u16 *)((u8 *)sNasAuth + 0x1cc),
-        (Unk_ov065_0226d158_Kv *)((u8 *)sNasAuth + 0x1f8), 0x20, 0);
+        (DwcHttpField *)((u8 *)sNasAuth + 0x1f8), 0x20, 0);
     if (sNasAuth->state != 0) {
         return 4;
     }
@@ -267,7 +259,7 @@ void NasAuth_ThreadMain(void) {
     s32 r;
     s64 t0;
     s64 ms;
-    Unk_ov065_02290600_Obj *o;
+    DwcHttp *o;
     S *g;
 
     for (;;) {
@@ -353,7 +345,7 @@ s32 NasAuth_HandleResponse(void) {
     void *r;
 
     g = sNasAuth;
-    if (DwcHttp_ParseResponse(g->httpFields, 0x20, 0, g->http->responseBuffer) != 1) {
+    if (DwcHttp_ParseResponse(g->httpFields, 0x20, 0, g->http->responseBuffer.base) != 1) {
         sNasAuth->resultCode = 0x4e84;
         return 0xd;
     }
@@ -365,17 +357,17 @@ s32 NasAuth_HandleResponse(void) {
     if (st < 0x4e84) {
         if (st == 0x4e22) {
             m = "bmwork";
-            r = ((Unk_ov065_0226dd2c_Alloc)g->config.v[9])(m, 0x71f);
+            r = g->config.allocFunc(m, 0x71f);
             if (r == 0) {
                 sNasAuth->resultCode = 0x4e84;
                 return 2;
             }
             if (func_020ff6f4(&sNasUserId, ((u32)r + 0x1f) & ~0x1f) != 1) {
-                ((Unk_ov065_0226dd2c_Free)sNasAuth->config.v[10])(m, r, 0);
+                sNasAuth->config.freeFunc(m, r, 0);
                 sNasAuth->resultCode = 0x4e84;
                 return 0xe;
             }
-            ((Unk_ov065_0226dd2c_Free)sNasAuth->config.v[10])(m, r, 0);
+            sNasAuth->config.freeFunc(m, r, 0);
         }
         return 0x14;
     }
@@ -386,13 +378,13 @@ s32 NasAuth_HandleResponse(void) {
         return 0xf;
     case 0x4e8c:
         m = "bmwork";
-        r = ((Unk_ov065_0226dd2c_Alloc)g->config.v[9])(m, 0x71f);
+        r = g->config.allocFunc(m, 0x71f);
         if (r == 0) {
             sNasAuth->resultCode = 0x4e8c;
             return 0x10;
         }
         func_020ff734(((u32)r + 0x1f) & ~0x1f);
-        ((Unk_ov065_0226dd2c_Free)sNasAuth->config.v[10])(m, r, 0);
+        sNasAuth->config.freeFunc(m, r, 0);
         sNasAuth->resultCode = 0x4e8c;
         return 0x10;
     default:
@@ -448,7 +440,7 @@ s32 NasAuth_ParseResponse(void) {
     return 0;
 }
 
-s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226d158_Kv *a3, s32 a4, s32 a5) {
+s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, DwcHttpField *a3, s32 a4, s32 a5) {
     u16 len;
     u8 mac[6];
     u8 mac2[6];
@@ -456,9 +448,9 @@ s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226
     char code2[3];
     char birth[5];
     char pw[4];
-    Unk_ov065_0226d158_Date date;
-    Unk_ov065_0226d158_Time time;
-    Unk_ov065_0226d158_Form form;
+    RTCDate date;
+    RTCTime time;
+    DwcHttpFieldList form;
     char macstr[13];
     char devtime[13];
     char nick[0x15];
@@ -466,7 +458,7 @@ s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226
     u8 buf[0x21];
     char apinfo[14];
     char userid[14];
-    Unk_ov065_0226d158_Owner owner;
+    OSOwnerInfo owner;
     s32 i;
     u32 irq;
     u8 *ptr;
@@ -552,7 +544,7 @@ s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226
     }
     i = 0;
     for (; a3->key != 0; a3++, i++) {
-        const char *v = a3->val;
+        const char *v = a3->value;
         if (DwcHttp_AddFormParam(a0, a3->key, v, func_0212a438(v)) != 0) {
             return 8;
         }

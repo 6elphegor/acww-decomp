@@ -1,9 +1,9 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_0227194c_Out.h"
+#include "net/GsGpBuddyStatus.h"
 #include "net/Unk_ov065_02272428_Sub.h"
 #include "net/Unk_ov065_02277418_Rec.h"
-#include "net/Unk_ov065_0229080c.h"
+#include "net/DwcFriendControl.h"
 #include "net/Unk_ov065_02290814.h"
 #include "net/Unk_ov065_02290840_Ent.h"
 #include "net/Unk_ov065_02290f78.h"
@@ -37,7 +37,7 @@ extern "C" {
 
 extern "C" {
 
-extern Unk_ov065_0229080c *sDwcFriendControl;
+extern DwcFriendControl *sDwcFriendControl;
 extern Unk_ov065_02290814 *sDwcMatch;
 
 u64 OS_GetTick();
@@ -65,7 +65,7 @@ void DwcFriend_OnBuddyRequestInfo();
 void DwcFriend_Abort();
 void DwcFriend_Tick();
 s32 DwcFriend_HandleGpResult();
-s32 DwcFriend_GetBuddyStatus(void *, Unk_ov065_0227194c_Out *);
+s32 DwcFriend_GetBuddyStatus(void *, GsGpBuddyStatus *);
 s32 NasBase64_Decode(const char *, s32, char *, u32);
 s32 NasBase64_Encode(void *, s32, void *, u32);
 s32 DwcMatch_HandleGt2Result();
@@ -81,10 +81,10 @@ s32 GsTransport_AddressToString(u32, u32, s32);
 s32 DwcMatch_CancelNewClient(u32);
 s32 DwcMatch_RestartAfterNnFailure(u32);
 s32 DwcMatch_HandleCommand(u32, u32, u32, u32, void *, s32);
-s32 GsGp_SetStatus(Unk_ov065_0229080c_Sub *, s32, char *, char *);
+s32 GsGp_SetStatus(GsGpConnection *, s32, char *, char *);
 s32 GsGp_DeleteBuddy(void *, s32);
 s32 GsGp_IsBuddy(void *, s32);
-s32 GsGp_GetBuddyStatus(void *, s32, Unk_ov065_0227194c_Out *);
+s32 GsGp_GetBuddyStatus(void *, s32, GsGpBuddyStatus *);
 s32 GsGp_GetInfo(void *, s32, s32, s32, void (*)(), s32);
 s32 DwcFriend_GetStatus(void *, u8 *, u8 *, char *);
 s32 DwcFriend_GetStatusString(void *, char *);

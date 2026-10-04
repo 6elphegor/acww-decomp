@@ -13,7 +13,7 @@ struct WifiApControl {
     /* 0x0a */ u8 errorState;
     /* 0x0b */ u8 anyApFound;
     /* 0x0c */ u32 errorCode;
-    /* 0x10 */ u8 unk_10[4];
+    /* 0x10 */ s32 netCheckError; // NetCheck_GetErrorCode of the AP being tested (WifiAp_StepWaitNetCheck)
     /* 0x14 */ u8 furthestApStatus;
     /* 0x15 */ u8 furthestApIndex;
     /* 0x16 */ u8 furthestState;

@@ -1,10 +1,10 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_0226ab40_Glb.h"
+#include "net/WifiLinkSendState.h"
 #include "net/WifiLinkWork.h"
 #include "net/WifiApControl.h"
 #include "net/WifiApConfig.h"
-#include "net/Unk_ov065_0226b3c4_Rec.h"
+#include "net/WifiApContext.h"
 #include "nitro/wm.h"
 
 extern "C" {
@@ -41,7 +41,7 @@ typedef void (*WifiLinkRecvCallback)(void *, void *, void *, u32);
 
 extern "C" {
 
-extern Unk_ov065_0226ab40_Glb sWifiLinkSendState;
+extern WifiLinkSendState sWifiLinkSendState;
 extern u8 sWifiLinkSendLock[];
 extern volatile u8 sWifiRssiCount;
 extern u8 sWifiRssiSamples[];

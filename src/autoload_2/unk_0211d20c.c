@@ -1,4 +1,5 @@
 // mwcc-flags: -nothumb -O4,p
+#include "nitro/os_rtc.h"
 // NitroSDK RTC (rtc.c), autoload_2 0x0211d20c-0x0211d680, with its month table (.data 0x0213c1cc-0x0213c1fc) and bss
 // (autoload_3 0x021feb8c-0x021febb4). The former unit 0x0211d20c-0x0211da74 is split into rtc.c and the CARD part
 // (unk_0211d680.c) by the files' bss. ARM code, mwcc 1.2/base -O4,p.
@@ -11,8 +12,6 @@ typedef long long s64;
 typedef int BOOL;
 
 typedef struct { u32 head, tail; } OSQ;
-typedef struct { u32 year, month, day; s32 week; } RTCDate;
-typedef struct { s32 hour, minute, second; } RTCTime;
 typedef struct { u32 w[0x30]; } OST;
 
 typedef struct {

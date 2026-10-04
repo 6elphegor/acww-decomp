@@ -1,55 +1,13 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/DwcHttp.h"
 
 typedef unsigned long long u64;
 typedef long long s64;
 
-typedef void *(*Unk_ov065_0226e3ac_Alloc)(const char *, u32);
-typedef void (*Unk_ov065_0226e3ac_Free)(const char *, void *, u32);
-
-struct Unk_ov065_0226e3ac_Buf {
-    u8 *base;
-    u8 *cur;
-    u8 *limit;
-    s32 capacity;
-};
-
-struct Unk_ov065_0226e3ac_Cfg {
+// Word view of DwcHttpParams for the struct copy in DwcHttp_Init (a copy of the field-typed struct compiles differently).
+struct DwcHttpParamsWords {
     s32 v[8];
-};
-
-struct Unk_ov065_0226e3ac_Ctx {
-    u8 initFlag;
-    u8 unk_01[3];
-    u32 url;
-    s32 method;
-    u8 *userRecvBuffer;
-    s32 rxBufSize;
-    Unk_ov065_0226e3ac_Alloc unk_14;
-    Unk_ov065_0226e3ac_Free unk_18;
-    s32 useTestServer;
-    s32 timeoutMs;
-    s32 result;
-    char urlBuffer[0xa8 - 0x28];
-    char *hostName;
-    char *path;
-    s32 isHttps;
-    u8 ipSocket[0x118 - 0xb4];
-    u8 sslCtx[0x91c - 0x118];
-    void *lowRecvBuf;
-    void *lowSendBuf;
-    s32 numFormParams;
-    Unk_ov065_0226e3ac_Buf requestBuffer;
-    Unk_ov065_0226e3ac_Buf responseBuffer;
-    u8 responseMutex[0x960 - 0x948];
-    s32 contentLength;
-    char *bodyStart;
-    u8 thread[0x9d4 - 0x968];
-    s32 threadId;
-    u8 unk_9d8[0xa28 - 0x9d8];
-    u8 abortMutex[0xa40 - 0xa28];
-    s32 isAbortRequested;
-    u8 unk_a44[0x1a60 - 0xa44];
 };
 
 struct Unk_ov065_0226e554_Conn {
@@ -76,21 +34,6 @@ struct Unk_ov065_0226eacc_Tbl {
     u32 unk_00;
     u32 currentThread;
 };
-
-struct Unk_ov065_0226de90_Ent {
-    const char *key;
-    char *value;
-};
-
-struct Unk_ov065_0226ded4_List {
-    Unk_ov065_0226de90_Ent *entries;
-    s32 capacity;
-    s32 count;
-};
-
-typedef Unk_ov065_0226e3ac_Ctx Unk_ov065_0226e170_Ctx;
-typedef Unk_ov065_0226e3ac_Buf Unk_ov065_0226e170_Buf;
-typedef Unk_ov065_0226e3ac_Ctx Unk_ov065_0226e0a8_Ctx;
 
 extern "C" {
 
@@ -153,27 +96,27 @@ void IpSoc_TcpWaitClosed();
 void IpSoc_TcpShutdown();
 
 // this unit
-s32 DwcHttp_GetFieldString(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key, char *dst, s32 size);
-s32 DwcHttp_GetFieldDecoded(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key, char *dst, u32 size);
-char *DwcHttp_FindField(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key);
-s32 DwcHttp_ParseResponse(Unk_ov065_0226de90_Ent *tbl, s32 n, s32 flag, char *text);
-s32 DwcHttp_AddField(Unk_ov065_0226ded4_List *l, const char *k, char *v);
-s32 DwcHttp_ParseUrl(Unk_ov065_0226e3ac_Ctx *c, char *s);
-s32 DwcHttp_GrowBuffer(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Buf *b, s32 n);
-void DwcHttp_FreeBuffer(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Buf *b);
-s32 DwcHttp_AllocBuffer(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Buf *b, s32 n);
+s32 DwcHttp_GetFieldString(DwcHttpField *tbl, s32 n, const char *key, char *dst, s32 size);
+s32 DwcHttp_GetFieldDecoded(DwcHttpField *tbl, s32 n, const char *key, char *dst, u32 size);
+char *DwcHttp_FindField(DwcHttpField *tbl, s32 n, const char *key);
+s32 DwcHttp_ParseResponse(DwcHttpField *tbl, s32 n, s32 flag, char *text);
+s32 DwcHttp_AddField(DwcHttpFieldList *l, const char *k, char *v);
+s32 DwcHttp_ParseUrl(DwcHttp *c, char *s);
+s32 DwcHttp_GrowBuffer(DwcHttp *c, DwcHttpBuffer *b, s32 n);
+void DwcHttp_FreeBuffer(DwcHttp *c, DwcHttpBuffer *b);
+s32 DwcHttp_AllocBuffer(DwcHttp *c, DwcHttpBuffer *b, s32 n);
 u32 DwcHttp_CertCallback(u32 v);
-s32 DwcHttp_AppendBody(Unk_ov065_0226e3ac_Ctx *c, const char *s);
-s32 DwcHttp_AddFormParam(Unk_ov065_0226e3ac_Ctx *c, const char *a1, void *a2, s32 a3);
-s32 DwcHttp_AddHeader(Unk_ov065_0226e3ac_Ctx *c, const char *a1, const char *a2);
-s32 DwcHttp_BuildRequestLine(Unk_ov065_0226e3ac_Ctx *c);
-void DwcHttp_Destroy(Unk_ov065_0226e3ac_Ctx *c);
-void DwcHttp_ThreadMain(Unk_ov065_0226e3ac_Ctx *c);
-s32 DwcHttp_CheckNotAborted(Unk_ov065_0226e3ac_Ctx *c);
-void DwcHttp_Abort(Unk_ov065_0226e3ac_Ctx *c);
-void DwcHttp_StartThread(Unk_ov065_0226e3ac_Ctx *c);
-s32 DwcHttp_FinishHeaders(Unk_ov065_0226e3ac_Ctx *c);
-s32 DwcHttp_Init(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Cfg *cfg);
+s32 DwcHttp_AppendBody(DwcHttp *c, const char *s);
+s32 DwcHttp_AddFormParam(DwcHttp *c, const char *a1, void *a2, s32 a3);
+s32 DwcHttp_AddHeader(DwcHttp *c, const char *a1, const char *a2);
+s32 DwcHttp_BuildRequestLine(DwcHttp *c);
+void DwcHttp_Destroy(DwcHttp *c);
+void DwcHttp_ThreadMain(DwcHttp *c);
+s32 DwcHttp_CheckNotAborted(DwcHttp *c);
+void DwcHttp_Abort(DwcHttp *c);
+void DwcHttp_StartThread(DwcHttp *c);
+s32 DwcHttp_FinishHeaders(DwcHttp *c);
+s32 DwcHttp_Init(DwcHttp *c, DwcHttpParams *cfg);
 
 // data
 void *sDwcHttpRootCaList[11] = {sRootCaVeriSignG3, sRootCaVeriSignG2, sRootCaVeriSignClass3, sRootCaRsaSecureServer,
@@ -181,21 +124,21 @@ void *sDwcHttpRootCaList[11] = {sRootCaVeriSignG3, sRootCaVeriSignG2, sRootCaVer
                                  sRootCaThawteServer, sRootCaThawtePremium, sRootCaNintendo};
 s32 sDwcHttpTestServer;
 
-s32 DwcHttp_Init(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Cfg *cfg) {
+s32 DwcHttp_Init(DwcHttp *c, DwcHttpParams *cfg) {
     MI_CpuFill8(c, 0, 0x1a60);
     c->contentLength = -1;
-    *(Unk_ov065_0226e3ac_Cfg *)&c->url = *cfg;
-    c->lowRecvBuf = c->unk_14("http->lowrecvbuf", 0xb68);
+    *(DwcHttpParamsWords *)&c->url = *(DwcHttpParamsWords *)cfg;
+    c->lowRecvBuf = c->allocFunc("http->lowrecvbuf", 0xb68);
     if (c->lowRecvBuf == NULL) {
         c->result = 1;
         return 1;
     }
-    c->lowSendBuf = c->unk_14("http->lowsendbuf", 0x5ea);
+    c->lowSendBuf = c->allocFunc("http->lowsendbuf", 0x5ea);
     if (c->lowSendBuf == NULL) {
         c->result = 1;
         return 1;
     }
-    DwcHttp_ParseUrl(c, (char *)cfg->v[0]);
+    DwcHttp_ParseUrl(c, cfg->url);
     c->result = DwcHttp_BuildRequestLine(c);
     if (c->result == 0) {
         c->initFlag = 0xff;
@@ -203,7 +146,7 @@ s32 DwcHttp_Init(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Cfg *cfg) {
     return c->result;
 }
 
-s32 DwcHttp_FinishHeaders(Unk_ov065_0226e3ac_Ctx *c) {
+s32 DwcHttp_FinishHeaders(DwcHttp *c) {
     char buf[8];
     s32 n;
     if (DwcHttp_AddHeader(c, "Connection", "close") != 0) {
@@ -219,7 +162,7 @@ s32 DwcHttp_FinishHeaders(Unk_ov065_0226e3ac_Ctx *c) {
     return 0;
 }
 
-void DwcHttp_StartThread(Unk_ov065_0226e3ac_Ctx *c) {
+void DwcHttp_StartThread(DwcHttp *c) {
     u32 prio = OS_GetThreadPriority(data_021fcc2c.currentThread);
     c->isAbortRequested = 0;
     OS_InitMutex(&c->abortMutex);
@@ -235,7 +178,7 @@ void DwcHttp_StartThread(Unk_ov065_0226e3ac_Ctx *c) {
     }
 }
 
-void DwcHttp_Abort(Unk_ov065_0226e3ac_Ctx *c) {
+void DwcHttp_Abort(DwcHttp *c) {
     if (c->initFlag == 0xff) {
         OS_LockMutex(&c->abortMutex);
         c->isAbortRequested = 1;
@@ -246,7 +189,7 @@ void DwcHttp_Abort(Unk_ov065_0226e3ac_Ctx *c) {
     }
 }
 
-s32 DwcHttp_CheckNotAborted(Unk_ov065_0226e3ac_Ctx *c) {
+s32 DwcHttp_CheckNotAborted(DwcHttp *c) {
     OS_LockMutex(&c->abortMutex);
     if (c->isAbortRequested == 1) {
         OS_UnlockMutex(&c->abortMutex);
@@ -257,7 +200,7 @@ s32 DwcHttp_CheckNotAborted(Unk_ov065_0226e3ac_Ctx *c) {
     return 1;
 }
 
-void DwcHttp_ThreadMain(Unk_ov065_0226e3ac_Ctx *c) {
+void DwcHttp_ThreadMain(DwcHttp *c) {
     s32 timeout;
     Unk_ov065_0226e554_Ssl *ssl;
     s32 host;
@@ -265,7 +208,7 @@ void DwcHttp_ThreadMain(Unk_ov065_0226e3ac_Ctx *c) {
     u64 mark;
     s32 hdr;
     Unk_ov065_0226e554_Conn *conn;
-    Unk_ov065_0226e3ac_Buf *rb;
+    DwcHttpBuffer *rb;
     s32 i, len, r, got;
     u8 tmp[0x20];
     char *p, *q, *q2;
@@ -485,26 +428,26 @@ fail:
     return;
 }
 
-void DwcHttp_Destroy(Unk_ov065_0226e3ac_Ctx *c) {
+void DwcHttp_Destroy(DwcHttp *c) {
     if (c != NULL) {
         if (c->userRecvBuffer == NULL) {
             DwcHttp_FreeBuffer(c, &c->responseBuffer);
         }
         DwcHttp_FreeBuffer(c, &c->requestBuffer);
         if (c->lowRecvBuf != NULL) {
-            c->unk_18("http->lowrecvbuf", c->lowRecvBuf, 0);
+            c->freeFunc("http->lowrecvbuf", c->lowRecvBuf, 0);
             c->lowRecvBuf = NULL;
         }
         if (c->lowSendBuf != NULL) {
-            c->unk_18("http->lowsendbuf", c->lowSendBuf, 0);
+            c->freeFunc("http->lowsendbuf", c->lowSendBuf, 0);
             c->lowSendBuf = NULL;
         }
         MI_CpuFill8(c, 0, 0x1a60);
     }
 }
 
-s32 DwcHttp_BuildRequestLine(Unk_ov065_0226e3ac_Ctx *c) {
-    Unk_ov065_0226e3ac_Buf *b = &c->requestBuffer;
+s32 DwcHttp_BuildRequestLine(DwcHttp *c) {
+    DwcHttpBuffer *b = &c->requestBuffer;
     const char *fmt = c->method == 0 ? "POST /%s HTTP/1.0\r\nContent-type: application/x-www-form-urlencoded\r\nHost: %s\r\n\r\n" : "GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n";
     s32 n, r, sz;
     n = func_0212a438(c->hostName);
@@ -518,9 +461,9 @@ s32 DwcHttp_BuildRequestLine(Unk_ov065_0226e3ac_Ctx *c) {
     return 0;
 }
 
-s32 DwcHttp_AddHeader(Unk_ov065_0226e3ac_Ctx *c, const char *a1, const char *a2) {
+s32 DwcHttp_AddHeader(DwcHttp *c, const char *a1, const char *a2) {
     s32 n, avail;
-    Unk_ov065_0226e3ac_Buf *b = &c->requestBuffer;
+    DwcHttpBuffer *b = &c->requestBuffer;
     char *p;
     s8 saved;
     n = func_0212a438(a2);
@@ -540,8 +483,8 @@ s32 DwcHttp_AddHeader(Unk_ov065_0226e3ac_Ctx *c, const char *a1, const char *a2)
     return 0;
 }
 
-s32 DwcHttp_AddFormParam(Unk_ov065_0226e170_Ctx *c, const char *a1, void *a2, s32 a3) {
-    Unk_ov065_0226e170_Buf *b = &c->requestBuffer;
+s32 DwcHttp_AddFormParam(DwcHttp *c, const char *a1, void *a2, s32 a3) {
+    DwcHttpBuffer *b = &c->requestBuffer;
     const char *fmt = c->numFormParams == 0 ? "%s=" : "&%s=";
     s32 r7, len, tot, avail, r;
     c->numFormParams++;
@@ -565,9 +508,9 @@ s32 DwcHttp_AddFormParam(Unk_ov065_0226e170_Ctx *c, const char *a1, void *a2, s3
     return 0;
 }
 
-s32 DwcHttp_AppendBody(Unk_ov065_0226e170_Ctx *c, const char *s) {
+s32 DwcHttp_AppendBody(DwcHttp *c, const char *s) {
     s32 n, avail, r;
-    Unk_ov065_0226e170_Buf *b = &c->requestBuffer;
+    DwcHttpBuffer *b = &c->requestBuffer;
     n = func_0212a438(s);
     avail = b->limit - b->cur;
     if (n > avail) {
@@ -591,11 +534,11 @@ u32 DwcHttp_CertCallback(u32 v) {
     return v;
 }
 
-s32 DwcHttp_AllocBuffer(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b, s32 n) {
+s32 DwcHttp_AllocBuffer(DwcHttp *c, DwcHttpBuffer *b, s32 n) {
     if (n == 0) {
         return 0;
     }
-    b->base = (u8 *)c->unk_14("DWCHttpBuffer", n);
+    b->base = (u8 *)c->allocFunc("DWCHttpBuffer", n);
     if (b->base == NULL) {
         return 0;
     }
@@ -605,24 +548,24 @@ s32 DwcHttp_AllocBuffer(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b, s3
     return 1;
 }
 
-void DwcHttp_FreeBuffer(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b) {
+void DwcHttp_FreeBuffer(DwcHttp *c, DwcHttpBuffer *b) {
     if (b->base != NULL) {
-        c->unk_18("DWCHttpBuffer", b->base, 0);
+        c->freeFunc("DWCHttpBuffer", b->base, 0);
     }
     MI_CpuFill8(b, 0, 0x10);
 }
 
-s32 DwcHttp_GrowBuffer(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b, s32 n) {
+s32 DwcHttp_GrowBuffer(DwcHttp *c, DwcHttpBuffer *b, s32 n) {
     u8 *p;
     if (n <= 0) {
         return 0;
     }
-    p = (u8 *)c->unk_14(NULL, b->capacity + n);
+    p = (u8 *)c->allocFunc(NULL, b->capacity + n);
     if (p == NULL) {
         return 0;
     }
     MI_CpuCopy8(b->base, p, b->capacity);
-    c->unk_18(NULL, b->base, 0);
+    c->freeFunc(NULL, b->base, 0);
     if (p == NULL) {
         return 0;
     }
@@ -633,7 +576,7 @@ s32 DwcHttp_GrowBuffer(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b, s32
     return 1;
 }
 
-s32 DwcHttp_ParseUrl(Unk_ov065_0226e0a8_Ctx *c, char *s) {
+s32 DwcHttp_ParseUrl(DwcHttp *c, char *s) {
     char *q;
     u32 n;
     if ((u32)func_0212a438(s) >= 0x80) {
@@ -665,7 +608,7 @@ s32 DwcHttp_ParseUrl(Unk_ov065_0226e0a8_Ctx *c, char *s) {
     return 1;
 }
 
-s32 DwcHttp_AddField(Unk_ov065_0226ded4_List *l, const char *k, char *v) {
+s32 DwcHttp_AddField(DwcHttpFieldList *l, const char *k, char *v) {
     if (l->count > l->capacity) {
         return 0;
     }
@@ -675,8 +618,8 @@ s32 DwcHttp_AddField(Unk_ov065_0226ded4_List *l, const char *k, char *v) {
     return 1;
 }
 
-s32 DwcHttp_ParseResponse(Unk_ov065_0226de90_Ent *tbl, s32 n, s32 flag, char *text) {
-    Unk_ov065_0226ded4_List l;
+s32 DwcHttp_ParseResponse(DwcHttpField *tbl, s32 n, s32 flag, char *text) {
+    DwcHttpFieldList l;
     char *p;
     char *q;
     char *r;
@@ -754,9 +697,9 @@ s32 DwcHttp_ParseResponse(Unk_ov065_0226de90_Ent *tbl, s32 n, s32 flag, char *te
     return 1;
 }
 
-char *DwcHttp_FindField(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key) {
+char *DwcHttp_FindField(DwcHttpField *tbl, s32 n, const char *key) {
     s32 i = 0;
-    Unk_ov065_0226de90_Ent *p;
+    DwcHttpField *p;
     if (n > 0) {
         p = tbl;
         do {
@@ -773,7 +716,7 @@ char *DwcHttp_FindField(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key) {
     return NULL;
 }
 
-s32 DwcHttp_GetFieldDecoded(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key, char *dst, u32 size) {
+s32 DwcHttp_GetFieldDecoded(DwcHttpField *tbl, s32 n, const char *key, char *dst, u32 size) {
     char *s = DwcHttp_FindField(tbl, n, key);
     if (s == NULL) {
         return 0;
@@ -785,7 +728,7 @@ s32 DwcHttp_GetFieldDecoded(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key,
     return r;
 }
 
-s32 DwcHttp_GetFieldString(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key, char *dst, s32 size) {
+s32 DwcHttp_GetFieldString(DwcHttpField *tbl, s32 n, const char *key, char *dst, s32 size) {
     char *s = DwcHttp_FindField(tbl, n, key);
     if (s == NULL) {
         return 0;

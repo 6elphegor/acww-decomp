@@ -1,4 +1,5 @@
 // mwcc-flags: -nothumb -O4,p
+#include "nitro/os_rtc.h"
 // NitroSDK CARD (card_common.c): CARDi_IdentifyBackupCore (func_0211da74), autoload_2 0x0211da74-0x0211dc4c. ARM, mwcc 1.2/base -O4,p.
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -8,8 +9,6 @@ typedef long long s64;
 typedef int BOOL;
 
 typedef struct { u32 head, tail; } OSQ;
-typedef struct { u32 year, month, day; s32 week; } RTCDate;
-typedef struct { s32 hour, minute, second; } RTCTime;
 typedef struct { u32 w[0x30]; } OST;
 
 typedef struct {

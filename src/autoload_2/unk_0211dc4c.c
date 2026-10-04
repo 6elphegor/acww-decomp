@@ -1,4 +1,5 @@
 // mwcc-flags: -nothumb -O4,p
+#include "nitro/os_rtc.h"
 // NitroSDK RTC (rtc.c) + CARD common/rom (card_common.c, card_rom.c), autoload_2 0x0211dc4c-0x0211e3fc. ARM code, mwcc 1.2/base -O4,p.
 // Functions are in reverse address order (mwcc emits in reverse source order).
 typedef unsigned char u8;
@@ -9,8 +10,6 @@ typedef long long s64;
 typedef int BOOL;
 
 typedef struct { u32 head, tail; } OSQ;
-typedef struct { u32 year, month, day; s32 week; } RTCDate;
-typedef struct { s32 hour, minute, second; } RTCTime;
 typedef struct { u32 w[0x30]; } OST;
 
 typedef struct {

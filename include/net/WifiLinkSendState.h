@@ -1,5 +1,5 @@
-#ifndef NET_UNK_OV065_0226AB40_GLB_H
-#define NET_UNK_OV065_0226AB40_GLB_H
+#ifndef NET_WIFILINKSENDSTATE_H
+#define NET_WIFILINKSENDSTATE_H
 
 #include "types.h"
 
@@ -8,7 +8,7 @@
 
 typedef void (*WifiLinkRecvCallback)(void *, void *, void *, u32);
 
-struct Unk_ov065_0226ab40_Glb {
+struct WifiLinkSendState {
     /* 0x00 */ u8 initialized;
     /* 0x01 */ u8 unk_01[3];
     /* 0x04 */ u32 unk_04;

@@ -1,11 +1,9 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_0226b488_Rec.h"
-#include "net/Unk_ov065_0226cfe4_Buf.h"
-#include "net/Unk_ov065_0226d158_Owner.h"
-#include "net/Unk_ov065_02290600_Obj.h"
-#include "net/Unk_ov065_0226b488_Ctx.h"
-#include "net/Unk_ov065_02290600_S.h"
+#include "net/WifiApNdwcshapPermTable.h"
+#include "net/DwcHttp.h"
+#include "net/WifiApContext.h"
+#include "net/NasAuthWork.h"
 #pragma opt_strength_reduction off
 
 extern "C" {
@@ -39,15 +37,13 @@ typedef long long s64;
 
 
 
-typedef void *(*Unk_ov065_02290600_Alloc)(const char *, u32);
-typedef void (*Unk_ov065_02290600_Free)(const char *, void *, u32);
 
 
-typedef Unk_ov065_02290600_S S;
+typedef NasAuthWork S;
 
 extern "C" {
 extern S *sNasAuth;
-extern Unk_ov065_02290604_S sNasUserId;
+extern NasUserIdInfo sNasUserId;
 extern u32 data_0220064c;
 extern char data_ov065_0228b708[];
 extern char data_ov065_0228b714[];
@@ -122,7 +118,7 @@ extern void WifiAp_DeriveNdwcshapWepKey(void *in, void *p);
 extern u8 *WifiLink_GetConnectedBssid(void);
 extern u8 *WifiLink_GetConnectedSsid(u16 *out);
 extern u32 WifiAp_GetConnectedApType(void);
-extern s32 DwcHttp_AddField(Unk_ov065_0226d158_Form *f, const char *k, const char *v);
+extern s32 DwcHttp_AddField(DwcHttpFieldList *f, const char *k, const char *v);
 extern s32 DwcHttp_AddHeader(void *a, const char *k, const char *v);
 extern s32 DwcHttp_AddFormParam(void *a, const char *k, const char *v, u32 n);
 extern s32 DwcHttp_FindField(void *buf, u32 n, const char *key);
@@ -242,13 +238,13 @@ u32 WifiAp_PrefixToNetmask(s32 n);
 u32 WifiAp_ReadAddress(u8 *p);
 s32 WifiAp_Base64Decode(u8 *in, u8 *out, u32 len, u32 max);
 s32 WifiAp_StepStopSockets(void);
-s32 WifiAp_StepConnected(Unk_ov065_0226b488_Ctx *c);
-s32 WifiAp_StepWaitNetCheck(Unk_ov065_0226b488_Ctx *c);
+s32 WifiAp_StepConnected(WifiApContext *c);
+s32 WifiAp_StepWaitNetCheck(WifiApContext *c);
 s32 WifiAp_StepStartNetCheck(void);
-s32 WifiAp_StepWaitAddress(Unk_ov065_0226b488_Ctx *c);
-s32 WifiAp_StepStartSockets(Unk_ov065_0226b488_Ctx *c);
-void WifiAp_BuildSocketConfig(u8 *a, Unk_ov065_0226b488_Ctx *b, u8 *c);
-void WifiAp_ApplyStaticDns(Unk_ov065_0226b488_Ctx *c);
+s32 WifiAp_StepWaitAddress(WifiApContext *c);
+s32 WifiAp_StepStartSockets(WifiApContext *c);
+void WifiAp_BuildSocketConfig(u8 *a, WifiApContext *b, u8 *c);
+void WifiAp_ApplyStaticDns(WifiApContext *c);
 
 
 
@@ -272,11 +268,11 @@ void WifiAp_ApplyStaticDns(Unk_ov065_0226b488_Ctx *c);
 
 
 s32 WifiAp_StepStopSockets(void);
-s32 WifiAp_StepConnected(Unk_ov065_0226b488_Ctx *c);
-s32 WifiAp_StepWaitNetCheck(Unk_ov065_0226b488_Ctx *c);
+s32 WifiAp_StepConnected(WifiApContext *c);
+s32 WifiAp_StepWaitNetCheck(WifiApContext *c);
 s32 WifiAp_StepStartNetCheck(void);
-s32 WifiAp_StepWaitAddress(Unk_ov065_0226b488_Ctx *c);
-s32 WifiAp_StepStartSockets(Unk_ov065_0226b488_Ctx *c);
+s32 WifiAp_StepWaitAddress(WifiApContext *c);
+s32 WifiAp_StepStartSockets(WifiApContext *c);
 s32 WifiAp_ProcessNetSetup(void);
 s32 WifiAp_Base64Decode(u8 *in, u8 *out, u32 len, u32 max);
 s32 WifiAp_Base64Value(u32 c);
@@ -286,8 +282,8 @@ void WifiAp_DecodeNdwcshapSsid(u8 *a, u8 *b);
 
 void WifiAp_DecodeNdwcshapSsid(u8 *a, u8 *b) {
     s32 i;
-    Unk_ov065_0226cfe4_Buf t;
-    t = *(Unk_ov065_0226cfe4_Buf *)sWifiApNdwcshapPermTable;
+    WifiApNdwcshapPermTable t;
+    t = *(WifiApNdwcshapPermTable *)sWifiApNdwcshapPermTable;
     WifiAp_Base64Decode(a, b, 0x20, 0x18);
     s32 j;
     for (j = 0; j < 0x18; j++) {
@@ -448,7 +444,7 @@ s32 WifiAp_Base64Decode(u8 *in, u8 *out, u32 len, u32 max) {
 
 s32 WifiAp_ProcessNetSetup(void) {
     s32 a = WifiAp_GetState();
-    Unk_ov065_0226b488_Ctx *c = (Unk_ov065_0226b488_Ctx *)WifiAp_GetBlock(0x10);
+    WifiApContext *c = (WifiApContext *)WifiAp_GetBlock(0x10);
     if (WifiLink_GetPhase() == 9) {
         switch (a) {
         case 10:
@@ -490,7 +486,7 @@ s32 WifiAp_ProcessNetSetup(void) {
     return a;
 }
 
-s32 WifiAp_StepStartSockets(Unk_ov065_0226b488_Ctx *c) {
+s32 WifiAp_StepStartSockets(WifiApContext *c) {
     u8 *p = WifiAp_GetBlock(1);
     u8 *q = WifiAp_GetBlock(4);
     WifiAp_BuildSocketConfig(p, c, q);
@@ -502,10 +498,10 @@ s32 WifiAp_StepStartSockets(Unk_ov065_0226b488_Ctx *c) {
     return 0xc;
 }
 
-s32 WifiAp_StepWaitAddress(Unk_ov065_0226b488_Ctx *c) {
+s32 WifiAp_StepWaitAddress(WifiApContext *c) {
     if (Sock_GetHostId() != 0) {
         WifiAp_ApplyStaticDns(c);
-        if (c->unk_d0c_mid == 1) {
+        if (c->netCheckMode == 1) {
             return 0xf;
         }
         return 0xd;
@@ -529,7 +525,7 @@ s32 WifiAp_StepStartNetCheck(void) {
     return 0xe;
 }
 
-s32 WifiAp_StepWaitNetCheck(Unk_ov065_0226b488_Ctx *c) {
+s32 WifiAp_StepWaitNetCheck(WifiApContext *c) {
     u8 *p = WifiAp_GetBlock(1);
     s32 r = NetCheck_GetState();
     if (r != 0) {
@@ -547,7 +543,7 @@ s32 WifiAp_StepWaitNetCheck(Unk_ov065_0226b488_Ctx *c) {
     return 0xe;
 }
 
-s32 WifiAp_StepConnected(Unk_ov065_0226b488_Ctx *c) {
+s32 WifiAp_StepConnected(WifiApContext *c) {
     WifiAp_SetConnectedApType(c->apType);
     return 0x10;
 }
