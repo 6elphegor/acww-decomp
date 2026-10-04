@@ -20,7 +20,7 @@
 #include "gfx/MatTexPatAnim.h"
 #include "gfx/MatTexVramTask.h"
 #include "gfx/TwoLayerAnimModel.h"
-#include "gfx/Unk_021cb69c.h"
+#include "gfx/Mtx43.h"
 #include "gfx/VecFx32.h"
 #include "npc/NpcEmotionFx.h"
 #include "player/HeldItemModel.h"
@@ -149,7 +149,7 @@ public:
     /* 0x388 */ CachedModel headModel0;
     /* 0x424 */ PlayerHead headRef;
     /* 0x425 */ u8 pad_425[3];
-    /* 0x428 */ Unk_021cb69c headMtx;
+    /* 0x428 */ Mtx43 headMtx;
     /* 0x458 */ s16 headPitch;
     /* 0x45a */ s16 headYaw;
     /* 0x45c */ s16 headPitchTarget;
@@ -159,10 +159,10 @@ public:
     /* 0x598 */ PlayerGlassesModelRef faceItemRef;
     /* 0x599 */ u8 pad_599[3];
     /* 0x59c */ HeldItemModel heldItemModel;
-    /* 0x604 */ Unk_021cb69c heldItemJointMtx;
-    /* 0x634 */ Unk_021cb69c heldItemJointMtx2;
-    /* 0x664 */ Unk_021cb69c toolHandMtx;
-    /* 0x694 */ Unk_021cb69c itemHandMtx;
+    /* 0x604 */ Mtx43 heldItemJointMtx;
+    /* 0x634 */ Mtx43 heldItemJointMtx2;
+    /* 0x664 */ Mtx43 toolHandMtx;
+    /* 0x694 */ Mtx43 itemHandMtx;
     /* 0x6c4 */ VecFx32 footPosA;
     /* 0x6d0 */ VecFx32 footPosB;
     /* 0x6dc */ VecFx32 headTopPos;

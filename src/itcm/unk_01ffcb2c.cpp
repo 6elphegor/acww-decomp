@@ -3,7 +3,7 @@
 #include "types.h"
 #include "game/Vec3.h"
 #include "town/TownBlockCell.h"
-#include "gfx/Unk_020d93b8.h"
+#include "gfx/Camera.h"
 #include "gfx/HBlankTask.h"
 
 struct Chunk {
@@ -37,7 +37,7 @@ extern Grid *gCurCollisionMap;
 extern HBlankTask *sHBlankListHead;
 void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
 Chunk *func_01ffcb5c(s32 x, s32 z);
-void Camera_GetLookAtOffset(Vec3 *out, Unk_020d93b8 *c);
+void Camera_GetLookAtOffset(Vec3 *out, Camera *c);
 }
 
 static inline Chunk *At(s32 x, s32 z) {
@@ -83,13 +83,13 @@ extern "C" BOOL func_01ffcbd8(CellGrid *g, s32 x, s32 z) {
     return TRUE;
 }
 
-extern "C" void Camera_GetLookAtPoint(Vec3 *out, Unk_020d93b8 *c) {
+extern "C" void Camera_GetLookAtPoint(Vec3 *out, Camera *c) {
     Vec3 t;
     Camera_GetLookAtOffset(&t, c);
     func_01ffd070(out, (Vec3 *)&c->currentFocus, &t);
 }
 
-extern "C" void Camera_GetLookAtOffset(Vec3 *out, Unk_020d93b8 *c) {
+extern "C" void Camera_GetLookAtOffset(Vec3 *out, Camera *c) {
     func_01ffd070(out, (Vec3 *)&c->currentOffset, (Vec3 *)&c->unk_84);
 }
 

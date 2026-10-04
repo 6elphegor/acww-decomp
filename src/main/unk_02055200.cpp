@@ -305,7 +305,7 @@ Model::~Model() {
 
 void Model::reset() {
     NNS_G3dRenderObjInit(unk_08, NULL);
-    unk_5c = NULL;
+    resMdl = NULL;
     resTex = 0;
     MTX_Identity43_(unk_64);
     modelFlags = 0;
@@ -313,10 +313,10 @@ void Model::reset() {
 }
 
 void Model::initRenderObj() {
-    NNS_G3dRenderObjInit(unk_08, unk_5c);
-    Unk_0205562c_Blk *b = (Unk_0205562c_Blk *)((u8 *)unk_5c + unk_5c->matOffset);
+    NNS_G3dRenderObjInit(unk_08, resMdl);
+    Unk_0205562c_Blk *b = (Unk_0205562c_Blk *)((u8 *)resMdl + resMdl->matOffset);
     s32 i;
-    for (i = 0; i < unk_5c->numMat; i++) {
+    for (i = 0; i < resMdl->numMat; i++) {
         u8 *ent = (u8 *)&b->dict + b->dict.entryOffset;
         u16 sz = *(u16 *)ent;
         ent += sz * i;
@@ -326,22 +326,22 @@ void Model::initRenderObj() {
             p[3] |= SceneLights_GetMatLightMask();
         }
     }
-    NNSi_G3dModifyMatFlag(unk_5c, 0, 0x400);
+    NNSi_G3dModifyMatFlag(resMdl, 0, 0x400);
 }
 
 BOOL Model::setResourceAndBind(Unk_020553f8_Res *a, u32 b) {
-    unk_5c = a;
+    resMdl = a;
     resTex = b;
     if (resTex != 0) {
-        NNS_G3dBindMdlTex(unk_5c, resTex);
-        NNS_G3dBindMdlPltt(unk_5c, resTex);
+        NNS_G3dBindMdlTex(resMdl, resTex);
+        NNS_G3dBindMdlPltt(resMdl, resTex);
     }
     initRenderObj();
     return TRUE;
 }
 
 BOOL Model::setResource(Unk_020553f8_Res *a, u32 b) {
-    unk_5c = a;
+    resMdl = a;
     resTex = b;
     initRenderObj();
     return TRUE;
@@ -355,7 +355,7 @@ BOOL Model::clearResource() {
 void Model::drawShapesDirect(s32 *p) {
     s32 save;
     s32 v[3];
-    u8 *hdr = (u8 *)unk_5c;
+    u8 *hdr = (u8 *)resMdl;
     u8 *cmd = hdr + *(u32 *)(hdr + 4);
     s32 lim = *(s32 *)(hdr + 0x1c);
     if (lim == 0x1000) {
@@ -378,7 +378,7 @@ void Model::drawShapesDirect(s32 *p) {
             save = cmd[1];
             break;
         case 5:
-            NNS_G3dDraw1Mat1Shp(unk_5c, save, cmd[1], 1);
+            NNS_G3dDraw1Mat1Shp(resMdl, save, cmd[1], 1);
             break;
         }
         cmd += func_02105d50(cmd);
@@ -430,10 +430,10 @@ void Model::setInitCallback(s32 a, s32 b) {
 void Model::setPolygonId(u32 v) {
     s32 i;
     Unk_0205562c_Blk *b;
-    b = (Unk_0205562c_Blk *)((u8 *)unk_5c + unk_5c->matOffset);
+    b = (Unk_0205562c_Blk *)((u8 *)resMdl + resMdl->matOffset);
     i = 0;
     u32 sh = v << 24;
-    for (; i < unk_5c->numMat; i++) {
+    for (; i < resMdl->numMat; i++) {
         u8 *ent = (u8 *)&b->dict + b->dict.entryOffset;
         u16 sz = *(u16 *)ent;
         ent += sz * i;
@@ -446,10 +446,10 @@ void Model::setPolygonId(u32 v) {
 void Model::setAlpha(u32 v) {
     s32 i;
     Unk_0205562c_Blk *b;
-    b = (Unk_0205562c_Blk *)((u8 *)unk_5c + unk_5c->matOffset);
+    b = (Unk_0205562c_Blk *)((u8 *)resMdl + resMdl->matOffset);
     i = 0;
     u32 sh = v << 16;
-    for (; i < unk_5c->numMat; i++) {
+    for (; i < resMdl->numMat; i++) {
         u8 *ent = (u8 *)&b->dict + b->dict.entryOffset;
         u16 sz = *(u16 *)ent;
         ent += sz * i;

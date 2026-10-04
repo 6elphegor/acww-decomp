@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "gfx/Unk_ov003_02215c7c_Blk.h"
+#include "gfx/Mtx43.h"
 #include "field/Unk_ov003_02217910_V3.h"
 #include "field/Unk_ov003_02217910_V3D.h"
 #include "field/Unk_ov003_02217b78_Ent.h"
@@ -32,7 +32,7 @@ struct Unk_ov003_02235478_Col {
 // other modules' methods are reached through their real mangled symbols (object first)
 #define BgModelCache_getGroundTex _ZN12BgModelCache12getGroundTexEv
 #define BgModelCache_getAcre _ZN12BgModelCache7getAcreEi
-#define Unk_020d93b8_getEyeCurveAngle _ZN12Unk_020d93b816getEyeCurveAngleEv
+#define Camera_getEyeCurveAngle _ZN6Camera16getEyeCurveAngleEv
 
 extern "C" {
 extern void *gCamera;
@@ -42,7 +42,7 @@ extern Unk_ov003_02217910_V3 gCameraLookAt;
 
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 a);
-s32 Unk_020d93b8_getEyeCurveAngle(void *self);
+s32 Camera_getEyeCurveAngle(void *self);
 void *BgModelCache_Get();
 void *BgModelCache_getAcre(void *self, s32 i);
 s32 BgModelCache_getGroundTex(void *self);
@@ -88,8 +88,8 @@ BOOL FieldGroundBackdrop::followCamera() {
         v.y = gCameraLookAt.y;
         v.z = gCameraLookAt.z;
         Mtx43_SetTranslate(data_021f47e0, v.x - data_020c8cb4, 0, 0);
-        Mtx43_RotateX(data_021f47e0, Unk_020d93b8_getEyeCurveAngle(cam));
-        *(Unk_ov003_02215c7c_Blk *)((u8 *)&model + 0x64) = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
+        Mtx43_RotateX(data_021f47e0, Camera_getEyeCurveAngle(cam));
+        *(Mtx43 *)((u8 *)&model + 0x64) = *(Mtx43 *)data_021f47e0;
         return TRUE;
     }
     return FALSE;

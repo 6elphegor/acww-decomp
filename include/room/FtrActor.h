@@ -4,7 +4,7 @@
 #include "types.h"
 #include "actor/Character.h"
 #include "talk/TalkMsgRequest.h"
-#include "gfx/Unk_ov004_Mtx.h"
+#include "gfx/Mtx43.h"
 #include "game/Unk_0203e4f0_Vec.h"
 #include "room/FtrActorParts.h"
 #include "room/FtrActorViews.h"
@@ -135,7 +135,7 @@ public:
             /* 0x534 */ u8 model[0x590 - 0x534]; // BlendAnimModel
             /* 0x590 */ u32 modelResMdl;
             /* 0x594 */ u8 pad_594[4];
-            /* 0x598 */ Unk_ov004_Mtx modelMtx;
+            /* 0x598 */ Mtx43 modelMtx;
             /* 0x5c8 */ u8 pad_5c8[0x5d0 - 0x5c8];
             /* 0x5d0 */ u8 animFrameCtrl[4];
             /* 0x5d4 */ u32 animNumFrames;

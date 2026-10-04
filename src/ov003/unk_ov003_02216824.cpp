@@ -4,7 +4,7 @@
 #include "game/Unk_ov003_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "talk/TalkWindowState.h"
-#include "gfx/Unk_ov009_0225bc88_Blk.h"
+#include "gfx/Mtx43.h"
 #include "sys/ProcBase.h"
 #include "gfx/ModelAnim.h"
 #include "item/PlayerMailbox.h"
@@ -103,7 +103,7 @@ public:
     virtual BOOL initBuilding();
     virtual void updateDoorState();
     virtual BOOL needsMatrixUpdate();
-    virtual BOOL calcCustomBaseMatrix(Unk_ov009_0225bc88_Blk *a);
+    virtual BOOL calcCustomBaseMatrix(Mtx43 *a);
 
     // state methods (old file 022164d0)
     void execMailGone();
@@ -265,7 +265,7 @@ u32 Mailbox::isUsable() {
     return canUse;
 }
 
-BOOL Mailbox::calcCustomBaseMatrix(Unk_ov009_0225bc88_Blk *a) {
+BOOL Mailbox::calcCustomBaseMatrix(Mtx43 *a) {
     struct {
         s32 a, b, c;
     } v;
@@ -274,10 +274,10 @@ BOOL Mailbox::calcCustomBaseMatrix(Unk_ov009_0225bc88_Blk *a) {
     v.b = 0;
     v.c = z;
     drawTilt = WorldCurve_ToCurved(&drawPos, &v);
-    makeCurvedMatrix((Unk_ov009_0225bc88_Blk *)a);
-    *(Unk_ov009_0225bc88_Blk *)data_021f47e0 = *(Unk_ov009_0225bc88_Blk *)a;
+    makeCurvedMatrix((Mtx43 *)a);
+    *(Mtx43 *)data_021f47e0 = *(Mtx43 *)a;
     Mtx43_Translate(data_021f47e0, (s32)0xffffe000, 0, 0x1000);
-    *(Unk_ov009_0225bc88_Blk *)a = *(Unk_ov009_0225bc88_Blk *)data_021f47e0;
+    *(Mtx43 *)a = *(Mtx43 *)data_021f47e0;
     return TRUE;
 }
 

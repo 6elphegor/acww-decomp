@@ -3,26 +3,9 @@
 
 #include "types.h"
 
-// SPL particle effect helpers: tracked effect entries, emitter object/resource, particle nodes and their owner
-// (src/main/unk_02090268.cpp, unk_02093f8c.cpp, unk_02093ff0.cpp).
-
-struct Unk_02093c28_Entry {
-    /* 0x00 */ s32 x, y, z;
-    /* 0x0c */ s16 angle;
-    /* 0x0e */ s16 life;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 handle;
-    /* 0x18 */ s32 unk_18;
-};
-
-struct Unk_02093bb4_Scratch {
-    /* 0x00 */ Unk_02093c28_Entry e;
-    /* 0x1c */ u16 nextHandle;
-};
-
-struct Unk_02093c28_Handle {
-    u8 b[4];
-};
+// SPL particle effect views: emitter object (a view of EffectSplEmitter), its resource and particle node
+// (src/main/unk_02090268.cpp, unk_02093f8c.cpp, unk_02093ff0.cpp). Effect slots are EffectSlot (gfx/EffectSlot.h),
+// emitter entries/tags EffectEmitterEntry/EffectEmitterTag (gfx/EffectSplEmitter.h).
 
 struct Unk_02093dc8_Root {
     s32 unk_00;
@@ -55,12 +38,6 @@ struct Unk_02093aa8_Node {
     /* 0x26 */ u16 age;
     /* 0x28 */ u8 pad_28[0x10];
     /* 0x38 */ s32 ox, oy, oz;
-};
-
-struct Unk_02093aa8_Owner {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_02093aa8_Node *particles;
 };
 
 #endif // GFX_UNK_02093DC8_OBJ_H

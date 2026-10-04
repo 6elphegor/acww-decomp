@@ -1,16 +1,16 @@
 #include "types.h"
-#include "gfx/Unk_0206fd10_Mtx.h"
+#include "gfx/Unk_0206fd10_Vec.h"
 #include "save/MuseumData.h"
 
 
 
 
 extern "C" {
-extern Unk_0206fd10_Mtx data_021cb69c;
+extern Mtx43 data_021cb69c;
 s32 Item_GetFossilGroup(u16 *p);
 }
 
-Unk_0206fde4_Mtx sCpuMtxStack[31];
+Mtx43 sCpuMtxStack[31];
 
 static inline u32 Unk_0206fe34_Id(u32 i) {
     if (i < 0x34) {
@@ -34,9 +34,9 @@ extern "C" s32 Museum_CountDonatedFossilsInGroup(u32 a, s32 b) {
 }
 
 extern "C" void CpuMtx_StoreToStack(u32 i) {
-    sCpuMtxStack[i] = *(Unk_0206fde4_Mtx *)&data_021cb69c;
+    sCpuMtxStack[i] = *(Mtx43 *)&data_021cb69c;
 }
 
 extern "C" void CpuMtx_RestoreFromStack(u32 i) {
-    *(Unk_0206fde4_Mtx *)&data_021cb69c = sCpuMtxStack[i];
+    *(Mtx43 *)&data_021cb69c = sCpuMtxStack[i];
 }

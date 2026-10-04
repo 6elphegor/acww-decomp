@@ -3,7 +3,7 @@
 #include "Unk_020d8c7c.h"
 #include "game/Unk_0203389c_Vec.h"
 #include "gfx/Unk_02093dc8_Obj.h"
-#include "gfx/Unk_02093c28_Obj.h"
+#include "gfx/EffectSlot.h"
 #include "gfx/EffectSplEmitter.h"
 #include "game/GroundInfo.h"
 
@@ -13,24 +13,6 @@ typedef Unk_0203389c_Vec Unk_02093748_Vec;
 
 struct Unk_020904f0_Vec {
     s32 x, y, z;
-};
-
-// 0x1c-byte effect/slot entry (32 of them in EffectManager, plus one scratch entry at data_021d0830)
-class EffectSlot {
-public:
-    void clear();
-    void set(s32 id, u32 type, Unk_020904f0_Vec *pos, s16 *a, s16 *b, s16 v);
-
-    /* 0x00 */ s32 x;
-    /* 0x04 */ s32 y;
-    /* 0x08 */ s32 z;
-    /* 0x0c */ s16 angle;
-    /* 0x0e */ s16 life;
-    /* 0x10 */ s16 param;
-    /* 0x12 */ s16 unk_12;
-    /* 0x14 */ s32 handle;
-    /* 0x18 */ u16 kind;
-    /* 0x1a */ u16 unk_1a;
 };
 
 class EffectManager {
@@ -925,9 +907,9 @@ s32 _ZN14GroundInfoBase16getWaterSurfaceYEv(void *p);
 
 namespace R7 {
 extern "C" {
-extern Unk_02093c28_Entry gEffectManager[];
+extern EffectSlot gEffectManager[];
 
-extern Unk_02093bb4_Scratch data_021d0830;
+extern EffectScratchSlot data_021d0830;
 
 extern Unk_02093aa8_Vec gVec3Zero;
 
@@ -961,17 +943,17 @@ s32 MI_CpuFill8(void *dst, u32 v, u32 n);
 
 s32 memcmp(const void *, const void *, u32);
 
-s32 EffectCb_FollowTrackedOffset(Unk_02093c28_Obj *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+s32 EffectCb_FollowTrackedOffset(EffectEmitterEntry *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
 
-s32 EffectCb_InitTrackedOffset(Unk_02093c28_Obj *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+s32 EffectCb_InitTrackedOffset(EffectEmitterEntry *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
 
 s32 Effect_StartOneShot(s32 a, s32 b, void *c, s32 d, s32 e, void *f);
 
-void EffectCb_PlaceEmitter(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+void EffectCb_PlaceEmitter(Unk_02093dc8_Obj *o, EffectSlot *e, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
 
-s32 EffectCb_PlaceFacingBack(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e);
+s32 EffectCb_PlaceFacingBack(Unk_02093dc8_Obj *o, EffectSlot *e);
 
-s32 EffectCb_PlaceFacing(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e);
+s32 EffectCb_PlaceFacing(Unk_02093dc8_Obj *o, EffectSlot *e);
 
 s32 EffectCb_InitOneShot(Unk_02093dc8_Obj *o);
 
@@ -989,15 +971,15 @@ extern "C" s32 EffectCb_TintOnly(void *o)
 namespace R7 {
 extern "C" s32 EffectCb_InitOneShot(Unk_02093dc8_Obj *o)
 {
-    o->posX = (*(Unk_02093bb4_Scratch *)&gEffectManager[32]).e.x + o->resource->header->posX;
-    o->posY = (*(Unk_02093bb4_Scratch *)&gEffectManager[32]).e.y + o->resource->header->posY;
-    o->posZ = (*(Unk_02093bb4_Scratch *)&gEffectManager[32]).e.z + o->resource->header->posZ;
+    o->posX = (*(EffectScratchSlot *)&gEffectManager[32]).x + o->resource->header->posX;
+    o->posY = (*(EffectScratchSlot *)&gEffectManager[32]).y + o->resource->header->posY;
+    o->posZ = (*(EffectScratchSlot *)&gEffectManager[32]).z + o->resource->header->posZ;
     return EffectSpl_ApplySceneTint(o);
 }
 }
 
 namespace R7 {
-extern "C" s32 EffectCb_PlaceFacing(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e)
+extern "C" s32 EffectCb_PlaceFacing(Unk_02093dc8_Obj *o, EffectSlot *e)
 {
     s32 idx;
     u16 ang = e->angle;
@@ -1015,12 +997,12 @@ extern "C" s32 EffectCb_PlaceFacing(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e)
 namespace R7 {
 extern "C" s32 EffectCb_InitOneShotFacing(Unk_02093dc8_Obj *o)
 {
-    return EffectCb_PlaceFacing(o, (Unk_02093c28_Entry *)&(*(Unk_02093bb4_Scratch *)&gEffectManager[32]));
+    return EffectCb_PlaceFacing(o, &(*(EffectScratchSlot *)&gEffectManager[32]));
 }
 }
 
 namespace R7 {
-extern "C" s32 EffectCb_PlaceFacingBack(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e)
+extern "C" s32 EffectCb_PlaceFacingBack(Unk_02093dc8_Obj *o, EffectSlot *e)
 {
     s16 ang = (s16)(e->angle + 0x8000);
     s32 idx;
@@ -1038,7 +1020,7 @@ extern "C" s32 EffectCb_PlaceFacingBack(Unk_02093dc8_Obj *o, Unk_02093c28_Entry 
 namespace R7 {
 extern "C" s32 EffectCb_InitOneShotFacingBack(Unk_02093dc8_Obj *o)
 {
-    return EffectCb_PlaceFacingBack(o, (Unk_02093c28_Entry *)&(*(Unk_02093bb4_Scratch *)&gEffectManager[32]));
+    return EffectCb_PlaceFacingBack(o, &(*(EffectScratchSlot *)&gEffectManager[32]));
 }
 }
 
@@ -1051,7 +1033,7 @@ extern "C" void EffectCb_InitOneShotSetUnk54(Unk_02093dc8_Obj *o, s32 x)
 }
 
 namespace R7 {
-extern "C" void EffectCb_PlaceEmitter(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b)
+extern "C" void EffectCb_PlaceEmitter(Unk_02093dc8_Obj *o, EffectSlot *e, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b)
 {
     Unk_02093aa8_Vec pos;
     Unk_02093aa8_Vec v1;
@@ -1089,7 +1071,7 @@ extern "C" void EffectCb_PlaceEmitter(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e
 namespace R7 {
 extern "C" s32 EffectCb_InitOneShotOffset(Unk_02093dc8_Obj *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b)
 {
-    EffectCb_PlaceEmitter(o, &(*(Unk_02093bb4_Scratch *)&gEffectManager[32]).e, a, b);
+    EffectCb_PlaceEmitter(o, &(*(EffectScratchSlot *)&gEffectManager[32]), a, b);
     EffectSpl_ApplySceneTint(o);
 }
 }
@@ -1101,7 +1083,7 @@ extern "C" s32 Effect_StartOneShot(s32 p0, s32 p1, void *p2, s32 p3, s32 e, void
     s32 r;
     if (t == NULL) t = sEffectDefaultOneShotCbs;
     r = 3;
-    _ZN10EffectSlot3setEijP16Unk_020904f0_VecPsS2_s(&(*(Unk_02093bb4_Scratch *)&gEffectManager[32]), -1, p1, (s32)p2, p3, e, -1);
+    _ZN10EffectSlot3setEijP16Unk_020904f0_VecPsS2_s(&(*(EffectScratchSlot *)&gEffectManager[32]), -1, p1, (s32)p2, p3, e, -1);
     if (EffectSpl_CreateOneShot((void *)p0, (s32)p2, p3, t)) r = 1;
     return r;
 }
@@ -1115,10 +1097,10 @@ extern "C" s32 Effect_EndDefault(s32 x)
 }
 
 namespace R7 {
-extern "C" s32 EffectCb_CountdownTracked(Unk_02093c28_Obj *o)
+extern "C" s32 EffectCb_CountdownTracked(EffectEmitterEntry *o)
 {
-    Unk_02093c28_Handle h = o->tag;
-    Unk_02093c28_Entry *e = &gEffectManager[h.b[0]];
+    EffectEmitterTag h = o->tag;
+    EffectSlot *e = &gEffectManager[h.poolIndex];
     BOOL r = FALSE;
     if (e->handle != -1 && e->life != 0) {
         if (e->life > 0) e->life--;
@@ -1130,25 +1112,25 @@ extern "C" s32 EffectCb_CountdownTracked(Unk_02093c28_Obj *o)
 }
 
 namespace R7 {
-extern "C" s32 EffectCb_InitTrackedOffset(Unk_02093c28_Obj *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b)
+extern "C" s32 EffectCb_InitTrackedOffset(EffectEmitterEntry *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b)
 {
-    Unk_02093bb4_Scratch *const g = &(*(Unk_02093bb4_Scratch *)&gEffectManager[32]);
-    Unk_02093c28_Handle h = o->tag;
-    EffectCb_PlaceEmitter(o->emitter, &g->e, a, b);
+    EffectScratchSlot *const g = &(*(EffectScratchSlot *)&gEffectManager[32]);
+    EffectEmitterTag h = o->tag;
+    EffectCb_PlaceEmitter((Unk_02093dc8_Obj *)o->emitter, g, a, b);
     EffectSpl_ApplySceneTint(o->emitter);
-    MI_CpuCopy8(g, &gEffectManager[h.b[0]], 0x1c);
+    MI_CpuCopy8(g, &gEffectManager[h.poolIndex], 0x1c);
 }
 }
 
 namespace R7 {
-extern "C" s32 EffectCb_FollowTrackedOffset(Unk_02093c28_Obj *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b)
+extern "C" s32 EffectCb_FollowTrackedOffset(EffectEmitterEntry *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b)
 {
-    Unk_02093c28_Handle h = o->tag;
+    EffectEmitterTag h = o->tag;
     BOOL r;
-    Unk_02093c28_Entry *e = &gEffectManager[h.b[0]];
+    EffectSlot *e = &gEffectManager[h.poolIndex];
     r = FALSE;
     if (e->handle != -1 && e->life != 0) {
-        EffectCb_PlaceEmitter(o->emitter, e, a, b);
+        EffectCb_PlaceEmitter((Unk_02093dc8_Obj *)o->emitter, e, a, b);
         if (e->life > 0) e->life--;
         r = TRUE;
     }
@@ -1158,14 +1140,14 @@ extern "C" s32 EffectCb_FollowTrackedOffset(Unk_02093c28_Obj *o, Unk_02093aa8_Ve
 }
 
 namespace R7 {
-extern "C" s32 EffectCb_InitTracked(Unk_02093c28_Obj *o)
+extern "C" s32 EffectCb_InitTracked(EffectEmitterEntry *o)
 {
     return EffectCb_InitTrackedOffset(o, NULL, NULL);
 }
 }
 
 namespace R7 {
-extern "C" s32 EffectCb_FollowTracked(Unk_02093c28_Obj *o)
+extern "C" s32 EffectCb_FollowTracked(EffectEmitterEntry *o)
 {
     return EffectCb_FollowTrackedOffset(o, NULL, NULL);
 }
@@ -1178,7 +1160,7 @@ extern "C" s32 Effect_StartTracked(void *p0, s32 p1, s32 p2, s32 p3, s32 e, void
     s32 r;
     if (t == NULL) t = sEffectDefaultTrackedCbs;
     r = 3;
-    Unk_02093bb4_Scratch *const g = &(*(Unk_02093bb4_Scratch *)&gEffectManager[32]);
+    EffectScratchSlot *const g = &(*(EffectScratchSlot *)&gEffectManager[32]);
     _ZN10EffectSlot3setEijP16Unk_020904f0_VecPsS2_s(g, g->nextHandle, p1, p2, p3, e, -1);
     if (EffectSpl_CreateTracked(p0, p2, p3, t)) r = 0;
     _ZN10EffectSlot5clearEv(g);
@@ -1187,12 +1169,12 @@ extern "C" s32 Effect_StartTracked(void *p0, s32 p1, s32 p2, s32 p3, s32 e, void
 }
 
 namespace R7 {
-extern "C" s32 Effect_SpawnParticleLandings(Unk_02093aa8_Owner *o, s32 p1, s32 p2, s32 p3, s32 s0, s32 p5, s32 s2, s32 p6, s32 s4)
+extern "C" s32 Effect_SpawnParticleLandings(EffectSplEmitter *o, s32 p1, s32 p2, s32 p3, s32 s0, s32 p5, s32 s2, s32 p6, s32 s4)
 {
     Unk_02093aa8_Node *n;
     Unk_02093aa8_Vec pos;
     BOOL result;
-    n = o->particles;
+    n = (Unk_02093aa8_Node *)o->particles;
     pos = gVec3Zero;
     result = FALSE;
     if (n != NULL) {

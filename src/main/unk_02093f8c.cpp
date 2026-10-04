@@ -6,7 +6,8 @@
 #include "save/TownId.h"
 #include "talk/EncodedStringBase.h"
 #include "player/PlayerId.h"
-#include "gfx/Unk_02093c28_Obj.h"
+#include "gfx/EffectSlot.h"
+#include "gfx/EffectSplEmitter.h"
 #include "talk/MsgString.h"
 #include "game/GroundInfo.h"
 #include "talk/EncodedString.h"
@@ -25,11 +26,11 @@
 
 
 extern "C" {
-extern Unk_02093c28_Entry gEffectManager[];
+extern EffectSlot gEffectManager[];
 }
 
 extern "C" {
-extern Unk_02093bb4_Scratch data_021d0830;
+extern EffectScratchSlot data_021d0830;
 }
 
 extern "C" {
@@ -97,11 +98,11 @@ s32 memcmp(const void *, const void *, u32);
 }
 
 extern "C" {
-s32 EffectCb_FollowTrackedOffset(Unk_02093c28_Obj *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+s32 EffectCb_FollowTrackedOffset(EffectEmitterEntry *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
 }
 
 extern "C" {
-s32 EffectCb_InitTrackedOffset(Unk_02093c28_Obj *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+s32 EffectCb_InitTrackedOffset(EffectEmitterEntry *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
 }
 
 extern "C" {
@@ -109,15 +110,15 @@ s32 Effect_StartOneShot(s32 a, s32 b, void *c, s32 d, s32 e, void *f);
 }
 
 extern "C" {
-void EffectCb_PlaceEmitter(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+void EffectCb_PlaceEmitter(Unk_02093dc8_Obj *o, EffectSlot *e, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
 }
 
 extern "C" {
-s32 EffectCb_PlaceFacingBack(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e);
+s32 EffectCb_PlaceFacingBack(Unk_02093dc8_Obj *o, EffectSlot *e);
 }
 
 extern "C" {
-s32 EffectCb_PlaceFacing(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e);
+s32 EffectCb_PlaceFacing(Unk_02093dc8_Obj *o, EffectSlot *e);
 }
 
 extern "C" {

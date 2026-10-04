@@ -290,11 +290,11 @@ extern "C" BOOL PlayerActor_SetHeadTilt(u32 a, u32 b, u32 idx) {
 extern "C" BOOL PlayerActor_GetHeadPos(Unk_02006d14_Vec *out, u32 idx) {
     Unk_02006d14 *o = PlayerActor_Get(idx);
     if (o) {
-        s32 a = o->headMtx.unk_24;
-        if (a == 0 && o->headMtx.unk_28 == 0 && o->headMtx.unk_2c == 0) return FALSE;
+        s32 a = o->headMtx.m[9];
+        if (a == 0 && o->headMtx.m[10] == 0 && o->headMtx.m[11] == 0) return FALSE;
         out->x = a;
-        out->y = o->headMtx.unk_28;
-        out->z = o->headMtx.unk_2c;
+        out->y = o->headMtx.m[10];
+        out->z = o->headMtx.m[11];
         WorldCurve_FromCurved(out, out);
         return TRUE;
     }

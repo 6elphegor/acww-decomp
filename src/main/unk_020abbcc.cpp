@@ -1,6 +1,6 @@
 #include "types.h"
 #include "game/Unk_02033914.h"
-#include "gfx/Unk_021ede90.h"
+#include "gfx/NNSG3dResMatData.h"
 #include "game/Vec3.h"
 #include "gfx/SceneLightsCol.h"
 #include "gfx/Mtx43.h"
@@ -37,7 +37,7 @@ extern "C" void CharaShadow_Draw(Vec3 *pos, s32 a, s32 b, s32 c);
 
 u32 sCharaShadowPolyId = 1;
 
-Unk_021ede90 *sCharaShadowMatData;
+NNSG3dResMatData *sCharaShadowMatData;
 CachedModel sCharaShadowModel;
 
 extern "C" BOOL CharaShadow_Load() {
@@ -47,12 +47,12 @@ extern "C" BOOL CharaShadow_Load() {
     } else {
         ret = FALSE;
     }
-    u8 *p = (u8 *)sCharaShadowModel.unk_5c;
+    u8 *p = (u8 *)sCharaShadowModel.resMdl;
     u8 *q = p + *(s32 *)(p + 8);
     q = q + *(s32 *)(q + *(u16 *)(q + 0xa) + 8);
-    sCharaShadowMatData = (Unk_021ede90 *)q;
+    sCharaShadowMatData = (NNSG3dResMatData *)q;
     sCharaShadowPolyId = 1;
-    NNSi_G3dModifyMatFlag((u32)sCharaShadowModel.unk_5c, 1, 0x40);
+    NNSi_G3dModifyMatFlag((u32)sCharaShadowModel.resMdl, 1, 0x40);
     return ret;
 }
 
@@ -61,7 +61,7 @@ extern "C" void CharaShadow_UpdateColor() {
     sCharaShadowPolyId = 1;
     c0 = SceneLights_GetRoomColor();
     c1 = c0;
-    NNS_G3dMdlSetMdlDiff((u32)sCharaShadowModel.unk_5c, 0, c1.v);
+    NNS_G3dMdlSetMdlDiff((u32)sCharaShadowModel.resMdl, 0, c1.v);
 }
 
 extern "C" void CharaShadow_Unload() {
@@ -136,11 +136,11 @@ extern "C" void CharaShadow_Draw(Vec3 *pos, s32 a, s32 b, s32 c) {
             scale.y = 0x1000;
             scale.z = a;
             if (sCharaShadowMatData != 0) {
-                sCharaShadowMatData->unk_0c &= 0xffe0ffff;
-                sCharaShadowMatData->unk_0c |= (lvl & 0x1f) << 16;
-                sCharaShadowMatData->unk_0c &= 0xc0ffffff;
-                sCharaShadowMatData->unk_0c |= sCharaShadowPolyId << 24;
-                sCharaShadowMatData->unk_10 |= 0x3f1f0000;
+                sCharaShadowMatData->polyAttr &= 0xffe0ffff;
+                sCharaShadowMatData->polyAttr |= (lvl & 0x1f) << 16;
+                sCharaShadowMatData->polyAttr &= 0xc0ffffff;
+                sCharaShadowMatData->polyAttr |= sCharaShadowPolyId << 24;
+                sCharaShadowMatData->polyAttrMask |= 0x3f1f0000;
             }
             sCharaShadowModel.drawScaled((s32 *)&scale);
             sCharaShadowPolyId++;

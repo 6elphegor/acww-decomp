@@ -8,7 +8,7 @@
 #include "game/StrBSizeData.h"
 #include "town/BuildingResources.h"
 #include "game/Unk_02031e10_Vec.h"
-#include "gfx/Unk_ov009_0225bc88_Blk.h"
+#include "gfx/Mtx43.h"
 #include "town/Unk_ov009_0225b880.h"
 #include "game/Unk_ov009_0225cb4c_V3.h"
 #include "game/TouchPicker.h"

@@ -1,6 +1,6 @@
 #include "types.h"
 #include "game/Unk_0205f6b4_Obj.h"
-#include "gfx/Unk_0205f7f4_Mtx.h"
+#include "gfx/Mtx43.h"
 #include "game/GroundInfo.h"
 #include "player/FishBobberStates.h"
 
@@ -62,7 +62,7 @@ void VEC_Add(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b, Unk_0205f1e8_Vec *out);
 void VEC_Subtract(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b, Unk_0205f1e8_Vec *out);
 s32 Vec_DistXZ(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b);
 void Vec_ShiftRight(Unk_0205f1e8_Vec *v, s32 n);
-void Mtx43_SetTranslate(Unk_0205f7f4_Mtx *m, s32 x, s32 y, s32 z);
+void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
 void FieldFish_StartCastSplash();
 void *func_0205fd94(u8 *tbl, u32 idx);
 void WorldCurve_FromCurved(void *p, Unk_0205f1e8_Vec *v);

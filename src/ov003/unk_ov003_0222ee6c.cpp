@@ -38,14 +38,14 @@ public:
 
 // ---- externs ----
 // other modules' methods are reached through their real mangled symbols (object first)
-#define Unk_020d93b8_lerpPoses _ZN12Unk_020d93b89lerpPosesEiii
+#define Camera_lerpPoses _ZN6Camera9lerpPosesEiii
 
 extern "C" {
 void *PlayerActor_GetBodyPos(u32);
 s32 Camera_CalcTriangleSpan(void *a, void *b, void *c, void *d, s32 *e);
 s32 Camera_CalcPointSpan(void *a, void *b, void *c, s32 *d);
 s32 FX_Div(s32 a, s32 b);
-s32 Unk_020d93b8_lerpPoses(void *self, s32 a, s32 b, s32 c);
+s32 Camera_lerpPoses(void *self, s32 a, s32 b, s32 c);
 void SnowballSpawner_SpawnSnowmen(void *self);
 void SnowballSpawner_SpawnLooseBalls(void *self);
 SnowballSpawner *SnowballSpawner_Create();
@@ -87,7 +87,7 @@ extern "C" void FieldCamera_UpdateFocusZoom(Unk_ov003_0222ef10_Cam *cam) {
     }
     u32 q = FX_Div(v - 0x4800, 0x6800);
     cam->closeUpFactorTarget = 0x1000 - q;
-    Unk_020d93b8_lerpPoses(cam, 0xa, 0, q);
+    Camera_lerpPoses(cam, 0xa, 0, q);
 }
 
 extern "C" SnowballSpawner *SnowballSpawner_Create() {

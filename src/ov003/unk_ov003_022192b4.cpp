@@ -3,7 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
-#include "gfx/Unk_020dbd44.h"
+#include "gfx/ModelSet.h"
 #include "game/UnitShapeQueryX.h"
 #include "gfx/CachedModel.h"
 #include "field/FieldObjectShapeQuery.h"
@@ -90,10 +90,10 @@ public:
     /* 0x4840 */ CachedModel crackModels[2];
     /* 0x4978 */ u32 stumpModels[12];
     /* 0x49a8 */ CachedModel turnipModels[2];
-    /* 0x4ae0 */ Unk_020dbd44 iconModelSet;
-    /* 0x4af0 */ Unk_020dbd44 dandelionModelSet;
-    /* 0x4b00 */ Unk_020dbd44 stoneModelSet;
-    /* 0x4b10 */ Unk_020dbd44 stumpModelSet;
+    /* 0x4ae0 */ ModelSet iconModelSet;
+    /* 0x4af0 */ ModelSet dandelionModelSet;
+    /* 0x4b00 */ ModelSet stoneModelSet;
+    /* 0x4b10 */ ModelSet stumpModelSet;
     /* 0x4b20 */ TreeAnimSet treeAnimSet;
 };
 
@@ -1287,10 +1287,10 @@ public:
     /* 0x4840 */ CachedModel crackModels[2];
     /* 0x4978 */ CachedModel *stumpModels[12];
     /* 0x49a8 */ CachedModel turnipModels[2];
-    /* 0x4ae0 */ Unk_020dbd44 iconModelSet;
-    /* 0x4af0 */ Unk_020dbd44 dandelionModelSet;
-    /* 0x4b00 */ Unk_020dbd44 stoneModelSet;
-    /* 0x4b10 */ Unk_020dbd44 stumpModelSet;
+    /* 0x4ae0 */ ModelSet iconModelSet;
+    /* 0x4af0 */ ModelSet dandelionModelSet;
+    /* 0x4b00 */ ModelSet stoneModelSet;
+    /* 0x4b10 */ ModelSet stumpModelSet;
     /* 0x4b20 */ TreeAnimSet treeAnimSet;
     /* 0x4b30 */ u8 pad_4b30[0x6a6c - 0x4b30];
     /* 0x6a6c */ s32 frameCounter;
@@ -4888,7 +4888,7 @@ extern "C" void FieldObj_DrawModel(O *o, M *p, Blk m)
         Model_drawShapesDirect(p, 0);
         volatile u16 a = SceneLights_GetRoomColor();
         volatile u16 b = a;
-        func_02105fd8((u32)p->unk_5c, b);
+        func_02105fd8((u32)p->resMdl, b);
     }
 }
 }

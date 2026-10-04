@@ -1,7 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "game/LightLevel.h"
-#include "gfx/Unk_020d93b8.h"
+#include "gfx/Camera.h"
 
 struct Unk_02064674_Vec { s32 x, y, z; };
 
@@ -187,7 +187,7 @@ struct Unk_020b22ac_Dummy;
 
 extern "C" {
 extern u8 gFieldSceneKind;
-extern Unk_020d93b8 *gCamera;
+extern Camera *gCamera;
 extern Unk_02064fa8_Data gViewMtx;
 }
 

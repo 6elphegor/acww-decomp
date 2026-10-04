@@ -1,12 +1,12 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "game/Unk_02033914.h"
-#include "gfx/Unk_020ac0c4_Entry.h"
-#include "gfx/Unk_020ac500_Tex.h"
+#include "gfx/ObjShadowTexture.h"
+#include "gfx/NNSG3dResTex.h"
 #include "game/Unk_020aebbc.h"
-#include "gfx/Unk_020d094c.h"
+#include "gfx/ObjShadowTexDef.h"
 #include "game/Unk_021c47c4.h"
-#include "gfx/Unk_021ede90.h"
+#include "gfx/NNSG3dResMatData.h"
 #include "item/Unk_02062f94_Ret.h"
 #include "game/Vec3.h"
 #include "item/ItemId.h"
@@ -2500,7 +2500,7 @@ extern "C" {
 extern u8 data_021edf04[];
 }
 extern "C" {
-extern Unk_021ede90 *sCharaShadowMatData;
+extern NNSG3dResMatData *sCharaShadowMatData;
 }
 extern "C" {
 extern u8 sCharaShadowModel[];
@@ -2512,7 +2512,7 @@ extern "C" {
 extern s32 sObjShadowCoordShift;
 }
 extern "C" {
-extern Unk_020ac0c4_Entry sObjShadowTextures[];
+extern ObjShadowTexture sObjShadowTextures[];
 }
 extern "C" {
 extern ObjShadowStrip sRockShadow, sSignShadow, sTreeShadowStage2, sTreeShadowStage3, sTreeShadowStage4;
@@ -2521,7 +2521,7 @@ extern "C" {
 extern u32 data_021edf3c;
 }
 extern "C" {
-extern Unk_020d094c sObjShadowTexDefs[];
+extern ObjShadowTexDef sObjShadowTexDefs[];
 }
 extern "C" {
 extern u8 sObjShadowTexPath[];
@@ -2855,15 +2855,15 @@ static inline BOOL isOne() {
     }
     return FALSE;
 }
-static inline void *Unk_020ac500_Data(const Unk_020ac500_Dict *dict, u32 idx) {
-    Unk_020ac500_DictHdr *hdr = (Unk_020ac500_DictHdr *)((u8 *)dict + dict->ofsEntry);
+static inline void *Unk_020ac500_Data(const NNSG3dResDict *dict, u32 idx) {
+    NNSG3dResDictEntryHeader *hdr = (NNSG3dResDictEntryHeader *)((u8 *)dict + dict->ofsEntry);
     return &hdr->data[hdr->sizeUnit * idx];
 }
-static inline u32 *Unk_020ac500_TexData(const Unk_020ac500_Tex *tex, u32 idx) {
+static inline u32 *Unk_020ac500_TexData(const NNSG3dResTex *tex, u32 idx) {
     return (u32 *)Unk_020ac500_Data(&tex->dict, idx);
 }
-static inline Unk_020ac500_Pltt *Unk_020ac500_PlttData(const Unk_020ac500_Tex *tex, u32 idx) {
-    return (Unk_020ac500_Pltt *)Unk_020ac500_Data((const Unk_020ac500_Dict *)((u8 *)tex + tex->ofsPlttDict), idx);
+static inline NNSG3dResDictPlttData *Unk_020ac500_PlttData(const NNSG3dResTex *tex, u32 idx) {
+    return (NNSG3dResDictPlttData *)Unk_020ac500_Data((const NNSG3dResDict *)((u8 *)tex + tex->ofsPlttDict), idx);
 }
 
 

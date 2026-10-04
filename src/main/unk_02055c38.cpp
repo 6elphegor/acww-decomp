@@ -26,7 +26,7 @@ struct Unk_02055cd0_Obj {
 };
 struct Unk_02056160_Rec {
     u8 pad[0x28];
-    Unk_020561d8_Mtx mtx;
+    Mtx33 mtx;
     Unk_020561d8_Vec vec;
 };
 
@@ -43,7 +43,7 @@ struct Unk_02056160_Hdr {
 struct Unk_020561d8_Z {
     u32 flags;
     u8 pad[0x24];
-    Unk_020561d8_Mtx mtx;
+    Mtx33 mtx;
     Unk_020561d8_Vec vec;
 };
 
@@ -59,7 +59,7 @@ void Anim_LerpVec(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_020561d8_Vec *ou
 }
 
 extern "C" {
-void Anim_LerpRotMtx(Unk_020561d8_Mtx *a, Unk_020561d8_Mtx *b, Unk_020561d8_Mtx *out, s32 t);
+void Anim_LerpRotMtx(Mtx33 *a, Mtx33 *b, Mtx33 *out, s32 t);
 }
 
 extern "C" s32 _ZN12G3dResAccess10findMatIdxEi(void *res, ...);
@@ -95,7 +95,7 @@ extern "C" void func_0212a360(void *p);
 extern "C" void operator delete(void *p);
 extern "C" void Anim_NormalizeVec(Unk_020561d8_Vec *v);
 extern "C" void Anim_LerpVec(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_020561d8_Vec *out, s32 t);
-extern "C" void Anim_LerpRotMtx(Unk_020561d8_Mtx *a, Unk_020561d8_Mtx *b, Unk_020561d8_Mtx *out, s32 t);
+extern "C" void Anim_LerpRotMtx(Mtx33 *a, Mtx33 *b, Mtx33 *out, s32 t);
 extern "C" s32 G3dRes_FindDictIdx(void *p, s32 a);
 extern "C" void *gCurrentHeap;
 
@@ -352,7 +352,7 @@ BOOL TexPatVramUploader::uploadByName(u8 *hdr, const char *n1, const char *n2, u
 
 ResName16::ResName16() {
     for (u32 i = 0; i < 0x11; i++) {
-        unk_00[i] = 0;
+        chars[i] = 0;
     }
 }
 
@@ -363,16 +363,16 @@ void ResName16::set(const char *src) {
         u32 n = func_0212a438(src) + 1;
         for (u32 i = 0; i < 0x11; i++) {
             if (i < n) {
-                unk_00[i] = src[i];
+                chars[i] = src[i];
             } else {
-                unk_00[i] = 0;
+                chars[i] = 0;
             }
         }
     }
 }
 
 char *ResName16::get() {
-    return unk_00;
+    return chars;
 }
 
 TexPatVramAnim::TexPatVramAnim() {
@@ -844,7 +844,7 @@ extern "C" void Anim_NormalizeVec(Unk_020561d8_Vec *v) {
     }
 }
 
-extern "C" void Anim_LerpRotMtx(Unk_020561d8_Mtx *a, Unk_020561d8_Mtx *b, Unk_020561d8_Mtx *out, s32 t) {
+extern "C" void Anim_LerpRotMtx(Mtx33 *a, Mtx33 *b, Mtx33 *out, s32 t) {
     s32 k = 0x1000 - t;
     out->m[0] = (s32)(((s64)t * a->m[0] + (s64)k * b->m[0]) >> 12);
     out->m[1] = (s32)(((s64)t * a->m[1] + (s64)k * b->m[1]) >> 12);
@@ -868,7 +868,7 @@ extern "C" void Anim_LerpVec(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_02056
 
 void JointBlend::blendPose(Unk_02056160_Arg *x) {
     Unk_020561d8_Vec v;
-    Unk_020561d8_Mtx m;
+    Mtx33 m;
     u32 idx = x->hdr->idx;
     if ((x->z->flags & 4) == 0 && idx <= 1) {
         Anim_LerpVec(&x->z->vec, &poseTrans, &v, blendRatio);

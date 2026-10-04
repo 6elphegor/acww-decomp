@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "room/Unk_ov004_0224882c_Buf.h"
-#include "gfx/Unk_ov004_Mtx.h"
+#include "gfx/Mtx43.h"
 #include "room/FtrActorViews.h"
 #include "actor/ActorListNode.h"
 #include "actor/CharacterListNode.h"
@@ -61,9 +61,9 @@
 typedef Vec3 Unk_ov004_Vec3;
 typedef Vec3 Unk_ov004_022077a4_Vec3;
 typedef Vec3 Unk_ov004_02208284_V3;
-typedef Unk_ov004_Mtx Unk_ov004_02208284_M;
-typedef Unk_ov004_Mtx Unk_ov004_022077a4_Mtx;
-typedef Unk_ov004_Mtx Unk_ov004_02205eb0_Mtx;
+typedef Mtx43 Unk_ov004_02208284_M;
+typedef Mtx43 Unk_ov004_022077a4_Mtx;
+typedef Mtx43 Unk_ov004_02205eb0_Mtx;
 
 
 // ================================================================ library chain (as tu01, but slot 08/14 as this class overrides them)

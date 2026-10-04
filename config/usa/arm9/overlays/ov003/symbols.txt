@@ -859,7 +859,7 @@ _ZN7Mailbox12enterUseIdleEv kind:function(thumb,size=0x4) addr:0x02216eb0
 _ZN7Mailbox14updateUseStateEv kind:function(thumb,size=0x98) addr:0x02216eb4
 _ZN7Mailbox11setUseStateEi kind:function(thumb,size=0xa8) addr:0x02216f4c
 _ZN7Mailbox20calcCustomBaseMatrixEPv kind:function(thumb,size=0x78) addr:0x02216ff4
-_ZN7Mailbox20calcCustomBaseMatrixEP22Unk_ov009_0225bc88_Blk kind:label(thumb) addr:0x02216ff4
+_ZN7Mailbox20calcCustomBaseMatrixEP5Mtx43 kind:label(thumb) addr:0x02216ff4
 _ZN7Mailbox8isUsableEv kind:function(thumb,size=0xc) addr:0x0221706c
 _ZN7Mailbox12countLettersEv kind:function(thumb,size=0x44) addr:0x02217078
 _ZN7Mailbox18onInteractionEventEjh kind:function(thumb,size=0x26) addr:0x022170bc

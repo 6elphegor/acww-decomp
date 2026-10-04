@@ -1,12 +1,12 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#include "gfx/Unk_0203bc68_Ent.h"
+#include "gfx/Unk_0203bd10_Dtcm.h"
 #include "npc/Unk_0203be94_Obj.h"
 #include "gfx/CameraPose.h"
 #include "gfx/FxMtx43.h"
 #include "item/ItemId.h"
 #include "sys/CameraBase.h"
-#include "gfx/Unk_020d93b8.h"
+#include "gfx/Camera.h"
 
 
 
@@ -38,7 +38,7 @@ extern s16 data_02135f44[];
 }
 
 extern "C" {
-extern Unk_0203bc68_Ent sCameraPoseTable[];
+extern CameraPose sCameraPoseTable[];
 }
 
 extern "C" {

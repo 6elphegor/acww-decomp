@@ -84,7 +84,7 @@
 #include "player/Unk_0205dfa4_Base.h"
 #include "player/Unk_0205c3a4.h"
 #include "game/Unk_0203d820_Ptr.h"
-#include "gfx/Unk_021cb69c.h"
+#include "gfx/Mtx43.h"
 #include "player/Unk_021c1b3c.h"
 #include "player/Unk_020d6df4_7d0.h"
 #include "player/PlayerHead.h"
@@ -238,12 +238,12 @@ void MTX_RotY33_(s32 *out, s32 a, s32 b);
 void MTX_Concat33(s32 *a, s32 *b, s32 *out);
 void _ZN5Model8setAlphaEj(void *obj, u8 v);
 void _ZN17TwoLayerAnimModel11drawLayeredEj(void *obj, u32 v);
-void Model_GetJointWorldMtx(void *obj, Unk_021cb69c *out, u32 idx);
+void Model_GetJointWorldMtx(void *obj, Mtx43 *out, u32 idx);
 void _ZN5Model10drawScaledEPi(void *obj, void *v);
 s32 PlayerHead_GetModelId(void *obj, u32 v);
 s32 PlayerGlassesModelRef_GetModelId(void *obj);
 void HeldItemModel_Draw(void *a, void *b);
-Unk_021cb69c HeldItemModel_GetJointMtx(void *obj, u32 mode);
+Mtx43 HeldItemModel_GetJointMtx(void *obj, u32 mode);
 void CharaShadow_DrawPlayer(Unk_02005294_Vec3 *pos, s32 a);
 void HeldItemModel_Update(void *obj);
 void PlayerActor_CheckSceneExit(s32 a);
@@ -266,7 +266,7 @@ void PlayerActor_FieldCheckUnitAhead(void *);
 extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern void *gCommManager;
-extern Unk_021cb69c data_021cb69c;
+extern Mtx43 data_021cb69c;
 extern s16 data_02135f44[];
 enum Unk_020d6df4_State { Unk_020d6df4_State_0 = 0 };
 void PlayerActor_JointCbStart(Unk_020050e0 *p);
@@ -1513,7 +1513,7 @@ s32 Item_GetFurnitureIndex(u16 *p);
 void HeldItemModel_Update(void *p);
 s32 Math_AngleToDir4(s16 a);
 s32 Math_AngleToSide(s16 a);
-s32 _ZN12Unk_020d93b86getYawEv(void *p);
+s32 _ZN6Camera6getYawEv(void *p);
 s32 Scene_NoPlayerInUnsharedScene();
 void FieldInfoBalloon_ClearNetMsg();
 s32 Net_GetMode();
@@ -1528,7 +1528,7 @@ s32 TouchPick_GetTargetObject(u8 *obj, s32 *pa, u8 *pb);
 u16 *BlockMap_GetItemPtrAtPos(void *a, Unk_0200d64c_Xyz *b, u32 c);
 void FieldPos_ToUnit(s32 *x, s32 *y, Unk_0200d64c_Xyz *v);
 void FieldPos_SnapToUnitCenter(Unk_0200d64c_Xyz *a, Unk_0200d64c_Xyz *b);
-s32 _ZN12Unk_020d93b88getPitchEv(void *p);
+s32 _ZN6Camera8getPitchEv(void *p);
 BOOL Camera_ProjectCurvedToScreen(s32 *a, s32 *b, Unk_0200d64c_Xyz *p);
 s32 Vec_MagXZ(Unk_0200d64c_Xyz *v);
 s32 Math_Atan2(s32 a, s32 b);
@@ -3718,7 +3718,7 @@ void Unk_02006d14::setShirtTexture(void *p) {
 
 void Unk_02006d14::requestShirtTexUpload() {
     using namespace nR;
-    u32 r4 = (u32)((Unk_02006d14 *)this)->bodyModel.unk_5c;
+    u32 r4 = (u32)((Unk_02006d14 *)this)->bodyModel.resMdl;
     CharaClothTexRef_GetBuffer(&((Unk_02006d14 *)this)->shirtTex);
     _ZN14MatTexVramTask7requestEPvjS0_jj(&((Unk_02006d14 *)this)->shirtTexUpload, r4, sPlayerShirtTexName, ClothTex_GetTexThunk(), 0, 0);
 }
@@ -4427,13 +4427,13 @@ void Unk_02006d14::loadInputMode() {
 
 BOOL PlayerActor::getHeldItemPos(Unk_020d77a4_Vec3 *out) {
     using namespace nP;
-    u32 a = ((Unk_02006d14 *)this)->itemHandMtx.unk_24;
-    if (a == 0 && ((Unk_02006d14 *)this)->itemHandMtx.unk_28 == 0 && ((Unk_02006d14 *)this)->itemHandMtx.unk_2c == 0) {
+    u32 a = ((Unk_02006d14 *)this)->itemHandMtx.m[9];
+    if (a == 0 && ((Unk_02006d14 *)this)->itemHandMtx.m[10] == 0 && ((Unk_02006d14 *)this)->itemHandMtx.m[11] == 0) {
         return FALSE;
     }
     out->x = a;
-    out->y = ((Unk_02006d14 *)this)->itemHandMtx.unk_28;
-    out->z = ((Unk_02006d14 *)this)->itemHandMtx.unk_2c;
+    out->y = ((Unk_02006d14 *)this)->itemHandMtx.m[10];
+    out->z = ((Unk_02006d14 *)this)->itemHandMtx.m[11];
     WorldCurve_FromCurved((Unk_02006d14_Vec3 *)out);
     return TRUE;
 }
@@ -4827,7 +4827,7 @@ s16 PlayerActor::getInputAngle() {
     using namespace nN;
     s16 r = getInputAngleRaw();
     if (((PlayerActor *)this)->inputMode != 2 && gCamera) {
-        r = r + _ZN12Unk_020d93b86getYawEv(gCamera);
+        r = r + _ZN6Camera6getYawEv(gCamera);
     }
     return r;
 }
@@ -7653,7 +7653,7 @@ void Unk_02008040::mainAct76() {
     v.z = pv->z;
     s16 d = (s16)drawTilt;
     Mtx43 blk1 = bodyModel.mtx;
-    Unk_021cb69c blk2 = itemHandMtx;
+    Mtx43 blk2 = itemHandMtx;
     _ZN12Unk_02006d1411calcHandMtxEv(this);
     _ZN12Unk_020102ec18updateBodyColliderEv(this);
     act76Update();
@@ -8470,9 +8470,9 @@ void PlayerActor::doExecute() {
             v = *p;
             *(Unk_02005294_Vec3 *)&((PlayerActor *)this)->footPosA = *(Unk_02005294_Vec3 *)&((PlayerActor *)this)->footPosB = *(Unk_02005294_Vec3 *)&((PlayerActor *)this)->headTopPos = *(Unk_02005294_Vec3 *)&((PlayerActor *)this)->bodyPos = *p;
             WorldCurve_ToCurved(&v, &v);
-            ((PlayerActor *)this)->toolHandMtx.unk_24 = ((PlayerActor *)this)->itemHandMtx.unk_24 = ((PlayerActor *)this)->heldItemJointMtx.unk_24 = ((PlayerActor *)this)->heldItemJointMtx2.unk_24 = v.x;
-            ((PlayerActor *)this)->toolHandMtx.unk_28 = ((PlayerActor *)this)->itemHandMtx.unk_28 = ((PlayerActor *)this)->heldItemJointMtx.unk_28 = ((PlayerActor *)this)->heldItemJointMtx2.unk_28 = v.y;
-            ((PlayerActor *)this)->toolHandMtx.unk_2c = ((PlayerActor *)this)->itemHandMtx.unk_2c = ((PlayerActor *)this)->heldItemJointMtx.unk_2c = ((PlayerActor *)this)->heldItemJointMtx2.unk_2c = v.z;
+            ((PlayerActor *)this)->toolHandMtx.m[9] = ((PlayerActor *)this)->itemHandMtx.m[9] = ((PlayerActor *)this)->heldItemJointMtx.m[9] = ((PlayerActor *)this)->heldItemJointMtx2.m[9] = v.x;
+            ((PlayerActor *)this)->toolHandMtx.m[10] = ((PlayerActor *)this)->itemHandMtx.m[10] = ((PlayerActor *)this)->heldItemJointMtx.m[10] = ((PlayerActor *)this)->heldItemJointMtx2.m[10] = v.y;
+            ((PlayerActor *)this)->toolHandMtx.m[11] = ((PlayerActor *)this)->itemHandMtx.m[11] = ((PlayerActor *)this)->heldItemJointMtx.m[11] = ((PlayerActor *)this)->heldItemJointMtx2.m[11] = v.z;
         }
     }
     _ZN12Unk_02006d1416pollFaceItemLoadEv(this);
@@ -8590,7 +8590,7 @@ extern "C" void PlayerActor_JointCbPost(Unk_020050e0 *p) {
     s32 m1[9];
     Unk_02005294_Vec3 v1;
     s32 m3[9];
-    Unk_021cb69c c;
+    Mtx43 c;
     Unk_02005294_Vec3 t3;
     Unk_02005294_Vec3 v2;
     PlayerActor *o;
@@ -8630,9 +8630,9 @@ extern "C" void PlayerActor_JointCbPost(Unk_020050e0 *p) {
             }
             JointCb_CalcCpuMatrix(&r6->bodyModel, p, 0);
             c = data_021cb69c;
-            t3.x = c.unk_24;
-            t3.y = _ZN11PlayerActor15getJointGroundYEi(r6, c.unk_28);
-            t3.z = c.unk_2c;
+            t3.x = c.m[9];
+            t3.y = _ZN11PlayerActor15getJointGroundYEi(r6, c.m[10]);
+            t3.z = c.m[11];
             WorldCurve_FromCurved((Unk_02005294_Vec3 *)&r6->bodyPos, &t3);
         }
     }

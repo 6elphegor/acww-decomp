@@ -1,7 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#include "gfx/Unk_02002804_Buf.h"
-#include "gfx/Unk_02002848_Data.h"
+#include "gfx/ToonTable.h"
+#include "gfx/Mtx43.h"
 #include "actor/Unk_02002f14_S16Vec.h"
 #include "actor/Unk_02002f14_S32Vec.h"
 #include "actor/ActorListNode.h"
@@ -236,8 +236,8 @@ void func_020030b4_dummy(void);
 
 
 
-extern Unk_02002848_Data gViewMtx;
-extern Unk_02002848_Data data_02135934_;
+extern Mtx43 gViewMtx;
+extern Mtx43 data_02135934_;
 
 
 AbAllObjGfx sAbAllObjGfx;

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/Mtx33.h"
 #include "game/Unk_020b1ddc.h"
 #include "item/ItemId.h"
 #include "game/StrBSizeData.h"
@@ -167,9 +168,6 @@ struct Unk_020b1d3c_Pad {
     ~Unk_020b1d3c_Pad() {}
 };
 
-struct Mtx33 {
-    s32 m[9];
-};
 
 struct Obj_b4 {
     u32 flags;

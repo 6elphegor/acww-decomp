@@ -10,7 +10,7 @@
 // src/main/unk_02055c38.cpp (0x02056b84..0x02056fca).
 
 struct ResName16 {
-    /* 0x00 */ char unk_00[17];
+    /* 0x00 */ char chars[17];
     ResName16();
     ~ResName16();
     char *get();

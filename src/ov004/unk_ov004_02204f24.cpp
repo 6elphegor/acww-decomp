@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "room/Unk_ov004_0224882c_Buf.h"
-#include "gfx/Unk_ov004_Mtx.h"
+#include "gfx/Mtx43.h"
 #include "gfx/Unk_ov004_Rgba.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "actor/ActorListNode.h"
@@ -45,9 +45,9 @@
 typedef Vec3 Unk_ov004_Vec3;
 typedef Vec3 Unk_ov004_022077a4_Vec3;
 typedef Vec3 Unk_ov004_02208284_V3;
-typedef Unk_ov004_Mtx Unk_ov004_02208284_M;
-typedef Unk_ov004_Mtx Unk_ov004_022077a4_Mtx;
-typedef Unk_ov004_Mtx Unk_ov004_02205eb0_Mtx;
+typedef Mtx43 Unk_ov004_02208284_M;
+typedef Mtx43 Unk_ov004_022077a4_Mtx;
+typedef Mtx43 Unk_ov004_02205eb0_Mtx;
 
 // main class 0x02000c8c (3 words, registered for destruction through __register_global_object)
 struct FxVec3 {
@@ -164,7 +164,7 @@ public:
     /* 0x14c */ s32 drawScale, drawScaleY, drawScaleZ, colliderScale;
     /* 0x15c */ u8 pad_15c[0x178 - 0x15c];
     /* 0x178 */ u8 stackLink[0x250 - 0x178];
-    /* 0x250 */ Unk_ov004_Mtx worldMtx;
+    /* 0x250 */ Mtx43 worldMtx;
     /* 0x280 */ s32 ftrIndex;
     /* 0x284 */ u8 mapLayer;
     /* 0x285 */ u8 isSetUp;
@@ -625,7 +625,7 @@ void ProcBase_RequestDelete(void *self);
 struct Unk_ov004_027e0148 { u8 pad[0x18]; u32 unk_18; };
 extern Unk_ov004_027e0148 data_027e0148;
 extern void *gSceneBlockMap;
-extern Unk_ov004_Mtx data_021f47e0;
+extern Mtx43 data_021f47e0;
 BOOL _ZN8FtrActor9isPreviewEv(void *self);
 BOOL _ZN8FtrActor11findOwnTileEPiS0_ii(void *self, s32 *a, s32 *b, s32 c, s32 d);
 BOOL _ZN8FtrActor11canRotateByEi(void *self);

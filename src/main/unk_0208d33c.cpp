@@ -1,5 +1,4 @@
 #include "types.h"
-#include "gfx/Unk_02089240_Rec.h"
 #include "gfx/Unk_0208d154_Sub.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"

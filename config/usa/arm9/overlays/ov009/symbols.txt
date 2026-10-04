@@ -1,5 +1,5 @@
 func_ov009_0225b880 kind:function(thumb,size=0x4) addr:0x0225b880
-_ZN13BuildingActor20calcCustomBaseMatrixEP22Unk_ov009_0225bc88_Blk kind:label(thumb) addr:0x0225b880
+_ZN13BuildingActor20calcCustomBaseMatrixEP5Mtx43 kind:label(thumb) addr:0x0225b880
 _ZN13BuildingActor20calcCustomBaseMatrixEv kind:label(thumb) addr:0x0225b880
 func_ov009_0225b884 kind:function(thumb,size=0xe) addr:0x0225b884
 _ZN13BuildingActor11getSoundPosEv kind:label(thumb) addr:0x0225b884
@@ -84,14 +84,14 @@ _ZN19BuildingShadowTable8getEntryEj kind:function(thumb,size=0xa) addr:0x0225cd4
 _ZN19BuildingShadowTable8getCountEv kind:function(thumb,size=0x4) addr:0x0225cd54
 _ZN13BuildingActor16destroyCollidersEv kind:function(thumb,size=0x5c) addr:0x0225cd58
 _ZN13BuildingActor15submitCollidersEv kind:function(thumb,size=0x50) addr:0x0225cdb4
-_ZN13BuildingActor15createCollidersEP22Unk_ov009_0225bc88_Blk kind:function(thumb,size=0x13c) addr:0x0225ce04
+_ZN13BuildingActor15createCollidersEP5Mtx43 kind:function(thumb,size=0x13c) addr:0x0225ce04
 _ZN13BuildingActor14destroyShadowsEv kind:function(thumb,size=0x38) addr:0x0225cf40
-_ZN13BuildingActor13updateShadowsEP22Unk_ov009_0225bc88_Blk kind:function(thumb,size=0x60) addr:0x0225cf78
-_ZN13BuildingActor13createShadowsEP22Unk_ov009_0225bc88_Blk kind:function(thumb,size=0xa0) addr:0x0225cfd8
-_ZN13BuildingActor16updateBaseMatrixEP22Unk_ov009_0225bc88_Blk kind:function(thumb,size=0x60) addr:0x0225d078
+_ZN13BuildingActor13updateShadowsEP5Mtx43 kind:function(thumb,size=0x60) addr:0x0225cf78
+_ZN13BuildingActor13createShadowsEP5Mtx43 kind:function(thumb,size=0xa0) addr:0x0225cfd8
+_ZN13BuildingActor16updateBaseMatrixEP5Mtx43 kind:function(thumb,size=0x60) addr:0x0225d078
 _ZN13BuildingActor19func_ov009_0225d0d8Ev kind:function(thumb,size=0x16c) addr:0x0225d0d8
 _ZN13BuildingActor12getResourcesEv kind:function(thumb,size=0x20) addr:0x0225d244
-_ZN13BuildingActor16makeCurvedMatrixEP22Unk_ov009_0225bc88_Blk kind:function(thumb,size=0x40) addr:0x0225d264
+_ZN13BuildingActor16makeCurvedMatrixEP5Mtx43 kind:function(thumb,size=0x40) addr:0x0225d264
 _ZN13BuildingActor13loadResourcesEPcS0_S0_ kind:function(thumb,size=0x1f4) addr:0x0225d2a4
 _ZN13BuildingActor10setupModelEPcS0_S0_ kind:function(thumb,size=0x8c) addr:0x0225d498
 _ZN13BuildingActor15getLightTexPathEv kind:function(thumb,size=0x7c) addr:0x0225d524

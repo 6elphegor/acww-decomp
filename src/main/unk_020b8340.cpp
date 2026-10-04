@@ -55,8 +55,8 @@ BOOL BgVramTaskPair::requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u3
     kind = 8;
     xfer.setChars(a, c, d, d, e);
     cost = xfer.getCharCost();
-    unk_24.setChars(b, c, f, f, g);
-    cost += unk_24.getCharCost();
+    xfer2.setChars(b, c, f, f, g);
+    cost += xfer2.getCharCost();
     priority = 4;
     if (VramQueue2d_Enqueue(this)) {
         return TRUE;
@@ -70,8 +70,8 @@ BOOL BgVramTaskPair::requestCharsAndPalette(u32 a, u8 b, u32 c, u32 d, u32 e, u3
     kind = 9;
     xfer.setChars(a, b, c, d, e);
     cost = xfer.getCharCost();
-    unk_24.setPalette(f, b, g);
-    cost += BgTransfer_GetPaletteCost(&unk_24);
+    xfer2.setPalette(f, b, g);
+    cost += BgTransfer_GetPaletteCost(&xfer2);
     priority = 4;
     if (VramQueue2d_Enqueue(this)) {
         return TRUE;

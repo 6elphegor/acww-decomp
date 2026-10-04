@@ -4,7 +4,7 @@
 #include "types.h"
 #include "actor/Character.h"
 #include "talk/TalkMsgRequest.h"
-#include "gfx/Unk_ov009_0225bc88_Blk.h"
+#include "gfx/Mtx43.h"
 #include "game/Unk_ov009_0225b880_Vec3.h"
 #include "town/Unk_ov009_0225b880.h"
 
@@ -58,7 +58,7 @@ public:
     virtual char *getLightTexPath();
     virtual BOOL needsMatrixUpdate();
     virtual Unk_ov009_0225da90_Vec3 getSoundPos();
-    virtual BOOL calcCustomBaseMatrix(Unk_ov009_0225bc88_Blk *out);
+    virtual BOOL calcCustomBaseMatrix(Mtx43 *out);
 
     s32 getEntranceType();
     s32 getViewRangeX();
@@ -87,14 +87,14 @@ public:
 
     void destroyColliders();
     void submitColliders();
-    void createColliders(Unk_ov009_0225bc88_Blk *m);
+    void createColliders(Mtx43 *m);
     void destroyShadows();
-    void updateShadows(Unk_ov009_0225bc88_Blk *m);
-    void createShadows(Unk_ov009_0225bc88_Blk *m);
-    void updateBaseMatrix(Unk_ov009_0225bc88_Blk *out);
+    void updateShadows(Mtx43 *m);
+    void createShadows(Mtx43 *m);
+    void updateBaseMatrix(Mtx43 *out);
     void func_ov009_0225d0d8();
     BuildingResources *getResources();
-    void makeCurvedMatrix(Unk_ov009_0225bc88_Blk *out);
+    void makeCurvedMatrix(Mtx43 *out);
     BOOL loadResources(char *a, char *b, char *c);
     BOOL setupModel(char *a, char *b, char *c);
     void *getBtaAnim(u32 idx);
@@ -139,7 +139,7 @@ public:
     /* 0x138 */ u8 unk_138[0x194 - 0x138];     // BlendAnimModel
     /* 0x194 */ void *modelRes;
     /* 0x198 */ u8 pad_198[4];
-    /* 0x19c */ Unk_ov009_0225bc88_Blk baseMatrix;
+    /* 0x19c */ Mtx43 baseMatrix;
     /* 0x1cc */ u8 pad_1cc[0x1d4 - 0x1cc];
     /* 0x1d4 */ u8 unk_1d4[8];                 // AnimFrameCtrl (door animation)
     /* 0x1dc */ Unk_ov068_0226b5a4_Bits doorAnimFrame;

@@ -39,7 +39,7 @@ struct Unk_ov068_02266680_Color {
 extern "C" {
 extern Unk_ov068_02266680_Vec gVec3Zero;
 extern void *gSceneBlockMap;
-extern Unk_ov068_0226647c_Row kCameraSwayPatterns[];
+extern CameraSwayPattern kCameraSwayPatterns[];
 extern s16 data_02135f44[];
 extern s32 data_ov068_0226fc48;
 extern s32 data_ov068_0226fc40;
@@ -85,23 +85,23 @@ public:
 };
 
 extern "C" {
-void _ZN12Unk_0203b35011dragFocusToEP14Unk_0203b350_V(void *self, Unk_ov068_02266680_Vec *v);
-void _ZN12Unk_0203b35014setLookAtOrbitEP14Unk_0203b350_Viii(void *self, Unk_ov068_02266680_Vec *v, s32 a, s32 b, s32 c);
-void _ZN12Unk_0203b35011updateBlendEv(void *self);
-void _ZN12Unk_0203b3507setFovyEi(void *self, s32 a);
-s32 _ZN12Unk_0203b35011getDistanceEv(void *self);
-s16 _ZN12Unk_020d93b86getYawEv(void *self);
-s16 _ZN12Unk_020d93b88getPitchEv(void *self);
-void _ZN12Unk_020d93b814setBlendPresetEi(void *self, s32 a);
-void _ZN12Unk_020d93b88loadPoseEiP10CameraPose(void *self, s32 a, s32 b);
+void _ZN6Camera11dragFocusToEP14Unk_0203b350_V(void *self, Unk_ov068_02266680_Vec *v);
+void _ZN6Camera14setLookAtOrbitEP14Unk_0203b350_Viii(void *self, Unk_ov068_02266680_Vec *v, s32 a, s32 b, s32 c);
+void _ZN6Camera11updateBlendEv(void *self);
+void _ZN6Camera7setFovyEi(void *self, s32 a);
+s32 _ZN6Camera11getDistanceEv(void *self);
+s16 _ZN6Camera6getYawEv(void *self);
+s16 _ZN6Camera8getPitchEv(void *self);
+void _ZN6Camera14setBlendPresetEi(void *self, s32 a);
+void _ZN6Camera8loadPoseEiP10CameraPose(void *self, s32 a, s32 b);
 }
 
 #define R_TAIL(V) \
-    _ZN12Unk_0203b35011updateBlendEv(this); \
+    _ZN6Camera11updateBlendEv(this); \
     Camera_GetLookAtPoint(&V, this); \
-    s32 a = _ZN12Unk_020d93b88getPitchEv(this); \
-    s32 b = _ZN12Unk_020d93b86getYawEv(this); \
-    _ZN12Unk_0203b35014setLookAtOrbitEP14Unk_0203b350_Viii(this, &V, a, b, _ZN12Unk_0203b35011getDistanceEv(this));
+    s32 a = _ZN6Camera8getPitchEv(this); \
+    s32 b = _ZN6Camera6getYawEv(this); \
+    _ZN6Camera14setLookAtOrbitEP14Unk_0203b350_Viii(this, &V, a, b, _ZN6Camera11getDistanceEv(this));
 
 // Definition order below reproduces the original data order (heapsort model); colours = sinit store order.
 extern "C" Unk_ov068_02266680_Vec sTownTourOffsetPlayerHouse;
@@ -136,8 +136,8 @@ extern "C" s32 data_ov068_0226fc40 = 1;
 extern "C" Unk_ov068_02266680_Color data_ov068_02270fcc(0x14, 0x18, 0x18, 0x1f);
 
 BOOL CameraEventModes::initModeFollowTarget() {
-    _ZN12Unk_020d93b88loadPoseEiP10CameraPose(this, 0, 0);
-    _ZN12Unk_020d93b814setBlendPresetEi(this, 0);
+    _ZN6Camera8loadPoseEiP10CameraPose(this, 0, 0);
+    _ZN6Camera14setBlendPresetEi(this, 0);
     Camera_FinishBlend();
     return TRUE;
 }
@@ -154,15 +154,15 @@ void CameraEventModes::updateModeFollowTarget() {
         d.y = pv->y;
         d.z = pv->z;
     }
-    _ZN12Unk_0203b35011dragFocusToEP14Unk_0203b350_V(this, &d);
+    _ZN6Camera11dragFocusToEP14Unk_0203b350_V(this, &d);
     Unk_ov068_02266680_Vec v;
     R_TAIL(v)
 }
 
 BOOL CameraEventModes::initModeTownTour() {
     u16 e[2];
-    _ZN12Unk_020d93b88loadPoseEiP10CameraPose(this, 0, 0);
-    _ZN12Unk_020d93b814setBlendPresetEi(this, 0);
+    _ZN6Camera8loadPoseEiP10CameraPose(this, 0, 0);
+    _ZN6Camera14setBlendPresetEi(this, 0);
     Camera_FinishBlend();
     void *g = gSceneBlockMap;
     s32 a = 0, b = 0, c = 0, d = 0;
@@ -262,7 +262,7 @@ void CameraEventModes::updateModeTownTour() {
 }
 
 BOOL CameraEventModes::initMode13() {
-    _ZN12Unk_020d93b88loadPoseEiP10CameraPose(this, 0x1a, 0);
+    _ZN6Camera8loadPoseEiP10CameraPose(this, 0x1a, 0);
     Camera_FinishBlend();
     return TRUE;
 }
@@ -274,20 +274,20 @@ void CameraEventModes::updateMode13() {
     if (p) {
         d = *p;
     }
-    _ZN12Unk_0203b35011dragFocusToEP14Unk_0203b350_V(this, &d);
+    _ZN6Camera11dragFocusToEP14Unk_0203b350_V(this, &d);
     Unk_ov068_02266680_Vec v;
     R_TAIL(v)
 }
 
 BOOL CameraEventModes::initModeSway() {
-    _ZN12Unk_020d93b88loadPoseEiP10CameraPose(this, 0x10, 0);
-    _ZN12Unk_020d93b814setBlendPresetEi(this, 0);
+    _ZN6Camera8loadPoseEiP10CameraPose(this, 0x10, 0);
+    _ZN6Camera14setBlendPresetEi(this, 0);
     if (prevMode == 2) {
         Camera_StartBlend();
     } else {
         Camera_FinishBlend();
     }
-    _ZN12Unk_0203b3507setFovyEi(this, 0x1c71);
+    _ZN6Camera7setFovyEi(this, 0x1c71);
     Camera_SetSwayPattern((Unk_ov068_0226647c_Cam *)this, 0);
     return TRUE;
 }
@@ -306,8 +306,8 @@ extern "C" void Camera_SetSwayPattern(Unk_ov068_0226647c_Cam *c, s32 idx) {
     if (c->bobPattern >= 4) {
         c->bobPattern = 0;
     }
-    c->bobTimer = kCameraSwayPatterns[c->bobPattern].a;
-    c->bobTimer += Random_GlobalBelow(kCameraSwayPatterns[c->bobPattern].b);
+    c->bobTimer = kCameraSwayPatterns[c->bobPattern].duration;
+    c->bobTimer += Random_GlobalBelow(kCameraSwayPatterns[c->bobPattern].durationRand);
     c->bobPhase = 0;
 }
 
@@ -316,8 +316,8 @@ extern "C" void Camera_SetSwayPattern2(Unk_ov068_0226647c_Cam *c, s32 idx) {
     if (c->rollPattern >= 4) {
         c->rollPattern = 0;
     }
-    c->rollTimer = kCameraSwayPatterns[c->rollPattern].a;
-    c->rollTimer += Random_GlobalBelow(kCameraSwayPatterns[c->rollPattern].b);
+    c->rollTimer = kCameraSwayPatterns[c->rollPattern].duration;
+    c->rollTimer += Random_GlobalBelow(kCameraSwayPatterns[c->rollPattern].durationRand);
     c->rollPhase = 0;
 }
 
@@ -360,17 +360,17 @@ extern "C" s32 Camera_UpdateSway(Unk_ov068_0226647c_Cam *c) {
             Camera_SetSwayPattern2(c, c->rollPattern);
         }
     }
-    s32 d = kCameraSwayPatterns[c->rollPattern].c;
+    s32 d = kCameraSwayPatterns[c->rollPattern].phaseStep;
     if (d != 0) {
         c->rollPhase = c->rollPhase + d;
         u32 idx = ((u16)c->rollPhase >> 4) * 2;
-        c->roll = func_01ffcb0c(data_02135f44[idx], kCameraSwayPatterns[c->rollPattern].d);
+        c->roll = func_01ffcb0c(data_02135f44[idx], kCameraSwayPatterns[c->rollPattern].amplitude);
     }
-    d = kCameraSwayPatterns[c->bobPattern].c;
+    d = kCameraSwayPatterns[c->bobPattern].phaseStep;
     if (d != 0) {
         c->bobPhase = c->bobPhase + d;
         u32 idx = ((u16)c->bobPhase >> 4) * 2;
-        return func_01ffcb0c(data_02135f44[idx], kCameraSwayPatterns[c->bobPattern].d);
+        return func_01ffcb0c(data_02135f44[idx], kCameraSwayPatterns[c->bobPattern].amplitude);
     }
     return 0;
 }

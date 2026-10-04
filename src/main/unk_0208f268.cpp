@@ -1443,7 +1443,7 @@ void EffectModel::load(EffectModelGroup *src) {
         if (r[1] != 0) {
             hasMatAnim = 1;
             ModelAnim *e = &anims[1];
-            _ZN9ModelAnim11allocMatAnmEjPv(e, model.unk_5c, sEffectModelHeap);
+            _ZN9ModelAnim11allocMatAnmEjPv(e, model.resMdl, sEffectModelHeap);
             s32 u = func_02106634(func_02106618((void *)r[1]), 0);
             _ZN9ModelAnim4initEiiit(e, u, 1, 0x1000, 0);
             _ZN9ModelAnim14addToRenderObjEj(e, _ZN5Model12getRenderObjEv(&model));
@@ -1453,7 +1453,7 @@ void EffectModel::load(EffectModelGroup *src) {
         if (r[2] != 0) {
             hasJointAnim = 1;
             ModelAnim *e = &anims[2];
-            _ZN9ModelAnim13allocJointAnmEjPv(e, model.unk_5c, sEffectModelHeap);
+            _ZN9ModelAnim13allocJointAnmEjPv(e, model.resMdl, sEffectModelHeap);
             s32 u = func_021067a4(func_02106788((void *)r[2]), 0);
             _ZN9ModelAnim4initEiiit(e, u, 1, 0x1000, 0);
             _ZN9ModelAnim14addToRenderObjEj(e, _ZN5Model12getRenderObjEv(&model));
@@ -1492,7 +1492,7 @@ void EffectModel::draw() {
         volatile u16 a, b;
         a = SceneLights_GetRoomColor();
         b = a;
-        NNS_G3dMdlSetMdlEmi(model.unk_5c, 0, b);
+        NNS_G3dMdlSetMdlEmi(model.resMdl, 0, b);
     }
 }
 

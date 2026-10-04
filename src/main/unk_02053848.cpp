@@ -63,8 +63,8 @@ struct Unk_0205415c_Obj {
 
 
 #include "gfx/CachedModel.h"
-// included here, not at the top: the vtable emission order (CachedModel before Unk_020dbd44) follows declaration order
-#include "gfx/Unk_020dbd44.h"
+// included here, not at the top: the vtable emission order (CachedModel before ModelSet) follows declaration order
+#include "gfx/ModelSet.h"
 #include "gfx/AnimModel.h"
 #include "gfx/TwoLayerAnimModel.h"
 #include "gfx/ThreeLayerAnimModel.h"
@@ -75,12 +75,6 @@ struct Unk_0205415c_Obj {
 
 
 
-struct ModelSet {
-    u32 unk_00;
-    u32 numModels;
-    CachedModel *models;
-    u8 *modelNames;
-};
 
 extern "C" {
 void MTX_Identity33_(void *p);
@@ -140,7 +134,7 @@ static inline u8 *Unk_02054b70_Off(u8 *p) {
     return p + *(u32 *)(p + *(u16 *)(p + 0xe) + 0xc);
 }
 
-CachedModel::CachedModel() : unk_98(0x4e554c4c) {}
+CachedModel::CachedModel() : cacheKey(0x4e554c4c) {}
 
 CachedModel::~CachedModel() {}
 
@@ -153,14 +147,14 @@ BOOL CachedModel::loadKeyed(void *res, void *name, u32 tag) {
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
     void *q = NNS_G3dGetTex(h);
     if (name != NULL) {
-        unk_5c = (Unk_020553f8_Res *)Gfx3d_CopyModel(p, name);
+        resMdl = (Unk_020553f8_Res *)Gfx3d_CopyModel(p, name);
     } else {
-        unk_5c = (Unk_020553f8_Res *)ResCache_GetModel(p, tag);
+        resMdl = (Unk_020553f8_Res *)ResCache_GetModel(p, tag);
     }
     if (q != NULL) {
         Gfx3d_LoadTexAndPltt(q, (void *)texVramSlot);
-        NNS_G3dBindMdlTex(unk_5c, q);
-        NNS_G3dBindMdlPltt(unk_5c, q);
+        NNS_G3dBindMdlTex(resMdl, q);
+        NNS_G3dBindMdlPltt(resMdl, q);
     }
     Heap_Free(heap, h);
     initRenderObj();
@@ -175,23 +169,23 @@ BOOL CachedModel::loadWithTexKeyed(void *res, void *name, void *tex, void *d, u3
     }
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
     if (name != NULL) {
-        unk_5c = (Unk_020553f8_Res *)Gfx3d_CopyModel(p, name);
+        resMdl = (Unk_020553f8_Res *)Gfx3d_CopyModel(p, name);
     } else {
-        unk_5c = (Unk_020553f8_Res *)ResCache_GetModel(p, tag);
+        resMdl = (Unk_020553f8_Res *)ResCache_GetModel(p, tag);
     }
     if (tex != NULL) {
-        NNS_G3dBindMdlTex(unk_5c, tex);
+        NNS_G3dBindMdlTex(resMdl, tex);
     } else {
         void *q = NNS_G3dGetTex(h);
         if (q != NULL) {
             Gfx3d_LoadTexAndPltt(q, (void *)texVramSlot);
-            NNS_G3dBindMdlTex(unk_5c, q);
+            NNS_G3dBindMdlTex(resMdl, q);
         }
     }
     if (d != NULL) {
         s32 i;
         for (i = 0; i < f; i++) {
-            func_021037b4(unk_5c, d, i, (void *)e[i]);
+            func_021037b4(resMdl, d, i, (void *)e[i]);
         }
     }
     Heap_Free(heap, h);
@@ -208,12 +202,12 @@ BOOL CachedModel::loadWithTex(void *res, void *name, void *tex, void *d, u32 *e,
 }
 
 BOOL CachedModel::loadCached(void *a, void *b) {
-    unk_5c = (Unk_020553f8_Res *)ResCache_FindModel(a);
-    if (unk_5c != NULL) {
+    resMdl = (Unk_020553f8_Res *)ResCache_FindModel(a);
+    if (resMdl != NULL) {
         initRenderObj();
         return TRUE;
     }
-    unk_98 = (u32)a;
+    cacheKey = (u32)a;
     return loadKeyed(b, NULL, (u32)a);
 }
 
@@ -224,10 +218,10 @@ BOOL CachedModel::loadWithSharedTex(void *a, void *b, void *c) {
         return FALSE;
     }
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
-    unk_5c = (Unk_020553f8_Res *)ResCache_GetModel(p, 0x4e554c4c);
+    resMdl = (Unk_020553f8_Res *)ResCache_GetModel(p, 0x4e554c4c);
     void *r = _ZN15PatternTexCache15getPlayerTexKeyEii(PatternTexCache_Get(), b, c);
-    func_02103978(unk_5c, r, 0, 0);
-    func_021037b4(unk_5c, r, 0, 0);
+    func_02103978(resMdl, r, 0, 0);
+    func_021037b4(resMdl, r, 0, 0);
     Heap_Free(heap, h);
     initRenderObj();
     return TRUE;
@@ -236,9 +230,9 @@ BOOL CachedModel::loadWithSharedTex(void *a, void *b, void *c) {
 void CachedModel::setFromFile(void *a) {
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(a));
     void *q = NNS_G3dGetTex(a);
-    unk_5c = (Unk_020553f8_Res *)p;
-    NNS_G3dBindMdlTex(unk_5c, q);
-    NNS_G3dBindMdlPltt(unk_5c, q);
+    resMdl = (Unk_020553f8_Res *)p;
+    NNS_G3dBindMdlTex(resMdl, q);
+    NNS_G3dBindMdlPltt(resMdl, q);
     initRenderObj();
 }
 
@@ -259,13 +253,13 @@ BOOL CachedModel::allocJointRecord(void *heap) {
 BOOL CachedModel::release(void) {
     BOOL r = TRUE;
     r &= clearResource();
-    unk_98 = 0x4e554c4c;
+    cacheKey = 0x4e554c4c;
     return r;
 }
 
-Unk_020dbd44::Unk_020dbd44() : unk_04(0), unk_08(0) {}
+ModelSet::ModelSet() : numModels(0), models(0) {}
 
-Unk_020dbd44::~Unk_020dbd44() {}
+ModelSet::~ModelSet() {}
 
 extern "C" BOOL ModelSet_Load(ModelSet *t, void *file, void *heap)
 {
@@ -345,10 +339,10 @@ AnimModel::~AnimModel() {}
 
 BOOL AnimModel::allocAnmObj(void *x)
 {
-    if (anmObj != 0 || unk_5c == 0) {
+    if (anmObj != 0 || resMdl == 0) {
         return FALSE;
     }
-    anmObj = (Unk_02054584_Data *)Gfx3d_AllocAnmObj(unk_5c, sJointAnmHeader2, x);
+    anmObj = (Unk_02054584_Data *)Gfx3d_AllocAnmObj(resMdl, sJointAnmHeader2, x);
     if (anmObj != 0) {
         return TRUE;
     }
@@ -401,7 +395,7 @@ void BlendAnimModel::initAnim(s32 a, s32 b, s32 c, u16 d, u16 e)
     }
     AnimFrameCtrl &r = *this;
     _ZN13AnimFrameCtrl5setupEihit(&r, e, b, c, d);
-    NNS_G3dAnmObjInit(anmObj, a, unk_5c, 0);
+    NNS_G3dAnmObjInit(anmObj, a, resMdl, 0);
     anmObj->unk_00 = curFrame;
 }
 
@@ -660,7 +654,7 @@ BOOL TwoLayerAnimModel::allocLayerAnims(u32 a) {
     if (!allocAnmObj((void *)a)) {
         return FALSE;
     }
-    layer2AnmObj = Gfx3d_AllocAnmObj(unk_5c, sJointAnmHeader2, (void *)a);
+    layer2AnmObj = Gfx3d_AllocAnmObj(resMdl, sJointAnmHeader2, (void *)a);
     if (layer2AnmObj != NULL) {
         return TRUE;
     }
@@ -694,7 +688,7 @@ void TwoLayerAnimModel::playLayer2(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOO
         *(u16 *)&f = Anim_GetFrameCountForMode(c, (Unk_02054778_Info *)a);
     }
     _ZN13AnimFrameCtrl5setupEihit(&layer2Frame, *(u16 *)&f, c, d, *(u16 *)&e);
-    NNS_G3dAnmObjInit(layer2AnmObj, a, unk_5c, 0);
+    NNS_G3dAnmObjInit(layer2AnmObj, a, resMdl, 0);
     if (g != 0) {
         modelFlags = modelFlags | 0x4000;
     } else {
@@ -840,7 +834,7 @@ BOOL ThreeLayerAnimModel::allocLayer3Anims(u32 a) {
     if (!allocLayerAnims(a)) {
         return FALSE;
     }
-    layer3AnmObj = Gfx3d_AllocAnmObj(unk_5c, sJointAnmHeader2, (void *)a);
+    layer3AnmObj = Gfx3d_AllocAnmObj(resMdl, sJointAnmHeader2, (void *)a);
     if (layer3AnmObj != NULL) {
         return TRUE;
     }
@@ -867,7 +861,7 @@ void ThreeLayerAnimModel::playLayer3(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, B
         *(u16 *)&f = Anim_GetFrameCountForMode(c, (Unk_02054778_Info *)a);
     }
     _ZN13AnimFrameCtrl5setupEihit(&layer3Frame, *(u16 *)&f, c, d, *(u16 *)&e);
-    NNS_G3dAnmObjInit(layer3AnmObj, a, unk_5c, 0);
+    NNS_G3dAnmObjInit(layer3AnmObj, a, resMdl, 0);
     if (g != 0) {
         modelFlags = modelFlags | 0x8000;
     } else {

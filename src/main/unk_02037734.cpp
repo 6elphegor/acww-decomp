@@ -435,7 +435,7 @@ void CommCautionWindow::setupModelMatrix() {
 }
 
 void CommCautionWindow::uploadLine(s32 i) {
-    u8 *b = (u8 *)model.unk_5c;
+    u8 *b = (u8 *)model.resMdl;
     b += *(s32 *)(b + 8);
     u8 *c = b + *(u16 *)(b + 0xa);
     u32 v = _ZN10G3dMatData10getTexAddrEv(b + *(s32 *)(c + 8));

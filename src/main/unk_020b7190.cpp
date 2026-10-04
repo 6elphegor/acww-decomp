@@ -53,7 +53,7 @@ Mat *Camera_GetViewMatrix(void);
 Vec *PlayerActor_GetBodyPos(s32 a);
 void WorldCurve_Apply(void *a, void *b);
 void MTX_MultVec43(void *a, void *b, void *c);
-u32 _ZN12Unk_0203b3509getFovTanEv(u32 a);
+u32 _ZN6Camera9getFovTanEv(u32 a);
 s32 FX_Div(s32 a, s32 b);
 void Vec_Scale(void *a, s32 b);
 s32 PlayerActor_IsInAction(s32 a, s32 b);
@@ -341,7 +341,7 @@ void FieldInfoBalloon::placeOverPlayer() {
         v.y += 0x3c00;
         WorldCurve_Apply(&w, &v);
         MTX_MultVec43(&w, &data_021f47e0, &x);
-        s32 d = _ZN12Unk_0203b3509getFovTanEv(gCamera);
+        s32 d = _ZN6Camera9getFovTanEv(gCamera);
         s32 q = FX_Div(0x60000, d);
         s32 r = FX_Div(-q, x.z);
         Vec_Scale(&x, r);

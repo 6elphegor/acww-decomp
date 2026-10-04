@@ -2,7 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "sys/Unk_0209d498_Time.h"
 #include "room/Unk_ov004_0222c9d0.h"
-#include "gfx/Unk_020dbd44.h"
+#include "gfx/ModelSet.h"
 #include "sys/ProcProfile.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
@@ -119,7 +119,7 @@ public:
     void drawItemModel(u16 id, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz);
 
     /* 0x050 */ void *iconModels[0x49];
-    /* 0x174 */ Unk_020dbd44 modelSet;
+    /* 0x174 */ ModelSet modelSet;
 };
 
 // ---------------------------------------------------------------- externs

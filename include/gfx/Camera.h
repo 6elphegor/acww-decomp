@@ -1,5 +1,5 @@
-#ifndef GFX_UNK_020D93B8_H
-#define GFX_UNK_020D93B8_H
+#ifndef GFX_CAMERA_H
+#define GFX_CAMERA_H
 
 // Field/room camera (vtable 0x020d93b0): CameraBase + a 4x3 view matrix, follow/blend offsets, poses and modes.
 // Defined in src/main/unk_0203a0cc.cpp; Unk_0203b350_V is the vector type of its method signatures. The global
@@ -14,9 +14,9 @@ struct Unk_0203b350_V {
     s32 x, y, z;
 };
 
-class Unk_020d93b8 : public CameraBase, public FxMtx43 {
+class Camera : public CameraBase, public FxMtx43 {
 public:
-    Unk_020d93b8() {}
+    Camera() {}
 
     virtual BOOL onCreate();
     virtual BOOL onDelete();
@@ -109,6 +109,6 @@ public:
     /* 0x220 */ u8 pad_220[0x14];
 };
 
-typedef Unk_020d93b8 Unk_021c3070;
+typedef Camera Unk_021c3070;
 
-#endif // GFX_UNK_020D93B8_H
+#endif // GFX_CAMERA_H

@@ -1,7 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#include "gfx/Unk_02002804_Buf.h"
-#include "gfx/Unk_02002848_Data.h"
+#include "gfx/ToonTable.h"
+#include "gfx/Mtx43.h"
 #include "actor/ActorCollider.h"
 #include "actor/Unk_02002f14_S16Vec.h"
 #include "actor/Unk_02002f14_S32Vec.h"
@@ -232,8 +232,8 @@ void func_020030b4_dummy(void);
 
 
 
-extern Unk_02002848_Data gViewMtx;
-extern Unk_02002848_Data data_02135934_;
+extern Mtx43 gViewMtx;
+extern Mtx43 data_02135934_;
 
 
 extern AbAllObjGfx sAbAllObjGfx;
@@ -432,6 +432,6 @@ void Actor::calcModelMatrix(void *out) {
     Mtx43_RotateX(m, (s16)drawTilt);
     Mtx43_RotateY(m, rotY);
     if (rotX != 0) Mtx43_RotateX(m, rotX);
-    *(Unk_02002848_Data *)out = *(Unk_02002848_Data *)m;
+    *(Mtx43 *)out = *(Mtx43 *)m;
 }
 

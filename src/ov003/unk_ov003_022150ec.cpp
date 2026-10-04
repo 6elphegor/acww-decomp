@@ -260,7 +260,7 @@ void CountdownSign_ModelCallback(void *p) {
 }
 
 void CountdownSign_MaterialCallback(Unk_ov003_02215a04_Obj *o) {
-    Unk_ov003_02215a04_Sub *s = o->pRenderObj;
+    NNSG3dRenderObj *s = o->pRenderObj;
     if (s->ptrUser != 0) {
         CountdownSign_SetMaterialAlpha((CountdownSign *)s->ptrUser, o->c->cmd[1], o);
     }

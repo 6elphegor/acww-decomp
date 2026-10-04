@@ -1,6 +1,6 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
-#include "gfx/Unk_0206fd10_Mtx.h"
+#include "gfx/Unk_0206fd10_Vec.h"
 #include "game/Unk_0206f6fc_Pos.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
@@ -101,11 +101,11 @@ extern GameFontDesc gFontC;
 }
 
 extern "C" {
-extern Unk_0206fd10_Mtx data_021cb69c;
+extern Mtx43 data_021cb69c;
 }
 
 extern "C" {
-extern Unk_0206fde4_Mtx sCpuMtxStack[];
+extern Mtx43 sCpuMtxStack[];
 }
 
 extern "C" {
@@ -431,40 +431,40 @@ void CpuMtx_MultRotScaledTrans(void *a, Unk_0206fd10_Vec *v, Unk_0206fd10_Vec *w
 
 
 void CpuMtx_MultRotTrans(void *a, Unk_0206fd10_Vec *v) {
-    Unk_0206fd10_Mtx m;
+    Mtx43 m;
     func_01ffb46c(a, &m);
-    m.x = v->x;
-    m.y = v->y;
-    m.z = v->z;
+    m.m[9] = v->x;
+    m.m[10] = v->y;
+    m.m[11] = v->z;
     MTX_Concat43(&m, &data_021cb69c, &data_021cb69c);
 }
 
 void CpuMtx_MultTrans(Unk_0206fd10_Vec *v) {
-    Unk_0206fd10_Mtx m;
+    Mtx43 m;
     MTX_Identity43_(&m);
-    m.x = v->x;
-    m.y = v->y;
-    m.z = v->z;
+    m.m[9] = v->x;
+    m.m[10] = v->y;
+    m.m[11] = v->z;
     MTX_Concat43(&m, &data_021cb69c, &data_021cb69c);
 }
 
 void CpuMtx_MultRot(void *a) {
-    Unk_0206fd10_Mtx m;
+    Mtx43 m;
     func_01ffb46c(a, &m);
     MTX_Concat43(&m, &data_021cb69c, &data_021cb69c);
 }
 
 void CpuMtx_MultRotScaledTrans(void *a, Unk_0206fd10_Vec *v, Unk_0206fd10_Vec *w) {
-    Unk_0206fd10_Mtx m;
+    Mtx43 m;
     func_01ffb46c(a, &m);
     if (w == NULL) {
-        m.x = v->x;
-        m.y = v->y;
-        m.z = v->z;
+        m.m[9] = v->x;
+        m.m[10] = v->y;
+        m.m[11] = v->z;
     } else {
-        m.x = func_01ffcb0c(v->x, w->x);
-        m.y = func_01ffcb0c(v->y, w->y);
-        m.z = func_01ffcb0c(v->z, w->z);
+        m.m[9] = func_01ffcb0c(v->x, w->x);
+        m.m[10] = func_01ffcb0c(v->y, w->y);
+        m.m[11] = func_01ffcb0c(v->z, w->z);
     }
     MTX_Concat43(&m, &data_021cb69c, &data_021cb69c);
 }

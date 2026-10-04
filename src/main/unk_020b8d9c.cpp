@@ -111,7 +111,7 @@ struct Unk_020bfc48_Pad;
 struct Unk_020bfe30_Vec;
 struct Unk_020bfe38_Ent;
 struct Unk_020bfec0_Ent;
-struct Unk_020bffc0_Mtx;
+struct Mtx43;
 class Unk_020bfe30;
 struct WeatherRecord;
 struct EventDayEntry;
@@ -1345,7 +1345,7 @@ extern "C" {
 u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
-Unk_020bffc0_Mtx *Camera_GetViewMatrix(void);
+Mtx43 *Camera_GetViewMatrix(void);
 }
 extern "C" {
 void WorldCurve_Apply(void *out, void *in);
@@ -1354,7 +1354,7 @@ extern "C" {
 void MTX_MultVec43(void *a, void *b, void *c);
 }
 extern "C" {
-s32 _ZN12Unk_0203b3509getFovTanEv(s32 a);
+s32 _ZN6Camera9getFovTanEv(s32 a);
 }
 extern "C" {
 s32 FX_Div(s32 a, s32 b);
@@ -1586,7 +1586,7 @@ extern "C" {
 extern s16 data_02135f44[];
 }
 extern "C" {
-extern Unk_020bffc0_Mtx data_021f47e0;
+extern Mtx43 data_021f47e0;
 }
 extern "C" {
 extern s32 gCamera;
@@ -1636,7 +1636,7 @@ extern "C" SkyProc *SkyProc_Create() {
 }
 
 extern "C" void Sky_ProjectToScreenX(s32 *out, Unk_020bfe30_Vec *in) {
-    Unk_020bffc0_Mtx *m = Camera_GetViewMatrix();
+    Mtx43 *m = Camera_GetViewMatrix();
     data_021f47e0 = *m;
     Unk_020bfe30_Vec v;
     v.x = in->x;
@@ -1646,7 +1646,7 @@ extern "C" void Sky_ProjectToScreenX(s32 *out, Unk_020bfe30_Vec *in) {
     s32 b[3];
     WorldCurve_Apply(a, &v);
     MTX_MultVec43(a, &data_021f47e0, b);
-    s32 c = _ZN12Unk_0203b3509getFovTanEv(gCamera);
+    s32 c = _ZN6Camera9getFovTanEv(gCamera);
     s32 q = -FX_Div(0x60000, c);
     Vec_Scale(b, FX_Div(q, b[2]));
     *out = b[0] + 0x80000;

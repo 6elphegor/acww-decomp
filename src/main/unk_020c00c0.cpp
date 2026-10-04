@@ -46,7 +46,7 @@ u32 Random_GlobalBelow(u32 n);
 }
 
 extern "C" {
-Unk_020bffc0_Mtx *Camera_GetViewMatrix(void);
+Mtx43 *Camera_GetViewMatrix(void);
 }
 
 extern "C" {
@@ -358,7 +358,7 @@ extern s16 data_02135f44[];
 }
 
 extern "C" {
-extern Unk_020bffc0_Mtx data_021f47e0;
+extern Mtx43 data_021f47e0;
 }
 
 extern "C" {

@@ -218,12 +218,12 @@ BOOL VillagerHouse::initBuilding() {
             NNS_G3dBindMdlTex(a, HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco()));
             void *b = HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q);
             NNS_G3dBindMdlPltt(b, HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco()));
-            if (lightUpAnim.allocMatAnm((u32)lightUpModel.unk_5c, gFieldStructureHeap)) {
+            if (lightUpAnim.allocMatAnm((u32)lightUpModel.resMdl, gFieldStructureHeap)) {
                 s32 c = HouseLightUpDeco_GetTexPattern(FieldStructureMgr_GetLightUpDeco());
                 s32 d = HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco());
                 lightUpAnim.initWithTex(c, d, 0, 0x1000, 0);
                 lightUpAnim.addToRenderObj((u32)_ZN5Model12getRenderObjEv(&lightUpModel));
-                *(Unk_ov009_0225bc88_Blk *)((u8 *)this + 0x314) = baseMatrix;
+                *(Mtx43 *)((u8 *)this + 0x314) = baseMatrix;
             }
         }
     }
@@ -232,7 +232,7 @@ BOOL VillagerHouse::initBuilding() {
 
 BOOL VillagerHouse::onExecute() {
     if (HouseLightUpDeco_IsLoaded(FieldStructureMgr_GetLightUpDeco())) {
-        *(Unk_ov009_0225bc88_Blk *)((u8 *)this + 0x314) = baseMatrix;
+        *(Mtx43 *)((u8 *)this + 0x314) = baseMatrix;
         if ((colliderFlags & 1) == 0) {
             lightUpAnim.step();
             **(u32 **)((u8 *)this + 0x380) = *(u32 *)((u8 *)this + 0x370);

@@ -1,6 +1,6 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
-#include "gfx/Unk_0206fd10_Mtx.h"
+#include "gfx/Unk_0206fd10_Vec.h"
 #include "game/Unk_0206f6fc_Pos.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
@@ -101,11 +101,11 @@ extern GameFontDesc gFontC;
 }
 
 extern "C" {
-extern Unk_0206fd10_Mtx data_021cb69c;
+extern Mtx43 data_021cb69c;
 }
 
 extern "C" {
-extern Unk_0206fde4_Mtx sCpuMtxStack[];
+extern Mtx43 sCpuMtxStack[];
 }
 
 extern "C" {

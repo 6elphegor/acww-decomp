@@ -445,13 +445,13 @@ BOOL RoomShell::onCreate() {
     ((RoomScene22Shape *)scene22Shape)->init();
     calcRoomSize();
     initAnims();
-    setMatLightFlags((u8 *)model.unk_5c);
+    setMatLightFlags((u8 *)model.resMdl);
     storeBaseMtx();
     initWallAndFloor();
-    hourHandNode = func_02056fcc((u8 *)model.unk_5c, "kh_j");
-    minuteHandNode = func_02056fcc((u8 *)model.unk_5c, "km_j");
-    hasuNode = func_02056fcc((u8 *)model.unk_5c, "hasu1");
-    wdMatIdx = G3dResAccess_findMatIdx((u8 *)model.unk_5c, "wd");
+    hourHandNode = func_02056fcc((u8 *)model.resMdl, "kh_j");
+    minuteHandNode = func_02056fcc((u8 *)model.resMdl, "km_j");
+    hasuNode = func_02056fcc((u8 *)model.resMdl, "hasu1");
+    wdMatIdx = G3dResAccess_findMatIdx((u8 *)model.resMdl, "wd");
     Model_setInitCallback(&model, (void *)RoomShell_InitRenderObj, this);
     RoomShell_SpawnBoardSigns(this);
     Unk_02003c30_callReset(&clockSe);
@@ -487,7 +487,7 @@ BOOL RoomShell::onDraw() {
         Unk_ov004_0222b954_Pair t;
         t.a = RoomShell_CalcWdColor(this);
         t.b = t.a;
-        NNS_G3dMdlSetMdlDiff((u8 *)model.unk_5c, wdMatIdx, t.b);
+        NNS_G3dMdlSetMdlDiff((u8 *)model.resMdl, wdMatIdx, t.b);
     }
     AnimModel_drawAnimated(&model, 0);
     return TRUE;
@@ -601,8 +601,8 @@ void RoomShell::initWallAndFloor() {
         c = NULL;
     }
     Unk_ov004_0222b45c_Res *r = (Unk_ov004_0222b45c_Res *)c->bgModel;
-    wallpaper.bindMaterial((u8 *)model.unk_5c, r->resTex);
-    carpet.bindMaterial((u8 *)model.unk_5c, (u8 *)r->resTex);
+    wallpaper.bindMaterial((u8 *)model.resMdl, r->resTex);
+    carpet.bindMaterial((u8 *)model.resMdl, (u8 *)r->resTex);
     volatile u16 h[2];
     s32 w8;
     s32 w12;
@@ -610,13 +610,13 @@ void RoomShell::initWallAndFloor() {
     h[1] = 0xfff1;
     RoomShell_GetSceneWallFloor(this, (u16 *)&h[0], &w8, (u16 *)&h[1], &w12);
     if (Unk_ov004_0222b510_Range(&h[0])) {
-        wallpaper.applyDefault(0x1124, (u8 *)model.unk_5c, w8);
+        wallpaper.applyDefault(0x1124, (u8 *)model.resMdl, w8);
     }
     if (Unk_ov004_0222b510_Range(&h[1])) {
-        carpet.applyDefault(0x1182, (G3dResAccess *)model.unk_5c, w12);
+        carpet.applyDefault(0x1182, (G3dResAccess *)model.resMdl, w12);
     }
-    ((Unk_ov004_0222b15c *)&wallpaper)->setWallpaper((u16 *)&h[0], (G3dResAccess *)model.unk_5c, w8);
-    carpet.setCarpet((u16 *)&h[1], (G3dResAccess *)model.unk_5c, w12);
+    ((Unk_ov004_0222b15c *)&wallpaper)->setWallpaper((u16 *)&h[0], (G3dResAccess *)model.resMdl, w8);
+    carpet.setCarpet((u16 *)&h[1], (G3dResAccess *)model.resMdl, w12);
 }
 
 void RoomShell::initAnims() {
@@ -636,7 +636,7 @@ void RoomShell::initAnims() {
         }
     }
     if (r->resMatAnm != 0) {
-        if (ModelAnim_allocMatAnm(matAnim, (u8 *)model.unk_5c, gBgHeap)) {
+        if (ModelAnim_allocMatAnm(matAnim, (u8 *)model.resMdl, gBgHeap)) {
             ModelAnim_init(matAnim, r->resMatAnm, 0, 0x1000, 0);
             ModelAnim_addToRenderObj(matAnim, Model_getRenderObj(&model));
         }
@@ -999,7 +999,7 @@ extern "C" u16 *RoomShell_SetWallpaper(u16 *p, s32 key, u32 flag) {
     if (r != FALSE || (*p >= 0x1188 && *p <= 0x11a7)) {
         RoomShell *g = sRoomShell;
         if (g != 0) {
-            if (((Unk_ov004_0222b15c *)&g->wallpaper)->setWallpaper(p, (G3dResAccess *)g->model.unk_5c, key) != 0) {
+            if (((Unk_ov004_0222b15c *)&g->wallpaper)->setWallpaper(p, (G3dResAccess *)g->model.resMdl, key) != 0) {
                 if (flag != 0) {
                     if (Scene_InNookShop() != 0) Snd_PlaySe(0x50);
                 }
@@ -1017,7 +1017,7 @@ extern "C" u16 *RoomShell_SetCarpet(u16 *p, s32 key, u32 flag) {
     if (r != FALSE || (*p >= 0x1188 && *p <= 0x11a7)) {
         RoomShell *g = sRoomShell;
         if (g != 0) {
-            if (g->carpet.setCarpet(p, (G3dResAccess *)g->model.unk_5c, key) != 0) {
+            if (g->carpet.setCarpet(p, (G3dResAccess *)g->model.resMdl, key) != 0) {
                 if (flag != 0) {
                     if (Scene_InNookShop() != 0) Snd_PlaySe(0x50);
                 }

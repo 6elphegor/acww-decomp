@@ -62,7 +62,7 @@ public:
             /* 0x40 */ u8 pad_40[0x1c];
         };
     };
-    /* 0x5c */ Unk_020553f8_Res *unk_5c;
+    /* 0x5c */ Unk_020553f8_Res *resMdl;
     /* 0x60 */ u32 resTex;
     union {
         /* 0x64 */ Mtx43 mtx;

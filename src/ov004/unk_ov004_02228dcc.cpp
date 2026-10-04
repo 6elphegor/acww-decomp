@@ -3,7 +3,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
-#include "gfx/Unk_ov004_02228a40_Mtx.h"
+#include "gfx/Mtx43.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
@@ -76,7 +76,7 @@ struct Unk_ov004_0224e034_M {
     u8 pad_00[0x5c];
     u32 resMdl;
     u8 pad_60[4];
-    Unk_ov004_02228a40_Mtx mtx;
+    Mtx43 mtx;
     u8 pad_94[0x9c - 0x94];
     u32 animFrameCtrl;
     s32 numFrames;
@@ -145,7 +145,7 @@ typedef BOOL (TarotProps::*Unk_ov004_022291d4_Fn)();
 
 extern "C" {
 extern void *gBgHeap;
-extern Unk_ov004_02228a40_Mtx data_021f47e0;
+extern Mtx43 data_021f47e0;
 extern TarotProps *sTarotProps;
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
 void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, s32));
@@ -173,7 +173,7 @@ void *_ZN5Model12getRenderObjEv(void *);
 s32 _ZN9ModelAnim14addToRenderObjEj(void *, void *);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *);
 s32 SpNpcKatrina_GetAnimFrame(void);
-Unk_ov004_02228a40_Mtx *SpNpcKatrina_GetJointMtx(void);
+Mtx43 *SpNpcKatrina_GetJointMtx(void);
 void *_ZN9AnimModelC1Ev(void *, s32);
 void *_ZN9AnimModelD1Ev(void *, s32);
 void *_ZN10RoomObjResC1Ev(void *, s32);
@@ -245,10 +245,10 @@ BOOL TarotProps::onDraw() {
 }
 
 void TarotProps::drawAtKatrina() {
-    Unk_ov004_02228a40_Mtx *m = SpNpcKatrina_GetJointMtx();
+    Mtx43 *m = SpNpcKatrina_GetJointMtx();
     u8 i;
     data_021f47e0 = *m;
-    F(Unk_ov004_02228a40_Mtx, 0xec + 0x64) = data_021f47e0;
+    F(Mtx43, 0xec + 0x64) = data_021f47e0;
     partModels[0].mtx = data_021f47e0;
     if (modelVisible) {
         _ZN9AnimModel12drawAnimatedEPv(&model, 0);

@@ -1925,7 +1925,7 @@ extern Unk_ov068_0226fb80_Fn data_ov068_0226f870;
 extern u16 sFleaRemovedHoldFrames;
 extern u16 data_020c6cc8;
 extern Unk_ov068_022661c8_Blk data_021cb69c;
-extern Unk_ov068_0226647c_Row kCameraSwayPatterns[];
+extern CameraSwayPattern kCameraSwayPatterns[];
 extern s16 data_02135f44[];
 void X_func_ov068_0225f838(void *, ...);
 s32 X_func_ov068_0225f83c(void *);

@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-// 0x30-byte 4x3 fixed-point matrix object; constructor in itcm (0x01ffb7cc). Base of the camera Unk_020d93b8.
+// 0x30-byte 4x3 fixed-point matrix object; constructor in itcm (0x01ffb7cc). Base of Camera.
 class FxMtx43 {
 public:
     FxMtx43();

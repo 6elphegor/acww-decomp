@@ -77,7 +77,7 @@ public:
 
 class BgVramTaskPair : public BgVramTask {
 public:
-    BgTransfer unk_24;
+    BgTransfer xfer2;
 
     BgVramTaskPair();
     virtual BOOL execute();
@@ -443,12 +443,12 @@ BOOL BgVramTask::requestPaletteRange(u32 a, u8 b, u32 c, u8 d) {
 }
 
 BgVramTaskPair::BgVramTaskPair() {
-    unk_24.clear();
+    xfer2.clear();
 }
 
 void BgVramTaskPair::clear() {
     BgVramTask::clear();
-    unk_24.clear();
+    xfer2.clear();
 }
 
 BOOL BgVramTaskPair::execute() {
@@ -458,11 +458,11 @@ BOOL BgVramTaskPair::execute() {
     switch (kind) {
     case 8:
         xfer.loadChars();
-        unk_24.loadChars();
+        xfer2.loadChars();
         break;
     case 9:
         xfer.loadChars();
-        unk_24.loadPalette();
+        xfer2.loadPalette();
         break;
     default:
         return FALSE;

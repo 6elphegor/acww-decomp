@@ -3,7 +3,7 @@
 #include "game/Unk_02003a6c_Vec.h"
 #include "snd/Unk_02003c30.h"
 #include "snd/Unk_02003c40.h"
-#include "gfx/Unk_ov003_02215c7c_Blk.h"
+#include "gfx/Mtx43.h"
 #include "field/Unk_ov003_02217910_V3D.h"
 #include "gfx/Model.h"
 

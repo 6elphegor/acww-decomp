@@ -307,7 +307,7 @@ BOOL TouchPickKind_HasTarget(u8 v);
 BOOL TouchPick_GetGroundPos(void *obj, Vec3 *out);
 void WorldCurve_FromCurved(Vec3 *out, Vec3 *in);
 s32 WorldCurve_GetRadius(void);
-void *_ZN12Unk_020d93b816getEyeCurveAngleEv(void *cam);
+void *_ZN6Camera16getEyeCurveAngleEv(void *cam);
 void Mtx43_SetRotX(Mtx43 *m, void *p);
 void Mtx43_Translate(Mtx43 *m, s32 a, s32 b, s32 c);
 void Mtx43_RotateX(Mtx43 *m, s32 a);
@@ -400,7 +400,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
                 q[3].y = h;
                 q[3].z = 0;
                 Mtx43 m;
-                Mtx43_SetRotX(&m, _ZN12Unk_020d93b816getEyeCurveAngleEv(cam));
+                Mtx43_SetRotX(&m, _ZN6Camera16getEyeCurveAngleEv(cam));
                 Mtx43_Translate(&m, 0, WorldCurve_GetRadius(), 0);
                 Mtx43_RotateX(&m, -0x1000);
                 Mtx43_RotateX(&m, 0);

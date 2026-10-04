@@ -2,7 +2,7 @@
 #define ROOM_UNK_OV004_VIEW00_CHK_H
 
 #include "types.h"
-#include "gfx/Unk_ov004_Mtx.h"
+#include "gfx/Mtx43.h"
 #include "room/FtrActorParts.h"
 
 // Size-check mirror of FtrActor's first per-part view (0x130..0x840); the other views (View10..View25) are in
@@ -35,7 +35,7 @@ struct Unk_ov004_View00_Chk {
     /* 0x534 */ u8 unk_534[0x590 - 0x534]; // BlendAnimModel
     /* 0x590 */ u32 unk_590;
     /* 0x594 */ u8 pad_594[4];
-    /* 0x598 */ Unk_ov004_Mtx unk_598;
+    /* 0x598 */ Mtx43 unk_598;
     /* 0x5c8 */ u8 pad_5c8[0x5d0 - 0x5c8];
     /* 0x5d0 */ u8 unk_5d0[4];
     /* 0x5d4 */ u32 unk_5d4;

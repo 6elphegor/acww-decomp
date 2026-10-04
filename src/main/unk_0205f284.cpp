@@ -3,7 +3,7 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "game/Unk_0205f6b4_Obj.h"
-#include "gfx/Unk_0205f7f4_Mtx.h"
+#include "gfx/Mtx43.h"
 #include "gfx/TexVramSlot.h"
 #include "gfx/CachedModel.h"
 #include "player/FishBobber.h"
@@ -103,7 +103,7 @@ void VEC_Add(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, Unk_0205f8d4_Vec *out);
 void VEC_Subtract(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, Unk_0205f8d4_Vec *out);
 s32 Vec_DistXZ(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b);
 void Vec_ShiftRight(Unk_0205f8d4_Vec *v, s32 n);
-void Mtx43_SetTranslate(Unk_0205f7f4_Mtx *m, s32 x, s32 y, s32 z);
+void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
 void FieldFish_StartCastSplash();
 void WorldCurve_FromCurved(void *p, Unk_0205f8d4_Vec *v);
 void WorldCurve_ToCurved(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b);
@@ -591,16 +591,16 @@ void FishBobber::update()
     (((FishBobberStates *)this)->*sFishBobberStateFns[curState])();
 }
 
-extern "C" void FishBobber_Draw(u8 *self, Unk_0205f7f4_Mtx *m, s32 arg)
+extern "C" void FishBobber_Draw(u8 *self, Mtx43 *m, s32 arg)
 {
     if (*(s32 *)(self + 4) != 0) {
         u8 *e = (u8 *)sFishBobberPool.getModel(*self);
-        Unk_0205f7f4_Mtx mt = *m;
+        Mtx43 mt = *m;
         Unk_0205f8d4_Vec v;
         if (*(s32 *)(self + 4) <= 1) {
-            v.x = mt.v[9];
-            v.y = mt.v[10];
-            v.z = mt.v[11];
+            v.x = mt.m[9];
+            v.y = mt.m[10];
+            v.z = mt.m[11];
             WorldCurve_FromCurved(self + 8, &v);
         } else {
             v.x = *(s32 *)(self + 8);
@@ -621,11 +621,11 @@ extern "C" void FishBobber_Draw(u8 *self, Unk_0205f7f4_Mtx *m, s32 arg)
                 }
             }
             WorldCurve_ToCurved(&v, &v);
-            Unk_0205f7f4_Mtx tmp;
+            Mtx43 tmp;
             Mtx43_SetTranslate(&tmp, v.x, v.y, v.z);
             mt = tmp;
         }
-        *(Unk_0205f7f4_Mtx *)(e + 0x64) = mt;
+        *(Mtx43 *)(e + 0x64) = mt;
         _ZN5Model10drawScaledEPi(e, arg);
     }
 }

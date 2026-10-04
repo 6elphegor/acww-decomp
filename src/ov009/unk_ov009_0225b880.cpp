@@ -8,7 +8,7 @@
 #include "game/StrBSizeData.h"
 #include "town/BuildingResources.h"
 #include "game/Unk_02031e10_Vec.h"
-#include "gfx/Unk_ov009_0225bc88_Blk.h"
+#include "gfx/Mtx43.h"
 #include "town/Unk_ov009_0225b880.h"
 #include "game/Unk_ov009_0225cb4c_V3.h"
 #include "game/TouchPicker.h"
@@ -422,8 +422,8 @@ BuildingActor::~BuildingActor() {
 BOOL BuildingActor::initBuilding() { return TRUE; }
 
 BOOL BuildingActor::onCreate() {
-    Unk_ov009_0225bc88_Blk b1;
-    Unk_ov009_0225bc88_Blk b2;
+    Mtx43 b1;
+    Mtx43 b2;
     struct {
         s32 v[12];
     } m;
@@ -447,7 +447,7 @@ BOOL BuildingActor::onCreate() {
     s32 ang = WorldCurve_Apply(&v, &position.x);
     Mtx43_SetTranslate(&m, v.x, v.y, v.z);
     Mtx43_RotateX(&m, ang);
-    createColliders((Unk_ov009_0225bc88_Blk *)&m);
+    createColliders((Mtx43 *)&m);
     BuildingResources *r = getResources();
     BuildingLights_bind(unk_1f0, (void *)(r ? r->bmd0 : 0), 1);
     setInteractionRange(0);
@@ -834,8 +834,8 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
     return result;
 }
 
-void BuildingActor::makeCurvedMatrix(Unk_ov009_0225bc88_Blk *out) {
-    Unk_ov009_0225bc88_Blk m;
+void BuildingActor::makeCurvedMatrix(Mtx43 *out) {
+    Mtx43 m;
     Mtx43_SetTranslate(&m, drawPos.x, drawPos.y, drawPos.z);
     Mtx43_RotateX(&m, (s16)drawTilt);
     *out = m;
@@ -894,8 +894,8 @@ void BuildingActor::func_ov009_0225d0d8() {
     }
 }
 
-void BuildingActor::updateBaseMatrix(Unk_ov009_0225bc88_Blk *out) {
-    Unk_ov009_0225bc88_Blk blk;
+void BuildingActor::updateBaseMatrix(Mtx43 *out) {
+    Mtx43 blk;
     if (!calcCustomBaseMatrix(&blk)) {
         drawTilt = WorldCurve_ToCurved(&drawPos, &position);
         makeCurvedMatrix(&blk);
@@ -906,7 +906,7 @@ void BuildingActor::updateBaseMatrix(Unk_ov009_0225bc88_Blk *out) {
     }
 }
 
-void BuildingActor::createShadows(Unk_ov009_0225bc88_Blk *m) {
+void BuildingActor::createShadows(Mtx43 *m) {
     BuildingResources *e = getResources();
     if (e != NULL) {
         if (e->shadowTable != NULL) {
@@ -932,7 +932,7 @@ void BuildingActor::createShadows(Unk_ov009_0225bc88_Blk *m) {
     }
 }
 
-void BuildingActor::updateShadows(Unk_ov009_0225bc88_Blk *m) {
+void BuildingActor::updateShadows(Mtx43 *m) {
     BuildingResources *e = getResources();
     if (e != NULL) {
         ObjShadowStrip *p = shadows;
@@ -962,7 +962,7 @@ void BuildingActor::destroyShadows() {
     }
 }
 
-void BuildingActor::createColliders(Unk_ov009_0225bc88_Blk *m) {
+void BuildingActor::createColliders(Mtx43 *m) {
     colliderCount = 0;
     StrBSizeData *h = StrBSize_Get(&itemId);
     if (h != NULL) {
@@ -1663,7 +1663,7 @@ void BuildingActor::updateMatrix() {
     if (modelRes != NULL) {
         updateBaseMatrix(0);
         AnimModel_drawAnimated(unk_138, 0);
-        Unk_ov009_0225bc88_Blk t = baseMatrix;
+        Mtx43 t = baseMatrix;
         updateShadows(&t);
     }
 }
@@ -1876,7 +1876,7 @@ Unk_ov009_0225da90_Vec3 BuildingActor::getSoundPos() {
 }
 
 // Slots b4 / b8 of the vtable (were free functions func_ov009_0225b884 / func_ov009_0225b880)
-BOOL BuildingActor::calcCustomBaseMatrix(Unk_ov009_0225bc88_Blk *out) { return 0; }
+BOOL BuildingActor::calcCustomBaseMatrix(Mtx43 *out) { return 0; }
 
 // ---------------------------------------------------------------- data
 

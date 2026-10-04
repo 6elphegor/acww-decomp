@@ -24,7 +24,7 @@ public:
 
 class BgVramTaskPair : public BgVramTask {
 public:
-    /* 0x24 */ BgTransfer unk_24;
+    /* 0x24 */ BgTransfer xfer2;
 
     BgVramTaskPair();
     virtual BOOL execute();

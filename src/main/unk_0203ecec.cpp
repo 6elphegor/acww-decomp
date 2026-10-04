@@ -144,7 +144,7 @@ s32 Bbs_AddPost(void *p);
 }
 
 extern "C" {
-s32 _ZN12Unk_020d93b88getPitchEv(void);
+s32 _ZN6Camera8getPitchEv(void);
 }
 
 extern "C" {
@@ -421,7 +421,7 @@ extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in) {
     o->y = in->y;
     o->z = in->z;
     if (gCamera) {
-        s32 v = _ZN12Unk_020d93b88getPitchEv();
+        s32 v = _ZN6Camera8getPitchEv();
         if (v > 0x27f7) {
             v = 0x27f7;
         } else if (v < 0x21fd) {

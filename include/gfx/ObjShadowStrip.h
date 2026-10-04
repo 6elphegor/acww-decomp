@@ -4,7 +4,7 @@
 #include "types.h"
 #include "game/Vec3.h"
 
-struct Unk_020ac0c4_Entry;
+struct ObjShadowTexture;
 
 // 0x34-byte textured ground shadow strip of field objects (rock, sign, tree shadows).
 // Defined in src/main/unk_020abea8.cpp; func_020ac1e0 (0x020ac1e0) is a second constructor returning this.
@@ -27,7 +27,7 @@ public:
     /* 0x24 */ s32 texRightS;
     /* 0x28 */ s32 *rowTexT;
     /* 0x2c */ Vec3 *rowVertices;
-    /* 0x30 */ Unk_020ac0c4_Entry *texture;
+    /* 0x30 */ ObjShadowTexture *texture;
 };
 
 #endif

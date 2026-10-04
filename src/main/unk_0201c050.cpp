@@ -3226,7 +3226,7 @@ BOOL VillagerClothModel::change(VillagerActor *parent, u16 *id) {
     if (!same || (Unk_0202d664_Range(id, 0x12a8, 0x12af) && Unk_0202d664_Range(&clothItem, 0x12a8, 0x12af))) {
         p = buildTexture(parent, id);
         if (p) {
-            result = _ZN14MatTexVramTask7requestEPvjS0_jj(this, (u32)parent->model.unk_5c, sVillagerClothMaterialNames, p, 0, 0);
+            result = _ZN14MatTexVramTask7requestEPvjS0_jj(this, (u32)parent->model.resMdl, sVillagerClothMaterialNames, p, 0, 0);
             clothItem = *id;
         }
     }

@@ -19,7 +19,7 @@ public:
     BOOL loadWithTexKeyed(void *res, void *name, void *tex, void *d, u32 *e, s32 f, u32 tag);
     BOOL loadKeyed(void *res, void *name, u32 tag);
 
-    /* 0x98 */ u32 unk_98;
+    /* 0x98 */ u32 cacheKey;
 };
 
 #endif

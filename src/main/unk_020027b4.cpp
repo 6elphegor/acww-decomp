@@ -1,7 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#include "gfx/Unk_02002804_Buf.h"
-#include "gfx/Unk_02002848_Data.h"
+#include "gfx/ToonTable.h"
+#include "gfx/Mtx43.h"
 #include "actor/Unk_02002f14_S16Vec.h"
 #include "actor/Unk_02002f14_S32Vec.h"
 #include "actor/ActorListNode.h"
@@ -235,12 +235,12 @@ void func_020030b4_dummy(void);
 
 
 
-extern Unk_02002848_Data data_02135934_;
+extern Mtx43 data_02135934_;
 
 u16 sGfx3dClearColor;
 u32 sGfx3dClearDepth;
 u8 gViewMtxInv[0x30];
-Unk_02002848_Data gViewMtx;
+Mtx43 gViewMtx;
 
 
 extern AbAllObjGfx sAbAllObjGfx;
@@ -288,7 +288,7 @@ extern "C" void Gfx3d_Init(void) {
     *(vu16 *)0x4000340 = 0;
     *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 8;
     G3X_SetClearColor(0, 0, 0x7fff, 0, 1);
-    gViewMtx = *(Unk_02002848_Data *)data_02135934;
+    gViewMtx = *(Mtx43 *)data_02135934;
     MTX_Inverse43(&gViewMtx, gViewMtxInv);
 }
 
@@ -299,13 +299,13 @@ extern "C" void Gfx3d_BeginFrame(void) {
     *(vu32 *)0x4000440 = 2;
 }
 
-extern "C" void Gfx3d_SetViewMatrix(Unk_02002848_Data *src) {
+extern "C" void Gfx3d_SetViewMatrix(Mtx43 *src) {
     gViewMtx = *src;
     MTX_Inverse43(&gViewMtx, gViewMtxInv);
 }
 
 extern "C" void Gfx3d_LoadDefaultToonTable(void) {
-    Unk_02002804_Buf buf = *(Unk_02002804_Buf *)sDefaultToonTable;
+    ToonTable buf = *(ToonTable *)sDefaultToonTable;
     DC_FlushRange(&buf, 0x40);
     vu16 *reg = (vu16 *)0x4000060;
     *reg = *reg & 0xffffcffd;

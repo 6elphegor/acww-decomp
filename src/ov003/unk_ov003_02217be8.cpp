@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#include "gfx/Unk_ov003_02215c7c_Blk.h"
+#include "gfx/Mtx43.h"
 #include "field/Unk_ov003_02217910_V3.h"
 #include "field/Unk_ov003_02217b78_Ent.h"
 #include "gfx/AnimFrameCtrl.h"
@@ -175,7 +175,7 @@ struct Unk_ov003_02218794_Obj {
 #define BgModelCache_getAcre _ZN12BgModelCache7getAcreEi
 #define BgModelCache_getGroundMatAnm _ZN12BgModelCache15getGroundMatAnmEv
 #define BgModelCache_getGroundTexSrtAnm _ZN12BgModelCache18getGroundTexSrtAnmEv
-#define Unk_020d93b8_getEyeCurveAngle _ZN12Unk_020d93b816getEyeCurveAngleEv
+#define Camera_getEyeCurveAngle _ZN6Camera16getEyeCurveAngleEv
 #define TexPatVramAnim_init _ZN14TexPatVramAnim4initEPhPKcS2_S0_S0_h
 
 extern "C" {
@@ -201,7 +201,7 @@ s32 BgModelCache_getBeBPatAnm(void *self);
 void *BgModelCache_getAcre(void *self, s32 i);
 s32 MapBlockAcre_getAcreId(void *self);
 s32 Acre_GetAttr(s32 a);
-s32 Unk_020d93b8_getEyeCurveAngle(void *self);
+s32 Camera_getEyeCurveAngle(void *self);
 void Camera_GetLookAtBlock(void *, s32 *, s32 *);
 s32 WorldCurve_AngleToDistance(s32);
 s16 WorldCurve_ToCurved(Unk_ov003_02218478_V3 *out, Unk_ov003_02218478_V3 *v);
@@ -397,7 +397,7 @@ BOOL FieldGround::onDraw() {
     cam_r = 0;
     cam = gCamera;
     if (cam != 0) {
-        cam_r = Unk_020d93b8_getEyeCurveAngle(cam);
+        cam_r = Camera_getEyeCurveAngle(cam);
         Camera_GetLookAtBlock(cam, &cx, &cy);
         a = WorldCurve_AngleToDistance(cam_r);
     }
@@ -587,7 +587,7 @@ BOOL FieldGroundPiece::setup(Unk_ov003_02217910_V3 *pos, s32 idx) {
     curveAngle = WorldCurve_ToCurved((Unk_ov003_02218478_V3 *)&tmp, (Unk_ov003_02218478_V3 *)&position);
     Mtx43_SetTranslate(data_021f47e0, position.x, 0, 0);
     Mtx43_RotateX(data_021f47e0, curveAngle);
-    *(Unk_ov003_02215c7c_Blk *)((u8 *)&model + 0x64) = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
+    *(Mtx43 *)((u8 *)&model + 0x64) = *(Mtx43 *)data_021f47e0;
     blockX = pos->x >> 17;
     blockZ = pos->z >> 17;
     return TRUE;
@@ -651,7 +651,7 @@ BOOL FieldGroundBlock::init(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) {
     Mtx43_SetTranslate(data_021f47e0, a * data_020c8cbc, 0, 0);
     s16 ang = b * WorldCurve_GetAngleScale();
     Mtx43_RotateX(data_021f47e0, ang);
-    *(Unk_ov003_02215c7c_Blk *)((u8 *)&model + 0x64) = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
+    *(Mtx43 *)((u8 *)&model + 0x64) = *(Mtx43 *)data_021f47e0;
     if (Acre_GetAttr(acreId) & 8) {
         beachMatIdx = G3dResAccess_findMatIdx(res, (s32)"m_grd_beA");
         if (beachMatIdx != -1) {

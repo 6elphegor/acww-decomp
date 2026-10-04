@@ -4,7 +4,7 @@
 #include "types.h"
 
 // Partial view of the ov068 camera object (gCamera): the sway fields used by Camera_UpdateSway and friends,
-// plus the 0xc-byte sway pattern row. No defining TU (data views).
+// plus the 0xc-byte sway pattern (kCameraSwayPatterns). No defining TU (data views).
 struct Unk_ov068_0226647c_Cam {
     /* 0x000 */ u8 pad_000[0x174];
     /* 0x174 */ s16 roll;
@@ -17,12 +17,12 @@ struct Unk_ov068_0226647c_Cam {
     /* 0x225 */ u8 rollPattern;
 };
 
-struct Unk_ov068_0226647c_Row {
-    /* 0x00 */ u16 a;
-    /* 0x02 */ u16 b;
-    /* 0x04 */ s16 c;
+struct CameraSwayPattern {
+    /* 0x00 */ u16 duration;     // base timer
+    /* 0x02 */ u16 durationRand; // random extra (Random_GlobalBelow)
+    /* 0x04 */ s16 phaseStep;    // added to the sway phase each frame
     /* 0x06 */ s16 pad;
-    /* 0x08 */ s32 d;
+    /* 0x08 */ s32 amplitude;    // sin(phase) * amplitude
 };
 
 #endif

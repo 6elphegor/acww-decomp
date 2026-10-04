@@ -1,10 +1,10 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "game/Unk_02033914.h"
-#include "gfx/Unk_020ac0c4_Entry.h"
-#include "gfx/Unk_020ac500_Tex.h"
-#include "gfx/Unk_020d094c.h"
-#include "gfx/Unk_021ede90.h"
+#include "gfx/ObjShadowTexture.h"
+#include "gfx/NNSG3dResTex.h"
+#include "gfx/ObjShadowTexDef.h"
+#include "gfx/NNSG3dResMatData.h"
 #include "game/Vec3.h"
 #include "gfx/ObjShadowBits.h"
 #include "gfx/Unk_020ac2e8_V.h"
@@ -69,7 +69,7 @@ u8 ObjShadow_GetObjAlpha(Vec3 *p, s32 q);
 #define REG(a) (*(volatile u32 *)(a))
 
 extern const s32 sObjShadowCoordShift;
-extern const Unk_020d094c sObjShadowTexDefs[];
+extern const ObjShadowTexDef sObjShadowTexDefs[];
 extern char sObjShadowTexNameFc[];
 extern char sObjShadowTexNameTr[];
 extern char sObjShadowTexNameGr[];
@@ -79,22 +79,22 @@ extern u8 sObjShadowAlpha;
 extern s32 sObjShadowSkew;
 extern u8 sObjShadowNormMtx[];
 extern u8 sObjShadowViewMtx[];
-extern Unk_020ac0c4_Entry sObjShadowTextures[];
+extern ObjShadowTexture sObjShadowTextures[];
 extern ObjShadowStrip sTreeShadowStage2;
 extern ObjShadowStrip sTreeShadowStage3;
 extern ObjShadowStrip sTreeShadowStage4;
 extern ObjShadowStrip sRockShadow;
 extern ObjShadowStrip sSignShadow;
 
-static inline void *Unk_020ac500_Data(const Unk_020ac500_Dict *dict, u32 idx) {
-    Unk_020ac500_DictHdr *hdr = (Unk_020ac500_DictHdr *)((u8 *)dict + dict->ofsEntry);
+static inline void *Unk_020ac500_Data(const NNSG3dResDict *dict, u32 idx) {
+    NNSG3dResDictEntryHeader *hdr = (NNSG3dResDictEntryHeader *)((u8 *)dict + dict->ofsEntry);
     return &hdr->data[hdr->sizeUnit * idx];
 }
-static inline u32 *Unk_020ac500_TexData(const Unk_020ac500_Tex *tex, u32 idx) {
+static inline u32 *Unk_020ac500_TexData(const NNSG3dResTex *tex, u32 idx) {
     return (u32 *)Unk_020ac500_Data(&tex->dict, idx);
 }
-static inline Unk_020ac500_Pltt *Unk_020ac500_PlttData(const Unk_020ac500_Tex *tex, u32 idx) {
-    return (Unk_020ac500_Pltt *)Unk_020ac500_Data((const Unk_020ac500_Dict *)((u8 *)tex + tex->ofsPlttDict), idx);
+static inline NNSG3dResDictPlttData *Unk_020ac500_PlttData(const NNSG3dResTex *tex, u32 idx) {
+    return (NNSG3dResDictPlttData *)Unk_020ac500_Data((const NNSG3dResDict *)((u8 *)tex + tex->ofsPlttDict), idx);
 }
 
 
@@ -109,7 +109,7 @@ extern "C" void ObjShadow_Init(void *arg) {
     s32 heap = gBgHeap;
     if (arg != 0) {
         sObjShadowSkew = 0;
-        Unk_020ac0c4_Entry *e = sObjShadowTextures;
+        ObjShadowTexture *e = sObjShadowTextures;
         void *file = File_Load((void *)"/shadow/tex_shadow.nsbtx");
         u8 *res = NNS_G3dGetTex(file);
         Gfx3d_LoadTexAndPltt(res, 0);
@@ -117,17 +117,17 @@ extern "C" void ObjShadow_Init(void *arg) {
         Mem_Free(file);
         u32 i;
         for (i = 0; i < 3; i++) {
-            char *name = sObjShadowTexDefs[i].unk_00;
+            char *name = sObjShadowTexDefs[i].texName;
             char buf[36];
             func_020639e8(buf, "%s_pl", name);
             e->texRes = 0;
             e->texImageParam = 0;
             e->plttBase = 0;
             e->texRes = res;
-            e->unk_14 = sObjShadowTexDefs[i].unk_06;
+            e->polygonId = sObjShadowTexDefs[i].polygonId;
             u32 idx1 = _ZN12G3dResAccess10findTexIdxEi(e->texRes, name);
             u32 idx2 = _ZN12G3dResAccess11findPlttIdxEi(e->texRes, buf);
-            Unk_020ac500_Tex *tex = (Unk_020ac500_Tex *)e->texRes;
+            NNSG3dResTex *tex = (NNSG3dResTex *)e->texRes;
             texData = Unk_020ac500_TexData(tex, idx1);
             u32 plttOfs = Unk_020ac500_PlttData(tex, idx2)->offset;
             u32 plttKey = (u16)tex->plttKey;
@@ -135,8 +135,8 @@ extern "C" void ObjShadow_Init(void *arg) {
             u32 texKey = (u16)tex->texKey;
             e->texImageParam = texParam + texKey;
             e->plttBase = plttOfs + plttKey;
-            e->texImageParam |= sObjShadowTexDefs[i].unk_04 << 18;
-            e->texImageParam |= sObjShadowTexDefs[i].unk_05 << 16;
+            e->texImageParam |= sObjShadowTexDefs[i].texFlip << 18;
+            e->texImageParam |= sObjShadowTexDefs[i].texRepeat << 16;
             e->texFormat = (*texData >> 26) & 7;
             if (e->texFormat != 2) {
                 e->plttBase >>= 1;
@@ -156,7 +156,7 @@ extern "C" void ObjShadow_Init(void *arg) {
 
 char sObjShadowTexNameFc[] = "obj_sdw_fc";
 ObjShadowStrip sTreeShadowStage2;
-Unk_020ac0c4_Entry sObjShadowTextures[3];
+ObjShadowTexture sObjShadowTextures[3];
 u8 sObjShadowAlpha = 0xe;
 ObjShadowStrip sTreeShadowStage3;
 ObjShadowStrip sTreeShadowStage4;
@@ -189,7 +189,7 @@ extern "C" void ObjShadow_Update() {
 
 extern "C" void ObjShadow_Exit() {
     sObjShadowSkew = 0;
-    Unk_020ac0c4_Entry *e = sObjShadowTextures;
+    ObjShadowTexture *e = sObjShadowTextures;
     u32 i;
     for (i = 0; i < 3; i++) {
         e->texRes = 0;
@@ -237,7 +237,7 @@ extern "C" u8 ObjShadow_CalcAlpha(Vec3 *p, s32 q, u8 r4) {
 }
 
 char sObjShadowTexNameTr[] = "obj_sdw_tr";
-const Unk_020d094c sObjShadowTexDefs[3] = {
+const ObjShadowTexDef sObjShadowTexDefs[3] = {
     {sObjShadowTexNameGr, 0, 1, 0x3d, 0},
     {sObjShadowTexNameFc, 0, 1, 0x3a, 0},
     {sObjShadowTexNameTr, 1, 1, 0x3a, 0},
@@ -353,7 +353,7 @@ void ObjShadowStrip::draw(Vec3 *pos) {
             REG(0x40004ac) = texture->plttBase;
             REG(0x4000440) = 1;
             G3_LoadMtx43(sObjShadowViewMtx);
-            REG(0x40004a4) = (lvl << 16) | ((texture->unk_14 << 24) | 0x8080);
+            REG(0x40004a4) = (lvl << 16) | ((texture->polygonId << 24) | 0x8080);
             s32 *p7 = rowDepths;
             s32 *p28 = rowTexT;
             Vec3 *vp = rowVertices;

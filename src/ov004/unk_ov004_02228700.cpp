@@ -3,7 +3,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
-#include "gfx/Unk_ov004_02228a40_Mtx.h"
+#include "gfx/Mtx43.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
@@ -117,7 +117,7 @@ public:
 
 extern "C" {
 extern void *gBgHeap;
-extern Unk_ov004_02228a40_Mtx data_021f47e0;
+extern Mtx43 data_021f47e0;
 extern SewingMachine *sSewingMachine;
 void RoomObjTex_Construct(void *);
 void RoomObjTex_Destruct(void *);
@@ -241,8 +241,8 @@ BOOL SewingMachine::onExecute() {
     _ZN13AnimFrameCtrl4stepEv(matAnim);
     *F(u32 *, 0x430) = F(u32, 0x420);
     Mtx43_SetTranslate(&data_021f47e0, position.x, position.y, position.z);
-    F(Unk_ov004_02228a40_Mtx, 0xec + 0x64) = data_021f47e0;
-    F(Unk_ov004_02228a40_Mtx, 0x290 + 0x64) = data_021f47e0;
+    F(Mtx43, 0xec + 0x64) = data_021f47e0;
+    F(Mtx43, 0x290 + 0x64) = data_021f47e0;
     updateState();
     return TRUE;
 }
