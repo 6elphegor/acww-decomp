@@ -11,11 +11,11 @@
 
 // ---- main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
-#define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
-#define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
+#define SndEnvChannel_callRelease _ZN13SndEnvChannel11callReleaseEv
+#define SndEnvChannel_callRequest _ZN13SndEnvChannel11callRequestEPv
+#define SndEnvChannel_callRequestSustained _ZN13SndEnvChannel20callRequestSustainedEPv
+#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP16Unk_02003a6c_Vec
+#define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define func_02031c10 _ZN11BoxColliderD2Ev
 #define func_02031c48 _ZN11BoxColliderC1Ev
 #define func_0203239c _ZN14CollisionStateD1Ev
@@ -946,7 +946,7 @@ u32 func_02106788(u32 a);
 u32 func_021067a4(u32 a, s32 b);
 void BlendAnimModel_initAnim(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
 void AnimModel_attachAnim(void *p);
-void Unk_02003c30_callReset(void *p);
+void SndEnvChannel_callReset(void *p);
 void func_020548a0(void *p);
 void func_0203239c(void *p);
 void func_020323b0(void *p);
@@ -966,7 +966,7 @@ void func_02088bc8(void *p);
 void Mem_Free(void *p);
 void AnimModel_detachVisAnim(void *p);
 void AnimModel_detachJointAnim(void *p);
-void Unk_02003c30_callRelease(void *p);
+void SndEnvChannel_callRelease(void *p);
 void PooledModel_unload(void *p);
 void ModelSlotPool_release(void *p, void *q);
 void func_0209c128(void *p);
@@ -995,7 +995,7 @@ void WorldCurve_FromCurved(void *a, void *b);
 s32 WorldCurve_ToCurved(void *out, void *in);
 void Collision_Move(void *obj, void *pos, void *prev, s32 a, s32 b, s32 c, s32 d);
 void AnimFrameCtrl_step(void *e);
-void Unk_02003c40_callUpdateRelative(void *obj, void *v);
+void SndEnvChannel_callUpdateRelative(void *obj, void *v);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s16 a);
 void Mtx43_RotateY(void *m, s32 a);
@@ -1066,8 +1066,8 @@ s32 PlayerActor_RequestAct79();
 void func_ov004_02239a4c(void *, s32);
 s32 Math_ApproachVec(void *a, void *b, s32 c, s32 d, s32 e);
 s32 Effect_PlayById2(s32 a, void *b, void *c, s32 d);
-void Unk_02003c40_callRequest(void *o, s32 id);
-void Unk_02003c40_callRequestSustained(void *o, s32 id);
+void SndEnvChannel_callRequest(void *o, s32 id);
+void SndEnvChannel_callRequestSustained(void *o, s32 id);
 void Vec_RotateY(void *v, s32 a);
 void func_ov004_02237690(void *p);
 }
@@ -1499,9 +1499,9 @@ extern "C" BOOL MuseumInsect_PlaySe(void *self_, s32 b) {
     s32 id = MuseumInsect_GetSe(self->insectIndex, b);
     if (id >= 0) {
         if (b == 1) {
-            Unk_02003c40_callRequestSustained(self->sound, id);
+            SndEnvChannel_callRequestSustained(self->sound, id);
         } else {
-            Unk_02003c40_callRequest(self->sound, id);
+            SndEnvChannel_callRequest(self->sound, id);
         }
         return TRUE;
     }
@@ -4859,7 +4859,7 @@ extern "C" void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s) {
                     }
                     if (ok) {
                         sMuseumInsectBehaviors[t].f(s);
-                        Unk_02003c30_callReset(s + 0x24);
+                        SndEnvChannel_callReset(s + 0x24);
                         *(u32 *)(s + 0x2d4) = sMuseumInsectBehaviors[t].v;
                         *(u32 *)(s + 0x198) = 2;
                     }
@@ -4950,7 +4950,7 @@ void MuseumInsectRoom::updateInsect(Elem_7690 *e) {
         }
         if (MuseumInsect_GetSe((s8)id, 0) > 0) {
             t = *pos;
-            Unk_02003c40_callUpdateRelative(&e->sound, &t);
+            SndEnvChannel_callUpdateRelative(&e->sound, &t);
         }
         s32 r = WorldCurve_ToCurved(&out, &e->position);
         Mtx43_SetTranslate(&data_021f47e0, out.x, out.y, out.z);
@@ -5256,7 +5256,7 @@ void MuseumInsectRoom::releaseInsect(s32 idx) {
         }
         r->matAnmObj = 0;
         r->matResMdl = 0;
-        Unk_02003c30_callRelease(r->sound);
+        SndEnvChannel_callRelease(r->sound);
         r->insectIndex = -1;
         r->yaw = 0;
         r->loadState = 0;

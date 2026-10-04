@@ -12,8 +12,8 @@
 // ProcBase vtable before it ends the previous file, the 4-byte gSndPanTrackMask after it starts the next) and the bss run
 // 0x021f5994-0x021f59e4 (next-node pointer, the 12-byte CONNECT list, the four 16-byte lists; gProfileTable starts the next file).
 // The text starts at 0x020ed4bc (the previous file ends with ProcBase's C2 at 0x020ed378) and stops before 0x020ed7e4:
-// 0x020ed7e4 / 0x020ed81c / 0x020ed8cc are the command-sequence object (Unk_Seq), one class whose last method lies in the next
-// unit (unk_020ed8cc.cpp); whether Unk_Seq ends this file or starts the next one is not decided by any data, so it is left out.
+// 0x020ed7e4 / 0x020ed81c / 0x020ed8cc are the command-sequence object (CmdSeq), one class whose last method lies in the next
+// unit (unk_020ed8cc.cpp); whether CmdSeq ends this file or starts the next one is not decided by any data, so it is left out.
 #include "types.h"
 #include "sys/TaskList.h"
 #include "sys/ProcBase.h"

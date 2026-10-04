@@ -17,7 +17,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "talk/MsgString25.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -34,7 +33,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class SpNpcGracie;
 class SpNpcGracieTalk;
 
@@ -265,7 +264,7 @@ BOOL SpNpcGracie::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     MI_CpuFill8(talk.askedQuestions, 0, 0x14);
     return TRUE;

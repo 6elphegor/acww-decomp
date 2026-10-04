@@ -19,7 +19,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -34,11 +33,11 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class SpNpcSaharah;
 class SpNpcSaharahTalk;
 struct VisitorPos;
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 
 struct Unk_ov078_Vec {
     s32 x, y, z;
@@ -60,7 +59,7 @@ void _ZN11NpcMoveCtrl16resetDestinationEv(void *self);
 BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *self);
 Unk_ov078_Vec * _ZN11NpcMoveCtrl14getDestinationEv(void *self);
 void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *self, Unk_ov078_Vec *v);
-BOOL _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(void *self, void *owner, s32 v);
+BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *self, void *owner, s32 v);
 s32 _ZN12Unk_0201acf88getLevelEv(void *self);
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData10getErrandsEv(void *p);
@@ -80,7 +79,7 @@ void Pocket_RemoveItem(s32 v);
 s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
 void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 void _ZN12ItemPickSpec3setEii(Unk_0202368c_Obj *o, s32 a, s32 b);
 void ItemPickSpec_Destruct(Unk_0202368c_Obj *o);
@@ -263,7 +262,7 @@ BOOL SpNpcSaharah::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     return TRUE;
 }
@@ -411,7 +410,7 @@ BOOL SpNpcSaharah::handleCollision() {
     s32 r6 = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     BOOL r = FALSE;
     Unk_ov078_Vec v;
-    if (_ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(q, this, 1) == 0) {
+    if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(q, this, 1) == 0) {
         switch (r6) {
         case 3:
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -731,7 +730,7 @@ void SpNpcSaharahTalk::onChoice(u32) {
             if (turbanSlot >= 0) {
                 Pocket_RemoveItem(turbanSlot);
                 h[1] = 0x13ac;
-                _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &h[1], 0, 5, 0);
+                _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &h[1], 0, 5, 0);
             }
             msg = 0x16;
         }

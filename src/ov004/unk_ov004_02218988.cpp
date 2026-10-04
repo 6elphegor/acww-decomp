@@ -2,7 +2,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "actor/Unk_ov004_SceneEntry.h"
-#include "npc/Unk_0201a13c.h"
 #include "npc/VillagerClothModel.h"
 #include "actor/Unk_02088d00.h"
 #include "npc/VillagerMood.h"
@@ -49,7 +48,7 @@ class FleaMarketBuyerVillager;
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcLookAt_disable _ZN9NpcLookAt7disableEv
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj

@@ -10,7 +10,6 @@
 #include "sys/ProcBase.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -27,7 +26,7 @@
 #define VillagerId_getName _ZN10VillagerId7getNameEj
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
+#define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
 #define ActorTalkRequest_requestGiveItem _ZN16ActorTalkRequest15requestGiveItemEPtjjj
 #define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
 #define ActorTalkRequest_setPocketFilter _ZN16ActorTalkRequest15setPocketFilterEjjj
@@ -89,7 +88,7 @@
 #define FtrActorGrid_getActor _ZN12FtrActorGrid8getActorEiii
 #define data_0213a740 __ptmf_null
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class NpcActor;
 class SpNpcNookShop;
 class SpNpcNookShopTalk;
@@ -166,7 +165,7 @@ struct Unk_ov050_MsgRow {
 
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class NpcActor;
 class SpNpcMabel;
 class SpNpcMabelTalk;
@@ -421,7 +420,7 @@ void *Actor_findByProfile(s32 a, s32 b);
 void VillagerId_getName(void *p, void *buf);
 void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
 s32 NpcTalkCtrl_isBusy(void *p);
-void Unk_02014420_requestTakeItem(void *self, u16 *a, u32 b, u32 c, u32 d);
+void ActorTalkRequest_requestTakeItem(void *self, u16 *a, u32 b, u32 c, u32 d);
 void ActorTalkRequest_requestGiveItem(void *self, u16 *p, s32 b, s32 c, s32 d);
 void ActorTalkRequest_setSubSceneKind(void *self, u32 a, u32 b);
 void ActorTalkRequest_setPocketFilter(void *self, void *fn, u32 b, u32 c);
@@ -828,7 +827,7 @@ BOOL SpNpcNookShop::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner((Unk_ov050_0225b908_Owner *)this);
     if (isTwin()) {
         setColliderSize(0xccd, 0x2000);
@@ -2111,7 +2110,7 @@ void SpNpcNookShopTalk::handleDeliveryMenu() {
                 Pocket_RemoveItem(r6);
             }
             if (!Unk_ov050_0225bd54_Same(&m.item, &m.unk_04, 0xfff1)) {
-                Unk_02014420_requestTakeItem(this, &m.item, 2, 5, 0);
+                ActorTalkRequest_requestTakeItem(this, &m.item, 2, 5, 0);
             }
             m.msgIndex = 3;
             ErrandRecord_setStep(ParcelErrand_GetRecord(SickVillagerRecord_getParcelErrand(PlayerData_getErrands(r7))), 1);
@@ -3569,7 +3568,7 @@ void SpNpcNookShopTalk::onSafeOfferChoice(s32 p) {
             u16 v;
             Pocket_RemoveItem();
             v = 0x36fc;
-            Unk_02014420_requestTakeItem(this, &v, 0, 5, 0);
+            ActorTalkRequest_requestTakeItem(this, &v, 0, 5, 0);
         }
         nextMsg = 0x37;
     }

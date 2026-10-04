@@ -5,7 +5,7 @@
 
 // Emotion effect/sound player of the NPCs and the player (0x28 bytes; PlayerActor::emotionFx). Methods defined in
 // src/main/unk_020119cc.cpp (unk_02019998 section, 0x02019e2c..0x0201a0f4). Its constructor/destructor are the empty
-// functions symbols.txt names Unk_0201a13c C1 0x0201a13c / D1 0x0201a138 (NpcEmotionFx names added as alias labels).
+// functions symbols.txt names NpcLookAt C1 0x0201a13c / D1 0x0201a138 (NpcEmotionFx names added as alias labels).
 struct NpcEmotionFxSlot {
     /* 0x0 */ s16 effectId;
     /* 0x2 */ u8 triggerFrame;

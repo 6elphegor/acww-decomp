@@ -213,9 +213,9 @@ s32 _ZN9Character9getCharIdEv(void *p);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 FishDisplay_Acquire();
-void _ZN12Unk_02003c3010callSeStopEv(void *p);
-void _ZN12Unk_02003c3010callSeInitEv(void *p);
-void _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(void *p, Unk_020dc034_V *v);
+void _ZN12SndSeEmitter8callStopEv(void *p);
+void _ZN12SndSeEmitter8callInitEv(void *p);
+void _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(void *p, Unk_020dc034_V *v);
 void Math_CountDownU8(void *p);
 void SaveVillagers_Get(void *p, u32 v);
 u32 Villager_GetAnimalKind();
@@ -345,14 +345,14 @@ extern "C" HandOverItem *HandOverItem_Create()
 BOOL HandOverItem::onCreate()
 {
     resetState();
-    _ZN12Unk_02003c3010callSeInitEv(&seEmitter);
+    _ZN12SndSeEmitter8callInitEv(&seEmitter);
     sHandOverItem = this;
     return TRUE;
 }
 
 BOOL HandOverItem::onDelete()
 {
-    _ZN12Unk_02003c3010callSeStopEv(&sHandOverItem->seEmitter);
+    _ZN12SndSeEmitter8callStopEv(&sHandOverItem->seEmitter);
     sHandOverItem = NULL;
     return TRUE;
 }
@@ -376,7 +376,7 @@ BOOL HandOverItem::onExecute()
                 v.x = itemPos.x;
                 v.y = itemPos.y;
                 v.z = itemPos.z;
-                _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(&seEmitter, &v);
+                _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(&seEmitter, &v);
             }
         }
         if (isAwaitingTake()) {

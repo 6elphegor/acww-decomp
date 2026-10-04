@@ -14,7 +14,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
@@ -45,7 +44,7 @@
 #define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
 #define NpcLookAt_getObstacleBits _ZN9NpcLookAt15getObstacleBitsEv
 #define Unk_0201acf8_getLevel _ZN12Unk_0201acf88getLevelEv
-#define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei
+#define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP9Characteri
 #define NpcMoveCtrl_hasNextLeg _ZN11NpcMoveCtrl10hasNextLegEv
 #define NpcMoveCtrl_resetDestination _ZN11NpcMoveCtrl16resetDestinationEv
 #define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3
@@ -159,7 +158,7 @@ public:
 
 
 struct Unk_020d77a4_Vec3;
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 
 
 
@@ -311,7 +310,7 @@ BOOL SpNpcPete::preCreate() {
     if (SpNpcActor::preCreate() == 0) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     return TRUE;
 }

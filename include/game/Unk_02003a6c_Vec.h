@@ -4,7 +4,7 @@
 #include "types.h"
 
 // s32 position vector (gCameraEye, sound emitter positions).
-// Used by the Unk_02003c40 methods in src/main/unk_020039ec.cpp.
+// Used by the SndEnvChannel / SndSeEmitter call wrappers in src/main/unk_020039ec.cpp.
 
 struct Unk_02003a6c_Vec {
     /* 0x0 */ s32 x, y, z;

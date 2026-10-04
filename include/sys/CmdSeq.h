@@ -1,11 +1,11 @@
-#ifndef SYS_UNK_SEQ_H
-#define SYS_UNK_SEQ_H
+#ifndef SYS_CMDSEQ_H
+#define SYS_CMDSEQ_H
 
 #include "types.h"
 
 // Command-sequence object: runs a list of commands (cmds) through its virtuals. Its non-virtual helpers are
 // CmdSeq_Run (src/autoload_2/unk_020ed81c.cpp), CmdSeq_Poll (unk_020ed7e4.cpp) and CmdSeq_Undo (unk_020ed8cc.cpp).
-class Unk_Seq {
+class CmdSeq {
 public:
     virtual void vfunc_00();
     virtual void vfunc_04();
@@ -17,7 +17,7 @@ public:
     /* 0x08 */ void **cmds;
     /* 0x0c */ u32 unk_0c;
     /* 0x10 */ u16 unk_10;
-    /* 0x12 */ s16 unk_12;
+    /* 0x12 */ s16 cmdStep;
 };
 
-#endif // SYS_UNK_SEQ_H
+#endif // SYS_CMDSEQ_H

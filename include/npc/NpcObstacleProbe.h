@@ -6,7 +6,7 @@
 // 2-byte NPC obstacle probe, NpcActor::obstacleProbe (unk_0201a334.cpp part of src/main/unk_020119cc.cpp; ctor
 // 0x0201a8bc).
 
-struct Unk_0201a334_Scene;
+class Character;
 
 class NpcObstacleProbe {
 public:
@@ -14,7 +14,7 @@ public:
     /* 0x1 */ u8 pad_01;
 
     NpcObstacleProbe();
-    void probe(Unk_0201a334_Scene *scene);
+    void probe(Character *scene);
     void clear();
 };
 

@@ -1,6 +1,5 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "npc/Unk_0201a13c.h"
 #include "npc/VillagerClothModel.h"
 #include "actor/Unk_02088d00.h"
 #include "talk/MsgStringBase.h"
@@ -47,7 +46,7 @@
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define func_0201b138 _ZN8NpcActor6onDrawEv
 #define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define func_0202d928 _ZN13VillagerActor9preDeleteEv
 #define func_0202d948 _ZN13VillagerActor8onCreateEv

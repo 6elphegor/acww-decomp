@@ -1,6 +1,5 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Unk_02088d00.h"
 #include "game/Unk_ov068_Vec.h"
 #include "actor/Unk_ov068_SceneEntry.h"
@@ -45,7 +44,7 @@ class SpNpcNookIntroTalk;
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define NpcActor_setNpcHandle _ZN8NpcActor12setNpcHandleEPt

@@ -16,7 +16,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -31,7 +30,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class SpNpcWendell;
 class SpNpcWendellTalk;
 
@@ -40,9 +39,9 @@ class SpNpcWendellTalk;
 
 
 extern "C" {
-void _ZN12Unk_0201442015requestKeepItemEv(void *p);
+void _ZN16ActorTalkRequest15requestKeepItemEv(void *p);
 void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
 void _ZN16ActorTalkRequest12openSubSceneEi(void *p, s32 v);
@@ -241,7 +240,7 @@ s32 _ZN12Unk_0201acf88getLevelEv(void *p);
 BOOL NpcActor_IsFrontAngle(s16 a);
 s32 Math_AngleXZ(void *a, void *b);
 void *_ZN11NpcMoveCtrl14getDestinationEv(void *p);
-BOOL _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(void *a, void *b, u32 c);
+BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *a, void *b, u32 c);
 s32 _ZN9NpcLookAt15getObstacleBitsEv(void *p);
 void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *a, void *b);
 BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *a);
@@ -255,8 +254,8 @@ BOOL EventAnnounce_IsBusy();
 void *TownSessionState_Get();
 void TownSessionState_GetVisitorPos(void *p);
 void _ZN10VisitorPos13pickRandomPosEv();
-void _ZN12Unk_0201442014requestEatItemEv(void *p);
-void _ZN12Unk_0201442017requestReturnItemEv(void *p);
+void _ZN16ActorTalkRequest14requestEatItemEv(void *p);
+void _ZN16ActorTalkRequest17requestReturnItemEv(void *p);
 void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *p, u32 a, u32 b);
 extern u32 data_020c6d1c;
 extern s32 data_020c6cf0;
@@ -312,7 +311,7 @@ BOOL SpNpcWendell::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     return TRUE;
 }
@@ -447,7 +446,7 @@ BOOL SpNpcWendell::handleCollision() {
     s32 k = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     BOOL r = FALSE;
     Unk_ov079_Vec3 v;
-    if (!_ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(p350, this, 1)) {
+    if (!_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(p350, this, 1)) {
         switch (k) {
         case 3:
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, r, 1, r, r, r, r, r, r, data_020c6cc8, r);
@@ -728,7 +727,7 @@ void SpNpcWendellTalk::onFoodPicked() {
             Pocket_RemoveItem(foodSlot);
             foodSlot = -1;
         }
-        _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &foodItem, 0, 4, 0);
+        _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &foodItem, 0, 4, 0);
         setNextResultHandler(1);
     } else {
         _ZN16ActorTalkRequest19requestReopenWindowEv(this);
@@ -878,7 +877,7 @@ void SpNpcWendellTalk::start(TalkStartMsg *out) {
 
 void SpNpcWendellTalk::onMessageStart(u32) {
     if (msgIndex == 0xf) {
-        _ZN12Unk_0201442014requestEatItemEv(this);
+        _ZN16ActorTalkRequest14requestEatItemEv(this);
     }
 }
 
@@ -891,7 +890,7 @@ void SpNpcWendellTalk::onMessageEnd(u32) {
         r = 0xf;
         break;
     case 2:
-        _ZN12Unk_0201442015requestKeepItemEv(this);
+        _ZN16ActorTalkRequest15requestKeepItemEv(this);
         break;
     case 15:
         r = 4;
@@ -911,7 +910,7 @@ void SpNpcWendellTalk::onMessageEnd(u32) {
         setResultHandler(2);
         break;
     case 11:
-        _ZN12Unk_0201442017requestReturnItemEv(this);
+        _ZN16ActorTalkRequest17requestReturnItemEv(this);
         break;
     case 9:
         if (Pocket_AddItem(&foodItem, 0)) {

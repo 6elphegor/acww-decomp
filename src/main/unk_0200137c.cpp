@@ -1,9 +1,8 @@
 #include "types.h"
 #include "sys/Unk_02000fc0_Col.h"
-#include "sys/Unk_02000fc0_Node.h"
+#include "sys/OSThread.h"
 #include "sys/Unk_02000fc0_Cfg.h"
 #include "sys/QNode.h"
-#include "sys/Unk_02000fc0_Thr.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -87,7 +86,7 @@ extern u8 gProcCreateStep;
 }
 
 extern "C" {
-extern Unk_02000fc0_Thr *data_021fcc2c[3];
+extern OSThread *data_021fcc2c[3];
 }
 
 extern "C" {
@@ -221,7 +220,7 @@ u32 func_021122b0(void);
 }
 
 extern "C" {
-u32 func_02113438(Unk_02000fc0_Node *a);
+u32 func_02113438(OSThread *a);
 }
 
 extern "C" {

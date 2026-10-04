@@ -11,7 +11,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
@@ -24,7 +23,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 
 struct Unk_ov073_Vec {
     s32 x, y, z;
@@ -107,7 +106,7 @@ void _ZN13NpcFootstepFx16disableFootstepsEv(void *p);
 void _ZN13NpcFootstepFx15enableFootstepsEv(void *p);
 void _ZN10VisitorPos6setPosEii(void *p, s32 x, s32 z);
 s32 _ZN9NpcLookAt15getObstacleBitsEv(void *p);
-s32 _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(void *p, void *scene, s32 v);
+s32 _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *p, void *scene, s32 v);
 void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *p, void *v);
 s32 _ZN11NpcMoveCtrl10hasNextLegEv(void *p);
 void _ZN11NpcMoveCtrl16resetDestinationEv(void *p);
@@ -237,7 +236,7 @@ BOOL SpNpcJoan::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner((s32)this);
     return TRUE;
 }
@@ -365,7 +364,7 @@ BOOL SpNpcJoan::steerAroundObstacle() {
     void *s = &moveCtrl;
     s32 k = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     BOOL r = FALSE;
-    if (_ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(s, this, 1) == 0) {
+    if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(s, this, 1) == 0) {
         switch (k) {
         case 3:
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(q, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);

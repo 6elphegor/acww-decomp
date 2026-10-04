@@ -1,10 +1,8 @@
 #include "types.h"
 #include "sys/Unk_02000fc0_Col.h"
-#include "sys/Unk_02000fc0_Node.h"
 #include "sys/Unk_02000fc0_Cfg.h"
 #include "sys/QNode.h"
 #include "sys/OSThread.h"
-#include "sys/Unk_02000fc0_Thr.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -29,7 +27,7 @@ extern u32 gProcHeap;
 extern QNode *gTaskCurrentNode;
 extern u16 gProcCreateProfile;
 extern u8 gProcCreateStep;
-extern Unk_02000fc0_Thr *data_021fcc2c[3];
+extern OSThread *data_021fcc2c[3];
 extern u32 data_021fce88;
 extern char data_02135f44[];
 extern char gBuildTime[];
@@ -92,7 +90,7 @@ void DebugText_Printf(Unk_02000fc0_Col *c, u8 *dst, const char *fmt, ...);
 void DebugText_Print(Unk_02000fc0_Col *c, u8 *dst, const char *fmt);
 u32 Task_GetPhaseName(u32 a);
 u32 func_021122b0(void);
-u32 func_02113438(Unk_02000fc0_Node *a);
+u32 func_02113438(OSThread *a);
 #define Heap_dump _ZN4Heap4dumpEv
 void Heap_dump(u32 a);
 void BlockMap_DebugStub(void);
@@ -175,8 +173,8 @@ void CrashScreen_DrawMain(void) {
     u32 *p6;
     s32 i;
     u32 *q;
-    Unk_02000fc0_Thr *thr;
-    Unk_02000fc0_Node *node;
+    OSThread *thr;
+    OSThread *node;
     u32 r;
     col.unk_00 = 0xd000;
     col.charBase = 0xd000;
@@ -225,7 +223,7 @@ void CrashScreen_DrawMain(void) {
     if (r != 0) {
         DebugText_Printf(&col, buf + 0x100, "IrqStkErr%u", r);
     } else {
-        node = (Unk_02000fc0_Node *)data_021fcc2c[2];
+        node = data_021fcc2c[2];
         r = 0;
         while (node != NULL) {
             r = func_02113438(node);
@@ -235,7 +233,7 @@ void CrashScreen_DrawMain(void) {
             node = node->next;
         }
         if (node != NULL) {
-            DebugText_Printf(&col, buf + 0x100, "StkErr%u:%u:%x", r, node->id, ((Unk_02000fc0_Thr *)node)->stackWarningOffset);
+            DebugText_Printf(&col, buf + 0x100, "StkErr%u:%u:%x", r, node->id, node->stackWarningOffset);
         }
     }
 }

@@ -20,7 +20,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
@@ -33,7 +32,7 @@
 #include "talk/SpNpcTalkRequest.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 
 
 
@@ -68,7 +67,7 @@ struct Unk_ov004_0221b6d4_Bits {
 #define NpcActor_netIsTalkLocked _ZN8NpcActor15netIsTalkLockedEv
 #define NpcActor_setNetUserBytes _ZN8NpcActor15setNetUserBytesEPvi
 #define NpcActor_getNetUserBytes _ZN8NpcActor15getNetUserBytesEPhj
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define NpcActor_setCollisionRadius _ZN8NpcActor18setCollisionRadiusEi
@@ -88,7 +87,7 @@ struct Unk_ov004_0221b6d4_Bits {
 #define NpcAnimCtrl_isPlayingAnim _ZN11NpcAnimCtrl13isPlayingAnimEiPv
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define PlayerData_getSpNpcRecord _ZN10PlayerData14getSpNpcRecordEv
-#define ActorTalkRequest_setPartnerActor _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene
+#define ActorTalkRequest_setPartnerActor _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor
 #define PlayerSpNpcRecord_setSableTalkCount _ZN17PlayerSpNpcRecord17setSableTalkCountEj
 #define PlayerSpNpcRecord_getSableTalkCount _ZN17PlayerSpNpcRecord17getSableTalkCountEv
 

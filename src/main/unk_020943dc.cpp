@@ -158,7 +158,7 @@ s32 PlayerActor_RequestChangeClothes(u16 *p, s32 a, s32 b);
 // members of PlayerActor whose symbols.txt names do not fit the method declarations (taken `this` first)
 extern "C" {
 s32 _ZN11PlayerActor16requestHatChangeEPthhh(PlayerActor *o, u16 *p, u32 a, u32 b, u32 c);
-void _ZN12Unk_020102ec10replayAnimEv(PlayerActor *o);
+void _ZN11PlayerActor10replayAnimEv(PlayerActor *o);
 s32 PlayerActor_GetHairStyle(PlayerActor *o);
 s32 PlayerActor_GetHairColor(PlayerActor *o);
 }
@@ -201,12 +201,12 @@ extern "C" BOOL PlayerActor_SetHoldableItem(u32 a, u32 idx) {
         _ZN10PlayerData11setHeldItemEPt(p, &v[3]);
         v[4] = 0xfff1;
         HeldItemModel_SetItem(&o->heldItemModel, &v[4], 0);
-        _ZN12Unk_020102ec10replayAnimEv(o);
+        _ZN11PlayerActor10replayAnimEv(o);
     } else {
         ItemInfo_GetNthHoldable(&v[0], a - 1);
         _ZN10PlayerData11setHeldItemEPt(p, &v[0]);
         HeldItemModel_SetItem(&o->heldItemModel, &v[0], p);
-        _ZN12Unk_020102ec10replayAnimEv(o);
+        _ZN11PlayerActor10replayAnimEv(o);
         HeldItemModel_Update(&o->heldItemModel);
     }
     return TRUE;

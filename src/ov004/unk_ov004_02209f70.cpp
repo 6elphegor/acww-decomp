@@ -1259,10 +1259,10 @@ void MTX_RotY33_(void *out, s32 a, s32 b);
 void MTX_Concat33(void *a, void *b, void *c);
 s32 Math_StepS32(s32 *p, s32 target, s32 step);
 s32 _ZN12G3dResAccess11findNodeIdxEi(u32 a, const char *s);
-void _ZN12Unk_02003c3010callSeStopEv(void *p);
+void _ZN12SndSeEmitter8callStopEv(void *p);
 void Snd_SeEmitterPlayOneShot(void *p, s32 a, s32 b, s32 c);
-void _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(void *p, void *v);
-void _ZN12Unk_02003c3010callSeInitEv(void *p);
+void _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(void *p, void *v);
+void _ZN12SndSeEmitter8callInitEv(void *p);
 u32 PatternTexCache_Get(void);
 u32 _ZN15PatternTexCache13getAbleTexKeyEi(u32 a, u32 b);
 s32 _ZN15PatternTexCache21testAndClearAbleDirtyEi(u32 a, u32 b);
@@ -1640,7 +1640,7 @@ public:
 
 BOOL FtrDesignDisplay::onDelete() {
     if (seEmitterReady) {
-        p13::_ZN12Unk_02003c3010callSeStopEv(&seEmitter);
+        p13::_ZN12SndSeEmitter8callStopEv(&seEmitter);
     }
     return TRUE;
 }
@@ -1651,7 +1651,7 @@ BOOL FtrDesignDisplay::updateActive() {
         if (p13::_ZN15PatternTexCache21testAndClearAbleDirtyEi(p13::PatternTexCache_Get(), designSlot)) {
             p13::Snd_SeEmitterPlayOneShot(&seEmitter, 0x50, 0x7f, 0);
         }
-        p13::_ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(&seEmitter, &v);
+        p13::_ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(&seEmitter, &v);
     }
     return TRUE;
 }
@@ -1676,7 +1676,7 @@ BOOL FtrDesignDisplay::initModel() {
         if (q != 0) {
             p13::Model_BindMatTexByIdx(b13_unk_590, p13::data_ov004_0224bb88, q, 0, 0);
             if (seEmitterReady == 0) {
-                p13::_ZN12Unk_02003c3010callSeInitEv(&seEmitter);
+                p13::_ZN12SndSeEmitter8callInitEv(&seEmitter);
                 seEmitterReady = 1;
             }
             return TRUE;

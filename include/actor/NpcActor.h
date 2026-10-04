@@ -24,7 +24,7 @@
 
 struct Unk_020d77a4_Vec3;
 struct Unk_020d77a4_Vec;
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 
 // Base of all NPC actors (villagers and special NPCs; 0x640 bytes). Methods and vtable in src/main/unk_020119cc.cpp
 // (0x0201b084..0x0201be04, D0 0x020119cc / D1 0x02011a98, inline destructor defined there and in 0202e2d4 / 0201c050,
@@ -75,8 +75,8 @@ public:
     s32 findAvoidPos(Unk_020d77a4_Vec *out);
     BOOL getFreeOffsetPos(Unk_020d77a4_Vec *out, void *p);
     s32 getSpeakerGender();
-    Unk_0201bc1c *getTalkRequest();
-    void setTalkRequest(Unk_0201bc1c *p);
+    ActorTalkRequest *getTalkRequest();
+    void setTalkRequest(ActorTalkRequest *p);
     u32 getPlayerActor(u32 id);
     s16 getRelativeAngleTo(NpcActor *other);
     s32 getAngleToPlayer(u32 id);
@@ -92,6 +92,10 @@ public:
     u16 getNpcIndex();
     void releaseModel();
     BOOL loadModel();
+    s32 getNewEmotionToLearn();
+    s16 getLastTaughtEmotion();
+    void setLastTaughtEmotion(s16 v);
+    void resetLastTaughtEmotion();
 
     /* 0x0ea */ u16 npcHandle;
     /* 0x0ec */ ThreeLayerAnimModel model;
@@ -124,9 +128,10 @@ public:
     /* 0x62d */ u8 netUserBytes[3];
     /* 0x630 */ u8 pad_630[2];
     /* 0x632 */ u16 npcIndex;
-    /* 0x634 */ Unk_0201bc1c *talkRequest;
+    /* 0x634 */ ActorTalkRequest *talkRequest;
     /* 0x638 */ s32 collisionRadius;
-    /* 0x63c */ u8 pad_63c[4];
+    /* 0x63c */ u8 pad_63c[2];
+    /* 0x63e */ s16 lastTaughtEmotion; // emotion last taught to the player (getNewEmotionToLearn), -1 = none
 };
 
 #endif

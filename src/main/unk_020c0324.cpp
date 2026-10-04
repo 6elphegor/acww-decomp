@@ -3,7 +3,6 @@
 #include "gfx/Unk_020bfe30_Vec.h"
 #include "npc/Unk_020c0538_Out.h"
 #include "game/Unk_020d77a4_Vec3.h"
-#include "npc/Unk_0201a13c.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
 #include "npc/NpcResHandleView.h"
@@ -31,7 +30,7 @@ typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
 class SpNpcKatie;
 
 extern "C" {
-void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
+void _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(void *a, void *b);
 void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
 s32 Scene_GetCurrent(void);
 s32 Scene_GetPrevious(void);
@@ -50,7 +49,7 @@ s32 _ZN8NpcActor10getAngleToEPS_(void *a, s32 b);
 s32 _ZN16ActorTalkRequest13getTalkPlayerEv(void *a);
 void _ZN16ActorTalkRequest13setTalkPlayerEj(void *a, s32 b);
 s32 _ZN16ActorTalkRequest10onEventTagEj(void *p, void *q);
-void _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene(void *p, s32 a);
+void _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor(void *p, s32 a);
 void _ZN16ActorTalkRequest15setTownNameSlotEjj(void *self, s32 a, s32 b);
 BOOL _ZN11NpcAnimCtrl13isPlayingAnimEiPv(void *a, s32 b, void *c);
 s32 Effect_Create(s32 a, void *b, void *c, s32 d);
@@ -162,7 +161,7 @@ BOOL SpNpcKatie::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(this, &talk);
+    _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(this, &talk);
     talk.attachOwner(this);
     _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 2, 0x333, 0xcc, 0x133);
     _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 1, 0x1b3, 0xcc, 0x133);
@@ -572,7 +571,7 @@ BOOL SpNpcKatie::mainAct08() {
             _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
             s32 t = NpcRegistry_FindSpNpc(0x23);
             if (t) {
-                _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene(&talk, t);
+                _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor(&talk, t);
             }
             buf = 10;
             _ZN15TalkWindowState14setNextMessageEPhPv(talk.window, &buf, (u32)sSpNpcKatieMsgKey);

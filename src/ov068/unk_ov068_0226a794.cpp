@@ -212,9 +212,9 @@ u32 _ZN12Unk_0200769421getActionDonePriorityEj(void *, u32);
 void _ZN11PlayerActor12requestAct01Ejj(void *, s32, s32);
 void _ZN11PlayerActor12requestAct10Esji(void *, s32, s32, s32);
 void *PlayerSession_GetSessionFlags();
-void _ZN12Unk_020102ec11advanceAnimEv(void *);
+void _ZN11PlayerActor11advanceAnimEv(void *);
 void _ZN11PlayerActor14playFootstepSeEv(void *);
-void _ZN12Unk_020102ec13startAnimOnceEijt(void *, s32, s32, s32);
+void _ZN11PlayerActor13startAnimOnceEijt(void *, s32, s32, s32);
 void _ZN11PlayerActor15clearActionFlagEj(void *);
 void *PlayerActor_GetPlayerData(void *);
 void Clock_GetDateTime(void *);
@@ -860,7 +860,7 @@ s32 PlayerActTaxiGetOut::requestTaxiGetOut(s32 a, s32 b) {
 void PlayerActTaxiGetOut::setupTaxiGetOut() {
     Unk_ov068_0226a940_Loc l;
     Unk_ov068_0226a940_Words w;
-    _ZN12Unk_020102ec13startAnimOnceEijt(this, 0x82, 0, 0);
+    _ZN11PlayerActor13startAnimOnceEijt(this, 0x82, 0, 0);
     rotY = 0;
     _ZN11PlayerActor15clearActionFlagEj(this);
     void *r4 = PlayerActor_GetPlayerData(this);
@@ -887,7 +887,7 @@ void PlayerActTaxiGetOut::endTaxiGetOut() {
 }
 
 void PlayerActTaxiGetOut::mainTaxiGetOutAnim() {
-    _ZN12Unk_020102ec11advanceAnimEv(this);
+    _ZN11PlayerActor11advanceAnimEv(this);
     if (_ZN13AnimFrameCtrl14hasPassedFrameEi(unk_2cc, 0x16) != 0) {
         _ZN11PlayerActor14playFootstepSeEv(this);
     }
@@ -913,7 +913,7 @@ s32 PlayerActTaxiGetIn::requestTaxiGetIn(s32 a, s32 b) {
 }
 
 void PlayerActTaxiGetIn::setupTaxiGetIn() {
-    _ZN12Unk_020102ec13startAnimOnceEijt(this, 0x83, 3, 0);
+    _ZN11PlayerActor13startAnimOnceEijt(this, 0x83, 3, 0);
     rotY = 0;
 }
 
@@ -927,7 +927,7 @@ void PlayerActTaxiGetIn::endTaxiGetIn() {
 }
 
 void PlayerActTaxiGetIn::mainTaxiGetInAnim() {
-    _ZN12Unk_020102ec11advanceAnimEv(this);
+    _ZN11PlayerActor11advanceAnimEv(this);
     if (_ZN13AnimFrameCtrl14hasPassedFrameEi(unk_2cc, 8) != 0) {
         _ZN11PlayerActor14playFootstepSeEv(this);
     }

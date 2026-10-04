@@ -13,9 +13,9 @@
 #define BlockMap_getDigKind _ZN8BlockMap10getDigKindEii
 #define BlockMap_canPlaceItem _ZN8BlockMap12canPlaceItemEii
 #define func_02133150 _s32_div_f
-#define Unk_02003c30_callSeStop _ZN12Unk_02003c3010callSeStopEv
-#define Unk_02003c40_callSeUpdateRelative _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec
-#define Unk_02003c30_callSeInit _ZN12Unk_02003c3010callSeInitEv
+#define SndSeEmitter_callStop _ZN12SndSeEmitter8callStopEv
+#define SndSeEmitter_callUpdateRelative _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec
+#define SndSeEmitter_callInit _ZN12SndSeEmitter8callInitEv
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -261,9 +261,9 @@ void FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
 s32 BlockMap_getDigKind(void *m, s32 x, s32 y);
 s32 CommManager_isOnline(void *g);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 y);
-void Unk_02003c30_callSeStop(void *);
-void Unk_02003c40_callSeUpdateRelative(void *, void *);
-void Unk_02003c30_callSeInit(void *);
+void SndSeEmitter_callStop(void *);
+void SndSeEmitter_callUpdateRelative(void *, void *);
+void SndSeEmitter_callInit(void *);
 void func_01ffd070(V3 *, void *, void *);
 s32 WorldCurve_ToCurved(V3 *, V3 *);
 void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
@@ -781,7 +781,7 @@ void PendingUnit_ApplyAtIfAid(Unk_ov003_0221b8bc_V2 *p, s32 id, s32 a);
 void Snd_SeEmitterPlayOneShot(void *p, u32 a, u32 b, u32 c);
 void TreeAnim_Reset(Unk_ov003_0221b8bc *o);
 void CachedModel_release(void *p);
-void Unk_02003c30_callSeStop(void *p);
+void SndSeEmitter_callStop(void *p);
 s32 WorldCurve_ToCurved(Unk_ov003_0221b8bc_V3 *out, void *v);
 void Mtx43_SetTranslate(void *p, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *p, s32 a);
@@ -796,11 +796,11 @@ s32 Item_GetStumpSize(u16 *p);
 s32 Item_GetTreeStage(u16 *p);
 void *TreeLeafFx_SpawnLeaves(void *d, s32 mode, s32 n, u16 *cell, Unk_ov003_0221b8bc_V2 *p, s32 c);
 void *TreeLeafFx_SpawnSeasonal(void *d, s32 mode, s32 n, u16 *cell, Unk_ov003_0221b8bc_V2 *p, s32 c);
-void Unk_02003c40_callSeUpdateRelative(void *p, Unk_ov003_0221b8bc_V3 *v);
+void SndSeEmitter_callUpdateRelative(void *p, Unk_ov003_0221b8bc_V3 *v);
 void CachedModel_allocJointRecord(void *p, s32 a);
 void AnimModel_allocAnmObj(void *p, s32 a);
 void Model_setCallback(void *p, void *fn, s32 a, s32 b, void *o, s32 c);
-void Unk_02003c30_callSeInit(void *p);
+void SndSeEmitter_callInit(void *p);
 void TreeAnim_ModelCallback(void);
 Unk_ov003_0221b8bc *TreeAnimSet_GetInstance(void *a, u16 *cell, s32 n, s32 f);
 s32 Item_IsTreeGrown(u16 *p);
@@ -6013,7 +6013,7 @@ void TreeAnim_Init(Unk_ov003_0221b8bc *o) {
     AnimModel_allocAnmObj(o->animModel, sFieldObjectAnimHeap);
     o->animKind = 8;
     Model_setCallback(o->animModel, (void *)TreeAnim_ModelCallback, 2, 2, o, 0);
-    Unk_02003c30_callSeInit(o->seEmitter);
+    SndSeEmitter_callInit(o->seEmitter);
     TreeAnim_Reset(o);
 }
 }
@@ -6155,7 +6155,7 @@ void TreeAnim_Update(Unk_ov003_0221b8bc *o) {
         v3.x = o->pos.x;
         v3.y = o->pos.y;
         v3.z = o->pos.z;
-        Unk_02003c40_callSeUpdateRelative(o->seEmitter, &v3);
+        SndSeEmitter_callUpdateRelative(o->seEmitter, &v3);
     }
     o->unk_b8 = 1;
 }
@@ -6186,7 +6186,7 @@ extern "C" {
 s32 TreeAnim_Release(Unk_ov003_0221b8bc *o) {
     TreeAnim_Reset(o);
     CachedModel_release(o->animModel);
-    Unk_02003c30_callSeStop(o->seEmitter);
+    SndSeEmitter_callStop(o->seEmitter);
 }
 }
 }
@@ -7362,7 +7362,7 @@ void FieldItemFxTable_Init(Tbl *t) {
     for (i = 0; i < 20; e++, i++) {
         e->active = 0;
         e->item = 0xfff1;
-        Unk_02003c30_callSeInit(e->seEmitter);
+        SndSeEmitter_callInit(e->seEmitter);
     }
 }
 }
@@ -7424,7 +7424,7 @@ void FieldItemFxTable_Update(Tbl *t) {
             tmp.x = e->pos.x;
             tmp.y = e->pos.y;
             tmp.z = e->pos.z;
-            Unk_02003c40_callSeUpdateRelative(e->seEmitter, &tmp);
+            SndSeEmitter_callUpdateRelative(e->seEmitter, &tmp);
         }
     }
 }
@@ -7554,7 +7554,7 @@ void FieldItemFxTable_Release(Tbl *t) {
         if (e->active != 0) {
             FieldItemFx_Finish(e);
         }
-        Unk_02003c30_callSeStop(e->seEmitter);
+        SndSeEmitter_callStop(e->seEmitter);
     }
 }
 }

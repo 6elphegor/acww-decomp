@@ -15,7 +15,6 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
 #include "item/ReceivedLetterBlock.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
@@ -29,7 +28,7 @@
 
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class SpNpcRover;
 
 
@@ -244,7 +243,7 @@ BOOL SpNpcRover::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     return TRUE;
 }

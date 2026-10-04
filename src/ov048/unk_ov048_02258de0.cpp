@@ -10,7 +10,6 @@
 #include "sys/ProcBase.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "talk/MsgString25.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -24,7 +23,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class NpcActor;
 class SpNpcCopper;
 class SpNpcCopperTalk;
@@ -696,7 +695,7 @@ BOOL SpNpcCopper::preCreate() {
     if (SpNpcActor::preCreate() == 0) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner((u8 *)this);
     setCollisionRadius(0x100);
     _ZN14NpcMoveAnimSet11setWalkAnimEi(&moveAnimSet, 0xd9);

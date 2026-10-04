@@ -44,6 +44,7 @@ struct Unk_0200b750_Pair;
 struct Unk_0200b908_Obj;
 struct Unk_0200f6d4_V2;
 struct Unk_0200ff08_Obj;
+struct Unk_020107c8_Blk;
 
 
 
@@ -317,6 +318,41 @@ public:
     void act76Update();
 
     // 0x000-0x0ec Character, 0x0ec-0x130 TalkMsgRequest
+    // animation / face / collider / movement methods (0x020102ec..0x020107c8 of src/main/unk_02004558.cpp; formerly
+    // the view PlayerActor)
+    void replayAnim();
+    void startAnimOnce(s32 a, u32 b, u16 c);
+    void switchAnim(s32 a, u32 b, u16 c);
+    void startAnim(s32 a, u32 b, u16 c);
+    void playAnim(s32 a, u32 b, u8 c, s32 d, u32 e, u16 f, s32 g);
+    void setMouthAnim(s32 *a, u8 *b);
+    void setEyeAnim(s32 *a, u8 *b);
+    void setMouthAnimForBody(s32 *a, u8 *b);
+    void setEyeAnimForBody(s32 *a, u8 *b);
+    void initFaceAnims();
+    void submitSceneCollider();
+    void updateCollidersAtDrawPos(u32 *a);
+    void updateBodyCollider();
+    void setSubCollider(u32 a, u32 b, u32 c);
+    void setSubColliderBody(u32 *a);
+    void setBodyColliderAtDrawPos(u32 *a);
+    void setBodyCollider(u32 *a);
+    void setBodyColliderAt(Unk_020107c8_Blk *a, u32 *b);
+    u32 getBodyColliderFlags(u32 *a);
+    void updateMouthAnim();
+    void updateEyeAnim();
+    void updateFaceAnims();
+    void advanceAnim();
+    BOOL netApproachTransform();
+    void moveNoCollision();
+    void moveWithCollision();
+    void setSpeed(u32 *a);
+    void approachRotX();
+    void setRotX(u16 a);
+    void setAngleY(s16 *a);
+    u32 getAnimResIndex(u32 *a);
+    u32 calcTan(u32 a);
+
     /* 0x130 */ s32 inputMagnitude;
     /* 0x134 */ s16 inputAngle;
     /* 0x136 */ u8 inputRun;

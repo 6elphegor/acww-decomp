@@ -4,7 +4,6 @@
 #include "types.h"
 
 class NpcActor;
-class Unk_02015b8c_Scene;
 
 // 0x1c-byte NPC animation controller (talk gesture, animation speed). Defined in main, unk_020119cc.cpp (the
 // unk_02015fe0.cpp part; C1 0x02016350, D1 0x02016340); a by-value member of every NPC actor.
@@ -28,17 +27,17 @@ public:
     void *getAnimResource(s32 a, s32 b);
     BOOL initForActor(NpcActor *o, s32 a);
     // unk_020156ac part (0x02015b8c..0x02015fe0)
-    void syncMouthType(Unk_02015b8c_Scene *scene);
-    void update(Unk_02015b8c_Scene *scene);
+    void syncMouthType(NpcActor *scene);
+    void update(NpcActor *scene);
     s32 getTalkGestureEnd(u32 k);
     s32 getTalkGestureStart(u32 k);
-    void updateAnimSpeed(Unk_02015b8c_Scene *scene);
+    void updateAnimSpeed(NpcActor *scene);
     s32 getAnimId(u32 idx);
-    BOOL isAnimFinished(Unk_02015b8c_Scene *scene);
-    void playAnimKeepFrame(Unk_02015b8c_Scene *scene, u32 c, u32 d, u32 e);
+    BOOL isAnimFinished(NpcActor *scene);
+    void playAnimKeepFrame(NpcActor *scene, u32 c, u32 d, u32 e);
     void setAnimSpeedFixed(u8 v);
-    void stopTalkGesture(Unk_02015b8c_Scene *scene);
-    void playTalkGesture(Unk_02015b8c_Scene *scene, u32 a, u32 b);
+    void stopTalkGesture(NpcActor *scene);
+    void playTalkGesture(NpcActor *scene, u32 a, u32 b);
     u32 getTalkGestureData();
     void loadTalkGesture();
     BOOL hasTalkGesture();

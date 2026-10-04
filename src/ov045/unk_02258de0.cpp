@@ -13,7 +13,6 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
 #include "talk/EncodedString.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
@@ -170,7 +169,7 @@ public:
 
 
 struct Unk_020d77a4_Vec3;
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 
 
 
@@ -300,7 +299,7 @@ BOOL SpNpcKatrina::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     setCollisionRadius(0x100);
     setInteractionRange(0x5000);

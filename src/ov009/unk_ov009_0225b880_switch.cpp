@@ -81,9 +81,9 @@ typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
 #define func_0203e638 _ZN9Character10preExecuteEv
 #define func_0203e650 _ZN9Character9preDeleteEv
 #define Character_setCharId _ZN9Character9setCharIdEj
-#define Unk_02003c30_callSeStop _ZN12Unk_02003c3010callSeStopEv
-#define Unk_02003c40_callSeUpdateRelative _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec
-#define Unk_02003c30_callSeInit _ZN12Unk_02003c3010callSeInitEv
+#define SndSeEmitter_callStop _ZN12SndSeEmitter8callStopEv
+#define SndSeEmitter_callUpdateRelative _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec
+#define SndSeEmitter_callInit _ZN12SndSeEmitter8callInitEv
 #define TriangleTrigger_getCenter _ZN15TriangleTrigger9getCenterEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -152,9 +152,9 @@ s32 BuildingInfo_GetEntranceType(void *self);
 
 void Snd_SeEmitterPlayHeld(void *, u32, u32, u32);
 void Snd_SeEmitterPlayOneShot(void *, u32, u32, u32);
-void Unk_02003c30_callSeStop(void *);
-void Unk_02003c40_callSeUpdateRelative(void *, void *);
-void Unk_02003c30_callSeInit(void *);
+void SndSeEmitter_callStop(void *);
+void SndSeEmitter_callUpdateRelative(void *, void *);
+void SndSeEmitter_callInit(void *);
 void BuildingLights_isLit(void *);
 void AnimModel_drawAnimated(void *, u32);
 s32 Math_Atan2(s32, s32);

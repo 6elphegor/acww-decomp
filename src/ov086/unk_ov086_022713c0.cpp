@@ -14,7 +14,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "talk/MsgString33.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -31,7 +30,7 @@
 #pragma opt_loop_invariants off
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class SpNpcTortimerCountdown;
 class SpNpcTortimerCountdownTalk;
 struct TalkStartMsg;
@@ -51,7 +50,7 @@ s32 Pocket_FindItem(u16 *p);
 void Pocket_AddItem(u16 *p, s32 v);
 void Pocket_RemoveItem(s32 v);
 void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 Random_GlobalBelow(u32 n);
@@ -202,7 +201,7 @@ BOOL SpNpcTortimerCountdown::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     return TRUE;
 }
@@ -433,7 +432,7 @@ void SpNpcTortimerCountdownTalk::onChoice(u32) {
             if (massageChairSlot >= 0) {
                 Pocket_RemoveItem(massageChairSlot);
                 h = 0x37e0;
-                _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &h, 0, 5, 0);
+                _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &h, 0, 5, 0);
             }
             msg = 2;
         }

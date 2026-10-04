@@ -1,10 +1,10 @@
 // mwcc-flags: -nothumb -O4,p
 // G004c: autoload_2 0x020ed8cc-0x020edd58 (18 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL unit: no data defined,
-// every function is extern "C" under its symbols.txt name. End of the command sequence object (Unk_Seq), then the
+// every function is extern "C" under its symbols.txt name. End of the command sequence object (CmdSeq), then the
 // sound-system wrappers around gSndHeap (sound archive/system object: thin assert-and-forward helpers, system
 // start-up at 0x020edbbc) and the sound player object (Player) helpers. Fatal stop = Fatal_Trap (assert failure).
 #include "types.h"
-#include "sys/Unk_Seq.h"
+#include "sys/CmdSeq.h"
 #include "snd/SndSeBytes4.h"
 #include "snd/SndSeGroup.h"
 #include "sys/FndList.h"
@@ -164,7 +164,7 @@ extern "C" void *Snd_GetHeapLevel(void) {
 
 // PROTOS-END
 
-extern "C" void CmdSeq_Undo(Unk_Seq *o) {
+extern "C" void CmdSeq_Undo(CmdSeq *o) {
     s16 *pi;
     if (o->cmds == NULL) return;
     if (o->state == 0) return;

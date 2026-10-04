@@ -8,17 +8,17 @@
 #include "game/FxVec3.h"
 #include "gfx/VecFx32.h"
 #include "gfx/V3.h"
-#include "snd/Unk_0213b954.h"
+#include "snd/CreatureSndChannel.h"
 #include "actor/StaticCollider.h"
 #include "sys/ProcProfile.h"
 
 // ---------------------------------------------------------------------------------------------------------------
 // Calls into other modules: the old stand-in names are #defined to the real symbols (mangled method names).
 #define func_02000c8c _ZN6FxVec3D1Ev
-#define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
+#define SndEnvChannel_callRelease _ZN13SndEnvChannel11callReleaseEv
+#define SndEnvChannel_callRequestSustained _ZN13SndEnvChannel20callRequestSustainedEPv
+#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP16Unk_02003a6c_Vec
+#define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define BlendAnimModel_playBlend _ZN14BlendAnimModel9playBlendEiiiitt
@@ -289,7 +289,7 @@ public:
     virtual ~AquariumFrog();
     virtual void setup();
     virtual void update();
-    /* 0x1fc */ Unk_0213b954 croakSound;
+    /* 0x1fc */ CreatureSndChannel croakSound;
     /* 0x20c */ s32 croakAnimSpeed;
     /* 0x210 */ u8 croakCount;
     /* 0x211 */ u8 croakState;
@@ -581,10 +581,10 @@ s32 func_01ffcb0c(s32, s32);
 void *FxVec3_Construct(void *);
 void func_02000c8c(void *);
 s32 Math_AngleXZ(void *, void *);
-void Unk_02003c30_callRelease(void *);
-void Unk_02003c40_callRequestSustained(void *, s32);
-void Unk_02003c40_callUpdateRelative(void *, V3 *);
-void Unk_02003c30_callReset(void *);
+void SndEnvChannel_callRelease(void *);
+void SndEnvChannel_callRequestSustained(void *, s32);
+void SndEnvChannel_callUpdateRelative(void *, V3 *);
+void SndEnvChannel_callReset(void *);
 s32 Snd_StopSe(s32, s32);
 void Snd_PlaySeOnHandle(u32 a);
 BOOL Collision_ClampToRect(void *p, s32 a, void *c, s32 w, s32 h);
@@ -1906,7 +1906,7 @@ extern "C" void _ZN12AquariumFrog5setupEv(E834 *o) {
     o->pos.z = 0x15400;
     o->unk_1c0 = 0;
     sAquariumFrog = o;
-    Unk_02003c30_callReset(&o->croakSound);
+    SndEnvChannel_callReset(&o->croakSound);
 }
 
 extern "C" void _ZN12AquariumFrog6updateEv(E834 *o) {
@@ -1914,7 +1914,7 @@ extern "C" void _ZN12AquariumFrog6updateEv(E834 *o) {
     l[0] = sRoomHasuPos;
     o->pos = l[0];
     l[1] = o->pos;
-    Unk_02003c40_callUpdateRelative(&o->croakSound, &l[1]);
+    SndEnvChannel_callUpdateRelative(&o->croakSound, &l[1]);
     switch (o->croakState) {
     case 2:
         AquariumFrog_StartCroak(o);
@@ -1923,7 +1923,7 @@ extern "C" void _ZN12AquariumFrog6updateEv(E834 *o) {
         AquariumFrog_Croak(o);
         break;
     case 6:
-        if (o->stateTimer >= o->croakSound.unk_0c) {
+        if (o->stateTimer >= o->croakSound.interval) {
             o->croakState = 2;
             o->stateTimer = 0;
         }
@@ -1933,10 +1933,10 @@ extern "C" void _ZN12AquariumFrog6updateEv(E834 *o) {
 }
 
 extern "C" void AquariumFrog_StartCroak(E834 *o) {
-    o->croakSound.unk_0c = Aquarium_RandRange(0x28, 0xc8);
+    o->croakSound.interval = Aquarium_RandRange(0x28, 0xc8);
     o->croakAnimSpeed = (Aquarium_RandRange(0x32, 0x4b) << 12) / 100;
     o->animFrameStep = o->croakAnimSpeed;
-    o->croakSound.unk_0e = Aquarium_RandRange(1, 7);
+    o->croakSound.repeatCount = Aquarium_RandRange(1, 7);
     o->croakCount = 0;
     o->stateTimer = 0;
     o->croakState = 4;
@@ -1944,10 +1944,10 @@ extern "C" void AquariumFrog_StartCroak(E834 *o) {
 
 extern "C" void AquariumFrog_Croak(E834 *o) {
     if (AnimFrameCtrl_hasPassedFrame(&o->animFrameCtrl, 1)) {
-        Unk_02003c40_callRequestSustained(&o->croakSound, 0x832);
+        SndEnvChannel_callRequestSustained(&o->croakSound, 0x832);
         o->croakCount++;
     }
-    if (o->croakCount >= o->croakSound.unk_0e) {
+    if (o->croakCount >= o->croakSound.repeatCount) {
         if (AnimFrameCtrl_hasPassedFrame(&o->animFrameCtrl, (u16)(o->animNumFrames.mid - 1))) {
             o->croakState = 6;
             o->stateTimer = 0;
@@ -3638,7 +3638,7 @@ extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i)
         switch ((*p)->fishIndex) {
         case 0xb:
             if (sAquariumFrog) {
-                Unk_02003c30_callRelease((u8 *)sAquariumFrog + 0x1fc);
+                SndEnvChannel_callRelease((u8 *)sAquariumFrog + 0x1fc);
                 sAquariumFrog = 0;
             }
             break;

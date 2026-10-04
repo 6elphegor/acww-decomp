@@ -2,7 +2,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "actor/Unk_ov004_SceneEntry.h"
-#include "npc/Unk_0201a13c.h"
 #include "npc/VillagerClothModel.h"
 #include "actor/Unk_02088d00.h"
 #include "room/RoomFreeUnitMap.h"
@@ -36,7 +35,7 @@ class SickVillager;
 #define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
+#define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
 #define ActorTalkRequest_setPlayerNameSlot _ZN16ActorTalkRequest17setPlayerNameSlotEjj
 #define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
@@ -51,7 +50,7 @@ class SickVillager;
 #define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
 #define func_0201b138 _ZN8NpcActor6onDrawEv
 #define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define VillagerMood_playMood3Effect _ZN12VillagerMood15playMood3EffectEP12VillagerTalk
@@ -190,7 +189,7 @@ s32 MenuCtrl_IsFinished();
 s32 MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
 s32 Pocket_RemoveItem();
-void Unk_02014420_requestTakeItem(void *, void *, s32, s32, s32);
+void ActorTalkRequest_requestTakeItem(void *, void *, s32, s32, s32);
 void *PlayerData_GetCurrent();
 void *PlayerData_getPlayerId(void *);
 void SickVillagerRecord_setTodaysVisitor(void *, void *);
@@ -548,7 +547,7 @@ void SickVillagerTalk::update() {
                 buf[1] = Random_GlobalBelow(3) + 16;
                 TalkWindowState_setNextMessage(window, &buf[1], 0);
                 *(u16 *)(buf + 2) = 0x155e;
-                Unk_02014420_requestTakeItem(this, buf + 2, 0, 6, 0);
+                ActorTalkRequest_requestTakeItem(this, buf + 2, 0, 6, 0);
                 villager->changeAct(7);
             }
         }

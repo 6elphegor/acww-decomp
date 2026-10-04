@@ -4,7 +4,9 @@
 #include "types.h"
 
 struct NpcActionEntry;
+struct NpcEmotionEntry;
 struct Unk_02006d14;
+class NpcActor;
 
 // Parameters of one NPC action request (0x34 bytes), current and pending copies inside NpcActionCtrl.
 struct NpcActionParams {
@@ -57,7 +59,7 @@ struct NpcActionCtrl {
     void startAction(u8 *o, s32 a, s32 b, s32 s0, s32 s1, s16 s2, s32 s3, s32 s4);
     void func_02019854();
     // Actions 0x0e..0x15 (unk_02016a44 part of src/main/unk_020119cc.cpp, 0x02016a44..0x02017d74); act0EStep00 is
-    // still the view method Unk_02017d74::act0EStep00, act0EStepNN are defined by their mangled names. The
+    // still the view method NpcActionCtrl::act0EStep00, act0EStepNN are defined by their mangled names. The
     // Unk_02006d14 argument is the TU-local NpcActor view of unk_020119cc.cpp, not the player.
     BOOL setupAct15(Unk_02006d14 *o);
     BOOL postAct14(Unk_02006d14 *o);
@@ -102,6 +104,52 @@ struct NpcActionCtrl {
     void act0EStep18(Unk_02006d14 *o);
     void act0EStep19(Unk_02006d14 *o);
     BOOL waitItemAnimEnd(Unk_02006d14 *o, u16 *p, u32 a, u32 b);
+    // actions 0x03..0x0e and 0x15 steps (unk_02015fe0 / unk_02017d74 / unk_02018698 parts of src/main/unk_020119cc.cpp)
+    void mainAct15(NpcActor *o);
+    void act15Step3(NpcActor *o);
+    void act15Step2(NpcActor *o);
+    void act15Step1(NpcActor *o);
+    void act15Step0(NpcActor *o);
+    void act0EStep00(NpcActor *c);
+    BOOL setupAct0E(NpcActor *c);
+    void postAct0D(NpcActor *c);
+    void mainAct0D(NpcActor *c);
+    void act0DStep4(NpcActor *c);
+    void act0DStep3(NpcActor *c);
+    void act0DStep2(NpcActor *c);
+    void act0DStep1(NpcActor *c);
+    void act0DStep0(NpcActor *c);
+    BOOL setupAct0D(NpcActor *c);
+    void postAct0C(NpcActor *c);
+    BOOL setupAct0C(NpcActor *c);
+    void postAct0B(NpcActor *c);
+    void mainAct0B(NpcActor *c);
+    void act0BStep0(NpcActor *c);
+    BOOL setupAct0B(NpcActor *c);
+    void postAct0A(NpcActor *c);
+    void mainAct0A(NpcActor *c);
+    void act0AStep0(NpcActor *c);
+    s32 setupAct0A(NpcActor *c);
+    void mainAct09(NpcActor *c);
+    s32 setupAct09(NpcActor *c);
+    void mainAct08(NpcActor *c);
+    s32 setupAct08(NpcActor *c);
+    void postAct07(NpcActor *c);
+    void mainAct07(NpcActor *c);
+    void act07Step0(NpcActor *c);
+    s32 setupAct07(NpcActor *c);
+    s32 setupAct06(NpcActor *c);
+    s32 setupAct05(NpcActor *c);
+    void mainAct05(NpcActor *c);
+    void act05Step1(NpcActor *c);
+    void act05Step0(NpcActor *c);
+    s32 setupMoveTurnFirst(NpcActor *c, s32 a, s16 b);
+    void mainAct04(NpcActor *c);
+    void act04Step1(NpcActor *c);
+    void act04Step0(NpcActor *c);
+    s32 setupAct04(NpcActor *c);
+    void mainAct03(NpcActor *c);
+    s32 setupAct03(NpcActor *c);
 
     /* 0x00 */ s32 netMoveMode;    // move kind (1/2) of the net-synced move action 0x15 (NpcActor::onExecute)
     /* 0x04 */ u8 netAction;
@@ -122,9 +170,9 @@ struct NpcActionCtrl {
     /* 0x99 */ u8 unk_99;
     /* 0x9a */ u8 pad_9a[2];
     /* 0x9c */ s32 moveMode;
-    /* 0xa0 */ u16 unk_a0;
+    /* 0xa0 */ s16 unk_a0;
     /* 0xa2 */ u8 pad_a2[2];
-    /* 0xa4 */ s32 emotionEntry;
+    /* 0xa4 */ NpcEmotionEntry *emotionEntry;
     /* 0xa8 */ u8 emotionIntro;
     /* 0xa9 */ u8 emotionId;
     /* 0xaa */ u8 pad_aa[2];

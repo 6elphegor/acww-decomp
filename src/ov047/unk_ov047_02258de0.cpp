@@ -14,7 +14,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -28,7 +27,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class NpcActor;
 class SpNpcBlathers;
 class SpNpcBlathersTalk;
@@ -113,9 +112,9 @@ u32 func_0212a438(const char *s);
 BOOL _ZN11CommManager8isOnlineEv(void *g);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, s32 a, s32 b, s32 c);
-void _ZN12Unk_0201442017requestReturnItemEv(void *self);
-void _ZN12Unk_0201442015requestKeepItemEv(void *self);
-void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *self, u16 *p, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest17requestReturnItemEv(void *self);
+void _ZN16ActorTalkRequest15requestKeepItemEv(void *self);
+void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *self, u16 *p, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest19requestReopenWindowEv(void *self);
 void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *self, u32 a, u32 b);
 void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *self, Unk_ov047_Cb cb, u32 a, u32 b);
@@ -156,9 +155,9 @@ BOOL _ZN8NpcActor11netGetSlotsEii(void *self, s32 *a, s32 *b);
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
-#define Unk_02014420_requestReturnItem _ZN12Unk_0201442017requestReturnItemEv
-#define Unk_02014420_requestKeepItem _ZN12Unk_0201442015requestKeepItemEv
-#define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
+#define ActorTalkRequest_requestReturnItem _ZN16ActorTalkRequest17requestReturnItemEv
+#define ActorTalkRequest_requestKeepItem _ZN16ActorTalkRequest15requestKeepItemEv
+#define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
 #define ActorTalkRequest_requestReopenWindow _ZN16ActorTalkRequest19requestReopenWindowEv
 #define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
 #define ActorTalkRequest_setPocketFilter _ZN16ActorTalkRequest15setPocketFilterEjjj
@@ -551,7 +550,7 @@ BOOL SpNpcBlathers::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     standBlend = data_020c6cc8;
     effectHandle = -1;
@@ -864,7 +863,7 @@ void SpNpcBlathersTalk::scriptDonationItemChosen() {
                     }
                 }
             }
-            Unk_02014420_requestTakeItem(this, &item, 0, 10, 0);
+            ActorTalkRequest_requestTakeItem(this, &item, 0, 10, 0);
             setNextScript(4);
         }
     } else {
@@ -892,7 +891,7 @@ void SpNpcBlathersTalk::scriptAppraisalItemChosen() {
     if (MenuCtrl_IsResultOk()) {
         pocketSlot = MenuCtrl_GetIndex();
         item = Pocket_GetItem(pocketSlot);
-        Unk_02014420_requestTakeItem(this, &item, 0, 10, 0);
+        ActorTalkRequest_requestTakeItem(this, &item, 0, 10, 0);
         m.msgIndex = 0x19;
     } else {
         item = 0xfff1;
@@ -940,7 +939,7 @@ void SpNpcBlathersTalk::scriptDeliveryItemChosen() {
             Pocket_RemoveItem(r5);
         }
         if (!Unk_ov047_0225a3e4_Same(&m.item, &m.unk_04)) {
-            Unk_02014420_requestTakeItem(this, &m.item, 2, 5, 0);
+            ActorTalkRequest_requestTakeItem(this, &m.item, 2, 5, 0);
         }
         ErrandRecord_setStep(ParcelErrand_GetRecord(SickVillagerRecord_getParcelErrand(PlayerData_getErrands(r7))), 1);
         m.msgIndex = 0xe7;
@@ -1144,7 +1143,7 @@ void SpNpcBlathersTalk::onMessageEnd(u32) {
         } else {
             nextMsg = 0x27;
         }
-        Unk_02014420_requestKeepItem(this);
+        ActorTalkRequest_requestKeepItem(this);
         hdr[1] = nextMsg;
         TalkWindowState_setNextMessage(window, (u8 *)&hdr[1], sSpNpcBlathersKey);
         goto end;
@@ -1156,7 +1155,7 @@ void SpNpcBlathersTalk::onMessageEnd(u32) {
         } else {
             nextMsg = 0x27;
         }
-        Unk_02014420_requestKeepItem(this);
+        ActorTalkRequest_requestKeepItem(this);
         hdr[2] = nextMsg;
         TalkWindowState_setNextMessage(window, (u8 *)&hdr[2], sSpNpcBlathersKey);
         goto end;
@@ -1206,7 +1205,7 @@ test:
             nextMsg = 0x20;
         }
         item = 0xfff1;
-        Unk_02014420_requestKeepItem(this);
+        ActorTalkRequest_requestKeepItem(this);
     }
     if (msgIndex == 0x25 || msgIndex == 0x2c || msgIndex == 0x2d || msgIndex == 0x69) {
         if (!Unk_ov047_022596e8_IsNoneT(&item, *(u16 *)&tt[0])) {
@@ -1259,12 +1258,12 @@ void SpNpcBlathersTalk::openAppraisalPicker() {
 }
 
 void SpNpcBlathersTalk::returnItemAndShowMenu() {
-    Unk_02014420_requestReturnItem(this);
+    ActorTalkRequest_requestReturnItem(this);
     showMuseumMenu();
 }
 
 void SpNpcBlathersTalk::returnItemAndAskShowMore() {
-    Unk_02014420_requestReturnItem(this);
+    ActorTalkRequest_requestReturnItem(this);
     nextMsg = 0x6b;
 }
 
@@ -1278,7 +1277,7 @@ void SpNpcBlathersTalk::showMuseumMenu() {
 
 void SpNpcBlathersTalk::returnHeldItem() {
     if (item != 0xfff1) {
-        Unk_02014420_requestReturnItem(this);
+        ActorTalkRequest_requestReturnItem(this);
     }
 }
 
@@ -1314,23 +1313,23 @@ void SpNpcBlathersTalk::afterFossilIdentified() {
 
 void SpNpcBlathersTalk::offerFossilDonation() {
     if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
-        Unk_02014420_requestReturnItem(this);
+        ActorTalkRequest_requestReturnItem(this);
         nextMsg = 0x20;
     } else if (Talk_IsInOwnTown() != 0 && MuseumData_isDonated(data_021ed0a0, &item) == 0) {
         nextMsg = 0x1e;
     } else {
-        Unk_02014420_requestReturnItem(this);
+        ActorTalkRequest_requestReturnItem(this);
         nextMsg = 0x20;
     }
 }
 
 void SpNpcBlathersTalk::returnAppraisedFossil() {
-    Unk_02014420_requestReturnItem(this);
+    ActorTalkRequest_requestReturnItem(this);
     nextMsg = 0x20;
 }
 
 void SpNpcBlathersTalk::onFossilPartDonated() {
-    Unk_02014420_requestKeepItem(this);
+    ActorTalkRequest_requestKeepItem(this);
     commitDonation();
     if (appraisalFlow == 0) {
         nextMsg = 0x27;
@@ -1354,7 +1353,7 @@ void SpNpcBlathersTalk::onPaintingDonated() {
     } else {
         nextMsg = 0x27;
     }
-    Unk_02014420_requestKeepItem(this);
+    ActorTalkRequest_requestKeepItem(this);
 }
 
 void SpNpcBlathersTalk::showInsectComment() {
@@ -1441,7 +1440,7 @@ void SpNpcBlathersTalk::onAlreadyDonated() {
 }
 
 void SpNpcBlathersTalk::returnItemAndAskMore() {
-    Unk_02014420_requestReturnItem(this);
+    ActorTalkRequest_requestReturnItem(this);
     item = 0xfff1;
     nextMsg = 0x23;
 }

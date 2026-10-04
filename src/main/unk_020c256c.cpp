@@ -9,7 +9,6 @@
 #include "npc/NpcFootstepFx.h"
 #include "sys/ProcBase.h"
 #include "npc/NpcActionCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/TalkMsgRequest.h"
@@ -24,7 +23,7 @@ s32 _ZN8NpcActor6isNearEPS_i(void *p, void *q, s32 n);
 BOOL TalkRequest_SetTargetDone(void *p);
 void _ZN8NpcActor12setNpcHandleEPt(void *p, u16 *q);
 u32 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
-void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *p, void *q);
+void _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(void *p, void *q);
 extern u16 data_020c6cc8;
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 }
@@ -320,7 +319,7 @@ BOOL SpNpcTest::preCreate() {
     }
     v = 0xd000;
     _ZN8NpcActor12setNpcHandleEPt(this, &v);
-    _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(this, &talk);
+    _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(this, &talk);
     talk.attachOwner((u32)this);
     return TRUE;
 }

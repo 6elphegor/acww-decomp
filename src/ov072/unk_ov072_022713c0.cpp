@@ -15,7 +15,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
@@ -29,7 +28,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 
 // Grid (unk_0204e858.cpp): cells are 0x28 bytes
 struct Unk_02071a58_Grid {
@@ -74,7 +73,7 @@ void _ZN13GulliverQuest5startEv(void *self);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void TalkRequest_SetTargetDone(void *p);
 void EventWeekSlots_MarkPlayer(s32 a);
-void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *self, u32 a);
 void _ZN14NpcMoveAnimSet12setStandAnimEi(void *self, s32 a);
@@ -295,7 +294,7 @@ BOOL SpNpcGulliver::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     return TRUE;
 }
@@ -723,7 +722,7 @@ void SpNpcGulliverTalk::onMessageEnd(u32) {
     case 0x14:
     case 0x15:
         h1 = 0x1568;
-        _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &h1, 0, 5, 0);
+        _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &h1, 0, 5, 0);
         r = 0x16;
         break;
     case 0x16:

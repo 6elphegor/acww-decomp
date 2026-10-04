@@ -5,7 +5,7 @@
 
 // 8-byte NpcActor member (footstepFx: footstep effects and sounds; ctor 0x020135e4, dtor label 0x020135e0, whose
 // function symbol is still func_020135e0). Defined in src/main/unk_020119cc.cpp (0x02013474..0x020135ec).
-struct Unk_020133cc_Player;
+class NpcActor;
 
 struct NpcFootstepFx {
     /* 0x0 */ u8 footstepsEnabled;
@@ -13,8 +13,8 @@ struct NpcFootstepFx {
     /* 0x4 */ u32 prevMoveMode;
     NpcFootstepFx();
     ~NpcFootstepFx();
-    void updateFootsteps(Unk_020133cc_Player* p);
-    void playFootstepSe(Unk_020133cc_Player* p);
+    void updateFootsteps(NpcActor* p);
+    void playFootstepSe(NpcActor* p);
     void disableFootsteps();
     void enableFootsteps();
     void resetFootsteps();

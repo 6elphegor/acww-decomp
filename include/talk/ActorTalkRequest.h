@@ -6,8 +6,9 @@
 #include "talk/TalkStartMsg.h"
 
 class ChoiceList;
-class Unk_02015b8c_Scene;
+class NpcActor;
 struct TalkSubSceneParams;
+struct Unk_02014420_Vec2;
 
 // Talk request of an actor conversation (0xac bytes; vtable 0x020d7710): TalkMsgRequest plus the two talking actors,
 // emotion state, the deferred task runner and the sub-scene parameters (0x64..0xa8). Base of the SpNpc*Talk /
@@ -38,10 +39,10 @@ public:
     virtual void onTaskDone(u32 id);            // 0x84 (called by the task runner with the finished task id)
 
     u8 getSpeakerIndex();
-    Unk_02015b8c_Scene *getSpeakerActor();
-    Unk_02015b8c_Scene *getActorB(u32 idx);
-    Unk_02015b8c_Scene *getActionActor();
-    Unk_02015b8c_Scene *getActor(u32 idx);
+    NpcActor *getSpeakerActor();
+    NpcActor *getActorB(u32 idx);
+    NpcActor *getActionActor();
+    NpcActor *getActor(u32 idx);
     void setSlotFromString(u32 a, u32 b, u32 c);
     void setItemNameSlot(u32 a, u32 b, u32 c);
     void setVillagerNameSlot(u32 a, u32 b);
@@ -57,12 +58,50 @@ public:
     void setItemActionBusy();
     void playEmotion(u32 a, u32 b);
     ChoiceList *getChoiceList();
-    void setOwnerActor(Unk_02015b8c_Scene *p);
-    Unk_02015b8c_Scene *getPartnerActor();
-    void setPartnerActor(Unk_02015b8c_Scene *p);
+    void setOwnerActor(NpcActor *p);
+    NpcActor *getPartnerActor();
+    void setPartnerActor(NpcActor *p);
     void *getTalkPlayer();
     void setTalkPlayer(u32 a);
     void tick();
+    // switch-speaker task and the item / melody tasks (0x02014258..0x02014d90, unk_02013b10.cpp / unk_02014420.cpp parts
+    // of src/main/unk_020119cc.cpp; started through the task runner of Unk_020d7710)
+    BOOL taskSwitchSpeaker();
+    BOOL switchSpeakerSwap();
+    BOOL switchSpeakerFocus();
+    BOOL switchSpeakerClose();
+    BOOL requestSwitchSpeaker(u8 v);
+    BOOL taskMelody();
+    BOOL melodyStart();
+    BOOL melodyWait();
+    BOOL melodyEnd();
+    BOOL taskEatItem();
+    BOOL eatItemStart();
+    BOOL eatItemWait();
+    BOOL taskItemAct12();
+    BOOL itemAct12Start();
+    BOOL itemAct12Wait();
+    BOOL taskReturnItem();
+    BOOL returnItemStart();
+    BOOL returnItemWait();
+    BOOL taskKeepItem();
+    BOOL keepItemStart();
+    BOOL keepItemWait();
+    BOOL taskItemAct0F();
+    BOOL itemAct0FStart();
+    BOOL itemAct0FWait();
+    BOOL taskTakeItem();
+    BOOL takeItemStart();
+    BOOL takeItemWait();
+    BOOL taskGiveItem();
+    BOOL requestPlayRandomMelody();
+    BOOL requestPlayMelody(Unk_02014420_Vec2 *p);
+    BOOL requestEatItem();
+    BOOL requestItemAct12();
+    BOOL requestReturnItem();
+    BOOL requestKeepItem();
+    BOOL requestItemAct0F();
+    BOOL requestTakeItem(u16 *a, u32 b, u32 c, u32 d);
 
     // task / sub-scene half (0x02014d90..0x02015624)
     BOOL giveItemWait();
@@ -95,8 +134,8 @@ public:
     void makePlayerLookAt(u8 *actor);
 
     /* 0x44 */ u32 talkPlayer;                  // player actor the talk / item hand-over is with
-    /* 0x48 */ Unk_02015b8c_Scene *ownerActor;  // owner actor (speaker 0)
-    /* 0x4c */ Unk_02015b8c_Scene *partnerActor; // partner actor (speaker 1)
+    /* 0x48 */ NpcActor *ownerActor;  // owner actor (speaker 0)
+    /* 0x4c */ NpcActor *partnerActor; // partner actor (speaker 1)
     /* 0x50 */ u8 actionActorIndex;             // actor index the action tags apply to
     /* 0x51 */ u8 speakerIndex;
     /* 0x52 */ u8 pad_52[6];
@@ -117,14 +156,15 @@ public:
     /* 0x82 */ u8 launcherMenu;
     /* 0x83 */ u8 launcherIndex;
     /* 0x84 */ u8 keepWindowClosed;
-    /* 0x85 */ u8 pad_85[0x0b];
+    /* 0x85 */ u8 pad_85[3];
+    /* 0x88 */ s32 melodyPattern[2];                // packed melody of the melody task (requestPlayMelody)
     /* 0x90 */ u8 handOverMode;
     /* 0x91 */ u8 pad_91[3];
     /* 0x94 */ u32 handOverVariant;
     /* 0x98 */ u32 launcherText;
     /* 0x9c */ u32 launcherTextSize;
     /* 0xa0 */ u8 focusNewSpeaker;              // switch-speaker task: refocus the camera (TalkSubSceneParams 0x3c)
-    /* 0xa1 */ u8 unk_a1;                       // TalkSubSceneParams::unk_3d (cleared by initSubSceneParams)
+    /* 0xa1 */ u8 randomMelody;                 // melody task plays a random melody (requestPlayRandomMelody; TalkSubSceneParams::unk_3d)
     /* 0xa2 */ u8 pad_a2[2];
     /* 0xa4 */ u32 closeMode;
     /* 0xa8 */ u8 taskStep;                     // step of the running task (ActorTalkRequest::runTask)

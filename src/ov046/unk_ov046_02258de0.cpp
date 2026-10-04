@@ -15,7 +15,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "talk/MsgString256.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -31,7 +30,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class SpNpcCelesteTalk;
 class SpNpcCeleste;
 typedef void (SpNpcCelesteTalk::*Unk_ov046_0225aa0c_Fn)();
@@ -278,7 +277,7 @@ BOOL SpNpcCeleste::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     effectHandle = -1;
     return TRUE;

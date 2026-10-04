@@ -12,10 +12,10 @@
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 // (called as free functions with the object as first argument; the mangled name is the symbols.txt name)
-#define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
+#define SndEnvChannel_callRelease _ZN13SndEnvChannel11callReleaseEv
+#define SndEnvChannel_callRequestSustained _ZN13SndEnvChannel20callRequestSustainedEPv
+#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP16Unk_02003a6c_Vec
+#define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
 #define GroundInfo_initAtUnit _ZN10GroundInfo10initAtUnitEiiii
 #define BlendAnimModel_getAnmObj _ZN14BlendAnimModel9getAnmObjEv
@@ -360,7 +360,7 @@ s32 SceneId_GetVillagerHouse(s32 r);
 s32 SceneId_IsNookShop(s32 r);
 s32 SceneId_GetNookShop(s32 r);
 void Model_clearResource(void *self);
-void Unk_02003c30_callRelease(void *self);
+void SndEnvChannel_callRelease(void *self);
 void AnimModel_drawAnimated(void *self, s32 a);
 void ObjShadow_Update();
 void CharaShadow_UpdateColor();
@@ -370,10 +370,10 @@ void AnimModel_stepAnim(void *self);
 void AnimFrameCtrl_step(void *self);
 s32 FtrMgr_GetCycleCounter(s32 a);
 void RoomBoardSign_Spawn(void *v, s32 a, s32 b, u32 c);
-void Unk_02003c40_callRequestSustained(void *self, u32 a);
-void Unk_02003c40_callUpdateRelative(void *self, Unk_ov004_0222b9a4_Vec *v);
+void SndEnvChannel_callRequestSustained(void *self, u32 a);
+void SndEnvChannel_callUpdateRelative(void *self, Unk_ov004_0222b9a4_Vec *v);
 void Model_setInitCallback(void *self, void *fn, void *obj);
-void Unk_02003c30_callReset(void *self);
+void SndEnvChannel_callReset(void *self);
 u16 *Sky_GetCurrentPalette();
 u16 Sky_GetLightColor(u32 v);
 
@@ -454,7 +454,7 @@ BOOL RoomShell::onCreate() {
     wdMatIdx = G3dResAccess_findMatIdx((u8 *)model.resMdl, "wd");
     Model_setInitCallback(&model, (void *)RoomShell_InitRenderObj, this);
     RoomShell_SpawnBoardSigns(this);
-    Unk_02003c30_callReset(&clockSe);
+    SndEnvChannel_callReset(&clockSe);
     return TRUE;
 }
 
@@ -470,11 +470,11 @@ BOOL RoomShell::onExecute() {
     if (clockPos.x != 0) {
         s32 id = FtrMgr_GetCycleCounter(clockPos.x);
         if (id == 9 || id == 0x1d) {
-            Unk_02003c40_callRequestSustained(&clockSe, 0x4d1);
+            SndEnvChannel_callRequestSustained(&clockSe, 0x4d1);
         }
     }
     Unk_ov004_0222b9a4_Vec v = clockPos;
-    Unk_02003c40_callUpdateRelative(&clockSe, &v);
+    SndEnvChannel_callUpdateRelative(&clockSe, &v);
     ((RoomScene22Shape *)scene22Shape)->update();
     data_021ce63c = 0;
     return TRUE;
@@ -501,7 +501,7 @@ BOOL RoomShell::onDelete() {
     entranceColliders.release();
     Model_clearResource(&model);
     sRoomShell = 0;
-    Unk_02003c30_callRelease(&clockSe);
+    SndEnvChannel_callRelease(&clockSe);
     return TRUE;
 }
 

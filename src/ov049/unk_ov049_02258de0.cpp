@@ -10,7 +10,6 @@
 #include "sys/ProcBase.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "save/Pattern.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -25,7 +24,7 @@
 
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
+#define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
 #define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
 #define ActorTalkRequest_setPocketFilter _ZN16ActorTalkRequest15setPocketFilterEjjj
 #define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
@@ -33,7 +32,7 @@
 #define ActorTalkRequest_setPlayerNameSlot _ZN16ActorTalkRequest17setPlayerNameSlotEjj
 #define ActorTalkRequest_setTownNameSlot _ZN16ActorTalkRequest15setTownNameSlotEjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
-#define ActorTalkRequest_setPartnerActor _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene
+#define ActorTalkRequest_setPartnerActor _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor
 #define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
 #define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
@@ -79,7 +78,7 @@
 #define FtrActorGrid_getActor _ZN12FtrActorGrid8getActorEiii
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class NpcActor;
 class SpNpcMabel;
 class SpNpcMabelTalk;
@@ -178,7 +177,7 @@ void *SickVillagerRecord_getParcelErrand(void *p);
 s32 Talk_IsInOwnTown();
 s32 Pocket_GetItem();
 void Pocket_RemoveItem(s32 a);
-void Unk_02014420_requestTakeItem(void *self, u16 *p, u32 a, u32 b, u32 c);
+void ActorTalkRequest_requestTakeItem(void *self, u16 *p, u32 a, u32 b, u32 c);
 void *ParcelErrand_GetRecord(void *p);
 void ErrandRecord_setStep(void *p, s32 a);
 s32 PlayerActor_TestLocalFlag0F();
@@ -727,7 +726,7 @@ BOOL SpNpcMabel::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner((s32)this);
     setColliderSize(0x119a, 0x2000);
     setCollisionRadius(0xf00);
@@ -1930,7 +1929,7 @@ void SpNpcMabelTalk::onDeliveryItemChosen() {
                 Pocket_RemoveItem(n);
             }
             if (!Unk_ov049_02258ee0_Eq(&v[1], &v[2])) {
-                Unk_02014420_requestTakeItem(this, &v[1], 2, 5, 0);
+                ActorTalkRequest_requestTakeItem(this, &v[1], 2, 5, 0);
                 msg = 0x2f;
                 ErrandRecord_setStep(ParcelErrand_GetRecord(hh), 1);
             }

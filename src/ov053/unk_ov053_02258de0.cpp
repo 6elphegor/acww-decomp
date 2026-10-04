@@ -16,7 +16,6 @@
 #include "sys/ProcBase.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
@@ -31,7 +30,7 @@
 
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class SpNpcHarriet;
 class SpNpcHarrietTalk;
 
@@ -338,7 +337,7 @@ BOOL SpNpcHarriet::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     setCollisionRadius(0x100);
     const Unk_ov053_Vec *d = &data_ov053_0225a1a0;

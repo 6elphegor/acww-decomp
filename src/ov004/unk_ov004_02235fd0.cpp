@@ -10,11 +10,11 @@
 // main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
-#define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
-#define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
-#define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
+#define SndEnvChannel_callRelease _ZN13SndEnvChannel11callReleaseEv
+#define SndEnvChannel_callRequest _ZN13SndEnvChannel11callRequestEPv
+#define SndEnvChannel_callRequestSustained _ZN13SndEnvChannel20callRequestSustainedEPv
+#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP16Unk_02003a6c_Vec
+#define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define func_02031c10 _ZN11BoxColliderD2Ev
 #define func_02031c48 _ZN11BoxColliderC1Ev
 #define func_0203239c _ZN14CollisionStateD1Ev
@@ -188,7 +188,7 @@ void *func_02106788(void *p);
 void *func_021067a4(void *p, u32 q);
 void BlendAnimModel_initAnim(void *p, void *a, s32 b, s32 c, u16 d, u16 e);
 void AnimModel_attachAnim(void *p);
-void Unk_02003c30_callReset(void *p);
+void SndEnvChannel_callReset(void *p);
 void func_02088c34(void *p);
 void func_020548a0(void *p);
 void func_0203239c(void *p);
@@ -219,10 +219,10 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 BoxCollider_Register(void *p, s32 a, s32 b, s32 c, void *d, s32 e, s32 f);
 s32 BoxCollider_Unregister(void *p);
-void Unk_02003c30_callRelease(void *p);
-void Unk_02003c40_callRequest(void *p, u32 id);
-void Unk_02003c40_callRequestSustained(void *p, u32 id);
-s32 Unk_02003c40_callUpdateRelative(void *p, void *v);
+void SndEnvChannel_callRelease(void *p);
+void SndEnvChannel_callRequest(void *p, u32 id);
+void SndEnvChannel_callRequestSustained(void *p, u32 id);
+s32 SndEnvChannel_callUpdateRelative(void *p, void *v);
 void CachedModel_release(void *p);
 void Model_setPolygonId(void *p, s32 a);
 void NNSi_G3dModifyPolygonAttrMask(u32 a, u32 b, u32 c);
@@ -520,7 +520,7 @@ BOOL HouseRoach::setup() {
     void *r = func_021067a4(func_02106788(t), 0);
     BlendAnimModel_initAnim(model, r, 0, 0x1000, 0, 0);
     AnimModel_attachAnim(model);
-    Unk_02003c30_callReset(sound);
+    SndEnvChannel_callReset(sound);
     s16 *q = &moveAngleX;
     q[1] = rotY;
     spawnAngle = q[1];
@@ -572,7 +572,7 @@ void HouseRoach::updateState() {
     v.x = position.x;
     v.y = pv->y;
     v.z = pv->z;
-    Unk_02003c40_callUpdateRelative(sound, &v);
+    SndEnvChannel_callUpdateRelative(sound, &v);
 }
 
 void HouseRoach::updateCollision() {
@@ -666,7 +666,7 @@ void HouseRoach::updateAppear() {
     v.x = position.x;
     v.y = pv->y;
     v.z = pv->z;
-    Unk_02003c40_callUpdateRelative(sound, &v);
+    SndEnvChannel_callUpdateRelative(sound, &v);
 }
 
 BOOL HouseRoach::execute() {
@@ -771,7 +771,7 @@ BOOL HouseRoach::release() {
     CachedModel_release(model);
     lifeState = 4;
     F08(this) = 0xffff;
-    Unk_02003c30_callRelease(sound);
+    SndEnvChannel_callRelease(sound);
     return TRUE;
 }
 
@@ -780,16 +780,16 @@ void HouseRoach::playSe(u32 sel) {
     case 0:
         wantsCrawlSe = 1;
         if (getSoundState() == 2) {
-            Unk_02003c40_callRequest(sound, 0x1d2);
+            SndEnvChannel_callRequest(sound, 0x1d2);
         } else {
             setSoundState(1);
         }
         break;
     case 1:
-        Unk_02003c40_callRequestSustained(sound, 0x1d3);
+        SndEnvChannel_callRequestSustained(sound, 0x1d3);
         break;
     default:
-        Unk_02003c40_callRequestSustained(sound, 0x1d4);
+        SndEnvChannel_callRequestSustained(sound, 0x1d4);
         break;
     }
 }

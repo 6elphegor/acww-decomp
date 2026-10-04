@@ -1,8 +1,8 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "game/Unk_02003a6c_Vec.h"
-#include "snd/Unk_02003c30.h"
-#include "snd/Unk_02003c40.h"
+#include "snd/SndEnvChannel.h"
+#include "snd/SndSeEmitter.h"
 #include "gfx/Mtx43.h"
 #include "field/Unk_ov003_02217910_V3D.h"
 #include "gfx/Model.h"
@@ -211,11 +211,11 @@ extern "C" void FieldGround_InitEnvChannel(void *volatile *p) {
 extern "C" void FieldGround_DestroyEnvChannel() {
 }
 
-extern "C" void FieldGround_ResetEnvChannel(Unk_02003c30 *p) {
+extern "C" void FieldGround_ResetEnvChannel(SndEnvChannel *p) {
     p->callReset();
 }
 
-extern "C" void FieldGround_PlayEnvSe(Unk_02003c40 *p, Unk_ov003_02217910_V3 *v, void *a) {
+extern "C" void FieldGround_PlayEnvSe(SndEnvChannel *p, Unk_ov003_02217910_V3 *v, void *a) {
     Unk_ov003_02217910_V3 t;
     t.x = v->x;
     t.y = v->y;
@@ -224,6 +224,6 @@ extern "C" void FieldGround_PlayEnvSe(Unk_02003c40 *p, Unk_ov003_02217910_V3 *v,
     p->callRequest(a);
 }
 
-extern "C" void FieldGround_ReleaseEnvChannel(Unk_02003c30 *p) {
+extern "C" void FieldGround_ReleaseEnvChannel(SndEnvChannel *p) {
     p->callRelease();
 }

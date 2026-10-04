@@ -12,13 +12,13 @@
 // TU23 of ov003 (fish actors, scene classes 0223498c / 02234a94): 0x0221ffb8-0x02224e68, static initialiser 0x354 bytes.
 // Merged from ten unit files; every view of the shared objects (sFishShadows etc.) is reached through casts.
 
-#define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
-#define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
-#define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
-#define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
-#define Unk_02003c30_callSeStop _ZN12Unk_02003c3010callSeStopEv
-#define Unk_02003c40_callSeUpdateRelative _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec
-#define Unk_02003c30_callSeInit _ZN12Unk_02003c3010callSeInitEv
+#define SndEnvChannel_callRelease _ZN13SndEnvChannel11callReleaseEv
+#define SndEnvChannel_callRequest _ZN13SndEnvChannel11callRequestEPv
+#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP16Unk_02003a6c_Vec
+#define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
+#define SndSeEmitter_callStop _ZN12SndSeEmitter8callStopEv
+#define SndSeEmitter_callUpdateRelative _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec
+#define SndSeEmitter_callInit _ZN12SndSeEmitter8callInitEv
 #define func_0203239c _ZN14CollisionStateD1Ev
 #define func_020323b0 _ZN14CollisionStateC1Ev
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
@@ -862,7 +862,7 @@ extern u8 data_ov003_02234a94[];
 
 s32 Math_AngleXZ(void *a, void *b);
 void Snd_SeEmitterPlayOneShot(void *o, s32 a, s32 b, s32 c);
-void Unk_02003c40_callSeUpdateRelative(void *self, void *v);
+void SndSeEmitter_callUpdateRelative(void *self, void *v);
 s32 Collision_Move(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
 s32 Ground_GetWaterKind(s32 x, s32 y);
 u32 MapBlock_GetAttr(void *c);
@@ -896,12 +896,12 @@ s32 Vec_DistXZ(void *a, void *b);
 s32 func_021065dc(s32 a);
 s32 func_02133150(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 Unk_02003c30_callRelease(void *p);
-void Unk_02003c40_callRequest(void *, s32);
-void Unk_02003c40_callUpdateRelative(void *self, Unk_ov003_02221364_Vec *v);
-void Unk_02003c30_callReset(void *self);
-s32 Unk_02003c30_callSeStop(void *p);
-void Unk_02003c30_callSeInit(void *self);
+s32 SndEnvChannel_callRelease(void *p);
+void SndEnvChannel_callRequest(void *, s32);
+void SndEnvChannel_callUpdateRelative(void *self, Unk_ov003_02221364_Vec *v);
+void SndEnvChannel_callReset(void *self);
+s32 SndSeEmitter_callStop(void *p);
+void SndSeEmitter_callInit(void *self);
 BOOL Ground_FindWaterAhead(V3_f7 *out, void *pos, s32 ang, s32 a, s32 b, s32 c);
 s32 Ground_IsPond(s32 x, s32 y);
 void func_0203239c(void *p);
@@ -3144,7 +3144,7 @@ extern "C" void FishCroak_Croak(Sub_f6 *s, Obj_f6 *o)
 {
     if (s->b1 != 0) {
         s->b1 = s->b1 - 1;
-        Unk_02003c40_callRequest(&o->unk_40, 0x82f);
+        SndEnvChannel_callRequest(&o->unk_40, 0x82f);
     } else {
         s->b2 = ((s32 (*)(s32, s32))FieldFish_RandRange)(0x14, 0x50);
         s->b3 = 1;
@@ -3190,7 +3190,7 @@ extern "C" void FishCatch_Update(Obj_f6 *self, void *arg)
         a.y = p->y;
         a.z = p->z;
         b = a;
-        ((void (*)(void *, V3_f6 *))Unk_02003c40_callSeUpdateRelative)(self, &a);
+        ((void (*)(void *, V3_f6 *))SndSeEmitter_callUpdateRelative)(self, &a);
         if (((s32 (*)(void *))BottleThrow_GetSeCue)(arg) == 1) {
             Snd_SeEmitterPlayOneShot(self, 0x7e0, 0x7f, 0);
         } else if (((s32 (*)(void *))BottleThrow_GetSeCue)(arg) == 2) {
@@ -3202,7 +3202,7 @@ extern "C" void FishCatch_Update(Obj_f6 *self, void *arg)
         a.x = self->unk_54.x;
         a.y = self->unk_54.y;
         a.z = self->unk_54.z;
-        ((void (*)(void *, V3_f6 *))Unk_02003c40_callSeUpdateRelative)(self, &a);
+        ((void (*)(void *, V3_f6 *))SndSeEmitter_callUpdateRelative)(self, &a);
     }
     if (sFishCatchStates[self->unk_40].f) {
         (self->*sFishCatchStates[self->unk_40].f)(arg);
@@ -3973,8 +3973,8 @@ BOOL FieldFishManager::onCreate() {
         p208[1] = z;
         *((u8 *)s + 0x211) = i;
         *(u16 *)((u8 *)s + 0x212) = i * 0x190 + 0x960;
-        Unk_02003c30_callSeInit(s);
-        Unk_02003c30_callReset((u8 *)s + 0x40);
+        SndSeEmitter_callInit(s);
+        SndEnvChannel_callReset((u8 *)s + 0x40);
         s++;
         i++;
     } while (i < 6);
@@ -3985,7 +3985,7 @@ BOOL FieldFishManager::onCreate() {
         if (CommManager_isOnline(net) && !CommManager_isMyAid(net, k) && FishDisplay_GetRequestKind(k) == 3) {
             ((void (*)(u8, s32, s32, s32, s32))FishDisplay_PostRequest)(k, 6, -1, z, z);
         }
-        Unk_02003c30_callSeInit(q);
+        SndSeEmitter_callInit(q);
         q += 0xa4;
     }
     return TRUE;
@@ -3999,13 +3999,13 @@ extern "C" void FishShadow_Run(void *a, u8 *b, void *c) {
     v1.x = pv->x;
     v1.y = pv->y;
     v1.z = pv->z;
-    ((void (*)(void *, Unk_ov003_02221364_Vec *))Unk_02003c40_callSeUpdateRelative)(b, &v1);
+    ((void (*)(void *, Unk_ov003_02221364_Vec *))SndSeEmitter_callUpdateRelative)(b, &v1);
     Unk_ov003_02221364_Vec v2;
     pv = (Unk_ov003_02221364_Vec *)(b + 0x120);
     v2.x = pv->x;
     v2.y = pv->y;
     v2.z = pv->z;
-    Unk_02003c40_callUpdateRelative(b + 0x40, &v2);
+    SndEnvChannel_callUpdateRelative(b + 0x40, &v2);
     if (sFishShadowStates[*(s32 *)(b + 0x80)].exit) {
         (((FieldFishManager *)a)->*(sFishShadowStates[*(s32 *)(b + 0x80)].exit))(b, c);
     }
@@ -4291,8 +4291,8 @@ extern "C" void FieldFishManager_FreeShadows(O_f3 *o) {
         }
         ((s32 (*)(O_f3 *, s32))FishShadow_Despawn)(o, i);
         ((s32 (*)(void *, void *))ModelSlotPool_release)((u8 *)o + 0x50, (u8 *)e + 0x7c);
-        Unk_02003c30_callSeStop(e);
-        Unk_02003c30_callRelease((u8 *)e + 0x40);
+        SndSeEmitter_callStop(e);
+        SndEnvChannel_callRelease((u8 *)e + 0x40);
         e = (E_f3 *)((u8 *)e + 0x24c);
     }
     Mem_Free(o->shadowAnimFile);
@@ -4310,7 +4310,7 @@ extern "C" void FieldFishManager_FreeCatches(s32 a) {
     s32 i;
     for (i = 0; i < 4; i++) {
         ((s32 (*)(void *, u8))FishCatch_StateEnd)(p, i);
-        Unk_02003c30_callSeStop(p);
+        SndSeEmitter_callStop(p);
         p += 0xa4;
     }
 }

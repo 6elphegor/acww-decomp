@@ -1515,7 +1515,7 @@ extern "C" {
 s32 NpcRegistry_FindSpNpc(s32 a);
 }
 extern "C" {
-void _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene(void *p, s32 a);
+void _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor(void *p, s32 a);
 }
 extern "C" {
 void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
@@ -4746,7 +4746,7 @@ namespace n08 {
 void SkySePlayer::resetAll() {
     using namespace n08;
     for (Unk_0213b970* e = channels; e < (Unk_0213b970*)positions; e++) {
-        e->func_02003cbc();
+        e->callReset();
     }
     active = 1;
 }
@@ -4757,7 +4757,7 @@ void SkySePlayer::releaseAll() {
     using namespace n08;
     active = 0;
     for (Unk_0213b970* e = &channels[7]; e >= channels; e--) {
-        e->func_02003c30();
+        e->callRelease();
     }
 }
 namespace n08 {
@@ -4766,7 +4766,7 @@ namespace n08 {
 void SkySePlayer::requestSustained(s32 idx, s32 a, Unk_020bd0a4_Vec3* p) {
     using namespace n08;
     if (active) {
-        channels[idx].func_02003c50(a);
+        channels[idx].callRequestSustained((void *)a);
         positions[idx].x = p->x;
         positions[idx].y = p->y;
         positions[idx].z = p->z;
@@ -4778,7 +4778,7 @@ namespace n08 {
 void SkySePlayer::request(s32 idx, s32 a, Unk_020bd0a4_Vec3* p) {
     using namespace n08;
     if (active) {
-        channels[idx].func_02003c40(a);
+        channels[idx].callRequest((void *)a);
         positions[idx].x = p->x;
         positions[idx].y = p->y;
         positions[idx].z = p->z;
@@ -4793,7 +4793,7 @@ void SkySePlayer::update() {
         Unk_0213b970* a = channels;
         FxVec3* b = positions;
         for (s32 i = 0; i < 8; i++, a++, b++) {
-            a->func_02003c60(i == 7 ? NULL : b);
+            a->callUpdate(i == 7 ? NULL : b);
         }
     }
 }
@@ -6894,16 +6894,16 @@ extern u8 data_021ef690_out[];
 namespace L_021efc08 { extern "C" { extern struct S { u8 p[0x300]; Unk_020baa10_Ptr v; } sSkyGradient; } }
 #define data_021efc08 n04::L_021efc08::sSkyGradient.v
 extern "C" {
-void _ZN12Unk_02003c3011callReleaseEv(void*);
+void _ZN13SndEnvChannel11callReleaseEv(void*);
 }
 extern "C" {
-void _ZN12Unk_02003c4011callRequestEPv(void*, s32);
+void _ZN13SndEnvChannel11callRequestEPv(void*, s32);
 }
 extern "C" {
-void _ZN12Unk_02003c4010callUpdateEPv(void*, void*);
+void _ZN13SndEnvChannel10callUpdateEPv(void*, void*);
 }
 extern "C" {
-void _ZN12Unk_02003c309callResetEv(void*);
+void _ZN13SndEnvChannel9callResetEv(void*);
 }
 extern "C" {
 s32 Scene_GetSkyKind(s32);
@@ -7449,7 +7449,7 @@ extern "C" u8 Sky_GetLightParam(s32 i) {
 
 extern "C" void RainSe_Init(Unk_020ba93c_Obj *p) {
     RainSe_InitVolume(p);
-    _ZN12Unk_02003c309callResetEv(p);
+    _ZN13SndEnvChannel9callResetEv(p);
 }
 
 extern "C" void RainSe_Update(Unk_020ba93c_Obj *p) {
@@ -7457,17 +7457,17 @@ extern "C" void RainSe_Update(Unk_020ba93c_Obj *p) {
     if (p->f0c != 0) {
         s32 k = sRainSeIds[Scene_GetSkyKind(0)];
         if (k >= 0) {
-            _ZN12Unk_02003c4011callRequestEPv(p, k);
+            _ZN13SndEnvChannel11callRequestEPv(p, k);
         }
     }
     func_02133ef8(v, 12);
     v[2] = p->f0c >> 8;
-    _ZN12Unk_02003c4010callUpdateEPv(p, v);
+    _ZN13SndEnvChannel10callUpdateEPv(p, v);
     RainSe_FadeVolume(p);
 }
 
 extern "C" void RainSe_Release(void *p) {
-    _ZN12Unk_02003c3011callReleaseEv(p);
+    _ZN13SndEnvChannel11callReleaseEv(p);
 }
 
 extern "C" void RainSe_InitVolume(Unk_020ba93c_Obj *p) {

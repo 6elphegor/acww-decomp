@@ -8,20 +8,14 @@ struct Vec3;
 
 // 0xc-byte sound-environment channel (no fields of its own), vtable 0x0213b968 (dsd label data_0213b970). The virtual
 // overrides are in autoload_2, unk_020f30fc.cpp, which keeps its own copy (class declaration order sets that file's
-// vtable order). main's sky/ambient-sound file (unk_020b8d9c.cpp) keeps an array of 8 and calls the thin wrappers
-// below (labels at the Unk_02003c30 / Unk_02003c40 functions 0x02003c30..0x02003cbc).
+// vtable order). main's sky/ambient-sound file (unk_020b8d9c.cpp) keeps an array of 8 and calls SndEnvChannel's
+// call wrappers (0x02003c30..0x02003cbc) on them.
 class Unk_0213b970 : public SndEnvChannel {
 public:
     virtual void vfunc_00();                // 0x020f3120
     virtual void requestSustained(u32 v);   // 0x020f3114
     virtual void request(u32 v);            // 0x020f3108
     virtual void update(Vec3 *pos);         // 0x020f30fc
-
-    void func_02003c30();
-    void func_02003c40(s32 a);
-    void func_02003c50(s32 a);
-    void func_02003c60(void *p);
-    void func_02003cbc();
 };
 
 #endif

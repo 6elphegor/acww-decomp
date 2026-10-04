@@ -13,7 +13,6 @@
 #include "sys/ProcBase.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "gfx/MatTexVramTask.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -27,7 +26,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class SpNpcBlanca;
 class SpNpcBlancaTalk;
 
@@ -85,7 +84,7 @@ struct Unk_ov074_02272020_V {
 #define NpcMoveCtrl_hasNextLeg _ZN11NpcMoveCtrl10hasNextLegEv
 #define NpcMoveCtrl_getDestination _ZN11NpcMoveCtrl14getDestinationEv
 #define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3
-#define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei
+#define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP9Characteri
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define func_0206260c _ZN8ItemNameD1Ev
 #define func_0206267c _ZN8ItemNameC1Ev
@@ -331,7 +330,7 @@ BOOL SpNpcBlanca::preCreate() {
     if (SpNpcActor::preCreate() == 0) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     return TRUE;
 }

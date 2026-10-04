@@ -14,7 +14,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
@@ -29,7 +28,7 @@
 
 class SpNpcKappn;
 class SpNpcKappnTalk;
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 
 struct Unk_ov051_02258e50_Bits {
     u32 lo : 12;
@@ -324,7 +323,7 @@ BOOL SpNpcKappn::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xfb);
     return TRUE;

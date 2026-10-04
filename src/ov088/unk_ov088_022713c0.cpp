@@ -17,7 +17,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -33,7 +32,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class SpNpcShrunk;
 class SpNpcShrunkTalk;
 struct VisitorPos;
@@ -88,8 +87,8 @@ BOOL func_0202e360();
 BOOL EventAnnounce_IsBusy();
 extern u32 __ptmf_null[];
 void _ZN15TalkWindowState17setSlotFromStringEiii(void *self, s32 idx, u8 *p, void *s);
-s32 _ZN19Unk_020133cc_Player20getNewEmotionToLearnEv(void *self);
-s32 _ZN19Unk_020133cc_Player20getLastTaughtEmotionEv(void *self);
+s32 _ZN8NpcActor20getNewEmotionToLearnEv(void *self);
+s32 _ZN8NpcActor20getLastTaughtEmotionEv(void *self);
 s32 _ZN12Unk_02097ff48testFlagEj(void *self, u32 v);
 void _ZN12Unk_02097ff47setFlagEj(void *self, u32 v);
 void _ZN9MsgString4copyEPS_(void *self, void *o);
@@ -102,7 +101,7 @@ void _ZN11NpcMoveCtrl16resetDestinationEv(void *self);
 BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *self);
 Unk_ov088_Vec *_ZN11NpcMoveCtrl14getDestinationEv(void *self);
 void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *self, void *v);
-BOOL _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(void *self, void *owner, s32 v);
+BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *self, void *owner, s32 v);
 s32 _ZN12Unk_0201acf88getLevelEv(void *self);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 }
@@ -301,7 +300,7 @@ BOOL SpNpcShrunk::preCreate() {
     if (SpNpcActor::preCreate() == 0) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     return TRUE;
 }
@@ -451,7 +450,7 @@ BOOL SpNpcShrunk::handleCollision() {
     s32 r6 = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     BOOL r = FALSE;
     Unk_ov088_Vec v;
-    if (_ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(q, this, 1) == 0) {
+    if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(q, this, 1) == 0) {
         switch (r6) {
         case 3:
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -694,7 +693,7 @@ void SpNpcShrunkTalk::scriptFirstLesson() {
     if (r4->state == 5) {
         u8 b[2];
         ownerNpc->reactionWindow = 0x14;
-        if (_ZN19Unk_020133cc_Player20getLastTaughtEmotionEv(ownerNpc) != -1) {
+        if (_ZN8NpcActor20getLastTaughtEmotionEv(ownerNpc) != -1) {
             b[1] = 0x17;
             _ZN15TalkWindowState17setSlotFromStringEiii(window, 0, &b[1], (void *)"st_learn");
             ownerNpc->reactionWindow = 0;
@@ -726,7 +725,7 @@ void SpNpcShrunkTalk::scriptCheckTriggerReaction() {
         if (ownerNpc->reactionWindow == 0) {
             ownerNpc->reactionWindow = 0x34;
         }
-        if (_ZN19Unk_020133cc_Player20getLastTaughtEmotionEv(ownerNpc) == -1) {
+        if (_ZN8NpcActor20getLastTaughtEmotionEv(ownerNpc) == -1) {
             if (Math_CountDownU8(&ownerNpc->reactionWindow) > 2) {
                 return;
             }
@@ -871,7 +870,7 @@ void SpNpcShrunk::onInteractionEvent(u32 v, u8) {
 
 s32 SpNpcShrunk::getTeachableEmotion() {
     if (reactionWindow != 0) {
-        return _ZN19Unk_020133cc_Player20getNewEmotionToLearnEv(this);
+        return _ZN8NpcActor20getNewEmotionToLearnEv(this);
     }
     return -1;
 }

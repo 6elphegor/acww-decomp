@@ -276,9 +276,9 @@ void _ZN14SnowmanRecords12markUnplacedEj(void *self, u32 a);
 s32 _ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_(void *self, u32 m, s32 *a, s32 *b, s32 *c, s32 z1, s32 z2, s32 z3);
 void _ZN5Model10drawScaledEPi(void *self, void *v);
 void _ZN11CachedModel10loadCachedEPvS0_(void *self, u32 a, const char *b);
-void _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(void *self, void *v);
-void _ZN12Unk_02003c3010callSeStopEv(void *self);
-void _ZN12Unk_02003c3010callSeInitEv(void *self);
+void _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(void *self, void *v);
+void _ZN12SndSeEmitter8callStopEv(void *self);
+void _ZN12SndSeEmitter8callInitEv(void *self);
 
 BOOL Snowball_ChangeState(Obj *o, s32 st);
 BOOL Snowball_IsLooseBall(Obj *o);
@@ -412,7 +412,7 @@ BOOL Snowball::onCreate() {
     lastFramePos.z = pv->z;
     prevContactCount = collisionState.contacts.numContacts;
     Snowball_UpdateMatrix(this, 0, 0);
-    _ZN12Unk_02003c3010callSeInitEv(seEmitter);
+    _ZN12SndSeEmitter8callInitEv(seEmitter);
     clearTalkStartMode();
     Snowball_Register(this);
 }
@@ -441,7 +441,7 @@ BOOL Snowball::onExecute() {
     lastFramePos.y = pv->y;
     lastFramePos.z = pv->z;
     V3P sp = *(V3P *)&position;
-    _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(seEmitter, &sp);
+    _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(seEmitter, &sp);
     return TRUE;
 }
 
@@ -496,7 +496,7 @@ BOOL Snowball::onDelete() {
         r = LooseSnowballs_Get();
         r[i & 1].w = sv;
     }
-    _ZN12Unk_02003c3010callSeStopEv(seEmitter);
+    _ZN12SndSeEmitter8callStopEv(seEmitter);
     Snowball_Unregister(this);
 }
 

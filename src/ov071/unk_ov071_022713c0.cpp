@@ -16,7 +16,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
@@ -33,7 +32,7 @@
 class SpNpcLyle;
 class SpNpcLyleTalk;
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 
 struct Unk_ov071_02271f54_Vec {
     s32 x, y, z;
@@ -111,10 +110,10 @@ s32 Math_AngleXZ(void *a, void *b);
 BOOL NpcActor_IsFrontAngle(s16 a);
 u32 Random_Next(void *p);
 
-void _ZN12Unk_0201442015requestKeepItemEv(void *self);
+void _ZN16ActorTalkRequest15requestKeepItemEv(void *self);
 void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *self, u32 cb, u32 b, u32 c);
 void _ZN16ActorTalkRequest12openSubSceneEi(void *self, s32 a);
-void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *self, u16 *p, u32 a, u32 b, u32 c);
+void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *self, u16 *p, u32 a, u32 b, u32 c);
 void *_ZN11NpcMoveCtrl14getDestinationEv(void *self);
 s32 _ZN12Unk_0201acf88getLevelEv(void *self);
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *self);
@@ -126,7 +125,7 @@ void _ZN13NpcFootstepFx15enableFootstepsEv(void *self);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 s32 _ZN9NpcLookAt15getObstacleBitsEv(void *self);
-BOOL _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(void *self, void *scene, s32 v);
+BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *self, void *scene, s32 v);
 BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *self);
 void _ZN11NpcMoveCtrl16resetDestinationEv(void *self);
 void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *self, Unk_ov071_02271f54_Vec *v);
@@ -322,7 +321,7 @@ BOOL SpNpcLyle::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 2, 0x200, 0x100, 0x100);
     MI_CpuFill8(askedQuestions, 0, 5);
@@ -617,7 +616,7 @@ BOOL SpNpcLyle::steerAroundObstacle() {
     s32 k = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     BOOL r = FALSE;
     Unk_ov071_02271f54_Vec v;
-    if (_ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(q, this, 1) == 0) {
+    if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(q, this, 1) == 0) {
         switch (k) {
         case 3:
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -869,7 +868,7 @@ void SpNpcLyleTalk::onClaimItemChosen() {
             void *w = _ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent());
             m.id = 0x25;
             _ZN17PlayerSpNpcRecord17addInsuranceClaimEv(w);
-            _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &m.a, 0, 4, 0);
+            _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &m.a, 0, 4, 0);
             if (r4 >= 0) {
                 Pocket_RemoveItem(r4);
             }
@@ -1026,7 +1025,7 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
         break;
     case 0x19:
         m.a = 0x149d;
-        _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &m.a, 0, 5, 0);
+        _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &m.a, 0, 5, 0);
         NpcActor_ChargePlayer(owner, 0xbb8);
         r5 = 0x1a;
         _ZN12Unk_02097ff47setFlagEj(h, 0x17);
@@ -1039,7 +1038,7 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
         break;
     case 0x1e:
         m.b = 0x14a0;
-        _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &m.b, 0, 5, 0);
+        _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &m.b, 0, 5, 0);
         NpcActor_ChargePlayer(owner, 0x1770);
         r5 = 0x1f;
         _ZN12Unk_02097ff47setFlagEj(h, 0x18);
@@ -1050,7 +1049,7 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
         setScript(0);
         break;
     case 0x25:
-        _ZN12Unk_0201442015requestKeepItemEv(this);
+        _ZN16ActorTalkRequest15requestKeepItemEv(this);
         if (MenuCtrl_BuildPocketMask((void *)SpNpcLyle_IsForgedPainting) != 0) {
             r5 = 0x21;
         } else {

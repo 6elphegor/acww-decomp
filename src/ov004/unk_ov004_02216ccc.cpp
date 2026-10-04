@@ -1,7 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "actor/Unk_ov004_SceneEntry.h"
-#include "npc/Unk_0201a13c.h"
 #include "npc/VillagerClothModel.h"
 #include "actor/Unk_02088d00.h"
 #include "room/RoomFreeUnitMap.h"
@@ -43,7 +42,7 @@ class HouseOwnerVillager;
 #define NpcActor_netGetSlots _ZN8NpcActor11netGetSlotsEii
 #define NpcActor_netSetSlotsIfOwner _ZN8NpcActor18netSetSlotsIfOwnerEjjjz
 #define NpcActor_isNetOwner _ZN8NpcActor10isNetOwnerEv
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleToPlayer _ZN8NpcActor16getAngleToPlayerEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_

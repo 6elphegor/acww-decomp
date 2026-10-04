@@ -3,6 +3,8 @@
 
 #include "types.h"
 
+struct Unk_02003a6c_Vec;
+
 // sound handle (functions in unk_020ede18.cpp, plain C names): the non-polymorphic second base of SndSeEmitter, at +4
 struct SndHandle {
     /* 0x00 */ u8 pad00[0x30];
@@ -25,6 +27,14 @@ public:
     BOOL playOneShot(s32 id, s32 c, s16 d);     // 0x020f41fc
     u16 nextAlternateId(u16 s);                 // 0x020f3f38
     void playAlternate(u16 s);                  // 0x020f3f10
+    // non-virtual wrappers of init / update / stop defined in main (src/main/unk_020039ec.cpp; the Alt ones are
+    // byte-identical twins); the relative update subtracts the camera eye position first
+    void callInit();
+    void callUpdateRelative(Unk_02003a6c_Vec *v);
+    void callStop();
+    void callInitAlt();
+    void callUpdateRelativeAlt(Unk_02003a6c_Vec *v);
+    void callStopAlt();
 
     /* 0x3c */ u16 h3c;
     /* 0x3e */ u8 b3e;

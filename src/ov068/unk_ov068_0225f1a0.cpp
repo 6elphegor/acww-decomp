@@ -48,22 +48,22 @@
 #define HeldToolModel_attach _ZN13HeldToolModel6attachEjPtjt
 #define HeldToolModel_load _ZN13HeldToolModel4loadEj
 #define HeldToolModel_init _ZN13HeldToolModel4initEv
-#define Unk_02012810_runStep _ZN12Unk_020128107runStepEP16Unk_02012810_Vec
-#define Unk_02012810_getStage _ZN12Unk_020128108getStageEv
+#define VillagerRoute_runStep _ZN13VillagerRoute7runStepEP16Unk_02012810_Vec
+#define VillagerRoute_getStage _ZN13VillagerRoute8getStageEv
 #define VillagerRoute_isActive _ZN13VillagerRoute8isActiveEv
 #define VillagerRoute_setStepMode _ZN13VillagerRoute11setStepModeEj
 #define VillagerRoute_start _ZN13VillagerRoute5startEjjjj
 #define VillagerRoute_reset _ZN13VillagerRoute5resetEv
 #define VillagerRoute_resetTarget _ZN13VillagerRoute11resetTargetEv
-#define Unk_020133cc_Player_resetLastTaughtEmotion _ZN19Unk_020133cc_Player22resetLastTaughtEmotionEv
-#define NpcFootstepFx_playFootstepSe _ZN13NpcFootstepFx14playFootstepSeEP19Unk_020133cc_Player
+#define NpcActor_resetLastTaughtEmotion _ZN8NpcActor22resetLastTaughtEmotionEv
+#define NpcFootstepFx_playFootstepSe _ZN13NpcFootstepFx14playFootstepSeEP8NpcActor
 #define NpcFootstepFx_disableFootsteps _ZN13NpcFootstepFx16disableFootstepsEv
 #define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestState4 _ZN11NpcTalkCtrl13requestState4Ejish
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define ActorTalkRequest_setPartnerActor _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene
+#define ActorTalkRequest_setPartnerActor _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor
 #define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
 #define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcAnimCtrl_getAnimId _ZN11NpcAnimCtrl9getAnimIdEj
@@ -78,8 +78,8 @@
 #define NpcActionCtrl_getEmotionId _ZN13NpcActionCtrl12getEmotionIdEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcEmotionFx_startEntry _ZN12NpcEmotionFx10startEntryEP15NpcEmotionPhasei
-#define Unk_0201a13c_isOnTarget _ZN12Unk_0201a13c10isOnTargetEv
-#define NpcLookAt_canSeeTarget _ZN9NpcLookAt12canSeeTargetEP18Unk_0201a334_Scene
+#define NpcLookAt_isOnTarget _ZN9NpcLookAt10isOnTargetEv
+#define NpcLookAt_canSeeTarget _ZN9NpcLookAt12canSeeTargetEP9Character
 #define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
 #define NpcLookAt_setTargetPos _ZN9NpcLookAt12setTargetPosEP17Unk_0201a334_Vec3
 #define NpcMoveCtrl_resetDestination _ZN11NpcMoveCtrl16resetDestinationEv
@@ -87,13 +87,13 @@
 #define NpcMoveCtrl_getDestination _ZN11NpcMoveCtrl14getDestinationEv
 #define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3
 #define NpcMoveCtrl_setTargetAngle _ZN11NpcMoveCtrl14setTargetAngleEs
-#define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei
+#define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP9Characteri
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
 #define Unk_0201acf8_getLevel _ZN12Unk_0201acf88getLevelEv
 #define func_0201b08c _ZN8NpcActor18onInteractionEventEi
 #define func_0201b138 _ZN8NpcActor6onDrawEv
 #define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getRelativeAngleTo _ZN8NpcActor18getRelativeAngleToEPS_
 #define NpcActor_getAngleToPlayer _ZN8NpcActor16getAngleToPlayerEj
@@ -1015,7 +1015,7 @@ void NpcAnimCtrl_setAnimSpeedFixed(void *, s32);
 s32 NpcAnimCtrl_getAnimId(void *, s32);
 void *ActorTalkRequest_getTalkPlayer(void *);
 void NpcFootstepFx_enableFootsteps(void *);
-s32 Unk_020133cc_Player_resetLastTaughtEmotion(void *);
+s32 NpcActor_resetLastTaughtEmotion(void *);
 s32 NpcActor_getAngleToPlayer(void *, s32);
 s32 NpcActor_getAngleTo(void *, void *);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
@@ -1455,7 +1455,7 @@ void TalkRequest_SetTargetDone(void *);
 void VillagerTalk_setPartner(void *, s32);
 void VillagerTalk_setInvitedByPartner(void *, s32);
 void FieldVillager_StopEmotion(void *);
-void Unk_020133cc_Player_resetLastTaughtEmotion(void *);
+void NpcActor_resetLastTaughtEmotion(void *);
 s32 VillagerTalk_hasPartner(void *);
 void NpcTalkCtrl_requestTalk(void *, s32, s32);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
@@ -1589,9 +1589,9 @@ s32 VillagerRoute_isActive(void *);
 void FieldVillagerAi_StartRoute(void *, s32, void *);
 s32 FieldVillagerAi_IsAtHomeDoor(void *, void *);
 s32 FieldVillagerAi_ShouldGoHome(void *, void *);
-s32 Unk_02012810_getStage(void *);
+s32 VillagerRoute_getStage(void *);
 void VillagerRoute_start(void *, void *, s32, s32, void *);
-s32 Unk_02012810_runStep(void *, void *);
+s32 VillagerRoute_runStep(void *, void *);
 void VillagerRoute_setStepMode(void *, s32);
 s32 Unk_0201acf8_getLevel(void *);
 s32 Random_Next(void *);
@@ -1633,7 +1633,7 @@ u32 FieldVillager_GetMood(void *);
 u32 PlayerActor_GetLocalShownItem();
 s32 NpcActor_getDistanceToPlayer(void *, s32);
 s32 NpcLookAt_canSeeTarget(void *, void *);
-s32 Unk_0201a13c_isOnTarget(void *);
+s32 NpcLookAt_isOnTarget(void *);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
 void FieldPos_SnapToUnitCenter(void *, void *);
 s32 Vec_DistXZ(void *, void *);
@@ -1660,11 +1660,11 @@ void NpcActionCtrl_requestStand(void *, s32, u32);
 void NpcMoveCtrl_setDestination(void *, void *);
 s32 NpcMoveCtrl_hasNextLeg(void *);
 void NpcMoveCtrl_resetDestination(void *);
-s32 Unk_02012810_getStage(void *);
+s32 VillagerRoute_getStage(void *);
 void *Villager_GetState(void *);
 s32 VillagerRoute_isActive(void *);
 void FieldVillagerAi_StartRoute(void *, s32, void *);
-s32 Unk_02012810_runStep(void *, void *);
+s32 VillagerRoute_runStep(void *, void *);
 s32 TalkRequest_IsTalking();
 void *PlayerActor_GetCharacter(s32);
 void *TalkRequest_GetTalkTarget();
@@ -1817,7 +1817,7 @@ s32 VillagerState_GetActivity(void *);
 s32 VillagerRoute_start(void *, void *, s32, s32, void *);
 s32 VillagerRoute_isActive(void *);
 s32 Random_GlobalBelow(s32);
-s32 Unk_02012810_getStage(void *);
+s32 VillagerRoute_getStage(void *);
 void NpcActionCtrl_requestStand(void *, s32, u32);
 void NpcFootstepFx_enableFootsteps(void *);
 void VillagerRoute_setStepMode(void *, u32);
@@ -3944,7 +3944,7 @@ s32 FieldVillagerAi_PickRandomRouteType(FieldVillagerAi *self) {
     }
     s32 i = Random_GlobalBelow(k);
     s32 r5 = sRandomRouteTypes[i];
-    if (r5 == Unk_02012810_getStage(self->route)) {
+    if (r5 == VillagerRoute_getStage(self->route)) {
         s32 n = i + 1;
         if (n >= 3) {
             n = 0;
@@ -4029,7 +4029,7 @@ namespace ns_022649f4 {
 extern "C" {
 BOOL FieldVillagerAi_IsAtHomeDoor(FieldVillagerAiStates *self, Unk_ov068_Owner_649 *o) {
     BOOL r;
-    if (VillagerRoute_isActive(self->route) != 0 && Unk_02012810_getStage(self->route) == 3) {
+    if (VillagerRoute_isActive(self->route) != 0 && VillagerRoute_getStage(self->route) == 3) {
         u8 *p = (u8 *)VillagerDataItemView_getHousePos(o->vfunc_64());
         Unk_ov068_022649f4_Vec t;
         FieldPos_FromUnitCenter(&t, p[0], p[1] + 1);
@@ -4131,7 +4131,7 @@ BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, Unk_ov068_02264
     if (o->vfunc_64() != 0) {
         Unk_ov068_0226506c_Flags *fl = (Unk_ov068_0226506c_Flags *)((u8 *)Villager_GetState(o->vfunc_64()) + 0x1d);
         if (fl->f1 != 0) {
-            if (Unk_02012810_getStage(self->route) != 3) {
+            if (VillagerRoute_getStage(self->route) != 3) {
                 self->routeTimeout = 0;
             }
         }
@@ -4145,7 +4145,7 @@ BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, Unk_ov068_02264
     out->x = pv->x;
     out->y = pv->y;
     out->z = pv->z;
-    if (Unk_02012810_runStep(self->route, out) != 0) {
+    if (VillagerRoute_runStep(self->route, out) != 0) {
         if (self->routeTimeout == -1) {
             self->routeTimeout = 0x1770;
         }
@@ -4480,7 +4480,7 @@ BOOL FieldVillagerAi_ShouldAdmireCatch(FieldVillagerAiStates *self, Unk_ov068_Ow
                 if (o->lookAt[0] == 1) {
                     if (NpcActor_getDistanceToPlayer(o, 4) <= 0x6000) {
                         if (NpcLookAt_canSeeTarget(o->lookAt, o) != 0) {
-                            if (Unk_0201a13c_isOnTarget(o->lookAt) != 0) {
+                            if (NpcLookAt_isOnTarget(o->lookAt) != 0) {
                                 return TRUE;
                             }
                         }
@@ -4691,12 +4691,12 @@ BOOL FieldVillagerAiStates::execOffscreen(Unk_ov068_Owner *o) {
             if (FieldVillagerAi_IsAtHomeDoor(this, o) != 0) {
                 FieldVillagerAi_ChangeState(this, o, 3);
             } else {
-                if (Unk_02012810_getStage((u8 *)this + 0x3c) != 3 && FieldVillagerAi_ShouldGoHome(this, o) != 0) {
+                if (VillagerRoute_getStage((u8 *)this + 0x3c) != 3 && FieldVillagerAi_ShouldGoHome(this, o) != 0) {
                     VillagerRoute_start((u8 *)this + 0x3c, (u8 *)o + 0x5c, 3, 1, o);
                     routeStepTimer = 0;
                 }
                 if (routeStepTimer == 0) {
-                    if (Unk_02012810_runStep((u8 *)this + 0x3c, (u8 *)o + 0x5c) != 0 && routeTimeout == -1) {
+                    if (VillagerRoute_runStep((u8 *)this + 0x3c, (u8 *)o + 0x5c) != 0 && routeTimeout == -1) {
                         routeTimeout = 0x1770;
                     }
                     routeStepTimer = 0x28;
@@ -5048,7 +5048,7 @@ s32 FieldVillagerAiLeaveHouse::execLeaveHouse(Unk_ov068_Owner *o) {
 BOOL FieldVillagerAiTalk::enterTalk(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
     FieldVillager_StopEmotion(o);
-    Unk_020133cc_Player_resetLastTaughtEmotion(o);
+    NpcActor_resetLastTaughtEmotion(o);
     if (VillagerTalk_hasPartner(o) != 0) {
         NpcTalkCtrl_requestTalk((u8 *)o + 0x618, 1, 0);
     } else if (*((u8 *)o + 0xa00) != 0) {
@@ -6976,7 +6976,7 @@ s32 FieldVillagerAiStates::execPushed(Unk_ov068_Owner *o) {
 
 BOOL FieldVillagerAiStates::enterHitTalk(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
-    Unk_020133cc_Player_resetLastTaughtEmotion(o);
+    NpcActor_resetLastTaughtEmotion(o);
     if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) != 0xec || NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
         void *p = ActorTalkRequest_getTalkPlayer((u8 *)o + 0x680);
         s32 v = 0;
@@ -7045,7 +7045,7 @@ BOOL FieldVillagerAiStates::enterPushTalk(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     void *p = ActorTalkRequest_getTalkPlayer((u8 *)o + 0x680);
     s32 v = 0;
-    Unk_020133cc_Player_resetLastTaughtEmotion(o);
+    NpcActor_resetLastTaughtEmotion(o);
     if (p != 0) {
         v = NpcActor_getAngleTo(o, p);
     }

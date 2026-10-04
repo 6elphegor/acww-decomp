@@ -11,7 +11,6 @@
 #include "sys/ProcBase.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "npc/NpcFaceAnim.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -26,7 +25,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class Character;
 class SpNpcPellyPhyllis;
 class SpNpcPellyPhyllisTalk;
@@ -238,7 +237,7 @@ struct Unk_ov054_0225aef4_Ent {
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
+#define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
 #define ActorTalkRequest_requestGiveItem _ZN16ActorTalkRequest15requestGiveItemEPtjjj
 #define ActorTalkRequest_requestReopenWindow _ZN16ActorTalkRequest19requestReopenWindowEv
 #define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
@@ -377,7 +376,7 @@ void ActorTalkRequest_setMonthSlot(void *self, u32 a, u32 b);
 void ActorTalkRequest_setPlayerNameSlot(void *self, u32 a, s32 b);
 
 void ActorTalkRequest_requestReopenWindow(void *self);
-void Unk_02014420_requestTakeItem(void *self, u16 *p, s32 a, s32 b, s32 c);
+void ActorTalkRequest_requestTakeItem(void *self, u16 *p, s32 a, s32 b, s32 c);
 BOOL SaveManager_HasAct12Failed();
 BOOL SaveManager_IsIdle();
 void SaveManager_RequestAct12();
@@ -685,7 +684,7 @@ BOOL SpNpcPellyPhyllis::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     if (isOnline()) {
         BOOL m;
@@ -1194,7 +1193,7 @@ void SpNpcPellyPhyllisTalk::onMailLettersDone() {
             break;
         }
         v[1] = 0x1565;
-        Unk_02014420_requestTakeItem(this, &v[1], 0, 5, 1);
+        ActorTalkRequest_requestTakeItem(this, &v[1], 0, 5, 1);
         setScript(10);
     } else {
         r4 = 3;
@@ -1234,7 +1233,7 @@ void SpNpcPellyPhyllisTalk::onDonationEntered() {
             r6 = 0x1e;
         }
         v[1] = 0x149b;
-        Unk_02014420_requestTakeItem(this, &v[1], 0, 5, 1);
+        ActorTalkRequest_requestTakeItem(this, &v[1], 0, 5, 1);
         setScript(10);
         donationBefore = Donation_GetTotal(Unk_02097ff4_getBankAccount(PlayerData_GetCurrent()));
         Donation_SetTotal(donationBefore + r4);
@@ -1311,7 +1310,7 @@ void SpNpcPellyPhyllisTalk::onLoanPaymentEntered() {
             r5 = 0x14;
         }
         v[1] = 0x149b;
-        Unk_02014420_requestTakeItem(this, &v[1], 0, 5, 1);
+        ActorTalkRequest_requestTakeItem(this, &v[1], 0, 5, 1);
         setScript(10);
     } else {
         r5 = 0x13;
@@ -1334,7 +1333,7 @@ void SpNpcPellyPhyllisTalk::onSavingsDone() {
         r4 = 0x17;
         if (r6 > savingsBefore) {
             v[1] = 0x149b;
-            Unk_02014420_requestTakeItem(this, &v[1], 0, 5, 1);
+            ActorTalkRequest_requestTakeItem(this, &v[1], 0, 5, 1);
         } else {
             v[2] = 0x149b;
             ActorTalkRequest_requestGiveItem(this, &v[2], 0, 5, 1);
@@ -1392,7 +1391,7 @@ void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
                 }
             }
             if (!same) {
-                Unk_02014420_requestTakeItem(this, &v[1], 2, 5, 1);
+                ActorTalkRequest_requestTakeItem(this, &v[1], 2, 5, 1);
                 if (!ParcelErrand_IsFor(p, &owner->npcHandle)) {
                     r4 = 0x57;
                 } else {

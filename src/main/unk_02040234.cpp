@@ -4,7 +4,6 @@
 #include "game/Unk_0203fe18_Date.h"
 #include "game/Unk_0203fe18_B4.h"
 #include "game/EventWeekSlots.h"
-#include "game/Unk_020400b0_Big.h"
 #include "game/ReddPassword.h"
 #include "game/ReddShop.h"
 #include "game/EventCalendarModule.h"

@@ -55,7 +55,7 @@ u16 Room_PickRandomWalkTarget(void *, void *, s32);
 #define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
+#define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
 #define ActorTalkRequest_requestGiveItem _ZN16ActorTalkRequest15requestGiveItemEPtjjj
 #define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
 #define ActorTalkRequest_setVillagerNameSlot _ZN16ActorTalkRequest19setVillagerNameSlotEjj
@@ -69,7 +69,7 @@ u16 Room_PickRandomWalkTarget(void *, void *, s32);
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
 #define func_0201b138 _ZN8NpcActor6onDrawEv
 #define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define NpcActor_getDistanceToPlayer _ZN8NpcActor19getDistanceToPlayerEj
@@ -151,7 +151,7 @@ void *MenuCtrl_GetIndex();
 u16 Pocket_GetItem();
 s32 Item_GetPrice(u16 *);
 void Pocket_RemoveItem(void *);
-void Unk_02014420_requestTakeItem(void *, void *, s32, s32, s32);
+void ActorTalkRequest_requestTakeItem(void *, void *, s32, s32, s32);
 void *Villager_GetPlan(void *);
 u32 VillagerPlanBlock_GetPlan(void *);
 u32 VillagerPlan_getState(u32);
@@ -522,7 +522,7 @@ void BirthdayHostVillagerTalk::update() {
                     addFriendship(5);
                     if (r4 >= 1000) addFriendship(5);
                     if (r4 >= 2000) addFriendship(10);
-                    Unk_02014420_requestTakeItem(this, &x, 0, 5, 0);
+                    ActorTalkRequest_requestTakeItem(this, &x, 0, 5, 0);
                     villager->changeAct(12);
                 } else {
                     b2 = Random_GlobalBelow(2) + 0xb;
@@ -530,7 +530,7 @@ void BirthdayHostVillagerTalk::update() {
                     addFriendship(2);
                     if (r4 >= 1000) addFriendship(5);
                     if (r4 >= 2000) addFriendship(5);
-                    Unk_02014420_requestTakeItem(this, &x, 0, 5, 0);
+                    ActorTalkRequest_requestTakeItem(this, &x, 0, 5, 0);
                     villager->changeAct(12);
                 }
             }

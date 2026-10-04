@@ -1,7 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 #include "types.h"
-#include "sys/Unk_Task.h"
-#include "sys/Unk_Seq.h"
+#include "sys/CmdSeq.h"
 #include "snd/PlayCtx.h"
 #include "snd/SndSeBytes4.h"
 #include "snd/BgmObj.h"
@@ -126,7 +125,7 @@ void Task_RunDrawPhase(void);
 void Task_RunAllPhases(void);
 #define TaskTree_run _ZN8TaskTree3runEv
 BOOL TaskTree_run(TaskList4 *l);
-s16 CmdSeq_Run(Unk_Seq *o, s32 loop);
+s16 CmdSeq_Run(CmdSeq *o, s32 loop);
 void *Snd_GetHeapLevel(void);
 void *Snd_RestoreHeapLevel(u32 a);
 s32 Snd_LoadGroup(u32 a);
@@ -160,13 +159,13 @@ void *SndList_GetNext(void *list, void *obj);
 }
 // PROTOS-END
 
-extern "C" s16 CmdSeq_Run(Unk_Seq *o, s32 loop) {
+extern "C" s16 CmdSeq_Run(CmdSeq *o, s32 loop) {
     if (o->cmds == NULL || o->state == 2) return 2;
     while (((u32 *)o->cmds)[o->cmdIndex] != 0) {
         o->state = o->vfunc_08(o->cmds[o->cmdIndex]);
         if (o->state != 2) break;
         o->cmdIndex++;
-        o->unk_12 = 0;
+        o->cmdStep = 0;
         if (loop == 0) break;
     }
     return o->state;

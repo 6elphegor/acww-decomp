@@ -7,9 +7,9 @@
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 
-#define Unk_02003c30_callSeStop _ZN12Unk_02003c3010callSeStopEv
-#define Unk_02003c40_callSeUpdateRelative _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec
-#define Unk_02003c30_callSeInit _ZN12Unk_02003c3010callSeInitEv
+#define SndSeEmitter_callStop _ZN12SndSeEmitter8callStopEv
+#define SndSeEmitter_callUpdateRelative _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec
+#define SndSeEmitter_callInit _ZN12SndSeEmitter8callInitEv
 #define Model_drawShapesDirect _ZN5Model16drawShapesDirectEPi
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define func_02133150 _s32_div_f
@@ -139,9 +139,9 @@ u32 Item_GetIconModelName(s32 a, s32 b);
 void Town_GetEnvironmentRank();
 void FieldPos_FromUnitCenter(Unk_ov004_V3 *out, s32 a, s32 b);
 s32 FtrMgr_GetSurfaceHeight(s32 a, s32 b);
-void Unk_02003c30_callSeStop(void *p);
-void Unk_02003c40_callSeUpdateRelative(void *p, void *v);
-void Unk_02003c30_callSeInit(void *p);
+void SndSeEmitter_callStop(void *p);
+void SndSeEmitter_callUpdateRelative(void *p, void *v);
+void SndSeEmitter_callInit(void *p);
 s32 Snd_SeEmitterPlayOneShot(void *p, u32 a, u32 b, u32 c);
 void VEC_Add(void *a, void *b, void *c);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
@@ -499,7 +499,7 @@ extern "C" void ItemDropList_Init(Unk_ov004_Entry *e) {
         e->state = 0;
         e->item = 0xfff1;
         e->landItem = 0xfff1;
-        Unk_02003c30_callSeInit(e->seEmitter);
+        SndSeEmitter_callInit(e->seEmitter);
     }
 }
 
@@ -515,7 +515,7 @@ extern "C" void ItemDropList_Update(Unk_ov004_Entry *e) {
             v.x = e->pos.x;
             v.y = e->pos.y;
             v.z = e->pos.z;
-            Unk_02003c40_callSeUpdateRelative(e->seEmitter, &v);
+            SndSeEmitter_callUpdateRelative(e->seEmitter, &v);
         }
     }
 }
@@ -554,7 +554,7 @@ extern "C" void ItemDropList_Release(Unk_ov004_Entry *e) {
     s32 i;
     for (i = 0; i < 15; e++, i++) {
         if (e->state != 0) ItemDrop_Clear(e);
-        Unk_02003c30_callSeStop(e->seEmitter);
+        SndSeEmitter_callStop(e->seEmitter);
     }
 }
 

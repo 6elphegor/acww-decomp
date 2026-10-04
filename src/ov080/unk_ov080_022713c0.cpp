@@ -13,7 +13,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
@@ -31,7 +30,7 @@
 #define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
 #define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
 #define PlayerData_isUsed _ZN10PlayerData6isUsedEv
-#define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
+#define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
 #define unk_618_func_020141b4 _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define unk_618_func_02014220 _ZN11NpcTalkCtrl6isBusyEv
 #define unk_564_func_020196b4 _ZN13NpcActionCtrl13requestActionEjiiissiitt
@@ -48,7 +47,7 @@ BOOL Catalog_HasAllFish();
 BOOL Catalog_HasAllInsects();
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
 void NpcAnimCtrl_playAnim(void *self, void *owner, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void Unk_02014420_requestTakeItem(void *self, u16 *p, u32 a, u32 b, u32 c);
+void ActorTalkRequest_requestTakeItem(void *self, u16 *p, u32 a, u32 b, u32 c);
 BOOL unk_618_func_02014220(void *self);
 void unk_618_func_020141b4(void *self, u32 a, u32 b, u32 c);
 void unk_564_func_020196b4(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
@@ -92,7 +91,7 @@ public:
 
 
 struct Unk_020d77a4_Vec3;
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 
 
 
@@ -162,7 +161,7 @@ BOOL SpNpcTortimer::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     return TRUE;
 }
@@ -371,7 +370,7 @@ void SpNpcTortimerTalk::onChoice(u32) {
             if (massageChairSlot >= 0) {
                 Pocket_RemoveItem(massageChairSlot);
                 buf.v = 0x37e0;
-                Unk_02014420_requestTakeItem(this, &buf.v, 0, 5, 0);
+                ActorTalkRequest_requestTakeItem(this, &buf.v, 0, 5, 0);
             }
             r = 2;
         }

@@ -14,7 +14,6 @@
 #include "sys/ProcBase.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
@@ -28,7 +27,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class SpNpcRedd;
 class SpNpcReddTalk;
 
@@ -56,7 +55,7 @@ s32 Pocket_FindItem(u16 *p);
 void Pocket_AddItem(u16 *p, s32 v);
 void Pocket_RemoveItem(s32 v);
 void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 void _ZN16ActorTalkRequest17setPlayerNameSlotEjj(void *p, void *q, u32 a);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
@@ -302,7 +301,7 @@ BOOL SpNpcRedd::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner((s32)this);
     standBlend = data_020c6cc8;
     MI_CpuFill8(usedPitchMsgs, 0, 5);
@@ -794,7 +793,7 @@ void SpNpcReddTalk::onMessageEnd(u32) {
         break;
     case 0x10:
         v[3] = 0x149d;
-        _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &v[3], 0, 5, 0);
+        _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &v[3], 0, 5, 0);
         owner->selectedItem = 0xfff1;
         msg = 0x11;
         NpcActor_ChargePlayer(owner, 0xbb8);
@@ -827,7 +826,7 @@ void SpNpcReddTalk::onChoice(u32) {
             if (redVaseSlot >= 0) {
                 Pocket_RemoveItem(redVaseSlot);
                 v[1] = 0x34a8;
-                _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &v[1], 0, 5, 0);
+                _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &v[1], 0, 5, 0);
             }
             msg = 0x2e;
         }

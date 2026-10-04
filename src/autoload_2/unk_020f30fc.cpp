@@ -6,7 +6,7 @@
 // are one size run, and the compiler's data order (named objects at their definition, vtables last in reverse declaration order, the
 // whole list heapsorted by size; realclass2_work/inv2.py, inv3.py) reproduces the original with all seven in one file, declared in the
 // natural order SndSeEmitter, SndSeEmitterKind1, SndSeEmitterKind99, SndSeEmitterKind2, SndEnvChannel, 938, 954, 970 (as below). The four channel
-// vtables as a file of their own (with or without the bss word gSndPosList) would need Unk_0213b970 / Unk_0213b954 declared before
+// vtables as a file of their own (with or without the bss word gSndPosList) would need Unk_0213b970 / CreatureSndChannel declared before
 // their base SndEnvChannel, which is impossible.
 // Every function lands on its original address with the original bytes; every old symbols.txt name stays (aliases.txt adds the compiler's
 // names as labels, nothing is renamed). Classes (vtable start / dsd label at +8):
@@ -204,7 +204,7 @@ public:
 };
 
 // vtable 0x0213b94c (data_0213b954)
-class Unk_0213b954 : public SndEnvChannel {
+class CreatureSndChannel : public SndEnvChannel {
 public:
     virtual void vfunc_00();           // 0x020f312c
 };
@@ -695,7 +695,7 @@ void Unk_0213b938::vfunc_00() {
     SndEnvChannel::vfunc_00();
 }
 
-void Unk_0213b954::vfunc_00() {
+void CreatureSndChannel::vfunc_00() {
     SndEnvChannel::vfunc_00();
 }
 

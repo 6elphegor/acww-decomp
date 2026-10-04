@@ -14,7 +14,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
@@ -28,7 +27,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class SpNpcResetti;
 class SpNpcResettiTalk;
 
@@ -267,7 +266,7 @@ BOOL SpNpcResetti::preCreate() {
         return FALSE;
     }
     lastApologyPhrase = 0xff;
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xfc);
     _ZN14NpcMoveAnimSet11setWalkAnimEi(&moveAnimSet, 0xfc);

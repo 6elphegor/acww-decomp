@@ -58,11 +58,4 @@ struct Unk_ov009_0225d2a4_Obj {
     /* 0x00 */ u32 pad[0x6c / 4];
 };
 
-struct Unk_ov009_0225bbdc_Target {
-    /* 0x00 */ u8 pad_00[0x28];
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ s32 unk_2c;
-    /* 0x30 */ s32 unk_30;
-};
-
 #endif

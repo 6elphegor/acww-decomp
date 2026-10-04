@@ -2,8 +2,7 @@
 // In-house BGM controller SndMgr_PlayTalkVoice, autoload_2 0x020ee98c-0x020ef150. C++, mwcc 1.2/base -O4,p.
 // Header = G004_all_best.cpp prototypes (SndMgr_GetVoiceSeqIndex now takes its real second argument).
 #include "types.h"
-#include "sys/Unk_Task.h"
-#include "sys/Unk_Seq.h"
+#include "sys/CmdSeq.h"
 #include "snd/PlayCtx.h"
 #include "snd/SndSeBytes4.h"
 #include "snd/BgmObj.h"
@@ -128,7 +127,7 @@ void Task_RunDrawPhase(void);
 void Task_RunAllPhases(void);
 #define TaskTree_run _ZN8TaskTree3runEv
 BOOL TaskTree_run(TaskList4 *l);
-s16 CmdSeq_Run(Unk_Seq *o, s32 loop);
+s16 CmdSeq_Run(CmdSeq *o, s32 loop);
 void *Snd_GetHeapLevel(void);
 void *Snd_RestoreHeapLevel(u32 a);
 s32 Snd_LoadGroup(u32 a);

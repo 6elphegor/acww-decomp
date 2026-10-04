@@ -8,7 +8,6 @@
 #include "npc/NpcFootstepFx.h"
 #include "sys/ProcBase.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "snd/SndSeEmitterKind1.h"
@@ -59,7 +58,7 @@ BOOL Vec_NotEqual(void *a, void *b);
 void *_ZN17NpcClothTexHandle19getSpNpcAnimHeapRefEv(void *p);
 BOOL _ZN12NpcResHandle7acquireEv(void *p);
 void _ZN12NpcResHandle7releaseEv(void *p);
-BOOL _ZN11NpcFaceAnim4loadEP18Unk_02019cac_Owner(void *p, void *q);
+BOOL _ZN11NpcFaceAnim4loadEP8NpcActor(void *p, void *q);
 BOOL _ZN11NpcAnimCtrl12initForActorEP8NpcActori(void *p, void *q, s32 r);
 void _ZN13NpcActionCtrl11startActionEPhiiiisii(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void _ZN19ActorFollowCollider13setupForActorEPviijjjhi(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, u32 f, s32 g);
@@ -134,7 +133,7 @@ BOOL SpNpcActor::onCreate() {
             return FALSE;
         }
     }
-    if (!_ZN11NpcFaceAnim4loadEP18Unk_02019cac_Owner(&faceAnim, this)) {
+    if (!_ZN11NpcFaceAnim4loadEP8NpcActor(&faceAnim, this)) {
         return FALSE;
     }
     if (!_ZN11NpcAnimCtrl12initForActorEP8NpcActori(&animCtrl, this, getWalkAnimSpeedScale())) {

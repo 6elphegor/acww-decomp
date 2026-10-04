@@ -14,7 +14,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -29,7 +28,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class SpNpcTortimerBugOff;
 class SpNpcTortimerBugOffTalk;
 
@@ -41,9 +40,9 @@ struct Unk_ov082_022718b0_Rec {
 };
 
 extern "C" {
-void _ZN12Unk_0201442015requestKeepItemEv(void *p);
+void _ZN16ActorTalkRequest15requestKeepItemEv(void *p);
 void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
 void _ZN16ActorTalkRequest12openSubSceneEi(void *p, s32 v);
@@ -209,7 +208,7 @@ BOOL SpNpcTortimerBugOff::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     return TRUE;
 }
@@ -379,7 +378,7 @@ void SpNpcTortimerBugOffTalk::scriptCatchChosen() {
         s32 r4 = MenuCtrl_GetIndex();
         entryItem = Pocket_GetItem();
         ownerNpc->entrySize = Contest_GetCatchSize(&entryItem);
-        _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &entryItem, 0, 4, 0);
+        _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &entryItem, 0, 4, 0);
         setNextScript(1);
         _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &entryItem, 2, 7);
         _ZN16ActorTalkRequest13setNumberSlotEijiii(this, ownerNpc->entrySize >> 12, 4, 3, 0, 0);
@@ -513,7 +512,7 @@ void SpNpcTortimerBugOffTalk::onMessageEnd(u32) {
         r6 = gContestRecord;
         switch (msgIndex) {
         case 0xd:
-            _ZN12Unk_0201442015requestKeepItemEv(this);
+            _ZN16ActorTalkRequest15requestKeepItemEv(this);
             ContestRecord_GetItem(&x14, r6);
             if (!Unk_ov082_InRange(&x14, 0x12b0, 0x12e7)) {
                 msg = 0x16;
@@ -605,7 +604,7 @@ void SpNpcTortimerBugOffTalk::onChoice(u32) {
             if (massageChairSlot >= 0) {
                 Pocket_RemoveItem(massageChairSlot);
                 h = 0x37e0;
-                _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &h, 0, 5, 0);
+                _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &h, 0, 5, 0);
             }
             msg = 2;
         }

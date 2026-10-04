@@ -6,7 +6,7 @@
 #include "npc/NpcResHandleView.h"
 #include "gfx/MatTexPatAnim.h"
 
-struct Unk_02019cac_Owner;
+class NpcActor;
 
 // NPC face animation (0x88 bytes): eye blink timer, face texture-pattern resource handles and the eye / mouth
 // material texture animations. Defined in src/main/unk_020119cc.cpp (0x020198c4..0x02019dd8).
@@ -40,7 +40,7 @@ struct NpcFaceAnim : BlinkTimer {
     s32 getTalkMouthStartFrame(s32 v);
     void pickTalkMouthVariant();
     BOOL isTalkMouthAnim(s32 v);
-    BOOL load(Unk_02019cac_Owner *o);
+    BOOL load(NpcActor *o);
     s32 getMouthAnim();
     BOOL isLoaded();
     void update(u8 *o);

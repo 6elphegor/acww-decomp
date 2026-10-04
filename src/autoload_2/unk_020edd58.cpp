@@ -1,7 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 #include "types.h"
-#include "sys/Unk_Task.h"
-#include "sys/Unk_Seq.h"
+#include "sys/CmdSeq.h"
 #include "snd/PlayCtx.h"
 #include "snd/BgmObj.h"
 #include "snd/SndSeGroup.h"
@@ -137,7 +136,7 @@ void Task_RunDrawPhase(void);
 void Task_RunAllPhases(void);
 #define TaskTree_run _ZN8TaskTree3runEv
 BOOL TaskTree_run(TaskList4 *l);
-s16 CmdSeq_Run(Unk_Seq *o, s32 loop);
+s16 CmdSeq_Run(CmdSeq *o, s32 loop);
 void *Snd_GetHeapLevel(void);
 void *Snd_RestoreHeapLevel(u32 a);
 s32 Snd_LoadGroup(u32 a);

@@ -1,7 +1,8 @@
 #include "types.h"
 #include "game/Unk_02003a6c_Vec.h"
-#include "snd/Unk_02003c30.h"
-#include "snd/Unk_02003c40.h"
+#include "snd/SndEnvChannel.h"
+#include "snd/SndSeEmitter.h"
+#include "snd/SndSceneBase.h"
 
 
 extern u32 gCamera;
@@ -13,19 +14,7 @@ extern u8 data_021f5be0[];
 
 
 
-struct Unk_0213c8ec {
-    virtual ~Unk_0213c8ec();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c(u32 a);
-    virtual void vfunc_20();
-    virtual void vfunc_24(u32 a);
-};
-
-Unk_0213c8ec *gSndScene;
+SndSceneBase *gSndScene;
 u8 gSndHeapBuffer[0x80000];
 
 extern "C" {
@@ -494,7 +483,7 @@ void SndMgr_StopSe(void *, u32, u32);
         if (p != NULL) {                                 \
             p = ctor(p);                                 \
         }                                                \
-        gSndScene = (Unk_0213c8ec *)p;               \
+        gSndScene = (SndSceneBase *)p;               \
     } while (0)
 
 static inline BOOL Unk_020040cc_check(u32 id, void *buf) {
@@ -506,14 +495,6 @@ static inline BOOL Unk_020040cc_check(u32 id, void *buf) {
 
 static inline BOOL Unk_020040cc_isA() { return gFieldSceneKind == 0; }
 static inline BOOL Unk_020040cc_isB() { return gFieldSceneKind == 1; }
-
-struct Unk_020044e0_Obj {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10(s32 v);
-};
 
 extern "C" {
 extern s32 gCameraDistance;
@@ -535,7 +516,7 @@ extern "C" void Snd_Update() {
     Melody_Update();
     SndMgr_update(gSndMgr);
     if (gSndScene != 0 && gCamera != 0) {
-        ((Unk_020044e0_Obj *)gSndScene)->vfunc_10(gCameraDistance);
+        gSndScene->update(gCameraDistance);
     }
 }
 
@@ -673,7 +654,7 @@ extern "C" void Snd_CreateScene() {
         }
         }
     }
-    gSndScene->vfunc_0c();
+    gSndScene->load();
 }
 
 extern "C" void Snd_DestroyScene() {
@@ -681,7 +662,7 @@ extern "C" void Snd_DestroyScene() {
         if (_ZN12BgmSceneFade12isKeepingBgmEv(data_021c1b3c + 0x2d0) != 0) {
             data_021f5be0[2] = 1;
         }
-        gSndScene->vfunc_18();
+        gSndScene->unload();
         delete gSndScene;
         gSndScene = NULL;
     }
@@ -691,7 +672,7 @@ extern "C" void Snd_VolumeOff() { SndMgr_volumeOff(gSndMgr); }
 
 extern "C" void Snd_VolumeOn() { SndMgr_volumeOn(gSndMgr); }
 
-extern "C" void Snd_FadeOutScene() { gSndScene->vfunc_14(); }
+extern "C" void Snd_FadeOutScene() { gSndScene->fadeOutAll(); }
 
 extern "C" void Snd_PlaySe(u32 a) { SndMgr_PlaySe(gSndMgr, a); }
 
@@ -704,17 +685,17 @@ extern "C" void Snd_StopSe(u32 a, u32 b) { SndMgr_StopSe(gSndMgr, a, b); }
 
 extern "C" void Snd_SetOutputMode(u32 a) { SndMgr_setOutputMode(gSndMgr, a); }
 
-extern "C" void Snd_BeginTalk(u32 a) { gSndScene->vfunc_1c(a); }
+extern "C" void Snd_BeginTalk(u32 a) { gSndScene->beginTalk(a); }
 
 extern "C" void Snd_PlayTalkVoice(u32 a, u32 b, u32 c, u32 d) { SndMgr_PlayTalkVoice(gSndMgr, a, b, c, d); }
 
-extern "C" void Snd_EndTalk() { gSndScene->vfunc_20(); }
+extern "C" void Snd_EndTalk() { gSndScene->endTalk(); }
 
 extern "C" void Snd_SetVoiceType(u32 a) { SndMgr_SetVoiceType(gSndMgr, a); }
 
 extern "C" void func_02003f78() {}
 
-extern "C" void Snd_SetSceneBankVariant(u32 a) { gSndScene->vfunc_24(a); }
+extern "C" void Snd_SetSceneBankVariant(u32 a) { gSndScene->setBankVariant(a); }
 
 extern "C" void Snd_SetSeHandleVolumes(u32 a) { SndMgr_SetSeHandleVolumes(gSndMgr, a); }
 
@@ -732,19 +713,19 @@ extern "C" void Snd_StartBellRollSe() { SndMgr_StartBellRollSe(gSndMgr); }
 
 extern "C" void Snd_StopBellRollSe() { SndMgr_StopBellRollSe(gSndMgr); }
 
-void Unk_02003c30::callSeInit() { vfunc_08(); }
+void SndSeEmitter::callInit() { init(); }
 
-void Unk_02003c40::callSeUpdateRelative(Unk_02003a6c_Vec *v) {
+void SndSeEmitter::callUpdateRelative(Unk_02003a6c_Vec *v) {
     Unk_02003a6c_Vec t;
     if (v != NULL) {
         if (gCamera != 0) {
             t.x = v->x - gCameraEye.x;
             t.y = v->y - gCameraEye.y;
             t.z = v->z - gCameraEye.z;
-            vfunc_0c(&t);
+            update(&t);
         }
     } else {
-        vfunc_0c(v);
+        update(v);
     }
 }
 
@@ -752,21 +733,21 @@ extern "C" void Snd_SeEmitterPlayOneShot(u32 a, u32 b, u32 c, u32 d) { SndSeEmit
 
 extern "C" void Snd_SeEmitterPlayHeld(u32 a, u32 b, u32 c, u32 d) { SndSeEmitter_playHeld(a, b, c, d); }
 
-void Unk_02003c30::callSeStop() { vfunc_10(); }
+void SndSeEmitter::callStop() { stop(); }
 
-void Unk_02003c30::callSeInitAlt() { vfunc_08(); }
+void SndSeEmitter::callInitAlt() { init(); }
 
-void Unk_02003c40::callSeUpdateRelativeAlt(Unk_02003a6c_Vec *v) {
+void SndSeEmitter::callUpdateRelativeAlt(Unk_02003a6c_Vec *v) {
     Unk_02003a6c_Vec t;
     if (v != NULL) {
         if (gCamera != 0) {
             t.x = v->x - gCameraEye.x;
             t.y = v->y - gCameraEye.y;
             t.z = v->z - gCameraEye.z;
-            vfunc_0c(&t);
+            update(&t);
         }
     } else {
-        vfunc_0c(v);
+        update(v);
     }
 }
 
@@ -774,7 +755,7 @@ extern "C" void Snd_SeEmitterPlayAlternate() { SndSeEmitter_playAlternate(); }
 
 extern "C" void Snd_SeEmitterPlayOneShotAlt(u32 a, u32 b, u32 c, u32 d) { SndSeEmitter_playOneShot(a, b, c, d); }
 
-void Unk_02003c30::callSeStopAlt() { vfunc_10(); }
+void SndSeEmitter::callStopAlt() { stop(); }
 
 extern "C" void Snd_PosListInit() { SndPosList_init(); }
 
@@ -818,29 +799,29 @@ extern "C" void Snd_PosNodeSetPitch() { SndPosNode_setPitch(); }
 
 extern "C" s32 Snd_PosListCanInit() { return 1; }
 
-void Unk_02003c30::callReset() { vfunc_00(); }
+void SndEnvChannel::callReset() { vfunc_00(); }
 
-void Unk_02003c40::callUpdateRelative(Unk_02003a6c_Vec *v) {
+void SndEnvChannel::callUpdateRelative(Unk_02003a6c_Vec *pos) {
     Unk_02003a6c_Vec t;
-    if (v != NULL) {
+    if (pos != NULL) {
         if (gCamera != 0) {
-            t.x = v->x - gCameraEye.x;
-            t.y = v->y - gCameraEye.y;
-            t.z = v->z - gCameraEye.z;
-            vfunc_10(&t);
+            t.x = pos->x - gCameraEye.x;
+            t.y = pos->y - gCameraEye.y;
+            t.z = pos->z - gCameraEye.z;
+            update((Vec3 *)&t);
         }
     } else {
-        vfunc_10(v);
+        update((Vec3 *)pos);
     }
 }
 
-void Unk_02003c40::callUpdate(void *a) { vfunc_10(a); }
+void SndEnvChannel::callUpdate(void *a) { update((Vec3 *)a); }
 
-void Unk_02003c40::callRequestSustained(void *a) { vfunc_08(a); }
+void SndEnvChannel::callRequestSustained(void *a) { requestSustained((u32)a); }
 
-void Unk_02003c40::callRequest(void *a) { vfunc_0c(a); }
+void SndEnvChannel::callRequest(void *a) { request((u32)a); }
 
-void Unk_02003c30::callRelease() { vfunc_04(); }
+void SndEnvChannel::callRelease() { vfunc_04(); }
 
 extern "C" void Snd_PlayBgm(u32 a) { SndMgr_PlayBgm(gSndMgr, a); }
 

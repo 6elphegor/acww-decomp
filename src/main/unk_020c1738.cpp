@@ -12,7 +12,6 @@
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
 #include "npc/NpcActionCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/TalkMsgRequest.h"
@@ -24,7 +23,7 @@
 #include "talk/SpNpcTalkRequest.h"
 
 extern "C" {
-void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
+void _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(void *a, void *b);
 void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
 void _ZN11NpcMoveCtrl11setTurnModeEh(void *self, s32 a);
 s32 Scene_GetCurrent(void);
@@ -34,7 +33,7 @@ void _ZN13NpcFootstepFx15enableFootstepsEv(void *self);
 s32 _ZN13NpcActionCtrl12isActionDoneEv(void *self);
 s32 _ZN12Unk_0201acf88getLevelEv(void *self);
 s32 _ZN9NpcLookAt15getObstacleBitsEv(void *self);
-s32 _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(void *self, void *owner, s32 a);
+s32 _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *self, void *owner, s32 a);
 void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *self, void *v);
 s32 _ZN11NpcMoveCtrl10hasNextLegEv(void *self);
 void _ZN11NpcMoveCtrl16resetDestinationEv(void *self);
@@ -200,7 +199,7 @@ BOOL SpNpcKaitlin::preCreate() {
         return FALSE;
     }
     sSpNpcKaitlinInstance = this;
-    _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(this, &talk);
+    _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(this, &talk);
     talk.attachOwner(this);
     if (Scene_GetCurrent()) {
         _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 2, 0x333, 0xcc, 0x133);
@@ -564,7 +563,7 @@ BOOL SpNpcKaitlin::avoidObstacle() {
     s32 st = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     BOOL result = FALSE;
     Unk_020c17f8_Vec v;
-    if (_ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(p350, this, 1) == 0) {
+    if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(p350, this, 1) == 0) {
         switch (st) {
         case 3:
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);

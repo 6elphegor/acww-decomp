@@ -13,7 +13,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
@@ -28,7 +27,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 class SpNpcPascal;
 class SpNpcPascalTalk;
 
@@ -56,7 +55,7 @@ struct Unk_ov076_02271a3c_Bits {
 
 
 extern "C" {
-void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
 void _ZN16ActorTalkRequest12openSubSceneEi(void *p, s32 v);
@@ -69,7 +68,7 @@ void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, s32 a, s32 b, s32 
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *self);
 s32 _ZN13NpcActionCtrl9getActionEv(void *self);
 s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *self, s32 a);
-BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP18Unk_02015b8c_Scene(void *self, void *o);
+BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *self, void *o);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, s32 a, s32 b, s32 c);
 s32 Random_GlobalBelow(s32 a);
@@ -231,7 +230,7 @@ BOOL SpNpcPascal::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    setTalkRequest((Unk_0201bc1c *)&talk);
+    setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     return TRUE;
 }
@@ -335,7 +334,7 @@ BOOL SpNpcPascal::setupAct04() {
 BOOL SpNpcPascal::mainAct04() {
     Unk_ov076_Vec v;
     if (_ZN11NpcAnimCtrl9getAnimIdEj(&animCtrl, 0) == 0xf9 &&
-        _ZN11NpcAnimCtrl14isAnimFinishedEP18Unk_02015b8c_Scene(&animCtrl, this)) {
+        _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&animCtrl, this)) {
         changeAct(5);
     } else {
         if (_ZN11NpcAnimCtrl9getAnimIdEj(&animCtrl, 0) == 0xf9 && ((Unk_ov076_02271a3c_Bits *)((u8 *)this + 0x190))->mid == 0xb) {
@@ -409,7 +408,7 @@ void SpNpcPascalTalk::onScallopPicked() {
             Pocket_RemoveItem();
         }
         m.item = 0x1559;
-        _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &m.item, 0, 5, 0);
+        _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &m.item, 0, 5, 0);
         m.msgIndex = 6;
     }
     r4->setNextMessage(&m.msgIndex, sSpNpcPascalKey);

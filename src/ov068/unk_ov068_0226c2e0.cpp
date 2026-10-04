@@ -16,7 +16,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/NpcTalkCtrl.h"
-#include "npc/Unk_0201a13c.h"
 #include "item/ItemName.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -45,7 +44,7 @@
 #define NpcMoveAnimSet_setRunAnim _ZN14NpcMoveAnimSet10setRunAnimEi
 #define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
 #define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
-#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_setNpcHandle _ZN8NpcActor12setNpcHandleEPt
 #define ThreeLayerAnimModel_updateLayers3 _ZN19ThreeLayerAnimModel13updateLayers3Ev
 #define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
@@ -63,7 +62,7 @@
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 
 
-struct Unk_0201bc1c;
+class ActorTalkRequest;
 
 
 struct Unk_ov068_0226ce70_Out {
