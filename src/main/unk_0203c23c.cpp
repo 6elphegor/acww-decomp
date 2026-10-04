@@ -6,6 +6,7 @@
 #include "gfx/FxMtx43.h"
 #include "item/ItemId.h"
 #include "sys/CameraBase.h"
+#include "gfx/Unk_020d93b8.h"
 
 
 
@@ -224,53 +225,6 @@ BOOL Item_TestInfoFlag3(u16 *p);
 }
 
 
-class Unk_020d93b8 : public CameraBase, public FxMtx43 {
-public:
-    Unk_020d93b8() {}
-
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-
-    u8 *getFollowSlack();
-    s16 getYaw();
-    s16 getPitch();
-    s16 getEyeCurveAngle();
-    u8 *getEye();
-    void resetOffsets();
-    void setBlendParams(u32 *src);
-    void setBlendPreset(s32 i);
-    void lerpPoses(s32 a, s32 b, s32 n);
-    void loadPose(s32 i, CameraPose *out);
-    BOOL setMode(s32 st);
-
-        /* 0x80 */ s32 distanceOffset, unk_84, unk_88, unk_8c, nearOffset, farOffset;
-    s16 fovyOffset, pitchOffset, yawOffset, unk_9e;
-    s32 followSlackOffset, unk_a4, blendDelayOffset, blendEndOffset, blendEaseInOffset, blendEaseOutOffset;
-    s32 blendDelay, blendEnd, blendEaseIn, blendEaseOut;
-    u8 pad_c8[0xfc - 0xc8];
-    CameraPose target;
-    s32 targetFocus, targetFocusY, targetFocusZ;
-    u8 pad_11c[0x148 - 0x11c];
-    s16 current, currentPitch;
-    u8 pad_14c[0x168 - 0x14c];
-    s32 eye;
-    u8 pad_16c[0x188 - 0x16c];
-    s32 lookTarget, lookTargetY, lookTargetZ, lookEye, lookEyeY, lookEyeZ, lookUp, lookUpY, lookUpZ;
-    s16 eyeCurveAngle;
-    s16 pad_1ae;
-    s32 aspect, nearClip, farClip;
-    u8 pad_1bc[0x1c8 - 0x1bc];
-    s16 fovy;
-    u8 pad_1ca[0x1e4 - 0x1ca];
-    s32 closeUpFactorTarget, closeUpFactor, presetCol, presetRow;
-    s32 viewPushed;
-    s32 mode, prevMode, startMode;
-    u8 pad_204[0x21c - 0x204];
-    s32 modeParam;
-    u8 pad_220[0x14];
-};
 
 static inline BOOL Unk_0203c23c_InRange(u16 c, u32 lo, u32 hi) {
     BOOL r = FALSE;

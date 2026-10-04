@@ -20,6 +20,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/ConstellationMsgString17.h"
+#include "talk/ChoiceList.h"
 
 
 struct Unk_0201bc1c;
@@ -43,19 +44,6 @@ struct Unk_ov046_02258e68_Actor {
     s16 rotY;
 };
 
-struct ChoiceEntry {
-    void setMsgIndex(const u8 *p);
-    void setBmgName(const void *p);
-    void loadText();
-    void *getText();
-};
-struct ChoiceList {
-    s32 getResult();
-    void clear();
-    ChoiceEntry *getEntry(s32 i);
-    void setCount(s32 v);
-    s32 setCancelToLast();
-};
 
 
 extern "C" {

@@ -21,6 +21,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/EncodedString16Buf.h"
+#include "talk/ChoiceList.h"
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -63,9 +64,6 @@ struct Unk_ov068_0226ce70_Out {
     u8 msgIndex;
 };
 
-struct ChoiceList {
-    s32 ChoiceList_getResult();
-};
 
 
 

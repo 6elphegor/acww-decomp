@@ -18,6 +18,7 @@
 #include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/ChoiceList.h"
 
 
 struct Unk_0201bc1c;
@@ -51,9 +52,6 @@ struct Unk_ov072_ColorCtor {
     Unk_ov072_ColorCtor(u8 a, u8 b, u8 c, u8 d) : a(a), b(b), c(c), d(d) {}
 };
 
-struct ChoiceList {
-    s32 getResult();
-};
 
 extern "C" {
 extern u8 data_021e58a6;

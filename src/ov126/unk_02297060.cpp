@@ -11,6 +11,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/GeneralMenuHeader.h"
 #include "menu/MenuBottomButtons.h"
+#include "menu/Keyboard.h"
 
 #define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
 #define func_0206260c _ZN8ItemNameD1Ev
@@ -294,15 +295,6 @@ public:
 
 
 
-// +0x144 ov095 menu sub-object, 0x23bc bytes
-class Keyboard {
-public:
-    Keyboard() : bgTasks(), labels() {}
-    ~Keyboard() {}
-    u32 unk_00[0x22f4 / 4];
-    BgVramTask bgTasks[2];
-    LabelString labels[2];
-};
 
 
 // Embedded polymorphic sub-object at +0x3e64 (vfunc_0c is called by func_ov126_02298ea4)
@@ -474,7 +466,6 @@ public:
     /* 0x0af */ u8 textWidth;
     /* 0x0b0 */ GeneralMenuHeader header;
     /* 0x144 */ Keyboard keyboard;
-    /* 0x2500 */ u32 unk_2500[(0x3d00 - 0x2500) / 4];
     /* 0x3d00 */ MenuBottomButtons bottomButtons;
     /* 0x3e64 */ MenuCursorBuf0 cursor;
     /* 0x3ec8 */ LabelString suffixLabel;

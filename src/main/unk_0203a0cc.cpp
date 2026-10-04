@@ -8,10 +8,8 @@
 #include "gfx/CameraSetup.h"
 #include "gfx/FxMtx43.h"
 #include "sys/CameraBase.h"
+#include "gfx/Unk_020d93b8.h"
 
-struct Unk_0203b350_V {
-    s32 x, y, z;
-};
 typedef Unk_0203b350_V V3;
 typedef Unk_0203b350_V Unk_0203a148_Vec;
 typedef Unk_0203b350_V Unk_0203a9b8_Vec;
@@ -129,95 +127,6 @@ struct Unk_021c30ec {
     Unk_021c30ec_Update update;
 };
 
-class Unk_020d93b8 : public CameraBase, public FxMtx43 {
-public:
-    Unk_020d93b8() {}
-
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-
-    // 0x0203a9b8 .. 0x0203b28c
-    BOOL initModeShake();
-    void updateModeRestore();
-    BOOL initModeRestore();
-    void updateModeTrackPair();
-    BOOL initModeTrackPair();
-    void updateMode4();
-    BOOL initMode4();
-    void updateMode3();
-    BOOL initMode3();
-    void updateModeFocus();
-    BOOL initModeFocus();
-    void updateMode1();
-    BOOL initMode1();
-    void popView();
-    void pushView();
-    void updateModeDefault();
-    BOOL initModeDefault();
-
-    // 0x0203b350 .. 0x0203bc48
-    void dragFocusTo(V3 *p);
-    void setLookAt(V3 *a, V3 *b);
-    void setLookAtOrbit(V3 *a, s32 r, s32 s, s32 z);
-    void updateBlend();
-    void setDefaultProjection();
-    void updateMode();
-    BOOL setMode(s32 idx);
-    s32 getRoomEdgeSide(s32 *p);
-    void setFocusPreset11(u8 *o, V3 *v);
-    BOOL clampToRoomBounds(s32 *p);
-    void calcRoomBounds();
-    void updateEyeCurveAngle();
-    void setFovy(s32 a);
-    s32 getBlendEaseOut();
-    s32 getBlendEaseIn();
-    s32 getBlendEnd();
-    s32 getBlendDelay();
-    s32 getFovTan();
-    s32 getDistance();
-
-    // 0x0203bc58 ..
-    s32 getFollowSlack();
-    s16 getYaw();
-    s16 getPitch();
-    s16 getEyeCurveAngle();
-    V3 *getEye();
-    void resetOffsets();
-    void setBlendParams(u32 *src);
-    void setBlendPreset(s32 i);
-    void lerpPoses(s32 a, s32 b, s32 n);
-    void loadPose(s32 i, CameraPose *out);
-
-    /* 0x80 */ s32 distanceOffset, unk_84, unk_88, unk_8c, nearOffset, farOffset;
-    s16 fovyOffset, pitchOffset, yawOffset, unk_9e;
-    s32 followSlackOffset, unk_a4, blendDelayOffset, blendEndOffset, blendEaseInOffset, blendEaseOutOffset;
-    s32 blendDelay, blendEnd, blendEaseIn, blendEaseOut;
-    u8 pad_c8[0xfc - 0xc8];
-    CameraPose target;
-    V3 targetFocus;
-    s16 saved, savedPitch;
-    s32 savedDistance, savedOffset, savedOffsetY, savedOffsetZ, savedFocus, savedFocusY, savedFocusZ;
-    s32 savedEye, savedEyeY, savedEyeZ;
-    s16 current, currentPitch;
-    u8 pad_14c[0x168 - 0x14c];
-    s32 eye, eyeY, eyeZ;
-    u8 pad_174[0x188 - 0x174];
-    s32 lookTarget, lookTargetY, lookTargetZ, lookEye, lookEyeY, lookEyeZ, lookUp, lookUpY, lookUpZ;
-    s16 eyeCurveAngle;
-    s16 pad_1ae;
-    s32 aspect, nearClip, farClip;
-    u8 pad_1bc[0x1c8 - 0x1bc];
-    s16 fovy;
-    u8 pad_1ca[0x1e4 - 0x1ca];
-    s32 closeUpFactorTarget, closeUpFactor, presetCol, presetRow;
-    u8 viewPushed, focusYawLocked, roomFocusSide, pad_1f7;
-    s32 mode, prevMode, startMode;
-    s32 restoreFocus, restoreFocusY, restoreFocusZ, restoreEye, restoreEyeY, restoreEyeZ;
-    s32 modeParam;
-    u8 pad_220[0x14];
-};
 
 static inline BOOL Unk_0203c23c_InRange(u16 c, u32 lo, u32 hi) {
     BOOL r = FALSE;

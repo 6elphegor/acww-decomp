@@ -17,6 +17,7 @@
 #include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/ChoiceList.h"
 
 
 struct Unk_0201bc1c;
@@ -38,9 +39,6 @@ struct Unk_ov052_02258eac_Loc : Unk_ov052_Vec {
 };
 
 
-struct ChoiceList {
-    s32 getResult();
-};
 
 extern "C" {
 void *PlayerData_GetCurrent();

@@ -23,6 +23,7 @@
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/ChoiceList.h"
 
 
 struct Unk_0201bc1c;
@@ -37,9 +38,6 @@ struct Unk_ov078_Vec {
 
 
 
-struct ChoiceList {
-    s32 getResult();
-};
 
 
 extern "C" {

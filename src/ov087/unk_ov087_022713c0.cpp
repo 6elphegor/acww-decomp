@@ -18,6 +18,7 @@
 #include "talk/MsgString33.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/ChoiceList.h"
 
 #pragma opt_loop_invariants off
 
@@ -31,9 +32,6 @@ struct Unk_ov087_Vec {
     s32 x, y, z;
 };
 
-struct ChoiceList {
-    s32 getResult();
-};
 
 extern "C" {
 void *PlayerData_GetCurrent();

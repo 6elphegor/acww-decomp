@@ -11,6 +11,7 @@
 #include "talk/MsgString9B.h"
 #include "gfx/BgVramTask.h"
 #include "player/PlayerData.h"
+#include "talk/ChoiceList.h"
 
 struct TitleChoiceSet {
     u8 *msgIds;
@@ -18,26 +19,7 @@ struct TitleChoiceSet {
     u8 numChoices;
 };
 
-class ChoiceEntry {
-public:
-    void setMsgIndex(const u8 *p);
-    void setBmgName(const void *p);
-    void loadText();
-    void setValue(const u8 *p);
-    void *getText();
-};
 
-class ChoiceList {
-public:
-    void clear();
-    ChoiceEntry *getEntry(s32 i);
-    void setCount(s32 v);
-    s32 setCancelToLast();
-    s32 getResult();
-    void reset(s32 a, s32 b);
-    void setEntry(s32 a, const u8 *b, s32 c, const u8 *d, const char *e, s32 f);
-    void loadTexts();
-};
 
 class TalkMsgRequest;
 

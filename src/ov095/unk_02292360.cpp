@@ -1,31 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "menu/Keyboard.h"
 
-struct Keyboard {
-    u16 flags;
-    u8 page;
-    u8 selectedEmotion;
-    u8 emotionCount;
-    u8 unk_05[3];
-    u8 pressTimer;
-    u8 unk_09[3];
-    s32 disabledSlots;
-    s32 pressedKey;
-    s32 cursorKey;
-    s32 cursorX;
-    s32 cursorY;
-    s32 knobGripX;
-    s32 knobGripY;
-    u8 unk_28[5];
-    u8 typedRunLength;
-    u8 layout;
-    u8 cursorWrap;
-    u8 *tabCells;
-    u8 unk_34[0x233c - 0x34];
-    u8 labels[0x40];
-    u8 unk_237c[0x2bbc - 0x237c];
-    u8 emotionIconBuf[0x1000];
-};
 
 struct Unk_ov095_02295e48 {
     s32 v[2];
@@ -1662,9 +1638,9 @@ void Keyboard_LoadObjGfx(Keyboard *s)
     String_Load2dMenu(s->labels, 0x9c);
     _ZN11LabelString16createSmallLabelEjjjhhi(s->labels, 8, 0xd8, 4, 0xa, 0, 0);
     _ZN11LabelString13redrawAlignedEii(s->labels, 1, 0);
-    String_Load2dMenu(s->unk_237c, 0x9d);
-    _ZN11LabelString16createSmallLabelEjjjhhi(s->unk_237c, 8, 0xf8, 4, 0xa, 0, 0);
-    _ZN11LabelString13redrawAlignedEii(s->unk_237c, 1, 0);
+    String_Load2dMenu(&s->labels[1], 0x9d);
+    _ZN11LabelString16createSmallLabelEjjjhhi(&s->labels[1], 8, 0xf8, 4, 0xa, 0, 0);
+    _ZN11LabelString13redrawAlignedEii(&s->labels[1], 1, 0);
 }
 
 void Keyboard_LoadEmotionIcons(Keyboard *s)

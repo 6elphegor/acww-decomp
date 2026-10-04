@@ -3,6 +3,7 @@
 #include "menu/MenuProc.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
+#include "menu/DateTimePicker.h"
 
 extern "C" {
 extern const u8 sDateSelectCursorLeftTable[5];
@@ -66,24 +67,6 @@ void DateTimePicker_Init(void *self, s32 a, s32 b, s32 c, s32 d);
 
 
 
-// ov134's library object at +0x260 (plain class DateTimePicker)
-class DateTimePicker {
-public:
-    DateTimePicker();
-    ~DateTimePicker();
-    void setListCursorFromY(s32 y);
-    s32 getListCursorY();
-    s32 getListCursorX();
-    BOOL grabKnobByCursor();
-    BOOL pickListCursorRow();
-    BOOL finishKnobRelease();
-    void moveKnobByPad();
-    void releaseKnob();
-    s32 navigateList(u32 pad);
-    void dragKnobToward(s32 x);
-    void dragKnob(s32 x);
-    u8 unk_00[0x25c4];
-};
 
 
 class DateSelectMenu;

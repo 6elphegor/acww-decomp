@@ -8,6 +8,7 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
+#include "menu/MenuTownListPanel.h"
 
 class NearbyTownsMenu;
 
@@ -60,26 +61,6 @@ void NetOverlay_AssertWireless(); // C++ linkage in main
 
 
 
-// ov139 menu helper, 0x624 bytes (src/ov139/unk_02291f60.cpp)
-class MenuTownListPanel {
-public:
-    MenuTownListPanel();
-    ~MenuTownListPanel();
-    s32 getCellList(s32 i);
-    void clearRow(s32 i);
-    void setRow(s32 i, u8 *str);
-    void createLabels();
-    void setRowFadeColor(s32 a, s32 x, s32 n, s32 e);
-    void loadObjGfx();
-    void clearAllRows();
-    void loadBgGfx();
-    void drawTitle(s32 a, s32 b);
-    void flushPalette();
-    void preStateUpdate();
-    void release();
-    void init(u8 id, u8 v);
-    u32 unk_00[0x624 / 4];
-};
 
 
 static inline BOOL Unk_ov141_02293194_Both() {

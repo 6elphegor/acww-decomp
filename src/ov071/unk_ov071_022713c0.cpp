@@ -19,6 +19,7 @@
 #include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/ChoiceList.h"
 
 
 class SpNpcLyle;
@@ -58,9 +59,6 @@ struct Unk_ov071_0227297c_Ent {
 
 struct Unk_ov071_022726c4_Ent;
 
-struct ChoiceList {
-    s32 getResult();
-};
 
 
 extern "C" {

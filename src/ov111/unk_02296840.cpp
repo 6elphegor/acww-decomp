@@ -14,6 +14,7 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
 #include "player/PlayerData.h"
+#include "menu/Keyboard.h"
 
 enum Unk_ov111_022970cc_Status { UNK_OV111_ST_0 = 0, UNK_OV111_ST_1 = 1, UNK_OV111_ST_2 = 2, UNK_OV111_ST_3 = 3 };
 
@@ -166,15 +167,6 @@ public:
 
 
 
-// Sub-object at +0xac (ov095 menu/state struct; methods from ov095)
-class Keyboard {
-public:
-    Keyboard() : bgTasks(), labels() {}
-    ~Keyboard() {}
-    u32 unk_00[0x22f4 / 4];
-    /* 0x22f4 */ BgVramTask bgTasks[2];
-    /* 0x233c */ LabelString labels[2];
-};
 
 
 
@@ -287,7 +279,6 @@ public:
     /* 0xa6 */ u8 unk_a6[2];
     /* 0xa8 */ TextLabel *textLabel;
     /* 0xac */ Keyboard keyboard;
-    /* 0x2468 */ u8 keyboardScreenBuf[0x3c68 - 0x2468];
     /* 0x3c68 */ ChatBalloonText balloonText;
     /* 0x3c9c */ EncodedString32 text;
     /* 0x3ccc */ MenuCursorBuf0 cursor;
@@ -951,7 +942,7 @@ void ChatMenu_LoadSendAnimFrame(S *s, u32 a) {
     }
     r = File_LoadAlloc(name, g, -4, 0);
     {
-        u8 *src = s->keyboardScreenBuf;
+        u8 *src = s->keyboard.screenBuf;
         MI_CpuCopy8((void *)(r + 0x100), src + 0x100, 0x140);
         if (a == 1) {
             BgScreen_ReplaceRectPalette(src, 0, 4, 0x1f, 9, 5, 6);

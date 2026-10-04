@@ -19,11 +19,9 @@
 #include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/ChoiceList.h"
 
 
-struct ChoiceList {
-    s32 getResult();
-};
 
 struct Unk_0201bc1c;
 class SpNpcHarriet;

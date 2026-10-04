@@ -17,6 +17,7 @@
 #include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/ChoiceList.h"
 
 
 struct Unk_0201bc1c;
@@ -24,10 +25,6 @@ class SpNpcResetti;
 class SpNpcResettiTalk;
 
 
-struct ChoiceList {
-    s32 getResult();
-    void *getSliderValue();
-};
 
 extern "C" {
 void *PlayerData_GetCurrent();
@@ -826,7 +823,7 @@ void SpNpcResettiTalk::onChoice() {
     case 0x20:
     case 0x21: {
         u32 n = Random_GlobalBelow(0xd);
-        if (func_020e77cc(getChoiceList()->getSliderValue(), n, n + 5) != 0) {
+        if (func_020e77cc((void *)getChoiceList()->getSliderValue(), n, n + 5) != 0) {
             cmd = 0x22;
         } else {
             cmd = Random_GlobalBelow(2) == 0 ? 0x20 : 0x21;

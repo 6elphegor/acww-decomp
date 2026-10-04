@@ -14,6 +14,11 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuScrollKnob.h"
 #include "player/PlayerData.h"
+#include "talk/MsgString.h"
+#include "talk/MsgString193.h"
+#include "talk/MsgString9B.h"
+#include "ui/LabelString.h"
+#include "menu/Keyboard.h"
 
 // Plain view of the scene object used by the extern "C" helpers (offsets only).
 struct Unk_ov112_02296840 {
@@ -62,42 +67,13 @@ class BbsWriteMenu;
 // ---- main-module classes (only what is used here) ----
 class EncodedString;
 
-class MsgString {
-public:
-    virtual ~MsgString();
-    void fromEncoded(EncodedString *dst, s32 a, s32 b);
-    void clear();
-};
 
 
-class MsgString193 : public MsgString {
-public:
-    MsgString193();
-    virtual ~MsgString193();
-    u32 unk_04[(0xc4 - 4) / 4];
-};
 
 
 // text window, 0x40 bytes
-class LabelString : public MsgString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    void setHighlight(u8 a, u8 b, u32 c, u32 d);
-    void redrawAligned(s32 a, s32 b);
-    void createBufferLabel(u32 a, u32 b, u8 c, u8 d);
-    void createSmallLabel(u32 a, u32 b, u32 c, u8 d, u8 e, s32 f);
-    void destroyLabel();
-    u32 unk_04[(0x40 - 4) / 4];
-};
 
 
-class MsgString9B : public MsgString {
-public:
-    MsgString9B();
-    virtual ~MsgString9B();
-    u32 unk_04[6];
-};
 
 
 // comm/session singleton (gCommManager)
@@ -145,14 +121,6 @@ public:
 
 
 
-// 0x370: ov095 list/text object, size 0x23bc
-class Keyboard {
-public:
-    Keyboard() : bgTasks(), labels() {}
-    u32 unk_00[0x22f4 / 4];
-    BgVramTask bgTasks[2];
-    LabelString labels[2];
-};
 
 typedef void (BbsWriteMenu::*Unk_ov112_02299b10_Fn)();
 
@@ -269,13 +237,11 @@ public:
     /* 0x244 */ MenuErrorMessage errorMessage;
     /* 0x34c */ BgVramTask textCharTask[1];
     /* 0x370 */ Keyboard keyboard;
-    /* 0x272c */ u32 unk_272c[(0x3f2c - 0x272c) / 4];
     /* 0x3f2c */ LabelString lineLabels[6];
     /* 0x40ac */ MenuScrollKnob scrollKnob;
     /* 0x40f4 */ MenuBottomButtons bottomButtons;
     /* 0x4258 */ MenuCursorBuf0 cursor;
     /* 0x42bc */ MsgString193 censorString;
-    /* 0x4380 */ u32 unk_4380[(0x4390 - 0x4380) / 4];
     /* 0x4390 */ EncodedString192 encodedText;
     /* 0x4450 */ u8 unk_4450[0x10];
     /* 0x4460 */ u8 bgScreenBuf[0x800];

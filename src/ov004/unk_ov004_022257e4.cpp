@@ -13,6 +13,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
+#include "room/RoomObjActor.h"
 
 
 
@@ -29,29 +30,6 @@
 
 
 
-class RoomObjActor : public Character {
-public:
-    RoomObjActor();
-    virtual ~RoomObjActor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL changeSyncState(u32 v);
-    virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
-
-    void setSyncSlot(u32 v);
-    s32 storeSyncState();
-    s32 getSyncState();
-    void releaseResources();
-    void loadResourcesByName(char *name);
-    void loadResources(char *a, char *b);
-    virtual BOOL vfunc_20(u32 a);
-
-    /* 0xec */ AnimModel model;
-    /* 0x1a4 */ RoomObjRes res;
-    /* 0x248 */ RoomObjTex tex;
-    /* 0x250 */ RoomObjSe se;
-};
 
 struct Unk_ov004_02225cf4_Q {
     u32 pad_00;

@@ -3,6 +3,7 @@
 #include "menu/MenuProc.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
+#include "menu/DateTimePicker.h"
 
 extern "C" {
 extern const u8 sBirthdayCursorRightTable[4];
@@ -65,24 +66,6 @@ void DateTimePicker_Init(void *self, u32 a, u32 b, u32 c, u8 d);
 
 
 
-// ov134 sub-object at +0x25c (class DateTimePicker)
-class DateTimePicker {
-public:
-    DateTimePicker();
-    ~DateTimePicker();
-    void setListCursorFromY(s32 y);
-    s32 getListCursorY();
-    s32 getListCursorX();
-    BOOL grabKnobByCursor();
-    BOOL pickListCursorRow();
-    BOOL finishKnobRelease();
-    void moveKnobByPad();
-    void releaseKnob();
-    s32 navigateList(u32 pad);
-    void dragKnobToward(s32 x);
-    void dragKnob(s32 x);
-    u8 unk_00[0x25c4];
-};
 
 class BirthdayMenu;
 typedef void (BirthdayMenu::*Unk_ov137_022962e0_Fn)();

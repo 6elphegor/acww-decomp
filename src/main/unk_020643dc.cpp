@@ -1,13 +1,11 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "game/LightLevel.h"
+#include "gfx/Unk_020d93b8.h"
 
 struct Unk_02064674_Vec { s32 x, y, z; };
 
 
-struct Unk_020d93b8 {
-    s16 getEyeCurveAngle();
-};
 
 struct Unk_02064674_Color {
     u16 r : 5;

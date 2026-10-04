@@ -10,6 +10,7 @@
 #include "gfx/BgVramTask.h"
 #include "talk/EncodedString8B.h"
 #include "menu/MenuTitleBalloon.h"
+#include "menu/MenuTownListPanel.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Declarations from other files
@@ -69,41 +70,6 @@ extern "C" u32 data_ov139_02292640[8] = {0x81a34048, 0x00008899, 0x41c30048, 0x0
 extern "C" u32 data_ov139_022926d0[84] = {0x81a800a8, 0x0000b17b, 0x41c880a8, 0x0000b17f, 0x41a840c8, 0x0000b1fb, 0x01c800c8, 0x0000b1ff, 0x4030403e, 0x000048e6, 0x4010403e, 0x000048e6, 0x41e8403e, 0x000048e6, 0x41c8403e, 0x000048e6, 0x41a8403e, 0x000048e6, 0x4030402e, 0x000048e6, 0x4010402e, 0x000048e6, 0x41e8402e, 0x000048e6, 0x41c8402e, 0x000048e6, 0x41a8402e, 0x000048e6, 0x4030401e, 0x000048e6, 0x4010401e, 0x000048e6, 0x41e8401e, 0x000048e6, 0x41c8401e, 0x000048e6, 0x41a8401e, 0x000048e6, 0x4030400e, 0x000048e6, 0x4010400e, 0x000048e6, 0x41e8400e, 0x000048e6, 0x41c8400e, 0x000048e6, 0x41a8400e, 0x000048e6, 0x403040fe, 0x000048e6, 0x401040fe, 0x000048e6, 0x41e840fe, 0x000048e6, 0x41c840fe, 0x000048e6, 0x41a840fe, 0x000048e6, 0x403040ee, 0x000048e6, 0x401040ee, 0x000048e6, 0x41e840ee, 0x000048e6, 0x41c840ee, 0x000048e6, 0x41a840ee, 0x000048e6, 0x41bc40d6, 0x000058cd, 0x01dc40d6, 0x000058d1, 0x401440d6, 0x000058ed, 0x003440d6, 0x000058f1, 0x902840d5, 0x00005888, 0x801040d5, 0x00005888, 0x91d040d5, 0x00005888, 0x81b840d5, 0xffff5888};
 extern "C" u32 data_ov139_022926a0[12] = {0x403040ee, 0x000058c6, 0x41a400df, 0x00005886, 0x401040ee, 0x000058c6, 0x41e840ee, 0x000058c6, 0x41c840ee, 0x000058c6, 0x41a840ee, 0xffff58c6};
 
-class MenuTownListPanel {
-public:
-    MenuTownListPanel();
-    ~MenuTownListPanel();
-
-    void clearFlags(u32 m);
-    void setFlags(u32 m);
-    BOOL testFlags(u32 m);
-    u32 getCellList(s32 i);
-    void setRowPlayerName(s32 i, u8 *str, u8 pal);
-    void setRowTownName(s32 i, u8 *str, u8 pal);
-    LabelString *allocTextLabel();
-    void resetTextLabels();
-    void clearRow(s32 i);
-    void setRow(s32 i, u8 *str);
-    void createLabels();
-    void setRowFadeColor(s32 a, s32 x, s32 n, s32 e);
-    void loadObjGfx();
-    void clearAllRows();
-    void loadBgGfx();
-    void drawTitle(s32 a, s32 b);
-    void flushPalette();
-    void preStateUpdate();
-    void release();
-    void init(u8 id, u8 v);
-
-    /* 0x000 */ MenuTitleBalloon titleBalloon;
-    /* 0x0bc */ LabelString textLabels[20];
-    /* 0x5bc */ BgVramTask paletteTask;
-    /* 0x5e0 */ u16 basePalette[16];
-    /* 0x600 */ u16 workPalette[16];
-    /* 0x620 */ u16 flags;
-    /* 0x622 */ u8 bgLayer;
-    /* 0x623 */ u8 labelCount;
-};
 
 MenuTownListPanel::MenuTownListPanel() {}
 

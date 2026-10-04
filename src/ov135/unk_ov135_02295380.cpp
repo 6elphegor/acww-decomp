@@ -4,6 +4,7 @@
 #include "ui/HandCursor.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
+#include "menu/DateTimePicker.h"
 
 extern "C" {
 extern const u8 sClockAdjustCursorLeftTable[7];
@@ -79,24 +80,6 @@ void DateTimePicker_Init(void *self, s32 a, s32 b, s32 c, s32 d);
 
 
 
-// ov134 library object at +0x260, 0x25c4 bytes
-class DateTimePicker {
-public:
-    BOOL pickListCursorRow();
-    void setListCursorFromY(s32 y);
-    s32 getListCursorY();
-    s32 getListCursorX();
-    BOOL finishKnobRelease();
-    void releaseKnob();
-    void moveKnobByPad();
-    void dragKnobToward(s32 x);
-    void dragKnob(s32 x);
-    BOOL grabKnobByCursor();
-    s32 navigateList(u32 pad);
-    DateTimePicker();
-    ~DateTimePicker();
-    u8 unk_00[0x25c4];
-};
 
 class ClockAdjustMenu;
 typedef void (ClockAdjustMenu::*Unk_ov135_022964b0_Fn)();

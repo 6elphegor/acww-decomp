@@ -11,6 +11,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
+#include "room/RoomObjActor.h"
 
 extern "C" {
 void _ZN19PlayerActionRequestC1Ev(void *self);
@@ -76,30 +77,6 @@ void NNS_G3dBindMdlTex(void *a, u32 b);
 void NNS_G3dBindMdlPltt(void *a, u32 b);
 }
 
-class RoomObjActor : public Character {
-public:
-    virtual ~RoomObjActor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
-    virtual BOOL changeSyncState(u32 v);
-    virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
-
-    void setSyncSlot(u32 v);
-    s32 storeSyncState();
-    s32 getSyncState();
-    void releaseResources();
-    void loadResourcesByName(char *name);
-    void loadResources(char *a, char *b);
-
-    /* 0xea */ u8 unk_ea;
-    /* 0xeb */ u8 pad_eb;
-    /* 0xec */ AnimModel model;
-    /* 0x1a4 */ RoomObjRes res;
-    /* 0x248 */ RoomObjTex tex;
-    /* 0x250 */ RoomObjSe se;
-};
 
 extern "C" {
 void _ZN9CharacterC2Ev(void *self);

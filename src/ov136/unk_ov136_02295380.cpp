@@ -3,6 +3,7 @@
 #include "menu/MenuProc.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
+#include "menu/DateTimePicker.h"
 
 class DateTimePicker;
 
@@ -64,24 +65,6 @@ void DateTimePicker_Shutdown(DateTimePicker *p);
 void DateTimePicker_Init(DateTimePicker *p, s32 a, s32 b, s32 c, s32 d);
 }
 
-// ov134 library object embedded at +0x25c (size 0x25c4)
-class DateTimePicker {
-public:
-    DateTimePicker();
-    ~DateTimePicker();
-    BOOL pickListCursorRow();
-    s32 navigateList(u32 pad);
-    void setListCursorFromY(s32 y);
-    s32 getListCursorY();
-    s32 getListCursorX();
-    BOOL finishKnobRelease();
-    void releaseKnob();
-    void moveKnobByPad();
-    void dragKnobToward(s32 x);
-    void dragKnob(s32 x);
-    BOOL grabKnobByCursor();
-    u8 unk_00[0x25c4];
-};
 
 
 

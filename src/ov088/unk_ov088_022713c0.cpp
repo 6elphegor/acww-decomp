@@ -22,6 +22,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/ChoiceString.h"
+#include "talk/ChoiceList.h"
 
 
 struct Unk_0201bc1c;
@@ -33,20 +34,7 @@ struct Unk_ov088_Vec {
     s32 x, y, z;
 };
 
-struct ChoiceEntry {
-    void loadText();
-    void setBmgName(const void *p);
-    void setMsgIndex(const u8 *p);
-    u8 *getText();
-};
 
-struct ChoiceList {
-    s32 getResult();
-    void setCancelToLast();
-    void setCount(s32 v);
-    ChoiceEntry *getEntry(s32 i);
-    void clear();
-};
 
 
 

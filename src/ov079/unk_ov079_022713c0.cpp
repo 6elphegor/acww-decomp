@@ -20,15 +20,13 @@
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/ChoiceList.h"
 
 
 struct Unk_0201bc1c;
 class SpNpcWendell;
 class SpNpcWendellTalk;
 
-struct ChoiceList {
-    s32 getResult();
-};
 
 
 

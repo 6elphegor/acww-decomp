@@ -5,6 +5,7 @@
 #include "ui/HandCursor.h"
 #include "ui/LabelString.h"
 #include "menu/MenuCursor.h"
+#include "menu/CreatureBookPanel.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -58,23 +59,6 @@ public:
     void onTabMenuClosed();
 };
 
-class CreatureBookPanel {
-public:
-    CreatureBookPanel();
-    ~CreatureBookPanel();
-    BOOL beginScrollTouch(s32 a, s32 b);
-    void placeScrollKnob(s32 a);
-    BOOL hitDescPageButtons(s32 a, s32 b);
-    void loadObjGraphics();
-    void loadBgGraphics();
-    void postUpdate();
-    void preUpdate();
-    void cleanup();
-    void init(u8 a, u8 b, u8 c, u8 d);
-    void drawButtons(s32 a);
-    void drawScrollKnob();
-    u32 unk_00[0x129c / 4];
-};
 
 
 

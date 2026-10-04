@@ -10,30 +10,18 @@
 #include "talk/EncodedString128.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuScrollKnob.h"
+#include "talk/MsgString.h"
+#include "talk/MsgString129.h"
+#include "ui/LabelString.h"
+#include "menu/Keyboard.h"
 
 class EncodedString;
 
-class MsgString {
-public:
-    virtual ~MsgString();
-};
 
 
-class MsgString129 : public MsgString {
-public:
-    MsgString129();
-    virtual ~MsgString129();
-    u32 unk_04[(0x94 - 4) / 4];
-};
 
 
 // text window, 0x40 bytes
-class LabelString : public MsgString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    u32 unk_04[(0x40 - 4) / 4];
-};
 
 
 
@@ -72,15 +60,6 @@ public:
 };
 
 
-// 0xc0: ov095 list/text object, size 0x23bc
-class Keyboard {
-public:
-    Keyboard() : bgTasks(), labels() {}
-    inline ~Keyboard() {}
-    u32 unk_00[0x22f4 / 4];
-    BgVramTask bgTasks[2];
-    LabelString labels[2];
-};
 
 class LetterWriteMenu;
 typedef void (LetterWriteMenu::*Unk_ov122_0229a1b8_Fn)();
@@ -452,7 +431,6 @@ public:
     /* 0xb9 */ u8 unk_b9[3];
     /* 0xbc */ u8 *letter;
     /* 0xc0 */ Keyboard keyboard;
-    /* 0x247c */ u32 unk_247c[(0x3c7c - 0x247c) / 4];
     /* 0x3c7c */ LetterRenderer renderer;
     /* 0x3e8c */ MenuScrollKnob scrollKnob;
     /* 0x3ed4 */ MenuCursorBuf0 cursor;

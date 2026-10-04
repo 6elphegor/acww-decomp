@@ -18,6 +18,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
+#include "room/RoomObjActor.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -73,29 +74,6 @@ void RoomObj_ActivateSe(void *self);
 
 
 
-class RoomObjActor : public Character {
-public:
-    RoomObjActor();
-    virtual ~RoomObjActor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
-    virtual BOOL changeSyncState(u32 v);
-    virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
-
-    void setSyncSlot(u32 v);
-    s32 storeSyncState();
-    s32 getSyncState();
-    void releaseResources();
-    void loadResourcesByName(char *name);
-    void loadResources(char *a, char *b);
-
-    /* 0xec */ AnimModel model;
-    /* 0x1a4 */ RoomObjRes res;
-    /* 0x248 */ RoomObjTex tex;
-    /* 0x250 */ RoomObjSe se;
-};
 
 
 // ---------------------------------------------------------------- secondary base at +0x290 (vtable main 0x020ddcf0)

@@ -17,6 +17,7 @@
 #include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/ChoiceList.h"
 
 
 class SpNpcKappn;
@@ -41,9 +42,6 @@ struct Unk_02067918 {
     s32 state;
 };
 
-struct ChoiceList {
-    s32 getResult();
-};
 
 extern "C" {
 void _ZN12Unk_020d771015setSubSceneKindEjj(void *self, u32 a, u32 b);

@@ -22,6 +22,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "player/PlayerData.h"
+#include "talk/ChoiceList.h"
 
 
 struct Unk_0201bc1c;
@@ -80,9 +81,6 @@ struct Unk_ov070_SceneEntry {
     s32 c, d, e, f;
 };
 
-struct ChoiceList {
-    s32 getResult();
-};
 
 class ActorTalkRequest {
 public:

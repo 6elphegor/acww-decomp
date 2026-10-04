@@ -5,6 +5,7 @@
 #include "ui/HandCursor.h"
 #include "ui/LabelString.h"
 #include "menu/MenuCursor.h"
+#include "menu/CreatureBookPanel.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -64,23 +65,6 @@ struct Unk_ov116_SceneEntry {
 
 
 
-class CreatureBookPanel {
-public:
-    CreatureBookPanel();
-    ~CreatureBookPanel();
-    BOOL beginScrollTouch(s32 a, s32 b);
-    void placeScrollKnob(s32 a);
-    void drawScrollKnob();
-    BOOL hitDescPageButtons(s32 a, s32 b);
-    void drawButtons(s32 a);
-    void loadObjGraphics();
-    void loadBgGraphics();
-    void postUpdate();
-    void preUpdate();
-    void cleanup();
-    void init(u8 a, u8 b, u8 c, u8 d);
-    u32 unk_00[0x129c / 4];
-};
 
 
 

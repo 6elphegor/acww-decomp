@@ -10,6 +10,7 @@
 #include "talk/MsgString25.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/ChoiceList.h"
 
 
 // ---------------------------------------------------------------- library base chain (as in link_ov009)
@@ -31,10 +32,6 @@ public:
     /* 0x1e */ u8 msgIndex;
 };
 
-class ChoiceList {
-public:
-    s32 getResult();
-};
 
 
 // Slots 0x10..0x18 are overridden by the derived class's own new virtuals (named after their addresses).

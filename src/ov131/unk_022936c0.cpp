@@ -3,6 +3,7 @@
 #include "menu/MenuProc.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
+#include "menu/NumberPad.h"
 
 extern "C" {
 extern u8 gSaveHouse[];
@@ -66,18 +67,6 @@ void NumberPad_PressKey(void *self);
 
 
 
-class NumberPad {
-public:
-    NumberPad();
-    ~NumberPad();
-    void flushScreens();
-    void update();
-    void shutdown();
-    void loadObj();
-    s32 loadBg();
-    void init(u32 a, u32 b, u32 c);
-    u32 unk_00[0x11b4 / 4];
-};
 
 
 static inline BOOL func_ov131_Both() {
@@ -131,7 +120,7 @@ public:
     void stateTouchRepeat();
     void updateTouch();
     void loadObjGfx();
-    s32 loadBgGfx();
+    void loadBgGfx();
     void setupBgLayers();
     void postStateUpdate();
     void preStateUpdate();
@@ -315,7 +304,7 @@ void AmountEntryMenu::setupBgLayers() {
     Gfx2d_SetLayerControl(4, 0, 0, 0);
 }
 
-s32 AmountEntryMenu::loadBgGfx() { return numberPad.loadBg(); }
+void AmountEntryMenu::loadBgGfx() { numberPad.loadBg(); }
 
 void AmountEntryMenu::loadObjGfx() {
     numberPad.loadObj();
