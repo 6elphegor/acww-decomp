@@ -1,11 +1,11 @@
-#ifndef NET_UNK_OV065_0226AED4_FC_H
-#define NET_UNK_OV065_0226AED4_FC_H
+#ifndef NET_WIFIAPCONTROL_H
+#define NET_WIFIAPCONTROL_H
 
 #include "types.h"
 
 // WifiAp control block (sWifiApControl, allocated in WifiAp_Init, src/ov065/unk_ov065_0226ad84.cpp).
 
-struct Unk_ov065_0226aed4_Fc {
+struct WifiApControl {
     /* 0x00 */ void *(*unk_00)(u32, u32);
     /* 0x04 */ void (*unk_04)(u32, void *, u32);
     /* 0x08 */ u8 allocMask;

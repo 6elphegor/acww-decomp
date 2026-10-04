@@ -1,9 +1,9 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/Unk_ov065_0226ab40_Glb.h"
-#include "net/Unk_ov065_0226ab5c_Conn.h"
-#include "net/Unk_ov065_0226aed4_Fc.h"
-#include "net/Unk_ov065_0226b27c_Cfg.h"
+#include "net/WifiLinkWork.h"
+#include "net/WifiApControl.h"
+#include "net/WifiApConfig.h"
 #include "net/Unk_ov065_0226b3c4_Rec.h"
 #include "net/Unk_ov065_0226b488_Rec.h"
 #include "net/Unk_ov065_0226cfe4_Buf.h"
@@ -1427,7 +1427,7 @@ extern "C" {
 // ov065_019: network library, connection/event state (0x0226ab40..0x0226b3c4)
 
 
-typedef void (*Unk_ov065_0226ac54_Cb)(void *, void *, void *, u32);
+typedef void (*WifiLinkRecvCallback)(void *, void *, void *, u32);
 
 
 
@@ -1446,8 +1446,8 @@ extern u8 sWifiRssiSamples[];
 extern u8 *sWifiApContext;
 extern void *sWifiApLinkWork;
 extern void *sWifiApSocketConfig;
-extern Unk_ov065_0226b27c_F8 *sWifiApAllocator;
-extern Unk_ov065_0226aed4_Fc *sWifiApControl;
+extern WifiApAllocator *sWifiApAllocator;
+extern WifiApControl *sWifiApControl;
 
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
@@ -1462,7 +1462,7 @@ s32 strncmp(void *, void *, u32);
 s32 WM_SetDCFData(void *, void *, void *, u32);
 void func_020ff154(void *);
 
-Unk_ov065_0226ab5c_Conn *WifiLink_GetWork();
+WifiLinkWork *WifiLink_GetWork();
 s32 WifiLink_Init(void *, u32);
 s32 WifiLink_UnlockFromIrq(void *);
 s32 WifiLink_TryLockFromIrq(void *);

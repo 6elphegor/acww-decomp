@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/sp2p3
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_022679f8_Sha1.h"
+#include "net/SslSha1Context.h"
 #pragma opt_strength_reduction off
 
 namespace Unk_ov065_02268470_Ns {
@@ -722,12 +722,12 @@ extern "C" {
 void MI_CpuFill8(void *dst, s32 v, s32 n);
 void MI_CpuCopy8(const void *src, void *dst, s32 n);
 void SslSha1_StoreBe32(void *dst, const void *src, s32 n);
-void SslSha1_Transform(Unk_ov065_022679f8_Sha1 *ctx, const u8 *block);
-void SslSha1_Update(Unk_ov065_022679f8_Sha1 *ctx, const u8 *data, u32 n);
+void SslSha1_Transform(SslSha1Context *ctx, const u8 *block);
+void SslSha1_Update(SslSha1Context *ctx, const u8 *data, u32 n);
 
 u8 sSslSha1Padding[0x40] = {0x80};
 
-void SslSha1_Init(Unk_ov065_022679f8_Sha1 *ctx)
+void SslSha1_Init(SslSha1Context *ctx)
 {
     MI_CpuFill8(ctx, 0, 0x5c);
     ctx->st[0] = 0x67452301;
@@ -737,7 +737,7 @@ void SslSha1_Init(Unk_ov065_022679f8_Sha1 *ctx)
     ctx->st[4] = 0xc3d2e1f0;
 }
 
-void SslSha1_Update(Unk_ov065_022679f8_Sha1 *ctx, const u8 *data, u32 n)
+void SslSha1_Update(SslSha1Context *ctx, const u8 *data, u32 n)
 {
     u32 idx = (ctx->lo >> 3) & 0x3f;
     u32 bits = n << 3;
@@ -762,7 +762,7 @@ void SslSha1_Update(Unk_ov065_022679f8_Sha1 *ctx, const u8 *data, u32 n)
     MI_CpuCopy8(data + i, ctx->buf + idx, n - i);
 }
 
-void SslSha1_Final(Unk_ov065_022679f8_Sha1 *ctx, void *out)
+void SslSha1_Final(SslSha1Context *ctx, void *out)
 {
     u32 idx;
     SslSha1_StoreBe32(out, &ctx->hi, 8);
@@ -777,7 +777,7 @@ void SslSha1_Final(Unk_ov065_022679f8_Sha1 *ctx, void *out)
     SslSha1_StoreBe32(out, ctx, 0x14);
 }
 
-void SslSha1_FinalRaw(Unk_ov065_022679f8_Sha1 *ctx, void *out)
+void SslSha1_FinalRaw(SslSha1Context *ctx, void *out)
 {
     SslSha1_Update(ctx, (sSslSha1Padding + 1), 0x2c);
     SslSha1_StoreBe32(out, ctx, 0x14);

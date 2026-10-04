@@ -1,12 +1,12 @@
 // mwcc-version: 1.2/sp2p3
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_02261638_Rng.h"
-#include "net/Unk_ov065_02262240_Sess.h"
-#include "net/Unk_ov065_02264a48_Cfg.h"
+#include "net/IpSocket.h"
+#include "net/IpFragEntry.h"
+#include "net/IpStackConfig.h"
 #include "net/Unk_ov065_02264c44_Thr.h"
-#include "net/Unk_ov065_02264d24_Ent.h"
-#include "net/Unk_ov065_02264d80_Obj.h"
+#include "net/SslSession.h"
+#include "net/SslConnection.h"
 
 extern "C" u8 data_ov065_0228f3c0[0x800] = {0};
 extern "C" u8 sIpRecvThreadStack[0x800] = {0};
@@ -86,10 +86,10 @@ extern u32 sDnsServers[2];
 extern u32 sDhcpServerId;
 extern u8 sArpCache[];
 extern Unk_ov065_02264c44_Info data_021fcc2c;
-extern Unk_ov065_02264c44_Ent sIpFragTable[8];
+extern IpFragEntry sIpFragTable[8];
 extern void (*sIpFree)(void *);
 extern u32 sIpYieldMode;
-extern Unk_ov065_02264d24_Ent sSslSessionCache[4];
+extern SslSession sSslSessionCache[4];
 extern void *(*sIpAlloc)(u32);
 extern void *(*sAddrConfiguredCallback)(void);
 extern s32 (*sIpLinkCheckCallback)(void);
@@ -101,17 +101,17 @@ extern u32 sRecvRingWrite;
 extern u16 sNextEphemeralPort;
 extern u8 sOwnMac[];
 extern u8 sArpConflict;
-extern Unk_ov065_02264a48_Rng sIpRandState;
+extern IpRandState sIpRandState;
 
 void IpStack_RecvThreadMain(void);
 void IpStack_TimerThreadMain(void);
 u32 Ssl_EncryptRecord(void *, void *);
-u32 Tcp_Write(void *, u32, u32, u32, Unk_ov065_02264d80_Obj *);
-u8 *Tcp_Read(u32 *, Unk_ov065_02264d80_Obj *);
-void Tcp_Consume(u32, Unk_ov065_02264d80_Obj *);
+u32 Tcp_Write(void *, u32, u32, u32, IpSocket *);
+u8 *Tcp_Read(u32 *, IpSocket *);
+void Tcp_Consume(u32, IpSocket *);
 void Ssl_ProcessRecord(void *, void *);
-s32 Ssl_ReadExact(void *, u32, Unk_ov065_02264d80_Obj *);
-s32 Ssl_ReadRecord(Unk_ov065_02264d80_Obj *);
+s32 Ssl_ReadExact(void *, u32, IpSocket *);
+s32 Ssl_ReadRecord(IpSocket *);
 
 u64 OS_GetTick(void);
 u32 OS_DisableInterrupts(void);
@@ -134,7 +134,7 @@ s32 Ip_IsOnLocalNet(u32 a);
 void IpStack_ResetAddress(u32 a);
 s32 IpStack_RequestStop(void);
 void Ssl_ClearSessionCache(void);
-void Ssl_ReceiveRecordPart(Unk_ov065_02264d80_Obj *o);
+void Ssl_ReceiveRecordPart(IpSocket *o);
 s32 IpStack_ReturnTrue(void);
 void IpStack_Nop(void);
 }
@@ -146,7 +146,7 @@ void IpStack_ResetAddress(u32 a);
 void IpStack_Yield(void);
 void IpStack_Nop(void);
 s32 IpStack_ReturnTrue(void);
-void IpStack_Init(Unk_ov065_02264a48_Cfg *c);
+void IpStack_Init(IpStackConfig *c);
 s32 IpStack_RequestStop(void);
 void IpStack_SetIdleCallback(void (*f)(void));
 void IpStack_Shutdown(void);
@@ -179,7 +179,7 @@ void IpStack_ResetAddress(u32 a) {
             Unk_ov065_02264c44_Thr *t = data_021fcc2c.list;
             if (t != 0) {
                 do {
-                    Unk_ov065_02264c44_Sub *s = t->ipSocket;
+                    IpSocket *s = t->ipSocket;
                     if (s != 0) {
                         if (s->ownerThread != 0) {
                             if (s->state != 10 && s->state != 11) {
@@ -197,7 +197,7 @@ void IpStack_ResetAddress(u32 a) {
         }
         {
             s32 i;
-            Unk_ov065_02264c44_Ent *e;
+            IpFragEntry *e;
             for (i = 0, e = sIpFragTable; i < 8; e++, i++) {
                 if (e->cnt != 0) {
                     sIpFree(e->buf);
@@ -224,7 +224,7 @@ s32 IpStack_ReturnTrue(void) {
     return 1;
 }
 
-void IpStack_Init(Unk_ov065_02264a48_Cfg *c) {
+void IpStack_Init(IpStackConfig *c) {
     OSi_ReferSymbol(0x2000bfc);
     u64 seed = *(u64 *)&c->randSeed;
     if (seed != 0) {
@@ -266,7 +266,7 @@ void IpStack_Init(Unk_ov065_02264a48_Cfg *c) {
     sRecvRingRead = 0;
     sRecvRingWrite = 0;
     {
-        Unk_ov065_02264a48_Rng *r = &sIpRandState;
+        IpRandState *r = &sIpRandState;
         r->value = (u64)((s64)r->multiplier * (s64)r->value) + r->increment;
         u32 hi = (u32)(r->value >> 32);
         sNextEphemeralPort = ((u64)((s64)hi * (s64)0xf88) >> 32) + 0x400;
@@ -394,24 +394,16 @@ u32 Ip_GetNextHop(u32 a) {
 
 }
 
-namespace Unk_ov065_02263f24_Ns {
-
-#define BS16(x) ((u16)((((s32)(x)) >> 8) | (((s32)(x)) << 8)))
-
-struct Unk_ov065_02263f24_Pkt {
-    u8 unk_00[0x0a];
-    u16 localPort;
-    u8 unk_0c[0x10];
-    u32 remoteAddr;
-    u8 unk_20[0x2c];
-    u8 *txBuf;
-};
-
-struct Unk_ov065_02264298_E {
+// ARP cache entry (sArpCache, 8 entries; Arp_UpdateCache, IpStack_TimerThreadMain)
+struct ArpCacheEntry {
     s32 ipAddr;
     u8 macAddr[6];
     u16 lastUsed;
 };
+
+namespace Unk_ov065_02263f24_Ns {
+
+#define BS16(x) ((u16)((((s32)(x)) >> 8) | (((s32)(x)) << 8)))
 
 extern "C" {
 extern u32 data_021fcc2c[];
@@ -428,7 +420,7 @@ extern u8 *sRecvRingBuf;
 extern u32 sRecvRingSize;
 extern u32 sRecvRingRead;
 extern u8 sOwnMac[];
-extern Unk_ov065_02264298_E sArpCache[8];
+extern ArpCacheEntry sArpCache[8];
 
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
@@ -447,7 +439,7 @@ u32 Ip_ChecksumAdd(u8 *, u32, u32);
 s32 Ip_GetNextHop(u32);
 s32 Ip_IsOnLocalNet(u32);
 
-void Icmp_SendEchoRequest(u32 a, u32 b, Unk_ov065_02263f24_Pkt *c);
+void Icmp_SendEchoRequest(u32 a, u32 b, IpSocket *c);
 void Ip_Send(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag);
 void Ip_SendPacket(u8 *p, u32 off, u8 *data, u32 n, u32 x, u32 w);
 void Eth_SendIp(u8 *p, u32 off, u8 *data, u32 n, u32 x, u16 w);
@@ -482,7 +474,7 @@ void Arp_UpdateCache(u8 *mac, u32 ip, u32 flag);
 void Eth_SendIp(u8 *p, u32 off, u8 *data, u32 n, u32 x, u16 w);
 void Ip_SendPacket(u8 *p, u32 off, u8 *data, u32 n, u32 x, u32 w);
 void Ip_Send(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag);
-void Icmp_SendEchoRequest(u32 a, u32 b, Unk_ov065_02263f24_Pkt *c);
+void Icmp_SendEchoRequest(u32 a, u32 b, IpSocket *c);
 }
 
 s32 Ip_IsBroadcast(u32 ip)
@@ -697,7 +689,7 @@ u8 *Arp_Lookup(u32 ip)
         r = sBroadcastMac;
     } else {
         s32 i;
-        Unk_ov065_02264298_E *e;
+        ArpCacheEntry *e;
         for (i = 0, e = sArpCache; (u32)i < 8; e++, i++) {
             if (ip == e->ipAddr) {
                 u32 t = (u32)(OS_GetTick() >> 16);
@@ -767,7 +759,7 @@ void Arp_UpdateCache(u8 *mac, u32 ip, u32 flag)
     }
     now = (u16)(OS_GetTick() >> 16);
     {
-        Unk_ov065_02264298_E *e;
+        ArpCacheEntry *e;
         for (i = 0, e = sArpCache; (u32)i < 8; e++, i++) {
             if (ip == e->ipAddr) {
                 sArpCache[i].lastUsed = now;
@@ -779,7 +771,7 @@ void Arp_UpdateCache(u8 *mac, u32 ip, u32 flag)
     if (flag != 0) {
         u32 best = 0;
         u32 idx = 0;
-        Unk_ov065_02264298_E *e;
+        ArpCacheEntry *e;
         for (i = 0, e = sArpCache; (u32)i < 8; e++, i++) {
             if (e->ipAddr == 0) {
                 idx = i;
@@ -891,7 +883,7 @@ void Ip_Send(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag)
     }
 }
 
-void Icmp_SendEchoRequest(u32 a, u32 b, Unk_ov065_02263f24_Pkt *c)
+void Icmp_SendEchoRequest(u32 a, u32 b, IpSocket *c)
 {
     u8 *h = c->txBuf;
     u8 *q = h + 0x22;
@@ -919,7 +911,7 @@ namespace Unk_ov065_02263578_Ns {
 
 
 
-typedef Unk_ov065_02262240_Sess Sess;
+typedef IpSocket Sess;
 typedef Unk_ov065_02262240_Thr Thr;
 
 extern "C" {
@@ -1321,76 +1313,39 @@ namespace Unk_ov065_02262c5c_Ns {
 
 // ov065_006: TCP/IP input path (socket library), 0x02262c5c..0x02263577
 
-struct Unk_ov065_02262c5c_Ip {
-    u8 b0;
+struct IpHeader {
+    u8 verIhl;
     u8 b1;
-    u16 h2;
+    u16 totalLength;
     u8 b4;
     u8 b5;
-    u16 h6;
+    u16 fragField;
     u8 b8;
     u8 b9;
     u16 ha;
-    u16 hc;
-    u16 he;
-    u16 h10;
-    u16 h12;
+    u16 srcAddrHi;
+    u16 srcAddrLo;
+    u16 dstAddrHi;
+    u16 dstAddrLo;
 };
 
-struct Unk_ov065_02262c5c_Frag {
-    u32 key;
-    u16 cnt;
-    u16 id;
-    u16 total;
-    u16 end;
-    u16 start[8];
-    u16 fin[8];
-    u32 tick;
-    u8 *data;
-    u8 *buf;
-};
-
-struct Unk_ov065_02262e64_Tcp {
-    u16 h0;
-    u16 h2;
+struct TcpHeader {
+    u16 srcPort;
+    u16 dstPort;
     u16 h4;
     u16 h6;
-    u16 h8;
-    u16 ha;
-    u8 bc;
-    u8 bd;
-    u16 he;
-};
-
-struct Unk_ov065_02262e64_Sock {
-    u32 ownerThread;
-    s32 waitReason;
-    u8 state;
-    u8 pad_09;
-    u16 localPort;
-    u8 pad_0c[8];
-    u32 localAddr;
-    u16 remotePort;
-    u16 pad_1a;
-    u32 remoteAddr;
-    u8 pad_20[4];
-    s32 recvNext;
-    s32 sendNext;
-    u16 peerWindow;
-    u16 pad_2e;
-    u32 ackedSeq;
-    s32 rxSegmentCount;
-    s32 (*unk_38)(u8 *, u32, Unk_ov065_02262e64_Sock *);
-    u32 rxBufSize;
-    u8 *rxBuf;
-    u32 rxLen;
+    u16 ackHi;
+    u16 ackLo;
+    u8 dataOffset;
+    u8 tcpFlags;
+    u16 window;
 };
 
 struct Unk_ov065_02262e64_Conn {
     u8 pad_00[0x68];
     Unk_ov065_02262e64_Conn *next;
     u8 pad_6c[0x38];
-    Unk_ov065_02262e64_Sock *ipSocket;
+    IpSocket *ipSocket;
 };
 
 struct Unk_ov065_02262e64_Ctx {
@@ -1404,7 +1359,7 @@ static inline u16 Unk_ov065_02262c5c_Bs(u16 v) {
 
 extern "C" {
 
-extern Unk_ov065_02262c5c_Frag sIpFragTable[8];
+extern IpFragEntry sIpFragTable[8];
 extern u8 *(*sIpAlloc)(u32);
 extern void (*sIpFree)(u8 *);
 extern Unk_ov065_02262e64_Ctx data_021fcc2c;
@@ -1413,41 +1368,41 @@ u64 OS_GetTick();
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
 void OS_YieldThread();
-void OS_WakeupThreadDirect(u32);
+void OS_WakeupThreadDirect(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 _s32_div_f(s32, s32);
 
-s32 Ip_VerifyPseudoChecksum(Unk_ov065_02262e64_Tcp *, u32, Unk_ov065_02262c5c_Ip *, u32);
-s32 Tcp_SendReset(Unk_ov065_02262c5c_Ip *, Unk_ov065_02262e64_Tcp *, u32, u16);
-s32 Tcp_SendAck(Unk_ov065_02262e64_Sock *, u16);
-s32 Tcp_SendFinAck(Unk_ov065_02262e64_Sock *, u16);
-s32 Tcp_ParseOptions(Unk_ov065_02262e64_Tcp *, Unk_ov065_02262e64_Sock *);
-Unk_ov065_02262e64_Sock *Tcp_FindConnection(Unk_ov065_02262c5c_Ip *);
-Unk_ov065_02262e64_Sock *Tcp_FindListener(Unk_ov065_02262c5c_Ip *, Unk_ov065_02262e64_Tcp *);
+s32 Ip_VerifyPseudoChecksum(TcpHeader *, u32, IpHeader *, u32);
+s32 Tcp_SendReset(IpHeader *, TcpHeader *, u32, u16);
+s32 Tcp_SendAck(IpSocket *, u16);
+s32 Tcp_SendFinAck(IpSocket *, u16);
+s32 Tcp_ParseOptions(TcpHeader *, IpSocket *);
+IpSocket *Tcp_FindConnection(IpHeader *);
+IpSocket *Tcp_FindListener(IpHeader *, TcpHeader *);
 s32 Ip_AreAddrsValid(u32, u32);
-s32 Tcp_AcceptSyn(Unk_ov065_02262c5c_Ip *, Unk_ov065_02262e64_Tcp *, Unk_ov065_02262e64_Sock *);
+s32 Tcp_AcceptSyn(IpHeader *, TcpHeader *, IpSocket *);
 
-void Tcp_InputRst(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q);
-void Tcp_InputFin(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void Tcp_InputAck(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void Tcp_InputSynAck(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void Tcp_InputSyn(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-s32 Tcp_InputSynExisting(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
+void Tcp_InputRst(IpHeader *p, TcpHeader *q);
+void Tcp_InputFin(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputAck(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputSynAck(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputSyn(IpHeader *p, TcpHeader *q, u32 r);
+s32 Tcp_InputSynExisting(IpHeader *p, TcpHeader *q, u32 r);
 
 extern "C" {
-s32 Tcp_InputSynExisting(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void Tcp_InputSyn(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void Tcp_InputSynAck(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void Tcp_InputAck(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void Tcp_InputFin(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void Tcp_InputRst(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q);
-void Tcp_Input(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void Udp_Input(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 c);
-u8 *Ip_Reassemble(Unk_ov065_02262c5c_Ip *p, s32 *out);
+s32 Tcp_InputSynExisting(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputSyn(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputSynAck(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputAck(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputFin(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputRst(IpHeader *p, TcpHeader *q);
+void Tcp_Input(IpHeader *p, TcpHeader *q, u32 r);
+void Udp_Input(IpHeader *p, TcpHeader *q, u32 c);
+u8 *Ip_Reassemble(IpHeader *p, s32 *out);
 }
 
-s32 Tcp_InputSynExisting(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
-    Unk_ov065_02262e64_Sock *s = Tcp_FindConnection(p);
+s32 Tcp_InputSynExisting(IpHeader *p, TcpHeader *q, u32 r) {
+    IpSocket *s = Tcp_FindConnection(p);
     if (s != 0) {
         if (s->state == 1) {
             Tcp_AcceptSyn(p, q, s);
@@ -1462,11 +1417,11 @@ s32 Tcp_InputSynExisting(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
     return 0;
 }
 
-void Tcp_InputSyn(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
-    if (Ip_AreAddrsValid(((u32)Unk_ov065_02262c5c_Bs(p->hc) << 16) | Unk_ov065_02262c5c_Bs(p->he),
-                            ((u32)Unk_ov065_02262c5c_Bs(p->h10) << 16) | Unk_ov065_02262c5c_Bs(p->h12)) != 0) {
+void Tcp_InputSyn(IpHeader *p, TcpHeader *q, u32 r) {
+    if (Ip_AreAddrsValid(((u32)Unk_ov065_02262c5c_Bs(p->srcAddrHi) << 16) | Unk_ov065_02262c5c_Bs(p->srcAddrLo),
+                            ((u32)Unk_ov065_02262c5c_Bs(p->dstAddrHi) << 16) | Unk_ov065_02262c5c_Bs(p->dstAddrLo)) != 0) {
         if (Tcp_InputSynExisting(p, q, r) == 0) {
-            Unk_ov065_02262e64_Sock *x = Tcp_FindListener(p, q);
+            IpSocket *x = Tcp_FindListener(p, q);
             if (x != 0) {
                 Tcp_AcceptSyn(p, q, x);
                 return;
@@ -1478,16 +1433,16 @@ void Tcp_InputSyn(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
     }
 }
 
-void Tcp_InputSynAck(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
-    Unk_ov065_02262e64_Sock *s = Tcp_FindConnection(p);
+void Tcp_InputSynAck(IpHeader *p, TcpHeader *q, u32 r) {
+    IpSocket *s = Tcp_FindConnection(p);
     if (s == 0 || s->state != 2) {
         Tcp_SendReset(p, q, r, (u16)((p->b5 << 8) + 5));
         return;
     }
     OS_YieldThread();
     s->recvNext = (((u32)Unk_ov065_02262c5c_Bs(q->h4) << 16) | Unk_ov065_02262c5c_Bs(q->h6)) + 1;
-    s->ackedSeq = ((u32)Unk_ov065_02262c5c_Bs(q->h8) << 16) | Unk_ov065_02262c5c_Bs(q->ha);
-    s->peerWindow = Unk_ov065_02262c5c_Bs(q->he);
+    s->ackedSeq = ((u32)Unk_ov065_02262c5c_Bs(q->ackHi) << 16) | Unk_ov065_02262c5c_Bs(q->ackLo);
+    s->peerWindow = Unk_ov065_02262c5c_Bs(q->window);
     Tcp_ParseOptions(q, s);
     Tcp_SendAck(s, (u16)((p->b5 << 8) + 6));
     s->state = 4;
@@ -1497,8 +1452,8 @@ void Tcp_InputSynAck(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r)
     }
 }
 
-void Tcp_InputAck(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
-    Unk_ov065_02262e64_Sock *s = Tcp_FindConnection(p);
+void Tcp_InputAck(IpHeader *p, TcpHeader *q, u32 r) {
+    IpSocket *s = Tcp_FindConnection(p);
     s32 fl;
     s32 last;
     u32 seq;
@@ -1506,14 +1461,14 @@ void Tcp_InputAck(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
         Tcp_SendReset(p, q, r, (u16)((p->b5 << 8) + 9));
         return;
     }
-    fl = q->bd;
-    s->ackedSeq = ((u32)Unk_ov065_02262c5c_Bs(q->h8) << 16) | Unk_ov065_02262c5c_Bs(q->ha);
+    fl = q->tcpFlags;
+    s->ackedSeq = ((u32)Unk_ov065_02262c5c_Bs(q->ackHi) << 16) | Unk_ov065_02262c5c_Bs(q->ackLo);
     seq = ((u32)Unk_ov065_02262c5c_Bs(q->h4) << 16) | Unk_ov065_02262c5c_Bs(q->h6);
     if (s->state == 4 && (u32)s->recvNext != seq) {
         Tcp_SendAck(s, (u16)((p->b5 << 8) + 0xa));
         return;
     }
-    s->peerWindow = Unk_ov065_02262c5c_Bs(q->he);
+    s->peerWindow = Unk_ov065_02262c5c_Bs(q->window);
     switch (s->state) {
     case 0:
     case 2:
@@ -1539,7 +1494,7 @@ void Tcp_InputAck(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
         }
         if (r != 0) {
             u32 sv = OS_DisableInterrupts();
-            MI_CpuCopy8((u8 *)q + _s32_div_f(q->bc & 0xf0, 4), s->rxBuf + s->rxLen, r);
+            MI_CpuCopy8((u8 *)q + _s32_div_f(q->dataOffset & 0xf0, 4), s->rxBuf + s->rxLen, r);
             s->rxLen += r;
             s->recvNext += r;
             OS_RestoreInterrupts(sv);
@@ -1596,8 +1551,8 @@ void Tcp_InputAck(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
     OS_YieldThread();
 }
 
-void Tcp_InputFin(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
-    Unk_ov065_02262e64_Sock *s = Tcp_FindConnection(p);
+void Tcp_InputFin(IpHeader *p, TcpHeader *q, u32 r) {
+    IpSocket *s = Tcp_FindConnection(p);
     if (s != 0) {
         switch (s->state) {
         case 7:
@@ -1627,8 +1582,8 @@ void Tcp_InputFin(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
     }
 }
 
-void Tcp_InputRst(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q) {
-    Unk_ov065_02262e64_Sock *s = Tcp_FindConnection(p);
+void Tcp_InputRst(IpHeader *p, TcpHeader *q) {
+    IpSocket *s = Tcp_FindConnection(p);
     if (s != 0) {
         OS_YieldThread();
         s->state = 0;
@@ -1639,11 +1594,11 @@ void Tcp_InputRst(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q) {
     }
 }
 
-void Tcp_Input(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
+void Tcp_Input(IpHeader *p, TcpHeader *q, u32 r) {
     if (Ip_VerifyPseudoChecksum(q, r, p, 6) == 0) {
         s32 t;
-        r -= _s32_div_f(q->bc & 0xf0, 4);
-        t = q->bd;
+        r -= _s32_div_f(q->dataOffset & 0xf0, 4);
+        t = q->tcpFlags;
         switch (t & 0x17) {
         case 2:
             if ((t & 0x28) == 0) Tcp_InputSyn(p, q, r);
@@ -1669,19 +1624,19 @@ void Tcp_Input(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
     }
 }
 
-void Udp_Input(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 c) {
+void Udp_Input(IpHeader *p, TcpHeader *q, u32 c) {
     if (q->h6 != 0 && Ip_VerifyPseudoChecksum(q, c, p, 0x11) != 0) return;
     Unk_ov065_02262e64_Conn *s = data_021fcc2c.list;
     for (; s != 0; s = s->next) {
-        Unk_ov065_02262e64_Sock *k = s->ipSocket;
-        if (k != 0 && k->ownerThread != 0 && k->state == 10 && k->localPort == Unk_ov065_02262c5c_Bs(q->h2)
-            && (k->remotePort == 0 || k->remotePort == Unk_ov065_02262c5c_Bs(q->h0))
+        IpSocket *k = s->ipSocket;
+        if (k != 0 && k->ownerThread != 0 && k->state == 10 && k->localPort == Unk_ov065_02262c5c_Bs(q->dstPort)
+            && (k->remotePort == 0 || k->remotePort == Unk_ov065_02262c5c_Bs(q->srcPort))
             && (k->remoteAddr == 0 || k->remoteAddr == (u32)-1
-                || k->remoteAddr == (((u32)Unk_ov065_02262c5c_Bs(p->hc) << 16) | Unk_ov065_02262c5c_Bs(p->he)))) {
-            k->localAddr = ((u32)Unk_ov065_02262c5c_Bs(p->h10) << 16) | Unk_ov065_02262c5c_Bs(p->h12);
+                || k->remoteAddr == (((u32)Unk_ov065_02262c5c_Bs(p->srcAddrHi) << 16) | Unk_ov065_02262c5c_Bs(p->srcAddrLo)))) {
+            k->localAddr = ((u32)Unk_ov065_02262c5c_Bs(p->dstAddrHi) << 16) | Unk_ov065_02262c5c_Bs(p->dstAddrLo);
             if (k->remoteAddr == 0) {
-                k->remoteAddr = ((u32)Unk_ov065_02262c5c_Bs(p->hc) << 16) | Unk_ov065_02262c5c_Bs(p->he);
-                k->remotePort = Unk_ov065_02262c5c_Bs(q->h0);
+                k->remoteAddr = ((u32)Unk_ov065_02262c5c_Bs(p->srcAddrHi) << 16) | Unk_ov065_02262c5c_Bs(p->srcAddrLo);
+                k->remotePort = Unk_ov065_02262c5c_Bs(q->srcPort);
             }
             if (k->rxLen != 0) return;
             u32 m = k->rxBufSize;
@@ -1694,8 +1649,8 @@ void Udp_Input(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 c) {
                 OS_WakeupThreadDirect(k->ownerThread);
                 return;
             }
-            if (k->unk_38 != 0) {
-                if (k->unk_38(k->rxBuf, k->rxLen, k) != 0) k->rxLen = 0;
+            if (k->udpCallback != 0) {
+                if (k->udpCallback(k->rxBuf, k->rxLen, k) != 0) k->rxLen = 0;
             }
             return;
         }
@@ -1703,24 +1658,24 @@ void Udp_Input(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 c) {
     return;
 }
 
-u8 *Ip_Reassemble(Unk_ov065_02262c5c_Ip *p, s32 *out) {
+u8 *Ip_Reassemble(IpHeader *p, s32 *out) {
     u32 flags;
     u8 *ret;
     *out = 0;
-    Unk_ov065_02262c5c_Frag *free = 0;
-    flags = Unk_ov065_02262c5c_Bs(p->h6);
+    IpFragEntry *free = 0;
+    flags = Unk_ov065_02262c5c_Bs(p->fragField);
     if ((flags & 0x3fff) != 0) {
         u32 len, off, hl, end, o8;
-        hl = (p->b0 & 0xf) << 2;
+        hl = (p->verIhl & 0xf) << 2;
         u32 id = *(u16 *)&p->b4;
-        u32 key = ((u32)Unk_ov065_02262c5c_Bs(p->hc) << 16) | Unk_ov065_02262c5c_Bs(p->he);
-        Unk_ov065_02262c5c_Frag *e = sIpFragTable;
+        u32 key = ((u32)Unk_ov065_02262c5c_Bs(p->srcAddrHi) << 16) | Unk_ov065_02262c5c_Bs(p->srcAddrLo);
+        IpFragEntry *e = sIpFragTable;
         u32 i;
         for (i = 0; i < 8; e++, i++) {
             if (e->cnt != 0 && e->key == key && e->id == id) break;
             if (e->cnt == 0 && free == 0) free = e;
         }
-        len = Unk_ov065_02262c5c_Bs(p->h2) - hl;
+        len = Unk_ov065_02262c5c_Bs(p->totalLength) - hl;
         off = flags & 0x1fff;
         o8 = off << 3;
         end = len + o8;
@@ -1786,13 +1741,7 @@ namespace Unk_ov065_02262240_Ns {
 
 
 
-struct Unk_ov065_02262a54_Rng {
-    s64 value;
-    s64 multiplier;
-    s64 increment;
-};
-
-typedef Unk_ov065_02262240_Sess Sess;
+typedef IpSocket Sess;
 typedef Unk_ov065_02262240_Thr Thr;
 
 extern "C" {
@@ -1805,7 +1754,7 @@ extern u8 sArpConflict;
 extern u8 sLinkSendError;
 extern u16 sMss;
 extern u16 sNextEphemeralPort;
-extern Unk_ov065_02262a54_Rng sIpRandState;
+extern IpRandStateSigned sIpRandState;
 
 // main module
 u64 OS_GetTick();
@@ -2004,7 +1953,7 @@ u16 IpSoc_AllocEphemeralPort() {
 }
 
 u32 IpStack_Rand32() {
-    Unk_ov065_02262a54_Rng *g = &sIpRandState;
+    IpRandStateSigned *g = &sIpRandState;
     g->value = _ll_mul(g->multiplier, g->value) + g->increment;
     return (u32)((u64)g->value >> 32);
 }
@@ -2076,7 +2025,7 @@ void Tcp_Listen(Sess *s) {
 void IpSoc_SetUdpCallback(u32 v) {
     Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
-        s->udpCallback = v;
+        s->udpCallback = (IpSocketUdpCallback)v;
     }
 }
 
@@ -2449,25 +2398,11 @@ void Arp_ProbeAddressConflict() {
 
 namespace Unk_ov065_02261718_Ns {
 
-struct Unk_ov065_02261fd8_B {
-    s32 ownerThread;
-    s32 waitReason;
-    u8 state;
-    u8 unk_09[7];
-    s32 handshakeTime;
-    u16 unk_14;
-    u16 unk_16;
-    u16 remotePort;
-    u16 boundRemotePort;
-    s32 remoteAddr;
-    s32 boundRemoteAddr;
-};
-
 struct Unk_ov065_02261fd8_N {
     u8 unk_00[0x68];
     Unk_ov065_02261fd8_N *next;
     u8 unk_6c[0x38];
-    Unk_ov065_02261fd8_B *ipSocket;
+    IpSocket *ipSocket;
 };
 
 struct Unk_ov065_02261fd8_H {
@@ -2475,33 +2410,11 @@ struct Unk_ov065_02261fd8_H {
     Unk_ov065_02261fd8_N *list;
 };
 
-struct Unk_ov065_02261fd8_E {
-    s32 ipAddr;
-    u8 macAddr[6];
-    u16 lastUsed;
-};
-
-struct Unk_ov065_02261fd8_Q {
-    u32 unk_00;
-    u16 cnt;
-    u16 unk_06;
-    u8 unk_08[0x24];
-    s32 tick;
-    u32 unk_30;
-    u32 buf;
-};
-
-struct Unk_ov065_02261e94_R {
-    u64 value;
-    u64 multiplier;
-    u64 increment;
-};
-
 extern "C" {
 #define data_ov065_0228ef2a (sTimerThreadTxBuf + 0x2a)
 extern s32 (*sIpLinkCheckCallback)(void);
 extern void (*sIpIdleCallback)(void);
-extern void (*sIpFree)(u32);
+extern void (*sIpFree)(void *);
 extern u32 sIpStackStatus;
 extern u32 sNetmask;
 extern u32 sDhcpServerId;
@@ -2514,12 +2427,12 @@ extern u32 sDhcpLeaseTime;
 extern u32 sDhcpRequestedIp;
 extern u32 sOwnMac[];
 extern u32 sDnsServers[2];
-extern Unk_ov065_02261e94_R sIpRandState;
-extern Unk_ov065_02261fd8_E sArpCache[8];
+extern IpRandState sIpRandState;
+extern ArpCacheEntry sArpCache[8];
 extern u32 sTimerThreadSoc[25];
 extern u8 sTimerThreadTxBuf[];
 extern u32 sTimerThreadRxBuf;
-extern Unk_ov065_02261fd8_Q sIpFragTable[8];
+extern IpFragEntry sIpFragTable[8];
 extern u8 sDhcpHostName[];
 extern Unk_ov065_02261fd8_H data_021fcc2c;
 
@@ -2527,7 +2440,7 @@ u64 OS_GetTick(void);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
 void MI_CpuCopy8(const void *src, void *dst, s32 n);
 void OS_Sleep(s32 ms);
-void OS_WakeupThreadDirect(s32 a);
+void OS_WakeupThreadDirect(void *a);
 u64 _ll_mul(u64 a, u64 b);
 
 void IpSoc_Write(u8 *buf, u32 len);
@@ -2586,10 +2499,10 @@ void IpStack_TimerThreadMain(void) {
     u32 cnt;
     u32 now;
     s32 i;
-    Unk_ov065_02261fd8_E *e;
+    ArpCacheEntry *e;
     Unk_ov065_02261fd8_N *n;
     s32 j;
-    Unk_ov065_02261fd8_Q *q;
+    IpFragEntry *q;
 
     sIpTimerStopRequest = 0;
     MI_CpuFill8(sTimerThreadSoc, 0, 0x64);
@@ -2664,7 +2577,7 @@ void IpStack_TimerThreadMain(void) {
             }
         }
         for (n = data_021fcc2c.list; n != NULL; n = n->next) {
-            Unk_ov065_02261fd8_B *b = n->ipSocket;
+            IpSocket *b = n->ipSocket;
             if (b != NULL && b->ownerThread != 0) {
                 u32 st = b->state;
                 if (st == 3 && (s32)(now - b->handshakeTime) > 0x27) {
@@ -3152,7 +3065,7 @@ s64 _ll_mul(s64, s64);
 s32 Dns_QueryServer(s32, u32, u32);
 s32 IpAddr_Parse(s32, s32 *);
 extern u32 sDnsServers[2];
-extern Unk_ov065_02261638_Rng sIpRandState;
+extern IpRandStateSignedStep sIpRandState;
 
 extern "C" {
 s32 Dns_Resolve(s32 self);
@@ -3169,7 +3082,7 @@ s32 Dns_Resolve(s32 self) {
     u16 *pp;
     u32 *pt;
     s32 j;
-    Unk_ov065_02261638_Rng *g = &sIpRandState;
+    IpRandStateSignedStep *g = &sIpRandState;
     g->value = _ll_mul(g->multiplier, g->value) + g->increment;
     l.port[0] = (u32)(((g->value >> 32) * 0x10000) >> 32);
     g->value = _ll_mul(g->multiplier, g->value) + g->increment;

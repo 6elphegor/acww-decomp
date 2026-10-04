@@ -1,8 +1,8 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_0226ab5c_Conn.h"
-#include "net/Unk_ov065_0226aed4_Fc.h"
-#include "net/Unk_ov065_0226b27c_Cfg.h"
+#include "net/WifiLinkWork.h"
+#include "net/WifiApControl.h"
+#include "net/WifiApConfig.h"
 
 
 
@@ -12,11 +12,11 @@
 
 extern "C" {
 
-Unk_ov065_0226b27c_F8 *sWifiApAllocator;
+WifiApAllocator *sWifiApAllocator;
 void *sWifiApSocketConfig;
 void *sWifiApLinkWork;
 u8 *sWifiApContext;
-Unk_ov065_0226aed4_Fc *sWifiApControl;
+WifiApControl *sWifiApControl;
 
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
@@ -28,7 +28,7 @@ s32 DGT_Hash1GetDigest_R();
 s32 DGT_Hash1SetSource();
 s32 DGT_Hash1Reset();
 
-Unk_ov065_0226ab5c_Conn *WifiLink_GetWork();
+WifiLinkWork *WifiLink_GetWork();
 s32 WifiLink_Init(void *, u32);
 s32 WifiAp_CleanupStep(u8 *);
 s32 WifiAp_GetErrorCode2();
@@ -63,14 +63,14 @@ s32 WifiAp_RequestCleanup();
 u32 WifiAp_GetConnectedApType();
 s32 WifiAp_GetStatus();
 s32 WifiAp_Process();
-s32 WifiAp_Init(Unk_ov065_0226b27c_Cfg *cfg);
+s32 WifiAp_Init(WifiApConfig *cfg);
 
-s32 WifiAp_Init(Unk_ov065_0226b27c_Cfg *cfg) {
+s32 WifiAp_Init(WifiApConfig *cfg) {
     u8 *ec;
-    Unk_ov065_0226b27c_F8 *f8;
-    Unk_ov065_0226aed4_Fc *fc;
+    WifiApAllocator *f8;
+    WifiApControl *fc;
     s32 r;
-    fc = (Unk_ov065_0226aed4_Fc *)cfg->unk_00(1, 0x18);
+    fc = (WifiApControl *)cfg->unk_00(1, 0x18);
     sWifiApControl = fc;
     { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApControl, 0x18); }
     fc = sWifiApControl;
@@ -82,7 +82,7 @@ s32 WifiAp_Init(Unk_ov065_0226b27c_Cfg *cfg) {
     sWifiApContext = (u8 *)WifiAp_AllocBlock(0x10, 0xd18);
     sWifiApLinkWork = WifiAp_AllocBlock(2, 0x2300);
     sWifiApSocketConfig = WifiAp_AllocBlock(4, 0x58);
-    sWifiApAllocator = (Unk_ov065_0226b27c_F8 *)WifiAp_AllocBlock(8, 0xc);
+    sWifiApAllocator = (WifiApAllocator *)WifiAp_AllocBlock(8, 0xc);
     { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApContext, 0xd18); }
     { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApLinkWork, 0x2300); }
     { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApSocketConfig, 0x58); }
@@ -195,7 +195,7 @@ void WifiAp_SetApEntry(u32 idx, void *dst) {
 }
 
 void *WifiAp_AllocBlock(u32 m, u32 a) {
-    Unk_ov065_0226aed4_Fc *f = (Unk_ov065_0226aed4_Fc *)WifiAp_GetBlock(1);
+    WifiApControl *f = (WifiApControl *)WifiAp_GetBlock(1);
     if ((f->allocMask & m) == 0) {
         f->allocMask |= m;
         return f->unk_00(m, a);
@@ -204,7 +204,7 @@ void *WifiAp_AllocBlock(u32 m, u32 a) {
 }
 
 void WifiAp_FreeBlock(u32 m, void *a, u32 b) {
-    Unk_ov065_0226aed4_Fc *f = (Unk_ov065_0226aed4_Fc *)WifiAp_GetBlock(1);
+    WifiApControl *f = (WifiApControl *)WifiAp_GetBlock(1);
     if ((f->allocMask & m) != 0) {
         f->allocMask &= ~m;
         f->unk_04(m, a, b);
@@ -212,7 +212,7 @@ void WifiAp_FreeBlock(u32 m, void *a, u32 b) {
 }
 
 void WifiAp_FreeAll() {
-    Unk_ov065_0226aed4_Fc *f = (Unk_ov065_0226aed4_Fc *)WifiAp_GetBlock(1);
+    WifiApControl *f = (WifiApControl *)WifiAp_GetBlock(1);
     if ((f->allocMask & 0x10) != 0) {
         void *o = WifiAp_GetBlock(0x10);
         f->allocMask &= ~0x10;
@@ -259,7 +259,7 @@ void *WifiAp_GetBlock(u32 m) {
 }
 
 void WifiAp_SetState(u8 v) {
-    Unk_ov065_0226aed4_Fc *f = (Unk_ov065_0226aed4_Fc *)WifiAp_GetBlock(1);
+    WifiApControl *f = (WifiApControl *)WifiAp_GetBlock(1);
     u8 *e = (u8 *)WifiAp_GetBlock(0x10);
     f->state = v;
     if (v < 0x10 && v > f->furthestState) {
@@ -276,7 +276,7 @@ u8 WifiAp_GetState() {
 }
 
 void WifiAp_SetError(u32 v) {
-    Unk_ov065_0226aed4_Fc *f = (Unk_ov065_0226aed4_Fc *)WifiAp_GetBlock(1);
+    WifiApControl *f = (WifiApControl *)WifiAp_GetBlock(1);
     f->errorCode = v;
     f->errorState = WifiAp_GetState();
 }
@@ -347,7 +347,7 @@ BOOL WifiAp_MacEquals(u8 *a, u8 *b) {
 
 s32 WifiAp_GetLinkLevel() {
     u32 irq = OS_DisableInterrupts();
-    Unk_ov065_0226ab5c_Conn *c = WifiLink_GetWork();
+    WifiLinkWork *c = WifiLink_GetWork();
     s32 r = 0;
     if (c != 0 && c->phase == 9) {
         r = WifiLink_GetLinkLevel();

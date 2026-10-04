@@ -1,82 +1,17 @@
 // mwcc-version: 1.2/sp2p3
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_02264a48_Cfg.h"
+#include "net/IpFragEntry.h"
+#include "net/IpStackConfig.h"
 #include "net/Unk_ov065_02264c44_Thr.h"
-#include "net/Unk_ov065_02264d24_Ent.h"
-#include "net/Unk_ov065_02264d80_Obj.h"
+#include "net/SslConnection.h"
+#include "net/SslSession.h"
+#include "net/IpSocket.h"
 
 namespace Unk_ov065_0226650c_Ns {
 
 
 // ov065_012: SSL/TLS handshake helpers (PRF, RSA, certificate ASN.1 parse), 0x0226650c..0x02266df4
-
-struct Unk_ov065_022665d8_Rsa {
-    s32 modulusLen;
-    u8 *modulus;
-    s32 primePLen;
-    u8 *primeP;
-    s32 primeQLen;
-    u8 *primeQ;
-    s32 exponentPLen;
-    u8 *exponentP;
-    s32 exponentQLen;
-    u8 *exponentQ;
-    s32 coefficientLen;
-    u8 *coefficient;
-};
-
-struct Unk_ov065_02266c90_Key {
-    u32 caName;
-    s32 modulusLen;
-    u8 *modulus;
-    s32 exponentLen;
-    u8 *exponent;
-};
-
-struct Unk_ov065_0226650c_Ctx;
-typedef u32 (*Unk_ov065_0226650c_Cb)(u32, Unk_ov065_0226650c_Ctx *, s32);
-
-struct Unk_ov065_0226650c_Ctx {
-    u8 *session;
-    u8 resumed;
-    u8 pad_05;
-    u16 cipherSuite;
-    u8 clientRandom[0x20];
-    u8 serverRandom[0x20];
-    u8 pad_48[0x31c - 0x48];
-    u8 sha1Work[0x5c];
-    u8 pad_378[0x3d0 - 0x378];
-    u8 md5Work[0x58];
-    u8 unk_428;
-    u8 handshakeState;
-    u8 pad_42a[2];
-    s32 certSigAlgorithm;
-    s32 peerKeyAlgorithm;
-    u8 *tbsStart;
-    u8 *tbsEnd;
-    u8 tbsDigest[0x14];
-    s32 tbsDigestLen;
-    Unk_ov065_02266c90_Key issuerKey;
-    u8 peerModulus[0x100];
-    s32 peerModulusLen;
-    u8 peerExponent[8];
-    s32 peerExponentLen;
-    u8 *certSignature;
-    s32 certSignatureLen;
-    u8 inSubject;
-    u8 inPublicKey;
-    u8 pendingAttrOid;
-    u8 isDateValid;
-    u8 issuerName[0x100];
-    u8 subjectName[0x100];
-    u8 commonName[0x50];
-    char *hostName;
-    u8 *certData;
-    s32 certLen;
-    u32 currentDate;
-    Unk_ov065_0226650c_Cb unk_7e4;
-};
 
 struct Unk_ov065_02266948_Date {
     s32 year;
@@ -85,9 +20,9 @@ struct Unk_ov065_02266948_Date {
     s32 week;
 };
 
-typedef Unk_ov065_0226650c_Ctx Ctx;
-typedef Unk_ov065_022665d8_Rsa Rsa;
-typedef Unk_ov065_02266c90_Key Key;
+typedef SslConnection Ctx;
+typedef SslRsaPrivateKey Rsa;
+typedef SslRootCa Key;
 
 extern "C" {
 extern void *(*sIpAlloc)(u32);
@@ -119,8 +54,8 @@ void SslSha1_Final(void *, void *);
 void SslMd5_Init(void *);
 void SslMd5_Update(void *, const void *, u32);
 void SslMd5_Final(void *, void *);
-u8 *SslSession_FindById(u8 *);
-u8 *SslSession_Add(u8 *);
+SslSession *SslSession_FindById(u8 *);
+SslSession *SslSession_Add(u8 *);
 s32 SslCert_ReadDerLength(u8 **);
 void SslCert_AppendName(void *, u8 *, s32);
 u32 SslCert_ParseTime(u8 *);
@@ -515,8 +450,8 @@ void Ssl_HandleCertificate(Ctx *c, u8 *p) {
             }
             r4 = (r4 & ~0xff) | SslCert_VerifySignature(c, &c->issuerKey);
         }
-        if (c->unk_7e4 != 0) {
-            r4 = c->unk_7e4(r4, c, i);
+        if (c->certVerifyCallback != 0) {
+            r4 = c->certVerifyCallback(r4, c, i);
         }
         i++;
         if (ty != 0 && r4 == 0 && len != 0) {
@@ -538,7 +473,7 @@ void Ssl_HandleServerHello(Ctx *c, u8 *p) {
     MI_CpuCopy8(p + 2, c->serverRandom, 0x20);
     p += 0x22;
     n = *p++;
-    old = c->session;
+    old = (u8 *)c->session;
     if (old != 0 && n == 0x20 && memcmp(old, p, 0x20) == 0) {
         c->resumed = 1;
     } else {
@@ -546,7 +481,7 @@ void Ssl_HandleServerHello(Ctx *c, u8 *p) {
             old[0x5a] = 0;
         }
         if (n == 0) {
-            c->session = sSslNoSession;
+            c->session = (SslSession *)sSslNoSession;
         } else {
             c->session = SslSession_Add(p);
         }
@@ -674,13 +609,13 @@ void Ssl_DeriveSecretPart(u8 *out, char *label, Ctx *c) {
     u8 *h = c->sha1Work;
     SslSha1_Init(h);
     SslSha1_Update(h, label, func_0212a438(label));
-    SslSha1_Update(h, c->session + 0x20, 0x30);
+    SslSha1_Update(h, c->session->masterSecret, 0x30);
     SslSha1_Update(h, c->clientRandom, 0x20);
     SslSha1_Update(h, c->serverRandom, 0x20);
     SslSha1_Final(h, tmp);
     h = c->md5Work;
     SslMd5_Init(h);
-    SslMd5_Update(h, c->session + 0x20, 0x30);
+    SslMd5_Update(h, c->session->masterSecret, 0x30);
     SslMd5_Update(h, tmp, 0x14);
     SslMd5_Final(h, out);
 }
@@ -690,7 +625,7 @@ void Ssl_DeriveMasterSecret(Ctx *c) {
     Ssl_DeriveSecretPart(buf, "A", c);
     Ssl_DeriveSecretPart(buf + 0x10, "BB", c);
     Ssl_DeriveSecretPart(buf + 0x20, "CCC", c);
-    MI_CpuCopy8(buf, c->session + 0x20, 0x30);
+    MI_CpuCopy8(buf, c->session->masterSecret, 0x30);
 }
 }
 
@@ -701,45 +636,8 @@ namespace Unk_ov065_02265a5c_Ns {
 
 // SSL 3.0 record layer (MD5/SHA-1 MAC, key block derivation, Finished checks)
 
-struct Unk_ov065_02265a5c_St {
-    u8 *session;
-    u8 unk_04[2];
-    u16 cipherSuite;
-    u8 clientRandom[0x20];
-    u8 serverRandom[0x20];
-    u8 keyBlock[0x48];
-    u8 *writeMacSecret;
-    u8 *writeKey;
-    u8 *writeIv;
-    u8 writeCipher[0x104];
-    u8 writeSeqNum[8];
-    u8 *readMacSecret;
-    u8 *readKey;
-    u8 *readIv;
-    u8 readCipher[0x104];
-    u8 readSeqNum[8];
-    u8 handshakeSha1[0x5c];
-    u8 sha1Work[0x5c];
-    u8 handshakeMd5[0x58];
-    u8 md5Work[0x58];
-    u8 isServer;
-    u8 handshakeState;
-    u8 recordReady;
-    u8 unk_42b[0x7f0 - 0x42b];
-    u32 serverKey;
-    u32 serverCert;
-    u8 *recordBuf;
-    u32 recordLen;
-    u32 recordPos;
-};
-
-struct Unk_ov065_02265a5c_Sess {
-    u8 unk_00[0xc];
-    Unk_ov065_02265a5c_St *sslCtx;
-};
-
-typedef Unk_ov065_02265a5c_St St;
-typedef Unk_ov065_02265a5c_Sess Sess;
+typedef SslConnection St;
+typedef IpSocket Sess;
 
 extern "C" {
 extern void *(*sIpAlloc)(u32);
@@ -765,7 +663,7 @@ void SslRc4_Init(void *, void *, u32);
 void Ssl_HandleClientHello(St *, u8 *);
 void Ssl_HandleServerHello(St *, u8 *);
 void Ssl_HandleCertificate(St *, u8 *);
-void SslRsa_PrivateDecrypt(u8 *, u8 *, u32);
+void SslRsa_PrivateDecrypt(u8 *, u8 *, SslRsaPrivateKey *);
 void Ssl_DeriveMasterSecret(St *);
 
 // in range
@@ -815,13 +713,13 @@ void Ssl_DeriveKeyBlock(St *st) {
                 SslSha1_Update(ctx, tmp, 1);
                 j++;
             }
-            SslSha1_Update(ctx, st->session + 0x20, 0x30);
+            SslSha1_Update(ctx, st->session->masterSecret, 0x30);
             SslSha1_Update(ctx, st->serverRandom, 0x20);
             SslSha1_Update(ctx, st->clientRandom, 0x20);
             SslSha1_Final(ctx, tmp + 1);
             ctx = st->md5Work;
             SslMd5_Init(ctx);
-            SslMd5_Update(ctx, st->session + 0x20, 0x30);
+            SslMd5_Update(ctx, st->session->masterSecret, 0x30);
             SslMd5_Update(ctx, tmp + 1, 0x14);
             SslMd5_Final(ctx, st->keyBlock + off);
             off += 0x10;
@@ -848,7 +746,7 @@ void Ssl_DeriveKeyBlock(St *st) {
 }
 
 void Ssl_HandleClientKeyExchange(St *st, u8 *p) {
-    SslRsa_PrivateDecrypt(st->session + 0x20, p, st->serverKey);
+    SslRsa_PrivateDecrypt(st->session->masterSecret, p, st->serverKey);
     Ssl_DeriveMasterSecret(st);
     Ssl_DeriveKeyBlock(st);
     st->handshakeState = 5;
@@ -863,12 +761,12 @@ void Ssl_CalcFinishedMd5(St *st, u8 *out, u32 who) {
     } else {
         SslMd5_Update(ctx, "CLNT", 4);
     }
-    SslMd5_Update(ctx, st->session + 0x20, 0x30);
+    SslMd5_Update(ctx, st->session->masterSecret, 0x30);
     MI_CpuFill8(pad, 0x36, 0x30);
     SslMd5_Update(ctx, pad, 0x30);
     SslMd5_Final(ctx, out);
     SslMd5_Init(ctx);
-    SslMd5_Update(ctx, st->session + 0x20, 0x30);
+    SslMd5_Update(ctx, st->session->masterSecret, 0x30);
     MI_CpuFill8(pad, 0x5c, 0x30);
     SslMd5_Update(ctx, pad, 0x30);
     SslMd5_Update(ctx, out, 0x10);
@@ -884,12 +782,12 @@ void Ssl_CalcFinishedSha1(St *st, u8 *out, u32 who) {
     } else {
         SslSha1_Update(ctx, "CLNT", 4);
     }
-    SslSha1_Update(ctx, st->session + 0x20, 0x30);
+    SslSha1_Update(ctx, st->session->masterSecret, 0x30);
     MI_CpuFill8(pad, 0x36, 0x28);
     SslSha1_Update(ctx, pad, 0x28);
     SslSha1_Final(ctx, out);
     SslSha1_Init(ctx);
-    SslSha1_Update(ctx, st->session + 0x20, 0x30);
+    SslSha1_Update(ctx, st->session->masterSecret, 0x30);
     MI_CpuFill8(pad, 0x5c, 0x28);
     SslSha1_Update(ctx, pad, 0x28);
     SslSha1_Update(ctx, out, 0x14);
@@ -1231,82 +1129,20 @@ struct Unk_ov065_02265130_Hash {
     u8 unk_00[0x5c];
 };
 
-struct Unk_ov065_02265130_Pms {
-    u8 sessionId[0x20];
-    u8 preMasterVersionMajor;
-    u8 preMasterVersionMinor;
-    u8 preMasterRandom[0x2e];
-    u8 unk_50[4];
-    u32 peerAddr;
-    u16 peerPort;
-};
-
-struct Unk_ov065_02265130_Cert {
-    u32 length;
-    u8 *data;
-};
-
-struct Unk_ov065_02265130_Ctx {
-    Unk_ov065_02265130_Pms *session;
-    u8 resumed;
-    u8 unk_05;
-    u16 cipherSuite;
-    u8 clientRandom[0x20];
-    u8 serverRandom[4];
-    u8 serverRandomBytes[0x1c];
-    u8 pad_48[0x1a0 - 0x48];
-    u8 writeSeqNum[8];
-    u8 pad_1a8[0x2c0 - 0x1a8];
-    u8 handshakeSha1[0x5c];
-    u8 sha1Work[0x5c];
-    u8 handshakeMd5[0x58];
-    u8 md5Work[0x58];
-    u8 isServer;
-    u8 handshakeState;
-    u8 pad_42a[0x468 - 0x42a];
-    u8 peerModulus[0x100];
-    s32 peerModulusLen;
-    u8 peerExponent[8];
-    s32 peerExponentLen;
-    u8 pad_578[0x7f4 - 0x578];
-    Unk_ov065_02265130_Cert *serverCert;
-};
-
-struct Unk_ov065_02265130_Sess {
-    u32 ownerThread;
-    u32 waitReason;
-    u8 state;
-    u8 useSsl;
-    u16 localPort;
-    Unk_ov065_02265130_Ctx *sslCtx;
-    u32 unk_10;
-    u32 unk_14;
-    u16 remotePort;
-    u16 boundRemotePort;
-    u32 remoteAddr;
-    u32 boundRemoteAddr;
-};
-
-struct Unk_ov065_0226599c_Rng {
-    s64 value;
-    s64 multiplier;
-    s64 increment;
-};
-
 struct Unk_ov065_02265334_Os {
     u32 unk_00;
     u32 cur;
 };
 
-typedef Unk_ov065_02265130_Sess Sess;
-typedef Unk_ov065_02265130_Ctx Ctx;
+typedef IpSocket Sess;
+typedef SslConnection Ctx;
 
 extern "C" {
 extern void *(*sIpAlloc)(u32);
 extern void (*sIpFree)(void *);
 extern u32 gSslRsaThreadPriority;
 extern u16 sSslCipherSuites[2];
-extern Unk_ov065_0226599c_Rng sIpRandState;
+extern IpRandStateSigned sIpRandState;
 extern u32 sSslSessionIdCounter;
 extern u8 sSslRandPool[20];
 extern u8 sSslRandSeeded;
@@ -1334,8 +1170,8 @@ void SslSha1_Update(void *, u8 *, u32);
 void SslSha1_Final(void *, void *);
 void SslSha1_FinalRaw(void *, void *);
 u32 Ssl_GetUnixTime();
-u32 SslSession_FindByPeer(u32, u32);
-u32 SslSession_Add(u8 *);
+SslSession *SslSession_FindByPeer(u32, u32);
+SslSession *SslSession_Add(u8 *);
 void Ssl_DeriveKeyBlock(Ctx *);
 void Ssl_DeriveMasterSecret(Ctx *);
 void Ssl_CalcFinishedMd5(Ctx *, u8 *, u32);
@@ -1421,7 +1257,7 @@ void SslRand_AddSeed(u8 *p, u32 n) {
 
 s32 Ssl_SendServerHello(Sess *s) {
     Ctx *ctx = s->sslCtx;
-    Unk_ov065_02265130_Cert *cert = ctx->serverCert;
+    SslServerCert *cert = ctx->serverCert;
     s32 cl;
     u32 t;
     u8 *buf;
@@ -1437,7 +1273,7 @@ s32 Ssl_SendServerHello(Sess *s) {
     ctx->serverRandom[1] = t >> 16;
     ctx->serverRandom[2] = t >> 8;
     ctx->serverRandom[3] = t;
-    SslRand_GetNonZeroBytes(ctx->serverRandomBytes, 0x1c);
+    SslRand_GetNonZeroBytes(ctx->serverRandom + 4, 0x1c);
     buf = (u8 *)sIpAlloc(cl + 0x9d);
     if (buf == 0) {
         ctx->handshakeState = 9;
@@ -1464,7 +1300,7 @@ s32 Ssl_SendServerHello(Sess *s) {
         q[0x45] = t >> 8;
         q += 0x46;
         *q++ = t;
-        ctx->session = (Unk_ov065_02265130_Pms *)SslSession_Add(q - 0x20);
+        ctx->session = SslSession_Add(q - 0x20);
         sSslSessionIdCounter++;
         ctx->resumed = 0;
     }
@@ -1566,7 +1402,7 @@ void Ssl_SendClientHello(Sess *s) {
     ctx->clientRandom[3] = t;
     SslRand_GetNonZeroBytes(&ctx->clientRandom[4], 0x1c);
     MI_CpuCopy8(ctx->clientRandom, q + 2, 0x20);
-    ctx->session = (Unk_ov065_02265130_Pms *)SslSession_FindByPeer(s->remoteAddr, s->remotePort);
+    ctx->session = SslSession_FindByPeer(s->remoteAddr, s->remotePort);
     if (ctx->session) {
         q[0x22] = 0x20;
         MI_CpuCopy8(ctx->session, q + 0x23, 0x20);
@@ -1614,9 +1450,9 @@ void Ssl_SendClientKeyExchange(Sess *s) {
     u16 *p3;
     u8 *buf2;
     u8 *q;
-    ctx->session->preMasterVersionMajor = 3;
-    ctx->session->preMasterVersionMinor = 0;
-    SslRand_GetNonZeroBytes(ctx->session->preMasterRandom, 0x2e);
+    ctx->session->masterSecret[0] = 3;
+    ctx->session->masterSecret[1] = 0;
+    SslRand_GetNonZeroBytes(ctx->session->masterSecret + 2, 0x2e);
     n = ctx->peerModulusLen;
     cnt = _s32_div_f(n * 2, 2);
     buf1 = (u8 *)sIpAlloc(n);
@@ -1628,7 +1464,7 @@ void Ssl_SendClientKeyExchange(Sess *s) {
     buf1[1] = 2;
     SslRand_GetNonZeroBytes(buf1 + 2, n - 0x33);
     buf1[n - 0x31] = 0;
-    MI_CpuCopy8(&ctx->session->preMasterVersionMajor, buf1 + n - 0x30, 0x30);
+    MI_CpuCopy8(ctx->session->masterSecret, buf1 + n - 0x30, 0x30);
     p0 = (u16 *)sIpAlloc(cnt * 8);
     if (p0 == 0) {
         sIpFree(buf1);
@@ -1822,10 +1658,10 @@ extern u32 sDnsServers[2];
 extern u32 sDhcpServerId;
 extern u8 sArpCache[];
 extern Unk_ov065_02264c44_Info data_021fcc2c;
-extern Unk_ov065_02264c44_Ent sIpFragTable[8];
+extern IpFragEntry sIpFragTable[8];
 extern void (*sIpFree)(void *);
 extern u32 sIpYieldMode;
-extern Unk_ov065_02264d24_Ent sSslSessionCache[4];
+extern SslSession sSslSessionCache[4];
 extern void *(*sIpAlloc)(u32);
 extern void *(*sAddrConfiguredCallback)(void);
 extern s32 (*sIpLinkCheckCallback)(void);
@@ -1837,19 +1673,19 @@ extern u32 sRecvRingWrite;
 extern u16 sNextEphemeralPort;
 extern u8 sOwnMac[];
 extern u8 sArpConflict;
-extern Unk_ov065_02264a48_Rng sIpRandState;
+extern IpRandState sIpRandState;
 extern u8 sSslRandSeeded[];
 extern u8 sIpRecvThreadStack[];
 
 void IpStack_RecvThreadMain(void);
 void IpStack_TimerThreadMain(void);
 u32 Ssl_EncryptRecord(void *, void *);
-u32 Tcp_Write(void *, u32, u32, u32, Unk_ov065_02264d80_Obj *);
-u8 *Tcp_Read(u32 *, Unk_ov065_02264d80_Obj *);
-void Tcp_Consume(u32, Unk_ov065_02264d80_Obj *);
+u32 Tcp_Write(void *, u32, u32, u32, IpSocket *);
+u8 *Tcp_Read(u32 *, IpSocket *);
+void Tcp_Consume(u32, IpSocket *);
 void Ssl_ProcessRecord(void *, void *);
-s32 Ssl_ReadExact(void *, u32, Unk_ov065_02264d80_Obj *);
-s32 Ssl_ReadRecord(Unk_ov065_02264d80_Obj *);
+s32 Ssl_ReadExact(void *, u32, IpSocket *);
+s32 Ssl_ReadRecord(IpSocket *);
 
 u64 OS_GetTick(void);
 u32 OS_DisableInterrupts(void);
@@ -1872,15 +1708,15 @@ s32 Ip_IsOnLocalNet(u32 a);
 void IpStack_ResetAddress(u32 a);
 s32 IpStack_RequestStop(void);
 void Ssl_ClearSessionCache(void);
-void Ssl_ReceiveRecordPart(Unk_ov065_02264d80_Obj *o);
+void Ssl_ReceiveRecordPart(IpSocket *o);
 s32 IpStack_ReturnTrue(void);
 void IpStack_Nop(void);
 }
 
 extern "C" {
 
-u8 *Ssl_Read(u32 *out, Unk_ov065_02264d80_Obj *o) {
-    Unk_ov065_02264d80_Conn *c = o->sslCtx;
+u8 *Ssl_Read(u32 *out, IpSocket *o) {
+    SslConnection *c = o->sslCtx;
     u8 **pb;
     if (c->recordBuf != 0 && c->recordReady == 0) {
         if (Ssl_ReadExact(c->recordBuf + c->recordPos, c->recordLen - c->recordPos, o) != 0) {
@@ -1907,8 +1743,8 @@ u8 *Ssl_Read(u32 *out, Unk_ov065_02264d80_Obj *o) {
     return c->recordBuf + c->recordPos;
 }
 
-void Ssl_Consume(u32 n, Unk_ov065_02264d80_Obj *o) {
-    Unk_ov065_02264d80_Conn *c = o->sslCtx;
+void Ssl_Consume(u32 n, IpSocket *o) {
+    SslConnection *c = o->sslCtx;
     if (n >= c->recordLen - c->recordPos) {
         if (c->recordBuf != 0) {
             sIpFree(c->recordBuf);
@@ -1919,8 +1755,8 @@ void Ssl_Consume(u32 n, Unk_ov065_02264d80_Obj *o) {
     }
 }
 
-void Ssl_ReceiveRecordPart(Unk_ov065_02264d80_Obj *o) {
-    Unk_ov065_02264d80_Conn *c = o->sslCtx;
+void Ssl_ReceiveRecordPart(IpSocket *o) {
+    SslConnection *c = o->sslCtx;
     u32 len;
     u8 *src;
     BOOL flag;
@@ -1971,8 +1807,8 @@ void Ssl_ReceiveRecordPart(Unk_ov065_02264d80_Obj *o) {
     return;
 }
 
-s32 Ssl_GetReadLength(Unk_ov065_02264d80_Obj *o) {
-    Unk_ov065_02264d80_Conn *c = o->sslCtx;
+s32 Ssl_GetReadLength(IpSocket *o) {
+    SslConnection *c = o->sslCtx;
     if (c->recordBuf == 0 || c->recordReady == 0) {
         Ssl_ReceiveRecordPart(o);
     }
@@ -1987,8 +1823,8 @@ s32 Ssl_GetReadLength(Unk_ov065_02264d80_Obj *o) {
     return 0;
 }
 
-u32 Ssl_Write(u8 *p1, u32 n1, u8 *p2, u32 n2, Unk_ov065_02264d80_Obj *o) {
-    Unk_ov065_02264d80_Conn *c = o->sslCtx;
+u32 Ssl_Write(u8 *p1, u32 n1, u8 *p2, u32 n2, IpSocket *o) {
+    SslConnection *c = o->sslCtx;
     s32 total = n1 + n2;
     u32 c2;
     u32 sent = 0;
@@ -2035,8 +1871,8 @@ u32 Ssl_Write(u8 *p1, u32 n1, u8 *p2, u32 n2, Unk_ov065_02264d80_Obj *o) {
     return sent;
 }
 
-void Ssl_Shutdown(Unk_ov065_02264d80_Obj *o) {
-    Unk_ov065_02264d80_Conn *c = o->sslCtx;
+void Ssl_Shutdown(IpSocket *o) {
+    SslConnection *c = o->sslCtx;
     if (c->handshakeState == 8) {
         u8 b[32];
         u32 n;
@@ -2055,7 +1891,7 @@ void Ssl_Shutdown(Unk_ov065_02264d80_Obj *o) {
 
 void Ssl_EnableOnCurrentSocket(u32 v) {
     OSi_ReferSymbol(0x2000c14);
-    Unk_ov065_02264c44_Sub *s = ((Unk_ov065_02264c44_Thr *)data_021fcc2c.cur)->ipSocket;
+    IpSocket *s = ((Unk_ov065_02264c44_Thr *)data_021fcc2c.cur)->ipSocket;
     if (s != 0) {
         s->useSsl = v;
     }
@@ -2063,10 +1899,10 @@ void Ssl_EnableOnCurrentSocket(u32 v) {
 
 void Ssl_ExpireSessions(s32 now) {
     s32 i;
-    Unk_ov065_02264d24_Ent *e;
+    SslSession *e;
     for (i = 0, e = sSslSessionCache; i < 4; e++, i++) {
         if (e->inUse != 0) {
-            if (now - e->lastUsed > 0xef) {
+            if ((s32)(now - e->lastUsed) > 0xef) {
                 e->inUse = 0;
             }
         }

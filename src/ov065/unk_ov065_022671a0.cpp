@@ -1,35 +1,17 @@
 // mwcc-version: 1.2/sp2p3
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_022679f8_Sha1.h"
-
-struct Unk_ov065_022672a0_Tbl {
-    u8 pad_000[0x7e8];
-    void **rootCaList;
-    s32 numRootCas;
-};
-
-struct Unk_ov065_022672ec_Ptr {
-    u8 pad_00[0xc];
-    Unk_ov065_022672a0_Tbl *sslCtx;
-};
+#include "net/IpSocket.h"
+#include "net/SslConnection.h"
+#include "net/SslSession.h"
+#include "net/SslSha1Context.h"
 
 struct Unk_ov065_022672ec_Root {
     u32 unk_00;
     u32 cur;
 };
 
-struct Unk_ov065_0226733c_Ent {
-    u8 sessionId[0x20];
-    u8 pad_20[0x30];
-    u32 lastUsed;
-    u32 peerAddr;
-    u16 peerPort;
-    u8 inUse;
-    u8 pad_5b;
-};
-
-struct Unk_ov065_02267480_Md5 {
+struct SslMd5Context {
     u32 st[4];
     u32 lo;
     u32 hi;
@@ -55,12 +37,12 @@ void SslMd5_Encode(void *dst, const void *src, s32 n);
 u8 sSslMd5WordIndex[0x40] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x01, 0x06, 0x0b, 0x00, 0x05, 0x0a, 0x0f, 0x04, 0x09, 0x0e, 0x03, 0x08, 0x0d, 0x02, 0x07, 0x0c, 0x05, 0x08, 0x0b, 0x0e, 0x01, 0x04, 0x07, 0x0a, 0x0d, 0x00, 0x03, 0x06, 0x09, 0x0c, 0x0f, 0x02, 0x00, 0x07, 0x0e, 0x05, 0x0c, 0x03, 0x0a, 0x01, 0x08, 0x0f, 0x06, 0x0d, 0x04, 0x0b, 0x02, 0x09};
 u8 sSslMd5Padding[0x40] = {0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 u32 sSslMd5SineTable[0x40] = {0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee, 0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501, 0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be, 0x6b901122, 0xfd987193, 0xa679438e, 0x49b40821, 0xf61e2562, 0xc040b340, 0x265e5a51, 0xe9b6c7aa, 0xd62f105d, 0x02441453, 0xd8a1e681, 0xe7d3fbc8, 0x21e1cde6, 0xc33707d6, 0xf4d50d87, 0x455a14ed, 0xa9e3e905, 0xfcefa3f8, 0x676f02d9, 0x8d2a4c8a, 0xfffa3942, 0x8771f681, 0x6d9d6122, 0xfde5380c, 0xa4beea44, 0x4bdecfa9, 0xf6bb4b60, 0xbebfbc70, 0x289b7ec6, 0xeaa127fa, 0xd4ef3085, 0x04881d05, 0xd9d4d039, 0xe6db99e5, 0x1fa27cf8, 0xc4ac5665, 0xf4292244, 0x432aff97, 0xab9423a7, 0xfc93a039, 0x655b59c3, 0x8f0ccc92, 0xffeff47d, 0x85845dd1, 0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1, 0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391};
-Unk_ov065_0226733c_Ent sSslSessionCache[4] = {0};
+SslSession sSslSessionCache[4] = {0};
 
-void SslMd5_Final(Unk_ov065_02267480_Md5 *ctx, void *out);
-void SslMd5_Update(Unk_ov065_02267480_Md5 *ctx, const u8 *data, u32 n);
-void SslMd5_Init(Unk_ov065_02267480_Md5 *ctx);
-void SslMd5_Transform(Unk_ov065_02267480_Md5 *ctx, const u8 *block);
+void SslMd5_Final(SslMd5Context *ctx, void *out);
+void SslMd5_Update(SslMd5Context *ctx, const u8 *data, u32 n);
+void SslMd5_Init(SslMd5Context *ctx);
+void SslMd5_Transform(SslMd5Context *ctx, const u8 *block);
 
 #define Unk_ov065_02267540_ROL(x, n) (((x) << (n)) | ((x) >> (32 - (n))))
 #define Unk_ov065_02267540_F(b, c, d) ((d) ^ ((b) & ((c) ^ (d))))
@@ -71,7 +53,7 @@ void SslMd5_Transform(Unk_ov065_02267480_Md5 *ctx, const u8 *block);
     a += f(b, c, d) + X[sSslMd5WordIndex[k]] + sSslMd5SineTable[k]; \
     a = b + Unk_ov065_02267540_ROL(a, sh);
 
-void SslMd5_Transform(Unk_ov065_02267480_Md5 *ctx, const u8 *block)
+void SslMd5_Transform(SslMd5Context *ctx, const u8 *block)
 {
     u32 a = ctx->st[0];
     u32 b = ctx->st[1];
@@ -116,7 +98,7 @@ void SslMd5_Transform(Unk_ov065_02267480_Md5 *ctx, const u8 *block)
     ctx->st[3] += d;
 }
 
-void SslMd5_Init(Unk_ov065_02267480_Md5 *ctx)
+void SslMd5_Init(SslMd5Context *ctx)
 {
     MI_CpuFill8(ctx, 0, 0x58);
     ctx->st[0] = 0x67452301;
@@ -125,7 +107,7 @@ void SslMd5_Init(Unk_ov065_02267480_Md5 *ctx)
     ctx->st[3] = 0x10325476;
 }
 
-void SslMd5_Update(Unk_ov065_02267480_Md5 *ctx, const u8 *data, u32 n)
+void SslMd5_Update(SslMd5Context *ctx, const u8 *data, u32 n)
 {
     u32 idx = (ctx->lo >> 3) & 0x3f;
     u32 bits = n << 3;
@@ -150,7 +132,7 @@ void SslMd5_Update(Unk_ov065_02267480_Md5 *ctx, const u8 *data, u32 n)
     MI_CpuCopy8(data + i, ctx->buf + idx, n - i);
 }
 
-void SslMd5_Final(Unk_ov065_02267480_Md5 *ctx, void *out)
+void SslMd5_Final(SslMd5Context *ctx, void *out)
 {
     u32 idx;
     SslMd5_Encode(out, &ctx->lo, 8);
@@ -165,10 +147,10 @@ void SslMd5_Final(Unk_ov065_02267480_Md5 *ctx, void *out)
     SslMd5_Encode(out, ctx, 0x10);
 }
 
-Unk_ov065_0226733c_Ent *SslSession_FindById(const void *p)
+SslSession *SslSession_FindById(const void *p)
 {
     s32 i = 0;
-    Unk_ov065_0226733c_Ent *e = sSslSessionCache;
+    SslSession *e = sSslSessionCache;
     for (; i < 4; e++, i++) {
         if (e->inUse != 0 && memcmp(e, p, 0x20) == 0) {
             e->lastUsed = (u32)(OS_GetTick() >> 16);
@@ -178,10 +160,10 @@ Unk_ov065_0226733c_Ent *SslSession_FindById(const void *p)
     return 0;
 }
 
-Unk_ov065_0226733c_Ent *SslSession_FindByPeer(u32 a, u32 b)
+SslSession *SslSession_FindByPeer(u32 a, u32 b)
 {
     s32 i = 0;
-    Unk_ov065_0226733c_Ent *e = sSslSessionCache;
+    SslSession *e = sSslSessionCache;
     for (; i < 4; e++, i++) {
         if (e->inUse != 0 && e->peerAddr == a && e->peerPort == b) {
             e->lastUsed = (u32)(OS_GetTick() >> 16);
@@ -191,13 +173,13 @@ Unk_ov065_0226733c_Ent *SslSession_FindByPeer(u32 a, u32 b)
     return 0;
 }
 
-Unk_ov065_0226733c_Ent *SslSession_Add(const void *src)
+SslSession *SslSession_Add(const void *src)
 {
-    Unk_ov065_0226733c_Ent *pick;
+    SslSession *pick;
     u32 tick;
     s32 i;
     u32 best;
-    Unk_ov065_0226733c_Ent *e;
+    SslSession *e;
     tick = (u32)(OS_GetTick() >> 16);
     best = 0;
     pick = sSslSessionCache;
@@ -232,9 +214,9 @@ u32 Ssl_GetUnixTime(void)
 
 void Ssl_SetRootCaList(void *a, s32 b)
 {
-    Unk_ov065_022672ec_Ptr *q = *(Unk_ov065_022672ec_Ptr **)((u8 *)((Unk_ov065_022672ec_Root *)data_021fcc2c)->cur + 0xa4);
+    IpSocket *q = *(IpSocket **)((u8 *)((Unk_ov065_022672ec_Root *)data_021fcc2c)->cur + 0xa4);
     if (q != 0) {
-        Unk_ov065_022672a0_Tbl *t = q->sslCtx;
+        SslConnection *t = q->sslCtx;
         if (t != 0) {
             t->rootCaList = (void **)a;
             t->numRootCas = b;
@@ -242,7 +224,7 @@ void Ssl_SetRootCaList(void *a, s32 b)
     }
 }
 
-void *SslCert_FindRootCa(Unk_ov065_022672a0_Tbl *o, const void *name)
+void *SslCert_FindRootCa(SslConnection *o, const void *name)
 {
     s32 i = 0;
     s32 n = o->numRootCas;

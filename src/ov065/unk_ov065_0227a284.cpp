@@ -1,6 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_02261408_Hostent.h"
+#include "net/SockHostEnt.h"
 #include "net/Unk_ov065_022786bc_Vec.h"
 #include "net/Unk_ov065_02279c7c.h"
 #include "net/Unk_ov065_0227bd20_Ctx.h"
@@ -357,7 +357,7 @@ s32 GsHttp_SocketRecv(Unk_ov065_0227b2a8_Obj *, char *, s32 *);
 s32 GsHttp_SendPostData(Unk_ov065_0227b2a8_Obj *);
 s32 GsHttp_FreePostState(Unk_ov065_0227b2a8_Obj *);
 char *GsHttp_GetContentType(Unk_ov065_0227b2a8_Obj *);
-Unk_ov065_02261408_Hostent *Sock_GetHostByName(char *);
+SockHostEnt *Sock_GetHostByName(char *);
 s32 GsHttp_ParseUrl(Unk_ov065_0227b2a8_Obj *);
 
 void GsHttp_AppendChunkSizeText(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
@@ -530,7 +530,7 @@ void GsHttp_StepHostLookup(Unk_ov065_0227b2a8_Obj *self) {
     }
     self->serverIp = GsSock_InetAddr(h);
     if (self->serverIp == -1) {
-        Unk_ov065_02261408_Hostent *he = Sock_GetHostByName(h);
+        SockHostEnt *he = Sock_GetHostByName(h);
         if (he == 0) {
             self->completed = 1;
             self->result = 4;

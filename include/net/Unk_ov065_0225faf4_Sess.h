@@ -8,8 +8,8 @@
 
 struct Unk_ov065_0225faf4_Sess;
 
-struct Unk_ov065_0225faf4_Node {
-    /* 0x0 */ Unk_ov065_0225faf4_Node *next;
+struct SockUdpRecvNode {
+    /* 0x0 */ SockUdpRecvNode *next;
     /* 0x4 */ u16 len;
     /* 0x6 */ u16 remotePort;
     /* 0x8 */ u32 remoteAddr;
@@ -18,7 +18,7 @@ struct Unk_ov065_0225faf4_Node {
 
 struct Unk_ov065_0225faf4_Alloc {
     /* 0x00 */ void *pad[6];
-    /* 0x18 */ Unk_ov065_0225faf4_Node *(*alloc)(u32);
+    /* 0x18 */ SockUdpRecvNode *(*alloc)(u32);
     /* 0x1c */ void (*free)(void *);
 };
 
@@ -31,8 +31,8 @@ struct Unk_ov065_0225faf4_Ctx {
     /* 0x0fc */ u16 limit;
     /* 0x0fe */ s8 lock;
     /* 0x0ff */ u8 pad_ff;
-    /* 0x100 */ Unk_ov065_0225faf4_Node *volatile tail;
-    /* 0x104 */ Unk_ov065_0225faf4_Node *head;
+    /* 0x100 */ SockUdpRecvNode *volatile tail;
+    /* 0x104 */ SockUdpRecvNode *head;
     /* 0x108 */ u16 used;
     /* 0x10a */ u16 cap;
     /* 0x10c */ u8 queue[4];
@@ -75,7 +75,7 @@ struct Unk_ov065_0225faf4_Sess {
 struct Unk_ov065_0225faf4_Job {
     /* 0x00 */ u32 unk_00;
     /* 0x04 */ Unk_ov065_0225faf4_Sess *sock;
-    /* 0x08 */ u32 unk_08;
+    /* 0x08 */ u32 replyQueue;
     /* 0x0c */ s8 sockType;
     /* 0x0d */ u8 pad_0d[3];
     /* 0x10 */ u16 localPort;

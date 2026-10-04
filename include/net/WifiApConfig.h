@@ -1,12 +1,12 @@
-#ifndef NET_UNK_OV065_0226B27C_CFG_H
-#define NET_UNK_OV065_0226B27C_CFG_H
+#ifndef NET_WIFIAPCONFIG_H
+#define NET_WIFIAPCONFIG_H
 
 #include "types.h"
 
 // WifiAp_Init config, the WifiAp allocator block (sWifiApAllocator) and two bitfield views of WifiAp context
 // bytes 0xd0b / 0xd0c (src/ov065/unk_ov065_0226ad84.cpp).
 
-struct Unk_ov065_0226b27c_Cfg {
+struct WifiApConfig {
     /* 0x0 */ void *(*unk_00)(u32, u32);
     /* 0x4 */ void (*unk_04)(u32, void *, u32);
     /* 0x8 */ u8 dmaNo;
@@ -15,7 +15,7 @@ struct Unk_ov065_0226b27c_Cfg {
     /* 0xb */ u8 netCheckMode;
 };
 
-struct Unk_ov065_0226b27c_F8 {
+struct WifiApAllocator {
     /* 0x0 */ void *(*unk_00)(u32, u32);
     /* 0x4 */ void (*unk_04)(u32, void *, u32);
     /* 0x8 */ u32 unk_08;

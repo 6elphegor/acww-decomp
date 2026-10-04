@@ -1,31 +1,19 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_0225fd18_Counters.h"
-#include "net/Unk_ov065_02261408_Hostent.h"
-#include "net/Unk_ov065_02261638_Rng.h"
+#include "net/SockUdpDropCounters.h"
+#include "net/SockHostEnt.h"
+#include "net/IpStackConfig.h"
 #include "net/Unk_ov065_0225faf4_Sess.h"
 
 namespace Unk_ov065_02260de4_Ns {
 
 // ov065_003: socket-library style free functions (0x02260de4..0x02261638)
 
-struct Unk_ov065_02260de4_Ring {
-    u8 pad_00[0xf8];
-    s32 unk_f8;
-    u8 pad_fc[8];
-    u32 unk_104_dummy;
-};
-
-struct Unk_ov065_02260de4_Buf {
-    u8 pad_00[4];
-    u16 len;
-};
-
 struct Unk_ov065_02260de4_Ctx {
     u8 pad_00[0xf8];
     s32 pos;
     u8 pad_fc[8];
-    Unk_ov065_02260de4_Buf *head;
+    SockUdpRecvNode *head;
 };
 
 struct Unk_ov065_02260de4 {
@@ -44,7 +32,7 @@ struct Unk_ov065_02260de4 {
     Unk_ov065_02260de4 *next;
 };
 
-struct Unk_ov065_02260fa4_Ent {
+struct SockPollFd {
     Unk_ov065_02260de4 *sock;
     s16 events;
     u16 revents;
@@ -72,7 +60,7 @@ struct Unk_ov065_02261118_Cfg {
     u32 recvWindow;
 };
 
-struct Unk_ov065_02261118_Src {
+struct SockStartupConfig {
     u8 pad_00[4];
     void *allocFunc;
     void *freeFunc;
@@ -88,8 +76,8 @@ struct Unk_ov065_02261118_Src {
 };
 
 
-typedef void (*Unk_ov065_02261118_Free)(s32, void *, u32);
-typedef void *(*Unk_ov065_02261118_Alloc)(s32, u32);
+typedef void (*SockFreeFunc)(s32, void *, u32);
+typedef void *(*SockAllocFunc)(s32, u32);
 
 extern "C" {
 
@@ -138,7 +126,7 @@ BOOL SockCore_IsInClosedList(Unk_ov065_02260de4 *n);
 char *Sock_InetNtoP(s32 mode, s32 x, char *buf, u32 len);
 void IpAddr_StoreBe32(u32 v, u8 *p);
 
-extern Unk_ov065_02261638_Rng sIpRandState;
+extern IpRandStateSignedStep sIpRandState;
 
 static inline u32 HTONL(u32 x) {
     return ((x << 24) & 0xff000000) | (((x << 8) & 0xff0000) | (((x >> 24) & 0xff) | ((x >> 8) & 0xff00)));
@@ -152,14 +140,14 @@ static inline u16 HTONS(u16 x) {
 u32 sSockUdpParams[6] = {0x05c00101, 0x00000001, 0x00000000, 0x08000000, 0x080c0800, 0x00000000};
 u32 sSockTcpParams[6] = {0x00000100, 0x05ea0000, 0x00000000, 0x00000bd5, 0x080c0800, 0x080d0800};
 u32 sSockSendOnlyParams[6] = {0x00000002, 0x05ea0000, 0x00000000, 0x000006eb, 0x00000000, 0x080d0800};
-Unk_ov065_02261118_Alloc sSockUserAlloc;
-Unk_ov065_02261118_Free sSockUserFree;
+SockAllocFunc sSockUserAlloc;
+SockFreeFunc sSockUserFree;
 Unk_ov065_02260de4 *sSockOpenList;
 Unk_ov065_02260de4 *sSockClosedList;
 u32 sHostentAddr;
 char *sHostentAddrList[2];
 char sInetNtoaBuf[16];
-Unk_ov065_02261408_Hostent sHostent;
+SockHostEnt sHostent;
 Unk_ov065_02261118_Cfg sSockStartupConfig;
 char sHostentName[0x104];
 
@@ -221,13 +209,13 @@ s32 Sock_Close(s32 a, s32 b, s32 c) {
     return SockCore_Close(a, b, c);
 }
 
-Unk_ov065_02261408_Hostent *Sock_GetHostByName(s32 x) {
+SockHostEnt *Sock_GetHostByName(s32 x) {
     u32 ip = SockCore_ResolveHost(x);
     if (ip == 0) {
         return NULL;
     }
     func_021277fc(sHostentName, x, 0x101);
-    Unk_ov065_02261408_Hostent *h = &sHostent;
+    SockHostEnt *h = &sHostent;
     h->hostName = sHostentName;
     h->aliases = NULL;
     h->addrType = 2;
@@ -323,7 +311,7 @@ void Sock_FreeHook(void *p) {
     }
 }
 
-s32 Sock_Startup(Unk_ov065_02261118_Src *s) {
+s32 Sock_Startup(SockStartupConfig *s) {
     u32 t;
     Unk_ov065_02261118_Cfg *c;
     if (s->dhcpMode == 1) {
@@ -340,8 +328,8 @@ s32 Sock_Startup(Unk_ov065_02261118_Src *s) {
     c->dns2 = HTONL(s->dns2);
     c->allocFunc = (void *)Sock_AllocHook;
     c->freeFunc = (void *)Sock_FreeHook;
-    sSockUserAlloc = (Unk_ov065_02261118_Alloc)s->allocFunc;
-    sSockUserFree = (Unk_ov065_02261118_Free)s->freeFunc;
+    sSockUserAlloc = (SockAllocFunc)s->allocFunc;
+    sSockUserFree = (SockFreeFunc)s->freeFunc;
     c->msgPoolSize = 0x40;
     c->mtu = s->mtu;
     c->recvWindow = s->recvWindow;
@@ -387,11 +375,11 @@ void IpAddr_StoreBe32(u32 v, u8 *p) {
     p[3] = v;
 }
 
-s32 Sock_Poll(Unk_ov065_02260fa4_Ent *arr, u32 n, s64 timeout) {
+s32 Sock_Poll(SockPollFd *arr, u32 n, s64 timeout) {
     s32 cnt;
     BOOL finite = (timeout != -1) ? TRUE : FALSE;
     for (;;) {
-        Unk_ov065_02260fa4_Ent *p;
+        SockPollFd *p;
         u32 i;
         p = arr;
         i = cnt = 0;
@@ -523,7 +511,7 @@ s32 SockCore_GetRecvAvailable(Unk_ov065_02260de4 *o) {
     if (c != NULL) {
         s32 m = o->sockType;
         if (m == 1) {
-            Unk_ov065_02260de4_Buf *b = c->head;
+            SockUdpRecvNode *b = c->head;
             if (b != NULL) {
                 r = b->len;
             }
@@ -1181,7 +1169,7 @@ namespace Unk_ov065_0225faf4_Ns {
 
 
 
-typedef Unk_ov065_0225faf4_Node Node;
+typedef SockUdpRecvNode Node;
 typedef Unk_ov065_0225faf4_Sess Sess;
 typedef Unk_ov065_0225faf4_Ctx Ctx;
 typedef Unk_ov065_022603bc_Rx Rx;
@@ -1220,7 +1208,7 @@ typedef Unk_ov065_022603bc_Job WJob;
 extern "C" {
 extern s32 sSockConnectInProgressError;
 extern Unk_ov065_0225faf4_Alloc *sSockCoreConfig;
-extern Unk_ov065_0225fd18_Counters sSockUdpDropCount;
+extern SockUdpDropCounters sSockUdpDropCount;
 
 u32 OS_DisableInterrupts(...);
 void OS_RestoreInterrupts(u32 v);

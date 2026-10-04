@@ -1,6 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_0225fd18_Counters.h"
+#include "net/SockUdpDropCounters.h"
 #include "net/Unk_ov065_0225f4d4_Msg.h"
 #include "net/Unk_ov065_0225faf4_Sess.h"
 #include "net/Unk_ov065_0225f378_Obj.h"
@@ -24,7 +24,7 @@ struct Unk_ov065_0225faf4_Sess;
 
 
 
-typedef Unk_ov065_0225faf4_Node Node;
+typedef SockUdpRecvNode Node;
 typedef Unk_ov065_0225faf4_Sess Sess;
 typedef Unk_ov065_0225faf4_Ctx Ctx;
 
@@ -140,7 +140,7 @@ static inline BOOL IsValid(Sess *s)
 
 extern "C" {
 s32 sSockConnectInProgressError = -0x1a;
-Unk_ov065_0225fd18_Counters sSockUdpDropCount;
+SockUdpDropCounters sSockUdpDropCount;
 
 s32 SockCore_OnUdpReceive(void *data, u32 len, Sess *s)
 {

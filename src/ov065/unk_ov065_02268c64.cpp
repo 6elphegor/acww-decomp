@@ -1,10 +1,11 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/Unk_ov065_0226ab40_Glb.h"
-#include "net/Unk_ov065_0226ab5c_Conn.h"
-#include "net/Unk_ov065_0226aed4_Fc.h"
-#include "net/Unk_ov065_0226b27c_Cfg.h"
+#include "net/WifiLinkWork.h"
+#include "net/WifiApControl.h"
+#include "net/WifiApConfig.h"
 #include "net/Unk_ov065_0226b3c4_Rec.h"
+#include "nitro/wm.h"
 
 extern "C" {
 
@@ -28,7 +29,7 @@ namespace N_ab40 {
 // ov065_019: network library, connection/event state (0x0226ab40..0x0226b3c4)
 
 
-typedef void (*Unk_ov065_0226ac54_Cb)(void *, void *, void *, u32);
+typedef void (*WifiLinkRecvCallback)(void *, void *, void *, u32);
 
 
 
@@ -47,8 +48,8 @@ extern u8 sWifiRssiSamples[];
 extern u8 *sWifiApContext;
 extern void *sWifiApLinkWork;
 extern void *sWifiApSocketConfig;
-extern Unk_ov065_0226b27c_F8 *sWifiApAllocator;
-extern Unk_ov065_0226aed4_Fc *sWifiApControl;
+extern WifiApAllocator *sWifiApAllocator;
+extern WifiApControl *sWifiApControl;
 
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
@@ -63,7 +64,7 @@ s32 strncmp(void *, void *, u32);
 s32 WM_SetDCFData(void *, void *, void *, u32);
 void func_020ff154(void *);
 
-Unk_ov065_0226ab5c_Conn *WifiLink_GetWork();
+WifiLinkWork *WifiLink_GetWork();
 s32 WifiLink_Init(void *, u32);
 s32 WifiLink_UnlockFromIrq(void *);
 s32 WifiLink_TryLockFromIrq(void *);
@@ -129,14 +130,14 @@ void WifiLink_InitSendState() {
 }
 
 void WifiLink_OnFrameReceived(u8 *p) {
-    Unk_ov065_0226ac54_Cb cb = sWifiLinkSendState.recvCallback;
+    WifiLinkRecvCallback cb = sWifiLinkSendState.recvCallback;
     if (cb != 0) {
         cb(p + 0x1e, p + 0x18, p + 0x2c, *(u16 *)(p + 6));
     }
 }
 
 void WifiLink_SendKeepAlive() {
-    Unk_ov065_0226ab5c_Conn *c = WifiLink_GetWork();
+    WifiLinkWork *c = WifiLink_GetWork();
     if (c != 0 && c->phase == 9 && c->isResetting != 1) {
         if (WifiLink_TryLockFromIrq(sWifiLinkSendLock) != 0) {
             if (WM_SetDCFData((void *)WifiLink_OnKeepAliveSent, c->targetBssid, c->sendBuf, 0) != 2) {
@@ -148,7 +149,7 @@ void WifiLink_SendKeepAlive() {
 
 u8 *WifiLink_GetConnectedBssid() {
     u8 *r5 = 0;
-    Unk_ov065_0226ab5c_Conn *c = WifiLink_GetWork();
+    WifiLinkWork *c = WifiLink_GetWork();
     u32 irq = OS_DisableInterrupts();
     if (c != 0 && c->phase == 9 && c->isResetting == 0) {
         r5 = c->targetBssid;
@@ -160,7 +161,7 @@ u8 *WifiLink_GetConnectedBssid() {
 u8 *WifiLink_GetConnectedSsid(u16 *out) {
     u8 *r7 = 0;
     u32 r6 = 0;
-    Unk_ov065_0226ab5c_Conn *c = WifiLink_GetWork();
+    WifiLinkWork *c = WifiLink_GetWork();
     u32 irq = OS_DisableInterrupts();
     if (c != 0 && c->phase == 9 && c->isResetting == 0) {
         r7 = c->targetSsid;
@@ -173,7 +174,7 @@ u8 *WifiLink_GetConnectedSsid(u16 *out) {
     return r7;
 }
 
-void WifiLink_SetRecvCallback(Unk_ov065_0226ac54_Cb cb) {
+void WifiLink_SetRecvCallback(WifiLinkRecvCallback cb) {
     u32 irq = OS_DisableInterrupts();
     sWifiLinkSendState.recvCallback = cb;
     OS_RestoreInterrupts(irq);
@@ -186,21 +187,21 @@ namespace N_a144 {
 
 // Network library state (big object pointed to by sWifiLinkWork)
 
-struct Unk_ov065_0226a73c_Node {
+struct WifiApListEntry {
     u8 inUse;
     u8 unk_01;
     u16 linkLevel;
     u32 id;
-    struct Unk_ov065_0226a73c_Node *prev;
-    struct Unk_ov065_0226a73c_Node *next;
+    struct WifiApListEntry *prev;
+    struct WifiApListEntry *next;
     u8 bssDesc[0xc0];
 };
 
-struct Unk_ov065_0226a73c_List {
+struct WifiApList {
     u32 count;
-    Unk_ov065_0226a73c_Node *head;
-    Unk_ov065_0226a73c_Node *tail;
-    Unk_ov065_0226a73c_Node nodes[1];
+    WifiApListEntry *head;
+    WifiApListEntry *tail;
+    WifiApListEntry nodes[1];
 };
 
 struct Unk_ov065_022905a8_S {
@@ -211,7 +212,7 @@ struct Unk_ov065_022905a8_S {
     u8 isApListLocked;
     u8 isResetting;
     u32 dmaNo;
-    Unk_ov065_0226a73c_List *apList;
+    WifiApList *apList;
     u32 apListSize;
     s32 apListReplaceOldest;
     u8 unk_227c[4];
@@ -234,11 +235,6 @@ struct Unk_ov065_0226a97c_Mutex {
 struct Unk_ov065_0226a9e4_G {
     u8 unk_00[0x24];
     s32 sendResult;
-};
-
-struct Unk_ov065_0226a9e4_Msg {
-    u16 apiId;
-    u16 errCode;
 };
 
 extern "C" {
@@ -294,11 +290,11 @@ s32 WifiLink_CleanupAsync(void);
 s32 WifiLink_StartupAsync(void *, void *);
 s32 WifiLink_Finish(void);
 s32 WifiLink_Init(void *, u32);
-void WifiApList_MoveToTail(Unk_ov065_0226a73c_Node *);
-Unk_ov065_0226a73c_Node *WifiApList_FindById(u32);
-Unk_ov065_0226a73c_Node *WifiApList_FindByBssid(void *);
-Unk_ov065_0226a73c_Node *WifiApList_GetOldest(void);
-Unk_ov065_0226a73c_Node *WifiApList_AllocEntry(void);
+void WifiApList_MoveToTail(WifiApListEntry *);
+WifiApListEntry *WifiApList_FindById(u32);
+WifiApListEntry *WifiApList_FindByBssid(void *);
+WifiApListEntry *WifiApList_GetOldest(void);
+WifiApListEntry *WifiApList_AllocEntry(void);
 void WifiLink_AddApListEntry(u8 *, u32);
 void *WifiLink_GetApListEntry(u32);
 BOOL WifiLink_LockApList(BOOL);
@@ -307,7 +303,7 @@ void WifiLink_ClearApList(void);
 void WifiLink_UnlockFromIrq(Unk_ov065_0226a97c_Mutex *);
 BOOL WifiLink_TryLockFromIrq(Unk_ov065_0226a97c_Mutex *);
 void WifiLink_OnKeepAliveSent(void);
-void WifiLink_OnSendDone(Unk_ov065_0226a9e4_Msg *);
+void WifiLink_OnSendDone(WMMsg *);
 s32 WifiLink_SendFrame(u32, void *, u32);
 
 
@@ -318,7 +314,7 @@ s32 WifiLink_SendFrame(u32, void *, u32);
 
 
 
-static inline u8 *Unk_ov065_0226a6b4_Data(Unk_ov065_0226a73c_Node *n)
+static inline u8 *Unk_ov065_0226a6b4_Data(WifiApListEntry *n)
 {
     return n->bssDesc;
 }
@@ -387,11 +383,11 @@ s32 WifiLink_SendFrame(u32 a, void *b, u32 c)
     }
 }
 
-void WifiLink_OnSendDone(Unk_ov065_0226a9e4_Msg *p)
+void WifiLink_OnSendDone(WMMsg *p)
 {
-    if (p->apiId == 0x12) {
-        sWifiLinkSendState.sendResult = p->errCode;
-        if (p->errCode == 0) {
+    if (p->id == 0x12) {
+        sWifiLinkSendState.sendResult = p->errcode;
+        if (p->errcode == 0) {
             WifiLink_RestartKeepAliveAlarm();
         }
         OS_WakeupThread(sWifiLinkSendWaitQueue);
@@ -437,7 +433,7 @@ void WifiLink_ClearApList(void)
         OS_RestoreInterrupts(e);
         return;
     }
-    Unk_ov065_0226a73c_List *list = s->apList;
+    WifiApList *list = s->apList;
     if (list != NULL && (s32)s->apListSize > 0) {
         MI_CpuFill8(list, 0, s->apListSize);
     }
@@ -453,7 +449,7 @@ u32 WifiLink_GetApListCount(void)
         OS_RestoreInterrupts(e);
         return r;
     }
-    Unk_ov065_0226a73c_List *list = s->apList;
+    WifiApList *list = s->apList;
     if (list != NULL && s->apListSize > 0xc) {
         r = list->count;
     }
@@ -488,7 +484,7 @@ void *WifiLink_GetApListEntry(u32 id)
         OS_RestoreInterrupts(e);
         return NULL;
     }
-    Unk_ov065_0226a73c_Node *n = WifiApList_FindById(id);
+    WifiApListEntry *n = WifiApList_FindById(id);
     if (n == NULL) {
         OS_RestoreInterrupts(e);
         return NULL;
@@ -503,7 +499,7 @@ void WifiLink_AddApListEntry(u8 *a, u32 b)
     if (s != NULL) {
         if (s->isApListLocked == 0) {
             if (*(u16 *)(a + 0x3c) == 0) {
-                Unk_ov065_0226a73c_Node *n = WifiApList_FindByBssid(a + 4);
+                WifiApListEntry *n = WifiApList_FindByBssid(a + 4);
                 if (n == NULL) {
                     n = WifiApList_AllocEntry();
                 }
@@ -520,11 +516,11 @@ void WifiLink_AddApListEntry(u8 *a, u32 b)
     }
 }
 
-Unk_ov065_0226a73c_Node *WifiApList_AllocEntry(void)
+WifiApListEntry *WifiApList_AllocEntry(void)
 {
     Unk_ov065_022905a8_S *s = WifiLink_GetWork();
-    Unk_ov065_0226a73c_List *list = s->apList;
-    Unk_ov065_0226a73c_Node *r = NULL;
+    WifiApList *list = s->apList;
+    WifiApListEntry *r = NULL;
     if (list != NULL && s->apListSize > 0xc) {
         u32 sz = 0xd0;
         u32 n = (s->apListSize - 0xc) / sz;
@@ -533,7 +529,7 @@ Unk_ov065_0226a73c_Node *WifiApList_AllocEntry(void)
             for (i = 0; (u32)i < n; i++) {
                 u32 off = i * sz;
                 u8 *base = (u8 *)list + 0xc;
-                r = (Unk_ov065_0226a73c_Node *)(base + off);
+                r = (WifiApListEntry *)(base + off);
                 if (base[off] == 0) {
                     break;
                 }
@@ -556,21 +552,21 @@ Unk_ov065_0226a73c_Node *WifiApList_AllocEntry(void)
     return r;
 }
 
-Unk_ov065_0226a73c_Node *WifiApList_GetOldest(void)
+WifiApListEntry *WifiApList_GetOldest(void)
 {
     Unk_ov065_022905a8_S *s = WifiLink_GetWork();
-    Unk_ov065_0226a73c_List *list = s->apList;
+    WifiApList *list = s->apList;
     if (list != NULL && s->apListSize > 0xc) {
         return list->head;
     }
     return NULL;
 }
 
-Unk_ov065_0226a73c_Node *WifiApList_FindByBssid(void *key)
+WifiApListEntry *WifiApList_FindByBssid(void *key)
 {
     Unk_ov065_022905a8_S *s = WifiLink_GetWork();
-    Unk_ov065_0226a73c_List *list = s->apList;
-    Unk_ov065_0226a73c_Node *n = NULL;
+    WifiApList *list = s->apList;
+    WifiApListEntry *n = NULL;
     if (key == NULL) {
         return n;
     }
@@ -584,11 +580,11 @@ Unk_ov065_0226a73c_Node *WifiApList_FindByBssid(void *key)
     return n;
 }
 
-Unk_ov065_0226a73c_Node *WifiApList_FindById(u32 id)
+WifiApListEntry *WifiApList_FindById(u32 id)
 {
     Unk_ov065_022905a8_S *s = WifiLink_GetWork();
-    Unk_ov065_0226a73c_List *list = s->apList;
-    Unk_ov065_0226a73c_Node *n = NULL;
+    WifiApList *list = s->apList;
+    WifiApListEntry *n = NULL;
     if (list != NULL && s->apListSize > 0xc) {
         for (n = list->head; n != NULL; n = n->next) {
             if (n->id == id) {
@@ -599,12 +595,12 @@ Unk_ov065_0226a73c_Node *WifiApList_FindById(u32 id)
     return n;
 }
 
-void WifiApList_MoveToTail(Unk_ov065_0226a73c_Node *node)
+void WifiApList_MoveToTail(WifiApListEntry *node)
 {
     Unk_ov065_022905a8_S *s = WifiLink_GetWork();
-    Unk_ov065_0226a73c_List *list = s->apList;
+    WifiApList *list = s->apList;
     if (node != NULL && list != NULL && s->apListSize > 0xc) {
-        Unk_ov065_0226a73c_Node *c = list->head;
+        WifiApListEntry *c = list->head;
         for (; c != NULL; c = c->next) {
             if (c == node) {
                 if (c->prev != NULL) {
@@ -869,7 +865,7 @@ s32 WifiLink_BeginSearchAsync(void *a, void *b, s32 c)
 
 namespace N_97ec {
 
-struct Unk_ov065_0226990c_Ev {
+struct WifiLinkEvent {
     s16 request;
     s16 result;
     s32 bssDesc;
@@ -877,7 +873,7 @@ struct Unk_ov065_0226990c_Ev {
     s32 sourceLine;
 };
 
-typedef void (*Unk_ov065_0226990c_Cb)(Unk_ov065_0226990c_Ev *);
+typedef void (*WifiLinkNotifyCallback)(WifiLinkEvent *);
 
 struct Unk_ov065_022697ec_G {
     u8 pad_0000[0x2140];
@@ -898,7 +894,7 @@ struct Unk_ov065_022697ec_G {
     u32 apList;
     u32 apListSize;
     u32 apListReplaceOldest;
-    Unk_ov065_0226990c_Cb notifyCallback;
+    WifiLinkNotifyCallback notifyCallback;
     s16 pendingRequest;
     u8 pad_2282[2];
     u32 scanCount;
@@ -916,7 +912,7 @@ struct Unk_ov065_022697ec_G {
 
 typedef Unk_ov065_022697ec_G G;
 
-struct Unk_ov065_02269b18_In {
+struct WifiLinkConfig {
     u32 dmaNo;
     u32 apListBuf;
     u32 apListBufSize;
@@ -962,7 +958,7 @@ void WifiLink_NotifyRequest(s32, s32, s32, s32);
 u32 WifiLink_NextAllowedChannel(s32);
 void WifiLink_SetDefaultOptions();
 void WifiLink_SetupScanParams(u8 *, u8 *, u32);
-void WifiLink_ApplyConfig(Unk_ov065_02269b18_In *, u32);
+void WifiLink_ApplyConfig(WifiLinkConfig *, u32);
 u32 WifiLink_GetWork();
 u32 WifiLink_UpdateOptions(u32);
 u32 WifiLink_GetPhase();
@@ -1225,7 +1221,7 @@ u32 WifiLink_GetWork() {
     return (u32)sWifiLinkWork;
 }
 
-void WifiLink_ApplyConfig(Unk_ov065_02269b18_In *p, u32 arg) {
+void WifiLink_ApplyConfig(WifiLinkConfig *p, u32 arg) {
     if (p == 0) {
         sWifiLinkWork->dmaNo = 3;
         sWifiLinkWork->apList = 0;
@@ -1245,7 +1241,7 @@ void WifiLink_ApplyConfig(Unk_ov065_02269b18_In *p, u32 arg) {
         }
         sWifiLinkWork->apListReplaceOldest = p->apListReplaceOldest;
     }
-    sWifiLinkWork->notifyCallback = (Unk_ov065_0226990c_Cb)arg;
+    sWifiLinkWork->notifyCallback = (WifiLinkNotifyCallback)arg;
 }
 
 void WifiLink_SetupScanParams(u8 *a, u8 *b, u32 c) {
@@ -1310,9 +1306,9 @@ void WifiLink_NotifyRequest(s32 a, s32 b, s32 c, s32 d) {
 
 void WifiLink_Notify(s32 a, s32 b, s32 c, s32 d, s32 e) {
     G *g = sWifiLinkWork;
-    Unk_ov065_0226990c_Cb *cb = &g->notifyCallback;
+    WifiLinkNotifyCallback *cb = &g->notifyCallback;
     if (*cb != 0) {
-        Unk_ov065_0226990c_Ev ev;
+        WifiLinkEvent ev;
         ev.request = a;
         ev.result = b;
         ev.bssDesc = c;
@@ -1412,8 +1408,6 @@ struct Unk_ov065_02268ec8_G {
     u16 connectFailStatus;
 };
 
-typedef Unk_ov065_02268ec8_Msg Unk_ov065_02268ec8_M;
-typedef Unk_ov065_02268ec8_G Unk_ov065_02268ec8_GG;
 
 extern "C" {
 
@@ -1825,10 +1819,6 @@ void WifiLink_OnEndDcf(Unk_ov065_02268ec8_Msg *m) {
 }  // namespace N_8ec8
 
 namespace N_8470 {
-struct Unk_ov065_02268c64_Msg {
-    u8 unk_00[2];
-    u16 errCode;
-};
 
 struct Unk_ov065_022905a8 {
     u8 unk_0000[0x2140];
@@ -1855,9 +1845,9 @@ s32 WifiLink_OnWmCommand(void *);
 s32 func_0211fcbc(void *cb, void *buf, u32 a, u32 b, u32 c);
 s32 WM_PowerOff(void *cb);
 
-void WifiLink_OnReset(Unk_ov065_02268c64_Msg *m)
+void WifiLink_OnReset(WMMsg *m)
 {
-    if (m->errCode == 0) {
+    if (m->errcode == 0) {
         sWifiLinkWork->isResetting = 0;
         sWifiLinkWork->aid = 0;
         switch (sWifiLinkWork->phase) {
