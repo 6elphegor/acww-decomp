@@ -48,11 +48,6 @@ struct Unk_020d77a4_Vec3;
 
 
 
-struct Unk_ov004_0221b6d4_Owner {
-    u8 pad_00[0x70a];
-    u8 isDramaTalk;
-};
-
 struct Unk_ov004_0221b6d4_Bits {
     u8 a : 2;
     u8 b : 3;
@@ -149,6 +144,8 @@ u32 SpNpcSable_GetTalkCount(void *self);
 void SpNpcSable_SetTalkCount(void *self, u32 v);
 }
 
+class SpNpcSable;
+
 class SpNpcSableTalk : public SpNpcTalkRequest {
 public:
     SpNpcSableTalk();
@@ -157,9 +154,9 @@ public:
     virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
 
-    void attachOwner(Unk_ov004_0221b6d4_Owner *o);
+    void attachOwner(SpNpcSable *o);
 
-    /* 0xac */ Unk_ov004_0221b6d4_Owner *owner;
+    /* 0xac */ SpNpcSable *owner;
 };
 
 class SpNpcSable : public SpNpcActor {
@@ -218,7 +215,7 @@ BOOL SpNpcSable::preCreate() {
         return FALSE;
     }
     NpcActor_setTalkRequest(this, &talk);
-    talk.attachOwner((Unk_ov004_0221b6d4_Owner *)this);
+    talk.attachOwner(this);
     SpNpcActor_setColliderSize(this, 0x119a, 0x2000);
     NpcActor_setCollisionRadius(this, 0);
     Character_setInteractionRange(this, 0x3000);
@@ -419,7 +416,7 @@ SpNpcSableTalk::SpNpcSableTalk() {}
 
 SpNpcSableTalk::~SpNpcSableTalk() {}
 
-void SpNpcSableTalk::attachOwner(Unk_ov004_0221b6d4_Owner *o) {
+void SpNpcSableTalk::attachOwner(SpNpcSable *o) {
     resetMsg();
     owner = o;
 }

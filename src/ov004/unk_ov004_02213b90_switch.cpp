@@ -6,8 +6,6 @@
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
 #include "game/Unk_ov004_022091fc_Vec.h"
-#include "actor/Unk_ov004_022142fc_Actor.h"
-#include "actor/Unk_ov004_022146ec_Actor.h"
 #include "game/Unk_ov004_022146ec_Bits.h"
 #include "net/CommManager.h"
 #include "talk/TalkWindowState.h"
@@ -91,7 +89,7 @@ s32 Vec_DistXZ(void *a, void *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 TouchPicker *Scene_GetTouchPicker(void);
 s32 Scene_GetCurrent(void);
-Unk_ov004_022146ec_Actor *PlayerActor_GetCharacter(u32);
+Actor *PlayerActor_GetCharacter(u32);
 void func_01ffd070(void *, void *, void *);
 }
 

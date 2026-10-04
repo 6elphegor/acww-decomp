@@ -72,25 +72,6 @@ void RoomObj_ActivateSe(void *self);
 
 
 
-// model element (0xb8 bytes), only the members touched from this unit
-struct Unk_ov004_0224e034_M {
-    u8 pad_00[0x5c];
-    u32 resMdl;
-    u8 pad_60[4];
-    Mtx43 mtx;
-    u8 pad_94[0x9c - 0x94];
-    u32 animFrameCtrl;
-    s32 numFrames;
-    s32 curFrame;
-    u8 pad_a8[4];
-    s32 frameStep;
-    u8 pad_b0[8];
-};
-
-// helper table object (0xa4 bytes)
-struct Unk_ov004_0224e034_T1 {
-    u8 pad_00[0xa4];
-};
 
 
 
@@ -117,8 +98,8 @@ public:
     BOOL changeAct(s32 i);
     void drawAtKatrina();
 
-    /* 0x290 */ Unk_ov004_0224e034_M partModels[3];
-    /* 0x4b8 */ Unk_ov004_0224e034_T1 partRes[3];
+    /* 0x290 */ AnimModel partModels[3];
+    /* 0x4b8 */ RoomObjRes partRes[3];
     /* 0x6a4 */ u32 partTex[3]; // RoomObjTex slots (construct/destruct by hand)
     /* 0x6b0 */ u8 partVisible[3];
     /* 0x6b3 */ u8 pad_6b3;
@@ -182,8 +163,6 @@ extern "C" TarotProps *TarotProps_Create() {
 }
 
 TarotProps::TarotProps() {
-    __cxa_vec_ctor(partModels, 3, 0xb8, (void *(*)(void *))_ZN9AnimModelC1Ev, _ZN9AnimModelD1Ev);
-    __cxa_vec_ctor(partRes, 3, 0xa4, (void *(*)(void *))_ZN10RoomObjResC1Ev, _ZN10RoomObjResD1Ev);
     __cxa_vec_ctor(partTex, 3, 4, (void *(*)(void *))RoomObjTex_Construct, (void *(*)(void *, s32))RoomObjTex_Destruct);
     _ZN9ModelAnimC1Ev(&part1MatAnim);
 }
@@ -191,8 +170,6 @@ TarotProps::TarotProps() {
 TarotProps::~TarotProps() {
     _ZN9ModelAnimD1Ev(&part1MatAnim);
     __cxa_vec_cleanup(partTex, 3, 4, (void *(*)(void *, s32))RoomObjTex_Destruct);
-    __cxa_vec_cleanup(partRes, 3, 0xa4, _ZN10RoomObjResD1Ev);
-    __cxa_vec_cleanup(partModels, 3, 0xb8, _ZN9AnimModelD1Ev);
 }
 
 BOOL TarotProps::onCreate() {
@@ -208,7 +185,7 @@ BOOL TarotProps::onCreate() {
             partModels[2].frameStep = 0;
         }
     }
-    if (_ZN9ModelAnim11allocMatAnmEjPv(&part1MatAnim, partModels[1].resMdl, gBgHeap)) {
+    if (_ZN9ModelAnim11allocMatAnmEjPv(&part1MatAnim, (u32)partModels[1].resMdl, gBgHeap)) {
         _ZN9ModelAnim4initEiiit(&part1MatAnim, RoomObjRes_GetBta(&partRes[1], 0), 1, 0x1000, 0);
         _ZN9ModelAnim14addToRenderObjEj(&part1MatAnim, _ZN5Model12getRenderObjEv(&partModels[1]));
         part1MatAnim.frameStep = 0;
@@ -310,7 +287,7 @@ BOOL TarotProps::enterAct02() {
     partVisible[0] = 0;
     partVisible[1] = 1;
     partVisible[2] = 1;
-    partModels[2].curFrame = (u32)(partModels[2].numFrames >> 12) << 16 >> 4;
+    partModels[2].curFrame = (u32)((s32)partModels[2].numFrames >> 12) << 16 >> 4;
     partModels[2].frameStep = 0;
     part1MatAnim.curFrame = (u32)(*(s32 *)&F(u32, 0x6b8) >> 12) << 16 >> 4;
     part1MatAnim.frameStep = 0;
@@ -346,7 +323,7 @@ void TarotProps::execAct03() {
     if (SpNpcKatrina_GetAnimFrame() == 0x25) {
         modelVisible = 0;
     }
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&partModels[2].animFrameCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv((AnimFrameCtrl *)&partModels[2])) {
         changeAct(0);
     }
 }
@@ -379,7 +356,7 @@ extern "C" void TarotProps_Draw() {
 }
 
 void TarotProps::loadPart(s32 i, void *a, void *b) {
-    Unk_ov004_0224e034_T1 *t1 = &partRes[i];
+    RoomObjRes *t1 = &partRes[i];
     RoomObjRes_Load(t1, (const char *)a);
     u32 *t2 = &partTex[i];
     RoomObjTex_Load(t2, (const char *)b);

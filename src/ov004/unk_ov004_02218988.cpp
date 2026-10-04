@@ -95,10 +95,6 @@ struct Unk_ov004_0221946c_Vec {
 struct Unk_ov004_02219e0c_V {
     s32 x, y, z;
 };
-struct Unk_ov004_02219e0c_Obj {
-    u8 pad_00[0x5c];
-    Unk_ov004_02219e0c_V position;
-};
 
 
 extern "C" {
@@ -571,10 +567,10 @@ BOOL FleaMarketBuyerVillager::mainAct00() {
             callCheckTimer = 100;
             return TRUE;
         }
-        Unk_ov004_02219e0c_Obj *p = (Unk_ov004_02219e0c_Obj *)PlayerActor_GetActor(4);
+        Actor *p = (Actor *)PlayerActor_GetActor(4);
         if (p) {
             Unk_ov004_02219e0c_V v;
-            Unk_ov004_02219e0c_V *pv = &p->position;
+            Unk_ov004_02219e0c_V *pv = (Unk_ov004_02219e0c_V *)&p->position;
             v.x = p->position.x;
             v.y = pv->y;
             v.z = pv->z;

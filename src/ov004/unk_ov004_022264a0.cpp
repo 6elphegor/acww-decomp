@@ -73,17 +73,11 @@ void RoomObj_ActivateSe(void *self);
 
 
 // ---------------------------------------------------------------- the state-actor object, seen two ways by the free functions
-struct Unk_ov004_02226724_Model {
-    u8 unk_00[0xb8];
-};
-struct Unk_ov004_02226724_Res {
-    u8 unk_00[0xa4];
-};
 struct ObjA {
     u8 pad_00[0x290];
-    Unk_ov004_02226724_Model partModels[4];
+    AnimModel partModels[4];
     u8 pad_570[0x908 - 0x570];
-    Unk_ov004_02226724_Res partRes[4];
+    RoomObjRes partRes[4];
     u8 pad_b98[0xecc - 0xb98];
     u32 partTex[4];
     u8 pad_edc[0xef0 - 0xedc];
@@ -171,18 +165,6 @@ public:
 typedef BOOL (ObjB::*Fn)();
 
 
-struct Unk_ov004_0224d988_M {
-    u8 pad_00[0xa0];
-    Bits numFrames;
-    s32 curFrame;
-    s32 unk_a8;
-    s32 frameStep;
-    u32 unk_b0;
-    u32 unk_b4;
-};
-struct Unk_ov004_0224d988_H {
-    u8 pad_00[0xa4];
-};
 struct Unk_ov004_0224d988_V3 {
     s32 x, y, z;
 };
@@ -197,8 +179,8 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
-    /* 0x290 */ Unk_ov004_0224d988_M partModels[9];
-    /* 0x908 */ Unk_ov004_0224d988_H partRes[9];
+    /* 0x290 */ AnimModel partModels[9];
+    /* 0x908 */ RoomObjRes partRes[9];
     /* 0xecc */ u32 partTex[9]; // RoomObjTex slots (construct/destruct by hand)
     /* 0xef0 */ u8 pad_ef0[3];
     /* 0xef3 */ u8 part3Visible;
@@ -416,16 +398,12 @@ extern "C" CafeCoffeeSet *CafeCoffeeSet_Create() {
 
 // @2227ab0
 CafeCoffeeSet::CafeCoffeeSet() {
-    __cxa_vec_ctor(partModels, 9, 0xb8, (void *(*)(void *))_ZN9AnimModelC1Ev, _ZN9AnimModelD1Ev);
-    __cxa_vec_ctor(partRes, 9, 0xa4, (void *(*)(void *))_ZN10RoomObjResC1Ev, _ZN10RoomObjResD1Ev);
     __cxa_vec_ctor(partTex, 9, 4, (void *(*)(void *))RoomObjTex_Construct, (void *(*)(void *, s32))RoomObjTex_Destruct);
 }
 
 // @22279f0
 CafeCoffeeSet::~CafeCoffeeSet() {
     __cxa_vec_cleanup(partTex, 9, 4, (void *(*)(void *, s32))RoomObjTex_Destruct);
-    __cxa_vec_cleanup(partRes, 9, 0xa4, _ZN10RoomObjResD1Ev);
-    __cxa_vec_cleanup(partModels, 9, 0xb8, _ZN9AnimModelD1Ev);
 }
 
 // @2227728
@@ -464,13 +442,13 @@ BOOL CafeCoffeeSet::onCreate() {
     part4EffectAngle = 0;
     part6EffectAngle = 0;
     partModels[4].frameStep = 0;
-    partModels[4].curFrame = (u16)(partModels[4].numFrames.mid - 1) << 12;
+    partModels[4].curFrame = (u16)(((Bits *)&partModels[4].numFrames)->mid - 1) << 12;
     partModels[5].frameStep = 0;
-    partModels[5].curFrame = (u16)(partModels[5].numFrames.mid - 1) << 12;
+    partModels[5].curFrame = (u16)(((Bits *)&partModels[5].numFrames)->mid - 1) << 12;
     partModels[6].frameStep = 0;
-    partModels[6].curFrame = (u16)(partModels[6].numFrames.mid - 1) << 12;
+    partModels[6].curFrame = (u16)(((Bits *)&partModels[6].numFrames)->mid - 1) << 12;
     partModels[7].frameStep = 0;
-    partModels[7].curFrame = (u16)(partModels[7].numFrames.mid - 1) << 12;
+    partModels[7].curFrame = (u16)(((Bits *)&partModels[7].numFrames)->mid - 1) << 12;
     pourEffect = -1;
     part4Effect = -1;
     part6Effect = -1;
@@ -886,7 +864,7 @@ s32 CafeCoffeeSet_ReleasePart(void *ov, u32 idx) {
 // @2226724
 void CafeCoffeeSet_InitPartAnim(void *ov, u32 idx) {
     ObjA *o = (ObjA *)ov;
-    Unk_ov004_02226724_Res *r = &o->partRes[idx];
+    RoomObjRes *r = &o->partRes[idx];
     if (RoomObjRes_GetBca(r, 0)) {
         if (_ZN9AnimModel11allocAnmObjEPv(&o->partModels[idx], gBgHeap)) {
             u32 off = idx * 0xb8;

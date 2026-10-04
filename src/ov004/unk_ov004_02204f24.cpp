@@ -142,7 +142,7 @@ struct FtrStackedSetView {
 class Unk_ov004_022077a4 : public Character {
 public:
     virtual BOOL vfunc_60();
-    virtual void vfunc_64(s32 a, Unk_ov004_02206ec8_Ctx *b);
+    virtual void vfunc_64(s32 a, NNSG3dRS *b);
     virtual BOOL vfunc_68();
     virtual void vfunc_6c(s32 a, void *b);
     virtual BOOL vfunc_70(u32 a, u8 b);
@@ -2585,10 +2585,10 @@ void FtrActor::onJointCalcPost(s32 a, void *b) {
 }
 
 // @02206ec8
-void FtrActor::onNodeVisCalc(s32 a, Unk_ov004_02206ec8_Ctx *b) {
+void FtrActor::onNodeVisCalc(s32 a, NNSG3dRS *b) {
     if (((FtrVisNodes *)(visNodes))->hasNode(a)) {
         u32 v = ((FtrVisNodes *)(visNodes))->isVisible();
-        *b->pVisAnmResult = v;
+        *(u32 *)b->pVisAnmResult = v;
     }
 }
 

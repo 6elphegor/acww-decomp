@@ -1627,11 +1627,6 @@ s32 _ZN14GroundInfoBase9getHeightEi(void *, s32);
 }
 }
 
-struct Unk_ov004_0220c534_Arg {
-    /* 0x00 */ u8 pad_00[0xb8];
-    /* 0xb8 */ s32 *pVisAnmResult;
-};
-
 // vtable 0x0224a884, size 0x888
 
 // vtable 0x0224a9b0, size 0x844
@@ -1641,7 +1636,7 @@ public:
     virtual ~FtrMyDesign();
 
     virtual BOOL onDelete();
-    virtual void onNodeVisCalc(s32 a, Unk_ov004_02206ec8_Ctx *b);
+    virtual void onNodeVisCalc(s32 a, NNSG3dRS *b);
     virtual BOOL initModel();
     virtual BOOL updateActive();
 
@@ -1784,9 +1779,9 @@ extern "C" FtrDesignDisplay *FtrDesignDisplay_Create() {
 }
 
 // ---- B ----
-void FtrMyDesign::onNodeVisCalc(s32 a, Unk_ov004_02206ec8_Ctx *b) {
+void FtrMyDesign::onNodeVisCalc(s32 a, NNSG3dRS *b) {
     if (a == hiddenNode) {
-        *((Unk_ov004_0220c534_Arg *)b)->pVisAnmResult = 0;
+        *(s32 *)b->pVisAnmResult = 0;
     }
 }
 
@@ -2396,13 +2391,6 @@ s32 Scene_InVillagerHouse(void);
 }
 }
 
-struct Unk_ov004_0220dcbc_Obj {
-    u8 pad_00[0xb4];
-    u8 *pJntAnmResult;
-    u8 pad_b8[0xd4 - 0xb8];
-    u8 *pResNodeInfo;
-};
-
 class FtrGyroid : public FtrActor {
 public:
     FtrGyroid();
@@ -2635,17 +2623,17 @@ void FtrGyroid::initSync(u32 v) {
 }
 
 void FtrGyroid::onJointCalcPost(s32 idx, void *b) {
-    Unk_ov004_0220dcbc_Obj *o = (Unk_ov004_0220dcbc_Obj *)b;
+    NNSG3dRS *o = (NNSG3dRS *)b;
     u8 *d = o->pResNodeInfo;
     u32 off = *(u16 *)(d + 6);
     u8 *tbl = d + off;
     u32 esz = *(u16 *)tbl;
     u8 *rec = d + *(u32 *)(tbl + esz * idx + 4);
     s32 *v = (s32 *)(rec + 4);
-    u8 *m = o->pJntAnmResult;
-    *(s32 *)(m + 0x4c) = v[0];
-    *(s32 *)(m + 0x50) = v[1];
-    *(s32 *)(m + 0x54) = v[2];
+    NNSG3dJntAnmResult *m = o->pJntAnmResult;
+    m->trans.x = v[0];
+    m->trans.y = v[1];
+    m->trans.z = v[2];
     p16::_ZN14BlendAnimModel15onJointCalcPostEPS_(model, o);
 }
 
@@ -4189,11 +4177,6 @@ struct FtrBedKindCheck {
     }
 };
 
-struct Unk_ov004_022108f0_Pl {
-    u8 pad_00[0x5c];
-    s32 x, y, z;
-};
-
 struct FtrBedStackPad {
     s32 v[2];
     FtrBedStackPad() {}
@@ -4462,7 +4445,7 @@ void FtrBed::execFtrAct00() {
     u16 v;
     BOOL r7 = FALSE;
     void *o = p21::_ZN13FtrContactSet11findContactEPv(p21::FtrContactSet_GetInstance(), this);
-    Unk_ov004_022108f0_Pl *pl = (Unk_ov004_022108f0_Pl *)p21::PlayerActor_GetActor(4);
+    Actor *pl = (Actor *)p21::PlayerActor_GetActor(4);
     if (o != 0) {
         if (pl != 0) {
             if (p21::FtrMgr_IsFurnitureUsable() != 0) {
@@ -4474,8 +4457,8 @@ void FtrBed::execFtrAct00() {
                     p21::FieldPos_FromUnitCenter(&a, p0->x, p0->y);
                     Unk_ov004_02210d58_P *p1 = q.get(1);
                     p21::FieldPos_FromUnitCenter(&b, p1->x, p1->y);
-                    s32 *pv = &pl->x;
-                    c.x = pl->x;
+                    s32 *pv = &pl->position.x;
+                    c.x = pl->position.x;
                     c.y = pv[1];
                     c.z = pv[2];
                     s32 d0 = p21::Vec_DistXZ(&c, &a);

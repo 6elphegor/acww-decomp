@@ -8,6 +8,8 @@
 #include "game/Unk_0203e4f0_Vec.h"
 #include "room/FtrActorParts.h"
 
+struct NNSG3dRS;
+
 // Furniture actor of the room overlay (ov004): Character with TalkMsgRequest as secondary base at +0xec.
 // Defined in src/ov004/unk_ov004_02204f24.cpp (ctor, all base methods); its 34 subclasses are in
 // src/ov004/unk_ov004_02209f70.cpp (+ _switch, same unit). The members are byte arrays where the real parts
@@ -27,7 +29,7 @@ public:
     virtual BOOL preDraw();
     virtual VecFx32 *getInteractionPos();
     virtual BOOL onMatCalc();
-    virtual void onNodeVisCalc(s32 a, Unk_ov004_02206ec8_Ctx *b);
+    virtual void onNodeVisCalc(s32 a, NNSG3dRS *b);
     virtual BOOL onJointCalcPre();
     virtual void onJointCalcPost(s32 a, void *b);
     virtual BOOL changeAct(u32 a, u8 b);

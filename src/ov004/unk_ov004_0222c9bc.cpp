@@ -2,7 +2,8 @@
 // ov004 TU31: 0x0222c9bc-0x02233074 (.text), see notes.txt
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#include "room/Unk_ov004_0222c9d0.h"
+#include "room/RoomItemDrop.h"
+#include "gfx/NNSG3dRS.h"
 #include "actor/ActorCollider.h"
 #include "snd/SndEnvChannel.h"
 #include "game/FxVec3.h"
@@ -477,21 +478,6 @@ typedef void (E864::*Fn)();
 typedef void (E804::*Fn804)();
 typedef void (Mgr::*MgrFn)(R **, s32);
 
-struct Unk_ov004_0222ef04_Own {
-    u8 pad_00[0x2c];
-    void *ptrUser;
-};
-
-struct Unk_ov004_0222ef04_Cb {
-    u8 pad_00[4];
-    Unk_ov004_0222ef04_Own *pRenderObj;
-    u8 pad_08[0x24 - 8];
-    void *nodeDescCallback;
-    u8 pad_28[0x92 - 0x28];
-    u8 nodeDescCallbackTiming;
-};
-
-typedef Unk_ov004_0222ef04_Cb Cb;
 
 struct Unk_ov004_022303b4_P {
     u8 pad_00[0x5c];
@@ -792,9 +778,9 @@ extern "C" void AquariumSwimFish_SetupSea(E864 *e);
 extern "C" void AquariumSwimFish_UpdateSea(E864 *e);
 extern "C" void AquariumSwimFish_SetupFreshwater(E864 *e);
 extern "C" void AquariumSwimFish_UpdateFreshwater(E864 *e);
-extern "C" void AquariumFish_JointCalcPre(Cb *c);
-extern "C" void AquariumFish_JointCalcPost(Cb *c);
-extern "C" void AquariumFish_InstallJointCallbacks(Cb *c);
+extern "C" void AquariumFish_JointCalcPre(NNSG3dRS *c);
+extern "C" void AquariumFish_JointCalcPost(NNSG3dRS *c);
+extern "C" void AquariumFish_InstallJointCallbacks(NNSG3dRS *c);
 extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out);
 extern "C" BOOL AquariumFish_CheckTouched(E864 *e);
 extern "C" void AquariumFish_StartFlee(E864 *e, V3 *p);
@@ -2998,25 +2984,25 @@ skip:
     AquariumFish_CheckTouched(e);
 }
 
-extern "C" void AquariumFish_JointCalcPre(Cb *c) {
-    void *m = c->pRenderObj->ptrUser;
+extern "C" void AquariumFish_JointCalcPre(NNSG3dRS *c) {
+    void *m = (void *)c->pRenderObj->ptrUser;
     if (m) {
         BlendAnimModel_onJointCalcPre((u8 *)m + 0x64, c);
     }
 }
 
-extern "C" void AquariumFish_JointCalcPost(Cb *c) {
-    void *m = c->pRenderObj->ptrUser;
+extern "C" void AquariumFish_JointCalcPost(NNSG3dRS *c) {
+    void *m = (void *)c->pRenderObj->ptrUser;
     if (m) {
         BlendAnimModel_onJointCalcPost((u8 *)m + 0x64, c);
     }
 }
 
-extern "C" void AquariumFish_InstallJointCallbacks(Cb *c) {
-    c->nodeDescCallback = (void *)AquariumFish_JointCalcPre;
-    c->nodeDescCallbackTiming = 1;
-    c->nodeDescCallback = (void *)AquariumFish_JointCalcPost;
-    c->nodeDescCallbackTiming = 2;
+extern "C" void AquariumFish_InstallJointCallbacks(NNSG3dRS *c) {
+    c->cbVecFunc[6] = (void *)AquariumFish_JointCalcPre; // NNS_G3D_SBC_NODEDESC
+    c->cbVecTiming[6] = 1;
+    c->cbVecFunc[6] = (void *)AquariumFish_JointCalcPost;
+    c->cbVecTiming[6] = 2;
 }
 
 extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out) {
@@ -4319,12 +4305,12 @@ extern "C" void Aquarium_ApplyCorrection(void *self, s32 *p, s32 a, s32 b, s32 c
     }
 }
 
-Unk_ov004_0222c9d0::Unk_ov004_0222c9d0() : unk_10(0), unk_14(0) {
-    SndSeEmitter_ctor(sound);
+RoomItemDrop::RoomItemDrop() : unitX(0), unitZ(0) {
+    SndSeEmitter_ctor(seEmitter);
 }
 
-Unk_ov004_0222c9d0::~Unk_ov004_0222c9d0() {
-    SndSeEmitter_dtor(sound);
+RoomItemDrop::~RoomItemDrop() {
+    SndSeEmitter_dtor(seEmitter);
 }
 
 extern "C" {

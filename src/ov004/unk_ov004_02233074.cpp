@@ -174,11 +174,6 @@ struct Unk_ov004_022337d4_Arc {
     u32 unk_00[0x68 / 4];
 };
 
-struct Unk_ov004_02233d2c_Obj {
-    u8 pad_00[0x77c];
-    s32 kind;
-};
-
 struct Unk_ov004_02233f3c_P {
     s16 x, y;
     Unk_ov004_02233f3c_P(s16 a, s16 b) : x(a), y(b) {}
@@ -4270,7 +4265,7 @@ TILE_ENTRY(FtrMgr_FindPlacementMyDesignC, 0x3f24)
 
 // @0x2233d88 unk_0223349c.cpp
 extern "C" s32 FtrMgr_TakeDisplayedWearable(void *o0) {
-    Unk_ov004_02233d2c_Obj *o = (Unk_ov004_02233d2c_Obj *)o0;
+    FtrActor *o = (FtrActor *)o0;
     if (o) {
         switch (o->kind) {
         case 0x1b:
@@ -4295,7 +4290,7 @@ extern "C" s32 FtrMgr_TakeDisplayedWearableAt(s32 a, s32 b) {
 
 // @0x2233d2c unk_0223349c.cpp
 extern "C" s32 FtrMgr_RestoreDisplayedWearable(void *o0) {
-    Unk_ov004_02233d2c_Obj *o = (Unk_ov004_02233d2c_Obj *)o0;
+    FtrActor *o = (FtrActor *)o0;
     if (o) {
         switch (o->kind) {
         case 0x1b:

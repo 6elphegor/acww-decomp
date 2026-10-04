@@ -1,8 +1,10 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "sys/Unk_0209d498_Time.h"
-#include "room/Unk_ov004_0222c9d0.h"
+#include "room/RoomItemDrop.h"
 #include "gfx/ModelSet.h"
+#include "gfx/Model.h"
+#include "actor/Actor.h"
 #include "sys/ProcProfile.h"
 #include "net/CommManager.h"
 
@@ -54,48 +56,14 @@ struct Unk_ov004_0222c570_Mtx {
     s64 v[6];
 };
 
-// Effect entry, 0x94 bytes, 15 of them at sRoomItemDrops (5 groups of 3)
-struct Unk_ov004_0222bff4_Entry {
-    /* 0x00 */ s32 group;
-    /* 0x04 */ s32 state;
-    /* 0x08 */ u16 item;
-    /* 0x0a */ u16 landItem;
-    /* 0x0c */ s32 isStill;
-    /* 0x10 */ Unk_ov004_0222bf34_P2 unit;
-    /* 0x18 */ Unk_ov004_V3 landPos;
-    /* 0x24 */ Unk_ov004_V3 pos;
-    /* 0x30 */ Unk_ov004_V3 velocity;
-    /* 0x3c */ Unk_ov004_V3 scale;
-    /* 0x48 */ s16 unk_48;
-    /* 0x4a */ s16 unk_4a;
-    /* 0x4c */ u8 seEmitter[0x40];
-    /* 0x8c */ s8 bounceCount;
-    /* 0x8d */ u8 frameCount;
-    /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 needsSettle;
-    /* 0x90 */ u8 onFtrSurface;
-    /* 0x91 */ u8 pad_91[3];
-};
 
 
-// the 15 effect entries as one object: its implicit destructor is func_ov004_0222c9a0 (__cxa_vec_cleanup), its implicit constructor is inlined in the __sinit
+// the 15 item drops as one object: its implicit destructor is func_ov004_0222c9a0 (__cxa_vec_cleanup), its implicit constructor is inlined in the __sinit
 struct RoomItemDropList {
-    Unk_ov004_0222c9d0 drops[15];
+    RoomItemDrop drops[15];
 };
 
 
-struct Unk_ov004_0222c570_Global {
-    u8 pad_00[0x5c];
-    Unk_ov004_0222c570_Vec position;
-};
-
-
-struct Unk_ov004_0222c880_Model {
-    u8 pad_00[0x5c];
-    void *resMdl;
-    u8 pad_60[4];
-    Unk_ov004_0222c570_Mtx mtx;
-};
 
 class RoomItemIcons : public GameProc {
 public:
@@ -107,8 +75,8 @@ public:
 
     BOOL loadIconModels();
     void drawGridItems(void *grid);
-    Unk_ov004_0222c880_Model *setupIconModel(u32 idx, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz);
-    void drawIconModel(Unk_ov004_0222c880_Model *model, Unk_ov004_0222c570_Mtx m);
+    Model *setupIconModel(u32 idx, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz);
+    void drawIconModel(Model *model, Unk_ov004_0222c570_Mtx m);
     void drawItemModel(u16 id, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz);
 
     /* 0x050 */ void *iconModels[0x49];
@@ -160,15 +128,15 @@ void Snd_PlaySe(s32 a);
 void Unk_c788_call(s32 mgr, u32 id, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 c, s32 d, s32 e);
 void Unk_c7e0_call(s32 mgr, u32 id, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 c, s32 d, s32 e);
 
-void ItemDropList_Release(Unk_ov004_0222bff4_Entry *e);
-void ItemDropList_Draw(Unk_ov004_0222bff4_Entry *e);
-void ItemDropList_Update(Unk_ov004_0222bff4_Entry *e);
-void ItemDropList_Init(Unk_ov004_0222bff4_Entry *e);
-void ItemDrop_Clear(Unk_ov004_0222bff4_Entry *e);
-void ItemDrop_Settle(Unk_ov004_0222bff4_Entry *e);
-void ItemDrop_Update(Unk_ov004_0222bff4_Entry *e);
-void ItemDrop_SetTrajectory(Unk_ov004_0222bff4_Entry *e, Unk_ov004_0222bf34_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, u32 v);
-void ItemDrop_Init(Unk_ov004_0222bff4_Entry *e, s32 idx, Unk_ov004_0222bf34_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 unused, s32 s16v, u32 u8v);
+void ItemDropList_Release(RoomItemDrop *e);
+void ItemDropList_Draw(RoomItemDrop *e);
+void ItemDropList_Update(RoomItemDrop *e);
+void ItemDropList_Init(RoomItemDrop *e);
+void ItemDrop_Clear(RoomItemDrop *e);
+void ItemDrop_Settle(RoomItemDrop *e);
+void ItemDrop_Update(RoomItemDrop *e);
+void ItemDrop_SetTrajectory(RoomItemDrop *e, Unk_ov004_0222bf34_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, u32 v);
+void ItemDrop_Init(RoomItemDrop *e, s32 idx, Unk_ov004_0222bf34_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 unused, s32 s16v, u32 u8v);
 s32 ItemDropList_Add(void *base, s32 idx, Unk_ov004_0222bf34_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 s16v, u32 u8v);
 s32 ItemDrop_Start(s32 idx, u32 v, Unk_ov004_V3 *a, Unk_ov004_V3 *b, u32 f);
 }
@@ -205,21 +173,21 @@ BOOL RoomItemIcons::onCreate() {
     if (loadIconModels()) {
         Town_GetEnvironmentRank();
         sRoomItemIcons = this;
-        ItemDropList_Init((Unk_ov004_0222bff4_Entry *)&sRoomItemDrops);
+        ItemDropList_Init(sRoomItemDrops.drops);
         r = TRUE;
     }
     return r;
 }
 
 BOOL RoomItemIcons::onExecute() {
-    ItemDropList_Update((Unk_ov004_0222bff4_Entry *)&sRoomItemDrops);
+    ItemDropList_Update(sRoomItemDrops.drops);
     return TRUE;
 }
 
-void RoomItemIcons::drawIconModel(Unk_ov004_0222c880_Model *model, Unk_ov004_0222c570_Mtx m) {
+void RoomItemIcons::drawIconModel(Model *model, Unk_ov004_0222c570_Mtx m) {
     if (model != NULL) {
         volatile u16 tmp[2];
-        model->mtx = m;
+        *(Unk_ov004_0222c570_Mtx *)&model->mtx = m; // s64 copy of the Mtx43
         Model_drawShapesDirect(model, 0);
         tmp[0] = SceneLights_GetRoomColor();
         tmp[1] = tmp[0];
@@ -227,8 +195,8 @@ void RoomItemIcons::drawIconModel(Unk_ov004_0222c880_Model *model, Unk_ov004_022
     }
 }
 
-Unk_ov004_0222c880_Model *RoomItemIcons::setupIconModel(u32 idx, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz) {
-    Unk_ov004_0222c880_Model *model = (Unk_ov004_0222c880_Model *)iconModels[idx];
+Model *RoomItemIcons::setupIconModel(u32 idx, const Unk_ov004_0222c570_Vec &pos, const Unk_ov004_0222c570_Vec &scale, s16 rx, s16 ry, s16 rz) {
+    Model *model = (Model *)iconModels[idx];
     Unk_ov004_0222c570_Mtx m;
     s32 t[3];
     u32 r = WorldCurve_ToCurved(t, (void *)&pos);
@@ -307,20 +275,20 @@ BOOL RoomItemIcons::onDraw() {
     void *b = gCamera;
     if (a != NULL && b != NULL) {
         drawGridItems(a);
-        ItemDropList_Draw((Unk_ov004_0222bff4_Entry *)&sRoomItemDrops);
+        ItemDropList_Draw(sRoomItemDrops.drops);
     }
     return TRUE;
 }
 
 BOOL RoomItemIcons::onDelete() {
     ModelSet_Release(&modelSet);
-    ItemDropList_Release((Unk_ov004_0222bff4_Entry *)&sRoomItemDrops);
+    ItemDropList_Release(sRoomItemDrops.drops);
     return TRUE;
 }
 
 extern "C" BOOL ItemDrop_StartFromLocalPlayer(u16 *p, Unk_ov004_0222c570_Vec *v) {
     void *g = (void *)gSceneBlockMap;
-    Unk_ov004_0222c570_Global *o = (Unk_ov004_0222c570_Global *)PlayerActor_GetActor(4);
+    Actor *o = (Actor *)PlayerActor_GetActor(4);
     BOOL r = FALSE;
     if (g != NULL && o != NULL) {
         CommManager *c = gCommManager;
@@ -330,7 +298,7 @@ extern "C" BOOL ItemDrop_StartFromLocalPlayer(u16 *p, Unk_ov004_0222c570_Vec *v)
         } else {
             a = 0;
         }
-        Unk_ov004_0222c570_Vec *pv = &o->position;
+        Unk_ov004_0222c570_Vec *pv = (Unk_ov004_0222c570_Vec *)&o->position;
         Unk_ov004_0222c570_Vec pos;
         pos.x = o->position.x;
         pos.y = pv->y;
@@ -377,22 +345,22 @@ extern "C" void Room_SetItemAtUnit(s32 x, s32 y, u16 v, s32 z) {
     }
 }
 
-extern "C" void ItemDrop_Settle(Unk_ov004_0222bff4_Entry *e) {
+extern "C" void ItemDrop_Settle(RoomItemDrop *e) {
     if (e->needsSettle != 0) {
         e->needsSettle = 0;
         Unk_ov004_0222bf34_P2 v;
-        v.a = e->unit.a;
-        v.b = e->unit.b;
+        v.a = e->unitX;
+        v.b = e->unitZ;
         PendingUnit_ApplyAt(&v, e->onFtrSurface);
     }
 }
 
-extern "C" void ItemDrop_Init(Unk_ov004_0222bff4_Entry *e, s32 idx, Unk_ov004_0222bf34_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 unused, s32 s16v, u32 u8v) {
+extern "C" void ItemDrop_Init(RoomItemDrop *e, s32 idx, Unk_ov004_0222bf34_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 unused, s32 s16v, u32 u8v) {
     e->group = idx;
     e->state = 1;
     e->isStill = flag;
-    e->unit.a = p->a;
-    e->unit.b = p->b;
+    e->unitX = p->a;
+    e->unitZ = p->b;
     e->landPos.x = b->x;
     e->landPos.y = b->y;
     e->landPos.z = b->z;
@@ -414,7 +382,7 @@ extern "C" void ItemDrop_Init(Unk_ov004_0222bff4_Entry *e, s32 idx, Unk_ov004_02
     }
 }
 
-extern "C" void ItemDrop_Clear(Unk_ov004_0222bff4_Entry *e) {
+extern "C" void ItemDrop_Clear(RoomItemDrop *e) {
     ItemDrop_Settle(e);
     e->state = 0;
     e->isStill = 1;
@@ -422,7 +390,7 @@ extern "C" void ItemDrop_Clear(Unk_ov004_0222bff4_Entry *e) {
     e->landItem = 0xfff1;
 }
 
-extern "C" void ItemDrop_SetTrajectory(Unk_ov004_0222bff4_Entry *e, Unk_ov004_0222bf34_P2 *p, Unk_ov004_V3 *from, Unk_ov004_V3 *to, u32 v32) {
+extern "C" void ItemDrop_SetTrajectory(RoomItemDrop *e, Unk_ov004_0222bf34_P2 *p, Unk_ov004_V3 *from, Unk_ov004_V3 *to, u32 v32) {
     volatile u16 id = 0xfff1;
     Unk_ov004_V3 t;
     FieldPos_FromUnitCenter(&t, p->a, p->b);
@@ -443,7 +411,7 @@ extern "C" void ItemDrop_SetTrajectory(Unk_ov004_0222bff4_Entry *e, Unk_ov004_02
     e->pos.x = from->x;
     e->pos.y = from->y;
     e->pos.z = from->z;
-    e->scale = Unk_ov004_V3(0, 0x1000, 0);
+    *(Unk_ov004_V3 *)&e->scale = Unk_ov004_V3(0, 0x1000, 0);
     id = v;
     u32 k = (id & 0xf000) >> 12;
     if (k == 3) goto zero;
@@ -455,7 +423,7 @@ extern "C" void ItemDrop_SetTrajectory(Unk_ov004_0222bff4_Entry *e, Unk_ov004_02
     }
 }
 
-extern "C" void ItemDrop_Update(Unk_ov004_0222bff4_Entry *e) {
+extern "C" void ItemDrop_Update(RoomItemDrop *e) {
     e->scale.x = e->scale.x + 0x19a;
     if (e->scale.x >= 0x1000) e->scale.x = 0x1000;
     e->scale.z = e->scale.x;
@@ -486,7 +454,7 @@ extern "C" void ItemDrop_Update(Unk_ov004_0222bff4_Entry *e) {
     }
 }
 
-extern "C" void ItemDropList_Init(Unk_ov004_0222bff4_Entry *e) {
+extern "C" void ItemDropList_Init(RoomItemDrop *e) {
     s32 i;
     for (i = 0; i < 15; e++, i++) {
         e->state = 0;
@@ -496,7 +464,7 @@ extern "C" void ItemDropList_Init(Unk_ov004_0222bff4_Entry *e) {
     }
 }
 
-extern "C" void ItemDropList_Update(Unk_ov004_0222bff4_Entry *e) {
+extern "C" void ItemDropList_Update(RoomItemDrop *e) {
     volatile u16 id = 0xfff1;
     s32 i;
     Unk_ov004_V3 v;
@@ -513,13 +481,13 @@ extern "C" void ItemDropList_Update(Unk_ov004_0222bff4_Entry *e) {
     }
 }
 
-extern "C" void ItemDropList_Draw(Unk_ov004_0222bff4_Entry *e) {
+extern "C" void ItemDropList_Draw(RoomItemDrop *e) {
     volatile u16 id = 0xfff1;
     s32 i;
     for (i = 0; i < 15; e++, i++) {
         id = e->item;
         if (e->state != 0 && id != 0xfff1) {
-            Unk_ov004_V3 *q = &e->scale;
+            Unk_ov004_V3 *q = (Unk_ov004_V3 *)&e->scale;
             Unk_ov004_V3 v;
             s32 r = WorldCurve_ToCurved(&v, &e->pos);
             Mtx43_SetTranslate(data_021f47e0, v.x, v.y, v.z);
@@ -530,7 +498,7 @@ extern "C" void ItemDropList_Draw(Unk_ov004_0222bff4_Entry *e) {
             if (t == 1 || t == 3 || t == 4) {
                 Unk_ov004_V3 pos;
                 Unk_ov004_V3 sc;
-                Unk_ov004_V3 *pv = &e->pos;
+                Unk_ov004_V3 *pv = (Unk_ov004_V3 *)&e->pos;
                 pos.x = e->pos.x;
                 pos.y = pv->y;
                 pos.z = pv->z;
@@ -543,7 +511,7 @@ extern "C" void ItemDropList_Draw(Unk_ov004_0222bff4_Entry *e) {
     }
 }
 
-extern "C" void ItemDropList_Release(Unk_ov004_0222bff4_Entry *e) {
+extern "C" void ItemDropList_Release(RoomItemDrop *e) {
     s32 i;
     for (i = 0; i < 15; e++, i++) {
         if (e->state != 0) ItemDrop_Clear(e);
@@ -554,7 +522,7 @@ extern "C" void ItemDropList_Release(Unk_ov004_0222bff4_Entry *e) {
 extern "C" s32 ItemDropList_Add(void *base, s32 idx, Unk_ov004_0222bf34_P2 *p, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 flag, u32 idv, s32 s16v, u32 u8v) {
     s32 g = gSceneBlockMap;
     if (g == 0) return 0;
-    Unk_ov004_0222bff4_Entry *e = (Unk_ov004_0222bff4_Entry *)base + idx * 3;
+    RoomItemDrop *e = (RoomItemDrop *)base + idx * 3;
     BOOL r = FALSE;
     s32 i;
     for (i = 0; i < 3; e++, i++) {

@@ -79,9 +79,9 @@ struct Unk_ov004_022288c0_Bits {
 
 
 // the global object at 0x02250f6c: constructed / registered by the unit's __sinit (ctor and dtor are two 2-byte stubs in main)
-struct Unk_ov004_02250f6c_Obj {
-    Unk_ov004_02250f6c_Obj();
-    ~Unk_ov004_02250f6c_Obj();
+struct ClothTex {
+    ClothTex();
+    ~ClothTex();
     u8 pad_00[0x2c4];
 };
 
@@ -167,7 +167,7 @@ typedef BOOL (SewingMachine::*Unk_ov004_0222894c_Fn)();
 // ---------------------------------------------------------------- data
 extern "C" ActorProfile sSewingMachineProfile = {(void *(*)())SewingMachine_Create, 0x78, 0x15, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" SewingMachine *sSewingMachine = 0;
-Unk_ov004_02250f6c_Obj sSewingMachineCloth;
+ClothTex sSewingMachineCloth;
 
 extern "C" SewingMachine *SewingMachine_Create() {
     return new SewingMachine();

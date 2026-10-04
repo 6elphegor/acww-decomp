@@ -60,11 +60,6 @@ struct Unk_ov004_0220bc80_V3 {
     s32 x, y, z;
 };
 
-struct Unk_ov004_02206ec8_Ctx {
-    /* 0x00 */ u8 pad_00[0xb8];
-    /* 0xb8 */ u32 *pVisAnmResult;
-};
-
 struct Unk_ov004_02207854_List {
     /* 0x00 */ u32 count;
     /* 0x04 */ s32 v[4][2];

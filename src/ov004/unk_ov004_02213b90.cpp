@@ -6,8 +6,6 @@
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
 #include "game/Unk_ov004_022091fc_Vec.h"
-#include "actor/Unk_ov004_022142fc_Actor.h"
-#include "actor/Unk_ov004_022146ec_Actor.h"
 #include "game/Unk_ov004_022146ec_Bits.h"
 #include "net/CommManager.h"
 #include "talk/TalkWindowState.h"
@@ -91,7 +89,7 @@ s32 Vec_DistXZ(void *a, void *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 TouchPicker *Scene_GetTouchPicker(void);
 s32 Scene_GetCurrent(void);
-Unk_ov004_022146ec_Actor *PlayerActor_GetCharacter(u32);
+Actor *PlayerActor_GetCharacter(u32);
 void func_01ffd070(void *, void *, void *);
 }
 
@@ -406,9 +404,9 @@ void MuseumExhibitInfo::onInteractionEvent(u32 a, u8 b) {
 }
 
 BOOL MuseumExhibitInfo::acceptsInteraction(void *a0) {
-    Unk_ov004_022142fc_Actor *a = (Unk_ov004_022142fc_Actor *)a0;
+    Actor *a = (Actor *)a0;
     if (a) {
-        if (Vec_DistXZ(a->position, (u8 *)this + 0x5c) < 0x2333) {
+        if (Vec_DistXZ(&a->position, (u8 *)this + 0x5c) < 0x2333) {
             if (Math_AngleDiffAbs((s16)(*(s16 *)((u8 *)this + 0x8e) + 0x8000), a->rotY) < facingArc) {
                 return TRUE;
             }
@@ -550,13 +548,13 @@ BOOL MuseumExhibitInfo::onCreate() {
     facingArc = sMuseumExhibitSpawnFacingArc;
     if (registerSelf() != 0) {
         if (isAutoTalkKind() != 0) {
-            Unk_ov004_022146ec_Actor *o = PlayerActor_GetCharacter(4);
+            Actor *o = PlayerActor_GetCharacter(4);
             if (o != 0) {
-                s32 idx = (o->ang >> 4) * 2;
+                s32 idx = ((u16)o->rotY >> 4) * 2;
                 v[0] = data_02135f44[idx];
                 v[1] = 0;
                 v[2] = data_02135f44[idx + 1];
-                func_01ffd070(out, o->pos, v);
+                func_01ffd070(out, &o->position, v);
                 position.x = out[0];
                 position.y = out[1];
                 position.z = out[2];

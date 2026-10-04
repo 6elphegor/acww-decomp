@@ -6,7 +6,6 @@
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
 #include "game/Unk_020d77a4_Vec3.h"
-#include "actor/Unk_ov004_022146ec_Actor.h"
 #include "game/Unk_ov004_02215c94_V.h"
 #include "game/FxVec3.h"
 #include "actor/Actor.h"
@@ -47,7 +46,7 @@ BOOL BirthdayHost_GiftFilter(u16 *p, s32 flag);
 u16 BirthdayHost_PickReturnGift(s32 n);
 void func_ov004_0221570c(void *a, void *b);
 s32 FtrMgr_GetSurfaceHeightAtPos(Unk_ov004_02215c94_V *v);
-Unk_ov004_022146ec_Actor *BirthdayGuestVillager_Get(void);
+Actor *BirthdayGuestVillager_Get(void);
 u16 Room_PickRandomWalkTarget(void *, void *, s32);
 }
 
@@ -828,10 +827,10 @@ void BirthdayHostVillager::mainAct00() {
 
 BOOL BirthdayHostVillager::setupAct01() {
     u8 *m = (u8 *)&actionCtrl;
-    Unk_ov004_022146ec_Actor *o = BirthdayGuestVillager_Get();
+    Actor *o = BirthdayGuestVillager_Get();
     if (o != 0) {
-        s32 dx = o->pos[0] - position.x;
-        s32 dz = o->pos[2] - position.z;
+        s32 dx = o->position.x - position.x;
+        s32 dz = o->position.z - position.z;
         s32 ang = Math_Atan2(dx, dz);
         NpcActionCtrl_requestAction(m, 3, 1, 0, 0, 0, ang, 0, 0, data_020c6cc8, 0);
         NpcLookAt_setTarget((u8 *)&lookAt, 2, 0, o, gVec3Zero, 4, data_020c6d1c, 1);

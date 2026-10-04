@@ -56,13 +56,6 @@ struct Unk_ov004_02236320_Mtx {
     s64 v[6];
 };
 
-struct Unk_ov004_02236320_Ent {
-    u8 pad_00[0x5c];
-    Unk_ov004_02236320_V3 position;
-    u8 pad_68[0x98 - 0x68];
-    s32 speed;
-};
-
 
 // a CollisionState built and destroyed by hand (C1/D1); a real CollisionState local would add implicit calls
 struct CollisionStateStorage {
@@ -89,10 +82,6 @@ void func_02031c10(void *p);
 void List_Remove(void *list, void *node);
 }
 
-struct Unk_ov004_02236950_Obj {
-    u8 unk_00[0x9c];
-    Unk_ov004_02236950_Obj() { func_02031c48(this); }
-};
 
 
 #define F08(o) (*(u32 *)((u8 *)(o) + 8))
@@ -107,7 +96,7 @@ public:
     virtual BOOL onDraw();
     virtual ~HouseRoach();
 
-    Unk_ov004_02236320_Ent *getNearestCharacter();
+    Actor *getNearestCharacter();
     void setProbePoints(s32 dist, s32 delta);
     u8 probeWalls();
     void playSe(u32 sel);
@@ -250,7 +239,7 @@ extern "C" ActorProfile sHouseRoachProfile;
 extern "C" s8 sHouseRoachTurnCounter;
 extern "C" volatile u8 sHouseRoachActiveCount;
 extern "C" void *sHouseRoachManager;
-extern "C" Unk_ov004_02236320_Ent *sHouseRoachVillager;
+extern "C" Actor *sHouseRoachVillager;
 extern "C" volatile u8 sHouseRoachTotal;
 extern "C" HouseRoach *sHouseRoaches[3];
 
@@ -482,7 +471,7 @@ extern "C" void HouseRoach_FindVillager(void *) {
     u8 i;
     for (i = 0; i < 8; i++) {
         void *r = NpcRegistry_FindVillager(i);
-        if (r) sHouseRoachVillager = (Unk_ov004_02236320_Ent *)r;
+        if (r) sHouseRoachVillager = (Actor *)r;
     }
 }
 
@@ -563,10 +552,7 @@ void HouseRoach::updateState() {
 void HouseRoach::updateCollision() {
     s32 ang;
     Unk_ov004_02236320_V3 *p;
-    Unk_ov004_02236950_Obj o0;
-    Unk_ov004_02236950_Obj o1;
-    Unk_ov004_02236950_Obj o2;
-    Unk_ov004_02236950_Obj o3;
+    u32 colliders[4][0x9c / 4]; // four BoxColliders, built (C1) and destroyed (D2) by hand
     u8 fr[4];
     u8 fm[4];
     Unk_ov004_02236320_V3 v[4];
@@ -575,6 +561,10 @@ void HouseRoach::updateCollision() {
     u32 n;
     u8 i;
     s32 t;
+    func_02031c48(colliders[0]);
+    func_02031c48(colliders[1]);
+    func_02031c48(colliders[2]);
+    func_02031c48(colliders[3]);
     p = (Unk_ov004_02236320_V3 *)this;
     p = (Unk_ov004_02236320_V3 *)((u8 *)p + 0x5c);
     n = 1;
@@ -619,11 +609,11 @@ void HouseRoach::updateCollision() {
         if (fm[i] != 0) {
             s32 a = func_01ffcb0c(0x4000, 0x1000);
             s32 b = func_01ffcb0c(0xa000, 0x1000);
-            fr[i] = BoxCollider_Register((u8 *)&o0 + i * 0x9c, a, 0x1000, b, &v[i], z2, z2);
+            fr[i] = BoxCollider_Register(colliders[i], a, 0x1000, b, &v[i], z2, z2);
         } else {
             s32 a = func_01ffcb0c(0x4000, 0x1000);
             s32 b = func_01ffcb0c(0xa000, 0x1000);
-            fr[i] = BoxCollider_Register((u8 *)&o0 + i * 0x9c, 0x1000, a, b, &v[i], z1, z1);
+            fr[i] = BoxCollider_Register(colliders[i], 0x1000, a, b, &v[i], z1, z1);
         }
     }
     if (roachState != 0) {
@@ -633,13 +623,13 @@ void HouseRoach::updateCollision() {
     Collision_Move(&moveResult, p, &prevPosition, ang, 0x666, this, 0xf);
     for (i = 0; i < n; i++) {
         if (fr[i] != 0) {
-            BoxCollider_Unregister((u8 *)&o0 + i * 0x9c);
+            BoxCollider_Unregister(colliders[i]);
         }
     }
-    func_02031c10(&o3);
-    func_02031c10(&o2);
-    func_02031c10(&o1);
-    func_02031c10(&o0);
+    func_02031c10(colliders[3]);
+    func_02031c10(colliders[2]);
+    func_02031c10(colliders[1]);
+    func_02031c10(colliders[0]);
 }
 
 void HouseRoach::updateAppear() {
@@ -711,7 +701,7 @@ BOOL HouseRoach::checkHeight() {
 }
 
 BOOL HouseRoach::checkStomped() {
-    Unk_ov004_02236320_Ent *pl = (Unk_ov004_02236320_Ent *)PlayerActor_GetActor(4);
+    Actor *pl = (Actor *)PlayerActor_GetActor(4);
     if (isHit != 0) {
         if (isJumping == 0) {
             if (pl != NULL) {
@@ -845,20 +835,20 @@ void HouseRoach::setProbePoints(s32 dist, s32 delta) {
     probePoints[1].y = 0x200;
 }
 
-Unk_ov004_02236320_Ent *HouseRoach::getNearestCharacter() {
+Actor *HouseRoach::getNearestCharacter() {
     s32 d4, d3, d2, d1;
-    Unk_ov004_02236320_Ent *p;
-    Unk_ov004_02236320_Ent *g;
+    Actor *p;
+    Actor *g;
     Unk_ov004_02236320_V3 *a;
     Unk_ov004_02236320_V3 *b;
     Unk_ov004_02236320_V3 *c;
-    p = (Unk_ov004_02236320_Ent *)PlayerActor_GetActor(4);
+    p = (Actor *)PlayerActor_GetActor(4);
     g = sHouseRoachVillager;
     if (g != NULL) {
         if (p != NULL) {
             a = (Unk_ov004_02236320_V3 *)&position;
-            b = &p->position;
-            c = &g->position;
+            b = (Unk_ov004_02236320_V3 *)&p->position;
+            c = (Unk_ov004_02236320_V3 *)&g->position;
             d1 = position.x - p->position.x;
             if (d1 < 0) d1 = -d1;
             d2 = a->z - b->z;
@@ -907,7 +897,7 @@ void HouseRoach::updateCrawl() {
         }
     }
     if (res == 2) {
-        Unk_ov004_02236320_Ent *t = getNearestCharacter();
+        Actor *t = getNearestCharacter();
         if (t) {
             s16 *q92 = &moveAngleX;
             q92[1] = Math_AngleXZ(&t->position, self0);
@@ -1040,7 +1030,7 @@ extern "C" volatile u8 sHouseRoachActiveCount = 0;
 
 extern "C" void *sHouseRoachManager = 0;
 
-extern "C" Unk_ov004_02236320_Ent *sHouseRoachVillager = 0;
+extern "C" Actor *sHouseRoachVillager = 0;
 
 extern "C" volatile u8 sHouseRoachTotal = 0;
 

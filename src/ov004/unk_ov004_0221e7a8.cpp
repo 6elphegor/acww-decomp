@@ -15,6 +15,7 @@
 #include "talk/TalkWindowState.h"
 #include "talk/TalkMsgRequest.h"
 #include "player/PlayerActionRequest.h"
+#include "player/PlayerActor.h"
 
 extern "C" {
 void _ZN19PlayerActionRequestC1Ev(void *self);
@@ -256,29 +257,7 @@ struct GetOutOfBedCheckWork {
     u8 flag;
 };
 
-struct Unk_ov004_022245ac_Obj {
-    u8 pad_00[0x5c];
-    Unk_ov004_022245ac_V3 position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0x700 - 0x90];
-    s32 animId;
-    u8 pad_704[0x7d0 - 0x704];
-    u8 actionWork;
-    u8 pad_7d1[0x7ec - 0x7d1];
-    s32 action;
-    u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 actionPriority;
-    u32 sessionSlot;
-    u8 pad_800[4];
-    s32 exitMode;
-    u8 pad_808[0x8e6 - 0x808];
-    u8 lastInputSide;
-    u8 pad_8e7[0xc80 - 0x8e7];
-    u16 netSeq;
-};
-
-typedef Unk_ov004_022245ac_Obj Obj;
+typedef PlayerActor Obj;
 typedef Unk_ov004_022245ac_V3 V3;
 typedef Unk_ov004_022245ac_Msg Msg;
 typedef GetOutOfBedCheckWork Rec;
@@ -537,7 +516,7 @@ extern "C" s32 PlayerActor_TestLocalFlag02(void) {
 extern "C" s32 PlayerActor_GetPosIfInAction(V3 *out, u32 idx, s32 st) {
     Obj *o = PlayerActor_Get(idx);
     if (o && o->action == st) {
-        V3 *pv = &o->position;
+        V3 *pv = (V3 *)&o->position;
         out->x = o->position.x;
         out->y = pv->y;
         out->z = pv->z;
@@ -663,7 +642,7 @@ extern "C" s32 PlayerActor_LocalRequestLeaveRoom(void) {
     if (o) {
         if (o->exitMode == 4) {
             V3 v;
-            V3 *pv = &o->position;
+            V3 *pv = (V3 *)&o->position;
             v.x = o->position.x;
             v.y = pv->y;
             v.z = pv->z;
@@ -768,7 +747,7 @@ extern "C" void PlayerActor_LieInBedSetWork(u8 *p, u32 v) {
 
 extern "C" void PlayerActor_SetupLieInBed(Obj *o, u8 *p, s32 c) {
     u8 *q = p + 0xc;
-    u8 *rec = &o->actionWork;
+    u8 *rec = o->actionWorkRaw;
     if (o->animId != 0x11) {
         if (c == 0xf || c == 0xd || !_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot)) {
             _ZN11PlayerActor9startAnimEijt(o, 0x11, 0, 0);
@@ -791,7 +770,7 @@ extern "C" void PlayerActor_NetLieInBed(Obj *o, s32 a) {
 }
 
 extern "C" void PlayerActor_EndLieInBed(Obj *o, s32 a) {
-    if (Scene_InUnk6To8() && a == 10 && o->actionWork == 0) {
+    if (Scene_InUnk6To8() && a == 10 && o->actionWorkRaw[0] == 0) {
         if (PlayerActor_GetGender(o)) {
             _ZN11PlayerActor6playSeEj(o, 0x4cd);
         } else {
@@ -893,31 +872,7 @@ struct Unk_ov004_02223c38_Bits16 {
     u16 hi : 5;
 };
 
-struct Unk_ov004_02223c38_Obj {
-    u8 pad_00[0x5c];
-    Unk_ov004_02223c38_V3 position;
-    Unk_ov004_02223c38_V3 prevPosition;
-    u8 pad_74[0x8e - 0x74];
-    s16 rotY;
-    u8 pad_90[0x1c0 - 0x90];
-    u8 subCollider[0x3c];
-    u8 subColliderHit;
-    u8 pad_1fd[0x2cc - 0x1fd];
-    u32 bodyAnimCtrl;
-    u8 pad_2d0[0x7d0 - 0x2d0];
-    GetOutOfBedWork actionWork;
-    u8 pad_7e0[0x7ec - 0x7e0];
-    u32 action;
-    u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 actionPriority;
-    u32 sessionSlot;
-    u8 pad_800[0x8e6 - 0x800];
-    u8 lastInputSide;
-    u8 pad_8e7[0x8ec - 0x8e7];
-    u8 netData[8];
-};
-
-typedef Unk_ov004_02223c38_Obj Obj;
+typedef PlayerActor Obj;
 typedef Unk_ov004_02223c38_V3 V3;
 typedef Unk_ov004_02223c38_V3c V3c;
 typedef GetOutOfBedWork Rec;
@@ -1021,11 +976,11 @@ static inline BOOL Unk_ov004_02224284_IsOne(u8 v) {
 extern "C" void PlayerActor_SetupGetOutOfBedCheck(Obj *o, Msg *m) {
     u8 c = m->args;
     s32 ang = o->rotY;
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     V3 v;
     V3 w;
     {
-        V3 *pp = &o->position;
+        V3 *pp = (V3 *)&o->position;
         v.x = o->position.x;
         v.y = pp->y;
         v.z = pp->z;
@@ -1041,7 +996,7 @@ extern "C" void PlayerActor_SetupGetOutOfBedCheck(Obj *o, Msg *m) {
     dz -= func_01ffcb0c(t[0], k);
     s32 dx = func_01ffcb0c(t[0], 0x1000);
     dx += func_01ffcb0c(t[1], k);
-    V3 *p2 = &o->position;
+    V3 *p2 = (V3 *)&o->position;
     v.x = p2->x + dx;
     v.z = p2->z + dz;
     w.x = v.x;
@@ -1063,7 +1018,7 @@ extern "C" void PlayerActor_GetOutOfBedCheckTurn(Obj *o) {
     v.y = s->y;
     v.z = s->z;
     _ZN11PlayerActor14setSubColliderEjjj(o, &v, 0x1000, 0x1000);
-    _ZN13ActorCollider6submitEv(o->subCollider);
+    _ZN13ActorCollider6submitEv(&o->subCollider);
 }
 
 extern "C" void PlayerActor_GetOutOfBedCheckResult(Obj *o) {
@@ -1078,8 +1033,8 @@ extern "C" void PlayerActor_GetOutOfBedCheckResult(Obj *o) {
         PlayerActor_RequestLieInBed(o, 0, 6, -1);
         return;
     }
-    Rec *r = &o->actionWork;
-    if (o->subColliderHit != 0) {
+    Rec *r = (Rec *)&o->actionWork;
+    if (o->subCollider.isHit != 0) {
         PlayerActor_RequestLieInBed(o, 0, 6, -1);
     } else {
         PlayerActor_RequestGetOutOfBed(o, r->getOutSide, 0, 6, -1);
@@ -1127,11 +1082,11 @@ extern "C" void PlayerActor_SetupGetOutOfBed(Obj *o, Msg *m) {
     u8 *q = q0 + 0xc;
     u8 c = m->args;
     if (Unk_ov004_02224284_IsOne(gFieldSceneKind)) {
-        FtrMgr_PlaySeatSound2At(&o->position);
+        FtrMgr_PlaySeatSound2At((V3 *)&o->position);
     }
     _ZN11PlayerActor13startAnimOnceEijt(o, c ? 0xa : 9, 3, 0);
     s32 ang = o->rotY;
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     s32 k = 0x2000;
     if (c == 0) {
         k *= -1;
@@ -1143,7 +1098,7 @@ extern "C" void PlayerActor_SetupGetOutOfBed(Obj *o, Msg *m) {
     dz -= func_01ffcb0c(t[0], k);
     s32 dx = func_01ffcb0c(t[0], 0x1000);
     dx += func_01ffcb0c(t[1], k);
-    V3 *p = &o->position;
+    V3 *p = (V3 *)&o->position;
     s32 x = p->x + dx;
     s32 z = p->z + dz;
     s16 h;
@@ -1153,18 +1108,18 @@ extern "C" void PlayerActor_SetupGetOutOfBed(Obj *o, Msg *m) {
         h = ang - 0x4000;
     }
     PlayerActor_GetOutOfBedSetWork(r, x, z, h, q[1]);
-    PlayerActor_GetOutOfBedSetNetData(o->netData, c);
+    PlayerActor_GetOutOfBedSetNetData(o->netData.bytes, c);
 }
 
 extern "C" void PlayerActor_NetGetOutOfBed(Obj *o, s32 a) {
     u8 b;
-    PlayerActor_GetOutOfBedGetNetData(o->netData, &b);
+    PlayerActor_GetOutOfBedGetNetData(o->netData.bytes, &b);
     PlayerActor_RequestGetOutOfBed(o, b, 0, 6, a);
 }
 
 extern "C" void PlayerActor_EndGetOutOfBed(Obj *o) {
-    Rec *r = &o->actionWork;
-    V3 *p = &o->position;
+    Rec *r = (Rec *)&o->actionWork;
+    V3 *p = (V3 *)&o->position;
     p->x = r->x;
     p->z = r->z;
     _ZN11PlayerActor9setAngleYEPs(o, &r->h);
@@ -1175,7 +1130,7 @@ extern "C" void PlayerActor_EndGetOutOfBed(Obj *o) {
 
 extern "C" void PlayerActor_GetOutOfBedUpdateAnim(Obj *o) {
     _ZN11PlayerActor11advanceAnimEv(o);
-    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0x15)) {
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0x15)) {
         _ZN11PlayerActor6playSeEj(o, 0x4c6);
         if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot)) {
             BedSpot_Release();
@@ -1185,7 +1140,7 @@ extern "C" void PlayerActor_GetOutOfBedUpdateAnim(Obj *o) {
 
 extern "C" void PlayerActor_GetOutOfBedUpdateHeight(Obj *o) {
     V3 v;
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     v.x = r->x;
     v.y = Ground_GetDefaultY(0);
     v.z = r->z;
@@ -1193,9 +1148,9 @@ extern "C" void PlayerActor_GetOutOfBedUpdateHeight(Obj *o) {
 }
 
 extern "C" void PlayerActor_GetOutOfBedCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
-        if (o->actionWork.afterSleep != 0) {
+        if (((Rec *)&o->actionWork)->afterSleep != 0) {
             volatile u16 t[2];
             _ZN11PlayerActor12requestAct10Esji(o, 0, 5, -1);
             *PlayerSession_GetTanTimer() = 0x4650;
@@ -1259,7 +1214,7 @@ extern "C" void PlayerActor_SetupBedRollCheck(Obj *o, Msg *m) {
     V3 w;
     V3 v;
     PlayerActor_BedRollCheckSetWork((u8 *)&o->actionWork, c);
-    PlayerActor_BedRollCheckSetNetData(o->netData, c);
+    PlayerActor_BedRollCheckSetNetData(o->netData.bytes, c);
     if (c != 0) {
         k = 0xc;
     } else {
@@ -1272,7 +1227,7 @@ extern "C" void PlayerActor_SetupBedRollCheck(Obj *o, Msg *m) {
             d = 0x2000;
         }
         ang = o->rotY + 0x4000;
-        PlayerActor_OffsetByAngle(&v, o, &o->position, &ang, &d);
+        PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &ang, &d);
         w.x = v.x;
         w.y = v.y;
         w.z = v.z;
@@ -1285,7 +1240,7 @@ extern "C" void PlayerActor_SetupBedRollCheck(Obj *o, Msg *m) {
 
 extern "C" void PlayerActor_NetBedRollCheck(Obj *o, s32 a) {
     u8 b;
-    PlayerActor_BedRollCheckGetNetData(o->netData, &b);
+    PlayerActor_BedRollCheckGetNetData(o->netData.bytes, &b);
     PlayerActor_RequestBedRollCheck(o, b, 6, a);
 }
 
@@ -1341,7 +1296,7 @@ extern "C" void PlayerActor_BedRollBlockedGetNetData(u8 *p, u8 *out) {
 
 extern "C" void PlayerActor_SetupBedRollBlocked(Obj *o, Msg *m) {
     u8 c = m->args;
-    PlayerActor_BedRollBlockedSetNetData(o->netData, c);
+    PlayerActor_BedRollBlockedSetNetData(o->netData.bytes, c);
     s32 k;
     if (c != 0) {
         k = 0xd;
@@ -1354,12 +1309,12 @@ extern "C" void PlayerActor_SetupBedRollBlocked(Obj *o, Msg *m) {
 
 extern "C" void PlayerActor_NetBedRollBlocked(Obj *o, s32 a) {
     u8 b;
-    PlayerActor_BedRollBlockedGetNetData(o->netData, &b);
+    PlayerActor_BedRollBlockedGetNetData(o->netData.bytes, &b);
     PlayerActor_RequestBedRollBlocked(o, b, 6, a);
 }
 
 extern "C" void PlayerActor_BedRollBlockedCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         PlayerActor_RequestLieInBed(o, 0, 6, -1);
     }
 }
@@ -1412,39 +1367,39 @@ extern "C" void PlayerActor_SetupBedRoll(Obj *o, Msg *m) {
     } else {
         _ZN11PlayerActor13startAnimOnceEijt(o, k, 0, 0);
     }
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     if (c == 0) {
         d = -0x2000;
     } else {
         d = 0x2000;
     }
     ang = o->rotY + 0x4000;
-    PlayerActor_OffsetByAngle(&v, o, &o->position, &ang, &d);
+    PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &ang, &d);
     s32 tx = v.x;
     w.x = tx;
     w.y = v.y;
     s32 tz = v.z;
     w.z = tz;
     PlayerActor_BedRollSetWork((s32 *)r, tx, tz);
-    PlayerActor_BedRollSetNetData(o->netData, c);
+    PlayerActor_BedRollSetNetData(o->netData.bytes, c);
     _ZN11PlayerActor6playSeEj(o, 0x435);
 }
 
 extern "C" void PlayerActor_NetBedRoll(Obj *o, s32 a) {
     u8 b;
-    PlayerActor_BedRollGetNetData(o->netData, &b);
+    PlayerActor_BedRollGetNetData(o->netData.bytes, &b);
     PlayerActor_RequestBedRoll(o, b, 6, a);
 }
 
 extern "C" void PlayerActor_EndBedRoll(Obj *o) {
-    Rec *r = &o->actionWork;
-    V3 *p = &o->position;
+    Rec *r = (Rec *)&o->actionWork;
+    V3 *p = (V3 *)&o->position;
     p->x = r->x;
     p->z = r->z;
 }
 
 extern "C" void PlayerActor_BedRollCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         if (PlayerActor_RequestLieInBed(o, 0, 6, -1)) {
             o->lastInputSide = 0;
         }
@@ -1513,42 +1468,8 @@ public:
     u8 pad_18[4];
 };
 
-struct Unk_ov004_02223314_Obj {
-    u8 pad_00[0x5c];
-    Unk_ov004_02223314_V3 position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0x2cc - 0x90];
-    u32 bodyAnimCtrl;
-    u8 pad_2d0[0x2d4 - 0x2d0];
-    Unk_ov004_02223314_Bits bodyAnimFrame;
-    u8 pad_2d8[0x700 - 0x2d8];
-    s32 animId;
-    u8 pad_704[0x7d0 - 0x704];
-    BedApproachWork actionWork;
-    u8 pad_7dc[0x7ec - 0x7dc];
-    s32 action;
-    u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 actionPriority;
-    u32 sessionSlot;
-    u8 pad_800[0x814 - 0x800];
-    s32 fieldAnswer;
-    u8 pad_818[0x81c - 0x818];
-    u16 actionItem;
-    u16 shownItem;
-    u32 shownItemPosX;
-    s32 shownItemPosY;
-    u8 pad_828[0x82c - 0x828];
-    s32 shownItemScaleX;
-    s32 shownItemScaleY;
-    s32 shownItemScaleZ;
-    u8 pad_838[0x8ec - 0x838];
-    u8 netData[8];
-    u8 pad_8f4[0xc80 - 0x8f4];
-    u16 netSeq;
-};
-
-typedef Unk_ov004_02223314_Obj Obj;
+typedef PlayerActor Obj;
+typedef Unk_ov004_02223314_Bits Bits;
 typedef Unk_ov004_02223314_V3 V3;
 typedef BedApproachWork Rec;
 typedef PickUpItemWork Rec2;
@@ -1689,7 +1610,7 @@ extern "C" void PlayerActor_SetupBedApproach(Obj *o, Msg *m) {
     v.z = c;
     h = pl->d;
     r6 = pl->e;
-    r7 = &o->actionWork;
+    r7 = (Rec *)&o->actionWork;
     g = gCommManager;
     if (_ZN11CommManager11isLocalSlotEj(g, o->sessionSlot)) {
         PlayerActor_OffsetByAngle(&tmp, o, &v, &h, (u32)(sAct12Pos + 3));
@@ -1698,7 +1619,7 @@ extern "C" void PlayerActor_SetupBedApproach(Obj *o, Msg *m) {
         v.z = tmp.z;
     }
     PlayerActor_BedApproachSetWork(r7, v.x, v.z, h, r6, pl->f);
-    PlayerActor_BedApproachSetNetData(o->netData, v.x, v.z, h, r6);
+    PlayerActor_BedApproachSetNetData(o->netData.bytes, v.x, v.z, h, r6);
     if (_ZN11CommManager11isLocalSlotEj(g, o->sessionSlot)) {
         BedSpot_RequestApproach(&v);
     }
@@ -1712,20 +1633,20 @@ extern "C" void PlayerActor_NetBedApproach(Obj *o, u32 a) {
     } l;
     s32 x, z;
     L *q = &l;
-    PlayerActor_BedApproachGetNetData(o->netData, &x, &z, &l.h, &l.b);
+    PlayerActor_BedApproachGetNetData(o->netData.bytes, &x, &z, &l.h, &l.b);
     PlayerActor_RequestBedApproach(o, x, z, q->h, q->b, 6, a);
 }
 
 extern "C" void PlayerActor_EndBedApproach(Obj *o) {
-    _ZN11PlayerActor9setAngleYEPs(o, &o->actionWork.targetAngle);
+    _ZN11PlayerActor9setAngleYEPs(o, (s16 *)&o->actionWorkRaw[8]); // BedApproachWork::targetAngle
 }
 
 extern "C" void PlayerActor_BedApproachMove(Obj *o) {
-    PlayerActor_StepTowardPose(o, o->position.x, o->position.z, o->actionWork.targetAngle);
+    PlayerActor_StepTowardPose(o, o->position.x, o->position.z, ((Rec *)&o->actionWork)->targetAngle);
 }
 
 extern "C" void PlayerActor_BedApproachCheckArrive(Obj *o) {
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot) == 0) {
         o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
     } else {
@@ -1794,7 +1715,7 @@ extern "C" void PlayerActor_SetupGetIntoBed(Obj *o, Msg *m) {
     s32 t, h, x, z;
     _ZN11PlayerActor13startAnimOnceEijt(o, k == 0 ? 8 : 7, 3, 0);
     _ZN11PlayerActor6playSeEj(o, 0x4c5);
-    r = &o->actionWork;
+    r = (Rec *)&o->actionWork;
     t = Math_AngleToDir4(o->rotY);
     t = (t << 30) >> 16;
     x = pl->c;
@@ -1805,7 +1726,7 @@ extern "C" void PlayerActor_SetupGetIntoBed(Obj *o, Msg *m) {
         h = (s16)(t - 0x4000);
     }
     PlayerActor_GetIntoBedSetWork(r, x, z, h, ((u8 *)pl)[0xc]);
-    PlayerActor_GetIntoBedSetNetData(o->netData, k, x, z);
+    PlayerActor_GetIntoBedSetNetData(o->netData.bytes, k, x, z);
 }
 
 extern "C" void PlayerActor_NetGetIntoBed(Obj *o, u32 a) {
@@ -1814,21 +1735,21 @@ extern "C" void PlayerActor_NetGetIntoBed(Obj *o, u32 a) {
     } else {
         u8 b;
         s32 x, z;
-        PlayerActor_GetIntoBedGetNetData(o->netData, &b, &x, &z);
+        PlayerActor_GetIntoBedGetNetData(o->netData.bytes, &b, &x, &z);
         PlayerActor_RequestGetIntoBed(o, b, x, z, 0, 6, a);
     }
 }
 
 extern "C" void PlayerActor_EndGetIntoBed(Obj *o) {
-    Rec *r = &o->actionWork;
-    V3 *p = &o->position;
+    Rec *r = (Rec *)&o->actionWork;
+    V3 *p = (V3 *)&o->position;
     p->x = r->targetX;
     p->z = r->targetZ;
     _ZN11PlayerActor9setAngleYEPs(o, &r->targetAngle);
 }
 
 extern "C" void PlayerActor_GetIntoBedSlide(Obj *o) {
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     u8 *p;
     s32 v;
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot)) {
@@ -1849,9 +1770,9 @@ extern "C" void PlayerActor_GetIntoBedSlide(Obj *o) {
 extern "C" void PlayerActor_GetIntoBedUpdateAnim(Obj *o) {
     V3 v;
     _ZN11PlayerActor11advanceAnimEv(o);
-    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0xd)) {
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0xd)) {
         if (Unk_ov004_02223314_IsOne(gFieldSceneKind)) {
-            Rec *r = &o->actionWork;
+            Rec *r = (Rec *)&o->actionWork;
             s32 z = r->targetZ;
             s32 y = o->position.y;
             s32 x = r->targetX;
@@ -1864,8 +1785,8 @@ extern "C" void PlayerActor_GetIntoBedUpdateAnim(Obj *o) {
 }
 
 extern "C" void PlayerActor_GetIntoBedCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
-        PlayerActor_RequestLieInBed(o, o->actionWork.unk_0a, 6, -1);
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
+        PlayerActor_RequestLieInBed(o, ((Rec *)&o->actionWork)->unk_0a, 6, -1);
     }
 }
 
@@ -2011,13 +1932,13 @@ extern "C" void PlayerActor_PickUpItemUpdateAnim(Obj *o) {
         return;
     }
     if (r->answer == 2) {
-        if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 7)) {
+        if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 7)) {
             o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
             _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
             return;
         }
     } else if (r->answer == 0) {
-        if (o->bodyAnimFrame.mid < 7) {
+        if (((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid < 7) {
             if (o->fieldAnswer == 2) {
                 r->answer = 2;
             } else if (o->fieldAnswer == 1) {
@@ -2045,8 +1966,8 @@ extern "C" void PlayerActor_PickUpItemUpdateScale(Obj *o) {
         o->shownItemScaleZ = 0;
         return;
     }
-    if (o->bodyAnimFrame.mid < 8) return;
-    r = 0x1000 - (s32)((o->bodyAnimFrame.mid - 8) << 12) / 7;
+    if (((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid < 8) return;
+    r = 0x1000 - (s32)((((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid - 8) << 12) / 7;
     if (r < 0) {
         r = 0;
         _ZN11PlayerActor15clearActionFlagEj(o, 0xd);
@@ -2083,28 +2004,6 @@ public:
     u8 pad_18[4];
 };
 
-class Unk_ov004_02222874_Prim {
-public:
-    virtual void vfunc_00();
-    u8 pad_04[0x5c - 4];
-    Unk_ov004_02222874_V3 position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0xec - 0x90];
-};
-
-class Unk_ov004_02222874_Sec {
-public:
-    virtual void vfunc_s00();
-    u8 pad_04[0x1e - 4];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    TalkWindowState *window;
-    u8 pad_40[0x51 - 0x40];
-    u8 actionHeld;
-    u8 pad_52[0x60 - 0x52];
-};
-
 struct FtrGrabApproachWork {
     s32 x;
     s32 z;
@@ -2113,33 +2012,8 @@ struct FtrGrabApproachWork {
     u8 pad_b;
 };
 
-struct Unk_ov004_02222874_Obj : public Unk_ov004_02222874_Prim, public Unk_ov004_02222874_Sec {
-    u8 pad_14c[0x2cc - 0x14c];
-    u8 bodyAnimCtrl[0x10];
-    s32 bodyAnimFrameStep;
-    u8 pad_2e0[0x59c - 0x2e0];
-    u8 heldItemModel[4];
-    u8 pad_5a0[0x7d0 - 0x5a0];
-    union {
-        FtrGrabApproachWork r;
-        u8 b[2];
-    } actionWork;
-    u8 pad_7dc[0x7ec - 0x7dc];
-    s32 action;
-    u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 actionPriority;
-    u32 sessionSlot;
-    u8 pad_800[0x80c - 0x800];
-    s32 dropQuery;
-    u8 pad_810[0x818 - 0x810];
-    s32 msgStep;
-    u16 actionItem;
-    u8 pad_81e[0x8ec - 0x81e];
-    u8 netData[0x10];
-};
-
-typedef Unk_ov004_02222874_Obj Obj;
-typedef Unk_ov004_02222874_Sec Sec;
+typedef PlayerActor Obj;
+typedef TalkMsgRequest Sec;
 typedef Unk_ov004_02222874_V3 V3;
 typedef PlayerFtrGrabApproachArgs Tgt;
 typedef Unk_ov004_02222874_Msg Msg;
@@ -2258,7 +2132,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
     s32 t;
     switch (*p) {
     case 0:
-        if (_ZN13AnimFrameCtrl10isFinishedEv(o->bodyAnimCtrl) == 0) {
+        if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel) == 0) {
             break;
         }
         {
@@ -2286,9 +2160,9 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
                     _ZN11PlayerActor9startAnimEijt(o, 0x6c, 3, 0);
                     s32 r = _ZN11PlayerActor15getHeldToolKindEv(o);
                     if (r == 4) {
-                        HeldItemModel_PlayAnim(o->heldItemModel, 0, 9, 0);
+                        HeldItemModel_PlayAnim(&o->heldItemModel, 0, 9, 0);
                     } else if (r == 3) {
-                        HeldItemModel_PlayAnim(o->heldItemModel, 0x13, 3, 0);
+                        HeldItemModel_PlayAnim(&o->heldItemModel, 0x13, 3, 0);
                     }
                     *p = 1;
                     _ZN9Character17attachTalkRequestEi(o, o);
@@ -2331,7 +2205,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
                 } else if (t == 6) {
                     if (MenuCtrl_IsFinished() != 0) {
                         o->msgStep = 0xf;
-                        o->bodyAnimFrameStep = 0x1000;
+                        ((AnimFrameCtrl &)o->bodyModel).frameStep = 0x1000;
                         if (MenuCtrl_IsResultOk() != 0) {
                             *p = 5;
                             _ZN9Character17detachTalkRequestEi(o, o);
@@ -2484,39 +2358,39 @@ extern "C" void PlayerActor_SetupFtrGrabApproach(Obj *o, Obj *arg) {
     s32 x = p->x;
     s32 z = p->y;
     s16 h = *(s16 *)((u8 *)p + 8);
-    PlayerActor_FtrGrabApproachSetWork(&o->actionWork.r, x, z, h);
-    PlayerActor_FtrGrabApproachSetNetData(o->netData, x, z, h);
+    PlayerActor_FtrGrabApproachSetWork((Rec *)&o->actionWork, x, z, h);
+    PlayerActor_FtrGrabApproachSetNetData(o->netData.bytes, x, z, h);
 }
 
 extern "C" s32 PlayerActor_NetFtrGrabApproach(Obj *o, s32 c) {
     s32 x, z;
     s16 h;
-    PlayerActor_FtrGrabApproachGetNetData(o->netData, &x, &z, &h);
+    PlayerActor_FtrGrabApproachGetNetData(o->netData.bytes, &x, &z, &h);
     PlayerActor_RequestFtrGrabApproach(o, x, z, h, 5, c);
 }
 
 extern "C" void PlayerActor_EndFtrGrabApproach(Obj *o) {
-    Rec *r = &o->actionWork.r;
-    V3 *p = &o->position;
+    Rec *r = (Rec *)&o->actionWork;
+    V3 *p = (V3 *)&o->position;
     p->x = r->x;
     p->z = r->z;
     _ZN11PlayerActor9setAngleYEPs(o, &r->h);
 }
 
 extern "C" void PlayerActor_FtrGrabApproachMove(Obj *o) {
-    Rec *r = &o->actionWork.r;
+    Rec *r = (Rec *)&o->actionWork;
     PlayerActor_StepTowardPose(o, r->x, r->z, r->h);
 }
 
 extern "C" void PlayerActor_FtrGrabApproachCheckArrive(Obj *o) {
-    Rec *r = &o->actionWork.r;
-    V3 *v = &o->position;
-    if (_ZN13AnimFrameCtrl10isFinishedEv(o->bodyAnimCtrl) && v->x == r->x && v->z == r->z && r->h == o->rotY) {
+    Rec *r = (Rec *)&o->actionWork;
+    V3 *v = (V3 *)&o->position;
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel) && v->x == r->x && v->z == r->z && r->h == o->rotY) {
         PlayerActor_RequestFtrHold(o, 1, 0, 5, -1);
     } else if (o->actionHeld == 0) {
         if (r->flag == 0) {
             r->flag = 1;
-            if (_ZN13AnimFrameCtrl10isFinishedEv(o->bodyAnimCtrl) == 0) {
+            if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel) == 0) {
                 _ZN13FtrContactSet13requestToggleEv(FtrContactSet_GetInstance());
             }
         } else {
@@ -2574,7 +2448,7 @@ extern "C" void PlayerActor_FtrHoldGetNetData(u8 *src, u8 *a, u8 *b) {
 
 extern "C" void PlayerActor_SetupFtrHold(Obj *o, Obj *arg) {
     u8 *a = (u8 *)arg + 0xc;
-    u8 *r = &o->actionWork.b[0];
+    u8 *r = &o->actionWorkRaw[0];
     u32 x = a[0];
     u32 y = a[1];
     s32 t = _ZN11PlayerActor17getInputMagnitudeEv(o);
@@ -2587,18 +2461,18 @@ extern "C" void PlayerActor_SetupFtrHold(Obj *o, Obj *arg) {
     } else {
         _ZN11PlayerActor9startAnimEijt(o, 0x1a, 0, 0);
     }
-    PlayerActor_FtrHoldSetNetData(o->netData, x, y);
+    PlayerActor_FtrHoldSetNetData(o->netData.bytes, x, y);
 }
 
 extern "C" void PlayerActor_NetFtrHold(Obj *o, s32 c) {
     u8 l[2];
-    PlayerActor_FtrHoldGetNetData(o->netData, &l[0], &l[1]);
+    PlayerActor_FtrHoldGetNetData(o->netData.bytes, &l[0], &l[1]);
     PlayerActor_RequestFtrHold(o, l[0], l[1], 5, c);
 }
 
 extern "C" void PlayerActor_FtrHoldUpdate(Obj *o) {
     FtrHoldStackPad pad;
-    u8 *p = &o->actionWork.b[0];
+    u8 *p = &o->actionWorkRaw[0];
     u8 *q = p + 1;
     switch (*q) {
     case 0:
@@ -2719,7 +2593,7 @@ extern "C" void PlayerActor_FtrRotateSetStickFlag(u8 *p, u32 v) {
 }
 
 extern "C" void PlayerActor_SetupFtrRotate(Obj *o, Obj *arg) {
-    u8 *p = &o->actionWork.b[0];
+    u8 *p = &o->actionWorkRaw[0];
     if (*((u8 *)arg + 0xc) != 0) {
         _ZN11PlayerActor13startAnimOnceEijt(o, 0x1b, 3, 0);
     } else {
@@ -2762,35 +2636,8 @@ public:
     u8 pad_18[4];
 };
 
-struct Unk_ov004_02221ed0_Obj {
-    u8 pad_00[0x5c];
-    Unk_ov004_02221ed0_V3 position;
-    Unk_ov004_02221ed0_V3 prevPosition;
-    u8 pad_74[0x8e - 0x74];
-    s16 rotY;
-    u8 pad_90[0x13d - 0x90];
-    u8 actionHeld;
-    u8 pad_13e[0x2cc - 0x13e];
-    u8 bodyAnimCtrl[4];
-    Unk_ov004_02221ed0_Bits bodyAnimNumFrames;
-    u8 pad_2d4[0x2e0 - 0x2d4];
-    u8 bodyAnimPlayMode;
-    u8 pad_2e1[0x6f0 - 0x2e1];
-    s32 bodyPosX;
-    u8 pad_6f4[0x6f8 - 0x6f4];
-    s32 bodyPosZ;
-    u8 pad_6fc[0x7d0 - 0x6fc];
-    SeatApproachWork actionWork;
-    u8 pad_7dc[0x7ec - 0x7dc];
-    s32 action;
-    u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 actionPriority;
-    u32 sessionSlot;
-    u8 pad_800[0x8ec - 0x800];
-    u8 netData[0x10];
-};
-
-typedef Unk_ov004_02221ed0_Obj Obj;
+typedef PlayerActor Obj;
+typedef Unk_ov004_02221ed0_Bits Bits;
 typedef Unk_ov004_02221ed0_V3 V3;
 typedef SeatApproachWork Rec;
 typedef Unk_ov004_02221ed0_Msg Msg;
@@ -2883,7 +2730,7 @@ void PlayerActor_FtrRotateCheckEnd(Obj *o);
 }
 
 extern "C" void PlayerActor_FtrRotateCheckEnd(Obj *o) {
-    if (o->bodyAnimPlayMode == 3) {
+    if (((AnimFrameCtrl &)o->bodyModel).playMode == 3) {
         u8 *f = (u8 *)&o->actionWork;
         s32 t;
         if (*f == 0) {
@@ -2899,7 +2746,7 @@ extern "C" void PlayerActor_FtrRotateCheckEnd(Obj *o) {
                 return;
             }
         }
-        if (_ZN13AnimFrameCtrl10isFinishedEv(o->bodyAnimCtrl)) {
+        if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
             if (o->actionHeld) {
                 PlayerActor_RequestFtrHold(o, 0, 1, 5, -1);
             } else {
@@ -2907,8 +2754,8 @@ extern "C" void PlayerActor_FtrRotateCheckEnd(Obj *o) {
             }
         }
     } else {
-        if (_ZN13AnimFrameCtrl10isFinishedEv(o->bodyAnimCtrl)) {
-            _ZN13AnimFrameCtrl5setupEihit(o->bodyAnimCtrl, 0, 3, 0x1000, o->bodyAnimNumFrames.mid);
+        if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
+            _ZN13AnimFrameCtrl5setupEihit(&(AnimFrameCtrl &)o->bodyModel, 0, 3, 0x1000, ((Bits *)&((AnimFrameCtrl &)o->bodyModel).numFrames)->mid);
         }
     }
 }
@@ -2938,7 +2785,7 @@ extern "C" void PlayerActor_NetFtrPush(Obj *o, s32 a) {
 }
 
 extern "C" void PlayerActor_FtrPushTryMove(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot)) {
             u8 r4 = 0;
             FtrContactSet_GetInstance();
@@ -3001,7 +2848,7 @@ extern "C" void PlayerActor_NetFtrPull(Obj *o, s32 a) {
 }
 
 extern "C" void PlayerActor_FtrPullTryMove(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot)) {
             u8 r4 = 0;
             FtrContactSet_GetInstance();
@@ -3062,22 +2909,22 @@ extern "C" void PlayerActor_FtrPushMoveSetWork(Rec *r, s32 x, s32 z) {
 extern "C" void PlayerActor_SetupFtrPushMove(Obj *o) {
     V3 v;
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x1f, 3, 0);
-    PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, (u32)(sAct12Pos + 12));
-    PlayerActor_FtrPushMoveSetWork(&o->actionWork, v.x, v.z);
+    PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, (u32)(sAct12Pos + 12));
+    PlayerActor_FtrPushMoveSetWork((Rec *)&o->actionWork, v.x, v.z);
 }
 
 extern "C" void PlayerActor_NetFtrPushMove(void) {
 }
 
 extern "C" void PlayerActor_EndFtrPushMove(Obj *o) {
-    V3 *p = &o->position;
-    Rec *r = &o->actionWork;
+    V3 *p = (V3 *)&o->position;
+    Rec *r = (Rec *)&o->actionWork;
     p->x = r->x;
     p->z = r->z;
 }
 
 extern "C" void PlayerActor_FtrPushMoveCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
         if (o->actionHeld) {
             PlayerActor_RequestFtrHold(o, 1, 0, 5, -1);
@@ -3110,16 +2957,16 @@ extern "C" void PlayerActor_FtrPullMoveSetWork(Rec *r, s32 x, s32 z) {
 extern "C" void PlayerActor_SetupFtrPullMove(Obj *o) {
     V3 v;
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x20, 3, 0);
-    PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, (u32)sFtrPullDist);
-    PlayerActor_FtrPullMoveSetWork(&o->actionWork, v.x, v.z);
+    PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, (u32)sFtrPullDist);
+    PlayerActor_FtrPullMoveSetWork((Rec *)&o->actionWork, v.x, v.z);
 }
 
 extern "C" void PlayerActor_NetFtrPullMove(void) {
 }
 
 extern "C" void PlayerActor_EndFtrPullMove(Obj *o) {
-    V3 *p = &o->position;
-    Rec *r = &o->actionWork;
+    V3 *p = (V3 *)&o->position;
+    Rec *r = (Rec *)&o->actionWork;
     p->x = r->x;
     p->z = r->z;
     o->prevPosition.x = p->x;
@@ -3129,14 +2976,14 @@ extern "C" void PlayerActor_EndFtrPullMove(Obj *o) {
 
 extern "C" void PlayerActor_FtrPullMoveCollide(Obj *o) {
     volatile V3 old;
-    V3 *pv = &o->position;
+    V3 *pv = (V3 *)&o->position;
     s32 y;
     old.x = o->position.x;
     y = pv->y;
     old.y = y;
     old.z = pv->z;
-    s32 nz = o->bodyPosZ;
-    s32 nx = o->bodyPosX;
+    s32 nz = o->bodyPos.z;
+    s32 nx = o->bodyPos.x;
     o->position.x = nx;
     o->position.y = y;
     o->position.z = nz;
@@ -3145,7 +2992,7 @@ extern "C" void PlayerActor_FtrPullMoveCollide(Obj *o) {
     o->prevPosition.z = o->position.z;
     _ZN11PlayerActor17moveWithCollisionEv(o);
     s32 ox = old.x;
-    if (ox == o->bodyPosX) {
+    if (ox == o->bodyPos.x) {
         o->position.z = old.z;
     } else {
         o->position.x = ox;
@@ -3153,7 +3000,7 @@ extern "C" void PlayerActor_FtrPullMoveCollide(Obj *o) {
 }
 
 extern "C" void PlayerActor_FtrPullMoveCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
         if (o->actionHeld) {
             PlayerActor_RequestFtrHold(o, 1, 0, 5, -1);
@@ -3221,8 +3068,8 @@ extern "C" void PlayerActor_SetupSeatApproach(Obj *o, Msg *m) {
     tmp.z = z;
     t = h + sSeatSideAngles[d];
     PlayerActor_OffsetByAngle(&v, o, &tmp, &t, (u32)sSeatApproachDist);
-    PlayerActor_SeatApproachSetWork(&o->actionWork, v.x, v.z, t, d);
-    PlayerActor_SeatApproachSetNetData(o->netData, tmp.x, tmp.z, h, d);
+    PlayerActor_SeatApproachSetWork((Rec *)&o->actionWork, v.x, v.z, t, d);
+    PlayerActor_SeatApproachSetNetData(o->netData.bytes, tmp.x, tmp.z, h, d);
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot)) {
         SpotSync_RequestReserve(&tmp);
     }
@@ -3236,20 +3083,20 @@ extern "C" void PlayerActor_NetSeatApproach(Obj *o, s32 a) {
         s16 h;
     } l;
     s32 x, z;
-    PlayerActor_SeatApproachGetNetData(o->netData, &x, &z, &l.h, &l.d);
+    PlayerActor_SeatApproachGetNetData(o->netData.bytes, &x, &z, &l.h, &l.d);
     PlayerActor_RequestSeatApproach(o, x, z, l.h, l.d, 6, a);
 }
 
 extern "C" void PlayerActor_EndSeatApproach(Obj *o) {
-    Rec *r = &o->actionWork;
-    V3 *p = &o->position;
+    Rec *r = (Rec *)&o->actionWork;
+    V3 *p = (V3 *)&o->position;
     p->x = r->x;
     p->z = r->z;
     _ZN11PlayerActor9setAngleYEPs(o, &r->h);
 }
 
 extern "C" void PlayerActor_SeatApproachMove(Obj *o) {
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     PlayerActor_StepTowardPose(o, r->x, r->z, r->h);
 }
 
@@ -3268,8 +3115,8 @@ extern "C" void PlayerActor_SeatApproachCheckArrive(Obj *o) {
         _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
         return;
     }
-    Rec *r = &o->actionWork;
-    V3 *p = &o->position;
+    Rec *r = (Rec *)&o->actionWork;
+    V3 *p = (V3 *)&o->position;
     if (p->x == r->x) {
         if (p->z == r->z) {
             if (r->h == o->rotY) {
@@ -3343,39 +3190,8 @@ public:
     u8 pad_18[4];
 };
 
-struct Unk_ov004_022215a8_Sub {
-    u8 pad_00[0x9c];
-    u8 animFrameCtrl[8];
-    Unk_ov004_022215a8_Bits curFrame;
-    u8 pad_a8[4];
-    s32 frameStep;
-    u8 pad_b0[8];
-    u8 jointBlend[0x300 - 0x230 - 0xb8];
-};
-
-struct Unk_ov004_022215a8_Obj {
-    u8 pad_00[0x5c];
-    Unk_ov004_022215a8_V3 position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0xb0 - 0x90];
-    s32 actorFlags;
-    u8 pad_b4[0x230 - 0xb4];
-    Unk_ov004_022215a8_Sub bodyModel;
-    u8 pad_300[0x700 - 0x300];
-    s32 animId;
-    u8 pad_704[0x7d0 - 0x704];
-    SitWork actionWork;
-    u8 pad_7dc[0x7ec - 0x7dc];
-    s32 action;
-    u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 actionPriority;
-    u32 sessionSlot;
-    u8 pad_800[0x8ec - 0x800];
-    u8 netData[0x10];
-};
-
-typedef Unk_ov004_022215a8_Obj Obj;
+typedef PlayerActor Obj;
+typedef Unk_ov004_022215a8_Bits Bits;
 typedef Unk_ov004_022215a8_V3 V3;
 struct Unk_ov004_022215a8_V3c {
     volatile s32 x, y, z;
@@ -3389,7 +3205,7 @@ typedef Unk_ov004_022215a8_V3c V3c;
 typedef PlayerSitDownArgs Tgt;
 typedef Unk_ov004_022215a8_Msg Msg;
 typedef SitWork Rec;
-typedef Unk_ov004_022215a8_Sub Sub;
+typedef TwoLayerAnimModel Sub;
 
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -3484,7 +3300,7 @@ extern "C" s32 PlayerActor_RequestSitDownFront(Obj *o, u32 a, u32 b) {
     Msg m;
     V3 v;
     m.func_0200e2c0(0x25, a, b);
-    PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, (u32)(sAct12Pos + 12));
+    PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, (u32)(sAct12Pos + 12));
     PlayerActor_SitDownFrontSetArgs(&m.args.t, v.x, v.z, (s16)(o->rotY + 0x8000));
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
     _ZN19PlayerActionRequestD1Ev(&m);
@@ -3527,19 +3343,19 @@ extern "C" void PlayerActor_SetupSitDownFront(Obj *o, Obj *arg) {
     s32 x = *(s32 *)((u8 *)arg + 0xc);
     V3c v(x, y, z);
     PlayerActor_SitDownFrontSetWork((Tgt *)&o->actionWork, x, z, h);
-    PlayerActor_SitDownFrontSetNetData(o->netData, v.x, v.z, h);
+    PlayerActor_SitDownFrontSetNetData(o->netData.bytes, v.x, v.z, h);
 }
 
 extern "C" void PlayerActor_NetSitDownFront(Obj *o, s32 a) {
     s32 x, z;
     s16 h;
-    PlayerActor_SitDownFrontGetNetData(o->netData, &x, &z, &h);
+    PlayerActor_SitDownFrontGetNetData(o->netData.bytes, &x, &z, &h);
     PlayerActor_RequestSitDownFrontAt(o, &x, &z, &h, 6, a);
 }
 
 extern "C" void PlayerActor_EndSitDownFront(Obj *o) {
-    Rec *r = &o->actionWork;
-    V3 *p = &o->position;
+    Rec *r = (Rec *)&o->actionWork;
+    V3 *p = (V3 *)&o->position;
     p->x = r->x;
     p->z = r->u.z;
     _ZN11PlayerActor9setAngleYEPs(o, &r->h);
@@ -3548,9 +3364,9 @@ extern "C" void PlayerActor_EndSitDownFront(Obj *o) {
 extern "C" void PlayerActor_SitDownFrontUpdate(Obj *o) {
     V3 v;
     _ZN11PlayerActor11advanceAnimEv(o);
-    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(o->bodyModel.animFrameCtrl, 0xc)) {
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0xc)) {
         if (Unk_ov004_022215a8_IsOne(gFieldSceneKind)) {
-            Rec *r = &o->actionWork;
+            Rec *r = (Rec *)&o->actionWork;
             s32 z = r->u.z;
             s32 y = o->position.y;
             s32 x = r->x;
@@ -3563,7 +3379,7 @@ extern "C" void PlayerActor_SitDownFrontUpdate(Obj *o) {
 }
 
 extern "C" void PlayerActor_SitDownFrontCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(o->bodyModel.animFrameCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         PlayerActor_RequestSit(o, 0, 6, -1);
     }
 }
@@ -3585,7 +3401,7 @@ extern "C" s32 PlayerActor_RequestSitDownSide2(Obj *o, u32 a, u32 b) {
     Msg m;
     V3 v;
     m.func_0200e2c0(0x26, a, b);
-    PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, (u32)(sAct12Pos + 12));
+    PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, (u32)(sAct12Pos + 12));
     PlayerActor_SitDownSide2SetArgs(&m.args.t, v.x, v.z, (s16)(o->rotY + 0x4000));
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
     _ZN19PlayerActionRequestD1Ev(&m);
@@ -3628,19 +3444,19 @@ extern "C" void PlayerActor_SetupSitDownSide2(Obj *o, Obj *arg) {
     s32 x = *(s32 *)((u8 *)arg + 0xc);
     V3c v(x, y, z);
     PlayerActor_SitDownSide2SetWork((Tgt *)&o->actionWork, x, z, h);
-    PlayerActor_SitDownSide2SetNetData(o->netData, v.x, v.z, h);
+    PlayerActor_SitDownSide2SetNetData(o->netData.bytes, v.x, v.z, h);
 }
 
 extern "C" void PlayerActor_NetSitDownSide2(Obj *o, s32 a) {
     s32 x, z;
     s16 h;
-    PlayerActor_SitDownSide2GetNetData(o->netData, &x, &z, &h);
+    PlayerActor_SitDownSide2GetNetData(o->netData.bytes, &x, &z, &h);
     PlayerActor_RequestSitDownSide2At(o, &x, &z, &h, 6, a);
 }
 
 extern "C" void PlayerActor_EndSitDownSide2(Obj *o) {
-    Rec *r = &o->actionWork;
-    V3 *p = &o->position;
+    Rec *r = (Rec *)&o->actionWork;
+    V3 *p = (V3 *)&o->position;
     p->x = r->x;
     p->z = r->u.z;
     _ZN11PlayerActor9setAngleYEPs(o, &r->h);
@@ -3649,9 +3465,9 @@ extern "C" void PlayerActor_EndSitDownSide2(Obj *o) {
 extern "C" void PlayerActor_SitDownSide2Update(Obj *o) {
     V3 v;
     _ZN11PlayerActor11advanceAnimEv(o);
-    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(o->bodyModel.animFrameCtrl, 0xc)) {
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0xc)) {
         if (Unk_ov004_022215a8_IsOne(gFieldSceneKind)) {
-            Rec *r = &o->actionWork;
+            Rec *r = (Rec *)&o->actionWork;
             s32 z = r->u.z;
             s32 y = o->position.y;
             s32 x = r->x;
@@ -3664,7 +3480,7 @@ extern "C" void PlayerActor_SitDownSide2Update(Obj *o) {
 }
 
 extern "C" void PlayerActor_SitDownSide2CheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(o->bodyModel.animFrameCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         PlayerActor_RequestSit(o, 0, 6, -1);
     }
 }
@@ -3686,7 +3502,7 @@ extern "C" s32 PlayerActor_RequestSitDownSide1(Obj *o, u32 a, u32 b) {
     Msg m;
     V3 v;
     m.func_0200e2c0(0x27, a, b);
-    PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, (u32)(sAct12Pos + 12));
+    PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, (u32)(sAct12Pos + 12));
     PlayerActor_SitDownSide1SetArgs(&m.args.t, v.x, v.z, (s16)(o->rotY - 0x4000));
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
     _ZN19PlayerActionRequestD1Ev(&m);
@@ -3729,19 +3545,19 @@ extern "C" void PlayerActor_SetupSitDownSide1(Obj *o, Obj *arg) {
     s32 x = *(s32 *)((u8 *)arg + 0xc);
     V3c v(x, y, z);
     PlayerActor_SitDownSide1SetWork((Tgt *)&o->actionWork, x, z, h);
-    PlayerActor_SitDownSide1SetNetData(o->netData, v.x, v.z, h);
+    PlayerActor_SitDownSide1SetNetData(o->netData.bytes, v.x, v.z, h);
 }
 
 extern "C" void PlayerActor_NetSitDownSide1(Obj *o, s32 a) {
     s32 x, z;
     s16 h;
-    PlayerActor_SitDownSide1GetNetData(o->netData, &x, &z, &h);
+    PlayerActor_SitDownSide1GetNetData(o->netData.bytes, &x, &z, &h);
     PlayerActor_RequestSitDownSide1At(o, &x, &z, &h, 6, a);
 }
 
 extern "C" void PlayerActor_EndSitDownSide1(Obj *o) {
-    Rec *r = &o->actionWork;
-    V3 *p = &o->position;
+    Rec *r = (Rec *)&o->actionWork;
+    V3 *p = (V3 *)&o->position;
     p->x = r->x;
     p->z = r->u.z;
     _ZN11PlayerActor9setAngleYEPs(o, &r->h);
@@ -3750,9 +3566,9 @@ extern "C" void PlayerActor_EndSitDownSide1(Obj *o) {
 extern "C" void PlayerActor_SitDownSide1Update(Obj *o) {
     V3 v;
     _ZN11PlayerActor11advanceAnimEv(o);
-    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(o->bodyModel.animFrameCtrl, 0xc)) {
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0xc)) {
         if (Unk_ov004_022215a8_IsOne(gFieldSceneKind)) {
-            Rec *r = &o->actionWork;
+            Rec *r = (Rec *)&o->actionWork;
             s32 z = r->u.z;
             s32 y = o->position.y;
             s32 x = r->x;
@@ -3765,7 +3581,7 @@ extern "C" void PlayerActor_SitDownSide1Update(Obj *o) {
 }
 
 extern "C" void PlayerActor_SitDownSide1CheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(o->bodyModel.animFrameCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         PlayerActor_RequestSit(o, 0, 6, -1);
     }
 }
@@ -3791,7 +3607,7 @@ extern "C" void PlayerActor_SetupSit(Obj *o, Obj *arg) {
     if (o->animId != 0x24) {
         _ZN11PlayerActor9startAnimEijt(o, 0x24, *r2, 0);
     }
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     r->x = o->actorFlags;
     r->u.flag = 0;
 }
@@ -3801,24 +3617,24 @@ extern "C" s32 PlayerActor_NetSit(Obj *o, s32 a) {
 }
 
 extern "C" void PlayerActor_EndSit(Obj *o) {
-    o->actorFlags = o->actionWork.x;
+    o->actorFlags = ((Rec *)&o->actionWork)->x;
 }
 
 extern "C" void PlayerActor_SitUpdateAnim(Obj *o) {
     u8 *p;
     if (Math_IsInRange(Bgm_GetCurrent(), 0x63, 0xab) != 0 && (p = Snd_GetBeatState()) != 0 && (s8)p[3] != 1) {
         Sub *sb = &o->bodyModel;
-        Rec *r = &o->actionWork;
+        Rec *r = (Rec *)&o->actionWork;
         if (r->u.flag == 0) {
             r->u.flag = 1;
-            if (sb->curFrame.mid != 0) {
-                _ZN10JointBlend5startEi(sb->jointBlend, 0xa);
+            if (((Bits *)&((AnimFrameCtrl &)*sb).curFrame)->mid != 0) {
+                _ZN10JointBlend5startEi(&(JointBlend &)*sb, 0xa);
             }
         }
-        *(u32 *)&sb->curFrame = 0;
-        sb->frameStep = *(s32 *)(p + 0xc);
+        *(u32 *)&((AnimFrameCtrl &)*sb).curFrame = 0;
+        ((AnimFrameCtrl &)*sb).frameStep = *(s32 *)(p + 0xc);
         _ZN17TwoLayerAnimModel12updateLayersEv(sb);
-        sb->frameStep = 0x1000;
+        ((AnimFrameCtrl &)*sb).frameStep = 0x1000;
         o->actorFlags = 0;
     } else {
         _ZN11PlayerActor11advanceAnimEv(o);
@@ -3830,17 +3646,17 @@ extern "C" void PlayerActor_SitReadInput(Obj *o) {
         s32 t = _ZN11PlayerActor13getInputAngleEv(o);
         switch (Math_AngleToDir4((s16)(o->rotY - t))) {
         case 0:
-            if (FtrMgr_CanStepForward(&o->position, o->rotY)) {
+            if (FtrMgr_CanStepForward((V3 *)&o->position, o->rotY)) {
                 PlayerActor_RequestStandUpCheck(o, 0, 6, -1);
             }
             break;
         case 3:
-            if (FtrMgr_CanStepSidePlus90(&o->position, o->rotY)) {
+            if (FtrMgr_CanStepSidePlus90((V3 *)&o->position, o->rotY)) {
                 PlayerActor_RequestStandUpCheck(o, 1, 6, -1);
             }
             break;
         case 1:
-            if (FtrMgr_CanStepSideMinus90(&o->position, o->rotY)) {
+            if (FtrMgr_CanStepSideMinus90((V3 *)&o->position, o->rotY)) {
                 PlayerActor_RequestStandUpCheck(o, 2, 6, -1);
             }
             break;
@@ -3850,7 +3666,7 @@ extern "C" void PlayerActor_SitReadInput(Obj *o) {
 
 extern "C" void PlayerActor_MainSit(Obj *o) {
     if (Unk_ov004_022215a8_IsOne(gFieldSceneKind)) {
-        FtrMgr_PlaySeatSound0At(&o->position);
+        FtrMgr_PlaySeatSound0At((V3 *)&o->position);
     }
     PlayerActor_SitUpdateAnim(o);
     _ZN11PlayerActor19submitSceneColliderEv(o);
@@ -3902,37 +3718,8 @@ struct Unk_ov004_02220c78_Bits {
     u32 hi : 4;
 };
 
-struct Unk_ov004_02220c78_Obj {
-    u8 pad_00[0x5c];
-    Unk_ov004_02220c78_V3 position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0x170 - 0x90];
-    u8 bodyCollider[0x50];
-    u8 subCollider[0x3c];
-    u8 subColliderHit;
-    u8 pad_1fd[0x2cc - 0x1fd];
-    u32 bodyAnimCtrl;
-    u8 pad_2d0[0x2d4 - 0x2d0];
-    Unk_ov004_02220c78_Bits bodyAnimFrame;
-    u8 pad_2d8[0x2e0 - 0x2d8];
-    u8 bodyAnimPlayMode;
-    u8 pad_2e1[0x700 - 0x2e1];
-    s32 animId;
-    u8 pad_704[0x7d0 - 0x704];
-    StorageOpenWork actionWork;
-    u8 pad_7e0[0x7ec - 0x7e0];
-    u32 action;
-    u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 actionPriority;
-    u32 sessionSlot;
-    u8 pad_800[0x8ec - 0x800];
-    u8 netData[8];
-    u8 pad_8f4[0xc80 - 0x8f4];
-    u16 netSeq;
-};
-
-typedef Unk_ov004_02220c78_Obj Obj;
+typedef PlayerActor Obj;
+typedef Unk_ov004_02220c78_Bits Bits;
 typedef Unk_ov004_02220c78_V3 V3;
 typedef StorageOpenWork Rec;
 typedef Unk_ov004_02220c78_Msg Msg;
@@ -4033,7 +3820,7 @@ extern "C" void PlayerActor_EndStandUpSide2(Obj *o) {
 }
 
 extern "C" void PlayerActor_StandUpSide2CheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         PlayerActor_RequestStandUpFront(o, 6, -1);
     }
 }
@@ -4069,7 +3856,7 @@ extern "C" void PlayerActor_EndStandUpSide1(Obj *o) {
 }
 
 extern "C" void PlayerActor_StandUpSide1CheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         PlayerActor_RequestStandUpFront(o, 6, -1);
     }
 }
@@ -4106,7 +3893,7 @@ extern "C" void PlayerActor_SetupStandUpCheck(Obj *o, Msg *m) {
     s16 t;
     u8 idx = m->args;
     t = o->rotY - sSeatSideAngles[idx];
-    PlayerActor_OffsetByAngle(&pos, o, &o->position, &t, (u32)(sAct12Pos + 12));
+    PlayerActor_OffsetByAngle(&pos, o, (V3 *)&o->position, &t, (u32)(sAct12Pos + 12));
     tmp.x = pos.x;
     tmp.y = pos.y;
     tmp.z = pos.z;
@@ -4126,7 +3913,7 @@ extern "C" void PlayerActor_StandUpCheckTurn(Obj *o) {
     v.y = s->y;
     v.z = s->z;
     _ZN11PlayerActor14setSubColliderEjjj(o, &v, 0x1000, 0x1000);
-    _ZN13ActorCollider6submitEv(o->subCollider);
+    _ZN13ActorCollider6submitEv(&o->subCollider);
 }
 
 extern "C" void PlayerActor_StandUpCheckResult(Obj *o) {
@@ -4142,8 +3929,8 @@ extern "C" void PlayerActor_StandUpCheckResult(Obj *o) {
         PlayerActor_RequestSit(o, 3, 6, -1);
         return;
     }
-    r = &o->actionWork;
-    if (o->subColliderHit != 0) {
+    r = (Rec *)&o->actionWork;
+    if (o->subCollider.isHit != 0) {
         PlayerActor_RequestSit(o, 3, 6, -1);
         return;
     }
@@ -4162,7 +3949,7 @@ extern "C" void PlayerActor_StandUpCheckResult(Obj *o) {
 
 extern "C" void PlayerActor_MainStandUpCheck(Obj *o) {
     if (Unk_ov004_022211ac_Flag()) {
-        FtrMgr_PlaySeatSound0At(&o->position);
+        FtrMgr_PlaySeatSound0At((V3 *)&o->position);
     }
     _ZN11PlayerActor11advanceAnimEv(o);
     _ZN11PlayerActor18updateBodyColliderEv(o);
@@ -4187,10 +3974,10 @@ extern "C" void PlayerActor_StandUpFrontSetWork(V3 *d, V3 *s) {
 extern "C" void PlayerActor_SetupStandUpFront(Obj *o) {
     V3 v;
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x27, 0, 0);
-    PlayerActor_OffsetByAngle(&v, o, &o->position, &o->rotY, (u32)(sAct12Pos + 12));
+    PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, (u32)(sAct12Pos + 12));
     PlayerActor_StandUpFrontSetWork((V3 *)&o->actionWork, &v);
     if (Unk_ov004_022211ac_Flag()) {
-        FtrMgr_PlaySeatSound2At(&o->position);
+        FtrMgr_PlaySeatSound2At((V3 *)&o->position);
     }
 }
 
@@ -4209,7 +3996,7 @@ extern "C" void PlayerActor_EndStandUpFront(Obj *o) {
         SpotSync_Release(0);
     }
     V3 *s = (V3 *)&o->actionWork;
-    V3 *d = &o->position;
+    V3 *d = (V3 *)&o->position;
     o->position.x = s->x;
     d->y = s->y;
     d->z = s->z;
@@ -4217,7 +4004,7 @@ extern "C" void PlayerActor_EndStandUpFront(Obj *o) {
 
 extern "C" void PlayerActor_StandUpFrontUpdateAnim(Obj *o) {
     _ZN11PlayerActor11advanceAnimEv(o);
-    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0xd)) {
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0xd)) {
         _ZN11PlayerActor6playSeEj(o, 0x4c6);
     }
 }
@@ -4231,13 +4018,13 @@ extern "C" void PlayerActor_StandUpFrontMoveRemote(Obj *o) {
         v.x = s->x;
         v.y = s->y;
         v.z = s->z;
-        _ZN11PlayerActor17setBodyColliderAtEP16Unk_020107c8_BlkPj(o, &v, &o->action);
-        _ZN13ActorCollider6submitEv(o->bodyCollider);
+        _ZN11PlayerActor17setBodyColliderAtEP16Unk_020107c8_BlkPj(o, &v, (u32 *)&o->action);
+        _ZN13ActorCollider6submitEv(&o->bodyCollider);
     }
 }
 
 extern "C" void PlayerActor_StandUpFrontCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
         _ZN11PlayerActor11requestWaitEjjj(o, 0, 1, -1);
     }
@@ -4292,30 +4079,30 @@ extern "C" void PlayerActor_SetupStorageOpen(Obj *o, Msg *m) {
     u32 a = *(u32 *)&m->args;
     u32 b = p->targetZ;
     s16 c = p->targetAngle;
-    PlayerActor_StorageOpenSetWork(&o->actionWork, d, a, b, c);
-    PlayerActor_StorageOpenSetNetData(o->netData, d, a, b, c);
-    o->bodyAnimPlayMode = 1;
+    PlayerActor_StorageOpenSetWork((Rec *)&o->actionWork, d, a, b, c);
+    PlayerActor_StorageOpenSetNetData(o->netData.bytes, d, a, b, c);
+    ((AnimFrameCtrl &)o->bodyModel).playMode = 1;
 }
 
 extern "C" void PlayerActor_NetStorageOpen(Obj *o, s32 a) {
     u8 b;
     u16 h;
     s32 x, y;
-    PlayerActor_StorageOpenGetNetData(o->netData, &b, &x, &y, &h);
+    PlayerActor_StorageOpenGetNetData(o->netData.bytes, &b, &x, &y, &h);
     PlayerActor_RequestStorageOpen(o, b, x, y, (s16)h, 6, a);
 }
 
 extern "C" void PlayerActor_StorageOpenMove(Obj *o) {
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     PlayerActor_StepTowardPose(o, r->targetX, r->targetZ, r->targetAngle);
 }
 
 extern "C" void PlayerActor_StorageOpenStartAnim(Obj *o) {
     s32 k;
     if (o->animId == 0x1a || o->animId == 0) {
-        if (Unk_ov004_02220e48_IsZero(o->bodyAnimFrame.mid) < 6) {
+        if (Unk_ov004_02220e48_IsZero(((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid) < 6) {
             _ZN11PlayerActor13setActionFlagEj(o, 2);
-            switch (o->actionWork.storageKind) {
+            switch (((Rec *)&o->actionWork)->storageKind) {
             case 0:
                 k = 0x3b;
                 break;
@@ -4328,7 +4115,7 @@ extern "C" void PlayerActor_StorageOpenStartAnim(Obj *o) {
             }
             _ZN11PlayerActor13startAnimOnceEijt(o, k, 3, 0);
             if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot) == 0) {
-                FtrMgr_OnRemoteStorageOpen(&o->position, o->rotY);
+                FtrMgr_OnRemoteStorageOpen((V3 *)&o->position, o->rotY);
             }
         }
     }
@@ -4337,9 +4124,9 @@ extern "C" void PlayerActor_StorageOpenStartAnim(Obj *o) {
 extern "C" void PlayerActor_StorageOpenCheckEnd(Obj *o) {
     if (o->animId == 0x1a) return;
     if (o->animId == 0) return;
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         _ZN11PlayerActor15clearActionFlagEj(o, 2);
-        PlayerActor_RequestStorageHold(o, o->actionWork.storageKind, 6, -1);
+        PlayerActor_RequestStorageHold(o, ((Rec *)&o->actionWork)->storageKind, 6, -1);
     }
 }
 
@@ -4380,7 +4167,7 @@ extern "C" void PlayerActor_SetupStorageHold(Obj *o, Msg *m) {
     u32 t = m->args;
     s32 k;
     PlayerActor_StorageHoldSetWork((u32 *)&o->actionWork, t);
-    PlayerActor_StorageHoldSetNetData(o->netData, t);
+    PlayerActor_StorageHoldSetNetData(o->netData.bytes, t);
     switch (m->args) {
     case 0:
         k = 0x3b;
@@ -4394,13 +4181,13 @@ extern "C" void PlayerActor_SetupStorageHold(Obj *o, Msg *m) {
     }
     _ZN11PlayerActor9startAnimEijt(o, k, 3, 0);
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot) == 0) {
-        FtrMgr_OnRemoteStorageHold(&o->position, o->rotY);
+        FtrMgr_OnRemoteStorageHold((V3 *)&o->position, o->rotY);
     }
 }
 
 extern "C" void PlayerActor_NetStorageHold(Obj *o, s32 a) {
     u8 b;
-    PlayerActor_StorageHoldGetNetData(o->netData, &b);
+    PlayerActor_StorageHoldGetNetData(o->netData.bytes, &b);
     PlayerActor_RequestStorageHold(o, b, 6, a);
 }
 
@@ -4487,45 +4274,11 @@ public:
     u8 pad_18[4];
 };
 
-struct Unk_ov004_02220314_Obj {
-    u8 pad_00[0x5c];
-    Unk_ov004_02220314_V3 position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0x10a - 0x90];
-    u8 msgIndex;
-    u8 pad_10b[0x128 - 0x10b];
-    TalkWindowState *window;
-    u8 pad_12c[0x2cc - 0x12c];
-    u32 bodyAnimCtrl;
-    u32 bodyAnimNumFrames;
-    u32 bodyAnimFrame;
-    u8 pad_2d8[4];
-    s32 bodyAnimFrameStep;
-    u8 pad_2e0[0x700 - 0x2e0];
-    s32 animId;
-    u8 pad_704[0x7d0 - 0x704];
-    LeaveRoomWork actionWork;
-    u8 pad_7e4[0x7ec - 0x7e4];
-    s32 action;
-    u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 actionPriority;
-    u32 sessionSlot;
-    s32 exitIndex;
-    u8 pad_804[0x81c - 0x804];
-    u16 actionItem;
-    u16 shownItem;
-    u8 pad_820[0x8e7 - 0x820];
-    u8 pendingAct76Kind;
-    u8 pad_8e8[4];
-    u8 netData[4];
-};
-
 static inline BOOL Unk_ov004_02220314_IsZero(u8 v) {
     return v == 0 ? TRUE : FALSE;
 }
 
-typedef Unk_ov004_02220314_Obj Obj;
+typedef PlayerActor Obj;
 typedef Unk_ov004_02220314_V3 V3;
 typedef LeaveRoomWork Rec;
 typedef Unk_ov004_02220314_Msg Msg;
@@ -4627,8 +4380,8 @@ void PlayerActor_SetupStorageClose(Obj *o, PlayerActionRequest *m);
 extern "C" void PlayerActor_SetupStorageClose(Obj *o, PlayerActionRequest *m) {
     s32 t = ((PlayerLeaveRoomArgs *)m->unk_0c_b)->kind;
     s32 k;
-    PlayerActor_StorageCloseSetWork(&o->actionWork, t);
-    PlayerActor_StorageCloseSetNetData(&o->netData, (u8)t);
+    PlayerActor_StorageCloseSetWork((Rec *)&o->actionWork, t);
+    PlayerActor_StorageCloseSetNetData(&o->netData.bytes, (u8)t);
     switch (((PlayerLeaveRoomArgs *)m->unk_0c_b)->kind) {
     case 0:
         k = 0x38;
@@ -4641,21 +4394,21 @@ extern "C" void PlayerActor_SetupStorageClose(Obj *o, PlayerActionRequest *m) {
         break;
     }
     _ZN11PlayerActor13startAnimOnceEijt(o, k, 3, 0);
-    u32 mid = ((Bits *)&o->bodyAnimNumFrames)->mid;
-    _ZN13AnimFrameCtrl5setupEihit(&o->bodyAnimCtrl, mid, 3, 0x1000, (u16)(mid - 1));
+    u32 mid = ((Bits *)&((AnimFrameCtrl &)o->bodyModel).numFrames)->mid;
+    _ZN13AnimFrameCtrl5setupEihit(&(AnimFrameCtrl &)o->bodyModel, mid, 3, 0x1000, (u16)(mid - 1));
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot) == 0) {
-        FtrMgr_OnRemoteStorageClose(&o->position, o->rotY);
+        FtrMgr_OnRemoteStorageClose((V3 *)&o->position, o->rotY);
     }
 }
 
 extern "C" void PlayerActor_NetStorageClose(Obj *o, s32 a) {
     u8 b;
-    PlayerActor_StorageCloseGetNetData(&o->netData, &b);
+    PlayerActor_StorageCloseGetNetData(&o->netData.bytes, &b);
     PlayerActor_RequestStorageClose(o, b, 6, a);
 }
 
 extern "C" void PlayerActor_StorageCloseCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         _ZN11PlayerActor9startAnimEijt(o, 0, 3, 3);
         if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot) == 0) {
             o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
@@ -4702,7 +4455,7 @@ extern "C" void PlayerActor_NetAct36(Obj *o) {
 }
 
 extern "C" void PlayerActor_Act36UpdateAnim(Obj *o) {
-    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 8)) {
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 8)) {
         if (Scene_GetCurrent() == 9) {
             _ZN11PlayerActor6playSeEj(o, 0x63);
         }
@@ -4711,7 +4464,7 @@ extern "C" void PlayerActor_Act36UpdateAnim(Obj *o) {
 }
 
 extern "C" void PlayerActor_Act36CheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
         _ZN11PlayerActor12requestAct10Esji(o, 3, 5, -1);
     }
@@ -4733,8 +4486,8 @@ extern "C" s32 PlayerActor_RequestAct37(Obj *o, s32 a, s32 b) {
 
 extern "C" void PlayerActor_SetupAct37(Obj *o) {
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x2e, 3, 0);
-    u32 mid = ((Bits *)&o->bodyAnimNumFrames)->mid;
-    _ZN13AnimFrameCtrl5setupEihit(&o->bodyAnimCtrl, mid, 3, 0x1000, (u16)(mid - 1));
+    u32 mid = ((Bits *)&((AnimFrameCtrl &)o->bodyModel).numFrames)->mid;
+    _ZN13AnimFrameCtrl5setupEihit(&(AnimFrameCtrl &)o->bodyModel, mid, 3, 0x1000, (u16)(mid - 1));
     HandOverItem_RequestMode(HandOverItem_GetNextMode(), o);
     _ZN11PlayerActor6playSeEj(o, 0x52);
 }
@@ -4743,7 +4496,7 @@ extern "C" void PlayerActor_NetAct37(Obj *o) {
 }
 
 extern "C" void PlayerActor_Act37CheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
         _ZN11PlayerActor12requestAct10Esji(o, 3, 5, -1);
         u16 v;
@@ -4795,9 +4548,9 @@ extern "C" void PlayerActor_LeaveRoomSetWork(Rec *r, s32 a, s32 b, s32 c, s32 d,
 extern "C" void PlayerActor_SetupLeaveRoom(Obj *o, PlayerActionRequest *m) {
     _ZN11PlayerActor13setActionFlagEj(o, 3);
     PlayerLeaveRoomArgs *pay = (PlayerLeaveRoomArgs *)m->unk_0c_b;
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     V3 v;
-    SceneExit_SnapPos(Scene_GetWarpRequest(), o->exitIndex, &v, &o->position);
+    SceneExit_SnapPos(Scene_GetWarpRequest(), o->exitIndex, &v, (V3 *)&o->position);
     s32 mode = pay->kind;
     s32 ang = pay->angle;
     if (mode == 2) {
@@ -4841,7 +4594,7 @@ extern "C" void PlayerActor_NetLeaveRoom(Obj *o) {
 }
 
 extern "C" void PlayerActor_LeaveRoomMove(Obj *o) {
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     PlayerActor_StepTowardPose(o, r->targetX, r->targetZ, r->targetAngle);
 }
 
@@ -4849,24 +4602,24 @@ extern "C" void PlayerActor_LeaveRoomUpdateAnim(Obj *o) {
     _ZN11PlayerActor11advanceAnimEv(o);
     if (o->animId == 1) {
         V3 v;
-        Vec_Sub(&v, &o->position, (V3 *)((u8 *)o + 0x68));
+        Vec_Sub(&v, (V3 *)&o->position, (V3 *)((u8 *)o + 0x68));
         s32 t = func_01ffcb0c(Vec_MagXZ(&v), 0x3ae1) << 2;
-        if (t <= (s32)o->bodyAnimNumFrames) {
-            o->bodyAnimFrameStep = t;
+        if (t <= (s32)((AnimFrameCtrl &)o->bodyModel).numFrames) {
+            ((AnimFrameCtrl &)o->bodyModel).frameStep = t;
         }
         _ZN11PlayerActor16updateFootstepFxEv(o);
         if (t == 0) {
             _ZN11PlayerActor9startAnimEijt(o, 0, 3, 0);
         }
     } else if (o->animId != 0) {
-        if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0x10)) {
+        if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0x10)) {
             _ZN11PlayerActor14playFootstepSeEv(o);
         }
     }
 }
 
 extern "C" void PlayerActor_LeaveRoomUpdateHeight(Obj *o) {
-    V3 *p = &o->position;
+    V3 *p = (V3 *)&o->position;
     u8 loc[0x30];
     _ZN14CollisionStateC1Ev(loc);
     s32 ang = o->rotY;
@@ -4879,7 +4632,7 @@ extern "C" void PlayerActor_LeaveRoomUpdateHeight(Obj *o) {
     Collision_Move(sel, p, (V3 *)((u8 *)o + 0x68), ang, 0xfd7, o, 0xf);
     _ZN14CollisionStateD1Ev(loc);
     p->y = Ground_GetDefaultY(0);
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     s32 m = r->leaveMode;
     if ((u32)(m - 1) <= 1) {
         Unk_ov004_02220314_V3c v(r->targetX, p->y, r->targetZ);
@@ -4895,10 +4648,10 @@ extern "C" void PlayerActor_LeaveRoomUpdateHeight(Obj *o) {
 }
 
 extern "C" void PlayerActor_LeaveRoomCheckArrive(Obj *o) {
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     u8 *st = &r->entryStep;
     if (*st == 0) {
-        V3 *p = &o->position;
+        V3 *p = (V3 *)&o->position;
         if (p->x == r->targetX && p->z == r->targetZ && r->targetAngle == o->rotY) {
             if (r->leaveMode == 1) {
                 PlayerActor_RequestAct41(o, 6, -1);
@@ -4909,12 +4662,12 @@ extern "C" void PlayerActor_LeaveRoomCheckArrive(Obj *o) {
         s32 t = o->animId;
         if (t == 1) return;
         if (t == 0x3e) {
-            if (((Bits *)&o->bodyAnimFrame)->mid >= 6) {
+            if (((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid >= 6) {
                 PlayerActor_StepAlpha(o, 0, 6);
             }
         }
         if (Unk_ov004_02220314_IsZero(gScreenTransition)) return;
-        if (((Bits *)&o->bodyAnimFrame)->mid >= 5) {
+        if (((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid >= 5) {
             SceneWarp_RequestExit(Scene_GetWarpRequest(), o->exitIndex);
         }
     } else {
@@ -4937,11 +4690,10 @@ extern "C" void PlayerActor_LeaveRoomCheckArrive(Obj *o) {
                 }
                 break;
             case 1: {
-                Sec *s = (Sec *)o;
-                if (o) s = (Sec *)((u8 *)o + 0xec);
+                Sec *s = o;
                 _ZN9Character17attachTalkRequestEi(o, s);
                 _ZN11PlayerActor13setActionFlagEj(o, 0x11);
-                _ZN10MsgRequest11setFileNameEPKc((Sec *)((u8 *)o + 0xec), sRoomErrorMsgFile);
+                _ZN10MsgRequest11setFileNameEPKc(&(Sec &)*o, sRoomErrorMsgFile);
                 o->msgIndex = 0x15;
                 o->window->nextState = 1;
                 *st = *st + 1;
@@ -4968,8 +4720,7 @@ extern "C" void PlayerActor_LeaveRoomCheckArrive(Obj *o) {
                     l.a.x = v->x;
                     l.a.y = v->y;
                     l.a.z = v->z;
-                    Sec *s = (Sec *)o;
-                    if (o) s = (Sec *)((u8 *)o + 0xec);
+                    Sec *s = o;
                     _ZN9Character17detachTalkRequestEi(o, s);
                     _ZN11PlayerActor15clearActionFlagEj(o, 0x11);
                     o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
@@ -5050,30 +4801,11 @@ struct Unk_ov004_0221fa00_Bits {
     u32 hi : 4;
 };
 
-struct Unk_ov004_0221fa00_Obj {
-    u8 pad_00[0x2cc];
-    u32 bodyAnimCtrl;
-    u32 bodyAnimNumFrames;
-    u32 bodyAnimFrame;
-    u8 pad_2d8[0x700 - 0x2d8];
-    s32 animId;
-    u8 pad_704[0x7d0 - 0x704];
-    HaircutWork actionWork;
-    u8 pad_7d3[0x7ec - 0x7d3];
-    s32 action;
-    u8 pad_7f0[0x7f8 - 0x7f0];
-    s32 actionPriority;
-    u32 sessionSlot;
-    s32 exitIndex;
-    u8 pad_804[0x8e5 - 0x804];
-    u8 alpha;
-};
-
 static inline BOOL Unk_ov004_0221fa00_IsZero(u8 v) {
     return v == 0 ? TRUE : FALSE;
 }
 
-typedef Unk_ov004_0221fa00_Obj Obj;
+typedef PlayerActor Obj;
 typedef Unk_ov004_0221fa00_V3 V3;
 typedef HaircutWork Rec;
 typedef Unk_ov004_0221fa00_Msg Msg;
@@ -5158,7 +4890,7 @@ void PlayerActor_Act41UpdateAnim(Obj *o);
 
 extern "C" void PlayerActor_Act41UpdateAnim(Obj *o) {
     _ZN11PlayerActor11advanceAnimEv(o);
-    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0x10)) {
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0x10)) {
         _ZN11PlayerActor14playFootstepSeEv(o);
     }
 }
@@ -5171,7 +4903,7 @@ extern "C" void PlayerActor_Act41UpdateRemote(Obj *o, s32 a) {
     }
     _ZN11PlayerActor11advanceAnimEv(o);
     if (o->animId == 0x3e) {
-        if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0x10)) {
+        if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0x10)) {
             _ZN11PlayerActor14playFootstepSeEv(o);
         }
     }
@@ -5179,7 +4911,7 @@ extern "C" void PlayerActor_Act41UpdateRemote(Obj *o, s32 a) {
 
 extern "C" void PlayerActor_Act41FadeOut(Obj *o) {
     if (o->animId == 0x3e) {
-        if (((Bits *)&o->bodyAnimFrame)->mid >= 6) {
+        if (((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid >= 6) {
             PlayerActor_StepAlpha(o, 0, 6);
         }
     }
@@ -5187,7 +4919,7 @@ extern "C" void PlayerActor_Act41FadeOut(Obj *o) {
 
 extern "C" void PlayerActor_Act41CheckSceneChange(Obj *o) {
     if (Unk_ov004_0221fa00_IsZero(gScreenTransition)) return;
-    if (((Bits *)&o->bodyAnimFrame)->mid >= 5) {
+    if (((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid >= 5) {
         SceneWarp_RequestExit(Scene_GetWarpRequest(), o->exitIndex);
     }
 }
@@ -5223,7 +4955,7 @@ extern "C" s32 PlayerActor_NetAct42(Obj *o, s32 a) {
 
 extern "C" void PlayerActor_Act42UpdateAnim(Obj *o) {
     _ZN11PlayerActor11advanceAnimEv(o);
-    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0x10)) {
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0x10)) {
         _ZN11PlayerActor14playFootstepSeEv(o);
     }
 }
@@ -5236,7 +4968,7 @@ extern "C" void PlayerActor_Act42UpdateRemote(Obj *o, s32 a) {
     }
     _ZN11PlayerActor11advanceAnimEv(o);
     if (o->animId == 0x3e) {
-        if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0x10)) {
+        if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0x10)) {
             _ZN11PlayerActor14playFootstepSeEv(o);
         }
     }
@@ -5244,7 +4976,7 @@ extern "C" void PlayerActor_Act42UpdateRemote(Obj *o, s32 a) {
 
 extern "C" void PlayerActor_Act42FadeOut(Obj *o) {
     if (o->animId == 0x3f) {
-        if (((Bits *)&o->bodyAnimFrame)->mid >= 9) {
+        if (((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid >= 9) {
             PlayerActor_StepAlpha(o, 0, 6);
         }
     }
@@ -5252,7 +4984,7 @@ extern "C" void PlayerActor_Act42FadeOut(Obj *o) {
 
 extern "C" void PlayerActor_Act42CheckSceneChange(Obj *o) {
     if (Unk_ov004_0221fa00_IsZero(gScreenTransition)) return;
-    if (((Bits *)&o->bodyAnimFrame)->mid >= 5) {
+    if (((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid >= 5) {
         SceneWarp_RequestExit(Scene_GetWarpRequest(), o->exitIndex);
     }
 }
@@ -5287,13 +5019,13 @@ extern "C" s32 PlayerActor_NetAct43(Obj *o, s32 a) {
 
 extern "C" void PlayerActor_Act43UpdateAnim(Obj *o) {
     _ZN11PlayerActor11advanceAnimEv(o);
-    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0xc) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0x14)) {
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0xc) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0x14)) {
         _ZN11PlayerActor14playFootstepSeEv(o);
     }
 }
 
 extern "C" void PlayerActor_Act43CheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         _ZN11PlayerActor12nudgeForwardEv(o);
         o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
         _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
@@ -5329,13 +5061,13 @@ extern "C" s32 PlayerActor_NetAct44(Obj *o, s32 a) {
 
 extern "C" void PlayerActor_Act44UpdateAnim(Obj *o) {
     _ZN11PlayerActor11advanceAnimEv(o);
-    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0xc) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 0x14)) {
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0xc) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 0x14)) {
         _ZN11PlayerActor14playFootstepSeEv(o);
     }
 }
 
 extern "C" void PlayerActor_Act44CheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         _ZN11PlayerActor12nudgeForwardEv(o);
         o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
         _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
@@ -5367,7 +5099,7 @@ extern "C" void PlayerActor_SetupHaircutStart(Obj *o, PlayerActionRequest *m) {
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x6d, 3, 0);
     PlayerHaircutArgs *p = (PlayerHaircutArgs *)m->unk_0c_b;
     u8 b = p->hairColor;
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     r->hairStyle = p->hairStyle;
     r->hairColor = b;
 }
@@ -5376,10 +5108,10 @@ extern "C" void PlayerActor_NetHaircutStart(Obj *o) {
 }
 
 extern "C" void PlayerActor_HaircutStartCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
-        Rec *r = &o->actionWork;
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
+        Rec *r = (Rec *)&o->actionWork;
         PlayerActor_RequestHaircutCut(o, r->hairStyle, r->hairColor, 6, -1);
-    } else if (((Bits *)&o->bodyAnimFrame)->mid >= 3) {
+    } else if (((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid >= 3) {
         if (PlayerActor_GetHairStyle(o)) {
             u16 loc[2];
             PlayerActor_GetHat(&loc[1], o);
@@ -5412,7 +5144,7 @@ extern "C" void PlayerActor_SetupHaircutCut(Obj *o, PlayerActionRequest *m) {
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x6e, 3, 0);
     PlayerHaircutArgs *p = (PlayerHaircutArgs *)m->unk_0c_b;
     u8 b = p->hairColor;
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     r->hairStyle = p->hairStyle;
     r->hairColor = b;
 }
@@ -5421,8 +5153,8 @@ extern "C" void PlayerActor_NetHaircutCut(Obj *o) {
 }
 
 extern "C" void PlayerActor_HaircutCutCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
-        Rec *r = &o->actionWork;
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
+        Rec *r = (Rec *)&o->actionWork;
         PlayerActor_RequestHaircutFinish(o, r->hairStyle, r->hairColor, 6, -1);
     }
 }
@@ -5447,7 +5179,7 @@ extern "C" void PlayerActor_SetupHaircutFinish(Obj *o, PlayerActionRequest *m) {
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x6f, 3, 0);
     PlayerHaircutArgs *p = (PlayerHaircutArgs *)m->unk_0c_b;
     u8 b = p->hairColor;
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     r->hairStyle = p->hairStyle;
     r->hairColor = b;
     r->hairApplied = 0;
@@ -5467,11 +5199,11 @@ extern "C" void PlayerActor_EndHaircutFinish(Obj *o) {
 
 extern "C" void PlayerActor_HaircutFinishUpdate(Obj *o) {
     _ZN11PlayerActor11advanceAnimEv(o);
-    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->bodyAnimCtrl, 10)) {
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 10)) {
         EffectSpl_CreateOneShot(0x60, (u8 *)o + 0x6dc, 0, gEffectSplDefaultInitCbs);
     }
-    if (((Bits *)&o->bodyAnimFrame)->mid >= 0xb) {
-        Rec *r = &o->actionWork;
+    if (((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid >= 0xb) {
+        Rec *r = (Rec *)&o->actionWork;
         if (r->hairApplied == 0) {
             u16 loc[2];
             PlayerActor_GetHat(&loc[1], o);
@@ -5512,34 +5244,7 @@ public:
     u8 pad_18[4];
 };
 
-struct Unk_ov004_0221f0b8_Obj {
-    u8 pad_00[0x5c];
-    Unk_ov004_0221f0b8_V3 position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0x98 - 0x90];
-    s32 speed;
-    u8 pad_9c[0x2cc - 0x9c];
-    s32 bodyAnimCtrl;
-    s32 bodyAnimNumFrames;
-    u8 pad_2d4[0x2dc - 0x2d4];
-    s32 bodyAnimFrameStep;
-    u8 pad_2e0[0x700 - 0x2e0];
-    s32 animId;
-    u8 pad_704[0x7d0 - 0x704];
-    DoorWalkWork actionWork;
-    u8 pad_7e8[0x7ec - 0x7e8];
-    s32 action;
-    u8 pad_7f0[0x7f4 - 0x7f0];
-    s32 drawStep;
-    s32 actionPriority;
-    u32 sessionSlot;
-    s32 exitIndex;
-    u8 pad_804[0x8ec - 0x804];
-    u32 netData[4];
-};
-
-typedef Unk_ov004_0221f0b8_Obj Obj;
+typedef PlayerActor Obj;
 typedef Unk_ov004_0221f0b8_V3 V3;
 typedef DoorWalkWork Rec;
 typedef Unk_ov004_0221f0b8_Msg Msg;
@@ -5620,7 +5325,7 @@ void PlayerActor_HaircutFinishCheckEnd(Obj *o);
 }
 
 extern "C" void PlayerActor_HaircutFinishCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         if (_ZN11PlayerActor17getInputMagnitudeEv(o) > 0) {
             s32 t = _ZN11PlayerActor13getInputAngleEv(o) - o->rotY;
             if (Math_AngleToDir4((s16)t) == 0) {
@@ -5664,7 +5369,7 @@ extern "C" void PlayerActor_NetPhonePickUp(Obj *o, u32 a) {
 }
 
 extern "C" void PlayerActor_PhonePickUpMove(Obj *o) {
-    Rec *r4 = &o->actionWork;
+    Rec *r4 = (Rec *)&o->actionWork;
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot)) {
         PlayerActor_StepTowardPose(o, r4->targetPos.x, r4->targetPos.z, -0x8000);
     } else {
@@ -5673,7 +5378,7 @@ extern "C" void PlayerActor_PhonePickUpMove(Obj *o) {
 }
 
 extern "C" void PlayerActor_PhonePickUpCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         PlayerActor_RequestPhoneHold(o, 6, -1);
     }
 }
@@ -5719,8 +5424,8 @@ extern "C" s32 PlayerActor_RequestPhoneHangUp(Obj *o, u32 a, u32 b) {
 
 extern "C" void PlayerActor_SetupPhoneHangUp(Obj *o) {
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x78, 3, 0);
-    u32 t = (u32)(o->bodyAnimNumFrames << 4) >> 16;
-    _ZN13AnimFrameCtrl5setupEihit(&o->bodyAnimCtrl, t, 3, 0x1000, (u16)(t - 1));
+    u32 t = (u32)((s32)((AnimFrameCtrl &)o->bodyModel).numFrames << 4) >> 16;
+    _ZN13AnimFrameCtrl5setupEihit(&(AnimFrameCtrl &)o->bodyModel, t, 3, 0x1000, (u16)(t - 1));
     RoomTelephone_GetInstance();
     RoomTelephone_PlayAnimHangUp();
 }
@@ -5730,7 +5435,7 @@ extern "C" void PlayerActor_NetPhoneHangUp(Obj *o, u32 a) {
 }
 
 extern "C" s32 PlayerActor_PhoneHangUpCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
         _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
     }
@@ -5758,7 +5463,7 @@ extern "C" void PlayerActor_NetDrinkCoffee() {
 }
 
 extern "C" void PlayerActor_DrinkCoffeeCheckEnd(Obj *o) {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->bodyAnimCtrl)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         switch (o->animId) {
         case 0x95:
             _ZN11PlayerActor13startAnimOnceEijt(o, 0x96, 0, 0);
@@ -5816,10 +5521,10 @@ extern "C" void PlayerActor_DoorWalkInGetNetData(void *a, s32 *b, s32 *c) {
 extern "C" void PlayerActor_SetupDoorWalkIn(Obj *o, Obj *arg) {
     V3 c;
     V3 *r6 = (V3 *)((u8 *)arg + 0xc);
-    Rec *r0c = &o->actionWork;
+    Rec *r0c = (Rec *)&o->actionWork;
     _ZN11PlayerActor9startAnimEijt(o, 1, 0, 0);
     s32 r7 = 0;
-    o->bodyAnimFrameStep = r7;
+    ((AnimFrameCtrl &)o->bodyModel).frameStep = r7;
     u32 r5 = r7;
     s32 mode = Building_GetLastEntranceType();
     o->drawStep = 1;
@@ -5842,9 +5547,9 @@ extern "C" void PlayerActor_SetupDoorWalkIn(Obj *o, Obj *arg) {
     case 3:
         break;
     }
-    void *r14 = &o->netData;
+    void *r14 = o->netData.bytes;
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot)) {
-        V3 *pv = &o->position;
+        V3 *pv = (V3 *)&o->position;
         c.x = pv->x;
         c.y = pv->y;
         c.z = pv->z;
@@ -5870,12 +5575,12 @@ extern "C" void PlayerActor_SetupDoorWalkIn(Obj *o, Obj *arg) {
 
 extern "C" void PlayerActor_NetDoorWalkIn(Obj *o, u32 a) {
     V3 v;
-    PlayerActor_DoorWalkInGetNetData(&o->netData, &v.x, &v.z);
+    PlayerActor_DoorWalkInGetNetData(o->netData.bytes, &v.x, &v.z);
     PlayerActor_RequestDoorWalkIn(o, &v, 6, a);
 }
 
 extern "C" void PlayerActor_DoorWalkInUpdate(Obj *o) {
-    Rec *r4 = &o->actionWork;
+    Rec *r4 = (Rec *)&o->actionWork;
     V3 v;
     s32 lim;
     u8 *p = &r4->doorTimer;
@@ -5915,7 +5620,7 @@ extern "C" void PlayerActor_RoomWalkUpdateAnim(Obj *o) {
     s32 r4 = o->speed;
     s32 t = func_01ffcb0c(r4, 0x3ae1);
     if (t < 0x800) t = 0x800;
-    if (t <= o->bodyAnimNumFrames) o->bodyAnimFrameStep = t;
+    if (t <= (s32)((AnimFrameCtrl &)o->bodyModel).numFrames) ((AnimFrameCtrl &)o->bodyModel).frameStep = t;
     if (r4 > 0x53f) {
         if (o->animId != 2) _ZN11PlayerActor10switchAnimEijt(o, 2, 3, 0);
     } else {
@@ -6006,13 +5711,13 @@ extern "C" void PlayerActor_SetupDoorWalkOut(Obj *o, Obj *arg) {
     c.x = r6->x;
     c.y = r6->y;
     c.z = r6->z;
-    PlayerActor_DoorWalkOutSetWork(&o->actionWork, c, o->speed, 0x400, (u8)r7);
-    PlayerActor_DoorWalkOutSetNetData(&o->netData, c.x, c.z);
+    PlayerActor_DoorWalkOutSetWork((Rec *)&o->actionWork, c, o->speed, 0x400, (u8)r7);
+    PlayerActor_DoorWalkOutSetNetData(o->netData.bytes, c.x, c.z);
 }
 
 extern "C" void PlayerActor_NetDoorWalkOut(Obj *o, u32 a) {
     V3 v;
-    PlayerActor_DoorWalkOutGetNetData(&o->netData, &v.x, &v.z);
+    PlayerActor_DoorWalkOutGetNetData(o->netData.bytes, &v.x, &v.z);
     PlayerActor_RequestDoorWalkOut(o, &v, 6, a);
 }
 
@@ -6046,44 +5751,7 @@ public:
     u8 pad_18[4];
 };
 
-struct Unk_ov004_0221e7a8_Obj {
-    u8 pad_00[0x5c];
-    Unk_ov004_0221e7a8_V3 position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0x98 - 0x90];
-    s32 speed;
-    u8 pad_9c[0x13d - 0x9c];
-    u8 actionHeld;
-    u8 pad_13e[0x144 - 0x13e];
-    u8 hasTargetPos;
-    u8 pad_145[0x154 - 0x145];
-    s32 targetPosX;
-    s32 targetPosY;
-    s32 targetPosZ;
-    u8 pad_160[0x169 - 0x160];
-    u8 touchTargetId;
-    u8 pad_16a[0x16c - 0x16a];
-    s32 inputMode;
-    u8 pad_170[0x2dc - 0x170];
-    s32 bodyAnimFrameStep;
-    u8 pad_2e0[0x700 - 0x2e0];
-    s32 animId;
-    u8 pad_704[0x7d0 - 0x704];
-    ExitWalkWork actionWork;
-    u8 pad_7e8[0x7fc - 0x7e8];
-    u32 sessionSlot;
-    s32 exitIndex;
-    u8 pad_804[0x81c - 0x804];
-    u16 actionItem;
-    u16 shownItem;
-    u8 pad_820[0x8e5 - 0x820];
-    u8 alpha;
-    u8 pad_8e6[0x8ec - 0x8e6];
-    u32 netData[4];
-};
-
-typedef Unk_ov004_0221e7a8_Obj Obj;
+typedef PlayerActor Obj;
 typedef Unk_ov004_0221e7a8_V3 V3;
 typedef Unk_ov004_0221e7a8_Pair Pair;
 typedef ExitWalkWork Rec;
@@ -6168,7 +5836,7 @@ void PlayerActor_ExitWalkOutSetArgs(V3 *d, V3 v);
 }
 
 extern "C" void PlayerActor_DoorWalkOutMove(Obj *o) {
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     s32 lim = r->speedLimit;
     V3 v;
     v.x = r->targetPos.x;
@@ -6182,7 +5850,7 @@ extern "C" void PlayerActor_MainDoorWalkOut(Obj *o) {
     PlayerActor_RoomWalkUpdateAnim(o);
     _ZN11PlayerActor15moveNoCollisionEv(o);
     _ZN11PlayerActor18updateBodyColliderEv(o);
-    Rec *q = &o->actionWork;
+    Rec *q = (Rec *)&o->actionWork;
     u8 *r4 = &q->doorTimer;
     u8 r6 = q->entranceType;
     void *r7 = gCommManager;
@@ -6235,20 +5903,20 @@ extern "C" void PlayerActor_SetupExitWalkOut(Obj *o, Obj *arg) {
     c.x = r4->x;
     c.y = r4->y;
     c.z = r4->z;
-    PlayerActor_ExitWalkOutSetWork(&o->actionWork, c, o->speed, 0x400);
-    PlayerActor_ExitWalkOutSetNetData(&o->netData, c.x, c.z);
+    PlayerActor_ExitWalkOutSetWork((Rec *)&o->actionWork, c, o->speed, 0x400);
+    PlayerActor_ExitWalkOutSetNetData(o->netData.bytes, c.x, c.z);
 }
 
 extern "C" void PlayerActor_NetExitWalkOut(Obj *o, u32 a) {
     V3 v;
-    PlayerActor_ExitWalkOutGetNetData(&o->netData, &v.x, &v.z);
+    PlayerActor_ExitWalkOutGetNetData(o->netData.bytes, &v.x, &v.z);
     if ((v.x & 0x80000) != 0) v.x |= 0xfff00000;
     if ((v.z & 0x80000) != 0) v.z |= 0xfff00000;
     PlayerActor_RequestExitWalkOut(o, &v, 6, a);
 }
 
 extern "C" void PlayerActor_ExitWalkOutMove(Obj *o) {
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     s32 lim = r->speedLimit;
     V3 v;
     v.x = r->targetPos.x;
@@ -6300,13 +5968,13 @@ extern "C" void PlayerActor_SetupExitWalkIn(Obj *o, Obj *arg) {
     V3 w;
     V3 tmp;
     V3 *r5 = (V3 *)((u8 *)arg + 0xc);
-    Rec *r6 = &o->actionWork;
+    Rec *r6 = (Rec *)&o->actionWork;
     _ZN11PlayerActor9startAnimEijt(o, 1, 0, 0);
-    o->bodyAnimFrameStep = 0;
+    ((AnimFrameCtrl &)o->bodyModel).frameStep = 0;
     w.x = 0;
     w.y = 0;
     w.z = 0;
-    void *r7 = &o->netData;
+    void *r7 = o->netData.bytes;
     switch (Math_AngleToDir4(o->rotY)) {
     case 2:
         w.z = w.z + 0x6000;
@@ -6322,18 +5990,18 @@ extern "C" void PlayerActor_SetupExitWalkIn(Obj *o, Obj *arg) {
         break;
     }
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot)) {
-        V3 *pv = &o->position;
+        V3 *pv = (V3 *)&o->position;
         cur.x = pv->x;
         cur.y = pv->y;
         cur.z = pv->z;
         PlayerActor_ExitWalkInSetNetData(r7, cur.x, cur.z);
-        VEC_Add(&o->position, &w, &o->position);
+        VEC_Add((V3 *)&o->position, &w, (V3 *)&o->position);
     } else {
         cur.x = r5->x;
         cur.y = r5->y;
         cur.z = r5->z;
         func_01ffd070(&tmp, &cur, &w);
-        V3 *pv = &o->position;
+        V3 *pv = (V3 *)&o->position;
         pv->x = tmp.x;
         pv->y = tmp.y;
         pv->z = tmp.z;
@@ -6345,12 +6013,12 @@ extern "C" void PlayerActor_SetupExitWalkIn(Obj *o, Obj *arg) {
 
 extern "C" void PlayerActor_NetExitWalkIn(Obj *o, u32 a) {
     V3 v;
-    PlayerActor_ExitWalkInGetNetData(&o->netData, &v.x, &v.z);
+    PlayerActor_ExitWalkInGetNetData(o->netData.bytes, &v.x, &v.z);
     PlayerActor_RequestExitWalkIn(o, &v, 6, a);
 }
 
 extern "C" void PlayerActor_ExitWalkInMove(Obj *o) {
-    Rec *r = &o->actionWork;
+    Rec *r = (Rec *)&o->actionWork;
     s32 lim = r->speedLimit;
     V3 v;
     v.x = r->targetPos.x;
@@ -6407,14 +6075,14 @@ extern "C" s32 PlayerActor_RoomInteractAt(Obj *o, s32 param) {
     r6 = gSceneBlockMap;
     if (r5 == -2) {
         if (o->inputMode == 1) {
-            PlayerActor_OffsetByAngle(&tmp1, o, &o->position, &o->rotY, (u32)(sAct12Pos + 12));
+            PlayerActor_OffsetByAngle(&tmp1, o, (V3 *)&o->position, &o->rotY, (u32)(sAct12Pos + 12));
             tgt.x = tmp1.x;
             tgt.y = tmp1.y;
             tgt.z = tmp1.z;
         } else {
-            tgt.x = o->targetPosX;
-            tgt.y = o->targetPosY;
-            tgt.z = o->targetPosZ;
+            tgt.x = o->targetPos.x;
+            tgt.y = o->targetPos.y;
+            tgt.z = o->targetPos.z;
             if (_ZN11PlayerActor12isPosInReachEPij(o, &tgt, 0xe) == 0) goto second;
         }
         r5 = BlockMap_GetItemPtrAtPos(r6, &tgt, 1);
@@ -6442,14 +6110,14 @@ extern "C" s32 PlayerActor_RoomInteractAt(Obj *o, s32 param) {
     }
 second:
     if (o->inputMode == 1) {
-        PlayerActor_OffsetByAngle(&tmp2, o, &o->position, &o->rotY, (u32)sRoomInteractDist);
+        PlayerActor_OffsetByAngle(&tmp2, o, (V3 *)&o->position, &o->rotY, (u32)sRoomInteractDist);
         tgt.x = tmp2.x;
         tgt.y = tmp2.y;
         tgt.z = tmp2.z;
     } else {
-        tgt.x = o->targetPosX;
-        tgt.y = o->targetPosY;
-        tgt.z = o->targetPosZ;
+        tgt.x = o->targetPos.x;
+        tgt.y = o->targetPos.y;
+        tgt.z = o->targetPos.z;
         if (_ZN11PlayerActor12isPosInReachEPij(o, &tgt, 0xc) == 0) return 0;
     }
     {
@@ -6514,7 +6182,7 @@ extern "C" void PlayerActor_RoomWalkToward(Obj *o, V3 *tgt, s32 *out, s32 *lim) 
     s32 ang;
     s16 h;
     s32 v;
-    V3 *pv = &o->position;
+    V3 *pv = (V3 *)&o->position;
     saved = *pv;
     d.x = tgt->x - o->position.x;
     d.z = tgt->z - o->position.z;
@@ -6525,8 +6193,8 @@ extern "C" void PlayerActor_RoomWalkToward(Obj *o, V3 *tgt, s32 *out, s32 *lim) 
             if (tgt->x == o->position.x && tgt->z == o->position.z) {
                 *out = 0;
             } else {
-                *out = Vec_DistXZ(&o->position, &saved);
-                V3 *pw = &o->position;
+                *out = Vec_DistXZ((V3 *)&o->position, &saved);
+                V3 *pw = (V3 *)&o->position;
                 *pw = saved;
             }
         } else {

@@ -3012,9 +3012,9 @@ ClothTex_GetTexData kind:function(thumb,size=0x14) addr:0x0203c6e4
 ClothTex_LoadPattern kind:function(thumb,size=0x6c) addr:0x0203c6f8
 ClothTex_LoadItem kind:function(thumb,size=0x1c0) addr:0x0203c764
 ClothTex_Destruct kind:function(thumb,size=0x2) addr:0x0203c924
-_ZN22Unk_ov004_02250f6c_ObjD1Ev kind:label(thumb) addr:0x0203c924
+_ZN8ClothTexD1Ev kind:label(thumb) addr:0x0203c924
 ClothTex_Construct kind:function(thumb,size=0x2) addr:0x0203c928
-_ZN22Unk_ov004_02250f6c_ObjC1Ev kind:label(thumb) addr:0x0203c928
+_ZN8ClothTexC1Ev kind:label(thumb) addr:0x0203c928
 _ZN13PlayerOptions20markTalkVoiceChangedEv kind:function(thumb,size=0xa) addr:0x0203c92c
 _ZN13PlayerOptions17markStereoChangedEv kind:function(thumb,size=0xa) addr:0x0203c938
 _ZN13PlayerOptions19markHiraganaChangedEv kind:function(thumb,size=0xc) addr:0x0203c944

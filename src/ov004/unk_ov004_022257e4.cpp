@@ -33,33 +33,10 @@
 
 
 
-struct Unk_ov004_02225cf4_Q {
-    u32 pad_00;
-    u32 prmMatColor0;
-    u32 pad_08;
-    u32 prmPolygonAttr;
-};
-
-struct Unk_ov004_02225cf4_P {
-    u8 pad_00[8];
-    u32 flag;
-    u8 pad_0c[0xb0 - 0xc];
-    Unk_ov004_02225cf4_Q *matAnmResult;
-};
-
 struct Unk_ov004_02225c6c_V3 {
     s32 x, y, z;
 };
 
-
-struct Unk_ov004_02226458_Obj {
-    u32 unk_00;
-    u32 unk_04;
-    u8 pad_08[0x14];
-    void (*matCallback)(void *);
-    u8 pad_20[0x90 - 0x20];
-    u8 matCallbackTiming;
-};
 
 // a 4-byte colour record whose constructor is inline (the __sinit of this unit initialises six of them)
 
@@ -88,7 +65,7 @@ public:
     void updateDoorCollision();
     void setDoorOffset(s32 a);
     void clearDoorUpdate();
-    void applyHourLight(u32 a, Unk_ov004_02225cf4_P *p);
+    void applyHourLight(u32 a, NNSG3dRS *p);
     BOOL initMatAnim();
     BOOL initBodyAnim();
     void setGroundMatFlags();
@@ -187,18 +164,17 @@ extern "C" CheckInGate *CheckInGate_Create() {
     return new CheckInGate();
 }
 
-extern "C" void CheckInGate_MatCallback(Unk_ov004_02226458_Obj *o);
-extern "C" void CheckInGate_MatCallback(Unk_ov004_02226458_Obj *o) {
-    NNSG3dRS *t = (NNSG3dRS *)o;
-    NNSG3dRenderObj *s = t->pRenderObj;
+extern "C" void CheckInGate_MatCallback(NNSG3dRS *o);
+extern "C" void CheckInGate_MatCallback(NNSG3dRS *o) {
+    NNSG3dRenderObj *s = o->pRenderObj;
     if (s->ptrUser != 0) {
-        ((Cls *)s->ptrUser)->applyHourLight(t->c[1], (Unk_ov004_02225cf4_P *)o);
+        ((Cls *)s->ptrUser)->applyHourLight(o->c[1], o);
     }
 }
 
-extern "C" void CheckInGate_InitRenderObj(Unk_ov004_02226458_Obj *o) {
-    o->matCallback = (void (*)(void *))CheckInGate_MatCallback;
-    o->matCallbackTiming = 2;
+extern "C" void CheckInGate_InitRenderObj(NNSG3dRS *o) {
+    o->cbVecFunc[4] = (void *)CheckInGate_MatCallback; // NNS_G3D_SBC_MAT
+    o->cbVecTiming[4] = 2;
 }
 
 // @2226410
@@ -371,7 +347,7 @@ extern "C" BOOL CheckInGate_IsOpen() {
 }
 
 // @2225cf4
-void CheckInGate::applyHourLight(u32 a, Unk_ov004_02225cf4_P *p) {
+void CheckInGate::applyHourLight(u32 a, NNSG3dRS *p) {
     u8 tm[2];
     Clock_GetMinuteHour(tm);
     s32 hr = tm[1];
@@ -391,18 +367,18 @@ void CheckInGate::applyHourLight(u32 a, Unk_ov004_02225cf4_P *p) {
     w2 = ((0x1000 - f) * *(s32 *)(data_ov004_02240150 + i1) + f * *(s32 *)(data_ov004_02240150 + i0)) >> 12;
     u32 e0 = F(u32, 0x2b0);
     if (a == e0 || a == F(u32, 0x2b4) || a == F(u32, 0x2b8)) {
-        u8 b = (p->matAnmResult->prmPolygonAttr >> 16) & 0x1f;
+        u8 b = (p->pMatAnmResult->prmPolygonAttr >> 16) & 0x1f;
         u8 r;
         if (a == e0) {
             r = (func_01ffcb0c(b << 12, w2) >> 12) & 0x1f;
         } else {
             r = (func_01ffcb0c(b << 12, w1) >> 12) & 0x1f;
         }
-        p->matAnmResult->prmPolygonAttr &= 0xffe0ffff;
-        p->matAnmResult->prmPolygonAttr |= r << 16;
+        p->pMatAnmResult->prmPolygonAttr &= 0xffe0ffff;
+        p->pMatAnmResult->prmPolygonAttr |= r << 16;
         p->flag &= ~0x100;
-        p->matAnmResult->prmMatColor0 &= 0xffff8000;
-        p->matAnmResult->prmMatColor0 |= pk;
+        p->pMatAnmResult->prmMatColor0 &= 0xffff8000;
+        p->pMatAnmResult->prmMatColor0 |= pk;
     }
 }
 
