@@ -31,10 +31,10 @@ func_02133aec:
 
 ; __rethrow (the name mwcc emits for `throw;`): build a ThrowContext on the stack (callee-saved registers, caller's
 ; sp and return address, throwtype/location/dtor = 0) and enter the C++ throw handler __ThrowHandler with it.
-	.global func_02133b1c
-	.type func_02133b1c, @function
-	.size func_02133b1c, 0x4c
-func_02133b1c:
+	.global __rethrow
+	.type __rethrow, @function
+	.size __rethrow, 0x4c
+__rethrow:
 	mov r12, sp
 	sub sp, sp, #0x70
 	str r4, [sp, #0x2c]

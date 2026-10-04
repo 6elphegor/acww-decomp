@@ -29,7 +29,8 @@ void *Mem_Alloc(u32 n);
 }
 
 extern "C" {
-void func_020e885c(void *p);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+void Heap_freeAll(void *p);
 }
 
 extern "C" {
@@ -193,7 +194,7 @@ void ModelSlotPool::release(u16 *idx) {
         arr[i].inUse = 0;
         lastFreed = *idx;
         *idx = 0xffff;
-        if (e->heap) func_020e885c(e->heap);
+        if (e->heap) Heap_freeAll(e->heap);
         numInUse--;
     }
 }

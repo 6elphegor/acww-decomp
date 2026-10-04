@@ -23,8 +23,10 @@ u32 ClothTex_GetBufferSize();
 void CharaClothTexHeap_Destroy();
 void CharaClothTexHeap_Create();
 void *Heap_AllocAligned(void *heap, u32 size, u32 align);
-void func_020e885c(void *p);
-void func_020e877c(void *p);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+void Heap_freeAll(void *p);
+#define Heap_adjust _ZN4Heap6adjustEv
+void Heap_adjust(void *p);
 u32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(u32 a);
 u32 Scene_GetMaxCharacters(u32 a);
@@ -56,7 +58,7 @@ void CharaClothTexRef_CopyFromSlot(void *p, s32 x);
 extern "C" void CharaClothTexPool_Create() {
     CharaClothTexHeap_Create();
     sCharaClothTexPool.allocBuffers();
-    if (gCharaClothTexHeap) func_020e877c(gCharaClothTexHeap);
+    if (gCharaClothTexHeap) Heap_adjust(gCharaClothTexHeap);
 }
 
 extern "C" void CharaClothTexPool_Destroy() {
@@ -98,7 +100,7 @@ void CharaClothTexPool::freeBuffers() {
         ptr[i] = 0;
         id[i].id = 0xfff1;
     }
-    if (gCharaClothTexHeap) func_020e885c(gCharaClothTexHeap);
+    if (gCharaClothTexHeap) Heap_freeAll(gCharaClothTexHeap);
 }
 
 u32 CharaClothTexPool::getBuffer(u32 idx) { return ptr[idx]; }

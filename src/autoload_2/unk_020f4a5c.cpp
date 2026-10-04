@@ -2,7 +2,7 @@
 // RC_020f4a5c: the sequence-player source file (G012b) as a WHOLE file with its data. mwcc 1.2/base, C++, ARM, -O4,p.
 // autoload_2 .text 0x020f4a5c-0x020f5b9c (40 functions), .rodata 0x0213597c-0x02135c9c (three pattern tables), .data 0x0213b9d8-0x0213b9dc
 // (stream-pair switch), autoload_3 .bss 0x021f5c28-0x021f5c30. No vtable, no __sinit. Code unchanged from G012b (functions stay
-// extern "C" under their func_ names, the object first; func_020f5b84 keeps its label _ZN11MelodyTrackD1Ev).
+// extern "C" under their func_ names, the object first; MelodyTrack::~MelodyTrack keeps its label _ZN11MelodyTrackD1Ev).
 // EXTENT (new): this is NOT part of the blocked pan-curve file 0x020f44f0-0x020f4a5c. bss: the pan-curve objects end with the 0x1c-byte
 // Ramp gSndVolumeCurve; the 2-byte data_021f5c28 after it starts a new file (objects are sorted by ascending size); its users and those
 // of sMelodyBeatPattern, the 1-byte data_0213b9d8 (after the 0x1c-byte vtables of unk_020f30fc.cpp: new file) and the .rodata tables
@@ -143,7 +143,8 @@ static inline BOOL nz(void *p) {
 }
 
 // dtor D1 (alias _ZN11MelodyTrackD1Ev): NNS_SndHandleReleaseSeq(this)
-extern "C" Obj *func_020f5b84(Obj *self) {
+#define MelodyTrack_dtor _ZN11MelodyTrackD1Ev
+extern "C" Obj *MelodyTrack_dtor(Obj *self) {
     NNS_SndHandleReleaseSeq(self);
     return self;
 }

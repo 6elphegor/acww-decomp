@@ -37,7 +37,8 @@ void Mtx43_RotateXYZ(void *m, s32 x, s32 y, s32 z);
 void Mtx43_Scale(void *m, s32 x, s32 y, s32 z);
 void Heap_Free(void *heap, void *p);
 u32 File_LoadAlloc(u32 res, void *heap, u32 a, s32 b);
-void func_020e8c94(void *);
+#define Heap_destroy _ZN4Heap7destroyEv
+void Heap_destroy(void *);
 void *ExpHeap_Create(u32, s32);
 void *Mem_Alloc(u32);
 void Mem_Free(void *);
@@ -1339,7 +1340,7 @@ extern "C" void EffectModels_UnloadAll(EffectModelGroup *b)
         EffectModelGroup_Unload(&b[i]);
     }
     if (sEffectModelHeap != NULL) {
-        func_020e8c94(sEffectModelHeap);
+        Heap_destroy(sEffectModelHeap);
         sEffectModelHeap = NULL;
     }
 }

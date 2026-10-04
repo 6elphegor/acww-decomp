@@ -527,8 +527,10 @@ void Mtx43_RotateY(s32 *m, s32 a);
 void *Mem_Free(void *p);
 void Heap_Free(void *heap, void *p);
 void *Heap_Alloc(void *heap, s32 size);
-void func_020e885c(void *p);
-void func_020e8c88(void *p);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+void Heap_freeAll(void *p);
+#define Heap_destroy2 _ZN4Heap8destroy2Ev
+void Heap_destroy2(void *p);
 void *FrameHeap_Create(u32 size, void *heap);
 u32 ExpHeap_Create(u32, u32);
 s32 Vec_RotateY(Unk_ov004_02235528_V3 *, s32);
@@ -536,7 +538,8 @@ s32 Vec_DistXZ(void *a, void *b);
 void Vec_DivScalar(void *, s32);
 void Vec_Sub(void *out, void *a, void *b);
 void ProcBase_RequestDelete(void *p);
-void func_020f3a18(void *);
+#define SndPosList_release _ZN10SndPosList7releaseEv
+void SndPosList_release(void *);
 void *func_021012bc(const char *name);
 void func_02101310(void *buf);
 BOOL func_02101340(void *buf, const char *name, void *data);
@@ -1074,7 +1077,7 @@ void FtrSoundList::reset() {
 
 // @0x22359d8 unk_02235984.cpp
 void *FtrSoundList::destroy() {
-    func_020f3a18(this);
+    SndPosList_release(this);
     return this;
 }
 
@@ -1198,7 +1201,7 @@ BOOL FtrActorHeap::create(s32 n) {
 // @0x2235870 unk_022350c8.cpp
 void FtrActorHeap::destroy() {
     if (heap != 0) {
-        func_020e8c88((void *)heap);
+        Heap_destroy2((void *)heap);
     }
     reset();
 }
@@ -4591,7 +4594,7 @@ extern "C" BOOL FtrMoveAnim_CreateHeap(FtrMoveAnim *r) {
 // @0x223397c unk_0223349c.cpp
 extern "C" BOOL FtrMoveAnim_DestroyHeap(FtrMoveAnim *r) {
     if (r->heap) {
-        func_020e8c88(r->heap);
+        Heap_destroy2(r->heap);
         r->heap = 0;
         return TRUE;
     }
@@ -4757,7 +4760,7 @@ extern "C" BOOL TvProgSlot_Load(TvProgSlot *p, u32 id, s32 x) {
 // @0x2233644 unk_0223349c.cpp
 extern "C" void TvProgSlot_FreeFiles(TvProgSlot *p) {
     if (p->heap) {
-        func_020e885c(p->heap);
+        Heap_freeAll(p->heap);
     }
     p->progTex = 0;
     p->progTexPat = 0;
@@ -4781,7 +4784,7 @@ extern "C" void TvProgSlot_Update(TvProgSlot *p) {
 // @0x22335dc unk_0223349c.cpp
 extern "C" void TvProgSlot_Release(TvProgSlot *p) {
     if (p->heap) {
-        func_020e8c88(p->heap);
+        Heap_destroy2(p->heap);
         p->heap = 0;
     }
     p->progTexPat = 0;
@@ -4863,7 +4866,7 @@ extern "C" BOOL TvScreen_SetProgram(TvScreen *o, s32 a, s32 b) {
                     TvSound_callRelease(o->tvSound);
                     o->tvSound = 0;
                 }
-                func_020e885c(o->soundHeap);
+                Heap_freeAll(o->soundHeap);
                 o->tvSound = TvSound_Create(o->soundHeap, a);
                 if (o->tvSound) TvSound_callReset(o->tvSound);
             }
@@ -4972,7 +4975,7 @@ extern "C" void TvScreen_Release(TvScreen *o) {
                 TvSound_callRelease(o->tvSound);
                 o->tvSound = 0;
             }
-            func_020e8c88(o->soundHeap);
+            Heap_destroy2(o->soundHeap);
             o->soundHeap = 0;
         }
     }

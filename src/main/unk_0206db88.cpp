@@ -25,7 +25,8 @@ void Snd_MelodyPlayAt(void *, u32, u32);
 void Snd_MelodyPlayPattern(void *, u32, void *);
 void Snd_MelodySetPattern(void *, void *);
 s64 func_02133540(u32, u32, u32);
-void *func_020f5b84(void *);
+#define MelodyTrack_dtor _ZN11MelodyTrackD1Ev
+void *MelodyTrack_dtor(void *);
 void Gfx2d_DisableMainWindows(u32);
 void Gfx2d_ResetLayer(u32);
 void MenuCtrl_ClearScreenChanging();

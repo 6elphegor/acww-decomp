@@ -435,8 +435,10 @@ void BgmClock_Reset(BgmClock *p);
 void BgmClock_Update(BgmClock *p);
 void BgmClock_Exit(void);
 void BgmClock_Init(BgmClock *p);
-void func_02036b9c(void);
-void func_02036ba0(void);
+#define BgmClock_dtor _ZN8BgmClockD1Ev
+void BgmClock_dtor(void);
+#define BgmClock_ctor _ZN8BgmClockC1Ev
+void BgmClock_ctor(void);
 }
 
 namespace Ns_02034ae8 {
@@ -565,11 +567,11 @@ BOOL BgmRequest::tickLifetime()
     return r;
 }
 
-extern "C" void func_02036ba0(void)
+extern "C" void BgmClock_ctor(void)
 {
 }
 
-extern "C" void func_02036b9c(void)
+extern "C" void BgmClock_dtor(void)
 {
 }
 

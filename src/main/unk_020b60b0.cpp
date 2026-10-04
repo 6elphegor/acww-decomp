@@ -662,9 +662,11 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
 
 }
 
-extern "C" void func_020b60d8(void) {}
+#define TouchPickResult_ctorBase _ZN15TouchPickResultC2Ev
+extern "C" void TouchPickResult_ctorBase(void) {}
 
-extern "C" void func_020b60d4(void) {}
+#define TouchPickResult_dtorBase _ZN15TouchPickResultD2Ev
+extern "C" void TouchPickResult_dtorBase(void) {}
 
 extern "C" BOOL TouchPick_GetGroundPos(Vec3 *obj, Vec3 *out) {
     if (out) {

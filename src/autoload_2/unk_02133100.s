@@ -22,10 +22,10 @@ _ll_mul:
 	bx lr
 
 ; _ll_shl(a r0:r1, n r2) -> a << (n & 63) (label _ll_shl).
-	.global func_02133120
-	.type func_02133120, @function
-	.size func_02133120, 0x30
-func_02133120:
+	.global _ll_shl
+	.type _ll_shl, @function
+	.size _ll_shl, 0x30
+_ll_shl:
 	ands r2, r2, #63
 	bxeq lr
 	subs r3, r2, #32

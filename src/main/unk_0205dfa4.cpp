@@ -135,8 +135,10 @@ void *func_02106654(void);
 void *func_02106670(void *p, s32 a);
 void *func_021065dc(void);
 void *func_021065f8(void *p, s32 a);
-void func_020e885c(void *p);
-void func_020e877c(void *p);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+void Heap_freeAll(void *p);
+#define Heap_adjust _ZN4Heap6adjustEv
+void Heap_adjust(void *p);
 void *FrameHeap_Create(u32 size, void *heap);
 void *Heap_AllocAligned(void *heap, u32 size, u32 align);
 void *Scene_GetCurrent(void);
@@ -175,7 +177,8 @@ void G3dRes_CopyPlttByName(u32 a, u32 b, char *c, char *d);
 void _ZN11CachedModel11setFromFileEPv(void *slot, u32 a);
 void _ZN9AnimModel11allocAnmObjEPv(void *slot, u32 a);
 void _ZN11CachedModel16allocJointRecordEPv(void *slot, u32 a);
-u32 func_020e8af4(u32 a);
+#define Heap_getFreeSize _ZN4Heap11getFreeSizeEv
+u32 Heap_getFreeSize(u32 a);
 void _ZN9ModelAnim11allocMatAnmEjPv(u32 *p, u32 a, u32 b);
 void _ZN9ModelAnim4initEiiit(u32 *p, u32 a, u32 b, u32 c, u32 d);
 void _ZN9ModelAnim14addToRenderObjEj(u32 *p, u32 a);
@@ -250,12 +253,12 @@ extern "C" void HeldItemModels_Init(u32 x) {
     HeldItemModelHeap_Create();
     HeldItemModels_AllocVram(&sHeldItemModelBank);
     if (gHeldItemModelHeap) {
-        func_020e877c(gHeldItemModelHeap);
+        Heap_adjust(gHeldItemModelHeap);
     }
     HeldItemAnimHeap_Create(x);
     HeldItemModels_CreateAnimHeaps(&sHeldItemModelBank);
     if (gHeldItemAnimHeap) {
-        func_020e877c(gHeldItemAnimHeap);
+        Heap_adjust(gHeldItemAnimHeap);
     }
 }
 
@@ -372,7 +375,7 @@ extern "C" void HeldItemModels_ReleaseAll(HeldItemModelBank *self) {
     }
     for (j = 0; j < 9; j++) {
         if (self->unk_24[j]) {
-            func_020e885c(self->unk_24[j]);
+            Heap_freeAll(self->unk_24[j]);
             self->unk_24[j] = 0;
             self->unk_48[j] = 0;
             self->unk_6c[j] = 0;
@@ -382,13 +385,13 @@ extern "C" void HeldItemModels_ReleaseAll(HeldItemModelBank *self) {
         }
     }
     if (gHeldItemAnimHeap) {
-        func_020e885c(gHeldItemAnimHeap);
+        Heap_freeAll(gHeldItemAnimHeap);
     }
     for (k = 0; k < 9; k++) {
         self->unk_00[k] = 0;
     }
     if (gHeldItemModelHeap) {
-        func_020e885c(gHeldItemModelHeap);
+        Heap_freeAll(gHeldItemModelHeap);
     }
 }
 
@@ -604,7 +607,7 @@ extern "C" void HeldItemModel_Setup(Unk_0205dfb8_Obj *o, u32 id, u32 x, u16 *cod
             _ZN9ModelAnim14addToRenderObjEj(p, (u32)((Model *)slot)->getRenderObj());
         }
         void *a2 = HeldItemModels_GetAnimHeap(&sHeldItemModelBank, id);
-        u32 n = func_020e8af4((u32)a2);
+        u32 n = Heap_getFreeSize((u32)a2);
         ((void (*)(HeldItemModelBank *, u32, void *, u32))HeldItemModels_SetAnimBuffer)(&sHeldItemModelBank, id, Heap_AllocAligned(a2, n, 4), n);
         HeldItemModels_PlayAnim(&sHeldItemModelBank, id, kind, 0, 0);
         _ZN9AnimModel10attachAnimEv(slot);
@@ -639,7 +642,7 @@ extern "C" void HeldItemModel_Release(Unk_0205dfb8_Obj *o) {
     HeldItemModels_SetTexAnim(&sHeldItemModelBank, id, 0);
     HeldItemModels_GetModel(&sHeldItemModelBank, id)->release();
     HeldItemModels_CancelTexUpload(&sHeldItemModelBank, id);
-    func_020e885c(HeldItemModels_GetAnimHeap(&sHeldItemModelBank, id));
+    Heap_freeAll(HeldItemModels_GetAnimHeap(&sHeldItemModelBank, id));
     HeldItemModels_SetAnimBuffer(&sHeldItemModelBank, id, 0, 0);
     HeldItemModels_SetTexAnimBuffer(&sHeldItemModelBank, id, 0, 0);
     HeldItemModels_SetMatAnmHeap(&sHeldItemModelBank, id, 0);

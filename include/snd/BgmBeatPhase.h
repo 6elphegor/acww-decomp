@@ -4,7 +4,7 @@
 #include "types.h"
 
 // 0x14-byte BGM beat/phase state: member at +0x14 of BgmBeatSync (autoload_2, unk_020f7a5c.cpp, constructor 0x020f8134,
-// also constructed by ov068 as func_020f8134). Byte names from ov068's reads of the sequence variables.
+// also constructed by ov068 as BgmBeatPhase::BgmBeatPhase). Byte names from ov068's reads of the sequence variables.
 class BgmBeatPhase {
 public:
     BgmBeatPhase();

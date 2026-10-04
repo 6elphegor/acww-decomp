@@ -8,10 +8,10 @@
 	.arm
 
 ; _dfltu(u32) -> double. Evidence: clz.
-	.global func_02131098
-	.type func_02131098, @function
-	.size func_02131098, 0x3c
-func_02131098:
+	.global _dfltu
+	.type _dfltu, @function
+	.size _dfltu, 0x3c
+_dfltu:
 	cmp r0, #0
 	mov r1, #0
 	bxeq lr
@@ -30,10 +30,10 @@ L_021310bc:
 	bx lr
 
 ; _dflt(s32) -> double. Evidence: clz.
-	.global func_021310d4
-	.type func_021310d4, @function
-	.size func_021310d4, 0x40
-func_021310d4:
+	.global _dflt
+	.type _dflt, @function
+	.size _dflt, 0x40
+_dflt:
 	ands r2, r0, #0x80000000
 	rsbmi r0, r0, #0
 	cmp r0, #0

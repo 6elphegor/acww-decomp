@@ -48,14 +48,20 @@ extern ProcProfile **gProfileTable;
 void Heap_Free(Heap *heap, void *p);
 void *Heap_Alloc(Heap *heap, u32 size);
 void OS_InitTick(void);
-void *func_020e8b94(Heap *self, u32 size, s32 align);
-void func_020e8c94(Heap *self);
-void func_020e8c88(Heap *self);
+#define Heap_alloc _ZN4Heap5allocEji
+void *Heap_alloc(Heap *self, u32 size, s32 align);
+#define Heap_destroy _ZN4Heap7destroyEv
+void Heap_destroy(Heap *self);
+#define Heap_destroy2 _ZN4Heap8destroy2Ev
+void Heap_destroy2(Heap *self);
 Heap *FrameHeap_CreateAsCurrent(u32 size, Heap *parent);
-u32 func_020e8af4(Heap *self);
+#define Heap_getFreeSize _ZN4Heap11getFreeSizeEv
+u32 Heap_getFreeSize(Heap *self);
 void Heap_RestoreCurrent(void);
-void *func_020e877c(Heap *self);
-void func_020e8908(Heap *self, void *p);
+#define Heap_adjust _ZN4Heap6adjustEv
+void *Heap_adjust(Heap *self);
+#define Heap_free _ZN4Heap4freeEPv
+void Heap_free(Heap *self, void *p);
 void List_PushBack(QList *l, QNode *n);
 void List_Remove(QList *l, QNode *n);
 void TreeNode_Detach(TreeNode *root, TreeNode *n);
@@ -75,7 +81,8 @@ ProcBase *Proc_Create(u32 a, TreeNode *parent, u32 c, u32 d);
 void Proc_CallDeleteHook(u32 a);
 u32 Proc_CallCreateHook(u32 a);
 void Proc_SetCreateParams(u32 a, TreeNode *parent, u32 c, u32 d);
-void func_020ecb78(ProcBase *p);
+#define ProcBase_taskCreate _ZN8ProcBase10taskCreateEv
+void ProcBase_taskCreate(ProcBase *p);
 void ProcBase_StartCreate(ProcBase *p);
 void ProcBase_RequestDelete(ProcBase *p);
 ProcBase *ProcBase_GetParent(ProcBase *p);
@@ -185,7 +192,7 @@ extern "C" void _ZN8ProcBase10postDeleteEv(ProcBase *self, s32 a) {
     if (a != 2) return;
     TreeNode_Detach(&gProcTree, &self->treeNode);
     List_Remove(&gTaskDeleteList, &self->executeNode);
-    if (self->procHeap != NULL) func_020e8c88(self->procHeap);
+    if (self->procHeap != NULL) Heap_destroy2(self->procHeap);
     if (self->seq != NULL) CmdSeq_Undo(self->seq);
     delete self;
 }
@@ -256,20 +263,20 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
         if (h != NULL) {
             BOOL ok;
             u32 f = h->regionStart & 0x10;
-            if (f) func_020e8b94(h, 0x10, 0x10);
+            if (f) Heap_alloc(h, 0x10, 0x10);
             ok = self->allocResources();
             if (f == 0) {
-                if (func_020e8b94(h, 0x10, 0x10) == NULL) ok = FALSE;
+                if (Heap_alloc(h, 0x10, 0x10) == NULL) ok = FALSE;
             }
             Heap_RestoreCurrent();
             if (ok == 0) {
-                func_020e8c94(h);
+                Heap_destroy(h);
                 h = NULL;
             } else {
                 need = (u32)h->regionSize;
-                need = (need - func_020e8af4(h) + 31) & ~31;
+                need = (need - Heap_getFreeSize(h) + 31) & ~31;
                 if (size == need) {
-                    func_020e877c(h);
+                    Heap_adjust(h);
                     self->procHeap = h;
                     return TRUE;
                 }
@@ -281,51 +288,51 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
         BOOL ok;
         h = FrameHeap_CreateAsCurrent(-1, parent);
         f = h->regionStart & 0x10;
-        if (f) func_020e8b94(h, 0x10, 0x10);
+        if (f) Heap_alloc(h, 0x10, 0x10);
         ok = self->allocResources();
         if (f == 0) {
-            if (func_020e8b94(h, 0x10, 0x10) == NULL) ok = FALSE;
+            if (Heap_alloc(h, 0x10, 0x10) == NULL) ok = FALSE;
         }
         Heap_RestoreCurrent();
         if (ok == 0) {
-            func_020e8c94(h);
+            Heap_destroy(h);
             ProcBase_RequestDelete(self);
             return FALSE;
         }
         need = (u32)h->regionSize;
-                need = (need - func_020e8af4(h) + 31) & ~31;
+                need = (need - Heap_getFreeSize(h) + 31) & ~31;
     }
     if (h != NULL) {
         u32 used = (u32)h->regionSize;
         h2 = NULL;
-        used -= func_020e8af4(h);
-        if (((used + 15) & ~15) + 0x30 < func_020e8af4(parent)) {
+        used -= Heap_getFreeSize(h);
+        if (((used + 15) & ~15) + 0x30 < Heap_getFreeSize(parent)) {
             h2 = FrameHeap_CreateAsCurrent(need, parent);
         }
         if (h2 != NULL) {
             if (h2 < h) {
                 BOOL r;
-                func_020e8c94(h);
+                Heap_destroy(h);
                 h = NULL;
                 r = self->allocResources();
                 Heap_RestoreCurrent();
                 if (r == 0) {
-                    func_020e8c94(h2);
+                    Heap_destroy(h2);
                     h2 = h;
                 }
             } else {
                 Heap_RestoreCurrent();
-                func_020e8c94(h2);
+                Heap_destroy(h2);
                 h2 = NULL;
             }
         }
         if (h2 != NULL) {
-            func_020e877c(h2);
+            Heap_adjust(h2);
             self->procHeap = h2;
             return TRUE;
         }
         if (h != NULL) {
-            func_020e877c(h);
+            Heap_adjust(h);
             self->procHeap = h;
             return TRUE;
         }
@@ -341,15 +348,15 @@ extern "C" BOOL _ZN8ProcBase10createHeapEv(ProcBase *self, u32 size, Heap *paren
         if (h != NULL) {
             BOOL ok;
             u32 f = h->regionStart & 0x10;
-            if (f) func_020e8b94(h, 0x10, 0x10);
+            if (f) Heap_alloc(h, 0x10, 0x10);
             ok = self->allocResources();
             if (f == 0) {
-                if (func_020e8b94(h, 0x10, 0x10) == NULL) ok = FALSE;
+                if (Heap_alloc(h, 0x10, 0x10) == NULL) ok = FALSE;
             }
-            func_020e8af4(h);
+            Heap_getFreeSize(h);
             Heap_RestoreCurrent();
             if (ok == 0) {
-                func_020e8c94(h);
+                Heap_destroy(h);
             } else {
                 self->procHeap = h;
                 return TRUE;
@@ -365,18 +372,18 @@ extern "C" BOOL _ZN8ProcBase14allocResourcesEv(ProcBase *self) {
 }
 
 extern "C" void *_ZN8ProcBasenwEm(u32 size) {
-    void *p = func_020e8b94(gProcHeap, size, -4);
+    void *p = Heap_alloc(gProcHeap, size, -4);
     if (p == NULL) return NULL;
     MI_CpuFill8(p, 0, size);
     return p;
 }
 
 extern "C" void _ZN8ProcBasedlEPv(void *p) {
-    func_020e8908(gProcHeap, p);
+    Heap_free(gProcHeap, p);
 }
 
 extern "C" void ProcBase_StartCreate(ProcBase *self) {
-    func_020ecb78(self);
+    ProcBase_taskCreate(self);
     if (self->deletePending != 0) return;
     if (self->activatePending != 0) return;
     if (!isZero(self->state)) return;
@@ -387,11 +394,12 @@ extern "C" void ProcBase_StartCreate(ProcBase *self) {
     List_PushBack(&gTaskCreateList, &self->executeNode);
 }
 
-extern "C" void func_020ecb78(ProcBase *self) {
+extern "C" void ProcBase_taskCreate(ProcBase *self) {
     ProcBase_RunPhase(self, data_0213b13c, data_0213b134, data_0213b124);
 }
 
-extern "C" u32 func_020ecaf4(ProcBase *self) {
+#define ProcBase_taskDelete _ZN8ProcBase10taskDeleteEv
+extern "C" u32 ProcBase_taskDelete(ProcBase *self) {
     u16 id = self->profile;
     u32 r = ProcBase_RunPhase(self, data_0213b12c, data_0213b144, data_0213b14c);
     if (r == 1) Proc_CallDeleteHook(id);

@@ -14,7 +14,8 @@ void NNS_FndRemoveListObject(void *list, void *obj);
 void NNS_FndInitList(void *list, u32 offset);
 void Mem_Free(void *ptr);
 void Heap_Free(void *heap, void *ptr);
-void func_020e8c88(void *heap);
+#define Heap_destroy2 _ZN4Heap8destroy2Ev
+void Heap_destroy2(void *heap);
 void *ExpHeap_Create(u32 size, void *parent);
 void DC_FlushRange(void *ptr, u32 size);
 void MI_CpuFill8(void *dst, u32 value, u32 size);
@@ -595,7 +596,7 @@ extern "C" void Text_InitSystem(void) {
 extern "C" void Text_ShutdownSystem(void) {
     if (gTextHeap != NULL) {
         TextLabel_DestroyAll();
-        func_020e8c88(gTextHeap);
+        Heap_destroy2(gTextHeap);
         gTextHeap = NULL;
     }
     GameFont_Free(&gFontASub);

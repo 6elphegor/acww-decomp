@@ -182,10 +182,12 @@ extern "C" {
 void NpcTexPatBufPool_Alloc(void **);
 }
 extern "C" {
-void func_020e885c(void *);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+void Heap_freeAll(void *);
 }
 extern "C" {
-void func_020e877c(void *);
+#define Heap_adjust _ZN4Heap6adjustEv
+void Heap_adjust(void *);
 }
 extern "C" {
 void *FrameHeap_Create(s32, void *);

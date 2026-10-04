@@ -9,10 +9,10 @@
 
 ; _dmul(x, y). Evidence: umull partial products summed with an adds/adcs/adc carry chain, clz
 ; (subnormal normalisation).
-	.global func_02131114
-	.type func_02131114, @function
-	.size func_02131114, 0x364
-func_02131114:
+	.global _dmul
+	.type _dmul, @function
+	.size _dmul, 0x364
+_dmul:
 	stmfd sp!, {r4, r5, r6, r7, lr}
 	eor lr, r1, r3
 	and lr, lr, #0x80000000

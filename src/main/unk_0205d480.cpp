@@ -7,8 +7,10 @@
 
 extern "C" {
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
-void func_020e877c(void *p);
-void func_020e885c(void *p);
+#define Heap_adjust _ZN4Heap6adjustEv
+void Heap_adjust(void *p);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+void Heap_freeAll(void *p);
 void *NNS_G3dGetTex(void *h);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(const char *path, void *buf, s32 size);
@@ -92,7 +94,7 @@ extern "C" void PlayerGlassesModelPool_Create() {
     PlayerGlassesModelHeap_Create();
     sPlayerGlassesModelPool.allocBuffers();
     if (gPlayerGlassesModelHeap) {
-        func_020e877c(gPlayerGlassesModelHeap);
+        Heap_adjust(gPlayerGlassesModelHeap);
     }
 }
 
@@ -151,7 +153,7 @@ void PlayerGlassesModelPool::freeBuffers(void) {
         buffers[i] = NULL;
     }
     if (gPlayerGlassesModelHeap) {
-        func_020e885c(gPlayerGlassesModelHeap);
+        Heap_freeAll(gPlayerGlassesModelHeap);
     }
     for (i = 0; i < 4; i++) {
         modelIds[i] = 0x4b;

@@ -35,11 +35,11 @@ public:
     virtual BOOL allocResources();                // 0x3c
     virtual ~ProcBase();                    // 0x40
 
-    void taskConnect(); // itcm func_01ffd1b4
-    void taskExecute(); // itcm func_01ffd14c
-    void taskDraw();    // itcm func_01ffd0e4
-    void taskCreate();  // func_020ecb78
-    void taskDelete();  // func_020ecaf4
+    void taskConnect(); // itcm ProcBase::taskConnect
+    void taskExecute(); // itcm ProcBase::taskExecute
+    void taskDraw();    // itcm ProcBase::taskDraw
+    void taskCreate();  // ProcBase::taskCreate
+    void taskDelete();  // ProcBase::taskDelete
 
     /* 0x04 */ u32 id;
     /* 0x08 */ u32 param;

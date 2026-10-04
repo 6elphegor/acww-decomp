@@ -42,7 +42,8 @@ void Npc_GetName(u32 a, u16 *p);
 
 // ---- SpNpcActor (scene object derived from NpcActor) ----
 
-extern "C" void func_020f43c8(void *p);
+#define SndSeEmitter_dtorBase _ZN12SndSeEmitterD2Ev
+extern "C" void SndSeEmitter_dtorBase(void *p);
 
 
 typedef Unk_020d77a4_Vec3 Unk_0203e7a4_Vec;

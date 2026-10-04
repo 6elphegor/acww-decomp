@@ -100,7 +100,7 @@ typedef struct _FILE {
 extern FILE data_0213c238[3];
 extern s32 fflush(FILE *);
 extern u32 data_0213c320;
-extern void func_0213294c(u32);
+extern void _f2d(u32);
 extern void __prep_buffer(FILE *);
 extern void func_02127cb0(u8 *, u32 *);
 extern void func_02127cb4(u8 *, u32 *);
@@ -338,9 +338,9 @@ s32 __flush_line_buffered_output_files(void) {
     return result;
 }
 
-// tail call: func_0213294c(data_0213c320)
+// tail call: _f2d(data_0213c320)
 void nan(void) {
-    func_0213294c(data_0213c320);
+    _f2d(data_0213c320);
 }
 
 // MSL abort-style exit path

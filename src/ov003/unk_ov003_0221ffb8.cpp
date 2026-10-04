@@ -800,8 +800,10 @@ public:
 
 // ================= canonical classes of the objects built by the static initialiser =================
 extern "C" {
-void func_020f440c(void *p);
-void func_020f43fc(void *p);
+#define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
+void SndSeEmitter_ctor(void *p);
+#define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
+void SndSeEmitter_dtor(void *p);
 void ModelSlotHandle_Init(void *p);
 void ModelSlotHandle_Destroy(void *p);
 void _ZN14CollisionStateC1Ev(void *p);
@@ -966,8 +968,8 @@ s32 Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 s32 Mtx43_RotateY(void *m, s32 a);
 s32 Mtx43_RotateX(void *m, s32 a);
 s32 Mem_Free(s32 a);
-void func_020f43fc(void *p);
-void func_020f440c(void *p);
+void SndSeEmitter_dtor(void *p);
+void SndSeEmitter_ctor(void *p);
 s32 func_021065f8(s32 a, s32 b);
 s32 func_02106654();
 s32 func_02106670(s32 a, s32 b);
@@ -3777,7 +3779,7 @@ extern "C" BOOL FishCatch_StartRemoteLift(void *a, u8 idx) {
 FishShadow::FishShadow()
 {
     u8 *a = (u8 *)this;
-    func_020f440c(a);
+    SndSeEmitter_ctor(a);
     *(volatile u8 **)(a + 0x40) = data_0213b91c;
     *(volatile u8 **)(a + 0x40) = data_0213b954;
     _ZN14CollisionStateC1Ev(a + 0x4c);
@@ -3812,7 +3814,7 @@ FishShadow::~FishShadow()
     _ZN11CachedModelD1Ev(a + 0x84);
     ModelSlotHandle_Destroy(a + 0x7c);
     _ZN14CollisionStateD1Ev(a + 0x4c);
-    func_020f43fc(a);
+    SndSeEmitter_dtor(a);
 }
 
 
@@ -3848,7 +3850,7 @@ extern "C" void FishCroak_Destroy(void *p) {
 FishCatch::FishCatch()
 {
     FishCatch *a = this;
-    func_020f440c(a);
+    SndSeEmitter_ctor(a);
     a->state = 0;
     a->displayHandle = -1;
     a->mode = 0;
@@ -3873,7 +3875,7 @@ FishCatch::FishCatch()
 //@ 0x2221874
 FishCatch::~FishCatch()
 {
-    func_020f43fc(this);
+    SndSeEmitter_dtor(this);
 }
 
 

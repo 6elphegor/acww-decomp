@@ -131,10 +131,10 @@ L_02131fec:
 	b L_02131f88
 
 ; double compare, x in r0:r1, y in r2:r3: x != y (_dneq; unordered -> 1, +0 == -0).
-	.global func_02132004
-	.type func_02132004, @function
-	.size func_02132004, 0x88
-func_02132004:
+	.global _dneq
+	.type _dneq, @function
+	.size _dneq, 0x88
+_dneq:
 	mov ip, #0x200000
 	cmn ip, r1, lsl #1
 	bcs L_02132058
@@ -175,10 +175,10 @@ L_02132074:
 	b L_02132018
 
 ; double compare, x in r0:r1, y in r2:r3: x == y (_deq; unordered -> 0, +0 == -0).
-	.global func_0213208c
-	.type func_0213208c, @function
-	.size func_0213208c, 0x88
-func_0213208c:
+	.global _deq
+	.type _deq, @function
+	.size _deq, 0x88
+_deq:
 	mov ip, #0x200000
 	cmn ip, r1, lsl #1
 	bcs L_021320e0

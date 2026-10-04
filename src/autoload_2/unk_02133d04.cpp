@@ -564,7 +564,7 @@ extern "C" void SetupCatchInfo(ThrowContext *context, s32 cinfo_ref, s32 offset)
     }
 }
 
-// __ThrowHandler: entered from __rethrow (func_02133b1c) with the thrower's register context
+// __ThrowHandler: entered from __rethrow (__rethrow) with the thrower's register context
 extern "C" void __ThrowHandler(ThrowContext *context) {
     s32 offset;
     ExceptionInfo info;
@@ -590,7 +590,7 @@ extern "C" void __ThrowHandler(ThrowContext *context) {
 }
 
 // __end__catch (the name mwcc emits at the end of a catch block): destroy the caught exception object
-extern "C" void func_02133f20(CatchInfo *catchinfo) {
+extern "C" void __end__catch(CatchInfo *catchinfo) {
     if (catchinfo->location && catchinfo->dtor) {
         ((DtorFunc)catchinfo->dtor)(catchinfo->location, -1);
     }

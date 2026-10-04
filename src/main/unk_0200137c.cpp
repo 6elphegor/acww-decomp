@@ -225,7 +225,8 @@ u32 func_02113438(Unk_02000fc0_Node *a);
 }
 
 extern "C" {
-void func_020e8b38(u32 a);
+#define Heap_dump _ZN4Heap4dumpEv
+void Heap_dump(u32 a);
 }
 
 extern "C" {

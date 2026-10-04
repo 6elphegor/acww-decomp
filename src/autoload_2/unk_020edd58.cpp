@@ -131,10 +131,12 @@ void SndSeGroup_ApplyVoiceParams(Group *g, s32 i);
 
 // PROTOS-BEGIN
 extern "C" {
-BOOL func_020ed54c(TaskList *l);
+#define TaskList_run _ZN8TaskList3runEv
+BOOL TaskList_run(TaskList *l);
 void Task_RunDrawPhase(void);
 void Task_RunAllPhases(void);
-BOOL func_020ed764(TaskList4 *l);
+#define TaskTree_run _ZN8TaskTree3runEv
+BOOL TaskTree_run(TaskList4 *l);
 s16 CmdSeq_Run(Unk_Seq *o, s32 loop);
 void *Snd_GetHeapLevel(void);
 void *Snd_RestoreHeapLevel(u32 a);

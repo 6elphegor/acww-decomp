@@ -1,8 +1,6 @@
-func_ov009_0225b880 kind:function(thumb,size=0x4) addr:0x0225b880
-_ZN13BuildingActor20calcCustomBaseMatrixEP5Mtx43 kind:label(thumb) addr:0x0225b880
+_ZN13BuildingActor20calcCustomBaseMatrixEP5Mtx43 kind:function(thumb,size=0x4) addr:0x0225b880
 _ZN13BuildingActor20calcCustomBaseMatrixEv kind:label(thumb) addr:0x0225b880
-func_ov009_0225b884 kind:function(thumb,size=0xe) addr:0x0225b884
-_ZN13BuildingActor11getSoundPosEv kind:label(thumb) addr:0x0225b884
+_ZN13BuildingActor11getSoundPosEv kind:function(thumb,size=0xe) addr:0x0225b884
 _ZN17BuildingSeEmitter10playSeHeldEj kind:function(thumb,size=0x1c) addr:0x0225b894
 _ZN17BuildingSeEmitter6playSeEj kind:function(thumb,size=0x1c) addr:0x0225b8b0
 _ZN17BuildingSeEmitter10deactivateEv kind:function(thumb,size=0x1e) addr:0x0225b8cc
@@ -128,10 +126,8 @@ Building_InitModelCallback kind:function(thumb,size=0x10) addr:0x0225df84
 Building_ModelCallback kind:function(thumb,size=0x1e) addr:0x0225df94
 _ZN13BuildingActor15onJointCalcPostEjPv kind:function(thumb,size=0x2) addr:0x0225dfb4
 BuildingResources_IsLoaded kind:function(thumb,size=0x38) addr:0x0225dfb8
-func_ov009_0225dff0 kind:function(thumb,size=0x2) addr:0x0225dff0
-_ZN17BuildingResourcesD1Ev kind:label(thumb) addr:0x0225dff0
-func_ov009_0225dff4 kind:function(thumb,size=0x2a) addr:0x0225dff4
-_ZN17BuildingResourcesC1Ev kind:label(thumb) addr:0x0225dff4
+_ZN17BuildingResourcesD1Ev kind:function(thumb,size=0x2) addr:0x0225dff0
+_ZN17BuildingResourcesC1Ev kind:function(thumb,size=0x2a) addr:0x0225dff4
 Building_LocalToWorld kind:function(thumb,size=0x20) addr:0x0225e020
 BuildingActor_Create kind:function(thumb,size=0x1c) addr:0x0225e040
 func_ov009_0225e05c kind:function(thumb,size=0x20) addr:0x0225e05c

@@ -121,8 +121,10 @@ public:
 };
 
 extern "C" {
-void func_020f43fc(void *p);
-void func_020f440c(void *p);
+#define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
+void SndSeEmitter_dtor(void *p);
+#define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
+void SndSeEmitter_ctor(void *p);
 }
 
 // ================================================================ per-file declarations
@@ -943,8 +945,8 @@ void TreeAnim_Draw(void *p);
 void TreeAnim_Update(void *p);
 void TreeAnim_Init(void *p);
 void TreeAnimSet_ProcessRequest(void *p, void *q);
-void func_020f43fc(void *p);
-void func_020f440c(void *p);
+void SndSeEmitter_dtor(void *p);
+void SndSeEmitter_ctor(void *p);
 void func_020548a0(void *p);
 void func_020548d0(void *p);
 void *func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
@@ -1116,7 +1118,8 @@ void FieldItemFxTable_Release(void *p);
 void FieldItemFxTable_Draw(void *p);
 void TreeAnimSet_Draw(void *p);
 void PendingUnits_Flush();
-void func_020e8c94(void *p);
+#define Heap_destroy _ZN4Heap7destroyEv
+void Heap_destroy(void *p);
 s32 func_02133150(s32 a, s32 b);
 void FieldObj_DrawUnits(O *o, void *g);
 extern V3 gCameraLookAt;
@@ -1746,8 +1749,8 @@ BOOL ModelAnim_allocMatAnm(void *a, void *b, void *c);
 void ModelAnim_init(void *a, s32 b, s32 c, s32 d, s32 e);
 void *Model_getRenderObj(void *a);
 void ModelAnim_addToRenderObj(void *a, void *b);
-void func_020f43fc(void *p);
-void func_020f440c(void *p);
+void SndSeEmitter_dtor(void *p);
+void SndSeEmitter_ctor(void *p);
 
 void *FieldObj_GetPalmModelPath(FieldObjectManager *self, s32 i);
 void *FieldObj_GetCedarModelPath(FieldObjectManager *self, s32 i);
@@ -3272,12 +3275,12 @@ FieldItemFx::FieldItemFx()
 {
     unitX = 0;
     unitZ = 0;
-    func_020f440c(seEmitter);
+    SndSeEmitter_ctor(seEmitter);
 }
 
 FieldItemFx::~FieldItemFx()
 {
-    func_020f43fc(seEmitter);
+    SndSeEmitter_dtor(seEmitter);
 }
 
 FieldItemFxTable::~FieldItemFxTable() {}
@@ -5059,7 +5062,7 @@ BOOL FieldObjectManager::onDelete() {
     using ns_0221cb54::sFieldItemFxTable;
     using ns_0221cb54::PendingUnits_Flush;
     using ns_0221cb54::ModelSet_Release;
-    using ns_0221cb54::func_020e8c94;
+    using ns_0221cb54::Heap_destroy;
     using ns_0221cb54::FieldItemFxTable_Release;
     using ns_0221cb54::TreeAnimSet_Release;
     u8 *self = (u8 *)this;
@@ -5072,11 +5075,11 @@ BOOL FieldObjectManager::onDelete() {
     FieldItemFxTable_Release(sFieldItemFxTable);
     PendingUnits_Flush();
     if (sFieldObjectModelHeap != 0) {
-        func_020e8c94(sFieldObjectModelHeap);
+        Heap_destroy(sFieldObjectModelHeap);
         sFieldObjectModelHeap = 0;
     }
     if (sFieldObjectAnimHeap != 0) {
-        func_020e8c94(sFieldObjectAnimHeap);
+        Heap_destroy(sFieldObjectAnimHeap);
         sFieldObjectAnimHeap = 0;
     }
     gFieldObjectManager = 0;
@@ -5695,7 +5698,7 @@ Elem2 *TreeAnim_Construct(Elem2 *self) {
     func_020548d0(self->animModel);
     self->unitX = 0;
     self->unitZ = 0;
-    func_020f440c(self->seEmitter);
+    SndSeEmitter_ctor(self->seEmitter);
     p = self->unk_120;
     do {
         p[0] = 0;
@@ -5742,7 +5745,7 @@ Big *_ZN11TreeAnimSetD1Ev(Big *self) {
 namespace ns_0221c220 {
 extern "C" {
 Elem2 *TreeAnim_Destruct(Elem2 *self) {
-    func_020f43fc(self->seEmitter);
+    SndSeEmitter_dtor(self->seEmitter);
     func_020548a0(self->animModel);
     return self;
 }

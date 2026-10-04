@@ -14,10 +14,10 @@
 ; _dadd(x r0:r1, y r2:r3): x + y. If the signs differ, y is negated and control goes to the _dsub body
 ; (func_0213162c). Evidence: branch into another routine's body; 64-bit carry chains (adds/adc, subs/sbc,
 ; `adcs r1, r1, #0` + bcc on the carry-out), rrx/rrxs normalisation.
-	.global func_02130b98
-	.type func_02130b98, @function
-	.size func_02130b98, 0x318
-func_02130b98:
+	.global _dadd
+	.type _dadd, @function
+	.size _dadd, 0x318
+_dadd:
 	stmfd sp!, {r4, lr}
 	eors ip, r1, r3
 	eormi r3, r3, #0x80000000

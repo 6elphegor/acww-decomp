@@ -1811,8 +1811,10 @@ extern u8 data_ov004_0224bb94[];
 extern u8 data_ov004_0224002c[];
 extern u8 data_021f47e0[];
 
-void func_020f43fc(void *);
-void func_020f440c(void *);
+#define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
+void SndSeEmitter_dtor(void *);
+#define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
+void SndSeEmitter_ctor(void *);
 void _ZN14MatTexVramTaskC1Ev(void *);
 s32 _ZN8FtrActornwEm(u32);
 u16 Item_MakeFurniture(u32, s32);
@@ -1872,11 +1874,11 @@ static inline s32 Unk_ov004_0220c554_Idx(u32 v, u32 lo, u32 hi) {
 
 // ---- A ----
 FtrDesignDisplay::~FtrDesignDisplay() {
-    p14::func_020f43fc(seEmitter);
+    p14::SndSeEmitter_dtor(seEmitter);
 }
 
 FtrDesignDisplay::FtrDesignDisplay() {
-    p14::func_020f440c(seEmitter);
+    p14::SndSeEmitter_ctor(seEmitter);
 }
 
 extern "C" FtrDesignDisplay *FtrDesignDisplay_Create() {

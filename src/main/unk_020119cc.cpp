@@ -1614,7 +1614,8 @@ s32 FS_CloseFile(void *self);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
 s32 Hud_GetSceneHudKind(void);
 void HudObjGfx_InitFile(void *p);
-void func_020f43c8(void *p);
+#define SndSeEmitter_dtorBase _ZN12SndSeEmitterD2Ev
+void SndSeEmitter_dtorBase(void *p);
 Unk_02081d4c *_ZN16NpcResHandleView16getHeldItemModelEv(void *p);
 void HeldItemModel_SetAnimSpeed(Unk_02081d4c *p, u32 v);
 Unk_0205dfa4 *HeldItemModel_GetModel(Unk_02081d4c *p);

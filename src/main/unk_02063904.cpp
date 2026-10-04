@@ -182,7 +182,8 @@ s32 File_ReadAll(Unk_02063d18_File *f, void *dst, u32 n);
 }
 
 extern "C" {
-u32 func_020e86fc(void *h, u32 flags);
+#define Heap_setFlags _ZN4Heap8setFlagsEj
+u32 Heap_setFlags(void *h, u32 flags);
 }
 
 extern "C" {
@@ -190,7 +191,8 @@ void *Heap_Alloc(void *h, u32 size);
 }
 
 extern "C" {
-u32 func_020e8a90(void *h);
+#define Heap_getMaxFreeBlockSize _ZN4Heap19getMaxFreeBlockSizeEv
+u32 Heap_getMaxFreeBlockSize(void *h);
 }
 
 extern "C" {

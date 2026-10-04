@@ -2,7 +2,7 @@
 // I004d: itcm 0x01ffd0e4-0x01ffd50c (10 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL: nothing but the functions is defined.
 // Two wrappers that call the pointer-to-member dispatcher ProcBase_RunPhase with the ptmf constants stored in .text at
 // 0x01ffd0b4-0x01ffd0e4 (data_01ffd0b4.. are extern here, the unit ends before them), a scene-object update step
-// (func_01ffd1b4), six members of the library base class ProcBase (symbols.txt names are C++-mangled;
+// (ProcBase::taskConnect), six members of the library base class ProcBase (symbols.txt names are C++-mangled;
 // defined as extern "C" functions that carry the mangled identifier verbatim and take the object first) and the dispatcher.
 #include "types.h"
 #include "sys/TreeNode.h"
@@ -107,7 +107,8 @@ extern "C" BOOL _ZN8ProcBase7preDrawEv(ProcBase *self) {
 extern "C" BOOL _ZN8ProcBase8postDrawEv(ProcBase *self) {
 }
 
-extern "C" BOOL func_01ffd1b4(ProcBase *self) {
+#define ProcBase_taskConnect _ZN8ProcBase11taskConnectEv
+extern "C" BOOL ProcBase_taskConnect(ProcBase *self) {
     if (self->deletePending != 0) {
         self->deletePending = 0;
         if (isOne(self->state)) {
@@ -165,11 +166,13 @@ extern "C" BOOL func_01ffd1b4(ProcBase *self) {
     return TRUE;
 }
 
-extern "C" s32 func_01ffd14c(ProcBase *p) {
+#define ProcBase_taskExecute _ZN8ProcBase11taskExecuteEv
+extern "C" s32 ProcBase_taskExecute(ProcBase *p) {
     return ProcBase_RunPhase(p, data_01ffd0cc, data_01ffd0d4, data_01ffd0b4);
 }
 
-extern "C" s32 func_01ffd0e4(ProcBase *p) {
+#define ProcBase_taskDraw _ZN8ProcBase8taskDrawEv
+extern "C" s32 ProcBase_taskDraw(ProcBase *p) {
     return ProcBase_RunPhase(p, data_01ffd0bc, data_01ffd0c4, data_01ffd0dc);
 }
 

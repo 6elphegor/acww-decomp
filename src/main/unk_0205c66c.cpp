@@ -24,8 +24,10 @@ extern void *gPlayerBodyModelHeap;
 extern u8 *gCommManager;
 
 void *Heap_AllocAligned(void *, u32, s32);
-void func_020e885c(void *);
-void func_020e877c(void *);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+void Heap_freeAll(void *);
+#define Heap_adjust _ZN4Heap6adjustEv
+void Heap_adjust(void *);
 s32 File_LoadToBuffer(char *, void *, u32);
 s32 PlayerBodyModelHeap_Destroy();
 s32 PlayerBodyModelHeap_Create();
@@ -43,7 +45,7 @@ void *PlayerBodyModelRef_GetBuffer(u8 *p);
 extern "C" void PlayerBodyModelPool_Create() {
     PlayerBodyModelHeap_Create();
     sPlayerBodyModelPool.allocBuffers();
-    if (gPlayerBodyModelHeap) func_020e877c(gPlayerBodyModelHeap);
+    if (gPlayerBodyModelHeap) Heap_adjust(gPlayerBodyModelHeap);
 }
 
 extern "C" void PlayerBodyModelPool_Destroy() {
@@ -82,7 +84,7 @@ void PlayerBodyModelPool::freeBuffers() {
     for (s32 i = 0; i < 4; i++) vramSlots[i].clear();
     s32 j;
     for (j = 0; j < 4; j++) buffers[j] = 0;
-    if (gPlayerBodyModelHeap) func_020e885c(gPlayerBodyModelHeap);
+    if (gPlayerBodyModelHeap) Heap_freeAll(gPlayerBodyModelHeap);
 }
 
 u32 PlayerBodyModelPool::getBuffer(s32 i) { return buffers[i]; }

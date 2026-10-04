@@ -15,8 +15,10 @@ extern void *gPlayerBodyAnimHeap;
 extern Unk_0205f6f8_Cfg *gCommManager;
 extern void PlayerBodyAnimHeap_Create(void);
 extern s32 PlayerBodyAnimHeap_Destroy(void);
-extern void func_020e885c(void *p);
-extern void func_020e877c(void *p);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+extern void Heap_freeAll(void *p);
+#define Heap_adjust _ZN4Heap6adjustEv
+extern void Heap_adjust(void *p);
 extern void *FrameHeap_Create(u32 size, void *heap);
 u32 PlayerBodyWork_GetHeapSize(void);
 u32 PlayerBodyWorkPool_GetHeap(u32 *base, u32 idx);
@@ -30,7 +32,7 @@ extern "C" void PlayerBodyWorkPool_Create(void) {
     PlayerBodyAnimHeap_Create();
     PlayerBodyWorkPool_CreateHeaps(sPlayerBodyWorkPool.heaps);
     if (gPlayerBodyAnimHeap) {
-        func_020e877c(gPlayerBodyAnimHeap);
+        Heap_adjust(gPlayerBodyAnimHeap);
     }
 }
 
@@ -58,12 +60,12 @@ extern "C" void PlayerBodyWorkPool_DestroyHeaps(u32 *tbl) {
     s32 i;
     for (i = 0; i < 4; i++) {
         if (tbl[i]) {
-            func_020e885c((void *)tbl[i]);
+            Heap_freeAll((void *)tbl[i]);
             tbl[i] = 0;
         }
     }
     if (gPlayerBodyAnimHeap) {
-        func_020e885c(gPlayerBodyAnimHeap);
+        Heap_freeAll(gPlayerBodyAnimHeap);
     }
 }
 
@@ -76,7 +78,7 @@ PlayerBodyWorkRef::PlayerBodyWorkRef() { slot = 4; }
 extern "C" void PlayerBodyWorkRef_Destruct(void) {}
 
 extern "C" void PlayerBodyWorkRef_Assign(u8 *p, u8 v) {
-    func_020e885c((void *)PlayerBodyWorkPool_GetHeap(sPlayerBodyWorkPool.heaps, v));
+    Heap_freeAll((void *)PlayerBodyWorkPool_GetHeap(sPlayerBodyWorkPool.heaps, v));
     *p = v;
 }
 

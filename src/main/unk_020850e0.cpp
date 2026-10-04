@@ -53,7 +53,8 @@ u8 *_ZN20VillagerDataItemView11getHousePosEv(...);
 void NetBuf_PackPair20(void *, s32, s32);
 void CommRecord_PackSource(void *, s32, s32);
 s32 VisitorSchedule_Clear(void *);
-void func_0208403c(void *);
+#define RoomFreeUnitMap_ctor _ZN15RoomFreeUnitMapC1Ev
+void RoomFreeUnitMap_ctor(void *);
 BOOL func_02072e88(void *, u32);
 s32 Scene_GetCurrent();
 s32 Scene_GetMaxSpNpcs();

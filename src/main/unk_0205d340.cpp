@@ -7,8 +7,10 @@ extern u8 *gCommManager;
 extern char sPlayerFaceTexPathBuf[0x14];
 
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
-void func_020e885c(void *p);
-void func_020e877c(void *p);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+void Heap_freeAll(void *p);
+#define Heap_adjust _ZN4Heap6adjustEv
+void Heap_adjust(void *p);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(void *path, void *buf, s32 size);
 s32 PlayerFaceTexHeap_Destroy();
@@ -34,7 +36,7 @@ extern "C" void PlayerFaceTexPool_Create() {
     PlayerFaceTexHeap_Create();
     PlayerFaceTexPool_AllocBuffers(sPlayerFaceTexPool.ptr);
     if (gPlayerFaceTexHeap) {
-        func_020e877c(gPlayerFaceTexHeap);
+        Heap_adjust(gPlayerFaceTexHeap);
     }
 }
 
@@ -65,7 +67,7 @@ extern "C" void PlayerFaceTexPool_AllocBuffers(u32 *arr) {
 
 void PlayerFaceTexPool::freeBuffers() {
     for (s32 i = 0; i < 4; i++) ptr[i] = 0;
-    if (gPlayerFaceTexHeap) func_020e885c(gPlayerFaceTexHeap);
+    if (gPlayerFaceTexHeap) Heap_freeAll(gPlayerFaceTexHeap);
 }
 
 void *PlayerFaceTexPool::getBuffer(u32 idx) { return (void *)ptr[idx]; }

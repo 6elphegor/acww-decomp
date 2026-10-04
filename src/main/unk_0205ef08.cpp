@@ -26,8 +26,10 @@ s32 PlayerPalette_GetHairSize();
 s32 PlayerPalette_GetSlotSize();
 void PlayerPaletteRef_SetSlot(u8 *p, u8 v);
 s32 PlayerPalettePool_GetBuffer(u32 *a, u32 i);
-void func_020e885c(void *p);
-void func_020e877c(void *p);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+void Heap_freeAll(void *p);
+#define Heap_adjust _ZN4Heap6adjustEv
+void Heap_adjust(void *p);
 void *Heap_AllocAligned(void *h, s32 size, s32 align);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 PlayerPaletteHeap_Destroy();
@@ -177,7 +179,7 @@ extern "C" void PlayerPalettePool_Create()
     PlayerPaletteHeap_Create();
     PlayerPalettePool_AllocBuffers(sPlayerPalettePool.unk_00);
     if (gPlayerPaletteHeap) {
-        func_020e877c(gPlayerPaletteHeap);
+        Heap_adjust(gPlayerPaletteHeap);
     }
 }
 
@@ -231,7 +233,7 @@ extern "C" void PlayerPalettePool_FreeBuffers(u32 *a)
         a[i] = z;
     }
     if (gPlayerPaletteHeap) {
-        func_020e885c(gPlayerPaletteHeap);
+        Heap_freeAll(gPlayerPaletteHeap);
     }
 }
 

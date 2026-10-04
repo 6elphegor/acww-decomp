@@ -41,23 +41,28 @@ void MelodyPlayer_PlayAt(u32, void *, u32);
 }
 
 extern "C" {
-void func_020f3a6c(u32, void *);
+#define SndPosNode_setBgmPan _ZN10SndPosNode9setBgmPanEP4Vec3
+void SndPosNode_setBgmPan(u32, void *);
 }
 
 extern "C" {
-void func_020f3b08(u32, u32, void *);
+#define SndPosNode_playOnce _ZN10SndPosNode8playOnceEjP4Vec3
+void SndPosNode_playOnce(u32, u32, void *);
 }
 
 extern "C" {
-void func_020f3d54(u32, u32, void *);
+#define SndPosNode_play _ZN10SndPosNode4playEiP4Vec3
+void SndPosNode_play(u32, u32, void *);
 }
 
 extern "C" {
-void func_020f41fc(u32, u32, u32, u32);
+#define SndSeEmitter_playOneShot _ZN12SndSeEmitter11playOneShotEiis
+void SndSeEmitter_playOneShot(u32, u32, u32, u32);
 }
 
 extern "C" {
-void func_020f4158(u32, u32, u32, u32);
+#define SndSeEmitter_playHeld _ZN12SndSeEmitter8playHeldEiis
+void SndSeEmitter_playHeld(u32, u32, u32, u32);
 }
 
 extern "C" {
@@ -105,147 +110,183 @@ s32 Event_GetState(u32, void *, u32);
 }
 
 extern "C" {
-void *func_020f1044(void *);
+#define SndScene99_ctor _ZN10SndScene99C1Ev
+void *SndScene99_ctor(void *);
 }
 
 extern "C" {
-void *func_020f2494(void *);
+#define SndScene19_ctor _ZN10SndScene19C1Ev
+void *SndScene19_ctor(void *);
 }
 
 extern "C" {
-void *func_020f23d0(void *);
+#define SndScene20_ctor _ZN10SndScene20C1Ev
+void *SndScene20_ctor(void *);
 }
 
 extern "C" {
-void *func_020f230c(void *);
+#define SndScene21_ctor _ZN10SndScene21C1Ev
+void *SndScene21_ctor(void *);
 }
 
 extern "C" {
-void *func_020f2248(void *);
+#define SndScene22_ctor _ZN10SndScene22C1Ev
+void *SndScene22_ctor(void *);
 }
 
 extern "C" {
-void *func_020f2184(void *);
+#define SndScene23_ctor _ZN10SndScene23C1Ev
+void *SndScene23_ctor(void *);
 }
 
 extern "C" {
-void *func_020f20b0(void *);
+#define SndScene24_ctor _ZN10SndScene24C1Ev
+void *SndScene24_ctor(void *);
 }
 
 extern "C" {
-void *func_020f1fec(void *);
+#define SndScene30_ctor _ZN10SndScene30C1Ev
+void *SndScene30_ctor(void *);
 }
 
 extern "C" {
-void *func_020f1f18(void *);
+#define SndScene31_ctor _ZN10SndScene31C1Ev
+void *SndScene31_ctor(void *);
 }
 
 extern "C" {
-void *func_020f1e44(void *);
+#define SndScene32_ctor _ZN10SndScene32C1Ev
+void *SndScene32_ctor(void *);
 }
 
 extern "C" {
-void *func_020f1d70(void *);
+#define SndScene33_ctor _ZN10SndScene33C1Ev
+void *SndScene33_ctor(void *);
 }
 
 extern "C" {
-void *func_020f1c9c(void *);
+#define SndScene34_ctor _ZN10SndScene34C1Ev
+void *SndScene34_ctor(void *);
 }
 
 extern "C" {
-void *func_020f1bc8(void *);
+#define SndScene35_ctor _ZN10SndScene35C1Ev
+void *SndScene35_ctor(void *);
 }
 
 extern "C" {
-void *func_020f1b04(void *);
+#define SndScene40_ctor _ZN10SndScene40C1Ev
+void *SndScene40_ctor(void *);
 }
 
 extern "C" {
-void *func_020f1a38(void *);
+#define SndScene41_ctor _ZN10SndScene41C1Ev
+void *SndScene41_ctor(void *);
 }
 
 extern "C" {
-void *func_020f18f0(void *);
+#define SndScene42_ctor _ZN10SndScene42C1Ev
+void *SndScene42_ctor(void *);
 }
 
 extern "C" {
-void *func_020f182c(void *);
+#define SndScene43_ctor _ZN10SndScene43C1Ev
+void *SndScene43_ctor(void *);
 }
 
 extern "C" {
-void *func_020f1768(void *);
+#define SndScene44_ctor _ZN10SndScene44C1Ev
+void *SndScene44_ctor(void *);
 }
 
 extern "C" {
-void *func_020f16a4(void *);
+#define SndScene45_ctor _ZN10SndScene45C1Ev
+void *SndScene45_ctor(void *);
 }
 
 extern "C" {
-void *func_020f151c(void *);
+#define SndScene47_ctor _ZN10SndScene47C1Ev
+void *SndScene47_ctor(void *);
 }
 
 extern "C" {
-void *func_020f15e0(void *);
+#define SndScene46_ctor _ZN10SndScene46C1Ev
+void *SndScene46_ctor(void *);
 }
 
 extern "C" {
-void *func_020f1458(void *);
+#define SndScene48_ctor _ZN10SndScene48C1Ev
+void *SndScene48_ctor(void *);
 }
 
 extern "C" {
-void *func_020f138c(void *);
+#define SndScene50_ctor _ZN10SndScene50C1Ev
+void *SndScene50_ctor(void *);
 }
 
 extern "C" {
-void *func_020f12c8(void *);
+#define SndScene51_ctor _ZN10SndScene51C1Ev
+void *SndScene51_ctor(void *);
 }
 
 extern "C" {
-void *func_020f11d4(void *);
+#define SndScene52_ctor _ZN10SndScene52C1Ev
+void *SndScene52_ctor(void *);
 }
 
 extern "C" {
-void *func_020f269c(void *);
+#define SndScene10_ctor _ZN10SndScene10C1Ev
+void *SndScene10_ctor(void *);
 }
 
 extern "C" {
-void *func_020f2878(void *);
+#define SndScene02_ctor _ZN10SndScene02C1Ev
+void *SndScene02_ctor(void *);
 }
 
 extern "C" {
-void *func_020f1118(void *);
+#define SndScene60_ctor _ZN10SndScene60C1Ev
+void *SndScene60_ctor(void *);
 }
 
 extern "C" {
-void *func_020f2788(void *);
+#define SndScene03_ctor _ZN10SndScene03C1Ev
+void *SndScene03_ctor(void *);
 }
 
 extern "C" {
-void *func_020f2a3c(void *);
+#define SndScene01_ctor _ZN10SndScene01C1Ev
+void *SndScene01_ctor(void *);
 }
 
 extern "C" {
-void func_020f3800();
+#define SndPosList_update _ZN10SndPosList6updateEv
+void SndPosList_update();
 }
 
 extern "C" {
-void func_020f39f8();
+#define SndPosList_init _ZN10SndPosList4initEv
+void SndPosList_init();
 }
 
 extern "C" {
-void func_020f3a34();
+#define SndPosNode_release _ZN10SndPosNode7releaseEv
+void SndPosNode_release();
 }
 
 extern "C" {
-void func_020f3af0();
+#define SndPosNode_setPitch _ZN10SndPosNode8setPitchEi
+void SndPosNode_setPitch();
 }
 
 extern "C" {
-void func_020f3e14();
+#define SndPosNode_init _ZN10SndPosNode4initEP10SndPosList
+void SndPosNode_init();
 }
 
 extern "C" {
-void func_020f3f10();
+#define SndSeEmitter_playAlternate _ZN12SndSeEmitter13playAlternateEt
+void SndSeEmitter_playAlternate();
 }
 
 extern "C" {
@@ -361,11 +402,13 @@ void SndMgr_BeginMenuDuck(void *);
 }
 
 extern "C" {
-void func_020f0e1c(void *);
+#define SndMgr_volumeOn _ZN6SndMgr8volumeOnEv
+void SndMgr_volumeOn(void *);
 }
 
 extern "C" {
-void func_020f0e2c(void *);
+#define SndMgr_volumeOff _ZN6SndMgr9volumeOffEv
+void SndMgr_volumeOff(void *);
 }
 
 extern "C" {
@@ -429,7 +472,8 @@ void SndMgr_PlaySe(void *, u32);
 }
 
 extern "C" {
-void func_020f0e08(void *, u32);
+#define SndMgr_setOutputMode _ZN6SndMgr13setOutputModeEj
+void SndMgr_setOutputMode(void *, u32);
 }
 
 extern "C" {
@@ -475,19 +519,21 @@ extern "C" {
 extern s32 gCameraDistance;
 void Melody_Update(void);
 void Melody_Init(void);
-void func_020f0e3c(void *a);
-void func_020f0e68(void *a, void *b, u32 c, const char *d, s32 e);
+#define SndMgr_update _ZN6SndMgr6updateEv
+void SndMgr_update(void *a);
+#define SndMgr_init _ZN6SndMgr4initEjjj
+void SndMgr_init(void *a, void *b, u32 c, const char *d, s32 e);
 }
 
 extern "C" void Snd_Init() {
     gSndScene = 0;
-    func_020f0e68(gSndMgr, gSndHeapBuffer, 0x80000, "/sound_dataENG.sdat", 1);
+    SndMgr_init(gSndMgr, gSndHeapBuffer, 0x80000, "/sound_dataENG.sdat", 1);
     Melody_Init();
 }
 
 extern "C" void Snd_Update() {
     Melody_Update();
-    func_020f0e3c(gSndMgr);
+    SndMgr_update(gSndMgr);
     if (gSndScene != 0 && gCamera != 0) {
         ((Unk_020044e0_Obj *)gSndScene)->vfunc_10(gCameraDistance);
     }
@@ -500,125 +546,125 @@ extern "C" void Snd_CreateScene() {
     u32 t[2];
     u32 b0[2], b1[2], b2[2];
     if (!Unk_020040cc_isA() && !Unk_020040cc_isB()) {
-        NEW(8, func_020f1044);
+        NEW(8, SndScene99_ctor);
     } else {
         Clock_GetMinuteHour(st);
         switch (Scene_GetCurrent()) {
     case 6:
     case 7:
     case 8:
-        NEW(8, func_020f2494);
+        NEW(8, SndScene19_ctor);
         break;
     case 9:
-        NEW(8, func_020f23d0);
+        NEW(8, SndScene20_ctor);
         break;
     case 10:
-        NEW(8, func_020f230c);
+        NEW(8, SndScene21_ctor);
         break;
     case 11:
     case 12:
     case 13:
     case 14:
     case 47:
-        NEW(8, func_020f2248);
+        NEW(8, SndScene22_ctor);
         break;
     case 15:
-        NEW(8, func_020f2184);
+        NEW(8, SndScene23_ctor);
         break;
     case 16:
-        NEW(8, func_020f20b0);
+        NEW(8, SndScene24_ctor);
         break;
     case 26:
-        NEW(8, func_020f1fec);
+        NEW(8, SndScene30_ctor);
         break;
     case 27:
-        NEW(8, func_020f1f18);
+        NEW(8, SndScene31_ctor);
         break;
     case 28:
-        NEW(8, func_020f1e44);
+        NEW(8, SndScene32_ctor);
         break;
     case 29:
-        NEW(8, func_020f1d70);
+        NEW(8, SndScene33_ctor);
         break;
     case 30:
-        NEW(8, func_020f1c9c);
+        NEW(8, SndScene34_ctor);
         break;
     case 31:
-        NEW(8, func_020f1bc8);
+        NEW(8, SndScene35_ctor);
         break;
     case 32:
-        NEW(8, func_020f1b04);
+        NEW(8, SndScene40_ctor);
         break;
     case 33:
-        NEW(0x38, func_020f1a38);
+        NEW(0x38, SndScene41_ctor);
         break;
     case 34:
-        NEW(8, func_020f18f0);
+        NEW(8, SndScene42_ctor);
         break;
     case 35:
     case 36:
-        NEW(8, func_020f182c);
+        NEW(8, SndScene43_ctor);
         break;
     case 37:
     case 38:
-        NEW(8, func_020f1768);
+        NEW(8, SndScene44_ctor);
         break;
     case 39:
-        NEW(8, func_020f16a4);
+        NEW(8, SndScene45_ctor);
         break;
     case 40:
         if (st[1] >= 8 && st[1] < 0x11) {
-            NEW(8, func_020f151c);
+            NEW(8, SndScene47_ctor);
         } else {
-            NEW(8, func_020f15e0);
+            NEW(8, SndScene46_ctor);
         }
         break;
     case 41:
-        NEW(8, func_020f1458);
+        NEW(8, SndScene48_ctor);
         break;
     case 44:
-        NEW(8, func_020f138c);
+        NEW(8, SndScene50_ctor);
         break;
     case 45:
-        NEW(8, func_020f12c8);
+        NEW(8, SndScene51_ctor);
         break;
     case 46:
     case 48:
-        NEW(8, func_020f11d4);
+        NEW(8, SndScene52_ctor);
         break;
     case 50:
-        NEW(8, func_020f1044);
+        NEW(8, SndScene99_ctor);
         break;
         default: {
             if (!Unk_020040cc_isA()) {
-                NEW(0x20, func_020f269c);
+                NEW(0x20, SndScene10_ctor);
                 break;
             }
             if (Taxi_IsArriving() != 0 || Taxi_IsLeaving() != 0) {
-                NEW(8, func_020f2878);
+                NEW(8, SndScene02_ctor);
             } else if (Scene_InTownUnk31() != 0) {
-                NEW(8, func_020f1118);
+                NEW(8, SndScene60_ctor);
             } else {
                 t[0] = 0;
                 t[1] = 0;
                 Clock_GetDateTime(t);
                 MI_CpuCopy8(t, b0, 8);
                 if (Unk_020040cc_check(0xf, b0)) {
-                    NEW(8, func_020f2788);
+                    NEW(8, SndScene03_ctor);
                 } else {
                     MI_CpuCopy8(t, b1, 8);
                     if (Unk_020040cc_check(0x12, b1)) {
-                        NEW(8, func_020f2788);
+                        NEW(8, SndScene03_ctor);
                     } else {
                         MI_CpuCopy8(t, b2, 8);
                         if (Unk_020040cc_check(0x13, b2)) {
                             if (((u8 *)t)[2] < 2) {
-                                NEW(8, func_020f2788);
+                                NEW(8, SndScene03_ctor);
                             } else {
-                                NEW(8, func_020f2a3c);
+                                NEW(8, SndScene01_ctor);
                             }
                         } else {
-                            NEW(8, func_020f2a3c);
+                            NEW(8, SndScene01_ctor);
                         }
                     }
                 }
@@ -641,9 +687,9 @@ extern "C" void Snd_DestroyScene() {
     }
 }
 
-extern "C" void Snd_VolumeOff() { func_020f0e2c(gSndMgr); }
+extern "C" void Snd_VolumeOff() { SndMgr_volumeOff(gSndMgr); }
 
-extern "C" void Snd_VolumeOn() { func_020f0e1c(gSndMgr); }
+extern "C" void Snd_VolumeOn() { SndMgr_volumeOn(gSndMgr); }
 
 extern "C" void Snd_FadeOutScene() { gSndScene->vfunc_14(); }
 
@@ -656,7 +702,7 @@ extern "C" void Snd_PlaySeOnHandle(u32 a) { SndMgr_PlaySeOnHandle(gSndMgr, a); }
 
 extern "C" void Snd_StopSe(u32 a, u32 b) { SndMgr_StopSe(gSndMgr, a, b); }
 
-extern "C" void Snd_SetOutputMode(u32 a) { func_020f0e08(gSndMgr, a); }
+extern "C" void Snd_SetOutputMode(u32 a) { SndMgr_setOutputMode(gSndMgr, a); }
 
 extern "C" void Snd_BeginTalk(u32 a) { gSndScene->vfunc_1c(a); }
 
@@ -702,9 +748,9 @@ void Unk_02003c40::callSeUpdateRelative(Unk_02003a6c_Vec *v) {
     }
 }
 
-extern "C" void Snd_SeEmitterPlayOneShot(u32 a, u32 b, u32 c, u32 d) { func_020f41fc(a, b, c, d); }
+extern "C" void Snd_SeEmitterPlayOneShot(u32 a, u32 b, u32 c, u32 d) { SndSeEmitter_playOneShot(a, b, c, d); }
 
-extern "C" void Snd_SeEmitterPlayHeld(u32 a, u32 b, u32 c, u32 d) { func_020f4158(a, b, c, d); }
+extern "C" void Snd_SeEmitterPlayHeld(u32 a, u32 b, u32 c, u32 d) { SndSeEmitter_playHeld(a, b, c, d); }
 
 void Unk_02003c30::callSeStop() { vfunc_10(); }
 
@@ -724,17 +770,17 @@ void Unk_02003c40::callSeUpdateRelativeAlt(Unk_02003a6c_Vec *v) {
     }
 }
 
-extern "C" void Snd_SeEmitterPlayAlternate() { func_020f3f10(); }
+extern "C" void Snd_SeEmitterPlayAlternate() { SndSeEmitter_playAlternate(); }
 
-extern "C" void Snd_SeEmitterPlayOneShotAlt(u32 a, u32 b, u32 c, u32 d) { func_020f41fc(a, b, c, d); }
+extern "C" void Snd_SeEmitterPlayOneShotAlt(u32 a, u32 b, u32 c, u32 d) { SndSeEmitter_playOneShot(a, b, c, d); }
 
 void Unk_02003c30::callSeStopAlt() { vfunc_10(); }
 
-extern "C" void Snd_PosListInit() { func_020f39f8(); }
+extern "C" void Snd_PosListInit() { SndPosList_init(); }
 
-extern "C" void Snd_PosListUpdate() { func_020f3800(); }
+extern "C" void Snd_PosListUpdate() { SndPosList_update(); }
 
-extern "C" void Snd_PosNodeInit() { func_020f3e14(); }
+extern "C" void Snd_PosNodeInit() { SndPosNode_init(); }
 
 extern "C" void Snd_PosNodePlay(u32 a, u32 b, Unk_02003a6c_Vec *v) {
     Unk_02003a6c_Vec t;
@@ -742,7 +788,7 @@ extern "C" void Snd_PosNodePlay(u32 a, u32 b, Unk_02003a6c_Vec *v) {
         t.x = v->x - gCameraEye.x;
         t.y = v->y - gCameraEye.y;
         t.z = v->z - gCameraEye.z;
-        func_020f3d54(a, b, &t);
+        SndPosNode_play(a, b, &t);
     }
 }
 
@@ -752,7 +798,7 @@ extern "C" void Snd_PosNodePlayOnce(u32 a, u32 b, Unk_02003a6c_Vec *v) {
         t.x = v->x - gCameraEye.x;
         t.y = v->y - gCameraEye.y;
         t.z = v->z - gCameraEye.z;
-        func_020f3b08(a, b, &t);
+        SndPosNode_playOnce(a, b, &t);
     }
 }
 
@@ -762,13 +808,13 @@ extern "C" void Snd_SetBgmPan(u32 a, Unk_02003a6c_Vec *v) {
         t.x -= gCameraEye.x;
         t.y -= gCameraEye.y;
         t.z -= gCameraEye.z;
-        func_020f3a6c(a, &t);
+        SndPosNode_setBgmPan(a, &t);
     }
 }
 
-extern "C" void Snd_PosNodeRelease() { func_020f3a34(); }
+extern "C" void Snd_PosNodeRelease() { SndPosNode_release(); }
 
-extern "C" void Snd_PosNodeSetPitch() { func_020f3af0(); }
+extern "C" void Snd_PosNodeSetPitch() { SndPosNode_setPitch(); }
 
 extern "C" s32 Snd_PosListCanInit() { return 1; }
 

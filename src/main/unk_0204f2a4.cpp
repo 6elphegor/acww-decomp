@@ -110,8 +110,10 @@ void _ZN11PooledModel5resetEv(void *p);
 void _ZN9AnimModelD1Ev(void *p);
 void _ZN11PooledModelD1Ev(void *p);
 void ModelSlotHandle_Destroy(void *p);
-void func_020f43fc(void *p);
-void func_020f440c(void *p);
+#define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
+void SndSeEmitter_dtor(void *p);
+#define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
+void SndSeEmitter_ctor(void *p);
 void ModelSlotHandle_Init(void *p);
 void _ZN11PooledModelC1Ev(void *p);
 void _ZN9AnimModelC1Ev(void *p);
@@ -205,7 +207,7 @@ extern "C" FishDisplay *FishDisplay_Create(void) {
 }
 
 extern "C" Unk_0204fd24 *FishDisplayEntry_Construct(Unk_0204fd24 *e) {
-    func_020f440c(e);
+    SndSeEmitter_ctor(e);
     ModelSlotHandle_Init(e->modelSlot);
     _ZN11PooledModelC1Ev(e->pooledModel);
     _ZN9AnimModelC1Ev(e->model);
@@ -229,7 +231,7 @@ extern "C" Unk_0204fd24 *FishDisplayEntry_Destruct(Unk_0204fd24 *e) {
     _ZN9AnimModelD1Ev(e->model);
     _ZN11PooledModelD1Ev(e->pooledModel);
     ModelSlotHandle_Destroy(e->modelSlot);
-    func_020f43fc(e);
+    SndSeEmitter_dtor(e);
     return e;
 }
 

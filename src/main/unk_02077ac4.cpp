@@ -272,8 +272,10 @@ void VillagerAnimHeapPool_Free(void **);
 void VillagerAnimHeapPool_Alloc(void **);
 void NpcTexPatBufPool_Free(void **);
 void NpcTexPatBufPool_Alloc(void **);
-void func_020e885c(void *);
-void func_020e877c(void *);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+void Heap_freeAll(void *);
+#define Heap_adjust _ZN4Heap6adjustEv
+void Heap_adjust(void *);
 void *FrameHeap_Create(s32, void *);
 void *Heap_AllocAligned(void *, s32, s32);
 void File_LoadToBuffer(void *, void *, s32);
@@ -11159,7 +11161,7 @@ extern "C" void NpcTexPatBufs_Create(void *) {
     NpcTexPatBufHeap_Create();
     NpcTexPatBufPool_Alloc(sNpcTexPatBufPool);
     if (gNpcTexPatBufHeap != 0) {
-        func_020e877c(gNpcTexPatBufHeap);
+        Heap_adjust(gNpcTexPatBufHeap);
     }
 }
 }
@@ -11197,7 +11199,7 @@ extern "C" void NpcTexPatBufPool_Free(void **p) {
         p[i] = 0;
     }
     if (heap != 0) {
-        func_020e885c(heap);
+        Heap_freeAll(heap);
     }
 }
 }
@@ -11220,7 +11222,7 @@ extern "C" void VillagerAnimHeaps_Create(void *) {
     VillagerAnimPoolHeap_Create();
     VillagerAnimHeapPool_Alloc(sVillagerAnimHeapPool);
     if (gVillagerAnimPoolHeap != 0) {
-        func_020e877c(gVillagerAnimPoolHeap);
+        Heap_adjust(gVillagerAnimPoolHeap);
     }
 }
 }
@@ -11255,12 +11257,12 @@ extern "C" void VillagerAnimHeapPool_Free(void **p) {
     s32 z = 0;
     for (i = 0; i < 8; i++) {
         if (p[i] != 0) {
-            func_020e885c(p[i]);
+            Heap_freeAll(p[i]);
             p[i] = (void *)z;
         }
     }
     if (heap != 0) {
-        func_020e885c(heap);
+        Heap_freeAll(heap);
     }
 }
 }
@@ -11283,7 +11285,7 @@ extern "C" void SpNpcAnimHeaps_Create(void *) {
     SpNpcAnimPoolHeap_Create();
     SpNpcAnimHeapPool_Alloc(sSpNpcAnimHeapPool);
     if (gSpNpcAnimPoolHeap != 0) {
-        func_020e877c(gSpNpcAnimPoolHeap);
+        Heap_adjust(gSpNpcAnimPoolHeap);
     }
 }
 }
@@ -11319,12 +11321,12 @@ extern "C" void SpNpcAnimHeapPool_Free(void **p) {
     s32 z = 0;
     for (i = 0; i < 4; i++) {
         if (p[i] != 0) {
-            func_020e885c(p[i]);
+            Heap_freeAll(p[i]);
             p[i] = (void *)z;
         }
     }
     if (heap != 0) {
-        func_020e885c(heap);
+        Heap_freeAll(heap);
     }
 }
 }
@@ -11376,7 +11378,7 @@ extern "C" void VillagerAnimHeapRef_Deinit() {}
 
 namespace nA {
 extern "C" void VillagerAnimHeapRef_Assign(s32 *p, s32 x) {
-    func_020e885c(VillagerAnimHeapPool_Get(sVillagerAnimHeapPool, x));
+    Heap_freeAll(VillagerAnimHeapPool_Get(sVillagerAnimHeapPool, x));
     *p = x;
 }
 }
@@ -11399,7 +11401,7 @@ extern "C" void SpNpcAnimHeapRef_Deinit() {}
 
 namespace nA {
 extern "C" void SpNpcAnimHeapRef_Assign(s32 *p, s32 x) {
-    func_020e885c(SpNpcAnimHeapPool_Get(sSpNpcAnimHeapPool, x));
+    Heap_freeAll(SpNpcAnimHeapPool_Get(sSpNpcAnimHeapPool, x));
     *p = x;
 }
 }

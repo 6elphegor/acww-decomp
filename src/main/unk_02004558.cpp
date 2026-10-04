@@ -177,8 +177,10 @@ extern "C" {
 
 void Melody_Update(void);
 void Melody_Init(void);
-void func_020f0e3c(void *a);
-void func_020f0e68(void *a, void *b, u32 c, void *d, s32 e);
+#define SndMgr_update _ZN6SndMgr6updateEv
+void SndMgr_update(void *a);
+#define SndMgr_init _ZN6SndMgr4initEjjj
+void SndMgr_init(void *a, void *b, u32 c, void *d, s32 e);
 void Heap_Free(void *heap, void *p);
 void *Heap_AllocAligned(void *heap, unsigned long size, s32 align);
 s32 PlayerActor_GetObjectAlign(void);
@@ -1822,7 +1824,8 @@ void _ZN11CachedModel11setFromFileEPv(void *, void *);
 s32 PlayerHead_GetModelId(void *, s32);
 void _ZN13MatTexPatAnim7releaseEv(void *);
 void _ZN20CharaFaceAnimWorkRef7getHeapEv(void *);
-void func_020e885c();
+#define Heap_freeAll _ZN4Heap7freeAllEv
+void Heap_freeAll();
 void *_ZN16CharaFaceAnimRef16getEyeAnimBufferEv(void *);
 void *_ZN16CharaFaceAnimRef18getMouthAnimBufferEv(void *);
 void _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(void *, void *, u32, u32, u32, u32);
@@ -3864,7 +3867,7 @@ void Unk_02006d14::applyHatChange() {
         _ZN13MatTexPatAnim7releaseEv(&((Unk_02006d14 *)this)->eyeTexAnim);
         _ZN13MatTexPatAnim7releaseEv(&((Unk_02006d14 *)this)->mouthTexAnim);
         _ZN20CharaFaceAnimWorkRef7getHeapEv(&((Unk_02006d14 *)this)->faceAnimWork);
-        func_020e885c();
+        Heap_freeAll();
         _ZN12Unk_020102ec13initFaceAnimsEv(this);
         _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(&((Unk_02006d14 *)this)->eyeTexAnim, _ZN16CharaFaceAnimRef16getEyeAnimBufferEv(&((Unk_02006d14 *)this)->faceAnimRef), p, 0, ((Unk_02006d14 *)this)->animMode, 0x1000);
         _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(&((Unk_02006d14 *)this)->mouthTexAnim, _ZN16CharaFaceAnimRef18getMouthAnimBufferEv(&((Unk_02006d14 *)this)->faceAnimRef), q, 0, ((Unk_02006d14 *)this)->animMode, 0x1000);

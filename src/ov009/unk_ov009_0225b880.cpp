@@ -1875,7 +1875,7 @@ Unk_ov009_0225da90_Vec3 BuildingActor::getSoundPos() {
     return r;
 }
 
-// Slots b4 / b8 of the vtable (were free functions func_ov009_0225b884 / func_ov009_0225b880)
+// Slots b4 / b8 of the vtable (were free functions BuildingActor::getSoundPos / BuildingActor::calcCustomBaseMatrix)
 BOOL BuildingActor::calcCustomBaseMatrix(Mtx43 *out) { return 0; }
 
 // ---------------------------------------------------------------- data

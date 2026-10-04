@@ -67,7 +67,8 @@ extern "C" {
 s32 NetHeap_Destroy();
 }
 extern "C" {
-u32 func_020e86fc(u32 *, u32);
+#define Heap_setFlags _ZN4Heap8setFlagsEj
+u32 Heap_setFlags(u32 *, u32);
 }
 extern "C" {
 void _Z20NetOverlay_AssertAnyv();
@@ -652,14 +653,14 @@ extern "C" s32 Comm_End() {
     s32 r5 = 1;
     if (gCommManager->started != 0) {
         u32 *r4 = gNetHeap;
-        u32 r6 = func_020e86fc(r4, 0x8000);
-        func_020e86fc(r4, r6 | 0x2000);
+        u32 r6 = Heap_setFlags(r4, 0x8000);
+        Heap_setFlags(r4, r6 | 0x2000);
         _Z20NetOverlay_AssertAnyv();
         if (Net_Shutdown() == 0) {
             func_020b7870();
             r5 = 0;
         }
-        func_020e86fc(r4, r6);
+        Heap_setFlags(r4, r6);
         CommManager *o = gCommManager;
         NetHeap_Free(_ZN11CommManager10getAuxBufBEv(o));
         _ZN11CommManager10setAuxBufBEj(o, 0);
@@ -691,13 +692,13 @@ extern "C" s32 Comm_End() {
 extern "C" void Comm_EndOv067Mode() {
     if (gCommManager->started != 0) {
         u32 *const r5 = gNetHeap;
-        u32 r4 = func_020e86fc(r5, 0x8000);
-        func_020e86fc(r5, r4 | 0x2000);
+        u32 r4 = Heap_setFlags(r5, 0x8000);
+        Heap_setFlags(r5, r4 | 0x2000);
         _Z20NetOverlay_AssertAnyv();
         if (Net_Shutdown() == 0) {
             func_020b7870();
         }
-        func_020e86fc(r5, r4);
+        Heap_setFlags(r5, r4);
         CommManager *o = gCommManager;
         _ZN11CommManager5resetEv(o);
         o->started = 0;

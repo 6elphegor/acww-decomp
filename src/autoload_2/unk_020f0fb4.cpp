@@ -72,19 +72,27 @@ void SndMgr_UpdateVolumeCurve(Glob *g);
 void SndMgr_SetPlayerVolumes(Glob *g, s32 a, s32 b);
 void SndMgr_LoadBank(Glob *g, s32 v);
 void SndMgr_SetVoiceType(Glob *g);
-void func_020f0dec(Glob *g);
-void func_020f0df8(Glob *g);
+#define SndMgr_stopAll _ZN6SndMgr7stopAllEv
+void SndMgr_stopAll(Glob *g);
+#define SndMgr_startOutputEffect _ZN6SndMgr17startOutputEffectEv
+void SndMgr_startOutputEffect(Glob *g);
 void Snd_ClearListenerCallbacks(void);
 void Snd_InstallListenerCallbacks(void);
 void func_020f44f0(s32 v);
 void MelodyPlayer_SetInstrument(F30 *a, s32 b);
 void MelodyPlayer_StopTrackB(F30 *v);
-void func_020f80a4(void *p, s32 v);
-void func_020f80ac(void *p);
-void func_020f80d8(void *p);
-void func_020f8290(void *p, s32 v);
-void func_020f831c(void *p);
-void func_020f833c(void *p);
+#define BgmBeatSync_setEnable _ZN11BgmBeatSync9setEnableEh
+void BgmBeatSync_setEnable(void *p, s32 v);
+#define BgmBeatSync_dtor _ZN11BgmBeatSyncD1Ev
+void BgmBeatSync_dtor(void *p);
+#define BgmBeatSync_ctor _ZN11BgmBeatSyncC1Ev
+void BgmBeatSync_ctor(void *p);
+#define BgmTempoTracker_setMode _ZN15BgmTempoTracker7setModeEh
+void BgmTempoTracker_setMode(void *p, s32 v);
+#define BgmTempoTracker_dtor _ZN15BgmTempoTrackerD1Ev
+void BgmTempoTracker_dtor(void *p);
+#define BgmTempoTracker_ctor _ZN15BgmTempoTrackerC1Ev
+void BgmTempoTracker_ctor(void *p);
 }
 
 // colour passed by value to SndSeSystem_Setup (byte 0 is replaced by the caller's argument)
@@ -437,7 +445,7 @@ void Unk_0213b8e8::unload() {
     SndSeSystem_Shutdown(&gSndSeSystem, 1);
     if (gSndMgr.f62 != 0) return;
     NNS_SndHeapLoadState(t, 1);
-    func_020f0dec(&gSndMgr);
+    SndMgr_stopAll(&gSndMgr);
 }
 
 void Unk_0213b8e8::beginTalk(s32 a) {
@@ -471,7 +479,7 @@ void Unk_0213b8e8::onBgmChange(u32 a, u32 c) {
 void Unk_0213b8e8::setupHeaps(u32 a, s32 b) {
     void *t = Snd_GetHeap();
     if (gSndMgr.f62 == 0) {
-        func_020f0df8(&gSndMgr);
+        SndMgr_startOutputEffect(&gSndMgr);
         NNS_SndPlayerCreateHeap(0, t, a);
         NNS_SndHeapSaveState(t);
     }
@@ -606,13 +614,13 @@ void SndScene03::load() {
 }
 
 SndScene10::SndScene10() {
-    func_020f833c(sub);
+    BgmTempoTracker_ctor(sub);
     id = 10;
     state = 0;
 }
 
 SndScene10::~SndScene10() {
-    func_020f831c(sub);
+    BgmTempoTracker_dtor(sub);
 }
 
 void SndScene10::load() {
@@ -631,7 +639,7 @@ void SndScene10::load() {
     NNS_SndHeapSaveState(t);
     state = 1;
     gSndMgr.f62 = 0;
-    func_020f8290(sub, 1);
+    BgmTempoTracker_setMode(sub, 1);
     NNS_SndPlayerSetPlayerVolume(18, 63);
     NNS_SndPlayerSetPlayerVolume(19, 63);
 }
@@ -642,7 +650,7 @@ void SndScene10::update() {
 }
 
 void SndScene10::onBgmChange(u32 v, u32 c) {
-    return func_020f8290(sub, v);
+    return BgmTempoTracker_setMode(sub, v);
 }
 
 void SndScene10::beginTalk(s32 a) {
@@ -867,12 +875,12 @@ void SndScene40::load() {
 }
 
 SndScene41::SndScene41() {
-    func_020f80d8(sub);
+    BgmBeatSync_ctor(sub);
     id = 41;
 }
 
 SndScene41::~SndScene41() {
-    func_020f80ac(sub);
+    BgmBeatSync_dtor(sub);
 }
 
 void SndScene41::load() {
@@ -890,10 +898,10 @@ void SndScene41::update() {
 
 void SndScene41::onBgmChange(u32 a, u32 c) {
     if (c >= 99 && c <= 171) {
-        func_020f8290(sub, a);
-        func_020f80a4(sub, 1);
+        BgmTempoTracker_setMode(sub, a);
+        BgmBeatSync_setEnable(sub, 1);
     } else {
-        func_020f80a4(sub, 0);
+        BgmBeatSync_setEnable(sub, 0);
     }
 }
 

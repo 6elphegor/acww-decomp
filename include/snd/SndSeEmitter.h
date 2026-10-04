@@ -12,7 +12,7 @@ struct SndHandle {
 
 // 0x44-byte sound-effect emitter (channel object base), vtable 0x0213b9a0 (dsd label data_0213b9a8).
 // Defined in autoload_2, unk_020f30fc.cpp (key function ~SndSeEmitter); main / ov003 / ov004 / ov068 call its C1 and D1
-// as func_020f440c / func_020f43fc.
+// as SndSeEmitter::SndSeEmitter / SndSeEmitter::~SndSeEmitter.
 class SndSeEmitter : public SndHandle {
 public:
     SndSeEmitter();                             // C1 0x020f440c, C2 0x020f4424

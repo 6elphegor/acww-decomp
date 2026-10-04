@@ -88,10 +88,10 @@ L_02130fa8:
 
 ; _dfixu(double) -> u32 (label _dfixu). Literal 0x41e (1023 + 31) at the end, read with an explicit
 ; pc-relative load.
-	.global func_02130fb4
-	.type func_02130fb4, @function
-	.size func_02130fb4, 0x58
-func_02130fb4:
+	.global _dfixu
+	.type _dfixu, @function
+	.size _dfixu, 0x58
+_dfixu:
 	tst r1, #0x80000000
 	bne L_02130fec
 	ldr r2, L_02131008 ; (was ldr r2, [pc, #68])
@@ -121,10 +121,10 @@ L_02131008:
 
 ; _ll_ufrom_d(double) -> u64 (label _ll_ufrom_d). Literal 0x43e (1023 + 63) at the end, read with an
 ; explicit pc-relative load.
-	.global func_0213100c
-	.type func_0213100c, @function
-	.size func_0213100c, 0x8c
-func_0213100c:
+	.global _ll_ufrom_d
+	.type _ll_ufrom_d, @function
+	.size _ll_ufrom_d, 0x8c
+_ll_ufrom_d:
 	tst r1, #0x80000000
 	bne L_02131070
 	ldr r2, L_02131094 ; (was ldr r2, [pc, #120])

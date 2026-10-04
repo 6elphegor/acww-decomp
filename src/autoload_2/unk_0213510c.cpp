@@ -141,7 +141,7 @@ extern "C" void func_021358a8(char *start, char *ptr, size_t size, ObjFunc dtor)
 }
 
 // __cxa_vec_new (label in symbols.txt)
-extern "C" void *func_021357e0(size_t count, size_t size, size_t padding, ObjFunc ctor, ObjFunc dtor) {
+extern "C" void *__cxa_vec_new(size_t count, size_t size, size_t padding, ObjFunc ctor, ObjFunc dtor) {
     char *block = (char *)_Znam(count * size + padding);
     char *array;
     char *ptr;
@@ -242,7 +242,7 @@ extern "C" void __cxa_vec_cleanup(void *array, size_t count, size_t size, ObjFun
 }
 
 // __cxa_vec_delete (label in symbols.txt)
-extern "C" void func_021355a8(void *array, size_t size, size_t padding, ObjFunc dtor) {
+extern "C" void __cxa_vec_delete(void *array, size_t size, size_t padding, ObjFunc dtor) {
     if (array) {
         if (dtor) {
             func_02135668(array, ((size_t *)array)[-1], size, dtor);

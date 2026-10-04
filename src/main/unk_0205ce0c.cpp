@@ -28,8 +28,10 @@ extern u8 sCharaFaceAnimPathBuf[];
 void CharaFaceAnimHeap_Destroy();
 void CharaFaceAnimHeap_Create();
 void *Heap_AllocAligned(void *heap, u32 size, u32 align);
-void func_020e885c(void *p);
-void func_020e877c(void *p);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+void Heap_freeAll(void *p);
+#define Heap_adjust _ZN4Heap6adjustEv
+void Heap_adjust(void *p);
 u32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(u32 a);
 u32 Scene_GetMaxCharacters(u32 a);
@@ -47,7 +49,7 @@ u8 *CharaFaceAnim_GetPath(u32 x);
 extern "C" void CharaFaceAnimPool_Create() {
     CharaFaceAnimHeap_Create();
     sCharaFaceAnimPool.allocBuffers();
-    if (gCharaFaceAnimHeap) func_020e877c(gCharaFaceAnimHeap);
+    if (gCharaFaceAnimHeap) Heap_adjust(gCharaFaceAnimHeap);
 }
 
 extern "C" void CharaFaceAnimPool_Destroy() {
@@ -98,7 +100,7 @@ void CharaFaceAnimPool::freeBuffers() {
             a[j][i] = 0;
         }
     }
-    if (gCharaFaceAnimHeap) func_020e885c(gCharaFaceAnimHeap);
+    if (gCharaFaceAnimHeap) Heap_freeAll(gCharaFaceAnimHeap);
 }
 
 u32 CharaFaceAnimPool::getAnimBuffer(u32 i, u32 j) {

@@ -16,9 +16,11 @@ BOOL FS_CloseFile(void *f);
 s32 FS_SeekFile(void *f, s32 off, s32 z);
 s32 FS_ReadFile(void *f, void *dst, u32 n);
 void MI_UncompressLZ8(const void *src, void *dst);
-u32 func_020e86fc(void *h, u32 flags);
+#define Heap_setFlags _ZN4Heap8setFlagsEj
+u32 Heap_setFlags(void *h, u32 flags);
 void *Heap_Alloc(void *h, u32 size);
-u32 func_020e8a90(void *h);
+#define Heap_getMaxFreeBlockSize _ZN4Heap19getMaxFreeBlockSizeEv
+u32 Heap_getMaxFreeBlockSize(void *h);
 void Heap_Free(void *h, void *p);
 void *Heap_AllocAligned(void *heap, u32 size, s32 align);
 void DC_StoreAll();
@@ -85,8 +87,8 @@ void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize) {
             usize = hdr[1] >> 8;
             ret = Heap_AllocAligned(heap, usize, align);
             if (ret) {
-                flags = func_020e86fc(h, 0);
-                func_020e86fc(h, flags & 0xffffbfff);
+                flags = Heap_setFlags(h, 0);
+                Heap_setFlags(h, flags & 0xffffbfff);
                 p = Heap_Alloc(h, size - 4);
                 if (p) {
                     MI_CpuCopy8(&hdr[1], p, 4);
@@ -95,7 +97,7 @@ void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize) {
                     size -= 8;
                     if (FS_ReadFile(&f, (u8 *)p + 4, size) != -1) MI_UncompressLZ8(p, ret);
                 } else {
-                    size = func_020e8a90(h);
+                    size = Heap_getMaxFreeBlockSize(h);
                     p = Heap_Alloc(h, size);
                     if (p) {
                         func_021163b0(st, ret, &hdr[1]);
@@ -107,7 +109,7 @@ void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize) {
                     }
                 }
                 if (p) Heap_Free(h, p);
-                func_020e86fc(h, flags);
+                Heap_setFlags(h, flags);
                 size = usize;
             }
         } else {
@@ -157,8 +159,8 @@ s32 File_ReadAll(Unk_02063d18_File *f, void *dst, u32 n) {
         if (hdr[0] == 0x37375a4c || hdr[0] == 0x4c5a3737) {
             ret = hdr[1] >> 8;
             void *h = gRootHeap;
-            flags = func_020e86fc(h, 0);
-            func_020e86fc(h, flags & 0xffffbfff);
+            flags = Heap_setFlags(h, 0);
+            Heap_setFlags(h, flags & 0xffffbfff);
             n = (u32)Heap_Alloc(h, size - 4);
             if (n) {
                 MI_CpuCopy8(&hdr[1], (void *)n, 4);
@@ -167,7 +169,7 @@ s32 File_ReadAll(Unk_02063d18_File *f, void *dst, u32 n) {
                 size -= 8;
                 if (FS_ReadFile(f, (u8 *)n + 4, size) != -1) MI_UncompressLZ8((void *)n, dst);
             } else {
-                size = func_020e8a90(h);
+                size = Heap_getMaxFreeBlockSize(h);
                 n = (u32)Heap_Alloc(h, size);
                 if (n) {
                     func_021163b0(st, dst, &hdr[1]);
@@ -179,7 +181,7 @@ s32 File_ReadAll(Unk_02063d18_File *f, void *dst, u32 n) {
                 }
             }
             if (n) Heap_Free(h, (void *)n);
-            func_020e86fc(h, flags);
+            Heap_setFlags(h, flags);
         } else if (size <= n) {
             MI_CpuCopy8(hdr, dst, 8);
             u8 *d8 = (u8 *)dst + 8;

@@ -236,7 +236,8 @@ extern u32 data_020c8cbc;
 extern u32 data_020c8cb8;
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
 void *Heap_AllocTail(void *heap, s32 size);
-void func_020e885c(u32 v);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+void Heap_freeAll(u32 v);
 u32 SaveVillagers_Get(u32 *a, s32 b);
 s32 _ZN20VillagerDataItemView13getRoomLayoutEPiS0_(u32 h, s32 *a, s32 *b);
 u32 _ZN20VillagerDataItemView13getInfo28ItemEv(u32 h);
@@ -455,7 +456,7 @@ void FieldPos_FromUnitCenter(void *p, s32 a, s32 b);
 u16 *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 u32 CollisionMap_Release(s32 a);
 void CollisionMap_Bind(s32 a, s32 b, s32 c, s32 d);
-void func_020e885c(void *p);
+void Heap_freeAll(void *p);
 void *Heap_Alloc(void *heap, u32 sz);
 u32 _ZN12MapBlockAcre9getAcreIdEv(void *p);
 void _ZN12MapBlockAcre9setAcreIdEj(void *p, u32 v);
@@ -1436,7 +1437,7 @@ void TownBlockMap::updateAcreIds() {
 
 void TownBlockMap::bindBg() {
     s32 x, y;
-    Ns_0204d560::func_020e885c(gTownBclHeap);
+    Ns_0204d560::Heap_freeAll(gTownBclHeap);
     Ns_0204d560::CollisionMap_Bind(width, height, 0, mapSlot);
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
@@ -1645,7 +1646,7 @@ extern "C" void HouseRoomMap_Update(Unk_0204d0a4 *p, s32 i) {
 
 extern "C" void HouseRoomMaps_BindBg() {
     s32 i;
-    func_020e885c(gRoomBclHeap);
+    Heap_freeAll(gRoomBclHeap);
     for (i = 0; i < 5; i++) {
         if (gHouseRoomMaps[i]) HouseRoomMap_BindBg(gHouseRoomMaps[i]);
     }

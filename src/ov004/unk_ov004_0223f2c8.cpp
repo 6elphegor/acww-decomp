@@ -2,7 +2,7 @@
 #include "types.h"
 #include "game/Unk_ov004_Vec3.h"
 
-// Static tile entries built by __sinit (ctor = main SceneWarp_Init, dtor = main func_020b4fc0).
+// Static tile entries built by __sinit (ctor = main SceneWarp_Init, dtor = main SceneWarp::~SceneWarp).
 
 extern "C" void SceneWarp_Init(void *e, u8 id, Unk_ov004_Vec3 *v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t);
 

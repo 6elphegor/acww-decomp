@@ -181,7 +181,8 @@ void *FrameHeap_CreateAsCurrent(u32 a, u32 b);
 void ProcBase_SetHeap(void *a, void *b);
 void AnimModel_allocAnmObj(void *p, void *q);
 void *File_Load(const char *p);
-void func_020e877c(void *p);
+#define Heap_adjust _ZN4Heap6adjustEv
+void Heap_adjust(void *p);
 void Heap_RestoreCurrent();
 void *func_02106788(void *p);
 void *func_021067a4(void *p, u32 q);
@@ -514,7 +515,7 @@ BOOL HouseRoach::setup() {
     ProcBase_SetHeap(this, h);
     AnimModel_allocAnmObj(model, 0);
     void *t = File_Load("/insect/51/bug52.nsbva");
-    func_020e877c(h);
+    Heap_adjust(h);
     Heap_RestoreCurrent();
     void *r = func_021067a4(func_02106788(t), 0);
     BlendAnimModel_initAnim(model, r, 0, 0x1000, 0, 0);

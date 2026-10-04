@@ -75,12 +75,13 @@ public:
 };
 
 extern "C" {
-void func_020f440c(void *p);
+#define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
+void SndSeEmitter_ctor(void *p);
 }
 
 class HandOverItem : public GameProc {
 public:
-    HandOverItem() { item = 0xfff1; func_020f440c(&seEmitter); }
+    HandOverItem() { item = 0xfff1; SndSeEmitter_ctor(&seEmitter); }
 
     /* 0x50 */ u16 item;
     /* 0x54 */ s32 kind;

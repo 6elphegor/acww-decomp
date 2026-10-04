@@ -1371,8 +1371,10 @@ s32 SceneId_GetMuseumRoom(s32);
 s32 Scene_InNookShop();
 s32 Weather_GetFallingPrecip();
 s32 Vec_DistXZ(void *, void *);
-void func_020f43fc(void *);
-void func_020f440c(void *);
+#define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
+void SndSeEmitter_dtor(void *);
+#define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
+void SndSeEmitter_ctor(void *);
 void * MI_CpuFill8(void *, s32, u32);
 s32 MI_CpuCopy8(void *, void *, s32);
 s32 memcmp(void *, void *, s32);
@@ -13187,12 +13189,12 @@ void VillagerTalk::refreshEventKind() {
 u8 VillagerTalk::getEventKind() { return ((VillagerActor *)this)->eventKind; }
 
 extern "C" void *VillagerMood_Construct(void *p) {
-    func_020f440c(p);
+    SndSeEmitter_ctor(p);
     return p;
 }
 
 extern "C" void *VillagerMood_Destruct(void *p) {
-    func_020f43fc(p);
+    SndSeEmitter_dtor(p);
     return p;
 }
 

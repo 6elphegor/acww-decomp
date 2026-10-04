@@ -327,8 +327,10 @@ s32 Snd_SeEmitterPlayOneShot(s32 a, s32 b, s32 c, s32 d);
 s32 _ZN12Unk_02003c3010callSeStopEv(s32 a);
 s32 _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(s32 a, V3 *v);
 s32 _ZN12Unk_02003c3010callSeInitEv(s32 a);
-void func_020f43fc(void *p);
-void func_020f440c(void *p);
+#define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
+void SndSeEmitter_dtor(void *p);
+#define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
+void SndSeEmitter_ctor(void *p);
 s32 File_LoadAlloc(u32 id, void *g, s32 a, u32 b);
 void *NNS_G3dGetTex(s32 a);
 void Gfx3d_LoadTexAndPltt(void *p, u32 a);
@@ -496,12 +498,12 @@ extern "C" u32 RoomObjTex_Get(Res *p) {
 }
 
 extern "C" Res *RoomObj_ConstructSe(Res *p) {
-    func_020f440c(p);
+    SndSeEmitter_ctor(p);
     return p;
 }
 
 extern "C" Res *RoomObj_DestructSe(Res *p) {
-    func_020f43fc(p);
+    SndSeEmitter_dtor(p);
     return p;
 }
 

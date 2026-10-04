@@ -650,8 +650,10 @@ void Heap_Free(void *, void *);
 void *Heap_Alloc(void *heap, u32 size);
 s64 Vec_DistSqXZ(void *, void *);
 s32 Vec_Distance(void *a, void *b);
-void func_020f43fc(void *p);
-void func_020f440c(void *p);
+#define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
+void SndSeEmitter_dtor(void *p);
+#define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
+void SndSeEmitter_ctor(void *p);
 s32 func_021065dc(u32 a);
 s32 func_021065f8(s32 a, s32 b);
 s32 func_02133150(s32 a, s32 b);
@@ -4327,11 +4329,11 @@ extern "C" void Aquarium_ApplyCorrection(void *self, s32 *p, s32 a, s32 b, s32 c
 }
 
 Unk_ov004_0222c9d0::Unk_ov004_0222c9d0() : unk_10(0), unk_14(0) {
-    func_020f440c(sound);
+    SndSeEmitter_ctor(sound);
 }
 
 Unk_ov004_0222c9d0::~Unk_ov004_0222c9d0() {
-    func_020f43fc(sound);
+    SndSeEmitter_dtor(sound);
 }
 
 extern "C" {

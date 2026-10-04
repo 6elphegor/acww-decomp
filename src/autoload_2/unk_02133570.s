@@ -23,10 +23,10 @@ _drdiv:
 ; _ddiv(x, y). Evidence: `sub r4, pc, #36` addresses a 256-byte reciprocal seed table INSIDE the code
 ; (0x021336c0-0x021337c0, ldrb [r4, r3, lsr #12]), umull/umlal/mla Newton steps with adds/adc and
 ; rsbs/rsc chains, clz. Literal 0x00000ffe at the end. The table is written as .word data.
-	.global func_02133588
-	.type func_02133588, @function
-	.size func_02133588, 0x544
-func_02133588:
+	.global _ddiv
+	.type _ddiv, @function
+	.size _ddiv, 0x544
+_ddiv:
 	stmfd sp!, {r4, r5, r6, lr}
 	ldr lr, L_02133ac8 ; (was ldr lr, [pc, #0x534])
 	eor r4, r1, r3

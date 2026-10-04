@@ -6,8 +6,8 @@
 // library base class ProcBase that the phase runner calls on every object of the list. The lists are file-scope objects
 // with a constructor taking the member pointer: mwcc builds them in the __sinit (main .init 0x020c5fa4) from the member-pointer
 // constants it emits in .data (0x0213b1c8-0x0213b1f4), in DEFINITION order CONNECT, CREATE, EXECUTE, DRAW, DELETE (the __sinit's
-// store order). The member functions are in ITCM (func_01ffd1b4 / 01ffd14c / 01ffd0e4) and in the ProcBase file
-// (func_020ecb78 / 020ecaf4): aliases.txt gives them their C++ names.
+// store order). The member functions are in ITCM (ProcBase::taskConnect / 01ffd14c / 01ffd0e4) and in the ProcBase file
+// (ProcBase::taskCreate / 020ecaf4): aliases.txt gives them their C++ names.
 // File extent: the .data run 0x0213b1a4-0x0213b200 (phase word, then the 8-byte strings and member-pointer constants; the
 // ProcBase vtable before it ends the previous file, the 4-byte gSndPanTrackMask after it starts the next) and the bss run
 // 0x021f5994-0x021f59e4 (next-node pointer, the 12-byte CONNECT list, the four 16-byte lists; gProfileTable starts the next file).

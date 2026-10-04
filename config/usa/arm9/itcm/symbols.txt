@@ -144,12 +144,9 @@ data_01ffd0c4 kind:data(any) addr:0x01ffd0c4
 data_01ffd0cc kind:data(any) addr:0x01ffd0cc
 data_01ffd0d4 kind:data(any) addr:0x01ffd0d4
 data_01ffd0dc kind:data(any) addr:0x01ffd0dc
-func_01ffd0e4 kind:function(arm,size=0x68) addr:0x01ffd0e4
-_ZN8ProcBase8taskDrawEv kind:label(arm) addr:0x01ffd0e4
-func_01ffd14c kind:function(arm,size=0x68) addr:0x01ffd14c
-_ZN8ProcBase11taskExecuteEv kind:label(arm) addr:0x01ffd14c
-func_01ffd1b4 kind:function(arm,size=0x230) addr:0x01ffd1b4
-_ZN8ProcBase11taskConnectEv kind:label(arm) addr:0x01ffd1b4
+_ZN8ProcBase8taskDrawEv kind:function(arm,size=0x68) addr:0x01ffd0e4
+_ZN8ProcBase11taskExecuteEv kind:function(arm,size=0x68) addr:0x01ffd14c
+_ZN8ProcBase11taskConnectEv kind:function(arm,size=0x230) addr:0x01ffd1b4
 _ZN8ProcBase8postDrawEv kind:function(arm,size=0x4) addr:0x01ffd3e4
 _ZN8ProcBase8postDrawEi kind:label(arm) addr:0x01ffd3e4
 _ZN8ProcBase7preDrawEv kind:function(arm,size=0x28) addr:0x01ffd3e8

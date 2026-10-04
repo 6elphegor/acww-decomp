@@ -263,8 +263,10 @@ void TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void *Heap_Alloc(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 void *func_0212899c(void *p, s32 v, u32 n);
-void func_020f43fc(void *p);
-void func_020f440c(void *p);
+#define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
+void SndSeEmitter_dtor(void *p);
+#define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
+void SndSeEmitter_ctor(void *p);
 
 void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
@@ -342,12 +344,12 @@ void SnowballCollider::onCollide(u32 a, u32 b, u32 c) {
 }
 
 Snowball::Snowball() {
-    func_020f440c(seEmitter);
+    SndSeEmitter_ctor(seEmitter);
     displacedItem = 0xfff1;
 }
 
 Snowball::~Snowball() {
-    func_020f43fc(seEmitter);
+    SndSeEmitter_dtor(seEmitter);
 }
 
 extern "C" s32 Snowball_GetMinRadius() { return 0x800; }

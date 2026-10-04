@@ -8,8 +8,10 @@
 
 extern "C" {
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
-void func_020e877c(void);
-void func_020e885c(void *p);
+#define Heap_adjust _ZN4Heap6adjustEv
+void Heap_adjust(void);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+void Heap_freeAll(void *p);
 void *NNS_G3dGetTex(void *h);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(const char *path, void *buf, s32 size);
@@ -128,8 +130,10 @@ s32 PlayerHead_GetBufferSize(void);
 s32 PlayerHead_GetTexVramSize(void);
 s32 PlayerHead_GetTex4x4VramSize(void);
 s32 PlayerHead_GetPlttVramSize(void);
-void func_0205dbb0(u8 *p);
-void func_0205dbac();
+#define PlayerHead_ctor _ZN10PlayerHeadC1Ev
+void PlayerHead_ctor(u8 *p);
+#define PlayerHead_dtor _ZN10PlayerHeadD1Ev
+void PlayerHead_dtor();
 void PlayerHead_SetSlot(u8 *p, u8 v);
 void PlayerHead_Release(u8 *p);
 void PlayerHead_CancelTexUpload(u8 *p);
@@ -170,7 +174,7 @@ extern "C" void PlayerHeadBank_Init(void) {
     PlayerHeadModelHeap_Create();
     MGR->setup();
     if (gPlayerHeadModelHeap != 0)
-        func_020e877c();
+        Heap_adjust();
 }
 
 extern "C" void PlayerHeadBank_Destroy(void) {
@@ -281,7 +285,7 @@ void PlayerHeadBank::releaseAll(void) {
         unk_190[i][1] = NULL;
     }
     if (gPlayerHeadModelHeap) {
-        func_020e885c((void *)gPlayerHeadModelHeap);
+        Heap_freeAll((void *)gPlayerHeadModelHeap);
     }
     for (i = 0; i < 4; i++) {
         unk_1b0[i][0] = 0x9e;
@@ -297,10 +301,10 @@ TexVramTask *PlayerHeadBank::getTexTask(u32 i, u32 j) { return &unk_b0[i][j]; }
 s32 PlayerHeadBank::getModelId(u32 i, u32 j) { return unk_1b0[i][j]; }
 void PlayerHeadBank::setModelId(u32 i, u32 j, u32 v) { unk_1b0[i][j] = v; }
 
-extern "C" void func_0205dbb0(u8 *p) {
+extern "C" void PlayerHead_ctor(u8 *p) {
     *p = 4;
 }
-extern "C" void func_0205dbac() {}
+extern "C" void PlayerHead_dtor() {}
 extern "C" void PlayerHead_SetSlot(u8 *p, u8 v) {
     *p = v;
 }

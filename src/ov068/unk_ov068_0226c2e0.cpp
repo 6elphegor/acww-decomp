@@ -95,7 +95,8 @@ struct Unk_ov068_0226ce70_Date {
     u32 b;
 };
 
-extern "C" void func_020f8134(void *self);
+#define BgmBeatPhase_ctor _ZN12BgmBeatPhaseC1Ev
+extern "C" void BgmBeatPhase_ctor(void *self);
 
 class SpNpcRoostGuest;
 

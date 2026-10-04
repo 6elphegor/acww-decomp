@@ -23,7 +23,7 @@ void Melody_Unpack(u32 *, u8 *);
 void Melody_Pack(u32 *, u8 *);
 }
 
-// 0x14-byte member, destructor func_020f5b84 (autoload_2, alias in aliases.txt)
+// 0x14-byte member, destructor MelodyTrack::~MelodyTrack (autoload_2, alias in aliases.txt)
 class MelodyTrack {
 public:
     ~MelodyTrack();

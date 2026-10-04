@@ -3868,7 +3868,7 @@ extern "C" { s32 _ZN9TalkFrame4drawEv(void *p); }
 extern "C" { s32 _ZN10ChoiceMenu4drawEv(void *p); }
 extern "C" { s32 _ZN9TalkFrame6updateEv(void *p); }
 extern "C" { s32 _ZN10ChoiceMenu6updateEv(void *p); }
-extern "C" { s32 func_021355a8(void *p, s32 a, s32 b, void *c); }
+extern "C" { s32 __cxa_vec_delete(void *p, s32 a, s32 b, void *c); }
 extern "C" { s32 _ZN13TalkFrameView12hideBusyIconEv(void *p); }
 extern "C" { s32 _ZN13TalkFrameView12showBusyIconEv(void *p); }
 extern "C" { s32 _ZN10ChoiceMenu14setListChoicesEP10ChoiceList(void *p, void *q); }
