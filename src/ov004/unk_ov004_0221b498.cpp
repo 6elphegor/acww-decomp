@@ -190,7 +190,7 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    s32 unk_654;
+    s32 act;
     SpNpcSableTalk talk;
     s16 homeAngle;
     u8 isDramaTalk;
@@ -199,13 +199,13 @@ public:
     u8 sewCycle;
 };
 
-struct Unk_ov004_0221bd50_Ent {
+struct SpNpcSableActEntry {
     BOOL (SpNpcSable::*enter)();
     BOOL (SpNpcSable::*exit)();
 };
 
 extern "C" {
-extern Unk_ov004_0221bd50_Ent sSpNpcSableActTable[7];
+extern SpNpcSableActEntry sSpNpcSableActTable[7];
 extern u8 sSpNpcSableModelPath[];
 extern u8 sSpNpcSableTexturePath[];
 }
@@ -256,8 +256,8 @@ BOOL SpNpcSable::updateAct() {
     sewCycle = SewingMachine_GetFrame() / 0x38;
     NpcActor_setNetUserBytes(this, &sewCycle, 1);
     BOOL r = FALSE;
-    if (sSpNpcSableActTable[unk_654].exit) {
-        r = (this->*sSpNpcSableActTable[unk_654].exit)();
+    if (sSpNpcSableActTable[act].exit) {
+        r = (this->*sSpNpcSableActTable[act].exit)();
     }
     return r;
 }
@@ -268,7 +268,7 @@ void SpNpcSable::changeAct(s32 state) {
         ok = (this->*sSpNpcSableActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -623,7 +623,7 @@ extern "C" void *data_ov004_0224cca8[2] = {(void *)_ZN10SpNpcSable9mainAct06Ev, 
 extern "C" void *data_ov004_0224ccc0[2] = {(void *)_ZN10SpNpcSable10setupAct03Ev, 0};
 extern "C" void *data_ov004_0224cc90[2] = {(void *)_ZN10SpNpcSable9mainAct05Ev, 0};
 typedef BOOL (SpNpcSable::*Unk_ov004_Fn)();
-extern "C" Unk_ov004_0221bd50_Ent sSpNpcSableActTable[7] = {
+extern "C" SpNpcSableActEntry sSpNpcSableActTable[7] = {
     {*(Unk_ov004_Fn *)data_ov004_0224ccb8, *(Unk_ov004_Fn *)data_ov004_0224cc98},
     {*(Unk_ov004_Fn *)data_ov004_0224ccb0, *(Unk_ov004_Fn *)data_ov004_0224cce0},
     {*(Unk_ov004_Fn *)data_ov004_0224ccf0, *(Unk_ov004_Fn *)data_ov004_0224cce8},

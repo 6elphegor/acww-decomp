@@ -46,7 +46,7 @@ class CafeVillager;
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 typedef BOOL (CafeVillager::*Unk_ov004_0224c994_Fn)();
 
-struct Unk_ov004_0224c994_Ent {
+struct CafeVillagerActEntry {
     Unk_ov004_0224c994_Fn a;
     Unk_ov004_0224c994_Fn b;
 };
@@ -54,7 +54,7 @@ struct Unk_ov004_0224c994_Ent {
 
 extern "C" {
 extern u16 data_020c6cc8;
-extern Unk_ov004_0224c994_Ent sCafeVillagerActTable[3];
+extern CafeVillagerActEntry sCafeVillagerActTable[3];
 extern u8 data_ov004_022508e0[0x28];
 
 s32 Random_GlobalBelow(s32 a);
@@ -138,11 +138,11 @@ void *data_ov004_0224c8cc[2] = {(void *)_ZN12CafeVillager9mainAct00Ev, 0};
 void *data_ov004_0224c8c4[2] = {(void *)_ZN12CafeVillager9mainAct02Ev, 0};
 }
 #define PM(x) (*(Unk_ov004_0224c994_Fn *)(x))
-extern "C" Unk_ov004_0224c994_Ent sCafeVillagerActTable[3] = {
+extern "C" CafeVillagerActEntry sCafeVillagerActTable[3] = {
     {PM(data_ov004_0224c8bc), PM(data_ov004_0224c8cc)},
     {0, PM(data_ov004_0224c8dc)},
     {PM(data_ov004_0224c8d4), PM(data_ov004_0224c8c4)}};
-#define data_ov004_02250910 ((Unk_ov004_0224c994_Ent *)((u8 *)sCafeVillagerActTable + 8))
+#define data_ov004_02250910 ((CafeVillagerActEntry *)((u8 *)sCafeVillagerActTable + 8))
 
 extern "C" CafeVillager *CafeVillager_Create() {
     return new CafeVillager;

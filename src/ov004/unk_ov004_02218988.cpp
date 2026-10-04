@@ -71,13 +71,13 @@ class FleaMarketBuyerVillager;
 typedef void (FleaMarketBuyerVillagerTalk::*Unk_ov004_0224c740_Fn)();
 typedef BOOL (FleaMarketBuyerVillager::*Unk_ov004_0224c7d0_Fn)();
 
-struct Unk_ov004_0224c740_Ent {
+struct FleaMarketBuyerTalkScript {
     Unk_ov004_0224c740_Fn fn;
     u8 flag;
     u8 pad[3];
 };
 
-struct Unk_ov004_0224c7d0_Ent {
+struct FleaMarketBuyerActEntry {
     Unk_ov004_0224c7d0_Fn a;
     Unk_ov004_0224c7d0_Fn b;
 };
@@ -106,8 +106,8 @@ extern u16 data_020c6cc8;
 extern s16 data_02135f44[];
 extern u8 gTalkMsgIndexEnd[];
 extern u8 gFieldSceneKind[];
-extern Unk_ov004_0224c740_Ent sFleaMarketBuyerTalkScripts[2];
-extern Unk_ov004_0224c7d0_Ent sFleaMarketBuyerActTable[9];
+extern FleaMarketBuyerTalkScript sFleaMarketBuyerTalkScripts[2];
+extern FleaMarketBuyerActEntry sFleaMarketBuyerActTable[9];
 extern u8 data_ov004_022507b0[0x28];
 extern u8 data_ov004_022507d8[0x28];
 extern u8 data_ov004_02250800[0x28];
@@ -290,7 +290,7 @@ public:
     BOOL setupAct01();
     BOOL mainAct00();
     BOOL setupAct00();
-    void func_ov004_02219ef4();
+    void playDoorChime();
     void changeAct(s32 idx);
 
     /* 0x894 */ u16 targetItem;
@@ -366,10 +366,10 @@ void *data_ov004_0224c6a0[2] = {(void *)_ZN27FleaMarketBuyerVillagerTalk10offerP
 }
 #define PMA(x) (*(Unk_ov004_0224c740_Fn *)(x))
 #define PMB(x) (*(Unk_ov004_0224c7d0_Fn *)(x))
-extern "C" Unk_ov004_0224c740_Ent sFleaMarketBuyerTalkScripts[2] = {
+extern "C" FleaMarketBuyerTalkScript sFleaMarketBuyerTalkScripts[2] = {
     {0, 0, {0, 0, 0}},
     {PMA(data_ov004_0224c6a0), 0, {0, 0, 0}}};
-extern "C" Unk_ov004_0224c7d0_Ent sFleaMarketBuyerActTable[9] = {
+extern "C" FleaMarketBuyerActEntry sFleaMarketBuyerActTable[9] = {
     {PMB(data_ov004_0224c690), PMB(data_ov004_0224c6d8)},
     {PMB(data_ov004_0224c698), PMB(data_ov004_0224c688)},
     {PMB(data_ov004_0224c718), PMB(data_ov004_0224c710)},
@@ -379,7 +379,7 @@ extern "C" Unk_ov004_0224c7d0_Ent sFleaMarketBuyerActTable[9] = {
     {PMB(data_ov004_0224c6a8), PMB(data_ov004_0224c6d0)},
     {PMB(data_ov004_0224c6c8), PMB(data_ov004_0224c6c0)},
     {PMB(data_ov004_0224c6b8), PMB(data_ov004_0224c6b0)}};
-#define data_ov004_02250858 ((Unk_ov004_0224c7d0_Ent *)((u8 *)sFleaMarketBuyerActTable + 8))
+#define data_ov004_02250858 ((FleaMarketBuyerActEntry *)((u8 *)sFleaMarketBuyerActTable + 8))
 
 static inline BOOL Unk_ov004_02218a48_Range(volatile u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -551,7 +551,7 @@ void FleaMarketBuyerVillager::changeAct(s32 idx) {
     }
 }
 
-void FleaMarketBuyerVillager::func_ov004_02219ef4() {
+void FleaMarketBuyerVillager::playDoorChime() {
     Snd_SeEmitterPlayOneShot(&seEmitter, 0x4cb, 0x7f, 0);
     Building_PlayDoorChime();
 }
@@ -606,7 +606,7 @@ BOOL FleaMarketBuyerVillager::mainAct01() {
         }
     }
     if (entryTimer == 0x28) {
-        func_ov004_02219ef4();
+        playDoorChime();
     }
     rotX = 0;
     rotY = -0x8000;

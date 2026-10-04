@@ -57,9 +57,9 @@
 #define func_ov004_0220af28 _ZN11FtrHeadwear8syncAct0Ev
 #define FtrShirt_syncAct0 _ZN8FtrShirt8syncAct0Ev
 #define FtrShirt_syncAct1 _ZN8FtrShirt8syncAct1Ev
-#define func_ov004_0220e738 _ZN5FtrTv19func_ov004_0220e738Ev
-#define func_ov004_0220f29c _ZN9FtrStereo19func_ov004_0220f29cEv
-#define func_ov004_0220f2a8 _ZN9FtrStereo19func_ov004_0220f2a8Ev
+#define FtrTv_markNearestTv _ZN5FtrTv13markNearestTvEv
+#define FtrClock_markNearestCabinClock _ZN8FtrClock21markNearestCabinClockEv
+#define FtrClock_markNearestSoundingClock _ZN8FtrClock24markNearestSoundingClockEv
 #define FtrBed_checkStepTile _ZN6FtrBed13checkStepTileEP20Unk_ov004_022108f0_ViS1_
 #define func_ov004_022326fc _ZN14MuseumAquariumC1Ev
 
@@ -571,9 +571,9 @@ s32 func_ov004_0220af14(void *p);
 s32 func_ov004_0220af28(void *p);
 s32 FtrShirt_syncAct0(void *p);
 s32 FtrShirt_syncAct1(void *p);
-void func_ov004_0220e738(FtrActor *);
-void func_ov004_0220f29c(FtrActor *);
-void func_ov004_0220f2a8(FtrActor *);
+void FtrTv_markNearestTv(FtrActor *);
+void FtrClock_markNearestCabinClock(FtrActor *);
+void FtrClock_markNearestSoundingClock(FtrActor *);
 BOOL FtrBed_checkStepTile(FtrActor *, Unk_ov004_Vec3 *, s32, Unk_ov004_Vec3 *);
 void func_ov004_022326fc(void *);
 void func_ov004_02235180();
@@ -3803,7 +3803,7 @@ extern "C" void FtrMgr_NotifyNearestCabinClock(void *) {
         if (best != -1) {
             FtrActor *e = FtrActorTable_GetInstance()->get(best);
             if (e != NULL) {
-                func_ov004_0220f29c(e);
+                FtrClock_markNearestCabinClock(e);
             }
         }
     }
@@ -3840,7 +3840,7 @@ extern "C" void FtrMgr_NotifyNearestSoundingClock(void *) {
         if (best != -1) {
             FtrActor *e = FtrActorTable_GetInstance()->get(best);
             if (e != NULL) {
-                func_ov004_0220f2a8(e);
+                FtrClock_markNearestSoundingClock(e);
             }
         }
     }
@@ -3882,7 +3882,7 @@ extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
             if (best != -1) {
                 FtrActor *e = FtrActorTable_GetInstance()->get(best);
                 if (e != NULL) {
-                    func_ov004_0220e738(e);
+                    FtrTv_markNearestTv(e);
                     Unk_ov004_Vec3 t = *(Unk_ov004_Vec3 *)e->centerPos;
                     v8.x = t.x;
                     v8.y = t.y;

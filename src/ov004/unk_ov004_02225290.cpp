@@ -96,10 +96,10 @@ extern "C" BarberMachine *BarberMachine_Create();
 extern "C" ActorProfile sBarberMachineProfile;
 extern "C" BarberMachine *volatile sBarberMachine;
 
-struct Unk_ov004_022255ec_Pad {
+struct BarberSoundStackPad {
     s32 v[4];
-    Unk_ov004_022255ec_Pad() {}
-    ~Unk_ov004_022255ec_Pad() {}
+    BarberSoundStackPad() {}
+    ~BarberSoundStackPad() {}
 };
 
 // @2225790
@@ -155,7 +155,7 @@ BOOL BarberMachine::onDelete() {
 
 // @22255ec
 void BarberMachine::getSoundPos(Vec *out) {
-    Unk_ov004_022255ec_Pad pad;
+    BarberSoundStackPad pad;
     out->x = 0xc000;
     out->y = 0;
     out->z = 0x17000;

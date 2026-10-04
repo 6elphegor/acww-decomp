@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-struct Unk_ov004_02208a18_Rec;
+struct NNSG3dResAnmCommon;
 
 // Five pairs of furniture animation resources (bca / bma / bva / bta / btp) plus the texture-copy flag.
 // Members defined in src/ov004/unk_ov004_02204f24.cpp (0x02206380-0x02206432).
@@ -11,11 +11,11 @@ struct FtrAnimSet {
     inline FtrAnimSet() { clear(); }
     ~FtrAnimSet();
     s32 getTexCopy();
-    Unk_ov004_02208a18_Rec *getBtp(u32 i);
-    Unk_ov004_02208a18_Rec *getBta(u32 i);
-    Unk_ov004_02208a18_Rec *getBva(u32 i);
-    Unk_ov004_02208a18_Rec *getBma(u32 i);
-    Unk_ov004_02208a18_Rec *getBca(u32 i);
+    NNSG3dResAnmCommon *getBtp(u32 i);
+    NNSG3dResAnmCommon *getBta(u32 i);
+    NNSG3dResAnmCommon *getBva(u32 i);
+    NNSG3dResAnmCommon *getBma(u32 i);
+    NNSG3dResAnmCommon *getBca(u32 i);
     void setTexCopy(s32 v);
     void setBtp(void *v, u32 i);
     void setBta(void *v, u32 i);

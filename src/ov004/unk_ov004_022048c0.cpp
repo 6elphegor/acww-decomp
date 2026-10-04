@@ -94,10 +94,10 @@ typedef BOOL (Atm::*Unk_02204b04_Fn)();
 
 extern "C" Atm *sAtmInstance;
 
-struct Unk_02204a38_Pad {
+struct AtmTalkStackPad {
     s32 v[2];
-    Unk_02204a38_Pad() {}
-    ~Unk_02204a38_Pad() {}
+    AtmTalkStackPad() {}
+    ~AtmTalkStackPad() {}
 };
 
 extern "C" Atm *Atm_Create() {
@@ -239,7 +239,7 @@ BOOL Atm::enterTalkAct00() {
 void Atm::execTalkAct00() {}
 
 BOOL Atm::enterTalkAct01() {
-    Unk_02204a38_Pad pad;
+    AtmTalkStackPad pad;
     Character_attachTalkRequest(this, this);
     setFileName(sAtmMsgFilePtr);
     msgIndex = 0;

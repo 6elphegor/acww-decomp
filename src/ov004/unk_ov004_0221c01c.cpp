@@ -48,11 +48,6 @@ struct Unk_020d77a4_Vec3;
 
 
 
-struct Unk_ov004_0221cc88_Obj {
-    u8 pad_00[0x14];
-    u32 unk_14;
-};
-
 struct Unk_ov004_0224d0a0_Bits {
     u32 lo : 12;
     u32 mid : 16;
@@ -65,13 +60,13 @@ class SpNpcBrewsterTalk;
 typedef void (SpNpcBrewsterTalk::*Unk_ov004_0224d010_Fn)();
 typedef BOOL (SpNpcBrewster::*Unk_ov004_0224d0a0_Fn)();
 
-struct Unk_ov004_0224d010_Ent {
+struct SpNpcBrewsterTalkScript {
     Unk_ov004_0224d010_Fn fn;
     u8 flag;
     u8 pad[3];
 };
 
-struct Unk_ov004_0224d0a0_Ent {
+struct SpNpcBrewsterActEntry {
     Unk_ov004_0224d0a0_Fn fn1;
     Unk_ov004_0224d0a0_Fn fn2;
 };
@@ -128,10 +123,10 @@ extern u8 data_ov004_0224cec8[];
 extern u8 sSpNpcBrewsterModelPath[];
 extern u8 sSpNpcBrewsterTexturePath[];
 extern SpNpcBrewster *sSpNpcBrewster;
-extern Unk_ov004_0224d010_Ent sSpNpcBrewsterTalkScripts[];
-extern Unk_ov004_0224d0a0_Ent sSpNpcBrewsterActTable[];
+extern SpNpcBrewsterTalkScript sSpNpcBrewsterTalkScripts[];
+extern SpNpcBrewsterActEntry sSpNpcBrewsterActTable[];
 // 0x02250aa8 is a label inside the 0x80-byte table (second ptmf of entry 0)
-#define data_ov004_02250aa8 ((Unk_ov004_0224d0a0_Ent *)((u8 *)sSpNpcBrewsterActTable + 8))
+#define data_ov004_02250aa8 ((SpNpcBrewsterActEntry *)((u8 *)sSpNpcBrewsterActTable + 8))
 extern const u32 data_ov004_02240120[];
 extern const u32 sSpNpcBrewsterGuestSpawnPos[];
 
@@ -275,7 +270,7 @@ public:
     BOOL setupAct00();
     void changeAct(s32 idx);
 
-    /* 0x654 */ s32 unk_654;
+    /* 0x654 */ s32 act;
     /* 0x658 */ SpNpcBrewsterTalk talk;
     /* 0x710 */ s16 homeAngle;
     /* 0x712 */ u8 pad_712[2];
@@ -355,7 +350,7 @@ u8 *SpNpcBrewster::getModelPath() {
 
 BOOL SpNpcBrewster::updateAct() {
     BOOL r = FALSE;
-    s32 i = unk_654;
+    s32 i = act;
     if (data_ov004_02250aa8[i].fn1 != 0) {
         r = (this->*sSpNpcBrewsterActTable[i].fn2)();
     }
@@ -387,7 +382,7 @@ void SpNpcBrewster::changeAct(s32 idx) {
         r = (this->*sSpNpcBrewsterActTable[idx].fn1)();
     }
     if (r != 0) {
-        unk_654 = idx;
+        act = idx;
     }
 }
 
@@ -581,7 +576,7 @@ void SpNpcBrewsterTalk::start(TalkStartMsg *arg) {
 
 void SpNpcBrewsterTalk::onMessageEnd(u32) {
     void *h = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
-    Unk_ov004_0221cc88_Obj *o = (Unk_ov004_0221cc88_Obj *)window;
+    TalkWindowState *o = window;
     u32 d = sSpNpcBrewsterMsgFiles[0];
     u32 r = 0xff;
     if (GameStart_IsActive() == 0) {
@@ -592,7 +587,7 @@ void SpNpcBrewsterTalk::onMessageEnd(u32) {
                     goto next0;
                 }
             }
-            o->unk_14 = 0;
+            o->openMode = 0;
             setScript(1);
         }
     next0:
@@ -602,11 +597,11 @@ void SpNpcBrewsterTalk::onMessageEnd(u32) {
         if (msgIndex == 0x2d) {
             useMsg30 = 1;
         }
-        o->unk_14 = 0;
+        o->openMode = 0;
         setScript(1);
     next1:
         if ((s32)msgIndex >= 0x30 && (s32)msgIndex <= 0x3b) {
-            o->unk_14 = 0;
+            o->openMode = 0;
             setScript(3);
         }
         if (r != 0xff) {
@@ -626,7 +621,7 @@ void SpNpcBrewsterTalk::onChoice(u32) {
         if (t != 0) {
             r = (u8)((PlayerSpNpcRecord_getCafeVisits(h) >> 2) + 0x28);
         } else {
-            ((Unk_ov004_0221cc88_Obj *)window)->unk_14 = 0;
+            window->openMode = 0;
             setScript(2);
         }
     }
@@ -1086,13 +1081,13 @@ extern "C" void *data_ov004_0224cf1c[2] = {(void *)_ZN13SpNpcBrewster10setupAct0
 extern "C" void *data_ov004_0224cee4[2] = {(void *)_ZN13SpNpcBrewster10setupAct07Ev, 0};
 typedef BOOL (SpNpcBrewster::*Unk_ov004_O_Fn)();
 typedef void (SpNpcBrewsterTalk::*Unk_ov004_D_Fn)();
-extern "C" Unk_ov004_0224d010_Ent sSpNpcBrewsterTalkScripts[4] = {
+extern "C" SpNpcBrewsterTalkScript sSpNpcBrewsterTalkScripts[4] = {
     {0, 0},
     {*(Unk_ov004_D_Fn *)data_ov004_0224cf64, 1},
     {*(Unk_ov004_D_Fn *)data_ov004_0224cf04, 1},
     {*(Unk_ov004_D_Fn *)data_ov004_0224cedc, 1},
 };
-extern "C" Unk_ov004_0224d0a0_Ent sSpNpcBrewsterActTable[8] = {
+extern "C" SpNpcBrewsterActEntry sSpNpcBrewsterActTable[8] = {
     {*(Unk_ov004_O_Fn *)data_ov004_0224cf5c, *(Unk_ov004_O_Fn *)data_ov004_0224cef4},
     {*(Unk_ov004_O_Fn *)data_ov004_0224cf4c, *(Unk_ov004_O_Fn *)data_ov004_0224cf44},
     {*(Unk_ov004_O_Fn *)data_ov004_0224cf3c, *(Unk_ov004_O_Fn *)data_ov004_0224ceec},

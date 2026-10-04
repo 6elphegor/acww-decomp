@@ -325,7 +325,7 @@ BOOL BirthdayHostVillager::updateAct() {
     return TRUE;
 }
 
-void BirthdayHostVillager::func_ov004_02215b9c() {
+void BirthdayHostVillager::recordPlayerTalk() {
     void *o = PlayerData_GetCurrent();
     if (o != NULL && villagerData != NULL) {
         s32 r = PlayerData_getPlayerId(o);
@@ -376,7 +376,7 @@ void BirthdayHostVillager::onInteractionEvent(u32 a, u8 b) {
         break;
     case 8:
         Camera_SetModeDefault();
-        func_ov004_02215b9c();
+        recordPlayerTalk();
         changeAct(0);
         break;
     case 4:

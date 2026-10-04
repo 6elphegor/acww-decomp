@@ -48,7 +48,7 @@ struct Unk_020d77a4_Vec3;
 
 class SpNpcTortimer2;
 
-struct Unk_ov004_0221e56c_Ent {
+struct SpNpcTortimer2ActEntry {
     BOOL (SpNpcTortimer2::*enter)();
     BOOL (SpNpcTortimer2::*exit)();
 };
@@ -71,9 +71,9 @@ struct Unk_ov004_0221e56c_Ent {
 extern "C" {
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
-extern Unk_ov004_0221e56c_Ent sSpNpcTortimer2ActTable[];
+extern SpNpcTortimer2ActEntry sSpNpcTortimer2ActTable[];
 // 0x02250bcc is a label inside the 0x20-byte table (second ptmf of entry 0)
-#define data_ov004_02250bcc ((Unk_ov004_0221e56c_Ent *)((u8 *)sSpNpcTortimer2ActTable + 8))
+#define data_ov004_02250bcc ((SpNpcTortimer2ActEntry *)((u8 *)sSpNpcTortimer2ActTable + 8))
 extern SpNpcTortimer2 *volatile sSpNpcTortimer2;
 extern u8 sSpNpcTortimer2ModelPath[];
 extern u8 sSpNpcTortimer2TexturePath[];
@@ -103,7 +103,7 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    /* 0x654 */ s32 unk_654;
+    /* 0x654 */ s32 act;
     /* 0x658 */ u8 idleLoops;
 };
 
@@ -143,8 +143,8 @@ u8 *SpNpcTortimer2::getModelPath() { return sSpNpcTortimer2ModelPath; }
 
 BOOL SpNpcTortimer2::updateAct() {
     BOOL r = FALSE;
-    if (data_ov004_02250bcc[unk_654].enter) {
-        r = (this->*sSpNpcTortimer2ActTable[unk_654].exit)();
+    if (data_ov004_02250bcc[act].enter) {
+        r = (this->*sSpNpcTortimer2ActTable[act].exit)();
     }
     return r;
 }
@@ -155,7 +155,7 @@ void SpNpcTortimer2::changeAct(s32 state) {
         ok = (this->*sSpNpcTortimer2ActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -195,7 +195,7 @@ BOOL SpNpcTortimer2::mainAct01() {
 extern "C" BOOL SpNpcTortimer2_IsIdle() {
     SpNpcTortimer2 *y = sSpNpcTortimer2;
     if (y) {
-        if (NpcAnimCtrl_isPlayingAnim(&y->animCtrl, 0xff, &y->moveAnimSet) && sSpNpcTortimer2->unk_654 == 0) {
+        if (NpcAnimCtrl_isPlayingAnim(&y->animCtrl, 0xff, &y->moveAnimSet) && sSpNpcTortimer2->act == 0) {
             return TRUE;
         }
         return FALSE;
@@ -215,7 +215,7 @@ extern "C" void *data_ov004_0224d39c[2] = {(void *)_ZN14SpNpcTortimer29mainAct01
 extern "C" void *data_ov004_0224d384[2] = {(void *)_ZN14SpNpcTortimer210setupAct00Ev, 0};
 extern "C" void *data_ov004_0224d38c[2] = {(void *)_ZN14SpNpcTortimer29mainAct00Ev, 0};
 typedef BOOL (SpNpcTortimer2::*Unk_ov004_O_Fn)();
-extern "C" Unk_ov004_0221e56c_Ent sSpNpcTortimer2ActTable[2] = {
+extern "C" SpNpcTortimer2ActEntry sSpNpcTortimer2ActTable[2] = {
     {*(Unk_ov004_O_Fn *)data_ov004_0224d384, *(Unk_ov004_O_Fn *)data_ov004_0224d38c},
     {*(Unk_ov004_O_Fn *)data_ov004_0224d394, *(Unk_ov004_O_Fn *)data_ov004_0224d39c},
 };

@@ -93,10 +93,10 @@ extern "C" {
 s32 sRoomBoardSignSpawnRadius;
 }
 
-struct Unk_02213774_Pad {
+struct BoardSignStackPad {
     s32 v[2];
-    Unk_02213774_Pad() {}
-    ~Unk_02213774_Pad() {}
+    BoardSignStackPad() {}
+    ~BoardSignStackPad() {}
 };
 
 extern "C" RoomBoardSign *RoomBoardSign_Create() {
@@ -226,7 +226,7 @@ BOOL RoomBoardSign::setupAct00() {
 void RoomBoardSign::mainAct00() {}
 
 BOOL RoomBoardSign::setupAct01() {
-    Unk_02213774_Pad pad;
+    BoardSignStackPad pad;
     _ZN9Character17attachTalkRequestEi(this, this);
     setFileName("obj_etc_board");
     msgIndex = signMsgIndex;

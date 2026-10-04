@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "snd/BgmBeatPhase.h"
 #include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
@@ -102,26 +103,13 @@ struct Unk_ov004_02226574_Bits {
     u32 hi : 4;
 };
 
-struct Unk_ov004_02227228_Mtx {
-    s32 v[12];
-};
-
 struct Unk_ov004_02227228_Bits {
     u32 lo : 12;
     u32 mid : 16;
     u32 hi : 4;
 };
 
-struct Unk_ov004_022275fc_Sess {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    s8 unk_03;
-    u8 pad_04[0xc];
-    u32 beatFrameStep;
-};
-
-typedef Unk_ov004_02227228_Mtx Mtx;
+typedef Mtx43 Mtx;
 typedef Unk_ov004_02227228_Bits Bits;
 
 class ObjB {
@@ -195,9 +183,6 @@ struct Unk_ov004_0224d988_M {
 struct Unk_ov004_0224d988_H {
     u8 pad_00[0xa4];
 };
-struct Unk_ov004_0224d988_W {
-    u32 unk_00;
-};
 struct Unk_ov004_0224d988_V3 {
     s32 x, y, z;
 };
@@ -214,7 +199,7 @@ public:
 
     /* 0x290 */ Unk_ov004_0224d988_M partModels[9];
     /* 0x908 */ Unk_ov004_0224d988_H partRes[9];
-    /* 0xecc */ Unk_ov004_0224d988_W partTex[9];
+    /* 0xecc */ u32 partTex[9]; // RoomObjTex slots (construct/destruct by hand)
     /* 0xef0 */ u8 pad_ef0[3];
     /* 0xef3 */ u8 part3Visible;
     /* 0xef4 */ u8 pad_ef4[0xf1c - 0xef4];
@@ -256,7 +241,7 @@ void *SpNpcBrewster_GetJointMtxE(void);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 void *Bgm_GetCurrent(void);
 s32 Math_IsInRange(void *p, u32 a, u32 b);
-Unk_ov004_022275fc_Sess *Snd_GetBeatState(void);
+BgmBeatPhase *Snd_GetBeatState(void);
 s32 Effect_SetPosition(s32 a, void *b, u32 c, u32 d);
 void *Heap_Alloc(void *heap, u32 size);
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
@@ -497,15 +482,15 @@ BOOL CafeCoffeeSet::onExecute() {
     ObjB *o = (ObjB *)this;
     u8 i;
     if (Math_IsInRange(Bgm_GetCurrent(), 0x63, 0xab)) {
-        Unk_ov004_022275fc_Sess *t = Snd_GetBeatState();
+        BgmBeatPhase *t = Snd_GetBeatState();
         if (t != NULL) {
-            if (t->unk_03 != 1) {
+            if (t->seqVar2 != 1) {
                 o->modelFrame = 0;
-                o->modelFrameStep = t->beatFrameStep;
+                o->modelFrameStep = t->loopFrame32;
                 _ZN9AnimModel8stepAnimEv((u8 *)o + 0xec);
                 o->modelFrameStep = 0;
                 o->part0Frame = 0;
-                o->part0FrameStep = t->beatFrameStep;
+                o->part0FrameStep = t->loopFrame32;
                 _ZN9AnimModel8stepAnimEv((u8 *)o + 0x290);
                 o->part0FrameStep = 0;
             }
@@ -558,9 +543,9 @@ void CafeCoffeeSet_UpdateMatrices(void *ov) {
             o->pourEffectZ = 0x15000;
         } else {
             data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
-            o->pourEffectX = data_021f47e0.v[9];
-            o->pourEffectY = data_021f47e0.v[10];
-            o->pourEffectZ = data_021f47e0.v[11];
+            o->pourEffectX = data_021f47e0.m[9];
+            o->pourEffectY = data_021f47e0.m[10];
+            o->pourEffectZ = data_021f47e0.m[11];
         }
     } else if (st == 6) {
         if ((s32)o->part1Frame.mid >= (s32)o->part1FrameCount.mid - 0x2d) {
@@ -570,15 +555,15 @@ void CafeCoffeeSet_UpdateMatrices(void *ov) {
             o->pourEffectZ = 0x15000;
         } else {
             data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
-            o->pourEffectX = data_021f47e0.v[9];
-            o->pourEffectY = data_021f47e0.v[10];
-            o->pourEffectZ = data_021f47e0.v[11];
+            o->pourEffectX = data_021f47e0.m[9];
+            o->pourEffectY = data_021f47e0.m[10];
+            o->pourEffectZ = data_021f47e0.m[11];
         }
     } else {
         data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
-        o->pourEffectX = data_021f47e0.v[9];
-        o->pourEffectY = data_021f47e0.v[10];
-        o->pourEffectZ = data_021f47e0.v[11];
+        o->pourEffectX = data_021f47e0.m[9];
+        o->pourEffectY = data_021f47e0.m[10];
+        o->pourEffectZ = data_021f47e0.m[11];
     }
     o->part1Mtx = data_021f47e0;
     st = o->serveState;

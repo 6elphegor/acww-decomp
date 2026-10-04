@@ -54,13 +54,13 @@ class SpNpcBooker;
 typedef void (SpNpcBookerTalk::*Unk_ov004_0224d248_Fn)();
 typedef BOOL (SpNpcBooker::*Unk_ov004_0224d2d8_Fn)();
 
-struct Unk_ov004_0224d248_Ent {
+struct SpNpcBookerTalkScript {
     Unk_ov004_0224d248_Fn fn;
     u8 flag;
     u8 pad[3];
 };
 
-struct Unk_ov004_0221e0b4_Ent {
+struct SpNpcBookerActEntry {
     Unk_ov004_0224d2d8_Fn enter;
     Unk_ov004_0224d2d8_Fn exit;
 };
@@ -114,10 +114,10 @@ extern u8 gSaveVillagers[];
 extern u8 *sSpNpcBookerModelPath;
 extern u8 *sSpNpcBookerTexturePath;
 extern u32 sSpNpcBookerMsgFiles[];
-extern Unk_ov004_0224d248_Ent sSpNpcBookerTalkScripts[];
-extern Unk_ov004_0221e0b4_Ent sSpNpcBookerActTable[];
+extern SpNpcBookerTalkScript sSpNpcBookerTalkScripts[];
+extern SpNpcBookerActEntry sSpNpcBookerActTable[];
 // 0x02250b58 is a label inside the 0x70-byte table (second ptmf of entry 0)
-#define data_ov004_02250b58 ((Unk_ov004_0221e0b4_Ent *)((u8 *)sSpNpcBookerActTable + 8))
+#define data_ov004_02250b58 ((SpNpcBookerActEntry *)((u8 *)sSpNpcBookerActTable + 8))
 
 void func_0201b08c(void *self, u32 a, u32 b);
 s32 NpcActor_netSetSlotsIfOwner(void *self, s32 a, s32 b, s32 c);
@@ -231,14 +231,14 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    /* 0x654 */ s32 unk_654;
+    /* 0x654 */ s32 act;
     /* 0x658 */ SpNpcBookerTalk talk;
     /* 0x70c */ s16 homeAngle;
     /* 0x70e */ u8 pad_70e[2];
 };
 
 
-struct Unk_ov004_0221d9bc_Range {
+struct ItemIdRange {
     static inline BOOL Chk(u16 *p, u32 lo, u32 hi) {
         BOOL r = FALSE;
         if (*p >= lo && *p <= hi) {
@@ -303,8 +303,8 @@ u8 *SpNpcBooker::getModelPath() { return sSpNpcBookerModelPath; }
 
 BOOL SpNpcBooker::updateAct() {
     BOOL r = FALSE;
-    if (data_ov004_02250b58[unk_654].enter) {
-        r = (this->*sSpNpcBookerActTable[unk_654].exit)();
+    if (data_ov004_02250b58[act].enter) {
+        r = (this->*sSpNpcBookerActTable[act].exit)();
     }
     return r;
 }
@@ -315,7 +315,7 @@ void SpNpcBooker::changeAct(s32 state) {
         ok = (this->*sSpNpcBookerActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -608,13 +608,13 @@ void SpNpcBookerTalk::runScript02() {
         u32 p1 = *PlayerData_getShirt(g);
         u32 p2 = *PlayerData_getHat(g);
         if (x == p1) {
-            if (Unk_ov004_0221d9bc_Range::Chk(PlayerData_getShirt(g), 0x12a8, 0x12af)) {
+            if (ItemIdRange::Chk(PlayerData_getShirt(g), 0x12a8, 0x12af)) {
                 m.a = x;
                 PlayerActor_RequestWearShirtAlt(&m.a);
             }
         }
         if (y == p2) {
-            if (Unk_ov004_0221d9bc_Range::Chk(PlayerData_getHat(g), 0x1429, 0x1430)) {
+            if (ItemIdRange::Chk(PlayerData_getHat(g), 0x1429, 0x1430)) {
                 m.b = y;
                 PlayerActor_RequestWearHatAlt(&m.b);
             }
@@ -770,13 +770,13 @@ extern "C" void *data_ov004_0224d198[2] = {(void *)_ZN11SpNpcBooker10setupAct06E
 extern "C" void *data_ov004_0224d188[2] = {(void *)_ZN15SpNpcBookerTalk11runScript02Ev, 0};
 typedef BOOL (SpNpcBooker::*Unk_ov004_O_Fn)();
 typedef void (SpNpcBookerTalk::*Unk_ov004_D_Fn)();
-extern "C" Unk_ov004_0224d248_Ent sSpNpcBookerTalkScripts[4] = {
+extern "C" SpNpcBookerTalkScript sSpNpcBookerTalkScripts[4] = {
     {0, 0},
     {*(Unk_ov004_D_Fn *)data_ov004_0224d160, 0},
     {*(Unk_ov004_D_Fn *)data_ov004_0224d188, 0},
     {*(Unk_ov004_D_Fn *)data_ov004_0224d168, 0},
 };
-extern "C" Unk_ov004_0221e0b4_Ent sSpNpcBookerActTable[7] = {
+extern "C" SpNpcBookerActEntry sSpNpcBookerActTable[7] = {
     {*(Unk_ov004_O_Fn *)data_ov004_0224d1d0, *(Unk_ov004_O_Fn *)data_ov004_0224d1c8},
     {*(Unk_ov004_O_Fn *)data_ov004_0224d1c0, *(Unk_ov004_O_Fn *)data_ov004_0224d1b8},
     {*(Unk_ov004_O_Fn *)data_ov004_0224d1a8, *(Unk_ov004_O_Fn *)data_ov004_0224d1b0},

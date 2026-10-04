@@ -63,7 +63,7 @@ class FleaMarketSellerVillager;
 #define FtrActorGrid_getIndex _ZN12FtrActorGrid8getIndexEiii
 typedef BOOL (FleaMarketSellerVillager::*Unk_ov004_022187b8_Fn)();
 
-struct Unk_ov004_022187b8_Ent {
+struct FleaMarketSellerActEntry {
     Unk_ov004_022187b8_Fn a;
     Unk_ov004_022187b8_Fn b;
 };
@@ -94,7 +94,7 @@ extern u8 gFieldSceneKind;
 extern u16 gPad[];
 extern s16 data_02135f44[];
 extern void *gCommManager;
-extern Unk_ov004_022187b8_Ent sFleaMarketSellerActTable[8];
+extern FleaMarketSellerActEntry sFleaMarketSellerActTable[8];
 extern u8 data_ov004_022506c8[0x28];
 extern u8 data_ov004_022506f0[0x28];
 
@@ -294,7 +294,7 @@ void *data_ov004_0224c45c[2] = {(void *)_ZN24FleaMarketSellerVillager10setupAct0
 void *data_ov004_0224c484[2] = {(void *)_ZN24FleaMarketSellerVillager9mainAct01Ev, 0};
 }
 #define PM(x) (*(Unk_ov004_022187b8_Fn *)(x))
-extern "C" Unk_ov004_022187b8_Ent sFleaMarketSellerActTable[8] = {
+extern "C" FleaMarketSellerActEntry sFleaMarketSellerActTable[8] = {
     {PM(data_ov004_0224c44c), PM(data_ov004_0224c4bc)},
     {PM(data_ov004_0224c4b4), PM(data_ov004_0224c484)},
     {0, PM(data_ov004_0224c4a4)},

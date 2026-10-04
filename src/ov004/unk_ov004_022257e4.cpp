@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/NNSG3dRS.h"
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
@@ -58,19 +59,6 @@ struct Unk_ov004_02226458_Obj {
     void (*matCallback)(void *);
     u8 pad_20[0x90 - 0x20];
     u8 matCallbackTiming;
-};
-
-struct Unk_ov004_02226468_Sub {
-    u8 pad_00[0x2c];
-    u32 userPtr;
-};
-struct Unk_ov004_02226468_Ctx {
-    u8 cmdBytes[2];
-    u8 pad_02[2];
-};
-struct Unk_ov004_02226468_Obj {
-    Unk_ov004_02226468_Ctx *sbcCmd;
-    Unk_ov004_02226468_Sub *renderObj;
 };
 
 // a 4-byte colour record whose constructor is inline (the __sinit of this unit initialises six of them)
@@ -201,10 +189,10 @@ extern "C" CheckInGate *CheckInGate_Create() {
 
 extern "C" void CheckInGate_MatCallback(Unk_ov004_02226458_Obj *o);
 extern "C" void CheckInGate_MatCallback(Unk_ov004_02226458_Obj *o) {
-    Unk_ov004_02226468_Obj *t = (Unk_ov004_02226468_Obj *)o;
-    Unk_ov004_02226468_Sub *s = t->renderObj;
-    if (s->userPtr != 0) {
-        ((Cls *)s->userPtr)->applyHourLight(t->sbcCmd->cmdBytes[1], (Unk_ov004_02225cf4_P *)o);
+    NNSG3dRS *t = (NNSG3dRS *)o;
+    NNSG3dRenderObj *s = t->pRenderObj;
+    if (s->ptrUser != 0) {
+        ((Cls *)s->ptrUser)->applyHourLight(t->c[1], (Unk_ov004_02225cf4_P *)o);
     }
 }
 

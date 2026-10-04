@@ -52,7 +52,7 @@ public:
     virtual void onTalkMelodyPlayed();
 
     BOOL drawModel();
-    void func_ov004_02215b9c();
+    void recordPlayerTalk();
     BOOL changeAct(s32 idx);
     void execAct();
     BOOL setupAct00();

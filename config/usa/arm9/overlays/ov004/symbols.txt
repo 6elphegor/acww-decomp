@@ -573,7 +573,7 @@ _ZN5FtrTv13enterFtrAct00Ev kind:function(thumb,size=0x3c) addr:0x0220e5f8
 _ZN5FtrTv10execFtrActEv kind:function(thumb,size=0x6c) addr:0x0220e634
 _ZN5FtrTv9changeActEjh kind:function(thumb,size=0x84) addr:0x0220e6a0
 _ZN5FtrTv17getActSwitchStateEj kind:function(thumb,size=0x14) addr:0x0220e724
-_ZN5FtrTv19func_ov004_0220e738Ev kind:function(thumb,size=0xc) addr:0x0220e738
+_ZN5FtrTv13markNearestTvEv kind:function(thumb,size=0xc) addr:0x0220e738
 _ZN8FtrActor15bindTvScreenTexEi kind:function(thumb,size=0x5c) addr:0x0220e744
 _ZN5FtrTv8onDeleteEv kind:function(thumb,size=0x4) addr:0x0220e7a0
 _ZN5FtrTv12updateActiveEv kind:function(thumb,size=0x28) addr:0x0220e7a4
@@ -616,8 +616,8 @@ _ZN9FtrStereoD0Ev kind:function(thumb,size=0x38) addr:0x0220f1e4
 _ZN9FtrStereoD1Ev kind:function(thumb,size=0x34) addr:0x0220f21c
 _ZN9FtrStereoC1Ev kind:function(thumb,size=0x30) addr:0x0220f250
 FtrStereo_Create kind:function(thumb,size=0x1c) addr:0x0220f280
-_ZN9FtrStereo19func_ov004_0220f29cEv kind:function(thumb,size=0xc) addr:0x0220f29c
-_ZN9FtrStereo19func_ov004_0220f2a8Ev kind:function(thumb,size=0xc) addr:0x0220f2a8
+_ZN8FtrClock21markNearestCabinClockEv kind:function(thumb,size=0xc) addr:0x0220f29c
+_ZN8FtrClock24markNearestSoundingClockEv kind:function(thumb,size=0xc) addr:0x0220f2a8
 _ZN8FtrClock15onJointCalcPostEiPv kind:function(thumb,size=0x8) addr:0x0220f2b4
 _ZN8FtrClock8onDeleteEv kind:function(thumb,size=0x4) addr:0x0220f2bc
 _ZN8FtrClock12updateActiveEv kind:function(thumb,size=0x1f0) addr:0x0220f2c0
@@ -710,10 +710,10 @@ FtrBed_IsTileFree kind:function(thumb,size=0x2c) addr:0x02210a98
 _ZN6FtrBed13enterFtrAct00Ev kind:function(thumb,size=0x10) addr:0x02210ac4
 _ZN6FtrBed10execFtrActEv kind:function(thumb,size=0x118) addr:0x02210ad4
 _ZN6FtrBed9changeActEjh kind:function(thumb,size=0x12c) addr:0x02210bec
-_ZN18Unk_ov004_02210d28D1Ev kind:function(thumb,size=0x10) addr:0x02210d18
-_ZN18Unk_ov004_02210d28C1Ev kind:function(thumb,size=0x10) addr:0x02210d28
-_ZN18Unk_ov004_02210d48D1Ev kind:function(thumb,size=0x10) addr:0x02210d38
-_ZN18Unk_ov004_02210d48C1Ev kind:function(thumb,size=0x10) addr:0x02210d48
+_ZN14FtrBedLieTilesD1Ev kind:function(thumb,size=0x10) addr:0x02210d18
+_ZN14FtrBedLieTilesC1Ev kind:function(thumb,size=0x10) addr:0x02210d28
+_ZN15FtrBedSideTilesD1Ev kind:function(thumb,size=0x10) addr:0x02210d38
+_ZN15FtrBedSideTilesC1Ev kind:function(thumb,size=0x10) addr:0x02210d48
 _ZN11FtrTilePair3getEj kind:function(thumb,size=0xa) addr:0x02210d58
 _ZN11FtrTilePairD2Ev kind:function(thumb,size=0x2) addr:0x02210d64
 _ZN11FtrTilePairC2Ev kind:function(thumb,size=0x14) addr:0x02210d68
@@ -1058,7 +1058,7 @@ _ZN20BirthdayHostVillager31acceptsSelfRequestedInteractionEv kind:function(thumb
 _ZN20BirthdayHostVillager31acceptsSelfRequestedInteractionEPv kind:label(thumb) addr:0x02215b4c
 _ZN20BirthdayHostVillager18acceptsInteractionEv kind:function(thumb,size=0x30) addr:0x02215b6c
 _ZN20BirthdayHostVillager18acceptsInteractionEPv kind:label(thumb) addr:0x02215b6c
-_ZN20BirthdayHostVillager19func_ov004_02215b9cEv kind:function(thumb,size=0x38) addr:0x02215b9c
+_ZN20BirthdayHostVillager16recordPlayerTalkEv kind:function(thumb,size=0x38) addr:0x02215b9c
 _ZN20BirthdayHostVillager9updateActEv kind:function(thumb,size=0x10) addr:0x02215bd4
 _ZN20BirthdayHostVillager9preDeleteEv kind:function(thumb,size=0x24) addr:0x02215be4
 _ZN20BirthdayHostVillager6onDrawEv kind:function(thumb,size=0x34) addr:0x02215c08
@@ -1107,7 +1107,7 @@ _ZN21BirthdayGuestVillager18onInteractionEventEij kind:function(thumb,size=0x84)
 _ZN21BirthdayGuestVillager18onInteractionEventEjh kind:label(thumb) addr:0x02216958
 _ZN21BirthdayGuestVillager18acceptsInteractionEv kind:function(thumb,size=0x30) addr:0x022169dc
 _ZN21BirthdayGuestVillager18acceptsInteractionEPv kind:label(thumb) addr:0x022169dc
-_ZN21BirthdayGuestVillager19func_ov004_02216a0cEv kind:function(thumb,size=0x38) addr:0x02216a0c
+_ZN21BirthdayGuestVillager16recordPlayerTalkEv kind:function(thumb,size=0x38) addr:0x02216a0c
 _ZN21BirthdayGuestVillager19blockFurnitureCellsEv kind:function(thumb,size=0x5c) addr:0x02216a44
 _ZN21BirthdayGuestVillager9updateActEv kind:function(thumb,size=0x10) addr:0x02216aa0
 _ZN21BirthdayGuestVillager9preDeleteEv kind:function(thumb,size=0x24) addr:0x02216ab0
@@ -1247,7 +1247,7 @@ _ZN23FleaMarketBuyerVillager9mainAct01Ev kind:function(thumb,size=0x94) addr:0x0
 _ZN23FleaMarketBuyerVillager10setupAct01Ev kind:function(thumb,size=0x34) addr:0x02219dd8
 _ZN23FleaMarketBuyerVillager9mainAct00Ev kind:function(thumb,size=0xac) addr:0x02219e0c
 _ZN23FleaMarketBuyerVillager10setupAct00Ev kind:function(thumb,size=0x3c) addr:0x02219eb8
-_ZN23FleaMarketBuyerVillager19func_ov004_02219ef4Ev kind:function(thumb,size=0x24) addr:0x02219ef4
+_ZN23FleaMarketBuyerVillager13playDoorChimeEv kind:function(thumb,size=0x24) addr:0x02219ef4
 _ZN23FleaMarketBuyerVillager9changeActEi kind:function(thumb,size=0x50) addr:0x02219f18
 _ZN23FleaMarketBuyerVillager9updateActEv kind:function(thumb,size=0x4c) addr:0x02219f68
 _ZN23FleaMarketBuyerVillager6onDrawEv kind:function(thumb,size=0x1c) addr:0x02219fb4
@@ -1323,7 +1323,7 @@ _ZN12SickVillager18onInteractionEventEjj kind:function(thumb,size=0x90) addr:0x0
 _ZN12SickVillager18onInteractionEventEjh kind:label(thumb) addr:0x0221b0f0
 _ZN12SickVillager18acceptsInteractionEv kind:function(thumb,size=0x30) addr:0x0221b180
 _ZN12SickVillager18acceptsInteractionEPv kind:label(thumb) addr:0x0221b180
-_ZN12SickVillager19func_ov004_0221b1b0Ev kind:function(thumb,size=0x38) addr:0x0221b1b0
+_ZN12SickVillager16recordPlayerTalkEv kind:function(thumb,size=0x38) addr:0x0221b1b0
 _ZN12SickVillager19blockFurnitureCellsEv kind:function(thumb,size=0x5c) addr:0x0221b1e8
 _ZN12SickVillager9updateActEv kind:function(thumb,size=0x20) addr:0x0221b244
 _ZN12SickVillager9preDeleteEv kind:function(thumb,size=0x24) addr:0x0221b264

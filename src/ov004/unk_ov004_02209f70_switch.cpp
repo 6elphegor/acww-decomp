@@ -2,7 +2,6 @@
 #include "types.h"
 #include "room/Unk_ov004_0224882c_Buf.h"
 #include "gfx/Mtx43.h"
-#include "room/FtrActorViews.h"
 #include "actor/ActorListNode.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_0203e4f0_Vec.h"
@@ -22,7 +21,6 @@
 #include "game/BoxCollider.h"
 #include "room/Unk_ov004_02205c80_Obj.h"
 #include "room/Unk_ov004_02206570_Act.h"
-#include "room/Unk_ov004_View00_Chk.h"
 #include "game/CollisionEdge.h"
 #include "room/FtrTileList.h"
 #include "room/FtrGlowMat.h"
@@ -128,49 +126,6 @@ class TexVramSlot;
 
 
 
-
-// ================================================================ types used by the per-part views of the base object
-
-// ---- part 13
-
-// ---- part 15
-
-// ---- part 24
-
-// ---- size checks of the per-part views of the base object (0x130..0x840)
-typedef char Unk_ov004_View00_Assert[sizeof(Unk_ov004_View00_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View10_Assert[sizeof(Unk_ov004_View10_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View11_Assert[sizeof(Unk_ov004_View11_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View12_Assert[sizeof(Unk_ov004_View12_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View13_Assert[sizeof(Unk_ov004_View13_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View14_Assert[sizeof(Unk_ov004_View14_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View15_Assert[sizeof(Unk_ov004_View15_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View16_Assert[sizeof(Unk_ov004_View16_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View17_Assert[sizeof(Unk_ov004_View17_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View18_Assert[sizeof(Unk_ov004_View18_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View19_Assert[sizeof(Unk_ov004_View19_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View20_Assert[sizeof(Unk_ov004_View20_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View21_Assert[sizeof(Unk_ov004_View21_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View22_Assert[sizeof(Unk_ov004_View22_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View23_Assert[sizeof(Unk_ov004_View23_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View24_Assert[sizeof(Unk_ov004_View24_Chk) == 0x840 - 0x130 ? 1 : -1];
-
-typedef char Unk_ov004_View25_Assert[sizeof(Unk_ov004_View25_Chk) == 0x840 - 0x130 ? 1 : -1];
 
 class FtrActor;
 
@@ -283,7 +238,7 @@ BOOL FtrSingingInsect::updateActive() {
                 prevAnimDone = 0;
                 singFrames = 0;
                 if (h != p10::gFtrSoundNone) {
-                    p10::_ZN15FtrSoundEmitter4playEjj(b10_sub_794, h, b10_sub_7b4);
+                    p10::_ZN15FtrSoundEmitter4playEjj(soundEmitter, h, centerPos);
                 }
             }
             break;
@@ -318,7 +273,7 @@ BOOL FtrSingingInsect::updateActive() {
                 loopCount = 0;
                 prevAnimDone = 0;
                 if (h != p10::gFtrSoundNone) {
-                    p10::_ZN15FtrSoundEmitter4playEjj(b10_sub_794, h, b10_sub_7b4);
+                    p10::_ZN15FtrSoundEmitter4playEjj(soundEmitter, h, centerPos);
                 }
             }
             break;
@@ -326,9 +281,9 @@ BOOL FtrSingingInsect::updateActive() {
         case 2:
         case 3: {
             if (h == 0x3ff) {
-                if (p10::_ZN13AnimFrameCtrl14hasPassedFrameEi(b10_pad_5d0, 0x14)) {
+                if (p10::_ZN13AnimFrameCtrl14hasPassedFrameEi(animFrameCtrl, 0x14)) {
                     if (h != p10::gFtrSoundNone) {
-                        p10::_ZN15FtrSoundEmitter4playEjj(b10_sub_794, h, b10_sub_7b4);
+                        p10::_ZN15FtrSoundEmitter4playEjj(soundEmitter, h, centerPos);
                     }
                 }
             }
@@ -342,13 +297,13 @@ BOOL FtrSingingInsect::updateActive() {
                     loopCount = 0;
                     if (singPhase != 0) {
                         if (h != p10::gFtrSoundNone) {
-                            p10::_ZN15FtrSoundEmitter4playEjj(b10_sub_794, h, b10_sub_7b4);
+                            p10::_ZN15FtrSoundEmitter4playEjj(soundEmitter, h, centerPos);
                         }
                     } else {
-                        if (p10::_ZN10FtrAnimSet6getBvaEj(p10::_ZN11FtrModelRes10getAnimSetEv(b10_sub_6c8), 0) != 0) {
-                            restTimer = loopsPerPhrase * b10_unk_824.mid;
+                        if (p10::_ZN10FtrAnimSet6getBvaEj(p10::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0) != 0) {
+                            restTimer = loopsPerPhrase * ((Unk_ov004_0220a648_Bits *)&anims[3].numFrames)->mid;
                         } else {
-                            restTimer = loopsPerPhrase * b10_unk_5d4.mid;
+                            restTimer = loopsPerPhrase * ((Unk_ov004_0220a648_Bits *)&animNumFrames)->mid;
                         }
                     }
                 }
@@ -509,7 +464,7 @@ BOOL FtrSingingInsect::initModel() {
     }
     singPhase = 0;
     restTimer = 0;
-    if (b11_unk_768 != 1) {
+    if (spawnMode != 1) {
         if (t == 0x3fc) {
             restTimer = p11::Random_GlobalBelow(0x3c, 0);
         } else if ((u16)(t + 0xfc07) <= 2) {

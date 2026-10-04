@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "gfx/NNSG3dResAnmCommon.h"
 #include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
@@ -37,10 +38,6 @@ class Unk_020b1ddc;
 
 
 
-struct NNSG3dResAnmCommon {
-    u32 anmHeader;
-    u16 numFrame;
-};
 
 
 extern "C" {

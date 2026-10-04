@@ -61,21 +61,21 @@ class HouseOwnerAi;
 typedef BOOL (HouseOwnerAi::*Unk_ov004_02216ff4_Fn)(HouseOwnerVillager *);
 typedef void (HouseOwnerAi::*Unk_ov004_02216ff4_VFn)(HouseOwnerVillager *);
 
-struct Unk_ov004_0221745c_Dir {
+struct HouseOwnerStepDir {
     s32 dx;
     s32 dy;
-    Unk_ov004_0221745c_Dir(s32 a, s32 b) : dx(a), dy(b) {}
+    HouseOwnerStepDir(s32 a, s32 b) : dx(a), dy(b) {}
 };
 
-struct Unk_ov004_02216ff4_Entry {
+struct HouseOwnerAiState {
     Unk_ov004_02216ff4_Fn enter;
     Unk_ov004_02216ff4_Fn update;
 };
 
 
 extern "C" {
-extern Unk_ov004_0221745c_Dir sHouseOwnerStepDirs[4];
-extern Unk_ov004_02216ff4_Entry sHouseOwnerAiStates[];
+extern HouseOwnerStepDir sHouseOwnerStepDirs[4];
+extern HouseOwnerAiState sHouseOwnerAiStates[];
 extern CommManager *gCommManager;
 extern u16 data_020c6cc8;
 extern const u8 data_ov004_02240090[4];
@@ -164,7 +164,7 @@ public:
     void update(HouseOwnerVillager *o);
 
     /* 0x00 */ s32 state;
-    /* 0x04 */ Unk_ov004_02216ff4_Entry *entry;
+    /* 0x04 */ HouseOwnerAiState *entry;
     /* 0x08 */ s32 pendingState;
     /* 0x0c */ u8 step;
     /* 0x0d */ u8 pad_0d[3];
@@ -203,7 +203,7 @@ public:
 extern "C" HouseOwnerVillager *HouseOwnerVillager_Create();
 extern "C" ActorProfile sHouseOwnerVillagerProfile = {(void *(*)())HouseOwnerVillager_Create, 0x85, 0x89, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" const u8 data_ov004_02240090[4] = {0x28, 0x1e, 0x14, 0x0a};
-#define data_ov004_0225065c ((Unk_ov004_0221745c_Dir *)((u8 *)sHouseOwnerStepDirs + 4))
+#define data_ov004_0225065c ((HouseOwnerStepDir *)((u8 *)sHouseOwnerStepDirs + 4))
 
 extern "C" HouseOwnerVillager *HouseOwnerVillager_Create() {
     return new HouseOwnerVillager;
@@ -329,7 +329,7 @@ void HouseOwnerAi::changeState(HouseOwnerVillager *o, s32 idx) {
         state = idx;
         entry = &sHouseOwnerAiStates[state];
         step = 0;
-        Unk_ov004_02216ff4_Entry *e = entry;
+        HouseOwnerAiState *e = entry;
         if (e != 0 && e->enter != 0) {
             (this->*e->enter)(o);
         }
@@ -383,14 +383,14 @@ BOOL HouseOwnerAi::findStepTarget(s32 *o1, s32 *o2, HouseOwnerVillager *o) {
 }
 
 extern "C" const u8 data_ov004_02240094[5] = {0x00, 0x0a, 0x32, 0x0f, 0x14};
-extern "C" Unk_ov004_02216ff4_Entry sHouseOwnerAiStates[5] = {
+extern "C" HouseOwnerAiState sHouseOwnerAiStates[5] = {
     {&HouseOwnerAi::enterState00, &HouseOwnerAi::updateState00},
     {&HouseOwnerAi::enterState01, &HouseOwnerAi::updateState01},
     {&HouseOwnerAi::enterState02, &HouseOwnerAi::updateState02},
     {&HouseOwnerAi::enterState03, &HouseOwnerAi::updateState03},
     {&HouseOwnerAi::enterState04, &HouseOwnerAi::updateState04}};
-extern "C" Unk_ov004_0221745c_Dir sHouseOwnerStepDirs[4] = {
-    Unk_ov004_0221745c_Dir(0, 1), Unk_ov004_0221745c_Dir(1, 0), Unk_ov004_0221745c_Dir(0, -1), Unk_ov004_0221745c_Dir(-1, 0)};
+extern "C" HouseOwnerStepDir sHouseOwnerStepDirs[4] = {
+    HouseOwnerStepDir(0, 1), HouseOwnerStepDir(1, 0), HouseOwnerStepDir(0, -1), HouseOwnerStepDir(-1, 0)};
 
 BOOL HouseOwnerAi::enterState00(HouseOwnerVillager *o) {
     o->drawFn = &HouseOwnerVillager::drawModel;

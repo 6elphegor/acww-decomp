@@ -78,15 +78,6 @@ class SickVillagerTalk;
 typedef BOOL (SickVillager::*Unk_ov004_0224cb98_BFn)();
 typedef void (SickVillager::*Unk_ov004_0224cb98_VFn)();
 
-struct Unk_ov004_0221a650_Msg {
-    u32 index;
-    s32 state;
-    u32 nextState;
-    u32 stateStep;
-    u32 unk_10;
-    u32 openMode;
-};
-
 struct Unk_ov004_0221a7d4_Vec {
     s32 x, y, z;
 };
@@ -260,7 +251,7 @@ public:
     BOOL setupAct01();
     void mainAct00();
     BOOL setupAct00();
-    void func_ov004_0221b1b0();
+    void recordPlayerTalk();
     void blockFurnitureCells();
     BOOL drawModel();
 
@@ -439,7 +430,7 @@ void SickVillager::blockFurnitureCells() {
     }
 }
 
-void SickVillager::func_ov004_0221b1b0() {
+void SickVillager::recordPlayerTalk() {
     void *p = PlayerData_GetCurrent();
     if (p) {
         if (villagerData) {
@@ -477,7 +468,7 @@ void SickVillager::onInteractionEvent(u32 idx, u8 v) {
         changeAct(3);
         break;
     case 8:
-        func_ov004_0221b1b0();
+        recordPlayerTalk();
         changeAct(0);
         break;
     case 4:
@@ -840,7 +831,7 @@ void SickVillager::mainAct03() {
 BOOL SickVillager::setupAct04() { return TRUE; }
 
 void SickVillager::mainAct04() {
-    Unk_ov004_0221a650_Msg *o = (Unk_ov004_0221a650_Msg *)talk.window;
+    TalkWindowState *o = talk.window;
     if (o != 0) {
         if (o->state == 0) {
             TalkRequest_SetTargetDone(this);
@@ -849,12 +840,12 @@ void SickVillager::mainAct04() {
 }
 
 BOOL SickVillager::setupAct05() {
-    ((Unk_ov004_0221a650_Msg *)talk.window)->openMode = 1;
+    talk.window->openMode = 1;
     return TRUE;
 }
 
 void SickVillager::mainAct05() {
-    Unk_ov004_0221a650_Msg *m = (Unk_ov004_0221a650_Msg *)talk.window;
+    TalkWindowState *m = talk.window;
     if (m->state == 5) {
         if (MenuCtrl_OpenPocketSelect(MenuCtrl_BuildPocketMask((void *)SickVillager_IsMedicine), 0xd) != 0) {
             changeAct(6);

@@ -13,6 +13,8 @@
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
 #include "talk/TalkWindowState.h"
+#include "talk/TalkMsgRequest.h"
+#include "player/PlayerActionRequest.h"
 
 extern "C" {
 void _ZN19PlayerActionRequestC1Ev(void *self);
@@ -249,7 +251,7 @@ public:
     u8 pad_0d[0x1c - 0xd];
 };
 
-struct Unk_ov004_022245ac_Rec {
+struct GetOutOfBedCheckWork {
     Unk_ov004_022245ac_V3 pos;
     u8 flag;
 };
@@ -276,19 +278,11 @@ struct Unk_ov004_022245ac_Obj {
     u16 netSeq;
 };
 
-struct Unk_ov004_02224d10 {
-    u32 archive;
-    u32 model;
-    u32 bcas[13];
-    u32 bmas[13];
-    u32 btas[13];
-};
-
 typedef Unk_ov004_022245ac_Obj Obj;
 typedef Unk_ov004_022245ac_V3 V3;
 typedef Unk_ov004_022245ac_Msg Msg;
-typedef Unk_ov004_022245ac_Rec Rec;
-typedef Unk_ov004_02224d10 Res;
+typedef GetOutOfBedCheckWork Rec;
+typedef RoomObjRes Res;
 
 extern "C" {
 extern void *gCommManager;
@@ -875,7 +869,7 @@ struct Unk_ov004_02223c38_V3c {
     ~Unk_ov004_02223c38_V3c() {}
 };
 
-struct Unk_ov004_02223c38_Rec {
+struct GetOutOfBedWork {
     s32 x;
     s32 z;
     s16 h;
@@ -891,10 +885,6 @@ public:
     u8 pad_00[0xc];
     u8 args;
     u8 pad_0d[0x1c - 0xd];
-};
-
-struct Unk_ov004_02223c38_Sub2cc {
-    u32 unk_00;
 };
 
 struct Unk_ov004_02223c38_Bits16 {
@@ -913,9 +903,9 @@ struct Unk_ov004_02223c38_Obj {
     u8 subCollider[0x3c];
     u8 subColliderHit;
     u8 pad_1fd[0x2cc - 0x1fd];
-    Unk_ov004_02223c38_Sub2cc bodyAnimCtrl;
+    u32 bodyAnimCtrl;
     u8 pad_2d0[0x7d0 - 0x2d0];
-    Unk_ov004_02223c38_Rec actionWork;
+    GetOutOfBedWork actionWork;
     u8 pad_7e0[0x7ec - 0x7e0];
     u32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
@@ -930,7 +920,7 @@ struct Unk_ov004_02223c38_Obj {
 typedef Unk_ov004_02223c38_Obj Obj;
 typedef Unk_ov004_02223c38_V3 V3;
 typedef Unk_ov004_02223c38_V3c V3c;
-typedef Unk_ov004_02223c38_Rec Rec;
+typedef GetOutOfBedWork Rec;
 typedef Unk_ov004_02223c38_Msg Msg;
 typedef Unk_ov004_02223c38_Bits16 Bits16;
 
@@ -1484,7 +1474,7 @@ struct Unk_ov004_02223314_V3 {
     s32 x, y, z;
 };
 
-struct Unk_ov004_02223314_Rec {
+struct BedApproachWork {
     s32 targetX;
     s32 targetZ;
     s16 targetAngle;
@@ -1492,7 +1482,7 @@ struct Unk_ov004_02223314_Rec {
     u8 unk_0b;
 };
 
-struct Unk_ov004_02223314_Rec2 {
+struct PickUpItemWork {
     s32 ftrIndex;
     u8 answer;
     u8 step;
@@ -1535,7 +1525,7 @@ struct Unk_ov004_02223314_Obj {
     u8 pad_2d8[0x700 - 0x2d8];
     s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    Unk_ov004_02223314_Rec actionWork;
+    BedApproachWork actionWork;
     u8 pad_7dc[0x7ec - 0x7dc];
     s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
@@ -1560,8 +1550,8 @@ struct Unk_ov004_02223314_Obj {
 
 typedef Unk_ov004_02223314_Obj Obj;
 typedef Unk_ov004_02223314_V3 V3;
-typedef Unk_ov004_02223314_Rec Rec;
-typedef Unk_ov004_02223314_Rec2 Rec2;
+typedef BedApproachWork Rec;
+typedef PickUpItemWork Rec2;
 typedef Unk_ov004_02223314_Msg Msg;
 typedef Unk_ov004_02223314_Pl Pl;
 
@@ -2076,7 +2066,7 @@ struct Unk_ov004_02222874_V3 {
     s32 x, y, z;
 };
 
-struct Unk_ov004_02222874_Tgt {
+struct PlayerFtrGrabApproachArgs {
     s32 x, z;
     s16 h;
 };
@@ -2087,7 +2077,7 @@ public:
     inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
     union {
-        Unk_ov004_02222874_Tgt t;
+        PlayerFtrGrabApproachArgs t;
         u8 b[2];
     } args;
     u8 pad_18[4];
@@ -2115,7 +2105,7 @@ public:
     u8 pad_52[0x60 - 0x52];
 };
 
-struct Unk_ov004_02222874_Rec {
+struct FtrGrabApproachWork {
     s32 x;
     s32 z;
     s16 h;
@@ -2131,7 +2121,7 @@ struct Unk_ov004_02222874_Obj : public Unk_ov004_02222874_Prim, public Unk_ov004
     u8 heldItemModel[4];
     u8 pad_5a0[0x7d0 - 0x5a0];
     union {
-        Unk_ov004_02222874_Rec r;
+        FtrGrabApproachWork r;
         u8 b[2];
     } actionWork;
     u8 pad_7dc[0x7ec - 0x7dc];
@@ -2151,9 +2141,9 @@ struct Unk_ov004_02222874_Obj : public Unk_ov004_02222874_Prim, public Unk_ov004
 typedef Unk_ov004_02222874_Obj Obj;
 typedef Unk_ov004_02222874_Sec Sec;
 typedef Unk_ov004_02222874_V3 V3;
-typedef Unk_ov004_02222874_Tgt Tgt;
+typedef PlayerFtrGrabApproachArgs Tgt;
 typedef Unk_ov004_02222874_Msg Msg;
-typedef Unk_ov004_02222874_Rec Rec;
+typedef FtrGrabApproachWork Rec;
 
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -2241,10 +2231,10 @@ void PlayerActor_MainPickUpItem(Obj *o);
 void PlayerActor_PickUpItemUpdateState(Obj *o);
 }
 
-struct Unk_ov004_02222980_Pad {
+struct FtrHoldStackPad {
     s32 v[2];
-    Unk_ov004_02222980_Pad() {}
-    ~Unk_ov004_02222980_Pad() {}
+    FtrHoldStackPad() {}
+    ~FtrHoldStackPad() {}
 };
 
 static inline BOOL Unk_ov004_02222874_IsOne(u8 v) {
@@ -2607,7 +2597,7 @@ extern "C" void PlayerActor_NetFtrHold(Obj *o, s32 c) {
 }
 
 extern "C" void PlayerActor_FtrHoldUpdate(Obj *o) {
-    Unk_ov004_02222980_Pad pad;
+    FtrHoldStackPad pad;
     u8 *p = &o->actionWork.b[0];
     u8 *q = p + 1;
     switch (*q) {
@@ -2750,7 +2740,7 @@ struct Unk_ov004_02221ed0_V3 {
     s32 x, y, z;
 };
 
-struct Unk_ov004_02221ed0_Rec {
+struct SeatApproachWork {
     s32 x;
     s32 z;
     s16 h;
@@ -2768,7 +2758,7 @@ public:
     inline Unk_ov004_02221ed0_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
     inline void func_0200e2c0(s32 a, s32 b, s32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
-    Unk_ov004_02221ed0_Rec args;
+    SeatApproachWork args;
     u8 pad_18[4];
 };
 
@@ -2790,7 +2780,7 @@ struct Unk_ov004_02221ed0_Obj {
     u8 pad_6f4[0x6f8 - 0x6f4];
     s32 bodyPosZ;
     u8 pad_6fc[0x7d0 - 0x6fc];
-    Unk_ov004_02221ed0_Rec actionWork;
+    SeatApproachWork actionWork;
     u8 pad_7dc[0x7ec - 0x7dc];
     s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
@@ -2802,7 +2792,7 @@ struct Unk_ov004_02221ed0_Obj {
 
 typedef Unk_ov004_02221ed0_Obj Obj;
 typedef Unk_ov004_02221ed0_V3 V3;
-typedef Unk_ov004_02221ed0_Rec Rec;
+typedef SeatApproachWork Rec;
 typedef Unk_ov004_02221ed0_Msg Msg;
 
 extern "C" {
@@ -3321,12 +3311,12 @@ struct Unk_ov004_022215a8_V3 {
     s32 x, y, z;
 };
 
-struct Unk_ov004_022215a8_Tgt {
+struct PlayerSitDownArgs {
     s32 x, z;
     s16 h;
 };
 
-struct Unk_ov004_022215a8_Rec {
+struct SitWork {
     s32 x;
     union {
         s32 z;
@@ -3347,7 +3337,7 @@ public:
     inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
     union {
-        Unk_ov004_022215a8_Tgt t;
+        PlayerSitDownArgs t;
         u16 h;
     } args;
     u8 pad_18[4];
@@ -3375,7 +3365,7 @@ struct Unk_ov004_022215a8_Obj {
     u8 pad_300[0x700 - 0x300];
     s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    Unk_ov004_022215a8_Rec actionWork;
+    SitWork actionWork;
     u8 pad_7dc[0x7ec - 0x7dc];
     s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
@@ -3396,9 +3386,9 @@ struct Unk_ov004_022215a8_V3c {
     }
 };
 typedef Unk_ov004_022215a8_V3c V3c;
-typedef Unk_ov004_022215a8_Tgt Tgt;
+typedef PlayerSitDownArgs Tgt;
 typedef Unk_ov004_022215a8_Msg Msg;
-typedef Unk_ov004_022215a8_Rec Rec;
+typedef SitWork Rec;
 typedef Unk_ov004_022215a8_Sub Sub;
 
 extern "C" {
@@ -3888,7 +3878,7 @@ struct Unk_ov004_02220c78_V3 {
     s32 x, y, z;
 };
 
-struct Unk_ov004_02220c78_Rec {
+struct StorageOpenWork {
     u32 targetX;
     u32 targetZ;
     s16 targetAngle;
@@ -3904,10 +3894,6 @@ public:
     u8 pad_00[0xc];
     u8 args;
     u8 pad_0d[0x1c - 0xd];
-};
-
-struct Unk_ov004_02220c78_Sub2cc {
-    u32 unk_00;
 };
 
 struct Unk_ov004_02220c78_Bits {
@@ -3926,7 +3912,7 @@ struct Unk_ov004_02220c78_Obj {
     u8 subCollider[0x3c];
     u8 subColliderHit;
     u8 pad_1fd[0x2cc - 0x1fd];
-    Unk_ov004_02220c78_Sub2cc bodyAnimCtrl;
+    u32 bodyAnimCtrl;
     u8 pad_2d0[0x2d4 - 0x2d0];
     Unk_ov004_02220c78_Bits bodyAnimFrame;
     u8 pad_2d8[0x2e0 - 0x2d8];
@@ -3934,7 +3920,7 @@ struct Unk_ov004_02220c78_Obj {
     u8 pad_2e1[0x700 - 0x2e1];
     s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    Unk_ov004_02220c78_Rec actionWork;
+    StorageOpenWork actionWork;
     u8 pad_7e0[0x7ec - 0x7e0];
     u32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
@@ -3948,7 +3934,7 @@ struct Unk_ov004_02220c78_Obj {
 
 typedef Unk_ov004_02220c78_Obj Obj;
 typedef Unk_ov004_02220c78_V3 V3;
-typedef Unk_ov004_02220c78_Rec Rec;
+typedef StorageOpenWork Rec;
 typedef Unk_ov004_02220c78_Msg Msg;
 
 extern "C" {
@@ -4457,10 +4443,6 @@ struct Unk_ov004_02220314_V3 {
     s32 x, y, z;
 };
 
-struct Unk_ov004_02220314_Sec {
-    u8 pad_00[4];
-};
-
 struct Unk_ov004_02220314_V3c {
     s32 x, y, z;
     Unk_ov004_02220314_V3c(s32 a, s32 b, s32 c) {
@@ -4470,7 +4452,7 @@ struct Unk_ov004_02220314_V3c {
     }
 };
 
-struct Unk_ov004_02220314_Rec {
+struct LeaveRoomWork {
     s32 leaveMode;
     s16 targetAngle;
     s32 targetX;
@@ -4478,12 +4460,12 @@ struct Unk_ov004_02220314_Rec {
     u8 entryStep;
 };
 
-struct Unk_ov004_02220314_Pay {
+struct PlayerLeaveRoomArgs {
     s32 kind;
     s16 angle;
 };
 
-struct Unk_ov004_02220314_Pay2 {
+struct PlayerAct36Args {
     s32 kind;
     u8 nextMode;
     s32 variant;
@@ -4494,16 +4476,6 @@ struct Unk_ov004_02220314_Bits {
     u32 lo : 12;
     u32 mid : 16;
     u32 hi : 4;
-};
-
-struct Unk_ov004_02220314_Msgp {
-    u8 pad_00[0xc];
-    Unk_ov004_02220314_Pay args;
-};
-
-struct Unk_ov004_02220314_Msgp2 {
-    u8 pad_00[0xc];
-    Unk_ov004_02220314_Pay2 args;
 };
 
 class Unk_ov004_02220314_Msg {
@@ -4533,7 +4505,7 @@ struct Unk_ov004_02220314_Obj {
     u8 pad_2e0[0x700 - 0x2e0];
     s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    Unk_ov004_02220314_Rec actionWork;
+    LeaveRoomWork actionWork;
     u8 pad_7e4[0x7ec - 0x7e4];
     s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
@@ -4555,9 +4527,9 @@ static inline BOOL Unk_ov004_02220314_IsZero(u8 v) {
 
 typedef Unk_ov004_02220314_Obj Obj;
 typedef Unk_ov004_02220314_V3 V3;
-typedef Unk_ov004_02220314_Rec Rec;
+typedef LeaveRoomWork Rec;
 typedef Unk_ov004_02220314_Msg Msg;
-typedef Unk_ov004_02220314_Sec Sec;
+typedef TalkMsgRequest Sec;
 typedef Unk_ov004_02220314_Bits Bits;
 
 extern "C" {
@@ -4630,7 +4602,7 @@ void PlayerActor_LeaveRoomUpdateHeight(Obj *o);
 void PlayerActor_LeaveRoomUpdateAnim(Obj *o);
 void PlayerActor_LeaveRoomMove(Obj *o);
 void PlayerActor_NetLeaveRoom(Obj *o);
-void PlayerActor_SetupLeaveRoom(Obj *o, Unk_ov004_02220314_Msgp *m);
+void PlayerActor_SetupLeaveRoom(Obj *o, PlayerActionRequest *m);
 void PlayerActor_LeaveRoomSetWork(Rec *r, s32 a, s32 b, s32 c, s32 d, bool e);
 s32 PlayerActor_RequestLeaveRoom(Obj *o, s32 a, s32 b);
 void PlayerActor_LeaveRoomSetArgs(void *p, s32 a, s16 b);
@@ -4643,21 +4615,21 @@ void PlayerActor_MainAct36(Obj *o);
 void PlayerActor_Act36CheckEnd(Obj *o);
 void PlayerActor_Act36UpdateAnim(Obj *o);
 void PlayerActor_NetAct36(Obj *o);
-void PlayerActor_SetupAct36(Obj *o, Unk_ov004_02220314_Msgp2 *m);
+void PlayerActor_SetupAct36(Obj *o, PlayerActionRequest *m);
 s32 PlayerActor_RequestAct36(Obj *o, u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s16 g);
 void PlayerActor_Act36SetArgs(void *p, s32 a, u32 b, s32 c, s32 d);
 void PlayerActor_MainStorageClose(Obj *o);
 void PlayerActor_StorageCloseCheckEnd(Obj *o);
 void PlayerActor_NetStorageClose(Obj *o, s32 a);
-void PlayerActor_SetupStorageClose(Obj *o, Unk_ov004_02220314_Msgp *m);
+void PlayerActor_SetupStorageClose(Obj *o, PlayerActionRequest *m);
 }
 
-extern "C" void PlayerActor_SetupStorageClose(Obj *o, Unk_ov004_02220314_Msgp *m) {
-    s32 t = m->args.kind;
+extern "C" void PlayerActor_SetupStorageClose(Obj *o, PlayerActionRequest *m) {
+    s32 t = ((PlayerLeaveRoomArgs *)m->unk_0c_b)->kind;
     s32 k;
     PlayerActor_StorageCloseSetWork(&o->actionWork, t);
     PlayerActor_StorageCloseSetNetData(&o->netData, (u8)t);
-    switch (m->args.kind) {
+    switch (((PlayerLeaveRoomArgs *)m->unk_0c_b)->kind) {
     case 0:
         k = 0x38;
         break;
@@ -4716,9 +4688,9 @@ extern "C" s32 PlayerActor_RequestAct36(Obj *o, u16 *a, s32 b, s32 c, s32 d, s32
     return r;
 }
 
-extern "C" void PlayerActor_SetupAct36(Obj *o, Unk_ov004_02220314_Msgp2 *m) {
-    Unk_ov004_02220314_Pay2 *p = &m->args;
-    HandOverItem_Begin(&o->actionItem, m->args.kind, p->nextMode, p->variant, o, p->partner);
+extern "C" void PlayerActor_SetupAct36(Obj *o, PlayerActionRequest *m) {
+    PlayerAct36Args *p = (PlayerAct36Args *)m->unk_0c_b;
+    HandOverItem_Begin(&o->actionItem, ((PlayerAct36Args *)m->unk_0c_b)->kind, p->nextMode, p->variant, o, p->partner);
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x2e, 3, 0);
     HandOverItem_RequestMode(1, o);
     if (Scene_GetCurrent() == 9) {
@@ -4820,9 +4792,9 @@ extern "C" void PlayerActor_LeaveRoomSetWork(Rec *r, s32 a, s32 b, s32 c, s32 d,
     r->entryStep = e;
 }
 
-extern "C" void PlayerActor_SetupLeaveRoom(Obj *o, Unk_ov004_02220314_Msgp *m) {
+extern "C" void PlayerActor_SetupLeaveRoom(Obj *o, PlayerActionRequest *m) {
     _ZN11PlayerActor13setActionFlagEj(o, 3);
-    Unk_ov004_02220314_Pay *pay = &m->args;
+    PlayerLeaveRoomArgs *pay = (PlayerLeaveRoomArgs *)m->unk_0c_b;
     Rec *r = &o->actionWork;
     V3 v;
     SceneExit_SnapPos(Scene_GetWarpRequest(), o->exitIndex, &v, &o->position);
@@ -5052,13 +5024,13 @@ struct Unk_ov004_0221fa00_V3 {
     s32 x, y, z;
 };
 
-struct Unk_ov004_0221fa00_Rec {
+struct HaircutWork {
     u8 hairStyle;
     u8 hairColor;
     u8 hairApplied;
 };
 
-struct Unk_ov004_0221fa00_Pay {
+struct PlayerHaircutArgs {
     u8 hairStyle;
     u8 hairColor;
 };
@@ -5068,13 +5040,8 @@ public:
     inline Unk_ov004_0221fa00_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
     inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
-    Unk_ov004_0221fa00_Pay args;
+    PlayerHaircutArgs args;
     u8 pad_0e[0x1c - 0xe];
-};
-
-struct Unk_ov004_0221fa00_Msgp {
-    u8 pad_00[0xc];
-    Unk_ov004_0221fa00_Pay args;
 };
 
 struct Unk_ov004_0221fa00_Bits {
@@ -5091,7 +5058,7 @@ struct Unk_ov004_0221fa00_Obj {
     u8 pad_2d8[0x700 - 0x2d8];
     s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    Unk_ov004_0221fa00_Rec actionWork;
+    HaircutWork actionWork;
     u8 pad_7d3[0x7ec - 0x7d3];
     s32 action;
     u8 pad_7f0[0x7f8 - 0x7f0];
@@ -5108,9 +5075,8 @@ static inline BOOL Unk_ov004_0221fa00_IsZero(u8 v) {
 
 typedef Unk_ov004_0221fa00_Obj Obj;
 typedef Unk_ov004_0221fa00_V3 V3;
-typedef Unk_ov004_0221fa00_Rec Rec;
+typedef HaircutWork Rec;
 typedef Unk_ov004_0221fa00_Msg Msg;
-typedef Unk_ov004_0221fa00_Msgp Msgp;
 typedef Unk_ov004_0221fa00_Bits Bits;
 
 extern "C" {
@@ -5151,17 +5117,17 @@ void PlayerActor_NetSendHair(Obj *o, s32 a, s32 b);
 void PlayerActor_HaircutFinishUpdate(Obj *o);
 void PlayerActor_EndHaircutFinish(Obj *o);
 void PlayerActor_NetHaircutFinish(Obj *o);
-void PlayerActor_SetupHaircutFinish(Obj *o, Msgp *m);
+void PlayerActor_SetupHaircutFinish(Obj *o, PlayerActionRequest *m);
 s32 PlayerActor_RequestHaircutFinish(Obj *o, u32 a, u32 b, u32 c, s32 e);
 void PlayerActor_MainHaircutCut(Obj *o);
 void PlayerActor_HaircutCutCheckEnd(Obj *o);
 void PlayerActor_NetHaircutCut(Obj *o);
-void PlayerActor_SetupHaircutCut(Obj *o, Msgp *m);
+void PlayerActor_SetupHaircutCut(Obj *o, PlayerActionRequest *m);
 s32 PlayerActor_RequestHaircutCut(Obj *o, u32 a, u32 b, u32 c, s32 e);
 void PlayerActor_MainHaircutStart(Obj *o);
 void PlayerActor_HaircutStartCheckEnd(Obj *o);
 void PlayerActor_NetHaircutStart(Obj *o);
-void PlayerActor_SetupHaircutStart(Obj *o, Msgp *m);
+void PlayerActor_SetupHaircutStart(Obj *o, PlayerActionRequest *m);
 s32 PlayerActor_RequestHaircutStart(Obj *o, u32 a, u32 b, u32 c, s32 e);
 void PlayerActor_MainAct44(Obj *o);
 void PlayerActor_Act44CheckEnd(Obj *o);
@@ -5389,7 +5355,7 @@ extern "C" void PlayerActor_MainAct44(Obj *o) {
 extern "C" s32 PlayerActor_RequestHaircutStart(Obj *o, u32 a, u32 b, u32 c, s32 e) {
     Msg m;
     m.func_0200e2c0(0x7a, c, *(s16 *)&e);
-    Unk_ov004_0221fa00_Pay &q = m.args;
+    PlayerHaircutArgs &q = m.args;
     q.hairStyle = a;
     q.hairColor = b;
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
@@ -5397,9 +5363,9 @@ extern "C" s32 PlayerActor_RequestHaircutStart(Obj *o, u32 a, u32 b, u32 c, s32 
     return r;
 }
 
-extern "C" void PlayerActor_SetupHaircutStart(Obj *o, Msgp *m) {
+extern "C" void PlayerActor_SetupHaircutStart(Obj *o, PlayerActionRequest *m) {
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x6d, 3, 0);
-    Unk_ov004_0221fa00_Pay *p = &m->args;
+    PlayerHaircutArgs *p = (PlayerHaircutArgs *)m->unk_0c_b;
     u8 b = p->hairColor;
     Rec *r = &o->actionWork;
     r->hairStyle = p->hairStyle;
@@ -5434,7 +5400,7 @@ extern "C" void PlayerActor_MainHaircutStart(Obj *o) {
 extern "C" s32 PlayerActor_RequestHaircutCut(Obj *o, u32 a, u32 b, u32 c, s32 e) {
     Msg m;
     m.func_0200e2c0(0x7b, c, *(s16 *)&e);
-    Unk_ov004_0221fa00_Pay &q = m.args;
+    PlayerHaircutArgs &q = m.args;
     q.hairStyle = a;
     q.hairColor = b;
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
@@ -5442,9 +5408,9 @@ extern "C" s32 PlayerActor_RequestHaircutCut(Obj *o, u32 a, u32 b, u32 c, s32 e)
     return r;
 }
 
-extern "C" void PlayerActor_SetupHaircutCut(Obj *o, Msgp *m) {
+extern "C" void PlayerActor_SetupHaircutCut(Obj *o, PlayerActionRequest *m) {
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x6e, 3, 0);
-    Unk_ov004_0221fa00_Pay *p = &m->args;
+    PlayerHaircutArgs *p = (PlayerHaircutArgs *)m->unk_0c_b;
     u8 b = p->hairColor;
     Rec *r = &o->actionWork;
     r->hairStyle = p->hairStyle;
@@ -5469,7 +5435,7 @@ extern "C" void PlayerActor_MainHaircutCut(Obj *o) {
 extern "C" s32 PlayerActor_RequestHaircutFinish(Obj *o, u32 a, u32 b, u32 c, s32 e) {
     Msg m;
     m.func_0200e2c0(0x7c, c, *(s16 *)&e);
-    Unk_ov004_0221fa00_Pay &q = m.args;
+    PlayerHaircutArgs &q = m.args;
     q.hairStyle = a;
     q.hairColor = b;
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
@@ -5477,9 +5443,9 @@ extern "C" s32 PlayerActor_RequestHaircutFinish(Obj *o, u32 a, u32 b, u32 c, s32
     return r;
 }
 
-extern "C" void PlayerActor_SetupHaircutFinish(Obj *o, Msgp *m) {
+extern "C" void PlayerActor_SetupHaircutFinish(Obj *o, PlayerActionRequest *m) {
     _ZN11PlayerActor13startAnimOnceEijt(o, 0x6f, 3, 0);
-    Unk_ov004_0221fa00_Pay *p = &m->args;
+    PlayerHaircutArgs *p = (PlayerHaircutArgs *)m->unk_0c_b;
     u8 b = p->hairColor;
     Rec *r = &o->actionWork;
     r->hairStyle = p->hairStyle;
@@ -5529,7 +5495,7 @@ struct Unk_ov004_0221f0b8_V3 {
     s32 x, y, z;
 };
 
-struct Unk_ov004_0221f0b8_Rec {
+struct DoorWalkWork {
     Unk_ov004_0221f0b8_V3 targetPos;
     s32 walkSpeed;
     s32 speedLimit;
@@ -5561,7 +5527,7 @@ struct Unk_ov004_0221f0b8_Obj {
     u8 pad_2e0[0x700 - 0x2e0];
     s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    Unk_ov004_0221f0b8_Rec actionWork;
+    DoorWalkWork actionWork;
     u8 pad_7e8[0x7ec - 0x7e8];
     s32 action;
     u8 pad_7f0[0x7f4 - 0x7f0];
@@ -5575,7 +5541,7 @@ struct Unk_ov004_0221f0b8_Obj {
 
 typedef Unk_ov004_0221f0b8_Obj Obj;
 typedef Unk_ov004_0221f0b8_V3 V3;
-typedef Unk_ov004_0221f0b8_Rec Rec;
+typedef DoorWalkWork Rec;
 typedef Unk_ov004_0221f0b8_Msg Msg;
 
 extern "C" {
@@ -6059,7 +6025,7 @@ struct Unk_ov004_0221e7a8_V3 {
     s32 x, y, z;
 };
 
-struct Unk_ov004_0221e7a8_Rec {
+struct ExitWalkWork {
     Unk_ov004_0221e7a8_V3 targetPos;
     s32 walkSpeed;
     s32 speedLimit;
@@ -6104,7 +6070,7 @@ struct Unk_ov004_0221e7a8_Obj {
     u8 pad_2e0[0x700 - 0x2e0];
     s32 animId;
     u8 pad_704[0x7d0 - 0x704];
-    Unk_ov004_0221e7a8_Rec actionWork;
+    ExitWalkWork actionWork;
     u8 pad_7e8[0x7fc - 0x7e8];
     u32 sessionSlot;
     s32 exitIndex;
@@ -6120,7 +6086,7 @@ struct Unk_ov004_0221e7a8_Obj {
 typedef Unk_ov004_0221e7a8_Obj Obj;
 typedef Unk_ov004_0221e7a8_V3 V3;
 typedef Unk_ov004_0221e7a8_Pair Pair;
-typedef Unk_ov004_0221e7a8_Rec Rec;
+typedef ExitWalkWork Rec;
 typedef Unk_ov004_0221e7a8_Msg Msg;
 
 extern "C" {

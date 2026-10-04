@@ -119,6 +119,7 @@ class TexVramSlot;
 
 
 #include "room/FtrModelAnim.h"
+#include "gfx/NNSG3dRS.h"
 // ================================================================ FtrActor
 
 
@@ -133,7 +134,7 @@ typedef FtrActor Self;
 class Unk_ov004_022077a4;
 
 // Set of up to four neighbour objects built by func_ov004_02206494
-struct Unk_ov004_02207854_Set {
+struct FtrStackedSetView {
     u32 count;
     Unk_ov004_022077a4 *v[4];
 };
@@ -195,32 +196,36 @@ struct Unk_ov004_02207ac4_Tmp {
     ~Unk_ov004_02207ac4_Tmp() {}
 };
 
-struct Unk_ov004_02207ef0_Bits {
-    u32 lo : 4;
-    u32 mid : 4;
-    u32 id : 16;
+// Spawn argument word of a furniture actor (Character::param), built by FtrActor_MakeSpawnArg.
+struct FtrSpawnArg {
+    u32 tileX : 4;
+    u32 tileZ : 4;
+    u32 ftrIndex : 16;
     u32 dir : 2;
-    u32 pad : 2;
-    u32 flag : 1;
+    u32 mode : 2;
+    u32 layer : 1;
 };
 
-struct Unk_ov004_022071cc_Pkt {
-    u16 a : 9;
-    u16 b : 7;
-    u16 x : 4;
-    u16 y : 4;
-    u16 f : 1;
-    u16 id : 6;
+// Character ids made by FtrActor::makeCharId (written with masks): preview/house form {actor table index, scene} in
+// the first halfword, placed form {tile x, tile z, layer, scene} in the second.
+struct FtrCharIdBits {
+    u16 tableIndex : 9;
+    u16 sceneId : 7;
+    u16 tileX : 4;
+    u16 tileZ : 4;
+    u16 layer : 1;
+    u16 tileSceneId : 6;
     u16 pad : 1;
 };
 
-struct Unk_ov004_02209d40_Bits {
-    u32 a : 4;
-    u32 b : 4;
-    u32 c : 16;
-    u32 d : 2;
-    u32 e : 2;
-    u32 f : 1;
+// FtrSpawnArg bit layout followed by a second word (only MakeSpawnArg writes it).
+struct FtrSpawnArgBuf {
+    u32 tileX : 4;
+    u32 tileZ : 4;
+    u32 ftrIndex : 16;
+    u32 dir : 2;
+    u32 mode : 2;
+    u32 layer : 1;
     u32 w1;
 };
 
@@ -255,35 +260,8 @@ struct Unk_ov004_02209e44_Target {
     virtual void vfunc_6c(u32 a, void *b);
 };
 
-struct Unk_ov004_02209e44_Inner {
-    u8 unk_00;
-    u8 index;
-};
-
-struct Unk_ov004_02209e44_Own {
-    u8 pad_00[0x2c];
-    Unk_ov004_02209e44_Target *ptrUser;
-};
-
-struct Unk_ov004_02209e64 {
-    /* 0x00 */ Unk_ov004_02209e44_Inner *c;
-    /* 0x04 */ Unk_ov004_02209e44_Own *pRenderObj;
-    /* 0x08 */ u8 pad_08[0x14 - 0x08];
-    /* 0x14 */ void (*cbVecFuncNode)(Unk_ov004_02209e64 *);
-    /* 0x18 */ u8 pad_18[4];
-    /* 0x1c */ void (*cbVecFuncMat)(Unk_ov004_02209e64 *);
-    /* 0x20 */ u8 pad_20[4];
-    /* 0x24 */ void (*cbVecFuncNodeDesc)(Unk_ov004_02209e64 *);
-    /* 0x28 */ u8 pad_28[0x8e - 0x28];
-    /* 0x8e */ u8 cbVecTimingNode;
-    /* 0x8f */ u8 pad_8f;
-    /* 0x90 */ u8 cbVecTimingMat;
-    /* 0x91 */ u8 pad_91;
-    /* 0x92 */ u8 cbVecTimingNodeDesc;
-};
-
 typedef BOOL (FtrActor::*Unk_ov004_0224882c_Fn)();
-struct Unk_ov004_053c0_Buf { s32 v[4]; };
+struct FtrCenterPosBuf { s32 v[4]; };
 
 static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
     if (v == 0x3d) return TRUE;
@@ -632,10 +610,10 @@ u32 _ZN11FtrTileList8getCountEv(void *self);
 Unk_ov004_02206520_Ent *_ZN11FtrTileList3getEi(void *self, s32 i);
 void _ZN11FtrTileList7releaseEv(void *self);
 BOOL _ZN11FtrTileList3addEjj(void *self, u32 a, u32 b);
-Unk_ov004_02207854_Set *_ZN13FtrStackedSetC1EP11FtrTileListi(Unk_ov004_02207854_Set *self, void *l, s32 flag);
-Unk_ov004_022077a4 *_ZN13FtrStackedSet3getEj(Unk_ov004_02207854_Set *self, u32 i);
-u32 _ZN13FtrStackedSet8getCountEv(Unk_ov004_02207854_Set *self);
-void _ZN13FtrStackedSetC1Ev(Unk_ov004_02207854_Set *self);
+FtrStackedSetView *_ZN13FtrStackedSetC1EP11FtrTileListi(FtrStackedSetView *self, void *l, s32 flag);
+Unk_ov004_022077a4 *_ZN13FtrStackedSet3getEj(FtrStackedSetView *self, u32 i);
+u32 _ZN13FtrStackedSet8getCountEv(FtrStackedSetView *self);
+void _ZN13FtrStackedSetC1Ev(FtrStackedSetView *self);
 BOOL _ZN8FtrActor8isGyroidEv(void);
 BOOL _ZN8FtrActor11isSeatOrBedEv(void);
 s32 FtrMgr_IsSaleMode();
@@ -656,9 +634,9 @@ void _ZN11FtrModelResC1Ev(void *);
 void _ZN9FtrSwitch5clearEv(void *);
 void _ZN13FtrClockHands5clearEv(void *);
 void _ZN10FtrGlowMatC1Ev(void *);
-typedef void (*Unk_ov004_02209578_Fn)(void *);
-void *__cxa_vec_ctor(void *, s32, s32, Unk_ov004_02209578_Fn, Unk_ov004_02209578_Fn);
-void __cxa_vec_cleanup(void *, s32, s32, Unk_ov004_02209578_Fn);
+typedef void (*FtrArrayElemFn)(void *);
+void *__cxa_vec_ctor(void *, s32, s32, FtrArrayElemFn, FtrArrayElemFn);
+void __cxa_vec_cleanup(void *, s32, s32, FtrArrayElemFn);
 BOOL _ZN8FtrActor9isNotIdleEv(void *self);
 void _ZN13FtrStackedSet5clearEv(void *self);
 void _ZN11BoxColliderD1Ev(void *self);
@@ -710,11 +688,11 @@ u32 FtrActor_GetArgFtrIndex(u32 v);
 u32 FtrActor_MakeSpawnArg(u32 a, u32 b, u32 c, u32 d, u8 f, u32 e);
 void FtrActor_TurnOnRoomLight(u32 a);
 u32 FtrActor_IsLightKind1(u32 a);
-void FtrActor_SetModelCallbacks(Unk_ov004_02209e64 *o);
-void FtrActor_NodeCallback(Unk_ov004_02209e64 *o);
-void FtrActor_NodeDescCallbackB(Unk_ov004_02209e64 *self);
-void FtrActor_NodeDescCallbackA(Unk_ov004_02209e64 *self);
-void FtrActor_MatCallback(Unk_ov004_02209e64 *self);
+void FtrActor_SetModelCallbacks(NNSG3dRS *o);
+void FtrActor_NodeCallback(NNSG3dRS *o);
+void FtrActor_NodeDescCallbackB(NNSG3dRS *self);
+void FtrActor_NodeDescCallbackA(NNSG3dRS *self);
+void FtrActor_MatCallback(NNSG3dRS *self);
 void FtrActor_Create();
 }
 
@@ -889,49 +867,49 @@ void FtrActor::operator delete(void *p) {
 }
 
 // @02209ebc
-extern "C" void FtrActor_MatCallback(Unk_ov004_02209e64 *self) {
-    Unk_ov004_02209e44_Target *t = self->pRenderObj->ptrUser;
+extern "C" void FtrActor_MatCallback(NNSG3dRS *self) {
+    Unk_ov004_02209e44_Target *t = (Unk_ov004_02209e44_Target *)self->pRenderObj->ptrUser;
     if (t != 0) {
-        t->vfunc_60(self->c->index, self);
+        t->vfunc_60(self->c[1], self);
     }
 }
 
 // @02209e90
-extern "C" void FtrActor_NodeDescCallbackA(Unk_ov004_02209e64 *self) {
-    Unk_ov004_02209e44_Target *t = self->pRenderObj->ptrUser;
+extern "C" void FtrActor_NodeDescCallbackA(NNSG3dRS *self) {
+    Unk_ov004_02209e44_Target *t = (Unk_ov004_02209e44_Target *)self->pRenderObj->ptrUser;
     if (t != 0) {
-        t->vfunc_68(self->c->index, self);
+        t->vfunc_68(self->c[1], self);
     }
-    self->cbVecFuncNodeDesc = FtrActor_NodeDescCallbackB;
-    self->cbVecTimingNodeDesc = 2;
+    self->cbVecFunc[6] = (void *)FtrActor_NodeDescCallbackB;
+    self->cbVecTiming[6] = 2;
 }
 
 // @02209e64
-extern "C" void FtrActor_NodeDescCallbackB(Unk_ov004_02209e64 *self) {
-    Unk_ov004_02209e44_Target *t = self->pRenderObj->ptrUser;
+extern "C" void FtrActor_NodeDescCallbackB(NNSG3dRS *self) {
+    Unk_ov004_02209e44_Target *t = (Unk_ov004_02209e44_Target *)self->pRenderObj->ptrUser;
     if (t != 0) {
-        t->vfunc_6c(self->c->index, self);
+        t->vfunc_6c(self->c[1], self);
     }
-    self->cbVecFuncNodeDesc = FtrActor_NodeDescCallbackA;
-    self->cbVecTimingNodeDesc = 1;
+    self->cbVecFunc[6] = (void *)FtrActor_NodeDescCallbackA;
+    self->cbVecTiming[6] = 1;
 }
 
 // @02209e44
-extern "C" void FtrActor_NodeCallback(Unk_ov004_02209e64 *o) {
-    Unk_ov004_02209e44_Target *t = o->pRenderObj->ptrUser;
+extern "C" void FtrActor_NodeCallback(NNSG3dRS *o) {
+    Unk_ov004_02209e44_Target *t = (Unk_ov004_02209e44_Target *)o->pRenderObj->ptrUser;
     if (t != NULL) {
-        t->vfunc_64(o->c->index, o);
+        t->vfunc_64(o->c[1], o);
     }
 }
 
 // @02209e14
-extern "C" void FtrActor_SetModelCallbacks(Unk_ov004_02209e64 *o) {
-    o->cbVecFuncMat = FtrActor_MatCallback;
-    o->cbVecTimingMat = 2;
-    o->cbVecFuncNode = FtrActor_NodeCallback;
-    o->cbVecTimingNode = 2;
-    o->cbVecFuncNodeDesc = FtrActor_NodeDescCallbackA;
-    o->cbVecTimingNodeDesc = 1;
+extern "C" void FtrActor_SetModelCallbacks(NNSG3dRS *o) {
+    o->cbVecFunc[4] = (void *)FtrActor_MatCallback;
+    o->cbVecTiming[4] = 2;
+    o->cbVecFunc[2] = (void *)FtrActor_NodeCallback;
+    o->cbVecTiming[2] = 2;
+    o->cbVecFunc[6] = (void *)FtrActor_NodeDescCallbackA;
+    o->cbVecTiming[6] = 1;
 }
 
 // @02209e08
@@ -955,29 +933,29 @@ extern "C" void FtrActor_TurnOnRoomLight(u32 a) {
 
 // @02209d58
 extern "C" u32 FtrActor_MakeSpawnArg(u32 a, u32 b, u32 c, u32 d, u8 f, u32 e) {
-    Unk_ov004_02209d40_Bits l;
-    l.a = a;
-    l.b = b;
-    l.c = c;
-    l.d = d;
-    l.e = e;
-    l.f = f;
+    FtrSpawnArgBuf l;
+    l.tileX = a;
+    l.tileZ = b;
+    l.ftrIndex = c;
+    l.dir = d;
+    l.mode = e;
+    l.layer = f;
     l.w1 = (l.w1 & ~0x1f) | 1;
     return *(u32 *)&l;
 }
 
 // @02209d4c
 extern "C" u32 FtrActor_GetArgFtrIndex(u32 v) {
-    Unk_ov004_02209d40_Bits l;
+    FtrSpawnArgBuf l;
     *(u32 *)&l = v;
-    return l.c;
+    return l.ftrIndex;
 }
 
 // @02209d40
 extern "C" u32 FtrActor_GetArgMode(u32 v) {
-    Unk_ov004_02209d40_Bits l;
+    FtrSpawnArgBuf l;
     *(u32 *)&l = v;
-    return l.e;
+    return l.mode;
 }
 
 // @02209d10
@@ -1128,9 +1106,9 @@ FtrActor::~FtrActor() {
 
 // @02209578
 BOOL FtrActor::onCreate() {
-    Unk_ov004_02209d40_Bits l;
+    FtrSpawnArgBuf l;
     *(u32 *)&l = *(u32 *)((u8 *)this + 8);
-    u32 t = l.e;
+    u32 t = l.mode;
     spawnMode = t;
     FtrActorTable_add(FtrActorTable_GetInstance(), this);
     void *r = ModelSlotPool_acquire(sFtrMgrPool, &modelSlot);
@@ -1459,7 +1437,7 @@ void FtrActor::initAnims(s32 a, s32 b, s32 c, s32 d) {
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(i)) {
         u32 t = modelResMdl;
         if (ModelAnim_allocMatAnm(&anims[2], t, ModelSlot_getHeap((void *)m))) {
-            Unk_ov004_02208a18_Rec *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(i);
+            NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(i);
             ModelAnim_initWithTex(&anims[2], rec, ((FtrModelRes *)(modelRes))->getTexture(), b, c, d);
             ModelAnim_addToRenderObj(&anims[2], Model_getRenderObj(model));
         }
@@ -1476,7 +1454,7 @@ void FtrActor::initAnims(s32 a, s32 b, s32 c, s32 d) {
 void FtrActor::playAnim(s32 a, s32 b, s32 c, u32 d) {
     u32 i = a & 1;
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBva(i)) {
-        Unk_ov004_02208a18_Rec *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBva(i);
+        NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBva(i);
         u32 v;
         if (d == 0xffff) {
             v = ((u32)anims[3].curFrame << 4) >> 16;
@@ -1487,7 +1465,7 @@ void FtrActor::playAnim(s32 a, s32 b, s32 c, u32 d) {
         ModelAnim_replace(&anims[3], Model_getRenderObj(model), rec, b, c, v);
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(i)) {
-        Unk_ov004_02208a18_Rec *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(i);
+        NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(i);
         u32 v;
         if (d == 0xffff) {
             v = ((u32)anims[0].curFrame << 4) >> 16;
@@ -1498,7 +1476,7 @@ void FtrActor::playAnim(s32 a, s32 b, s32 c, u32 d) {
         ModelAnim_replace(anims, Model_getRenderObj(model), rec, b, c, v);
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(i)) {
-        Unk_ov004_02208a18_Rec *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(i);
+        NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(i);
         u32 v;
         if (d == 0xffff) {
             v = ((u32)anims[1].curFrame << 4) >> 16;
@@ -1509,7 +1487,7 @@ void FtrActor::playAnim(s32 a, s32 b, s32 c, u32 d) {
         ModelAnim_replace(&anims[1], Model_getRenderObj(model), rec, b, c, v);
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(i)) {
-        Unk_ov004_02208a18_Rec *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(i);
+        NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(i);
         u32 v;
         if (d == 0xffff) {
             v = ((u32)anims[2].curFrame << 4) >> 16;
@@ -1521,7 +1499,7 @@ void FtrActor::playAnim(s32 a, s32 b, s32 c, u32 d) {
         ModelAnim_replaceWithTex(&anims[2], p, rec, ((FtrModelRes *)(modelRes))->getTexture(), b, c, v);
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(i)) {
-        Unk_ov004_02208a18_Rec *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(i);
+        NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(i);
         u32 v;
         if (d == 0xffff) {
             v = (animFrame << 4) >> 16;
@@ -1539,7 +1517,7 @@ void FtrActor::playAnim(s32 a, s32 b, s32 c, u32 d) {
 // @02208a18
 extern "C" void FtrActor_PlayAnimsFromLastFrame(Self *self, u32 a, s32 b, s32 c) {
     s32 k = a & 1;
-    Unk_ov004_02208a18_Rec *q;
+    NNSG3dResAnmCommon *q;
     if (((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBva(k)) {
         q = ((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBva(k);
         ModelAnim_replace(PT(0x820), Model_getRenderObj(PT(0x534)), q, b, c, (u16)(q->numFrame - 1));
@@ -1927,14 +1905,14 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
         struct {
             volatile u16 tmp;
             u16 pad;
-            Unk_ov004_02207ef0_Bits bits;
+            FtrSpawnArg bits;
             u32 pad2;
         } f;
-        f.bits = *(Unk_ov004_02207ef0_Bits *)&param;
+        f.bits = *(FtrSpawnArg *)&param;
         Unk_ov004_022077a4_Vec3 p1, p2, r;
         volatile Unk_ov004_022077a4_Vec3 q;
         if (!((FtrActor *)this)->isPreview()) {
-            FieldPos_FromBlockUnitCenter(&position, 0, 0, f.bits.lo, f.bits.mid);
+            FieldPos_FromBlockUnitCenter(&position, 0, 0, f.bits.tileX, f.bits.tileZ);
             position.y = FtrMgr_GetSurfaceHeightAtPos(&position);
             drawScale = 0x1000;
             drawScaleY = 0x1000;
@@ -1962,12 +1940,12 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
             sFtrPreviewYaw = Math_Atan2(r.x, r.z) + 0x8000;
         }
         rotY = f.bits.dir << 14;
-        ftrIndex = f.bits.id;
+        ftrIndex = f.bits.ftrIndex;
         if (ftrIndex >= 0x6e9) {
             ftrIndex = 0x6e8;
         }
         f.tmp = Item_MakeFurniture(ftrIndex, 0);
-        mapLayer = f.bits.flag;
+        mapLayer = f.bits.layer;
         if (!((FtrActor *)this)->isPreview() && mapLayer == 0) {
             position.y = 0;
             if (Scene_GetCurrent() == 10) {
@@ -1989,7 +1967,7 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
                 position.z += 0x1000;
             }
             if (mapLayer == 1) {
-                ((FtrStackLink *)(stackLink))->attachAt(f.bits.lo, f.bits.mid, rotY);
+                ((FtrStackLink *)(stackLink))->attachAt(f.bits.tileX, f.bits.tileZ, rotY);
             }
         }
         FtrActor_UpdateMtx((Self *)this);
@@ -2203,7 +2181,7 @@ void Unk_ov004_022077a4::writeTiles(s32 unused, void *x, s32 y, u8 flag) {
 // @02207854
 void Unk_ov004_022077a4::moveTiles(void *a, s32 b) {
     Unk_ov004_02207854_List l;
-    Unk_ov004_02207854_Set set;
+    FtrStackedSetView set;
     u32 i;
     _ZN11FtrTileListC1Ev(&l);
     getTiles(&l, 0, 0);
@@ -2421,7 +2399,7 @@ BOOL FtrActor::canMoveTo(s32 a, s32 b) {
 
 // @022071cc
 u16 FtrActor::makeCharId(s32 a, s32 b) {
-    Unk_ov004_022071cc_Pkt p;
+    FtrCharIdBits p;
     s32 x;
     s32 y;
     if (Scene_InUnk6To8() != 0 || isPreview()) {
@@ -3099,28 +3077,28 @@ void FtrAnimSet::setTexCopy(s32 v) {
 }
 
 // @022063c8
-Unk_ov004_02208a18_Rec *FtrAnimSet::getBca(u32 i) {
-    return (Unk_ov004_02208a18_Rec *)bca[i & 1];
+NNSG3dResAnmCommon *FtrAnimSet::getBca(u32 i) {
+    return (NNSG3dResAnmCommon *)bca[i & 1];
 }
 
 // @022063bc
-Unk_ov004_02208a18_Rec *FtrAnimSet::getBma(u32 i) {
-    return (Unk_ov004_02208a18_Rec *)bma[i & 1];
+NNSG3dResAnmCommon *FtrAnimSet::getBma(u32 i) {
+    return (NNSG3dResAnmCommon *)bma[i & 1];
 }
 
 // @022063b0
-Unk_ov004_02208a18_Rec *FtrAnimSet::getBva(u32 i) {
-    return (Unk_ov004_02208a18_Rec *)bva[i & 1];
+NNSG3dResAnmCommon *FtrAnimSet::getBva(u32 i) {
+    return (NNSG3dResAnmCommon *)bva[i & 1];
 }
 
 // @022063a4
-Unk_ov004_02208a18_Rec *FtrAnimSet::getBta(u32 i) {
-    return (Unk_ov004_02208a18_Rec *)bta[i & 1];
+NNSG3dResAnmCommon *FtrAnimSet::getBta(u32 i) {
+    return (NNSG3dResAnmCommon *)bta[i & 1];
 }
 
 // @02206398
-Unk_ov004_02208a18_Rec *FtrAnimSet::getBtp(u32 i) {
-    return (Unk_ov004_02208a18_Rec *)btp[i & 1];
+NNSG3dResAnmCommon *FtrAnimSet::getBtp(u32 i) {
+    return (NNSG3dResAnmCommon *)btp[i & 1];
 }
 
 // @02206380
@@ -3835,7 +3813,7 @@ void FtrActor::execAppear() {
         actFrame = 0;
         if (appearFrame == 0xc) PlayerActor_PlayLocalSe(0x4c7);
         if (appearFrame == 0xf) {
-            Unk_ov004_053c0_Buf buf;
+            FtrCenterPosBuf buf;
             FtrActor_GetCenter(this, (Vec3 *)&buf);
             spawnEffectAt((Unk_0203e4f0_Vec *)&buf);
         }

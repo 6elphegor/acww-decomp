@@ -20,12 +20,6 @@
 #include "talk/VillagerTalk.h"
 #include "npc/BirthdayHostVillager.h"
 
-extern "C" {
-struct Unk_ov004_02215c94_S : Unk_ov004_02215c94_V {
-    Unk_ov004_02215c94_S(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
-    ~Unk_ov004_02215c94_S() {}
-};
-}
 
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -90,7 +84,7 @@ public:
     BOOL setupAct01();
     BOOL setupAct00();
     BOOL changeAct(s32 idx);
-    void func_ov004_02216a0c();
+    void recordPlayerTalk();
     void blockFurnitureCells();
     BOOL drawModel();
 
@@ -110,10 +104,6 @@ public:
 typedef Unk_020d77a4_Vec3 Unk_ov004_Vec3;
 
 
-struct Unk_ov004_022162f0_Actor {
-    u8 pad[0x5c];
-    Unk_ov004_Vec3 pos;
-};
 
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
@@ -384,7 +374,7 @@ void BirthdayGuestVillager::blockFurnitureCells() {
     }
 }
 
-void BirthdayGuestVillager::func_ov004_02216a0c() {
+void BirthdayGuestVillager::recordPlayerTalk() {
     void *p = PlayerData_GetCurrent();
     if (p) {
         if (villagerData) {
@@ -421,7 +411,7 @@ void BirthdayGuestVillager::onInteractionEvent(u32 a, u8 b) {
         changeAct(5);
         break;
     case 8:
-        func_ov004_02216a0c();
+        recordPlayerTalk();
         Camera_SetModeDefault();
         changeAct(0);
         break;
@@ -555,10 +545,10 @@ BOOL BirthdayGuestVillager::setupAct00() {
 
 void BirthdayGuestVillager::mainAct00() {
     Unk_ov004_Vec3 v;
-    Unk_ov004_022162f0_Actor *a = (Unk_ov004_022162f0_Actor *)BirthdayHostVillager_Get(this);
+    BirthdayHostVillager *a = BirthdayHostVillager_Get(this);
     s32 d;
     if (a) {
-        d = Vec_DistXZ(&a->pos, &position);
+        d = Vec_DistXZ(&a->position, &position);
     } else {
         d = data_020c8cbc;
     }
@@ -587,10 +577,10 @@ void BirthdayGuestVillager::mainAct00() {
             waypoint.y = walkTarget.y;
             waypoint.z = walkTarget.z;
             if (a && d >= 0x6000 && Random_GlobalBelow(2) == 0) {
-                d = Math_Atan2(a->pos.x - position.x, a->pos.z - position.z);
+                d = Math_Atan2(a->position.x - position.x, a->position.z - position.z);
                 s32 df = Math_AngleDiffAbs(rotY, d);
-                Unk_ov004_Vec3 *pa = &a->pos;
-                s32 xx = *(volatile s32 *)&a->pos.x;
+                Unk_ov004_Vec3 *pa = (Unk_ov004_Vec3 *)&a->position;
+                s32 xx = *(volatile s32 *)&a->position.x;
                 Unk_ov004_Vec3 *pq = &walkTarget;
                 pq->x = xx;
                 walkTarget.y = pa->y;
