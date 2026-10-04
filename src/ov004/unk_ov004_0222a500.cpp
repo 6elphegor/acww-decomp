@@ -5,6 +5,7 @@
 #include "gfx/MatTexBinder.h"
 #include "game/FxVec3.h"
 #include "gfx/MatTexVramTask.h"
+#include "game/TouchPickCylinder.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 // (called as free functions with the object as first argument; the mangled name is the symbols.txt name)
@@ -95,11 +96,6 @@ public:
     u8 pad_0c[0xc];
 };
 
-struct TouchPickCylinder {
-    TouchPickCylinder();
-    ~TouchPickCylinder();
-    u8 pad[0x20];
-};
 
 
 // ---------------------------------------------------------------- shared helper types

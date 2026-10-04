@@ -29,6 +29,7 @@
 #include "item/ItemName.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "npc/NpcEmotionFx.h"
 
 
 // unk_02011580.cpp
@@ -1596,48 +1597,8 @@ struct Unk_02019cac_Owner {
 };
 
 
-// unk_02019998.cpp
-struct NpcEmotionFxSlot {
-    s16 effectId;
-    u8 triggerFrame;
-    u8 repeat;
-};
 
-// unk_02019998.cpp
-struct NpcEmotionPhase {
-    s32 animId;
-    void *fxSlots;
-    u8 numFxSlots;
-    u8 killPrevFx;
-    u8 pad_0a[2];
-};
 
-// unk_02019998.cpp
-struct NpcEmotionFx {
-    s32 effects[4];
-    NpcEmotionFxSlot slots[2];
-    s32 seEmitter;
-    s32 slotAnimId;
-    s32 entryPart;
-    u8 seMode;
-    u8 emotionId;
-    u8 useGlobalSe;
-    u8 effectParam;
-
-    void stop();
-    void update(void *a, s16 b, s32 c, u16 d);
-    void killEffects();
-    void updateSlot(void *a, s16 b, s32 c, u16 d, s32 j);
-    void stopSound();
-    void keepSound();
-    void playSound(NpcEmotionFxSlot *s);
-    void startEntry(NpcEmotionPhase *tbl, s32 idx);
-    void setSlots(void *a, u32 b, s32 c);
-    s32 findFreeHandle();
-    void copySlots(void *dst, void *src, s32 n);
-    void clearSlots(void *p, s32 n);
-    void reset();
-};
 
 
 struct Unk_0201a1e0_Target;

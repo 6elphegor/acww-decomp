@@ -3,6 +3,7 @@
 // to the original code (see unk_02004558.cpp; same declarations, nothing else is defined here).
 #include "types.h"
 #include "net/CommManager.h"
+#include "talk/TalkWindowState.h"
 #include "player/Unk_02005294_Vec3.h"
 #include "player/Unk_020050e0_P.h"
 #include "player/Unk_020050e0_Q.h"
@@ -42,7 +43,6 @@
 #include "player/Unk_02008074_Vec.h"
 #include "player/Unk_020080e8.h"
 #include "player/Unk_02008100_Msg.h"
-#include "player/Unk_02008190_Ptr.h"
 #include "player/Unk_02008858_Blk.h"
 #include "player/Unk_02008e48.h"
 #include "player/Unk_02008f5c.h"
@@ -63,7 +63,6 @@
 #include "player/Unk_02007694.h"
 #include "player/Unk_020093d4.h"
 #include "player/Unk_02008e50_Msg.h"
-#include "player/Unk_02008040_Base.h"
 #include "player/Unk_02006d14_Base0.h"
 #include "player/Unk_02006d14_A.h"
 #include "player/Unk_02005e7c.h"
@@ -169,92 +168,34 @@ public:
     virtual void onWindowClose();
     virtual void onTalkEnd();
 
-    /* 0x20 */ u8 pad_20[0x60];
-    /* 0x80 */ s32 unk_80;
+    /* 0x20 */ u8 pad_20[0x1c];
+    /* 0x3c */ TalkWindowState *unk_3c;
+    /* 0x40 */ u8 unk_40;
+    /* 0x41 */ u8 pad_41[3];
 };
 
-// ---- member objects of PlayerActor (classes of other units; constructor / destructor only)
-struct ActorPlacedCollider { ActorPlacedCollider(); ~ActorPlacedCollider(); };
-struct TouchPickCylinder { TouchPickCylinder(); ~TouchPickCylinder(); };
-struct TwoLayerAnimModel { TwoLayerAnimModel(); ~TwoLayerAnimModel(); };
-struct CachedModel { CachedModel(); ~CachedModel(); };
-struct HeldItemModel { HeldItemModel(); ~HeldItemModel(); };
-struct CollisionState { CollisionState(); ~CollisionState(); };
-struct SndSeEmitterKind99 { SndSeEmitterKind99(); ~SndSeEmitterKind99(); };
-struct Unk_0201a13c { Unk_0201a13c(); ~Unk_0201a13c(); };
-
+// ---- sound emitters of PlayerActor. SndSeEmitterKind1 keeps its inline destructor here: this unit emits its link-once
+// D1 0x02004b48 / D0 0x02010fa4 (snd/SndSeEmitterKind1.h declares it out of line). SndSeEmitterKind99 (C1 0x020f3ee4) is
+// defined in autoload_2 (unk_020f30fc.cpp).
 struct SndSeEmitterKind1 : SndSeEmitter {
-    u8 unk_44[0xc];
     SndSeEmitterKind1();
     virtual ~SndSeEmitterKind1() {}
 };
 
-
-
-
-
-
-
-
-
-class Unk_02008040 : public Unk_02008040_Base, public MsgRequest {
-public:
-    void netHoldUpItem(void *arg);
-    void setupHoldUpItem();
-    BOOL requestHoldUpItem(u16 *v, u32 a, u32 b);
-    void mainErrorMessage();
-    void errorMessageUpdate();
-    void func_020082a8();
-    BOOL netErrorMessage(u32 b);
-    void setupErrorMessage(u8 *msg);
-    BOOL requestErrorMessage(u8 v, u32 a, u32 b);
-    void mainLidClosed();
-    void lidClosedCheckOpen();
-    void lidClosedUpdateAnim();
-    BOOL netLidClosed(u32 b);
-    void setupLidClosed(u32 a, u32 flag);
-    BOOL requestLidClosed(u32 a, u32 b);
-    void mainAct79();
-    void act79Update();
-    BOOL netAct79(u32 b);
-    void setupAct79();
-    BOOL requestAct79(u32 a, u32 b);
-    void mainAct77();
-    void act77CheckEnd();
-    void act77Turn();
-    void netAct77(u32 b);
-    void setupAct77(u8 *msg);
-    BOOL requestAct77(s16 v, u32 a, u32 b);
-    void mainAct76();
-    void act76Update();
-
-      u8 unk_10c[0x1c];
-      Unk_02008190_Ptr *window;
-      u8 unk_12c[0x168];
-      Unk_02008858_Blk bodyBaseMtx;
-      u8 unk_2c4[8];
-      u8 bodyAnimCtrl[8];
-      u32 bodyAnimFrame;
-      u8 unk_2d8[0x2c4];
-      u8 heldItemModel[0x28];
-      u8 fishBobber[0xd0];
-      Unk_02008858_Blk itemHandMtx;
-      u8 footPosA[0x18];
-      u8 headTopPos[0x24];
-      s32 animId;
-      u8 handPose[0xcc];
-      u8 actionWork[0x1c];
-      s32 action;
-      u8 prevAction[8];
-      s32 actionPriority;
-      s32 sessionSlot;
-      u8 exitIndex[0x1c];
-      u16 actionItem;
-      u16 shownItem;
-      s32 shownItemPosX, shownItemPosY, shownItemPosZ, shownItemScaleX, shownItemScaleY, shownItemScaleZ;
-      u8 seEmitterLocal[0xb4];
-      Unk_020080e8 netData;
+struct SndSeEmitterKind99 : SndSeEmitterKind1 {
+    SndSeEmitterKind99();
+    virtual ~SndSeEmitterKind99();
 };
+
+
+
+
+
+
+
+
+
+#include "player/PlayerActor.h"
 
 
 
@@ -2873,337 +2814,6 @@ void PlayerActor_Create();
 }
 }
 
-class Unk_02006d14 {
-public:
-    void changeAction(Unk_02006d14_Item* item);
-    BOOL netAct76(s16 v);
-    BOOL requestAct76(u8 a, u8 b, u8 c, u32 d, s16 e);
-    void mainTurnTo();
-    void turnToCheckEnd();
-    void turnToUpdate();
-    void netTurnTo();
-    void setupTurnTo(Unk_02006d14_Item *item, u32 old);
-    BOOL requestTurnTo(s16 v, u32 a, u32 b);
-    void mainWalkTo();
-    void walkToCheckEnd(s32 f);
-    void walkToMove();
-    void walkToUpdateAnim();
-    s32 walkToUpdateSpeed();
-    void netWalkTo();
-    void setupWalkTo(Unk_02006d14_Item *item, u32 old);
-    BOOL requestWalkTo(Unk_02006d14_Vec *v, u32 a, u32 b, s16 c);
-    void mainChangeHeldItem();
-    void changeHeldItemUpdate();
-    void endChangeHeldItem();
-    void setupAct76(Unk_02006d14_Item *item, u32 old);
-    s32 netChangeHeldItem(u32 a);
-    void setupChangeHeldItem(Unk_02006d14_Item* item, u32 old);
-    s32 requestChangeHeldItem(u16 a, u32 b, u32 c);
-    void mainAct35();
-    void act35CheckEnd();
-    void setupAct35(Unk_02006d14_Item* item, u32 old);
-    s32 requestAct35(u32 a, u32 b);
-    s32 requestAct34(u32 a, u32 b);
-    s32 requestAct33(u32 a, u32 b);
-    s32 requestAct32(u32 a, u32 b);
-    s32 requestAct31(u32 a, u32 b);
-    void mainAct34();
-    void act34CheckEnd();
-    void setupAct34(Unk_02006d14_Item* item, u32 old);
-    void mainAct33();
-    void act33CheckEnd();
-    void setupAct33(Unk_02006d14_Item* item, u32 old);
-    void mainAct32();
-    void act32CheckEnd();
-    void act32UpdateAnim();
-    void act32UpdateSpeed();
-    s32 netAct32(u32 a);
-    void setupAct32(Unk_02006d14_Item* item, u32 old);
-    void mainAct31();
-    void act31CheckEnd();
-    void setupAct31(Unk_02006d14_Item* item, u32 old);
-    void mainAct30();
-    void act30CheckEnd();
-    void act30UpdateAnim();
-    void setupAct30(Unk_02006d14_Item* item, u32 old);
-    s32 requestAct30(u16* p, u32 b, u32 c, u32 d, u32 e, u32 f, s16 g);
-    void mainPickUpFanfareStow();
-    void pickUpFanfareStowShrink();
-    void netAct35();
-    void netAct34();
-    void netAct33();
-    void netAct31();
-    void netAct30();
-    void netPickUpFanfareStow(s16 v);
-    void setupPickUpFanfareStow(Unk_02006d14_Item* item, u32 v);
-    s32 requestPickUpFanfareStow(Unk_02006d14_Pair* p, u8 b, u32 x, s16 y);
-    void mainPickUpFanfare();
-    void pickUpFanfareTakeItem();
-    void pickUpFanfareNetTake();
-    void pickUpFanfareUpdate();
-    void pickUpFanfareUpdateItemPos();
-    void endPickUpFanfare();
-    void netPickUpFanfare(s16 v);
-    void setupPickUpFanfare(Unk_02006d14_Item* item, u32 v);
-    s32 requestPickUpFanfareWithItem(Unk_02006d14_Pair* p, u16 h, u8 b, u32 x, s16 y);
-    s32 requestPickUpFanfareAt(Unk_02006d14_Pair* p, u8 b, u32 x, s16 y);
-    void mainPickUp();
-    void pickUpRemoteCheckEnd();
-    void pickUpUpdateStore(u8* state, u8 flag);
-    s32 requestPickUpWithItem(Unk_0200b144_Pos* pos, u16 a, u8 b, s32 c, s16 d);
-    s32 requestPickUpAt(Unk_0200b144_Pos* pos, s32 a, u8 b, s32 c, s16 d);
-    void pickUpUpdateAnim(Unk_02006d14_Item* item, u32 old);
-    void endPickUp(Unk_02006d14_Item* item, u32 old);
-    void netPickUp(s16 old);
-    void mainPickUpReach(Unk_02006d14_Item* item, u32 old);
-    void pickUpReachUpdate();
-    void pickUpUpdateItem();
-    void setupPickUp(Unk_02006d14_Item* item, u32 old);
-    void pickUpReachWaitAnswer();
-    void netPickUpReach(s16 v);
-    void setupPickUpReach(Unk_02006d14_Item *item, u32 old);
-    s32 requestPickUpReach(Unk_0200b750_Pair pr, s32 a, u32 b, s16 c);
-    void mainAct15();
-    void act15CheckEnd();
-    void act15UpdateAnim();
-    s32 netAct15(u32 v);
-    void setupAct15(Unk_02006d14_Item *item, u32 old);
-    s32 requestAct15(u32 a, u32 b);
-    void mainEmotion();
-    void emotionCheckEnd();
-    void emotionUpdateAnim();
-    void endEmotion();
-    s32 netEmotion(s16 v);
-    void setupEmotion(Unk_02006d14_Item *item, u32 old);
-    s32 requestEmotion(u8 a, u8 b, u32 c, s16 d);
-    void mainAct13();
-    void act13CheckEnd();
-    s32 netAct13(u32 v);
-    void setupAct13(Unk_02006d14_Item *item, u32 old);
-    BOOL requestAct13(u32 a, u32 b);
-    void mainAct10();
-    void act10CheckTalk();
-    void act10FaceTalkTarget();
-    void act10UpdateAnim();
-    void netAct10(u32 v);
-    void setupAct10(Unk_02006d14_Item *item, u32 old);
-    s32 requestAct10(s16 a, u32 b, s32 c);
-    void mainChangeClothes();
-    void changeClothesCheckEnd();
-    BOOL isGuestInSession();
-    void calcHandMtx();
-    void resetHeldToolAnim();
-    void netUpdateBodyCollider();
-    BOOL canAcceptTalk(u32 id);
-    void updateHeadLook();
-    void netSendTan();
-    void netSendClothesChange(u32 a, u32 b);
-    void loadInputMode();
-    void clearActionFlag(u32 id);
-    void setActionFlag(u32 id);
-    u32 testActionFlag(u32 id);
-    void playSeAt(u32 a, Unk_02006d14_Vec3 *v);
-    void playSe(u32 a);
-    void offsetSpawnBySlot();
-    void nudgeForward();
-    BOOL netSyncNearPoint(Unk_02006d14_Vec3 *p);
-    BOOL netSyncNearUnit(s32 *p);
-    BOOL netFollowTransform();
-    BOOL getNetTransformInArea(Unk_02006d14_Vec3 *out, s16 *ang);
-    void updateShownItemPos(u32 a, ...);
-    BOOL checkLidAndError();
-    void playFootstepSe();
-    void updateFootstepFx();
-    s32 turnAwayFromCamera(s32 a);
-    s32 turnToCamera(s32 a);
-    s32 turnToward(s32 a);
-    s32 getHeldToolKind();
-    s32 getHeldHoldableIndex();
-    BOOL requestByFieldAnswer(s32 a, s32 b);
-    s32 startUnitItemQuery(Unk_0200f6d4_V2 *p, s32 a, s32 b);
-    s32 pollFieldQuery();
-    void pollStoreQuery();
-    BOOL startFieldQuery(s32 a, s32 mode, s32 idx);
-    u32 getFieldAnswerKind();
-    s32 interactAt(s32 a);
-    s32 useHeldTool();
-    BOOL isPosInReach(s32 *pos, u32 idx);
-    void bindPaletteByName(void *a, void *b, void *c, void *d);
-    void bindTextureByName(void *a, void *b, void *c, void *d);
-    BOOL requestHatChange(u16 *p, u8 b, u8 c, u8 d);
-    void pollHatLoad();
-    void applyHatChange();
-    BOOL requestFaceItemChange(u16 *p);
-    void pollFaceItemLoad();
-    void applyFaceItemChange();
-    s32 tryInteract();
-    void requestShirtTexUpload();
-    void setShirtTexture(void *p);
-    void applySkinHairPalette(s32 a, s32 b);
-    s32 getTargetWalkSpeed();
-    void applyHoldPose(u16 *p, s32 b, void *c);
-    void applyHeldItemPose(s32 b, void *c);
-};
-
-
-
-// ---- the object (size 0xc9c; vtable 0x020d6dec with the secondary table at 0x020d6e64)
-class PlayerActor : public Character, public TalkMsgRequest {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *p);
-
-    PlayerActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual ~PlayerActor();
-    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *out);
-    virtual s32 onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onWindowClose();
-
-    void doDraw();
-    BOOL doDelete();
-    s32 getJointGroundY(s32 x);
-    void drawReady();
-    void drawNotReady();
-    void doExecute();
-    void walkUpdateLean();
-    void walkMove();
-    BOOL walkFollowNet();
-    void walkUpdateSpeed();
-    void netWalk();
-    void setupWalk(Unk_02006d14_Item *item, u32 old);
-    BOOL requestWalk(u32 a, u32 b, u32 c);
-    void mainWait();
-    void waitNetCheckEnd(u8 *p);
-    void waitCheckInput();
-    BOOL waitFollowNet();
-    void endWait();
-    void netWait(u32 a);
-    void setupWait(Unk_02006d14_Item *item, u32 old);
-    BOOL requestWait(u32 a, u32 b, u32 c);
-    void mainAct01();
-    void endAct01();
-    void netAct01(u32 a);
-    void setupAct01(Unk_02006d14_Item *item, u32 old);
-    BOOL requestAct01(u32 a, u32 b);
-    void mainInit();
-    void startFirstAction(s32 *p);
-    BOOL finishModelSetup();
-    void endInit(u32 a);
-    void netInit();
-    void setupInit(Unk_0200d53c_Item *item);
-    BOOL requestInit(u32 a, u32 b, u32 c);
-    u8 func_0200d5b8();
-    s32 getInputDirRelative();
-    s32 getInputSideRelative();
-    s16 getInputAngle();
-    s16 getInputAngleRaw();
-    s32 getInputMagnitude();
-    void readInput();
-    BOOL doCreate();
-    void initFaceItemModel();
-    void initHatModel();
-    void initShirtModel();
-    s32 getRequiredPriority();
-    s32 getEffectivePriority();
-    void clearRequests();
-    nO::Unk_0200e248_Rec *getRequest(s32 i);
-    BOOL pushRequest(nO::Unk_0200e248_Rec *r);
-    BOOL getRemoteTransform(u8 *a, s32 *b, s32 *c, u16 *d);
-    u8 isLocomotionAction(u32 i);
-
-    ActorPlacedCollider bodyCollider;
-    u8 pad_171[0x4f];
-    ActorPlacedCollider subCollider;
-    u8 pad_1c1[0x4f];
-    TouchPickCylinder touchCylinder;
-    u8 pad_211[0x1f];
-    TwoLayerAnimModel bodyModel;
-    u8 pad_231[0x153];
-    PlayerBodyWorkRef bodyWork;
-    PlayerBodyModelRef bodyModelRef;
-    u8 pad_386[0x2];
-    CachedModel headModel0;
-    u8 pad_389[0x9b];
-    PlayerHead headRef;
-    u8 pad_425[0x3b];
-    CachedModel headModel1;
-    u8 pad_461[0x9b];
-    CachedModel faceItemModel;
-    u8 pad_4fd[0x9b];
-    PlayerGlassesModelRef faceItemRef;
-    u8 pad_599[0x3];
-    HeldItemModel heldItemModel;
-    u8 pad_59d[0x15f];
-    Unk_0205c3a4 bodyAnimSlot;
-    Unk_0205c3a4 holdAnimSlot;
-    u8 pad_6fe[0x2];
-    s32 animId;
-    s32 handPose;
-    u8 pad_708[0x1];
-    PlayerFaceTexRef faceTex;
-    CharaFaceAnimRef faceAnimRef;
-    CharaFaceAnimWorkRef faceAnimWork;
-    MatTexPatAnim eyeTexAnim;
-    MatTexPatAnim mouthTexAnim;
-    BlinkTimer blinkTimer;
-    s32 eyeAnimId;
-    s32 mouthAnimId;
-    CharaClothTexRef shirtTex;
-    u8 pad_771[0x3];
-    MatTexVramTask shirtTexUpload;
-    Unk_0205ef98 skinHairPalette;
-    u8 pad_79d[0x3];
-    CollisionState bgCheckWork;
-    u8 pad_7a1[0x2f];
-    s32 actionWork;
-    u8 pad_7d4[0x18];
-    s32 action;
-    u8 pad_7f0[0x4];
-    s32 drawStep;
-    u8 pad_7f8[0x4];
-    s32 sessionSlot;
-    u8 pad_800[0x1c];
-    u16 actionItem;
-    u16 shownItem;
-    s32 shownItemPosX;
-    s32 shownItemPosY;
-    s32 shownItemPosZ;
-    s32 shownItemScaleX;
-    s32 shownItemScaleY;
-    s32 shownItemScaleZ;
-    SndSeEmitterKind99 seEmitterLocal;
-    u8 pad_839[0x43];
-    SndSeEmitterKind1 seEmitterRemote;
-    s32 aheadUnitX;
-    s32 aheadUnitZ;
-    s32 runUnitX;
-    s32 runUnitZ;
-    s32 pitfallUnitX;
-    s32 pitfallUnitZ;
-    u8 pad_8e4[0x10];
-    s32 lastNetAction;
-    s32 pendingEventUnitX;
-    s32 pendingEventUnitZ;
-    u8 pad_900[0x8];
-    Unk_0201a13c emotionFx;
-    u8 pad_909[0x27];
-    PlayerActionRequest requests[30];
-    u8 pad_c78[0x4];
-    s32 bestRequest;
-    u16 netSeq;
-    u8 pad_c82[0x2];
-    s32 netSeqAction;
-    s32 faceItemState;
-    u8 pad_c8c[0x4];
-    s32 hatState;
-    u8 pad_c94[0x8];
-};
 
 
 void Unk_02006d14::nudgeForward() {
@@ -4021,12 +3631,12 @@ void Unk_02008040::act76Update() {
     s32 lim;
     void *g;
     u16 t[8];
-    Unk_02008858_Blk blk;
+    Unk_021cb69c blk;
     Unk_02008074_Vec v1, v2, v3, v4, v5;
     BOOL r;
 
     _ZN12Unk_02006d1412turnToCameraEi(this, 0x400);
-    p = &actionWork[0];
+    p = &actionWorkRaw[0];
     kind = p[2];
     sub = p[5];
     st = p + 3;
@@ -4051,18 +3661,18 @@ void Unk_02008040::act76Update() {
         t[5] = 0x64;
         t[6] = 0x64;
         t[7] = 0x64;
-        v1 = *(Unk_02008074_Vec *)&blk.w[9];
+        v1 = *(Unk_02008074_Vec *)&blk.unk_a[9];
         WorldCurve_FromCurved(&v1, &v1);
         HeldInsect_SetHandMatrix((u8)sessionSlot, &t[5], &blk, 0);
         break;
     case 1:
-        void *o = _ZN10FishBobber7getFishEv(fishBobber);
+        void *o = _ZN10FishBobber7getFishEv(&heldItemModel.bobber);
         if (o != NULL) {
             v1.x = 0xb33;
             v1.y = 0x19a;
             v1.z = -0x19a;
             PlayerActor_ApplyHoldOffset(&blk, &v1);
-            v2 = *(Unk_02008074_Vec *)&blk.w[9];
+            v2 = *(Unk_02008074_Vec *)&blk.unk_a[9];
             WorldCurve_FromCurved(&v2, &v2);
             Fish_GetDisplayScale(&v3, *((s8 *)o + 0x7e));
             v4 = v2;
@@ -4073,23 +3683,23 @@ void Unk_02008040::act76Update() {
     }
     switch (animId) {
     case 0x87:
-        if (!_ZN13AnimFrameCtrl10isFinishedEv(bodyAnimCtrl)) {
+        if (!_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)bodyModel)) {
             return;
         }
         _ZN12Unk_020102ec13startAnimOnceEijt(this, 0x88, 0, 0);
-        HeldItemModel_PlayAnim(heldItemModel, 0xa, 0, 1);
+        HeldItemModel_PlayAnim(&heldItemModel, 0xa, 0, 1);
         return;
     case 0x89:
-        if (!_ZN13AnimFrameCtrl10isFinishedEv(bodyAnimCtrl)) {
+        if (!_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)bodyModel)) {
             return;
         }
         _ZN12Unk_020102ec13startAnimOnceEijt(this, 0x8a, 0, 0);
-        HeldItemModel_PlayAnim(heldItemModel, 0x20, 0, 1);
+        HeldItemModel_PlayAnim(&heldItemModel, 0x20, 0, 1);
         return;
     case 0x86:
         lim = 0x19;
         if (_ZN11CommManager11isLocalSlotEj(gCommManager, sessionSlot)) {
-            if (_ZN13AnimFrameCtrl14hasPassedFrameEi(bodyAnimCtrl, 0xc)) {
+            if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)bodyModel, 0xc)) {
                 Camera_SetMode4();
             }
         }
@@ -4098,7 +3708,7 @@ void Unk_02008040::act76Update() {
         lim = 5;
         break;
     }
-    if ((s32)((bodyAnimFrame << 4) >> 16) < lim) {
+    if ((s32)(((u32)bodyModel.curFrame << 4) >> 16) < lim) {
         return;
     }
     g = gCommManager;
@@ -4138,21 +3748,21 @@ void Unk_02008040::act76Update() {
                 msgIndex = kind + 0x1a;
                 break;
             }
-            window->nextState = 1;
+            unk_3c->nextState = 1;
         }
     case 1:
-        if (window != NULL) {
-            if (window->state != 0) {
+        if (unk_3c != NULL) {
+            if (unk_3c->state != 0) {
                 *st = 2;
             }
         }
         break;
     case 2:
         if (kind < 2) {
-            if (window == NULL) {
+            if (unk_3c == NULL) {
                 break;
             }
-            if (*((u8 *)window + 0x19f7) != 0xfe) {
+            if (unk_3c->nextMsgIndex != 0xfe) {
                 break;
             }
             if (kind == 1) {
@@ -4162,10 +3772,10 @@ void Unk_02008040::act76Update() {
             }
             break;
         }
-        if (window == NULL) {
+        if (unk_3c == NULL) {
             break;
         }
-        if (window->state != 0) {
+        if (unk_3c->state != 0) {
             break;
         }
         _ZN9Character17detachTalkRequestEi(this, this);

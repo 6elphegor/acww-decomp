@@ -3,10 +3,11 @@
 
 #include "types.h"
 
-// Player animation slot (bodyAnimSlot/holdAnimSlot; only ctor/dtor known; src/main/unk_02004558.cpp,
-// unk_020821c4.cpp).
+// One-byte animation slot handle (AnimSlotRef_* C entries at 0x0205c254..0x0205c3a8: constructor AnimSlotRef_Init,
+// destructor AnimSlotRef_Destruct); PlayerActor::bodyAnimSlot/holdAnimSlot, NpcBodyAnimSlot::layers.
 
 struct Unk_0205c3a4 {
+    /* 0x00 */ u8 slot;
     Unk_0205c3a4();
     ~Unk_0205c3a4();
 };

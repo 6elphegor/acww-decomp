@@ -7,6 +7,7 @@
 #include "game/TouchPickSphere.h"
 #include "gfx/Mtx43.h"
 #include "game/CollisionCylinder.h"
+#include "game/TouchPickCylinder.h"
 
 
 
@@ -40,14 +41,6 @@ struct Unk_0202f660_V3;
 struct Unk_0202e918_Vec3;
 
 
-struct TouchPickCylinder : CollisionCylinderX {
-    TouchPickCylinder();
-    ~TouchPickCylinder();
-    BOOL setup(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    /* 0x14 */ s32 kind;
-    /* 0x18 */ u8 index;
-    /* 0x1c */ TouchPickCylinder *next;
-};
 
 
 

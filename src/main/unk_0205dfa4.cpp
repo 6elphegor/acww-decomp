@@ -13,6 +13,7 @@
 #include "gfx/TexVramTask.h"
 #include "player/HeldItemModel.h"
 #include "gfx/Model.h"
+#include "gfx/TwoLayerAnimModel.h"
 
 // ---- helper classes (declared elsewhere) ----
 
@@ -22,14 +23,6 @@
 
 
 
-class BlendAnimModel : public CachedModel {
-public:
-    BlendAnimModel();
-    virtual ~BlendAnimModel();
-    u8 pad_9c[0x58];
-    void playBlend(s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
-    void onJointCalcPre(BlendAnimModel *x);
-};
 
 
 
