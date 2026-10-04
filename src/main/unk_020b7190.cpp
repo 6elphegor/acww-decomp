@@ -64,7 +64,7 @@ BOOL TalkRequest_IsSaveMenuRunning(void);
 BOOL TalkRequest_IsPlayerMessage(void);
 void *TalkWindow_Get(s32 a);
 BOOL MenuCtrl_IsMenuOpen(void);
-BOOL func_0206e5ec(void);
+BOOL MenuCtrl_IsSyncMsgMenu(void);
 BOOL MenuCtrl_IsScreenChanging(void);
 BOOL MenuCtrl_IsTransitionActive(void);
 s32 MenuCtrl_GetTransitionProgress(void);
@@ -217,13 +217,13 @@ extern "C" void FieldInfoBalloon_ShowSyncWaitMsg(s32 arg) {
             s32 c = b;
             if (t && t[1]) c = 1;
             if (MenuCtrl_IsMenuOpen()) {
-                if (func_0206e5ec()) b = 1;
+                if (MenuCtrl_IsSyncMsgMenu()) b = 1;
                 else v = 1;
             } else if (c) {
                 v = 2;
             }
         } else {
-            if (MenuCtrl_IsMenuOpen() && func_0206e5ec()) b = 1;
+            if (MenuCtrl_IsMenuOpen() && MenuCtrl_IsSyncMsgMenu()) b = 1;
         }
         if (b && arg < 4) v = sFieldInfoBalloonSyncKindMsgs[arg];
     }

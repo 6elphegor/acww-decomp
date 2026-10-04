@@ -152,7 +152,7 @@ MenuManager *MenuManager_Create();
 // prototypes of the unit's functions
 extern "C" {
 void CommSub_StartCountdown(u8 *o);
-void func_0206f4d8(u8 *o);
+void CommSub_RecvClearPendingUnit(u8 *o);
 MenuManager *MenuManager_Create();
 void MenuCtrl_AddOpenMenu(u32 v);
 void MenuCtrl_RemoveOpenMenu(u8 *o);
@@ -270,9 +270,9 @@ void MenuCtrl_RequestForceClose(void);
 void MenuCtrl_ResetForceClose(void);
 void MenuCtrl_TickForceClose(void);
 s32 MenuCtrl_IsForceCloseDue(void);
-void func_0206e60c(void);
-void func_0206e5fc(void);
-BOOL func_0206e5ec(void);
+void MenuCtrl_SetSyncMsgMenu(void);
+void MenuCtrl_ClearSyncMsgMenu(void);
+BOOL MenuCtrl_IsSyncMsgMenu(void);
 BOOL MenuCtrl_IsFriendPageFromIndex(void);
 void MenuCtrl_SetFriendPageFromIndex(void);
 void MenuCtrl_ClearFriendPageFromIndex(void);
@@ -425,7 +425,7 @@ u32 kMenuOverlayList1D[3] = {0x88, 0x86, 0xffffffff};
 
 extern "C" void CommSub_StartCountdown(u8 *o) { HudCountdown_StartWithSe(o[0] - 0x12); }
 
-extern "C" void func_0206f4d8(u8 *o) { PendingUnit_ClearActiveOfAid(o[1]); }
+extern "C" void CommSub_RecvClearPendingUnit(u8 *o) { PendingUnit_ClearActiveOfAid(o[1]); }
 
 extern "C" MenuManager *MenuManager_Create() { return new MenuManager; }
 
@@ -1099,11 +1099,11 @@ extern "C" s32 MenuCtrl_IsForceCloseDue(void) {
     return MenuCtrl_HasFlags(0x80);
 }
 
-extern "C" void func_0206e60c(void) { MenuCtrl_SetFlags(0x100); }
+extern "C" void MenuCtrl_SetSyncMsgMenu(void) { MenuCtrl_SetFlags(0x100); }
 
-extern "C" void func_0206e5fc(void) { MenuCtrl_ClearFlags(0x100); }
+extern "C" void MenuCtrl_ClearSyncMsgMenu(void) { MenuCtrl_ClearFlags(0x100); }
 
-extern "C" BOOL func_0206e5ec(void) { return MenuCtrl_HasFlags(0x100); }
+extern "C" BOOL MenuCtrl_IsSyncMsgMenu(void) { return MenuCtrl_HasFlags(0x100); }
 
 extern "C" BOOL MenuCtrl_IsFriendPageFromIndex(void) { return MenuCtrl_HasFlags(0x200); }
 

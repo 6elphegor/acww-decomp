@@ -10,27 +10,6 @@
 #include "npc/NpcSpawner.h"
 #include "npc/NpcBodyAnimPool.h"
 
-// Element payload types (defined elsewhere)
-struct Unk_020829b0_Y {
-    u32 unk_00;
-    Unk_020829b0_Y();
-    ~Unk_020829b0_Y();
-    void SpNpcAnimHeapRef_Assign();
-};
-struct Unk_02082c54_Z {
-    Unk_02082c54_Z();
-    ~Unk_02082c54_Z();
-    void AnimSlotRef_Assign();
-};
-
-
-struct Unk_020829b0_Y_dummy;
-
-
-
-
-
-
 extern "C" {
 VillagerAnimHeapRefPool *VillagerAnimHeapRefPool_Get();
 }
@@ -47,9 +26,6 @@ extern "C" {
 extern NpcBodyAnimPool sNpcBodyAnimPool;
 }
 
-struct Unk_02082d74_M {
-    ~Unk_02082d74_M();
-};
 
 
 

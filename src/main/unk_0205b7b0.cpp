@@ -94,8 +94,8 @@ void *Scene_GetCurrent(void);
 s32 Scene_GetMaxCharacters(void *);
 s32 Scene_GetMaxPlayers(void *);
 s32 NpcSpawn_GetSpNpcSlotCount(void);
-u32 func_02077e28(void);
-u32 func_02077e20(void);
+u32 NpcModelHeap_GetVillagerModelSize(void);
+u32 NpcModelHeap_GetSpNpcModelSize(void);
 u32 FishBobber_GetModelSize(void);
 u32 HeldItem_GetAnimHeapSize(void);
 u32 PlayerBodyWork_GetHeapSize(void);
@@ -784,9 +784,9 @@ extern "C" void *NpcModelHeap_Create(void *parent) {
         n = Scene_GetMaxCharacters(Scene_GetCurrent()) - Scene_GetMaxPlayers(Scene_GetCurrent());
     }
     s32 m = NpcSpawn_GetSpNpcSlotCount();
-    u32 x = ALIGN4(ALIGN4(func_02077e28()) + 0x48);
+    u32 x = ALIGN4(ALIGN4(NpcModelHeap_GetVillagerModelSize()) + 0x48);
     t += x * n;
-    x = ALIGN4(ALIGN4(func_02077e20()) + 0x48);
+    x = ALIGN4(ALIGN4(NpcModelHeap_GetSpNpcModelSize()) + 0x48);
     u32 size = t + x * m;
     if (size != 0) {
         gNpcModelHeap = FrameHeap_Create(size, parent);

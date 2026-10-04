@@ -15,12 +15,12 @@
 enum Unk_020720f8_Id { Unk_020720f8_Id_0 = 0 };
 
 // ======== types of unk_02072408.cpp ========
-struct Unk_020724e0_Loc {
+struct CommRecordUnpackLocals {
     u8 a;
     u8 b;
     u8 buf[5];
 };
-struct Unk_0207264c_Loc {
+struct CommDeferredFlushLocals {
     u8 a;
     u8 b;
     u8 buf[5];
@@ -1969,7 +1969,7 @@ namespace n2 {
 }
 void CommManager::flushDeferred() {
     using namespace n2;
-    Unk_0207264c_Loc l;
+    CommDeferredFlushLocals l;
     s32 v6 = myAid;
     if (_ZN11CommManager12isSlotActiveEi(this, v6)) {
         u32 total = getDeferredLen();
@@ -2036,7 +2036,7 @@ namespace n2 {
 }
 void CommManager::dispatchHeld() {
     using namespace n2;
-    Unk_020724e0_Loc l;
+    CommRecordUnpackLocals l;
     u32 size = getHeldLen();
     if (size != 0) {
         u8 *p = getHeldBuf();
@@ -2083,7 +2083,7 @@ namespace n2 {
 }
 void CommManager::dispatchLoopback() {
     using namespace n2;
-    Unk_020724e0_Loc l;
+    CommRecordUnpackLocals l;
     u32 size = getLoopbackLen();
     if (size != 0) {
         u32 pos = 0;

@@ -81,11 +81,11 @@ extern u32 data_020c7c1c;
 }
 
 extern "C" {
-typedef void (*Unk_0206f804_Fn)(u8 *, u32);
+typedef void (*CommSubHandler)(u8 *, u32);
 }
 
 extern "C" {
-extern Unk_0206f804_Fn sCommSubHandlers[];
+extern CommSubHandler sCommSubHandlers[];
 }
 
 extern "C" {

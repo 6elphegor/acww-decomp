@@ -15,7 +15,7 @@ struct VillagerStateTable {
     /* 0x163 */ s8 birthdayGuest;
     /* 0x164 */ s8 fleaMarketBuyer;
     /* 0x165 */ u8 pad_165[3];
-    /* 0x168 */ s32 idleFrames;
+    /* 0x168 */ u32 idleFrames;
     /* 0x16c */ s8 birthdayVisitor;
 };
 

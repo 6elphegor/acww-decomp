@@ -6,7 +6,7 @@ extern "C" {
 extern u8 sCommSubPostReply;
 s32 Text_GetLength(const u8 *str, s32 len);
 
-void func_0206f4d8(u8 *p, u32 x);
+void CommSub_RecvClearPendingUnit(u8 *p, u32 x);
 void CommSub_StartCountdown(u8 *p, u32 x);
 void CommSub_RecvCountdownRequest(u8 *p, u32 x);
 void CommSub_RecvTownTune(u8 *p, u32 x);
@@ -19,14 +19,14 @@ void CommSub_RecvReleaseOrThrow(u8 *p, u32 x);
 void CommSub_RecvInsectRelease(u8 *p, u32 x);
 void CommSub_RecvBbsPost(u8 *p, u32 x);
 
-typedef void (*Unk_0206f804_Fn)(u8 *, u32);
+typedef void (*CommSubHandler)(u8 *, u32);
 }
 
-Unk_0206f804_Fn sCommSubHandlers[24] = {
+CommSubHandler sCommSubHandlers[24] = {
     CommSub_RecvBbsPost, CommSub_RecvInsectRelease, CommSub_RecvReleaseOrThrow, CommSub_RecvItemList15, CommSub_RecvItemList15, CommSub_RecvReleaseOrThrow,
     CommSub_RecvBottleLetter, CommSub_ClearBottleLetter, CommSub_RecvPostLetter, CommSub_RecvPostReply, CommSub_RecvPostReply, CommSub_RecvPostReply,
     CommSub_RecvTownTune, CommSub_RecvCountdownRequest, CommSub_RecvCountdownRequest, CommSub_RecvCountdownRequest, CommSub_RecvCountdownRequest, CommSub_RecvCountdownRequest,
-    CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, func_0206f4d8,
+    CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_RecvClearPendingUnit,
 };
 
 s32 EncodedString41::getLength() { return Text_GetLength(text, 0x29); }

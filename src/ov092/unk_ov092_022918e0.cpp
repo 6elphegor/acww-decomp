@@ -13,12 +13,12 @@ void MenuScreen_SetBackgroundKind(s32 a);
 void Snd_PlaySe(s32 a);
 void Snd_SetSceneBankVariant(s32 a);
 void Gfx2d_SetSubBgModeState(s32 a);
-void func_0206e60c();
+void MenuCtrl_SetSyncMsgMenu();
 void MenuCtrl_RequestOpenNested(s32 a);
 void MenuCtrl_SetMode(s32 a);
 void MenuScreen_ReleaseCloseHold();
 void MenuScreen_BeginClose();
-void func_0206e5fc();
+void MenuCtrl_ClearSyncMsgMenu();
 void MenuScreen_Reset();
 void Snd_EndMenuDuck();
 void Snd_BeginMenuDuck();
@@ -43,7 +43,7 @@ extern "C" MenuLauncher *MenuLauncher_Create() {
 extern "C" ProcProfile sMenuLauncherProfile = {(void *(*)())MenuLauncher_Create, 0x90, 0x94};
 
 BOOL MenuLauncher::onCreate() {
-    func_0206e5fc();
+    MenuCtrl_ClearSyncMsgMenu();
     initLauncher();
     Snd_BeginMenuDuck();
     MenuCtrl_SyncFromInputMode();
@@ -51,7 +51,7 @@ BOOL MenuLauncher::onCreate() {
 }
 
 BOOL MenuLauncher::onDelete() {
-    func_0206e5fc();
+    MenuCtrl_ClearSyncMsgMenu();
     MenuScreen_Reset();
     releaseResources();
     Snd_EndMenuDuck();
@@ -160,7 +160,7 @@ void MenuLauncher::updateOpenRequested() {
     case 0x23:
     case 0x27:
     case 0x40:
-        func_0206e60c();
+        MenuCtrl_SetSyncMsgMenu();
         break;
     case 0x1b:
     case 0x1c:
@@ -258,7 +258,7 @@ _above_27:
         cmp r0, #0x40
         bne _switch2
 _call_e60c:
-        bl func_0206e60c
+        bl MenuCtrl_SetSyncMsgMenu
 _switch2:
         add r0, r4, #0
         add r0, #0x91

@@ -4,6 +4,10 @@
 #include "talk/MsgString129.h"
 #include "talk/MsgString25B.h"
 #include "talk/EncodedString128.h"
+#include "talk/MsgString9B.h"
+#include "talk/EncodedString8.h"
+#include "talk/EncodedString41.h"
+#include "ui/LabelString.h"
 
 
 
@@ -19,7 +23,7 @@ struct LetterDefaults {
     /* 0x51 */ u8 futureSelfNamePos;
 };
 
-struct Unk_020653cc_Buf {
+struct EncodedString41Storage {
     /* 0x00 */ u32 unk_00[3];
     /* 0x0c */ u8 unk_0c[2];
     /* 0x0e */ u8 text[0x2e];
@@ -40,36 +44,15 @@ void _ZN15EncodedString41C1Ev(void *);
 void _ZN15EncodedString41D1Ev(void *);
 }
 
-struct Unk_02065d5c_Str {
+struct VillagerIdLocal {
     u32 v[3];
-    Unk_02065d5c_Str() { VillagerId_Construct(this); }
-    ~Unk_02065d5c_Str() { VillagerId_Destruct(this); }
+    VillagerIdLocal() { VillagerId_Construct(this); }
+    ~VillagerIdLocal() { VillagerId_Destruct(this); }
 };
-struct Unk_02065d5c_Buf18 {
+struct PlayerIdLocal {
     u32 v[6];
-    Unk_02065d5c_Buf18() { _ZN8PlayerIdC1EPv(this); }
-    ~Unk_02065d5c_Buf18() { _ZN8PlayerIdC1Ev(this); }
-};
-struct Unk_02065dc8_Obj1c {
-    u32 v[7];
-    Unk_02065dc8_Obj1c() { _ZN11MsgString9BC1Ev(this); }
-    ~Unk_02065dc8_Obj1c() { _ZN11MsgString9BD1Ev(this); }
-};
-struct Unk_02065dc8_Obj18 {
-    u32 v[6];
-    Unk_02065dc8_Obj18() { _ZN14EncodedString8C1Ev(this); }
-    ~Unk_02065dc8_Obj18() { _ZN14EncodedString8D1Ev(this); }
-};
-struct Unk_02065dc8_Obj44 {
-    u32 v[0x11];
-    Unk_02065dc8_Obj44() { _ZN11LabelStringC1Ev(this); }
-    ~Unk_02065dc8_Obj44() { _ZN11LabelStringD1Ev(this); }
-};
-struct Unk_02065a1c_Str {
-    u8 pad[0xe];
-    char text[0x2a];
-    Unk_02065a1c_Str() { _ZN15EncodedString41C1Ev(this); }
-    ~Unk_02065a1c_Str() { _ZN15EncodedString41D1Ev(this); }
+    PlayerIdLocal() { _ZN8PlayerIdC1EPv(this); }
+    ~PlayerIdLocal() { _ZN8PlayerIdC1Ev(this); }
 };
 
 extern MsgString25B sMailGreeting;
@@ -141,10 +124,10 @@ extern "C" LetterView *Letter_Copy(LetterView *self, const LetterView *src) {
 }
 
 extern "C" void LetterParty_GetNameBytes(LetterParty *self, void *out) {
-    Unk_02065dc8_Obj1c a;
-    Unk_02065dc8_Obj18 b;
-    Unk_02065d5c_Str c;
-    Unk_02065dc8_Obj44 d;
+    MsgString9B a;
+    EncodedString8 b;
+    VillagerIdLocal c;
+    LabelString d;
     switch (self->partyType) {
     case 0:
     case 4:
@@ -169,8 +152,8 @@ extern "C" void LetterParty_GetNameBytes(LetterParty *self, void *out) {
 }
 
 extern "C" void LetterParty_GetName(LetterParty *self, void *out) {
-    Unk_02065d5c_Str a;
-    Unk_02065d5c_Buf18 b;
+    VillagerIdLocal a;
+    PlayerIdLocal b;
     switch (self->partyType) {
     case 0:
     case 4:
@@ -315,7 +298,7 @@ extern "C" void Letter_MarkReceived(LetterView *self) {
 
 extern "C" void Letter_SetTexts(LetterView *self, s32 *pv, void *a, void *b, void *c) {
     self->namePos = *pv;
-    Unk_02065a1c_Str l;
+    EncodedString41 l;
     _ZN13EncodedString13fromMsgStringEP9MsgString(&l, a);
     Mem_Copy(l.text, self->greeting, 0x18);
     static EncodedString128 s;
@@ -327,8 +310,8 @@ extern "C" void Letter_SetTexts(LetterView *self, s32 *pv, void *a, void *b, voi
 }
 
 extern "C" void Letter_FillFromVillager(LetterView *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2) {
-    Unk_02065d5c_Str l1;
-    Unk_02065d5c_Buf18 l2;
+    VillagerIdLocal l1;
+    PlayerIdLocal l2;
     VillagerId_Copy(&l1, s1);
     _ZN8PlayerId6setRawEPv(&l2, s2);
     Letter_Clear(self);
@@ -347,7 +330,7 @@ extern "C" void Letter_FillFromVillager(LetterView *self, void *a, void *b, void
 extern "C" void Letter_ComposeVillagerMail(LetterView *self, void *a1, void *a2, void *a3, void *a4, void *a5, s32 a6) {
     u32 out;
     if (a6 != 0xb) {
-        Unk_02065dc8_Obj1c o;
+        MsgString9B o;
         _ZN10VillagerId7getNameEj(a4, &o);
         MailText_SetSlot(a6, &o);
     }
@@ -358,7 +341,7 @@ extern "C" void Letter_ComposeVillagerMail(LetterView *self, void *a1, void *a2,
 extern "C" void Letter_ComposeVillagerMailZ(LetterView *self, void *a1, void *a2, void *a3, void *a4, void *a5, u8 *a6, void *a7, void *a8, s32 a9) {
     u32 out;
     if (a9 != 0xb) {
-        Unk_02065dc8_Obj1c o;
+        MsgString9B o;
         _ZN10VillagerId7getNameEj(a7, &o);
         MailText_SetSlot(a9, &o);
     }
@@ -367,8 +350,8 @@ extern "C" void Letter_ComposeVillagerMailZ(LetterView *self, void *a1, void *a2
 }
 
 extern "C" void Letter_FillVillagerToVillager(LetterView *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2) {
-    Unk_02065d5c_Str l1;
-    Unk_02065d5c_Str l2;
+    VillagerIdLocal l1;
+    VillagerIdLocal l2;
     VillagerId_Copy(&l1, s1);
     VillagerId_Copy(&l2, s2);
     Letter_Clear(self);
@@ -387,7 +370,7 @@ extern "C" void Letter_FillVillagerToVillager(LetterView *self, void *a, void *b
 extern "C" void Letter_ComposeVillagerToVillagerZ(LetterView *self, void *a1, void *a2, void *a3, void *a4, void *a5, u8 *a6, void *a7, void *a8, s32 a9) {
     u32 out;
     if (a9 != 0xb) {
-        Unk_02065dc8_Obj1c o;
+        MsgString9B o;
         _ZN10VillagerId7getNameEj(a7, &o);
         MailText_SetSlot(a9, &o);
     }
@@ -396,7 +379,7 @@ extern "C" void Letter_ComposeVillagerToVillagerZ(LetterView *self, void *a1, vo
 }
 
 extern "C" void Letter_FillSystemMail(LetterView *self, void *a, void *b, void *c, s32 v, u8 *pef, u8 *ped, void *obj) {
-    Unk_02065d5c_Buf18 tmp;
+    PlayerIdLocal tmp;
     _ZN8PlayerId6setRawEPv(&tmp, obj);
     Letter_Clear(self);
     self->paper = *ped;
@@ -525,7 +508,7 @@ extern "C" void LetterDefaults_Store(LetterDefaults *a, LetterView *b) {
 
 extern "C" void Letter_LoadTemplate2d(u8 *code, u8 *dst, u8 *lenOut, u8 *extra) {
     u32 src[16];
-    Unk_020653cc_Buf out;
+    EncodedString41Storage out;
     s32 n;
     s32 m;
     _ZN11LabelStringC1Ev(src);

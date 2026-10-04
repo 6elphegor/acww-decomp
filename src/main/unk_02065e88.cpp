@@ -25,6 +25,8 @@
 #include "talk/MsgString9C.h"
 #include "talk/ChoiceList.h"
 #include "talk/ChoiceMenu.h"
+#include "nitro/fs.h"
+#include "net/CommManager.h"
 
 class MsgRequest;
 class MsgString;
@@ -52,13 +54,11 @@ class ChoiceEntry;
 class BmgReader;
 class Unk_02068f10_Obj;
 class TalkBmgReader;
-struct Unk_020cbb18_Obj;
-struct Unk_020660f8_Pad;
+struct TalkAdvanceStackPad;
 class Unk_02066978_Owner;
 class TalkTagScannerView;
 class TalkAutoAdvance;
-struct Unk_020676b4_Tmp;
-struct Unk_02067c70_Z;
+struct TalkWindowShake;
 class BmgMsgAttr;
 class MsgString25;
 class MsgString11;
@@ -69,10 +69,7 @@ class MsgString17B;
 struct Unk_02067f44_Sel;
 struct Unk_020682b8_Sub;
 class TalkFrameView;
-struct Unk_02068490_Ptrs;
-struct Unk_02068558_File;
 class Unk_02068848_Menu;
-struct Unk_02068848_Entry;
 struct Unk_02068848_Owner;
 class TalkTagScanner;
 class HouseData;
@@ -88,11 +85,9 @@ class TalkParserTags;
 class TalkCharStepper;
 struct TalkParserSpeedState;
 class Unk_0206b950_Obj;
-class Unk_020a71d0_v16;
-struct Unk_0206b618_Msg;
+class MsgString33View;
 struct Unk_0206c4fc_Ent;
 struct Unk_0206c56c_Obj;
-struct Unk_0206c45c_Arg;
 
 extern "C" { extern u8 gTalkMsgIndexNone; }
 
@@ -116,7 +111,7 @@ public:
     void tagGroup01();
     void tagGroup00();
     void dispatchTag();
-    void selectBySlotForm(Unk_0206c45c_Arg *a);
+    void selectBySlotForm(MsgString *a);
     void tagAltText();
     void selectByPlayerGender();
     void expandNamedSlot(s32 idx);
@@ -398,7 +393,7 @@ public:
 
 
 // library object, 0x34 bytes (polymorphic)
-struct Unk_020a71d0_v16 {
+struct MsgString33View {
     u8 pad[0x34];
 };
 
@@ -465,11 +460,11 @@ public:
     /* 0x13b4 */ u8 msgAttr[0xc];
     union {
         /* 0x13c0 */ u8 unk_13c0[11][0x34];
-        Unk_020a71d0_v16 unk_13c0_v16[11];
+        MsgString33View unk_13c0_v16[11];
     };
     union {
         /* 0x15fc */ u8 unk_15fc[4][0x34];
-        Unk_020a71d0_v16 unk_15fc_v16[4];
+        MsgString33View unk_15fc_v16[4];
     };
     /* 0x16cc */ u32 namedSlotColors[4];
     u8 pad_16dc[0x1c];
@@ -577,7 +572,7 @@ public:
 
 
 
-struct Unk_02067c70_Z { u32 a; u16 b; u32 c, d, e, f; Unk_02067c70_Z() { a = 0; b = 0; c = 0; d = 0; e = 0; f = 0; } };
+struct TalkWindowShake { u32 scrollY; u16 angle; u32 amplitude, decay, scaleX, scaleY; TalkWindowShake() { scrollY = 0; angle = 0; amplitude = 0; decay = 0; scaleX = 0; scaleY = 0; } };
 
 
 
@@ -590,7 +585,7 @@ struct TalkWindow {
     u32 index, state, nextState, stateStep, autoAdvanceTimer, openMode;
     u8 choicePending;
     TalkFrame frame;
-    Unk_02067c70_Z scrollShake;
+    TalkWindowShake scrollShake;
     ChoiceMenu choiceMenu;
     ChoiceList choiceList;
     u32 nameLabel;
@@ -605,11 +600,11 @@ struct TalkWindow {
     u8 *namedSlotColors[4];
     TalkVoice voice;
     u32 year;
-    u32 unk_170c_pad;
+    u8 day, month, minute, hour;
     u32 weekday, second, timeOfDay;
     MsgString25 yearText;
     MsgString33 monthText;
-    MsgString25 unk_177c_a;
+    MsgString25 dayText;
     MsgString33 weekdayText;
     MsgString25 hourText, minuteText, secondText;
     MsgString11 catchphrase;
@@ -659,9 +654,8 @@ public:
     virtual void *vfunc_68();
 };
 
-struct Unk_020cbb18_Obj { u8 pad[0x64]; u32 myAid; };
 
-struct Unk_020660f8_Pad { s32 v[2]; Unk_020660f8_Pad() {} ~Unk_020660f8_Pad() {} };
+struct TalkAdvanceStackPad { s32 v[2]; TalkAdvanceStackPad() {} ~TalkAdvanceStackPad() {} };
 
 class Unk_02066978_Owner {
 public:
@@ -710,11 +704,6 @@ public:
     s32 autoAdvanceTimer;
 };
 
-struct Unk_020676b4_Tmp {
-    Unk_020676b4_Tmp();
-    ~Unk_020676b4_Tmp();
-    u8 b[0x38];
-};
 
 struct Unk_02067f44_Sel {
     virtual void vfunc_00(); virtual void vfunc_04(); virtual void vfunc_08(); virtual void vfunc_0c();
@@ -759,15 +748,7 @@ public:
     void setScrollY(s32 b);
 };
 
-struct Unk_02068490_Ptrs {
-    void *a;
-    u16 *b;
-    void *c;
-};
 
-struct Unk_02068558_File {
-    u32 v[0x12];
-};
 
 class Unk_02068848_Menu {
 public:
@@ -799,16 +780,13 @@ public:
     virtual s32 vfunc_68();
 };
 
-struct Unk_02068848_Entry {
-    u8 unk_00[0x34];
-};
 
 struct Unk_02068848_Owner {
     u8 pad_0000[0x13b0];
     /* 0x13b0 */ Unk_02068848_Menu *request;
     u8 pad_13b4[0x13c0 - 0x13b4];
-    /* 0x13c0 */ Unk_02068848_Entry slots[11];
-    /* 0x15fc */ Unk_02068848_Entry namedSlots[4];
+    /* 0x13c0 */ MsgString33 slots[11];
+    /* 0x15fc */ MsgString33 namedSlots[4];
     u8 pad_16cc[0x1704 - 0x16cc];
     /* 0x1704 */ u32 voiceTextColor;
     u8 pad_1708[0x1710 - 0x1708];
@@ -1176,12 +1154,6 @@ struct Unk_0206b950_Obj {
     virtual u8 *vfunc_0c();
 };
 
-struct Unk_0206b618_Msg {
-    u8 pad[8];
-    s32 argLen;
-    u8 pad2[4];
-    s32 raw;
-};
 
 struct Unk_0206c4fc_Ent {
     virtual void vfunc_00();
@@ -1199,10 +1171,6 @@ struct Unk_0206c56c_Obj {
     virtual u8 *vfunc_0c();
 };
 
-struct Unk_0206c45c_Arg {
-    u32 unk_00, unk_04, unk_08;
-    s32 form;
-};
 
 
 // ======== unk_0206c714.cpp ========
@@ -1336,15 +1304,15 @@ void TalkRenderProcessor::selectByPlayerGender() {
         }
     }
 }
-void TalkRenderProcessor::selectBySlotForm(Unk_0206c45c_Arg *a) {
+void TalkRenderProcessor::selectBySlotForm(MsgString *a) {
     using namespace n17;
     char *p0, *p1, *p2;
     tag.getStrings3(&p0, &p1, &p2);
-    if (a->form == 0) {
+    if (a->attr.form == 0) {
         if (p0 != 0) pushText((u8 *)p0);
-    } else if (a->form == 1) {
+    } else if (a->attr.form == 1) {
         if (p1 != 0) pushText((u8 *)p1);
-    } else if (a->form == 2) {
+    } else if (a->attr.form == 2) {
         if (p2 != 0) {
             selectEnd = cursor;
             pushText((u8 *)p2);
@@ -1394,8 +1362,6 @@ void TalkRenderProcessor::tagGroup0b() {
 #define unk_13b0 unk_13b0_v16
 #define unk_13c0 unk_13c0_v16
 #define unk_15fc unk_15fc_v16
-#define Unk_020a71d0 Unk_020a71d0_v16
-#define Unk_0206b7dc_Arg Unk_0206c45c_Arg
 namespace n16 {
 extern "C" { void MI_CpuFill8(void *, s32, u32); }
 extern "C" { u8 *Text_GetSpecialCharStr5(void); }
@@ -1570,35 +1536,35 @@ void TalkRenderProcessor::tagArticleMode2() {
 void TalkRenderProcessor::tagSelectByPlayerGender() {
     using namespace n16; selectByPlayerGender(); }
 void TalkRenderProcessor::tagSlotForm0() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_13c0; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (0))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (0))); }
 void TalkRenderProcessor::tagSlotForm1() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_13c0; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (1))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (1))); }
 void TalkRenderProcessor::tagSlotForm2() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_13c0; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (2))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (2))); }
 void TalkRenderProcessor::tagSlotForm3() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_13c0; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (3))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (3))); }
 void TalkRenderProcessor::tagSlotForm4() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_13c0; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (4))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (4))); }
 void TalkRenderProcessor::tagSlotForm5() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_13c0; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (5))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (5))); }
 void TalkRenderProcessor::tagSlotForm6() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_13c0; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (6))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (6))); }
 void TalkRenderProcessor::tagSlotForm7() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_13c0; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (7))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (7))); }
 void TalkRenderProcessor::tagSlotForm8() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_13c0; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (8))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (8))); }
 void TalkRenderProcessor::tagSlotForm9() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_13c0; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (9))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (9))); }
 void TalkRenderProcessor::tagSlotForm10() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_13c0; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (10))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_13c0; selectBySlotForm((MsgString *)(p + (10))); }
 void TalkRenderProcessor::tagNamedSlotForm0() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_15fc; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (0))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_15fc; selectBySlotForm((MsgString *)(p + (0))); }
 void TalkRenderProcessor::tagNamedSlotForm1() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_15fc; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (1))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_15fc; selectBySlotForm((MsgString *)(p + (1))); }
 void TalkRenderProcessor::tagNamedSlotForm2() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_15fc; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (2))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_15fc; selectBySlotForm((MsgString *)(p + (2))); }
 void TalkRenderProcessor::tagNamedSlotForm3() {
-    using namespace n16; Unk_020a71d0 *p = msgWindow->unk_15fc; selectBySlotForm((Unk_0206b7dc_Arg *)(p + (3))); }
+    using namespace n16; MsgString33View *p = msgWindow->unk_15fc; selectBySlotForm((MsgString *)(p + (3))); }
 // ---- TalkRenderProcessor state handlers
 void TalkRenderProcessor::tagAltText() {
     using namespace n16;
@@ -1684,7 +1650,7 @@ BOOL TalkTextBox::appendChar(s32 c0) {
 }
 void TalkTextBox::appendTag(void *m) {
     using namespace n16;
-    Unk_0206b618_Msg *q = (Unk_0206b618_Msg *)m;
+    MsgTag *q = (MsgTag *)m;
     appendBytes((s8 *)q->raw, q->argLen + 5);
 }
 void TalkTextBox::beginLine(u32 v) {
@@ -1745,8 +1711,6 @@ void TalkTextBox::clearLabels() {
 #undef unk_13b0
 #undef unk_13c0
 #undef unk_15fc
-#undef Unk_020a71d0
-#undef Unk_0206b7dc_Arg
 
 // ======== unk_0206ab74.cpp ========
 #define lineStartWords ((s32 *)lineStarts)
@@ -3211,52 +3175,52 @@ void TalkTagScanner::tagSlotForm0() {
 }
 void TalkTagScanner::tagSlotForm1() {
     using namespace n10;
-    Unk_02068848_Entry *e = window->slots;
+    MsgString33 *e = window->slots;
     selectBySlotForm(&e[1]);
 }
 void TalkTagScanner::tagSlotForm2() {
     using namespace n10;
-    Unk_02068848_Entry *e = window->slots;
+    MsgString33 *e = window->slots;
     selectBySlotForm(&e[2]);
 }
 void TalkTagScanner::tagSlotForm3() {
     using namespace n10;
-    Unk_02068848_Entry *e = window->slots;
+    MsgString33 *e = window->slots;
     selectBySlotForm(&e[3]);
 }
 void TalkTagScanner::tagSlotForm4() {
     using namespace n10;
-    Unk_02068848_Entry *e = window->slots;
+    MsgString33 *e = window->slots;
     selectBySlotForm(&e[4]);
 }
 void TalkTagScanner::tagSlotForm5() {
     using namespace n10;
-    Unk_02068848_Entry *e = window->slots;
+    MsgString33 *e = window->slots;
     selectBySlotForm(&e[5]);
 }
 void TalkTagScanner::tagSlotForm6() {
     using namespace n10;
-    Unk_02068848_Entry *e = window->slots;
+    MsgString33 *e = window->slots;
     selectBySlotForm(&e[6]);
 }
 void TalkTagScanner::tagSlotForm7() {
     using namespace n10;
-    Unk_02068848_Entry *e = window->slots;
+    MsgString33 *e = window->slots;
     selectBySlotForm(&e[7]);
 }
 void TalkTagScanner::tagSlotForm8() {
     using namespace n10;
-    Unk_02068848_Entry *e = window->slots;
+    MsgString33 *e = window->slots;
     selectBySlotForm(&e[8]);
 }
 void TalkTagScanner::tagSlotForm9() {
     using namespace n10;
-    Unk_02068848_Entry *e = window->slots;
+    MsgString33 *e = window->slots;
     selectBySlotForm(&e[9]);
 }
 void TalkTagScanner::tagSlotForm10() {
     using namespace n10;
-    Unk_02068848_Entry *e = window->slots;
+    MsgString33 *e = window->slots;
     selectBySlotForm(&e[10]);
 }
 void TalkTagScanner::tagNamedSlotForm0() {
@@ -3265,17 +3229,17 @@ void TalkTagScanner::tagNamedSlotForm0() {
 }
 void TalkTagScanner::tagNamedSlotForm1() {
     using namespace n10;
-    Unk_02068848_Entry *e = window->namedSlots;
+    MsgString33 *e = window->namedSlots;
     selectBySlotForm(&e[1]);
 }
 void TalkTagScanner::tagNamedSlotForm2() {
     using namespace n10;
-    Unk_02068848_Entry *e = window->namedSlots;
+    MsgString33 *e = window->namedSlots;
     selectBySlotForm(&e[2]);
 }
 void TalkTagScanner::tagNamedSlotForm3() {
     using namespace n10;
-    Unk_02068848_Entry *e = window->namedSlots;
+    MsgString33 *e = window->namedSlots;
     selectBySlotForm(&e[3]);
 }
 void TalkTagScanner::tagColor() {
@@ -3467,7 +3431,7 @@ BOOL TalkFrame::load(s32 a, u32 b, s32 c, u8 d) {
     using namespace n9;
     BOOL result = FALSE;
     BOOL alt = (b == 0 && a == 0) ? TRUE : FALSE;
-    Unk_02068558_File file;
+    FSFile file;
     FS_InitFile(&file);
     if (loadScreen(&file, alt)) {
         if (loadPalette(&file)) {
@@ -3526,11 +3490,11 @@ extern "C" { void GX_LoadBG2Scr(void *, s32, u32); }
 extern "C" { void MI_CpuFill8(void *, s32, u32); }
 extern "C" { void Mem_Free(void *); }
 
-extern "C" void TalkFrame_FreeBuffers(Unk_02068490_Ptrs *p)
+extern "C" void TalkFrame_FreeBuffers(TalkFrame *p)
 {
-    if (p->a) { Mem_Free(p->a); p->a = 0; }
-    if (p->b) { Mem_Free(p->b); p->b = 0; }
-    if (p->c) { Mem_Free(p->c); p->c = 0; }
+    if (p->screenData) { Mem_Free(p->screenData); p->screenData = 0; }
+    if (p->paletteData) { Mem_Free(p->paletteData); p->paletteData = 0; }
+    if (p->charData) { Mem_Free(p->charData); p->charData = 0; }
 }
 extern "C" void TalkFrame_SetupBgControl()
 {
@@ -3541,15 +3505,15 @@ extern "C" void TalkFrame_SetupBgControl()
     Gfx2d_SetMainWin0Planes(0x1f);
     Gfx2d_SetMainWinOutPlanes(0x1b);
 }
-extern "C" void TalkFrame_UploadBg(Unk_02068490_Ptrs *p)
+extern "C" void TalkFrame_UploadBg(TalkFrame *p)
 {
-    u16 *q = p->b;
+    u16 *q = (u16 *)p->paletteData;
     DC_FlushRange(q + 1, 0x17e);
     GX_LoadBGPltt(q + 1, 2, 0x17e);
-    DC_FlushRange(p->c, 0x2800);
-    GX_LoadBG2Char(p->c, 0, 0x2800);
-    DC_FlushRange(p->a, 0x800);
-    GX_LoadBG2Scr(p->a, 0, 0x800);
+    DC_FlushRange(p->charData, 0x2800);
+    GX_LoadBG2Char(p->charData, 0, 0x2800);
+    DC_FlushRange(p->screenData, 0x800);
+    GX_LoadBG2Scr(p->screenData, 0, 0x800);
 }
 extern "C" void TalkFrame_ShowBg()
 {
@@ -4099,7 +4063,7 @@ s32 TalkWindowState::resetVoice() {
 }
 void *TalkWindowState::getYearText() {
     using namespace n7;
-    Unk_020676b4_Tmp t;
+    MsgString33 t;
     String_FormatNumber(&t, year, 2, 6, 0, 0);
     _ZN9MsgString3setEPh(yearText, data_020dddb8);
     _ZN9MsgString12appendStringEPS_(yearText, &t);
@@ -4851,7 +4815,7 @@ extern "C" { extern u8 gTalkMsgIndexEnd; }
 extern "C" { extern s16 sTalkWindowCloseOffsets[]; }
 extern "C" { extern s16 sTalkWindowOpenOffsets[]; }
 extern "C" { extern u8 *data_021c1b3c; }
-extern "C" { extern Unk_020cbb18_Obj *gCommManager; }
+extern "C" { extern CommManager *gCommManager; }
 typedef void (TalkWindowState::*Unk_020660f8_Fn)();
 
 }
@@ -5050,7 +5014,7 @@ void TalkWindowState::advance() {
     s32 r6 = r7;
     s32 flag = 0;
     s32 act = 0;
-    Unk_020660f8_Pad pad;
+    TalkAdvanceStackPad pad;
     if (choicePending != 0) {
         choicePending = 0;
         _ZN15TalkWindowState11openChoicesEi(this, 0);

@@ -40,7 +40,7 @@ TownSessionState gTownSessionState;
 
 extern "C" {
 void *_ZN13ContestRecord17getHolderVillagerEv(void *self);
-void _ZN13ContestRecord13func_020858acEv(void *self);
+void _ZN13ContestRecord15getHolderPlayerEv(void *self);
 void _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(void *self, void *src);
 void _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(void *self, void *src);
 void _ZN13ContestRecord10resetTodayEv(void *self);
@@ -121,7 +121,7 @@ void _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(void *, s32);
 void TownSessionState_SetFlag(void *self, u32 bit);
 }
 
-struct Unk_020856a4_Rec {
+struct ClockDateBytes {
     u8 b[4];
 };
 
@@ -139,7 +139,7 @@ void ContestRecord::setKind(u32 v) { kind = v; }
 
 void ContestRecord::setHolderPlayer(Unk_02085810_Base *src) { holderPlayer = *src; VillagerId_Clear(&holderVillager); }
 
-void ContestRecord::func_020858ac() {}
+void ContestRecord::getHolderPlayer() {}
 
 void ContestRecord::setHolderVillager(Unk_02085810_Rec *src) { holderVillager = *src; _ZN8PlayerId5clearEv(this); }
 
@@ -161,7 +161,7 @@ u32 ContestRecord::getSize() { return size; }
 
 extern "C" void ContestRecord_BeginContestDay(u8 *self, u32 mode)
 {
-    Unk_020856a4_Rec t;
+    ClockDateBytes t;
     s32 i;
     s32 z1 = 0;
     s32 z0 = 0;
@@ -187,7 +187,7 @@ extern "C" void ContestRecord_BeginContestDay(u8 *self, u32 mode)
 
 extern "C" void ContestRecord_BeginFestival(u8 *self, u32 mode)
 {
-    Unk_020856a4_Rec t;
+    ClockDateBytes t;
     s32 v;
     s32 i;
     Clock_GetDate(&t);
@@ -409,7 +409,7 @@ extern "C" void ContestRecord_JudgeGardens(void *self)
         grid = *(void **)gSceneBlockMap;
         _ZN13ContestRecord17getHolderVillagerEv(self);
         VillagerId_Clear();
-        _ZN13ContestRecord13func_020858acEv(self);
+        _ZN13ContestRecord15getHolderPlayerEv(self);
         _ZN8PlayerId5clearEv();
         if (grid != NULL) {
             mask = 0;

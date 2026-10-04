@@ -942,7 +942,7 @@ s32 _ZN14VillagerMemory13getFriendshipEv(void *);
 s32 _ZN13ContestRecord7getSizeEv(ContestRecord *);
 Unk_0201dc44_Id * _ZN13ContestRecord16getVotedVillagerEv(void *);
 Unk_0201dc44_Id * _ZN13ContestRecord17getHolderVillagerEv(void *);
-u32 _ZN13ContestRecord13func_020858acEv(ContestRecord *);
+u32 _ZN13ContestRecord15getHolderPlayerEv(ContestRecord *);
 void _ZN20PlayerDailyTalkFlags3setEj(void *, u32);
 u32 _ZN20PlayerDailyTalkFlags4testEj(void *, u32);
 void _ZN8PlayerId13getNameStringEP9MsgString(void *, void *);
@@ -11803,7 +11803,7 @@ void VillagerTalkHobbyTopics::selectEvFishing(Unk_0201ef00_Out *out) {
         r6 = 0;
     } else if (dp) {
         if (Unk_0201f170_InRange(&id, 0x12e8, 0x131f)) {
-            sp1c = _ZN13ContestRecord13func_020858acEv(dp);
+            sp1c = _ZN13ContestRecord15getHolderPlayerEv(dp);
             r4 = ((void *)_ZN13ContestRecord17getHolderVillagerEv(dp));
             if (_ZN10VillagerId7isValidEv(r4)) {
                 Unk_0201f170_Rec *a = (Unk_0201f170_Rec *)r4;
@@ -11816,7 +11816,7 @@ void VillagerTalkHobbyTopics::selectEvFishing(Unk_0201ef00_Out *out) {
                 _ZN16ActorTalkRequest19setVillagerNameSlotEjj(this, r4, 1);
             } else if (_ZN8PlayerId7isValidEv((void *)sp1c)) {
                 r6 = Talk_GetTourneyHourBlock(sp18);
-                _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN13ContestRecord13func_020858acEv(dp), 1);
+                _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN13ContestRecord15getHolderPlayerEv(dp), 1);
             }
             _ZN16ActorTalkRequest17setFixedPointSlotEiji(this, _ZN13ContestRecord7getSizeEv(dp), 0, 1, 3);
             _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, (void *)&id, 0, 7);
@@ -11868,7 +11868,7 @@ void VillagerTalkHobbyTopics::selectEvInsect(Unk_0201ef00_Out *out) {
         r6 = 0;
     } else if (dp) {
         if (Unk_0201f170_InRange(&id, 0x12b0, 0x12e7)) {
-            sp1c = _ZN13ContestRecord13func_020858acEv(dp);
+            sp1c = _ZN13ContestRecord15getHolderPlayerEv(dp);
             r4 = ((void *)_ZN13ContestRecord17getHolderVillagerEv(dp));
             if (_ZN10VillagerId7isValidEv(r4)) {
                 Unk_0201f170_Rec *a = (Unk_0201f170_Rec *)r4;
@@ -11881,7 +11881,7 @@ void VillagerTalkHobbyTopics::selectEvInsect(Unk_0201ef00_Out *out) {
                 _ZN16ActorTalkRequest19setVillagerNameSlotEjj(this, r4, 1);
             } else if (_ZN8PlayerId7isValidEv((void *)sp1c)) {
                 r6 = Talk_GetTourneyHourBlock(sp18);
-                _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN13ContestRecord13func_020858acEv(dp), 1);
+                _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN13ContestRecord15getHolderPlayerEv(dp), 1);
             }
             _ZN16ActorTalkRequest13setNumberSlotEijiii(this, _ZN13ContestRecord7getSizeEv(dp) >> 12, 0, 3, 0, 0);
             _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, (void *)&id, 0, 7);

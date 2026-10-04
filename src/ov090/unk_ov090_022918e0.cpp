@@ -80,8 +80,8 @@ void MenuScreen_ReleaseCloseHold();
 BOOL Save_WritePlayerFriendList();
 void MenuScreen_Reset();
 void Snd_EndMenuDuck();
-void func_0206e5fc();
-void func_0206e60c();
+void MenuCtrl_ClearSyncMsgMenu();
+void MenuCtrl_SetSyncMsgMenu();
 void MenuScreen_BeginOpen();
 void Snd_BeginMenuDuck();
 void MenuCtrl_SyncFromInputMode();
@@ -132,7 +132,7 @@ extern "C" MenuTabBar *MenuTabBar_Create() { return new MenuTabBar(); }
 
 BOOL MenuTabBar::onCreate() {
     justOpened = 1;
-    func_0206e60c();
+    MenuCtrl_SetSyncMsgMenu();
     initTabBar();
     MenuScreen_BeginOpen();
     loadedTab = 0xff;
@@ -151,7 +151,7 @@ BOOL MenuTabBar::onDelete() {
     MenuScreen_Reset();
     releaseResources();
     Snd_EndMenuDuck();
-    func_0206e5fc();
+    MenuCtrl_ClearSyncMsgMenu();
     return TRUE;
 }
 

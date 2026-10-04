@@ -54,7 +54,7 @@ s32 _ZN8PlayerId7isValidEv(void *p);
 s32 _ZN8PlayerId6equalsEPS_(void *p, void *q);
 s32 _ZN10VillagerId7isValidEv(void *p);
 void _ZN10VillagerId7getNameEj(void *p, void *q);
-void *_ZN13ContestRecord13func_020858acEv(void *p);
+void *_ZN13ContestRecord15getHolderPlayerEv(void *p);
 void *_ZN13ContestRecord17getHolderVillagerEv(void *p);
 s32 _ZN13ContestRecord7getSizeEv(void *p);
 void ContestRecord_GetItem(u16 *out, void *p);

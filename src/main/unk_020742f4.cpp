@@ -9,14 +9,12 @@
 #include "talk/MsgString.h"
 #include "talk/EncodedString.h"
 #include "talk/EncodedString192.h"
+#include "talk/EncodedString41.h"
+#include "ui/LabelString.h"
 
 // ======== types of unk_020742f4.cpp ========
 
 
-struct Unk_02074c4c_Color {
-    u8 r, g, b;
-    u8 col[2];
-};
 // ======== types of unk_02074c4c.cpp ========
 
 struct Unk_02074c4c_G { u8 pad[0x64]; u32 myAid; u32 localSlot; };
@@ -47,22 +45,22 @@ struct Unk_02075bc4_Pt {
 };
 
 
-struct Unk_02075680_Pad {
+struct VillagerShirtRecvStackPad {
     s32 v[1];
-    Unk_02075680_Pad() {}
-    ~Unk_02075680_Pad() {}
+    VillagerShirtRecvStackPad() {}
+    ~VillagerShirtRecvStackPad() {}
 };
 // ======== types of unk_02075e60.cpp ========
 struct Unk_02075e98_Nib { u8 lo : 4; u8 hi : 4; };
 
 // ======== types of unk_020767f8.cpp ========
-struct Unk_02076d68_E;
+struct FriendEntry;
 
-struct Unk_02076d68_E {
+struct FriendEntry {
     u8 b[0x1c];
 };
 
-struct Unk_020767f8_Tag {
+struct VillagerSyncLocals {
     u8 b;
     u16 h;
 };
@@ -1056,9 +1054,7 @@ namespace n6 {
 // ======== unk_020767f8.cpp ========
 namespace n5 {
 struct Unk_02076f28_T;
-struct Unk_02076ff0_Obj;
-struct Unk_02077040_A;
-struct Unk_02077040_B;
+struct BbsMsgString193Local;
 extern "C" {
 void MI_CpuCopy8(const void *, void *, u32);
 }
@@ -1288,7 +1284,7 @@ extern "C" {
 u64 _ll_mul(u64 a, u64 b);
 }
 extern "C" {
-Unk_02076d68_E *FriendList_GetEntries(void);
+FriendEntry *FriendList_GetEntries(void);
 }
 extern "C" {
 u32 DwcFriendData_GetBytes(void *);
@@ -1313,14 +1309,12 @@ struct Unk_02076f28_T {
     ~Unk_02076f28_T() { _ZN13DwcFriendDataD1Ev(this); }
 };
 
-struct Unk_02076ff0_Obj {
+struct BbsMsgString193Local {
     u32 pad[0xd8 / 4];
-    Unk_02076ff0_Obj() { _ZN12MsgString193C1Ev(this); }
-    ~Unk_02076ff0_Obj() { _ZN12MsgString193D1Ev(this); }
+    BbsMsgString193Local() { _ZN12MsgString193C1Ev(this); }
+    ~BbsMsgString193Local() { _ZN12MsgString193D1Ev(this); }
 };
 
-struct Unk_02077040_A { u32 pad[0x40 / 4]; Unk_02077040_A() { _ZN11LabelStringC1Ev(this); } ~Unk_02077040_A() { _ZN11LabelStringD1Ev(this); } };
-struct Unk_02077040_B { u32 pad[0x3c / 4]; Unk_02077040_B() { _ZN15EncodedString41C1Ev(this); } ~Unk_02077040_B() { _ZN15EncodedString41D1Ev(this); } };
 
 
 extern "C" void Bbs_LoadMsg(void *a, u32 b, u32 c) {
@@ -1351,8 +1345,8 @@ namespace n5 {
 
 
 extern "C" BOOL BbsPost_SetTextFromMsg(void *self, void *r1) {
-    Unk_02077040_A o1;
-    Unk_02077040_B o2;
+    LabelString o1;
+    EncodedString41 o2;
     u8 *buf = BbsPost_GetText(self);
     s32 n = 0;
     s32 i = n;
@@ -1375,7 +1369,7 @@ extern "C" BOOL BbsPost_SetTextFromMsg(void *self, void *r1) {
 }
 
 extern "C" void Bbs_PostMsgDated(u32 a, u32 b, u32 c, u32 d, u8 e) {
-    Unk_02076ff0_Obj o;
+    BbsMsgString193Local o;
     u8 l[3];
     Bbs_LoadMsg(&o, a, b);
     void *r = _ZN8BbsBoard7addPostEv(data_021e87d8);
@@ -1481,22 +1475,22 @@ extern "C" void *FriendList_Destruct(void *p) {
     return p;
 }
 
-extern "C" void FriendList_Clear(Unk_02076d68_E *base) {
+extern "C" void FriendList_Clear(FriendEntry *base) {
     s32 i;
     for (i = 0; i < 0x20; i++) {
         FriendEntry_Clear(&base[i]);
     }
 }
 
-extern "C" Unk_02076d68_E *FriendList_GetEntries(void) {}
+extern "C" FriendEntry *FriendList_GetEntries(void) {}
 
 extern "C" void FriendList_Compact(void) {
-    Unk_02076d68_E *base = FriendList_GetEntries();
+    FriendEntry *base = FriendList_GetEntries();
     s32 i, n;
     n = 0;
     i = n;
     for (; i < 0x20; i++) {
-        Unk_02076d68_E *e = &base[i];
+        FriendEntry *e = &base[i];
         FriendEntry_GetFriendData(e);
         if (DwcFriendData_IsValid()) {
             if (i != n) {
@@ -1718,9 +1712,9 @@ extern "C" u16 CommRecord_GetLength(void *src) {
 extern "C" void CommBlock_WriteAct00(void) {}
 
 extern "C" void CommBlock_WriteAct01(void) {
-    Unk_020767f8_Tag t;
+    VillagerSyncLocals t;
     u32 v;
-    Unk_020767f8_Tag *tp = &t;
+    VillagerSyncLocals *tp = &t;
     void *p;
     s32 i;
     void *ctx;
@@ -1747,11 +1741,11 @@ extern "C" void CommBlock_ReadAct00(void) {}
 
 // ---------------------------------------------------------------------------
 extern "C" void CommBlock_ReadAct01(u8 *buf) {
-    Unk_020767f8_Tag t;
+    VillagerSyncLocals t;
     u8 obj[0x10];
     u32 v;
     u32 z8 = 0, zc = 0, z10 = 0;
-    Unk_020767f8_Tag *tp = &t;
+    VillagerSyncLocals *tp = &t;
     s32 i;
     t.b = 3;
     _ZN12ErrandRecord4initEv(obj);
@@ -2841,7 +2835,7 @@ extern "C" void CommRecv_Act3F() {
 extern "C" void CommRecv_VillagerShirt() {
     struct { u16 x; u8 y[3]; } l;
     u32 id;
-    Unk_02075680_Pad pad;
+    VillagerShirtRecvStackPad pad;
     l.x = 0xfff1;
     _ZN11CommManager10readRecordEPhj(gCommManager, l.y, 3);
     CommVillager_UnpackItem(&id, &l.x, l.y);

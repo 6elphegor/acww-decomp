@@ -10,6 +10,8 @@
 #include "room/HouseRoom.h"
 #include "talk/EncodedString16Buf.h"
 #include "room/HouseData.h"
+#include "save/SaveData.h"
+#include "town/TownBlockMap.h"
 
 // U125: design (pattern) storage and display helpers, 0x02070560-0x020720f8
 
@@ -23,16 +25,6 @@ extern "C" BOOL _ZN8PlayerId6equalsEPS_(Unk_020942c8 *self, Unk_020942c8 *o);
 }
 
 // ======== types of unk_0206fe80.cpp ========
-struct Unk_02070248_Str {
-    Unk_02070248_Str();
-    ~Unk_02070248_Str();
-    u32 pad[7];
-};
-struct Unk_02070248_Big {
-    Unk_02070248_Big();
-    ~Unk_02070248_Big();
-    u8 d[0xf4];
-};
 
 // ======== types of unk_02070790.cpp ========
 struct Unk_02070790_Game {
@@ -53,22 +45,13 @@ struct ItemId {
     ItemId() : v(0xfff1) {}
     ~ItemId();
 };
-struct Unk_020707ec_Grid {
-    u8 *cells;
-    s32 w;
-    s32 h;
-};
-struct Unk_020707ec_Rooms {
-    u8 pad[0x44];
-};
 class HouseData;
 class HouseRoom;
 
 // ======== types of unk_0207116c.cpp ========
-struct Unk_02071460_Tbl { u8 pad[0xc]; u8 t[1]; };
 struct PatternPaletteFile {
     u8 *fileData;
-    u8 *unk_04[16];
+    u8 *palettes[16];
     PatternPaletteFile();
     ~PatternPaletteFile();
     void unload();
@@ -97,19 +80,19 @@ struct PatternTexCache {
     u32 getAbleTexKey(s32 i);
     u32 getPlayerTexKey(s32 a, s32 b);
 };
-struct Unk_02071460_Buf { u32 v[0xb1]; };
-struct Unk_020719b0_B8 { u8 v[8]; };
-struct Unk_020719b0_B16 { u8 v[16]; };
-struct Unk_020719b0_B512 { u32 v[128]; };
-struct Unk_020719b0 {
-    Unk_020719b0_B512 a;
+struct ClothTexStorage { u32 v[0xb1]; };
+struct PatternCopyBytes8 { u8 v[8]; };
+struct PatternCopyBytes16 { u8 v[16]; };
+struct PatternCopyPixels { u32 v[128]; };
+struct PatternCopyView {
+    PatternCopyPixels a;
     u16 b;
-    Unk_020719b0_B8 c;
+    PatternCopyBytes8 c;
     u16 d;
-    Unk_020719b0_B8 e;
+    PatternCopyBytes8 e;
     s8 f;
     u8 g;
-    Unk_020719b0_B16 h;
+    PatternCopyBytes16 h;
     u8 i;
 };
 
@@ -765,7 +748,7 @@ extern "C" {
 extern u8 data_021cbcac[4];
 }
 extern "C" {
-extern Unk_02071460_Tbl gSaveData;
+extern SaveData gSaveData;
 }
 extern "C" {
 extern void *gCurrentHeap;
@@ -809,16 +792,12 @@ namespace Unk_02071a50_Calls {
 extern "C" void *TownFlagPattern_GetPattern(void *p);
 extern "C" void TownId_Assign(void *p, void *q);
 extern "C" u16 data_020d03d4;
-struct Unk_021d7350 {
-    u16 unk_00;
-    u16 townId[1];
-};
-extern "C" Unk_021d7350 gSaveData;
+extern "C" SaveData gSaveData;
 }
 
 extern "C" void TownFlagPattern_InitDefault(void *self);
 extern "C" void TownFlagPattern_GetPattern(void);
-extern "C" void Pattern_CopyFields(Unk_020719b0 *dst, Unk_020719b0 *src);
+extern "C" void Pattern_CopyFields(PatternCopyView *dst, PatternCopyView *src);
 extern "C" void *PresetPatternBuffer_Get(void);
 extern "C" void PatternTexCache_ClearDirty(void *p);
 extern "C" void *PatternTexCache_Get(void);
@@ -862,7 +841,7 @@ extern "C" void TownFlagPattern_InitDefault(void *self) {
     }
 }
 extern "C" void TownFlagPattern_GetPattern(void) {}
-extern "C" void Pattern_CopyFields(Unk_020719b0 *dst, Unk_020719b0 *src) {
+extern "C" void Pattern_CopyFields(PatternCopyView *dst, PatternCopyView *src) {
     dst->a = src->a;
     dst->b = src->b;
     dst->c = src->c;
@@ -1012,7 +991,7 @@ extern "C" void *PatternTexCache_Get(void) { return sPatternTexCache; }
 void PatternPaletteFile::clear() {
     using namespace n3;
     fileData = 0;
-    for (u32 i = 0; i < 16; i++) unk_04[i] = 0;
+    for (u32 i = 0; i < 16; i++) palettes[i] = 0;
 }
 namespace n3 {
 }
@@ -1029,7 +1008,7 @@ void PatternPaletteFile::load() {
     if (fileData == 0) {
         fileData = (u8 *)File_Load((void *)"/menu/desi/b_myd_ten0_obj.bpl");
         if (fileData != 0) {
-            for (u32 i = 0; i < 16; i++) unk_04[i] = fileData + i * 32;
+            for (u32 i = 0; i < 16; i++) palettes[i] = fileData + i * 32;
         }
     }
 }
@@ -1062,8 +1041,8 @@ extern "C" void PatternTexKeys_Clear(void *p) {
 }
 void PatternTexCache::createTextures() {
     using namespace n3;
-    Unk_02071460_Buf *a = (Unk_02071460_Buf *)Mem_Alloc(0x2c4);
-    Unk_02071460_Buf *b = (Unk_02071460_Buf *)Mem_Alloc(0x2c4);
+    ClothTexStorage *a = (ClothTexStorage *)Mem_Alloc(0x2c4);
+    ClothTexStorage *b = (ClothTexStorage *)Mem_Alloc(0x2c4);
     if (a != 0) {
         if (b != 0) {
             u8 i, j;
@@ -1084,7 +1063,7 @@ void PatternTexCache::createTextures() {
                 j = 0;
                 row = (u32 *)sPlayerPatternTexKeys + i * 8;
             loop0:
-                e = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(PlayerData_GetResident(((Unk_02071460_Tbl *)(u32)&gSaveData)->t, i)), j);
+                e = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(PlayerData_GetResident(((SaveData *)(u32)&gSaveData)->players, i)), j);
                 *b = *a;
                 p = (u8 *)ClothTex_GetTexData(b);
                 src = (u8 *)_ZN7Pattern9getPixelsEv(e);
@@ -1266,10 +1245,10 @@ extern "C" {
 s32 _ZN14PlayerPatterns10getPatternEh(void *p, s32 i);
 }
 extern "C" {
-Unk_020707ec_Grid *TownBlockMap_Get(void);
+TownBlockMap *TownBlockMap_Get(void);
 }
 extern "C" {
-Unk_020707ec_Grid *HouseRoomMaps_Get(s32 i);
+TownBlockMap *HouseRoomMaps_Get(s32 i);
 }
 extern "C" {
 u16 *MapBlock_GetItemPtr(void *cell, s32 x, s32 y, s32 z);
@@ -1581,13 +1560,13 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
     s32 x2;
     u8 *cells;
     u8 *cell;
-    Unk_020707ec_Grid *g = TownBlockMap_Get();
+    TownBlockMap *g = TownBlockMap_Get();
     if (g != NULL) {
         s32 x, y;
-        for (y = 1; y < g->h - 1; y++) {
-            for (x = 1; x < g->w - 1; x++) {
-                if ((u32)x < (u32)g->w && (u32)y < (u32)g->h && g->cells != NULL) {
-                    cell = g->cells + (y * g->w + x) * 0x28;
+        for (y = 1; y < g->height - 1; y++) {
+            for (x = 1; x < g->width - 1; x++) {
+                if ((u32)x < (u32)g->width && (u32)y < (u32)g->height && g->blocks != NULL) {
+                    cell = g->blocks + (y * g->width + x) * 0x28;
                 } else {
                     cell = NULL;
                 }
@@ -1618,10 +1597,10 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
     }
     m = 0;
     do {
-        Unk_020707ec_Grid *g2 = HouseRoomMaps_Get(m);
+        TownBlockMap *g2 = HouseRoomMaps_Get(m);
         if (g2 != NULL) {
-            if ((u8 *)g2->w > (u8 *)0 && (u8 *)g2->h > (u8 *)0 && g2->cells != NULL) {
-                cells = g2->cells;
+            if ((u8 *)g2->width > (u8 *)0 && (u8 *)g2->height > (u8 *)0 && g2->blocks != NULL) {
+                cells = g2->blocks;
             } else {
                 cells = NULL;
             }

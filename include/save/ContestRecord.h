@@ -21,7 +21,7 @@ public:
     void clear();
     void postResultNotice();
     void sendResultLetters();
-    void func_020858ac();
+    void getHolderPlayer();
     ContestRecord *destruct();
     ContestRecord *construct();
 

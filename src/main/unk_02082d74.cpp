@@ -7,6 +7,8 @@
 #include "game/GroundInfoBase.h"
 #include "game/GroundInfo.h"
 #include "npc/NpcSpawner.h"
+#include "sys/ProcProfile.h"
+#include "town/TownBlockMap.h"
 
 typedef Unk_0203389c_Vec Unk_02083c28_Vec;
 struct VisitorSpawner;
@@ -41,7 +43,7 @@ struct VisitorCheckEntry {
     u8 lvl;
 };
 
-struct Unk_02083c28_Rec {
+struct NpcNetRecord {
     u8 isSet;
     u8 slotA;
     u8 slotB;
@@ -91,12 +93,12 @@ struct EventVisitorEntry {
 
 
 struct Unk_02084ae4_Vec { s32 x, y, z; };
-struct Unk_020847b0_P0 { u8 pad[0x88]; };
-struct Unk_020847b0_Q0 { u8 pad[0xc]; };
-struct Unk_020847b0_Q1 { u8 pad[0x20]; };
-struct Unk_020847b0_Mid : Unk_020847b0_Q0, Unk_020847b0_Q1 { u8 pad[0x20]; };
-struct Unk_020847b0_Top : Unk_020847b0_P0, Unk_020847b0_Mid { u8 pad[8]; };
-struct Unk_02084ae4_W {
+struct PlayerErrandsHeadPad { u8 pad[0x88]; };
+struct HouseVisitInviteIdPart { u8 pad[0xc]; };
+struct HouseVisitInviteErrandPart { u8 pad[0x20]; };
+struct HouseVisitInviteLayoutView : HouseVisitInviteIdPart, HouseVisitInviteErrandPart { u8 pad[0x20]; };
+struct PlayerErrandsInviteView : PlayerErrandsHeadPad, HouseVisitInviteLayoutView { u8 pad[8]; };
+struct VillagerSpawnLocals {
     u8 b;
     u16 h[4];
 };
@@ -108,11 +110,6 @@ struct Unk_02084ecc_Vec {
 
 
 
-struct Unk_02084ffc_Grid {
-    u8 *blocks;
-    u32 width;
-    u32 height;
-};
 
 
 
@@ -147,7 +144,6 @@ void NpcSpawner_Create();
 }
 }
 
-struct Unk_02084f84_Scene { void *fn; u16 a; u16 b; };
 extern void *sVisitorPlacePmf_Joan[2];
 extern void *sVisitorPlacePmf_Saharah[2];
 extern void *sVisitorCheckPmf_EventHost[2];
@@ -191,15 +187,15 @@ extern const EventVisitorEntry sDateVisitorTable[4];
 extern const EventVisitorEntry sEventHostTable[8];
 extern u32 sTortimerVisitorProfile;
 extern u32 sEventTortimerProfile[2];
-extern Unk_02084f84_Scene sNpcSpawnerProfile;
+extern ProcProfile sNpcSpawnerProfile;
 extern VisitorSchedule sVisitorSchedule;
 extern VisitorCheckEntry sVisitorCheckTable[11];
 extern VisitorSpawnEntry sVisitorSpawnTable[23];
-extern Unk_02083c28_Rec sVillagerNetRecords[8];
-extern Unk_02083c28_Rec sSpNpcNetRecords[0x26];
+extern NpcNetRecord sVillagerNetRecords[8];
+extern NpcNetRecord sSpNpcNetRecords[0x26];
 extern u8 sVillagerNetRecordPacked;
 
-Unk_02083c28_Rec sVillagerNetRecords[8];
+NpcNetRecord sVillagerNetRecords[8];
 void *sVisitorPlacePmf_FlowerFest[2] = {(void *)Dp::VisitorPlace_EventHost, 0};
 void *sVisitorPlacePmf_Gulliver[2] = {(void *)Dp::VisitorPlace_Gulliver, 0};
 u32 sEventTortimerProfile[2] = {0x56, 0};
@@ -218,11 +214,11 @@ void *sVisitorCheckPmf_Pete[2] = {(void *)Dp::Visitor_CheckPete, 0};
 void *sVisitorPlacePmf_Fireworks[2] = {(void *)Dp::VisitorPlace_EventHost, 0};
 void *sVisitorPlacePmf_Shrunk[2] = {(void *)Dp::VisitorPlace_AtVisitorPos, 0};
 void *sVisitorPlacePmf_Tortimer[2] = {(void *)Dp::VisitorPlace_Tortimer, 0};
-Unk_02083c28_Rec sSpNpcNetRecords[0x26];
+NpcNetRecord sSpNpcNetRecords[0x26];
 const EventVisitorEntry sDateVisitorTable[4] = {{0x3e, 0x6a, 0}, {0x41, 0x6b, 0}, {0x42, 0x68, 0}, {0x43, 0x62, 0}};
 void *sVisitorPlacePmf_BugOff[2] = {(void *)Dp::VisitorPlace_EventHost, 0};
 void *sVisitorPlacePmf_Kaitlin[2] = {(void *)Dp::VisitorPlace_Kaitlin, 0};
-Unk_02084f84_Scene sNpcSpawnerProfile = {(void *)Dp::NpcSpawner_Create, 0xd0, 0xcc};
+ProcProfile sNpcSpawnerProfile = {(void *(*)())Dp::NpcSpawner_Create, 0xd0, 0xcc};
 VisitorCheckEntry sVisitorCheckTable[11] = {
     {*(Unk_02083d14_Fn *)sVisitorCheckPmf_Tortimer, 4},
     {*(Unk_02083d14_Fn *)sVisitorCheckPmf_Resetti, 4},
@@ -394,8 +390,8 @@ extern VisitorCheckEntry sVisitorCheckTable[11];
 extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
 extern Unk_02083c28_Vec gVec3Zero;
-extern Unk_02083c28_Rec sSpNpcNetRecords[0x26];
-extern Unk_02083c28_Rec sVillagerNetRecords[8];
+extern NpcNetRecord sSpNpcNetRecords[0x26];
+extern NpcNetRecord sVillagerNetRecords[8];
 extern u8 sVillagerNetRecordPacked;
 extern u8 gSaveVillagers[];
 extern u16 *gSceneBlockMap;
@@ -600,7 +596,7 @@ s32 Item_GetFurnitureIndex(u16 *);
 
 extern "C" void Town_RemoveShipParts()
 {
-    Unk_02084ffc_Grid *g = (Unk_02084ffc_Grid *)F5::TownBlockMap_Get();
+    TownBlockMap *g = (TownBlockMap *)F5::TownBlockMap_Get();
     s32 x, y;
     if (g != NULL) {
         for (y = 1; y < 5; y++) {
@@ -815,7 +811,7 @@ extern "C" void NpcSpawn_FixVillagerPos(void *a, void *vec)
 
 extern "C" void NpcSpawner_SpawnVillagers(void *a)
 {
-    Unk_02084ae4_W w;
+    VillagerSpawnLocals w;
     Unk_02084ae4_Vec v;
     s32 n, cnt, i;
     w.h[0] = 0xfff1;
@@ -963,9 +959,9 @@ extern "C" void NpcSpawner_SpawnPlayerHouseVisitor(void *a)
     h[0] = 0xfff1;
     s32 st = F4::VillagerEvent_GetTodayIndex();
     if (st == 0xb) {
-        Unk_020847b0_Top *top = (Unk_020847b0_Top *)F4::_ZN10PlayerData10getErrandsEv(F4::PlayerData_GetCurrent());
-        Unk_020847b0_Mid &m = *top;
-        Unk_020847b0_Q1 &q = m;
+        PlayerErrandsInviteView *top = (PlayerErrandsInviteView *)F4::_ZN10PlayerData10getErrandsEv(F4::PlayerData_GetCurrent());
+        HouseVisitInviteLayoutView &m = *top;
+        HouseVisitInviteErrandPart &q = m;
         u8 *r7 = (u8 *)&m;
         u8 *r4 = (u8 *)&q;
         s32 r5 = ~flag;
@@ -1166,7 +1162,7 @@ BOOL NpcSpawner::onExecute()
 extern "C" BOOL NpcNetRecord_SetVillagerState(u16 *p, u32 b, Unk_02083c28_Vec *v, u16 c, u8 *d, u8 *e) {
     u32 i = *p & 0xfff;
     if (i < 8) {
-        Unk_02083c28_Rec *r = &F3::sVillagerNetRecords[i];
+        NpcNetRecord *r = &F3::sVillagerNetRecords[i];
         r->isSet = 1;
         F3::CommRecord_PackSource((u8 *)r + 3, b, 0);
         F3::NetBuf_PackPair20((u8 *)r + 4, v->x, v->z);
@@ -1181,7 +1177,7 @@ extern "C" BOOL NpcNetRecord_SetVillagerState(u16 *p, u32 b, Unk_02083c28_Vec *v
 extern "C" BOOL NpcNetRecord_SetVillagerSlots(u16 *p, u32 b, u32 c) {
     u32 i = *p & 0xfff;
     if (i < 8) {
-        Unk_02083c28_Rec *r = &F3::sVillagerNetRecords[i];
+        NpcNetRecord *r = &F3::sVillagerNetRecords[i];
         r->isSet = 1;
         r->slotA = b;
         r->slotB = c;
@@ -1203,7 +1199,7 @@ extern "C" void NpcNetRecord_InitVillagerVar(void *dst, s32 id) {
 extern "C" void NpcNetRecord_PackVillager(void *dst, s32 id) {
     u32 i = id - 0xc;
     if (i < 8) {
-        Unk_02083c28_Rec *r = &F3::sVillagerNetRecords[i];
+        NpcNetRecord *r = &F3::sVillagerNetRecords[i];
         r->isSet = 1;
         F3::MI_CpuCopy8(r, dst, F3::CommSyncVar_GetVarSize(id));
         F3::sVillagerNetRecordPacked = 1;
@@ -1219,7 +1215,7 @@ extern "C" u8 *NpcNetRecord_GetVillagerVar(u16 *p) {
 extern "C" BOOL NpcNetRecord_SetSpNpcState(u16 *p, u32 b, Unk_02083c28_Vec *v, u16 c, u8 *d, u8 *e) {
     u32 i = *p & 0xfff;
     if (i < 0x26) {
-        Unk_02083c28_Rec *r = &F3::sSpNpcNetRecords[i];
+        NpcNetRecord *r = &F3::sSpNpcNetRecords[i];
         r->isSet = 1;
         F3::CommRecord_PackSource((u8 *)r + 3, b, 0);
         F3::NetBuf_PackPair20((u8 *)r + 4, v->x, v->z);
@@ -1234,7 +1230,7 @@ extern "C" BOOL NpcNetRecord_SetSpNpcState(u16 *p, u32 b, Unk_02083c28_Vec *v, u
 extern "C" BOOL NpcNetRecord_SetSpNpcSlots(u16 *p, u32 b, u32 c) {
     u32 i = *p & 0xfff;
     if (i < 0x26) {
-        Unk_02083c28_Rec *r = &F3::sSpNpcNetRecords[i];
+        NpcNetRecord *r = &F3::sSpNpcNetRecords[i];
         r->isSet = 1;
         r->slotA = b;
         r->slotB = c;
@@ -1246,7 +1242,7 @@ extern "C" BOOL NpcNetRecord_SetSpNpcSlots(u16 *p, u32 b, u32 c) {
 extern "C" void NpcNetRecord_PackSpNpc(void *dst, s32 id) {
     u32 i = id - 0x20;
     if (i < 0x26) {
-        Unk_02083c28_Rec *r = &F3::sSpNpcNetRecords[i];
+        NpcNetRecord *r = &F3::sSpNpcNetRecords[i];
         r->isSet = 1;
         F3::MI_CpuCopy8(r, dst, F3::CommSyncVar_GetVarSize(id));
     }

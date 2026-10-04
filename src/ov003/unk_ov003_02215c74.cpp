@@ -83,7 +83,7 @@ extern u32 sVillagerHouses[];
 
 BOOL Building_IsNight(void *p);
 void *SaveVillagers_Get(void *p, s32 i);
-s32 func_0207e274(void *p);
+s32 Villager_IsHouseAvailable(void *p);
 s32 Villager_GetWhereabouts(void *p);
 void NetArea_GetSlotStatus(s32 i, u8 *a, u8 *b, u8 *c);
 s32 SceneId_GetVillagerHouse(u32 a);
@@ -306,7 +306,7 @@ void VillagerHouse::setupTalkMsg() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     void *p = SaveVillagers_Get(gSaveVillagers, idx);
     setFileName("obj_etc_closed");
-    if (func_0207e274(p) == 0) {
+    if (Villager_IsHouseAvailable(p) == 0) {
         msgIndex = 6;
     } else if (entryFlags.f1) {
         setFileName("obj_etc_error");
@@ -329,7 +329,7 @@ BOOL VillagerHouse::isOpen() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     void *p = SaveVillagers_Get(gSaveVillagers, idx);
     if (p) {
-        if (func_0207e274(p) == 0) {
+        if (Villager_IsHouseAvailable(p) == 0) {
             return FALSE;
         }
         if (Villager_GetWhereabouts(p) == 0 || Villager_GetWhereabouts(p) == 3 || Villager_GetWhereabouts(p) == 4 || Villager_GetWhereabouts(p) == 5 ||
@@ -346,7 +346,7 @@ BOOL VillagerHouse::areLightsOn() {
     if (Building_IsNight(this)) {
         void *p = SaveVillagers_Get(gSaveVillagers, idx);
         if (p) {
-            if (func_0207e274(p) == 0) {
+            if (Villager_IsHouseAvailable(p) == 0) {
                 return FALSE;
             }
             if (Villager_GetWhereabouts(p) == 0 || Villager_GetWhereabouts(p) == 3 || Villager_GetWhereabouts(p) == 4 || Villager_GetWhereabouts(p) == 5 ||

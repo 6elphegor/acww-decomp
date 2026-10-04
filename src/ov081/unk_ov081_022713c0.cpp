@@ -72,7 +72,7 @@ s32 _ZN8PlayerId7isValidEv(void *p);
 s32 _ZN8PlayerId6equalsEPS_(void *p, void *q);
 s32 _ZN10VillagerId7isValidEv(void *p);
 void _ZN10VillagerId7getNameEj(void *p, void *q);
-void *_ZN13ContestRecord13func_020858acEv(void *p);
+void *_ZN13ContestRecord15getHolderPlayerEv(void *p);
 void *_ZN13ContestRecord17getHolderVillagerEv(void *p);
 s32 _ZN13ContestRecord7getSizeEv(void *p);
 void ContestRecord_GetItem(u16 *out, void *p);
@@ -261,7 +261,7 @@ BOOL SpNpcTortimerFishingTourney::onCreate() {
     ContestRecord_BeginContestDay(g, 1);
     ContestRecord_GetItem(&l.b, g);
     if (!Unk_ov081_InRange(&l.b, 0x12e8, 0x131f)) {
-        _ZN13ContestRecord13func_020858acEv(g);
+        _ZN13ContestRecord15getHolderPlayerEv(g);
         s32 r6 = Random_GlobalBelow(2);
         l.x = 0;
         l.y = 0;
@@ -536,15 +536,15 @@ s32 SpNpcTortimerFishingTourneyTalk::getRecordHolder() {
             r = TRUE;
         }
         if (r != 0) {
-            r6 = _ZN13ContestRecord13func_020858acEv(g);
+            r6 = _ZN13ContestRecord15getHolderPlayerEv(g);
             r4 = _ZN13ContestRecord17getHolderVillagerEv(g);
             ContestRecord_GetItem(&h[1], g);
             _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &h[1], 1, 7);
             _ZN16ActorTalkRequest17setFixedPointSlotEiji(this, _ZN13ContestRecord7getSizeEv(g), 0, 1, 3);
             if (_ZN8PlayerId7isValidEv(r6) != 0) {
-                _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN13ContestRecord13func_020858acEv(g), 1);
+                _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN13ContestRecord15getHolderPlayerEv(g), 1);
                 p4 = (u16 *)_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent());
-                p5 = (u16 *)_ZN13ContestRecord13func_020858acEv(g);
+                p5 = (u16 *)_ZN13ContestRecord15getHolderPlayerEv(g);
                 if (p5[0] == p4[0] && memcmp(p5 + 1, p4 + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(p5, p4) != 0) {
                     goto ret0;
                 }

@@ -55,7 +55,7 @@ s32 _ZN8PlayerId7isValidEv(void *p);
 s32 _ZN8PlayerId6equalsEPS_(void *p, void *q);
 s32 _ZN10VillagerId7isValidEv(void *p);
 void _ZN10VillagerId7getNameEj(void *p, void *q);
-void *_ZN13ContestRecord13func_020858acEv(void *p);
+void *_ZN13ContestRecord15getHolderPlayerEv(void *p);
 void *_ZN13ContestRecord17getHolderVillagerEv(void *p);
 s32 _ZN13ContestRecord7getSizeEv(void *p);
 void ContestRecord_GetItem(u16 *out, void *p);
@@ -233,7 +233,7 @@ BOOL SpNpcTortimerBugOff::onCreate() {
     ContestRecord_BeginContestDay(g, 2);
     ContestRecord_GetItem(&l.s2, g);
     if (!Unk_ov082_InRange(&l.s2, 0x12b0, 0x12e7)) {
-        _ZN13ContestRecord13func_020858acEv(g);
+        _ZN13ContestRecord15getHolderPlayerEv(g);
         rnd = Random_GlobalBelow(2);
         l.t[0] = 0;
         l.t[1] = 0;
@@ -463,15 +463,15 @@ s32 SpNpcTortimerBugOffTalk::getRecordHolder() {
     u8 *r7 = gContestRecord;
     ContestRecord_GetItem(&v, r7);
     if (Unk_ov082_InRange(&v, 0x12b0, 0x12e7)) {
-        void *r6 = _ZN13ContestRecord13func_020858acEv(r7);
+        void *r6 = _ZN13ContestRecord15getHolderPlayerEv(r7);
         void *r4 = _ZN13ContestRecord17getHolderVillagerEv(r7);
         ContestRecord_GetItem(&w, r7);
         _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &w, 1, 7);
         _ZN16ActorTalkRequest13setNumberSlotEijiii(this, _ZN13ContestRecord7getSizeEv(r7) >> 12, 0, 3, 0, 0);
         if (_ZN8PlayerId7isValidEv(r6)) {
-            _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN13ContestRecord13func_020858acEv(r7), 1);
+            _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, _ZN13ContestRecord15getHolderPlayerEv(r7), 1);
             u16 *q = (u16 *)_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent());
-            u16 *p = (u16 *)_ZN13ContestRecord13func_020858acEv(r7);
+            u16 *p = (u16 *)_ZN13ContestRecord15getHolderPlayerEv(r7);
             if (p[0] != q[0] || memcmp(p + 1, q + 1, 8) != 0 || _ZN8PlayerId6equalsEPS_(p, q) == 0) {
                 return 1;
             }
