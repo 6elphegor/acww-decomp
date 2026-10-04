@@ -74,7 +74,7 @@ extern "C" BOOL HudUnkIcon_CanShow() {
 ScrollKnob::ScrollKnob(u32 flag) : layer1(0), posY(0) {
     state = 0;
     anim = flag;
-    unk_44 = -1;
+    drawPriority = -1;
     setState(0);
 }
 
@@ -92,11 +92,11 @@ void ScrollKnob::draw() {
         s32 bx = layer1 + getOriginX();
         s32 by = posY + getOriginY();
         if (anim != 0) {
-            Oam_DrawCell(0, h0, bx + a, by + b, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
-            Oam_DrawCell(0, h1, bx + c, by + d, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(0, h0, bx + a, by + b, -1, drawPriority, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(0, h1, bx + c, by + d, -1, drawPriority, 0x1000, 0x1000, 0, -1, 0, 0);
         } else {
-            Oam_DrawCell(1, h0, bx + a, by + b, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
-            Oam_DrawCell(1, h1, bx + c, by + d, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, h0, bx + a, by + b, -1, drawPriority, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, h1, bx + c, by + d, -1, drawPriority, 0x1000, 0x1000, 0, -1, 0, 0);
         }
     }
 }
@@ -110,5 +110,5 @@ void ScrollKnob::update() {
 
 void ScrollKnob::moveTo(s32 x, s32 y) { layer1 = x; posY = y; }
 
-void ScrollKnob::setPriority(s32 v) { unk_44 = v; }
+void ScrollKnob::setPriority(s32 v) { drawPriority = v; }
 

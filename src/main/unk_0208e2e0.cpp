@@ -26,7 +26,7 @@ u32 LabelButtonText::capacity() { return 9; }
 
 u8 *LabelButtonText::data() { return (u8 *)this + 0x12; }
 
-LabelButton::LabelButton(u8 a, s32 b) : unk_0c(0), unk_10(0), palette(-1), kind(b), state(0), label(0) {
+LabelButton::LabelButton(u8 a, s32 b) : posX(0), posY(0), palette(-1), kind(b), state(0), label(0) {
     textColor = 0x50c0;
     onBufferA = a;
     objWindow = 0;
@@ -47,8 +47,8 @@ void LabelButton::draw() {
         s32 b = layer1.getFrameY(-1);
         s32 c = layer2.getFrameX(-1);
         s32 d = layer2.getFrameY(-1);
-        s32 bx = unk_0c + getOriginX();
-        s32 by = unk_10 + getOriginY();
+        s32 bx = posX + getOriginX();
+        s32 by = posY + getOriginY();
         s32 x0 = bx + a;
         s32 y0 = by + b;
         s32 x1 = bx + c;

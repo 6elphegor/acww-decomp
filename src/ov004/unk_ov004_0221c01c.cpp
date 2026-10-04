@@ -28,7 +28,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 
 
@@ -222,7 +222,7 @@ void PlayerActor_LocalRequestStandUp(s32 a);
 void CafeCoffeeSet_SyncToBrewster(void);
 }
 
-class SpNpcBrewsterTalk : public Unk_020d7710 {
+class SpNpcBrewsterTalk : public ActorTalkRequest {
 public:
     SpNpcBrewsterTalk();
     virtual ~SpNpcBrewsterTalk();
@@ -583,7 +583,7 @@ void SpNpcBrewsterTalk::start(TalkStartMsg *arg) {
 
 void SpNpcBrewsterTalk::onMessageEnd(u32) {
     void *h = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
-    Unk_ov004_0221cc88_Obj *o = (Unk_ov004_0221cc88_Obj *)unk_3c;
+    Unk_ov004_0221cc88_Obj *o = (Unk_ov004_0221cc88_Obj *)window;
     u32 d = sSpNpcBrewsterMsgFiles[0];
     u32 r = 0xff;
     if (GameStart_IsActive() == 0) {
@@ -614,7 +614,7 @@ void SpNpcBrewsterTalk::onMessageEnd(u32) {
         if (r != 0xff) {
             u8 buf;
             buf = r;
-            TalkWindowState_setNextMessage(unk_3c, &buf, d);
+            TalkWindowState_setNextMessage(window, &buf, d);
         }
     }
 }
@@ -628,7 +628,7 @@ void SpNpcBrewsterTalk::onChoice(u32) {
         if (t != 0) {
             r = (u8)((PlayerSpNpcRecord_getCafeVisits(h) >> 2) + 0x28);
         } else {
-            ((Unk_ov004_0221cc88_Obj *)unk_3c)->unk_14 = 0;
+            ((Unk_ov004_0221cc88_Obj *)window)->unk_14 = 0;
             setScript(2);
         }
     }
@@ -653,7 +653,7 @@ void SpNpcBrewsterTalk::onChoice(u32) {
     if (r != 0xff) {
         u8 buf;
         buf = r;
-        TalkWindowState_setNextMessage(unk_3c, &buf, d);
+        TalkWindowState_setNextMessage(window, &buf, d);
     }
 }
 
@@ -682,7 +682,7 @@ void SpNpcBrewsterTalk::setScript(s32 v) {
 }
 
 void SpNpcBrewsterTalk::runCoffeeScript() {
-    TalkWindowState *r6 = unk_3c;
+    TalkWindowState *r6 = window;
     u8 r7 = (u8)((PlayerSpNpcRecord_getCafeVisits(PlayerData_getSpNpcRecord(PlayerData_GetCurrent())) >> 2) + 0x24);
     void *r5 = &owner->actionCtrl;
     u8 buf;
@@ -795,7 +795,7 @@ void SpNpcBrewsterTalk::runCoffeeScript() {
 }
 
 void SpNpcBrewsterTalk::runDrinkScript() {
-    TalkWindowState *r6 = unk_3c;
+    TalkWindowState *r6 = window;
     if (r6->state == 5) {
         if (CafeCoffeeSet_GetState() == 5) {
             CafeCoffeeSet_SetState08();
@@ -853,7 +853,7 @@ void SpNpcBrewsterTalk::onWindowClose() {
 }
 
 void SpNpcBrewsterTalk::runScript03() {
-    TalkWindowState *r6 = unk_3c;
+    TalkWindowState *r6 = window;
     u8 r7 = (u8)((PlayerSpNpcRecord_getCafeVisits(PlayerData_getSpNpcRecord(PlayerData_GetCurrent())) >> 2) + 0x51);
     void *r5 = &owner->actionCtrl;
     u8 buf;

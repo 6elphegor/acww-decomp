@@ -22,7 +22,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "item/ItemPickSpec.h"
 #include "actor/Unk_ov004_SceneEntry.h"
@@ -57,9 +57,9 @@ struct Unk_ov076_02271a3c_Bits {
 
 extern "C" {
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_020d771015setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
-void _ZN12Unk_020d771012openSubSceneEi(void *p, s32 v);
+void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
+void _ZN16ActorTalkRequest12openSubSceneEi(void *p, s32 v);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void _ZN11NpcMoveCtrl14setTargetAngleEs(void *self, s32 a);
 void _ZN9NpcLookAt7disableEv(void *self);
@@ -401,7 +401,7 @@ extern "C" BOOL SpNpcPascal_IsScallop(u16 *p, s32 x) {
 }
 
 void SpNpcPascalTalk::onScallopPicked() {
-    TalkWindowState *r4 = unk_3c;
+    TalkWindowState *r4 = window;
     Unk_ov076_02271864_Msg m;
     m.msgIndex = 5;
     if (MenuCtrl_IsResultOk()) {
@@ -459,8 +459,8 @@ void SpNpcPascalTalk::onMessageEnd(u32) {
     }
     switch (msgIndex) {
     case 4:
-        _ZN12Unk_020d771015setPocketFilterEjjj(this, SpNpcPascal_IsScallop, 0xd, 0);
-        _ZN12Unk_020d771012openSubSceneEi(this, 0);
+        _ZN16ActorTalkRequest15setPocketFilterEjjj(this, SpNpcPascal_IsScallop, 0xd, 0);
+        _ZN16ActorTalkRequest12openSubSceneEi(this, 0);
         setResultHandler(0);
         break;
     case 5:
@@ -476,7 +476,7 @@ void SpNpcPascalTalk::onMessageEnd(u32) {
         } else {
             giftItem = 0x1373;
         }
-        _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &giftItem, 0, 5, 0);
+        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &giftItem, 0, 5, 0);
         Pocket_AddItem(&giftItem, 0);
         owner->giftGiven = 1;
         Talk_CheckAndSetPlayerFlag(0x18, 1);
@@ -525,7 +525,7 @@ void SpNpcPascalTalk::onMessageEnd(u32) {
                     ItemPick_One(&oc, &o2, 0, 0, 1, 1, 0);
                     giftItem = oc;
                 }
-                _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &giftItem, 0, 5, 0);
+                _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &giftItem, 0, 5, 0);
                 Pocket_AddItem(&giftItem, 0);
                 Talk_CheckAndSetPlayerFlag(0x18, 1);
             }
@@ -536,7 +536,7 @@ void SpNpcPascalTalk::onMessageEnd(u32) {
     }
     if (code != 0xff) {
         msg = code;
-        unk_3c->setNextMessage(&msg, tag);
+        window->setNextMessage(&msg, tag);
     }
 }
 
@@ -576,7 +576,7 @@ void SpNpcPascalTalk::onChoice(u32) {
     }
     if (code != 0xff) {
         u8 b = code;
-        unk_3c->setNextMessage(&b, tag);
+        window->setNextMessage(&b, tag);
     }
 }
 

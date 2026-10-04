@@ -29,7 +29,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -79,7 +79,7 @@ void Pocket_AddItem(u16 *p, s32 v);
 void Pocket_RemoveItem(s32 v);
 s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
-void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 void _ZN12ItemPickSpec3setEii(Unk_0202368c_Obj *o, s32 a, s32 b);
@@ -574,7 +574,7 @@ void SpNpcSaharahTalk::start(TalkStartMsg *out) {
     }
     if (_ZN12ErrandRecord8isActiveEv(ParcelErrand_GetRecord(g)) != 0 && _ZN12ErrandRecord7getStepEv(ParcelErrand_GetRecord(g)) == 0) {
         if (ParcelErrand_GetRecipientName(g, &o)) {
-            unk_3c->setSlot(0, &o);
+            window->setSlot(0, &o);
         }
         out->msgIndex = 9;
         return;
@@ -585,7 +585,7 @@ void SpNpcSaharahTalk::start(TalkStartMsg *out) {
     }
     if (ParcelErrand_NextRecipient(g)) {
         if (ParcelErrand_GetRecipientName(g, &o)) {
-            unk_3c->setSlot(0, &o);
+            window->setSlot(0, &o);
         }
         out->msgIndex = 0xa;
     } else if (_ZN12ErrandRecord7getStepEv(ParcelErrand_GetRecord(g)) == 1) {
@@ -646,9 +646,9 @@ void SpNpcSaharahTalk::onMessageEnd(u32) {
     case 6:
     case 7:
         Pocket_AddItem(_ZN12ErrandRecord7getItemEv(ParcelErrand_GetRecord(g)), 2);
-        _ZN12Unk_020d771015requestGiveItemEPtjjj(this, _ZN12ErrandRecord7getItemEv(ParcelErrand_GetRecord(g)), 2, 5, 0);
+        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, _ZN12ErrandRecord7getItemEv(ParcelErrand_GetRecord(g)), 2, 5, 0);
         if (ParcelErrand_GetRecipientName(g, &o3)) {
-            unk_3c->setSlot(0, &o3);
+            window->setSlot(0, &o3);
         }
         if (msgIndex != 10) {
             msg = 8;
@@ -685,13 +685,13 @@ void SpNpcSaharahTalk::onMessageEnd(u32) {
         }
         turbanSlot = -2;
         _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &h[0], 0, 7);
-        _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h[0], 0, 5, 0);
+        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h[0], 0, 5, 0);
         Pocket_AddItem(&h[0], 0);
         break;
     }
     if (msg != 0) {
         b = msg;
-        unk_3c->setNextMessage(&b, s);
+        window->setNextMessage(&b, s);
     }
 }
 
@@ -722,7 +722,7 @@ void SpNpcSaharahTalk::onChoice(u32) {
         } else {
             h[0] = rewardItems[1].id;
         }
-        _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h[0], 0, 5, 0);
+        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h[0], 0, 5, 0);
         Pocket_AddItem(&h[0], 0);
         msg = 0xe;
         break;
@@ -739,7 +739,7 @@ void SpNpcSaharahTalk::onChoice(u32) {
     }
     if (msg != 0) {
         b = msg;
-        unk_3c->setNextMessage(&b, s);
+        window->setNextMessage(&b, s);
     }
 }
 

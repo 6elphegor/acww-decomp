@@ -230,13 +230,13 @@ BOOL RoomBoardSign::setupAct01() {
     _ZN9Character17attachTalkRequestEi(this, this);
     setFileName("obj_etc_board");
     msgIndex = signMsgIndex;
-    unk_3c->nextState = 1;
+    window->nextState = 1;
     return TRUE;
 }
 
 void RoomBoardSign::mainAct01() {
-    if (unk_3c) {
-        if (unk_3c->state) {
+    if (window) {
+        if (window->state) {
             changeAct(2);
         }
     }
@@ -247,8 +247,8 @@ BOOL RoomBoardSign::setupAct02() {
 }
 
 void RoomBoardSign::mainAct02() {
-    if (unk_3c) {
-        if (unk_3c->state == 0) {
+    if (window) {
+        if (window->state == 0) {
             _ZN9Character17detachTalkRequestEi(this, this);
             TalkRequest_SetTargetDone(this);
         }

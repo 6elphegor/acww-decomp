@@ -19,16 +19,16 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
-#define Unk_020d7710_setSubSceneKind _ZN12Unk_020d771015setSubSceneKindEjj
-#define Unk_020d7710_setPocketFilter _ZN12Unk_020d771015setPocketFilterEjjj
-#define Unk_020d7710_openSubScene _ZN12Unk_020d771012openSubSceneEi
+#define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
+#define ActorTalkRequest_setPocketFilter _ZN16ActorTalkRequest15setPocketFilterEjjj
+#define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
 #define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
 #define ActorTalkRequest_setPlayerNameSlot _ZN16ActorTalkRequest17setPlayerNameSlotEjj
 #define ActorTalkRequest_setTownNameSlot _ZN16ActorTalkRequest15setTownNameSlotEjj
@@ -207,8 +207,8 @@ BOOL Talk_IsDramaPending(void *owner, void *buf, s32 n);
 void Talk_AdvanceDrama(void *, void *);
 s32 NpcRegistry_FindSpNpc(s32 n);
 void ActorTalkRequest_setPartnerActor(void *self, s32 v);
-void Unk_020d7710_setPocketFilter(void *, void *, u32, u32);
-void Unk_020d7710_openSubScene(void *self, s32 a);
+void ActorTalkRequest_setPocketFilter(void *, void *, u32, u32);
+void ActorTalkRequest_openSubScene(void *self, s32 a);
 void PlayerActor_SetNoFaceTalkTarget(s32, s32);
 void Camera_RestorePrevMode();
 void Camera_SetMode4();
@@ -219,7 +219,7 @@ void NpcActor_PayPlayer(void *owner, s32 v);
 BOOL func_0204bab8(u16 *);
 void MenuCtrl_ReturnChosenItems(s32);
 s32 Random_GlobalBelow(s32 n);
-void Unk_020d7710_setSubSceneKind(void *self, u32 a, u32 b);
+void ActorTalkRequest_setSubSceneKind(void *self, u32 a, u32 b);
 BOOL GameStart_IsActive();
 u32 func_0212a438(const char *s);
 s32 strncmp(void *a, const char *b, u32 n);
@@ -1205,7 +1205,7 @@ void SpNpcMabelTalk::start(TalkStartMsg *out) {
         void *q6 = AbleSistersPatterns_getPattern(g + 0xfafc, owner->patternSlot);
         Unk_ov049_0225a714_Q q;
         PatternInfo_getTitle(Pattern_getInfo(q6), &q);
-        TalkWindowState_setNamedSlot(unk_3c, 2, &q, 7);
+        TalkWindowState_setNamedSlot(window, 2, &q, 7);
         Unk_ov049_0225a714_Pair a(*PatternInfo_getAuthor(Pattern_getInfo(q6)));
         Unk_ov049_0225a714_Pair b(*PlayerData_getPlayerId(r7));
         Unk_ov049_0225a714_P c(*PlayerId_GetTownId(&a));
@@ -1312,14 +1312,14 @@ test0:
 }
 
 void SpNpcMabelTalk::startDesignEditor() {
-    Unk_020d7710_setSubSceneKind(this, 4, 0);
-    Unk_020d7710_openSubScene(this, 2);
+    ActorTalkRequest_setSubSceneKind(this, 4, 0);
+    ActorTalkRequest_openSubScene(this, 2);
     setScript(1);
 }
 
 void SpNpcMabelTalk::startDesignNameEntry() {
-    Unk_020d7710_setSubSceneKind(this, 0xb, 0);
-    Unk_020d7710_openSubScene(this, 2);
+    ActorTalkRequest_setSubSceneKind(this, 0xb, 0);
+    ActorTalkRequest_openSubScene(this, 2);
     setScript(2);
 }
 
@@ -1328,8 +1328,8 @@ void SpNpcMabelTalk::chargeDesignFee() {
 }
 
 void SpNpcMabelTalk::startSellItemSelect() {
-    Unk_020d7710_setSubSceneKind(this, 0x1e, 0);
-    Unk_020d7710_openSubScene(this, 2);
+    ActorTalkRequest_setSubSceneKind(this, 0x1e, 0);
+    ActorTalkRequest_openSubScene(this, 2);
     setScript(6);
 }
 
@@ -1352,20 +1352,20 @@ void SpNpcMabelTalk::openItemChoices() {
 }
 
 void SpNpcMabelTalk::startDisplayPatternSelect() {
-    Unk_020d7710_setSubSceneKind(this, 5, 0);
-    Unk_020d7710_openSubScene(this, 2);
+    ActorTalkRequest_setSubSceneKind(this, 5, 0);
+    ActorTalkRequest_openSubScene(this, 2);
     setScript(3);
 }
 
 void SpNpcMabelTalk::startTakePatternSelect() {
-    Unk_020d7710_setSubSceneKind(this, 7, 0);
-    Unk_020d7710_openSubScene(this, 2);
+    ActorTalkRequest_setSubSceneKind(this, 7, 0);
+    ActorTalkRequest_openSubScene(this, 2);
     setScript(4);
 }
 
 void SpNpcMabelTalk::startTradePatternSelect() {
-    Unk_020d7710_setSubSceneKind(this, 8, 0);
-    Unk_020d7710_openSubScene(this, 2);
+    ActorTalkRequest_setSubSceneKind(this, 8, 0);
+    ActorTalkRequest_openSubScene(this, 2);
     setScript(5);
 }
 
@@ -1477,7 +1477,7 @@ loop0:
     u32 off = i * 12;
     u32 id = tbl[i].id;
     if (id == *idp) {
-        u32 arg = ChoiceList_getResult(TalkWindowState_getChoiceList(unk_3c));
+        u32 arg = ChoiceList_getResult(TalkWindowState_getChoiceList(window));
         (this->*((Unk_ov049_0225a210_Ent *)((u32)tbl + off))->fn)(arg);
     }
     i++;
@@ -1491,10 +1491,10 @@ void SpNpcMabelTalk::onMenuChoice(u32 a) {
     if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (a == 2) {
             buf[0] = 0x1c;
-            TalkWindowState_setNextMessage(unk_3c, &buf[0], sSpNpcMabelMsgKeys[0]);
+            TalkWindowState_setNextMessage(window, &buf[0], sSpNpcMabelMsgKeys[0]);
         } else if (a == 0) {
             buf[1] = 0x37;
-            TalkWindowState_setNextMessage(unk_3c, &buf[1], sSpNpcMabelMsgKeys[0]);
+            TalkWindowState_setNextMessage(window, &buf[1], sSpNpcMabelMsgKeys[0]);
         }
     }
     if (CommManager_isOnline(g) == 0 && *DebugVar_GetPtr(0, 0x4a) == 0) {
@@ -1510,10 +1510,10 @@ void SpNpcMabelTalk::onDesignFeeChoice(u32 a) {
     if (a == 0) {
         if (NpcActor_CanPlayerPay(owner, 0x15e) == 0) {
             buf[0] = 0xd;
-            TalkWindowState_setNextMessage(unk_3c, &buf[0], sSpNpcMabelMsgKeys[0]);
+            TalkWindowState_setNextMessage(window, &buf[0], sSpNpcMabelMsgKeys[0]);
         } else {
             buf[1] = 0xe;
-            TalkWindowState_setNextMessage(unk_3c, &buf[1], sSpNpcMabelMsgKeys[0]);
+            TalkWindowState_setNextMessage(window, &buf[1], sSpNpcMabelMsgKeys[0]);
         }
     }
 }
@@ -1544,15 +1544,15 @@ void SpNpcMabelTalk::onSellPriceChoice(s32 v) {
         case 0:
             NpcActor_PayPlayer(owner, price);
             m[0] = 0x1a;
-            TalkWindowState_setNextMessage(unk_3c, m, sSpNpcMabelMsgKeys[0]);
+            TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
             break;
         case 1:
             m[1] = 0x1e;
-            TalkWindowState_setNextMessage(unk_3c, &m[1], sSpNpcMabelMsgKeys[0]);
+            TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
             break;
         case 2:
             m[2] = 0x38;
-            TalkWindowState_setNextMessage(unk_3c, &m[2], sSpNpcMabelMsgKeys[0]);
+            TalkWindowState_setNextMessage(window, &m[2], sSpNpcMabelMsgKeys[0]);
             MenuCtrl_ReturnChosenItems(0);
             break;
         }
@@ -1579,13 +1579,13 @@ void SpNpcMabelTalk::onItemPriceChoice(s32 v) {
         s32 r = Pocket_FindEmpty();
         if (r == -1) {
             m[0] = 0x2c;
-            TalkWindowState_setNextMessage(unk_3c, m, sSpNpcMabelMsgKeys[0]);
+            TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
         } else if (!NpcActor_CanPlayerPay(owner, price)) {
             m[1] = 0x2b;
-            TalkWindowState_setNextMessage(unk_3c, &m[1], sSpNpcMabelMsgKeys[0]);
+            TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
         } else {
             m[2] = 0x29;
-            TalkWindowState_setNextMessage(unk_3c, &m[2], sSpNpcMabelMsgKeys[0]);
+            TalkWindowState_setNextMessage(window, &m[2], sSpNpcMabelMsgKeys[0]);
             sellItemToPlayer();
         }
     } else if (v == 1) {
@@ -1628,7 +1628,7 @@ void SpNpcMabelTalk::onItemPriceChoice(s32 v) {
         }
         PlayerActor_SetNoFaceTalkTarget(1, 4);
         Camera_SetMode4();
-        TalkWindowState_lockAdvance(unk_3c);
+        TalkWindowState_lockAdvance(window);
         setScript(7);
     }
 }
@@ -1673,13 +1673,13 @@ void SpNpcMabelTalk::onTryOnChoice(s32 v) {
         s32 r = Pocket_FindEmpty();
         if (r == -1) {
             m[0] = 0x2c;
-            TalkWindowState_setNextMessage(unk_3c, m, sSpNpcMabelMsgKeys[0]);
+            TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
         } else if (!NpcActor_CanPlayerPay(owner, price)) {
             m[1] = 0x2b;
-            TalkWindowState_setNextMessage(unk_3c, &m[1], sSpNpcMabelMsgKeys[0]);
+            TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
         } else {
             m[2] = 0x29;
-            TalkWindowState_setNextMessage(unk_3c, &m[2], sSpNpcMabelMsgKeys[0]);
+            TalkWindowState_setNextMessage(window, &m[2], sSpNpcMabelMsgKeys[0]);
             sellItemToPlayer();
         }
     }
@@ -1694,8 +1694,8 @@ extern "C" BOOL SpNpcMabel_IsDeliveryItem(u16 *p, s32 v) {
 
 void SpNpcMabelTalk::onDeliveryChoice(s32 v) {
     if (v == 0) {
-        Unk_020d7710_setPocketFilter(this, (void *)SpNpcMabel_IsDeliveryItem, 0xd, 0);
-        Unk_020d7710_openSubScene(this, 0);
+        ActorTalkRequest_setPocketFilter(this, (void *)SpNpcMabel_IsDeliveryItem, 0xd, 0);
+        ActorTalkRequest_openSubScene(this, 0);
         setScript(9);
     }
 }
@@ -1703,10 +1703,10 @@ void SpNpcMabelTalk::onDeliveryChoice(s32 v) {
 void SpNpcMabelTalk::onDramaMenuChoice() {
     u8 m[2];
     if ((s32)msgIndex >= 0 && (s32)msgIndex <= 0x11) {
-        s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(unk_3c));
+        s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(window));
         if (t != 2) {
             m[1] = sSpNpcMabelDramaMenuMsgs[t];
-            TalkWindowState_setNextMessage(unk_3c, &m[1], sSpNpcMabelMsgKeys[0]);
+            TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
         } else {
             if (Talk_IsDramaPending(owner, m, 2)) {
                 Talk_AdvanceDrama(owner, m);
@@ -1750,17 +1750,17 @@ void SpNpcMabelTalk::onDesignEditorDone() {
     u8 m[2];
     if (MenuCtrl_IsResultOk()) {
         m[0] = 0x10;
-        TalkWindowState_setNextMessage(unk_3c, m, sSpNpcMabelMsgKeys[0]);
+        TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
     } else {
         m[1] = 0xf;
-        TalkWindowState_setNextMessage(unk_3c, &m[1], sSpNpcMabelMsgKeys[0]);
+        TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
     }
 }
 
 void SpNpcMabelTalk::onDesignNamed() {
     u8 m[1];
     m[0] = 0x12;
-    TalkWindowState_setNextMessage(unk_3c, m, sSpNpcMabelMsgKeys[0]);
+    TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
 }
 
 void SpNpcMabelTalk::onDisplayPatternChosen() {
@@ -1772,10 +1772,10 @@ void SpNpcMabelTalk::onDisplayPatternChosen() {
         u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(), a);
         PatternSrc_Copy(9, t, 4, owner->patternSlot, 1);
         m[0] = 0x24;
-        TalkWindowState_setNextMessage(unk_3c, m, sSpNpcMabelMsgKeys[0]);
+        TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
     } else {
         m[1] = 0x22;
-        TalkWindowState_setNextMessage(unk_3c, &m[1], sSpNpcMabelMsgKeys[0]);
+        TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
     }
 }
 
@@ -1814,10 +1814,10 @@ void SpNpcMabelTalk::onTakePatternChosen() {
             }
         }
         m[0] = 0x27;
-        TalkWindowState_setNextMessage(unk_3c, m, sSpNpcMabelMsgKeys[0]);
+        TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
     } else {
         m[1] = 0x22;
-        TalkWindowState_setNextMessage(unk_3c, &m[1], sSpNpcMabelMsgKeys[0]);
+        TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
     }
 }
 
@@ -1856,10 +1856,10 @@ void SpNpcMabelTalk::onTradePatternChosen() {
             }
         }
         m[0] = 0x21;
-        TalkWindowState_setNextMessage(unk_3c, m, sSpNpcMabelMsgKeys[0]);
+        TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
     } else {
         m[1] = 0x22;
-        TalkWindowState_setNextMessage(unk_3c, &m[1], sSpNpcMabelMsgKeys[0]);
+        TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
     }
 }
 
@@ -1870,7 +1870,7 @@ void SpNpcMabelTalk::onSellItemsChosen() {
     s32 i;
     price = 0;
     soldCount = 0;
-    ctx = unk_3c;
+    ctx = window;
     msg = gU8None[0];
     if (MenuCtrl_IsResultOk()) {
         u16 *tbl = MenuCtrl_GetChosenItems();
@@ -1899,7 +1899,7 @@ void SpNpcMabelTalk::waitTryOnDone() {
         FtrMgr_TakeDisplayedWearableAt(owner->selectedItemX, owner->selectedItemZ);
     }
     if (PlayerActor_IsInAction(0x10, 4)) {
-        void *ctx = unk_3c;
+        void *ctx = window;
         u8 msg;
         TalkWindowState_unlockAdvance(ctx);
         msg = 0x2d;
@@ -1916,7 +1916,7 @@ void SpNpcMabelTalk::restoreTryOnDisplay() {
 }
 
 void SpNpcMabelTalk::onDeliveryItemChosen() {
-    void *ctx = unk_3c;
+    void *ctx = window;
     char *tbl = sSpNpcMabelMsgKeys[0];
     u32 msg = 0x30;
     u16 v[3];
@@ -1941,8 +1941,8 @@ void SpNpcMabelTalk::onDeliveryItemChosen() {
 }
 
 void SpNpcMabelTalk::openChoiceMenu(void *rec, s32 x) {
-    void *ctx = unk_3c;
-    void *h = TalkWindowState_getChoiceList(unk_3c);
+    void *ctx = window;
+    void *h = TalkWindowState_getChoiceList(window);
     Unk_ov049_022594e0_Rec *r = (Unk_ov049_022594e0_Rec *)rec;
     u8 *p = r->choices;
     s32 n = r->count;

@@ -23,7 +23,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
@@ -51,8 +51,8 @@ struct Unk_02067918 {
 
 
 extern "C" {
-void _ZN12Unk_020d771015setSubSceneKindEjj(void *self, u32 a, u32 b);
-void _ZN12Unk_020d771012openSubSceneEi(void *self, s32 a);
+void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *self, u32 a, u32 b);
+void _ZN16ActorTalkRequest12openSubSceneEi(void *self, s32 a);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *self, u32 a, u32 b, u32 c, u32 d, u32 e);
 void _ZN11NpcAnimCtrl9getAnimIdEj(void *self, s32 a);
 u32 _ZN8PlayerId9getGenderEv(void *self);
@@ -115,7 +115,7 @@ struct Unk_020d77a4_Vec3;
 
 
 
-class SpNpcKappnTalk : public Unk_020d7710 {
+class SpNpcKappnTalk : public ActorTalkRequest {
 public:
     typedef void (SpNpcKappnTalk::*Fn)();
     typedef void (SpNpcKappnTalk::*FnU)(u32);
@@ -498,24 +498,24 @@ void SpNpcKappnTalk::setResultHandler(s32 idx) {
 void SpNpcKappnTalk::onTownNameEntered() {
     u8 m[1];
     m[0] = genderMsg(0x11);
-    unk_3c->setNextMessage(m, sSpNpcKappnMsgKey);
+    window->setNextMessage(m, sSpNpcKappnMsgKey);
 }
 
 void SpNpcKappnTalk::onPlayerNameEntered() {
     u8 m[2];
     if (MenuCtrl_IsResultDuplicateName()) {
         m[0] = 0x29;
-        unk_3c->setNextMessage(m, sSpNpcKappnMsgKey);
+        window->setNextMessage(m, sSpNpcKappnMsgKey);
     } else {
         m[1] = 9;
-        unk_3c->setNextMessage(&m[1], sSpNpcKappnMsgKey);
+        window->setNextMessage(&m[1], sSpNpcKappnMsgKey);
     }
 }
 
 void SpNpcKappnTalk::onClockSet() {
     u8 m[1];
     m[0] = 2;
-    unk_3c->setNextMessage(m, sSpNpcKappnMsgKey);
+    window->setNextMessage(m, sSpNpcKappnMsgKey);
 }
 
 void SpNpcKappnTalk::onMessageStart(u32) {
@@ -547,20 +547,20 @@ void SpNpcKappnTalk::onMessageStart(u32) {
 }
 
 void SpNpcKappnTalk::openClockSetting() {
-    _ZN12Unk_020d771015setSubSceneKindEjj(this, 0x30, 0);
-    _ZN12Unk_020d771012openSubSceneEi(this, 2);
+    _ZN16ActorTalkRequest15setSubSceneKindEjj(this, 0x30, 0);
+    _ZN16ActorTalkRequest12openSubSceneEi(this, 2);
     setResultHandler(2);
 }
 
 void SpNpcKappnTalk::openPlayerNameEntry() {
-    _ZN12Unk_020d771015setSubSceneKindEjj(this, 0xf, 0);
-    _ZN12Unk_020d771012openSubSceneEi(this, 2);
+    _ZN16ActorTalkRequest15setSubSceneKindEjj(this, 0xf, 0);
+    _ZN16ActorTalkRequest12openSubSceneEi(this, 2);
     setResultHandler(1);
 }
 
 void SpNpcKappnTalk::openTownNameEntry() {
-    _ZN12Unk_020d771015setSubSceneKindEjj(this, 0x10, 0);
-    _ZN12Unk_020d771012openSubSceneEi(this, 2);
+    _ZN16ActorTalkRequest15setSubSceneKindEjj(this, 0x10, 0);
+    _ZN16ActorTalkRequest12openSubSceneEi(this, 2);
     setResultHandler(0);
 }
 
@@ -568,7 +568,7 @@ void SpNpcKappnTalk::askVisitPlan() {
     u8 m[2];
     if (GameStart_IsMode4()) {
         m[0] = 0x30;
-        unk_3c->setNextMessage(m, sSpNpcKappnMsgKey);
+        window->setNextMessage(m, sSpNpcKappnMsgKey);
     }
 }
 
@@ -577,27 +577,27 @@ void SpNpcKappnTalk::askReasonOrMoney() {
     u8 m[2];
     if (GameStart_IsNewTown()) {
         m[0] = genderMsg(0x15);
-        unk_3c->setNextMessage(m, sSpNpcKappnMsgKey);
+        window->setNextMessage(m, sSpNpcKappnMsgKey);
     } else {
         m[1] = genderMsg(0x1f);
-        unk_3c->setNextMessage(&m[1], sSpNpcKappnMsgKey);
+        window->setNextMessage(&m[1], sSpNpcKappnMsgKey);
     }
 }
 
 void SpNpcKappnTalk::askDestination() {
     u8 msg;
     msg = genderMsg(0xf);
-    unk_3c->setNextMessage(&msg, sSpNpcKappnMsgKey);
+    window->setNextMessage(&msg, sSpNpcKappnMsgKey);
 }
 
 void SpNpcKappnTalk::askAfterBoyCorrection() {
     u8 msg[2];
     if (GameStart_IsNewResident()) {
         msg[0] = 0x19;
-        unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
+        window->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
     } else {
         msg[1] = 0xf;
-        unk_3c->setNextMessage(&msg[1], sSpNpcKappnMsgKey);
+        window->setNextMessage(&msg[1], sSpNpcKappnMsgKey);
     }
 }
 
@@ -605,10 +605,10 @@ void SpNpcKappnTalk::askAfterGirlCorrection() {
     u8 msg[2];
     if (GameStart_IsNewResident()) {
         msg[0] = 0x1a;
-        unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
+        window->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
     } else {
         msg[1] = 0x10;
-        unk_3c->setNextMessage(&msg[1], sSpNpcKappnMsgKey);
+        window->setNextMessage(&msg[1], sSpNpcKappnMsgKey);
     }
 }
 
@@ -616,17 +616,17 @@ void SpNpcKappnTalk::askMoneyOrArrive() {
     u8 msg[2];
     if (GameStart_IsMode3()) {
         msg[0] = genderMsg(0x25);
-        unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
+        window->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
     } else {
         msg[1] = genderMsg(0x1f);
-        unk_3c->setNextMessage(&msg[1], sSpNpcKappnMsgKey);
+        window->setNextMessage(&msg[1], sSpNpcKappnMsgKey);
     }
 }
 
 void SpNpcKappnTalk::announceArrival() {
     u8 msg;
     msg = genderMsg(0x25);
-    unk_3c->setNextMessage(&msg, sSpNpcKappnMsgKey);
+    window->setNextMessage(&msg, sSpNpcKappnMsgKey);
 }
 
 void SpNpcKappnTalk::applyFaceFromAnswers() {
@@ -654,7 +654,7 @@ void SpNpcKappnTalk::applyFaceFromAnswers() {
         c = e->c;
         _ZN10PlayerData8setShirtEPt(h, &c);
     }
-    unk_3c->setNextMessage(gTalkMsgIndexEnd, 0);
+    window->setNextMessage(gTalkMsgIndexEnd, 0);
     ownerNpc->changeAct(4);
 }
 
@@ -725,15 +725,15 @@ void SpNpcKappnTalk::onTownNameConfirmChoice(u32 sel) {
     case 0:
         if (GameStart_IsMode3()) {
             msg[0] = genderMsg(0x15);
-            unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
+            window->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
         } else {
             msg[1] = genderMsg(0x19);
-            unk_3c->setNextMessage(&msg[1], sSpNpcKappnMsgKey);
+            window->setNextMessage(&msg[1], sSpNpcKappnMsgKey);
         }
         break;
     case 1:
         msg[2] = genderMsg(0x13);
-        unk_3c->setNextMessage(&msg[2], sSpNpcKappnMsgKey);
+        window->setNextMessage(&msg[2], sSpNpcKappnMsgKey);
         break;
     }
 }
@@ -745,16 +745,16 @@ void SpNpcKappnTalk::onBoyNameChoice(u32 sel) {
         _ZN8PlayerId9setGenderEh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 0);
         if (GameStart_IsNewResident()) {
             msg[0] = genderMsg(0x19);
-            unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
+            window->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
         } else {
             msg[1] = genderMsg(0xf);
-            unk_3c->setNextMessage(&msg[1], sSpNpcKappnMsgKey);
+            window->setNextMessage(&msg[1], sSpNpcKappnMsgKey);
         }
         break;
     case 1:
         _ZN8PlayerId9setGenderEh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 1);
         msg[2] = 0xe;
-        unk_3c->setNextMessage(&msg[2], sSpNpcKappnMsgKey);
+        window->setNextMessage(&msg[2], sSpNpcKappnMsgKey);
         break;
     }
 }
@@ -766,16 +766,16 @@ void SpNpcKappnTalk::onGirlNameChoice(u32 sel) {
         _ZN8PlayerId9setGenderEh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 1);
         if (GameStart_IsNewResident()) {
             msg[0] = genderMsg(0x19);
-            unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
+            window->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
         } else {
             msg[1] = genderMsg(0xf);
-            unk_3c->setNextMessage(&msg[1], sSpNpcKappnMsgKey);
+            window->setNextMessage(&msg[1], sSpNpcKappnMsgKey);
         }
         break;
     case 1:
         _ZN8PlayerId9setGenderEh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 0);
         msg[2] = 0xd;
-        unk_3c->setNextMessage(&msg[2], sSpNpcKappnMsgKey);
+        window->setNextMessage(&msg[2], sSpNpcKappnMsgKey);
         break;
     }
 }
@@ -783,7 +783,7 @@ void SpNpcKappnTalk::onGirlNameChoice(u32 sel) {
 void SpNpcKappnTalk::onTownReasonChoice(u32 sel) {
     u8 msg;
     msg = genderMsg(0x17);
-    unk_3c->setNextMessage(&msg, sSpNpcKappnMsgKey);
+    window->setNextMessage(&msg, sSpNpcKappnMsgKey);
     Town_SetGenGateMode(sel);
 }
 
@@ -792,11 +792,11 @@ void SpNpcKappnTalk::onVisitPlanChoice(u32 sel) {
     switch (sel) {
     case 0:
         msg[0] = 0x31;
-        unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
+        window->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
         break;
     case 1:
         msg[1] = 0x32;
-        unk_3c->setNextMessage(&msg[1], sSpNpcKappnMsgKey);
+        window->setNextMessage(&msg[1], sSpNpcKappnMsgKey);
         break;
     }
 }
@@ -810,7 +810,7 @@ void SpNpcKappnTalk::onRainChoice(u32 sel) {
         v = sSpNpcKappnRainReplyMsgs[sel];
     }
     msg = v;
-    unk_3c->setNextMessage(&msg, sSpNpcKappnMsgKey);
+    window->setNextMessage(&msg, sSpNpcKappnMsgKey);
     if (sel == 1) {
         ownerNpc->talk.answerBits += 4;
     }
@@ -819,7 +819,7 @@ void SpNpcKappnTalk::onRainChoice(u32 sel) {
 void SpNpcKappnTalk::onPurposeChoice(u32 sel) {
     u8 msg;
     msg = genderMsg(sSpNpcKappnPurposeReplyMsgs[sel]);
-    unk_3c->setNextMessage(&msg, sSpNpcKappnMsgKey);
+    window->setNextMessage(&msg, sSpNpcKappnMsgKey);
     if (sel == 1) {
         ownerNpc->talk.answerBits += 2;
     }
@@ -840,7 +840,7 @@ void SpNpcKappnTalk::onMoneyChoice(u32 sel) {
         v = genderMsg(0x23);
     }
     msg = v;
-    unk_3c->setNextMessage(&msg, sSpNpcKappnMsgKey);
+    window->setNextMessage(&msg, sSpNpcKappnMsgKey);
     if (sel == 1) {
         ownerNpc->talk.answerBits++;
     }
@@ -937,7 +937,7 @@ loop0:
     u32 off = i * 12;
     u32 id = *(u32 *)((u8 *)tbl + off);
     if (id == *idp) {
-        u32 arg = unk_3c->getChoiceList()->getResult();
+        u32 arg = window->getChoiceList()->getResult();
         (this->*((Unk_ov051_02258e68_Ent *)((u32)tbl + off))->fn)(arg);
     }
     i++;

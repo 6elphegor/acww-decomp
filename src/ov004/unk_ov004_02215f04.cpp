@@ -16,7 +16,7 @@
 #include "talk/TalkWindowState.h"
 #include "actor/NpcActor.h"
 #include "actor/VillagerActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/VillagerTalk.h"
 #include "npc/BirthdayHostVillager.h"
 

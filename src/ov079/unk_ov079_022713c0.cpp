@@ -26,7 +26,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -41,12 +41,12 @@ class SpNpcWendellTalk;
 
 extern "C" {
 void _ZN12Unk_0201442015requestKeepItemEv(void *p);
-void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
-void _ZN12Unk_020d771015setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
-void _ZN12Unk_020d771012openSubSceneEi(void *p, s32 v);
-void _ZN12Unk_020d771019requestReopenWindowEv(void *p);
+void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
+void _ZN16ActorTalkRequest12openSubSceneEi(void *p, s32 v);
+void _ZN16ActorTalkRequest19requestReopenWindowEv(void *p);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
 void _ZN16ActorTalkRequest17setPlayerNameSlotEjj(void *p, void *q, u32 a);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
@@ -257,7 +257,7 @@ void TownSessionState_GetVisitorPos(void *p);
 void _ZN10VisitorPos13pickRandomPosEv();
 void _ZN12Unk_0201442014requestEatItemEv(void *p);
 void _ZN12Unk_0201442017requestReturnItemEv(void *p);
-void _ZN12Unk_020d771015setSubSceneKindEjj(void *p, u32 a, u32 b);
+void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *p, u32 a, u32 b);
 extern u32 data_020c6d1c;
 extern s32 data_020c6cf0;
 extern u8 gRandom[];
@@ -698,7 +698,7 @@ BOOL SpNpcWendell_AcceptAnyItem(u16 *p, s32 x) {
 }
 
 void SpNpcWendellTalk::onFoodPicked() {
-    TalkWindowState *m = unk_3c;
+    TalkWindowState *m = window;
     u8 v = 1;
     foodSlot = -1;
     if (MenuCtrl_IsResultOk()) {
@@ -731,17 +731,17 @@ void SpNpcWendellTalk::onFoodPicked() {
         _ZN12Unk_0201442015requestTakeItemEPtjjj(this, &foodItem, 0, 4, 0);
         setNextResultHandler(1);
     } else {
-        _ZN12Unk_020d771019requestReopenWindowEv(this);
+        _ZN16ActorTalkRequest19requestReopenWindowEv(this);
     }
     m->setNextMessage(&v, (u8 *)"sp_npc_walrus");
 }
 
 void SpNpcWendellTalk::resultHandler01() {
-    _ZN12Unk_020d771019requestReopenWindowEv(this);
+    _ZN16ActorTalkRequest19requestReopenWindowEv(this);
 }
 
 void SpNpcWendellTalk::onPatternSlotPicked() {
-    TalkWindowState *m = unk_3c;
+    TalkWindowState *m = window;
     Unk_ov079_02271718_Buf buf;
     u32 r4;
     buf.t = 0xd;
@@ -797,7 +797,7 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
         PatternSrc_Copy(7, r4, 9, r6, 1);
         buf.t = 5;
         buf.v[0] = 0x3530;
-        _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &buf.v[0], 0, 5, 0);
+        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &buf.v[0], 0, 5, 0);
         u32 a, b, c;
         if (r6 < 8) {
             a = (u16)(r6 + 0x12a8);
@@ -839,7 +839,7 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
         u32 obj[9];
         _ZN8ItemNameC1Ev(obj);
         _ZN11PatternInfo8getTitleEPv(_ZN7Pattern7getInfoEv(h), obj);
-        unk_3c->setNamedSlot(1, obj, 7);
+        window->setNamedSlot(1, obj, 7);
         _ZN8ItemNameD1Ev(obj);
     }
     m->setNextMessage(&buf.t, (u8 *)"sp_npc_walrus");
@@ -906,8 +906,8 @@ void SpNpcWendellTalk::onMessageEnd(u32) {
         EventWeekSlots_MarkPlayer(0x41);
         break;
     case 14:
-        _ZN12Unk_020d771015setSubSceneKindEjj(this, 0xa, 0);
-        _ZN12Unk_020d771012openSubSceneEi(this, 2);
+        _ZN16ActorTalkRequest15setSubSceneKindEjj(this, 0xa, 0);
+        _ZN16ActorTalkRequest12openSubSceneEi(this, 2);
         setResultHandler(2);
         break;
     case 11:
@@ -915,7 +915,7 @@ void SpNpcWendellTalk::onMessageEnd(u32) {
         break;
     case 9:
         if (Pocket_AddItem(&foodItem, 0)) {
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &foodItem, 0, 5, 0);
+            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &foodItem, 0, 5, 0);
         }
         r = 0xa;
         break;
@@ -927,7 +927,7 @@ void SpNpcWendellTalk::onMessageEnd(u32) {
     }
     if (r != 0xff) {
         v = r;
-        unk_3c->setNextMessage(&v, str);
+        window->setNextMessage(&v, str);
     }
 }
 
@@ -939,8 +939,8 @@ void SpNpcWendellTalk::onChoice(u32) {
     switch (msgIndex) {
     case 0:
         if (t == 0) {
-            _ZN12Unk_020d771015setPocketFilterEjjj(this, SpNpcWendell_AcceptAnyItem, 0xd, 1);
-            _ZN12Unk_020d771012openSubSceneEi(this, 0);
+            _ZN16ActorTalkRequest15setPocketFilterEjjj(this, SpNpcWendell_AcceptAnyItem, 0xd, 1);
+            _ZN16ActorTalkRequest12openSubSceneEi(this, 0);
             setResultHandler(0);
         }
         break;
@@ -952,7 +952,7 @@ void SpNpcWendellTalk::onChoice(u32) {
     }
     if (r != 0xff) {
         v = r;
-        unk_3c->setNextMessage(&v, str);
+        window->setNextMessage(&v, str);
     }
 }
 

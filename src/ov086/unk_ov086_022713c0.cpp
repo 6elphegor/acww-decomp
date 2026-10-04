@@ -24,7 +24,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -50,7 +50,7 @@ s32 Pocket_FindEmpty();
 s32 Pocket_FindItem(u16 *p);
 void Pocket_AddItem(u16 *p, s32 v);
 void Pocket_RemoveItem(s32 v);
-void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
@@ -362,11 +362,11 @@ void SpNpcTortimerCountdownTalk::onMessageEnd(u32) {
         }
         if (msgIndex == 2) {
             l.h1 = 0x1559;
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &l.h1, 0, 5, 0);
+            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &l.h1, 0, 5, 0);
             l.h2 = 0x1559;
             Pocket_AddItem(&l.h2, 0);
             l.bb[1] = 4;
-            unk_3c->setNextMessage(&l.bb[1], (u8 *)"sp_npc_turtle");
+            window->setNextMessage(&l.bb[1], (u8 *)"sp_npc_turtle");
         }
     } else {
         s32 r = Inventory_FindEmptyLetter();
@@ -399,7 +399,7 @@ void SpNpcTortimerCountdownTalk::onMessageEnd(u32) {
                     }
                     TownSessionState_SetFlag(TownSessionState_Get(), 4);
                     l.h4 = 0x1565;
-                    _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &l.h4, 0, 5, 0);
+                    _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &l.h4, 0, 5, 0);
                     msg = 0x15;
                 }
             }
@@ -408,7 +408,7 @@ void SpNpcTortimerCountdownTalk::onMessageEnd(u32) {
         case 0x1a:
         case 0x1b:
             l.h5 = 0x137d;
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &l.h5, 0, 5, 0);
+            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &l.h5, 0, 5, 0);
             l.h6 = 0x137d;
             Pocket_AddItem(&l.h6, 0);
             msg = 0x1c + Random_GlobalBelow(3);
@@ -416,7 +416,7 @@ void SpNpcTortimerCountdownTalk::onMessageEnd(u32) {
         }
         if (msg != 0xff) {
             l.bb[4] = msg;
-            unk_3c->setNextMessage(&l.bb[4], s6);
+            window->setNextMessage(&l.bb[4], s6);
         }
     }
 }
@@ -439,7 +439,7 @@ void SpNpcTortimerCountdownTalk::onChoice(u32) {
         }
         if (msg != 0xff) {
             b = msg;
-            unk_3c->setNextMessage(&b, s);
+            window->setNextMessage(&b, s);
         }
     }
 }

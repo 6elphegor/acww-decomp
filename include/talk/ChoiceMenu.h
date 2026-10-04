@@ -202,7 +202,7 @@ public:
     void setList(ChoiceList *p);
 
     /* 0x00 */ s32 row;
-    /* 0x04 */ ChoiceWindow *unk_04;
+    /* 0x04 */ ChoiceWindow *listWindow;
     /* 0x08 */ TextLabel *labels[5];
     /* 0x1c */ u32 maxWidth;
     /* 0x20 */ ChoiceList *list;
@@ -249,9 +249,9 @@ public:
     s32 getPos();
     void setList(ChoiceList *p);
 
-    /* 0x00 */ ChoiceSliderWindow *unk_00;
+    /* 0x00 */ ChoiceSliderWindow *sliderWindow;
     /* 0x04 */ s32 speed;
-    /* 0x08 */ s32 unk_08;
+    /* 0x08 */ s32 sliderPos;
     /* 0x0c */ s32 prevPos;
     /* 0x10 */ s32 grabOffsetY;
     /* 0x14 */ TextLabel *labels[5];

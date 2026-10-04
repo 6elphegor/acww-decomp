@@ -104,7 +104,7 @@ BOOL CountdownDigit::initBuilding() {
     if (_ZN9ModelAnim11allocMatAnmEjPv(&matAnim, (s32)modelRes, gFieldStructureHeap)) {
         s32 r1 = (s32)getBtaAnim(0);
         _ZN9ModelAnim4initEiiit(&matAnim, r1, 1, 0x1000, 0);
-        _ZN9ModelAnim14addToRenderObjEj(&matAnim, _ZN5Model12getRenderObjEv(unk_138));
+        _ZN9ModelAnim14addToRenderObjEj(&matAnim, _ZN5Model12getRenderObjEv(model));
     }
     isCounting = 1;
     prevDigit = 0xff;

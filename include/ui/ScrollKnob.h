@@ -27,7 +27,7 @@ public:
     /* 0x28 */ SpriteAnim priority;
     /* 0x3c */ s32 state;
     /* 0x40 */ u8 anim;
-    /* 0x44 */ s32 unk_44;
+    /* 0x44 */ s32 drawPriority;
 };
 
 #endif

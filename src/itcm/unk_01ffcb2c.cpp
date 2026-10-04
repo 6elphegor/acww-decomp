@@ -19,7 +19,7 @@ struct Grid {
 
 
 struct CellGrid {
-    /* 0x00 */ Cell *cells;
+    /* 0x00 */ TownBlockCell *cells;
     /* 0x04 */ s32 w;
 };
 

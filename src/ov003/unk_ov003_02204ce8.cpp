@@ -13354,18 +13354,18 @@ extern "C" void PlayerActor_BeeStingUpdate(Obj *o) {
             Unk_02006d14_setActionFlag(o, 0x11);
             MsgRequest_setFileName(&(TalkMsgRequest &)*o, "obj_etc_player");
             o->msgIndex = 0x14;
-            o->unk_3c->nextState = 1;
+            o->window->nextState = 1;
             Camera_SetMode4();
         case 1:
-            if (o->unk_3c) {
-                if (o->unk_3c->state) {
+            if (o->window) {
+                if (o->window->state) {
                     *p = 2;
                 }
             }
             break;
         case 2:
-            if (o->unk_3c) {
-                if (o->unk_3c->state == 0) {
+            if (o->window) {
+                if (o->window->state == 0) {
                     Character_detachTalkRequest(o, o);
                     Unk_02006d14_clearActionFlag(o, 0x11);
                     TalkRequest_FinishPlayerMessage();

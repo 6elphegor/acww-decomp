@@ -172,8 +172,8 @@ extern "C" void *MuseumExhibitInfo_GetByIndex(s32 i) {
 }
 
 void MuseumExhibitInfo::mainAct03() {
-    if (unk_3c) {
-        if (unk_3c->state) {
+    if (window) {
+        if (window->state) {
             changeAct(2);
         }
     }
@@ -189,19 +189,19 @@ BOOL MuseumExhibitInfo::setupAct03() {
         MsgString9B obj;
         if (MuseumData_getDonorName(g, &obj, &id[1])) {
             msgIndex = 3;
-            TalkWindowState_setSlot(unk_3c, 0, &obj);
+            TalkWindowState_setSlot(window, 0, &obj);
         }
     } else {
         msgIndex = 4;
     }
-    unk_3c->nextState = 1;
+    window->nextState = 1;
     talkCount++;
     return TRUE;
 }
 
 void MuseumExhibitInfo::mainAct02() {
-    if (unk_3c) {
-        if (unk_3c->state == 0) {
+    if (window) {
+        if (window->state == 0) {
             Character_detachTalkRequest(this, this);
             TalkRequest_SetTargetDone(this);
         }
@@ -209,8 +209,8 @@ void MuseumExhibitInfo::mainAct02() {
 }
 
 void MuseumExhibitInfo::mainAct01() {
-    if (unk_3c) {
-        if (unk_3c->state) {
+    if (window) {
+        if (window->state) {
             changeAct(2);
         }
     }
@@ -250,7 +250,7 @@ BOOL MuseumExhibitInfo::setupAct01() {
             msgIndex = 2;
         }
     }
-    unk_3c->nextState = 1;
+    window->nextState = 1;
     return TRUE;
 }
 
@@ -296,23 +296,23 @@ void MuseumExhibitInfo::onChoice(u32) {
     if (isAutoTalkKind() == 0) {
         u8 a0, a1, a2, a3;
         u16 sel;
-        if (ChoiceList_getResult(TalkWindowState_getChoiceList(unk_3c)) == 0) {
+        if (ChoiceList_getResult(TalkWindowState_getChoiceList(window)) == 0) {
             sel = items[cursor];
             if (kind <= 1) {
                 u32 n = countDonatedFromCursor();
                 if (n > 3) n = 3;
                 a0 = (n - 1) % 3 + 5;
-                TalkWindowState_setNextMessage(unk_3c, &a0, 0);
+                TalkWindowState_setNextMessage(window, &a0, 0);
             } else if (MuseumData_getDonationState(&data_021ed0a0, &sel) != 2) {
                 a1 = 1;
-                TalkWindowState_setNextMessage(unk_3c, &a1, 0);
+                TalkWindowState_setNextMessage(window, &a1, 0);
             } else {
                 a2 = 2;
-                TalkWindowState_setNextMessage(unk_3c, &a2, 0);
+                TalkWindowState_setNextMessage(window, &a2, 0);
             }
         } else {
             a3 = gTalkMsgIndexEnd;
-            TalkWindowState_setNextMessage(unk_3c, &a3, 0);
+            TalkWindowState_setNextMessage(window, &a3, 0);
         }
     }
 }
@@ -326,21 +326,21 @@ void MuseumExhibitInfo::onMessageEnd(u32) {
                     u32 e = msgIndex;
                     if (infoMsgIndex == e) {
                         b[0] = e + 1;
-                        TalkWindowState_setNextMessage(unk_3c, &b[0], 0);
+                        TalkWindowState_setNextMessage(window, &b[0], 0);
                     } else {
                         b[1] = gTalkMsgIndexEnd;
-                        TalkWindowState_setNextMessage(unk_3c, &b[1], 0);
+                        TalkWindowState_setNextMessage(window, &b[1], 0);
                     }
                 } else {
                     b[2] = gTalkMsgIndexEnd;
-                    TalkWindowState_setNextMessage(unk_3c, &b[2], 0);
+                    TalkWindowState_setNextMessage(window, &b[2], 0);
                 }
             } else {
                 b[3] = gTalkMsgIndexEnd;
-                TalkWindowState_setNextMessage(unk_3c, &b[3], 0);
+                TalkWindowState_setNextMessage(window, &b[3], 0);
             }
         } else if (countDonatedFromCursor() != 0) {
-            void *o = TalkWindowState_getChoiceList(unk_3c);
+            void *o = TalkWindowState_getChoiceList(window);
             if (o) {
                 ChoiceList_reset(o, 2, 1);
                 b[4] = 0xe5;
@@ -348,11 +348,11 @@ void MuseumExhibitInfo::onMessageEnd(u32) {
                 b[5] = 0xe6;
                 ChoiceList_setEntry(o, 1, &b[5], 0, gTalkMsgIndexNone, 0, 0);
                 ChoiceList_loadTexts(o);
-                TalkWindowState_openChoices(unk_3c, 1);
+                TalkWindowState_openChoices(window, 1);
             }
         } else {
             b[6] = gTalkMsgIndexEnd;
-            TalkWindowState_setNextMessage(unk_3c, &b[6], 0);
+            TalkWindowState_setNextMessage(window, &b[6], 0);
         }
     }
 }
@@ -371,7 +371,7 @@ void MuseumExhibitInfo::onMessageStart(u32) {
             for (i = 0; i < n; i++) {
                 w1 = items[cursor];
                 ItemName o(&w1);
-                TalkWindowState_setNamedSlot(unk_3c, i, &o, 7);
+                TalkWindowState_setNamedSlot(window, i, &o, 7);
                 advanceToNextDonated();
             }
         } else {
@@ -380,9 +380,9 @@ void MuseumExhibitInfo::onMessageStart(u32) {
                 w2 = items[idx];
                 MsgString9B e;
                 MuseumData_getDonorName(&data_021ed0a0, &e, &w2);
-                TalkWindowState_setSlot(unk_3c, 0, &e);
+                TalkWindowState_setSlot(window, 0, &e);
                 ItemName o2(&w2);
-                TalkWindowState_setNamedSlot(unk_3c, 0, &o2, 7);
+                TalkWindowState_setNamedSlot(window, 0, &o2, 7);
                 if (kind != 3) {
                     advanceToNextDonated();
                 }

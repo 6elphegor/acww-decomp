@@ -93,7 +93,7 @@ typedef BOOL (CountdownSign::*Unk_02215680_Fn)();
 // ================================================================
 BOOL CountdownDigit::onExecute() {
     CountdownDigit_Update(this);
-    s32 r4 = _ZN5Model12getRenderObjEv(unk_138);
+    s32 r4 = _ZN5Model12getRenderObjEv(model);
     s32 r2 = (s32)getBtaAnim(0);
     _ZN9ModelAnim7replaceEiiiit(&matAnim, r4, r2, 1, 0x1000, digit);
     return TRUE;
@@ -224,12 +224,12 @@ BOOL CountdownSign::initBuilding() {
         digits[i] = (Unk_ov003_02215748_Ent *)_ZN5Actor5spawnEPvS0_S0_S0_S0_(0x26, 0x501f, v, z, z);
         i++;
     } while (i < 6);
-    _ZN5Model15setInitCallbackEii(unk_138, CountdownSign_ModelCallback, this);
+    _ZN5Model15setInitCallbackEii(model, CountdownSign_ModelCallback, this);
     alphaMatIdx = _ZN12G3dResAccess10findMatIdxEi((s32)modelRes, "m_cbs_Adt");
     if (_ZN9ModelAnim11allocMatAnmEjPv(&matAnim, (s32)modelRes, gFieldStructureHeap)) {
         s32 r1 = (s32)getBtaAnim(0);
         _ZN9ModelAnim4initEiiit(&matAnim, r1, 0, 0x1000, 0);
-        _ZN9ModelAnim14addToRenderObjEj(&matAnim, _ZN5Model12getRenderObjEv(unk_138));
+        _ZN9ModelAnim14addToRenderObjEj(&matAnim, _ZN5Model12getRenderObjEv(model));
     }
     u32 tm[2];
     tm[0] = 0;

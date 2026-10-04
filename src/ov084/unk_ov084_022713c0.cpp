@@ -24,7 +24,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -50,7 +50,7 @@ s32 Pocket_FindEmpty();
 s32 Pocket_FindItem(u16 *p);
 void Pocket_AddItem(u16 *p, s32 v);
 void Pocket_RemoveItem(s32 v);
-void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
@@ -368,11 +368,11 @@ void SpNpcTortimerFireworksTalk::onMessageEnd(u32) {
         }
         if (msgIndex == 2) {
             h[1] = 0x1559;
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h[1], 0, 5, 0);
+            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h[1], 0, 5, 0);
             h[2] = 0x1559;
             Pocket_AddItem(&h[2], 0);
             b = 4;
-            unk_3c->setNextMessage(&b, (u8 *)"sp_npc_turtle");
+            window->setNextMessage(&b, (u8 *)"sp_npc_turtle");
         }
     } else {
         switch (msgIndex) {
@@ -416,7 +416,7 @@ void SpNpcTortimerFireworksTalk::onMessageEnd(u32) {
                 if (_ZN17PlayerSpNpcRecord17getFireworksGivenEv(g2) < 10) {
                     _ZN17PlayerSpNpcRecord17addFireworksGivenEv(g2);
                     s32 r = _ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
-                    _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h[0], 0, 5, 0);
+                    _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h[0], 0, 5, 0);
                     Pocket_AddItem(&h[0], 0);
                     _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &h[0], 0, 7);
                     if (r == 0) {
@@ -435,13 +435,13 @@ void SpNpcTortimerFireworksTalk::onMessageEnd(u32) {
         }
         case 9:
             h[6] = 0x1565;
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h[6], 0, 5, 0);
+            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h[6], 0, 5, 0);
             msg = 0xa;
             break;
         }
         if (msg != 0xff) {
             b2 = msg;
-            unk_3c->setNextMessage(&b2, s);
+            window->setNextMessage(&b2, s);
         }
     }
 }
@@ -468,7 +468,7 @@ void SpNpcTortimerFireworksTalk::onChoice(u32) {
         }
         if (msg != 0xff) {
             buf[1] = msg;
-            unk_3c->setNextMessage(&buf[1], s);
+            window->setNextMessage(&buf[1], s);
         }
     } else {
         if (msgIndex == 7 && t == 0) {
@@ -506,7 +506,7 @@ void SpNpcTortimerFireworksTalk::onChoice(u32) {
         }
         if (msg != 0xff) {
             buf[4] = msg;
-            unk_3c->setNextMessage(&buf[4], t4);
+            window->setNextMessage(&buf[4], t4);
         }
     }
 }

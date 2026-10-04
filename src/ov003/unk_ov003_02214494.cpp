@@ -139,7 +139,7 @@ void ReddTent::onMessageStart(u32) {
         u32 obj[0x38 / 4];
         _ZN18ReddPasswordStringC1Ev(obj);
         if (_ZN8ReddShop11getPasswordEv(data_021ed2c0)->getPromptText(obj)) {
-            _ZN15TalkWindowState7setSlotEiPv(unk_3c, 0, obj);
+            _ZN15TalkWindowState7setSlotEiPv(window, 0, obj);
         }
         _ZN18ReddPasswordStringD1Ev(obj);
     }
@@ -149,7 +149,7 @@ void ReddTent::onMessageStart(u32) {
 void ReddTent::onMessageEnd(u32) {
     switch (msgIndex) {
     case 2:
-        unk_3c->openMode = 1;
+        window->openMode = 1;
         setTentState(4);
         break;
     case 3:
@@ -254,14 +254,14 @@ BOOL ReddTent::enterTentTalkOpen() {
             msgIndex = 0;
         }
     }
-    unk_3c->nextState = 1;
+    window->nextState = 1;
     setNoSpeakerName(0);
     return TRUE;
 }
 
 
 void ReddTent::execTentTalkOpen() {
-    TalkWindowState *t = unk_3c;
+    TalkWindowState *t = window;
     if (t) {
         if (t->state != 0) {
             setTentState(3);
@@ -276,7 +276,7 @@ BOOL ReddTent::enterTentTalk() {
 
 
 void ReddTent::execTentTalk() {
-    TalkWindowState *t = unk_3c;
+    TalkWindowState *t = window;
     if (t) {
         if (t->state == 0) {
             _ZN9Character17detachTalkRequestEi(this, this);
@@ -292,7 +292,7 @@ BOOL ReddTent::enterTentMenuWait() {
 
 
 void ReddTent::execTentMenuWait() {
-    if (unk_3c->state == 5) {
+    if (window->state == 5) {
         _ZN8ReddShop11getPasswordEv(data_021ed2c0);
         MenuCtrl_OpenLauncherWithIndex(0xe, _ZN12ReddPassword14getAnswerIndexEv());
         setTentState(5);
@@ -311,13 +311,13 @@ void ReddTent::execTentMenu() {
         if (MenuCtrl_IsResultOk()) {
             ReddPassword_LearnCurrentPlayer();
             r[0] = 3;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &r[0], "sp_npc_fox");
-            unk_3c->nextState = 1;
+            _ZN15TalkWindowState14setNextMessageEPhPv(window, &r[0], "sp_npc_fox");
+            window->nextState = 1;
             setTentState(3);
         } else {
             r[1] = 4;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &r[1], "sp_npc_fox");
-            unk_3c->nextState = 1;
+            _ZN15TalkWindowState14setNextMessageEPhPv(window, &r[1], "sp_npc_fox");
+            window->nextState = 1;
             setTentState(3);
             BuildingOccupancy_Leave(itemId, 0);
         }
@@ -331,7 +331,7 @@ BOOL ReddTent::enterTentGoIn() {
 
 
 void ReddTent::execTentGoIn() {
-    TalkWindowState *t = unk_3c;
+    TalkWindowState *t = window;
     if (t) {
         if (t->state == 0) {
             setTentState(7);

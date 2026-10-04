@@ -30,7 +30,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/VillagerActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/VillagerTalk.h"
 #include "talk/MsgString.h"
 #include "talk/MsgString33.h"
@@ -73,7 +73,7 @@ struct Unk_020d77a4_Vec3;
 
 
 
-struct Unk_020d8938_Tbl;
+struct VillagerTalkTopicFns;
 
 
 // ---------------------------------------------------------------- TU10 classes
@@ -723,7 +723,7 @@ void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
     EncodedString16Buf obj1(buf.b);
     MsgString33 obj2;
     obj2.fromEncoded(&obj1, 0, 0);
-    unk_3c->setSlot(3, &obj2);
+    window->setSlot(3, &obj2);
     if (rnd < 30 && v != -1) {
         unk_1a0->talkTopic = 3;
         SPEAK((void *)"q10_furniture");
@@ -752,11 +752,11 @@ void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
         ((Unk_ov068_02270a6c_Bits *)((u8 *)PlayerData_getErrands(PlayerData_GetCurrent()) + 0xa8))->lo = n;
     } else if (rnd < 70) {
         unk_1a0->talkTopic = 0;
-        setTopicFns((Unk_020d8938_Tbl *)sHouseVisitTsuTopicTable);
+        setTopicFns((VillagerTalkTopicFns *)sHouseVisitTsuTopicTable);
         VillagerTalk::start((TalkStartMsg *)out);
     } else {
         unk_1a0->talkTopic = 0;
-        setTopicFns((Unk_020d8938_Tbl *)data_021be810);
+        setTopicFns((VillagerTalkTopicFns *)data_021be810);
         VillagerTalk::start((TalkStartMsg *)out);
     }
 }
@@ -782,10 +782,10 @@ void HouseVisitVillagerTalk::onMessageEnd(u32 a) {
             o->talkTopic = 7;
             VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->villagerData), data_ov068_022712b8, 0x28, (void *)"q_bye");
             buf[0] = Random_GlobalBelow(3);
-            unk_1a0->talk.unk_3c->setNextMessageIfUnset(buf, data_ov068_022712b8);
+            unk_1a0->talk.window->setNextMessageIfUnset(buf, data_ov068_022712b8);
         } else if (st == 7) {
             buf[1] = gTalkMsgIndexEnd;
-            unk_1a0->talk.unk_3c->setNextMessage(&buf[1], 0);
+            unk_1a0->talk.window->setNextMessage(&buf[1], 0);
             unk_1a0->setVisitState(10);
             Snd_PlaySe(0x5f);
         }
@@ -950,7 +950,7 @@ BOOL HouseVisitVillager::enterVisitDoorOpen() {
 
 void HouseVisitVillager::execVisitDoorOpen() {
     using namespace sB;
-    if (talk.unk_3c->state == 0) {
+    if (talk.window->state == 0) {
         Snd_SeEmitterPlayOneShot(&seEmitter, 0x4cb, 0x7f, 0);
         Building_PlayDoorChime();
         setVisitState(3);
@@ -1185,8 +1185,8 @@ BOOL HouseVisitVillager::enterVisitTalkWait() {
 
 void HouseVisitVillager::execVisitTalkWait() {
     using namespace sA;
-    if (talk.unk_3c != NULL) {
-        if (talk.unk_3c->state == 0) {
+    if (talk.window != NULL) {
+        if (talk.window->state == 0) {
             TalkRequest_SetTargetDone(this);
         }
     }
@@ -1199,8 +1199,8 @@ BOOL HouseVisitVillager::enterVisitLeave() {
 
 void HouseVisitVillager::execVisitLeave() {
     using namespace sA;
-    if (talk.unk_3c != NULL) {
-        if (talk.unk_3c->state == 0) {
+    if (talk.window != NULL) {
+        if (talk.window->state == 0) {
             HouseVisitor_ClearPresent();
             if (getVillagerData() != NULL) {
                 VillagerState_ResetRole(Villager_GetState(getVillagerData()));

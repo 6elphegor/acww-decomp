@@ -28,10 +28,10 @@ void HandCursor::disableObjWindow() {
 }
 
 void HandCursor::setPos(s32 a, s32 b) {
-    unk_20 = a;
-    unk_24 = b;
+    posX = a;
+    posY = b;
     if (anim != 0) {
-        s32 v = unk_20 + getOriginX();
+        s32 v = posX + getOriginX();
         if (v < 0) {
             v = 0;
         }

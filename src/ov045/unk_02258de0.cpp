@@ -21,7 +21,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/MsgString.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -144,7 +144,7 @@ public:
 // ---------------------------------------------------------------------------------------------------------------------
 // Dialog
 
-class SpNpcKatrinaTalk : public Unk_020d7710 {
+class SpNpcKatrinaTalk : public ActorTalkRequest {
 public:
     SpNpcKatrinaTalk();
     virtual ~SpNpcKatrinaTalk();
@@ -590,7 +590,7 @@ void SpNpcKatrinaTalk::onMessageEnd(u32) {
     }
     if (sel != 0xff) {
         u8 buf = sel;
-        unk_3c->setNextMessage(&buf, sSpNpcKatrinaMsgKey);
+        window->setNextMessage(&buf, sSpNpcKatrinaMsgKey);
     }
 }
 
@@ -660,7 +660,7 @@ void SpNpcKatrinaTalk::onChoice(u32) {
     }
     if (sel != 0xff) {
         buf = sel;
-        unk_3c->setNextMessage(&buf, sSpNpcKatrinaMsgKey);
+        window->setNextMessage(&buf, sSpNpcKatrinaMsgKey);
     }
 }
 
@@ -692,7 +692,7 @@ void SpNpcKatrinaTalk::setScript(s32 v) {
 
 void SpNpcKatrinaTalk::scriptReadPartnerName() {
     u8 msg;
-    void *o = unk_3c;
+    void *o = window;
     msg = 0xb;
     if (MenuCtrl_IsResultOk()) {
         owner->partnerName = MenuCtrl_GetText();
@@ -700,7 +700,7 @@ void SpNpcKatrinaTalk::scriptReadPartnerName() {
         KatrinaEncodedString16 dst;
         EncodedString_SetRaw(&dst, owner->partnerName, 0x10);
         src.fromEncoded(&dst, 0, 0);
-        unk_3c->setSlot(0, &src);
+        window->setSlot(0, &src);
         msg = 0xa;
     }
     ((TalkWindowState *)o)->setNextMessage(&msg, sSpNpcKatrinaMsgKey);

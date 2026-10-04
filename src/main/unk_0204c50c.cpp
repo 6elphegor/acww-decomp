@@ -1,6 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#include "town/Unk_020b5350_Info.h"
+#include "town/SceneMapInfo.h"
 #include "town/Unk_0204c3c0_Ver.h"
 #include "game/Unk_0204da0c_Size.h"
 #include "game/Unk_0204da0c_Map.h"
@@ -136,7 +136,7 @@ extern "C" {
 }
 
 extern "C" {
-Unk_020b5350_Info *Scene_GetMapInfo();
+SceneMapInfo *Scene_GetMapInfo();
 }
 
 extern "C" {
@@ -409,7 +409,7 @@ void SceneMapModule::getHouseUnk(u32 *out, s32 n) {
 }
 
 s32 SceneMapModule::buildSceneMap(void *heap) {
-    Unk_020b5350_Info *info;
+    SceneMapInfo *info;
     void *h;
     u32 *src;
     u32 *r;

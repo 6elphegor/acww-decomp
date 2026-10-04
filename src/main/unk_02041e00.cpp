@@ -1,7 +1,7 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "town/Unk_020419b4.h"
-#include "town/Unk_02041e00_Ent.h"
+#include "game/EventDayEntry.h"
 #include "game/Unk_02042104_Date.h"
 #include "game/Unk_0204da0c_Size.h"
 #include "game/Unk_0204da0c_Map.h"
@@ -10,13 +10,6 @@
 struct Unk_0204a768_Pos {
     s32 x, y;
     Unk_0204a768_Pos() { x = 0; y = 0; }
-};
-
-// gTownUpdater (0x24 bytes; data_021c3ea8 is its offset 4)
-struct TownUpdater {
-    u32 unk_00;
-    u32 unk_04[8];
-    ~TownUpdater() {}
 };
 
 // member at offset 0x18 of gTownEval (data_021c40e4)
@@ -84,7 +77,7 @@ extern Unk_021c3f88 sPendingUnits;
 namespace nA {
 extern "C" {
 
-extern Unk_02041ac0_Glob gTownUpdater;
+extern TownUpdater gTownUpdater;
 extern u32 gCurrentHeap;
 extern u32 data_021fcc2c[];
 s32 TownUpdateThread_Destroy();
@@ -119,8 +112,8 @@ void DateTime_AddDays(Unk_02042104_Date *a, s32 n);
 void TownState_PickNextWeekDate(void *a, u8 *b);
 void TownBbs_PostPelicanNotice(void *o, u8 *base, Unk_02042104_Date *d);
 void TownBbs_PostSlogan(void *o, u8 *base, Unk_02042104_Date *d);
-s32 EventSchedule_CollectDayAll(Unk_02041e00_Ent *z, Unk_02042104_Date *d);
-void TownBbs_PostDayEvents(void *o, Unk_02041e00_Ent *z, Unk_02042104_Date *d);
+s32 EventSchedule_CollectDayAll(EventDayEntry *z, Unk_02042104_Date *d);
+void TownBbs_PostDayEvents(void *o, EventDayEntry *z, Unk_02042104_Date *d);
 struct Unk_02041e00_Obj {
     u8 pad[0x1c];
 };
@@ -139,7 +132,7 @@ void Bbs_PostMsgDated(s32 a, const char *fmt, u32 b, u32 c, u32 d);
 s32 TownBbs_UnpackUsedMask(void *o, u8 *dst, u8 *src, s32 n);
 void TownBbs_PostRandomUnused(void *o, s32 n, const char *fmt, u8 *p, s32 len, Unk_02042104_Date *d);
 void TownBbs_PackUsedMask(void *o, u8 *dst, u8 *src, s32 n);
-void TownBbs_PostDayEvents(void *o, Unk_02041e00_Ent *z, Unk_02042104_Date *d);
+void TownBbs_PostDayEvents(void *o, EventDayEntry *z, Unk_02042104_Date *d);
 void TownBbs_PostPelicanNotice(void *o, u8 *base, Unk_02042104_Date *d);
 void TownBbs_PostSlogan(void *o, u8 *base, Unk_02042104_Date *d);
 void TownBbs_PostRandomUnused(void *o, s32 n, const char *fmt, u8 *p, s32 len, Unk_02042104_Date *d);
@@ -9129,7 +9122,7 @@ extern "C" void TownBbs_PostPelicanNotice(void *o, u8 *base, Unk_02042104_Date *
 }
 
 namespace nA {
-extern "C" void TownBbs_PostDayEvents(void *o, Unk_02041e00_Ent *z, Unk_02042104_Date *d) {
+extern "C" void TownBbs_PostDayEvents(void *o, EventDayEntry *z, Unk_02042104_Date *d) {
     volatile s32 i, v8, v0c, v10, v14;
     Unk_02042104_Date tmp;
     Unk_02041e00_Obj obj;
@@ -9142,7 +9135,7 @@ extern "C" void TownBbs_PostDayEvents(void *o, Unk_02041e00_Ent *z, Unk_02042104
     v14 = i;
     do {
         t = v8;
-        u32 ty = z->h0;
+        u32 ty = z->eventId;
         switch (ty) {
         case 0:
         case 1:

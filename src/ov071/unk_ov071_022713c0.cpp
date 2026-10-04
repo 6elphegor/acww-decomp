@@ -25,7 +25,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -112,8 +112,8 @@ BOOL NpcActor_IsFrontAngle(s16 a);
 u32 Random_Next(void *p);
 
 void _ZN12Unk_0201442015requestKeepItemEv(void *self);
-void _ZN12Unk_020d771015setPocketFilterEjjj(void *self, u32 cb, u32 b, u32 c);
-void _ZN12Unk_020d771012openSubSceneEi(void *self, s32 a);
+void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *self, u32 cb, u32 b, u32 c);
+void _ZN16ActorTalkRequest12openSubSceneEi(void *self, s32 a);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *self, u16 *p, u32 a, u32 b, u32 c);
 void *_ZN11NpcMoveCtrl14getDestinationEv(void *self);
 s32 _ZN12Unk_0201acf88getLevelEv(void *self);
@@ -844,7 +844,7 @@ extern "C" BOOL SpNpcLyle_IsForgedPainting(u16 *p, s32 x) {
 }
 
 void SpNpcLyleTalk::onClaimItemChosen() {
-    TalkWindowState *scene = unk_3c;
+    TalkWindowState *scene = window;
     Unk_ov071_0227160c_Msg m;
     m.id = 0x24;
     if (MenuCtrl_IsResultOk() != 0) {
@@ -1045,8 +1045,8 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
         _ZN12Unk_02097ff47setFlagEj(h, 0x18);
         break;
     case 0x23:
-        _ZN12Unk_020d771015setPocketFilterEjjj(this, (u32)SpNpcLyle_IsForgedPainting, 0xd, 1);
-        _ZN12Unk_020d771012openSubSceneEi(this, 0);
+        _ZN16ActorTalkRequest15setPocketFilterEjjj(this, (u32)SpNpcLyle_IsForgedPainting, 0xd, 1);
+        _ZN16ActorTalkRequest12openSubSceneEi(this, 0);
         setScript(0);
         break;
     case 0x25:
@@ -1060,7 +1060,7 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
     }
     if (r5 != 0xff) {
         m.id = r5;
-        unk_3c->setNextMessage(&m.id, name);
+        window->setNextMessage(&m.id, name);
     }
 }
 
@@ -1167,13 +1167,13 @@ blkC2:
     }
     goto end;
 blkD:
-    _ZN12Unk_020d771015setPocketFilterEjjj(this, (u32)SpNpcLyle_IsForgedPainting, 0xd, 1);
-    _ZN12Unk_020d771012openSubSceneEi(this, 0);
+    _ZN16ActorTalkRequest15setPocketFilterEjjj(this, (u32)SpNpcLyle_IsForgedPainting, 0xd, 1);
+    _ZN16ActorTalkRequest12openSubSceneEi(this, 0);
     setScript(0);
 end:
     if (r5 != 0xff) {
         m = r5;
-        unk_3c->setNextMessage(&m, name);
+        window->setNextMessage(&m, name);
     }
 }
 

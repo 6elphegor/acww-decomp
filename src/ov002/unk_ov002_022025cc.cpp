@@ -8,8 +8,8 @@
 #include "sys/KeyRepeat.h"
 #include "menu/MenuTween.h"
 #include "menu/PopupChoiceIdList.h"
-#include "ui/Unk_ov002_022018e4_Arg.h"
-#include "ui/Unk_ov002_02203c5c_Rec.h"
+#include "ui/AddresseePageArg.h"
+#include "ui/OamCellEntry.h"
 #include "talk/TalkWindowState.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
@@ -198,13 +198,13 @@ extern const u8 sBottomButtonTargetX[];
 extern const u8 sBottomButtonTargetY[];
 extern const u8 sBottomButtonOfTarget[];
 extern s32 sPopupChoicePopOffsets[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW4A[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW4B[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW6Single[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW8[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW6A[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW6B[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW12[];
+extern OamCellEntry sButtonCellsW4A[];
+extern OamCellEntry sButtonCellsW4B[];
+extern OamCellEntry sButtonCellsW6Single[];
+extern OamCellEntry sButtonCellsW8[];
+extern OamCellEntry sButtonCellsW6A[];
+extern OamCellEntry sButtonCellsW6B[];
+extern OamCellEntry sButtonCellsW12[];
 }
 
 
@@ -266,7 +266,7 @@ void PopupChoice_BuildScreen(Self *self);
 void PopupChoice_SetState(Self *self, u32 x);
 void PopupChoice_Close(Self *self, s32 x);
 void PopupChoice_Open(Self *self, s32 x);
-void PopupChoice_OpenAddresseePage(Self *self, Unk_ov002_022018e4_Arg a, s32 x);
+void PopupChoice_OpenAddresseePage(Self *self, AddresseePageArg a, s32 x);
 void PopupChoice_LoadFriendBg(Self *self);
 void PopupChoice_LoadChoiceBg(Self *self);
 void PopupChoice_SetPosClamped(Self *self, s32 x, s32 y);
@@ -505,10 +505,10 @@ void MenuCursorBase::moveToEase(s32 x, s32 y, s32 n, s32 f) {
 }
 
 void MenuCursorBase::moveToNear(s32 x, s32 y, s32 n, u8 e) {
-    s32 dx = x - (unk_20 + getOriginX());
+    s32 dx = x - (posX + getOriginX());
     Snd_PlaySe(0xb);
     if (dx >= -0x30 && dx <= 0x30) {
-        s32 dy = y - (unk_24 + getOriginY());
+        s32 dy = y - (posY + getOriginY());
         if (dy >= -0x30 && dy <= 0x30) {
             n = e;
         }
@@ -558,29 +558,29 @@ BOOL MenuCursorBase::isMoving() {
 
 s32 MenuCursorBase::getFrameScreenX() {
     s32 t = layer1.getFrameX(-1);
-    return t + (unk_20 + getOriginX());
+    return t + (posX + getOriginX());
 }
 
 s32 MenuCursorBase::getFrameScreenY() {
     s32 t = layer1.getFrameY(-1);
-    return t + (unk_24 + getOriginY());
+    return t + (posY + getOriginY());
 }
 
 s32 MenuCursorBase::getScreenX() {
-    return unk_20 + getOriginX();
+    return posX + getOriginX();
 }
 
 s32 MenuCursorBase::getScreenY() {
-    return unk_24 + getOriginY();
+    return posY + getOriginY();
 }
 
 void MenuCursorBase::drawWrapped() {
     HandCursor::draw();
-    s32 old = unk_20;
+    s32 old = posX;
     if (old + getOriginX() > 0xe0) {
-        unk_20 -= 0x100;
+        posX -= 0x100;
         HandCursor::draw();
-        unk_20 = old;
+        posX = old;
     }
 }
 

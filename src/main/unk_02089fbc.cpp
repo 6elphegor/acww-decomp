@@ -864,16 +864,16 @@ HudCountdown::HudCountdown() : state(0), minutesLabel(0), secondsLabel(0), count
     countB = 0;
     durationKind = 0;
     endTime = 0;
-    unk_ac = 0;
+    endTimeHi = 0;
     remaining = 0;
-    unk_b4 = 0;
+    remainingHi = 0;
     finishTimer = 0;
     slideY = 0;
     slideTarget = 0;
     slideSpeed = 0;
     slideDelay = -1;
     lastTickTime = 0;
-    unk_d0 = 0;
+    lastTickTimeHi = 0;
 }
 
 HudCountdown::~HudCountdown() {

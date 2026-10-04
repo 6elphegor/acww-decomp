@@ -86,7 +86,7 @@ void TownSign::setupTalkMsg() {
     }
     v[1] = w;
     _ZN8ItemNameC1EPt(obj, &v[1]);
-    unk_3c->setSlot(1, obj);
+    window->setSlot(1, obj);
     _ZN8ItemNameD1Ev(obj);
 }
 

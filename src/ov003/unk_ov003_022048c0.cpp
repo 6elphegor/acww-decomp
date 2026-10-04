@@ -206,16 +206,16 @@ BOOL VillagerBoard::setupRead() {
     _ZN9Character17attachTalkRequestEi(this, this);
     setFileName("obj_etc_board");
     msgIndex = 0;
-    ((TalkWindowState *)unk_3c)->nextState = 1;
+    ((TalkWindowState *)window)->nextState = 1;
     MsgString9B buf;
     _ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(gSaveVillagers, *(s32 *)((u8 *)this + 8)))->getName((u32)&buf);
-    ((TalkWindowState *)unk_3c)->setSlot(0, &buf);
+    ((TalkWindowState *)window)->setSlot(0, &buf);
     return TRUE;
 }
 
 void VillagerBoard::mainRead() {
-    if (unk_3c) {
-        if (((TalkWindowState *)unk_3c)->state) {
+    if (window) {
+        if (((TalkWindowState *)window)->state) {
             changeAct(2);
         }
     }
@@ -226,8 +226,8 @@ BOOL VillagerBoard::setupReadEnd() {
 }
 
 void VillagerBoard::mainReadEnd() {
-    if (unk_3c) {
-        if (((TalkWindowState *)unk_3c)->state == 0) {
+    if (window) {
+        if (((TalkWindowState *)window)->state == 0) {
             _ZN9Character17detachTalkRequestEi(this, this);
             TalkRequest_SetTargetDone(this);
         }

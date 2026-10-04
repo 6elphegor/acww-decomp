@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-// Town update thread context (TownUpdateThread_*) and the gTownUpdater global that points to it
+// Town update thread context (TownUpdateThread_*) and the gTownUpdater global (TownUpdater) that points to it
 // (src/main/unk_02041868.cpp, unk_02041e00.cpp).
 
 struct Unk_020419b4 {
@@ -25,9 +25,12 @@ struct Unk_020419b4 {
     /* 0x10ea */ u8 started;
 };
 
-struct Unk_02041ac0_Glob {
-    /* 0x00 */ u32 pad[8];
+// gTownUpdater (0x24 bytes, defined in unk_02041e00.cpp; data_021c3ea8 is its offset 4).
+struct TownUpdater {
+    /* 0x00 */ u32 unk_00;
+    /* 0x04 */ u32 unk_04[7];
     /* 0x20 */ Unk_020419b4 *updateThread;
+    ~TownUpdater() {}
 };
 
 #endif

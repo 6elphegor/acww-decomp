@@ -404,13 +404,13 @@ BOOL RecycleBox::enterAct01() {
     _ZN9Character17attachTalkRequestEi(this, (TalkMsgRequest *)this);
     MsgRequest::setFileName(sRecycleBoxMsgFilePtr);
     MsgRequest::msgIndex = 0;
-    TalkMsgRequest::unk_3c->nextState = 1;
+    TalkMsgRequest::window->nextState = 1;
     return TRUE;
 }
 
 void RecycleBox::execAct01() {
-    if (TalkMsgRequest::unk_3c != 0) {
-        if (TalkMsgRequest::unk_3c->state != 0) {
+    if (TalkMsgRequest::window != 0) {
+        if (TalkMsgRequest::window->state != 0) {
             changeAct(2);
         }
     }
@@ -421,8 +421,8 @@ BOOL RecycleBox::enterAct02() {
 }
 
 void RecycleBox::execAct02() {
-    if (TalkMsgRequest::unk_3c != 0) {
-        if (TalkMsgRequest::unk_3c->state == 0) {
+    if (TalkMsgRequest::window != 0) {
+        if (TalkMsgRequest::window->state == 0) {
             _ZN9Character17detachTalkRequestEi(this, (TalkMsgRequest *)this);
             changeAct(3);
         }

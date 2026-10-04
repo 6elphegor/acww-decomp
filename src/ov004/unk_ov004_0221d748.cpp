@@ -28,7 +28,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 
 
@@ -89,8 +89,8 @@ struct Unk_ov004_0221e0b4_Ent {
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
-#define Unk_020d7710_setSubSceneKind _ZN12Unk_020d771015setSubSceneKindEjj
-#define Unk_020d7710_openSubScene _ZN12Unk_020d771012openSubSceneEi
+#define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
+#define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
 #define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
 #define ActorTalkRequest_setPlayerNameSlot _ZN16ActorTalkRequest17setPlayerNameSlotEjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
@@ -140,8 +140,8 @@ void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, 
 void NpcActionCtrl_requestStand(void *self, s32 a, u16 b);
 s32 NpcTalkCtrl_isBusy(void *self);
 void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
-void Unk_020d7710_setSubSceneKind(void *self, s32 a, s32 b);
-void Unk_020d7710_openSubScene(void *self, s32 a);
+void ActorTalkRequest_setSubSceneKind(void *self, s32 a, s32 b);
+void ActorTalkRequest_openSubScene(void *self, s32 a);
 s32 ActorTalkRequest_setItemNameSlot(void *self, u16 *p, s32 a, s32 b);
 void ActorTalkRequest_setPlayerNameSlot(void *self, s32 a, s32 b);
 void ActorTalkRequest_setNumberSlot(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -184,7 +184,7 @@ s32 SickVillagerRecord_resetRecord(void *p);
 s32 Scene_GetCurrent(void);
 }
 
-class SpNpcBookerTalk : public Unk_020d7710 {
+class SpNpcBookerTalk : public ActorTalkRequest {
 public:
     SpNpcBookerTalk();
     virtual ~SpNpcBookerTalk();
@@ -446,13 +446,13 @@ void SpNpcBookerTalk::start(TalkStartMsg *arg) {
 void SpNpcBookerTalk::onMessageEnd(u32) {
     switch (msgIndex) {
     case 0x1a:
-        Unk_020d7710_setSubSceneKind(this, 0x1f, 0);
-        Unk_020d7710_openSubScene(this, 2);
+        ActorTalkRequest_setSubSceneKind(this, 0x1f, 0);
+        ActorTalkRequest_openSubScene(this, 2);
         setScript(3);
         break;
     case 0x17:
-        Unk_020d7710_setSubSceneKind(this, 9, 0);
-        Unk_020d7710_openSubScene(this, 2);
+        ActorTalkRequest_setSubSceneKind(this, 9, 0);
+        ActorTalkRequest_openSubScene(this, 2);
         setScript(2);
         break;
     }
@@ -461,7 +461,7 @@ void SpNpcBookerTalk::onMessageEnd(u32) {
 void SpNpcBookerTalk::onChoice(u32) {
     u8 c;
     u16 x;
-    void *o = unk_3c;
+    void *o = window;
     s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(o));
     u32 d = sSpNpcBookerMsgFiles[0];
     u32 r = 0xff;
@@ -531,8 +531,8 @@ void SpNpcBookerTalk::onChoice(u32) {
         break;
     case 0x16:
         if (t == 0) {
-            Unk_020d7710_setSubSceneKind(this, 6, 0);
-            Unk_020d7710_openSubScene(this, 2);
+            ActorTalkRequest_setSubSceneKind(this, 6, 0);
+            ActorTalkRequest_openSubScene(this, 2);
             setScript(1);
         }
         break;
@@ -575,10 +575,10 @@ void SpNpcBookerTalk::runScript01() {
         PatternSrc_Copy(9, t, 5, 0, 1);
         Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x50, 0x7f, 0);
         buf[0] = 0x18;
-        TalkWindowState_setNextMessage(unk_3c, buf, sSpNpcBookerMsgFiles[0]);
+        TalkWindowState_setNextMessage(window, buf, sSpNpcBookerMsgFiles[0]);
     } else {
         buf[1] = 1;
-        TalkWindowState_setNextMessage(unk_3c, &buf[1], sSpNpcBookerMsgFiles[0]);
+        TalkWindowState_setNextMessage(window, &buf[1], sSpNpcBookerMsgFiles[0]);
     }
 }
 
@@ -622,10 +622,10 @@ void SpNpcBookerTalk::runScript02() {
             }
         }
         m.c0 = 0x19;
-        TalkWindowState_setNextMessage(unk_3c, &m, sSpNpcBookerMsgFiles[0]);
+        TalkWindowState_setNextMessage(window, &m, sSpNpcBookerMsgFiles[0]);
     } else {
         m.c1 = 1;
-        TalkWindowState_setNextMessage(unk_3c, &m.c1, sSpNpcBookerMsgFiles[0]);
+        TalkWindowState_setNextMessage(window, &m.c1, sSpNpcBookerMsgFiles[0]);
     }
 }
 
@@ -633,7 +633,7 @@ void SpNpcBookerTalk::runScript02() {
 // SpNpcBookerTalk
 
 void SpNpcBookerTalk::runScript03() {
-    void *o = unk_3c;
+    void *o = window;
     u8 c;
     u16 v;
     c = 0x20;

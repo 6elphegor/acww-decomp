@@ -84,14 +84,14 @@ void TownMapMarkers_AddPlayerHouse(TownMapMarkers *s);
 void TownMapMarkers_AddVillagerHouses(TownMapMarkers *s);
 void TownMapMarkers_AddTerrainMarkers(TownMapMarkers *s);
 u8 TownMapMarkers_GetKind(TownMapMarkers *s, u32 i);
-Unk_ov117_02292c88_Icon *TownMapMarkers_Get(TownMapMarkers *s, u32 i);
+TownMapMarker *TownMapMarkers_Get(TownMapMarkers *s, u32 i);
 void TownMapMarkers_Set(TownMapMarkers *s, s32 i, s32 x, s32 y, u8 z);
 void TownMapMarkers_Clear(TownMapMarkers *self);
 
 }
 
 TownMapMarkers::TownMapMarkers() {
-    Unk_ov117_02292c88_Icon *e = this->e;
+    TownMapMarker *e = this->e;
     do {
         e->x = 0;
         e->y = 0;
@@ -120,12 +120,12 @@ extern "C" void TownMapMarkers_Set(TownMapMarkers *s, s32 i, s32 x, s32 y, u8 z)
     }
 }
 
-extern "C" Unk_ov117_02292c88_Icon *TownMapMarkers_Get(TownMapMarkers *s, u32 i) {
+extern "C" TownMapMarker *TownMapMarkers_Get(TownMapMarkers *s, u32 i) {
     if (i < 17) {
         s32 m = -1;
         if (s->e[i].x != m) {
             s = (TownMapMarkers *)((u8 *)s + i * 6);
-            if (*(s16 *)((u8 *)s + 2) != m) return (Unk_ov117_02292c88_Icon *)s;
+            if (*(s16 *)((u8 *)s + 2) != m) return (TownMapMarker *)s;
         }
         return NULL;
     }

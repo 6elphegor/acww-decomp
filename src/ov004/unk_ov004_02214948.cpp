@@ -16,7 +16,7 @@
 #include "talk/TalkWindowState.h"
 #include "actor/NpcActor.h"
 #include "actor/VillagerActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/VillagerTalk.h"
 #include "npc/BirthdayHostVillager.h"
 
@@ -56,7 +56,7 @@ u16 Room_PickRandomWalkTarget(void *, void *, s32);
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
-#define Unk_020d7710_requestGiveItem _ZN12Unk_020d771015requestGiveItemEPtjjj
+#define ActorTalkRequest_requestGiveItem _ZN16ActorTalkRequest15requestGiveItemEPtjjj
 #define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
 #define ActorTalkRequest_setVillagerNameSlot _ZN16ActorTalkRequest19setVillagerNameSlotEjj
 #define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
@@ -130,7 +130,7 @@ extern u8 sBirthdayHostMsgFile[];
 void *TalkWindowState_getChoiceList(void *);
 s32 ChoiceList_getResult(void *);
 void TalkWindowState_setNextMessageIfUnset(void *, void *, s32);
-void Unk_020d7710_requestGiveItem(void *, void *, s32, s32, s32);
+void ActorTalkRequest_requestGiveItem(void *, void *, s32, s32, s32);
 void Pocket_AddItem(void *, s32);
 void *VillagerMemory_getFriendship(void *);
 void VillagerMemory_addFriendship(void *, s8);
@@ -496,7 +496,7 @@ void *BirthdayHostVillagerTalk::getFriendship() {
 
 void BirthdayHostVillagerTalk::onTaskDone(u32) {
     if (villager->act == 0xc) {
-        unk_3c->nextState = 1;
+        window->nextState = 1;
     }
 }
 
@@ -506,9 +506,9 @@ void BirthdayHostVillagerTalk::update() {
     if (villager->act == 0xb) {
         if (MenuCtrl_IsFinished()) {
             if (MenuCtrl_IsResultOk() == 0) {
-                unk_3c->nextState = 1;
+                window->nextState = 1;
                 b0 = Random_GlobalBelow(2) + 7;
-                TalkWindowState_setNextMessage(unk_3c, &b0, 0);
+                TalkWindowState_setNextMessage(window, &b0, 0);
                 villager->changeAct(6);
             } else {
                 void *r6 = MenuCtrl_GetIndex();
@@ -518,7 +518,7 @@ void BirthdayHostVillagerTalk::update() {
                 ActorTalkRequest_setItemNameSlot(this, &x, 0, 7);
                 if (isLikedGift(&x)) {
                     b1 = Random_GlobalBelow(2) + 0xd;
-                    TalkWindowState_setNextMessage(unk_3c, &b1, 0);
+                    TalkWindowState_setNextMessage(window, &b1, 0);
                     addFriendship(5);
                     if (r4 >= 1000) addFriendship(5);
                     if (r4 >= 2000) addFriendship(10);
@@ -526,7 +526,7 @@ void BirthdayHostVillagerTalk::update() {
                     villager->changeAct(12);
                 } else {
                     b2 = Random_GlobalBelow(2) + 0xb;
-                    TalkWindowState_setNextMessage(unk_3c, &b2, 0);
+                    TalkWindowState_setNextMessage(window, &b2, 0);
                     addFriendship(2);
                     if (r4 >= 1000) addFriendship(5);
                     if (r4 >= 2000) addFriendship(5);
@@ -569,7 +569,7 @@ void BirthdayHostVillagerTalk::start(TalkStartMsg *arg) {
             break;
         }
         BirthdayHostVillager *p = villager;
-        if (p->talk.unk_3c) {
+        if (p->talk.window) {
             if (p && p->villagerData) {
                 ActorTalkRequest_setVillagerNameSlot(&villager->talk, VillagerData_getVillagerId(p->villagerData), 1);
             }
@@ -656,7 +656,7 @@ void BirthdayHostVillagerTalk::onMessageEnd(u32) {
     case 7:
     case 8:
         b[0] = gTalkMsgIndexEnd[0];
-        TalkWindowState_setNextMessageIfUnset(unk_3c, &b[0], 0);
+        TalkWindowState_setNextMessageIfUnset(window, &b[0], 0);
         break;
     case 9:
     case 10:
@@ -667,11 +667,11 @@ void BirthdayHostVillagerTalk::onMessageEnd(u32) {
     case 13:
     case 14:
         b[1] = Random_GlobalBelow(2) + 0xf;
-        TalkWindowState_setNextMessage(villager->talk.unk_3c, &b[1], 0);
+        TalkWindowState_setNextMessage(villager->talk.window, &b[1], 0);
         break;
     case 15:
     case 16:
-        Unk_020d7710_requestGiveItem(this, &villager->returnGift, 0, 5, 0);
+        ActorTalkRequest_requestGiveItem(this, &villager->returnGift, 0, 5, 0);
         Pocket_AddItem(&villager->returnGift, 0);
         villager->changeAct(13);
         break;
@@ -684,28 +684,28 @@ void BirthdayHostVillagerTalk::onMessageEnd(u32) {
     case 21:
     case 22:
         b[2] = gTalkMsgIndexEnd[0];
-        TalkWindowState_setNextMessageIfUnset(unk_3c, &b[2], 0);
+        TalkWindowState_setNextMessageIfUnset(window, &b[2], 0);
         break;
     }
 }
 
 void BirthdayHostVillagerTalk::onChoice(u32) {
     u8 b[3];
-    s32 r = ChoiceList_getResult(TalkWindowState_getChoiceList(villager->talk.unk_3c));
+    s32 r = ChoiceList_getResult(TalkWindowState_getChoiceList(villager->talk.window));
     switch (msgIndex) {
     case 4:
     case 5:
         if (r == 0) {
             if (MenuCtrl_BuildPocketMask((void *)BirthdayHost_GiftFilter)) {
                 b[0] = Random_GlobalBelow(2) + 9;
-                TalkWindowState_setNextMessage(villager->talk.unk_3c, &b[0], 0);
+                TalkWindowState_setNextMessage(villager->talk.window, &b[0], 0);
             } else {
                 b[1] = 6;
-                TalkWindowState_setNextMessage(villager->talk.unk_3c, &b[1], 0);
+                TalkWindowState_setNextMessage(villager->talk.window, &b[1], 0);
             }
         } else {
             b[2] = Random_GlobalBelow(2) + 7;
-            TalkWindowState_setNextMessage(villager->talk.unk_3c, &b[2], 0);
+            TalkWindowState_setNextMessage(villager->talk.window, &b[2], 0);
         }
         break;
     }
@@ -918,7 +918,7 @@ void BirthdayHostVillager::mainAct05() {
 BOOL BirthdayHostVillager::setupAct06() { return TRUE; }
 
 void BirthdayHostVillager::mainAct06() {
-    TalkWindowState *o = talk.unk_3c;
+    TalkWindowState *o = talk.window;
     if (o != 0) {
         if (o->state == 0) {
             TalkRequest_SetTargetDone(this);
@@ -975,7 +975,7 @@ void BirthdayHostVillager::mainAct08() {
 BOOL BirthdayHostVillager::setupAct09() { return TRUE; }
 
 void BirthdayHostVillager::mainAct09() {
-    TalkWindowState *o = talk.unk_3c;
+    TalkWindowState *o = talk.window;
     if (o != 0) {
         if (o->state == 0) {
             TalkRequest_SetTargetDone(this);
@@ -984,12 +984,12 @@ void BirthdayHostVillager::mainAct09() {
 }
 
 BOOL BirthdayHostVillager::setupAct0A() {
-    talk.unk_3c->openMode = 1;
+    talk.window->openMode = 1;
     return TRUE;
 }
 
 void BirthdayHostVillager::mainAct0A() {
-    if (talk.unk_3c->state == 5) {
+    if (talk.window->state == 5) {
         if (MenuCtrl_OpenPocketSelect(MenuCtrl_BuildPocketMask((void *)BirthdayHost_GiftFilter), 0xd) != 0) {
             changeAct(0xb);
         }
@@ -1009,7 +1009,7 @@ BOOL BirthdayHostVillager::setupAct0D() { return TRUE; }
 void BirthdayHostVillager::mainAct0D() {
     u8 buf[1];
     buf[0] = Random_GlobalBelow(2) + 0x11;
-    TalkWindowState_setNextMessage(talk.unk_3c, buf, 0);
+    TalkWindowState_setNextMessage(talk.window, buf, 0);
     changeAct(6);
 }
 

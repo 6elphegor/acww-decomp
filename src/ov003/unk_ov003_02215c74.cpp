@@ -321,7 +321,7 @@ void VillagerHouse::setupTalkMsg() {
     u32 l[9];
     _ZN11MsgString9BC1Ev(&l[1]);
     VillagerId_getName(VillagerData_getVillagerId(p), &l[1]);
-    TalkWindowState_setSlot(unk_3c, 0, &l[1]);
+    TalkWindowState_setSlot(window, 0, &l[1]);
     _ZN11MsgString9BD1Ev(&l[1]);
 }
 

@@ -26,7 +26,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/VillagerActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/VillagerTalk.h"
 
 class FleaMarketSellerVillager;
@@ -756,7 +756,7 @@ void FleaMarketSellerVillagerTalk::onChoice(u32) {
     }
     if (r4 != 0xff) {
         u8 b = r4;
-        TalkWindowState_setNextMessage(unk_3c, &b, s);
+        TalkWindowState_setNextMessage(window, &b, s);
     }
 }
 

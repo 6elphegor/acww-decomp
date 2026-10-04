@@ -27,7 +27,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/VillagerActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/VillagerTalk.h"
 
 class SickVillager;
@@ -528,7 +528,7 @@ void SickVillagerTalk::attachOwner(SickVillager *owner) {
 void SickVillagerTalk::onTaskDone(u32 a) {
     if (a == 4) {
         SickVillager_SetCurrentVisitor();
-        ((Unk_ov004_0221afc4_Msg *)unk_3c)->nextState = 1;
+        ((Unk_ov004_0221afc4_Msg *)window)->nextState = 1;
     }
 }
 
@@ -538,15 +538,15 @@ void SickVillagerTalk::update() {
     if (o->act == 6) {
         if (MenuCtrl_IsFinished()) {
             if (MenuCtrl_IsResultOk() == 0) {
-                ((Unk_ov004_0221afc4_Msg *)unk_3c)->nextState = 1;
+                ((Unk_ov004_0221afc4_Msg *)window)->nextState = 1;
                 buf[0] = Random_GlobalBelow(3) + 13;
-                TalkWindowState_setNextMessage(unk_3c, buf, 0);
+                TalkWindowState_setNextMessage(window, buf, 0);
                 villager->changeAct(4);
             } else {
                 MenuCtrl_GetIndex();
                 Pocket_RemoveItem();
                 buf[1] = Random_GlobalBelow(3) + 16;
-                TalkWindowState_setNextMessage(unk_3c, &buf[1], 0);
+                TalkWindowState_setNextMessage(window, &buf[1], 0);
                 *(u16 *)(buf + 2) = 0x155e;
                 Unk_02014420_requestTakeItem(this, buf + 2, 0, 6, 0);
                 villager->changeAct(7);
@@ -591,7 +591,7 @@ void SickVillagerTalk::onMessageEnd(u32) {
         case 0:
         case 1:
         case 2: {
-            void *h = TalkWindowState_getChoiceList(unk_3c);
+            void *h = TalkWindowState_getChoiceList(window);
             if (h == 0) break;
             ChoiceList_reset(h, 3, 2);
             b[0] = 0x15;
@@ -601,13 +601,13 @@ void SickVillagerTalk::onMessageEnd(u32) {
             b[2] = Random_GlobalBelow(10) + 10;
             ChoiceList_setEntry(h, 2, &b[2], 0, gTalkMsgIndexNone, 0, 0);
             ChoiceList_loadTexts(h);
-            TalkWindowState_openChoices(unk_3c, 1);
+            TalkWindowState_openChoices(window, 1);
             break;
         }
         case 3:
         case 4:
         case 5: {
-            void *h = TalkWindowState_getChoiceList(unk_3c);
+            void *h = TalkWindowState_getChoiceList(window);
             if (h == 0) break;
             ChoiceList_reset(h, 2, 1);
             b[3] = 0x17;
@@ -615,7 +615,7 @@ void SickVillagerTalk::onMessageEnd(u32) {
             b[4] = Random_GlobalBelow(10) + 0x78;
             ChoiceList_setEntry(h, 1, &b[4], 0, gTalkMsgIndexNone, 0, 0);
             ChoiceList_loadTexts(h);
-            TalkWindowState_openChoices(unk_3c, 1);
+            TalkWindowState_openChoices(window, 1);
             break;
         }
         }
@@ -644,7 +644,7 @@ void SickVillagerTalk::onMessageEnd(u32) {
 
 void SickVillagerTalk::onChoice(u32) {
     u8 buf[6];
-    s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(villager->talk.unk_3c));
+    s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(villager->talk.window));
     if (villager->mood.severeSickness == 0) {
         VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_02250984, 0x28, "q12_sick1_2");
         villager->isAnswered = 1;
@@ -657,28 +657,28 @@ void SickVillagerTalk::onChoice(u32) {
         case 0:
             if (MenuCtrl_BuildPocketMask((void *)SickVillager_IsMedicine) != 0) {
                 buf[0] = Random_GlobalBelow(3) + 7;
-                TalkWindowState_setNextMessage(villager->talk.unk_3c, &buf[0], data_ov004_02250984);
+                TalkWindowState_setNextMessage(villager->talk.window, &buf[0], data_ov004_02250984);
             } else {
                 buf[1] = Random_GlobalBelow(3) + 10;
-                TalkWindowState_setNextMessage(villager->talk.unk_3c, &buf[1], data_ov004_02250984);
+                TalkWindowState_setNextMessage(villager->talk.window, &buf[1], data_ov004_02250984);
             }
             break;
         case 1:
             buf[2] = Random_GlobalBelow(4);
-            TalkWindowState_setNextMessage(villager->talk.unk_3c, &buf[2], data_ov004_02250984);
+            TalkWindowState_setNextMessage(villager->talk.window, &buf[2], data_ov004_02250984);
             break;
         default:
             buf[3] = Random_GlobalBelow(3) + 4;
-            TalkWindowState_setNextMessage(villager->talk.unk_3c, &buf[3], data_ov004_02250984);
+            TalkWindowState_setNextMessage(villager->talk.window, &buf[3], data_ov004_02250984);
             break;
         }
     } else {
         if (t == 0) {
             buf[4] = Random_GlobalBelow(3) + 0x13;
-            TalkWindowState_setNextMessage(villager->talk.unk_3c, &buf[4], data_ov004_02250984);
+            TalkWindowState_setNextMessage(villager->talk.window, &buf[4], data_ov004_02250984);
         } else {
             buf[5] = Random_GlobalBelow(3) + 4;
-            TalkWindowState_setNextMessage(villager->talk.unk_3c, &buf[5], data_ov004_02250984);
+            TalkWindowState_setNextMessage(villager->talk.window, &buf[5], data_ov004_02250984);
         }
     }
 }
@@ -860,7 +860,7 @@ void SickVillager::mainAct03() {
 BOOL SickVillager::setupAct04() { return TRUE; }
 
 void SickVillager::mainAct04() {
-    Unk_ov004_0221a650_Msg *o = (Unk_ov004_0221a650_Msg *)talk.unk_3c;
+    Unk_ov004_0221a650_Msg *o = (Unk_ov004_0221a650_Msg *)talk.window;
     if (o != 0) {
         if (o->state == 0) {
             TalkRequest_SetTargetDone(this);
@@ -869,12 +869,12 @@ void SickVillager::mainAct04() {
 }
 
 BOOL SickVillager::setupAct05() {
-    ((Unk_ov004_0221a650_Msg *)talk.unk_3c)->openMode = 1;
+    ((Unk_ov004_0221a650_Msg *)talk.window)->openMode = 1;
     return TRUE;
 }
 
 void SickVillager::mainAct05() {
-    Unk_ov004_0221a650_Msg *m = (Unk_ov004_0221a650_Msg *)talk.unk_3c;
+    Unk_ov004_0221a650_Msg *m = (Unk_ov004_0221a650_Msg *)talk.window;
     if (m->state == 5) {
         if (MenuCtrl_OpenPocketSelect(MenuCtrl_BuildPocketMask((void *)SickVillager_IsMedicine), 0xd) != 0) {
             changeAct(6);

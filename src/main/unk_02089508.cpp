@@ -49,7 +49,7 @@ u32 LabelBalloonText::capacity() { return 0x21; }
 u8 *LabelBalloonText::data() { return (u8 *)this + 4; }
 
 LabelBalloon::LabelBalloon(s32 flag)
-    : state(0), animTimer(0), x(0), unk_40(0), priority(-1), popOffsetX(0), popOffsetY(0), clampOffsetX(0), openRequest(0),
+    : state(0), animTimer(0), x(0), posY(0), priority(-1), popOffsetX(0), popOffsetY(0), clampOffsetX(0), openRequest(0),
       closeRequest(0), onBufferA(flag), clampToScreen(0), objWindow(0), noPopAnim(0), popDownward(0), layer2Visible(0), centerText(0), label(0),
       label2(0), textMode(0) {
     initAnims();
@@ -121,7 +121,7 @@ void LabelBalloon::hideLayer2() { layer2Visible = 0; }
 
 void LabelBalloon::setPos(s32 a, s32 b) {
     x = a;
-    unk_40 = b;
+    posY = b;
 }
 
 void LabelBalloon::setText(StrBuf *src) {
@@ -265,11 +265,11 @@ SpriteAnim *LabelBalloon::getAnim() { return &layer1; }
 
 s32 LabelBalloon::getDrawX() { return clampOffsetX + (popOffsetX + (x + getOriginX())); }
 
-s32 LabelBalloon::getDrawY() { return popOffsetY + (unk_40 + getOriginY()); }
+s32 LabelBalloon::getDrawY() { return popOffsetY + (posY + getOriginY()); }
 
 s32 LabelBalloon::getPosX() { return x; }
 
-s32 LabelBalloon::getPosY() { return unk_40; }
+s32 LabelBalloon::getPosY() { return posY; }
 
 s32 LabelBalloon::getWidth() { return layer1.getFrameIndex() * 8 + 0x18; }
 
@@ -277,7 +277,7 @@ void LabelBalloon::reset() {
     state = 0;
     animTimer = 0;
     x = 0;
-    unk_40 = 0;
+    posY = 0;
     priority = -1;
     popOffsetX = 0;
     popOffsetY = 0;

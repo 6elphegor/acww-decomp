@@ -369,8 +369,8 @@ void RoomTelephone::execAct0B() {
 void RoomTelephone::enterAct0B() {}
 
 void RoomTelephone::execAct0A() {
-    if (unk_3c) {
-        if (unk_3c->state) {
+    if (window) {
+        if (window->state) {
             changeAct(0xb);
         }
     }
@@ -462,8 +462,8 @@ void RoomTelephone::enterAct05() {
 }
 
 void RoomTelephone::execAct04() {
-    if (unk_3c) {
-        if (!unk_3c->state) {
+    if (window) {
+        if (!window->state) {
             changeAct(5);
         }
     }
@@ -472,8 +472,8 @@ void RoomTelephone::execAct04() {
 void RoomTelephone::enterAct04() {}
 
 void RoomTelephone::execAct03() {
-    if (unk_3c) {
-        if (!unk_3c->state) {
+    if (window) {
+        if (!window->state) {
             changeAct(5);
         }
     }
@@ -482,8 +482,8 @@ void RoomTelephone::execAct03() {
 void RoomTelephone::enterAct03() {}
 
 void RoomTelephone::execAct02() {
-    if (unk_3c) {
-        if (unk_3c->state) {
+    if (window) {
+        if (window->state) {
             changeAct(3);
         }
     }
@@ -498,7 +498,7 @@ void RoomTelephone::enterAct02() {
     } else {
         msgIndex = 0xe;
     }
-    unk_3c->nextState = 1;
+    window->nextState = 1;
 }
 
 void RoomTelephone::execAct01() {
@@ -535,7 +535,7 @@ void RoomTelephone::changeAct(s32 state) {
 
 // ---------------------------------------------------------------- 0x02229e1c
 void RoomTelephone::openChoices(PhoneChoiceSet *p, s32 v) {
-    TalkWindowState *m = unk_3c;
+    TalkWindowState *m = window;
     ChoiceList *o = TalkWindowState_getChoiceList(m);
     const u8 *s = p->choiceMsgs;
     u8 n = p->numChoices;
@@ -562,7 +562,7 @@ void RoomTelephone::openChoices(PhoneChoiceSet *p, s32 v) {
 }
 
 void RoomTelephone::onMessageEnd(u32) {
-    TalkWindowState *m = unk_3c;
+    TalkWindowState *m = window;
     switch (msgIndex) {
     case 0x1b:
         openChoices(&data_ov004_0224e2a8, -1);
@@ -591,7 +591,7 @@ void RoomTelephone::onMessageEnd(u32) {
 }
 
 void RoomTelephone::onMessageStart(u32) {
-    TalkWindowState *m = unk_3c;
+    TalkWindowState *m = window;
     switch (msgIndex) {
     case 0xe:
         TalkVoice_setVoiceOverride(m->voice, 0);

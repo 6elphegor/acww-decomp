@@ -57,8 +57,8 @@ public:
     void setSpeakerName(u8 *p, u32 v);
 
     /* 0x20 */ MsgString9 speakerName;      // 0x2c speakerName.attr.form: name kind
-    /* 0x3c */ TalkWindowState *unk_3c;     // talk window this request is attached to (attachWindow)
-    /* 0x40 */ u8 unk_40;                   // no speaker name (setNoSpeakerName)
+    /* 0x3c */ TalkWindowState *window;     // talk window this request is attached to (attachWindow)
+    /* 0x40 */ u8 noSpeakerName;                   // no speaker name (setNoSpeakerName)
     // 0x41: end of data. mwcc places a derived class's first members in the tail padding (BuildingActor: u16 at
     // +0x42), so this class must not declare padding of its own here.
 };

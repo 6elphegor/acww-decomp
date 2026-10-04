@@ -27,13 +27,13 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define Unk_020d7710_setSubSceneKind _ZN12Unk_020d771015setSubSceneKindEjj
-#define Unk_020d7710_openSubScene _ZN12Unk_020d771012openSubSceneEi
+#define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
+#define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
 #define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti
 #define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
@@ -397,8 +397,8 @@ s32 Random_GlobalBelow(s32 a);
 s32 Pocket_FindItem(u16 *p);
 s32 Unk_02097ff4_testFlag(void *p, s32 a);
 void Unk_02097ff4_setFlag(void *p, s32 a);
-void Unk_020d7710_setSubSceneKind(void *self, u32 a, u32 b);
-void Unk_020d7710_openSubScene(void *self, u32 a);
+void ActorTalkRequest_setSubSceneKind(void *self, u32 a, u32 b);
+void ActorTalkRequest_openSubScene(void *self, u32 a);
 void func_0201578c(void *self, u16 *p, s32 a, s32 b);
 void TalkWindowState_setNamedSlot(void *self, s32 a, void *p, s32 b);
 void EncodedString_SetRaw(void *dst, void *src, s32 n);
@@ -790,7 +790,7 @@ void SpNpcRoostGuestTalk::start(TalkStartMsg *out_) {
                 EncodedString16Buf b;
                 EncodedString_SetRaw(&b, owner->requestText, 0x10);
                 MsgString_fromEncoded(&a, &b, 0, 0);
-                TalkWindowState_setNamedSlot(unk_3c, 0, &a, 7);
+                TalkWindowState_setNamedSlot(window, 0, &a, 7);
             } else if (getTalkMode() == 2) {
                 h4 = owner->songItem;
                 setItemNameSlot((u32)&h4, 1, 7);
@@ -831,7 +831,7 @@ void SpNpcRoostGuestTalk::fillKkSongName(s32 a) {
         EncodedString16Buf b;
         EncodedString_SetRaw(&b, owner->requestText, 0x10);
         MsgString_fromEncoded(&a, &b, 0, 0);
-        TalkWindowState_setNamedSlot(unk_3c, 0, &a, 7);
+        TalkWindowState_setNamedSlot(window, 0, &a, 7);
         break;
     }
     }
@@ -881,14 +881,14 @@ extern "C" char sRoostMsgCf2[11] = "sp_npc_cf2";
 
 void SpNpcRoostGuestTalk::onKkAskSongRequest() {
     using namespace sB;
-    Unk_020d7710_setSubSceneKind(this, 0xd, 0);
-    Unk_020d7710_openSubScene(this, 2);
+    ActorTalkRequest_setSubSceneKind(this, 0xd, 0);
+    ActorTalkRequest_openSubScene(this, 2);
     setScript(1);
 }
 
 void SpNpcRoostGuestTalk::onKkStartShow() {
     using namespace sB;
-    unk_3c->openMode = 0;
+    window->openMode = 0;
     owner->showTimer = 0x2d;
     setScript(2);
 }
@@ -917,7 +917,7 @@ loop:
     u32 idv = tbl[i].id;
     u32 off = i * 12;
     if (idv == *pe) {
-        u32 x = ChoiceList_getResult(TalkWindowState_getChoiceList(unk_3c));
+        u32 x = ChoiceList_getResult(TalkWindowState_getChoiceList(window));
         Unk_ov068_02270780_Fn1 *fp = (Unk_ov068_02270780_Fn1 *)((u8 *)tbl + off + 4);
         (this->*(*fp))(x);
     }
@@ -1031,7 +1031,7 @@ void SpNpcRoostGuestTalk::scriptReadSongRequest() {
     EncodedString16Buf objB;
     EncodedString_SetRaw(&objB, owner->requestText, 0x10);
     MsgString_fromEncoded(&objA, &objB, 0, 0);
-    TalkWindowState_setNamedSlot(unk_3c, 0, &objA, 7);
+    TalkWindowState_setNamedSlot(window, 0, &objA, 7);
     if (MenuCtrl_IsResultOk()) {
         u32 v;
         u16 h;
@@ -1050,7 +1050,7 @@ void SpNpcRoostGuestTalk::scriptReadSongRequest() {
         owner->songItem = RoostGuest_PickKKSong(owner);
     }
     cmd = 8;
-    TalkWindowState_setNextMessage(unk_3c, &cmd, sRoostGuestMsgFiles[owner->guestType]);
+    TalkWindowState_setNextMessage(window, &cmd, sRoostGuestMsgFiles[owner->guestType]);
 }
 
 void SpNpcRoostGuestTalk::scriptStartPerformance() {
@@ -1180,16 +1180,16 @@ void SpNpcRoostGuestTalk::scriptEndPerformance() {
         owner->showAccepted = 0;
         if (owner->isRandomSong != 0) {
             c0 = 0xb;
-            TalkWindowState_setNextMessage(unk_3c, &c0, sRoostGuestMsgFiles[owner->guestType]);
+            TalkWindowState_setNextMessage(window, &c0, sRoostGuestMsgFiles[owner->guestType]);
         } else {
             h = owner->songItem;
             if (Pocket_AddItem(&h, 0) == 0) {
                 c1 = 0xd;
-                TalkWindowState_setNextMessage(unk_3c, &c1, sRoostGuestMsgFiles[owner->guestType]);
+                TalkWindowState_setNextMessage(window, &c1, sRoostGuestMsgFiles[owner->guestType]);
             } else {
                 Talk_CheckAndSetPlayerFlag(0xd, 1);
                 c2 = 0xc;
-                TalkWindowState_setNextMessage(unk_3c, &c2, sRoostGuestMsgFiles[owner->guestType]);
+                TalkWindowState_setNextMessage(window, &c2, sRoostGuestMsgFiles[owner->guestType]);
             }
         }
         KkShowFx_Stop();
@@ -1205,7 +1205,7 @@ void SpNpcRoostGuestTalk::scriptRestoreLook() {
     using namespace sA;
     if (Math_CountDownU16(&owner->showTimer) == 0) {
         NpcLookAt_setManualAngles(&owner->lookAt, 0, 0, 0x1000, 0x276, 0x276);
-        unk_3c->nextState = 1;
+        window->nextState = 1;
         setScript(0);
     }
 }

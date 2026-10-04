@@ -10,12 +10,12 @@ struct BmgMsgAttr {
     ~BmgMsgAttr();
 
     /* 0x00 */ u32 textOffset;
-    /* 0x04 */ u8 unk_04;
-    /* 0x05 */ u8 unk_05;
-    /* 0x06 */ u8 unk_06;
-    /* 0x07 */ u8 unk_07;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
+    /* 0x04 */ u8 windowStyle;
+    /* 0x05 */ u8 friendshipDelta;
+    /* 0x06 */ u8 startEvent;
+    /* 0x07 */ u8 endEvent;
+    /* 0x08 */ u8 nextMsg;
+    /* 0x09 */ u8 msgSe;
     /* 0x0a */ u8 unk_0a;
     /* 0x0b */ u8 unk_0b;
 };

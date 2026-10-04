@@ -24,7 +24,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -75,7 +75,7 @@ BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void TalkRequest_SetTargetDone(void *p);
 void EventWeekSlots_MarkPlayer(s32 a);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *self, u32 a);
 void _ZN14NpcMoveAnimSet12setStandAnimEi(void *self, s32 a);
 s32 Pocket_FindItem(u16 *p);
@@ -601,7 +601,7 @@ void SpNpcGulliverTalk::setScript(s32 s) {
 void SpNpcGulliverTalk::scriptWakeUp() {
     switch (scriptStep) {
     case 0:
-        if (unk_3c->state == 5) {
+        if (window->state == 5) {
             ownerNpc->actionCtrl.requestPlayAnim(2, 0xd5, 1, data_020c6cc8, 0);
             _ZN14NpcMoveAnimSet12setStandAnimEi(&ownerNpc->moveAnimSet, 0);
             scriptStep = scriptStep + 1;
@@ -623,7 +623,7 @@ void SpNpcGulliverTalk::scriptWakeUp() {
                 requestReopenWindow();
                 Talk_CheckAndSetPlayerFlag(0x14, 1);
                 b = Random_GlobalBelow(5) + 5;
-                unk_3c->setNextMessage(&b, sSpNpcGulliverKey);
+                window->setNextMessage(&b, sSpNpcGulliverKey);
                 setScript(0);
             }
         }
@@ -740,7 +740,7 @@ void SpNpcGulliverTalk::onMessageEnd(u32) {
         ItemPick_One(&h2, &o, 0, 0, 1, 1, 0);
         h0 = h2;
         ItemPickSpec_Destruct(&o);
-        _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h0, 0, 5, 0);
+        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h0, 0, 5, 0);
         Pocket_AddItem(&h0, 0);
         r = 0x19;
         break;
@@ -750,7 +750,7 @@ void SpNpcGulliverTalk::onMessageEnd(u32) {
     }
     if (r != 0xff) {
         b = r;
-        unk_3c->setNextMessage(&b, m);
+        window->setNextMessage(&b, m);
     }
 }
 

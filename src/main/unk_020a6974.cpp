@@ -1707,12 +1707,12 @@ extern "C" void BmgMsgAttr_Fini() {}
 
 extern "C" void BmgMsgAttr_Copy(BmgMsgAttr *d, BmgMsgAttr *s) {
     d->textOffset = s->textOffset;
-    d->unk_04 = s->unk_04;
-    d->unk_05 = s->unk_05;
-    d->unk_06 = s->unk_06;
-    d->unk_07 = s->unk_07;
-    d->unk_08 = s->unk_08;
-    d->unk_09 = s->unk_09;
+    d->windowStyle = s->windowStyle;
+    d->friendshipDelta = s->friendshipDelta;
+    d->startEvent = s->startEvent;
+    d->endEvent = s->endEvent;
+    d->nextMsg = s->nextMsg;
+    d->msgSe = s->msgSe;
     d->unk_0a = s->unk_0a;
     d->unk_0b = s->unk_0b;
 }
@@ -1721,17 +1721,17 @@ extern "C" void BmgMsgAttr_Clear(BmgMsgAttr *s) { MI_CpuFill8(s, 0, 0xc); }
 
 extern "C" void BmgMsgAttr_Get() {}
 
-extern "C" u8 BmgMsgAttr_GetByte04(BmgMsgAttr *s) { return s->unk_04; }
+extern "C" u8 BmgMsgAttr_GetByte04(BmgMsgAttr *s) { return s->windowStyle; }
 
-extern "C" u8 BmgMsgAttr_GetByte05(BmgMsgAttr *s) { return s->unk_05; }
+extern "C" u8 BmgMsgAttr_GetByte05(BmgMsgAttr *s) { return s->friendshipDelta; }
 
-extern "C" u8 BmgMsgAttr_GetByte06(BmgMsgAttr *s) { return s->unk_06; }
+extern "C" u8 BmgMsgAttr_GetByte06(BmgMsgAttr *s) { return s->startEvent; }
 
-extern "C" u8 BmgMsgAttr_GetByte07(BmgMsgAttr *s) { return s->unk_07; }
+extern "C" u8 BmgMsgAttr_GetByte07(BmgMsgAttr *s) { return s->endEvent; }
 
-extern "C" u8 BmgMsgAttr_GetByte09(BmgMsgAttr *s) { return s->unk_09; }
+extern "C" u8 BmgMsgAttr_GetByte09(BmgMsgAttr *s) { return s->msgSe; }
 
-extern "C" void BmgMsgAttr_GetByte08(u8 *out, BmgMsgAttr *s) { *out = s->unk_08; }
+extern "C" void BmgMsgAttr_GetByte08(u8 *out, BmgMsgAttr *s) { *out = s->nextMsg; }
 
 extern "C" u32 BmgMsgAttr_LookupUnkA(BmgMsgAttr *s) { return sBmgMsgAttrTableA[BmgMsgAttr_GetByte04(s)]; }
 

@@ -1,7 +1,7 @@
 #include "types.h"
 
 #include "Unk_020d8c7c.h"
-#include "town/Unk_020b5350_Info.h"
+#include "town/SceneMapInfo.h"
 #include "town/Unk_0204c3c0_Ver.h"
 #include "game/Unk_0204da0c_Size.h"
 #include "town/Unk_0204e858_Grid.h"
@@ -218,7 +218,7 @@ void func_0204e2f0();
 s32 func_0204e1a8(void *a, void *b, void *c, void *heap);
 void Heap_Free(void *heap, void *p);
 void *Heap_Alloc(void *heap, s32 size);
-Unk_020b5350_Info *Scene_GetMapInfo();
+SceneMapInfo *Scene_GetMapInfo();
 s32 Scene_InUnk6To8();
 u32 func_020603c8(void *p);
 u32 _ZN9HouseData19buildRoomBlockEntryEiPv(void *p, u32 a, void *heap);
@@ -316,14 +316,14 @@ void File_UnloadOverlay(u32 id);
 void File_LoadOverlay(u32 id);
 void *FS_LoadOverlayInfo(void *p, s32 v, u32 n);
 void FS_GetOverlayFileID(void *a, void *b);
-s32 MapBlock_ClearBuried(Unk_0204e858_Cell *c, s32 a, s32 b);
-s32 MapBlock_SetBuried(Unk_0204e858_Cell *c, s32 a, s32 b);
-s32 MapBlock_HasAnyAttr(Unk_0204e858_Cell *c, s32 a);
-s32 MapBlock_HasAllAttr(Unk_0204e858_Cell *c, s32 a);
-s32 MapBlock_GetAttr(Unk_0204e858_Cell *c);
-s32 MapBlock_FindItemInRange(Unk_0204e858_Cell *c, s32 a, s32 b, s32 d, s32 e, s32 f);
-s32 MapBlock_GetItemPtr(Unk_0204e858_Cell *c, s32 a, s32 b, u8 d);
-void *MapBlock_SetItem(Unk_0204e858_Cell *c, s32 a, s32 b, s32 d, u8 e);
+s32 MapBlock_ClearBuried(TownBlockCell *c, s32 a, s32 b);
+s32 MapBlock_SetBuried(TownBlockCell *c, s32 a, s32 b);
+s32 MapBlock_HasAnyAttr(TownBlockCell *c, s32 a);
+s32 MapBlock_HasAllAttr(TownBlockCell *c, s32 a);
+s32 MapBlock_GetAttr(TownBlockCell *c);
+s32 MapBlock_FindItemInRange(TownBlockCell *c, s32 a, s32 b, s32 d, s32 e, s32 f);
+s32 MapBlock_GetItemPtr(TownBlockCell *c, s32 a, s32 b, u8 d);
+void *MapBlock_SetItem(TownBlockCell *c, s32 a, s32 b, s32 d, u8 e);
 void Clock_GetDayMonth(void *p);
 void Clock_GetMinuteHour(void *p);
 u8 FishTable_GetPeriod(u8 r);
@@ -404,8 +404,8 @@ u16 *BlockMap_GetItemPtrAtPos(Unk_0204e858_Grid *g, Unk_0204e858_Vec *v, s32 lay
 void BlockMap_GetItemPtr(Unk_0204e858_Grid *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
 void *BlockMap_BlockHasAllAttr(Unk_0204e858_Grid *g, s32 hx, s32 hy, s32 a);
 s32 BlockMap_GetBlockAttr(Unk_0204e858_Grid *g, s32 hx, s32 hy);
-Unk_0204e858_Cell *BlockMap_FindBlockAnyAttr(Unk_0204e858_Grid *g, s32 filter);
-Unk_0204e858_Cell *BlockMap_FindBlockAllAttr(Unk_0204e858_Grid *g, s32 filter);
+TownBlockCell *BlockMap_FindBlockAnyAttr(Unk_0204e858_Grid *g, s32 filter);
+TownBlockCell *BlockMap_FindBlockAllAttr(Unk_0204e858_Grid *g, s32 filter);
 void FieldPos_FromBlockUnit(Unk_0204e858_Vec *v, s32 a, s32 b, s32 c, s32 d);
 void FieldPos_FromUnitCenter(Unk_0204e858_Vec *v, s32 x, s32 z);
 void FieldPos_FromBlockUnitCenter(Unk_0204e858_Vec *v, s32 a, s32 b, s32 c, s32 d);
@@ -546,7 +546,7 @@ inline void *operator new(unsigned long, void *p) {
     return p;
 }
 
-static inline Unk_0204e858_Cell *Unk_0204e858_GetCell(Unk_0204e858_Grid *g, u32 x, u32 y) {
+static inline TownBlockCell *Unk_0204e858_GetCell(Unk_0204e858_Grid *g, u32 x, u32 y) {
     if (x < g->width && y < g->height && g->blocks != NULL) {
         return &g->blocks[y * g->width + x];
     }
@@ -640,17 +640,17 @@ extern "C" void FieldPos_FromBlockUnit(Unk_0204e858_Vec *v, s32 a, s32 b, s32 c,
     v->z = v->z + (d << 13);
 }
 
-extern "C" Unk_0204e858_Cell *BlockMap_FindBlockAllAttr(Unk_0204e858_Grid *g, s32 filter) {
+extern "C" TownBlockCell *BlockMap_FindBlockAllAttr(Unk_0204e858_Grid *g, s32 filter) {
     s32 x, y;
     if (filter != 0) {
         u32 *sz = &g->width;
         s32 w = sz[0];
         s32 h = sz[1];
         s32 x0 = 0;
-        Unk_0204e858_Cell *nullc = NULL;
+        TownBlockCell *nullc = NULL;
         for (y = 0; y < h; y++) {
             for (x = x0; x < w; x++) {
-                Unk_0204e858_Cell *cell;
+                TownBlockCell *cell;
                 if ((u32)x < g->width && (u32)y < g->height && g->blocks != NULL) {
                     cell = &g->blocks[y * g->width + x];
                 } else {
@@ -665,16 +665,16 @@ extern "C" Unk_0204e858_Cell *BlockMap_FindBlockAllAttr(Unk_0204e858_Grid *g, s3
     return NULL;
 }
 
-extern "C" Unk_0204e858_Cell *BlockMap_FindBlockAnyAttr(Unk_0204e858_Grid *g, s32 filter) {
+extern "C" TownBlockCell *BlockMap_FindBlockAnyAttr(Unk_0204e858_Grid *g, s32 filter) {
     s32 x, y;
     u32 *sz = &g->width;
     s32 w = sz[0];
     s32 h = sz[1];
     s32 x0 = 0;
-    Unk_0204e858_Cell *nullc = NULL;
+    TownBlockCell *nullc = NULL;
     for (y = 0; y < h; y++) {
         for (x = x0; x < w; x++) {
-            Unk_0204e858_Cell *cell;
+            TownBlockCell *cell;
             if ((u32)x < g->width && (u32)y < g->height && g->blocks != NULL) {
                 cell = &g->blocks[y * g->width + x];
             } else {
@@ -690,7 +690,7 @@ extern "C" Unk_0204e858_Cell *BlockMap_FindBlockAnyAttr(Unk_0204e858_Grid *g, s3
 
 extern "C" s32 BlockMap_GetBlockAttr(Unk_0204e858_Grid *g, s32 hx, s32 hy) {
     s32 r = 0;
-    Unk_0204e858_Cell *cell = Unk_0204e858_GetCell(g, hx, hy);
+    TownBlockCell *cell = Unk_0204e858_GetCell(g, hx, hy);
     if (cell != NULL) {
         r = MapBlock_GetAttr(cell);
     }
@@ -698,7 +698,7 @@ extern "C" s32 BlockMap_GetBlockAttr(Unk_0204e858_Grid *g, s32 hx, s32 hy) {
 }
 
 extern "C" void *BlockMap_BlockHasAllAttr(Unk_0204e858_Grid *g, s32 hx, s32 hy, s32 a) {
-    Unk_0204e858_Cell *cell = Unk_0204e858_GetCell(g, hx, hy);
+    TownBlockCell *cell = Unk_0204e858_GetCell(g, hx, hy);
     s32 r = 0;
     if (cell != NULL) {
         r = MapBlock_HasAllAttr(cell, a);
@@ -707,7 +707,7 @@ extern "C" void *BlockMap_BlockHasAllAttr(Unk_0204e858_Grid *g, s32 hx, s32 hy, 
 }
 
 extern "C" void BlockMap_GetItemPtr(Unk_0204e858_Grid *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer) {
-    Unk_0204e858_Cell *cell = Unk_0204e858_GetCell(g, hx, hy);
+    TownBlockCell *cell = Unk_0204e858_GetCell(g, hx, hy);
     if (cell != NULL) {
         MapBlock_GetItemPtr(cell, lx, ly, layer);
     }
@@ -724,7 +724,7 @@ extern "C" u16 *BlockMap_GetItemPtrAtPos(Unk_0204e858_Grid *g, Unk_0204e858_Vec 
 }
 
 extern "C" void *BlockMap_SetItem(Unk_0204e858_Grid *g, s32 a, u32 hx, u32 hy, u32 lx, u32 ly, u8 d) {
-    Unk_0204e858_Cell *cell = Unk_0204e858_GetCell(g, hx, hy);
+    TownBlockCell *cell = Unk_0204e858_GetCell(g, hx, hy);
     void *r = NULL;
     if (cell != NULL) {
         r = MapBlock_SetItem(cell, a, lx, ly, d);
@@ -744,10 +744,10 @@ extern "C" BOOL BlockMap_FindItemAllAttr(Unk_0204e858_Grid *g, s32 *outx, s32 *o
     s32 w = sz[0];
     s32 h = sz[1];
     s32 x0 = 0;
-    Unk_0204e858_Cell *nullc = NULL;
+    TownBlockCell *nullc = NULL;
     for (y = 0; y < h; y++) {
         for (x = x0; x < w; x++) {
-            Unk_0204e858_Cell *cell;
+            TownBlockCell *cell;
             if ((u32)x < g->width && (u32)y < g->height && g->blocks != NULL) {
                 cell = &g->blocks[y * g->width + x];
             } else {
@@ -771,10 +771,10 @@ extern "C" BOOL BlockMap_FindItemAnyAttr(Unk_0204e858_Grid *g, s32 *outx, s32 *o
     s32 w = sz[0];
     s32 h = sz[1];
     s32 x0 = 0;
-    Unk_0204e858_Cell *nullc = NULL;
+    TownBlockCell *nullc = NULL;
     for (y = 0; y < h; y++) {
         for (x = x0; x < w; x++) {
-            Unk_0204e858_Cell *cell;
+            TownBlockCell *cell;
             if ((u32)x < g->width && (u32)y < g->height && g->blocks != NULL) {
                 cell = &g->blocks[y * g->width + x];
             } else {
@@ -795,7 +795,7 @@ extern "C" BOOL BlockMap_FindItemAnyAttr(Unk_0204e858_Grid *g, s32 *outx, s32 *o
 }
 
 extern "C" s32 BlockMap_SetBuried(Unk_0204e858_Grid *g, u32 hx, u32 hy, u32 lx, u32 ly) {
-    Unk_0204e858_Cell *cell = Unk_0204e858_GetCell(g, hx, hy);
+    TownBlockCell *cell = Unk_0204e858_GetCell(g, hx, hy);
     s32 r = 0;
     if (cell != NULL) {
         r = MapBlock_SetBuried(cell, lx, ly);
@@ -810,7 +810,7 @@ extern "C" s32 BlockMap_SetBuriedAtUnit(Unk_0204e858_Grid *g, s32 x, s32 z) {
 }
 
 extern "C" s32 BlockMap_ClearBuried(Unk_0204e858_Grid *g, u32 hx, u32 hy, u32 lx, u32 ly) {
-    Unk_0204e858_Cell *cell = Unk_0204e858_GetCell(g, hx, hy);
+    TownBlockCell *cell = Unk_0204e858_GetCell(g, hx, hy);
     s32 r = 0;
     if (cell != NULL) {
         r = MapBlock_ClearBuried(cell, lx, ly);
@@ -825,10 +825,10 @@ extern "C" s32 BlockMap_ClearBuriedAtUnit(Unk_0204e858_Grid *g, s32 x, s32 z) {
 }
 
 extern "C" s32 BlockMap_IsBuried(Unk_0204e858_Grid *g, u32 hx, u32 hy, u32 lx, u32 ly) {
-    Unk_0204e858_Cell *cell = Unk_0204e858_GetCell(g, hx, hy);
+    TownBlockCell *cell = Unk_0204e858_GetCell(g, hx, hy);
     BOOL r = FALSE;
-    if (cell != NULL && cell->buried != NULL) {
-        r = Unk_0204e8b0_Bit(cell->buried, lx, ly);
+    if (cell != NULL && cell->buriedFlags != NULL) {
+        r = Unk_0204e8b0_Bit(cell->buriedFlags, lx, ly);
     }
     return r;
 }

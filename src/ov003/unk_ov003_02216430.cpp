@@ -116,7 +116,7 @@ BOOL TownHall::initBuilding() {
     hourHandNode = func_02056fcc(modelRes, (s32) "kh_j");
     minuteHandNode = func_02056fcc(modelRes, (s32) "km_j");
     if (hourHandNode != -1 && minuteHandNode != -1) {
-        ((Model *)unk_138)->setCallback((s32)TownHall_NodeCallback, 6, 2, (s32)this, 0);
+        ((Model *)model)->setCallback((s32)TownHall_NodeCallback, 6, 2, (s32)this, 0);
     }
     return TRUE;
 }

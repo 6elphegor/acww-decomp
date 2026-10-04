@@ -3,15 +3,8 @@
 #include "game/TouchPicker.h"
 #include "game/TouchPickSphere.h"
 #include "game/BugNetTarget.h"
+#include "ui/OamCellEntry.h"
 
-
-struct OamCellEntry {
-    u32 w0;
-    u32 w1lo : 10;
-    u32 w1pri : 2;
-    u32 w1pal : 4;
-    u32 w1id : 16;
-};
 
 // NitroSDK GXOamAttr layout (attr0/1 word, attr2, affine parameter slot).
 struct GXOamAttr {
@@ -252,13 +245,13 @@ extern "C" GXOamAttr *Oam_DrawObjRotated(u32 mode, OamCellEntry *e, s32 dx, s32 
         oam = &sOamBufferB[n];
         aux = &sOamAffineCountB;
     }
-    x = (e->w0 << 7) >> 23;
+    x = (e->attr01 << 7) >> 23;
     if (x >= 0x100) {
         x -= 0x200;
     }
     y = *(s8 *)e;
-    w = Oam_GetObjWidth(&e->w0);
-    h = Oam_GetObjHeight(&e->w0);
+    w = Oam_GetObjWidth(&e->attr01);
+    h = Oam_GetObjHeight(&e->attr01);
     if (rot != 0) {
         if (sz != 0) {
             s32 s, ty, c, hw, hh, t;
@@ -290,7 +283,7 @@ extern "C" GXOamAttr *Oam_DrawObjRotated(u32 mode, OamCellEntry *e, s32 dx, s32 
             y = ((ty * c + tx * s) >> 12) - hh;
         }
     }
-    if ((scale != 0x1000 || rot != 0) && ((e->w0 << 22) >> 30) != 1) {
+    if ((scale != 0x1000 || rot != 0) && ((e->attr01 << 22) >> 30) != 1) {
         x -= w >> 1;
         y -= h >> 1;
         w <<= 1;
@@ -317,10 +310,10 @@ extern "C" GXOamAttr *Oam_DrawObjRotated(u32 mode, OamCellEntry *e, s32 dx, s32 
         }
     }
     if (pal == -1) {
-        pal = e->w1pal;
+        pal = e->palette;
     }
     if (pri == -1) {
-        pri = e->w1pri;
+        pri = e->priority;
     }
     if (scale != 0x1000 || rot != 0) {
         s32 m[4];
@@ -333,11 +326,11 @@ extern "C" GXOamAttr *Oam_DrawObjRotated(u32 mode, OamCellEntry *e, s32 dx, s32 
         m[1] = s;
         m[2] = -s;
         m[3] = c;
-        if (e->w0 & 0x10000000) {
+        if (e->attr01 & 0x10000000) {
             m[0] = -c;
             m[1] = -s;
         }
-        if (e->w0 & 0x20000000) {
+        if (e->attr01 & 0x20000000) {
             m[2] = -m[2];
             m[3] = -m[3];
         }
@@ -345,18 +338,18 @@ extern "C" GXOamAttr *Oam_DrawObjRotated(u32 mode, OamCellEntry *e, s32 dx, s32 
         if (idx == -1) {
             return 0;
         }
-        if (((e->w0 << 22) >> 30) == 1) {
+        if (((e->attr01 << 22) >> 30) == 1) {
             flags = 0x100;
         } else {
             flags = 0x300;
         }
     } else {
         idx = 0;
-        flags = ((volatile OamCellEntry *)e)->w0 & 0x30000000;
+        flags = ((volatile OamCellEntry *)e)->attr01 & 0x30000000;
     }
-    w1lo = e->w1lo;
-    b13 = (e->w0 << 18) >> 31;
-    Unk_02087e70_SetAttr(oam, x, y, pri, (Unk_02087e70_Mode_)((e->w0 << 20) >> 30), (e->w0 << 19) >> 31, flags, e->w0 & 0xc000c000, b13, w1lo, pal, idx);
+    w1lo = e->charName;
+    b13 = (e->attr01 << 18) >> 31;
+    Unk_02087e70_SetAttr(oam, x, y, pri, (Unk_02087e70_Mode_)((e->attr01 << 20) >> 30), (e->attr01 << 19) >> 31, flags, e->attr01 & 0xc000c000, b13, w1lo, pal, idx);
     *cnt = *cnt + 1;
     return oam;
 }
@@ -406,24 +399,24 @@ top:
             goto end;
         }
         k3 = FALSE;
-        if (use && ((e->w0 << 22) >> 30) == 3) {
+        if (use && ((e->attr01 << 22) >> 30) == 3) {
             k3 = TRUE;
         }
         k0 = FALSE;
-        if (use && ((e->w0 << 22) >> 30) == 0) {
+        if (use && ((e->attr01 << 22) >> 30) == 0) {
             k0 = TRUE;
         }
         k1 = FALSE;
-        if (use && ((e->w0 << 22) >> 30) == 1) {
+        if (use && ((e->attr01 << 22) >> 30) == 1) {
             k1 = TRUE;
         }
-        x = (e->w0 << 7) >> 23;
+        x = (e->attr01 << 7) >> 23;
         if (x >= 0x100) {
             x -= 0x200;
         }
         y = *(s8 *)e;
-        w = Oam_GetObjWidth(&e->w0);
-        h = Oam_GetObjHeight(&e->w0);
+        w = Oam_GetObjWidth(&e->attr01);
+        h = Oam_GetObjHeight(&e->attr01);
         if (use) {
             if (k3) {
                 w <<= 1;
@@ -467,14 +460,14 @@ top:
                 w = h;
             }
             if (x + w < 0 || x > 0x100) {
-                if (e->w1id == 0xffff) {
+                if (e->attr3 == 0xffff) {
                     goto end;
                 }
                 e++;
                 goto top;
             }
             if (y + w < 0 || y > 0xc0) {
-                if (e->w1id == 0xffff) {
+                if (e->attr3 == 0xffff) {
                     goto end;
                 }
                 e++;
@@ -482,14 +475,14 @@ top:
             }
         } else {
             if (x + w < 0 || x > 0x100) {
-                if (e->w1id == 0xffff) {
+                if (e->attr3 == 0xffff) {
                     goto end;
                 }
                 e++;
                 goto top;
             }
             if (y + h < 0 || y > 0xc0) {
-                if (e->w1id == 0xffff) {
+                if (e->attr3 == 0xffff) {
                     goto end;
                 }
                 e++;
@@ -497,19 +490,19 @@ top:
             }
         }
         if (pal == -1) {
-            palv = e->w1pal;
+            palv = e->palette;
         } else {
             palv = pal;
         }
         if (pri == -1) {
-            priv = e->w1pri;
+            priv = e->priority;
         } else {
             priv = pri;
         }
         if (sz > 0) {
             size = (Unk_02087e70_Mode_)sz;
         } else {
-            size = (Unk_02087e70_Mode_)((e->w0 << 20) >> 30);
+            size = (Unk_02087e70_Mode_)((e->attr01 << 20) >> 30);
         }
         if (use) {
             s32 P, Q;
@@ -524,17 +517,17 @@ top:
             m[1] = Q;
             m[2] = -((ss * sy + 0x800) >> 12);
             m[3] = (cc * sy + 0x800) >> 12;
-            if (e->w0 & 0x10000000) {
+            if (e->attr01 & 0x10000000) {
                 m[0] = -P;
                 m[1] = -Q;
             }
-            if (e->w0 & 0x20000000) {
+            if (e->attr01 & 0x20000000) {
                 m[2] = -m[2];
                 m[3] = -m[3];
             }
             idx = Oam_AllocAffine(oam - *cnt, aux, m);
             if (idx == -1) {
-                if (e->w1id == 0xffff) {
+                if (e->attr3 == 0xffff) {
                     goto end;
                 }
                 e++;
@@ -547,7 +540,7 @@ top:
             }
         } else {
             idx = 0;
-            flags = e->w0 & 0x30000000;
+            flags = e->attr01 & 0x30000000;
         }
         if (fx) {
             flags |= 0x10000000;
@@ -555,12 +548,12 @@ top:
         if (fy) {
             flags |= 0x20000000;
         }
-        w1lo = e->w1lo;
-        b13 = (e->w0 << 18) >> 31;
-        Unk_02087e70_SetAttr(oam, x, y, priv, size, (e->w0 << 19) >> 31, flags, e->w0 & 0xc000c000, b13, w1lo, palv, idx);
+        w1lo = e->charName;
+        b13 = (e->attr01 << 18) >> 31;
+        Unk_02087e70_SetAttr(oam, x, y, priv, size, (e->attr01 << 19) >> 31, flags, e->attr01 & 0xc000c000, b13, w1lo, palv, idx);
         oam++;
         *cnt = *cnt + 1;
-        if (e->w1id == 0xffff) {
+        if (e->attr3 == 0xffff) {
             goto end;
         }
         e++;

@@ -21,7 +21,7 @@
 #include "talk/TalkWindowState.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -239,11 +239,11 @@ struct Unk_ov054_0225aef4_Ent {
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
-#define Unk_020d7710_requestGiveItem _ZN12Unk_020d771015requestGiveItemEPtjjj
-#define Unk_020d7710_requestReopenWindow _ZN12Unk_020d771019requestReopenWindowEv
-#define Unk_020d7710_setSubSceneKind _ZN12Unk_020d771015setSubSceneKindEjj
-#define Unk_020d7710_setPocketFilter _ZN12Unk_020d771015setPocketFilterEjjj
-#define Unk_020d7710_openSubScene _ZN12Unk_020d771012openSubSceneEi
+#define ActorTalkRequest_requestGiveItem _ZN16ActorTalkRequest15requestGiveItemEPtjjj
+#define ActorTalkRequest_requestReopenWindow _ZN16ActorTalkRequest19requestReopenWindowEv
+#define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
+#define ActorTalkRequest_setPocketFilter _ZN16ActorTalkRequest15setPocketFilterEjjj
+#define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
 #define ActorTalkRequest_setPlayerNameSlot _ZN16ActorTalkRequest17setPlayerNameSlotEjj
 #define ActorTalkRequest_setDaySlot _ZN16ActorTalkRequest10setDaySlotEjj
 #define ActorTalkRequest_setMonthSlot _ZN16ActorTalkRequest12setMonthSlotEjj
@@ -311,9 +311,9 @@ s32 Unk_02097ff4_testFlag(void *g, s32 v);
 s32 TalkWindowState_setNextMessage(void *m, void *buf, u32 cb);
 s32 HouseData_getDebt(void *m);
 void ActorTalkRequest_setNumberSlot(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
-void Unk_020d7710_setSubSceneKind(void *self, s32 a, s32 b);
-void Unk_020d7710_openSubScene(void *self, s32 a);
-void Unk_020d7710_setPocketFilter(void *self, void *cb, s32 a, s32 b);
+void ActorTalkRequest_setSubSceneKind(void *self, s32 a, s32 b);
+void ActorTalkRequest_openSubScene(void *self, s32 a);
+void ActorTalkRequest_setPocketFilter(void *self, void *cb, s32 a, s32 b);
 void TalkChoiceList_SetIndices(void *self, void *tbl, s32 n, s32 m);
 s32 ActorTalkRequest_getChoiceList(void *self);
 s32 ChoiceList_getResult(s32 v);
@@ -371,12 +371,12 @@ void func_02063818(void *p);
 void func_02063870(void *p);
 BOOL EncodedString_SetRaw(void *dst, const void *src, s32 n);
 void MsgString_fromEncoded(void *dst, void *src, s32 a, s32 b);
-void Unk_020d7710_requestGiveItem(void *self, u16 *p, s32 a, s32 b, s32 c);
+void ActorTalkRequest_requestGiveItem(void *self, u16 *p, s32 a, s32 b, s32 c);
 void ActorTalkRequest_setDaySlot(void *self, u32 a, u32 b);
 void ActorTalkRequest_setMonthSlot(void *self, u32 a, u32 b);
 void ActorTalkRequest_setPlayerNameSlot(void *self, u32 a, s32 b);
 
-void Unk_020d7710_requestReopenWindow(void *self);
+void ActorTalkRequest_requestReopenWindow(void *self);
 void Unk_02014420_requestTakeItem(void *self, u16 *p, s32 a, s32 b, s32 c);
 BOOL SaveManager_HasAct12Failed();
 BOOL SaveManager_IsIdle();
@@ -1136,7 +1136,7 @@ u32 SpNpcPellyPhyllisTalk::getMailAcceptedMsg() {
 void SpNpcPellyPhyllisTalk::giveBackLetters() {
     if (lettersGivenBack == 0) {
         u16 v = 0x1565;
-        Unk_020d7710_requestGiveItem(this, &v, 0, 5, 1);
+        ActorTalkRequest_requestGiveItem(this, &v, 0, 5, 1);
         lettersGivenBack = 1;
     }
 }
@@ -1166,7 +1166,7 @@ void SpNpcPellyPhyllisTalk::setScript(s32 v) {
 }
 
 void SpNpcPellyPhyllisTalk::onMailLettersDone() {
-    void *m = unk_3c;
+    void *m = window;
     u32 cb = sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     s32 r4 = 0;
     u16 v[2];
@@ -1198,7 +1198,7 @@ void SpNpcPellyPhyllisTalk::onMailLettersDone() {
         setScript(10);
     } else {
         r4 = 3;
-        Unk_020d7710_requestReopenWindow(this);
+        ActorTalkRequest_requestReopenWindow(this);
         setScript(0);
     }
     *(u8 *)v = r4;
@@ -1206,7 +1206,7 @@ void SpNpcPellyPhyllisTalk::onMailLettersDone() {
 }
 
 void SpNpcPellyPhyllisTalk::onLetterStorageDone() {
-    void *m = unk_3c;
+    void *m = window;
     u32 cb = sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     u8 buf[1];
     s32 r1;
@@ -1221,7 +1221,7 @@ void SpNpcPellyPhyllisTalk::onLetterStorageDone() {
 }
 
 void SpNpcPellyPhyllisTalk::onDonationEntered() {
-    void *m = unk_3c;
+    void *m = window;
     u32 cb = sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     s32 r4, r6;
     u16 v[3];
@@ -1240,7 +1240,7 @@ void SpNpcPellyPhyllisTalk::onDonationEntered() {
         Donation_SetTotal(donationBefore + r4);
     } else {
         r6 = 0x1c;
-        Unk_020d7710_requestReopenWindow(this);
+        ActorTalkRequest_requestReopenWindow(this);
         setScript(0);
     }
     *(u8 *)v = r6;
@@ -1248,7 +1248,7 @@ void SpNpcPellyPhyllisTalk::onDonationEntered() {
 }
 
 void SpNpcPellyPhyllisTalk::onTownTuneDone() {
-    void *m = unk_3c;
+    void *m = window;
     u32 cb = sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     u8 buf[1];
     s32 r4;
@@ -1271,7 +1271,7 @@ void SpNpcPellyPhyllisTalk::onTownTuneDone() {
 }
 
 void SpNpcPellyPhyllisTalk::onFutureLetterDateEntered() {
-    void *m = unk_3c;
+    void *m = window;
     u32 cb[1] = { sSpNpcPellyPhyllisMsgKeys[owner->sister][0]};
     s32 r4;
     Unk_ov054_0225a3cc_Msg l;
@@ -1296,7 +1296,7 @@ void SpNpcPellyPhyllisTalk::onFutureLetterDateEntered() {
 }
 
 void SpNpcPellyPhyllisTalk::onLoanPaymentEntered() {
-    void *m = unk_3c;
+    void *m = window;
     u32 cb = sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     s32 r5;
     u16 v[2];
@@ -1315,7 +1315,7 @@ void SpNpcPellyPhyllisTalk::onLoanPaymentEntered() {
         setScript(10);
     } else {
         r5 = 0x13;
-        Unk_020d7710_requestReopenWindow(this);
+        ActorTalkRequest_requestReopenWindow(this);
         setScript(0);
     }
     *(u8 *)v = r5;
@@ -1323,7 +1323,7 @@ void SpNpcPellyPhyllisTalk::onLoanPaymentEntered() {
 }
 
 void SpNpcPellyPhyllisTalk::onSavingsDone() {
-    void *m = unk_3c;
+    void *m = window;
     u32 cb = sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     s32 r4;
     u16 v[3];
@@ -1337,12 +1337,12 @@ void SpNpcPellyPhyllisTalk::onSavingsDone() {
             Unk_02014420_requestTakeItem(this, &v[1], 0, 5, 1);
         } else {
             v[2] = 0x149b;
-            Unk_020d7710_requestGiveItem(this, &v[2], 0, 5, 1);
+            ActorTalkRequest_requestGiveItem(this, &v[2], 0, 5, 1);
         }
         setScript(10);
     } else {
         r4 = 0x18;
-        Unk_020d7710_requestReopenWindow(this);
+        ActorTalkRequest_requestReopenWindow(this);
         setScript(0);
     }
     *(u8 *)v = r4;
@@ -1362,7 +1362,7 @@ extern "C" BOOL SpNpcPellyPhyllis_IsDeliveryItem(u16 *p, s32 k) {
 }
 
 void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
-    void *m = unk_3c;
+    void *m = window;
     void *p;
     u32 cb = sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     s32 r4 = 0x51;
@@ -1415,7 +1415,7 @@ void SpNpcPellyPhyllisTalk::startMailboxSave() {
 }
 
 void SpNpcPellyPhyllisTalk::waitMailboxSave() {
-    void *m = unk_3c;
+    void *m = window;
     if (SaveManager_HasAct12Failed()) {
         u8 buf[1];
         TalkWindowState_hideBusyIcon(m);
@@ -1431,7 +1431,7 @@ void SpNpcPellyPhyllisTalk::waitMailboxSave() {
 }
 
 void SpNpcPellyPhyllisTalk::endHandItem() {
-    Unk_020d7710_requestReopenWindow(this);
+    ActorTalkRequest_requestReopenWindow(this);
     setScript(0);
 }
 
@@ -1440,7 +1440,7 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
     u8 buf[16];
     u32 A[0x1c / 4];
     u32 B[0x18 / 4];
-    void *ctx = unk_3c;
+    void *ctx = window;
     u8 i;
     v[0] = 0;
     v[1] = 0;
@@ -1498,7 +1498,7 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
 }
 
 void SpNpcPellyPhyllisTalk::waitMoveConnected() {
-    void *ctx = unk_3c;
+    void *ctx = window;
     if (Math_CountDownU16(&netTimer) == 0) {
         u8 msg;
         endComm();
@@ -1522,7 +1522,7 @@ void SpNpcPellyPhyllisTalk::startMoveSave() {
 }
 
 void SpNpcPellyPhyllisTalk::waitMoveSave() {
-    void *ctx = unk_3c;
+    void *ctx = window;
     if (SaveManager_HasAct1FFailed()) {
         setScript(0);
     } else if (SaveManager_IsIdleAfterAct1F()) {
@@ -1585,7 +1585,7 @@ void SpNpcPellyPhyllisTalk::onMessageEnd(u32 a_) {
 }
 
 void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
-    void *ctx = unk_3c;
+    void *ctx = window;
     void *h = PlayerData_GetCurrent();
     void *hd = Unk_02097ff4_getBankAccount(h);
     char *tbl = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12);
@@ -1638,19 +1638,19 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
     case 0x0b:
     case 0x0d:
     case 0x11:
-        Unk_020d7710_setSubSceneKind(this, 0x33, r5);
-        Unk_020d7710_openSubScene(this, 2);
+        ActorTalkRequest_setSubSceneKind(this, 0x33, r5);
+        ActorTalkRequest_openSubScene(this, 2);
         setScript(5);
         break;
     case 0x12:
-        Unk_020d7710_setSubSceneKind(this, 0x34, 1);
-        Unk_020d7710_openSubScene(this, 2);
+        ActorTalkRequest_setSubSceneKind(this, 0x34, 1);
+        ActorTalkRequest_openSubScene(this, 2);
         setScript(6);
         break;
     case 0x16:
         savingsBefore = PlayerBank_GetBalance(hd);
-        Unk_020d7710_setSubSceneKind(this, 0x3b, 1);
-        Unk_020d7710_openSubScene(this, 2);
+        ActorTalkRequest_setSubSceneKind(this, 0x3b, 1);
+        ActorTalkRequest_openSubScene(this, 2);
         setScript(7);
         break;
     case 0x13:
@@ -1667,13 +1667,13 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
         break;
     case 0x19:
     case 0x1b:
-        Unk_020d7710_setSubSceneKind(this, 0x37, 1);
-        Unk_020d7710_openSubScene(this, 2);
+        ActorTalkRequest_setSubSceneKind(this, 0x37, 1);
+        ActorTalkRequest_openSubScene(this, 2);
         setScript(3);
         break;
     case 0x49:
-        Unk_020d7710_setSubSceneKind(this, 0x3f, r5);
-        Unk_020d7710_openSubScene(this, 2);
+        ActorTalkRequest_setSubSceneKind(this, 0x3f, r5);
+        ActorTalkRequest_openSubScene(this, 2);
         setScript(4);
         break;
     case 0x1d:
@@ -1755,7 +1755,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
         break;
     case 0x4e:
         half1 = 0x1379;
-        Unk_020d7710_requestGiveItem(this, &half1, r5, 5, 1);
+        ActorTalkRequest_requestGiveItem(this, &half1, r5, 5, 1);
         Unk_02097ff4_setFlag(h, 0x20);
         break;
     case 0x3b:
@@ -1777,7 +1777,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
 void SpNpcPellyPhyllisTalk::onDramaMsgEnd(s32 a) {}
 
 void SpNpcPellyPhyllisTalk::onSequence4MsgEnd(s32 a) {
-    void *ctx = unk_3c;
+    void *ctx = window;
     char *tbl = *(char **)((u8 *)data_ov054_0225b974 + owner->sister * 12);
     u32 r4 = 0;
     u8 msg;
@@ -1788,8 +1788,8 @@ void SpNpcPellyPhyllisTalk::onSequence4MsgEnd(s32 a) {
     case 0x24:
     case 0x25:
     case 0x26:
-        Unk_020d7710_setSubSceneKind(this, 0x2f, 0);
-        Unk_020d7710_openSubScene(this, 2);
+        ActorTalkRequest_setSubSceneKind(this, 0x2f, 0);
+        ActorTalkRequest_openSubScene(this, 2);
         break;
     case 0x13:
         r4 = PlayerDataArray_CountUsed(gSavePlayers);
@@ -1832,7 +1832,7 @@ void SpNpcPellyPhyllisTalk::onChoice(u32 a_) {
 // compare tree rooted at 0x52, the original has a 10-entry table for cases 0..9 under a tree rooted at 0x39).
 #ifdef NONMATCHING
 void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
-    Unk_ov054_02258e58_Sub *o = (Unk_ov054_02258e58_Sub *)unk_3c;
+    Unk_ov054_02258e58_Sub *o = (Unk_ov054_02258e58_Sub *)window;
     s32 r = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     void *g = PlayerData_GetCurrent();
     u32 id = 0xff;
@@ -1840,8 +1840,8 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     switch (msgIndex) {
     case 0x5f:
         if (r == 0) {
-            Unk_020d7710_setPocketFilter(this, (void *)SpNpcPellyPhyllis_IsDeliveryItem, 0xd, 0);
-            Unk_020d7710_openSubScene(this, 0);
+            ActorTalkRequest_setPocketFilter(this, (void *)SpNpcPellyPhyllis_IsDeliveryItem, 0xd, 0);
+            ActorTalkRequest_openSubScene(this, 0);
             setScript(0xb);
         } else if (r == 1) {
             id = data_ov054_0225b344[owner->window];
@@ -1856,7 +1856,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     case 3:
     case 9:
         if (r == 0) {
-            Unk_020d7710_openSubScene(this, 1);
+            ActorTalkRequest_openSubScene(this, 1);
             setScript(1);
         }
         break;
@@ -2013,10 +2013,10 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
         ldr r1, =SpNpcPellyPhyllis_IsDeliveryItem
         mov r2, #13
         mov r3, #0
-        bl Unk_020d7710_setPocketFilter
+        bl ActorTalkRequest_setPocketFilter
         add r0, r5, #0
         mov r1, #0
-        bl Unk_020d7710_openSubScene
+        bl ActorTalkRequest_openSubScene
         add r0, r5, #0
         mov r1, #11
         bl setScript
@@ -2042,7 +2042,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
         bne L_end
         add r0, r5, #0
         mov r1, #1
-        bl Unk_020d7710_openSubScene
+        bl ActorTalkRequest_openSubScene
         add r0, r5, #0
         mov r1, #1
         bl setScript
@@ -2125,7 +2125,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
 #endif
 
 void SpNpcPellyPhyllisTalk::onDramaChoice(s32 a) {
-    Unk_ov054_02258e58_Sub *o = (Unk_ov054_02258e58_Sub *)unk_3c;
+    Unk_ov054_02258e58_Sub *o = (Unk_ov054_02258e58_Sub *)window;
     s32 r = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     u32 id = 0xff;
     u32 k = 1;
@@ -2163,7 +2163,7 @@ void SpNpcPellyPhyllisTalk::onSequence4Choice(s32 a) {
 }
 
 void SpNpcPellyPhyllisTalk::openPostOfficeMenu(s32 a) {
-    Unk_ov054_02258e58_Sub *o = (Unk_ov054_02258e58_Sub *)unk_3c;
+    Unk_ov054_02258e58_Sub *o = (Unk_ov054_02258e58_Sub *)window;
     void *g = PlayerData_GetCurrent();
     menuKind = 0;
     if (!Talk_IsInOwnTown()) {
@@ -2202,34 +2202,34 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMenuChoice(s32 a) {
 }
 
 void SpNpcPellyPhyllisTalk::startMailLetters() {
-    Unk_020d7710_openSubScene(this, 1);
+    ActorTalkRequest_openSubScene(this, 1);
     setScript(1);
 }
 
 void SpNpcPellyPhyllisTalk::showGoodbye() {
     u8 m = 1;
-    TalkWindowState_setNextMessage(unk_3c, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
+    TalkWindowState_setNextMessage(window, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
 }
 
 void SpNpcPellyPhyllisTalk::openLetterStorage() {
-    Unk_020d7710_setSubSceneKind(this, 0x26, 0);
-    Unk_020d7710_openSubScene(this, 2);
+    ActorTalkRequest_setSubSceneKind(this, 0x26, 0);
+    ActorTalkRequest_openSubScene(this, 2);
     setScript(2);
 }
 
 void SpNpcPellyPhyllisTalk::askLoanPayment() {
     ActorTalkRequest_setNumberSlot(this, HouseData_getDebt(gSaveHouse), 4, 10, 1, 0);
     u8 m = 0x12;
-    TalkWindowState_setNextMessage(unk_3c, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
+    TalkWindowState_setNextMessage(window, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
 }
 
 void SpNpcPellyPhyllisTalk::askSavings() {
     u8 m = 0x16;
-    TalkWindowState_setNextMessage(unk_3c, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
+    TalkWindowState_setNextMessage(window, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
 }
 
 void SpNpcPellyPhyllisTalk::updateDonationLevel(s32 a) {
-    void *o = unk_3c;
+    void *o = window;
     void *g;
     void *h;
     void *name;
@@ -2347,7 +2347,7 @@ void SpNpcPellyPhyllis::onInteractionEvent(u32 cmd, u8 arg) {
 }
 
 BOOL SpNpcPellyPhyllis::canStartSave() {
-    if (faceAnim.getMouthAnim() == 0xba && SpNpcTortimer2_IsIdle() && talk.unk_3c->state == 2) {
+    if (faceAnim.getMouthAnim() == 0xba && SpNpcTortimer2_IsIdle() && talk.window->state == 2) {
         return TRUE;
     }
     return FALSE;

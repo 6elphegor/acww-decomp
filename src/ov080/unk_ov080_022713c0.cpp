@@ -21,7 +21,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -316,7 +316,7 @@ void SpNpcTortimerTalk::onMessageEnd(u32) {
             buf.v[1] = 0x1559;
             Pocket_AddItem(&buf.v[1], 0);
             buf.t[0] = 4;
-            unk_3c->setNextMessage(&buf.t[0], (u8 *)"sp_npc_turtle");
+            window->setNextMessage(&buf.t[0], (u8 *)"sp_npc_turtle");
         }
     } else {
         void *g = PlayerData_GetCurrent();
@@ -354,7 +354,7 @@ void SpNpcTortimerTalk::onMessageEnd(u32) {
         }
         if (r != 0xff) {
             buf.t[1] = r;
-            unk_3c->setNextMessage(&buf.t[1], str);
+            window->setNextMessage(&buf.t[1], str);
         }
     }
 }
@@ -377,7 +377,7 @@ void SpNpcTortimerTalk::onChoice(u32) {
         }
         if (r != 0xff) {
             buf.t = r;
-            unk_3c->setNextMessage(&buf.t, str);
+            window->setNextMessage(&buf.t, str);
         }
     } else {
         Unk_02097ff4_testFlag(g, 1);

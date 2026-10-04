@@ -19,7 +19,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -28,10 +28,10 @@
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
-#define Unk_020d7710_requestGiveItem _ZN12Unk_020d771015requestGiveItemEPtjjj
-#define Unk_020d7710_setSubSceneKind _ZN12Unk_020d771015setSubSceneKindEjj
-#define Unk_020d7710_setPocketFilter _ZN12Unk_020d771015setPocketFilterEjjj
-#define Unk_020d7710_openSubScene _ZN12Unk_020d771012openSubSceneEi
+#define ActorTalkRequest_requestGiveItem _ZN16ActorTalkRequest15requestGiveItemEPtjjj
+#define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
+#define ActorTalkRequest_setPocketFilter _ZN16ActorTalkRequest15setPocketFilterEjjj
+#define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
 #define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
 #define ActorTalkRequest_setDaySlot _ZN16ActorTalkRequest10setDaySlotEjj
 #define ActorTalkRequest_setMonthSlot _ZN16ActorTalkRequest12setMonthSlotEjj
@@ -422,10 +422,10 @@ void VillagerId_getName(void *p, void *buf);
 void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
 s32 NpcTalkCtrl_isBusy(void *p);
 void Unk_02014420_requestTakeItem(void *self, u16 *a, u32 b, u32 c, u32 d);
-void Unk_020d7710_requestGiveItem(void *self, u16 *p, s32 b, s32 c, s32 d);
-void Unk_020d7710_setSubSceneKind(void *self, u32 a, u32 b);
-void Unk_020d7710_setPocketFilter(void *self, void *fn, u32 b, u32 c);
-s32 Unk_020d7710_openSubScene(void *self, s32 a);
+void ActorTalkRequest_requestGiveItem(void *self, u16 *p, s32 b, s32 c, s32 d);
+void ActorTalkRequest_setSubSceneKind(void *self, u32 a, u32 b);
+void ActorTalkRequest_setPocketFilter(void *self, void *fn, u32 b, u32 c);
+s32 ActorTalkRequest_openSubScene(void *self, s32 a);
 void ActorTalkRequest_setDaySlot(void *self, u32 a, u32 b);
 void ActorTalkRequest_setMonthSlot(void *self, u32 a, u32 b);
 void ActorTalkRequest_setItemNameSlot(void *self, u16 *p, s32 a, s32 b);
@@ -1978,7 +1978,7 @@ void SpNpcNookShopTalk::setPendingMenuHandler(s32 idx) {
 }
 
 void SpNpcNookShopTalk::handleSellMenu() {
-    void *owner = unk_3c;
+    void *owner = window;
     struct {
         u8 cmd;
         u16 item;
@@ -2065,7 +2065,7 @@ void SpNpcNookShopTalk::handleSellMenu() {
 }
 
 void SpNpcNookShopTalk::handleCatalogMenu() {
-    void *o = unk_3c;
+    void *o = window;
     Unk_ov050_0225c0a0_Msg m;
     m.msgIndex = 0x1b;
     if (MenuCtrl_IsResultOk() == 1) {
@@ -2099,7 +2099,7 @@ extern "C" BOOL SpNpcNookShop_IsDeliveryParcel(u16 *p, s32 m) {
 }
 
 void SpNpcNookShopTalk::handleDeliveryMenu() {
-    void *o = unk_3c;
+    void *o = window;
     Unk_ov050_0225c0a0_Msg m;
     m.msgIndex = 4;
     if (MenuCtrl_IsResultOk()) {
@@ -2228,7 +2228,7 @@ void SpNpcNookShopTalk::givePlantingItems() {
         Pocket_AddItem(&l[4], 0);
     }
     l[5] = 0x151d;
-    Unk_020d7710_requestGiveItem(this, &l[5], 0, 5, 0);
+    ActorTalkRequest_requestGiveItem(this, &l[5], 0, 5, 0);
 }
 
 BOOL SpNpcNookShopTalk::checkNotInUniform(Unk_ov050_0225b908_Out *out) {
@@ -2376,7 +2376,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0F(Unk_ov050_0225b908_Out *out) {
             if (s == 0 || s == 2) {
                 if (c) {
                     VillagerId_getName(c, &o);
-                    TalkWindowState_setSlot(unk_3c, 0, &o);
+                    TalkWindowState_setSlot(window, 0, &o);
                 }
                 out->msgIndex = 0x21;
                 if (ownerNpc->arbeitPrompted == 2) {
@@ -2390,7 +2390,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0F(Unk_ov050_0225b908_Out *out) {
         if (ErrandRecord_getStep(b) == 1) {
             if (c) {
                 VillagerId_getName(c, &o);
-                TalkWindowState_setSlot(unk_3c, 0, &o);
+                TalkWindowState_setSlot(window, 0, &o);
             }
             out->msgIndex = 0x27;
             return;
@@ -2550,7 +2550,7 @@ void SpNpcNookShopTalk::onArbeitMessageEnd() {
     }
     if (nextMsg != 0xff) {
         u8 v = nextMsg;
-        TalkWindowState_setNextMessage(unk_3c, &v, sSpNpcNookShopSequence5_1Key);
+        TalkWindowState_setNextMessage(window, &v, sSpNpcNookShopSequence5_1Key);
     }
 }
 
@@ -2566,7 +2566,7 @@ void SpNpcNookShopTalk::arbeitGiveUniform(void *h) {
 
 void SpNpcNookShopTalk::arbeitPresentUniform(void *h) {
     u16 v = 0x11a8;
-    Unk_020d7710_requestGiveItem(this, &v, 0, 5, 0);
+    ActorTalkRequest_requestGiveItem(this, &v, 0, 5, 0);
     nextMsg = 6;
     void *r = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0));
     if (ErrandRecord_isActive(r) && ErrandRecord_getKind(r) == 0xb) {
@@ -2615,7 +2615,7 @@ void SpNpcNookShopTalk::arbeitStartFurnitureDelivery(void *h) {
         Arbeit_StartFurnitureDelivery(h);
         v = 0x1563;
         PlayerErrands_GetDeliveryRecipientName(h, buf, &v);
-        TalkWindowState_setSlot(unk_3c, 1, buf);
+        TalkWindowState_setSlot(window, 1, buf);
         ownerNpc->arbeitPrompted = 0;
         nextMsg = 0x18;
         func_02094018(buf);
@@ -2629,7 +2629,7 @@ void SpNpcNookShopTalk::arbeitGiveDeliveryParcel(void *h) {
     v[0] = 0x1563;
     if (Pocket_AddItem(&v[0], 2)) {
         v[1] = 0x1563;
-        Unk_020d7710_requestGiveItem(this, &v[1], 2, 5, 0);
+        ActorTalkRequest_requestGiveItem(this, &v[1], 2, 5, 0);
     }
 }
 
@@ -2643,7 +2643,7 @@ void SpNpcNookShopTalk::arbeitStartLetterTask(void *h) {
         if (r) {
             func_02094030(buf);
             VillagerId_getName(r, buf);
-            TalkWindowState_setSlot(unk_3c, 0, buf);
+            TalkWindowState_setSlot(window, 0, buf);
             func_02094018(buf);
         }
         ownerNpc->arbeitPrompted = 0;
@@ -2658,7 +2658,7 @@ void SpNpcNookShopTalk::arbeitGiveStationery(void *h) {
     v[0] = 0x1020;
     if (Pocket_AddItem(&v[0], 0)) {
         v[1] = 0x1020;
-        Unk_020d7710_requestGiveItem(this, &v[1], 0, 5, 0);
+        ActorTalkRequest_requestGiveItem(this, &v[1], 0, 5, 0);
     }
     if (msgIndex == 0x1f) {
         nextMsg = 0x20;
@@ -2673,7 +2673,7 @@ void SpNpcNookShopTalk::arbeitOfferStationery(void *h) {
         nextMsg = 0x22;
     } else {
         ownerNpc->arbeitPrompted = 1;
-        TalkWindowState_setNextMessage(unk_3c, gTalkMsgIndexEnd, 0);
+        TalkWindowState_setNextMessage(window, gTalkMsgIndexEnd, 0);
     }
 }
 
@@ -2688,7 +2688,7 @@ void SpNpcNookShopTalk::arbeitRetryLetter(void *h) {
     if (Pocket_FindEmpty() >= 0) {
         nextMsg = 0x25;
     } else {
-        TalkWindowState_setNextMessage(unk_3c, gTalkMsgIndexEnd, 0);
+        TalkWindowState_setNextMessage(window, gTalkMsgIndexEnd, 0);
     }
 }
 
@@ -2703,7 +2703,7 @@ void SpNpcNookShopTalk::arbeitStartCarpetDelivery(void *h) {
         Arbeit_StartCarpetDelivery(h);
         v = 0x1561;
         PlayerErrands_GetDeliveryRecipientName(h, buf, &v);
-        TalkWindowState_setSlot(unk_3c, 1, buf);
+        TalkWindowState_setSlot(window, 1, buf);
         nextMsg = 0x29;
     } else {
         nextMsg = 0x17;
@@ -2716,7 +2716,7 @@ void SpNpcNookShopTalk::arbeitGiveCarpet(void *h) {
     v[0] = 0x1561;
     if (Pocket_AddItem(&v[0], 2)) {
         v[1] = 0x1561;
-        Unk_020d7710_requestGiveItem(this, &v[1], 0, 5, 0);
+        ActorTalkRequest_requestGiveItem(this, &v[1], 0, 5, 0);
     }
 }
 
@@ -2729,7 +2729,7 @@ void SpNpcNookShopTalk::arbeitStartWateringCanDelivery(void *h) {
         Arbeit_StartWateringCanDelivery(h);
         v[1] = 0x1564;
         PlayerErrands_GetDeliveryRecipientName(h, buf, &v[1]);
-        TalkWindowState_setSlot(unk_3c, 1, buf);
+        TalkWindowState_setSlot(window, 1, buf);
         nextMsg = 0x2e;
         func_02094018(buf);
     } else {
@@ -2739,7 +2739,7 @@ void SpNpcNookShopTalk::arbeitStartWateringCanDelivery(void *h) {
 
 void SpNpcNookShopTalk::arbeitPresentWateringCan(void *h) {
     u16 v = 0x1564;
-    Unk_020d7710_requestGiveItem(this, &v, 2, 5, 0);
+    ActorTalkRequest_requestGiveItem(this, &v, 2, 5, 0);
     ownerNpc->arbeitPrompted = 0;
 }
 
@@ -2969,7 +2969,7 @@ void SpNpcNookShopTalk::start(TalkStartMsg *out_) {
                         idx = -1;
                     }
                     l.roofColor = idx;
-                    TalkWindowState_setSlotFromString(unk_3c, 2, &l.roofColor, (void *)"st_roof_paint");
+                    TalkWindowState_setSlotFromString(window, 2, &l.roofColor, (void *)"st_roof_paint");
                 }
             }
             case 8:
@@ -3093,13 +3093,13 @@ test:
     if (i < 13) goto loop;
     if (nextMsg != 0xff) {
         u8 c = nextMsg;
-        TalkWindowState_setNextMessage(unk_3c, &c, (void *)name);
+        TalkWindowState_setNextMessage(window, &c, (void *)name);
     }
 }
 
 void SpNpcNookShopTalk::giveGlamourShot() {
     u16 a = 0x4a30;
-    Unk_020d7710_requestGiveItem(this, &a, 0, 5, 0);
+    ActorTalkRequest_requestGiveItem(this, &a, 0, 5, 0);
     u16 b = 0x4a30;
     Pocket_AddItem(&b, 0);
     safeSlot = -1;
@@ -3111,8 +3111,8 @@ void SpNpcNookShopTalk::onSafeOfferDeclined() {
 }
 
 void SpNpcNookShopTalk::openSellMenu() {
-    Unk_020d7710_setSubSceneKind(this, 0x1d, 0);
-    Unk_020d7710_openSubScene(this, 2);
+    ActorTalkRequest_setSubSceneKind(this, 0x1d, 0);
+    ActorTalkRequest_openSubScene(this, 2);
     setPendingMenuHandler(0);
 }
 
@@ -3121,8 +3121,8 @@ void SpNpcNookShopTalk::giveMoneyBag() {
 }
 
 void SpNpcNookShopTalk::openCatalogMenu() {
-    Unk_020d7710_setSubSceneKind(this, 0x3e, 0);
-    Unk_020d7710_openSubScene(this, 2);
+    ActorTalkRequest_setSubSceneKind(this, 0x3e, 0);
+    ActorTalkRequest_openSubScene(this, 2);
     setPendingMenuHandler(1);
 }
 
@@ -3192,7 +3192,7 @@ void SpNpcNookShopTalk::showFirstPurchaseHint() {
             }
         }
     }
-    TalkWindowState_setNextMessage(unk_3c, gTalkMsgIndexEnd, 0);
+    TalkWindowState_setNextMessage(window, gTalkMsgIndexEnd, 0);
 }
 
 void SpNpcNookShopTalk::ackHouseUpgrade() {
@@ -3203,7 +3203,7 @@ void SpNpcNookShopTalk::setRoofColor(s32 row, s32 col) {
     const u8 *q = sSpNpcNookShopRoofColorChoices + row * 4;
     u8 v = q[col];
     u8 b = v;
-    TalkWindowState_setSlotFromString(unk_3c, 2, &b, (void *)"st_roof_paint");
+    TalkWindowState_setSlotFromString(window, 2, &b, (void *)"st_roof_paint");
     HouseData_orderUpgrade(gSaveHouse, v);
 }
 extern "C" void *data_ov050_0225e080[2] = {(void *)_ZN17SpNpcNookShopTalk20arbeitPresentUniformEPv, 0};
@@ -3417,7 +3417,7 @@ test:
     if (nextMsg != 0xff) {
         char *str = ownerNpc->isNook() != 0 ? sSpNpcNookShopKey : sSpNpcNookShopTwinsKey;
         u8 b = nextMsg;
-        TalkWindowState_setNextMessage(unk_3c, &b, str);
+        TalkWindowState_setNextMessage(window, &b, str);
     }
 }
 
@@ -3453,8 +3453,8 @@ void SpNpcNookShopTalk::onMainMenuChoice(s32 p) {
 
 void SpNpcNookShopTalk::onDeliveryChoice(s32 p) {
     if (p == 0) {
-        Unk_020d7710_setPocketFilter(this, (void *)SpNpcNookShop_IsDeliveryParcel, 0xd, 0);
-        Unk_020d7710_openSubScene(this, 0);
+        ActorTalkRequest_setPocketFilter(this, (void *)SpNpcNookShop_IsDeliveryParcel, 0xd, 0);
+        ActorTalkRequest_openSubScene(this, 0);
         setPendingMenuHandler(2);
     } else {
         nextMsg = 0xf;
@@ -3677,7 +3677,7 @@ void SpNpcNookShopTalk::onDrama2Choice() {
         s32 c = nextMsg;
         if (c != 0xff) {
             buf.b = c;
-            TalkWindowState_setNextMessage(unk_3c, &buf.b, sSpNpcNookShopKey);
+            TalkWindowState_setNextMessage(window, &buf.b, sSpNpcNookShopKey);
         }
     }
 }
@@ -3732,7 +3732,7 @@ test:
     }
     if (nextMsg != 0xff) {
         u8 b = nextMsg;
-        TalkWindowState_setNextMessage(unk_3c, &b, sSpNpcNookShopSequence5_1Key);
+        TalkWindowState_setNextMessage(window, &b, sSpNpcNookShopSequence5_1Key);
     }
 }
 

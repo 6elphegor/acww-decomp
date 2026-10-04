@@ -1,6 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#include "talk/Unk_0203ebdc_List.h"
+#include "talk/TalkRequestList.h"
 #include "game/Unk_0203ecec_Global.h"
 #include "game/Unk_0203f218_Slot.h"
 #include "game/EventDayEntry.h"
@@ -317,7 +317,7 @@ extern "C" void TalkRequestEntry_Free(TalkRequestEntry *e) {
     e->targetId = 0;
 }
 
-extern "C" void TalkRequestList_FreeAll(Unk_0203ebdc_List *l) {
+extern "C" void TalkRequestList_FreeAll(TalkRequestList *l) {
     TalkRequestEntry *p = l->head;
     while (p) {
         TalkRequestEntry *next = *(TalkRequestEntry **)((u8 *)p + 4);

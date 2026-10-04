@@ -20,7 +20,7 @@
 #include "talk/TalkWindowState.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
 
@@ -307,7 +307,7 @@ struct Unk_ov048_M2 { u8 unk_00[0xd4]; };
 struct Unk_ov048_M3 { u8 unk_00[0x22c]; };
 
 // Dialog-state sub object embedded in the scene (vtable data_ov048_0225cbc8).
-class SpNpcCopperTalk : public Unk_020d7710 {
+class SpNpcCopperTalk : public ActorTalkRequest {
 public:
     typedef void (SpNpcCopperTalk::*Fn)();
     typedef void (SpNpcCopperTalk::*ArgFn)(s32);
@@ -2096,7 +2096,7 @@ void SpNpcCopperTalk::showMainMenu() {
         v = 0xf;
     }
     buf[0] = v;
-    _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, buf, sSpNpcCopperMsgKey);
+    _ZN15TalkWindowState14setNextMessageEPhPv(window, buf, sSpNpcCopperMsgKey);
 }
 
 void SpNpcCopperTalk::closeGate() {
@@ -2110,7 +2110,7 @@ void SpNpcCopperTalk::closeGate() {
 }
 
 void SpNpcCopperTalk::lockWindow(s32 flag) {
-    void *p = unk_3c;
+    void *p = window;
     if (flag != 0) {
         _ZN15TalkWindowState12showBusyIconEv(p, 1);
     } else {
@@ -2120,7 +2120,7 @@ void SpNpcCopperTalk::lockWindow(s32 flag) {
 }
 
 void SpNpcCopperTalk::unlockWindow() {
-    void *p = unk_3c;
+    void *p = window;
     _ZN15TalkWindowState12hideBusyIconEv(p);
     _ZN15TalkWindowState13unlockAdvanceEv(p);
 }
@@ -2196,7 +2196,7 @@ void SpNpcCopperTalk::startFarewellAct() {
 void SpNpcCopperTalk::showAnythingElseMenu() {
     u8 buf[2];
     buf[0] = getAnythingElseMsg();
-    _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, buf, sSpNpcCopperMsgKey);
+    _ZN15TalkWindowState14setNextMessageEPhPv(window, buf, sSpNpcCopperMsgKey);
 }
 
 void SpNpcCopperTalk::showWifiIdSavedResult() {
@@ -2204,10 +2204,10 @@ void SpNpcCopperTalk::showWifiIdSavedResult() {
     if (wifiIdChanged != 0) {
         setFriendCodeArgs(Net_GetOwnFriendKey(PlayerWifiData_GetDwcUserData(_ZN10PlayerData15getWifiUserDataEv(PlayerData_GetCurrent()))));
         buf[0] = 0x76;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, buf, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, buf, sSpNpcCopperMsgKey);
     } else {
         buf[1] = getWifiLoginResultMsg();
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &buf[1], sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &buf[1], sSpNpcCopperMsgKey);
     }
 }
 
@@ -2290,11 +2290,11 @@ void SpNpcCopperTalk::onChoiceConnectWifi(s32 p) {
         u32 id = 0xff;
         switch (wifiPurpose) {
         case 2:
-            unk_aa = 0x5b;
+            afterSaveMsg = 0x5b;
             id = 0x6a;
             break;
         case 1:
-            unk_aa = 0x3e;
+            afterSaveMsg = 0x3e;
             id = 0x6a;
             break;
         case 0:
@@ -2303,7 +2303,7 @@ void SpNpcCopperTalk::onChoiceConnectWifi(s32 p) {
         }
         if (id != 0xff) {
             u8 v = id;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v, sSpNpcCopperMsgKey);
+            _ZN15TalkWindowState14setNextMessageEPhPv(window, &v, sSpNpcCopperMsgKey);
         }
     }
 }
@@ -2321,7 +2321,7 @@ void SpNpcCopperTalk::onChoiceVisitMethod(s32 p) {
         checkWifiReady();
     } else if (p == 2) {
         u8 v = getAnythingElseMsg();
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &v, sSpNpcCopperMsgKey);
     }
 }
 
@@ -2331,7 +2331,7 @@ void SpNpcCopperTalk::onChoiceHostMethod(s32 p) {
         checkWifiReady();
     } else if (p == 2) {
         u8 v = getAnythingElseMsg();
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &v, sSpNpcCopperMsgKey);
     }
 }
 
@@ -2340,10 +2340,10 @@ void SpNpcCopperTalk::checkWifiReady() {
     if (wifiPurpose != 0 && hasFriends() == 0) {
         if (wifiPurpose == 2) {
             v0 = 0x6f;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v0, sSpNpcCopperMsgKey);
+            _ZN15TalkWindowState14setNextMessageEPhPv(window, &v0, sSpNpcCopperMsgKey);
         } else {
             v1 = 0x70;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v1, sSpNpcCopperMsgKey);
+            _ZN15TalkWindowState14setNextMessageEPhPv(window, &v1, sSpNpcCopperMsgKey);
         }
         return;
     }
@@ -2352,15 +2352,15 @@ void SpNpcCopperTalk::checkWifiReady() {
     if (Net_HasWifiUserId(s)) {
         if (Net_IsWifiConfigValid(s)) {
             v2 = sCopperWifiStartMsgs[wifiPurpose];
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v2, sSpNpcCopperMsgKey);
+            _ZN15TalkWindowState14setNextMessageEPhPv(window, &v2, sSpNpcCopperMsgKey);
         } else {
             wifiIdChanged = 1;
             v3 = 0x72;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v3, sSpNpcCopperMsgKey);
+            _ZN15TalkWindowState14setNextMessageEPhPv(window, &v3, sSpNpcCopperMsgKey);
         }
     } else {
         v4 = 0x71;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v4, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &v4, sSpNpcCopperMsgKey);
     }
     NetOverlay_Restore();
 }
@@ -2368,7 +2368,7 @@ void SpNpcCopperTalk::checkWifiReady() {
 void SpNpcCopperTalk::onChoiceGoHome(s32 p) {
     if (p == 0) {
         u8 v = 0x19;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &v, sSpNpcCopperMsgKey);
     }
 }
 
@@ -2423,7 +2423,7 @@ void SpNpcCopperTalk::onChoiceMainMenu(s32 p) {
     }
     if (id != 0xff) {
         u8 v = id;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &v, sSpNpcCopperMsgKey);
     }
 }
 
@@ -2455,14 +2455,14 @@ void SpNpcCopperTalk::onChoiceHostMenu(s32 p) {
     }
     if (id != 0xff) {
         u8 v = id;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &v, sSpNpcCopperMsgKey);
     }
 }
 
 void SpNpcCopperTalk::onChoiceBackToMenu(s32 p) {
     if (p == 1) {
         u8 v = getAnythingElseMsg();
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &v, sSpNpcCopperMsgKey);
     }
 }
 
@@ -2479,25 +2479,25 @@ void SpNpcCopperTalk::confirmStartComm(s32 p, s32 id) {
     u8 v1;
     u8 v2;
     if (p == 0) {
-        unk_aa = id;
+        afterSaveMsg = id;
         if (saveDone != 0) {
-            v0 = unk_aa;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v0, sSpNpcCopperMsgKey);
+            v0 = afterSaveMsg;
+            _ZN15TalkWindowState14setNextMessageEPhPv(window, &v0, sSpNpcCopperMsgKey);
         } else {
             v1 = 0x6a;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v1, sSpNpcCopperMsgKey);
+            _ZN15TalkWindowState14setNextMessageEPhPv(window, &v1, sSpNpcCopperMsgKey);
         }
     }
     if (p == 1) {
         v2 = getAnythingElseMsg();
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v2, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &v2, sSpNpcCopperMsgKey);
     }
 }
 
 void SpNpcCopperTalk::onChoiceGoOutInstead(s32 p) {
     if (p == 0) {
         u8 v = 0x52;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &v, sSpNpcCopperMsgKey);
         CheckInGate_Close();
         Comm_ResetNetSession();
         if (Net_GetMode() == 3 || Net_GetMode() == 4) {
@@ -2511,19 +2511,19 @@ void SpNpcCopperTalk::onChoiceGoOutInstead(s32 p) {
 void SpNpcCopperTalk::onChoiceRetryLocal(s32 p) {
     if (p == 0) {
         u8 v = 0x59;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &v, sSpNpcCopperMsgKey);
     }
 }
 
 void SpNpcCopperTalk::onChoiceRetryWifi(s32 p) {
     if (p == 0) {
         u8 v = 0x62;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &v, sSpNpcCopperMsgKey);
     }
 }
 
 void SpNpcCopperTalk::onChoiceSaveAndQuit(s32 p) {
-    Unk_ov048_Owner *o = (Unk_ov048_Owner *)unk_3c;
+    Unk_ov048_Owner *o = (Unk_ov048_Owner *)window;
     if (p == 0) {
         o->unk_14 = 0;
         SpNpcCopper_ChangeAct(owner, 0xe);
@@ -2542,7 +2542,7 @@ void SpNpcCopperTalk::onChoiceUnk5F(s32 p) {
         break;
     case 1: {
         u8 v = 0x6c;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &v, sSpNpcCopperMsgKey);
         break;
     }
     case 2:
@@ -2598,7 +2598,7 @@ void SpNpcCopperTalk::onChoice(u32) {
             u32 a = *(u32 *)((u8 *)tbl + off);
             u32 b = *p;
             if (a == b) {
-                s32 arg = _ZN10ChoiceList9getResultEv(_ZN15TalkWindowState13getChoiceListEv(unk_3c));
+                s32 arg = _ZN10ChoiceList9getResultEv(_ZN15TalkWindowState13getChoiceListEv(window));
                 Unk_ov048_0225a108_Row *r = (Unk_ov048_0225a108_Row *)((u32)tbl + off);
                 (this->*r->f)(arg);
             }
@@ -2754,7 +2754,7 @@ void SpNpcCopperTalk::onWifiLoggedIn() {
             mv = getWifiLoginResultMsg();
         }
         m = mv;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &m, sSpNpcCopperMsgKey);
         if (wifiPurpose == 0 || wifiIdChanged != 0) {
             setScript(0x14);
         } else {
@@ -2783,7 +2783,7 @@ void SpNpcCopperTalk::scanForOpenTowns() {
         _ZN15EncodedString8BC2Ev(B);
         _ZN11MsgString9BC1Ev(C);
         _ZN14EncodedString8C1Ev(D);
-        r7 = unk_3c;
+        r7 = window;
         for (i = 0; i < n; i++) {
             p = arr[i];
             s32 t;
@@ -2825,30 +2825,30 @@ void SpNpcCopperTalk::onFriendListClosed() {
         NetOverlay_AssertWifi();
         unk_b8.unk_3d4 = Net_WifiGetFriendProfileId(r5);
         a = 0x62;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &a, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &a, sSpNpcCopperMsgKey);
         setScript(0);
     } else {
         u8 b;
         setScript(0x14);
         b = 0x61;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &b, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &b, sSpNpcCopperMsgKey);
     }
 }
 
 void SpNpcCopperTalk::onTownListClosed() {
     if (MenuCtrl_IsResultOk()) {
         u8 a = 0x59;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &a, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &a, sSpNpcCopperMsgKey);
     } else {
         u8 b = 0x58;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &b, sSpNpcCopperMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &b, sSpNpcCopperMsgKey);
         endComm();
     }
     setScript(0);
 }
 
 void SpNpcCopperTalk::shutdownWifi() {
-    void *t = unk_3c;
+    void *t = window;
     if (t) {
         _ZN15TalkWindowState11lockAdvanceEv(t);
     }
@@ -2867,7 +2867,7 @@ void SpNpcCopperTalk::shutdownWifi() {
                 Wifi_StoreFriendList();
                 if (Save_WritePlayerFriendList()) {
                     b = 2;
-                    _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &b, sSpNpcCopperMsgKey);
+                    _ZN15TalkWindowState14setNextMessageEPhPv(window, &b, sSpNpcCopperMsgKey);
                 }
             }
         }
@@ -2885,7 +2885,7 @@ void SpNpcCopperTalk::requestSave() {
 }
 
 void SpNpcCopperTalk::waitSaveDone() {
-    void *t = unk_3c;
+    void *t = window;
     if (SaveManager_HasAct13Failed()) {
         u8 a;
         unlockWindow();
@@ -2896,7 +2896,7 @@ void SpNpcCopperTalk::waitSaveDone() {
         u8 b;
         saveDone = 1;
         unlockWindow();
-        b = unk_aa;
+        b = afterSaveMsg;
         _ZN15TalkWindowState14setNextMessageEPhPv(t, &b, sSpNpcCopperMsgKey);
         SpNpcKatie_ChangeAct05();
         setScript(0);
@@ -2922,8 +2922,8 @@ BOOL SpNpcCopperTalk::checkNetError(s32 flag) {
             _ZN11MsgString25C1Ev(b);
             String_FormatNumber(a, q, 2, 6, 0, 0);
             String_FormatNumber(b, v - q * 1000, 3, 6, 0, 0);
-            _ZN15TalkWindowState7setSlotEiPv(unk_3c, 6, a);
-            _ZN15TalkWindowState7setSlotEiPv(unk_3c, 7, b);
+            _ZN15TalkWindowState7setSlotEiPv(window, 6, a);
+            _ZN15TalkWindowState7setSlotEiPv(window, 7, b);
             if (code == 0x400b) {
                 showErrorAndAbort(0x7d, 0);
             } else if (code == 0x400a) {
@@ -2988,7 +2988,7 @@ BOOL SpNpcCopperTalk::checkScanTimeout() {
 
 void SpNpcCopperTalk::showErrorAndAbort(u32 msg, s32 unused) {
     u8 b = msg;
-    _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &b, sSpNpcCopperMsgKey);
+    _ZN15TalkWindowState14setNextMessageEPhPv(window, &b, sSpNpcCopperMsgKey);
     if (Net_GetMode() == 3 || Net_GetMode() == 4) {
         setScript(0x14);
     } else {
@@ -3106,7 +3106,7 @@ void SpNpcCopperTalk::waitJoinAccepted() {
                 Net_GetMyAid();
                 Net_SetJoiningAid();
                 Comm_ClearSyncState();
-                unk_3c->openMode = 0;
+                window->openMode = 0;
                 unlockWindow();
                 setScript(0);
                 SpNpcCopper_ChangeAct(owner, 0xc);
@@ -3128,7 +3128,7 @@ void SpNpcCopperTalk::requestGoHome() {
 }
 
 void SpNpcCopperTalk::waitGoHomeAccepted() {
-    Unk_ov048_Owner *o = (Unk_ov048_Owner *)unk_3c;
+    Unk_ov048_Owner *o = (Unk_ov048_Owner *)window;
     s32 t = Comm_GetSyncState();
     if ((u32)(t - 5) <= 1) {
         unlockWindow();
@@ -3375,7 +3375,7 @@ BOOL SpNpcCopper::canPlayTalkMelody() {
 // ---- 8de0
 
 BOOL SpNpcCopper::canStartSave() {
-    if (_ZN11NpcFaceAnim12getMouthAnimEv(&faceAnim) == 0xba && SpNpcKatie_IsIdle() && talk.unk_3c->state == 2) {
+    if (_ZN11NpcFaceAnim12getMouthAnimEv(&faceAnim) == 0xba && SpNpcKatie_IsIdle() && talk.window->state == 2) {
         return TRUE;
     }
     return FALSE;

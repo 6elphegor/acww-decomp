@@ -173,7 +173,7 @@ BOOL Mailbox::initBuilding() {
     if (getBtaAnim(0)) {
         if (matAnim.allocMatAnm((u32)modelRes, gFieldStructureHeap)) {
             matAnim.init((s32)getBtaAnim(0), 1, 0x1000, 0);
-            matAnim.addToRenderObj((u32)((Model *)unk_138)->getRenderObj());
+            matAnim.addToRenderObj((u32)((Model *)model)->getRenderObj());
         }
     }
     u8 b = (u8)BuildingList_IndexOf(this);
@@ -398,14 +398,14 @@ void Mailbox::updateDoorState() {
         (this->*tbl[doorState])();
     }
     if (matAnim.hasPassedFrame(0x12)) {
-        ((BuildingSeEmitter *)unk_234)->playSe(0x7de);
+        ((BuildingSeEmitter *)seEmitter)->playSe(0x7de);
     }
 }
 
 BOOL Mailbox::enterNoMail() {
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorInAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, 0, 0);
-    void *r4 = ((Model *)unk_138)->getRenderObj();
+    _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, 0, 0);
+    void *r4 = ((Model *)model)->getRenderObj();
     void *r2 = getBtaAnim(0);
     _ZN9ModelAnim7replaceEiiiit(&matAnim, r4, r2, 1, 0x1000, 0);
     return TRUE;
@@ -419,23 +419,23 @@ void Mailbox::execNoMail() {
 
 BOOL Mailbox::enterMailArrive() {
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorInAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 void Mailbox::execMailArrive() {
-    if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
+    if (isUsable() && ((AnimFrameCtrl *)doorAnimCtrl)->isFinished()) {
         Building_RequestState(this, 2);
     } else {
-        _ZN9AnimModel8stepAnimEv(unk_138);
+        _ZN9AnimModel8stepAnimEv(model);
     }
 }
 
 BOOL Mailbox::enterHasMail() {
     Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)getDoorInAnim();
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorInAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, a->numFrame - 1, 0);
-    void *r5 = ((Model *)unk_138)->getRenderObj();
+    _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, a->numFrame - 1, 0);
+    void *r5 = ((Model *)model)->getRenderObj();
     void *r2 = getBtaAnim(0);
     _ZN9ModelAnim7replaceEiiiit(&matAnim, r5, r2, 0, 0x1000, 0);
     return TRUE;
@@ -448,16 +448,16 @@ void Mailbox::execHasMail() {
 
 BOOL Mailbox::enterLidOpen() {
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, 0, 0);
-    ((BuildingSeEmitter *)unk_234)->playSe(0x819);
+    _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, 0, 0);
+    ((BuildingSeEmitter *)seEmitter)->playSe(0x819);
     return TRUE;
 }
 
 void Mailbox::execLidOpen() {
-    _ZN9AnimModel8stepAnimEv(unk_138);
+    _ZN9AnimModel8stepAnimEv(model);
     matAnim.step();
     *(s32 *)matAnim.anmObj = matAnim.curFrame;
-    if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
+    if (isUsable() && ((AnimFrameCtrl *)doorAnimCtrl)->isFinished()) {
         Building_RequestState(this, 4);
     }
 }
@@ -465,7 +465,7 @@ void Mailbox::execLidOpen() {
 BOOL Mailbox::enterLidOpened() {
     Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, a->numFrame - 1, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, a->numFrame - 1, 0);
     return TRUE;
 }
 
@@ -477,20 +477,20 @@ void Mailbox::execLidOpened() {
 BOOL Mailbox::enterLidClose() {
     Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 3, 0x1000, a->numFrame - 1, 0);
-    ((BuildingSeEmitter *)unk_234)->playSe(0x81a);
+    _ZN14BlendAnimModel8initAnimEiiitt(model, b, 3, 0x1000, a->numFrame - 1, 0);
+    ((BuildingSeEmitter *)seEmitter)->playSe(0x81a);
     return TRUE;
 }
 
 void Mailbox::execLidClose() {
-    if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
+    if (isUsable() && ((AnimFrameCtrl *)doorAnimCtrl)->isFinished()) {
         if (countLetters() == 0) {
             Building_RequestState(this, 6);
         } else {
             Building_RequestState(this, 2);
         }
     } else {
-        _ZN9AnimModel8stepAnimEv(unk_138);
+        _ZN9AnimModel8stepAnimEv(model);
     }
     matAnim.step();
     *(s32 *)matAnim.anmObj = matAnim.curFrame;
@@ -499,17 +499,17 @@ void Mailbox::execLidClose() {
 BOOL Mailbox::enterMailGone() {
     Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)getDoorInAnim();
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorInAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 3, 0x1000, a->numFrame - 1, 0);
-    ((BuildingSeEmitter *)unk_234)->playSe(0x81b);
+    _ZN14BlendAnimModel8initAnimEiiitt(model, b, 3, 0x1000, a->numFrame - 1, 0);
+    ((BuildingSeEmitter *)seEmitter)->playSe(0x81b);
     return TRUE;
 }
 
 // ---- state methods
 void Mailbox::execMailGone() {
-    if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
+    if (isUsable() && ((AnimFrameCtrl *)doorAnimCtrl)->isFinished()) {
         Building_RequestState(this, 0);
     } else {
-        _ZN9AnimModel8stepAnimEv(unk_138);
+        _ZN9AnimModel8stepAnimEv(model);
     }
     matAnim.step();
     *(s32 *)matAnim.anmObj = matAnim.curFrame;

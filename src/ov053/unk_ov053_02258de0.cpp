@@ -25,7 +25,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -821,7 +821,7 @@ void SpNpcHarrietTalk::onMessageEnd(u32) {
     case 0x37:
         Talk_CheckAndSetPlayerFlag(0x13, 1);
         TownSessionState_ClearFlag(TownSessionState_Get(), 7);
-        unk_3c->setNextMessage(gTalkMsgIndexEnd, 0);
+        window->setNextMessage(gTalkMsgIndexEnd, 0);
         break;
     case 0x41:
         PlayerActor_LocalSetHeadwearHidden(1);
@@ -832,7 +832,7 @@ void SpNpcHarrietTalk::onMessageEnd(u32) {
     }
     if (msg != 0xff) {
         u8 m = msg;
-        unk_3c->setNextMessage(&m, (void *)tbl);
+        window->setNextMessage(&m, (void *)tbl);
     }
 }
 
@@ -882,7 +882,7 @@ void SpNpcHarrietTalk::onChoice(u32) {
     }
     if (msg != 0xff) {
         u8 m = msg;
-        unk_3c->setNextMessage(&m, (void *)tbl);
+        window->setNextMessage(&m, (void *)tbl);
     }
 }
 

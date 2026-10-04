@@ -23,7 +23,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -116,10 +116,10 @@ void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442017requestReturnItemEv(void *self);
 void _ZN12Unk_0201442015requestKeepItemEv(void *self);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *self, u16 *p, s32 a, s32 b, s32 c);
-void _ZN12Unk_020d771019requestReopenWindowEv(void *self);
-void _ZN12Unk_020d771015setSubSceneKindEjj(void *self, u32 a, u32 b);
-void _ZN12Unk_020d771015setPocketFilterEjjj(void *self, Unk_ov047_Cb cb, u32 a, u32 b);
-void _ZN12Unk_020d771012openSubSceneEi(void *self, s32 a);
+void _ZN16ActorTalkRequest19requestReopenWindowEv(void *self);
+void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *self, u32 a, u32 b);
+void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *self, Unk_ov047_Cb cb, u32 a, u32 b);
+void _ZN16ActorTalkRequest12openSubSceneEi(void *self, s32 a);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *self, u16 *p, s32 a, s32 b);
 void _ZN16ActorTalkRequest13getChoiceListEv(void *self);
 NpcActor *_ZN16ActorTalkRequest13getTalkPlayerEv(void *self);
@@ -159,10 +159,10 @@ BOOL _ZN8NpcActor11netGetSlotsEii(void *self, s32 *a, s32 *b);
 #define Unk_02014420_requestReturnItem _ZN12Unk_0201442017requestReturnItemEv
 #define Unk_02014420_requestKeepItem _ZN12Unk_0201442015requestKeepItemEv
 #define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
-#define Unk_020d7710_requestReopenWindow _ZN12Unk_020d771019requestReopenWindowEv
-#define Unk_020d7710_setSubSceneKind _ZN12Unk_020d771015setSubSceneKindEjj
-#define Unk_020d7710_setPocketFilter _ZN12Unk_020d771015setPocketFilterEjjj
-#define Unk_020d7710_openSubScene _ZN12Unk_020d771012openSubSceneEi
+#define ActorTalkRequest_requestReopenWindow _ZN16ActorTalkRequest19requestReopenWindowEv
+#define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
+#define ActorTalkRequest_setPocketFilter _ZN16ActorTalkRequest15setPocketFilterEjjj
+#define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
 #define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
 #define ActorTalkRequest_getChoiceList _ZN16ActorTalkRequest13getChoiceListEv
 #define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
@@ -808,7 +808,7 @@ extern "C" BOOL SpNpcBlathers_IsDonatableItem(u16 *p, s32 m) {
 }
 
 void SpNpcBlathersTalk::scriptDonationItemChosen() {
-    void *o = unk_3c;
+    void *o = window;
     Unk_ov047_0225a5e8_Msg m;
     m.msgIndex = 0x22;
     if (MenuCtrl_IsResultOk()) {
@@ -869,13 +869,13 @@ void SpNpcBlathersTalk::scriptDonationItemChosen() {
         }
     } else {
         item = 0xfff1;
-        Unk_020d7710_requestReopenWindow(this);
+        ActorTalkRequest_requestReopenWindow(this);
     }
     TalkWindowState_setNextMessage(o, &m, sSpNpcBlathersKey);
 }
 
 void SpNpcBlathersTalk::scriptCloseItemSelect() {
-    Unk_020d7710_requestReopenWindow(this);
+    ActorTalkRequest_requestReopenWindow(this);
 }
 
 extern "C" BOOL SpNpcBlathers_IsUnidentifiedFossil(u16 *p, s32 m) {
@@ -886,7 +886,7 @@ extern "C" BOOL SpNpcBlathers_IsUnidentifiedFossil(u16 *p, s32 m) {
 }
 
 void SpNpcBlathersTalk::scriptAppraisalItemChosen() {
-    void *o = unk_3c;
+    void *o = window;
     Unk_ov047_0225a5e8_Msg m;
     m.msgIndex = 0x22;
     if (MenuCtrl_IsResultOk()) {
@@ -896,14 +896,14 @@ void SpNpcBlathersTalk::scriptAppraisalItemChosen() {
         m.msgIndex = 0x19;
     } else {
         item = 0xfff1;
-        Unk_020d7710_requestReopenWindow(this);
+        ActorTalkRequest_requestReopenWindow(this);
     }
     setNextScript(4);
     TalkWindowState_setNextMessage(o, &m, sSpNpcBlathersKey);
 }
 
 void SpNpcBlathersTalk::scriptExhibitListClosed() {
-    void *o = unk_3c;
+    void *o = window;
     if (MenuCtrl_IsResultOk()) {
         u8 cmd = 0x13;
         void *g = data_021ed0a0;
@@ -929,7 +929,7 @@ extern "C" BOOL SpNpcBlathers_IsDeliveryItem(u16 *p, s32 m) {
 }
 
 void SpNpcBlathersTalk::scriptDeliveryItemChosen() {
-    void *o = unk_3c;
+    void *o = window;
     Unk_ov047_0225a3e4_Msg m;
     m.msgIndex = 0xe8;
     u32 r7 = (u32)PlayerData_GetCurrent();
@@ -1134,7 +1134,7 @@ void SpNpcBlathersTalk::onMessageEnd(u32) {
             nextMsg = 0xc;
         }
         hdr[0] = nextMsg;
-        TalkWindowState_setNextMessage(unk_3c, (u8 *)&hdr[0], sSpNpcBlathersKey);
+        TalkWindowState_setNextMessage(window, (u8 *)&hdr[0], sSpNpcBlathersKey);
         goto end;
     }
     if (msgIndex == 0x33 || ((s32)msgIndex >= 0x6e && (s32)msgIndex <= 0xa5)) {
@@ -1146,7 +1146,7 @@ void SpNpcBlathersTalk::onMessageEnd(u32) {
         }
         Unk_02014420_requestKeepItem(this);
         hdr[1] = nextMsg;
-        TalkWindowState_setNextMessage(unk_3c, (u8 *)&hdr[1], sSpNpcBlathersKey);
+        TalkWindowState_setNextMessage(window, (u8 *)&hdr[1], sSpNpcBlathersKey);
         goto end;
     }
     if ((s32)msgIndex >= 0xaa && (s32)msgIndex <= 0xe1) {
@@ -1158,7 +1158,7 @@ void SpNpcBlathersTalk::onMessageEnd(u32) {
         }
         Unk_02014420_requestKeepItem(this);
         hdr[2] = nextMsg;
-        TalkWindowState_setNextMessage(unk_3c, (u8 *)&hdr[2], sSpNpcBlathersKey);
+        TalkWindowState_setNextMessage(window, (u8 *)&hdr[2], sSpNpcBlathersKey);
         goto end;
     }
     p = PlayerData_GetCurrent();
@@ -1241,20 +1241,20 @@ test:
     }
     if (nextMsg != 0xff) {
         hdr[3] = nextMsg;
-        TalkWindowState_setNextMessage(unk_3c, (u8 *)&hdr[3], sSpNpcBlathersKey);
+        TalkWindowState_setNextMessage(window, (u8 *)&hdr[3], sSpNpcBlathersKey);
     }
 end:;
 }
 
 void SpNpcBlathersTalk::openDonationPicker() {
-    Unk_020d7710_setPocketFilter(this, SpNpcBlathers_IsDonatableItem, 0xd, 1);
-    Unk_020d7710_openSubScene(this, 0);
+    ActorTalkRequest_setPocketFilter(this, SpNpcBlathers_IsDonatableItem, 0xd, 1);
+    ActorTalkRequest_openSubScene(this, 0);
     setScript(0);
 }
 
 void SpNpcBlathersTalk::openAppraisalPicker() {
-    Unk_020d7710_setPocketFilter(this, SpNpcBlathers_IsUnidentifiedFossil, 0xd, 1);
-    Unk_020d7710_openSubScene(this, 0);
+    ActorTalkRequest_setPocketFilter(this, SpNpcBlathers_IsUnidentifiedFossil, 0xd, 1);
+    ActorTalkRequest_openSubScene(this, 0);
     setScript(1);
 }
 
@@ -1447,8 +1447,8 @@ void SpNpcBlathersTalk::returnItemAndAskMore() {
 }
 
 void SpNpcBlathersTalk::openExhibitList() {
-    Unk_020d7710_setSubSceneKind(this, 0x41, 0);
-    Unk_020d7710_openSubScene(this, 2);
+    ActorTalkRequest_setSubSceneKind(this, 0x41, 0);
+    ActorTalkRequest_openSubScene(this, 2);
     setScript(3);
 }
 
@@ -1486,7 +1486,7 @@ void SpNpcBlathersTalk::onDramaChoice(s32 a) {
             }
             dramaTalk = 0;
             buf[1] = nextMsg;
-            TalkWindowState_setNextMessage(unk_3c, &buf[1], sSpNpcBlathersKey);
+            TalkWindowState_setNextMessage(window, &buf[1], sSpNpcBlathersKey);
         } else {
             if (Talk_IsDramaPending(ownerNpc, buf, 1)) {
                 Talk_AdvanceDrama(ownerNpc, buf);
@@ -1568,7 +1568,7 @@ test0:
     if (nextMsg != 0xff) {
         Unk_ov047_022592b8_Byte b;
         b.v = nextMsg;
-        TalkWindowState_setNextMessage(unk_3c, &b, sSpNpcBlathersKey);
+        TalkWindowState_setNextMessage(window, &b, sSpNpcBlathersKey);
     }
 }
 
@@ -1726,8 +1726,8 @@ void SpNpcBlathersTalk::onDonateMoreChoice(u32 a) {
 
 void SpNpcBlathersTalk::onDeliveryChoice(u32 a) {
     if (a == 0) {
-        Unk_020d7710_setPocketFilter(this, SpNpcBlathers_IsDeliveryItem, 0xd, 0);
-        Unk_020d7710_openSubScene(this, 0);
+        ActorTalkRequest_setPocketFilter(this, SpNpcBlathers_IsDeliveryItem, 0xd, 0);
+        ActorTalkRequest_openSubScene(this, 0);
         setScript(2);
     } else if (SaveData_testFlag(gSaveData, 0xc)) {
         nextMsg = 0xea;

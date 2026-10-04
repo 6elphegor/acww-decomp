@@ -19,7 +19,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -91,7 +91,7 @@ void *_ZN16ActorTalkRequest13getChoiceListEv(void *self);
 s32 _ZN10ChoiceList9getResultEv(void *self);
 s32 _ZN12TurnipMarket8getPriceEv(void *p);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN15TalkWindowState14setNextMessageEPhPv(void *obj, void *buf, const char *name);
 s32 _ZN8SaveData8testFlagEj(void *p, s32 n);
 void _ZN8SaveData7setFlagEj(void *p, s32 n);
@@ -554,7 +554,7 @@ FxVec3 sSpNpcJoanSidestepOffsets[2] = {FxVec3(0x800, 0, 0x1000), FxVec3(-0x800, 
 void *data_ov073_02272388[2] = {(void *)_ZN9SpNpcJoan10setupAct00Ev, 0};
 
 void SpNpcJoanTalk::onAmountEntered() {
-    void *obj = unk_3c;
+    void *obj = window;
     u8 buf[2];
     buf[0] = 0x11;
     if (MenuCtrl_IsResultOk()) {
@@ -662,7 +662,7 @@ void SpNpcJoanTalk::onMessageEnd(u32) {
     }
     if (cmd != 0xff) {
         buf[0] = cmd;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, buf, str);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, buf, str);
     }
 }
 
@@ -785,7 +785,7 @@ b19:
         } else {
             NpcActor_ChargePlayer(owner, price);
             a = 0x1531;
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &a, 0, 5, 0);
+            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &a, 0, 5, 0);
             boughtSeeds = 0;
             cmd = 0x15;
         }
@@ -813,7 +813,7 @@ b25:
                 _ZN8SaveData7setFlagEj(gSaveData, 4);
                 boughtSeeds = 1;
                 c = 0x1567;
-                _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &c, 0, 5, 0);
+                _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &c, 0, 5, 0);
             } else {
                 cmd = 0x1c;
             }
@@ -823,7 +823,7 @@ b25:
 end:
     if (cmd != 0xff) {
         buf[0] = cmd;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, buf, str);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, buf, str);
     }
 }
 #else
@@ -982,7 +982,7 @@ L_case19_c:
     add r1, sp, #8
     add r1, #2
     mov r3, #5
-    bl _ZN12Unk_020d771015requestGiveItemEPtjjj
+    bl _ZN16ActorTalkRequest15requestGiveItemEPtjjj
     mov r1, #0
     mov r0, r5
     add r0, #196
@@ -1046,7 +1046,7 @@ L_case25_a:
     add r1, sp, #12
     add r1, #2
     mov r3, #5
-    bl _ZN12Unk_020d771015requestGiveItemEPtjjj
+    bl _ZN16ActorTalkRequest15requestGiveItemEPtjjj
     b L_end
 L_case25_fail:
     mov r4, #28

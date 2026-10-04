@@ -28,7 +28,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "item/ItemPickSpec.h"
 #include "actor/Unk_ov004_SceneEntry.h"
@@ -193,9 +193,9 @@ BOOL MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetAmount();
 BOOL TalkRequest_SetTargetDone(void *p);
 void NpcActor_ChargePlayer(void *p, s32 v);
-void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_020d771015setSubSceneKindEjj(void *self, u32 a, u32 b);
-void _ZN12Unk_020d771012openSubSceneEi(void *self, s32 a);
+void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *self, u32 a, u32 b);
+void _ZN16ActorTalkRequest12openSubSceneEi(void *self, s32 a);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
@@ -399,7 +399,7 @@ extern "C" u8 sSpNpcGracieKey[] = "sp_npc_giraffe";
 
 
 void SpNpcGracieTalk::onFeeEntered() {
-    TalkWindowState *m = unk_3c;
+    TalkWindowState *m = window;
     u8 v = 0x4b;
     fee = 0;
     if (MenuCtrl_IsResultOk()) {
@@ -747,7 +747,7 @@ void SpNpcGracieTalk::onMessageEnd(u32) {
                 }
                 s.letterLevel = lvl;
                 s.giftItem = 0x1565;
-                _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &s.giftItem, 0, 5, 0);
+                _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &s.giftItem, 0, 5, 0);
                 String_FormatNumber(&str, p->getStyleScore(), 10, 0, 0, 0);
                 MailText_SetSlot(0, &str);
                 Letter_ComposeFromMail(obj, &s, sSpNpcGracieKey, data_ov070_022726e0, data_ov070_022726e4, r7->getPlayerId());
@@ -796,8 +796,8 @@ void SpNpcGracieTalk::onMessageEnd(u32) {
     case 0x2c:
     case 0x31:
         if (hasPocketRoomForOutfit()) {
-            _ZN12Unk_020d771015setSubSceneKindEjj(this, 0x39, 0);
-            _ZN12Unk_020d771012openSubSceneEi(this, 2);
+            _ZN16ActorTalkRequest15setSubSceneKindEjj(this, 0x39, 0);
+            _ZN16ActorTalkRequest12openSubSceneEi(this, 2);
             setResultHandler(0);
         } else {
             code = 0x39;
@@ -818,7 +818,7 @@ void SpNpcGracieTalk::onMessageEnd(u32) {
     }
     if (code != 0xff) {
         s.msgIndex = code;
-        unk_3c->setNextMessage(&s.msgIndex, sSpNpcGracieKey);
+        window->setNextMessage(&s.msgIndex, sSpNpcGracieKey);
     }
 }
 
@@ -850,7 +850,7 @@ void SpNpcGracieTalk::onChoice(u32) {
     }
     if (code != 0xff) {
         u8 buf = code;
-        unk_3c->setNextMessage(&buf, r6);
+        window->setNextMessage(&buf, r6);
     }
 }
 

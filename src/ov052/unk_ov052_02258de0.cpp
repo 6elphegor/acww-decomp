@@ -23,7 +23,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -55,7 +55,7 @@ s32 Pocket_FindEmpty();
 s32 Pocket_FindItem(u16 *p);
 void Pocket_AddItem(u16 *p, s32 v);
 void Pocket_RemoveItem(s32 v);
-void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 void _ZN16ActorTalkRequest17setPlayerNameSlotEjj(void *p, void *q, u32 a);
@@ -775,7 +775,7 @@ void SpNpcReddTalk::onMessageEnd(u32) {
     switch (msgIndex) {
     case 0x2e:
         v[1] = 0x36fc;
-        _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &v[1], 0, 5, 0);
+        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &v[1], 0, 5, 0);
         v[2] = 0x36fc;
         Pocket_AddItem(&v[2], 0);
         msg = 0x2f;
@@ -812,7 +812,7 @@ void SpNpcReddTalk::onMessageEnd(u32) {
     }
     if (msg != 0xff) {
         *(u8 *)v = msg;
-        unk_3c->setNextMessage((u8 *)v, tbl);
+        window->setNextMessage((u8 *)v, tbl);
     }
 }
 
@@ -878,7 +878,7 @@ void SpNpcReddTalk::onChoice(u32) {
     }
     if (msg != 0xff) {
         *(u8 *)v = msg;
-        unk_3c->setNextMessage((u8 *)v, tbl);
+        window->setNextMessage((u8 *)v, tbl);
     }
 }
 

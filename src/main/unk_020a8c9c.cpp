@@ -962,7 +962,7 @@ void ChoiceEntry::clear() {
     text.clear();
     BmgMsgAttr_Clear(&attr);
     value = gU8None;
-    MI_CpuFill8(unk_49, 0, 0x1a);
+    MI_CpuFill8(name, 0, 0x1a);
     weight = 0;
     seType = 0;
 }
@@ -971,7 +971,7 @@ ChoiceString *ChoiceEntry::getText() { return &text; }
 
 u8 *ChoiceEntry::getValuePtr() { return &value; }
 
-char *ChoiceEntry::getName() { return unk_49; }
+char *ChoiceEntry::getName() { return name; }
 
 BmgMsgAttr *ChoiceEntry::getAttr() { return &attr; }
 
@@ -986,8 +986,8 @@ void ChoiceEntry::setBmgName(const void *p) { bmgName = p; }
 void ChoiceEntry::setValue(const u8 *p) { value = *p; }
 
 void ChoiceEntry::setName(const char *src) {
-    unk_49[0x19] = 0;
-    func_0212a2ec(unk_49, src, 0x19);
+    name[0x19] = 0;
+    func_0212a2ec(name, src, 0x19);
 }
 
 void ChoiceEntry::setSeType(s32 v) { seType = v; }
@@ -1118,7 +1118,7 @@ const void *Choice_GetBmgName(u32 i) { return kChoiceBmgNames[i]; }
 ChoiceListCursor::ChoiceListCursor(ChoiceWindow *window) {
     u32 i;
     row = 0;
-    unk_04 = window;
+    listWindow = window;
     maxWidth = 0;
     list = NULL;
     confirmDelay = 0;
@@ -1280,7 +1280,7 @@ BOOL ChoiceListCursor::updateTouch() {
     s32 a, b;
     BOOL r = FALSE;
     if (Input_GetTouchTrigPos(&a, &b)) {
-        s32 res = unk_04->hitTestRow(a, b);
+        s32 res = listWindow->hitTestRow(a, b);
         if (res >= 0) {
             row = res;
             r = TRUE;
@@ -1384,9 +1384,9 @@ void ChoiceListCursor::playDecideSe() {
 
 ChoiceSliderCursor::ChoiceSliderCursor(ChoiceSliderWindow *window) {
     u32 i;
-    unk_00 = window;
+    sliderWindow = window;
     speed = 0;
-    unk_08 = 0x800;
+    sliderPos = 0x800;
     prevPos = 0x800;
     grabOffsetY = 0;
     maxWidth = 0;
@@ -1409,7 +1409,7 @@ void ChoiceSliderCursor::setList(ChoiceList *p) {
 }
 
 s32 ChoiceSliderCursor::getPos() {
-    return unk_08;
+    return sliderPos;
 }
 
 u32 ChoiceSliderCursor::getMaxWidth() {
@@ -1424,7 +1424,7 @@ void ChoiceSliderCursor::open() {
     list->clearResult();
     createLabels();
     speed = 0;
-    unk_08 = 0x800;
+    sliderPos = 0x800;
     prevPos = 0x800;
     focusSlider();
     calcMaxWidth();
@@ -1639,8 +1639,8 @@ void ChoiceSliderCursor::updateGrab() {
 
 BOOL ChoiceSliderCursor::isKnobTouched() {
     BOOL r = FALSE;
-    s32 a = unk_00->getKnobX();
-    s32 b = unk_00->getKnobY();
+    s32 a = sliderWindow->getKnobX();
+    s32 b = sliderWindow->getKnobY();
     s32 x, y;
     if (Input_IsTouchTrigInRect(a - 5, a + 21, b, b + 16)) {
         Input_GetTouchTrigPos(&x, &y);
@@ -1699,18 +1699,18 @@ void ChoiceSliderCursor::focusSlider() {
 void ChoiceSliderCursor::updateSlider() {
     s32 x, y, v, hi, lo;
     if (grabbing) {
-        if (unk_00->isKnobHeld()) {
+        if (sliderWindow->isKnobHeld()) {
             if (Input_IsTouchMode()) {
                 if (Input_GetTouchHeldPos(&x, &y)) {
-                    lo = unk_00->getTrackBottomY();
-                    hi = unk_00->getTrackTopY();
+                    lo = sliderWindow->getTrackBottomY();
+                    hi = sliderWindow->getTrackTopY();
                     v = y - grabOffsetY;
                     if (v < hi) {
                         v = hi;
                     } else if (v > lo) {
                         v = lo;
                     }
-                    unk_08 = _s32_div_f((v - lo) << 12, hi - lo);
+                    sliderPos = _s32_div_f((v - lo) << 12, hi - lo);
                 }
                 speed = 0;
             } else if (Input_IsButtonMode()) {
@@ -1729,29 +1729,29 @@ void ChoiceSliderCursor::updateSlider() {
                     speed = sp;
                 }
                 if (up) {
-                    unk_08 += speed;
+                    sliderPos += speed;
                 }
                 if (down) {
-                    unk_08 -= speed;
+                    sliderPos -= speed;
                 }
-                s32 pos = unk_08;
+                s32 pos = sliderPos;
                 if (pos < 0) {
                     pos = 0;
                 } else if (pos > 0x1000) {
                     pos = 0x1000;
                 }
-                unk_08 = pos;
+                sliderPos = pos;
             }
         }
     }
-    s32 d = unk_08 - prevPos;
+    s32 d = sliderPos - prevPos;
     if (d < 0) {
         d = -d;
     }
     if (d >= 81) {
-        BOOL inc = unk_08 > prevPos;
-        s32 hi = inc ? unk_08 : prevPos;
-        s32 lo = inc ? prevPos : unk_08;
+        BOOL inc = sliderPos > prevPos;
+        s32 hi = inc ? sliderPos : prevPos;
+        s32 lo = inc ? prevPos : sliderPos;
         BOOL found = FALSE;
         s32 i;
         for (i = 0; i < 10; i++) {
@@ -1768,7 +1768,7 @@ void ChoiceSliderCursor::updateSlider() {
             Snd_PlaySe(25);
         }
     }
-    prevPos = unk_08;
+    prevPos = sliderPos;
 }
 
 void ChoiceSliderCursor::focusOkButton() {
@@ -1779,7 +1779,7 @@ void ChoiceSliderCursor::updateOkButton() {
     if (list) {
         if (list->getResult() < 0) {
             if ((Input_IsTouchMode() && isOkButtonTapped()) || (Input_IsButtonMode() && isConfirmPressed())) {
-                list->pickBySliderPos(unk_08);
+                list->pickBySliderPos(sliderPos);
             }
         }
     }

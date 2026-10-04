@@ -1098,7 +1098,7 @@ BOOL Snowball::setupTalk() {
     }
     setFileName("sp_npc_snowman");
     msgIndex = r;
-    ((Unk_ov003_02212830_Ctl *)unk_3c)->nextState = 1;
+    ((Unk_ov003_02212830_Ctl *)window)->nextState = 1;
     u8 c = 0x26;
     u32 buf[0x46];
     _ZN12MsgString256C1Ev(buf);
@@ -1110,8 +1110,8 @@ BOOL Snowball::setupTalk() {
 }
 
 void Snowball::mainTalk() {
-    if (unk_3c) {
-        if (((Unk_ov003_02212830_Ctl *)unk_3c)->state) {
+    if (window) {
+        if (((Unk_ov003_02212830_Ctl *)window)->state) {
             changeTalkAct(2);
         }
     }
@@ -1122,8 +1122,8 @@ BOOL Snowball::setupTalkEnd() {
 }
 
 void Snowball::mainTalkEnd() {
-    if (unk_3c) {
-        if (((Unk_ov003_02212830_Ctl *)unk_3c)->state == 0) {
+    if (window) {
+        if (((Unk_ov003_02212830_Ctl *)window)->state == 0) {
             _ZN9Character17detachTalkRequestEi(this, this);
             TalkRequest_SetTargetDone(this);
         }

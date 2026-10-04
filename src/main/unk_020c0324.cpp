@@ -558,8 +558,8 @@ BOOL SpNpcKatie::mainAct08() {
         }
         break;
     case 3:
-        if (talk.unk_3c->state == 5) {
-            _ZN15TalkWindowState11lockAdvanceEv(talk.unk_3c);
+        if (talk.window->state == 5) {
+            _ZN15TalkWindowState11lockAdvanceEv(talk.window);
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 2, 2, 0xea00, 0x12e00, 0, 0, 0, 0, data_020c6cc8, 0);
             SpNpcKaitlin_ChangeAct04();
             Camera_SetMode19();
@@ -575,9 +575,9 @@ BOOL SpNpcKatie::mainAct08() {
                 _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene(&talk, t);
             }
             buf = 10;
-            _ZN15TalkWindowState14setNextMessageEPhPv(talk.unk_3c, &buf, (u32)sSpNpcKatieMsgKey);
-            talk.unk_3c->nextState = 1;
-            _ZN15TalkWindowState13unlockAdvanceEv(talk.unk_3c);
+            _ZN15TalkWindowState14setNextMessageEPhPv(talk.window, &buf, (u32)sSpNpcKatieMsgKey);
+            talk.window->nextState = 1;
+            _ZN15TalkWindowState13unlockAdvanceEv(talk.window);
             reunionStep = 5;
         }
         break;
@@ -710,7 +710,7 @@ void SpNpcKatieTalk::onMessageStart(u32) {
 
 void SpNpcKatieTalk::onMessageEnd(u32) {
     if (msgIndex == 0x14) {
-        unk_3c->openMode = 0;
+        window->openMode = 0;
     }
 }
 
@@ -720,16 +720,16 @@ void SpNpcKatieTalk::onChoice(u32) {
     case 25: case 26: case 27:
     case 34: case 35: case 36: {
         u8 v[2];
-        _ZN15TalkWindowState13getChoiceListEv(unk_3c);
+        _ZN15TalkWindowState13getChoiceListEv(window);
         switch (_ZN10ChoiceList9getResultEv()) {
         case 0:
             v[0] = Random_GlobalBelow(3) + 0x1c;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v[0], (u32)sSpNpcKatieMsgKey);
+            _ZN15TalkWindowState14setNextMessageEPhPv(window, &v[0], (u32)sSpNpcKatieMsgKey);
             _ZN15KatieVisitState12setFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
             break;
         case 1:
             v[1] = Random_GlobalBelow(3) + 0x1f;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v[1], (u32)sSpNpcKatieMsgKey);
+            _ZN15TalkWindowState14setNextMessageEPhPv(window, &v[1], (u32)sSpNpcKatieMsgKey);
             if (Scene_GetCurrent() == 0) {
                 _ZN15KatieVisitState14clearFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
             }

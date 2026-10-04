@@ -530,7 +530,7 @@ void SaveMenu::enterSaveA() {
 }
 
 void SaveMenu::updateSaveA() {
-    TalkWindowState *o = (TalkWindowState *)talk.unk_3c;
+    TalkWindowState *o = (TalkWindowState *)talk.window;
     s32 r = Comm_GetSyncState();
     if (r == 5 || r == 6) {
         o->hideBusyIcon();
@@ -559,7 +559,7 @@ void SaveMenu::enterSaveB() {
 // SaveMenu
 
 void SaveMenu::updateSaveB() {
-    TalkWindowState *o = (TalkWindowState *)talk.unk_3c;
+    TalkWindowState *o = (TalkWindowState *)talk.window;
     s32 r = Comm_GetSyncState();
     if (r == 5 || r == 6) {
         o->hideBusyIcon();
@@ -590,7 +590,7 @@ void SaveMenuTalk::setOwner(SaveMenu *owner) {
 
 void SaveMenuTalk::onMessageEnd(u32) {
     if (msgIndex == 0) {
-        TalkWindowState *o = (TalkWindowState *)unk_3c;
+        TalkWindowState *o = (TalkWindowState *)window;
         void *h = o->getChoiceList();
         _ZN10ChoiceList5resetEii(h, 2, 1);
         u8 buf[4];
@@ -608,7 +608,7 @@ void SaveMenuTalk::onMessageEnd(u32) {
 // SaveMenuTalk
 
 void SaveMenuTalk::onChoice(u32) {
-    TalkWindowState *o = (TalkWindowState *)unk_3c;
+    TalkWindowState *o = (TalkWindowState *)window;
     s32 r = _ZN10ChoiceList9getResultEv(o->getChoiceList());
     switch (msgIndex) {
     case 4:

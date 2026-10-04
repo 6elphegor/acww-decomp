@@ -36,7 +36,7 @@ public:
     /* 0x0b4 */ u8 pad_b4[0xc4 - 0xb4];
     /* 0x0c4 */ Unk_020238b0_Fn onEndFn;
     /* 0x0cc */ u8 pad_cc[0xec - 0xcc];
-    /* 0x0ec */ Unk_020238b0_Fn unk_ec;
+    /* 0x0ec */ Unk_020238b0_Fn updateFn;
     /* 0x0f4 */ Unk_020238b0_Fn closeFn;
     /* 0x0fc */ VillagerActor *actor;
     /* 0x100 */ u8 topicFile[0x11e - 0x100];

@@ -2,6 +2,8 @@
 #define TOWN_UNK_OV009_0225B880_H
 
 #include "types.h"
+#include "gfx/NNSG3dRS.h"
+#include "town/BuildingInfo.h"
 
 // Helper records of the ov009 building actor unit (unk_ov009_0225b880.cpp and its _switch twin).
 class BuildingActor;
@@ -11,25 +13,10 @@ struct Unk_ov009_0225da90_Vec3 {
     Unk_ov009_0225da90_Vec3() {}
 };
 
-struct Unk_ov009_0225b880_Target {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-};
-
-struct Unk_ov009_0225bf3c_Flags {
+struct BuildingEntryFlags {
     /* 0x0 */ u8 f0 : 1;
     /* 0x0 */ u8 f1 : 1;
     /* 0x0 */ u8 rest : 6;
-};
-
-struct Unk_ov009_0225c644_Msg {
-    /* 0x00 */ u32 v[4];
-    Unk_ov009_0225c644_Msg() {}
-};
-
-struct Unk_ov009_0225bb0c_Tmp {
-    /* 0x00 */ u32 pad[4];
 };
 
 struct Unk_ov009_0225e4e0_Col {
@@ -57,14 +44,14 @@ struct Unk_ov009_0225cc24_Obj {
     /* 0x98 */ s32 speed;
 };
 
-struct Unk_ov009_0225cd48_Item {
-    /* 0x00 */ u32 unk_00;
+struct BuildingShadowEntry {
+    /* 0x00 */ u32 texIndex;
     /* 0x04 */ s32 offsetX;
     /* 0x08 */ s32 offsetZ;
     /* 0x0c */ s32 size;
     /* 0x10 */ s32 shift;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
+    /* 0x14 */ s32 texLeft;
+    /* 0x18 */ s32 texRight;
 };
 
 struct Unk_ov009_0225d2a4_Obj {
@@ -76,23 +63,6 @@ struct Unk_ov009_0225bbdc_Target {
     /* 0x28 */ s32 unk_28;
     /* 0x2c */ s32 unk_2c;
     /* 0x30 */ s32 unk_30;
-};
-
-struct Unk_ov009_0225df94_Target {
-    /* 0x00 */ u8 pad_00[0x2c];
-    /* 0x2c */ BuildingActor *ptrUser;
-};
-
-struct Unk_ov009_0225df94_Arg {
-    /* 0x00 */ u8 *c;
-    /* 0x04 */ Unk_ov009_0225df94_Target *pRenderObj;
-};
-
-struct Unk_ov009_0225df84_Obj {
-    /* 0x00 */ u8 pad_00[0x24];
-    /* 0x24 */ void *nodeDescCallback;
-    /* 0x28 */ u8 pad_28[0x92 - 0x28];
-    /* 0x92 */ u8 nodeDescCallbackTiming;
 };
 
 #endif

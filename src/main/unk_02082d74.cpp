@@ -297,7 +297,7 @@ BOOL Visitor_FindBlanca(BOOL flag);
 BOOL Visitor_FindKaitlin(BOOL flag);
 }
 static inline BOOL Unk_02083058_IsA() { return gFieldSceneKind == 0 ? TRUE : FALSE; }
-static inline Unk_02082e80_Cell *Unk_02082e80_GetCell(Unk_02082e80_Grid *g, u32 x, u32 y) {
+static inline TownBlockCell *Unk_02082e80_GetCell(Unk_02082e80_Grid *g, u32 x, u32 y) {
     if (x < g->size[0] && y < g->size[1] && g->blocks != NULL) {
         return &g->blocks[y * g->size[0] + x];
     }
@@ -2051,7 +2051,7 @@ extern "C" BOOL Visitor_CanPascalVisit() {
 
 extern "C" BOOL VisitorPlace_Beach(void *self, void *p1) {
     static Unk_02082e80_Pos list[32];
-    Unk_02082e80_Cell *c;
+    TownBlockCell *c;
     Unk_02082e80_Grid *m;
     s32 w;
     s32 count;

@@ -23,8 +23,8 @@ public:
     void enableObjWindow();             // 0x0208d644
 
     /* 0x0c */ SpriteAnim layer1;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ s32 unk_24;
+    /* 0x20 */ s32 posX;
+    /* 0x24 */ s32 posY;
     /* 0x28 */ s32 priority;
     /* 0x2c */ SpriteAnim layer2;
     /* 0x40 */ s32 anim;

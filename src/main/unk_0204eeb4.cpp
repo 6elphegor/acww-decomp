@@ -14,7 +14,7 @@ inline void *operator new(unsigned long, void *p) {
 
 OverlaySlot sOverlaySlots[12];
 
-static inline Unk_0204e858_Cell *Unk_0204e858_GetCell(Unk_0204e858_Grid *g, u32 x, u32 y) {
+static inline TownBlockCell *Unk_0204e858_GetCell(Unk_0204e858_Grid *g, u32 x, u32 y) {
     if (x < g->width && y < g->height && g->blocks != NULL) {
         return &g->blocks[y * g->width + x];
     }
@@ -115,35 +115,35 @@ void FS_GetOverlayFileID(void *a, void *b);
 }
 
 extern "C" {
-s32 MapBlock_ClearBuried(Unk_0204e858_Cell *c, s32 a, s32 b);
+s32 MapBlock_ClearBuried(TownBlockCell *c, s32 a, s32 b);
 }
 
 extern "C" {
-s32 MapBlock_SetBuried(Unk_0204e858_Cell *c, s32 a, s32 b);
+s32 MapBlock_SetBuried(TownBlockCell *c, s32 a, s32 b);
 }
 
 extern "C" {
-s32 MapBlock_HasAnyAttr(Unk_0204e858_Cell *c, s32 a);
+s32 MapBlock_HasAnyAttr(TownBlockCell *c, s32 a);
 }
 
 extern "C" {
-s32 MapBlock_HasAllAttr(Unk_0204e858_Cell *c, s32 a);
+s32 MapBlock_HasAllAttr(TownBlockCell *c, s32 a);
 }
 
 extern "C" {
-s32 MapBlock_GetAttr(Unk_0204e858_Cell *c);
+s32 MapBlock_GetAttr(TownBlockCell *c);
 }
 
 extern "C" {
-s32 MapBlock_FindItemInRange(Unk_0204e858_Cell *c, s32 a, s32 b, s32 d, s32 e, s32 f);
+s32 MapBlock_FindItemInRange(TownBlockCell *c, s32 a, s32 b, s32 d, s32 e, s32 f);
 }
 
 extern "C" {
-s32 MapBlock_GetItemPtr(Unk_0204e858_Cell *c, s32 a, s32 b, u8 d);
+s32 MapBlock_GetItemPtr(TownBlockCell *c, s32 a, s32 b, u8 d);
 }
 
 extern "C" {
-void *MapBlock_SetItem(Unk_0204e858_Cell *c, s32 a, s32 b, s32 d, u8 e);
+void *MapBlock_SetItem(TownBlockCell *c, s32 a, s32 b, s32 d, u8 e);
 }
 
 extern "C" {

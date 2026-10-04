@@ -24,7 +24,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -45,7 +45,7 @@ s32 Pocket_FindEmpty();
 s32 Pocket_FindItem(u16 *p);
 void Pocket_AddItem(u16 *p, s32 v);
 void Pocket_RemoveItem(s32 v);
-void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
@@ -308,11 +308,11 @@ void SpNpcTortimerFlowerFestTalk::onMessageEnd(u32) {
         }
         if (msgIndex == 2) {
             h1 = 0x1559;
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h1, 0, 5, 0);
+            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h1, 0, 5, 0);
             h2 = 0x1559;
             Pocket_AddItem(&h2, 0);
             b1 = 4;
-            unk_3c->setNextMessage(&b1, (void *)"sp_npc_turtle");
+            window->setNextMessage(&b1, (void *)"sp_npc_turtle");
         }
     } else {
         if (msgIndex == 5 || msgIndex == 6 || msgIndex == 9) {
@@ -326,14 +326,14 @@ void SpNpcTortimerFlowerFestTalk::onMessageEnd(u32) {
             }
         }
         if (msgIndex == 7) {
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &giftItem, 0, 5, 0);
+            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &giftItem, 0, 5, 0);
             Pocket_AddItem(&giftItem, 0);
             _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &giftItem, 0, 7);
             msg = 8;
         }
         if (msg != 0xff) {
             b2 = msg;
-            unk_3c->setNextMessage(&b2, s);
+            window->setNextMessage(&b2, s);
         }
     }
 }
@@ -357,7 +357,7 @@ void SpNpcTortimerFlowerFestTalk::onChoice(u32) {
         }
         if (msg != 0xff) {
             b1 = msg;
-            unk_3c->setNextMessage(&b1, s);
+            window->setNextMessage(&b1, s);
         }
     } else {
         if (msgIndex == 0xa && t == 0) {
@@ -369,7 +369,7 @@ void SpNpcTortimerFlowerFestTalk::onChoice(u32) {
         }
         if (msg != 0xff) {
             b2 = msg;
-            unk_3c->setNextMessage(&b2, s);
+            window->setNextMessage(&b2, s);
         }
     }
 }

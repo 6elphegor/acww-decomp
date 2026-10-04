@@ -34,7 +34,7 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "talk/ActorTalkRequest.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcFootstepFx.h"
 #include "actor/NpcActor.h"
@@ -686,7 +686,7 @@ struct TalkSubSceneParams {
 
 
 // unk_02014d90.cpp
-typedef BOOL (Unk_020d7710::*Unk_020d7710_StateFn)();
+typedef BOOL (ActorTalkRequest::*ActorTalkTaskFn)();
 
 void operator delete(void *p);
 
@@ -1496,7 +1496,7 @@ namespace nE {
 extern "C" {
 
 Unk_02013b10_Ctx *_ZN16ActorTalkRequest9getActorBEj(Unk_02014258 *p, u8 idx);
-s32 _ZN12Unk_020d77109startTaskEi(Unk_02014258 *p, s32 a);
+s32 _ZN16ActorTalkRequest9startTaskEi(Unk_02014258 *p, s32 a);
 u32 Camera_IsBlending(void);
 u32 Camera_GetBlendFramesLeft(void);
 void _ZN14TalkMsgRequest17changeSpeakerNameEP9MsgStringj(Unk_02014258 *p, Unk_020140d0_X *x, u8 *b);
@@ -1534,7 +1534,7 @@ void _ZN11NpcTalkCtrlC1Ev(void);
 namespace nF {
 extern "C" {
 
-BOOL _ZN12Unk_020d77109startTaskEi(void *self, s32 cmd);
+BOOL _ZN16ActorTalkRequest9startTaskEi(void *self, s32 cmd);
 void _ZN16ActorTalkRequest19clearItemActionBusyEv(void *self);
 void _ZN16ActorTalkRequest17setItemActionBusyEv(void *self);
 void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
@@ -1613,8 +1613,8 @@ void String_Load(void *a, u8 *b, u8 *c);
 void _ZN9MsgString12appendStringEPS_(void *a, void *b);
 void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 Npc_GetVoiceType(void *p);
-s32 _ZN12Unk_020d77107runTaskEv(void *p);
-void _ZN12Unk_020d771010resetTasksEv(void *p);
+s32 _ZN16ActorTalkRequest7runTaskEv(void *p);
+void _ZN16ActorTalkRequest10resetTasksEv(void *p);
 void _ZN14NpcSpeechState12setMouthTypeEi(void *p, s32 a);
 s32 _ZN14NpcSpeechState12getMouthTypeEv(void *p);
 s32 _ZN14NpcSpeechState10isSpeakingEv(void *p);
@@ -2378,16 +2378,16 @@ void _ZN9NpcLookAt17lookAtTargetActorEP18Unk_0201a334_Scene(void);
 void _ZN9NpcLookAt17lookAtLocalPlayerEP18Unk_0201a334_Scene(void);
 void _ZN9NpcLookAt18lookAtTargetPlayerEP18Unk_0201a334_Scene(void);
 void _ZN9NpcLookAt5relaxEv(void);
-void _ZN12Unk_020d771012giveItemWaitEv(void);
-void _ZN12Unk_020d771013giveItemStartEv(void);
-void _ZN12Unk_020d771015taskCloseWindowEv(void);
-void _ZN12Unk_020d771015closeWindowWaitEv(void);
-void _ZN12Unk_020d771016closeWindowStartEv(void);
-void _ZN12Unk_020d771016taskReopenWindowEv(void);
-void _ZN12Unk_020d771012taskSubSceneEv(void);
-void _ZN12Unk_020d771012subSceneWaitEv(void);
-void _ZN12Unk_020d771012subSceneOpenEv(void);
-void _ZN12Unk_020d771019subSceneCloseWindowEv(void);
+void _ZN16ActorTalkRequest12giveItemWaitEv(void);
+void _ZN16ActorTalkRequest13giveItemStartEv(void);
+void _ZN16ActorTalkRequest15taskCloseWindowEv(void);
+void _ZN16ActorTalkRequest15closeWindowWaitEv(void);
+void _ZN16ActorTalkRequest16closeWindowStartEv(void);
+void _ZN16ActorTalkRequest16taskReopenWindowEv(void);
+void _ZN16ActorTalkRequest12taskSubSceneEv(void);
+void _ZN16ActorTalkRequest12subSceneWaitEv(void);
+void _ZN16ActorTalkRequest12subSceneOpenEv(void);
+void _ZN16ActorTalkRequest19subSceneCloseWindowEv(void);
 void VillagerRoute_PickCoastBlock(void);
 void VillagerRoute_PickRandomBlock(void);
 void VillagerRoute_PickOwnHouseBlock(void);
@@ -5103,7 +5103,7 @@ void *data_020d75fc[2] = {(void *)_ZN13NpcActionCtrl9postAct14EP12Unk_02006d14, 
 void *data_020d7124[2] = {(void *)_ZN12Unk_0201216413stepAlongPathEP16Unk_02011f74_Vec, 0};
 void *data_020d765c[2] = {(void *)_ZN12Unk_02017d7410setupAct0EEP16Unk_02017d74_Ctx, 0};
 FxVec3 sNpcAvoidOffsets[2] = {FxVec3(0x800, 0, 0x1000), FxVec3(-0x800, 0, 0x1000)};
-void *data_020d7384[2] = {(void *)_ZN12Unk_020d771016taskReopenWindowEv, 0};
+void *data_020d7384[2] = {(void *)_ZN16ActorTalkRequest16taskReopenWindowEv, 0};
 void *data_020d742c[2] = {(void *)_ZN12Unk_02017d7411act0EStep00EP16Unk_02017d74_Ctx, 0};
 void *data_020d76d4[2] = {(void *)_ZN12Unk_020186989mainAct04EP16Unk_02018698_Ctx, 0};
 void *data_020d76e4[2] = {(void *)_ZN12Unk_020186989mainAct07EP16Unk_02018698_Ctx, 0};
@@ -5169,7 +5169,7 @@ void *data_020d75d4[2] = {(void *)_ZN12Unk_0201442012takeItemWaitEv, 0};
 void *data_020d75cc[2] = {(void *)_ZN12Unk_0201869810act04Step0EP16Unk_02018698_Ctx, 0};
 void *data_020d75c4[2] = {(void *)_ZN12Unk_0201869810act04Step1EP16Unk_02018698_Ctx, 0};
 void *data_020d75bc[2] = {(void *)_ZN12Unk_0201216411isInBlockT4EP16Unk_02011f74_Vec, 0};
-void *data_020d75b4[2] = {(void *)_ZN12Unk_020d771012giveItemWaitEv, 0};
+void *data_020d75b4[2] = {(void *)_ZN16ActorTalkRequest12giveItemWaitEv, 0};
 void *data_020d75ac[2] = {(void *)_ZN12Unk_0201636010act15Step2EP8NpcActor, 0};
 void *data_020d75a4[2] = {(void *)_ZN12Unk_0201869810act05Step1EP16Unk_02018698_Ctx, 0};
 void *data_020d71f4[2] = {(void *)_ZN12Unk_0201869810act05Step0EP16Unk_02018698_Ctx, 0};
@@ -5250,10 +5250,10 @@ namespace nZ {
 extern "C" {
 void *data_020d7574[2] = {(void *)_ZN12Unk_0201216413stepAlongPathEP16Unk_02011f74_Vec, 0};
 void *data_020d756c[2] = {(void *)_ZN13NpcActionCtrl10setupAct10EP12Unk_02006d14, 0};
-void *data_020d7564[2] = {(void *)_ZN12Unk_020d771015closeWindowWaitEv, 0};
+void *data_020d7564[2] = {(void *)_ZN16ActorTalkRequest15closeWindowWaitEv, 0};
 void *data_020d755c[2] = {(void *)_ZN12Unk_0201636010act15Step1EP8NpcActor, 0};
 void *data_020d7554[2] = {(void *)_ZN12Unk_0201216416stepAdjacentUnitEP16Unk_02011f74_Vec, 0};
-void *data_020d754c[2] = {(void *)_ZN12Unk_020d771016closeWindowStartEv, 0};
+void *data_020d754c[2] = {(void *)_ZN16ActorTalkRequest16closeWindowStartEv, 0};
 void *data_020d7544[2] = {(void *)_ZN12Unk_02017d749postAct0DEP16Unk_02017d74_Ctx, 0};
 void *data_020d753c[2] = {(void *)_ZN12Unk_0201216414stepFollowPathEP16Unk_02011f74_Vec, 0};
 const u16 data_020c6d3c[2] = {0x54, 0x5};
@@ -5312,7 +5312,7 @@ void Unk_02018698::act07Step0(C_8698 *c) {
 namespace nZ {
 extern "C" {
 void *data_020d7514[2] = {(void *)_ZN12Unk_02017d7410setupAct0BEP16Unk_02017d74_Ctx, 0};
-void *data_020d750c[2] = {(void *)_ZN12Unk_020d771019subSceneCloseWindowEv, 0};
+void *data_020d750c[2] = {(void *)_ZN16ActorTalkRequest19subSceneCloseWindowEv, 0};
 void *data_020d7504[2] = {(void *)_ZN12Unk_0201216413stepAlongPathEP16Unk_02011f74_Vec, 0};
 void *data_020d74fc[2] = {(void *)_ZN12Unk_0201869810setupAct0AEP16Unk_02018698_Ctx, 0};
 void *data_020d74f4[2] = {(void *)_ZN12Unk_0201216410stepToDoorEP16Unk_02011f74_Vec, 0};
@@ -6085,7 +6085,7 @@ void *data_020d737c[2] = {(void *)_ZN13NpcActionCtrl10act11Step0EP12Unk_02006d14
 void *data_020d7374[2] = {(void *)_ZN13NpcActionCtrl10act11Step1EP12Unk_02006d14, 0};
 void *data_020d736c[2] = {(void *)_ZN13NpcActionCtrl10act11Step2Ev, 0};
 void *data_020d72b4[2] = {(void *)_ZN13NpcActionCtrl10act12Step1Ev, 0};
-void *data_020d735c[2] = {(void *)_ZN12Unk_020d771012taskSubSceneEv, 0};
+void *data_020d735c[2] = {(void *)_ZN16ActorTalkRequest12taskSubSceneEv, 0};
 }
 }
 
@@ -6996,13 +6996,13 @@ void NpcAnimCtrl::syncMouthType(Unk_02015b8c_Scene *scene) {
 
 ActorTalkRequest::ActorTalkRequest() {
     using namespace nH;
-    unk_7a = 0xfff1;
-    unk_44 = 0;
-    unk_48 = NULL;
-    unk_4c = NULL;
+    subSceneItem = 0xfff1;
+    talkPlayer = 0;
+    ownerActor = NULL;
+    partnerActor = NULL;
     lastEmotion = 0;
-    unk_60 = 0xc;
-    _ZN12Unk_020d771010resetTasksEv(this);
+    taskId = 0xc;
+    _ZN16ActorTalkRequest10resetTasksEv(this);
 }
 
 ActorTalkRequest::~ActorTalkRequest() {
@@ -7012,13 +7012,13 @@ ActorTalkRequest::~ActorTalkRequest() {
 void ActorTalkRequest::resetMsg() {
     using namespace nH;
     TalkMsgRequest::resetMsg();
-    unk_44 = 0;
-    unk_4c = NULL;
-    unk_50 = 0;
+    talkPlayer = 0;
+    partnerActor = NULL;
+    actionActorIndex = 0;
     speakerIndex = 0;
     lastEmotion = 0;
     clearItemActionBusy();
-    _ZN12Unk_020d771010resetTasksEv(this);
+    _ZN16ActorTalkRequest10resetTasksEv(this);
 }
 
 void ActorTalkRequest::update() {
@@ -7028,7 +7028,7 @@ void ActorTalkRequest::update() {
 void ActorTalkRequest::tick() {
     using namespace nH;
     update();
-    _ZN12Unk_020d77107runTaskEv(this);
+    _ZN16ActorTalkRequest7runTaskEv(this);
 }
 
 void ActorTalkRequest::runDeferred() {
@@ -7037,41 +7037,41 @@ void ActorTalkRequest::runDeferred() {
 
 void ActorTalkRequest::setTalkPlayer(u32 a) {
     using namespace nH;
-    unk_44 = a;
+    talkPlayer = a;
 }
 
 void *ActorTalkRequest::getTalkPlayer() {
     using namespace nH;
-    return (void *)unk_44;
+    return (void *)talkPlayer;
 }
 
 void ActorTalkRequest::setPartnerActor(Unk_02015b8c_Scene *p) {
     using namespace nH;
-    unk_4c = p;
-    if (unk_4c != NULL) {
+    partnerActor = p;
+    if (partnerActor != NULL) {
         ActorTalkRequest *q = _ZN8NpcActor14getTalkRequestEv();
         if (q != NULL) {
             q->resetMsg();
-            unk_4c->vfunc_8c();
+            partnerActor->vfunc_8c();
         }
     }
 }
 
 Unk_02015b8c_Scene *ActorTalkRequest::getPartnerActor() {
     using namespace nH;
-    return unk_4c;
+    return partnerActor;
 }
 
 void ActorTalkRequest::setOwnerActor(Unk_02015b8c_Scene *p) {
     using namespace nH;
-    unk_48 = p;
+    ownerActor = p;
 }
 
 ChoiceList *ActorTalkRequest::getChoiceList() {
     using namespace nH;
     ChoiceList *r = 0;
-    if (unk_3c != 0) {
-        r = (ChoiceList *)_ZN15TalkWindowState13getChoiceListEv((u32)unk_3c);
+    if (window != 0) {
+        r = (ChoiceList *)_ZN15TalkWindowState13getChoiceListEv((u32)window);
     }
     return r;
 }
@@ -7080,13 +7080,13 @@ s32 ActorTalkRequest::getVoiceType() {
     using namespace nH;
     switch (speakerIndex) {
     case 0:
-        if (unk_48 != NULL) {
-            return Npc_GetVoiceType(((void *)((u8 *)(unk_48) + (0xea))));
+        if (ownerActor != NULL) {
+            return Npc_GetVoiceType(((void *)((u8 *)(ownerActor) + (0xea))));
         }
         break;
     case 1:
-        if (unk_4c != NULL) {
-            return Npc_GetVoiceType(((void *)((u8 *)(unk_4c) + (0xea))));
+        if (partnerActor != NULL) {
+            return Npc_GetVoiceType(((void *)((u8 *)(partnerActor) + (0xea))));
         }
         break;
     }
@@ -7114,7 +7114,7 @@ void ActorTalkRequest::playEmotion(u32 a, u32 b) {
 
 void ActorTalkRequest::onEventTag(u32 a) {
     using namespace nH;
-    playEmotion(a, unk_50);
+    playEmotion(a, actionActorIndex);
 }
 
 void ActorTalkRequest::setItemActionBusy() {
@@ -7140,7 +7140,7 @@ void ActorTalkRequest::setNumberSlot(s32 a, u32 b, s32 c, s32 d, s32 e) {
     if (a >= 0) {
         MsgString25 loc;
         String_FormatNumber(&loc, a, c, d, e, 0);
-        _ZN15TalkWindowState7setSlotEiPv(unk_3c, b, &loc);
+        _ZN15TalkWindowState7setSlotEiPv(window, b, &loc);
     }
 }
 
@@ -7157,7 +7157,7 @@ void ActorTalkRequest::setNumberNamedSlot(s32 a, u32 b, s32 c, u8 d, s32 e, s32 
             _ZN9MsgString12appendStringEPS_(&loc, &str);
             flag = 0;
         }
-        _ZN15TalkWindowState12setNamedSlotEiPvj(unk_3c, b, &loc, flag);
+        _ZN15TalkWindowState12setNamedSlotEiPvj(window, b, &loc, flag);
     }
 }
 
@@ -7166,7 +7166,7 @@ void ActorTalkRequest::setFixedPointSlot(s32 a, u32 b, s32 c) {
     if (a >= 0) {
         MsgString25 local;
         String_FormatFixedPoint(&local, a, c);
-        _ZN15TalkWindowState7setSlotEiPv(unk_3c, b, &local);
+        _ZN15TalkWindowState7setSlotEiPv(window, b, &local);
     }
 }
 
@@ -7174,46 +7174,46 @@ void ActorTalkRequest::setMonthSlot(u32 a, u32 b) {
     using namespace nH;
     MsgString33 local;
     String_GetMonthName(&local, a);
-    _ZN15TalkWindowState7setSlotEiPv(unk_3c, b, &local);
+    _ZN15TalkWindowState7setSlotEiPv(window, b, &local);
 }
 
 void ActorTalkRequest::setDaySlot(u32 a, u32 b) {
     using namespace nH;
     MsgString33 local;
     String_GetDayOrdinal(&local, a);
-    _ZN15TalkWindowState7setSlotEiPv(unk_3c, b, &local);
+    _ZN15TalkWindowState7setSlotEiPv(window, b, &local);
 }
 
 void ActorTalkRequest::setTownNameSlot(u32 a, u32 b) {
     using namespace nH;
     MsgString9C local;
     TownId_GetNameString(a, &local);
-    _ZN15TalkWindowState7setSlotEiPv(unk_3c, b, &local);
+    _ZN15TalkWindowState7setSlotEiPv(window, b, &local);
 }
 
 void ActorTalkRequest::setPlayerNameSlot(u32 a, u32 b) {
     using namespace nH;
     MsgString9B local;
     _ZN8PlayerId13getNameStringEP9MsgString(a, &local);
-    _ZN15TalkWindowState7setSlotEiPv(unk_3c, b, &local);
+    _ZN15TalkWindowState7setSlotEiPv(window, b, &local);
 }
 
 void ActorTalkRequest::setVillagerNameSlot(u32 a, u32 b) {
     using namespace nH;
     MsgString9B local;
     _ZN10VillagerId7getNameEj(a, &local);
-    _ZN15TalkWindowState7setSlotEiPv(unk_3c, b, &local);
+    _ZN15TalkWindowState7setSlotEiPv(window, b, &local);
 }
 
 void ActorTalkRequest::setItemNameSlot(u32 a, u32 b, u32 c) {
     using namespace nH;
     ItemName local((u16 *)a);
-    _ZN15TalkWindowState12setNamedSlotEiPvj(unk_3c, b, &local, c);
+    _ZN15TalkWindowState12setNamedSlotEiPvj(window, b, &local, c);
 }
 
 void ActorTalkRequest::setSlotFromString(u32 a, u32 b, u32 c) {
     using namespace nH;
-    _ZN15TalkWindowState17setSlotFromStringEiii(unk_3c, a, b, c);
+    _ZN15TalkWindowState17setSlotFromStringEiii(window, a, b, c);
 }
 
 void ActorTalkRequest::onConditionTag() {
@@ -7222,42 +7222,42 @@ void ActorTalkRequest::onConditionTag() {
 
 void ActorTalkRequest::onTag09_0() {
     using namespace nH;
-    unk_50 = 2;
+    actionActorIndex = 2;
 }
 
 void ActorTalkRequest::onTag09_1() {
     using namespace nH;
-    unk_50 = 0;
+    actionActorIndex = 0;
 }
 
 void ActorTalkRequest::onTag09_2() {
     using namespace nH;
-    unk_50 = 1;
+    actionActorIndex = 1;
 }
 
 Unk_02015b8c_Scene *ActorTalkRequest::getActor(u32 idx) {
     using namespace nH;
     switch (idx) {
     case 0:
-        return unk_48;
+        return ownerActor;
     case 1:
-        return unk_4c;
+        return partnerActor;
     }
     return NULL;
 }
 
 Unk_02015b8c_Scene *ActorTalkRequest::getActionActor() {
     using namespace nH;
-    return getActor(unk_50);
+    return getActor(actionActorIndex);
 }
 
 Unk_02015b8c_Scene *ActorTalkRequest::getActorB(u32 idx) {
     using namespace nH;
     switch (idx) {
     case 0:
-        return unk_48;
+        return ownerActor;
     case 1:
-        return unk_4c;
+        return partnerActor;
     }
     return NULL;
 }
@@ -7283,15 +7283,15 @@ extern "C" s32 TalkRequest_GetPlayerId(void) {
 
 void ActorTalkRequest::onTag09_3() {
     using namespace nH;
-    Unk_02015b8c_Scene *p = getActor(unk_50);
+    Unk_02015b8c_Scene *p = getActor(actionActorIndex);
     if (p != NULL) {
         _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(((void *)((u8 *)(p) + (0x3b0))), 4, 0, 0, (s32)&gVec3Zero, TalkRequest_GetPlayerId(), 0, 0);
     }
 }
 
-void Unk_020d7710::onTag09_4() {
+void ActorTalkRequest::onTag09_4() {
     using namespace nG;
-    u8 *p5 = nG::_ZN16ActorTalkRequest8getActorEj(this, unk_50);
+    u8 *p5 = nG::_ZN16ActorTalkRequest8getActorEj(this, actionActorIndex);
     if (p5 != NULL) {
         Unk_0201bc1c *h = _ZN8NpcActor14getTalkRequestEv();
         u32 u = TalkRequest_GetPlayerId();
@@ -7304,7 +7304,7 @@ void Unk_020d7710::onTag09_4() {
     }
 }
 
-void Unk_020d7710::makePlayerLookAt(u8 *p) {
+void ActorTalkRequest::makePlayerLookAt(u8 *p) {
     using namespace nG;
     u32 a = TalkRequest_GetPlayerId();
     u32 b = PlayerActor_GetBodyPos();
@@ -7315,7 +7315,7 @@ void Unk_020d7710::makePlayerLookAt(u8 *p) {
     }
 }
 
-void Unk_020d7710::makePlayerTurnTo(u8 *p) {
+void ActorTalkRequest::makePlayerTurnTo(u8 *p) {
     using namespace nG;
     u32 a = TalkRequest_GetPlayerId();
     u32 b = PlayerActor_GetBodyPos();
@@ -7327,11 +7327,11 @@ void Unk_020d7710::makePlayerTurnTo(u8 *p) {
     }
 }
 
-void Unk_020d7710::onTag09_5() {
+void ActorTalkRequest::onTag09_5() {
     using namespace nG;
     u8 *p4 = nG::_ZN16ActorTalkRequest8getActorEj(this, 0);
     if (p4 != NULL) {
-        u8 s = unk_50;
+        u8 s = actionActorIndex;
         switch (s) {
         case 1: {
             u8 *p = nG::_ZN16ActorTalkRequest8getActorEj(this, s);
@@ -7347,11 +7347,11 @@ void Unk_020d7710::onTag09_5() {
     }
 }
 
-void Unk_020d7710::onTag09_6() {
+void ActorTalkRequest::onTag09_6() {
     using namespace nG;
     u8 *p7 = nG::_ZN16ActorTalkRequest8getActorEj(this, 0);
     if (p7 != NULL) {
-        u8 s = unk_50;
+        u8 s = actionActorIndex;
         switch (s) {
         case 1: {
             u8 *p4 = nG::_ZN16ActorTalkRequest8getActorEj(this, s);
@@ -7373,11 +7373,11 @@ void Unk_020d7710::onTag09_6() {
     }
 }
 
-void Unk_020d7710::onTag09_7() {
+void ActorTalkRequest::onTag09_7() {
     using namespace nG;
     u8 *p4 = nG::_ZN16ActorTalkRequest8getActorEj(this, 1);
     if (p4 != NULL) {
-        u8 s = unk_50;
+        u8 s = actionActorIndex;
         switch (s) {
         case 0: {
             u8 *p = nG::_ZN16ActorTalkRequest8getActorEj(this, s);
@@ -7393,11 +7393,11 @@ void Unk_020d7710::onTag09_7() {
     }
 }
 
-void Unk_020d7710::onTag09_8() {
+void ActorTalkRequest::onTag09_8() {
     using namespace nG;
     u8 *p7 = nG::_ZN16ActorTalkRequest8getActorEj(this, 1);
     if (p7 != NULL) {
-        u8 s = unk_50;
+        u8 s = actionActorIndex;
         switch (s) {
         case 0: {
             u8 *p4 = nG::_ZN16ActorTalkRequest8getActorEj(this, s);
@@ -7419,20 +7419,20 @@ void Unk_020d7710::onTag09_8() {
     }
 }
 
-void Unk_020d7710::onTag09_9() {
+void ActorTalkRequest::onTag09_9() {
     using namespace nG;
     nG::_ZN12Unk_0201425820requestSwitchSpeakerEh(this, 1);
 }
 
-void Unk_020d7710::resetTasks() {
+void ActorTalkRequest::resetTasks() {
     using namespace nG;
-    unk_60 = 12;
+    taskId = 12;
     taskStep = 0;
     taskRunning = 0;
     initSubSceneParams((TalkSubSceneParams *)&subSceneType);
 }
 
-void Unk_020d7710::initSubSceneParams(TalkSubSceneParams *p) {
+void ActorTalkRequest::initSubSceneParams(TalkSubSceneParams *p) {
     using namespace nG;
     p->subSceneType = 8;
     p->menuPtrArg0 = 0;
@@ -7455,11 +7455,11 @@ void Unk_020d7710::initSubSceneParams(TalkSubSceneParams *p) {
     p->closeMode = 0;
 }
 
-BOOL Unk_020d7710::startTask(s32 x) {
+BOOL ActorTalkRequest::startTask(s32 x) {
     using namespace nG;
     BOOL result = FALSE;
-    if (unk_60 == 12 || isTaskRunning() == 0) {
-        unk_60 = x;
+    if (taskId == 12 || isTaskRunning() == 0) {
+        taskId = x;
         taskStep = 0;
         result = TRUE;
         taskRunning = result;
@@ -7467,7 +7467,7 @@ BOOL Unk_020d7710::startTask(s32 x) {
     return result;
 }
 
-BOOL Unk_020d7710::isTaskRunning() {
+BOOL ActorTalkRequest::isTaskRunning() {
     using namespace nG;
     if (taskRunning != 0) {
         return TRUE;
@@ -7483,24 +7483,24 @@ void *data_020d74b4[2] = {(void *)_ZN12Unk_0201442011taskEatItemEv, 0};
 }
 }
 
-void Unk_020d7710::runTask() {
+void ActorTalkRequest::runTask() {
     using namespace nG;
-    static Unk_020d7710_StateFn tbl[12] = {*(Unk_020d7710_StateFn *)data_020d735c, *(Unk_020d7710_StateFn *)data_020d7384, *(Unk_020d7710_StateFn *)data_020d720c, *(Unk_020d7710_StateFn *)data_020d7404, *(Unk_020d7710_StateFn *)data_020d7444, *(Unk_020d7710_StateFn *)data_020d7474, *(Unk_020d7710_StateFn *)data_020d747c, *(Unk_020d7710_StateFn *)data_020d7494, *(Unk_020d7710_StateFn *)data_020d74ac, *(Unk_020d7710_StateFn *)data_020d74b4, *(Unk_020d7710_StateFn *)data_020d74c4, *(Unk_020d7710_StateFn *)data_020d74d4};
-    if ((s32)unk_60 < 12) {
-        if ((this->*tbl[unk_60])()) {
-            s32 old = unk_60;
+    static ActorTalkTaskFn tbl[12] = {*(ActorTalkTaskFn *)data_020d735c, *(ActorTalkTaskFn *)data_020d7384, *(ActorTalkTaskFn *)data_020d720c, *(ActorTalkTaskFn *)data_020d7404, *(ActorTalkTaskFn *)data_020d7444, *(ActorTalkTaskFn *)data_020d7474, *(ActorTalkTaskFn *)data_020d747c, *(ActorTalkTaskFn *)data_020d7494, *(ActorTalkTaskFn *)data_020d74ac, *(ActorTalkTaskFn *)data_020d74b4, *(ActorTalkTaskFn *)data_020d74c4, *(ActorTalkTaskFn *)data_020d74d4};
+    if ((s32)taskId < 12) {
+        if ((this->*tbl[taskId])()) {
+            s32 old = taskId;
             taskRunning = 0;
-            unk_60 = 12;
+            taskId = 12;
             onTaskDone(old);
         }
     }
 }
 
-void Unk_020d7710::onTaskDone(u32 id) {
+void ActorTalkRequest::onTaskDone(u32 id) {
     using namespace nG;
 }
 
-BOOL Unk_020d7710::openSubScene(s32 x) {
+BOOL ActorTalkRequest::openSubScene(s32 x) {
     using namespace nG;
     BOOL result = FALSE;
     if (startTask(0)) {
@@ -7510,51 +7510,51 @@ BOOL Unk_020d7710::openSubScene(s32 x) {
     return result;
 }
 
-void Unk_020d7710::setPocketItem(u32 a, u32 b, u32 c) {
+void ActorTalkRequest::setPocketItem(u32 a, u32 b, u32 c) {
     using namespace nG;
     pocketMask = a;
     pocketFilter = 0;
-    unk_80 = b;
-    unk_7a = 0xfff1;
+    pocketSelectMode = b;
+    subSceneItem = 0xfff1;
     keepWindowClosed = c;
 }
 
-void Unk_020d7710::setPocketFilter(u32 a, u32 b, u32 c) {
+void ActorTalkRequest::setPocketFilter(u32 a, u32 b, u32 c) {
     using namespace nG;
     pocketMask = 0;
     pocketFilter = a;
-    unk_80 = b;
-    unk_7a = 0xfff1;
+    pocketSelectMode = b;
+    subSceneItem = 0xfff1;
     keepWindowClosed = c;
 }
 
-void Unk_020d7710::setSubSceneKind(u32 a, u32 b) {
+void ActorTalkRequest::setSubSceneKind(u32 a, u32 b) {
     using namespace nG;
     launcherMenu = a;
     keepWindowClosed = b;
 }
 
-void Unk_020d7710::setSubSceneKindArg(u32 a, u32 b, u32 c) {
+void ActorTalkRequest::setSubSceneKindArg(u32 a, u32 b, u32 c) {
     using namespace nG;
     launcherMenu = a;
     launcherIndex = b;
     keepWindowClosed = c;
 }
 
-void Unk_020d7710::setSelectionList(u32 a, u32 b, u32 c) {
+void ActorTalkRequest::setSelectionList(u32 a, u32 b, u32 c) {
     using namespace nG;
     menuPtrArg0 = a;
     menuPtrArg1 = b;
     keepWindowClosed = c;
 }
 
-void Unk_020d7710::setMenu12Arg(u32 a, u32 b) {
+void ActorTalkRequest::setMenu12Arg(u32 a, u32 b) {
     using namespace nG;
     menu12Arg = a;
     keepWindowClosed = b;
 }
 
-void Unk_020d7710::setSubSceneKind2(u32 a, u32 b, u32 c, u8 d) {
+void ActorTalkRequest::setSubSceneKind2(u32 a, u32 b, u32 c, u8 d) {
     using namespace nG;
     launcherMenu = a;
     launcherText = b;
@@ -7562,18 +7562,18 @@ void Unk_020d7710::setSubSceneKind2(u32 a, u32 b, u32 c, u8 d) {
     keepWindowClosed = d;
 }
 
-BOOL Unk_020d7710::subSceneCloseWindow() {
+BOOL ActorTalkRequest::subSceneCloseWindow() {
     using namespace nG;
-    if (unk_3c != NULL) {
-        unk_3c->openMode = 1;
+    if (window != NULL) {
+        window->openMode = 1;
         taskStep = 1;
     }
     return FALSE;
 }
 
-BOOL Unk_020d7710::subSceneOpen() {
+BOOL ActorTalkRequest::subSceneOpen() {
     using namespace nG;
-    if (unk_3c != NULL && unk_3c->state == 5) {
+    if (window != NULL && window->state == 5) {
         BOOL r = FALSE;
         switch (subSceneType) {
         case 0: {
@@ -7581,7 +7581,7 @@ BOOL Unk_020d7710::subSceneOpen() {
             if (pocketFilter != 0) {
                 v = MenuCtrl_BuildPocketMask(pocketFilter);
             }
-            r = MenuCtrl_OpenPocketSelect(v, unk_80);
+            r = MenuCtrl_OpenPocketSelect(v, pocketSelectMode);
             break;
         }
         case 1:
@@ -7605,7 +7605,7 @@ BOOL Unk_020d7710::subSceneOpen() {
             break;
         case 7:
             if (keepWindowClosed != 1) {
-                unk_3c->nextState = 1;
+                window->nextState = 1;
             }
             taskStep = 3;
             return TRUE;
@@ -7617,12 +7617,12 @@ BOOL Unk_020d7710::subSceneOpen() {
     return FALSE;
 }
 
-BOOL Unk_020d7710::subSceneWait() {
+BOOL ActorTalkRequest::subSceneWait() {
     using namespace nG;
     BOOL result = FALSE;
     if (MenuCtrl_IsFinished()) {
         if (keepWindowClosed != 1) {
-            unk_3c->nextState = 1;
+            window->nextState = 1;
         }
         taskStep = 3;
         result = TRUE;
@@ -7632,16 +7632,16 @@ BOOL Unk_020d7710::subSceneWait() {
 
 namespace nZ {
 extern "C" {
-void *data_020d752c[2] = {(void *)_ZN12Unk_020d771012subSceneWaitEv, 0};
+void *data_020d752c[2] = {(void *)_ZN16ActorTalkRequest12subSceneWaitEv, 0};
 void *data_020d7534[2] = {(void *)_ZN11NpcTalkCtrl11state2Step1EP16Unk_02013b10_Ctx, 0};
-void *data_020d7584[2] = {(void *)_ZN12Unk_020d771013giveItemStartEv, 0};
+void *data_020d7584[2] = {(void *)_ZN16ActorTalkRequest13giveItemStartEv, 0};
 void *data_020d759c[2] = {(void *)_ZN12Unk_0201442014itemAct0FStartEv, 0};
 }
 }
 
-BOOL Unk_020d7710::taskSubScene() {
+BOOL ActorTalkRequest::taskSubScene() {
     using namespace nG;
-    static Unk_020d7710_StateFn tbl[3] = {*(Unk_020d7710_StateFn *)data_020d750c, *(Unk_020d7710_StateFn *)data_020d7524, *(Unk_020d7710_StateFn *)data_020d752c};
+    static ActorTalkTaskFn tbl[3] = {*(ActorTalkTaskFn *)data_020d750c, *(ActorTalkTaskFn *)data_020d7524, *(ActorTalkTaskFn *)data_020d752c};
     BOOL r = FALSE;
     u8 i = taskStep;
     if (i < 3) {
@@ -7650,22 +7650,22 @@ BOOL Unk_020d7710::taskSubScene() {
     return r;
 }
 
-BOOL Unk_020d7710::requestReopenWindow() {
+BOOL ActorTalkRequest::requestReopenWindow() {
     using namespace nG;
     return startTask(1);
 }
 
-BOOL Unk_020d7710::taskReopenWindow() {
+BOOL ActorTalkRequest::taskReopenWindow() {
     using namespace nG;
     BOOL result = FALSE;
-    if (unk_3c != NULL && unk_3c->state == 5) {
+    if (window != NULL && window->state == 5) {
         result = TRUE;
-        unk_3c->nextState = result;
+        window->nextState = result;
     }
     return result;
 }
 
-BOOL Unk_020d7710::requestCloseWindow(u32 x) {
+BOOL ActorTalkRequest::requestCloseWindow(u32 x) {
     using namespace nG;
     if (startTask(2)) {
         closeMode = x;
@@ -7674,19 +7674,19 @@ BOOL Unk_020d7710::requestCloseWindow(u32 x) {
     return FALSE;
 }
 
-BOOL Unk_020d7710::closeWindowStart() {
+BOOL ActorTalkRequest::closeWindowStart() {
     using namespace nG;
-    if (unk_3c != NULL) {
-        unk_3c->openMode = closeMode;
+    if (window != NULL) {
+        window->openMode = closeMode;
         taskStep = 1;
     }
     return FALSE;
 }
 
-BOOL Unk_020d7710::closeWindowWait() {
+BOOL ActorTalkRequest::closeWindowWait() {
     using namespace nG;
     BOOL result = FALSE;
-    if (unk_3c != NULL && unk_3c->state == 5) {
+    if (window != NULL && window->state == 5) {
         result = TRUE;
     }
     return result;
@@ -7699,9 +7699,9 @@ void *data_020d7634[2] = {(void *)_ZN12Unk_020163609mainAct15EP8NpcActor, 0};
 }
 }
 
-BOOL Unk_020d7710::taskCloseWindow() {
+BOOL ActorTalkRequest::taskCloseWindow() {
     using namespace nG;
-    static Unk_020d7710_StateFn tbl[2] = {*(Unk_020d7710_StateFn *)data_020d754c, *(Unk_020d7710_StateFn *)data_020d7564};
+    static ActorTalkTaskFn tbl[2] = {*(ActorTalkTaskFn *)data_020d754c, *(ActorTalkTaskFn *)data_020d7564};
     BOOL r = FALSE;
     u8 i = taskStep;
     if (i < 2) {
@@ -7710,11 +7710,11 @@ BOOL Unk_020d7710::taskCloseWindow() {
     return r;
 }
 
-BOOL Unk_020d7710::requestGiveItem(u16 *p, u32 b, u32 c, u32 d) {
+BOOL ActorTalkRequest::requestGiveItem(u16 *p, u32 b, u32 c, u32 d) {
     using namespace nG;
     BOOL result = FALSE;
     if (startTask(3)) {
-        unk_7a = *p;
+        subSceneItem = *p;
         handOverKind = b;
         handOverMode = c;
         handOverVariant = d;
@@ -7723,16 +7723,16 @@ BOOL Unk_020d7710::requestGiveItem(u16 *p, u32 b, u32 c, u32 d) {
     return result;
 }
 
-BOOL Unk_020d7710::giveItemStart() {
+BOOL ActorTalkRequest::giveItemStart() {
     using namespace nG;
-    if (unk_48 != NULL) {
-        if (unk_3c != NULL) {
-            _ZN15TalkWindowState11lockAdvanceEv(unk_3c);
+    if (ownerActor != NULL) {
+        if (window != NULL) {
+            _ZN15TalkWindowState11lockAdvanceEv(window);
         }
-        if (_ZN13NpcActionCtrl9getActionEv((u8 *)unk_48 + 0x564) == 8 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)unk_48 + 0x564) == 0) {
+        if (_ZN13NpcActionCtrl9getActionEv((u8 *)ownerActor + 0x564) == 8 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)ownerActor + 0x564) == 0) {
             onEventTag(0);
-        } else if (unk_3c != NULL) {
-            if (_ZN13NpcActionCtrl15requestGiveItemEiPtjhjj((u8 *)unk_48 + 0x564, 4, &unk_7a, handOverKind, handOverMode, handOverVariant, unk_44)) {
+        } else if (window != NULL) {
+            if (_ZN13NpcActionCtrl15requestGiveItemEiPtjhjj((u8 *)ownerActor + 0x564, 4, &subSceneItem, handOverKind, handOverMode, handOverVariant, talkPlayer)) {
                 taskStep = 1;
             }
         }
@@ -7740,12 +7740,12 @@ BOOL Unk_020d7710::giveItemStart() {
     return FALSE;
 }
 
-BOOL Unk_020d7710::giveItemWait() {
+BOOL ActorTalkRequest::giveItemWait() {
     using namespace nG;
     BOOL result = FALSE;
-    if (unk_48 != NULL && unk_3c != NULL) {
-        if (_ZN13NpcActionCtrl9getActionEv((u8 *)unk_48 + 0x564) == 13 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)unk_48 + 0x564) != 0) {
-            _ZN15TalkWindowState13unlockAdvanceEv(unk_3c);
+    if (ownerActor != NULL && window != NULL) {
+        if (_ZN13NpcActionCtrl9getActionEv((u8 *)ownerActor + 0x564) == 13 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)ownerActor + 0x564) != 0) {
+            _ZN15TalkWindowState13unlockAdvanceEv(window);
             taskStep = 2;
             result = TRUE;
         }
@@ -7772,7 +7772,7 @@ BOOL Unk_02014420::taskGiveItem() {
 BOOL Unk_02014420::requestTakeItem(u16 *a, u32 b, u32 c, u32 d) {
     using namespace nF;
     BOOL r = 0;
-    if (nF::_ZN12Unk_020d77109startTaskEi(this, 4)) {
+    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 4)) {
         subSceneItem = *a;
         handOverKind = b;
         handOverMode = c;
@@ -7821,7 +7821,7 @@ extern "C" {
 void *data_020d7604[2] = {(void *)_ZN13NpcActionCtrl10setupAct13EP12Unk_02006d14, 0};
 void *data_020d721c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep07EP12Unk_02006d14, 0};
 const u16 data_020c6d48[4] = {0xe2, 0x0, 0xe0, 0x0};
-void *data_020d720c[2] = {(void *)_ZN12Unk_020d771015taskCloseWindowEv, 0};
+void *data_020d720c[2] = {(void *)_ZN16ActorTalkRequest15taskCloseWindowEv, 0};
 void *data_020d7204[2] = {(void *)_ZN12Unk_0201216416isInAttr200BlockEP16Unk_02011f74_Vec, 0};
 void *data_020d71fc[2] = {(void *)_ZN13NpcActionCtrl10setupAct00EPh, 0};
 const u16 data_020c6d0c[2] = {0x5f, 0x19};
@@ -7846,7 +7846,7 @@ BOOL Unk_02014420::taskTakeItem() {
 BOOL Unk_02014420::requestItemAct0F() {
     using namespace nF;
     BOOL r = 0;
-    if (nF::_ZN12Unk_020d77109startTaskEi(this, 5)) {
+    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 5)) {
         r = 1;
     }
     return r;
@@ -7901,7 +7901,7 @@ BOOL Unk_02014420::taskItemAct0F() {
 BOOL Unk_02014420::requestKeepItem() {
     using namespace nF;
     BOOL r = 0;
-    if (nF::_ZN12Unk_020d77109startTaskEi(this, 6)) {
+    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 6)) {
         r = 1;
     }
     return r;
@@ -7957,7 +7957,7 @@ BOOL Unk_02014420::taskKeepItem() {
 BOOL Unk_02014420::requestReturnItem() {
     using namespace nF;
     BOOL r = 0;
-    if (nF::_ZN12Unk_020d77109startTaskEi(this, 7)) {
+    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 7)) {
         r = 1;
     }
     return r;
@@ -8010,7 +8010,7 @@ BOOL Unk_02014420::taskReturnItem() {
 BOOL Unk_02014420::requestItemAct12() {
     using namespace nF;
     BOOL r = 0;
-    if (nF::_ZN12Unk_020d77109startTaskEi(this, 8)) {
+    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 8)) {
         r = 1;
     }
     return r;
@@ -8065,7 +8065,7 @@ BOOL Unk_02014420::taskItemAct12() {
 BOOL Unk_02014420::requestEatItem() {
     using namespace nF;
     BOOL r = 0;
-    if (nF::_ZN12Unk_020d77109startTaskEi(this, 9)) {
+    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 9)) {
         r = 1;
     }
     return r;
@@ -8118,7 +8118,7 @@ BOOL Unk_02014420::taskEatItem() {
 
 BOOL Unk_02014420::requestPlayMelody(Unk_02014420_Vec2 *p) {
     using namespace nF;
-    if (nF::_ZN12Unk_020d77109startTaskEi(this, 10)) {
+    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 10)) {
         *(long long *)&melodyPattern = *(long long *)p;
         randomMelody = 0;
         return TRUE;
@@ -8128,7 +8128,7 @@ BOOL Unk_02014420::requestPlayMelody(Unk_02014420_Vec2 *p) {
 
 BOOL Unk_02014420::requestPlayRandomMelody() {
     using namespace nF;
-    if (nF::_ZN12Unk_020d77109startTaskEi(this, 10)) {
+    if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 10)) {
         randomMelody = 1;
         return TRUE;
     }
@@ -8219,7 +8219,7 @@ BOOL Unk_02014420::taskMelody() {
 
 BOOL Unk_02014258::requestSwitchSpeaker(u8 v) {
     using namespace nE;
-    if (_ZN12Unk_020d77109startTaskEi(this, 0xb)) {
+    if (_ZN16ActorTalkRequest9startTaskEi(this, 0xb)) {
         focusNewSpeaker = v;
         return TRUE;
     }
@@ -8826,7 +8826,7 @@ const NpcEmotionEntry sEmotionTable[60] = {
     {0x4f, data_020c6ccc, 0x101, 0x50, 0, 0xffff0000, 0x101},
 };
 const u16 data_020c6cc4[2] = {0x200, 0x0};
-void *data_020d7524[2] = {(void *)_ZN12Unk_020d771012subSceneOpenEv, 0};
+void *data_020d7524[2] = {(void *)_ZN16ActorTalkRequest12subSceneOpenEv, 0};
 void *data_020d763c[2] = {(void *)_ZN13NpcActionCtrl9postAct0FEP12Unk_02006d14, 0};
 const u16 data_020c6d50[4] = {0x51, 0x6, 0x52, 0x3};
 void *data_020d708c[2] = {(void *)_ZN12Unk_0201869810act07Step0EP16Unk_02018698_Ctx, 0};

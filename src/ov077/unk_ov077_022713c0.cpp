@@ -23,7 +23,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -531,14 +531,14 @@ void SpNpcResettiTalk::setScript(s32 state) {
 void SpNpcResettiTalk::scriptWaitForTip() {
     if (Math_CountDownU8(&waitTimer) == 0) {
         u8 v = 0x10;
-        unk_3c->setNextMessage(&v, sSpNpcResettiMsgKey);
+        window->setNextMessage(&v, sSpNpcResettiMsgKey);
         requestReopenWindow();
         setScript(0);
     }
 }
 
 void SpNpcResettiTalk::scriptCheckApology() {
-    TalkWindowState *m = unk_3c;
+    TalkWindowState *m = window;
     if (MenuCtrl_IsFinished()) {
         u8 v = 0x18;
         if (MenuCtrl_IsResultOk()) {
@@ -628,14 +628,14 @@ void SpNpcResettiTalk::onMessageStart(u32) {
         }
         ownerNpc->lastApologyPhrase = n;
         c = ownerNpc->lastApologyPhrase;
-        _ZN15TalkWindowState17setSlotFromStringEiii(unk_3c, 0, &c, (void *)"st_general");
+        _ZN15TalkWindowState17setSlotFromStringEiii(window, 0, &c, (void *)"st_general");
     }
 }
 
 void SpNpcResettiTalk::onMessageEnd(u32) {
     switch (msgIndex) {
     case 0xf:
-        unk_3c->openMode = 0;
+        window->openMode = 0;
         setScript(2);
         break;
     case 0x17:
@@ -672,7 +672,7 @@ void SpNpcResettiTalk::onChoice(u32) {
     }
     if (cmd != 0xff) {
         u8 buf = cmd;
-        unk_3c->setNextMessage(&buf, sSpNpcResettiMsgKey);
+        window->setNextMessage(&buf, sSpNpcResettiMsgKey);
     }
 }
 

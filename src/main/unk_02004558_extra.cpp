@@ -1537,19 +1537,19 @@ void PlayerActor::onMessageEnd(u32 attr) {
     switch (((PlayerActor *)this)->msgStep) {
     case 0:
         buf[0] = 0x3d;
-        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->unk_3c, &buf[0], 0);
+        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &buf[0], 0);
         break;
     case 4:
         buf[1] = 0x3e;
-        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->unk_3c, &buf[1], 0);
+        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &buf[1], 0);
         break;
     case 2:
         buf[2] = 3;
-        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->unk_3c, &buf[2], 0);
+        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &buf[2], 0);
         break;
     case 1:
         buf[3] = 0x3c;
-        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->unk_3c, &buf[3], 0);
+        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &buf[3], 0);
         ((PlayerActor *)this)->msgStep = 9;
         break;
     case 5:
@@ -1559,10 +1559,10 @@ void PlayerActor::onMessageEnd(u32 attr) {
     case 13: {
         u32 obj[9];
         buf[4] = 0x3f;
-        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->unk_3c, &buf[4], 0);
+        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &buf[4], 0);
         *(u16 *)&buf[6] = ((PlayerActor *)this)->actionWorkRaw[8] + 0x12b0;
         _ZN8ItemNameC1EPt(obj, (u16 *)&buf[6]);
-        _ZN15TalkWindowState12setNamedSlotEiPvj(((PlayerActor *)this)->unk_3c, 0, obj, 7);
+        _ZN15TalkWindowState12setNamedSlotEiPvj(((PlayerActor *)this)->window, 0, obj, 7);
         _ZN8ItemNameD1Ev(obj);
         ((PlayerActor *)this)->msgStep = 8;
         break;
@@ -1570,11 +1570,11 @@ void PlayerActor::onMessageEnd(u32 attr) {
     case 14: {
         u32 obj[9];
         buf[5] = 0x3f;
-        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->unk_3c, &buf[5], 0);
+        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &buf[5], 0);
         ((PlayerActor *)this)->msgStep = 8;
         *(u16 *)&buf[8] = ((PlayerActor *)this)->actionWorkRaw[3] + 0x12e8;
         _ZN8ItemNameC1EPt(obj, (u16 *)&buf[8]);
-        _ZN15TalkWindowState12setNamedSlotEiPvj(((PlayerActor *)this)->unk_3c, 0, obj, 7);
+        _ZN15TalkWindowState12setNamedSlotEiPvj(((PlayerActor *)this)->window, 0, obj, 7);
         _ZN8ItemNameD1Ev(obj);
         break;
     }
@@ -1592,10 +1592,10 @@ void PlayerActor::onChoice(u32 attr) {
     case 4: {
         s32 r5;
         u8 b;
-        _ZN15TalkWindowState13getChoiceListEv(((PlayerActor *)this)->unk_3c);
+        _ZN15TalkWindowState13getChoiceListEv(((PlayerActor *)this)->window);
         r5 = _ZN10ChoiceList9getResultEv();
         b = gTalkMsgIndexEnd;
-        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->unk_3c, &b, 0);
+        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &b, 0);
         if (r5 == 0) {
             ((PlayerActor *)this)->msgStep = 5;
         } else {
@@ -2079,19 +2079,19 @@ void PlayerActor::pickUpReachUpdate() {
             _ZN11PlayerActor13setActionFlagEj(this, 0x11);
             _ZN10MsgRequest11setFileNameEPKc((u8*)((PlayerActor *)this) + 0xec, &sPlayerActorMsgFile);
             ((PlayerActor *)this)->msgIndex = 0;
-            ((PlayerActor *)this)->unk_3c->nextState = 1;
+            ((PlayerActor *)this)->window->nextState = 1;
         }
         break;
     case 4:
-        if (((PlayerActor *)this)->unk_3c != NULL) {
-            if (((PlayerActor *)this)->unk_3c->state != 0) {
+        if (((PlayerActor *)this)->window != NULL) {
+            if (((PlayerActor *)this)->window->state != 0) {
                 *st = 5;
             }
         }
         break;
     case 5:
-        if (((PlayerActor *)this)->unk_3c != NULL) {
-            if (((PlayerActor *)this)->unk_3c->state == 0) {
+        if (((PlayerActor *)this)->window != NULL) {
+            if (((PlayerActor *)this)->window->state == 0) {
                 _ZN9Character17detachTalkRequestEi(((PlayerActor *)this), ((PlayerActor *)this));
                 _ZN11PlayerActor15clearActionFlagEj(this, 0x11);
                 TalkRequest_FinishPlayerMessage();
@@ -2111,19 +2111,19 @@ void PlayerActor::pickUpReachUpdate() {
             _ZN11PlayerActor13setActionFlagEj(this, 0x11);
             _ZN10MsgRequest11setFileNameEPKc((u8*)((PlayerActor *)this) + 0xec, &sPlayerActorErrorMsgFile);
             ((PlayerActor *)this)->msgIndex = 1;
-            ((PlayerActor *)this)->unk_3c->nextState = 1;
+            ((PlayerActor *)this)->window->nextState = 1;
         }
         break;
     case 8:
-        if (((PlayerActor *)this)->unk_3c != NULL) {
-            if (((PlayerActor *)this)->unk_3c->state != 0) {
+        if (((PlayerActor *)this)->window != NULL) {
+            if (((PlayerActor *)this)->window->state != 0) {
                 *st = 9;
             }
         }
         break;
     case 9:
-        if (((PlayerActor *)this)->unk_3c != NULL) {
-            if (((PlayerActor *)this)->unk_3c->state == 0) {
+        if (((PlayerActor *)this)->window != NULL) {
+            if (((PlayerActor *)this)->window->state == 0) {
                 _ZN9Character17detachTalkRequestEi(((PlayerActor *)this), ((PlayerActor *)this));
                 _ZN11PlayerActor15clearActionFlagEj(this, 0x11);
                 TalkRequest_FinishPlayerMessage();
@@ -2158,7 +2158,7 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
             _ZN11PlayerActor13setActionFlagEj(this, 0x11);
             _ZN10MsgRequest11setFileNameEPKc((u8*)((PlayerActor *)this) + 0xec, sPlayerActorErrorMsgFile);
             ((PlayerActor *)this)->msgIndex = 0x12;
-            ((PlayerActor *)this)->unk_3c->nextState = 1;
+            ((PlayerActor *)this)->window->nextState = 1;
         } else if (flag) {
             if (!TalkRequest_IsPlayerMessage() && !TalkRequest_AddPlayerMessage()) break;
             _ZN12Unk_020102ec9startAnimEijt(this, 0x6c, 0, 0);
@@ -2173,7 +2173,7 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
             _ZN11PlayerActor13setActionFlagEj(this, 0x11);
             _ZN10MsgRequest11setFileNameEPKc((u8*)((PlayerActor *)this) + 0xec, sPlayerActorMsgFile);
             ((PlayerActor *)this)->msgIndex = 2;
-            ((PlayerActor *)this)->unk_3c->nextState = 1;
+            ((PlayerActor *)this)->window->nextState = 1;
         } else {
             u16 v[2];
             v[1] = ((PlayerActor *)this)->actionItem;
@@ -2182,8 +2182,8 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
         }
         break;
     case 1:
-        if (!((PlayerActor *)this)->unk_3c) break;
-        if (!((PlayerActor *)this)->unk_3c->state) break;
+        if (!((PlayerActor *)this)->window) break;
+        if (!((PlayerActor *)this)->window->state) break;
         *state = 2;
         ((PlayerActor *)this)->msgStep = 3;
         break;
@@ -2191,8 +2191,8 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
         if (((PlayerActor *)this)->msgStep >= 15) {
             *state = 3;
         } else {
-            if (!((PlayerActor *)this)->unk_3c) break;
-            if (((PlayerActor *)this)->unk_3c->state) break;
+            if (!((PlayerActor *)this)->window) break;
+            if (((PlayerActor *)this)->window->state) break;
             if (((PlayerActor *)this)->msgStep == 5) {
                 if (!MenuCtrl_OpenPocketsFullPickUp(((PlayerActor *)this)->actionItem)) break;
                 ((PlayerActor *)this)->msgStep = 6;
@@ -2225,8 +2225,8 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
         if (((PlayerActor *)this)->dropQuery != -1) break;
         *state = 5;
     case 5:
-        if (!((PlayerActor *)this)->unk_3c) break;
-        if (((PlayerActor *)this)->unk_3c->state) break;
+        if (!((PlayerActor *)this)->window) break;
+        if (((PlayerActor *)this)->window->state) break;
         _ZN9Character17detachTalkRequestEi(this, ((PlayerActor *)this));
         _ZN11PlayerActor15clearActionFlagEj(this, 0x11);
         TalkRequest_FinishPlayerMessage();
@@ -2243,13 +2243,13 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
         ((PlayerActor *)this)->msgStep = 15;
         break;
     case 7:
-        if (!((PlayerActor *)this)->unk_3c) break;
-        if (!((PlayerActor *)this)->unk_3c->state) break;
+        if (!((PlayerActor *)this)->window) break;
+        if (!((PlayerActor *)this)->window->state) break;
         *state = 8;
         break;
     case 8:
-        if (!((PlayerActor *)this)->unk_3c) break;
-        if (((PlayerActor *)this)->unk_3c->state) break;
+        if (!((PlayerActor *)this)->window) break;
+        if (((PlayerActor *)this)->window->state) break;
         *state = 3;
         if (((PlayerActor *)this)->dropQuery != -1) break;
         ((PlayerActor *)this)->dropQuery = FieldAction_RequestPlaceAtPendingForAid(((PlayerActor *)this)->sessionSlot, ((PlayerActor *)this)->actionItem);
@@ -2440,21 +2440,21 @@ void PlayerActor::act76Update() {
                 msgIndex = kind + 0x1a;
                 break;
             }
-            unk_3c->nextState = 1;
+            window->nextState = 1;
         }
     case 1:
-        if (unk_3c != NULL) {
-            if (unk_3c->state != 0) {
+        if (window != NULL) {
+            if (window->state != 0) {
                 *st = 2;
             }
         }
         break;
     case 2:
         if (kind < 2) {
-            if (unk_3c == NULL) {
+            if (window == NULL) {
                 break;
             }
-            if (unk_3c->nextMsgIndex != 0xfe) {
+            if (window->nextMsgIndex != 0xfe) {
                 break;
             }
             if (kind == 1) {
@@ -2464,10 +2464,10 @@ void PlayerActor::act76Update() {
             }
             break;
         }
-        if (unk_3c == NULL) {
+        if (window == NULL) {
             break;
         }
-        if (unk_3c->state != 0) {
+        if (window->state != 0) {
             break;
         }
         _ZN9Character17detachTalkRequestEi(this, this);

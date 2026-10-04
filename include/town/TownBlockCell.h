@@ -5,7 +5,7 @@
 // 0x24, src/main/unk_020af514.cpp walks the cells for MapBlock_GetItemPtr).
 #include "types.h"
 
-struct Cell {
+struct TownBlockCell {
     /* 0x00 */ u8 pad_00[0x24];
     /* 0x24 */ u16 *buriedFlags;
 };

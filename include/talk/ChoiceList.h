@@ -31,7 +31,7 @@ public:
     /* 0x08 */ ChoiceString text;
     /* 0x3c */ BmgMsgAttr attr;
     /* 0x48 */ u8 value;
-    /* 0x49 */ char unk_49[0x1a];
+    /* 0x49 */ char name[0x1a];
     /* 0x63 */ u8 weight;
     /* 0x64 */ s32 seType;
 };

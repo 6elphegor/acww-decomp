@@ -82,8 +82,8 @@ public:
     void hideLayer2();
     void enableObjWindow();
 
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
+    /* 0x0c */ s32 posX;
+    /* 0x10 */ s32 posY;
     /* 0x14 */ s32 palette;
     /* 0x18 */ s32 kind;
     /* 0x1c */ SpriteAnim layer1;
@@ -116,7 +116,7 @@ void LabelButton::setLabelText() {
     }
 }
 
-void LabelButton::setPos(s32 x, s32 y) { unk_0c = x; unk_10 = y; }
+void LabelButton::setPos(s32 x, s32 y) { posX = x; posY = y; }
 
 void LabelButton::getAnimOffset(s32 *outx, s32 *outy) {
     s32 x = 0;

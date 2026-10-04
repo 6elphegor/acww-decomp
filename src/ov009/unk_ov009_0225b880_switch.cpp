@@ -67,8 +67,6 @@ struct Unk_ov009_0225cc24_Obj;
 
 
 
-struct Unk_ov009_0225df84_Obj;
-struct Unk_ov009_0225df94_Target;
 
 
 
@@ -276,8 +274,8 @@ void BuildingActor_Create();
 BOOL BuildingResources_IsLoaded(BuildingResources *e);
 void *func_ov009_0225df58(void *unused);
 void *func_ov009_0225df6c(void *unused);
-void Building_InitModelCallback(Unk_ov009_0225df84_Obj *o);
-void Building_ModelCallback(struct Unk_ov009_0225df94_Arg *a);
+void Building_InitModelCallback(NNSG3dRS *o);
+void Building_ModelCallback(struct NNSG3dRS *a);
 }
 
 static inline BOOL Unk_ov009_0225d0d8_Match(u16 *p, u32 v) {

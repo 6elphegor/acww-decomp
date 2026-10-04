@@ -2,6 +2,7 @@
 #include "types.h"
 #include "game/Vec3.h"
 #include "town/TownBlockCell.h"
+#include "town/SceneMapInfo.h"
 
 extern "C" {
 u32 GroundSeason_IsSnowPhase(u32);
@@ -76,7 +77,7 @@ public:
 
 
 struct Grid {
-    Cell *cells;
+    TownBlockCell *cells;
     u32 w;
     u32 h;
 };
@@ -86,13 +87,6 @@ extern void *gActorDefaultParent;
 void GameProc_CreateChild(u32, void *, u32, u32);
 u64 OS_GetTick();
 }
-
-class SceneMapInfo {
-public:
-    void createMapModule();
-    u8 pad[6];
-    u16 moduleParam;
-};
 
 class SceneSpawnGroup;
 
@@ -495,7 +489,7 @@ SnowmanRecords::SnowmanRecords() {}
 SnowmanRecords::~SnowmanRecords() {}
 
 extern "C" BOOL Snowman_FindInTown(u32 *a, u32 *b, u32 idx) {
-    Cell *cell;
+    TownBlockCell *cell;
     Grid *g = (Grid *)TownBlockMap_Get();
     for (s32 y = 1; y <= 4; y++) {
         for (s32 x = 1; x <= 4; x++) {

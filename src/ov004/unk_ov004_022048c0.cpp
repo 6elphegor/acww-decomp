@@ -154,20 +154,20 @@ BOOL Atm::releaseCollision() {
 }
 
 void Atm::setPointTexts() {
-    if (unk_3c) {
+    if (window) {
         u16 *p = NookPoints_GetValuePtr(PlayerData_getNookPoints(PlayerData_GetCurrent()));
         u8 buf[2];
         MsgString25 obj;
         String_FormatNumber(&obj, *p, 10, 1, 0, 0);
-        unk_3c->setSlot(0, &obj);
+        window->setSlot(0, &obj);
         String_FormatNumber(&obj, NookPoints_GetToNextRank(p), 10, 1, 0, 0);
-        unk_3c->setSlot(1, &obj);
+        window->setSlot(1, &obj);
         if (NookPoints_GetRank(*p) != 0) {
             buf[0] = NookPoints_GetRank(*p) - 1;
-            unk_3c->setSlotFromString(2, (s32)&buf[0], (s32)sAtmStringBankPtr);
+            window->setSlotFromString(2, (s32)&buf[0], (s32)sAtmStringBankPtr);
         }
         buf[1] = NookPoints_GetRank(*p);
-        unk_3c->setSlotFromString(3, (s32)&buf[1], (s32)sAtmStringBankPtr);
+        window->setSlotFromString(3, (s32)&buf[1], (s32)sAtmStringBankPtr);
     }
 }
 
@@ -244,13 +244,13 @@ BOOL Atm::enterTalkAct01() {
     setFileName(sAtmMsgFilePtr);
     msgIndex = 0;
     setPointTexts();
-    unk_3c->nextState = 1;
+    window->nextState = 1;
     return TRUE;
 }
 
 void Atm::execTalkAct01() {
-    if (unk_3c) {
-        if (unk_3c->state) {
+    if (window) {
+        if (window->state) {
             setTalkAct(2);
         }
     }
@@ -261,8 +261,8 @@ BOOL Atm::enterTalkAct02() {
 }
 
 void Atm::execTalkAct02() {
-    if (unk_3c) {
-        if (unk_3c->state == 0) {
+    if (window) {
+        if (window->state == 0) {
             Character_detachTalkRequest(this, this);
             TalkRequest_SetTargetDone(this);
         }
@@ -278,10 +278,10 @@ void Atm::onMessageEnd(u32) {
     case 2:
         if (NookPoints_GetRank(*NookPoints_GetValuePtr(PlayerData_getNookPoints(PlayerData_GetCurrent()))) == 4) {
             buf[0] = 5;
-            unk_3c->setNextMessage(&buf[0], sAtmMsgFilePtr);
+            window->setNextMessage(&buf[0], sAtmMsgFilePtr);
         } else {
             buf[1] = 3;
-            unk_3c->setNextMessage(&buf[1], sAtmMsgFilePtr);
+            window->setNextMessage(&buf[1], sAtmMsgFilePtr);
         }
         break;
     }
@@ -291,25 +291,25 @@ void Atm::onMessageEnd(u32) {
 void Atm::onChoice(u32) {
     u8 buf[4];
     u32 st = msgIndex;
-    s32 v = unk_3c->getChoiceList()->getResult();
+    s32 v = window->getChoiceList()->getResult();
     if (st == 0 || st == 7) {
         switch (v) {
         case 0:
             if (NookPoints_GetRank(*NookPoints_GetValuePtr(PlayerData_getNookPoints(PlayerData_GetCurrent()))) == 0) {
                 buf[0] = 1;
-                unk_3c->setNextMessage(&buf[0], sAtmMsgFilePtr);
+                window->setNextMessage(&buf[0], sAtmMsgFilePtr);
             } else {
                 buf[1] = 2;
-                unk_3c->setNextMessage(&buf[1], sAtmMsgFilePtr);
+                window->setNextMessage(&buf[1], sAtmMsgFilePtr);
             }
             break;
         case 1:
             buf[2] = 6;
-            unk_3c->setNextMessage(&buf[2], sAtmMsgFilePtr);
+            window->setNextMessage(&buf[2], sAtmMsgFilePtr);
             break;
         case 2:
             buf[3] = 4;
-            unk_3c->setNextMessage(&buf[3], sAtmMsgFilePtr);
+            window->setNextMessage(&buf[3], sAtmMsgFilePtr);
             break;
         }
     }

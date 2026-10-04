@@ -28,7 +28,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -51,7 +51,7 @@ struct Unk_ov088_Vec {
 extern "C" {
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData10getErrandsEv(void *p);
-void _ZN12Unk_020d771019requestReopenWindowEv(void *p);
+void _ZN16ActorTalkRequest19requestReopenWindowEv(void *p);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void EventWeekSlots_MarkPlayer(s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
@@ -614,7 +614,7 @@ void SpNpcShrunkTalk::openEmotionPage(s32 mode) {
     s32 i;
     u32 r6;
     PlayerData_GetCurrent();
-    g = unk_3c->getChoiceList();
+    g = window->getChoiceList();
     b[0] = 0;
     MsgString9B o;
     b[1] = 5;
@@ -664,7 +664,7 @@ void SpNpcShrunkTalk::openEmotionPage(s32 mode) {
     } else {
         g->setCount(i);
     }
-    unk_3c->openChoices(1);
+    window->openChoices(1);
 }
 
 void SpNpcShrunkTalk::update() {
@@ -690,13 +690,13 @@ void SpNpcShrunkTalk::setScript(s32 state) {
 }
 
 void SpNpcShrunkTalk::scriptFirstLesson() {
-    TalkWindowState *r4 = unk_3c;
+    TalkWindowState *r4 = window;
     if (r4->state == 5) {
         u8 b[2];
         ownerNpc->reactionWindow = 0x14;
         if (_ZN19Unk_020133cc_Player20getLastTaughtEmotionEv(ownerNpc) != -1) {
             b[1] = 0x17;
-            _ZN15TalkWindowState17setSlotFromStringEiii(unk_3c, 0, &b[1], (void *)"st_learn");
+            _ZN15TalkWindowState17setSlotFromStringEiii(window, 0, &b[1], (void *)"st_learn");
             ownerNpc->reactionWindow = 0;
             ownerNpc->waitTimer = 0x14;
             _ZN12Unk_02097ff47setFlagEj(PlayerData_GetCurrent(), 0x10);
@@ -720,7 +720,7 @@ void SpNpcShrunkTalk::scriptOpenEmotionChoice() {
 }
 
 void SpNpcShrunkTalk::scriptCheckTriggerReaction() {
-    TalkWindowState *r4 = unk_3c;
+    TalkWindowState *r4 = window;
     if (r4->state == 5) {
         u8 b[2];
         if (ownerNpc->reactionWindow == 0) {
@@ -741,7 +741,7 @@ void SpNpcShrunkTalk::scriptCheckTriggerReaction() {
             }
         }
         b[1] = unk_b8;
-        _ZN15TalkWindowState17setSlotFromStringEiii(unk_3c, 0, &b[1], (void *)"st_learn");
+        _ZN15TalkWindowState17setSlotFromStringEiii(window, 0, &b[1], (void *)"st_learn");
         ownerNpc->reactionWindow = 0;
         ownerNpc->waitTimer = 0x14;
         r4->setNextMessage(&b[0], (void *)"sp_npc_reaction");
@@ -752,7 +752,7 @@ void SpNpcShrunkTalk::scriptCheckTriggerReaction() {
 void SpNpcShrunkTalk::scriptWaitThenEnd() {
     if (Math_CountDownU8(&ownerNpc->waitTimer) == 0) {
         setScript(0);
-        _ZN12Unk_020d771019requestReopenWindowEv(this);
+        _ZN16ActorTalkRequest19requestReopenWindowEv(this);
     }
 }
 
@@ -785,12 +785,12 @@ void SpNpcShrunkTalk::start(TalkStartMsg *out) {
 void SpNpcShrunkTalk::onMessageEnd(u32) {
     s32 t = msgIndex;
     if (t >= 0x1d && t <= 0x39) {
-        unk_3c->openMode = 0;
+        window->openMode = 0;
         setScript(3);
     }
     switch (msgIndex) {
     case 0xb:
-        unk_3c->openMode = 0;
+        window->openMode = 0;
         setScript(1);
         break;
     case 0x17:
@@ -831,17 +831,17 @@ void SpNpcShrunkTalk::onChoice(u32) {
             msg = 0x1b;
         } else {
             b[0] = Emotion_GetSlot(t);
-            _ZN15TalkWindowState17setSlotFromStringEiii(unk_3c, 1, &b[0], (void *)"st_learn");
+            _ZN15TalkWindowState17setSlotFromStringEiii(window, 1, &b[0], (void *)"st_learn");
             ownerNpc->teachEmotion(t, unk_b8);
             b[1] = unk_b8;
-            _ZN15TalkWindowState17setSlotFromStringEiii(unk_3c, 0, &b[1], (void *)"st_learn");
+            _ZN15TalkWindowState17setSlotFromStringEiii(window, 0, &b[1], (void *)"st_learn");
             msg = 0x1c;
         }
         break;
     }
     if (msg != 0xff) {
         b[2] = msg;
-        unk_3c->setNextMessage(&b[2], s);
+        window->setNextMessage(&b[2], s);
     }
 }
 

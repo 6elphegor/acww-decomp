@@ -41,8 +41,8 @@ public:
     void hideLayer2();                          // 0x0208e2d0
     void enableObjWindow();                     // 0x0208e2d8
 
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
+    /* 0x0c */ s32 posX;
+    /* 0x10 */ s32 posY;
     /* 0x14 */ s32 palette;
     /* 0x18 */ s32 kind;
     /* 0x1c */ SpriteAnim layer1;

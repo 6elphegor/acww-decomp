@@ -6730,7 +6730,7 @@ void PlayerActor::pickUpFanfareUpdate() {
             } else {
                 ((PlayerActor *)this)->msgIndex = 0x25;
             }
-            ((PlayerActor *)this)->unk_3c->nextState = 1;
+            ((PlayerActor *)this)->window->nextState = 1;
             Bgm_ReleasePriority(0x12);
             Bgm_RequestSilence(0xc, 0, 0x10);
             Bgm_Request(0xd, 0x39, 0x7f, 1);
@@ -6738,12 +6738,12 @@ void PlayerActor::pickUpFanfareUpdate() {
         }
         break;
     case 1:
-        if (((PlayerActor *)this)->unk_3c && ((PlayerActor *)this)->unk_3c->state) {
+        if (((PlayerActor *)this)->window && ((PlayerActor *)this)->window->state) {
             *state = 2;
         }
         break;
     case 2:
-        if (((PlayerActor *)this)->unk_3c && !((PlayerActor *)this)->unk_3c->state) {
+        if (((PlayerActor *)this)->window && !((PlayerActor *)this)->window->state) {
             _ZN9Character17detachTalkRequestEi(this, ((PlayerActor *)this));
             _ZN11PlayerActor15clearActionFlagEj(this, 0x11);
             u8 flag = s->commitUnit;
@@ -7771,19 +7771,19 @@ void PlayerActor::act79Update() {
                 _ZN11PlayerActor13setActionFlagEj(this, 0x11);
                 setFileName(sPlayerActorMsgFile);
                 msgIndex = 0x15;
-                unk_3c->nextState = 1;
+                window->nextState = 1;
                 Camera_SetMode4();
             }
         case 1:
-            if (unk_3c != NULL) {
-                if (unk_3c->state != 0) {
+            if (window != NULL) {
+                if (window->state != 0) {
                     *st = 2;
                 }
             }
             break;
         case 2:
-            if (unk_3c != NULL) {
-                if (unk_3c->state == 0) {
+            if (window != NULL) {
+                if (window->state == 0) {
                     _ZN9Character17detachTalkRequestEi(this, this);
                     _ZN11PlayerActor15clearActionFlagEj(this, 0x11);
                     TalkRequest_FinishPlayerMessage();
@@ -7903,7 +7903,7 @@ void PlayerActor::errorMessageUpdate() {
                 _ZN11PlayerActor13setActionFlagEj(this, 0x11);
                 setFileName(sPlayerActorErrorMsgFile);
                 msgIndex = 0x1e;
-                unk_3c->nextState = 1;
+                window->nextState = 1;
                 LowBattery_SetWarned();
             } else {
                 actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(this, action);
@@ -7911,15 +7911,15 @@ void PlayerActor::errorMessageUpdate() {
             }
             break;
         case 1:
-            if (unk_3c != NULL) {
-                if (unk_3c->state != 0) {
+            if (window != NULL) {
+                if (window->state != 0) {
                     *st = 2;
                 }
             }
             break;
         case 2:
-            if (unk_3c != NULL) {
-                if (unk_3c->state == 0) {
+            if (window != NULL) {
+                if (window->state == 0) {
                     _ZN9Character17detachTalkRequestEi(this, this);
                     _ZN11PlayerActor15clearActionFlagEj(this, 0x11);
                     TalkRequest_FinishPlayerMessage();

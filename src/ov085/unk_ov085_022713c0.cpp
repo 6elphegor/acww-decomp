@@ -24,7 +24,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -50,7 +50,7 @@ s32 Pocket_FindEmpty();
 s32 Pocket_FindItem(u16 *p);
 void Pocket_AddItem(u16 *p, s32 v);
 void Pocket_RemoveItem(s32 v);
-void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
@@ -272,7 +272,7 @@ BOOL SpNpcTortimerBrightNights::mainAct02() { return TRUE; }
 
 void SpNpcTortimerBrightNightsTalk::openVillagerPage() {
     u8 b;
-    void *r7 = unk_3c->getChoiceList();
+    void *r7 = window->getChoiceList();
     s32 i, n, r6;
     b = 0x3d;
     MsgString9B o;
@@ -309,7 +309,7 @@ void SpNpcTortimerBrightNightsTalk::openVillagerPage() {
     if (SaveVillagers_Count(gSaveVillagers) > 4) {
         _ZN10ChoiceList15setCancelToLastEv(r7);
     }
-    unk_3c->openChoices(1);
+    window->openChoices(1);
 }
 
 SpNpcTortimerBrightNightsTalk::SpNpcTortimerBrightNightsTalk() {}
@@ -341,7 +341,7 @@ void SpNpcTortimerBrightNightsTalk::start(TalkStartMsg *out) {
             if (_ZN10VillagerId7isValidEv(g)) {
                 MsgString9B o;
                 _ZN10VillagerId7getNameEj(g, &o);
-                unk_3c->setSlot(1, &o);
+                window->setSlot(1, &o);
             }
             out->msgIndex = Random_GlobalBelow(3) + 0x11;
         } else {
@@ -353,7 +353,7 @@ void SpNpcTortimerBrightNightsTalk::start(TalkStartMsg *out) {
         if (_ZN10VillagerId7isValidEv(g)) {
             MsgString9B o;
             _ZN10VillagerId7getNameEj(g, &o);
-            unk_3c->setSlot(0, &o);
+            window->setSlot(0, &o);
             out->msgIndex = Random_GlobalBelow(4) + 0xb;
         } else {
             out->msgIndex = 4;
@@ -391,11 +391,11 @@ void SpNpcTortimerBrightNightsTalk::onMessageEnd(u32) {
         switch (msgIndex) {
         case 2:
             h0 = 0x1559;
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h0, 0, 5, 0);
+            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h0, 0, 5, 0);
             h1 = 0x1559;
             Pocket_AddItem(&h1, 0);
             b0 = 4;
-            unk_3c->setNextMessage(&b0, (u8 *)"sp_npc_turtle");
+            window->setNextMessage(&b0, (u8 *)"sp_npc_turtle");
             break;
         }
     } else {
@@ -413,7 +413,7 @@ void SpNpcTortimerBrightNightsTalk::onMessageEnd(u32) {
             }
             _ZN10VillagerId7getNameEj(r, &o);
             MailText_SetSlot(0, &o);
-            unk_3c->setSlot(1, &o);
+            window->setSlot(1, &o);
             Bbs_PostMsgToday(Random_GlobalBelow(2), (u8 *)"bbs_snowfes");
             SaveVillagers_ClearTalkedToday(gSaveVillagers);
             msg = 0x10;
@@ -428,7 +428,7 @@ void SpNpcTortimerBrightNightsTalk::onMessageEnd(u32) {
         }
         if (msg != 0xff) {
             b1 = msg;
-            unk_3c->setNextMessage(&b1, s);
+            window->setNextMessage(&b1, s);
         }
     }
 }
@@ -452,7 +452,7 @@ void SpNpcTortimerBrightNightsTalk::onChoice(u32) {
         }
         if (msg != 0xff) {
             b0 = msg;
-            unk_3c->setNextMessage(&b0, s);
+            window->setNextMessage(&b0, s);
         }
     } else {
         s32 k = msgIndex;
@@ -475,7 +475,7 @@ void SpNpcTortimerBrightNightsTalk::onChoice(u32) {
                 void *e = SaveVillagers_Get(gSaveVillagers, *p);
                 if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(e))) {
                     _ZN10VillagerId7getNameEj(_ZN12VillagerData13getVillagerIdEv(e), &o);
-                    unk_3c->setSlot(0, &o);
+                    window->setSlot(0, &o);
                 }
                 if (Random_GlobalBelow(2) == 0) {
                     _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(g, _ZN12VillagerData13getVillagerIdEv(e));
@@ -492,7 +492,7 @@ void SpNpcTortimerBrightNightsTalk::onChoice(u32) {
         }
         if (msg != 0xff) {
             b1 = msg;
-            unk_3c->setNextMessage(&b1, s);
+            window->setNextMessage(&b1, s);
         }
     }
 }

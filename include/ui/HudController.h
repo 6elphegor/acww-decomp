@@ -64,16 +64,16 @@ public:
     /* 0xa0 */ s32 countB;
     /* 0xa4 */ s32 durationKind;
     /* 0xa8 */ s32 endTime;
-    /* 0xac */ s32 unk_ac;
+    /* 0xac */ s32 endTimeHi;
     /* 0xb0 */ s32 remaining;
-    /* 0xb4 */ s32 unk_b4;
+    /* 0xb4 */ s32 remainingHi;
     /* 0xb8 */ s32 finishTimer;
     /* 0xbc */ s32 slideY;
     /* 0xc0 */ s32 slideTarget;
     /* 0xc4 */ s32 slideSpeed;
     /* 0xc8 */ s32 slideDelay;
     /* 0xcc */ s32 lastTickTime;
-    /* 0xd0 */ s32 unk_d0;
+    /* 0xd0 */ s32 lastTickTimeHi;
 };
 
 // 3x3 camera direction grid (0xd8 bytes, vtable 0x020e0f40; 0x0208b5e4..0x0208b8ac)

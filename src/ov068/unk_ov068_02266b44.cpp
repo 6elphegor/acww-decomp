@@ -28,7 +28,7 @@
 #include "actor/NpcActor.h"
 #include "game/CollisionState.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 
 
@@ -483,7 +483,7 @@ void SpNpcNookIntroTalk::start(TalkStartMsg *out_) {
 }
 
 void SpNpcNookIntroTalk::onMessageEnd(u32) {
-    Unk_ov068_02266bd0_Scene *sc = (Unk_ov068_02266bd0_Scene *)unk_3c;
+    Unk_ov068_02266bd0_Scene *sc = (Unk_ov068_02266bd0_Scene *)window;
     volatile u8 buf = gU8None;
     buf = 0;
     switch (msgIndex) {
@@ -559,7 +559,7 @@ void SpNpcNookIntroTalk::setScript(s32 a) {
 void SpNpcNookIntroTalk::runWalkScript() {
     switch (scriptStep) {
     case 0:
-        if (unk_3c->state == 5) {
+        if (window->state == 5) {
             Bgm_ReleasePriority(0x13);
             Bgm_Request(0x15, 0x47, 0x7f, 1);
             PlayerActor_SetNoFaceTalkTarget(0, 4);
@@ -593,7 +593,7 @@ void SpNpcNookIntroTalk::runWalkScript() {
         if (NpcActionCtrl_isActionDone(o->actionCtrl) != 0) {
             o = (Unk_ov068_02266bd0_Owner *)owner;
             if (NpcActionCtrl_getAction(o->actionCtrl) == 0) {
-                Unk_ov068_02266bd0_Scene *sc = (Unk_ov068_02266bd0_Scene *)unk_3c;
+                Unk_ov068_02266bd0_Scene *sc = (Unk_ov068_02266bd0_Scene *)window;
                 volatile u8 buf = gU8None;
                 if (GameStart_IsNewTown() != 0) {
                     buf = 0xd;

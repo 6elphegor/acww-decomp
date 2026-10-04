@@ -27,7 +27,7 @@ BOOL ScrollKnob::areAnimsDone() {
     return r;
 }
 
-HandCursor::HandCursor(BOOL flag) : unk_20(0), unk_24(0), priority(-1) {
+HandCursor::HandCursor(BOOL flag) : posX(0), posY(0), priority(-1) {
     anim = 0;
     unk_44 = 0x16;
     onBufferA = flag;
@@ -54,8 +54,8 @@ void HandCursor::draw() {
         s32 ay = layer1.getFrameY(-1);
         s32 bx = layer2.getFrameX(-1);
         s32 by = layer2.getFrameY(-1);
-        x = (s32)((u8 *)0 + (unk_20 + getOriginX()));
-        y = (s32)((u8 *)0 + (unk_24 + getOriginY()));
+        x = (s32)((u8 *)0 + (posX + getOriginX()));
+        y = (s32)((u8 *)0 + (posY + getOriginY()));
         x0 = x + ax;
         y0 = y + ay;
         x += bx;

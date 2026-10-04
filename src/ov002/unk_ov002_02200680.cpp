@@ -8,8 +8,8 @@
 #include "sys/KeyRepeat.h"
 #include "menu/MenuTween.h"
 #include "menu/PopupChoiceIdList.h"
-#include "ui/Unk_ov002_022018e4_Arg.h"
-#include "ui/Unk_ov002_02203c5c_Rec.h"
+#include "ui/AddresseePageArg.h"
+#include "ui/OamCellEntry.h"
 #include "talk/TalkWindowState.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
@@ -198,13 +198,13 @@ extern const u8 sBottomButtonTargetX[];
 extern const u8 sBottomButtonTargetY[];
 extern const u8 sBottomButtonOfTarget[];
 extern s32 sPopupChoicePopOffsets[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW4A[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW4B[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW6Single[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW8[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW6A[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW6B[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW12[];
+extern OamCellEntry sButtonCellsW4A[];
+extern OamCellEntry sButtonCellsW4B[];
+extern OamCellEntry sButtonCellsW6Single[];
+extern OamCellEntry sButtonCellsW8[];
+extern OamCellEntry sButtonCellsW6A[];
+extern OamCellEntry sButtonCellsW6B[];
+extern OamCellEntry sButtonCellsW12[];
 }
 
 
@@ -266,7 +266,7 @@ void PopupChoice_BuildScreen(Self *self);
 void PopupChoice_SetState(Self *self, u32 x);
 void PopupChoice_Close(Self *self, s32 x);
 void PopupChoice_Open(Self *self, s32 x);
-void PopupChoice_OpenAddresseePage(Self *self, Unk_ov002_022018e4_Arg a, s32 x);
+void PopupChoice_OpenAddresseePage(Self *self, AddresseePageArg a, s32 x);
 void PopupChoice_LoadFriendBg(Self *self);
 void PopupChoice_LoadChoiceBg(Self *self);
 void PopupChoice_SetPosClamped(Self *self, s32 x, s32 y);

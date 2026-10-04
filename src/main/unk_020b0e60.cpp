@@ -1,4 +1,5 @@
 #include "types.h"
+#include "town/BuildingInfo.h"
 #include "gfx/Mtx33.h"
 #include "game/Unk_020b1ddc.h"
 #include "item/ItemId.h"
@@ -27,17 +28,6 @@ extern s32 gFrameCounter;
 extern u32 data_027e0148[];
 }
 
-struct Info {
-    u16 profile;
-    u8 entranceType;
-    u8 kind;
-    s8 interiorScene;
-    u8 unk_05;
-    u8 viewRangeX;
-    u8 viewRangeFront;
-    u8 viewRangeBack;
-    u8 capacity;
-};
 
 struct NibblePair {
     u8 lo : 4;
@@ -109,7 +99,7 @@ public:
 typedef ItemId Marker2;
 
 // Info table of the next unit
-extern Info data_020d0a7c[];
+extern BuildingInfo data_020d0a7c[];
 
 
 inline BOOL isFlag1() {
@@ -390,18 +380,18 @@ u32 MapBlock_ReplaceNthSign(u8 *cell, u32 target, u32 v);
 BOOL MapBlock_ReplaceRandomSign(u8 *cell, u32 v);
 BOOL Town_PlaceGulliverShip(s32 *pos, BOOL flag);
 BOOL Town_RemoveGulliverShip(void);
-void BuildingInfo_Copy(Info *dst, Info *src);
-void BuildingInfo_Destroy(Info *i);
-u16 BuildingInfo_GetProfile(Info *i);
-u8 BuildingInfo_GetEntranceType(Info *i);
-u8 BuildingInfo_GetKind(Info *i);
-s8 BuildingInfo_GetInteriorScene(Info *i);
-u8 BuildingInfo_GetUnk05(Info *i);
-u8 BuildingInfo_GetViewRangeX(Info *i);
-u8 BuildingInfo_GetViewRangeFront(Info *i);
-u8 BuildingInfo_GetViewRangeBack(Info *i);
-u8 BuildingInfo_GetCapacity(Info *i);
-u32 BuildingInfo_MakeKey(Info *i, u32 b, u32 c);
+void BuildingInfo_Copy(BuildingInfo *dst, BuildingInfo *src);
+void BuildingInfo_Destroy(BuildingInfo *i);
+u16 BuildingInfo_GetProfile(BuildingInfo *i);
+u8 BuildingInfo_GetEntranceType(BuildingInfo *i);
+u8 BuildingInfo_GetKind(BuildingInfo *i);
+s8 BuildingInfo_GetInteriorScene(BuildingInfo *i);
+u8 BuildingInfo_GetUnk05(BuildingInfo *i);
+u8 BuildingInfo_GetViewRangeX(BuildingInfo *i);
+u8 BuildingInfo_GetViewRangeFront(BuildingInfo *i);
+u8 BuildingInfo_GetViewRangeBack(BuildingInfo *i);
+u8 BuildingInfo_GetCapacity(BuildingInfo *i);
+u32 BuildingInfo_MakeKey(BuildingInfo *i, u32 b, u32 c);
 u32 BuildingKey_Make(u32 a, u32 b, u32 c);
 u32 Building_GetDoorAnimParamAt(u32 a);
 BOOL Field_HasExitedBuildingKey(void);
@@ -1396,7 +1386,7 @@ extern "C" BOOL Town_RemoveGulliverShip(void) {
     return FALSE;
 }
 
-extern "C" void BuildingInfo_Copy(Info *dst, Info *src) {
+extern "C" void BuildingInfo_Copy(BuildingInfo *dst, BuildingInfo *src) {
     dst->profile = src->profile;
     dst->entranceType = src->entranceType;
     dst->kind = src->kind;
@@ -1408,27 +1398,27 @@ extern "C" void BuildingInfo_Copy(Info *dst, Info *src) {
     dst->capacity = src->capacity;
 }
 
-extern "C" void BuildingInfo_Destroy(Info *i) {}
+extern "C" void BuildingInfo_Destroy(BuildingInfo *i) {}
 
-extern "C" u16 BuildingInfo_GetProfile(Info *i) { return i->profile; }
+extern "C" u16 BuildingInfo_GetProfile(BuildingInfo *i) { return i->profile; }
 
-extern "C" u8 BuildingInfo_GetEntranceType(Info *i) { return i->entranceType; }
+extern "C" u8 BuildingInfo_GetEntranceType(BuildingInfo *i) { return i->entranceType; }
 
-extern "C" u8 BuildingInfo_GetKind(Info *i) { return i->kind; }
+extern "C" u8 BuildingInfo_GetKind(BuildingInfo *i) { return i->kind; }
 
-extern "C" s8 BuildingInfo_GetInteriorScene(Info *i) { return i->interiorScene; }
+extern "C" s8 BuildingInfo_GetInteriorScene(BuildingInfo *i) { return i->interiorScene; }
 
-extern "C" u8 BuildingInfo_GetUnk05(Info *i) { return i->unk_05; }
+extern "C" u8 BuildingInfo_GetUnk05(BuildingInfo *i) { return i->unk_05; }
 
-extern "C" u8 BuildingInfo_GetViewRangeX(Info *i) { return i->viewRangeX; }
+extern "C" u8 BuildingInfo_GetViewRangeX(BuildingInfo *i) { return i->viewRangeX; }
 
-extern "C" u8 BuildingInfo_GetViewRangeFront(Info *i) { return i->viewRangeFront; }
+extern "C" u8 BuildingInfo_GetViewRangeFront(BuildingInfo *i) { return i->viewRangeFront; }
 
-extern "C" u8 BuildingInfo_GetViewRangeBack(Info *i) { return i->viewRangeBack; }
+extern "C" u8 BuildingInfo_GetViewRangeBack(BuildingInfo *i) { return i->viewRangeBack; }
 
-extern "C" u8 BuildingInfo_GetCapacity(Info *i) { return i->capacity; }
+extern "C" u8 BuildingInfo_GetCapacity(BuildingInfo *i) { return i->capacity; }
 
-extern "C" u32 BuildingInfo_MakeKey(Info *i, u32 b, u32 c) { return BuildingKey_Make(BuildingInfo_GetProfile(i), b, c); }
+extern "C" u32 BuildingInfo_MakeKey(BuildingInfo *i, u32 b, u32 c) { return BuildingKey_Make(BuildingInfo_GetProfile(i), b, c); }
 
 extern "C" u32 BuildingKey_Make(u32 a, u32 b, u32 c) { return (a << 16) | (((c & 0xff) << 8) | (b & 0xff)); }
 
@@ -1488,8 +1478,8 @@ extern "C" u32 Field_GetExitedBuildingKey(void) {
                 }
                 if (in) {
                     u32 i;
-                    Info *src;
-                    Info info;
+                    BuildingInfo *src;
+                    BuildingInfo info;
                     u32 result;
                     if (v >= 0x5000 && v <= 0x5021) {
                         i = v & 0xfff;
@@ -1590,8 +1580,8 @@ extern "C" void BuildingOccupancy_OnEnterRecord(Flags1 *p, s32 bit) {
         u32 after;
         void *d;
         Flags1 pk;
-        Info info;
-        Info *src;
+        BuildingInfo info;
+        BuildingInfo *src;
         lo = lo | (1 << bit);
         after = Math_CountBits4(lo);
         if (idx < 0x22) {
@@ -1649,8 +1639,8 @@ extern "C" void BuildingOccupancy_RequestEnter(u32 arg) {
         z = Math_CountBits4(lo);
         lo = (u8)(lo | 1);
         y = Math_CountBits4(lo);
-        BuildingInfo_Copy((Info *)buf, idx < 0x22 ? &data_020d0a7c[idx] : data_020d0a7c);
-        if (y > BuildingInfo_GetCapacity((Info *)buf)) {
+        BuildingInfo_Copy((BuildingInfo *)buf, idx < 0x22 ? &data_020d0a7c[idx] : data_020d0a7c);
+        if (y > BuildingInfo_GetCapacity((BuildingInfo *)buf)) {
             e->hi = 2;
         } else if (Building_IsOwnerAsleep(arg) && z == 0) {
             e->hi = 3;
@@ -1659,7 +1649,7 @@ extern "C" void BuildingOccupancy_RequestEnter(u32 arg) {
             e->hi = 1;
             Building_IsOwnerAsleep(arg);
         }
-        BuildingInfo_Destroy((Info *)buf);
+        BuildingInfo_Destroy((BuildingInfo *)buf);
     } else {
         sBuildingOccupancy[idx].hi = 0;
         bits.a = 0;

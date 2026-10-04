@@ -27,7 +27,7 @@ extern u8 data_ov124_02296f90[];
 }
 
 
-struct Unk_ov002_02203c5c_Rec;
+struct OamCellEntry;
 
 
 
@@ -167,7 +167,7 @@ void GeneralMenuHeader::loadObjGfx(s32 v) {
     Heap_Free(heap, buf);
     Gfx2d_LoadPaletteFileSlot("menu/han/ten0_obj.bpl", heap, 8, pictureIndex, v);
     objPalette = v;
-    iconButton.setup((Unk_ov002_02203c5c_Rec *)data_ov124_02296f90, 14, 2);
+    iconButton.setup((OamCellEntry *)data_ov124_02296f90, 14, 2);
     switch (MenuCtrl_GetMode()) {
     case 0xb: iconButton.setLabelNoShadow(0x3b); break;
     case 0xf: iconButton.setLabelNoShadow(0xe6); break;

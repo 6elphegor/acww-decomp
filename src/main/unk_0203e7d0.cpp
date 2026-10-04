@@ -1,7 +1,7 @@
 #include "types.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_0203e4f0_Vec.h"
-#include "talk/Unk_0203e22c_State.h"
+#include "talk/TalkRequestEntry.h"
 #include "game/CharacterList.h"
 #include "net/Unk_0203e938_Net.h"
 #include "sys/ProcBase.h"
@@ -22,7 +22,7 @@ extern u8 sCharInteractSyncResult;
 
 
 extern "C" {
-extern Unk_0203e22c_State *gTalkRequestCurrent;
+extern TalkRequestEntry *gTalkRequestCurrent;
 }
 
 extern "C" {
@@ -97,7 +97,7 @@ s32 Field_GetExitedBuildingKey(void);
 }
 
 extern "C" {
-Unk_0203e22c_State *TalkRequestPool_Alloc(void);
+TalkRequestEntry *TalkRequestPool_Alloc(void);
 }
 
 extern "C" {

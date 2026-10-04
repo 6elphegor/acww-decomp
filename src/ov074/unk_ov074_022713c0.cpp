@@ -22,7 +22,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -688,7 +688,7 @@ void SpNpcBlancaTalk::setResultHandler(s32 idx) {
 }
 
 void SpNpcBlancaTalk::onFaceDrawn() {
-    void *p = unk_3c;
+    void *p = window;
     u8 buf[1];
     buf[0] = 0xf;
     if (MenuCtrl_IsResultOk() != 0) {
@@ -700,7 +700,7 @@ void SpNpcBlancaTalk::onFaceDrawn() {
 
 BOOL SpNpcBlancaTalk::onConceptChosen() {
     if (MenuCtrl_IsResultOk() != 0) {
-        void *p = unk_3c;
+        void *p = window;
         u8 *const g = gSaveBlancaFace;
         u8 buf[1];
         BlancaFaceRecord_setConcept(g, Impression_Evaluate(PlayerData_GetCurrent(), 0, 0));
@@ -751,9 +751,9 @@ next:
         setPlayerNameSlot((u32)&m, 1);
         setTownNameSlot(PlayerId_GetTownId(&m), 0);
         buf[0] = BlancaFaceRecord_getConcept(g);
-        TalkWindowState_setSlotFromString(unk_3c, 2, buf, ((char *)"st_impress"));
+        TalkWindowState_setSlotFromString(window, 2, buf, ((char *)"st_impress"));
         PatternInfo_getTitle(&l, obj);
-        TalkWindowState_setSlot(unk_3c, 3, obj);
+        TalkWindowState_setSlot(window, 3, obj);
     }
     func_0206260c(obj);
     func_020942c8(&m);
@@ -788,7 +788,7 @@ void SpNpcBlancaTalk::onMessageEnd(u32) {
     }
     if (t != 0xff) {
         buf[0] = t;
-        TalkWindowState_setNextMessage(unk_3c, buf, name);
+        TalkWindowState_setNextMessage(window, buf, name);
     }
 }
 
@@ -838,7 +838,7 @@ void SpNpcBlancaTalk::onChoice(u32) {
     }
     if (t != 0xff) {
         buf[0] = t;
-        TalkWindowState_setNextMessage(unk_3c, buf, name);
+        TalkWindowState_setNextMessage(window, buf, name);
     }
     func_020942c8(&m);
     func_02072064(&l);

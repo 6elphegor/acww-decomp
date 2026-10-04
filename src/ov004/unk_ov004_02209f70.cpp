@@ -268,8 +268,8 @@ BOOL FtrPhone::enterTalkAct04() {
 }
 
 void FtrPhone::execTalkAct03() {
-    if (unk_3c != 0) {
-        if (unk_3c->state == 0) {
+    if (window != 0) {
+        if (window->state == 0) {
             detachTalkRequest((s32)(TalkMsgRequest *)this);
             setTalkAct(4);
         }
@@ -279,8 +279,8 @@ void FtrPhone::execTalkAct03() {
 BOOL FtrPhone::enterTalkAct03() { return TRUE; }
 
 void FtrPhone::execTalkAct02() {
-    if (unk_3c != 0) {
-        if (unk_3c->state != 0) {
+    if (window != 0) {
+        if (window->state != 0) {
             setTalkAct(3);
         }
     }
@@ -290,7 +290,7 @@ void FtrPhone::execTalkAct02() {
 BOOL FtrPhone::enterTalkAct02() {
     Unk_ov004_0220a0e4_Pad pad;
     attachTalkRequest((s32)(TalkMsgRequest *)this);
-    unk_3c->nextState = 1;
+    window->nextState = 1;
     TalkMsgRequest &s = *this;
     s.setFileName(p10::data_ov004_0224bb44);
     msgIndex = 0;
@@ -1404,8 +1404,8 @@ typedef BOOL (FtrVillagerPic::*Unk_ov004_0224a500_Fn)();
 typedef void (FtrVillagerPic::*Unk_ov004_0220bec8_Fn)();
 
 void FtrVillagerPic::execTalkAct03() {
-    if (((Unk_ov004_0220bdbc_P *)unk_3c)) {
-        if (((Unk_ov004_0220bdbc_P *)unk_3c)->state == 0) {
+    if (((Unk_ov004_0220bdbc_P *)window)) {
+        if (((Unk_ov004_0220bdbc_P *)window)->state == 0) {
             p13::_ZN9Character17detachTalkRequestEi(this, this);
             p13::TalkRequest_SetTargetDone(this);
         }
@@ -1417,8 +1417,8 @@ BOOL FtrVillagerPic::enterTalkAct03() {
 }
 
 void FtrVillagerPic::execTalkAct02() {
-    if (((Unk_ov004_0220bdbc_P *)unk_3c)) {
-        if (((Unk_ov004_0220bdbc_P *)unk_3c)->state) {
+    if (((Unk_ov004_0220bdbc_P *)window)) {
+        if (((Unk_ov004_0220bdbc_P *)window)->state) {
             setTalkAct(3);
         }
     }
@@ -1441,7 +1441,7 @@ BOOL FtrVillagerPic::enterTalkAct02() {
     volatile u16 va[2];
     s32 idx;
     p13::_ZN9Character17attachTalkRequestEi(this, this);
-    ((Unk_ov004_0220bdbc_P *)unk_3c)->nextState = 1;
+    ((Unk_ov004_0220bdbc_P *)window)->nextState = 1;
     va[1] = p13::Item_MakeFurniture(p13::FtrActor_GetFtrIndex(this), 0);
     BOOL r = FALSE;
     u32 t = va[1];
@@ -3364,8 +3364,8 @@ u8 FtrStereo::getActSwitchState(u32 a) {
 }
 
 void FtrStereo::execTalkAct05() {
-    if (((Unk_ov004_0220ebd8_Ptr *)unk_3c) != NULL) {
-        if (((Unk_ov004_0220ebd8_Ptr *)unk_3c)->state == 0) {
+    if (((Unk_ov004_0220ebd8_Ptr *)window) != NULL) {
+        if (((Unk_ov004_0220ebd8_Ptr *)window)->state == 0) {
             p18::_ZN9Character17detachTalkRequestEi(this, this);
             p18::TalkRequest_SetTargetDone(this);
         }
@@ -3377,8 +3377,8 @@ BOOL FtrStereo::enterTalkAct05() {
 }
 
 BOOL FtrStereo::execTalkAct04() {
-    if (((Unk_ov004_0220ebd8_Ptr *)unk_3c) != NULL) {
-        if (((Unk_ov004_0220ebd8_Ptr *)unk_3c)->state != 0) {
+    if (((Unk_ov004_0220ebd8_Ptr *)window) != NULL) {
+        if (((Unk_ov004_0220ebd8_Ptr *)window)->state != 0) {
             setTalkAct(5);
         }
     }
@@ -3386,7 +3386,7 @@ BOOL FtrStereo::execTalkAct04() {
 
 BOOL FtrStereo::enterTalkAct04() {
     p18::_ZN9Character17attachTalkRequestEi(this, this);
-    ((Unk_ov004_0220ebd8_Ptr *)unk_3c)->unk_08 = 1;
+    ((Unk_ov004_0220ebd8_Ptr *)window)->unk_08 = 1;
     {
         TalkMsgRequest &sec = *this;
         p18::_ZN10MsgRequest11setFileNameEPKc(&sec, p18::data_ov004_0224bbb0);
@@ -3403,7 +3403,7 @@ BOOL FtrStereo::enterTalkAct04() {
         l.v = Unk_ov004_0220ec30_Val(t);
         p18::_ZN8ItemNameC1EPt(buf1, &l.v);
         msgIndex = 5;
-        p18::_ZN15TalkWindowState12setNamedSlotEiPvj(((Unk_ov004_0220ebd8_Ptr *)unk_3c), 0, buf1, 7);
+        p18::_ZN15TalkWindowState12setNamedSlotEiPvj(((Unk_ov004_0220ebd8_Ptr *)window), 0, buf1, 7);
         p18::_ZN8ItemNameD1Ev(buf1);
     } else {
         u16 *p = p18::HouseRoom_GetCurrentSong();
@@ -3412,7 +3412,7 @@ BOOL FtrStereo::enterTalkAct04() {
         if (ok) {
             p18::_ZN8ItemNameC1EPt(buf2, p);
             msgIndex = 5;
-            p18::_ZN15TalkWindowState12setNamedSlotEiPvj(((Unk_ov004_0220ebd8_Ptr *)unk_3c), 0, buf2, 7);
+            p18::_ZN15TalkWindowState12setNamedSlotEiPvj(((Unk_ov004_0220ebd8_Ptr *)window), 0, buf2, 7);
             p18::_ZN8ItemNameD1Ev(buf2);
         } else {
             msgIndex = 6;
@@ -4401,8 +4401,8 @@ BOOL FtrBed::enterFtrAct0B() {
 }
 
 void FtrBed::execFtrAct0A() {
-    if (((Unk_ov004_0220bdbc_P *)unk_3c)) {
-        if (((Unk_ov004_0220bdbc_P *)unk_3c)->state == 0) {
+    if (((Unk_ov004_0220bdbc_P *)window)) {
+        if (((Unk_ov004_0220bdbc_P *)window)->state == 0) {
             if (p21::MenuCtrl_OpenPocketSelect(p21::MenuCtrl_BuildPocketMask(FtrBed_IsDma06Is5), 0x28)) {
                 changeAct(0xb, 0xff);
             }
@@ -4415,8 +4415,8 @@ BOOL FtrBed::enterFtrAct0A() {
 }
 
 void FtrBed::execFtrAct09() {
-    if (((Unk_ov004_0220bdbc_P *)unk_3c)) {
-        if (((Unk_ov004_0220bdbc_P *)unk_3c)->state == 0) {
+    if (((Unk_ov004_0220bdbc_P *)window)) {
+        if (((Unk_ov004_0220bdbc_P *)window)->state == 0) {
             p21::_ZN9Character17detachTalkRequestEi(this, this);
             p21::TalkRequest_SetTargetDone(this);
         }
@@ -4433,7 +4433,7 @@ void FtrBed::execFtrAct08() {
 BOOL FtrBed::enterFtrAct08() {
     Unk_ov004_022105d8_Pad pad;
     p21::_ZN9Character17attachTalkRequestEi(this, this);
-    ((Unk_ov004_0220bdbc_P *)unk_3c)->nextState = 1;
+    ((Unk_ov004_0220bdbc_P *)window)->nextState = 1;
     MsgRequest::setFileName(p21::data_ov004_0224bbb0);
     msgIndex = 4;
     return TRUE;
@@ -4448,8 +4448,8 @@ BOOL FtrBed::enterFtrAct07() {
 }
 
 void FtrBed::execFtrAct06() {
-    if (((Unk_ov004_0220bdbc_P *)unk_3c)) {
-        if (((Unk_ov004_0220bdbc_P *)unk_3c)->state == 0) {
+    if (((Unk_ov004_0220bdbc_P *)window)) {
+        if (((Unk_ov004_0220bdbc_P *)window)->state == 0) {
             p21::_ZN9Character17detachTalkRequestEi(this, this);
             p21::TalkRequest_SetTargetDone(this);
             p21::SceneWarp_RequestFade(p21::Scene_GetWarpRequest(), 0x2e, 2, 0);
@@ -4463,8 +4463,8 @@ BOOL FtrBed::enterFtrAct06() {
 }
 
 void FtrBed::execFtrAct05() {
-    if (((Unk_ov004_0220bdbc_P *)unk_3c)) {
-        if (((Unk_ov004_0220bdbc_P *)unk_3c)->state == 0) {
+    if (((Unk_ov004_0220bdbc_P *)window)) {
+        if (((Unk_ov004_0220bdbc_P *)window)->state == 0) {
             p21::PlayerActor_LocalRequestGetOutOfBed(inLeftHalf, 0);
             p21::_ZN9Character17detachTalkRequestEi(this, this);
             p21::TalkRequest_SetTargetDone(this);
@@ -4482,7 +4482,7 @@ void FtrBed::execFtrAct04() {
 BOOL FtrBed::enterFtrAct04() {
     Unk_ov004_022105d8_Pad pad;
     p21::_ZN9Character17attachTalkRequestEi(this, this);
-    ((Unk_ov004_0220bdbc_P *)unk_3c)->nextState = 1;
+    ((Unk_ov004_0220bdbc_P *)window)->nextState = 1;
     if (p21::GameStart_IsNewTown() || p21::GameStart_IsNewResident()) {
         MsgRequest::setFileName(p21::data_ov004_0224bbd0);
         msgIndex = 0x19;
@@ -6268,7 +6268,7 @@ BOOL FtrStorage::enterTalkAct0B() {
 }
 
 BOOL FtrStorage::execTalkAct0A() {
-    if (((Unk_ov004_0220f6e0_Rec *)unk_3c) && ((Unk_ov004_0220f6e0_Rec *)unk_3c)->state == 0) {
+    if (((Unk_ov004_0220f6e0_Rec *)window) && ((Unk_ov004_0220f6e0_Rec *)window)->state == 0) {
         setTalkAct(11);
     }
 }
@@ -6278,7 +6278,7 @@ BOOL FtrStorage::enterTalkAct0A() {
 }
 
 BOOL FtrStorage::execTalkAct09() {
-    if (((Unk_ov004_0220f6e0_Rec *)unk_3c) && ((Unk_ov004_0220f6e0_Rec *)unk_3c)->state != 0) {
+    if (((Unk_ov004_0220f6e0_Rec *)window) && ((Unk_ov004_0220f6e0_Rec *)window)->state != 0) {
         setTalkAct(10);
     }
 }
@@ -6286,7 +6286,7 @@ BOOL FtrStorage::execTalkAct09() {
 BOOL FtrStorage::enterTalkAct09() {
     s32 y, x;
     p19::_ZN9Character17attachTalkRequestEi(this, this);
-    ((Unk_ov004_0220f6e0_Rec *)unk_3c)->unk_08 = 1;
+    ((Unk_ov004_0220f6e0_Rec *)window)->unk_08 = 1;
     p19::_ZN10MsgRequest11setFileNameEPKc(*this, p19::data_ov004_0224bbc0);
     u32 t = p19::FtrActor_GetFtrIndex(this);
     u32 r5 = t + p19::Scene_GetCurrent();
@@ -6482,11 +6482,11 @@ BOOL FtrStorage::setTalkAct(s32 s) {
 }
 
 void FtrBed::onChoice(u32) {
-    u32 r = p20::_ZN10ChoiceList9getResultEv(p20::_ZN15TalkWindowState13getChoiceListEv(((u32)unk_3c)));
+    u32 r = p20::_ZN10ChoiceList9getResultEv(p20::_ZN15TalkWindowState13getChoiceListEv(((u32)window)));
     if (useMode == 1) {
         switch (r) {
         case 0:
-            p20::_ZN15TalkWindowState14setNextMessageEPhPv(((u32)unk_3c), p20::gTalkMsgIndexEnd, 0);
+            p20::_ZN15TalkWindowState14setNextMessageEPhPv(((u32)window), p20::gTalkMsgIndexEnd, 0);
             changeAct(6, 0xff);
             break;
         case 1:
@@ -6496,11 +6496,11 @@ void FtrBed::onChoice(u32) {
     } else {
         switch (r) {
         case 0:
-            p20::_ZN15TalkWindowState14setNextMessageEPhPv(((u32)unk_3c), p20::gTalkMsgIndexEnd, 0);
+            p20::_ZN15TalkWindowState14setNextMessageEPhPv(((u32)window), p20::gTalkMsgIndexEnd, 0);
             changeAct(0xa, 0xff);
             break;
         case 1:
-            p20::_ZN15TalkWindowState14setNextMessageEPhPv(((u32)unk_3c), p20::gTalkMsgIndexEnd, 0);
+            p20::_ZN15TalkWindowState14setNextMessageEPhPv(((u32)window), p20::gTalkMsgIndexEnd, 0);
             changeAct(9, 0xff);
             break;
         }
@@ -6509,7 +6509,7 @@ void FtrBed::onChoice(u32) {
 
 void FtrBed::onMessageEnd(u32) {
     if (msgIndex == 0) {
-        u32 o = ((u32)unk_3c);
+        u32 o = ((u32)window);
         u32 h = p20::_ZN15TalkWindowState13getChoiceListEv(o);
         p20::_ZN10ChoiceList5resetEii(h, 2, 1);
         u8 buf[4];

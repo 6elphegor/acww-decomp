@@ -2,7 +2,7 @@
 #define TALK_VILLAGERTALK_H
 
 #include "types.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/TalkStartMsg.h"
 
 class VillagerActor;
@@ -14,7 +14,7 @@ typedef void (VillagerTalk::*Unk_020d8938_Fn2)(u32 a, s32 b);
 typedef s32 (VillagerTalk::*Unk_020d8938_FnS)();
 
 // Topic table entry (three state functions) set by setTopicFns.
-struct Unk_020d8938_Tbl {
+struct VillagerTalkTopicFns {
     Unk_020d8938_Fn a;
     Unk_020d8938_Fn b;
     Unk_020d8938_Fn c;
@@ -23,7 +23,7 @@ struct Unk_020d8938_Tbl {
 // Villager talk request (0x1a0 bytes, vtable 0x020d8930; member at 0x680 of VillagerActor): topic state functions,
 // item hand-over state, memory / partner indices, choice values. Base of the event villagers' talk requests (ov004,
 // ov068). Defined in src/main/unk_0201c050.cpp.
-class VillagerTalk : public Unk_020d7710 {
+class VillagerTalk : public ActorTalkRequest {
 public:
     VillagerTalk();
     virtual ~VillagerTalk();
@@ -82,7 +82,7 @@ public:
     void setUnk150(u32 v);
     void *getActorByIndex(s32 idx);
     void setChoiceFn(Unk_020d8938_Fn fn);
-    void setTopicFns(Unk_020d8938_Tbl *t);
+    void setTopicFns(VillagerTalkTopicFns *t);
     void clearTopicFns();
     void setDeferredFn(Unk_020d8938_Fn fn);
     void setNextTaskDoneFn(Unk_020d8938_Fn fn);
@@ -98,7 +98,7 @@ public:
     /* 0x0d4 */ Unk_020d8938_Fn taskDoneFn;
     /* 0x0dc */ Unk_020d8938_Fn nextTaskDoneFn;
     /* 0x0e4 */ Unk_020d8938_Fn deferredFn;
-    /* 0x0ec */ Unk_020d8938_Fn unk_ec;
+    /* 0x0ec */ Unk_020d8938_Fn updateFn;
     /* 0x0f4 */ Unk_020d8938_Fn closeFn;
     /* 0x0fc */ VillagerActor *actor;
     /* 0x100 */ u8 pad_100[0x120 - 0x100];

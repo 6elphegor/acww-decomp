@@ -22,7 +22,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -31,8 +31,8 @@
 #define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
 #define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
-#define Unk_020d7710_requestCloseWindow _ZN12Unk_020d771018requestCloseWindowEj
-#define Unk_020d7710_requestReopenWindow _ZN12Unk_020d771019requestReopenWindowEv
+#define ActorTalkRequest_requestCloseWindow _ZN16ActorTalkRequest18requestCloseWindowEj
+#define ActorTalkRequest_requestReopenWindow _ZN16ActorTalkRequest19requestReopenWindowEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -79,8 +79,8 @@ s32 Unk_02097ff4_testFlag(void *p, s32 a);
 s32 Unk_02097ff4_setFlag(void *p, s32 a);
 s32 Random_GlobalBelow(s32 a);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-void Unk_020d7710_requestCloseWindow(void *self, s32 a);
-s32 Unk_020d7710_requestReopenWindow(void *self);
+void ActorTalkRequest_requestCloseWindow(void *self, s32 a);
+s32 ActorTalkRequest_requestReopenWindow(void *self);
 BOOL NpcTalkCtrl_isBusy(void *self);
 void NpcTalkCtrl_requestTalk(void *self, s32 a, s32 b);
 void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
@@ -652,7 +652,7 @@ void SpNpcPeteTalk::scriptWakeUp() {
     u8 *o;
     switch (scriptStep) {
     case 0:
-        if (unk_3c->state == 5) {
+        if (window->state == 5) {
             NpcActionCtrl_requestPlayAnim(ownerNpc + 0x564, 2, 0xd5, 1, data_020c6cc8, 0);
             NpcMoveAnimSet_setStandAnim(ownerNpc + 0x2a0, 0);
             scriptStep = scriptStep + 1;
@@ -673,16 +673,16 @@ void SpNpcPeteTalk::scriptWakeUp() {
                 void *p = PlayerData_GetCurrent();
                 u8 buf[2];
                 ownerNpc[0x714] = 1;
-                Unk_020d7710_requestReopenWindow(this);
+                ActorTalkRequest_requestReopenWindow(this);
                 if (Unk_02097ff4_testFlag(p, 6) == 0) {
                     Unk_02097ff4_setFlag(p, 6);
                     Talk_CheckAndSetPlayerFlag(0x12, 1);
                     buf[0] = 0x10;
-                    unk_3c->setNextMessage(buf, (void *)"sp_npc_mpelican");
+                    window->setNextMessage(buf, (void *)"sp_npc_mpelican");
                 } else {
                     Talk_CheckAndSetPlayerFlag(0x12, 1);
                     buf[1] = Random_GlobalBelow(12);
-                    unk_3c->setNextMessage(&buf[1], (void *)"sp_npc_mpelican");
+                    window->setNextMessage(&buf[1], (void *)"sp_npc_mpelican");
                 }
                 setScript(0);
             }
@@ -713,7 +713,7 @@ void SpNpcPeteTalk::start(TalkStartMsg *out) {
 void SpNpcPeteTalk::onMessageEnd(u32) {
     PlayerData_GetCurrent();
     if (msgIndex == 0x1a) {
-        Unk_020d7710_requestCloseWindow(this, 0);
+        ActorTalkRequest_requestCloseWindow(this, 0);
         setScript(1);
     }
 }

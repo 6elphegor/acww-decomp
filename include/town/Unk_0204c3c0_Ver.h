@@ -10,14 +10,14 @@ struct Unk_0204c3c0_Ver {
     /* 0x00 */ u8 day;
     /* 0x01 */ u8 month;
     /* 0x02 */ u8 year;
-    /* 0x03 */ u8 unk_03;
+    /* 0x03 */ u8 pad_03;
 };
 
 struct Unk_0204c3f4_Slot {
     /* 0x00 */ u8 day;
     /* 0x01 */ u8 month;
     /* 0x02 */ u8 year;
-    /* 0x03 */ u8 unk_03;
+    /* 0x03 */ u8 pad_03;
 };
 
 #endif

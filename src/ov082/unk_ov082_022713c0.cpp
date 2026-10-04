@@ -24,7 +24,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -42,12 +42,12 @@ struct Unk_ov082_022718b0_Rec {
 
 extern "C" {
 void _ZN12Unk_0201442015requestKeepItemEv(void *p);
-void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
-void _ZN12Unk_020d771015setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
-void _ZN12Unk_020d771012openSubSceneEi(void *p, s32 v);
-void _ZN12Unk_020d771019requestReopenWindowEv(void *p);
+void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
+void _ZN16ActorTalkRequest12openSubSceneEi(void *p, s32 v);
+void _ZN16ActorTalkRequest19requestReopenWindowEv(void *p);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
 void _ZN16ActorTalkRequest17setPlayerNameSlotEjj(void *p, void *q, u32 a);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
@@ -370,7 +370,7 @@ extern "C" BOOL SpNpcTortimerBugOff_IsInsect(u16 *p, s32 x) {
 }
 
 void SpNpcTortimerBugOffTalk::scriptCatchChosen() {
-    TalkWindowState *r6 = unk_3c;
+    TalkWindowState *r6 = window;
     u8 b;
     entryItem = 0xfff1;
     ownerNpc->entrySize = 0;
@@ -388,13 +388,13 @@ void SpNpcTortimerBugOffTalk::scriptCatchChosen() {
         }
         b = 0xd;
     } else {
-        _ZN12Unk_020d771019requestReopenWindowEv(this);
+        _ZN16ActorTalkRequest19requestReopenWindowEv(this);
     }
     r6->setNextMessage(&b, (void *)"sp_npc_turtle2");
 }
 
 void SpNpcTortimerBugOffTalk::scriptCloseItemSelect() {
-    _ZN12Unk_020d771019requestReopenWindowEv(this);
+    _ZN16ActorTalkRequest19requestReopenWindowEv(this);
 }
 
 SpNpcTortimerBugOffTalk::SpNpcTortimerBugOffTalk() {
@@ -480,7 +480,7 @@ s32 SpNpcTortimerBugOffTalk::getRecordHolder() {
         if (_ZN10VillagerId7isValidEv(r4)) {
             MsgString9B o;
             _ZN10VillagerId7getNameEj(r4, &o);
-            unk_3c->setSlot(1, &o);
+            window->setSlot(1, &o);
             return 2;
         }
     }
@@ -500,11 +500,11 @@ void SpNpcTortimerBugOffTalk::onMessageEnd(u32) {
         }
         if (msgIndex == 2) {
             ha = 0x1559;
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &ha, 0, 5, 0);
+            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &ha, 0, 5, 0);
             hb = 0x1559;
             Pocket_AddItem(&hb, 0);
             b1 = 4;
-            unk_3c->setNextMessage(&b1, (void *)"sp_npc_turtle");
+            window->setNextMessage(&b1, (void *)"sp_npc_turtle");
         }
         return;
     }
@@ -566,7 +566,7 @@ void SpNpcTortimerBugOffTalk::onMessageEnd(u32) {
             ItemPick_One(&h16, &o, 0, 0, 1, 1, 0);
             h0 = h16;
             ItemPickSpec_Destruct(&o);
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h0, 0, 5, 0);
+            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h0, 0, 5, 0);
             _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &h0, 0, 7);
             Pocket_AddItem(&h0, 0);
             break;
@@ -575,21 +575,21 @@ void SpNpcTortimerBugOffTalk::onMessageEnd(u32) {
     switch (msgIndex) {
     case 1:
         hc = 0x1376;
-        _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &hc, 0, 5, 0);
+        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &hc, 0, 5, 0);
         hd = 0x1376;
         Pocket_AddItem(&hd, 0);
         msg = 4;
         Talk_CheckAndSetPlayerFlag(0x1c, 1);
         break;
     case 0xb:
-        _ZN12Unk_020d771015setPocketFilterEjjj(this, SpNpcTortimerBugOff_IsInsect, 0xd, 1);
-        _ZN12Unk_020d771012openSubSceneEi(this, 0);
+        _ZN16ActorTalkRequest15setPocketFilterEjjj(this, SpNpcTortimerBugOff_IsInsect, 0xd, 1);
+        _ZN16ActorTalkRequest12openSubSceneEi(this, 0);
         setScript(0);
         break;
     }
     if (msg != 0xff) {
         b2 = msg;
-        unk_3c->setNextMessage(&b2, r7);
+        window->setNextMessage(&b2, r7);
     }
 }
 
@@ -611,7 +611,7 @@ void SpNpcTortimerBugOffTalk::onChoice(u32) {
         }
         if (msg != 0xff) {
             b1 = msg;
-            unk_3c->setNextMessage(&b1, s);
+            window->setNextMessage(&b1, s);
         }
     } else {
         if (msgIndex == 8) {
@@ -630,7 +630,7 @@ void SpNpcTortimerBugOffTalk::onChoice(u32) {
         }
         if (msg != 0xff) {
             b2 = msg;
-            unk_3c->setNextMessage(&b2, s);
+            window->setNextMessage(&b2, s);
         }
     }
 }

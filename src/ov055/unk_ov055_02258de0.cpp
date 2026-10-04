@@ -23,7 +23,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -340,7 +340,7 @@ void SpNpcRoverTalk::start(TalkStartMsg *out) {
 
 void SpNpcRoverTalk::onMessageEnd(u32) {
     u8 m[4];
-    void *r6 = unk_3c;
+    void *r6 = window;
     switch (msgIndex) {
     case 0x39:
         if (Net_WlxIsReady(NetOverlay_AssertOv067()) == 0) {
@@ -370,7 +370,7 @@ void SpNpcRoverTalk::onMessageEnd(u32) {
 }
 
 void SpNpcRoverTalk::onChoice(u32) {
-    s32 t = _ZN10ChoiceList9getResultEv(_ZN15TalkWindowState13getChoiceListEv(unk_3c));
+    s32 t = _ZN10ChoiceList9getResultEv(_ZN15TalkWindowState13getChoiceListEv(window));
     if (msgIndex == 0x3a && t == 1) {
         Comm_EndOv067Mode();
     }
@@ -414,7 +414,7 @@ void SpNpcRoverTalk::runTagMode() {
     if (Net_WlxIsExchangeDone(NetOverlay_AssertOv067())) {
         Comm_EndOv067Mode();
         m[0] = 0x3c;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m[0], sSpNpcRoverMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &m[0], sSpNpcRoverMsgKey);
         setScript(2);
     } else {
         if ((gPad[1] & 1) == 0 && !Unk_ov055_0225915c_Both() && r5 == 0) {
@@ -422,7 +422,7 @@ void SpNpcRoverTalk::runTagMode() {
         }
         Net_WlxStopExchange(NetOverlay_AssertOv067());
         m[1] = 0x3a;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m[1], sSpNpcRoverMsgKey);
+        _ZN15TalkWindowState14setNextMessageEPhPv(window, &m[1], sSpNpcRoverMsgKey);
         setScript(3);
     }
 }
@@ -430,7 +430,7 @@ void SpNpcRoverTalk::runTagMode() {
 void SpNpcRoverTalk::waitLidOpen() {
     if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) == 0) {
         Snd_PlaySe(0x69);
-        _ZN15TalkWindowState13unlockAdvanceEv(unk_3c);
+        _ZN15TalkWindowState13unlockAdvanceEv(window);
         setScript(0);
     }
 }
@@ -439,13 +439,13 @@ void SpNpcRoverTalk::waitLidOpen() {
 // SpNpcRoverTalk
 
 void SpNpcRoverTalk::waitTagModeStop() {
-    void *r4 = unk_3c;
+    void *r4 = window;
     if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) == 0) {
         if (Net_WlxIsExchangeDone(NetOverlay_AssertOv067())) {
             Snd_PlaySe(0x69);
             Comm_EndOv067Mode();
             u8 m = 0x3c;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m, sSpNpcRoverMsgKey);
+            _ZN15TalkWindowState14setNextMessageEPhPv(window, &m, sSpNpcRoverMsgKey);
         } else {
             if (Net_WlxIsReady(NetOverlay_AssertOv067()) != 1) {
                 Net_WlxStopExchange(NetOverlay_AssertOv067());

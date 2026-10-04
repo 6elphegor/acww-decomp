@@ -640,7 +640,7 @@ void TitleTalk::onMessageEnd(u32) {
 }
 
 void TitleTalk::openChoiceSet(TitleChoiceSet *d) {
-    TalkWindowState *sp0 = unk_3c;
+    TalkWindowState *sp0 = window;
     ChoiceList *sp10 = sp0->getChoiceList();
     u8 *r5 = d->msgIds;
     u8 *r6 = d->nextMsgIds;
@@ -665,7 +665,7 @@ void TitleTalk::openChoiceSet(TitleChoiceSet *d) {
 }
 
 void TitleTalk::openResidentChoices() {
-    TalkWindowState *sp0 = unk_3c;
+    TalkWindowState *sp0 = window;
     ChoiceList *r6 = sp0->getChoiceList();
     r6->clear();
     s32 r5 = 0;
@@ -749,7 +749,7 @@ void TitleTalk::onChoice(u32) {
         break;
     case 0x35:
         if (r5 == 0) {
-            unk_3c->setNextMessage(&gTalkMsgIndexEnd, 0);
+            window->setNextMessage(&gTalkMsgIndexEnd, 0);
             unk_44->changeState(10);
         }
         break;
@@ -801,7 +801,7 @@ void TitleTalk::chooseTagMode() {
     if (((LetterView *)TownExchange_GetLetter(g))->getState()) {
         if (((TownExchangeRecord *)g)->getCounter() == 0) {
             u8 v = 0x35;
-            unk_3c->setNextMessage(&v, 0);
+            window->setNextMessage(&v, 0);
         }
     }
 }

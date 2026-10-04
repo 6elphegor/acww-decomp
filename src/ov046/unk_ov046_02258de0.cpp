@@ -26,7 +26,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -419,7 +419,7 @@ BOOL SpNpcCeleste::mainAct03() {
 BOOL SpNpcCeleste::mainAct04() { return TRUE; }
 
 void SpNpcCelesteTalk::openConstellationPage() {
-    TalkWindowState *o = unk_3c;
+    TalkWindowState *o = window;
     ChoiceList *r7 = o->getChoiceList();
     u8 v = 0xf;
     r7->clear();
@@ -459,7 +459,7 @@ void SpNpcCelesteTalk::openConstellationPage() {
     p->loadText();
     r7->setCount(r4 + 1);
     r7->setCancelToLast();
-    unk_3c->openChoices(1);
+    window->openChoices(1);
 }
 
 void SpNpcCelesteTalk::onTaskDone(u32) {
@@ -515,13 +515,13 @@ void SpNpcCelesteTalk::setResultHandler(s32 idx) {
 }
 
 void SpNpcCelesteTalk::onStargazingDone() {
-    TalkWindowState *o = unk_3c;
+    TalkWindowState *o = window;
     u8 v = 0x12;
     o->setNextMessage(&v, sSpNpcCelesteKey);
 }
 
 void SpNpcCelesteTalk::onConstellationDrawn() {
-    TalkWindowState *o = unk_3c;
+    TalkWindowState *o = window;
     u8 msg[4];
     Unk_ov046_02259de8_Time t;
     msg[0] = 0xc;
@@ -554,21 +554,21 @@ void SpNpcCelesteTalk::onConstellationDrawn() {
 }
 
 void SpNpcCelesteTalk::onConstellationNamed() {
-    TalkWindowState *o = unk_3c;
+    TalkWindowState *o = window;
     u8 v = 5;
     if (MenuCtrl_IsFinished()) {
         if (MenuCtrl_IsResultOk()) {
             ConstellationMsgString17 s;
             v = 0xb;
             Constellation_GetName(&s, constellationSlot);
-            unk_3c->setSlot(0, &s);
+            window->setSlot(0, &s);
         }
         o->setNextMessage(&v, sSpNpcCelesteKey);
     }
 }
 
 void SpNpcCelesteTalk::onConstellationRedrawn() {
-    TalkWindowState *o = unk_3c;
+    TalkWindowState *o = window;
     u8 v = 0x1d;
     if (MenuCtrl_IsResultOk()) {
         v = 0x38;
@@ -581,14 +581,14 @@ void SpNpcCelesteTalk::onConstellationRedrawn() {
 }
 
 void SpNpcCelesteTalk::onConstellationRenamed() {
-    TalkWindowState *o = unk_3c;
+    TalkWindowState *o = window;
     u8 v = 5;
     if (MenuCtrl_IsFinished()) {
         if (MenuCtrl_IsResultOk()) {
             v = 0x3d;
             ConstellationMsgString17 s;
             Constellation_GetName(&s, constellationSlot);
-            unk_3c->setSlot(0, &s);
+            window->setSlot(0, &s);
         }
         o->setNextMessage(&v, sSpNpcCelesteKey);
     }
@@ -723,7 +723,7 @@ void SpNpcCelesteTalk::onMessageEnd(u32) {
         }
         if (nextMsg != 0xff) {
             u8 v = nextMsg;
-            unk_3c->setNextMessage(&v, sSpNpcCelesteKey);
+            window->setNextMessage(&v, sSpNpcCelesteKey);
         }
     }
 }
@@ -740,7 +740,7 @@ void SpNpcCelesteTalk::announceNewConstellations() {
         if (Constellation_GetNewStatus(&v) == 1) {
             ConstellationMsgString17 s;
             Constellation_GetName(&s, v);
-            unk_3c->setSlot(7, &s);
+            window->setSlot(7, &s);
             nextMsg = 0x39;
         } else {
             nextMsg = 0x3a;
@@ -863,7 +863,7 @@ test:
     }
     if (nextMsg != 0xff) {
         u8 b = nextMsg;
-        unk_3c->setNextMessage(&b, sSpNpcCelesteKey);
+        window->setNextMessage(&b, sSpNpcCelesteKey);
     }
 }
 
@@ -881,13 +881,13 @@ void SpNpcCelesteTalk::onConstellationListChoice(s32 idx) {
         u8 pad[3];
         u32 w[2];
     } l;
-    TalkWindowState *o = unk_3c;
+    TalkWindowState *o = window;
     constellationSlot = listSlots[idx];
     if (constellationSlot >= 0) {
         u32 buf[9];
         _ZN24ConstellationMsgString17C1Ev(buf);
         Constellation_GetName(buf, constellationSlot);
-        unk_3c->setSlot(6, buf);
+        window->setSlot(6, buf);
         if (listMode == 0) {
             nextMsg = 0x19;
             listStart = 0;
@@ -1016,7 +1016,7 @@ void SpNpcCelesteTalk::onEraseConfirmChoice(s32 a) {
         if (constellationSlot >= 0) {
             _ZN24ConstellationMsgString17C1Ev(buf);
             Constellation_GetName(buf, constellationSlot);
-            unk_3c->setSlot(6, buf);
+            window->setSlot(6, buf);
             Constellation_Erase(constellationSlot);
             _ZN24ConstellationMsgString17D1Ev(buf);
         }

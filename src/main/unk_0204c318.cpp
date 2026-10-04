@@ -57,7 +57,7 @@ extern "C" void TownState_InitNew(TownState *p) {
         s->day = 1;
         s->month = 1;
         s->year = 0;
-        s->unk_03 = 0;
+        s->pad_03 = 0;
         s++;
     }
     p->perfectStreak = -1;
@@ -89,7 +89,7 @@ extern "C" void TownState_Reset(TownState *p) {
         s->day = 1;
         s->month = 1;
         s->year = 0;
-        s->unk_03 = 0;
+        s->pad_03 = 0;
         s++;
     }
     p->perfectStreak = -1;
@@ -106,7 +106,7 @@ extern "C" void TownState_ClampDate(Unk_0204c3c0_Ver *p) {
         p->day = t.day;
         p->month = t.month;
         p->year = t.year;
-        p->unk_03 = t.unk_03;
+        p->pad_03 = t.pad_03;
     }
 }
 

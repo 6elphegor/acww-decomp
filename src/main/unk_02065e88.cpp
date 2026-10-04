@@ -5067,8 +5067,8 @@ u8 *MsgString9::data() {
     using namespace n3; return (u8 *)this + 0x12; }
 TalkMsgRequest::TalkMsgRequest() {
     using namespace n3;
-    unk_3c = 0;
-    unk_40 = 0;
+    window = 0;
+    noSpeakerName = 0;
 }
 TalkMsgRequest::~TalkMsgRequest() {
     using namespace n3;}
@@ -5076,27 +5076,27 @@ void TalkMsgRequest::resetMsg() {
     using namespace n3;
     MsgRequest::resetMsg();
     speakerName.clear();
-    unk_3c = 0;
-    unk_40 = 0;
+    window = 0;
+    noSpeakerName = 0;
 }
 void TalkMsgRequest::setSpeakerName(u8 *p, u32 v) {
     using namespace n3;
     speakerName.set(p);
     speakerName.attr.form = v;
-    unk_40 = 0;
+    noSpeakerName = 0;
 }
 void TalkMsgRequest::setSpeakerNameStr(MsgString *p, u32 v) {
     using namespace n3;
     speakerName.copy(p);
     speakerName.attr.form = v;
-    unk_40 = 0;
+    noSpeakerName = 0;
 }
 // ---- TalkMsgRequest ----
 void TalkMsgRequest::setNoSpeakerName(u32 v) {
     using namespace n3;
     speakerName.clear();
     speakerName.attr.form = v;
-    unk_40 = 1;
+    noSpeakerName = 1;
 }
 
 // ======== unk_02065f14.cpp ========
@@ -5105,13 +5105,13 @@ namespace n2 {
 }
 void TalkMsgRequest::changeSpeakerName(MsgString *p, u32 v) {
     using namespace n2;
-    TalkWindowState *o = (TalkWindowState *)unk_3c;
+    TalkWindowState *o = (TalkWindowState *)window;
     s32 t = o->state;
     BOOL five = (t == 5);
     setSpeakerNameStr(p, v);
     if (t != 0 && !five) {
-        ((TalkWindowState *)unk_3c)->refreshNameColor();
-        ((TalkVoice *)(((TalkWindowState *)unk_3c)->voice))->refreshVoiceType();
+        ((TalkWindowState *)window)->refreshNameColor();
+        ((TalkVoice *)(((TalkWindowState *)window)->voice))->refreshVoiceType();
     }
 }
 
@@ -5124,7 +5124,7 @@ namespace n1 {
 MsgString9 *TalkMsgRequest::getSpeakerName() {
     using namespace n1; return &speakerName; }
 u32 TalkMsgRequest::isNoSpeakerName() {
-    using namespace n1; return unk_40; }
+    using namespace n1; return noSpeakerName; }
 u32 TalkMsgRequest::getNameKind() {
     using namespace n1; return unk_04[(0x2c - 4) / 4]; }
 const char *TalkMsgRequest::getMsgDir() {
@@ -5182,8 +5182,8 @@ void TalkMsgRequest::onWindowClose() {
 void TalkMsgRequest::onTalkEnd() {
     using namespace n1;}
 void TalkMsgRequest::attachWindow(u32 v) {
-    using namespace n1; unk_3c = (TalkWindowState *)v; }
+    using namespace n1; window = (TalkWindowState *)v; }
 void TalkMsgRequest::detachWindow() {
-    using namespace n1; unk_3c = 0; }
+    using namespace n1; window = 0; }
 #undef unk_04
 #undef data_020ddd68

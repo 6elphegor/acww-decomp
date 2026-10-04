@@ -25,7 +25,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -59,12 +59,12 @@ s32 FishPick_PickAnyHour(void *a, void *b, void *c, u32 d, u32 e);
 u32 FishTable_IsLateMonth(u32 a);
 u32 FishTable_GetForDate(u32 a, u32 b);
 void _ZN12Unk_0201442015requestKeepItemEv(void *p);
-void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
-void _ZN12Unk_020d771015setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
-void _ZN12Unk_020d771012openSubSceneEi(void *p, s32 v);
-void _ZN12Unk_020d771019requestReopenWindowEv(void *p);
+void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
+void _ZN16ActorTalkRequest12openSubSceneEi(void *p, s32 v);
+void _ZN16ActorTalkRequest19requestReopenWindowEv(void *p);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
 void _ZN16ActorTalkRequest17setPlayerNameSlotEjj(void *p, void *q, u32 a);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
@@ -410,7 +410,7 @@ extern "C" BOOL SpNpcTortimerFishingTourney_IsFish(u16 *p, s32 x) {
 }
 
 void SpNpcTortimerFishingTourneyTalk::scriptCatchChosen() {
-    TalkWindowState *p = unk_3c;
+    TalkWindowState *p = window;
     u8 m;
     entryItem = 0xfff1;
     ownerNpc->entrySize = 0;
@@ -428,13 +428,13 @@ void SpNpcTortimerFishingTourneyTalk::scriptCatchChosen() {
         }
         m = 0xd;
     } else {
-        _ZN12Unk_020d771019requestReopenWindowEv(this);
+        _ZN16ActorTalkRequest19requestReopenWindowEv(this);
     }
     p->setNextMessage(&m, (void *)"sp_npc_turtle1");
 }
 
 void SpNpcTortimerFishingTourneyTalk::scriptCloseItemSelect() {
-    _ZN12Unk_020d771019requestReopenWindowEv(this);
+    _ZN16ActorTalkRequest19requestReopenWindowEv(this);
 }
 
 SpNpcTortimerFishingTourneyTalk::SpNpcTortimerFishingTourneyTalk() {
@@ -554,7 +554,7 @@ s32 SpNpcTortimerFishingTourneyTalk::getRecordHolder() {
             } else if (_ZN10VillagerId7isValidEv(r4) != 0) {
                 MsgString9B o;
                 _ZN10VillagerId7getNameEj(r4, &o);
-                unk_3c->setSlot(1, &o);
+                window->setSlot(1, &o);
                 return 2;
             }
         }
@@ -578,11 +578,11 @@ void SpNpcTortimerFishingTourneyTalk::onMessageEnd(u32) {
         }
         if (msgIndex == 2) {
             h1 = 0x1559;
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h1, 0, 5, 0);
+            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h1, 0, 5, 0);
             h2 = 0x1559;
             Pocket_AddItem(&h2, 0);
             m1 = 4;
-            unk_3c->setNextMessage(&m1, (void *)"sp_npc_turtle");
+            window->setNextMessage(&m1, (void *)"sp_npc_turtle");
         }
     } else {
         switch (msgIndex) {
@@ -627,7 +627,7 @@ void SpNpcTortimerFishingTourneyTalk::onMessageEnd(u32) {
                 ItemPick_One(&h3, &o, 0, 0, 1, 1, 0);
                 h0 = h3;
                 ItemPickSpec_Destruct(&o);
-                _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h0, 0, 5, 0);
+                _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h0, 0, 5, 0);
                 _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &h0, 0, 7);
                 Pocket_AddItem(&h0, 0);
                 break;
@@ -637,21 +637,21 @@ void SpNpcTortimerFishingTourneyTalk::onMessageEnd(u32) {
         switch (msgIndex) {
         case 1:
             h4 = 0x1374;
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h4, 0, 5, 0);
+            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h4, 0, 5, 0);
             h5 = 0x1374;
             Pocket_AddItem(&h5, 0);
             msg = 4;
             Talk_CheckAndSetPlayerFlag(0x1b, 1);
             break;
         case 0xb:
-            _ZN12Unk_020d771015setPocketFilterEjjj(this, SpNpcTortimerFishingTourney_IsFish, 0xd, 1);
-            _ZN12Unk_020d771012openSubSceneEi(this, 0);
+            _ZN16ActorTalkRequest15setPocketFilterEjjj(this, SpNpcTortimerFishingTourney_IsFish, 0xd, 1);
+            _ZN16ActorTalkRequest12openSubSceneEi(this, 0);
             setScript(0);
             break;
         }
         if (msg != 0xff) {
             m2 = msg;
-            unk_3c->setNextMessage(&m2, s);
+            window->setNextMessage(&m2, s);
         }
     }
 }
@@ -677,7 +677,7 @@ void SpNpcTortimerFishingTourneyTalk::onChoice(u32) {
         }
         if (msg != 0xff) {
             b1 = msg;
-            unk_3c->setNextMessage(&b1, s);
+            window->setNextMessage(&b1, s);
         }
     } else {
         if (msgIndex == 8) {
@@ -693,7 +693,7 @@ void SpNpcTortimerFishingTourneyTalk::onChoice(u32) {
         }
         if (msg != 0xff) {
             b2 = msg;
-            unk_3c->setNextMessage(&b2, s);
+            window->setNextMessage(&b2, s);
         }
     }
 }

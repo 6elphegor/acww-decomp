@@ -24,7 +24,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 
@@ -50,7 +50,7 @@ s32 Pocket_FindEmpty();
 s32 Pocket_FindItem(u16 *p);
 BOOL Pocket_AddItem(u16 *p, s32 v);
 void Pocket_RemoveItem(s32 v);
-void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
+void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
@@ -427,7 +427,7 @@ void SpNpcCornimerTalk::onMessageEnd(u32) {
         } else {
             _ZN17PlayerSpNpcRecord21advanceAcornPrizeStepEv(g);
             buf.v[3] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) * 4];
-            _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &buf.v[3], 0, 5, 0);
+            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &buf.v[3], 0, 5, 0);
             if (_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) < 12) {
                 u32 b = _ZN17PlayerSpNpcRecord18getAcornsDeliveredEv(g);
                 if (b >= (sSpNpcCornimerPrizeTable + 2)[_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) * 4]) {
@@ -442,13 +442,13 @@ void SpNpcCornimerTalk::onMessageEnd(u32) {
         break;
     case 20:
         buf.v[5] = 0x1565;
-        _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &buf.v[5], 0, 5, 0);
+        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &buf.v[5], 0, 5, 0);
         k = 0x15;
         break;
     }
     if (k != 0xff) {
         buf.t = k;
-        unk_3c->setNextMessage(&buf.t, (u8 *)"sp_npc_acorn");
+        window->setNextMessage(&buf.t, (u8 *)"sp_npc_acorn");
     }
 }
 
@@ -534,7 +534,7 @@ void SpNpcCornimerTalk::onChoice(u32) {
     }
     if (k != 0xff) {
         buf.v = k;
-        unk_3c->setNextMessage(&buf.v, sa);
+        window->setNextMessage(&buf.v, sa);
     }
 }
 

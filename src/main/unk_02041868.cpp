@@ -1,7 +1,7 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "town/Unk_020419b4.h"
-#include "town/Unk_02041e00_Ent.h"
+#include "game/EventDayEntry.h"
 #include "game/Unk_02042104_Date.h"
 
 
@@ -12,7 +12,7 @@ struct Unk_02041938 { u8 unk_00[0x10e9]; u8 done; u8 started; };
 extern u32 data_021fcc2c[];
 
 extern CommManager *gCommManager;
-extern Unk_02041ac0_Glob gTownUpdater;
+extern TownUpdater gTownUpdater;
 extern u32 gCurrentHeap;
 extern u8 sAntSpawnEnabled;
 extern volatile u32 gTownEval[];
@@ -51,8 +51,8 @@ void DateTime_AddDays(Unk_02042104_Date *a, s32 n);
 void TownState_PickNextWeekDate(void *a, u8 *b);
 void TownBbs_PostPelicanNotice(void *o, u8 *base, Unk_02042104_Date *d);
 void TownBbs_PostSlogan(void *o, u8 *base, Unk_02042104_Date *d);
-s32 EventSchedule_CollectDayAll(Unk_02041e00_Ent *z, Unk_02042104_Date *d);
-void TownBbs_PostDayEvents(void *o, Unk_02041e00_Ent *z, Unk_02042104_Date *d);
+s32 EventSchedule_CollectDayAll(EventDayEntry *z, Unk_02042104_Date *d);
+void TownBbs_PostDayEvents(void *o, EventDayEntry *z, Unk_02042104_Date *d);
 void TownUpdateThread_Main(u8 *arg);
 void OS_ExitThread();
 u32 DC_FlushAll();
@@ -118,7 +118,7 @@ extern "C" void TownBbs_CatchUpPelicanDate(void *o, u8 *base, Unk_02042104_Date 
 
 extern "C" void TownBbs_PostEventsForDay(void *o, u8 *base, Unk_02042104_Date *d) {
     Unk_02042104_Date x, y, w;
-    Unk_02041e00_Ent z[7];
+    EventDayEntry z[7];
     *(u32 *)&x = 0;
     *((u32 *)&x + 1) = 0;
     MI_CpuCopy8(d, &x, 8);

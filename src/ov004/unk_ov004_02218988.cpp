@@ -26,7 +26,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/VillagerActor.h"
-#include "talk/Unk_020d7710.h"
+#include "talk/ActorTalkRequest.h"
 #include "talk/VillagerTalk.h"
 
 class FleaMarketBuyerVillagerTalk;
@@ -36,9 +36,9 @@ class FleaMarketBuyerVillager;
 #define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define Unk_020d7710_requestGiveItem _ZN12Unk_020d771015requestGiveItemEPtjjj
-#define Unk_020d7710_setSubSceneKind _ZN12Unk_020d771015setSubSceneKindEjj
-#define Unk_020d7710_openSubScene _ZN12Unk_020d771012openSubSceneEi
+#define ActorTalkRequest_requestGiveItem _ZN16ActorTalkRequest15requestGiveItemEPtjjj
+#define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
+#define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
 #define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
 #define ActorTalkRequest_getChoiceList _ZN16ActorTalkRequest13getChoiceListEv
@@ -150,9 +150,9 @@ void *ActorTalkRequest_getChoiceList(void *);
 s32 ChoiceList_getResult();
 void *VillagerData_getVillagerId(void *);
 void VillagerId_makeFileName(void *, const void *, u32, const void *);
-void Unk_020d7710_setSubSceneKind(void *, s32, s32);
-void Unk_020d7710_openSubScene(void *, s32);
-void Unk_020d7710_requestGiveItem(void *, void *, s32, s32, s32);
+void ActorTalkRequest_setSubSceneKind(void *, s32, s32);
+void ActorTalkRequest_openSubScene(void *, s32);
+void ActorTalkRequest_requestGiveItem(void *, void *, s32, s32, s32);
 void *PlayerData_GetCurrent();
 void *PlayerData_getInventory(void *);
 void *PlayerData_getPlayerId(void *);
@@ -880,7 +880,7 @@ void FleaMarketBuyerVillagerTalk::onTaskDone(u32) {
 void FleaMarketBuyerVillagerTalk::setScript(s32 v) { scriptIndex = v; }
 
 void FleaMarketBuyerVillagerTalk::offerPrice() {
-    u32 sp8 = (u32)unk_3c;
+    u32 sp8 = (u32)window;
     u16 buf[2];
     ((u8 *)buf)[0] = Random_GlobalBelow(2) + 8;
     offerAmount = 0;
@@ -1030,14 +1030,14 @@ void FleaMarketBuyerVillagerTalk::onMessageEnd(u32) {
         }
         VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_02250828, 0x28, "q_bye");
         buf = Random_GlobalBelow(3);
-        TalkWindowState_setNextMessage(unk_3c, &buf, data_ov004_02250828);
+        TalkWindowState_setNextMessage(window, &buf, data_ov004_02250828);
     } else {
         switch (msgIndex) {
         case 0:
         case 1:
         case 2:
             if (st == 6 || st == 1) {
-                TalkWindowState_setNextMessage(unk_3c, gTalkMsgIndexEnd, 0);
+                TalkWindowState_setNextMessage(window, gTalkMsgIndexEnd, 0);
             } else if (st == 0) {
                 void *q;
                 if (PlayerData_GetCurrent() != 0) {
@@ -1052,7 +1052,7 @@ void FleaMarketBuyerVillagerTalk::onMessageEnd(u32) {
                 FleaMarketBuyerVillager **pp = &villager;
                 (*pp)->visitStage = 1;
                 (*pp)->entryTimer = 0x28;
-                TalkWindowState_setNextMessage(unk_3c, gTalkMsgIndexEnd, 0);
+                TalkWindowState_setNextMessage(window, gTalkMsgIndexEnd, 0);
                 villager->changeAct(1);
             }
             break;
@@ -1101,8 +1101,8 @@ void FleaMarketBuyerVillagerTalk::onChoice(u32) {
         case 11:
             VillagerId_makeFileName(VillagerData_getVillagerId(b->villagerData), data_ov004_022507d8, 0x28, "ev_fmarket3");
             if (st == 0) {
-                Unk_020d7710_setSubSceneKind(this, 0x38, 0);
-                Unk_020d7710_openSubScene(this, 2);
+                ActorTalkRequest_setSubSceneKind(this, 0x38, 0);
+                ActorTalkRequest_openSubScene(this, 2);
                 setScript(1);
             } else {
                 sel = (u8)(Random_GlobalBelow(2) + 8);
@@ -1127,13 +1127,13 @@ void FleaMarketBuyerVillagerTalk::onChoice(u32) {
                 } else {
                     switch (st) {
                     case 0:
-                        Unk_020d7710_requestGiveItem(this, &tmp, 0, 5, 0);
+                        ActorTalkRequest_requestGiveItem(this, &tmp, 0, 5, 0);
                         NpcActor_PayPlayer(villager, (void *)offerAmount);
                         sel = (u8)(Random_GlobalBelow(2) + 0xe);
                         completePurchase();
                         break;
                     case 1:
-                        Unk_020d7710_requestGiveItem(this, &tmp, 0, 5, 0);
+                        ActorTalkRequest_requestGiveItem(this, &tmp, 0, 5, 0);
                         sel = (u8)(Random_GlobalBelow(2) + 0xe);
                         NpcActor_PayPlayer(villager, (void *)offerAmount);
                         completePurchase();
@@ -1150,7 +1150,7 @@ void FleaMarketBuyerVillagerTalk::onChoice(u32) {
         }
         if (sel != 0xff) {
             buf = sel;
-            TalkWindowState_setNextMessage(unk_3c, &buf, data_ov004_022507d8);
+            TalkWindowState_setNextMessage(window, &buf, data_ov004_022507d8);
         }
     }
 }

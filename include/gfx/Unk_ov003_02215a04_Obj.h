@@ -2,17 +2,13 @@
 #define GFX_UNK_OV003_02215A04_OBJ_H
 
 #include "types.h"
+#include "gfx/NNSG3dRenderObj.h"
 
 // Views of the G3D render state passed to CountdownSign_MaterialCallback (ov003 0x02215a04, src/ov003/unk_ov003_022150ec.cpp).
 
 struct Unk_ov003_02215a04_Ctx {
     /* 0x00 */ u8 cmd[2];
     /* 0x02 */ u8 pad_02[2];
-};
-
-struct NNSG3dRenderObj {
-    /* 0x00 */ u8 pad_00[0x2c];
-    /* 0x2c */ u32 ptrUser;
 };
 
 struct NNSG3dMatAnmResult {

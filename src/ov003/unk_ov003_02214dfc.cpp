@@ -144,7 +144,7 @@ BOOL GateHouse::initBuilding() {
 }
 
 BOOL GateHouse::onExecute() {
-    AnimModel_stepAnim(unk_138);
+    AnimModel_stepAnim(model);
     return TRUE;
 }
 

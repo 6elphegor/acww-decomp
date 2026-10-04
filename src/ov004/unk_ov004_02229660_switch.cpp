@@ -219,7 +219,7 @@ RoomTelephone *RoomTelephone_Create();
 // Only this function: it needs mwcc 1.2/base (the rest of the unit is in the main file, built with 1.2/sp2).
 // It is the class's virtual at vtable slot 0x70 (and, through the thunk, the secondary base's slot 0x18).
 void RoomTelephone::onChoice(u32 a_) {
-    TalkWindowState *p = unk_3c;
+    TalkWindowState *p = window;
     s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(p));
     u32 r = 0;
     switch (msgIndex) {

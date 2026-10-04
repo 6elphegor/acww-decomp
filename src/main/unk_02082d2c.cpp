@@ -196,7 +196,7 @@ void FieldPos_FromUnitCenter(void *a, s32 x, s32 y);
 
 static inline BOOL Unk_02083058_IsA() { return gFieldSceneKind == 0 ? TRUE : FALSE; }
 
-static inline Unk_02082e80_Cell *Unk_02082e80_GetCell(Unk_02082e80_Grid *g, u32 x, u32 y) {
+static inline TownBlockCell *Unk_02082e80_GetCell(Unk_02082e80_Grid *g, u32 x, u32 y) {
     if (x < g->size[0] && y < g->size[1] && g->blocks != NULL) {
         return &g->blocks[y * g->size[0] + x];
     }

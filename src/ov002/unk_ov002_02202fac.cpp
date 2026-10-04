@@ -8,8 +8,8 @@
 #include "sys/KeyRepeat.h"
 #include "menu/MenuTween.h"
 #include "menu/PopupChoiceIdList.h"
-#include "ui/Unk_ov002_022018e4_Arg.h"
-#include "ui/Unk_ov002_02203c5c_Rec.h"
+#include "ui/AddresseePageArg.h"
+#include "ui/OamCellEntry.h"
 #include "talk/TalkWindowState.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
@@ -197,13 +197,13 @@ extern const u8 sBottomButtonTargetX[];
 extern const u8 sBottomButtonTargetY[];
 extern const u8 sBottomButtonOfTarget[];
 extern s32 sPopupChoicePopOffsets[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW4A[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW4B[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW6Single[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW8[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW6A[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW6B[];
-extern Unk_ov002_02203c5c_Rec sButtonCellsW12[];
+extern OamCellEntry sButtonCellsW4A[];
+extern OamCellEntry sButtonCellsW4B[];
+extern OamCellEntry sButtonCellsW6Single[];
+extern OamCellEntry sButtonCellsW8[];
+extern OamCellEntry sButtonCellsW6A[];
+extern OamCellEntry sButtonCellsW6B[];
+extern OamCellEntry sButtonCellsW12[];
 }
 
 
@@ -266,7 +266,7 @@ void PopupChoice_BuildScreen(Self *self);
 void PopupChoice_SetState(Self *self, u32 x);
 void PopupChoice_Close(Self *self, s32 x);
 void PopupChoice_Open(Self *self, s32 x);
-void PopupChoice_OpenAddresseePage(Self *self, Unk_ov002_022018e4_Arg a, s32 x);
+void PopupChoice_OpenAddresseePage(Self *self, AddresseePageArg a, s32 x);
 void PopupChoice_LoadFriendBg(Self *self);
 void PopupChoice_LoadChoiceBg(Self *self);
 void PopupChoice_SetPosClamped(Self *self, s32 x, s32 y);
@@ -293,57 +293,57 @@ static inline BOOL Unk_ov002_022009d4_Both() {
 }
 
 // ---- .rodata
-extern "C" Unk_ov002_02203c5c_Rec sButtonCellsW8[5] = {
-    {0x81f440a0, 0x14c, 0x30},
-    {0x801440a0, 0x150, 0x30},
-    {0x800440a0, 0xd0, 0x2c},
-    {0x901c40a0, 0xcf, 0x2c},
-    {0x81ec40a0, 0xcf, 0x3fffec},
+extern "C" OamCellEntry sButtonCellsW8[5] = {
+    {0x81f440a0, 0x14c, 0, 0xc, 0x0},
+    {0x801440a0, 0x150, 0, 0xc, 0x0},
+    {0x800440a0, 0xd0, 0, 0xb, 0x0},
+    {0x901c40a0, 0xcf, 0, 0xb, 0x0},
+    {0x81ec40a0, 0xcf, 0, 0xb, 0xffff},
 };
 extern "C" const u8 sBottomButtonTargetY[12] = {0xb6, 0x9e, 0xb2, 0xa9, 0xa9, 0xb6, 0xb6, 0xb6, 0xb6, 0xb6, 0x00, 0x00};
-extern "C" Unk_ov002_02203c5c_Rec sButtonCellsW4A[3] = {
-    {0x80204044, 0x146, 0x30},
-    {0x90284044, 0xcf, 0x2c},
-    {0x80184044, 0xcf, 0x3fffec},
+extern "C" OamCellEntry sButtonCellsW4A[3] = {
+    {0x80204044, 0x146, 0, 0xc, 0x0},
+    {0x90284044, 0xcf, 0, 0xb, 0x0},
+    {0x80184044, 0xcf, 0, 0xb, 0xffff},
 };
-extern "C" Unk_ov002_02203c5c_Rec sButtonCellsW6A[6] = {
-    {0x80084000, 0x14, 0x1},
-    {0x40280000, 0x18, 0x1},
-    {0x90204000, 0x5b, 0x1},
-    {0x80004000, 0x5b, 0x3fffc1},
-    {0x90244004, 0x5b, 0x5},
-    {0x80044004, 0x5b, 0x3fffc5},
+extern "C" OamCellEntry sButtonCellsW6A[6] = {
+    {0x80084000, 0x14, 1, 0x0, 0x0},
+    {0x40280000, 0x18, 1, 0x0, 0x0},
+    {0x90204000, 0x5b, 1, 0x0, 0x0},
+    {0x80004000, 0x5b, 1, 0x0, 0xffff},
+    {0x90244004, 0x5b, 1, 0x1, 0x0},
+    {0x80044004, 0x5b, 1, 0x1, 0xffff},
 };
 extern "C" const u8 sBottomButtonOfTarget[12] = {0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00};
-extern "C" Unk_ov002_02203c5c_Rec sButtonCellsW6B[6] = {
-    {0x80084000, 0x1a, 0x1},
-    {0x40280000, 0x1e, 0x1},
-    {0x90204000, 0x5b, 0x1},
-    {0x80004000, 0x5b, 0x3fffc1},
-    {0x90244004, 0x5b, 0x5},
-    {0x80044004, 0x5b, 0x3fffc5},
+extern "C" OamCellEntry sButtonCellsW6B[6] = {
+    {0x80084000, 0x1a, 1, 0x0, 0x0},
+    {0x40280000, 0x1e, 1, 0x0, 0x0},
+    {0x90204000, 0x5b, 1, 0x0, 0x0},
+    {0x80004000, 0x5b, 1, 0x0, 0xffff},
+    {0x90244004, 0x5b, 1, 0x1, 0x0},
+    {0x80044004, 0x5b, 1, 0x1, 0xffff},
 };
 extern "C" const u8 sTextButtonPressOffsets[4] = {0x00, 0x02, 0x03, 0x00};
 extern "C" const u8 sBottomButtonTargetX[12] = {0x58, 0xca, 0xca, 0x62, 0xc2, 0x3e, 0xc4, 0x7c, 0x74, 0xc4, 0x00, 0x00};
-extern "C" Unk_ov002_02203c5c_Rec sButtonCellsW12[7] = {
-    {0x81d440a0, 0x14c, 0x30},
-    {0x81f440a0, 0x150, 0x30},
-    {0x801440a0, 0x154, 0x30},
-    {0x800040a0, 0xd0, 0x2c},
-    {0x81e840a0, 0xd0, 0x2c},
-    {0x901c40a0, 0xcf, 0x2c},
-    {0x81cc40a0, 0xcf, 0x3fffec},
+extern "C" OamCellEntry sButtonCellsW12[7] = {
+    {0x81d440a0, 0x14c, 0, 0xc, 0x0},
+    {0x81f440a0, 0x150, 0, 0xc, 0x0},
+    {0x801440a0, 0x154, 0, 0xc, 0x0},
+    {0x800040a0, 0xd0, 0, 0xb, 0x0},
+    {0x81e840a0, 0xd0, 0, 0xb, 0x0},
+    {0x901c40a0, 0xcf, 0, 0xb, 0x0},
+    {0x81cc40a0, 0xcf, 0, 0xb, 0xffff},
 };
-extern "C" Unk_ov002_02203c5c_Rec sButtonCellsW6Single[4] = {
-    {0x804840a0, 0x140, 0x30},
-    {0x406800a0, 0x144, 0x30},
-    {0x905e40a0, 0xcf, 0x2c},
-    {0x804040a0, 0xcf, 0x3fffec},
+extern "C" OamCellEntry sButtonCellsW6Single[4] = {
+    {0x804840a0, 0x140, 0, 0xc, 0x0},
+    {0x406800a0, 0x144, 0, 0xc, 0x0},
+    {0x905e40a0, 0xcf, 0, 0xb, 0x0},
+    {0x804040a0, 0xcf, 0, 0xb, 0xffff},
 };
-extern "C" Unk_ov002_02203c5c_Rec sButtonCellsW4B[3] = {
-    {0x81c04044, 0x142, 0x30},
-    {0x91c84044, 0xcf, 0x2c},
-    {0x81b84044, 0xcf, 0x3fffec},
+extern "C" OamCellEntry sButtonCellsW4B[3] = {
+    {0x81c04044, 0x142, 0, 0xc, 0x0},
+    {0x91c84044, 0xcf, 0, 0xb, 0x0},
+    {0x81b84044, 0xcf, 0, 0xb, 0xffff},
 };
 extern "C" const u8 sMenuButtonTextColors[4] = {0x5f, 0x7d, 0xc0, 0x50};
 
@@ -507,7 +507,7 @@ void MenuErrorMessage::advanceTalk() {
 }
 
 BOOL MenuErrorMessage::finishTalk() {
-    TalkWindowState *o = talk.unk_3c;
+    TalkWindowState *o = talk.window;
     if (o->state == 0) {
         o->detachRequest();
         return TRUE;
@@ -627,7 +627,7 @@ MenuTextButton::MenuTextButton() {
 
 MenuTextButton::~MenuTextButton() { caption.destroyLabel(); }
 
-void MenuTextButton::setup(Unk_ov002_02203c5c_Rec *p, u8 a, u8 b) {
+void MenuTextButton::setup(OamCellEntry *p, u8 a, u8 b) {
     cells = p;
     widthTiles = a;
     frameCellCount = b;

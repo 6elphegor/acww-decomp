@@ -59,7 +59,7 @@ public:
     /* 0x34 */ s32 state;
     /* 0x38 */ s32 animTimer;
     /* 0x3c */ s32 x;
-    /* 0x40 */ s32 unk_40;
+    /* 0x40 */ s32 posY;
     /* 0x44 */ s32 priority;
     /* 0x48 */ s32 popOffsetX;
     /* 0x4c */ s32 popOffsetY;

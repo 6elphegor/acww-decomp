@@ -502,7 +502,7 @@ s16 sKappnTaxiLeaveTimer;
 }
 
 BOOL KappnTaxi::enterTaxiIdle() {
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, getDoorInAnim(), 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(model, getDoorInAnim(), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
@@ -510,7 +510,7 @@ void KappnTaxi::execTaxiIdle() {
 }
 
 BOOL KappnTaxi::enterTaxiArrive() {
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, getDoorInAnim(), 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(model, getDoorInAnim(), 1, 0x1000, 0, 0);
     TalkRequestFlags_SetSceneHold();
     return TRUE;
 }
@@ -522,31 +522,31 @@ void KappnTaxi::execTaxiArrive() {
 }
 
 BOOL KappnTaxi::enterTaxiDoorOpen() {
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, getDoorInAnim(), 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(model, getDoorInAnim(), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 void KappnTaxi::execTaxiDoorOpen() {
-    _ZN17BuildingSeEmitter10playSeHeldEj(unk_234, 0x888);
-    if (_ZN13AnimFrameCtrl10isFinishedEv(unk_1d4)) {
+    _ZN17BuildingSeEmitter10playSeHeldEj(seEmitter, 0x888);
+    if (_ZN13AnimFrameCtrl10isFinishedEv(doorAnimCtrl)) {
         setTaxiState(3);
     }
     updateEffect41();
-    _ZN9AnimModel8stepAnimEv(unk_138);
+    _ZN9AnimModel8stepAnimEv(model);
 }
 
 BOOL KappnTaxi::enterTaxiPlayerGetOut() {
     getOutFrameCount = 0;
     if (KappnTaxi_RequestPlayerGetOut()) {
-        _ZN14BlendAnimModel8initAnimEiiitt(unk_138, getDoorOutAnim(), 1, 0x1000, 0, 0);
-        _ZN17BuildingSeEmitter6playSeEj(unk_234, 0x88a);
+        _ZN14BlendAnimModel8initAnimEiiitt(model, getDoorOutAnim(), 1, 0x1000, 0, 0);
+        _ZN17BuildingSeEmitter6playSeEj(seEmitter, 0x88a);
         return TRUE;
     }
     return FALSE;
 }
 
 void KappnTaxi::execTaxiPlayerGetOut() {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(unk_1d4)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(doorAnimCtrl)) {
         switch (getOutFrameCount) {
         case 0x12:
             PlayerActor_KeepAnimForNextAction();
@@ -560,7 +560,7 @@ void KappnTaxi::execTaxiPlayerGetOut() {
             getOutFrameCount++;
         }
     } else {
-        _ZN9AnimModel8stepAnimEv(unk_138);
+        _ZN9AnimModel8stepAnimEv(model);
     }
 }
 
@@ -605,19 +605,19 @@ void KappnTaxi::execTaxiTalkWait() {
 
 BOOL KappnTaxi::enterTaxiDepart() {
     s32 r1 = callGetBca2Anim();
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, r1, 1, 0x1000, 0, 0);
-    _ZN17BuildingSeEmitter6playSeEj(unk_234, 0x88b);
+    _ZN14BlendAnimModel8initAnimEiiitt(model, r1, 1, 0x1000, 0, 0);
+    _ZN17BuildingSeEmitter6playSeEj(seEmitter, 0x88b);
     departFrameCount = 0;
     return TRUE;
 }
 
 void KappnTaxi::execTaxiDepart() {
-    _ZN17BuildingSeEmitter10playSeHeldEj(unk_234, 0x889);
+    _ZN17BuildingSeEmitter10playSeHeldEj(seEmitter, 0x889);
     updateEffect42();
-    if (_ZN13AnimFrameCtrl10isFinishedEv(unk_1d4) != 0) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(doorAnimCtrl) != 0) {
         setTaxiState(7);
     } else {
-        _ZN9AnimModel8stepAnimEv(unk_138);
+        _ZN9AnimModel8stepAnimEv(model);
         u8 *o = (u8 *)PlayerActor_GetActor(4);
         if (o != 0) {
             s32 r4 = *(s16 *)(o + 0x8e);
@@ -747,17 +747,17 @@ void KappnTaxi::execTaxiPlayerExitTownHall() {
 
 BOOL KappnTaxi::enterTaxiLeaveDoorOpen() {
     s32 r1 = getDoorInAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, r1, 1, 0x1000, 0, 0);
+    _ZN14BlendAnimModel8initAnimEiiitt(model, r1, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 void KappnTaxi::execTaxiLeaveDoorOpen() {
-    _ZN17BuildingSeEmitter10playSeHeldEj(unk_234, 0x888);
-    if (_ZN13AnimFrameCtrl10isFinishedEv(unk_1d4) != 0) {
+    _ZN17BuildingSeEmitter10playSeHeldEj(seEmitter, 0x888);
+    if (_ZN13AnimFrameCtrl10isFinishedEv(doorAnimCtrl) != 0) {
         setTaxiState(0xd);
     }
     updateEffect41();
-    _ZN9AnimModel8stepAnimEv(unk_138);
+    _ZN9AnimModel8stepAnimEv(model);
     u8 *o = (u8 *)PlayerActor_GetActor(4);
     if (o != 0) {
         s32 r4 = *(s16 *)(o + 0x8e);
@@ -769,16 +769,16 @@ void KappnTaxi::execTaxiLeaveDoorOpen() {
 
 BOOL KappnTaxi::enterTaxiLeaveDoorAnim() {
     s32 r1 = getDoorOutAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, r1, 1, 0x1000, 0, 0);
-    _ZN17BuildingSeEmitter6playSeEj(unk_234, 0x88a);
+    _ZN14BlendAnimModel8initAnimEiiitt(model, r1, 1, 0x1000, 0, 0);
+    _ZN17BuildingSeEmitter6playSeEj(seEmitter, 0x88a);
     return TRUE;
 }
 
 void KappnTaxi::execTaxiLeaveDoorAnim() {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(unk_1d4) != 0) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(doorAnimCtrl) != 0) {
         setTaxiState(0xe);
     }
-    _ZN9AnimModel8stepAnimEv(unk_138);
+    _ZN9AnimModel8stepAnimEv(model);
 }
 
 BOOL KappnTaxi::enterTaxiPlayerGetIn() {
@@ -797,23 +797,23 @@ void KappnTaxi::execTaxiPlayerGetIn() {
         PlayerActor_SetHeadTilt(0, 0, 4);
         getInTimer = getInTimer - 1;
     }
-    _ZN9AnimModel8stepAnimEv(unk_138);
+    _ZN9AnimModel8stepAnimEv(model);
 }
 
 BOOL KappnTaxi::enterTaxiLeaveDrive() {
     s32 r1 = callGetBca2Anim();
-    _ZN14BlendAnimModel8initAnimEiiitt(unk_138, r1, 1, 0x1000, 0, 0);
-    _ZN17BuildingSeEmitter6playSeEj(unk_234, 0x88b);
+    _ZN14BlendAnimModel8initAnimEiiitt(model, r1, 1, 0x1000, 0, 0);
+    _ZN17BuildingSeEmitter6playSeEj(seEmitter, 0x88b);
     return TRUE;
 }
 
 void KappnTaxi::execTaxiLeaveDrive() {
-    _ZN17BuildingSeEmitter10playSeHeldEj(unk_234, 0x889);
-    if (_ZN13AnimFrameCtrl10isFinishedEv(unk_1d4) != 0) {
+    _ZN17BuildingSeEmitter10playSeHeldEj(seEmitter, 0x889);
+    if (_ZN13AnimFrameCtrl10isFinishedEv(doorAnimCtrl) != 0) {
         setTaxiState(0x10);
     }
     updateEffect42();
-    _ZN9AnimModel8stepAnimEv(unk_138);
+    _ZN9AnimModel8stepAnimEv(model);
 }
 
 BOOL KappnTaxi::enterTaxiLeaveEnd() {
