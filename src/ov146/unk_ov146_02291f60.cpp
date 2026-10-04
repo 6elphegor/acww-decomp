@@ -112,7 +112,7 @@ public:
     virtual ~EncodedString8B();
     virtual u32 capacity();
     virtual u8 *data();
-    /* 0x0e */ u8 unk_0e[10];
+    /* 0x0e */ u8 text[10];
 };
 
 class MsgString9C : public MsgString {

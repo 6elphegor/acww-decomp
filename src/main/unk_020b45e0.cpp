@@ -52,7 +52,7 @@ public:
     void requestField();
     void waitAreaMove();
 
-    /* 0x50 */ s32 unk_50;
+    /* 0x50 */ s32 step;
 };
 
 extern "C" FieldEntryScene *FieldEntryScene_Create(void) { return new FieldEntryScene; }
@@ -66,16 +66,16 @@ void FieldEntryScene::waitAreaMove() {
 
 void FieldEntryScene::requestField() {
     Scene_Request(6, 3, Scene_GetSavedFadeIn(), 1);
-    unk_50 = 2;
+    step = 2;
 }
 
 void FieldEntryScene::idle() {}
 
 BOOL FieldEntryScene::vfunc_00() {
     if (gCommManager->isSlotActive(gCommManager->myAid)) {
-        unk_50 = 0;
+        step = 0;
     } else {
-        unk_50 = 1;
+        step = 1;
     }
     Snd_CreateScene();
     Scene_SetupGraphics();
@@ -94,7 +94,7 @@ BOOL FieldEntryScene::onExecute() {
     typedef void (FieldEntryScene::*Fn)();
     Fn dead = &FieldEntryScene::waitAreaMove;
     static Fn table[3] = {&FieldEntryScene::waitAreaMove, &FieldEntryScene::requestField, &FieldEntryScene::idle};
-    (this->*table[unk_50])();
+    (this->*table[step])();
     return TRUE;
 }
 

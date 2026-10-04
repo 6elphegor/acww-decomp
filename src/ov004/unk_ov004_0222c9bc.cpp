@@ -121,24 +121,24 @@ public:
     virtual u32 getOwnerId() = 0;
     virtual void onCollide(u32 a, u32 b, u32 c);
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ u8 unk_0c;
-    /* 0x0d */ u8 unk_0d;
-    /* 0x0e */ u8 unk_0e;
-    /* 0x0f */ u8 unk_0f;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
-    /* 0x1c */ u32 unk_1c;
-    /* 0x20 */ u32 unk_20;
+    /* 0x04 */ s32 radius;
+    /* 0x08 */ s32 height;
+    /* 0x0c */ u8 targetKind;
+    /* 0x0d */ u8 targetIndex;
+    /* 0x0e */ u8 hitTargetKind;
+    /* 0x0f */ u8 hitTargetIndex;
+    /* 0x10 */ s32 pushX;
+    /* 0x14 */ s32 pushY;
+    /* 0x18 */ s32 pushZ;
+    /* 0x1c */ u32 groups;
+    /* 0x20 */ u32 collideMask;
     /* 0x24 */ s32 unk_24;
-    /* 0x28 */ u32 unk_28;
-    /* 0x2c */ u32 unk_2c;
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ ActorCollider *unk_38;
-    /* 0x3c */ u8 unk_3c;
+    /* 0x28 */ u32 hitGroups;
+    /* 0x2c */ u32 hitOwnerId;
+    /* 0x30 */ s32 hitDepth;
+    /* 0x34 */ s32 weight;
+    /* 0x38 */ ActorCollider *next;
+    /* 0x3c */ u8 isHit;
 };
 
 class StaticCollider : public ActorCollider {
@@ -147,7 +147,7 @@ public:
     ~StaticCollider();
     virtual void *getPos();
     virtual u32 getOwnerId();
-    /* 0x40 */ V3 unk_40;
+    /* 0x40 */ V3 position;
 };
 
 class AquariumFish;

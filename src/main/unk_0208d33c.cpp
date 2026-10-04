@@ -112,19 +112,19 @@ public:
     void release();
     void setKind(s32 a);
 
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ SpriteAnim unk_14;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ s32 unk_2c;
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ ChatBalloonText unk_38;
-    /* 0x6c */ Unk_0208d154_Sub *unk_6c;
-    /* 0x70 */ s32 unk_70;
-    /* 0x74 */ s32 unk_74;
-    /* 0x78 */ s32 unk_78;
-    /* 0x7c */ u8 unk_7c;
+    /* 0x0c */ s32 kind;
+    /* 0x10 */ s32 seqIndex;
+    /* 0x14 */ SpriteAnim anim;
+    /* 0x28 */ s32 offsetX;
+    /* 0x2c */ s32 offsetY;
+    /* 0x30 */ s32 slideY;
+    /* 0x34 */ s32 alignX;
+    /* 0x38 */ ChatBalloonText text;
+    /* 0x6c */ Unk_0208d154_Sub *textLabel;
+    /* 0x70 */ s32 state;
+    /* 0x74 */ s32 showRequested;
+    /* 0x78 */ s32 stateTimer;
+    /* 0x7c */ u8 isVisible;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -177,12 +177,12 @@ BOOL HandCursor::isAnimDone() {
     return r;
 }
 
-NameLabelBalloon::NameLabelBalloon() : unk_0c(0), unk_10(10), unk_28(0), unk_2c(0), unk_30(0), unk_34(0) {
-    unk_6c = 0;
-    unk_70 = 0;
-    unk_74 = 0;
-    unk_78 = 0;
-    unk_7c = 0;
+NameLabelBalloon::NameLabelBalloon() : kind(0), seqIndex(10), offsetX(0), offsetY(0), slideY(0), alignX(0) {
+    textLabel = 0;
+    state = 0;
+    showRequested = 0;
+    stateTimer = 0;
+    isVisible = 0;
 }
 
 NameLabelBalloon::~NameLabelBalloon() {
@@ -190,15 +190,15 @@ NameLabelBalloon::~NameLabelBalloon() {
 }
 
 void NameLabelBalloon::draw() {
-    if (unk_7c != 0) {
-        void *h = unk_14.getCell();
+    if (isVisible != 0) {
+        void *h = anim.getCell();
         s32 a = getOriginX();
-        s32 b = unk_14.getFrameX(-1);
-        s32 x = unk_34 + (unk_28 + a);
+        s32 b = anim.getFrameX(-1);
+        s32 x = alignX + (offsetX + a);
         x += b;
         s32 c = getOriginY();
-        s32 d = unk_14.getFrameY(-1);
-        s32 y = unk_30 + (unk_2c + c);
+        s32 d = anim.getFrameY(-1);
+        s32 y = slideY + (offsetY + c);
         y += d;
         Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
@@ -210,9 +210,9 @@ void NameLabelBalloon::vfunc_0c() {
     Fn q0 = &NameLabelBalloon::updateShown;
     Fn q1 = &NameLabelBalloon::updateShown;
     Fn q2 = &NameLabelBalloon::updateShown;
-    (this->*tbl[unk_70])();
-    if (unk_70 != 0) {
-        unk_14.update();
+    (this->*tbl[state])();
+    if (state != 0) {
+        anim.update();
     }
 }
 

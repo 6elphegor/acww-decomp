@@ -1435,7 +1435,7 @@ struct Unk_ov003_02208190_Pair {
 };
 
 struct Unk_ov003_02208190_RecA {
-    s32 unk_00;
+    s32 treePosX;
     s32 treePosZ;
     u16 faceAngle;
     u8 shakeFrames;
@@ -1804,8 +1804,8 @@ struct Unk_ov003_022093bc_Pair {
 
 // view A of the 0x7d0 record
 struct Unk_ov003_022093bc_RecA {
-    u16 unk_00;
-    s16 unk_02;
+    u16 buryItem;
+    s16 faceAngle;
     u8 fillMode;
     u8 holeUnitX;
     u8 holeUnitZ;
@@ -1814,14 +1814,14 @@ struct Unk_ov003_022093bc_RecA {
 
 // view B
 struct Unk_ov003_022093bc_RecB {
-    u8 unk_00;
+    u8 digUnitX;
     u8 digUnitZ;
-    u8 unk_02;
+    u8 step;
 };
 
 // view C
 struct Unk_ov003_022093bc_RecC {
-    Unk_ov003_022093bc_V3 unk_00;
+    Unk_ov003_022093bc_V3 digPos;
     u8 talkStep;
 };
 
@@ -1835,8 +1835,8 @@ struct Unk_ov003_022093bc_Sub {
 
 struct Unk_ov003_022093bc_Ptr {
     u32 unk_00;
-    u32 unk_04;
-    s32 unk_08;
+    u32 state;
+    s32 nextState;
 };
 
 class MsgRequest {
@@ -2029,7 +2029,7 @@ struct Unk_ov003_02209d50_Bits {
 };
 
 struct Unk_ov003_02209d50_Rec {
-    Unk_ov003_02209d50_V3 unk_00;
+    Unk_ov003_02209d50_V3 digPos;
     u8 talkStep;
     u8 holeKind;
 };
@@ -11115,7 +11115,7 @@ extern "C" void PlayerActor_SetupDigUpItem(Obj *o, Msg *m) {
 
     Rec *r = &o->actionWork;
     r->talkStep = 0;
-    r->unk_00 = v;
+    r->digPos = v;
     r->holeKind = b;
     s32 st = o->animId;
     if (st == 0x49 || st == 0x4a || !Unk_ov003_02209fc8_IsNone(&loc)) {
@@ -11195,7 +11195,7 @@ extern "C" void PlayerActor_EndDigUpItem(Obj *o, s32 p) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
             Rec *r = &o->actionWork;
             V3 v;
-            v = r->unk_00;
+            v = r->digPos;
             Unk_ov003_02209ef4_P::FieldItemFx_StartDigHole(o->sessionSlot, &v, r->holeKind);
             Unk_02006d14_clearActionFlag(o, 0x1c);
             Unk_02006d14_clearActionFlag(o, 9);
@@ -11215,7 +11215,7 @@ extern "C" void PlayerActor_DigUpItemUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (o->animId != 0x49) {
         Rec *r = &o->actionWork;
-        p = r->unk_00;
+        p = r->digPos;
         switch (o->animFrame.mid) {
         case 5:
             Effect_Create(6, &p, 0, 0);
@@ -11321,7 +11321,7 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
         TalkWindowState_setNamedSlot(o->window, 0, buf, 7);
         func_0206260c(buf);
     l54:
-        o->window->unk_08 = 1;
+        o->window->nextState = 1;
         Bgm_ReleasePriority(0x12);
         Bgm_RequestSilence(0xc, 0, 1);
         Bgm_Request(0xd, 0x39, 0x7f, 1);
@@ -11330,7 +11330,7 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
     }
     case 1:
         if (o->window != 0) {
-            if (o->window->unk_04 != 0) *r6 = 2;
+            if (o->window->state != 0) *r6 = 2;
         }
         break;
     case 2:
@@ -11340,15 +11340,15 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
             break;
         }
         if (o->window == 0) break;
-        if (o->window->unk_04 != 0) break;
+        if (o->window->state != 0) break;
         Character_detachTalkRequest(o, o);
         Unk_02006d14_clearActionFlag(o, 0x11);
         TalkRequest_FinishPlayerMessage();
         ab.a0 = 0;
         ab.b0 = 0;
-        v0.x = r5->unk_00.x;
-        v0.y = r5->unk_00.y;
-        v0.z = r5->unk_00.z;
+        v0.x = r5->digPos.x;
+        v0.y = r5->digPos.y;
+        v0.z = r5->digPos.z;
         FieldPos_ToUnit(&ab.a0, &ab.b0, &v0);
         ab.p0.a = ab.a0;
         ab.p0.b = ab.b0;
@@ -11361,14 +11361,14 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
             break;
         }
         if (o->window == 0) break;
-        if (o->window->unk_04 != 0) break;
+        if (o->window->state != 0) break;
         Character_detachTalkRequest(o, o);
         Unk_02006d14_clearActionFlag(o, 0x11);
         ab.a1 = 0;
         ab.b1 = 0;
-        v1.x = r5->unk_00.x;
-        v1.y = r5->unk_00.y;
-        v1.z = r5->unk_00.z;
+        v1.x = r5->digPos.x;
+        v1.y = r5->digPos.y;
+        v1.z = r5->digPos.z;
         FieldPos_ToUnit(&ab.a1, &ab.b1, &v1);
         ab.p1.a = ab.a1;
         ab.p1.b = ab.b1;
@@ -11377,7 +11377,7 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
         break;
     case 4:
         if (o->window == 0) break;
-        if (o->window->unk_04 != 0) break;
+        if (o->window->state != 0) break;
         if (MenuCtrl_IsFinished() == 0) break;
         Character_detachTalkRequest(o, o);
         Unk_02006d14_clearActionFlag(o, 0x11);
@@ -11388,9 +11388,9 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
         if (o->fieldQuery != -1) break;
         ab.a2 = 0;
         ab.b2 = 0;
-        v2.x = r5->unk_00.x;
-        v2.y = r5->unk_00.y;
-        v2.z = r5->unk_00.z;
+        v2.x = r5->digPos.x;
+        v2.y = r5->digPos.y;
+        v2.z = r5->digPos.z;
         FieldPos_ToUnit(&ab.a2, &ab.b2, &v2);
         u32 hh = o->actionItem;
         ab.p2.a = ab.a2;
@@ -11409,7 +11409,7 @@ extern "C" void PlayerActor_MainDigUpItem(Obj *o) {
         if ((u32)(o->animFrame << 4) >> 16 >= 0x19) Unk_020102ec_moveWithCollision(o);
     } else {
         V3 v;
-        V3 *pv = &o->actionWork.c.unk_00;
+        V3 *pv = &o->actionWork.c.digPos;
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;
@@ -11456,8 +11456,8 @@ extern "C" void PlayerActor_SetupDugItemStore(Obj *o, Unk_ov003_022093bc_Msg3 *m
     u8 t2 = q[2];
     u8 t0 = m->b0;
     u8 t1 = q[1];
-    r->unk_02 = t2;
-    r->unk_00 = t0;
+    r->step = t2;
+    r->digUnitX = t0;
     r->digUnitZ = t1;
     PlayerActor_DugItemStoreSetNetData(&o->netData, t0, t1, t2);
     Unk_020102ec_startAnimOnce(o, 0x50, 3, 0);
@@ -11500,8 +11500,8 @@ extern "C" void PlayerActor_DugItemStoreShrink(Obj *o) {
 namespace ns_022093bc {
 extern "C" void PlayerActor_DugItemStoreUpdate(Obj *o) {
     Unk_ov003_022093bc_RecB *g = &o->actionWork.b;
-    u8 *st = &g->unk_02;
-    switch (g->unk_02) {
+    u8 *st = &g->step;
+    switch (g->step) {
     case 0:
         if (AnimFrameCtrl_isFinished(o->anim) == 0) break;
         o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
@@ -11549,7 +11549,7 @@ extern "C" void PlayerActor_DugItemStoreUpdate(Obj *o) {
         Pair p;
         u32 pb = g->digUnitZ;
         u32 v = o->actionItem;
-        u32 pa = g->unk_00;
+        u32 pa = g->digUnitX;
         p.a = pa;
         p.b = pb;
         PlayerActor_RequestBuryItem(o, 2, &p, v, 6, -1);
@@ -11608,12 +11608,12 @@ extern "C" void PlayerActor_SetupBuryItem(Obj *o, Msg *m) {
     } else if (o->animId == 0x6c) {
         k = 3;
     }
-    r->unk_00 = h;
+    r->buryItem = h;
     r->holeUnitX = x;
     r->holeUnitZ = z;
     r->fillMode = k;
     r->answerOk = 0;
-    r->unk_02 = func_020e7b98(v.x - o->position.x, v.z - o->position.z);
+    r->faceAngle = func_020e7b98(v.x - o->position.x, v.z - o->position.z);
     PlayerActor_BuryItemSetNetData(&o->netData, h, (u8)x, (u8)z, k);
     Unk_020102ec_startAnimOnce(o, 0x49, 7, 0);
     Unk_02006d14_clearActionFlag(o, 0xd);
@@ -11627,7 +11627,7 @@ extern "C" void PlayerActor_NetBuryItem() {
 
 namespace ns_022093bc {
 extern "C" void PlayerActor_BuryItemTurn(Obj *o) {
-    Unk_02006d14_turnToward(o, o->actionWork.a.unk_02);
+    Unk_02006d14_turnToward(o, o->actionWork.a.faceAngle);
 }
 }
 
@@ -11648,7 +11648,7 @@ extern "C" void PlayerActor_BuryItemCheckEnd(Obj *o) {
         u32 pa = r->holeUnitX;
         p.a = pa;
         p.b = pb;
-        PlayerActor_RequestFillHole(o, r->fillMode, &p, r->unk_00, 6, -1);
+        PlayerActor_RequestFillHole(o, r->fillMode, &p, r->buryItem, 6, -1);
     }
 }
 }
@@ -12378,7 +12378,7 @@ extern "C" s32 PlayerActor_RequestTreeShake(Obj *o, s32 x, s32 z, bool a, bool b
 namespace ns_02208108 {
 extern "C" void PlayerActor_TreeShakeSetWork(RecA *r, s32 a, s32 x, s32 z, u8 b, u8 c) {
     r->faceAngle = a;
-    r->unk_00 = x;
+    r->treePosX = x;
     r->treePosZ = z;
     r->unk_0b = b;
     r->doRelease = c;
@@ -12441,7 +12441,7 @@ extern "C" void PlayerActor_EndTreeShake(Obj *o) {
     if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) == 0) {
         RecA *r = (RecA *)((u8 *)o + 0x7d0);
         if (r->shakeFrames < 5) {
-            V3 v(r->unk_00, 0, r->treePosZ);
+            V3 v(r->treePosX, 0, r->treePosZ);
             Pair p;
             p.a = 0;
             p.b = 0;
@@ -12465,7 +12465,7 @@ extern "C" void PlayerActor_TreeShakeCheckEnd(Obj *o) {
     RecA *r = (RecA *)((u8 *)o + 0x7d0);
     if (r->doRelease != 0) {
         if (AnimFrameCtrl_isFinished(o->anim)) {
-            PlayerActor_RequestTreeShakeRelease(o, r->unk_00, r->treePosZ, r->unk_0b, 1, 6, -1);
+            PlayerActor_RequestTreeShakeRelease(o, r->treePosX, r->treePosZ, r->unk_0b, 1, 6, -1);
         }
     } else {
         s32 t = o->fieldAnswer;
@@ -12486,7 +12486,7 @@ extern "C" void PlayerActor_TreeShakeCheckEndRemote(Obj *o) {
     o->actionPriority = (s32)Unk_02007694_getActionDonePriority(o, o->action);
     if (r->doRelease != 0) {
         if (AnimFrameCtrl_isFinished(o->anim)) {
-            PlayerActor_RequestTreeShakeRelease(o, r->unk_00, r->treePosZ, r->unk_0b, 1, 6, -1);
+            PlayerActor_RequestTreeShakeRelease(o, r->treePosX, r->treePosZ, r->unk_0b, 1, 6, -1);
         }
     }
 }
@@ -12495,7 +12495,7 @@ extern "C" void PlayerActor_TreeShakeCheckEndRemote(Obj *o) {
 namespace ns_02208108 {
 extern "C" void PlayerActor_MainTreeShake(Obj *o) {
     RecA *r = (RecA *)((u8 *)o + 0x7d0);
-    V3 v(r->unk_00, 0, r->treePosZ);
+    V3 v(r->treePosX, 0, r->treePosZ);
     Pair p;
     p.a = 0;
     p.b = 0;

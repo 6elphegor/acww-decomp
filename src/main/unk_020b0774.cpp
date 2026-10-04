@@ -61,7 +61,7 @@ public:
     virtual ~ConstellationMsgString17();
     virtual u32 capacity();
     virtual u8 *data();
-    u8 unk_12[0x11];
+    u8 text[0x11];
 };
 
 class ConstellationEncodedString16 : public EncodedString {
@@ -70,7 +70,7 @@ public:
     virtual ~ConstellationEncodedString16();
     virtual u32 capacity();
     virtual u8 *data();
-    u8 unk_0e[0x10];
+    u8 text[0x10];
 };
 
 class ConstellationRecord {
@@ -84,7 +84,7 @@ class ConstellationStore {
 public:
     ConstellationStore();
     ~ConstellationStore();
-    ConstellationRecord unk_00[16];
+    ConstellationRecord records[16];
 };
 
 class StarTwinkle {
@@ -151,7 +151,7 @@ ConstellationMsgString17::~ConstellationMsgString17() {}
 
 u32 ConstellationMsgString17::capacity() { return 0x11; }
 
-u8 *ConstellationMsgString17::data() { return unk_12; }
+u8 *ConstellationMsgString17::data() { return text; }
 
 ConstellationEncodedString16::ConstellationEncodedString16() {}
 
@@ -159,7 +159,7 @@ ConstellationEncodedString16::~ConstellationEncodedString16() {}
 
 u32 ConstellationEncodedString16::capacity() { return 0x10; }
 
-u8 *ConstellationEncodedString16::data() { return unk_0e; }
+u8 *ConstellationEncodedString16::data() { return text; }
 
 StarTwinkle::StarTwinkle() {
     _ZN10BgVramTaskC1Ev(this);

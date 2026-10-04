@@ -1,6 +1,6 @@
 #include "types.h"
 
-struct Unk_0205f6f8_Cfg { u8 pad[0x6c]; u8 unk_6c; };
+struct Unk_0205f6f8_Cfg { u8 pad[0x6c]; u8 memberCount; };
 
 struct PlayerBodyWorkPool {
     u32 heaps[4];
@@ -50,7 +50,7 @@ PlayerBodyWorkPool::~PlayerBodyWorkPool() {}
 
 extern "C" void PlayerBodyWorkPool_CreateHeaps(u32 *tbl) {
     void *heap = gPlayerBodyAnimHeap;
-    u32 n = gCommManager->unk_6c;
+    u32 n = gCommManager->memberCount;
     u32 i;
     for (i = 0; i < n; i++) {
         tbl[i] = (u32)FrameHeap_Create(PlayerBodyWork_GetHeapSize(), heap);

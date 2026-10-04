@@ -52,8 +52,8 @@ struct NetMoveReady {
 };
 
 struct NetMoveRequest {
-    u32 unk_00;
-    u8 unk_04;
+    u32 slot;
+    u8 targetScene;
     NetMoveRequest();
     ~NetMoveRequest();
     void reset();
@@ -62,9 +62,9 @@ struct NetMoveRequest {
 };
 
 struct NetSlotStatus {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
+    u8 sceneId;
+    u8 isOwner;
+    u8 isMoving;
     NetSlotStatus();
     ~NetSlotStatus();
     void reset();
@@ -73,10 +73,10 @@ struct NetSlotStatus {
 };
 
 struct NetPendingStatus {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    u32 unk_04;
+    u8 sceneId;
+    u8 isOwner;
+    u8 isMoving;
+    u32 dirtyMask;
     NetPendingStatus();
     ~NetPendingStatus();
     void reset();
@@ -159,29 +159,29 @@ NetPendingStatus::~NetPendingStatus() {}
 
 void NetPendingStatus::setMasked(u8 a, u8 b, u8 c, u32 mask) {
     if (mask & 1) {
-        unk_00 = a;
+        sceneId = a;
     }
     if (mask & 2) {
-        unk_01 = b;
+        isOwner = b;
     }
     if (mask & 4) {
-        unk_02 = c;
+        isMoving = c;
     }
-    unk_04 |= mask;
+    dirtyMask |= mask;
 }
 
 void NetPendingStatus::get(u8 *a, u8 *b, u8 *c, u32 *d) {
-    *a = unk_00;
-    *b = unk_01;
-    *c = unk_02;
-    *d = unk_04;
+    *a = sceneId;
+    *b = isOwner;
+    *c = isMoving;
+    *d = dirtyMask;
 }
 
 void NetPendingStatus::reset() {
-    unk_00 = 0x3f;
-    unk_01 = 0;
-    unk_02 = 0;
-    unk_04 = 0;
+    sceneId = 0x3f;
+    isOwner = 0;
+    isMoving = 0;
+    dirtyMask = 0;
 }
 
 NetSlotStatus::NetSlotStatus() { reset(); }
@@ -189,21 +189,21 @@ NetSlotStatus::NetSlotStatus() { reset(); }
 NetSlotStatus::~NetSlotStatus() {}
 
 void NetSlotStatus::set(u8 a, u8 b, u8 c) {
-    unk_00 = a;
-    unk_01 = b;
-    unk_02 = c;
+    sceneId = a;
+    isOwner = b;
+    isMoving = c;
 }
 
 void NetSlotStatus::get(u8 *a, u8 *b, u8 *c) {
-    *a = unk_00;
-    *b = unk_01;
-    *c = unk_02;
+    *a = sceneId;
+    *b = isOwner;
+    *c = isMoving;
 }
 
 void NetSlotStatus::reset() {
-    unk_00 = 0x3f;
-    unk_01 = 0;
-    unk_02 = 0;
+    sceneId = 0x3f;
+    isOwner = 0;
+    isMoving = 0;
 }
 
 NetMoveRequest::NetMoveRequest() { reset(); }
@@ -211,18 +211,18 @@ NetMoveRequest::NetMoveRequest() { reset(); }
 NetMoveRequest::~NetMoveRequest() {}
 
 void NetMoveRequest::set(u32 a, u8 b) {
-    unk_00 = a;
-    unk_04 = b;
+    slot = a;
+    targetScene = b;
 }
 
 void NetMoveRequest::get(s32 *a, u8 *b) {
-    *a = unk_00;
-    *b = unk_04;
+    *a = slot;
+    *b = targetScene;
 }
 
 void NetMoveRequest::reset() {
-    unk_00 = 4;
-    unk_04 = 0x3f;
+    slot = 4;
+    targetScene = 0x3f;
 }
 
 NetMoveReady::NetMoveReady() { reset(); }

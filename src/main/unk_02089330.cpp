@@ -71,20 +71,20 @@ public:
     void setOffset(s32 x, s32 y);
     void setAltStyle();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ SpriteAnim unk_20;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ u8 unk_40;
+    /* 0x0c */ SpriteAnim anim;
+    /* 0x20 */ SpriteAnim subAnim;
+    /* 0x34 */ s32 state;
+    /* 0x38 */ s32 offsetX;
+    /* 0x3c */ s32 offsetY;
+    /* 0x40 */ u8 useAltStyle;
     /* 0x41 */ u8 unk_41;
 };
 
 TalkArrow::TalkArrow(u8 flag) {
-    unk_34 = 0;
-    unk_38 = 0;
-    unk_3c = 0;
-    unk_40 = 0;
+    state = 0;
+    offsetX = 0;
+    offsetY = 0;
+    useAltStyle = 0;
     unk_41 = flag;
     setState(0);
 }
@@ -92,15 +92,15 @@ TalkArrow::TalkArrow(u8 flag) {
 TalkArrow::~TalkArrow() {}
 
 void TalkArrow::draw() {
-    if (unk_34 != 0) {
-        void *a = unk_0c.getCell();
-        void *b = unk_20.getCell();
-        s32 ox0 = unk_0c.getFrameX(-1);
-        s32 oy0 = unk_0c.getFrameY(-1);
-        s32 ox1 = unk_20.getFrameX(-1);
-        s32 oy1 = unk_20.getFrameY(-1);
-        s32 x = unk_38 + getOriginX();
-        s32 y = unk_3c + getOriginY();
+    if (state != 0) {
+        void *a = anim.getCell();
+        void *b = subAnim.getCell();
+        s32 ox0 = anim.getFrameX(-1);
+        s32 oy0 = anim.getFrameY(-1);
+        s32 ox1 = subAnim.getFrameX(-1);
+        s32 oy1 = subAnim.getFrameY(-1);
+        s32 x = offsetX + getOriginX();
+        s32 y = offsetY + getOriginY();
         if (unk_41 != 0) {
             Oam_DrawCell(0, a, x + ox0, y + oy0, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
             Oam_DrawCell(0, b, x + ox1, y + oy1, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
@@ -112,9 +112,9 @@ void TalkArrow::draw() {
 }
 
 void TalkArrow::vfunc_0c() {
-    if (unk_34 != 0) {
-        unk_0c.update();
-        unk_20.update();
+    if (state != 0) {
+        anim.update();
+        subAnim.update();
     }
 }
 

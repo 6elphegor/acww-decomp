@@ -309,8 +309,8 @@ public:
     ConstellationRecord();
     ~ConstellationRecord();
     u8 unk_00[0x16];
-    u8 unk_16[0x10];
-    u16 unk_26[0x10];
+    u8 name[0x10];
+    u16 lines[0x10];
 };
 
 class ConstellationEditorMenu;
@@ -1238,10 +1238,10 @@ void ConstellationEditorMenu::acceptConfirmation() {
         Constellation_SetCreator(&obj);
         s32 i;
         for (i = 0; i < 16; i++) {
-            obj.unk_26[i] = lines[i];
+            obj.lines[i] = lines[i];
         }
         for (i = 0; i < 16; i++) {
-            obj.unk_16[i] = constellationName[i];
+            obj.name[i] = constellationName[i];
         }
         Constellation_Store(&obj, n, 0);
         Snd_PlaySe(0x27);

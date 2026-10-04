@@ -251,7 +251,7 @@ struct Unk_ov003_022359a4_Ent {
     /* 0x00 */ u32 sessionSlot;
     /* 0x04 */ u32 active;
     /* 0x08 */ u16 item;
-    /* 0x0a */ u16 unk_0a;
+    /* 0x0a */ u16 pendingItem;
     /* 0x0c */ s32 kind;
     /* 0x10 */ P2 unit;
     /* 0x18 */ V3 pos;
@@ -1100,7 +1100,7 @@ inline Unk_ov003_0221cb54_P2::Unk_ov003_0221cb54_P2(Unk_ov003_0221cb54_Col *c) {
 struct Unk_ov003_0221cb54_Rec {
     u8 pad_00[8];
     u16 unit;
-    u16 unk_0a;
+    u16 item;
 };
 extern "C" {
 
@@ -5239,7 +5239,7 @@ s32 Tree_IsPendingStump(void *o, P2 pos) {
     s32 idx = PendingUnit_FindForAid(o, pos, 0);
     if (idx >= 0) {
         volatile u16 v = 0xfff1;
-        v = ((Unk_ov003_0221cb54_Rec *(*)(s32))PendingUnit_Get)(idx)->unk_0a;
+        v = ((Unk_ov003_0221cb54_Rec *(*)(s32))PendingUnit_Get)(idx)->item;
         BOOL f1 = TRUE, f2 = TRUE, f3 = TRUE, f0 = FALSE;
         u32 t = v;
         if (v >= 0x2b && t <= 0x2e) f0 = TRUE;
@@ -5398,7 +5398,7 @@ void FieldItemFx_StartStrikeResult(P2 pos) {
     u32 t = *(u32 *)(gCommManager + 0x64);
     if (PendingUnit_FindBySlot(t, 4) >= 0) {
         Unk_ov003_0221cb54_Rec *r = PendingUnit_Get();
-        FieldItemFx_StartStrikeShake(t, r->unk_0a, pos);
+        FieldItemFx_StartStrikeShake(t, r->item, pos);
     }
     if (PendingUnit_FindBySlot(t, 3) >= 0) {
         Unk_ov003_0221cb54_Rec *r = PendingUnit_Get();
@@ -5409,7 +5409,7 @@ void FieldItemFx_StartStrikeResult(P2 pos) {
         u16 tt = c.c;
         c.b = tt;
         c.a = tt;
-        FieldItemFx_StartStrikeEject(t, r->unk_0a, P2(&c), v);
+        FieldItemFx_StartStrikeEject(t, r->item, P2(&c), v);
     }
 }
 }

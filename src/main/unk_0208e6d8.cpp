@@ -140,10 +140,10 @@ public:
     void exit();
     void init();
 
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ SpriteAnim unk_14;
-    /* 0x28 */ u8 unk_28;
+    /* 0x0c */ s32 inputMode;
+    /* 0x10 */ s32 shownMode;
+    /* 0x14 */ SpriteAnim anim;
+    /* 0x28 */ u8 isVisible;
 };
 
 extern "C" TransitionCommIconProc *TransitionCommIconProc_Create();
@@ -181,19 +181,19 @@ void InputModeIcon::init() {}
 void InputModeIcon::exit() {}
 
 void InputModeIcon::startModeAnim() {
-    if (unk_0c == 0) {
-        unk_28 = 0;
+    if (inputMode == 0) {
+        isVisible = 0;
     } else {
         s32 i;
-        if (unk_0c == 1) {
+        if (inputMode == 1) {
             i = 0x43;
         } else {
             i = 0x44;
         }
-        unk_14.setSeq((SpriteAnimSeq *)data_020d5b0c[i]);
-        unk_14.setPlayOnce(1);
-        unk_14.restart();
-        unk_28 = 1;
+        anim.setSeq((SpriteAnimSeq *)data_020d5b0c[i]);
+        anim.setPlayOnce(1);
+        anim.restart();
+        isVisible = 1;
     }
 }
 

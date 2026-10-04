@@ -25,7 +25,7 @@ public:
     virtual Vec3 *getPos();
     virtual u32 getOwnerId();
     void setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
-    /* 0x40 */ u8 *unk_40;
+    /* 0x40 */ u8 *ownerActor;
 };
 
 class ActorPlacedCollider : public ActorFollowColliderView {
@@ -35,7 +35,7 @@ public:
     virtual Vec3 *getPos();
     virtual u32 getOwnerId();
     void setupForActorAt(void *p, Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
-    /* 0x44 */ Vec3 unk_44;
+    /* 0x44 */ Vec3 position;
 };
 
 class StaticCollider : public ActorColliderView {
@@ -45,7 +45,7 @@ public:
     virtual Vec3 *getPos();
     virtual u32 getOwnerId();
     void setupAtPos(Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
-    /* 0x40 */ Vec3 unk_40;
+    /* 0x40 */ Vec3 position;
 };
 
 class ActorFollowCollider : public ActorColliderView {
@@ -55,7 +55,7 @@ public:
     virtual Vec3 *getPos();
     virtual u32 getOwnerId();
     void setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
-    /* 0x40 */ u8 *unk_40;
+    /* 0x40 */ u8 *ownerActor;
 };
 
 class ActorCollider {
@@ -73,24 +73,24 @@ public:
     s32 getHitActor();
     BOOL isPushedFromAngle(s32 a);
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ u8 unk_0c;
-    /* 0x0d */ u8 unk_0d;
-    /* 0x0e */ u8 unk_0e;
-    /* 0x0f */ u8 unk_0f;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
-    /* 0x1c */ u32 unk_1c;
-    /* 0x20 */ u32 unk_20;
+    /* 0x04 */ s32 radius;
+    /* 0x08 */ s32 height;
+    /* 0x0c */ u8 targetKind;
+    /* 0x0d */ u8 targetIndex;
+    /* 0x0e */ u8 hitTargetKind;
+    /* 0x0f */ u8 hitTargetIndex;
+    /* 0x10 */ s32 pushX;
+    /* 0x14 */ s32 pushY;
+    /* 0x18 */ s32 pushZ;
+    /* 0x1c */ u32 groups;
+    /* 0x20 */ u32 collideMask;
     /* 0x24 */ s32 unk_24;
-    /* 0x28 */ u32 unk_28;
-    /* 0x2c */ u32 unk_2c;
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ ActorCollider *unk_38;
-    /* 0x3c */ u8 unk_3c;
+    /* 0x28 */ u32 hitGroups;
+    /* 0x2c */ u32 hitOwnerId;
+    /* 0x30 */ s32 hitDepth;
+    /* 0x34 */ s32 weight;
+    /* 0x38 */ ActorCollider *next;
+    /* 0x3c */ u8 isHit;
 };
 
 struct SpriteAnimFrame {
@@ -162,11 +162,11 @@ void SpriteAnim::update() {
 
 u32 StaticCollider::getOwnerId() { return FALSE; }
 
-Vec3 *StaticCollider::getPos() { return &unk_40; }
+Vec3 *StaticCollider::getPos() { return &position; }
 
 u32 ActorPlacedCollider::getOwnerId() { _ZN19ActorFollowCollider10getOwnerIdEv(this); }
 
-Vec3 *ActorPlacedCollider::getPos() { return &unk_44; }
+Vec3 *ActorPlacedCollider::getPos() { return &position; }
 
 extern "C" void ActorCollider_InitList(void) { ActorCollider_ClearList(); }
 
@@ -181,8 +181,8 @@ ActorCollider::~ActorCollider() {}
 void ActorCollider::onCollide(u32 a, u32 b, u32 c) {}
 
 BOOL ActorCollider::isPushedFromAngle(s32 a) {
-    if (unk_3c != 0) {
-        s32 t = func_020e7b98(unk_10, unk_18);
+    if (isHit != 0) {
+        s32 t = func_020e7b98(pushX, pushZ);
         if (func_020e780c(t, (s16)(a + 0x8000)) <= 0x2000) {
             return TRUE;
         }
@@ -192,43 +192,43 @@ BOOL ActorCollider::isPushedFromAngle(s32 a) {
 }
 
 s32 ActorCollider::getHitActor() {
-    if (unk_2c != 0) {
-        return _ZN5Actor8findByIdEj(unk_2c);
+    if (hitOwnerId != 0) {
+        return _ZN5Actor8findByIdEj(hitOwnerId);
     }
     return 0;
 }
 
 void ActorCollider::setup(s32 a, s32 b, s32 c, s32 d, u32 e, u8 f, s32 g) {
-    unk_04 = a;
-    unk_08 = b;
-    unk_1c = c;
-    unk_20 = d;
-    unk_0c = e;
-    unk_0d = f;
-    unk_34 = g;
+    radius = a;
+    height = b;
+    groups = c;
+    collideMask = d;
+    targetKind = e;
+    targetIndex = f;
+    weight = g;
 }
 
 void ActorCollider::resetHit() {
-    unk_38 = 0;
-    unk_10 = 0;
-    unk_14 = 0;
-    unk_18 = 0;
-    unk_3c = 0;
-    unk_2c = 0;
-    unk_28 = 0;
-    unk_0e = 0;
-    unk_0f = 0xff;
+    next = 0;
+    pushX = 0;
+    pushY = 0;
+    pushZ = 0;
+    isHit = 0;
+    hitOwnerId = 0;
+    hitGroups = 0;
+    hitTargetKind = 0;
+    hitTargetIndex = 0xff;
 }
 
 void ActorCollider::submit() {
     resetHit();
-    unk_38 = gActorColliderList;
+    next = gActorColliderList;
     gActorColliderList = this;
 }
 
 BOOL ActorCollider::canCollideWith(ActorCollider *o) {
     BOOL r;
-    if ((unk_1c & o->unk_20) && (unk_20 & o->unk_1c)) {
+    if ((groups & o->collideMask) && (collideMask & o->groups)) {
         r = TRUE;
     } else {
         r = FALSE;
@@ -256,22 +256,22 @@ extern "C" void ActorCollider_ResolveAll() {
     s32 pen;
     s32 t;
     s32 sumM, w1, k, w0;
-    for (o = gActorColliderList; o; o = o->unk_38) {
-        if (o->unk_1c & 1) {
-            o->unk_30 = -0x1000;
+    for (o = gActorColliderList; o; o = o->next) {
+        if (o->groups & 1) {
+            o->hitDepth = -0x1000;
         }
     }
     while (gActorColliderList) {
         cv = gActorColliderList->getPos();
-        for (o = gActorColliderList->unk_38; o; o = o->unk_38) {
+        for (o = gActorColliderList->next; o; o = o->next) {
             if (!gActorColliderList->canCollideWith(o)) {
                 continue;
             }
             func_020e9960(&d, o->getPos(), cv);
             if (d.y < 0) {
-                t = o->unk_08 + d.y;
+                t = o->height + d.y;
             } else {
-                t = gActorColliderList->unk_08 - d.y;
+                t = gActorColliderList->height - d.y;
             }
             if (t <= 0) {
                 continue;
@@ -281,84 +281,84 @@ extern "C" void ActorCollider_ResolveAll() {
                 d.x = 0x1000;
                 len = 0x1000;
             }
-            pen = gActorColliderList->unk_04 + o->unk_04 - len;
+            pen = gActorColliderList->radius + o->radius - len;
             if (pen <= 0) {
                 continue;
             }
-            o->unk_3c = 1;
-            gActorColliderList->unk_3c = o->unk_3c;
-            if (gActorColliderList->unk_1c & 1) {
-                if (pen >= gActorColliderList->unk_30) {
-                    gActorColliderList->unk_30 = pen;
-                    gActorColliderList->unk_28 = o->unk_1c;
-                    gActorColliderList->unk_2c = o->getOwnerId();
-                    gActorColliderList->unk_0e = o->unk_0c;
-                    gActorColliderList->unk_0f = o->unk_0d;
+            o->isHit = 1;
+            gActorColliderList->isHit = o->isHit;
+            if (gActorColliderList->groups & 1) {
+                if (pen >= gActorColliderList->hitDepth) {
+                    gActorColliderList->hitDepth = pen;
+                    gActorColliderList->hitGroups = o->groups;
+                    gActorColliderList->hitOwnerId = o->getOwnerId();
+                    gActorColliderList->hitTargetKind = o->targetKind;
+                    gActorColliderList->hitTargetIndex = o->targetIndex;
                 }
             } else {
-                gActorColliderList->unk_28 = o->unk_1c;
-                gActorColliderList->unk_2c = o->getOwnerId();
-                gActorColliderList->unk_0e = o->unk_0c;
-                gActorColliderList->unk_0f = o->unk_0d;
+                gActorColliderList->hitGroups = o->groups;
+                gActorColliderList->hitOwnerId = o->getOwnerId();
+                gActorColliderList->hitTargetKind = o->targetKind;
+                gActorColliderList->hitTargetIndex = o->targetIndex;
             }
-            if (o->unk_1c & 1) {
-                if (pen >= o->unk_30) {
-                    o->unk_28 = gActorColliderList->unk_1c;
-                    o->unk_2c = gActorColliderList->getOwnerId();
-                    o->unk_0e = gActorColliderList->unk_0c;
-                    o->unk_0f = gActorColliderList->unk_0d;
+            if (o->groups & 1) {
+                if (pen >= o->hitDepth) {
+                    o->hitGroups = gActorColliderList->groups;
+                    o->hitOwnerId = gActorColliderList->getOwnerId();
+                    o->hitTargetKind = gActorColliderList->targetKind;
+                    o->hitTargetIndex = gActorColliderList->targetIndex;
                 }
             } else {
-                o->unk_28 = gActorColliderList->unk_1c;
-                o->unk_2c = gActorColliderList->getOwnerId();
-                o->unk_0e = gActorColliderList->unk_0c;
-                o->unk_0f = gActorColliderList->unk_0d;
+                o->hitGroups = gActorColliderList->groups;
+                o->hitOwnerId = gActorColliderList->getOwnerId();
+                o->hitTargetKind = gActorColliderList->targetKind;
+                o->hitTargetIndex = gActorColliderList->targetIndex;
             }
-            gActorColliderList->onCollide(o->unk_0c, o->unk_0d, o->unk_1c);
-            o->onCollide(gActorColliderList->unk_0c, gActorColliderList->unk_0d, gActorColliderList->unk_1c);
-            if (gActorColliderList->unk_1c & 1) {
+            gActorColliderList->onCollide(o->targetKind, o->targetIndex, o->groups);
+            o->onCollide(gActorColliderList->targetKind, gActorColliderList->targetIndex, gActorColliderList->groups);
+            if (gActorColliderList->groups & 1) {
                 continue;
             }
-            if (o->unk_1c & 1) {
+            if (o->groups & 1) {
                 continue;
             }
-            if (gActorColliderList->unk_1c & 2) {
-                if (o->unk_1c & 2) {
+            if (gActorColliderList->groups & 2) {
+                if (o->groups & 2) {
                     continue;
                 }
             }
-            if (gActorColliderList->unk_1c & 2) {
-                o->unk_14 = 0;
+            if (gActorColliderList->groups & 2) {
+                o->pushY = 0;
                 pen = FX_Div(pen, len);
-                o->unk_10 += func_01ffcb0c(d.x, pen);
-                o->unk_18 += func_01ffcb0c(d.z, pen);
-            } else if (o->unk_1c & 2) {
-                gActorColliderList->unk_14 = 0;
+                o->pushX += func_01ffcb0c(d.x, pen);
+                o->pushZ += func_01ffcb0c(d.z, pen);
+            } else if (o->groups & 2) {
+                gActorColliderList->pushY = 0;
                 pen = FX_Div(pen, len);
-                gActorColliderList->unk_10 -= func_01ffcb0c(d.x, pen);
-                gActorColliderList->unk_18 -= func_01ffcb0c(d.z, pen);
+                gActorColliderList->pushX -= func_01ffcb0c(d.x, pen);
+                gActorColliderList->pushZ -= func_01ffcb0c(d.z, pen);
             } else {
-                w0 = gActorColliderList->unk_34;
-                w1 = o->unk_34;
+                w0 = gActorColliderList->weight;
+                w1 = o->weight;
                 k = FX_Div(pen, len) >> 1;
                 sumM = w0 + w1;
                 s32 f1 = func_01ffcb0c(k, FX_Div(w1, sumM));
                 pen = func_01ffcb0c(k, FX_Div(w0, sumM));
-                o->unk_14 = 0;
-                gActorColliderList->unk_14 = 0;
-                gActorColliderList->unk_10 -= func_01ffcb0c(d.x, f1);
-                gActorColliderList->unk_18 -= func_01ffcb0c(d.z, f1);
-                o->unk_10 += func_01ffcb0c(d.x, pen);
-                o->unk_18 += func_01ffcb0c(d.z, pen);
+                o->pushY = 0;
+                gActorColliderList->pushY = 0;
+                gActorColliderList->pushX -= func_01ffcb0c(d.x, f1);
+                gActorColliderList->pushZ -= func_01ffcb0c(d.z, f1);
+                o->pushX += func_01ffcb0c(d.x, pen);
+                o->pushZ += func_01ffcb0c(d.z, pen);
             }
         }
-        gActorColliderList = gActorColliderList->unk_38;
+        gActorColliderList = gActorColliderList->next;
     }
 }
 
 BOOL ActorCollider::isHitByGroup(u32 mask) {
-    if (unk_3c) {
-        if (unk_28 & mask) {
+    if (isHit) {
+        if (hitGroups & mask) {
             return TRUE;
         }
         return FALSE;
@@ -367,23 +367,23 @@ BOOL ActorCollider::isHitByGroup(u32 mask) {
 }
 
 ActorFollowCollider::ActorFollowCollider() {
-    unk_40 = 0;
+    ownerActor = 0;
 }
 
 ActorFollowCollider::~ActorFollowCollider() {
 }
 
-Vec3 *ActorFollowCollider::getPos() { return (Vec3 *)(unk_40 + 0x5c); }
+Vec3 *ActorFollowCollider::getPos() { return (Vec3 *)(ownerActor + 0x5c); }
 
-u32 ActorFollowCollider::getOwnerId() { return *(u32 *)(unk_40 + 4); }
+u32 ActorFollowCollider::getOwnerId() { return *(u32 *)(ownerActor + 4); }
 
 void ActorFollowCollider::setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
-    unk_40 = (u8 *)p;
+    ownerActor = (u8 *)p;
     setup(a, b, c, d, e, f, g);
 }
 
 void StaticCollider::setupAtPos(Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
-    unk_40 = *v;
+    position = *v;
     setup(a, b, c, d, e, f, g);
 }
 
@@ -395,7 +395,7 @@ ActorPlacedCollider::~ActorPlacedCollider() {
 
 void ActorPlacedCollider::setupForActorAt(void *p, Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
     setupForActor(p, a, b, c, d, e, f, g);
-    unk_44 = *v;
+    position = *v;
 }
 
 StaticCollider::StaticCollider() {

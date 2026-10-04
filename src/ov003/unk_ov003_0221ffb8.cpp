@@ -115,7 +115,7 @@ struct Unk_ov003_02220844_Obj {
     u8 slotIndex;
     u16 respawnTimer;
     u8 pad_214[0x218 - 0x214];
-    Unk_ov003_02220128_Vec3 unk_218;
+    Unk_ov003_02220128_Vec3 prevPosition;
     u8 pad_224[0x244 - 0x224];
     s32 despawnTimer;
 };
@@ -499,7 +499,7 @@ public:
     /* 0x060 */ u8 pad_060[0x1e];
     /* 0x07e */ s8 fishId;
     /* 0x07f */ u8 pad_07f[0x120 - 0x7f];
-    /* 0x120 */ V3_f6 unk_120;
+    /* 0x120 */ V3_f6 position;
     /* 0x12c */ u8 pad_12c[0xc];
     /* 0x138 */ u16 rotY;
     /* 0x13a */ u8 pad_13a[2];
@@ -509,7 +509,7 @@ public:
     /* 0x1fe */ u8 habitat;
     /* 0x1ff */ u8 sizeClass;
     /* 0x200 */ u8 pad_200[0x218 - 0x200];
-    /* 0x218 */ s32 unk_218, unk_21c, unk_220;
+    /* 0x218 */ s32 prevPosition, prevPositionY, prevPositionZ;
     /* 0x224 */ u8 biteState;
     /* 0x225 */ u8 pad_225[2];
     /* 0x227 */ s8 playerIdx;
@@ -549,9 +549,9 @@ static inline BOOL R74(volatile u16 *p)
 
 #define COPY() \
     do { \
-        self->unk_120.x = self->unk_218; \
-        self->unk_120.y = self->unk_21c; \
-        self->unk_120.z = self->unk_220; \
+        self->position.x = self->prevPosition; \
+        self->position.y = self->prevPositionY; \
+        self->position.z = self->prevPositionZ; \
     } while (0)
 
 // ---- from file 7
@@ -662,7 +662,7 @@ public:
     /* 0x07e */ s8 fishId;
     /* 0x07f */ u8 hasFin;
     /* 0x080 */ u8 pad_080[0x120 - 0x80];
-    /* 0x120 */ V3_f8 unk_120;
+    /* 0x120 */ V3_f8 position;
     /* 0x12c */ u8 pad_12c[0xc];
     /* 0x138 */ u16 rotY;
     /* 0x13a */ u8 pad_13a[2];
@@ -732,7 +732,7 @@ public:
     /* 0x000 */ u8 pad_000[0x7e];
     /* 0x07e */ s8 fishId;
     /* 0x07f */ u8 pad_07f[0x120 - 0x7f];
-    /* 0x120 */ V3_f9 unk_120;
+    /* 0x120 */ V3_f9 position;
     /* 0x12c */ s32 spawnPos, spawnPosY, spawnPosZ;
     /* 0x138 */ s16 rotY;
     /* 0x13a */ u8 pad_13a[2];
@@ -750,7 +750,7 @@ public:
     /* 0x202 */ u8 pad_202[0x210 - 0x202];
     /* 0x210 */ u8 turnDir;
     /* 0x211 */ u8 pad_211[0x218 - 0x211];
-    /* 0x218 */ s32 unk_218, unk_21c, unk_220;
+    /* 0x218 */ s32 prevPosition, prevPositionY, prevPositionZ;
     /* 0x224 */ u8 biteState;
     /* 0x225 */ u8 pad_225[0x23c - 0x225];
     /* 0x23c */ u8 aiMode;
@@ -1700,9 +1700,9 @@ extern "C" void FishShadow_RunAi(Obj_f9 *o)
 extern "C" void FishShadow_AppearFree(Obj_f9 *o)
 {
     s32 r;
-    o->unk_120.x = o->spawnPos;
-    o->unk_120.y = o->spawnPosY;
-    o->unk_120.z = o->spawnPosZ;
+    o->position.x = o->spawnPos;
+    o->position.y = o->spawnPosY;
+    o->position.z = o->spawnPosZ;
     (o->*sFishShadowMoveStates[o->moveState].f)();
     r = ((s32 (*)(void *))FishShadow_CheckWaterBounds)(o);
     if (r != 0 && r != 5) {
@@ -1798,18 +1798,18 @@ extern "C" void FishShadow_ThinkFree(Obj_f9 *o)
         case 1:
         case 2:
         case 3:
-            FieldPos_ToUnit(&x, &y, &o->unk_120);
+            FieldPos_ToUnit(&x, &y, &o->position);
             if (Ground_GetWaterKind(x, y) == 1) {
-                ((s32 (*)(void *, void *))FishShadow_TryFlee)(o, &o->unk_218);
+                ((s32 (*)(void *, void *))FishShadow_TryFlee)(o, &o->prevPosition);
             }
             break;
         case 4:
             break;
         case 5:
         case 6:
-            FieldPos_ToUnit(&x, &y, &o->unk_120);
+            FieldPos_ToUnit(&x, &y, &o->position);
             if (Ground_GetWaterKind(x, y) == 2) {
-                ((s32 (*)(void *, void *))FishShadow_TryFlee)(o, &o->unk_218);
+                ((s32 (*)(void *, void *))FishShadow_TryFlee)(o, &o->prevPosition);
             }
             break;
         }
@@ -1843,8 +1843,8 @@ extern "C" void FishShadow_MoveAccelerate(Obj_f9 *o)
     c = data_02135f44[((u16)o->wobblePhase >> 4) * 2];
     d = data_02135f44[((u16)o->rotY >> 4) * 2 + 1];
     z = func_01ffcb0c(t, d) + func_01ffcb0c(q, c);
-    o->unk_120.x += x;
-    o->unk_120.z += z;
+    o->position.x += x;
+    o->position.z += z;
     if (o->stateTimer >= 10) {
         ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(o, 0x20);
     } else {
@@ -1859,7 +1859,7 @@ extern "C" void FishShadow_MoveAccelerate(Obj_f9 *o)
 //@ 0x2224310
 extern "C" void FishShadow_MoveCruise(Obj_f9 *o)
 {
-    FieldFish_MoveXZ((s32 *)&o->unk_120, 0x19a, o->rotY);
+    FieldFish_MoveXZ((s32 *)&o->position, 0x19a, o->rotY);
     ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(o, 0x20);
     o->cruiseTimer--;
     if (o->cruiseTimer == 0) {
@@ -1873,7 +1873,7 @@ extern "C" void FishShadow_MoveCruise(Obj_f9 *o)
 extern "C" void FishShadow_MoveDecelerate(Obj_f9 *o)
 {
     s32 t = 0x19a - (o->stateTimer << 3);
-    FieldFish_MoveXZ((s32 *)&o->unk_120, t, o->rotY);
+    FieldFish_MoveXZ((s32 *)&o->position, t, o->rotY);
     if (o->stateTimer >= 10) {
         ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(o, 3);
     } else {
@@ -1890,7 +1890,7 @@ extern "C" void FishShadow_MoveDecelerate(Obj_f9 *o)
 extern "C" void FishShadow_MoveRest(Obj_f9 *o)
 {
     ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(o, 10);
-    ((void (*)(void *, s32))FieldWater_ApplyFlow)(&o->unk_120, 0x40);
+    ((void (*)(void *, s32))FieldWater_ApplyFlow)(&o->position, 0x40);
     if (FieldFish_RandRange(0, 0x64) == 1 || o->stateTimer > 0x64) {
         o->moveState = 0;
     }
@@ -1918,8 +1918,8 @@ extern "C" void FishShadow_MoveFlee(Obj_f8 *self)
     s138 = *(volatile s16 *)&data_02135f44[((self->rotY >> 4) * 2) + 1];
     t = func_01ffcb0c(a, s138);
     y = t + func_01ffcb0c(sq, s142);
-    self->unk_120.x += x;
-    self->unk_120.z += y;
+    self->position.x += x;
+    self->position.z += y;
     if (self->hasFin) {
         if (self->stateTimer >= 10) {
             ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(self, 3);
@@ -1933,9 +1933,9 @@ extern "C" void FishShadow_MoveFlee(Obj_f8 *self)
     }
     {
         V3_f8 v;
-        v.x = self->unk_120.x;
-        v.y = self->unk_120.y;
-        v.z = self->unk_120.z;
+        v.x = self->position.x;
+        v.y = self->position.y;
+        v.z = self->position.z;
         v.y = data_020c7c1c;
         ((void (*)(s32, V3_f8 *, s32, s32))Effect_SetPosition)(self->effectHandle, &v, 0, 0);
     }
@@ -1983,10 +1983,10 @@ extern "C" s32 FishShadow_BiteApproach(Obj_f8 *self)
     if (s >= 0x100) {
         s = 0x100;
     }
-    self->rotY = Math_AngleXZ(&self->unk_120, p);
-    ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, s, (s16)self->rotY);
+    self->rotY = Math_AngleXZ(&self->position, p);
+    ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, s, (s16)self->rotY);
     ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(self, 0x18);
-    if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, p, dv, dv, dv)) {
+    if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->position, p, dv, dv, dv)) {
         s32 r = ((s32 (*)(s32, s32))FieldFish_RandRange)(0, 100);
         s32 lim = 0x5f;
         s32 a, b;
@@ -2015,12 +2015,12 @@ extern "C" s32 FishShadow_BiteApproach(Obj_f8 *self)
             self->biteStepTimer = 0;
             self->biteStep = 3;
             self->biteState = 3;
-            self->rotY = Math_AngleXZ(&self->unk_120, p);
+            self->rotY = Math_AngleXZ(&self->position, p);
         } else {
             self->biteStepTimer = 0;
             self->biteStep = 0;
             self->biteState = 2;
-            self->rotY = Math_AngleXZ(&self->unk_120, p);
+            self->rotY = Math_AngleXZ(&self->position, p);
         }
     }
     self->biteStepTimer = self->biteStepTimer + 1;
@@ -2045,9 +2045,9 @@ extern "C" s32 FishShadow_BiteInspect(Obj_f8 *self)
         if (s >= 0x100) {
             s = 0x100;
         }
-        self->rotY = Math_AngleXZ(&self->unk_120, q);
-        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, s, (s16)self->rotY);
-        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv)) {
+        self->rotY = Math_AngleXZ(&self->position, q);
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, s, (s16)self->rotY);
+        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->position, q, dv, dv, dv)) {
             self->biteStepTimer = 0;
             FishBobber_nudge(p);
             self->biteStep = 1;
@@ -2057,12 +2057,12 @@ extern "C" s32 FishShadow_BiteInspect(Obj_f8 *self)
     case 1: {
         s32 lim = ((s32 (*)(s32, s32))FieldFish_RandRange)(10, 15);
         if (((s32 (*)(s32, s32))FieldFish_RandRange)(0, 100) < 0x32) {
-            self->rotY = Math_AngleXZ(q, &self->unk_120);
+            self->rotY = Math_AngleXZ(q, &self->position);
         } else {
-            self->rotY = Math_AngleXZ(&self->unk_120, q);
+            self->rotY = Math_AngleXZ(&self->position, q);
         }
-        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0x100, (s16)self->rotY);
-        self->rotY = Math_AngleXZ(&self->unk_120, q);
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, 0x100, (s16)self->rotY);
+        self->rotY = Math_AngleXZ(&self->position, q);
         if (self->biteStepTimer > lim) {
             self->biteStepTimer = 0;
             self->rotY = (s16)self->rotY + (s16)(FieldFish_RandRangeSigned(1, 2) * 0x1554);
@@ -2072,8 +2072,8 @@ extern "C" s32 FishShadow_BiteInspect(Obj_f8 *self)
     }
     case 2: {
         s32 dv = ((s32)*(u16 *)(((u8 *)((u8 *)&sFishSizeClassParams[0].d)) + self->sizeClass * 0x14) << 12) / 100;
-        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0x14c, (s16)self->rotY);
-        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv) == 0) {
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, 0x14c, (s16)self->rotY);
+        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->position, q, dv, dv, dv) == 0) {
             if (((s32 (*)(Obj_f8 *))FishShadow_LoseBobber)(self) == 0) {
                 ((s32 (*)(Obj_f8 *))FishShadow_FleeFromPlayer)(self);
             }
@@ -2101,7 +2101,7 @@ extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
     q = p + 8;
     if (self->stateTimer >= self->biteDelay) {
         s32 dv = ((s32)((u8 *)(sFishSizeClassParams))[self->sizeClass * 0x14] << 12) / 100;
-        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv)) {
+        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->position, q, dv, dv, dv)) {
             self->stateTimer = r;
             ((s32 (*)(void *, u32))FishBobber_setState)(p, 5);
             func_02003e70(self, 0x84f, 0x7f, r);
@@ -2138,8 +2138,8 @@ extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
         if (s >= 0x100) {
             s = 0x100;
         }
-        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, s, Math_AngleXZ(&self->unk_120, q));
-        d = ((s64 (*)(void *, void *))func_020e9600)(&self->unk_120, q);
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, s, Math_AngleXZ(&self->position, q));
+        d = ((s64 (*)(void *, void *))func_020e9600)(&self->position, q);
         if ((s64)func_01ffcb0c(dv, dv) >= d) {
             self->biteStepTimer = 0;
             FishBobber_nudge(p);
@@ -2151,14 +2151,14 @@ extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
     case 4: {
         s32 lim = ((s32 (*)(s32, s32))FieldFish_RandRange)(10, 0x14);
         if (((s32 (*)(s32, s32))FieldFish_RandRange)(0, 100) < 0x32) {
-            ang = Math_AngleXZ(q, &self->unk_120);
+            ang = Math_AngleXZ(q, &self->position);
         } else {
-            ang = Math_AngleXZ(&self->unk_120, q);
+            ang = Math_AngleXZ(&self->position, q);
             if (((s32 (*)(s32, s32))FieldFish_RandRange)(0, 100) < 5) {
                 FishBobber_nudge(p);
             }
         }
-        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0x100, ang);
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, 0x100, ang);
         if (self->biteStepTimer > lim) {
             self->biteStepTimer = 0;
             self->biteStep = 5;
@@ -2171,8 +2171,8 @@ extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
         if (s < 0) {
             s = 0;
         }
-        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, s, Math_AngleXZ(q, &self->unk_120));
-        if (s == 0 || ((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv) == 0) {
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, s, Math_AngleXZ(q, &self->position));
+        if (s == 0 || ((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->position, q, dv, dv, dv) == 0) {
             self->biteStepTimer = 0;
             self->biteStep = 3;
         }
@@ -2182,9 +2182,9 @@ extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
     }
     {
         sq = base >> 9;
-        s64 d = ((s64 (*)(void *, void *))func_020e9600)(&self->unk_120, q);
+        s64 d = ((s64 (*)(void *, void *))func_020e9600)(&self->position, q);
         if (d >= (s64)func_01ffcb0c(sq, sq)) {
-            self->rotY = Math_AngleXZ(&self->unk_120, q);
+            self->rotY = Math_AngleXZ(&self->position, q);
         }
     }
     self->biteStepTimer = self->biteStepTimer + 1;
@@ -2240,10 +2240,10 @@ extern "C" s32 FishShadow_BiteTug(Obj_f8 *self)
     switch (self->biteStep - 6) {
     case 0: {
         s32 dv = ((s32)((u8 *)(sFishSizeClassParams))[self->sizeClass * 0x14] << 12) / 100;
-        s32 ang = Math_AngleXZ(&self->unk_120, q);
-        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0x180, ang);
-        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0xc0, (s16)(ang + 0x4000));
-        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv)) {
+        s32 ang = Math_AngleXZ(&self->position, q);
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, 0x180, ang);
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, 0xc0, (s16)(ang + 0x4000));
+        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->position, q, dv, dv, dv)) {
             self->biteStep = 8;
         } else {
             self->biteStep = 7;
@@ -2252,10 +2252,10 @@ extern "C" s32 FishShadow_BiteTug(Obj_f8 *self)
     }
     case 1: {
         s32 dv = ((s32)((u8 *)(sFishSizeClassParams))[self->sizeClass * 0x14] << 12) / 100;
-        s32 ang = Math_AngleXZ(&self->unk_120, q);
-        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0x180, ang);
-        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0xc0, (s16)(ang - 0x4000));
-        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv)) {
+        s32 ang = Math_AngleXZ(&self->position, q);
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, 0x180, ang);
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, 0xc0, (s16)(ang - 0x4000));
+        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->position, q, dv, dv, dv)) {
             self->biteStep = 8;
         } else {
             self->biteStep = 6;
@@ -2265,10 +2265,10 @@ extern "C" s32 FishShadow_BiteTug(Obj_f8 *self)
     case 2: {
         s32 dv = ((s32)((u8 *)((u8 *)&sFishSizeClassParams[0].a1))[self->sizeClass * 0x14] << 12) / 100;
         s32 r;
-        s32 ang = Math_AngleXZ(q, &self->unk_120);
-        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0x180, ang);
+        s32 ang = Math_AngleXZ(q, &self->position);
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, 0x180, ang);
         r = ((s32 (*)(s32, s32))FieldFish_RandRange)(0, 100);
-        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv) == 0) {
+        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->position, q, dv, dv, dv) == 0) {
             if (r >= 0x46) {
                 self->biteStep = 6;
             } else {
@@ -2283,7 +2283,7 @@ extern "C" s32 FishShadow_BiteTug(Obj_f8 *self)
         }
         break;
     }
-    self->rotY = Math_AngleXZ(&self->unk_120, q);
+    self->rotY = Math_AngleXZ(&self->position, q);
     return 1;
 }
 
@@ -2880,7 +2880,7 @@ extern "C" BOOL FishShadow_Land(Obj_f6 *self, u32 k)
     e = (Ent_f6 *)((u8 *)((Ent_f6 *)(sFishCatches)) + idx * 0xa4);
     e->state = 1;
     e->mode = 1;
-    pv = &self->unk_120;
+    pv = &self->position;
     q = &e->arcPointA;
     q->x = pv->x;
     q->y = pv->y;
@@ -2920,7 +2920,7 @@ extern "C" BOOL FishShadow_Land(Obj_f6 *self, u32 k)
     }
     buf[0] = 0;
     buf[1] = h;
-    NetBuf_PackPair20(tmp, self->unk_120.x, self->unk_120.z);
+    NetBuf_PackPair20(tmp, self->position.x, self->position.z);
     MI_CpuCopy8(tmp, &buf[2], 5);
     s = gCommManager;
     CommManager_beginRecord(s);
@@ -2952,7 +2952,7 @@ extern "C" BOOL FishShadow_LoseBobber(Obj_f6 *self)
 extern "C" s32 FishShadow_GetEdgeColumn(Obj_f6 *self)
 {
     s32 r = 2;
-    s32 t = self->unk_120.x >> 17;
+    s32 t = self->position.x >> 17;
     if (t == 0) {
         r = 0;
     } else if (t == 5) {
@@ -2968,7 +2968,7 @@ extern "C" BOOL FishShadow_IsSeaNorth(Obj_f6 *self)
     BOOL r = FALSE;
     s32 x, y;
     V3_f6 p;
-    V3_f6 *pv = &self->unk_120;
+    V3_f6 *pv = &self->position;
     p.x = pv->x;
     p.y = pv->y;
     p.z = pv->z;
@@ -2986,7 +2986,7 @@ extern "C" s32 FishShadow_CheckWaterBounds(Obj_f6 *self)
 {
     s32 r = 0;
     s32 x, y;
-    ((void (*)(s32 *, s32 *, V3_f6 *))FieldPos_ToUnit)(&x, &y, &self->unk_120);
+    ((void (*)(s32 *, s32 *, V3_f6 *))FieldPos_ToUnit)(&x, &y, &self->position);
     switch (self->habitat) {
     case 0:
     case 1:
@@ -3108,18 +3108,18 @@ extern "C" void FishShadow_GetProbeGroundKinds(Obj_f6 *self, s32 *o1, s32 *o2, s
     ang = self->rotY;
     i0 = ((u16)(s16)(ang + 0x2000) >> 4) * 2;
     r = *(u16 *)(((u8 *)((u8 *)&sFishSizeClassParams[0].g)) + self->sizeClass * 0x14);
-    z0 = self->unk_120.z + (r * data_02135f44[i0 + 1]) / 100;
-    v0.x = self->unk_120.x + (r * data_02135f44[i0]) / 100;
+    z0 = self->position.z + (r * data_02135f44[i0 + 1]) / 100;
+    v0.x = self->position.x + (r * data_02135f44[i0]) / 100;
     v0.y = -0x1333;
     v0.z = z0;
     i1 = ((u16)(s16)(ang - 0x2000) >> 4) * 2;
-    z1 = self->unk_120.z + (r * data_02135f44[i1 + 1]) / 100;
-    v1.x = self->unk_120.x + (r * data_02135f44[i1]) / 100;
+    z1 = self->position.z + (r * data_02135f44[i1 + 1]) / 100;
+    v1.x = self->position.x + (r * data_02135f44[i1]) / 100;
     v1.y = -0x1333;
     v1.z = z1;
     i2 = (self->rotY >> 4) * 2;
-    z2 = self->unk_120.z + (r * data_02135f44[i2 + 1]) / 100;
-    v2.x = self->unk_120.x + (r * data_02135f44[i2]) / 100;
+    z2 = self->position.z + (r * data_02135f44[i2 + 1]) / 100;
+    v2.x = self->position.x + (r * data_02135f44[i2]) / 100;
     v2.y = -0x1333;
     v2.z = z2;
     GroundInfo_initAtPos(&g0, &v0, 0, 0);
@@ -3163,7 +3163,7 @@ extern "C" void FishCroak_Idle(Sub_f6 *s, Obj_f6 *o)
     }
     t = ((s32 (*)(s32))PlayerActor_GetBodyPos)(0);
     if (t != 0) {
-        if (((s32 (*)(s32, void *))func_020e9650)(t, &o->unk_120) < 0x8000) {
+        if (((s32 (*)(s32, void *))func_020e9650)(t, &o->position) < 0x8000) {
             s->b3 = 1;
         }
     }
@@ -3179,7 +3179,7 @@ extern "C" void FishCroak_Listen(Sub_f6 *s, Obj_f6 *o)
     }
     t = ((s32 (*)(s32))PlayerActor_GetBodyPos)(0);
     if (t != 0) {
-        if (((s32 (*)(s32, void *))func_020e9650)(t, &o->unk_120) >= 0x8000) {
+        if (((s32 (*)(s32, void *))func_020e9650)(t, &o->position) >= 0x8000) {
             s->b3 = 0;
             return;
         }
@@ -4639,7 +4639,7 @@ extern "C" BOOL FishShadow_TrySpawn(void *self, Unk_ov003_02220844_Obj *e, s32 f
                 r = TRUE;
                 e->state = r;
                 e->moveState = 0;
-                Unk_ov003_02220128_Vec3 *pv = &e->unk_218;
+                Unk_ov003_02220128_Vec3 *pv = &e->prevPosition;
                 *pv = v;
                 s32 db = cd.b;
                 Unk_ov003_02220128_Pos *pp = &e->spawnBlock;

@@ -12,7 +12,7 @@ struct Unk_ov001_0222df2c {
     u32 pad_000[0x40];
     Unk_ov001_0222df2c_Rec sharedRecv[2];
     u8 pad_188[0x200 - 0x188];
-    u16 unk_200;
+    u16 blockIndex;
     u16 unk_202;
     u32 failCount;
     u32 sharedRecvValid[16];
@@ -396,7 +396,7 @@ extern "C" void WfcMove_StepDataShare() {
     case 4:
     case 5:
     case 6: {
-        s32 v = sWfcMove->unk_200;
+        s32 v = sWfcMove->blockIndex;
         WfcMove_SendBlock(0, v, sWfcMove->config + (v % 16) * 0x40);
         WfcMove_ProcessRecv();
         if (sWfcMove->state == 0x1b) return;
@@ -500,17 +500,17 @@ extern "C" void WfcMove_ProcessRecv() {
                     h->ackCount = h->ackCount + 1;
                     h = H;
                     if ((h->ackCount & 1) == 0) {
-                        h->unk_200 = h->unk_200 + 1;
+                        h->blockIndex = h->blockIndex + 1;
                         h = H;
-                        if (h->unk_200 >= 0x24) {
-                            h->unk_200 = 0;
+                        if (h->blockIndex >= 0x24) {
+                            h->blockIndex = 0;
                         }
                     }
                 } else {
                     h->unk_202 = 0xbc;
                     if (r->command == 0xbd) {
                         H->isHandshakeDone = 1;
-                        H->unk_200 = 0;
+                        H->blockIndex = 0;
                         H->ackCount = 0;
                     }
                 }

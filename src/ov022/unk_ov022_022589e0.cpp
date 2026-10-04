@@ -57,11 +57,11 @@ struct Unk_ov022_Rec {
 
 struct Unk_ov022_Scene {  // 24 bytes; main's table sSceneInfoTable points to it
     Unk_ov022_Head *head;
-    s32 unk_04;
+    s32 isOutdoor;
     Unk_ov022_Grid *grid;
     Unk_ov022_Objs *objs;
-    s32 unk_10;
-    s32 unk_14;
+    s32 infoOverlayA;
+    s32 infoOverlayB;
 };
 
 extern u8 sRoomCommonProfileCount;  // copied into the entry table by __sinit

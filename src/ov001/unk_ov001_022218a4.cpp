@@ -35,12 +35,12 @@ struct Unk_ov001_0222df28_S {
     u16 parentMaxSize;
     u16 childMaxSize;
     u8 pad_38[8];
-    s32 unk_40;
+    s32 sysState;
     s32 connectMode;
     s32 receiverFunc;
     Unk_ov001_0222df28_Fn judgeAcceptFunc;
-    u16 unk_50;
-    u16 unk_52;
+    u16 myAid;
+    u16 connectBitmap;
     s32 errCode;
     u32 rand;
     u16 decidedChannel;
@@ -197,7 +197,7 @@ extern "C" Unk_ov001_0222df28_S *sWfcMoveWh;
 
 extern "C" void WfcMoveWh_SetWork(Unk_ov001_0222df28_S *p) {
     G = p;
-    p->unk_40 = 0;
+    p->sysState = 0;
     G->unk_13a8 = 0;
     G->unk_13ac = 0;
     G->unk_13b0 = 0;
@@ -205,17 +205,17 @@ extern "C" void WfcMoveWh_SetWork(Unk_ov001_0222df28_S *p) {
 
 extern "C" void WfcMoveWh_ChangeSysState(s32 n) {
     if (LOG) {
-        LOG(0x8000000, "%s -> ", sWfcMoveWhSysStateNames[G->unk_40]);
+        LOG(0x8000000, "%s -> ", sWfcMoveWhSysStateNames[G->sysState]);
     }
-    G->unk_40 = n;
+    G->sysState = n;
     if (LOG) {
-        LOG(0x8000000, "%s\n", sWfcMoveWhSysStateNames[G->unk_40]);
+        LOG(0x8000000, "%s\n", sWfcMoveWhSysStateNames[G->sysState]);
     }
 }
 
 extern "C" void WfcMoveWh_SetError(u32 v) {
     Unk_ov001_0222df28_S *g = G;
-    if ((u32)(g->unk_40 - 9) > 1) {
+    if ((u32)(g->sysState - 9) > 1) {
         g->errCode = v;
     }
 }
@@ -278,7 +278,7 @@ extern "C" void WfcMoveWh_StateOutSetWepKey(u16 *p) {
 
 extern "C" s32 WfcMoveWh_StateInStartParent() {
     s32 r;
-    if ((u32)(G->unk_40 - 4) <= 2) {
+    if ((u32)(G->sysState - 4) <= 2) {
         return TRUE;
     }
     r = WM_StartParent((void *)WfcMoveWh_StateOutStartParent);
@@ -286,8 +286,8 @@ extern "C" s32 WfcMoveWh_StateInStartParent() {
         WfcMoveWh_SetError(r);
         return FALSE;
     }
-    G->unk_50 = 0;
-    G->unk_52 = 1;
+    G->myAid = 0;
+    G->connectBitmap = 1;
     return TRUE;
 }
 
@@ -316,14 +316,14 @@ extern "C" void WfcMoveWh_StateOutStartParent(u16 *p) {
             WfcMoveWh_ChangeSysState(9);
             return;
         }
-        G->unk_52 |= mask;
+        G->connectBitmap |= mask;
         return;
     }
     case 9:
         if (LOG) {
             LOG(0x8000000, "StartParent - child (aid %x) disconnected\n", sh);
         }
-        G->unk_52 &= ~mask;
+        G->connectBitmap &= ~mask;
         return;
     case 0:
         if (WfcMoveWh_StateInStartParentMp()) {
@@ -341,7 +341,7 @@ extern "C" void WfcMoveWh_StateOutStartParent(u16 *p) {
 
 extern "C" s32 WfcMoveWh_StateInStartParentMp() {
     s32 r;
-    if ((u32)(G->unk_40 - 4) <= 2) {
+    if ((u32)(G->sysState - 4) <= 2) {
         return TRUE;
     }
     WfcMoveWh_ChangeSysState(4);
@@ -366,7 +366,7 @@ extern "C" void WfcMoveWh_StateOutStartParentMp(u16 *p) {
     case 10: {
         Unk_ov001_0222df28_S *g = G;
         if (g->connectMode == 2) {
-            if (g->unk_40 == 4) {
+            if (g->sysState == 4) {
                 if (DWCi_MOV_WH_StateInStartParentKeyShare()) {
                     return;
                 }
@@ -375,7 +375,7 @@ extern "C" void WfcMoveWh_StateOutStartParentMp(u16 *p) {
                 }
                 WfcMoveWh_ChangeSysState(9);
                 return;
-            } else if (g->unk_40 == 6) {
+            } else if (g->sysState == 6) {
                 return;
             }
         } else if (g->connectMode == 4) {
@@ -464,7 +464,7 @@ extern "C" void WfcMoveWh_StateOutEndParent(Unk_ov001_02222088_A *a) {
 
 extern "C" s32 WfcMoveWh_StateInEndChildKeyShare() {
     s32 r;
-    if (sWfcMoveWh->unk_40 != 6) return 0;
+    if (sWfcMoveWh->sysState != 6) return 0;
     WfcMoveWh_ChangeSysState(3);
     r = WM_EndKeySharing((u8 *)sWfcMoveWh + 0x1e00);
     if (r == 2) return 1;
@@ -540,11 +540,11 @@ extern "C" void WfcMoveWh_SetGgid(s32 x) {
 }
 
 extern "C" u16 WfcMoveWh_GetConnectedBitmap() {
-    return sWfcMoveWh->unk_52;
+    return sWfcMoveWh->connectBitmap;
 }
 
 extern "C" s32 WfcMoveWh_GetSysState() {
-    return sWfcMoveWh->unk_40;
+    return sWfcMoveWh->sysState;
 }
 
 extern "C" s32 WfcMoveWh_StartMeasureChannel() {
@@ -624,7 +624,7 @@ extern "C" s32 WfcMoveWh_StateInMeasureChannel(void *cb, s32 x) {
 }
 
 extern "C" u16 WfcMoveWh_DecideChannel() {
-    if (sWfcMoveWh->unk_40 != 7) Fatal_Trap();
+    if (sWfcMoveWh->sysState != 7) Fatal_Trap();
     WfcMoveWh_ChangeSysState(1);
     sWfcMoveWh->decidedChannel = WfcMoveWh_PickRandomChannel(sWfcMoveWh->channelBitmap);
     if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "decided channel = %d\n", sWfcMoveWh->decidedChannel);
@@ -660,8 +660,8 @@ extern "C" BOOL WfcMoveWh_Initialize() {
     (*g)->recvBufferSize = 0;
     (*g)->sendBufferSize = 0;
     (*g)->receiverFunc = 0;
-    (*g)->unk_50 = 0;
-    (*g)->unk_52 = 1;
+    (*g)->myAid = 0;
+    (*g)->connectBitmap = 1;
     (*g)->errCode = 0;
     (*g)->userGameInfo = 0;
     (*g)->userGameInfoLength = 0;
@@ -702,7 +702,7 @@ extern "C" void WfcMoveWh_StateOutInitialize(u16 *p) {
 }
 
 extern "C" s32 WfcMoveWh_ParentConnect(s32 a, u32 b, u32 c) {
-    if (sWfcMoveWh->unk_40 != 1) Fatal_Trap();
+    if (sWfcMoveWh->sysState != 1) Fatal_Trap();
     sWfcMoveWh->recvBufferSize = 0x180;
     sWfcMoveWh->sendBufferSize = 0xe0;
     if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "recv buffer size = %d\n", sWfcMoveWh->recvBufferSize);
@@ -756,14 +756,14 @@ extern "C" void WfcMoveWh_Reset() {
 }
 
 extern "C" void DWCi_MOV_WH_Finalize() {
-    s32 st = sWfcMoveWh->unk_40;
+    s32 st = sWfcMoveWh->sysState;
     if (st == 1) {
         if (sWfcMoveWhDebugPrint == 0) return;
         sWfcMoveWhDebugPrint(0x8000000, "already DWCi_MOV_WH_SYSSTATE_IDLE\n");
         return;
     }
     if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "DWCi_MOV_WH_Finalize, state = %d\n", st);
-    st = sWfcMoveWh->unk_40;
+    st = sWfcMoveWh->sysState;
     if (st != 6 && st != 5 && st != 4) {
         WfcMoveWh_ChangeSysState(3);
         WfcMoveWh_Reset();
@@ -793,7 +793,7 @@ extern "C" void DWCi_MOV_WH_Finalize() {
 }
 
 extern "C" s32 WfcMoveWh_End() {
-    if (sWfcMoveWh->unk_40 != 1) Fatal_Trap();
+    if (sWfcMoveWh->sysState != 1) Fatal_Trap();
     WfcMoveWh_ChangeSysState(3);
     if (WM_End((void *)WfcMoveWh_StateOutEnd) == 2) return 1;
     WfcMoveWh_ChangeSysState(9);

@@ -104,24 +104,24 @@ public:
     void release();
     void setKind(s32 a);
 
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ SpriteAnim unk_14;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ s32 unk_2c;
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ MsgString unk_38;
-    /* 0x6c */ Unk_0208d154_Sub *unk_6c;
-    /* 0x70 */ s32 unk_70;
-    /* 0x74 */ s32 unk_74;
-    /* 0x78 */ s32 unk_78;
-    /* 0x7c */ u8 unk_7c;
+    /* 0x0c */ s32 kind;
+    /* 0x10 */ s32 seqIndex;
+    /* 0x14 */ SpriteAnim anim;
+    /* 0x28 */ s32 offsetX;
+    /* 0x2c */ s32 offsetY;
+    /* 0x30 */ s32 slideY;
+    /* 0x34 */ s32 alignX;
+    /* 0x38 */ MsgString text;
+    /* 0x6c */ Unk_0208d154_Sub *textLabel;
+    /* 0x70 */ s32 state;
+    /* 0x74 */ s32 showRequested;
+    /* 0x78 */ s32 stateTimer;
+    /* 0x7c */ u8 isVisible;
 };
 
 void NameLabelBalloon::setKind(s32 a) {
-    unk_0c = a;
-    unk_10 = kNameLabelBalloonKindAnims[a];
+    kind = a;
+    seqIndex = kNameLabelBalloonKindAnims[a];
     applyKindAnim();
 }
 
@@ -130,36 +130,36 @@ void NameLabelBalloon::release() {
 }
 
 void NameLabelBalloon::setOffset(s32 a, s32 b) {
-    unk_28 = a;
-    unk_2c = b;
+    offsetX = a;
+    offsetY = b;
 }
 
 void NameLabelBalloon::setText(void *p) {
-    unk_38.copy((MsgString *)p);
+    text.copy((MsgString *)p);
 }
 
 BOOL NameLabelBalloon::requestShow() {
     BOOL r;
-    if (unk_70 == 0) {
+    if (state == 0) {
         r = TRUE;
     } else {
         r = FALSE;
     }
     if (r) {
-        unk_74 = 2;
+        showRequested = 2;
     }
     return r;
 }
 
 BOOL NameLabelBalloon::requestHide() {
     BOOL r;
-    if (unk_70 != 0) {
+    if (state != 0) {
         r = TRUE;
     } else {
         r = FALSE;
     }
     if (r) {
-        unk_74 = 0;
+        showRequested = 0;
     }
     return r;
 }
@@ -169,13 +169,13 @@ void NameLabelBalloon::loadKind4Palette() {
 }
 
 void NameLabelBalloon::enterHidden() {
-    unk_70 = 0;
-    unk_7c = 0;
+    state = 0;
+    isVisible = 0;
 }
 
 void NameLabelBalloon::updateHidden() {
-    if (unk_74 != 0) {
-        if (unk_0c == 4) {
+    if (showRequested != 0) {
+        if (kind == 4) {
             loadKind4Palette();
         }
         ((NameLabelBalloonView *)this)->createLabel();
@@ -185,76 +185,76 @@ void NameLabelBalloon::updateHidden() {
 }
 
 void NameLabelBalloon::enterAppearing() {
-    unk_70 = 1;
-    unk_7c = 1;
-    unk_78 = 3;
-    unk_30 = 5;
+    state = 1;
+    isVisible = 1;
+    stateTimer = 3;
+    slideY = 5;
 }
 
 void NameLabelBalloon::updateAppearing() {
-    if (unk_78 > 2) {
-        unk_30 -= 6;
+    if (stateTimer > 2) {
+        slideY -= 6;
     } else {
-        unk_30 += 2;
+        slideY += 2;
     }
-    unk_78 = unk_78 - 1;
-    if (unk_78 <= 0) {
-        unk_30 = 0;
+    stateTimer = stateTimer - 1;
+    if (stateTimer <= 0) {
+        slideY = 0;
         enterShown();
     }
 }
 
 void NameLabelBalloon::enterShown() {
-    unk_70 = 2;
-    unk_7c = 1;
-    unk_78 = 2;
+    state = 2;
+    isVisible = 1;
+    stateTimer = 2;
 }
 
 void NameLabelBalloon::updateShown() {
-    if (unk_74 == 0) {
+    if (showRequested == 0) {
         enterHiding();
     }
 }
 
 void NameLabelBalloon::enterHiding() {
-    unk_70 = 3;
-    unk_7c = 1;
+    state = 3;
+    isVisible = 1;
 }
 
 void NameLabelBalloon::updateHiding() {
-    unk_30 += 11;
-    unk_78 = unk_78 - 1;
-    if (unk_78 <= 0) {
+    slideY += 11;
+    stateTimer = stateTimer - 1;
+    if (stateTimer <= 0) {
         ((NameLabelBalloonView *)this)->freeLabel();
         enterHidden();
     }
 }
 
 void NameLabelBalloon::applyKindAnim() {
-    unk_14.setSeq((SpriteAnimSeq *)(data_020d467c + unk_10 * 8));
-    unk_14.setPlayOnce(1);
-    unk_14.setSpeed(0);
+    anim.setSeq((SpriteAnimSeq *)(data_020d467c + seqIndex * 8));
+    anim.setPlayOnce(1);
+    anim.setSpeed(0);
 }
 
 void NameLabelBalloon::fitToLabel() {
-    if (unk_6c != 0) {
-        s32 len = unk_6c->vfunc_0c();
+    if (textLabel != 0) {
+        s32 len = textLabel->vfunc_0c();
         u32 n = (u32)(len + 7) >> 3;
-        s32 idx = unk_14.getSeq()->frameCount - 1;
+        s32 idx = anim.getSeq()->frameCount - 1;
         s32 t = n - 1;
         if (t < 0) {
             idx = 0;
         } else if (t <= idx) {
             idx = t;
         }
-        unk_14.setFrame(idx, 0);
-        unk_6c->xOffset = (u32)(n * 8 - len) >> 1;
-        if (unk_0c == 0) {
-            unk_34 = 0;
+        anim.setFrame(idx, 0);
+        textLabel->xOffset = (u32)(n * 8 - len) >> 1;
+        if (kind == 0) {
+            alignX = 0;
         } else {
             s32 q = idx << 2;
             q = -q;
-            unk_34 = q + 0x24;
+            alignX = q + 0x24;
         }
     }
 }

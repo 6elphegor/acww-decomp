@@ -688,9 +688,9 @@ public:
     void createLabel();
 
     u32 pad_00[3];
-    /* 0x0c */ s32 unk_0c;
+    /* 0x0c */ s32 kind;
     u32 pad_10[0x5c / 4];
-    /* 0x6c */ MsgTextLabel *unk_6c;
+    /* 0x6c */ MsgTextLabel *textLabel;
 };
 
 extern HudController gHud;
@@ -709,29 +709,29 @@ typedef void (HudCountdown::*Unk_020e0f10_Fn)();
 typedef void (HudClock::*Unk_020e0f64_Fn)();
 
 void NameLabelBalloonView::createLabel() {
-    if (unk_6c == NULL) {
-        BOOL c = unk_0c == 4 ? TRUE : FALSE;
-        s32 width = c ? 0x1c8 : (unk_0c << 6) + 0xc0;
+    if (textLabel == NULL) {
+        BOOL c = kind == 4 ? TRUE : FALSE;
+        s32 width = c ? 0x1c8 : (kind << 6) + 0xc0;
         u8 t = c ? 0xe : 0xf;
-        unk_6c = MsgTextLabel_CreateVram(width, 0x14, 2);
-        MsgTextLabel *o = unk_6c;
+        textLabel = MsgTextLabel_CreateVram(width, 0x14, 2);
+        MsgTextLabel *o = textLabel;
         if (o != NULL) {
             o->vramLoader = 4;
-            MsgTextLabel *p = unk_6c;
+            MsgTextLabel *p = textLabel;
             p->textStart = (u32)((MsgString *)((u8 *)this + 0x38))->data();
-            unk_6c->copyMode = 2;
-            unk_6c->rowStride1K = 1;
-            unk_6c->bgColor = t;
-            unk_6c->fgColor = 0xd;
-            unk_6c->requestRedraw();
+            textLabel->copyMode = 2;
+            textLabel->rowStride1K = 1;
+            textLabel->bgColor = t;
+            textLabel->fgColor = 0xd;
+            textLabel->requestRedraw();
         }
     }
 }
 
 void NameLabelBalloonView::freeLabel() {
-    if (unk_6c != NULL) {
-        MsgTextLabel_Destroy(unk_6c);
-        unk_6c = NULL;
+    if (textLabel != NULL) {
+        MsgTextLabel_Destroy(textLabel);
+        textLabel = NULL;
     }
 }
 

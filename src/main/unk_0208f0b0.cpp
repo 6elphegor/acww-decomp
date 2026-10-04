@@ -41,18 +41,18 @@ public:
     /* 0x000 */ u8 unk_000[0xf4];
     /* 0x0f4 */ u8 unk_0f4;
     /* 0x0f5 */ u8 unk_0f5[0x47];
-    /* 0x13c */ u8 unk_13c[0x700];
-    /* 0x83c */ u8 unk_83c;
-    /* 0x83d */ u8 unk_83d;
-    /* 0x83e */ u8 unk_83e[0xc];
-    /* 0x84a */ u16 unk_84a;
+    /* 0x13c */ u8 villager[0x700];
+    /* 0x83c */ u8 counter;
+    /* 0x83d */ u8 flags;
+    /* 0x83e */ u8 lostChild[0xc];
+    /* 0x84a */ u16 checksum;
 };
 
 class TownExchangeRemoteRecords {
 public:
     TownExchangeRemoteRecords();
     ~TownExchangeRemoteRecords();
-    TownExchangeRecord unk_00[3];
+    TownExchangeRecord records[3];
 };
 
 TownExchangeRemoteRecords sTownExchangeRemoteRecords;
@@ -82,41 +82,41 @@ extern "C" void TownExchange_Clear(void *p) {
     ConstellationRecord_Clear((u8 *)p + 0xf4);
 }
 
-void TownExchangeRecord::setChecksum(u32 v) { unk_84a = v; }
+void TownExchangeRecord::setChecksum(u32 v) { checksum = v; }
 
-u32 TownExchangeRecord::getChecksum() { return unk_84a; }
+u32 TownExchangeRecord::getChecksum() { return checksum; }
 
 s32 TownExchangeRecord::isValid() { return 1; }
 
-void TownExchangeRecord::setUnkFlag(u32 v) { unk_83d = (unk_83d & ~1) | (v & 1); }
+void TownExchangeRecord::setUnkFlag(u32 v) { flags = (flags & ~1) | (v & 1); }
 
-u32 TownExchangeRecord::getUnkFlag() { return ((Unk_0208f238_Bits *)&unk_83d)->b0; }
+u32 TownExchangeRecord::getUnkFlag() { return ((Unk_0208f238_Bits *)&flags)->b0; }
 
-void *TownExchangeRecord::getLostChildRecord() { return unk_83e; }
+void *TownExchangeRecord::getLostChildRecord() { return lostChild; }
 
 void TownExchangeRecord::incrementCounter() {
-    s32 v = unk_83c + 1;
+    s32 v = counter + 1;
     if (v > 5) {
         v = 5;
     }
-    unk_83c = v;
+    counter = v;
 }
 
-void TownExchangeRecord::resetCounter() { unk_83c = 0; }
+void TownExchangeRecord::resetCounter() { counter = 0; }
 
-u32 TownExchangeRecord::getCounter() { return unk_83c; }
+u32 TownExchangeRecord::getCounter() { return counter; }
 
 extern "C" void TownExchange_GetLetter() {}
 
 void *TownExchangeRecord::getConstellation() { return &unk_0f4; }
 
-void *TownExchangeRecord::getVillager() { return unk_13c; }
+void *TownExchangeRecord::getVillager() { return villager; }
 
 TownExchangeRemoteRecords::TownExchangeRemoteRecords() {}
 
 TownExchangeRemoteRecords::~TownExchangeRemoteRecords() {}
 
-extern "C" void *TownExchange_GetRemote(s32 i) { return &sTownExchangeRemoteRecords.unk_00[i]; }
+extern "C" void *TownExchange_GetRemote(s32 i) { return &sTownExchangeRemoteRecords.records[i]; }
 
 extern "C" void *TownExchange_GetForAid(s32 i) {
     switch (i) {

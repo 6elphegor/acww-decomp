@@ -82,7 +82,7 @@ public:
     u8 *getWeights();
     void randomize();
 
-    /* 0x00 */ u8 unk_00;
+    /* 0x00 */ u8 orderIndex;
 };
 
 class ItemClassOrders {
@@ -92,7 +92,7 @@ public:
     void randomizeAll();
     ItemClassOrder *get(s32 i);
 
-    /* 0x00 */ ItemClassOrder unk_00[9];
+    /* 0x00 */ ItemClassOrder orders[9];
 };
 
 struct ItemPickSpec {
@@ -192,11 +192,11 @@ ItemClassOrder::ItemClassOrder() {}
 
 ItemClassOrder::~ItemClassOrder() {}
 
-void ItemClassOrder::randomize() { unk_00 = Random_GlobalBelow(6); }
+void ItemClassOrder::randomize() { orderIndex = Random_GlobalBelow(6); }
 
 u8 *ItemClassOrder::getWeights() {
-    if (unk_00 >= 6) unk_00 = unk_00 % 6;
-    return (u8 *)sItemClassWeightOrders + unk_00 * 3;
+    if (orderIndex >= 6) orderIndex = orderIndex % 6;
+    return (u8 *)sItemClassWeightOrders + orderIndex * 3;
 }
 
 u32 ItemClassOrder::pickClass(s32 mode, RandomSource *rng) {
@@ -238,7 +238,7 @@ extern "C" u8 ItemPick_GetClassWeight(u32 idx) {
     return t[0];
 }
 
-u32 ItemClassOrder::getIndex() { return unk_00; }
+u32 ItemClassOrder::getIndex() { return orderIndex; }
 
 u32 ItemClassOrder::getClassOfWeight(u32 x) {
     u8 *p = getWeights();
@@ -254,12 +254,12 @@ ItemClassOrders::~ItemClassOrders() {}
 
 void ItemClassOrders::randomizeAll() {
     for (u32 i = 0; i < 9; i++) {
-        unk_00[i].randomize();
+        orders[i].randomize();
     }
 }
 
 ItemClassOrder *ItemClassOrders::get(s32 i) {
-    ItemClassOrder *p = unk_00;
+    ItemClassOrder *p = orders;
     if (i < 9) p += i;
     return p;
 }

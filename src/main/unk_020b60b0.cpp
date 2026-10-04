@@ -94,7 +94,7 @@ struct TouchPickBox {
     TouchPickBox();
     ~TouchPickBox();
     BOOL build(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f);
-    /* 0x00 */ TouchPickTriangle unk_00[10];
+    /* 0x00 */ TouchPickTriangle triangles[10];
 };
 
 struct TouchPicker : TouchPickResult {
@@ -247,7 +247,7 @@ TouchPicker::TouchPicker() {
 
 BOOL TouchPicker::pushBox(TouchPickBox *box) {
     BOOL ok = TRUE;
-    TouchPickTriangle *p = box->unk_00;
+    TouchPickTriangle *p = box->triangles;
     for (u32 i = 0; i < 10; i++) {
         BOOL r = pushTriangle(p);
         p++;
@@ -355,12 +355,12 @@ struct Unk_020b60dc_Cell {
 class ActorCollider {
 public:
     virtual Vec3 *getPos();
-    u32 unk_04;
-    u32 unk_08;
-    u8 unk_0c;
-    u8 unk_0d;
+    u32 radius;
+    u32 height;
+    u8 targetKind;
+    u8 targetIndex;
     u8 pad_0e[0x38 - 0xe];
-    ActorCollider *unk_38;
+    ActorCollider *next;
 };
 
 struct Unk_020b60dc_Rec {
@@ -634,15 +634,15 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
             self->targetIndex = n->index;
         }
     }
-    for (ActorCollider *col = gActorColliderList; col != 0; col = col->unk_38) {
-        if (TouchPickKind_HasTarget(col->unk_0c)) {
-            if (TouchPick_HitCylinder(&p1, &p0, col->getPos(), col->unk_04, col->unk_08)) {
+    for (ActorCollider *col = gActorColliderList; col != 0; col = col->next) {
+        if (TouchPickKind_HasTarget(col->targetKind)) {
+            if (TouchPick_HitCylinder(&p1, &p0, col->getPos(), col->radius, col->height)) {
                 Vec3 *vp = col->getPos();
                 self->targetX = vp->x;
                 self->targetY = vp->y;
                 self->targetZ = vp->z;
-                self->targetKind = col->unk_0c;
-                self->targetIndex = col->unk_0d;
+                self->targetKind = col->targetKind;
+                self->targetIndex = col->targetIndex;
             }
         }
     }

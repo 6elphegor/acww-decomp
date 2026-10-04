@@ -37,9 +37,9 @@ public:
     BugNetTarget();
     ~BugNetTarget();
     void submit(Vec3 *a, s32 b, Vec3 *c, u8 d);
-    /* 0x1c */ BugNetTarget *unk_1c;
-    /* 0x20 */ u8 unk_20;
-    /* 0x24 */ s32 unk_24;
+    /* 0x1c */ BugNetTarget *nextTarget;
+    /* 0x20 */ u8 isHit;
+    /* 0x24 */ s32 hitRadius;
 };
 
 extern "C" {
@@ -94,8 +94,8 @@ static inline void Unk_02087e70_SetAttr(Unk_02087e70_Oam *oam, s32 x, s32 y, s32
 
 BugNetTarget::BugNetTarget() {
     _ZN15TouchPickSphereC2Ev(this);
-    unk_1c = 0;
-    unk_20 = 0;
+    nextTarget = 0;
+    isHit = 0;
 }
 
 BugNetTarget::~BugNetTarget() {
@@ -103,16 +103,16 @@ BugNetTarget::~BugNetTarget() {
 }
 
 void BugNetTarget::submit(Vec3 *a, s32 b, Vec3 *c, u8 d) {
-    unk_1c = 0;
+    nextTarget = 0;
     BugNetTarget *h = data_021ce63c;
     if (h == 0) {
         data_021ce63c = this;
     } else {
-        unk_1c = h;
+        nextTarget = h;
         data_021ce63c = this;
     }
-    unk_20 = 0;
-    unk_24 = b;
+    isHit = 0;
+    hitRadius = b;
     Scene_GetTouchPicker()->addSphere(this, a, c, 4, d);
 }
 
@@ -134,11 +134,11 @@ extern "C" BOOL BugNet_HitTest(void *a, void *b, s32 rad, u8 *out) {
         pts[i].z = v1.z + i * v3.z;
     }
     while (p) {
-        p->unk_20 = 0;
-        s32 len = func_01ffcb0c(rad + p->unk_24, rad + p->unk_24);
+        p->isHit = 0;
+        s32 len = func_01ffcb0c(rad + p->hitRadius, rad + p->hitRadius);
         for (i = 0; i < 6; i++) {
             if ((s64)len >= func_01ffd028(&pts[i], p)) {
-                p->unk_20 = 1;
+                p->isHit = 1;
                 result = TRUE;
                 if (out) {
                     *out = ((u8 *)p)[0x10];
@@ -146,7 +146,7 @@ extern "C" BOOL BugNet_HitTest(void *a, void *b, s32 rad, u8 *out) {
                 break;
             }
         }
-        p = p->unk_1c;
+        p = p->nextTarget;
     }
     return result;
 }

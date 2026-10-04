@@ -33,7 +33,7 @@ struct NpcResPool {
 
 // Same object as NpcResHandle (symbols.txt names two of its methods after the class NpcResHandleView); declaration only.
 struct NpcResHandleView {
-    s8 unk_04;
+    s8 slot;
     NpcResHandleView();
     virtual ~NpcResHandleView();
     virtual NpcResPool *getPool() = 0;
@@ -75,7 +75,7 @@ struct NpcBodyAnimHandle : NpcResHandleView {
 };
 
 struct NpcResHandle {
-    s8 unk_04;
+    s8 slot;
     NpcResHandle();
     virtual ~NpcResHandle();
     virtual NpcResPool *getPool() = 0;
@@ -105,7 +105,7 @@ struct NpcFaceAnimHandle : NpcResHandle {
     void *getTexPatBufRef();
 };
 
-NpcResHandle::NpcResHandle() : unk_04(-1) {}
+NpcResHandle::NpcResHandle() : slot(-1) {}
 
 NpcResHandle::~NpcResHandle() {}
 
@@ -113,11 +113,11 @@ BOOL NpcResHandle::acquire() {
     NpcResPool *c = getPool();
     BOOL r = FALSE;
     if (c) {
-        if (unk_04 == -1) {
+        if (slot == -1) {
             u32 i = _ZN10NpcResPool12findFreeSlotEv(c);
             if (i < (u32)c->numSlots) {
-                unk_04 = i;
-                c->occupySlot(unk_04);
+                slot = i;
+                c->occupySlot(slot);
                 r = TRUE;
             }
         } else {
@@ -130,8 +130,8 @@ BOOL NpcResHandle::acquire() {
 void NpcResHandle::release() {
     NpcResPool *c = getPool();
     if (c) {
-        c->releaseSlot(unk_04);
-        unk_04 = -1;
+        c->releaseSlot(slot);
+        slot = -1;
     }
 }
 
@@ -143,7 +143,7 @@ void *NpcResHandle::getBodyAnimLayer(u32 off) {
     NpcResPool *c = getPool();
     void *r = 0;
     if (c) {
-        r = (void *)_ZN15NpcBodyAnimPool8getLayerEjj(c, unk_04, off);
+        r = (void *)_ZN15NpcBodyAnimPool8getLayerEjj(c, slot, off);
     }
     return r;
 }
@@ -156,7 +156,7 @@ void *SpNpcAnimHeapHandle::getVillagerAnimHeapRef() {
     void *p = getPool();
     void *r = 0;
     if (p) {
-        r = (void *)_ZN23VillagerAnimHeapRefPool10getHeapRefEj(p, (s8)unk_04);
+        r = (void *)_ZN23VillagerAnimHeapRefPool10getHeapRefEj(p, (s8)slot);
     }
     return r;
 }
@@ -169,7 +169,7 @@ void *NpcClothTexHandle::getSpNpcAnimHeapRef() {
     void *p = getPool();
     void *r = 0;
     if (p) {
-        r = (void *)_ZN20SpNpcAnimHeapRefPool10getHeapRefEj(p, (s8)unk_04);
+        r = (void *)_ZN20SpNpcAnimHeapRefPool10getHeapRefEj(p, (s8)slot);
     }
     return r;
 }
@@ -182,7 +182,7 @@ void *NpcTexPatBufRefHandle::getClothTex() {
     void *p = getPool();
     void *r = 0;
     if (p) {
-        r = (void *)_ZN15NpcClothTexPool11getClothTexEj(p, (s8)unk_04);
+        r = (void *)_ZN15NpcClothTexPool11getClothTexEj(p, (s8)slot);
     }
     return r;
 }
@@ -195,7 +195,7 @@ void *NpcFaceAnimHandle::getTexPatBufRef() {
     void *p = getPool();
     void *r = 0;
     if (p) {
-        r = (void *)_ZN19NpcTexPatBufRefPool9getBufRefEj(p, (s8)unk_04);
+        r = (void *)_ZN19NpcTexPatBufRefPool9getBufRefEj(p, (s8)slot);
     }
     return r;
 }
@@ -208,7 +208,7 @@ void *NpcTexPatHeapHandle::getFaceAnim() {
     void *p = getPool();
     void *r = 0;
     if (p) {
-        r = (void *)_ZN15NpcFaceAnimPool11getFaceAnimEj(p, (s8)unk_04);
+        r = (void *)_ZN15NpcFaceAnimPool11getFaceAnimEj(p, (s8)slot);
     }
     return r;
 }
@@ -221,7 +221,7 @@ void *NpcHeldItemModelHandle::getTexPatHeapRef() {
     void *p = getPool();
     void *r = 0;
     if (p) {
-        r = (void *)_ZN17NpcTexPatHeapPool10getHeapRefEj(p, (s8)unk_04);
+        r = (void *)_ZN17NpcTexPatHeapPool10getHeapRefEj(p, (s8)slot);
     }
     return r;
 }
@@ -234,7 +234,7 @@ void *NpcResHandleView::loadHeldItem(s32 a) {
     void *p = getPool();
     void *r = 0;
     if (p) {
-        r = (void *)_ZN20NpcHeldItemModelPool8loadItemEjPt(p, (s8)unk_04, a);
+        r = (void *)_ZN20NpcHeldItemModelPool8loadItemEjPt(p, (s8)slot, a);
     }
     return r;
 }
@@ -242,7 +242,7 @@ void *NpcResHandleView::loadHeldItem(s32 a) {
 void *NpcResHandleView::getHeldItemModel() {
     void *p = getPool();
     if (p) {
-        return (void *)_ZN20NpcHeldItemModelPool8getModelEj(p, (s8)unk_04);
+        return (void *)_ZN20NpcHeldItemModelPool8getModelEj(p, (s8)slot);
     }
     return 0;
 }

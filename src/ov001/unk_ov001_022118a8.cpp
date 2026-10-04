@@ -19,7 +19,7 @@ struct Unk_ov001_0222de74 {
     u32 *signalIcons[5];
     void *scrollTask;
     u32 bgScrollTask;
-    u16 unk_40;
+    u16 maxScroll;
     u16 securityIconTiles[3];
     u16 signalIconTiles[3];
     u8 pad_4e[3];

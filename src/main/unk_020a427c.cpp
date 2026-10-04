@@ -75,8 +75,8 @@ struct FxVec3 {
 };
 
 struct Unk_020a4778_Id {
-    u16 unk_00;
-    u8 unk_02[8];
+    u16 townId;
+    u8 townName[8];
 };
 
 // Pieces of the singleton at gNetSessionState
@@ -383,9 +383,9 @@ static inline NetSessionState &V2() { return gNetSessionState; }
 static inline NetSessionAreaView &V3() { return *(NetSessionAreaView *)&gNetSessionState; }
 
 struct Unk_020e2978_Rec {
-    void *unk_00;
-    s16 unk_04;
-    s16 unk_06;
+    void *create;
+    s16 executePriority;
+    s16 drawPriority;
 };
 extern u8 sSceneExists;
 extern u16 gNextSceneProfile;

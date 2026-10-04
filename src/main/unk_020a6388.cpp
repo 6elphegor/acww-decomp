@@ -17,16 +17,16 @@ struct NetMoveReady {
 };
 
 struct NetMoveRequest {
-    u32 unk_00;
-    u8 unk_04;
+    u32 slot;
+    u8 targetScene;
     void get(s32 *a, u8 *b);
     void set(u32 a, u8 b);
 };
 
 struct NetSlotStatus {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
+    u8 sceneId;
+    u8 isOwner;
+    u8 isMoving;
     void get(u8 *a, u8 *b, u8 *c);
     void set(u8 a, u8 b, u8 c);
 };
@@ -34,10 +34,10 @@ struct NetSlotStatus {
 extern "C" void _ZN16NetPendingStatus9setMaskedEhhhj(void *self, u32 a, u32 b, u32 c, u32 mask);
 
 struct NetPendingStatus {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    u32 unk_04;
+    u8 sceneId;
+    u8 isOwner;
+    u8 isMoving;
+    u32 dirtyMask;
 };
 
 extern NetSlotStatus gNetSessionState[];

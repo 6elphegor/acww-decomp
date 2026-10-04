@@ -35,12 +35,12 @@ struct Unk_ov001_0222de74 {
     Unk_ov001_02212f98_Reg *signalIcons[5];
     void *scrollTask;
     void *bgScrollTask;
-    u16 unk_40;
+    u16 maxScroll;
     u16 securityIconTiles[3];
     u16 signalIconTiles[4];
     u8 pad_50;
     u8 apCount;
-    u8 unk_52;
+    u8 selectedAp;
     u8 scrollBarRange;
 };
 
@@ -156,7 +156,7 @@ void WfcApList_LoadBg() {
 void WfcApList_InitScrollBar() {
     s32 r = 0;
     s32 m;
-    sWfcApList->unk_40 = (sWfcApList->apCount - 4) * 0x1c;
+    sWfcApList->maxScroll = (sWfcApList->apCount - 4) * 0x1c;
     if (sWfcApList->apCount <= 4) {
         m = r;
         sWfcApList->scrollBarRange = 0;
@@ -168,7 +168,7 @@ void WfcApList_InitScrollBar() {
         m = 2;
     }
     if (m != 0) {
-        r = FX_DivS32(sWfcApListScroll * sWfcApList->scrollBarRange, sWfcApList->unk_40);
+        r = FX_DivS32(sWfcApListScroll * sWfcApList->scrollBarRange, sWfcApList->maxScroll);
     }
     WfcScrollBar_Create(m, 0x55, 0xec, 0x3f, r);
 }
@@ -259,11 +259,11 @@ struct Unk_ov001_0222de74 {
     void *signalIcons[5];
     void *scrollTask;
     u32 bgScrollTask;
-    u16 unk_40;
+    u16 maxScroll;
     u8 pad_42[0xe];
-    s8 unk_50;
+    s8 touchRow;
     u8 apCount;
-    u8 unk_52;
+    u8 selectedAp;
     u8 scrollBarRange;
     u8 isConfirmed;
     u8 dragRedrawDelay;
@@ -356,13 +356,13 @@ void WfcApList_HandleInput() {
     if (sWfcApList->scrollTask != 0) return;
     if (sWfcApList->isDragging != 0) return;
     if (WfcInput_IsTouchPressedIn(gWfcScreenRect) != 0) {
-        sWfcApList->unk_50 = -1;
+        sWfcApList->touchRow = -1;
         u32 i;
         u8 *p = (u8 *)data_ov001_0222a008;
         for (i = 0; i < 5; i++, p += 8) {
             if (WfcInput_IsTouchPressedIn(p) != 0) {
                 if ((s32)i < 4) {
-                    sWfcApList->unk_50 = i;
+                    sWfcApList->touchRow = i;
                     break;
                 }
                 WfcButtonBar_SetResult(1);
@@ -377,7 +377,7 @@ void WfcApList_HandleInput() {
         s32 i;
         for (i = 0; i < 4; i++, p += 8) {
             if (WfcInput_IsTouchReleasedIn(p) != 0) {
-                if (sWfcApList->unk_50 != i) break;
+                if (sWfcApList->touchRow != i) break;
                 if (i >= sWfcApList->apCount) {
                     WfcSound_Play(9);
                     break;
@@ -442,14 +442,14 @@ void WfcApList_HandleScrollBar() {
     case 2:
         if (sWfcApList->dragRedrawDelay != 0) return;
         WfcCursor_Clear();
-        sWfcApListScroll = FX_DivS32(sWfcApList->unk_40 * WfcScrollBar_GetPos(), sWfcApList->scrollBarRange);
+        sWfcApListScroll = FX_DivS32(sWfcApList->maxScroll * WfcScrollBar_GetPos(), sWfcApList->scrollBarRange);
         WfcApList_Redraw();
         sWfcApList->dragRedrawDelay = 4;
         break;
     case 3: {
         sWfcApList->isDragging = 0;
         WfcButtonBar_EnableInput();
-        sWfcApListScroll = FX_DivS32(sWfcApList->unk_40 * WfcScrollBar_GetPos(), sWfcApList->scrollBarRange);
+        sWfcApListScroll = FX_DivS32(sWfcApList->maxScroll * WfcScrollBar_GetPos(), sWfcApList->scrollBarRange);
         WfcSound_Play(0x13);
         WfcApList_Redraw();
         s32 r = FX_ModS32(sWfcApListScroll, 0x1c);
@@ -473,7 +473,7 @@ void WfcApList_HandleScrollBar() {
         break;
     case 6:
         if (sWfcApList->apCount > 4) {
-            if (sWfcApListScroll != sWfcApList->unk_40) goto c6b;
+            if (sWfcApListScroll != sWfcApList->maxScroll) goto c6b;
         }
         if (sWfcApList->scrollEndSoundPlayed != 0) return;
         WfcSound_Play(9);
@@ -513,7 +513,7 @@ void WfcApList_HandleResult() {
                 return;
             }
             sWfcApList->isConfirmed = 1;
-            sWfcApList->unk_52 = t;
+            sWfcApList->selectedAp = t;
             WfcSound_Play(6);
         }
         break;
@@ -569,9 +569,9 @@ void WfcApList_Exit() {
         WfcUtil_SetScreenFlags(0, 1);
         WfcUtil_SetScene((void *)WfcApSearch_Enter);
     } else {
-        WfcConfig_SetEditSsid(&sWfcApList->apEntries[sWfcApList->unk_52]);
+        WfcConfig_SetEditSsid(&sWfcApList->apEntries[sWfcApList->selectedAp]);
         WfcUtil_SetScreenFlags(0, 0);
-        if (sWfcApList->apEntries[sWfcApList->unk_52].security != 0) {
+        if (sWfcApList->apEntries[sWfcApList->selectedAp].security != 0) {
             WfcUtil_SetScreenFlags(0, 1);
             WfcUtil_SetEditParams(1, 1);
             WfcUtil_SetScene((void *)WfcTextEdit_Enter);
@@ -610,7 +610,7 @@ struct Unk_ov001_0222de74 {
     u32 *signalIcons[5];
     void *scrollTask;
     u32 bgScrollTask;
-    u16 unk_40;
+    u16 maxScroll;
     u16 securityIconTiles[3];
     u16 signalIconTiles[3];
     u8 pad_4e[3];
@@ -752,7 +752,7 @@ void WfcApList_ScrollUpTask(u32 a) {
     }
     WfcApList_LayoutRows();
     if (n != 0) return;
-    WfcScrollBar_SetPos(FX_DivS32(sWfcApListScroll * sWfcApList->scrollBarRange, sWfcApList->unk_40));
+    WfcScrollBar_SetPos(FX_DivS32(sWfcApListScroll * sWfcApList->scrollBarRange, sWfcApList->maxScroll));
     WfcScrollBar_Enable();
     WfcApList_UpdateCursor();
     sWfcApList->scrollTask = 0;
@@ -770,7 +770,7 @@ void WfcApList_ScrollDownTask(u32 a) {
     }
     sWfcApListScroll = sWfcApListScroll - n;
     WfcApList_Redraw();
-    WfcScrollBar_SetPos(FX_DivS32(sWfcApListScroll * sWfcApList->scrollBarRange, sWfcApList->unk_40));
+    WfcScrollBar_SetPos(FX_DivS32(sWfcApListScroll * sWfcApList->scrollBarRange, sWfcApList->maxScroll));
     WfcScrollBar_Enable();
     WfcApList_UpdateCursor();
     sWfcApList->scrollTask = 0;
@@ -860,7 +860,7 @@ void WfcApList_ScrollUp() {
 
 void WfcApList_ScrollDown() {
     Unk_ov001_0222de74 *o = sWfcApList;
-    if (sWfcApListScroll == o->unk_40 || o->apCount <= 4) {
+    if (sWfcApListScroll == o->maxScroll || o->apCount <= 4) {
         if (o->errorSoundPlayed != 0) return;
         WfcSound_Play(9);
         sWfcApList->errorSoundPlayed = 1;

@@ -113,7 +113,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x12 */ u8 unk_12[513];
+    /* 0x12 */ u8 text[513];
 };
 
 // 0x200-byte destination buffer at +0xe
@@ -124,7 +124,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x0e */ u8 unk_0e[0x200];
+    /* 0x0e */ u8 text[0x200];
 };
 
 // 0x28-byte destination buffer at +0xe
@@ -135,7 +135,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x0e */ u8 unk_0e[0x28];
+    /* 0x0e */ u8 text[0x28];
 };
 
 class MsgString33B : public MsgString {
@@ -145,7 +145,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x12 */ u8 unk_12[33];
+    /* 0x12 */ u8 text[33];
 };
 
 class MsgString129 : public MsgString {
@@ -155,7 +155,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x12 */ u8 unk_12[129];
+    /* 0x12 */ u8 text[129];
 };
 
 class MsgString25B : public MsgString {
@@ -165,7 +165,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x12 */ u8 unk_12[25];
+    /* 0x12 */ u8 text[25];
 };
 
 class LetterTextLine : public MsgString {
@@ -185,17 +185,17 @@ public:
     void freeLabel();
     void setTarget(u16 v, u32 x);
 
-    /* 0x12 */ u8 unk_12[0x2a];
-    /* 0x3c */ TextLabel *unk_3c;
-    /* 0x40 */ u16 unk_40;
-    /* 0x42 */ u8 unk_42;
-    /* 0x43 */ u8 unk_43;
-    /* 0x44 */ u8 unk_44;
-    /* 0x45 */ u8 unk_45;
-    /* 0x46 */ u8 unk_46;
-    /* 0x47 */ u8 unk_47;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
+    /* 0x12 */ u8 text[0x2a];
+    /* 0x3c */ TextLabel *textLabel;
+    /* 0x40 */ u16 charBase;
+    /* 0x42 */ u8 bgIndex;
+    /* 0x43 */ u8 isSubScreen;
+    /* 0x44 */ u8 isDirty;
+    /* 0x45 */ u8 highlightStart;
+    /* 0x46 */ u8 highlightLength;
+    /* 0x47 */ u8 highlightAlt;
+    /* 0x48 */ u8 nameHighlightStart;
+    /* 0x49 */ u8 nameHighlightLength;
 };
 
 class LetterLayout {
@@ -206,11 +206,11 @@ public:
     s32 getBodyLineCount();
     u8 *getBodyLineStarts();
 
-    /* 0x000 */ u8 unk_000[0x98];
-    /* 0x098 */ u8 unk_098[4][0x4c];
-    /* 0x1c8 */ u8 unk_1c8[0x28];
-    /* 0x1f0 */ s32 unk_1f0[5];
-    /* 0x204 */ s32 unk_204;
+    /* 0x000 */ u8 headerLines[0x98];
+    /* 0x098 */ u8 bodyLines[4][0x4c];
+    /* 0x1c8 */ u8 recipientName[0x28];
+    /* 0x1f0 */ s32 bodyLineStarts[5];
+    /* 0x204 */ s32 bodyLineCount;
 };
 
 extern "C" BOOL String_LoadByIndexB(MsgString *buf, const char *name, u32 key);
@@ -253,7 +253,7 @@ extern "C" void MailCheck_LoadWordList() {
     for (; i < 0x1a; i++) {
         String_LoadByIndexB(&src, "st_mailcheck", i);
         dst.fromMsgString(&src);
-        p = dst.unk_0e;
+        p = dst.text;
         while (*p != 0) {
             n = Text_GetLineEnd(p, 3, z0);
             if (n != 0) {

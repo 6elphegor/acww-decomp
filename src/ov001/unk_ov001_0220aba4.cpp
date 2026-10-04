@@ -89,7 +89,7 @@ struct Unk_ov001_0222dde0 {
     void *rowCanvases[4];
     Unk_ov001_0220a7f0_Reg *digitKeyOams[10];
     void *funcKeyOams[2];
-    void *unk_040[2];
+    void *bottomButtons[2];
     void *rowTextObjs[4];
     void *cursorObj;
     u8 pad_05c[7];
@@ -153,7 +153,7 @@ struct Unk_ov001_0222dde0 {
     void *rowCanvases[4];
     Unk_ov001_0220b05c_Reg *digitKeyOams[10];
     Unk_ov001_0220b05c_Reg *funcKeyOams[2];
-    void *unk_40[2];
+    void *bottomButtons[2];
     void *rowTextObjs[4];
     u8 unk_58[8];
     u8 inputKey;
@@ -224,7 +224,7 @@ struct Unk_ov001_0222dde0 {
     void *rowCanvases[4];
     Unk_ov001_0220ba08_Reg *digitKeyOams[10];
     Unk_ov001_0220ba08_Reg *funcKeyOams[2];
-    void *unk_40[2];
+    void *bottomButtons[2];
     void *rowTextObjs[4];
     void *cursorObj;
     void *task;
@@ -368,9 +368,9 @@ void WfcNumPad_Create() {
         sWfcNumPad->funcKeyOams[i]->h4 = (sWfcNumPad->funcKeyOams[i]->h4 & ~0xc00) | 0xc00;
     }
     for (i = 0; i < 2; i++) {
-        sWfcNumPad->unk_40[i] = WfcObj_Create(0, data_ov001_02229e94[i], 1);
-        WfcObj_SetAffineMode(sWfcNumPad->unk_40[i], -1, 0x200, 0);
-        WfcObj_SetPriority(sWfcNumPad->unk_40[i], -1, 3);
+        sWfcNumPad->bottomButtons[i] = WfcObj_Create(0, data_ov001_02229e94[i], 1);
+        WfcObj_SetAffineMode(sWfcNumPad->bottomButtons[i], -1, 0x200, 0);
+        WfcObj_SetPriority(sWfcNumPad->bottomButtons[i], -1, 3);
     }
     u32 bh = data_ov001_02229ea8[1];
     u32 bw = data_ov001_02229ea8[0];
@@ -540,7 +540,7 @@ namespace N_0ba08 {
 extern "C" {
 void WfcNumPad_SlideInStep4(void *self) {
     s32 a, b;
-    WfcObj_GetPos(sWfcNumPad->unk_40[0], 0, &a, &b);
+    WfcObj_GetPos(sWfcNumPad->bottomButtons[0], 0, &a, &b);
     b -= 12;
     u32 h = ((u16 *)data_ov001_02229ebc)[1];
     if (b > (s32)h) {
@@ -785,8 +785,8 @@ void WfcNumPad_SetRowY(s32 a, s32 b) {
         r->w0 = (r->w0 & 0xfe00ff00) | (u8)b | ((t & 0x1ff) << 16);
     }
     for (i = 0; i < z[a]; i++) {
-        WfcObj_SetAffineMode(sWfcNumPad->unk_40[i], -1, 0, 0);
-        WfcObj_SetPos(sWfcNumPad->unk_40[i], -1, data_ov001_02229ebc[i].x, b);
+        WfcObj_SetAffineMode(sWfcNumPad->bottomButtons[i], -1, 0, 0);
+        WfcObj_SetPos(sWfcNumPad->bottomButtons[i], -1, data_ov001_02229ebc[i].x, b);
     }
 }
 }
@@ -805,7 +805,7 @@ void WfcNumPad_SetKeyHighlight(s32 a, u32 b) {
         r->w0 = r->w0 & ~0xc00;
         r->h4 = (r->h4 & ~0xf000) | (data_ov001_02229e98[b] << 12);
     } else {
-        WfcObj_SetModePalette(sWfcNumPad->unk_40[a - 12], -1, 0, data_ov001_02229e8c[b]);
+        WfcObj_SetModePalette(sWfcNumPad->bottomButtons[a - 12], -1, 0, data_ov001_02229e8c[b]);
     }
 }
 }
@@ -860,7 +860,7 @@ namespace N_0a758 {
 extern "C" {
 void WfcNumPad_SlideOutStep0(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = (Unk_ov001_0220a7f0_Reg *)WfcObj_GetOam(sWfcNumPad->unk_040[0], 0);
+    Unk_ov001_0220a7f0_Reg *r = (Unk_ov001_0220a7f0_Reg *)WfcObj_GetOam(sWfcNumPad->bottomButtons[0], 0);
     s32 t;
     s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
     t = *(volatile u32 *)&r->w0 & 0xff;
@@ -956,7 +956,7 @@ void WfcNumPad_Destroy(s32 a) {
         WfcText_DestroyObjCanvas(sWfcNumPad->rowCanvases[i]);
     }
     for (i = 0; i < 2; i++) {
-        WfcObj_Free(sWfcNumPad->unk_040[i]);
+        WfcObj_Free(sWfcNumPad->bottomButtons[i]);
     }
     for (i = 0; i < 2; i++) {
         WfcOam_FreeEntry(sWfcNumPad->funcKeyOams[i]);

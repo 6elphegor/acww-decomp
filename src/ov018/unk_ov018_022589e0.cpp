@@ -57,11 +57,11 @@ struct Unk_ov018_Rec {
 
 struct Unk_ov018_Scene {  // 24 bytes; main's table sSceneInfoTable points to it
     Unk_ov018_Head *head;
-    s32 unk_04;
+    s32 isOutdoor;
     Unk_ov018_Grid *grid;
     Unk_ov018_Objs *objs;
-    s32 unk_10;
-    s32 unk_14;
+    s32 infoOverlayA;
+    s32 infoOverlayB;
 };
 
 

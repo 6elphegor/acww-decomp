@@ -144,7 +144,7 @@ struct Unk_0205e61c_Obj {
     u8 cbVecTimingNodeDesc;
 };
 
-struct Unk_0205f6f8_Cfg { u8 pad[0x6c]; u8 unk_6c; };
+struct Unk_0205f6f8_Cfg { u8 pad[0x6c]; u8 memberCount; };
 
 struct Unk_0205e310_P {
     u32 pad[6];
@@ -408,7 +408,7 @@ HeldItemModelBank::HeldItemModelBank() {}
 HeldItemModelBank::~HeldItemModelBank() {}
 
 extern "C" void HeldItemModels_AllocVram(HeldItemModelBank *self) {
-    u32 cfg = gCommManager->unk_6c;
+    u32 cfg = gCommManager->memberCount;
     u32 n = Scene_GetMaxPlayers(Scene_GetCurrent());
     u32 m, i, end;
     void *heap;
@@ -436,7 +436,7 @@ extern "C" void HeldItemModels_AllocVram(HeldItemModelBank *self) {
 extern "C" void HeldItemModels_CreateAnimHeaps(HeldItemModelBank *self) {
     void *heap = gHeldItemAnimHeap;
     u32 n;
-    u32 i = gCommManager->unk_6c;
+    u32 i = gCommManager->memberCount;
     n = Scene_GetMaxPlayers(Scene_GetCurrent());
     if (i < n) {
         n = i;

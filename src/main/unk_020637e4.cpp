@@ -51,7 +51,7 @@ public:
     virtual u8 *data();
     void copyBytesTo(void *p, u32 n);
 
-    /* 0x0e */ u8 unk_0e[14];
+    /* 0x0e */ u8 text[14];
 };
 
 extern "C" void TownId_GetNameString(void *src, MsgString *dst) {
@@ -80,7 +80,7 @@ EncodedString8B::~EncodedString8B() {}
 
 u32 EncodedString8B::capacity() { return 8; }
 
-void EncodedString8B::copyBytesTo(void *p, u32 n) { MI_CpuCopy8(unk_0e, p, n); }
+void EncodedString8B::copyBytesTo(void *p, u32 n) { MI_CpuCopy8(text, p, n); }
 
-u8 *EncodedString8B::data() { return unk_0e; }
+u8 *EncodedString8B::data() { return text; }
 

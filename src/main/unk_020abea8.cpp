@@ -72,17 +72,17 @@ public:
     ObjShadowStrip();
     ~ObjShadowStrip();
 
-    /* 0x00 */ Vec3 unk_00;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ u32 unk_14;
-    /* 0x18 */ s32 unk_18;
-    /* 0x1c */ s32 *unk_1c;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 *unk_28;
-    /* 0x2c */ Vec3 *unk_2c;
-    /* 0x30 */ Unk_020ac0c4_Entry *unk_30;
+    /* 0x00 */ Vec3 basePos;
+    /* 0x0c */ s32 halfWidth;
+    /* 0x10 */ s32 cullExtent;
+    /* 0x14 */ u32 numRows;
+    /* 0x18 */ s32 cachedZ;
+    /* 0x1c */ s32 *rowDepths;
+    /* 0x20 */ s32 texLeftS;
+    /* 0x24 */ s32 texRightS;
+    /* 0x28 */ s32 *rowTexT;
+    /* 0x2c */ Vec3 *rowVertices;
+    /* 0x30 */ Unk_020ac0c4_Entry *texture;
 };
 
 struct Pack {
@@ -388,16 +388,16 @@ extern "C" void ObjShadow_DrawSign(Vec3 *p) {
 }
 
 ObjShadowStrip::ObjShadowStrip() {
-    unk_00.x = 0;
-    unk_00.y = 0;
-    unk_00.z = 0;
-    unk_0c = 0;
-    unk_10 = 0;
-    unk_14 = 0;
-    unk_1c = 0;
-    unk_28 = 0;
-    unk_2c = 0;
-    unk_30 = 0;
+    basePos.x = 0;
+    basePos.y = 0;
+    basePos.z = 0;
+    halfWidth = 0;
+    cullExtent = 0;
+    numRows = 0;
+    rowDepths = 0;
+    rowTexT = 0;
+    rowVertices = 0;
+    texture = 0;
 }
 
 ObjShadowStrip::~ObjShadowStrip() {}
@@ -407,38 +407,38 @@ BOOL ObjShadowStrip::build(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b
     if (heap == 0) {
         heap = gCurrentHeap;
     }
-    unk_30 = &sObjShadowTextures[idx];
-    unk_00 = *pos;
-    unk_0c = size >> 1;
-    s32 v = unk_0c;
+    texture = &sObjShadowTextures[idx];
+    basePos = *pos;
+    halfWidth = size >> 1;
+    s32 v = halfWidth;
     if ((v >> shift) == 0) {
         v = shift;
     }
-    unk_10 = v;
-    unk_18 = 0;
-    unk_14 = _s32_div_f(shift - 0x200, 0x2000) + 2;
-    u32 n4 = unk_14 << 2;
-    unk_1c = (s32 *)Heap_Alloc(heap, (n4 << 1) + unk_14 * 12);
-    unk_28 = (s32 *)((u8 *)unk_1c + n4);
-    unk_2c = (Vec3 *)((u8 *)unk_28 + n4);
-    for (i = 0; i < unk_14; i++) {
-        if (i == unk_14 - 1) {
-            unk_1c[i] = shift;
+    cullExtent = v;
+    cachedZ = 0;
+    numRows = _s32_div_f(shift - 0x200, 0x2000) + 2;
+    u32 n4 = numRows << 2;
+    rowDepths = (s32 *)Heap_Alloc(heap, (n4 << 1) + numRows * 12);
+    rowTexT = (s32 *)((u8 *)rowDepths + n4);
+    rowVertices = (Vec3 *)((u8 *)rowTexT + n4);
+    for (i = 0; i < numRows; i++) {
+        if (i == numRows - 1) {
+            rowDepths[i] = shift;
         } else {
-            unk_1c[i] = i << 13;
+            rowDepths[i] = i << 13;
         }
     }
     if (a == 0 && b == 0) {
-        unk_20 = 0;
-        unk_24 = unk_30->width << 12;
+        texLeftS = 0;
+        texRightS = texture->width << 12;
     } else {
-        unk_20 = func_01ffcb0c(unk_30->width << 12, a);
-        unk_24 = func_01ffcb0c(unk_30->width << 12, b);
+        texLeftS = func_01ffcb0c(texture->width << 12, a);
+        texRightS = func_01ffcb0c(texture->width << 12, b);
     }
-    s32 *p6 = unk_1c;
-    s32 *p7 = unk_28;
-    for (i = 0; i < unk_14; i++) {
-        *p7++ = func_01ffcb0c(0x1000 - FX_Div(*p6, shift), unk_30->height << 12);
+    s32 *p6 = rowDepths;
+    s32 *p7 = rowTexT;
+    for (i = 0; i < numRows; i++) {
+        *p7++ = func_01ffcb0c(0x1000 - FX_Div(*p6, shift), texture->height << 12);
         p6++;
     }
     return TRUE;
@@ -447,26 +447,26 @@ BOOL ObjShadowStrip::build(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b
 void ObjShadowStrip::draw(Vec3 *pos) {
     Vec3 tmp;
     Col c0, c1;
-    if (unk_30 != 0 && unk_30->texRes != 0) {
-        u8 lvl = ObjShadow_GetObjAlpha(pos, unk_10);
+    if (texture != 0 && texture->texRes != 0) {
+        u8 lvl = ObjShadow_GetObjAlpha(pos, cullExtent);
         if (lvl > 1) {
             NNS_G3dGeFlushBuffer();
-            REG(0x40004a8) = unk_30->texImageParam;
-            REG(0x40004ac) = unk_30->plttBase;
+            REG(0x40004a8) = texture->texImageParam;
+            REG(0x40004ac) = texture->plttBase;
             REG(0x4000440) = 1;
             G3_LoadMtx43(sObjShadowViewMtx);
-            REG(0x40004a4) = (lvl << 16) | ((unk_30->unk_14 << 24) | 0x8080);
-            s32 *p7 = unk_1c;
-            s32 *p28 = unk_28;
-            Vec3 *vp = unk_2c;
+            REG(0x40004a4) = (lvl << 16) | ((texture->unk_14 << 24) | 0x8080);
+            s32 *p7 = rowDepths;
+            s32 *p28 = rowTexT;
+            Vec3 *vp = rowVertices;
             REG(0x4000500) = 3;
-            s32 e1 = unk_1c[1];
+            s32 e1 = rowDepths[1];
             u32 i = 0;
             s32 lo, hi, neg;
             s32 shift = sObjShadowCoordShift;
             s32 z1 = i;
             s32 z2 = i;
-            for (; i < unk_14; i++) {
+            for (; i < numRows; i++) {
                 s32 v;
                 if (i != 0) {
                     v = e1;
@@ -474,9 +474,9 @@ void ObjShadowStrip::draw(Vec3 *pos) {
                     v = *p7;
                 }
                 s32 t = func_01ffcb0c(sObjShadowSkew, v);
-                lo = t + (pos->x - unk_0c);
-                hi = t + (pos->x + unk_0c);
-                if (pos->z != unk_18) {
+                lo = t + (pos->x - halfWidth);
+                hi = t + (pos->x + halfWidth);
+                if (pos->z != cachedZ) {
                     neg = -*p7;
                     s32 y = Ground_GetDefaultY(z1);
                     tmp.x = z2;
@@ -490,11 +490,11 @@ void ObjShadowStrip::draw(Vec3 *pos) {
                 c0 = SceneLights_GetRoomColor();
                 c1 = c0;
                 REG(0x4000480) = c1.v;
-                REG(0x4000488) = (u16)((unk_20 << 8) >> 16) | ((u16)((*p28 << 8) >> 16) << 16);
+                REG(0x4000488) = (u16)((texLeftS << 8) >> 16) | ((u16)((*p28 << 8) >> 16) << 16);
                 s16 zz = vp->z;
                 REG(0x400048c) = (u16)((lo << 11) >> 16) | ((u16)(s16)vp->y << 16);
                 REG(0x400048c) = (u16)zz;
-                REG(0x4000488) = (u16)((unk_24 << 8) >> 16) | ((u16)((*p28 << 8) >> 16) << 16);
+                REG(0x4000488) = (u16)((texRightS << 8) >> 16) | ((u16)((*p28 << 8) >> 16) << 16);
                 zz = vp->z;
                 REG(0x400048c) = (u16)((hi << 11) >> 16) | ((u16)(s16)vp->y << 16);
                 REG(0x400048c) = (u16)zz;
@@ -504,7 +504,7 @@ void ObjShadowStrip::draw(Vec3 *pos) {
             }
             REG(0x4000504) = 0;
             REG(0x4000448) = 1;
-            unk_18 = pos->z;
+            cachedZ = pos->z;
         }
     }
 }
@@ -513,11 +513,11 @@ void ObjShadowStrip::release(s32 heap) {
     if (heap == 0) {
         heap = gCurrentHeap;
     }
-    if (unk_1c != 0) {
-        Heap_Free(heap, unk_1c);
-        unk_1c = 0;
+    if (rowDepths != 0) {
+        Heap_Free(heap, rowDepths);
+        rowDepths = 0;
     }
-    unk_30 = 0;
+    texture = 0;
 }
 
 

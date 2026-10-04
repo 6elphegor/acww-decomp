@@ -71,22 +71,22 @@ public:
     void setOffset(s32 x, s32 y);
     void setAltStyle();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ SpriteAnim unk_20;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ u8 unk_40;
+    /* 0x0c */ SpriteAnim anim;
+    /* 0x20 */ SpriteAnim subAnim;
+    /* 0x34 */ s32 state;
+    /* 0x38 */ s32 offsetX;
+    /* 0x3c */ s32 offsetY;
+    /* 0x40 */ u8 useAltStyle;
     /* 0x41 */ u8 unk_41;
 };
 
 enum Unk_020892b0_E { Unk_020892b0_E0 = 0 };
 
-void TalkArrow::setAltStyle() { unk_40 = 1; }
+void TalkArrow::setAltStyle() { useAltStyle = 1; }
 
 void TalkArrow::setOffset(s32 x, s32 y) {
-    unk_38 = x;
-    unk_3c = y;
+    offsetX = x;
+    offsetY = y;
 }
 
 void TalkArrow::setState(s32 idx) {
@@ -94,24 +94,24 @@ void TalkArrow::setState(s32 idx) {
     Unk_020892b0_E b;
     u32 c;
     a = (Unk_020892b0_E)((u32 *)sTalkArrowSeqIds)[idx];
-    if (unk_40 != 0) {
+    if (useAltStyle != 0) {
         a = (Unk_020892b0_E)(a + 6);
     }
     b = (Unk_020892b0_E)(a + 1);
     c = ((u32 *)sTalkArrowPlayOnce)[idx];
-    unk_34 = idx;
-    unk_0c.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
-    unk_0c.setPlayOnce(c);
-    unk_0c.restart();
-    unk_20.setSeq((SpriteAnimSeq *)(data_020d5b0c + b * 8));
-    unk_20.setPlayOnce(c);
-    unk_20.restart();
+    state = idx;
+    anim.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
+    anim.setPlayOnce(c);
+    anim.restart();
+    subAnim.setSeq((SpriteAnimSeq *)(data_020d5b0c + b * 8));
+    subAnim.setPlayOnce(c);
+    subAnim.restart();
 }
 
-s32 TalkArrow::getState() { return unk_34; }
+s32 TalkArrow::getState() { return state; }
 
 BOOL TalkArrow::isAnimDone() {
-    if (unk_0c.isFinished() && unk_20.isFinished()) {
+    if (anim.isFinished() && subAnim.isFinished()) {
         return TRUE;
     }
     return FALSE;

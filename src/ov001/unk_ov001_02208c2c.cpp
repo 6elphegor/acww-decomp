@@ -374,7 +374,7 @@ struct Unk_ov001_0222dde0 {
     void *rowCanvases[4];
     Unk_ov001_0220a7f0_Reg *digitKeyOams[10];
     void *funcKeyOams[2];
-    void *unk_040[2];
+    void *bottomButtons[2];
     void *rowTextObjs[4];
     void *cursorObj;
     u8 pad_05c[7];

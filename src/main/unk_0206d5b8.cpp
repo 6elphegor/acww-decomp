@@ -488,10 +488,10 @@ public:
     void loadLetterScreen(u32 v);
 
     /* 0x4c */ Unk_0206ce50 unk_4c;
-    /* 0x98 */ Unk_0206ce50 unk_98[4];
-    /* 0x1c8 */ u8 unk_1c8[0x28];
-    /* 0x1f0 */ s32 unk_1f0[5];
-    /* 0x204 */ s32 unk_204;
+    /* 0x98 */ Unk_0206ce50 bodyLines[4];
+    /* 0x1c8 */ u8 recipientName[0x28];
+    /* 0x1f0 */ s32 bodyLineStarts[5];
+    /* 0x204 */ s32 bodyLineCount;
     /* 0x208 */ s32 recipientNameLength;
     /* 0x20c */ s32 recipientNameWidth;
 };

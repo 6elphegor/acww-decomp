@@ -45,7 +45,7 @@ struct TouchPickBox {
     TouchPickBox();
     ~TouchPickBox();
     BOOL build(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f);
-    /* 0x00 */ TouchPickTriangle unk_00[10];
+    /* 0x00 */ TouchPickTriangle triangles[10];
 };
 
 struct CollisionCylinder {
@@ -199,16 +199,16 @@ BOOL TouchPickBox::build(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f)
     c[0].y = c[1].y = c[2].y = c[3].y = pos->y;
     c[4].y = c[5].y = c[6].y = c[7].y = pos->y + d;
     BOOL ok = TRUE;
-    ok = (ok | unk_00[0].setup(&c[4], &c[5], &c[6], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[1].setup(&c[4], &c[6], &c[7], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[2].setup(&c[5], &c[1], &c[2], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[3].setup(&c[5], &c[2], &c[6], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[4].setup(&c[6], &c[2], &c[3], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[5].setup(&c[6], &c[3], &c[7], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[6].setup(&c[4], &c[0], &c[1], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[7].setup(&c[4], &c[1], &c[5], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[8].setup(&c[7], &c[3], &c[0], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[9].setup(&c[7], &c[0], &c[4], e, f)) ? TRUE : FALSE;
+    ok = (ok | triangles[0].setup(&c[4], &c[5], &c[6], e, f)) ? TRUE : FALSE;
+    ok = (ok | triangles[1].setup(&c[4], &c[6], &c[7], e, f)) ? TRUE : FALSE;
+    ok = (ok | triangles[2].setup(&c[5], &c[1], &c[2], e, f)) ? TRUE : FALSE;
+    ok = (ok | triangles[3].setup(&c[5], &c[2], &c[6], e, f)) ? TRUE : FALSE;
+    ok = (ok | triangles[4].setup(&c[6], &c[2], &c[3], e, f)) ? TRUE : FALSE;
+    ok = (ok | triangles[5].setup(&c[6], &c[3], &c[7], e, f)) ? TRUE : FALSE;
+    ok = (ok | triangles[6].setup(&c[4], &c[0], &c[1], e, f)) ? TRUE : FALSE;
+    ok = (ok | triangles[7].setup(&c[4], &c[1], &c[5], e, f)) ? TRUE : FALSE;
+    ok = (ok | triangles[8].setup(&c[7], &c[3], &c[0], e, f)) ? TRUE : FALSE;
+    ok = (ok | triangles[9].setup(&c[7], &c[0], &c[4], e, f)) ? TRUE : FALSE;
     return ok;
 }
 

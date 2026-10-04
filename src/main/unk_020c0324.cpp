@@ -263,7 +263,7 @@ struct Unk_0201a13c {
 MEMBER(CollisionState, 0x30);
 struct ActorFollowCollider {
     u8 unk_00[0x1c];
-    u32 unk_1c;
+    u32 groups;
     u8 pad_20[0x44 - 0x20];
     u8 unk_44;
     u8 pad_45[3];
@@ -606,7 +606,7 @@ void SpNpcKatie::changeAct(s32 state) {
 }
 
 BOOL SpNpcKatie::setupAct00() {
-    collider.unk_1c |= 2;
+    collider.groups |= 2;
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
@@ -618,7 +618,7 @@ BOOL SpNpcKatie::mainAct00() {
 
 BOOL SpNpcKatie::setupAct01() {
     Unk_020c0acc_Vec a, b;
-    collider.unk_1c |= 2;
+    collider.groups |= 2;
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x53, 1, data_020c6cc8, 0);
     Town_FindGateHouse(TownBlockMap_Get(), &a, 0, 0);
@@ -654,7 +654,7 @@ BOOL SpNpcKatie::setupAct02() {
 }
 
 BOOL SpNpcKatie::mainAct02() {
-    collider.unk_1c |= 2;
+    collider.groups |= 2;
     if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&animCtrl, 0xab, &moveAnimSet) && _ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
         _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xac);
@@ -694,7 +694,7 @@ BOOL SpNpcKatie::mainAct07() {
 }
 
 BOOL SpNpcKatie::setupAct04() {
-    collider.unk_1c &= ~2;
+    collider.groups &= ~2;
     waitTimer = 0x28;
     return TRUE;
 }
@@ -707,7 +707,7 @@ BOOL SpNpcKatie::mainAct04() {
 }
 
 BOOL SpNpcKatie::setupAct05() {
-    collider.unk_1c &= ~2;
+    collider.groups &= ~2;
     stuckTimer = 0x28;
     prevPos = position;
     return TRUE;

@@ -31,7 +31,7 @@ class GuestPlayerArray {
 public:
     GuestPlayerArray();
     ~GuestPlayerArray();
-    PlayerData unk_00[3];
+    PlayerData players[3];
 };
 
 extern "C" {

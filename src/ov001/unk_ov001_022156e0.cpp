@@ -15,7 +15,7 @@ struct Unk_ov001_0222de94 {
     u32 *statusIcon;
     void *scrollTask;
     void *bgScrollTask;
-    u8 unk_40;
+    u8 selectedItem;
     u8 dragRedrawDelay;
     u8 lastBottomItem;
     u8 savedAutoDns;
@@ -321,7 +321,7 @@ extern "C" void WfcManualSetup_HandleKeys() {
     }
     if (WfcInput_IsKeyPressed(2) != 0) {
         WfcSound_Play(7);
-        sWfcManualSetup->unk_40 = 13;
+        sWfcManualSetup->selectedItem = 13;
         WfcUtil_SetScene((void *)WfcManualSetup_StartExit);
         return;
     }
@@ -414,7 +414,7 @@ extern "C" void WfcManualSetup_SelectItem(u32 a) {
         WfcManualSetup_SetAutoDns((a - 7) ^ 1 ? 1 : 0);
         return;
     }
-    sWfcManualSetup->unk_40 = a;
+    sWfcManualSetup->selectedItem = a;
     if (a - 11 <= 1) {
         WfcManualSetup_HighlightButton();
         if (WfcManualSetup_ValidateSettings() == 0) {
@@ -545,7 +545,7 @@ extern "C" void WfcManualSetup_Exit() {
     WfcScrollBar_Destroy();
     WfcText_DestroyBgCanvas(0);
     WfcCursor_Clear();
-    if (sWfcManualSetup->unk_40 != 0xc) WfcUtil_HideTopMessage();
+    if (sWfcManualSetup->selectedItem != 0xc) WfcUtil_HideTopMessage();
     WfcBgMap_Destroy();
     WfcFs_FreeFile(sWfcManualSetup->bgMapFile);
     for (i = 0; i < 2; i++) WfcFs_FreeFile(sWfcManualSetup->paletteFiles[i]);
@@ -555,7 +555,7 @@ extern "C" void WfcManualSetup_Exit() {
     *(volatile u32 *)0x4000010 = 0;
     *(volatile u32 *)0x4000018 = 0;
     *(volatile u16 *)0x400000c = (*(volatile u16 *)0x400000c & 0x43) | 0xe10;
-    u32 t = sWfcManualSetup->unk_40;
+    u32 t = sWfcManualSetup->selectedItem;
     switch (t) {
     case 0:
     case 1:

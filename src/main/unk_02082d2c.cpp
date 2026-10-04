@@ -21,7 +21,7 @@ struct Unk_02082c54_Z {
 };
 
 struct NpcResSlot {
-    u8 unk_00;
+    u8 inUse;
     NpcResSlot();
     ~NpcResSlot();
 };
@@ -290,7 +290,7 @@ static inline Unk_02082e80_Cell *Unk_02082e80_GetCell(Unk_02082e80_Grid *g, u32 
     return NULL;
 }
 
-NpcResSlot::NpcResSlot() { unk_00 = 0; }
+NpcResSlot::NpcResSlot() { inUse = 0; }
 
 NpcResSlot::~NpcResSlot() {}
 

@@ -51,10 +51,10 @@ public:
     void exit();
     void init();
 
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ SpriteAnim unk_14;
-    /* 0x28 */ u8 unk_28;
+    /* 0x0c */ s32 inputMode;
+    /* 0x10 */ s32 shownMode;
+    /* 0x14 */ SpriteAnim anim;
+    /* 0x28 */ u8 isVisible;
 };
 
 InputModeIcon sInputModeIcon;
@@ -100,21 +100,21 @@ u8 TownExchangeRecord::getChecksumByte() { return unk_0f4; }
 
 extern "C" void ReceivedLetter_GetLetter() {}
 
-extern "C" void InputMode_Clear() { sInputModeIcon.unk_0c = 0; }
+extern "C" void InputMode_Clear() { sInputModeIcon.inputMode = 0; }
 
-extern "C" void InputMode_SetButtons() { sInputModeIcon.unk_0c = 1; }
+extern "C" void InputMode_SetButtons() { sInputModeIcon.inputMode = 1; }
 
-extern "C" void InputMode_SetTouch() { sInputModeIcon.unk_0c = 2; }
+extern "C" void InputMode_SetTouch() { sInputModeIcon.inputMode = 2; }
 
 extern "C" BOOL InputMode_IsButtons() {
-    if (sInputModeIcon.unk_0c == 1) {
+    if (sInputModeIcon.inputMode == 1) {
         return TRUE;
     }
     return FALSE;
 }
 
 extern "C" BOOL InputMode_IsTouch() {
-    if (sInputModeIcon.unk_0c == 2) {
+    if (sInputModeIcon.inputMode == 2) {
         return TRUE;
     }
     return FALSE;
@@ -129,28 +129,28 @@ extern "C" void InputModeIcon_Update() { sInputModeIcon.vfunc_0c(); }
 extern "C" void InputModeIcon_Draw() { sInputModeIcon.draw(); }
 
 void InputModeIcon::draw() {
-    if (unk_28 != 0) {
+    if (isVisible != 0) {
         if (!isDrawBlocked()) {
-            void *h = unk_14.getCell();
-            s32 x = getOriginX() + unk_14.getFrameX(-1);
-            s32 y = getOriginY() + unk_14.getFrameY(-1);
+            void *h = anim.getCell();
+            s32 x = getOriginX() + anim.getFrameX(-1);
+            s32 y = getOriginY() + anim.getFrameY(-1);
             Oam_DrawCell(3, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
     }
 }
 
 void InputModeIcon::vfunc_0c() {
-    if (unk_28 != 0) {
-        unk_14.update();
+    if (isVisible != 0) {
+        anim.update();
     }
-    if (unk_0c != unk_10) {
+    if (inputMode != shownMode) {
         startModeAnim();
-        unk_10 = unk_0c;
+        shownMode = inputMode;
     }
 }
 
-InputModeIcon::InputModeIcon() : unk_0c(0), unk_10(0) {
-    unk_28 = 0;
+InputModeIcon::InputModeIcon() : inputMode(0), shownMode(0) {
+    isVisible = 0;
 }
 
 InputModeIcon::~InputModeIcon() {

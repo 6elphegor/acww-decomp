@@ -1,7 +1,7 @@
 #include "types.h"
 
 struct NpcResSlot {
-    u8 unk_00;
+    u8 inUse;
     NpcResSlot();
     ~NpcResSlot();
 };
@@ -243,14 +243,14 @@ const s32 sNpcBodyAnimLayerIdBases[3] = {4, 0xd, 0x12};
 void NpcResPool::clearAllSlots() {
     for (s32 i = 0; i < numSlots; i++) {
         NpcResSlot *p = getSlot(i);
-        if (p) p->unk_00 = 0;
+        if (p) p->inUse = 0;
     }
 }
 
 void NpcResPool::releaseSlot(u32 i) {
     if (i < (u32)numSlots) {
         NpcResSlot *p = getSlot(i);
-        if (p) p->unk_00 = 0;
+        if (p) p->inUse = 0;
     }
 }
 
@@ -258,7 +258,7 @@ s32 NpcResPool::findFreeSlot() {
     s32 r = -1;
     for (s32 i = 0; i < numSlots; i++) {
         NpcResSlot *p = getSlot(i);
-        if (p && p->unk_00 == 0) {
+        if (p && p->inUse == 0) {
             r = i;
             break;
         }
@@ -308,7 +308,7 @@ VillagerAnimHeapRefSlot::~VillagerAnimHeapRefSlot() {}
 
 void VillagerAnimHeapRefSlot::assign(u32 x) {
     VillagerAnimHeapRef_Assign(&heapRef);
-    unk_00 = 1;
+    inUse = 1;
 }
 
 VillagerAnimHeapRefPool::VillagerAnimHeapRefPool() : NpcResPool(8) {}
@@ -346,7 +346,7 @@ SpNpcAnimHeapRefSlot::~SpNpcAnimHeapRefSlot() {}
 
 void SpNpcAnimHeapRefSlot::assign() {
     SpNpcAnimHeapRef_Assign(&heapRef);
-    unk_00 = 1;
+    inUse = 1;
 }
 
 SpNpcAnimHeapRefPool::SpNpcAnimHeapRefPool() : NpcResPool(4) {}
@@ -386,12 +386,12 @@ NpcClothTexSlot::~NpcClothTexSlot() {}
 
 void NpcClothTexSlot::assign(u32 id) {
     _ZN16CharaClothTexRef6assignEj(&clothTex);
-    unk_00 = 1;
+    inUse = 1;
 }
 
 void NpcClothTexSlot::release() {
     _ZN16CharaClothTexRef7releaseEv(&clothTex);
-    unk_00 = 0;
+    inUse = 0;
 }
 
 NpcClothTexPool::NpcClothTexPool() : NpcResPool(5) {}
@@ -438,7 +438,7 @@ NpcTexPatBufRefSlot::~NpcTexPatBufRefSlot() {}
 
 void NpcTexPatBufRefSlot::assign(u32 id) {
     NpcTexPatBufRef_Assign(&bufRef);
-    unk_00 = 1;
+    inUse = 1;
 }
 
 NpcTexPatBufRefPool::NpcTexPatBufRefPool() : NpcResPool(5) {}
@@ -478,7 +478,7 @@ NpcFaceAnimSlot::~NpcFaceAnimSlot() {}
 
 void NpcFaceAnimSlot::assign(u32 id) {
     _ZN16CharaFaceAnimRef6assignEj(&faceAnim);
-    unk_00 = 1;
+    inUse = 1;
 }
 
 NpcFaceAnimPool::NpcFaceAnimPool() : NpcResPool(5) {}
@@ -518,7 +518,7 @@ NpcTexPatHeapSlot::~NpcTexPatHeapSlot() {}
 
 void NpcTexPatHeapSlot::assign(u32 id) {
     _ZN20CharaFaceAnimWorkRef6assignEj(&workRef);
-    unk_00 = 1;
+    inUse = 1;
 }
 
 NpcTexPatHeapPool::NpcTexPatHeapPool() : NpcResPool(5) {}
@@ -558,12 +558,12 @@ NpcHeldItemModelSlot::~NpcHeldItemModelSlot() {}
 
 void NpcHeldItemModelSlot::load(u32 id, u16 *p) {
     HeldItemModel_Setup(&model, id, 0, p, 0, 0);
-    unk_00 = 1;
+    inUse = 1;
 }
 
 void NpcHeldItemModelSlot::unload() {
     HeldItemModel_Release(&model);
-    unk_00 = 0;
+    inUse = 0;
 }
 
 NpcHeldItemModelPool::NpcHeldItemModelPool() : NpcResPool(5) {}

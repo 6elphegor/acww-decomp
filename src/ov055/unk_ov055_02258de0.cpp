@@ -377,7 +377,7 @@ struct Unk_ov055_02259234_Flag {
 
 struct ReceivedLetterBlock {
     u8 unk_00[0xf8];
-    u8 unk_f8;
+    u8 exchangeKind;
     u8 pad_f9[3];
 
     ~ReceivedLetterBlock();
@@ -719,7 +719,7 @@ void SpNpcRoverTalk::waitTagModeStop() {
 
 void SpNpcRover::applyReceivedData() {
     TownExchangeRecord *r4 = TownExchange_GetForAid(4);
-    u32 st = recvLetters.unk_f8;
+    u32 st = recvLetters.exchangeKind;
     if (st == 2) {
         MI_CpuCopy8(&recvLetters, data_021ecfa8, 0xf8);
         restoreOwnTransfer();
@@ -770,7 +770,7 @@ void SpNpcRover::prepareTagData() {
     Constellation_PrepareExchange();
     TownExchangeRecord *r4 = TownExchange_GetForAid(4);
     MI_CpuCopy8(r4, &sendTransfer, 0x84c);
-    sendLetters.unk_f8 = 1;
+    sendLetters.exchangeKind = 1;
     TownExchange_Clear(r4);
     if (saveFailed == 0) {
         s32 r = Save_WriteVillagerTransfer();

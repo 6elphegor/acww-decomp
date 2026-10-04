@@ -38,7 +38,7 @@ struct WfcPool {
 
 struct Unk_ov001_0222df34 {
     u8 pad_000[0x200];
-    WfcObjGroup unk_200;
+    WfcObjGroup headNode;
     WfcObjGroup tailNode;
     void *list;
     WfcPool *nodePool;
@@ -95,7 +95,7 @@ void WfcObj_Init() {
     for (; i < 2; off += 0x228, i++) {
         ((Unk_ov001_0222df34 *)((u8 *)sWfcObj + off))->nodePool = WfcPool_CreateFrom(0x20, (u8 *)sWfcObj + off, 0x10);
         ((Unk_ov001_0222df34 *)((u8 *)sWfcObj + off))->list = WfcList_Create();
-        ((Unk_ov001_0222df34 *)((u8 *)sWfcObj + off))->unk_200.oams = WfcOam_GetEntry(i, 0x40);
+        ((Unk_ov001_0222df34 *)((u8 *)sWfcObj + off))->headNode.oams = WfcOam_GetEntry(i, 0x40);
         ((Unk_ov001_0222df34 *)((u8 *)sWfcObj + off))->tailNode.oams = WfcOam_GetEntry(i, 0x7f) + 1;
         WfcList_PushFront(((Unk_ov001_0222df34 *)((u8 *)sWfcObj + off))->list, (u8 *)sWfcObj + off + 0x200);
         WfcList_PushBack(((Unk_ov001_0222df34 *)((u8 *)sWfcObj + off))->list, (u8 *)sWfcObj + off + 0x210);
@@ -120,7 +120,7 @@ WfcObjGroup *WfcObj_Alloc(s32 which, s32 n, s32 flag) {
     r = WfcPool_Get(sWfcObj[which].nodePool);
     irq = OS_DisableIrqMask(1);
     if (flag != 0) {
-        for (node = &sWfcObj[which].unk_200; node != &sWfcObj[which].tailNode; node = node->next) {
+        for (node = &sWfcObj[which].headNode; node != &sWfcObj[which].tailNode; node = node->next) {
             WfcObjGroup *next = node->next;
             Unk_ov001_02224670_Entry *end = node->oams + node->numOams;
             if (end + n <= next->oams) {
@@ -131,7 +131,7 @@ WfcObjGroup *WfcObj_Alloc(s32 which, s32 n, s32 flag) {
         }
         if (node == &sWfcObj[which].tailNode) Fatal_Trap();
     } else {
-        for (node = &sWfcObj[which].tailNode; node != &sWfcObj[which].unk_200; node = node->prev) {
+        for (node = &sWfcObj[which].tailNode; node != &sWfcObj[which].headNode; node = node->prev) {
             WfcObjGroup *prev = node->prev;
             Unk_ov001_02224670_Entry *start = node->oams - n;
             if (start >= prev->oams + prev->numOams) {
@@ -140,7 +140,7 @@ WfcObjGroup *WfcObj_Alloc(s32 which, s32 n, s32 flag) {
                 break;
             }
         }
-        if (node == &sWfcObj[which].unk_200) Fatal_Trap();
+        if (node == &sWfcObj[which].headNode) Fatal_Trap();
     }
     OS_EnableIrqMask(irq);
     r->numOams = n;

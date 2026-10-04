@@ -72,7 +72,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x0e */ u8 unk_0e[0x28];
+    /* 0x0e */ u8 text[0x28];
 };
 
 class LetterTextLine : public MsgString {
@@ -92,17 +92,17 @@ public:
     void freeLabel();
     void setTarget(u16 v, u32 x);
 
-    /* 0x12 */ u8 unk_12[0x2a];
-    /* 0x3c */ TextLabel *unk_3c;
-    /* 0x40 */ u16 unk_40;
-    /* 0x42 */ u8 unk_42;
-    /* 0x43 */ u8 unk_43;
-    /* 0x44 */ u8 unk_44;
-    /* 0x45 */ u8 unk_45;
-    /* 0x46 */ u8 unk_46;
-    /* 0x47 */ u8 unk_47;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
+    /* 0x12 */ u8 text[0x2a];
+    /* 0x3c */ TextLabel *textLabel;
+    /* 0x40 */ u16 charBase;
+    /* 0x42 */ u8 bgIndex;
+    /* 0x43 */ u8 isSubScreen;
+    /* 0x44 */ u8 isDirty;
+    /* 0x45 */ u8 highlightStart;
+    /* 0x46 */ u8 highlightLength;
+    /* 0x47 */ u8 highlightAlt;
+    /* 0x48 */ u8 nameHighlightStart;
+    /* 0x49 */ u8 nameHighlightLength;
 };
 
 class LetterLayout {
@@ -114,11 +114,11 @@ public:
     u8 *getBodyLineStarts();
     void highlightBodyRange(u32 a, u32 b, u32 c);
 
-    /* 0x000 */ u8 unk_000[0x98];
-    /* 0x098 */ u8 unk_098[4][0x4c];
-    /* 0x1c8 */ u8 unk_1c8[0x28];
-    /* 0x1f0 */ s32 unk_1f0[5];
-    /* 0x204 */ s32 unk_204;
+    /* 0x000 */ u8 headerLines[0x98];
+    /* 0x098 */ u8 bodyLines[4][0x4c];
+    /* 0x1c8 */ u8 recipientName[0x28];
+    /* 0x1f0 */ s32 bodyLineStarts[5];
+    /* 0x204 */ s32 bodyLineCount;
 };
 
 struct Unk_0206d0a0_Pad {
@@ -160,9 +160,9 @@ extern "C" s32 LetterLayout_SplitBody(void *unused, u8 *a, s32 *b, s32 *c);
 void LetterRenderer::setLayer(s32 v) {
     s32 i;
     ((LetterTextLine *)this)->setTarget(0x75, v);
-    ((LetterTextLine *)unk_000 + 1)->setTarget(0x180, v);
+    ((LetterTextLine *)headerLines + 1)->setTarget(0x180, v);
     for (i = 0; i < 4; i++) {
-        ((LetterTextLine *)unk_098[i])->setTarget(i * 0x28 + 0x9d, v);
+        ((LetterTextLine *)bodyLines[i])->setTarget(i * 0x28 + 0x9d, v);
     }
     recipientNameLength = 0;
 }
@@ -199,10 +199,10 @@ s32 LetterRenderer::getRecipientNameLength() {
 }
 
 void LetterRenderer::loadRecipientName(void *src) {
-    Mem_Clear(unk_1c8, 0x28);
-    Letter_GetRecipientNameBytes(src, unk_1c8);
-    recipientNameLength = Text_GetLength(unk_1c8, 0x28);
-    recipientNameWidth = Text_MeasureWidth(unk_1c8, 0x28);
+    Mem_Clear(recipientName, 0x28);
+    Letter_GetRecipientNameBytes(src, recipientName);
+    recipientNameLength = Text_GetLength(recipientName, 0x28);
+    recipientNameWidth = Text_MeasureWidth(recipientName, 0x28);
 }
 
 void LetterRenderer::setGreeting(Unk_0206d1d4_Src *src, u8 *out) {
@@ -221,7 +221,7 @@ void LetterRenderer::setGreeting(Unk_0206d1d4_Src *src, u8 *out) {
     }
     k = 0;
     while (k < recipientNameLength) {
-        out[n] = unk_1c8[k];
+        out[n] = recipientName[k];
         n++;
         k++;
     }
@@ -244,7 +244,7 @@ void LetterRenderer::setGreeting(Unk_0206d1d4_Src *src, u8 *out) {
 }
 
 void LetterRenderer::setBody(u8 *src, BOOL flag) {
-    LetterLayout_SplitBody(this, src, unk_1f0, &unk_204);
+    LetterLayout_SplitBody(this, src, bodyLineStarts, &bodyLineCount);
     EncodedString40 buf;
     u8 z[0x28];
     s32 i;
@@ -253,17 +253,17 @@ void LetterRenderer::setBody(u8 *src, BOOL flag) {
     z[0] = 0;
     zero = 0;
     for (; i < 4; i++) {
-        s32 diff = unk_1f0[i + 1] - unk_1f0[i];
-        LetterTextLine *cell = (LetterTextLine *)unk_098[i];
+        s32 diff = bodyLineStarts[i + 1] - bodyLineStarts[i];
+        LetterTextLine *cell = (LetterTextLine *)bodyLines[i];
         cell->clearText();
         if (diff != 0) {
-            EncodedString_SetRaw(&buf, src + unk_1f0[i], diff);
+            EncodedString_SetRaw(&buf, src + bodyLineStarts[i], diff);
             if (flag) {
-                cell->setTextWithMarks(&buf, i == unk_204 ? 1 : zero);
+                cell->setTextWithMarks(&buf, i == bodyLineCount ? 1 : zero);
             } else {
                 cell->setText(&buf);
             }
-        } else if (flag && i == unk_204) {
+        } else if (flag && i == bodyLineCount) {
             EncodedString_SetRaw(&buf, z, 1);
             cell->setTextWithMarks(&buf, 1);
         } else {
@@ -274,9 +274,9 @@ void LetterRenderer::setBody(u8 *src, BOOL flag) {
 
 void LetterRenderer::setSignature(u8 *data) {
     EncodedString40 buf;
-    ((LetterTextLine *)unk_000 + 1)->clearText();
+    ((LetterTextLine *)headerLines + 1)->clearText();
     EncodedString_SetRaw(&buf, data, 0x20);
-    ((LetterTextLine *)unk_000 + 1)->setText(&buf);
+    ((LetterTextLine *)headerLines + 1)->setText(&buf);
 }
 
 void LetterRenderer::highlightGreeting(u32 a, u32 b) {
@@ -290,14 +290,14 @@ void LetterLayout::highlightBodyRange(u32 a, u32 b, u32 c) {
     u32 pos, cnt, end, len;
     pos = 0;
     for (i = 0; i < 4; i++) {
-        len = unk_1f0[i + 1] - unk_1f0[i];
+        len = bodyLineStarts[i + 1] - bodyLineStarts[i];
         if (len == 0) break;
         if (a >= pos) {
             end = pos + len;
             if (a < end) {
                 if (end > a + b) cnt = b;
                 else cnt = len - (a - pos);
-                ((LetterTextLine *)unk_098[i])->setHighlight(a - pos, cnt, c);
+                ((LetterTextLine *)bodyLines[i])->setHighlight(a - pos, cnt, c);
                 a = (u8)end;
                 b -= cnt;
                 if (b == 0) break;
@@ -344,13 +344,13 @@ extern "C" s32 Text_SplitLines(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw
     return 0;
 }
 
-u8 *LetterLayout::getBodyLineStarts() { return (u8 *)unk_1f0; }
-s32 LetterLayout::getBodyLineCount() { return unk_204; }
+u8 *LetterLayout::getBodyLineStarts() { return (u8 *)bodyLineStarts; }
+s32 LetterLayout::getBodyLineCount() { return bodyLineCount; }
 
 s32 LetterLayout::getBodyLineOfPos(s32 v) {
     s32 n, i;
-    for (i = 0, n = unk_204; i < n; i++) {
-        if (v < unk_1f0[i + 1]) return i;
+    for (i = 0, n = bodyLineCount; i < n; i++) {
+        if (v < bodyLineStarts[i + 1]) return i;
     }
     if (n >= 4) n = 3;
     return n;
@@ -361,7 +361,7 @@ void LetterLayout::freeAllLabels() {
     ((LetterTextLine *)this)->freeLabel();
     ((LetterTextLine *)((u8 *)this + 0x4c))->freeLabel();
     for (i = 0; i < 4; i++) {
-        ((LetterTextLine *)unk_098[i])->freeLabel();
+        ((LetterTextLine *)bodyLines[i])->freeLabel();
     }
 }
 
@@ -370,7 +370,7 @@ void LetterLayout::redrawAll() {
     ((LetterTextLine *)this)->redrawIfDirty(0);
     ((LetterTextLine *)((u8 *)this + 0x4c))->redrawIfDirty(1);
     for (i = 0; i < 4; i++) {
-        ((LetterTextLine *)unk_098[i])->redrawIfDirty(0);
+        ((LetterTextLine *)bodyLines[i])->redrawIfDirty(0);
     }
 }
 
@@ -379,12 +379,12 @@ u8 *EncodedString40::data() { return (u8 *)this + 0xe; }
 
 LetterTextLine::LetterTextLine() {
     clear();
-    unk_3c = NULL;
-    unk_40 = 0;
-    unk_45 = 0;
-    unk_46 = 0;
-    unk_48 = 0;
-    unk_49 = 0;
+    textLabel = NULL;
+    charBase = 0;
+    highlightStart = 0;
+    highlightLength = 0;
+    nameHighlightStart = 0;
+    nameHighlightLength = 0;
 }
 
 LetterTextLine::~LetterTextLine() { freeLabel(); }
@@ -392,93 +392,93 @@ LetterTextLine::~LetterTextLine() { freeLabel(); }
 u32 LetterTextLine::capacity() { return 0x29; }
 
 void LetterTextLine::setTarget(u16 v, u32 x) {
-    unk_40 = v;
-    unk_44 = 0;
-    unk_43 = Gfx2d_IsMainScreenLayer(x) == 0 ? 1 : 0;
-    unk_42 = Gfx2d_GetLayerBgIndex(x);
+    charBase = v;
+    isDirty = 0;
+    isSubScreen = Gfx2d_IsMainScreenLayer(x) == 0 ? 1 : 0;
+    bgIndex = Gfx2d_GetLayerBgIndex(x);
 }
 
 u8 *LetterTextLine::data() { return (u8 *)this + 0x12; }
 
 void LetterTextLine::freeLabel() {
-    if (unk_3c != NULL) {
-        MsgTextLabel_Destroy(unk_3c);
-        unk_3c = NULL;
+    if (textLabel != NULL) {
+        MsgTextLabel_Destroy(textLabel);
+        textLabel = NULL;
     }
 }
 
 void LetterTextLine::createLabel() {
-    if (unk_3c == NULL) {
-        unk_3c = MsgTextLabel_CreateVram(unk_40, 0x14, 2);
-        if (unk_3c != NULL) {
+    if (textLabel == NULL) {
+        textLabel = MsgTextLabel_CreateVram(charBase, 0x14, 2);
+        if (textLabel != NULL) {
             u8 a, b;
-            unk_3c->vramLoader = unk_42;
-            if (unk_43) unk_3c->copyMode = 1;
-            else unk_3c->copyMode = 2;
-            unk_3c->rowStride1K = 0;
-            unk_3c->bgColor = 0;
-            unk_3c->fgColor = 0xf;
-            if (unk_47) {
+            textLabel->vramLoader = bgIndex;
+            if (isSubScreen) textLabel->copyMode = 1;
+            else textLabel->copyMode = 2;
+            textLabel->rowStride1K = 0;
+            textLabel->bgColor = 0;
+            textLabel->fgColor = 0xf;
+            if (highlightAlt) {
                 a = 0xb;
                 b = 0;
             } else {
                 a = 0xe;
                 b = 0xd;
             }
-            if (unk_46) {
-                if (unk_49) {
-                    unk_3c->setHighlights(a, b, unk_45, unk_46, 0xc, 0, unk_48, unk_49);
+            if (highlightLength) {
+                if (nameHighlightLength) {
+                    textLabel->setHighlights(a, b, highlightStart, highlightLength, 0xc, 0, nameHighlightStart, nameHighlightLength);
                 } else {
-                    unk_3c->setHighlight(a, b, unk_45, unk_46);
+                    textLabel->setHighlight(a, b, highlightStart, highlightLength);
                 }
-            } else if (unk_49) {
-                unk_3c->setHighlight(0xc, 0, unk_48, unk_49);
+            } else if (nameHighlightLength) {
+                textLabel->setHighlight(0xc, 0, nameHighlightStart, nameHighlightLength);
             }
         }
     }
 }
 
 void LetterTextLine::redrawIfDirty(BOOL b) {
-    if (unk_44) {
+    if (isDirty) {
         createLabel();
-        if (unk_3c) {
+        if (textLabel) {
             TextLabel *t;
-            unk_44 = 0;
-            t = unk_3c;
+            isDirty = 0;
+            t = textLabel;
             t->textStart = (u32)data();
-            if (b) unk_3c->alignRight();
-            unk_3c->requestRedraw();
+            if (b) textLabel->alignRight();
+            textLabel->requestRedraw();
         }
     }
 }
 
 void LetterTextLine::setText(EncodedString *src) {
     fromEncoded(src, 0, 0);
-    unk_44 = 1;
+    isDirty = 1;
 }
 
 void LetterTextLine::setTextWithMarks(EncodedString *src, BOOL b) {
     fromEncoded(src, 1, b);
-    unk_44 = 1;
+    isDirty = 1;
 }
 
 void LetterTextLine::clearText() {
     clear();
-    unk_45 = 0;
-    unk_46 = 0;
-    unk_47 = 0;
-    unk_48 = 0;
-    unk_49 = 0;
-    unk_44 = 1;
+    highlightStart = 0;
+    highlightLength = 0;
+    highlightAlt = 0;
+    nameHighlightStart = 0;
+    nameHighlightLength = 0;
+    isDirty = 1;
 }
 
 void LetterTextLine::setHighlight(u8 a, u8 b, u32 c) {
-    unk_45 = a;
-    unk_46 = b;
-    unk_47 = c;
+    highlightStart = a;
+    highlightLength = b;
+    highlightAlt = c;
 }
 
 void LetterTextLine::setNameHighlight(u8 a, u8 b) {
-    unk_48 = a;
-    unk_49 = b;
+    nameHighlightStart = a;
+    nameHighlightLength = b;
 }
