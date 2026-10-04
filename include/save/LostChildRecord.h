@@ -20,9 +20,9 @@ public:
 
     /* 0x00 */ u32 unk_00[2];
     /* 0x08 */ u16 unk_08;
-    /* 0x0a */ u8 unk_0a_0 : 4;
-    u8 unk_0a_4 : 1;
-    u8 unk_0a_5 : 1;
+    /* 0x0a */ u8 daysLeft : 4;
+    u8 kaitlinRole : 1;
+    u8 escorting : 1;
 };
 
 #endif

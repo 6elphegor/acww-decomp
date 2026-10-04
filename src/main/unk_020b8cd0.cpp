@@ -1,5 +1,5 @@
 #include "types.h"
-#include "sys/Unk_020b83b0.h"
+#include "sys/PrioListNode.h"
 #include "gfx/VramTask.h"
 
 extern "C" {

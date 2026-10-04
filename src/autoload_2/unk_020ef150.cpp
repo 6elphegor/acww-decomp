@@ -131,7 +131,7 @@ extern "C" void SndMgr_PlaySe(SndMgr *self, s32 id) {
             SndMgr_ApplyPan(self, 0);
             break;
         case 0x861:
-            Snd_StartSeqArc(id % 1000, id / 1000, &self->unk_40);
+            Snd_StartSeqArc(id % 1000, id / 1000, &self->auxSeHandle);
             SndMgr_ApplyPan(self, 0);
             break;
         case 1:
@@ -209,7 +209,7 @@ extern "C" void SndMgr_PlayBgm(SndMgr *self, u32 k) {
             if (k != 0) {
                 return;
             }
-            self->unk_68 = func_0210e5fc(&self->strmHandle);
+            self->strmTotalTime = func_0210e5fc(&self->strmHandle);
             return;
     }
     self->scene->vfunc_28(0, k);
@@ -486,7 +486,7 @@ extern "C" void SndMgr_UpdateVolumeRamps(SndMgr *self) {
     }
     if (o->id == 50) {
         u32 r = func_0210e648(&self->strmHandle);
-        s32 vol = ((u32)(self->unk_68 - r) * 20) / 1000;
+        s32 vol = ((u32)(self->strmTotalTime - r) * 20) / 1000;
         if (r != 0) {
             if (vol > 127) {
                 SndMgr_SetPlayerVolumes(self, 0, 0);
@@ -526,7 +526,7 @@ extern "C" void SndMgr_ApplyPan(SndMgr *self, u32 flag) {
     }
     if (flag == 0) {
         NNS_SndPlayerSetTrackPan(&self->seHandle, 255, v);
-        NNS_SndPlayerSetTrackPan(&self->unk_40, 255, v);
+        NNS_SndPlayerSetTrackPan(&self->auxSeHandle, 255, v);
         return;
     }
     SndHandle *h = self->seHandle;
@@ -701,19 +701,19 @@ extern "C" void SndMgr_SetSeHandleVolumes(SndMgr *self, s32 v) {
         b = 127;
     }
     NNS_SndPlayerSetVolume(&self->seHandle, a);
-    NNS_SndPlayerSetVolume(&self->unk_40, b);
+    NNS_SndPlayerSetVolume(&self->auxSeHandle, b);
 }
 
 extern "C" void SndMgr_PlayAuxSe(SndMgr *self, u32 a) {
-    Snd_StartSeqArcEx(&self->unk_40, 10, -1, -1, 0, a);
+    Snd_StartSeqArcEx(&self->auxSeHandle, 10, -1, -1, 0, a);
 }
 
 extern "C" void SndMgr_PlayAuxSeHeld(SndMgr *self, u32 a) {
-    Snd_StartSeqArcEx(&self->unk_40, 10, -1, -1, 0, a);
+    Snd_StartSeqArcEx(&self->auxSeHandle, 10, -1, -1, 0, a);
 }
 
 extern "C" void SndMgr_StopAuxSe(SndMgr *self) {
-    Snd_StopHandle(&self->unk_40, 0);
+    Snd_StopHandle(&self->auxSeHandle, 0);
 }
 
 extern "C" void SndMgr_StartBellRollSe(SndMgr *self) {

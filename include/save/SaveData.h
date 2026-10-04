@@ -2,7 +2,6 @@
 #define SAVE_SAVEDATA_H
 
 #include "types.h"
-#include "save/Unk_0209da44_E98c.h"
 
 // Game-wide save state (0x15fe0 bytes, one global gSaveData at 0x021d7350 constructed by __sinit): every
 // data_021d73xx..gSaveFooter label of symbols.txt is a member of it. gSaveData and the constructor are in
@@ -36,18 +35,18 @@ struct SaveData {
     /* 0x08a3c */ u8 villagers[0x38f4];
     /* 0x0c330 */ u8 townMap[0x2210];
     /* 0x0e540 */ u8 unk_e540[0x16];
-    /* 0x0e556 */ u8 unk_e556[0x1];
-    /* 0x0e557 */ u8 unk_e557[0x1];
+    /* 0x0e556 */ u8 gulliverQuest[0x1];
+    /* 0x0e557 */ u8 roostGuestRoll[0x1];
     /* 0x0e558 */ u8 house[0x1594];
     /* 0x0faec */ u8 songSet[0x10];
     /* 0x0fafc */ u8 ableSistersPatterns[0x1140];
     /* 0x10c3c */ u8 townExchange[0x84c]; // TownExchangeRecord
     /* 0x11488 */ u8 bbsBoard[0xb78];
     /* 0x12000 */ u8 unk_12000[0xc];
-    /* 0x1200c */ Unk_0209da44_E98c mailboxes[4];
+    /* 0x1200c */ u8 mailboxes[4][0x98c]; // PlayerMailbox
     /* 0x1463c */ u8 letterOutbox[0x990];
     /* 0x14fcc */ u8 constellations[0x464];
-    /* 0x15430 */ Unk_0209da44_Eb4 dressers[4];
+    /* 0x15430 */ u8 dressers[4][0xb4]; // ChestStorage
     /* 0x15700 */ u8 blancaFace[0x22c];
     /* 0x1592c */ u8 townStyle[0x230];
     /* 0x15b5c */ u8 bottleLetter[0xfc];
@@ -67,7 +66,7 @@ struct SaveData {
     /* 0x15ede */ u8 recycleBin[0x1e];
     /* 0x15efc */ u8 contestRecord[0x38];
     /* 0x15f34 */ u8 reddLastSale[0x18];
-    /* 0x15f4c */ u8 unk_15f4c[0x1a];
+    /* 0x15f4c */ u8 turnipMarket[0x1a];
     /* 0x15f66 */ u8 weather[0xa];
     /* 0x15f70 */ u8 reddShop[0x10];
     /* 0x15f80 */ u8 unk_15f80[0x4];

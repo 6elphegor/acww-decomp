@@ -142,7 +142,7 @@ public:
             /* 0x5d8 */ u32 animFrame;
             /* 0x5dc */ u8 pad_5dc[0x628 - 0x5dc];
             /* 0x628 */ u8 collider[0xa0];   // FtrCollider
-            /* 0x6c8 */ u8 modelRes[0x74];   // Unk_ov004_02206e38
+            /* 0x6c8 */ u8 modelRes[0x74];   // FtrModelRes
             /* 0x73c */ u8 switchState[2];      // FtrSwitch
             /* 0x73e */ s8 clockHands;         // FtrClockHands (3 bytes)
             /* 0x73f */ s8 clockHandsMinJnt;
@@ -169,7 +169,7 @@ public:
             /* 0x790 */ s32 lightKind;
             /* 0x794 */ u8 soundEmitter[0x20];   // Unk_ov004_02235984
             /* 0x7b4 */ s32 centerPos[3];
-            /* 0x7c0 */ Unk_ov004_02208980_E anims[4];   // 4 x FtrModelAnim
+            /* 0x7c0 */ FtrModelAnimView anims[4];   // 4 x FtrModelAnim
         };
         struct {
             /* 0x130 */ u8 b10_pad_130[0x5d0 - 0x130];
@@ -253,7 +253,7 @@ public:
             /* 0x594 */ u8 b15_pad_594[0x6c8 - 0x594];
             /* 0x6c8 */ u8 b15_f_6c8[0x73c - 0x6c8];
             /* 0x73c */ u8 b15_f_73c[0x7c0 - 0x73c];
-            /* 0x7c0 */ Unk_ov004_0220ce38_Slot b15_unk_7c0[4];
+            /* 0x7c0 */ FtrModelAnimView b15_unk_7c0[4];
         };
         struct {
             /* 0x130 */ u8 b16_pad_f0[0x534 - 0x130];
@@ -379,7 +379,7 @@ public:
             /* 0x5e4 */ u8 b24_pad_5e4[0x73c - 0x5e4];
             /* 0x73c */ u8 b24_unk_73c[2];
             /* 0x73e */ u8 b24_pad_73e[0x7c0 - 0x73e];
-            /* 0x7c0 */ Unk_ov004_02206e74 b24_unk_7c0[4];
+            /* 0x7c0 */ FtrModelAnimView b24_unk_7c0[4];
         };
         struct {
             /* 0x130 */ u8 b25_pad_12c[0x534 - 0x130];

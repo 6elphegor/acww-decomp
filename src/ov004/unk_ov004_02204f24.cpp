@@ -646,7 +646,7 @@ FtrActor *FtrActorTable_get(void *a, u32 b);
 void _ZN10FtrGlowMatD1Ev(void *);
 void _ZN13FtrClockHandsD1Ev(void *);
 void _ZN9FtrSwitchD1Ev(void *);
-void _ZN18Unk_ov004_02206e38D1Ev(void *);
+void _ZN11FtrModelResD1Ev(void *);
 void *_ZN11FtrColliderD1Ev(void *);
 void _ZN11FtrTopItemsD1Ev(void *);
 void _ZN12FtrStackLinkD1Ev(void *);
@@ -655,7 +655,7 @@ void _ZN12FtrModelAnimC1Ev(void *);
 void _ZN12FtrStackLink5clearEv(void *);
 void _ZN11FtrTopItemsC1Ev(void *);
 void _ZN11FtrColliderC1Ev(void *);
-void _ZN18Unk_ov004_02206e38C1Ev(void *);
+void _ZN11FtrModelResC1Ev(void *);
 void _ZN9FtrSwitch5clearEv(void *);
 void _ZN13FtrClockHands5clearEv(void *);
 void _ZN10FtrGlowMatC1Ev(void *);
@@ -663,7 +663,7 @@ typedef void (*Unk_ov004_02209578_Fn)(void *);
 void *__cxa_vec_ctor(void *, s32, s32, Unk_ov004_02209578_Fn, Unk_ov004_02209578_Fn);
 void __cxa_vec_cleanup(void *, s32, s32, Unk_ov004_02209578_Fn);
 BOOL _ZN8FtrActor9isNotIdleEv(void *self);
-void _ZN18Unk_ov004_0220650c5clearEv(void *self);
+void _ZN13FtrStackedSet5clearEv(void *self);
 void _ZN11BoxColliderD1Ev(void *self);
 extern u32 _ZTV11FtrCollider[];
 }
@@ -1101,7 +1101,7 @@ FtrActor::FtrActor() {
     func_020b6e10(touchBox);
     func_02054514(model);
     _ZN11FtrColliderC1Ev(collider);
-    _ZN18Unk_ov004_02206e38C1Ev(modelRes);
+    _ZN11FtrModelResC1Ev(modelRes);
     _ZN9FtrSwitch5clearEv(switchState);
     _ZN13FtrClockHands5clearEv(&clockHands);
     _ZN10FtrGlowMatC1Ev(lampMat);
@@ -1118,7 +1118,7 @@ FtrActor::~FtrActor() {
     _ZN10FtrGlowMatD1Ev(lampMat);
     _ZN13FtrClockHandsD1Ev(&clockHands);
     _ZN9FtrSwitchD1Ev(switchState);
-    _ZN18Unk_ov004_02206e38D1Ev(modelRes);
+    _ZN11FtrModelResD1Ev(modelRes);
     _ZN11FtrColliderD1Ev(collider);
     func_020544d8(model);
     func_020b6df4(touchBox);
@@ -1582,7 +1582,7 @@ extern "C" BOOL FtrActor_StepAnims(Self *self) {
     }
     for (i = z; i < 4; i++) {
         if (((FtrModelAnim *)(&self->anims[i]))->getAnmObj()) {
-            p = (Unk_ov004_02208980_E *)PT(0x7c0) + i;
+            p = (FtrModelAnimView *)PT(0x7c0) + i;
             AnimFrameCtrl_step(p);
             *self->anims[i].anmObj = self->anims[i].curFrame;
             if (!AnimFrameCtrl_isFinished(p)) {
@@ -2273,7 +2273,7 @@ void FtrActor::updateLamp() {
             }
         }
     }
-    ((Unk_ov004_02205b14 *)(lampMat))->updateEmission();
+    ((FtrGlowMat *)(lampMat))->updateEmission();
 }
 
 // @022076b0
@@ -2633,7 +2633,7 @@ u32 FtrModelAnim::getAnmObj() {
 }
 
 // @02206e38
-Unk_ov004_02206e38::Unk_ov004_02206e38() : item(0xfff1) {
+FtrModelRes::FtrModelRes() : item(0xfff1) {
     texFile = 0;
     arcFile = 0;
     model = 0;
@@ -2644,7 +2644,7 @@ Unk_ov004_02206e38::Unk_ov004_02206e38() : item(0xfff1) {
 
 // @02206e1c
 // ---- functions ----
-Unk_ov004_02206e38::~Unk_ov004_02206e38() {
+FtrModelRes::~FtrModelRes() {
 }
 
 // @02206e0c
@@ -2989,7 +2989,7 @@ Unk_ov004_02206520_Ent *FtrTileList::get(s32 i) {
 }
 
 // @0220650c
-void Unk_ov004_0220650c::clear() {
+void FtrStackedSet::clear() {
     u32 i;
     count = 0;
     for (i = 0; i < 4; i++) {
@@ -3015,13 +3015,13 @@ void FtrStackedSet::collect(FtrTileList *l, s32 flag) {
 
 // @02206494
 FtrStackedSet::FtrStackedSet(FtrTileList *l, s32 flag) {
-    _ZN18Unk_ov004_0220650c5clearEv(this);
+    _ZN13FtrStackedSet5clearEv(this);
     collect(l, flag);
 }
 
 // @02206484
 FtrStackedSet::FtrStackedSet() {
-    _ZN18Unk_ov004_0220650c5clearEv(this);
+    _ZN13FtrStackedSet5clearEv(this);
 }
 
 // @02206480
@@ -3562,7 +3562,7 @@ BOOL FtrGlowMat::setLit(BOOL on, s32 a, s32 b) {
 }
 
 // @02205b14
-void Unk_ov004_02205b14::updateEmission() {
+void FtrGlowMat::updateEmission() {
     if (matIdx != -1) {
         LightLevel_update(this);
         s32 x = LightLevel_getLevel(this);
@@ -3573,7 +3573,7 @@ void Unk_ov004_02205b14::updateEmission() {
             s32 g = Math_LerpFx(x, (col & 0x1f) << 12, 0x1f000);
             s32 b = Math_LerpFx(x, ((col >> 5) & 0x1f) << 12, 0x1f000);
             u32 r7c = (u16)(((r7 >> 12) << 10) | ((g >> 12) | ((b >> 12) << 5)));
-            for (s32 i = 0; i < resMdl->numMat; i++) {
+            for (s32 i = 0; i < ((Unk_ov004_02205b14_Obj *)resMdl)->numMat; i++) {
                 NNS_G3dMdlSetMdlEmi(resMdl, i, i == matIdx ? r7c : col);
             }
         } else {
@@ -3628,7 +3628,7 @@ void FtrGlowMatSet::update() {
     if (anyBound != 0) {
         FtrGlowMat *p = mats;
         FtrGlowMat *end = (FtrGlowMat *)&anyBound;
-        for (; p < end; p++) ((Unk_ov004_02205b14 *)p)->updateEmission();
+        for (; p < end; p++) p->updateEmission();
     }
 }
 

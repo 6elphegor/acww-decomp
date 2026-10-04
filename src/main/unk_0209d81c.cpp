@@ -1,5 +1,4 @@
 #include "types.h"
-#include "save/Unk_0209da44_E98c.h"
 #include "save/SaveData.h"
 
 extern "C" {

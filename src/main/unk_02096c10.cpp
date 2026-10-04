@@ -219,7 +219,7 @@ void MotherLetterState::clear() {
     lastYear = 0;
     birthdayYearFlags = 0;
     for (i = 0; i < 15; i++) {
-        unk_04[i] = 0;
+        sentBits[i] = 0;
     }
     birthdayYearFlags = 100;
 }
@@ -254,20 +254,20 @@ BOOL MotherLetterState::testFlag(u32 mask) {
 }
 
 void MotherLetterState::setSent(s32 i) {
-    u8 *p = unk_04;
+    u8 *p = sentBits;
     s32 k = i >> 3;
     p[k] |= (1 << (i & 7));
 }
 
 void MotherLetterState::clearSent(s32 i) {
-    u8 *p = unk_04;
+    u8 *p = sentBits;
     s32 k = i >> 3;
     p[k] &= ~(1 << (i & 7));
 }
 
 BOOL MotherLetterState::isSent(s32 i) {
     BOOL r = TRUE;
-    if (((r << (i & 7)) & unk_04[i >> 3]) == 0) {
+    if (((r << (i & 7)) & sentBits[i >> 3]) == 0) {
         r = FALSE;
     }
     return r;

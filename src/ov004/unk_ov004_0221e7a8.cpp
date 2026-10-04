@@ -99,7 +99,7 @@ extern "C" RoomObjActor *_ZN12RoomObjActorC2Ev(RoomObjActor *self) {
     _ZN10RoomObjResC1Ev(&self->res);
     RoomObjTex_Construct(&self->tex);
     RoomObj_ConstructSe(&self->se);
-    self->unk_ea = 0xff;
+    self->syncSlot = 0xff;
     return self;
 }
 
@@ -121,7 +121,7 @@ BOOL RoomObjActor::preExecute() {
     if (Character::preExecute() == 0) {
         return FALSE;
     }
-    if (unk_ea != 0xff) {
+    if (syncSlot != 0xff) {
         s32 v = getSyncState();
         if (tex.syncState != v) {
             changeSyncState(v);
@@ -195,19 +195,19 @@ void RoomObjActor::releaseResources() {
 }
 
 void RoomObjActor::setSyncSlot(u32 v) {
-    unk_ea = v;
+    syncSlot = v;
 }
 
 s32 RoomObjActor::getSyncState() {
-    if (unk_ea != 0xff) {
-        return RoomObjSync_GetState(unk_ea);
+    if (syncSlot != 0xff) {
+        return RoomObjSync_GetState(syncSlot);
     }
     return 0;
 }
 
 s32 RoomObjActor::storeSyncState() {
-    if (unk_ea != 0xff) {
-        return RoomObjSync_SetState(unk_ea);
+    if (syncSlot != 0xff) {
+        return RoomObjSync_SetState(syncSlot);
     }
     return 0;
 }

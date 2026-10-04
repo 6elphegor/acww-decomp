@@ -1,6 +1,6 @@
 #include "types.h"
 #include "net/CommManager.h"
-#include "sys/Unk_020b83b0.h"
+#include "sys/PrioListNode.h"
 #include "room/Unk_0209c41c_Actor.h"
 #include "gfx/TexVramSlot.h"
 #include "town/TownAcreIndex.h"

@@ -10,7 +10,7 @@ class PatternOrder {
 public:
     PatternOrder();
     ~PatternOrder();
-    /* 0x0 */ u8 unk_00[8];
+    /* 0x0 */ u8 slots[8];
     u32 getSlot(u32 i);
     void swap(u32 a, u32 b);
     void reset();

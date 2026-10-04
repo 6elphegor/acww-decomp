@@ -62,10 +62,10 @@ void SndMgr::init(u32 a, u32 b, u32 c) {
     Snd_InitHandle(&voiceHandle);
     Snd_InitHandle(&seHandle);
     Snd_InitHandle(&bgmHandle);
-    Snd_InitHandle(&unk_40);
+    Snd_InitHandle(&auxSeHandle);
     beatSync = 0;
     trackMask = 0;
-    unk_68 = 0;
+    strmTotalTime = 0;
     variantTimer = -1;
     crossTrackMask = 0;
     pan = 0;

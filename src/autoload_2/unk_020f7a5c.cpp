@@ -403,9 +403,9 @@ BgmBeatPhase::BgmBeatPhase() {
     seqVar0 = -1;
     seqVar2 = -1;
     seqVar3 = -1;
-    unk_10 = 0;
-    unk_0c = unk_10;
-    unk_08 = unk_0c;
+    loopFrame32 = 0;
+    loopFrame20 = loopFrame32;
+    beatFrame = loopFrame20;
 }
 
 BgmBeatSync::BgmBeatSync() {
@@ -438,9 +438,9 @@ void BgmBeatSync::update() {
         if (!nz((u32)h->p)) return;
         func_0210a024(h, 4, &v);
         sub.seqVar4 = v;
-        sub.unk_08 = 0;
-        sub.unk_0c = 0;
-        sub.unk_10 = 0;
+        sub.beatFrame = 0;
+        sub.loopFrame20 = 0;
+        sub.loopFrame32 = 0;
         id = h->p->id;
         switch (id) {
         case 109:
@@ -540,7 +540,7 @@ void BgmBeatSync::calcPhase() {
     s16 t;
     s32 den;
     s32 d;
-    sub.unk_08 = FX_Div(s2c << 12, 0x3000);
+    sub.beatFrame = FX_Div(s2c << 12, 0x3000);
     t = s2c;
     switch (sub.seqVar4) {
     case 3:
@@ -567,7 +567,7 @@ void BgmBeatSync::calcPhase() {
     }
     d = FX_Div(t << 12, den) + 0xc000;
     if (d >= 0x20000) d -= 0x20000;
-    sub.unk_10 = d;
+    sub.loopFrame32 = d;
     t = s2c;
     switch (sub.seqVar4) {
     case 4:
@@ -601,5 +601,5 @@ void BgmBeatSync::calcPhase() {
     }
     d = FX_Div(t << 12, den) + 0x4000;
     if (d >= 0x14000) d -= 0x14000;
-    sub.unk_0c = d;
+    sub.loopFrame20 = d;
 }

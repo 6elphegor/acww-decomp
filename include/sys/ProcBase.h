@@ -54,7 +54,7 @@ public:
     /* 0x28 */ QNode executeNode;
     /* 0x38 */ QNode drawNode;
     /* 0x48 */ void *seq;
-    /* 0x4c */ Heap *unk_4c;
+    /* 0x4c */ Heap *procHeap;
 };
 
 // Vtable at 0x020d8c74 (emitted with postCreate in src/main/unk_0202e840.cpp). Its constructor and destructor are

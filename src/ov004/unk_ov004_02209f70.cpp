@@ -3029,7 +3029,7 @@ BOOL FtrTvVcr::onDelete() {
 }
 
 BOOL FtrTvVcr::updateActive() {
-    ((Unk_ov004_02205b14 *)&screenMat)->updateEmission();
+    screenMat.updateEmission();
     execVcrAct();
     return TRUE;
 }
@@ -3128,7 +3128,7 @@ BOOL FtrTv::onDelete() {
 }
 
 BOOL FtrTv::updateActive() {
-    ((Unk_ov004_02205b14 *)&screenMat)->updateEmission();
+    screenMat.updateEmission();
     execFtrAct();
     isNearestTv = 0;
     return TRUE;

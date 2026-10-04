@@ -6,7 +6,7 @@
 // Room object sync helpers: nibble-packed state bytes, sync record, and the actor interface whose vfunc_60 changes
 // state (src/main/unk_0209c08c.cpp, unk_0209c390.cpp, unk_0209c3e0.cpp, unk_0209c4a8.cpp).
 
-struct Unk_0209c614_S {
+struct SceneExitResult {
     /* 0x00 */ u8 a, b, c, d;
     /* 0x04 */ u16 e;
     /* 0x06 */ s16 f;

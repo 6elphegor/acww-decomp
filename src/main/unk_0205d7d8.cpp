@@ -1,6 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "sys/Unk_020b83b0.h"
+#include "sys/PrioListNode.h"
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexTransfer.h"
 #include "gfx/VramTask.h"

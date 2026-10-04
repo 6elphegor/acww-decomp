@@ -1233,31 +1233,31 @@ extern "C" void LostChild_LoadFromTown() {
 
 void LostChildRecord::clear() {
     TownId_Clear(this);
-    unk_0a_0 = 0;
-    unk_0a_4 = 0;
-    unk_0a_5 = 0;
+    daysLeft = 0;
+    kaitlinRole = 0;
+    escorting = 0;
 }
 
 u16 *LostChildRecord::getTownId() { return (u16 *)this; }
 
 void LostChildRecord::setTownId() { TownId_Assign(this); }
 
-u32 LostChildRecord::getDaysLeft() { return unk_0a_0; }
+u32 LostChildRecord::getDaysLeft() { return daysLeft; }
 
-void LostChildRecord::setDaysLeft(u8 v) { unk_0a_0 = v; }
+void LostChildRecord::setDaysLeft(u8 v) { daysLeft = v; }
 
-BOOL LostChildRecord::isKaitlinRole() { return unk_0a_4; }
+BOOL LostChildRecord::isKaitlinRole() { return kaitlinRole; }
 
-void LostChildRecord::setKaitlinRole(u8 v) { unk_0a_4 = v; }
+void LostChildRecord::setKaitlinRole(u8 v) { kaitlinRole = v; }
 
 BOOL LostChildRecord::isEscorting() {
-    if (unk_0a_5) return TRUE;
+    if (escorting) return TRUE;
     return FALSE;
 }
 
-void LostChildRecord::setEscorting() { unk_0a_5 = 1; }
+void LostChildRecord::setEscorting() { escorting = 1; }
 
-void LostChildRecord::clearEscorting() { unk_0a_5 = 0; }
+void LostChildRecord::clearEscorting() { escorting = 0; }
 
 BlancaFaceRecord *BlancaFaceRecord::construct() {
     _ZN7PatternC1Ev(this);
@@ -1296,9 +1296,9 @@ BOOL BlancaFaceRecord::isBlancaDue() {
     return FALSE;
 }
 
-void BlancaFaceRecord::func_02087230(u32 v) { unk_228 = v; }
+void BlancaFaceRecord::func_02087230(u32 v) { checksum = v; }
 
-u16 BlancaFaceRecord::func_02087224() { return unk_228; }
+u16 BlancaFaceRecord::func_02087224() { return checksum; }
 
 void KatieVisitState::func_02087220() {}
 

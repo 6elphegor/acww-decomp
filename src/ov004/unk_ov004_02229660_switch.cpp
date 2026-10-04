@@ -2,7 +2,7 @@
 // ov004 TU26: .text 0x02229660-0x0222a374 (class RoomTelephone). The switch function at 0x02229c20
 // (RoomTelephone::onChoice) needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
-#include "room/Unk_ov004_0224e2b8_Ent.h"
+#include "room/RoomTelephoneActEntry.h"
 #include "gfx/Unk_ov004_Quad.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "actor/CharacterListNode.h"
@@ -42,7 +42,7 @@
 //    (RoomObj_DestructSe / RoomObjTex_Destruct), so RoomObjTex and RoomObjSe have no destructor here.
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
-//  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
+//  * Names a derived class must not reuse: syncSlot (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
 // Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
 
 
@@ -191,7 +191,7 @@ void PlayerActor_LocalRequestPhonePickUp(void *p);
 
 #define F(T, off) (*(T *)((u8 *)this + off))
 
-typedef void (RoomTelephone::*Unk_ov004_0224e2b8_Fn)();
+typedef void (RoomTelephone::*RoomTelephoneActFn)();
 
 
 
@@ -212,7 +212,7 @@ extern PhoneChoiceSet data_ov004_0224e2a8;
 extern char sRoomTelephoneArcPath[];
 extern char sRoomTelephoneTexPath[];
 extern RoomTelephone *volatile sRoomTelephone;
-extern Unk_ov004_0224e2b8_Ent sRoomTelephoneActTable[15];
+extern RoomTelephoneActEntry sRoomTelephoneActTable[15];
 RoomTelephone *RoomTelephone_Create();
 }
 

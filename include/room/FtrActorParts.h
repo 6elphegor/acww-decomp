@@ -19,26 +19,10 @@ struct Unk_ov004_02206520_Ent {
     }
 };
 
-struct Unk_ov004_0220650c {
-    /* 0x00 */ u32 count;
-    /* 0x04 */ u32 actors[4];
-    void clear();
-};
-
-// ---- 0x02205b14: element view used by the 3-element container (same object as 0x02205bcc)
+// ---- 0x02205b14: model resource seen by FtrGlowMat::updateEmission (material count at 0x18)
 struct Unk_ov004_02205b14_Obj {
     /* 0x00 */ u8 pad[0x18];
     /* 0x18 */ u8 numMat;
-};
-
-class Unk_ov004_02205b14 {
-public:
-    void updateEmission();
-
-    /* 0x00 */ u8 pad_00[0x14];
-    /* 0x14 */ s8 matIdx;
-    /* 0x15 */ u8 pad_15[3];
-    /* 0x18 */ Unk_ov004_02205b14_Obj *resMdl;
 };
 
 struct Unk_ov004_02208a18_Rec {
@@ -55,10 +39,14 @@ struct Unk_ov004_02206be8_Blk {
     /* 0x00 */ u32 pad[26];
 };
 
-struct Unk_ov004_02208980_E {
+// View of one FtrModelAnim (0x20 bytes: AnimFrameCtrl curFrame 0x08 / frameStep 0x10, ModelAnim anmObj 0x18) for the
+// anims[4] array at 0x7c0 of FtrActor's per-kind union, where the real class (vtable, constructor) cannot be a member.
+struct FtrModelAnimView {
     /* 0x00 */ u8 pad_00[8];
     /* 0x08 */ s32 curFrame;
-    /* 0x0c */ u8 pad_0c[12];
+    /* 0x0c */ u8 pad_0c[4];
+    /* 0x10 */ s32 frameStep;
+    /* 0x14 */ u8 pad_14[4];
     /* 0x18 */ s32 *anmObj;
     /* 0x1c */ u8 pad_1c[4];
 };

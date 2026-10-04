@@ -24,7 +24,7 @@ public:
     BlancaFaceRecord *construct();
 
     /* 0x000 */ u32 pattern[0x228 / 4];
-    /* 0x228 */ u16 unk_228;
+    /* 0x228 */ u16 checksum;
     /* 0x22a */ u8 visitState;
     /* 0x22b */ u8 concept;
 };

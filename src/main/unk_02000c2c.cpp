@@ -2,8 +2,8 @@
 #include "sys/Unk_02000fc0_Col.h"
 #include "sys/Unk_02000fc0_Node.h"
 #include "sys/Unk_02000fc0_Cfg.h"
-#include "sys/Unk_02000fc0_Ptr.h"
-#include "sys/Unk_02000fc0_Ctx.h"
+#include "sys/QNode.h"
+#include "sys/OSThread.h"
 #include "sys/Unk_02000fc0_Thr.h"
 
 typedef volatile u16 vu16;
@@ -26,7 +26,7 @@ extern u32 gTaskPhase;
 extern u32 gRootHeap;
 extern u32 gCurrentHeap;
 extern u32 gProcHeap;
-extern Unk_02000fc0_Ptr *gTaskCurrentNode;
+extern QNode *gTaskCurrentNode;
 extern u16 gProcCreateProfile;
 extern u8 gProcCreateStep;
 extern Unk_02000fc0_Thr *data_021fcc2c[3];
@@ -149,13 +149,13 @@ void CrashScreen_DumpWords(u8 *dst, u32 src, u32 size) {
 void CrashScreen_DrawStack(void) {
     u8 *buf = (u8 *)sCrashScreenSub;
     Unk_02000fc0_Col col;
-    Unk_02000fc0_Ctx *ctx;
+    OSContext *ctx;
     u32 v;
     col.unk_00 = 0xd000;
     col.charBase = 0xd000;
-    ctx = (Unk_02000fc0_Ctx *)sCrashContext;
+    ctx = (OSContext *)sCrashContext;
     if (ctx != NULL) {
-        v = ctx->sp;
+        v = ctx->r[13];
     } else {
         v = sCrashSP;
     }
@@ -170,7 +170,7 @@ void CrashScreen_DrawMain(void) {
     Unk_02000fc0_Col col;
     u32 n;
     u32 v;
-    Unk_02000fc0_Ptr *pp;
+    QNode *pp;
     u32 *p6;
     s32 i;
     u32 *q;
@@ -188,7 +188,7 @@ void CrashScreen_DrawMain(void) {
     v = 0xffff;
     pp = gTaskCurrentNode;
     if (pp != NULL) {
-        Unk_02000fc0_Cfg *cfg = pp->owner;
+        Unk_02000fc0_Cfg *cfg = (Unk_02000fc0_Cfg *)pp->owner;
         if (cfg != NULL) {
             v = cfg->profile;
         }

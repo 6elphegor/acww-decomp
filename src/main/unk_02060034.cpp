@@ -170,23 +170,23 @@ MapBlockEntry *HouseRoom::buildBlockEntry(void *heap) {
 RoomFtrState *HouseRoom::func_0206086c() { return &ftrState; }
 
 u16 *HouseRoom::getWallpaper(s32 *out) {
-    if (out) *out = unk_44e_0;
+    if (out) *out = wallpaperDesignKey;
     return &wallpaper;
 }
 
 u16 *HouseRoom::getCarpet(s32 *out) {
-    if (out) *out = unk_44e_1;
+    if (out) *out = carpetDesignKey;
     return &carpet;
 }
 
 void HouseRoom::setWallpaper(u16 *src, u32 flag) {
     wallpaper = *src;
-    unk_44e_0 = flag;
+    wallpaperDesignKey = flag;
 }
 
 void HouseRoom::setCarpet(u16 *src, u32 flag) {
     carpet = *src;
-    unk_44e_1 = flag;
+    carpetDesignKey = flag;
 }
 
 u16 *HouseRoom::getSong() { return &song; }

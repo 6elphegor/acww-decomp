@@ -7,12 +7,12 @@
 
 class FtrPreviewer {
 public:
-    /* 0x00 */ u32 unk_00[2];
-    /* 0x08 */ u16 unk_08[2];
+    /* 0x00 */ u32 actors[2];
+    /* 0x08 */ u16 shownItems[2];
     /* 0x0c */ u8 curSlot;
     /* 0x10 */ s32 sampleIndex;
-    /* 0x14 */ u32 unk_14[2];
-    /* 0x1c */ u32 unk_1c[2];
+    /* 0x14 */ u32 wallTexBuffers[2];
+    /* 0x1c */ u32 floorTexBuffers[2];
 
     u32 getFloorBuffer();
     u32 getWallBuffer();

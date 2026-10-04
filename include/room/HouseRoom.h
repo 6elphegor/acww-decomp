@@ -25,8 +25,8 @@ public:
     /* 0x448 */ u16 wallpaper;
     /* 0x44a */ u16 carpet;
     /* 0x44c */ u16 song;
-    /* 0x44e */ u8 unk_44e_0 : 1;
-    /* 0x44e */ u8 unk_44e_1 : 1;
+    /* 0x44e */ u8 wallpaperDesignKey : 1;
+    /* 0x44e */ u8 carpetDesignKey : 1;
     HouseRoom();
     ~HouseRoom();
     void func_02060878_dummy();

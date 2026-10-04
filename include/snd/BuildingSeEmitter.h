@@ -17,7 +17,7 @@ public:
     void setPosition(Unk_ov009_0225b880_Vec3 *v);
     void activate();
 
-    /* 0x00 */ Unk_0213b9c4 unk_00; // the active flag is unk_00.b40 (0x40)
+    /* 0x00 */ Unk_0213b9c4 emitter; // the active flag is emitter.b40 (0x40)
 };
 
 #endif // SND_BUILDINGSEEMITTER_H

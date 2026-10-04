@@ -255,7 +255,7 @@ extern "C" s32 RoomEntry_IsExclusiveExit(void *p) {
 extern "C" BOOL RoomEntry_Request(u32 id) {
     Unk_0209c614_Actor *p = PlayerActor_GetActor(4);
     void *o = Scene_GetWarpRequest();
-    Unk_0209c614_S s;
+    SceneExitResult s;
     u32 a20, a24;
     Unk_0209c614_Vec v28, v34, v40, v4c;
     s32 r = SceneExit_Resolve(o, id, &s.a, &v28, &a20, &s.e, &s.c, &s.b, 0, 0);

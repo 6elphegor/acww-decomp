@@ -30,7 +30,7 @@ public:
     void loadResourcesByName(char *name);
     void loadResources(char *a, char *b);
 
-    /* 0xea */ u8 unk_ea;
+    /* 0xea */ u8 syncSlot;
     /* 0xeb */ u8 pad_eb;
     /* 0xec */ AnimModel model;
     /* 0x1a4 */ RoomObjRes res;

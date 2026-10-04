@@ -880,20 +880,20 @@ extern "C" void FtrMgr_SetSaleMode() {
 
 // @0x2235cc0 unk_02235984.cpp
 FtrPreviewer::FtrPreviewer() {
-    __cxa_vec_ctor(unk_08, 2, 2, (void *(*)(void *))func_0203442c, (void *(*)(void *, s32))func_02004b60);
+    __cxa_vec_ctor(shownItems, 2, 2, (void *(*)(void *))func_0203442c, (void *(*)(void *, s32))func_02004b60);
     reset();
     u32 i = 0;
     u32 z = i;
     for (; i < 2; i++) {
-        unk_14[i] = z;
-        unk_1c[i] = z;
+        wallTexBuffers[i] = z;
+        floorTexBuffers[i] = z;
     }
 }
 
 // @0x2235c9c unk_02235984.cpp
 FtrPreviewer::~FtrPreviewer() {
     reset();
-    __cxa_vec_cleanup(unk_08, 2, 2, (void *(*)(void *, s32))func_02004b60);
+    __cxa_vec_cleanup(shownItems, 2, 2, (void *(*)(void *, s32))func_02004b60);
 }
 
 // @0x2235c78 unk_02235984.cpp
@@ -901,8 +901,8 @@ void FtrPreviewer::reset() {
     u32 i = 0;
     u32 z = i;
     for (; i < 2; i++) {
-        unk_00[i] = z;
-        unk_08[i] = 0xfff1;
+        actors[i] = z;
+        shownItems[i] = 0xfff1;
         curSlot = z;
     }
 }
@@ -996,7 +996,7 @@ BOOL FtrPreviewer::showItem(u16 *p) {
         }
         v = t;
     }
-    u16 *pv = &unk_08[curSlot & 1];
+    u16 *pv = &shownItems[curSlot & 1];
     BOOL same;
     if (Item_IsFurniture(p)) {
         s32 a = Item_GetFurnitureIndex(p);
@@ -1014,17 +1014,17 @@ BOOL FtrPreviewer::showItem(u16 *p) {
         }
     }
     if (!same) {
-        u32 *slot = &unk_00[curSlot & 1];
+        u32 *slot = &actors[curSlot & 1];
         if (*slot) {
             ProcBase_RequestDelete((void *)*slot);
-            unk_00[curSlot & 1] = 0;
+            actors[curSlot & 1] = 0;
         }
         u8 n = (u8)((curSlot + 1) & 1);
-        u32 *slot2 = &unk_00[n];
+        u32 *slot2 = &actors[n];
         if (*slot2 == 0) {
             if (FtrMgr_FindPlacementForPlayer(&out, &v, 2) == 3) {
                 *slot2 = FtrMgr_SpawnFromArg((FtrActor *)out);
-                unk_08[n] = *p;
+                shownItems[n] = *p;
                 curSlot = n;
                 return TRUE;
             }
@@ -1036,8 +1036,8 @@ BOOL FtrPreviewer::showItem(u16 *p) {
 // @0x2235a2c unk_02235984.cpp
 void FtrPreviewer::clear() {
     for (u32 i = 0; i < 2; i++) {
-        if (unk_00[i]) {
-            ProcBase_RequestDelete((void *)unk_00[i]);
+        if (actors[i]) {
+            ProcBase_RequestDelete((void *)actors[i]);
         }
     }
     reset();
@@ -1045,12 +1045,12 @@ void FtrPreviewer::clear() {
 
 // @0x2235a1c unk_02235984.cpp
 u32 FtrPreviewer::getWallBuffer() {
-    return unk_14[curSlot & 1];
+    return wallTexBuffers[curSlot & 1];
 }
 
 // @0x2235a0c unk_02235984.cpp
 u32 FtrPreviewer::getFloorBuffer() {
-    return unk_1c[curSlot & 1];
+    return floorTexBuffers[curSlot & 1];
 }
 
 // @0x2235a04 unk_02235984.cpp

@@ -2,8 +2,7 @@
 #include "sys/Unk_02000fc0_Col.h"
 #include "sys/Unk_02000fc0_Node.h"
 #include "sys/Unk_02000fc0_Cfg.h"
-#include "sys/Unk_02000fc0_Ptr.h"
-#include "sys/Unk_02000fc0_Ctx.h"
+#include "sys/QNode.h"
 #include "sys/Unk_02000fc0_Thr.h"
 
 typedef volatile u16 vu16;
@@ -76,7 +75,7 @@ extern u32 gProcHeap;
 }
 
 extern "C" {
-extern Unk_02000fc0_Ptr *gTaskCurrentNode;
+extern QNode *gTaskCurrentNode;
 }
 
 extern "C" {

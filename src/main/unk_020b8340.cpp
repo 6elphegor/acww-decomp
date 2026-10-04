@@ -1,5 +1,5 @@
 #include "types.h"
-#include "sys/Unk_020b83b0.h"
+#include "sys/PrioListNode.h"
 #include "gfx/BgTransfer.h"
 #include "gfx/TexTransfer.h"
 #include "gfx/VramTask.h"
@@ -85,11 +85,11 @@ extern "C" void VramQueueTex_Init(void) {
 }
 
 BOOL VramTask::enqueueTex(void) {
-    return PrioList_Insert(&sVramQueueTex, (Unk_020b83b0 *)this);
+    return PrioList_Insert(&sVramQueueTex, (PrioListNode *)this);
 }
 
 void VramTask::dequeueTex(void) {
-    List_Remove(&sVramQueueTex, (Unk_020b83b0 *)this);
+    List_Remove(&sVramQueueTex, (PrioListNode *)this);
 }
 
 static inline Unk_020b8340_Task *Unk_020b8340_First(void **l) {

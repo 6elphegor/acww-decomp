@@ -15,9 +15,9 @@ public:
     /* 0x03 */ s8 seqVar2;
     /* 0x04 */ s8 seqVar3;
     /* 0x05 */ u8 pad_05[3];
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
+    /* 0x08 */ s32 beatFrame;
+    /* 0x0c */ s32 loopFrame20;
+    /* 0x10 */ s32 loopFrame32;
 };
 
 #endif

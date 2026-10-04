@@ -37,7 +37,7 @@ public:
     /* 0x34 */ SndHandle *strmHandle;
     /* 0x38 */ SndHandle *seHandle;
     /* 0x3c */ SndHandle *bgmHandle;
-    /* 0x40 */ SndHandle *unk_40;
+    /* 0x40 */ SndHandle *auxSeHandle;
     /* 0x44 */ u32 voiceType;
     /* 0x48 */ SndHandle *voiceHandle;
     /* 0x4c */ u8 unk_4c;
@@ -53,7 +53,7 @@ public:
     /* 0x63 */ u8 unk_63;
     /* 0x64 */ u16 trackMask;
     /* 0x66 */ u16 unk_66;
-    /* 0x68 */ s32 unk_68;
+    /* 0x68 */ s32 strmTotalTime;
     /* 0x6c */ s16 variantTimer;
     /* 0x6e */ u16 crossTrackMask;
     /* 0x70 */ u8 pan;

@@ -471,21 +471,21 @@ namespace n4 {
 }
 void PatternOrder::reset() {
     using namespace n4;
-    for (u8 i = 0; i < 8; i++) unk_00[i] = i;
+    for (u8 i = 0; i < 8; i++) slots[i] = i;
 }
 namespace n4 {
 }
 void PatternOrder::swap(u32 a, u32 b) {
     using namespace n4;
-    u8 t = unk_00[a & 7];
-    unk_00[a & 7] = unk_00[b & 7];
-    unk_00[b & 7] = t;
+    u8 t = slots[a & 7];
+    slots[a & 7] = slots[b & 7];
+    slots[b & 7] = t;
 }
 namespace n4 {
 }
 u32 PatternOrder::getSlot(u32 i) {
     using namespace n4;
-    return (u8)(unk_00[i & 7] & 7);
+    return (u8)(slots[i & 7] & 7);
 }
 namespace n4 {
 }

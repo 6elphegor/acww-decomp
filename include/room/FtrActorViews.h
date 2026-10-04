@@ -2,6 +2,7 @@
 #define ROOM_FTRACTORVIEWS_H
 
 #include "types.h"
+#include "room/FtrActorParts.h"
 
 // Size-check mirrors of the per-part views (b<NN>_ anonymous structs, 0x130..0x840) of FtrActor and the small field
 // types they use. FtrActor is defined in src/ov004/unk_ov004_02204f24.cpp; its subclasses (whose old source parts the
@@ -15,20 +16,6 @@ struct Unk_ov004_0220a648_Bits {
 
 struct Unk_ov004_0220bc80_V3 {
     s32 x, y, z;
-};
-
-struct Unk_ov004_0220ce38_Slot {
-    /* 0x00 */ u32 sub[2];
-    /* 0x08 */ u32 curFrame;
-    /* 0x0c */ u32 pad_0c[3];
-    /* 0x18 */ u32 *anmObj;
-    /* 0x1c */ u32 pad_1c;
-};
-
-struct Unk_ov004_02206e74 {
-    u8 pad_00[0x10];
-    u32 frameStep;
-    u8 pad_14[0x20 - 0x14];
 };
 
 struct Unk_ov004_View10_Chk {
@@ -118,7 +105,7 @@ struct Unk_ov004_View15_Chk {
     /* 0x594 */ u8 b15_pad_594[0x6c8 - 0x594];
     /* 0x6c8 */ u8 b15_f_6c8[0x73c - 0x6c8];
     /* 0x73c */ u8 b15_f_73c[0x7c0 - 0x73c];
-    /* 0x7c0 */ Unk_ov004_0220ce38_Slot b15_unk_7c0[4];
+    /* 0x7c0 */ FtrModelAnimView b15_unk_7c0[4];
 };
 
 struct Unk_ov004_View16_Chk {
@@ -253,7 +240,7 @@ struct Unk_ov004_View24_Chk {
     /* 0x5e4 */ u8 b24_pad_5e4[0x73c - 0x5e4];
     /* 0x73c */ u8 b24_unk_73c[2];
     /* 0x73e */ u8 b24_pad_73e[0x7c0 - 0x73e];
-    /* 0x7c0 */ Unk_ov004_02206e74 b24_unk_7c0[4];
+    /* 0x7c0 */ FtrModelAnimView b24_unk_7c0[4];
 };
 
 struct Unk_ov004_View25_Chk {

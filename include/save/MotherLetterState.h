@@ -22,7 +22,7 @@ public:
     /* 0x01 */ u8 lastMonth;
     /* 0x02 */ u8 lastYear;
     /* 0x03 */ u8 birthdayYearFlags;
-    /* 0x04 */ u8 unk_04[15];
+    /* 0x04 */ u8 sentBits[15];
     /* 0x13 */ u8 pad_13;
 };
 

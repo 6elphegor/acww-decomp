@@ -1822,7 +1822,7 @@ s32 BuildingActor::callIsLit() { return BuildingLights_isLit(unk_1f0); }
 
 
 BuildingSeEmitter::BuildingSeEmitter() {
-    unk_00.b40 = 0;
+    emitter.b40 = 0;
 }
 
 extern "C" void *_ZN12Unk_0213b9c4D1Ev(void *p) {
@@ -1832,14 +1832,14 @@ extern "C" void *_ZN12Unk_0213b9c4D1Ev(void *p) {
 }
 
 void BuildingSeEmitter::activate() {
-    if (unk_00.b40 == 0) {
+    if (emitter.b40 == 0) {
         Unk_02003c30_callSeInit(this);
-        unk_00.b40 = 1;
+        emitter.b40 = 1;
     }
 }
 
 void BuildingSeEmitter::setPosition(Unk_ov009_0225b880_Vec3 *v) {
-    if (unk_00.b40 != 0) {
+    if (emitter.b40 != 0) {
         Unk_ov009_0225b880_Vec3 t;
         t.x = v->x;
         t.y = v->y;
@@ -1849,20 +1849,20 @@ void BuildingSeEmitter::setPosition(Unk_ov009_0225b880_Vec3 *v) {
 }
 
 void BuildingSeEmitter::deactivate() {
-    if (unk_00.b40 != 0) {
+    if (emitter.b40 != 0) {
         Unk_02003c30_callSeStop(this);
-        unk_00.b40 = 0;
+        emitter.b40 = 0;
     }
 }
 
 void BuildingSeEmitter::playSe(u32 a) {
-    if (unk_00.b40 != 0) {
+    if (emitter.b40 != 0) {
         Snd_SeEmitterPlayOneShot(this, a, 0x7f, 0);
     }
 }
 
 void BuildingSeEmitter::playSeHeld(u32 a) {
-    if (unk_00.b40 != 0) {
+    if (emitter.b40 != 0) {
         Snd_SeEmitterPlayHeld(this, a, 0x7f, 0);
     }
 }

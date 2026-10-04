@@ -42,7 +42,7 @@ struct Unk_ov004_View00_Chk {
     /* 0x5d8 */ u32 unk_5d8;
     /* 0x5dc */ u8 pad_5dc[0x628 - 0x5dc];
     /* 0x628 */ u8 unk_628[0xa0];   // FtrCollider
-    /* 0x6c8 */ u8 unk_6c8[0x74];   // Unk_ov004_02206e38
+    /* 0x6c8 */ u8 unk_6c8[0x74];   // FtrModelRes
     /* 0x73c */ u8 unk_73c[2];      // FtrSwitch
     /* 0x73e */ s8 unk_73e;         // FtrClockHands (3 bytes)
     /* 0x73f */ s8 unk_73f;
@@ -69,7 +69,7 @@ struct Unk_ov004_View00_Chk {
     /* 0x790 */ s32 unk_790;
     /* 0x794 */ u8 unk_794[0x20];   // Unk_ov004_02235984
     /* 0x7b4 */ s32 unk_7b4[3];
-    /* 0x7c0 */ Unk_ov004_02208980_E unk_7c0[4];   // 4 x FtrModelAnim
+    /* 0x7c0 */ FtrModelAnimView unk_7c0[4];   // 4 x FtrModelAnim
 };
 
 #endif

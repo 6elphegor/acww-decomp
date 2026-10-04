@@ -1142,7 +1142,7 @@ void SpNpcRoostGuestTalk::scriptPerform() {
         }
         if ((u8)(s8)(p->seqVar4 - 3) <= 1) {
             owner->model.curFrame = 0;
-            owner->model.frameStep = p->unk_08;
+            owner->model.frameStep = p->beatFrame;
             ThreeLayerAnimModel_updateLayers3(&owner->model);
             owner->model.frameStep = 0;
         }

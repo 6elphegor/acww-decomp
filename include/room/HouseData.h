@@ -16,7 +16,7 @@ public:
     void clear();
 };
 
-struct Unk_0206022c_Bits {
+struct HouseStatus {
     u32 a : 3;
     u32 b : 3;
     u32 c : 4;
@@ -31,7 +31,7 @@ public:
     /* 0x0000 */ HouseRoom rooms[5];
     /* 0x1590 */ s32 debt;
     /* 0x1594 */ SongSet songs;
-    /* 0x15a0 */ Unk_0206022c_Bits status;
+    /* 0x15a0 */ HouseStatus status;
 
     HouseData();
     ~HouseData();

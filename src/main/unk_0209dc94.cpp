@@ -1,5 +1,4 @@
 #include "types.h"
-#include "save/Unk_0209da44_E98c.h"
 #include "save/SaveData.h"
 
 
@@ -147,7 +146,7 @@ SaveData::~SaveData() {
     AbleShop_Destruct(&ableShop);
     _ZN8ReddShopD1Ev(&reddShop);
     Weather_Destruct(&weather);
-    func_020868c4(&unk_15f4c);
+    func_020868c4(&turnipMarket);
     _ZN12ReddLastSaleD1Ev(&reddLastSale);
     _ZN13ContestRecord8destructEv(&contestRecord);
     RecycleBin_Destruct(&recycleBin);
@@ -168,8 +167,8 @@ SaveData::~SaveData() {
     _ZN18TownExchangeRecordD1Ev(&townExchange);
     _ZN19AbleSistersPatternsD1Ev(&ableSistersPatterns);
     _ZN9HouseDataD1Ev(&house);
-    func_02086230(&unk_e557);
-    func_02086290(&unk_e556);
+    func_02086230(&roostGuestRoll);
+    func_02086290(&gulliverQuest);
     _ZN7TownMapD1Ev(&townMap);
     SaveVillagers_Destruct(&villagers);
     PlayerDataArray_Destruct(&players);
@@ -234,9 +233,9 @@ void SaveData::reset() {
     Weather_SetDateToday(&weather);
     NookShop_Clear(&nookShop);
     _ZN16BlancaFaceRecord5resetEv(&blancaFace);
-    _ZN12TurnipMarket5clearEv(&unk_15f4c);
+    _ZN12TurnipMarket5clearEv(&turnipMarket);
     _ZN12ReddLastSale5clearEv(&reddLastSale);
-    GulliverQuest_Clear(&unk_e556);
+    GulliverQuest_Clear(&gulliverQuest);
     _ZN13ContestRecord5clearEv(&contestRecord);
     _ZN12LetterOutbox5clearEv(&letterOutbox);
     LostAndFound_Clear(&lostAndFound);
@@ -249,7 +248,7 @@ void SaveData::reset() {
     _ZN14SnowmanRecords8clearAllEv(&snowmen);
     EventWeekSlots_Reset(&eventWeekSlots);
     _ZN15LostChildRecord5clearEv(&lostChild);
-    _ZN12Unk_0208620c13func_0208620cEv(&unk_e557);
+    _ZN12Unk_0208620c13func_0208620cEv(&roostGuestRoll);
     TownExchange_Clear(&townExchange);
 }
 
@@ -340,7 +339,7 @@ void SaveData::setupContinue() {
     GameStart_Clear();
     func_020b8eb0();
     Sky_RequestBirds();
-    _ZN12TurnipMarket12spoilOnResetEv(&unk_15f4c);
+    _ZN12TurnipMarket12spoilOnResetEv(&turnipMarket);
     SaveVillagers_PickPlayerBirthdayVisitor(&villagers, 0);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
     if (Scene_GetCurrent() == 6) {

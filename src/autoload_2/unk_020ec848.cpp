@@ -185,7 +185,7 @@ extern "C" void _ZN8ProcBase10postDeleteEv(ProcBase *self, s32 a) {
     if (a != 2) return;
     TreeNode_Detach(&gProcTree, &self->treeNode);
     List_Remove(&gTaskDeleteList, &self->executeNode);
-    if (self->unk_4c != NULL) func_020e8c88(self->unk_4c);
+    if (self->procHeap != NULL) func_020e8c88(self->procHeap);
     if (self->seq != NULL) CmdSeq_Undo(self->seq);
     delete self;
 }
@@ -194,7 +194,7 @@ extern "C" BOOL _ZN8ProcBase15onDeleteRequestEv(ProcBase *self) {
 }
 
 extern "C" void ProcBase_SetHeap(ProcBase *self, Heap *heap) {
-    self->unk_4c = heap;
+    self->procHeap = heap;
 }
 
 extern "C" void ProcBase_RequestDelete(ProcBase *self) {
@@ -250,7 +250,7 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
     Heap *h = NULL;
     u32 need;
     Heap *h2;
-    if (self->unk_4c != NULL) return TRUE;
+    if (self->procHeap != NULL) return TRUE;
     if (size != 0) {
         h = FrameHeap_CreateAsCurrent(size, parent);
         if (h != NULL) {
@@ -270,7 +270,7 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
                 need = (need - func_020e8af4(h) + 31) & ~31;
                 if (size == need) {
                     func_020e877c(h);
-                    self->unk_4c = h;
+                    self->procHeap = h;
                     return TRUE;
                 }
             }
@@ -321,12 +321,12 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
         }
         if (h2 != NULL) {
             func_020e877c(h2);
-            self->unk_4c = h2;
+            self->procHeap = h2;
             return TRUE;
         }
         if (h != NULL) {
             func_020e877c(h);
-            self->unk_4c = h;
+            self->procHeap = h;
             return TRUE;
         }
     }
@@ -335,7 +335,7 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
 }
 
 extern "C" BOOL _ZN8ProcBase10createHeapEv(ProcBase *self, u32 size, Heap *parent) {
-    if (self->unk_4c != NULL) return TRUE;
+    if (self->procHeap != NULL) return TRUE;
     if (size != 0) {
         Heap *h = FrameHeap_CreateAsCurrent(size, parent);
         if (h != NULL) {
@@ -351,7 +351,7 @@ extern "C" BOOL _ZN8ProcBase10createHeapEv(ProcBase *self, u32 size, Heap *paren
             if (ok == 0) {
                 func_020e8c94(h);
             } else {
-                self->unk_4c = h;
+                self->procHeap = h;
                 return TRUE;
             }
         }

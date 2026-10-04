@@ -2,7 +2,7 @@
 // ov004 TU26: .text 0x02229660-0x0222a374 (class RoomTelephone). The switch function at 0x02229c20
 // (RoomTelephone::onChoice) needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
-#include "room/Unk_ov004_0224e2b8_Ent.h"
+#include "room/RoomTelephoneActEntry.h"
 #include "gfx/Unk_ov004_Quad.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "actor/CharacterListNode.h"
@@ -42,7 +42,7 @@
 //    (RoomObj_DestructSe / RoomObjTex_Destruct), so RoomObjTex and RoomObjSe have no destructor here.
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
-//  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
+//  * Names a derived class must not reuse: syncSlot (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
 // Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
 
 
@@ -191,7 +191,7 @@ void PlayerActor_LocalRequestPhonePickUp(void *p);
 
 #define F(T, off) (*(T *)((u8 *)this + off))
 
-typedef void (RoomTelephone::*Unk_ov004_0224e2b8_Fn)();
+typedef void (RoomTelephone::*RoomTelephoneActFn)();
 
 
 
@@ -212,7 +212,7 @@ extern PhoneChoiceSet data_ov004_0224e2a8;
 extern char sRoomTelephoneArcPath[];
 extern char sRoomTelephoneTexPath[];
 extern RoomTelephone *volatile sRoomTelephone;
-extern Unk_ov004_0224e2b8_Ent sRoomTelephoneActTable[15];
+extern RoomTelephoneActEntry sRoomTelephoneActTable[15];
 RoomTelephone *RoomTelephone_Create();
 }
 
@@ -228,22 +228,22 @@ extern "C" Unk_ov004_Quad data_ov004_0225127c(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov004_Quad data_ov004_02251290(0x14, 0x18, 0x18, 0x1f);
 
 // State table: {function run on entering the state, function run every frame}.
-extern "C" Unk_ov004_0224e2b8_Ent sRoomTelephoneActTable[15] = {
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct00, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct00 },
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct01, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct01 },
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct02, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct02 },
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct03, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct03 },
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct04, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct04 },
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct05, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct05 },
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct06, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct06 },
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct07, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct07 },
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct08, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct08 },
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct09, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct09 },
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct0A, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct0A },
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct0B, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct0B },
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct0C, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct0C },
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct0D, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct0D },
-    { (Unk_ov004_0224e2b8_Fn)&RoomTelephone::enterAct0E, (Unk_ov004_0224e2b8_Fn)&RoomTelephone::execAct0E },
+extern "C" RoomTelephoneActEntry sRoomTelephoneActTable[15] = {
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct00, (RoomTelephoneActFn)&RoomTelephone::execAct00 },
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct01, (RoomTelephoneActFn)&RoomTelephone::execAct01 },
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct02, (RoomTelephoneActFn)&RoomTelephone::execAct02 },
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct03, (RoomTelephoneActFn)&RoomTelephone::execAct03 },
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct04, (RoomTelephoneActFn)&RoomTelephone::execAct04 },
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct05, (RoomTelephoneActFn)&RoomTelephone::execAct05 },
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct06, (RoomTelephoneActFn)&RoomTelephone::execAct06 },
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct07, (RoomTelephoneActFn)&RoomTelephone::execAct07 },
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct08, (RoomTelephoneActFn)&RoomTelephone::execAct08 },
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct09, (RoomTelephoneActFn)&RoomTelephone::execAct09 },
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct0A, (RoomTelephoneActFn)&RoomTelephone::execAct0A },
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct0B, (RoomTelephoneActFn)&RoomTelephone::execAct0B },
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct0C, (RoomTelephoneActFn)&RoomTelephone::execAct0C },
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct0D, (RoomTelephoneActFn)&RoomTelephone::execAct0D },
+    { (RoomTelephoneActFn)&RoomTelephone::enterAct0E, (RoomTelephoneActFn)&RoomTelephone::execAct0E },
 };
 #undef FN
 
@@ -646,8 +646,8 @@ BOOL RoomTelephone::onDraw() {
 }
 
 BOOL RoomTelephone::onExecute() {
-    if (sRoomTelephoneActTable[act].exit) {
-        (this->*sRoomTelephoneActTable[act].exit)();
+    if (sRoomTelephoneActTable[act].exec) {
+        (this->*sRoomTelephoneActTable[act].exec)();
     }
     AnimModel_stepAnim(&model);
     return TRUE;
