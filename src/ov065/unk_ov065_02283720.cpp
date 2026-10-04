@@ -13,68 +13,68 @@ extern "C" {
 // ov065_057: GameSpy-like TCP connect / parse helpers (0x02282f90..0x02283868)
 
 struct Unk_ov065_02282f90_Ctx {
-    char unk_000[0x100];
+    char errorString[0x100];
     u8 pad_100[0x418 - 0x100];
-    s32 unk_418;
+    s32 errorCode;
 };
 
 struct Unk_ov065_02282f90_Handle {
-    Unk_ov065_02282f90_Ctx *unk_00;
+    Unk_ov065_02282f90_Ctx *connection;
 };
 
 struct Unk_ov065_02282f90_Conn {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    char *unk_18;
-    s32 unk_1c;
-    s32 unk_20;
-    s32 unk_24;
-    char unk_28[0x1f];
-    char unk_47[0x15];
-    char unk_5c[0x33];
-    char unk_8f[0x1f];
-    char unk_ae[0x1f];
+    s32 searchType;
+    s32 sock;
+    s32 inputBuffer;
+    s32 inputBufferCapacity;
+    s32 inputBufferLength;
+    s32 inputBufferPos;
+    char *outputBuffer;
+    s32 outputBufferCapacity;
+    s32 outputBufferLength;
+    s32 outputBufferPos;
+    char nick[0x1f];
+    char uniqueNick[0x15];
+    char email[0x33];
+    char firstName[0x1f];
+    char lastName[0x1f];
     u8 pad_cd[0x130 - 0xcd];
-    s32 unk_130;
-    s32 unk_134;
-    s32 unk_138;
-    s32 unk_13c;
-    s32 unk_140;
+    s32 icqUin;
+    s32 skip;
+    s32 productId;
+    s32 isProcessing;
+    s32 isFinished;
 };
 
 struct Unk_ov065_022831c0_Sock {
-    s32 unk_00;
-    s32 unk_04;
-    char *unk_08;
-    s32 unk_0c;
+    s32 searchType;
+    s32 sock;
+    char *inputBuffer;
+    s32 inputBufferCapacity;
 };
 
 struct Unk_ov065_022831c0_Obj {
-    s32 unk_00;
-    Unk_ov065_022831c0_Sock *unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s32 unk_18;
+    s32 type;
+    Unk_ov065_022831c0_Sock *data;
+    s32 isBlocking;
+    s32 callbackFunc;
+    s32 callbackParam;
+    s32 state;
+    s32 id;
 };
 
 struct Unk_ov065_022831c0_Host {
     s32 unk_00;
     s32 unk_04;
     s32 unk_08;
-    s32 **unk_0c;
+    s32 **addrList;
 };
 
 struct Unk_ov065_022831c0_Addr {
     u8 unk_00;
-    u8 unk_01;
-    u16 unk_02;
-    u32 unk_04;
+    u8 family;
+    u16 port;
+    u32 addr;
 };
 
 struct Unk_ov065_022833b4_Pair {

@@ -208,10 +208,10 @@ struct Unk_ov065_0227e350_Pair2 {
 };
 
 struct Unk_ov065_0227e350_Sub {
-    s32 unk_00;
-    s32 unk_04;
-    void *unk_08;
-    void *unk_0c;
+    s32 buddyIndex;
+    s32 status;
+    void *statusString;
+    void *locationString;
 };
 
 struct Unk_ov065_0227e350_Node {
@@ -253,12 +253,12 @@ struct Unk_ov065_0227e350_Ctx {
 
 struct Unk_ov065_0227e438_Req {
     u8 pad_00[0x80];
-    char unk_80[0x21];
-    char unk_a1[0x21];
-    char unk_c2[0x100];
-    char unk_1c2[0x100];
-    char unk_2c2[0x42];
-    s32 unk_304;
+    char clientChallenge[0x21];
+    char passwordHash[0x21];
+    char authToken[0x100];
+    char authSecret[0x100];
+    char cdKey[0x42];
+    s32 isNewUser;
 };
 
 typedef Unk_ov065_0227e350_Ctx Ctx0227;
@@ -353,28 +353,28 @@ struct Unk_ov065_0227c538_Ctx {
 
 struct Unk_ov065_0227ee64_Obj {
     u8 pad_000[0xc2];
-    char unk_0c2[0x100];
-    char unk_1c2[0x100];
-    char unk_2c2[0x42];
-    s32 unk_304;
+    char authToken[0x100];
+    char authSecret[0x100];
+    char cdKey[0x42];
+    s32 isNewUser;
 };
 
 struct Unk_ov065_0227f00c_Sa {
     u8 unk_0;
-    u8 unk_1;
-    u16 unk_2;
-    u32 unk_4;
+    u8 family;
+    u16 port;
+    u32 addr;
 };
 
 struct Unk_ov065_0227f00c_Host {
     u8 pad_00[0xc];
-    u32 **unk_0c;
+    u32 **addrList;
 };
 
 struct Unk_ov065_0227f324_Rec {
-    char *unk_00[6];
+    char *stringFields[6];
     u8 pad_18[0xc8 - 0x18];
-    char *unk_c8;
+    char *aimName;
     u8 pad_cc[0xf0 - 0xcc];
 };
 
@@ -384,7 +384,7 @@ struct Unk_ov065_0227f324_Copy {
 
 struct Unk_ov065_0227f324_Owner {
     u8 pad_00[0xc];
-    Unk_ov065_0227f324_Rec *unk_0c;
+    Unk_ov065_0227f324_Rec *infoCache;
 };
 
 typedef Unk_ov065_0227c538_Ctx Ctx0227;
@@ -520,12 +520,12 @@ s32 GsGp_OpenSockets(Ctx0227 **h, Node0227 *n) {
         w = (u32 *)&sa;
         w[0] = 0;
         w[1] = 0;
-        sa.unk_1 = 2;
+        sa.family = 2;
         if (GsSock_Bind(ctx->peerSocket, w, 8) == -1) GP_FAIL("There was an error binding a socket.")
         if (GsSock_Listen(ctx->peerSocket, 5) == -1) GP_FAIL("There was an error listening on a socket.")
         len = 8;
         if (GsSock_GetSockName(ctx->peerSocket, &sa, &len) == -1) GP_FAIL("There was an error getting a socket's addres.")
-        ctx->peerPort = sa.unk_2;
+        ctx->peerPort = sa.port;
     } else {
         ctx->peerSocket = -1;
         ctx->peerPort = 0;
@@ -540,9 +540,9 @@ s32 GsGp_OpenSockets(Ctx0227 **h, Node0227 *n) {
     w = (u32 *)&sa;
     w[0] = 0;
     w[1] = 0;
-    sa.unk_1 = 2;
-    sa.unk_4 = **host->unk_0c;
-    sa.unk_2 = 0xcc74;
+    sa.family = 2;
+    sa.addr = **host->addrList;
+    sa.port = 0xcc74;
     if (GsSock_Connect(ctx->cmSocket, &sa, 8) == -1) {
         e = GsSock_GetLastError(ctx->cmSocket);
         if (e != -6 && e != -0x1a && e != -0x4c) GP_FAIL("There was an error connecting a socket.")
@@ -595,13 +595,13 @@ s32 GsGp_Connect(Ctx0227 **h, const char *a1, const char *a2, const char *a3, co
         return 1;
     }
     func_0212899c(obj, 0, 0x308);
-    obj->unk_304 = a9;
+    obj->isNewUser = a9;
     if (*a5 != 0 && *a6 != 0) {
-        GsUtil_StrCopyN(obj->unk_0c2, a5, 0x100);
-        GsUtil_StrCopyN(obj->unk_1c2, a6, 0x100);
+        GsUtil_StrCopyN(obj->authToken, a5, 0x100);
+        GsUtil_StrCopyN(obj->authSecret, a6, 0x100);
     }
     if (a7 != 0) {
-        GsUtil_StrCopyN(obj->unk_2c2, a7, 0x41);
+        GsUtil_StrCopyN(obj->cdKey, a7, 0x41);
     }
     r = GsGp_AddOperation(h, 0, obj, &node, a10, a11, a12);
     if (r != 0) {
@@ -635,22 +635,22 @@ s32 GsGp_SendLogin(Ctx0227 **h, Req0227 *req) {
     char b3[0x50];
     char *p;
     char *q;
-    GsGp_MakeRandomString(req->unk_80, 0x20);
-    if (req->unk_1c2[0] != 0) {
-        p = req->unk_1c2;
+    GsGp_MakeRandomString(req->clientChallenge, 0x20);
+    if (req->authSecret[0] != 0) {
+        p = req->authSecret;
     } else {
         p = c->password;
     }
-    GsUtil_Md5Hex(p, STD_GetStringLength(p), req->unk_a1);
-    if (req->unk_c2[0] != 0) {
-        q = req->unk_c2;
+    GsUtil_Md5Hex(p, STD_GetStringLength(p), req->passwordHash);
+    if (req->authToken[0] != 0) {
+        q = req->authToken;
     } else if (c->uniqueNick[0] != 0) {
         q = c->uniqueNick;
     } else {
         OS_SPrintf(b3, "%s@%s", c->nick, c->email);
         q = b3;
     }
-    OS_SPrintf(b2, "%s%s%s%s%s%s", req->unk_a1, "                                                ", q, req->unk_80, req, req->unk_a1);
+    OS_SPrintf(b2, "%s%s%s%s%s%s", req->passwordHash, "                                                ", q, req->clientChallenge, req, req->passwordHash);
     GsUtil_Md5Hex(b2, STD_GetStringLength(b2), b1);
     if (c->infoCaching != 0) {
         GsGpProfile_FindByNickEmail(h, c->nick, c->email, &out);
@@ -661,10 +661,10 @@ s32 GsGp_SendLogin(Ctx0227 **h, Req0227 *req) {
     }
     GsGpBuf_AppendString(h, c->outputBuffer, "\\login\\");
     GsGpBuf_AppendString(h, c->outputBuffer, "\\challenge\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, req->unk_80);
-    if (req->unk_c2[0] != 0) {
+    GsGpBuf_AppendString(h, c->outputBuffer, req->clientChallenge);
+    if (req->authToken[0] != 0) {
         GsGpBuf_AppendString(h, c->outputBuffer, "\\authtoken\\");
-        GsGpBuf_AppendString(h, c->outputBuffer, req->unk_c2);
+        GsGpBuf_AppendString(h, c->outputBuffer, req->authToken);
     } else if (c->uniqueNick[0] != 0) {
         GsGpBuf_AppendString(h, c->outputBuffer, "\\uniquenick\\");
         GsGpBuf_AppendString(h, c->outputBuffer, c->uniqueNick);
@@ -746,8 +746,8 @@ s32 GsGp_SendNewUser(Ctx0227 **h, Req0227 *req) {
     GsGpBuf_AppendInt(h, c->outputBuffer, c->namespaceId);
     GsGpBuf_AppendString(h, c->outputBuffer, "\\uniquenick\\");
     GsGpBuf_AppendString(h, c->outputBuffer, c->uniqueNick);
-    if (req->unk_2c2[0] != 0) {
-        len = STD_GetStringLength(req->unk_2c2);
+    if (req->cdKey[0] != 0) {
+        len = STD_GetStringLength(req->cdKey);
         GsUtil_SeedRand(0x79707367);
         i = 0;
         if (i < len) {
@@ -755,7 +755,7 @@ s32 GsGp_SendNewUser(Ctx0227 **h, Req0227 *req) {
             z1 = i;
             do {
                 s8 r = GsUtil_RandRange(z1, 0xff);
-                *p++ = r ^ req->unk_2c2[i];
+                *p++ = r ^ req->cdKey[i];
             } while (++i < len);
         }
         a2[i] = 0;
@@ -815,7 +815,7 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, Node0227 *n, char *line) {
             GsGp_CallErrorCallback(h, 3, 1);
             return 3;
         }
-        if (req->unk_304 != 0) {
+        if (req->isNewUser != 0) {
             t = GsGp_SendNewUser(h, req);
             if (t != 0) {
                 return t;
@@ -883,15 +883,15 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, Node0227 *n, char *line) {
         if (GsGp_GetValue(line, "\\lt\\", c->loginTicket, 0x19) == 0) {
             c->loginTicket[0] = 0;
         }
-        if (req->unk_c2[0] != 0) {
-            p = req->unk_c2;
+        if (req->authToken[0] != 0) {
+            p = req->authToken;
         } else if (c->uniqueNick[0] != 0) {
             p = c->uniqueNick;
         } else {
             OS_SPrintf(b4, "%s@%s", c->nick, c->email);
             p = b4;
         }
-        OS_SPrintf(b3, "%s%s%s%s%s%s", req->unk_a1, "                                                ", p, req, req->unk_80, req->unk_a1);
+        OS_SPrintf(b3, "%s%s%s%s%s%s", req->passwordHash, "                                                ", p, req, req->clientChallenge, req->passwordHash);
         GsUtil_Md5Hex(b3, STD_GetStringLength(b3), b1);
         if (GsGp_GetValue(line, "\\proof\\", b3, 0x200) == 0) {
             GsGp_SetError(h, 1, "Unexepected data was received from the server.");
@@ -962,10 +962,10 @@ s32 GsGp_FreeBuddyDataCb(Ctx0227 **h, Node0227 *n) {
     Ctx0227 *c = *h;
     if (n->unk_08 != NULL) {
         if (c->infoCachingBuddyOnly == 0) {
-            GsUtil_Free(n->unk_08->unk_08);
-            n->unk_08->unk_08 = NULL;
-            GsUtil_Free(n->unk_08->unk_0c);
-            n->unk_08->unk_0c = NULL;
+            GsUtil_Free(n->unk_08->statusString);
+            n->unk_08->statusString = NULL;
+            GsUtil_Free(n->unk_08->locationString);
+            n->unk_08->locationString = NULL;
             GsUtil_Free(n->unk_08);
             n->unk_08 = NULL;
         }

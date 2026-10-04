@@ -48,28 +48,28 @@ struct Unk_ov065_0227c538_Ctx {
 
 struct Unk_ov065_0227ee64_Obj {
     u8 pad_000[0xc2];
-    char unk_0c2[0x100];
-    char unk_1c2[0x100];
-    char unk_2c2[0x42];
-    s32 unk_304;
+    char authToken[0x100];
+    char authSecret[0x100];
+    char cdKey[0x42];
+    s32 isNewUser;
 };
 
 struct Unk_ov065_0227f00c_Sa {
     u8 unk_0;
-    u8 unk_1;
-    u16 unk_2;
-    u32 unk_4;
+    u8 family;
+    u16 port;
+    u32 addr;
 };
 
 struct Unk_ov065_0227f00c_Host {
     u8 pad_00[0xc];
-    u32 **unk_0c;
+    u32 **addrList;
 };
 
 struct Unk_ov065_0227f324_Rec {
-    char *unk_00[6];
+    char *stringFields[6];
     u8 pad_18[0xc8 - 0x18];
-    char *unk_c8;
+    char *aimName;
     u8 pad_cc[0xf0 - 0xcc];
 };
 
@@ -79,7 +79,7 @@ struct Unk_ov065_0227f324_Copy {
 
 struct Unk_ov065_0227f324_Owner {
     u8 pad_00[0xc];
-    Unk_ov065_0227f324_Rec *unk_0c;
+    Unk_ov065_0227f324_Rec *infoCache;
 };
 
 typedef Unk_ov065_0227c538_Ctx Ctx0227;
@@ -178,75 +178,75 @@ namespace Nb {
 
 struct Unk_ov065_0227fe88_Ctx {
     u8 pad_000[0x198];
-    s32 unk_198;
+    s32 sessKey;
     u8 pad_19c[0x2a4];
-    s32 unk_440;
-    s32 unk_444;
-    s32 unk_448;
-    s32 unk_44c;
-    s32 unk_450;
-    s32 unk_454;
-    s32 unk_458;
+    s32 profileUpdateBuffer;
+    s32 profileUpdateBufferCapacity;
+    s32 profileUpdateBufferLength;
+    s32 profileUpdateBufferPos;
+    s32 userUpdateBuffer;
+    s32 userUpdateBufferCapacity;
+    s32 userUpdateBufferLength;
 };
 
 struct Unk_ov065_0227ff90_Pair {
-    s32 unk_00;
-    s32 unk_04;
+    s32 func;
+    s32 param;
 };
 
 struct Unk_ov065_0227ff90_Wrap {
-    Unk_ov065_0227ff90_Pair unk_00;
+    Unk_ov065_0227ff90_Pair callback;
 };
 
 struct Unk_ov065_0227ff90_Req {
     u8 pad_00[0xc];
-    Unk_ov065_0227ff90_Wrap unk_0c;
+    Unk_ov065_0227ff90_Wrap callback;
 };
 
 struct Unk_ov065_0227ff90_Node {
-    s32 unk_00;
+    s32 peerState;
     u8 pad_04[8];
-    s32 unk_0c;
+    s32 profileId;
     u8 pad_10[0x2c];
-    Unk_ov065_0227ff90_Node *unk_3c;
+    Unk_ov065_0227ff90_Node *next;
 };
 
 struct Unk_ov065_0227ff90_Ctx {
     u8 pad_000[0x100];
-    s32 unk_100;
+    s32 infoCaching;
     u8 pad_104[0x330];
-    Unk_ov065_0227ff90_Node *unk_434;
+    Unk_ov065_0227ff90_Node *peerList;
 };
 
 struct Unk_ov065_0227ff90_Rec {
-    char *unk_00;
-    char *unk_04;
-    char *unk_08;
-    char *unk_0c;
-    char *unk_10;
-    char *unk_14;
-    s32 unk_18;
-    char unk_1c[0xb];
-    char unk_27[3];
+    char *nick;
+    char *uniqueNick;
+    char *email;
+    char *firstName;
+    char *lastName;
+    char *homepage;
+    s32 icqUin;
+    char zipCode[0xb];
+    char countryCode[3];
     u8 pad_2a[2];
     s32 unk_2c;
     s32 unk_30;
-    char unk_34[0x80];
-    s32 unk_b4;
-    s32 unk_b8;
-    s32 unk_bc;
-    s32 unk_c0;
-    s32 unk_c4;
-    char *unk_c8;
-    s32 unk_cc;
-    s32 unk_d0;
-    s32 unk_d4;
-    s32 unk_d8;
-    s32 unk_dc;
-    s32 unk_e0;
-    s32 unk_e4;
-    s32 unk_e8;
-    s32 unk_ec;
+    char location[0x80];
+    s32 birthDay;
+    s32 birthMonth;
+    s32 birthYear;
+    s32 sex;
+    s32 publicMask;
+    char *aimName;
+    s32 pic;
+    s32 occupationId;
+    s32 industryId;
+    s32 incomeId;
+    s32 marriedId;
+    s32 childCount;
+    s32 interests1;
+    s32 ownership1;
+    s32 connectionType;
 };
 
 
@@ -298,124 +298,124 @@ namespace Nc {
 // ov065_054: 0x022804b8..0x02280d70
 
 struct Unk_ov065_022804b8_Src {
-    char *unk_00;
-    char *unk_04;
-    char *unk_08;
-    char *unk_0c;
-    char *unk_10;
-    char *unk_14;
-    s32 unk_18;
-    char unk_1c[0xb];
-    char unk_27[3];
+    char *nick;
+    char *uniqueNick;
+    char *email;
+    char *firstName;
+    char *lastName;
+    char *homepage;
+    s32 icqUin;
+    char zipCode[0xb];
+    char countryCode[3];
     s32 unk_2c;
     s32 unk_30;
-    char unk_34[0x80];
-    s32 unk_b4;
-    s32 unk_b8;
-    s32 unk_bc;
-    s32 unk_c0;
-    s32 unk_c4;
-    char *unk_c8;
-    s32 unk_cc;
-    s32 unk_d0;
-    s32 unk_d4;
-    s32 unk_d8;
-    s32 unk_dc;
-    s32 unk_e0;
-    s32 unk_e4;
-    s32 unk_e8;
-    s32 unk_ec;
+    char location[0x80];
+    s32 birthDay;
+    s32 birthMonth;
+    s32 birthYear;
+    s32 sex;
+    s32 publicMask;
+    char *aimName;
+    s32 pic;
+    s32 occupationId;
+    s32 industryId;
+    s32 incomeId;
+    s32 marriedId;
+    s32 childCount;
+    s32 interests1;
+    s32 ownership1;
+    s32 connectionType;
 };
 
 struct Unk_ov065_022804b8_Dst {
     u8 pad_00[8];
-    char unk_08[0x1f];
-    char unk_27[0x15];
-    char unk_3c[0x33];
-    char unk_6f[0x1f];
-    char unk_8e[0x1f];
-    char unk_ad[0x4c];
-    s32 unk_fc;
-    char unk_100[0xb];
-    char unk_10b[3];
+    char nick[0x1f];
+    char uniqueNick[0x15];
+    char email[0x33];
+    char firstName[0x1f];
+    char lastName[0x1f];
+    char homepage[0x4c];
+    s32 icqUin;
+    char zipCode[0xb];
+    char countryCode[3];
     s32 unk_110;
     s32 unk_114;
-    char unk_118[0x80];
-    s32 unk_198;
-    s32 unk_19c;
-    s32 unk_1a0;
-    s32 unk_1a4;
-    s32 unk_1a8;
-    char unk_1ac[0x33];
+    char location[0x80];
+    s32 birthDay;
+    s32 birthMonth;
+    s32 birthYear;
+    s32 sex;
+    s32 publicMask;
+    char aimName[0x33];
     u8 pad_1df[1];
-    s32 unk_1e0;
-    s32 unk_1e4;
-    s32 unk_1e8;
-    s32 unk_1ec;
-    s32 unk_1f0;
-    s32 unk_1f4;
-    s32 unk_1f8;
-    s32 unk_1fc;
-    s32 unk_200;
+    s32 pic;
+    s32 occupationId;
+    s32 industryId;
+    s32 incomeId;
+    s32 marriedId;
+    s32 childCount;
+    s32 interests1;
+    s32 ownership1;
+    s32 connectionType;
 };
 
 struct Unk_ov065_02280854_Node {
     s32 unk_00;
-    s32 unk_04;
+    s32 data;
     s32 unk_08;
     s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
-    Unk_ov065_02280854_Node *unk_20;
+    s32 callbackParam;
+    s32 state;
+    s32 id;
+    s32 result;
+    Unk_ov065_02280854_Node *next;
 };
 
 struct Unk_ov065_02280854_Ctx {
     u8 pad_000[0x20c];
-    s32 unk_20c;
-    s32 unk_210;
+    s32 nextOperationId;
+    s32 numSearches;
     u8 pad_214[0x418 - 0x214];
-    s32 unk_418;
+    s32 errorCode;
     u8 pad_41c[8];
-    Unk_ov065_02280854_Node *unk_424;
+    Unk_ov065_02280854_Node *operationList;
 };
 
 struct Unk_ov065_02280854_H {
-    Unk_ov065_02280854_Ctx *unk_00;
+    Unk_ov065_02280854_Ctx *connection;
 };
 
 struct Unk_ov065_0228094c_Sub {
-    s32 unk_00;
-    s32 unk_04;
-    char *unk_08;
+    s32 searchType;
+    s32 sock;
+    char *inputBuffer;
     u8 pad_0c[0xc];
-    char *unk_18;
+    char *outputBuffer;
 };
 
 struct Unk_ov065_02280a2c_Ctx {
     u8 pad_000[0x1a0];
-    s32 unk_1a0;
+    s32 profileId;
     u8 pad_1a4[0x418 - 0x1a4];
-    s32 unk_418;
+    s32 errorCode;
 };
 
 struct Unk_ov065_02280a2c_M0 {
-    s32 unk_00;
-    s32 unk_04;
+    s32 result;
+    s32 profileId;
     u8 pad_08[0x18];
 };
 
 struct Unk_ov065_02280c08_Node {
     u8 pad_00[0x10];
-    s32 unk_10;
+    s32 expireTime;
     u8 pad_14[0x38 - 0x14];
-    s32 unk_38;
+    s32 messageQueue;
 };
 
 struct Unk_ov065_02280a2c_Pair {
-    s32 unk_00;
-    s32 unk_04;
+    s32 func;
+    s32 param;
 };
 
 struct Unk_ov065_02280a2c_Wrap {
@@ -503,18 +503,18 @@ struct Unk_ov065_02280cb4_T {
 
 struct Unk_ov065_02280d70_P2 {
     u8 pad_00[0x10];
-    s32 unk_10;
-    s32 unk_14;
+    s32 ip;
+    s32 port;
 };
 
 struct Unk_ov065_02280d70_P1 {
     u8 pad_00[8];
-    Unk_ov065_02280d70_P2 *unk_08;
+    Unk_ov065_02280d70_P2 *buddyStatus;
 };
 
 struct Unk_ov065_02280d70_Sa {
     s32 unk_00;
-    s32 unk_04;
+    s32 addr;
 };
 
 }
@@ -545,73 +545,73 @@ s32 GsGp_UnpackDate(void *ctx, s32 packed, s32 *pa, s32 *pb, s32 *pc) {
 namespace Nc {
 extern "C" {
 void GsGp_CopyInfoResult(Unk_ov065_022804b8_Src *s, Unk_ov065_022804b8_Dst *d) {
-    if (s->unk_00) {
-        GsUtil_StrCopyN(d->unk_08, s->unk_00, 0x1f);
+    if (s->nick) {
+        GsUtil_StrCopyN(d->nick, s->nick, 0x1f);
     } else {
-        d->unk_08[0] = 0;
+        d->nick[0] = 0;
     }
-    if (s->unk_04) {
-        GsUtil_StrCopyN(d->unk_27, s->unk_04, 0x15);
+    if (s->uniqueNick) {
+        GsUtil_StrCopyN(d->uniqueNick, s->uniqueNick, 0x15);
     } else {
-        d->unk_27[0] = 0;
+        d->uniqueNick[0] = 0;
     }
-    if (s->unk_08) {
-        GsUtil_StrCopyN(d->unk_3c, s->unk_08, 0x33);
+    if (s->email) {
+        GsUtil_StrCopyN(d->email, s->email, 0x33);
     } else {
-        d->unk_3c[0] = 0;
+        d->email[0] = 0;
     }
-    if (s->unk_0c) {
-        GsUtil_StrCopyN(d->unk_6f, s->unk_0c, 0x1f);
+    if (s->firstName) {
+        GsUtil_StrCopyN(d->firstName, s->firstName, 0x1f);
     } else {
-        d->unk_6f[0] = 0;
+        d->firstName[0] = 0;
     }
-    if (s->unk_10) {
-        GsUtil_StrCopyN(d->unk_8e, s->unk_10, 0x1f);
+    if (s->lastName) {
+        GsUtil_StrCopyN(d->lastName, s->lastName, 0x1f);
     } else {
-        d->unk_8e[0] = 0;
+        d->lastName[0] = 0;
     }
-    if (s->unk_14) {
-        GsUtil_StrCopyN(d->unk_ad, s->unk_14, 0x4c);
+    if (s->homepage) {
+        GsUtil_StrCopyN(d->homepage, s->homepage, 0x4c);
     } else {
-        d->unk_ad[0] = 0;
+        d->homepage[0] = 0;
     }
-    d->unk_fc = s->unk_18;
-    GsUtil_StrCopyN(d->unk_100, s->unk_1c, 0xb);
-    GsUtil_StrCopyN(d->unk_10b, s->unk_27, 3);
+    d->icqUin = s->icqUin;
+    GsUtil_StrCopyN(d->zipCode, s->zipCode, 0xb);
+    GsUtil_StrCopyN(d->countryCode, s->countryCode, 3);
     d->unk_110 = s->unk_2c;
     d->unk_114 = s->unk_30;
-    if (s->unk_34) {
-        GsUtil_StrCopyN(d->unk_118, s->unk_34, 0x80);
+    if (s->location) {
+        GsUtil_StrCopyN(d->location, s->location, 0x80);
     } else {
-        d->unk_118[0] = 0;
+        d->location[0] = 0;
     }
-    d->unk_198 = s->unk_b4;
-    d->unk_19c = s->unk_b8;
-    d->unk_1a0 = s->unk_bc;
-    d->unk_1a4 = s->unk_c0;
-    d->unk_1a8 = s->unk_c4;
-    if (s->unk_c8) {
-        GsUtil_StrCopyN(d->unk_1ac, s->unk_c8, 0x33);
+    d->birthDay = s->birthDay;
+    d->birthMonth = s->birthMonth;
+    d->birthYear = s->birthYear;
+    d->sex = s->sex;
+    d->publicMask = s->publicMask;
+    if (s->aimName) {
+        GsUtil_StrCopyN(d->aimName, s->aimName, 0x33);
     } else {
-        d->unk_1ac[0] = 0;
+        d->aimName[0] = 0;
     }
-    d->unk_fc = s->unk_18;
+    d->icqUin = s->icqUin;
     d->unk_110 = s->unk_2c;
     d->unk_114 = s->unk_30;
-    d->unk_198 = s->unk_b4;
-    d->unk_19c = s->unk_b8;
-    d->unk_1a0 = s->unk_bc;
-    d->unk_1a4 = s->unk_c0;
-    d->unk_1a8 = s->unk_c4;
-    d->unk_1e0 = s->unk_cc;
-    d->unk_1e4 = s->unk_d0;
-    d->unk_1e8 = s->unk_d4;
-    d->unk_1ec = s->unk_d8;
-    d->unk_1f0 = s->unk_dc;
-    d->unk_1f4 = s->unk_e0;
-    d->unk_1f8 = s->unk_e4;
-    d->unk_1fc = s->unk_e8;
-    d->unk_200 = s->unk_ec;
+    d->birthDay = s->birthDay;
+    d->birthMonth = s->birthMonth;
+    d->birthYear = s->birthYear;
+    d->sex = s->sex;
+    d->publicMask = s->publicMask;
+    d->pic = s->pic;
+    d->occupationId = s->occupationId;
+    d->industryId = s->industryId;
+    d->incomeId = s->incomeId;
+    d->marriedId = s->marriedId;
+    d->childCount = s->childCount;
+    d->interests1 = s->interests1;
+    d->ownership1 = s->ownership1;
+    d->connectionType = s->connectionType;
 }
 }
 }
@@ -653,135 +653,135 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
     GsGpProfile_Find(h, r5, &l.e);
     Unk_ov065_0227ff90_Rec s = {0};
     char f[0x4c];
-    s.unk_00 = l.a;
-    s.unk_04 = l.b;
-    s.unk_08 = l.c;
-    s.unk_0c = l.d;
-    s.unk_10 = l.e2;
-    s.unk_14 = f;
-    s.unk_c8 = l.g;
-    if (FIND("\\nick\\", s.unk_00, 0x1f) == 0) {
-        s.unk_00[0] = 0;
+    s.nick = l.a;
+    s.uniqueNick = l.b;
+    s.email = l.c;
+    s.firstName = l.d;
+    s.lastName = l.e2;
+    s.homepage = f;
+    s.aimName = l.g;
+    if (FIND("\\nick\\", s.nick, 0x1f) == 0) {
+        s.nick[0] = 0;
     }
-    if (FIND("\\uniquenick\\", s.unk_04, 0x15) == 0) {
-        s.unk_04[0] = 0;
+    if (FIND("\\uniquenick\\", s.uniqueNick, 0x15) == 0) {
+        s.uniqueNick[0] = 0;
     }
-    if (FIND("\\email\\", s.unk_08, 0x33) == 0) {
-        s.unk_08[0] = 0;
+    if (FIND("\\email\\", s.email, 0x33) == 0) {
+        s.email[0] = 0;
     }
-    if (FIND("\\firstname\\", s.unk_0c, 0x1f) == 0) {
-        s.unk_0c[0] = 0;
+    if (FIND("\\firstname\\", s.firstName, 0x1f) == 0) {
+        s.firstName[0] = 0;
     }
-    if (FIND("\\lastname\\", s.unk_10, 0x1f) == 0) {
-        s.unk_10[0] = 0;
+    if (FIND("\\lastname\\", s.lastName, 0x1f) == 0) {
+        s.lastName[0] = 0;
     }
     if (FIND("\\icquin\\", l.buf, 0x40) == 0) {
-        s.unk_18 = -1;
+        s.icqUin = -1;
     } else {
-        s.unk_18 = func_0212b770(l.buf);
+        s.icqUin = func_0212b770(l.buf);
     }
-    if (FIND("\\homepage\\", s.unk_14, 0x4c) == 0) {
-        s.unk_14[0] = 0;
+    if (FIND("\\homepage\\", s.homepage, 0x4c) == 0) {
+        s.homepage[0] = 0;
     }
-    if (FIND("\\zipcode\\", s.unk_1c, 0xb) == 0) {
-        s.unk_1c[0] = 0;
+    if (FIND("\\zipcode\\", s.zipCode, 0xb) == 0) {
+        s.zipCode[0] = 0;
     }
-    if (FIND("\\countrycode\\", s.unk_27, 3) == 0) {
-        s.unk_27[0] = 0;
+    if (FIND("\\countrycode\\", s.countryCode, 3) == 0) {
+        s.countryCode[0] = 0;
     }
     s.unk_2c = 0;
     s.unk_30 = 0;
-    if (FIND("\\loc\\", s.unk_34, 0x80) == 0) {
-        s.unk_34[0] = 0;
+    if (FIND("\\loc\\", s.location, 0x80) == 0) {
+        s.location[0] = 0;
     }
     if (FIND("\\birthday\\", l.buf, 0x40) == 0) {
-        s.unk_b4 = 0;
-        s.unk_b8 = 0;
-        s.unk_bc = 0;
+        s.birthDay = 0;
+        s.birthMonth = 0;
+        s.birthYear = 0;
     } else {
-        s32 r = GsGp_UnpackDate(h, func_0212b770(l.buf), &s.unk_b4, &s.unk_b8, &s.unk_bc);
+        s32 r = GsGp_UnpackDate(h, func_0212b770(l.buf), &s.birthDay, &s.birthMonth, &s.birthYear);
         if (r != 0) {
             return r;
         }
     }
     if (FIND("\\sex\\", l.buf, 0x40) == 0) {
-        s.unk_c0 = 0x502;
+        s.sex = 0x502;
     } else if (l.buf[0] == 0x30) {
-        s.unk_c0 = 0x500;
+        s.sex = 0x500;
     } else if (l.buf[0] == 0x31) {
-        s.unk_c0 = 0x501;
+        s.sex = 0x501;
     } else {
-        s.unk_c0 = 0x502;
+        s.sex = 0x502;
     }
     if (FIND("\\pmask\\", l.buf, 0x40) == 0) {
-        s.unk_c4 = -1;
+        s.publicMask = -1;
     } else {
-        s.unk_c4 = func_0212b770(l.buf);
+        s.publicMask = func_0212b770(l.buf);
     }
-    if (FIND("\\aim\\", s.unk_c8, 0x33) == 0) {
-        s.unk_c8[0] = 0;
+    if (FIND("\\aim\\", s.aimName, 0x33) == 0) {
+        s.aimName[0] = 0;
     }
     if (FIND("\\pic\\", l.buf, 0x40) == 0) {
-        s.unk_cc = 0;
+        s.pic = 0;
     } else {
-        s.unk_cc = func_0212b770(l.buf);
+        s.pic = func_0212b770(l.buf);
     }
     if (FIND("\\occ\\", l.buf, 0x40) == 0) {
-        s.unk_d0 = 0;
+        s.occupationId = 0;
     } else {
-        s.unk_d0 = func_0212b770(l.buf);
+        s.occupationId = func_0212b770(l.buf);
     }
     if (FIND("\\ind\\", l.buf, 0x40) == 0) {
-        s.unk_d4 = 0;
+        s.industryId = 0;
     } else {
-        s.unk_d4 = func_0212b770(l.buf);
+        s.industryId = func_0212b770(l.buf);
     }
     if (FIND("\\inc\\", l.buf, 0x40) == 0) {
-        s.unk_d8 = 0;
+        s.incomeId = 0;
     } else {
-        s.unk_d8 = func_0212b770(l.buf);
+        s.incomeId = func_0212b770(l.buf);
     }
     if (FIND("\\mar\\", l.buf, 0x40) == 0) {
-        s.unk_dc = 0;
+        s.marriedId = 0;
     } else {
-        s.unk_dc = func_0212b770(l.buf);
+        s.marriedId = func_0212b770(l.buf);
     }
     if (FIND("\\chc\\", l.buf, 0x40) == 0) {
-        s.unk_e0 = 0;
+        s.childCount = 0;
     } else {
-        s.unk_e0 = func_0212b770(l.buf);
+        s.childCount = func_0212b770(l.buf);
     }
     if (FIND("\\i1\\", l.buf, 0x40) == 0) {
-        s.unk_e4 = 0;
+        s.interests1 = 0;
     } else {
-        s.unk_e4 = func_0212b770(l.buf);
+        s.interests1 = func_0212b770(l.buf);
     }
     if (FIND("\\o1\\", l.buf, 0x40) == 0) {
-        s.unk_e8 = 0;
+        s.ownership1 = 0;
     } else {
-        s.unk_e8 = func_0212b770(l.buf);
+        s.ownership1 = func_0212b770(l.buf);
     }
     if (FIND("\\conn\\", l.buf, 0x40) == 0) {
-        s.unk_ec = 0;
+        s.connectionType = 0;
     } else {
-        s.unk_ec = func_0212b770(l.buf);
+        s.connectionType = func_0212b770(l.buf);
     }
     if (FIND("\\sig\\", l.buf, 0x40) == 0) {
         GsGp_SetError(h, 1, "Unexpected data was received from the server.");
         GsGp_CallErrorCallback(h, 3, 1);
         return 3;
     }
-    flag = ctx->unk_100;
-    for (n = ctx->unk_434; n != NULL; n = n->unk_3c) {
-        if (n->unk_0c == r5 && n->unk_00 == 0x65) {
+    flag = ctx->infoCaching;
+    for (n = ctx->peerList; n != NULL; n = n->next) {
+        if (n->profileId == r5 && n->peerState == 0x65) {
             if (l.e == NULL) {
                 l.e = GsGpProfile_Add(h, r5);
             }
-            n->unk_00 = 0x66;
+            n->peerState = 0x66;
             flag = 1;
         }
     }
-    if (l.e == NULL && ctx->unk_100 != 0) {
+    if (l.e == NULL && ctx->infoCaching != 0) {
         l.e = GsGpProfile_Add(h, r5);
     }
     if (flag != 0) {
@@ -789,11 +789,11 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
         l.e[6] = 0;
         l.e[6] = (u32)GsUtil_StrDup(l.buf);
     }
-    if (ctx->unk_100 != 0) {
+    if (ctx->infoCaching != 0) {
         GsGp_CacheProfileInfo(h, l.e, &s);
     }
-    l.p = req->unk_0c;
-    if (l.p.unk_00.unk_00 != 0) {
+    l.p = req->callback;
+    if (l.p.callback.func != 0) {
         node = GsUtil_Alloc(0x204);
         if (node == NULL) {
             GsGp_SetErrorString(h, "Out of memory.");
@@ -803,7 +803,7 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
         ((s32 *)node)[0] = 0;
         ((s32 *)node)[1] = r5;
         {
-            s32 r = GsGp_QueueCallback(h, l.p.unk_00, node, req, 0);
+            s32 r = GsGp_QueueCallback(h, l.p.callback, node, req, 0);
             if (r != 0) {
                 return r;
             }
@@ -819,19 +819,19 @@ namespace Nb {
 extern "C" {
 s32 GsGp_FlushInfoUpdates(void *h, char *p) {
     Unk_ov065_0227fe88_Ctx *c = *(Unk_ov065_0227fe88_Ctx **)h;
-    if (c->unk_448 > 0) {
+    if (c->profileUpdateBufferLength > 0) {
         GsGpBuf_AppendString(h, p, "\\updatepro\\\\sesskey\\");
-        GsGpBuf_AppendInt(h, p, c->unk_198);
-        GsGpBuf_AppendString(h, p, (const char *)c->unk_440);
+        GsGpBuf_AppendInt(h, p, c->sessKey);
+        GsGpBuf_AppendString(h, p, (const char *)c->profileUpdateBuffer);
         GsGpBuf_AppendString(h, p, "\\final\\");
-        c->unk_448 = 0;
+        c->profileUpdateBufferLength = 0;
     }
-    if (c->unk_458 > 0) {
+    if (c->userUpdateBufferLength > 0) {
         GsGpBuf_AppendString(h, p, "\\updateui\\\\sesskey\\");
-        GsGpBuf_AppendInt(h, p, c->unk_198);
-        GsGpBuf_AppendString(h, p, (const char *)c->unk_450);
+        GsGpBuf_AppendInt(h, p, c->sessKey);
+        GsGpBuf_AppendString(h, p, (const char *)c->userUpdateBuffer);
         GsGpBuf_AppendString(h, p, "\\final\\");
-        c->unk_458 = 0;
+        c->userUpdateBufferLength = 0;
     }
     return 0;
 }
@@ -842,11 +842,11 @@ namespace Nb {
 extern "C" {
 s32 GsGp_QueueProfileUpdate(void *h, char *a, char *b) {
     Unk_ov065_0227fe88_Ctx *c = *(Unk_ov065_0227fe88_Ctx **)h;
-    s32 r = GsGpBuf_AppendString(h, (char *)&c->unk_440, a);
+    s32 r = GsGpBuf_AppendString(h, (char *)&c->profileUpdateBuffer, a);
     if (r != 0) {
         return r;
     }
-    r = GsGpBuf_AppendString(h, (char *)&c->unk_440, b);
+    r = GsGpBuf_AppendString(h, (char *)&c->profileUpdateBuffer, b);
     if (r != 0) {
         return r;
     }
@@ -859,11 +859,11 @@ namespace Nb {
 extern "C" {
 s32 GsGp_QueueUserUpdate(void *h, char *a, char *b) {
     Unk_ov065_0227fe88_Ctx *c = *(Unk_ov065_0227fe88_Ctx **)h;
-    s32 r = GsGpBuf_AppendString(h, (char *)&c->unk_450, a);
+    s32 r = GsGpBuf_AppendString(h, (char *)&c->userUpdateBuffer, a);
     if (r != 0) {
         return r;
     }
-    r = GsGpBuf_AppendString(h, (char *)&c->unk_450, b);
+    r = GsGpBuf_AppendString(h, (char *)&c->userUpdateBuffer, b);
     if (r != 0) {
         return r;
     }
@@ -1317,19 +1317,19 @@ s32 GsGp_CacheProfileInfo(Ctx0227 **h, Unk_ov065_0227f324_Owner *p, Unk_ov065_02
         return 1;
     }
     GsGp_FreeCachedInfo(p);
-    p->unk_0c = (Unk_ov065_0227f324_Rec *)GsUtil_Alloc(0xf0);
-    d = p->unk_0c;
+    p->infoCache = (Unk_ov065_0227f324_Rec *)GsUtil_Alloc(0xf0);
+    d = p->infoCache;
     if (d != 0) {
         *(Unk_ov065_0227f324_Copy *)d = *(Unk_ov065_0227f324_Copy *)q;
-        p->unk_0c->unk_00[0] = GsUtil_StrDup(q->unk_00[0]);
-        p->unk_0c->unk_00[1] = GsUtil_StrDup(q->unk_00[1]);
-        p->unk_0c->unk_00[2] = GsUtil_StrDup(q->unk_00[2]);
-        p->unk_0c->unk_00[3] = GsUtil_StrDup(q->unk_00[3]);
-        p->unk_0c->unk_00[4] = GsUtil_StrDup(q->unk_00[4]);
-        p->unk_0c->unk_00[5] = GsUtil_StrDup(q->unk_00[5]);
-        p->unk_0c->unk_c8 = GsUtil_StrDup(q->unk_c8);
+        p->infoCache->stringFields[0] = GsUtil_StrDup(q->stringFields[0]);
+        p->infoCache->stringFields[1] = GsUtil_StrDup(q->stringFields[1]);
+        p->infoCache->stringFields[2] = GsUtil_StrDup(q->stringFields[2]);
+        p->infoCache->stringFields[3] = GsUtil_StrDup(q->stringFields[3]);
+        p->infoCache->stringFields[4] = GsUtil_StrDup(q->stringFields[4]);
+        p->infoCache->stringFields[5] = GsUtil_StrDup(q->stringFields[5]);
+        p->infoCache->aimName = GsUtil_StrDup(q->aimName);
     }
-    if (p->unk_0c != 0) {
+    if (p->infoCache != 0) {
         return 1;
     }
     return 0;
@@ -1340,23 +1340,23 @@ s32 GsGp_CacheProfileInfo(Ctx0227 **h, Unk_ov065_0227f324_Owner *p, Unk_ov065_02
 namespace Na {
 extern "C" {
 void GsGp_FreeCachedInfo(Unk_ov065_0227f324_Owner *p) {
-    if (p->unk_0c != 0) {
-        GsUtil_Free(p->unk_0c->unk_00[0]);
-        p->unk_0c->unk_00[0] = 0;
-        GsUtil_Free(p->unk_0c->unk_00[1]);
-        p->unk_0c->unk_00[1] = 0;
-        GsUtil_Free(p->unk_0c->unk_00[2]);
-        p->unk_0c->unk_00[2] = 0;
-        GsUtil_Free(p->unk_0c->unk_00[3]);
-        p->unk_0c->unk_00[3] = 0;
-        GsUtil_Free(p->unk_0c->unk_00[4]);
-        p->unk_0c->unk_00[4] = 0;
-        GsUtil_Free(p->unk_0c->unk_00[5]);
-        p->unk_0c->unk_00[5] = 0;
-        GsUtil_Free(p->unk_0c->unk_c8);
-        p->unk_0c->unk_c8 = 0;
-        GsUtil_Free(p->unk_0c);
-        p->unk_0c = 0;
+    if (p->infoCache != 0) {
+        GsUtil_Free(p->infoCache->stringFields[0]);
+        p->infoCache->stringFields[0] = 0;
+        GsUtil_Free(p->infoCache->stringFields[1]);
+        p->infoCache->stringFields[1] = 0;
+        GsUtil_Free(p->infoCache->stringFields[2]);
+        p->infoCache->stringFields[2] = 0;
+        GsUtil_Free(p->infoCache->stringFields[3]);
+        p->infoCache->stringFields[3] = 0;
+        GsUtil_Free(p->infoCache->stringFields[4]);
+        p->infoCache->stringFields[4] = 0;
+        GsUtil_Free(p->infoCache->stringFields[5]);
+        p->infoCache->stringFields[5] = 0;
+        GsUtil_Free(p->infoCache->aimName);
+        p->infoCache->aimName = 0;
+        GsUtil_Free(p->infoCache);
+        p->infoCache = 0;
     }
 }
 }

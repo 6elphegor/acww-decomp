@@ -9,53 +9,53 @@ namespace Na {
 struct Unk_ov065_022786bc_Vec;
 
 struct Unk_ov065_02280e7c_Node {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    char *unk_18;
-    s32 unk_1c;
-    s32 unk_20;
-    s32 unk_24;
-    char *unk_28;
-    s32 unk_2c;
-    s32 unk_30;
-    s32 unk_34;
-    Unk_ov065_022786bc_Vec *unk_38;
-    Unk_ov065_02280e7c_Node *unk_3c;
+    s32 peerState;
+    s32 isOutgoing;
+    s32 sock;
+    s32 profileId;
+    s32 expireTime;
+    s32 nackCount;
+    char *inputBuffer;
+    s32 inputBufferCapacity;
+    s32 inputBufferLength;
+    s32 inputBufferPos;
+    char *outputBuffer;
+    s32 outputBufferCapacity;
+    s32 outputBufferLength;
+    s32 outputBufferPos;
+    Unk_ov065_022786bc_Vec *messageQueue;
+    Unk_ov065_02280e7c_Node *next;
 };
 
 struct Unk_ov065_02280e7c_Ctx {
     u8 pad_000[0x110];
-    char unk_110[0x67];
-    char unk_177[0x29];
-    s32 unk_1a0;
+    char nick[0x67];
+    char password[0x29];
+    s32 profileId;
     u8 pad_1a4[0x18];
-    s32 unk_1bc;
-    s32 unk_1c0;
+    s32 buddyMessageCallback;
+    s32 buddyMessageParam;
     u8 pad_1c4[0x40];
-    s32 unk_204;
+    s32 peerSocket;
     u8 pad_208[0x22c];
-    Unk_ov065_02280e7c_Node *unk_434;
+    Unk_ov065_02280e7c_Node *peerList;
 };
 
 struct Unk_ov065_02280e7c_Ent {
     s32 unk_00;
     s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
+    s32 buddyStatus;
+    s32 infoCache;
+    s32 authSig;
     s32 unk_14;
     char *unk_18;
 };
 
 struct Unk_ov065_02280e7c_Pair {
-    s32 unk_00;
-    s32 unk_04;
+    s32 func;
+    s32 param;
     Unk_ov065_02280e7c_Pair() {}
-    Unk_ov065_02280e7c_Pair(s32 a, s32 b) { unk_00 = a; unk_04 = b; }
+    Unk_ov065_02280e7c_Pair(s32 a, s32 b) { func = a; param = b; }
 };
 
 struct Unk_ov065_02280e7c_Pair2 {
@@ -66,9 +66,9 @@ struct Unk_ov065_02280e7c_Sub {
     s32 unk_00;
     s32 unk_04;
     s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
+    s32 sendPos;
+    s32 msgType;
+    s32 msgOffset;
 };
 
 typedef Unk_ov065_02280e7c_Ctx Ctx0228;
@@ -187,71 +187,71 @@ struct Unk_ov065_02281974_Nest {
 };
 
 struct Unk_ov065_02281790_Sub {
-    s32 unk_00;
-    s32 unk_04;
-    void *unk_08;
-    void *unk_0c;
+    s32 buddyIndex;
+    s32 status;
+    void *statusString;
+    void *locationString;
 };
 
 struct Unk_ov065_02281790_Elem {
-    s32 unk_00;
-    s32 unk_04;
-    Unk_ov065_02281790_Sub *unk_08;
-    s32 unk_0c;
-    void *unk_10;
-    s32 unk_14;
-    void *unk_18;
+    s32 profileId;
+    s32 userId;
+    Unk_ov065_02281790_Sub *buddyStatus;
+    s32 infoCache;
+    void *authSig;
+    s32 requestCount;
+    void *peerSig;
 };
 
 struct Unk_ov065_02281790_Conn {
-    s32 unk_00;
-    s32 unk_04;
-    char *unk_08;
+    s32 searchType;
+    s32 sock;
+    char *inputBuffer;
     u8 pad_0c[0x18 - 0x0c];
-    char *unk_18;
+    char *outputBuffer;
     u8 pad_1c[0x28 - 0x1c];
-    char unk_28[0x1f];
-    char unk_47[0x15];
-    char unk_5c[0x33];
-    char unk_8f[0x1f];
-    char unk_ae[0x1f];
-    char unk_cd[0x1f];
-    char unk_ec[0x130 - 0xec];
-    s32 unk_130;
-    s32 unk_134;
-    s32 unk_138;
-    s32 unk_13c;
-    s32 unk_140;
+    char nick[0x1f];
+    char uniqueNick[0x15];
+    char email[0x33];
+    char firstName[0x1f];
+    char lastName[0x1f];
+    char password[0x1f];
+    char cdKey[0x130 - 0xec];
+    s32 icqUin;
+    s32 skip;
+    s32 productId;
+    s32 isProcessing;
+    s32 isFinished;
 };
 
 struct Unk_ov065_02281790_Node {
-    s32 unk_00;
-    Unk_ov065_02281790_Conn *unk_04;
+    s32 type;
+    Unk_ov065_02281790_Conn *data;
     Unk_ov065_02281790_Sub *unk_08;
     Unk_ov065_02281974_Nest unk_0c;
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
-    Unk_ov065_02281790_Node *unk_20;
+    s32 state;
+    s32 id;
+    s32 result;
+    Unk_ov065_02281790_Node *next;
 };
 
 struct Unk_ov065_02281790_Ctx {
     u8 pad_000[0x198];
-    s32 unk_198;
+    s32 sessKey;
     u8 pad_19c[4];
-    s32 unk_1a0;
+    s32 profileId;
     u8 pad_1a4[0x210 - 0x1a4];
-    s32 unk_210;
+    s32 numSearches;
     u8 pad_214[0x418 - 0x214];
-    s32 unk_418;
+    s32 errorCode;
     u8 pad_41c[0x424 - 0x41c];
-    Unk_ov065_02281790_Node *unk_424;
-    void *unk_428;
-    s32 unk_42c;
-    s32 unk_430;
+    Unk_ov065_02281790_Node *operationList;
+    void *profileTable;
+    s32 numProfiles;
+    s32 numBuddies;
     u8 pad_434[0x46c - 0x434];
-    s32 unk_46c;
-    s32 unk_470;
+    s32 productId;
+    s32 namespaceId;
 };
 
 typedef Unk_ov065_02281790_Ctx Ctx0228;
@@ -324,13 +324,13 @@ struct Unk_ov065_02281814_L {
 
 
 static inline void Unk_ov065_022818f4_Zero(Elem0228 *e) {
-    e->unk_00 = 0;
-    e->unk_04 = 0;
-    e->unk_08 = 0;
-    e->unk_0c = 0;
-    e->unk_10 = 0;
-    e->unk_14 = 0;
-    e->unk_18 = 0;
+    e->profileId = 0;
+    e->userId = 0;
+    e->buddyStatus = 0;
+    e->infoCache = 0;
+    e->authSig = 0;
+    e->requestCount = 0;
+    e->peerSig = 0;
 }
 
 
@@ -413,71 +413,71 @@ void GsUtil_Sleep(s32);
 s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, void *, s32, s32);
 
 struct Unk_ov065_02281bf4_Rec {
-    s32 unk_00;
-    char unk_04[0x1f];
-    char unk_23[0x15];
-    char unk_38[0x1f];
-    char unk_57[0x1f];
-    char unk_76[0x33];
+    s32 profileId;
+    char nick[0x1f];
+    char uniqueNick[0x15];
+    char firstName[0x1f];
+    char lastName[0x1f];
+    char email[0x33];
     u8 pad_a9[3];
 };
 
 struct Unk_ov065_02281bf4_Res2 {
-    s32 unk_00;
-    char unk_04[0x34];
-    s32 unk_38;
+    s32 result;
+    char email[0x34];
+    s32 isValid;
 };
 
 struct Unk_ov065_02281bf4_Res3 {
-    s32 unk_00;
-    char unk_04[0x34];
-    s32 unk_38;
-    char **unk_3c;
-    char **unk_40;
+    s32 result;
+    char email[0x34];
+    s32 numNicks;
+    char **nicks;
+    char **uniqueNicks;
 };
 
 struct Unk_ov065_02281bf4_Ent {
-    s32 unk_00;
-    char unk_04[0x1f];
+    s32 profileId;
+    char nick[0x1f];
     u8 pad_23;
-    s32 unk_24;
-    char unk_28[0x100];
+    s32 statusCode;
+    char statusString[0x100];
 };
 
 struct Unk_ov065_02281bf4_Res4 {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    Unk_ov065_02281bf4_Ent *unk_0c;
+    s32 result;
+    s32 productId;
+    s32 numMatches;
+    Unk_ov065_02281bf4_Ent *matches;
 };
 
 struct Unk_ov065_02281bf4_Res7 {
-    s32 unk_00;
-    s32 unk_04;
-    Unk_ov065_02281bf4_Rec *unk_08;
+    s32 result;
+    s32 numProfiles;
+    Unk_ov065_02281bf4_Rec *profiles;
 };
 
 struct Unk_ov065_02281bf4_Res8 {
-    s32 unk_00;
-    s32 unk_04;
-    char **unk_08;
+    s32 result;
+    s32 numNicks;
+    char **nicks;
 };
 
 struct Unk_ov065_02281bf4_Res5 {
-    s32 unk_00;
-    s32 unk_04;
+    s32 result;
+    s32 profileId;
 };
 
 struct Unk_ov065_02281bf4_S1 {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    Unk_ov065_02281bf4_Rec *unk_0c;
+    s32 result;
+    s32 numMatches;
+    s32 moreStatus;
+    Unk_ov065_02281bf4_Rec *matches;
 };
 
 #define ERR3() { GsGp_SetError(h, 1, data_ov065_0228dcec); GsGp_CallErrorCallback(h, 3, 1); return 3; }
 #define ERRMEM(m) { GsGp_SetErrorString(h, m); return 1; }
-#define GETTOK(t) r = GsGp_ReadKeyValue(h, c->unk_08, &pos, t, buf); if (r != 0) { return r; }
+#define GETTOK(t) r = GsGp_ReadKeyValue(h, c->inputBuffer, &pos, t, buf); if (r != 0) { return r; }
 
 
 }
@@ -541,7 +541,7 @@ namespace Nb {
 extern "C" {
 s32 GsGpProfile_Add(Ctx0228 **h, s32 a) {
     void *out;
-    void **t = &(*h)->unk_428;
+    void **t = &(*h)->profileTable;
     if (a <= 0) {
         return 0;
     }
@@ -551,12 +551,12 @@ s32 GsGpProfile_Add(Ctx0228 **h, s32 a) {
     Elem0228 tmp;
     u32 ad = (u32)&tmp;
     Unk_ov065_022818f4_Zero((Elem0228 *)ad);
-    tmp.unk_00 = a;
-    tmp.unk_04 = 0;
-    tmp.unk_0c = 0;
-    tmp.unk_10 = 0;
-    tmp.unk_18 = 0;
-    tmp.unk_14 = 0;
+    tmp.profileId = a;
+    tmp.userId = 0;
+    tmp.infoCache = 0;
+    tmp.authSig = 0;
+    tmp.peerSig = 0;
+    tmp.requestCount = 0;
     GsHash_Insert(*t, (Elem0228 *)ad);
     ((s32 *)t)[1]++;
     if (GsGpProfile_Find(h, a, &out) != 0) {
@@ -573,8 +573,8 @@ s32 GsGpProfile_Find(Ctx0228 **h, s32 a, void *out) {
     Elem0228 key;
     void *r;
     Ctx0228 *c = *h;
-    key.unk_00 = a;
-    r = GsHash_Find(c->unk_428, &key);
+    key.profileId = a;
+    r = GsHash_Find(c->profileTable, &key);
     if (out != 0) {
         *(void **)out = r;
     }
@@ -592,7 +592,7 @@ void GsGpProfile_RemoveById(Ctx0228 **h, s32 a) {
     Ctx0228 *c = *h;
     void *out;
     if (GsGpProfile_Find(h, a, &out) != 0) {
-        GsHash_Remove(c->unk_428, out);
+        GsHash_Remove(c->profileTable, out);
     }
 }
 }
@@ -601,7 +601,7 @@ void GsGpProfile_RemoveById(Ctx0228 **h, s32 a) {
 namespace Nb {
 extern "C" {
 s32 GsGpProfile_Remove(Ctx0228 **h, void *n) {
-    return GsHash_Remove((*h)->unk_428, n);
+    return GsHash_Remove((*h)->profileTable, n);
 }
 }
 }
@@ -659,7 +659,7 @@ s32 GsGpProfile_FindIf(Ctx0228 **h, Unk_ov065_022817c8_Cb cb, void *arg) {
     a.h = h;
     a.cb = cb;
     a.arg = arg;
-    if (GsHash_FindIf(c->unk_428, (s32 (*)(void *, void *))GsGpProfile_FindIfAdapter, &a) == 0) {
+    if (GsHash_FindIf(c->profileTable, (s32 (*)(void *, void *))GsGpProfile_FindIfAdapter, &a) == 0) {
         return 1;
     }
     return 0;
@@ -671,7 +671,7 @@ namespace Nb {
 extern "C" {
 s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, Node0228 *n, void *arg) {
     Unk_ov065_02281790_L1 *l = (Unk_ov065_02281790_L1 *)arg;
-    if (n->unk_08 != 0 && l->a == n->unk_08->unk_00) {
+    if (n->unk_08 != 0 && l->a == n->unk_08->buddyIndex) {
         l->r = n;
         return 0;
     }
@@ -695,7 +695,7 @@ void *GsGpProfile_FindByBuddyIndex(Ctx0228 **h, s32 a) {
 namespace Na {
 extern "C" {
 s32 GsGpProfile_IsUnused(Ent0228 *e) {
-    if (e != NULL && e->unk_0c == 0 && e->unk_08 == 0 && e->unk_18 == NULL && e->unk_10 == 0) {
+    if (e != NULL && e->infoCache == 0 && e->buddyStatus == 0 && e->unk_18 == NULL && e->authSig == 0) {
         return 1;
     }
     return 0;

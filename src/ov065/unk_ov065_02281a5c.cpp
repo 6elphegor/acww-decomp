@@ -6,68 +6,68 @@
 namespace Nb {
 // ov065_057: search manager connect / parse helpers (0x02282f90..)
 struct Unk_ov065_02282f90_Ctx {
-    char unk_000[0x100];
+    char errorString[0x100];
     u8 pad_100[0x418 - 0x100];
-    s32 unk_418;
+    s32 errorCode;
 };
 
 struct Unk_ov065_02282f90_Handle {
-    Unk_ov065_02282f90_Ctx *unk_00;
+    Unk_ov065_02282f90_Ctx *connection;
 };
 
 struct Unk_ov065_02282f90_Conn {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    char *unk_18;
-    s32 unk_1c;
-    s32 unk_20;
-    s32 unk_24;
-    char unk_28[0x1f];
-    char unk_47[0x15];
-    char unk_5c[0x33];
-    char unk_8f[0x1f];
-    char unk_ae[0x1f];
+    s32 searchType;
+    s32 sock;
+    s32 inputBuffer;
+    s32 inputBufferCapacity;
+    s32 inputBufferLength;
+    s32 inputBufferPos;
+    char *outputBuffer;
+    s32 outputBufferCapacity;
+    s32 outputBufferLength;
+    s32 outputBufferPos;
+    char nick[0x1f];
+    char uniqueNick[0x15];
+    char email[0x33];
+    char firstName[0x1f];
+    char lastName[0x1f];
     u8 pad_cd[0x130 - 0xcd];
-    s32 unk_130;
-    s32 unk_134;
-    s32 unk_138;
-    s32 unk_13c;
-    s32 unk_140;
+    s32 icqUin;
+    s32 skip;
+    s32 productId;
+    s32 isProcessing;
+    s32 isFinished;
 };
 
 struct Unk_ov065_022831c0_Sock {
-    s32 unk_00;
-    s32 unk_04;
-    char *unk_08;
-    s32 unk_0c;
+    s32 searchType;
+    s32 sock;
+    char *inputBuffer;
+    s32 inputBufferCapacity;
 };
 
 struct Unk_ov065_022831c0_Obj {
-    s32 unk_00;
-    Unk_ov065_022831c0_Sock *unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s32 unk_18;
+    s32 type;
+    Unk_ov065_022831c0_Sock *data;
+    s32 isBlocking;
+    s32 callbackFunc;
+    s32 callbackParam;
+    s32 state;
+    s32 id;
 };
 
 struct Unk_ov065_022831c0_Host {
     s32 unk_00;
     s32 unk_04;
     s32 unk_08;
-    s32 **unk_0c;
+    s32 **addrList;
 };
 
 struct Unk_ov065_022831c0_Addr {
     u8 unk_00;
-    u8 unk_01;
-    u16 unk_02;
-    u32 unk_04;
+    u8 family;
+    u16 port;
+    u32 addr;
 };
 
 struct Unk_ov065_022833b4_Pair {
@@ -153,71 +153,71 @@ struct Unk_ov065_02281974_Nest {
 };
 
 struct Unk_ov065_02281790_Sub {
-    s32 unk_00;
-    s32 unk_04;
-    void *unk_08;
-    void *unk_0c;
+    s32 buddyIndex;
+    s32 status;
+    void *statusString;
+    void *locationString;
 };
 
 struct Unk_ov065_02281790_Elem {
-    s32 unk_00;
-    s32 unk_04;
-    Unk_ov065_02281790_Sub *unk_08;
-    s32 unk_0c;
-    void *unk_10;
-    s32 unk_14;
-    void *unk_18;
+    s32 profileId;
+    s32 userId;
+    Unk_ov065_02281790_Sub *buddyStatus;
+    s32 infoCache;
+    void *authSig;
+    s32 requestCount;
+    void *peerSig;
 };
 
 struct Unk_ov065_02281790_Conn {
-    s32 unk_00;
-    s32 unk_04;
-    char *unk_08;
+    s32 searchType;
+    s32 sock;
+    char *inputBuffer;
     u8 pad_0c[0x18 - 0x0c];
-    char *unk_18;
+    char *outputBuffer;
     u8 pad_1c[0x28 - 0x1c];
-    char unk_28[0x1f];
-    char unk_47[0x15];
-    char unk_5c[0x33];
-    char unk_8f[0x1f];
-    char unk_ae[0x1f];
-    char unk_cd[0x1f];
-    char unk_ec[0x130 - 0xec];
-    s32 unk_130;
-    s32 unk_134;
-    s32 unk_138;
-    s32 unk_13c;
-    s32 unk_140;
+    char nick[0x1f];
+    char uniqueNick[0x15];
+    char email[0x33];
+    char firstName[0x1f];
+    char lastName[0x1f];
+    char password[0x1f];
+    char cdKey[0x130 - 0xec];
+    s32 icqUin;
+    s32 skip;
+    s32 productId;
+    s32 isProcessing;
+    s32 isFinished;
 };
 
 struct Unk_ov065_02281790_Node {
-    s32 unk_00;
-    Unk_ov065_02281790_Conn *unk_04;
+    s32 type;
+    Unk_ov065_02281790_Conn *data;
     Unk_ov065_02281790_Sub *unk_08;
     Unk_ov065_02281974_Nest unk_0c;
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
-    Unk_ov065_02281790_Node *unk_20;
+    s32 state;
+    s32 id;
+    s32 result;
+    Unk_ov065_02281790_Node *next;
 };
 
 struct Unk_ov065_02281790_Ctx {
     u8 pad_000[0x198];
-    s32 unk_198;
+    s32 sessKey;
     u8 pad_19c[4];
-    s32 unk_1a0;
+    s32 profileId;
     u8 pad_1a4[0x210 - 0x1a4];
-    s32 unk_210;
+    s32 numSearches;
     u8 pad_214[0x418 - 0x214];
-    s32 unk_418;
+    s32 errorCode;
     u8 pad_41c[0x424 - 0x41c];
-    Unk_ov065_02281790_Node *unk_424;
-    void *unk_428;
-    s32 unk_42c;
-    s32 unk_430;
+    Unk_ov065_02281790_Node *operationList;
+    void *profileTable;
+    s32 numProfiles;
+    s32 numBuddies;
     u8 pad_434[0x46c - 0x434];
-    s32 unk_46c;
-    s32 unk_470;
+    s32 productId;
+    s32 namespaceId;
 };
 
 typedef Unk_ov065_02281790_Ctx Ctx0228;
@@ -281,71 +281,71 @@ void GsUtil_Sleep(s32);
 s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, void *, s32, s32);
 
 struct Unk_ov065_02281bf4_Rec {
-    s32 unk_00;
-    char unk_04[0x1f];
-    char unk_23[0x15];
-    char unk_38[0x1f];
-    char unk_57[0x1f];
-    char unk_76[0x33];
+    s32 profileId;
+    char nick[0x1f];
+    char uniqueNick[0x15];
+    char firstName[0x1f];
+    char lastName[0x1f];
+    char email[0x33];
     u8 pad_a9[3];
 };
 
 struct Unk_ov065_02281bf4_Res2 {
-    s32 unk_00;
-    char unk_04[0x34];
-    s32 unk_38;
+    s32 result;
+    char email[0x34];
+    s32 isValid;
 };
 
 struct Unk_ov065_02281bf4_Res3 {
-    s32 unk_00;
-    char unk_04[0x34];
-    s32 unk_38;
-    char **unk_3c;
-    char **unk_40;
+    s32 result;
+    char email[0x34];
+    s32 numNicks;
+    char **nicks;
+    char **uniqueNicks;
 };
 
 struct Unk_ov065_02281bf4_Ent {
-    s32 unk_00;
-    char unk_04[0x1f];
+    s32 profileId;
+    char nick[0x1f];
     u8 pad_23;
-    s32 unk_24;
-    char unk_28[0x100];
+    s32 statusCode;
+    char statusString[0x100];
 };
 
 struct Unk_ov065_02281bf4_Res4 {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    Unk_ov065_02281bf4_Ent *unk_0c;
+    s32 result;
+    s32 productId;
+    s32 numMatches;
+    Unk_ov065_02281bf4_Ent *matches;
 };
 
 struct Unk_ov065_02281bf4_Res7 {
-    s32 unk_00;
-    s32 unk_04;
-    Unk_ov065_02281bf4_Rec *unk_08;
+    s32 result;
+    s32 numProfiles;
+    Unk_ov065_02281bf4_Rec *profiles;
 };
 
 struct Unk_ov065_02281bf4_Res8 {
-    s32 unk_00;
-    s32 unk_04;
-    char **unk_08;
+    s32 result;
+    s32 numNicks;
+    char **nicks;
 };
 
 struct Unk_ov065_02281bf4_Res5 {
-    s32 unk_00;
-    s32 unk_04;
+    s32 result;
+    s32 profileId;
 };
 
 struct Unk_ov065_02281bf4_S1 {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    Unk_ov065_02281bf4_Rec *unk_0c;
+    s32 result;
+    s32 numMatches;
+    s32 moreStatus;
+    Unk_ov065_02281bf4_Rec *matches;
 };
 
 #define ERR3() { GsGp_SetError(h, 1, "Error reading from the search server."); GsGp_CallErrorCallback(h, 3, 1); return 3; }
 #define ERRMEM(m) { GsGp_SetErrorString(h, m); return 1; }
-#define GETTOK(t) r = GsGp_ReadKeyValue(h, c->unk_08, &pos, t, buf); if (r != 0) { return r; }
+#define GETTOK(t) r = GsGp_ReadKeyValue(h, c->inputBuffer, &pos, t, buf); if (r != 0) { return r; }
 
 }
 }
@@ -361,24 +361,24 @@ extern "C" {
 s32 GsGpSearch_Connect(void *h0, void *o0) {
     Unk_ov065_02282f90_Handle *h = (Unk_ov065_02282f90_Handle *)h0;
     Unk_ov065_022831c0_Obj *o = (Unk_ov065_022831c0_Obj *)o0;
-    Unk_ov065_022831c0_Sock *s = o->unk_04;
+    Unk_ov065_022831c0_Sock *s = o->data;
     Unk_ov065_022831c0_Host *ent;
     Unk_ov065_022831c0_Addr sa;
     s32 r;
     s32 m;
-    s->unk_0c = 0x1000;
-    s->unk_08 = (char *)GsUtil_Alloc(s->unk_0c + 1);
-    if (s->unk_08 == NULL) {
+    s->inputBufferCapacity = 0x1000;
+    s->inputBuffer = (char *)GsUtil_Alloc(s->inputBufferCapacity + 1);
+    if (s->inputBuffer == NULL) {
         GsGp_SetErrorString(h, "Out of memory.");
         return 1;
     }
-    s->unk_04 = GsSock_Socket(2, 1, 0);
-    if (s->unk_04 == -1) {
+    s->sock = GsSock_Socket(2, 1, 0);
+    if (s->sock == -1) {
         GsGp_SetError(h, 5, "There was an error creating a socket.");
         GsGp_CallErrorCallback(h, 3, 1);
         return 3;
     }
-    if (GsSock_SetBlocking(s->unk_04, 0) == 0) {
+    if (GsSock_SetBlocking(s->sock, 0) == 0) {
         GsGp_SetError(h, 5, "There was an error making a socket non-blocking.");
         GsGp_CallErrorCallback(h, 3, 1);
         return 3;
@@ -392,18 +392,18 @@ s32 GsGpSearch_Connect(void *h0, void *o0) {
     u32 *w = (u32 *)&sa;
     w[0] = 0;
     w[1] = 0;
-    sa.unk_01 = 2;
-    sa.unk_04 = **ent->unk_0c;
-    sa.unk_02 = 0xcd74;
-    if (GsSock_Connect(s->unk_04, &sa, 8) == -1) {
-        r = GsSock_GetLastError(s->unk_04);
+    sa.family = 2;
+    sa.addr = **ent->addrList;
+    sa.port = 0xcd74;
+    if (GsSock_Connect(s->sock, &sa, 8) == -1) {
+        r = GsSock_GetLastError(s->sock);
         if (r != -6 && r != -0x1a && r != -0x4c) {
             GsGp_SetError(h, 5, "There was an error connecting a socket.");
             GsGp_CallErrorCallback(h, 3, 1);
             return 3;
         }
     }
-    o->unk_14 = 1;
+    o->state = 1;
     return 0;
 }
 
@@ -416,22 +416,22 @@ s32 GsGpSearch_NewData(void *h0, void *out, s32 p2) {
         return 1;
     }
     func_0212899c(cn, 0, 0x144);
-    cn->unk_00 = p2;
-    cn->unk_04 = -1;
-    cn->unk_08 = 0;
-    cn->unk_10 = 0;
-    cn->unk_14 = 0;
-    cn->unk_0c = 0;
-    cn->unk_20 = 0;
-    cn->unk_24 = 0;
-    cn->unk_1c = 0x1000;
-    cn->unk_18 = (char *)GsUtil_Alloc(cn->unk_1c + 1);
-    if (cn->unk_18 == NULL) {
+    cn->searchType = p2;
+    cn->sock = -1;
+    cn->inputBuffer = 0;
+    cn->inputBufferLength = 0;
+    cn->inputBufferPos = 0;
+    cn->inputBufferCapacity = 0;
+    cn->outputBufferLength = 0;
+    cn->outputBufferPos = 0;
+    cn->outputBufferCapacity = 0x1000;
+    cn->outputBuffer = (char *)GsUtil_Alloc(cn->outputBufferCapacity + 1);
+    if (cn->outputBuffer == NULL) {
         GsGp_SetErrorString(h, "Out of memory.");
         return 1;
     }
-    cn->unk_13c = 0;
-    cn->unk_140 = 0;
+    cn->isProcessing = 0;
+    cn->isFinished = 0;
     *(Unk_ov065_02282f90_Conn **)out = cn;
     return 0;
 }
@@ -440,7 +440,7 @@ s32 GsGpSearch_Start(void *h0, void *cn, s32 p2, s32 p3, s32 p4) {
     Unk_ov065_02282f90_Handle *h = (Unk_ov065_02282f90_Handle *)h0;
     Unk_ov065_022831c0_Obj *o;
     s32 r;
-    *(s32 *)((u8 *)h->unk_00 + 0x210) += 1;
+    *(s32 *)((u8 *)h->connection + 0x210) += 1;
     r = GsGp_AddOperation(h, 3, cn, &o, p2, p3, p4);
     if (r != 0) {
         return r;
@@ -449,8 +449,8 @@ s32 GsGpSearch_Start(void *h0, void *cn, s32 p2, s32 p3, s32 p4) {
     if (r != 0) {
         return r;
     }
-    if (o->unk_08 != 0) {
-        r = GsGp_ProcessConnection(h, o->unk_18);
+    if (o->isBlocking != 0) {
+        r = GsGp_ProcessConnection(h, o->id);
         if (r != 0) {
             return r;
         }
@@ -470,36 +470,36 @@ s32 GsGpSearch_ProfileSearch(Unk_ov065_02282f90_Handle *h, char *a, char *b, cha
         return r;
     }
     if (a == NULL) {
-        cn->unk_28[0] = 0;
+        cn->nick[0] = 0;
     } else {
-        GsUtil_StrCopyN(cn->unk_28, a, 0x1f);
+        GsUtil_StrCopyN(cn->nick, a, 0x1f);
     }
     if (b == NULL) {
-        cn->unk_47[0] = 0;
+        cn->uniqueNick[0] = 0;
     } else {
-        GsUtil_StrCopyN(cn->unk_47, b, 0x15);
+        GsUtil_StrCopyN(cn->uniqueNick, b, 0x15);
     }
     if (c == NULL) {
-        cn->unk_5c[0] = 0;
+        cn->email[0] = 0;
     } else {
-        GsUtil_StrCopyN(cn->unk_5c, c, 0x33);
+        GsUtil_StrCopyN(cn->email, c, 0x33);
     }
-    GsUtil_StrToLower(cn->unk_5c);
+    GsUtil_StrToLower(cn->email);
     if (d == NULL) {
-        cn->unk_8f[0] = 0;
+        cn->firstName[0] = 0;
     } else {
-        GsUtil_StrCopyN(cn->unk_8f, d, 0x1f);
+        GsUtil_StrCopyN(cn->firstName, d, 0x1f);
     }
     if (e == NULL) {
-        cn->unk_ae[0] = 0;
+        cn->lastName[0] = 0;
     } else {
-        GsUtil_StrCopyN(cn->unk_ae, e, 0x1f);
+        GsUtil_StrCopyN(cn->lastName, e, 0x1f);
     }
-    cn->unk_130 = f;
+    cn->icqUin = f;
     if (g < 0) {
         g = 0;
     }
-    cn->unk_134 = g;
+    cn->skip = g;
     r = GsGpSearch_Start(h, cn, p8, p9, p10);
     if (r != 0) {
         return r;
@@ -520,7 +520,7 @@ s32 GsGpSearch_Process(Ctx0228 **h, Node0228 *node) {
     Unk_ov065_02281bf4_Res7 *p7;
     s32 cnt;
     s32 retry;
-    Conn0228 *c = node->unk_04;
+    Conn0228 *c = node->data;
     s32 r;
     s32 v8c;
     s32 pos;
@@ -537,12 +537,12 @@ s32 GsGpSearch_Process(Ctx0228 **h, Node0228 *node) {
         retry = 0;
     }
 again:
-    r = GsGp_SendBuffer(h, c->unk_04, &c->unk_18, &vv[1], 1, "SM");
+    r = GsGp_SendBuffer(h, c->sock, &c->outputBuffer, &vv[1], 1, "SM");
     if (r != 0) {
         return r;
     }
-    if (node->unk_14 == 1) {
-        r = GsGp_CheckConnectComplete(h, c->unk_04, &v8c);
+    if (node->state == 1) {
+        r = GsGp_CheckConnectComplete(h, c->sock, &v8c);
         if (r != 0) {
             return r;
         }
@@ -554,113 +554,113 @@ again:
         if (v8c != 3) {
             goto endchk;
         }
-        if (c->unk_00 == 1) {
-            GsGpBuf_AppendString(h, &c->unk_18, "\\search\\");
-            GsGpBuf_AppendString(h, &c->unk_18, "\\sesskey\\");
-            GsGpBuf_AppendInt(h, &c->unk_18, ctx->unk_198);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\profileid\\");
-            GsGpBuf_AppendInt(h, &c->unk_18, ctx->unk_1a0);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\namespaceid\\");
-            GsGpBuf_AppendInt(h, &c->unk_18, ctx->unk_470);
-            if (c->unk_28[0] != 0) {
-                GsGpBuf_AppendString(h, &c->unk_18, "\\nick\\");
-                GsGpBuf_AppendString(h, &c->unk_18, c->unk_28);
+        if (c->searchType == 1) {
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\search\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\sesskey\\");
+            GsGpBuf_AppendInt(h, &c->outputBuffer, ctx->sessKey);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\profileid\\");
+            GsGpBuf_AppendInt(h, &c->outputBuffer, ctx->profileId);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\namespaceid\\");
+            GsGpBuf_AppendInt(h, &c->outputBuffer, ctx->namespaceId);
+            if (c->nick[0] != 0) {
+                GsGpBuf_AppendString(h, &c->outputBuffer, "\\nick\\");
+                GsGpBuf_AppendString(h, &c->outputBuffer, c->nick);
             }
-            if (c->unk_47[0] != 0) {
-                GsGpBuf_AppendString(h, &c->unk_18, "\\uniquenick\\");
-                GsGpBuf_AppendString(h, &c->unk_18, c->unk_47);
+            if (c->uniqueNick[0] != 0) {
+                GsGpBuf_AppendString(h, &c->outputBuffer, "\\uniquenick\\");
+                GsGpBuf_AppendString(h, &c->outputBuffer, c->uniqueNick);
             }
-            if (c->unk_5c[0] != 0) {
-                GsGpBuf_AppendString(h, &c->unk_18, "\\email\\");
-                GsGpBuf_AppendString(h, &c->unk_18, c->unk_5c);
+            if (c->email[0] != 0) {
+                GsGpBuf_AppendString(h, &c->outputBuffer, "\\email\\");
+                GsGpBuf_AppendString(h, &c->outputBuffer, c->email);
             }
-            if (c->unk_8f[0] != 0) {
-                GsGpBuf_AppendString(h, &c->unk_18, "\\firstname\\");
-                GsGpBuf_AppendString(h, &c->unk_18, c->unk_8f);
+            if (c->firstName[0] != 0) {
+                GsGpBuf_AppendString(h, &c->outputBuffer, "\\firstname\\");
+                GsGpBuf_AppendString(h, &c->outputBuffer, c->firstName);
             }
-            if (c->unk_ae[0] != 0) {
-                GsGpBuf_AppendString(h, &c->unk_18, "\\lastname\\");
-                GsGpBuf_AppendString(h, &c->unk_18, c->unk_ae);
+            if (c->lastName[0] != 0) {
+                GsGpBuf_AppendString(h, &c->outputBuffer, "\\lastname\\");
+                GsGpBuf_AppendString(h, &c->outputBuffer, c->lastName);
             }
-            if (c->unk_130 != 0) {
-                GsGpBuf_AppendString(h, &c->unk_18, "\\icquin\\");
-                GsGpBuf_AppendInt(h, &c->unk_18, c->unk_130);
+            if (c->icqUin != 0) {
+                GsGpBuf_AppendString(h, &c->outputBuffer, "\\icquin\\");
+                GsGpBuf_AppendInt(h, &c->outputBuffer, c->icqUin);
             }
-            if (c->unk_134 > 0) {
-                GsGpBuf_AppendString(h, &c->unk_18, "\\skip\\");
-                GsGpBuf_AppendInt(h, &c->unk_18, c->unk_134);
+            if (c->skip > 0) {
+                GsGpBuf_AppendString(h, &c->outputBuffer, "\\skip\\");
+                GsGpBuf_AppendInt(h, &c->outputBuffer, c->skip);
             }
-        } else if (c->unk_00 == 2) {
-            GsGpBuf_AppendString(h, &c->unk_18, "\\valid\\");
-            GsGpBuf_AppendString(h, &c->unk_18, "\\email\\");
-            GsGpBuf_AppendString(h, &c->unk_18, c->unk_5c);
-        } else if (c->unk_00 == 3) {
-            GsGpBuf_AppendString(h, &c->unk_18, "\\nicks\\");
-            GsGpBuf_AppendString(h, &c->unk_18, "\\email\\");
-            GsGpBuf_AppendString(h, &c->unk_18, c->unk_5c);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\pass\\");
-            GsGpBuf_AppendString(h, &c->unk_18, c->unk_cd);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\namespaceid\\");
-            GsGpBuf_AppendInt(h, &c->unk_18, ctx->unk_470);
-        } else if (c->unk_00 == 4) {
-            GsGpBuf_AppendString(h, &c->unk_18, "\\pmatch\\");
-            GsGpBuf_AppendString(h, &c->unk_18, "\\sesskey\\");
-            GsGpBuf_AppendInt(h, &c->unk_18, ctx->unk_198);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\profileid\\");
-            GsGpBuf_AppendInt(h, &c->unk_18, ctx->unk_1a0);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\productid\\");
-            GsGpBuf_AppendInt(h, &c->unk_18, c->unk_138);
-        } else if (c->unk_00 == 5) {
-            GsGpBuf_AppendString(h, &c->unk_18, "\\check\\");
-            GsGpBuf_AppendString(h, &c->unk_18, "\\nick\\");
-            GsGpBuf_AppendString(h, &c->unk_18, c->unk_28);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\email\\");
-            GsGpBuf_AppendString(h, &c->unk_18, c->unk_5c);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\pass\\");
-            GsGpBuf_AppendString(h, &c->unk_18, c->unk_cd);
-        } else if (c->unk_00 == 6) {
-            GsGpBuf_AppendString(h, &c->unk_18, "\\newuser\\");
-            GsGpBuf_AppendString(h, &c->unk_18, "\\nick\\");
-            GsGpBuf_AppendString(h, &c->unk_18, c->unk_28);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\email\\");
-            GsGpBuf_AppendString(h, &c->unk_18, c->unk_5c);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\pass\\");
-            GsGpBuf_AppendString(h, &c->unk_18, c->unk_cd);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\productID\\");
-            GsGpBuf_AppendInt(h, &c->unk_18, ctx->unk_46c);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\namespaceid\\");
-            GsGpBuf_AppendInt(h, &c->unk_18, ctx->unk_470);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\uniquenick\\");
-            GsGpBuf_AppendString(h, &c->unk_18, c->unk_47);
-            if (c->unk_ec[0] != 0) {
-                GsGpBuf_AppendString(h, &c->unk_18, "\\cdkey\\");
-                GsGpBuf_AppendString(h, &c->unk_18, c->unk_ec);
+        } else if (c->searchType == 2) {
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\valid\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\email\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, c->email);
+        } else if (c->searchType == 3) {
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\nicks\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\email\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, c->email);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\pass\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, c->password);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\namespaceid\\");
+            GsGpBuf_AppendInt(h, &c->outputBuffer, ctx->namespaceId);
+        } else if (c->searchType == 4) {
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\pmatch\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\sesskey\\");
+            GsGpBuf_AppendInt(h, &c->outputBuffer, ctx->sessKey);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\profileid\\");
+            GsGpBuf_AppendInt(h, &c->outputBuffer, ctx->profileId);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\productid\\");
+            GsGpBuf_AppendInt(h, &c->outputBuffer, c->productId);
+        } else if (c->searchType == 5) {
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\check\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\nick\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, c->nick);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\email\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, c->email);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\pass\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, c->password);
+        } else if (c->searchType == 6) {
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\newuser\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\nick\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, c->nick);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\email\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, c->email);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\pass\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, c->password);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\productID\\");
+            GsGpBuf_AppendInt(h, &c->outputBuffer, ctx->productId);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\namespaceid\\");
+            GsGpBuf_AppendInt(h, &c->outputBuffer, ctx->namespaceId);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\uniquenick\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, c->uniqueNick);
+            if (c->cdKey[0] != 0) {
+                GsGpBuf_AppendString(h, &c->outputBuffer, "\\cdkey\\");
+                GsGpBuf_AppendString(h, &c->outputBuffer, c->cdKey);
             }
-        } else if (c->unk_00 == 7) {
-            GsGpBuf_AppendString(h, &c->unk_18, "\\others\\");
-            GsGpBuf_AppendString(h, &c->unk_18, "\\sesskey\\");
-            GsGpBuf_AppendInt(h, &c->unk_18, ctx->unk_198);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\profileid\\");
-            GsGpBuf_AppendInt(h, &c->unk_18, ctx->unk_1a0);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\namespaceid\\");
-            GsGpBuf_AppendInt(h, &c->unk_18, ctx->unk_470);
-        } else if (c->unk_00 == 8) {
-            GsGpBuf_AppendString(h, &c->unk_18, "\\uniquesearch\\");
-            GsGpBuf_AppendString(h, &c->unk_18, "\\preferrednick\\");
-            GsGpBuf_AppendString(h, &c->unk_18, c->unk_47);
-            GsGpBuf_AppendString(h, &c->unk_18, "\\namespaceid\\");
-            GsGpBuf_AppendInt(h, &c->unk_18, ctx->unk_470);
+        } else if (c->searchType == 7) {
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\others\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\sesskey\\");
+            GsGpBuf_AppendInt(h, &c->outputBuffer, ctx->sessKey);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\profileid\\");
+            GsGpBuf_AppendInt(h, &c->outputBuffer, ctx->profileId);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\namespaceid\\");
+            GsGpBuf_AppendInt(h, &c->outputBuffer, ctx->namespaceId);
+        } else if (c->searchType == 8) {
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\uniquesearch\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\preferrednick\\");
+            GsGpBuf_AppendString(h, &c->outputBuffer, c->uniqueNick);
+            GsGpBuf_AppendString(h, &c->outputBuffer, "\\namespaceid\\");
+            GsGpBuf_AppendInt(h, &c->outputBuffer, ctx->namespaceId);
         }
-        GsGpBuf_AppendString(h, &c->unk_18, "\\gamename\\");
-        GsGpBuf_AppendString(h, &c->unk_18, sGsGameName);
-        GsGpBuf_AppendString(h, &c->unk_18, "\\final\\");
-        node->unk_14 = 4;
+        GsGpBuf_AppendString(h, &c->outputBuffer, "\\gamename\\");
+        GsGpBuf_AppendString(h, &c->outputBuffer, sGsGameName);
+        GsGpBuf_AppendString(h, &c->outputBuffer, "\\final\\");
+        node->state = 4;
         goto endchk;
     }
-    if (node->unk_14 != 4) {
+    if (node->state != 4) {
         goto endchk;
     }
-    r = GsGp_RecvToBuffer(h, c->unk_04, &c->unk_08, &vv[0], &vv[1], "SM");
+    r = GsGp_RecvToBuffer(h, c->sock, &c->inputBuffer, &vv[0], &vv[1], "SM");
     if (r != 0) {
         if (r != 3) {
             return r;
@@ -669,28 +669,28 @@ again:
         GsGp_CallErrorCallback(h, 3, 0);
         return 3;
     }
-    if (func_02129f1c(c->unk_08, "\\final\\") == 0) {
+    if (func_02129f1c(c->inputBuffer, "\\final\\") == 0) {
         goto endchk;
     }
     pos = 0;
-    node->unk_14 = 5;
-    if (GsGp_CheckServerError(h, c->unk_08, 1) != 0) {
-        c->unk_140 = 1;
+    node->state = 5;
+    if (GsGp_CheckServerError(h, c->inputBuffer, 1) != 0) {
+        c->isFinished = 1;
         return 4;
     }
-    if (c->unk_00 == 1) {
+    if (c->searchType == 1) {
         done = 0;
-        s1.unk_00 = 0;
-        s1.unk_04 = 0;
-        s1.unk_0c = 0;
-        s1.unk_08 = 0x601;
+        s1.result = 0;
+        s1.numMatches = 0;
+        s1.matches = 0;
+        s1.moreStatus = 0x601;
         do {
             GETTOK(tok)
             if (strcmp(tok, "bsrdone") == 0) {
                 GETTOK(tok)
                 if (strcmp(tok, "more") == 0) {
                     if (strcmp(buf, "0") != 0) {
-                        s1.unk_08 = 0x600;
+                        s1.moreStatus = 0x600;
                     }
                 }
                 done = 1;
@@ -698,28 +698,28 @@ again:
                 Unk_ov065_02281bf4_Rec *e;
                 s32 idx;
                 Unk_ov065_02281bf4_Rec *base;
-                s1.unk_04++;
-                base = (Unk_ov065_02281bf4_Rec *)GsUtil_Realloc(s1.unk_0c, s1.unk_04 * 0xac);
-                s1.unk_0c = base;
+                s1.numMatches++;
+                base = (Unk_ov065_02281bf4_Rec *)GsUtil_Realloc(s1.matches, s1.numMatches * 0xac);
+                s1.matches = base;
                 if (base == 0) ERRMEM("Out of memory.")
-                idx = s1.unk_04 - 1;
+                idx = s1.numMatches - 1;
                 e = &base[idx];
                 func_0212899c(e, 0, 0xac);
-                base[idx].unk_00 = func_0212b770(buf);
+                base[idx].profileId = func_0212b770(buf);
                 done2 = 0;
                 do {
                     save1 = pos;
                     GETTOK(tok)
                     if (strcmp(tok, "nick") == 0) {
-                        GsUtil_StrCopyN(e->unk_04, buf, 0x1f);
+                        GsUtil_StrCopyN(e->nick, buf, 0x1f);
                     } else if (strcmp(tok, "uniquenick") == 0) {
-                        GsUtil_StrCopyN(e->unk_23, buf, 0x15);
+                        GsUtil_StrCopyN(e->uniqueNick, buf, 0x15);
                     } else if (strcmp(tok, "firstname") == 0) {
-                        GsUtil_StrCopyN(e->unk_38, buf, 0x1f);
+                        GsUtil_StrCopyN(e->firstName, buf, 0x1f);
                     } else if (strcmp(tok, "lastname") == 0) {
-                        GsUtil_StrCopyN(e->unk_57, buf, 0x1f);
+                        GsUtil_StrCopyN(e->lastName, buf, 0x1f);
                     } else if (strcmp(tok, "email") == 0) {
-                        GsUtil_StrCopyN(e->unk_76, buf, 0x33);
+                        GsUtil_StrCopyN(e->email, buf, 0x33);
                     } else if (strcmp(tok, "bsr") == 0 || strcmp(tok, "bsrdone") == 0) {
                         done2 = 1;
                         pos = save1;
@@ -730,22 +730,22 @@ again:
             }
         } while (done == 0);
         {
-            s32 t = s1.unk_08;
+            s32 t = s1.moreStatus;
             pr1 = node->unk_0c;
             if (pr1.p.a != 0) {
                 ((void (*)(Ctx0228 **, void *, s32))pr1.p.a)(h, &s1, pr1.p.b);
             }
-            if (t == 0x600 && s1.unk_08 == 0x600) {
-                r = GsGpSearch_ProfileSearch(h, c->unk_28, c->unk_47, c->unk_5c, c->unk_8f, c->unk_ae, c->unk_130, s1.unk_04 + c->unk_134, node->unk_08, node->unk_0c.p.a, node->unk_0c.p.b);
+            if (t == 0x600 && s1.moreStatus == 0x600) {
+                r = GsGpSearch_ProfileSearch(h, c->nick, c->uniqueNick, c->email, c->firstName, c->lastName, c->icqUin, s1.numMatches + c->skip, node->unk_08, node->unk_0c.p.a, node->unk_0c.p.b);
                 if (r != 0) {
                     return r;
                 }
             }
         }
-        GsUtil_Free(s1.unk_0c);
-        s1.unk_0c = 0;
+        GsUtil_Free(s1.matches);
+        s1.matches = 0;
         goto done;
-    } else if (c->unk_00 == 2) {
+    } else if (c->searchType == 2) {
         Unk_ov065_02281bf4_Res2 *p;
         pr2 = node->unk_0c;
         if (pr2.p.a == 0) {
@@ -755,19 +755,19 @@ again:
         if (strcmp(tok, "vr") != 0) ERR3()
         p = (Unk_ov065_02281bf4_Res2 *)GsUtil_Alloc(0x3c);
         if (p == 0) ERRMEM("Out of memory.")
-        p->unk_00 = 0;
-        GsUtil_StrCopyN(p->unk_04, c->unk_5c, 0x33);
+        p->result = 0;
+        GsUtil_StrCopyN(p->email, c->email, 0x33);
         if (buf[0] == 0x30) {
-            p->unk_38 = 0;
+            p->isValid = 0;
         } else {
-            p->unk_38 = 1;
+            p->isValid = 1;
         }
         r = GsGp_QueueCallback(h, pr2.p, p, node, 0);
         if (r == 0) {
             goto done;
         }
         return r;
-    } else if (c->unk_00 == 3) {
+    } else if (c->searchType == 3) {
         Unk_ov065_02281bf4_Res3 *p;
         pr3 = node->unk_0c;
         if (pr3.p.a == 0) {
@@ -775,34 +775,34 @@ again:
         }
         p = (Unk_ov065_02281bf4_Res3 *)GsUtil_Alloc(0x44);
         if (p == 0) ERRMEM("Out of memory.")
-        p->unk_00 = 0;
-        func_02127838(p->unk_04, c->unk_5c);
-        p->unk_38 = 0;
-        p->unk_3c = 0;
-        p->unk_40 = 0;
+        p->result = 0;
+        func_02127838(p->email, c->email);
+        p->numNicks = 0;
+        p->nicks = 0;
+        p->uniqueNicks = 0;
         GETTOK(tok)
         if (strcmp(tok, "nr") != 0) ERR3()
         done = 0;
         do {
             GETTOK(tok)
             if (strcmp(tok, "nick") == 0) {
-                void *t = GsUtil_Realloc(p->unk_3c, (p->unk_38 + 1) * 4);
+                void *t = GsUtil_Realloc(p->nicks, (p->numNicks + 1) * 4);
                 if (t == 0) ERRMEM("Out of memory.")
-                p->unk_3c = (char **)t;
+                p->nicks = (char **)t;
                 t = GsUtil_Alloc(0x1f);
                 if (t == 0) ERRMEM("Out of memory.")
-                p->unk_3c[p->unk_38] = (char *)t;
-                GsUtil_StrCopyN(p->unk_3c[p->unk_38], buf, 0x1f);
-                p->unk_38++;
+                p->nicks[p->numNicks] = (char *)t;
+                GsUtil_StrCopyN(p->nicks[p->numNicks], buf, 0x1f);
+                p->numNicks++;
             } else if (strcmp(tok, "uniquenick") == 0) {
-                if (p->unk_38 > 0) {
-                    void *t = GsUtil_Realloc(p->unk_40, p->unk_38 * 4);
+                if (p->numNicks > 0) {
+                    void *t = GsUtil_Realloc(p->uniqueNicks, p->numNicks * 4);
                     if (t == 0) ERRMEM("Out of memory.")
-                    p->unk_40 = (char **)t;
+                    p->uniqueNicks = (char **)t;
                     t = GsUtil_Alloc(0x15);
                     if (t == 0) ERRMEM("Out of memory.")
-                    p->unk_40[p->unk_38 - 1] = (char *)t;
-                    GsUtil_StrCopyN(p->unk_40[p->unk_38 - 1], buf, 0x15);
+                    p->uniqueNicks[p->numNicks - 1] = (char *)t;
+                    GsUtil_StrCopyN(p->uniqueNicks[p->numNicks - 1], buf, 0x15);
                 }
             } else if (strcmp(tok, "ndone") == 0) {
                 done = 1;
@@ -815,18 +815,18 @@ again:
             goto done;
         }
         return r;
-    } else if (c->unk_00 == 4) {
+    } else if (c->searchType == 4) {
         pr4 = node->unk_0c;
         if (pr4.p.a == 0) {
             goto done;
         }
         p4 = (Unk_ov065_02281bf4_Res4 *)GsUtil_Alloc(0x10);
         if (p4 == 0) ERRMEM("Out of memory.")
-        p4->unk_04 = c->unk_138;
+        p4->productId = c->productId;
         done = 0;
-        p4->unk_00 = 0;
-        p4->unk_08 = 0;
-        p4->unk_0c = 0;
+        p4->result = 0;
+        p4->numMatches = 0;
+        p4->matches = 0;
         do {
             GETTOK(tok)
             if (strcmp(tok, "psrdone") == 0) {
@@ -835,26 +835,26 @@ again:
                 Unk_ov065_02281bf4_Ent *e;
                 s32 idx;
                 Unk_ov065_02281bf4_Ent *base;
-                p4->unk_08++;
-                p4->unk_0c = (Unk_ov065_02281bf4_Ent *)GsUtil_Realloc(p4->unk_0c, p4->unk_08 * 0x128);
-                base = p4->unk_0c;
+                p4->numMatches++;
+                p4->matches = (Unk_ov065_02281bf4_Ent *)GsUtil_Realloc(p4->matches, p4->numMatches * 0x128);
+                base = p4->matches;
                 if (base == 0) ERRMEM("Out of memory.")
-                idx = p4->unk_08 - 1;
+                idx = p4->numMatches - 1;
                 e = &base[idx];
                 func_0212899c(e, 0, 0x128);
-                e->unk_24 = 1;
-                base[idx].unk_00 = func_0212b770(buf);
+                e->statusCode = 1;
+                base[idx].profileId = func_0212b770(buf);
                 done2 = 0;
                 do {
                     save1 = pos;
                     GETTOK(tok)
                     if (strcmp(tok, "status") == 0) {
-                        GsUtil_StrCopyN(e->unk_28, buf, 0x100);
+                        GsUtil_StrCopyN(e->statusString, buf, 0x100);
                     } else if (strcmp(tok, "nick") == 0) {
-                        GsUtil_StrCopyN(e->unk_04, buf, 0x1f);
+                        GsUtil_StrCopyN(e->nick, buf, 0x1f);
                     }
                     if (strcmp(tok, "statuscode") == 0) {
-                        e->unk_24 = func_0212b770(buf);
+                        e->statusCode = func_0212b770(buf);
                     } else if (strcmp(tok, "psr") == 0 || strcmp(tok, "psrdone") == 0) {
                         done2 = 1;
                         pos = save1;
@@ -869,7 +869,7 @@ again:
             goto done;
         }
         return r;
-    } else if (c->unk_00 == 5) {
+    } else if (c->searchType == 5) {
         s32 a4;
         s32 a6;
         Unk_ov065_02281bf4_Res5 *p;
@@ -881,22 +881,22 @@ again:
         if (strcmp(tok, "cur") != 0) ERR3()
         a4 = func_0212b770(buf);
         if (a4 != 0) {
-            ctx->unk_418 = a4;
+            ctx->errorCode = a4;
             a6 = 0;
         } else {
-            if (GsGp_GetValue(c->unk_08, "\\pid\\", buf, 0x200) == 0) ERR3()
+            if (GsGp_GetValue(c->inputBuffer, "\\pid\\", buf, 0x200) == 0) ERR3()
             a6 = func_0212b770(buf);
         }
         p = (Unk_ov065_02281bf4_Res5 *)GsUtil_Alloc(8);
         if (p == 0) ERRMEM("Out of memory.")
-        p->unk_00 = a4;
-        p->unk_04 = a6;
+        p->result = a4;
+        p->profileId = a6;
         r = GsGp_QueueCallback(h, pr5.p, p, node, 0);
         if (r == 0) {
             goto done;
         }
         return r;
-    } else if (c->unk_00 == 6) {
+    } else if (c->searchType == 6) {
         s32 a4;
         s32 a6;
         Unk_ov065_02281bf4_Res5 *p;
@@ -908,9 +908,9 @@ again:
         if (strcmp(tok, "nur") != 0) ERR3()
         a4 = func_0212b770(buf);
         if (a4 != 0) {
-            ctx->unk_418 = a4;
+            ctx->errorCode = a4;
         }
-        if (GsGp_GetValue(c->unk_08, "\\pid\\", buf, 0x200) == 0) {
+        if (GsGp_GetValue(c->inputBuffer, "\\pid\\", buf, 0x200) == 0) {
             if (a4 == 0) ERR3()
             a6 = 0;
         } else {
@@ -918,23 +918,23 @@ again:
         }
         p = (Unk_ov065_02281bf4_Res5 *)GsUtil_Alloc(8);
         if (p == 0) ERRMEM("Out of memory.")
-        p->unk_00 = a4;
-        p->unk_04 = a6;
+        p->result = a4;
+        p->profileId = a6;
         r = GsGp_QueueCallback(h, pr6.p, p, node, 0);
         if (r == 0) {
             goto done;
         }
         return r;
-    } else if (c->unk_00 == 7) {
+    } else if (c->searchType == 7) {
         pr7 = node->unk_0c;
         if (pr7.p.a == 0) {
             goto done;
         }
         p7 = (Unk_ov065_02281bf4_Res7 *)GsUtil_Alloc(0xc);
         if (p7 == 0) ERRMEM("Out of memory.")
-        p7->unk_00 = 0;
-        p7->unk_04 = 0;
-        p7->unk_08 = 0;
+        p7->result = 0;
+        p7->numProfiles = 0;
+        p7->profiles = 0;
         GETTOK(tok)
         if (strcmp(tok, "others") != 0) ERR3()
         done = 0;
@@ -946,29 +946,29 @@ again:
                 Unk_ov065_02281bf4_Rec *e;
                 s32 idx;
                 Unk_ov065_02281bf4_Rec *base;
-                void *t = GsUtil_Realloc(p7->unk_08, (p7->unk_04 + 1) * 0xac);
+                void *t = GsUtil_Realloc(p7->profiles, (p7->numProfiles + 1) * 0xac);
                 if (t == 0) ERRMEM("Out of memory.")
-                p7->unk_08 = (Unk_ov065_02281bf4_Rec *)t;
-                base = p7->unk_08;
-                idx = p7->unk_04;
+                p7->profiles = (Unk_ov065_02281bf4_Rec *)t;
+                base = p7->profiles;
+                idx = p7->numProfiles;
                 e = &base[idx];
                 func_0212899c(e, 0, 0xac);
-                p7->unk_04++;
-                base[idx].unk_00 = func_0212b770(buf);
+                p7->numProfiles++;
+                base[idx].profileId = func_0212b770(buf);
                 done2 = 0;
                 do {
                     save1 = pos;
                     GETTOK(tok)
                     if (strcmp(tok, "nick") == 0) {
-                        GsUtil_StrCopyN(e->unk_04, buf, 0x1f);
+                        GsUtil_StrCopyN(e->nick, buf, 0x1f);
                     } else if (strcmp(tok, "uniquenick") == 0) {
-                        GsUtil_StrCopyN(e->unk_23, buf, 0x15);
+                        GsUtil_StrCopyN(e->uniqueNick, buf, 0x15);
                     } else if (strcmp(tok, "first") == 0) {
-                        GsUtil_StrCopyN(e->unk_38, buf, 0x1f);
+                        GsUtil_StrCopyN(e->firstName, buf, 0x1f);
                     } else if (strcmp(tok, "last") == 0) {
-                        GsUtil_StrCopyN(e->unk_57, buf, 0x1f);
+                        GsUtil_StrCopyN(e->lastName, buf, 0x1f);
                     } else if (strcmp(tok, "email") == 0) {
-                        GsUtil_StrCopyN(e->unk_76, buf, 0x33);
+                        GsUtil_StrCopyN(e->email, buf, 0x33);
                     } else if (strcmp(tok, "o") == 0 || strcmp(tok, "odone") == 0) {
                         done2 = 1;
                         pos = save1;
@@ -983,7 +983,7 @@ again:
             goto done;
         }
         return r;
-    } else if (c->unk_00 == 8) {
+    } else if (c->searchType == 8) {
         Unk_ov065_02281bf4_Res8 *p;
         pr8 = node->unk_0c;
         if (pr8.p.a == 0) {
@@ -992,24 +992,24 @@ again:
         cnt = 0;
         p = (Unk_ov065_02281bf4_Res8 *)GsUtil_Alloc(0xc);
         if (p == 0) ERRMEM("Out of memory.")
-        p->unk_00 = 0;
-        p->unk_04 = 0;
-        p->unk_08 = 0;
+        p->result = 0;
+        p->numNicks = 0;
+        p->nicks = 0;
         GETTOK(tok)
         if (strcmp(tok, "us") != 0) ERR3()
-        p->unk_04 = func_0212b770(buf);
-        p->unk_08 = (char **)GsUtil_Alloc(p->unk_04 * 4);
-        if (p->unk_08 == 0) ERRMEM("Out of memory.")
+        p->numNicks = func_0212b770(buf);
+        p->nicks = (char **)GsUtil_Alloc(p->numNicks * 4);
+        if (p->nicks == 0) ERRMEM("Out of memory.")
         done = 0;
         do {
             GETTOK(tok)
             if (strcmp(tok, "nick") == 0) {
-                p->unk_08[cnt] = (char *)GsUtil_Alloc(0x15);
-                if (p->unk_08[cnt] == 0) ERRMEM("Out of memory.")
-                GsUtil_StrCopyN(p->unk_08[cnt], buf, 0x15);
+                p->nicks[cnt] = (char *)GsUtil_Alloc(0x15);
+                if (p->nicks[cnt] == 0) ERRMEM("Out of memory.")
+                GsUtil_StrCopyN(p->nicks[cnt], buf, 0x15);
                 cnt++;
             } else if (strcmp(tok, "usdone") == 0) {
-                p->unk_04 = cnt;
+                p->numNicks = cnt;
                 done = 1;
             } else {
                 ERR3()
@@ -1021,7 +1021,7 @@ again:
         }
     }
 done:
-    c->unk_140 = 1;
+    c->isFinished = 1;
     retry = 0;
 endchk:
     if (retry != 0) {
@@ -1040,28 +1040,28 @@ s32 GsGpSearch_ProcessAll(Ctx0228 **h) {
     Node0228 **arr;
     Node0228 *nd;
     s32 z = 0;
-    if (c->unk_210 > 0) {
-        arr = (Node0228 **)GsUtil_Alloc(c->unk_210 * 4);
+    if (c->numSearches > 0) {
+        arr = (Node0228 **)GsUtil_Alloc(c->numSearches * 4);
         if (arr == 0) {
             GsGp_SetErrorString(h, "Out of memory.");
             return 1;
         }
-        for (nd = c->unk_424; nd != 0; nd = nd->unk_20) {
-            if (nd->unk_00 == 3 && nd->unk_14 != 5 && nd->unk_04->unk_13c == 0) {
+        for (nd = c->operationList; nd != 0; nd = nd->next) {
+            if (nd->type == 3 && nd->state != 5 && nd->data->isProcessing == 0) {
                 arr[n++] = nd;
-                nd->unk_04->unk_13c = 1;
+                nd->data->isProcessing = 1;
             }
         }
         for (i = 0; i < n; i++) {
             s32 r = GsGpSearch_Process(h, arr[i]);
             if (r != 0) {
-                arr[i]->unk_1c = r;
+                arr[i]->result = r;
             }
         }
         for (i = 0; i < n; i++) {
-            Conn0228 *s = arr[i]->unk_04;
-            s->unk_13c = z;
-            if (s->unk_140 != 0) {
+            Conn0228 *s = arr[i]->data;
+            s->isProcessing = z;
+            if (s->isFinished != 0) {
                 GsGp_RemoveOperation(h, arr[i]);
             }
         }
@@ -1080,27 +1080,27 @@ s32 GsGpProfile_CompareId(s32 *a, s32 *b) {
 
 void GsGpProfile_FreeEntry(void *p) {
     Elem0228 *e = (Elem0228 *)p;
-    if (e->unk_08 != 0) {
-        GsUtil_Free(e->unk_08->unk_08);
-        e->unk_08->unk_08 = 0;
-        GsUtil_Free(e->unk_08->unk_0c);
-        e->unk_08->unk_0c = 0;
-        GsUtil_Free(e->unk_08);
-        e->unk_08 = 0;
+    if (e->buddyStatus != 0) {
+        GsUtil_Free(e->buddyStatus->statusString);
+        e->buddyStatus->statusString = 0;
+        GsUtil_Free(e->buddyStatus->locationString);
+        e->buddyStatus->locationString = 0;
+        GsUtil_Free(e->buddyStatus);
+        e->buddyStatus = 0;
     }
     GsGp_FreeCachedInfo(e);
-    GsUtil_Free(e->unk_10);
-    e->unk_10 = 0;
-    GsUtil_Free(e->unk_18);
-    e->unk_18 = 0;
+    GsUtil_Free(e->authSig);
+    e->authSig = 0;
+    GsUtil_Free(e->peerSig);
+    e->peerSig = 0;
 }
 
 s32 GsGpProfile_InitTable(Ctx0228 **h) {
     Ctx0228 *c = *h;
-    c->unk_430 = 0;
-    c->unk_42c = 0;
-    c->unk_428 = GsHash_New(0x1c, 4, GsGpProfile_HashId, GsGpProfile_CompareId, GsGpProfile_FreeEntry);
-    if (c->unk_428 != 0) {
+    c->numBuddies = 0;
+    c->numProfiles = 0;
+    c->profileTable = GsHash_New(0x1c, 4, GsGpProfile_HashId, GsGpProfile_CompareId, GsGpProfile_FreeEntry);
+    if (c->profileTable != 0) {
         return 1;
     }
     return 0;

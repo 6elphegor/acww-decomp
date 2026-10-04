@@ -7,124 +7,124 @@ namespace Na {
 // ov065_054: 0x022804b8..0x02280d70
 
 struct Unk_ov065_022804b8_Src {
-    char *unk_00;
-    char *unk_04;
-    char *unk_08;
-    char *unk_0c;
-    char *unk_10;
-    char *unk_14;
-    s32 unk_18;
-    char unk_1c[0xb];
-    char unk_27[3];
+    char *nick;
+    char *uniqueNick;
+    char *email;
+    char *firstName;
+    char *lastName;
+    char *homepage;
+    s32 icqUin;
+    char zipCode[0xb];
+    char countryCode[3];
     s32 unk_2c;
     s32 unk_30;
-    char unk_34[0x80];
-    s32 unk_b4;
-    s32 unk_b8;
-    s32 unk_bc;
-    s32 unk_c0;
-    s32 unk_c4;
-    char *unk_c8;
-    s32 unk_cc;
-    s32 unk_d0;
-    s32 unk_d4;
-    s32 unk_d8;
-    s32 unk_dc;
-    s32 unk_e0;
-    s32 unk_e4;
-    s32 unk_e8;
-    s32 unk_ec;
+    char location[0x80];
+    s32 birthDay;
+    s32 birthMonth;
+    s32 birthYear;
+    s32 sex;
+    s32 publicMask;
+    char *aimName;
+    s32 pic;
+    s32 occupationId;
+    s32 industryId;
+    s32 incomeId;
+    s32 marriedId;
+    s32 childCount;
+    s32 interests1;
+    s32 ownership1;
+    s32 connectionType;
 };
 
 struct Unk_ov065_022804b8_Dst {
     u8 pad_00[8];
-    char unk_08[0x1f];
-    char unk_27[0x15];
-    char unk_3c[0x33];
-    char unk_6f[0x1f];
-    char unk_8e[0x1f];
-    char unk_ad[0x4c];
-    s32 unk_fc;
-    char unk_100[0xb];
-    char unk_10b[3];
+    char nick[0x1f];
+    char uniqueNick[0x15];
+    char email[0x33];
+    char firstName[0x1f];
+    char lastName[0x1f];
+    char homepage[0x4c];
+    s32 icqUin;
+    char zipCode[0xb];
+    char countryCode[3];
     s32 unk_110;
     s32 unk_114;
-    char unk_118[0x80];
-    s32 unk_198;
-    s32 unk_19c;
-    s32 unk_1a0;
-    s32 unk_1a4;
-    s32 unk_1a8;
-    char unk_1ac[0x33];
+    char location[0x80];
+    s32 birthDay;
+    s32 birthMonth;
+    s32 birthYear;
+    s32 sex;
+    s32 publicMask;
+    char aimName[0x33];
     u8 pad_1df[1];
-    s32 unk_1e0;
-    s32 unk_1e4;
-    s32 unk_1e8;
-    s32 unk_1ec;
-    s32 unk_1f0;
-    s32 unk_1f4;
-    s32 unk_1f8;
-    s32 unk_1fc;
-    s32 unk_200;
+    s32 pic;
+    s32 occupationId;
+    s32 industryId;
+    s32 incomeId;
+    s32 marriedId;
+    s32 childCount;
+    s32 interests1;
+    s32 ownership1;
+    s32 connectionType;
 };
 
 struct Unk_ov065_02280854_Node {
     s32 unk_00;
-    s32 unk_04;
+    s32 data;
     s32 unk_08;
     s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
-    Unk_ov065_02280854_Node *unk_20;
+    s32 callbackParam;
+    s32 state;
+    s32 id;
+    s32 result;
+    Unk_ov065_02280854_Node *next;
 };
 
 struct Unk_ov065_02280854_Ctx {
     u8 pad_000[0x20c];
-    s32 unk_20c;
-    s32 unk_210;
+    s32 nextOperationId;
+    s32 numSearches;
     u8 pad_214[0x418 - 0x214];
-    s32 unk_418;
+    s32 errorCode;
     u8 pad_41c[8];
-    Unk_ov065_02280854_Node *unk_424;
+    Unk_ov065_02280854_Node *operationList;
 };
 
 struct Unk_ov065_02280854_H {
-    Unk_ov065_02280854_Ctx *unk_00;
+    Unk_ov065_02280854_Ctx *connection;
 };
 
 struct Unk_ov065_0228094c_Sub {
-    s32 unk_00;
-    s32 unk_04;
-    char *unk_08;
+    s32 searchType;
+    s32 sock;
+    char *inputBuffer;
     u8 pad_0c[0xc];
-    char *unk_18;
+    char *outputBuffer;
 };
 
 struct Unk_ov065_02280a2c_Ctx {
     u8 pad_000[0x1a0];
-    s32 unk_1a0;
+    s32 profileId;
     u8 pad_1a4[0x418 - 0x1a4];
-    s32 unk_418;
+    s32 errorCode;
 };
 
 struct Unk_ov065_02280a2c_M0 {
-    s32 unk_00;
-    s32 unk_04;
+    s32 result;
+    s32 profileId;
     u8 pad_08[0x18];
 };
 
 struct Unk_ov065_02280c08_Node {
     u8 pad_00[0x10];
-    s32 unk_10;
+    s32 expireTime;
     u8 pad_14[0x38 - 0x14];
-    s32 unk_38;
+    s32 messageQueue;
 };
 
 struct Unk_ov065_02280a2c_Pair {
-    s32 unk_00;
-    s32 unk_04;
+    s32 func;
+    s32 param;
 };
 
 struct Unk_ov065_02280a2c_Wrap {
@@ -211,18 +211,18 @@ struct Unk_ov065_02280cb4_T {
 
 struct Unk_ov065_02280d70_P2 {
     u8 pad_00[0x10];
-    s32 unk_10;
-    s32 unk_14;
+    s32 ip;
+    s32 port;
 };
 
 struct Unk_ov065_02280d70_P1 {
     u8 pad_00[8];
-    Unk_ov065_02280d70_P2 *unk_08;
+    Unk_ov065_02280d70_P2 *buddyStatus;
 };
 
 struct Unk_ov065_02280d70_Sa {
     s32 unk_00;
-    s32 unk_04;
+    s32 addr;
 };
 
 }
@@ -245,7 +245,7 @@ s32 GsGp_CallFailedCallback(void *h, Unk_ov065_02280854_Node *n) {
     Unk_ov065_02280a2c_Wrap w;
     s32 r;
     w = *(Unk_ov065_02280a2c_Wrap *)&n->unk_0c;
-    if (w.p.unk_00 != 0) {
+    if (w.p.func != 0) {
         {
             switch (n->unk_00) {
             case 0: {
@@ -255,10 +255,10 @@ s32 GsGp_CallFailedCallback(void *h, Unk_ov065_02280854_Node *n) {
                     return 1;
                 }
                 func_0212899c(m, 0, 0x20);
-                m->unk_00 = n->unk_1c;
-                if (c->unk_418 == 0x201) {
-                    m->unk_04 = c->unk_1a0;
-                    c->unk_1a0 = 0;
+                m->result = n->result;
+                if (c->errorCode == 0x201) {
+                    m->profileId = c->profileId;
+                    c->profileId = 0;
                 }
                 r = GsGp_QueueCallback(h, w.p, m, n, 0);
                 if (r == 0) {
@@ -280,7 +280,7 @@ s32 GsGp_CallFailedCallback(void *h, Unk_ov065_02280854_Node *n) {
                 m[5] = 0;
                 m[6] = 0;
                 m[7] = 0;
-                *(s32 *)m = n->unk_1c;
+                *(s32 *)m = n->result;
                 r = GsGp_QueueCallback(h, w.p, m, n, 0);
                 if (r == 0) {
                     break;
@@ -294,7 +294,7 @@ s32 GsGp_CallFailedCallback(void *h, Unk_ov065_02280854_Node *n) {
                     return 1;
                 }
                 func_0212899c(m, 0, 0x204);
-                *(s32 *)m = n->unk_1c;
+                *(s32 *)m = n->result;
                 r = GsGp_QueueCallback(h, w.p, m, n, 0);
                 if (r == 0) {
                     break;
@@ -317,7 +317,7 @@ s32 GsGp_CallFailedCallback(void *h, Unk_ov065_02280854_Node *n) {
                     *q++ = z;
                     k--;
                 } while (k != 0);
-                *(s32 *)m = n->unk_1c;
+                *(s32 *)m = n->result;
                 *(s32 *)(m + 0xc) = 0;
                 r = GsGp_QueueCallback(h, w.p, m, n, 0);
                 if (r == 0) {
@@ -335,7 +335,7 @@ s32 GsGp_CallFailedCallback(void *h, Unk_ov065_02280854_Node *n) {
                 m[1] = 0;
                 m[2] = 0;
                 m[3] = 0;
-                *(s32 *)m = n->unk_1c;
+                *(s32 *)m = n->result;
                 r = GsGp_QueueCallback(h, w.p, m, n, 0);
                 if (r == 0) {
                     break;
@@ -353,30 +353,30 @@ s32 GsGp_CallFailedCallback(void *h, Unk_ov065_02280854_Node *n) {
 namespace Na {
 extern "C" {
 s32 GsGp_AddOperation(Unk_ov065_02280854_H *h, s32 a, s32 b, Unk_ov065_02280854_Node **out, s32 e, s32 f, s32 g) {
-    Unk_ov065_02280854_Ctx *c = h->unk_00;
+    Unk_ov065_02280854_Ctx *c = h->connection;
     Unk_ov065_02280854_Node *n = (Unk_ov065_02280854_Node *)GsUtil_Alloc(0x24);
     if (n == 0) {
         GsGp_SetErrorString(h, "Out of memory.");
         return 1;
     }
     n->unk_00 = a;
-    n->unk_04 = b;
+    n->data = b;
     n->unk_08 = e;
-    n->unk_14 = 0;
+    n->state = 0;
     if (a == 0) {
-        n->unk_18 = 1;
+        n->id = 1;
     } else {
-        s32 t = c->unk_20c++;
-        n->unk_18 = t;
-        if (c->unk_20c < 2) {
-            c->unk_20c = 2;
+        s32 t = c->nextOperationId++;
+        n->id = t;
+        if (c->nextOperationId < 2) {
+            c->nextOperationId = 2;
         }
     }
-    n->unk_1c = 0;
+    n->result = 0;
     n->unk_0c = f;
-    n->unk_10 = g;
-    n->unk_20 = c->unk_424;
-    c->unk_424 = n;
+    n->callbackParam = g;
+    n->next = c->operationList;
+    c->operationList = n;
     *out = n;
     return 0;
 }
@@ -386,19 +386,19 @@ s32 GsGp_AddOperation(Unk_ov065_02280854_H *h, s32 a, s32 b, Unk_ov065_02280854_
 namespace Na {
 extern "C" {
 void GsGp_FreeOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node *n) {
-    Unk_ov065_02280854_Ctx *c = h->unk_00;
+    Unk_ov065_02280854_Ctx *c = h->connection;
     if (n->unk_00 == 3) {
-        Unk_ov065_0228094c_Sub *s = (Unk_ov065_0228094c_Sub *)n->unk_04;
-        c->unk_210--;
-        GsSock_Shutdown(s->unk_04, 2);
-        GsSock_Close(s->unk_04);
-        GsUtil_Free(s->unk_18);
-        s->unk_18 = 0;
-        GsUtil_Free(s->unk_08);
-        s->unk_08 = 0;
+        Unk_ov065_0228094c_Sub *s = (Unk_ov065_0228094c_Sub *)n->data;
+        c->numSearches--;
+        GsSock_Shutdown(s->sock, 2);
+        GsSock_Close(s->sock);
+        GsUtil_Free(s->outputBuffer);
+        s->outputBuffer = 0;
+        GsUtil_Free(s->inputBuffer);
+        s->inputBuffer = 0;
     }
-    GsUtil_Free((void *)n->unk_04);
-    n->unk_04 = 0;
+    GsUtil_Free((void *)n->data);
+    n->data = 0;
     GsUtil_Free(n);
 }
 }
@@ -407,15 +407,15 @@ void GsGp_FreeOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node *n) {
 namespace Na {
 extern "C" {
 void GsGp_RemoveOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node *n) {
-    Unk_ov065_02280854_Ctx *c = h->unk_00;
-    Unk_ov065_02280854_Node *p = c->unk_424;
+    Unk_ov065_02280854_Ctx *c = h->connection;
+    Unk_ov065_02280854_Node *p = c->operationList;
     Unk_ov065_02280854_Node *prev = 0;
-    for (; p; prev = p, p = p->unk_20) {
+    for (; p; prev = p, p = p->next) {
         if (p == n) {
             if (prev == 0) {
-                c->unk_424 = p->unk_20;
+                c->operationList = p->next;
             } else {
-                prev->unk_20 = n->unk_20;
+                prev->next = n->next;
             }
             GsGp_FreeOperation(h, n);
             return;
@@ -428,9 +428,9 @@ void GsGp_RemoveOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node *n) {
 namespace Na {
 extern "C" {
 s32 GsGp_FindOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node **out, s32 id) {
-    Unk_ov065_02280854_Node *n = h->unk_00->unk_424;
-    for (; n; n = n->unk_20) {
-        if (n->unk_18 == id) {
+    Unk_ov065_02280854_Node *n = h->connection->operationList;
+    for (; n; n = n->next) {
+        if (n->id == id) {
             if (out) {
                 *out = n;
             }
@@ -448,8 +448,8 @@ s32 GsGp_FindOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node **out, s
 namespace Na {
 extern "C" {
 s32 GsGp_HasBlockingOperation(Unk_ov065_02280854_H *h) {
-    Unk_ov065_02280854_Node *n = h->unk_00->unk_424;
-    for (; n; n = n->unk_20) {
+    Unk_ov065_02280854_Node *n = h->connection->operationList;
+    for (; n; n = n->next) {
         if (n->unk_08 != 0 && n->unk_00 != 3) {
             return 1;
         }
@@ -482,7 +482,7 @@ s32 gpiProcessOperation(void *h, Unk_ov065_02280854_Node *n, char *x) {
         break;
     }
     if (r != 0) {
-        n->unk_1c = r;
+        n->result = r;
     }
     return r;
 }
