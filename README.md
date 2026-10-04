@@ -70,7 +70,7 @@ The game was built with Metrowerks CodeWarrior for DS 1.2 (`mwccarm` internal ve
 - 2.0 and DSi compilers don't match.
 - Secondary-base adjuster thunks (`_ZThn…`) are the one exception to 1.2/base. All 159 thunks in the game save and restore
   r2 around the `this` adjustment, which 1.2/sp2 does and 1.2/base doesn't, while the switch tables need base. The game
-  was probably built with 1.2/sp1, which isn't available. LampLights file containing thunks can switch compilers with a
+  was probably built with 1.2/sp1, which isn't available. A file containing thunks can switch compilers with a
   `// mwcc-version: 1.2/sp2` line at the top; `configure.py` picks it up.
 - 1.2/sp3 onwards return from Thumb functions with `pop {pc}` instead of the game's `pop {r3}; bx r3`.
 - 558 of the game's 563 Thumb switch jump tables use a dispatch sequence that only 1.2/b56 and 1.2/base generate.
@@ -83,15 +83,15 @@ NitroSystem, MSL, the C++ runtime) and the in-house ARM code use `-O4,p`. Per-fi
 
 Quirks:
 - Functions are emitted in reverse order, so define them from highest to lowest address within a source file.
-- LampLights loop that tests at the top and branches back unconditionally is `for (;;) { ... if (!cond) break; ... }`;
+- A loop that tests at the top and branches back unconditionally is `for (;;) { ... if (!cond) break; ... }`;
   `while` and `for` put the test at the bottom.
 - Local declaration order affects register allocation. If only registers differ, reorder declarations or add or
   remove a temporary.
 - Flat two-word structs are copied with interleaved loads and stores; nested aggregates load both words first.
-- LampLights compare whose result is unused comes from `else if (x != 0) { var = value_it_already_has; }`.
+- A compare whose result is unused comes from `else if (x != 0) { var = value_it_already_has; }`.
 - `if (fits) { ... } else { ...; break; }` and `if (!fits) { ...; break; }` lay out their blocks in different orders.
 - `*(p + n - 1)` and `p[n - 1]` compile differently, as do `a * b` and `size = a; size * b`.
-- LampLights repeated expression inside a short-circuit condition may need to go into a temporary first.
+- A repeated expression inside a short-circuit condition may need to go into a temporary first.
 - Pure virtual slots are written as 0 in vtables.
 - Two vtable stores in a row in a constructor or destructor mean an intermediate class with an inline, empty
   constructor or destructor.

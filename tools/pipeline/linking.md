@@ -27,7 +27,7 @@ they cannot be split across files. Start from the unit files in `src/ovNNN/`.
   * a method `_ZN17MenuTownListPanel8clearRowEi` → class `MenuTownListPanel`, method
     `func_ov139_02292154(s32)`; parameter letters: `h` u8, `t` u16, `j` u32, `i` s32, `s` s16, `a` s8,
     `Ph` u8*, `Pv` void*. Return types are not mangled: keep whatever the function matched with.
-  * a plain `func_XXXXXXXX` → `extern "C"`. LampLights `_Z25NetOverlay_AssertWirelessv` → C++ linkage, declared outside `extern "C"`.
+  * a plain `func_XXXXXXXX` → `extern "C"`. A `_Z25NetOverlay_AssertWirelessv` → C++ linkage, declared outside `extern "C"`.
   * a call the unit wrote as a free function taking the object (`f(&unk_94, i)`) becomes a method call
     (`unk_94.f(i)`) when the real symbol is a method; the code is the same.
   * methods of one object split across several classes in ov002 (known case: `MenuCursorBase` and
@@ -81,15 +81,15 @@ all of it:
   `extern "C" u32 ovNNN_order_pad[4] = {0};`, created at the right point, takes part in the sort and is then
   stripped (ov125).
 * The scene class destructor: if the original has D1 then D0 (vtable slot 0x40 then 0x44, D1 at the lower
-  address) and the destructor body is empty, **leave the destructor implicit** (no `~DoorLight()` declaration or
-  definition). An explicit `~DoorLight() {}` emits D0 before D1.
+  address) and the destructor body is empty, **leave the destructor implicit** (no `~X()` declaration or
+  definition). An explicit `~X() {}` emits D0 before D1.
 
 ### Overlays with `.init` / `.ctor` (static initialisers)
 
 Nothing special is needed in the source: mwcc generates `__sinit_<file>` (in `.init`) and its `.ctor` word itself
 from any file-scope object with a non-constant initialiser — typically a table of pointer-to-member-function
 pairs, e.g. `Ent sSpNpcTortimerFlowerFestActTable[3] = {{&C::f824,&C::f7d8},{&C::f790,&C::f764},{NULL,&C::f760}};`.
-* LampLights NULL member pointer is copied from the runtime constant `__ptmf_null` (autoload_2 0x0213a740): add
+* A NULL member pointer is copied from the runtime constant `__ptmf_null` (autoload_2 0x0213a740): add
   `autoload_2 0213a740 __ptmf_null` to renames.txt until it is committed.
 * Strings shared by several functions (one copy in the original) need `// mwcc-flags: -str reuse` on line 1;
   the default `-str noreuse` makes one copy per use. `#pragma reuse_strings` is ignored.
@@ -128,7 +128,7 @@ inline helpers above them. This is the original file's definition order, so inli
   `__sinit`, is set by the linker and expected), and the end of every section against its range (zero padding up to
   the section's `align:` is allowed). It simulates dead-stripping first: a data/bss object that nothing kept refers
   to and that has no `symbols.txt` name is listed as `unused` and left out (mwld strips it, and everything after it
-  moves). `DATA` = wrong bytes or wrong order, `SIZE` = the objects do not fill the range. LampLights data label of the
+  moves). `DATA` = wrong bytes or wrong order, `SIZE` = the objects do not fill the range. A data label of the
   overlay that code outside the unit uses (an extern in another `src/` file, a relocation of delinked code of
   another module) must be a global of the object at that address, or recorded (`interior:` in renames.txt,
   `lcf_symbols.txt`): `MISSING ... used from outside the unit`. Overlays with an `object_order.txt` skip these data
@@ -151,15 +151,17 @@ mwcc emits a complete-object (C1) and a base-object (C2) constructor, but the ga
 both. Different linked units may call the same address by different names (e.g. ov048/ov118/ov120 call
 `_ZN11MsgString9CC2Ev`, ov139's function-local statics call `C1`). symbols.txt holds one sized symbol per
 address and mwld aborts on two ("the sum of all symbol sizes exceed section size"), so add the second
-name as a zero-size label: `python3 tools/pipeline/alias.py config/usa/arm9/symbols.txt <existing> <new>`.
+name as a zero-size label: `python3 tools/pipeline/alias.py config/usa/arm9/symbols.txt <existing> <new>`
+(an overlay's address: `config/usa/arm9/overlays/ovNNN/symbols.txt`; `tools/aliases.py` makes both names
+resolve once the unit is compiled, in every module).
 Never rename a constructor that a linked unit already calls; alias it instead (`rename_impact.py` tells you).
 
 ## Creation-order rules the data model gets wrong (found on ov147, ov123, ov139, ov129)
 
 Verified with small equal-size test files (where the heapsort can be inverted exactly):
-- LampLights guarded function-local static is created FIRST, its guard immediately after (the model puts the guard after).
-- LampLights function-local static pointer-to-member table: its @N constants first, then the table, then its guard.
-- LampLights file-scope ptmf table filled by `__sinit`: its @N constants first, then the table.
+- A guarded function-local static is created FIRST, its guard immediately after (the model puts the guard after).
+- A function-local static pointer-to-member table: its @N constants first, then the table, then its guard.
+- A file-scope ptmf table filled by `__sinit`: its @N constants first, then the table.
 - Vtables come last, in reverse declaration order of their classes.
 When `data` reports "compiled object's data order: MATCHES" but its own model says N/M in place, trust the
 compiled-order line. For hard orders, write a small script that inverts the heapsort with these rules
@@ -184,7 +186,7 @@ Their sources were generated from the original image, with the definition order 
 * Object boundaries come from the scene graph, not from dsd's labels (many are interior and marked `ambiguous`):
   scene 24 bytes, head 8, entry 8 per list, id list 4 per id, record list 20 per record, grid 4 x width x height,
   object table 8, object array 0x1c per object. Every overlay's `.data` is then one ascending size run.
-* LampLights global that nothing refers to is dead-stripped unless `symbols.txt` names it (`check`: `unused`); a named
+* A global that nothing refers to is dead-stripped unless `symbols.txt` names it (`check`: `unused`); a named
   global keeps its `symbols.txt` name (ov069's empty initialiser object `data_ov069_02260cc0`).
 * Labels used from outside the unit: main's `sSceneInfoTable` table names `data_ov005_0225b79c`, which is the fourth
   id of ov005's list `data_ov005_0225b790`: `ov005 0225b79c interior:0225b790` in the unit's renames.txt.
@@ -192,14 +194,14 @@ Their sources were generated from the original image, with the definition order 
 ## Overlays that were two translation units
 
 If an overlay's .data/.bss are two size-sorted runs back to back, it was two source files (ov147). Split it into
-two `complete` units in delinks.txt with explicit section ranges per unit (unit LampLights: its .text/.rodata/.init/
-.ctor/.data/.bss halves; unit LightLevel: the rest). The link runner installs only single-unit overlays; two-unit
+two `complete` units in delinks.txt with explicit section ranges per unit (unit A: its .text/.rodata/.init/
+.ctor/.data/.bss halves; unit B: the rest). The link runner installs only single-unit overlays; two-unit
 ones are installed by hand.
 Installing a multi-unit overlay (done for ov147, ov002): `git rm` the old units, write each unit file, and
 list each unit in delinks.txt as `complete` with its own section sub-ranges. dsd requires every unit's
 section range to end exactly on a symbol boundary (a symbol's size is implied by the next symbol), so add
 an unreferenced `data_ovNNN_<addr> kind:data(any)` symbol at each unit boundary that falls inside a
-symbol's implied range. LampLights relocation from another module into the middle of a unit's object (e.g. main
+symbol's implied range. A relocation from another module into the middle of a unit's object (e.g. main
 pointing into a bss array) must target the object's start plus `add:<offset>` in relocs.txt.
 Different units may use different `// mwcc-version:` lines.
 
@@ -217,7 +219,7 @@ TU03/TU05/TU26). Such a unit is linked from two (or more) objects:
   nothing else that the link needs (no vtable, no static table); string literals and constants local to its
   functions are fine. No assembly: the function is ordinary C++ that the other compiler version happens to match.
 
-LampLights file's functions cannot be interleaved with another file's by `file.o(.text)` selectors, and mwld `-partial`
+A file's functions cannot be interleaved with another file's by `file.o(.text)` selectors, and mwld `-partial`
 does not help (it concatenates same-name sections in input order). Instead the linker script places every
 function and data object of the unit individually with mwld's `OBJECT(symbol, file.o)` selector, in original
 address order. `tools/object_order.py` writes those selectors; it runs between `dsd lcf` and
@@ -237,7 +239,7 @@ dependencies on the unit's objects; without any such file the build is as before
   are not affected and keep their normal `file.o(.section)` selectors).
 * `extra <source> <symbol>...` — an extra source file and the symbols it provides. Only these symbols are taken
   from the extra object (plus local objects its placed functions point to); any other global it happens to emit
-  is ignored in favour of the main object's. LampLights unit may have several `extra` lines.
+  is ignored in favour of the main object's. A unit may have several `extra` lines.
 * `place <symbol> <address>` — optional; the original address of an object that cannot be derived (see below;
   the example line above is not needed in ov009).
 
@@ -272,10 +274,13 @@ In the linker script it:
   the `AFTER(...)` list of every module loaded after it. mwld writes OBJECT-selected bss into the overlay's
   file as zero bytes otherwise. (The region name must not start with `OV`: dsd reads such regions as overlays.)
   `OVNNN_BSS_START`/`_END` keep their values, and the other units' `file.o(.bss)` lines move along unchanged;
-* defines every other `symbols.txt` name of a placed function that no object of the unit defines as an alias at
-  the end of `SECTIONS`: `alias = defined_name + 1;` (`+ 1` for Thumb). This is how other linked units keep
-  using their own names for the unit's functions (see "One constructor, two names"): add the name the source
-  defines, or the name another unit uses, as a label with `tools/pipeline/alias.py` and the tool does the rest;
+* defines the `symbols.txt` names of a placed function as an alias at the end of `SECTIONS`
+  (`alias = section_symbol + 1;`, `+ 1` for Thumb) when no object of the unit defines any of that address's
+  names (the section was placed by relocation or `place`). Where an object defines one of them,
+  `tools/aliases.py` adds the others to that object as real symbols instead (see "Second names of functions").
+  Either way other linked units keep using their own names for the unit's functions (see "One constructor, two
+  names"): add the name the source defines, or the name another unit uses, as a label with
+  `tools/pipeline/alias.py` and the build does the rest;
 * adds the extra objects to the object list right after the main object (`objects_object_order.txt`), so
   `force_active.py` keeps their `symbols.txt` functions.
 
@@ -290,12 +295,13 @@ that follow from the order) for it: ignore those, but not BYTES or MISSING lines
   name; for main see "Linking the main module", "Units placed object by object").
 * The whole bss of the overlay moves to the file-less region as soon as one of its units is object-ordered;
   this is harmless for the other units.
-* An alias is an untyped absolute linker symbol. It is right for pointers (vtable slots, tables) and Thumb
-  callers — the only uses so far — but mwld cannot know its ARM/Thumb mode, so check the ROM when a new kind of
-  caller appears, or give callers the name the source defines.
+* A linker script alias is an untyped absolute linker symbol. It is right for pointers (vtable slots, tables) and
+  Thumb callers, but mwld cannot know its ARM/Thumb mode, so check the ROM when a new kind of caller appears, or
+  give callers the name the source defines. (Since `aliases.py` covers overlays, all 56 aliases of the current
+  object-ordered units are real symbols; none is left in the linker script.)
 * Data labels of `symbols.txt` get no aliases: if another unit references `data_ovNNN_XXXXXXXX` by name, the
   source must define the object under that name (or, for a label inside an object, record it in the overlay's
-  `lcf_symbols.txt`, see "Names the linker script defines"). LampLights pointer from another module into the middle of one of the
+  `lcf_symbols.txt`, see "Names the linker script defines"). A pointer from another module into the middle of one of the
   unit's objects is handled as for any linked unit: name the object's start in `symbols.txt` and give the
   relocation `add:<offset>` (ov003 TU08: main's word at 0x020cdf4c points to 0x02231707, inside a vtable; it is
   now `to:0x0223160c add:0xfb` with `_ZTV13CountdownSign` at 0x0223160c). mwld does **not** report the
@@ -305,7 +311,7 @@ that follow from the order) for it: ignore those, but not BYTES or MISSING lines
   `const` in the source (the tool reports the hole in `.rodata` otherwise).
 * An object that nothing placed points to, and that has no `symbols.txt` name, needs a `place` line.
 * Two sections of one object that share a local symbol name cannot be selected (the tool reports it).
-* LampLights link-once function that another unit already provides at its own address (the shared thunk
+* A link-once function that another unit already provides at its own address (the shared thunk
   `_ZThn236_N13BuildingActor8vfunc_88Ev` in ov003 TU04) lies outside the unit's range, is therefore not
   placed, and the first copy keeps being used.
 * Tools that compare `src/ovNNN/*.cpp` with `delinks.txt` see the extra file as an unlisted source.
@@ -360,7 +366,7 @@ Build chain: `dsd lcf` -> `bss_units.py` -> `object_order.py` -> `aliases.py` ->
 * writes `src/main/unk_<text start>.cpp`, lists it `complete` with the main ranges, and the `.bss` range as the
   placeholder in autoload_3;
 * removes old non-complete files that lie inside the `.text` range (`git rm`), trims the ones that straddle it
-  (a file covering both sides keeps the lower part). LampLights trimmed file that has the name the unit needs is renamed
+  (a file covering both sides keeps the lower part). A trimmed file that has the name the unit needs is renamed
   to `unk_<its new start>.cpp` (`git mv`). So **file names in plans and notes go stale as units are
   installed**: prepare units from a frozen copy of `src/main`, and take function addresses, not file names, as
   the reference;
@@ -368,7 +374,7 @@ Build chain: `dsd lcf` -> `bss_units.py` -> `object_order.py` -> `aliases.py` ->
   replaced by their real file (TU068 replaced four);
 * checks every range boundary: `.text`/`.init` boundaries must be function symbols; for a data or bss boundary
   without a symbol it adds `data_<addr>` (dsd wants every unit range to start and end on a symbol) and prints a
-  NOTE. LampLights boundary that is the start of a vtable should be named in `renames.txt` instead (next section);
+  NOTE. A boundary that is the start of a vtable should be named in `renames.txt` instead (next section);
 * applies `aliases.txt`, then `renames.txt`, next to the source.
 
 `renames.txt` (one per line, `#` comments):
@@ -386,13 +392,13 @@ Never alias a signed and an unsigned helper onto one address: the code then link
 uses and hides a wrong source. The 64-bit runtime helpers are one routine with four entry points: 0x02132ef8
 `_ll_udiv`, 0x02132f04 `_ull_mod`, 0x02132f40 `_ll_mod`, 0x02132f50 `_ll_sdiv` (mwcc 1.2 emits `_ll_sdiv` for
 `s64 / s64`, `_ll_udiv` for `u64 / u64` and mixed operands, `_ll_mod` for `s64 % s64`, `_ull_mod` for `u64 % u64`).
-LampLights 64-bit division of the wrong signedness now links to a different address and shows in the link diff.
+A 64-bit division of the wrong signedness now links to a different address and shows in the link diff.
 
 ### Vtables
 
 dsd labelled 230 vtables of main 8 bytes into the object (`data_020dd374` = first slot of the vtable at
 0x020dd36c). The compiled unit emits `_ZTV15EncodedString8B` at the start, so the label must become that symbol and
-every relocation to it `to:<start> add:0x8`. LampLights `renames.txt` line `main <start> _ZTV<n><class>` does both
+every relocation to it `to:<start> add:0x8`. A `renames.txt` line `main <start> _ZTV<n><class>` does both
 (`tools/pipeline/vtable_rename.py`; standalone: `vtable_rename.py [-n] main <start or label> <class or _ZTV name>`).
 Do the same for the vtable that starts where the unit's `.data` range ends, even though it belongs to the next
 unit: the range must end on a symbol, and the vtable symbol is the right one (TU102: `main 020dd384
@@ -425,7 +431,7 @@ that other code uses are then defined by nobody:
   `gSaveData + 2`; 106 linked files use the 49 labels inside the save object). The link stops with
   `Undefined: "gSaveTownId"`;
 * a name for a place the compiler gives only a **local symbol**: the first word of main's `.ctor` table is
-  `.p__sinit_<file>` in the object, and the runtime in autoload_2 has a relocation to it (0x02135344). LampLights delinked
+  `.p__sinit_<file>` in the object, and the runtime in autoload_2 has a relocation to it (0x02135344). A delinked
   object's references are weak: no message, the word is 0, `autoload_2.bin` differs.
 
 Both are recorded in `lcf_symbols.txt` next to the module's `symbols.txt` (main: `config/usa/arm9/`, main's bss:
@@ -445,7 +451,7 @@ What mwld does (tested with a miniature link of real mwcc objects, 1.2/base mwld
   for `.data`, for bss in a region without an output file (also `OBJECT()`-selected), and relative to a section
   start symbol for `.ctor`;
 * a base that is not linked (misspelt, or dead-stripped because nothing keeps it) evaluates as **0 without a
-  message**; the name is then `0 + offset`. LampLights linker script reference does not keep an object alive;
+  message**; the name is then `0 + offset`. A linker script reference does not keep an object alive;
 * when an object also defines the name, there is no "multiply defined": for data the assignment silently wins;
 * a name must be an identifier: `.p__sinit_020c2cd0 = ...` is a syntax error, quoted or not. dsd accepts any name
   for the symbol, so the `symbols.txt` name loses its dot.
@@ -499,7 +505,7 @@ in `src/autoload_2`.
   syntax of dsd's own `OVERLAY_0_ID = 0;` lines. It refuses: a non-identifier, a duplicate, a name that is also
   in a `symbols.txt` or an `lcf_symbols.txt` (a place inside a module has a relocation and belongs there), a
   name that a linked object defines. `aliases.py`, `force_active.py` and `bss_units.py` do not see these names.
-* **`linkprep.py check` / `undef`.** The names resolve (module `abs`). LampLights relocation against an absolute symbol
+* **`linkprep.py check` / `undef`.** The names resolve (module `abs`). A relocation against an absolute symbol
   is right when the original word has no relocation and equals the symbol's value plus the addend; `check` lists
   it as `abs     func+0x124 SDK_SYS_STACKSIZE = 0x00002000 (...)` (information, not a problem). It is a `TARGET`
   problem when the value differs, when the original has a relocation on that word (then the word is a place in a
@@ -507,7 +513,7 @@ in `src/autoload_2`.
   Without the line in `abs_symbols.txt` the name is `MISSING` (unresolved).
 * **Adding one.** Name it after the SDK's symbol when known, give the exact value of the original word, and say
   in the unit's notes.txt which line the coordinator must add. Values are per program (this ROM), not per module.
-* **Not every unfolded number is a symbol.** LampLights base address that is loaded and then indexed
+* **Not every unfolded number is a symbol.** A base address that is loaded and then indexed
   (`ldr r3,=0x027ffc00; ldr r2,[r3,#0x388]`) comes out of a plain number held in a local pointer first:
   `OSSystemWork *p = (OSSystemWork *)0x027ffc00; ... p->pxiHandleChecker[0]` (`sdk_units/L002`, PXI). Written as
   `((OSSystemWork *)0x027ffc00)->member` the compiler folds the offset into the address. Try the local pointer
@@ -521,17 +527,22 @@ objects sit in the neighbour (TU021/TU022, TU207-TU209), the units are one file 
 ## Second names of functions: `tools/aliases.py`
 
 symbols.txt has 59+ `kind:label` aliases in main, mostly a C1 next to a C2 constructor, because linked overlay
-units call one address by both names. For a delinked address dsd defines every name. LampLights compiled unit would
+units call one address by both names; overlays have their own (C1/C2 pairs, and a method's old and new mangled
+names after a signature fix, e.g. `_ZN9TitleTalk8onChoiceEv` / `...Ej` in ov147). For a delinked address dsd
+defines every name. A compiled unit would
 * define both C1 and C2 as two functions, and the build keeps every global that symbols.txt names
   (`force_active.py`): both bodies would be linked and the unit would grow;
-* leave undefined a name it does not use (another class's name for the same function).
-LampLights linker script assignment (`alias = name + 1;`, what `object_order.py` writes for overlays) does not solve the
-first case: mwld prefers the object's own definition (tested). So `tools/aliases.py` (build step, present when
-main has complete units) rewrites the symbol table of each compiled main unit that has such names into a copy
-under `build/usa/aliases/`, and that copy is linked: an alias the object defines with **identical code** is
-redirected to the primary name's section (the duplicate, now nameless, is dead-stripped); names the object does
-not define are added to it as real function symbols (correct for ARM callers too). Different code under two
-names is an error. Nothing to do in the source; `check` prints `ALIAS` lines saying what will happen.
+* leave undefined a name it does not use (another class's name for the same function, or the old name).
+A linker script assignment (`alias = name + 1;`) does not solve the first case: mwld prefers the object's own
+definition (tested). So `tools/aliases.py` (build step, present when a module has complete units) rewrites the
+symbol table of each compiled unit of main, autoload_2, itcm **and the overlays** that has such names (from its
+own module's `symbols.txt`) into a copy under `build/usa/aliases/`, and that copy is linked: an alias the object
+defines with **identical code** is redirected to the primary name's section (the duplicate, now nameless, is
+dead-stripped); names the object does not define are added to it as real function symbols (correct for ARM
+callers too). Different code under two names is an error. Nothing to do in the source; for main `check` prints
+`ALIAS` lines saying what will happen. Units placed object by object (`object_order.txt`) are handled the same
+way, extra objects included (a name another object of the link defines is not added again); only names at an
+address where no object defines any of the names are left to `object_order.py`'s linker script aliases.
 When a unit calls a constructor by the name symbols.txt does not have (`_ZN14LetterTextLineC2Ev` for a base class
 whose symbol is `...C1Ev`), add the missing one in `aliases.txt`; never rename (see "One constructor, two names").
 
@@ -582,7 +593,7 @@ Definitions must be top-level statements (not inside an `extern "C" { }` block) 
 `data --apply` reproduced TU068's 33 objects from a naive order (try a few `--seed`s).
 
 `python3 tools/pipeline/linkprep.py diff main` (after a failed build) lists the differing ranges of `arm9.bin`
-with the symbol and the unit that own them, and compares the autoloads. LampLights wrong bss order shows up as different
+with the symbol and the unit that own them, and compares the autoloads. A wrong bss order shows up as different
 address words in the code that uses the objects.
 
 ## Things that are different in main sources
@@ -593,11 +604,11 @@ address words in the code that uses the objects.
   their symbols.txt names (`realnames.py` rewrites `func_XXXXXXXX` to the mangled name; the declaration stays an
   `extern "C"` function taking the object first). Rename only the unit's own symbols, and only when nothing
   compiled references the old name (`rename_impact.py`).
-* **LampLights callee whose address exists in several overlays** (`relocs.txt`: `module:overlays(113,123,...)`): name the
+* **A callee whose address exists in several overlays** (`relocs.txt`: `module:overlays(113,123,...)`): name the
   symbol of the first overlay in the list (TU210: `_ZN11BbsReadMenuD1Ev`). The link resolves it to the
   shared address; `check` verifies address and module.
 * **Empty `__sinit`** (2 bytes, `bx lr`; nos. 23, 28, 50, 59): mwcc emits one for a file-scope object of a class
-  whose constructor is inline and empty (`struct LampLights { LampLights() {} ... }; LampLights obj;`), also through an empty base
+  whose constructor is inline and empty (`struct A { A() {} ... }; A obj;`), also through an empty base
   constructor. The unit that owns such an object owns the `.init`/`.ctor` slot.
 * **Assembly routines of the original** (`Fatal_SaveRegisters`: pushes all registers and CPSR) cannot be written in
   C++: cut the C++ unit around them (TU113 is two complete units with the routine in between) and link the routine
@@ -628,11 +639,11 @@ prints the linker errors, `romdiff.py`, `linkprep.py diff main` and reverts `src
 
 * `bss_units.py` depends on dsd 0.12.1 writing `<stem>.bss.o(.bss)` for a unit named `<stem>.bss.cpp` (and
   listing an object for it). It stops with a message if the line is missing.
-* LampLights leftover reference to a label inside a complete unit links as 0 without a linker error. `check`'s
+* A leftover reference to a label inside a complete unit links as 0 without a linker error. `check`'s
   `MISSING` lines are the guard; the ROM checksum is the proof.
 * `lcf_symbols.py`: mwld checks nothing about a script assignment (missing base = 0, clash with an object =
   silent), so the tool's own checks are the only guard besides the ROM checksum. It relies on the base being kept
-  by `force_active.py` (a `symbols.txt` name) and on dsd's `<MODULE>_<SECTION>_START = .;` lines. LampLights label recorded
+  by `force_active.py` (a `symbols.txt` name) and on dsd's `<MODULE>_<SECTION>_START = .;` lines. A label recorded
   for an object whose layout later changes (another member order) still links, at the old offset. Labels removed
   by `interior:` before this step existed were not recorded: add them with `vtable_rename.py`-style lines by hand
   (`<label> addr:.. base:..`) when a compiled source needs one (`Undefined` at link).
@@ -656,11 +667,11 @@ main module" applies with the module name in place of `main`. What is different:
   `tools/configure.py`, so both produce the same object.
 * **Function order**: mwcc 1.2 emits a C file's functions last to first as well. `linkprep.py reverse unit.c
   autoload_2` sorts the definitions by descending address.
-* **Names**: C symbols are not mangled. LampLights unit keeps the `func_XXXXXXXX`/`data_XXXXXXXX` names of `symbols.txt`
+* **Names**: C symbols are not mangled. A unit keeps the `func_XXXXXXXX`/`data_XXXXXXXX` names of `symbols.txt`
   (compiled game sources call them through `extern "C"` declarations) unless a rename is agreed; the SDK name goes
   in a comment. `static` functions and objects have local symbols: something that code outside the unit refers to
   must not be `static` (`check`: `MISSING`).
-* **bss** is in `autoload_3`, behind main's files (from 0x021f4768). LampLights `.bss` line of the spec becomes the
+* **bss** is in `autoload_3`, behind main's files (from 0x021f4768). A `.bss` line of the spec becomes the
   placeholder unit `src/<module>/unk_<text start>.bss.c` in `config/usa/arm9/autoload_3/delinks.txt`, exactly as
   for main (`tools/bss_units.py`).
 * **Relocations** to the unit are `module:autoload(2)` / `module:itcm` in every `relocs.txt`; `check` reads the
@@ -685,8 +696,8 @@ in the module's `delinks.txt`, and handles boundary symbols, `renames.txt` (`aut
 unresolved symbols`; a spec whose ranges are outside the module is refused with `NORANGE`.
 
 Build chain: `dsd lcf` writes `unk_XXXXXXXX.o(.text)` between the gap objects of `.autoload_2` / `.itcm`;
-`bss_units.py` handles the placeholder; `aliases.py` gives compiled units of autoload_2 and itcm their second
-names from the module's own `symbols.txt` (both have `kind:label` aliases, e.g. `_ll_udiv`); `lcf_symbols.py`
+`bss_units.py` handles the placeholder; `aliases.py` gives compiled units of autoload_2 and itcm (as of every
+module, overlays included) their second names from the module's own `symbols.txt` (both have `kind:label` aliases, e.g. `_ll_udiv`); `lcf_symbols.py`
 accepts `lcf_symbols.txt` in the module directory (section starts `AUTOLOAD_2_DATA_START`, `ITCM_TEXT_START`);
 `force_active.py` keeps the unit's `symbols.txt` globals. `python3 tools/configure.py usa` after every install.
 
@@ -700,12 +711,12 @@ Not supported / open:
 * `tools/object_order.py` (units placed object by object, two compilers in one unit) refuses an
   `object_order.txt` in these modules.
 * **Sections of one file in two modules.** `.exceptix` in *main* (0x020c2bb0-0x020c2cd0) has 24 entries that point
-  to autoload_2 functions (0x02133ae0...: the C++ runtime, built with exceptions). LampLights compiled runtime file emits
+  to autoload_2 functions (0x02133ae0...: the C++ runtime, built with exceptions). A compiled runtime file emits
   its own `.exception`/`.exceptix` sections, which belong in main's ranges; a unit cannot own ranges in main and in
   autoload_2 (only the bss placeholder mechanism exists). Until that is solved, leave those functions delinked.
   The delinked tables refer to the functions by name, so linking *other* autoload_2 units does not disturb them.
 * autoload_2's `.rodata` is 12 bytes and dsd has no data symbol inside its `.text` range: constant tables of the
-  library are either in `.data` or seen as code. LampLights unit whose object emits `.rodata` needs a `.rodata` range in
+  library are either in `.data` or seen as code. A unit whose object emits `.rodata` needs a `.rodata` range in
   the module (`check`: `NORANGE`); if the constants sit inside the `.text` range the module's section table in
   `delinks.txt` has to be split first.
 * Unit file names are `unk_<address>`; mwld selects objects by file name only, so two units with the same text
@@ -722,7 +733,7 @@ like any other: listed in `delinks.txt`, checked with `linkprep.py check`, insta
 Older units write such code as mwcc `asm` functions inside a `.c`/`.cpp` (`src/main/unk_02000800.cpp` crt0,
 `src/autoload_2/`, `src/itcm/`). They stay valid, but that form cannot have a global label inside a routine (every
 further entry point has to be its own `asm` function), has only 4-aligned `dcd` data, cannot place Thumb code at a
-2-mod-4 address, and mis-assembles `blx label`. LampLights `.s` unit has none of these limits. Write new assembly units as
+2-mod-4 address, and mis-assembles `blx label`. A `.s` unit has none of these limits. Write new assembly units as
 `.s`; convert an old one when it is touched.
 
 ## Build
@@ -732,7 +743,7 @@ further entry point has to be its own `asm` function), has only 4-aligned `dcd` 
   (`AS_FLAGS` in `tools/mwcc_config.py`; ARMv5TE is the arm946e's architecture: `blx`, `clz`, `qadd`, `ldrd`).
   Within the first 10 lines a `; mwasm-flags: ...` line appends flags and `; mwasm-version: 1.2/sp2` selects
   another package's assembler, like `// mwcc-flags:` / `// mwcc-version:`.
-* LampLights `.s` and a `.c`/`.cpp` with the same name would build the same object: configure stops with a message.
+* A `.s` and a `.c`/`.cpp` with the same name would build the same object: configure stops with a message.
 * There is no dependency file: a `.include`d file is not tracked by ninja (the units are self-contained; avoid it).
 * dsd needs nothing special: `src/main/unk_02000000.s:` in `delinks.txt` gives `unk_02000000.o(.text)` in the linker
   script; `bss_units.py`, `aliases.py`, `lcf_symbols.py`, `force_active.py` and `dsd objdiff` work on the object as
@@ -754,7 +765,7 @@ further entry point has to be its own `asm` function), has only 4-aligned `dcd` 
   including the H bit for a Thumb target at a 2-mod-4 address (miniature link). Both spellings link correctly (the
   `blx label` problem is mwcc's inline assembler only); write what the original has.
 * **Branches to a label of the same file are resolved by the assembler, without relocation and without
-  interworking.** LampLights `bl` to a label of the other mode in the same file stays a `bl` (wrong code). Write `blx label`
+  interworking.** A `bl` to a label of the other mode in the same file stays a `bl` (wrong code). Write `blx label`
   for a mode change inside one file: it is encoded correctly in both directions (tested).
 * Thumb functions at 2-mod-4 addresses inside the section are fine (secure area). The section itself is 4-aligned
   (`ALIGNALL(4)` of dsd's script), so a unit cannot *start* at a 2-mod-4 address.
@@ -771,7 +782,7 @@ further entry point has to be its own `asm` function), has only 4-aligned `dcd` 
   assembly policy.`, the range (`; autoload_2 0x02132ef8-0x02133100: ...`) and the evidence that it is assembly.
 * Every `symbols.txt` function of the range is a `.global` label with `.type ..., @function` and `.size` at its
   address, under its `symbols.txt` name. Second entry points and join points inside a routine are just labels; other
-  labels stay local (`L_02132f1c:`). LampLights global function symbol that `symbols.txt` does not have is harmless (check
+  labels stay local (`L_02132f1c:`). A global function symbol that `symbols.txt` does not have is harmless (check
   prints `LABEL`), but make it local unless something calls it.
 * Data inside the range (a routine's literal pool, the secure area's filler) is written in place with `.word` /
   `.short` / `.byte`. The file is laid out exactly as written: `linkprep.py reverse` and `data` refuse `.s` files.

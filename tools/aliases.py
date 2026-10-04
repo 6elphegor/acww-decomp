@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 ###
-# Gives the functions of compiled ARM9 main units their second names.
+# Gives the functions of compiled ARM9 units (main, autoload_2, itcm and the overlays) their second names.
 #
 # symbols.txt may hold several names for one address: the function symbol and `kind:label` aliases (added with
 # tools/pipeline/alias.py). The usual case is a constructor: mwcc emits a complete-object (C1) and a base-object
@@ -13,7 +13,7 @@
 # A linker script assignment (`alias = name + 1;`, as tools/object_order.py writes for its units) does not help
 # when the object defines the alias itself: mwld prefers the object's definition and links both bodies.
 #
-# So this step rewrites the symbol table of each compiled main unit that has such names, into a copy of the object
+# So this step rewrites the symbol table of each compiled unit that has such names, into a copy of the object
 # under build/<version>/aliases/, and links the copy instead:
 #   * if the object defines two names of one address in two sections, the sections must be identical (bytes and
 #     relocations); the alias is redirected to the section of the primary name (size 0) and the duplicate, now
@@ -21,10 +21,13 @@
 #   * names the object does not define are added as global symbols on the primary name's section (size 0, same
 #     type and Thumb bit, so interworking calls from ARM code stay correct).
 # The primary name is the `kind:function` symbol if the object defines it, else the first alias it defines.
-# Objects without such names are linked as they are. The step is part of the build when main has complete units.
+# Objects without such names are linked as they are. The step is part of the build when a module has complete units.
 #
-# The library modules autoload_2 and itcm are treated like main (their units are compiled one translation unit at a
-# time too): each module's own symbols.txt gives the names of its complete units' functions.
+# Modules: main, the library modules autoload_2 and itcm, and every overlay. Each module's own symbols.txt gives the
+# names of its complete units' functions. A unit placed object by object (an overlay's object_order.txt, see
+# tools/object_order.py) has its extra objects treated like the main object, with the unit's .text range; a name is
+# not added to one object when another object of the link defines it. Names of such a unit at an address where no
+# object defines any of the names are left to object_order.py's linker script aliases.
 #
 # Usage:
 #   python3 tools/aliases.py build/usa/objects.txt --config config/usa/arm9 --build build/usa \
@@ -37,25 +40,44 @@ import struct
 import sys
 from pathlib import Path
 
+import object_order
+
 SHT_SYMTAB = 2
 SHT_RELA = 4
 STB_LOCAL = 0
 SHN_LORESERVE = 0xff00
 
 
-# Modules whose compiled units get alias names: main (the config directory itself) and the library autoloads
+# Modules whose compiled units get alias names: main (the config directory itself), the library autoloads and
+# every overlay (config/<version>/arm9/overlays/ovNNN)
 UNIT_MODULES = ("", "autoload_2", "itcm")
+OVERLAYS_DIR = "overlays"
 
 
 def module_dirs(config: Path) -> list[Path]:
-    return [config / name for name in UNIT_MODULES if (config / name / "delinks.txt").is_file()]
+    dirs = [config / name for name in UNIT_MODULES]
+    if (config / OVERLAYS_DIR).is_dir():
+        dirs += sorted(path for path in (config / OVERLAYS_DIR).iterdir() if path.is_dir())
+    return [path for path in dirs if (path / "delinks.txt").is_file()]
 
 
-def main_complete_units(config: Path) -> dict[str, tuple[int, int]]:
-    '''{source: .text range} of the complete units of main, autoload_2 and itcm'''
+def complete_units(config: Path) -> dict[str, tuple[int, int]]:
+    '''{source: .text range} of the complete units of all modules, including the extra sources of units placed
+    object by object'''
     units = {}
     for module_dir in module_dirs(config):
-        units.update(module_complete_units(module_dir))
+        units.update(module_unit_sources(module_dir))
+    return units
+
+
+def module_unit_sources(module_dir: Path) -> dict[str, tuple[int, int]]:
+    '''{source: .text range} of a module's complete units and of the extra sources (object_order.txt) of those'''
+    units = module_complete_units(module_dir)
+    description = module_dir / object_order.DESCRIPTION_FILE
+    if description.is_file():
+        for unit in object_order.parse_description(description):
+            if unit.source in units:
+                units.update({source: units[unit.source] for source, _ in unit.extras})
     return units
 
 
@@ -78,7 +100,7 @@ def module_complete_units(module_dir: Path) -> dict[str, tuple[int, int]]:
 
 
 def has_complete_units(config: Path) -> bool:
-    return bool(main_complete_units(config))
+    return bool(complete_units(config))
 
 
 def names_by_address(module_dir: Path) -> dict[int, list[tuple[str, bool]]]:
@@ -142,8 +164,9 @@ class Elf:
         path.write_bytes(d)
 
 
-def process_object(elf: Elf, text: tuple[int, int], names, known_addresses, log) -> bool:
-    '''Folds and adds alias names; returns whether the object changed'''
+def process_object(elf: Elf, text: tuple[int, int], names, elsewhere: set[str], log) -> bool:
+    '''Folds and adds alias names; returns whether the object changed. Names in `elsewhere` are defined by another
+    object of the link (another object of a unit placed object by object) and are not added.'''
     defined = elf.globals()
     changed = False
     for address, group in sorted(names.items()):
@@ -167,6 +190,8 @@ def process_object(elf: Elf, text: tuple[int, int], names, known_addresses, log)
                              f"them in the source, or remove the alias from symbols.txt.")
                 sym[1], sym[2], sym[5] = psym[1], 0, psym[5]
                 log(f"  {name} folded into {primary} ({address:#010x})")
+            elif name in elsewhere:
+                continue
             else:
                 offset = len(elf.strings)
                 elf.strings += name.encode() + b"\0"
@@ -181,17 +206,28 @@ def process(objects: list[str], config: Path, build: Path, verbose: bool) -> lis
     by_object = {}  # object path -> (.text range, alias names of its module)
     for module_dir in module_dirs(config):
         names = names_by_address(module_dir)
-        for source, text in module_complete_units(module_dir).items():
+        for source, text in module_unit_sources(module_dir).items():
             by_object[str(build / Path(source).with_suffix(".o"))] = (text, names)
+    elves = {}  # object path -> Elf, for the objects that have alias names in their range
     for line in objects:
         path = line.strip().strip('"')
         text, names = by_object.get(path, (None, {}))
-        if text is None or not any(text[0] <= a < text[1] for a in names) or not Path(path).exists():
+        if text is not None and any(text[0] <= a < text[1] for a in names) and Path(path).exists():
+            elves[path] = Elf(Path(path))
+    defined_by = {}  # name -> object paths that define it
+    for path, elf in elves.items():
+        for name in elf.globals():
+            defined_by.setdefault(name, set()).add(path)
+    for line in objects:
+        path = line.strip().strip('"')
+        if path not in elves:
             out.append(line)
             continue
-        elf = Elf(Path(path))
+        elf = elves[path]
+        text, names = by_object[path]
+        elsewhere = {name for name, paths in defined_by.items() if paths - {path}}
         messages = []
-        if process_object(elf, text, names, None, messages.append):
+        if process_object(elf, text, names, elsewhere, messages.append):
             target = build / "aliases" / Path(path).relative_to(build)
             elf.write(target)
             out.append(f'"{target.as_posix()}"')
@@ -204,7 +240,7 @@ def process(objects: list[str], config: Path, build: Path, verbose: bool) -> lis
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Defines the alias names of compiled main units")
+    parser = argparse.ArgumentParser(description="Defines the alias names of compiled units")
     parser.add_argument("objects_file", type=Path, help="list of objects to link")
     parser.add_argument("--config", type=Path, required=True, help="dsd config directory, e.g. config/usa/arm9")
     parser.add_argument("--build", type=Path, required=True, help="Build directory, e.g. build/usa")

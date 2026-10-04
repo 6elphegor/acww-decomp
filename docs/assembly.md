@@ -5,7 +5,7 @@ where the original was assembly, plus a short, explicit list of exceptions.
 
 ## When a routine is linked as assembly
 
-LampLights routine is written as an assembly unit when at least one of these holds:
+A routine is written as an assembly unit when at least one of these holds:
 
 * **It contains code a C compiler cannot produce:** instructions mwcc never emits (`mrs`/`msr`, `mcr`/`mrc`,
   `swi`, `clz`, `swp`/`swpb`, `stm`/`ldm` lists that include `sp` or `pc`), or a structure C cannot express (a
@@ -15,7 +15,7 @@ LampLights routine is written as an assembly unit when at least one of these hol
   protection-unit routines, the `MI_Cpu*` copy and fill routines, the LZ/RL decompressors, the soft-float and 64-bit
   arithmetic helpers, ...).
 
-LampLights function that is merely hard to match, or whose shape looks unusual (no stack padding, no tail call), is not
+A function that is merely hard to match, or whose shape looks unusual (no stack padding, no tail call), is not
 assembly. It gets a C or C++ attempt, and if it does not match it stays unlinked and is listed in
 [`unmatched.md`](unmatched.md). Assembly is never used to force a C function to match.
 
@@ -25,7 +25,7 @@ assembly. It gets a C or C++ attempt, and if it does not match it stays unlinked
   unit like any other. There are 69 of them: 52 in `autoload_2`, 13 in ITCM, 3 in main (the secure area, crt0,
   and the register-dump routine at 0x0206d470) and 1 in ov065 (two ARM `clz` helpers of the network library).
 * They are assembled with the toolchain's own assembler, `mwasmarm -proc arm5TE -little`, from the same package
-  as the compiler (`AS_FLAGS` in `tools/mwcc_config.py`, rule `mwasm` in `tools/configure.py`). LampLights
+  as the compiler (`AS_FLAGS` in `tools/mwcc_config.py`, rule `mwasm` in `tools/configure.py`). A
   `; mwasm-flags:` or `; mwasm-version:` line within the first 10 lines changes the flags or the package.
 * Every file starts with a header comment: `; Original assembly (<library>): hand-written in the original; linked
   as assembly per the project's assembly policy.`, the address range, and the evidence that the routine is
@@ -34,7 +34,7 @@ assembly. It gets a C or C++ attempt, and if it does not match it stays unlinked
   entry points are plain labels inside the routine; other labels are local (`L_02132f1c:`). Literal pools and
   in-range data are written in place with `.word` / `.short` / `.byte`.
 * Calls to other files are written `bl`; the linker turns them into `blx` when the target is in the other mode.
-  LampLights mode change to a label *in the same file* has to be written `blx label`, because the assembler resolves local
+  A mode change to a label *in the same file* has to be written `blx label`, because the assembler resolves local
   branches itself without interworking. See "Assembly units (.s)" in
   [`tools/pipeline/linking.md`](../tools/pipeline/linking.md) for details and limits.
 * `python3 tools/pipeline/linkprep.py compile unit.s unit.o` and `check` work on assembly units as on compiled
