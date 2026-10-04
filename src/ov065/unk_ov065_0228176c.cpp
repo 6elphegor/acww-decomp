@@ -1,6 +1,10 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/Unk_ov065_022786bc_Vec.h"
+#include "net/Unk_ov065_02280e7c_Ctx.h"
+#include "net/Unk_ov065_02281974_Pair.h"
+#include "net/Unk_ov065_02281790_Ctx.h"
+#include "net/Unk_ov065_02281bf4_Res.h"
 
 // ov065 TU48: GP gpiProfile.c (0x0228176c..0x02281a5c)
 
@@ -8,68 +12,11 @@ namespace Na {
 // ov065_055: friend/auth connection task list (0x02280e7c..0x0228176c)
 
 
-struct Unk_ov065_02280e7c_Node {
-    s32 peerState;
-    s32 isOutgoing;
-    s32 sock;
-    s32 profileId;
-    s32 expireTime;
-    s32 nackCount;
-    char *inputBuffer;
-    s32 inputBufferCapacity;
-    s32 inputBufferLength;
-    s32 inputBufferPos;
-    char *outputBuffer;
-    s32 outputBufferCapacity;
-    s32 outputBufferLength;
-    s32 outputBufferPos;
-    Unk_ov065_022786bc_Vec *messageQueue;
-    Unk_ov065_02280e7c_Node *next;
-};
 
-struct Unk_ov065_02280e7c_Ctx {
-    u8 pad_000[0x110];
-    char nick[0x67];
-    char password[0x29];
-    s32 profileId;
-    u8 pad_1a4[0x18];
-    s32 buddyMessageCallback;
-    s32 buddyMessageParam;
-    u8 pad_1c4[0x40];
-    s32 peerSocket;
-    u8 pad_208[0x22c];
-    Unk_ov065_02280e7c_Node *peerList;
-};
 
-struct Unk_ov065_02280e7c_Ent {
-    s32 unk_00;
-    s32 unk_04;
-    s32 buddyStatus;
-    s32 infoCache;
-    s32 authSig;
-    s32 unk_14;
-    char *unk_18;
-};
 
-struct Unk_ov065_02280e7c_Pair {
-    s32 func;
-    s32 param;
-    Unk_ov065_02280e7c_Pair() {}
-    Unk_ov065_02280e7c_Pair(s32 a, s32 b) { func = a; param = b; }
-};
 
-struct Unk_ov065_02280e7c_Pair2 {
-    Unk_ov065_02280e7c_Pair p;
-};
 
-struct Unk_ov065_02280e7c_Sub {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 sendPos;
-    s32 msgType;
-    s32 msgOffset;
-};
 
 typedef Unk_ov065_02280e7c_Ctx Ctx0228;
 typedef Unk_ov065_02280e7c_Node Node0228;
@@ -177,82 +124,12 @@ s32 GsGpProfile_IsUnused(Ent0228 *e);
 namespace Nb {
 // ov065_056: ghttp connection table / request building (0x02281790..0x02281bf4)
 
-struct Unk_ov065_02281974_Pair {
-    s32 a;
-    s32 b;
-};
 
-struct Unk_ov065_02281974_Nest {
-    Unk_ov065_02281974_Pair p;
-};
 
-struct Unk_ov065_02281790_Sub {
-    s32 buddyIndex;
-    s32 status;
-    void *statusString;
-    void *locationString;
-};
 
-struct Unk_ov065_02281790_Elem {
-    s32 profileId;
-    s32 userId;
-    Unk_ov065_02281790_Sub *buddyStatus;
-    s32 infoCache;
-    void *authSig;
-    s32 requestCount;
-    void *peerSig;
-};
 
-struct Unk_ov065_02281790_Conn {
-    s32 searchType;
-    s32 sock;
-    char *inputBuffer;
-    u8 pad_0c[0x18 - 0x0c];
-    char *outputBuffer;
-    u8 pad_1c[0x28 - 0x1c];
-    char nick[0x1f];
-    char uniqueNick[0x15];
-    char email[0x33];
-    char firstName[0x1f];
-    char lastName[0x1f];
-    char password[0x1f];
-    char cdKey[0x130 - 0xec];
-    s32 icqUin;
-    s32 skip;
-    s32 productId;
-    s32 isProcessing;
-    s32 isFinished;
-};
 
-struct Unk_ov065_02281790_Node {
-    s32 type;
-    Unk_ov065_02281790_Conn *data;
-    Unk_ov065_02281790_Sub *unk_08;
-    Unk_ov065_02281974_Nest unk_0c;
-    s32 state;
-    s32 id;
-    s32 result;
-    Unk_ov065_02281790_Node *next;
-};
 
-struct Unk_ov065_02281790_Ctx {
-    u8 pad_000[0x198];
-    s32 sessKey;
-    u8 pad_19c[4];
-    s32 profileId;
-    u8 pad_1a4[0x210 - 0x1a4];
-    s32 numSearches;
-    u8 pad_214[0x418 - 0x214];
-    s32 errorCode;
-    u8 pad_41c[0x424 - 0x41c];
-    Unk_ov065_02281790_Node *operationList;
-    void *profileTable;
-    s32 numProfiles;
-    s32 numBuddies;
-    u8 pad_434[0x46c - 0x434];
-    s32 productId;
-    s32 namespaceId;
-};
 
 typedef Unk_ov065_02281790_Ctx Ctx0228;
 typedef Unk_ov065_02281790_Node Node0228;
@@ -296,10 +173,6 @@ s32 GsGpProfile_FindIf(Ctx0228 **, Unk_ov065_022817c8_Cb, void *);
 s32 GsGpProfile_CompareId(s32 *, s32 *);
 s32 GsGpProfile_HashId(s32 *, s32);
 
-struct Unk_ov065_02281790_L1 {
-    s32 a;
-    Node0228 *r;
-};
 
 
 
@@ -412,50 +285,11 @@ char *func_02129f1c(const char *, const char *);
 void GsUtil_Sleep(s32);
 s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, void *, s32, s32);
 
-struct Unk_ov065_02281bf4_Rec {
-    s32 profileId;
-    char nick[0x1f];
-    char uniqueNick[0x15];
-    char firstName[0x1f];
-    char lastName[0x1f];
-    char email[0x33];
-    u8 pad_a9[3];
-};
 
-struct Unk_ov065_02281bf4_Res2 {
-    s32 result;
-    char email[0x34];
-    s32 isValid;
-};
 
-struct Unk_ov065_02281bf4_Res3 {
-    s32 result;
-    char email[0x34];
-    s32 numNicks;
-    char **nicks;
-    char **uniqueNicks;
-};
 
-struct Unk_ov065_02281bf4_Ent {
-    s32 profileId;
-    char nick[0x1f];
-    u8 pad_23;
-    s32 statusCode;
-    char statusString[0x100];
-};
 
-struct Unk_ov065_02281bf4_Res4 {
-    s32 result;
-    s32 productId;
-    s32 numMatches;
-    Unk_ov065_02281bf4_Ent *matches;
-};
 
-struct Unk_ov065_02281bf4_Res7 {
-    s32 result;
-    s32 numProfiles;
-    Unk_ov065_02281bf4_Rec *profiles;
-};
 
 struct Unk_ov065_02281bf4_Res8 {
     s32 result;
@@ -463,10 +297,6 @@ struct Unk_ov065_02281bf4_Res8 {
     char **nicks;
 };
 
-struct Unk_ov065_02281bf4_Res5 {
-    s32 result;
-    s32 profileId;
-};
 
 struct Unk_ov065_02281bf4_S1 {
     s32 result;

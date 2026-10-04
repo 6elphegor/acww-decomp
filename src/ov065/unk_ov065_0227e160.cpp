@@ -2,6 +2,9 @@
 #include "types.h"
 #include "net/Unk_ov065_0227c538_Node.h"
 #include "net/Unk_ov065_0227d8e0_Ctx.h"
+#include "net/Unk_ov065_0227ee64_Obj.h"
+#include "net/Unk_ov065_0227f00c_Host.h"
+#include "net/Unk_ov065_0227f324_Rec.h"
 
 // ov065 TU44: GP gpiConnect.c (0x0227e160..0x0227f2a4)
 
@@ -255,41 +258,11 @@ struct Unk_ov065_0227c538_Ctx {
     s32 peerPort;
 };
 
-struct Unk_ov065_0227ee64_Obj {
-    u8 pad_000[0xc2];
-    char authToken[0x100];
-    char authSecret[0x100];
-    char cdKey[0x42];
-    s32 isNewUser;
-};
 
-struct Unk_ov065_0227f00c_Sa {
-    u8 unk_0;
-    u8 family;
-    u16 port;
-    u32 addr;
-};
 
-struct Unk_ov065_0227f00c_Host {
-    u8 pad_00[0xc];
-    u32 **addrList;
-};
 
-struct Unk_ov065_0227f324_Rec {
-    char *stringFields[6];
-    u8 pad_18[0xc8 - 0x18];
-    char *aimName;
-    u8 pad_cc[0xf0 - 0xcc];
-};
 
-struct Unk_ov065_0227f324_Copy {
-    s64 v[30];
-};
 
-struct Unk_ov065_0227f324_Owner {
-    u8 pad_00[0xc];
-    Unk_ov065_0227f324_Rec *infoCache;
-};
 
 typedef Unk_ov065_0227c538_Ctx Ctx0227;
 typedef Unk_ov065_0227c538_Node Node0227;

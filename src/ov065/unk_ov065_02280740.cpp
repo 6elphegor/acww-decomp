@@ -1,135 +1,29 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_022804b8_Src.h"
+#include "net/Unk_ov065_02280854_Ctx.h"
+#include "net/Unk_ov065_0228094c_Sub.h"
+#include "net/Unk_ov065_02280a2c_Ctx.h"
+#include "net/Unk_ov065_02280c08_Node.h"
+#include "net/Unk_ov065_02280c84_Src.h"
+#include "net/Unk_ov065_02280cb4_T.h"
+#include "net/Unk_ov065_02280d70_P1.h"
 
 // ov065 TU46: GP gpiOperation.c (0x02280740..0x02280c08)
 
 namespace Na {
 // ov065_054: 0x022804b8..0x02280d70
 
-struct Unk_ov065_022804b8_Src {
-    char *nick;
-    char *uniqueNick;
-    char *email;
-    char *firstName;
-    char *lastName;
-    char *homepage;
-    s32 icqUin;
-    char zipCode[0xb];
-    char countryCode[3];
-    s32 unk_2c;
-    s32 unk_30;
-    char location[0x80];
-    s32 birthDay;
-    s32 birthMonth;
-    s32 birthYear;
-    s32 sex;
-    s32 publicMask;
-    char *aimName;
-    s32 pic;
-    s32 occupationId;
-    s32 industryId;
-    s32 incomeId;
-    s32 marriedId;
-    s32 childCount;
-    s32 interests1;
-    s32 ownership1;
-    s32 connectionType;
-};
 
-struct Unk_ov065_022804b8_Dst {
-    u8 pad_00[8];
-    char nick[0x1f];
-    char uniqueNick[0x15];
-    char email[0x33];
-    char firstName[0x1f];
-    char lastName[0x1f];
-    char homepage[0x4c];
-    s32 icqUin;
-    char zipCode[0xb];
-    char countryCode[3];
-    s32 unk_110;
-    s32 unk_114;
-    char location[0x80];
-    s32 birthDay;
-    s32 birthMonth;
-    s32 birthYear;
-    s32 sex;
-    s32 publicMask;
-    char aimName[0x33];
-    u8 pad_1df[1];
-    s32 pic;
-    s32 occupationId;
-    s32 industryId;
-    s32 incomeId;
-    s32 marriedId;
-    s32 childCount;
-    s32 interests1;
-    s32 ownership1;
-    s32 connectionType;
-};
 
-struct Unk_ov065_02280854_Node {
-    s32 unk_00;
-    s32 data;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 callbackParam;
-    s32 state;
-    s32 id;
-    s32 result;
-    Unk_ov065_02280854_Node *next;
-};
 
-struct Unk_ov065_02280854_Ctx {
-    u8 pad_000[0x20c];
-    s32 nextOperationId;
-    s32 numSearches;
-    u8 pad_214[0x418 - 0x214];
-    s32 errorCode;
-    u8 pad_41c[8];
-    Unk_ov065_02280854_Node *operationList;
-};
 
-struct Unk_ov065_02280854_H {
-    Unk_ov065_02280854_Ctx *connection;
-};
 
-struct Unk_ov065_0228094c_Sub {
-    s32 searchType;
-    s32 sock;
-    char *inputBuffer;
-    u8 pad_0c[0xc];
-    char *outputBuffer;
-};
 
-struct Unk_ov065_02280a2c_Ctx {
-    u8 pad_000[0x1a0];
-    s32 profileId;
-    u8 pad_1a4[0x418 - 0x1a4];
-    s32 errorCode;
-};
 
-struct Unk_ov065_02280a2c_M0 {
-    s32 result;
-    s32 profileId;
-    u8 pad_08[0x18];
-};
 
-struct Unk_ov065_02280c08_Node {
-    u8 pad_00[0x10];
-    s32 expireTime;
-    u8 pad_14[0x38 - 0x14];
-    s32 messageQueue;
-};
 
-struct Unk_ov065_02280a2c_Pair {
-    s32 func;
-    s32 param;
-};
 
-struct Unk_ov065_02280a2c_Wrap {
-    Unk_ov065_02280a2c_Pair p;
-};
 
 extern "C" {
 void GsUtil_StrCopyN(void *, const void *, s32);
@@ -197,33 +91,12 @@ enum Unk_ov065_02280a2c_Z { Unk_ov065_02280a2c_Z_0 = 0, Unk_ov065_02280a2c_Z_FF 
 
 
 
-struct Unk_ov065_02280c84_Src {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-};
 
 
-struct Unk_ov065_02280cb4_T {
-    s32 v[6];
-};
 
 
-struct Unk_ov065_02280d70_P2 {
-    u8 pad_00[0x10];
-    s32 ip;
-    s32 port;
-};
 
-struct Unk_ov065_02280d70_P1 {
-    u8 pad_00[8];
-    Unk_ov065_02280d70_P2 *buddyStatus;
-};
 
-struct Unk_ov065_02280d70_Sa {
-    s32 unk_00;
-    s32 addr;
-};
 
 }
 extern "C" {
