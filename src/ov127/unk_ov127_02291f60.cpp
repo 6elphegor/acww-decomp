@@ -1,29 +1,11 @@
 #include "types.h"
+#include "game/StarSkyView.h"
 
 // File-wide: mwcc samples this pragma at end of TU, so it cannot be scoped to one function.
 #pragma opt_loop_invariants off
 
 struct Unk_ov127_02291f60_Vec {
     s32 x, y, z;
-};
-
-struct Unk_ov127_02291f60 {
-    /* 0x0000 */ u8 unk_00[0x24];
-    /* 0x0024 */ u8 unk_24[0x1000];
-    /* 0x1024 */ u16 unk_1024[0x800];
-    /* 0x2024 */ u16 unk_2024[0x400];
-    /* 0x2824 */ s16 scrollX;
-    /* 0x2826 */ s16 scrollY;
-    /* 0x2828 */ s16 overscroll;
-    /* 0x282a */ s16 targetScrollX;
-    /* 0x282c */ s16 targetScrollY;
-    /* 0x282e */ s16 clipRows;
-    /* 0x2830 */ u16 flags;
-    /* 0x2832 */ u8 skyLayer;
-    /* 0x2833 */ u8 scopeLayer;
-    /* 0x2834 */ u8 activeArrow;
-    /* 0x2835 */ u8 bounceDir;
-    /* 0x2836 */ u8 bounceTimer;
 };
 
 struct Unk_ov127_02291fcc {
@@ -83,20 +65,20 @@ u32 StarSky_GetStarX(s32 i);
 s32 StarSky_GetLineAt(s32 x, s32 y);
 s32 StarSky_GetLineAtCellIndex(s32 i);
 s32 StarSky_GetStarAtCellIndex(s32 i);
-void StarSky_ClearFlags(Unk_ov127_02291f60 *s, u32 m);
-void StarSky_SetFlags(Unk_ov127_02291f60 *s, u32 m);
-BOOL StarSky_HasFlags(Unk_ov127_02291f60 *s, u32 m);
-s32 StarSky_GetScrollY(Unk_ov127_02291f60 *s);
-s32 StarSky_GetScrollX(Unk_ov127_02291f60 *s);
-s32 StarSky_GetOverscroll(Unk_ov127_02291f60 *s);
-void StarSky_StepToTarget(Unk_ov127_02291f60 *s);
-BOOL StarSky_ScreenToCell(Unk_ov127_02291f60 *s, s32 x, s32 y, s32 *ox, s32 *oy);
-BOOL StarSky_ScrollY(Unk_ov127_02291f60 *s, s32 a, s32 b);
-void StarSky_ScrollX(Unk_ov127_02291f60 *s, s32 a);
+void StarSky_ClearFlags(StarSkyView *s, u32 m);
+void StarSky_SetFlags(StarSkyView *s, u32 m);
+BOOL StarSky_HasFlags(StarSkyView *s, u32 m);
+s32 StarSky_GetScrollY(StarSkyView *s);
+s32 StarSky_GetScrollX(StarSkyView *s);
+s32 StarSky_GetOverscroll(StarSkyView *s);
+void StarSky_StepToTarget(StarSkyView *s);
+BOOL StarSky_ScreenToCell(StarSkyView *s, s32 x, s32 y, s32 *ox, s32 *oy);
+BOOL StarSky_ScrollY(StarSkyView *s, s32 a, s32 b);
+void StarSky_ScrollX(StarSkyView *s, s32 a);
 namespace Unk_ov127_02292698_Ns {
-s32 StarSky_ScrollX(Unk_ov127_02291f60 *s, s32 a);
+s32 StarSky_ScrollX(StarSkyView *s, s32 a);
 }
-void StarSky_ScrollByDir(Unk_ov127_02291f60 *s, s32 mode, s32 a, s32 b);
+void StarSky_ScrollByDir(StarSkyView *s, s32 mode, s32 a, s32 b);
 }
 
 // StarSkyView's constructor and destructor (ov129 constructs this class as a member)
@@ -139,7 +121,7 @@ extern "C" void StarSky_LoadObjGraphics() {
     Gfx2d_LoadCharFile("menu/star/b_scp_obj.bch", h, 8, 0xc0, 0xc0, 0x13f);
 }
 
-extern "C" void StarSky_Update(Unk_ov127_02291f60 *s)
+extern "C" void StarSky_Update(StarSkyView *s)
 {
     if (StarSky_HasFlags(s, 4)) {
         StarSky_StepToTarget(s);
@@ -166,10 +148,10 @@ extern "C" void StarSky_Update(Unk_ov127_02291f60 *s)
         u16 *p2;
         s32 j;
         s32 i;
-        MI_CpuCopy8(s->unk_24, s->unk_1024, 0x1000);
+        MI_CpuCopy8(s->skyScreen, s->skyScreenWork, 0x1000);
         cnt = s->clipRows;
         if (cnt > 0) {
-            p1 = s->unk_1024;
+            p1 = s->skyScreenWork;
             p2 = (u16 *)((u8 *)p1 + 0x800);
             for (i = 0; i < s->clipRows; i++) {
                 for (j = 0; j < 0x20; j++) {
@@ -180,7 +162,7 @@ extern "C" void StarSky_Update(Unk_ov127_02291f60 *s)
                 }
             }
         } else if (cnt < 0) {
-            p1 = (u16 *)((u8 *)s->unk_1024 + ((cnt + 0x20) << 6));
+            p1 = (u16 *)((u8 *)s->skyScreenWork + ((cnt + 0x20) << 6));
             p2 = (u16 *)((u8 *)p1 + 0x800);
             for (i = 0; i > s->clipRows; i--) {
                 for (j = 0; j < 0x20; j++) {
@@ -191,7 +173,7 @@ extern "C" void StarSky_Update(Unk_ov127_02291f60 *s)
                 }
             }
         }
-        _ZN10BgVramTask13requestScreenEjhjj(s, s->unk_1024, s->skyLayer, 0x1000, 0);
+        _ZN10BgVramTask13requestScreenEjhjj(s, s->skyScreenWork, s->skyLayer, 0x1000, 0);
         StarSky_ClearFlags(s, 2);
     }
 }
@@ -201,7 +183,7 @@ extern "C" void StarSky_CancelUpload(void *p)
     _ZN10BgVramTask6cancelEv(p);
 }
 
-extern "C" void StarSky_DrawArrows(Unk_ov127_02291f60 *s, s32 a, s32 b)
+extern "C" void StarSky_DrawArrows(StarSkyView *s, s32 a, s32 b)
 {
     s32 i, pal;
     for (i = 0; i < 4; i++) {
@@ -216,7 +198,7 @@ extern "C" void StarSky_DrawScopeSprite(void *s, s32 y)
     Oam_DrawObj(1, data_ov127_02293fac, 0x80, y + 0x60, -1, 1, 0);
 }
 
-extern "C" void StarSky_DrawStarMarker(Unk_ov127_02291f60 *s, s32 i)
+extern "C" void StarSky_DrawStarMarker(StarSkyView *s, s32 i)
 {
     s32 a = StarSky_GetScrollX(s);
     s32 t = StarSky_GetStarX(i);
@@ -245,7 +227,7 @@ extern "C" s32 StarSky_HitArrow(void *s, s32 x, s32 y)
     return 4;
 }
 
-extern "C" void StarSky_ScrollByDir(Unk_ov127_02291f60 *s, s32 mode, s32 a, s32 b)
+extern "C" void StarSky_ScrollByDir(StarSkyView *s, s32 mode, s32 a, s32 b)
 {
     switch (mode) {
     case 0:
@@ -263,7 +245,7 @@ extern "C" void StarSky_ScrollByDir(Unk_ov127_02291f60 *s, s32 mode, s32 a, s32 
     }
 }
 
-extern "C" void StarSky_ScrollInDir(Unk_ov127_02291f60 *s, s32 d, s32 e)
+extern "C" void StarSky_ScrollInDir(StarSkyView *s, s32 d, s32 e)
 {
     s32 ox = s->overscroll;
     s32 oy = s->scrollX;
@@ -297,7 +279,7 @@ extern "C" void StarSky_ScrollInDir(Unk_ov127_02291f60 *s, s32 d, s32 e)
     }
 }
 
-extern "C" void StarSky_StartBounce(Unk_ov127_02291f60 *s, s32 d)
+extern "C" void StarSky_StartBounce(StarSkyView *s, s32 d)
 {
     if (StarSky_HasFlags(s, 8)) {
         StarSky_ClearFlags(s, 8);
@@ -308,7 +290,7 @@ extern "C" void StarSky_StartBounce(Unk_ov127_02291f60 *s, s32 d)
     s->bounceDir = d;
 }
 
-extern "C" BOOL StarSky_UpdateBounce(Unk_ov127_02291f60 *s)
+extern "C" BOOL StarSky_UpdateBounce(StarSkyView *s)
 {
     if (s->bounceTimer != 0) {
         s->bounceTimer--;
@@ -320,13 +302,13 @@ extern "C" BOOL StarSky_UpdateBounce(Unk_ov127_02291f60 *s)
     return FALSE;
 }
 
-extern "C" void StarSky_ScrollX(Unk_ov127_02291f60 *s, s32 a)
+extern "C" void StarSky_ScrollX(StarSkyView *s, s32 a)
 {
     s->scrollX = (s->scrollX + a) & 0x1ff;
     StarSky_SetFlags(s, 1);
 }
 
-extern "C" BOOL StarSky_ScrollY(Unk_ov127_02291f60 *s, s32 a, s32 b)
+extern "C" BOOL StarSky_ScrollY(StarSkyView *s, s32 a, s32 b)
 {
     s32 old = s->scrollY;
     s32 t;
@@ -364,14 +346,14 @@ extern "C" BOOL StarSky_ScrollY(Unk_ov127_02291f60 *s, s32 a, s32 b)
     return FALSE;
 }
 
-extern "C" void StarSky_SetScroll(Unk_ov127_02291f60 *s, s32 x, s32 y)
+extern "C" void StarSky_SetScroll(StarSkyView *s, s32 x, s32 y)
 {
     s->scrollX = (x - 0x80) & 0x1ff;
     s->scrollY = y - 0x60;
     StarSky_ScrollY(s, 0, 0);
 }
 
-extern "C" BOOL StarSky_ScreenToCell(Unk_ov127_02291f60 *s, s32 x, s32 y, s32 *ox, s32 *oy)
+extern "C" BOOL StarSky_ScreenToCell(StarSkyView *s, s32 x, s32 y, s32 *ox, s32 *oy)
 {
     x = (x + s->scrollX) & 0x1ff;
     y = y + s->scrollY;
@@ -383,23 +365,23 @@ extern "C" BOOL StarSky_ScreenToCell(Unk_ov127_02291f60 *s, s32 x, s32 y, s32 *o
     return TRUE;
 }
 
-extern "C" s32 StarSky_ScreenToCellInScope(Unk_ov127_02291f60 *s, s32 x, s32 y, s32 *ox, s32 *oy)
+extern "C" s32 StarSky_ScreenToCellInScope(StarSkyView *s, s32 x, s32 y, s32 *ox, s32 *oy)
 {
     s32 cx = x >> 3;
     s32 cy = y >> 3;
-    if ((s->unk_2024[cx + (cy << 5)] & 0x3ff) == 0x20) {
+    if ((s->scopeScreen[cx + (cy << 5)] & 0x3ff) == 0x20) {
         return StarSky_ScreenToCell(s, x, y, ox, oy);
     }
     return 0;
 }
 
-extern "C" void StarSky_RebuildScreen(Unk_ov127_02291f60 *s)
+extern "C" void StarSky_RebuildScreen(StarSkyView *s)
 {
-    Constellation_SetLinePalette(s->unk_24);
+    Constellation_SetLinePalette(s->skyScreen);
     StarSky_SetFlags(s, 2);
 }
 
-extern "C" void StarSky_SetScrollTarget(Unk_ov127_02291f60 *s, s32 x, s32 y)
+extern "C" void StarSky_SetScrollTarget(StarSkyView *s, s32 x, s32 y)
 {
     s->targetScrollX = (x - 0x80) & 0x1ff;
     s->targetScrollY = y - 0x60;
@@ -412,7 +394,7 @@ extern "C" void StarSky_SetScrollTarget(Unk_ov127_02291f60 *s, s32 x, s32 y)
     StarSky_SetFlags(s, 4);
 }
 
-extern "C" void StarSky_StepToTarget(Unk_ov127_02291f60 *s)
+extern "C" void StarSky_StepToTarget(StarSkyView *s)
 {
     struct {
         Unk_ov127_02291f60_Vec a, b, c, e, f;
@@ -459,22 +441,22 @@ extern "C" void StarSky_StepToTarget(Unk_ov127_02291f60 *s)
     }
 }
 
-extern "C" s32 StarSky_GetOverscroll(Unk_ov127_02291f60 *s)
+extern "C" s32 StarSky_GetOverscroll(StarSkyView *s)
 {
     return s->overscroll;
 }
 
-extern "C" s32 StarSky_GetScrollX(Unk_ov127_02291f60 *s)
+extern "C" s32 StarSky_GetScrollX(StarSkyView *s)
 {
     return s->scrollX;
 }
 
-extern "C" s32 StarSky_GetScrollY(Unk_ov127_02291f60 *s)
+extern "C" s32 StarSky_GetScrollY(StarSkyView *s)
 {
     return s->scrollY;
 }
 
-extern "C" BOOL StarSky_HasFlags(Unk_ov127_02291f60 *s, u32 m)
+extern "C" BOOL StarSky_HasFlags(StarSkyView *s, u32 m)
 {
     if ((s->flags & m) != 0) {
         return TRUE;
@@ -482,12 +464,12 @@ extern "C" BOOL StarSky_HasFlags(Unk_ov127_02291f60 *s, u32 m)
     return FALSE;
 }
 
-extern "C" void StarSky_SetFlags(Unk_ov127_02291f60 *s, u32 m)
+extern "C" void StarSky_SetFlags(StarSkyView *s, u32 m)
 {
     s->flags |= m;
 }
 
-extern "C" void StarSky_ClearFlags(Unk_ov127_02291f60 *s, u32 m)
+extern "C" void StarSky_ClearFlags(StarSkyView *s, u32 m)
 {
     s->flags &= ~m;
 }

@@ -881,7 +881,7 @@ BOOL LetterGiveMenu::dropOnSlot(u32 b) {
 
 void LetterGiveMenu::setLetter(u32 b, void *c) {
     if (isLetterSlot(b)) {
-        letterGrid.func_ov094_02294318(slotToLetterIndex(b), (s32)c);
+        letterGrid.setLetter(slotToLetterIndex(b), (s32)c);
     }
 }
 

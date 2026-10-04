@@ -11,7 +11,7 @@
 #include "menu/MenuBottomButtons.h"
 #include "sys/ProcProfile.h"
 
-struct Unk_ov143_02293b38_E {
+struct MelodyNoteCell {
     u32 w0;
     struct {
         u32 lo : 10;
@@ -27,7 +27,7 @@ struct Unk_ov143_02293b38_E {
     } w5;
 };
 
-struct Unk_ov143_02293980_T {
+struct MelodyPanelCell {
     u32 w0;
     struct {
         u32 lo : 10;
@@ -35,7 +35,7 @@ struct Unk_ov143_02293980_T {
     } w1;
 };
 
-struct Unk_ov143_0229334c_E {
+struct MelodyPlayingNoteCell {
     u32 w0;
     u32 w1;
     u32 w2;
@@ -69,12 +69,12 @@ typedef void (MelodyMenu::*Unk_ov143_02293b80_Fn)();
 
 
 extern "C" {
-extern Unk_ov143_02293b38_E *sMelodyNoteSprites[16];
-extern Unk_ov143_02293980_T data_ov143_02293980[2];
+extern MelodyNoteCell *sMelodyNoteSprites[16];
+extern MelodyPanelCell data_ov143_02293980[2];
 extern u32 data_ov143_02293950[2];
 extern u32 data_ov143_022938c8[2];
-extern Unk_ov143_0229334c_E data_ov143_02293a00;
-extern Unk_ov143_0229334c_E data_ov143_022939e8;
+extern MelodyPlayingNoteCell data_ov143_02293a00;
+extern MelodyPlayingNoteCell data_ov143_022939e8;
 MelodyMenu *MelodyMenu_Create();
 extern u8 gTouchCurY;
 extern u8 gTouchCurX;
@@ -130,25 +130,25 @@ BOOL MenuKeys_HasUp(u32 pad);
 
 
 extern "C" ProcProfile sMelodyMenuProfile = {(void *(*)())MelodyMenu_Create, 0xb8, 0xbc};
-extern "C" Unk_ov143_02293980_T data_ov143_02293980[2] = {{0x8188404a, {192, 48}}, {0x81a8404a, {196, 4194288}}};
+extern "C" MelodyPanelCell data_ov143_02293980[2] = {{0x8188404a, {192, 48}}, {0x81a8404a, {196, 4194288}}};
 extern "C" u32 data_ov143_02293950[2] = {0x1a000f0, 0xffffc0de};
-extern "C" Unk_ov143_0229334c_E data_ov143_022939e8 = {0x419800cf, 0xc0c9, 0x1a880cf, 0xc0cb, 0x819a00df, {0x144, 0x2c}, 0xffff};
-extern "C" Unk_ov143_0229334c_E data_ov143_02293a00 = {0x419800cf, 0xc0c9, 0x1a880cf, 0xc0cb, 0x819a00df, {0x144, 0x2c}, 0xffff};
-extern "C" Unk_ov143_02293b38_E data_ov143_02293af0 = {0x419800e1, {204, 48}, 0x1a880e1, 0xc0ce, 0x819a00df, {332, 10, 65535}};
-extern "C" Unk_ov143_02293b38_E data_ov143_02293a18 = {0x419800e1, {207, 48}, 0x1a880e1, 0xc0d1, 0x819a00df, {336, 9, 65535}};
-extern "C" Unk_ov143_02293b38_E data_ov143_02293a30 = {0x419800e1, {210, 48}, 0x1a880e1, 0xc0d4, 0x819a00df, {336, 8, 65535}};
-extern "C" Unk_ov143_02293b38_E data_ov143_02293a48 = {0x419800e1, {213, 48}, 0x1a880e1, 0xc0d7, 0x819a00df, {336, 7, 65535}};
-extern "C" Unk_ov143_02293b38_E data_ov143_02293a60 = {0x419800e1, {216, 48}, 0x1a880e1, 0xc0da, 0x819a00df, {336, 6, 65535}};
-extern "C" Unk_ov143_02293b38_E data_ov143_02293a78 = {0x419800e1, {219, 48}, 0x1a880e1, 0xc0dd, 0x819a00df, {336, 5, 65535}};
-extern "C" Unk_ov143_02293b38_E data_ov143_02293a90 = {0x419800e1, {256, 48}, 0x1a880e1, 0xc102, 0x819a00df, {336, 4, 65535}};
-extern "C" Unk_ov143_02293b38_E data_ov143_02293aa8 = {0x419800e1, {259, 48}, 0x1a880e1, 0xc105, 0x819a00df, {340, 11, 65535}};
-extern "C" Unk_ov143_02293b38_E data_ov143_02293ac0 = {0x419800e1, {262, 48}, 0x1a880e1, 0xc108, 0x819a00df, {340, 10, 65535}};
-extern "C" Unk_ov143_02293b38_E data_ov143_02293ad8 = {0x419800e1, {265, 48}, 0x1a880e1, 0xc10b, 0x819a00df, {340, 9, 65535}};
-extern "C" Unk_ov143_02293b38_E data_ov143_02293b08 = {0x419800e1, {268, 48}, 0x1a880e1, 0xc10e, 0x819a00df, {340, 8, 65535}};
-extern "C" Unk_ov143_02293b38_E data_ov143_02293b20 = {0x419800e1, {271, 48}, 0x1a880e1, 0xc111, 0x819a00df, {340, 7, 65535}};
-extern "C" Unk_ov143_02293b38_E data_ov143_022939a0 = {0x419800e1, {274, 48}, 0x1a880e1, 0xc114, 0x819a00df, {340, 6, 65535}};
-extern "C" Unk_ov143_02293b38_E data_ov143_022939b8 = {0x419800e1, {277, 48}, 0x1a880e1, 0xc117, 0x819a00df, {340, 5, 65535}};
-extern "C" Unk_ov143_02293b38_E data_ov143_022939d0 = {0x419800e4, {280, 48}, 0x1a880e4, 0xc11a, 0x819a00df, {344, 4, 65535}};
+extern "C" MelodyPlayingNoteCell data_ov143_022939e8 = {0x419800cf, 0xc0c9, 0x1a880cf, 0xc0cb, 0x819a00df, {0x144, 0x2c}, 0xffff};
+extern "C" MelodyPlayingNoteCell data_ov143_02293a00 = {0x419800cf, 0xc0c9, 0x1a880cf, 0xc0cb, 0x819a00df, {0x144, 0x2c}, 0xffff};
+extern "C" MelodyNoteCell data_ov143_02293af0 = {0x419800e1, {204, 48}, 0x1a880e1, 0xc0ce, 0x819a00df, {332, 10, 65535}};
+extern "C" MelodyNoteCell data_ov143_02293a18 = {0x419800e1, {207, 48}, 0x1a880e1, 0xc0d1, 0x819a00df, {336, 9, 65535}};
+extern "C" MelodyNoteCell data_ov143_02293a30 = {0x419800e1, {210, 48}, 0x1a880e1, 0xc0d4, 0x819a00df, {336, 8, 65535}};
+extern "C" MelodyNoteCell data_ov143_02293a48 = {0x419800e1, {213, 48}, 0x1a880e1, 0xc0d7, 0x819a00df, {336, 7, 65535}};
+extern "C" MelodyNoteCell data_ov143_02293a60 = {0x419800e1, {216, 48}, 0x1a880e1, 0xc0da, 0x819a00df, {336, 6, 65535}};
+extern "C" MelodyNoteCell data_ov143_02293a78 = {0x419800e1, {219, 48}, 0x1a880e1, 0xc0dd, 0x819a00df, {336, 5, 65535}};
+extern "C" MelodyNoteCell data_ov143_02293a90 = {0x419800e1, {256, 48}, 0x1a880e1, 0xc102, 0x819a00df, {336, 4, 65535}};
+extern "C" MelodyNoteCell data_ov143_02293aa8 = {0x419800e1, {259, 48}, 0x1a880e1, 0xc105, 0x819a00df, {340, 11, 65535}};
+extern "C" MelodyNoteCell data_ov143_02293ac0 = {0x419800e1, {262, 48}, 0x1a880e1, 0xc108, 0x819a00df, {340, 10, 65535}};
+extern "C" MelodyNoteCell data_ov143_02293ad8 = {0x419800e1, {265, 48}, 0x1a880e1, 0xc10b, 0x819a00df, {340, 9, 65535}};
+extern "C" MelodyNoteCell data_ov143_02293b08 = {0x419800e1, {268, 48}, 0x1a880e1, 0xc10e, 0x819a00df, {340, 8, 65535}};
+extern "C" MelodyNoteCell data_ov143_02293b20 = {0x419800e1, {271, 48}, 0x1a880e1, 0xc111, 0x819a00df, {340, 7, 65535}};
+extern "C" MelodyNoteCell data_ov143_022939a0 = {0x419800e1, {274, 48}, 0x1a880e1, 0xc114, 0x819a00df, {340, 6, 65535}};
+extern "C" MelodyNoteCell data_ov143_022939b8 = {0x419800e1, {277, 48}, 0x1a880e1, 0xc117, 0x819a00df, {340, 5, 65535}};
+extern "C" MelodyNoteCell data_ov143_022939d0 = {0x419800e4, {280, 48}, 0x1a880e4, 0xc11a, 0x819a00df, {344, 4, 65535}};
 extern "C" u32 data_ov143_022938c8[2] = {0x81f000f0, 0xffffb140};
 
 
@@ -1034,7 +1034,7 @@ void MelodyMenu::resetTextLabels() {
 }
 
 void MelodyMenu::drawPlayingNote(u32 idx, s32 x, s32 y) {
-    Unk_ov143_02293b38_E *e = sMelodyNoteSprites[idx];
+    MelodyNoteCell *e = sMelodyNoteSprites[idx];
     u32 t = levelFromNote(idx);
     s32 ym = y - t * 2;
     if (idx == 0xf) {
@@ -1098,7 +1098,7 @@ void MelodyMenu::drawNotes(s32 x, s32 y) {
     }
 }
 
-extern "C" Unk_ov143_02293b38_E *sMelodyNoteSprites[16] = {&data_ov143_02293a18, &data_ov143_02293a30, &data_ov143_02293a48, &data_ov143_02293a60, &data_ov143_02293a78, &data_ov143_02293a90, &data_ov143_02293aa8, &data_ov143_02293ac0, &data_ov143_02293ad8, &data_ov143_02293b08, &data_ov143_02293b20, &data_ov143_022939a0, &data_ov143_022939b8, &data_ov143_022939d0, &data_ov143_02293af0, (Unk_ov143_02293b38_E *)&data_ov143_022939e8};
+extern "C" MelodyNoteCell *sMelodyNoteSprites[16] = {&data_ov143_02293a18, &data_ov143_02293a30, &data_ov143_02293a48, &data_ov143_02293a60, &data_ov143_02293a78, &data_ov143_02293a90, &data_ov143_02293aa8, &data_ov143_02293ac0, &data_ov143_02293ad8, &data_ov143_02293b08, &data_ov143_02293b20, &data_ov143_022939a0, &data_ov143_022939b8, &data_ov143_022939d0, &data_ov143_02293af0, (MelodyNoteCell *)&data_ov143_022939e8};
 
 u32 MelodyMenu::levelFromNote(u32 idx) {
     u8 t[16] = {2, 3, 4, 5, 6, 7, 8, 9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf, 1, 0};
@@ -1112,7 +1112,7 @@ u32 MelodyMenu::noteFromLevel(u32 idx) {
 }
 
 void MelodyMenu::createNoteLabel(u32 id, u32 idx) {
-    Unk_ov143_02293b38_E *p = sMelodyNoteSprites[idx];
+    MelodyNoteCell *p = sMelodyNoteSprites[idx];
     LabelString *e = allocTextLabel();
     String_Load2dMenu(e, id);
     e->createLabel(8, p->w1.lo, 3, 0xf, 0, 0);

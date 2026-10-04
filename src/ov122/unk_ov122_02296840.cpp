@@ -256,9 +256,9 @@ public:
     void censorLetter();
     void censorField(u8 *src, u32 n);
     void storeLetterDefaults();
-    void func_ov122_02296a48();
-    void func_ov122_02296a7c(u32 a);
-    void func_ov122_02296aa4();
+    void closeAddresseeList();
+    void openAddresseePage(u32 a);
+    void moveCursorToPopupRow();
     void refreshCursor();
     void releaseCursor();
     void pressCursor();
@@ -302,10 +302,10 @@ public:
     u8 hitTestGreeting(s32 a, u8 *p);
     void moveCaretToGreeting();
     void resetTextCursor();
-    void func_ov122_022978c0();
-    void func_ov122_02297928();
-    void func_ov122_02297940();
-    void func_ov122_02297994();
+    void enterAddresseeButtons();
+    void enterAddresseeTouch();
+    void enterDialogButtons();
+    void enterDialogTouch();
     void showMessage(u8 a, s32 b);
     void resumeInput();
     void startButtonInput();
@@ -851,9 +851,9 @@ void LetterWriteMenu::transitionAct07() {
         buttonsSlideY = 0;
         setPhase(2);
         if (MenuCtrl_IsTouch()) {
-            func_ov122_02297994();
+            enterDialogTouch();
         } else {
-            func_ov122_02297940();
+            enterDialogButtons();
         }
     }
 }
@@ -897,7 +897,7 @@ void LetterWriteMenu::transitionAct0B() {
 void LetterWriteMenu::transitionAct0C() {
     addresseePage = 0;
     PopupChoice_LoadChoiceBg(&addresseeMenu);
-    func_ov122_02296a7c(1);
+    openAddresseePage(1);
     setPhase(2);
 }
 
@@ -1207,7 +1207,7 @@ void C::mainAct03() {
 
 void C::mainAct04() {
     if (checkSwitchToButtons(1)) {
-        func_ov122_02297940();
+        enterDialogButtons();
     } else if (Unk_ov122_02298b70_Both()) {
         if (_ZN21MenuBottomButtonsBody9isTouchedEi(&bottomButtons, 3)) {
             openDialog(3);
@@ -1220,9 +1220,9 @@ void C::mainAct04() {
 void C::mainAct05() {
     if (MenuCtrl_IsForceCloseDue()) {
         setFlags(0x2000);
-        func_ov122_02296a48();
+        closeAddresseeList();
     } else if (checkSwitchToButtons(1)) {
-        func_ov122_022978c0();
+        enterAddresseeButtons();
     } else if (Unk_ov122_02298b70_Both()) {
         s32 t = _ZN19PopupChoiceMenuBody10hitTestRowEii(&addresseeMenu, gTouchCurX, gTouchCurY);
         if (t >= 0) {
@@ -1230,7 +1230,7 @@ void C::mainAct05() {
             choiceIndex = _ZN19PopupChoiceMenuBody13pickAddresseeEjj(&addresseeMenu, addresseePage, (u8)t);
             setMainState(0x17);
         } else {
-            func_ov122_02296a48();
+            closeAddresseeList();
         }
     }
 }
@@ -1702,7 +1702,7 @@ void LetterWriteMenu::mainAct13()
     u32 f;
 
     if (checkSwitchToTouch()) {
-        func_ov122_02297994();
+        enterDialogTouch();
         return;
     }
     r4 = takeRepeatedKeys();
@@ -1751,19 +1751,19 @@ void LetterWriteMenu::mainAct14()
 
     if (MenuCtrl_IsForceCloseDue()) {
         setFlags(0x2000);
-        func_ov122_02296a48();
+        closeAddresseeList();
     } else if (checkSwitchToTouch()) {
-        func_ov122_02297928();
+        enterAddresseeTouch();
     } else {
         if (PopupChoice_MoveCursor(&addresseeMenu, takeRepeatedKeys(), &choiceIndex, 0)) {
-            func_ov122_02296aa4();
+            moveCursorToPopupRow();
         }
         f = gPad[1];
         if (f & 1) {
             _ZN10MenuCursor12setPosePressEv(&cursor);
             setMainState(0x15);
         } else if (f & 2) {
-            func_ov122_02296a48();
+            closeAddresseeList();
         }
     }
 }
@@ -1781,9 +1781,9 @@ void LetterWriteMenu::mainAct16()
 {
     if (_ZN19PopupChoiceMenuBody6isOpenEv(&addresseeMenu)) {
         if (MenuCtrl_IsButtons()) {
-            func_ov122_022978c0();
+            enterAddresseeButtons();
         } else {
-            func_ov122_02297928();
+            enterAddresseeTouch();
         }
     }
 }
@@ -1817,7 +1817,7 @@ void LetterWriteMenu::mainAct18()
         if (addresseePage >= _ZN19PopupChoiceMenuBody12getPageCountEv(&addresseeMenu)) {
             addresseePage = 0;
         }
-        func_ov122_02296a7c(0);
+        openAddresseePage(0);
         break;
     case 3:
         if (testFlags(0x2000)) {
@@ -1995,12 +1995,12 @@ void C::showMessage(u8 a, s32 b) {
     hideCursor();
 }
 
-void C::func_ov122_02297994() {
+void C::enterDialogTouch() {
     hideCursor();
     setMainState(4);
 }
 
-void C::func_ov122_02297940() {
+void C::enterDialogButtons() {
     restartKeyRepeat();
     showCursor();
     s32 a = _ZN21MenuBottomButtonsBody10getTargetXEi(&bottomButtons, 4);
@@ -2010,12 +2010,12 @@ void C::func_ov122_02297940() {
     setMainState(0x13);
 }
 
-void C::func_ov122_02297928() {
+void C::enterAddresseeTouch() {
     hideCursor();
     setMainState(5);
 }
 
-void C::func_ov122_022978c0() {
+void C::enterAddresseeButtons() {
     restartKeyRepeat();
     showCursor();
     choiceIndex = _ZN19PopupChoiceMenuBody11getRowCountEv(&addresseeMenu) - 1;
@@ -2590,7 +2590,7 @@ void LetterWriteMenu::refreshCursor() {
     cursor.update();
 }
 
-void LetterWriteMenu::func_ov122_02296aa4() {
+void LetterWriteMenu::moveCursorToPopupRow() {
     s32 a = _ZN19PopupChoiceMenuBody7getRowXEv(&addresseeMenu);
     s32 b = _ZN19PopupChoiceMenuBody7getRowYEi(&addresseeMenu, choiceIndex);
     _ZN14MenuCursorBase12moveToLinearEiii(&cursor, a, b, 2);
@@ -2598,12 +2598,12 @@ void LetterWriteMenu::func_ov122_02296aa4() {
     setMainState(7);
 }
 
-void LetterWriteMenu::func_ov122_02296a7c(u32 a) {
+void LetterWriteMenu::openAddresseePage(u32 a) {
     PopupChoice_OpenAddresseePage(&addresseeMenu, addresseePage, a);
     setMainState(0x16);
 }
 
-void LetterWriteMenu::func_ov122_02296a48() {
+void LetterWriteMenu::closeAddresseeList() {
     Snd_PlaySe(0x28);
     choiceIndex = 0xf;
     PopupChoice_Close(&addresseeMenu, 1);

@@ -65,7 +65,7 @@ s32 PocketMenu_GetLetter(PocketMenu *self, u32 a);
 s32 PocketMenu_GetItem(PocketMenu *self, u32 a);
 s32 PocketMenu_ClearLetter(PocketMenu *self, u32 a);
 s32 PocketMenu_ClearSlotItem(PocketMenu *self, u32 a);
-s32 func_ov096_02298320(PocketMenu *self);
+s32 PocketMenu_StartRemoveBlink(PocketMenu *self);
 s32 PocketMenu_ShowMessage(PocketMenu *self, s32 a, s32 b, s32 c);
 s32 PocketMenu_ReturnToIdle(PocketMenu *self);
 }
@@ -98,19 +98,13 @@ struct Unk_ov098_0229b790_Pt {
     }
 };
 
-struct Unk_0229bc90_Pad {
-    s32 v[2];
-    Unk_0229bc90_Pad() {}
-    ~Unk_0229bc90_Pad() {}
-};
-
 extern "C" {
 void *PlayerData_GetCurrent();
 s32 InvItem_IsNotFishInsectOrFlower(u32);
 }
 
 extern "C" s32 PocketMenu_CanDropOutdoor(s32 a, u32 b) {
-    Unk_0229bc90_Pad pad;
+    InvItemStackPad pad;
     if (((Unk_02097ff4 *)PlayerData_GetCurrent())->testFlag(1) != 0) {
         if ((b >= 0x14fe && b <= 0x1517) || (b >= 0x151d && b <= 0x151e)) {
             return 0;
@@ -213,7 +207,7 @@ void PocketMenu::mainAct30() {
         }
         sendFishReleasePacket((u8)r1);
         PlayerActor_LocalReleaseCatch(1);
-        func_ov096_02298320(this);
+        PocketMenu_StartRemoveBlink(this);
     }
 }
 
@@ -260,7 +254,7 @@ void PocketMenu::mainAct2C() {
         HeldInsect_Release(r7, x);
         PlayerActor_LocalReleaseCatch(0);
         sendInsectReleasePacket((u8)r5, t);
-        func_ov096_02298320(this);
+        PocketMenu_StartRemoveBlink(this);
     }
 }
 

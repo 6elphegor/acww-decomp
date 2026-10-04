@@ -72,7 +72,7 @@ void GeneralMenuHeader::placeTitleText() {
     titleLabel[0].createLabel(3, 0x11, v, 4, 1, 0);
 }
 
-void GeneralMenuHeader::func_ov124_02296c98() {
+void GeneralMenuHeader::redrawTitle() {
     s32 v;
     switch (GeneralMenuHeader_GetStyle()) {
     case 0:
@@ -88,7 +88,7 @@ void GeneralMenuHeader::setTitleText(void *s, s32 n) {
     String_FromEncodedBytes(this, s, n);
 }
 
-void GeneralMenuHeader::func_ov124_02296c7c(u8 a, u8 b, u32 c, u32 d) {
+void GeneralMenuHeader::setTitleHighlight(u8 a, u8 b, u32 c, u32 d) {
     titleLabel[0].setHighlight(a, b, c, d);
 }
 

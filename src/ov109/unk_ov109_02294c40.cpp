@@ -18,8 +18,8 @@
 #include "sys/ProcProfile.h"
 
 class SongPickMenu;
-struct Unk_ov109_02295570;
-typedef Unk_ov109_02295570 S;
+class SongPickMenu;
+typedef SongPickMenu S;
 struct PopupChoiceIdList;
 
 extern "C" {
@@ -160,7 +160,7 @@ public:
     void refreshNameLabel();
     void showSlotFocus(u32 idx);
     void hideSlotFocus();
-    s32 func_ov109_0229550c(u32 idx);
+    s32 getSlotFlags(u32 idx);
     s32 getSlotItem(u32 idx);
 
     void startPanels();
@@ -254,31 +254,6 @@ SongPickMenu *SongPickMenu_Create();
 
 
 extern "C" ProcProfile sSongPickMenuProfile = {(void *(*)())SongPickMenu_Create, 0x9c, 0xa0};
-
-// Layout of the scene object as seen by the out-of-class functions
-struct Unk_ov109_02295570 {
-    u8 pad_000[0x94];
-    u8 bgTasks[0x38];
-    u8 pocketGrid[0x2134 - 0xcc];
-    u8 nameBalloon[0x220c - 0x2134];
-    u8 cursor[0x2270 - 0x220c];
-    u8 popup[0x2569 - 0x2270];
-    u8 popupValues[0x2570 - 0x2569];
-    u8 errorMessage[0x2678 - 0x2570];
-    u8 bottomButtons[0x27e4 - 0x2678];
-    s32 dragOffsetX;
-    s32 dragOffsetY;
-    u8 pad_27ec[0x27f8 - 0x27ec];
-    u8 touchedSlot;
-    u8 balloonSlot;
-    u8 pad_27fa;
-    u8 cursorSlot;
-    u8 pad_27fc[2];
-    u8 returnState;
-    u8 popupChoice;
-    u8 popupRow;
-    u8 touchHoldDelay;
-};
 
 #define M(s) ((SongPickMenu *)(s))
 #define C220(x) ((MenuCursor *)&(x))
@@ -521,7 +496,7 @@ void SongPickMenu::updateTouch() {
         u32 r = SongPickMenu_HitTestSlot(s, gTouchCurX, gTouchCurY + 0x10, 1);
         if (r != 0x10) {
             SongPickMenu_BeginTouchSlot(s, r);
-        } else if (((MenuBottomButtonsBody *)s->bottomButtons)->isTouched(9)) {
+        } else if (((MenuBottomButtonsBody *)&s->bottomButtons)->isTouched(9)) {
             M(s)->startClose();
         }
     }
@@ -532,12 +507,12 @@ void SongPickMenu::mainAct01() {
     if (gTouchHeld == 0) {
         if (SongPickMenu_IsSlotDisabled(s, s->touchedSlot)) {
             M(s)->setMainState(0);
-            ((TouchPromptBalloon *)s->nameBalloon)->setAutoCloseTimer(0x3c);
+            ((TouchPromptBalloon *)&s->nameBalloon)->setAutoCloseTimer(0x3c);
         } else {
             M(s)->setMainState(3);
             M(s)->runMainState();
         }
-    } else if (!SongPickMenu_IsSlotDisabled(s, s->touchedSlot) && ((TouchPromptBalloon *)s->nameBalloon)->isOpenOrOpening()) {
+    } else if (!SongPickMenu_IsSlotDisabled(s, s->touchedSlot) && ((TouchPromptBalloon *)&s->nameBalloon)->isOpenOrOpening()) {
         u8 v = s->touchHoldDelay;
         if (v != 0) {
             s->touchHoldDelay = v - 1;
@@ -546,7 +521,7 @@ void SongPickMenu::mainAct01() {
             M(s)->setMainState(2);
         }
     } else {
-        ((TouchPromptBalloon *)s->nameBalloon)->commitOpen();
+        ((TouchPromptBalloon *)&s->nameBalloon)->commitOpen();
     }
 }
 
@@ -561,7 +536,7 @@ void SongPickMenu::mainAct02() {
 
 void SongPickMenu::mainAct03() {
     S *s = (S *)this;
-    if (((TouchPromptBalloon *)s->nameBalloon)->isOpenOrOpening()) {
+    if (((TouchPromptBalloon *)&s->nameBalloon)->isOpenOrOpening()) {
         u8 v = s->touchHoldDelay;
         if (v != 0) {
             s->touchHoldDelay = v - 1;
@@ -574,16 +549,16 @@ void SongPickMenu::mainAct03() {
 
 void SongPickMenu::mainAct04() {
     S *s = (S *)this;
-    if (((PopupChoiceMenuBody *)s->popup)->isOpen()) {
+    if (((PopupChoiceMenuBody *)&s->popup)->isOpen()) {
         if (MenuCtrl_IsForceCloseDue()) {
             M(s)->cancelChoice();
         } else if (M(s)->checkSwitchToButtons(1)) {
             M(s)->cancelChoice();
         } else if (Unk_ov109_02295c70_Both()) {
-            s32 r = ((PopupChoiceMenuBody *)s->popup)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
+            s32 r = ((PopupChoiceMenuBody *)&s->popup)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
             if (r >= 0) {
-                PopupChoice_DecideRow(s->popup, r, 1);
-                s->popupChoice = s->popupValues[r];
+                PopupChoice_DecideRow(&s->popup, r, 1);
+                s->popupChoice = s->choiceList.values[r];
                 M(s)->setMainState(0xc);
             }
         }
@@ -594,11 +569,11 @@ void SongPickMenu::updateButtons() {
     S *s = (S *)this;
     if (M(s)->checkSwitchToTouch()) {
         SongPickMenu_StartTouchInput(s);
-        ((TouchPromptBalloon *)s->nameBalloon)->hide(1);
+        ((TouchPromptBalloon *)&s->nameBalloon)->hide(1);
     } else if (M(s)->moveCursorByPad((void *)M(s)->takeRepeatedKeys())) {
         M(s)->updateNameLabel();
         M(s)->moveCursorToTarget();
-        ((TouchPromptBalloon *)s->nameBalloon)->hide(0);
+        ((TouchPromptBalloon *)&s->nameBalloon)->hide(0);
     } else if (!SongPickMenu_IsSlotDisabled(s, s->cursorSlot) && (gPad[1] & 1) != 0) {
         if (SongPickMenu_IsPocketSlot(s, s->cursorSlot)) {
             if (!SongPickMenu_IsSlotEmpty(s, s->cursorSlot)) {
@@ -610,9 +585,9 @@ void SongPickMenu::updateButtons() {
     } else if ((gPad[1] & 2) != 0) {
         M(s)->hideCursor();
         M(s)->startClose();
-        ((TouchPromptBalloon *)s->nameBalloon)->hide(0);
+        ((TouchPromptBalloon *)&s->nameBalloon)->hide(0);
     } else {
-        ((TouchPromptBalloon *)s->nameBalloon)->commitOpen();
+        ((TouchPromptBalloon *)&s->nameBalloon)->commitOpen();
     }
 }
 
@@ -622,12 +597,12 @@ void SongPickMenu::mainAct06() {
         M(s)->cancelChoice();
     } else if (M(s)->checkSwitchToTouch()) {
         M(s)->cancelChoice();
-    } else if (PopupChoice_MoveCursor(s->popup, M(s)->takeRepeatedKeys(), &s->popupRow, 0)) {
+    } else if (PopupChoice_MoveCursor(&s->popup, M(s)->takeRepeatedKeys(), &s->popupRow, 0)) {
         M(s)->moveCursorToPopupRow();
     } else {
         u32 k = gPad[1];
         if ((k & 1) != 0) {
-            ((MenuCursor *)s->cursor)->setPosePress();
+            ((MenuCursor *)&s->cursor)->setPosePress();
             M(s)->setMainState(7);
         } else if ((k & 2) != 0) {
             M(s)->cancelPopup();
@@ -637,16 +612,16 @@ void SongPickMenu::mainAct06() {
 
 void SongPickMenu::mainAct07() {
     S *s = (S *)this;
-    if (((MenuCursorBuf0 *)s->cursor)->isAnimDone()) {
-        PopupChoice_DecideRow(s->popup, s->popupRow, 1);
-        s->popupChoice = s->popupValues[s->popupRow];
+    if (((MenuCursorBuf0 *)&s->cursor)->isAnimDone()) {
+        PopupChoice_DecideRow(&s->popup, s->popupRow, 1);
+        s->popupChoice = s->choiceList.values[s->popupRow];
         M(s)->setMainState(0xc);
     }
 }
 
 void SongPickMenu::updateCursorMove() {
     S *s = (S *)this;
-    if (!((MenuCursorBuf0 *)s->cursor)->isMoving()) {
+    if (!((MenuCursorBuf0 *)&s->cursor)->isMoving()) {
         M(s)->setMainState(s->returnState);
         if (s->returnState == 5) {
             M(s)->showSlotFocus(s->cursorSlot);
@@ -657,8 +632,8 @@ void SongPickMenu::updateCursorMove() {
 
 void SongPickMenu::mainAct09() {
     S *s = (S *)this;
-    if (((MenuCursorBuf0 *)s->cursor)->isAnimDone()) {
-        ((MenuBottomButtonsBody *)s->bottomButtons)->setSelected(9);
+    if (((MenuCursorBuf0 *)&s->cursor)->isAnimDone()) {
+        ((MenuBottomButtonsBody *)&s->bottomButtons)->setSelected(9);
         M(s)->setMainState(0xf);
         Snd_PlaySe(0x28);
     }
@@ -666,7 +641,7 @@ void SongPickMenu::mainAct09() {
 
 void SongPickMenu::mainAct0A() {
     S *s = (S *)this;
-    if (((MenuCursorBuf0 *)s->cursor)->isAnimDone()) {
+    if (((MenuCursorBuf0 *)&s->cursor)->isAnimDone()) {
         M(s)->refreshCursor();
         M(s)->setMainState(5);
     }
@@ -674,7 +649,7 @@ void SongPickMenu::mainAct0A() {
 
 void SongPickMenu::mainAct0B() {
     S *s = (S *)this;
-    if (((PopupChoiceMenuBody *)s->popup)->isOpen()) {
+    if (((PopupChoiceMenuBody *)&s->popup)->isOpen()) {
         if (MenuCtrl_IsButtons()) {
             M(s)->cursorToPopupTop();
             M(s)->setMainState(6);
@@ -686,10 +661,10 @@ void SongPickMenu::mainAct0B() {
 
 void SongPickMenu::mainAct0C() {
     S *s = (S *)this;
-    if (PopupChoice_TickDecideDelay(s->popup)) {
-        PopupChoice_Close(s->popup, 0);
-        ((TouchPromptBalloon *)s->nameBalloon)->hide(1);
-        if (((MenuCursorBuf0 *)s->cursor)->getAnim()) {
+    if (PopupChoice_TickDecideDelay(&s->popup)) {
+        PopupChoice_Close(&s->popup, 0);
+        ((TouchPromptBalloon *)&s->nameBalloon)->hide(1);
+        if (((MenuCursorBuf0 *)&s->cursor)->getAnim()) {
             M(s)->showCursorAtSlot();
         }
         M(s)->setMainState(0xd);
@@ -698,27 +673,27 @@ void SongPickMenu::mainAct0C() {
 
 void SongPickMenu::mainAct0D() {
     S *s = (S *)this;
-    if (((PopupChoiceMenuBody *)s->popup)->isClosed()) {
+    if (((PopupChoiceMenuBody *)&s->popup)->isClosed()) {
         M(s)->onPopupChoice();
     }
 }
 
 void SongPickMenu::mainAct0E() {
     S *s = (S *)this;
-    if (((MenuErrorMessage *)s->errorMessage)->update(1)) {
+    if (((MenuErrorMessage *)&s->errorMessage)->update(1)) {
         SongPickMenu_ResumeInput(s);
-        ((MenuCursorBuf0 *)s->cursor)->enableObjWindow();
+        ((MenuCursorBuf0 *)&s->cursor)->enableObjWindow();
     }
 }
 
 void SongPickMenu::mainAct0F() {
     S *s = (S *)this;
-    if (((MenuBottomButtonsBody *)s->bottomButtons)->stepPress()) {
-        if (((MenuCursorBuf0 *)s->cursor)->getAnim()) {
-            s32 t = ((MenuBottomButtonsBody *)s->bottomButtons)->getPressOffset();
-            s32 u = ((MenuBottomButtonsBody *)s->bottomButtons)->getTargetX(-1);
-            s32 w = ((MenuBottomButtonsBody *)s->bottomButtons)->getTargetY(-1);
-            ((MenuCursorBuf0 *)s->cursor)->warpTo(t + u, t + w);
+    if (((MenuBottomButtonsBody *)&s->bottomButtons)->stepPress()) {
+        if (((MenuCursorBuf0 *)&s->cursor)->getAnim()) {
+            s32 t = ((MenuBottomButtonsBody *)&s->bottomButtons)->getPressOffset();
+            s32 u = ((MenuBottomButtonsBody *)&s->bottomButtons)->getTargetX(-1);
+            s32 w = ((MenuBottomButtonsBody *)&s->bottomButtons)->getTargetY(-1);
+            ((MenuCursorBuf0 *)&s->cursor)->warpTo(t + u, t + w);
         }
     } else {
         M(s)->closeWithoutResult();
@@ -757,8 +732,8 @@ void SongPickMenu_BeginTouchSlot(S *s, u32 a) {
     s->dragOffsetX = SongPickMenu_GetSlotX(s, s->touchedSlot) - x;
     s->dragOffsetY = SongPickMenu_GetSlotY(s, s->touchedSlot) - y;
     s->balloonSlot = a;
-    ((TouchPromptBalloon *)s->nameBalloon)->queueOpen();
-    ((TouchPromptBalloon *)s->nameBalloon)->commitOpen();
+    ((TouchPromptBalloon *)&s->nameBalloon)->queueOpen();
+    ((TouchPromptBalloon *)&s->nameBalloon)->commitOpen();
     s->touchHoldDelay = 2;
     if (!SongPickMenu_IsSlotDisabled(s, a)) Inventory_PlayTouchSe();
 }
@@ -766,9 +741,9 @@ void SongPickMenu_BeginTouchSlot(S *s, u32 a) {
 void SongPickMenu_ShowError(S *s, u32 a) {
     volatile u8 b = gU8None;
     b = a;
-    ((MenuErrorMessage *)s->errorMessage)->open((u8 *)&b, 1, 0);
+    ((MenuErrorMessage *)&s->errorMessage)->open((u8 *)&b, 1, 0);
     M(s)->setMainState(0xe);
-    ((MenuCursorBuf0 *)s->cursor)->disableObjWindow();
+    ((MenuCursorBuf0 *)&s->cursor)->disableObjWindow();
 }
 
 void SongPickMenu_CancelBgTask(S *s) {
@@ -791,10 +766,10 @@ u32 SongPickMenu_PocketToSlot(S *s, u32 a) {
 }
 
 u32 SongPickMenu_HitTestSlot(S *s, u32 a, u32 b, s32 c) {
-    u32 t = InventoryItemGrid_FindPocketSlotAt(s->pocketGrid);
+    u32 t = InventoryItemGrid_FindPocketSlotAt(&s->pocketGrid);
     if (t != 0x23) {
         if (c != 0) {
-            if (InventoryItemGrid_IsSlotEmpty(s->pocketGrid, t)) return 0x10;
+            if (InventoryItemGrid_IsSlotEmpty(&s->pocketGrid, t)) return 0x10;
         }
         return SongPickMenu_PocketToSlot(s, t);
     }
@@ -804,14 +779,14 @@ u32 SongPickMenu_HitTestSlot(S *s, u32 a, u32 b, s32 c) {
 void SongPickMenu_SetSlotItem(S *s, u32 a, u32 b, u32 c) {
     if (SongPickMenu_IsPocketSlot(s, a)) {
         u32 t = SongPickMenu_SlotToPocket(s, a);
-        InventoryItemGrid_SetSlotItem(s->pocketGrid, t, b, c);
-        InventoryItemGrid_RefreshSlot(s->pocketGrid, t);
+        InventoryItemGrid_SetSlotItem(&s->pocketGrid, t, b, c);
+        InventoryItemGrid_RefreshSlot(&s->pocketGrid, t);
     }
 }
 
 s32 SongPickMenu_GetSlotX(S *s, u32 a) {
     if (SongPickMenu_IsPocketSlot(s, a)) {
-        return InventoryItemGrid_GetSlotX(s->pocketGrid, SongPickMenu_SlotToPocket(s, a));
+        return InventoryItemGrid_GetSlotX(&s->pocketGrid, SongPickMenu_SlotToPocket(s, a));
     } else if (a == 0xf) {
         return 0xbc;
     }
@@ -820,7 +795,7 @@ s32 SongPickMenu_GetSlotX(S *s, u32 a) {
 
 s32 SongPickMenu_GetSlotY(S *s, u32 a) {
     if (SongPickMenu_IsPocketSlot(s, a)) {
-        return InventoryItemGrid_GetSlotY(s->pocketGrid, SongPickMenu_SlotToPocket(s, a)) - 0x10;
+        return InventoryItemGrid_GetSlotY(&s->pocketGrid, SongPickMenu_SlotToPocket(s, a)) - 0x10;
     } else if (a == 0xf) {
         return 0xb6;
     }
@@ -834,7 +809,7 @@ void SongPickMenu_DisableNonSongs(S *s) {
     for (i = 0; i <= 0xe; i++) {
         BOOL r = FALSE;
         if (!SongPickMenu_IsSlotEmpty(s, i)) {
-            if (M(s)->func_ov109_0229550c(i)) {
+            if (M(s)->getSlotFlags(i)) {
                 r = TRUE;
             } else {
                 v = M(s)->getSlotItem(i);
@@ -842,21 +817,21 @@ void SongPickMenu_DisableNonSongs(S *s) {
             }
         }
         if (r) {
-            InventoryItemGrid_DisableSlot(s->pocketGrid, SongPickMenu_SlotToPocket(s, i));
+            InventoryItemGrid_DisableSlot(&s->pocketGrid, SongPickMenu_SlotToPocket(s, i));
         }
     }
 }
 
 BOOL SongPickMenu_IsSlotDisabled(S *s, u32 a) {
     if (SongPickMenu_IsPocketSlot(s, a)) {
-        return InventoryItemGrid_IsSlotDisabled(s->pocketGrid, SongPickMenu_SlotToPocket(s, a));
+        return InventoryItemGrid_IsSlotDisabled(&s->pocketGrid, SongPickMenu_SlotToPocket(s, a));
     }
     return FALSE;
 }
 
 BOOL SongPickMenu_IsSlotEmpty(S *s, u32 a) {
     if (SongPickMenu_IsPocketSlot(s, a)) {
-        return InventoryItemGrid_IsSlotEmpty(s->pocketGrid, SongPickMenu_SlotToPocket(s, a));
+        return InventoryItemGrid_IsSlotEmpty(&s->pocketGrid, SongPickMenu_SlotToPocket(s, a));
     }
     return TRUE;
 }
@@ -869,7 +844,7 @@ s32 SongPickMenu::getSlotItem(u32 idx) {
     return 0xfff1;
 }
 
-s32 SongPickMenu::func_ov109_0229550c(u32 idx) {
+s32 SongPickMenu::getSlotFlags(u32 idx) {
     if (SongPickMenu_IsPocketSlot((S *)this, idx)) {
         s32 r = SongPickMenu_SlotToPocket((S *)this, idx);
         return InventoryItemGrid_GetSlotFlags(&pocketGrid, r);

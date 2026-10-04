@@ -1,4 +1,5 @@
 #include "types.h"
+#include "ui/OamCellEntry.h"
 #include "item/ItemIconCache.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
@@ -8,17 +9,10 @@
 #include "menu/MenuScrollKnob.h"
 #include "menu/CreatureBookPanel.h"
 
-struct Unk_ov114_02294c40_Bits {
-    u32 idx : 10;
-    u32 mid : 2;
-    u32 pal : 4;
-    u32 hi : 16;
-};
-
+// Icon row object of the creature book list: OAM cell entry (charName = icon tiles, palette per icon) + cached icon id.
 struct CreatureBookIconObj {
-    u32 attr01;
-    Unk_ov114_02294c40_Bits attr2;
-    s32 iconId;
+    /* 0x0 */ OamCellEntry cell;
+    /* 0x8 */ s32 iconId;
 };
 
 struct Unk_ov114_S {
@@ -856,7 +850,7 @@ void CreatureBook_InitRows(S *s) {
     for (i = 0; i < 9; i++) {
         CreatureBookIconObj *e = &s->unk_108c[i];
         MI_CpuCopy8(data_ov114_02296580, e, 8);
-        e->attr2.idx = i * 2 + 0xc0;
+        e->cell.charName = i * 2 + 0xc0;
         e->iconId = -1;
     }
     s->iconRowY = (s32)Oam_GetObjY(data_ov114_022965e0) + 0x70;
@@ -868,7 +862,7 @@ void CreatureBook_SetRowIcon(S *s, u32 a, s32 idx) {
     s32 key = Item_GetInfoUnk02(a);
     if (key != e->iconId) {
         e->iconId = key;
-        u32 lo = e->attr2.idx;
+        u32 lo = e->cell.charName;
         void *dst = _ZN13ItemIconCache12getIconCharsEi(s, key);
         s32 n = CreatureBook_AllocIconTask(s);
         u8 *src = s->unk_0a14 + n * 0x80;
@@ -876,7 +870,7 @@ void CreatureBook_SetRowIcon(S *s, u32 a, s32 idx) {
         MI_CpuCopy8(dst, src, 0x40);
         MI_CpuCopy8((u8 *)dst + 0x400, src2, 0x40);
         _ZN14BgVramTaskPair15requestCharPairEjjhjjjj(s->unk_0e94 + n * 0x38, src, src2, 8, lo, lo + 1, lo + 0x20, lo + 0x21);
-        e->attr2.pal = InventoryItemGrid_GetIconPalette(s, key);
+        e->cell.palette = InventoryItemGrid_GetIconPalette(s, key);
     }
 }
 

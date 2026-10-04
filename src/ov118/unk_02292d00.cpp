@@ -262,13 +262,13 @@ public:
 };
 
 struct Unk_ov118_02295500 {
-    u16 unk_0;
+    u16 attr0;
     u16 a : 9;
     u16 pal : 5;
     u16 b : 2;
     u16 tile : 10;
     u16 c : 6;
-    u16 unk_6;
+    u16 attr3;
 };
 
 

@@ -71,7 +71,7 @@ static inline BOOL Unk_ov141_02293194_Both() {
     return FALSE;
 }
 
-struct Unk_ov141_02292b94_Buf {
+struct NearbyTownBeaconInfo {
     u8 b[0x10];
     u8 flag;
 };
@@ -612,7 +612,7 @@ void NearbyTownsMenu::scanTowns() {
     u32 *list;
     s32 n2;
     s32 z[3];
-    Unk_ov141_02292b94_Buf buf;
+    NearbyTownBeaconInfo buf;
     s32 i;
     Comm_SendEmpty();
     cnt = Net_CountHostCandidates();

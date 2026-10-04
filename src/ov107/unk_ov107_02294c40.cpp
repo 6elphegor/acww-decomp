@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
 #include "ui/CursorMotion.h"
 #include "menu/InventoryItemGrid.h"
 #include "menu/LetterGrid.h"
@@ -90,14 +91,8 @@ typedef void (PocketsFullMenu::*Unk_ov107_02296e78_Fn)();
 
 
 
-struct Unk_ov107_Comm {
-    u32 unk_00[0x64 / 4];
-    u32 myAid;
-    u32 localSlot;
-};
-
 extern "C" {
-extern Unk_ov107_Comm *gCommManager;
+extern CommManager *gCommManager;
 extern u8 gU8None;
 extern u8 gTouchCurX;
 extern u8 gTouchCurY;
@@ -1513,7 +1508,7 @@ void PocketsFullMenu::sendFishReleasePacket(u8 v) {
 
 void PocketsFullMenu::onChoiceBury() {
     s32 t = getSlotItem(selectedSlot);
-    Unk_ov107_Comm *g = gCommManager;
+    CommManager *g = gCommManager;
     fieldRequest = FieldAction_RequestToolAtPending(g->myAid, 2, 0, t);
     if (fieldRequest == -1) {
         resumeInput();
@@ -1556,7 +1551,7 @@ void PocketsFullMenu::mainAct17() {
 }
 
 u8 PocketsFullMenu::getLocalPlayerIndex() {
-    Unk_ov107_Comm *g = gCommManager;
+    CommManager *g = gCommManager;
     u32 v = g->myAid;
     if (CommManager_isSlotActive(g, v)) {
         return (u8)v;

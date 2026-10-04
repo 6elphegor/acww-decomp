@@ -120,11 +120,11 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    s32 unk_654;
+    s32 act;
     SpNpcTortimerCountdownTalk talk;
 };
 
-struct Unk_ov086_02271940_Ent {
+struct SpNpcTortimerCountdownActEntry {
     BOOL (SpNpcTortimerCountdown::*enter)();
     BOOL (SpNpcTortimerCountdown::*exit)();
 };
@@ -150,7 +150,7 @@ s32 Inventory_FindEmptyLetter();
 extern u32 data_ov086_02271c20;
 extern u32 data_ov086_02271c24;
 extern const Unk_ov086_022714e4_Ent sSpNpcTortimerCountdownFortuneLines[4];
-extern Unk_ov086_02271940_Ent sSpNpcTortimerCountdownActTable[3];
+extern SpNpcTortimerCountdownActEntry sSpNpcTortimerCountdownActTable[3];
 }
 
 extern "C" char sSpNpcTortimerCountdownFortuneStrKey[];
@@ -173,7 +173,7 @@ extern "C" void *data_ov086_02271c30[2] = {(void *)_ZN22SpNpcTortimerCountdown9m
 extern "C" void *data_ov086_02271c28[2] = {(void *)_ZN22SpNpcTortimerCountdown10setupAct00Ev, 0};
 extern "C" void *data_ov086_02271c40[2] = {(void *)_ZN22SpNpcTortimerCountdown9mainAct00Ev, 0};
 typedef BOOL (SpNpcTortimerCountdown::*Unk_ov086_Fn)();
-Unk_ov086_02271940_Ent sSpNpcTortimerCountdownActTable[3] = {
+SpNpcTortimerCountdownActEntry sSpNpcTortimerCountdownActTable[3] = {
     {*(Unk_ov086_Fn *)data_ov086_02271c28, *(Unk_ov086_Fn *)data_ov086_02271c40},
     {*(Unk_ov086_Fn *)data_ov086_02271c48, *(Unk_ov086_Fn *)data_ov086_02271c38},
     {NULL, *(Unk_ov086_Fn *)data_ov086_02271c30},
@@ -183,11 +183,11 @@ extern "C" u8 sSpNpcTortimerCountdownModelPath[] = {'n','p','c','_','s','p','/',
 extern "C" ActorProfile sSpNpcTortimerCountdownProfile = {(void *(*)())SpNpcTortimerCountdown_Create, 0x5c, 0x63, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" u8 sSpNpcTortimerCountdownTexturePath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','_','t','e','x','.','n','s','b','t','x',0};
 
-struct Unk_ov086_022716b0_A {
+struct TortimerCountdownDateLocals {
     u8 b0, b1;
     u8 pad[4];
 };
-struct Unk_ov086_022716b0_B {
+struct TortimerCountdownTimeLocals {
     u8 b0, b1, b2, b3;
     u32 w;
 };
@@ -222,8 +222,8 @@ u8 *SpNpcTortimerCountdown::getModelPath() { return sSpNpcTortimerCountdownModel
 
 BOOL SpNpcTortimerCountdown::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcTortimerCountdownActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcTortimerCountdownActTable[unk_654].exit)();
+    if (sSpNpcTortimerCountdownActTable[act].exit != NULL) {
+        result = (this->*sSpNpcTortimerCountdownActTable[act].exit)();
     }
     return result;
 }
@@ -234,7 +234,7 @@ void SpNpcTortimerCountdown::changeAct(s32 state) {
         ok = (this->*sSpNpcTortimerCountdownActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -277,8 +277,8 @@ void SpNpcTortimerCountdownTalk::attachOwner(SpNpcTortimerCountdown *owner) {
 
 void SpNpcTortimerCountdownTalk::start(TalkStartMsg *out) {
     u16 h;
-    Unk_ov086_022716b0_A a;
-    Unk_ov086_022716b0_B t;
+    TortimerCountdownDateLocals a;
+    TortimerCountdownTimeLocals t;
     BOOL f;
     _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
     out->msgKey = "sp_npc_turtle6";

@@ -135,7 +135,7 @@ public:
     u8 scriptStep;
     u8 pad_b1[3];
     SpNpcShrunk *ownerNpc;
-    u8 unk_b8;
+    u8 pendingEmotion;
     u8 emotionTaken[0x1e];
     u8 offeredEmotions[5];
 };
@@ -181,18 +181,18 @@ public:
     void changeAct(s32 state);
 
     u8 pad_652[2];
-    s32 unk_654;
+    s32 act;
     SpNpcShrunkTalk talk;
     u8 waitTimer;
     u8 reactionWindow;
 };
 
-struct Unk_ov088_022725d4_Ent {
+struct SpNpcShrunkTalkScript {
     void (SpNpcShrunkTalk::*fn)();
     u8 flag;
 };
 
-struct Unk_ov088_02272144_Ent {
+struct SpNpcShrunkActEntry {
     BOOL (SpNpcShrunk::*enter)();
     BOOL (SpNpcShrunk::*exit)();
 };
@@ -229,8 +229,8 @@ extern void *data_ov088_02272568[2];
 extern void *data_ov088_02272570[2];
 extern void *data_ov088_02272578[2];
 extern void *data_ov088_02272580[2];
-extern Unk_ov088_022725d4_Ent sSpNpcShrunkTalkScripts[5];
-extern Unk_ov088_02272144_Ent sSpNpcShrunkActTable[5];
+extern SpNpcShrunkTalkScript sSpNpcShrunkTalkScripts[5];
+extern SpNpcShrunkActEntry sSpNpcShrunkActTable[5];
 extern FxVec3 sSpNpcShrunkSideStepOffsets[2];
 extern u8 sSpNpcShrunkModelPath[];
 extern u8 sSpNpcShrunkTexturePath[];
@@ -257,7 +257,7 @@ extern "C" void *data_ov088_02272548[2] = {(void *)_ZN15SpNpcShrunkTalk26scriptC
 extern "C" DebugColor data_ov088_022727ac(20, 24, 24, 31);
 extern "C" void *data_ov088_02272538[2] = {(void *)_ZN15SpNpcShrunkTalk17scriptFirstLessonEv, 0};
 
-Unk_ov088_022725d4_Ent sSpNpcShrunkTalkScripts[5] = {
+SpNpcShrunkTalkScript sSpNpcShrunkTalkScripts[5] = {
     {NULL, 0},
     {*(Unk_ov088_02272618_Fn *)data_ov088_02272538, 1},
     {*(Unk_ov088_02272618_Fn *)data_ov088_02272570, 1},
@@ -267,7 +267,7 @@ Unk_ov088_022725d4_Ent sSpNpcShrunkTalkScripts[5] = {
 
 extern "C" void *data_ov088_02272560[2] = {(void *)_ZN11SpNpcShrunk9mainAct04Ev, 0};
 
-Unk_ov088_02272144_Ent sSpNpcShrunkActTable[5] = {
+SpNpcShrunkActEntry sSpNpcShrunkActTable[5] = {
     {*(Unk_ov088_022726ac_Fn *)data_ov088_02272568, *(Unk_ov088_022726ac_Fn *)data_ov088_02272578},
     {NULL, *(Unk_ov088_022726ac_Fn *)data_ov088_02272540},
     {*(Unk_ov088_022726ac_Fn *)data_ov088_02272520, *(Unk_ov088_022726ac_Fn *)data_ov088_02272528},
@@ -318,8 +318,8 @@ u8 *SpNpcShrunk::getModelPath() { return sSpNpcShrunkModelPath; }
 
 BOOL SpNpcShrunk::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcShrunkActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcShrunkActTable[unk_654].exit)();
+    if (sSpNpcShrunkActTable[act].exit != NULL) {
+        result = (this->*sSpNpcShrunkActTable[act].exit)();
     }
     return result;
 }
@@ -330,7 +330,7 @@ void SpNpcShrunk::changeAct(s32 state) {
         ok = (this->*sSpNpcShrunkActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -698,12 +698,12 @@ void SpNpcShrunkTalk::scriptFirstLesson() {
 }
 
 void SpNpcShrunkTalk::scriptOpenEmotionChoice() {
-    if (unk_b8 == 0x17) {
+    if (pendingEmotion == 0x17) {
         openEmotionPage(0);
     } else {
         openEmotionPage(1);
     }
-    unk_b8 = 0xff;
+    pendingEmotion = 0xff;
     setScript(0);
 }
 
@@ -728,7 +728,7 @@ void SpNpcShrunkTalk::scriptCheckTriggerReaction() {
                 b[0] = 0x1a;
             }
         }
-        b[1] = unk_b8;
+        b[1] = pendingEmotion;
         _ZN15TalkWindowState17setSlotFromStringEiii(window, 0, &b[1], (void *)"st_learn");
         ownerNpc->reactionWindow = 0;
         ownerNpc->waitTimer = 0x14;
@@ -783,13 +783,13 @@ void SpNpcShrunkTalk::onMessageEnd(u32) {
         break;
     case 0x17:
     case 0x18:
-        unk_b8 = msgIndex;
+        pendingEmotion = msgIndex;
         setScript(2);
         break;
     case 0x19: {
         s32 r = Emotion_FindFreeSlot();
         if (r != -1) {
-            ownerNpc->teachEmotion(r, unk_b8);
+            ownerNpc->teachEmotion(r, pendingEmotion);
         }
         break;
     }
@@ -811,7 +811,7 @@ void SpNpcShrunkTalk::onChoice(u32) {
     case 0x18: {
         u8 v = *(u8 *)((u8 *)this + t + 0xd7);
         msg = (u8)(v + 0x1c);
-        unk_b8 = v;
+        pendingEmotion = v;
         break;
     }
     case 0x1a:
@@ -820,8 +820,8 @@ void SpNpcShrunkTalk::onChoice(u32) {
         } else {
             b[0] = Emotion_GetSlot(t);
             _ZN15TalkWindowState17setSlotFromStringEiii(window, 1, &b[0], (void *)"st_learn");
-            ownerNpc->teachEmotion(t, unk_b8);
-            b[1] = unk_b8;
+            ownerNpc->teachEmotion(t, pendingEmotion);
+            b[1] = pendingEmotion;
             _ZN15TalkWindowState17setSlotFromStringEiii(window, 0, &b[1], (void *)"st_learn");
             msg = 0x1c;
         }

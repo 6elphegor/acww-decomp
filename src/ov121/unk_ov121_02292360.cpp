@@ -235,9 +235,9 @@ extern const u8 sDesignTabSlotX[];
 extern const u8 sDesignTabPopupChoices[][0xb];
 extern u16 sDesignItemBase[];
 struct Unk_ov121_02294c80 {
-    u32 unk_00;
+    u32 attr01;
     u16 attr2;
-    u16 unk_06;
+    u16 attr3;
 };
 extern Unk_ov121_02294c80 sDesignTabIconCell;
 extern u32 sDesignTabTargetFrameCells[];

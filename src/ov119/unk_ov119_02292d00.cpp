@@ -174,9 +174,9 @@ extern u32 data_ov119_02295778[12];
 extern u32 data_ov119_022957a8[12];
 extern u32 data_ov119_022957d8[24];
 struct Unk_ov119_02295588 {
-    u32 unk_00;
+    u32 attr01;
     u16 attr2;
-    u16 unk_06;
+    u16 attr3;
 };
 extern Unk_ov119_02295588 data_ov119_02295588;
 }
@@ -199,21 +199,6 @@ struct PopupChoiceIdList;
 
 
 // stack helper objects (ctor/dtor are plain calls into main)
-struct Unk_ov119_A {
-    u32 pad[7];
-    Unk_ov119_A() { _ZN11MsgString9CC2Ev(this); }
-    ~Unk_ov119_A() { _ZN11MsgString9CD1Ev(this); }
-};
-struct Unk_ov119_B {
-    u32 pad[7];
-    Unk_ov119_B() { _ZN11MsgString9BC1Ev(this); }
-    ~Unk_ov119_B() { _ZN11MsgString9BD1Ev(this); }
-};
-struct Unk_ov119_C {
-    u32 pad[6];
-    Unk_ov119_C() { _ZN15EncodedString8BC2Ev(this); }
-    ~Unk_ov119_C() { _ZN15EncodedString8BD1Ev(this); }
-};
 
 class FriendRosterTab;
 typedef void (FriendRosterTab::*Unk_ov119_02295840_Fn)();
@@ -381,7 +366,7 @@ public:
     void stateOpening();
     void stateOpen();
     void stateLoad();
-    void func_ov119_02294fa8();
+    void hideTabBar();
     BOOL requestTab(s32 idx);
     BOOL handleTabSwitch();
     void runMainState();
@@ -649,7 +634,7 @@ BOOL FriendRosterTab::requestTab(s32 idx) {
     return FALSE;
 }
 
-void FriendRosterTab::func_ov119_02294fa8() {
+void FriendRosterTab::hideTabBar() {
     MenuTabBar_hideTabs(ProcBase_GetParent(this));
 }
 
@@ -1349,7 +1334,7 @@ void FriendRosterTab::openFriendEditor(s32 x)
 {
     MenuCtrl_SetIndex((u8)getFocusedFriendIndex());
     requestTab(x);
-    func_ov119_02294fa8();
+    hideTabBar();
 }
 
 void FriendRosterTab::useCodeEntry()
@@ -1361,7 +1346,7 @@ void FriendRosterTab::useCodeEntry()
         FriendEntry_Clear((u8 *)getFriendEntries() + i * 0x1c);
         MenuCtrl_SetIndex((u8)i);
         requestTab(0xe);
-        func_ov119_02294fa8();
+        hideTabBar();
     }
 }
 

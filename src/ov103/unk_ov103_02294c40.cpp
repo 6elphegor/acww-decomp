@@ -140,7 +140,7 @@ public:
     void beginSwapAt(u32 v);
     void beginPutDownAt(u32 v);
     void beginMoveFromPopup();
-    void func_ov103_02295120();
+    void releaseCursor();
     void refreshCursor();
     void showCursorAtSlot();
     void cursorToPopupTop();
@@ -726,7 +726,7 @@ void PocketLettersMenu::mainAct0B() {
 
 void PocketLettersMenu::mainAct0C() {
     if (cursor.isAnimDone()) {
-        func_ov103_02295120();
+        releaseCursor();
     }
 }
 
@@ -951,7 +951,7 @@ BOOL PocketLettersMenu::dropHeldOnSlot(u32 a) {
 
 void PocketLettersMenu::putLetterInSlot(u32 a, void *b) {
     if (isLetterSlot(a)) {
-        letterGrid.func_ov094_02294318(toLetterIndex(a), (s32)b);
+        letterGrid.setLetter(toLetterIndex(a), (s32)b);
     }
 }
 
@@ -1177,7 +1177,7 @@ void PocketLettersMenu::refreshCursor() {
     cursor.update();
 }
 
-void PocketLettersMenu::func_ov103_02295120() {
+void PocketLettersMenu::releaseCursor() {
     cursor.setPoseRelease();
     setMainState(0xd);
 }

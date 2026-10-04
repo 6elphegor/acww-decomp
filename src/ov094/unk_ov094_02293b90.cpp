@@ -487,7 +487,7 @@ void *LetterGrid::getLetter(s32 i) {
     return 0;
 }
 
-void LetterGrid::func_ov094_02294318(s32 i, s32 x) {
+void LetterGrid::setLetter(s32 i, s32 x) {
     Letter_Copy(getLetter(i), x);
     LetterGrid_SetBit((u32 *)&occupiedBits, i);
 }

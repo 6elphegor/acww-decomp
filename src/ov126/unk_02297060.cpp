@@ -77,9 +77,9 @@
 #define GeneralMenuHeader_resetFrame _ZN17GeneralMenuHeader10resetFrameEv
 #define FishBookTab_moveCursorTo _ZN11FishBookTab12moveCursorToEii
 #define GeneralMenuHeader_drawWithIcon _ZN17GeneralMenuHeader12drawWithIconEii
-#define func_ov124_02296c7c _ZN17GeneralMenuHeader19func_ov124_02296c7cEhhjj
+#define GeneralMenuHeader_setTitleHighlight _ZN17GeneralMenuHeader17setTitleHighlightEhhjj
 #define GeneralMenuHeader_setTitleText _ZN17GeneralMenuHeader12setTitleTextEPvi
-#define func_ov124_02296c98 _ZN17GeneralMenuHeader19func_ov124_02296c98Ev
+#define GeneralMenuHeader_redrawTitle _ZN17GeneralMenuHeader11redrawTitleEv
 #define GeneralMenuHeader_placeTitleText _ZN17GeneralMenuHeader14placeTitleTextEv
 #define GeneralMenuHeader_loadBgGfxForStyle _ZN17GeneralMenuHeader17loadBgGfxForStyleEi
 
@@ -210,10 +210,10 @@ s32 MenuKeys_HasRight(void *p);
 s32 MenuKeys_HasDown(void *p);
 
 // ov124 / ov111 / ov115 / ov090 / ov092
-void func_ov124_02296c7c(void *p, s32 a, s32 b, s32 c, s32 d);
+void GeneralMenuHeader_setTitleHighlight(void *p, s32 a, s32 b, s32 c, s32 d);
 void GeneralMenuHeader_setTitleText(void *p, void *q, u32 v);
 void GeneralMenuHeader_placeTitleText(void *p);
-void func_ov124_02296c98(void *p);
+void GeneralMenuHeader_redrawTitle(void *p);
 s32 GeneralMenuHeader_GetStyle(void *p);
 void GeneralMenuHeader_loadBgGfxForStyle(void *p, s32 a);
 void GeneralMenuHeader_drawWithIcon(void *p, s32 a, void *b);
@@ -335,7 +335,7 @@ public:
     void storeFriendField2();
     void storeFriendField1();
     void storeStatsPatternName();
-    void func_ov126_02297328();
+    void storeConstellationName();
     s32 storeTownName();
     void storePlayerName();
     void checkPasswordAnswer();
@@ -346,7 +346,7 @@ public:
     void loadFriendField2();
     void loadFriendField1();
     u8 * getFriendEntry();
-    void func_ov126_0229763c();
+    void loadConstellationName();
     void loadDesignName();
     BOOL tryStartConfirm();
     BOOL tryCopyButton();
@@ -1629,7 +1629,7 @@ void NameEntryMenu::redrawText() {
     }
     GeneralMenuHeader_placeTitleText(&header);
     highlightSelection();
-    func_ov124_02296c98(&header);
+    GeneralMenuHeader_redrawTitle(&header);
     setFlags(0x10);
     refreshKeys();
 }
@@ -1657,7 +1657,7 @@ void NameEntryMenu::highlightSelection() {
         r2 = 1;
     }
     if (r0 != 0) {
-        func_ov124_02296c7c(&header, r1, r2, r4, r0);
+        GeneralMenuHeader_setTitleHighlight(&header, r1, r2, r4, r0);
     }
 }
 
@@ -1826,7 +1826,7 @@ void NameEntryMenu::loadDesignName() {
     Mem_Copy(buf, text, 0x10);
 }
 
-void NameEntryMenu::func_ov126_0229763c() {
+void NameEntryMenu::loadConstellationName() {
     Constellation_CopyName(text, MenuCtrl_GetIndex());
 }
 
@@ -1855,7 +1855,7 @@ void NameEntryMenu::loadInitialText() {
         Mem_Copy(MenuCtrl_GetText(), text, maxLength);
         break;
     case 0xb: loadDesignName(); break;
-    case 0x12: func_ov126_0229763c(); break;
+    case 0x12: loadConstellationName(); break;
     case 0x18:
     case 0x19: loadFriendField1(); break;
     case 0x1a:
@@ -1926,7 +1926,7 @@ s32 NameEntryMenu::storeTownName() {
     return TownId_InitWithName(gSaveTownId, text);
 }
 
-void NameEntryMenu::func_ov126_02297328() {
+void NameEntryMenu::storeConstellationName() {
     s32 t = MenuCtrl_GetIndex();
     if (Constellation_IsNameTaken(text, t)) {
         MenuCtrl_SetResult(0);
@@ -1962,7 +1962,7 @@ void NameEntryMenu::commitEntry() {
     case 0xf: storePlayerName(); break;
     case 0x10: storeTownName(); break;
     case 0x11: break;
-    case 0x12: func_ov126_02297328(); break;
+    case 0x12: storeConstellationName(); break;
     case 0x13: break;
     case 0x14: storeStatsPatternName(); break;
     case 0x15: break;

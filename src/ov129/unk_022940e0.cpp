@@ -167,12 +167,6 @@ static inline BOOL Unk_ov129_02295000_Both() {
 
 
 
-struct Unk_ov129_0229497c_Save {
-    u8 unk_00[0x16];
-    u8 unk_16[16];
-    u16 lines[16];
-};
-
 
 class ConstellationEditorMenu;
 typedef void (ConstellationEditorMenu::*Unk_ov129_022965f8_Fn)();
@@ -196,28 +190,28 @@ public:
     void setFlags(u32 mask);
     BOOL testFlags(u32 mask);
     s32 tapStar();
-    s32 func_ov129_0229421c();
-    s32 func_ov129_022942d0();
-    void func_ov129_02294360();
-    s32 func_ov129_02294398();
-    s32 func_ov129_022943ec();
-    u32 func_ov129_02294598(u32 id, u32 val);
-    s32 func_ov129_022945f4(u32 id);
-    BOOL func_ov129_02294664(u32 id);
-    s32 func_ov129_022946b0(u32 v);
-    s32 func_ov129_022946dc();
-    BOOL func_ov129_0229470c(s32 x, s32 y);
-    void func_ov129_022947c4(u32 id);
-    void func_ov129_02294818(u32 a, u32 b);
-    BOOL func_ov129_0229483c(u32 a, u32 b);
-    void func_ov129_022948a4(BOOL flag);
+    s32 tapNextStar();
+    s32 tapSecondStar();
+    void advanceEndStar();
+    s32 tapFirstStar();
+    s32 removeCursorLine();
+    u32 findLineBetween(u32 id, u32 val);
+    s32 checkStartStar(u32 id);
+    BOOL touchesOwnLine(u32 id);
+    s32 findLineSlot(u32 v);
+    s32 findFreeLineSlot();
+    BOOL pickAt(s32 x, s32 y);
+    void markCandidatesAround(u32 id);
+    void markCandidateLine(u32 a, u32 b);
+    BOOL touchesOtherConstellation(u32 a, u32 b);
+    void refreshLineStates(BOOL flag);
     void updateAllStarSprites();
     void updateStarSprite(s32 i);
-    void func_ov129_02294914();
-    s32 func_ov129_02294948();
-    void func_ov129_0229497c();
-    void func_ov129_02294a50();
-    void func_ov129_02294aa4();
+    void markEndCandidates();
+    s32 markOwnLines();
+    void loadConstellation();
+    void markOtherConstellations();
+    void clearOwnLineStates();
     void clearStarStates();
     void updateTappedStarFlash();
     void flashTappedStar();
@@ -233,8 +227,8 @@ public:
     s32 getCursorTargetY();
     s32 getCursorTargetX();
     void showCursor();
-    BOOL func_ov129_02294edc();
-    BOOL func_ov129_02294f04();
+    BOOL usesButtonCursor();
+    BOOL usesPointerCursor();
     BOOL moveCursorByPad(s32 k);
     void openMessage(u32 v);
     void rejectConfirmation();
@@ -267,9 +261,9 @@ public:
     void preInputUpdate();
     void releaseResources();
     void initMembers();
-    void func_ov129_02295d18();
-    void func_ov129_02295d38();
-    void func_ov129_02295d98();
+    void enterDialogInput();
+    void enterDialogButtons();
+    void enterDialogTouch();
     void transitionAct0B();
     void transitionAct0A();
     void transitionAct09();
@@ -487,7 +481,7 @@ void ConstellationEditorMenu::transitionAct01() {
         setPhase(2);
         resumeInput();
         setFlags(0x10);
-        func_ov129_022948a4(1);
+        refreshLineStates(1);
         Gfx2d_DisableSubWindows(2);
     } else {
         updateSlideWindow();
@@ -564,7 +558,7 @@ void ConstellationEditorMenu::transitionAct06() {
 void ConstellationEditorMenu::transitionAct07() {
     if (stepSlideIn(0)) {
         setPhase(2);
-        func_ov129_02295d18();
+        enterDialogInput();
     }
     buttonsSlideY = getSlideOffsetY();
 }
@@ -598,18 +592,18 @@ void ConstellationEditorMenu::transitionAct0B() {
         setPhase(2);
         resumeInput();
         setFlags(0x10);
-        func_ov129_022948a4(1);
+        refreshLineStates(1);
     }
     buttonsSlideY = getSlideOffsetY();
     arrowsSlideY = getSlideOffsetY();
 }
 
-void ConstellationEditorMenu::func_ov129_02295d98() {
+void ConstellationEditorMenu::enterDialogTouch() {
     hideCursor();
     setMainState(0xb);
 }
 
-void ConstellationEditorMenu::func_ov129_02295d38() {
+void ConstellationEditorMenu::enterDialogButtons() {
     restartKeyRepeat();
     confirmChoice = 1;
     ((MenuCursor *)&cursor)->setAnimIfChanged(1);
@@ -619,11 +613,11 @@ void ConstellationEditorMenu::func_ov129_02295d38() {
     setMainState(0xc);
 }
 
-void ConstellationEditorMenu::func_ov129_02295d18() {
+void ConstellationEditorMenu::enterDialogInput() {
     if (MenuCtrl_IsTouch()) {
-        func_ov129_02295d98();
+        enterDialogTouch();
     } else {
-        func_ov129_02295d38();
+        enterDialogButtons();
     }
 }
 
@@ -637,11 +631,11 @@ void ConstellationEditorMenu::initMembers() {
     flashLine = 0xffff;
     flashTimer = 0;
     clearStarStates();
-    func_ov129_02294a50();
+    markOtherConstellations();
     cursorStar = 0xff;
     cursorLine = 0xffff;
     endStar = 0xff;
-    func_ov129_0229497c();
+    loadConstellation();
     PlayerActor_LocalRequestAct12();
     BgmTracks_FadeOutScene22(data_021c1b3c + 0x2f0);
 }
@@ -724,7 +718,7 @@ void ConstellationEditorMenu::mainAct00() {
             startQuit();
             clearTappedStar();
         } else {
-            if (func_ov129_0229470c(a, b)) {
+            if (pickAt(a, b)) {
                 switch (tapStar()) {
                 case 1:
                     return;
@@ -897,7 +891,7 @@ void ConstellationEditorMenu::updateCursorMove() {
 void ConstellationEditorMenu::updateCursorPress() {
     if (cursor.isAnimDone()) {
         if (testFlags(2)) {
-            if (func_ov129_0229470c(pointerX, pointerY)) {
+            if (pickAt(pointerX, pointerY)) {
                 if (tapStar() == 3) return;
             }
             updateHoverStar();
@@ -953,7 +947,7 @@ void ConstellationEditorMenu::mainAct0A() {
 
 void ConstellationEditorMenu::mainAct0B() {
     if (checkSwitchToButtons(1)) {
-        func_ov129_02295d38();
+        enterDialogButtons();
     } else if (Unk_ov129_02295000_Both()) {
         if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(3)) {
             acceptConfirmation();
@@ -965,7 +959,7 @@ void ConstellationEditorMenu::mainAct0B() {
 
 void ConstellationEditorMenu::mainAct0C() {
     if (checkSwitchToTouch()) {
-        func_ov129_02295d98();
+        enterDialogTouch();
         return;
     }
     u32 keys = gPad[1];
@@ -1055,7 +1049,7 @@ void ConstellationEditorMenu::startFinish() {
     setTransitionState(4);
     setMainState(0xa);
     clearFlags(0x10);
-    func_ov129_022948a4(0);
+    refreshLineStates(0);
     Constellation_CalcCentre(lines, &a, &b);
     a = a & 0xfffc;
     b = b & 0xfffc;
@@ -1137,7 +1131,7 @@ BOOL ConstellationEditorMenu::moveCursorByPad(s32 k) {
     return old != cursorTarget ? TRUE : FALSE;
 }
 
-BOOL ConstellationEditorMenu::func_ov129_02294f04() {
+BOOL ConstellationEditorMenu::usesPointerCursor() {
     if (testFlags(2)) {
         return TRUE;
     }
@@ -1147,7 +1141,7 @@ BOOL ConstellationEditorMenu::func_ov129_02294f04() {
     return TRUE;
 }
 
-BOOL ConstellationEditorMenu::func_ov129_02294edc() {
+BOOL ConstellationEditorMenu::usesButtonCursor() {
     if (testFlags(2)) {
         return FALSE;
     }
@@ -1161,9 +1155,9 @@ void ConstellationEditorMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
     cursor.warpTo(a, b);
-    if (func_ov129_02294f04()) {
+    if (usesPointerCursor()) {
         ((MenuCursor *)&cursor)->setAnimIfChanged(1);
-    } else if (func_ov129_02294edc()) {
+    } else if (usesButtonCursor()) {
         ((MenuCursor *)&cursor)->setAnimIfChanged(7);
     } else {
         ((MenuCursor *)&cursor)->setAnimIfChanged(0xd);
@@ -1205,9 +1199,9 @@ void ConstellationEditorMenu::hideCursor() {
 }
 
 void ConstellationEditorMenu::moveCursorToTarget() {
-    if (func_ov129_02294f04()) {
+    if (usesPointerCursor()) {
         ((MenuCursor *)&cursor)->switchToAnim01();
-    } else if (func_ov129_02294edc()) {
+    } else if (usesButtonCursor()) {
         ((MenuCursor *)&cursor)->switchToAnim07();
     } else {
         ((MenuCursor *)&cursor)->switchToAnim0D();
@@ -1248,18 +1242,18 @@ void ConstellationEditorMenu::clearHoverStar() {
 
 void ConstellationEditorMenu::updateHoverStar() {
     u32 r4;
-    if (func_ov129_0229470c(pointerX, pointerY)) {
+    if (pickAt(pointerX, pointerY)) {
         if (cursorStar != 0xff && endStar != 0xff && cursorStar != endStar) {
             switch (editMode) {
             case 1:
             case 2: {
-                u32 x = func_ov129_02294598(endStar, cursorStar);
+                u32 x = findLineBetween(endStar, cursorStar);
                 if (x != 0xffff && lineStates[x] == 3) {
                     cursorLine = x;
                     goto done;
                 }
                 if (editMode == 2) {
-                    if (func_ov129_02294664(cursorStar)) {
+                    if (touchesOwnLine(cursorStar)) {
                         cursorLine = 0xffff;
                     }
                 }
@@ -1326,7 +1320,7 @@ void ConstellationEditorMenu::clearStarStates() {
     }
 }
 
-void ConstellationEditorMenu::func_ov129_02294aa4() {
+void ConstellationEditorMenu::clearOwnLineStates() {
     s32 i;
     u8 *p = lineStates;
     for (i = 0; i < 0x1c6; p++, i++) {
@@ -1336,7 +1330,7 @@ void ConstellationEditorMenu::func_ov129_02294aa4() {
     }
 }
 
-void ConstellationEditorMenu::func_ov129_02294a50() {
+void ConstellationEditorMenu::markOtherConstellations() {
     s32 n = MenuCtrl_GetIndex();
     s32 i = 0;
     do {
@@ -1356,8 +1350,8 @@ void ConstellationEditorMenu::func_ov129_02294a50() {
     } while (i < 16);
 }
 
-void ConstellationEditorMenu::func_ov129_0229497c() {
-    Unk_ov129_0229497c_Save *t = (Unk_ov129_0229497c_Save *)Constellation_GetRecord(MenuCtrl_GetIndex());
+void ConstellationEditorMenu::loadConstellation() {
+    ConstellationRecord *t = (ConstellationRecord *)Constellation_GetRecord(MenuCtrl_GetIndex());
     s32 i;
     u16 *p = lines;
     u32 first = 0xffff;
@@ -1377,7 +1371,7 @@ void ConstellationEditorMenu::func_ov129_0229497c() {
         y = (y + 4) & 0xfffc;
         StarSky_SetScroll(&skyView, x, y);
         for (i = 0; i < 16; i++) {
-            constellationName[i] = t->unk_16[i];
+            constellationName[i] = t->name[i];
         }
     } else {
         for (i = 0; i < 16; p++, i++) {
@@ -1389,10 +1383,10 @@ void ConstellationEditorMenu::func_ov129_0229497c() {
         }
         editMode = z;
     }
-    func_ov129_02294948();
+    markOwnLines();
 }
 
-s32 ConstellationEditorMenu::func_ov129_02294948() {
+s32 ConstellationEditorMenu::markOwnLines() {
     s32 i;
     u16 *p = lines;
     for (i = 0; i < 16; p++, i++) {
@@ -1402,15 +1396,15 @@ s32 ConstellationEditorMenu::func_ov129_02294948() {
     }
 }
 
-void ConstellationEditorMenu::func_ov129_02294914() {
+void ConstellationEditorMenu::markEndCandidates() {
     switch (editMode) {
     case 0:
         break;
     case 1:
-        func_ov129_022947c4(firstStar);
+        markCandidatesAround(firstStar);
         break;
     case 2:
-        func_ov129_022947c4(endStar);
+        markCandidatesAround(endStar);
         break;
     }
 }
@@ -1426,16 +1420,16 @@ void ConstellationEditorMenu::updateAllStarSprites() {
     }
 }
 
-void ConstellationEditorMenu::func_ov129_022948a4(BOOL flag) {
-    func_ov129_02294aa4();
-    func_ov129_02294948();
+void ConstellationEditorMenu::refreshLineStates(BOOL flag) {
+    clearOwnLineStates();
+    markOwnLines();
     if (flag) {
-        func_ov129_02294914();
+        markEndCandidates();
     }
     updateAllStarSprites();
 }
 
-BOOL ConstellationEditorMenu::func_ov129_0229483c(u32 a, u32 b) {
+BOOL ConstellationEditorMenu::touchesOtherConstellation(u32 a, u32 b) {
     u8 *q = StarSky_GetLineStars(a);
     s32 i;
     for (i = 0; i < 2; i++) {
@@ -1456,30 +1450,30 @@ BOOL ConstellationEditorMenu::func_ov129_0229483c(u32 a, u32 b) {
     return FALSE;
 }
 
-void ConstellationEditorMenu::func_ov129_02294818(u32 a, u32 b) {
+void ConstellationEditorMenu::markCandidateLine(u32 a, u32 b) {
     if (lineStates[a] == 0) {
-        if (func_ov129_0229483c(a, b) == 0) {
+        if (touchesOtherConstellation(a, b) == 0) {
             lineStates[a] = 3;
         }
     }
 }
 
-void ConstellationEditorMenu::func_ov129_022947c4(u32 id) {
+void ConstellationEditorMenu::markCandidatesAround(u32 id) {
     if (id != 0xff) {
-        if (func_ov129_022946dc() != -1) {
+        if (findFreeLineSlot() != -1) {
             u32 x = StarSky_GetStarX(id);
             u32 y = StarSky_GetStarY(id);
             u16 nb[8];
             s32 n = StarSky_GetLinesAround(nb, x, y);
             s32 i;
             for (i = 0; i < n; i++) {
-                func_ov129_02294818(nb[i], id);
+                markCandidateLine(nb[i], id);
             }
         }
     }
 }
 
-BOOL ConstellationEditorMenu::func_ov129_0229470c(s32 x, s32 y) {
+BOOL ConstellationEditorMenu::pickAt(s32 x, s32 y) {
     cursorStar = 0xff;
     cursorLine = 0xffff;
     s32 z1 = 0;
@@ -1508,7 +1502,7 @@ BOOL ConstellationEditorMenu::func_ov129_0229470c(s32 x, s32 y) {
     return FALSE;
 }
 
-s32 ConstellationEditorMenu::func_ov129_022946dc() {
+s32 ConstellationEditorMenu::findFreeLineSlot() {
     s32 i;
     for (i = 0; i < 16; i++) {
         if (lines[i] == 0xffff) {
@@ -1518,7 +1512,7 @@ s32 ConstellationEditorMenu::func_ov129_022946dc() {
     return -1;
 }
 
-s32 ConstellationEditorMenu::func_ov129_022946b0(u32 v) {
+s32 ConstellationEditorMenu::findLineSlot(u32 v) {
     s32 i;
     for (i = 0; i < 16; i++) {
         if (v == lines[i]) {
@@ -1528,7 +1522,7 @@ s32 ConstellationEditorMenu::func_ov129_022946b0(u32 v) {
     return -1;
 }
 
-BOOL ConstellationEditorMenu::func_ov129_02294664(u32 id) {
+BOOL ConstellationEditorMenu::touchesOwnLine(u32 id) {
     u32 x = StarSky_GetStarX(id);
     u32 y = StarSky_GetStarY(id);
     u16 nb[8];
@@ -1542,7 +1536,7 @@ BOOL ConstellationEditorMenu::func_ov129_02294664(u32 id) {
     return FALSE;
 }
 
-s32 ConstellationEditorMenu::func_ov129_022945f4(u32 id) {
+s32 ConstellationEditorMenu::checkStartStar(u32 id) {
     u32 x = StarSky_GetStarX(id);
     u32 y = StarSky_GetStarY(id);
     u16 nb[8];
@@ -1554,14 +1548,14 @@ s32 ConstellationEditorMenu::func_ov129_022945f4(u32 id) {
         }
     }
     for (i = 0; i < n; i++) {
-        if (func_ov129_0229483c(nb[i], id) == 0) {
+        if (touchesOtherConstellation(nb[i], id) == 0) {
             return 1;
         }
     }
     return 3;
 }
 
-u32 ConstellationEditorMenu::func_ov129_02294598(u32 id, u32 val) {
+u32 ConstellationEditorMenu::findLineBetween(u32 id, u32 val) {
     u32 x = StarSky_GetStarX(id);
     u32 y = StarSky_GetStarY(id);
     u16 nb[8];
@@ -1579,12 +1573,12 @@ u32 ConstellationEditorMenu::func_ov129_02294598(u32 id, u32 val) {
     return 0xffff;
 }
 
-s32 ConstellationEditorMenu::func_ov129_022943ec() {
+s32 ConstellationEditorMenu::removeCursorLine() {
     volatile u8 *q;
     u8 *pi;
     u16 *slot;
     s32 n;
-    s32 idx = func_ov129_022946b0(cursorLine);
+    s32 idx = findLineSlot(cursorLine);
     if (idx == -1) {
         return 0;
     }
@@ -1627,7 +1621,7 @@ s32 ConstellationEditorMenu::func_ov129_022943ec() {
                     n = StarSky_GetLinesAround(nb, x, y);
                     s32 m;
                     for (m = 0; m < n; m++) {
-                        s32 t = func_ov129_022946b0(nb[m]);
+                        s32 t = findLineSlot(nb[m]);
                         if (t != -1 && st[t] == 0) {
                             st[t] = 1;
                         }
@@ -1659,7 +1653,7 @@ s32 ConstellationEditorMenu::func_ov129_022943ec() {
     }
     if (r != 0xff) {
         lineStates[cursorLine] = 0;
-        if (func_ov129_02294664(endStar) == 0) {
+        if (touchesOwnLine(endStar) == 0) {
             endStar = r;
         }
     }
@@ -1667,10 +1661,10 @@ s32 ConstellationEditorMenu::func_ov129_022943ec() {
     return 2;
 }
 
-s32 ConstellationEditorMenu::func_ov129_02294398() {
+s32 ConstellationEditorMenu::tapFirstStar() {
     s32 r = 0;
     if (cursorStar != 0xff) {
-        r = func_ov129_022945f4(cursorStar);
+        r = checkStartStar(cursorStar);
         if (r != 1) {
             if (r == 3) {
                 openMessage(0x16);
@@ -1684,7 +1678,7 @@ s32 ConstellationEditorMenu::func_ov129_02294398() {
     return r;
 }
 
-void ConstellationEditorMenu::func_ov129_02294360() {
+void ConstellationEditorMenu::advanceEndStar() {
     Snd_PlaySe(0x881);
     u8 *q = StarSky_GetLineStars(cursorLine);
     u32 c = q[0];
@@ -1695,15 +1689,15 @@ void ConstellationEditorMenu::func_ov129_02294360() {
     }
 }
 
-s32 ConstellationEditorMenu::func_ov129_022942d0() {
+s32 ConstellationEditorMenu::tapSecondStar() {
     u32 a = cursorStar;
     u32 b = firstStar;
     if (b != a) {
-        u32 t = func_ov129_02294598(b, a);
+        u32 t = findLineBetween(b, a);
         if (t != 0xffff && lineStates[t] == 3) {
             cursorLine = t;
         } else {
-            s32 r = func_ov129_02294398();
+            s32 r = tapFirstStar();
             if (r != 0) {
                 return r;
             }
@@ -1714,13 +1708,13 @@ s32 ConstellationEditorMenu::func_ov129_022942d0() {
         editMode = 2;
         lines[0] = cursorLine;
         ((MenuBottomButtonsBody *)&bottomButtons)->enableButton(6);
-        func_ov129_02294360();
+        advanceEndStar();
         return 2;
     }
     return 0;
 }
 
-s32 ConstellationEditorMenu::func_ov129_0229421c() {
+s32 ConstellationEditorMenu::tapNextStar() {
     u32 a = cursorStar;
     if (a != 0xff) {
         u32 b = endStar;
@@ -1729,10 +1723,10 @@ s32 ConstellationEditorMenu::func_ov129_0229421c() {
                 endStar = a;
                 return 1;
             }
-            u32 t = func_ov129_02294598(b, a);
+            u32 t = findLineBetween(b, a);
             if (t != 0xffff && lineStates[t] == 3) {
                 cursorLine = t;
-            } else if (func_ov129_02294664(cursorStar)) {
+            } else if (touchesOwnLine(cursorStar)) {
                 endStar = cursorStar;
                 return 1;
             }
@@ -1743,13 +1737,13 @@ s32 ConstellationEditorMenu::func_ov129_0229421c() {
         u32 s = lineStates[cur];
         if (s != 2) {
             if (s == 3) {
-                s32 i = func_ov129_022946dc();
+                s32 i = findFreeLineSlot();
                 lines[i] = cursorLine;
-                func_ov129_02294360();
+                advanceEndStar();
                 return 2;
             }
         } else {
-            return func_ov129_022943ec();
+            return removeCursorLine();
         }
     }
     return 0;
@@ -1759,13 +1753,13 @@ s32 ConstellationEditorMenu::tapStar() {
     s32 r = 0;
     switch (editMode) {
     case 0:
-        r = func_ov129_02294398();
+        r = tapFirstStar();
         break;
     case 1:
-        r = func_ov129_022942d0();
+        r = tapSecondStar();
         break;
     case 2:
-        r = func_ov129_0229421c();
+        r = tapNextStar();
         break;
     }
     if (r == 1) {
@@ -1776,7 +1770,7 @@ s32 ConstellationEditorMenu::tapStar() {
     }
     if (r == 2) {
     upd:
-        func_ov129_022948a4(TRUE);
+        refreshLineStates(TRUE);
     }
     return r;
 }

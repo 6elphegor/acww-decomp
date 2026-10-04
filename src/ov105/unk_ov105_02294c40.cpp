@@ -242,7 +242,7 @@ public:
     void beginSwapAt(u32 b);
     void beginPutDownAt(u32 b);
     void beginMoveFromPopup();
-    void func_ov105_02295814();
+    void releaseCursor();
     void pressCloseButton();
     void refreshCursor();
     void showCursorAtSlot();
@@ -1222,13 +1222,13 @@ void LetterStorageMenu::mainAct0E() {
         } else if (s->isPageTabSlot(s->cursorSlot)) {
             s32 v = s->cursorSlot - 0x3e;
             if (v == s->currentPage) {
-                s->func_ov105_02295814();
+                s->releaseCursor();
             } else {
                 s->currentPage = v;
                 s->startPageSwitch();
             }
         } else {
-            s->func_ov105_02295814();
+            s->releaseCursor();
         }
     }
 }
@@ -1695,7 +1695,7 @@ BOOL LetterStorageMenu::dropHeldOnSlot(u32 a) {
 
 void LetterStorageMenu::putLetterInSlot(u32 a, void *c) {
     if (isLetterSlot(a) || isStorageSlot(a)) {
-        letterGrid.func_ov094_02294318(toLetterGridIndex(a), (s32)c);
+        letterGrid.setLetter(toLetterGridIndex(a), (s32)c);
     } else if (isPageTabSlot(a)) {
         Letter_Copy(&storageLetters[(heldOriginSlot - 0x24) + heldOriginPage * 0x19], c);
     }
@@ -1989,7 +1989,7 @@ void LetterStorageMenu::pressCloseButton() {
     s->setMainState(0xe);
 }
 
-void LetterStorageMenu::func_ov105_02295814() {
+void LetterStorageMenu::releaseCursor() {
     S *s = this;
     s->cursor.setPoseRelease();
     s->setMainState(0xf);

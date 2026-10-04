@@ -294,7 +294,7 @@ public:
     void beginSwapAt(u32 v);
     void beginPutDownAt(u32 v);
     void beginMoveFromPopup();
-    void func_ov106_022954b4();
+    void releaseCursor();
     void pressCloseButton();
     void refreshCursor();
     void showCursorAtSlot();
@@ -1082,7 +1082,7 @@ void MailboxMenu::mainAct0E() {
         if (cursorSlot == 0x1f) {
             pressCloseTab();
         } else {
-            func_ov106_022954b4();
+            releaseCursor();
         }
     }
 }
@@ -1609,7 +1609,7 @@ BOOL MailboxMenu::dropHeldOnSlot(u32 a) {
 
 void MailboxMenu::putLetterInSlot(u32 a, void *p) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
-        ((LetterGrid *)&letterGrid)->func_ov094_02294318(toLetterGridIndex(a), (s32)p);
+        ((LetterGrid *)&letterGrid)->setLetter(toLetterGridIndex(a), (s32)p);
         if (isLetterSlot(a)) {
             registerLetterPaper(p);
         }
@@ -1873,7 +1873,7 @@ void MailboxMenu::pressCloseButton() {
     setMainState(0xe);
 }
 
-void MailboxMenu::func_ov106_022954b4() {
+void MailboxMenu::releaseCursor() {
     ((MenuCursorBase *)&cursor)->setPoseRelease();
     setMainState(0xf);
 }

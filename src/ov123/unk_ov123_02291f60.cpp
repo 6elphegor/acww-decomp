@@ -102,13 +102,13 @@ void _ZN10BgVramTask6cancelEv(void *self);
 
 
 
-struct Unk_ov123_022958c0 {
-    u16 unk_00;
+struct PatternShapeCornerCell {
+    u16 attr0;
     u16 a : 9;
     u16 b : 5;
     u16 c : 2;
-    u16 unk_04;
-    u16 unk_06;
+    u16 attr2;
+    u16 attr3;
 };
 
 struct Unk_ov123_02293010_Q {
@@ -155,7 +155,7 @@ extern u32 data_ov123_02295a24[28];
 extern u32 data_ov123_02295a94[36];
 extern u32 data_ov123_02295b24[38];
 extern u16 data_ov123_02295840[4];
-extern Unk_ov123_022958c0 data_ov123_022958c0;
+extern PatternShapeCornerCell data_ov123_022958c0;
 extern u16 *sStampBitmaps[4];
 extern void *sPatternEditorToolCursors[12];
 extern void *data_ov123_02295900[3];
@@ -453,7 +453,7 @@ extern "C" u32 data_ov123_022958b8[2] = {0x41f800f8, 0xffff4102};
 
 extern "C" void *data_ov123_02295810[2] = {(void *)_ZN17PatternEditorMenu9stateOpenEv, 0};
 
-extern "C" Unk_ov123_022958c0 data_ov123_022958c0 = {0xf8, 0x1f8, 0, 1, 0x40ca, 0xffff};
+extern "C" PatternShapeCornerCell data_ov123_022958c0 = {0xf8, 0x1f8, 0, 1, 0x40ca, 0xffff};
 
 extern "C" const u16 sStampStar[16] = {0, 0, 0, 0x0100, 0x0100, 0x0380, 0x3ff8, 0x0fe0, 0x07c0, 0x07c0, 0x0ee0, 0x0c60, 0x1010, 0, 0, 0};
 

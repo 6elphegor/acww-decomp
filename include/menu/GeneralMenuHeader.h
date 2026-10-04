@@ -17,9 +17,9 @@ public:
     void drawPlain(s32 x, s32 y);
     void loadObjGfx(s32 v);
     void loadBgGfx(s32 a, s32 b);
-    void func_ov124_02296c7c(u8 a, u8 b, u32 c, u32 d);
+    void setTitleHighlight(u8 a, u8 b, u32 c, u32 d);
     void setTitleText(void *s, s32 n);
-    void func_ov124_02296c98();
+    void redrawTitle();
     void placeTitleText();
     void loadBgGfxForStyle(s32 a);
     void loadTitleBg(s32 a, s32 b);

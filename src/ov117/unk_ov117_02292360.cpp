@@ -3,6 +3,7 @@
 #include "game/StrBSizeData.h"
 #include "npc/VillagerDataItemView.h"
 #include "room/HouseData.h"
+#include "town/TownBlockCell.h"
 
 
 
@@ -22,17 +23,13 @@ struct TownMapImage {
     TownMapImage();
 };
 
-struct Unk_ov117_02292b54_Cell {
-    u8 pad_00[0x28];
-};
-
 struct Unk_ov117_02292b54_Grid {
-    Unk_ov117_02292b54_Cell *cells;
+    TownBlockCell *cells;
     u32 w;
     u32 h;
 };
 
-static inline Unk_ov117_02292b54_Cell *Unk_ov117_02292b54_GetCell(Unk_ov117_02292b54_Grid *g, u32 x, u32 y) {
+static inline TownBlockCell *Unk_ov117_02292b54_GetCell(Unk_ov117_02292b54_Grid *g, u32 x, u32 y) {
     if (x < g->w && y < g->h && g->cells != NULL) {
         return &g->cells[y * g->w + x];
     }

@@ -98,7 +98,7 @@ public:
     void openResidentChoices();
     void openChoiceSet(TitleChoiceSet *d);
 
-    /* 0x44 */ TitleScreen *unk_44;
+    /* 0x44 */ TitleScreen *titleScreen;
 };
 
 
@@ -214,7 +214,7 @@ public:
     void updateWaitStart();
     void enterWaitStart();
     void changeState(s32 state);
-    void func_ov147_022929c0();
+    void holdTalkDuck();
     void stopBgm();
     void startBgm(BOOL flag);
     void dismissLogo();
@@ -326,7 +326,7 @@ void TitleScreen::stopBgm() {
     }
 }
 
-void TitleScreen::func_ov147_022929c0() {
+void TitleScreen::holdTalkDuck() {
     if (bgmMode == 1) {
         *(s32 *)(data_021c1b3c + 0x248) = 0xb;
     }
@@ -432,7 +432,7 @@ void TitleScreen::updateBackToTitle() {
     }
 }
 
-void TitleScreen::enterEraseResident() { func_ov147_022929c0(); }
+void TitleScreen::enterEraseResident() { holdTalkDuck(); }
 
 void TitleScreen::updateEraseResident() {
     if (Unk_ov147_022924c0_IsTwo()) {
@@ -446,7 +446,7 @@ void TitleScreen::updateEraseResident() {
     }
 }
 
-void TitleScreen::enterEraseTown() { func_ov147_022929c0(); }
+void TitleScreen::enterEraseTown() { holdTalkDuck(); }
 
 void TitleScreen::updateEraseTown() {
     if (Unk_ov147_022924c0_IsTwo()) {
@@ -460,7 +460,7 @@ void TitleScreen::updateEraseTown() {
     }
 }
 
-void TitleScreen::enterContinue() { func_ov147_022929c0(); }
+void TitleScreen::enterContinue() { holdTalkDuck(); }
 
 void TitleScreen::updateContinue() {
     TalkWindowState *r = TalkWindow_Get(0);
@@ -471,7 +471,7 @@ void TitleScreen::updateContinue() {
     }
 }
 
-void TitleScreen::enterStartGame() { func_ov147_022929c0(); }
+void TitleScreen::enterStartGame() { holdTalkDuck(); }
 
 void TitleScreen::updateStartGame() {
     if (Unk_ov147_022924c0_IsTwo()) {
@@ -484,7 +484,7 @@ void TitleScreen::updateStartGame() {
     }
 }
 
-void TitleScreen::enterImmigration() { func_ov147_022929c0(); }
+void TitleScreen::enterImmigration() { holdTalkDuck(); }
 
 void TitleScreen::updateImmigration() {
     if (Unk_ov147_022924c0_IsTwo()) {
@@ -498,7 +498,7 @@ void TitleScreen::updateImmigration() {
     }
 }
 
-void TitleScreen::enterTagMode() { func_ov147_022929c0(); }
+void TitleScreen::enterTagMode() { holdTalkDuck(); }
 
 void TitleScreen::updateTagMode() {
     TalkWindowState *r = TalkWindow_Get(0);
@@ -509,7 +509,7 @@ void TitleScreen::updateTagMode() {
     }
 }
 
-void TitleScreen::enterWifiSettings() { func_ov147_022929c0(); }
+void TitleScreen::enterWifiSettings() { holdTalkDuck(); }
 
 void TitleScreen::updateWifiSettings() {
     TalkWindowState *r = TalkWindow_Get(0);
@@ -526,7 +526,7 @@ TitleTalk::~TitleTalk() {}
 
 // ---- TitleTalk ctor/dtor, TitleScreen (part 2) ----
 
-void TitleTalk::setOwner(void *owner) { unk_44 = (TitleScreen *)owner; }
+void TitleTalk::setOwner(void *owner) { titleScreen = (TitleScreen *)owner; }
 
 void TitleTalk::onMessageEnd(u32) {
     static u8 s258[4] = { 0x02, 0x0a, 0x0b, 0x05 };
@@ -561,7 +561,7 @@ void TitleTalk::onMessageEnd(u32) {
     TalkWindowState *r5 = TalkWindow_Get(0);
     s32 r6 = PlayerDataArray_CountUsed(gSavePlayers);
     s32 r0 = gSaveData.isValid();
-    TitleScreen *r2 = unk_44;
+    TitleScreen *r2 = titleScreen;
     if (r2->backupError != 0) {
         r5->lockAdvance();
         return;
@@ -595,18 +595,18 @@ void TitleTalk::onMessageEnd(u32) {
     case 0x27:
         GameStart_SetNewResident();
         r5->setSilent();
-        unk_44->changeState(7);
+        titleScreen->changeState(7);
         break;
     case 3:
         openResidentChoices();
         break;
     case 6:
         r5->setNextMessage(&gTalkMsgIndexEnd, 0);
-        unk_44->changeState(4);
+        titleScreen->changeState(4);
         break;
     case 0xb:
         r5->setNextMessage(&gTalkMsgIndexEnd, 0);
-        unk_44->changeState(5);
+        titleScreen->changeState(5);
         break;
     case 5:
     case 0xa: {
@@ -630,11 +630,11 @@ void TitleTalk::onMessageEnd(u32) {
         r5->setSilent();
         r5->setNextMessage(&gTalkMsgIndexEnd, 0);
         GameStart_SetMode3();
-        unk_44->changeState(7);
+        titleScreen->changeState(7);
         break;
     case 0x32:
         r5->setNextMessage(&gTalkMsgIndexEnd, 0);
-        unk_44->changeState(3);
+        titleScreen->changeState(3);
         break;
     }
 }
@@ -716,7 +716,7 @@ void TitleTalk::onChoice(u32) {
     case 0:
         if (r5 == 0) {
             sp0->setNextMessage(&gTalkMsgIndexEnd, 0);
-            unk_44->changeState(8);
+            titleScreen->changeState(8);
         }
         break;
     case 0x2d:
@@ -740,7 +740,7 @@ void TitleTalk::onChoice(u32) {
     case 0x30:
         if (r5 == 0) {
             sp0->setNextMessage(&gTalkMsgIndexEnd, 0);
-            unk_44->changeState(9);
+            titleScreen->changeState(9);
         }
         break;
     case 0x32:
@@ -750,7 +750,7 @@ void TitleTalk::onChoice(u32) {
     case 0x35:
         if (r5 == 0) {
             window->setNextMessage(&gTalkMsgIndexEnd, 0);
-            unk_44->changeState(10);
+            titleScreen->changeState(10);
         }
         break;
     case 3:
@@ -761,15 +761,15 @@ void TitleTalk::onChoice(u32) {
 
 void TitleTalk::chooseNewGame() {
     GameStart_SetNewTown();
-    unk_44->changeState(7);
+    titleScreen->changeState(7);
 }
 
 void TitleTalk::chooseContinue() {
-    unk_44->changeState(6);
+    titleScreen->changeState(6);
 }
 
 void TitleTalk::chooseNeverMind() {
-    unk_44->changeState(3);
+    titleScreen->changeState(3);
 }
 
 void TitleTalk::chooseResident() {

@@ -119,11 +119,11 @@ public:
     BOOL mainAct02();
     void changeAct(s32 state);
 
-    s32 unk_654;
+    s32 act;
     SpNpcCornimerTalk talk;
 };
 
-struct Unk_ov087_02271a6c_Ent {
+struct SpNpcCornimerActEntry {
     BOOL (SpNpcCornimer::*enter)();
     BOOL (SpNpcCornimer::*exit)();
 };
@@ -162,7 +162,7 @@ extern u8 sSpNpcCornimerTexturePath[];
 extern u32 data_ov087_02271d80;
 extern u32 data_ov087_02271d84;
 extern const Unk_ov087_02271cc4_Ent sSpNpcCornimerFortuneLines[4];
-extern Unk_ov087_02271a6c_Ent sSpNpcCornimerActTable[3];
+extern SpNpcCornimerActEntry sSpNpcCornimerActTable[3];
 }
 
 extern "C" SpNpcCornimer *SpNpcCornimer_Create();
@@ -187,7 +187,7 @@ extern "C" void *data_ov087_02271d88[2] = {(void *)_ZN13SpNpcCornimer10setupAct0
 extern "C" void *data_ov087_02271da0[2] = {(void *)_ZN13SpNpcCornimer9mainAct00Ev, 0};
 extern "C" void *data_ov087_02271d98[2] = {(void *)_ZN13SpNpcCornimer9mainAct01Ev, 0};
 typedef BOOL (SpNpcCornimer::*Unk_ov087_Fn)();
-Unk_ov087_02271a6c_Ent sSpNpcCornimerActTable[3] = {
+SpNpcCornimerActEntry sSpNpcCornimerActTable[3] = {
     {*(Unk_ov087_Fn *)data_ov087_02271d88, *(Unk_ov087_Fn *)data_ov087_02271da0},
     {*(Unk_ov087_Fn *)data_ov087_02271da8, *(Unk_ov087_Fn *)data_ov087_02271d98},
     {NULL, *(Unk_ov087_Fn *)data_ov087_02271d90},
@@ -221,7 +221,7 @@ static inline BOOL Unk_ov087_02271478_Chk(u16 *c, u16 *slot, u16 val) {
     return r;
 }
 
-struct Unk_ov087_02271478_Buf {
+struct CornimerChoiceLocals {
     u8 a;
     u8 pad_01[2];
     u8 v;
@@ -238,7 +238,7 @@ static inline BOOL Unk_ov087_02271670_Z(BOOL x) {
     return FALSE;
 }
 
-struct Unk_ov087_02271670_Buf {
+struct CornimerMsgEndLocals {
     u8 t;
     u8 pad_01;
     u16 v[6];
@@ -275,8 +275,8 @@ u8 *SpNpcCornimer::getModelPath() { return sSpNpcCornimerModelPath; }
 
 BOOL SpNpcCornimer::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcCornimerActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcCornimerActTable[unk_654].exit)();
+    if (sSpNpcCornimerActTable[act].exit != NULL) {
+        result = (this->*sSpNpcCornimerActTable[act].exit)();
     }
     return result;
 }
@@ -287,7 +287,7 @@ void SpNpcCornimer::changeAct(s32 state) {
         ok = (this->*sSpNpcCornimerActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -357,7 +357,7 @@ extern "C" BOOL SpNpcCornimer_IsAcorn(u16 *p, u32 m) {
 }
 
 void SpNpcCornimerTalk::onMessageEnd(u32) {
-    Unk_ov087_02271670_Buf buf;
+    CornimerMsgEndLocals buf;
     void *g = _ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent());
     u32 k;
     buf.v[0] = 0xfff1;
@@ -451,7 +451,7 @@ void SpNpcCornimerTalk::onMessageEnd(u32) {
 }
 
 void SpNpcCornimerTalk::onChoice(u32) {
-    Unk_ov087_02271478_Buf buf;
+    CornimerChoiceLocals buf;
     u8 *sa = (u8 *)"sp_npc_acorn";
     s32 t5 = getChoiceList()->getResult();
     void *g8 = PlayerData_GetCurrent();
