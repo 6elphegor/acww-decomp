@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
 public:
@@ -79,15 +80,6 @@ struct Unk_ov004_022170e0_Global {
     s32 myAid;
 };
 
-struct Unk_ov004_SceneEntry {
-    void *(*factory)();
-    u16 executePriority;
-    u16 drawPriority;
-    u32 actorFlags;
-    u32 cullHeight;
-    u32 cullRadius;
-    u32 cullDepth;
-};
 
 extern "C" {
 extern Unk_ov004_0221745c_Dir sHouseOwnerStepDirs[4];

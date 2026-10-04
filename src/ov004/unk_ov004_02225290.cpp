@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 // Library base class (as include/GameProc.h, but vfunc_20 takes the u32 that ov004's override uses)
 class ProcBase {
 public:
@@ -308,12 +309,6 @@ public:
 typedef RoomObjActor M;
 typedef Unk_ov004_02224ee4_Vec Vec;
 
-struct Unk_ov004_Scene_Entry {
-    void *(*unk_00)();
-    u16 executePriority;
-    u16 drawPriority;
-    s32 actorParams[4];
-};
 
 extern "C" BarberMachine *BarberMachine_Create();
 // Declarations for data defined further down (definition order sets the data layout)
@@ -385,7 +380,7 @@ void BarberMachine::getSoundPos(Vec *out) {
     out->z = 0x17000;
 }
 
-extern "C" Unk_ov004_Scene_Entry sBarberMachineProfile = {(void *(*)())BarberMachine_Create, 0x15, 0x19, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" Unk_ov004_Scene_Entry sBarberMachineProfile = {(void *(*)())BarberMachine_Create, 0x15, 0x19, 0, 0xc8000, 0x12c000, 0x258000};
 
 extern "C" BarberMachine *volatile sBarberMachine = 0;
 

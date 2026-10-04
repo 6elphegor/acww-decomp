@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -246,12 +247,6 @@ struct Unk_ov004_02228a40_Mtx {
     u32 v[12];
 };
 
-struct Unk_ov004_Scene_Entry {
-    void *(*unk_00)();
-    u16 executePriority;
-    u16 drawPriority;
-    s32 actorParams[4];
-};
 
 // the global object at 0x02250f6c: constructed / registered by the unit's __sinit (ctor and dtor are two 2-byte stubs in main)
 struct Unk_ov004_02250f6c_Obj {
@@ -340,7 +335,7 @@ typedef void (SewingMachine::*Unk_ov004_022288c0_Fn)();
 typedef BOOL (SewingMachine::*Unk_ov004_0222894c_Fn)();
 
 // ---------------------------------------------------------------- data
-extern "C" Unk_ov004_Scene_Entry sSewingMachineProfile = {(void *(*)())SewingMachine_Create, 0x78, 0x15, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" Unk_ov004_Scene_Entry sSewingMachineProfile = {(void *(*)())SewingMachine_Create, 0x78, 0x15, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" SewingMachine *sSewingMachine = 0;
 Unk_ov004_02250f6c_Obj sSewingMachineCloth;
 

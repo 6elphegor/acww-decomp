@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -377,12 +378,6 @@ struct Unk_ov004_0224d988_V3 {
     s32 x, y, z;
 };
 
-struct Unk_ov004_Scene_Entry {
-    void *(*unk_00)();
-    u16 executePriority;
-    u16 drawPriority;
-    s32 actorParams[4];
-};
 
 class CafeCoffeeSet : public RoomObjActor {
 public:
@@ -861,7 +856,7 @@ void CafeCoffeeSet_UpdateState(ObjB *o) {
 // ---------------------------------------------------------------- data
 extern "C" void *data_ov004_0224d8c8[2] = {(void *)CafeCoffeeSet_EnterState00, 0};
 
-extern "C" Unk_ov004_Scene_Entry sCafeCoffeeSetProfile = {(void *(*)())CafeCoffeeSet_Create, 0x64, 0x13, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" Unk_ov004_Scene_Entry sCafeCoffeeSetProfile = {(void *(*)())CafeCoffeeSet_Create, 0x64, 0x13, 0, 0xc8000, 0x12c000, 0x258000};
 
 // @222700c
 BOOL CafeCoffeeSet_EnterState00(ObjB *o) {

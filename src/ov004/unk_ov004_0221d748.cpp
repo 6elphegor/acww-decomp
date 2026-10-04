@@ -6,6 +6,7 @@ struct Unk_ov004_0221b6d4_Out {
 };
 
 #include "types.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -493,11 +494,6 @@ public:
     /* 0x70e */ u8 pad_70e[2];
 };
 
-struct Unk_ov004_SceneEntry {
-    SpNpcBooker *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 struct Unk_ov004_0221d9bc_Range {
     static inline BOOL Chk(u16 *p, u32 lo, u32 hi) {
@@ -1011,7 +1007,7 @@ extern "C" u8 data_ov004_0224d224[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm',
 extern "C" u32 sSpNpcBookerMsgFiles[1] = {(u32)data_ov004_0224d1e0};
 extern "C" u8 *sSpNpcBookerModelPath = data_ov004_0224d1f4;
 extern "C" u8 *sSpNpcBookerTexturePath = data_ov004_0224d224;
-extern "C" Unk_ov004_SceneEntry sSpNpcBookerProfile = {SpNpcBooker_Create, 0x73, 0x78, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcBookerProfile = {(void *(*)())SpNpcBooker_Create, 0x73, 0x78, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov004_0224d1d8[2] = {(void *)_ZN11SpNpcBooker9mainAct06Ev, 0};
 extern "C" void *data_ov004_0224d1d0[2] = {(void *)_ZN11SpNpcBooker10setupAct00Ev, 0};
 extern "C" void *data_ov004_0224d1c8[2] = {(void *)_ZN11SpNpcBooker9mainAct00Ev, 0};

@@ -4,6 +4,8 @@
 // The no-argument vfunc_08 of the base is widened locally: NpcActor::postCreate takes one argument.
 #define postCreate() postCreate(s32 a)
 #include "Unk_020d8c7c.h"
+#include "gfx/Unk_ov004_Quad.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 #undef postCreate
 
 extern "C" {
@@ -456,23 +458,7 @@ extern s32 data_020c8cb4;
 extern s32 data_020c8cb8;
 }
 
-struct Unk_ov004_SceneEntry {
-    BirthdayHostVillager *(*factory)();
-    u16 id;
-    u16 size;
-    u32 zero;
-    u32 a, b, c;
-};
 
-struct Unk_ov004_Quad {
-    u8 a, b, c, d;
-    Unk_ov004_Quad(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
 
 extern "C" BirthdayHostVillager *BirthdayHostVillager_Create();
 extern "C" void _ZN20BirthdayHostVillager9drawModelEv();
@@ -483,7 +469,7 @@ extern "C" Unk_ov004_Quad data_ov004_022503c4(0x1f, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov004_Quad data_ov004_022503bc(0x14, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov004_Quad data_ov004_022503cc(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov004_Quad data_ov004_022503d0(0x14, 0x18, 0x18, 0x1f);
-extern "C" Unk_ov004_SceneEntry sBirthdayHostVillagerProfile = { BirthdayHostVillager_Create, 0x80, 0x84, 2, 0x5000, 0x5000, 0x3e800 };
+extern "C" Unk_ov004_SceneEntry sBirthdayHostVillagerProfile = { (void *(*)())BirthdayHostVillager_Create, 0x80, 0x84, 2, 0x5000, 0x5000, 0x3e800 };
 extern "C" {
 BirthdayHostVillager *sBirthdayHostVillager;
 }

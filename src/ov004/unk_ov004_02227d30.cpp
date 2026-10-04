@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -235,12 +236,6 @@ public:
 };
 
 
-struct Unk_ov004_Scene_Entry {
-    void *(*unk_00)();
-    u16 executePriority;
-    u16 drawPriority;
-    s32 actorParams[4];
-};
 
 class BarberPole : public RoomObjActor {
 public:
@@ -263,7 +258,7 @@ s32 _ZN9AnimModel8stepAnimEv(void *);
 }
 
 extern "C" BarberPole *BarberPole_Create();
-extern "C" Unk_ov004_Scene_Entry sBarberPoleProfile = {(void *(*)())BarberPole_Create, 0x16, 0x1a, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" Unk_ov004_Scene_Entry sBarberPoleProfile = {(void *(*)())BarberPole_Create, 0x16, 0x1a, 0, 0xc8000, 0x12c000, 0x258000};
 
 extern "C" BarberPole *BarberPole_Create() {
     return new BarberPole();

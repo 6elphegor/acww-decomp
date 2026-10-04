@@ -1,14 +1,15 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "room/Unk_ov004_0224882c_Buf.h"
+#include "gfx/Unk_ov004_Mtx.h"
+#include "gfx/Unk_ov004_Rgba.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 // ================================================================ plain value types
 struct Vec3 {
     s32 x, y, z;
 };
 
-struct Unk_ov004_Mtx {
-    s64 v[6];
-};
 
 typedef Vec3 Unk_ov004_Vec3;
 struct Unk_ov004_02205d8c_Vec {
@@ -541,9 +542,6 @@ struct Unk_ov004_02208980_E {
     u8 pad_1c[4];
 };
 
-struct Unk_ov004_0224882c_Buf {
-    s32 v[4];
-};
 
 struct Unk_ov004_02206ec8_Ctx {
     u8 pad_00[0xb8];
@@ -1415,21 +1413,6 @@ struct Unk_ov004_0224882c_VT {
 #define VCALL98(self, arg) ((Unk_ov004_0224882c_VT *)(self))->vfunc_98(arg)
 #define VCALL9C(self, arg) ((Unk_ov004_0224882c_VT *)(self))->vfunc_9c(arg)
 
-struct Unk_ov004_Scene_Entry {
-    void *(*unk_00)();
-    u16 executePriority;
-    u16 drawPriority;
-    s32 actorParams[4];
-};
-struct Unk_ov004_Rgba {
-    u8 a, b, c, d;
-    Unk_ov004_Rgba(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
 
 // ---- declarations of the data defined below
 extern "C" {
@@ -1916,7 +1899,7 @@ Unk_ov004_Rgba data_ov004_0224f61c(20, 31, 31, 31);
 // data
 Unk_ov004_Rgba data_ov004_0224f618(20, 24, 24, 31);
 // data
-Unk_ov004_Scene_Entry sFtrActorProfile = {(void *(*)())FtrActor_Create, 0x2e, 0x35, {0, 0xc8000, 0x12c000, 0x258000}};
+Unk_ov004_Scene_Entry sFtrActorProfile = {(void *(*)())FtrActor_Create, 0x2e, 0x35, 0, 0xc8000, 0x12c000, 0x258000};
 // data
 FxVec3 data_ov004_0224f88c[4] = {FxVec3(-0x1000, 0, -0x1000), FxVec3(-0x1000, 0, 0x1000),
                                        FxVec3(0x1000, 0, 0x1000), FxVec3(0x1000, 0, -0x1000)};

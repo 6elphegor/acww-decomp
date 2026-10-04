@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "sys/Unk_0209d498_Time.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 
@@ -89,9 +90,6 @@ struct RoomItemDropList {
     Unk_ov004_0222c9d0 drops[15];
 };
 
-struct Unk_0209d498_Time {
-    u8 b0, b1, b2, b3, b4, b5, b6, b7;
-};
 
 struct Unk_ov004_0222c570_Global {
     u8 pad_00[0x5c];

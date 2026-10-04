@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -273,12 +274,6 @@ struct Unk_ov004_0224e034_E {
     u8 pad_1c[0x20 - 0x1c];
 };
 
-struct Unk_ov004_Scene_Entry {
-    void *(*unk_00)();
-    u16 executePriority;
-    u16 drawPriority;
-    s32 actorParams[4];
-};
 
 class TarotProps : public RoomObjActor {
 public:
@@ -360,7 +355,7 @@ TarotProps *TarotProps_Create();
 #define F(T, off) (*(T *)((u8 *)this + off))
 
 // ---------------------------------------------------------------- data
-extern "C" Unk_ov004_Scene_Entry sTarotPropsProfile = {(void *(*)())TarotProps_Create, 0x71, 0x1b, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" Unk_ov004_Scene_Entry sTarotPropsProfile = {(void *(*)())TarotProps_Create, 0x71, 0x1b, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" TarotProps *sTarotProps = 0;
 
 extern "C" TarotProps *TarotProps_Create() {

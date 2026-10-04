@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
 public:
@@ -55,15 +56,6 @@ struct Unk_ov004_0221a2d8_Out {
     u8 msgIndex;
 };
 
-struct Unk_ov004_SceneEntry {
-    void *(*factory)();
-    u16 executePriority;
-    u16 drawPriority;
-    u32 actorFlags;
-    u32 cullHeight;
-    u32 cullRadius;
-    u32 cullDepth;
-};
 
 extern "C" {
 extern u16 data_020c6cc8;

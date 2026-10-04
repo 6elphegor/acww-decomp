@@ -6,6 +6,7 @@ struct Unk_ov004_0221b6d4_Out {
 };
 
 #include "types.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -360,11 +361,6 @@ public:
     /* 0x658 */ u8 idleLoops;
 };
 
-struct Unk_ov004_SceneEntry {
-    SpNpcTortimer2 *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 extern "C" SpNpcTortimer2 *SpNpcTortimer2_Create() { return new SpNpcTortimer2; }
 
@@ -467,7 +463,7 @@ extern "C" void _ZN14SpNpcTortimer210setupAct01Ev();
 extern "C" void _ZN14SpNpcTortimer29mainAct01Ev();
 extern "C" u8 sSpNpcTortimer2ModelPath[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'i', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" u8 sSpNpcTortimer2TexturePath[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'i', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" Unk_ov004_SceneEntry sSpNpcTortimer2Profile = {SpNpcTortimer2_Create, 0x5d, 0x64, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcTortimer2Profile = {(void *(*)())SpNpcTortimer2_Create, 0x5d, 0x64, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov004_0224d394[2] = {(void *)_ZN14SpNpcTortimer210setupAct01Ev, 0};
 extern "C" void *data_ov004_0224d39c[2] = {(void *)_ZN14SpNpcTortimer29mainAct01Ev, 0};
 extern "C" void *data_ov004_0224d384[2] = {(void *)_ZN14SpNpcTortimer210setupAct00Ev, 0};

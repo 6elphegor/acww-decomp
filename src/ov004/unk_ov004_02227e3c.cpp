@@ -1,5 +1,7 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "gfx/Unk_ov004_Rgba.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -312,23 +314,8 @@ struct TouchPicker {
     BOOL pushBox(TouchPickBox *box);
 };
 
-struct Unk_ov004_Scene_Entry {
-    void *(*unk_00)();
-    u16 executePriority;
-    u16 drawPriority;
-    s32 actorParams[4];
-};
 
 // a 4-byte colour record whose constructor is inline (the __sinit of this unit initialises six of them)
-struct Unk_ov004_Rgba {
-    u8 red, green, blue, alpha;
-    Unk_ov004_Rgba(u8 a, u8 b, u8 c, u8 d) {
-        red = a;
-        green = b;
-        blue = c;
-        alpha = d;
-    }
-};
 
 class RecycleBox : public RoomObjActor, public TalkMsgRequest {
 public:
@@ -435,7 +422,7 @@ extern "C" Unk_ov004_Rgba data_ov004_02250e5c(20, 31, 31, 31);
 
 extern "C" Unk_ov004_Rgba data_ov004_02250e4c(20, 24, 24, 31);
 
-extern "C" Unk_ov004_Scene_Entry sRecycleBoxProfile = {(void *(*)())RecycleBox_Create, 0x12, 0x16, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" Unk_ov004_Scene_Entry sRecycleBoxProfile = {(void *(*)())RecycleBox_Create, 0x12, 0x16, 0, 0xc8000, 0x12c000, 0x258000};
 
 // ---------------------------------------------------------------- data
 extern "C" char sRecycleBoxMsgFile[0x10] = "sp_npc_trash";

@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU09 (actor 0223177c): .text 0x02215ad8-0x02215c74
 #include "types.h"
+#include "sys/Unk_0209d498_Time.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -255,9 +256,6 @@ public:
     /* 0x2b0 */
 };
 
-struct Unk_0209d498_Time {
-    u8 b0, b1, b2, b3, b4, b5, b6, b7;
-};
 
 class Unk_ov003_02215ad8_Str {
 public:

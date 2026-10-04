@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 // mwcc-flags: -O4,s
 #include "types.h"
+#include "sys/Unk_0209d498_Time.h"
 class ProcBase {
 public:
     static void *operator new(unsigned long size);
@@ -224,9 +225,6 @@ public:
     /* 0x2b0 */
 };
 
-struct Unk_0209d498_Time {
-    u8 b0, b1, b2, b3, b4, b5, b6, b7;
-};
 
 // 0x20-byte member object (ctor func_02055c88, dtor func_02055c70)
 struct ModelAnim {

@@ -1,5 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/Unk_ov004_Rgba.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 // Library base class (as include/GameProc.h, but vfunc_20 takes the u32 that ov004's override uses)
 class ProcBase {
@@ -248,22 +250,7 @@ struct Unk_ov004_02226468_Obj {
 };
 
 // a 4-byte colour record whose constructor is inline (the __sinit of this unit initialises six of them)
-struct Unk_ov004_Rgba {
-    u8 red, green, blue, alpha;
-    Unk_ov004_Rgba(u8 a, u8 b, u8 c, u8 d) {
-        red = a;
-        green = b;
-        blue = c;
-        alpha = d;
-    }
-};
 
-struct Unk_ov004_Scene_Entry {
-    void *(*unk_00)();
-    u16 executePriority;
-    u16 drawPriority;
-    s32 actorParams[4];
-};
 
 class ModelAnim {
 public:
@@ -710,7 +697,7 @@ extern "C" Unk_ov004_Rgba data_ov004_02250c38(20, 24, 24, 31);
 
 extern "C" char data_ov004_0224d77c[] = "m_grd_clf";
 
-extern "C" Unk_ov004_Scene_Entry sCheckInGateProfile = {(void *(*)())CheckInGate_Create, 0x11, 0x14, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" Unk_ov004_Scene_Entry sCheckInGateProfile = {(void *(*)())CheckInGate_Create, 0x11, 0x14, 0, 0xc8000, 0x12c000, 0x258000};
 
 // @2225ba8
 BOOL CheckInGate::changeSyncState(u32 a) {

@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "net/Unk_020cbb18_Ptr.h"
 
 // TU26 of ov003: the 0x80-byte table of eight 0x10-byte records (bss 0x0225b468)
 struct InsectNetSyncRec {
@@ -11,10 +12,6 @@ struct InsectNetSyncRec {
     ~InsectNetSyncRec() {}
 };
 
-struct Unk_020cbb18_Ptr {
-    u8 unk_00[0x64];
-    u32 myAid;
-};
 
 extern "C" {
 extern Unk_020cbb18_Ptr *gCommManager;

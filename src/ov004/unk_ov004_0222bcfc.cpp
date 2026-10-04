@@ -1,9 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "sys/Unk_0209d498_Time.h"
 
-struct Unk_0209d498_Time {
-    u8 b0, b1, b2, b3, b4, b5, b6, b7;
-};
 
 struct Unk_ov004_SceneEntry {
     void *(*factory)();

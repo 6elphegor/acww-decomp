@@ -6,6 +6,7 @@ struct Unk_ov004_0221b6d4_Out {
 };
 
 #include "types.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -546,11 +547,6 @@ public:
     /* 0x77b */ u8 pad_77b;
 };
 
-struct Unk_ov004_SceneEntry {
-    SpNpcBrewster *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 extern "C" SpNpcBrewster *SpNpcBrewster_Create() { return new SpNpcBrewster; }
 
@@ -1328,7 +1324,7 @@ extern "C" u8 data_ov004_0224cf78[17] = {'s', 'p', '_', 'e', 't', 'c', '_', 's',
 extern "C" void *data_ov004_0224cf24[2] = {(void *)_ZN13SpNpcBrewster9mainAct03Ev, 0};
 extern "C" u8 sSpNpcBrewsterModelPath[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'p', 'g', 'e', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" u8 sSpNpcBrewsterTexturePath[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'p', 'g', 'e', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" Unk_ov004_SceneEntry sSpNpcBrewsterProfile = {SpNpcBrewster_Create, 0x63, 0x6a, 0, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcBrewsterProfile = {(void *(*)())SpNpcBrewster_Create, 0x63, 0x6a, 0, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov004_0224cf0c[2] = {(void *)_ZN13SpNpcBrewster10setupAct05Ev, 0};
 extern "C" void *data_ov004_0224cf5c[2] = {(void *)_ZN13SpNpcBrewster10setupAct00Ev, 0};
 extern "C" u32 sSpNpcBrewsterMsgFiles[2] = {(u32)data_ov004_0224cf6c, (u32)data_ov004_0224cf78};

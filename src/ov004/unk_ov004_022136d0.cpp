@@ -2,6 +2,8 @@
 // ov004 TU04: .text 0x022136d0-0x02213b90 (class RoomBoardSign)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "gfx/Unk_ov004_Quad.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 struct Unk_ov004_022091fc_Vec {
     s32 x, y, z;
@@ -170,23 +172,7 @@ extern "C" RoomBoardSign *RoomBoardSign_Create();
 extern "C" void RoomBoardSign_ClearRegistry();
 
 // ---------------------------------------------------------------- data
-struct Unk_ov004_SceneEntry {
-    RoomBoardSign *(*factory)();
-    u16 id;
-    u16 size;
-    u32 zero;
-    u32 a, b, c;
-};
 
-struct Unk_ov004_Quad {
-    u8 a, b, c, d;
-    Unk_ov004_Quad(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
 
 extern "C" s16 sRoomBoardSignSpawnMsg;
 extern "C" u8 sRoomBoardSignCount;
@@ -200,7 +186,7 @@ extern "C" Unk_ov004_Quad data_ov004_02250170(0x14, 0x1f, 0x14, 0x1f);
 extern "C" {
 void *sRoomBoardSigns[0x40];
 }
-extern "C" Unk_ov004_SceneEntry sRoomBoardSignProfile = { RoomBoardSign_Create, 0x17, 0x1c, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" Unk_ov004_SceneEntry sRoomBoardSignProfile = { (void *(*)())RoomBoardSign_Create, 0x17, 0x1c, 0, 0xc8000, 0x12c000, 0x258000 };
 extern "C" {
 s32 sRoomBoardSignSpawnRadius;
 }

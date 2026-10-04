@@ -10,6 +10,7 @@ struct Unk_ov004_0221b954_Vec {
 };
 
 #include "types.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -461,11 +462,6 @@ extern u8 sSpNpcSableModelPath[];
 extern u8 sSpNpcSableTexturePath[];
 }
 
-struct Unk_ov004_SceneEntry {
-    SpNpcSable *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
 extern "C" SpNpcSable *SpNpcSable_Create() { return new SpNpcSable; }
 
@@ -848,7 +844,7 @@ extern "C" u8 data_ov004_0224cd24[17] = {'s', 'p', '_', 'e', 't', 'c', '_', 's',
 extern "C" u32 sSpNpcSableMsgFiles[3] = {(u32)data_ov004_0224cd14, (u32)data_ov004_0224cd04, (u32)data_ov004_0224cd24};
 extern "C" u8 sSpNpcSableModelPath[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'h', 'g', 's', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" u8 sSpNpcSableTexturePath[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'h', 'g', 's', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" Unk_ov004_SceneEntry sSpNpcSableProfile = {SpNpcSable_Create, 0x77, 0x7c, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov004_SceneEntry sSpNpcSableProfile = {(void *(*)())SpNpcSable_Create, 0x77, 0x7c, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void _ZN10SpNpcSable10setupAct05Ev();
 extern "C" void _ZN10SpNpcSable9mainAct05Ev();
 extern "C" void _ZN10SpNpcSable9mainAct00Ev();

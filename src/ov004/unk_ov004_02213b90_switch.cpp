@@ -3,6 +3,8 @@
 // MuseumExhibitInfo::buildItemList needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "gfx/Unk_ov004_Quad.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 struct Unk_ov004_022091fc_Vec {
     s32 x, y, z;
@@ -265,23 +267,7 @@ public:
 typedef void (MuseumExhibitInfo::*Unk_ov004_02213ea8_Fn)();
 typedef BOOL (MuseumExhibitInfo::*Unk_ov004_02213f34_Fn)();
 
-struct Unk_ov004_SceneEntry {
-    MuseumExhibitInfo *(*factory)();
-    u16 id;
-    u16 size;
-    u32 zero;
-    u32 a, b, c;
-};
 
-struct Unk_ov004_Quad {
-    u8 a, b, c, d;
-    Unk_ov004_Quad(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
 
 extern "C" {
 extern s16 sMuseumExhibitSpawnMsg;

@@ -1,5 +1,9 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "room/Unk_ov004_0224882c_Buf.h"
+#include "gfx/Unk_ov004_Mtx.h"
+#include "actor/Unk_ov004_SceneEntry.h"
+#include "room/FtrActorViews.h"
 // ov004 translation unit 0x02209f70-0x022136d0 (34 classes derived from FtrActor). Built by two compilers:
 // this file's thunks need mwcc 1.2/sp2, FtrSingingInsect::updateActive / vfunc_7c (in the _switch file) need 1.2/base;
 // the functions and data objects are placed by address (config/usa/arm9/overlays/ov004/object_order.txt).
@@ -18,9 +22,6 @@ struct Vec3 {
     s32 x, y, z;
 };
 
-struct Unk_ov004_Mtx {
-    s64 v[6];
-};
 
 typedef Vec3 Unk_ov004_Vec3;
 struct Unk_ov004_02205d8c_Vec {
@@ -556,9 +557,6 @@ struct Unk_ov004_02208980_E {
     u8 pad_1c[4];
 };
 
-struct Unk_ov004_0224882c_Buf {
-    s32 v[4];
-};
 
 struct Unk_ov004_02206ec8_Ctx {
     u8 pad_00[0xb8];
@@ -572,32 +570,12 @@ struct Unk_ov004_02207854_List {
 
 
 // ================================================================ types used by the per-part views of the base object
-struct Unk_ov004_0220a648_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
 
 // ---- part 13
-struct Unk_ov004_0220bc80_V3 {
-    s32 x, y, z;
-};
 
 // ---- part 15
-struct Unk_ov004_0220ce38_Slot {
-    /* 0x00 */ u32 sub[2];
-    /* 0x08 */ u32 curFrame;
-    /* 0x0c */ u32 pad_0c[3];
-    /* 0x18 */ u32 *anmObj;
-    /* 0x1c */ u32 pad_1c;
-};
 
 // ---- part 24
-struct Unk_ov004_02206e74 {
-    u8 pad_00[0x10];
-    u32 frameStep;
-    u8 pad_14[0x20 - 0x14];
-};
 
 // ---- size checks of the per-part views of the base object (0x130..0x840)
 struct Unk_ov004_View00_Chk {
@@ -664,262 +642,36 @@ struct Unk_ov004_View00_Chk {
 };
 typedef char Unk_ov004_View00_Assert[sizeof(Unk_ov004_View00_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View10_Chk {
-    /* 0x130 */ u8 b10_pad_130[0x5d0 - 0x130];
-    /* 0x5d0 */ u8 b10_pad_5d0[4];
-    /* 0x5d4 */ Unk_ov004_0220a648_Bits b10_unk_5d4;
-    /* 0x5d8 */ u8 b10_pad_5d8[0x6c8 - 0x5d8];
-    /* 0x6c8 */ u32 b10_sub_6c8[(0x73c - 0x6c8) / 4];
-    /* 0x73c */ u32 b10_sub_73c[(0x768 - 0x73c) / 4];
-    /* 0x768 */ s32 b10_unk_768;
-    /* 0x76c */ u8 b10_pad_76c[0x794 - 0x76c];
-    /* 0x794 */ u32 b10_sub_794[(0x7b4 - 0x794) / 4];
-    /* 0x7b4 */ u32 b10_sub_7b4[(0x820 - 0x7b4) / 4];
-    /* 0x820 */ u32 b10_pad_820;
-    /* 0x824 */ Unk_ov004_0220a648_Bits b10_unk_824;
-    /* 0x828 */ u8 b10_pad_828[0x840 - 0x828];
-};
 typedef char Unk_ov004_View10_Assert[sizeof(Unk_ov004_View10_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View11_Chk {
-    /* 0x130 */ u8 b11_pad_10c[0x590 - 0x130];
-    /* 0x590 */ s32 b11_unk_590;
-    /* 0x594 */ u8 b11_pad_594[0x73c - 0x594];
-    /* 0x73c */ u8 b11_unk_73c[0x24];
-    /* 0x760 */ u8 b11_unk_760[8];
-    /* 0x768 */ s32 b11_unk_768;
-    /* 0x76c */ u8 b11_pad_76c[0x840 - 0x76c];
-};
 typedef char Unk_ov004_View11_Assert[sizeof(Unk_ov004_View11_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View12_Chk {
-    /* 0x130 */ u8 b12_f_0f0[0x73c - 0x130];
-    /* 0x73c */ u8 b12_f_73c[0x778 - 0x73c];
-    /* 0x778 */ u8 b12_unk_778;
-    /* 0x779 */ u8 b12_f_779[0x794 - 0x779];
-    /* 0x794 */ u8 b12_f_794[0x7b4 - 0x794];
-    /* 0x7b4 */ u8 b12_f_7b4[0x840 - 0x7b4];
-};
 typedef char Unk_ov004_View12_Assert[sizeof(Unk_ov004_View12_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View13_Chk {
-    /* 0x130 */ u8 b13_f_12c[0x178 - 0x130];
-    /* 0x178 */ u8 b13_f_178[0x188 - 0x178];
-    /* 0x188 */ u8 b13_f_188[0x1cc - 0x188];
-    /* 0x1cc */ u8 b13_f_1cc[0x24c - 0x1cc];
-    /* 0x24c */ u8 b13_f_24c[0x280 - 0x24c];
-    /* 0x280 */ u32 b13_unk_280;
-    /* 0x284 */ u8 b13_f_284[0x288 - 0x284];
-    /* 0x288 */ u8 b13_f_288[0x534 - 0x288];
-    /* 0x534 */ u8 b13_f_534[0x590 - 0x534];
-    /* 0x590 */ u32 b13_unk_590;
-    /* 0x594 */ u8 b13_f_594[0x628 - 0x594];
-    /* 0x628 */ u8 b13_f_628[0x6c8 - 0x628];
-    /* 0x6c8 */ u8 b13_f_6c8[0x73c - 0x6c8];
-    /* 0x73c */ u8 b13_f_73c[2];
-    /* 0x73e */ u8 b13_f_73e[0x744 - 0x73e];
-    /* 0x744 */ u8 b13_f_744[0x760 - 0x744];
-    /* 0x760 */ u8 b13_f_760[0x768 - 0x760];
-    /* 0x768 */ u32 b13_unk_768;
-    /* 0x76c */ u8 b13_f_76c[0x77a - 0x76c];
-    /* 0x77a */ u8 b13_unk_77a;
-    /* 0x77b */ u8 b13_pad_77b;
-    /* 0x77c */ u32 b13_unk_77c;
-    /* 0x780 */ u8 b13_f_780[0x794 - 0x780];
-    /* 0x794 */ u8 b13_f_794[0x7b4 - 0x794];
-    /* 0x7b4 */ Unk_ov004_0220bc80_V3 b13_unk_7b4;
-    /* 0x7c0 */ u8 b13_f_7c0[0x840 - 0x7c0];
-};
 typedef char Unk_ov004_View13_Assert[sizeof(Unk_ov004_View13_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View14_Chk {
-    /* 0x130 */ u8 b14_f_0f0[0x534 - 0x130];
-    /* 0x534 */ u8 b14_f_534[0x590 - 0x534];
-    /* 0x590 */ u32 b14_unk_590;
-    /* 0x594 */ u8 b14_f_594[4];
-    /* 0x598 */ u8 b14_f_598[0x30];
-    /* 0x5c8 */ u8 b14_f_5c8[8];
-    /* 0x5d0 */ u8 b14_f_5d0[0x628 - 0x5d0];
-    /* 0x628 */ u8 b14_f_628[0x6c8 - 0x628];
-    /* 0x6c8 */ u8 b14_f_6c8[0x73c - 0x6c8];
-    /* 0x73c */ u8 b14_f_73c[0x760 - 0x73c];
-    /* 0x760 */ u8 b14_f_760[0x77c - 0x760];
-    /* 0x77c */ u32 b14_unk_77c;
-    /* 0x780 */ u8 b14_f_780[0x840 - 0x780];
-};
 typedef char Unk_ov004_View14_Assert[sizeof(Unk_ov004_View14_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View15_Chk {
-    /* 0x130 */ u8 b15_pad_0f0[0x534 - 0x130];
-    /* 0x534 */ u8 b15_f_534[0x590 - 0x534];
-    /* 0x590 */ u32 b15_unk_590;
-    /* 0x594 */ u8 b15_pad_594[0x6c8 - 0x594];
-    /* 0x6c8 */ u8 b15_f_6c8[0x73c - 0x6c8];
-    /* 0x73c */ u8 b15_f_73c[0x7c0 - 0x73c];
-    /* 0x7c0 */ Unk_ov004_0220ce38_Slot b15_unk_7c0[4];
-};
 typedef char Unk_ov004_View15_Assert[sizeof(Unk_ov004_View15_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View16_Chk {
-    /* 0x130 */ u8 b16_pad_f0[0x534 - 0x130];
-    /* 0x534 */ u8 b16_unk_534[0x6c8 - 0x534];
-    /* 0x6c8 */ u8 b16_unk_6c8[0x73c - 0x6c8];
-    /* 0x73c */ u8 b16_unk_73c[0x768 - 0x73c];
-    /* 0x768 */ s32 b16_unk_768;
-    /* 0x76c */ u8 b16_pad_76c[0x778 - 0x76c];
-    /* 0x778 */ u8 b16_unk_778;
-    /* 0x779 */ u8 b16_pad_779;
-    /* 0x77a */ u8 b16_unk_77a;
-    /* 0x77b */ u8 b16_pad_77b;
-    /* 0x77c */ s32 b16_unk_77c;
-    /* 0x780 */ u8 b16_pad_780[0x840 - 0x780];
-};
 typedef char Unk_ov004_View16_Assert[sizeof(Unk_ov004_View16_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View17_Chk {
-    /* 0x130 */ u8 b17_pad_130[0x590 - 0x130];
-    /* 0x590 */ void *b17_unk_590;
-    /* 0x594 */ u8 b17_pad_594[0x6c8 - 0x594];
-    /* 0x6c8 */ u32 b17_sub_6c8[(0x73c - 0x6c8) / 4];
-    /* 0x73c */ u8 b17_unk_73c[2];
-    /* 0x73e */ u8 b17_pad_73e[0x794 - 0x73e];
-    /* 0x794 */ u32 b17_sub_794[(0x7b4 - 0x794) / 4];
-    /* 0x7b4 */ u32 b17_unk_7b4[3];
-    /* 0x7c0 */ u8 b17_pad_7c0[0x840 - 0x7c0];
-};
 typedef char Unk_ov004_View17_Assert[sizeof(Unk_ov004_View17_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View18_Chk {
-    /* 0x130 */ u8 b18_pad_12c[0x534 - 0x130];
-    /* 0x534 */ u8 b18_f_534[0x590 - 0x534];
-    /* 0x590 */ u32 b18_unk_590;
-    /* 0x594 */ u8 b18_pad_594[0x6c8 - 0x594];
-    /* 0x6c8 */ u8 b18_f_6c8[0x73c - 0x6c8];
-    /* 0x73c */ u8 b18_f_73c[0x768 - 0x73c];
-    /* 0x768 */ u32 b18_unk_768;
-    /* 0x76c */ u8 b18_f_76c[0x778 - 0x76c];
-    /* 0x778 */ u8 b18_unk_778;
-    /* 0x779 */ u8 b18_pad_779;
-    /* 0x77a */ u8 b18_unk_77a;
-    /* 0x77b */ u8 b18_pad_77b;
-    /* 0x77c */ s32 b18_unk_77c;
-    /* 0x780 */ u8 b18_f_780[0x840 - 0x780];
-};
 typedef char Unk_ov004_View18_Assert[sizeof(Unk_ov004_View18_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View19_Chk {
-    /* 0x130 */ u8 b19_pad_12c[0x534 - 0x130];
-    /* 0x534 */ u8 b19_f_534[0x5d0 - 0x534];
-    /* 0x5d0 */ u8 b19_f_5d0[0x6c8 - 0x5d0];
-    /* 0x6c8 */ u8 b19_f_6c8[0x77c - 0x6c8];
-    /* 0x77c */ s32 b19_unk_77c;
-    /* 0x780 */ u8 b19_pad_780[0x794 - 0x780];
-    /* 0x794 */ u8 b19_f_794[0x7b4 - 0x794];
-    /* 0x7b4 */ u8 b19_f_7b4[0x840 - 0x7b4];
-};
 typedef char Unk_ov004_View19_Assert[sizeof(Unk_ov004_View19_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View20_Chk {
-    /* 0x130 */ u8 b20_pad_12c[0x534 - 0x130];
-    /* 0x534 */ u8 b20_f_534[0x6c8 - 0x534];
-    /* 0x6c8 */ u8 b20_f_6c8[0x73c - 0x6c8];
-    /* 0x73c */ u8 b20_f_73c[0x744 - 0x73c];
-    /* 0x744 */ u8 b20_f_744[0x760 - 0x744];
-    /* 0x760 */ u8 b20_f_760[0x768 - 0x760];
-    /* 0x768 */ u32 b20_unk_768;
-    /* 0x76c */ u8 b20_pad_76c[0x77c - 0x76c];
-    /* 0x77c */ u32 b20_unk_77c;
-    /* 0x780 */ u32 b20_unk_780;
-    /* 0x784 */ u8 b20_pad_784[0x840 - 0x784];
-};
 typedef char Unk_ov004_View20_Assert[sizeof(Unk_ov004_View20_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View21_Chk {
-    /* 0x130 */ u8 b21_f_12c[0x178 - 0x130];
-    /* 0x178 */ u8 b21_f_178[0x188 - 0x178];
-    /* 0x188 */ u8 b21_f_188[0x1cc - 0x188];
-    /* 0x1cc */ u8 b21_f_1cc[0x24c - 0x1cc];
-    /* 0x24c */ u8 b21_f_24c[0x280 - 0x24c];
-    /* 0x280 */ u32 b21_unk_280;
-    /* 0x284 */ u8 b21_f_284[0x288 - 0x284];
-    /* 0x288 */ u8 b21_f_288[0x534 - 0x288];
-    /* 0x534 */ u8 b21_f_534[0x590 - 0x534];
-    /* 0x590 */ u32 b21_unk_590;
-    /* 0x594 */ u8 b21_f_594[0x628 - 0x594];
-    /* 0x628 */ u8 b21_f_628[0x6c8 - 0x628];
-    /* 0x6c8 */ u8 b21_f_6c8[0x73c - 0x6c8];
-    /* 0x73c */ u8 b21_f_73c[2];
-    /* 0x73e */ u8 b21_f_73e[0x744 - 0x73e];
-    /* 0x744 */ u8 b21_f_744[0x760 - 0x744];
-    /* 0x760 */ u8 b21_f_760[0x768 - 0x760];
-    /* 0x768 */ u32 b21_unk_768;
-    /* 0x76c */ u8 b21_f_76c[0x77a - 0x76c];
-    /* 0x77a */ u8 b21_unk_77a;
-    /* 0x77b */ u8 b21_pad_77b;
-    /* 0x77c */ u32 b21_unk_77c;
-    /* 0x780 */ u8 b21_f_780[0x794 - 0x780];
-    /* 0x794 */ u8 b21_f_794[0x7b4 - 0x794];
-    /* 0x7b4 */ Unk_ov004_0220bc80_V3 b21_unk_7b4;
-    /* 0x7c0 */ u8 b21_f_7c0[0x840 - 0x7c0];
-};
 typedef char Unk_ov004_View21_Assert[sizeof(Unk_ov004_View21_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View22_Chk {
-    /* 0x130 */ u8 b22_f_0f0[0x590 - 0x130];
-    /* 0x590 */ u32 b22_unk_590;
-    /* 0x594 */ u8 b22_f_594[0x73c - 0x594];
-    /* 0x73c */ u8 b22_f_73c[0x760 - 0x73c];
-    /* 0x760 */ u8 b22_f_760[0x77c - 0x760];
-    /* 0x77c */ u32 b22_unk_77c;
-    /* 0x780 */ u32 b22_unk_780;
-    /* 0x784 */ u8 b22_f_784[0x840 - 0x784];
-};
 typedef char Unk_ov004_View22_Assert[sizeof(Unk_ov004_View22_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View23_Chk {
-    /* 0x130 */ u8 b23_pad_12c[0x534 - 0x130];
-    /* 0x534 */ u8 b23_f_534[0x6c8 - 0x534];
-    /* 0x6c8 */ u8 b23_f_6c8[0x73c - 0x6c8];
-    /* 0x73c */ u8 b23_f_73c[0x744 - 0x73c];
-    /* 0x744 */ u8 b23_f_744[0x760 - 0x744];
-    /* 0x760 */ u8 b23_f_760[0x768 - 0x760];
-    /* 0x768 */ u32 b23_unk_768;
-    /* 0x76c */ u8 b23_pad_76c[0x77c - 0x76c];
-    /* 0x77c */ u32 b23_unk_77c;
-    /* 0x780 */ u32 b23_unk_780;
-    /* 0x784 */ u8 b23_pad_784[0x840 - 0x784];
-};
 typedef char Unk_ov004_View23_Assert[sizeof(Unk_ov004_View23_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View24_Chk {
-    /* 0x130 */ u8 b24_pad_130[0x590 - 0x130];
-    /* 0x590 */ void *b24_unk_590;
-    /* 0x594 */ u8 b24_pad_594[0x5d0 - 0x594];
-    /* 0x5d0 */ u8 b24_unk_5d0[0x10];
-    /* 0x5e0 */ u32 b24_unk_5e0;
-    /* 0x5e4 */ u8 b24_pad_5e4[0x73c - 0x5e4];
-    /* 0x73c */ u8 b24_unk_73c[2];
-    /* 0x73e */ u8 b24_pad_73e[0x7c0 - 0x73e];
-    /* 0x7c0 */ Unk_ov004_02206e74 b24_unk_7c0[4];
-};
 typedef char Unk_ov004_View24_Assert[sizeof(Unk_ov004_View24_Chk) == 0x840 - 0x130 ? 1 : -1];
 
-struct Unk_ov004_View25_Chk {
-    /* 0x130 */ u8 b25_pad_12c[0x534 - 0x130];
-    /* 0x534 */ u8 b25_f_534[0x590 - 0x534];
-    /* 0x590 */ u32 b25_unk_590;
-    /* 0x594 */ u8 b25_pad_594[0x5d0 - 0x594];
-    /* 0x5d0 */ u8 b25_f_5d0[0x6c8 - 0x5d0];
-    /* 0x6c8 */ u8 b25_f_6c8[0x73c - 0x6c8];
-    /* 0x73c */ u8 b25_f_73c[0x744 - 0x73c];
-    /* 0x744 */ u8 b25_f_744[0x768 - 0x744];
-    /* 0x768 */ u32 b25_unk_768;
-    /* 0x76c */ u8 b25_pad_76c[0x77c - 0x76c];
-    /* 0x77c */ u32 b25_unk_77c;
-    /* 0x780 */ u8 b25_pad_780[0x794 - 0x780];
-    /* 0x794 */ u8 b25_f_794[0x7b4 - 0x794];
-    /* 0x7b4 */ u8 b25_f_7b4[0x840 - 0x7b4];
-};
 typedef char Unk_ov004_View25_Assert[sizeof(Unk_ov004_View25_Chk) == 0x840 - 0x130 ? 1 : -1];
 
 class FtrActor;
@@ -7941,48 +7693,41 @@ const Unk_ov004_02240078_Row sFtrBedLieOffsets[3] = {{0, 0}, {data_ov004_0224fac
 FxVec3 *data_ov004_02249028[3] = {0, data_ov004_0224fc84, data_ov004_0224fc9c};
 
 // ---- .data: the 34 registration entries {factory, id range, 0, 0xc8000, 0x12c000, 0x258000}; main refers to them by address only
-typedef void (*Unk_ov004_Factory)();
-struct Unk_ov004_SceneEntry {
-    Unk_ov004_Factory create;
-    u16 executePriority;
-    u16 drawPriority;
-    u32 unk_08[4];
-};
 extern "C" {
-Unk_ov004_SceneEntry sFtrCompassProfile = {(Unk_ov004_Factory)FtrCompass_Create, 0x44, 0x4b, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrVillagerPicProfile = {(Unk_ov004_Factory)FtrVillagerPic_Create, 0x45, 0x4c, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrPhoneProfile = {(Unk_ov004_Factory)FtrPhone_Create, 0x4f, 0x56, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrClockProfile = {(Unk_ov004_Factory)FtrClock_Create, 0x39, 0x40, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrStereoProfile = {(Unk_ov004_Factory)FtrStereo_Create, 0x3a, 0x41, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrInstrumentProfile = {(Unk_ov004_Factory)FtrInstrument_Create, 0x46, 0x4d, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrPiggyBankProfile = {(Unk_ov004_Factory)FtrPiggyBank_Create, 0x47, 0x4e, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrMetronomeProfile = {(Unk_ov004_Factory)FtrMetronome_Create, 0x48, 0x4f, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrBasicProfile = {(Unk_ov004_Factory)FtrBasic_Create, 0x2f, 0x36, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrTvProfile = {(Unk_ov004_Factory)FtrTv_Create, 0x3b, 0x42, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrKind02Profile = {(Unk_ov004_Factory)FtrKind02_Create, 0x30, 0x37, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrKind03Profile = {(Unk_ov004_Factory)FtrKind03_Create, 0x31, 0x38, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrTvVcrProfile = {(Unk_ov004_Factory)FtrTvVcr_Create, 0x3c, 0x43, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrKind04Profile = {(Unk_ov004_Factory)FtrKind04_Create, 0x32, 0x39, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrKind05Profile = {(Unk_ov004_Factory)FtrKind05_Create, 0x33, 0x3a, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrCartProfile = {(Unk_ov004_Factory)FtrCart_Create, 0x3d, 0x44, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrGyroidProfile = {(Unk_ov004_Factory)FtrGyroid_Create, 0x3e, 0x45, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrWallpaperSampleProfile = {(Unk_ov004_Factory)FtrWallpaperSample_Create, 0x49, 0x50, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrKind06Profile = {(Unk_ov004_Factory)FtrKind06_Create, 0x34, 0x3b, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrCarpetSampleProfile = {(Unk_ov004_Factory)FtrCarpetSample_Create, 0x4a, 0x51, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrKind25Profile = {(Unk_ov004_Factory)FtrKind25_Create, 0x4b, 0x52, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrHeadwearProfile = {(Unk_ov004_Factory)FtrHeadwear_Create, 0x4c, 0x53, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrKind07Profile = {(Unk_ov004_Factory)FtrKind07_Create, 0x35, 0x3c, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrKind19Profile = {(Unk_ov004_Factory)FtrKind19_Create, 0x3f, 0x46, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrSeatProfile = {(Unk_ov004_Factory)FtrSeat_Create, 0x36, 0x3d, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrBedProfile = {(Unk_ov004_Factory)FtrBed_Create, 0x37, 0x3e, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrCannonProfile = {(Unk_ov004_Factory)FtrCannon_Create, 0x40, 0x47, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrComputerProfile = {(Unk_ov004_Factory)FtrComputer_Create, 0x4d, 0x54, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrNookwayProfile = {(Unk_ov004_Factory)FtrNookway_Create, 0x50, 0x57, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrShirtProfile = {(Unk_ov004_Factory)FtrShirt_Create, 0x41, 0x48, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrStorageProfile = {(Unk_ov004_Factory)FtrStorage_Create, 0x38, 0x3f, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrMyDesignProfile = {(Unk_ov004_Factory)FtrMyDesign_Create, 0x42, 0x49, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrSingingInsectProfile = {(Unk_ov004_Factory)FtrSingingInsect_Create, 0x4e, 0x55, {0x0, 0xc8000, 0x12c000, 0x258000}};
-Unk_ov004_SceneEntry sFtrDesignDisplayProfile = {(Unk_ov004_Factory)FtrDesignDisplay_Create, 0x43, 0x4a, {0x0, 0xc8000, 0x12c000, 0x258000}};
+Unk_ov004_SceneEntry sFtrCompassProfile = {(void *(*)())FtrCompass_Create, 0x44, 0x4b, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrVillagerPicProfile = {(void *(*)())FtrVillagerPic_Create, 0x45, 0x4c, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrPhoneProfile = {(void *(*)())FtrPhone_Create, 0x4f, 0x56, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrClockProfile = {(void *(*)())FtrClock_Create, 0x39, 0x40, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrStereoProfile = {(void *(*)())FtrStereo_Create, 0x3a, 0x41, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrInstrumentProfile = {(void *(*)())FtrInstrument_Create, 0x46, 0x4d, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrPiggyBankProfile = {(void *(*)())FtrPiggyBank_Create, 0x47, 0x4e, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrMetronomeProfile = {(void *(*)())FtrMetronome_Create, 0x48, 0x4f, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrBasicProfile = {(void *(*)())FtrBasic_Create, 0x2f, 0x36, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrTvProfile = {(void *(*)())FtrTv_Create, 0x3b, 0x42, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrKind02Profile = {(void *(*)())FtrKind02_Create, 0x30, 0x37, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrKind03Profile = {(void *(*)())FtrKind03_Create, 0x31, 0x38, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrTvVcrProfile = {(void *(*)())FtrTvVcr_Create, 0x3c, 0x43, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrKind04Profile = {(void *(*)())FtrKind04_Create, 0x32, 0x39, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrKind05Profile = {(void *(*)())FtrKind05_Create, 0x33, 0x3a, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrCartProfile = {(void *(*)())FtrCart_Create, 0x3d, 0x44, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrGyroidProfile = {(void *(*)())FtrGyroid_Create, 0x3e, 0x45, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrWallpaperSampleProfile = {(void *(*)())FtrWallpaperSample_Create, 0x49, 0x50, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrKind06Profile = {(void *(*)())FtrKind06_Create, 0x34, 0x3b, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrCarpetSampleProfile = {(void *(*)())FtrCarpetSample_Create, 0x4a, 0x51, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrKind25Profile = {(void *(*)())FtrKind25_Create, 0x4b, 0x52, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrHeadwearProfile = {(void *(*)())FtrHeadwear_Create, 0x4c, 0x53, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrKind07Profile = {(void *(*)())FtrKind07_Create, 0x35, 0x3c, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrKind19Profile = {(void *(*)())FtrKind19_Create, 0x3f, 0x46, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrSeatProfile = {(void *(*)())FtrSeat_Create, 0x36, 0x3d, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrBedProfile = {(void *(*)())FtrBed_Create, 0x37, 0x3e, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrCannonProfile = {(void *(*)())FtrCannon_Create, 0x40, 0x47, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrComputerProfile = {(void *(*)())FtrComputer_Create, 0x4d, 0x54, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrNookwayProfile = {(void *(*)())FtrNookway_Create, 0x50, 0x57, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrShirtProfile = {(void *(*)())FtrShirt_Create, 0x41, 0x48, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrStorageProfile = {(void *(*)())FtrStorage_Create, 0x38, 0x3f, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrMyDesignProfile = {(void *(*)())FtrMyDesign_Create, 0x42, 0x49, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrSingingInsectProfile = {(void *(*)())FtrSingingInsect_Create, 0x4e, 0x55, 0x0, 0xc8000, 0x12c000, 0x258000};
+Unk_ov004_SceneEntry sFtrDesignDisplayProfile = {(void *(*)())FtrDesignDisplay_Create, 0x43, 0x4a, 0x0, 0xc8000, 0x12c000, 0x258000};
 }
 
 // ---- .data: names (model / animation / sound resource names used by the classes above)

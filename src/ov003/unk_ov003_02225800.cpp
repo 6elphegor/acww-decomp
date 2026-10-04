@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/Unk_020cbb18_Ptr.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 struct Unk_0203389c_Vec {
@@ -628,10 +629,6 @@ struct Unk_ov003_022269b8_Obj {
     void *specialAnimFiles[2];
 };
 
-struct Unk_020cbb18_Ptr {
-    u8 unk_00[0x64];
-    u32 myAid;
-};
 
 struct Unk_ov003_02226768_Vec : Unk_ov003_02226180_Vec {
     Unk_ov003_02226768_Vec() {}
@@ -912,10 +909,6 @@ struct Unk_ov003_0225980c_Rec {
 
 typedef Unk_ov003_0225980c_Rec Rec;
 
-struct Unk_020cbb18_Ptr {
-    u8 unk_00[0x64];
-    u32 myAid;
-};
 
 struct Unk_ov003_02234c6c_Ent {
     void (*fn)(Rec *);
@@ -1116,10 +1109,6 @@ struct Unk_ov003_02227cd0_Rec {
 
 typedef Unk_ov003_02227cd0_Rec Rec;
 
-struct Unk_020cbb18_Ptr {
-    u8 unk_00[0x64];
-    u32 myAid;
-};
 
 class Unk_ov003_02227f20_Slot {
 public:
@@ -1959,10 +1948,6 @@ struct Unk_ov003_0222adc4_Rec {
 
 typedef Unk_ov003_0222adc4_Rec Rec;
 
-struct Unk_020cbb18_Ptr {
-    u8 unk_00[0x64];
-    u32 myAid;
-};
 
 extern "C" {
 extern Unk_020cbb18_Ptr *gCommManager;
@@ -2091,10 +2076,6 @@ struct Unk_ov003_0222b6e0_Rec {
 
 typedef Unk_ov003_0222b6e0_Rec Rec;
 
-struct Unk_020cbb18_Ptr {
-    u8 unk_00[0x64];
-    u32 myAid;
-};
 
 struct Unk_ov003_0222bb28_V3 : V3 {
     Unk_ov003_0222bb28_V3() {}
@@ -2231,10 +2212,6 @@ struct Unk_ov003_0222adc4_Rec {
 
 typedef Unk_ov003_0222adc4_Rec Rec;
 
-struct Unk_020cbb18_Ptr {
-    u8 unk_00[0x64];
-    u32 myAid;
-};
 
 struct Unk_02095204_Obj {
     u8 pad_00[0x5c];
@@ -2373,10 +2350,6 @@ struct Unk_ov003_0222c9e0_Rec {
 
 typedef Unk_ov003_0222c9e0_Rec Rec;
 
-struct Unk_020cbb18_Ptr {
-    u8 unk_00[0x64];
-    u32 myAid;
-};
 
 extern "C" {
 extern Unk_020cbb18_Ptr *gCommManager;
@@ -2494,10 +2467,6 @@ struct Unk_ov003_0222d350_Rec {
 
 typedef Unk_ov003_0222d350_Rec Rec;
 
-struct Unk_020cbb18_Ptr {
-    u8 unk_00[0x64];
-    u32 myAid;
-};
 
 extern "C" {
 extern Unk_020cbb18_Ptr *gCommManager;
@@ -2639,10 +2608,6 @@ struct Unk_ov003_0222dd54_Rec {
 
 typedef Unk_ov003_0222dd54_Rec Rec;
 
-struct Unk_020cbb18_Ptr {
-    u8 unk_00[0x64];
-    u32 myAid;
-};
 
 struct Unk_02095204_Obj {
     u8 pad_00[0x5c];

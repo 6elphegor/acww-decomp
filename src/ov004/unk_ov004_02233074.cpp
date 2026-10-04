@@ -2,6 +2,7 @@
 // ov004 TU32: .text 0x02233074-0x02235fd0 (furniture/TV resource slots, tile placement helpers, actor tables, scene object 0224e9d8)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "game/Unk_ov004_Vec3.h"
 
 // other modules' symbols by their real names
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
@@ -54,9 +55,6 @@
 
 
 
-struct Unk_ov004_Vec3 {
-    s32 x, y, z;
-};
 
 struct Unk_ov004_02235528_V3 {
     s32 x, y, z;

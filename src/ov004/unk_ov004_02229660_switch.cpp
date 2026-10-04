@@ -2,6 +2,9 @@
 // ov004 TU26: .text 0x02229660-0x0222a374 (class RoomTelephone). The switch function at 0x02229c20
 // (RoomTelephone::onChoice) needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
+#include "room/Unk_ov004_0224e2b8_Ent.h"
+#include "gfx/Unk_ov004_Quad.h"
+#include "actor/Unk_ov004_SceneEntry.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -490,28 +493,8 @@ public:
 
 typedef void (RoomTelephone::*Unk_ov004_0224e2b8_Fn)();
 
-struct Unk_ov004_0224e2b8_Ent {
-    Unk_ov004_0224e2b8_Fn enter;
-    Unk_ov004_0224e2b8_Fn exit;
-};
 
-struct Unk_ov004_SceneEntry {
-    RoomTelephone *(*factory)();
-    u16 id;
-    u16 size;
-    u32 zero;
-    u32 a, b, c;
-};
 
-struct Unk_ov004_Quad {
-    u8 a, b, c, d;
-    Unk_ov004_Quad(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
 
 extern "C" {
 extern const u8 sRoomTelephoneChoiceMsgs[3];

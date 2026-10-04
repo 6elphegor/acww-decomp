@@ -1,31 +1,15 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "game/Unk_020b4f8c_Vec.h"
+#include "game/Unk_020b4f8c.h"
 
 // ov011: map scene tables (a scene record, its entry list, the id grid).
 // Generated from the original image; the definition order below
 // reproduces the original data/bss order (mwcc size heapsort) and the __sinit order.
 
 // 12-byte vector with a copy constructor (so it is passed by address of a copy)
-struct Unk_020b4f8c_Vec {
-    s32 x, y, z;
-    Unk_020b4f8c_Vec(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-    Unk_020b4f8c_Vec(const Unk_020b4f8c_Vec &o) {
-        x = o.x;
-        y = o.y;
-        z = o.z;
-    }
-};
 
 // 0x1c-byte map object: constructor 0x020b4f8c, destructor 0x020b4fc0 (both in main)
-struct Unk_020b4f8c {
-    u8 pad[0x1c];
-    Unk_020b4f8c(u8 id, Unk_020b4f8c_Vec v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t);
-    ~Unk_020b4f8c();
-};
 
 struct Unk_ov011_Entry {  // one list of the scene: kind 2 = ids (u32), 1 and 0 = 20-byte records
     u8 kind;
