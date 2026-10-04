@@ -6,11 +6,11 @@
 
 // Villager talk topic state functions: the remaining topic state functions (greetings, memories, errands, items, ...). Views of the VillagerTalk object; base of the next topic class (ov069 chain).
 // Members defined in src/main/unk_0201c050.cpp. The member-pointer fields are typed with VillagerTalkRequestItemTopics; that unit casts them to its per-class types.
-struct Unk_0201d2d0_Data;
+struct TalkTopic;
 struct Unk_0201d2d0_Out;
-struct Unk_02022608_Ent;
-struct Unk_020289f8_S;
-struct Unk_0202b4ac_Rec;
+struct FishSpawnRow;
+struct ClockDateTime;
+struct VillagerStateView;
 struct Unk_0202bd3c_Arr;
 
 class VillagerTalkTopics : public VillagerTalkRequestReplyTopics {
@@ -71,7 +71,7 @@ public:
     BOOL selectTsuFoAct();
     BOOL selectTsuFiAct();
     BOOL selectTsuInAct();
-    void selectTsuActMessage(s32 r1, Unk_0201d2d0_Data *d);
+    void selectTsuActMessage(s32 r1, TalkTopic *d);
     BOOL selectTsuHobbyHint();
     BOOL selectTsuNoHint();
     BOOL selectTsuSeHint();
@@ -80,7 +80,7 @@ public:
     BOOL selectTsuClHint();
     BOOL selectTsuFoHint();
     s32 selectTsuFiHint();
-    void setFishTimeSlot(s32 a, u16 *p, s32 c, Unk_02022608_Ent **arr, s32 last);
+    void setFishTimeSlot(s32 a, u16 *p, s32 c, FishSpawnRow **arr, s32 last);
     s32 selectTsuInHint();
     void selectEtcCancel(Unk_0201d2d0_Out *out);
     void selectQ10Leave(Unk_0201d2d0_Out *out);
@@ -181,7 +181,7 @@ public:
     void continueDeliveryReceived();
     void selectDeliveryReceived(Unk_0201d2d0_Out *out);
     void onDeliveryItemPicked();
-    void func_02027424();
+    void reopenWindow();
     void selectQIcancel(Unk_0201d2d0_Out *out);
     void openDeliveryItemPicker();
     void selectQTimeover(Unk_0201d2d0_Out *out);
@@ -199,7 +199,7 @@ public:
     s32 pickRandomOtherVillager();
     s32 tryAddActiveRequestChoice(void *a, void *b);
     BOOL tryAddVisitReminderChoice(void *a, void *b, u32 c);
-    void setVisitTimeArgs(Unk_020289f8_S *p);
+    void setVisitTimeArgs(ClockDateTime *p);
     BOOL tryAddCollectRequestChoice(void *a, void *b, u32 c);
     s32 openFossilRequestMenu();
     s32 openShirtRequestMenu();
@@ -250,14 +250,14 @@ public:
     BOOL isMoodTired(s32 x);
     BOOL isMoodSad(s32 x);
     BOOL isMoodAngry(s32 x);
-    Unk_0201d2d0_Data *getBeeStingTopic(u32 *out, Unk_0202b4ac_Rec *rec);
-    BOOL isPlayerStung(Unk_0202b4ac_Rec *rec);
+    TalkTopic *getBeeStingTopic(u32 *out, VillagerStateView *rec);
+    BOOL isPlayerStung(VillagerStateView *rec);
     BOOL hasFleas();
-    Unk_0201d2d0_Data *getPoisonTopic(s32 x);
+    TalkTopic *getPoisonTopic(s32 x);
     BOOL findDangerousInsect(volatile s32 *out, void *p);
-    Unk_0201d2d0_Data *getForeignTopic();
+    TalkTopic *getForeignTopic();
     BOOL isForeignMemory(s32 x);
-    Unk_0201d2d0_Data *getFirstMeetingTopic(u32 *out, void *scene);
+    TalkTopic *getFirstMeetingTopic(u32 *out, void *scene);
     BOOL isFirstMeeting(s32 x);
     BOOL isBeeSwarmOut();
     BOOL hasFallen();

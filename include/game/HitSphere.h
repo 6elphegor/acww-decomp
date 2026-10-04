@@ -5,7 +5,7 @@
 #include "types.h"
 
 struct Unk_0202e918_Vec3;
-struct Unk_0202e918_Cap;
+class CollisionSegment;
 
 struct HitSphere {
     /* 0x0 */ s32 centerX;
@@ -15,7 +15,7 @@ struct HitSphere {
 
     HitSphere();
     ~HitSphere();
-    BOOL intersectSegment(Unk_0202e918_Vec3 *out, Unk_0202e918_Cap *cap);
+    BOOL intersectSegment(Unk_0202e918_Vec3 *out, CollisionSegment *cap);
     void set(Unk_0202e918_Vec3 *p, s32 r);
 };
 

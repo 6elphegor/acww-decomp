@@ -6,6 +6,7 @@
 #include "game/CollisionTriangle.h"
 #include "game/CollisionCylinder.h"
 #include "game/CollisionEdge.h"
+#include "game/CollisionSegment.h"
 
 
 extern "C" {
@@ -37,21 +38,6 @@ inline BOOL CollisionEdge::hasRoundEnds() { return TRUE; }
 
 // ---- triangle (vtable 0x020d8ccc) ----
 
-class CollisionSegment {
-public:
-    Unk_0202f660_V3 start;
-    Unk_0202f660_V3 end;
-    Unk_0202f660_V3 dir;
-
-    BOOL isBetweenEnds(Unk_0202f660_V3 *pt);
-    void projectPoint(Unk_0202f660_V3 *out, Unk_0202f660_V3 *pt);
-    s32 closestPoint(Unk_0202f660_V3 *out, Unk_0202f660_V3 *pt);
-    void set(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
-    s32 distanceTo(Unk_0202f660_V3 *pt);
-    s32 calcDir(Unk_0202f660_V3 *out);
-    ~CollisionSegment();
-    CollisionSegment(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
-};
 
 
 

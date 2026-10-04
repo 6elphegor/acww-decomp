@@ -299,7 +299,7 @@ void GroundInfo_Destruct(Unk_020b60dc_Cell *x);
 s32 _ZN14GroundInfoBase9getHeightEi(Unk_020b60dc_Cell *x, s32 k);
 void _ZN16CollisionSegmentC1EP15Unk_0202f660_V3S1_(Unk_020b60dc_Line *l, Vec3 *a, Vec3 *b);
 void _ZN16CollisionSegmentD1Ev(Unk_020b60dc_Line *l);
-BOOL _ZN9HitSphere16intersectSegmentEP17Unk_0202e918_Vec3P16Unk_0202e918_Cap(void *n, Vec3 *out, Unk_020b60dc_Line *l);
+BOOL _ZN9HitSphere16intersectSegmentEP17Unk_0202e918_Vec3P16CollisionSegment(void *n, Vec3 *out, Unk_020b60dc_Line *l);
 void TouchPick_CalcRay(Basis *out, s32 a, s32 b);
 BOOL TouchPick_HitCylinder(Vec3 *out, Vec3 *in, void *node, s32 a, s32 b);
 BOOL TouchPick_HitWorldDrum(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d);
@@ -643,7 +643,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
     while (n != 0) {
         Unk_020b60dc_Line l;
         _ZN16CollisionSegmentC1EP15Unk_0202f660_V3S1_(&l, &p0, &p1);
-        if (_ZN9HitSphere16intersectSegmentEP17Unk_0202e918_Vec3P16Unk_0202e918_Cap(n, &ip, &l)) {
+        if (_ZN9HitSphere16intersectSegmentEP17Unk_0202e918_Vec3P16CollisionSegment(n, &ip, &l)) {
             Vec3 m2;
             WorldCurve_FromCurved(&m2, (Vec3 *)n);
             self->targetX = m2.x;

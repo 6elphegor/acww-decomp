@@ -1,5 +1,7 @@
 #include "types.h"
 #include "game/HitSphere.h"
+#include "game/Unk_0202f2ac_V3.h"
+#include "game/CollisionSegment.h"
 #include "sys/ProcBase.h"
 
 
@@ -35,10 +37,6 @@ struct Unk_0202e918_Vec3 {
     Unk_0202e918_Vec3(s32 px, s32 py, s32 pz) { x = px; y = py; z = pz; }
 };
 
-struct Unk_0202e918_Cap {
-    u8 pad_00[0x18];
-    s32 dirX, dirY, dirZ;
-};
 
 
 
@@ -61,13 +59,13 @@ void HitSphere::set(Unk_0202e918_Vec3 *p, s32 r) {
     radius = r;
 }
 
-BOOL HitSphere::intersectSegment(Unk_0202e918_Vec3 *out, Unk_0202e918_Cap *cap) {
+BOOL HitSphere::intersectSegment(Unk_0202e918_Vec3 *out, CollisionSegment *cap) {
     s32 z;
     s32 r = radius;
     if (_ZN16CollisionSegment10distanceToEP15Unk_0202f660_V3(cap, this) <= r) {
-        z = centerZ + func_01ffcb0c(cap->dirZ, radius);
-        s32 y = centerY + func_01ffcb0c(cap->dirY, radius);
-        s32 x = centerX + func_01ffcb0c(cap->dirX, radius);
+        z = centerZ + func_01ffcb0c(cap->dir.z, radius);
+        s32 y = centerY + func_01ffcb0c(cap->dir.y, radius);
+        s32 x = centerX + func_01ffcb0c(cap->dir.x, radius);
         Unk_0202e918_Vec3 a(x, y, z);
         Unk_0202e918_Vec3 b(centerX - x, centerY - y, centerZ - z);
         s64 s1 = func_01ffd028(cap, &a);

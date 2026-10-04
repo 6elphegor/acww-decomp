@@ -13,8 +13,8 @@
 // start-up (the NULL members are copied from __ptmf_null) and func_ov069_0225f1a0 copies them into main's tables.
 
 struct Unk_0201d2d0_Out;
-struct Unk_0201dc44_Ret;
-struct Unk_0201e5a4_Out;
+struct HolidayTopicMsg;
+struct AcornTopicMsg;
 struct Unk_0201ef00_Out;
 struct Unk_0201f7d0_Out;
 struct Unk_020238b0_Out;
