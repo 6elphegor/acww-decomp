@@ -7,7 +7,7 @@
 // Members defined in src/main/unk_02055c38.cpp (0x02056fcc-0x02057120).
 class G3dResAccess {
 public:
-    u32 func_02056fcc(s32 a);
+    u32 findNodeIdx(s32 a);
     u32 getPlttSize(s32 idx);
     void findPlttData(void);
     void *getPlttData(s32 idx);

@@ -39,7 +39,7 @@
 #define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 #define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
 #define PooledModel_getModel _ZN11PooledModel8getModelEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define ModelAnim_init _ZN9ModelAnim4initEiiit

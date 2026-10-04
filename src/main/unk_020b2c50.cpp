@@ -20,7 +20,7 @@ u32 Msg_GetCharAt(u32 a, u32 b);
 int strcmp(const u8 *a, const u8 *b);
 void MI_CpuFill8(void *dst, u32 value, u32 size);
 s32 FX_Modf(s32 v, s32 *out);
-int func_020639e8(char *dst, const char *fmt, ...);
+int Str_SPrintf(char *dst, const char *fmt, ...);
 char *Msg_SkipLines(char *p, u32 n);
 void func_02133ef8(void *p, u32 n);
 }
@@ -1011,7 +1011,7 @@ void StringBank::reset() {
 
 BOOL StringBank::load(StringMsgRequest *req) {
     char path[0x44];
-    func_020639e8(path, "%s/%s.bmg", req->getMsgDir(), req->fileName);
+    Str_SPrintf(path, "%s/%s.bmg", req->getMsgDir(), req->fileName);
     BOOL ok = reader.open(path);
     BOOL t = ok ? reader.loadMessage(&req->msgIndex) : FALSE;
     ok = ok & t;

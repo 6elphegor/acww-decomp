@@ -1,11 +1,11 @@
 #include "types.h"
 
-struct Unk_0204f178_Item {
+struct FishSpawnEntry {
     u8 fishIndex, habitat, weight;
 };
 
-struct Unk_0204f178_Row {
-    Unk_0204f178_Item *entries;
+struct FishSpawnRow {
+    FishSpawnEntry *entries;
     u8 numEntries;
 };
 
@@ -142,7 +142,7 @@ extern u8 sFishEntriesSepLateDawnDuskSea[56];
 extern u8 sFishEntriesSepLateDayFresh[56];
 extern u8 sFishEntriesJulNightSea[56];
 extern u8 sFishEntriesAugEarlyDawnDuskSea[56];
-extern Unk_0204f178_Row **sFishTablesByPeriod[14];
+extern FishSpawnRow **sFishTablesByPeriod[14];
 extern u8 sFishEntriesAugLateDayFresh[60];
 extern u8 sFishEntriesSepEarlyDawnDuskSea[60];
 extern u8 sFishEntriesSepEarlyDayFresh[60];
@@ -418,21 +418,21 @@ u8 sFishEntriesJulNightSea[56] = {
     0x39, 0x06, 0x02, 0x3a, 0x06, 0x02, 0x00, 0x00
 };
 
-Unk_0204f178_Row **sFishTablesByPeriod[14] = {
-    (Unk_0204f178_Row **)sFishTableJan,
-    (Unk_0204f178_Row **)sFishTableFeb,
-    (Unk_0204f178_Row **)sFishTableMar,
-    (Unk_0204f178_Row **)sFishTableApr,
-    (Unk_0204f178_Row **)sFishTableMay,
-    (Unk_0204f178_Row **)sFishTableJun,
-    (Unk_0204f178_Row **)sFishTableJul,
-    (Unk_0204f178_Row **)sFishTableAugEarly,
-    (Unk_0204f178_Row **)sFishTableAugLate,
-    (Unk_0204f178_Row **)sFishTableSepEarly,
-    (Unk_0204f178_Row **)sFishTableSepLate,
-    (Unk_0204f178_Row **)sFishTableOct,
-    (Unk_0204f178_Row **)sFishTableNov,
-    (Unk_0204f178_Row **)sFishTableDec
+FishSpawnRow **sFishTablesByPeriod[14] = {
+    (FishSpawnRow **)sFishTableJan,
+    (FishSpawnRow **)sFishTableFeb,
+    (FishSpawnRow **)sFishTableMar,
+    (FishSpawnRow **)sFishTableApr,
+    (FishSpawnRow **)sFishTableMay,
+    (FishSpawnRow **)sFishTableJun,
+    (FishSpawnRow **)sFishTableJul,
+    (FishSpawnRow **)sFishTableAugEarly,
+    (FishSpawnRow **)sFishTableAugLate,
+    (FishSpawnRow **)sFishTableSepEarly,
+    (FishSpawnRow **)sFishTableSepLate,
+    (FishSpawnRow **)sFishTableOct,
+    (FishSpawnRow **)sFishTableNov,
+    (FishSpawnRow **)sFishTableDec
 };
 
 u8 sFishEntriesOctDawnDuskFresh[52] = {

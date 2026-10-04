@@ -38,7 +38,7 @@ u32 Scene_GetMaxCharacters(u32 a);
 u32 NpcSpawn_GetSpNpcSlotCount();
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 File_LoadToBuffer(void *name, void *buf, s32 size);
-void func_020639e8(void *buf, const char *fmt, u32 a, u32 b);
+void Str_SPrintf(void *buf, const char *fmt, u32 a, u32 b);
 
 u32 CharaFaceAnim_GetKind(u32 x);
 u32 CharaFaceAnim_GetSlotSize();
@@ -58,7 +58,7 @@ extern "C" void CharaFaceAnimPool_Destroy() {
 }
 
 extern "C" u8 *CharaFaceAnim_GetPath(u32 x) {
-    func_020639e8(sCharaFaceAnimPathBuf, "/FcAnm/%d/%d.nsbtp", x >> 5, x);
+    Str_SPrintf(sCharaFaceAnimPathBuf, "/FcAnm/%d/%d.nsbtp", x >> 5, x);
     return sCharaFaceAnimPathBuf;
 }
 

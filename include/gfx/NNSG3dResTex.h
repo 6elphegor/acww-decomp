@@ -3,8 +3,8 @@
 
 #include "types.h"
 
-// NitroSystem G3D TEX0 block (NNSG3dResTex, partial) with its dictionary records (NNSG3dResDict, entry header,
-// palette entry), parsed in src/main/unk_020abea8.cpp and unk_020ac750.cpp. G3dResAccess views the same block.
+// NitroSystem G3D TEX0 block (NNSG3dResTex, partial; block header {kind, size}) with its dictionary records
+// (NNSG3dResDict, entry header, palette entry), parsed in src/main/unk_020abea8.cpp and unk_020ac750.cpp. G3dResAccess views the same block.
 
 struct NNSG3dResDictEntryHeader {
     /* 0x0 */ u16 sizeUnit;
@@ -20,8 +20,13 @@ struct NNSG3dResDict {
     /* 0x6 */ u16 ofsEntry;
 };
 
+struct NNSG3dResDataBlockHeader {
+    /* 0x0 */ u32 kind;
+    /* 0x4 */ u32 size;
+};
+
 struct NNSG3dResTex {
-    /* 0x00 */ u8 pad_00[8];
+    /* 0x00 */ NNSG3dResDataBlockHeader header;
     /* 0x08 */ u32 texKey;
     /* 0x0c */ u8 pad_0c[0x20];
     /* 0x2c */ u32 plttKey;

@@ -24,7 +24,7 @@ void *__cxa_vec_ctor(void *p, u32 n, u32 size, void *ctor, void *dtor);
 void *__cxa_vec_cleanup(void *p, u32 n, u32 size, void *dtor);
 void _ZN11MsgString33D1Ev(void *);
 void _ZN11MsgString33C1Ev(void *);
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 void String_GetDayOrdinal(void *, s32);
 void String_GetMonthName(void *, s32);
 s32 _ZN9MsgString4copyEPS_(void *, void *);
@@ -457,9 +457,9 @@ BOOL MailTextBuilder::load(MailMsgRequest *p) {
     char buf[0x44];
     u32 s = p->getPartDir();
     if (s != 0) {
-        func_020639e8(buf, "%s/%s/%s.bmg", p->getMsgDir(), s, (char *)p + 4);
+        Str_SPrintf(buf, "%s/%s/%s.bmg", p->getMsgDir(), s, (char *)p + 4);
     } else {
-        func_020639e8(buf, "%s/%s.bmg", p->getMsgDir(), (char *)p + 4);
+        Str_SPrintf(buf, "%s/%s.bmg", p->getMsgDir(), (char *)p + 4);
     }
     BOOL a = ((BmgReader *)reader)->open(buf);
     BOOL b = a ? ((BmgReader *)reader)->loadMessage(&p->msgIndex) : 0;

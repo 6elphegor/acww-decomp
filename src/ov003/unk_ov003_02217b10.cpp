@@ -10,7 +10,7 @@
 // TU18 of ov003: ground helper class FieldGroundBackdrop (0x02217b10-0x02217be8) and the six colour constants of its header
 
 
-struct Unk_020553f8_Res;
+struct NNSG3dResMdl;
 
 
 

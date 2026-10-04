@@ -111,7 +111,7 @@ void MenuCtrl_TickForceClose();
 void PlayerData_GetCurrent();
 void PlayerData_GetDresser();
 s32 ChestStorage_GetItems();
-s32 func_020639e8(char *buf, char *fmt, ...);
+s32 Str_SPrintf(char *buf, char *fmt, ...);
 BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
 void Oam_DrawObj(u32 a, void *p, u32 b, u32 c, s32 d, u32 e, u32 f);
 }
@@ -612,7 +612,7 @@ void ChestMenu::loadTopBg() {
 void ChestMenu::loadPage() {
     char buf[0x24];
     s32 h = gCurrentHeap;
-    func_020639e8(buf, "menu/inventory/ten%d.bpl", currentPage);
+    Str_SPrintf(buf, "menu/inventory/ten%d.bpl", currentPage);
     Gfx2d_LoadPaletteFile(buf, h, 4, 3, 3, 5);
     InventoryItemGrid_LoadBox(&itemGrid, ChestMenu_GetPageItems(this));
 }

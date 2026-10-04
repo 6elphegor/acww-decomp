@@ -130,7 +130,7 @@ void *PrioList_FindById(void *, u32);
 }
 
 extern "C" {
-void func_020652dc(void *, void *);
+void PrioList_PushBack(void *, void *);
 }
 
 extern "C" {
@@ -231,7 +231,7 @@ BOOL Character::preCreate() {
 
 void Character::postCreate(s32 a) {
     if (a == 2) {
-        func_020652dc(&gCharacterList, &charNode);
+        PrioList_PushBack(&gCharacterList, &charNode);
     }
     _ZN5Actor10postCreateEv(this, a);
 }

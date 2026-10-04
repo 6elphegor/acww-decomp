@@ -27,7 +27,7 @@ void DC_StoreAll();
 void DC_FlushAll();
 void func_021163b0(void *st, void *dst, void *src);
 s32 func_021162b0(void *st, void *p, s32 n);
-s32 func_020639c0(char *buf, u32 n, const char *fmt, va_list va);
+s32 Str_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
 extern void *gCurrentHeap;
 extern void *gRootHeap;
 
@@ -199,7 +199,7 @@ s32 File_ReadAll(Unk_02063d18_File *f, void *dst, u32 n) {
 
 s32 File_LoadAllocV(s32 a, s32 b, s32 c, const char *fmt, va_list va) {
     char buf[0x80];
-    func_020639c0(buf, 0x80, fmt, va);
+    Str_VSNPrintf(buf, 0x80, fmt, va);
     File_LoadAlloc((u32)buf, (void *)a, b, (u32 *)c);
 }
 
@@ -219,7 +219,7 @@ void File_LoadToBufferF(u32 a, u32 b, const char *fmt, ...) {
     char buf[0x80];
     va_list va;
     va_start(va, fmt);
-    func_020639c0(buf, 0x80, fmt, va);
+    Str_VSNPrintf(buf, 0x80, fmt, va);
     File_LoadToBuffer(buf, (void *)a, b);
 }
 

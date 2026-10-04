@@ -50,7 +50,7 @@ BOOL FishShadow_CheckReelResult(void *p);
 BOOL FishShadow_TryHook(void *p);
 void *NNS_G3dGetTex(void *p);
 void File_LoadToBuffer(char *name, void *p, u32 size);
-s32 func_020639e8(char *buf, char *fmt, ...);
+s32 Str_SPrintf(char *buf, char *fmt, ...);
 s32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(s32 a);
 u32 Scene_GetMaxCharacters(s32 a);
@@ -132,11 +132,11 @@ public:
     void freeBuffers();
     void allocBuffers();
 
-    void *unk_00[9];
-    TexVramSlot unk_24[9];
-    TexVramTask unk_d8[9];
-    CachedModel unk_1d4[9];
-    FishBobber *unk_750[9];
+    void *modelBuffers[9];
+    TexVramSlot texSlots[9];
+    TexVramTask texTasks[9];
+    CachedModel models[9];
+    FishBobber *bobbers[9];
 };
 
 
@@ -203,7 +203,7 @@ extern "C" FishBobber *FishBobber_GetFloating(s32 idx)
 
 extern "C" char *FishBobber_GetModelPath(u32 n)
 {
-    func_020639e8(sFishBobberPathBuf, "/PItm/Uki0/%d.nsbmd", n);
+    Str_SPrintf(sFishBobberPathBuf, "/PItm/Uki0/%d.nsbmd", n);
     return sFishBobberPathBuf;
 }
 
@@ -219,8 +219,8 @@ FishBobberPool::FishBobberPool()
 {
     s32 i;
     for (i = 0; i < 9; i++) {
-        unk_00[i] = 0;
-        unk_750[i] = 0;
+        modelBuffers[i] = 0;
+        bobbers[i] = 0;
     }
 }
 
@@ -246,21 +246,21 @@ void FishBobberPool::allocBuffers()
     for (i = 0; i < n; i++) {
         u32 x = FishBobber_GetTexVramSize();
         u32 y = FishBobber_GetTex4x4VramSize();
-        unk_24[i].alloc((void *)x, (void *)y, (void *)FishBobber_GetPlttVramSize());
+        texSlots[i].alloc((void *)x, (void *)y, (void *)FishBobber_GetPlttVramSize());
     }
     for (i = 4; i < m + 4; i++) {
         u32 x = FishBobber_GetTexVramSize();
         u32 y = FishBobber_GetTex4x4VramSize();
-        unk_24[i].alloc((void *)x, (void *)y, (void *)FishBobber_GetPlttVramSize());
+        texSlots[i].alloc((void *)x, (void *)y, (void *)FishBobber_GetPlttVramSize());
     }
     u32 heap = gFishBobberHeap;
     for (i = 0; i < n; i++) {
-        unk_00[i] = Heap_AllocAligned(heap, FishBobber_GetModelSize(), 4);
+        modelBuffers[i] = Heap_AllocAligned(heap, FishBobber_GetModelSize(), 4);
     }
     u32 j = 4;
     a = 4;
     for (; j < m + 4; j++) {
-        unk_00[j] = Heap_AllocAligned(heap, FishBobber_GetModelSize(), a);
+        modelBuffers[j] = Heap_AllocAligned(heap, FishBobber_GetModelSize(), a);
     }
 }
 
@@ -268,11 +268,11 @@ void FishBobberPool::freeBuffers()
 {
     s32 i;
     for (i = 0; i < 9; i++) {
-        unk_24[i].clear();
+        texSlots[i].clear();
     }
     for (i = 0; i < 9; i++) {
-        unk_00[i] = 0;
-        unk_750[i] = 0;
+        modelBuffers[i] = 0;
+        bobbers[i] = 0;
     }
     if (gFishBobberHeap != 0) {
         Heap_freeAll();
@@ -281,22 +281,22 @@ void FishBobberPool::freeBuffers()
 
 void *FishBobberPool::getModelBuffer(s32 idx)
 {
-    return unk_00[idx];
+    return modelBuffers[idx];
 }
 
 TexVramSlot *FishBobberPool::getTexSlot(s32 idx)
 {
-    return &unk_24[idx];
+    return &texSlots[idx];
 }
 
 TexVramTask *FishBobberPool::getTexTask(s32 idx)
 {
-    return &unk_d8[idx];
+    return &texTasks[idx];
 }
 
 CachedModel *FishBobberPool::getModel(s32 idx)
 {
-    return &unk_1d4[idx];
+    return &models[idx];
 }
 
 void FishBobber::construct()
@@ -341,10 +341,10 @@ void FishBobber::detach()
 
 void FishBobberPool::cancelTexUpload(s32 idx)
 {
-    if (Unk_0205fbfc_Is1(unk_d8[idx].state)) {
-        unk_d8[idx].cancel();
+    if (Unk_0205fbfc_Is1(texTasks[idx].state)) {
+        texTasks[idx].cancel();
     } else {
-        unk_d8[idx].clear();
+        texTasks[idx].clear();
     }
 }
 
@@ -376,7 +376,7 @@ BOOL FishBobberPool::pollTexUpload(s32 idx)
 
 void FishBobberPool::setBobber(s32 idx, FishBobber *p)
 {
-    unk_750[idx] = p;
+    bobbers[idx] = p;
 }
 
 FishBobber *FishBobberPool::getFloatingBobber(s32 idx)
@@ -384,7 +384,7 @@ FishBobber *FishBobberPool::getFloatingBobber(s32 idx)
     if (idx >= 4) {
         return 0;
     }
-    FishBobber *p = unk_750[idx];
+    FishBobber *p = bobbers[idx];
     if (p != 0 && p->curState == 4) {
         return p;
     }

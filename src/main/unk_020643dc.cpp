@@ -2,6 +2,9 @@
 #include "Unk_020d8c7c.h"
 #include "game/LightLevel.h"
 #include "gfx/Camera.h"
+#include "gfx/Mtx43.h"
+#include "sys/ListNode.h"
+#include "sys/PrioListNode.h"
 
 struct Unk_02064674_Vec { s32 x, y, z; };
 
@@ -13,7 +16,7 @@ struct Unk_02064674_Color {
     u16 b : 5;
 };
 
-struct Unk_02064870_Time {
+struct MinuteHour {
     u16 v;
 };
 
@@ -85,7 +88,7 @@ struct SceneLight {
     /* 0x38 */ Unk_02064674_Vec direction;
 };
 
-struct Unk_0206513c_Def {
+struct SceneLightDef {
     /* 0x00 */ s32 lightKind;
     /* 0x04 */ s32 lightId;
     /* 0x08 */ u16 timeOffset;
@@ -94,12 +97,12 @@ struct Unk_0206513c_Def {
     /* 0x12 */ s16 dirYaw;
 };
 
-struct Unk_0206513c_DefList {
+struct SceneLightDefList {
     /* 0x00 */ s32 numLights;
-    /* 0x04 */ const Unk_0206513c_Def *const *defs;
+    /* 0x04 */ const SceneLightDef *const *defs;
 };
 
-struct Unk_02065078_Rec {
+struct SceneLightColorSet {
     /* 0x00 */ u16 lampColorOn;
     /* 0x02 */ u16 roomColorOn;
     /* 0x04 */ s16 lampDirPitch;
@@ -108,30 +111,10 @@ struct Unk_02065078_Rec {
     /* 0x09 */ u8 unk_09;
 };
 
-struct Unk_02064fa8_Data {
-    /* 0x00 */ u8 unk_00[0x24];
-};
-
-struct Unk_020652c0_Node {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ Unk_020652c0_Node *next;
+struct IdListNode {
+    /* 0x00 */ s32 prev;
+    /* 0x04 */ IdListNode *next;
     /* 0x08 */ s32 id;
-};
-
-struct Unk_020652c0_List {
-    /* 0x00 */ Unk_020652c0_Node *head;
-    /* 0x04 */ Unk_020652c0_Node *tail;
-};
-
-struct Unk_020652ec_Node {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ Unk_020652ec_Node *next;
-    /* 0x08 */ u8 priority;
-};
-
-struct Unk_020652ec_List {
-    /* 0x00 */ Unk_020652ec_Node *head;
-    /* 0x04 */ Unk_020652ec_Node *tail;
 };
 
 struct Unk_02064d6c_Rgb {
@@ -170,10 +153,10 @@ struct Unk_021c9f40_Color {
 };
 
 // Flags and values at sLightSwitchState (0x14 bytes).
-struct Unk_021c9f5c {
-    u8 flag[2];
-    u32 b[2];
-    u32 a[2];
+struct LightSwitchState {
+    u8 isOn[2];
+    u32 switchModes[2];
+    u32 fadeFrames[2];
 };
 
 // Scene registration entry: constructor, two halfwords.
@@ -188,17 +171,17 @@ struct Unk_020b22ac_Dummy;
 extern "C" {
 extern u8 gFieldSceneKind;
 extern Camera *gCamera;
-extern Unk_02064fa8_Data gViewMtx;
+extern Mtx43 gViewMtx;
 }
 
 extern SceneLights *gSceneLights;
-extern Unk_021c9f5c sLightSwitchState;
+extern LightSwitchState sLightSwitchState;
 extern const u16 sFlashLightColors[];
 extern const u16 sThunderSeIds[];
 extern const u16 sThunderSeIdsAlt[];
 extern const u8 sSceneLightSetupIds[];
-extern const Unk_02065078_Rec sSceneLightColors[];
-extern const Unk_0206513c_DefList *sSceneLightSetups[];
+extern const SceneLightColorSet sSceneLightColors[];
+extern const SceneLightDefList *sSceneLightSetups[];
 
 extern "C" {
 void G3_MultMtx33(void *m);
@@ -210,8 +193,8 @@ void Vec_RotateY(Unk_02064674_Vec *v, s32 a);
 s32 Vec_SafeNormalize(Unk_02064674_Vec *v);
 s32 VEC_Mag(Unk_02064674_Vec *v);
 s32 func_01ffcb0c(s32 a, s32 b);
-void Clock_GetMinuteHour(Unk_02064870_Time *t);
-void Time_AddHourMinute(Unk_02064870_Time a, Unk_02064870_Time b, Unk_02064870_Time *out);
+void Clock_GetMinuteHour(MinuteHour *t);
+void Time_AddHourMinute(MinuteHour a, MinuteHour b, MinuteHour *out);
 s32 Scene_InTown();
 s32 Scene_InTownUnk31();
 void Snd_PlaySe(u32 a);
@@ -255,40 +238,40 @@ static inline void Unk_02064d6c_Adjust(Unk_02064d6c_Rgb *c) {
     }
 }
 
-extern "C" void PrioList_Init(Unk_020652c0_List *list) {
+extern "C" void PrioList_Init(List *list) {
     list->head = NULL;
     list->tail = NULL;
 }
 
-extern "C" BOOL PrioList_Insert(Unk_020652ec_List *list, Unk_020652ec_Node *node) {
-    Unk_020652ec_Node *prev = list->head;
+extern "C" BOOL PrioList_Insert(List *list, PrioListNode *node) {
+    PrioListNode *prev = (PrioListNode *)list->head;
     if (prev == NULL) {
-        list->head = node;
-        list->tail = node;
+        list->head = (ListNode *)node;
+        list->tail = (ListNode *)node;
         return TRUE;
     }
-    Unk_020652ec_Node *cur = prev->next;
+    PrioListNode *cur = (PrioListNode *)prev->next;
     while (cur != NULL) {
         if (cur->priority > node->priority) {
             List_InsertAfter(list, node, prev);
             return TRUE;
         }
         prev = cur;
-        cur = cur->next;
+        cur = (PrioListNode *)cur->next;
     }
     List_InsertAfter(list, node, prev);
     return TRUE;
 }
 
-extern "C" BOOL func_020652dc(void) {
+extern "C" BOOL PrioList_PushBack(void) {
     List_PushBack();
     return TRUE;
 }
 
-extern "C" Unk_020652c0_Node *PrioList_FindById(Unk_020652c0_List *list, s32 key) {
+extern "C" IdListNode *PrioList_FindById(List *list, s32 key) {
     if (key == 0) return NULL;
-    Unk_020652c0_Node *p;
-    for (p = list->head; p != NULL; p = p->next) {
+    IdListNode *p;
+    for (p = (IdListNode *)list->head; p != NULL; p = p->next) {
         if (key == p->id) return p;
     }
     return NULL;
@@ -311,14 +294,14 @@ void SceneLights::setupLights() {
         LightSwitch_SetOff(0, 1);
     }
     LightSwitch_SetOff(1, 1);
-    const Unk_0206513c_DefList *dl = sSceneLightSetups[setupKind];
-    const Unk_0206513c_Def *const *list = dl->defs;
+    const SceneLightDefList *dl = sSceneLightSetups[setupKind];
+    const SceneLightDef *const *list = dl->defs;
     s32 count = dl->numLights;
     numLights = count;
     i = 0;
-    const Unk_02065078_Rec *rec = &sSceneLightColors[id];
+    const SceneLightColorSet *rec = &sSceneLightColors[id];
     for (; i < count; i++) {
-        Unk_0206513c_Def d = *list[i];
+        SceneLightDef d = *list[i];
         lights[i].lightKind = d.lightKind;
         lights[i].lightId = d.lightId;
         lights[i].timeOffset = d.timeOffset;
@@ -350,7 +333,7 @@ BOOL SceneLights::onCreate() {
         roomColorOff = 0x518c;
         lightParam = 0xb;
     } else {
-        const Unk_02065078_Rec *rec = &sSceneLightColors[id];
+        const SceneLightColorSet *rec = &sSceneLightColors[id];
         lampColorOn = rec->lampColorOn;
         lampColorOff = 0;
         roomColorOn = rec->roomColorOn;
@@ -742,20 +725,20 @@ BOOL LightSwitch::sync(s32 mode)
     switch (mode) {
     case 3:
     case 4:
-        v = sLightSwitchState.flag[0];
+        v = sLightSwitchState.isOn[0];
         if (isOn != v) {
             isOn = v;
-            switchMode = sLightSwitchState.b[0];
-            fadeFrames = sLightSwitchState.a[0];
+            switchMode = sLightSwitchState.switchModes[0];
+            fadeFrames = sLightSwitchState.fadeFrames[0];
             r = TRUE;
         }
         break;
     case 5:
-        v = sLightSwitchState.flag[1];
+        v = sLightSwitchState.isOn[1];
         if (isOn != v) {
             isOn = v;
-            switchMode = sLightSwitchState.b[1];
-            fadeFrames = sLightSwitchState.a[1];
+            switchMode = sLightSwitchState.switchModes[1];
+            fadeFrames = sLightSwitchState.fadeFrames[1];
             r = TRUE;
         }
         break;
@@ -767,7 +750,7 @@ extern "C" void SceneLight_InitStub(void *) {}
 
 s16 SceneLight::getTimeAngle()
 {
-    Unk_02064870_Time res, tm, now;
+    MinuteHour res, tm, now;
     tm.v = timeOffset;
     Clock_GetMinuteHour(&now);
     Time_AddHourMinute(now, tm, &res);
@@ -961,40 +944,40 @@ void SceneLight::apply(void *m)
 
 extern "C" void LightSwitch_SetOn(s32 i, u32 a, u32 b)
 {
-    sLightSwitchState.flag[i] = 1;
-    sLightSwitchState.a[i] = a;
-    sLightSwitchState.b[i] = b;
+    sLightSwitchState.isOn[i] = 1;
+    sLightSwitchState.fadeFrames[i] = a;
+    sLightSwitchState.switchModes[i] = b;
 }
 
 extern "C" void LightSwitch_SetOff(s32 i, u32 v)
 {
-    sLightSwitchState.flag[i] = 0;
-    sLightSwitchState.a[i] = v;
+    sLightSwitchState.isOn[i] = 0;
+    sLightSwitchState.fadeFrames[i] = v;
 }
 
 SceneLight::~SceneLight() {}
 
 // ---- data (definition order = creation order, solved by inverting the heapsort)
-extern const Unk_0206513c_DefList sSceneLightSetup2;
-extern const Unk_0206513c_DefList sSceneLightSetup1;
-extern const Unk_0206513c_DefList sSceneLightSetup0;
-extern const Unk_0206513c_DefList sSceneLightSetup4;
-extern const Unk_0206513c_DefList sSceneLightSetup3;
-extern const Unk_0206513c_Def sSceneLightDefSky0L0;
-extern const Unk_0206513c_Def sSceneLightDefSky1L3;
-extern const Unk_0206513c_Def sSceneLightDefSky2L1;
-extern const Unk_0206513c_Def sSceneLightDefSky0L0Tilted;
-extern const Unk_0206513c_Def sSceneLightDefSwitchL3;
-extern const Unk_0206513c_Def sSceneLightDefSwitchL0;
-extern const Unk_0206513c_Def sSceneLightDefLampL0;
-extern const Unk_0206513c_Def sSceneLightDefWarmL1;
-extern const Unk_0206513c_Def *sSceneLightSetup2Defs[1];
-extern const Unk_0206513c_Def *sSceneLightSetup3Defs[2];
-extern const Unk_0206513c_Def *sSceneLightSetup0Defs[3];
-extern const Unk_0206513c_Def *sSceneLightSetup4Defs[3];
-extern const Unk_0206513c_Def *sSceneLightSetup1Defs[3];
+extern const SceneLightDefList sSceneLightSetup2;
+extern const SceneLightDefList sSceneLightSetup1;
+extern const SceneLightDefList sSceneLightSetup0;
+extern const SceneLightDefList sSceneLightSetup4;
+extern const SceneLightDefList sSceneLightSetup3;
+extern const SceneLightDef sSceneLightDefSky0L0;
+extern const SceneLightDef sSceneLightDefSky1L3;
+extern const SceneLightDef sSceneLightDefSky2L1;
+extern const SceneLightDef sSceneLightDefSky0L0Tilted;
+extern const SceneLightDef sSceneLightDefSwitchL3;
+extern const SceneLightDef sSceneLightDefSwitchL0;
+extern const SceneLightDef sSceneLightDefLampL0;
+extern const SceneLightDef sSceneLightDefWarmL1;
+extern const SceneLightDef *sSceneLightSetup2Defs[1];
+extern const SceneLightDef *sSceneLightSetup3Defs[2];
+extern const SceneLightDef *sSceneLightSetup0Defs[3];
+extern const SceneLightDef *sSceneLightSetup4Defs[3];
+extern const SceneLightDef *sSceneLightSetup1Defs[3];
 
-extern const Unk_02065078_Rec sSceneLightColors[51] = {
+extern const SceneLightColorSet sSceneLightColors[51] = {
     {0x0000, 0x0000, 0, 0, 11, 0},
     {0x67de, 0x31ef, 4096, 4096, 11, 0},
     {0x67de, 0x31ef, 4096, 4096, 11, 0},
@@ -1047,40 +1030,40 @@ extern const Unk_02065078_Rec sSceneLightColors[51] = {
     {0x0000, 0x0000, 0, 0, 11, 0},
     {0x0000, 0x0000, 4096, 4096, 11, 0},
 };
-const Unk_0206513c_Def *sSceneLightSetup1Defs[3] = {&sSceneLightDefSky0L0Tilted, &sSceneLightDefSky2L1, &sSceneLightDefSwitchL3};
-extern const Unk_0206513c_Def sSceneLightDefSwitchL0 = {3, 0, 0, 1, 0x1000, 0x1000};
+const SceneLightDef *sSceneLightSetup1Defs[3] = {&sSceneLightDefSky0L0Tilted, &sSceneLightDefSky2L1, &sSceneLightDefSwitchL3};
+extern const SceneLightDef sSceneLightDefSwitchL0 = {3, 0, 0, 1, 0x1000, 0x1000};
 // ---- .data
-const Unk_0206513c_Def *sSceneLightSetup2Defs[1] = {&sSceneLightDefSwitchL0};
+const SceneLightDef *sSceneLightSetup2Defs[1] = {&sSceneLightDefSwitchL0};
 extern const u16 sThunderSeIdsAlt[2] = {0x07f3, 0};
 // ---- .bss (in __sinit construction order)
 Unk_021c9f40_Color data_021c9f58(31, 20, 20, 31);
-extern const Unk_0206513c_DefList sSceneLightSetup1 = {3, sSceneLightSetup1Defs};
-extern const Unk_0206513c_DefList sSceneLightSetup0 = {3, sSceneLightSetup0Defs};
-const Unk_0206513c_Def *sSceneLightSetup0Defs[3] = {&sSceneLightDefSky0L0, &sSceneLightDefSky1L3, &sSceneLightDefSky2L1};
+extern const SceneLightDefList sSceneLightSetup1 = {3, sSceneLightSetup1Defs};
+extern const SceneLightDefList sSceneLightSetup0 = {3, sSceneLightSetup0Defs};
+const SceneLightDef *sSceneLightSetup0Defs[3] = {&sSceneLightDefSky0L0, &sSceneLightDefSky1L3, &sSceneLightDefSky2L1};
 extern const u8 sSceneLightSetupIds[0x34] = {
     0, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 2, 2, 2, 2, 3, 2, 2, 2, 2, 2, 4, 4, 2, 0, 0, 0, 1, 2, 1, 2, 0, 2, 0};
-const Unk_0206513c_DefList *sSceneLightSetups[5] = {&sSceneLightSetup0, &sSceneLightSetup1, &sSceneLightSetup2, &sSceneLightSetup3, &sSceneLightSetup4};
-extern const Unk_0206513c_Def sSceneLightDefSky2L1 = {2, 1, 0xc00, 1, 0, 0};
-extern const Unk_0206513c_Def sSceneLightDefSky0L0Tilted = {0, 0, 0, 0, -0x2000, 0};
-extern const Unk_0206513c_DefList sSceneLightSetup4 = {3, sSceneLightSetup4Defs};
-const Unk_0206513c_Def *sSceneLightSetup4Defs[3] = {&sSceneLightDefSky0L0Tilted, &sSceneLightDefSky2L1, &sSceneLightDefSwitchL3};
+const SceneLightDefList *sSceneLightSetups[5] = {&sSceneLightSetup0, &sSceneLightSetup1, &sSceneLightSetup2, &sSceneLightSetup3, &sSceneLightSetup4};
+extern const SceneLightDef sSceneLightDefSky2L1 = {2, 1, 0xc00, 1, 0, 0};
+extern const SceneLightDef sSceneLightDefSky0L0Tilted = {0, 0, 0, 0, -0x2000, 0};
+extern const SceneLightDefList sSceneLightSetup4 = {3, sSceneLightSetup4Defs};
+const SceneLightDef *sSceneLightSetup4Defs[3] = {&sSceneLightDefSky0L0Tilted, &sSceneLightDefSky2L1, &sSceneLightDefSwitchL3};
 // ---- .rodata
 extern const u16 sThunderSeIds[2] = {0x04cf, 0};
-extern const Unk_0206513c_Def sSceneLightDefSwitchL3 = {3, 3, 0, 1, 0x1000, 0x1000};
-extern const Unk_0206513c_Def sSceneLightDefWarmL1 = {5, 1, 0, 1, 0x1000, 0x1000};
-extern const Unk_0206513c_DefList sSceneLightSetup3 = {2, sSceneLightSetup3Defs};
+extern const SceneLightDef sSceneLightDefSwitchL3 = {3, 3, 0, 1, 0x1000, 0x1000};
+extern const SceneLightDef sSceneLightDefWarmL1 = {5, 1, 0, 1, 0x1000, 0x1000};
+extern const SceneLightDefList sSceneLightSetup3 = {2, sSceneLightSetup3Defs};
 extern const u16 sFlashLightColors[8] = {0x0922, 0x08c9, 0x30c3, 0x30a9, 0x1224, 0x1192, 0x5da6, 0x5531};
 Unk_020dd3b8 sSceneLightsProfile = {SceneLights_Create, 7, 5};
 Unk_021c9f40_Color data_021c9f54(20, 20, 31, 31);
 Unk_021c9f40_Color data_021c9f50(31, 31, 20, 31);
-extern const Unk_0206513c_DefList sSceneLightSetup2 = {1, sSceneLightSetup2Defs};
-const Unk_0206513c_Def *sSceneLightSetup3Defs[2] = {&sSceneLightDefLampL0, &sSceneLightDefWarmL1};
+extern const SceneLightDefList sSceneLightSetup2 = {1, sSceneLightSetup2Defs};
+const SceneLightDef *sSceneLightSetup3Defs[2] = {&sSceneLightDefLampL0, &sSceneLightDefWarmL1};
 Unk_021c9f40_Color data_021c9f48(20, 31, 20, 31);
-Unk_021c9f5c sLightSwitchState;
-extern const Unk_0206513c_Def sSceneLightDefSky0L0 = {0, 0, 0, 0, 0, 0};
+LightSwitchState sLightSwitchState;
+extern const SceneLightDef sSceneLightDefSky0L0 = {0, 0, 0, 0, 0, 0};
 Unk_021c9f40_Color data_021c9f4c(20, 31, 31, 31);
 Unk_021c9f40_Color data_021c9f40(20, 24, 24, 31);
-extern const Unk_0206513c_Def sSceneLightDefLampL0 = {4, 0, 0, 1, 0x1000, 0x1000};
-extern const Unk_0206513c_Def sSceneLightDefSky1L3 = {1, 3, 0, 0, 0, 0};
+extern const SceneLightDef sSceneLightDefLampL0 = {4, 0, 0, 1, 0x1000, 0x1000};
+extern const SceneLightDef sSceneLightDefSky1L3 = {1, 3, 0, 0, 0, 0};
 SceneLights *gSceneLights;

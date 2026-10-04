@@ -31,7 +31,7 @@ void Heap_freeAll(void *p);
 #define Heap_adjust _ZN4Heap6adjustEv
 void Heap_adjust(void *p);
 void *Heap_AllocAligned(void *h, s32 size, s32 align);
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 PlayerPaletteHeap_Destroy();
 s32 PlayerPaletteHeap_Create();
 void PlayerPalettePool_FreeBuffers(u32 *a);
@@ -76,7 +76,7 @@ void GroundInfo_Destruct(void *p);
 
 
 struct PlayerPalettePool {
-    u32 unk_00[4];
+    u32 buffers[4];
     PlayerPalettePool();
     ~PlayerPalettePool();
 };
@@ -177,7 +177,7 @@ extern "C" void ItemSync_SetAtUnit(s32 a, s32 b, s32 c, s32 d, s32 e)
 extern "C" void PlayerPalettePool_Create()
 {
     PlayerPaletteHeap_Create();
-    PlayerPalettePool_AllocBuffers(sPlayerPalettePool.unk_00);
+    PlayerPalettePool_AllocBuffers(sPlayerPalettePool.buffers);
     if (gPlayerPaletteHeap) {
         Heap_adjust(gPlayerPaletteHeap);
     }
@@ -185,13 +185,13 @@ extern "C" void PlayerPalettePool_Create()
 
 extern "C" void PlayerPalettePool_Destroy()
 {
-    PlayerPalettePool_FreeBuffers(sPlayerPalettePool.unk_00);
+    PlayerPalettePool_FreeBuffers(sPlayerPalettePool.buffers);
     PlayerPaletteHeap_Destroy();
 }
 
 char *PlayerPalette_GetPath(u32 x)
 {
-    func_020639e8(sPlayerPalettePathBuf, "/PPal/%d/%d.nsbtx", x >> 5, x);
+    Str_SPrintf(sPlayerPalettePathBuf, "/PPal/%d/%d.nsbtx", x >> 5, x);
     return sPlayerPalettePathBuf;
 }
 
@@ -263,7 +263,7 @@ extern "C" void PlayerPaletteRef_SetSlot(u8 *p, u8 v)
 
 extern "C" s32 PlayerPaletteRef_GetSkin(u8 *p)
 {
-    return PlayerPalettePool_GetBuffer(sPlayerPalettePool.unk_00, *p);
+    return PlayerPalettePool_GetBuffer(sPlayerPalettePool.buffers, *p);
 }
 
 extern "C" s32 PlayerPaletteRef_GetHair(u8 *p)

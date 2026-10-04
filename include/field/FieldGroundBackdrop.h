@@ -6,7 +6,7 @@
 #include "types.h"
 #include "gfx/CachedModel.h"
 
-struct Unk_020553f8_Res;
+struct NNSG3dResMdl;
 
 class FieldGroundBackdrop {
 public:
@@ -17,7 +17,7 @@ public:
     void clear();
 
     /* 0x00 */ CachedModel model;
-    /* 0x9c */ Unk_020553f8_Res *modelRes;
+    /* 0x9c */ NNSG3dResMdl *modelRes;
 };
 
 #endif // FIELD_FIELDGROUNDBACKDROP_H

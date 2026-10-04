@@ -13,7 +13,7 @@
 // TU19 of ov003: ground part classes 0x02217be8 / 0x02217dbc and the scene 0x02232418 (0x02217be8-0x022187f8)
 
 
-struct Unk_020553f8_Res;
+struct NNSG3dResMdl;
 
 
 // ---- main-module helper classes ----
@@ -26,7 +26,7 @@ struct Unk_020553f8_Res;
 
 struct Unk_ov003_02217c3c_P {
     u8 pad_00[8];
-    Unk_020553f8_Res *modelRes;
+    NNSG3dResMdl *modelRes;
     u8 pad_0c[0x14];
     u32 groundTex;
 };
@@ -573,7 +573,7 @@ BOOL FieldGroundPiece::setup(Unk_ov003_02217910_V3 *pos, s32 idx) {
     position.z = pos->z;
     Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)BgModelCache_getAcre(BgModelCache_Get(), sFieldGroundPieceAcres[idx]);
     s32 t = BgModelCache_getGroundTex(BgModelCache_Get());
-    Unk_020553f8_Res *res = e->modelRes;
+    NNSG3dResMdl *res = e->modelRes;
     ((Model *)&model)->setResourceAndBind(res, t);
     if (matAnims[0].allocMatAnm((u32)res, gBgHeap)) {
         matAnims[0].init(BgModelCache_getGroundMatAnm(BgModelCache_Get()), 0, 0x1000, 0);
@@ -638,7 +638,7 @@ BOOL FieldGroundBlock::init(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) {
     Unk_ov003_02217c3c_P *p = o->bgModel;
     u32 q = p->groundTex;
     if (q != 0) t = q;
-    Unk_020553f8_Res *res = p->modelRes;
+    NNSG3dResMdl *res = p->modelRes;
     ((Model *)&model)->setResourceAndBind(res, t);
     if (matAnims[0].allocMatAnm((u32)res, gBgHeap)) {
         matAnims[0].init(BgModelCache_getGroundMatAnm(BgModelCache_Get()), 0, 0x1000, 0);

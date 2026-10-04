@@ -109,7 +109,7 @@ void Gfx2d_ShowLayer(u32 v);
 void Gfx2d_SetSubAlphaBlend(void *a, void *b, u32 c);
 void Gfx2d_ResetSubBlend();
 void Gfx2d_HideLayer(u32 v);
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 void Gfx2d_LoadCharFile(const char *buf, u32 *font, u32 a, s32 b, s32 c, s32 d);
 void Gfx2d_LoadPaletteFileSlot(const char *buf, u32 *font, u32 a, u8 b, s32 c);
 s32 Item_GetInfoUnk02(u32 v);
@@ -918,9 +918,9 @@ void CreatureBook_LoadPicture(S *s) {
     default:
         return;
     }
-    func_020639e8(sCreaturePicPath, "%s/%d/%d_%02d.bch", sCreaturePicDir, q, q, c);
+    Str_SPrintf(sCreaturePicPath, "%s/%d/%d_%02d.bch", sCreaturePicDir, q, q, c);
     Gfx2d_LoadCharFile(sCreaturePicPath, font, s->pictureLayer, 0x11, 0x11, 0xa0);
-    func_020639e8(sCreaturePicPath, "%s/%d/%d.bpl", sCreaturePicDir, q, q, c);
+    Str_SPrintf(sCreaturePicPath, "%s/%d/%d.bpl", sCreaturePicDir, q, q, c);
     Gfx2d_LoadPaletteFileSlot(sCreaturePicPath, font, s->pictureLayer, (s32)c % 12, 5);
 }
 

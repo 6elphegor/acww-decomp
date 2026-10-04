@@ -80,7 +80,7 @@ void func_0206267c(void *p);
 void func_02063870(void *p);
 void func_02063888(void *p);
 void TownId_GetNameString(s32 a, void *p);
-s32 func_020639e8(char *buf, const void *fmt, ...);
+s32 Str_SPrintf(char *buf, const void *fmt, ...);
 void File_LoadToBuffer(const void *src, void *dst, s32 n);
 s32 LetterView_getState(void *o);
 s32 LetterView_getPresent(s32 a);
@@ -330,7 +330,7 @@ u8 *ItemIconCache::getIconChars(s32 idx)
     s32 page = idx >> 4;
     if (page != loadedPage) {
         loadedPage = page;
-        func_020639e8(buf, (const char *)data_ov094_02294b94, page);
+        Str_SPrintf(buf, (const char *)data_ov094_02294b94, page);
         File_LoadToBuffer(buf, iconChars, 0x800);
     }
     u8 *r = iconChars;
@@ -341,7 +341,7 @@ u8 *ItemIconCache::getIconChars(s32 idx)
 u8 *ItemIconCache::getPresentChars(s32 idx)
 {
     char buf[0x28];
-    func_020639e8(buf, (const char *)data_ov094_02294b80);
+    Str_SPrintf(buf, (const char *)data_ov094_02294b80);
     File_LoadToBuffer(buf, iconChars, 0x800);
     u8 *r = iconChars;
     r += Menu_GetIconCharIndex(idx) << 5;

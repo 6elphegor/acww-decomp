@@ -127,8 +127,8 @@ extern u8 data_021ed0a0[];
 s32 RoomObjRes_GetBca(void *, u32);
 void *Heap_Alloc(void *heap, u32 size);
 s32 _ZN10MuseumData9isDonatedEPt(void *p, u16 *v);
-s32 func_020639e8(char *buf, const char *fmt, ...);
-s32 _ZN12G3dResAccess13func_02056fccEi(void *p, char *name);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
+s32 _ZN12G3dResAccess11findNodeIdxEi(void *p, char *name);
 s32 _ZN9AnimModel12drawAnimatedEPv(void *p, u32 a);
 s32 _ZN5Model15setInitCallbackEii(void *p, void *fn, void *self);
 void MuseumDisplay_InitRenderObj(void *p);
@@ -254,8 +254,8 @@ void MuseumDisplay::selectNodes() {
         if (_ZN10MuseumData9isDonatedEPt(data_021ed0a0, &v) != 0) {
             f = 1;
         }
-        func_020639e8(sMuseumDisplayNodeName, "p%d_%d", i, f);
-        shownNodes[i] = _ZN12G3dResAccess13func_02056fccEi(F(void *, 0x148), sMuseumDisplayNodeName);
+        Str_SPrintf(sMuseumDisplayNodeName, "p%d_%d", i, f);
+        shownNodes[i] = _ZN12G3dResAccess11findNodeIdxEi(F(void *, 0x148), sMuseumDisplayNodeName);
     }
 }
 

@@ -206,7 +206,7 @@ u32 Villager_GetSpeciesName(u32 a, u32 b);
 }
 
 extern "C" {
-void func_020639e8(void *buf, void *fmt, u32 a, u32 b);
+void Str_SPrintf(void *buf, void *fmt, u32 a, u32 b);
 }
 
 extern "C" {

@@ -33,7 +33,7 @@
 #define func_02054e24 _ZN11CachedModelD1Ev
 #define func_02054e3c _ZN11CachedModelC1Ev
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 #define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
@@ -1007,7 +1007,7 @@ extern u8 sMuseumInsectFrame;
 extern Mtx_7690 data_021f47e0;
 extern u8 data_021ed0a0[];
 void func_02133ef8(void *p, s32 n);
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 BOOL File_Exists(void *s);
 s32 File_LoadAlloc(void *s, s32 a, s32 b, s32 c);
 u32 ModelSlotPool_acquire(void *self, void *p);
@@ -4789,37 +4789,37 @@ extern "C" void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s) {
     func_02133ef8(pth + 1, 0x17);
     t = *(s8 *)(s + 0x196);
     if (t == 0x25 && s[0x22] == 0) {
-        func_020639e8(nm, "/insect/51/bug57");
+        Str_SPrintf(nm, "/insect/51/bug57");
         ((u8 *)sMuseumInsectParams)[t * 4] = 1;
     } else if (t == 0x18) {
-        func_020639e8(nm, "/insect/61/bug%d", 0x3c);
+        Str_SPrintf(nm, "/insect/61/bug%d", 0x3c);
     } else if (t == 0x23) {
-        func_020639e8(nm, "/insect/61/bug61");
+        Str_SPrintf(nm, "/insect/61/bug61");
     } else if (t == 0x38) {
-        func_020639e8(nm, "/insect/61/bug62");
+        Str_SPrintf(nm, "/insect/61/bug62");
     } else if (t < 10) {
-        func_020639e8(nm, "/insect/01/bug0%d", t);
+        Str_SPrintf(nm, "/insect/01/bug0%d", t);
     } else if (t < 0x14) {
-        func_020639e8(nm, "/insect/11/bug%d", t);
+        Str_SPrintf(nm, "/insect/11/bug%d", t);
     } else if (t < 0x1e) {
-        func_020639e8(nm, "/insect/21/bug%d", t);
+        Str_SPrintf(nm, "/insect/21/bug%d", t);
     } else if (t < 0x28) {
-        func_020639e8(nm, "/insect/31/bug%d", t);
+        Str_SPrintf(nm, "/insect/31/bug%d", t);
     } else if (t < 0x32) {
-        func_020639e8(nm, "/insect/41/bug%d", t);
+        Str_SPrintf(nm, "/insect/41/bug%d", t);
     } else {
-        func_020639e8(nm, "/insect/51/bug%d", t);
+        Str_SPrintf(nm, "/insect/51/bug%d", t);
     }
-    func_020639e8(pth + 1, "%s.nsbmd", nm);
+    Str_SPrintf(pth + 1, "%s.nsbmd", nm);
     if (File_Exists(pth + 1)) {
         if (PooledModel_loadFromSlot(mdl, res, pth + 1)) {
             r6 = s + 0xb0;
             Model_setResource(r6, (u32)PooledModel_getModel(mdl), 0);
             rec = ((u8 *)sMuseumInsectParams) + t * 4;
             if (*rec) {
-                func_020639e8(pth + 1, "%s.nsbva", nm);
+                Str_SPrintf(pth + 1, "%s.nsbva", nm);
             } else {
-                func_020639e8(pth + 1, "%s.nsbca", nm);
+                Str_SPrintf(pth + 1, "%s.nsbca", nm);
             }
             if (File_Exists(pth + 1)) {
                 sp10 = ModelSlot_getHeap(res);
@@ -4844,7 +4844,7 @@ extern "C" void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s) {
                         AnimModel_attachAnim(r6);
                     }
                     if (t == 0x18) {
-                        func_020639e8(buf3, "/insect/61/bug%d.nsbta", 0x3c);
+                        Str_SPrintf(buf3, "/insect/61/bug%d.nsbta", 0x3c);
                         ok = FALSE;
                         if (File_Exists(buf3)) {
                             if (File_LoadAlloc(buf3, sp10, 4, ok)) {

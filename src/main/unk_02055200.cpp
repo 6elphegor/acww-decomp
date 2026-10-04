@@ -3,31 +3,22 @@
 #include "gfx/TexVramSlot.h"
 #include "gfx/ModelAnim.h"
 #include "gfx/Model.h"
+#include "gfx/NNSG3dResTex.h"
 
-struct Unk_020553f8_Res {
-    u32 unk_00;
-    u32 unk_04;
-    u32 matOffset;
+struct NNSG3dResMdl {
+    u32 size;
+    u32 ofsSbc;
+    u32 ofsMat;
     u8 unk_0c[0xc];
     u8 numMat;
 };
 
-struct Unk_0205562c_Dict {
-    u8 pad_00[6];
-    u16 entryOffset;
-};
-
-struct Unk_0205562c_Blk {
+struct NNSG3dResMat {
     u32 unk_00;
-    Unk_0205562c_Dict dict;
+    NNSG3dResDict dict;
 };
 
-struct Unk_02055744_Obj {
-    u32 unk_00;
-    u32 blockSize;
-};
-
-struct Unk_02055820_Slot {
+struct ResCacheEntry {
     void *data;
     u32 key;
 };
@@ -35,18 +26,18 @@ struct Unk_02055820_Slot {
 
 
 
-class Unk_020dbe14 {
+class ModelBase {
 public:
-    Unk_020dbe14();
-    virtual ~Unk_020dbe14();
+    ModelBase();
+    virtual ~ModelBase();
 };
 
 
 
 s32 sResCacheModelCount;
 s32 sResCacheTexCount;
-Unk_02055820_Slot sResCacheTexs[0x3c];
-Unk_02055820_Slot sResCacheModels[0x96];
+ResCacheEntry sResCacheTexs[0x3c];
+ResCacheEntry sResCacheModels[0x96];
 
 extern "C" {
 void func_02103d48(void *p, s32 a);
@@ -99,40 +90,40 @@ extern u32 (*data_0213bc10)(u32, u32, u32);
 }
 
 extern "C" {
-BOOL Gfx3d_LoadTexAndPltt(Unk_02055744_Obj *a, u32 b);
-BOOL Gfx3d_LoadPltt(Unk_02055744_Obj *a, u32 b);
-BOOL Gfx3d_LoadPlttWithKey(Unk_02055744_Obj *a, u32 x);
-BOOL Gfx3d_LoadTex(Unk_02055744_Obj *a, u32 b);
-BOOL Gfx3d_LoadTexWithKeys(Unk_02055744_Obj *a, u32 y, u32 z);
+BOOL Gfx3d_LoadTexAndPltt(NNSG3dResTex *a, u32 b);
+BOOL Gfx3d_LoadPltt(NNSG3dResTex *a, u32 b);
+BOOL Gfx3d_LoadPlttWithKey(NNSG3dResTex *a, u32 x);
+BOOL Gfx3d_LoadTex(NNSG3dResTex *a, u32 b);
+BOOL Gfx3d_LoadTexWithKeys(NNSG3dResTex *a, u32 y, u32 z);
 u32 ResCache_FindTex(u32 key);
 u32 ResCache_FindModel(u32 key);
 void *Gfx3d_CopyTex(void *a, void *heap);
 void *Gfx3d_CopyModel(u32 *a, void *heap);
 }
 
-void ModelAnim::initFromResource(Unk_020553f8_Res *a, void *b, u32 c, u32 d, u16 e) {
+void ModelAnim::initFromResource(NNSG3dResMdl *a, void *b, u32 c, u32 d, u16 e) {
     _ZN13AnimFrameCtrl5setupEihit(this, *(u16 *)((u8 *)a + 4), c, d, e);
     NNS_G3dAnmObjInit((void *)anmObj, a, resMdl, (u32)b);
     *(u32 *)anmObj = e << 12;
 }
 
 void ModelAnim::init(s32 a, s32 b, s32 c, u16 e) {
-    initFromResource((Unk_020553f8_Res *)a, NULL, b, c, e);
+    initFromResource((NNSG3dResMdl *)a, NULL, b, c, e);
 }
 
 void ModelAnim::replace(s32 a, s32 b, s32 c, s32 e, u16 f) {
     removeFromRenderObj(a);
-    initFromResource((Unk_020553f8_Res *)b, NULL, c, e, f);
+    initFromResource((NNSG3dResMdl *)b, NULL, c, e, f);
     addToRenderObj(a);
 }
 
 void ModelAnim::initWithTex(s32 a, s32 b, s32 c, s32 e, u16 f) {
-    initFromResource((Unk_020553f8_Res *)a, (void *)b, c, e, f);
+    initFromResource((NNSG3dResMdl *)a, (void *)b, c, e, f);
 }
 
 void ModelAnim::replaceWithTex(s32 a, s32 b, s32 c, u8 d, s32 e, u16 f) {
     removeFromRenderObj(a);
-    initFromResource((Unk_020553f8_Res *)b, (void *)c, d, e, f);
+    initFromResource((NNSG3dResMdl *)b, (void *)c, d, e, f);
     addToRenderObj(a);
 }
 
@@ -144,10 +135,10 @@ void ModelAnim::removeFromRenderObj(u32 a) {
     NNS_G3dRenderObjRemoveAnmObj(a, anmObj);
 }
 
-Unk_020dbe14::Unk_020dbe14() {
+ModelBase::ModelBase() {
 }
 
-Unk_020dbe14::~Unk_020dbe14() {
+ModelBase::~ModelBase() {
 }
 
 extern "C" void ResCache_Init(void) {
@@ -254,14 +245,14 @@ extern "C" void *ResCache_GetTex(void *a, u32 key) {
     return r;
 }
 
-extern "C" BOOL Gfx3d_LoadTexWithKeys(Unk_02055744_Obj *a, u32 y, u32 z) {
+extern "C" BOOL Gfx3d_LoadTexWithKeys(NNSG3dResTex *a, u32 y, u32 z) {
     NNS_G3dTexSetTexKey(a, y, z);
-    DC_FlushRange(a, a->blockSize);
+    DC_FlushRange(a, a->header.size);
     NNS_G3dTexLoad(a, 1);
     return TRUE;
 }
 
-extern "C" BOOL Gfx3d_LoadTex(Unk_02055744_Obj *a, u32 b) {
+extern "C" BOOL Gfx3d_LoadTex(NNSG3dResTex *a, u32 b) {
     u32 y = NNS_G3dTexGetRequiredSize(a);
     u32 z = NNS_G3dTex4x4GetRequiredSize(a);
     if (b != 0) {
@@ -274,14 +265,14 @@ extern "C" BOOL Gfx3d_LoadTex(Unk_02055744_Obj *a, u32 b) {
     return Gfx3d_LoadTexWithKeys(a, y, z);
 }
 
-extern "C" BOOL Gfx3d_LoadPlttWithKey(Unk_02055744_Obj *a, u32 x) {
+extern "C" BOOL Gfx3d_LoadPlttWithKey(NNSG3dResTex *a, u32 x) {
     NNS_G3dPlttSetPlttKey(a, x);
-    DC_FlushRange(a, a->blockSize);
+    DC_FlushRange(a, a->header.size);
     NNS_G3dPlttLoad(a, 1);
     return TRUE;
 }
 
-extern "C" BOOL Gfx3d_LoadPltt(Unk_02055744_Obj *a, u32 b) {
+extern "C" BOOL Gfx3d_LoadPltt(NNSG3dResTex *a, u32 b) {
     u32 x = NNS_G3dPlttGetRequiredSize(a);
     if (b != 0) {
         x = ((TexVramSlot *)b)->makePlttKey(x);
@@ -291,7 +282,7 @@ extern "C" BOOL Gfx3d_LoadPltt(Unk_02055744_Obj *a, u32 b) {
     return Gfx3d_LoadPlttWithKey(a, x);
 }
 
-extern "C" BOOL Gfx3d_LoadTexAndPltt(Unk_02055744_Obj *a, u32 b) {
+extern "C" BOOL Gfx3d_LoadTexAndPltt(NNSG3dResTex *a, u32 b) {
     BOOL r = Gfx3d_LoadTex(a, b);
     return r | Gfx3d_LoadPltt(a, b);
 }
@@ -314,10 +305,10 @@ void Model::reset() {
 
 void Model::initRenderObj() {
     NNS_G3dRenderObjInit(unk_08, resMdl);
-    Unk_0205562c_Blk *b = (Unk_0205562c_Blk *)((u8 *)resMdl + resMdl->matOffset);
+    NNSG3dResMat *b = (NNSG3dResMat *)((u8 *)resMdl + resMdl->ofsMat);
     s32 i;
     for (i = 0; i < resMdl->numMat; i++) {
-        u8 *ent = (u8 *)&b->dict + b->dict.entryOffset;
+        u8 *ent = (u8 *)&b->dict + b->dict.ofsEntry;
         u16 sz = *(u16 *)ent;
         ent += sz * i;
         u32 *p = (u32 *)((u8 *)b + *(u32 *)(ent + 4));
@@ -329,7 +320,7 @@ void Model::initRenderObj() {
     NNSi_G3dModifyMatFlag(resMdl, 0, 0x400);
 }
 
-BOOL Model::setResourceAndBind(Unk_020553f8_Res *a, u32 b) {
+BOOL Model::setResourceAndBind(NNSG3dResMdl *a, u32 b) {
     resMdl = a;
     resTex = b;
     if (resTex != 0) {
@@ -340,7 +331,7 @@ BOOL Model::setResourceAndBind(Unk_020553f8_Res *a, u32 b) {
     return TRUE;
 }
 
-BOOL Model::setResource(Unk_020553f8_Res *a, u32 b) {
+BOOL Model::setResource(NNSG3dResMdl *a, u32 b) {
     resMdl = a;
     resTex = b;
     initRenderObj();
@@ -429,12 +420,12 @@ void Model::setInitCallback(s32 a, s32 b) {
 
 void Model::setPolygonId(u32 v) {
     s32 i;
-    Unk_0205562c_Blk *b;
-    b = (Unk_0205562c_Blk *)((u8 *)resMdl + resMdl->matOffset);
+    NNSG3dResMat *b;
+    b = (NNSG3dResMat *)((u8 *)resMdl + resMdl->ofsMat);
     i = 0;
     u32 sh = v << 24;
     for (; i < resMdl->numMat; i++) {
-        u8 *ent = (u8 *)&b->dict + b->dict.entryOffset;
+        u8 *ent = (u8 *)&b->dict + b->dict.ofsEntry;
         u16 sz = *(u16 *)ent;
         ent += sz * i;
         u32 *p = (u32 *)((u8 *)b + *(u32 *)(ent + 4));
@@ -445,12 +436,12 @@ void Model::setPolygonId(u32 v) {
 
 void Model::setAlpha(u32 v) {
     s32 i;
-    Unk_0205562c_Blk *b;
-    b = (Unk_0205562c_Blk *)((u8 *)resMdl + resMdl->matOffset);
+    NNSG3dResMat *b;
+    b = (NNSG3dResMat *)((u8 *)resMdl + resMdl->ofsMat);
     i = 0;
     u32 sh = v << 16;
     for (; i < resMdl->numMat; i++) {
-        u8 *ent = (u8 *)&b->dict + b->dict.entryOffset;
+        u8 *ent = (u8 *)&b->dict + b->dict.ofsEntry;
         u16 sz = *(u16 *)ent;
         ent += sz * i;
         u32 *p = (u32 *)((u8 *)b + *(u32 *)(ent + 4));

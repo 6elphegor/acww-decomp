@@ -121,7 +121,7 @@ void _ZN8BlockMap5clearEv();
 }
 
 extern "C" {
-s32 _ZN8BlockMap5buildEP18Unk_0204debc_EntryP16Unk_0204e1a8_Outi(void *a, void *b, void *c, void *heap);
+s32 _ZN8BlockMap5buildEP13MapBlockEntryP12BlockMapSizei(void *a, void *b, void *c, void *heap);
 }
 
 extern "C" {
@@ -439,7 +439,7 @@ s32 SceneMapModule::buildSceneMap(void *heap) {
         }
         r = buildEntries(src, numOwnedGrids, h);
         if (r != NULL) {
-            _ZN8BlockMap5buildEP18Unk_0204debc_EntryP16Unk_0204e1a8_Outi(gSceneBlockMap, r, &sz, h);
+            _ZN8BlockMap5buildEP13MapBlockEntryP12BlockMapSizei(gSceneBlockMap, r, &sz, h);
             if (Unk_0204c5c0_IsZero(gFieldSceneKind)) Town_ClearBorderTrees((Unk_0204da0c_Map *)gSceneBlockMap);
             Heap_Free(h, r);
         }

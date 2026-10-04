@@ -130,7 +130,7 @@ s32 _ZN9AnimModel12drawAnimatedEPv(void *, u32);
 s32 _ZN9AnimModel8stepAnimEv(void *);
 s32 _ZN13AnimFrameCtrl4stepEv(void *);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
-s32 _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *, void *, u32);
+s32 _ZN5Model11setResourceEP12NNSG3dResMdlj(void *, void *, u32);
 s32 NNS_G3dBindMdlTex(void *, u32);
 s32 NNS_G3dBindMdlPltt(void *, u32);
 s32 _ZN9AnimModel11allocAnmObjEPv(void *, void *);
@@ -193,7 +193,7 @@ BOOL SewingMachine::onCreate() {
     loadResources("/roomObj/obj_tailor1.arc", "/roomObj/obj_tailor1.nsbtx");
     RoomObjRes_Load(partRes, "/roomObj/obj_tailor2.arc");
     RoomObjTex_Load(&partTex, "/roomObj/obj_tailor2.nsbtx");
-    _ZN5Model11setResourceEP16Unk_020553f8_Resj(partModel, RoomObjRes_GetModel(partRes), 0);
+    _ZN5Model11setResourceEP12NNSG3dResMdlj(partModel, RoomObjRes_GetModel(partRes), 0);
     {
         void *a = RoomObjRes_GetModel(partRes);
         NNS_G3dBindMdlTex(a, RoomObjTex_Get(&partTex));

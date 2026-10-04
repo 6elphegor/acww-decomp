@@ -12,7 +12,7 @@ void Heap_adjust(void *p);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
 void *NNS_G3dGetTex(void *h);
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(const char *path, void *buf, s32 size);
 s32 PlayerGlassesModelHeap_Destroy();
 s32 PlayerGlassesModelHeap_Create();
@@ -104,7 +104,7 @@ extern "C" void PlayerGlassesModelPool_Destroy() {
 }
 
 extern "C" char *PlayerGlassesModel_GetPath(s32 x) {
-    func_020639e8(sPlayerGlassesModelPathBuf, "/PGls/%d/%d.nsbmd", (u32)x >> 5, x);
+    Str_SPrintf(sPlayerGlassesModelPathBuf, "/PGls/%d/%d.nsbmd", (u32)x >> 5, x);
     return sPlayerGlassesModelPathBuf;
 }
 

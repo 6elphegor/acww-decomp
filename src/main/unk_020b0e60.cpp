@@ -281,7 +281,7 @@ u16 *BlockMap_GetItemPtr(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 u32 BlockMap_GetBlockAttr(Map *m, s32 x, s32 y);
 void FieldUnit_FromBlockUnit(s32 *ox, s32 *oy, s32 x, s32 y, s32 a, s32 b);
 s32 _ZN12G3dResAccess10findMatIdxEi(Ctx *c, const char *name);
-void func_020639e8(char *buf, const char *fmt, ...);
+void Str_SPrintf(char *buf, const char *fmt, ...);
 u32 Random_GlobalBelow(...);
 void *File_LoadAlloc(const char *name, u32 a, u32 b, u32 c);
 void Melody_PlayAt(void *p, s32 a);
@@ -636,7 +636,7 @@ extern "C" void StrBSize_Load(void) {
     if (p != NULL) {
         if (func_02101340(file, "STR", p)) {
             for (i = 0; i < 0x22; i++) {
-                func_020639e8(name, "STR:a/%d.bsize", i);
+                Str_SPrintf(name, "STR:a/%d.bsize", i);
                 sStrBSizeTable[i] = (u32)func_021012bc(name);
             }
             func_02101310(file);
@@ -1024,7 +1024,7 @@ extern "C" u16 Light_GetBaseEmission(void)
 
 const char *LampLights::getMaterialName(s32 i)
 {
-    func_020639e8(sLampMatNameBuf, "lp_m%d", i);
+    Str_SPrintf(sLampMatNameBuf, "lp_m%d", i);
     return sLampMatNameBuf;
 }
 

@@ -38,7 +38,7 @@ void func_020a71d0(void *);
 }
 
 extern "C" {
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 }
 
 extern "C" {
@@ -237,7 +237,7 @@ extern "C" BOOL ClothTex_LoadItem(void *self, u16 *p, void *q) {
         if (*p >= 0x11a8 && *p <= 0x12a7) i4 = *p - 0x11a8;
         else i4 = -1;
         if (i4 != -1) {
-            func_020639e8(buf, "/cloth/%d/cloth%03d.nsbtx", i4 >> 4, i4);
+            Str_SPrintf(buf, "/cloth/%d/cloth%03d.nsbtx", i4 >> 4, i4);
             if (File_LoadToBuffer(buf, self, -1)) return TRUE;
             return FALSE;
         } else {

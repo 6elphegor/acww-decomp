@@ -36,7 +36,7 @@
 #define func_02054e24 _ZN11CachedModelD1Ev
 #define func_02054e3c _ZN11CachedModelC1Ev
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 #define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv

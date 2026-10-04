@@ -9,9 +9,9 @@ struct Unk_0205b848_Cfg { u8 pad[0x6c]; u8 memberCount; };
 
 // sCharaAnimCache object
 struct CharaAnimCache {
-    u32 unk_00[25];
-    u16 unk_64[25];
-    u16 unk_96[25];
+    u32 buffers[25];
+    u16 animIds[25];
+    u16 dataSizes[25];
 
     CharaAnimCache();
     ~CharaAnimCache();
@@ -113,7 +113,7 @@ u32 CharaAnim_GetPartSlotSize(void);
 u32 CharaAnim_GetExtraSlotSize(void);
 void MI_CpuCopy8(void *, void *, u32);
 s32 File_LoadToBuffer(char *, void *, u32);
-s32 func_020639e8(char *, const char *, ...);
+s32 Str_SPrintf(char *, const char *, ...);
 BOOL Item_IsFurniture(u16 *);
 void CharaAnimHeap_Destroy(void);
 void CharaAnimHeap_Create(void *parent);
@@ -286,7 +286,7 @@ extern "C" void CharaAnimCache_Destroy() {
 
 extern "C" char *CharaAnim_GetPath(u32 x) {
     u32 z = x >> 5;
-    func_020639e8(sCharaAnimPathBuf, "/anm/%d/%d.nsbca", z, x);
+    Str_SPrintf(sCharaAnimPathBuf, "/anm/%d/%d.nsbca", z, x);
     return sCharaAnimPathBuf;
 }
 
@@ -318,7 +318,7 @@ extern "C" u32 CharaAnim_GetJointGroup(u32 i) { return sCharaAnimJointGroups[i];
 extern "C" u32 CharaAnim_GetHoldPoseMode(u32 i) { return sCharaAnimHoldPoseModes[i]; }
 
 CharaAnimCache::CharaAnimCache() {
-    for (s32 i = 0; i < 0x19; i++) unk_64[i] = 0x144;
+    for (s32 i = 0; i < 0x19; i++) animIds[i] = 0x144;
 }
 
 CharaAnimCache::~CharaAnimCache() {}
@@ -335,44 +335,44 @@ void CharaAnimCache::allocBuffers() {
     v[2] = CharaAnim_GetPartSlotSize();
     v[3] = CharaAnim_GetExtraSlotSize();
     u32 i;
-    for (i = 0; i < m; i++) unk_00[i] = (u32)Heap_AllocAligned(heap, v[1], 4);
-    for (i = 4; i < v[0] + 4; i++) unk_00[i] = (u32)Heap_AllocAligned(heap, v[1], 4);
-    for (i = 9; i < m + 9; i++) unk_00[i] = (u32)Heap_AllocAligned(heap, v[2], 4);
+    for (i = 0; i < m; i++) buffers[i] = (u32)Heap_AllocAligned(heap, v[1], 4);
+    for (i = 4; i < v[0] + 4; i++) buffers[i] = (u32)Heap_AllocAligned(heap, v[1], 4);
+    for (i = 9; i < m + 9; i++) buffers[i] = (u32)Heap_AllocAligned(heap, v[2], 4);
     m = 4;
-    for (i = 0xd; i < v[0] + 0xd; i++) unk_00[i] = (u32)Heap_AllocAligned(heap, v[2], m);
-    for (i = 0x12; i < v[0] + 0x12; i++) unk_00[i] = (u32)Heap_AllocAligned(heap, v[3], m);
+    for (i = 0xd; i < v[0] + 0xd; i++) buffers[i] = (u32)Heap_AllocAligned(heap, v[2], m);
+    for (i = 0x12; i < v[0] + 0x12; i++) buffers[i] = (u32)Heap_AllocAligned(heap, v[3], m);
 }
 
 void CharaAnimCache::freeBuffers() {
     s32 i;
     for (i = 0; i < 0x19; i++) {
-        unk_00[i] = 0;
-        unk_64[i] = 0x144;
-        unk_96[i] = 0;
+        buffers[i] = 0;
+        animIds[i] = 0x144;
+        dataSizes[i] = 0;
     }
     if (sCharaAnimHeap) Heap_freeAll(sCharaAnimHeap);
 }
 
-u32 CharaAnimCache::getBuffer(s32 i) { return unk_00[i]; }
+u32 CharaAnimCache::getBuffer(s32 i) { return buffers[i]; }
 
-u32 CharaAnimCache::getAnimId(s32 i) { return unk_64[i]; }
+u32 CharaAnimCache::getAnimId(s32 i) { return animIds[i]; }
 
-void CharaAnimCache::setAnimId(s32 i, u32 v) { unk_64[i] = v; }
+void CharaAnimCache::setAnimId(s32 i, u32 v) { animIds[i] = v; }
 
 s32 CharaAnimCache::findSlotByAnim(s32 v) {
     s32 lo = 0, hi = 0x19;
     if (v < 0x137) hi = 9;
     else lo = 9;
     for (; lo < hi; lo++) {
-        s32 c = unk_64[lo];
+        s32 c = animIds[lo];
         if (c == v) return lo;
     }
     return 0x19;
 }
 
-u32 CharaAnimCache::getDataSize(s32 i) { return unk_96[i]; }
+u32 CharaAnimCache::getDataSize(s32 i) { return dataSizes[i]; }
 
-void CharaAnimCache::setDataSize(s32 i, u32 v) { unk_96[i] = v; }
+void CharaAnimCache::setDataSize(s32 i, u32 v) { dataSizes[i] = v; }
 
 extern "C" void AnimSlotRef_Init(u8 *p) { *p = 0x19; }
 

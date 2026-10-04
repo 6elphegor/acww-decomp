@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/ThreeLayerAnimModel.h"
 
 extern "C" {
 extern volatile u32 gGfxMainOnTop;
@@ -33,21 +34,13 @@ struct Unk_020536dc_Obj {
 };
 
 extern "C" {
-struct Unk_02053830_Obj {
-    u8 pad[0x1ac];
-    u32 f1ac;
-    u32 f1b0;
-};
-}
-
-extern "C" {
 Unk_020536dc_Obj *gGfxFrameHooks;
 }
 
-extern "C" void ThreeLayerAnimModel_ClearLayer3Mask(Unk_02053830_Obj *o)
+extern "C" void ThreeLayerAnimModel_ClearLayer3Mask(ThreeLayerAnimModel *o)
 {
-    o->f1b0 = 0;
-    o->f1ac = o->f1b0;
+    o->layer3JointMaskHi = 0;
+    o->layer3JointMask = o->layer3JointMaskHi;
 }
 
 extern "C" void Gfx_Init()

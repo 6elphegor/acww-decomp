@@ -98,7 +98,7 @@ s32 Snd_PlaySe(s32 id);
 }
 
 extern "C" {
-void func_020639e8(char *buf, const char *fmt, ...);
+void Str_SPrintf(char *buf, const char *fmt, ...);
 }
 
 extern "C" {
@@ -994,7 +994,7 @@ void ChoiceEntry::setSeType(s32 v) { seType = v; }
 
 void ChoiceEntry::loadText() {
     char buf[0x40];
-    func_020639e8(buf, "/script/%s/select/%s.bmg", bmgName ? "ENG" : "ENG", bmgName);
+    Str_SPrintf(buf, "/script/%s/select/%s.bmg", bmgName ? "ENG" : "ENG", bmgName);
     text.loadFromBmg(buf, this, &attr);
 }
 

@@ -529,7 +529,7 @@ extern "C" {
 void File_LoadToBuffer(char *name, void *p, u32 size);
 }
 extern "C" {
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 }
 extern "C" {
 void *File_Load(void *p);
@@ -1161,7 +1161,7 @@ extern "C" BOOL TownFlagPatternDefault_Extract(void *a, void *b) {
 extern "C" void PresetPatternFile_Ctor(void *p) {}
 extern "C" void PresetPatternFile_Load(void *dst, s32 n) {
     char buf[0x28];
-    func_020639e8(buf, "menu/desi/myc/obj%d.bch", n + 2);
+    Str_SPrintf(buf, "menu/desi/myc/obj%d.bch", n + 2);
     File_LoadToBuffer(buf, dst, 0x200);
 }
 extern "C" BOOL PresetPatternFile_Extract(void *a, void *b) {

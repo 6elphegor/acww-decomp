@@ -1,4 +1,5 @@
 #include "types.h"
+#include "town/TownBlockMap.h"
 
 extern u8 sInsectSpawnDecSlot3[8];
 extern u8 sInsectSpawnFebSlot2[8];
@@ -171,12 +172,6 @@ extern "C" {
 void Item_ConvertFakePainting(u16 *out, u16 *in);
 }
 
-struct Unk_02061060_Grid {
-    u8 unk_00[0xc];
-    s32 w;
-    s32 h;
-};
-
 static inline BOOL Unk_02060e3c_Eq(u16 *a, u16 *b) {
     if (Item_IsFurniture(a)) {
         s32 x = Item_GetFurnitureIndex(a);
@@ -337,7 +332,7 @@ extern "C" void Item_ConvertFakePainting(u16 *out, u16 *in) {
 }
 
 extern "C" void Grid_ConvertFakePaintings(void *g) {
-    Unk_02061060_Grid *gr = (Unk_02061060_Grid *)g;
+    TownBlockMap *gr = (TownBlockMap *)g;
     s32 y;
     s32 x;
     s32 hx;
@@ -345,9 +340,9 @@ extern "C" void Grid_ConvertFakePaintings(void *g) {
     u16 t;
     u16 *p;
     if (gr) {
-        for (y = 0; y < gr->h; y++) {
+        for (y = 0; y < gr->unitsZ; y++) {
             x = 0;
-            if (x < gr->w) {
+            if (x < gr->unitsX) {
                 goto test;
             loop:
                 hx = x >> 4;
@@ -361,7 +356,7 @@ extern "C" void Grid_ConvertFakePaintings(void *g) {
                 }
                 x++;
             test:
-                if (x < gr->w) goto loop;
+                if (x < gr->unitsX) goto loop;
             }
         }
     }

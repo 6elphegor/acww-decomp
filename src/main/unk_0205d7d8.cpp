@@ -13,7 +13,7 @@ void Heap_adjust(void);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
 void *NNS_G3dGetTex(void *h);
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(const char *path, void *buf, s32 size);
 s32 PlayerHeadModelHeap_Destroy(void);
 s32 PlayerHeadModelHeap_Create(void);
@@ -48,12 +48,14 @@ static inline BOOL Unk_0205d4e4_IsOne(u8 v) {
 
 class PlayerHeadBank {
 public:
-    void *unk_00[4];
-    TexVramSlot unk_10[4][2];
-    TexVramTask unk_b0[4][2];
-    void *unk_190[4][2];
-    u8 unk_1b0[4][2];
+    void *buffers[4];
+    TexVramSlot vramSlots[4][2];
+    TexVramTask texTasks[4][2];
+    void *modelFiles[4][2];
+    u8 modelIds[4][2];
 
+    PlayerHeadBank();
+    ~PlayerHeadBank();
     void setModelId(u32 i, u32 j, u32 v);
     s32 getModelId(u32 i, u32 j);
     TexVramTask *getTexTask(u32 i, u32 j);
@@ -63,28 +65,6 @@ public:
     void *getBuffer(u32 i);
     void releaseAll(void);
     void setup(void);
-};
-
-struct Unk_0205dd38_Pair {
-    u32 hairModelFile;
-    u32 headgearModelFile;
-};
-
-struct Unk_0205dd38_Bytes {
-    u8 hairModelId;
-    u8 headgearModelId;
-};
-
-class PlayerHeadBankData {
-public:
-    u32 unk_00[4];
-    TexVramSlot unk_10[8];
-    TexVramTask unk_b0[8];
-    Unk_0205dd38_Pair unk_190[4];
-    Unk_0205dd38_Bytes unk_1b0[4];
-
-    PlayerHeadBankData();
-    ~PlayerHeadBankData();
 };
 
 static inline BOOL Unk_0205da08_InRange(u16 *p) {
@@ -162,9 +142,9 @@ const u8 sHatModelIds[0x48] = {0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0
                                 0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87};
 
 char sPlayerHeadPathBuf[0x14];
-PlayerHeadBankData sPlayerHeadBankData;
+PlayerHeadBank sPlayerHeadBank;
 
-#define MGR ((PlayerHeadBank *)&sPlayerHeadBankData)
+#define MGR (&sPlayerHeadBank)
 
 extern "C" void HeldItemModel_IsBobberLanded(u8 *p) {
     _ZN10FishBobber9isInWaterEv(p + 0x28);
@@ -183,7 +163,7 @@ extern "C" void PlayerHeadBank_Destroy(void) {
 }
 
 extern "C" char *PlayerHead_GetModelPath(u32 a) {
-    func_020639e8(sPlayerHeadPathBuf, "/PHead/%d/%d.nsbmd", a >> 5, a);
+    Str_SPrintf(sPlayerHeadPathBuf, "/PHead/%d/%d.nsbmd", a >> 5, a);
     return sPlayerHeadPathBuf;
 }
 
@@ -249,57 +229,57 @@ extern "C" s32 PlayerHead_GetTexVramSize(void) { return 0x1220; }
 extern "C" s32 PlayerHead_GetTex4x4VramSize(void) { return 0; }
 extern "C" s32 PlayerHead_GetPlttVramSize(void) { return 0xc0; }
 
-PlayerHeadBankData::PlayerHeadBankData() {
+PlayerHeadBank::PlayerHeadBank() {
     for (s32 i = 0; i < 4; i++) {
-        unk_00[i] = 0;
-        unk_190[i].hairModelFile = 0;
-        unk_190[i].headgearModelFile = 0;
-        unk_1b0[i].hairModelId = 0x9e;
-        unk_1b0[i].headgearModelId = 0x9e;
+        buffers[i] = 0;
+        modelFiles[i][0] = 0;
+        modelFiles[i][1] = 0;
+        modelIds[i][0] = 0x9e;
+        modelIds[i][1] = 0x9e;
     }
 }
 
-PlayerHeadBankData::~PlayerHeadBankData() {}
+PlayerHeadBank::~PlayerHeadBank() {}
 
 void PlayerHeadBank::setup(void) {
     u32 n = *(u8 *)(gCommManager + 0x6c);
     u32 i;
     for (i = 0; i < n; i++) {
-        unk_10[i][0].alloc((void *)PlayerHead_GetTexVramSize(), (void *)PlayerHead_GetTex4x4VramSize(), (void *)PlayerHead_GetPlttVramSize());
+        vramSlots[i][0].alloc((void *)PlayerHead_GetTexVramSize(), (void *)PlayerHead_GetTex4x4VramSize(), (void *)PlayerHead_GetPlttVramSize());
     }
     void *heap = (void *)gPlayerHeadModelHeap;
     for (i = 0; i < n; i++) {
-        unk_00[i] = Heap_AllocAligned(heap, PlayerHead_GetBufferSize(), 4);
+        buffers[i] = Heap_AllocAligned(heap, PlayerHead_GetBufferSize(), 4);
     }
 }
 
 void PlayerHeadBank::releaseAll(void) {
     s32 i;
     for (i = 0; i < 4; i++) {
-        unk_10[i][0].clear();
-        unk_10[i][1].clear();
+        vramSlots[i][0].clear();
+        vramSlots[i][1].clear();
     }
     for (i = 0; i < 4; i++) {
-        unk_00[i] = NULL;
-        unk_190[i][0] = NULL;
-        unk_190[i][1] = NULL;
+        buffers[i] = NULL;
+        modelFiles[i][0] = NULL;
+        modelFiles[i][1] = NULL;
     }
     if (gPlayerHeadModelHeap) {
         Heap_freeAll((void *)gPlayerHeadModelHeap);
     }
     for (i = 0; i < 4; i++) {
-        unk_1b0[i][0] = 0x9e;
-        unk_1b0[i][1] = 0x9e;
+        modelIds[i][0] = 0x9e;
+        modelIds[i][1] = 0x9e;
     }
 }
 
-void *PlayerHeadBank::getBuffer(u32 i) { return unk_00[i]; }
-void *PlayerHeadBank::getModelFile(u32 i, u32 j) { return unk_190[i][j]; }
-void PlayerHeadBank::setModelFile(u32 i, u32 j, void *v) { unk_190[i][j] = v; }
-TexVramSlot *PlayerHeadBank::getVramSlot(u32 i, u32 j) { return &unk_10[i][j]; }
-TexVramTask *PlayerHeadBank::getTexTask(u32 i, u32 j) { return &unk_b0[i][j]; }
-s32 PlayerHeadBank::getModelId(u32 i, u32 j) { return unk_1b0[i][j]; }
-void PlayerHeadBank::setModelId(u32 i, u32 j, u32 v) { unk_1b0[i][j] = v; }
+void *PlayerHeadBank::getBuffer(u32 i) { return buffers[i]; }
+void *PlayerHeadBank::getModelFile(u32 i, u32 j) { return modelFiles[i][j]; }
+void PlayerHeadBank::setModelFile(u32 i, u32 j, void *v) { modelFiles[i][j] = v; }
+TexVramSlot *PlayerHeadBank::getVramSlot(u32 i, u32 j) { return &vramSlots[i][j]; }
+TexVramTask *PlayerHeadBank::getTexTask(u32 i, u32 j) { return &texTasks[i][j]; }
+s32 PlayerHeadBank::getModelId(u32 i, u32 j) { return modelIds[i][j]; }
+void PlayerHeadBank::setModelId(u32 i, u32 j, u32 v) { modelIds[i][j] = v; }
 
 extern "C" void PlayerHead_ctor(u8 *p) {
     *p = 4;

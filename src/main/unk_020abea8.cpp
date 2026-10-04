@@ -54,7 +54,7 @@ u8 *NNS_G3dGetTex(void *p);
 void Gfx3d_LoadTexAndPltt(void *p, s32 a);
 u8 *Gfx3d_CopyTex(void *p, s32 heap);
 void Mem_Free(void *p);
-void func_020639e8(char *buf, const void *fmt, ...);
+void Str_SPrintf(char *buf, const void *fmt, ...);
 u32 _ZN12G3dResAccess10findTexIdxEi(u8 *base, char *name);
 u32 _ZN12G3dResAccess11findPlttIdxEi(u8 *base, char *name);
 extern s32 gCamera;
@@ -119,7 +119,7 @@ extern "C" void ObjShadow_Init(void *arg) {
         for (i = 0; i < 3; i++) {
             char *name = sObjShadowTexDefs[i].texName;
             char buf[36];
-            func_020639e8(buf, "%s_pl", name);
+            Str_SPrintf(buf, "%s_pl", name);
             e->texRes = 0;
             e->texImageParam = 0;
             e->plttBase = 0;

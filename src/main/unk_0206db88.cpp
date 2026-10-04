@@ -68,7 +68,7 @@ s32 Gfx2d_LoadPaletteRange(void *, u32, u32, u32, u32);
 void Gfx2d_LinearToTiles4bppBytes(void *, void *, u32, u32);
 s32 Gfx2d_LoadCharRange(void *, u32, u32, u32, u32);
 s32 Gfx2d_LoadScreenFile(const char *, void *, u32);
-void func_020639e8(char *, const void *, ...);
+void Str_SPrintf(char *, const void *, ...);
 s32 Gfx2d_LoadPaletteFile(void *, void *, u32, u32, u32, u32);
 s32 Gfx2d_LoadCharFile(void *, void *, u32, u32, u32, u32);
 void Gfx2d_SetLayerControl(u32, u32, u32, u32);
@@ -270,11 +270,11 @@ extern "C" BOOL MenuScreen_LoadStdBackground(u32 arg) {
     if (!Gfx2d_LoadScreenFile("menu/inventory/b_itm_back.bsc", heap, arg)) {
         return FALSE;
     }
-    func_020639e8(buf, "menu/bas/b_bas_%d.bpl", sMenuScreenBgKind.v);
+    Str_SPrintf(buf, "menu/bas/b_bas_%d.bpl", sMenuScreenBgKind.v);
     if (!Gfx2d_LoadPaletteFile(buf, heap, arg, 0, 0, 0)) {
         return FALSE;
     }
-    func_020639e8(buf, "menu/bas/b_bas_%d.bch", sMenuScreenBgKind.v);
+    Str_SPrintf(buf, "menu/bas/b_bas_%d.bch", sMenuScreenBgKind.v);
     Gfx2d_LoadCharFile(buf, heap, arg, 0, 0, 0xf);
     return TRUE;
 }

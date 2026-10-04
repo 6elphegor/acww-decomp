@@ -1,5 +1,6 @@
 #include "types.h"
 #include "town/MapBlockEntry.h"
+#include "item/ItemId.h"
 #include "room/RoomFtrState.h"
 #include "room/HouseRoom.h"
 #include "room/HouseData.h"
@@ -87,12 +88,6 @@ struct Unk_02060654_Pad {
     ~Unk_02060654_Pad() {}
 };
 
-struct Unk_020608b8_W {
-    u16 v;
-    Unk_020608b8_W(u16 x) { v = x; }
-    ~Unk_020608b8_W();
-};
-
 static inline s32 Unk_02060044_Idx(u32 id)
 {
     if (id >= 0x1323 && id <= 0x1368) {
@@ -134,10 +129,10 @@ void HouseRoom::reset(s32 i) {
         p->clear();
     }
     ftrState.reset();
-    static Unk_020608b8_W t1[5] = { Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e) };
-    wallpaper = t1[i].v;
-    static Unk_020608b8_W t2[5] = { Unk_020608b8_W(0x1182), Unk_020608b8_W(0x1182), Unk_020608b8_W(0x1182), Unk_020608b8_W(0x1182), Unk_020608b8_W(0x1182) };
-    carpet = t2[i].v;
+    static ItemId t1[5] = { ItemId(0x113e), ItemId(0x113e), ItemId(0x113e), ItemId(0x113e), ItemId(0x113e) };
+    wallpaper = t1[i].id;
+    static ItemId t2[5] = { ItemId(0x1182), ItemId(0x1182), ItemId(0x1182), ItemId(0x1182), ItemId(0x1182) };
+    carpet = t2[i].id;
     song = 0xfff1;
     if (i == 0) {
         RoomItemGrid *a = layers[0].getGrid();
@@ -167,7 +162,7 @@ MapBlockEntry *HouseRoom::buildBlockEntry(void *heap) {
     return p;
 }
 
-RoomFtrState *HouseRoom::func_0206086c() { return &ftrState; }
+RoomFtrState *HouseRoom::getFtrState() { return &ftrState; }
 
 u16 *HouseRoom::getWallpaper(s32 *out) {
     if (out) *out = wallpaperDesignKey;

@@ -160,7 +160,7 @@ s32 TownSessionState_Get(void);
 s32 TownSessionState_GetTravelState(s32);
 s32 _ZN15TownTravelState7getModeEv(s32);
 s32 _ZN11CommManager12isSlotActiveEi(void *, u32);
-void _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *, void *, s32);
+void _ZN5Model11setResourceEP12NNSG3dResMdlj(void *, void *, s32);
 void _ZN5Model15setInitCallbackEii(void *, void *, void *);
 void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
@@ -233,7 +233,7 @@ BOOL CheckInGate::onCreate() {
     s32 s = TownSessionState_GetTravelState(TownSessionState_Get());
     RoomObjRes_Load(&res, "/roomObj/obj_check_in.arc");
     RoomObjTex_Load(&tex, "/roomObj/obj_check_in.nsbtx");
-    _ZN5Model11setResourceEP16Unk_020553f8_Resj(&model, RoomObjRes_GetModel(&res), 0);
+    _ZN5Model11setResourceEP12NNSG3dResMdlj(&model, RoomObjRes_GetModel(&res), 0);
     F(u32, 0x2b0) = _ZN12G3dResAccess10findMatIdxEi(RoomObjRes_GetModel(&res), (u32)"m_lt");
     F(u32, 0x2b4) = _ZN12G3dResAccess10findMatIdxEi(RoomObjRes_GetModel(&res), (u32)"m_ltdoor");
     F(u32, 0x2b8) = _ZN12G3dResAccess10findMatIdxEi(RoomObjRes_GetModel(&res), (u32)"m_open");

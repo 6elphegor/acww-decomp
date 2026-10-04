@@ -6,7 +6,7 @@
 
 extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
-void func_020639e8(char *dst, const char *fmt, ...);
+void Str_SPrintf(char *dst, const char *fmt, ...);
 s32 File_GetDecodedSizeByPath(const char *s);
 s32 Random_GlobalBelow(s32 n);
 s32 AcreAttr_GetType(s32 n);
@@ -116,7 +116,7 @@ u32 TownAcreGenerator::getTotalArchiveSize() {
         for (x = 0; x < 6; x++) {
             if (seen[g->getCell(x, y)->getAcreId()] == 0) {
                 s32 v = g->getCell(x, y)->getAcreId();
-                func_020639e8(buf, "/bg/a%d/%04x.arc", v >> 4, v);
+                Str_SPrintf(buf, "/bg/a%d/%04x.arc", v >> 4, v);
                 total += z + File_GetDecodedSizeByPath(buf);
                 seen[g->getCell(x, y)->getAcreId()] = 1;
             }

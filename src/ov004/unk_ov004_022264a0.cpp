@@ -241,7 +241,7 @@ s32 _ZN9AnimModel11allocAnmObjEPv(void *, void *);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *);
 s32 _ZN9AnimModel12drawAnimatedEPv(void *, u32);
 s32 _ZN9AnimModel8stepAnimEv(void *);
-s32 _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *, void *, u32);
+s32 _ZN5Model11setResourceEP12NNSG3dResMdlj(void *, void *, u32);
 s32 NNS_G3dBindMdlTex(void *, u32);
 s32 NNS_G3dBindMdlPltt(void *, u32);
 s32 Camera_RestorePrevMode(void);
@@ -886,7 +886,7 @@ void CafeCoffeeSet_LoadPart(void *ov, u32 idx, const char *id, const char *x) {
     RoomObjRes_Load(r, id);
     q = b + 0xecc + idx * 4;
     RoomObjTex_Load(q, x);
-    _ZN5Model11setResourceEP16Unk_020553f8_Resj(b + 0x290 + idx * 0xb8, RoomObjRes_GetModel(r), 0);
+    _ZN5Model11setResourceEP12NNSG3dResMdlj(b + 0x290 + idx * 0xb8, RoomObjRes_GetModel(r), 0);
     NNS_G3dBindMdlTex(RoomObjRes_GetModel(r), RoomObjTex_Get(q));
     NNS_G3dBindMdlPltt(RoomObjRes_GetModel(r), RoomObjTex_Get(q));
 }

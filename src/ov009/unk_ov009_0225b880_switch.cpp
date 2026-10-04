@@ -94,7 +94,7 @@ typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
 #define func_020548d0 _ZN9AnimModelC1Ev
 #define Model_setInitCallback _ZN5Model15setInitCallbackEii
 #define Model_clearResource _ZN5Model13clearResourceEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
 #define TalkAutoAdvance_start _ZN15TalkAutoAdvance5startEi
@@ -210,7 +210,7 @@ s32 WorldCurve_ToCurved(void *out, void *in);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 void Mtx43_RotateX(void *m, s32 a);
 BOOL PlayerActor_IsInterruptibleByMenu();
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 void *File_LoadAlloc(void *a, void *heap, s32 c, s32 d);
 BOOL File_Exists(void *p);
 s32 func_02101340(void *buf, char *name, void *data);

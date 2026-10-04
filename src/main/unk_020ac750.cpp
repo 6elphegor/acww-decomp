@@ -2545,7 +2545,7 @@ extern "C" {
 void Mem_Free(void *p);
 }
 extern "C" {
-void func_020639e8(char *buf, const void *fmt, ...);
+void Str_SPrintf(char *buf, const void *fmt, ...);
 }
 extern "C" {
 u32 func_02057100(u8 *base, char *name);

@@ -1258,7 +1258,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 void MTX_RotY33_(void *out, s32 a, s32 b);
 void MTX_Concat33(void *a, void *b, void *c);
 s32 Math_StepS32(s32 *p, s32 target, s32 step);
-s32 _ZN12G3dResAccess13func_02056fccEi(u32 a, const char *s);
+s32 _ZN12G3dResAccess11findNodeIdxEi(u32 a, const char *s);
 void _ZN12Unk_02003c3010callSeStopEv(void *p);
 void Snd_SeEmitterPlayOneShot(void *p, s32 a, s32 b, s32 c);
 void _ZN12Unk_02003c4020callSeUpdateRelativeEP16Unk_02003a6c_Vec(void *p, void *v);
@@ -1610,7 +1610,7 @@ BOOL FtrCompass::updateActive() {
 }
 
 BOOL FtrCompass::initModel() {
-    compassNode = p13::_ZN12G3dResAccess13func_02056fccEi(b13_unk_590, p13::data_ov004_0224bb80);
+    compassNode = p13::_ZN12G3dResAccess11findNodeIdxEi(b13_unk_590, p13::data_ov004_0224bb80);
     return TRUE;
 }
 
@@ -1818,7 +1818,7 @@ void SndSeEmitter_ctor(void *);
 void _ZN14MatTexVramTaskC1Ev(void *);
 s32 _ZN8FtrActornwEm(u32);
 u16 Item_MakeFurniture(u32, s32);
-u32 _ZN12G3dResAccess13func_02056fccEi(u32, void *);
+u32 _ZN12G3dResAccess11findNodeIdxEi(u32, void *);
 s32 PlayerData_Get(s32);
 s32 _ZN10PlayerData11getPlayerIdEv(...);
 s32 _ZN8PlayerId9getGenderEv();
@@ -1929,9 +1929,9 @@ BOOL FtrMyDesign::initModel() {
     if (p14::PlayerData_Get(hi)) {
         p14::_ZN10PlayerData11getPlayerIdEv();
         if (p14::_ZN8PlayerId9getGenderEv() == 0) {
-            hiddenNode = p14::_ZN12G3dResAccess13func_02056fccEi(b14_unk_590, p14::data_ov004_0224bb8c);
+            hiddenNode = p14::_ZN12G3dResAccess11findNodeIdxEi(b14_unk_590, p14::data_ov004_0224bb8c);
         } else {
-            hiddenNode = p14::_ZN12G3dResAccess13func_02056fccEi(b14_unk_590, p14::data_ov004_0224bb90);
+            hiddenNode = p14::_ZN12G3dResAccess11findNodeIdxEi(b14_unk_590, p14::data_ov004_0224bb90);
         }
     }
     u32 o = b14_unk_590;

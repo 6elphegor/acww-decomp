@@ -7,13 +7,13 @@
 #include "gfx/CachedModel.h"
 #include "gfx/AnimFrameCtrl.h"
 
-struct Unk_02054584_Data;
+struct NNSG3dAnmObj;
 
 class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:
     AnimModel();
     virtual ~AnimModel();
-    /* 0xb4 */ Unk_02054584_Data *anmObj;
+    /* 0xb4 */ NNSG3dAnmObj *anmObj;
 
     void detachAnim();
     void detachVisAnim();

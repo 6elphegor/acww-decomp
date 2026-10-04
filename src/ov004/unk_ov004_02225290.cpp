@@ -39,7 +39,7 @@ class BarberMachine;
 extern "C" {
 extern void *gBgHeap;
 
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 RoomObjSync_SetState(u32 v);
 s32 RoomObjSync_GetState(u32 v);
 s32 RoomObjSync_ChangeState(void *o, u32 v);

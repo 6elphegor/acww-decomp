@@ -79,7 +79,7 @@ s32 _ZN8TownFlag13getGateDesignEv(void *);
 void _ZN9AnimModel8stepAnimEv(void *);
 void FieldPos_ToUnit(s32 *, s32 *, s32 *);
 BOOL Ground_SetQuadrantsBlocked(s32, s32, s32);
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 Field_GetStructureTexSuffix();
 u32 GateHouse_GetModelName();
 s32 GateHouse_GetDesign();
@@ -170,21 +170,21 @@ extern "C" Unk_ov003_SceneEntry sGateHouseProfile = { (void *(*)())GateHouse_Cre
 char *GateHouse::getArcPath() {
     u32 x = GateHouse_GetModelName();
     s32 y = Field_GetStructureTexSuffix();
-    func_020639e8(data_ov003_02235228, "/str/chkp/%s%c.arc", x, y);
+    Str_SPrintf(data_ov003_02235228, "/str/chkp/%s%c.arc", x, y);
     return data_ov003_02235228;
 }
 
 char *GateHouse::getTexPath() {
     u32 x = GateHouse_GetModelName();
     s32 y = Field_GetStructureTexSuffix();
-    func_020639e8(data_ov003_02235204, "/str/chkp/%s%c.nsbtx", x, y);
+    Str_SPrintf(data_ov003_02235204, "/str/chkp/%s%c.nsbtx", x, y);
     return data_ov003_02235204;
 }
 
 char *GateHouse::getLightTexPath() {
     u32 x = GateHouse_GetModelName();
     s32 y = Field_GetStructureTexSuffix();
-    func_020639e8(data_ov003_0223524c, "/str/chkp/%s%c_lt.nsbtx", x, y);
+    Str_SPrintf(data_ov003_0223524c, "/str/chkp/%s%c_lt.nsbtx", x, y);
     return data_ov003_0223524c;
 }
 

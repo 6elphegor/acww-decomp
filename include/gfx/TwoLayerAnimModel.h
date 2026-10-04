@@ -22,7 +22,7 @@ public:
     void applyJointBlend(BlendAnimModel *x);
     void onJointCalcPre(BlendAnimModel *x);
     void captureJointPose(BlendAnimModel *x);
-    Unk_02054584_Data *getAnmObj();
+    NNSG3dAnmObj *getAnmObj();
     u32 getAnmRes();
     void initAnim(s32 a, s32 b, s32 c, u16 d, u16 e);
 };

@@ -555,7 +555,7 @@ sPlayerGlassesModelPathBuf kind:bss addr:0x021c653c
 sPlayerGlassesModelPool kind:bss addr:0x021c6550
 data_021c6624 kind:bss addr:0x021c6624
 sPlayerHeadPathBuf kind:bss addr:0x021c6630
-sPlayerHeadBankData kind:bss addr:0x021c6644
+sPlayerHeadBank kind:bss addr:0x021c6644
 data_021c67fc kind:bss addr:0x021c67fc
 sHeldItemModelPathBuf kind:bss addr:0x021c6808
 sHeldItemAnimPathBuf kind:bss addr:0x021c6820

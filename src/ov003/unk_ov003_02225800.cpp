@@ -892,7 +892,7 @@ extern "C" void FieldInsect_UpdateAll(void *a);
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 #define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
@@ -1060,7 +1060,7 @@ Unk_ov003_02227f20_Slot *NpcRegistry_FindVillager(s32 i);
 s32 Vec_DistXZ(void *a, void *b);
 void Unk_ov068_02268214_antsAppear(void *p);
 BOOL File_Exists(char *s);
-s32 func_020639e8(char *buf, char *fmt, ...);
+s32 Str_SPrintf(char *buf, char *fmt, ...);
 void Collision_Move(void *obj, void *pos, void *prev, s32 a, s32 b, s32 c, s32 d);
 void BugNetTarget_submit(void *obj, void *v, s32 a, s32 b, s32 flags);
 void Unk_02003c40_callUpdateRelative(void *obj, void *v);
@@ -8518,7 +8518,7 @@ BOOL InsectManager::onCreate() { using namespace s05;
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 #define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
@@ -8560,19 +8560,19 @@ extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode) {
         return;
     }
     if (t4 < 10) {
-        func_020639e8(l.name, sInsectPathFmt0x, t4);
+        Str_SPrintf(l.name, sInsectPathFmt0x, t4);
     } else if (t4 < 0x14) {
-        func_020639e8(l.name, sInsectPathFmt1x, t4);
+        Str_SPrintf(l.name, sInsectPathFmt1x, t4);
     } else if (t4 < 0x1e) {
-        func_020639e8(l.name, sInsectPathFmt2x, t4);
+        Str_SPrintf(l.name, sInsectPathFmt2x, t4);
     } else if (t4 < 0x28) {
-        func_020639e8(l.name, sInsectPathFmt3x, t4);
+        Str_SPrintf(l.name, sInsectPathFmt3x, t4);
     } else if (t4 < 0x32) {
-        func_020639e8(l.name, sInsectPathFmt4x, t4);
+        Str_SPrintf(l.name, sInsectPathFmt4x, t4);
     } else {
-        func_020639e8(l.name, sInsectPathFmt5x, t4);
+        Str_SPrintf(l.name, sInsectPathFmt5x, t4);
     }
-    func_020639e8(l.path, sInsectModelExtFmt, l.name);
+    Str_SPrintf(l.path, sInsectModelExtFmt, l.name);
     if (!File_Exists(l.path)) {
         return;
     }
@@ -8592,9 +8592,9 @@ extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode) {
     Model_setResource(obj, PooledModel_getModel(p130), 0);
     rec = &sInsectModelParams[t4];
     if (rec->hasVisAnim != 0) {
-        func_020639e8(l.path, sInsectVisAnimExtFmt, l.name);
+        Str_SPrintf(l.path, sInsectVisAnimExtFmt, l.name);
     } else {
-        func_020639e8(l.path, sInsectJointAnimExtFmt, l.name);
+        Str_SPrintf(l.path, sInsectJointAnimExtFmt, l.name);
     }
     if (!File_Exists(l.path)) {
         return;
@@ -8634,7 +8634,7 @@ extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode) {
         AnimFrameCtrl_setup(&e->unk_ec, 9, 1, 0, 9);
     }
     if ((u32)(t4 - 0x3a) <= 1) {
-        func_020639e8(l.path, sInsectTexAnimPathFmt, t4);
+        Str_SPrintf(l.path, sInsectTexAnimPathFmt, t4);
         ok = FALSE;
         if (File_Exists(l.path)) {
             File_LoadAlloc(l.path, h2, 4, 0);
@@ -8706,7 +8706,7 @@ extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode) {
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 #define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
@@ -8820,7 +8820,7 @@ extern "C" void Insect_UpdateHideTimer(void *a, Rec *e) {
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 #define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
@@ -9006,7 +9006,7 @@ L268:
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 #define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
@@ -9082,7 +9082,7 @@ BOOL InsectManager::onExecute() { using namespace s04;
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 #define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
@@ -9203,7 +9203,7 @@ extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 #define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
@@ -9283,7 +9283,7 @@ extern "C" s32 FieldInsect_GetKindAndAlarm(u8 *out, u32 idx) {
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 #define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
@@ -9372,7 +9372,7 @@ extern "C" BOOL FieldInsect_IsTreeKind(u32 idx) {
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 #define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
@@ -9448,7 +9448,7 @@ extern "C" s32 FieldInsect_GetPosAndKind(Vec3 *out, u32 idx) {
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 #define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv

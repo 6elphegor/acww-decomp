@@ -1,7 +1,7 @@
 #include "types.h"
 #include "item/ItemId.h"
 
-extern "C" void func_020639e8(void *dst, const void *fmt, ...);
+extern "C" void Str_SPrintf(void *dst, const void *fmt, ...);
 extern "C" BOOL File_LoadToBuffer(void *a, void *b, s32 c);
 
 
@@ -19,7 +19,7 @@ extern "C" BOOL Wallpaper_LoadTexture(void *dst, ItemId *p) {
     }
     if (idx != -1) {
         u8 buf[0x20];
-        func_020639e8(buf, "/wall/wall_%d.nsbtx", idx);
+        Str_SPrintf(buf, "/wall/wall_%d.nsbtx", idx);
         if (File_LoadToBuffer(buf, dst, -1)) {
             return TRUE;
         }

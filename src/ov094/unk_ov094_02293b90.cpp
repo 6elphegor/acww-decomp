@@ -79,7 +79,7 @@ void func_0206267c(void *p);
 void func_02063870(void *p);
 void func_02063888(void *p);
 void TownId_GetNameString(s32 a, void *p);
-s32 func_020639e8(char *buf, const void *fmt, ...);
+s32 Str_SPrintf(char *buf, const void *fmt, ...);
 void File_LoadToBuffer(const void *src, void *dst, s32 n);
 s32 LetterView_getState(void *o);
 s32 LetterView_getPresent(s32 a);

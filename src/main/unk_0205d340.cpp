@@ -11,7 +11,7 @@ void *Heap_AllocAligned(void *heap, s32 size, s32 align);
 void Heap_freeAll(void *p);
 #define Heap_adjust _ZN4Heap6adjustEv
 void Heap_adjust(void *p);
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(void *path, void *buf, s32 size);
 s32 PlayerFaceTexHeap_Destroy();
 s32 PlayerFaceTexHeap_Create();
@@ -46,7 +46,7 @@ extern "C" void PlayerFaceTexPool_Destroy() {
 }
 
 extern "C" void *PlayerFaceTex_GetPath(u32 x) {
-    func_020639e8(sPlayerFaceTexPathBuf, "/PFcTx/%d/%d.nsbtx", x >> 5, x);
+    Str_SPrintf(sPlayerFaceTexPathBuf, "/PFcTx/%d/%d.nsbtx", x >> 5, x);
     return sPlayerFaceTexPathBuf;
 }
 

@@ -7,55 +7,14 @@
 #include "gfx/JointBlend.h"
 #include "gfx/TexVramTask.h"
 #include "gfx/TexPatVramAnim.h"
+#include "gfx/NNSG3dRenderObj.h"
+#include "gfx/NNSG3dRS.h"
 
 
-struct Unk_02055cd0_Ent {
-    u8 pad_00[0x22];
-    u8 matIdx;
-    u8 flags;
-    u8 pad_24[4];
-};
 
-struct Unk_02055cd0_Obj {
-    u8 pad_00[0x18];
-    u32 resMdl;
-    u8 pad_1c[0xa];
-    u8 numTracks;
-    u8 pad_27;
-    Unk_02055cd0_Ent *tracks;
-};
-struct Unk_02056160_Rec {
-    u8 pad[0x28];
-    Mtx33 mtx;
-    Unk_020561d8_Vec vec;
-};
-
-struct Unk_02056160_Tbl {
-    u8 pad[0x34];
-    Unk_02056160_Rec *recs;
-};
-
-struct Unk_02056160_Hdr {
-    u8 pad;
-    u8 idx;
-};
-
-struct Unk_020561d8_Z {
-    u32 flags;
-    u8 pad[0x24];
-    Mtx33 mtx;
-    Unk_020561d8_Vec vec;
-};
-
-struct Unk_02056160_Arg {
-    Unk_02056160_Hdr *hdr;
-    Unk_02056160_Tbl *tbl;
-    u8 pad[0xac];
-    Unk_020561d8_Z *z;
-};
 
 extern "C" {
-void Anim_LerpVec(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_020561d8_Vec *out, s32 t);
+void Anim_LerpVec(VecFx32 *a, VecFx32 *b, VecFx32 *out, s32 t);
 }
 
 extern "C" {
@@ -93,8 +52,8 @@ extern "C" u8 *NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *p, u32 v);
 extern "C" u32 func_0212a438(const char *s);
 extern "C" void func_0212a360(void *p);
 extern "C" void operator delete(void *p);
-extern "C" void Anim_NormalizeVec(Unk_020561d8_Vec *v);
-extern "C" void Anim_LerpVec(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_020561d8_Vec *out, s32 t);
+extern "C" void Anim_NormalizeVec(VecFx32 *v);
+extern "C" void Anim_LerpVec(VecFx32 *a, VecFx32 *b, VecFx32 *out, s32 t);
 extern "C" void Anim_LerpRotMtx(Mtx33 *a, Mtx33 *b, Mtx33 *out, s32 t);
 extern "C" s32 G3dRes_FindDictIdx(void *p, s32 a);
 extern "C" void *gCurrentHeap;
@@ -276,7 +235,7 @@ u32 G3dResAccess::getPlttSize(s32 idx) {
     }
 }
 
-u32 G3dResAccess::func_02056fcc(s32 a) {
+u32 G3dResAccess::findNodeIdx(s32 a) {
     return G3dRes_FindDictIdx((u8 *)this + 0x40, a);
 }
 
@@ -821,7 +780,7 @@ void JointBlend::start(s32 n) {
 }
 
 #pragma thumb off
-extern "C" void Anim_NormalizeVec(Unk_020561d8_Vec *v) {
+extern "C" void Anim_NormalizeVec(VecFx32 *v) {
     s64 sum = (s64)v->x * v->x;
     sum += (s64)v->y * v->y;
     sum += (s64)v->z * v->z;
@@ -852,13 +811,13 @@ extern "C" void Anim_LerpRotMtx(Mtx33 *a, Mtx33 *b, Mtx33 *out, s32 t) {
     out->m[3] = (s32)(((s64)t * a->m[3] + (s64)k * b->m[3]) >> 12);
     out->m[4] = (s32)(((s64)t * a->m[4] + (s64)k * b->m[4]) >> 12);
     out->m[5] = (s32)(((s64)t * a->m[5] + (s64)k * b->m[5]) >> 12);
-    Anim_NormalizeVec((Unk_020561d8_Vec *)&out->m[0]);
-    Anim_NormalizeVec((Unk_020561d8_Vec *)&out->m[3]);
+    Anim_NormalizeVec((VecFx32 *)&out->m[0]);
+    Anim_NormalizeVec((VecFx32 *)&out->m[3]);
     VEC_CrossProduct(&out->m[0], &out->m[3], &out->m[6]);
     VEC_CrossProduct(&out->m[6], &out->m[0], &out->m[3]);
 }
 
-extern "C" void Anim_LerpVec(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_020561d8_Vec *out, s32 t) {
+extern "C" void Anim_LerpVec(VecFx32 *a, VecFx32 *b, VecFx32 *out, s32 t) {
     s32 k = 0x1000 - t;
     out->x = (s32)(((s64)t * a->x + (s64)k * b->x) >> 12);
     out->y = (s32)(((s64)t * a->y + (s64)k * b->y) >> 12);
@@ -866,37 +825,37 @@ extern "C" void Anim_LerpVec(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_02056
 }
 #pragma thumb reset
 
-void JointBlend::blendPose(Unk_02056160_Arg *x) {
-    Unk_020561d8_Vec v;
+void JointBlend::blendPose(NNSG3dRS *x) {
+    VecFx32 v;
     Mtx33 m;
-    u32 idx = x->hdr->idx;
-    if ((x->z->flags & 4) == 0 && idx <= 1) {
-        Anim_LerpVec(&x->z->vec, &poseTrans, &v, blendRatio);
-        Unk_020561d8_Z *z = x->z;
-        Unk_020561d8_Vec *pv = &z->vec;
+    u32 idx = x->c[1];
+    if ((x->pJntAnmResult->flag & 4) == 0 && idx <= 1) {
+        Anim_LerpVec(&x->pJntAnmResult->trans, &poseTrans, &v, blendRatio);
+        NNSG3dJntAnmResult *z = x->pJntAnmResult;
+        VecFx32 *pv = &z->trans;
         pv->x = v.x;
         pv->y = v.y;
         pv->z = v.z;
     }
-    if (x->z->flags & 2) {
-        MTX_Identity33_(&x->z->mtx);
+    if (x->pJntAnmResult->flag & 2) {
+        MTX_Identity33_(&x->pJntAnmResult->rot);
     }
-    Anim_LerpRotMtx(&x->z->mtx, &poseRot, &m, blendRatio);
-    x->z->mtx = m;
-    x->z->flags &= ~2;
+    Anim_LerpRotMtx(&x->pJntAnmResult->rot, &poseRot, &m, blendRatio);
+    x->pJntAnmResult->rot = m;
+    x->pJntAnmResult->flag &= ~2;
 }
 
-void JointBlend::capturePose(Unk_02056160_Arg *x) {
-    Unk_02056160_Rec *r = &x->tbl->recs[x->hdr->idx];
-    if (r->mtx.m[0] == 0 && r->mtx.m[1] == 0 && r->mtx.m[2] == 0 && r->mtx.m[3] == 0 && r->mtx.m[4] == 0 &&
-        r->mtx.m[5] == 0 && r->mtx.m[6] == 0 && r->mtx.m[7] == 0 && r->mtx.m[8] == 0) {
+void JointBlend::capturePose(NNSG3dRS *x) {
+    NNSG3dJntAnmResult *r = &x->pRenderObj->recJntAnm[x->c[1]];
+    if (r->rot.m[0] == 0 && r->rot.m[1] == 0 && r->rot.m[2] == 0 && r->rot.m[3] == 0 && r->rot.m[4] == 0 &&
+        r->rot.m[5] == 0 && r->rot.m[6] == 0 && r->rot.m[7] == 0 && r->rot.m[8] == 0) {
         MTX_Identity33_(&poseRot);
     } else {
-        poseRot = r->mtx;
+        poseRot = r->rot;
     }
-    poseTrans.x = r->vec.x;
-    poseTrans.y = r->vec.y;
-    poseTrans.z = r->vec.z;
+    poseTrans.x = r->trans.x;
+    poseTrans.y = r->trans.y;
+    poseTrans.z = r->trans.z;
 }
 
 MatTexPatTrack *MatTexPatTrack::construct() {
@@ -1079,7 +1038,7 @@ void MatTexPatAnim::pauseMaterial() {
     }
 }
 
-extern "C" void MatTexPatAnim_ResumeMaterial(Unk_02055cd0_Obj *p, void *q) {
+extern "C" void MatTexPatAnim_ResumeMaterial(MatTexPatAnim *p, void *q) {
     s32 i, r;
     r = _ZN12G3dResAccess10findMatIdxEi((void *)p->resMdl);
     i = 0;

@@ -14,15 +14,6 @@ struct Unk_0205a930_H {
     Unk_0205a930_H() {}
 };
 
-struct Unk_0205afdc {
-    s32 minX;
-    s32 minZ;
-    s32 maxX;
-    s32 maxZ;
-    u16 wallpaper;
-    u16 carpet;
-};
-
 struct Unk_0205b320_Buf {
     u32 unk_00, unk_04, unk_08;
 };
@@ -569,14 +560,14 @@ extern "C" u32 HappyRoom_CalcLuckyBonus(u32 *p) {
 }
 #pragma thumb reset
 
-extern "C" void RoomScoreEvaluator_Construct(Unk_0205afdc *p) {
+extern "C" void RoomScoreEvaluator_Construct(RoomScoreEvaluator *p) {
     p->wallpaper = 0xfff1;
     p->carpet = 0xfff1;
 }
 
 extern "C" void RoomScoreEvaluator_Destruct() {}
 
-extern "C" u32 HappyRoom_RateMainRoom(Unk_0205afdc *p, s32 *out) {
+extern "C" u32 HappyRoom_RateMainRoom(RoomScoreEvaluator *p, s32 *out) {
     void *m = HouseRoomMaps_Get(0);
     s32 x = 3;
     u32 flags = 0;
@@ -589,7 +580,7 @@ extern "C" u32 HappyRoom_RateMainRoom(Unk_0205afdc *p, s32 *out) {
         for (i = 0; i < 0x4a; i++) sHappyRoomUnk06Masks.w[i] = 0;
         sHappyRoomUnk06Masks.extra = 0;
         MI_CpuFill8(&sHappyRoomSeriesScores, 0, 0x128);
-        RoomMap_GetFloorBounds((s32 *)p, &p->maxX, &p->minZ, &p->maxZ, m);
+        RoomMap_GetFloorBounds((s32 *)p, (s32 *)&p->maxX, (s32 *)&p->minZ, (s32 *)&p->maxZ, m);
         p->wallpaper = 0x1100;
         p->carpet = 0x1144;
         h = _ZN9HouseData7getRoomEi(gSaveHouse, 0);

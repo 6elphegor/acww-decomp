@@ -89,7 +89,7 @@ void NetArea_GetSlotStatus(s32 i, u8 *a, u8 *b, u8 *c);
 s32 SceneId_GetVillagerHouse(u32 a);
 s32 VillagerId_GetPersonality(void *);
 
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 void func_01ffd070(Unk_ov003_Vec *out, void *a, void *b);
 void NNS_G3dBindMdlTex(void *a, s32 b);
 void _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, s32 d, void *e);
@@ -99,7 +99,7 @@ BOOL _ZN11CommManager12isSlotActiveEi(void *self, s32 i);
 void *_ZN23VillagerDataProfileView9getInfo28Ev(void *self);
 void *_ZN12VillagerData13getVillagerIdEv(void *self);
 void *_ZN5Model12getRenderObjEv(void *self);
-BOOL _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *self, void *res, u32 b);
+BOOL _ZN5Model11setResourceEP12NNSG3dResMdlj(void *self, void *res, u32 b);
 void _ZN11MsgString9BC1Ev(void *p);
 void _ZN11MsgString9BD1Ev(void *p);
 void NNS_G3dBindMdlPltt(void *a, s32 b);
@@ -213,7 +213,7 @@ BOOL VillagerHouse::initBuilding() {
     }
     if (HouseLightUpDeco_IsLoaded(FieldStructureMgr_GetLightUpDeco())) {
         s32 q = getHouseStyle() >> 2;
-        if (_ZN5Model11setResourceEP16Unk_020553f8_Resj(&lightUpModel, HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q), 0)) {
+        if (_ZN5Model11setResourceEP12NNSG3dResMdlj(&lightUpModel, HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q), 0)) {
             void *a = HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q);
             NNS_G3dBindMdlTex(a, HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco()));
             void *b = HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q);
@@ -270,7 +270,7 @@ u8 VillagerHouse::getHouseVariant() {
 
 char *VillagerHouse::getModelName() {
     s32 t = getHouseStyle();
-    func_020639e8(data_ov003_022352d4, "obj_house%d_%d", t >> 2, t & 3);
+    Str_SPrintf(data_ov003_022352d4, "obj_house%d_%d", t >> 2, t & 3);
     return data_ov003_022352d4;
 }
 
@@ -278,7 +278,7 @@ char *VillagerHouse::getArcPath() {
     s32 a = getHouseStyle();
     char *s = getModelName();
     s32 e = Field_GetStructureTexSuffix();
-    func_020639e8(data_ov003_02235308, "/str/npcHs/%d/%s%c.arc", a >> 2, s, e);
+    Str_SPrintf(data_ov003_02235308, "/str/npcHs/%d/%s%c.arc", a >> 2, s, e);
     return data_ov003_02235308;
 }
 
@@ -286,7 +286,7 @@ char *VillagerHouse::getTexPath() {
     s32 a = getHouseStyle();
     char *s = getModelName();
     s32 e = Field_GetStructureTexSuffix();
-    func_020639e8(data_ov003_02235330, "/str/npcHs/%d/%s%c.nsbtx", a >> 2, s, e);
+    Str_SPrintf(data_ov003_02235330, "/str/npcHs/%d/%s%c.nsbtx", a >> 2, s, e);
     return data_ov003_02235330;
 }
 

@@ -59,9 +59,9 @@ class Unk_020b1ddc;
 
 
 extern "C" {
-s32 _ZN12G3dResAccess13func_02056fccEi(void *self, s32 i);
+s32 _ZN12G3dResAccess11findNodeIdxEi(void *self, s32 i);
 }
-#define func_02056fcc _ZN12G3dResAccess13func_02056fccEi
+#define G3dResAccess_findNodeIdx _ZN12G3dResAccess11findNodeIdxEi
 
 struct Unk_ov003_0221655c_Owner {
     u8 pad_00[0x2c];
@@ -113,8 +113,8 @@ TownHall::~TownHall() {
 }
 
 BOOL TownHall::initBuilding() {
-    hourHandNode = func_02056fcc(modelRes, (s32) "kh_j");
-    minuteHandNode = func_02056fcc(modelRes, (s32) "km_j");
+    hourHandNode = G3dResAccess_findNodeIdx(modelRes, (s32) "kh_j");
+    minuteHandNode = G3dResAccess_findNodeIdx(modelRes, (s32) "km_j");
     if (hourHandNode != -1 && minuteHandNode != -1) {
         ((Model *)model)->setCallback((s32)TownHall_NodeCallback, 6, 2, (s32)this, 0);
     }

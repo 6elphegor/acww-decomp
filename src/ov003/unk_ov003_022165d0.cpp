@@ -73,7 +73,7 @@ void Mem_Free(void *p);
 void NNS_G3dBindMdlTex(void *a, void *b);
 void NNS_G3dBindMdlPltt(void *a, void *b);
 void _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, s32 d, s32 e);
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 BOOL _ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(void *self, void *v, s16 *ang);
 
 BuildingActor *BuildingList_FindByItem(u32 a);
@@ -147,7 +147,7 @@ extern "C" u8 PlayerHouse_GetTexIndex() { return gSaveHouse.getRoofColor(); }
 extern "C" char *PlayerHouse_GetTexPath() {
     u32 i = PlayerHouse_GetTexIndex();
     u32 c = Field_GetStructureTexSuffix();
-    func_020639e8(data_ov003_02235358, "/str/plHsTex/home%c%c.nsbtx", sHexDigits[i & 0xf], c);
+    Str_SPrintf(data_ov003_02235358, "/str/plHsTex/home%c%c.nsbtx", sHexDigits[i & 0xf], c);
     return data_ov003_02235358;
 }
 

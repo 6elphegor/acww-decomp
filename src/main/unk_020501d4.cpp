@@ -1,11 +1,12 @@
 #include "text/Unk_02050288.h"
 #include "Unk_020d8c7c.h"
+#include "sys/ProcProfile.h"
 
 // TU068: 0x020501d4-0x02051218, the text system (fonts, text objects drawn into a tile buffer, string buffers and
 // the scene object that loads the fonts). One original file: __sinit constructs the five fonts and fills the
 // entries of the character table that hold sCharSortKeyZero.
 
-typedef void (*Unk_02050288_LoadFunc)(void *src, u32 offset, u32 size);
+typedef void (*GxLoadCharFunc)(void *src, u32 offset, u32 size);
 
 extern "C" {
 void *func_02133ef8(void *ptr, u32 size);
@@ -72,11 +73,6 @@ public:
     virtual ~TextSystemModule();
 };
 
-struct Unk_020dba58_Entry {
-    TextSystemModule *(*create)(void);
-    u16 unk_04;
-    u16 unk_06;
-};
 
 extern "C" {
 TextSystemModule *TextSystemModule_Create(void);
@@ -90,8 +86,8 @@ extern const u16 sSpecialCharStr1;
 extern const u16 sSpecialCharStr3;
 extern const u16 sSpecialCharStr7;
 extern const char *const sGameFontFileParts[3];
-extern const Unk_02050288_LoadFunc sTextVramLoadFuncsA[6];
-extern const Unk_02050288_LoadFunc sTextVramLoadFuncsB[6];
+extern const GxLoadCharFunc sTextVramLoadFuncsA[6];
+extern const GxLoadCharFunc sTextVramLoadFuncsB[6];
 extern const u8 sToUpperPairs[0x7a];
 extern const u8 sGameCharToAsciiTable[0xe0];
 // the first object of the next file's .rodata (0x80000000: "glyph of the secondary font")
@@ -99,7 +95,7 @@ extern const u32 data_020ca638;
 extern char sGameFontPartImg[];
 extern char sGameFontPartHead[];
 extern char sGameFontPartAttr[];
-extern Unk_020dba58_Entry sTextSystemModuleProfile;
+extern ProcProfile sTextSystemModuleProfile;
 extern u16 sCharSortKeyTable[0xe0];
 extern void *gTextHeap;
 extern u8 gTextLabelList[0xc];
@@ -191,7 +187,7 @@ void *gTextHeap;
 
 const u16 sSpecialCharStr2 = 2;
 
-Unk_020dba58_Entry sTextSystemModuleProfile = {TextSystemModule_Create, 0xce, 0xca};
+ProcProfile sTextSystemModuleProfile = {(void *(*)())TextSystemModule_Create, 0xce, 0xca};
 
 char sGameFontPartImg[] = "img";
 
@@ -211,7 +207,7 @@ const u8 sToUpperPairs[0x7a] = {
 
 GameFont gFontD;
 
-const Unk_02050288_LoadFunc sTextVramLoadFuncsB[6] = {
+const GxLoadCharFunc sTextVramLoadFuncsB[6] = {
     GXS_LoadBG0Char, GXS_LoadBG1Char, GXS_LoadBG2Char, GXS_LoadBG3Char, GXS_LoadOBJ, NULL,
 };
 
@@ -219,7 +215,7 @@ const u16 sSpecialCharStr5 = 5;
 
 const u16 sSpecialCharStr6 = 6;
 
-const Unk_02050288_LoadFunc sTextVramLoadFuncsA[6] = {
+const GxLoadCharFunc sTextVramLoadFuncsA[6] = {
     GX_LoadBG0Char, GX_LoadBG1Char, GX_LoadBG2Char, GX_LoadBG3Char, GX_LoadOBJ, NULL,
 };
 

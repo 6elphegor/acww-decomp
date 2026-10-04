@@ -142,7 +142,7 @@ void Gfx3d_LoadPltt(void *, s32);
 extern u32 gSaveTownState[];
 s32 TownState_FindEvent(void *, s32);
 s32 func_02101340(char *, const char *, void *);
-void func_020639e8(char *, const char *, ...);
+void Str_SPrintf(char *, const char *, ...);
 void *func_021012bc(const char *);
 void *NNS_G3dGetMdlSet(void *);
 void *func_02106690(void *);
@@ -681,7 +681,7 @@ s32 HouseLightUpDeco_Load(HouseLightUpDeco *r) {
     void *t = File_LoadAlloc("/str/npcHsX.arc", gFieldStructureHeap, 4, z);
     if (func_02101340((char *)buf, "STR", t) != 0) {
         for (i = 0; i < 5; i++) {
-            func_020639e8(data_ov003_02235888, "STR:a/obj_x_house%d.nsbmd", i);
+            Str_SPrintf(data_ov003_02235888, "STR:a/obj_x_house%d.nsbmd", i);
             u8 *p = (u8 *)NNS_G3dGetMdlSet(func_021012bc(data_ov003_02235888));
             r->models[i] = (s32)(p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc));
         }

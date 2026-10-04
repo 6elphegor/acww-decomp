@@ -51,25 +51,24 @@ struct Unk_02051d24_Obj {
 
 struct Unk_02052134_W { u32 a:1, b:4, c:4, d:1, e:1, f:16; };
 struct Unk_020520a8_W { u32 a:4, b:4, c:16; };
-struct Unk_020520d0_W { u32 a:4, b:4, h:4, i:1, j:1, k:1, c:16; };
 struct Unk_0205218c_B { u8 a:6, b:1, c:1; };
 struct Unk_02051fcc_W { u16 a:6, b:1, c:4, d:4; };
-struct Unk_020521fc_W { u32 a:6, b:1, c:1, d:4, e:4, f:5, g:8, n:1, o:1, p:1; };
+struct FtrStateRecord { u32 a:6, b:1, c:1, d:4, e:4, f:5, g:8, n:1, o:1, p:1; };
 struct Unk_0205242c_Item {
     s16 a, b;
     Unk_0205242c_Item() { a = 0; b = 0; }
     Unk_0205242c_Item(s16 x, s16 y) { a = x; b = y; }
 };
-struct Unk_0205242c_Ent { Unk_0205242c_Item *rows[4]; u8 count; };
+struct FtrFootprintShape { Unk_0205242c_Item *rows[4]; u8 count; };
 struct Unk_0205242c_Self { s32 a; s32 b; };
 struct Unk_02051f68_V { s32 x, y, z; };
-struct Unk_02051a50_Bits {
+struct FtrPlaceRecord {
     u32 x : 4;
     u32 y : 4;
-    u32 g : 4;
-    u32 d : 1;
-    u32 e : 1;
-    u32 f : 1;
+    u32 beat : 4;
+    u32 layer : 1;
+    u32 switchOn : 1;
+    u32 isGyroid : 1;
     u32 item : 16;
     u32 pad : 1;
 };
@@ -78,9 +77,9 @@ extern u8 gFieldSceneKind;
 extern void *gCommManager;
 extern void *gSceneBlockMap;
 extern u8 gSaveHouse[];
-extern const Unk_0205242c_Ent sFtrFootprint1x1;
-extern const Unk_0205242c_Ent sFtrFootprint2x1;
-extern const Unk_0205242c_Ent sFtrFootprint2x2;
+extern const FtrFootprintShape sFtrFootprint1x1;
+extern const FtrFootprintShape sFtrFootprint2x1;
+extern const FtrFootprintShape sFtrFootprint2x2;
 
 inline BOOL IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 inline BOOL Range(u16 *p, u32 lo, u32 hi) {
@@ -118,7 +117,7 @@ s32 Item_GetFurnitureDirection(void *p);
 s32 FtrInfo_GetUnk05(s32 a);
 void _ZN9HouseData11setRoomFlagEjj(void *p, s32 a, s32 b);
 s32 _ZN9HouseData7getRoomEi(void *p, s32 a);
-RoomFtrState *_ZN9HouseRoom13func_0206086cEv();
+RoomFtrState *_ZN9HouseRoom11getFtrStateEv();
 void HouseRoom_ClearSongForScene(s32 a);
 void HouseRoom_SetSongForScene(s32 a, u16 *p);
 s32 SceneId_IsHouseRoom(u32 id);
@@ -171,7 +170,7 @@ extern Unk_0205242c_Item data_021c4e44[2];
 extern Unk_0205242c_Item data_021c4e54[2];
 extern Unk_0205242c_Item data_021c4e4c[2];
 extern Unk_0205242c_Item data_021c4e8c[4];
-extern const Unk_0205242c_Ent *sFtrFootprintTables[3];
+extern const FtrFootprintShape *sFtrFootprintTables[3];
 extern s32 sSpotReserveResult;
 
 extern "C" {
@@ -365,7 +364,7 @@ BOOL RoomFtrState::removeGyroidBeat(u32 a, u32 b) { return gyroidBeats.remove(a,
 extern "C" RoomFtrState *RoomFtrState_GetForScene(u32 id) {
     if (SceneId_IsHouseRoom(id)) {
         if (_ZN9HouseData7getRoomEi(gSaveHouse, SceneId_GetHouseRoom(id))) {
-            return _ZN9HouseRoom13func_0206086cEv();
+            return _ZN9HouseRoom11getFtrStateEv();
         }
     } else if (SceneId_IsVillagerHouse(id)) {
         return &sVillagerHouseFtrStates[SceneId_GetVillagerHouse(id)];
@@ -438,10 +437,10 @@ extern "C" Unk_0205242c_Item *FtrFootprint_GetTileOffset(Unk_0205242c_Self *p, u
 
 Unk_0205242c_Item data_021c4e34(0, 0);
 Unk_0205242c_Item data_021c4e3c[2] = { Unk_0205242c_Item(0, 0), Unk_0205242c_Item(1, 0) };
-const Unk_0205242c_Ent *sFtrFootprintTables[3] = { &sFtrFootprint1x1, &sFtrFootprint2x1, &sFtrFootprint2x2 };
-extern const Unk_0205242c_Ent sFtrFootprint2x2 = { { data_021c4e8c, data_021c4e8c, data_021c4e8c, data_021c4e8c }, 4 };
-extern const Unk_0205242c_Ent sFtrFootprint2x1 = { { data_021c4e3c, data_021c4e44, data_021c4e54, data_021c4e4c }, 2 };
-extern const Unk_0205242c_Ent sFtrFootprint1x1 = { { &data_021c4e34, &data_021c4e34, &data_021c4e34, &data_021c4e34 }, 1 };
+const FtrFootprintShape *sFtrFootprintTables[3] = { &sFtrFootprint1x1, &sFtrFootprint2x1, &sFtrFootprint2x2 };
+extern const FtrFootprintShape sFtrFootprint2x2 = { { data_021c4e8c, data_021c4e8c, data_021c4e8c, data_021c4e8c }, 4 };
+extern const FtrFootprintShape sFtrFootprint2x1 = { { data_021c4e3c, data_021c4e44, data_021c4e54, data_021c4e4c }, 2 };
+extern const FtrFootprintShape sFtrFootprint1x1 = { { &data_021c4e34, &data_021c4e34, &data_021c4e34, &data_021c4e34 }, 1 };
 Unk_0205242c_Item data_021c4e44[2] = { Unk_0205242c_Item(0, 0), Unk_0205242c_Item(0, -1) };
 Unk_0205242c_Item data_021c4e54[2] = { Unk_0205242c_Item(0, 0), Unk_0205242c_Item(-1, 0) };
 s32 sSpotReserveResult;
@@ -482,7 +481,7 @@ extern "C" s32 FtrSync_ApplyState(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool 
 }
 
 extern "C" s32 FtrSync_OnStateRecord(u32 *pp) {
-    Unk_020521fc_W *p = (Unk_020521fc_W *)pp;
+    FtrStateRecord *p = (FtrStateRecord *)pp;
     if (p->n == 1) {
         FtrSync_ApplyState(p->a, p->d, p->e, (u8)p->b, p->f, p->c, p->o, p->p, p->g);
         u32 w = *pp;
@@ -520,11 +519,11 @@ extern "C" s32 FtrSync_OnRemoveRecord(s32 a, Unk_02052134_W *w) {
     FtrSync_RemoveFurniture(a, w->b, w->c, (u8)w->a, e, &t, d, 0);
 }
 
-extern "C" s32 FtrSync_OnPlaceRecord(s32 a, Unk_020520d0_W *w) {
-    u16 t = w->c;
-    BOOL j = w->j ? 1 : 0;
-    BOOL k = w->k ? 1 : 0;
-    FtrSync_PlaceFurniture(a, w->a, w->b, (u8)w->i, j, k, (u8)w->h, &t, 0);
+extern "C" s32 FtrSync_OnPlaceRecord(s32 a, FtrPlaceRecord *w) {
+    u16 t = w->item;
+    BOOL j = w->switchOn ? 1 : 0;
+    BOOL k = w->isGyroid ? 1 : 0;
+    FtrSync_PlaceFurniture(a, w->x, w->y, (u8)w->layer, j, k, (u8)w->beat, &t, 0);
 }
 
 extern "C" s32 FtrSync_OnTopItemRecord(s32 a, Unk_020520a8_W *w) {
@@ -673,7 +672,7 @@ extern "C" void FtrSync_PlaceFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f,
     void *o;
     u16 loc[3];
     Unk_0205242c_Self pk;
-    Unk_02051a50_Bits bits;
+    FtrPlaceRecord bits;
     s32 x, y;
     s32 off;
     u32 idx;
@@ -712,10 +711,10 @@ extern "C" void FtrSync_PlaceFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f,
         void *t;
         bits.x = b;
         bits.y = c;
-        bits.g = g & 0xf;
-        bits.d = d;
-        bits.e = e;
-        bits.f = f;
+        bits.beat = g & 0xf;
+        bits.layer = d;
+        bits.switchOn = e;
+        bits.isGyroid = f;
         bits.item = loc[0];
         t = gCommManager;
         _ZN11CommManager11beginRecordEv(t);

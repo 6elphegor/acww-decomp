@@ -95,7 +95,7 @@ typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
 #define func_020548d0 _ZN9AnimModelC1Ev
 #define Model_setInitCallback _ZN5Model15setInitCallbackEii
 #define Model_clearResource _ZN5Model13clearResourceEv
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
 #define TalkAutoAdvance_start _ZN15TalkAutoAdvance5startEi
@@ -211,7 +211,7 @@ s32 WorldCurve_ToCurved(void *out, void *in);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 void Mtx43_RotateX(void *m, s32 a);
 BOOL PlayerActor_IsInterruptibleByMenu();
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 void *File_LoadAlloc(void *a, void *heap, s32 c, s32 d);
 BOOL File_Exists(void *p);
 s32 func_02101340(void *buf, char *name, void *data);
@@ -697,13 +697,13 @@ extern "C" BOOL Building_IsNight() {
 
 char *BuildingActor::getArcPath() {
     u32 i = buildingIndex;
-    func_020639e8(sBuildingArcPath, sBuildingArcPathFmt, i, i, Field_GetStructureTexSuffix());
+    Str_SPrintf(sBuildingArcPath, sBuildingArcPathFmt, i, i, Field_GetStructureTexSuffix());
     return sBuildingArcPath;
 }
 
 char *BuildingActor::getTexPath() {
     u32 i = buildingIndex;
-    func_020639e8(sBuildingTexPath, sBuildingTexPathFmt, i, i, Field_GetStructureTexSuffix());
+    Str_SPrintf(sBuildingTexPath, sBuildingTexPathFmt, i, i, Field_GetStructureTexSuffix());
     return sBuildingTexPath;
 }
 
@@ -717,7 +717,7 @@ char *BuildingActor::getLightTexPath() {
         return 0;
     }
     u32 i = buildingIndex;
-    func_020639e8(sBuildingLightTexPath, sBuildingLightTexPathFmt, i, i, Field_GetStructureTexSuffix());
+    Str_SPrintf(sBuildingLightTexPath, sBuildingLightTexPathFmt, i, i, Field_GetStructureTexSuffix());
     return sBuildingLightTexPath;
 }
 
@@ -781,7 +781,7 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
                 i = 0;
                 z1 = i;
                 for (; i < 4; i++) {
-                    func_020639e8(b1, data_ov009_0225e41c, i);
+                    Str_SPrintf(b1, data_ov009_0225e41c, i);
                     if (func_021012bc(b1)) {
                         e->btaAnims[i] = (s32)func_02106670(func_02106654(), z1);
                     }
@@ -789,7 +789,7 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
                 i = 0;
                 z2 = i;
                 for (; i < 4; i++) {
-                    func_020639e8(b2, data_ov009_0225e42c, i);
+                    Str_SPrintf(b2, data_ov009_0225e42c, i);
                     if (func_021012bc(b2)) {
                         e->btpAnims[i] = (s32)func_021066ac(func_02106690(), z2);
                     }

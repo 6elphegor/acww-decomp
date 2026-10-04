@@ -16,7 +16,7 @@ void Clock_GetDayMonth(u16 *);
 void Clock_GetMinuteHour(u16 *);
 s32 Clock_GetSecond(void);
 void BgHeap_Destroy(void);
-void func_020639e8(void *buf, const void *fmt, ...);
+void Str_SPrintf(void *buf, const void *fmt, ...);
 s32 func_02101340(void *, const void *, void *);
 void func_02101310(void *);
 void *func_021012bc(const void *);
@@ -169,7 +169,7 @@ void BgModelCache::loadGroundTexture()
     s32 a = BgModel_GetGrassType(this);
     s32 b = BgModel_GetGrassType(this);
     void *p;
-    func_020639e8(buf, "/bg/ct%d/grd_set%d%c.nsbtx", a, b, ((u32)(data_021e5890.groundSeasonBits << 24) >> 26) + 0x61);
+    Str_SPrintf(buf, "/bg/ct%d/grd_set%d%c.nsbtx", a, b, ((u32)(data_021e5890.groundSeasonBits << 24) >> 26) + 0x61);
     p = File_LoadAlloc(buf, gCurrentHeap, -4, 0);
     s32 *q = &groundTex;
     *q = (s32)NNS_G3dGetTex(p);
@@ -200,7 +200,7 @@ void *BgModel_LoadBcl(s32 id, void *heap)
     u8 buf[0x20];
     u8 file[0x68];
     void *p, *r, *t;
-    func_020639e8(buf, "/bg/a%d/%04x.arc", id >> 4, id);
+    Str_SPrintf(buf, "/bg/a%d/%04x.arc", id >> 4, id);
     p = File_LoadAlloc(buf, gCurrentHeap, -4, 0);
     r = 0;
     if (func_02101340(file, "BG", p)) {
@@ -256,7 +256,7 @@ BgAcreModel *BgModelCache::getAcre(s32 id)
         if (e->arc == 0) {
             s32 hi = id >> 4;
             void *p;
-            func_020639e8(l.buf, "/bg/a%d/%04x.arc", hi, id);
+            Str_SPrintf(l.buf, "/bg/a%d/%04x.arc", hi, id);
             e->arc = BgModel_LoadFile(l.buf, e->unk_24);
             if (func_02101340(l.file, "BG", e->arc)) {
                 u8 *q = (u8 *)NNS_G3dGetMdlSet(func_021012bc("BG:a/bmd/bmd0"));
@@ -283,7 +283,7 @@ BgAcreModel *BgModelCache::getAcre(s32 id)
                 func_02101310(l.file);
             }
             if (((id & 0xf000) >> 12) == 1) {
-                func_020639e8(l.buf, "/bg/t%d/%04x.nsbtx", hi, id);
+                Str_SPrintf(l.buf, "/bg/t%d/%04x.nsbtx", hi, id);
                 p = File_LoadAlloc(l.buf, gCurrentHeap, -4, 0);
                 if (p) {
                     l.tmp = (s32)NNS_G3dGetTex(p);

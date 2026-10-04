@@ -15,7 +15,7 @@ void Gfx2d_LoadScreenFile(const char *a, void *b, s32 c);
 void *File_LoadAlloc(void *a, void *b, s32 c, void *d);
 void Heap_Free(void *heap, void *p);
 s32 MenuCtrl_GetMode();
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 
 extern void *gCurrentHeap;
 extern char data_ov124_02296e70[],data_ov124_02296e84[],data_ov124_02296e98[],data_ov124_02296eac[],data_ov124_02296ec0[],data_ov124_02296ed4[],data_ov124_02296ee8[],data_ov124_02296efc[],data_ov124_02296f10[],data_ov124_02296f24[];
@@ -140,9 +140,9 @@ void GeneralMenuHeader::loadBgGfx(s32 a, s32 b) {
     default: pictureIndex = 0; break;
     }
     if (pictureIndex == 0xb || pictureIndex == 0xe) {
-        func_020639e8(buf, "menu/han/bg%dE.bch", pictureIndex);
+        Str_SPrintf(buf, "menu/han/bg%dE.bch", pictureIndex);
     } else {
-        func_020639e8(buf, "menu/han/bg%d.bch", pictureIndex);
+        Str_SPrintf(buf, "menu/han/bg%d.bch", pictureIndex);
     }
     Gfx2d_LoadCharFile(buf, heap, a, 0x113, 0x113, 0x126);
     Gfx2d_LoadPaletteFileSlot("menu/han/ten0_bg.bpl", heap, a, pictureIndex, 0xe);

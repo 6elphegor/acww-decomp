@@ -1182,7 +1182,7 @@ void ItemPick_OneSimple(u16 *, Unk_0202368c_Obj *);
 void ItemPick_One(void *, void *, u32, u32, u32, u32, u32);
 void ItemPickSpec_Destruct(void *);
 void TownId_CopyFrom(void *, u32);
-void func_020639e8(u8 *, u8 *);
+void Str_SPrintf(u8 *, u8 *);
 s32 Random_GlobalBelow2(s32);
 s32 Random_GlobalBelow(s32);
 void * Letter_GetSenderPlayer();
@@ -2980,7 +2980,7 @@ u8 *VillagerActor::getTexturePath() {
     if (v == -1) {
         v = 0;
     }
-    ((void (*)(u8 *, u8 *, ...))func_020639e8)(sVillagerTexturePathBuf,  ((u8 *)"npc/model/%d/%d.nsbtx"),  v & 0xf8,  v);
+    ((void (*)(u8 *, u8 *, ...))Str_SPrintf)(sVillagerTexturePathBuf,  ((u8 *)"npc/model/%d/%d.nsbtx"),  v & 0xf8,  v);
     return sVillagerTexturePathBuf;
 }
 
@@ -2989,7 +2989,7 @@ u8 *VillagerActor::getModelPath() {
     if (v == -1) {
         v = 0;
     }
-    ((void (*)(u8 *, u8 *, ...))func_020639e8)(sVillagerModelPathBuf,  ((u8 *)"npc/model/%d/%d.nsbmd"),  v & 0xf8,  v);
+    ((void (*)(u8 *, u8 *, ...))Str_SPrintf)(sVillagerModelPathBuf,  ((u8 *)"npc/model/%d/%d.nsbmd"),  v & 0xf8,  v);
     return sVillagerModelPathBuf;
 }
 

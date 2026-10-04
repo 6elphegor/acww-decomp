@@ -38,7 +38,7 @@ public:
     void setWallpaper(u16 *src, u32 flag);
     u16 *getCarpet(s32 *out);
     u16 *getWallpaper(s32 *out);
-    RoomFtrState *func_0206086c();
+    RoomFtrState *getFtrState();
 };
 
 #endif // ROOM_HOUSEROOM_H

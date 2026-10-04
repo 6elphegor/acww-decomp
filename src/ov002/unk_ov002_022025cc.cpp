@@ -125,7 +125,7 @@ void Gfx2d_LoadScreen(void *buf, s32 a, s32 b, s32 c);
 void Gfx2d_LoadPaletteFile(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
 void Gfx2d_LoadCharFile(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
 void Gfx2d_LoadScreenFile(char *buf, void *h, s32 x);
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void GXS_LoadOBJPltt(const void *p, u32 a, u32 b);
 s32 MenuCtrl_IsForceCloseDue();
@@ -299,11 +299,11 @@ extern "C" void Menu_PlayScrollGrabSe() { Snd_PlaySe(0x33); }
 extern "C" void Menu_LoadPaperBg(s32 a, void *b) {
     void *h = gCurrentHeap;
     char buf[0x20];
-    func_020639e8(buf, "menu/paper/chr/%03d.bch", a);
+    Str_SPrintf(buf, "menu/paper/chr/%03d.bch", a);
     Gfx2d_LoadCharFile(buf, h, (s32)b, 0x10, 0x10, 0x74);
-    func_020639e8(buf, "menu/paper/scr/%03d.bsc", a);
+    Str_SPrintf(buf, "menu/paper/scr/%03d.bsc", a);
     Gfx2d_LoadScreenFile(buf, h, (s32)b);
-    func_020639e8(buf, "menu/paper/plt/%03d.bpl", a, a);
+    Str_SPrintf(buf, "menu/paper/plt/%03d.bpl", a, a);
     Gfx2d_LoadPaletteFile(buf, h, (s32)b, 0xc, 0xc, 0xe);
 }
 

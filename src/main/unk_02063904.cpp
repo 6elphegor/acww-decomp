@@ -1,13 +1,9 @@
 #include "types.h"
 #include "sys/Unk_02063d18_File.h"
+#include "nitro/fs.h"
 
 typedef char *va_list;
 #define va_start(ap, parm) ((ap) = (va_list)(((u32)&(parm)) & ~3) + 4)
-
-struct Unk_02063eac_FileId {
-    u32 arc;
-    u32 file_id;
-};
 
 
 struct FileLzHeader {
@@ -122,11 +118,11 @@ extern void *gCurrentHeap;
 }
 
 extern "C" {
-s32 func_020639c0(char *buf, u32 n, const char *fmt, va_list va);
+s32 Str_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
 }
 
 extern "C" {
-s32 func_020639d0(char *buf, const char *fmt, va_list va);
+s32 Str_VSPrintf(char *buf, const char *fmt, va_list va);
 }
 
 extern "C" {
@@ -134,7 +130,7 @@ void FS_InitFile(void *f);
 }
 
 extern "C" {
-BOOL FS_OpenFileFast(void *f, Unk_02063eac_FileId id);
+BOOL FS_OpenFileFast(void *f, FSFileID id);
 }
 
 extern "C" {
@@ -243,7 +239,7 @@ enum FileBlockType { Unk_02063d18_T0 = 0, Unk_02063d18_T10 = 0x10, Unk_02063d18_
 
 extern "C" BOOL File_Exists(u32 a);
 extern "C" void File_ReadRangeByPath(u32 a, void *dst, u32 size, u32 off);
-extern "C" void File_ReadRangeById(Unk_02063eac_FileId id, s32 a, s32 b, s32 c);
+extern "C" void File_ReadRangeById(FSFileID id, s32 a, s32 b, s32 c);
 extern "C" void File_ReadRange(Unk_02063d18_File *f, void *dst, u32 size, u32 off);
 extern "C" s32 File_LoadOverlay(s32 x);
 extern "C" s32 File_UnloadOverlay(s32 x);
@@ -262,9 +258,9 @@ extern "C" s32 Math_EaseRampProgress(s32 x, s32 lo, s32 hi, s32 a, s32 b);
 extern "C" void G3dRes_CopyTexByName(void *a, void *b, s32 c, s32 d);
 extern "C" void G3dRes_CopyPlttByName(void *a, void *b, s32 c, s32 d);
 extern "C" BOOL Mem_Differs();
-extern "C" s32 func_020639e8(char *buf, const char *fmt, ...);
-extern "C" s32 func_020639d0(char *buf, const char *fmt, va_list va);
-extern "C" s32 func_020639c0(char *buf, u32 n, const char *fmt, va_list va);
+extern "C" s32 Str_SPrintf(char *buf, const char *fmt, ...);
+extern "C" s32 Str_VSPrintf(char *buf, const char *fmt, va_list va);
+extern "C" s32 Str_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
 extern "C" void TownId_Construct();
 extern "C" void TownId_Destruct();
 extern "C" void TownId_Clear(u16 *p);
@@ -293,7 +289,7 @@ extern "C" void File_ReadRangeByPath(u32 a, void *dst, u32 size, u32 off) {
     FS_CloseFile(&f);
 }
 
-extern "C" void File_ReadRangeById(Unk_02063eac_FileId id, s32 a, s32 b, s32 c) {
+extern "C" void File_ReadRangeById(FSFileID id, s32 a, s32 b, s32 c) {
     Unk_02063d18_File f;
     FS_InitFile(&f);
     if (FS_OpenFileFast(&f, id)) {
@@ -482,15 +478,15 @@ extern "C" BOOL Mem_Differs() {
     return FALSE;
 }
 
-extern "C" s32 func_020639e8(char *buf, const char *fmt, ...) {
+extern "C" s32 Str_SPrintf(char *buf, const char *fmt, ...) {
     va_list va;
     va_start(va, fmt);
-    return func_020639d0(buf, fmt, va);
+    return Str_VSPrintf(buf, fmt, va);
 }
 
-extern "C" s32 func_020639d0(char *buf, const char *fmt, va_list va) { func_020639c0(buf, 0x7fffffff, fmt, va); }
+extern "C" s32 Str_VSPrintf(char *buf, const char *fmt, va_list va) { Str_VSNPrintf(buf, 0x7fffffff, fmt, va); }
 
-extern "C" s32 func_020639c0(char *buf, u32 n, const char *fmt, va_list va) { OS_VSNPrintf(buf, n, fmt, va); }
+extern "C" s32 Str_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va) { OS_VSNPrintf(buf, n, fmt, va); }
 
 extern "C" void TownId_Construct() {}
 

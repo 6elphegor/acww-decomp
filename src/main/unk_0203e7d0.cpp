@@ -129,7 +129,7 @@ void *PrioList_FindById(void *, u32);
 }
 
 extern "C" {
-void func_020652dc(void *, void *);
+void PrioList_PushBack(void *, void *);
 }
 
 extern "C" {

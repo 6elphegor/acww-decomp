@@ -7,19 +7,19 @@
 // 3D model instance (0x98 bytes): an NNS G3D render object at 0x08, the model resource at 0x5c, its texture/palette
 // key, a 4x3 base matrix at 0x64 and the texture VRAM slot. Defined in src/main/unk_02055200.cpp (ctor 0x02055704);
 // base of CachedModel.
-struct Unk_020553f8_Res;
-struct Unk_02054584_Data;
+struct NNSG3dResMdl;
+struct NNSG3dAnmObj;
 
-// Declaration-only twin of Model's real base Unk_020dbe14 (vtable 0x020dbe0c, defined in src/main/unk_02055200.cpp
-// after Model): the original vtable order there is the heapsort of the declaration order twin, Model, Unk_020dbe14.
+// Declaration-only twin of Model's real base ModelBase (vtable 0x020dbe0c, defined in src/main/unk_02055200.cpp
+// after Model): the original vtable order there is the heapsort of the declaration order twin, Model, ModelBase.
 // symbols.txt gives the twin's C2/D2 names as labels of the real functions.
-class Unk_020dbe14b {
+class ModelBaseDecl {
 public:
-    Unk_020dbe14b();
-    virtual ~Unk_020dbe14b();
+    ModelBaseDecl();
+    virtual ~ModelBaseDecl();
 };
 
-class Model : public Unk_020dbe14b {
+class Model : public ModelBaseDecl {
 public:
     Model();
     virtual ~Model();
@@ -34,8 +34,8 @@ public:
     void drawScaled(s32 *p);
     void drawShapesDirect(s32 *p);
     BOOL clearResource();
-    BOOL setResource(Unk_020553f8_Res *a, u32 b);
-    BOOL setResourceAndBind(Unk_020553f8_Res *a, u32 b);
+    BOOL setResource(NNSG3dResMdl *a, u32 b);
+    BOOL setResourceAndBind(NNSG3dResMdl *a, u32 b);
     void initRenderObj();
     void reset();
 
@@ -47,9 +47,9 @@ public:
             /* 0x08 */ u32 renderObj; // NNSG3dRenderObj::flag
             /* 0x0c */ u8 *renderResMdl;
             /* 0x10 */ u8 pad_10[8];
-            /* 0x18 */ Unk_02054584_Data *renderAnmJnt;
+            /* 0x18 */ NNSG3dAnmObj *renderAnmJnt;
             /* 0x1c */ s32 unk_1c;
-            /* 0x20 */ Unk_02054584_Data *renderAnmVis;
+            /* 0x20 */ NNSG3dAnmObj *renderAnmVis;
             /* 0x24 */ u8 pad_24[0x10];
         };
     };
@@ -62,7 +62,7 @@ public:
             /* 0x40 */ u8 pad_40[0x1c];
         };
     };
-    /* 0x5c */ Unk_020553f8_Res *resMdl;
+    /* 0x5c */ NNSG3dResMdl *resMdl;
     /* 0x60 */ u32 resTex;
     union {
         /* 0x64 */ Mtx43 mtx;

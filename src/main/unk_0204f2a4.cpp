@@ -1,6 +1,8 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "save/Backup.h"
+#include "gfx/Mtx43.h"
+#include "sys/ProcProfile.h"
 
 struct Unk_020db984_Vec3 {
     s32 x, y, z;
@@ -43,22 +45,13 @@ struct Unk_0204fd24 {
 };
 
 
-struct Unk_020db94c_Ent {
+struct FishDisplayRequest {
     u8 kind;
     u8 fishId;
     u32 posX;
     u32 posZ;
 };
 
-struct Unk_020db8b8_Rec {
-    void *unk_00;
-    s16 unk_04;
-    s16 unk_06;
-};
-
-struct Unk_0204f98c_Mtx {
-    s32 v[12];
-};
 
 class FishDisplay;
 
@@ -80,7 +73,7 @@ extern u8 gFieldSceneKind;
 void *_ZN13ModelSlotPool7acquireEPt(void *, void *);
 s32 _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc(void *, void *, const char *);
 void *_ZN11PooledModel8getModelEv(void *);
-void _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *, void *, s32);
+void _ZN5Model11setResourceEP12NNSG3dResMdlj(void *, void *, s32);
 void *_ZN9ModelSlot7getHeapEv(void *);
 void *File_LoadAlloc(void *, void *, s32, s32);
 s32 func_021065dc(void);
@@ -95,7 +88,7 @@ void Mtx43_RotateX(void *, s32);
 void Mtx43_RotateXYZ(void *, s32, s32, s32);
 void Mtx43_RotateY(void *, s32);
 void Mtx43_RotateZ(void *, s32);
-s32 func_020639e8(char *, const char *, ...);
+s32 Str_SPrintf(char *, const char *, ...);
 extern u8 data_021f47e0[];
 void _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, const char *f);
 void FishDisplayHeap_Create(void);
@@ -168,9 +161,9 @@ extern char sFishMdl57File[];
 extern char sFishMdl58File[];
 extern char sFishShadowMdlFile[];
 extern char sFishShadowAnmFile[];
-extern Unk_020db8b8_Rec sFishDisplayProfile;
+extern ProcProfile sFishDisplayProfile;
 extern char *sFishStaticMdlPaths[3];
-extern Unk_020db94c_Ent sFishDisplayRequests[4];
+extern FishDisplayRequest sFishDisplayRequests[4];
 extern const u8 sFishBaseSizes[0x160];
 extern Backup gBackup;
 
@@ -372,7 +365,7 @@ void FishDisplay::updateTransform(FishDisplayEntry *e) {
         Mtx43_RotateZ(data_021f47e0, e->rotZ);
         Mtx43_RotateX(data_021f47e0, e->rotX);
     }
-    *(Unk_0204f98c_Mtx *)(m + 0x64) = *(Unk_0204f98c_Mtx *)data_021f47e0;
+    *(Mtx43 *)(m + 0x64) = *(Mtx43 *)data_021f47e0;
 }
 
 BOOL FishDisplay::loadFishModel(void *p, FishDisplayEntry *e) {
@@ -385,18 +378,18 @@ BOOL FishDisplay::loadFishModel(void *p, FishDisplayEntry *e) {
     void *y = (u8 *)e + 0x4c;
     s32 q = id / 16;
     if (id < 10) {
-        func_020639e8(buf, "/fish/0%d/fish0%d.nsbmd", q, id);
+        Str_SPrintf(buf, "/fish/0%d/fish0%d.nsbmd", q, id);
     } else {
-        func_020639e8(buf, "/fish/0%d/fish%d.nsbmd", q, id);
+        Str_SPrintf(buf, "/fish/0%d/fish%d.nsbmd", q, id);
     }
     if (_ZN11PooledModel12loadFromSlotEP9ModelSlotPKc(y, x, buf)) {
         u8 *m = (u8 *)e + 0x98;
-        _ZN5Model11setResourceEP16Unk_020553f8_Resj(m, _ZN11PooledModel8getModelEv(y), 0);
+        _ZN5Model11setResourceEP12NNSG3dResMdlj(m, _ZN11PooledModel8getModelEv(y), 0);
         t = _ZN9ModelSlot7getHeapEv(x);
         if (id < 10) {
-            func_020639e8(buf, "/fish/0%d/fish0%d.nsbca", q, id);
+            Str_SPrintf(buf, "/fish/0%d/fish0%d.nsbca", q, id);
         } else {
-            func_020639e8(buf, "/fish/0%d/fish%d.nsbca", q, id);
+            Str_SPrintf(buf, "/fish/0%d/fish%d.nsbca", q, id);
         }
         File_LoadAlloc(buf, t, 4, 0);
         s32 u = func_021065f8(func_021065dc(), 0);
@@ -420,7 +413,7 @@ BOOL FishDisplay::loadStaticModel(void *p, FishDisplayEntry *e) {
     void *x = _ZN13ModelSlotPool7acquireEPt(p, (u8 *)e + 0x48);
     void *y = (u8 *)e + 0x4c;
     if (_ZN11PooledModel12loadFromSlotEP9ModelSlotPKc(y, x, sFishStaticMdlPaths[id - 0x38])) {
-        _ZN5Model11setResourceEP16Unk_020553f8_Resj((u8 *)e + 0x98, _ZN11PooledModel8getModelEv(y), r);
+        _ZN5Model11setResourceEP12NNSG3dResMdlj((u8 *)e + 0x98, _ZN11PooledModel8getModelEv(y), r);
         e->entryState = 3;
         updateTransform(e);
         r = TRUE;
@@ -436,7 +429,7 @@ BOOL FishDisplay::loadShadowModel(void *p, FishDisplayEntry *e) {
     void *y = (u8 *)e + 0x4c;
     if (_ZN11PooledModel12loadFromSlotEP9ModelSlotPKc(y, x, sFishShadowMdlPath)) {
         u8 *m = (u8 *)e + 0x98;
-        _ZN5Model11setResourceEP16Unk_020553f8_Resj(m, _ZN11PooledModel8getModelEv(y), r);
+        _ZN5Model11setResourceEP12NNSG3dResMdlj(m, _ZN11PooledModel8getModelEv(y), r);
         void *t = _ZN9ModelSlot7getHeapEv(x);
         File_LoadAlloc(sFishShadowAnmPath, t, 4, r);
         s32 u = func_021065f8(func_021065dc(), r);
@@ -640,11 +633,11 @@ char sFishShadowAnmFile[] = "/fish/03/fish_shadow.nsbca";
 
 s32 sFishDisplayEntryCount = 4;
 
-Unk_020db8b8_Rec sFishDisplayProfile = {(void *)FishDisplay_Create, 0xc2, 8};
+ProcProfile sFishDisplayProfile = {(void *(*)())FishDisplay_Create, 0xc2, 8};
 
 char *sFishStaticMdlPaths[3] = {sFishMdl56File, sFishMdl57File, sFishMdl58File};
 
-Unk_020db94c_Ent sFishDisplayRequests[4] = {
+FishDisplayRequest sFishDisplayRequests[4] = {
     {8, 0xff, 0, 0},
     {8, 0xff, 0, 0},
     {8, 0xff, 0, 0},

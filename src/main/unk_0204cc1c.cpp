@@ -26,12 +26,12 @@ extern "C" void Town_ClearBorderTrees(Unk_0204da0c_Map *p);
 
 // ---- SceneMapModule ----
 
-struct Unk_0204cf2c_Ent {
+struct FgDataIndex {
     u16 *data;
     s32 count;
 };
 
-struct Unk_0204cd00_Glyph {
+struct FgLayoutEntry {
     u16 v;
     u8 x;
     u8 y;
@@ -53,7 +53,7 @@ struct Unk_0204d0f4_Info {
     u32 d;
 };
 
-struct Unk_0204d0a4 {
+struct RoomBlockMap {
     u32 blocks;
     u32 width;
     u32 height;
@@ -81,20 +81,8 @@ struct Unk_0204d920_Pad { s32 v[4]; Unk_0204d920_Pad() {} ~Unk_0204d920_Pad() {}
 
 struct Unk_0204db24_L { volatile s32 xy[2]; Unk_0204d560_Vec v, w; };
 
-struct Unk_0204dd20_Obj {
-    u8 pad[0x2224];
-    u8 f : 2;
-};
-
 struct Unk_0204debc_Pos {
     s32 x, y;
-};
-
-struct Unk_0204debc_Entry {
-    u32 v;
-    void *a;
-    u32 z;
-    void *b;
 };
 
 struct BuriedMask {
@@ -103,7 +91,7 @@ struct BuriedMask {
     ~BuriedMask();
 };
 
-struct Unk_0204e1a8_Out {
+struct BlockMapSize {
     s32 v[2];
 };
 
@@ -122,8 +110,8 @@ public:
     u8 acres[0x24];
     AcreItemGrid items[16];
     BuriedMask buried[16];
-    u8 unk_2224_lo : 2;
-    u8 unk_2224_hi : 6;
+    u8 grassType : 2;
+    u8 groundSeason : 6;
 
     TownMap();
     ~TownMap();
@@ -154,7 +142,7 @@ public:
     s32 worldHeight;
     s32 mapSlot;
 
-    BOOL build(Unk_0204debc_Entry *e, Unk_0204e1a8_Out *sz, s32 heap);
+    BOOL build(MapBlockEntry *e, BlockMapSize *sz, s32 heap);
     void free(s32 heap);
     void clear();
     s32 clearPlantFlag(s32 a, s32 b);
@@ -195,9 +183,9 @@ extern char sFgDataNfIndexPath[];
 extern char sFgDataNrIndexPath[];
 extern char sFgDataFoIndexPath[];
 extern TownBlockMap *gTownBlockMap;
-extern Unk_0204cf2c_Ent *gFgDataIndex;
-extern Unk_0204d0a4 *gVillagerRoomMap;
-extern Unk_0204d0a4 *gHouseRoomMaps[5];
+extern FgDataIndex *gFgDataIndex;
+extern RoomBlockMap *gVillagerRoomMap;
+extern RoomBlockMap *gHouseRoomMaps[5];
 extern u16 sNativeFruitTrees[];
 extern u8 gFieldSceneKind;
 extern void *gCurrentHeap;
@@ -336,39 +324,39 @@ extern "C" {
 s32 FgData_GetVillagerLayout(s32 a, s32 b, s32 c);
 void *FgData_ReadVillagerLayout(void *a, s32 *b, s32 c, void *d);
 void *FgData_ReadLayoutEntries(void *a, s32 *b, s32 c, s32 d, void *heap);
-BOOL FgData_ApplyLayout(Unk_0204cf2c_Ent *t, u16 *dst, s32 i, s32 j, void *heap);
+BOOL FgData_ApplyLayout(FgDataIndex *t, u16 *dst, s32 i, s32 j, void *heap);
 u16 *FgData_CreateLayoutGrid(u16 *dst, s32 b, void *heap, s32 d);
 BOOL FgData_ApplyLayoutGlobal(u16 *dst, s32 i, s32 j, void *heap);
-BOOL FgData_ReadLayout(Unk_0204cf2c_Ent *t, void *dst, s32 i, s32 j, s32 n);
+BOOL FgData_ReadLayout(FgDataIndex *t, void *dst, s32 i, s32 j, s32 n);
 u16 *ItemGrid_Alloc(void *heap, s32 align);
 BOOL FgData_HasLayout(s32 a, s32 b);
-s32 FgData_GetLayoutSize(Unk_0204cf2c_Ent *t, s32 i, s32 j);
-s32 FgData_GetLayoutOffset(Unk_0204cf2c_Ent *t, s32 i, s32 j);
-BOOL FgData_IsValidTable(Unk_0204cf2c_Ent *t, s32 i);
-void FgData_FreeIndices(Unk_0204cf2c_Ent *t, void *heap);
-BOOL FgData_LoadIndices(Unk_0204cf2c_Ent *t, void *heap);
+s32 FgData_GetLayoutSize(FgDataIndex *t, s32 i, s32 j);
+s32 FgData_GetLayoutOffset(FgDataIndex *t, s32 i, s32 j);
+BOOL FgData_IsValidTable(FgDataIndex *t, s32 i);
+void FgData_FreeIndices(FgDataIndex *t, void *heap);
+BOOL FgData_LoadIndices(FgDataIndex *t, void *heap);
 void FgData_Unload(void *heap);
 BOOL FgData_Load(void *heap);
-void FgData_ClearIndices(Unk_0204cf2c_Ent *t);
+void FgData_ClearIndices(FgDataIndex *t);
 void VillagerRoomMap_Destroy(void *heap);
-void VillagerRoomMap_Free(Unk_0204d0a4 *p, void *heap);
-Unk_0204d0a4 *VillagerRoomMap_Create(u32 a, void *heap);
-BOOL VillagerRoomMap_Init(Unk_0204d0a4 *p, u32 a, void *heap);
+void VillagerRoomMap_Free(RoomBlockMap *p, void *heap);
+RoomBlockMap *VillagerRoomMap_Create(u32 a, void *heap);
+BOOL VillagerRoomMap_Init(RoomBlockMap *p, u32 a, void *heap);
 BOOL VillagerRoom_LoadLayout(u16 *dst, u32 b, void *heap);
 Unk_0204d0f4_Info *VillagerRoom_BuildEntry(u16 *dst, u32 b, void *heap);
-void VillagerRoomMap_Clear(Unk_0204d0a4 *p);
-void HouseRoomMap_FreeBlocks(Unk_0204d0a4 *p, void *heap);
-BOOL HouseRoomMap_Init(Unk_0204d0a4 *p, s32 i, void *heap);
-void HouseRoomMap_ReleaseBg(Unk_0204d0a4 *p);
-void HouseRoomMap_BindBg(Unk_0204d0a4 *p);
+void VillagerRoomMap_Clear(RoomBlockMap *p);
+void HouseRoomMap_FreeBlocks(RoomBlockMap *p, void *heap);
+BOOL HouseRoomMap_Init(RoomBlockMap *p, s32 i, void *heap);
+void HouseRoomMap_ReleaseBg(RoomBlockMap *p);
+void HouseRoomMap_BindBg(RoomBlockMap *p);
 void HouseRoomMaps_BindBg();
-void HouseRoomMap_Update(Unk_0204d0a4 *p, s32 i);
+void HouseRoomMap_Update(RoomBlockMap *p, s32 i);
 void HouseRoomMaps_UpdateAll();
 void HouseRoomMaps_Destroy(void *heap);
 BOOL HouseRoomMaps_Create(void *heap);
-Unk_0204d0a4 *HouseRoomMaps_GetForScene(s32 a);
-Unk_0204d0a4 *HouseRoomMaps_Get(s32 i);
-void HouseRoomMap_Clear(Unk_0204d0a4 *p);
+RoomBlockMap *HouseRoomMaps_GetForScene(s32 a);
+RoomBlockMap *HouseRoomMaps_Get(s32 i);
+void HouseRoomMap_Clear(RoomBlockMap *p);
 BOOL Town_FindGulliverShip(void *a, void *b);
 BOOL Town_FindTownHallFront(void *a, s32 *pos, s32 *p3, s32 *p4);
 BOOL Town_FindGateHouse(void *a, s32 *pos, s32 *p3, s32 *p4);
@@ -385,7 +373,7 @@ BOOL TownBlockMap_Create(void *heap);
 void AcreItemGrid_Get();
 void ItemGrid_Clear(u16 *p);
 u8 *TownMap_GetAcres(void *p);
-void TownMap_Generate(Unk_0204dd20_Obj *o, s32 arg);
+void TownMap_Generate(TownMap *o, s32 arg);
 void TownMap_ApplyAcreLayouts(void *ov, s32 arg);
 BOOL TownMap_HasEnoughRocks(void *o);
 BOOL TownMap_HasEnoughSigns(void *o);
@@ -519,7 +507,7 @@ static inline BOOL Unk_0204c6a4_Check(u16 *p) {
     return f9;
 }
 
-static inline BOOL Unk_0204cd00_R(Unk_0204cd00_Glyph *g) {
+static inline BOOL Unk_0204cd00_R(FgLayoutEntry *g) {
     u32 y = g->y;
     u32 x = g->x;
     BOOL r = FALSE;
@@ -1056,34 +1044,34 @@ void BlockMap::free(s32 heap) {
 }// Declarations for data defined further down (definition order sets the data layout)
 extern TownBlockMap *gTownBlockMap;
 extern char sFgDataFoIndexPath[];
-extern Unk_0204d0a4 *gHouseRoomMaps[5];
+extern RoomBlockMap *gHouseRoomMaps[5];
 extern char sFgDataNfIndexPath[];
 extern char sFgDataNrPath[];
-extern Unk_0204cf2c_Ent *gFgDataIndex;
+extern FgDataIndex *gFgDataIndex;
 extern const Unk_020ca2f4_Ent sFgDataFiles[4];
 extern char sFgDataNrIndexPath[];
-extern Unk_0204d0a4 *gVillagerRoomMap;
+extern RoomBlockMap *gVillagerRoomMap;
 extern char sFgDataFoPath[];
 extern char sFgDataFiPath[];
 extern char sFgDataNfPath[];
 extern char sFgDataFiIndexPath[];// Declarations for data defined further down (definition order sets the data layout)
 extern char sFgDataFoIndexPath[];
-extern Unk_0204cf2c_Ent *gFgDataIndex;
+extern FgDataIndex *gFgDataIndex;
 extern char sFgDataNfPath[];
 extern TownBlockMap *gTownBlockMap;
 extern char sFgDataFiPath[];
 extern char sFgDataNrPath[];
 extern char sFgDataNrIndexPath[];
-extern Unk_0204d0a4 *gVillagerRoomMap;
+extern RoomBlockMap *gVillagerRoomMap;
 extern char sFgDataFoPath[];
 extern char sFgDataFiIndexPath[];
 extern char sFgDataNfIndexPath[];
-extern Unk_0204d0a4 *gHouseRoomMaps[5];
+extern RoomBlockMap *gHouseRoomMaps[5];
 extern const Unk_020ca2f4_Ent sFgDataFiles[4];
 
 char sFgDataFoIndexPath[] = "fg_data/fo_h.bin";
 
-Unk_0204cf2c_Ent *gFgDataIndex;
+FgDataIndex *gFgDataIndex;
 
 char sFgDataNfPath[] = "fg_data/nf.bin";
 
@@ -1095,13 +1083,13 @@ char sFgDataNrPath[] = "fg_data/nr.bin";
 
 char sFgDataNrIndexPath[] = "fg_data/nr_h.bin";
 
-Unk_0204d0a4 *gVillagerRoomMap;
+RoomBlockMap *gVillagerRoomMap;
 
 char sFgDataFoPath[] = "fg_data/fo.bin";
 
 char sFgDataFiIndexPath[] = "fg_data/fi_h.bin";
 
-BOOL BlockMap::build(Unk_0204debc_Entry *e, Unk_0204e1a8_Out *sz, s32 heap) {
+BOOL BlockMap::build(MapBlockEntry *e, BlockMapSize *sz, s32 heap) {
     s32 count = sz->v[0] * sz->v[1];
     BOOL r = FALSE;
     mapSlot = 0;
@@ -1129,8 +1117,8 @@ BOOL BlockMap::build(Unk_0204debc_Entry *e, Unk_0204e1a8_Out *sz, s32 heap) {
                 l.v.x = l.x << 17;
                 l.v.z = l.y << 17;
                 w = l.v;
-                u32 h = _ZN12BgModelCache7getAcreEi(BgModelCache_Get(), e->v);
-                Ns_0204debc::MapBlock_Init(buf, e->v, &w, e->a, e->z, e->b, h, 0, (void *)&l, 0);
+                u32 h = _ZN12BgModelCache7getAcreEi(BgModelCache_Get(), e->acreId);
+                Ns_0204debc::MapBlock_Init(buf, e->acreId, &w, (void *)e->layers[0], e->layers[1], (void *)e->buried, h, 0, (void *)&l, 0);
                 buf += 0x28;
                 e++;
             }
@@ -1172,7 +1160,7 @@ void TownMap::clear() {
         a++;
         b++;
     }
-    unk_2224_lo = 0;
+    grassType = 0;
 }
 
 void *TownMap::getAcreItems(Unk_0204debc_Pos *in) {
@@ -1217,23 +1205,23 @@ BOOL TownMap::toTownAcreIndex(Unk_0204debc_Pos *out, Unk_0204debc_Pos *in) {
 }
 
 u32 TownMap::getGrassType() {
-    return unk_2224_lo;
+    return grassType;
 }
 
 void TownMap::updateGroundSeason() {
     u32 v = GroundSeason_CalcPhase();
-    unk_2224_hi = v;
+    groundSeason = v;
     _ZN14SnowmanRecords11updateDailyEv(data_021ed2e6);
 }
 
 void *TownMap::buildBlockEntries(s32 heap) {
     volatile s32 zero0, zero1;
     Unk_0204debc_Pos pos;
-    Unk_0204debc_Entry *r;
+    MapBlockEntry *r;
     s32 idx;
     pos.x = 0;
     pos.y = 0;
-    r = (Unk_0204debc_Entry *)Ns_0204debc::MapBlockEntry_NewArray(0x24, heap);
+    r = (MapBlockEntry *)Ns_0204debc::MapBlockEntry_NewArray(0x24, heap);
     if (r) {
         idx = 0;
         pos.y = 0;
@@ -1241,11 +1229,11 @@ void *TownMap::buildBlockEntries(s32 heap) {
         zero1 = 0;
         for (; pos.y < 6; pos.y++) {
             for (pos.x = zero0; pos.x < 6; pos.x++) {
-                Unk_0204debc_Entry *e = &r[idx];
-                e->v = ((u8 *)this + pos.y * 6)[pos.x];
-                e->a = getAcreItems(&pos);
-                e->z = zero1;
-                e->b = getAcreBuried(&pos);
+                MapBlockEntry *e = &r[idx];
+                e->acreId = ((u8 *)this + pos.y * 6)[pos.x];
+                e->layers[0] = (u32)getAcreItems(&pos);
+                e->layers[1] = zero1;
+                e->buried = (u32)getAcreBuried(&pos);
                 idx++;
             }
         }
@@ -1320,9 +1308,9 @@ extern "C" void TownMap_ApplyAcreLayouts(void *ov, s32 arg) {
     }
 }
 
-extern "C" void TownMap_Generate(Unk_0204dd20_Obj *o, s32 arg) {
+extern "C" void TownMap_Generate(TownMap *o, s32 arg) {
     _ZN7TownMap5clearEv(o);
-    o->f = Ns_0204d560::Random_GlobalBelow(3);
+    o->grassType = Ns_0204d560::Random_GlobalBelow(3);
     do {
         Town_GenerateAcres(o);
         TownMap_ApplyAcreLayouts(o, arg);
@@ -1571,7 +1559,7 @@ extern "C" BOOL Town_FindGulliverShip(void *a, void *b) {
     return Unk_0204d560_Chk(t) ? FALSE : TRUE;
 }
 
-extern "C" void HouseRoomMap_Clear(Unk_0204d0a4 *p) {
+extern "C" void HouseRoomMap_Clear(RoomBlockMap *p) {
     p->width = 0;
     p->height = 0;
     p->unitsX = 0;
@@ -1580,14 +1568,14 @@ extern "C" void HouseRoomMap_Clear(Unk_0204d0a4 *p) {
     p->mapSlot = 2;
 }
 
-extern "C" Unk_0204d0a4 *HouseRoomMaps_Get(s32 i) {
-    Unk_0204d0a4 *r = 0;
+extern "C" RoomBlockMap *HouseRoomMaps_Get(s32 i) {
+    RoomBlockMap *r = 0;
     if (HouseData_IsValidRoomIndex()) r = gHouseRoomMaps[i];
     return r;
 }
 
-extern "C" Unk_0204d0a4 *HouseRoomMaps_GetForScene(s32 a) {
-    Unk_0204d0a4 *r = 0;
+extern "C" RoomBlockMap *HouseRoomMaps_GetForScene(s32 a) {
+    RoomBlockMap *r = 0;
     if (SceneId_IsHouseRoom()) {
         r = HouseRoomMaps_Get(SceneId_GetHouseRoom(a));
     }
@@ -1599,9 +1587,9 @@ extern "C" BOOL HouseRoomMaps_Create(void *heap) {
     s32 i;
     RoomBclHeap_Create();
     for (i = 0; i < 5; i++) {
-        Unk_0204d0a4 **e = &gHouseRoomMaps[i];
+        RoomBlockMap **e = &gHouseRoomMaps[i];
         if (!*e) {
-            *e = (Unk_0204d0a4 *)Heap_Alloc(heap, 0x20);
+            *e = (RoomBlockMap *)Heap_Alloc(heap, 0x20);
             if (*e) {
                 if (*e) HouseRoomMap_Clear(*e);
                 if (!HouseRoomMap_Init(*e, i, heap)) {
@@ -1621,7 +1609,7 @@ extern "C" BOOL HouseRoomMaps_Create(void *heap) {
 extern "C" void HouseRoomMaps_Destroy(void *heap) {
     s32 i;
     for (i = 0; i < 5; i++) {
-        Unk_0204d0a4 **e = &gHouseRoomMaps[i];
+        RoomBlockMap **e = &gHouseRoomMaps[i];
         if (*e) {
             HouseRoomMap_ReleaseBg(*e);
             HouseRoomMap_FreeBlocks(*e, heap);
@@ -1639,7 +1627,7 @@ extern "C" void HouseRoomMaps_UpdateAll() {
     }
 }
 
-extern "C" void HouseRoomMap_Update(Unk_0204d0a4 *p, s32 i) {
+extern "C" void HouseRoomMap_Update(RoomBlockMap *p, s32 i) {
     u32 v = _ZN9HouseData13getRoomAcreIdEi(&Ns_0204cc48::gSaveHouse);
     if (p->blocks) _ZN12MapBlockAcre9setAcreIdEj(p->blocks, v);
 }
@@ -1652,7 +1640,7 @@ extern "C" void HouseRoomMaps_BindBg() {
     }
 }
 
-extern "C" void HouseRoomMap_BindBg(Unk_0204d0a4 *p) {
+extern "C" void HouseRoomMap_BindBg(RoomBlockMap *p) {
     u32 h;
     CollisionMap_Bind(p->width, p->height, 0, p->mapSlot);
     if ((u8 *)p->width > (u8 *)0 && (u8 *)p->height > (u8 *)0) {
@@ -1669,11 +1657,11 @@ join:
     }
 }
 
-extern "C" void HouseRoomMap_ReleaseBg(Unk_0204d0a4 *p) {
+extern "C" void HouseRoomMap_ReleaseBg(RoomBlockMap *p) {
     CollisionMap_Release(p->mapSlot);
 }
 
-extern "C" BOOL HouseRoomMap_Init(Unk_0204d0a4 *p, s32 i, void *heap) {
+extern "C" BOOL HouseRoomMap_Init(RoomBlockMap *p, s32 i, void *heap) {
     BOOL r = FALSE;
     Unk_0204d0f4_Info *info;
     struct { Unk_0204d0f4_V3 v, w; } l;
@@ -1699,14 +1687,14 @@ extern "C" BOOL HouseRoomMap_Init(Unk_0204d0a4 *p, s32 i, void *heap) {
     return r;
 }
 
-extern "C" void HouseRoomMap_FreeBlocks(Unk_0204d0a4 *p, void *heap) {
+extern "C" void HouseRoomMap_FreeBlocks(RoomBlockMap *p, void *heap) {
     if (p->blocks) {
         Heap_Free(heap, (void *)p->blocks);
         p->blocks = 0;
     }
 }
 
-extern "C" void VillagerRoomMap_Clear(Unk_0204d0a4 *p) {
+extern "C" void VillagerRoomMap_Clear(RoomBlockMap *p) {
     p->width = 0;
     p->height = 0;
     p->unitsX = 0;
@@ -1751,7 +1739,7 @@ extern "C" BOOL VillagerRoom_LoadLayout(u16 *dst, u32 b, void *heap) {
     return r;
 }
 
-extern "C" BOOL VillagerRoomMap_Init(Unk_0204d0a4 *p, u32 a, void *heap) {
+extern "C" BOOL VillagerRoomMap_Init(RoomBlockMap *p, u32 a, void *heap) {
     BOOL r = FALSE;
     Unk_0204d0f4_Info *info;
     struct { Unk_0204d0f4_V3 v, w; } l;
@@ -1781,10 +1769,10 @@ extern "C" BOOL VillagerRoomMap_Init(Unk_0204d0a4 *p, u32 a, void *heap) {
     return r;
 }
 
-extern "C" Unk_0204d0a4 *VillagerRoomMap_Create(u32 a, void *heap) {
-    Unk_0204d0a4 *r = 0;
+extern "C" RoomBlockMap *VillagerRoomMap_Create(u32 a, void *heap) {
+    RoomBlockMap *r = 0;
     if (!gVillagerRoomMap) {
-        gVillagerRoomMap = (Unk_0204d0a4 *)Heap_AllocTail(heap, 0x24);
+        gVillagerRoomMap = (RoomBlockMap *)Heap_AllocTail(heap, 0x24);
         if (gVillagerRoomMap) {
             if (gVillagerRoomMap) VillagerRoomMap_Clear(gVillagerRoomMap);
             if (VillagerRoomMap_Init(gVillagerRoomMap, a, heap)) {
@@ -1797,7 +1785,7 @@ extern "C" Unk_0204d0a4 *VillagerRoomMap_Create(u32 a, void *heap) {
     return r;
 }
 
-extern "C" void VillagerRoomMap_Free(Unk_0204d0a4 *p, void *heap) {
+extern "C" void VillagerRoomMap_Free(RoomBlockMap *p, void *heap) {
     if (p->blocks) {
         Heap_Free(heap, (void *)p->blocks);
         p->blocks = 0;
@@ -1817,7 +1805,7 @@ extern "C" void VillagerRoomMap_Destroy(void *heap) {
     }
 }
 
-extern "C" void FgData_ClearIndices(Unk_0204cf2c_Ent *t) {
+extern "C" void FgData_ClearIndices(FgDataIndex *t) {
     s32 i;
     for (i = 0; i < 4; i++) {
         t[i].data = 0;
@@ -1828,7 +1816,7 @@ extern "C" void FgData_ClearIndices(Unk_0204cf2c_Ent *t) {
 extern "C" BOOL FgData_Load(void *heap) {
     BOOL r = FALSE;
     if (!gFgDataIndex) {
-        gFgDataIndex = (Unk_0204cf2c_Ent *)Heap_Alloc(heap, 0x20);
+        gFgDataIndex = (FgDataIndex *)Heap_Alloc(heap, 0x20);
         if (gFgDataIndex) {
             if (gFgDataIndex) FgData_ClearIndices(gFgDataIndex);
             if (FgData_LoadIndices(gFgDataIndex, heap)) {
@@ -1850,7 +1838,7 @@ extern "C" void FgData_Unload(void *heap) {
     }
 }
 
-extern "C" BOOL FgData_LoadIndices(Unk_0204cf2c_Ent *t, void *heap) {
+extern "C" BOOL FgData_LoadIndices(FgDataIndex *t, void *heap) {
     const Unk_020ca2f4_Ent *e = sFgDataFiles;
     s32 i = 0;
     s32 size = 0;
@@ -1868,7 +1856,7 @@ extern "C" BOOL FgData_LoadIndices(Unk_0204cf2c_Ent *t, void *heap) {
     return r;
 }
 
-extern "C" void FgData_FreeIndices(Unk_0204cf2c_Ent *t, void *heap) {
+extern "C" void FgData_FreeIndices(FgDataIndex *t, void *heap) {
     s32 i;
     for (i = 0; i < 4; i++) {
         if (t->data) {
@@ -1880,15 +1868,15 @@ extern "C" void FgData_FreeIndices(Unk_0204cf2c_Ent *t, void *heap) {
     }
 }
 
-extern "C" BOOL FgData_IsValidTable(Unk_0204cf2c_Ent *t, s32 i) {
+extern "C" BOOL FgData_IsValidTable(FgDataIndex *t, s32 i) {
     if (i >= 0 && i < 4) return TRUE;
     return FALSE;
 }
 
-extern "C" s32 FgData_GetLayoutOffset(Unk_0204cf2c_Ent *t, s32 i, s32 j) {
+extern "C" s32 FgData_GetLayoutOffset(FgDataIndex *t, s32 i, s32 j) {
     s32 r = 0;
     if (FgData_IsValidTable(t, i)) {
-        Unk_0204cf2c_Ent *e = &t[i];
+        FgDataIndex *e = &t[i];
         u16 *d = e->data;
         if (d && j < e->count) {
             s32 k;
@@ -1900,10 +1888,10 @@ extern "C" s32 FgData_GetLayoutOffset(Unk_0204cf2c_Ent *t, s32 i, s32 j) {
     return r;
 }
 
-extern "C" s32 FgData_GetLayoutSize(Unk_0204cf2c_Ent *t, s32 i, s32 j) {
+extern "C" s32 FgData_GetLayoutSize(FgDataIndex *t, s32 i, s32 j) {
     s32 r = 0;
     if (FgData_IsValidTable(t, i)) {
-        Unk_0204cf2c_Ent *e = &t[i];
+        FgDataIndex *e = &t[i];
         u16 *d = e->data;
         if (d && j < e->count) {
             r = d[j];
@@ -1931,7 +1919,7 @@ extern "C" u16 *ItemGrid_Alloc(void *heap, s32 align) {
     return p;
 }
 
-extern "C" BOOL FgData_ReadLayout(Unk_0204cf2c_Ent *t, void *dst, s32 i, s32 j, s32 n) {
+extern "C" BOOL FgData_ReadLayout(FgDataIndex *t, void *dst, s32 i, s32 j, s32 n) {
     s32 off = FgData_GetLayoutOffset(t, i, j);
     const Unk_020ca2f4_Ent *e = &sFgDataFiles[i];
     File_ReadRangeByPath(e->b, dst, n, off);
@@ -1960,12 +1948,12 @@ extern "C" u16 *FgData_CreateLayoutGrid(u16 *dst, s32 b, void *heap, s32 d) {
     return r;
 }
 
-extern "C" BOOL FgData_ApplyLayout(Unk_0204cf2c_Ent *t, u16 *dst, s32 i, s32 j, void *heap) {
+extern "C" BOOL FgData_ApplyLayout(FgDataIndex *t, u16 *dst, s32 i, s32 j, void *heap) {
     s32 n = FgData_GetLayoutSize(t, i, j);
     BOOL result = FALSE;
     if (dst && n > 0 && (n & 3) == 0 && FgData_IsValidTable(t, i)) {
         void *buf = Heap_AllocTail(heap, n);
-        Unk_0204cd00_Glyph *p = (Unk_0204cd00_Glyph *)buf;
+        FgLayoutEntry *p = (FgLayoutEntry *)buf;
         if (p) {
             if (FgData_ReadLayout(t, buf, i, j, n)) {
                 s32 cnt = n >> 2;
@@ -1984,7 +1972,7 @@ extern "C" BOOL FgData_ApplyLayout(Unk_0204cf2c_Ent *t, u16 *dst, s32 i, s32 j, 
 }
 
 extern "C" void *FgData_ReadLayoutEntries(void *a, s32 *b, s32 c, s32 d, void *heap) {
-    Unk_0204cf2c_Ent *t = (Unk_0204cf2c_Ent *)a;
+    FgDataIndex *t = (FgDataIndex *)a;
     s32 n = FgData_GetLayoutSize(t, c, d);
     if (n > 0 && (n & 3) == 0 && FgData_IsValidTable(t, c)) {
         void *buf = Heap_AllocAligned(heap, n, 4);
@@ -2015,7 +2003,7 @@ extern "C" s32 FgData_GetVillagerLayout(s32 a, s32 b, s32 c) {
 
 char sFgDataNfIndexPath[] = "fg_data/nf_h.bin";
 
-Unk_0204d0a4 *gHouseRoomMaps[5];
+RoomBlockMap *gHouseRoomMaps[5];
 
 const Unk_020ca2f4_Ent sFgDataFiles[4] = {
     {(u32)sFgDataFoIndexPath, (u32)sFgDataFoPath},

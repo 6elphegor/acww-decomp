@@ -4313,7 +4313,7 @@ extern "C" { extern u16 data_020cba10[]; }
 extern "C" { extern u8 gSaveData[]; }
 extern "C" { s32 strncmp(const char *a, const char *b, u32 n); }
 extern "C" { u32 func_0212a438(const char *s); }
-extern "C" { char *func_020639e8(char *buf, const char *fmt, ...); }
+extern "C" { char *Str_SPrintf(char *buf, const char *fmt, ...); }
 extern "C" { void TownId_GetNameString(void *dst, void *src); }
 extern "C" { void Snd_PlaySe(void); }
 extern "C" { void _ZN13TalkMsgBuffer5clearEv(void *p); }
@@ -4680,12 +4680,12 @@ char *TalkWindowMsg::buildMessagePath(const char *a, const char *b) {
         const char *r4 = matchSubdirPrefix(r5);
         if (r4 != 0) {
             const char *e = r5 + (func_0212a438(r4) + 1);
-            func_020639e8(sTalkMessagePath, data_020ddd7c, r6, r7, r4, e);
+            Str_SPrintf(sTalkMessagePath, data_020ddd7c, r6, r7, r4, e);
         } else {
-            func_020639e8(sTalkMessagePath, data_020ddd90, r6, r7, r5);
+            Str_SPrintf(sTalkMessagePath, data_020ddd90, r6, r7, r5);
         }
     } else {
-        func_020639e8(sTalkMessagePath, data_020ddda4, r6, r5);
+        Str_SPrintf(sTalkMessagePath, data_020ddda4, r6, r5);
     }
     return sTalkMessagePath;
 }

@@ -5,7 +5,7 @@ extern "C" {
 extern u32 gSaveTownId;
 void TownId_Assign(void *p, void *s);
 u32 TownId_IsValid(void *p);
-void func_020639e8(void *buf, void *fmt, u32 a, u32 b);
+void Str_SPrintf(void *buf, void *fmt, u32 a, u32 b);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 u32 VillagerId_IsValidSpecies(u32 id);
 }
@@ -46,7 +46,7 @@ u32 VillagerId::getGender() {
 
 extern "C" void Villager_MakePersonalityFileName(void *buf, u32 size, u32 arg, u32 idx) {
     MI_CpuFill8(buf, 0, size);
-    func_020639e8(buf, (void *)"%s%s", (u32)sPersonalityPrefixes[idx], arg);
+    Str_SPrintf(buf, (void *)"%s%s", (u32)sPersonalityPrefixes[idx], arg);
 }
 
 void VillagerId::makeFileName(void *buf, u32 size, u32 arg) {

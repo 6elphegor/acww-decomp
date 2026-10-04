@@ -68,11 +68,11 @@ void RoomObj_ActivateSe(void *self);
 
 extern "C" {
 
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 RoomObjSync_SetState(u32 v);
 s32 RoomObjSync_GetState(u32 v);
 void _ZN5Actor11postExecuteEv(void *o, u32 v);
-void _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *m, void *r, u32 z);
+void _ZN5Model11setResourceEP12NNSG3dResMdlj(void *m, void *r, u32 z);
 void NNS_G3dBindMdlTex(void *a, u32 b);
 void NNS_G3dBindMdlPltt(void *a, u32 b);
 }
@@ -158,7 +158,7 @@ BOOL RoomObjActor::changeSyncState(u32 v) {
 extern "C" void RoomObj_LoadResources(char *a, char *b, AnimModel *m, RoomObjRes *aa, RoomObjTex *bb) {
     aa->RoomObjRes_Load(a);
     bb->RoomObjTex_Load(b);
-    _ZN5Model11setResourceEP16Unk_020553f8_Resj(m, aa->RoomObjRes_GetModel(), 0);
+    _ZN5Model11setResourceEP12NNSG3dResMdlj(m, aa->RoomObjRes_GetModel(), 0);
     void *p = aa->RoomObjRes_GetModel();
     NNS_G3dBindMdlTex(p, bb->RoomObjTex_Get());
     void *q = aa->RoomObjRes_GetModel();
@@ -168,8 +168,8 @@ extern "C" void RoomObj_LoadResources(char *a, char *b, AnimModel *m, RoomObjRes
 extern "C" void RoomObj_LoadResourcesByName(char *name, AnimModel *m, RoomObjRes *a, RoomObjTex *b) {
     char x[0x28];
     char y[0x28];
-    func_020639e8(x, "/roomObj/%s.arc", name);
-    func_020639e8(y, "/roomObj/%s.nsbtx", name);
+    Str_SPrintf(x, "/roomObj/%s.arc", name);
+    Str_SPrintf(y, "/roomObj/%s.nsbtx", name);
     RoomObj_LoadResources(x, y, m, a, b);
 }
 
@@ -180,8 +180,8 @@ void RoomObjActor::loadResources(char *a, char *b) {
 void RoomObjActor::loadResourcesByName(char *name) {
     char a[0x28];
     char b[0x28];
-    func_020639e8(a, "/roomObj/%s.arc", name);
-    func_020639e8(b, "/roomObj/%s.nsbtx", name);
+    Str_SPrintf(a, "/roomObj/%s.arc", name);
+    Str_SPrintf(b, "/roomObj/%s.nsbtx", name);
     loadResources(a, b);
 }
 
@@ -337,7 +337,7 @@ void Gfx3d_LoadTexAndPltt(void *p, u32 a);
 u32 Gfx3d_CopyTex(void *p, void *g);
 void Mem_Free(s32 a);
 void Heap_Free(void *g, u32 p);
-s32 func_020639e8(char *buf, char *fmt, ...);
+s32 Str_SPrintf(char *buf, char *fmt, ...);
 s32 func_02101340(void *buf, char *name, u32 data);
 void *func_021012bc(char *name);
 void func_02101310(void *buf);
@@ -401,7 +401,7 @@ extern "C" s32 RoomObjRes_Load(Res *self, u32 id) {
                     self->model = (u32)(r + *(u32 *)(r + *(u16 *)(r + 0xe) + 0xc));
                 }
                 for (i = 0, z = i; i < 13;) {
-                    func_020639e8(buf, "RMO:a/bca/bca%d", i);
+                    Str_SPrintf(buf, "RMO:a/bca/bca%d", i);
                     { void *h = func_021012bc(buf); if (h) {
                         self->bcas[i] = func_021065f8(func_021065dc(h), z);
                     } }
@@ -411,7 +411,7 @@ extern "C" s32 RoomObjRes_Load(Res *self, u32 id) {
                     i++;
                 }
                 for (i = 0, z = i; i < 13;) {
-                    func_020639e8(buf, "RMO:a/bma/bma%d", i);
+                    Str_SPrintf(buf, "RMO:a/bma/bma%d", i);
                     { void *h = func_021012bc(buf); if (h) {
                         self->bmas[i] = func_02106634(func_02106618(h), z);
                     } }
@@ -421,7 +421,7 @@ extern "C" s32 RoomObjRes_Load(Res *self, u32 id) {
                     i++;
                 }
                 for (i = 0, z = i; i < 13;) {
-                    func_020639e8(buf, "RMO:a/bta/bta%d", i);
+                    Str_SPrintf(buf, "RMO:a/bta/bta%d", i);
                     { void *h = func_021012bc(buf); if (h) {
                         self->btas[i] = func_02106670(func_02106654(h), z);
                     } }

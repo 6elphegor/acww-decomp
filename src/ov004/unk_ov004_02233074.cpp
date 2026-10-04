@@ -28,7 +28,7 @@
 #define func_020548d0 _ZN9AnimModelC1Ev
 #define Model_setInitCallback _ZN5Model15setInitCallbackEii
 #define Model_drawNoGeCmd _ZN5Model11drawNoGeCmdEv
-#define Model_setResourceAndBind _ZN5Model18setResourceAndBindEP16Unk_020553f8_Resj
+#define Model_setResourceAndBind _ZN5Model18setResourceAndBindEP12NNSG3dResMdlj
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
 #define TexPatVramAnim_update _ZN14TexPatVramAnim6updateEv
@@ -497,7 +497,7 @@ void func_02056d8c(void *p);
 void FurnitureHeap_Destroy();
 void FurnitureHeap_Create();
 void Item_ToPlacedForm(u16 *out, u16 *in, s32 n);
-s32 func_020639e8(char *buf, const char *fmt, ...);
+s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 Random_GlobalBelow(s32 a);
 void *File_LoadAlloc(const char *a, void *b, s32 c, s32 d);
 s32 ActorPlacedCollider_setupForActorAt(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
@@ -4653,7 +4653,7 @@ extern "C" BOOL FtrMoveAnim_LoadModel(FtrMoveAnim *r) {
     }
     path.item = 0x3984;
     s32 v = Item_GetFurnitureIndex(&path.item);
-    func_020639e8(path.path, "/ftr/%d/%d/%04x.arc", v >> 8, (v & 0xff) >> 4, v);
+    Str_SPrintf(path.path, "/ftr/%d/%d/%04x.arc", v >> 8, (v & 0xff) >> 4, v);
     r->modelArc = File_LoadAlloc(path.path, r->heap, 4, 0);
     if (r->modelArc != 0) {
         if (func_02101340(&arc, "FTT", r->modelArc)) {
@@ -4738,12 +4738,12 @@ extern "C" BOOL TvProgSlot_Load(TvProgSlot *p, u32 id, s32 x) {
     TvProgSlot_FreeFiles(p);
     r6 = -1;
     if (id != 0xff) {
-        func_020639e8(buf1, "/ftr/tv/prog/tv_program%d.nsbtx", id);
-        func_020639e8(buf2, "/ftr/tv/prog/tv_program%d.nsbtp", id);
+        Str_SPrintf(buf1, "/ftr/tv/prog/tv_program%d.nsbtx", id);
+        Str_SPrintf(buf2, "/ftr/tv/prog/tv_program%d.nsbtp", id);
     } else {
         r6 = TvWeather_GetName(x);
-        func_020639e8(buf1, "/ftr/tv/weather/%s.nsbtx", r6);
-        func_020639e8(buf2, "/ftr/tv/weather/%s.nsbtp", r6);
+        Str_SPrintf(buf1, "/ftr/tv/weather/%s.nsbtx", r6);
+        Str_SPrintf(buf2, "/ftr/tv/weather/%s.nsbtp", r6);
         r6 = x;
     }
     p->progTex = (u32)NNS_G3dGetTex(File_LoadAlloc(buf1, p->heap, 4, 0));

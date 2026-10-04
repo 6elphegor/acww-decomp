@@ -313,7 +313,7 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 #define Model_setPolygonId _ZN5Model12setPolygonIdEj   // main
 #define Model_setInitCallback _ZN5Model15setInitCallbackEii   // main
 #define Model_getRenderObj _ZN5Model12getRenderObjEv   // main
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj   // main
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj   // main
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj   // main
 #define ModelAnim_replaceWithTex _ZN9ModelAnim14replaceWithTexEiiihit   // main
 #define ModelAnim_initWithTex _ZN9ModelAnim11initWithTexEiiiit   // main
@@ -324,7 +324,7 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi   // main
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv   // main
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv   // main
-#define func_02056fcc _ZN12G3dResAccess13func_02056fccEi   // main
+#define G3dResAccess_findNodeIdx _ZN12G3dResAccess11findNodeIdxEi   // main
 #define TownId_getTownRelation _ZN6TownId15getTownRelationEv   // main
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv   // main
 #define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt   // main
@@ -415,7 +415,7 @@ s32 Math_StepAngle(s16 *v, s32 target, s32 step);
 s32 func_01ffcb0c(s32 a, s32 b);
 void Vec_RotateY(Unk_ov004_Vec3 *v, s16 a);
 void func_01ffd070(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *a, Unk_ov004_Vec3 *b);
-s32 func_02056fcc(void *p, u32 id);
+s32 G3dResAccess_findNodeIdx(void *p, u32 id);
 void *PlayerActor_GetActor(s32 a);
 u16 Item_MakeFurniture(s32 a, s32 b);
 s32 FtrMgr_GetSurfaceHeightAtPos(void *v);
@@ -463,7 +463,7 @@ void FtrContactSet_setContact(void *a, void *b, void *c, void *d, s32 e, void *f
 s32 ModelSlot_getVramSlot(void *p);
 s32 ModelSlot_getHeap(void *p);
 void *File_LoadAlloc(void *path, void *heap, s32 mode, u32 *size);
-s32 func_020639e8(char *buf, char *fmt, ...);
+s32 Str_SPrintf(char *buf, char *fmt, ...);
 void *Heap_Alloc(void *a, u32 b);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 func_02101340(void *buf, char *fmt, void *arg);
@@ -2007,8 +2007,8 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
 // @02207e48
 void Unk_ov004_022077a4::setupModel() {
     void *p = modelResMdl;
-    s32 a = func_02056fcc(p, (s32)"kh_j");
-    s32 b = func_02056fcc(p, (s32)"km_j");
+    s32 a = G3dResAccess_findNodeIdx(p, (s32)"kh_j");
+    s32 b = G3dResAccess_findNodeIdx(p, (s32)"km_j");
     ((FtrClockHands *)(clockHands))->set((s8)a, (s8)b);
     Model_setInitCallback(model, (s32)FtrActor_SetModelCallbacks, this);
     ((FtrVisNodes *)(visNodes))->init((void *)modelResMdl, 1);
@@ -2657,13 +2657,13 @@ BOOL FtrModelRes::isLoaded() {
 
 // @02206de0
 char *FtrModelRes::makeArcPath(s32 id) {
-    func_020639e8(sFtrArcPathBuf, "/ftr/%d/%d/%04x.arc", id >> 8, (id & 0xff) >> 4, id);
+    Str_SPrintf(sFtrArcPathBuf, "/ftr/%d/%d/%04x.arc", id >> 8, (id & 0xff) >> 4, id);
     return sFtrArcPathBuf;
 }
 
 // @02206db4
 char *FtrModelRes::makeTexPath(s32 id) {
-    func_020639e8(sFtrTexPathBuf, "/ftr/%d/%d/%04x.nsbtx", id >> 8, (id & 0xff) >> 4, id);
+    Str_SPrintf(sFtrTexPathBuf, "/ftr/%d/%d/%04x.nsbtx", id >> 8, (id & 0xff) >> 4, id);
     return sFtrTexPathBuf;
 }
 
@@ -2693,27 +2693,27 @@ BOOL FtrModelRes::loadFiles(void *obj, s32 id) {
             s32 z0 = 0, z1 = 0, z2 = 0, z3 = 0, z4 = 0;
             do {
                 s32 h;
-                func_020639e8(name, "FTR:a/bca/bca%d", i);
+                Str_SPrintf(name, "FTR:a/bca/bca%d", i);
                 h = func_021012bc((s32)name);
                 if (h) {
                     animSet.setBca((void *)func_021065f8(func_021065dc(h), z0), i);
                 }
-                func_020639e8(name, "FTR:a/bma/bma%d", i);
+                Str_SPrintf(name, "FTR:a/bma/bma%d", i);
                 h = func_021012bc((s32)name);
                 if (h) {
                     animSet.setBma((void *)func_02106634(func_02106618(h), z1), i);
                 }
-                func_020639e8(name, "FTR:a/bva/bva%d", i);
+                Str_SPrintf(name, "FTR:a/bva/bva%d", i);
                 h = func_021012bc((s32)name);
                 if (h) {
                     animSet.setBva((void *)func_021067a4(func_02106788(h), z2), i);
                 }
-                func_020639e8(name, "FTR:a/bta/bta%d", i);
+                Str_SPrintf(name, "FTR:a/bta/bta%d", i);
                 h = func_021012bc((s32)name);
                 if (h) {
                     animSet.setBta((void *)func_02106670(func_02106654(h), z3), i);
                 }
-                func_020639e8(name, "FTR:a/btp/btp%d", i);
+                Str_SPrintf(name, "FTR:a/btp/btp%d", i);
                 h = func_021012bc((s32)name);
                 if (h) {
                     animSet.setBtp((void *)func_021066ac(func_02106690(h), z4), i);
@@ -3642,7 +3642,7 @@ extern "C" void FtrVisNodes_Destruct(void *) {}
 void FtrVisNodes::init(void *p, u32 v) {
     if (p) {
         for (u32 i = 0; i < 4; i++) {
-            nodeIds[i] = func_02056fcc(p, (u32)sFtrVisNodeNames[i]);
+            nodeIds[i] = G3dResAccess_findNodeIdx(p, (u32)sFtrVisNodeNames[i]);
         }
         setVisible(v);
     }

@@ -69,7 +69,7 @@ typedef void (MenuProc::*Unk_ov002_02200a68_Fn)();
 extern "C" {
 void Gfx2d_SetSubBgModeState(u32 a);
 s32 Gfx2d_LoadPaletteFile(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f);
-void func_020639e8(char *buf, const char *fmt, ...);
+void Str_SPrintf(char *buf, const char *fmt, ...);
 BOOL File_LoadToBuffer(const void *a, void *b, s32 c);
 BOOL MenuCtrl_RequestOpenNested(u32 v);
 void MenuCtrl_SetMode(u8 v);
@@ -474,7 +474,7 @@ void MenuTabBar::showTab(u32 idx) {
             u32 a = (u32)tabObjChars + idx * 0x60;
             u32 t = idx * 3 + 0x80;
             vramTasks[1].requestCharPair(a, a + 0x400, 8, t, t + 2, t + 0x20, t + 0x22);
-            func_020639e8(buf, "menu/tag/obj%d.bpl", idx);
+            Str_SPrintf(buf, "menu/tag/obj%d.bpl", idx);
             File_LoadToBuffer(buf, tabPalette, 0x20);
             vramTasks[2].requestPalette((u32)tabPalette, 8, 0xf);
             loadedTab = idx;

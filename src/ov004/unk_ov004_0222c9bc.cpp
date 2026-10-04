@@ -35,7 +35,7 @@
 #define CachedModel_release _ZN11CachedModel7releaseEv
 #define CachedModel_allocJointRecord _ZN11CachedModel16allocJointRecordEPv
 #define Model_setInitCallback _ZN5Model15setInitCallbackEii
-#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP12NNSG3dResMdlj
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
 #define StaticCollider_setupAtPos _ZN14StaticCollider10setupAtPosEP4Vec3iijjjhi
@@ -609,7 +609,7 @@ s32 Model_setResource(void *, s32, s32);
 BOOL AnimFrameCtrl_hasPassedFrame(void *p, s32 v);
 void MuseumAquariumHeap_Destroy(void);
 void MuseumAquariumHeap_Create(void);
-s32 func_020639e8(char *, char *, ...);
+s32 Str_SPrintf(char *, char *, ...);
 s32 Random_GlobalBelow(s32 n);
 s32 File_LoadAlloc(char *, s32, s32, s32);
 s32 MuseumData_isDonated(void *, u16 *);
@@ -3895,9 +3895,9 @@ extern "C" s32 MuseumAquarium_LoadFishAnims(Mgr *o, R **p, s32 idx, s32 n) {
     char buf[0x1c];
     for (; i < n; i++) {
         if (idx < 10) {
-            func_020639e8(buf, "/fish/%d/m_fish0%d%d.nsbca", k, idx, i);
+            Str_SPrintf(buf, "/fish/%d/m_fish0%d%d.nsbca", k, idx, i);
         } else {
-            func_020639e8(buf, "/fish/%d/m_fish%d%d.nsbca", k, idx, i);
+            Str_SPrintf(buf, "/fish/%d/m_fish%d%d.nsbca", k, idx, i);
         }
         (*p)->animFiles[i] = File_LoadAlloc(buf, (s32)gCurrentHeap, 4, z);
         if ((*p)->animFiles[i] == 0) {
@@ -3995,9 +3995,9 @@ extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx) {
     char buf[0x18];
     s32 k = n / 10 + 10;
     if (n < 10) {
-        func_020639e8(buf, "/fish/%d/m_fish0%d.nsbmd", k, n);
+        Str_SPrintf(buf, "/fish/%d/m_fish0%d.nsbmd", k, n);
     } else {
-        func_020639e8(buf, "/fish/%d/m_fish%d.nsbmd", k, n);
+        Str_SPrintf(buf, "/fish/%d/m_fish%d.nsbmd", k, n);
     }
     if (PooledModel_loadFromSlot(b, a, buf)) {
         void *q;

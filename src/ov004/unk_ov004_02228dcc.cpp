@@ -161,7 +161,7 @@ s32 _ZN9AnimModel12drawAnimatedEPv(void *, u32);
 s32 _ZN9AnimModel8stepAnimEv(void *);
 s32 _ZN13AnimFrameCtrl4stepEv(void *);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
-s32 _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *, void *, u32);
+s32 _ZN5Model11setResourceEP12NNSG3dResMdlj(void *, void *, u32);
 s32 NNS_G3dBindMdlTex(void *, u32);
 s32 NNS_G3dBindMdlPltt(void *, u32);
 s32 _ZN9AnimModel11allocAnmObjEPv(void *, void *);
@@ -395,7 +395,7 @@ void TarotProps::loadPart(s32 i, void *a, void *b) {
     RoomObjRes_Load(t1, (const char *)a);
     Unk_ov004_0224e034_T2 *t2 = &partTex[i];
     RoomObjTex_Load(t2, (const char *)b);
-    _ZN5Model11setResourceEP16Unk_020553f8_Resj(&partModels[i], RoomObjRes_GetModel(t1), 0);
+    _ZN5Model11setResourceEP12NNSG3dResMdlj(&partModels[i], RoomObjRes_GetModel(t1), 0);
     {
         void *x = RoomObjRes_GetModel(t1);
         NNS_G3dBindMdlTex(x, RoomObjTex_Get(t2));

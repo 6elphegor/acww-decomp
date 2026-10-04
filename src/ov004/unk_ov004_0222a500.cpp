@@ -27,7 +27,7 @@
 #define Model_setInitCallback _ZN5Model15setInitCallbackEii
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
 #define Model_clearResource _ZN5Model13clearResourceEv
-#define Model_setResourceAndBind _ZN5Model18setResourceAndBindEP16Unk_020553f8_Resj
+#define Model_setResourceAndBind _ZN5Model18setResourceAndBindEP12NNSG3dResMdlj
 #define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 #define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
@@ -36,7 +36,7 @@
 #define MatTexBinder_bindByIdx _ZN12MatTexBinder9bindByIdxEPhii
 #define MatTexBinder_bindByName _ZN12MatTexBinder10bindByNameEPhPKcS2_
 #define MatTexBinder_setMaterialByName _ZN12MatTexBinder17setMaterialByNameEPhPKc
-#define func_02056fcc _ZN12G3dResAccess13func_02056fccEi
+#define G3dResAccess_findNodeIdx _ZN12G3dResAccess11findNodeIdxEi
 #define G3dResAccess_findMatIdx _ZN12G3dResAccess10findMatIdxEi
 #define HouseData_getRoom _ZN9HouseData7getRoomEi
 #define HouseRoom_setCarpet _ZN9HouseRoom9setCarpetEPtj
@@ -330,7 +330,7 @@ void MatTexBinder_bindByIdx(void *self, u8 *a, s32 b, s32 c);
 void MatTexBinder_bindByName(void *self, u8 *a, const char *b, const char *c);
 void MatTexBinder_setMaterialByName(void *self, u8 *a, const char *b);
 s32 MatTexBinder_getMaterial(void *self);
-s32 func_02056fcc(void *self, const char *s);
+s32 G3dResAccess_findNodeIdx(void *self, const char *s);
 s32 G3dResAccess_findMatIdx(void *self, const char *s);
 s32 FX_Div(s32 a, s32 b);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
@@ -448,9 +448,9 @@ BOOL RoomShell::onCreate() {
     setMatLightFlags((u8 *)model.resMdl);
     storeBaseMtx();
     initWallAndFloor();
-    hourHandNode = func_02056fcc((u8 *)model.resMdl, "kh_j");
-    minuteHandNode = func_02056fcc((u8 *)model.resMdl, "km_j");
-    hasuNode = func_02056fcc((u8 *)model.resMdl, "hasu1");
+    hourHandNode = G3dResAccess_findNodeIdx((u8 *)model.resMdl, "kh_j");
+    minuteHandNode = G3dResAccess_findNodeIdx((u8 *)model.resMdl, "km_j");
+    hasuNode = G3dResAccess_findNodeIdx((u8 *)model.resMdl, "hasu1");
     wdMatIdx = G3dResAccess_findMatIdx((u8 *)model.resMdl, "wd");
     Model_setInitCallback(&model, (void *)RoomShell_InitRenderObj, this);
     RoomShell_SpawnBoardSigns(this);
