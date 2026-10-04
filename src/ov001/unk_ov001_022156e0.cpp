@@ -1,9 +1,8 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/gxoam.h"
 
 #pragma thumb off
-
-struct Unk_ov001_02217e40_E { u8 pad_00[4]; u16 unk_04; };
 
 struct Unk_ov001_0222de94 {
     void *flashTask;
@@ -38,7 +37,7 @@ struct Unk_ov001_02217c24_A23 { u8 b[23]; };
 struct Unk_ov001_02217c24_A21 { u8 b[21]; };
 struct Unk_ov001_02217c24_A22 { u8 b[22]; };
 
-#define E34 ((Unk_ov001_02217e40_E *)sWfcManualSetup->statusIcon)
+#define E34 ((GXOamAttr *)sWfcManualSetup->statusIcon)
 #define BGCNT(a, v) (*(volatile u16 *)(a) = (*(volatile u16 *)(a) & ~3) | (v))
 #define REGSET(a, v) do { u32 t = *(volatile u16 *)(a); t &= ~3; t |= (v); *(volatile u16 *)(a) = t; } while (0)
 
@@ -169,7 +168,7 @@ s32 WfcDialog_Close();
 s32 WfcDialog_Open(s32, s32, s32, s32, s32);
 s32 WfcFs_FreeFile(void *);
 void * WfcFs_LoadFile(void *, s32, s32);
-Unk_ov001_02217e40_E * WfcObj_CreateSingle(s32, s32);
+GXOamAttr * WfcObj_CreateSingle(s32, s32);
 void WfcCell_Copy(s32, u32, void *);
 s32 WfcFade_StartWait(s32);
 s32 WfcFade_Start(s32, s32, s32, s32);
@@ -237,11 +236,11 @@ extern "C" void WfcManualSetup_Enter() {
     switch (p[0xe7]) {
     case 1:
         sWfcManualSetup->statusIcon = (u32 *)WfcObj_CreateSingle(0, 0x50);
-        E34->unk_04 = (E34->unk_04 & ~0xc00) | 0xc00;
+        E34->attr2 = (E34->attr2 & ~0xc00) | 0xc00;
         break;
     case 2:
         sWfcManualSetup->statusIcon = (u32 *)WfcObj_CreateSingle(0, 0x51);
-        E34->unk_04 = (E34->unk_04 & ~0xc00) | 0xc00;
+        E34->attr2 = (E34->attr2 & ~0xc00) | 0xc00;
         break;
     }
     sWfcManualSetup->bgScrollTask = WfcTask_Add(1, (void *)WfcManualSetup_ScrollBgTask, 0, 0x6e);

@@ -9,16 +9,16 @@ struct WfcAddrEdit {
     u8 result;
 };
 
-struct Unk_ov001_02214154_Tbl { u8 b[4]; };
+struct WfcOctetMaxDigits { u8 b[4]; };
 
-struct Unk_ov001_02214358_T {
+struct WfcAddrEditStoreFuncTable {
     u32 v[5];
 };
 
-typedef void (*Unk_ov001_02214dd8_Fn)(void *);
+typedef void (*WfcAddrEditFieldFunc)(void *);
 
-struct Unk_ov001_02214dd8_Fns { Unk_ov001_02214dd8_Fn v[5]; };
-struct Unk_ov001_02214dd8_Ids { u8 v[5]; };
+struct WfcAddrEditLoadFuncTable { WfcAddrEditFieldFunc v[5]; };
+struct WfcAddrEditTitleMsgIds { u8 v[5]; };
 
 #pragma thumb off
 extern "C" {
@@ -112,8 +112,8 @@ void *sWfcAddrEditStoreFuncs[5] = {(void *)WfcConfig_SetEditIp, (void *)WfcConfi
 WfcAddrEdit *sWfcAddrEdit;
 
 void WfcAddrEdit_Enter() {
-    Unk_ov001_02214dd8_Fns fns = *(Unk_ov001_02214dd8_Fns *)sWfcAddrEditLoadFuncs;
-    Unk_ov001_02214dd8_Ids ids = *(Unk_ov001_02214dd8_Ids *)sWfcAddrEditTitleMsgs;
+    WfcAddrEditLoadFuncTable fns = *(WfcAddrEditLoadFuncTable *)sWfcAddrEditLoadFuncs;
+    WfcAddrEditTitleMsgIds ids = *(WfcAddrEditTitleMsgIds *)sWfcAddrEditTitleMsgs;
     s32 idx;
     sWfcAddrEdit = (WfcAddrEdit *)WfcHeap_AllocClear(0x18, 4);
     WfcUtil_GetEditParams(&idx, 0);
@@ -404,7 +404,7 @@ void WfcAddrEdit_WaitConfirmDialog() {
 }
 
 void WfcAddrEdit_ApplyAndExit() {
-    Unk_ov001_02214358_T t = *(Unk_ov001_02214358_T *)sWfcAddrEditStoreFuncs;
+    WfcAddrEditStoreFuncTable t = *(WfcAddrEditStoreFuncTable *)sWfcAddrEditStoreFuncs;
     s32 v;
     if (WfcDialog_IsOpen()) return;
     if (sWfcAddrEdit->result == 0) {
@@ -440,7 +440,7 @@ void WfcAddrEdit_NormalizeOctets() {
 s32 WfcAddrEdit_ValidateAddress() {
     u8 *p;
     s32 i, off, j;
-    Unk_ov001_02214154_Tbl tbl = *(Unk_ov001_02214154_Tbl *)data_ov001_0222af7c;
+    WfcOctetMaxDigits tbl = *(WfcOctetMaxDigits *)data_ov001_0222af7c;
     s32 v;
     u8 out[4];
     WfcAddrEdit *g = sWfcAddrEdit;

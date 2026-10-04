@@ -1,37 +1,30 @@
 // mwcc-flags: -O4,p
 #pragma opt_dead_assignments off
 #include "types.h"
+#include "net/SockAddrIn.h"
 
-typedef void (*Unk_ov001_022034a0_Cb)(s32, ...);
-typedef void (*Unk_ov001_0220751c_Cb)(...);
+typedef void (*SimpleStartWcmNotifyFunc)(...);
 
-struct Unk_ov001_02204774_Ctx {
+struct SimpleStartMd5Ctx {
     u32 state[4];
     u32 count[2];
     u8 buffer[64];
 };
-struct Unk_ov001_022067b8_Hdr {
-    u8 a;
-    u8 b;
-    u16 c;
-    s32 d;
-};
-struct Unk_ov001_02206b08_Ent {
+struct SimpleStartApEntry {
     u32 len;
     u8 name[0x20];
     u8 unk_24[4];
-    u8 bssid[4];
-    u16 unk_2c;
+    u8 bssid[6];
     u16 privacy;
 };
-struct Unk_ov001_02206b08_Tbl {
+struct SimpleStartApList {
     u32 count;
-    Unk_ov001_02206b08_Ent e[1];
+    SimpleStartApEntry e[1];
 };
-struct Unk_ov001_02206248_Out {
-    u8 a[6];
-    u8 b[6];
-    u8 c[4];
+struct SimpleStartSessionId {
+    u8 higherMac[6];
+    u8 lowerMac[6];
+    u8 tag[4];
 };
 struct SimpleStartWcmConfig {
     s32 dmaNo;
@@ -39,13 +32,13 @@ struct SimpleStartWcmConfig {
     s32 bssDescBufferSize;
     s32 bssDescMode;
 };
-struct Unk_ov001_02205e18_B5 { u8 v[5]; };
-struct Unk_ov001_02205e18_B13 { u8 v[13]; };
-struct Unk_ov001_02205e18_B16 { u8 v[16]; };
-struct Unk_ov001_02205e18_B64 { s64 v[8]; };
-struct Unk_ov001_02205e18_A { u8 pad[0x20]; s32 securityType; s32 unk_24; };
-struct Unk_ov001_02205e18_B { u8 pad[0x2c]; s32 securityType; s32 unk_30; u8 pad2[0x28]; s32 unk_5c; };
-struct Unk_ov001_022059fc_B8 { u8 v[8]; };
+struct SimpleStartWep40Key { u8 v[5]; };
+struct SimpleStartWep104Key { u8 v[13]; };
+struct SimpleStartWep128Key { u8 v[16]; };
+struct SimpleStartPsk { s64 v[8]; };
+struct SimpleStartResult { u8 pad[0x20]; s32 securityType; s32 unk_24; };
+struct SimpleStartConfigView { u8 pad[0x2c]; s32 securityType; s32 unk_30; u8 pad2[0x28]; s32 unk_5c; };
+struct SimpleStartExchangeKey { u8 v[8]; };
 
 extern "C" {
 void *memset(void *, int, unsigned long);
@@ -87,7 +80,7 @@ s32 Sock_Cleanup(void);
 s32 Sock_Startup(void *p);
 u8 *SockCore_GetHostIp();
 void IpAddr_StoreBe32(u8 *a, u8 *out);
-s32 Sock_SendTo(u8 *a, u8 *d, u32 e, u32 f, Unk_ov001_022067b8_Hdr *hdr);
+s32 Sock_SendTo(u8 *a, u8 *d, u32 e, u32 f, SockAddrIn *hdr);
 s32 Sock_Create(s32, s32, s32);
 s32 Sock_Bind(s32, void *);
 s32 Sock_Close(s32);
@@ -109,9 +102,9 @@ void SimpleStart_Md5Memcpy(u8 *dst, u8 *src, u32 n);
 void SimpleStart_Md5Decode(u32 *dst, u8 *src, u32 n);
 void SimpleStart_Md5Encode(u8 *dst, u32 *src, u32 n);
 void SimpleStart_Md5Transform(u32 *state, u8 *block);
-void SimpleStart_Md5Final(u8 *out, Unk_ov001_02204774_Ctx *ctx);
-void SimpleStart_Md5Update(Unk_ov001_02204774_Ctx *ctx, const u8 *data, u32 len);
-void SimpleStart_Md5Init(Unk_ov001_02204774_Ctx *ctx);
+void SimpleStart_Md5Final(u8 *out, SimpleStartMd5Ctx *ctx);
+void SimpleStart_Md5Update(SimpleStartMd5Ctx *ctx, const u8 *data, u32 len);
+void SimpleStart_Md5Init(SimpleStartMd5Ctx *ctx);
 void SimpleStart_AesDecryptBlock(const u32 *rk, s32 Nr, const u8 *ct, u8 *pt);
 void SimpleStart_AesEncryptBlock(const u32 *rk, s32 Nr, const u8 *ct, u8 *pt);
 s32 SimpleStart_AesKeySetupDec(u32 *rk, const u8 *key, s32 bits);
@@ -124,7 +117,7 @@ s32 SimpleStart_RunProtocol();
 s32 SimpleStart_BuildResult();
 s32 SimpleStart_ParseHex(u8 *dst, s8 *src, s32 n);
 s32 SimpleStart_ParseConfigTlvs(u8 *p);
-s32 SimpleStart_BuildSessionId(Unk_ov001_02206248_Out *out, void *unused);
+s32 SimpleStart_BuildSessionId(SimpleStartSessionId *out, void *unused);
 BOOL SimpleStart_GetOwnMac(void *unused);
 u32 SimpleStart_BuildHelloPacket(u8 *pkt);
 s32 SimpleStart_RecvPacket(u8 *pkt, s32 type, u8 *dst, u8 *extra);
@@ -137,8 +130,8 @@ u8 *SimpleStart_NextTlv(u8 **cur, u8 *end, s32 *type, s32 *len);
 u8 *SimpleStart_CheckPacket(u8 *pkt, s32 *type, s32 *len);
 s32 SimpleStart_SendPacket(u8 *a, u8 *b, u8 *c, u32 d);
 s32 SimpleStart_SendBroadcast(u8 *a, u8 *b, u32 c);
-s32 SimpleStart_SendTo(u8 *a, Unk_ov001_022067b8_Hdr *hdr, u8 *out, u8 *d, u32 e);
-BOOL SimpleStart_FindSetupAp(Unk_ov001_02206b08_Tbl *a, Unk_ov001_02206b08_Tbl *b, s32 *out);
+s32 SimpleStart_SendTo(u8 *a, SockAddrIn *hdr, u8 *out, u8 *d, u32 e);
+BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *out);
 s32 SimpleStart_SearchAp();
 void SimpleStart_Disconnect(void);
 s32 SimpleStart_ConnectAp(void);
@@ -214,7 +207,7 @@ extern s32 sSimpleStartMaxAps;
 extern s32 data_ov001_0222c8c4;
 extern s32 sSimpleStartResultCode;
 extern void (*sSimpleStartStatusCb)(void *);
-extern Unk_ov001_0220751c_Cb sSimpleStartWcmNotifyCb;
+extern SimpleStartWcmNotifyFunc sSimpleStartWcmNotifyCb;
 extern u8 data_ov001_0222c8d4[6];
 extern u8 data_ov001_0222c8dc[6];
 extern u8 data_ov001_0222c8e4[8];
@@ -232,12 +225,12 @@ extern u8 sSimpleStartPacketBuf[0x800];
 }
 #define data_ov001_0222c92c (data_ov001_0222c924 + 8)
 #define data_ov001_0222ca70 ((u8 *)&sSimpleStartResult[10])
-#define data_ov001_0222caf0 (*(Unk_ov001_02205e18_B64 *)&sSimpleStartResult[42])
-#define data_ov001_0222cc30 (*(Unk_ov001_02205e18_B *)&data_ov001_0222cb30[64])
+#define data_ov001_0222caf0 (*(SimpleStartPsk *)&sSimpleStartResult[42])
+#define data_ov001_0222cc30 (*(SimpleStartConfigView *)&data_ov001_0222cb30[64])
 #define data_ov001_0222cc94 ((u8 *)&data_ov001_0222cb30[89])
-#define data_ov001_0222cd2c (*(Unk_ov001_02205e18_B64 *)&data_ov001_0222cb30[127])
-#define CA48_A (*(Unk_ov001_02205e18_A *)sSimpleStartResult)
-#define C924_B8 (*(Unk_ov001_022059fc_B8 *)data_ov001_0222c924)
+#define data_ov001_0222cd2c (*(SimpleStartPsk *)&data_ov001_0222cb30[127])
+#define CA48_A (*(SimpleStartResult *)sSimpleStartResult)
+#define C924_B8 (*(SimpleStartExchangeKey *)data_ov001_0222c924)
 
 #define F(x, y, z) (((x) & (y)) | ((~(x)) & (z)))
 #define G(x, y, z) (((x) & (z)) | ((y) & (~(z))))
@@ -726,7 +719,7 @@ extern "C" s32 data_ov001_0222c868 = 0;
 extern "C" u8 *data_ov001_0222a52c = sSimpleStartTlvBuf + 8;
 extern "C" s32 data_ov001_0222a53c = 0x40;
 extern "C" u32 data_ov001_0222c884 = 0;
-extern "C" Unk_ov001_0220751c_Cb sSimpleStartWcmNotifyCb = 0;
+extern "C" SimpleStartWcmNotifyFunc sSimpleStartWcmNotifyCb = 0;
 extern "C" void (*sSimpleStartStatusCb)(void *) = 0;
 extern "C" s32 sSimpleStartResultCode = 0;
 extern "C" s32 data_ov001_0222c8c4 = 0;
@@ -771,33 +764,23 @@ extern "C" u8 sSimpleStartPacketBuf[0x800] = {0};
 #pragma opt_dead_assignments off
 #include "types.h"
 
-struct Unk_ov001_022055bc_Blk { u8 b[8]; };
+struct SimpleStartKeyWrapBlock { u8 b[8]; };
 
-struct Unk_ov001_0220681c_Mac {
+struct SimpleStartMacAddr {
     u8 b[6];
 };
 
-struct Unk_ov001_0220681c_Src {
+struct SimpleStartBssDesc {
     u8 unk_00[4];
-    Unk_ov001_0220681c_Mac mac;
+    SimpleStartMacAddr mac;
     u16 len;
     u8 name[0x20];
     u16 flags;
     u8 pad[0xc0 - 0x2c - 2];
 };
 
-struct Unk_ov001_02206584_Hdr {
-    u16 id;
-    u16 len;
-};
-
-struct Unk_ov001_02206374_Seven {
+struct SimpleStartSecurityList {
     u8 b[7];
-};
-
-struct Unk_ov001_02206374_Buf {
-    u16 a;
-    Unk_ov001_02206374_Seven b;
 };
 
 static inline u32 Unk_ov001_02206ef8_AL(u32 v, u32 a) {
@@ -806,10 +789,8 @@ static inline u32 Unk_ov001_02206ef8_AL(u32 v, u32 a) {
 
 enum Unk_ov001_02206ef8_Mask { UNK_OV001_02206EF8_MASK = 0x20 - 1 };
 
-static inline void Unk_ov001_02205e18_Cp(Unk_ov001_02205e18_B64 *d, Unk_ov001_02205e18_B64 *s) { *d = *s; }
+static inline void Unk_ov001_02205e18_Cp(SimpleStartPsk *d, SimpleStartPsk *s) { *d = *s; }
 
-struct Unk_ov001_0220607c_Z32 { s32 v[8]; };
-struct Unk_ov001_0220607c_Z72 { s32 v[18]; };
 
 static inline u32 Unk_ov001_0220607c_Swap(u8 *p)
 {
@@ -817,13 +798,8 @@ static inline u32 Unk_ov001_0220607c_Swap(u8 *p)
     return (u16)(((v >> 8) & 0xff) | ((v << 8) & 0xff00));
 }
 
-struct Unk_ov001_0220607c_Key { u32 a; u32 b; u8 key[0x20]; };
-struct Unk_ov001_0220607c_G { u8 pad[0x15c]; Unk_ov001_0220607c_Key keys[4]; };
 
-struct Unk_ov001_022059fc_Req { u8 a; u8 b; u16 c; s32 d; };
-struct Unk_ov001_022059fc_L { Unk_ov001_022059fc_Req req; u8 buf[8]; u32 w54; u32 w58; u32 w5c; };
-struct Unk_ov001_022059fc_Q { u8 pad[0x10]; };
-struct Unk_ov001_022059fc_B8_cpy { u8 v[8]; };
+struct SimpleStartProtocolLocals { SockAddrIn req; u8 buf[8]; u32 w54; u32 w58; u32 w5c; };
 
 void SimpleStart_WcmCallback(void *pp) {
     s16 *p = (s16 *)pp;
@@ -1188,7 +1164,7 @@ s32 SimpleStart_WcmInit(void *cb, void *buf, s32 size) {
     data_ov001_0222c858->bssDescBufferSize = ((u32)buf + size) - data_ov001_0222c858->bssDescBuffer;
     data_ov001_0222c858->bssDescMode = 0;
     data_ov001_0222c858->dmaNo = 3;
-    sSimpleStartWcmNotifyCb = (Unk_ov001_0220751c_Cb)cb;
+    sSimpleStartWcmNotifyCb = (SimpleStartWcmNotifyFunc)cb;
     if (sSimpleStartWcmState == 0) {
         if (WifiLink_Init(data_ov001_0222c88c, 0x2300) != 0) {
             OS_RestoreInterrupts(e);
@@ -1458,13 +1434,13 @@ void SimpleStart_Disconnect(void) {
     }
 }
 
-BOOL SimpleStart_FindSetupAp(Unk_ov001_02206b08_Tbl *a, Unk_ov001_02206b08_Tbl *b, s32 *out) {
+BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *out) {
     BOOL found = FALSE;
     BOOL ret = FALSE;
     BOOL flagA;
     BOOL flagB;
-    Unk_ov001_02206b08_Ent *e1 = a->e;
-    Unk_ov001_02206b08_Ent *e2 = b->e;
+    SimpleStartApEntry *e1 = a->e;
+    SimpleStartApEntry *e2 = b->e;
     u32 cnt;
     u32 i = found;
     if ((u8 *)a->count > (u8 *)0) {
@@ -1551,9 +1527,9 @@ s32 SimpleStart_SearchAp() {
     s32 i;
     s32 j;
     u32 size;
-    Unk_ov001_02206b08_Tbl *buf1;
-    Unk_ov001_02206b08_Tbl *buf2 = 0;
-    Unk_ov001_0220681c_Src *src;
+    SimpleStartApList *buf1;
+    SimpleStartApList *buf2 = 0;
+    SimpleStartBssDesc *src;
     s32 idx = 0;
     u8 unkbuf[0x20];
     u8 name[0x30];
@@ -1562,9 +1538,9 @@ s32 SimpleStart_SearchAp() {
     s32 sc;
 
     size = sSimpleStartMaxAps * 0x30 + 0x34;
-    buf1 = (Unk_ov001_02206b08_Tbl *)SimpleStart_Calloc(1, size);
+    buf1 = (SimpleStartApList *)SimpleStart_Calloc(1, size);
     if (buf1 == 0) goto cleanup;
-    buf2 = (Unk_ov001_02206b08_Tbl *)SimpleStart_Calloc(1, size);
+    buf2 = (SimpleStartApList *)SimpleStart_Calloc(1, size);
     if (buf2 == 0) goto cleanup;
     for (iter = 0; iter < 0x1e && sSimpleStartCancel == 0; iter++) {
         if (SimpleStart_GetMilliseconds() >= sSimpleStartDeadline) break;
@@ -1614,7 +1590,7 @@ s32 SimpleStart_SearchAp() {
             result = -6;
             goto cleanup;
         }
-        for (i = 0, src = (Unk_ov001_0220681c_Src *)data_ov001_0222c8ac; i < result; i++, src++) {
+        for (i = 0, src = (SimpleStartBssDesc *)data_ov001_0222c8ac; i < result; i++, src++) {
             memcpy(buf1->e[j].name, src->name, 0x20);
             buf1->e[j].len = src->len;
             buf1->e[j].name[src->len] = 0;
@@ -1629,7 +1605,7 @@ s32 SimpleStart_SearchAp() {
         buf1->count = result;
         if (sSimpleStartState != 1) {
             if (SimpleStart_FindSetupAp(buf1, buf2, &idx) != 0) {
-                Unk_ov001_02206b08_Ent *e = &buf1->e[idx];
+                SimpleStartApEntry *e = &buf1->e[idx];
                 data_ov001_0222c868 = idx;
                 func_0212a360(data_ov001_0222c964, e->name);
                 {
@@ -1658,19 +1634,19 @@ cleanup:
     return result;
 }
 
-s32 SimpleStart_SendTo(u8 *a, Unk_ov001_022067b8_Hdr *hdr, u8 *out, u8 *d, u32 e) {
+s32 SimpleStart_SendTo(u8 *a, SockAddrIn *hdr, u8 *out, u8 *d, u32 e) {
     s32 r = Sock_SendTo(a, d, e, 0, hdr);
     if (r < 0) r = -4;
     return r;
 }
 
 s32 SimpleStart_SendBroadcast(u8 *a, u8 *b, u32 c) {
-    Unk_ov001_022067b8_Hdr h;
+    SockAddrIn h;
     u8 out[4];
-    h.a = 8;
-    h.b = 2;
-    h.d = -1;
-    h.c = 0x1e6;
+    h.len = 8;
+    h.family = 2;
+    h.addr = -1;
+    h.port = 0x1e6;
     IpAddr_StoreBe32(SockCore_GetHostIp(), out);
     return SimpleStart_SendTo(a, &h, out, b, c);
 }
@@ -1801,7 +1777,7 @@ s32 SimpleStart_RecvPacket(u8 *pkt, s32 type, u8 *dst, u8 *extra) {
 u32 SimpleStart_BuildHelloPacket(u8 *pkt) {
     u8 t[9];
     *(u16 *)t = 0x100;
-    *(Unk_ov001_02206374_Seven *)(t + 2) = *(Unk_ov001_02206374_Seven *)data_ov001_0222a548;
+    *(SimpleStartSecurityList *)(t + 2) = *(SimpleStartSecurityList *)data_ov001_0222a548;
     u8 *r = SimpleStart_PutTlv(data_ov001_0222a52c, 1, t, 2);
     r = SimpleStart_PutTlv(r, 2, t, 2);
     if (data_ov001_0222c8a0 != 0) {
@@ -1819,23 +1795,23 @@ BOOL SimpleStart_GetOwnMac(void *unused) {
     return TRUE;
 }
 
-s32 SimpleStart_BuildSessionId(Unk_ov001_02206248_Out *out, void *unused)
+s32 SimpleStart_BuildSessionId(SimpleStartSessionId *out, void *unused)
 {
     u8 m0[6];
     u8 m1[6];
     char s0[0x20];
     char s1[0x20];
-    CP4(out->c, "WARP");
+    CP4(out->tag, "WARP");
     CP6(m0, data_ov001_0222c8dc);
     m0[0] &= 0xfd;
     SimpleStart_GetOwnMac(m1);
     CP6(data_ov001_0222c8d4, m1);
     if (memcmp(m0, m1, 6) <= 0) {
-        CP6(out->a, m1);
-        CP6(out->b, m0);
+        CP6(out->higherMac, m1);
+        CP6(out->lowerMac, m0);
     } else {
-        CP6(out->a, m0);
-        CP6(out->b, m1);
+        CP6(out->higherMac, m0);
+        CP6(out->lowerMac, m1);
     }
     if (data_ov001_0222a530 != 0) {
         SimpleStart_FormatMac(s0, (s8 *)m1);
@@ -1945,7 +1921,7 @@ s32 SimpleStart_BuildResult()
             ret = -7;
             break;
         }
-        Unk_ov001_02205e18_A *a = &CA48_A;
+        SimpleStartResult *a = &CA48_A;
         a->unk_24 = data_ov001_0222cc30.unk_30;
         s32 i = 0;
         {
@@ -1959,7 +1935,7 @@ s32 SimpleStart_BuildResult()
                 switch (func_0212a438(bp)) {
                 case 5:
                     a->securityType = 1;
-                    *(Unk_ov001_02205e18_B5 *)dst = *(Unk_ov001_02205e18_B5 *)bp;
+                    *(SimpleStartWep40Key *)dst = *(SimpleStartWep40Key *)bp;
                     break;
                 case 10:
                     a->securityType = 1;
@@ -1967,7 +1943,7 @@ s32 SimpleStart_BuildResult()
                     break;
                 case 13:
                     a->securityType = 2;
-                    *(Unk_ov001_02205e18_B13 *)dst = *(Unk_ov001_02205e18_B13 *)bp;
+                    *(SimpleStartWep104Key *)dst = *(SimpleStartWep104Key *)bp;
                     break;
                 case 26:
                     a->securityType = 2;
@@ -1975,7 +1951,7 @@ s32 SimpleStart_BuildResult()
                     break;
                 case 16:
                     a->securityType = 3;
-                    *(Unk_ov001_02205e18_B16 *)dst = *(Unk_ov001_02205e18_B16 *)bp;
+                    *(SimpleStartWep128Key *)dst = *(SimpleStartWep128Key *)bp;
                     break;
                 case 32:
                     a->securityType = 3;
@@ -2015,7 +1991,7 @@ s32 SimpleStart_RunProtocol()
     u32 t40 = 0;
     s32 retries = 0;
     s32 done = 0;
-    Unk_ov001_022059fc_L l;
+    SimpleStartProtocolLocals l;
     sSimpleStartStep = 1;
     while (done == 0 && sSimpleStartCancel == 0) {
         OS_Sleep(500);
@@ -2048,10 +2024,10 @@ s32 SimpleStart_RunProtocol()
                 break;
             }
             __builtin__clear(&l.req, 8);
-            l.req.a = 8;
-            l.req.b = 2;
-            l.req.c = 0x1e6;
-            l.req.d = 0;
+            l.req.len = 8;
+            l.req.family = 2;
+            l.req.port = 0x1e6;
+            l.req.addr = 0;
             result = Sock_Bind(h, &l.req);
             if (result < 0) {
                 result = -2;
@@ -2068,7 +2044,7 @@ s32 SimpleStart_RunProtocol()
                 break;
             }
             l.buf[0] = 8;
-            SimpleStart_BuildSessionId((Unk_ov001_02206248_Out *)data_ov001_0222c8fc, l.buf);
+            SimpleStart_BuildSessionId((SimpleStartSessionId *)data_ov001_0222c8fc, l.buf);
             if (Sock_RecvFrom(h, sSimpleStartPacketBuf, 0x800, 4, l.buf) > 0) {
                 if (SimpleStart_ParseHelloReply(sSimpleStartPacketBuf, &data_ov001_0222c8a0) != 0) {
                     sSimpleStartDeadline = SimpleStart_GetMilliseconds() + 30000;
@@ -2096,7 +2072,7 @@ s32 SimpleStart_RunProtocol()
                 u8 *q = SimpleStart_FirstTlv(sSimpleStartTlvBuf, (s32 *)&l.w54, (s32 *)&l.w58);
                 if (l.w54 != 0x101) break;
                 l.w5c = SimpleStart_GetMilliseconds();
-                C924_B8 = *(Unk_ov001_022059fc_B8 *)q;
+                C924_B8 = *(SimpleStartExchangeKey *)q;
                 SimpleStart_Md5(data_ov001_0222c92c, &l.w5c, 4);
                 retries = 0;
                 sSimpleStartStep = 7;
@@ -2188,9 +2164,9 @@ s32 SimpleStart_AesKeyWrap(u8 *out, const u8 *in, u32 inlen, const u8 *key, s32 
     u64 nn;
     u64 r;
     u64 tb;
-    Unk_ov001_022055bc_Blk iv;
-    Unk_ov001_022055bc_Blk a;
-    Unk_ov001_022055bc_Blk b;
+    SimpleStartKeyWrapBlock iv;
+    SimpleStartKeyWrapBlock a;
+    SimpleStartKeyWrapBlock b;
     u32 rk[81];
     u64 t;
     *(u32 *)&iv.b[0] = 0xa6a6a6a6;
@@ -2204,12 +2180,12 @@ s32 SimpleStart_AesKeyWrap(u8 *out, const u8 *in, u32 inlen, const u8 *key, s32 
     }
     nr = SimpleStart_AesKeySetupEnc(rk, key, keylen << 3);
     memcpy(out + 8, in, inlen);
-    { Unk_ov001_022055bc_Blk *pa = &a; *pa = iv; }
+    { SimpleStartKeyWrapBlock *pa = &a; *pa = iv; }
     for (j = 0; j < 6; j++) {
         nn = n;
         i = 1;
         if (i <= n) do {
-            b = *(Unk_ov001_022055bc_Blk *)(out + ((u32)i << 3));
+            b = *(SimpleStartKeyWrapBlock *)(out + ((u32)i << 3));
             SimpleStart_AesEncryptBlock(rk, nr, a.b, a.b);
             t = r = nn * j;
             t = i + r;
@@ -2218,10 +2194,10 @@ s32 SimpleStart_AesKeyWrap(u8 *out, const u8 *in, u32 inlen, const u8 *key, s32 
                  ((t & 0x000000ff00000000ULL) >> 8) | ((t & 0x0000ff0000000000ULL) >> 24) |
                  ((t & 0x00ff000000000000ULL) >> 40) | ((t & 0xff00000000000000ULL) >> 56);
             SimpleStart_Xor8(a.b, (u8 *)&tb, a.b);
-            *(Unk_ov001_022055bc_Blk *)(out + ((u32)i << 3)) = b;
+            *(SimpleStartKeyWrapBlock *)(out + ((u32)i << 3)) = b;
         } while (++i <= n);
     }
-    *(Unk_ov001_022055bc_Blk *)out = a;
+    *(SimpleStartKeyWrapBlock *)out = a;
     return 1;
 }
 
@@ -2232,9 +2208,9 @@ s32 SimpleStart_AesKeyUnwrap(u8 *out, const u8 *in, u32 inlen, const u8 *key, s3
     u64 nn;
     u64 r;
     u64 tb;
-    Unk_ov001_022055bc_Blk iv;
-    Unk_ov001_022055bc_Blk a;
-    Unk_ov001_022055bc_Blk b;
+    SimpleStartKeyWrapBlock iv;
+    SimpleStartKeyWrapBlock a;
+    SimpleStartKeyWrapBlock b;
     u32 rk[81];
     u64 t;
     *(u32 *)&iv.b[0] = 0xa6a6a6a6;
@@ -2247,7 +2223,7 @@ s32 SimpleStart_AesKeyUnwrap(u8 *out, const u8 *in, u32 inlen, const u8 *key, s3
         return 0;
     }
     nr = SimpleStart_AesKeySetupDec(rk, key, keylen << 3);
-    { Unk_ov001_022055bc_Blk *pa = &a; *pa = *(const Unk_ov001_022055bc_Blk *)in; }
+    { SimpleStartKeyWrapBlock *pa = &a; *pa = *(const SimpleStartKeyWrapBlock *)in; }
     in += 8;
     memcpy(out, in, inlen - 1);
     for (j = 5; j >= 0; j--) {
@@ -2262,9 +2238,9 @@ s32 SimpleStart_AesKeyUnwrap(u8 *out, const u8 *in, u32 inlen, const u8 *key, s3
                  ((t & 0x00ff000000000000ULL) >> 40) | ((t & 0xff00000000000000ULL) >> 56);
             SimpleStart_Xor8(a.b, (u8 *)&tb, a.b);
             u8 *p = out + (i - 1) * 8;
-            b = *(Unk_ov001_022055bc_Blk *)p;
+            b = *(SimpleStartKeyWrapBlock *)p;
             SimpleStart_AesDecryptBlock(rk, nr, a.b, a.b);
-            *(Unk_ov001_022055bc_Blk *)p = b;
+            *(SimpleStartKeyWrapBlock *)p = b;
         } while (--i > 0);
     }
     if (memcmp(&iv, &a, 8) != 0) ok = 0;
@@ -2451,7 +2427,7 @@ void SimpleStart_AesDecryptBlock(const u32 *rk, s32 Nr, const u8 *ct, u8 *pt)
     PUTU32(pt + 12, s3);
 }
 
-void SimpleStart_Md5Init(Unk_ov001_02204774_Ctx *ctx)
+void SimpleStart_Md5Init(SimpleStartMd5Ctx *ctx)
 {
     ctx->count[0] = ctx->count[1] = 0;
     ctx->state[0] = 0x67452301;
@@ -2460,7 +2436,7 @@ void SimpleStart_Md5Init(Unk_ov001_02204774_Ctx *ctx)
     ctx->state[3] = 0x10325476;
 }
 
-void SimpleStart_Md5Update(Unk_ov001_02204774_Ctx *ctx, const u8 *data, u32 len)
+void SimpleStart_Md5Update(SimpleStartMd5Ctx *ctx, const u8 *data, u32 len)
 {
     u32 i;
     u32 idx;
@@ -2487,7 +2463,7 @@ void SimpleStart_Md5Update(Unk_ov001_02204774_Ctx *ctx, const u8 *data, u32 len)
     SimpleStart_Md5Memcpy(&ctx->buffer[idx], (u8 *)&data[i], len - i);
 }
 
-void SimpleStart_Md5Final(u8 *out, Unk_ov001_02204774_Ctx *ctx)
+void SimpleStart_Md5Final(u8 *out, SimpleStartMd5Ctx *ctx)
 {
     u8 bits[8];
     u32 idx;
@@ -2616,9 +2592,9 @@ void SimpleStart_Md5Memset(void *p, s32 c, u32 n) {
 
 void SimpleStart_Md5(void *out, void *p, u32 n) {
     u32 ctx[22];
-    SimpleStart_Md5Init((Unk_ov001_02204774_Ctx *)ctx);
-    SimpleStart_Md5Update((Unk_ov001_02204774_Ctx *)ctx, (const u8 *)p, n);
-    SimpleStart_Md5Final((u8 *)out, (Unk_ov001_02204774_Ctx *)ctx);
+    SimpleStart_Md5Init((SimpleStartMd5Ctx *)ctx);
+    SimpleStart_Md5Update((SimpleStartMd5Ctx *)ctx, (const u8 *)p, n);
+    SimpleStart_Md5Final((u8 *)out, (SimpleStartMd5Ctx *)ctx);
 }
 
 u32 SimpleStart_GetMilliseconds() {

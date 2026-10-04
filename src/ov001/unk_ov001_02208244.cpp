@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 
-typedef void (*Unk_ov001_02208594_Fn)(void *, s32, u32);
+typedef void (*WfcLoadFunc)(void *, s32, u32);
 
 extern "C" u8 sWfcTopMessageShown = 0;
 extern "C" const u16 data_ov001_02229b74[4] = {0x14, 0, 0xd8, 0x40};
@@ -14,7 +14,7 @@ extern void *WfcText_CreateBgCanvas(s32, s32);
 extern void *WfcMsg_GetStringWithDigit(void *, s32, s32, s32);
 extern void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, u32, void *);
 extern void WfcText_RequestTransfer(void *);
-s32 WfcUtil_LoadFileTo(void *a, Unk_ov001_02208594_Fn fn);
+s32 WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
 u32 WfcUtil_GetTextFlags();
 }
 

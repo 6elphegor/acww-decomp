@@ -1,7 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "ui/Unk_ov001_0221a40c.h"
-#include "ui/Unk_ov001_0221b220_A22.h"
 #include "net/Unk_ov001_0221b6f8_A12.h"
 #include "menu/WfcConnSelectWork.h"
 
@@ -265,10 +264,10 @@ void WfcSetupMethod_FadeOut() {
 
 namespace F0221a40c {
 
-#define R258 ((const Unk_ov001_0221abb4_R *)sWfcSetupMethodCursorPos)
-#define R25A ((const Unk_ov001_0221abb4_R *)((const u16 *)sWfcSetupMethodCursorPos + 1))
-#define R25C ((const Unk_ov001_0221abb4_R *)((const u16 *)sWfcSetupMethodCursorPos + 2))
-#define R25E ((const Unk_ov001_0221abb4_R *)((const u16 *)sWfcSetupMethodCursorPos + 3))
+#define R258 ((const WfcCursorRectRow *)sWfcSetupMethodCursorPos)
+#define R25A ((const WfcCursorRectRow *)((const u16 *)sWfcSetupMethodCursorPos + 1))
+#define R25C ((const WfcCursorRectRow *)((const u16 *)sWfcSetupMethodCursorPos + 2))
+#define R25E ((const WfcCursorRectRow *)((const u16 *)sWfcSetupMethodCursorPos + 3))
 
 
 

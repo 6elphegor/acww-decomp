@@ -1,18 +1,18 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 
-typedef void (*Unk_ov001_0220cd24_Fn)(u32);
+typedef void (*WfcTransferCallback)(u32);
 
 struct WfcTransferWork {
     u8 unk_00000[0x1e280];
     u8 childUser[0x18];
-    Unk_ov001_0220cd24_Fn callback;
+    WfcTransferCallback callback;
     void *task;
     u8 hasPendingEvent;
     u8 isCancelled;
 };
 
-struct Unk_ov001_0220d0e4_Init {
+struct WfcMoveParams {
     s32 v[7];
 };
 
@@ -20,7 +20,7 @@ struct Unk_ov001_0220d0e4_Init {
 extern "C" char data_ov001_0222aa60[0x14] = "dwc:/move/child.srl";
 extern "C" char data_ov001_0222aa8c[0x18] = "dwc:/move/banner.char";
 extern "C" char data_ov001_0222aa74[0x18] = "dwc:/move/banner.plt";
-extern "C" Unk_ov001_0220d0e4_Init data_ov001_0222aaa4 = {{(s32)data_ov001_0222aa60, 0, 0, (s32)data_ov001_0222aa8c, (s32)data_ov001_0222aa74, 0x159, 0}};
+extern "C" WfcMoveParams data_ov001_0222aaa4 = {{(s32)data_ov001_0222aa60, 0, 0, (s32)data_ov001_0222aa8c, (s32)data_ov001_0222aa74, 0x159, 0}};
 extern "C" WfcTransferWork *sWfcTransfer;
 WfcTransferWork *sWfcTransfer;
 //ENDDEFS
@@ -50,12 +50,12 @@ void WfcTransfer_EndTask(s32 a);
 
 #pragma thumb off
 
-void WfcTransfer_Start(Unk_ov001_0220cd24_Fn a) {
+void WfcTransfer_Start(WfcTransferCallback a) {
     sWfcTransfer = (WfcTransferWork *)WfcHeap_Alloc(0x1e2a4, 0x20);
     sWfcTransfer->callback = a;
     sWfcTransfer->hasPendingEvent = 0;
     sWfcTransfer->isCancelled = 0;
-    Unk_ov001_0220d0e4_Init s = data_ov001_0222aaa4;
+    WfcMoveParams s = data_ov001_0222aaa4;
     s.v[1] = (s32)WfcMsg_GetString(gWfcMsgBank, 0xf);
     s.v[2] = (s32)WfcMsg_GetString(gWfcMsgBank, 0x10);
     *(u8 *)&s.v[6] = WfcUtil_GetLanguage() + 0x31;
@@ -79,7 +79,7 @@ BOOL WfcTransfer_IsFinished() {
     return sWfcTransfer == 0;
 }
 
-void WfcTransfer_SetCallback(Unk_ov001_0220cd24_Fn f) {
+void WfcTransfer_SetCallback(WfcTransferCallback f) {
     sWfcTransfer->callback = f;
 }
 
@@ -101,7 +101,7 @@ void WfcTransfer_Task(s32 a) {
     s32 x;
     WfcMove_Update((void *)a);
     if (sWfcTransfer->hasPendingEvent != 0 && sWfcTransfer->isCancelled == 0) {
-        Unk_ov001_0220cd24_Fn f = sWfcTransfer->callback;
+        WfcTransferCallback f = sWfcTransfer->callback;
         if (f != 0) f(0);
         return;
     }
@@ -149,35 +149,35 @@ b5:
             u8 *d = sWfcTransfer->childUser;
             void *q = WfcMove_GetChildUser();
             MIi_CpuCopy16(q, d, 0x16);
-            Unk_ov001_0220cd24_Fn f = sWfcTransfer->callback;
+            WfcTransferCallback f = sWfcTransfer->callback;
             if (f == 0) sWfcTransfer->hasPendingEvent = 1;
             else f(0);
         }
     goto end;
 b13:
         if (t[1] != 0) {
-            Unk_ov001_0220cd24_Fn f = sWfcTransfer->callback;
+            WfcTransferCallback f = sWfcTransfer->callback;
             if (f == 0) sWfcTransfer->hasPendingEvent = 1;
             else f(1);
         }
     goto end;
 b20:
         if (t[1] != 0) {
-            Unk_ov001_0220cd24_Fn f = sWfcTransfer->callback;
+            WfcTransferCallback f = sWfcTransfer->callback;
             if (f == 0) sWfcTransfer->hasPendingEvent = 1;
             else f(3);
         }
     goto end;
 b26:
         if (t[1] != 0) {
-            Unk_ov001_0220cd24_Fn f = sWfcTransfer->callback;
+            WfcTransferCallback f = sWfcTransfer->callback;
             if (f == 0) sWfcTransfer->hasPendingEvent = 1;
             else f(4);
         }
     goto end;
 b12:
         if (t[1] != 0) {
-            Unk_ov001_0220cd24_Fn f = sWfcTransfer->callback;
+            WfcTransferCallback f = sWfcTransfer->callback;
             if (f == 0) sWfcTransfer->hasPendingEvent = 1;
             else f(2);
         }

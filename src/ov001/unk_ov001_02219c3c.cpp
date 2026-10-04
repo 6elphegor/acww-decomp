@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/Unk_ov001_02225924_Rect.h"
 #include "ui/Unk_ov001_0221a40c.h"
 #include "menu/WfcConnSelectWork.h"
 
@@ -131,7 +132,7 @@ void WfcConnSelect_LoadBg() {
     BGCNT(0x400000c, 3);
 }
 
-#define P168 ((const Unk_ov001_0221a8a8_P *)sWfcConnSelectButtonPos)
+#define P168 ((const Unk_ov001_02225924_Pt *)sWfcConnSelectButtonPos)
 
 void WfcConnSelect_CreateSlotButtons() {
     u32 z[2];

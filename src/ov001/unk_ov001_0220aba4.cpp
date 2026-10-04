@@ -1,8 +1,8 @@
 // mwcc-flags: -O3,p
 #include "types.h"
-#include "ui/Unk_ov001_0220a7f0.h"
-#include "net/Unk_ov001_0220a7f0_Reg.h"
-#include "net/Unk_ov001_0222dddc.h"
+#include "nitro/gxoam.h"
+#include "ui/WfcTextKb.h"
+#include "net/Unk_ov001_02225924_Rect.h"
 
 #pragma thumb off
 
@@ -62,8 +62,8 @@ namespace N_0a758 {
 
 
 extern "C" {
-extern Unk_ov001_0222dddc *sWfcTextKb;
-extern Unk_ov001_0222dde0 *sWfcNumPad;
+extern WfcTextKb *sWfcTextKb;
+extern WfcNumPad *sWfcNumPad;
 extern u16 data_ov001_02229bf4[];
 extern u8 data_ov001_02229be8[];
 extern u8 data_ov001_02229be0[];
@@ -73,7 +73,7 @@ extern u16 data_ov001_02229f14[];
 extern s8 sWfcNumPadNavTable[][4];
 
 extern void *WfcHeap_AllocClear(s32, s32);
-extern Unk_ov001_0220a7f0_Reg *WfcObj_CreateSingle(s32, s32);
+extern GXOamAttr *WfcObj_CreateSingle(s32, s32);
 extern void *WfcObj_Create(s32, s32, s32);
 extern void WfcObj_SetAffineMode(void *, s32, s32, s32);
 extern void WfcObj_SetPriority(void *, s32, s32);
@@ -110,21 +110,16 @@ namespace N_0b05c {
 
 
 
-struct Unk_ov001_0220b618_Pt {
-    u16 x;
-    u16 y;
-};
-
 extern "C" {
-extern Unk_ov001_0222dde0 *sWfcNumPad;
+extern WfcNumPad *sWfcNumPad;
 extern u8 data_ov001_02229e98[];
 extern u8 data_ov001_02229e8c[];
 extern u8 data_ov001_02229e9c[];
 extern u8 data_ov001_02229ea0[];
 extern u8 data_ov001_02229ec4[];
-extern Unk_ov001_0220b618_Pt data_ov001_02229eec[];
-extern Unk_ov001_0220b618_Pt data_ov001_02229eb4[];
-extern Unk_ov001_0220b618_Pt data_ov001_02229ebc[];
+extern Unk_ov001_02225924_Pt data_ov001_02229eec[];
+extern Unk_ov001_02225924_Pt data_ov001_02229eb4[];
+extern Unk_ov001_02225924_Pt data_ov001_02229ebc[];
 extern u8 gWfcScreenRect[];
 extern u8 data_ov001_02229ea4[];
 extern u8 data_ov001_02229eac[];
@@ -160,7 +155,7 @@ namespace N_0ba08 {
 
 
 extern "C" {
-extern Unk_ov001_0222dde0 *sWfcNumPad;
+extern WfcNumPad *sWfcNumPad;
 extern u8 gWfcScreenRect[];
 extern u32 data_ov001_02229eec[];
 extern u32 data_ov001_02229eb4[];
@@ -210,8 +205,7 @@ void WfcNumPad_SlideInStep0(void *self);
 }
 
 namespace N_0ba08 {
-struct Unk_ov001_0220bfec_Pair { u16 a, b; };
-struct Unk_ov001_0220bfec_Rect { Unk_ov001_0220bfec_Pair p; Unk_ov001_0220bfec_Pair s; };
+struct WfcPosSize { Unk_ov001_02225924_Pt pos; Unk_ov001_02225924_Pt size; };
 }
 
 
@@ -262,29 +256,29 @@ void WfcNumPad_Destroy(s32 a);
 namespace N_0ba08 {
 extern "C" {
 void WfcNumPad_Create() {
-    Unk_ov001_0220bfec_Rect pos;
+    WfcPosSize pos;
     u32 t;
     u16 v[2];
     s32 i, j, k;
-    pos = *(Unk_ov001_0220bfec_Rect *)data_ov001_0222aa58;
-    pos.s = *(Unk_ov001_0220bfec_Pair *)data_ov001_02229ea4;
-    sWfcNumPad = (Unk_ov001_0222dde0 *)WfcHeap_AllocClear(0x6c, 4);
+    pos = *(WfcPosSize *)data_ov001_0222aa58;
+    pos.size = *(Unk_ov001_02225924_Pt *)data_ov001_02229ea4;
+    sWfcNumPad = (WfcNumPad *)WfcHeap_AllocClear(0x6c, 4);
     sWfcNumPad->inputKey = 0x1f;
     sWfcNumPad->cursorKey = 0;
     sWfcNumPad->deleteEnabled = 1;
     sWfcNumPad->insertEnabled = 1;
     sWfcNumPad->dotEnabled = 1;
     for (i = 0; i < 10; i++) {
-        sWfcNumPad->digitKeyOams[i] = (Unk_ov001_0220ba08_Reg *)WfcObj_CreateSingle(0, 0x36);
-        sWfcNumPad->digitKeyOams[i]->w0 = (sWfcNumPad->digitKeyOams[i]->w0 & 0xc1fffcff) | 0x200;
-        sWfcNumPad->digitKeyOams[i]->h4 = (sWfcNumPad->digitKeyOams[i]->h4 & ~0xc00) | 0xc00;
+        sWfcNumPad->digitKeyOams[i] = (GXOamAttr *)WfcObj_CreateSingle(0, 0x36);
+        sWfcNumPad->digitKeyOams[i]->attr01 = (sWfcNumPad->digitKeyOams[i]->attr01 & 0xc1fffcff) | 0x200;
+        sWfcNumPad->digitKeyOams[i]->attr2 = (sWfcNumPad->digitKeyOams[i]->attr2 & ~0xc00) | 0xc00;
     }
     u8 *p = data_ov001_02229e90;
     for (i = 0; i < 2; i++) {
-        sWfcNumPad->funcKeyOams[i] = (Unk_ov001_0220ba08_Reg *)WfcObj_CreateSingle(0, *p);
+        sWfcNumPad->funcKeyOams[i] = (GXOamAttr *)WfcObj_CreateSingle(0, *p);
         p++;
-        sWfcNumPad->funcKeyOams[i]->w0 = (sWfcNumPad->funcKeyOams[i]->w0 & 0xc1fffcff) | 0x200;
-        sWfcNumPad->funcKeyOams[i]->h4 = (sWfcNumPad->funcKeyOams[i]->h4 & ~0xc00) | 0xc00;
+        sWfcNumPad->funcKeyOams[i]->attr01 = (sWfcNumPad->funcKeyOams[i]->attr01 & 0xc1fffcff) | 0x200;
+        sWfcNumPad->funcKeyOams[i]->attr2 = (sWfcNumPad->funcKeyOams[i]->attr2 & ~0xc00) | 0xc00;
     }
     for (i = 0; i < 2; i++) {
         sWfcNumPad->bottomButtons[i] = WfcObj_Create(0, data_ov001_02229e94[i], 1);
@@ -299,12 +293,12 @@ void WfcNumPad_Create() {
     v[1] = i;
     for (; i < 4; i++) {
         sWfcNumPad->rowCanvases[i] = WfcText_CreateObjCanvas(0, bw, bh, 0, &t, 0);
-        pos.p.a = 0;
+        pos.pos.x = 0;
         s32 idx = n;
         s32 kk;
-        for (kk = 0; kk < 3; kk++, idx++, pos.p.a += 0x20) {
+        for (kk = 0; kk < 3; kk++, idx++, pos.pos.x += 0x20) {
             v[0] = data_ov001_02229ed0[idx];
-            WfcText_DrawTextRect(sWfcNumPad->rowCanvases[i], pos.p.a, pos.p.b, pos.s.a, pos.s.b, 2, 0x480, (void *)v);
+            WfcText_DrawTextRect(sWfcNumPad->rowCanvases[i], pos.pos.x, pos.pos.y, pos.size.x, pos.size.y, 2, 0x480, (void *)v);
         }
         sWfcNumPad->rowTextObjs[i] = WfcObj_Alloc(0, t, 0);
         n += 3;
@@ -532,7 +526,7 @@ void WfcNumPad_HandleTouchPress() {
 namespace N_0b05c {
 extern "C" {
 void WfcNumPad_HandleTouchRelease() {
-    Unk_ov001_0220b618_Pt *p;
+    Unk_ov001_02225924_Pt *p;
     s32 i;
     u32 buf[3];
     sWfcNumPad->inputKey = 0;
@@ -575,7 +569,7 @@ namespace N_0b05c {
 extern "C" {
 void WfcNumPad_HandleTouchHold() {
     s32 i;
-    Unk_ov001_0220b618_Pt *p;
+    Unk_ov001_02225924_Pt *p;
     u32 buf[3];
     if (!WfcInput_IsTouchHeldIn(gWfcScreenRect)) goto fail;
     for (p = data_ov001_02229eec, i = 0; i < 10; p++, i++) {
@@ -639,7 +633,7 @@ void WfcNumPad_HandlePad() {
     if (WfcInput_IsKeyRepeat(0x10)) WfcNumPad_MoveCursor(2);
     if (WfcInput_IsKeyRepeat(0x80)) WfcNumPad_MoveCursor(3);
     if (WfcInput_IsKeyPressed(1)) {
-        Unk_ov001_0222dde0 *o = sWfcNumPad;
+        WfcNumPad *o = sWfcNumPad;
         s32 c = o->cursorKey;
         if (c < 10) {
             if (o->insertEnabled != 0) {
@@ -660,7 +654,7 @@ void WfcNumPad_HandlePad() {
         }
     }
     if (WfcInput_IsKeyRepeat(2)) {
-        Unk_ov001_0222dde0 *o = sWfcNumPad;
+        WfcNumPad *o = sWfcNumPad;
         if (o->deleteEnabled == 0) {
             if (o->errorSoundPlayed != 0) return;
             WfcSound_Play(9);
@@ -686,22 +680,22 @@ void WfcNumPad_SetRowY(s32 a, s32 b) {
     s32 k = a * 3;
     s32 i;
     for (i = 0; i < x[a]; i++) {
-        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->digitKeyOams[k];
-        r->w0 &= 0xc1fffcff;
+        GXOamAttr *r = sWfcNumPad->digitKeyOams[k];
+        r->attr01 &= 0xc1fffcff;
         u32 t = data_ov001_02229eec[k].x;
         r = sWfcNumPad->digitKeyOams[k];
-        r->w0 = (r->w0 & 0xfe00ff00) | (u8)b | ((t & 0x1ff) << 16);
+        r->attr01 = (r->attr01 & 0xfe00ff00) | (u8)b | ((t & 0x1ff) << 16);
         k++;
     }
     if (a < 4) {
         WfcText_ArrangeObj(sWfcNumPad->rowCanvases[a], data_ov001_02229eec[a * 3].x, b, sWfcNumPad->rowTextObjs[a], 2);
     }
     for (i = 0; i < y[a]; i++) {
-        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->funcKeyOams[i];
-        r->w0 &= 0xc1fffcff;
+        GXOamAttr *r = sWfcNumPad->funcKeyOams[i];
+        r->attr01 &= 0xc1fffcff;
         u32 t = data_ov001_02229eb4[i].x;
         r = sWfcNumPad->funcKeyOams[i];
-        r->w0 = (r->w0 & 0xfe00ff00) | (u8)b | ((t & 0x1ff) << 16);
+        r->attr01 = (r->attr01 & 0xfe00ff00) | (u8)b | ((t & 0x1ff) << 16);
     }
     for (i = 0; i < z[a]; i++) {
         WfcObj_SetAffineMode(sWfcNumPad->bottomButtons[i], -1, 0, 0);
@@ -716,13 +710,13 @@ extern "C" {
 void WfcNumPad_SetKeyHighlight(s32 a, u32 b) {
     if (a < 0) return;
     if (a < 10) {
-        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->digitKeyOams[a];
-        r->w0 = r->w0 & ~0xc00;
-        r->h4 = (r->h4 & ~0xf000) | (data_ov001_02229e98[b] << 12);
+        GXOamAttr *r = sWfcNumPad->digitKeyOams[a];
+        r->attr01 = r->attr01 & ~0xc00;
+        r->attr2 = (r->attr2 & ~0xf000) | (data_ov001_02229e98[b] << 12);
     } else if (a - 10 < 2) {
-        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->funcKeyOams[a - 10];
-        r->w0 = r->w0 & ~0xc00;
-        r->h4 = (r->h4 & ~0xf000) | (data_ov001_02229e98[b] << 12);
+        GXOamAttr *r = sWfcNumPad->funcKeyOams[a - 10];
+        r->attr01 = r->attr01 & ~0xc00;
+        r->attr2 = (r->attr2 & ~0xf000) | (data_ov001_02229e98[b] << 12);
     } else {
         WfcObj_SetModePalette(sWfcNumPad->bottomButtons[a - 12], -1, 0, data_ov001_02229e8c[b]);
     }
@@ -749,7 +743,7 @@ void WfcNumPad_UpdateCursor() {
 namespace N_0a758 {
 extern "C" {
 void WfcNumPad_MoveCursor(s32 a) {
-    Unk_ov001_0222dde0 *g = sWfcNumPad;
+    WfcNumPad *g = sWfcNumPad;
     s32 old = g->cursorKey;
     g->cursorKey = sWfcNumPadNavTable[old][a];
     g = sWfcNumPad;
@@ -779,10 +773,10 @@ namespace N_0a758 {
 extern "C" {
 void WfcNumPad_SlideOutStep0(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = (Unk_ov001_0220a7f0_Reg *)WfcObj_GetOam(sWfcNumPad->bottomButtons[0], 0);
+    GXOamAttr *r = (GXOamAttr *)WfcObj_GetOam(sWfcNumPad->bottomButtons[0], 0);
     s32 t;
-    s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
-    t = *(volatile u32 *)&r->w0 & 0xff;
+    s[0] = (*(volatile u32 *)&r->attr01 & 0x1ff0000) >> 16;
+    t = *(volatile u32 *)&r->attr01 & 0xff;
     s[1] = t;
     t += 0xc;
     s[1] = t;
@@ -797,10 +791,10 @@ namespace N_0a758 {
 extern "C" {
 void WfcNumPad_SlideOutStep1(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->digitKeyOams[9];
+    GXOamAttr *r = sWfcNumPad->digitKeyOams[9];
     s32 t;
-    s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
-    t = *(volatile u32 *)&r->w0 & 0xff;
+    s[0] = (*(volatile u32 *)&r->attr01 & 0x1ff0000) >> 16;
+    t = *(volatile u32 *)&r->attr01 & 0xff;
     s[1] = t;
     t += 0xc;
     s[1] = t;
@@ -815,10 +809,10 @@ namespace N_0a758 {
 extern "C" {
 void WfcNumPad_SlideOutStep2(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->digitKeyOams[6];
+    GXOamAttr *r = sWfcNumPad->digitKeyOams[6];
     s32 t;
-    s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
-    t = *(volatile u32 *)&r->w0 & 0xff;
+    s[0] = (*(volatile u32 *)&r->attr01 & 0x1ff0000) >> 16;
+    t = *(volatile u32 *)&r->attr01 & 0xff;
     s[1] = t;
     t += 0xc;
     s[1] = t;
@@ -833,10 +827,10 @@ namespace N_0a758 {
 extern "C" {
 void WfcNumPad_SlideOutStep3(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->digitKeyOams[3];
+    GXOamAttr *r = sWfcNumPad->digitKeyOams[3];
     s32 t;
-    s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
-    t = *(volatile u32 *)&r->w0 & 0xff;
+    s[0] = (*(volatile u32 *)&r->attr01 & 0x1ff0000) >> 16;
+    t = *(volatile u32 *)&r->attr01 & 0xff;
     s[1] = t;
     t += 0xc;
     s[1] = t;
@@ -851,10 +845,10 @@ namespace N_0a758 {
 extern "C" {
 void WfcNumPad_SlideOutStep4(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->digitKeyOams[0];
+    GXOamAttr *r = sWfcNumPad->digitKeyOams[0];
     s32 t;
-    s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
-    t = *(volatile u32 *)&r->w0 & 0xff;
+    s[0] = (*(volatile u32 *)&r->attr01 & 0x1ff0000) >> 16;
+    t = *(volatile u32 *)&r->attr01 & 0xff;
     s[1] = t;
     t += 0xc;
     s[1] = t;

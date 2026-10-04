@@ -1,6 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
-#include "net/Unk_ov001_0222de74.h"
+#include "ui/WfcApList.h"
 
 #pragma thumb off
 
@@ -19,7 +19,7 @@ extern u8 sWfcAossDoneTimer;
 extern u8 data_ov001_0222aea8;
 extern u8 sWfcApListCursor;
 extern u16 sWfcApListScroll;
-extern Unk_ov001_0222de74 *sWfcApList;
+extern WfcApList *sWfcApList;
 extern u16 data_ov001_0222a030[];
 extern u16 data_ov001_0222a032[];
 extern u16 data_ov001_0222a034[];

@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 
-typedef void (*Unk_ov001_02208594_Fn)(void *, s32, u32);
+typedef void (*WfcLoadFunc)(void *, s32, u32);
 
 extern "C" {
 extern void GX_LoadBG1Scr(void *, s32, u32);
@@ -16,7 +16,7 @@ extern void *WfcHeap_Alloc(s32, s32);
 extern void WfcTask_RequestDelete(s32, s32);
 extern void WfcTask_Add(s32, void *, s32, s32);
 extern u8 *WfcConfig_GetEdit();
-extern s32 WfcUtil_LoadFileTo(void *a, Unk_ov001_02208594_Fn fn);
+extern s32 WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
 extern u8 *WfcUtil_LocalizePath(u8 *p);
 s32 WfcHighlight_Set(s32 n);
 void WfcHighlight_TransferTask(s32 a);

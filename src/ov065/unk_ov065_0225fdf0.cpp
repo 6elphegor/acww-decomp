@@ -4,6 +4,7 @@
 #include "net/SockHostEnt.h"
 #include "net/IpStackConfig.h"
 #include "net/Unk_ov065_0225faf4_Sess.h"
+#include "net/SockAddrIn.h"
 
 namespace Unk_ov065_02260de4_Ns {
 
@@ -36,13 +37,6 @@ struct SockPollFd {
     Unk_ov065_02260de4 *sock;
     s16 events;
     u16 revents;
-};
-
-struct Unk_ov065_0226129c_Sa {
-    u8 len;
-    u8 family;
-    u16 port;
-    u32 addr;
 };
 
 struct Unk_ov065_02261118_Cfg {
@@ -158,11 +152,11 @@ s32 Sock_Create(s32 a, s32 b) {
     return SockCore_Create(sSockUdpParams);
 }
 
-s32 Sock_Bind(s32 a, Unk_ov065_0226129c_Sa *sa) {
+s32 Sock_Bind(s32 a, SockAddrIn *sa) {
     return SockCore_Bind(a, HTONS(sa->port));
 }
 
-s32 Sock_Connect(s32 a, Unk_ov065_0226129c_Sa *sa) {
+s32 Sock_Connect(s32 a, SockAddrIn *sa) {
     return SockCore_Connect(a, HTONS(sa->port), HTONL(sa->addr));
 }
 
@@ -170,12 +164,12 @@ s32 Sock_Recv(s32 a, s32 b, s32 c, u32 d) {
     return SockCore_RecvFrom(a, b, c, 0, 0, d);
 }
 
-s32 Sock_RecvFrom(s32 a, s32 b, s32 c, u32 d, Unk_ov065_0226129c_Sa *sa) {
+s32 Sock_RecvFrom(s32 a, s32 b, s32 c, u32 d, SockAddrIn *sa) {
     u16 port;
     u32 ip;
     s32 r = SockCore_RecvFrom(a, b, c, &port, &ip, d);
     if (r >= 0) {
-        Unk_ov065_0226129c_Sa *q = *(Unk_ov065_0226129c_Sa *volatile *)&sa;
+        SockAddrIn *q = *(SockAddrIn *volatile *)&sa;
         if (q != NULL) {
             q->port = HTONS(port);
             q->addr = HTONL(ip);
@@ -188,7 +182,7 @@ s32 Sock_Send(s32 a, s32 b, s32 c, u32 d) {
     return SockCore_SendTo(a, b, c, 0, 0, d);
 }
 
-s32 Sock_SendTo(s32 a, s32 b, s32 c, u32 d, Unk_ov065_0226129c_Sa *sa) {
+s32 Sock_SendTo(s32 a, s32 b, s32 c, u32 d, SockAddrIn *sa) {
     u32 port;
     u32 ip;
     if (sa != NULL) {
@@ -227,7 +221,7 @@ SockHostEnt *Sock_GetHostByName(s32 x) {
     return h;
 }
 
-s32 Sock_GetSockName(Unk_ov065_02260de4 *o, Unk_ov065_0226129c_Sa *sa) {
+s32 Sock_GetSockName(Unk_ov065_02260de4 *o, SockAddrIn *sa) {
     u32 ip;
     u32 port;
     if (o == NULL) {
@@ -261,7 +255,7 @@ s32 Sock_Listen(s32 a, s32 b, s32 c) {
     return SockCore_Listen(a, b, c);
 }
 
-s32 Sock_Accept(s32 a, Unk_ov065_0226129c_Sa *sa) {
+s32 Sock_Accept(s32 a, SockAddrIn *sa) {
     u16 port;
     u32 addr;
     s32 r = SockCore_Accept(a, &port, &addr);

@@ -1,7 +1,9 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/SockAddrIn.h"
+#include "net/AossParam.h"
 
-struct Unk_ov001_022006e0_Rng {
+struct AossRandState {
     u32 seed;
     u32 mul;
     u32 add;
@@ -32,7 +34,7 @@ struct AossSession {
     s8 clientInfoTag;
 };
 
-struct Unk_ov001_02200b5c_Rc4 {
+struct AossRc4State {
     u32 i;
     u32 j;
     u8 *s;
@@ -49,28 +51,14 @@ struct AossKeyBlock {
     u8 key4[0x40];
 };
 
-struct Unk_ov001_02202b3c_Cfg {
-    u32 unk_00;
-    u16 clientNameLength;
-    u8 clientName[0x100];
-    s16 apRetryCount;
-    s16 apRetryWait;
-    s16 packetRetryCount;
-    s16 packetRetryWait;
-    s16 recvTimeout;
-    u8 pad_110[6];
-    u8 errorCode;
-};
-
-struct Unk_ov001_02200680_S;
-struct Unk_ov001_022007fc_P;
-struct Unk_ov001_02201cd0_Hdr;
+struct AossPollFd;
+struct AossScanList;
 
 extern "C" s32 Aoss_SocAlloc(s32 a, s32 b);
 extern "C" s32 Aoss_SocFree(s32 a, s32 b);
 
 // EXTERNS
-extern "C" Unk_ov001_022006e0_Rng sAossRand;
+extern "C" AossRandState sAossRand;
 extern "C" AossSocConfig sAossSocConfig;
 extern "C" AossSession sAossSession;
 extern "C" s16 sAossDefaultRetry[2];
@@ -103,8 +91,8 @@ extern u32 gOwnIp;
 extern s32 (*sAossFreeFunc)(s32);
 extern s32 (*sAossAllocFunc)(s32);
 
-void Aoss_FdSet(u32 v, Unk_ov001_02200680_S *s);
-void Aoss_FdZero(Unk_ov001_02200680_S *s);
+void Aoss_FdSet(u32 v, AossPollFd *s);
+void Aoss_FdZero(AossPollFd *s);
 u16 Aoss_Rand16(void);
 s32 Aoss_Strlen(char *s);
 s32 Aoss_Ntohs(s32 v);
@@ -116,7 +104,7 @@ s32 Aoss_SocketBind(s32 a, u8 *b, s32 c);
 s32 Aoss_SocketCreate(s32 a, s32 b, s32 c);
 s32 Aoss_SetSockOpt(s32 s, s32 l, s32 o, void *v, s32 n);
 s32 Aoss_SendTo(s32 a, s32 b, s32 c, s32 d, u8 *p, u32 v);
-s32 Aoss_Select(s32 a, Unk_ov001_022007fc_P *p, s32 c, s32 d, s32 *q);
+s32 Aoss_Select(s32 a, AossPollFd *p, s32 c, s32 d, s32 *q);
 s32 Aoss_RecvFrom(s32 a, s32 b, s32 c, s32 d, u8 *p, s32 *q);
 void *Aoss_Memset(void *p, u32 v, u32 n);
 void Aoss_Memcpy(void *dst, void *src, u32 n);
@@ -132,9 +120,9 @@ s32 Aoss_Scramble(u8 *out, s32 n, u8 *key, s32 klen);
 void Aoss_InitCrc32Table(u32 unused, u32 *t);
 u32 Aoss_UpdateCrc32(u32 crc, u8 *data, s32 len, s32 init, u32 *tbl);
 u8 Aoss_CalcCrc32Low8(u8 *data, s32 len);
-u32 Aoss_Rc4NextByte(Unk_ov001_02200b5c_Rc4 *st);
-void Aoss_Rc4Crypt(Unk_ov001_02200b5c_Rc4 *st, u8 *out, u8 *in, u32 n);
-void Aoss_Rc4Init(Unk_ov001_02200b5c_Rc4 *st, u8 *key, u32 klen, u32 n);
+u32 Aoss_Rc4NextByte(AossRc4State *st);
+void Aoss_Rc4Crypt(AossRc4State *st, u8 *out, u8 *in, u32 n);
+void Aoss_Rc4Init(AossRc4State *st, u8 *key, u32 klen, u32 n);
 s32 Aoss_DecryptPayload(u8 *a, u8 *b, u32 n, u32 crc, u8 *x, u8 *y, s32 z);
 s32 Aoss_EncryptPayload(u8 *a, u8 *b, u32 n, u8 *out, u8 *x, u8 *y, s32 z);
 s32 Aoss_SendPacket(s32 a, s32 b, s32 n, s32 c);
@@ -162,7 +150,7 @@ s32 Aoss_HandleRecvPacket(s32 a, u8 *b, s32 *cnt, void *c, s32 sock);
 s32 Aoss_SetProgress(s32 x);
 void Aoss_InitNonces(s32 n, u8 *p, void *x);
 s32 Aoss_BuildAossApConfig(u32 *p);
-s32 Aoss_FindAossAp(Unk_ov001_02201cd0_Hdr *p);
+s32 Aoss_FindAossAp(AossScanList *p);
 s32 Aoss_IsPrintable(u8 *s, s32 n);
 s32 Aoss_StoreResult(u8 *o);
 s32 Aoss_GetError();
@@ -171,7 +159,7 @@ void Aoss_InitSession(u8 *p);
 void Aoss_FreeScanBuffers();
 u32 Aoss_PickHostAddress(u32 a, u32 b);
 s32 Aoss_RunProtocol(u8 *o);
-s32 Aoss_Run(Unk_ov001_02202b3c_Cfg *a);
+s32 Aoss_Run(AossParam *a);
 s32 RTC_GetTime(void *p);
 s32 Sock_Close();
 s32 Sock_Bind();
@@ -193,71 +181,46 @@ void Aoss_Sleep(s32 ms);
 s32 Aoss_ConnectAp(void *cmd, void *p);
 }
 
-struct Unk_ov001_02201cd0_Ent {
-    s32 len;
-    u8 name[0x4c];
-    u32 flag;
-};
-
-struct Unk_ov001_02201cd0_Hdr {
+struct AossScanList {
     s32 count;
-    Unk_ov001_02201cd0_Ent e[64];
+    AossApInfo aps[64];
 };
 
-struct Unk_ov001_02202050_Buf {
+struct AossRecvBuffer {
     s32 sock;
     s32 recvLength;
     u8 unk_08[4];
     u8 unk_0c[0x5ec];
 };
 
-struct Unk_ov001_02202050_Retry {
+struct AossRetryLimits {
     s16 v[2];
 };
 
-struct Unk_ov001_02202050_Addr {
-    u8 len;
-    u8 family;
-    u16 port;
-    u32 addr;
-};
-
-struct Unk_ov001_0220187c_Hdr {
+struct AossPacketHeader {
     u8 pad[0x10];
-    u8 mac[8];
+    u8 nonce[8];
 };
 
-struct Unk_ov001_02200680_S {
-    u32 a;
-    u16 b;
-    u16 c;
+struct AossPollFd {
+    u32 fd;
+    u16 events;
+    u16 revents;
 };
 
-struct Unk_ov001_022007fc_P {
-    s32 a;
-    s32 b;
-};
-
-struct Unk_ov001_02200d58_Sock {
-    u8 len;
-    u8 family;
-    u16 port;
-    u32 addr;
-};
-
-struct Unk_ov001_02200f78_L {
+struct AossKeyRequestLocals {
     s8 a;
     s16 b;
     s16 c;
     u8 dat[8];
-    Unk_ov001_02200d58_Sock sa;
+    SockAddrIn sa;
 };
 
-extern "C" s32 Aoss_Run(Unk_ov001_02202b3c_Cfg *a) {
+extern "C" s32 Aoss_Run(AossParam *a) {
     s32 r;
     if (a->apRetryCount == 0 || a->apRetryCount < -1 || a->apRetryWait < -1 || a->packetRetryCount == 0 || a->packetRetryCount < -1
-        || a->packetRetryWait < -1 || a->recvTimeout < -1 || a->clientNameLength == 0 || a->clientNameLength > 0x100
-        || a->clientName[a->clientNameLength - 1] != 0) {
+        || a->packetRetryWait < -1 || a->recvTimeout < -1 || a->clientInfo.nameLength == 0 || a->clientInfo.nameLength > 0x100
+        || a->clientInfo.name[a->clientInfo.nameLength - 1] != 0) {
         r = -1;
     } else {
         r = 0;
@@ -294,7 +257,7 @@ extern "C" s32 Aoss_RunProtocol(u8 *o)
     s32 state;
     s32 res;
     s32 ip;
-    Unk_ov001_02202050_Buf *buf;
+    AossRecvBuffer *buf;
     s32 sec;
     s32 m1;
     s32 res2;
@@ -305,8 +268,8 @@ extern "C" s32 Aoss_RunProtocol(u8 *o)
     s32 z;
     u32 a;
 
-    volatile Unk_ov001_02202050_Retry v01 = *(Unk_ov001_02202050_Retry *)sAossDefaultRetry;
-    volatile Unk_ov001_02202050_Retry v23 = { 0, 0 };
+    volatile AossRetryLimits v01 = *(AossRetryLimits *)sAossDefaultRetry;
+    volatile AossRetryLimits v23 = { 0, 0 };
     state = 0;
     s32 opt = 1;
     s32 tries = state;
@@ -314,7 +277,7 @@ extern "C" s32 Aoss_RunProtocol(u8 *o)
     s32 len48;
     s32 fdset[2];
     s32 tv[2];
-    Unk_ov001_02202050_Addr sa5c;
+    SockAddrIn sa5c;
     u8 st64[0x18];
     u8 cmd7c[0x3c];
     s32 pkt[5];
@@ -357,7 +320,7 @@ extern "C" s32 Aoss_RunProtocol(u8 *o)
         if (Aoss_ScanAps(&sAossScanList) == -1) {
             FAIL(0xf);
         }
-        r = Aoss_FindAossAp((Unk_ov001_02201cd0_Hdr *)sAossScanList);
+        r = Aoss_FindAossAp((AossScanList *)sAossScanList);
         if (r == 4) {
             FAIL(2);
         }
@@ -427,7 +390,7 @@ extern "C" s32 Aoss_RunProtocol(u8 *o)
     z = 0;
     m1 = -1;
 top:
-    buf = (Unk_ov001_02202050_Buf *)sAossPacketBuf;
+    buf = (AossRecvBuffer *)sAossPacketBuf;
     Aoss_Memset((void *)a, z, 0x14);
     pkt[4] = 0xc0a80b65;
     pkt[0] = 0xc0a80b01;
@@ -457,7 +420,7 @@ again:
             if (res2 == -1) {
                 FAIL(0xf);
             }
-            r = Aoss_FindAossAp((Unk_ov001_02201cd0_Hdr *)sAossScanList);
+            r = Aoss_FindAossAp((AossScanList *)sAossScanList);
             if (r == 4) {
                 FAIL(2);
             }
@@ -529,11 +492,11 @@ again:
         FAIL(0xf);
     }
     Aoss_Memset(buf, z, 0x5f8);
-    Aoss_FdZero((Unk_ov001_02200680_S *)fdset);
-    Aoss_FdSet(sAossSocket, (Unk_ov001_02200680_S *)fdset);
+    Aoss_FdZero((AossPollFd *)fdset);
+    Aoss_FdSet(sAossSocket, (AossPollFd *)fdset);
     tv[0] = sec;
     tv[1] = usec;
-    if (Aoss_Select(sAossSocket + 1, (Unk_ov001_022007fc_P *)fdset, z, z, tv) <= 0) {
+    if (Aoss_Select(sAossSocket + 1, (AossPollFd *)fdset, z, z, tv) <= 0) {
         tries++;
         if (tries > v23.v[0]) {
             if (state == 0) {
@@ -581,7 +544,7 @@ again:
                 if (Aoss_ScanAps(&sAossScanList) == -1) {
                     FAIL(0xf);
                 }
-                r = Aoss_FindAossAp((Unk_ov001_02201cd0_Hdr *)sAossScanList);
+                r = Aoss_FindAossAp((AossScanList *)sAossScanList);
                 if (r == 4) {
                     FAIL(2);
                 }
@@ -816,7 +779,7 @@ extern "C" s32 Aoss_IsPrintable(u8 *s, s32 n)
     return 0;
 }
 
-extern "C" s32 Aoss_FindAossAp(Unk_ov001_02201cd0_Hdr *p)
+extern "C" s32 Aoss_FindAossAp(AossScanList *p)
 {
     s32 n;
     s32 r = 0;
@@ -830,9 +793,9 @@ extern "C" s32 Aoss_FindAossAp(Unk_ov001_02201cd0_Hdr *p)
         n = 0x40;
     }
     for (i = 0; i < n; i++) {
-        if ((p->e[i].flag & 1) != 0) {
-            if (p->e[i].len == Aoss_Strlen((char *)sAossEssidStr)) {
-                if (Aoss_Memcmp(p->e[i].name, sAossEssidStr, Aoss_Strlen((char *)sAossEssidStr)) == 0) {
+        if ((p->aps[i].bssType & 1) != 0) {
+            if (p->aps[i].ssidLength == Aoss_Strlen((char *)sAossEssidStr)) {
+                if (Aoss_Memcmp(p->aps[i].ssid, sAossEssidStr, Aoss_Strlen((char *)sAossEssidStr)) == 0) {
                     cnt++;
                 }
             }
@@ -1010,7 +973,7 @@ extern "C" s32 Aoss_HandleFinishReply(s32 mode, u8 *q, s32 *cnt, u8 *r3)
         return mode;
     }
     r4 = q + 0x24;
-    if (Aoss_CheckReplyNonce(r3 + 0x10, ((Unk_ov001_0220187c_Hdr *)(q + 0xc))->mac) < 0) {
+    if (Aoss_CheckReplyNonce(r3 + 0x10, ((AossPacketHeader *)(q + 0xc))->nonce) < 0) {
         (*cnt)++;
         return mode;
     }
@@ -1457,7 +1420,7 @@ extern "C" s32 Aoss_SendStartRequest(s32 unused, u8 *src, s32 arg)
 }
 
 extern "C" s32 Aoss_SendKeyRequest(s32 a, u8 *b, s32 c) {
-    Unk_ov001_02200f78_L l;
+    AossKeyRequestLocals l;
     u8 *r4;
     l.a = 0;
     l.b = 0;
@@ -1546,7 +1509,7 @@ extern "C" void Aoss_WriteHeader(u16 *out, u32 x, u32 y, u32 z, s8 a5, s8 a6, u8
 }
 
 extern "C" s32 Aoss_SendPacket(s32 a, s32 b, s32 n, s32 c) {
-    Unk_ov001_02200d58_Sock sa;
+    SockAddrIn sa;
     Aoss_Memset(&sa, 0, 8);
     sa.family = 2;
     sa.port = Aoss_Htons(0x5790);
@@ -1559,7 +1522,7 @@ extern "C" s32 Aoss_SendPacket(s32 a, s32 b, s32 n, s32 c) {
 
 extern "C" s32 Aoss_EncryptPayload(u8 *a, u8 *b, u32 n, u8 *out, u8 *x, u8 *y, s32 z) {
     u16 v;
-    Unk_ov001_02200b5c_Rc4 st;
+    AossRc4State st;
     *out = Aoss_CalcCrc32Low8(a, n);
     st.s = (u8 *)Aoss_Alloc(n);
     if (st.s == NULL) {
@@ -1576,7 +1539,7 @@ extern "C" s32 Aoss_EncryptPayload(u8 *a, u8 *b, u32 n, u8 *out, u8 *x, u8 *y, s
 }
 
 extern "C" s32 Aoss_DecryptPayload(u8 *a, u8 *b, u32 n, u32 crc, u8 *x, u8 *y, s32 z) {
-    Unk_ov001_02200b5c_Rc4 st;
+    AossRc4State st;
     st.s = (u8 *)Aoss_Alloc(n);
     if (st.s == NULL) {
         Aoss_SetError(2);
@@ -1596,7 +1559,7 @@ extern "C" s32 Aoss_DecryptPayload(u8 *a, u8 *b, u32 n, u32 crc, u8 *x, u8 *y, s
     return 0;
 }
 
-extern "C" void Aoss_Rc4Init(Unk_ov001_02200b5c_Rc4 *st, u8 *key, u32 klen, u32 n) {
+extern "C" void Aoss_Rc4Init(AossRc4State *st, u8 *key, u32 klen, u32 n) {
     u8 *s = st->s;
     u32 i, j, k;
     st->j = 0;
@@ -1621,7 +1584,7 @@ extern "C" void Aoss_Rc4Init(Unk_ov001_02200b5c_Rc4 *st, u8 *key, u32 klen, u32 
     }
 }
 
-extern "C" void Aoss_Rc4Crypt(Unk_ov001_02200b5c_Rc4 *st, u8 *out, u8 *in, u32 n) {
+extern "C" void Aoss_Rc4Crypt(AossRc4State *st, u8 *out, u8 *in, u32 n) {
     u32 i;
     for (i = 0; i < n; i++) {
         u32 t = (u8)Aoss_Rc4NextByte(st);
@@ -1630,7 +1593,7 @@ extern "C" void Aoss_Rc4Crypt(Unk_ov001_02200b5c_Rc4 *st, u8 *out, u8 *in, u32 n
     }
 }
 
-extern "C" u32 Aoss_Rc4NextByte(Unk_ov001_02200b5c_Rc4 *st) {
+extern "C" u32 Aoss_Rc4NextByte(AossRc4State *st) {
     u8 *s = st->s;
     u32 n = st->n;
     u32 i = (u8)((st->i + 1) % n);
@@ -1797,9 +1760,9 @@ extern "C" s32 Aoss_RecvFrom(s32 a, s32 b, s32 c, s32 d, u8 *p, s32 *q) {
     return Sock_RecvFrom(a, b, c, d, p);
 }
 
-extern "C" s32 Aoss_Select(s32 a, Unk_ov001_022007fc_P *p, s32 c, s32 d, s32 *q) {
+extern "C" s32 Aoss_Select(s32 a, AossPollFd *p, s32 c, s32 d, s32 *q) {
     s64 sum = 0;
-    Unk_ov001_022007fc_P t = *p;
+    AossPollFd t = *p;
     sum += q[0] * 0x1ff6210 / 0x40;
     sum += q[1] * 0x1ff6210 / 0x40;
     return Sock_Poll(&t, 1, sum);
@@ -1869,15 +1832,15 @@ extern "C" u16 Aoss_Rand16(void) {
     return (u16)(((sAossRand.seed >> 16) * 0x7fff) >> 16);
 }
 
-extern "C" void Aoss_FdZero(Unk_ov001_02200680_S *s) {
-    s->a = 0;
-    s->b = 0;
-    s->c = 0;
+extern "C" void Aoss_FdZero(AossPollFd *s) {
+    s->fd = 0;
+    s->events = 0;
+    s->revents = 0;
 }
 
-extern "C" void Aoss_FdSet(u32 v, Unk_ov001_02200680_S *s) {
-    s->a = v;
-    s->b = 1;
+extern "C" void Aoss_FdSet(u32 v, AossPollFd *s) {
+    s->fd = v;
+    s->events = 1;
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
@@ -1894,7 +1857,7 @@ extern "C" s16 sAossDefaultRetry[2];
 extern "C" u8 sAossKeyBlockTags[4];
 extern "C" AossSocConfig sAossSocConfig;
 extern "C" s32 sAossEncryptFlag;
-extern "C" Unk_ov001_022006e0_Rng sAossRand;
+extern "C" AossRandState sAossRand;
 extern "C" u8 sAossKeyBuf[0x6a0];
 extern "C" AossSession sAossSession;
 extern "C" s32 sAossSocket;
@@ -1926,7 +1889,7 @@ extern "C" AossSocConfig sAossSocConfig = {0x01000000, Aoss_SocAlloc, Aoss_SocFr
 
 extern "C" s32 sAossEncryptFlag = 0;
 
-extern "C" Unk_ov001_022006e0_Rng sAossRand = {0};
+extern "C" AossRandState sAossRand = {0};
 
 extern "C" u8 sAossKeyBuf[0x6a0] = {0};
 

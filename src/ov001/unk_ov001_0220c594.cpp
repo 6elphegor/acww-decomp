@@ -1,9 +1,9 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 
-struct Unk_ov001_0220c5c8_Bits {
-    u32 lo : 4;
-    u32 hi : 28;
+struct WfcParamBits {
+    u32 startMode : 4;
+    u32 optionFlags : 28;
 };
 
 extern "C" {
@@ -250,7 +250,7 @@ u32 WfcUtil_GetLanguage() {
 }
 
 u32 WfcUtil_GetStartMode() {
-    return ((Unk_ov001_0220c5c8_Bits *)&sWfcParams)->lo;
+    return ((WfcParamBits *)&sWfcParams)->startMode;
 }
 
 BOOL WfcUtil_TestOptionFlag(u32 m) {

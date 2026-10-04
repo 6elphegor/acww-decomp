@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 
-typedef void (*Unk_ov001_022034a0_Cb)(s32, ...);
+typedef void (*AossWcmNotifyFunc)(s32, ...);
 
 struct AossWcmConfig {
     s32 dmaNo;
@@ -19,7 +19,7 @@ extern "C" s32 sAossWcmState = 0;
 extern "C" u8 sAossWcmSsid[0x20] = {0};
 extern "C" u8 *sAossWcmBssidPtr = 0;
 extern "C" s32 sAossWcmConnectOption = 0;
-extern "C" Unk_ov001_022034a0_Cb sAossWcmNotifyCb = 0;
+extern "C" AossWcmNotifyFunc sAossWcmNotifyCb = 0;
 extern "C" u8 *sAossWcmSsidPtr = 0;
 extern "C" AossWcmConfig *sAossWcmConfig = 0;
 extern "C" s32 sAossWcmSearchOption = 0;
@@ -412,7 +412,7 @@ extern "C" s32 Aoss_WcmInit(void *fn, void *buf, u32 size) {
     sAossWcmConfig->bssDescBufferSize = (s32)((u32)buf + size - sAossWcmConfig->bssDescBuffer);
     sAossWcmConfig->bssDescMode = 0;
     sAossWcmConfig->dmaNo = 3;
-    sAossWcmNotifyCb = (Unk_ov001_022034a0_Cb)fn;
+    sAossWcmNotifyCb = (AossWcmNotifyFunc)fn;
     if (sAossWcmState == 0) {
         if (WifiLink_Init(sAossWcmWork, 0x2300)) {
             OS_RestoreInterrupts(irq);

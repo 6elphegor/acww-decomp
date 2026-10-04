@@ -9,10 +9,10 @@ extern "C" u16 data_ov001_0222ad14[40] = {'%', '0', '4', 'd', '-', '%', '0', '4'
 extern "C" const u16 data_ov001_02229fb0[4] = {0x0008, 0x0040, 0x00f0, 0x001c};
 extern "C" const u16 data_ov001_02229fb8[4] = {0x0008, 0x0078, 0x00f0, 0x001c};
 
-struct Unk_ov001_0220e8c8_Pad {
+struct WfcSysInfoStackPad {
     u32 v[3];
-    Unk_ov001_0220e8c8_Pad() {}
-    ~Unk_ov001_0220e8c8_Pad() {}
+    WfcSysInfoStackPad() {}
+    ~WfcSysInfoStackPad() {}
 };
 
 #define BGCNT(a) (*(volatile u16 *)(a) = (*(volatile u16 *)(a) & ~3) | 3)
@@ -136,7 +136,7 @@ extern "C" void WfcSysInfo_DrawInfo() {
     void *obj = WfcText_CreateBgCanvas(0, 0);
     u8 dt[8];
     u64 tick;
-    Unk_ov001_0220e8c8_Pad pad;
+    WfcSysInfoStackPad pad;
     u32 d[4];
     char buf[0x2c];
     OS_GetMacAddress(dt);

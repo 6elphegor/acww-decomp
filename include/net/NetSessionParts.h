@@ -28,7 +28,7 @@ struct NetMoveRequest {
 };
 
 struct NetMoveReady {
-    /* 0x00 */ u32 unk_00;
+    /* 0x00 */ u32 readyFlag;
     NetMoveReady();
     ~NetMoveReady();
     void reset();

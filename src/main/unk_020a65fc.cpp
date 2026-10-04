@@ -174,11 +174,11 @@ NetMoveReady::NetMoveReady() { reset(); }
 
 NetMoveReady::~NetMoveReady() {}
 
-void NetMoveReady::set(u32 v) { unk_00 = v; }
+void NetMoveReady::set(u32 v) { readyFlag = v; }
 
-void NetMoveReady::get(u32 *out) { *out = unk_00; }
+void NetMoveReady::get(u32 *out) { *out = readyFlag; }
 
-void NetMoveReady::reset() { unk_00 = 0; }
+void NetMoveReady::reset() { readyFlag = 0; }
 
 extern "C" void NetSyncMsg_Init() {}
 

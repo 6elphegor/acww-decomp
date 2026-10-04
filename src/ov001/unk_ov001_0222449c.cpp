@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/gxoam.h"
 #include "net/WfcObjGroup.h"
 #include "net/WfcPool.h"
 
@@ -49,14 +50,14 @@ void WfcList_InsertBefore(void *, void *);
 void WfcList_Remove(void *);
 void WfcList_Destroy(void *, ...);
 void *WfcList_Create();
-Unk_ov001_02224670_Entry *WfcOam_GetEntry(s32, s32);
+GXOamAttr *WfcOam_GetEntry(s32, s32);
 void WfcObj_GetPos(Unk_ov001_0222449c *self, s32 idx, u32 *o1, u32 *o2);
 void WfcObj_SetPriority(Unk_ov001_0222449c *self, s32 idx, s32 v);
 void WfcObj_SetPos(Unk_ov001_0222449c *self, s32 idx, s32 x, s32 y);
 void WfcObj_SetModePalette(WfcObjGroup *p, s32 idx, u32 a, u32 b);
 void WfcObj_SetAffineMode(WfcObjGroup *p, s32 idx, u32 v, u32 x);
 u32 WfcObj_GetCount(WfcObjGroup *p);
-Unk_ov001_02224670_Entry *WfcObj_GetOam(WfcObjGroup *p, s32 i);
+GXOamAttr *WfcObj_GetOam(WfcObjGroup *p, s32 i);
 void WfcObj_Free(WfcObjGroup *p);
 WfcObjGroup *WfcObj_Alloc(s32 which, s32 n, s32 flag);
 void WfcObj_Shutdown();
@@ -107,7 +108,7 @@ WfcObjGroup *WfcObj_Alloc(s32 which, s32 n, s32 flag) {
     if (flag != 0) {
         for (node = &sWfcObj[which].headNode; node != &sWfcObj[which].tailNode; node = node->next) {
             WfcObjGroup *next = node->next;
-            Unk_ov001_02224670_Entry *end = node->oams + node->numOams;
+            GXOamAttr *end = node->oams + node->numOams;
             if (end + n <= next->oams) {
                 r->oams = end;
                 WfcList_InsertBefore(next, r);
@@ -118,7 +119,7 @@ WfcObjGroup *WfcObj_Alloc(s32 which, s32 n, s32 flag) {
     } else {
         for (node = &sWfcObj[which].tailNode; node != &sWfcObj[which].headNode; node = node->prev) {
             WfcObjGroup *prev = node->prev;
-            Unk_ov001_02224670_Entry *start = node->oams - n;
+            GXOamAttr *start = node->oams - n;
             if (start >= prev->oams + prev->numOams) {
                 r->oams = start;
                 WfcList_InsertBefore(node, r);
@@ -134,7 +135,7 @@ WfcObjGroup *WfcObj_Alloc(s32 which, s32 n, s32 flag) {
 
 void WfcObj_Free(WfcObjGroup *p) {
     s32 t = 0;
-    Unk_ov001_02224670_Entry *e = p->oams;
+    GXOamAttr *e = p->oams;
     s32 i;
     for (i = t; i < p->numOams; i++, e++) {
         e->attr01 = (e->attr01 & 0xc1fffcff) | 0x200;
@@ -145,7 +146,7 @@ void WfcObj_Free(WfcObjGroup *p) {
     WfcPool_Put(g[t].nodePool, p);
 }
 
-Unk_ov001_02224670_Entry *WfcObj_GetOam(WfcObjGroup *p, s32 i) {
+GXOamAttr *WfcObj_GetOam(WfcObjGroup *p, s32 i) {
     return p->oams + i;
 }
 
@@ -154,7 +155,7 @@ u32 WfcObj_GetCount(WfcObjGroup *p) {
 }
 
 void WfcObj_SetAffineMode(WfcObjGroup *p, s32 idx, u32 v, u32 x) {
-    Unk_ov001_02224670_Entry *e = p->oams;
+    GXOamAttr *e = p->oams;
     if (idx >= 0) {
         if (v != 0x100 && v != 0x300) {
             u32 w = e[idx].attr01; w &= 0xc1fffcff; w |= v; e[idx].attr01 = w;
@@ -174,7 +175,7 @@ void WfcObj_SetAffineMode(WfcObjGroup *p, s32 idx, u32 v, u32 x) {
 }
 
 void WfcObj_SetModePalette(WfcObjGroup *p, s32 idx, u32 a, u32 b) {
-    Unk_ov001_02224670_Entry *e = p->oams;
+    GXOamAttr *e = p->oams;
     if (idx >= 0) {
         e[idx].attr01 = (e[idx].attr01 & ~0xc00) | (a << 10);
         e[idx].attr2 = (e[idx].attr2 & ~0xf000) | (b << 12);

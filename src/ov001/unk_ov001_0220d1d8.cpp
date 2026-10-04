@@ -1,11 +1,11 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 
-struct Unk_ov001_0220d1f4_V3 {
+struct SimpleStartStatus {
     s32 v[3];
 };
 
-struct Unk_ov001_0220d23c_Buf {
+struct WfcSimpleStartResultBuf {
     u8 unk_00[0x20];
     s32 securityType;
     s32 unk_24;
@@ -22,7 +22,7 @@ char data_ov001_0222aad0[16] = "msg/jap.bmg.l";
 char data_ov001_0222ab00[16] = "msg/eng.bmg.l";
 void *sWfcMsgFileNames[6] = {data_ov001_0222aad0, data_ov001_0222ab00, data_ov001_0222aaf0, data_ov001_0222aae0, data_ov001_0222ab10, data_ov001_0222aac0};
 void *gWfcMsgBank;
-Unk_ov001_0220d1f4_V3 *sWfcSimpleStartStatus;
+SimpleStartStatus *sWfcSimpleStartStatus;
 //ENDDEFS
 
 extern void Fatal_Trap();
@@ -80,7 +80,7 @@ void WfcBoot_FadeIn();
 void WfcBoot_Enter();
 void WfcSimpleStart_Free();
 void *WfcSimpleStart_Alloc(s32);
-void WfcSimpleStart_StatusCallback(Unk_ov001_0220d1f4_V3 *);
+void WfcSimpleStart_StatusCallback(SimpleStartStatus *);
 
 void WfcBoot_Enter() {
     WfcConfig_Init();
@@ -164,7 +164,7 @@ void WfcUtil_Quit() {
 }
 
 void WfcSimpleStart_Begin() {
-    sWfcSimpleStartStatus = (Unk_ov001_0220d1f4_V3 *)WfcHeap_AllocClear(0xc, -4);
+    sWfcSimpleStartStatus = (SimpleStartStatus *)WfcHeap_AllocClear(0xc, -4);
     if (SimpleStart_Start(0xf, 0x40, (void *)WfcSimpleStart_StatusCallback, (void *)WfcSimpleStart_Alloc, (void *)WfcSimpleStart_Free, 0x800) != 1) Fatal_Trap();
     OS_Sleep(10);
 }
@@ -175,7 +175,7 @@ void WfcSimpleStart_End() {
 }
 
 s32 WfcSimpleStart_GetState() {
-    Unk_ov001_0220d23c_Buf buf;
+    WfcSimpleStartResultBuf buf;
     s32 r;
     switch (sWfcSimpleStartStatus->v[0]) {
     case 0:
@@ -206,7 +206,7 @@ void WfcSimpleStart_ApplyResult() {
     WfcConfig_StoreSimpleStart(buf);
 }
 
-void WfcSimpleStart_StatusCallback(Unk_ov001_0220d1f4_V3 *p) {
+void WfcSimpleStart_StatusCallback(SimpleStartStatus *p) {
     *sWfcSimpleStartStatus = *p;
 }
 

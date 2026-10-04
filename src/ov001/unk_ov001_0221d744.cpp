@@ -1,15 +1,8 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/WfcApScanEntry.h"
 
 #pragma thumb off
-
-struct WfcApScanEntry {
-    u8 unk_00[0x20];
-    u8 bssid[6];
-    u16 linkLevel;
-    u8 security;
-    u8 unk_29;
-};
 
 struct Unk_ov001_0221d744_Tlv {
     u8 type;

@@ -1,7 +1,8 @@
 // mwcc-flags: -O4,p
 #include "types.h"
-#include "net/Unk_ov001_0222de74.h"
-#include "net/Unk_ov001_0222de78.h"
+#include "nitro/gxoam.h"
+#include "ui/WfcApList.h"
+#include "ui/WfcTextEdit.h"
 
 #pragma thumb off
 
@@ -29,12 +30,10 @@ namespace F02212e84 {
 
 
 
-struct Unk_ov001_02213124_S25 { u8 b[25]; };
-struct Unk_ov001_02213124_S22 { u8 b[22]; };
 
 extern "C" {
-extern Unk_ov001_0222de74 *sWfcApList;
-extern Unk_ov001_0222de78 *sWfcTextEdit;
+extern WfcApList *sWfcApList;
+extern WfcTextEdit *sWfcTextEdit;
 extern u16 sWfcApListScroll;
 extern u8 sWfcApListCursor;
 extern void *sWfcTextEditStoreFuncs[];
@@ -51,7 +50,7 @@ s32 WfcFade_IsBusy(s32);
 void WfcUtil_OpenButtonBar(s32);
 void WfcFade_Start(s32, s32, s32, s32);
 void WfcGx_ShowPlanes(s32, s32);
-Unk_ov001_02212f98_Reg *WfcObj_CreateSingle(s32, s32);
+GXOamAttr *WfcObj_CreateSingle(s32, s32);
 void WfcCell_Copy(s32, u32, void *);
 void WfcScrollBar_Create(s32, s32, s32, s32, s32);
 s32 WfcUtil_LoadFileTo(void *, void *);
@@ -95,7 +94,7 @@ void WfcApList_LoadBg();
 void WfcApList_Enter();
 void WfcApList_Enter() {
     s32 x;
-    sWfcApList = (Unk_ov001_0222de74 *)WfcHeap_AllocClear(0x5c, 4);
+    sWfcApList = (WfcApList *)WfcHeap_AllocClear(0x5c, 4);
     WfcUtil_GetEditParams(&x, 0);
     if (x == 0) {
         sWfcApListCursor = 0;
@@ -170,7 +169,7 @@ void WfcApList_CreateRowIcons() {
         u32 j;
         for (j = 0; j < 3; j++, p++) {
             WfcCell_Copy(0, *p, sWfcApList->securityIcons[0]);
-            sWfcApList->securityIconTiles[j] = sWfcApList->securityIcons[0]->h4 & 0x3ff;
+            sWfcApList->securityIconTiles[j] = sWfcApList->securityIcons[0]->attr2 & 0x3ff;
         }
     }
     {
@@ -178,14 +177,14 @@ void WfcApList_CreateRowIcons() {
         u32 j;
         for (j = 0; j < 4; j++, p++) {
             WfcCell_Copy(0, *p, sWfcApList->signalIcons[0]);
-            sWfcApList->signalIconTiles[j] = sWfcApList->signalIcons[0]->h4 & 0x3ff;
+            sWfcApList->signalIconTiles[j] = sWfcApList->signalIcons[0]->attr2 & 0x3ff;
         }
     }
     for (i = 0; i < n; i++) {
-        Unk_ov001_02212f98_Reg *r = sWfcApList->securityIcons[i];
-        r->h4 = (r->h4 & ~0xc00) | 0xc00;
+        GXOamAttr *r = sWfcApList->securityIcons[i];
+        r->attr2 = (r->attr2 & ~0xc00) | 0xc00;
         r = sWfcApList->signalIcons[i];
-        r->h4 = (r->h4 & ~0xc00) | 0xc00;
+        r->attr2 = (r->attr2 & ~0xc00) | 0xc00;
     }
 }
 
@@ -225,7 +224,7 @@ namespace F022123e4 {
 
 
 extern "C" {
-extern Unk_ov001_0222de74 *sWfcApList;
+extern WfcApList *sWfcApList;
 extern u16 sWfcApListScroll;
 extern u8 sWfcApListCursor;
 extern u8 gWfcScreenRect[];
@@ -560,7 +559,7 @@ extern u8 sWfcAossDoneTimer;
 extern u8 data_ov001_0222aea8;
 extern u8 sWfcApListCursor;
 extern u16 sWfcApListScroll;
-extern Unk_ov001_0222de74 *sWfcApList;
+extern WfcApList *sWfcApList;
 
 s32 WfcFade_Start(u32 a, u32 b, u32 c, u32 d);
 s32 WfcUtil_SetScene(void *p);
@@ -639,7 +638,7 @@ void WfcApList_DrawSsid(s32 a, s32 b) {
 }
 
 void WfcApList_SetRowIcons(s32 a, s32 b) {
-    Unk_ov001_0222de74 *o = sWfcApList;
+    WfcApList *o = sWfcApList;
     if (a >= o->apCount) return;
     u8 *rec = (u8 *)o->apEntries + a * 0x2a;
     u16 *p = (u16 *)o->securityIcons[b];
@@ -789,7 +788,7 @@ void WfcApList_ScrollUp() {
 }
 
 void WfcApList_ScrollDown() {
-    Unk_ov001_0222de74 *o = sWfcApList;
+    WfcApList *o = sWfcApList;
     if (sWfcApListScroll == o->maxScroll || o->apCount <= 4) {
         if (o->errorSoundPlayed != 0) return;
         WfcSound_Play(9);

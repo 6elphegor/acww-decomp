@@ -13,7 +13,7 @@ struct WfcButtonBar {
     u8 isClosing;
 };
 
-typedef void (*Unk_ov001_02207904_Task)(u32);
+typedef void (*WfcTaskFunc)(u32);
 
 extern "C" WfcButtonBar *sWfcButtonBar = 0;
 extern "C" const u16 data_ov001_02229b3c[2] = {0, 0xa8};
@@ -34,8 +34,8 @@ void WfcObj_SetPriority(void *, s32, s32);
 void WfcObj_GetPos(void *, u32, s32 *, s32 *);
 void WfcObj_SetPos(void *, s32, s32, s32);
 void WfcTask_RequestDelete(u32, u32);
-void WfcTask_SetFunc(u32, Unk_ov001_02207904_Task);
-u32 WfcTask_Add(u32, Unk_ov001_02207904_Task, u32, u32);
+void WfcTask_SetFunc(u32, WfcTaskFunc);
+u32 WfcTask_Add(u32, WfcTaskFunc, u32, u32);
 void WfcHeap_FreeAndClear(void *);
 void WfcUtil_RectFromPosSize(void *, void *, void *);
 s32 WfcInput_IsTouchPressedIn(void *);

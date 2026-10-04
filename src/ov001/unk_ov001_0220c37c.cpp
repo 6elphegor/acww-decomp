@@ -1,22 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
-
-struct Unk_ov001_0220c474_Rec {
-    u16 unk_00[0x82];
-};
-
-struct AossParam {
-    u16 keyTypeMask;
-    Unk_ov001_0220c474_Rec clientInfo;
-    u16 apRetryCount;
-    s16 apRetryWait;
-    u16 packetRetryCount;
-    s16 packetRetryWait;
-    s16 recvTimeout;
-    u8 macAddress[6];
-    u8 errorCode;
-    u8 result[0x155];
-};
+#include "net/AossParam.h"
 
 extern "C" {
 extern const char data_ov001_02229f84[12];
@@ -45,14 +29,14 @@ extern void OS_GetMacAddress(void *);
 
 void WfcAoss_Begin() {
     volatile u16 z;
-    Unk_ov001_0220c474_Rec r;
+    AossClientInfo r;
     sWfcAossConfig = (AossParam *)WfcHeap_AllocClear(0x26c, 4);
     sWfcAossSucceeded = 0;
     z = 0;
     MIi_CpuClear16(z, &r, 0x104);
-    *(u8 *)&r = 0x50;
-    r.unk_00[1] = 0xc;
-    MI_CpuCopy8(data_ov001_02229f84, &r.unk_00[2]);
+    r.tlvType = 0x50;
+    r.nameLength = 0xc;
+    MI_CpuCopy8(data_ov001_02229f84, r.name);
     sWfcAossConfig->keyTypeMask = 3;
     sWfcAossConfig->clientInfo = r;
     sWfcAossConfig->apRetryCount = 1;

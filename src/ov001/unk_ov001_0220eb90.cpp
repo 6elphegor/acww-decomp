@@ -1,15 +1,15 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/gxoam.h"
+#include "net/Unk_ov001_02225924_Rect.h"
 
 #pragma thumb off
 
-struct Unk_ov001_0220ebc4_Pos { u16 v0; u16 v2; u16 v4; u16 v6; };
-struct Unk_ov001_0220f164_Reg { u32 w0; u16 h4; };
-struct Unk_ov001_0220f164_Cp { u8 v[0x16]; };
-struct Unk_ov001_0220f164_Cq { u8 v[0x17]; };
-struct Unk_ov001_0220f164_Buf { u8 a[0x16]; u8 b[0x17]; u64 t; u32 pad[4]; };
+struct WfcOptionsPalettePath { u8 v[0x16]; };
+struct WfcOptionsPalette1Path { u8 v[0x17]; };
+struct WfcOptionsLoadBgLocals { u8 a[0x16]; u8 b[0x17]; u64 t; u32 pad[4]; };
 extern "C" const u16 data_ov001_02229fc4[2];
-extern "C" const Unk_ov001_0220ebc4_Pos data_ov001_02229fc8[3];
+extern "C" const Unk_ov001_02225924_Rect data_ov001_02229fc8[3];
 extern "C" const u8 data_ov001_02229fe0[24];
 extern "C" const u8 data_ov001_02229fc0[3];
 #define data_ov001_02229fe2 (data_ov001_02229fe0 + 2)
@@ -20,7 +20,7 @@ extern "C" {
 u8 sWfcOptionsChosen;
 void *sWfcOptionsPalette;
 u8 sWfcOptionsSel;
-Unk_ov001_0220f164_Reg *sWfcOptionsSprite;
+GXOamAttr *sWfcOptionsSprite;
 }
 
 #define BGCNT(a) (*(volatile u16 *)(a) = (*(volatile u16 *)(a) & ~3) | 3)
@@ -68,7 +68,7 @@ void *WfcFs_LoadFile(void *, s32, s32);
 void MI_CpuCopy8(void *, void *, s32);
 void DC_FlushRange(void *, s32);
 void GX_LoadBGPltt(void *, s32, s32);
-Unk_ov001_0220f164_Reg *WfcObj_CreateSingle(s32, s32);
+GXOamAttr *WfcObj_CreateSingle(s32, s32);
 s32 WfcTop_LoadScreen(s32);
 void WfcSysInfo_FadeIn();
 void WfcSysInfo_Enter();
@@ -94,21 +94,21 @@ extern "C" void WfcOptions_Enter() {
     WfcTop_LoadScreen(3);
     WfcUtil_ShowTopMessage(0x88, -1, 0);
     sWfcOptionsSprite = WfcObj_CreateSingle(0, 0x5b);
-    sWfcOptionsSprite->w0 = (sWfcOptionsSprite->w0 & 0xfe00ff00) | (data_ov001_02229fc4[1] & 0xff) | ((data_ov001_02229fc4[0] & 0x1ff) << 16);
-    sWfcOptionsSprite->h4 = (sWfcOptionsSprite->h4 & ~0xc00) | 0xc00;
+    sWfcOptionsSprite->attr01 = (sWfcOptionsSprite->attr01 & 0xfe00ff00) | (data_ov001_02229fc4[1] & 0xff) | ((data_ov001_02229fc4[0] & 0x1ff) << 16);
+    sWfcOptionsSprite->attr2 = (sWfcOptionsSprite->attr2 & ~0xc00) | 0xc00;
     WfcCursor_ShowCorners(*(const u16 *)(data_ov001_02229fe0 + (sWfcOptionsSel << 3)), *(const u16 *)(data_ov001_02229fe4 + (sWfcOptionsSel << 3)), *(const u16 *)(data_ov001_02229fe2 + (sWfcOptionsSel << 3)), *(const u16 *)(data_ov001_02229fe6 + (sWfcOptionsSel << 3)));
     WfcUtil_SetScene((void *)WfcOptions_FadeIn);
 }
 
 extern "C" void WfcOptions_LoadBg() {
-    Unk_ov001_0220f164_Buf buf;
+    WfcOptionsLoadBgLocals buf;
     u8 *d, *s;
     s32 i;
     u8 *e;
     u8 *src;
     src = (u8 *)"char/ybBgOption.ncl.l";
-    *(Unk_ov001_0220f164_Cp *)buf.a = *(Unk_ov001_0220f164_Cp *)src;
-    *(Unk_ov001_0220f164_Cq *)buf.b = *(Unk_ov001_0220f164_Cq *)"char/ybBgOption1.ncl.l";
+    *(WfcOptionsPalettePath *)buf.a = *(WfcOptionsPalettePath *)src;
+    *(WfcOptionsPalette1Path *)buf.b = *(WfcOptionsPalette1Path *)"char/ybBgOption1.ncl.l";
     WfcUtil_LoadFileTo((void *)"char/jbBgOption.ncg.l", (void *)GX_LoadBG2Char);
     WfcUtil_LoadFileTo((void *)"char/jb5OptMenu.nsc.l", (void *)GX_LoadBG2Scr);
     sWfcOptionsPalette = WfcFs_LoadFile(WfcUtil_LocalizePath(buf.b), 0, 4);
@@ -161,7 +161,7 @@ extern "C" void WfcOptions_Update() {
 
 extern "C" void WfcOptions_HandleInput() {
     u32 i;
-    const Unk_ov001_0220ebc4_Pos *q = data_ov001_02229fc8;
+    const Unk_ov001_02225924_Rect *q = data_ov001_02229fc8;
     for (i = 0; i < 3; i++, q++) {
         if (WfcInput_IsTouchPressedIn((void *)q) != 0) {
             WfcButtonBar_SetResult(1);
@@ -224,7 +224,7 @@ extern "C" void WfcOptions_FadeOut() {
 
 extern "C" const u16 data_ov001_02229fc4[2] = {0x00e0, 0x0084};
 
-extern "C" const Unk_ov001_0220ebc4_Pos data_ov001_02229fc8[3] = {{0x0008, 0x0024, 0x00f8, 0x0044}, {0x0008, 0x0050, 0x00f8, 0x0070}, {0x0008, 0x007c, 0x00f8, 0x009c}};
+extern "C" const Unk_ov001_02225924_Rect data_ov001_02229fc8[3] = {{0x0008, 0x0024, 0x00f8, 0x0044}, {0x0008, 0x0050, 0x00f8, 0x0070}, {0x0008, 0x007c, 0x00f8, 0x009c}};
 
 extern "C" const u8 data_ov001_02229fe0[24] = {0x06, 0x00, 0x22, 0x00, 0xea, 0x00, 0x36, 0x00, 0x06, 0x00, 0x4e, 0x00, 0xea, 0x00, 0x62, 0x00, 0x06, 0x00, 0x7a, 0x00, 0xea, 0x00, 0x8e, 0x00};
 

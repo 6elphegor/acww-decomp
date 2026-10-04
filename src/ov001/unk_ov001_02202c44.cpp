@@ -1,10 +1,11 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/AossParam.h"
 
-typedef void *(*Unk_ov001_02202b3c_Alloc)(u32);
-typedef void (*Unk_ov001_02202b3c_Free)(void *);
+typedef void *(*AossAllocFunc)(u32);
+typedef void (*AossFreeFunc)(void *);
 
-struct Unk_ov001_02202c90_In {
+struct AossApConfig {
     s32 ssidLength;
     u8 ssid[0x20];
     s32 unk_24;
@@ -12,7 +13,7 @@ struct Unk_ov001_02202c90_In {
     u8 wepKey[1];
 };
 
-struct Unk_ov001_02203258_Src {
+struct AossBssDesc {
     u8 pad_00[4];
     u8 bssid[6];
     u16 ssidLength;
@@ -25,31 +26,18 @@ struct Unk_ov001_02203258_Src {
     u16 channel;
 };
 
-struct AossApInfo {
-    u32 ssidLength;
-    u8 ssid[0x20];
-    u32 channel;
-    u8 pad_28[8];
-    u8 bssid[6];
-    u8 pad_36[2];
-    u32 numRates;
-    u8 rates[0x10];
-    u32 beaconPeriod;
-    u32 bssType;
-};
-
-struct Unk_ov001_02203258_Ent {
+struct AossRateEntry {
     u16 mask;
     u8 val;
 };
 #define data_ov001_0222c6ce (sAossWepDesc + 2)
 
 extern "C" void *sAossWlanWork = 0;
-extern "C" Unk_ov001_02202b3c_Free sAossFreeFunc = 0;
-extern "C" Unk_ov001_02202b3c_Alloc sAossAllocFunc = 0;
+extern "C" AossFreeFunc sAossFreeFunc = 0;
+extern "C" AossAllocFunc sAossAllocFunc = 0;
 extern "C" s32 (*sAossProgressCb)(void *) = 0;
 extern "C" u32 sAossMsgQueue[8] = {0};
-extern "C" Unk_ov001_02203258_Ent sAossRateTable[12] = {
+extern "C" AossRateEntry sAossRateTable[12] = {
     {0x1, 2}, {0x2, 4}, {0x4, 0xb}, {0x8, 0xc}, {0x10, 0x12}, {0x20, 0x16}, {0x40, 0x18}, {0x80, 0x24},
     {0x100, 0x30}, {0x200, 0x48}, {0x400, 0x60}, {0x800, 0x6c},
 };
@@ -95,13 +83,13 @@ s32 WifiLink_CleanupAsync();
 void Aoss_WcmCallback(void);
 void Aoss_PostAlarmMsg(s32);
 void Aoss_PostWcmMsg(s32);
-void Aoss_ConvertBssDesc(Unk_ov001_02203258_Src *, AossApInfo *);
+void Aoss_ConvertBssDesc(AossBssDesc *, AossApInfo *);
 
 }
 
 enum Loop_02203004 { LOOP_02203004_0 = 0 };
 
-extern "C" void Aoss_ConvertBssDesc(Unk_ov001_02203258_Src *a, AossApInfo *b) {
+extern "C" void Aoss_ConvertBssDesc(AossBssDesc *a, AossApInfo *b) {
     b->ssidLength = a->ssidLength;
     MIi_CpuCopy16(a->ssid, b->ssid, 0x20);
     b->channel = a->channel;
@@ -110,7 +98,7 @@ extern "C" void Aoss_ConvertBssDesc(Unk_ov001_02203258_Src *a, AossApInfo *b) {
     s32 n;
     n = 0;
     i = 0;
-    Unk_ov001_02203258_Ent *e = sAossRateTable;
+    AossRateEntry *e = sAossRateTable;
     for (; i < 12; e++, i++) {
         if (a->supportRateSet & e->mask) {
             b->rates[n] = e->val;
@@ -141,7 +129,7 @@ extern "C" void Aoss_SetBssDescSsid(void *a, void *b) {
 
 extern "C" void Aoss_StoreConnectResult(void *a, void *b, s32 c) {
     *(s32 *)a = c;
-    Aoss_ConvertBssDesc((Unk_ov001_02203258_Src *)b, (AossApInfo *)((u8 *)a + 4));
+    Aoss_ConvertBssDesc((AossBssDesc *)b, (AossApInfo *)((u8 *)a + 4));
 }
 
 extern "C" void Aoss_PostWcmMsg(s32 a) {
@@ -152,7 +140,7 @@ extern "C" void Aoss_PostAlarmMsg(s32 a) {
     OS_SendMessage(sAossMsgQueue, a, 0);
 }
 
-extern "C" s32 Aoss_WlanStartup(Unk_ov001_02202b3c_Alloc a, Unk_ov001_02202b3c_Free b) {
+extern "C" s32 Aoss_WlanStartup(AossAllocFunc a, AossFreeFunc b) {
     s32 ok = 1;
     s32 msg;
     void *p;
@@ -368,7 +356,7 @@ extern "C" s32 Aoss_ScanAps(void **out) {
             if (r7 > 0) {
                 u8 *q = p + 4;
                 do {
-                    Aoss_ConvertBssDesc((Unk_ov001_02203258_Src *)r4, (AossApInfo *)q);
+                    Aoss_ConvertBssDesc((AossBssDesc *)r4, (AossApInfo *)q);
                     r4 += 0xc0;
                     q += 0x54;
                     r6++;
@@ -384,7 +372,7 @@ extern "C" s32 Aoss_ScanAps(void **out) {
     return res;
 }
 
-extern "C" s32 Aoss_ConnectAp(Unk_ov001_02202c90_In *a, void *b) {
+extern "C" s32 Aoss_ConnectAp(AossApConfig *a, void *b) {
     s32 r4;
     s32 res;
     s32 cnt;

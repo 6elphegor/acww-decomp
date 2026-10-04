@@ -4,14 +4,7 @@
 #include "game/TouchPickSphere.h"
 #include "game/BugNetTarget.h"
 #include "ui/OamCellEntry.h"
-
-
-// NitroSDK GXOamAttr layout (attr0/1 word, attr2, affine parameter slot).
-struct GXOamAttr {
-    u32 attr01;
-    u16 attr2;
-    u16 _3;
-};
+#include "nitro/gxoam.h"
 
 
 
