@@ -6,6 +6,8 @@
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
 #include "ui/LabelString.h"
+#include "menu/MenuTextButton.h"
+#include "menu/MenuCursor.h"
 
 extern "C" {
 extern u8 gTouchHeld;
@@ -94,45 +96,11 @@ static inline BOOL Unk_ov128_02294b44_Both() {
 
 
 
-class MenuCursorBase : public HandCursor {
-public:
-    BOOL isMoving();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void warpTo(s32 a, s32 b);
-    void setPoseIdle();
-    void setPoseRelease();
-};
 
-// Same object as MenuCursorBase under the name used by src/ov002/unk_02202b68.cpp
-class MenuCursor : public HandCursor {
-public:
-    void setPosePress();
-    void switchToAnim0D();
-    void switchToAnim01();
-    void setAnimIfChanged(s32 a);
-};
 
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4c[0x64 - 0x4c];
-};
 
 // Sprite/text pair element (0x50 bytes), vtable 0x022046dc
 struct Unk_ov002_02203c5c_Rec;
-class MenuTextButton {
-public:
-    MenuTextButton();
-    virtual ~MenuTextButton();
-    BOOL stepPress();
-    void drawAt(s32 a, s32 b, s32 c);
-    void freeText();
-    void setLabelWithShadow(u8 a);
-    void setup(Unk_ov002_02203c5c_Rec *p, u8 a, u8 b);
-
-    u32 unk_04[0x4c / 4];
-};
 
 
 

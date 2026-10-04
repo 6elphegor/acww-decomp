@@ -5,6 +5,7 @@
 #include "menu/MenuLauncher.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
+#include "menu/MenuCursor.h"
 
 extern "C" {
 extern u8 gSaveBlancaFace;
@@ -93,32 +94,8 @@ void _ZN10BgVramTask6cancelEv(void *self);
 
 
 
-class MenuCursorBase : public HandCursor {
-public:
-    void drawWrapped();
-    s32 getScreenX();
-    BOOL isMoving();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void warpTo(s32 a, s32 b);
-    void setPoseIdle();
-    void setPoseRelease();
-};
 
-// Same object as MenuCursorBase under the name used by src/ov002/unk_02202b68.cpp
-class MenuCursor : public HandCursor {
-public:
-    void setPosePress();
-    void switchToAnim01();
-    void switchToAnim07();
-    void setAnimIfChanged(s32 a);
-};
 
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4c[0x64 - 0x4c];
-};
 
 class MenuBottomButtonsBody {
 public:

@@ -17,6 +17,7 @@
 #include "menu/MenuLauncher.h"
 #include "ui/LabelBalloon.h"
 #include "gfx/BgVramTask.h"
+#include "ui/TouchPromptBalloon.h"
 
 class PostOfficeMenu;
 class MenuLauncher;
@@ -170,19 +171,6 @@ public:
 
 // ov002 sub-objects ----------------------------------------------------------------------------
 
-class TouchPromptBalloon : public LabelBalloon {
-public:
-    TouchPromptBalloon();
-    virtual ~TouchPromptBalloon();
-    BOOL isOpenOrOpening();
-    void setAutoCloseTimer(u8 v);
-    void cancelQueuedOpen();
-    void queueOpen();
-    void commitOpen();
-    BOOL hide(s32 a);
-    s32 updatePrompt();
-    u32 unk_bc[(0xc0 - 0xbc) / 4];
-};
 
 
 class MenuCursorBase : public HandCursor {

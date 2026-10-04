@@ -6,6 +6,8 @@
 #include "ui/HandCursor.h"
 #include "ui/LabelBalloon.h"
 #include "gfx/BgVramTask.h"
+#include "ui/TouchPromptBalloon.h"
+#include "menu/MenuCursor.h"
 
 #define func_020624c0 _ZN18EncodedString16BufD1Ev
 #define func_02062510 _ZN18EncodedString16BufC1Ev
@@ -246,26 +248,10 @@ extern u32 sDesignTabTargetFrameCells[];
 
 
 
-class TouchPromptBalloon : public LabelBalloon {
-public:
-    TouchPromptBalloon();
-    virtual ~TouchPromptBalloon();
-    virtual void draw();
-    u32 unk_bc[(0xc0 - 0xbc) / 4];
-};
 
 
 
-class MenuCursorBase : public HandCursor {
-public:
-};
 
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4b[0x64 - 0x4b];
-};
 
 class PopupChoiceMenuBody {
 public:

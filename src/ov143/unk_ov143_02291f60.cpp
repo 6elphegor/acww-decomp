@@ -7,6 +7,7 @@
 #include "menu/MenuLauncher.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
+#include "menu/MenuCursor.h"
 
 struct Unk_ov143_02293b38_E {
     u32 w0;
@@ -62,31 +63,8 @@ typedef void (MelodyMenu::*Unk_ov143_02293b80_Fn)();
 
 
 
-class MenuCursorBase : public HandCursor {
-public:
-    void drawWrapped();
-    BOOL isMoving();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void warpTo(s32 a, s32 b);
-    void setPoseIdle();
-    void setPoseRelease();
-};
 
-// Same object as MenuCursorBase under the name used by src/ov002/unk_02202b68.cpp
-class MenuCursor : public HandCursor {
-public:
-    void setPosePress();
-    void switchToAnim07();
-    void switchToAnim01();
-    void setAnimIfChanged(s32 a);
-};
 
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4c[0x64 - 0x4c];
-};
 
 // Menu list sub-object, 0x164 bytes (src/ov002/)
 class MenuBottomButtons {

@@ -8,6 +8,7 @@
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
 #include "talk/EncodedString41.h"
+#include "menu/MenuCursor.h"
 
 #define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
 #define func_0206260c _ZN8ItemNameD1Ev
@@ -278,15 +279,7 @@ void Keyboard_DrawCaret(void *p, s32 a, s32 b, s32 c);
 
 
 
-class MenuCursorBase : public HandCursor {};
 
-// +0x3e64 sub-object (0x64 bytes)
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4c[0x64 - 0x4c];
-};
 
 // +0x3d00 sub-object (0x164 bytes)
 class MenuBottomButtons {

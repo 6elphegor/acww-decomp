@@ -14,6 +14,7 @@
 #include "ui/LabelBalloon.h"
 #include "gfx/BgVramTask.h"
 #include "snd/BgmManager.h"
+#include "ui/TouchPromptBalloon.h"
 
 extern "C" {
 void Gfx2d_SetWindowRect(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
@@ -54,25 +55,6 @@ extern u16 gPad[];
 
 
 
-// Vtable 0x02204468
-class TouchPromptBalloon : public LabelBalloon {
-public:
-    TouchPromptBalloon();
-    virtual ~TouchPromptBalloon();
-
-    BOOL isOpenOrOpening();
-    void setAutoCloseTimer(u8 v);
-    void func_ov002_022006ac(s32 v);
-    void cancelQueuedOpen();
-    void queueOpen();
-    void commitOpen();
-    BOOL hide(s32 a);
-    s32 updatePrompt();
-
-    /* 0xbc */ u8 promptState;
-    /* 0xbd */ u8 openQueued;
-    /* 0xbe */ volatile u8 autoCloseTimer;
-};
 
 
 

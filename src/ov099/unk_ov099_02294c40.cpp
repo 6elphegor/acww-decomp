@@ -11,6 +11,8 @@
 #include "menu/MenuLauncher.h"
 #include "ui/LabelBalloon.h"
 #include "gfx/BgVramTask.h"
+#include "ui/TouchPromptBalloon.h"
+#include "menu/MenuCursor.h"
 
 class PocketMenuUnk;
 struct PopupChoiceIdList;
@@ -95,50 +97,11 @@ s32 LetterGrid_GetSlotX(void *p, u32 v);
 
 
 
-class TouchPromptBalloon {
-public:
-    TouchPromptBalloon();
-    virtual ~TouchPromptBalloon();
-    virtual void vfunc_08();
-    void setAutoCloseTimer(u8 a);
-    void cancelQueuedOpen();
-    void queueOpen();
-    void commitOpen();
-    void hide(s32 a);
-    BOOL updatePrompt();
-    u32 unk_04[(0xc0 - 4) / 4];
-};
 
 
 
-class MenuCursorBase : public HandCursor {
-public:
-    void drawWrapped();
-    s32 getFrameScreenY();
-    s32 getFrameScreenX();
-    BOOL isMoving();
-    BOOL func_ov002_022028fc();
-    BOOL func_ov002_02202928();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void moveToLinear(s32 a, s32 b, s32 c);
-    void warpTo(s32 a, s32 b);
-    void setPoseIdle();
-    void setPoseRelease();
-};
 
-// Same object as MenuCursorBase under the name used by its other methods
-class MenuCursor : public HandCursor {
-public:
-    void setPosePress();
-    void setAnimIfChanged(s32 a);
-};
 
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4c[0x64 - 0x4c];
-};
 
 // Same object as PopupChoiceMenu under the name used by its other methods
 class PopupChoiceMenuBody {
@@ -365,7 +328,7 @@ BOOL PocketMenuUnk::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    nameBalloon.vfunc_08();
+    nameBalloon.draw();
     if (MenuCtrl_IsButtons()) {
         cursor.drawWrapped();
     }

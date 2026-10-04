@@ -16,6 +16,9 @@
 #include "menu/MenuLauncher.h"
 #include "ui/LabelBalloon.h"
 #include "gfx/BgVramTask.h"
+#include "ui/TouchPromptBalloon.h"
+#include "menu/MenuLabelButton.h"
+#include "menu/MenuCursor.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -89,51 +92,12 @@ struct Unk_0206d1d4_Src;
 
 
 
-class TouchPromptBalloon : public LabelBalloon {
-public:
-    TouchPromptBalloon();
-    virtual ~TouchPromptBalloon();
-    virtual void draw();
-    void setAutoCloseTimer(u8 a);
-    void cancelQueuedOpen();
-    void queueOpen();
-    void commitOpen();
-    void hide(s32 a);
-    BOOL updatePrompt();
-    u32 unk_bc[(0xc0 - 0xbc) / 4];
-};
 
 
 
 
-class MenuCursorBase : public HandCursor {
-public:
-    void drawWrapped();
-    s32 getFrameScreenY();
-    s32 getFrameScreenX();
-    BOOL isMoving();
-    BOOL func_ov002_022028fc();
-    BOOL func_ov002_02202928();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void moveToLinear(s32 a, s32 b, s32 c);
-    void warpTo(s32 x, s32 y);
-    void setPoseIdle();
-    void setPoseRelease();
-};
 
-// same object as MenuCursorBase (+0x220c); methods split across two classes in ov002
-class MenuCursor {
-public:
-    void setPosePress();
-    void setAnimIfChanged(s32 idx);
-};
 
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4b[0x64 - 0x4b];
-};
 
 
 class PopupChoiceMenuBody {
@@ -164,16 +128,6 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-class MenuLabelButton : public LabelButton {
-public:
-    MenuLabelButton();
-    virtual ~MenuLabelButton();
-    BOOL isTouched();
-    void showDefault(s32 a);
-    BOOL stepAnim();
-    s32 getAnchorY(s32 a);
-    s32 getAnchorX(s32 a);
-};
 
 
 class PocketLettersMenu;

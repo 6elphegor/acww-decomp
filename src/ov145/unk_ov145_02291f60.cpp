@@ -9,6 +9,8 @@
 #include "item/ItemName.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
+#include "menu/MenuScrollKnob.h"
+#include "menu/MenuCursor.h"
 
 class DonationMenu;
 typedef void (DonationMenu::*Unk_ov145_022937c0_Fn)();
@@ -68,23 +70,7 @@ class TextLabel;
 
 
 
-class MenuCursorBuf0 {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[0x60 / 4];
-};
 
-class MenuScrollKnob {
-public:
-    MenuScrollKnob();
-    virtual ~MenuScrollKnob();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[(0x48 - 4) / 4];
-};
 
 class MenuBottomButtons {
 public:
@@ -348,7 +334,7 @@ BOOL DonationMenu::onDraw() {
     y = slideY + 0x60;
     if (scrollMax > 0) {
         MenuScrollKnob *q = &scrollKnob;
-        q->vfunc_08();
+        q->draw();
         Oam_DrawCell(1, data_ov145_02293820, 0x80, y, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     p = (u8 *)&data_ov145_02293820[16];

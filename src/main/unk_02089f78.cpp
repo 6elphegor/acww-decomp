@@ -7,6 +7,7 @@
 #include "talk/LabelBalloonText.h"
 #include "ui/HudProc.h"
 #include "ui/LabelBalloon.h"
+#include "ui/HudController.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -172,33 +173,6 @@ extern u8 gFieldSceneKind;
 
 
 
-// State machine (methods are state handlers in a member-pointer table at 0x020e0dcc)
-class HudControllerStates {
-public:
-    void updateInputLayout();
-    void enterModeForRoom();
-    void updateSharedPanels();
-    void updateHidden();
-    void enterHidden();
-    void updateWallet();
-    void enterWallet();
-    void updateCameraButton();
-    void enterCameraButton();
-    void updateCountdown();
-    void func_0208a328();
-    void func_0208a3bc();
-    void func_0208a3ec();
-
-    /* 0x000 */ s32 unk_00;
-    /* 0x004 */ s32 state;
-    /* 0x008 */ u32 unk_08[0x32];
-    /* 0x0d0 */ u32 unk_d0[0x35];
-    /* 0x1a4 */ u32 unk_1a4[0x40];
-    /* 0x2a4 */ u32 unk_2a4[0x1c];
-    /* 0x314 */ u8 hideRequest;
-    /* 0x315 */ u8 hideRequestB;
-    /* 0x316 */ u8 buttonLayout;
-};
 
 static inline BOOL Unk_0208a150_IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 

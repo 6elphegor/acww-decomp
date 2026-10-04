@@ -11,6 +11,9 @@
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
 #include "talk/EncodedString8B.h"
+#include "menu/MenuTitleBalloon.h"
+#include "menu/MenuScrollKnob.h"
+#include "menu/MenuCursor.h"
 
 #define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
 #define LabelBalloon_showLayer2 _ZN12LabelBalloon10showLayer2Ev
@@ -142,31 +145,8 @@ void MenuTitleBalloon_showText(void *p, s32 a, s32 b, s32 c);
 }
 
 // ---- ov002 sub-objects (opaque bodies) ----
-class MenuCursorBuf0 {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[0x60 / 4];
-};
 
-class MenuScrollKnob {
-public:
-    MenuScrollKnob();
-    virtual ~MenuScrollKnob();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[(0x48 - 4) / 4];
-};
 
-class MenuTitleBalloon {
-public:
-    MenuTitleBalloon();
-    virtual ~MenuTitleBalloon();
-    virtual void vfunc_08();
-    u32 unk_04[0xb8 / 4];
-};
 
 
 // ---- ov002 scene base (vtable 0x022044e4) ----
@@ -385,9 +365,9 @@ BOOL WfcFriendListMenu::onDraw() {
     if (!testFlags(1)) {
         return FALSE;
     }
-    knob.vfunc_08();
+    knob.draw();
     LabelBalloon_setPos(&title, 0, slideOffsetY);
-    title.vfunc_08();
+    title.draw();
     y = slideOffsetY + 0x60;
     y2 = y - (scrollY & 0xf);
     for (i = 0; i < 7; y2 += 0x10, i++) {

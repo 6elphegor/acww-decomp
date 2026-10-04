@@ -4,6 +4,8 @@
 #include "menu/MenuProc.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
+#include "menu/MenuScrollKnob.h"
+#include "menu/MenuCursor.h"
 
 #define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
 #define func_02063870 _ZN11MsgString9CD1Ev
@@ -130,25 +132,7 @@ void PopupChoice_CopyVillagerName(void *p, s32 a);
 
 
 
-// sub-object at +0x438 (ctor func_ov002_02202f88), 0x48 bytes, polymorphic
-class MenuScrollKnob {
-public:
-    MenuScrollKnob();
-    virtual ~MenuScrollKnob();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[0x44 / 4];
-};
 
-// sub-object at +0x480 (ctor func_ov002_02202658), 0x64 bytes
-class MenuCursorBuf0 {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[0x60 / 4];
-};
 
 // 3-byte record, ctor func_ov120_02292de4, dtor func_ov120_02292de0
 class MapViewMarker {
@@ -429,7 +413,7 @@ BOOL MapViewerMenu::onDraw() {
             }
         }
         if (testFlags(8)) {
-            scrollKnob.vfunc_08();
+            scrollKnob.draw();
         }
     }
     return TRUE;

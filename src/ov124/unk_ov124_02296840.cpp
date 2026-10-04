@@ -1,5 +1,6 @@
 #include "types.h"
 #include "ui/LabelString.h"
+#include "menu/MenuTextButton.h"
 
 extern "C" {
 void String_Load2dMenu(void *a, u32 v);
@@ -27,19 +28,6 @@ extern u8 data_ov124_02296f90[];
 
 struct Unk_ov002_02203c5c_Rec;
 
-// Sprite/text pair element (0x50 bytes), vtable 0x022046dc (src/ov002 / scratch ov002_005)
-class MenuTextButton {
-public:
-    MenuTextButton();
-    virtual ~MenuTextButton();
-
-    void freeText();
-    void setLabelNoShadow(u8 v);
-    void setup(Unk_ov002_02203c5c_Rec *p, u8 a, u8 b);
-    void drawAt(s32 x, s32 y, s32 c);
-
-    u32 unk_04[0x4c / 4];
-};
 
 // Non-polymorphic menu sub-object: 1 text buffer at +0, a sprite/text pair at +0x40, state bytes at +0x90/0x91
 class GeneralMenuHeader {

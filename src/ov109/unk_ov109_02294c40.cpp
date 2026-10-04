@@ -10,6 +10,8 @@
 #include "menu/MenuLauncher.h"
 #include "ui/LabelBalloon.h"
 #include "gfx/BgVramTask.h"
+#include "ui/TouchPromptBalloon.h"
+#include "menu/MenuCursor.h"
 
 class SongPickMenu;
 struct Unk_ov109_02295570;
@@ -93,47 +95,10 @@ void InventoryBg_DrawSprite(void *p, s32 a);
 
 
 
-class MenuCursorBase : public HandCursor {
-public:
-    void drawWrapped();
-    BOOL isMoving();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void moveToLinear(s32 a, s32 b, s32 c);
-    void warpTo(s32 a, s32 b);
-    void setPoseIdle();
-};
-
-// Same object as MenuCursorBase under the name used by src/ov002/unk_02202b68.cpp
-class MenuCursor : public HandCursor {
-public:
-    void setPosePress();
-    void switchToAnim01();
-    void switchToAnim07();
-    void setAnimIfChanged(s32 a);
-};
-
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4c[0x64 - 0x4c];
-};
 
 
-class TouchPromptBalloon {
-public:
-    TouchPromptBalloon();
-    virtual ~TouchPromptBalloon();
-    virtual void vfunc_08();
-    BOOL isOpenOrOpening();
-    void setAutoCloseTimer(u8 v);
-    void cancelQueuedOpen();
-    void queueOpen();
-    void commitOpen();
-    BOOL hide(s32 a);
-    BOOL updatePrompt();
-    u32 unk_04[(0xc0 - 4) / 4];
-};
+
+
 
 class PopupChoiceMenuBody {
 public:
@@ -398,7 +363,7 @@ BOOL SongPickMenu::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    nameBalloon.vfunc_08();
+    nameBalloon.draw();
     if (MenuCtrl_IsButtons()) {
         cursor.drawWrapped();
     }

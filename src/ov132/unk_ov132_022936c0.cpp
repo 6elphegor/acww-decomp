@@ -3,6 +3,7 @@
 #include "menu/MenuProc.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
+#include "menu/MenuCursor.h"
 
 extern "C" {
 extern u8 gSaveHouse[];
@@ -69,32 +70,8 @@ s32 NumberPad_HitTestKey(void *self, u32 a, u32 b);
 void NumberPad_PressKey(void *self);
 }
 
-class MenuCursorBase {
-public:
-    void drawWrapped();
-    void setPoseRelease();
-    void setPoseIdle();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void warpTo(s32 a, s32 b);
-    s32 isMoving();
-};
 
-class MenuCursor {
-public:
-    void setPosePress();
-    void switchToAnim07();
-    void switchToAnim01();
-    void setAnimIfChanged(s32 v);
-};
 
-class MenuCursorBuf0 {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[0x60 / 4];
-};
 
 class MenuBottomButtonsBody {
 public:

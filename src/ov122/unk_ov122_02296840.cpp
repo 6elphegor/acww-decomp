@@ -8,6 +8,8 @@
 #include "talk/EncodedString.h"
 #include "gfx/BgVramTask.h"
 #include "talk/EncodedString128.h"
+#include "menu/MenuCursor.h"
+#include "menu/MenuScrollKnob.h"
 
 class EncodedString;
 
@@ -37,22 +39,8 @@ public:
 
 
 
-class MenuScrollKnob : public ScrollKnob {
-public:
-    MenuScrollKnob();
-    virtual ~MenuScrollKnob();
-};
 
-class MenuCursorBase : public HandCursor {
-public:
-};
 
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4c[0x64 - 0x4c];
-};
 
 class PopupChoiceMenuBody {
 public:

@@ -5,6 +5,7 @@
 #include "talk/MsgString193.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
+#include "menu/MenuCursor.h"
 
 // Calls into other modules' class methods: extern "C" functions named by the real mangled symbol (self first).
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
@@ -202,38 +203,9 @@ public:
     u8 unk_2f4[0xc];
 };
 
-// object at +0x970 (size 0x64, vtable 0x02204614); methods split over more ov002 / main classes
-class MenuCursorBase {
-public:
-    void drawWrapped();
-    s32 getScreenY();
-    s32 getScreenX();
-    void setPoseRelease();
-    void setPoseIdle();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void warpTo(s32 a, s32 b);
-    void moveToLinear(s32 a, s32 b, s32 c);
-    s32 isMoving();
-};
-
-class MenuCursor {
-public:
-    void setPosePress();
-    void switchToAnim0D();
-    void switchToAnim01();
-    void switchToAnim07();
-    void setAnimIfChanged(s32 v);
-};
 
 
-class MenuCursorBuf0 {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[0x60 / 4];
-};
+
 
 #define U970_A ((MenuCursorBase *)&cursor)
 #define U970_B ((MenuCursor *)&cursor)

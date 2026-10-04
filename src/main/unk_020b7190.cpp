@@ -3,6 +3,7 @@
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
 #include "ui/LabelBalloon.h"
+#include "ui/FieldInfoLabelBalloon.h"
 
 struct Vec {
     s32 x, y, z;
@@ -33,30 +34,6 @@ public:
 
 
 
-// Its vtable, constructor, destructor and virtuals belong to U225 (0x020b7bb0..)
-class FieldInfoLabelBalloon : public LabelBalloon {
-public:
-    FieldInfoLabelBalloon();
-    virtual ~FieldInfoLabelBalloon();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    void restartMarkerAnim();
-    BOOL isBlinkVisible();
-    BOOL isBlinkCycleEnd();
-    void setBlink(u8 v);
-    void resetBalloon();
-    void requestMarker();
-    void updateBlink();
-
-    /* 0xbc */ SpriteAnim markerAnim;
-    /* 0xd0 */ s32 blinkFrame;
-    /* 0xd4 */ u8 markerRequest;
-    /* 0xd5 */ u8 markerShown;
-    /* 0xd6 */ u8 markerDrawn;
-    /* 0xd7 */ u8 markerDrawnPrev;
-    /* 0xd8 */ u8 blinkEnabled;
-};
 
 extern "C" {
 // Other files

@@ -23,6 +23,13 @@
 #include "ui/LabelButton.h"
 #include "ui/LabelString.h"
 #include "ui/LabelBalloon.h"
+#include "ui/TouchPromptBalloon.h"
+#include "menu/MenuTextButton.h"
+#include "menu/MenuTitleBalloon.h"
+#include "menu/MenuLabelButton.h"
+#include "menu/MenuCursor.h"
+#include "menu/MenuScrollKnob.h"
+#include "menu/PopupChoiceRow.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
@@ -202,25 +209,6 @@ extern Unk_ov002_02203c5c_Rec sButtonCellsW6B[];
 extern Unk_ov002_02203c5c_Rec sButtonCellsW12[];
 }
 
-// Vtable 0x02204468
-class TouchPromptBalloon : public LabelBalloon {
-public:
-    TouchPromptBalloon();
-    virtual ~TouchPromptBalloon();
-
-    BOOL isOpenOrOpening();
-    void setAutoCloseTimer(u8 v);
-    void func_ov002_022006ac(s32 v);
-    void cancelQueuedOpen();
-    void queueOpen();
-    void commitOpen();
-    BOOL hide(s32 a);
-    s32 updatePrompt();
-
-    /* 0xbc */ u8 promptState;
-    /* 0xbd */ u8 openQueued;
-    /* 0xbe */ volatile u8 autoCloseTimer;
-};
 
 
 
@@ -231,50 +219,7 @@ class MenuProc;
 typedef void (MenuProc::*Unk_ov002_02200a68_Fn)();
 
 
-// 8-byte-aligned owner helpers of the menu: text elements
-// Sprite/text pair element (0x50 bytes), vtable 0x022046dc
-class MenuTextButton {
-public:
-    MenuTextButton();
-    virtual ~MenuTextButton();
 
-    u32 getPressOffset();
-    void freeText();
-    void clearFlags(u32 m);
-    void setFlags(u32 m);
-    BOOL testFlags(u32 m);
-    void renderText(u8 a, u8 b);
-    void setLabelNoShadow(u8 v);
-    void setLabelWithShadow(u8 v);
-    void setLabel(u8 v);
-    void setup(Unk_ov002_02203c5c_Rec *p, u8 a, u8 b);
-    void isDisabled();
-    void setEnabled();
-    void setDisabled();
-    void disableObjWindow();
-    void enableObjWindow();
-    BOOL stepPress();
-    void drawAt(s32 x, s32 y, s32 c);
-
-    /* 0x04 */ LabelString caption;
-    /* 0x44 */ Unk_ov002_02203c5c_Rec *cells;
-    /* 0x48 */ u8 widthTiles;
-    /* 0x49 */ u8 pressStep;
-    /* 0x4a */ u8 frameCellCount;
-    /* 0x4b */ u8 msgId;
-    /* 0x4c */ u8 flags;
-};
-
-// Menu, vtable 0x02204770
-class MenuTitleBalloon : public LabelBalloon {
-public:
-    MenuTitleBalloon();
-    virtual ~MenuTitleBalloon();
-    virtual void setOrigin(s32 a, s32 b);
-
-    void hideNow();
-    void showText(u8 a, s32 b, s32 c);
-};
 
 // Owner, vtable 0x022046cc
 class MenuBottomButtons {
@@ -326,34 +271,8 @@ public:
     void setLayoutYesNo07(s32 x);
 };
 
-// Base of the 0x0220471c / 0x02204738 classes
-class MenuLabelButtonBase : public LabelButton {
-public:
-    MenuLabelButtonBase(u8 a, s32 b);
-    virtual ~MenuLabelButtonBase();
-    virtual void setOrigin(s32 a, s32 b);
-};
 
-class MenuLabelButtonStyle1 : public MenuLabelButtonBase {
-public:
-    MenuLabelButtonStyle1();
-    virtual ~MenuLabelButtonStyle1();
-};
 
-// Vtable 0x02204738
-class MenuLabelButton : public MenuLabelButtonBase {
-public:
-    MenuLabelButton();
-    virtual ~MenuLabelButton();
-
-    BOOL isTouched();
-    void showAt(s32 v, s32 x, s32 y);
-    void showDefault(s32 v);
-    void setLabel2d(s32 v);
-    BOOL stepAnim();
-    s32 getAnchorY(s32 k);
-    s32 getAnchorX(s32 k);
-};
 
 // Non-polymorphic holder object (members at +0x00 and +0xc0)
 class MenuErrorMessage {
@@ -388,86 +307,11 @@ public:
 };
 
 
-// Intermediate base of the vtables 0x02204614 / 0x02204630 / 0x0220464c
-class MenuCursorBase : public HandCursor {
-public:
-    MenuCursorBase(BOOL flag);
-    ~MenuCursorBase();
-    virtual void vfunc_0c();
 
-    void drawWrapped();
-    s32 getScreenY();
-    s32 getScreenX();
-    s32 getFrameScreenY();
-    s32 getFrameScreenX();
-    BOOL isMoving();
-    BOOL func_ov002_022028fc();
-    BOOL func_ov002_02202928();
-    void moveToNear(s32 x, s32 y, s32 n, u8 e);
-    void moveToEase(s32 x, s32 y, s32 n, s32 f);
-    void moveToLinear(s32 x, s32 y, s32 n);
-    void warpTo(s32 x, s32 y);
-    void setScreenPos(s32 x, s32 y);
-    void setPoseIdle();
-    void setPoseRelease();
 
-    /* 0x4c */ CursorMotion motion;
-};
 
-class MenuCursor : public MenuCursorBase {
-public:
-    MenuCursor(BOOL flag);
-    virtual ~MenuCursor();
 
-    void setPosePress();
-    void switchToAnim0D();
-    void switchToAnim01();
-    void switchToAnim07();
-    void setAnimIfChanged(s32 idx);
-};
 
-class MenuCursorBuf0 : public MenuCursor {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-};
-
-class MenuCursorBuf1 : public MenuCursor {
-public:
-    MenuCursorBuf1();
-    virtual ~MenuCursorBuf1();
-};
-
-class MenuScrollKnob : public ScrollKnob {
-public:
-    MenuScrollKnob();
-    virtual ~MenuScrollKnob();
-
-    s32 getGripY();
-    s32 getGripX();
-    s32 getScreenY();
-    s32 getScreenX();
-    s32 updateRelease();
-    void release();
-    void grab();
-    void show();
-    BOOL hitTest(s32 x, s32 y);
-};
-
-// Element of the 5-entry array at +0x28 of the menu (0x48 bytes)
-class PopupChoiceRow : public LabelString {
-public:
-    PopupChoiceRow();
-    virtual ~PopupChoiceRow();
-
-    void setup(u32 a, u16 b, u8 c, u8 d);
-    void render(s32 v);
-
-    /* 0x40 */ u16 charBase;
-    /* 0x42 */ u8 layer;
-    /* 0x43 */ u8 fgColor;
-    /* 0x44 */ u8 bgColor;
-};
 
 
 // Menu/selection object, vtable 0x02204558

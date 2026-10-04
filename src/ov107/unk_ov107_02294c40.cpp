@@ -6,6 +6,8 @@
 #include "menu/InventoryBg.h"
 #include "menu/MenuProc.h"
 #include "gfx/BgVramTask.h"
+#include "ui/TouchPromptBalloon.h"
+#include "menu/MenuCursor.h"
 
 // ov107: scene overlay (class PocketsFullMenu, vtable 0x02296e78, 0x281c bytes).
 
@@ -83,23 +85,8 @@ struct Unk_ov107_SceneEntry {
 
 
 
-class TouchPromptBalloon {
-public:
-    TouchPromptBalloon();
-    virtual ~TouchPromptBalloon();
-    virtual void vfunc_08();
-    u32 unk_04[(0xc0 - 4) / 4];
-};
 
 
-class MenuCursorBuf0 {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[0x60 / 4];
-};
 
 class PopupChoiceMenu {
 public:
@@ -481,7 +468,7 @@ BOOL PocketsFullMenu::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    nameBalloon.vfunc_08();
+    nameBalloon.draw();
     if (MenuCtrl_IsButtons()) {
         MenuCursorBase_drawWrapped(&cursor);
     }

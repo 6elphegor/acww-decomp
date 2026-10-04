@@ -6,6 +6,8 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "ui/LabelButton.h"
+#include "menu/MenuLabelButton.h"
+#include "menu/MenuCursor.h"
 
 extern "C" {
 void Snd_PlaySe(s32 a);
@@ -32,43 +34,11 @@ struct Unk_0206d1d4_Src;
 
 
 
-// +0x2a4 sub-object (0x70 bytes)
-class MenuLabelButtonStyle1 : public LabelButton {
-public:
-    MenuLabelButtonStyle1();
-    virtual ~MenuLabelButtonStyle1();
-};
-
-class MenuLabelButton {
-public:
-    BOOL isTouched();
-    void showDefault(s32 v);
-    BOOL stepAnim();
-    s32 getAnchorY(s32 k);
-    s32 getAnchorX(s32 k);
-};
-
-// +0x314 sub-object (0x64 bytes)
-class MenuCursorBuf1 : public HandCursor {
-public:
-    MenuCursorBuf1();
-    virtual ~MenuCursorBuf1();
-
-    u8 unk_4b[0x64 - 0x4b];
-};
 
 
-class MenuCursorBase {
-public:
-    void drawWrapped();
-    void warpTo(s32 x, s32 y);
-};
 
-class MenuCursor {
-public:
-    void setPosePress();
-    void setAnimIfChanged(s32 idx);
-};
+
+
 
 typedef void (LetterViewMenu::*Unk_ov091_02291ef0_Fn)();
 

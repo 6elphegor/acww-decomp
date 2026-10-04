@@ -5,6 +5,7 @@
 #include "talk/MsgString.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
+#include "menu/MenuScrollKnob.h"
 
 struct Unk_ov114_02294c40_Bits {
     u32 idx : 10;
@@ -214,19 +215,6 @@ public:
 
 
 
-// sub-object at +0x11f8 (ctor func_ov002_02202f88, dtor func_ov002_02202f70)
-class MenuScrollKnob {
-public:
-    MenuScrollKnob();
-    virtual ~MenuScrollKnob();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    BOOL hitTest(s32 x, s32 y);
-    void grab();
-    void updateRelease();
-    void show();
-    u32 unk_04[(0x54 - 4) / 4];
-};
 
 class CreatureBookPanel {
 public:
@@ -257,6 +245,7 @@ public:
     /* 0x108c */ u8 unk_108c[0x10f8 - 0x108c];
     /* 0x10f8 */ LabelString labels[4];
     /* 0x11f8 */ MenuScrollKnob scrollKnob;
+    /* 0x1240 */ u32 unk_1240[3];
     /* 0x124c */ s32 knobPos;
     /* 0x1250 */ s32 knobGrabOffset;
     /* 0x1254 */ s32 knobLastTickPos;
@@ -415,7 +404,7 @@ BOOL CreatureBookPanel::hitDescPageButtons(s32 x, s32 y) {
 }
 
 void CreatureBookPanel::drawScrollKnob() {
-    scrollKnob.vfunc_08();
+    scrollKnob.draw();
 }
 
 void CreatureBookPanel::placeScrollKnob(s32 x) {

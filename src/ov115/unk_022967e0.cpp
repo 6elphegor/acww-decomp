@@ -4,6 +4,7 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "ui/LabelString.h"
+#include "menu/MenuCursor.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -77,31 +78,8 @@ public:
 
 
 
-class MenuCursorBase : public HandCursor {
-public:
-    BOOL isMoving();
-    void drawWrapped();
-    void setPoseIdle();
-    void setPoseRelease();
-    void warpTo(s32 a, s32 b);
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-};
 
-class MenuCursor : public HandCursor {
-public:
-    void setPosePress();
-    void switchToAnim0D();
-    void switchToAnim01();
-    void setAnimIfChanged(s32 idx);
-};
 
-// +0x94 sub-object (0x64 bytes)
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4b[0x64 - 0x4b];
-};
 
 
 typedef void (FishBookTab::*Unk_ov115_02297378_Fn)();

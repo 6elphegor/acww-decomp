@@ -7,6 +7,7 @@
 #include "menu/MenuLauncher.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
+#include "menu/MenuCursor.h"
 
 class DistantTownsMenu;
 
@@ -50,29 +51,8 @@ void DistantTownsMenu_SetupBgLayers();
 
 
 
-class MenuCursorBase : public HandCursor {
-public:
-    void drawWrapped();
-    BOOL isMoving();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void warpTo(s32 a, s32 b);
-    void setPoseIdle();
-    void setPoseRelease();
-};
 
-// Same object as MenuCursorBase under the name used by src/ov002/unk_02202b68.cpp
-class MenuCursor : public HandCursor {
-public:
-    void setPosePress();
-    void setAnimIfChanged(s32 a);
-};
 
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4c[0x64 - 0x4c];
-};
 
 // Menu list sub-object, 0x164 bytes (src/ov002/unk_022034c4.cpp)
 class MenuBottomButtons {

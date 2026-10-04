@@ -11,6 +11,8 @@
 #include "gfx/BgVramTask.h"
 #include "talk/EncodedString192.h"
 #include "talk/EncodedString41.h"
+#include "menu/MenuCursor.h"
+#include "menu/MenuScrollKnob.h"
 
 // Plain view of the scene object used by the extern "C" helpers (offsets only).
 struct Unk_ov112_02296840 {
@@ -118,17 +120,6 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-class MenuScrollKnob : public ScrollKnob {
-public:
-    MenuScrollKnob();
-    virtual ~MenuScrollKnob();
-    s32 getGripY();
-    s32 getGripX();
-    void release();
-    void grab();
-    void show();
-    BOOL hitTest(s32 x, s32 y);
-};
 
 class MenuBottomButtonsBody {
 public:
@@ -153,32 +144,8 @@ public:
     void freeTexts();
 };
 
-class MenuCursorBase : public HandCursor {
-public:
-    void drawWrapped();
-    BOOL isMoving();
-    void moveToNear(s32 a, s32 b, s32 c, u8 d);
-    void warpTo(s32 a, s32 b);
-    void setPoseIdle();
-    void setPoseRelease();
-};
 
-// same cursor object as MenuCursorBase
-class MenuCursor : public HandCursor {
-public:
-    void setPosePress();
-    void switchToAnim0D();
-    void switchToAnim01();
-    void switchToAnim07();
-    void setAnimIfChanged(s32 v);
-};
 
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4c[0x64 - 0x4c];
-};
 
 
 

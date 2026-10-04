@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
+#include "menu/MenuCursor.h"
 
 extern "C" {
 extern const u8 sDateSelectCursorLeftTable[5];
@@ -59,32 +60,8 @@ void DateTimePicker_EnableMinLimit(void *self);
 void DateTimePicker_Init(void *self, s32 a, s32 b, s32 c, s32 d);
 }
 
-class MenuCursorBase {
-public:
-    void drawWrapped();
-    void setPoseRelease();
-    void setPoseIdle();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void warpTo(s32 a, s32 b);
-    s32 isMoving();
-};
 
-class MenuCursor {
-public:
-    void setPosePress();
-    void switchToAnim07();
-    void switchToAnim01();
-    void setAnimIfChanged(s32 v);
-};
 
-class MenuCursorBuf0 {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[0x60 / 4];
-};
 
 class MenuBottomButtonsBody {
 public:

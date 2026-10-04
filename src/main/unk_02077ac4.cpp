@@ -180,15 +180,8 @@ class MsgString;
 
 
 
-class MsgString17B : public MsgString {
-public:
-    MsgString17B();
-    virtual ~MsgString17B();
-    virtual u32 capacity();
-    virtual u8 *data();
-      u8 text[0x11];
-};
 
+#include "talk/MsgString17B.h"
 class EncodedString10 : public EncodedString {
 public:
     EncodedString10();
@@ -199,15 +192,8 @@ public:
       u8 bytes[0xa];
 };
 
-class MsgString17 : public MsgString {
-public:
-    MsgString17();
-    virtual ~MsgString17();
-    virtual u32 capacity();
-    virtual u8 *data();
-      u8 text[0x11];
-};
 
+#include "talk/MsgString17.h"
 class EncodedString16 : public EncodedString {
 public:
     EncodedString16();

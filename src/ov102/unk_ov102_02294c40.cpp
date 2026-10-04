@@ -11,6 +11,8 @@
 #include "ui/LabelString.h"
 #include "ui/LabelBalloon.h"
 #include "gfx/BgVramTask.h"
+#include "ui/TouchPromptBalloon.h"
+#include "menu/MenuCursor.h"
 
 extern "C" {
 void Gfx2d_ShowLayer(u32 x);
@@ -117,30 +119,8 @@ class ChestMenu;
 
 
 
-class TouchPromptBalloon {
-public:
-    TouchPromptBalloon();
-    virtual ~TouchPromptBalloon();
-    virtual void vfunc_08();
-    void setAutoCloseTimer(u8);
-    void cancelQueuedOpen();
-    void queueOpen();
-    void commitOpen();
-    void hide(s32);
-    s32 updatePrompt();
-    u32 unk_04[(0xc0 - 4) / 4];
-};
 
 
-class MenuCursorBuf0 {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-
-    u32 unk_04[0x60 / 4];
-};
 
 class PopupChoiceMenu {
 public:
@@ -175,28 +155,7 @@ public:
     BOOL isOpen();
 };
 
-class MenuCursorBase {
-public:
-    void drawWrapped();
-    s32 getFrameScreenY();
-    s32 getFrameScreenX();
-    BOOL isMoving();
-    BOOL func_ov002_022028fc();
-    BOOL func_ov002_02202928();
-    void moveToEase(s32, s32, s32, s32);
-    void moveToLinear(s32, s32, s32);
-    void warpTo(s32, s32);
-    void setPoseIdle();
-    void setPoseRelease();
-};
 
-class MenuCursor {
-public:
-    void setPosePress();
-    void switchToAnim01();
-    void switchToAnim07();
-    void setAnimIfChanged(s32);
-};
 
 typedef void (ChestMenu::*Unk_ov102_02297520_Fn)();
 
@@ -404,7 +363,7 @@ BOOL ChestMenu::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    nameBalloon.vfunc_08();
+    nameBalloon.draw();
     if (MenuCtrl_IsButtons()) {
         ((MenuCursorBase *)&cursor)->drawWrapped();
     }

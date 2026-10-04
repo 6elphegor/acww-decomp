@@ -6,6 +6,7 @@
 #include "talk/TalkWindowState.h"
 #include "town/TownBlockMap.h"
 #include "talk/MsgRequest.h"
+#include "ui/HudWallet.h"
 
 // ---- declarations shared by the merged files
 class TalkMsgRequest;
@@ -657,11 +658,6 @@ s32 Save_CheckSlot(s32 idx);
 
 void operator delete(void *p);
 
-class HudWallet {
-public:
-    void unfreezeValue();
-    void freezeValue();
-};
 
 namespace Unk_020a14ac_Ns {
 extern "C" s32 MI_CpuCopy8(const void *src, void *dst, u32 size);

@@ -4,6 +4,8 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
+#include "ui/TouchPromptBalloon.h"
+#include "menu/MenuCursor.h"
 
 struct PopupChoiceIdList;
 
@@ -77,31 +79,8 @@ extern const u8 sPatternSelectSlotY[9];
 // Classes of other modules (minimal declarations)
 
 
-class MenuCursorBase : public HandCursor {
-public:
-    void drawWrapped();
-    BOOL isMoving();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void moveToLinear(s32 a, s32 b, s32 c);
-    void warpTo(s32 a, s32 b);
-    void setPoseIdle();
-};
 
-// Same object as MenuCursorBase under the name used by its other methods
-class MenuCursor : public HandCursor {
-public:
-    void setPosePress();
-    void switchToAnim01();
-    void switchToAnim07();
-    void setAnimIfChanged(s32 a);
-};
 
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4c[0x64 - 0x4c];
-};
 
 // Same object as PopupChoiceMenu under the name used by its other methods
 class PopupChoiceMenuBody {
@@ -123,18 +102,6 @@ public:
     u32 unk_00[0x300 / 4];
 };
 
-class TouchPromptBalloon {
-public:
-    TouchPromptBalloon();
-    virtual ~TouchPromptBalloon();
-    virtual void vfunc_08();
-    void func_ov002_022006ac(s32 a);
-    void queueOpen();
-    void commitOpen();
-    void hide(s32 a);
-    BOOL updatePrompt();
-    u32 unk_04[(0xc0 - 4) / 4];
-};
 
 class MenuBottomButtonsBody {
 public:
@@ -300,7 +267,7 @@ BOOL PatternSelectMenu::onDraw() {
         return FALSE;
     }
     TouchPromptBalloon *p = &nameBalloon;
-    p->vfunc_08();
+    p->draw();
     if (MenuCtrl_IsButtons()) {
         cursor.drawWrapped();
     }

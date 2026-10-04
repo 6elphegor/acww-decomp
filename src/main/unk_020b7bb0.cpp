@@ -2,6 +2,7 @@
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
 #include "ui/LabelBalloon.h"
+#include "ui/FieldInfoLabelBalloon.h"
 
 extern "C" {
 // Other files
@@ -20,21 +21,6 @@ void _ZN21FieldInfoLabelBalloon11updateBlinkEv(void *p);
 
 
 
-class FieldInfoLabelBalloon : public LabelBalloon {
-public:
-    FieldInfoLabelBalloon();
-    virtual ~FieldInfoLabelBalloon();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    /* 0xbc */ SpriteAnim markerAnim;
-    /* 0xd0 */ s32 blinkFrame;
-    /* 0xd4 */ u8 markerRequest;
-    /* 0xd5 */ u8 markerShown;
-    /* 0xd6 */ u8 markerDrawn;
-    /* 0xd7 */ u8 markerDrawnPrev;
-    /* 0xd8 */ u8 blinkEnabled;
-};
 
 FieldInfoLabelBalloon::FieldInfoLabelBalloon() : LabelBalloon(1) {
     blinkFrame = 0;

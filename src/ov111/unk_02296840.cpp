@@ -12,6 +12,7 @@
 #include "talk/MsgString9B.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
+#include "menu/MenuCursor.h"
 
 enum Unk_ov111_022970cc_Status { UNK_OV111_ST_0 = 0, UNK_OV111_ST_1 = 1, UNK_OV111_ST_2 = 2, UNK_OV111_ST_3 = 3 };
 
@@ -153,32 +154,8 @@ BOOL Keyboard_IsSlotDisabled(void *s, s32 i);
 
 
 
-class MenuCursorBuf0 : public HandCursor {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
 
-    u8 unk_4b[0x64 - 0x4b];
-};
 
-class MenuCursorBase {
-public:
-    void drawWrapped();
-    s32 getScreenX();
-    BOOL isMoving();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void warpTo(s32 a, s32 b);
-    void setPoseIdle();
-    void setPoseRelease();
-};
-
-class MenuCursor {
-public:
-    void setPosePress();
-    void switchToAnim0D();
-    void switchToAnim01();
-    void setAnimIfChanged(s32 idx);
-};
 
 // Holder at +0x3d30 (0x108 bytes)
 class MenuErrorMessage {

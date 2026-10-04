@@ -6,6 +6,8 @@
 #include "ui/ScrollKnob.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
+#include "menu/MenuCursor.h"
+#include "menu/MenuScrollKnob.h"
 
 extern "C" {
 BOOL _ZN10HandCursor10isAnimDoneEv(void *self);
@@ -93,47 +95,10 @@ public:
 };
 
 
-// object at +0x484 (size 0x64, vtable 0x02204614); methods split over two more ov002 classes
-class MenuCursorBase {
-public:
-    void drawWrapped();
-    u8 getScreenY();
-    u8 getScreenX();
-    void setPoseRelease();
-    void setPoseIdle();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void warpTo(s32 a, s32 b);
-    s32 isMoving();
-};
-
-class MenuCursor {
-public:
-    void setPosePress();
-    void switchToAnim0D();
-    void switchToAnim01();
-    void switchToAnim07();
-    void setAnimIfChanged(s32 v);
-};
-
-class MenuCursorBuf0 {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[0x60 / 4];
-};
 
 
-class MenuScrollKnob : public ScrollKnob {
-public:
-    MenuScrollKnob();
-    virtual ~MenuScrollKnob();
-    s32 getGripX();
-    s32 getGripY();
-    void grab();
-    BOOL hitTest(s32 x, s32 y);
-};
+
+
 
 
 

@@ -4,6 +4,8 @@
 #include "menu/MenuProc.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
+#include "menu/MenuScrollKnob.h"
+#include "menu/MenuCursor.h"
 
 class MusicMenu;
 typedef void (MusicMenu::*Unk_ov144_02293db8_Fn)();
@@ -166,23 +168,7 @@ extern "C" u32 data_ov144_02293d70[16] = {0x20508028, 0x50c0, 0x508018, 0x50e0, 
                                           0x5080e8, 0x50e0, 0x5080d8, 0x50e0, 0x5080c8, 0x50e0, 0x5080b8, 0xffff50c0};
 
 
-class MenuCursorBuf0 {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[0x60 / 4];
-};
 
-class MenuScrollKnob {
-public:
-    MenuScrollKnob();
-    virtual ~MenuScrollKnob();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[(0x48 - 4) / 4];
-};
 
 class MenuBottomButtons {
 public:
@@ -377,7 +363,7 @@ BOOL MusicMenu::onDraw() {
     MenuBottomButtons_drawAt(&bottomButtons, getSlideOffsetY());
     u32 p = slideY + 0x60;
     if (scrollMax > 0) {
-        scrollKnob.vfunc_08();
+        scrollKnob.draw();
         Oam_DrawCell(1, data_ov144_02293d70, 0x80, p, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     return TRUE;

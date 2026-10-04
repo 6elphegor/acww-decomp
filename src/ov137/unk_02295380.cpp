@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
+#include "menu/MenuCursor.h"
 
 extern "C" {
 extern const u8 sBirthdayCursorRightTable[4];
@@ -58,33 +59,8 @@ void DateTimePicker_Init(void *self, u32 a, u32 b, u32 c, u8 d);
 }
 
 
-class MenuCursorBase {
-public:
-    void drawWrapped();
-    void setPoseRelease();
-    void setPoseIdle();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void warpTo(s32 a, s32 b);
-    BOOL isMoving();
-};
 
-class MenuCursor {
-public:
-    void setPosePress();
-    void switchToAnim07();
-    void switchToAnim01();
-    void setAnimIfChanged(s32 v);
-};
 
-// Sub-object at +0x94 (vtable 0x02204614, size 0x64)
-class MenuCursorBuf0 {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[0x60 / 4];
-};
 
 class MenuBottomButtonsBody {
 public:

@@ -3,20 +3,9 @@
 #include "ui/ScrollKnob.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
+#include "menu/MenuScrollKnob.h"
 
 
-class MenuScrollKnob : public ScrollKnob {
-public:
-    MenuScrollKnob();
-    ~MenuScrollKnob();
-    s32 getGripY();
-    s32 getGripX();
-    void updateRelease();
-    void release();
-    void grab();
-    void show();
-    BOOL hitTest(s32 x, s32 y);
-};
 
 
 

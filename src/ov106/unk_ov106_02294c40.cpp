@@ -14,6 +14,9 @@
 #include "menu/MenuLauncher.h"
 #include "ui/LabelBalloon.h"
 #include "gfx/BgVramTask.h"
+#include "ui/TouchPromptBalloon.h"
+#include "menu/MenuLabelButton.h"
+#include "menu/MenuCursor.h"
 
 // ov106: scene overlay (class MailboxMenu, vtable 0x02298180, 0x3f80 bytes).
 
@@ -141,30 +144,8 @@ class LetterGrid;
 
 
 
-class TouchPromptBalloon {
-public:
-    TouchPromptBalloon();
-    virtual ~TouchPromptBalloon();
-    virtual void vfunc_08();
-    s32 isOpenOrOpening();
-    void setAutoCloseTimer(u8);
-    void cancelQueuedOpen();
-    void queueOpen();
-    void commitOpen();
-    void hide(s32);
-    s32 updatePrompt();
-    u32 unk_04[(0xc0 - 4) / 4];
-};
 
 
-class MenuCursorBuf0 {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[0x60 / 4];
-};
 
 class PopupChoiceMenu {
 public:
@@ -189,18 +170,6 @@ public:
 };
 
 
-class MenuLabelButton {
-public:
-    MenuLabelButton();
-    virtual ~MenuLabelButton();
-    virtual void vfunc_08();
-    s32 isTouched();
-    void showDefault(s32);
-    BOOL stepAnim();
-    s32 getAnchorY(s32);
-    s32 getAnchorX(s32);
-    u32 unk_04[(0x70 - 4) / 4];
-};
 
 
 class MenuBottomButtons {
@@ -235,20 +204,6 @@ public:
     s32 isOpen();
 };
 
-class MenuCursorBase {
-public:
-    void drawWrapped();
-    s32 getFrameScreenY();
-    s32 getFrameScreenX();
-    s32 isMoving();
-    s32 func_ov002_022028fc();
-    s32 func_ov002_02202928();
-    void moveToEase(s32, s32, s32, s32);
-    void moveToLinear(s32, s32, s32);
-    void warpTo(s32, s32);
-    void setPoseIdle();
-    void setPoseRelease();
-};
 
 class MenuBottomButtonsBody {
 public:
@@ -263,13 +218,6 @@ public:
     void setLayoutTossKeep();
 };
 
-class MenuCursor {
-public:
-    void setPosePress();
-    void switchToAnim01();
-    void switchToAnim07();
-    void setAnimIfChanged(s32);
-};
 
 
 
@@ -515,7 +463,7 @@ BOOL MailboxMenu::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    nameBalloon.vfunc_08();
+    nameBalloon.draw();
     if (MenuCtrl_IsButtons()) {
         ((MenuCursorBase *)&cursor)->drawWrapped();
     }
@@ -532,7 +480,7 @@ BOOL MailboxMenu::onDraw() {
     }
     if (testFlags(0x80)) {
         ((LabelButton *)&letterCloseButton)->setPos(0, getSlideOffsetY());
-        letterCloseButton.vfunc_08();
+        letterCloseButton.draw();
     }
     return TRUE;
 }

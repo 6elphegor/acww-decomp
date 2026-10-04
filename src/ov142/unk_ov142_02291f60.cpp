@@ -12,6 +12,8 @@
 #include "item/ItemName.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
+#include "menu/MenuCursor.h"
+#include "menu/MenuScrollKnob.h"
 
 class CatalogMenu;
 
@@ -84,46 +86,10 @@ void *PlayerData_getCatalog(u32 p);
 
 // ---- ov002 sub-objects ----
 
-class MenuCursorBase : public HandCursor {
-public:
-    void drawWrapped();
-    s32 getScreenY();
-    BOOL isMoving();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void warpTo(s32 a, s32 b);
-    void setPoseIdle();
-    void setPoseRelease();
-};
-
-// Same object as MenuCursorBase under the name used by src/ov002
-class MenuCursor : public HandCursor {
-public:
-    void setPosePress();
-    void switchToAnim01();
-    void switchToAnim07();
-    void setAnimIfChanged(s32 a);
-};
-
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4c[0x64 - 0x4c];
-};
 
 
-class MenuScrollKnob : public ScrollKnob {
-public:
-    MenuScrollKnob();
-    virtual ~MenuScrollKnob();
-    s32 getGripY();
-    s32 getGripX();
-    void updateRelease();
-    void release();
-    void grab();
-    void show();
-    BOOL hitTest(s32 x, s32 y);
-};
+
+
 
 class MenuBottomButtonsBody {
 public:

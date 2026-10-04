@@ -13,6 +13,8 @@
 #include "ui/LabelString.h"
 #include "ui/LabelBalloon.h"
 #include "gfx/BgVramTask.h"
+#include "ui/TouchPromptBalloon.h"
+#include "menu/MenuCursor.h"
 
 class LostFoundRecycleMenu;
 
@@ -117,19 +119,6 @@ void LetterGrid_LoadPocketLetters(void *a);
 
 
 
-class TouchPromptBalloon {
-public:
-    TouchPromptBalloon();
-    virtual ~TouchPromptBalloon();
-    virtual void vfunc_08();
-    void setAutoCloseTimer(u8);
-    void cancelQueuedOpen();
-    void queueOpen();
-    void commitOpen();
-    void hide(s32);
-    s32 updatePrompt();
-    u32 unk_04[(0xc0 - 4) / 4];
-};
 
 
 class PopupChoiceMenuBody {
@@ -158,35 +147,8 @@ public:
 };
 
 
-class MenuCursorBase : public HandCursor {
-public:
-    void drawWrapped();
-    s32 getFrameScreenY();
-    s32 getFrameScreenX();
-    BOOL isMoving();
-    BOOL func_ov002_022028fc();
-    BOOL func_ov002_02202928();
-    void moveToEase(s32, s32, s32, s32);
-    void moveToLinear(s32, s32, s32);
-    void warpTo(s32, s32);
-    void setPoseIdle();
-    void setPoseRelease();
-};
 
-class MenuCursor : public HandCursor {
-public:
-    void setPosePress();
-    void switchToAnim01();
-    void switchToAnim07();
-    void setAnimIfChanged(s32);
-};
 
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u8 unk_4c[0x64 - 0x4c];
-};
 
 
 typedef void (LostFoundRecycleMenu::*Unk_ov110_02297778_Fn)();
@@ -568,7 +530,7 @@ BOOL LostFoundRecycleMenu::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    nameBalloon.vfunc_08();
+    nameBalloon.draw();
     if (MenuCtrl_IsButtons()) {
         cursor.drawWrapped();
     }

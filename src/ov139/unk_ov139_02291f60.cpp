@@ -9,6 +9,7 @@
 #include "ui/LabelBalloon.h"
 #include "gfx/BgVramTask.h"
 #include "talk/EncodedString8B.h"
+#include "menu/MenuTitleBalloon.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Declarations from other files
@@ -34,15 +35,6 @@ public:
 
 
 
-class MenuTitleBalloon : public LabelBalloon {
-public:
-    MenuTitleBalloon();
-    virtual ~MenuTitleBalloon();
-    virtual void setOrigin(s32 a, s32 b);
-
-    void hideNow();
-    void showText(u8 a, s32 b, s32 c);
-};
 
 
 extern "C" {
