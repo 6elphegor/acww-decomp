@@ -34,7 +34,7 @@
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define Unk_020d7710_setSubSceneKind _ZN12Unk_020d771015setSubSceneKindEjj
 #define Unk_020d7710_openSubScene _ZN12Unk_020d771012openSubSceneEi
-#define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti
+#define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti
 #define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
 #define NpcFaceAnim_resumeMouthMaterial _ZN11NpcFaceAnim19resumeMouthMaterialEv
@@ -1224,7 +1224,7 @@ void SpNpcRoostGuest::onInteractionEvent(u32 mode, u8) {
     switch (mode) {
     case 0:
         talk.resetMsg();
-        talk.func_02015ab0(getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         if (guestType == 7) {
             talk.setTalkMode(0);
         }
@@ -1232,7 +1232,7 @@ void SpNpcRoostGuest::onInteractionEvent(u32 mode, u8) {
         break;
     case 1:
         talk.resetMsg();
-        talk.func_02015ab0(getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         if (hasSongRequest != 0) {
             talk.setTalkMode(1);
         } else {

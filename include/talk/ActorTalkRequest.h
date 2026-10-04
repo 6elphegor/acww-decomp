@@ -58,8 +58,8 @@ public:
     void setOwnerActor(Unk_02015b8c_Scene *p);
     Unk_02015b8c_Scene *getPartnerActor();
     void setPartnerActor(Unk_02015b8c_Scene *p);
-    void *func_02015aac();
-    void func_02015ab0(u32 a);
+    void *getTalkPlayer();
+    void setTalkPlayer(u32 a);
     void tick();
 
     /* 0x44 */ u32 unk_44;

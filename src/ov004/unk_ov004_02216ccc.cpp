@@ -29,12 +29,12 @@
 class HouseOwnerVillager;
 
 #define VillagerId_isValid _ZN10VillagerId7isValidEv
-#define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
+#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
-#define Unk_02015b8c_getAnimId _ZN12Unk_02015b8c9getAnimIdEj
+#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
+#define NpcAnimCtrl_getAnimId _ZN11NpcAnimCtrl9getAnimIdEj
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
@@ -91,7 +91,7 @@ s32 VillagerTalk_getEventKind(void *);
 s32 Villager_GetResidentStatus(void *);
 s32 NpcActor_getPlayerActor(void *, u32);
 void VillagerTalk_begin(void *, void *, s32);
-void func_02015ab0(void *, s32);
+void ActorTalkRequest_setTalkPlayer(void *, s32);
 s32 NetArea_IsLocalOwner();
 s32 NpcTalkCtrl_isBusy(void *);
 s32 NpcActionCtrl_getAction(void *);
@@ -101,7 +101,7 @@ s32 NpcActor_getAngleToPlayer(void *, u32);
 void NpcActionCtrl_requestAction(void *, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32);
 void VillagerMood_requestApply(void *);
 void TalkRequest_SetTargetDone(void *);
-void *func_02015aac(void *);
+void *ActorTalkRequest_getTalkPlayer(void *);
 s32 NpcActor_getAngleTo(void *, void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
 s32 Random_GlobalBelow(u32);
@@ -120,7 +120,7 @@ void VillagerMood_update(void *o, void *owner);
 void VillagerTalkTopics_updateCatchPlans(void *o, const void *a, const void *b, u32 c);
 void TalkRequest_AddPlayerTalk6(void *o, u32 a);
 void RoomFreeUnitMap_Build(void *o);
-void Unk_02013474_enableFootsteps(void *o);
+void NpcFootstepFx_enableFootsteps(void *o);
 void *Villager_GetState(void *o);
 u32 VillagerState_GetRole(void *o);
 void VillagerState_SetRole(void *o, u32 a);
@@ -130,7 +130,7 @@ void *VillagerState_GetTalkRepeat(void *o);
 void TalkRepeat_Reset(void *o);
 void NpcActor_setTalkRequest(void *self, void *p);
 void VillagerClothModel_change(void *self, void *owner, u16 *p);
-u32 Unk_02015b8c_getAnimId(void *o, u32 v);
+u32 NpcAnimCtrl_getAnimId(void *o, u32 v);
 }
 
 
@@ -237,7 +237,7 @@ BOOL HouseOwnerVillager::onCreate() {
         return FALSE;
     }
     drawFn = &HouseOwnerVillager::drawModel;
-    Unk_02013474_enableFootsteps(&footstepFx);
+    NpcFootstepFx_enableFootsteps(&footstepFx);
     if (NpcActor_isNetOwner(this)) {
         ai.changeState(this, 0);
         VillagerTalkTopics_updateCatchPlans(this, data_ov004_02240094, data_ov004_02240090, 0);
@@ -282,7 +282,7 @@ void HouseOwnerVillager::onTalkMelodyPlayed() { talkMelodyPlayed = 1; }
 BOOL HouseOwnerVillager::updateAct() {
     ai.update(this);
     if (CommManager_isOnline(gCommManager)) {
-        if (Unk_02015b8c_getAnimId(&animCtrl, 0) != 6) {
+        if (NpcAnimCtrl_getAnimId(&animCtrl, 0) != 6) {
             if (getVillagerData()) {
                 u16 *p = (u16 *)VillagerDataProfileView_getShirt(getVillagerData());
                 u16 *q = VillagerClothModel_getItem(&clothModel);
@@ -438,7 +438,7 @@ BOOL HouseOwnerAi::updateState00(HouseOwnerVillager *o) {
 }
 
 BOOL HouseOwnerAi::enterState01(HouseOwnerVillager *o) {
-    void *t = func_02015aac(&o->villagerTalk);
+    void *t = ActorTalkRequest_getTalkPlayer(&o->villagerTalk);
     s32 r = 0;
     if (t != 0) {
         r = NpcActor_getAngleTo(o, t);
@@ -508,7 +508,7 @@ BOOL HouseOwnerAi::updateState03(HouseOwnerVillager *o) {
                 o->talkKind = 0;
             }
             VillagerTalk_begin(&o->villagerTalk, o, o->talkKind);
-            func_02015ab0(&o->villagerTalk, NpcActor_getPlayerActor(o, 4));
+            ActorTalkRequest_setTalkPlayer(&o->villagerTalk, NpcActor_getPlayerActor(o, 4));
             o->ai.changeState(o, 1);
         } else {
             if (NetArea_IsLocalOwner() != 0 && b == 4) {
@@ -596,7 +596,7 @@ void HouseOwnerVillager::onInteractionEvent(u32 idx, u8 v) {
                 s32 g = gCommManager->myAid;
                 NpcActor_netSetSlotsIfOwner(this, 1, g, g);
                 VillagerTalk_begin(&villagerTalk, this, talkKind);
-                func_02015ab0(&villagerTalk, NpcActor_getPlayerActor(this, 4));
+                ActorTalkRequest_setTalkPlayer(&villagerTalk, NpcActor_getPlayerActor(this, 4));
                 ai.changeState(this, 1);
                 talkKind = 0;
             }

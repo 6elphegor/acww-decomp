@@ -79,8 +79,8 @@ struct Unk_ov004_0224d0a0_Ent {
 };
 
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
-#define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
+#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
@@ -94,7 +94,7 @@ struct Unk_ov004_0224d0a0_Ent {
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define NpcActor_setCollisionRadius _ZN8NpcActor18setCollisionRadiusEi
 #define Character_setInteractionRange _ZN9Character19setInteractionRangeEi
-#define Unk_02015b8c_getAnimId _ZN12Unk_02015b8c9getAnimIdEj
+#define NpcAnimCtrl_getAnimId _ZN11NpcAnimCtrl9getAnimIdEj
 #define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define NpcMoveCtrl_setTurnMode _ZN11NpcMoveCtrl11setTurnModeEh
@@ -148,9 +148,9 @@ u32 NpcActor_getPlayerActor(void *self, u32 id);
 s32 NpcActor_getAngleTo(void *self, void *p);
 void NpcActor_setCollisionRadius(void *self, s32 v);
 void Character_setInteractionRange(void *self, s32 v);
-void func_02015ab0(void *self, u32 v);
-void *func_02015aac(void *self);
-void Unk_02015b8c_getAnimId(void *self, u32 v);
+void ActorTalkRequest_setTalkPlayer(void *self, u32 v);
+void *ActorTalkRequest_getTalkPlayer(void *self);
+void NpcAnimCtrl_getAnimId(void *self, u32 v);
 void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, Unk_ov004_0221b954_Vec *v, s32 d, s32 e, u8 f);
 void NpcMoveCtrl_setSpeedPreset(void *self, s32 a, s32 b, s32 c, s32 d);
 void NpcMoveCtrl_setTurnMode(void *self, u8 a);
@@ -424,7 +424,7 @@ BOOL SpNpcBrewster::mainAct00() {
 }
 
 BOOL SpNpcBrewster::setupAct01() {
-    void *p = func_02015aac(&talk);
+    void *p = ActorTalkRequest_getTalkPlayer(&talk);
     s32 r = 0;
     NpcLookAt_setTarget(&lookAt, 1, r, r, &gVec3Zero, 4, data_020c6d1c, 1);
     if (p != 0) {
@@ -495,7 +495,7 @@ BOOL SpNpcBrewster::mainAct05() {
             NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, gCommManager->myAid);
             ((ActorTalkRequest *)&talk)->resetMsg();
             s32 r = NpcActor_getPlayerActor(this, 4);
-            func_02015ab0(&talk, r);
+            ActorTalkRequest_setTalkPlayer(&talk, r);
             changeAct(1);
         } else if (NetArea_IsLocalOwner() != 0 && b == 4) {
             NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
@@ -967,7 +967,7 @@ void SpNpcBrewster::onInteractionEvent(u32 cmd, u8 arg) {
             NpcActor_netSetSlotsIfOwner(this, 1, g, g);
             ActorTalkRequest *p = &talk;
             p->resetMsg();
-            func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+            ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
             if (CommManager_isOnline(gl) || *DebugVar_GetPtr(0, 0x4a) != 0) {
                 changeAct(1);
             } else {
@@ -985,7 +985,7 @@ void SpNpcBrewster::onInteractionEvent(u32 cmd, u8 arg) {
             NpcActor_netSetSlotsIfOwner(this, 1, g, g);
             ActorTalkRequest *p = &talk;
             p->resetMsg();
-            func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+            ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
             changeAct(1);
         }
         break;
@@ -1033,7 +1033,7 @@ extern "C" void *SpNpcBrewster_GetJointMtxB() { return &sSpNpcBrewster->jointMtx
 
 extern "C" u32 SpNpcBrewster_GetAnimFrame() { return ((u32)sSpNpcBrewster->model.curFrame << 4) >> 16; }
 
-extern "C" void SpNpcBrewster_GetAnimState() { Unk_02015b8c_getAnimId(&sSpNpcBrewster->animCtrl, 0); }
+extern "C" void SpNpcBrewster_GetAnimState() { NpcAnimCtrl_getAnimId(&sSpNpcBrewster->animCtrl, 0); }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // SpNpcBrewster

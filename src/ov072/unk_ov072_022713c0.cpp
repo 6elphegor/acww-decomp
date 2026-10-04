@@ -76,7 +76,7 @@ void TalkRequest_SetTargetDone(void *p);
 void EventWeekSlots_MarkPlayer(s32 a);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-s32 _ZN12Unk_02015b8c9getAnimIdEj(void *self, u32 a);
+s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *self, u32 a);
 void _ZN14NpcMoveAnimSet12setStandAnimEi(void *self, s32 a);
 s32 Pocket_FindItem(u16 *p);
 void Pocket_RemoveItem(s32 a);
@@ -540,7 +540,7 @@ BOOL SpNpcGulliver::setupAct02() {
     repairing = 0;
     if (_ZN13GulliverQuest9isStartedEv(&data_021e58a6)) {
         if (gestureTimer == 0) {
-            void *p = talk.func_02015aac();
+            void *p = talk.getTalkPlayer();
             s32 x = rotY;
             if (p != NULL) {
                 x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -557,7 +557,7 @@ BOOL SpNpcGulliver::setupAct02() {
 
 BOOL SpNpcGulliver::mainAct02() {
     if (gestureTimer != 0) {
-        void *p = talk.func_02015aac();
+        void *p = talk.getTalkPlayer();
         s32 x = rotY;
         if (p != NULL) {
             x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -608,7 +608,7 @@ void SpNpcGulliverTalk::scriptWakeUp() {
         }
         break;
     case 1:
-        if (_ZN12Unk_02015b8c9getAnimIdEj(&ownerNpc->animCtrl, 0) == 0xd5) {
+        if (_ZN11NpcAnimCtrl9getAnimIdEj(&ownerNpc->animCtrl, 0) == 0xd5) {
             if (ownerNpc->actionCtrl.isActionDone()) {
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(&ownerNpc->actionCtrl, 3, 2, 0, 0, 0, ownerNpc->getAngleToPlayer(4), 0, 0, data_020c6cc8, 0);
                 scriptStep = scriptStep + 1;
@@ -770,7 +770,7 @@ void SpNpcGulliver::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        talk.func_02015ab0((u32)getPlayerActor(4));
+        talk.setTalkPlayer((u32)getPlayerActor(4));
         changeAct(2);
         break;
     case 8:

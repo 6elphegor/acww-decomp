@@ -32,14 +32,14 @@
 class FleaMarketSellerVillager;
 
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
-#define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
+#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
 #define ActorTalkRequest_getChoiceList _ZN16ActorTalkRequest13getChoiceListEv
-#define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
+#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
@@ -122,8 +122,8 @@ s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, 
 s32 NpcTalkCtrl_isBusy(void *);
 s32 Scene_GetWarpRequest(void);
 void SceneWarp_RequestExit(s32, s32);
-void *func_02015aac(void *);
-void func_02015ab0(void *, s32);
+void *ActorTalkRequest_getTalkPlayer(void *);
+void ActorTalkRequest_setTalkPlayer(void *, s32);
 s32 TalkRequest_SetTargetDone(void *);
 void TalkRequest_AddPlayerTalk6(void *, u32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
@@ -135,7 +135,7 @@ void Villager_RemoveFurnitureAt(void *, void *, s32, s32);
 s32 Item_IsFurniture(void *);
 u32 Item_GetFurnitureIndex(void *);
 void FtrMgr_SetSaleMode(void);
-void Unk_02013474_enableFootsteps(void *);
+void NpcFootstepFx_enableFootsteps(void *);
 void Scene_GetPrevious(void);
 s32 SceneId_IsTownUnk31(void);
 void Ground_LockExit(u32);
@@ -338,7 +338,7 @@ BOOL FleaMarketSellerVillager::onCreate() {
     }
     FtrMgr_SetSaleMode();
     saleItem = 0xfff1;
-    Unk_02013474_enableFootsteps(&footstepFx);
+    NpcFootstepFx_enableFootsteps(&footstepFx);
     Scene_GetPrevious();
     if (SceneId_IsTownUnk31()) {
         changeAct(4);
@@ -492,7 +492,7 @@ BOOL FleaMarketSellerVillager::mainAct06() {
 }
 
 BOOL FleaMarketSellerVillager::setupAct03() {
-    void *t = func_02015aac(&talk);
+    void *t = ActorTalkRequest_getTalkPlayer(&talk);
     s32 r = 0;
     if (t != 0) {
         r = NpcActor_getAngleTo(this, t);
@@ -515,7 +515,7 @@ BOOL FleaMarketSellerVillager::mainAct03() {
 }
 
 BOOL FleaMarketSellerVillager::setupAct01() {
-    void *t = func_02015aac(&talk);
+    void *t = ActorTalkRequest_getTalkPlayer(&talk);
     s32 r = 0;
     if (t != 0) {
         r = NpcActor_getAngleTo(this, t);
@@ -571,7 +571,7 @@ BOOL FleaMarketSellerVillager::mainAct07() {
     if (r4 <= 0x3000 || Vec_Equal(&b, &position) != 0 || Math_CountDownU8(&approachTimer) == 0) {
         VillagerTalk *pb = &talk;
         pb->resetMsg();
-        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
         changeAct(1);
     }
     return TRUE;
@@ -778,7 +778,7 @@ void FleaMarketSellerVillager::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 1:
         talk.resetMsg();
-        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
         if (talkStage == 0) {
             changeAct(1);
         } else if (talkStage == 3) {
@@ -789,7 +789,7 @@ void FleaMarketSellerVillager::onInteractionEvent(u32 a, u8) {
         break;
     case 0:
         talk.resetMsg();
-        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
         changeAct(1);
         break;
     case 8:

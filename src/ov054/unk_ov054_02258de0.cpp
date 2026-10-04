@@ -249,7 +249,7 @@ struct Unk_ov054_0225aef4_Ent {
 #define ActorTalkRequest_setMonthSlot _ZN16ActorTalkRequest12setMonthSlotEjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
 #define ActorTalkRequest_getChoiceList _ZN16ActorTalkRequest13getChoiceListEv
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
@@ -325,7 +325,7 @@ void TalkWindowState_openChoices(void *o, s32 v);
 void MenuCtrl_ReturnFutureLetter();
 void MenuCtrl_StoreFutureLetter();
 s32 NetArea_IsLocalOwner();
-void func_02015ab0(void *self, s32 v);
+void ActorTalkRequest_setTalkPlayer(void *self, s32 v);
 s32 NpcTalkCtrl_isBusy(void *self);
 s32 NpcActor_netGetSlots(void *self, s32 *a, s32 *b);
 
@@ -1004,7 +1004,7 @@ BOOL SpNpcPellyPhyllis::mainAct09() {
         if (NpcActor_netGetSlots(this, &a, &b) && a == gCommManager->myAid && a == b) {
             netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
             talk.resetMsg();
-            func_02015ab0(&talk, getPlayerActor(4));
+            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
             changeAct(4);
         } else if (NetArea_IsLocalOwner() && b == 4) {
             netSetSlotsIfOwner(1, gCommManager->myAid, 4);
@@ -2302,7 +2302,7 @@ void SpNpcPellyPhyllis::onInteractionEvent(u32 cmd, u8 arg) {
         break;
     case 1:
         talk.resetMsg();
-        func_02015ab0(&talk, getPlayerActor(4));
+        ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
         changeAct(1);
         break;
     case 0:
@@ -2314,7 +2314,7 @@ void SpNpcPellyPhyllis::onInteractionEvent(u32 cmd, u8 arg) {
             u32 t = gCommManager->myAid;
             netSetSlotsIfOwner(1, t, t);
             talk.resetMsg();
-            func_02015ab0(&talk, getPlayerActor(4));
+            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
             changeAct(4);
         }
         break;

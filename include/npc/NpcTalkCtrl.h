@@ -4,6 +4,7 @@
 #include "types.h"
 
 struct Unk_02013b10_Ctx;
+struct Unk_020133cc_Player;
 
 // 0x10-byte NPC talk controller (turn-and-talk state machine), NpcActor::talkCtrl (+0x618). Defined in main,
 // unk_020119cc.cpp (the unk_02013b10.cpp part, 0x02013b10..0x02014254; empty C1 0x02014254, D1 label 0x02014250 =
@@ -45,6 +46,17 @@ public:
     BOOL requestTurnAndTalk(s16 d, s16 e, u8 g);
     BOOL isBusy();
     void reset();
+    // talk states 1, 3 and 4 (0x020135ec..0x02013b10; their argument is the TU-local NpcActor view Unk_020133cc_Player)
+    void mainState4(Unk_020133cc_Player* p);
+    void state4Step0(Unk_020133cc_Player* p);
+    void setupState4(Unk_020133cc_Player* p);
+    void mainState3(Unk_020133cc_Player* p);
+    void setupState3(Unk_020133cc_Player* p);
+    void mainState1(Unk_020133cc_Player* p);
+    void state1Step2(Unk_020133cc_Player* p);
+    void state1Step1(Unk_020133cc_Player* p);
+    void state1Step0(Unk_020133cc_Player* p);
+    void setupState1(Unk_020133cc_Player* p);
 };
 
 #endif

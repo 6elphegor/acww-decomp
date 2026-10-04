@@ -85,7 +85,7 @@ void _ZN15TalkWindowState13unlockAdvanceEv(void *self);
 void _ZN15TalkWindowState11lockAdvanceEv(void *self);
 void *_ZN15TalkWindowState13getChoiceListEv(void *self);
 s32 _ZN10ChoiceList9getResultEv(void *self);
-void _ZN16ActorTalkRequest13func_02015ab0Ej(void *self, u32 v);
+void _ZN16ActorTalkRequest13setTalkPlayerEj(void *self, u32 v);
 void TalkRequestFlags_ClearSceneHold();
 void TalkRequestFlags_SetSceneHold();
 void *Scene_GetWarpRequest();
@@ -492,12 +492,12 @@ void SpNpcRover::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        _ZN16ActorTalkRequest13func_02015ab0Ej(&talk, getPlayerActor(4));
+        _ZN16ActorTalkRequest13setTalkPlayerEj(&talk, getPlayerActor(4));
         changeAct(1);
         break;
     case 1:
         talk.resetMsg();
-        _ZN16ActorTalkRequest13func_02015ab0Ej(&talk, getPlayerActor(4));
+        _ZN16ActorTalkRequest13setTalkPlayerEj(&talk, getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

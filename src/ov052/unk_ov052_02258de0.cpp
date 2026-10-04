@@ -511,7 +511,7 @@ BOOL SpNpcRedd::mainAct04() {
 }
 
 BOOL SpNpcRedd::setupAct05() {
-    void *p = talk.func_02015aac();
+    void *p = talk.getTalkPlayer();
     s32 r = 0;
     if (p) {
         r = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -533,7 +533,7 @@ BOOL SpNpcRedd::mainAct05() {
 }
 
 BOOL SpNpcRedd::setupAct06() {
-    void *p = talk.func_02015aac();
+    void *p = talk.getTalkPlayer();
     s32 r = 0;
     if (p) {
         r = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -591,7 +591,7 @@ BOOL SpNpcRedd::mainAct09() {
     _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &out);
     if (t <= 0x3000 || Vec_Equal(&out, &position) != 0 || Math_CountDownU8(&approachTimer) == 0) {
         talk.resetMsg();
-        talk.func_02015ab0(getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(5);
     }
     return TRUE;
@@ -916,7 +916,7 @@ void SpNpcRedd::onInteractionEvent(u32 cmd, u8 arg) {
         break;
     case 1:
         talk.resetMsg();
-        talk.func_02015ab0(getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         if (talk.getTopic() == 0) {
             changeAct(5);
         } else if (talk.getTopic() == 1 || talk.getTopic() == 2 ||
@@ -928,7 +928,7 @@ void SpNpcRedd::onInteractionEvent(u32 cmd, u8 arg) {
         break;
     case 0:
         talk.resetMsg();
-        talk.func_02015ab0(getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(5);
         break;
     case 8:

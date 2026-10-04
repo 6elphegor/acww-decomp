@@ -27,7 +27,7 @@ public:
 
     void storeHeadMtx(Unk_02006d14 *p);
     void setTurnMode(u8 v);
-    void func_0201a8cc();
+    void getCurSpeedPreset();
     void setSpeedPreset(s32 idx, s32 x, s32 y, s32 z);
     void resetDestination();
     s32 hasNextLeg();

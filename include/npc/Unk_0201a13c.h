@@ -8,7 +8,7 @@
 // the real type of NpcActor::emotionFx (0x28 bytes, followed by NpcActor::jointMtx / jointPos). Only the kept NpcActor
 // copy in src/main/unk_0201c050.cpp still uses it as a member type.
 
-struct Unk_0201a1e0_Base;
+class NpcActor;
 struct Unk_0201a25c_Src;
 
 struct Unk_0201a13c {
@@ -36,7 +36,7 @@ struct Unk_0201a13c {
     ~Unk_0201a13c();
     BOOL isOnTarget();
     BOOL isWithinYawLimit(s32 v);
-    void update(Unk_0201a1e0_Base *base);
+    void update(NpcActor *base);
     void approachManualAngles();
     void lookAtPoint(Unk_0201a25c_Src *o);
     s32 func_0201a53c(void *a, void *b, s32 c);

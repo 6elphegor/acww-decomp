@@ -330,7 +330,7 @@ BOOL SpNpcResetti::setupAct00() { return TRUE; }
 BOOL SpNpcResetti::mainAct00() { return TRUE; }
 
 BOOL SpNpcResetti::setupAct01() {
-    void *p = talk.func_02015aac();
+    void *p = talk.getTalkPlayer();
     s16 v = 0;
     if (p != NULL) {
         v = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -682,7 +682,7 @@ void SpNpcResetti::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 1:
         talk.resetMsg();
-        talk.func_02015ab0((u32)getPlayerActor(4));
+        talk.setTalkPlayer((u32)getPlayerActor(4));
         changeAct(4);
         break;
     case 8:

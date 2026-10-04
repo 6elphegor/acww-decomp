@@ -311,7 +311,7 @@ BOOL SpNpcGracie::setupAct00() {
 BOOL SpNpcGracie::mainAct00() { return TRUE; }
 
 BOOL SpNpcGracie::setupAct01() {
-    void *p = talk.func_02015aac();
+    void *p = talk.getTalkPlayer();
     u32 x = 0;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -867,7 +867,7 @@ void SpNpcGracie::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        talk.func_02015ab0((u32)getPlayerActor(4));
+        talk.setTalkPlayer((u32)getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

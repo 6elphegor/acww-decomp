@@ -9,7 +9,7 @@ struct Unk_0201acf8 {
     /* 0x2 */ u16 unk_02;
 
     void func_0201acf8(u16 v);
-    s32 func_0201acfc();
+    s32 getLevel();
 }; // size 0x4
 
 #endif // GAME_UNK_0201ACF8_H

@@ -804,7 +804,7 @@ BOOL SpNpcCopper::mainAct01() {
 }
 
 BOOL SpNpcCopper::setupAct02() {
-    NpcActor *o = (NpcActor *)talk.func_02015aac();
+    NpcActor *o = (NpcActor *)talk.getTalkPlayer();
     s32 r = 0;
     if (o) {
         r = getAngleTo(o);
@@ -1937,7 +1937,7 @@ BOOL SpNpcCopper::mainAct0F() {
         if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b) != 0 && (x = a, u = gCommManager->myAid, x == u) && x == b) {
             netSetSlotsIfOwner(1, u, u);
             ((ActorTalkRequest *)&talk)->resetMsg();
-            talk.func_02015ab0(getPlayerActor(4));
+            talk.setTalkPlayer(getPlayerActor(4));
             SpNpcCopper_ChangeAct(this, 2);
         } else if (NetArea_IsLocalOwner() != 0 && b == 4) {
             netSetSlotsIfOwner(1, gCommManager->myAid, 4);
@@ -3284,7 +3284,7 @@ void SpNpcCopper::onInteractionEvent(u32 cmd, u8 arg) {
         break;
     case 1: {
         ((ActorTalkRequest *)&talk)->resetMsg();
-        talk.func_02015ab0(getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         SpNpcCopper_ChangeAct(this, 2);
         break;
     }
@@ -3297,7 +3297,7 @@ void SpNpcCopper::onInteractionEvent(u32 cmd, u8 arg) {
             s32 g = gCommManager->myAid;
             netSetSlotsIfOwner(1, g, g);
             ((ActorTalkRequest *)&talk)->resetMsg();
-            talk.func_02015ab0(getPlayerActor(4));
+            talk.setTalkPlayer(getPlayerActor(4));
             SpNpcCopper_ChangeAct(this, 2);
         }
         break;

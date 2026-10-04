@@ -29,10 +29,10 @@ void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 
 void _ZN11NpcMoveCtrl11setTurnModeEh(void *self, s32 a);
 s32 Scene_GetCurrent(void);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, s32 a, s32 b, s32 c, s32 d0, s32 d1, s32 d2, s32 d3, s32 d4, s32 d5, s32 d6);
-void _ZN12Unk_0201347416disableFootstepsEv(void *self);
-void _ZN12Unk_0201347415enableFootstepsEv(void *self);
+void _ZN13NpcFootstepFx16disableFootstepsEv(void *self);
+void _ZN13NpcFootstepFx15enableFootstepsEv(void *self);
 s32 _ZN13NpcActionCtrl12isActionDoneEv(void *self);
-s32 _ZN12Unk_0201acf813func_0201acfcEv(void *self);
+s32 _ZN12Unk_0201acf88getLevelEv(void *self);
 s32 _ZN9NpcLookAt15getObstacleBitsEv(void *self);
 s32 _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(void *self, void *owner, s32 a);
 void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *self, void *v);
@@ -279,7 +279,7 @@ void SpNpcKaitlin::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 1:
         talk.resetMsg();
-        talk.func_02015ab0(_ZN8NpcActor14getPlayerActorEj(this, 4));
+        talk.setTalkPlayer(_ZN8NpcActor14getPlayerActorEj(this, 4));
         changeAct(1);
         break;
     case 0:
@@ -287,7 +287,7 @@ void SpNpcKaitlin::onInteractionEvent(u32 a, u8) {
         break;
     case 3:
         talk.resetMsg();
-        talk.func_02015ab0(_ZN8NpcActor14getPlayerActorEj(this, 4));
+        talk.setTalkPlayer(_ZN8NpcActor14getPlayerActorEj(this, 4));
         changeAct(9);
         break;
     case 8:
@@ -332,7 +332,7 @@ BOOL SpNpcKaitlin::mainAct01() {
 
 BOOL SpNpcKaitlin::setupAct09() {
     u32 x;
-    void *p = talk.func_02015aac();
+    void *p = talk.getTalkPlayer();
     x = 0;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -480,8 +480,8 @@ void SpNpcKaitlinTalk::onChoice(u32) {}
 BOOL SpNpcKaitlin::setupAct07() {
     actCounter = 0;
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
-    _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
+    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
+    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
@@ -611,7 +611,7 @@ BOOL SpNpcKaitlin::mainAct07() {
     if (a) {
         if (!tryAvoidObstacle()) {
             if (_ZN13NpcActionCtrl12isActionDoneEv(p564)) {
-                if (_ZN12Unk_0201acf813func_0201acfcEv(&unk_3aa) == 2) {
+                if (_ZN12Unk_0201acf88getLevelEv(&unk_3aa) == 2) {
                     _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 } else if ((Random_Next(gRandom) & 7) == 0) {
                     Unk_020c17f8_Vec v1;
@@ -672,7 +672,7 @@ BOOL SpNpcKaitlin::mainAct07() {
 BOOL SpNpcKaitlin::setupAct08() {
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     actCounter = 0;
-    _ZN12Unk_0201347416disableFootstepsEv(&footstepFx);
+    _ZN13NpcFootstepFx16disableFootstepsEv(&footstepFx);
     return TRUE;
 }
 

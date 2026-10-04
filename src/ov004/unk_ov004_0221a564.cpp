@@ -33,12 +33,12 @@
 class SickVillager;
 
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
-#define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
+#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
 #define ActorTalkRequest_setPlayerNameSlot _ZN16ActorTalkRequest17setPlayerNameSlotEjj
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
 #define NpcActionCtrl_requestEmotion _ZN13NpcActionCtrl14requestEmotionEiht
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
@@ -196,7 +196,7 @@ void *PlayerData_getPlayerId(void *);
 void SickVillagerRecord_setTodaysVisitor(void *, void *);
 s32 SickVillagerRecord_hasTodaysVisitor(void *);
 void VillagerTalk_begin(void *, void *, u32);
-void func_02015ab0(void *, s32);
+void ActorTalkRequest_setTalkPlayer(void *, s32);
 s32 NpcActor_getPlayerActor(void *, s32);
 s32 NpcTalkCtrl_isBusy(void *);
 void *Villager_FindOrCreateMemory(void *, void *);
@@ -208,7 +208,7 @@ void VillagerMood_updateSoundPos(void *, void *);
 s32 func_0202d928();
 s32 func_0202d948(void *);
 s32 func_0202dab0(void *);
-void Unk_02013474_enableFootsteps(void *);
+void NpcFootstepFx_enableFootsteps(void *);
 s32 func_0201b138(void *);
 void NpcActor_setTalkRequest(void *, void *);
 s32 NpcMoveAnimSet_setWalkAnim(void *, s32);
@@ -407,7 +407,7 @@ BOOL SickVillager::onCreate() {
     }
     drawFn = PMB(data_ov004_0224ca68);
     blockFurnitureCells();
-    Unk_02013474_enableFootsteps(&footstepFx);
+    NpcFootstepFx_enableFootsteps(&footstepFx);
     return TRUE;
 }
 
@@ -493,7 +493,7 @@ void SickVillager::onInteractionEvent(u32 idx, u8 v) {
         break;
     case 0:
         partnerPlayer = v;
-        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
         changeAct(3);
         break;
     case 8:

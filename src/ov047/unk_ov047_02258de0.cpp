@@ -122,8 +122,8 @@ void _ZN12Unk_020d771015setPocketFilterEjjj(void *self, Unk_ov047_Cb cb, u32 a, 
 void _ZN12Unk_020d771012openSubSceneEi(void *self, s32 a);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *self, u16 *p, s32 a, s32 b);
 void _ZN16ActorTalkRequest13getChoiceListEv(void *self);
-NpcActor *_ZN16ActorTalkRequest13func_02015aacEv(void *self);
-void _ZN16ActorTalkRequest13func_02015ab0Ej(void *self, u32 v);
+NpcActor *_ZN16ActorTalkRequest13getTalkPlayerEv(void *self);
+void _ZN16ActorTalkRequest13setTalkPlayerEj(void *self, u32 v);
 void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
 void _ZN13NpcActionCtrl12requestStandEjt(void *self, s32 a, u16 b);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
@@ -165,8 +165,8 @@ BOOL _ZN8NpcActor11netGetSlotsEii(void *self, s32 *a, s32 *b);
 #define Unk_020d7710_openSubScene _ZN12Unk_020d771012openSubSceneEi
 #define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
 #define ActorTalkRequest_getChoiceList _ZN16ActorTalkRequest13getChoiceListEv
-#define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
+#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
@@ -688,7 +688,7 @@ BOOL SpNpcBlathers::mainAct02() {
 }
 
 BOOL SpNpcBlathers::setupAct03() {
-    NpcActor *p = func_02015aac(&talk);
+    NpcActor *p = ActorTalkRequest_getTalkPlayer(&talk);
     s32 r = 0;
     if (p) {
         r = getAngleTo(p);
@@ -726,7 +726,7 @@ BOOL SpNpcBlathers::mainAct06() {
         if (NpcActor_netGetSlots(this, &a, &b) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
             netSetSlotsIfOwner(1, t, t);
             talk.resetMsg();
-            func_02015ab0(&talk, getPlayerActor(4));
+            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
             changeAct(3);
         } else if (NetArea_IsLocalOwner() && b == 4) {
             netSetSlotsIfOwner(1, gCommManager->myAid, 4);
@@ -1768,7 +1768,7 @@ void SpNpcBlathers::onInteractionEvent(u32 cmd, u8 arg) {
             netSetSlotsIfOwner(1, g, g);
             ActorTalkRequest *p = &talk;
             p->resetMsg();
-            func_02015ab0(&talk, getPlayerActor(4));
+            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
             changeAct(3);
         }
         break;

@@ -34,8 +34,8 @@ class CafeVillager;
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
+#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcMoveAnimSet_setRunAnim _ZN14NpcMoveAnimSet10setRunAnimEi
 #define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
@@ -66,11 +66,11 @@ extern u8 data_ov004_022508e0[0x28];
 s32 Random_GlobalBelow(s32 a);
 void *VillagerData_getVillagerId(void *o);
 void VillagerId_makeFileName(void *a, const void *b, u32 c, const void *d);
-void func_02015ab0(void *o, s32 a);
+void ActorTalkRequest_setTalkPlayer(void *o, s32 a);
 s32 NpcActor_getPlayerActor(void *o, s32 a);
 s32 NpcTalkCtrl_isBusy(void *o);
 void TalkRequest_SetTargetDone(void *o);
-void *func_02015aac(void *o);
+void *ActorTalkRequest_getTalkPlayer(void *o);
 s32 NpcActor_getAngleTo(void *o, void *p);
 void NpcTalkCtrl_requestTurnAndTalk(void *o, s32 a, s32 b, s32 c);
 void NpcMoveAnimSet_setStandAnim(void *o, s32 a);
@@ -200,7 +200,7 @@ BOOL CafeVillager::setupAct02() {
 BOOL CafeVillager::mainAct02() { return TRUE; }
 
 BOOL CafeVillager::setupAct00() {
-    void *p = func_02015aac(&talk);
+    void *p = ActorTalkRequest_getTalkPlayer(&talk);
     s32 v = 0;
     if (p) {
         v = NpcActor_getAngleTo(this, p);
@@ -251,7 +251,7 @@ void CafeVillager::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
         changeAct(0);
         break;
     case 8:

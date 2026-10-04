@@ -35,7 +35,7 @@
 #include "talk/MsgString.h"
 #include "talk/MsgString33.h"
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
-#define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
+#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -391,7 +391,7 @@ s32 Item_IsFurnitureOrF031();
 void Ground_UnlinkUnit(s32, s32);
 s32 func_0202d928(void *);
 s32 func_0202d948(void *);
-void Unk_02013474_enableFootsteps(void *);
+void NpcFootstepFx_enableFootsteps(void *);
 void Scene_GetPrevious();
 s32 SceneId_IsTown();
 void HouseVisitor_SetPresent();
@@ -436,7 +436,7 @@ BOOL HouseVisitVillager::onCreate() {
     }
     drawFn = *(Unk_ov068_02270afc_BFn *)data_ov068_02270a24;
     unlinkFurnitureUnits();
-    Unk_02013474_enableFootsteps(&footstepFx);
+    NpcFootstepFx_enableFootsteps(&footstepFx);
     stayTimer = -1;
     talksLeft = 3;
     leaveTalkDelay = 0xb0;

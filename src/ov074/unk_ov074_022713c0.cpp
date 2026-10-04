@@ -72,8 +72,8 @@ struct Unk_ov074_02272020_V {
 
 
 // Other modules' methods are called through their mangled symbol names (self first).
-#define Unk_02013474_disableFootsteps _ZN12Unk_0201347416disableFootstepsEv
-#define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
+#define NpcFootstepFx_disableFootsteps _ZN13NpcFootstepFx16disableFootstepsEv
+#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
@@ -160,8 +160,8 @@ s32 NpcActionCtrl_requestAction(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 
 s32 Math_AngleXZ(void *a, s32 *b);
 Unk_ov074_02271be8_V *NpcMoveCtrl_getDestination(void *p);
 s32 MatTexVramTask_request(void *p, u32 a, u32 *b, u32 c, s32 d, s32 e);
-void Unk_02013474_disableFootsteps(void *p);
-void Unk_02013474_enableFootsteps(void *p);
+void NpcFootstepFx_disableFootsteps(void *p);
+void NpcFootstepFx_enableFootsteps(void *p);
 BOOL NpcTalkCtrl_isBusy(void *p);
 void NpcTalkCtrl_requestTurnAndTalk(void *p, u32 a, u32 b, u32 c);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -379,8 +379,8 @@ BOOL SpNpcBlanca::setupAct02() {
     void *self = this;
     FS(u8, 0x651) = 0;
     NpcActionCtrl_requestAction(PS(0x564), 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    Unk_02013474_enableFootsteps(PS(0x558));
-    Unk_02013474_enableFootsteps(PS(0x558));
+    NpcFootstepFx_enableFootsteps(PS(0x558));
+    NpcFootstepFx_enableFootsteps(PS(0x558));
     NpcLookAt_setTarget(PS(0x3b0), 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
@@ -518,7 +518,7 @@ BOOL SpNpcBlanca::mainAct02() {
     if (r6 != 0) {
         if (SpNpcBlanca_TryAvoidObstacle(this) == 0) {
             if (NpcActionCtrl_isActionDone(r4) != 0) {
-                if (((Unk_0201acf8 *)P(0x3aa))->func_0201acfc() == 2) {
+                if (((Unk_0201acf8 *)P(0x3aa))->getLevel() == 2) {
                     NpcActionCtrl_requestAction(r4, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 } else if ((Random_Next(gRandom) & 7) == 0) {
                     v.v[0] = gVec3Zero[0];
@@ -576,7 +576,7 @@ BOOL SpNpcBlanca::mainAct02() {
 BOOL SpNpcBlanca::setupAct03() {
     NpcActionCtrl_requestAction(P(0x564), 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     F(u8, 0x651) = 0;
-    Unk_02013474_disableFootsteps(P(0x558));
+    NpcFootstepFx_disableFootsteps(P(0x558));
     return TRUE;
 }
 
@@ -600,7 +600,7 @@ BOOL SpNpcBlanca::mainAct00() {
 BOOL SpNpcBlanca::mainAct01() { return TRUE; }
 
 BOOL SpNpcBlanca::setupAct04() {
-    u32 a = (u32)talk.func_02015aac();
+    u32 a = (u32)talk.getTalkPlayer();
     s32 b = rotY;
     if (a != 0) {
         b = NpcActor_getAngleTo(this, a);
@@ -859,7 +859,7 @@ void SpNpcBlanca::onInteractionEvent(u32 a, u8) {
         break;
     case 3:
         talk.resetMsg();
-        talk.func_02015ab0(getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         SpNpcBlanca_ChangeAct(this, 4);
         break;
     case 8:

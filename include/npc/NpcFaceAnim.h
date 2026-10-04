@@ -25,7 +25,7 @@ struct NpcFaceAnim : BlinkTimer {
     NpcFaceAnim();
     ~NpcFaceAnim();
     void release();
-    void func_020199c8();
+    void blinkNow();
     void resumeMouthMaterial();
     BOOL setMouthTexture(u32 a);
     BOOL setMaterialTex(void *m, void *q, u32 r);
@@ -36,8 +36,8 @@ struct NpcFaceAnim : BlinkTimer {
     void setMouthAnim(s32 v, u32 w);
     BOOL isMouthCycleDone();
     void randomizeTalkMouth();
-    BOOL func_02019c50(s32 a, s32 b, s32 c);
-    s32 func_02019c70(s32 v);
+    BOOL isTalkMouthCycleDone(s32 a, s32 b, s32 c);
+    s32 getTalkMouthStartFrame(s32 v);
     void pickTalkMouthVariant();
     BOOL isTalkMouthAnim(s32 v);
     BOOL load(Unk_02019cac_Owner *o);

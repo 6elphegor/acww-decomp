@@ -68,7 +68,7 @@ void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void ContestRecord_BeginFestival(void *p, s32 v);
 u32 Event_GetDaysSinceStart(s32 v);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
-void _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
+void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 extern u16 data_020c6cc8;
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
@@ -218,7 +218,7 @@ BOOL SpNpcTortimerFireworks::onCreate() {
     }
     changeAct(0);
     ContestRecord_BeginContestDay(gContestRecord, 0);
-    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&animCtrl, this, 0x140, 0, 0, 0x1000, 0, 1);
+    _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&animCtrl, this, 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
     u8 buf[8];
@@ -260,7 +260,7 @@ BOOL SpNpcTortimerFireworks::setupAct00() {
 BOOL SpNpcTortimerFireworks::mainAct00() { return TRUE; }
 
 BOOL SpNpcTortimerFireworks::setupAct01() {
-    void *p = talk.func_02015aac();
+    void *p = talk.getTalkPlayer();
     s32 x = 0;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -524,7 +524,7 @@ void SpNpcTortimerFireworks::onInteractionEvent(u32 v, u8) {
     switch (v) {
     case 0:
         talk.resetMsg();
-        talk.func_02015ab0((u32)getPlayerActor(4));
+        talk.setTalkPlayer((u32)getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

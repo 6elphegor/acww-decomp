@@ -47,8 +47,8 @@ void _ZN14NpcMoveAnimSet11setWalkAnimEi(void *a, s32 b);
 s32 _ZN8NpcActor19getDistanceToPlayerEj(void *a, s32 b);
 u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
 s32 _ZN8NpcActor10getAngleToEPS_(void *a, s32 b);
-s32 _ZN16ActorTalkRequest13func_02015aacEv(void *a);
-void _ZN16ActorTalkRequest13func_02015ab0Ej(void *a, s32 b);
+s32 _ZN16ActorTalkRequest13getTalkPlayerEv(void *a);
+void _ZN16ActorTalkRequest13setTalkPlayerEj(void *a, s32 b);
 s32 _ZN16ActorTalkRequest10onEventTagEj(void *p, void *q);
 void _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene(void *p, s32 a);
 void _ZN16ActorTalkRequest15setTownNameSlotEjj(void *self, s32 a, s32 b);
@@ -286,7 +286,7 @@ void SpNpcKatie::onInteractionEvent(u32 state, u8) {
     case 0:
     case 1:
         talk.resetMsg();
-        _ZN16ActorTalkRequest13func_02015ab0Ej(&talk, _ZN8NpcActor14getPlayerActorEj(this, 4));
+        _ZN16ActorTalkRequest13setTalkPlayerEj(&talk, _ZN8NpcActor14getPlayerActorEj(this, 4));
         if (talk.getTopic() != 6) {
             changeAct(3);
         }
@@ -380,7 +380,7 @@ BOOL SpNpcKatie::mainAct02() {
 BOOL SpNpcKatie::setupAct03() {
     s32 p, r4;
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-    p = _ZN16ActorTalkRequest13func_02015aacEv(&talk);
+    p = _ZN16ActorTalkRequest13getTalkPlayerEv(&talk);
     r4 = 0;
     if (p != 0) {
         r4 = _ZN8NpcActor10getAngleToEPS_(this, p);

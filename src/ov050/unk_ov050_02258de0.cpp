@@ -37,8 +37,8 @@
 #define ActorTalkRequest_setMonthSlot _ZN16ActorTalkRequest12setMonthSlotEjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
 #define ActorTalkRequest_getChoiceList _ZN16ActorTalkRequest13getChoiceListEv
-#define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
+#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
@@ -431,8 +431,8 @@ void ActorTalkRequest_setMonthSlot(void *self, u32 a, u32 b);
 void ActorTalkRequest_setItemNameSlot(void *self, u16 *p, s32 a, s32 b);
 void ActorTalkRequest_setNumberSlot(void *self, ...);
 s32 ActorTalkRequest_getChoiceList(void *self);
-NpcActor *func_02015aac(void *self);
-void func_02015ab0(void *self, s32 v);
+NpcActor *ActorTalkRequest_getTalkPlayer(void *self);
+void ActorTalkRequest_setTalkPlayer(void *self, s32 v);
 void NpcActionCtrl_requestStand(void *self, s32 a, u32 b);
 void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, u16 i, u16 j);
 s32 NpcActionCtrl_isActionDone(void *self);
@@ -1167,7 +1167,7 @@ BOOL SpNpcNookShop::mainAct03() {
 
 BOOL SpNpcNookShop::setupAct04() {
     s32 v;
-    NpcActor *p = func_02015aac(&talk);
+    NpcActor *p = ActorTalkRequest_getTalkPlayer(&talk);
     s32 r = 0;
     if (p) {
         r = getAngleTo(p);
@@ -1201,7 +1201,7 @@ BOOL SpNpcNookShop::mainAct04() {
 }
 
 BOOL SpNpcNookShop::setupAct05() {
-    NpcActor *p = func_02015aac(&talk);
+    NpcActor *p = ActorTalkRequest_getTalkPlayer(&talk);
     s32 r = 0;
     if (p) {
         r = getAngleTo(p);
@@ -1359,7 +1359,7 @@ BOOL SpNpcNookShop::mainAct08() {
         if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
             netSetSlotsIfOwner(1, t, t);
             talk.resetMsg();
-            func_02015ab0(&talk, getPlayerActor(4));
+            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
             BOOL r;
             if (Item_IsFurniture(&selectedItem)) {
                 u16 tmp = 0xfff1;
@@ -1474,7 +1474,7 @@ BOOL SpNpcNookShop::mainAct10() {
     NpcMoveCtrl_setWaypoint(&moveCtrl, &out);
     if (t <= 0x3000 || Vec_Equal(&out, &position) != 0 || Math_CountDownU8(&approachTimer) == 0) {
         talk.resetMsg();
-        func_02015ab0(&talk, getPlayerActor(4));
+        ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
         changeAct(4);
     }
     return TRUE;
@@ -3803,7 +3803,7 @@ void SpNpcNookShop::onInteractionEvent(u32 cmd, u8 arg) {
             g = gCommManager;
             netSetSlotsIfOwner(1, g->myAid, g->myAid);
             talk.resetMsg();
-            func_02015ab0(&talk, getPlayerActor(4));
+            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
             if (talk.getTopic() == 0 || talk.getTopic() == 0x11) {
                 changeAct(4);
             } else if (talk.getTopic() == 1 || talk.getTopic() == 0x12 ||
@@ -3811,7 +3811,7 @@ void SpNpcNookShop::onInteractionEvent(u32 cmd, u8 arg) {
                 changeAct(5);
             } else if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
                 talk.resetMsg();
-                func_02015ab0(&talk, getPlayerActor(4));
+                ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
                 changeAct(4);
             } else {
                 changeAct(0x10);
@@ -3826,7 +3826,7 @@ void SpNpcNookShop::onInteractionEvent(u32 cmd, u8 arg) {
         } else if (isNetOwner()) {
             netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
             talk.resetMsg();
-            func_02015ab0(&talk, getPlayerActor(4));
+            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
             if (isNook()) {
                 talk.setTopic(5);
             } else {

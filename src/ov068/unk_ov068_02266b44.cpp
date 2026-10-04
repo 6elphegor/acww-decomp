@@ -37,8 +37,8 @@ class SpNpcNookIntro;
 class SpNpcNookIntroTalk;
 
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
-#define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
+#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
@@ -105,8 +105,8 @@ void Unk_02097ff4_clearFlag(void *self, s32 a);
 void *HouseData_getDebt(void *self);
 void TalkWindowState_setNextMessage(void *self, void *buf, void *p);
 void ActorTalkRequest_setNumberSlot(void *self, void *a, s32 b, s32 c, s32 d, s32 e);
-void func_02015ab0(void *self, s32 a);
-void *func_02015aac(void *self);
+void ActorTalkRequest_setTalkPlayer(void *self, s32 a);
+void *ActorTalkRequest_getTalkPlayer(void *self);
 s32 NpcActor_getPlayerActor(void *self, s32 a);
 u32 NpcActor_getAngleTo(void *self, void *q);
 void NpcActor_setTalkRequest(void *self, void *q);
@@ -374,7 +374,7 @@ BOOL SpNpcNookIntro::mainAct00() {
 
 BOOL SpNpcNookIntro::setupAct01() {
     u32 x;
-    void *p = func_02015aac(&talk);
+    void *p = ActorTalkRequest_getTalkPlayer(&talk);
     x = 0;
     if (p != NULL) {
         x = NpcActor_getAngleTo(this, p);
@@ -407,7 +407,7 @@ BOOL SpNpcNookIntro::setupAct02() {
 BOOL SpNpcNookIntro::mainAct02() {
     if (PlayerActor_IsScriptedWalking(4) == 0) {
         talk.resetMsg();
-        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
         changeAct(1);
     }
     return TRUE;

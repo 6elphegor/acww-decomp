@@ -93,8 +93,8 @@ s32 _ZN19Unk_020133cc_Player20getLastTaughtEmotionEv(void *self);
 s32 _ZN12Unk_02097ff48testFlagEj(void *self, u32 v);
 void _ZN12Unk_02097ff47setFlagEj(void *self, u32 v);
 void _ZN9MsgString4copyEPS_(void *self, void *o);
-void _ZN12Unk_0201347416disableFootstepsEv(void *self);
-void _ZN12Unk_0201347415enableFootstepsEv(void *self);
+void _ZN13NpcFootstepFx16disableFootstepsEv(void *self);
+void _ZN13NpcFootstepFx15enableFootstepsEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u32 a, s32 b, s32 c, void *d, s32 e, s32 f, u32 g);
 s32 _ZN9NpcLookAt15getObstacleBitsEv(void *self);
@@ -103,7 +103,7 @@ BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *self);
 Unk_ov088_Vec *_ZN11NpcMoveCtrl14getDestinationEv(void *self);
 void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *self, void *v);
 BOOL _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(void *self, void *owner, s32 v);
-s32 _ZN12Unk_0201acf813func_0201acfcEv(void *self);
+s32 _ZN12Unk_0201acf88getLevelEv(void *self);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 }
 
@@ -361,8 +361,8 @@ BOOL SpNpcShrunk::mainAct01() { return TRUE; }
 BOOL SpNpcShrunk::setupAct02() {
     waitTimer = 0;
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
-    _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
+    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
+    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
@@ -499,7 +499,7 @@ BOOL SpNpcShrunk::mainAct02() {
     if (r6 != 0) {
         if (checkCollisionWhileMoving() == 0) {
             if (p->isActionDone() != 0) {
-                if (_ZN12Unk_0201acf813func_0201acfcEv(&unk_3aa) == 2) {
+                if (_ZN12Unk_0201acf88getLevelEv(&unk_3aa) == 2) {
                     _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 } else if ((Random_Next(gRandom) & 7) == 0) {
                     v.x = gVec3Zero.x;
@@ -551,7 +551,7 @@ BOOL SpNpcShrunk::mainAct02() {
 BOOL SpNpcShrunk::setupAct03() {
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     waitTimer = 0;
-    _ZN12Unk_0201347416disableFootstepsEv(&footstepFx);
+    _ZN13NpcFootstepFx16disableFootstepsEv(&footstepFx);
     return TRUE;
 }
 
@@ -563,7 +563,7 @@ BOOL SpNpcShrunk::mainAct03() {
 }
 
 BOOL SpNpcShrunk::setupAct04() {
-    void *p = talk.func_02015aac();
+    void *p = talk.getTalkPlayer();
     s32 x = rotY;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -860,7 +860,7 @@ void SpNpcShrunk::onInteractionEvent(u32 v, u8) {
         break;
     case 3:
         talk.resetMsg();
-        talk.func_02015ab0((u32)getPlayerActor(4));
+        talk.setTalkPlayer((u32)getPlayerActor(4));
         changeAct(4);
         break;
     case 8:

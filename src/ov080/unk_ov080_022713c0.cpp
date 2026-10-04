@@ -26,7 +26,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
-#define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti
+#define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
 #define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
@@ -218,7 +218,7 @@ BOOL SpNpcTortimer::setupAct00() {
 BOOL SpNpcTortimer::mainAct00() { return TRUE; }
 
 BOOL SpNpcTortimer::setupAct01() {
-    void *p = talk.func_02015aac();
+    void *p = talk.getTalkPlayer();
     u32 x = 0;
     if (p != NULL) {
         x = getAngleTo((NpcActor *)p);
@@ -396,7 +396,7 @@ void SpNpcTortimer::onInteractionEvent(u32 a, u8 b) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        talk.func_02015ab0(getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

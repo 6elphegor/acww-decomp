@@ -41,16 +41,16 @@
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
-#define Unk_02015b8c_getAnimId _ZN12Unk_02015b8c9getAnimIdEj
+#define NpcAnimCtrl_getAnimId _ZN11NpcAnimCtrl9getAnimIdEj
 #define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
 #define NpcLookAt_getObstacleBits _ZN9NpcLookAt15getObstacleBitsEv
-#define func_0201acfc _ZN12Unk_0201acf813func_0201acfcEv
+#define Unk_0201acf8_getLevel _ZN12Unk_0201acf88getLevelEv
 #define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei
 #define NpcMoveCtrl_hasNextLeg _ZN11NpcMoveCtrl10hasNextLegEv
 #define NpcMoveCtrl_resetDestination _ZN11NpcMoveCtrl16resetDestinationEv
 #define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3
 #define NpcMoveCtrl_getDestination _ZN11NpcMoveCtrl14getDestinationEv
-#define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
+#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define PeteFallState_hasFallPos _ZN13PeteFallState10hasFallPosEv
 #define PeteFallState_getPos _ZN13PeteFallState6getPosEP17Unk_02086ec4_Vec3
 #define PeteFallState_clear _ZN13PeteFallState5clearEv
@@ -88,11 +88,11 @@ void TalkRequest_SetTargetDone(void *self);
 void NpcActionCtrl_requestPlayAnim(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 NpcActionCtrl_requestAction(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 void NpcMoveAnimSet_setStandAnim(void *p, s32 v);
-s32 Unk_02015b8c_getAnimId(void *p, s32 a);
+s32 NpcAnimCtrl_getAnimId(void *p, s32 a);
 s32 NpcActionCtrl_isActionDone(void *p);
 s32 NpcActionCtrl_getAction(void *p);
 void NpcLookAt_setTarget(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
-s32 func_0201acfc(void *p);
+s32 Unk_0201acf8_getLevel(void *p);
 s32 NpcLookAt_getObstacleBits(void *p);
 s32 NpcMoveCtrl_hasArrived(void *p, void *q, s32 a);
 s32 NpcMoveCtrl_hasNextLeg(void *p);
@@ -111,7 +111,7 @@ s32 Random_Next(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *out, void *in);
 s32 TownMap_IsPosWalkable(void *v, s32 a);
-void Unk_02013474_enableFootsteps(void *p);
+void NpcFootstepFx_enableFootsteps(void *p);
 void *TownSessionState_Get();
 void *TownSessionState_GetPeteFall(void *p);
 s32 PeteFallState_hasFallPos(void *p);
@@ -398,8 +398,8 @@ BOOL SpNpcPete::mainAct04() {
 BOOL SpNpcPete::setupAct05() {
     moveTimer = 0;
     NpcActionCtrl_requestAction(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    Unk_02013474_enableFootsteps(&footstepFx);
-    Unk_02013474_enableFootsteps(&footstepFx);
+    NpcFootstepFx_enableFootsteps(&footstepFx);
+    NpcFootstepFx_enableFootsteps(&footstepFx);
     NpcLookAt_setTarget(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
@@ -536,7 +536,7 @@ BOOL SpNpcPete::mainAct05() {
     if (r6 != 0) {
         if (tryAvoidObstacle() == 0) {
             if (NpcActionCtrl_isActionDone(r4) != 0) {
-                if (func_0201acfc(&unk_3aa) == 2) {
+                if (Unk_0201acf8_getLevel(&unk_3aa) == 2) {
                     Unk_ov075_0227188c_CallA();
                 } else if ((Random_Next(gRandom) & 7) == 0) {
                     Unk_ov075_Vec3 a;
@@ -586,7 +586,7 @@ BOOL SpNpcPete::mainAct05() {
 }
 
 BOOL SpNpcPete::setupAct01() {
-    void *r4 = talk.func_02015aac();
+    void *r4 = talk.getTalkPlayer();
     s32 r6 = rotY;
     if (isUp != 0) {
         NpcLookAt_setTarget(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
@@ -659,7 +659,7 @@ void SpNpcPeteTalk::scriptWakeUp() {
         }
         break;
     case 1:
-        if (Unk_02015b8c_getAnimId(ownerNpc + 0x334, 0) == 0xd5) {
+        if (NpcAnimCtrl_getAnimId(ownerNpc + 0x334, 0) == 0xd5) {
             if (NpcActionCtrl_isActionDone(ownerNpc + 0x564) != 0) {
                 u32 r = NpcActor_getAngleToPlayer(ownerNpc, 4);
                 NpcActionCtrl_requestAction(ownerNpc + 0x564, 3, 2, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
@@ -741,7 +741,7 @@ void SpNpcPete::onInteractionEvent(u32 a, u8) {
         break;
     case 3:
         talk.resetMsg();
-        talk.func_02015ab0(NpcActor_getPlayerActor(this, 4));
+        talk.setTalkPlayer(NpcActor_getPlayerActor(this, 4));
         if (isUp != 0) {
             SpNpcPete_ChangeAct(this, 1);
         }

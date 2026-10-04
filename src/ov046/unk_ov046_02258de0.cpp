@@ -391,7 +391,7 @@ BOOL SpNpcCeleste::mainAct02() {
 }
 
 BOOL SpNpcCeleste::setupAct03() {
-    NpcActor *p = (NpcActor *)talk.func_02015aac();
+    NpcActor *p = (NpcActor *)talk.getTalkPlayer();
     s32 r = 0;
     if (p) {
         r = getAngleTo(p);
@@ -1116,7 +1116,7 @@ void SpNpcCeleste::onInteractionEvent(u32 a, u8) {
     case 0:
     case 1:
         talk.resetMsg();
-        talk.func_02015ab0((u32)getPlayerActor(4));
+        talk.setTalkPlayer((u32)getPlayerActor(4));
         changeAct(3);
         break;
     case 8:

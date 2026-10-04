@@ -427,7 +427,7 @@ BOOL SpNpcHarriet::mainAct01() {
 
 BOOL SpNpcHarriet::setupAct02() {
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-    NpcActor *p = (NpcActor *)talk.func_02015aac();
+    NpcActor *p = (NpcActor *)talk.getTalkPlayer();
     s32 r4 = 0;
     if (p) {
         r4 = getAngleTo(p);
@@ -921,7 +921,7 @@ void SpNpcHarriet::onInteractionEvent(u32 cmd, u8 arg) {
     case 1:
         partnerPlayer = arg;
         talk.resetMsg();
-        talk.func_02015ab0(getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         if (talk.getTopic() == 4 || talk.getTopic() == 3) {
             changeAct(6);
         } else {
@@ -930,7 +930,7 @@ void SpNpcHarriet::onInteractionEvent(u32 cmd, u8 arg) {
         break;
     case 0:
         talk.resetMsg();
-        talk.func_02015ab0(getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(2);
         break;
     case 8:

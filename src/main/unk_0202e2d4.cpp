@@ -60,11 +60,11 @@ void *_ZN17NpcClothTexHandle19getSpNpcAnimHeapRefEv(void *p);
 BOOL _ZN12NpcResHandle7acquireEv(void *p);
 void _ZN12NpcResHandle7releaseEv(void *p);
 BOOL _ZN11NpcFaceAnim4loadEP18Unk_02019cac_Owner(void *p, void *q);
-BOOL _ZN11NpcAnimCtrl12initForActorEP16Unk_02015fe0_Obji(void *p, void *q, s32 r);
+BOOL _ZN11NpcAnimCtrl12initForActorEP8NpcActori(void *p, void *q, s32 r);
 void _ZN13NpcActionCtrl11startActionEPhiiiisii(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void _ZN19ActorFollowCollider13setupForActorEPviijjjhi(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, u32 f, s32 g);
 BOOL NpcRegistry_AddSpNpc(void *p, void *q);
-void _ZN12Unk_0201347415enableFootstepsEv(void *p);
+void _ZN13NpcFootstepFx15enableFootstepsEv(void *p);
 s32 _ZN8NpcActor15netReadPositionEPiPh(void *self, void *a, void *b);
 s32 SpNpcAnimHeapRef_GetHeap(void *p);
 BOOL _ZN11CachedModel16allocJointRecordEPv(void *p, s32 v);
@@ -137,7 +137,7 @@ BOOL SpNpcActor::onCreate() {
     if (!_ZN11NpcFaceAnim4loadEP18Unk_02019cac_Owner(&faceAnim, this)) {
         return FALSE;
     }
-    if (!_ZN11NpcAnimCtrl12initForActorEP16Unk_02015fe0_Obji(&animCtrl, this, getWalkAnimSpeedScale())) {
+    if (!_ZN11NpcAnimCtrl12initForActorEP8NpcActori(&animCtrl, this, getWalkAnimSpeedScale())) {
         return FALSE;
     }
     _ZN13NpcActionCtrl11startActionEPhiiiisii(&actionCtrl, this, 0, 1, 0, 0, 0, 0, 0);
@@ -145,7 +145,7 @@ BOOL SpNpcActor::onCreate() {
     if (!NpcRegistry_AddSpNpc(this, &npcHandle)) {
         return FALSE;
     }
-    _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
+    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
     return TRUE;
 }
 

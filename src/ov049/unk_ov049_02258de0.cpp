@@ -34,8 +34,8 @@
 #define ActorTalkRequest_setTownNameSlot _ZN16ActorTalkRequest15setTownNameSlotEjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
 #define ActorTalkRequest_setPartnerActor _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene
-#define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
+#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
@@ -159,7 +159,7 @@ void NpcActor_ChargePlayer(void *owner, s32 v);
 void Pocket_AddItem(void *p, s32 v);
 void AbleShop_BuyAt(s32 a, s32 b, s32 c);
 s32 VillagerTrend_OnClothesBought();
-void func_02015ab0(void *self, s32 v);
+void ActorTalkRequest_setTalkPlayer(void *self, s32 v);
 void *PlayerData_GetCurrent();
 s32 MenuCtrl_GetIndex();
 void *PlayerData_getPatterns(void *h);
@@ -245,7 +245,7 @@ BOOL NpcActionCtrl_isActionDone(void *self);
 void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, u16 i, u16 j);
 void NpcActionCtrl_requestStand(void *self, s32 a, u32 b);
 void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
-NpcActor *func_02015aac(void *self);
+NpcActor *ActorTalkRequest_getTalkPlayer(void *self);
 void TalkRequest_SetTargetDone(void *self);
 void NpcActor_FindFreeUnitNear(Unk_ov049_0225aba8_Vec *out, void *self, Unk_ov049_0225aba8_Vec *v);
 void NpcMoveCtrl_setTargetAngle(void *self, s32 v);
@@ -924,7 +924,7 @@ BOOL SpNpcMabel::mainAct03() {
 }
 
 BOOL SpNpcMabel::setupAct04() {
-    NpcActor *p = func_02015aac(&talk);
+    NpcActor *p = ActorTalkRequest_getTalkPlayer(&talk);
     s32 r = 0;
     if (p) {
         r = getAngleTo(p);
@@ -946,7 +946,7 @@ BOOL SpNpcMabel::mainAct04() {
 }
 
 BOOL SpNpcMabel::setupAct05() {
-    NpcActor *p = func_02015aac(&talk);
+    NpcActor *p = ActorTalkRequest_getTalkPlayer(&talk);
     s32 r = 0;
     if (p) {
         r = getAngleTo(p);
@@ -998,7 +998,7 @@ BOOL SpNpcMabel::mainAct08() {
         if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
             netSetSlotsIfOwner(1, t, t);
             talk.resetMsg();
-            func_02015ab0(&talk, getPlayerActor(4));
+            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
             BOOL r;
             if (Item_IsFurniture(&selectedItem)) {
                 u16 tmp = 0xfff1;
@@ -1105,7 +1105,7 @@ BOOL SpNpcMabel::mainAct0D() {
     NpcMoveCtrl_setWaypoint(&moveCtrl, &out);
     if (t <= 0x5000 || Vec_Equal(&out, &position) != 0 || Math_CountDownU8(&approachTimer) == 0) {
         talk.resetMsg();
-        func_02015ab0(&talk, getPlayerActor(4));
+        ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
         changeAct(4);
     }
     return TRUE;
@@ -2014,15 +2014,15 @@ void SpNpcMabel::onInteractionEvent(u32 cmd, u8 arg) {
             netSetSlotsIfOwner(1, g->myAid, g->myAid);
             if (talk.getTopic() == 1 || talk.getTopic() == 0) {
                 talk.resetMsg();
-                func_02015ab0(&talk, getPlayerActor(4));
+                ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
                 changeAct(4);
             } else if (talk.getTopic() == 3) {
                 talk.resetMsg();
-                func_02015ab0(&talk, getPlayerActor(4));
+                ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
                 changeAct(5);
             } else if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
                 talk.resetMsg();
-                func_02015ab0(&talk, getPlayerActor(4));
+                ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
                 changeAct(4);
             } else {
                 changeAct(0xd);
@@ -2037,7 +2037,7 @@ void SpNpcMabel::onInteractionEvent(u32 cmd, u8 arg) {
         } else if (isNetOwner()) {
             netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
             talk.resetMsg();
-            func_02015ab0(&talk, getPlayerActor(4));
+            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
             talk.setTopic(2);
             changeAct(4);
         }

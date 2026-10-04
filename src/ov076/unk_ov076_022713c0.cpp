@@ -68,8 +68,8 @@ void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, s32 a, s32 b, u32 c, 
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *self);
 s32 _ZN13NpcActionCtrl9getActionEv(void *self);
-s32 _ZN12Unk_02015b8c9getAnimIdEj(void *self, s32 a);
-BOOL _ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(void *self, void *o);
+s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *self, s32 a);
+BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP18Unk_02015b8c_Scene(void *self, void *o);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, s32 a, s32 b, s32 c);
 s32 Random_GlobalBelow(s32 a);
@@ -276,7 +276,7 @@ BOOL SpNpcPascal::setupAct00() {
 BOOL SpNpcPascal::mainAct00() { return TRUE; }
 
 BOOL SpNpcPascal::setupAct01() {
-    void *p = talk.func_02015aac();
+    void *p = talk.getTalkPlayer();
     u32 r = 0;
     if (p != NULL) {
         r = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -334,11 +334,11 @@ BOOL SpNpcPascal::setupAct04() {
 
 BOOL SpNpcPascal::mainAct04() {
     Unk_ov076_Vec v;
-    if (_ZN12Unk_02015b8c9getAnimIdEj(&animCtrl, 0) == 0xf9 &&
-        _ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(&animCtrl, this)) {
+    if (_ZN11NpcAnimCtrl9getAnimIdEj(&animCtrl, 0) == 0xf9 &&
+        _ZN11NpcAnimCtrl14isAnimFinishedEP18Unk_02015b8c_Scene(&animCtrl, this)) {
         changeAct(5);
     } else {
-        if (_ZN12Unk_02015b8c9getAnimIdEj(&animCtrl, 0) == 0xf9 && ((Unk_ov076_02271a3c_Bits *)((u8 *)this + 0x190))->mid == 0xb) {
+        if (_ZN11NpcAnimCtrl9getAnimIdEj(&animCtrl, 0) == 0xf9 && ((Unk_ov076_02271a3c_Bits *)((u8 *)this + 0x190))->mid == 0xb) {
             *((u8 *)this + 0x511) = 0;
             *((u8 *)this + 0x510) = 0;
         }
@@ -595,7 +595,7 @@ void SpNpcPascal::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        talk.func_02015ab0((u32)getPlayerActor(4));
+        talk.setTalkPlayer((u32)getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

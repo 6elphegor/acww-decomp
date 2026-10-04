@@ -69,8 +69,8 @@ struct Unk_ov004_0221e0b4_Ent {
 
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
-#define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
+#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define ActorTalkRequest_getChoiceList _ZN16ActorTalkRequest13getChoiceListEv
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -132,8 +132,8 @@ s32 NpcActor_getAngleTo(void *self, void *p);
 void NpcActor_setCollisionRadius(void *self, s32 v);
 void NpcMoveAnimSet_setWalkAnim(void *self, s32 a);
 void NpcMoveAnimSet_setStandAnim(void *self, s32 a);
-void func_02015ab0(void *self, u32 v);
-void *func_02015aac(void *self);
+void ActorTalkRequest_setTalkPlayer(void *self, u32 v);
+void *ActorTalkRequest_getTalkPlayer(void *self);
 s32 NpcActionCtrl_getAction(void *self);
 s32 NpcActionCtrl_isActionDone(void *self);
 void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
@@ -331,8 +331,8 @@ BOOL SpNpcBooker::mainAct00() { return TRUE; }
 BOOL SpNpcBooker::setupAct01() {
     ActorTalkRequest *p = &talk;
     p->resetMsg();
-    func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
-    void *q = func_02015aac(&talk);
+    ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
+    void *q = ActorTalkRequest_getTalkPlayer(&talk);
     s32 r = 0;
     if (q) {
         r = NpcActor_getAngleTo(this, q);

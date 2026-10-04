@@ -378,7 +378,7 @@ BOOL SpNpcTest::mainAct00() {
 
 BOOL SpNpcTest::setupAct01() {
     u32 x;
-    void *p = talk.func_02015aac();
+    void *p = talk.getTalkPlayer();
     x = 0;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -479,7 +479,7 @@ void SpNpcTest::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        talk.func_02015ab0(_ZN8NpcActor14getPlayerActorEj(this, 4));
+        talk.setTalkPlayer(_ZN8NpcActor14getPlayerActorEj(this, 4));
         changeAct(1);
         break;
     case 8:

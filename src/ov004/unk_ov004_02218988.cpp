@@ -33,7 +33,7 @@ class FleaMarketBuyerVillagerTalk;
 class FleaMarketBuyerVillager;
 
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
-#define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
+#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define Unk_020d7710_requestGiveItem _ZN12Unk_020d771015requestGiveItemEPtjjj
@@ -42,8 +42,8 @@ class FleaMarketBuyerVillager;
 #define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
 #define ActorTalkRequest_getChoiceList _ZN16ActorTalkRequest13getChoiceListEv
-#define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
+#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
@@ -144,7 +144,7 @@ s32 TalkRequest_IsActive();
 void Clock_GetDateTime(void *);
 s32 DateTime_DiffMinutes(void *, void *);
 void HouseVisitor_SetPresent();
-void func_02015ab0(void *, s32);
+void ActorTalkRequest_setTalkPlayer(void *, s32);
 s32 NpcActor_getPlayerActor(void *, s32);
 void *ActorTalkRequest_getChoiceList(void *);
 s32 ChoiceList_getResult();
@@ -198,7 +198,7 @@ s32 Vec_NotEqual(void *, void *);
 s32 Math_AngleDiffAbs(s32, s32);
 void FieldPos_ToUnit(s32 *, s32 *, s32 *);
 s32 Math_AngleXZ(void *, void *);
-s32 func_02015aac(void *);
+s32 ActorTalkRequest_getTalkPlayer(void *);
 s32 NpcActor_getAngleTo(void *, s32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 u32 *TalkWindow_Get(s32);
@@ -211,7 +211,7 @@ void *PlayerActor_GetActor(s32);
 s32 VillagerState_ResetRole(void *);
 void *Villager_GetState(void *);
 void VillagerState_SetRole(void *, u32);
-void Unk_02013474_enableFootsteps(void *);
+void NpcFootstepFx_enableFootsteps(void *);
 void NpcLookAt_disable(void *);
 s32 PlayerId_isValid(void *);
 s32 VillagerMemory_isFleaMarketVisited(s32);
@@ -475,7 +475,7 @@ BOOL FleaMarketBuyerVillager::onCreate() {
         return FALSE;
     }
     targetItem = 0xfff1;
-    Unk_02013474_enableFootsteps(&footstepFx);
+    NpcFootstepFx_enableFootsteps(&footstepFx);
     targetPos[0] = position.x;
     targetPos[1] = position.y;
     targetPos[2] = position.z;
@@ -777,7 +777,7 @@ BOOL FleaMarketBuyerVillager::mainAct05() {
 }
 
 BOOL FleaMarketBuyerVillager::setupAct07() {
-    s32 a = func_02015aac(&talk);
+    s32 a = ActorTalkRequest_getTalkPlayer(&talk);
     s32 b = 0;
     if (a) {
         b = NpcActor_getAngleTo(this, a);
@@ -805,7 +805,7 @@ BOOL FleaMarketBuyerVillager::mainAct07() {
 }
 
 BOOL FleaMarketBuyerVillager::setupAct06() {
-    s32 a = func_02015aac(&talk);
+    s32 a = ActorTalkRequest_getTalkPlayer(&talk);
     s32 b = 0;
     if (a) {
         b = NpcActor_getAngleTo(this, a);
@@ -822,7 +822,7 @@ BOOL FleaMarketBuyerVillager::mainAct06() {
     u8 s = callTimer;
     if (s != 0) {
         if (s == 1) {
-            s32 a = func_02015aac(&talk);
+            s32 a = ActorTalkRequest_getTalkPlayer(&talk);
             s32 b = 0;
             if (a) {
                 b = NpcActor_getAngleTo(this, a);
@@ -1173,7 +1173,7 @@ void FleaMarketBuyerVillager::onInteractionEvent(u32 cmd, u8 b) {
     switch (cmd) {
     case 1:
         talk.resetMsg();
-        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
         if (visitStage == 5 || visitStage == 3) {
             changeAct(7);
         } else {
@@ -1190,7 +1190,7 @@ void FleaMarketBuyerVillager::onInteractionEvent(u32 cmd, u8 b) {
         break;
     case 0:
         talk.resetMsg();
-        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
         changeAct(6);
         break;
     case 8:

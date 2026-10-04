@@ -33,16 +33,16 @@
 #define X_func_ov068_02265f58 _ZN13FieldVillager15getPlayerMemoryEv
 #define X_func_ov068_02265fb4 _ZN13FieldVillager19attachHeldItemModelEv
 #define VillagerId_isValid _ZN10VillagerId7isValidEv
-#define func_02011b60 _ZN13HeldToolModel13func_02011b60Ej
-#define func_02011b7c _ZN13HeldToolModel13func_02011b7cEv
+#define HeldToolModel_setModelAnimSpeed _ZN13HeldToolModel17setModelAnimSpeedEj
+#define HeldToolModel_getModel _ZN13HeldToolModel8getModelEv
 #define HeldToolModel_setAnimSpeed _ZN13HeldToolModel12setAnimSpeedEj
 #define HeldToolModel_getAnimSpeed _ZN13HeldToolModel12getAnimSpeedEv
 #define HeldToolModel_draw _ZN13HeldToolModel4drawEP12Unk_02006d14
 #define HeldToolModel_release _ZN13HeldToolModel7releaseEv
-#define func_02011c44 _ZN13HeldToolModel13func_02011c44Ejj
-#define func_02011c9c _ZN13HeldToolModel13func_02011c9cEjj
-#define func_02011cf4 _ZN13HeldToolModel13func_02011cf4Ejj
-#define func_02011d4c _ZN13HeldToolModel13func_02011d4cEjj
+#define HeldToolModel_playPitfallClimbOutAnim _ZN13HeldToolModel23playPitfallClimbOutAnimEjj
+#define HeldToolModel_playPitfallStuckAnim _ZN13HeldToolModel20playPitfallStuckAnimEjj
+#define HeldToolModel_playPitfallHoleAnim _ZN13HeldToolModel19playPitfallHoleAnimEjj
+#define HeldToolModel_playPitfallFallAnim _ZN13HeldToolModel19playPitfallFallAnimEjj
 #define HeldToolModel_playIdleAnim _ZN13HeldToolModel12playIdleAnimEjj
 #define HeldToolModel_playAnim _ZN13HeldToolModel8playAnimEjjj
 #define HeldToolModel_attach _ZN13HeldToolModel6attachEjPtjt
@@ -56,20 +56,20 @@
 #define VillagerRoute_reset _ZN13VillagerRoute5resetEv
 #define VillagerRoute_resetTarget _ZN13VillagerRoute11resetTargetEv
 #define Unk_020133cc_Player_resetLastTaughtEmotion _ZN19Unk_020133cc_Player22resetLastTaughtEmotionEv
-#define Unk_02013474_playFootstepSe _ZN12Unk_0201347414playFootstepSeEP19Unk_020133cc_Player
-#define Unk_02013474_disableFootsteps _ZN12Unk_0201347416disableFootstepsEv
-#define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
+#define NpcFootstepFx_playFootstepSe _ZN13NpcFootstepFx14playFootstepSeEP19Unk_020133cc_Player
+#define NpcFootstepFx_disableFootsteps _ZN13NpcFootstepFx16disableFootstepsEv
+#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestState4 _ZN11NpcTalkCtrl13requestState4Ejish
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define ActorTalkRequest_setPartnerActor _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene
-#define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
-#define Unk_02015b8c_getAnimId _ZN12Unk_02015b8c9getAnimIdEj
-#define Unk_02015b8c_setAnimSpeedFixed _ZN12Unk_02015b8c17setAnimSpeedFixedEh
-#define NpcAnimCtrl_playHoldItemPose _ZN11NpcAnimCtrl16playHoldItemPoseEP16Unk_02015fe0_ObjPtPvt
-#define Unk_02016a44_requestAct14 _ZN12Unk_02016a4412requestAct14EiPt
+#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
+#define NpcAnimCtrl_getAnimId _ZN11NpcAnimCtrl9getAnimIdEj
+#define NpcAnimCtrl_setAnimSpeedFixed _ZN11NpcAnimCtrl17setAnimSpeedFixedEh
+#define NpcAnimCtrl_playHoldItemPose _ZN11NpcAnimCtrl16playHoldItemPoseEP8NpcActorPtPvt
+#define NpcActionCtrl_requestAct14 _ZN13NpcActionCtrl12requestAct14EiPt
 #define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
 #define NpcActionCtrl_requestEmotion _ZN13NpcActionCtrl14requestEmotionEiht
@@ -89,7 +89,7 @@
 #define NpcMoveCtrl_setTargetAngle _ZN11NpcMoveCtrl14setTargetAngleEs
 #define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
-#define func_0201acfc _ZN12Unk_0201acf813func_0201acfcEv
+#define Unk_0201acf8_getLevel _ZN12Unk_0201acf88getLevelEv
 #define func_0201b08c _ZN8NpcActor18onInteractionEventEi
 #define func_0201b138 _ZN8NpcActor6onDrawEv
 #define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
@@ -964,7 +964,7 @@ s32 NpcActor_isPlayerNear(void *, s32, u32);
 s32 NpcTalkCtrl_isBusy(void *);
 s32 VillagerTalk_begin(void *, void *, s32);
 void *NpcActor_getPlayerActor(void *, s32);
-void func_02015ab0(void *, void *);
+void ActorTalkRequest_setTalkPlayer(void *, void *);
 void ActorTalkRequest_setPartnerActor(void *, void *);
 void TalkRepeat_Count();
 void Villager_ClearTalkUrge(void *);
@@ -1011,10 +1011,10 @@ s32 NpcActionCtrl_getEmotionId(void *);
 s32 NpcActionCtrl_isActionDone(void *);
 void NpcActionCtrl_requestStand(void *, s32, u32);
 void NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
-void Unk_02015b8c_setAnimSpeedFixed(void *, s32);
-s32 Unk_02015b8c_getAnimId(void *, s32);
-void *func_02015aac(void *);
-void Unk_02013474_enableFootsteps(void *);
+void NpcAnimCtrl_setAnimSpeedFixed(void *, s32);
+s32 NpcAnimCtrl_getAnimId(void *, s32);
+void *ActorTalkRequest_getTalkPlayer(void *);
+void NpcFootstepFx_enableFootsteps(void *);
 s32 Unk_020133cc_Player_resetLastTaughtEmotion(void *);
 s32 NpcActor_getAngleToPlayer(void *, s32);
 s32 NpcActor_getAngleTo(void *, void *);
@@ -1081,17 +1081,17 @@ void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32)
 s32 FieldVillagerAi_ChangeState(void *, void *, s32);
 void FieldItemFx_StartPitfallClose(s32, void *);
 void FieldItemFx_StartPitfallHole(s32, void *);
-void Unk_02015b8c_setAnimSpeedFixed(void *, s32);
+void NpcAnimCtrl_setAnimSpeedFixed(void *, s32);
 void VillagerActor_clearFlag834(void *);
 void VillagerActor_setFlag834(void *);
-void Unk_02013474_enableFootsteps(void *);
-void Unk_02013474_disableFootsteps(void *);
+void NpcFootstepFx_enableFootsteps(void *);
+void NpcFootstepFx_disableFootsteps(void *);
 void HeldToolModel_playIdleAnim(void *, u32, s32);
-void func_02011c44(void *, u32, s32);
-void func_02011c9c(void *, u32, s32);
-void func_02011b60(void *, s32);
-void func_02011cf4(void *, u32, s32);
-void func_02011d4c(void *, u32, s32);
+void HeldToolModel_playPitfallClimbOutAnim(void *, u32, s32);
+void HeldToolModel_playPitfallStuckAnim(void *, u32, s32);
+void HeldToolModel_setModelAnimSpeed(void *, s32);
+void HeldToolModel_playPitfallHoleAnim(void *, u32, s32);
+void HeldToolModel_playPitfallFallAnim(void *, u32, s32);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 void Character_clearTalkStartMode(void *);
 void *PlayerActor_GetCharacter(s32);
@@ -1106,7 +1106,7 @@ void Npc_GetStateHeldItem(void *, void *);
 void GroundInfo_initAtPos(void *, void *, s32, s32);
 void GroundInfo_Destruct(void *);
 void Snd_SeEmitterPlayOneShotAlt(void *, s32, s32, s32);
-s32 Unk_02015b8c_getAnimId(void *, s32);
+s32 NpcAnimCtrl_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
 void NpcAnimCtrl_playHoldItemPose(void *, void *, void *, s32, s32);
 s32 AnimFrameCtrl_isFinished(void *);
@@ -1142,14 +1142,14 @@ s32 FieldVillagerAi_Resume(void *, void *);
 s32 FieldVillagerAi_ChangeState(void *, void *, s32);
 void FieldVillager_StopEmotion(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
-s32 Unk_02015b8c_getAnimId(void *, s32);
+s32 NpcAnimCtrl_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
 s32 NpcActionCtrl_getAction(void *);
 void HeldToolModel_attach(void *, void *, void *, s32, s32);
 s32 HeldToolModel_getAnimSpeed(void *);
 void HeldToolModel_setAnimSpeed(void *, s32);
 void HeldToolModel_playAnim(void *, s32, s32, s32);
-void *func_02011b7c(void *);
+void *HeldToolModel_getModel(void *);
 void AnimFrameCtrl_setup(void *, s32, s32, s32, s32);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
 void Snd_SeEmitterPlayOneShotAlt(void *, s32, s32, s32);
@@ -1165,9 +1165,9 @@ void TalkRequest_AddPlayerTalk6(void *, s32);
 void PlayerActor_SetSlotFlag(s32, s32);
 void Camera_SetModeDefault(void);
 s32 NpcTalkCtrl_isBusy(void *);
-void *func_02015aac(void *);
+void *ActorTalkRequest_getTalkPlayer(void *);
 s32 NpcActor_getAngleTo(void *, void *);
-void Unk_02013474_enableFootsteps(void *);
+void NpcFootstepFx_enableFootsteps(void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
@@ -1239,7 +1239,7 @@ s32 NpcActor_getRelativeAngleTo(void *, void *);
 s32 NpcActor_getAngleTo(void *, void *);
 s32 Vec_Distance(void *, void *);
 void NpcMoveCtrl_setWaypoint(void *, void *);
-s32 Unk_02015b8c_getAnimId(void *, s32);
+s32 NpcAnimCtrl_getAnimId(void *, s32);
 s32 Random_GlobalBelow(s32);
 void Effect_Create(u32, void *, void *, s32);
 void Snd_SeEmitterPlayOneShotAlt(void *, s32, s32, s32);
@@ -1385,7 +1385,7 @@ void FieldVillagerAi_AddMood(void *, void *, s32, s32, s32);
 void FieldVillagerAi_AddRandomMood(void *, void *, void *, s32, s32, s32);
 void FieldVillagerAi_AddRandomPairRelation(void *, void *, void *);
 void VillagerDataProfileView_setShirt(void *, u16 *);
-void Unk_02016a44_requestAct14(void *, s32, u16 *);
+void NpcActionCtrl_requestAct14(void *, s32, u16 *);
 s32 VillagerId_GetSpecies(void *);
 s32 Villager_GetDefaultCatchphraseEncoded(void *, s32);
 void Villager_SetCatchphraseEncoded(void *, void *);
@@ -1459,16 +1459,16 @@ void Unk_020133cc_Player_resetLastTaughtEmotion(void *);
 s32 VillagerTalk_hasPartner(void *);
 void NpcTalkCtrl_requestTalk(void *, s32, s32);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
-void *func_02015aac(void *);
+void *ActorTalkRequest_getTalkPlayer(void *);
 s32 NpcActor_getAngleTo(void *, void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
-s32 Unk_02015b8c_getAnimId(void *, s32);
+s32 NpcAnimCtrl_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
 void NpcActor_setCollisionRadius(void *, s32);
 void Npc_GetStateHeldItem(void *, void *);
 s32 FieldVillagerAi_ChangeState(void *, void *, s32);
 s32 FieldVillagerAi_SetResumeState(void *, s32);
-s32 Unk_02013474_playFootstepSe(void *, void *);
+s32 NpcFootstepFx_playFootstepSe(void *, void *);
 void *Villager_GetState(void *);
 void Villager_GetIndex(void *);
 s32 VillagerHouse_TryOpenDoorForExit();
@@ -1566,7 +1566,7 @@ void Villager_PlaceReceivedItems(void *);
 void VillagerActor_setFlag834(void *);
 s32 Random_GlobalBelow(s32);
 void VillagerMood_disableEffects(void *);
-s32 Unk_02015b8c_getAnimId(void *, s32);
+s32 NpcAnimCtrl_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_getEmotionId(void *);
@@ -1575,12 +1575,12 @@ void FieldVillagerAi_SetResumeState(void *, s32);
 void *VillagerDataItemView_getHousePos(void *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
 void Math_StepS32(void *, s32, s32);
-void Unk_02013474_playFootstepSe(void *, void *);
+void NpcFootstepFx_playFootstepSe(void *, void *);
 void *Villager_GetIndex(void *);
 s32 VillagerHouse_TryOpenDoorForEntry(void *);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, u32, s32);
-void Unk_02013474_disableFootsteps(void *);
+void NpcFootstepFx_disableFootsteps(void *);
 s32 FieldVillager_IsNearCameraFocus(void *, void *);
 s32 VillagerTalkTopics_updateCatchPlans(void *, void *, void *, s32);
 void FieldVillager_UpdateCatchSim(void *);
@@ -1593,7 +1593,7 @@ s32 Unk_02012810_getStage(void *);
 void VillagerRoute_start(void *, void *, s32, s32, void *);
 s32 Unk_02012810_runStep(void *, void *);
 void VillagerRoute_setStepMode(void *, s32);
-s32 func_0201acfc(void *);
+s32 Unk_0201acf8_getLevel(void *);
 s32 Random_Next(void *);
 s32 FieldVillagerAi_GetRouteTarget(void *, void *, void *);
 s32 FieldVillagerAi_IsNearPlayerTalkSpot(void *, void *, s32);
@@ -1777,7 +1777,7 @@ s32 NpcActor_isPlayerNear(void *, s32, u32);
 s32 NpcTalkCtrl_isBusy(void *);
 s32 VillagerTalk_begin(void *, void *, s32);
 void *NpcActor_getPlayerActor(void *, s32);
-void func_02015ab0(void *, void *);
+void ActorTalkRequest_setTalkPlayer(void *, void *);
 void ActorTalkRequest_setPartnerActor(void *, void *);
 void TalkRepeat_Count();
 void Villager_ClearTalkUrge(void *);
@@ -1819,11 +1819,11 @@ s32 VillagerRoute_isActive(void *);
 s32 Random_GlobalBelow(s32);
 s32 Unk_02012810_getStage(void *);
 void NpcActionCtrl_requestStand(void *, s32, u32);
-void Unk_02013474_enableFootsteps(void *);
+void NpcFootstepFx_enableFootsteps(void *);
 void VillagerRoute_setStepMode(void *, u32);
 void VillagerActor_clearFlag834(void *);
 void VillagerMood_enableEffects(void *);
-void func_020133a4(void *);
+void VillagerRoute_Destruct(void *);
 void VillagerRoute_resetTarget(void *);
 void VillagerRoute_reset(void *);
 void *PlayerActor_GetCharacter(s32);
@@ -3682,7 +3682,7 @@ FieldVillagerAi *FieldVillagerAi::initAi() {
 
 FieldVillagerAi::~FieldVillagerAi() {
     using namespace ns_02265324;
-    func_020133a4(route);
+    VillagerRoute_Destruct(route);
 }
 
 namespace ns_02265324 {
@@ -3870,7 +3870,7 @@ s32 FieldVillagerAi_EnterWander(FieldVillagerAi *self, FieldVillager *o) {
     FieldVillager_StopEmotion(o);
     *(Unk_ov068_0226fa68_Nest *)((u8 *)o + 0x8ac) = *(Unk_ov068_0226fa68_Nest *)&data_ov068_0226fa68;
     NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
-    Unk_02013474_enableFootsteps((u8 *)o + 0x558);
+    NpcFootstepFx_enableFootsteps((u8 *)o + 0x558);
     X_func_ov068_0225f630((u8 *)o + 0x894, o);
     if (VillagerRoute_isActive(self->route) != 0) {
         VillagerRoute_setStepMode(self->route, 0);
@@ -4576,7 +4576,7 @@ BOOL FieldVillagerAiStates::execWander(Unk_ov068_Owner *o) {
             goto end;
         }
         lookStopTimer = 0;
-        if (func_0201acfc((u8 *)o + 0x3aa) == 2) {
+        if (Unk_0201acf8_getLevel((u8 *)o + 0x3aa) == 2) {
             NpcActionCtrl_requestStand(r6, 1, data_020c6cc8);
             goto end;
         }
@@ -4654,7 +4654,7 @@ BOOL FieldVillagerAiStates::enterOffscreen(Unk_ov068_Owner *o) {
     NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
     stateTimer = 0;
     *(Unk_ov068_022644fc_W *)((u8 *)o + 0x8ac) = *(Unk_ov068_022644fc_W *)__ptmf_null;
-    Unk_02013474_disableFootsteps((u8 *)o + 0x558);
+    NpcFootstepFx_disableFootsteps((u8 *)o + 0x558);
     routeStepTimer = 0;
     talkUrgeTimer = 0x384;
     if (VillagerRoute_isActive((u8 *)this + 0x3c) != 0) {
@@ -4749,7 +4749,7 @@ void FieldVillagerAiStates::goInHouseStep1(Unk_ov068_Owner *o) {
 void FieldVillagerAiStates::goInHouseStep2(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
     Unk_ov068_02264188_V3 v;
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x3b) {
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0x3b) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             FieldVillagerAi_ChangeState(this, o, 3);
             return;
@@ -4759,7 +4759,7 @@ void FieldVillagerAiStates::goInHouseStep2(Unk_ov068_Owner *o) {
     FieldPos_FromUnitCenter(&v, p[0], p[1] + 1);
     Math_StepS32((u8 *)o + 0x5c, v.x, 0x400);
     Math_StepS32((u8 *)o + 0x64, v.z, 0x400);
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x3b) {
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0x3b) {
         // switch {8,12,22,27,34}: mwcc's own lowering gives a different compare tree, so it is hand-written
         s32 k = (s32)((*(u32 *)((u8 *)o + 0x190) << 4) >> 16);
         if (k > 22) goto hi;
@@ -4782,7 +4782,7 @@ void FieldVillagerAiStates::goInHouseStep2(Unk_ov068_Owner *o) {
     hi2:
         if (k != 34) goto end;
     hit:
-        Unk_02013474_playFootstepSe((u8 *)o + 0x558, o);
+        NpcFootstepFx_playFootstepSe((u8 *)o + 0x558, o);
     }
 end:;
 }
@@ -4993,7 +4993,7 @@ void FieldVillagerAiLeaveHouse::leaveHouseStep0(Unk_ov068_Owner *o) {
 
 void FieldVillagerAiLeaveHouse::leaveHouseStep1(Unk_ov068_Owner *o) {
     using namespace ns_02263600;
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x3d) {
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0x3d) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             u16 buf;
             *((u8 *)o + 0x511) = 1;
@@ -5025,7 +5025,7 @@ void FieldVillagerAiLeaveHouse::leaveHouseStep1(Unk_ov068_Owner *o) {
                 if (t != 0x28) goto done;
             }
         hit:
-            Unk_02013474_playFootstepSe((u8 *)o + 0x558, o);
+            NpcFootstepFx_playFootstepSe((u8 *)o + 0x558, o);
         done:;
         }
     }
@@ -5055,7 +5055,7 @@ BOOL FieldVillagerAiTalk::enterTalk(Unk_ov068_Owner *o) {
         NpcTalkCtrl_requestTalk((u8 *)o + 0x618, 0, 0);
         X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     } else {
-        void *p = func_02015aac((u8 *)o + 0x680);
+        void *p = ActorTalkRequest_getTalkPlayer((u8 *)o + 0x680);
         s32 v = 0;
         if (p != 0) {
             v = NpcActor_getAngleTo(o, p);
@@ -5466,7 +5466,7 @@ BOOL FieldVillagerAiChat::tryChatSpreadShirt(Unk_ov068_Owner *o) {
         FieldVillagerAi_AddMood(this, o, 1, 2, 0);
         FieldVillagerAi_AddMood(this, other, 1, 2, 0);
         h1 = 0x12a8;
-        Unk_02016a44_requestAct14(chatTarget + 0x564, 1, &h1);
+        NpcActionCtrl_requestAct14(chatTarget + 0x564, 1, &h1);
         step = 2;
     } else {
         FieldVillagerAi_AddMood(this, o, 1, 2, 1);
@@ -5522,7 +5522,7 @@ BOOL FieldVillagerAiChat::tryChatRevertClothes(Unk_ov068_Owner *o) {
         FieldVillagerAi_AddRandomMood(this, o, sChatClothesMoods, 4, 2, 0);
         FieldVillagerAi_AddRandomMood(this, other, sChatClothesMoods, 4, 2, 0);
         VillagerDataProfileView_setShirt(a, &v0);
-        Unk_02016a44_requestAct14(chatTarget + 0x564, 1, &v0);
+        NpcActionCtrl_requestAct14(chatTarget + 0x564, 1, &v0);
         step = 2;
     } else {
         FieldVillagerAi_AddRandomMood(this, o, sChatClothesMoods, 4, 2, 1);
@@ -5593,7 +5593,7 @@ BOOL FieldVillagerAiChat::tryChatAdoptAblePattern(Unk_ov068_Owner *o) {
     h0 = 0x12a8;
     VillagerDataProfileView_setShirt(a, &h0);
     h1 = 0x12a8;
-    Unk_02016a44_requestAct14(chatTarget + 0x564, 1, &h1);
+    NpcActionCtrl_requestAct14(chatTarget + 0x564, 1, &h1);
     step = 2;
     return TRUE;
     }
@@ -6023,7 +6023,7 @@ void FieldVillagerAiPlayerStates::approachStep0(Unk_ov068_Owner *o) {
                 step = 1;
                 stateTimer = 0xc8;
             }
-        } else if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xdf && ((*(u32 *)((u8 *)o + 0x190) << 4) >> 16) == 9) {
+        } else if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0xdf && ((*(u32 *)((u8 *)o + 0x190) << 4) >> 16) == 9) {
             Unk_ov068_02262044_Vec v;
             s16 h;
             v.x = *(s32 *)((u8 *)o + 0x478);
@@ -6298,12 +6298,12 @@ s32 FieldVillagerAiBirthdayWait::execBirthdayWait(Unk_ov068_Owner *o) {
 
 BOOL FieldVillagerAiBirthdayInvite::enterBirthdayInvite(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
-    void *p = func_02015aac((u8 *)o + 0x680);
+    void *p = ActorTalkRequest_getTalkPlayer((u8 *)o + 0x680);
     s32 v = 0;
     if (p != 0) {
         v = NpcActor_getAngleTo(o, p);
     }
-    Unk_02013474_enableFootsteps((u8 *)o + 0x558);
+    NpcFootstepFx_enableFootsteps((u8 *)o + 0x558);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     NpcTalkCtrl_requestTurnAndTalk((u8 *)o + 0x618, 0, v, 1);
     VillagerMood_disableEffects((u8 *)o + 0x838);
@@ -6388,7 +6388,7 @@ BOOL FieldVillagerAiTakeOut::enterTakeOutItem(Unk_ov068_Owner *o) {
 
 void FieldVillagerAiTakeOut::takeOutItemStep0(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xd6) {
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0xd6) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             step = 2;
             if (FieldVillagerAi_Resume(this, o) == 0) {
@@ -6412,7 +6412,7 @@ void FieldVillagerAiTakeOut::takeOutItemStep0(Unk_ov068_Owner *o) {
 
 void FieldVillagerAiTakeOut::takeOutItemStep1(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xcd) {
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0xcd) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             NpcAnimCtrl_playHoldItemPose((u8 *)o + 0x334, o, (u8 *)o + 0x9b0, 0, 7);
             step = 2;
@@ -6451,7 +6451,7 @@ BOOL FieldVillagerAiPutAway::enterPutAwayItem(Unk_ov068_Owner *o) {
         NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0xcd, 3, w, 0);
         HeldToolModel_attach((u8 *)o + 0x9b0, o, pos, 0xcd, w);
         HeldToolModel_playAnim((u8 *)o + 0x9b0, 0x26, 1, 3);
-        void *p = func_02011b7c((u8 *)o + 0x9b0);
+        void *p = HeldToolModel_getModel((u8 *)o + 0x9b0);
         if (p != 0) {
             u32 bits = (*(u32 *)((u8 *)p + 0xa0) << 4) >> 16;
             AnimFrameCtrl_setup((u8 *)p + 0x9c, bits, 3, 0x1000, (u16)(bits - 1));
@@ -6477,7 +6477,7 @@ BOOL FieldVillagerAiPutAway::enterPutAwayItem(Unk_ov068_Owner *o) {
 
 void FieldVillagerAiPutAway::putAwayItemStep0(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xd6) {
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0xd6) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             u16 t[1];
             t[0] = 0xfff1;
@@ -6501,7 +6501,7 @@ void FieldVillagerAiPutAway::putAwayItemStep0(Unk_ov068_Owner *o) {
 
 void FieldVillagerAiPutAway::putAwayItemStep1(Unk_ov068_Owner *o) {
     using namespace ns_02260f90;
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xcd) {
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0xcd) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             step = 2;
             if (FieldVillagerAi_Resume(this, o) == 0) {
@@ -6536,10 +6536,10 @@ BOOL FieldVillagerAiStates::enterPitfall(Unk_ov068_Owner *o) {
     u32 t = data_020c6cc8;
     NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0x127, 0, t, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-    func_02011d4c((u8 *)o + 0x9b0, t, 0);
+    HeldToolModel_playPitfallFallAnim((u8 *)o + 0x9b0, t, 0);
     *(u32 *)((u8 *)o + 0x4e8) |= 2;
     VillagerActor_setFlag834(o);
-    Unk_02013474_disableFootsteps((u8 *)o + 0x558);
+    NpcFootstepFx_disableFootsteps((u8 *)o + 0x558);
     Snd_SeEmitterPlayOneShotAlt((u8 *)o + 0x514, 0x7ee, 0x7f, 0);
     VillagerMood_disableEffects((u8 *)o + 0x838);
     return TRUE;
@@ -6590,7 +6590,7 @@ extern "C" void FieldVillager_StepToward(s32 *p, s32 target, s32 a, s32 spd, s32
 
 void FieldVillagerAiStates::pitfallStep0(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x127) {
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0x127) {
         Unk_ov068_02260780_Vec *pp = &((Unk_ov068_02260780_Own *)o)->position;
         Unk_ov068_02260780_Vec loc;
         FieldPos_SnapToUnitCenter(&loc, pp);
@@ -6609,7 +6609,7 @@ void FieldVillagerAiStates::pitfallStep0(Unk_ov068_Owner *o) {
 
 void FieldVillagerAiStates::pitfallStep1(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x127) {
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0x127) {
         if (AnimFrameCtrl_isFinished((u8 *)o + 0x188) != 0) {
             u32 t = data_020c6cc8;
             NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0x128, 1, t, 0);
@@ -6633,7 +6633,7 @@ void FieldVillagerAiStates::pitfallStep1(Unk_ov068_Owner *o) {
                 Effect_PlayById(0x8e, &v, 0, 0);
             }
             Snd_SeEmitterPlayOneShotAlt((u8 *)o + 0x514, 0x7e8, 0x7f, 0);
-            func_02011cf4((u8 *)o + 0x9b0, t, 1);
+            HeldToolModel_playPitfallHoleAnim((u8 *)o + 0x9b0, t, 1);
             NpcAnimCtrl_playHoldItemPose((u8 *)o + 0x334, o, (u8 *)o + 0x9b0, 0x128, 3);
             step = 2;
             GroundInfo_Destruct(obj);
@@ -6643,15 +6643,15 @@ void FieldVillagerAiStates::pitfallStep1(Unk_ov068_Owner *o) {
 
 void FieldVillagerAiStates::pitfallStep2(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x128) {
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0x128) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             pitfallAnimSpeed = 0x1400;
             u32 t = data_020c6cc8;
             NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0x129, 0, t, 0);
             *(s32 *)((u8 *)o + 0x198) = pitfallAnimSpeed;
-            Unk_02015b8c_setAnimSpeedFixed((u8 *)o + 0x334, 1);
-            func_02011c9c((u8 *)o + 0x9b0, t, 0);
-            func_02011b60((u8 *)o + 0x9b0, pitfallAnimSpeed);
+            NpcAnimCtrl_setAnimSpeedFixed((u8 *)o + 0x334, 1);
+            HeldToolModel_playPitfallStuckAnim((u8 *)o + 0x9b0, t, 0);
+            HeldToolModel_setModelAnimSpeed((u8 *)o + 0x9b0, pitfallAnimSpeed);
             pitfallTimer = 0x64;
             Unk_ov068_02260780_Own *ow = (Unk_ov068_02260780_Own *)o;
             Unk_ov068_02260780_Vec *pv = &ow->position;
@@ -6669,9 +6669,9 @@ void FieldVillagerAiStates::pitfallStep2(Unk_ov068_Owner *o) {
 
 void FieldVillagerAiStates::pitfallStep3(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x129) {
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0x129) {
         if (pitfallTimer == 0) {
-            Unk_02015b8c_setAnimSpeedFixed((u8 *)o + 0x334, 0);
+            NpcAnimCtrl_setAnimSpeedFixed((u8 *)o + 0x334, 0);
             VillagerActor_setFlag834(o);
             *(u8 *)((u8 *)o + 0xa00) = 0;
             if (*(s32 *)((u8 *)o + 0x9fc) != -1) {
@@ -6689,7 +6689,7 @@ void FieldVillagerAiStates::pitfallStep3(Unk_ov068_Owner *o) {
                 (v0 >= 0x1374 && v0 <= 0x1374) || (v0 >= 0x1375 && v0 <= 0x1375)) {
                 u32 t = data_020c6cc8;
                 NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0x12b, 1, t, 0);
-                func_02011c44((u8 *)o + 0x9b0, t, 0);
+                HeldToolModel_playPitfallClimbOutAnim((u8 *)o + 0x9b0, t, 0);
             } else {
                 NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0x12a, 1, data_020c6cc8, 0);
             }
@@ -6726,7 +6726,7 @@ void FieldVillagerAiStates::pitfallStep3(Unk_ov068_Owner *o) {
 
 void FieldVillagerAiStates::pitfallStep4(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x12b || Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0x12a) {
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0x12b || NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0x12a) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             *(u32 *)((u8 *)o + 0x4e8) &= ~2;
             step = 5;
@@ -6756,10 +6756,10 @@ s32 FieldVillagerAiStates::execPitfall(Unk_ov068_Owner *o) {
 BOOL FieldVillagerAiStates::enterPitfallClimbOut(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
     FieldVillager_StopEmotion(o);
-    Unk_02015b8c_setAnimSpeedFixed((u8 *)o + 0x334, 0);
+    NpcAnimCtrl_setAnimSpeedFixed((u8 *)o + 0x334, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     *(u32 *)((u8 *)o + 0x4e8) |= 2;
-    Unk_02013474_disableFootsteps((u8 *)o + 0x558);
+    NpcFootstepFx_disableFootsteps((u8 *)o + 0x558);
     VillagerActor_setFlag834(o);
     *(u8 *)((u8 *)o + 0xa00) = 0;
     if (*(s32 *)((u8 *)o + 0x9fc) != -1) {
@@ -6777,7 +6777,7 @@ BOOL FieldVillagerAiStates::enterPitfallClimbOut(Unk_ov068_Owner *o) {
         (v0 >= 0x1374 && v0 <= 0x1374) || (v0 >= 0x1375 && v0 <= 0x1375)) {
         u32 t = data_020c6cc8;
         NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0x12b, 1, t, 0);
-        func_02011c44((u8 *)o + 0x9b0, t, 0);
+        HeldToolModel_playPitfallClimbOutAnim((u8 *)o + 0x9b0, t, 0);
     } else {
         NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0x12a, 1, data_020c6cc8, 0);
     }
@@ -6822,10 +6822,10 @@ s32 FieldVillagerAiStates::execPitfallClimbOut(Unk_ov068_Owner *o) {
 BOOL FieldVillagerAiStates::enterHitByNet(Unk_ov068_Owner *o) {
     using namespace ns_022605f4;
     FieldVillager_StopEmotion(o);
-    Unk_02015b8c_setAnimSpeedFixed((u8 *)o + 0x334, 0);
+    NpcAnimCtrl_setAnimSpeedFixed((u8 *)o + 0x334, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     VillagerActor_clearFlag834(o);
-    Unk_02013474_enableFootsteps((u8 *)o + 0x558);
+    NpcFootstepFx_enableFootsteps((u8 *)o + 0x558);
     u32 r, t;
     t = data_020c6cc8;
     HeldToolModel_playIdleAnim((u8 *)o + 0x9b0, t, 0);
@@ -6865,7 +6865,7 @@ BOOL FieldVillagerAiStates::enterHitByNet(Unk_ov068_Owner *o) {
 
 void FieldVillagerAiStates::hitByNetStep0(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xeb || Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) == 0xec) {
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0xeb || NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0xec) {
         if (hitCount >= 3) {
             TalkRequest_AddPlayerTalk6(o, 0);
         }
@@ -6922,10 +6922,10 @@ s32 FieldVillagerAiStates::execHitByNet(Unk_ov068_Owner *o) {
 BOOL FieldVillagerAiStates::enterPushed(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     FieldVillager_StopEmotion(o);
-    Unk_02015b8c_setAnimSpeedFixed((u8 *)o + 0x334, 0);
+    NpcAnimCtrl_setAnimSpeedFixed((u8 *)o + 0x334, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     VillagerActor_clearFlag834(o);
-    Unk_02013474_enableFootsteps((u8 *)o + 0x558);
+    NpcFootstepFx_enableFootsteps((u8 *)o + 0x558);
     s32 t = NpcActor_getAngleToPlayer(o, 4);
     NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
     *(u16 *)((u8 *)o + 0xa02) = 0;
@@ -6977,8 +6977,8 @@ s32 FieldVillagerAiStates::execPushed(Unk_ov068_Owner *o) {
 BOOL FieldVillagerAiStates::enterHitTalk(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     Unk_020133cc_Player_resetLastTaughtEmotion(o);
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) != 0xec || NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
-        void *p = func_02015aac((u8 *)o + 0x680);
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) != 0xec || NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
+        void *p = ActorTalkRequest_getTalkPlayer((u8 *)o + 0x680);
         s32 v = 0;
         if (p != 0) {
             v = NpcActor_getAngleTo(o, p);
@@ -6994,8 +6994,8 @@ BOOL FieldVillagerAiStates::enterHitTalk(Unk_ov068_Owner *o) {
 
 void FieldVillagerAiStates::hitTalkStep0(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
-    if (Unk_02015b8c_getAnimId((u8 *)o + 0x334, 0) != 0xec || NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
-        void *p = func_02015aac((u8 *)o + 0x680);
+    if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) != 0xec || NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
+        void *p = ActorTalkRequest_getTalkPlayer((u8 *)o + 0x680);
         s32 v = 0;
         if (p != 0) {
             v = NpcActor_getAngleTo(o, p);
@@ -7043,7 +7043,7 @@ s32 FieldVillagerAiStates::execHitTalk(Unk_ov068_Owner *o) {
 
 BOOL FieldVillagerAiStates::enterPushTalk(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
-    void *p = func_02015aac((u8 *)o + 0x680);
+    void *p = ActorTalkRequest_getTalkPlayer((u8 *)o + 0x680);
     s32 v = 0;
     Unk_020133cc_Player_resetLastTaughtEmotion(o);
     if (p != 0) {
@@ -7089,10 +7089,10 @@ s32 FieldVillagerAiStates::execPushTalk(Unk_ov068_Owner *o) {
 BOOL FieldVillagerAiStates::enterAdmireCatch(Unk_ov068_Owner *o) {
     using namespace ns_0225fc60;
     FieldVillager_StopEmotion(o);
-    Unk_02015b8c_setAnimSpeedFixed((u8 *)o + 0x334, 0);
+    NpcAnimCtrl_setAnimSpeedFixed((u8 *)o + 0x334, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     VillagerActor_clearFlag834(o);
-    Unk_02013474_enableFootsteps((u8 *)o + 0x558);
+    NpcFootstepFx_enableFootsteps((u8 *)o + 0x558);
     s32 t = NpcActor_getAngleToPlayer(o, 4);
     NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
     VillagerMood_disableEffects((u8 *)o + 0x838);
@@ -7243,14 +7243,14 @@ void FieldVillager::onInteractionEvent(u32 idx, u8 v) {
             break;
         }
         VillagerTalk_begin((&villagerTalk), this, talkType);
-        func_02015ab0((&villagerTalk), NpcActor_getPlayerActor(this, 4));
+        ActorTalkRequest_setTalkPlayer((&villagerTalk), NpcActor_getPlayerActor(this, 4));
         FieldVillagerAi_ChangeState(&ai, this, r6);
         break;
     }
     case 0:
         partnerPlayer = v;
         VillagerTalk_begin((&villagerTalk), this, talkType);
-        func_02015ab0((&villagerTalk), NpcActor_getPlayerActor(this, 4));
+        ActorTalkRequest_setTalkPlayer((&villagerTalk), NpcActor_getPlayerActor(this, 4));
         if (talkPartner) {
             ActorTalkRequest_setPartnerActor((&villagerTalk), talkPartner);
         }

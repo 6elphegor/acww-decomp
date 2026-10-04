@@ -116,7 +116,7 @@ struct Unk_ov004_022162f0_Actor {
 };
 
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
-#define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
+#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define ActorTalkRequest_setVillagerNameSlot _ZN16ActorTalkRequest19setVillagerNameSlotEjj
@@ -158,7 +158,7 @@ s32 NpcActor_findAvoidPos(void *, void *);
 s32 NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u32);
 s32 Random_GlobalBelow(s32);
 s32 NpcTalkCtrl_isBusy(void *);
-void Unk_02013474_enableFootsteps(void *);
+void NpcFootstepFx_enableFootsteps(void *);
 void Camera_FocusOnPoint(void *);
 void Camera_SetModeDefault();
 s32 VillagerMemory_RecordTalk(void *, s32, s32, s32);
@@ -331,7 +331,7 @@ BOOL BirthdayGuestVillager::onCreate() {
     }
     drawFn = *(Unk_ov004_0224c228_BFn *)data_ov004_0224c158;
     blockFurnitureCells();
-    Unk_02013474_enableFootsteps((u8 *)&footstepFx);
+    NpcFootstepFx_enableFootsteps((u8 *)&footstepFx);
     return TRUE;
 }
 

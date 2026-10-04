@@ -75,8 +75,8 @@ struct Unk_ov004_0221b6d4_Bits {
 #define func_0201b08c _ZN8NpcActor18onInteractionEventEi
 #define Character_setInteractionRange _ZN9Character19setInteractionRangeEi
 #define SpNpcActor_setColliderSize _ZN10SpNpcActor15setColliderSizeEii
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
-#define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
+#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
 #define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
@@ -115,8 +115,8 @@ void NpcActor_setCollisionRadius(void *self, s32 v);
 void func_0201b08c(void *self, u32 a, u32 b);
 void Character_setInteractionRange(void *self, s32 v);
 void SpNpcActor_setColliderSize(void *self, s32 a, s32 b);
-void func_02015ab0(void *self, u32 v);
-NpcActor *func_02015aac(void *self);
+void ActorTalkRequest_setTalkPlayer(void *self, u32 v);
+NpcActor *ActorTalkRequest_getTalkPlayer(void *self);
 void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, Unk_ov004_0221b954_Vec *v, s32 d, s32 e, u8 f);
 s32 NpcActionCtrl_getAction(void *self);
 BOOL NpcActionCtrl_isActionDone(void *self);
@@ -303,7 +303,7 @@ BOOL SpNpcSable::setupAct01() {
     if (SpNpcSable_GetTalkCount(this) < 6) {
         NpcTalkCtrl_requestTalk(&talkCtrl, 1, 0);
     } else {
-        NpcActor *p = func_02015aac(&talk);
+        NpcActor *p = ActorTalkRequest_getTalkPlayer(&talk);
         s32 r = 0;
         if (p) {
             r = NpcActor_getAngleTo(this, p);
@@ -364,7 +364,7 @@ BOOL SpNpcSable::mainAct04() {
                 NpcActor_netSetSlotsIfOwner(this, 1, g, g);
                 ActorTalkRequest *p = &talk;
                 p->resetMsg();
-                func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+                ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
                 changeAct(1);
                 goto end;
             }
@@ -533,7 +533,7 @@ void SpNpcSable::onInteractionEvent(u32 idx, u8 v) {
                 s32 g = gCommManager->myAid;
                 NpcActor_netSetSlotsIfOwner(this, 1, g, g);
                 talk.resetMsg();
-                func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+                ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
                 changeAct(1);
             }
         }

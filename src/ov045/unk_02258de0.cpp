@@ -389,7 +389,7 @@ BOOL SpNpcKatrina::mainAct00() {
 }
 
 BOOL SpNpcKatrina::setupAct01() {
-    NpcActor *p = (NpcActor *)talk.func_02015aac();
+    NpcActor *p = (NpcActor *)talk.getTalkPlayer();
     if (p) {
         getAngleTo(p);
     }
@@ -734,7 +734,7 @@ void SpNpcKatrina::onInteractionEvent(u32 cmd, u8 b) {
     case 0:
     case 1:
         talk.resetMsg();
-        talk.func_02015ab0(getPlayerActor(4));
+        talk.setTalkPlayer(getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

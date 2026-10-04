@@ -52,14 +52,14 @@ u16 Room_PickRandomWalkTarget(void *, void *, s32);
 }
 
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
-#define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
+#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
 #define Unk_020d7710_requestGiveItem _ZN12Unk_020d771015requestGiveItemEPtjjj
 #define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
 #define ActorTalkRequest_setVillagerNameSlot _ZN16ActorTalkRequest19setVillagerNameSlotEjj
-#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
 #define NpcActionCtrl_requestEmotion _ZN13NpcActionCtrl14requestEmotionEiht
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
@@ -160,11 +160,11 @@ void VillagerTalk_begin(void *, void *, u32);
 s32 func_0202d948(void *self);
 s32 func_0202dab0(void *self);
 s32 func_0202d928(void *self);
-void Unk_02013474_enableFootsteps(void *p);
+void NpcFootstepFx_enableFootsteps(void *p);
 void func_01ffd070(Unk_ov004_02215c94_V *out, void *a, void *b);
 void NpcActor_setTalkRequest(void *self, void *p);
 void *NpcActor_getPlayerActor(void *self, s32 n);
-void func_02015ab0(void *p, void *q);
+void ActorTalkRequest_setTalkPlayer(void *p, void *q);
 void Camera_FocusOnPoint(void *p);
 void Camera_SetModeDefault();
 s32 PlayerData_getPlayerId(...);
@@ -294,7 +294,7 @@ BOOL BirthdayHostVillager::onCreate() {
         return FALSE;
     }
     drawFn = *(Unk_ov004_0224c034_Fn *)data_ov004_0224befc;
-    Unk_02013474_enableFootsteps(&footstepFx);
+    NpcFootstepFx_enableFootsteps(&footstepFx);
     return TRUE;
 }
 
@@ -364,13 +364,13 @@ void BirthdayHostVillager::onInteractionEvent(u32 a, u8 b) {
         break;
     case 0:
         *((u8 *)this + 0x560) = b;
-        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
         Camera_FocusOnPoint(&v);
         changeAct(5);
         break;
     case 1:
         *((u8 *)this + 0x560) = b;
-        func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
+        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
         Camera_FocusOnPoint(&v);
         changeAct(8);
         break;

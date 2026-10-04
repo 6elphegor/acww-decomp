@@ -883,9 +883,9 @@ void _ZN12Unk_0201442017requestReturnItemEv(void *);
 void _ZN12Unk_0201442015requestKeepItemEv(void *);
 void _ZN12Unk_0201442016requestItemAct0FEv(void *);
 BOOL _ZN12Unk_0201442015requestTakeItemEPtjjj(void *, void *, s32, s32, s32);
-s32 _ZN12Unk_02015b8c9getAnimIdEj(void *, u32);
+s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *, u32);
 s32 _ZN11NpcAnimCtrl13resolveAnimIdEiPv(void *, u32, void *);
-s32 _ZN11NpcAnimCtrl12initForActorEP16Unk_02015fe0_Obji(void *, void *, u32);
+s32 _ZN11NpcAnimCtrl12initForActorEP8NpcActori(void *, void *, u32);
 void _ZN13NpcActionCtrl12requestStandEjt(void *, s32, u32);
 s32 _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32);
 s32 _ZN13NpcActionCtrl12isActionDoneEv(void *);
@@ -3067,7 +3067,7 @@ BOOL VillagerActor::onCreate() {
     if (!_ZN11NpcFaceAnim4loadEP18Unk_02019cac_Owner((u8 *)this + 0x2ac, this)) {
         return FALSE;
     }
-    if (!_ZN11NpcAnimCtrl12initForActorEP16Unk_02015fe0_Obji((u8 *)this + 0x334, this, data_020c6cf0)) {
+    if (!_ZN11NpcAnimCtrl12initForActorEP8NpcActori((u8 *)this + 0x334, this, data_020c6cf0)) {
         return FALSE;
     }
     _ZN13NpcActionCtrl11startActionEPhiiiisii((u8 *)this + 0x564, this, 0, 1, 0, 0, 0, 0, 0);
@@ -13302,7 +13302,7 @@ BOOL VillagerMood::effectsEnabled() {
 }
 
 BOOL VillagerMood::isMoodAnim(VillagerTalk *s) {
-    s32 v = _ZN12Unk_02015b8c9getAnimIdEj(((void *)((u8 *)(s) + (0x334))), 0);
+    s32 v = _ZN11NpcAnimCtrl9getAnimIdEj(((void *)((u8 *)(s) + (0x334))), 0);
     const u32 *p = sMoodAnimIds;
     const u32 *q = sMoodAnimNextIds;
     for (s32 i = 0; i < 5; p++, q++, i++) {
@@ -13378,7 +13378,7 @@ void VillagerMood::updateMood3Effects(VillagerTalk *s) {
 }
 
 BOOL VillagerMood::isMoodAnimStart(VillagerTalk *s) {
-    s32 v = _ZN12Unk_02015b8c9getAnimIdEj(((void *)((u8 *)(s) + (0x334))), 0);
+    s32 v = _ZN11NpcAnimCtrl9getAnimIdEj(((void *)((u8 *)(s) + (0x334))), 0);
     const u32 *p = sMoodAnimIds;
     for (s32 i = 0; i < 5; p++, i++) {
         if (v == *p) {
@@ -13572,7 +13572,7 @@ void VillagerMood::updateMoodAnim(VillagerTalk *s, s32 next) {
         effectFn = *(Unk_0201c078_State *)__ptmf_null;
         effectMood = 5;
     } else if (!effectFn) {
-        switch (_ZN12Unk_02015b8c9getAnimIdEj(((void *)((u8 *)(s) + (0x334))), 0) - 0xe5) {
+        switch (_ZN11NpcAnimCtrl9getAnimIdEj(((void *)((u8 *)(s) + (0x334))), 0) - 0xe5) {
         case 0:
         case 1:
             if (next == 1) {
@@ -13636,7 +13636,7 @@ void VillagerMood::update(VillagerTalk *s) {
                 }
                 setMoodAnimation(s, b);
             }
-            s32 v = _ZN12Unk_02015b8c9getAnimIdEj(((void *)((u8 *)(s) + (0x334))), 0);
+            s32 v = _ZN11NpcAnimCtrl9getAnimIdEj(((void *)((u8 *)(s) + (0x334))), 0);
             if (v != _ZN11NpcAnimCtrl13resolveAnimIdEiPv(((void *)((u8 *)(s) + (0x334))), 0, ((void *)((u8 *)(s) + (0x2a0))))) {
                 if (isMoodAnimStart(s)) {
                     _ZN13NpcActionCtrl13requestActionEjiiissiitt(((void *)((u8 *)(s) + (0x564))), 0, *(u32 *)((void *)((u8 *)(s) + (0x578))), 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);

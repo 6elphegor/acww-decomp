@@ -116,13 +116,13 @@ void _ZN12Unk_020d771015setPocketFilterEjjj(void *self, u32 cb, u32 b, u32 c);
 void _ZN12Unk_020d771012openSubSceneEi(void *self, s32 a);
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *self, u16 *p, u32 a, u32 b, u32 c);
 void *_ZN11NpcMoveCtrl14getDestinationEv(void *self);
-s32 _ZN12Unk_0201acf813func_0201acfcEv(void *self);
+s32 _ZN12Unk_0201acf88getLevelEv(void *self);
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *self);
 s32 _ZN13NpcActionCtrl9getActionEv(void *self);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, s32 a, s32 b, u32 c, u32 d, u32 e);
-void _ZN12Unk_0201347416disableFootstepsEv(void *self);
-void _ZN12Unk_0201347415enableFootstepsEv(void *self);
+void _ZN13NpcFootstepFx16disableFootstepsEv(void *self);
+void _ZN13NpcFootstepFx15enableFootstepsEv(void *self);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 s32 _ZN9NpcLookAt15getObstacleBitsEv(void *self);
@@ -136,7 +136,7 @@ void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b,
 s32 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 s32 _ZN8NpcActor13getDistanceToEPS_(void *self, void *p);
 s32 _ZN8NpcActor18getRelativeAngleToEPS_(void *self, void *p);
-void _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(void *self, void *owner, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *self, void *owner, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void _ZN10VisitorPos13pickRandomPosEv();
 
 void Npc_RotateOffsetXZ(Unk_ov071_02271f54_Tmp *t, void *pos, void *p, s32 ang);
@@ -333,7 +333,7 @@ BOOL SpNpcLyle::onCreate() {
     if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
-    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&animCtrl, this, 0x141, 0, 0, 0x1000, 0, 1);
+    _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&animCtrl, this, 0x141, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     changeAct(4);
     return TRUE;
@@ -455,7 +455,7 @@ BOOL SpNpcLyle::mainAct00() {
 }
 
 BOOL SpNpcLyle::setupAct05() {
-    void *p = talk.func_02015aac();
+    void *p = talk.getTalkPlayer();
     s32 x = rotY;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -549,7 +549,7 @@ BOOL SpNpcLyle::setupAct01() {
     Unk_ov071_02271f54_Vec *pv = (Unk_ov071_02271f54_Vec *)&position;
     chaseStart = *pv;
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xdf, 1, data_020c6cc8, 0);
-    _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
+    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     act01Step = 0;
     return TRUE;
@@ -568,7 +568,7 @@ BOOL SpNpcLyle::mainAct01() {
 BOOL SpNpcLyle::setupAct03() {
     stepTimer = 0;
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
+    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
@@ -673,7 +673,7 @@ BOOL SpNpcLyle::mainAct03() {
     if (isNearCameraFocus(1) != 0) {
         if (tryAvoidObstacle() == 0) {
             if (_ZN13NpcActionCtrl12isActionDoneEv(p) != 0) {
-                if (_ZN12Unk_0201acf813func_0201acfcEv(&unk_3aa) == 2) {
+                if (_ZN12Unk_0201acf88getLevelEv(&unk_3aa) == 2) {
                     _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 } else if ((Random_Next(&gRandom) & 7) == 0) {
                     u32 *d = gVec3Zero;
@@ -726,7 +726,7 @@ BOOL SpNpcLyle::mainAct03() {
 }
 
 BOOL SpNpcLyle::setupAct04() {
-    _ZN12Unk_0201347416disableFootstepsEv(&footstepFx);
+    _ZN13NpcFootstepFx16disableFootstepsEv(&footstepFx);
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     stepTimer = 0x28;
     return TRUE;
@@ -1194,7 +1194,7 @@ void SpNpcLyle::onInteractionEvent(u32 a, u8) {
         break;
     case 3:
         talk.resetMsg();
-        talk.func_02015ab0((u32)getPlayerActor(4));
+        talk.setTalkPlayer((u32)getPlayerActor(4));
         changeAct(5);
         break;
     case 8:
