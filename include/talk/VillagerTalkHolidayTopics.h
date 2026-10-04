@@ -5,7 +5,7 @@
 #include "talk/VillagerTalkHobbyTopics.h"
 
 // Villager talk topic state functions: birthday / countdown / snow festival topics and the tsu (rumor) once-topics. Views of the VillagerTalk object; base of the next topic class (ov069 chain).
-// Members defined in src/main/unk_0201c050.cpp (which keeps its own layout view of this class).
+// Members defined in src/main/unk_0201c050.cpp. The member-pointer fields are typed with VillagerTalkRequestItemTopics; that unit casts them to its per-class types.
 struct Unk_0201dc44_Ret;
 
 class VillagerTalkHolidayTopics : public VillagerTalkHobbyTopics {

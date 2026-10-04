@@ -5,7 +5,7 @@
 #include "talk/VillagerTalkAcornTopics.h"
 
 // Villager talk topic state functions: gardening / insect / fishing / admire topics. Views of the VillagerTalk object; base of the next topic class (ov069 chain).
-// Members defined in src/main/unk_0201c050.cpp (which keeps its own layout view of this class).
+// Members defined in src/main/unk_0201c050.cpp. The member-pointer fields are typed with VillagerTalkRequestItemTopics; that unit casts them to its per-class types.
 struct Unk_0201ef00_Out;
 
 class VillagerTalkHobbyTopics : public VillagerTalkAcornTopics {

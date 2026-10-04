@@ -27,7 +27,8 @@ struct Unk_020d77a4_Vec;
 struct Unk_0201bc1c;
 
 // Base of all NPC actors (villagers and special NPCs; 0x640 bytes). Methods and vtable in src/main/unk_020119cc.cpp
-// (0x0201b084..0x0201be04, D0 0x020119cc / D1 0x02011a98, inline destructor defined there); the constructor is inline.
+// (0x0201b084..0x0201be04, D0 0x020119cc / D1 0x02011a98, inline destructor defined there and in 0202e2d4 / 0201c050,
+// whose derived destructors inline it); the constructor is inline.
 class NpcActor : public Character {
 public:
     NpcActor() : unk_ea(0xfff1) {}

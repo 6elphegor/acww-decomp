@@ -224,7 +224,7 @@ BOOL HouseOwnerVillager::vfunc_04() {
         return FALSE;
     }
     NpcActor_setTalkRequest(this, &villagerTalk);
-    villagerTalk.vfunc_08();
+    villagerTalk.obj.vfunc_08();
     RoomFreeUnitMap_Build(&freeUnitMap);
     talkKind = 0;
     talkMelodyPlayed = 0;

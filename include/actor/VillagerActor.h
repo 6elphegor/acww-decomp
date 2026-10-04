@@ -9,8 +9,7 @@
 #include "npc/VillagerMood.h"
 
 // Base of the town villagers (0x894 bytes). Defined in src/main/unk_0201c050.cpp (ctor, dtor, vtable, overrides
-// 0x0202daf8..), which keeps its own declaration (it keeps its NpcActor copy, see actor/NpcActor.h notes). The member
-// at 0x680 is a VillagerTalk plus one byte; this header uses the npc/Unk_0202d5e8.h view of it.
+// 0x0202daf8..). The member at 0x680 is a VillagerTalk plus one byte (npc/Unk_0202d5e8.h).
 class VillagerActor : public NpcActor {
 public:
     VillagerActor();

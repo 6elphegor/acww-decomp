@@ -5,7 +5,7 @@
 #include "talk/VillagerTalkRequestReplyTopics.h"
 
 // Villager talk topic state functions: the remaining topic state functions (greetings, memories, errands, items, ...). Views of the VillagerTalk object; base of the next topic class (ov069 chain).
-// Members defined in src/main/unk_0201c050.cpp (which keeps its own layout view of this class).
+// Members defined in src/main/unk_0201c050.cpp. The member-pointer fields are typed with VillagerTalkRequestItemTopics; that unit casts them to its per-class types.
 struct Unk_0201d2d0_Data;
 struct Unk_0201d2d0_Out;
 struct Unk_02022608_Ent;

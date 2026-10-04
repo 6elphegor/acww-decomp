@@ -5,7 +5,7 @@
 #include "talk/VillagerTalkHolidayTopics.h"
 
 // Villager talk topic state functions: delivery request / Q-time replies and the connect menu. Views of the VillagerTalk object; base of the next topic class (ov069 chain).
-// Members defined in src/main/unk_0201c050.cpp (which keeps its own layout view of this class).
+// Members defined in src/main/unk_0201c050.cpp. The member-pointer fields are typed with VillagerTalkRequestItemTopics; that unit casts them to its per-class types.
 struct Unk_02027a34_Out;
 
 class VillagerTalkRequestReplyTopics : public VillagerTalkHolidayTopics {

@@ -3160,7 +3160,7 @@ BOOL FieldVillager::vfunc_04() {
         return FALSE;
     }
     NpcActor_setTalkRequest(this, &villagerTalk);
-    villagerTalk.vfunc_08();
+    villagerTalk.obj.vfunc_08();
     talkPartner = NULL;
     talkType = 0;
     talkReason = 3;
