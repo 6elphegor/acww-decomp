@@ -1453,10 +1453,10 @@ Insect_Update kind:function(thumb,size=0x2a8) addr:0x02228060
 Insect_UpdateHideTimer kind:function(thumb,size=0xc8) addr:0x02228308
 Insect_LoadModel kind:function(thumb,size=0x340) addr:0x022283d0
 _ZN13InsectManager8onCreateEv kind:function(thumb,size=0xb8) addr:0x02228710
-_ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti kind:function(thumb,size=0x114) addr:0x022287c8
-_ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act kind:function(thumb,size=0x48) addr:0x022288dc
+_ZN13InsectManager10freeInsectEP6Insecti kind:function(thumb,size=0x114) addr:0x022287c8
+_ZN13InsectManager16allocFieldInsectEP6Insect kind:function(thumb,size=0x48) addr:0x022288dc
 _ZN13InsectManager18allocSpecialInsectEii kind:function(thumb,size=0x68) addr:0x02228924
-_ZN13InsectManager15allocHeldInsectEP22Unk_ov003_02228710_Act kind:function(thumb,size=0xbc) addr:0x0222898c
+_ZN13InsectManager15allocHeldInsectEP6Insect kind:function(thumb,size=0xbc) addr:0x0222898c
 _ZN13InsectManagerD0Ev kind:function(thumb,size=0x48) addr:0x02228a48
 _ZN13InsectManagerD1Ev kind:function(thumb,size=0x40) addr:0x02228a90
 _ZN13InsectManagerC1Ev kind:function(thumb,size=0x48) addr:0x02228ad0
@@ -1507,7 +1507,7 @@ Insect_InitButterfly kind:function(thumb,size=0xf4) addr:0x022294f8
 Insect_InitFlutter kind:function(thumb,size=0x7c) addr:0x022295ec
 Insect_UpdateButterfly kind:function(thumb,size=0x8) addr:0x02229668
 Insect_RandomAngle kind:function(thumb,size=0x28) addr:0x02229670
-Insect_InitBehaviour kind:function(thumb,size=0x130) addr:0x02229698
+Insect_InitBehavior kind:function(thumb,size=0x130) addr:0x02229698
 Crawler_Escape kind:function(thumb,size=0x148) addr:0x022297c8
 Insect_Despawn kind:function(thumb,size=0x28) addr:0x02229910
 Insect_SetWanderBox kind:function(thumb,size=0x104) addr:0x02229938
@@ -2434,7 +2434,7 @@ data_ov003_02234abc kind:data(any) addr:0x02234abc
 sInsectModelParams kind:data(any) addr:0x02234b04
 data_ov003_02234b06 kind:data(any) addr:0x02234b06
 data_ov003_02234b08 kind:data(any) addr:0x02234b08
-sInsectBehaviours kind:data(any) addr:0x02234c6c
+sInsectBehaviors kind:data(any) addr:0x02234c6c
 data_ov003_02234c70 kind:data(any) addr:0x02234c70
 sInsectPathFmt0x kind:data(any) addr:0x02234e4c
 sInsectPathFmt1x kind:data(any) addr:0x02234e60

@@ -35,7 +35,7 @@ struct Unk_ov003_0225980c_Rec {
     /* 0x210 */ s32 scaleX;
     /* 0x214 */ s32 scaleY;
     /* 0x218 */ s32 scaleZ;
-    /* 0x21c */ s32 behaviourWork;
+    /* 0x21c */ s32 behaviorWork;
     /* 0x220 */ s32 targetHeight;
     /* 0x224 */ s32 disturbRadius;
     /* 0x228 */ s32 baseHeight;

@@ -288,6 +288,9 @@ public:
     virtual void setup();
     virtual void update();
     /* 0x1fc */ CreatureSndChannel croakSound;
+    /* 0x208 */ u16 croakInterval;
+    /* 0x20a */ u8 croakRepeatCount;
+    /* 0x20b */ u8 pad_20b;
     /* 0x20c */ s32 croakAnimSpeed;
     /* 0x210 */ u8 croakCount;
     /* 0x211 */ u8 croakState;
@@ -1921,7 +1924,7 @@ extern "C" void _ZN12AquariumFrog6updateEv(E834 *o) {
         AquariumFrog_Croak(o);
         break;
     case 6:
-        if (o->stateTimer >= o->croakSound.interval) {
+        if (o->stateTimer >= o->croakInterval) {
             o->croakState = 2;
             o->stateTimer = 0;
         }
@@ -1931,10 +1934,10 @@ extern "C" void _ZN12AquariumFrog6updateEv(E834 *o) {
 }
 
 extern "C" void AquariumFrog_StartCroak(E834 *o) {
-    o->croakSound.interval = Aquarium_RandRange(0x28, 0xc8);
+    o->croakInterval = Aquarium_RandRange(0x28, 0xc8);
     o->croakAnimSpeed = (Aquarium_RandRange(0x32, 0x4b) << 12) / 100;
     o->animFrameStep = o->croakAnimSpeed;
-    o->croakSound.repeatCount = Aquarium_RandRange(1, 7);
+    o->croakRepeatCount = Aquarium_RandRange(1, 7);
     o->croakCount = 0;
     o->stateTimer = 0;
     o->croakState = 4;
@@ -1945,7 +1948,7 @@ extern "C" void AquariumFrog_Croak(E834 *o) {
         SndEnvChannel_callRequestSustained(&o->croakSound, 0x832);
         o->croakCount++;
     }
-    if (o->croakCount >= o->croakSound.repeatCount) {
+    if (o->croakCount >= o->croakRepeatCount) {
         if (AnimFrameCtrl_hasPassedFrame(&o->animFrameCtrl, (u16)(o->animNumFrames.mid - 1))) {
             o->croakState = 6;
             o->stateTimer = 0;

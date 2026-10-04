@@ -52,7 +52,7 @@ struct Unk_ov003_0222ed20_V3 {
     s32 x, y, z;
 };
 
-struct Unk_ov003_0222ed20_St {
+struct LooseSnowballsView {
     Unk_ov003_0222ed20_V3 a;
     u32 pad_0c;
     Unk_ov003_0222ed20_V3 b;
@@ -93,7 +93,7 @@ BOOL Item_IsSnowman(u16 *p);
 s32 Item_GetSnowmanIndex(u16 *p);
 s32 SnowmanRecords_getInfo(void *o, s32 i, void *a, void *b, void *c, void *d, void *e, void *f);
 s32 Actor_spawn(u32 a, u32 b, void *c, u32 d, void *e);
-Unk_ov003_0222ed20_St *LooseSnowballs_Get();
+LooseSnowballsView *LooseSnowballs_Get();
 void LooseSnowballs_reset();
 s32 GroundSeason_IsSnow();
 s32 Scene_InTown();
@@ -152,7 +152,7 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
     if (Scene_InTown() != 0) {
         if (SnowmanRecords_isFull(data_021ed2e6) == 0) {
             if (LooseSnowballs_Get()->a.x != 0) {
-                Unk_ov003_0222ed20_St *s = LooseSnowballs_Get();
+                LooseSnowballsView *s = LooseSnowballs_Get();
                 f.A.x = s->a.x;
                 f.A.y = s->a.y;
                 f.A.z = s->a.z;
@@ -160,7 +160,7 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
                 Snowball_FindSpawnPos(self, &f.A, 0, 1);
             }
             if (LooseSnowballs_Get()->b.x != 0) {
-                Unk_ov003_0222ed20_St *s = LooseSnowballs_Get();
+                LooseSnowballsView *s = LooseSnowballs_Get();
                 Unk_ov003_0222ed20_V3 *pv = &s->b;
                 f.B.x = pv->x;
                 f.B.y = pv->y;
@@ -169,13 +169,13 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
                 Snowball_FindSpawnPos(self, &f.B, (s32)&f.A, 1);
             }
             if (Actor_spawn(0xbd, 0, &f.A, 0, self)) {
-                Unk_ov003_0222ed20_St *s = LooseSnowballs_Get();
+                LooseSnowballsView *s = LooseSnowballs_Get();
                 s->a.x = f.A.x;
                 s->a.y = f.A.y;
                 s->a.z = f.A.z;
             }
             if (Actor_spawn(0xbd, 1, &f.B, 0, self)) {
-                Unk_ov003_0222ed20_St *s = LooseSnowballs_Get();
+                LooseSnowballsView *s = LooseSnowballs_Get();
                 s->b.x = f.B.x;
                 s->b.y = f.B.y;
                 s->b.z = f.B.z;
