@@ -15,7 +15,7 @@ public:
     virtual u8 *data();
     void copyTo(void *dst, s32 n);
 
-    /* 0x0e */ u8 bytes[0xa];
+    /* 0x0e */ u8 text[0xa];
 };
 
 #endif

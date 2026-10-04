@@ -1350,7 +1350,7 @@ namespace n5 {
 }
 
 u8 *EncodedString192::data() {
-    using namespace n5; return bytes; }
+    using namespace n5; return text; }
 namespace n5 {
 
 

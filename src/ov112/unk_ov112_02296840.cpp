@@ -757,8 +757,8 @@ void BbsWriteMenu::init() {
     String_Load2dMenu(&a, 0x89);
     EncodedString41 c;
     ((EncodedString *)(&c))->fromMsgString(&a);
-    s32 n = Text_GetLength(c.bytes, 0x28);
-    Mem_Copy(c.bytes, text, n);
+    s32 n = Text_GetLength(c.text, 0x28);
+    Mem_Copy(c.text, text, n);
     text[n] = 0x86;
     n++;
     if (Text_MeasureWidth(text, n) > 0x96) {

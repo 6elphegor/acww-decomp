@@ -489,9 +489,9 @@ struct Unk_ov004_0222ef04_Cb {
     u8 pad_00[4];
     Unk_ov004_0222ef04_Own *pRenderObj;
     u8 pad_08[0x24 - 8];
-    void *cbVecFuncNodeDesc;
+    void *nodeDescCallback;
     u8 pad_28[0x92 - 0x28];
-    u8 cbVecTimingNodeDesc;
+    u8 nodeDescCallbackTiming;
 };
 
 typedef Unk_ov004_0222ef04_Cb Cb;
@@ -3020,10 +3020,10 @@ extern "C" void AquariumFish_JointCalcPost(Cb *c) {
 }
 
 extern "C" void AquariumFish_InstallJointCallbacks(Cb *c) {
-    c->cbVecFuncNodeDesc = (void *)AquariumFish_JointCalcPre;
-    c->cbVecTimingNodeDesc = 1;
-    c->cbVecFuncNodeDesc = (void *)AquariumFish_JointCalcPost;
-    c->cbVecTimingNodeDesc = 2;
+    c->nodeDescCallback = (void *)AquariumFish_JointCalcPre;
+    c->nodeDescCallbackTiming = 1;
+    c->nodeDescCallback = (void *)AquariumFish_JointCalcPost;
+    c->nodeDescCallbackTiming = 2;
 }
 
 extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out) {

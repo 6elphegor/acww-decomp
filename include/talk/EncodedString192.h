@@ -12,7 +12,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x0e */ u8 bytes[0xb2];
+    /* 0x0e */ u8 text[0xb2];
 };
 
 #endif

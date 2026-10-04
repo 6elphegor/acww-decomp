@@ -17,11 +17,11 @@ struct TaskNode {
 // a phase's task list (EXECUTE, CREATE, DRAW, DELETE)
 class TaskList {
 public:
-    TaskList(TaskFn f) : head(0), count(0), fn(f) {}
+    TaskList(TaskFn f) : head(0), tail(0), fn(f) {}
     BOOL run();                       // 0x020ed54c
 
     /* 0x00 */ TaskNode *head;
-    /* 0x04 */ u32 count;
+    /* 0x04 */ u32 tail;
     /* 0x08 */ TaskFn fn;
 };
 
@@ -30,7 +30,7 @@ struct TaskNode10 {
     /* 0x10 */ ProcBase *unk_10;
 };
 
-// the CONNECT list (another node layout, no count)
+// the CONNECT list (another node layout, no tail)
 class TaskTree {
 public:
     TaskTree(TaskFn f) : head(0), fn(f) {}

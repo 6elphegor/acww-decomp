@@ -70,7 +70,7 @@ struct Unk_ov004_02235528_V3 {
 };
 
 struct Unk_ov004_0224e98c_Entry {
-    void *(*factory)();
+    void *(*create)();
     u16 executePriority;
     u16 drawPriority;
 };

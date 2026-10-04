@@ -72,7 +72,7 @@ public:
 };
 
 struct Unk_020dba58_Entry {
-    TextSystemModule *(*factory)(void);
+    TextSystemModule *(*create)(void);
     u16 unk_04;
     u16 unk_06;
 };

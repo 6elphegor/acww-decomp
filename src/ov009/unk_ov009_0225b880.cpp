@@ -1881,7 +1881,7 @@ BOOL BuildingActor::vfunc_b8(Unk_ov009_0225bc88_Blk *out) { return 0; }
 // ---------------------------------------------------------------- data
 
 struct Unk_ov009_0225e260_Entry {
-    void (*factory)();
+    void (*create)();
     u16 executePriority;
     u16 drawPriority;
     s32 unk_08[4];

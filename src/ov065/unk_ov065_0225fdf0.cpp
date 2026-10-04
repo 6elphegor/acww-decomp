@@ -1189,7 +1189,7 @@ typedef Unk_ov065_022603bc_Rx Rx;
 
 struct Unk_ov065_0225ff64_Job {
     u32 unk_00;
-    Sess *sess;
+    Sess *sock;
     u8 pad_08[8];
     u8 *buf;
     u32 len;
@@ -1199,7 +1199,7 @@ struct Unk_ov065_0225ff64_Job {
 
 struct Unk_ov065_022603bc_Job {
     u32 unk_00;
-    Sess *sess;
+    Sess *sock;
     u8 pad_08[8];
     u8 *data1;
     s32 len1;
@@ -1267,10 +1267,10 @@ static inline Unk_ov065_0225faf4_Job *AllocJob(void *fn, Sess *s, s32 i)
     return (Unk_ov065_0225faf4_Job *)SockCore_AllocMsg(fn, s, i);
 }
 
-static inline BOOL IsIdle(Sess *s)
+static inline BOOL IsTcp(Sess *s)
 {
     BOOL r = TRUE;
-    if (s->state != 0 && s->state != 4) {
+    if (s->sockType != 0 && s->sockType != 4) {
         r = FALSE;
     }
     return r;
@@ -1290,8 +1290,8 @@ extern "C" {
 
 s32 SockCore_CmdSend(WJob *j)
 {
-    Sess *s = j->sess;
-    Rx *rx = s->rx;
+    Sess *s = j->sock;
+    Rx *rx = s->sendPipe;
     u8 *buf;
     s32 r = 0;
     s32 off;
@@ -1299,11 +1299,11 @@ s32 SockCore_CmdSend(WJob *j)
     s32 k;
     s32 m;
 
-    if (!IsIdle(s) || (s->flags & 4)) {
+    if (!IsTcp(s) || (s->flags & 4)) {
         if (j->remoteAddr != NULL) {
             IpSoc_Bind(j->localPort, j->remotePort, j->remoteAddr);
         }
-        if (IsIdle(s)) {
+        if (IsTcp(s)) {
             off = 0x36;
         } else {
             off = 0x2a;
@@ -1319,7 +1319,7 @@ s32 SockCore_CmdSend(WJob *j)
             if (m > 0) {
                 goto addm;
             }
-            if (IsIdle(s)) {
+            if (IsTcp(s)) {
                 s->flags &= ~0xe;
             }
             r = -0x4c;
@@ -1368,7 +1368,7 @@ s32 SockCore_RecvFrom(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb, s32 e)
         return -0x1c;
     }
     if ((e & 4) || s->blocking == 0) {
-        if (s->state == 4) {
+        if (s->sockType == 4) {
             return -0x1c;
         }
         blk = 0;
@@ -1381,12 +1381,12 @@ s32 SockCore_RecvFrom(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb, s32 e)
     if (!IsValid(s)) {
         return -0x27;
     }
-    if (IsIdle(s)) {
+    if (IsTcp(s)) {
         if (!(s->flags & 4) || (s->flags & 8)) {
             return -0x38;
         }
     }
-    c = s->ctx;
+    c = s->recvPipe;
     if (blk == 0) {
         if (OS_TryLockMutex(c->mutex) == 0) {
             return -6;
@@ -1401,7 +1401,7 @@ s32 SockCore_RecvFrom(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb, s32 e)
 
 s32 SockCore_RecvLocked(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb, s32 e, s32 f)
 {
-    Ctx *c = s->ctx;
+    Ctx *c = s->recvPipe;
     BOOL lock;
     s8 saved;
     s32 res;
@@ -1415,7 +1415,7 @@ s32 SockCore_RecvLocked(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb, s32 e, s32 f)
         saved = c->lock;
         c->lock = 1;
     }
-    if (s->state == 1) {
+    if (s->sockType == 1) {
         res = SockCore_RecvDatagram(s, buf, n, pa, pb, e);
     } else {
         res = SockCore_RecvStream(s, buf, n, pa, pb, e);
@@ -1432,7 +1432,7 @@ s32 SockCore_RecvLocked(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb, s32 e, s32 f)
 s32 SockCore_RecvStream(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb, s32 e)
 {
     s32 r;
-    if (s->state == 4) {
+    if (s->sockType == 4) {
         return SockCore_PostRecvWait(s, buf, n, pa, pb);
     }
     r = SockCore_RecvStreamData(s, buf, n, pa, pb);
@@ -1460,12 +1460,12 @@ s32 SockCore_RecvStreamData(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb)
             if (n > r) {
                 n = r;
             }
-            if (IsIdle(s)) {
+            if (IsTcp(s)) {
                 r = n;
             }
             MI_CpuCopy8(src, buf, n);
-            if (s->ctx->lock == 0) {
-                s->ctx->pos = s->ctx->pos + r;
+            if (s->recvPipe->lock == 0) {
+                s->recvPipe->pos = s->recvPipe->pos + r;
             }
         }
     } else {
@@ -1491,8 +1491,8 @@ s32 SockCore_RecvStreamData(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb)
 
 u8 *SockCore_PeekStreamData(Sess *s, s32 *outlen, u16 *a, u16 *b, u32 *c)
 {
-    Ctx *ctx = s->ctx;
-    Sess *e = ctx->cur;
+    Ctx *ctx = s->recvPipe;
+    Sess *e = ctx->ipSocket;
     s32 pos = ctx->pos;
     s32 d = e->rxLen - pos;
     if (d >= 0) {
@@ -1522,8 +1522,8 @@ s32 SockCore_PostRecvWait(Sess *s, u8 *a, s32 b, u16 *c, u32 *d)
 
 s32 SockCore_CmdRecvWait(RJob *j)
 {
-    Sess *s = j->sess;
-    Ctx *c = s->ctx;
+    Sess *s = j->sock;
+    Ctx *c = s->recvPipe;
     u8 *dst = j->buf;
     u32 n = j->len;
     u16 *pa = j->outPort;
@@ -1540,7 +1540,7 @@ s32 SockCore_CmdRecvWait(RJob *j)
         if ((s32)(x - pos) > 0) {
             break;
         }
-        if (IsIdle(s)) {
+        if (IsTcp(s)) {
             if (s->ipState != 4) {
                 src = NULL;
                 break;
@@ -1548,7 +1548,7 @@ s32 SockCore_CmdRecvWait(RJob *j)
         }
         OS_Sleep(10);
     }
-    if (s->state == 4) {
+    if (s->sockType == 4) {
         if (src == NULL) {
             return 0;
         }
@@ -1575,7 +1575,7 @@ s32 SockCore_CmdRecvWait(RJob *j)
 
 s32 SockCore_RequestConsume(Sess *s)
 {
-    Ctx *c = s->ctx;
+    Ctx *c = s->recvPipe;
     if (c->pos < c->limit) {
         return 0;
     }
@@ -1588,12 +1588,12 @@ s32 SockCore_RequestConsume(Sess *s)
 
 s32 SockCore_CmdConsume(Job *j)
 {
-    return SockCore_ConsumeRecvData(j->sess);
+    return SockCore_ConsumeRecvData(j->sock);
 }
 
 s32 SockCore_ConsumeRecvData(Sess *s)
 {
-    Ctx *c = s->ctx;
+    Ctx *c = s->recvPipe;
     u32 irq = OS_DisableInterrupts();
     s32 v = c->pos;
     if (v != 0) {
@@ -1608,7 +1608,7 @@ s32 SockCore_RecvDatagram(Sess *s, u8 *dst, s32 max, u16 *o1, u32 *o2, s32 block
 {
     u32 irq;
     s32 err;
-    Ctx *c = s->ctx;
+    Ctx *c = s->recvPipe;
     Node *n;
 
     irq = OS_DisableInterrupts(c->head);

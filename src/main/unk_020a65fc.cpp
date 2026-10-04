@@ -198,7 +198,7 @@ extern "C" void NetArea_WriteStateAPart0() {}
 
 extern "C" void NetArea_WriteStateANpcTalk() {
     u8 v = 1;
-    gCommManager->appendAuxB(&v, 1);
+    gCommManager->appendAuxA(&v, 1);
 }
 
 extern "C" void NetArea_BuildStateA() {

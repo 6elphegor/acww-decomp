@@ -244,13 +244,13 @@ BOOL HouseRoach_SpawnInitial(void *owner);
 }
 
 struct Unk_ov004_0224eb5c_Entry {
-    void *(*factory)();
+    void *(*create)();
     u16 executePriority;
     u16 drawPriority;
 };
 
 struct Unk_ov004_0224eb7c_Entry {
-    void *(*factory)();
+    void *(*create)();
     u16 executePriority;
     u16 drawPriority;
     u32 actorFlags;

@@ -29,7 +29,7 @@ Unk_0206f804_Fn sCommSubHandlers[24] = {
     CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, func_0206f4d8,
 };
 
-s32 EncodedString41::getLength() { return Text_GetLength(bytes, 0x29); }
+s32 EncodedString41::getLength() { return Text_GetLength(text, 0x29); }
 
 extern "C" void CommSub_ResetPostReply() { sCommSubPostReply = 0x18; }
 

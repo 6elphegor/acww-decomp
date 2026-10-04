@@ -24,7 +24,7 @@ struct Unk_ov065_0225faf4_Alloc {
 
 struct Unk_ov065_0225faf4_Ctx {
     /* 0x000 */ u8 pad_00[0xc4];
-    /* 0x0c4 */ Unk_ov065_0225faf4_Sess *cur;
+    /* 0x0c4 */ Unk_ov065_0225faf4_Sess *ipSocket;
     /* 0x0c8 */ u8 pad_c8[0x18];
     /* 0x0e0 */ u8 mutex[0x18];
     /* 0x0f8 */ s32 pos;
@@ -61,12 +61,12 @@ struct Unk_ov065_0225faf4_Sess {
     /* 0x48 */ s32 txBufSize;
     /* 0x4c */ u8 *txBuf;
     /* 0x50 */ u8 pad_50[0x14];
-    /* 0x64 */ Unk_ov065_0225faf4_Ctx *ctx;
-    /* 0x68 */ Unk_ov065_022603bc_Rx *rx;
+    /* 0x64 */ Unk_ov065_0225faf4_Ctx *recvPipe;
+    /* 0x68 */ Unk_ov065_022603bc_Rx *sendPipe;
     /* 0x6c */ s32 result;
     /* 0x70 */ volatile s16 flags;
     /* 0x72 */ s8 blocking;
-    /* 0x73 */ s8 state;
+    /* 0x73 */ s8 sockType;
     /* 0x74 */ u16 boundPort;
     /* 0x76 */ u16 peerPort;
     /* 0x78 */ u32 peerAddr;
@@ -74,7 +74,7 @@ struct Unk_ov065_0225faf4_Sess {
 
 struct Unk_ov065_0225faf4_Job {
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_ov065_0225faf4_Sess *sess;
+    /* 0x04 */ Unk_ov065_0225faf4_Sess *sock;
     /* 0x08 */ u32 unk_08;
     /* 0x0c */ s8 sockType;
     /* 0x0d */ u8 pad_0d[3];

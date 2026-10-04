@@ -166,7 +166,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    u8 bytes[0x20];
+    u8 text[0x20];
 };
 
 typedef void (ChatMenu::*Unk_ov111_02298a48_Fn)();
@@ -478,7 +478,7 @@ BOOL ChatMenu_RequestTab(S *s, s32 a, u32 b) {
             s->setFlags(0x10);
         }
         if (b != 0) {
-            MenuCtrl_SetChatDraft(s->text.bytes);
+            MenuCtrl_SetChatDraft(s->text.text);
         } else {
             MenuCtrl_ClearChatDraft();
         }
@@ -899,7 +899,7 @@ void ChatMenu_Init(S *s) {
     ChatMenu_ClearText(s);
     s->textLabel = NULL;
     Keyboard_Init(&s->keyboard);
-    Mem_Copy((void *)MenuCtrl_GetChatDraft(), s->text.bytes, 0x20);
+    Mem_Copy((void *)MenuCtrl_GetChatDraft(), s->text.text, 0x20);
     PlayerActor_OnChatOpenNop();
     if (((MenuTabBar *)ProcBase_GetParent(s))->isJustOpened()) {
         s->setFlags(0x20);
@@ -1005,7 +1005,7 @@ void ChatMenu_RedrawText(S *s) {
         TextLabel *t = s->textLabel;
         t->textStart = ((TextLabel *)&s->balloonText)->measureWidth();
         s->textLabel->requestRedraw();
-        s->lengthGauge = Text_GetLength(s->text.bytes, 0x20) * 0x1f / 0x20;
+        s->lengthGauge = Text_GetLength(s->text.text, 0x20) * 0x1f / 0x20;
         if (s->lengthGauge > 0x1f) {
             s->lengthGauge = 0x1f;
         }
@@ -1031,7 +1031,7 @@ BOOL ChatMenu_InsertChar(S *s, u32 a) {
         ChatMenu_DeleteSelection(s);
         Keyboard_ResetTypedRun(&s->keyboard);
     }
-    if (Keyboard_InsertChar(&s->keyboard, s->text.bytes, a, &s->caretIndex, 0x20, 0xa0, 0, 1)) {
+    if (Keyboard_InsertChar(&s->keyboard, s->text.text, a, &s->caretIndex, 0x20, 0xa0, 0, 1)) {
         s->updateCaretX();
         ChatMenu_RedrawText(s);
     } else {
@@ -1048,7 +1048,7 @@ BOOL ChatMenu_Backspace(S *s, Unk_ov111_022970cc_Status a) {
         s->selectionStart = s->caretIndex;
         s->selectionEnd = s->caretIndex - 1;
         Snd_PlaySe(0x35);
-    } else if (s->text.bytes[0] != 0) {
+    } else if (s->text.text[0] != 0) {
         s->selectionStart = 0;
         s->selectionEnd = 1;
         Snd_PlaySe(0x35);
@@ -1075,7 +1075,7 @@ void ChatMenu_DeleteSelection(S *s) {
         lo = b;
         hi = a;
     }
-    s->caretIndex = Keyboard_DeleteRange(&s->keyboard, s->text.bytes, lo, hi, 0x20);
+    s->caretIndex = Keyboard_DeleteRange(&s->keyboard, s->text.text, lo, hi, 0x20);
     s->clearSelection();
 }
 
@@ -1084,7 +1084,7 @@ BOOL ChatMenu_TryModifier103(S *s) {
     if (a == 0) return FALSE;
     u32 b = Keyboard_ModifyCharKey103(&s->keyboard, a);
     if (b == 0) return FALSE;
-    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.bytes, b, s->caretIndex, 0x20, 0xa0)) return TRUE;
+    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex, 0x20, 0xa0)) return TRUE;
     return FALSE;
 }
 
@@ -1102,7 +1102,7 @@ BOOL ChatMenu_TryModifier104(S *s) {
     if (a == 0) return FALSE;
     u32 b = Keyboard_ModifyCharKey104(&s->keyboard, a);
     if (b == 0) return FALSE;
-    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.bytes, b, s->caretIndex, 0x20, 0xa0)) return TRUE;
+    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex, 0x20, 0xa0)) return TRUE;
     return FALSE;
 }
 
@@ -1120,7 +1120,7 @@ BOOL ChatMenu_TryModifier105(S *s) {
     if (a == 0) return FALSE;
     u32 b = Keyboard_ModifyCharKey105(&s->keyboard, a);
     if (b == 0) return FALSE;
-    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.bytes, b, s->caretIndex, 0x20, 0xa0)) return TRUE;
+    if (Keyboard_ReplaceCharBeforeCursor(&s->keyboard, s->text.text, b, s->caretIndex, 0x20, 0xa0)) return TRUE;
     return FALSE;
 }
 
@@ -1140,7 +1140,7 @@ void ChatMenu_ClearText(S *s) {
     s->clearSelection();
     s->refreshKeys();
     Keyboard_ResetKeyPalettes(&s->keyboard);
-    Mem_Clear(s->text.bytes, 0x20);
+    Mem_Clear(s->text.text, 0x20);
 }
 
 void ChatMenu_Copy(S *s) {
@@ -1156,7 +1156,7 @@ void ChatMenu_Copy(S *s) {
             cnt = a - b;
         }
         Mem_Clear(s->clipboard, 0x20);
-        Mem_Copy(s->text.bytes + lo, s->clipboard, cnt);
+        Mem_Copy(s->text.text + lo, s->clipboard, cnt);
         s->setFlags(8);
         Keyboard_PlayCopySe(&s->keyboard);
         s->refreshKeys();
@@ -1170,7 +1170,7 @@ void ChatMenu_Paste(S *s) {
         s32 z;
         Keyboard_BeginPaste(&s->keyboard);
         if (s->hasSelection()) {
-            s->caretIndex = Keyboard_DeleteRange(&s->keyboard, s->text.bytes, s->selectionStart, s->selectionEnd, 0x20);
+            s->caretIndex = Keyboard_DeleteRange(&s->keyboard, s->text.text, s->selectionStart, s->selectionEnd, 0x20);
             s->clearFlags(1);
         }
         Keyboard_ResetTypedRun(&s->keyboard);
@@ -1178,7 +1178,7 @@ void ChatMenu_Paste(S *s) {
         i = 0;
         z = i;
         for (; i < n; i++) {
-            if (!Keyboard_InsertChar(&s->keyboard, s->text.bytes, s->clipboard[i], &s->caretIndex, 0x20, 0xa0, z, z)) {
+            if (!Keyboard_InsertChar(&s->keyboard, s->text.text, s->clipboard[i], &s->caretIndex, 0x20, 0xa0, z, z)) {
                 if (i == 0) {
                     ChatMenu_PlayErrorSe(s);
                 }
@@ -1299,7 +1299,7 @@ BOOL ChatMenu::startSend() {
     if (sendKeyAnim != 0) {
         return FALSE;
     }
-    if (Text_GetLength(text.bytes, 0x20) == 0) {
+    if (Text_GetLength(text.text, 0x20) == 0) {
         ChatMenu_PlayErrorSe(this);
     } else {
         PlayerActor_RequestAct13();
@@ -1352,13 +1352,13 @@ void ChatMenu::setCaretFromTouchX(u32 v) {
 }
 
 void ChatMenu::snapCaretToText() {
-    caretX = Keyboard_HitTestText(&keyboard, text.bytes, 0x20, 0xa0, caretX, &caretIndex);
+    caretX = Keyboard_HitTestText(&keyboard, text.text, 0x20, 0xa0, caretX, &caretIndex);
     caretBlinkTimer = 0x10;
     refreshKeys();
 }
 
 void ChatMenu::updateCaretX() {
-    caretX = Text_MeasureWidth(text.bytes, caretIndex);
+    caretX = Text_MeasureWidth(text.text, caretIndex);
     caretBlinkTimer = 0x10;
     refreshKeys();
 }
@@ -1367,7 +1367,7 @@ u32 ChatMenu::getCharBeforeCursor() {
     if (caretIndex == 0) {
         return 0;
     }
-    return text.bytes[caretIndex - 1];
+    return text.text[caretIndex - 1];
 }
 
 BOOL ChatMenu::hasSelection() {
@@ -1393,7 +1393,7 @@ s32 ChatMenu::navigateText(void *pad) {
             return 1;
         }
     } else if (MenuKeys_HasRight(pad)) {
-        if (*(volatile u8 *)&caretIndex + 1 <= Text_GetLength(text.bytes, 0x20)) {
+        if (*(volatile u8 *)&caretIndex + 1 <= Text_GetLength(text.text, 0x20)) {
             caretIndex = *(volatile u8 *)&caretIndex + 1;
             return 1;
         }

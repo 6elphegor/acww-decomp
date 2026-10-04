@@ -124,7 +124,7 @@ class SpNpcActor;
 class SpNpcKatie;
 struct Unk_021f4400 { u8 pad[9]; u8 birdsRequested; };
 struct Unk_021f4420 { u8 pad[0x10]; u8 shootingStarVisible; };
-struct Unk_021f44a0 { u8 pad[6]; u8 balloonDropEnded; u8 unk_07; u8 unk_08; };
+struct Unk_021f44a0 { u8 pad[6]; u8 balloonDropEnded; u8 landSePending; u8 splashSePending; };
 struct Unk_021f14c8 { u8 pad[0xc]; s32 unk_0c; };
 struct Unk_020b8ec0_Time { u8 second; u8 unk_01; u8 hour; u8 pad[5]; };
 struct Unk_02095204 { u8 pad[0x5c]; struct { u32 unk_00; u32 unk_04; u32 unk_08; } unk_5c; };
@@ -254,7 +254,7 @@ struct WeatherManager {
     s32 cloudVariant;
     s32 nextCloudVariant;
     s32 streamBlock;
-    s32 unk_157c;
+    s32 curCloudScreen;
     u8 pad_1580[4];
     u8 *cloudScreen;
     u32 cloudScreenSize;
@@ -7813,7 +7813,7 @@ WeatherManager::WeatherManager() {
     using namespace n03;
     engine = 0;
     transitionBusy = 0;
-    unk_157c = 0;
+    curCloudScreen = 0;
     cloudScreen = 0;
     transitionStep = 0;
     streamBlock = -1;
@@ -9354,9 +9354,9 @@ extern "C" void Sky_EndBalloonDrop(void) { data_021f44a0.balloonDropEnded = 1; }
 
 extern "C" void Sky_PlayBalloonDropSe(BOOL x) {
     if (x) {
-        data_021f44a0.unk_08 = 1;
+        data_021f44a0.splashSePending = 1;
     } else {
-        data_021f44a0.unk_07 = 1;
+        data_021f44a0.landSePending = 1;
     }
 }
 

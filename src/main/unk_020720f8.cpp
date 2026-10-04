@@ -2122,7 +2122,7 @@ u32 CommManager::getAuxLenA() {
     using namespace n2; return auxLenA; }
 namespace n2 {
 }
-void CommManager::appendAuxB(u8 *src, u32 n) {
+void CommManager::appendAuxA(u8 *src, u32 n) {
     using namespace n2;
     MI_CpuCopy8(src, auxWritePtrA, n);
     auxWritePtrA += n;

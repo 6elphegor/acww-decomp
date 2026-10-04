@@ -119,10 +119,10 @@ static inline BOOL Unk_ov065_0225f8dc_IsIdle(Obj *o)
     return r;
 }
 
-static inline BOOL IsIdle(Sess *s)
+static inline BOOL IsTcp(Sess *s)
 {
     BOOL r = TRUE;
-    if (s->state != 0 && s->state != 4) {
+    if (s->sockType != 0 && s->sockType != 4) {
         r = FALSE;
     }
     return r;
@@ -144,7 +144,7 @@ Unk_ov065_0225fd18_Counters sSockUdpDropCount;
 
 s32 SockCore_OnUdpReceive(void *data, u32 len, Sess *s)
 {
-    Ctx *c = s->ctx;
+    Ctx *c = s->recvPipe;
     u32 irq = OS_DisableInterrupts();
 
     if (c->cap >= c->used + len) {
@@ -191,7 +191,7 @@ s32 SockCore_Bind(Sess *s, u16 a)
         return -7;
     }
     s->boundPort = a;
-    if (s->state == 1) {
+    if (s->sockType == 1) {
         return SockCore_PostConnect(s);
     }
     return 0;
@@ -206,7 +206,7 @@ s32 SockCore_Connect(Sess *s, u16 a, u32 b)
     if (!IsValid(s)) {
         return -0x27;
     }
-    if (IsIdle(s)) {
+    if (IsTcp(s)) {
         if (s->flags & 4) {
             if (s->blocking == 1) {
                 return -0x1e;
@@ -248,10 +248,10 @@ s32 SockCore_PostConnect(Sess *s)
 
 s32 SockCore_CmdConnect(Job *j)
 {
-    Sess *s = j->sess;
+    Sess *s = j->sock;
     Ctx *c;
     s32 err = 0;
-    c = s->ctx;
+    c = s->recvPipe;
 
     OS_LockMutex(c->mutex);
     IpSoc_Bind(j->localPort, j->remotePort, j->remoteAddr);

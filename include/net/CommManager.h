@@ -107,7 +107,7 @@ public:
     void clearAuxLenB();
     void setAuxBufB(u32 v);
     u32 getAuxBufB();
-    void appendAuxB(u8 *src, u32 n);
+    void appendAuxA(u8 *src, u32 n);
     u32 getAuxLenA();
     void setAuxLenA(u32 v);
     void clearAuxLenA();

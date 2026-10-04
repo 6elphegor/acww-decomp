@@ -93,7 +93,7 @@ public:
 };
 
 struct Unk_ov004_0224f078_Entry {
-    void *(*factory)();
+    void *(*create)();
     u16 a;
     u16 b;
 };

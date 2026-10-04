@@ -510,6 +510,8 @@ class Rename:
         if self.kind == "member":
             return f"member {'::'.join(self.path)}::{self.old} -> {self.new}"
         if self.kind == "field":
+            if getattr(self, "old_field", None):
+                return f"field {'::'.join(self.path)}::{self.old_field} -> {self.new}"
             return f"field {'::'.join(self.path)} {self.offset:#04x} -> {self.new}"
         if self.kind == "vfunc":
             what = self.old if self.slot is None else f"slot:{self.slot:#04x}"
@@ -563,6 +565,19 @@ def parse_list(path):
             continue
         if kind == "unit" and len(f) == 3:
             reports.append(Report("unit", f[1:], where, s, batch, confidence, evidence))
+            continue
+        if (kind == "field" and len(f) == 4 and not f[2].startswith(("0x", "slot:"))) or \
+                (kind == "member" and len(f) == 4 and IDENT.fullmatch(f[2]) and not f[2].startswith("0x")):
+            # an existing (meaningful) name: `field <Class> <old> <new>`; `member <Class> <old> <new>` is a field or a
+            # method, whichever the class declares (decided in normalize)
+            if not all(IDENT.fullmatch(x) for x in f[1].split("::")) or not IDENT.fullmatch(f[3]):
+                bad(f"expected `{kind} <Class> <old name> <new name>` (or `<namespace>::<Class>`)")
+                continue
+            r = Rename("field", None, None, f[3], where, s, batch, confidence, evidence)
+            r.path, r.offset, r.ftype = tuple(f[1].split("::")), None, None
+            r.old_field = f[2]
+            r.either = kind == "member"
+            renames.append(r)
             continue
         if (kind == "member" and len(f) >= 4 and f[2].startswith("0x")) or (kind == "field" and len(f) == 4):
             # struct field: `member <Class> <offset> <type> <name>` (batch format) or `field <Class> <offset> <name>`
@@ -2089,7 +2104,9 @@ class Renamer:
                     if category.startswith("config"):
                         self.produced[r.new].add(r)
                     return self.hit(r, category, path)
-                if tok in self.field_pairs:
+                if tok in self.field_pairs and not (tok in self.any_pairs and re.match(r"\s*\(", seg[m.end():])):
+                    # (a name that one record renames as a field and another as a method: a call, declaration or
+                    # definition `name(` is decided as a method)
                     if fm is None or not code or fm.asm:
                         for r in {id(x): x for xs in self.field_pairs[tok].values() for x in xs}.values():
                             r.counts["left (comment/docs)"] += 1
@@ -2206,7 +2223,25 @@ def describe_use(idx, name):
 
 
 def normalize(r, idx):
-    """func records that name a method become member/vfunc records"""
+    """func records that name a method become member/vfunc records; `member <Class> <old> <new>` (an existing name)
+    becomes a field or a method record, whichever the class declares"""
+    if r.kind == "field" and getattr(r, "either", False) and not r.errors:
+        cls, old = r.path[-1], r.old_field
+        is_field = any(f.name == old for c in [cls] + sorted(idx.primary_descendants(cls))
+                       for _, _, _, fl in idx.copies(c) for f in fl)
+        is_method = len(r.path) == 1 and (
+            any(p[-1:] == r.path for p in idx.methods.get(old, ())) or
+            any(old in idx.view(p)[cls].all_methods for p in idx.files_with(cls)))
+        if is_field and is_method:
+            r.errors.append(f"{r.where}: {cls} has both a field and a method named {old}; use `field {cls} {old} "
+                            f"{r.new}` or `method {cls} {old} {r.new}`")
+        elif is_method:
+            before = r.label()
+            r.kind, r.old, r.offset = "member", old, None
+            if slot_of(idx, cls, old) is not None:
+                r.kind = "vfunc"
+            r.notes.append(f"`{before}` names a method: treated as `{r.label()}`")
+        return
     if r.kind != "func" or r.errors:
         return
     target = None
@@ -2493,6 +2528,11 @@ def check_field(r, idx, allow_existing):
     """`member <Class> <offset> <type> <name>`: the field `unk_<offset>` of every declaration of the class (and of
     classes derived from it through first bases that declare it themselves, offsets being absolute)"""
     cls, off, root = r.path[-1], r.offset, idx.repo.root
+    byname = getattr(r, "old_field", None)  # `field <Class> <old> <new>`: an existing name instead of unk_<offset>
+    if byname:
+        matches = lambda name: name == byname
+    else:
+        matches = lambda name: unk_offset(name) == off
     where = lambda p, pos=None: f"{p.relative_to(root)}" + (f":{idx.files[p].line(pos)}" if pos is not None else "")
     ns = r.path[-2] if len(r.path) > 1 else None
     if ns is not None:
@@ -2526,19 +2566,24 @@ def check_field(r, idx, allow_existing):
     elsewhere = []              # other names declared at that offset (offset comments)
     types = defaultdict(list)   # declared type -> files
     blobs = []                  # copies that declare a byte array (the rest of the class) at that offset
+    offsets = defaultdict(set)  # by name: the offsets the declarations give the field (offset comments)
     descendants = idx.primary_descendants(cls) if ns is None else set()
     for c in [cls] + sorted(descendants):
         for p, fm, k, fl in copies_of(c):
-            hits = [f for f in fl if unk_offset(f.name) == off]
+            hits = [f for f in fl if matches(f.name)]
             for f in fl:
-                if f.offset == off and unk_offset(f.name) != off and not f.name.startswith(("pad", "_pad")) and \
+                if not byname and f.offset == off and unk_offset(f.name) != off and not f.name.startswith(("pad", "_pad")) and \
                         f.name != r.new:
                     elsewhere.append(f"{c}::{f.name} ({where(p, f.pos)})")
             if len({f.name for f in hits}) < len(hits):
                 errors.append(f"{r.where}: {c} declares {hits[0].name} twice in {where(p, k[0])} (ambiguous)")
             for f in hits:
                 olds[f.name].add(c)
-                if blob_declaration(f.type, r.ftype):
+                if byname and c != cls and f.offset is not None:
+                    offsets[c].add(f.offset)
+                if byname and c == cls and f.offset is not None:
+                    offsets[cls].add(f.offset)
+                if not byname and blob_declaration(f.type, r.ftype):
                     blobs.append((p, f, c, k[0]))
                     continue
                 decls.append((p, f.pos, c))
@@ -2546,6 +2591,21 @@ def check_field(r, idx, allow_existing):
                 if f.type == ANON:
                     r.notes.append(f"{where(p, f.pos)}: {f.name} has an anonymous struct type (its own fields cannot "
                                    f"be named by a `member` record)")
+    if byname and not decls:
+        msg = f"{r.where}: no field {'or method ' if getattr(r, 'either', False) else ''}{byname} in any of the " \
+              f"{len(copies)} declarations of {cls}"
+        for a in (idx.primary_ancestors(cls) if ns is None else ()):
+            hit = next((p for p, fm, k, fl in idx.copies(a) if any(f.name == byname for f in fl)), None)
+            if hit:
+                msg += f"; base class {a} declares {byname} ({where(hit)}): name it there"
+                break
+        if any(byname in (x[1] for x in k[4] if x[0] == "method") for _, _, k, _ in copies):
+            msg += f"; {byname} is a method of {cls}: use `method {cls} {byname} {r.new}`"
+        return errors + [msg]
+    if byname and len(set().union(*offsets.values(), set())) > 1:
+        return errors + [f"{r.where}: the declarations of {byname} in {cls} and the derived classes that declare it "
+                         f"themselves give different offsets ({', '.join(f'{c} {o:#x}' for c, os in sorted(offsets.items()) for o in sorted(os))}): "
+                         f"not one field"]
     if blobs and not decls:
         return errors + [f"{r.where}: every declaration of unk_{off:02x} in {cls} is an array that is not a field of "
                          f"type `{r.ftype}`: " + ", ".join(f"`{f.type}` ({where(p, f.pos)})" for p, f, c, o in blobs[:4])]
@@ -3083,7 +3143,7 @@ def validate(renames, idx, allow_existing, allow_common=False):
             errs[r].append(f"{r.where}: new name {r.new} is not a valid identifier"
                            + (" or mangled name" if r.kind == "func" else ""))
             continue
-        if r.kind in ("func", "class") and r.new == r.old:
+        if r.kind in ("func", "class") and r.new == r.old or getattr(r, "old_field", None) == r.new:
             errs[r].append(f"{r.where}: old and new name are the same")
             continue
         if r.qual not in (None, "*") and r.qual not in modules_known(idx):
@@ -3171,6 +3231,13 @@ def check_common_name(r, idx):
         why.append("is also a class name")
     if r.kind == "class" and (old in idx.symbols or old in idx.other_config):
         why.append("is also a symbol name")
+    if r.kind == "class":
+        # an existing class name: also refuse when it is a macro, or a typedef of another type somewhere
+        if any(d[3] == old for fm in idx.files.values() for d in getattr(fm, "define_spans", ())):
+            why.append("is also a macro name")
+        if any(norm_type(fm.typedefs[old]) not in (old, f"{old}*") for fm in idx.files.values()
+               if old in getattr(fm, "typedefs", {})):
+            why.append("is also a typedef of another type")
     if not why:
         return []
     return [f"{r.where}: old name {old} is not a placeholder (Unk_/func_/data_<addr>...) and {' and '.join(why)}; a "

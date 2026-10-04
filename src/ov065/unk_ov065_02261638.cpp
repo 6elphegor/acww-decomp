@@ -179,7 +179,7 @@ void IpStack_ResetAddress(u32 a) {
             Unk_ov065_02264c44_Thr *t = data_021fcc2c.list;
             if (t != 0) {
                 do {
-                    Unk_ov065_02264c44_Sub *s = t->sess;
+                    Unk_ov065_02264c44_Sub *s = t->ipSocket;
                     if (s != 0) {
                         if (s->ownerThread != 0) {
                             if (s->state != 10 && s->state != 11) {
@@ -1138,7 +1138,7 @@ void Icmp_SendEchoReply(u8 *a, u8 *b, u32 c) {
 void Icmp_DeliverEchoReply(u8 *a, u8 *b, u32 c) {
     Thr *t;
     for (t = data_021fcc2c.list; t != 0; t = t->next) {
-        Sess *s = t->sess;
+        Sess *s = t->ipSocket;
         if (s != 0 && s->ownerThread != 0 && s->state == 11 && (u16)(u32)s->ownerThread == *(u16 *)(b + 4)
             && s->localPort == *(u16 *)(b + 6) && s->rxLen == 0 && s->remoteAddr == Swap32(a + 0xc)) {
             u32 m = s->rxBufSize;
@@ -1186,7 +1186,7 @@ Sess *Tcp_FindListener(u8 *a, u8 *b) {
     Sess *s;
     Thr *t;
     for (t = data_021fcc2c.list; t != 0; t = t->next) {
-        s = t->sess;
+        s = t->ipSocket;
         if (s != 0 && s->ownerThread != 0 && s->state == 1 && s->localPort == BS16(*(u16 *)(b + 2))
             && (s->remotePort == 0 || s->remotePort == BS16(*(u16 *)b))
             && (s->remoteAddr == 0 || s->remoteAddr == Swap32(a + 0xc))) {
@@ -1226,7 +1226,7 @@ Sess *Tcp_FindConnection(u8 *a, u8 *b) {
     Sess *s;
     Thr *t;
     for (t = data_021fcc2c.list; t != 0; t = t->next) {
-        s = t->sess;
+        s = t->ipSocket;
         if (s != 0 && s->ownerThread != 0 && Tcp_MatchConnection(a, b, s) != 0) {
             return s;
         }
@@ -1993,7 +1993,7 @@ u16 IpSoc_AllocEphemeralPort() {
         }
         Thr *t;
         for (t = data_021fcc2c.list; t != 0; t = t->next) {
-            Sess *s = t->sess;
+            Sess *s = t->ipSocket;
             if (s != 0 && s->ownerThread != 0 && s->localPort == sNextEphemeralPort) {
                 found = 1;
                 break;
@@ -2010,15 +2010,15 @@ u32 IpStack_Rand32() {
 }
 
 void IpSoc_Use(Sess *s) {
-    data_021fcc2c.cur->sess = s;
+    data_021fcc2c.cur->ipSocket = s;
 }
 
 void IpSoc_Unuse() {
-    data_021fcc2c.cur->sess = 0;
+    data_021fcc2c.cur->ipSocket = 0;
 }
 
 void IpSoc_SetUdp() {
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
         s->state = 10;
         s->rxLen = 0;
@@ -2026,7 +2026,7 @@ void IpSoc_SetUdp() {
 }
 
 void IpSoc_Bind(u32 a, u32 b, u32 c) {
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
         if (c == 0x7f000001) {
             c = gOwnIp;
@@ -2045,7 +2045,7 @@ void IpSoc_Bind(u32 a, u32 b, u32 c) {
 
 void IpSoc_Init() {
     Thr *c = data_021fcc2c.cur;
-    Sess *s = c->sess;
+    Sess *s = c->ipSocket;
     if (s != 0) {
         s->ownerThread = c;
         s->state = 0;
@@ -2056,14 +2056,14 @@ void IpSoc_Init() {
 }
 
 void IpSoc_Release() {
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
         s->ownerThread = 0;
     }
 }
 
 void IpSoc_ShareWithThread(Thr *t) {
-    t->sess = data_021fcc2c.cur->sess;
+    t->ipSocket = data_021fcc2c.cur->ipSocket;
 }
 
 void Tcp_Listen(Sess *s) {
@@ -2074,14 +2074,14 @@ void Tcp_Listen(Sess *s) {
 }
 
 void IpSoc_SetUdpCallback(u32 v) {
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
         s->udpCallback = v;
     }
 }
 
 void IpSoc_TcpListen() {
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
         if (s->useSsl != 0) {
             Ssl_Accept(s);
@@ -2116,7 +2116,7 @@ s32 Tcp_Connect(Sess *s) {
 }
 
 s32 IpSoc_TcpConnect() {
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
         if (s->useSsl != 0) {
             return Ssl_Connect(s);
@@ -2127,7 +2127,7 @@ s32 IpSoc_TcpConnect() {
 }
 
 u32 IpSoc_GetPeer(u16 *a, u32 *b) {
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
         if (s->state == 4 || s->state == 10) {
             if (a != 0) {
@@ -2154,7 +2154,7 @@ void Tcp_Shutdown(Sess *s) {
 }
 
 void IpSoc_TcpShutdown() {
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
         if (s->useSsl != 0) {
             Ssl_Shutdown(s);
@@ -2165,7 +2165,7 @@ void IpSoc_TcpShutdown() {
 }
 
 void IpSoc_TcpWaitClosed() {
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
         s32 t = (s32)(OS_GetTick() >> 16);
         while (sIpLinkCheckCallback() != 0 && s->state != 0 && (s32)(OS_GetTick() >> 16) - t < 0x27) {
@@ -2200,7 +2200,7 @@ u8 *Tcp_Read(u32 *out, Sess *s) {
 }
 
 u8 *IpSoc_Read(u32 *out) {
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
         if ((u8)(s->state + 0xf6) <= 1) {
             return IpSoc_WaitDatagram(out, s);
@@ -2234,7 +2234,7 @@ void Tcp_Consume(u32 a, Sess *s) {
 }
 
 void IpSoc_Consume(u32 a) {
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
         if (s->useSsl != 0) {
             Ssl_Consume(a, s);
@@ -2344,7 +2344,7 @@ u32 Tcp_Write(u8 *a, u32 b, u8 *c, u32 d, Sess *s) {
 
 u32 IpSoc_WriteTwo(u8 *a, u32 b, u8 *c, u32 d) {
     u32 r;
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
         u8 st = s->state;
         if (st == 10) {
@@ -2378,7 +2378,7 @@ u32 IpSoc_WriteTwo(u8 *a, u32 b, u8 *c, u32 d) {
 }
 
 u32 IpSoc_Write(u32 a, u32 b) {
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
         u32 r;
         if (s->pendingTxLen != 0) {
@@ -2398,7 +2398,7 @@ u32 IpSoc_Write(u32 a, u32 b) {
 }
 
 s32 IpSoc_GetReadLength() {
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     s32 r;
     if (s != 0) {
         if (s->useSsl != 0) {
@@ -2417,7 +2417,7 @@ s32 IpSoc_GetReadLength() {
 }
 
 void IpSoc_FlushPending() {
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = data_021fcc2c.cur->ipSocket;
     if (s != 0) {
         if (s->pendingTxLen != 0) {
             IpSoc_WriteTwo(s->pendingTx, s->pendingTxLen, 0, 0);

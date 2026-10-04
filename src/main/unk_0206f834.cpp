@@ -586,13 +586,13 @@ BOOL String_EqualsEncodedBytes(MsgString *a, u8 *b, s32 len) {
     EncodedString41 l;
     l.fromMsgString(a);
     s32 n = Text_GetTrimmedLength(b, len);
-    if (n != Text_GetTrimmedLength(l.bytes, len)) {
+    if (n != Text_GetTrimmedLength(l.text, len)) {
         return FALSE;
     }
     s32 i = 0;
     while (i < n) {
         u32 x = b[i];
-        u32 y = l.bytes[i];
+        u32 y = l.text[i];
         if (x == 0x8d) {
             x = 0xb1;
         }
@@ -613,7 +613,7 @@ EncodedString41::~EncodedString41() {}
 
 u32 EncodedString41::capacity() { return 0x29; }
 
-u8 *EncodedString41::data() { return bytes; }
+u8 *EncodedString41::data() { return text; }
 
 static inline u32 Unk_0206fe34_Id(u32 i) {
     if (i < 0x34) {

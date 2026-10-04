@@ -170,7 +170,7 @@ public:
     /* 0x1e8 */ u8 unk_1e8[0x284 - 0x1e8];
     /* 0x284 */ u8 modelSlot[4];
     /* 0x288 */ u8 pooledModel[0x2c8 - 0x288];
-    /* 0x2c8 */ Unk_ov004_022376f8_V3 pos;
+    /* 0x2c8 */ Unk_ov004_022376f8_V3 position;
     /* 0x2d4 */ void (*updateFn)(MuseumInsect *);
 };
 
@@ -4889,7 +4889,7 @@ void MuseumInsectRoom::updateInsect(Elem_7690 *e) {
     s32 a;
     if (e->updateFn != 0) {
         Unk_ov004_022376f8_Obj *obj = &e->hitBox;
-        V3_7690 *pos = &e->pos;
+        V3_7690 *pos = &e->position;
         u8 id = e->insectIndex;
         prev = *pos;
         if (obj->isHit != 0) {
@@ -4952,7 +4952,7 @@ void MuseumInsectRoom::updateInsect(Elem_7690 *e) {
             t = *pos;
             Unk_02003c40_callUpdateRelative(&e->sound, &t);
         }
-        s32 r = WorldCurve_ToCurved(&out, &e->pos);
+        s32 r = WorldCurve_ToCurved(&out, &e->position);
         func_020e8388(&data_021f47e0, out.x, out.y, out.z);
         func_020e8434(&data_021f47e0, r + e->pitch);
         func_020e8404(&data_021f47e0, e->yaw);
@@ -5108,7 +5108,7 @@ BOOL MuseumInsectRoom::onDraw() {
             }
             if (hasShadow(e)) {
                 u32 r = func_02106020((u32)PooledModel_getModel(e->pooledModel), z1);
-                CharaShadow_DrawFaded(&e->pos, sMuseumInsectParams[id].radius, 0x9000, (u8)r);
+                CharaShadow_DrawFaded(&e->position, sMuseumInsectParams[id].radius, 0x9000, (u8)r);
             }
         }
     }

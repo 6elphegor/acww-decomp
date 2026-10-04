@@ -24,7 +24,7 @@ struct Unk_ov065_02264c44_Thr {
     /* 0x00 */ u8 unk_00[0x68];
     /* 0x68 */ Unk_ov065_02264c44_Thr *next;
     /* 0x6c */ u8 unk_6c[0x38];
-    /* 0xa4 */ Unk_ov065_02264c44_Sub *sess;
+    /* 0xa4 */ Unk_ov065_02264c44_Sub *ipSocket;
 };
 
 struct Unk_ov065_02264c44_Info {

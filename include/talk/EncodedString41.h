@@ -15,7 +15,7 @@ public:
 
     s32 getLength();
 
-    /* 0x0e */ u8 bytes[0x29];
+    /* 0x0e */ u8 text[0x29];
 };
 
 #endif

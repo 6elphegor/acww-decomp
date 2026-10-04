@@ -141,7 +141,7 @@ ShopStockPlacer::~ShopStockPlacer() {}
 
 // scene registration entry (referenced from main by address only)
 struct Unk_ov004_0224f26c_Entry {
-    void *(*factory)();
+    void *(*create)();
     u16 a;
     u16 b;
 };

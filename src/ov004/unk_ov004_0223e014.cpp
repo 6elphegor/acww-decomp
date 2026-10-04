@@ -175,7 +175,7 @@ public:
 
 // scene registration entry (referenced from main by address only)
 struct Unk_ov004_0224f194_Entry {
-    void *(*factory)();
+    void *(*create)();
     u16 a;
     u16 b;
 };

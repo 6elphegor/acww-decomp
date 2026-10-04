@@ -12,7 +12,7 @@ struct Unk_ov065_02262240_Thr {
     /* 0x00 */ u8 pad_00[0x68];
     /* 0x68 */ Unk_ov065_02262240_Thr *next;
     /* 0x6c */ u8 pad_6c[0xa4 - 0x6c];
-    /* 0xa4 */ Unk_ov065_02262240_Sess *sess;
+    /* 0xa4 */ Unk_ov065_02262240_Sess *ipSocket;
 };
 
 struct Unk_ov065_02262240_Sess {

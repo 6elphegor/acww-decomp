@@ -2055,7 +2055,7 @@ void Ssl_Shutdown(Unk_ov065_02264d80_Obj *o) {
 
 void Ssl_EnableOnCurrentSocket(u32 v) {
     func_02000b44(0x2000c14);
-    Unk_ov065_02264c44_Sub *s = ((Unk_ov065_02264c44_Thr *)data_021fcc2c.cur)->sess;
+    Unk_ov065_02264c44_Sub *s = ((Unk_ov065_02264c44_Thr *)data_021fcc2c.cur)->ipSocket;
     if (s != 0) {
         s->useSsl = v;
     }

@@ -189,7 +189,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
     void copyTo(void *dst, s32 n);
-      u8 bytes[0xa];
+      u8 text[0xa];
 };
 
 
@@ -200,7 +200,7 @@ public:
     virtual ~EncodedString16();
     virtual u32 capacity();
     virtual u8 *data();
-      u8 bytes[0x10];
+      u8 text[0x10];
 };
 
 class MsgString11 : public MsgString {
@@ -218,7 +218,7 @@ public:
     virtual ~EncodedString16B();
     virtual u32 capacity();
     virtual u8 *data();
-      u8 bytes[0x10];
+      u8 text[0x10];
 };
 
 
