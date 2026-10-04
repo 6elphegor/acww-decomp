@@ -42,11 +42,6 @@ struct Unk_ov051_02258e68_Rec {
 };
 
 
-struct Unk_02067918 {
-    u32 unk_00;
-    s32 state;
-};
-
 
 extern "C" {
 void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *self, u32 a, u32 b);
@@ -66,7 +61,7 @@ void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, s32 a, s32 b, s32 c, 
 void _ZN14NpcMoveAnimSet12setStandAnimEi(void *self, s32 a);
 void _ZN15TalkWindowState17setSlotFromStringEiii(void *self, s32 a, void *p, void *q);
 void *PlayerData_GetCurrent();
-Unk_02067918 *TalkWindow_Get(s32 a);
+TalkWindowState *TalkWindow_Get(s32 a);
 BOOL GameStart_IsNewTown();
 BOOL GameStart_IsMode4();
 BOOL GameStart_IsMode3();
@@ -158,7 +153,7 @@ public:
     s32 answerBits;
 };
 
-struct Unk_ov051_02259be4_Ent {
+struct SpNpcKappnActEntry {
     BOOL (SpNpcKappn::*enter)();
     BOOL (SpNpcKappn::*exit)();
 };
@@ -188,7 +183,7 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    s32 unk_654;
+    s32 act;
     SpNpcKappnTalk talk;
     u16 startDelay;
     u8 animTimer;
@@ -204,7 +199,7 @@ extern const u32 sSpNpcKappnFaceTable[];
 extern char *sSpNpcKappnMsgKey;
 extern u8 sSpNpcKappnModelPath[];
 extern u8 sSpNpcKappnTexturePath[];
-extern Unk_ov051_02259be4_Ent sSpNpcKappnActTable[];
+extern SpNpcKappnActEntry sSpNpcKappnActTable[];
 extern SpNpcKappn *sSpNpcKappnInstance;
 }
 
@@ -306,12 +301,12 @@ extern "C" u8 sSpNpcKappnKey[];
 static inline BOOL Unk_ov051_02259a8c_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 static inline BOOL Unk_ov051_02259b98_IsTwo(u8 v) { return v == 2 ? TRUE : FALSE; }
 
-struct Unk_ov051_02258e68_Ent {
+struct SpNpcKappnChoiceHandler {
     u32 id;
     void (SpNpcKappnTalk::*fn)(u32);
 };
 
-struct Unk_ov051_022592e8_Ent {
+struct SpNpcKappnMessageEndHandler {
     u32 id;
     void (SpNpcKappnTalk::*fn)();
 };
@@ -354,8 +349,8 @@ u8 *SpNpcKappn::getModelPath() { return sSpNpcKappnModelPath; }
 
 BOOL SpNpcKappn::updateAct() {
     BOOL r = FALSE;
-    if (sSpNpcKappnActTable[unk_654].exit) {
-        r = (this->*sSpNpcKappnActTable[unk_654].exit)();
+    if (sSpNpcKappnActTable[act].exit) {
+        r = (this->*sSpNpcKappnActTable[act].exit)();
     }
     if (Math_CountDownU8(&animTimer) == 1) {
         _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x8f, 1, data_020c6cc8, 0);
@@ -369,7 +364,7 @@ void SpNpcKappn::changeAct(s32 state) {
         ok = (this->*sSpNpcKappnActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -670,7 +665,7 @@ extern "C" void *data_ov051_0225a124[2] = {(void *)_ZN10SpNpcKappn9mainAct04Ev, 
 extern "C" void *data_ov051_0225a11c[2] = {(void *)_ZN14SpNpcKappnTalk16askMoneyOrArriveEv, 0};
 
 void SpNpcKappnTalk::onMessageEnd(u32) {
-    static Unk_ov051_022592e8_Ent tbl[32] = {
+    static SpNpcKappnMessageEndHandler tbl[32] = {
         {0x01, *(Fn *)data_ov051_02259fec},
         {0x04, *(Fn *)data_ov051_0225a0c4},
         {0x08, *(Fn *)data_ov051_0225a0bc},
@@ -710,7 +705,7 @@ void SpNpcKappnTalk::onMessageEnd(u32) {
 loop0:
     u32 id = tbl[i].id;
     if (id == *idp) {
-        (this->*((Unk_ov051_022592e8_Ent *)((u32)tbl + i * 12))->fn)();
+        (this->*((SpNpcKappnMessageEndHandler *)((u32)tbl + i * 12))->fn)();
     }
     i++;
 test0:
@@ -854,7 +849,7 @@ extern "C" void *data_ov051_0225a0fc[2] = {(void *)_ZN14SpNpcKappnTalk17onTownNa
 extern "C" u8 sSpNpcKappnTexturePath[] = "npc_sp/model/wip_tex.nsbtx";
 extern "C" void *data_ov051_0225a0ec[2] = {(void *)_ZN14SpNpcKappnTalk10onClockSetEv, 0};
 extern "C" void *data_ov051_0225a0e4[2] = {(void *)_ZN14SpNpcKappnTalk15announceArrivalEv, 0};
-Unk_ov051_02259be4_Ent sSpNpcKappnActTable[5] = {
+SpNpcKappnActEntry sSpNpcKappnActTable[5] = {
     {*(BOOL (SpNpcKappn::**)())data_ov051_0225a014, *(BOOL (SpNpcKappn::**)())data_ov051_02259f84},
     {*(BOOL (SpNpcKappn::**)())data_ov051_0225a034, *(BOOL (SpNpcKappn::**)())data_ov051_0225a10c},
     {*(BOOL (SpNpcKappn::**)())data_ov051_02259f64, *(BOOL (SpNpcKappn::**)())data_ov051_02259f94},
@@ -912,7 +907,7 @@ extern "C" void *data_ov051_02259fb4[2] = {(void *)_ZN14SpNpcKappnTalk15onPurpos
 extern "C" void *data_ov051_0225a02c[2] = {(void *)_ZN14SpNpcKappnTalk12onRainChoiceEj, 0};
 
 void SpNpcKappnTalk::onChoice(u32) {
-    static Unk_ov051_02258e68_Ent tbl[14] = {
+    static SpNpcKappnChoiceHandler tbl[14] = {
         {0x05, *(FnU *)data_ov051_0225a02c},
         {0x03, *(FnU *)data_ov051_0225a06c},
         {0x28, *(FnU *)data_ov051_0225a07c},
@@ -936,7 +931,7 @@ loop0:
     u32 id = *(u32 *)((u8 *)tbl + off);
     if (id == *idp) {
         u32 arg = window->getChoiceList()->getResult();
-        (this->*((Unk_ov051_02258e68_Ent *)((u32)tbl + off))->fn)(arg);
+        (this->*((SpNpcKappnChoiceHandler *)((u32)tbl + off))->fn)(arg);
     }
     i++;
 test0:

@@ -33,8 +33,8 @@
 class ActorTalkRequest;
 class SpNpcCelesteTalk;
 class SpNpcCeleste;
-typedef void (SpNpcCelesteTalk::*Unk_ov046_0225aa0c_Fn)();
-typedef void (SpNpcCelesteTalk::*Unk_ov046_02259480_Fn)(s32);
+typedef void (SpNpcCelesteTalk::*SpNpcCelesteTalkFn)();
+typedef void (SpNpcCelesteTalk::*SpNpcCelesteChoiceFn)(s32);
 
 
 struct Unk_ov046_02258e68_Vec {
@@ -124,14 +124,14 @@ struct Unk_020d77a4_Vec3;
 
 
 
-struct Unk_ov046_0225aa0c_Row {
+struct SpNpcCelesteMessageEndHandler {
     u32 id;
-    Unk_ov046_0225aa0c_Fn f;
+    SpNpcCelesteTalkFn f;
 };
 
-struct Unk_ov046_02259480_Ent {
+struct SpNpcCelesteChoiceHandler {
     u32 id;
-    Unk_ov046_02259480_Fn fn;
+    SpNpcCelesteChoiceFn fn;
 };
 
 class SpNpcCelesteTalk : public SpNpcTalkRequest {
@@ -147,15 +147,15 @@ public:
 
     void onRenameChoice(s32 a);
     void onLookOrTimesChoice(s32 a);
-    void func_ov046_0225904c(s32 a);
-    void func_ov046_022590a0(s32 a);
+    void onRemakeChoice(s32 a);
+    void onMakeNewOrLeaveChoice(s32 a);
     void onStargazeMenuChoice(s32 a);
     void onMakeOrChangeChoice(s32 a);
     void onEraseConfirmChoice(s32 a);
     void onFullMenuChoice(s32 a);
     void onTelescopeMenuChoice(s32 a);
     void onDiscardNewChoice(s32 a);
-    void func_ov046_022592a4(s32 a);
+    void onMakeNewOrMenuChoice(s32 a);
     void onConstellationListChoice(s32 idx);
     void onViewingTimeChoice(s32 a);
     void startStargazing();
@@ -179,7 +179,7 @@ public:
 
     /* 0xac */ s32 topic;
     /* 0xb0 */ u8 *owner;
-    /* 0xb4 */ Unk_ov046_0225aa0c_Fn resultHandler;
+    /* 0xb4 */ SpNpcCelesteTalkFn resultHandler;
     /* 0xbc */ s32 constellationSlot;
     /* 0xc0 */ u8 listStart;
     /* 0xc1 */ u8 listRemaining;
@@ -215,7 +215,7 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    s32 unk_654;
+    s32 act;
     SpNpcCelesteTalk talk;
     u16 sleepTimer;
     s16 homeAngle;
@@ -225,7 +225,7 @@ public:
     s32 effectHandle;
 };
 
-struct Unk_ov046_0225a398_Ent {
+struct SpNpcCelesteActEntry {
     BOOL (SpNpcCeleste::*enter)();
     BOOL (SpNpcCeleste::*exit)();
 };
@@ -242,7 +242,7 @@ extern "C" u8 sSpNpcCelesteModelPath[];
 extern "C" u8 sSpNpcCelesteTexturePath[];
 extern "C" const TalkStartMsg sSpNpcCelesteTopicMsgs[5];
 extern "C" ActorProfile sSpNpcCelesteProfile;
-extern Unk_ov046_0225a398_Ent sSpNpcCelesteActTable[5];
+extern SpNpcCelesteActEntry sSpNpcCelesteActTable[5];
 extern "C" u8 sSpNpcCelesteKey[];
 
 static inline BOOL Unk_ov046_02258e68_Both() {
@@ -305,8 +305,8 @@ u8 *SpNpcCeleste::getModelPath() { return sSpNpcCelesteModelPath; }
 
 BOOL SpNpcCeleste::updateAct() {
     BOOL r = FALSE;
-    if (sSpNpcCelesteActTable[unk_654].exit) {
-        r = (this->*sSpNpcCelesteActTable[unk_654].exit)();
+    if (sSpNpcCelesteActTable[act].exit) {
+        r = (this->*sSpNpcCelesteActTable[act].exit)();
     }
     return r;
 }
@@ -317,7 +317,7 @@ void SpNpcCeleste::changeAct(s32 state) {
         ok = (this->*sSpNpcCelesteActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -481,7 +481,7 @@ extern "C" const TalkStartMsg sSpNpcCelesteTopicMsgs[5] = {
 
 extern "C" ActorProfile sSpNpcCelesteProfile = {(void *(*)())SpNpcCeleste_Create, 0x6d, 0x73, 2, 0x5000, 0x5000, 0x3e800};
 
-Unk_ov046_0225a398_Ent sSpNpcCelesteActTable[5] = {
+SpNpcCelesteActEntry sSpNpcCelesteActTable[5] = {
     {&SpNpcCeleste::setupAct00, &SpNpcCeleste::mainAct00},
     {&SpNpcCeleste::setupAct01, &SpNpcCeleste::mainAct01},
     {&SpNpcCeleste::setupAct02, &SpNpcCeleste::mainAct02},
@@ -490,7 +490,7 @@ Unk_ov046_0225a398_Ent sSpNpcCelesteActTable[5] = {
 };
 
 void SpNpcCelesteTalk::setResultHandler(s32 idx) {
-    static Unk_ov046_0225aa0c_Fn tbl[5] = {
+    static SpNpcCelesteTalkFn tbl[5] = {
         &SpNpcCelesteTalk::onStargazingDone,
         &SpNpcCelesteTalk::onConstellationDrawn,
         &SpNpcCelesteTalk::onConstellationNamed,
@@ -666,7 +666,7 @@ void SpNpcCelesteTalk::onMessageEnd(u32) {
     if (GameStart_IsActive() == 0) {
         PlayerData_GetCurrent();
         nextMsg = 0xff;
-        static Unk_ov046_0225aa0c_Row tbl[29] = {
+        static SpNpcCelesteMessageEndHandler tbl[29] = {
             {0x00, &SpNpcCelesteTalk::announceNewConstellations},
             {0x04, &SpNpcCelesteTalk::showTelescopeMenu},
             {0x05, &SpNpcCelesteTalk::startNameEntry},
@@ -699,7 +699,7 @@ void SpNpcCelesteTalk::onMessageEnd(u32) {
         };
         s32 i = 0;
         u8 *p = &msgIndex;
-        Unk_ov046_0225aa0c_Row *t = tbl;
+        SpNpcCelesteMessageEndHandler *t = tbl;
         for (; (u32)i < 0x1d; i++) {
             u32 a = tbl[i].id;
             u32 b = *p;
@@ -803,7 +803,7 @@ void SpNpcCelesteTalk::startStargazing() {
 void SpNpcCelesteTalk::onChoice(u32) {
     s32 t = getChoiceList()->getResult();
     nextMsg = 0xff;
-    static Unk_ov046_02259480_Ent tbl[26] = {
+    static SpNpcCelesteChoiceHandler tbl[26] = {
         {0x01, &SpNpcCelesteTalk::onTelescopeMenuChoice},
         {0x08, &SpNpcCelesteTalk::onViewingTimeChoice},
         {0x10, &SpNpcCelesteTalk::onStargazeMenuChoice},
@@ -814,9 +814,9 @@ void SpNpcCelesteTalk::onChoice(u32) {
         {0x19, &SpNpcCelesteTalk::onEraseConfirmChoice},
         {0x1e, &SpNpcCelesteTalk::onConstellationListChoice},
         {0x1f, &SpNpcCelesteTalk::onConstellationListChoice},
-        {0x20, &SpNpcCelesteTalk::func_ov046_022590a0},
+        {0x20, &SpNpcCelesteTalk::onMakeNewOrLeaveChoice},
         {0x23, &SpNpcCelesteTalk::onDiscardNewChoice},
-        {0x24, &SpNpcCelesteTalk::func_ov046_0225904c},
+        {0x24, &SpNpcCelesteTalk::onRemakeChoice},
         {0x25, &SpNpcCelesteTalk::onMakeOrChangeChoice},
         {0x26, &SpNpcCelesteTalk::onStargazeMenuChoice},
         {0x27, &SpNpcCelesteTalk::onStargazeMenuChoice},
@@ -824,7 +824,7 @@ void SpNpcCelesteTalk::onChoice(u32) {
         {0x29, &SpNpcCelesteTalk::onTelescopeMenuChoice},
         {0x2a, &SpNpcCelesteTalk::onMakeOrChangeChoice},
         {0x2b, &SpNpcCelesteTalk::onMakeOrChangeChoice},
-        {0x31, &SpNpcCelesteTalk::func_ov046_022592a4},
+        {0x31, &SpNpcCelesteTalk::onMakeNewOrMenuChoice},
         {0x35, &SpNpcCelesteTalk::onLookOrTimesChoice},
         {0x38, &SpNpcCelesteTalk::onRenameChoice},
         {0x3f, &SpNpcCelesteTalk::onConstellationListChoice},
@@ -936,7 +936,7 @@ void SpNpcCelesteTalk::onConstellationListChoice(s32 idx) {
     }
 }
 
-void SpNpcCelesteTalk::func_ov046_022592a4(s32 a) {
+void SpNpcCelesteTalk::onMakeNewOrMenuChoice(s32 a) {
     if (a == 0) {
         nextMsg = 7;
     } else if (Constellation_CountFreeSlots() < 0x10) {
@@ -1043,7 +1043,7 @@ void SpNpcCelesteTalk::onStargazeMenuChoice(s32 a) {
     }
 }
 
-void SpNpcCelesteTalk::func_ov046_022590a0(s32 a) {
+void SpNpcCelesteTalk::onMakeNewOrLeaveChoice(s32 a) {
     if (a == 0) {
         nextMsg = 7;
     } else {
@@ -1051,7 +1051,7 @@ void SpNpcCelesteTalk::func_ov046_022590a0(s32 a) {
     }
 }
 
-void SpNpcCelesteTalk::func_ov046_0225904c(s32 a) {
+void SpNpcCelesteTalk::onRemakeChoice(s32 a) {
     listRemaining = 0x10 - Constellation_CountFreeSlots();
     listStart = 0;
     if (a == 0) {

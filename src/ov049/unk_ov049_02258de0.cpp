@@ -96,23 +96,15 @@ struct Unk_ov049_0225aba8_Vec {
 };
 
 
-struct Unk_ov049_0225a714_Name {
-    u8 b[8];
-};
+struct PlayerIdInlineCopy;
+struct ItemNameStorage;
+struct TownIdInlineCopy;
 
-struct Unk_ov049_0225a714_Pair;
-struct Unk_ov049_0225a714_Q;
-struct Unk_ov049_0225a714_P;
-
-struct Unk_ov049_0225a434_Ent {
-    const u8 *bytes;
+struct SpNpcMabelChoiceMenu {
+    const u8 *choices;
     u8 count;
 };
 
-struct Unk_ov049_022594e0_Rec {
-    u8 *choices;
-    u8 count;
-};
 
 extern "C" {
 void _ZN8NpcActor18onInteractionEventEi(void *self, u32 cmd, s32 arg);
@@ -222,17 +214,17 @@ void ActorTalkRequest_setItemNameSlot(void *self, void *a, s32 b, s32 c);
 void *AbleSistersPatterns_getPattern(void *a, u32 b);
 void PatternInfo_getTitle(void *a, void *b);
 void TalkWindowState_setNamedSlot(void *a, s32 b, void *c, s32 d);
-const Unk_ov049_0225a714_Pair *PatternInfo_getAuthor(void *a);
-const Unk_ov049_0225a714_Pair *PlayerData_getPlayerId(...);
-const Unk_ov049_0225a714_P *PlayerId_GetTownId(Unk_ov049_0225a714_Pair *a);
+const PlayerIdInlineCopy *PatternInfo_getAuthor(void *a);
+const PlayerIdInlineCopy *PlayerData_getPlayerId(...);
+const TownIdInlineCopy *PlayerId_GetTownId(PlayerIdInlineCopy *a);
 s32 memcmp(const void *a, const void *b, u32 n);
-BOOL PlayerId_equals(Unk_ov049_0225a714_Pair *a, Unk_ov049_0225a714_Pair *b);
+BOOL PlayerId_equals(PlayerIdInlineCopy *a, PlayerIdInlineCopy *b);
 void ActorTalkRequest_setPlayerNameSlot(void *self, void *a, s32 n);
 void ActorTalkRequest_setTownNameSlot(void *self, void *a, s32 n);
-void TownId_Destruct(Unk_ov049_0225a714_P *p);
-void func_020942c8(Unk_ov049_0225a714_Pair *p);
-void func_0206267c(Unk_ov049_0225a714_Q *p);
-void func_0206260c(Unk_ov049_0225a714_Q *p);
+void TownId_Destruct(TownIdInlineCopy *p);
+void func_020942c8(PlayerIdInlineCopy *p);
+void func_0206267c(ItemNameStorage *p);
+void func_0206260c(ItemNameStorage *p);
 void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, Unk_ov049_0225aba8_Vec *v, s32 d, s32 e, u8 f);
 s32 NpcActionCtrl_getAction(void *self);
 BOOL NpcActionCtrl_isActionDone(void *self);
@@ -260,34 +252,34 @@ void NpcMoveCtrl_setSpeedPreset(void *self, s32 a, s32 b, s32 c, s32 d);
 void func_02071e74(void *self);
 }
 
-struct Unk_ov049_0225a714_Q {
+struct ItemNameStorage {
     u8 unk_00[0x24];
-    Unk_ov049_0225a714_Q() { func_0206267c(this); }
+    ItemNameStorage() { func_0206267c(this); }
 };
 
-struct Unk_ov049_0225a714_P {
+struct TownIdInlineCopy {
     u16 id;
-    Unk_ov049_0225a714_Name name;
-    Unk_ov049_0225a714_P(const Unk_ov049_0225a714_P &o) {
+    EncodedName8 name;
+    TownIdInlineCopy(const TownIdInlineCopy &o) {
         id = o.id;
         name = o.name;
     }
 };
 
-struct Unk_ov049_0225a714_Pair {
+struct PlayerIdInlineCopy {
     u16 id0;
-    Unk_ov049_0225a714_Name name0;
+    EncodedName8 name0;
     u16 id1;
-    Unk_ov049_0225a714_Name name1;
+    EncodedName8 name1;
     s8 gender;
-    u8 unk_15;
-    Unk_ov049_0225a714_Pair(const Unk_ov049_0225a714_Pair &o) {
+    u8 pad_15;
+    PlayerIdInlineCopy(const PlayerIdInlineCopy &o) {
         id0 = o.id0;
         name0 = o.name0;
         id1 = o.id1;
         name1 = o.name1;
         gender = o.gender;
-        unk_15 = o.unk_15;
+        pad_15 = o.pad_15;
     }
 };
 
@@ -416,7 +408,7 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    /* 0x654 */ s32 unk_654;
+    /* 0x654 */ s32 act;
     /* 0x658 */ SpNpcMabelTalk talk;
     /* 0x724 */ s32 selectedItemX;
     /* 0x728 */ s32 selectedItemZ;
@@ -425,7 +417,7 @@ public:
     /* 0x732 */ u16 tryOnRemovedItem;
     /* 0x734 */ u16 selectedItem;
     /* 0x736 */ u8 pad_736[2];
-    /* 0x738 */ Pattern unk_738;
+    /* 0x738 */ Pattern pattern;
     /* 0x960 */ u16 dramaTimer;
     /* 0x962 */ u16 standBlend;
     /* 0x964 */ u8 purchasePending;
@@ -434,23 +426,23 @@ public:
     /* 0x967 */ u8 approachTimer;
 };
 
-struct Unk_ov049_0225b458_Ent {
+struct SpNpcMabelActEntry {
     BOOL (SpNpcMabel::*enter)();
     BOOL (SpNpcMabel::*exit)();
 };
 
-struct Unk_ov049_0225bd70_Ent {
+struct SpNpcMabelTalkScript {
     SpNpcMabelTalk::Fn0 fn;
     u8 flag;
     u8 pad[3];
 };
 
-struct Unk_ov049_0225a210_Ent {
+struct SpNpcMabelChoiceHandler {
     u32 id;
     SpNpcMabelTalk::Fn fn;
 };
 
-struct Unk_ov049_0225a590_Ent {
+struct SpNpcMabelMessageEndHandler {
     u32 id;
     SpNpcMabelTalk::Fn0 fn;
 };
@@ -464,9 +456,9 @@ extern const u8 sSpNpcMabelDramaMsgTable[28];
 extern const u32 sSpNpcMabelDesignConcepts[10];
 extern char sSpNpcMabelModelPath[];
 extern char sSpNpcMabelTexturePath[];
-extern Unk_ov049_0225a434_Ent sSpNpcMabelItemChoiceMenus[4];
-extern Unk_ov049_0225bd70_Ent sSpNpcMabelTalkScripts[10];
-extern Unk_ov049_0225b458_Ent sSpNpcMabelActTable[16];
+extern SpNpcMabelChoiceMenu sSpNpcMabelItemChoiceMenus[4];
+extern SpNpcMabelTalkScript sSpNpcMabelTalkScripts[10];
+extern SpNpcMabelActEntry sSpNpcMabelActTable[16];
 BOOL SpNpcMabel_IsDeliveryItem(u16 *p, s32 v);
 SpNpcMabel *SpNpcMabel_Create();
 }
@@ -587,7 +579,7 @@ extern "C" void *data_ov049_0225bb58[2];
 extern "C" void *data_ov049_0225bb50[2];
 extern "C" void *data_ov049_0225bb48[2];
 extern "C" void *data_ov049_0225bb40[2];
-extern "C" Unk_ov049_0225a434_Ent sSpNpcMabelItemChoiceMenus[4];
+extern "C" SpNpcMabelChoiceMenu sSpNpcMabelItemChoiceMenus[4];
 extern "C" void *data_ov049_0225ba70[2];
 extern "C" void *data_ov049_0225bc48[2];
 extern "C" void *data_ov049_0225bb20[2];
@@ -608,7 +600,7 @@ extern "C" void *data_ov049_0225bab0[2];
 extern "C" const u32 sSpNpcMabelDesignConcepts[10];
 extern "C" void *data_ov049_0225bb38[2];
 extern "C" void *data_ov049_0225bb10[2];
-extern "C" Unk_ov049_0225bd70_Ent sSpNpcMabelTalkScripts[10];
+extern "C" SpNpcMabelTalkScript sSpNpcMabelTalkScripts[10];
 extern "C" void *data_ov049_0225ba78[2];
 extern "C" char sSpNpcMabelKey[];
 extern "C" void *data_ov049_0225bad8[2];
@@ -617,7 +609,7 @@ extern "C" void *data_ov049_0225ba88[2];
 extern "C" void *data_ov049_0225baa8[2];
 extern "C" void *data_ov049_0225bb28[2];
 extern "C" void *data_ov049_0225bc30[2];
-extern "C" Unk_ov049_0225b458_Ent sSpNpcMabelActTable[16];
+extern "C" SpNpcMabelActEntry sSpNpcMabelActTable[16];
 extern "C" void *data_ov049_0225ba68[2];
 extern "C" const u8 sSpNpcMabelDramaMsgTable[28];
 extern "C" void *data_ov049_0225bb18[2];
@@ -767,8 +759,8 @@ u8 *SpNpcMabel::getModelPath() { return (u8 *)sSpNpcMabelModelPath; }
 
 BOOL SpNpcMabel::updateAct() {
     BOOL r = FALSE;
-    if (((Unk_ov049_0225b458_Ent *)&sSpNpcMabelActTable[0].exit)[unk_654].enter) {
-        r = (this->*sSpNpcMabelActTable[unk_654].exit)();
+    if (((SpNpcMabelActEntry *)&sSpNpcMabelActTable[0].exit)[act].enter) {
+        r = (this->*sSpNpcMabelActTable[act].exit)();
     }
     return r;
 }
@@ -779,7 +771,7 @@ void SpNpcMabel::changeAct(s32 state) {
         ok = (this->*sSpNpcMabelActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -1197,13 +1189,13 @@ void SpNpcMabelTalk::start(TalkStartMsg *out) {
         }
         owner->patternSlot = t;
         void *q6 = AbleSistersPatterns_getPattern(g + 0xfafc, owner->patternSlot);
-        Unk_ov049_0225a714_Q q;
+        ItemNameStorage q;
         PatternInfo_getTitle(Pattern_getInfo(q6), &q);
         TalkWindowState_setNamedSlot(window, 2, &q, 7);
-        Unk_ov049_0225a714_Pair a(*PatternInfo_getAuthor(Pattern_getInfo(q6)));
-        Unk_ov049_0225a714_Pair b(*PlayerData_getPlayerId(r7));
-        Unk_ov049_0225a714_P c(*PlayerId_GetTownId(&a));
-        Unk_ov049_0225a714_P d(*PlayerId_GetTownId(&b));
+        PlayerIdInlineCopy a(*PatternInfo_getAuthor(Pattern_getInfo(q6)));
+        PlayerIdInlineCopy b(*PlayerData_getPlayerId(r7));
+        TownIdInlineCopy c(*PlayerId_GetTownId(&a));
+        TownIdInlineCopy d(*PlayerId_GetTownId(&b));
         if (GameStart_IsActive() != 0) {
             out->msgKey = (const char *)sSpNpcMabelMsgKeys[2];
             out->msgIndex = 0x1d;
@@ -1281,7 +1273,7 @@ extern "C" char *sSpNpcMabelMsgKeys[3] = {sSpNpcMabelKey, sSpNpcMabelDramaKey, s
 extern "C" u8 data_ov049_0225ba4c[4] = {0xd3, 0xe1, 0xd0, 0x00};
 
 void SpNpcMabelTalk::dispatchShopMessageEnd() {
-    static Unk_ov049_0225a590_Ent tbl[9] = {
+    static SpNpcMabelMessageEndHandler tbl[9] = {
         {0xe, *(SpNpcMabelTalk::Fn0 *)data_ov049_0225bb38},
         {0x11, *(SpNpcMabelTalk::Fn0 *)data_ov049_0225bb60},
         {0x12, *(SpNpcMabelTalk::Fn0 *)data_ov049_0225bb70},
@@ -1298,7 +1290,7 @@ void SpNpcMabelTalk::dispatchShopMessageEnd() {
 loop0:
     u32 id = tbl[i].id;
     if (id == *idp) {
-        (this->*((Unk_ov049_0225a590_Ent *)((u32)tbl + i * 12))->fn)();
+        (this->*((SpNpcMabelMessageEndHandler *)((u32)tbl + i * 12))->fn)();
     }
     i++;
 test0:
@@ -1387,7 +1379,7 @@ extern "C" void *data_ov049_0225bb48[2] = {(void *)_ZN10SpNpcMabel9mainAct0FEv, 
 
 extern "C" void *data_ov049_0225bb40[2] = {(void *)_ZN14SpNpcMabelTalk15onDisposeChoiceEi, 0};
 
-extern "C" Unk_ov049_0225a434_Ent sSpNpcMabelItemChoiceMenus[4] = {
+extern "C" SpNpcMabelChoiceMenu sSpNpcMabelItemChoiceMenus[4] = {
     {data_ov049_0225ba4c, 3},
     {data_ov049_0225ba44, 3},
     {data_ov049_0225ba48, 3},
@@ -1451,7 +1443,7 @@ extern "C" const u32 sSpNpcMabelDesignConcepts[10] = {8, 2, 6, 3, 4, 9, 1, 0, 5,
 extern "C" void *data_ov049_0225bb38[2] = {(void *)_ZN14SpNpcMabelTalk17startDesignEditorEv, 0};
 
 void SpNpcMabelTalk::dispatchShopChoice() {
-    static Unk_ov049_0225a210_Ent tbl[11] = {
+    static SpNpcMabelChoiceHandler tbl[11] = {
         {4, *(SpNpcMabelTalk::Fn *)data_ov049_0225bb90},
         {0x15, *(SpNpcMabelTalk::Fn *)data_ov049_0225bc30},
         {0x1a, *(SpNpcMabelTalk::Fn *)data_ov049_0225ba50},
@@ -1472,7 +1464,7 @@ loop0:
     u32 id = tbl[i].id;
     if (id == *idp) {
         u32 arg = ChoiceList_getResult(TalkWindowState_getChoiceList(window));
-        (this->*((Unk_ov049_0225a210_Ent *)((u32)tbl + off))->fn)(arg);
+        (this->*((SpNpcMabelChoiceHandler *)((u32)tbl + off))->fn)(arg);
     }
     i++;
 test0:
@@ -1937,8 +1929,8 @@ void SpNpcMabelTalk::onDeliveryItemChosen() {
 void SpNpcMabelTalk::openChoiceMenu(void *rec, s32 x) {
     void *ctx = window;
     void *h = TalkWindowState_getChoiceList(window);
-    Unk_ov049_022594e0_Rec *r = (Unk_ov049_022594e0_Rec *)rec;
-    u8 *p = r->choices;
+    SpNpcMabelChoiceMenu *r = (SpNpcMabelChoiceMenu *)rec;
+    u8 *p = (u8 *)r->choices;
     s32 n = r->count;
     s32 z = 0;
     s32 i;
@@ -2178,7 +2170,7 @@ BOOL SpNpcMabel::tryStartFarewellTalk() {
 
 extern "C" void *data_ov049_0225bb10[2] = {(void *)_ZN14SpNpcMabelTalk20onDeliveryItemChosenEv, 0};
 
-extern "C" Unk_ov049_0225bd70_Ent sSpNpcMabelTalkScripts[10] = {
+extern "C" SpNpcMabelTalkScript sSpNpcMabelTalkScripts[10] = {
     {0, 0},
     {*(SpNpcMabelTalk::Fn0 *)data_ov049_0225bc40, 0},
     {*(SpNpcMabelTalk::Fn0 *)data_ov049_0225ba88, 0},
@@ -2207,7 +2199,7 @@ extern "C" void *data_ov049_0225bb28[2] = {(void *)_ZN14SpNpcMabelTalk18dispatch
 
 extern "C" void *data_ov049_0225bc30[2] = {(void *)_ZN14SpNpcMabelTalk12onMenuChoiceEj, 0};
 
-extern "C" Unk_ov049_0225b458_Ent sSpNpcMabelActTable[16] = {
+extern "C" SpNpcMabelActEntry sSpNpcMabelActTable[16] = {
     {*(SpNpcMabel::Fn *)data_ov049_0225bb00, *(SpNpcMabel::Fn *)data_ov049_0225bb08},
     {*(SpNpcMabel::Fn *)data_ov049_0225bb30, *(SpNpcMabel::Fn *)data_ov049_0225bc28},
     {*(SpNpcMabel::Fn *)data_ov049_0225bc20, *(SpNpcMabel::Fn *)data_ov049_0225bb50},

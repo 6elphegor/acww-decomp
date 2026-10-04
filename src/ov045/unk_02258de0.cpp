@@ -173,7 +173,7 @@ struct Unk_ov045_02259070_Rec {
     s32 a, b, c;
 };
 
-struct Unk_ov045_02258ee4_Ent {
+struct KatrinaFortuneCard {
     u8 a;
     s32 b;
 };
@@ -210,7 +210,7 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    s32 unk_654;
+    s32 effectHandle;
     s32 act;
     u8 jointMtx[0x30];
     SpNpcKatrinaTalk talk;
@@ -226,30 +226,30 @@ public:
     u8 pad_755[3];
 };
 
-typedef void (SpNpcKatrinaTalk::*Unk_ov045_02259e20_Fn)();
+typedef void (SpNpcKatrinaTalk::*SpNpcKatrinaTalkScriptFn)();
 
-struct Unk_ov045_02259e20_Ent {
-    Unk_ov045_02259e20_Fn fn;
+struct SpNpcKatrinaTalkScript {
+    SpNpcKatrinaTalkScriptFn fn;
     u8 flag;
     u8 pad[3];
 };
 
-struct Unk_ov045_02259810_Ent {
+struct SpNpcKatrinaActEntry {
     BOOL (SpNpcKatrina::*enter)();
     BOOL (SpNpcKatrina::*exit)();
 };
 
 
 extern "C" {
-extern const Unk_ov045_02258ee4_Ent sSpNpcKatrinaGoodFortuneCards[17];
-extern const Unk_ov045_02258ee4_Ent sSpNpcKatrinaBadFortuneCards[21];
+extern const KatrinaFortuneCard sSpNpcKatrinaGoodFortuneCards[17];
+extern const KatrinaFortuneCard sSpNpcKatrinaBadFortuneCards[21];
 extern void *sSpNpcKatrinaMsgKey;
 extern u8 sSpNpcKatrinaKey[];
 extern u8 sSpNpcKatrinaModelPath[];
 extern u8 sSpNpcKatrinaTexturePath[];
 extern SpNpcKatrina *sSpNpcKatrinaInstance;
-extern Unk_ov045_02259e20_Ent sSpNpcKatrinaTalkScripts[2];
-extern Unk_ov045_02259810_Ent sSpNpcKatrinaActTable[4];
+extern SpNpcKatrinaTalkScript sSpNpcKatrinaTalkScripts[2];
+extern SpNpcKatrinaActEntry sSpNpcKatrinaActTable[4];
 extern SpNpcKatrina *SpNpcKatrina_Create();
 u32 SpNpcKatrina_GetAnimFrame();
 u8 *SpNpcKatrina_GetJointMtx();
@@ -266,23 +266,23 @@ extern "C" SpNpcKatrina *SpNpcKatrina_Create() { return new SpNpcKatrina; }
 u8 sSpNpcKatrinaModelPath[23] = "npc_sp/model/bpt.nsbmd";
 u8 sSpNpcKatrinaTexturePath[27] = "npc_sp/model/bpt_tex.nsbtx";
 // Data order: this unit is placed object by object (see object_order.txt).
-const Unk_ov045_02258ee4_Ent sSpNpcKatrinaGoodFortuneCards[17] = {
+const KatrinaFortuneCard sSpNpcKatrinaGoodFortuneCards[17] = {
     {0x00, 0}, {0x01, 0}, {0x02, 0}, {0x03, 0}, {0x04, 0}, {0x05, 0}, {0x06, 0}, {0x07, 0}, {0x08, 0},
     {0x0a, 0}, {0x0b, 0}, {0x0e, 0}, {0x11, 0}, {0x12, 1}, {0x13, 0}, {0x14, 0}, {0x15, 0},
 };
 void *sSpNpcKatrinaMsgKey = sSpNpcKatrinaKey;
 u8 sSpNpcKatrinaKey[15] = "sp_npc_panther";
-Unk_ov045_02259e20_Ent sSpNpcKatrinaTalkScripts[2] = {
+SpNpcKatrinaTalkScript sSpNpcKatrinaTalkScripts[2] = {
     {NULL, 0},
     {&SpNpcKatrinaTalk::scriptReadPartnerName, 0},
 };
-Unk_ov045_02259810_Ent sSpNpcKatrinaActTable[4] = {
+SpNpcKatrinaActEntry sSpNpcKatrinaActTable[4] = {
     {&SpNpcKatrina::setupAct00, &SpNpcKatrina::mainAct00},
     {&SpNpcKatrina::setupAct01, &SpNpcKatrina::mainAct01},
     {&SpNpcKatrina::setupAct02, &SpNpcKatrina::mainAct02},
     {&SpNpcKatrina::setupAct03, &SpNpcKatrina::mainAct03},
 };
-const Unk_ov045_02258ee4_Ent sSpNpcKatrinaBadFortuneCards[21] = {
+const KatrinaFortuneCard sSpNpcKatrinaBadFortuneCards[21] = {
     {0x00, 1}, {0x01, 1}, {0x02, 1}, {0x03, 1}, {0x04, 1}, {0x05, 1}, {0x06, 1}, {0x08, 1}, {0x09, 1}, {0x0a, 1},
     {0x0c, 0}, {0x0c, 1}, {0x0d, 0}, {0x0e, 1}, {0x0f, 0}, {0x10, 0}, {0x10, 1}, {0x12, 0}, {0x13, 1}, {0x14, 1},
     {0x15, 1},
@@ -297,7 +297,7 @@ BOOL SpNpcKatrina::preCreate() {
     talk.attachOwner(this);
     setCollisionRadius(0x100);
     setInteractionRange(0x5000);
-    unk_654 = -1;
+    effectHandle = -1;
     effectTimer = 0;
     return TRUE;
 }
@@ -341,16 +341,16 @@ BOOL SpNpcKatrina::updateAct() {
     } else if (NpcActionCtrl_isActionDone(&actionCtrl)) {
         talk.onEventTag(0);
     }
-    if (unk_654 == -1) {
+    if (effectHandle == -1) {
         if (t == 0x21 && ((((u32)model.curFrame << 4) >> 16)) >= 0x12) {
-            unk_654 = Effect_Create(0x3d, (u8 *)this + 0x478, 0, 0);
+            effectHandle = Effect_Create(0x3d, (u8 *)this + 0x478, 0, 0);
             effectTimer = 0x16;
         }
     } else if (Math_CountDownU8(&effectTimer) == 0) {
-        Effect_End(unk_654);
-        unk_654 = -1;
+        Effect_End(effectHandle);
+        effectHandle = -1;
     } else {
-        Effect_SetPosition(unk_654, (u8 *)this + 0x478, 0, 0);
+        Effect_SetPosition(effectHandle, (u8 *)this + 0x478, 0, 0);
     }
     BOOL r = FALSE;
     if (sSpNpcKatrinaActTable[act].exit) {

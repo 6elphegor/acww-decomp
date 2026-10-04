@@ -21,6 +21,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/ActorProfile.h"
 #include "net/CommManager.h"
+#include "talk/TalkStartMsg.h"
 
 
 class ActorTalkRequest;
@@ -32,8 +33,8 @@ struct Unk_ov048_Vec {
     s32 x, y, z;
 };
 
-struct Unk_ov048_Vec_Loc : Unk_ov048_Vec {
-    Unk_ov048_Vec_Loc() {}
+struct SpNpcCopperVecLocal : Unk_ov048_Vec {
+    SpNpcCopperVecLocal() {}
 };
 
 struct Unk_ov048_0225b278_Vec {
@@ -47,15 +48,7 @@ struct Unk_ov048_0225b278_Ent {
     s16 rotY;
 };
 
-struct Unk_ov048_0225ae04_Row {
-    const void *name;
-    u8 id;
-};
 
-struct Unk_ov048_Rec {
-    u8 pad_00[4];
-    s32 state;
-};
 // Two-step storage for the three model/sequence name pointers (their strings are named arrays below).
 extern "C" {
 extern char sSpNpcCopperSequence4Key[];
@@ -176,7 +169,7 @@ s32 Comm_Start(s32, s32, s32);
 s32 Comm_End();
 s32 _ZN8NpcActor11netGetSlotsEii(void *, s32 *, s32 *);
 BOOL NetArea_IsLocalOwner();
-Unk_ov048_Rec * TalkWindow_Get(s32);
+TalkWindowState * TalkWindow_Get(s32);
 void SaveManager_RequestAct02();
 void * Scene_GetWarpRequest();
 s32 SceneWarp_RequestFade(void *, s32, s32, s32);
@@ -481,7 +474,7 @@ public:
     BOOL mainAct00();
     BOOL setupAct00();
 
-    s32 unk_654;
+    s32 act;
     SpNpcCopperTalk talk;
 };
 
@@ -490,12 +483,12 @@ struct Unk_ov048_State_Ent {
     SpNpcCopper::Fn exit;
 };
 
-struct Unk_ov048_0225cd04_Ent {
+struct SpNpcCopperTalkScript {
     SpNpcCopperTalk::Fn f;
     u8 flag;
 };
 
-struct Unk_ov048_0225a108_Row {
+struct SpNpcCopperChoiceHandler {
     u32 id;
     SpNpcCopperTalk::ArgFn f;
 };
@@ -637,7 +630,7 @@ extern void *data_ov048_0225cadc[2];
 extern void *data_ov048_0225cae4[2];
 extern void *data_ov048_0225caec[2];
 extern Unk_ov048_State_Ent sSpNpcCopperActTable[];
-extern Unk_ov048_0225cd04_Ent sSpNpcCopperTalkScripts[];
+extern SpNpcCopperTalkScript sSpNpcCopperTalkScripts[];
 void SpNpcCopper_ChangeAct(void *p, s32 s);
 }
 
@@ -749,8 +742,8 @@ u8 *SpNpcCopper::getModelPath() {
 
 BOOL SpNpcCopper::updateAct() {
     BOOL r = FALSE;
-    if (sSpNpcCopperActTable[unk_654].exit) {
-        r = (this->*sSpNpcCopperActTable[unk_654].exit)();
+    if (sSpNpcCopperActTable[act].exit) {
+        r = (this->*sSpNpcCopperActTable[act].exit)();
     }
     return r;
 }
@@ -762,7 +755,7 @@ extern "C" void SpNpcCopper_ChangeAct(void *p, s32 s) {
         r = (self->*sSpNpcCopperActTable[s].enter)();
     }
     if (r) {
-        self->unk_654 = s;
+        self->act = s;
     }
 }
 
@@ -833,8 +826,8 @@ BOOL SpNpcCopper::setupAct05() {
 }
 
 BOOL SpNpcCopper::mainAct05() {
-    Unk_ov048_Vec_Loc a;
-    Unk_ov048_Vec_Loc b;
+    SpNpcCopperVecLocal a;
+    SpNpcCopperVecLocal b;
     PlayerData_GetCurrent();
     Unk_ov048_Vec *p = PlayerActor_GetBodyPos(4);
     *(Unk_ov048_Vec *)&a = *p;
@@ -1031,7 +1024,7 @@ BOOL SpNpcCopper::act08Step4() {
         _ZN9NpcLookAt7disableEv(sp8);
     }
     if (Math_CountDownU16(&talk.timer) == 0) {
-        if (unk_654 == 8) {
+        if (act == 8) {
             if (ScreenTransition_StartFadeOut(2, 0xf)) {
                 Snd_FadeOutScene();
                 return TRUE;
@@ -1069,7 +1062,7 @@ extern "C" BOOL SpNpcCopper_CheckKatieEscort() {
 }
 
 BOOL SpNpcCopper::act08Step5() {
-    if (unk_654 == 8) {
+    if (act == 8) {
         if (Unk_ov048_0225b854_Is0()) {
             SaveManager_SetGatePassed();
         } else {
@@ -1202,7 +1195,7 @@ extern "C" char sSpNpcCopperSequence4Key[];
 extern "C" char sSpNpcCopperModelPath[];
 extern "C" const u8 sCopperWifiStartMsgs[4];
 extern "C" void *sSpNpcCopperTexturePathPtr;
-extern "C" Unk_ov048_0225cd04_Ent sSpNpcCopperTalkScripts[23];
+extern "C" SpNpcCopperTalkScript sSpNpcCopperTalkScripts[23];
 extern "C" void *sSpNpcCopperMsgKey;
 extern "C" const Unk_ov048_Vec sCopperDepartWalkPos;
 extern "C" Unk_ov048_State_Ent sSpNpcCopperActTable[18];
@@ -1505,7 +1498,7 @@ BOOL SpNpcCopper::setupAct0B() {
     talk.subStep = 0;
     return TRUE;
 }
-extern "C" Unk_ov048_0225cd04_Ent sSpNpcCopperTalkScripts[23] = {
+extern "C" SpNpcCopperTalkScript sSpNpcCopperTalkScripts[23] = {
     {NULL, 0},
     {*(SpNpcCopperTalk::Fn *)data_ov048_0225c8ac, 1},
     {*(SpNpcCopperTalk::Fn *)data_ov048_0225c784, 0},
@@ -2031,11 +2024,11 @@ BOOL SpNpcCopperTalk::hasFriends() {
 
 void SpNpcCopperTalk::start(TalkStartMsg *arg) {
     TalkStartMsg *out = (TalkStartMsg *)arg;
-    static Unk_ov048_0225ae04_Row tbl[11] = {
-        {sSpNpcCopperMsgKey, 0}, {sSpNpcCopperMsgKey, 4}, {sSpNpcCopperMsgKey, 5},
-        {sSpNpcCopperMsgKey, 6}, {sSpNpcCopperMsgKey, 7}, {sSpNpcCopperMsgKey, 0xa},
-        {sSpNpcCopperMsgKey, 0x68}, {sSpNpcCopperMsgKey, 0xd}, {sSpNpcCopperSequence4Key, 9},
-        {sSpNpcCopperMsgKey, 0x47}, {sSpNpcCopperMsgKey, 0x48},
+    static TalkStartMsg tbl[11] = {
+        {(const char *)sSpNpcCopperMsgKey, 0}, {(const char *)sSpNpcCopperMsgKey, 4}, {(const char *)sSpNpcCopperMsgKey, 5},
+        {(const char *)sSpNpcCopperMsgKey, 6}, {(const char *)sSpNpcCopperMsgKey, 7}, {(const char *)sSpNpcCopperMsgKey, 0xa},
+        {(const char *)sSpNpcCopperMsgKey, 0x68}, {(const char *)sSpNpcCopperMsgKey, 0xd}, {sSpNpcCopperSequence4Key, 9},
+        {(const char *)sSpNpcCopperMsgKey, 0x47}, {(const char *)sSpNpcCopperMsgKey, 0x48},
     };
     void *h;
     saveDone = 0;
@@ -2059,8 +2052,8 @@ void SpNpcCopperTalk::start(TalkStartMsg *arg) {
         }
     }
     if (topic >= 0 && topic < 0xb) {
-        out->msgIndex = tbl[topic].id;
-        out->msgKey = (const char *)tbl[topic].name;
+        out->msgIndex = tbl[topic].msgIndex;
+        out->msgKey = tbl[topic].msgKey;
     }
 }
 
@@ -2542,7 +2535,7 @@ extern "C" const Unk_ov048_Vec sCopperArrivalWalkPos = {0x10000, 0x0, 0x11800};
 
 void SpNpcCopperTalk::onChoice(u32) {
     if (GameStart_IsActive() == 0) {
-        static Unk_ov048_0225a108_Row tbl[29] = {
+        static SpNpcCopperChoiceHandler tbl[29] = {
             {0x15, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c89c},
             {0x41, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c904},
             {0x14, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225ca94},
@@ -2581,7 +2574,7 @@ void SpNpcCopperTalk::onChoice(u32) {
             u32 b = *p;
             if (a == b) {
                 s32 arg = _ZN10ChoiceList9getResultEv(_ZN15TalkWindowState13getChoiceListEv(window));
-                Unk_ov048_0225a108_Row *r = (Unk_ov048_0225a108_Row *)((u32)tbl + off);
+                SpNpcCopperChoiceHandler *r = (SpNpcCopperChoiceHandler *)((u32)tbl + off);
                 (this->*r->f)(arg);
             }
         }
@@ -3319,7 +3312,7 @@ void SpNpcCopper::onInteractionEvent(u32 cmd, u8 arg) {
 
 BOOL SpNpcCopper::checkPlayerAtGate() {
     CommManager *g = gCommManager;
-    Unk_ov048_Vec_Loc v;
+    SpNpcCopperVecLocal v;
     if (_ZN11CommManager8isOnlineEv(g)) {
         return FALSE;
     }

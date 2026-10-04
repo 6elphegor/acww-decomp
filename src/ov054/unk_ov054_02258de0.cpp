@@ -46,31 +46,23 @@ struct Unk_ov054_0225b3ac_Row {
 };
 
 
-struct Unk_ov054_0225b0ac_Local {
-    u8 unk_00;
+struct SpNpcPellyPhyllisSpawnLocal {
+    u8 minute;
     u8 hour;
     u16 npcHandle;
-    u16 unk_04;
+    u16 cmpItem;
     u16 spawnRot[3];
 };
 
-struct Unk_ov054_02258e58_Sub {
-    s32 unk_00;
-    s32 unk_04;
-};
 
 
-struct Unk_ov054_0225aa98_Rec {
-    s32 unk_00;
-    s32 state;
-};
 
 struct Unk_ov054_0225a3cc_Data {
     u32 w0;
     u32 w1;
 };
 
-struct Unk_ov054_0225a3cc_Msg {
+struct FutureLetterDateLocal {
     u8 id;
     u8 pad[3];
     Unk_ov054_0225a3cc_Data d;
@@ -94,11 +86,11 @@ struct Unk_020d77a4_Vec3;
 
 
 
-typedef void (SpNpcPellyPhyllisTalk::*Unk_ov054_0225b9c4_Fn)();
+typedef void (SpNpcPellyPhyllisTalk::*SpNpcPellyPhyllisTalkScriptFn)();
 typedef void (SpNpcPellyPhyllisTalk::*Unk_ov054_0225b9c4_FnI)(s32);
 
-struct Unk_ov054_0225b9c4_Ent {
-    Unk_ov054_0225b9c4_Fn fn;
+struct SpNpcPellyPhyllisTalkScript {
+    SpNpcPellyPhyllisTalkScriptFn fn;
     u8 flag;
 };
 
@@ -213,7 +205,7 @@ public:
     BOOL updateWindow();
     void changeAct(s32 state);
 
-    /* 0x654 */ s32 unk_654;
+    /* 0x654 */ s32 act;
     /* 0x658 */ SpNpcPellyPhyllisTalk talk;
     /* 0x800 */ s16 homeAngle;
     /* 0x802 */ u8 pad_802[2];
@@ -225,11 +217,11 @@ public:
     /* 0x811 */ u8 pad_811[3];
 };
 
-typedef BOOL (SpNpcPellyPhyllis::*Unk_ov054_0225ba54_Fn)();
+typedef BOOL (SpNpcPellyPhyllis::*SpNpcPellyPhyllisActFn)();
 
-struct Unk_ov054_0225aef4_Ent {
-    Unk_ov054_0225ba54_Fn enter;
-    Unk_ov054_0225ba54_Fn exit;
+struct SpNpcPellyPhyllisActEntry {
+    SpNpcPellyPhyllisActFn enter;
+    SpNpcPellyPhyllisActFn exit;
 };
 
 
@@ -429,7 +421,7 @@ void Taxi_SetLeaving();
 BOOL Town_FindTownHall(void *r, s32 *a, s32 *b, s32 *c);
 void *Scene_GetWarpRequest();
 s32 SceneWarp_RequestAt(void *r, s32 a, void *v, s32 b, s32 c, s32 d, s32 e);
-Unk_ov054_0225aa98_Rec *TalkWindow_Get(s32 a);
+TalkWindowState *TalkWindow_Get(s32 a);
 
 BOOL SpNpcPellyPhyllis_IsDeliveryItem(u16 *p, s32 k);
 SpNpcPellyPhyllis *SpNpcPellyPhyllis_Create();
@@ -466,8 +458,8 @@ extern ActorProfile sSpNpcPellyPhyllisProfile;
 extern u32 sSpNpcPellyPhyllisMsgKeys[2][3];
 extern u8 sSpNpcPellyTexturePath[];
 extern u8 sSpNpcPhyllisTexturePath[];
-extern Unk_ov054_0225b9c4_Ent sSpNpcPellyPhyllisTalkScripts[16];
-extern Unk_ov054_0225aef4_Ent sSpNpcPellyPhyllisActTable[12];
+extern SpNpcPellyPhyllisTalkScript sSpNpcPellyPhyllisTalkScripts[16];
+extern SpNpcPellyPhyllisActEntry sSpNpcPellyPhyllisActTable[12];
 }
 // Member-function-pointer constants {function, this adjustment}: the tables are filled from them. They are
 // named objects so that their order in .data can be set (see tools/pipeline/linking.md); the functions are
@@ -591,7 +583,7 @@ extern void *data_ov054_0225b8a0[2];
 #define data_ov054_0225b3b4 ((const u8 *)sSpNpcPellyPhyllisCounterPos + 8)
 #define data_ov054_0225b974 ((char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + 8))
 #define data_ov054_0225bb08 ((Unk_ov054_0225b9c4_Flag *)((u8 *)sSpNpcPellyPhyllisTalkScripts + 8))
-#define data_ov054_0225bca4 ((Unk_ov054_0225aef4_Ent *)((u8 *)sSpNpcPellyPhyllisActTable + 8))
+#define data_ov054_0225bca4 ((SpNpcPellyPhyllisActEntry *)((u8 *)sSpNpcPellyPhyllisActTable + 8))
 
 // Data. mwcc sorts a file's data by size, and the order of equal-sized objects follows from the order in which
 // the objects are created (see tools/pipeline/linking.md): the definitions are in the order that reproduces the
@@ -622,23 +614,23 @@ extern "C" const s32 sSpNpcPellyPhyllisDonationLevels[22] = {
     900000,   1000000, 1100000, 1200000, 1300000, 1400000, 1500000, 1600000, 3200000, 6400000, 9999999,
 };
 extern "C" void *data_ov054_0225b6c0[2] = {(void *)_ZN21SpNpcPellyPhyllisTalk11showGoodbyeEv, 0};
-extern "C" Unk_ov054_0225b9c4_Ent sSpNpcPellyPhyllisTalkScripts[16] = {
+extern "C" SpNpcPellyPhyllisTalkScript sSpNpcPellyPhyllisTalkScripts[16] = {
     {NULL, 0},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b6d8, 0},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b7a0, 0},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b7a8, 0},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b788, 0},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b780, 0},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b6c8, 0},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b6d0, 0},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b808, 1},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b890, 1},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b7c0, 0},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b8a0, 0},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b6b8, 1},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b6e0, 1},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b760, 1},
-    {*(Unk_ov054_0225b9c4_Fn *)data_ov054_0225b700, 1},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b6d8, 0},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b7a0, 0},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b7a8, 0},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b788, 0},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b780, 0},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b6c8, 0},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b6d0, 0},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b808, 1},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b890, 1},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b7c0, 0},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b8a0, 0},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b6b8, 1},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b6e0, 1},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b760, 1},
+    {*(SpNpcPellyPhyllisTalkScriptFn *)data_ov054_0225b700, 1},
 };
 extern "C" u8 sSpNpcPellyTexturePath[] = "npc_sp/model/pga_tex.nsbtx";
 extern "C" void *data_ov054_0225b898[2] = {(void *)_ZN17SpNpcPellyPhyllis10setupAct01Ev, 0};
@@ -649,19 +641,19 @@ extern "C" void *data_ov054_0225b6d0[2] = {(void *)_ZN21SpNpcPellyPhyllisTalk13o
 extern "C" void *data_ov054_0225b768[2] = {(void *)_ZN21SpNpcPellyPhyllisTalk17onSequence4ChoiceEi, 0};
 extern "C" void *data_ov054_0225b7e8[2] = {(void *)_ZN17SpNpcPellyPhyllis9mainAct05Ev, 0};
 extern "C" void *data_ov054_0225b760[2] = {(void *)_ZN21SpNpcPellyPhyllisTalk13startMoveSaveEv, 0};
-extern "C" Unk_ov054_0225aef4_Ent sSpNpcPellyPhyllisActTable[12] = {
-    {*(Unk_ov054_0225ba54_Fn *)data_ov054_0225b708, *(Unk_ov054_0225ba54_Fn *)data_ov054_0225b750},
-    {*(Unk_ov054_0225ba54_Fn *)data_ov054_0225b898, *(Unk_ov054_0225ba54_Fn *)data_ov054_0225b730},
-    {*(Unk_ov054_0225ba54_Fn *)data_ov054_0225b738, *(Unk_ov054_0225ba54_Fn *)data_ov054_0225b740},
-    {*(Unk_ov054_0225ba54_Fn *)data_ov054_0225b878, *(Unk_ov054_0225ba54_Fn *)data_ov054_0225b7c8},
-    {*(Unk_ov054_0225ba54_Fn *)data_ov054_0225b868, *(Unk_ov054_0225ba54_Fn *)data_ov054_0225b7d0},
-    {*(Unk_ov054_0225ba54_Fn *)data_ov054_0225b858, *(Unk_ov054_0225ba54_Fn *)data_ov054_0225b7e8},
-    {*(Unk_ov054_0225ba54_Fn *)data_ov054_0225b848, *(Unk_ov054_0225ba54_Fn *)data_ov054_0225b7f0},
-    {*(Unk_ov054_0225ba54_Fn *)data_ov054_0225b838, *(Unk_ov054_0225ba54_Fn *)data_ov054_0225b810},
-    {*(Unk_ov054_0225ba54_Fn *)data_ov054_0225b820, *(Unk_ov054_0225ba54_Fn *)data_ov054_0225b828},
-    {*(Unk_ov054_0225ba54_Fn *)data_ov054_0225b830, *(Unk_ov054_0225ba54_Fn *)data_ov054_0225b840},
-    {*(Unk_ov054_0225ba54_Fn *)data_ov054_0225b860, *(Unk_ov054_0225ba54_Fn *)data_ov054_0225b870},
-    {*(Unk_ov054_0225ba54_Fn *)data_ov054_0225b7f8, *(Unk_ov054_0225ba54_Fn *)data_ov054_0225b6f8},
+extern "C" SpNpcPellyPhyllisActEntry sSpNpcPellyPhyllisActTable[12] = {
+    {*(SpNpcPellyPhyllisActFn *)data_ov054_0225b708, *(SpNpcPellyPhyllisActFn *)data_ov054_0225b750},
+    {*(SpNpcPellyPhyllisActFn *)data_ov054_0225b898, *(SpNpcPellyPhyllisActFn *)data_ov054_0225b730},
+    {*(SpNpcPellyPhyllisActFn *)data_ov054_0225b738, *(SpNpcPellyPhyllisActFn *)data_ov054_0225b740},
+    {*(SpNpcPellyPhyllisActFn *)data_ov054_0225b878, *(SpNpcPellyPhyllisActFn *)data_ov054_0225b7c8},
+    {*(SpNpcPellyPhyllisActFn *)data_ov054_0225b868, *(SpNpcPellyPhyllisActFn *)data_ov054_0225b7d0},
+    {*(SpNpcPellyPhyllisActFn *)data_ov054_0225b858, *(SpNpcPellyPhyllisActFn *)data_ov054_0225b7e8},
+    {*(SpNpcPellyPhyllisActFn *)data_ov054_0225b848, *(SpNpcPellyPhyllisActFn *)data_ov054_0225b7f0},
+    {*(SpNpcPellyPhyllisActFn *)data_ov054_0225b838, *(SpNpcPellyPhyllisActFn *)data_ov054_0225b810},
+    {*(SpNpcPellyPhyllisActFn *)data_ov054_0225b820, *(SpNpcPellyPhyllisActFn *)data_ov054_0225b828},
+    {*(SpNpcPellyPhyllisActFn *)data_ov054_0225b830, *(SpNpcPellyPhyllisActFn *)data_ov054_0225b840},
+    {*(SpNpcPellyPhyllisActFn *)data_ov054_0225b860, *(SpNpcPellyPhyllisActFn *)data_ov054_0225b870},
+    {*(SpNpcPellyPhyllisActFn *)data_ov054_0225b7f8, *(SpNpcPellyPhyllisActFn *)data_ov054_0225b6f8},
 };
 extern "C" void *data_ov054_0225b710[2] = {(void *)_ZN21SpNpcPellyPhyllisTalk16startMailLettersEv, 0};
 extern "C" void *data_ov054_0225b8a0[2] = {(void *)_ZN21SpNpcPellyPhyllisTalk20onDeliveryItemPickedEv, 0};
@@ -678,7 +670,7 @@ extern "C" const u8 sSpNpcPellyPhyllisGreetingMsgs[2] = {0x34, 0};
 extern "C" SpNpcPellyPhyllis *SpNpcPellyPhyllis_Create() { return new SpNpcPellyPhyllis; }
 
 BOOL SpNpcPellyPhyllis::preCreate() {
-    Unk_ov054_0225b0ac_Local l;
+    SpNpcPellyPhyllisSpawnLocal l;
     Unk_ov054_0225ba54_Vec vec;
     if (!SpNpcActor::preCreate()) {
         return FALSE;
@@ -688,8 +680,8 @@ BOOL SpNpcPellyPhyllis::preCreate() {
     if (isOnline()) {
         BOOL m;
         if (Item_IsFurniture(&npcHandle)) {
-            l.unk_04 = sSpNpcPellyPhyllisHandles[0];
-            if (Item_GetFurnitureIndex(&npcHandle) == Item_GetFurnitureIndex(&l.unk_04)) {
+            l.cmpItem = sSpNpcPellyPhyllisHandles[0];
+            if (Item_GetFurnitureIndex(&npcHandle) == Item_GetFurnitureIndex(&l.cmpItem)) {
                 m = TRUE;
             } else {
                 m = FALSE;
@@ -790,8 +782,8 @@ u8 *SpNpcPellyPhyllis::getModelPath() { return ((u8 **)sSpNpcPellyPhyllisModelPa
 
 BOOL SpNpcPellyPhyllis::updateAct() {
     BOOL r = FALSE;
-    if (data_ov054_0225bca4[unk_654].enter) {
-        r = (this->*sSpNpcPellyPhyllisActTable[unk_654].exit)();
+    if (data_ov054_0225bca4[act].enter) {
+        r = (this->*sSpNpcPellyPhyllisActTable[act].exit)();
     }
     return r;
 }
@@ -802,7 +794,7 @@ void SpNpcPellyPhyllis::changeAct(s32 state) {
         ok = (this->*sSpNpcPellyPhyllisActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -1142,7 +1134,7 @@ void SpNpcPellyPhyllisTalk::giveBackLetters() {
 void SpNpcPellyPhyllisTalk::update() {
     s32 i = script;
     if (data_ov054_0225bb08[i].flag != 0) {
-        Unk_ov054_0225b9c4_Ent *e = &sSpNpcPellyPhyllisTalkScripts[i];
+        SpNpcPellyPhyllisTalkScript *e = &sSpNpcPellyPhyllisTalkScripts[i];
         if (e->fn) {
             (this->*e->fn)();
         }
@@ -1152,7 +1144,7 @@ void SpNpcPellyPhyllisTalk::update() {
 void SpNpcPellyPhyllisTalk::onTaskDone(u32) {
     s32 i = script;
     if (data_ov054_0225bb08[i].flag == 0) {
-        Unk_ov054_0225b9c4_Ent *e = &sSpNpcPellyPhyllisTalkScripts[i];
+        SpNpcPellyPhyllisTalkScript *e = &sSpNpcPellyPhyllisTalkScripts[i];
         if (e->fn) {
             (this->*e->fn)();
         }
@@ -1272,7 +1264,7 @@ void SpNpcPellyPhyllisTalk::onFutureLetterDateEntered() {
     void *m = window;
     u32 cb[1] = { sSpNpcPellyPhyllisMsgKeys[owner->sister][0]};
     s32 r4;
-    Unk_ov054_0225a3cc_Msg l;
+    FutureLetterDateLocal l;
     if (MenuCtrl_IsResultOk()) {
         r4 = 0xc;
         l.d.w0 = 0;
@@ -1830,7 +1822,7 @@ void SpNpcPellyPhyllisTalk::onChoice(u32 a_) {
 // compare tree rooted at 0x52, the original has a 10-entry table for cases 0..9 under a tree rooted at 0x39).
 #ifdef NONMATCHING
 void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
-    Unk_ov054_02258e58_Sub *o = (Unk_ov054_02258e58_Sub *)window;
+    TalkWindowState *o = window;
     s32 r = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     void *g = PlayerData_GetCurrent();
     u32 id = 0xff;
@@ -2123,7 +2115,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
 #endif
 
 void SpNpcPellyPhyllisTalk::onDramaChoice(s32 a) {
-    Unk_ov054_02258e58_Sub *o = (Unk_ov054_02258e58_Sub *)window;
+    TalkWindowState *o = window;
     s32 r = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     u32 id = 0xff;
     u32 k = 1;
@@ -2161,7 +2153,7 @@ void SpNpcPellyPhyllisTalk::onSequence4Choice(s32 a) {
 }
 
 void SpNpcPellyPhyllisTalk::openPostOfficeMenu(s32 a) {
-    Unk_ov054_02258e58_Sub *o = (Unk_ov054_02258e58_Sub *)window;
+    TalkWindowState *o = window;
     void *g = PlayerData_GetCurrent();
     menuKind = 0;
     if (!Talk_IsInOwnTown()) {
@@ -2276,7 +2268,7 @@ BOOL SpNpcPellyPhyllis::acceptsInteraction(void *other) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked()) {
         return FALSE;
     }
-    if (unk_654 == 2 || unk_654 == 0 || unk_654 == 9) {
+    if (act == 2 || act == 0 || act == 9) {
         if (bx == cx && by == cy) {
             r = TRUE;
         }

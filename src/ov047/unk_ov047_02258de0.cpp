@@ -33,7 +33,7 @@ class SpNpcBlathers;
 class SpNpcBlathersTalk;
 
 
-struct Unk_ov047_0225a074_Buf {
+struct SpNpcBlathersStartLocal {
     u8 lo : 2;
     u8 b : 3;
     u8 c : 3;
@@ -46,18 +46,18 @@ struct Unk_ov047_0225a3e4_Msg {
     u8 msgIndex;
     u8 pad_01;
     u16 item;
-    u16 unk_04;
+    u16 cmpItem;
 };
 
-struct Unk_ov047_0225a5e8_Msg {
+struct SpNpcBlathersMsgLocal {
     u8 msgIndex;
     u8 pad_01;
-    u16 unk_02;
+    u16 cmpItem;
 };
 
 
-typedef BOOL (*Unk_ov047_Cb)(u16 *p, s32 m);
-typedef BOOL (SpNpcBlathers::*Unk_ov047_0225aeb4_Fn)();
+typedef BOOL (*PocketFilterFn)(u16 *p, s32 m);
+typedef BOOL (SpNpcBlathers::*SpNpcBlathersActFn)();
 
 extern "C" {
 extern CommManager *gCommManager;
@@ -79,7 +79,7 @@ s32 Item_GetFossilGroup(u16 *p);
 s32 Fossil_CountInGroup(s32 id);
 s32 ItemPick_FromRange(u16 *a, u32 b, u32 c, void *d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 s32 Random_GlobalBelow(s32 n);
-BOOL MenuCtrl_BuildPocketMask(Unk_ov047_Cb cb);
+BOOL MenuCtrl_BuildPocketMask(PocketFilterFn cb);
 BOOL MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
 s32 Museum_CountDonatedFossilsInGroup(void *g, s32 id);
@@ -112,7 +112,7 @@ void _ZN16ActorTalkRequest15requestKeepItemEv(void *self);
 void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *self, u16 *p, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest19requestReopenWindowEv(void *self);
 void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *self, u32 a, u32 b);
-void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *self, Unk_ov047_Cb cb, u32 a, u32 b);
+void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *self, PocketFilterFn cb, u32 a, u32 b);
 void _ZN16ActorTalkRequest12openSubSceneEi(void *self, s32 a);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *self, u16 *p, s32 a, s32 b);
 void _ZN16ActorTalkRequest13getChoiceListEv(void *self);
@@ -296,7 +296,7 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    s32 unk_654;
+    s32 act;
     SpNpcBlathersTalk talk;
     u8 dramaShown;
     u8 pad_729;
@@ -439,7 +439,7 @@ extern "C" void *data_ov047_0225b568[2];
 extern "C" void *data_ov047_0225b570[2];
 extern "C" void *data_ov047_0225b578[2];
 
-struct Unk_ov047_0225aeb4_Ent {
+struct SpNpcBlathersActEntry {
     BOOL (SpNpcBlathers::*enter)();
     BOOL (SpNpcBlathers::*exit)();
 };
@@ -457,24 +457,24 @@ extern "C" u8 sSpNpcBlathersModelPath[];
 extern "C" u8 sSpNpcBlathersTexturePath[];
 extern "C" const u8 sSpNpcBlathersDramaMsgTable[32];
 extern "C" ActorProfile sSpNpcBlathersProfile;
-extern Unk_ov047_0225aeb4_Ent sSpNpcBlathersActTable[9];
+extern SpNpcBlathersActEntry sSpNpcBlathersActTable[9];
 
-struct Unk_ov047_022592b8_Byte {
+struct SpNpcBlathersMsgByte {
     u8 v;
-    Unk_ov047_022592b8_Byte() {}
+    SpNpcBlathersMsgByte() {}
 };
 
-struct Unk_ov047_022592b8_Ent {
+struct SpNpcBlathersChoiceHandler {
     u32 id;
     void (SpNpcBlathersTalk::*fn)(u32);
 };
 
 // ---- unit 2
-typedef void (SpNpcBlathersTalk::*Unk_ov047_02259a8c_Fn)();
+typedef void (SpNpcBlathersTalk::*SpNpcBlathersTalkFn)();
 
-struct Unk_ov047_02259a8c_Ent {
+struct SpNpcBlathersMessageEndHandler {
     u32 id;
-    Unk_ov047_02259a8c_Fn fn;
+    SpNpcBlathersTalkFn fn;
 };
 
 static inline BOOL Unk_ov047_022596e8_IsNoneT(u16 *p, u16 &v) {
@@ -601,8 +601,8 @@ u8 *SpNpcBlathers::getModelPath() { return sSpNpcBlathersModelPath; }
 
 BOOL SpNpcBlathers::updateAct() {
     BOOL r = FALSE;
-    if (sSpNpcBlathersActTable[unk_654].exit) {
-        r = (this->*sSpNpcBlathersActTable[unk_654].exit)();
+    if (sSpNpcBlathersActTable[act].exit) {
+        r = (this->*sSpNpcBlathersActTable[act].exit)();
     }
     return r;
 }
@@ -613,7 +613,7 @@ void SpNpcBlathers::changeAct(s32 state) {
         ok = (this->*sSpNpcBlathersActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -803,14 +803,14 @@ extern "C" BOOL SpNpcBlathers_IsDonatableItem(u16 *p, s32 m) {
 
 void SpNpcBlathersTalk::scriptDonationItemChosen() {
     void *o = window;
-    Unk_ov047_0225a5e8_Msg m;
+    SpNpcBlathersMsgLocal m;
     m.msgIndex = 0x22;
     if (MenuCtrl_IsResultOk()) {
         MsgString9B ob;
         pocketSlot = -1;
         pocketSlot = MenuCtrl_GetIndex();
         item = Pocket_GetItem(pocketSlot);
-        if (!Unk_ov047_0225a3e4_Same(&item, &m.unk_02)) {
+        if (!Unk_ov047_0225a3e4_Same(&item, &m.cmpItem)) {
             ActorTalkRequest_setItemNameSlot(this, &item, 0, 7);
             if (Unk_ov047_0225a4a8_R(&item, 0x1549, 0x1549)) {
                 m.msgIndex = 0x21;
@@ -881,7 +881,7 @@ extern "C" BOOL SpNpcBlathers_IsUnidentifiedFossil(u16 *p, s32 m) {
 
 void SpNpcBlathersTalk::scriptAppraisalItemChosen() {
     void *o = window;
-    Unk_ov047_0225a5e8_Msg m;
+    SpNpcBlathersMsgLocal m;
     m.msgIndex = 0x22;
     if (MenuCtrl_IsResultOk()) {
         pocketSlot = MenuCtrl_GetIndex();
@@ -933,7 +933,7 @@ void SpNpcBlathersTalk::scriptDeliveryItemChosen() {
         if (r5 >= 0) {
             Pocket_RemoveItem(r5);
         }
-        if (!Unk_ov047_0225a3e4_Same(&m.item, &m.unk_04)) {
+        if (!Unk_ov047_0225a3e4_Same(&m.item, &m.cmpItem)) {
             ActorTalkRequest_requestTakeItem(this, &m.item, 2, 5, 0);
         }
         ErrandRecord_setStep(ParcelErrand_GetRecord(SickVillagerRecord_getParcelErrand(PlayerData_getErrands(r7))), 1);
@@ -991,7 +991,7 @@ void SpNpcBlathersTalk::start(TalkStartMsg *out) {
     out->msgKey = (const char *)sSpNpcBlathersKey;
     u32 r7 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(PlayerData_GetCurrent()));
     void *g = gCommManager;
-    Unk_ov047_0225a074_Buf l;
+    SpNpcBlathersStartLocal l;
     if (!CommManager_isOnline(g) && *DebugVar_GetPtr(0, 0x4a) == 0) {
         l.npcHandle = 0xd00c;
         if (ParcelErrand_IsFor(r7, &l.npcHandle)) {
@@ -1083,16 +1083,16 @@ extern "C" void *data_ov047_0225b440[2] = {(void *)_ZN17SpNpcBlathersTalk18onExh
 extern "C" void *data_ov047_0225b570[2] = {(void *)_ZN13SpNpcBlathers9mainAct03Ev, 0};
 extern "C" void *data_ov047_0225b330[2] = {(void *)_ZN13SpNpcBlathers9mainAct00Ev, 0};
 extern "C" void *data_ov047_0225b578[2] = {(void *)_ZN13SpNpcBlathers10setupAct03Ev, 0};
-Unk_ov047_0225aeb4_Ent sSpNpcBlathersActTable[9] = {
-    {*(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b398, *(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b330},
-    {*(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b3a0, *(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b338},
-    {*(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b368, *(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b4f0},
-    {*(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b578, *(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b570},
-    {NULL, *(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b568},
-    {*(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b560, *(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b558},
-    {*(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b550, *(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b548},
-    {*(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b540, *(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b538},
-    {*(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b530, *(Unk_ov047_0225aeb4_Fn *)data_ov047_0225b528},
+SpNpcBlathersActEntry sSpNpcBlathersActTable[9] = {
+    {*(SpNpcBlathersActFn *)data_ov047_0225b398, *(SpNpcBlathersActFn *)data_ov047_0225b330},
+    {*(SpNpcBlathersActFn *)data_ov047_0225b3a0, *(SpNpcBlathersActFn *)data_ov047_0225b338},
+    {*(SpNpcBlathersActFn *)data_ov047_0225b368, *(SpNpcBlathersActFn *)data_ov047_0225b4f0},
+    {*(SpNpcBlathersActFn *)data_ov047_0225b578, *(SpNpcBlathersActFn *)data_ov047_0225b570},
+    {NULL, *(SpNpcBlathersActFn *)data_ov047_0225b568},
+    {*(SpNpcBlathersActFn *)data_ov047_0225b560, *(SpNpcBlathersActFn *)data_ov047_0225b558},
+    {*(SpNpcBlathersActFn *)data_ov047_0225b550, *(SpNpcBlathersActFn *)data_ov047_0225b548},
+    {*(SpNpcBlathersActFn *)data_ov047_0225b540, *(SpNpcBlathersActFn *)data_ov047_0225b538},
+    {*(SpNpcBlathersActFn *)data_ov047_0225b530, *(SpNpcBlathersActFn *)data_ov047_0225b528},
 };
 extern "C" void *data_ov047_0225b568[2] = {(void *)_ZN13SpNpcBlathers9mainAct04Ev, 0};
 extern "C" void *data_ov047_0225b560[2] = {(void *)_ZN13SpNpcBlathers10setupAct05Ev, 0};
@@ -1157,29 +1157,29 @@ void SpNpcBlathersTalk::onMessageEnd(u32) {
     }
     p = PlayerData_GetCurrent();
     nextMsg = 0xff;
-    static Unk_ov047_02259a8c_Ent tbl[35] = {
-        {0x14, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b4d8}, {0x15, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b4d0},
-        {0x16, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b4c8}, {0x17, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b4c0},
-        {0x18, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b4b8}, {0x19, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b4b0},
-        {0x1a, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b4a8}, {0x1b, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b4a0},
-        {0x1c, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b498}, {0x1d, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b490},
-        {0x1f, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b3b8}, {0x26, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b480},
-        {0x29, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b478}, {0x2e, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b470},
-        {0x2f, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b3a8}, {0x30, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b460},
-        {0x31, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b4e8}, {0x32, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b450},
-        {0x33, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b320}, {0x34, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b440},
-        {0x35, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b438}, {0x36, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b430},
-        {0x37, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b428}, {0x38, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b420},
-        {0x39, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b418}, {0x3a, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b410},
-        {0x3b, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b408}, {0x3c, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b520},
-        {0x3d, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b3f0}, {0x3f, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b400},
-        {0x40, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b468}, {0x41, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b4e0},
-        {0x42, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b3d8}, {0x43, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b3d0},
-        {0x6a, *(Unk_ov047_02259a8c_Fn *)data_ov047_0225b3c8},
+    static SpNpcBlathersMessageEndHandler tbl[35] = {
+        {0x14, *(SpNpcBlathersTalkFn *)data_ov047_0225b4d8}, {0x15, *(SpNpcBlathersTalkFn *)data_ov047_0225b4d0},
+        {0x16, *(SpNpcBlathersTalkFn *)data_ov047_0225b4c8}, {0x17, *(SpNpcBlathersTalkFn *)data_ov047_0225b4c0},
+        {0x18, *(SpNpcBlathersTalkFn *)data_ov047_0225b4b8}, {0x19, *(SpNpcBlathersTalkFn *)data_ov047_0225b4b0},
+        {0x1a, *(SpNpcBlathersTalkFn *)data_ov047_0225b4a8}, {0x1b, *(SpNpcBlathersTalkFn *)data_ov047_0225b4a0},
+        {0x1c, *(SpNpcBlathersTalkFn *)data_ov047_0225b498}, {0x1d, *(SpNpcBlathersTalkFn *)data_ov047_0225b490},
+        {0x1f, *(SpNpcBlathersTalkFn *)data_ov047_0225b3b8}, {0x26, *(SpNpcBlathersTalkFn *)data_ov047_0225b480},
+        {0x29, *(SpNpcBlathersTalkFn *)data_ov047_0225b478}, {0x2e, *(SpNpcBlathersTalkFn *)data_ov047_0225b470},
+        {0x2f, *(SpNpcBlathersTalkFn *)data_ov047_0225b3a8}, {0x30, *(SpNpcBlathersTalkFn *)data_ov047_0225b460},
+        {0x31, *(SpNpcBlathersTalkFn *)data_ov047_0225b4e8}, {0x32, *(SpNpcBlathersTalkFn *)data_ov047_0225b450},
+        {0x33, *(SpNpcBlathersTalkFn *)data_ov047_0225b320}, {0x34, *(SpNpcBlathersTalkFn *)data_ov047_0225b440},
+        {0x35, *(SpNpcBlathersTalkFn *)data_ov047_0225b438}, {0x36, *(SpNpcBlathersTalkFn *)data_ov047_0225b430},
+        {0x37, *(SpNpcBlathersTalkFn *)data_ov047_0225b428}, {0x38, *(SpNpcBlathersTalkFn *)data_ov047_0225b420},
+        {0x39, *(SpNpcBlathersTalkFn *)data_ov047_0225b418}, {0x3a, *(SpNpcBlathersTalkFn *)data_ov047_0225b410},
+        {0x3b, *(SpNpcBlathersTalkFn *)data_ov047_0225b408}, {0x3c, *(SpNpcBlathersTalkFn *)data_ov047_0225b520},
+        {0x3d, *(SpNpcBlathersTalkFn *)data_ov047_0225b3f0}, {0x3f, *(SpNpcBlathersTalkFn *)data_ov047_0225b400},
+        {0x40, *(SpNpcBlathersTalkFn *)data_ov047_0225b468}, {0x41, *(SpNpcBlathersTalkFn *)data_ov047_0225b4e0},
+        {0x42, *(SpNpcBlathersTalkFn *)data_ov047_0225b3d8}, {0x43, *(SpNpcBlathersTalkFn *)data_ov047_0225b3d0},
+        {0x6a, *(SpNpcBlathersTalkFn *)data_ov047_0225b3c8},
     };
     u32 i = 0;
     u8 *pid = &msgIndex;
-    Unk_ov047_02259a8c_Ent *tp = tbl;
+    SpNpcBlathersMessageEndHandler *tp = tbl;
     goto test;
 loop:
     u32 ida = *(u32 *)((u8 *)tp + i * 12);
@@ -1529,7 +1529,7 @@ void SpNpcBlathersTalk::dispatchChoice(u32 a) {
     ActorTalkRequest_getChoiceList(this);
     u32 arg = ChoiceList_getResult();
     nextMsg = 0xff;
-    static Unk_ov047_022592b8_Ent tbl[17] = {
+    static SpNpcBlathersChoiceHandler tbl[17] = {
         {0xc, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b390},
         {0xe, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b388},
         {0x1e, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b370},
@@ -1554,13 +1554,13 @@ void SpNpcBlathersTalk::dispatchChoice(u32 a) {
 loop0:
     u32 id = tbl[i].id;
     if (id == *idp) {
-        (this->*((Unk_ov047_022592b8_Ent *)((u32)tbl + i * 12))->fn)(arg);
+        (this->*((SpNpcBlathersChoiceHandler *)((u32)tbl + i * 12))->fn)(arg);
     }
     i++;
 test0:
     if (i < 0x11) goto loop0;
     if (nextMsg != 0xff) {
-        Unk_ov047_022592b8_Byte b;
+        SpNpcBlathersMsgByte b;
         b.v = nextMsg;
         TalkWindowState_setNextMessage(window, &b, sSpNpcBlathersKey);
     }

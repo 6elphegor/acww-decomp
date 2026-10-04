@@ -30,6 +30,7 @@
 #include "game/TouchPickTriangle.h"
 #include "game/CollisionTriangle.h"
 #include "gfx/DebugColor.h"
+#include "actor/ActorProfile.h"
 
 
 
@@ -274,8 +275,8 @@ BOOL _ZN13BuildingActor13setEntryStateEi(void *self, s32 a);
 BOOL Building_IsNight();
 void BuildingActor_Create();
 BOOL BuildingResources_IsLoaded(BuildingResources *e);
-void *func_ov009_0225df58(void *unused);
-void *func_ov009_0225df6c(void *unused);
+void *Building_GetFirstAnm(void *unused);
+void *Building_GetFirstMdl(void *unused);
 void Building_InitModelCallback(NNSG3dRS *o);
 void Building_ModelCallback(struct NNSG3dRS *a);
 }
@@ -393,12 +394,12 @@ extern "C" void Building_InitModelCallback(NNSG3dRS *o) {
     o->cbVecTiming[6] = 2;
 }
 
-extern "C" void *func_ov009_0225df6c(void *unused) {
+extern "C" void *Building_GetFirstMdl(void *unused) {
     u8 *p = (u8 *)NNS_G3dGetMdlSet();
     return p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc);
 }
 
-extern "C" void *func_ov009_0225df58(void *unused) {
+extern "C" void *Building_GetFirstAnm(void *unused) {
     void *p = func_021065dc();
     return (void *)func_021065f8(p, 0);
 }
@@ -482,7 +483,7 @@ BOOL BuildingActor::preExecute() {
     s32 b = hasFlickeringLights();
     BuildingLights_setLit(lights, on, 1, b);
     BuildingLights_updateLights(lights, modelRes);
-    func_ov009_0225d0d8();
+    updateDoorExit();
     return TRUE;
 }
 
@@ -769,15 +770,15 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
                 void *t;
                 t = func_021012bc(data_ov009_0225e3ec);
                 if (t) {
-                    e->bca0 = (s32)func_ov009_0225df58(t);
+                    e->bca0 = (s32)Building_GetFirstAnm(t);
                 }
                 t = func_021012bc(data_ov009_0225e3fc);
                 if (t) {
-                    e->bca1 = (s32)func_ov009_0225df58(t);
+                    e->bca1 = (s32)Building_GetFirstAnm(t);
                 }
                 t = func_021012bc(data_ov009_0225e40c);
                 if (t) {
-                    e->bca2 = (s32)func_ov009_0225df58(t);
+                    e->bca2 = (s32)Building_GetFirstAnm(t);
                 }
                 i = 0;
                 z1 = i;
@@ -795,10 +796,10 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
                         e->btpAnims[i] = (s32)func_021066ac(func_02106690(), z2);
                     }
                 }
-                e->bmd0 = (s32)func_ov009_0225df6c(func_021012bc(data_ov009_0225e43c));
+                e->bmd0 = (s32)Building_GetFirstMdl(func_021012bc(data_ov009_0225e43c));
                 t = func_021012bc(data_ov009_0225e44c);
                 if (t) {
-                    e->bmd1 = (s32)func_ov009_0225df6c(t);
+                    e->bmd1 = (s32)Building_GetFirstMdl(t);
                 }
                 e->shadowTable = (BuildingShadowTable *)func_021012bc(data_ov009_0225e45c);
                 func_02101310(&obj);
@@ -848,7 +849,7 @@ BuildingResources *BuildingActor::getResources() {
     return NULL;
 }
 
-void BuildingActor::func_ov009_0225d0d8() {
+void BuildingActor::updateDoorExit() {
     if (exitDelay >= 1) {
         if (exitDelay == 3) {
             if (PlayerActor_IsInterruptibleByMenu()) {
@@ -1879,14 +1880,7 @@ BOOL BuildingActor::calcCustomBaseMatrix(Mtx43 *out) { return 0; }
 
 // ---------------------------------------------------------------- data
 
-struct Unk_ov009_0225e260_Entry {
-    void (*create)();
-    u16 executePriority;
-    u16 drawPriority;
-    s32 unk_08[4];
-};
-
-extern "C" Unk_ov009_0225e260_Entry sBuildingActorProfile = {BuildingActor_Create, 0x1a, 0x20, {0, 0xc8000, 0x12c000, 0x258000}};
+extern "C" ActorProfile sBuildingActorProfile = {(void *(*)())BuildingActor_Create, 0x1a, 0x20, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" char sBuildingDefaultMsgFile[16] = "obj_etc_error";
 extern "C" char data_ov009_0225e3e8[4] = "STR";
 extern "C" char data_ov009_0225e3ec[16] = "STR:a/bca/bca0";

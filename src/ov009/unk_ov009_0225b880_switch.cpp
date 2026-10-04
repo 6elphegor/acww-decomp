@@ -272,8 +272,8 @@ BOOL _ZN13BuildingActor13setEntryStateEi(void *self, s32 a);
 BOOL Building_IsNight();
 void BuildingActor_Create();
 BOOL BuildingResources_IsLoaded(BuildingResources *e);
-void *func_ov009_0225df58(void *unused);
-void *func_ov009_0225df6c(void *unused);
+void *Building_GetFirstAnm(void *unused);
+void *Building_GetFirstMdl(void *unused);
 void Building_InitModelCallback(NNSG3dRS *o);
 void Building_ModelCallback(struct NNSG3dRS *a);
 }

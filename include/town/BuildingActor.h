@@ -92,7 +92,7 @@ public:
     void updateShadows(Mtx43 *m);
     void createShadows(Mtx43 *m);
     void updateBaseMatrix(Mtx43 *out);
-    void func_ov009_0225d0d8();
+    void updateDoorExit();
     BuildingResources *getResources();
     void makeCurvedMatrix(Mtx43 *out);
     BOOL loadResources(char *a, char *b, char *c);

@@ -40,8 +40,8 @@ struct Unk_ov052_02259d6c_Vec {
     ~Unk_ov052_02259d6c_Vec() {}
 };
 
-struct Unk_ov052_02258eac_Loc : Unk_ov052_Vec {
-    Unk_ov052_02258eac_Loc() {}
+struct SpNpcReddVecLocal : Unk_ov052_Vec {
+    SpNpcReddVecLocal() {}
 };
 
 
@@ -204,21 +204,21 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    s32 unk_654;
+    s32 act;
     SpNpcReddTalk talk;
     u16 standBlend;
     u16 selectedItem;
     ItemId pitchedItems[3];
     s32 selectedItemX;
     s32 selectedItemZ;
-    u8 unk_72c;
+    u8 purchaseSyncPending;
     u8 approachTimer;
     u8 boughtSomething;
     u8 usedPitchMsgs[5];
     u8 usedThanksMsgs[5];
 };
 
-struct Unk_ov052_0225a2cc_Ent {
+struct SpNpcReddActEntry {
     BOOL (SpNpcRedd::*enter)();
     BOOL (SpNpcRedd::*exit)();
 };
@@ -227,7 +227,7 @@ struct Unk_ov052_0225a2cc_Ent {
 extern "C" {
 extern char sSpNpcReddKey[];
 extern const TalkStartMsg sSpNpcReddTopicMsgs[13];
-extern Unk_ov052_0225a2cc_Ent sSpNpcReddActTable[11];
+extern SpNpcReddActEntry sSpNpcReddActTable[11];
 #define MSG_ID(i) (((u8 (*)[8])((u8 *)sSpNpcReddTopicMsgs + 4))[i][0])
 extern u8 sSpNpcReddModelPath[];
 extern u8 sSpNpcReddTexturePath[];
@@ -326,8 +326,8 @@ u8 *SpNpcRedd::getModelPath() { return sSpNpcReddModelPath; }
 
 BOOL SpNpcRedd::updateAct() {
     BOOL r = FALSE;
-    if (sSpNpcReddActTable[unk_654].exit != NULL) {
-        r = (this->*sSpNpcReddActTable[unk_654].exit)();
+    if (sSpNpcReddActTable[act].exit != NULL) {
+        r = (this->*sSpNpcReddActTable[act].exit)();
     }
     return r;
 }
@@ -338,7 +338,7 @@ void SpNpcRedd::changeAct(s32 state) {
         ok = (this->*sSpNpcReddActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -516,7 +516,7 @@ BOOL SpNpcRedd::mainAct05() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl)) {
         return TRUE;
     }
-    if (unk_72c != 0 && ReddShop_IsPurchaseSynced() == 0) {
+    if (purchaseSyncPending != 0 && ReddShop_IsPurchaseSynced() == 0) {
         return TRUE;
     }
     TalkRequest_SetTargetDone(this);
@@ -991,7 +991,7 @@ BOOL SpNpcRedd::pickDisplayItem() {
     selectedItem = t[0];
     selectedItemX = bx;
     selectedItemZ = by;
-    unk_72c = 0;
+    purchaseSyncPending = 0;
     return TRUE;
 }
 
@@ -1004,7 +1004,7 @@ BOOL SpNpcRedd::tryItemTalk() {
 }
 
 BOOL SpNpcRedd::tryFarewellTalk() {
-    Unk_ov052_02258eac_Loc v;
+    SpNpcReddVecLocal v;
     Unk_ov052_Vec *src = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
     *(Unk_ov052_Vec *)&v = *src;
     if (Ground_IsOnLockedExit(&v)) {
@@ -1094,17 +1094,17 @@ extern "C" void *data_ov052_0225a760[2] = {(void *)_ZN9SpNpcRedd10setupAct00Ev, 
 extern "C" void *data_ov052_0225a780[2] = {(void *)_ZN9SpNpcRedd10setupAct0AEv, 0};
 extern "C" void *data_ov052_0225a778[2] = {(void *)_ZN9SpNpcRedd9mainAct06Ev, 0};
 extern "C" void *data_ov052_0225a770[2] = {(void *)_ZN9SpNpcRedd9mainAct08Ev, 0};
-typedef BOOL (SpNpcRedd::*Unk_ov052_Fn)();
-extern "C" Unk_ov052_0225a2cc_Ent sSpNpcReddActTable[11] = {
-    {*(Unk_ov052_Fn *)data_ov052_0225a760, *(Unk_ov052_Fn *)data_ov052_0225a768},
-    {*(Unk_ov052_Fn *)data_ov052_0225a7c8, *(Unk_ov052_Fn *)data_ov052_0225a800},
-    {*(Unk_ov052_Fn *)data_ov052_0225a808, *(Unk_ov052_Fn *)data_ov052_0225a7a0},
-    {*(Unk_ov052_Fn *)data_ov052_0225a7f8, *(Unk_ov052_Fn *)data_ov052_0225a7f0},
-    {*(Unk_ov052_Fn *)data_ov052_0225a7e8, *(Unk_ov052_Fn *)data_ov052_0225a7e0},
-    {*(Unk_ov052_Fn *)data_ov052_0225a7d8, *(Unk_ov052_Fn *)data_ov052_0225a7d0},
-    {*(Unk_ov052_Fn *)data_ov052_0225a788, *(Unk_ov052_Fn *)data_ov052_0225a778},
-    {*(Unk_ov052_Fn *)data_ov052_0225a7b8, *(Unk_ov052_Fn *)data_ov052_0225a7b0},
-    {*(Unk_ov052_Fn *)data_ov052_0225a7a8, *(Unk_ov052_Fn *)data_ov052_0225a770},
-    {*(Unk_ov052_Fn *)data_ov052_0225a798, *(Unk_ov052_Fn *)data_ov052_0225a790},
-    {*(Unk_ov052_Fn *)data_ov052_0225a780, *(Unk_ov052_Fn *)data_ov052_0225a7c0},
+typedef BOOL (SpNpcRedd::*SpNpcReddActFn)();
+extern "C" SpNpcReddActEntry sSpNpcReddActTable[11] = {
+    {*(SpNpcReddActFn *)data_ov052_0225a760, *(SpNpcReddActFn *)data_ov052_0225a768},
+    {*(SpNpcReddActFn *)data_ov052_0225a7c8, *(SpNpcReddActFn *)data_ov052_0225a800},
+    {*(SpNpcReddActFn *)data_ov052_0225a808, *(SpNpcReddActFn *)data_ov052_0225a7a0},
+    {*(SpNpcReddActFn *)data_ov052_0225a7f8, *(SpNpcReddActFn *)data_ov052_0225a7f0},
+    {*(SpNpcReddActFn *)data_ov052_0225a7e8, *(SpNpcReddActFn *)data_ov052_0225a7e0},
+    {*(SpNpcReddActFn *)data_ov052_0225a7d8, *(SpNpcReddActFn *)data_ov052_0225a7d0},
+    {*(SpNpcReddActFn *)data_ov052_0225a788, *(SpNpcReddActFn *)data_ov052_0225a778},
+    {*(SpNpcReddActFn *)data_ov052_0225a7b8, *(SpNpcReddActFn *)data_ov052_0225a7b0},
+    {*(SpNpcReddActFn *)data_ov052_0225a7a8, *(SpNpcReddActFn *)data_ov052_0225a770},
+    {*(SpNpcReddActFn *)data_ov052_0225a798, *(SpNpcReddActFn *)data_ov052_0225a790},
+    {*(SpNpcReddActFn *)data_ov052_0225a780, *(SpNpcReddActFn *)data_ov052_0225a7c0},
 };
