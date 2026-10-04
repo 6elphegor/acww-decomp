@@ -1,3 +1,4 @@
+#include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) sound library tail: sound-archive stream player (NNS_SndArcStrm*: thread, job queue,
 // stream contexts), capture effects (NNS_SndCapture*) and the NNSiSndFader helpers.
@@ -24,12 +25,11 @@ typedef struct Fader {
 } Fader;
 
 #define HDR(c) ((u8 *)(c) + 0xa8)
-typedef struct FSFileID { void *arc; u32 id; } FSFileID;
 
 // stream context (NNSSndArcStrm), 0x160 bytes, 4 of them (data_021fc650)
 typedef struct Ctx {
     u8 strm[0x5c];          // 0x00 NNSSndStrm
-    u8 file[0x48];          // 0x5c FSFile
+    FSFile file;            // 0x5c
     u32 a4;                 // 0xa4
     u8 pad_a8[0x18];        // 0xa8 .. 0xe8: 64-byte stream header buffer (type etc. are bytes of it)
     u8 type;                // 0xc0
@@ -235,7 +235,7 @@ void func_0210e8bc(u32 prio, void *heap)
     c = data_021fc650;
     for (i = 0; i < 4; i++, c++) {
         c->fl.a = 0;
-        FS_InitFile(c->file);
+        FS_InitFile(&c->file);
         NNS_SndStrmInit(c);
         c->v148 = i;
         c->nch = 0;
@@ -428,7 +428,7 @@ BOOL func_0210e128(Ctx **h, SInfo *info, s32 idx, s32 prio, s32 v144, u32 len, s
         return 0;
     }
     fid = func_0210b48c();
-    if (FS_OpenFileFast(c->file, fid) == 0) {
+    if (FS_OpenFileFast(&c->file, fid) == 0) {
         FreePlayer(c);
         return 0;
     }
@@ -469,13 +469,13 @@ BOOL func_0210e128(Ctx **h, SInfo *info, s32 idx, s32 prio, s32 v144, u32 len, s
     if (n > c->nch) n = c->nch;
     c->fl.g = (n == 1);
     if (func_0210df74(c, n, c->chIdx) == 0) {
-        FS_CloseFile(c->file);
+        FS_CloseFile(&c->file);
         FreePlayer(c);
         return 0;
     }
     if (NNS_SndStrmSetup(c, fmt, c->buf, (c->bufSize * n) / c->nch, c->c6, 4, func_0210db74, c) == 0) {
         FreeChannel(c);
-        FS_CloseFile(c->file);
+        FS_CloseFile(&c->file);
         FreePlayer(c);
         return 0;
     }
@@ -508,7 +508,7 @@ void func_0210e024(Ctx *c)
     OS_LockMutex(data_021fc62c);
     if (data_021fbdac != 0) OS_LockMutex(&data_021fbdac->mutex);
     if (c->fl.b) NNS_SndStrmStop(c);
-    if (c->fl.a) func_021198c4(c->file);
+    if (c->fl.a) func_021198c4(&c->file);
     func_0210dfb4(c);
     OS_UnlockMutex(data_021fc62c);
     if (data_021fbdac != 0) OS_UnlockMutex(&data_021fbdac->mutex);
@@ -519,7 +519,7 @@ void func_0210dfb4(Ctx *c)
 {
     if (c->fl.a == 0) return;
     FreeChannel(c);
-    FS_CloseFile(c->file);
+    FS_CloseFile(&c->file);
     RemoveCommandByPlayer(&data_021fc644, c);
     {
         ThreadInfo *p = data_021fbdac;

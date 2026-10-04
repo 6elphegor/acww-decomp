@@ -1,23 +1,8 @@
+#include "sys/OSThread.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK OS mutex (os_mutex.c): autoload_2 0x02114410-0x02114528. ARM code, mwcc 1.2/base.
 typedef unsigned int u32;
 typedef int s32;
-
-typedef struct OSThread OSThread;
-typedef struct OSMutex OSMutex;
-typedef struct {
-    volatile OSThread *head;
-    volatile OSThread *tail;
-} OSThreadQueue;
-struct OSThread {
-    u32 pad[33];
-    OSMutex *mutex; // 0x84
-};
-struct OSMutex {
-    OSThreadQueue queue;
-    OSThread *thread;
-    s32 count;
-};
 
 typedef struct {
     u32 unk0;

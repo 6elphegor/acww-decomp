@@ -1,3 +1,4 @@
+#include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK FS (fs_file.c / fs_archive.c / fs_command.c region), autoload_2 0x0211802c-0x02119434. ARM code.
 typedef unsigned char u8;
@@ -5,106 +6,6 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
-
-typedef struct FSArc FSArc;
-typedef struct FSFile FSFile;
-typedef int (*FSIoFunc)(FSArc *, void *, u32, u32);
-typedef struct {
-    void *head;
-    void *tail;
-} OSThreadQueue;
-typedef struct {
-    FSArc *arc;
-    union {
-        u32 file_id;
-        struct {
-            u16 own_id;
-            u16 index;
-        } d;
-    } u;
-    u32 pos;
-} FSDirPos;
-typedef struct {
-    FSDirPos pos;
-    u32 is_dir;
-    u32 name_len;
-    char name[128];
-} FSEntry;
-typedef struct {
-    FSArc *arc;
-    u32 pos;
-} FSStream;
-
-struct FSFile {
-    FSFile *prev;
-    FSFile *next;
-    FSArc *arc;
-    volatile u32 stat;
-    u32 command;
-    u32 error;
-    OSThreadQueue queue;
-    union {
-        FSDirPos pos;
-        struct {
-            u32 w20, w24, w28;
-        } w;
-    } p;
-    u32 parent;
-    union {
-        struct {
-            u32 w30;
-            u32 w34;
-            u32 w38;
-        } w;
-        FSDirPos pos;
-        struct {
-            void *buf;
-            u32 buf_size;
-            u16 len;
-            u16 dirid;
-        } path;
-        struct {
-            FSEntry *ent;
-            u32 skip;
-        } rdent;
-        struct {
-            u32 a30;
-            u16 id34;
-            u16 id36;
-            u32 a38;
-        } rd;
-    } a;
-    u32 w3c;
-    u32 w40;
-    FSDirPos *w44;
-};
-
-struct FSArc {
-    u32 name;
-    FSArc *next;
-    FSArc *prev;
-    OSThreadQueue queue;
-    OSThreadQueue queue2;
-    volatile u32 flag;
-    struct {
-        FSFile *prev;
-        FSFile *next;
-    } list;
-    u32 base;
-    u32 fat;
-    u32 fat_size;
-    u32 fnt;
-    u32 fnt_size;
-    u32 fat_orig;
-    u32 fnt_orig;
-    void *load_mem;
-    FSIoFunc read_orig;
-    FSIoFunc write;
-    FSIoFunc read;
-    int (*proc)(FSFile *, u32);
-    u32 proc_mask;
-    u32 pad5c[2];
-};
 
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
@@ -205,23 +106,23 @@ int FSi_OpenFileFastCommand(FSFile *file) {
     u32 out[2];
     FSStream s;
     FSArc *arc = file->arc;
-    u32 id = file->a.w.w34;
+    u32 id = file->arg.w.w34;
     u32 off = id << 3;
     if (off >= arc->fat_size) return 1;
     s.arc = arc;
     s.pos = arc->fat + off;
     FSi_ReadTable(&s, out, 8);
-    file->a.w.w30 = out[0];
-    file->a.w.w34 = out[1];
-    file->a.w.w38 = id;
+    file->arg.w.w30 = out[0];
+    file->arg.w.w34 = out[1];
+    file->arg.w.w38 = id;
     return FSi_TranslateCommand(file, 7);
 }
 
 int FSi_OpenFileDirectCommand(FSFile *file) {
-    file->p.w.w24 = file->a.w.w30;
-    file->parent = file->a.w.w30;
-    file->p.w.w28 = file->a.w.w34;
-    file->p.w.w20 = file->a.w.w38;
+    file->prop.file.start = file->arg.w.w30;
+    file->prop.file.pos = file->arg.w.w30;
+    file->prop.file.end = file->arg.w.w34;
+    file->prop.file.own_id = file->arg.w.w38;
     return 0;
 }
 

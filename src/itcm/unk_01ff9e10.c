@@ -1,3 +1,4 @@
+#include "nitro/mtx.h"
 // mwcc-flags: -nothumb -O4,p
 // I001e: itcm 0x01ff9e10-0x01ffa2ec, NitroSystem g3d Maya texture matrix + NitroSDK MI GX-command DMA (MI_SendGXCommandAsync, MI_WaitDma, MIi_DmaSetParams, FIFO callbacks) (8 functions). ARM, mwcc 1.2/base, -O4,p.
 // NitroSDK types: s32/u32 are long (this matters: int and long operands are not folded together)
@@ -146,7 +147,6 @@ typedef struct ResMatData {
 
 typedef struct VecFx32 { fx32 x, y, z; } VecFx32;
 typedef struct A3 { s32 a[3]; } A3;
-typedef struct MtxFx33 { fx32 a[9]; } MtxFx33;
 
 // NNSG3dJntAnmResult (0x58 bytes)
 typedef struct JntAnm {

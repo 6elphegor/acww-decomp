@@ -1,3 +1,4 @@
+#include "nitro/mtx.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK types: s32/u32 are long (this matters: int and long operands are not folded together)
 typedef unsigned char u8;
@@ -19,7 +20,6 @@ typedef s32 fx32;
 typedef s16 fx16;
 
 typedef struct VecFx32 { fx32 x, y, z; } VecFx32;
-typedef struct MtxFx33 { fx32 a[9]; } MtxFx33;
 
 typedef struct ResJntAnm {
     u32 anmHeader;     // 0x00

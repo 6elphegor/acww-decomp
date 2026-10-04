@@ -1,4 +1,5 @@
 #include "sys/CardCommon.h"
+#include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK region, autoload_2 0x0211ef94-0x0211f488. ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
@@ -23,25 +24,6 @@ typedef struct {
     u8 _ba[0x17e - 0xba];
     u16 f17e;
 } WMStatus;
-
-typedef struct WMMsg WMMsg;
-struct WMMsg {
-    u16 id;     // 0
-    u16 f2;
-    u16 f4;
-    u16 f6;
-    union {
-        u32 f8;
-        u16 f8w;
-    };
-    u32 fc;
-    u16 f10;
-    u16 f12;
-    u8 _14[6];
-    u16 f1a;
-    u32 f1c;
-    u16 f20;
-};
 
 typedef struct {
     void *w0;

@@ -1,3 +1,4 @@
+#include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK WM (wireless manager) API, autoload_2 0x0211f800-0x02120c98. ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
@@ -28,7 +29,6 @@ typedef struct {
     u16 f190;
 } WMStatus;
 
-typedef struct WMMsg WMMsg;
 typedef void (*WMCallback)(WMMsg *);
 
 typedef struct {

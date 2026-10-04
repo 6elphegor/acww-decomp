@@ -1,4 +1,5 @@
 #include "sys/DtorEntry.h"
+#include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK FS (fs_file / fs_archive / fs_overlay) + MATH_CalcHMACMD5, autoload_2 0x02119434-0x02119de4. ARM code.
 typedef unsigned char u8;
@@ -6,102 +7,6 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
-
-typedef struct FSArc FSArc;
-typedef struct FSFile FSFile;
-typedef struct {
-    void *head;
-    void *tail;
-} OSThreadQueue;
-typedef struct {
-    FSArc *arc;
-    union {
-        u32 file_id;
-        struct {
-            u16 own_id;
-            u16 index;
-        } d;
-    } u;
-    u32 pos;
-} FSDirPos;
-typedef struct {
-    FSArc *arc;
-    u32 file_id;
-} FSFileID;
-typedef struct {
-    u32 offset;
-    u32 length;
-} FSROMTable;
-typedef struct {
-    u8 *ptr;
-    u32 size;
-} FSOvtCache;
-
-struct FSFile {
-    FSFile *prev;
-    FSFile *next;
-    FSArc *arc;
-    u32 stat;
-    u32 command;
-    u32 error;
-    OSThreadQueue queue;
-    u32 w20;
-    s32 start;
-    s32 end;
-    s32 pos;
-    u32 a30;
-    u32 a34;
-    u32 a38;
-    u32 a3c;
-    u32 a40;
-    FSDirPos *a44;
-};
-
-struct FSArc {
-    u32 name;
-    FSArc *next;
-    FSArc *prev;
-    OSThreadQueue queue;
-    OSThreadQueue queue2;
-    u32 flag;
-    struct {
-        FSFile *prev;
-        FSFile *next;
-    } list;
-    u32 base;
-    u32 fat;
-    u32 fat_size;
-    u32 fnt;
-    u32 fnt_size;
-    u32 fat_orig;
-    u32 fnt_orig;
-    void *load_mem;
-    int (*read_orig)(FSArc *, void *, u32, u32);
-    int (*write)(FSArc *, void *, u32, u32);
-    int (*read)(FSArc *, void *, u32, u32);
-    int (*proc)(FSFile *, u32);
-    u32 proc_mask;
-    u32 pad5c[2];
-};
-
-typedef struct {
-    u32 id;
-    u32 ram_address;
-    u32 ram_size;
-    u32 bss_size;
-    void (**sinit_init)(void);
-    void (**sinit_init_end)(void);
-    u32 file_id;
-    u32 compressed : 24;
-    u32 flag : 8;
-} FSOverlayInfoHeader;
-
-typedef struct {
-    FSOverlayInfoHeader header;
-    u32 target;
-    u32 start;
-    u32 length;
-} FSOverlayInfo;
 
 typedef struct {
     u32 w[23];
@@ -279,32 +184,32 @@ BOOL FSi_FindPath(FSFile *file, const char *path, FSFileID *id, FSDirPos *dirpos
         }
     }
     file->arc = pos.arc;
-    file->a3c = (u32)path;
-    *(FSDirPos *)&file->a30 = pos;
+    file->arg.w.w3c = (u32)path;
+    *(FSDirPos *)&file->arg.w.w30 = pos;
     if (dirpos) {
-        file->a40 = 1;
-        file->a44 = dirpos;
+        file->arg.w.w40 = 1;
+        file->arg.w.w44 = dirpos;
     } else {
-        file->a40 = 0;
-        file->a44 = (FSDirPos *)id;
+        file->arg.w.w40 = 0;
+        file->arg.w.w44 = (FSDirPos *)id;
     }
     return FSi_SendCommand(file, 4);
 }
 
 // FSi_ReadFileCore
 s32 FSi_ReadFileCore(FSFile *file, void *dst, s32 len, BOOL async) {
-    s32 pos = file->pos;
-    s32 rest = file->end - pos;
+    s32 pos = file->prop.file.pos;
+    s32 rest = file->prop.file.end - pos;
     s32 len_org = len;
-    file->a30 = (u32)dst;
+    file->arg.w.w30 = (u32)dst;
     if (len > rest) len = rest;
     if (len < 0) len = 0;
-    file->a34 = len_org;
-    file->a38 = len;
+    file->arg.w.w34 = len_org;
+    file->arg.w.w38 = len;
     if (!async) file->stat |= 4;
     FSi_SendCommand(file, 0);
     if (!async) {
-        len = FS_WaitAsync(file) ? file->pos - pos : -1;
+        len = FS_WaitAsync(file) ? file->prop.file.pos - pos : -1;
     }
     return len;
 }
@@ -319,9 +224,9 @@ BOOL FS_ConvertPathToFileID(FSFileID *id, const char *path) {
 // FS_OpenFileDirect
 BOOL FS_OpenFileDirect(FSFile *file, FSArc *arc, u32 start, u32 end, int id) {
     file->arc = arc;
-    file->a38 = id;
-    file->a30 = start;
-    file->a34 = end;
+    file->arg.w.w38 = id;
+    file->arg.w.w30 = start;
+    file->arg.w.w34 = end;
     if (!FSi_SendCommand(file, 7)) return 0;
     file->stat |= 0x10;
     file->stat &= ~0x20;
@@ -332,7 +237,7 @@ BOOL FS_OpenFileDirect(FSFile *file, FSArc *arc, u32 start, u32 end, int id) {
 BOOL FS_OpenFileFast(FSFile *file, FSFileID id) {
     if (id.arc == 0) return 0;
     file->arc = id.arc;
-    *(FSFileID *)&file->a30 = id;
+    *(FSFileID *)&file->arg.w.w30 = id;
     if (!FSi_SendCommand(file, 6)) return 0;
     file->stat |= 0x10;
     file->stat &= ~0x20;
@@ -396,20 +301,20 @@ s32 FS_ReadFile(FSFile *file, void *dst, s32 len) {
 BOOL FS_SeekFile(FSFile *file, s32 pos, u32 origin) {
     switch (origin) {
     case 0:
-        pos += file->start;
+        pos += file->prop.file.start;
         break;
     case 1:
-        pos += file->pos;
+        pos += file->prop.file.pos;
         break;
     case 2:
-        pos += file->end;
+        pos += file->prop.file.end;
         break;
     default:
         return 0;
     }
-    if (pos < file->start) pos = file->start;
-    if (pos > file->end) pos = file->end;
-    file->pos = pos;
+    if (pos < file->prop.file.start) pos = file->prop.file.start;
+    if (pos > file->prop.file.end) pos = file->prop.file.end;
+    file->prop.file.pos = pos;
     return 1;
 }
 

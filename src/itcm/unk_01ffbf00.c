@@ -1,3 +1,4 @@
+#include "nitro/mtx.h"
 // mwcc-flags: -nothumb -O4,p
 // I003c: itcm 0x01ffbf00-0x01ffbf40, NitroSDK FX 4x3 matrix C (MTX_ScaleApply43), 1 function. ARM, mwcc 1.2/base, -O4,p.
 // NitroSDK types: s32/u32 are long (this matters: int and long operands are not folded together)
@@ -29,11 +30,6 @@ typedef s64 fx64c;
 
 typedef struct VecFx32 { fx32 x, y, z; } VecFx32;
 typedef struct VecFx16 { fx16 x, y, z; } VecFx16;
-typedef struct MtxFx33 {
-    fx32 _00, _01, _02;
-    fx32 _10, _11, _12;
-    fx32 _20, _21, _22;
-} MtxFx33;
 typedef struct MtxFx43 {
     fx32 _00, _01, _02;
     fx32 _10, _11, _12;

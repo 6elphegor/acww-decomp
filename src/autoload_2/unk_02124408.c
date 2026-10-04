@@ -1,3 +1,4 @@
+#include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // MB/WH-style parent list (S017 module), func_02124408, autoload_2 0x02124408-0x02124480. mwcc 1.2/base -nothumb -O4,p
 typedef unsigned char u8;
@@ -6,10 +7,6 @@ typedef unsigned int u32;
 typedef int s32;
 typedef signed char s8;
 typedef int BOOL;
-
-typedef struct FSFile {
-    u32 w[18];
-} FSFile; // 0x48 bytes; the start/end offsets live at w[9] / w[10]
 
 // parent-info buffer (one per game), 0x4c0 bytes
 typedef struct MBBuf {

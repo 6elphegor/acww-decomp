@@ -1,3 +1,4 @@
+#include "nitro/mtx.h"
 // mwcc-flags: -nothumb -O4,p
 // I003e: itcm 0x01ffc538-0x01ffcb2c, NitroSDK FX (FX_Sqrt, FX_Inv, FX_Div, VEC_Fx16Normalize, VEC_Normalize, VEC_Mag, VEC_Fx16CrossProduct, VEC_CrossProduct, VEC_Fx16DotProduct, VEC_DotProduct, VEC_Subtract, VEC_Add, FX_Modf, FX_Mul, empty function), 15 functions. ARM, mwcc 1.2/base, -O4,p.
 // NitroSDK types: s32/u32 are long (this matters: int and long operands are not folded together)
@@ -29,11 +30,6 @@ typedef s64 fx64c;
 
 typedef struct VecFx32 { fx32 x, y, z; } VecFx32;
 typedef struct VecFx16 { fx16 x, y, z; } VecFx16;
-typedef struct MtxFx33 {
-    fx32 _00, _01, _02;
-    fx32 _10, _11, _12;
-    fx32 _20, _21, _22;
-} MtxFx33;
 typedef struct MtxFx43 {
     fx32 _00, _01, _02;
     fx32 _10, _11, _12;

@@ -1,3 +1,4 @@
+#include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK FS (fs_file.c / fs_archive.c / fs_command.c region), autoload_2 0x0211802c-0x02119434. ARM code.
 typedef unsigned char u8;
@@ -5,106 +6,6 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
-
-typedef struct FSArc FSArc;
-typedef struct FSFile FSFile;
-typedef int (*FSIoFunc)(FSArc *, void *, u32, u32);
-typedef struct {
-    void *head;
-    void *tail;
-} OSThreadQueue;
-typedef struct {
-    FSArc *arc;
-    union {
-        u32 file_id;
-        struct {
-            u16 own_id;
-            u16 index;
-        } d;
-    } u;
-    u32 pos;
-} FSDirPos;
-typedef struct {
-    FSDirPos pos;
-    u32 is_dir;
-    u32 name_len;
-    char name[128];
-} FSEntry;
-typedef struct {
-    FSArc *arc;
-    u32 pos;
-} FSStream;
-
-struct FSFile {
-    FSFile *prev;
-    FSFile *next;
-    FSArc *arc;
-    volatile u32 stat;
-    u32 command;
-    u32 error;
-    OSThreadQueue queue;
-    union {
-        FSDirPos pos;
-        struct {
-            u32 w20, w24, w28;
-        } w;
-    } p;
-    u32 parent;
-    union {
-        struct {
-            u32 w30;
-            u32 w34;
-            u32 w38;
-        } w;
-        FSDirPos pos;
-        struct {
-            void *buf;
-            u32 buf_size;
-            u16 len;
-            u16 dirid;
-        } path;
-        struct {
-            FSEntry *ent;
-            u32 skip;
-        } rdent;
-        struct {
-            u32 a30;
-            u16 id34;
-            u16 id36;
-            u32 a38;
-        } rd;
-    } a;
-    u32 w3c;
-    u32 w40;
-    FSDirPos *w44;
-};
-
-struct FSArc {
-    u32 name;
-    FSArc *next;
-    FSArc *prev;
-    OSThreadQueue queue;
-    OSThreadQueue queue2;
-    volatile u32 flag;
-    struct {
-        FSFile *prev;
-        FSFile *next;
-    } list;
-    u32 base;
-    u32 fat;
-    u32 fat_size;
-    u32 fnt;
-    u32 fnt_size;
-    u32 fat_orig;
-    u32 fnt_orig;
-    void *load_mem;
-    FSIoFunc read_orig;
-    FSIoFunc write;
-    FSIoFunc read;
-    int (*proc)(FSFile *, u32);
-    u32 proc_mask;
-    u32 pad5c[2];
-};
 
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
@@ -319,34 +220,34 @@ void FSi_ReadTable(FSStream *s, void *dst, u32 len) {
 
 int FSi_SeekDirDirect(FSFile *file, u32 id) {
     file->stat |= 4;
-    file->a.pos.arc = file->arc;
-    file->a.pos.pos = 0;
-    file->a.pos.u.d.index = 0;
-    file->a.pos.u.d.own_id = id;
+    file->arg.pos.arc = file->arc;
+    file->arg.pos.pos = 0;
+    file->arg.pos.u.d.index = 0;
+    file->arg.pos.u.d.own_id = id;
     return FSi_TranslateCommand(file, 2);
 }
 
 int FSi_ReadFileCommand(FSFile *file) {
-    u32 pos = file->parent;
-    u32 len = file->a.w.w38;
+    u32 pos = file->prop.file.pos;
+    u32 len = file->arg.w.w38;
     FSArc *arc = file->arc;
-    void *dst = (void *)file->a.w.w30;
-    file->parent = pos + len;
+    void *dst = (void *)file->arg.w.w30;
+    file->prop.file.pos = pos + len;
     return arc->read_orig(arc, dst, pos, len);
 }
 
 int FSi_WriteFileCommand(FSFile *file) {
-    u32 pos = file->parent;
-    u32 len = file->a.w.w38;
+    u32 pos = file->prop.file.pos;
+    u32 len = file->arg.w.w38;
     FSArc *arc = file->arc;
-    void *dst = (void *)file->a.w.w30;
-    file->parent = pos + len;
+    void *dst = (void *)file->arg.w.w30;
+    file->prop.file.pos = pos + len;
     return arc->write(arc, dst, pos, len);
 }
 
 int FSi_SeekDirCommand(FSFile *file) {
     FSArc *arc = file->arc;
-    FSDirPos *pos = &file->a.pos;
+    FSDirPos *pos = &file->arg.pos;
     struct {
         u32 off;
         u16 first;
@@ -356,27 +257,27 @@ int FSi_SeekDirCommand(FSFile *file) {
     s.arc = arc;
     s.pos = arc->fnt + pos->u.d.own_id * 8;
     FSi_ReadTable(&s, &buf, 8);
-    file->p.pos = *pos;
+    file->prop.dir.pos = *pos;
     if (pos->u.d.index == 0 && pos->pos == 0) {
-        file->p.pos.u.d.index = buf.first;
-        file->p.pos.pos = arc->fnt + buf.off;
+        file->prop.dir.pos.u.d.index = buf.first;
+        file->prop.dir.pos.pos = arc->fnt + buf.off;
     }
-    file->parent = buf.parent & 0xfff;
+    file->prop.dir.parent = buf.parent & 0xfff;
     return 0;
 }
 
 int func_02118894(FSFile *file) {
-    FSEntry *ent = (FSEntry *)file->a.w.w30;
+    FSEntry *ent = (FSEntry *)file->arg.w.w30;
     u8 b;
     u16 id;
     FSStream s;
     s.arc = file->arc;
-    s.pos = file->p.w.w28;
+    s.pos = file->prop.dir.pos.pos;
     FSi_ReadTable(&s, &b, 1);
     ent->name_len = b & 0x7f;
     ent->is_dir = (b >> 7) & 1;
     if (ent->name_len == 0) return 1;
-    if (file->a.w.w34) {
+    if (file->arg.w.w34) {
         s.pos += ent->name_len;
     } else {
         FSi_ReadTable(&s, ent->name, ent->name_len);
@@ -390,9 +291,9 @@ int func_02118894(FSFile *file) {
         ent->pos.pos = 0;
     } else {
         ent->pos.arc = file->arc;
-        ent->pos.u.file_id = file->p.pos.u.d.index;
-        file->p.pos.u.d.index++;
+        ent->pos.u.file_id = file->prop.dir.pos.u.d.index;
+        file->prop.dir.pos.u.d.index++;
     }
-    file->p.w.w28 = s.pos;
+    file->prop.dir.pos.pos = s.pos;
     return 0;
 }

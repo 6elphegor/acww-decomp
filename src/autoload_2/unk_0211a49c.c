@@ -1,4 +1,5 @@
 #include "sys/DtorEntry.h"
+#include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK FS (fs_file / fs_archive / fs_overlay) + MATH_CalcHMACMD5, autoload_2 0x02119434-0x0211a8d4. ARM code.
 typedef unsigned char u8;
@@ -6,102 +7,6 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
-
-typedef struct FSArc FSArc;
-typedef struct FSFile FSFile;
-typedef struct {
-    void *head;
-    void *tail;
-} OSThreadQueue;
-typedef struct {
-    FSArc *arc;
-    union {
-        u32 file_id;
-        struct {
-            u16 own_id;
-            u16 index;
-        } d;
-    } u;
-    u32 pos;
-} FSDirPos;
-typedef struct {
-    FSArc *arc;
-    u32 file_id;
-} FSFileID;
-typedef struct {
-    u32 offset;
-    u32 length;
-} FSROMTable;
-typedef struct {
-    u8 *ptr;
-    u32 size;
-} FSOvtCache;
-
-struct FSFile {
-    FSFile *prev;
-    FSFile *next;
-    FSArc *arc;
-    u32 stat;
-    u32 command;
-    u32 error;
-    OSThreadQueue queue;
-    u32 w20;
-    s32 start;
-    s32 end;
-    s32 pos;
-    u32 a30;
-    u32 a34;
-    u32 a38;
-    u32 a3c;
-    u32 a40;
-    FSDirPos *a44;
-};
-
-struct FSArc {
-    u32 name;
-    FSArc *next;
-    FSArc *prev;
-    OSThreadQueue queue;
-    OSThreadQueue queue2;
-    u32 flag;
-    struct {
-        FSFile *prev;
-        FSFile *next;
-    } list;
-    u32 base;
-    u32 fat;
-    u32 fat_size;
-    u32 fnt;
-    u32 fnt_size;
-    u32 fat_orig;
-    u32 fnt_orig;
-    void *load_mem;
-    int (*read_orig)(FSArc *, void *, u32, u32);
-    int (*write)(FSArc *, void *, u32, u32);
-    int (*read)(FSArc *, void *, u32, u32);
-    int (*proc)(FSFile *, u32);
-    u32 proc_mask;
-    u32 pad5c[2];
-};
-
-typedef struct {
-    u32 id;
-    u32 ram_address;
-    u32 ram_size;
-    u32 bss_size;
-    void (**sinit_init)(void);
-    void (**sinit_init_end)(void);
-    u32 file_id;
-    u32 compressed : 24;
-    u32 flag : 8;
-} FSOverlayInfoHeader;
-
-typedef struct {
-    FSOverlayInfoHeader header;
-    u32 target;
-    u32 start;
-    u32 length;
-} FSOverlayInfo;
 
 typedef struct {
     u32 w[23];
@@ -255,8 +160,8 @@ BOOL FSi_LoadOverlayInfoCore(FSOverlayInfo *p, int target, u32 id, FSArc *arc, u
         FS_CloseFile(file);
         p->target = target;
         if (!FS_OpenFileFast(file, FS_GetOverlayFileID(&p->header))) return 0;
-        p->start = file->start;
-        p->length = file->end - file->start;
+        p->start = file->prop.file.start;
+        p->length = file->prop.file.end - file->prop.file.start;
         FS_CloseFile(file);
         return 1;
     }
@@ -276,8 +181,8 @@ BOOL FS_LoadOverlayInfo(FSOverlayInfo *p, int target, u32 id) {
         p->target = target;
         FS_InitFile(file);
         if (!FS_OpenFileFast(file, FS_GetOverlayFileID(&p->header))) return 0;
-        p->start = file->start;
-        p->length = file->end - file->start;
+        p->start = file->prop.file.start;
+        p->length = file->prop.file.end - file->prop.file.start;
         FS_CloseFile(file);
         return 1;
     } else {

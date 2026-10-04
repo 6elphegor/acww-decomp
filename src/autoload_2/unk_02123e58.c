@@ -1,3 +1,4 @@
+#include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK MB (multiboot parent) helpers, autoload_2 0x02123e58-0x02124408. ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
@@ -6,10 +7,6 @@ typedef unsigned int u32;
 typedef int s32;
 typedef signed char s8;
 typedef int BOOL;
-
-typedef struct FSFile {
-    u32 w[18];
-} FSFile; // 0x48 bytes; the start/end offsets live at w[9] / w[10]
 
 // parent-info buffer (one per game), 0x4c0 bytes
 typedef struct MBBuf {
@@ -329,7 +326,7 @@ u32 MB_GetSegmentLength(FSFile *file) {
     u32 *hdr = 0;
     u32 size = 0;
     if (file != 0) {
-        u32 pos = file->w[11] - file->w[9];
+        u32 pos = file->prop.file.pos - file->prop.file.start;
         if ((u32)FS_ReadFile(file, buf, 0x60) >= 0x60) hdr = buf;
         FS_SeekFile(file, pos, 0);
     } else {

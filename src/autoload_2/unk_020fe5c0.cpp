@@ -8,8 +8,7 @@
 #include "gfx/SplTex.h"
 #include "gfx/MagF.h"
 #include "gfx/P.h"
-
-struct MtxFx33 { s32 m[9]; };
+#include "nitro/mtx.h"
 
 struct P;
 

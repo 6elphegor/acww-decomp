@@ -1,3 +1,4 @@
+#include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK FS (fs_file.c / fs_archive.c / fs_command.c region), autoload_2 0x0211802c-0x02119434. ARM code.
 typedef unsigned char u8;
@@ -5,106 +6,6 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
-
-typedef struct FSArc FSArc;
-typedef struct FSFile FSFile;
-typedef int (*FSIoFunc)(FSArc *, void *, u32, u32);
-typedef struct {
-    void *head;
-    void *tail;
-} OSThreadQueue;
-typedef struct {
-    FSArc *arc;
-    union {
-        u32 file_id;
-        struct {
-            u16 own_id;
-            u16 index;
-        } d;
-    } u;
-    u32 pos;
-} FSDirPos;
-typedef struct {
-    FSDirPos pos;
-    u32 is_dir;
-    u32 name_len;
-    char name[128];
-} FSEntry;
-typedef struct {
-    FSArc *arc;
-    u32 pos;
-} FSStream;
-
-struct FSFile {
-    FSFile *prev;
-    FSFile *next;
-    FSArc *arc;
-    volatile u32 stat;
-    u32 command;
-    u32 error;
-    OSThreadQueue queue;
-    union {
-        FSDirPos pos;
-        struct {
-            u32 w20, w24, w28;
-        } w;
-    } p;
-    u32 parent;
-    union {
-        struct {
-            u32 w30;
-            u32 w34;
-            u32 w38;
-        } w;
-        FSDirPos pos;
-        struct {
-            void *buf;
-            u32 buf_size;
-            u16 len;
-            u16 dirid;
-        } path;
-        struct {
-            FSEntry *ent;
-            u32 skip;
-        } rdent;
-        struct {
-            u32 a30;
-            u16 id34;
-            u16 id36;
-            u32 a38;
-        } rd;
-    } a;
-    u32 w3c;
-    u32 w40;
-    FSDirPos *w44;
-};
-
-struct FSArc {
-    u32 name;
-    FSArc *next;
-    FSArc *prev;
-    OSThreadQueue queue;
-    OSThreadQueue queue2;
-    volatile u32 flag;
-    struct {
-        FSFile *prev;
-        FSFile *next;
-    } list;
-    u32 base;
-    u32 fat;
-    u32 fat_size;
-    u32 fnt;
-    u32 fnt_size;
-    u32 fat_orig;
-    u32 fnt_orig;
-    void *load_mem;
-    FSIoFunc read_orig;
-    FSIoFunc write;
-    FSIoFunc read;
-    int (*proc)(FSFile *, u32);
-    u32 proc_mask;
-    u32 pad5c[2];
-};
 
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
@@ -202,12 +103,8 @@ void FS_InitArchive(FSArc *arc);
 BOOL FSi_SendCommand(FSFile *file, u32 cmd);
 
 typedef struct {
-    FSArc *arc;
-    u32 file_id;
-} FSFileID2;
-typedef struct {
     union {
-        FSFileID2 file_id;
+        FSFileID file_id;
         FSDirPos dir_id;
     } u;
     u32 is_dir;
@@ -215,8 +112,8 @@ typedef struct {
     char name[128];
 } FSDirEntry2;
 int FSi_FindPathCommand(FSFile *file) {
-    const u8 *path = (const u8 *)file->w3c;
-    const BOOL find_directory = file->w40;
+    const u8 *path = (const u8 *)file->arg.w.w3c;
+    const BOOL find_directory = file->arg.w.w40;
     FSi_TranslateCommand(file, 2);
     for (; *path; path += (*path ? 1 : 0)) {
         u32 is_directory;
@@ -234,8 +131,8 @@ int FSi_FindPathCommand(FSFile *file) {
                 path += 1;
                 continue;
             } else if ((name_len == 2) & (path[1] == '.')) {
-                if (file->p.pos.u.d.own_id != 0) {
-                    FSi_SeekDirDirect(file, file->parent);
+                if (file->prop.dir.pos.u.d.own_id != 0) {
+                    FSi_SeekDirDirect(file, file->prop.dir.parent);
                 }
                 path += 2;
                 continue;
@@ -245,26 +142,26 @@ int FSi_FindPathCommand(FSFile *file) {
             return 1;
         } else {
             FSDirEntry2 etr;
-            file->a.rdent.ent = (FSEntry *)&etr;
-            file->a.rdent.skip = 0;
+            file->arg.rdent.ent = (FSEntry *)&etr;
+            file->arg.rdent.skip = 0;
             for (;;) {
                 if (FSi_TranslateCommand(file, 3) != 0) return 1;
                 if ((is_directory != etr.is_dir) || (name_len != etr.name_len) || FSi_StrNICmp((const char *)path, etr.name, (u32)name_len)) continue;
                 if (is_directory) {
                     path += name_len;
-                    file->a.pos = etr.u.dir_id;
+                    file->arg.pos = etr.u.dir_id;
                     FSi_TranslateCommand(file, 2);
                     break;
                 } else {
                     if (find_directory) return 1;
-                    *(FSFileID2 *)file->w44 = etr.u.file_id;
+                    *(FSFileID *)file->arg.w.w44 = etr.u.file_id;
                     return 0;
                 }
             }
         }
     }
     if (!find_directory) return 1;
-    *file->w44 = file->p.pos;
+    *file->arg.w.w44 = file->prop.dir.pos;
     return 0;
 }
 
@@ -277,7 +174,7 @@ int FSi_GetPathCommand(FSFile *file) {
         u32 buf_size;
         u16 len;
         u16 dirid;
-    } *arg = (void *)&file->a.path;
+    } *arg = (void *)&file->arg.path;
     u32 dir;
     u32 target;
     char *buf;
@@ -288,10 +185,10 @@ int FSi_GetPathCommand(FSFile *file) {
     FS_InitFile(&tmp);
     tmp.arc = file->arc;
     if (FSi_IsDirOnly(file) != 0) {
-        dir = file->p.pos.u.d.own_id;
+        dir = file->prop.dir.pos.u.d.own_id;
         target = 0x10000;
     } else {
-        target = file->p.w.w20;
+        target = file->prop.file.own_id;
         if (arg->len != 0) {
             dir = arg->dirid;
         } else {
@@ -300,13 +197,13 @@ int FSi_GetPathCommand(FSFile *file) {
             dir = 0x10000;
             do {
                 FSi_SeekDirDirect(&tmp, i);
-                if (i == 0) cnt = tmp.parent;
-                tmp.a.rdent.ent = &ent;
-                tmp.a.rdent.skip = 1;
+                if (i == 0) cnt = tmp.prop.dir.parent;
+                tmp.arg.rdent.ent = &ent;
+                tmp.arg.rdent.skip = 1;
                 if (FSi_TranslateCommand(&tmp, 3) == 0) {
                     for (;;) {
                         if (ent.is_dir == 0 && ent.pos.u.file_id == target) {
-                            dir = tmp.p.pos.u.d.own_id;
+                            dir = tmp.prop.dir.pos.u.d.own_id;
                             break;
                         }
                         if (FSi_TranslateCommand(&tmp, 3) != 0) break;
@@ -336,9 +233,9 @@ int FSi_GetPathCommand(FSFile *file) {
         if (i != 0) {
             FSi_SeekDirDirect(&tmp, dir);
             do {
-                FSi_SeekDirDirect(&tmp, tmp.parent);
-                tmp.a.rdent.ent = &ent;
-                tmp.a.rdent.skip = 1;
+                FSi_SeekDirDirect(&tmp, tmp.prop.dir.parent);
+                tmp.arg.rdent.ent = &ent;
+                tmp.arg.rdent.skip = 1;
                 if (FSi_TranslateCommand(&tmp, 3) == 0) {
                     for (;;) {
                         if (ent.is_dir != 0 && ent.pos.u.d.own_id == i) {
@@ -348,7 +245,7 @@ int FSi_GetPathCommand(FSFile *file) {
                         if (FSi_TranslateCommand(&tmp, 3) != 0) break;
                     }
                 }
-                i = tmp.p.pos.u.d.own_id;
+                i = tmp.prop.dir.pos.u.d.own_id;
             } while (i != 0);
         }
         arg->len = cnt + 1;
@@ -368,8 +265,8 @@ int FSi_GetPathCommand(FSFile *file) {
     }
     FSi_SeekDirDirect(&tmp, dir);
     if (target != 0x10000) {
-        tmp.a.rdent.ent = &ent;
-        tmp.a.rdent.skip = 0;
+        tmp.arg.rdent.ent = &ent;
+        tmp.arg.rdent.skip = 0;
         if (FSi_TranslateCommand(&tmp, 3) == 0) {
             for (;;) {
                 if (ent.is_dir == 0 && ent.pos.u.file_id == target) break;
@@ -385,9 +282,9 @@ int FSi_GetPathCommand(FSFile *file) {
     }
     if (dir != 0) {
         do {
-            FSi_SeekDirDirect(&tmp, tmp.parent);
-            tmp.a.rdent.ent = &ent;
-            tmp.a.rdent.skip = 0;
+            FSi_SeekDirDirect(&tmp, tmp.prop.dir.parent);
+            tmp.arg.rdent.ent = &ent;
+            tmp.arg.rdent.skip = 0;
             *(buf + len - 1) = '/';
             len -= 1;
             if (FSi_TranslateCommand(&tmp, 3) == 0) {
@@ -401,7 +298,7 @@ int FSi_GetPathCommand(FSFile *file) {
                     if (FSi_TranslateCommand(&tmp, 3) != 0) break;
                 }
             }
-            dir = tmp.p.pos.u.d.own_id;
+            dir = tmp.prop.dir.pos.u.d.own_id;
         } while (dir != 0);
     }
     return 0;

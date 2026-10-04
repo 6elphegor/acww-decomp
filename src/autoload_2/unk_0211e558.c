@@ -1,4 +1,5 @@
 #include "sys/CardCommon.h"
+#include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK region, autoload_2 0x0211e558-0x0211eeec. ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
@@ -23,25 +24,6 @@ typedef struct {
     u8 _ba[0x17e - 0xba];
     u16 f17e;
 } WMStatus;
-
-typedef struct WMMsg WMMsg;
-struct WMMsg {
-    u16 id;     // 0
-    u16 f2;
-    u16 f4;
-    u16 f6;
-    union {
-        u32 f8;
-        u16 f8w;
-    };
-    u32 fc;
-    u16 f10;
-    u16 f12;
-    u8 _14[6];
-    u16 f1a;
-    u32 f1c;
-    u16 f20;
-};
 
 typedef struct {
     void *w0;
@@ -168,17 +150,17 @@ void func_0211eb4c(u32 tag, WMMsg *m, BOOL err) {
     if (m != (WMMsg *)data_021ff46c->f10) DC_InvalidateRange(m, 0x100);
     if (m->id >= 42) {
         if (m->id == 0x80) {
-            if (m->f2 == 19) Fatal_Trap();
+            if (m->errcode == 19) Fatal_Trap();
             if (data_021ff46c->cbC0 != 0) data_021ff46c->cbC0(m);
         } else if (m->id == 0x82) {
-            if (data_021ff46c->reqCb[m->f6] != 0) {
-                m->f1c = data_021ff46c->reqArg[m->f6];
-                DC_InvalidateRange((void *)m->f8, data_021ff46c->status->f46);
-                data_021ff46c->reqCb[m->f6](m);
+            if (data_021ff46c->reqCb[m->f06] != 0) {
+                m->arg = (void *)data_021ff46c->reqArg[m->f06];
+                DC_InvalidateRange((void *)m->f08, data_021ff46c->status->f46);
+                data_021ff46c->reqCb[m->f06](m);
             }
         } else if (m->id == 0x81) {
             m->id = 15;
-            if (m->f1c != 0) ((void (*)(WMMsg *))m->f1c)(m);
+            if (m->arg != 0) ((void (*)(WMMsg *))m->arg)(m);
         }
     } else {
         void (*cb)(WMMsg *);
@@ -187,9 +169,9 @@ void func_0211eb4c(u32 tag, WMMsg *m, BOOL err) {
         u32 r6;
         u8 *r5;
         u8 *r4;
-        if (m->id == 14 && (u16)(m->f4 + 0xfff5) <= 1 && m->f2 == 0)
-            DC_InvalidateRange((void *)m->f8, data_021ff46c->status->f46);
-        if (m->id == 2 && m->f2 == 0) {
+        if (m->id == 14 && (u16)(m->f04 + 0xfff5) <= 1 && m->errcode == 0)
+            DC_InvalidateRange((void *)m->f08, data_021ff46c->status->f46);
+        if (m->id == 2 && m->errcode == 0) {
             cb = data_021ff46c->cb18[m->id];
             func_0211f188();
             if (cb != 0) cb(m);
@@ -204,12 +186,12 @@ void func_0211eb4c(u32 tag, WMMsg *m, BOOL err) {
             if (m->id == 8) {
                 r5 = (u8 *)m + 10;
                 r4 = (u8 *)m + 20;
-                r8 = m->f8w;
+                r8 = m->f08w;
                 r7 = m->f10;
                 r6 = 0;
             } else if (m->id == 12) {
                 r7 = 0;
-                r8 = m->f8w;
+                r8 = m->f08w;
                 r6 = m->f10;
                 r4 = (u8 *)r7;
                 r5 = (u8 *)m + 10;
@@ -217,13 +199,13 @@ void func_0211eb4c(u32 tag, WMMsg *m, BOOL err) {
             if (r8 == 7 || r8 == 9) {
                 u16 i;
                 data_021ff4b8.id = 0x82;
-                data_021ff4b8.f2 = 0;
-                data_021ff4b8.f4 = r8;
-                data_021ff4b8.f8 = 0;
-                data_021ff4b8.fc = 0;
+                data_021ff4b8.errcode = 0;
+                data_021ff4b8.f04 = r8;
+                data_021ff4b8.f08 = 0;
+                data_021ff4b8.f0c = 0;
                 data_021ff4b8.f10 = 0;
                 data_021ff4b8.f12 = r7;
-                data_021ff4b8.f20 = r6;
+                data_021ff4b8.f20h = r6;
                 data_021ff4b8.f1a = 0xffff;
                 MI_CpuCopy8(r5, data_021ff4cc, 6);
                 if (r4 != 0) {
@@ -233,9 +215,9 @@ void func_0211eb4c(u32 tag, WMMsg *m, BOOL err) {
                     MIi_CpuClear16(z, data_021ff4dc, 0x18);
                 }
                 for (i = 0; i < 16; i++) {
-                    data_021ff4b8.f6 = i;
+                    data_021ff4b8.f06 = i;
                     if (data_021ff46c->reqCb[i] != 0) {
-                        data_021ff4b8.f1c = data_021ff46c->reqArg[i];
+                        data_021ff4b8.arg = (void *)data_021ff46c->reqArg[i];
                         data_021ff46c->reqCb[i](&data_021ff4b8);
                     }
                 }

@@ -1,3 +1,4 @@
+#include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
 // MB/WH-style peer module: MBi_CommParentSendBlock (send next child block / cache miss -> task load), autoload_2 0x02121e5c-0x02122114.
 // ARM code, mwcc 1.2/base, flags -nothumb -O4,p. Header = S015b/unit.c header (prototypes fixed: MBi_MakeParentSendBuffer / MBi_BlockHeaderEnd).
@@ -17,24 +18,7 @@ typedef struct {
     u16 f184;
 } WMStatus;
 
-typedef struct WMMsg WMMsg;
 typedef void (*WMCallback)(WMMsg *);
-
-struct WMMsg {
-    u16 f00;
-    u16 errcode;
-    u16 f04;
-    u16 f06;
-    u16 f08;
-    u16 f0a;
-    u16 *f0c;
-    u16 f10;
-    u16 f12;
-    u8 _14[6];
-    u16 f1a;
-    void *arg;
-    u32 f20;
-};
 
 typedef struct {
     void *w0;

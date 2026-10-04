@@ -1,3 +1,4 @@
+#include "nitro/fs.h"
 // NNS sound library (NitroSystem snd): sound archive access (NNSSndArc: SDAT header, FAT, INFO/SYMB blocks,
 // load from file via FS), the sound heap (NNSSndHeap, a frame heap with save/load-state levels and free
 // callbacks) and the capture/reverb start (NNS_SndCaptureStartReverb). autoload_2 0x0210b1b0-0x0210c084.
@@ -33,7 +34,6 @@ typedef struct Cap {
 } Cap;
 typedef struct FatEnt { u32 off; u32 size; u32 ptr; u32 fc; } FatEnt;
 typedef struct Fat { u32 w0; u32 w4; u32 count; FatEnt e[1]; } Fat;
-typedef struct FSFileID { u32 arc; u32 id; } FSFileID;
 typedef struct Arc {
     u8 sig[4];              // 0x00 'SDAT'
     u32 magic;              // 0x04
@@ -49,7 +49,7 @@ typedef struct Arc {
     u32 fileOff;            // 0x28
     u32 fileBlkSize;        // 0x2c
     s32 fromFile;           // 0x30
-    u8 file[0x48];          // 0x34 FSFile
+    FSFile file;            // 0x34
     FSFileID id;            // 0x7c
     Fat *fat;               // 0x84
     u8 *symb;               // 0x88
@@ -290,8 +290,8 @@ void NNS_SndArcInit(Arc *arc, void *path, void *heap, BOOL loadSymb)
     if (FS_ConvertPathToFileID(&arc->id, path) == 0) {
         return;
     }
-    FS_InitFile(&arc->file[0]);
-    if (FS_OpenFileFast(&arc->file[0], arc->id) == 0) {
+    FS_InitFile(&arc->file);
+    if (FS_OpenFileFast(&arc->file, arc->id) == 0) {
         return;
     }
     arc->fromFile = 1;
@@ -304,10 +304,10 @@ void NNS_SndArcInit(Arc *arc, void *path, void *heap, BOOL loadSymb)
 BOOL func_0210b9e4(Arc *arc, void *heap, BOOL loadSymb)
 {
     s32 n;
-    if (FS_SeekFile(&arc->file[0], 0, 0) == 0) {
+    if (FS_SeekFile(&arc->file, 0, 0) == 0) {
         return 0;
     }
-    if (FS_ReadFile(&arc->file[0], arc, 0x30) != 0x30) {
+    if (FS_ReadFile(&arc->file, arc, 0x30) != 0x30) {
         return 0;
     }
     if (heap != 0 && 1) {
@@ -315,10 +315,10 @@ BOOL func_0210b9e4(Arc *arc, void *heap, BOOL loadSymb)
         if (arc->info == 0) {
             return 0;
         }
-        if (FS_SeekFile(&arc->file[0], arc->infoOff, 0) == 0) {
+        if (FS_SeekFile(&arc->file, arc->infoOff, 0) == 0) {
             return 0;
         }
-        n = FS_ReadFile(&arc->file[0], arc->info, arc->infoSize);
+        n = FS_ReadFile(&arc->file, arc->info, arc->infoSize);
         if (n != arc->infoSize) {
             return 0;
         }
@@ -326,10 +326,10 @@ BOOL func_0210b9e4(Arc *arc, void *heap, BOOL loadSymb)
         if (arc->fat == 0) {
             return 0;
         }
-        if (FS_SeekFile(&arc->file[0], arc->fatOff, 0) == 0) {
+        if (FS_SeekFile(&arc->file, arc->fatOff, 0) == 0) {
             return 0;
         }
-        n = FS_ReadFile(&arc->file[0], arc->fat, arc->fatSize);
+        n = FS_ReadFile(&arc->file, arc->fat, arc->fatSize);
         if (n != arc->fatSize) {
             return 0;
         }
@@ -338,10 +338,10 @@ BOOL func_0210b9e4(Arc *arc, void *heap, BOOL loadSymb)
             if (arc->symb == 0) {
                 return 0;
             }
-            if (FS_SeekFile(&arc->file[0], arc->symbOff, 0) == 0) {
+            if (FS_SeekFile(&arc->file, arc->symbOff, 0) == 0) {
                 return 0;
             }
-            n = FS_ReadFile(&arc->file[0], arc->symb, arc->symbSize);
+            n = FS_ReadFile(&arc->file, arc->symb, arc->symbSize);
         if (n != arc->symbSize) {
                 return 0;
             }
@@ -656,10 +656,10 @@ s32 NNS_SndArcReadFile(u32 idx, void *buf, u32 len, u32 offset)
     if (len > rem) {
         len = rem;
     }
-    if (FS_SeekFile(&arc->file[0], e->off + offset, 0) == 0) {
+    if (FS_SeekFile(&arc->file, e->off + offset, 0) == 0) {
         return -1;
     }
-    return FS_ReadFile(&arc->file[0], buf, len);
+    return FS_ReadFile(&arc->file, buf, len);
 }
 
 // NNS_SndArcGetFileID
