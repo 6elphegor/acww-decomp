@@ -5,6 +5,7 @@
 #include "gfx/TexVramSlot.h"
 #include "town/TownAcreIndex.h"
 #include "gfx/ModelSlotPool.h"
+#include "gfx/TexTransfer.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -107,11 +108,6 @@ public:
     virtual BOOL execute() = 0;
 };
 
-struct TexTransfer {
-    u32 dstAddr;
-    u32 src;
-    u32 size;
-};
 
 class TexVramTask : public VramTask {
 public:

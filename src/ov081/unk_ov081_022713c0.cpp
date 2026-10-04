@@ -3,6 +3,7 @@
 #include "game/Unk_0202368c_Obj.h"
 #include "actor/Unk_02088d00.h"
 #include "talk/TalkStartMsg.h"
+#include "talk/TalkWindowState.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -130,10 +131,6 @@ extern u8 gSaveVillagers[];
 extern u32 __ptmf_null[];
 }
 
-struct TalkWindowState {
-    s32 setNextMessage(u8 *a, void *b);
-    s32 setSlot(s32 idx, void *p);
-};
 
 class ActorTalkRequest {
 public:

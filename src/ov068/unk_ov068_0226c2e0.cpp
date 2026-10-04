@@ -3,6 +3,7 @@
 #include "actor/Unk_02088d00.h"
 #include "actor/Unk_ov068_SceneEntry.h"
 #include "game/Unk_ov083_Vec.h"
+#include "talk/TalkWindowState.h"
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -75,14 +76,6 @@ struct ChoiceList {
 };
 
 
-struct TalkWindowState {
-    u32 index;
-    u32 state;
-    s32 nextState;
-    u32 stateStep;
-    u32 unk_10;
-    s32 openMode;
-};
 
 class ActorTalkRequest {
 public:

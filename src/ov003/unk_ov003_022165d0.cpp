@@ -5,6 +5,7 @@
 #include "field/Unk_ov003_Flags.h"
 #include "actor/Unk_ov003_SceneEntry.h"
 #include "game/Unk_ov003_Vec.h"
+#include "talk/TalkWindowState.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -125,10 +126,6 @@ public:
     /* 0x1e */ u8 msgIndex;
 };
 
-struct TalkWindowState {
-    u8 pad_00[0x14];
-    s32 openMode;
-};
 
 class TalkMsgRequest : public MsgRequest {
 public:

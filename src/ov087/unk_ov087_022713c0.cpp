@@ -2,6 +2,7 @@
 #include "types.h"
 #include "actor/Unk_02088d00.h"
 #include "talk/TalkStartMsg.h"
+#include "talk/TalkWindowState.h"
 
 #pragma opt_loop_invariants off
 
@@ -80,9 +81,6 @@ extern u8 gContestRecord[];
 extern u8 gSaveData[];
 }
 
-struct TalkWindowState {
-    void setNextMessage(u8 *a, void *b);
-};
 
 class ActorTalkRequest {
 public:

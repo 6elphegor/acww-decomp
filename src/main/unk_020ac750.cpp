@@ -12,6 +12,7 @@
 #include "item/ItemId.h"
 #include "item/ItemPickSpec.h"
 #include "item/RandomSource.h"
+#include "game/Unk_020aec00.h"
 struct Letter {
     Letter();
     ~Letter();
@@ -248,7 +249,6 @@ struct ShopAckCounter {
 };
 
 struct Elem2a { Elem2a(); u16 d; };
-struct Unk_020aec00 { u32 vt; u16 e[0x25]; Unk_020aec00(); };
 struct NookShop { u32 vt; ItemId e[0x25]; NookShop(); };
 
 extern const s32 sObjShadowCoordShift;

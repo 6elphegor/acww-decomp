@@ -8,6 +8,7 @@
 #include "talk/Unk_ov004_0221b6d4_Out.h"
 #include "net/Unk_ov004_0221b954_Global.h"
 #include "game/Unk_ov004_0221b954_Vec.h"
+#include "talk/TalkWindowState.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -41,9 +42,6 @@ struct ChoiceList {
     s32 getResult();
 };
 
-struct TalkWindowState {
-    void setNextMessage(u8 *a, void *b);
-};
 
 class ActorTalkRequest {
 public:

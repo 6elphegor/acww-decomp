@@ -1,25 +1,9 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "game/LightLevel.h"
 
 struct Unk_02064674_Vec { s32 x, y, z; };
 
-// Class "LightLevel" of symbols.txt (0x020b22ac...).
-class LightLevel {
-public:
-    LightLevel();
-    ~LightLevel();
-    s32 getLevel();
-    BOOL switchLight(BOOL on, s32 a, s32 b, u32 param);
-    void update();
-    BOOL switchLightAnimated(BOOL on);
-
-    s32 level;
-    s32 targetLevel;
-    u32 fadeStep;
-    s32 isFlickering;
-    u16 flickerIndex;
-    u16 flickerDelay;
-};
 
 struct Unk_020d93b8 {
     s16 getEyeCurveAngle();

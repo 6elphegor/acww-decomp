@@ -12,6 +12,7 @@
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
+#include "talk/TalkWindowState.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -198,15 +199,6 @@ public:
     /* 0x1e */ u8 msgIndex;
 };
 
-struct TalkWindowState {
-    /* 0x0000 */ u32 index;
-    /* 0x0004 */ s32 state;
-    /* 0x0008 */ s32 nextState;
-    /* 0x000c */ u8 pad_0c[8];
-    /* 0x0014 */ s32 openMode;
-    /* 0x0018 */ u8 pad_18[0x16dc - 0x18];
-    /* 0x16dc */ u8 voice[4];
-};
 
 class TalkMsgRequest : public MsgRequest {
 public:

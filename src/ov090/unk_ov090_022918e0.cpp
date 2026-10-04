@@ -6,6 +6,7 @@
 #include "menu/Unk_ov002_022013a0.h"
 #include "sys/Unk_020b83b0.h"
 #include "talk/MsgStringBase.h"
+#include "gfx/BgTransfer.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -259,13 +260,6 @@ public:
     virtual BOOL execute() = 0;
 };
 
-struct BgTransfer {
-    u32 buf;
-    u8 layer;
-    u32 loadArg0;
-    u32 loadArg1;
-    u32 loadArg2;
-};
 
 class BgVramTask : public VramTask {
 public:

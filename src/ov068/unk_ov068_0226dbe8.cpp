@@ -10,6 +10,8 @@
 #include "talk/MsgStringBase.h"
 #include "gfx/Unk_ov068_022708fc_Color.h"
 #include "actor/Unk_ov068_SceneEntry.h"
+#include "npc/VillagerMood.h"
+#include "talk/TalkWindowState.h"
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
@@ -60,15 +62,6 @@ public:
     virtual ~ProcBase();
 };
 
-class TalkWindowState {
-public:
-    void setSlot(s32 a, void *p);
-    void setNextMessage(u8 *a, void *p);
-    void setNextMessageIfUnset(u8 *a, void *p);
-
-    u32 index;
-    s32 state;
-};
 
 struct Unk_0201ad3c { Unk_0201ad3c(); ~Unk_0201ad3c(); u32 pad[0xc / 4]; };
 struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
@@ -94,7 +87,6 @@ public:
     ~Unk_020f4080() {}
 };
 
-struct VillagerMood { VillagerMood(); ~VillagerMood(); u32 pad[0x5c / 4]; };
 
 class Actor : public ProcBase {
 public:

@@ -4,6 +4,7 @@
 #include "Unk_020d8c7c.h"
 #include "actor/Unk_02088d00.h"
 #include "talk/TalkStartMsg.h"
+#include "talk/TalkWindowState.h"
 #undef postCreate
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
@@ -48,9 +49,6 @@ extern u8 sSpNpcTortimerModelPath[];
 extern u8 sSpNpcTortimerTexturePath[];
 }
 
-struct TalkWindowState {
-    void setNextMessage(u8 *a, void *b);
-};
 
 struct TalkStartMsg;
 

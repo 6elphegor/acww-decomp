@@ -3,24 +3,11 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "save/BlancaFaceRecord.h"
+#include "talk/TalkWindowState.h"
 
 // ---- declarations shared by the merged files
 class TalkMsgRequest;
 
-class TalkWindowState {
-public:
-    void detachRequest();
-    void attachRequest(TalkMsgRequest *p);
-    void hideBusyIcon();
-    s32 setSlot(s32 idx, void *p);
-    void unlockAdvance();
-    void lockAdvance();
-    void setNextMessage(u8 *b, void *c);
-
-    /* 0x00 */ u32 index;
-    /* 0x04 */ u32 state;
-    /* 0x08 */ u32 nextState;
-};
 
 
 class MsgRequest {

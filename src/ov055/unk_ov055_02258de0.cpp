@@ -2,6 +2,8 @@
 #include "actor/Unk_02088d00.h"
 #include "item/ItemId.h"
 #include "talk/TalkStartMsg.h"
+#include "save/TownExchangeRecord.h"
+#include "talk/TalkWindowState.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -33,9 +35,6 @@ public:
 struct Unk_0201bc1c;
 class SpNpcRover;
 
-struct TalkWindowState {
-    void setNextMessage(u8 *a, void *b);
-};
 
 class ActorTalkRequest {
 public:
@@ -273,13 +272,6 @@ public:
     u8 talkMelodyPlayed;
 };
 
-struct TownExchangeRecord {
-    u8 unk_00[0x84c];
-
-    ~TownExchangeRecord();
-    void incrementCounter();
-    void setUnkFlag(u32 v);
-};
 
 extern "C" {
 extern u8 gOverlayHandle[];
@@ -367,11 +359,19 @@ struct ReceivedLetterBlock {
     u8 exchangeKind;
     u8 pad_f9[3];
 
+    ReceivedLetterBlock();
     ~ReceivedLetterBlock();
 };
 
 extern "C" void _ZN18TownExchangeRecordC1Ev(void *self);
 extern "C" void _ZN19ReceivedLetterBlockC1Ev(void *self);
+
+// sent / received town-exchange data: the record and the letters that travel with it (0x948 bytes)
+struct SpNpcRoverTransfer {
+    SpNpcRoverTransfer() {}
+    /* 0x000 */ TownExchangeRecord record;
+    /* 0x84c */ ReceivedLetterBlock letters;
+};
 
 class SpNpcRover;
 typedef BOOL (SpNpcRover::*Unk_ov055_02259994_Fn)();
@@ -383,14 +383,7 @@ struct Unk_ov055_022594e0_Ent {
 
 class SpNpcRover : public SpNpcActor {
 public:
-    SpNpcRover() {
-        u8 *p = (u8 *)&sendTransfer;
-        _ZN18TownExchangeRecordC1Ev(p);
-        _ZN19ReceivedLetterBlockC1Ev(p + 0x84c);
-        p = (u8 *)&recvTransfer;
-        _ZN18TownExchangeRecordC1Ev(p);
-        _ZN19ReceivedLetterBlockC1Ev(p + 0x84c);
-    }
+    SpNpcRover() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -420,10 +413,8 @@ public:
     /* 0x70c */ u8 saveFailed;
     /* 0x70d */ u8 lidClosed;
     /* 0x70e */ u8 pad_70e[2];
-    /* 0x710 */ TownExchangeRecord sendTransfer;
-    /* 0xf5c */ ReceivedLetterBlock sendLetters;
-    /* 0x1058 */ TownExchangeRecord recvTransfer;
-    /* 0x18a4 */ ReceivedLetterBlock recvLetters;
+    /* 0x710 */ SpNpcRoverTransfer send;
+    /* 0x1058 */ SpNpcRoverTransfer recv;
 };
 
 struct Unk_ov055_SceneEntry {
@@ -597,10 +588,10 @@ void SpNpcRoverTalk::onMessageEnd() {
                 break;
             }
             Comm_StartOv067Mode();
-            MI_CpuFill8(&ownerNpc->recvTransfer, 0, 0x948);
+            MI_CpuFill8(&ownerNpc->recv.record, 0, 0x948);
             SpNpcRover *r4 = ownerNpc;
             NetOverlay_AssertOv067();
-            func_020e9a54(&r4->sendTransfer, &r4->recvTransfer, 0x948);
+            func_020e9a54(&r4->send.record, &r4->recv.record, 0x948);
             func_020e9a48(NetOverlay_AssertOv067());
         }
         func_020e9a48(NetOverlay_AssertOv067());
@@ -706,19 +697,19 @@ void SpNpcRoverTalk::waitTagModeStop() {
 
 void SpNpcRover::applyReceivedData() {
     TownExchangeRecord *r4 = TownExchange_GetForAid(4);
-    u32 st = recvLetters.exchangeKind;
+    u32 st = recv.letters.exchangeKind;
     if (st == 2) {
-        MI_CpuCopy8(&recvLetters, data_021ecfa8, 0xf8);
+        MI_CpuCopy8(&recv.letters, data_021ecfa8, 0xf8);
         restoreOwnTransfer();
     } else if (st == 1) {
-        MI_CpuCopy8(&recvTransfer, r4, 0x84c);
+        MI_CpuCopy8(&recv.record, r4, 0x84c);
         r4->incrementCounter();
         r4->setUnkFlag(1);
     }
 }
 
 void SpNpcRover::restoreOwnTransfer() {
-    MI_CpuCopy8(&sendTransfer, TownExchange_GetForAid(4), 0x84c);
+    MI_CpuCopy8(&send.record, TownExchange_GetForAid(4), 0x84c);
 }
 
 BOOL SpNpcRover::vfunc_48() {
@@ -756,8 +747,8 @@ void SpNpcRover::vfunc_4c(s32 a) {
 void SpNpcRover::prepareTagData() {
     Constellation_PrepareExchange();
     TownExchangeRecord *r4 = TownExchange_GetForAid(4);
-    MI_CpuCopy8(r4, &sendTransfer, 0x84c);
-    sendLetters.exchangeKind = 1;
+    MI_CpuCopy8(r4, &send.record, 0x84c);
+    send.letters.exchangeKind = 1;
     TownExchange_Clear(r4);
     if (saveFailed == 0) {
         s32 r = Save_WriteVillagerTransfer();

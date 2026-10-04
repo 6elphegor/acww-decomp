@@ -2,6 +2,7 @@
 #include "types.h"
 #include "actor/Unk_02088d00.h"
 #include "talk/TalkStartMsg.h"
+#include "talk/TalkWindowState.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -82,12 +83,6 @@ extern void *gSceneBlockMap;
 extern u32 __ptmf_null[];
 }
 
-struct TalkWindowState {
-    u8 pad_00[0x14];
-    s32 openMode;
-    void setNextMessage(u8 *a, void *b);
-    void setSlotFromString(s32 a, u8 *b, void *c);
-};
 
 class ActorTalkRequest {
 public:

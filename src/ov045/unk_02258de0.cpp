@@ -3,6 +3,7 @@
 #include "Unk_020d8c7c.h"
 #include "actor/Unk_02088d00.h"
 #include "talk/MsgStringBase.h"
+#include "talk/TalkWindowState.h"
 #undef postCreate
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
@@ -83,10 +84,6 @@ extern u8 gSaveData[];
 extern u8 *gCommManager;
 }
 
-struct TalkWindowState {
-    void setNextMessage(u8 *a, void *b);
-    void setSlot(s32 a, void *b);
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Chain for the vtable of SpNpcKatrinaTalk. Its constructor and destructor call ActorTalkRequest's, so that is the most

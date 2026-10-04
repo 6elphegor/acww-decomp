@@ -1,6 +1,9 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/TitleBlinkText.h"
+#include "save/SaveData.h"
+#include "save/TownExchangeRecord.h"
+#include "talk/TalkWindowState.h"
 
 struct TitleChoiceSet {
     u8 *msgIds;
@@ -31,42 +34,18 @@ public:
 
 class TalkMsgRequest;
 
-class TalkWindowState {
-public:
-    ChoiceList *getChoiceList();
-    void openChoices(s32 v);
-    void setSlot(s32 a, void *b);
-    void setNextMessage(u8 *a, void *b);
-    void setSilent();
-    void lockAdvance();
-    void detachRequest();
-    void attachRequest(TalkMsgRequest *p);
-
-    /* 0x00 */ u32 index;
-    /* 0x04 */ s32 state;
-    /* 0x08 */ s32 nextState;
-};
 
 class PlayerData {
 public:
     void *getPlayerId();
 };
 
-class SaveData {
-public:
-    s32 isValid();
-    BOOL testFlag(u32 a);
-};
 
 class LetterView {
 public:
     u8 getState();
 };
 
-class TownExchangeRecord {
-public:
-    s32 getCounter();
-};
 
 class BgVramTask {
 public:

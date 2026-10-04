@@ -1,6 +1,7 @@
 #include "types.h"
 #include "game/Unk_020aebbc.h"
 #include "game/Unk_021c47c4.h"
+#include "game/Unk_020aec00.h"
 
 struct Counter {
     Counter();
@@ -15,7 +16,6 @@ struct ShopAckCounter {
 
 struct Elem2a { Elem2a(); u16 d; };
 struct Elem2b { Elem2b(); ~Elem2b(); u16 d; };
-struct Unk_020aec00 { u32 vt; u16 e[0x25]; Unk_020aec00(); };
 struct NookShop { u32 vt; Elem2b e[0x25]; NookShop(); };
 
 struct Str { Str(const u16 *s); ~Str(); u8 d[0x24]; };

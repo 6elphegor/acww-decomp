@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/Random.h"
 
 extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
@@ -32,13 +33,6 @@ struct Unk_021cb3c4_Col {
     Unk_021cb3c4_Col(u8 r_, u8 g_, u8 b_, u8 a_) : r(r_), g(g_), b(b_), a(a_) {}
 };
 
-// 4-byte object seeded with Random_SetSeed(this, 1); its destructor is the empty Random_Destruct (alias)
-class Random {
-public:
-    Random() { Random_SetSeed(this, 1); }
-    ~Random();
-    u32 seed;
-};
 
 extern "C" void *Main_DwcAlloc(u32 a, void *p, u32 n);
 extern "C" void Main_DwcFree(u32 a, void *p);

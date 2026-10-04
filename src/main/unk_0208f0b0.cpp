@@ -1,4 +1,5 @@
 #include "types.h"
+#include "save/TownExchangeRecord.h"
 
 extern "C" {
 s32 func_02065578();
@@ -21,32 +22,6 @@ struct Unk_0208f238_Bits {
     u8 b0 : 1;
 };
 
-// Player-slot style record, 0x84c bytes (ctor 0x0208f238, dtor 0x0208f204)
-class TownExchangeRecord {
-public:
-    TownExchangeRecord();
-    ~TownExchangeRecord();
-    void *getVillager();
-    void *getConstellation();
-    u32 getCounter();
-    void resetCounter();
-    void incrementCounter();
-    void *getLostChildRecord();
-    u32 getUnkFlag();
-    void setUnkFlag(u32 v);
-    s32 isValid();
-    u32 getChecksum();
-    void setChecksum(u32 v);
-
-    /* 0x000 */ u8 unk_000[0xf4];
-    /* 0x0f4 */ u8 unk_0f4;
-    /* 0x0f5 */ u8 unk_0f5[0x47];
-    /* 0x13c */ u8 villager[0x700];
-    /* 0x83c */ u8 counter;
-    /* 0x83d */ u8 flags;
-    /* 0x83e */ u8 lostChild[0xc];
-    /* 0x84a */ u16 checksum;
-};
 
 class TownExchangeRemoteRecords {
 public:

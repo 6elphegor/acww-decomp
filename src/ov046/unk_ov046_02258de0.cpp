@@ -3,6 +3,7 @@
 #include "game/Unk_ov046_0225a11c_Vec.h"
 #include "actor/Unk_02088d00.h"
 #include "talk/TalkStartMsg.h"
+#include "talk/TalkWindowState.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -63,12 +64,6 @@ struct ChoiceList {
     ChoiceEntry *getEntry(s32 i);
     void setCount(s32 v);
     s32 setCancelToLast();
-};
-struct TalkWindowState {
-    ChoiceList *getChoiceList();
-    void openChoices(s32 v);
-    void setSlot(s32 a, void *b);
-    void setNextMessage(u8 *a, void *b);
 };
 
 struct ConstellationMsgString17 {

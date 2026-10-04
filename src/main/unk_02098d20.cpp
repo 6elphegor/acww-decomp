@@ -1,5 +1,6 @@
 #include "types.h"
 #include "item/ItemPickSpec.h"
+#include "npc/VillagerId.h"
 
 extern "C" void VillagerId_Clear(void *);
 extern "C" void VillagerId_Destruct(void *);
@@ -16,10 +17,6 @@ extern "C" void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
 extern const u32 sForeignLetterPresentKinds[];
 const u32 sForeignLetterPresentKinds[] = {0, 4, 3};
 
-class VillagerId {
-public:
-    BOOL isValid();
-};
 
 
 class ForeignVillagerRecord {

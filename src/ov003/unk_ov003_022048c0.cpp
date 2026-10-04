@@ -2,6 +2,8 @@
 #include "types.h"
 #include "actor/Unk_ov003_SceneEntry.h"
 #include "game/Unk_ov003_Vec.h"
+#include "npc/VillagerId.h"
+#include "talk/TalkWindowState.h"
 
 class ProcBase {
 public:
@@ -101,13 +103,6 @@ public:
     u8 pad_04[0x18];
 };
 
-class TalkWindowState {
-public:
-    s32 setSlot(s32 idx, void *p);
-    u8 pad_00[4];
-    /* 0x04 */ s32 state;
-    /* 0x08 */ s32 nextState;
-};
 
 class TalkMsgRequest : public MsgRequest {
 public:
@@ -156,10 +151,6 @@ struct Unk_02204930_Pad {
     ~Unk_02204930_Pad() {}
 };
 
-class VillagerId {
-public:
-    u32 getName(u32 p);
-};
 
 // member at +0x134: the original constructs it with C2 (base-object constructor), so it is raw storage plus explicit calls
 struct TouchPickSphere {

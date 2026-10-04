@@ -11,15 +11,18 @@
 #include "game/Vec3.h"
 #include "item/ItemId.h"
 #include "game/CollisionVec2.h"
+#include "game/LightLevel.h"
+#include "gfx/G3dResAccess.h"
+#include "room/FtrVisNodes.h"
+#include "room/FtrSwitch.h"
+#include "room/FtrClockHands.h"
+#include "room/FtrAnimSet.h"
+#include "room/FtrStackedSet.h"
+#include "talk/TalkWindowState.h"
 // The two functions of the ov004 translation unit 0x02209f70-0x022136d0 that need mwcc 1.2/base (signed-halfword
 // switch tables): FtrSingingInsect::updateActive and vfunc_7c. Same declarations as the main file of the unit;
 // nothing else is emitted here (see config/usa/arm9/overlays/ov004/object_order.txt).
 // ================================================================ library chain and TU02 helper classes (from the linked TU02 unit)
-struct TalkWindowState {
-    /* 0x0000 */ u32 index;
-    /* 0x0004 */ s32 state;
-    /* 0x0008 */ s32 nextState;
-};
 
 // ================================================================ plain value types
 
@@ -187,9 +190,6 @@ struct Unk_ov004_02205c80_Obj {
     s32 surfaceHeight;
 };
 
-struct G3dResAccess {
-    s32 findMatIdx(s32 a);
-};
 
 // ---- 0x02206520: list of up to 4 tile positions
 
@@ -205,30 +205,8 @@ struct FtrTileList {
 
 
 // ---- 0x02205994: 4 ids + count (member at 0x760)
-class FtrVisNodes {
-public:
-    u8 isVisible();
-    BOOL hasNode(s32 v);
-    void setVisible(u32 v);
-    void init(void *p, u32 v);
-
-    /* 0x00 */ s8 nodeIds[4];
-    /* 0x04 */ u8 visible;
-};
 
 // ---- 0x02205bcc: model animation slot (base: main class LightLevel)
-struct LightLevel {
-    LightLevel();
-    ~LightLevel();
-    BOOL switchLight(BOOL on, s32 a, s32 b, u32 param);
-    BOOL switchLightAnimated(BOOL on);
-    s32 level;
-    s32 targetLevel;
-    u32 fadeStep;
-    s32 isFlickering;
-    u16 flickerIndex;
-    u16 flickerDelay;
-};
 
 struct FtrGlowMat : public LightLevel {
     FtrGlowMat();
@@ -255,29 +233,8 @@ public:
 };
 
 // ---- 0x02205c44 (member at 0x73c)
-struct FtrSwitch {
-    ~FtrSwitch();
-    void set(u32 v, s32 flag);
-    void toggle(s32 flag);
-    BOOL isChanging();
-    u8 isOn();
-    void saveToMap(Unk_ov004_02205c80_Obj *o);
-    void commit(Unk_ov004_02205c80_Obj *o);
-    void loadFromMap(Unk_ov004_02205c80_Obj *o);
-    void clear();
-    u8 cur;
-    u8 next;
-};
 
 // ---- 0x02205d5c (member at 0x73e)
-struct FtrClockHands {
-    ~FtrClockHands();
-    void set(s32 a, s32 b);
-    void clear();
-    s8 hourJnt;
-    s8 minJnt;
-    u8 valid;
-};
 
 // ---- 0x02205e58 (member at 0x178)
 struct FtrStackLink {
@@ -327,41 +284,8 @@ struct FtrTopItems {
 
 // ---- 0x02206398 (member at 0x44 of 0x02206e38; 5 pairs of resource pointers)
 
-struct FtrAnimSet {
-    inline FtrAnimSet() { clear(); }
-    ~FtrAnimSet();
-    s32 getTexCopy();
-    Unk_ov004_02208a18_Rec *getBtp(u32 i);
-    Unk_ov004_02208a18_Rec *getBta(u32 i);
-    Unk_ov004_02208a18_Rec *getBva(u32 i);
-    Unk_ov004_02208a18_Rec *getBma(u32 i);
-    Unk_ov004_02208a18_Rec *getBca(u32 i);
-    void setTexCopy(s32 v);
-    void setBtp(void *v, u32 i);
-    void setBta(void *v, u32 i);
-    void setBva(void *v, u32 i);
-    void setBma(void *v, u32 i);
-    void setBca(void *v, u32 i);
-    void clear();
-    void *bca[2];
-    void *bma[2];
-    void *bva[2];
-    void *bta[2];
-    void *btp[2];
-    s32 texCopy;
-};
 
 // ---- 0x02206434 (set of up to 4 neighbour objects)
-struct FtrStackedSet {
-    FtrStackedSet();
-    FtrStackedSet(FtrTileList *l, s32 flag);
-    BOOL add(Unk_ov004_02205c80_Obj *o);
-    Unk_ov004_02205c80_Obj *get(u32 i);
-    u32 getCount();
-    void collect(FtrTileList *l, s32 flag);
-    u32 count;
-    Unk_ov004_02205c80_Obj *actors[4];
-};
 
 // ---- 0x022487cc : BoxCollider (member at 0x628)
 

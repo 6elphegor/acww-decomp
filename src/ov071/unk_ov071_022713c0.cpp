@@ -2,6 +2,7 @@
 #include "types.h"
 #include "actor/Unk_02088d00.h"
 #include "talk/TalkStartMsg.h"
+#include "talk/TalkWindowState.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -161,11 +162,6 @@ void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
 BOOL SpNpcLyle_IsForgedPainting(u16 *p, s32 x);
 }
 
-struct TalkWindowState {
-    u32 index;
-    u32 state;
-    void setNextMessage(u8 *a, void *b);
-};
 
 class ActorTalkRequest {
 public:

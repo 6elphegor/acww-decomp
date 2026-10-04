@@ -1,4 +1,5 @@
 #include "types.h"
+#include "npc/VillagerId.h"
 
 extern "C" {
 extern u32 gSaveTownId;
@@ -9,18 +10,6 @@ void MI_CpuFill8(void *p, u32 v, u32 n);
 u32 VillagerId_IsValidSpecies(u32 id);
 }
 
-// Class with a type byte at +0x0a and an id byte at +0x0b (base class unknown, 0xc bytes in total)
-class VillagerId {
-public:
-    void makeFileName(void *buf, u32 size, u32 arg);
-    u32 getGender();
-    void set(u32 id, u32 type, void *s);
-    u32 isValid();
-
-    /* 0x00 */ u8 unk_00[0xa];
-    /* 0x0a */ u8 personality;
-    /* 0x0b */ u8 species;
-};
 
 extern "C" u32 VillagerId_GetPersonality(VillagerId *o);
 extern "C" u32 Villager_PersonalityToGender(u32 t);

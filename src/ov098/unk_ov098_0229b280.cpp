@@ -4,6 +4,7 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "player/Unk_02097ff4.h"
+#include "save/TownExchangeRecord.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -68,10 +69,6 @@ s32 func_ov096_02298320(PocketMenu *self);
 s32 PocketMenu_ShowMessage(PocketMenu *self, s32 a, s32 b, s32 c);
 s32 PocketMenu_ReturnToIdle(PocketMenu *self);
 }
-struct TownExchangeRecord {
-    void resetCounter();
-    void setUnkFlag(u32 v);
-};
 struct PlayerData {
     u16 *getHeldItem();
 };

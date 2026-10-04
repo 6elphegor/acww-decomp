@@ -2,6 +2,7 @@
 #include "types.h"
 #include "actor/Unk_02088d00.h"
 #include "talk/TalkStartMsg.h"
+#include "talk/TalkWindowState.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -133,11 +134,6 @@ void SpNpcPete_ChangeAct(void *self, s32 state);
 s32 SpNpcPete_IsInFocusBox(void *self, void *a, void *b);
 }
 
-struct TalkWindowState {
-    u32 index;
-    s32 state;
-    void setNextMessage(u8 *a, void *b);
-};
 
 class ActorTalkRequest {
 public:

@@ -6,6 +6,8 @@
 #include "actor/Unk_02002f14_S16Vec.h"
 #include "actor/Unk_02002f14_S32Vec.h"
 #include "actor/Unk_02002f14_Node.h"
+#include "gfx/AbAllObjGfx.h"
+#include "npc/VillagerId.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -241,22 +243,6 @@ u32 sGfx3dClearDepth;
 u8 gViewMtxInv[0x30];
 Unk_02002848_Data gViewMtx;
 
-// Object with two heap pointers at +0x48 and +0x4c, first method func_020029e8
-class AbAllObjGfx {
-public:
-    AbAllObjGfx();
-    ~AbAllObjGfx();
-    void uploadChars();
-    void uploadPalette();
-    void freeChars();
-    void freePalette();
-    BOOL loadChars();
-    BOOL loadPalette();
-
-    /* 0x00 */ u8 unk_00[0x48];
-    /* 0x48 */ void *paletteBuf;
-    /* 0x4c */ void *charBuf;
-};
 
 extern AbAllObjGfx sAbAllObjGfx;
 
@@ -318,19 +304,6 @@ public:
     /* 0xd0 */ u16 drawTilt;
 };
 
-// Class with a type byte at +0x0a and an id byte at +0x0b (base class unknown, 0xc bytes in total)
-class VillagerId {
-public:
-    u32 getName(u32 arg);
-    void makeFileName(void *buf, u32 size, u32 arg);
-    u32 getGender();
-    void set(u32 id, u32 type, void *s);
-    u32 isValid();
-
-    /* 0x00 */ u8 unk_00[0xa];
-    /* 0x0a */ u8 personality;
-    /* 0x0b */ u8 species;
-};
 
 extern "C" u32 VillagerId_GetPersonality(VillagerId *o);
 extern "C" u32 Villager_PersonalityToGender(u32 t);

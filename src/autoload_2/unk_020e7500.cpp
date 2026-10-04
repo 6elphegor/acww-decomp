@@ -3,6 +3,7 @@
 // Approach helpers (step a value towards a target), intrusive list / tree nodes, atan2, LCG random, touch panel
 // and key sampling, 4x3 matrix helpers. No class with a vtable in this range.
 #include "types.h"
+#include "sys/TreeNode.h"
 
 struct ListNode {
     ListNode *prev;
@@ -11,12 +12,6 @@ struct ListNode {
 struct List {
     ListNode *head;
     ListNode *tail;
-};
-struct TreeNode {
-    TreeNode *parent;
-    TreeNode *child;
-    TreeNode *prev;
-    TreeNode *next;
 };
 struct Tree {
     TreeNode *root;

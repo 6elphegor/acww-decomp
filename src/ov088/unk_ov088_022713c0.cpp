@@ -3,6 +3,7 @@
 #include "actor/Unk_02088d00.h"
 #include "town/VisitorPos.h"
 #include "talk/TalkStartMsg.h"
+#include "talk/TalkWindowState.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -66,16 +67,6 @@ struct MsgString9B {
     ~MsgString9B();
 };
 
-struct TalkWindowState {
-    u8 pad_00[4];
-    s32 state;
-    u8 pad_08[0xc];
-    s32 openMode;
-    void setNextMessage(u8 *a, void *b);
-    s32 setSlot(s32 idx, void *p);
-    ChoiceList *getChoiceList();
-    void openChoices(s32 v);
-};
 
 
 extern "C" {

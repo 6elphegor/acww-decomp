@@ -3,6 +3,7 @@
 #include "talk/MsgStringBase.h"
 #include "talk/MsgTag.h"
 #include "talk/MsgRunner.h"
+#include "talk/TalkWindowState.h"
 
 class MsgRequest;
 class MsgString;
@@ -508,145 +509,6 @@ public:
     /* 0x40 */ u8 unk_40;
 };
 
-class TalkWindowState {
-public:
-    TalkWindowState();
-    ~TalkWindowState();
-    void advance();
-    void onChoiceDone();
-    void reloadMessage();
-    void loadNextMessage();
-    void resetTextVars();
-    void stopAutoAdvance();
-    void execClosed();
-    void enterClosed();
-    void execClosing();
-    void enterClosing();
-    void execPrinting();
-    void enterPrinting();
-    void execWaitInput();
-    void enterWaitInput();
-    void execOpening();
-    void enterOpening();
-    void execIdle();
-    void enterIdle();
-    void applyStateChange();
-
-    void stopText();
-    void finish();
-    void resetPrint();
-    void captureClock();
-    void updateShake();
-    BOOL isSkipHeld();
-    BOOL isAdvanceTriggered();
-    BOOL checkDeviceSwitch();
-    void storeInputMode();
-    void loadInputMode();
-    void refreshNameColor();
-    void startShake(s32 a, s32 b, s32 c, s32 d);
-    void *getNumber1714Text();
-    void *getMinuteText();
-    void *getHourText();
-    void *getWeekdayText();
-    void *getDayText();
-    void *getMonthText();
-    void *getYearText();
-    s32 resetVoice();
-    void setVoicePlaying(BOOL v);
-    s32 onCharPrinted(s32 a);
-    void draw();
-    void update();
-    void setSilent();
-    void setKeepSe();
-    void disableInput();
-    void detachRequest();
-    void attachRequest(TalkMsgRequest *p);
-    s32 hideBusyIcon();
-    s32 showBusyIcon();
-    u8 isVoicePlaying();
-    void *getChoiceList();
-    void openChoices(s32 v);
-    void setNamedSlot(s32 idx, void *p, u32 val);
-    void setSlotFromString(s32 idx, s32 a, s32 b);
-    s32 setSlot(s32 idx, void *p);
-    void clearAdvancePending();
-    void setAdvancePending();
-    void unlockAdvance();
-    void lockAdvance();
-    void setNextMessage(u8 *src, void *s);
-    BOOL setNextMessageIfUnset(u8 *src, void *s);
-
-    /* 0x0000 */ u32 index;
-    /* 0x0004 */ s32 state;
-    /* 0x0008 */ s32 nextState;
-    /* 0x000c */ s32 stateStep;
-    u8 pad_10[4];
-    /* 0x0014 */ s32 openMode;
-    /* 0x0018 */ u8 choicePending;
-    u8 pad_19[3];
-    /* 0x001c */ u8 frame[0x9c - 0x1c];
-    /* 0x009c */ s32 scrollY;
-    /* 0x00a0 */ s16 shakeAngle;
-    u8 pad_a2[2];
-    /* 0x00a4 */ s32 shakeAmplitude;
-    /* 0x00a8 */ s32 shakeDecay;
-    /* 0x00ac */ s32 shakeScaleX;
-    /* 0x00b0 */ s32 shakeScaleY;
-    /* 0x00b4 */ u8 choiceMenu[0x314 - 0xb4];
-    /* 0x0314 */ u8 choiceList[0x58c - 0x314];
-    /* 0x058c */ u8 textBox[0xa1c - 0x58c];
-    /* 0x0a1c */ u8 msgBuffer[0x12c0 - 0xa1c];
-    /* 0x12c0 */ u8 parser[0x30];
-    /* 0x12f0 */ s32 parserPrintStatus;
-    u8 pad_12f4[0x1398 - 0x12f4];
-    /* 0x1398 */ u8 parserChoiceDeferred;
-    u8 pad_1399[0x13a4 - 0x1399];
-    /* 0x13a4 */ u8 runner[0xc];
-    /* 0x13b0 */ TalkMsgRequest *request;
-    /* 0x13b4 */ u8 msgAttr[0xc];
-    /* 0x13c0 */ u8 slots[0x15fc - 0x13c0];
-    /* 0x15fc */ u8 namedSlots[0x16cc - 0x15fc];
-    /* 0x16cc */ u32 namedSlotColors[4];
-    /* 0x16dc */ u8 voice[0x1708 - 0x16dc];
-    /* 0x1708 */ s32 year;
-    /* 0x170c */ u8 day;
-    /* 0x170d */ u8 month;
-    /* 0x170e */ u8 minute;
-    /* 0x170f */ u8 hour;
-    /* 0x1710 */ s32 weekday;
-    /* 0x1714 */ s32 second;
-    /* 0x1718 */ s32 timeOfDay;
-    /* 0x171c */ u8 yearText[0x1748 - 0x171c];
-    /* 0x1748 */ u8 monthText[0x177c - 0x1748];
-    /* 0x177c */ u8 dayText[0x17a8 - 0x177c];
-    /* 0x17a8 */ u8 weekdayText[0x17dc - 0x17a8];
-    /* 0x17dc */ u8 hourText[0x1808 - 0x17dc];
-    /* 0x1808 */ u8 minuteText[0x1834 - 0x1808];
-    /* 0x1834 */ u8 secondText[0x1860 - 0x1834];
-    /* 0x1860 */ u8 catchphrase[0x1880 - 0x1860];
-    /* 0x1880 */ u8 townName[0x189c - 0x1880];
-    /* 0x189c */ u8 playerName[0x18b8 - 0x189c];
-    /* 0x18b8 */ u8 friendName[0x18d4 - 0x18b8];
-    /* 0x18d4 */ u8 enemyName[0x18f0 - 0x18d4];
-    /* 0x18f0 */ u8 randomVillagerName[0x190c - 0x18f0];
-    /* 0x190c */ u8 otherResidentName[0x1928 - 0x190c];
-    /* 0x1928 */ u8 trend[0x195c - 0x1928];
-    /* 0x195c */ u8 impression[0x1990 - 0x195c];
-    /* 0x1990 */ u8 nickname[0x19ac - 0x1990];
-    /* 0x19ac */ u8 compliment[0x19d0 - 0x19ac];
-    /* 0x19d0 */ u8 greeting[0x19f7 - 0x19d0];
-    /* 0x19f7 */ u8 nextMsgIndex;
-    /* 0x19f8 */ u8 nextFileName[0x1a12 - 0x19f8];
-    /* 0x1a12 */ u8 advancePending;
-    /* 0x1a13 */ u8 advanceLocked;
-    u8 pad_1a14[2];
-    /* 0x1a16 */ u8 choiceNotifyPending;
-    /* 0x1a17 */ u8 voicePlaying;
-    /* 0x1a18 */ u8 inputDisabled;
-    /* 0x1a19 */ u8 noOpenSe;
-    /* 0x1a1a */ u8 silent;
-    u8 pad_1a1b;
-};
 
 // library object, 0x34 bytes (polymorphic)
 struct Unk_020a71d0_v16 {
@@ -4308,8 +4170,8 @@ void TalkWindowState::openChoices(s32 v) {
         _ZN10ChoiceMenu4openEv(choiceMenu);
     }
 }
-void *TalkWindowState::getChoiceList() {
-    using namespace n7; return choiceList; }
+ChoiceList *TalkWindowState::getChoiceList() {
+    using namespace n7; return (ChoiceList *)choiceList; }
 u8 TalkWindowState::isVoicePlaying() {
     using namespace n7; return voicePlaying; }
 s32 TalkWindowState::showBusyIcon() {

@@ -1,6 +1,7 @@
 #include "types.h"
 #include "town/TownMapMarkers.h"
 #include "game/StrBSizeData.h"
+#include "npc/VillagerDataItemView.h"
 
 
 
@@ -38,7 +39,6 @@ static inline Unk_ov117_02292b54_Cell *Unk_ov117_02292b54_GetCell(Unk_ov117_0229
 }
 
 struct HouseData { void getLevel(); };
-struct VillagerDataItemView { u8 *getHousePos(); };
 
 extern "C" {
 TownMapImage *sTownMapImage;

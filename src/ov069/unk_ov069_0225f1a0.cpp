@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "talk/VillagerTalkRequestItemTopics.h"
 
 // ov069: the state tables of the menu object (three pointers to member functions per entry). They are built at
 // start-up (the NULL members are copied from __ptmf_null) and func_ov069_0225f1a0 copies them into main's tables.
@@ -12,17 +13,6 @@ struct Unk_0201f7d0_Out;
 struct Unk_020238b0_Out;
 struct Unk_020254ec_Out;
 struct Unk_02027a34_Out;
-class VillagerTalkRequestItemTopics {
-public:
-    void openArbeitItemPicker();
-    void selectQComp(Unk_020238b0_Out *);
-    void selectQReturn(Unk_020238b0_Out *);
-    void selectQEnd(Unk_020238b0_Out *);
-    void selectQClear(Unk_020238b0_Out *);
-    void handOverQItemB();
-    void selectQItemB(Unk_020238b0_Out *);
-    void gotoQItemB();
-};
 class VillagerTalkRequestStartTopics : public VillagerTalkRequestItemTopics {
 public:
     void gotoQ05Talk();

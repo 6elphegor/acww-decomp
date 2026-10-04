@@ -5,6 +5,7 @@
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/TexVramSlot.h"
 #include "item/ItemId.h"
+#include "gfx/TexTransfer.h"
 
 // ---- helper classes (declared elsewhere) ----
 
@@ -19,11 +20,6 @@ public:
     virtual BOOL execute() = 0;
 };
 
-struct TexTransfer {
-    u32 dstAddr;
-    u32 src;
-    u32 size;
-};
 
 class TexVramTask : public VramTask {
 public:

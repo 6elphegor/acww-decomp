@@ -6,6 +6,7 @@
 #include "net/CommManager.h"
 #include "player/Unk_02097ff4.h"
 #include "ui/CursorMotion.h"
+#include "talk/TalkWindowState.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -132,10 +133,6 @@ public:
 
 extern "C" CommManager *gCommManager;
 
-class TalkWindowState {
-public:
-    void setSlot(s32 a, void *p);
-};
 extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 
 class MsgString {

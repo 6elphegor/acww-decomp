@@ -1,4 +1,5 @@
 #include "types.h"
+#include "save/SaveData.h"
 
 extern "C" {
 s32 ClockOffset_Clear(void *p);
@@ -52,109 +53,46 @@ extern "C" void *__cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor
 class SaveData;
 extern SaveData gSaveData;
 
-// Game-wide state object (0x15fe0 bytes at 0x021d7350, one global constructed by __sinit and registered with its
-// destructor): every data_021d73xx..gSaveFooter label of symbols.txt is a member of it.
-class SaveData {
-public:
-    SaveData() {
-        u8 *p = (u8 *)this;
-        TownId_Construct((void *)0x021d7352);
-        PlayerDataArray_Construct((void *)0x021d735c);
-        SaveVillagers_Construct(p + 0x8a3c);
-        _ZN7TownMapC1Ev(p + 0xc330);
-        func_02086294(p + 0xe556);
-        func_02086234(p + 0xe557);
-        _ZN9HouseDataC1Ev(p + 0xe558);
-        _ZN19AbleSistersPatternsC1Ev(p + 0xfafc);
-        _ZN18TownExchangeRecordC1Ev(p + 0x10c3c);
-        _ZN8BbsBoardC1Ev(p + 0x11488);
-        __cxa_vec_ctor(p + 0x1200c, 4, 0x98c, (void *)_ZN13PlayerMailboxC1Ev, (void *)_ZN13PlayerMailboxD1Ev);
-        _ZN12LetterOutboxC1Ev(p + 0x1463c);
-        _ZN18ConstellationStoreC2Ev(p + 0x14fcc);
-        __cxa_vec_ctor(p + 0x15430, 4, 0xb4, (void *)ChestStorage_Construct, (void *)ChestStorage_Destruct);
-        _ZN16BlancaFaceRecord9constructEv(p + 0x15700);
-        _ZN15TownStyleRecordD2Ev(p + 0x1592c);
-        BottleLetterRecord_Construct(p + 0x15b5c);
-        _ZN19ReceivedLetterBlockC1Ev(p + 0x15c58);
-        _ZN10MuseumData9constructEv(p + 0x15d50);
-        _ZN8NookShopC1Ev(p + 0x15db4);
-        EventWeekSlots_Construct(p + 0x15e18);
-        TownState_Construct(p + 0x15e54);
-        LostAndFound_Construct(p + 0x15ec0);
-        RecycleBin_Construct(p + 0x15ede);
-        _ZN13ContestRecord9constructEv(p + 0x15efc);
-        _ZN12ReddLastSaleC1Ev(p + 0x15f34);
-        func_020868c8(p + 0x15f4c);
-        Weather_Construct(p + 0x15f66);
-        _ZN8ReddShopC1Ev(p + 0x15f70);
-        AbleShop_Construct(p + 0x15f84);
-        _ZN14SnowmanRecordsC1Ev(p + 0x15f96);
-        HappyRoomDate_Construct(p + 0x15fb0);
-        _ZN15ItemClassOrdersC2Ev(p + 0x15fbc);
-        SaveData_ConstructDateRecord(p + 0x15fc5);
-        LostChildRecord_Construct(p + 0x15fca);
-        _ZN11SaveRecord49constructEv(p + 0x15fdc);
-    }
-    ~SaveData();
-    void setupMode06();
-    void setupMode05();
-    void setupLoaded();
-    void setupNoSave();
-    void setupContinue();
-    void setupNewResident();
-    void setupNewTown();
 
-    /* 0x00000 */ u8 unk_0[2];
-    /* 0x00002 */ u8 townId[10];
-    /* 0x0000c */ u8 players[35376];
-    /* 0x08a3c */ u8 villagers[14580];
-    /* 0x0c330 */ u8 townMap[8720];
-    /* 0x0e540 */ u8 unk_e540[22];
-    /* 0x0e556 */ u8 unk_e556[1];
-    /* 0x0e557 */ u8 unk_e557[1];
-    /* 0x0e558 */ u8 house[5524];
-    /* 0x0faec */ u8 songSet[16];
-    /* 0x0fafc */ u8 ableSistersPatterns[4416];
-    /* 0x10c3c */ u8 townExchange[2124];
-    /* 0x11488 */ u8 bbsBoard[2936];
-    /* 0x12000 */ u8 unk_12000[12];
-    /* 0x1200c */ u8 mailboxes[9776];
-    /* 0x1463c */ u8 letterOutbox[2448];
-    /* 0x14fcc */ u8 constellations[1124];
-    /* 0x15430 */ u8 dressers[720];
-    /* 0x15700 */ u8 blancaFace[556];
-    /* 0x1592c */ u8 townStyle[560];
-    /* 0x15b5c */ u8 bottleLetter[252];
-    /* 0x15c58 */ u8 receivedLetters[248];
-    /* 0x15d50 */ u8 museum[100];
-    /* 0x15db4 */ u8 nookShop[76];
-    /* 0x15e00 */ u8 unk_15e00[24];
-    /* 0x15e18 */ u8 eventWeekSlots[8];
-    /* 0x15e20 */ u8 unk_15e20[4];
-    /* 0x15e24 */ u8 unk_15e24[48];
-    /* 0x15e54 */ u8 townState[12];
-    /* 0x15e60 */ u8 unk_15e60[24];
-    /* 0x15e78 */ u8 townEvents[48];
-    /* 0x15ea8 */ u8 townEventDate[20];
-    /* 0x15ebc */ u8 unk_15ebc[4];
-    /* 0x15ec0 */ u8 lostAndFound[30];
-    /* 0x15ede */ u8 recycleBin[30];
-    /* 0x15efc */ u8 contestRecord[56];
-    /* 0x15f34 */ u8 reddLastSale[24];
-    /* 0x15f4c */ u8 unk_15f4c[20];
-    /* 0x15f60 */ u8 unk_15f60[16];
-    /* 0x15f70 */ u8 reddShop[16];
-    /* 0x15f80 */ u8 unk_15f80[4];
-    /* 0x15f84 */ u8 ableShop[18];
-    /* 0x15f96 */ u8 snowmen[18];
-    /* 0x15fa8 */ u8 townTune[8];
-    /* 0x15fb0 */ u8 happyRoomDate[4];
-    /* 0x15fb4 */ u8 clockOffset[8];
-    /* 0x15fbc */ u8 itemClassOrders[9];
-    /* 0x15fc5 */ u8 unk_15fc5[5];
-    /* 0x15fca */ u8 lostChild[18];
-    /* 0x15fdc */ u8 footer[4];
-};
+inline SaveData::SaveData() {
+    u8 *p = (u8 *)this;
+    TownId_Construct((void *)0x021d7352);
+    PlayerDataArray_Construct((void *)0x021d735c);
+    SaveVillagers_Construct(p + 0x8a3c);
+    _ZN7TownMapC1Ev(p + 0xc330);
+    func_02086294(p + 0xe556);
+    func_02086234(p + 0xe557);
+    _ZN9HouseDataC1Ev(p + 0xe558);
+    _ZN19AbleSistersPatternsC1Ev(p + 0xfafc);
+    _ZN18TownExchangeRecordC1Ev(p + 0x10c3c);
+    _ZN8BbsBoardC1Ev(p + 0x11488);
+    __cxa_vec_ctor(p + 0x1200c, 4, 0x98c, (void *)_ZN13PlayerMailboxC1Ev, (void *)_ZN13PlayerMailboxD1Ev);
+    _ZN12LetterOutboxC1Ev(p + 0x1463c);
+    _ZN18ConstellationStoreC2Ev(p + 0x14fcc);
+    __cxa_vec_ctor(p + 0x15430, 4, 0xb4, (void *)ChestStorage_Construct, (void *)ChestStorage_Destruct);
+    _ZN16BlancaFaceRecord9constructEv(p + 0x15700);
+    _ZN15TownStyleRecordD2Ev(p + 0x1592c);
+    BottleLetterRecord_Construct(p + 0x15b5c);
+    _ZN19ReceivedLetterBlockC1Ev(p + 0x15c58);
+    _ZN10MuseumData9constructEv(p + 0x15d50);
+    _ZN8NookShopC1Ev(p + 0x15db4);
+    EventWeekSlots_Construct(p + 0x15e18);
+    TownState_Construct(p + 0x15e54);
+    LostAndFound_Construct(p + 0x15ec0);
+    RecycleBin_Construct(p + 0x15ede);
+    _ZN13ContestRecord9constructEv(p + 0x15efc);
+    _ZN12ReddLastSaleC1Ev(p + 0x15f34);
+    func_020868c8(p + 0x15f4c);
+    Weather_Construct(p + 0x15f66);
+    _ZN8ReddShopC1Ev(p + 0x15f70);
+    AbleShop_Construct(p + 0x15f84);
+    _ZN14SnowmanRecordsC1Ev(p + 0x15f96);
+    HappyRoomDate_Construct(p + 0x15fb0);
+    _ZN15ItemClassOrdersC2Ev(p + 0x15fbc);
+    SaveData_ConstructDateRecord(p + 0x15fc5);
+    LostChildRecord_Construct(p + 0x15fca);
+    _ZN11SaveRecord49constructEv(p + 0x15fdc);
+}
 
 SaveData gSaveData;
 

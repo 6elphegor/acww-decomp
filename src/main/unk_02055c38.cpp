@@ -1,5 +1,7 @@
 #include "types.h"
 #include "gfx/AnimFrameCtrl.h"
+#include "gfx/G3dResAccess.h"
+#include "gfx/MatTexBinder.h"
 
 struct Unk_020561d8_Vec { s32 x, y, z; };
 struct Unk_020561d8_Mtx { s32 m[9]; };
@@ -211,24 +213,6 @@ public:
     BOOL init(u8 *hdr, const char *n1, const char *n2, u8 *x, u8 *y, u8 flag);
 };
 
-struct MatTexBinder {
-    u8 *resMdl;
-    s8 matIdx;
-
-    MatTexBinder();
-    ~MatTexBinder();
-    void clear();
-    BOOL hasMaterial();
-    BOOL setMaterial(u8 *hdr, s32 idx);
-    BOOL setMaterialByName(u8 *hdr, const char *name);
-    s8 getMaterial();
-    BOOL bindPltt(u8 *hdr2, s32 idx2);
-    BOOL bindPlttByName(u8 *hdr2, const char *name);
-    BOOL bindTex(u8 *hdr2, s32 idx2);
-    BOOL bindTexByName(u8 *hdr2, const char *name);
-    BOOL bindByIdx(u8 *hdr2, s32 a, s32 idx);
-    BOOL bindByName(u8 *hdr2, const char *n, const char *n2);
-};
 
 static inline u8 *Unk_02056e88_Ent(u8 *d, s32 idx) {
     u16 off = *(u16 *)(d + 6);
@@ -237,35 +221,6 @@ static inline u8 *Unk_02056e88_Ent(u8 *d, s32 idx) {
     return t + stride * idx;
 }
 
-// Resource header
-class G3dResAccess {
-public:
-    u32 func_02056fcc(s32 a);
-    u32 getPlttSize(s32 idx);
-    void findPlttData(void);
-    void *getPlttData(s32 idx);
-    s32 findPlttIdx(s32 a);
-    u32 getTexSize(s32 idx);
-    void *getTexData(s32 idx);
-    void *findTexData(void);
-    s32 findTexIdx(s32 a);
-    u32 getTexImageOffset(void);
-    s32 findMatIdx(s32 a);
-
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ u32 unk_0c[2];
-    /* 0x14 */ u32 texDataOffset;
-    /* 0x18 */ u8 unk_18[0x18];
-    /* 0x30 */ u16 plttDataSize;
-    /* 0x32 */ u16 unk_32;
-    /* 0x34 */ u16 plttDictOffset;
-    /* 0x36 */ u16 unk_36;
-    /* 0x38 */ u32 plttDataOffset;
-    /* 0x3c */ u8 unk_3c[6];
-    /* 0x42 */ u16 texDictEntryOffset;
-};
 
 class G3dMatData {
 public:

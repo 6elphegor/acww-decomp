@@ -3,6 +3,7 @@
 #include "game/Unk_0203389c_Vec.h"
 #include "actor/Unk_ov003_SceneEntry.h"
 #include "actor/ActorCollider.h"
+#include "talk/TalkWindowState.h"
 
 class ProcBase {
 public:
@@ -106,13 +107,6 @@ public:
     u8 pad_04[0x18];
 };
 
-class TalkWindowState {
-public:
-    s32 setSlot(s32 idx, void *p);
-    u8 pad_00[4];
-    /* 0x04 */ s32 state;
-    /* 0x08 */ s32 nextState;
-};
 
 class TalkMsgRequest : public MsgRequest {
 public:

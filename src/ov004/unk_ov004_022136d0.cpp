@@ -5,6 +5,7 @@
 #include "gfx/Unk_ov004_Quad.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "game/Unk_ov004_022091fc_Vec.h"
+#include "talk/TalkWindowState.h"
 
 
 class Actor : public GameProc {
@@ -48,12 +49,6 @@ public:
     /* 0xea */ u16 pad_ea;
 };
 
-struct TalkWindowState {
-    /* 0x0000 */ u32 index;
-    /* 0x0004 */ s32 state;
-    /* 0x0008 */ s32 nextState;
-    s32 setSlot(s32 idx, void *p);
-};
 
 // Secondary base of the 0x0224882c family (at +0xec). Its vtable 0x020ddcf0 is not overridden by the derived class.
 // Slots 0c/18/24 are named vfunc_s0c/s18/s24 so the derived overrides of the primary chain do not also override them.

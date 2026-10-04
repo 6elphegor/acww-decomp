@@ -5,6 +5,9 @@
 #include "game/Unk_020d77a4_Vec3.h"
 #include "npc/Unk_0202d7f4.h"
 #include "talk/MsgStringBase.h"
+#include "npc/VillagerId.h"
+#include "npc/VillagerMood.h"
+#include "talk/VillagerTalkRequestItemTopics.h"
 
 
 class VillagerTalk;
@@ -286,7 +289,6 @@ struct Unk_0201c050_Obj {
 
 typedef BOOL (VillagerMood::*Unk_0201c078_Fn)(VillagerTalk *s);
 
-typedef void (VillagerMood::*Unk_0201c078_State)(VillagerTalk *s);
 
 struct Unk_0201c574_Vec { s32 x, y, z; };
 
@@ -615,9 +617,7 @@ struct Unk_020238b0_Parent {
     void *villagerData;
 };
 
-typedef void (VillagerTalkRequestItemTopics::*Unk_020238b0_Fn)();
 
-typedef void (VillagerTalkRequestItemTopics::*Unk_020238b0_OutFn)(Unk_020238b0_Out *);
 
 struct Unk_0201d2d0_Id {
     u16 unk_00;
@@ -1013,50 +1013,6 @@ struct Unk_0202ce90_Parent {
 };
 
 
-// member unk_838 of VillagerActor; constructor / destructor are VillagerMood_Construct / VillagerMood_Destruct
-class VillagerMood {
-public:
-    VillagerMood();
-    ~VillagerMood();
-    void update(VillagerTalk *s);
-    void updateMoodAnim(VillagerTalk *s, s32 next);
-    BOOL startMoodAnim(VillagerTalk *s, u32 idx);
-    BOOL isMoodAnimStart(VillagerTalk *s);
-    void updateMood3Effects(VillagerTalk *s);
-    BOOL beginMood3Effects(VillagerTalk *s);
-    void playMood3Effect(VillagerTalk *s);
-    void updateMood2Effects(VillagerTalk *s);
-    BOOL beginMood2Effects(VillagerTalk *s);
-    void playMood2Effect(VillagerTalk *s);
-    void updateMood1Effects(VillagerTalk *s);
-    BOOL beginMood1Effects(VillagerTalk *s);
-    void playMood1EffectB(VillagerTalk *s);
-    void playMood1EffectA(VillagerTalk *s);
-    BOOL isMoodAnim(VillagerTalk *s);
-    BOOL effectsEnabled();
-    void disableEffects();
-    void enableEffects();
-    void updateSoundPos(VillagerTalk *s);
-    void playMoodEffect(VillagerTalk *s, u32 a, u32 b);
-    void requestApply();
-    void addMood(u32 a, s32 b);
-    void clearPending();
-    void setMoodAnimation(VillagerTalk *s, u32 mode);
-    BOOL isActive();
-    void stop();
-    void start();
-    void reset();
-    /* 0x00 */ u8 pad_00[0x40];
-    /* 0x40 */ u8 currentMood;
-    /* 0x44 */ s32 effectMood;
-    /* 0x48 */ u8 effectFrame;
-    /* 0x4c */ Unk_0201c078_State effectFn;
-    /* 0x54 */ u8 pendingMood;
-    /* 0x56 */ u16 pendingTime;
-    /* 0x58 */ u8 applyRequested;
-    /* 0x59 */ u8 active;
-    /* 0x5a */ u8 effectsOn;
-};
 
 
 
@@ -1931,10 +1887,6 @@ public:
     u8 pad_04[0x1c];
 };
 
-struct VillagerId {
-    void getName(u32 a);
-    s32 getGender();
-};
 
 class Unk_02021340_Base {
 public:
@@ -1969,44 +1921,6 @@ public:
     u16 unk_120;
 };
 
-class VillagerTalkRequestItemTopics {
-public:
-    void openArbeitItemPicker();
-    void clearRequest();
-    void selectQComp(Unk_020238b0_Out *out);
-    void selectQReturn(Unk_020238b0_Out *out);
-    void finishRequestChain();
-    void selectQEnd(Unk_020238b0_Out *out);
-    void selectQClear(Unk_020238b0_Out *out);
-    void gotoQClearOrEnd();
-    void handOverQItemB();
-    void selectQItemB(Unk_020238b0_Out *out);
-    void pickRequestReward();
-    void gotoQItemB();
-    u8 pad_00[0x3c];
-    void *window;
-    u8 pad_40[0xac - 0x40];
-    Unk_020238b0_OutFn selectFn;
-    u8 pad_b4[0xc4 - 0xb4];
-    Unk_020238b0_Fn onEndFn;
-    u8 pad_cc[0xfc - 0xcc];
-    Unk_020238b0_Parent *actor;
-    u8 topicFile[0x11e - 0x100];
-    u8 topicIndex;
-    u8 pad_11f;
-    u16 itemFromPlayer;
-    u8 pad_122[2];
-    s32 memoryIndex;
-    void *memory;
-    u8 pad_12c[0x156 - 0x12c];
-    u16 pendingSe;
-    u8 pad_158[0x160 - 0x158];
-    void *planErrand;
-    u8 pad_164[0x198 - 0x164];
-    u16 itemToPlayer;
-    u8 pad_19a[2];
-    s32 price;
-};
 
 class VillagerTalkRequestStartTopics {
 public:

@@ -4,13 +4,7 @@
 // BGM change/fade handling. PARTIAL unit: only extern "C" functions under their symbols.txt names, no data,
 // no vtable (the class SndObj only DECLARES its virtuals), all data and callees extern.
 #include "types.h"
-
-struct Ramp {
-    /* 0x00 */ s16 target;
-    /* 0x02 */ u16 frames;
-    /* 0x04 */ s32 value;
-    /* 0x08 */ s32 step;
-};
+#include "snd/SndMgr.h"
 
 class SndObj {
 public:
@@ -35,41 +29,6 @@ struct SndHandle {
     /* 0x3a */ u16 unk_3a;
 };
 
-struct SndMgr {
-    /* 0x00 */ u32 beatSync;
-    /* 0x04 */ Ramp fadeRamp;
-    /* 0x10 */ Ramp mainRamp;
-    /* 0x1c */ Ramp subRamp;
-    /* 0x28 */ u32 subHeap;
-    /* 0x2c */ SndObj *scene;
-    /* 0x30 */ u32 melody;
-    /* 0x34 */ SndHandle *strmHandle;
-    /* 0x38 */ SndHandle *seHandle;
-    /* 0x3c */ SndHandle *bgmHandle;
-    /* 0x40 */ SndHandle *unk_40;
-    /* 0x44 */ u32 voiceType;
-    /* 0x48 */ SndHandle *voiceHandle;
-    /* 0x4c */ u8 unk_4c;
-    /* 0x4d */ u8 seDisabled;
-    /* 0x4e */ u8 unk_4e[6];
-    /* 0x54 */ u32 randState;
-    /* 0x58 */ u32 randMul;
-    /* 0x5c */ u32 randAdd;
-    /* 0x60 */ u8 menuDuck;
-    /* 0x61 */ u8 subDucked;
-    /* 0x62 */ u8 unk_62[2];
-    /* 0x64 */ u16 trackMask;
-    /* 0x66 */ u16 unk_66;
-    /* 0x68 */ s32 unk_68;
-    /* 0x6c */ s16 variantTimer;
-    /* 0x6e */ u16 crossTrackMask;
-    /* 0x70 */ u8 pan;
-    /* 0x71 */ u8 keySeMode;
-    /* 0x72 */ u8 curveDelay;
-    /* 0x73 */ u8 trackVariant;
-    /* 0x74 */ u8 pendingVariant;
-    /* 0x75 */ u8 variantDirty;
-};
 
 struct SndEnt {
     u16 a;
@@ -104,9 +63,9 @@ void SndVolumeCurve_Set(void *p, u32 a);
 u16 SndMgr_GetVoiceSeqIndex(SndMgr *self, u16 id);
 u8 SndMgr_ClampVolume(SndMgr *self, u8 v);
 void SndMgr_UpdateTrackRamps(SndMgr *self);
-s16 SndRamp_Step(Ramp *r);
-void SndRamp_Start(Ramp *r, s16 target, u32 frames);
-void SndRamp_Set(Ramp *r, s32 v);
+s16 SndRamp_Step(SndRamp *r);
+void SndRamp_Start(SndRamp *r, s16 target, u32 frames);
+void SndRamp_Set(SndRamp *r, s32 v);
 void SndMgr_SetSubPlayerVolume(SndMgr *self, s32 v);
 void SndMgr_SetPlayerVolumes(SndMgr *self, s32 a, s32 b);
 void SndMgr_ApplyPan(SndMgr *self, u32 flag);
@@ -770,12 +729,12 @@ extern "C" void func_020ef850(SndMgr *self, u16 a, u32 b) {
     NNS_SndPlayerSetTrackPan(&self->seHandle, gSndPanTrackMask, b);
 }
 
-extern "C" void SndRamp_Set(Ramp *r, s32 v) {
+extern "C" void SndRamp_Set(SndRamp *r, s32 v) {
     r->value = v << 12;
     r->frames = 0;
 }
 
-extern "C" void SndRamp_Start(Ramp *r, s16 target, u32 frames) {
+extern "C" void SndRamp_Start(SndRamp *r, s16 target, u32 frames) {
     r->target = target;
     r->frames = frames;
     s32 t = r->target << 12;
@@ -787,7 +746,7 @@ extern "C" void SndRamp_Start(Ramp *r, s16 target, u32 frames) {
     r->step = FX_Div(d, frames << 12);
 }
 
-extern "C" s16 SndRamp_Step(Ramp *r) {
+extern "C" s16 SndRamp_Step(SndRamp *r) {
     if (r->frames != 0) {
         r->frames--;
         if (r->frames != 0) {

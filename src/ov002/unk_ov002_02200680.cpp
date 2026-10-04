@@ -12,6 +12,7 @@
 #include "menu/PopupChoiceIdList.h"
 #include "ui/Unk_ov002_022018e4_Arg.h"
 #include "ui/Unk_ov002_02203c5c_Rec.h"
+#include "talk/TalkWindowState.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -346,20 +347,6 @@ public:
     virtual void vfunc_08();
 };
 
-class TalkWindowState {
-public:
-    void setKeepSe();
-    void disableInput();
-    s32 detachRequest();
-    void attachRequest(TalkMsgRequest *p);
-    void setAdvancePending();
-    void unlockAdvance();
-    void lockAdvance();
-    void setNextMessageIfUnset(u8 *a, void *b);
-    /* 0x00 */ s32 index;
-    /* 0x04 */ s32 state;
-    /* 0x08 */ s32 nextState;
-};
 extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 
 // ---------------------------------------------------------------------------------------------------------------------

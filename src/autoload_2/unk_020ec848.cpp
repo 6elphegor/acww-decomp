@@ -8,31 +8,14 @@
 // declares them), so no vtable, D0/D1 or C1 is emitted. Virtual calls go through the declared-only virtuals.
 #include "types.h"
 #include "sys/Heap.h"
+#include "sys/TreeNode.h"
+#include "sys/QNode.h"
 
 
 class ProcBase;
 
-// tree node (functions 0x020e7af4 / 0x020e7a7c / 0x01ffcfc0 / 0x01ffcffc work on it)
-struct TreeNode {
-    /* 0x00 */ TreeNode *unk_00; // parent
-    /* 0x04 */ TreeNode *unk_04;
-    /* 0x08 */ TreeNode *unk_08;
-    /* 0x0c */ TreeNode *unk_0c;
-    /* 0x10 */ ProcBase *owner; // owner
-};
 
-struct QNode {
-    /* 0x00 */ QNode *prev;
-    /* 0x04 */ QNode *next;
-    /* 0x08 */ ProcBase *owner;
-    /* 0x0c */ u16 priority;
-    /* 0x0e */ u16 pendingPriority;
-};
 
-struct QList {
-    QNode *unk_00;
-    QNode *unk_04;
-};
 
 struct P2 {
     u32 a;
@@ -229,7 +212,7 @@ extern "C" BOOL _ZN8ProcBase8vfunc_0cEv(ProcBase *self) {
 }
 
 extern "C" BOOL _ZN8ProcBase9preDeleteEv(ProcBase *self) {
-    if ((self->seq == NULL || func_020ed7e4(self->seq) != 0) && self->treeNode.unk_04 == NULL) {
+    if ((self->seq == NULL || func_020ed7e4(self->seq) != 0) && self->treeNode.child == NULL) {
     } else {
         return FALSE;
     }
@@ -260,7 +243,7 @@ extern "C" void ProcBase_RequestDelete(ProcBase *self) {
 }
 
 extern "C" ProcBase *ProcBase_GetParent(ProcBase *self) {
-    TreeNode *parent = self->treeNode.unk_00;
+    TreeNode *parent = self->treeNode.parent;
     if (parent != NULL) return parent->owner;
     return NULL;
 }
@@ -456,7 +439,7 @@ extern "C" u32 func_020ecaf4(ProcBase *self) {
 extern "C" BOOL ProcBase_HasCreatingChild(ProcBase *self) {
     TreeNode *root = &self->treeNode;
     TreeNode *end = func_01ffcfc0(root);
-    TreeNode *n = root->unk_04;
+    TreeNode *n = root->child;
     while (n != NULL && n != end) {
         if (isZero(n->owner->state)) return TRUE;
         n = func_01ffcffc(n);

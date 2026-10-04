@@ -10,6 +10,7 @@
 #include "npc/Unk_0202d5e8.h"
 #include "actor/Unk_02088d00.h"
 #include "room/RoomFreeUnitMap.h"
+#include "npc/VillagerMood.h"
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
 public:
@@ -249,7 +250,6 @@ public:
     ~Unk_020f4080() {}
 };
 
-struct VillagerMood { VillagerMood(); ~VillagerMood(); u8 pad[0x5b]; u8 severeSickness; };
 
 class Actor : public ProcBase {
 public:

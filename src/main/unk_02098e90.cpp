@@ -1,6 +1,7 @@
 #include "types.h"
 #include "item/Unk_02098f30_Out.h"
 #include "item/ItemId.h"
+#include "npc/VillagerId.h"
 
 // Entry of the const table at 0x020d0604 (8 bytes): name, random range
 struct Unk_0209b570_Ent {
@@ -50,10 +51,6 @@ struct Unk_020030d8_R256 {
     u8 pad[0xc];
 };
 
-class VillagerId {
-public:
-    u32 isValid();
-};
 
 struct Unk_020994cc_Ent {
     u16 townId;

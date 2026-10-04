@@ -1,6 +1,7 @@
 #include "types.h"
 #include "sys/Unk_020b83b0.h"
 #include "gfx/TexVramSlot.h"
+#include "gfx/TexTransfer.h"
 
 extern "C" {
 void *File_LoadAlloc(void *a, void *heap, s32 b, s32 c);
@@ -48,11 +49,6 @@ public:
     virtual BOOL execute() = 0;
 };
 
-struct TexTransfer {
-    u32 dstAddr;
-    u32 src;
-    u32 size;
-};
 
 class TexVramTask : public VramTask {
 public:

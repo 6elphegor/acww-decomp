@@ -1,5 +1,7 @@
 #include "types.h"
 #include "sys/Unk_020b83b0.h"
+#include "gfx/BgTransfer.h"
+#include "gfx/TexTransfer.h"
 
 extern "C" {
 // Other files
@@ -24,40 +26,7 @@ void GX_LoadTex(u32 a, u32 b, u32 c);
 void GX_EndLoadTex(void);
 }
 
-// Five-word command record (fields depend on the mode it was set up for).
-struct BgTransfer {
-    u32 buf;
-    u8 layer;
-    u32 loadArg0;
-    u32 loadArg1;
-    u32 loadArg2;
 
-    void loadPaletteRange(void);
-    void setPaletteRange(u32 a, u8 b, u32 c, u8 d);
-    void loadPalette(void);
-    void setPalette(u32 a, u8 b, u32 c);
-    void loadScreen(void);
-    void setScreen(u32 a, u8 b, u32 c, u32 d);
-    u8 getCharCost(void);
-    void loadChars(void);
-    void setChars(u32 a, u8 b, u32 c, u32 d, u32 e);
-    void clear(void);
-};
-
-// Three-word record used by three modes.
-struct TexTransfer {
-    u32 dstAddr;
-    u32 src;
-    u32 size;
-
-    u8 getResCost(void);
-    u8 getTexCost(void);
-    void loadTexResource(void);
-    void loadTexPltt(void);
-    void loadTex(void);
-    void set(u32 a, u32 b, u32 c);
-    void clear(void);
-};
 
 extern "C" {
 u8 BgTransfer_GetPaletteRangeCost(BgTransfer *p);

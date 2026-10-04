@@ -8,49 +8,8 @@
 // SndMgr_PlayTalkVoice and G006 0x020ef150-0x020f0dec) are equal-or-smaller objects, so they may belong to this file too (then G006, and
 // perhaps SndMgr_PlayTalkVoice, are this file's first part); nothing in the data decides it, so the unit takes only what is proven.
 #include "types.h"
+#include "snd/SndMgr.h"
 
-class SndMgr {
-public:
-    SndMgr();                                // C1 0x020f0f70
-    void init(u32 a, u32 b, u32 c);          // 0x020f0e68
-    void update();                           // 0x020f0e3c
-    void volumeOff();                        // 0x020f0e2c
-    void volumeOn();                         // 0x020f0e1c
-    void setOutputMode(u32 v);                     // 0x020f0e08
-    void startOutputEffect();                        // 0x020f0df8
-    void stopAll();                          // 0x020f0dec
-
-    /* 0x00 */ u32 beatSync;
-    /* 0x04 */ u8 unk_04[0x24];
-    /* 0x28 */ void *subHeap;
-    /* 0x2c */ u32 scene;
-    /* 0x30 */ u32 melody;
-    /* 0x34 */ u32 strmHandle;
-    /* 0x38 */ u32 seHandle;
-    /* 0x3c */ u32 bgmHandle;
-    /* 0x40 */ u32 unk_40;
-    /* 0x44 */ u32 voiceType;
-    /* 0x48 */ u32 voiceHandle;
-    /* 0x4c */ u8 unk_4c;
-    /* 0x4d */ u8 seDisabled;
-    /* 0x4e */ u8 unk_4e[2];
-    /* 0x50 */ u32 outputMode;
-    /* 0x54 */ u32 randState;
-    /* 0x58 */ u32 randMul;
-    /* 0x5c */ u32 randAdd;
-    /* 0x60 */ u8 menuDuck;
-    /* 0x61 */ u8 subDucked;
-    /* 0x62 */ u8 keepHeap;
-    /* 0x63 */ u8 unk_63;
-    /* 0x64 */ u16 trackMask;
-    /* 0x66 */ u16 unk_66;
-    /* 0x68 */ s32 unk_68;
-    /* 0x6c */ s16 variantTimer;
-    /* 0x6e */ u16 crossTrackMask;
-    /* 0x70 */ u8 pan;
-    /* 0x71 */ u8 keySeMode;
-    /* 0x72 */ u8 unk_72[6];
-};
 
 // the sound manager (C linkage name as in symbols.txt; other files use gSndBgmHandle / bc0 / be0 = members at +0x3c / +0x40 / +0x60,
 // recorded as linker-script names by renames.txt)

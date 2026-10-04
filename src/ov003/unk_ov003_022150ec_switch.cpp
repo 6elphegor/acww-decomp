@@ -9,6 +9,7 @@
 #include "gfx/Unk_ov003_Blk.h"
 #include "field/Unk_ov003_Flags.h"
 #include "game/Unk_ov003_Vec.h"
+#include "talk/TalkWindowState.h"
 class ProcBase {
 public:
     static void *operator new(unsigned long size);
@@ -101,10 +102,6 @@ public:
     /* 0x1e */ u8 msgIndex;
 };
 
-struct TalkWindowState {
-    u8 pad_00[0x14];
-    s32 openMode;
-};
 
 class TalkMsgRequest : public MsgRequest {
 public:

@@ -1,10 +1,6 @@
 #include "types.h"
+#include "save/Backup.h"
 
-struct Backup {
-    /* 0x00 */ u32 totalSize;
-    /* 0x04 */ s32 lockId;
-    /* 0x08 */ u8 unk_08;
-};
 
 extern "C" Backup gBackup;
 

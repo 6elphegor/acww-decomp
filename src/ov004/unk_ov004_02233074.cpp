@@ -7,6 +7,7 @@
 #include "gfx/ModelSlotPool.h"
 #include "room/FtrActorTable.h"
 #include "room/FtrPreviewer.h"
+#include "room/FtrSwitch.h"
 
 // other modules' symbols by their real names
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
@@ -224,12 +225,6 @@ struct Unk_ov004_02233f3c_V3 {
     ~Unk_ov004_02233f3c_V3() {}
 };
 
-struct FtrSwitch {
-    void set(u32 v, s32 flag);
-    u8 isOn();
-    u8 cur;
-    u8 next;
-};
 
 // TU02's class: only the members this unit touches
 class FtrActor {

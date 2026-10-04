@@ -3,14 +3,8 @@
 // The range ends at 0x01ffd0b4 where the ptmf constants (data in .text, 0x01ffd0b4-0x01ffd0e4) begin.
 #include "types.h"
 #include "game/Vec3.h"
+#include "sys/TreeNode.h"
 
-struct TreeNode {
-    /* 0x00 */ TreeNode *unk_00; // parent
-    /* 0x04 */ TreeNode *unk_04;
-    /* 0x08 */ TreeNode *unk_08;
-    /* 0x0c */ TreeNode *unk_0c;
-    /* 0x10 */ void *owner;
-};
 
 
 extern "C" {
@@ -34,7 +28,7 @@ extern "C" s64 func_01ffd028(Vec3 *a, Vec3 *b) {
 }
 
 extern "C" TreeNode *func_01ffcffc(TreeNode *n) {
-    TreeNode *r = n->unk_04;
+    TreeNode *r = n->child;
     if (r == 0) {
         r = func_01ffcfc0(n);
     }
@@ -42,12 +36,12 @@ extern "C" TreeNode *func_01ffcffc(TreeNode *n) {
 }
 
 extern "C" TreeNode *func_01ffcfc0(TreeNode *n) {
-    if (n->unk_0c != 0) {
-        return n->unk_0c;
+    if (n->next != 0) {
+        return n->next;
     }
-    for (TreeNode *p = n->unk_00; p != 0; p = p->unk_00) {
-        if (p->unk_0c != 0) {
-            return p->unk_0c;
+    for (TreeNode *p = n->parent; p != 0; p = p->parent) {
+        if (p->next != 0) {
+            return p->next;
         }
     }
     return 0;

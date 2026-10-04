@@ -1,6 +1,8 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "item/ItemId.h"
+#include "gfx/G3dResAccess.h"
+#include "gfx/MatTexBinder.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 // (called as free functions with the object as first argument; the mangled name is the symbols.txt name)
@@ -86,13 +88,6 @@ public:
     u8 pad_04[0x24];
 };
 
-struct MatTexBinder {
-    u8 *resMdl;
-    s8 matIdx;
-
-    MatTexBinder();
-    ~MatTexBinder();
-};
 
 struct AnimModel {
     AnimModel();
@@ -124,9 +119,6 @@ struct TouchPickCylinder {
     u8 pad[0x20];
 };
 
-struct G3dResAccess {
-    u8 pad[4];
-};
 
 // ---------------------------------------------------------------- shared helper types
 struct Unk_ov004_0222a994_Ctx {

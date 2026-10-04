@@ -1,21 +1,8 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "talk/TalkWindowState.h"
 
-class TalkWindowState {
-public:
-    void *getChoiceList();
-    void lockAdvance();
-    void hideBusyIcon();
-    void unlockAdvance();
-    void setNextMessage(u8 *a, void *b);
-    void openChoices(s32 v);
-    void detachRequest();
-
-    /* 0x00 */ u32 index;
-    /* 0x04 */ s32 state;
-    /* 0x08 */ u32 nextState;
-};
 
 class MsgRequest {
 public:

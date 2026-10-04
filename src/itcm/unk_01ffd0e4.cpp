@@ -5,35 +5,19 @@
 // (func_01ffd1b4), six members of the library base class ProcBase (symbols.txt names are C++-mangled;
 // defined as extern "C" functions that carry the mangled identifier verbatim and take the object first) and the dispatcher.
 #include "types.h"
+#include "sys/TreeNode.h"
+#include "sys/QNode.h"
 
 class Heap;
 class ProcBase;
 
-struct TreeNode {
-    /* 0x00 */ TreeNode *unk_00; // parent
-    /* 0x04 */ TreeNode *unk_04;
-    /* 0x08 */ TreeNode *unk_08;
-    /* 0x0c */ TreeNode *unk_0c;
-    /* 0x10 */ ProcBase *owner; // owner
-};
 
-struct QNode {
-    /* 0x00 */ QNode *prev;
-    /* 0x04 */ QNode *next;
-    /* 0x08 */ ProcBase *owner;
-    /* 0x0c */ u16 priority;
-    /* 0x0e */ u16 pendingPriority;
-};
 
 struct FlagView {
     u8 pad_00[0x13];
     u8 procFlags;
 };
 
-struct QList {
-    QNode *unk_00;
-    QNode *unk_04;
-};
 
 class ProcBase {
 public:
@@ -168,7 +152,7 @@ extern "C" BOOL func_01ffd1b4(ProcBase *self) {
         }
         func_020e7930(&gTaskDeleteList, &self->executeNode);
         self->state = 2;
-        for (TreeNode *c = self->treeNode.unk_04; c != NULL; c = c->unk_0c) {
+        for (TreeNode *c = self->treeNode.child; c != NULL; c = c->next) {
             ProcBase_RequestDelete(c->owner);
         }
     } else {

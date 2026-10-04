@@ -4,6 +4,7 @@
 #include "actor/Unk_02002f14_Node.h"
 #include "actor/Unk_0203e5d0_Node.h"
 #include "game/Vec3.h"
+#include "talk/TalkWindowState.h"
 
 
 // ---------------------------------------------------------------- library base chain (as in link_ov009)
@@ -103,16 +104,6 @@ public:
     s32 getResult();
 };
 
-struct TalkWindowState {
-    ChoiceList *getChoiceList();
-    void setSlotFromString(s32 idx, s32 a, s32 b);
-    s32 setSlot(s32 idx, void *p);
-    void setNextMessage(u8 *src, void *s);
-
-    /* 0x0000 */ u32 index;
-    /* 0x0004 */ s32 state;
-    /* 0x0008 */ s32 nextState;
-};
 
 // Slots 0x10..0x18 are overridden by the derived class's own new virtuals (named after their addresses).
 class TalkMsgRequest : public MsgRequest {

@@ -4,21 +4,8 @@
 // sound-system wrappers around gSndHeap (sound archive/system object: thin assert-and-forward helpers, system
 // start-up at 0x020edbbc) and the sound player object (Player) helpers. Fatal stop = Fatal_Trap (assert failure).
 #include "types.h"
+#include "sys/Unk_Seq.h"
 
-class Unk_Seq {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual s32 vfunc_08(void *p);
-    virtual void vfunc_0c(void *p);
-
-    /* 0x04 */ s16 state;
-    /* 0x06 */ s16 cmdIndex;
-    /* 0x08 */ void **cmds;
-    /* 0x0c */ u32 unk_0c;
-    /* 0x10 */ u16 unk_10;
-    /* 0x12 */ s16 unk_12;
-};
 
 struct Ent {
     /* 0x00 */ void *handle;

@@ -10,6 +10,7 @@
 #include "actor/Unk_ov004_022146ec_Actor.h"
 #include "game/Unk_ov004_022146ec_Bits.h"
 #include "net/Unk_ov004_022146ec_Sing.h"
+#include "talk/TalkWindowState.h"
 
 
 class Actor : public GameProc {
@@ -51,11 +52,6 @@ public:
     /* 0xea */ u16 pad_ea;
 };
 
-struct TalkWindowState {
-    /* 0x0000 */ u32 index;
-    /* 0x0004 */ s32 state;
-    /* 0x0008 */ s32 nextState;
-};
 
 // Secondary base at +0xec (vtable main 0x020ddcf0). MuseumExhibitInfo overrides its slots 0x10, 0x14 and 0x18 with
 // the functions its own vtable has at 0x60, 0x64 and 0x68, so those three slots carry the derived names onMessageStart/onMessageEnd/onChoice here

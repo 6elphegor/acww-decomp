@@ -2,6 +2,8 @@
 // In-house BGM controller SndMgr_PlayTalkVoice, autoload_2 0x020ee98c-0x020ef150. C++, mwcc 1.2/base -O4,p.
 // Header = G004_all_best.cpp prototypes (SndMgr_GetVoiceSeqIndex now takes its real second argument).
 #include "types.h"
+#include "sys/Unk_Task.h"
+#include "sys/Unk_Seq.h"
 
 struct ListNode {
     ListNode *prev;
@@ -33,10 +35,6 @@ struct InfoList {
     InfoNode *head;
 };
 
-class Unk_Task {
-public:
-    virtual void vfunc_00();
-};
 typedef void (Unk_Task::*TaskFn)();
 
 struct TaskNode {
@@ -58,20 +56,6 @@ struct TaskList {
     TaskFn unk_08;
 };
 
-class Unk_Seq {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual s32 vfunc_08(void *p);
-    virtual void vfunc_0c(void *p);
-
-    /* 0x04 */ s16 state;
-    /* 0x06 */ s16 cmdIndex;
-    /* 0x08 */ void **cmds;
-    /* 0x0c */ u32 unk_0c;
-    /* 0x10 */ u16 unk_10;
-    /* 0x12 */ s16 unk_12;
-};
 
 struct Ent {
     /* 0x00 */ void *handle;
