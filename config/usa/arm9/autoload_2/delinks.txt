@@ -205,6 +205,10 @@ src/autoload_2/unk_02101818.c:
     complete
     .text       start:0x02101818 end:0x02101de8
 
+src/autoload_2/unk_02101de8.c:
+    complete
+    .text       start:0x02101de8 end:0x0210211c
+
 src/autoload_2/unk_0210211c.c:
     complete
     .text       start:0x0210211c end:0x0210217c
@@ -212,6 +216,10 @@ src/autoload_2/unk_0210211c.c:
 src/autoload_2/unk_0210217c.c:
     complete
     .text       start:0x0210217c end:0x021022ac
+
+src/autoload_2/unk_021022ac.c:
+    complete
+    .text       start:0x021022ac end:0x02102340
 
 src/autoload_2/unk_02102340.c:
     complete
@@ -221,9 +229,21 @@ src/autoload_2/unk_0210269c.c:
     complete
     .text       start:0x0210269c end:0x021028e0
 
+src/autoload_2/unk_021028e0.c:
+    complete
+    .text       start:0x021028e0 end:0x02102b04
+
+src/autoload_2/unk_02102b04.c:
+    complete
+    .text       start:0x02102b04 end:0x02102cbc
+
 src/autoload_2/unk_021030a0.c:
     complete
     .text       start:0x021030a0 end:0x021030bc
+
+src/autoload_2/unk_021030bc.c:
+    complete
+    .text       start:0x021030bc end:0x021031c4
 
 src/autoload_2/unk_021031c4.c:
     complete

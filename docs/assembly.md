@@ -90,7 +90,7 @@ original prologue and epilogue from the compiler. The comments in each file expl
 encoded. If a compiler build that reproduces these switches becomes available, the C versions replace the
 assembly.
 
-### The inline `clz` helper in ov067
+### The inline `clz` helper (ov067, NitroSystem g2d)
 
 `src/ov067/unk_ov067_0225f1a0.cpp` defines
 
@@ -103,5 +103,21 @@ static inline u32 Clz(u32 x) {
 ```
 
 for the ARM function `WlxWm_MeasureChannelStep`. This is the NitroSDK's own form of `MATH_CountLeadingZeros`
-(`math.h`), a one-instruction inline `asm` in the SDK itself; mwcc 1.2 has no `clz` intrinsic. It is the only
-inline `asm` in a C or C++ file.
+(`math.h`), a one-instruction inline `asm` in the SDK itself; mwcc 1.2 has no `clz` intrinsic.
+
+The NitroSystem g2d units `src/autoload_2/unk_02101de8.c` (`NNS_G2dArrangeOBJ1D`),
+`src/autoload_2/unk_021022ac.c` (`NNS_G2dCharCanvasInitForOBJ1D`) and `src/autoload_2/unk_021030bc.c`
+(`GetCharIndex1D`) use the same instruction through the SDK's
+`MATH_ILog2`, with the helper in its in-place form:
+
+```c
+static inline u32 MATH_CountLeadingZerosInline(u32 x) {
+    asm { clz x, x }
+    return x;
+}
+```
+
+The original has `movlt r4, r2; clzlt r4, r4; rsblt ip, r4, #0x1f` for `(w >= 8) ? 3 : MATH_ILog2(w)`: the copy
+of the argument and the conditional `clz` are what mwcc makes of this inline (a separate result variable gives
+`clz r4, r2`). These four files are the only inline `asm` in C or C++ files (apart from the `asm` routine bodies
+listed under "Four switch routines" above).
