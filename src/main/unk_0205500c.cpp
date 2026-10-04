@@ -3,6 +3,7 @@
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexTransfer.h"
 #include "gfx/VramTask.h"
+#include "gfx/TexVramTask.h"
 
 extern "C" {
 void *File_LoadAlloc(void *a, void *heap, s32 b, s32 c);
@@ -43,14 +44,6 @@ extern void *gCurrentHeap;
 
 
 
-class TexVramTask : public VramTask {
-public:
-    TexTransfer xfer;
-    TexVramTask();
-    virtual BOOL execute();
-    void cancel(void);
-    BOOL requestTexResource(u32 *a, u8 b);
-};
 
 
 class ModelResource {

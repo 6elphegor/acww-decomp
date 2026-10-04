@@ -7,31 +7,13 @@
 #include "gfx/VecFx32.h"
 #include "gfx/SplTex.h"
 #include "gfx/MagF.h"
+#include "gfx/P.h"
 
 struct MtxFx33 { s32 m[9]; };
 
 struct P;
 
 
-struct P {
-    P *next;
-    P *prev;
-    VecFx32 pos;
-    VecFx32 vel;
-    u16 rot0;
-    u16 rot1;
-    u16 life;
-    u16 age;
-    u16 h28;
-    u16 h2a;
-    u8 b2c;
-    u8 b2d;
-    Fl2e fl;
-    s32 w30;
-    s16 s34;
-    u16 col;
-    VecFx32 epos;
-};
 
 
 

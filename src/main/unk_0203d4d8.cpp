@@ -1,20 +1,11 @@
 #include "types.h"
 #include "sys/ProcBase.h"
+#include "talk/TalkRequestQueue.h"
 
 struct Unk_0203dad4_Task;
 
 
 
-class TalkRequestQueue : public GameProc {
-public:
-    TalkRequestQueue() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL vfunc_20(u32 b);
-    virtual BOOL onDraw();
-    // destructor implicit (D1 is at the lower address)
-};
 
 // Only the non-virtual methods of this class (vtable and constructor are in the next unit)
 class Character {

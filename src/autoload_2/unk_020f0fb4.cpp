@@ -18,13 +18,10 @@
 // Every function lands on its original address with the original bytes; every old func_ name stays (aliases.txt), nothing is renamed
 // except the vtables (renames.txt, _ZTV at the real start).
 #include "types.h"
+#include "snd/Player.h"
 #include "snd/SndSeBytes4.h"
 
 
-struct Player {
-    /* 0x00 */ u8 pad0[0x15];
-    /* 0x15 */ Bytes4 unk_15;
-};
 
 struct F30 {
     u8 pad[0x3c];

@@ -5,6 +5,8 @@
 #include "gfx/ModelAnim.h"
 #include "gfx/MatTexPatAnim.h"
 #include "gfx/JointBlend.h"
+#include "gfx/TexVramTask.h"
+#include "gfx/TexPatVramAnim.h"
 
 
 struct Unk_02055cd0_Ent {
@@ -120,30 +122,8 @@ public:
 
 
 
-struct ResName16 {
-    char unk_00[17];
-    ResName16();
-    ~ResName16();
-    char *get();
-    void set(const char *src);
-};
 
-// Library class (see unk_020b8464.cpp)
-class TexVramTask {
-public:
-    TexVramTask();
-    void cancel(void);
 
-    u32 unk_00[7];
-};
-
-class TexPatVramTasks {
-public:
-    TexPatVramTasks();
-    ~TexPatVramTasks();
-
-    /* 0x00 */ TexVramTask tasks[2];
-};
 
 struct TexPatVramUploader {
     u32 tasks[14];
@@ -151,26 +131,6 @@ struct TexPatVramUploader {
     BOOL uploadByIdx(u8 *hdr, s32 i1, s32 i2, u8 *x, s32 a, s32 b);
 };
 
-class TexPatVramAnim : public AnimFrameCtrl {
-public:
-    TexPatVramTasks vramTasks;
-    u8 *dstTex;
-    ResName16 texName;
-    ResName16 plttName;
-    u8 *srcTex;
-    u8 *patAnm;
-    s32 curPlttIdx;
-    s32 curTexIdx;
-    s32 prevTexIdx;
-    u8 plttOnly;
-
-    TexPatVramAnim();
-    virtual ~TexPatVramAnim();
-    void clear();
-    void getFrameIndices(s32 *a, s32 *b);
-    BOOL update();
-    BOOL init(u8 *hdr, const char *n1, const char *n2, u8 *x, u8 *y, u8 flag);
-};
 
 
 static inline u8 *Unk_02056e88_Ent(u8 *d, s32 idx) {

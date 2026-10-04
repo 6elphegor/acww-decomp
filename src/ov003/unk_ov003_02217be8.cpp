@@ -6,6 +6,7 @@
 #include "field/Unk_ov003_02217b78_Ent.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/ModelAnim.h"
+#include "gfx/TexPatVramAnim.h"
 
 // TU19 of ov003: ground part classes 0x02217be8 / 0x02217dbc and the scene 0x02232418 (0x02217be8-0x022187f8)
 
@@ -36,13 +37,6 @@ public:
 
 
 
-class TexPatVramAnim {
-public:
-    u32 pad[0x90 / 4];
-    TexPatVramAnim();
-    ~TexPatVramAnim();
-    BOOL update();
-};
 
 // ---- this overlay's part classes ----
 

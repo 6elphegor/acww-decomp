@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "sys/SceneBase.h"
 
 extern "C" {
 void Gfx2d_SetBrightness(s32 x);
@@ -47,23 +48,6 @@ extern u8 gSaveData;
 extern u8 gSaveFooter;
 }
 
-// Intermediate game-state class with an inline constructor that sets flags
-class SceneBase : public GameProc {
-public:
-    SceneBase() {
-        procFlags |= 1;
-        procFlags |= 4;
-    }
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 status);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~SceneBase() {}
-};
 
 class BootLogoScene : public SceneBase {
 public:

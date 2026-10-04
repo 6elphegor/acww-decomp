@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "sys/SceneBase.h"
 
 extern "C" {
 void AbAllObjGfx_Upload(void);
@@ -18,23 +19,6 @@ extern u32 gGfxFrameHooks;
 
 extern CommManager *gCommManager;
 
-// Intermediate game-state class with an inline constructor that sets flags
-class SceneBase : public GameProc {
-public:
-    SceneBase() {
-        procFlags |= 1;
-        procFlags |= 4;
-    }
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 status);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~SceneBase() {}
-};
 
 class FieldEntryScene : public SceneBase {
 public:

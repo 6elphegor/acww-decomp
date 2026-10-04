@@ -4,6 +4,7 @@
 #include "talk/MsgStringAttr.h"
 #include "talk/MsgTextLabel.h"
 #include "talk/MsgString.h"
+#include "gfx/TexVramTask.h"
 
 // ---- Classes defined in other files (declarations only) ----
 
@@ -22,13 +23,6 @@ public:
 };
 
 
-class TexVramTask {
-public:
-    TexVramTask();
-    BOOL requestTex(u32 a, u32 b, u32 c, u8 d);
-
-    u32 unk_00[7];
-};
 
 // ---- Classes of this file ----
 

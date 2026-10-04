@@ -4,6 +4,7 @@
 #include "save/LostChildRecord.h"
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
+#include "sys/SceneBase.h"
 
 
 
@@ -167,23 +168,6 @@ struct NetSessionAreaView {
     void reset();
 };
 
-// Vtable at 0x020e2980; its constructor and destructor are inline.
-class SceneBase : public GameProc {
-public:
-    SceneBase() {
-        procFlags |= 1;
-        procFlags |= 4;
-    }
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~SceneBase() {}
-};
 
 extern "C" {
 extern CommManager *gCommManager;

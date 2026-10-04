@@ -1,26 +1,9 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "sys/SceneBase.h"
 
 extern "C" void Snd_CreateScene(void);
 
-// Intermediate class (vtable 0x020e2988); its constructor and destructor are inline.
-// Its virtuals vfunc_04/08/10/14/1c/20/28/2c are defined by another unit (declared only).
-class SceneBase : public GameProc {
-public:
-    SceneBase() {
-        procFlags |= 1;
-        procFlags |= 4;
-    }
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 status);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~SceneBase() {}
-};
 
 class DummyScene3 : public SceneBase {
 public:

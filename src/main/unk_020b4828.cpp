@@ -4,6 +4,7 @@
 #include "gfx/ViewFrustum.h"
 #include "game/FxVec3.h"
 #include "game/TouchPicker.h"
+#include "sys/SceneBase.h"
 
 #define reg_4000358 (*(u32 *)0x4000358)
 #define reg_4000008 (*(u16 *)0x4000008)
@@ -106,23 +107,6 @@ struct Unk_020b5d5c_Rec {
 
 
 
-// Intermediate class (vtable 0x020e2988): its virtuals are defined by another unit, ctor/dtor inline
-class SceneBase : public GameProc {
-public:
-    SceneBase() {
-        procFlags |= 1;
-        procFlags |= 4;
-    }
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 status);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~SceneBase() {}
-};
 
 // Vtable 0x020e4230
 class FieldScene : public SceneBase {

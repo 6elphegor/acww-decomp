@@ -3,6 +3,7 @@
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexTransfer.h"
 #include "gfx/VramTask.h"
+#include "gfx/TexVramTask.h"
 
 extern "C" {
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
@@ -20,15 +21,6 @@ extern u8 *gCommManager;
 
 
 
-class TexVramTask : public VramTask {
-public:
-    TexTransfer xfer;
-    TexVramTask();
-    virtual BOOL execute();
-    void cancel(void);
-    BOOL requestTexResource(u32 *a, u8 b);
-    void clear(void);
-};
 
 
 static inline BOOL Unk_0205d4e4_IsTwo(u8 v) {

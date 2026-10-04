@@ -2,6 +2,7 @@
 #include "player/Unk_02097ff4.h"
 #include "item/ItemId.h"
 #include "item/Letter.h"
+#include "save/Pattern.h"
 
 class PlayerInventory;
 class Unk_02097ff4;
@@ -151,12 +152,6 @@ public:
     void clear();
 };
 
-class PlayerPatterns {
-public:
-    PlayerPatterns();
-    ~PlayerPatterns();
-    u8 patterns[0x1148];
-};
 
 
 

@@ -1,18 +1,8 @@
 #include "types.h"
 #include "gfx/TexVramSlot.h"
+#include "gfx/TexVramTask.h"
 
 
-class TexVramTask {
-public:
-    TexVramTask();
-    virtual BOOL vfunc_00();
-    void cancel(void);
-    BOOL requestTexResource(u32 *a, u8 b);
-    void clear(void);
-    u8 pad[9];
-    u8 state;
-    u8 pad2[0xe];
-};
 
 struct PlayerBodyModelPool {
     u32 buffers[4];

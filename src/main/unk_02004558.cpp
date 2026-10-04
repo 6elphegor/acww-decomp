@@ -47,6 +47,8 @@
 #include "player/Unk_02008100_Msg.h"
 #include "player/Unk_02008190_Ptr.h"
 #include "player/Unk_02008858_Blk.h"
+#include "player/PM_020076f0.h"
+#include "player/PM_020063a0.h"
 #include "player/Unk_020093f4_Msg.h"
 #include "gfx/MatTexPatAnim.h"
 #include "sys/ProcBase.h"
@@ -852,10 +854,6 @@ void PlayerActor_RequestShovelStrike(void *p, s32 a, void *v, s32 b, s32 c);
 void PlayerActor_RequestAxeStrike(void *p, s32 a, s32 b, void *v, s32 c, s32 d);
 void PlayerActor_LevelTiltForAction(void *p, u32 i, s32 force);
 s32 _ZN12Unk_02006d1412changeActionEP17Unk_02006d14_Item(void *, void *p);
-union PM_020063a0 {
-    PMRaw raw;
-    void (Unk_02005e7c::*fn)(s32);
-};
 extern PM_020063a0 data_020d671c;
 extern PM_020063a0 data_020d624c;
 extern PM_020063a0 data_020d5fcc;
@@ -1387,10 +1385,6 @@ void _ZN12Unk_020102ec13startAnimOnceEijt(void *, u32 a, u32 b, u32 c);
 BOOL _ZN12Unk_02006d1412turnToCameraEi(void *, u32 a);
 void _ZN12Unk_02006d146playSeEj(void *, u32 a);
 void _ZN12Unk_02006d1413setActionFlagEj(void *, u32 a);
-union PM_020076f0 {
-    PMRaw raw;
-    void (Unk_02007694::*fn)(u32);
-};
 extern PM_020076f0 data_020d6da4;
 extern PM_020076f0 data_020d6dac;
 extern PM_020076f0 data_020d6d84;

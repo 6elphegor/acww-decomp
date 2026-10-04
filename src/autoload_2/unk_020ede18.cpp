@@ -9,21 +9,12 @@
 #include "snd/SndSeBytes4.h"
 #include "snd/SndSeGroup.h"
 #include "sys/FndList.h"
+#include "snd/Player.h"
 
 
 struct Group;
 typedef void (*GroupFn)(Group *g, s32 i, s32 v);
 
-struct Player {
-    /* 0x00 */ FndList list;
-    /* 0x0c */ u32 active;
-    /* 0x10 */ u32 unk_10;
-    /* 0x14 */ u8 unk_14;
-    /* 0x15 */ Bytes4 unk_15;
-    /* 0x1c */ u32 heapLevel;
-    /* 0x20 */ u8 unk_20[4];
-    /* 0x24 */ u8 unk_24[4];
-};
 
 extern "C" {
 void Fatal_Trap(void);

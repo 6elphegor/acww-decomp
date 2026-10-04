@@ -10,6 +10,7 @@
 #include "player/FishBobber.h"
 #include "gfx/VramTask.h"
 #include "gfx/ModelAnim.h"
+#include "gfx/TexVramTask.h"
 
 // ---- helper classes (declared elsewhere) ----
 
@@ -17,15 +18,6 @@
 
 
 
-class TexVramTask : public VramTask {
-public:
-    TexTransfer xfer;
-    TexVramTask();
-    virtual BOOL execute();
-    void cancel(void);
-    BOOL requestTexResource(u32 *a, u8 b);
-    void clear(void);
-};
 
 
 class BlendAnimModel : public CachedModel {

@@ -8,6 +8,7 @@
 #include "gfx/CachedModel.h"
 #include "player/FishBobber.h"
 #include "game/GroundInfo.h"
+#include "gfx/TexVramTask.h"
 
 
 
@@ -39,17 +40,6 @@ typedef void (FishBobber::*Unk_0205f8d4_Fn)();
 
 
 
-class TexVramTask {
-public:
-    TexVramTask();
-    virtual BOOL vfunc_00();
-    void cancel(void);
-    void clear(void);
-    BOOL requestTexResource(u32 *a, u8 b);
-    u8 pad_04[9];
-    u8 state;
-    u8 pad_0e[0x0e];
-};
 
 
 extern "C" {

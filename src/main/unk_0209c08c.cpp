@@ -11,6 +11,7 @@
 #include "room/Unk_0209c614_Actor.h"
 #include "gfx/VramTask.h"
 #include "town/TownAcreGrid.h"
+#include "gfx/TexVramTask.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -61,14 +62,6 @@ extern "C" {
 
 
 
-class TexVramTask : public VramTask {
-public:
-    TexTransfer xfer;
-    TexVramTask();
-    virtual BOOL execute();
-    void cancel(void);
-    BOOL requestTexResource(u32 *a, u8 b);
-};
 
 
 class ModelResource {

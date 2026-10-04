@@ -11,6 +11,7 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "save/Pattern.h"
 
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -441,11 +442,6 @@ MEMBER(CollisionState, 0x30);
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 
 
-struct Pattern {
-    u8 pixels[0x960 - 0x738];
-    Pattern();
-    ~Pattern();
-};
 
 class Actor : public ProcBase {
 public:

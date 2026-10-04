@@ -7,6 +7,7 @@
 #include "gfx/VecFx32.h"
 #include "gfx/SplTex.h"
 #include "gfx/SplViews.h"
+#include "gfx/Pt.h"
 
 
 
@@ -137,28 +138,6 @@ static inline void G3_Translate(s32 x, s32 y, s32 z) {
 
 
 
-struct Pt {
-    Pt *next;
-    u8 p4[4];
-    s32 w8;
-    s32 w12;
-    s32 w16;
-    s32 w20;
-    s32 w24;
-    s32 w28;
-    u16 h32;
-    s16 s34;
-    u16 h36;
-    u16 h38;
-    u16 h40;
-    u16 h42;
-    u8 p44;
-    u8 c45;
-    u16 pad46 : 10;
-    u16 id46 : 6;
-    u8 p48[8];
-    A3 v56;
-};
 
 
 

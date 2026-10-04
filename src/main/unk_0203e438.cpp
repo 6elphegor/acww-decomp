@@ -5,6 +5,7 @@
 #include "game/Unk_0203e5d0_List.h"
 #include "net/Unk_0203e938_Net.h"
 #include "sys/ProcBase.h"
+#include "talk/TalkRequestQueue.h"
 
 
 
@@ -257,13 +258,6 @@ public:
     /* 0xea */ u16 pad_ea;
 };
 
-class TalkRequestQueue : public GameProc {
-public:
-    TalkRequestQueue() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual ~TalkRequestQueue();
-};
 Unk_0203e5d0_List gCharacterList;
 
 Character::Character() {

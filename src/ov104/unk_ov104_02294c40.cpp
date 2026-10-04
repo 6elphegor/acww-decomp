@@ -13,6 +13,7 @@
 #include "ui/LetterRenderer.h"
 #include "menu/MenuProc.h"
 #include "item/LetterView.h"
+#include "ui/UiWidget.h"
 
 class PostOfficeMenu;
 class MenuLauncher;
@@ -153,26 +154,26 @@ public:
     u32 unk_00[0x38 / 4];
 };
 
-class UiWidget {
-public:
-    virtual ~UiWidget();
-    virtual void draw();
-    virtual void vfunc_0c();
-};
 
 class LabelBalloon : public UiWidget {
 public:
+    virtual void draw();
+    virtual void vfunc_0c();
     void setPos(s32 x, s32 y);
 };
 
 class LabelButton : public UiWidget {
 public:
+    virtual void draw();
+    virtual void vfunc_0c();
     void setState(s32 v);
     void setPos(s32 x, s32 y);
 };
 
 class HandCursor : public UiWidget {
 public:
+    virtual void draw();
+    virtual void vfunc_0c();
     BOOL isAnimDone();
     s32 getAnim();
     void setAnimAtEnd(s32 idx);
@@ -192,7 +193,7 @@ public:
     void commitOpen();
     BOOL hide(s32 a);
     s32 updatePrompt();
-    u32 unk_04[(0xc0 - 4) / 4];
+    u32 unk_0c[(0xc0 - 0xc) / 4];
 };
 
 
@@ -221,7 +222,7 @@ class MenuCursorBuf0 : public MenuCursorBase {
 public:
     MenuCursorBuf0();
     virtual ~MenuCursorBuf0();
-    u32 unk_04[0x60 / 4];
+    u32 unk_0c[(0x64 - 0xc) / 4];
 };
 
 struct PopupChoiceIdList;
@@ -261,7 +262,7 @@ public:
     BOOL stepAnim();
     s32 getAnchorY(s32 a);
     s32 getAnchorX(s32 a);
-    u32 unk_04[(0x70 - 4) / 4];
+    u32 unk_0c[(0x70 - 0xc) / 4];
 };
 
 class MenuBottomButtonsBody {

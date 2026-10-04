@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "game/Unk_02095774_Ent.h"
+#include "net/PlayerNetSync.h"
 
 
 
@@ -308,15 +309,6 @@ public:
     virtual ~RemotePlayerSpawner();
 };
 
-class PlayerNetSync : public GameProc {
-public:
-    PlayerNetSync();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual ~PlayerNetSync();
-};
 static inline void Unk_0209579c_Set(s16 *d, s16 a, s16 b, s16 c) {
     d[0] = a;
     d[1] = b;

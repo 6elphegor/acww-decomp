@@ -5,6 +5,7 @@
 #include "save/MuseumData.h"
 #include "sys/RecordFile.h"
 #include "save/Unk_020942c8.h"
+#include "save/Pattern.h"
 
 // U125: design (pattern) storage and display helpers, 0x02070560-0x020720f8
 
@@ -132,73 +133,6 @@ public:
     void copyTo(u8 *dst, s32 n);
     void StrBuf_SetBytes(u8 *src, s32 n);
     u8 unk_04[0x20];
-};
-class PatternInfo : public Unk_020942c8 {
-public:
-    PatternInfo();
-    ~PatternInfo();
-    Unk_02071b10_Id16 title;
-    struct {
-        u8 lo : 4;
-        u8 hi : 4;
-    } tastePalette;
-
-    void setTaste(u32 v);
-    u8 getTaste();
-    void setTitleRaw(u8 *src);
-    void setTitleEncoded(EncodedString16Buf *o);
-    void setTitle(void *x);
-    void getTitleRaw(u8 *dst);
-    void getTitleEncoded(EncodedString16Buf *o);
-    void getTitle(void *x);
-    Unk_020942c8 *getAuthor();
-    void setAuthor(Unk_020942c8 *src);
-    void setAuthorToCurrentPlayer();
-    void setPalette(u32 v);
-    u8 getPalette();
-    void getPaletteData();
-    BOOL infoEquals(PatternInfo *o);
-};
-class Pattern {
-public:
-    Pattern();
-    ~Pattern();
-    long long pixels[0x40];
-    PatternInfo info;
-
-    PatternInfo *getInfo();
-    void fill(u32 v);
-    void setPixels(void *dst);
-    u8 *getPixels();
-    BOOL equals(Pattern *o);
-};
-class TownFlagPattern {
-public:
-    Pattern pixels;
-    TownFlagPattern();
-    ~TownFlagPattern();
-};
-class AbleSistersPatterns {
-public:
-    AbleSistersPatterns();
-    ~AbleSistersPatterns();
-    Pattern patterns[8];
-
-    Pattern *getPattern(u8 i);
-    void initDefaultPatterns();
-};
-class PlayerPatterns {
-public:
-    PlayerPatterns();
-    ~PlayerPatterns();
-    Pattern patterns[8];
-    PatternOrder patternOrder;
-
-    PatternOrder *getPatternOrder();
-    Pattern *getPatternByOrder(u32 i);
-    Pattern *getPattern(u8 i);
-    void replaceAuthorTown(Unk_020942c8 *a, Unk_020942c8 *b);
-    void initDefaultPatterns(Unk_020942c8 *a);
 };
 enum Unk_020720f8_Id { Unk_020720f8_Id_0 = 0 };
 
