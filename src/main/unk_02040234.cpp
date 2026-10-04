@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "game/Unk_020d96fc_G.h"
+#include "sys/ClockDateTime.h"
 #include "game/Unk_0203fe18_Date.h"
 #include "game/Unk_0203fe18_B4.h"
 #include "game/EventWeekSlots.h"
@@ -47,15 +48,15 @@ extern u32 sWeekVisitorIds[];
 }
 
 extern "C" {
-s32 DateTime_AddDays(Unk_0203fe18_Date*, s32);
+s32 DateTime_AddDays(ClockDateTime*, s32);
 }
 
 extern "C" {
-s32 DateTime_SubDays(Unk_0203fe18_Date*, s32);
+s32 DateTime_SubDays(ClockDateTime*, s32);
 }
 
 extern "C" {
-void Clock_GetDateTime(Unk_0203fe18_Date*);
+void Clock_GetDateTime(ClockDateTime*);
 }
 
 extern "C" {
@@ -67,7 +68,7 @@ s32 Date_DaysBetween(Unk_0203fe18_B3*, u8*);
 }
 
 extern "C" {
-void DateTime_GetWeekStart(Unk_0203fe18_Date*, long long*);
+void DateTime_GetWeekStart(ClockDateTime*, long long*);
 }
 
 extern "C" {
@@ -83,15 +84,15 @@ s32 Game_IsIntroPeriod(void);
 }
 
 extern "C" {
-s32 Event_GetStateAt(u32, Unk_0203fe18_Date*, s32);
+s32 Event_GetStateAt(u32, ClockDateTime*, s32);
 }
 
 extern "C" {
-s32 EventDayList_GetState(u32, Unk_0203fe18_Date*, void*);
+s32 EventDayList_GetState(u32, ClockDateTime*, void*);
 }
 
 extern "C" {
-s32 EventSchedule_CollectDayAll(void*, Unk_0203fe18_Date*);
+s32 EventSchedule_CollectDayAll(void*, ClockDateTime*);
 }
 
 extern "C" {
@@ -143,7 +144,7 @@ void EventWeekSlot_Clear(EventWeekSlot*);
 }
 
 extern "C" {
-void EventWeekSlot_Set(EventWeekSlot*, u8, Unk_0203fe18_Date*);
+void EventWeekSlot_Set(EventWeekSlot*, u8, ClockDateTime*);
 }
 
 extern "C" {
@@ -159,15 +160,15 @@ void EventWeekSlots_MarkPastDays(EventWeekSlots*);
 }
 
 extern "C" {
-void EventWeekSlots_PlaceRedd(EventWeekSlots*, s32*, s32*, Unk_0203fe18_Date*);
+void EventWeekSlots_PlaceRedd(EventWeekSlots*, s32*, s32*, ClockDateTime*);
 }
 
 extern "C" {
-void EventWeekSlots_PlacePete(EventWeekSlots*, s32*, s32*, Unk_0203fe18_Date*);
+void EventWeekSlots_PlacePete(EventWeekSlots*, s32*, s32*, ClockDateTime*);
 }
 
 extern "C" {
-void EventWeekSlots_PlaceVisitors(EventWeekSlots*, s32*, s32*, u8*, Unk_0203fe18_Date*);
+void EventWeekSlots_PlaceVisitors(EventWeekSlots*, s32*, s32*, u8*, ClockDateTime*);
 }
 
 extern "C" {
@@ -175,7 +176,7 @@ void EventWeekSlots_UpdateWeek(EventWeekSlots*, s32);
 }
 
 extern "C" {
-void Date_GetWeekBoundary(Unk_0203fe18_Date*, s32);
+void Date_GetWeekBoundary(ClockDateTime*, s32);
 }
 
 extern "C" {
@@ -186,9 +187,9 @@ BOOL EventWeek_IsInUnkWeek(Unk_0203fe18_B4);
 
 // prototypes
 extern "C" void EventWeekSlots_ClearWeek(EventWeekSlots *s);
-extern "C" void EventWeekSlots_PlaceVisitors(EventWeekSlots *s, s32 *arr, s32 *cnt, u8 *a, Unk_0203fe18_Date *pd);
-extern "C" void EventWeekSlots_PlacePete(EventWeekSlots *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd);
-extern "C" void EventWeekSlots_PlaceRedd(EventWeekSlots *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd);
+extern "C" void EventWeekSlots_PlaceVisitors(EventWeekSlots *s, s32 *arr, s32 *cnt, u8 *a, ClockDateTime *pd);
+extern "C" void EventWeekSlots_PlacePete(EventWeekSlots *s, s32 *arr, s32 *cnt, ClockDateTime *pd);
+extern "C" void EventWeekSlots_PlaceRedd(EventWeekSlots *s, s32 *arr, s32 *cnt, ClockDateTime *pd);
 extern "C" void EventWeekSlots_MarkPastDays(EventWeekSlots *s);
 extern "C" void EventWeekSlots_UpdateWeek(EventWeekSlots *s, s32 flag);
 extern "C" void EventWeekSlots_Update(void);
@@ -206,7 +207,7 @@ extern "C" void EventWeekSlots_ClearWeek(EventWeekSlots *s) {
     }
 }
 
-extern "C" void EventWeekSlots_PlaceVisitors(EventWeekSlots *s, s32 *arr, s32 *cnt, u8 *a, Unk_0203fe18_Date *pd) {
+extern "C" void EventWeekSlots_PlaceVisitors(EventWeekSlots *s, s32 *arr, s32 *cnt, u8 *a, ClockDateTime *pd) {
     s32 z1 = 0;
     s32 z2 = 0;
     s32 i;
@@ -222,7 +223,7 @@ extern "C" void EventWeekSlots_PlaceVisitors(EventWeekSlots *s, s32 *arr, s32 *c
             }
             e = EventWeekSlots_Get(s, r6 + 1);
             if (e) {
-                Unk_0203fe18_Date d1, d2;
+                ClockDateTime d1, d2;
                 ((s32*)&d1)[0] = z2;
                 ((s32*)&d1)[1] = z2;
                 MI_CpuCopy8(pd, &d1, 8);
@@ -235,7 +236,7 @@ extern "C" void EventWeekSlots_PlaceVisitors(EventWeekSlots *s, s32 *arr, s32 *c
     }
 }
 
-extern "C" void EventWeekSlots_PlacePete(EventWeekSlots *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd) {
+extern "C" void EventWeekSlots_PlacePete(EventWeekSlots *s, s32 *arr, s32 *cnt, ClockDateTime *pd) {
     s32 z1 = 0;
     s32 z2 = 0;
     s32 i;
@@ -251,7 +252,7 @@ extern "C" void EventWeekSlots_PlacePete(EventWeekSlots *s, s32 *arr, s32 *cnt, 
             }
             e = EventWeekSlots_Get(s, r6 + 1);
             if (e) {
-                Unk_0203fe18_Date d1, d2;
+                ClockDateTime d1, d2;
                 ((s32*)&d1)[0] = z2;
                 ((s32*)&d1)[1] = z2;
                 MI_CpuCopy8(pd, &d1, 8);
@@ -263,9 +264,9 @@ extern "C" void EventWeekSlots_PlacePete(EventWeekSlots *s, s32 *arr, s32 *cnt, 
     }
 }
 
-extern "C" void EventWeekSlots_PlaceRedd(EventWeekSlots *s, s32 *arr, s32 *cnt, Unk_0203fe18_Date *pd) {
+extern "C" void EventWeekSlots_PlaceRedd(EventWeekSlots *s, s32 *arr, s32 *cnt, ClockDateTime *pd) {
     Unk_0203fe18_B4 x;
-    Unk_0203fe18_Date c, d, z, cp;
+    ClockDateTime c, d, z, cp;
     if (*cnt > 0) {
         u8 *g = gSaveData;
         s32 o = *cnt ? 0x15e28 : 0x15e28;
@@ -282,8 +283,8 @@ extern "C" void EventWeekSlots_PlaceRedd(EventWeekSlots *s, s32 *arr, s32 *cnt, 
             t = r4 - Clock_GetWeekday();
             if (t >= 0) DateTime_AddDays(&c, t);
             else DateTime_SubDays(&c, -t);
-            x.b.b3 = c.b4;
-            x.b.b2 = c.b3;
+            x.b.b3 = c.month;
+            x.b.b2 = c.day;
             if (!EventWeek_IsInUnkWeek(x)) {
                 EventWeekSlot *e = EventWeekSlots_Get(s, r4);
                 if (e) {
@@ -303,7 +304,7 @@ extern "C" void EventWeekSlots_PlaceRedd(EventWeekSlots *s, s32 *arr, s32 *cnt, 
 
 extern "C" void EventWeekSlots_MarkPastDays(EventWeekSlots *s) {
     volatile s32 z;
-    Unk_0203fe18_Date d, c1, c2;
+    ClockDateTime d, c1, c2;
     u8 arr[84];
     s32 i, r6;
     ((s32*)&d)[0] = 0;
@@ -335,11 +336,11 @@ extern "C" void EventWeekSlots_MarkPastDays(EventWeekSlots *s) {
 }
 
 extern "C" void EventWeekSlots_UpdateWeek(EventWeekSlots *s, s32 flag) {
-    Unk_0203fe18_Date d;
+    ClockDateTime d;
     long long t;
     u8 a[6];
     s32 cnt;
-    Unk_0203fe18_Date c1, c2, c3, c4;
+    ClockDateTime c1, c2, c3, c4;
     s32 arr[5];
     s32 r6, i, idx;
     ((s32*)&d)[0] = 0;
@@ -347,7 +348,7 @@ extern "C" void EventWeekSlots_UpdateWeek(EventWeekSlots *s, s32 flag) {
     t = 0;
     Clock_GetDateTime(&d);
     r6 = Clock_GetWeekday();
-    sEventWeekLastHour = d.b2;
+    sEventWeekLastHour = d.hour;
     DateTime_GetWeekStart(&d, &t);
     if (s->weekStart == 0 || s->weekStart != t || flag != 0) {
         EventWeekSlot *e = EventWeekSlots_Get(s, 1);
@@ -384,13 +385,13 @@ extern "C" void EventWeekSlots_Update(void) {
 extern "C" void EventWeekSlots_UpdateToday(void) {
     if (Game_IsIntroPeriod() != 1) {
         u8 *g = gSaveData;
-        Unk_0203fe18_Date d, c;
+        ClockDateTime d, c;
         EventWeekSlot *e;
         u32 t;
         ((s32*)&d)[0] = 0;
         ((s32*)&d)[1] = 0;
         Clock_GetDateTime(&d);
-        t = d.b2;
+        t = d.hour;
         if (sEventWeekLastHour != t) {
             sEventWeekLastHour = t;
             e = EventWeekSlots_GetToday((EventWeekSlots *)(g + 0x15e18));

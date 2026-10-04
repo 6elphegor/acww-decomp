@@ -16,7 +16,7 @@
 //                                Its C1 f4080 / C2 f40c0 and the volume callback f4010 are defined here.
 //   SndEnvChannel               sound-environment channel, key function vfunc_00 f3700, vtable 0x0213b914; slots f3700 / f36dc / f369c /
 //                                f365c / f3144. No constructor here: main / ov003 / ov004 construct it with inline constructors.
-//   Unk_0213b938 / 954 / 970 : SndEnvChannel   overrides that call the base version (tail calls f3138 / f312c / f3120..f30fc),
+//   RainSndChannel (938) / CreatureSndChannel (954) / SkySndChannel (970) : SndEnvChannel   overrides that call the base version (tail calls f3138 / f312c / f3120..f30fc),
 //                                vtables 0x0213b930 / 0x0213b94c / 0x0213b968
 //   SndSeEmitterKind99 : SndSeEmitterKind1   key function ~SndSeEmitterKind99 (D0 f3e7c, D1 f3eb4; D2 unreferenced, dead-stripped), C1 f3ee4, vtable 0x0213b984
 //   SndSeEmitterKind2 : SndSeEmitter   = dsd's "Unk_0213b9c4" (C1 label _ZN12Unk_0213b9c4C1Ev): no key function, implicit D1 f44a0 / D0 f44c4 and
@@ -198,7 +198,7 @@ public:
 };
 
 // vtable 0x0213b930 (data_0213b938)
-class Unk_0213b938 : public SndEnvChannel {
+class RainSndChannel : public SndEnvChannel {
 public:
     virtual void vfunc_00();           // 0x020f3138
 };
@@ -691,7 +691,7 @@ void SndEnvChannel::update(VecFx32 *pos) {
     flags &= ~1;
 }
 
-void Unk_0213b938::vfunc_00() {
+void RainSndChannel::vfunc_00() {
     SndEnvChannel::vfunc_00();
 }
 

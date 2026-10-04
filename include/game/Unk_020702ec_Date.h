@@ -2,12 +2,9 @@
 #define GAME_UNK_020702EC_DATE_H
 
 #include "types.h"
+#include "sys/ClockDateTime.h"
 
-// Packed date bytes and a bitfield date view (src/main/unk_0206fe80.cpp, unk_02070560.cpp).
-
-struct Unk_020702ec_Date {
-    u8 b0, b1, b2, b3, b4, b5, b6, b7;
-};
+// Bitfield date view (src/main/unk_0206fe80.cpp, unk_02070560.cpp); the date-time record is ClockDateTime.
 
 struct Unk_0206fe80_Bits {
     u32 a : 4;

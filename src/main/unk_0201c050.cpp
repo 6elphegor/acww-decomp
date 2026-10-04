@@ -53,6 +53,7 @@
 #include "talk/VillagerTalkTopics.h"
 #include "talk/TalkTopicMsg.h"
 #include "save/TownId.h"
+#include "npc/VillagerState.h"
 
 
 class VillagerTalk;
@@ -95,7 +96,7 @@ struct MsgString17;
 struct MsgString9B;
 struct RumorVillagerIndex;
 struct RumorVillagerPair;
-struct Unk_02021340_Pad;
+struct VillagerState;
 struct Unk_02021340_Map;
 class VillagerTalkRumorTopics;
 struct TownId;
@@ -127,7 +128,7 @@ struct FishSpawnTable;
 struct Unk_0202c224_Local;
 struct Unk_0202c654_Row;
 struct Unk_0202c92c_Ent;
-struct Unk_0202cb34_Size;
+struct Vec2;
 class VillagerActor;
 class VillagerClothModel;
 struct VillagerTalkTopicFns;
@@ -289,7 +290,6 @@ struct RumorVillagerIndex { s32 v; };
 
 struct RumorVillagerPair { RumorVillagerIndex a, b; };
 
-struct Unk_02021340_Pad { u8 pad_00[0x20]; s32 roomScore; u16 roomBonusFlags; };
 
 struct Unk_02021340_Map { u8 *cells; u32 w; u32 h; };
 
@@ -438,10 +438,6 @@ struct Unk_0202c92c_Ent {
     u8 count;
 };
 
-
-struct Unk_0202cb34_Size {
-    s32 x, y;
-};
 
 
 
@@ -1620,8 +1616,8 @@ static inline u8 *Unk_0202cb34_Cell(TownBlockMap *g, s32 x, s32 y) {
     return NULL;
 }
 
-static inline void Unk_0202cb34_GetSize(TownBlockMap *g, Unk_0202cb34_Size *out) {
-    Unk_0202cb34_Size *ps = (Unk_0202cb34_Size *)&g->width;
+static inline void Unk_0202cb34_GetSize(TownBlockMap *g, Vec2 *out) {
+    Vec2 *ps = (Vec2 *)&g->width;
     out->x = ps->x;
     out->y = ps->y;
 }
@@ -3194,9 +3190,9 @@ extern "C" void InsectPick_GetMissingHabitats(s32 *out, s32 *cnt) {
     flags = 0;
     *cnt = 0;
     if (g != NULL) {
-        Unk_0202cb34_Size sz;
+        Vec2 sz;
         Unk_0202cb34_GetSize(g, &sz);
-        Unk_0202cb34_Size pos;
+        Vec2 pos;
         for (pos.y = 1; pos.y < sz.y - 1; pos.y++) {
             for (pos.x = 1; pos.x < sz.x - 1; pos.x++) {
                 u8 *cell = Unk_0202cb34_Cell(g, pos.x, pos.y);
@@ -9801,10 +9797,10 @@ BOOL VillagerTalkTopics::selectTsuAlways() {
 }
 
 BOOL VillagerTalkRumorTopics::selectTsuHappyroom() {
-    Unk_02021340_Pad *p;
+    VillagerState *p;
     void *ctx = actor->villagerData;
     if (ctx != NULL) {
-        p = ((Unk_02021340_Pad *)Villager_GetState(ctx));
+        p = ((VillagerState *)Villager_GetState(ctx));
     } else {
         p = NULL;
     }

@@ -1,6 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#include "sys/Unk_0209d498_Time.h"
+#include "sys/ClockDateTime.h"
 #include "sys/ProcProfile.h"
 
 
@@ -49,14 +49,14 @@ BOOL NewYearCountdown::onCreate() {
 
 BOOL NewYearCountdown::onExecute() {
     u32 idx = Scene_GetCurrent();
-    Unk_0209d498_Time t;
+    ClockDateTime t;
     ((u32 *)&t)[0] = 0;
     ((u32 *)&t)[1] = 0;
     Clock_GetDateTime(&t);
     if (idx < 0x33) {
         if (sNewYearCountdownScenes[idx] != 0) {
-            if (t.b4 == 0xc && t.b3 == 0x1f) {
-                u32 secs = 0x15180 - (t.b0 + (t.b1 * 0x3c + t.b2 * 0xe10));
+            if (t.month == 0xc && t.day == 0x1f) {
+                u32 secs = 0x15180 - (t.second + (t.minute * 0x3c + t.hour * 0xe10));
                 u32 h = secs / 0xe10;
                 secs = secs - h * 0xe10;
                 u32 m = secs / 0x3c;
@@ -79,8 +79,8 @@ BOOL NewYearCountdown::onExecute() {
                     }
                 }
                 prevSecondDigit = secondDigit;
-            } else if (t.b4 == 1) {
-                if (t.b3 == 1 && t.b2 == 0 && t.b1 == 0 && t.b0 == 0) {
+            } else if (t.month == 1) {
+                if (t.day == 1 && t.hour == 0 && t.minute == 0 && t.second == 0) {
                     if (midnightSePlayed == 0) {
                         Snd_PlaySe(0x61);
                         midnightSePlayed = 1;

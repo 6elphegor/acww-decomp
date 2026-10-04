@@ -3,6 +3,7 @@
 #include "game/Unk_0203f3a0_L.h"
 #include "game/EventDayEntry.h"
 #include "game/Unk_0203f42c_L.h"
+#include "sys/ClockDateTime.h"
 #include "game/Unk_0203fe18_Date.h"
 #include "game/EventWeekSlots.h"
 #include "game/EventCalendarModule.h"
@@ -15,10 +16,10 @@ struct Unk_0203f484_Date {
     u32 b;
 };
 
-struct ClockDateTime {
+struct ClockDateTimeCopy {
     u8 b[8];
-    ClockDateTime() {}
-    ClockDateTime(const ClockDateTime &o) { MI_CpuCopy8(&o, this, 8); }
+    ClockDateTimeCopy() {}
+    ClockDateTimeCopy(const ClockDateTimeCopy &o) { MI_CpuCopy8(&o, this, 8); }
 };
 
 struct Unk_0203f554_CalB {
@@ -111,8 +112,8 @@ void *_ZN12VillagerData13getVillagerIdEv(void *);
 u8 *_ZN10PlayerData11getBirthdayEv(s32);
 
 void Event_RefreshToday(s32);
-void EventSchedule_CollectDay(EventEntryView *, ClockDateTime, s32);
-s32 EventSchedule_Collect(EventEntryView *out, ClockDateTime d, s32 x, s32 y);
+void EventSchedule_CollectDay(EventEntryView *, ClockDateTimeCopy, s32);
+s32 EventSchedule_Collect(EventEntryView *out, ClockDateTimeCopy d, s32 x, s32 y);
 EventDate EventRule_ResolveStart(Unk_0203f554_Sub *, s32, EventDate, u32);
 EventDate EventRule_ResolveEnd(Unk_0203f554_Sub *, s32, EventDate, u32);
 EventDate EventRule_Resolve(Unk_0203f554_Sub *, s32, EventDate, u32);
@@ -257,11 +258,11 @@ extern "C" EventWeekSlot *EventWeekSlots_GetToday(EventWeekSlots *unused) {
     EventWeekSlot *r = 0;
     s32 r4 = Clock_GetWeekday();
     if (r4) {
-        Unk_0203fe18_Date d;
+        ClockDateTime d;
         ((s32*)&d)[0] = 0;
         ((s32*)&d)[1] = 0;
         Clock_GetDateTime(&d);
-        if (d.b2 < 6) r4--;
+        if (d.hour < 6) r4--;
         r = EventWeekSlots_Get((EventWeekSlots *)(g + 0x15e18), r4);
     }
     return r;
@@ -307,10 +308,10 @@ extern "C" void EventWeekSlot_Clear(EventWeekSlot *e) {
     e->playerMask = 0;
 }
 
-extern "C" void EventWeekSlot_Set(EventWeekSlot *e, u8 id, Unk_0203fe18_Date *d) {
+extern "C" void EventWeekSlot_Set(EventWeekSlot *e, u8 id, ClockDateTime *d) {
     EventWeekSlot_Clear(e);
-    ((u8*)e)[1] = d->b4;
-    ((u8*)e)[0] = d->b3;
+    ((u8*)e)[1] = d->month;
+    ((u8*)e)[0] = d->day;
     e->eventId = id;
 }
 
@@ -349,19 +350,19 @@ extern "C" u8 EventRule_ResolveMonth(u32 *self, s32 w0, Unk_0203fe18_B4 d, s32 t
         if (nib == 0) {
             r = b7;
         } else {
-            Unk_0203fe18_Date t;
+            ClockDateTime t;
             s32 n;
             ((u32*)&t)[0] = 0;
             ((u32*)&t)[1] = 0;
             if (type == 0x48) n = -4; else n = self[1];
             ((u32*)&t)[0] = 0;
             ((u32*)&t)[1] = 0;
-            t.b5 = w0;
-            t.b4 = b7;
-            t.b3 = b6;
+            t.year = w0;
+            t.month = b7;
+            t.day = b6;
             if (n < 0) n = -n;
             DateTime_AddDays(&t, n);
-            r = t.b4;
+            r = t.month;
         }
         switch (type) {
         case 0x29:
@@ -781,7 +782,7 @@ extern "C" s32 EventSchedule_Match(EventEntryView *out, EventScheduleRule *t, s3
     return ok;
 }
 
-extern "C" s32 EventSchedule_Collect(EventEntryView *out, ClockDateTime d, s32 x, s32 y) {
+extern "C" s32 EventSchedule_Collect(EventEntryView *out, ClockDateTimeCopy d, s32 x, s32 y) {
     EventScheduleRule *t;
     s32 count = 0;
     u32 year = ((u8 *)&d)[5];
@@ -811,11 +812,11 @@ extern "C" s32 EventSchedule_Collect(EventEntryView *out, ClockDateTime d, s32 x
     return count;
 }
 
-extern "C" void EventSchedule_CollectDay(EventEntryView *a, ClockDateTime d, s32 x) {
+extern "C" void EventSchedule_CollectDay(EventEntryView *a, ClockDateTimeCopy d, s32 x) {
     EventSchedule_Collect(a, d, 0, x);
 }
 
-extern "C" s32 EventSchedule_CollectDayAll(EventEntryView *a, ClockDateTime d) {
+extern "C" s32 EventSchedule_CollectDayAll(EventEntryView *a, ClockDateTimeCopy d) {
     return EventSchedule_Collect(a, d, 1, 0);
 }
 
@@ -824,7 +825,7 @@ extern "C" void Event_RefreshToday(s32 x) {
     d.a = 0;
     d.b = 0;
     Clock_GetDateTime(&d);
-    EventSchedule_CollectDay((EventEntryView *)gTodayEvents.entries, *(ClockDateTime *)&d, x);
+    EventSchedule_CollectDay((EventEntryView *)gTodayEvents.entries, *(ClockDateTimeCopy *)&d, x);
     gTodayEvents.date[2] = ((u8 *)&d)[5];
     gTodayEvents.date[1] = ((u8 *)&d)[4];
     gTodayEvents.date[0] = ((u8 *)&d)[3];

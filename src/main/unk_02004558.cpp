@@ -23,7 +23,6 @@
 #include "game/Unk_0200f6d4_V2.h"
 #include "player/Unk_0200d64c_Xyz.h"
 #include "player/Unk_0200f070_V3.h"
-#include "player/Unk_0200ff08_Obj.h"
 #include "player/Unk_020107c8_Blk.h"
 #include "player/PlayerNetActionArgs.h"
 #include "player/PlayerU16ArgsRequest.h"
@@ -3705,7 +3704,7 @@ s32 PlayerActor::tryInteract() {
         if (((PlayerActor *)this)->interactTarget == 0) {
             if (Character_FindInteractionTarget(((PlayerActor *)this))) return TRUE;
         } else if (!_ZN9Character16checkInteractionEPS_(((PlayerActor *)this)->interactTarget, ((PlayerActor *)this))) {
-            if (((PlayerActor *)this)->interactTarget->vfunc_54(((PlayerActor *)this))) return TRUE;
+            if (((PlayerActor *)this)->interactTarget->acceptsInteractionOutOfRange(((PlayerActor *)this))) return TRUE;
         } else {
             return TRUE;
         }

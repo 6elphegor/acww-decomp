@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "town/TownBlockMap.h"
 #include "game/Unk_02095774_Ent.h"
 #include "net/PlayerNetSync.h"
 #include "item/ItemPickSpec.h"
@@ -232,7 +233,7 @@ void func_02096f10(void *p, s32 v);
 }
 
 extern "C" {
-Unk_02095dcc_Grid *TownBlockMap_Get();
+TownBlockMap *TownBlockMap_Get();
 }
 
 extern "C" {

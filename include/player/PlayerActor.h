@@ -40,7 +40,6 @@ struct Unk_02006d14_Pair;
 struct Unk_0200b750_Pair;
 struct Unk_0200b908_Obj;
 struct Unk_0200f6d4_V2;
-struct Unk_0200ff08_Obj;
 struct Unk_020107c8_Blk;
 
 
@@ -354,7 +353,7 @@ public:
     /* 0x134 */ s16 inputAngle;
     /* 0x136 */ u8 inputRun;
     /* 0x137 */ u8 interactPressed;
-    /* 0x138 */ Unk_0200ff08_Obj *interactTarget;
+    /* 0x138 */ Character *interactTarget;
     /* 0x13c */ u8 actionPressed;
     /* 0x13d */ u8 actionHeld;
     /* 0x13e */ u8 pad_13e[2];

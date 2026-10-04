@@ -136,9 +136,6 @@ struct Unk_ov003_0220bc84_Pair {
 struct Unk_ov003_0220c4ac_Rec {
     u8 a, b, c;
 };
-struct Unk_ov003_0220e030_P2 {
-    s32 x, z;
-};
 struct Unk_ov003_0220e970_Rec {
     u8 b0, b1, b2, b3;
 };
@@ -2333,7 +2330,7 @@ typedef PlayerActor Obj;
 typedef VecFx32Ctor V3;
 typedef PlayerActionRequest Msg;
 extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s16 c);
-typedef Unk_ov003_0220e030_P2 P2;
+typedef VecXZ P2;
 
 extern "C" {
 extern void *gCommManager;
@@ -2461,10 +2458,6 @@ extern "C" s32 PlayerActor_MainAxeBrokenMessage(Obj *o);
 
 namespace ns_0220e970 {
 
-struct Unk_ov003_0220e970_P2 {
-    s32 x, z;
-};
-
 struct Unk_ov003_0220e970_Pv {
     s32 x, z;
     Unk_ov003_0220e970_Pv() {}
@@ -2497,7 +2490,7 @@ typedef PlayerActor Obj;
 typedef VecFx32 V3;
 typedef PlayerActionRequest Msg;
 extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s16 c);
-typedef Unk_ov003_0220e970_P2 P2;
+typedef VecXZ P2;
 typedef Unk_ov003_0220e970_Pv Pv;
 typedef Unk_ov003_0220e970_Rec Rec;
 typedef Unk_ov003_0220e970_Mtx Mtx;
@@ -6457,7 +6450,7 @@ extern "C" s32 PlayerActor_RequestFishCast(Obj *o, V3 *v, s32 a, s16 b) {
     t.x = v->x;
     t.y = v->y;
     t.z = v->z;
-    PlayerActor_FishCastSetArgs((Unk_ov003_0220e030_P2 *)m.unk_0c_b, &t);
+    PlayerActor_FishCastSetArgs((VecXZ *)m.unk_0c_b, &t);
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }

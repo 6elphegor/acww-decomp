@@ -10,6 +10,7 @@
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
 #include "net/CommManager.h"
+#include "nitro/gxoam.h"
 
 // Calls into other modules' class methods: extern "C" functions named by the real mangled symbol (self first).
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
@@ -173,12 +174,7 @@ extern u32 data_ov119_02295748[12];
 extern u32 data_ov119_02295778[12];
 extern u32 data_ov119_022957a8[12];
 extern u32 data_ov119_022957d8[24];
-struct Unk_ov119_02295588 {
-    u32 attr01;
-    u16 attr2;
-    u16 attr3;
-};
-extern Unk_ov119_02295588 data_ov119_02295588;
+extern GXOamAttr data_ov119_02295588;
 }
 
 
@@ -494,7 +490,7 @@ extern "C" u32 data_ov119_022956a8[10];
 extern "C" void *data_ov119_02295628[2];
 extern "C" void *data_ov119_022955b8[2];
 extern "C" u32 data_ov119_02295748[12];
-extern "C" Unk_ov119_02295588 data_ov119_02295588;
+extern "C" GXOamAttr data_ov119_02295588;
 extern "C" void *data_ov119_022955a8[2];
 extern "C" void *data_ov119_02295598[2];
 extern "C" void *data_ov119_022955c0[2];
@@ -1998,7 +1994,7 @@ extern "C" void *data_ov119_022955b8[2] = {(void *)_ZN15FriendRosterTab9mainAct1
 
 extern "C" u32 data_ov119_02295748[12] = {0x40490027, 0x0000b0d0, 0x00598027, 0x0000b0d2, 0x80424025, 0x0000b50b, 0x00628025, 0x0000b50f, 0x40424035, 0x0000b54b, 0x00620035, 0xffffb54f};
 
-extern "C" Unk_ov119_02295588 data_ov119_02295588 = {0x419700f0, 0xa1a0, 0xffff};
+extern "C" GXOamAttr data_ov119_02295588 = {0x419700f0, 0x1a0, 0, 0xa, 0xffff};
 
 extern "C" void *data_ov119_022955a8[2] = {(void *)_ZN15FriendRosterTab9mainAct01Ev, 0};
 

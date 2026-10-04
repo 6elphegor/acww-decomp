@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/sp2
 // mwcc-flags: -O4,s
 #include "types.h"
-#include "sys/Unk_0209d498_Time.h"
+#include "sys/ClockDateTime.h"
 #include "gfx/NNSG3dRS.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkWindowState.h"
@@ -188,11 +188,11 @@ BOOL CountdownSign::postDraw(s32 a) {
 }
 
 BOOL CountdownSign::onExecute() {
-    Unk_0209d498_Time t;
+    ClockDateTime t;
     ((u32 *)&t)[0] = 0;
     ((u32 *)&t)[1] = 0;
     Clock_GetDateTime(&t);
-    u32 secs = 0x15180 - (t.b0 + (t.b1 * 0x3c + t.b2 * 0xe10));
+    u32 secs = 0x15180 - (t.second + (t.minute * 0x3c + t.hour * 0xe10));
     sCountdownSeconds = secs;
     u32 h = sCountdownSeconds / 0xe10;
     sCountdownHours = h;

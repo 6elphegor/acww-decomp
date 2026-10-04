@@ -1,6 +1,6 @@
 #include "types.h"
 #include "sys/StackPad.h"
-#include "sys/Unk_0206d8b8_Pair.h"
+#include "nitro/fs.h"
 #include "talk/MsgStringAttr.h"
 #include "talk/EncodedStringBase.h"
 #include "talk/EncodedString.h"
@@ -109,12 +109,12 @@ void Clock_Update(u32 v);
 void OS_SleepThread(void *p);
 void Backup_GetStatus(void *p);
 void FS_InitFile(void *f);
-BOOL FS_OpenFileFast(void *f, Unk_0206d8b8_Pair p);
+BOOL FS_OpenFileFast(void *f, FSFileID p);
 void FS_CloseFile(void *f);
 void File_ReadRange(void *f, void *dst, u32 sz, u32 off);
 void FS_ConvertPathToFileID(void *p, void *q);
 void *Mem_Alloc(u32 n);
-void File_ReadRangeById(Unk_0206d8b8_Pair p, void *dst, u32 n, s32 z);
+void File_ReadRangeById(FSFileID p, void *dst, u32 n, s32 z);
 void *Snd_MelodyUpdate(void *p);
 void Snd_MelodyInit(void *p);
 s32 Melody_ApplyEditPattern(void);

@@ -14,6 +14,7 @@
 #include "field/FieldAction.h"
 #include "actor/Actor.h"
 #include "gfx/SPLResource.h"
+#include "game/GroundInfoBase.h"
 
 // ================================================================ other modules' real names
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
@@ -96,10 +97,6 @@ struct TreeLeafFxCbs {
     /* 0x00 */ EffectEmitterCbs emitters[2];
 };
 
-// unit x / z pair (A01 vector-shape candidate); TreeAnim / TreeAnimRequest member, also used by ns_0221aed4
-struct Unk_ov003_0221aed4_Raw2 {
-    s32 x, z;
-};
 
 // fx32 animation frame as bitfields (A01 copy set of AnimFrameCtrl::curFrame views)
 struct Unk_ov003_0221b8bc_Bits {
@@ -132,7 +129,7 @@ struct TreeAnim {
     /* 0x0c0 */ s32 posX;
     /* 0x0c4 */ s32 posY;
     /* 0x0c8 */ s32 posZ;
-    /* 0x0cc */ Unk_ov003_0221aed4_Raw2 unit;
+    /* 0x0cc */ VecXZ unit;
     /* 0x0d4 */ s32 animKind;
     /* 0x0d8 */ s32 alpha;
     /* 0x0dc */ s32 leafSpawnCount;
@@ -147,7 +144,7 @@ struct TreeAnim {
 struct TreeAnimRequest {
     /* 0x00 */ s32 active;
     /* 0x04 */ s32 sessionSlot;
-    /* 0x08 */ Unk_ov003_0221aed4_Raw2 unit;
+    /* 0x08 */ VecXZ unit;
     /* 0x10 */ s32 animKind;
     /* 0x14 */ s32 isChop;
 };
@@ -442,12 +439,6 @@ extern "C" { s32 FieldItemFx_StartFillHole(s32 type, s32 v); }
 }
 
 namespace ns_0221a4a0 {
-struct Unk_ov003_0221a4a0_Buf {
-    u8 pad_00[0x30];
-    s32 waterKind;
-    u8 pad_34[8];
-    s32 waterSurfaceY;
-};
 struct Unk_ov003_0221a4a0 {
     /* 0x00 */ u32 sessionSlot;
     /* 0x04 */ s32 active;
@@ -486,8 +477,8 @@ extern s16 data_02135f44[];
 extern s32 sItemPopScaleXZ[];
 extern s32 sItemPopScaleY[];
 
-void GroundInfo_initAtPos(Unk_ov003_0221a4a0_Buf *b, void *pos, s32 a, s32 c);
-void GroundInfo_Destruct(Unk_ov003_0221a4a0_Buf *b);
+void GroundInfo_initAtPos(GroundInfoBase *b, void *pos, s32 a, s32 c);
+void GroundInfo_Destruct(GroundInfoBase *b);
 void VEC_Add(void *a, void *b, void *out);
 void Vec_Add(VecFx32 *out, void *m, VecFx32 *v);
 s32 EffectSpl_CreateOneShot(s32 id, void *v, s32 c, void *cb);
@@ -577,7 +568,7 @@ struct Unk_ov003_0221aed4_P2 {
     s32 x, z;
     Unk_ov003_0221aed4_P2(s32 a, s32 b) { x = a; z = b; }
     Unk_ov003_0221aed4_P2(const Unk_ov003_0221aed4_P2 &o) { x = o.x; z = o.z; }
-    Unk_ov003_0221aed4_P2(const Unk_ov003_0221aed4_Raw2 &o) { x = o.x; z = o.z; }
+    Unk_ov003_0221aed4_P2(const VecXZ &o) { x = o.x; z = o.z; }
 };
 typedef Unk_ov003_0221aed4_P2 P2;
 typedef VecFx32Copy V3;
@@ -906,9 +897,6 @@ struct Unk_ov003_0221d118_K : VecFx32 {
     ~Unk_ov003_0221d118_K() {}
 };
 typedef Unk_ov003_0221d118_K V3k;
-struct Unk_ov003_0221cb54_Raw2 {
-    s32 x, z;
-};
 struct Unk_ov003_0221cb54_Col {
     volatile u16 a, b, c;
 };
@@ -919,7 +907,7 @@ typedef Unk_ov003_0221d37c_Blk Blk;
 typedef FieldObjectManager O;
 typedef Unk_ov003_0221cb54_P2 P2;
 typedef VecFx32Copy V3;
-typedef Unk_ov003_0221cb54_Raw2 R2;
+typedef VecXZ R2;
 typedef Unk_ov003_0221cb54_Col Col;
 inline Unk_ov003_0221cb54_P2::Unk_ov003_0221cb54_P2(Unk_ov003_0221cb54_Col *c) { x = (s32)c->a >> 8; z = c->b & 0xff; }
 extern "C" {
@@ -6350,13 +6338,13 @@ extern "C" void FieldItemFx_ReleasePending(Unk_ov003_0221aed4_Fx *self)
 {
     if (self->pendingApply != 0) {
         self->pendingApply = 0;
-        Unk_ov003_0221aed4_Raw2 t;
+        VecXZ t;
         t.x = self->unitX;
         t.z = self->unitZ;
         PendingUnit_ApplyAt(&t, 0);
     } else if (self->pendingCommit != 0) {
         self->pendingCommit = 0;
-        Unk_ov003_0221aed4_Raw2 t;
+        VecXZ t;
         t.x = self->unitX;
         t.z = self->unitZ;
         PendingUnit_CommitAt(&t, 0);
@@ -6383,7 +6371,7 @@ extern "C" void FieldItemFx_Init(Unk_ov003_0221aed4_Fx *self, s32 a, P2 p, V3 po
     self->offsetY = 0;
     self->offsetZ = 0;
     {
-        Unk_ov003_0221aed4_Raw2 t;
+        VecXZ t;
         t.x = self->unitX;
         t.z = self->unitZ;
         s32 i = PendingUnit_Find(&t, 0);
@@ -6560,7 +6548,7 @@ extern "C" void FieldItemFx_InitDigHole(Unk_ov003_0221aed4_Fx *self, P2 p, void 
     if (c != 0) {
         s32 r = BlockMap_IsBuriedAtUnit(g, p.x, p.z);
         if (Item_IsFlower(c) != 0) {
-            Unk_ov003_0221aed4_Raw2 q;
+            VecXZ q;
             q.x = p.x;
             q.z = p.z;
             Flower_SpawnPetalFx(c, &q, 0, 0);
@@ -6569,12 +6557,12 @@ extern "C" void FieldItemFx_InitDigHole(Unk_ov003_0221aed4_Fx *self, P2 p, void 
             u32 v = *c;
             if (v >= 0x21 && v <= 0x24) f = TRUE;
             if (f || (v >= 0x1f && v <= 0x20)) {
-                Unk_ov003_0221aed4_Raw2 q;
+                VecXZ q;
             q.x = p.x;
             q.z = p.z;
                 Weed_SpawnPullFx(c, &q);
             } else if (v == 0xe2) {
-                Unk_ov003_0221aed4_Raw2 q;
+                VecXZ q;
             q.x = p.x;
             q.z = p.z;
                 DeadTurnip_SpawnDigFx(&q);
@@ -7061,7 +7049,7 @@ extern "C" void FieldItemFx_InitBalloonDrop(Unk_ov003_0221a4a0 *self, VecFx32 *p
 namespace ns_0221a4a0 {
 extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
 {
-    Unk_ov003_0221a4a0_Buf b;
+    GroundInfoBase b;
     VecFx32 v;
     GroundInfo_initAtPos(&b, &self->posX, 0, 0);
     if (b.waterKind != 0) {

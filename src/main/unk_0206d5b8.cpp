@@ -1,6 +1,6 @@
 #include "types.h"
 #include "sys/StackPad.h"
-#include "sys/Unk_0206d8b8_Pair.h"
+#include "nitro/fs.h"
 #include "talk/MsgStringAttr.h"
 #include "sys/RecordFile.h"
 #include "talk/EncodedStringBase.h"
@@ -364,7 +364,7 @@ void FS_InitFile(void *f);
 }
 
 extern "C" {
-BOOL FS_OpenFileFast(void *f, Unk_0206d8b8_Pair p);
+BOOL FS_OpenFileFast(void *f, FSFileID p);
 }
 
 extern "C" {
@@ -384,7 +384,7 @@ void *Mem_Alloc(u32 n);
 }
 
 extern "C" {
-void File_ReadRangeById(Unk_0206d8b8_Pair p, void *dst, u32 n, s32 z);
+void File_ReadRangeById(FSFileID p, void *dst, u32 n, s32 z);
 }
 
 extern "C" {
@@ -444,7 +444,7 @@ extern "C" u32 Main_InitDwc(void);
 extern "C" u8 Main_TakeDwcInitResult(void);
 
 RecordFile::RecordFile() {
-    fileId.a = 0;
+    fileId.arc = 0;
     pageIndex = -1;
     recordCount = 0;
     data = 0;
@@ -481,7 +481,7 @@ void RecordFile::freeAll() {
 }
 
 void RecordFile::close() {
-    fileId.a = 0;
+    fileId.arc = 0;
     pageIndex = -1;
     recordCount = 0;
     recordSize = 0;

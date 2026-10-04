@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/ClockDateTime.h"
 #include "game/Unk_020702ec_Date.h"
 #include "save/MuseumData.h"
 #include "item/Letter.h"
@@ -149,11 +150,11 @@ BOOL MuseumData::isDonated(u16 *id) {
 void MuseumData::checkCompletionLetters() {
     if (_ZN8SaveData8testFlagEj(gSaveData, 3) == 0) {
         if (isComplete()) {
-            Unk_020702ec_Date t;
+            ClockDateTime t;
             ((u32 *)&t)[0] = 0;
             ((u32 *)&t)[1] = 0;
             Clock_GetDateTime(&t);
-            if (completeYear != t.b5 || completeMonth != t.b4 || completeDay != t.b3) {
+            if (completeYear != t.year || completeMonth != t.month || completeDay != t.day) {
                 if (sendCompletionLetters()) _ZN8SaveData7setFlagEj(gSaveData, 3);
             }
         }

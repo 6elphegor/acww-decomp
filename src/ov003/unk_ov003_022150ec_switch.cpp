@@ -1,7 +1,6 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -O4,s
 #include "types.h"
-#include "sys/Unk_0209d498_Time.h"
 #include "field/Unk_ov003_02214494_Views.h"
 #include "gfx/NNSG3dRS.h"
 #include "talk/TalkWindowState.h"

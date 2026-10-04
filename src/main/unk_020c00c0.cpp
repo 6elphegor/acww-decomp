@@ -7,7 +7,7 @@
 #include "player/PlayerData.h"
 #include "snd/SndEnvChannel.h"
 #include "game/WeatherRecord.h"
-#include "snd/Unk_0213b938.h"
+#include "snd/RainSndChannel.h"
 #include "game/SkyProc.h"
 #include "actor/SpNpcActor.h"
 #include "talk/SpNpcTalkRequest.h"

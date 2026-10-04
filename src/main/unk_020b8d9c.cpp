@@ -12,7 +12,7 @@
 #include "game/WeatherRecord.h"
 #include "item/Letter.h"
 #include "game/FxVec3.h"
-#include "snd/Unk_0213b938.h"
+#include "snd/RainSndChannel.h"
 #include "snd/SkySndChannel.h"
 #include "game/SkyProc.h"
 #include "actor/Actor.h"
@@ -41,7 +41,7 @@ struct SkyObjGfxLoader;
 struct SkyShotRequest;
 struct SndEnvChannel;
 struct SkySndChannel;
-struct Unk_0213b938;
+struct RainSndChannel;
 struct FxVec3;
 struct SkySePlayer;
 struct SkyShotSequence;
@@ -6629,10 +6629,10 @@ extern "C" {
 s32 NNS_G3dGlbMaterialColorSpecEmi(s32, u32, s32);
 }
 
-extern "C" void RainSe_InitVolume(Unk_0213b938 *p);
+extern "C" void RainSe_InitVolume(RainSndChannel *p);
 extern "C" void RainSe_Release(void *p);
-extern "C" void RainSe_Update(Unk_0213b938 *p);
-extern "C" void RainSe_Init(Unk_0213b938 *p);
+extern "C" void RainSe_Update(RainSndChannel *p);
+extern "C" void RainSe_Init(RainSndChannel *p);
 extern "C" u8 Sky_GetLightParam(s32 i);
 extern "C" s16 Sky_GetLightColor(s32 i);
 extern "C" void Sky_UpdateLighting(s32 a, s32 b);
@@ -6999,12 +6999,12 @@ extern "C" u8 Sky_GetLightParam(s32 i) {
     return data_021ef690[i];
 }
 
-extern "C" void RainSe_Init(Unk_0213b938 *p) {
+extern "C" void RainSe_Init(RainSndChannel *p) {
     RainSe_InitVolume(p);
     _ZN13SndEnvChannel9callResetEv(p);
 }
 
-extern "C" void RainSe_Update(Unk_0213b938 *p) {
+extern "C" void RainSe_Update(RainSndChannel *p) {
     s32 v[3];
     if (p->volume != 0) {
         s32 k = sRainSeIds[Scene_GetSkyKind(0)];
@@ -7022,7 +7022,7 @@ extern "C" void RainSe_Release(void *p) {
     _ZN13SndEnvChannel11callReleaseEv(p);
 }
 
-extern "C" void RainSe_InitVolume(Unk_0213b938 *p) {
+extern "C" void RainSe_InitVolume(RainSndChannel *p) {
     BOOL a = gWeatherManager.level == 3;
     BOOL b = gWeatherManager.level == 4;
     BOOL c = gWeatherManager.precipKind == 1;
@@ -7060,7 +7060,7 @@ extern "C" {
 void Color_Lerp(u16 *d, u16 *s1, u16 *s2, s32 t);
 }
 extern "C" {
-void RainSe_FadeVolume(Unk_0213b938 *o);
+void RainSe_FadeVolume(RainSndChannel *o);
 }
 extern "C" {
 BOOL Gfx2d_LoadScreen(void *p, s32 a, s32 b, s32 off);
@@ -7167,9 +7167,9 @@ extern "C" void Color_Lerp6(u16 *d, u16 *s1, u16 *s2, s32 t);
 extern "C" void Color_Lerp(u16 *d, u16 *s1, u16 *s2, s32 t);
 extern "C" BOOL Sky_AllocPaletteBufs(u16 **p);
 extern "C" BOOL Sky_LoadPaletteFiles();
-extern "C" void RainSe_FadeVolume(Unk_0213b938 *o);
+extern "C" void RainSe_FadeVolume(RainSndChannel *o);
 
-extern "C" void RainSe_FadeVolume(Unk_0213b938 *o) {
+extern "C" void RainSe_FadeVolume(RainSndChannel *o) {
     s32 a = gWeatherManager.targetLevel == 3;
     s32 b = gWeatherManager.targetLevel == 4;
     s32 on = gWeatherManager.precipKind == 1;

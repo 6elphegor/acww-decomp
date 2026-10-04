@@ -1,5 +1,5 @@
 #include "types.h"
-#include "gfx/Unk_0208d154_Sub.h"
+#include "text/Unk_02050288.h"
 #include "ui/NameLabelBalloonView.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
@@ -142,7 +142,7 @@ void NameLabelBalloon::applyKindAnim() {
 
 void NameLabelBalloon::fitToLabel() {
     if (textLabel != 0) {
-        s32 len = textLabel->vfunc_0c();
+        s32 len = textLabel->measureWidth();
         u32 n = (u32)(len + 7) >> 3;
         s32 idx = anim.getSeq()->frameCount - 1;
         s32 t = n - 1;

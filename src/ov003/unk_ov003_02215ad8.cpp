@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU09 (actor 0223177c): .text 0x02215ad8-0x02215c74
 #include "types.h"
-#include "sys/Unk_0209d498_Time.h"
+#include "sys/ClockDateTime.h"
 #include "talk/MsgString9B.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkWindowState.h"
@@ -97,12 +97,12 @@ BOOL KatrinaTent::onExecute() {
 }
 
 BOOL KatrinaTent::isOpen() {
-    Unk_0209d498_Time t;
+    ClockDateTime t;
     ((u32 *)&t)[0] = 0;
     ((u32 *)&t)[1] = 0;
     Clock_GetDateTime(&t);
     BOOL r;
-    if (t.b2 >= 6) {
+    if (t.hour >= 6) {
         if (createHour < 6) r = FALSE;
         else r = TRUE;
     } else {

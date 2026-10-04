@@ -108,10 +108,6 @@ struct RouteJunction {
     };
 };
 
-// unk_02012810.cpp
-struct Unk_020130f0_Dir {
-    s32 x, z;
-};
 
 
 // Villager route planner (0x9c bytes, FieldVillagerAi member in ov068): unit-grid path search over gSceneBlockMap
@@ -159,7 +155,7 @@ struct VillagerRoute {
     void pushJunction(u32 hi, u32 lo, RouteGridPos *p);
     s32 scanDir(RouteGridPos *out, Unk_02012e08_Pos pos, u32 mask, RouteGridPos *lim, BlockMap *obj);
     u32 pickAdjacentUnit(VecFx32 *v, BlockMap *o);
-    s32 scanForPath(VecFx32 *cand, RouteGridPos *p, Unk_020130f0_Dir *d, s32 limit, RouteGridPos *q, s32 flag, BlockMap *o);
+    s32 scanForPath(VecFx32 *cand, RouteGridPos *p, VecXZ *d, s32 limit, RouteGridPos *q, s32 flag, BlockMap *o);
     u32 findNearestPath(RouteGridPos *out, VecFx32 *pos);
     void planStep(VecFx32 *pos);
     s32 countJunctions();
@@ -545,7 +541,7 @@ void VillagerRoute_PickAttr200Target(Vec2 *out, void *self);
 // ---- unk_02012810.cpp
 namespace nC {
 extern "C" {
-namespace nC2 { extern Unk_020130f0_Dir sRouteDirs[4]; }
+namespace nC2 { extern VecXZ sRouteDirs[4]; }
 void _ZN13VillagerRoute12rememberUnitEj(void *self, VecFx32 *v);
 extern s32 sRouteDirs[];
 extern BlockMap *gSceneBlockMap;
@@ -598,7 +594,7 @@ BOOL _ZN8BlockMap12getWalkLinksEii(void* p, u32 x, u32 y);
 void FieldPos_FromUnitCenter(void* p, u32 x, u32 y);
 void FieldPos_ToUnit(u32* a, u32* b, u32 c);
 void MI_CpuFill8(void* p, u32 v, u32 n);
-BOOL _ZN13VillagerRoute11scanForPathEP7VecFx32P12RouteGridPosP16Unk_020130f0_DiriS3_iP8BlockMap(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q);
+BOOL _ZN13VillagerRoute11scanForPathEP7VecFx32P12RouteGridPosP5VecXZiS3_iP8BlockMap(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q);
 extern VillagerRouteType sVillagerRouteTypes[];
 s32 _ZN8NpcActor19getTeachableEmotionEv();
 s32 Emotion_FindSlot(u32 v);
@@ -8154,7 +8150,7 @@ BOOL VillagerRoute::isActive() {
 }
 
 namespace nD {
-extern "C" BOOL _ZN13VillagerRoute11scanForPathEP7VecFx32P12RouteGridPosP16Unk_020130f0_DiriS3_iP8BlockMap(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q) {
+extern "C" BOOL _ZN13VillagerRoute11scanForPathEP7VecFx32P12RouteGridPosP5VecXZiS3_iP8BlockMap(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q) {
     s32 i;
     u32 x = pos[0];
     u32 y = pos[1];
@@ -8193,8 +8189,8 @@ u32 VillagerRoute::pickAdjacentUnit(VecFx32 *v, BlockMap *o) {
     n = 0;
     FieldPos_ToBlockUnit2(&a, &c, v);
     for (i = 0; i < 4; i++) {
-        u32 x = c.x + ((Unk_020130f0_Dir *)sRouteDirs)[i].x;
-        u32 z = c.z + ((Unk_020130f0_Dir *)sRouteDirs)[i].z;
+        u32 x = c.x + ((VecXZ *)sRouteDirs)[i].x;
+        u32 z = c.z + ((VecXZ *)sRouteDirs)[i].z;
         if (x < 16 && z < 16) {
             FieldUnit_FromBlockUnit(&out.x, &out.z, a.x, a.z, x, z);
             if (TownMap_IsUnitWalkable(out.x, out.z, o) != 0) {
@@ -8252,7 +8248,7 @@ u32 VillagerRoute::findNearestPath(RouteGridPos *out, VecFx32 *pos) {
     z0 = p.z & 0xfff0;
     x1 = x0 + 16;
     z1 = z0 + 16;
-    if (scanForPath(&cand[0], &p, ((Unk_020130f0_Dir *)sRouteDirs), p.z - z0, &q, flag, o)) {
+    if (scanForPath(&cand[0], &p, ((VecXZ *)sRouteDirs), p.z - z0, &q, flag, o)) {
         mask |= 1;
     }
     if (scanForPath(&cand[2], &p, &nC2::sRouteDirs[2], z1 - p.z, &q, flag, o)) {

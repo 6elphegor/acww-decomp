@@ -228,12 +228,8 @@ struct TurnipMarket {
 
 // ---- position pair ----
 
-// ---- tail ----
-struct Unk_02086af0_Off {
-    s32 x, z;
-};
 
-extern const Unk_02086af0_Off sGulliverSpotOffsets[];
+extern const VecXZ sGulliverSpotOffsets[];
 
 extern const s16 sGulliverRepairedAngles[];
 
@@ -1604,8 +1600,8 @@ void VisitorSpawnFlags::setVisitorSpawned() { visitorSpawned = 1; }
 void VisitorSpawnFlags::getGulliverSpawn(void *v, u16 *out, VecFx32 *p) {
     if (gulliverSpotRolled == 0) _ZN17VisitorSpawnFlags16rollGulliverSpotEv(this);
     VecFx32 t;
-    const Unk_02086af0_Off *tb = sGulliverSpotOffsets;
-    const Unk_02086af0_Off *e = &tb[gulliverSpot];
+    const VecXZ *tb = sGulliverSpotOffsets;
+    const VecXZ *e = &tb[gulliverSpot];
     s32 z = p->z + e->z;
     s32 x = p->x + tb[gulliverSpot].x;
     t.x = x;
@@ -2294,7 +2290,7 @@ extern const u8 data_020cf328[0x230];
 extern char data_020e0c7c[];
 extern u8 data_020e0c4c[4];
 extern u32 sKatieSpotRows[0x20];
-extern const Unk_02086af0_Off sGulliverSpotOffsets[3];
+extern const VecXZ sGulliverSpotOffsets[3];
 extern u8 data_020e0c50[4];
 extern char data_020e0c58[];
 extern char data_020e0c98[];
@@ -2367,7 +2363,7 @@ u8 data_020e0c4c[4] = {0x7, 0, 0, 0};
 
 u32 sKatieSpotRows[0x20];
 
-const Unk_02086af0_Off sGulliverSpotOffsets[3] = {{0, 0x4000}, {-0x4000, 0}, {0x4000, 0}};
+const VecXZ sGulliverSpotOffsets[3] = {{0, 0x4000}, {-0x4000, 0}, {0x4000, 0}};
 
 u8 data_020e0c50[4] = {0xf, 0, 0, 0};
 

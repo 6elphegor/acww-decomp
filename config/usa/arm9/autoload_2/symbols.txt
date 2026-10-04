@@ -572,7 +572,7 @@ _ZN13SkySndChannel8vfunc_00Ev kind:label(arm) addr:0x020f3120
 func_020f312c kind:function(arm,size=0xc) addr:0x020f312c
 _ZN18CreatureSndChannel8vfunc_00Ev kind:label(arm) addr:0x020f312c
 func_020f3138 kind:function(arm,size=0xc) addr:0x020f3138
-_ZN12Unk_0213b9388vfunc_00Ev kind:label(arm) addr:0x020f3138
+_ZN14RainSndChannel8vfunc_00Ev kind:label(arm) addr:0x020f3138
 _ZN13SndEnvChannel6updateEP7VecFx32 kind:function(arm,size=0x48c) addr:0x020f3144
 Snd_CalcSeVolume kind:function(arm,size=0x8c) addr:0x020f35d0
 _ZN13SndEnvChannel7requestEj kind:function(arm,size=0x40) addr:0x020f365c
@@ -2336,7 +2336,7 @@ _ZTV10SndScene99 kind:data(any) addr:0x0213b878
 _ZTV10SndScene01 kind:data(any) addr:0x0213b8ac
 _ZTV12SndSceneBase kind:data(any) addr:0x0213b8e0
 _ZTV13SndEnvChannel kind:data(any) addr:0x0213b914
-_ZTV12Unk_0213b938 kind:data(any) addr:0x0213b930
+_ZTV14RainSndChannel kind:data(any) addr:0x0213b930
 _ZTV18CreatureSndChannel kind:data(any) addr:0x0213b94c
 _ZTV13SkySndChannel kind:data(any) addr:0x0213b968
 _ZTV18SndSeEmitterKind99 kind:data(any) addr:0x0213b984

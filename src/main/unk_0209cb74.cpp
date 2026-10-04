@@ -1,4 +1,5 @@
 #include "types.h"
+#include "nitro/os_rtc.h"
 
 struct ClockOffset {
     u32 minutes;
@@ -43,12 +44,6 @@ struct ClockDateTime {
     u8 unk_07;
 };
 
-struct Unk_0209d4c0_Date {
-    s32 year, month, day, week;
-};
-struct Unk_0209d4c0_Time {
-    s32 hour, min, sec;
-};
 
 // rodata
 extern const u8 sDaysInMonthLeap[12];
@@ -80,7 +75,7 @@ void DateTime_AddYears(ClockDateTime *p, s32 n);
 s32 DateTime_DiffMinutes(ClockDateTime *a, ClockDateTime *b);
 s32 DateTime_DiffDays(ClockDateTime *a, ClockDateTime *b);
 void Clock_ReadAdjusted(s32 *out);
-void Clock_ReadRtc(Unk_0209d4c0_Date *d, Unk_0209d4c0_Time *t);
+void Clock_ReadRtc(RTCDate *d, RTCTime *t);
 s32 Date_GetWeatherPeriod(Unk_0209cc08_T *t);
 s32 Date_GetSeasonPeriod(Unk_0209cc08_T *t);
 s32 Date_IsAfterOrEqual(u8 *a, u8 *b);
@@ -217,7 +212,7 @@ extern "C" void LetterStorage_MarkValid(LetterStorageBlock *p) {
     p->validMarker = 2;
 }
 
-extern "C" void Clock_ReadRtc(Unk_0209d4c0_Date *d, Unk_0209d4c0_Time *t) {
+extern "C" void Clock_ReadRtc(RTCDate *d, RTCTime *t) {
     RTC_GetDateTime(d, t);
     if (d->year == 0 && d->month == 1 && d->day == 1) {
         d->week = 6;
@@ -225,13 +220,13 @@ extern "C" void Clock_ReadRtc(Unk_0209d4c0_Date *d, Unk_0209d4c0_Time *t) {
 }
 
 extern "C" void Clock_ReadAdjusted(s32 *out) {
-    Unk_0209d4c0_Date d;
-    Unk_0209d4c0_Time t;
+    RTCDate d;
+    RTCTime t;
     Clock_ReadRtc(&d, &t);
-    Unk_0209d4c0_Date d2 = d;
+    RTCDate d2 = d;
     out[0] = d2.year; out[1] = d2.month; out[2] = d2.day; out[3] = d2.week;
-    Unk_0209d4c0_Time t2 = t;
-    out[4] = t2.hour; out[5] = t2.min; out[6] = t2.sec;
+    RTCTime t2 = t;
+    out[4] = t2.hour; out[5] = t2.minute; out[6] = t2.second;
     s32 a = *(s32 *)(data_021ed2d0 + 0x34);
     s16 b = *(s16 *)(data_021ed2d0 + 0x38);
     ZeroedClockDateTime2 dtl;
@@ -239,8 +234,8 @@ extern "C" void Clock_ReadAdjusted(s32 *out) {
     dtl.month = d.month;
     dtl.day = d.day;
     dtl.hour = t.hour;
-    dtl.minute = t.min;
-    dtl.second = t.sec;
+    dtl.minute = t.minute;
+    dtl.second = t.second;
     if (a < 0) {
         DateTime_SubMinutes(&dtl, Unk_0209d0e4_Abs(a));
     } else {
@@ -256,13 +251,13 @@ extern "C" void Clock_ReadAdjusted(s32 *out) {
     d.month = dtl.month;
     d.day = dtl.day;
     t.hour = dtl.hour;
-    t.min = dtl.minute;
-    t.sec = dtl.second;
+    t.minute = dtl.minute;
+    t.second = dtl.second;
     d.week = Date_GetWeekday((u8)d.year, (u8)d.month, (u8)d.day);
-    Unk_0209d4c0_Date d3 = d;
+    RTCDate d3 = d;
     out[0] = d3.year; out[1] = d3.month; out[2] = d3.day; out[3] = d3.week;
-    Unk_0209d4c0_Time t3 = t;
-    out[4] = t3.hour; out[5] = t3.min; out[6] = t3.sec;
+    RTCTime t3 = t;
+    out[4] = t3.hour; out[5] = t3.minute; out[6] = t3.second;
 }
 
 extern "C" void Clock_GetDateTime(ClockDateTime *p) {
@@ -575,7 +570,7 @@ extern "C" void Clock_GetDateTimeCleared(u8 *out) {
 extern "C" void Clock_GetRtcDateTime(u8 *out) {
     s32 a[4];
     s32 b[4];
-    Clock_ReadRtc((Unk_0209d4c0_Date *)a, (Unk_0209d4c0_Time *)b);
+    Clock_ReadRtc((RTCDate *)a, (RTCTime *)b);
     *(u32 *)out = 0;
     *(u32 *)(out + 4) = 0;
     out[5] = a[0];

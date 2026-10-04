@@ -897,11 +897,6 @@ s32 SaveVillagers_PickBirthdayGuest(void *self0, s32 x);
 void SaveVillagers_UpdateBirthdayNotices(u8 *self);
 void SaveVillagers_ResetMoods(u8 *self);
 void SaveVillagers_UpdateAllRoomInfo(void *self);
-struct Unk_02079ce8_Obj {
-    u8 pad_00[0x20];
-    s32 roomScore;
-    u16 roomBonusFlags;
-};
 void SaveVillagers_UpdateRoomInfo(void *self, s32 idx);
 void SaveVillagers_ApplyGoodFortune(void *self, void *p);
 void SaveVillagers_GiveFortuneGreeting(void *self0, void *p);
@@ -9140,7 +9135,7 @@ extern "C" void SaveVillagers_UpdateRoomInfo(void *self, s32 idx) {
             s32 z2 = 0;
             u16 h = 0;
             if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(o)) != 0) {
-                Unk_02079ce8_Obj *r5 = (Unk_02079ce8_Obj *)Villager_GetState(o);
+                VillagerState *r5 = (VillagerState *)Villager_GetState(o);
                 if (r5 != NULL) {
                     u32 x[4];
                     RoomScoreEvaluator_Construct(x);

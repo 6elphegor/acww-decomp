@@ -12,6 +12,7 @@
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
 #include "net/CommManager.h"
+#include "nitro/gxoam.h"
 
 #define func_020624c0 _ZN18EncodedString16BufD1Ev
 #define func_02062510 _ZN18EncodedString16BufC1Ev
@@ -234,12 +235,7 @@ extern const u8 sDesignTabSlotY[];
 extern const u8 sDesignTabSlotX[];
 extern const u8 sDesignTabPopupChoices[][0xb];
 extern u16 sDesignItemBase[];
-struct Unk_ov121_02294c80 {
-    u32 attr01;
-    u16 attr2;
-    u16 attr3;
-};
-extern Unk_ov121_02294c80 sDesignTabIconCell;
+extern GXOamAttr sDesignTabIconCell;
 extern u32 sDesignTabTargetFrameCells[];
 }
 
@@ -510,7 +506,7 @@ BOOL DesignTab::onDraw() {
 // Scene registration entry read by main: factory, then two ids
 extern "C" ProcProfile sDesignTabProfile = {(void *(*)())DesignTab_Create, 0xa4, 0xa8};
 
-extern "C" Unk_ov121_02294c80 sDesignTabIconCell = {0x81f000f0, 0x40c0, 0xffff};
+extern "C" GXOamAttr sDesignTabIconCell = {0x81f000f0, 0xc0, 0, 0x4, 0xffff};
 
 extern "C" u32 sDesignTabTargetFrameCells[8] = {0x41ee00ee, 0x0000c140, 0x500200ee, 0x0000c140, 0x70020002, 0x0000c140, 0x61ee0002, 0xffffc140};
 

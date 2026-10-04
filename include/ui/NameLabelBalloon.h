@@ -4,8 +4,9 @@
 #include "types.h"
 #include "ui/UiWidget.h"
 #include "gfx/SpriteAnim.h"
-#include "gfx/Unk_0208d154_Sub.h"
 #include "talk/ChatBalloonText.h"
+
+class TextLabel;
 
 // 0x80-byte HUD name-label balloon widget (vtable _ZTV16NameLabelBalloon 0x020e0fe8). Defined in main: the state
 // machine in unk_0208d154.cpp (0x0208d154..0x0208d33c), vfunc_0c / draw / destructor / constructor in unk_0208d33c.cpp.
@@ -44,7 +45,7 @@ public:
     /* 0x30 */ s32 slideY;
     /* 0x34 */ s32 alignX;
     /* 0x38 */ ChatBalloonText text;
-    /* 0x6c */ Unk_0208d154_Sub *textLabel;
+    /* 0x6c */ TextLabel *textLabel;
     /* 0x70 */ s32 state;
     /* 0x74 */ s32 showRequested;
     /* 0x78 */ s32 stateTimer;

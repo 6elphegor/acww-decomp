@@ -19,7 +19,6 @@
 #include "game/Unk_0200f6d4_V2.h"
 #include "player/Unk_0200d64c_Xyz.h"
 #include "player/Unk_0200f070_V3.h"
-#include "player/Unk_0200ff08_Obj.h"
 #include "player/Unk_020107c8_Blk.h"
 #include "player/PlayerNetActionArgs.h"
 #include "player/PlayerU16ArgsRequest.h"
@@ -1921,7 +1920,7 @@ void PlayerActor::readInput() {
         ((PlayerActor *)this)->inputRun = fast;
     }
     ((PlayerActor *)this)->interactPressed = v4;
-    ((PlayerActor *)this)->interactTarget = (Unk_0200ff08_Obj *)v8;
+    ((PlayerActor *)this)->interactTarget = (Character *)v8;
     ((PlayerActor *)this)->actionHeld = v10;
     ((PlayerActor *)this)->hasTargetPos = v14;
     *(VecFx32Ctor *)&((PlayerActor *)this)->targetPos = r5c;

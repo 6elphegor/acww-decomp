@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "town/TownBlockMap.h"
 #include "game/Unk_02095774_Ent.h"
 #include "save/MotherLetterState.h"
 #include "item/Letter.h"
@@ -93,7 +94,7 @@ void Catalog_SetItem(void *a, u16 *b, s32 c, s32 d);
 void MailText_SetSlot(s32, void *);
 void Town_GetUpdater();
 s32 Town_WashUpBottle();
-Unk_02095dcc_Grid *TownBlockMap_Get();
+TownBlockMap *TownBlockMap_Get();
 void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 void ItemPick_FromRange(u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
@@ -843,7 +844,7 @@ extern "C" s32 BottleLetter_PlaceBottle() {
 }
 
 extern "C" s32 BottleLetter_IsBottleInTown() {
-    Unk_02095dcc_Grid *g = TownBlockMap_Get();
+    TownBlockMap *g = TownBlockMap_Get();
     s32 y, x, hx, hy;
     u16 *c;
     for (y = 0; y < g->unitsZ; y++) {
