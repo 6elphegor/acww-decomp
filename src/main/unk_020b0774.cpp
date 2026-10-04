@@ -3,6 +3,7 @@
 #include "talk/MsgStringAttr.h"
 #include "game/ConstellationRecord.h"
 #include "gfx/StarTwinkle.h"
+#include "talk/EncodedStringBase.h"
 extern u16 sConstellationLineCells[0x718];
 extern char *sStarTwinklePalettePaths[5];
 extern char sStarPalPathB4[0x14];
@@ -20,10 +21,6 @@ void _ZN8PlayerIdC1Ev(void *p);
 void _ZN8PlayerIdC1EPv(void *p);
 }
 
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase() {}
-};
 
 
 

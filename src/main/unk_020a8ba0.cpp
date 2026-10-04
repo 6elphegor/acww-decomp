@@ -6,6 +6,10 @@
 #include "talk/MsgStringAttr.h"
 #include "talk/MsgTag.h"
 #include "talk/MsgRunner.h"
+#include "talk/BmgReader.h"
+#include "talk/BmgMsgAttr.h"
+#include "talk/MsgParser.h"
+#include "talk/EncodedStringBase.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -372,10 +376,6 @@ class MsgString;
 
 
 
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase() {}
-};
 
 
 // buffer interface (destination-side, member at +4)
@@ -443,41 +443,7 @@ public:
     /* 0x1e */ u8 msgIndex;
 };
 
-struct BmgMsgAttr {
-    u32 textOffset;
-    u8 unk_04;
-    u8 unk_05;
-    u8 unk_06;
-    u8 unk_07;
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0a;
-    u8 unk_0b;
-};
 
-// Script interpreter root
-class MsgParser {
-public:
-    MsgParser();
-    virtual ~MsgParser();
-    virtual void onBegin();
-    virtual void onEnd();
-    virtual void onChar(u32 c);
-    virtual void onTag(u8 *p);
-
-    void popText();
-    void pushText(u8 *p);
-    void begin(u8 *p);
-    BOOL step(u32 arg);
-    BOOL isLeadByte(u32 c);
-    void unreadTag(u8 *p);
-    void skip(s32 n);
-    void processTag();
-    void reset();
-
-    /* 0x04 */ u8 *cursor;
-    /* 0x08 */ u8 callStack[0x1c];
-};
 
 class MsgWalker : public MsgParser {
 public:
@@ -579,34 +545,6 @@ public:
 };
 
 
-// BMG message file reader
-class BmgReader {
-public:
-    BmgReader(u8 arg1);
-    virtual ~BmgReader();
-    virtual u32 getBuffer() = 0;
-    virtual u32 getBufferSize() = 0;
-
-    BOOL readText();
-    BOOL readInfEntryWithAttr();
-    BOOL readInfEntry();
-    BOOL readDatHeader();
-    BOOL readInfHeader();
-    BOOL readFileHeader();
-    void resetState();
-    BOOL loadMessage(u8 *arg1);
-    void close();
-    u8 open(const char *path);
-
-    /* 0x04 */ u8 hasAttributes;
-    /* 0x05 */ u8 filePath[0x3f];
-    /* 0x44 */ u8 file[0x48];
-    /* 0x8c */ u8 isOpen;
-    /* 0x8d */ u8 msgIndex;
-    /* 0x90 */ u32 entry[3];
-    /* 0x9c */ u32 textOffset;
-    /* 0xa0 */ u32 textSize;
-};
 
 class MsgUiProc : public GameProc {
 public:
@@ -618,35 +556,9 @@ public:
     virtual ~MsgUiProc();
 };
 
-struct BmgInfEntryAttr {
-    u32 textOffset;
-    u8 attrs[6];
-};
 
-struct BmgInfHeader {
-    u32 magic;
-    u32 size;
-    u16 msgCount;
-    u16 entrySize;
-    u16 unk_0c;
-    u8 unk_0e;
-};
 
-struct BmgDatHeader {
-    u32 magic;
-    u32 size;
-    u32 unk_08;
-};
 
-struct BmgFileHeader {
-    u32 magic;
-    u32 type;
-    u32 fileSize;
-    u32 sectionCount;
-    u8 encoding;
-    u8 pad[0xb];
-    u32 unk_1c;
-};
 
 struct Flag18 {
     u8 pad[0x18];

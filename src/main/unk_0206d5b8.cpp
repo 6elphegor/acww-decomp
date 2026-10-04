@@ -4,15 +4,12 @@
 #include "sys/Unk_0206d8b8_Pair.h"
 #include "talk/MsgStringAttr.h"
 #include "sys/RecordFile.h"
+#include "talk/EncodedStringBase.h"
 
 extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
 
 // ---- buffer interface classes (defined elsewhere) ----
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase() {}
-};
 
 
 class EncodedString : public EncodedStringBase {

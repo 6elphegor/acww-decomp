@@ -1,6 +1,8 @@
 // mwcc-flags: -O3,p
 #include "types.h"
 #include "ui/Unk_ov001_0220a7f0.h"
+#include "net/Unk_ov001_0220a7f0_Reg.h"
+#include "net/Unk_ov001_0222dddc.h"
 
 #pragma thumb off
 
@@ -57,34 +59,7 @@ namespace N_0a758 {
 
 
 
-struct Unk_ov001_0222dddc {
-    void *rowCanvases[3][4];
-    Unk_ov001_0220a7f0_Reg *charKeyOams[0x2f];
-    Unk_ov001_0220a7f0_Reg *funcKeyOams[4];
-    void *bottomButtons[2];
-    void *rowTextObjs[4];
-    void *cursorObj;
-    void *task;
-    u8 inputKey;
-    u8 caseMode;
-    u8 pad_11e[3];
-    u8 cursorKey;
-    u8 pad_122;
-    u8 deleteEnabled;
-    u8 insertEnabled;
-};
 
-struct Unk_ov001_0222dde0 {
-    void *rowCanvases[4];
-    Unk_ov001_0220a7f0_Reg *digitKeyOams[10];
-    void *funcKeyOams[2];
-    void *bottomButtons[2];
-    void *rowTextObjs[4];
-    void *cursorObj;
-    u8 pad_05c[7];
-    s8 cursorKey;
-    s8 prevCursorKey;
-};
 
 extern "C" {
 extern Unk_ov001_0222dddc *sWfcTextKb;
@@ -133,29 +108,7 @@ void WfcNumPad_SlideOutStep1(s32);
 
 namespace N_0b05c {
 
-struct Unk_ov001_0220b05c_Reg {
-    u32 w0;
-    u16 h4;
-};
 
-struct Unk_ov001_0222dde0 {
-    void *rowCanvases[4];
-    Unk_ov001_0220b05c_Reg *digitKeyOams[10];
-    Unk_ov001_0220b05c_Reg *funcKeyOams[2];
-    void *bottomButtons[2];
-    void *rowTextObjs[4];
-    u8 unk_58[8];
-    u8 inputKey;
-    s8 touchKey;
-    s8 highlightKey;
-    s8 cursorKey;
-    u8 prevCursorKey;
-    u8 deleteHoldTimer;
-    u8 deleteEnabled;
-    u8 insertEnabled;
-    u8 dotEnabled;
-    u8 errorSoundPlayed;
-};
 
 struct Unk_ov001_0220b618_Pt {
     u16 x;
@@ -204,30 +157,7 @@ void WfcNumPad_HandleTouchRelease();
 
 namespace N_0ba08 {
 
-struct Unk_ov001_0220ba08_Reg {
-    u32 w0;
-    u16 h4;
-};
 
-struct Unk_ov001_0222dde0 {
-    void *rowCanvases[4];
-    Unk_ov001_0220ba08_Reg *digitKeyOams[10];
-    Unk_ov001_0220ba08_Reg *funcKeyOams[2];
-    void *bottomButtons[2];
-    void *rowTextObjs[4];
-    void *cursorObj;
-    void *task;
-    u8 inputKey;
-    s8 touchKey;
-    s8 highlightKey;
-    s8 cursorKey;
-    u8 prevCursorKey;
-    u8 deleteHoldTimer;
-    u8 deleteEnabled;
-    u8 insertEnabled;
-    u8 dotEnabled;
-    u8 errorSoundPlayed;
-};
 
 extern "C" {
 extern Unk_ov001_0222dde0 *sWfcNumPad;

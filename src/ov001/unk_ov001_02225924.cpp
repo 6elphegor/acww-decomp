@@ -1,19 +1,10 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/Unk_ov001_02225924_Rect.h"
 
 #pragma thumb off
 
-struct Unk_ov001_02225924_Rect {
-    u16 x;
-    u16 y;
-    u16 w;
-    u16 h;
-};
 
-struct Unk_ov001_02225924_Pt {
-    u16 x;
-    u16 y;
-};
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;

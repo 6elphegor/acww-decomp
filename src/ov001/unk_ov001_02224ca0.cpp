@@ -1,21 +1,11 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/WfcObjGroup.h"
+#include "net/WfcPool.h"
 
 #pragma thumb off
 
-struct WfcObjGroup {
-    WfcObjGroup *prev;
-    WfcObjGroup *next;
-    void *oams;
-    u8 numOams;
-};
 
-struct WfcPool {
-    u16 capacity;
-    u8 head;
-    u8 top;
-    void *entries[1];
-};
 
 struct WfcFadeState {
     s32 task;

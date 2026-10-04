@@ -6,17 +6,12 @@
 #include "talk/MsgStringAttr.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "talk/EncodedStringBase.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes owned by other units (declarations only, no inline bodies)
 
 
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase() {}
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-};
 
 
 // destination-side buffer interface

@@ -4,15 +4,12 @@
 #include "game/Unk_0206f6fc_Pos.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "talk/EncodedStringBase.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files (see unk_020a6914.cpp)
 
 
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase() {}
-};
 
 
 class MsgString;

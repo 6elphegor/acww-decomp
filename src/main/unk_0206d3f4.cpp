@@ -3,6 +3,7 @@
 #include "game/Unk_0206d1d4_Src.h"
 #include "sys/Unk_0206d8b8_Pair.h"
 #include "talk/MsgStringAttr.h"
+#include "talk/EncodedStringBase.h"
 
 // TU113, first part: 0x0206d3f4-0x0206d470 (the unit's remaining functions are the assembly routine
 // Fatal_SaveRegisters and its caller). Owns its string literal (.data 0x020ddf6c-0x020ddf88).
@@ -11,10 +12,6 @@ extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
 
 // ---- buffer interface classes (defined elsewhere) ----
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase() {}
-};
 
 
 class EncodedString : public EncodedStringBase {

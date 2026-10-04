@@ -3,6 +3,8 @@
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "ui/LetterLayout.h"
+#include "talk/BmgReader.h"
+#include "talk/EncodedStringBase.h"
 
 extern "C" {
 s32 Mem_Copy(void *src, void *dst, s32 n);
@@ -41,10 +43,6 @@ extern s16 sMailCheckWordEnds[0x1a];
 extern u8 sMailCheckWordUses[0xc0];
 extern const u8 sMailCheckSeparators[8];
 
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase() {}
-};
 
 
 
@@ -74,15 +72,6 @@ public:
     /* 0x08 */ MsgStringAttr attr;
 };
 
-class BmgReader {
-public:
-    BmgReader(u8 arg1);
-    virtual ~BmgReader();
-    virtual u32 getBuffer() = 0;
-    virtual u32 getBufferSize() = 0;
-
-    /* 0x04 */ u8 hasAttributes;
-};
 
 extern "C" BOOL String_Load(MsgString *buf, u8 *key, const char *name);
 

@@ -4,6 +4,7 @@
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "save/TownId.h"
+#include "talk/EncodedStringBase.h"
 
 
 
@@ -139,10 +140,6 @@ s32 EffectCb_InitOneShot(Unk_02093dc8_Obj *o);
 // ---------------------------------------------------------------------------------------------------------------------
 // Message buffers (see unk_0206c714.cpp for the bases)
 
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase() {}
-};
 
 
 

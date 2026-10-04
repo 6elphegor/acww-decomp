@@ -2,6 +2,7 @@
 #include "talk/MsgStringAttr.h"
 #include "item/ItemId.h"
 #include "sys/RecordFile.h"
+#include "talk/EncodedStringBase.h"
 
 
 
@@ -15,10 +16,6 @@ public:
     RecordFile series;
 };
 
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase();
-};
 
 
 class EncodedString : public EncodedStringBase {

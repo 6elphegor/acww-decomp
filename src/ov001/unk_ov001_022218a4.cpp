@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov001_02221734_B.h"
 
 #pragma thumb off
 
@@ -62,24 +63,8 @@ struct Unk_ov001_0222df28_S {
     u8 keySetBuf[4];
 };
 
-struct Unk_ov001_02221734_Z { u16 v[7]; };
 
-struct Unk_ov001_02221734_D {
-    u8 lo : 4;
-    u8 hi : 4;
-    u8 b1;
-    u8 data[0x14];
-    Unk_ov001_02221734_Z z;
-};
 
-struct Unk_ov001_02221734_B {
-    u8 pad_00[1];
-    u8 favoriteColor;
-    u8 pad_02[2];
-    u8 nickName[0x14];
-    u16 nickNameLength;
-    u8 pad_1a[0x54 - 0x1a];
-};
 
 struct Unk_ov001_02222088_A {
     u8 pad_00[2];

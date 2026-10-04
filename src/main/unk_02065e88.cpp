@@ -4,6 +4,9 @@
 #include "talk/MsgTag.h"
 #include "talk/MsgRunner.h"
 #include "talk/TalkWindowState.h"
+#include "talk/BmgReader.h"
+#include "talk/BmgMsgAttr.h"
+#include "talk/MsgParser.h"
 
 class MsgRequest;
 class MsgString;
@@ -79,28 +82,6 @@ extern "C" { extern u8 gTalkMsgIndexNone; }
 class ChoiceString;
 
 
-class MsgParser {
-public:
-    MsgParser();
-    virtual ~MsgParser();
-    virtual void onBegin();
-    virtual void onEnd();
-    virtual void onChar(u32 c);
-    virtual void onTag(u8 *p);
-
-    void popText();
-    void pushText(u8 *p);
-    void begin(u8 *p);
-    BOOL step(u32 arg);
-    BOOL isLeadByte(u32 c);
-    void unreadTag(u8 *p);
-    void skip(s32 n);
-    void processTag();
-    void reset();
-
-    /* 0x04 */ u8 *cursor;
-    /* 0x08 */ u8 callStack[0x1c];
-};
 
 class MsgProcessor : public MsgParser {
 public:
@@ -202,18 +183,6 @@ public:
     /* 0x50 */ u32 articleMode;
 };
 
-class BmgReader {
-public:
-    BmgReader(u8 arg1);
-    virtual ~BmgReader();
-    virtual u32 getBuffer() = 0;
-    virtual u32 getBufferSize() = 0;
-    void loadMessage(u8 *p);
-    s32 close();
-    u8 open(const char *path);
-
-    /* 0x04 */ u8 hasAttributes;
-};
 
 class TalkBmgReader : public BmgReader {
 public:
@@ -723,7 +692,6 @@ public:
 
 struct Unk_02067c70_Z { u32 a; u16 b; u32 c, d, e, f; Unk_02067c70_Z() { a = 0; b = 0; c = 0; d = 0; e = 0; f = 0; } };
 
-class BmgMsgAttr { public: u32 pad[0xc / 4]; BmgMsgAttr(); };
 
 class MsgString25 { public: u32 pad[0x2c / 4]; MsgString25(); };
 

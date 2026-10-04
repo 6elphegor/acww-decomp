@@ -12,6 +12,7 @@
 #include "item/Letter.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
+#include "talk/EncodedStringBase.h"
 
 
 class VillagerTalk;
@@ -518,10 +519,6 @@ typedef void *(VillagerTalkTopics::*Unk_02021048_Fn)(u32 *, s32);
 
 typedef u32 (VillagerTalkTopics::*Unk_02020d90_Fn)(u8 *, s32 *, u8 *, u32 *);
 
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase() {}
-};
 
 
 class EncodedString : public EncodedStringBase {

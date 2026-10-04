@@ -1,10 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/WfcListNode.h"
 
-struct WfcListNode {
-    WfcListNode *prev;
-    WfcListNode *next;
-};
 
 struct Unk_ov001_0222df70 {
     u8 pad_000[0x800];

@@ -1,20 +1,10 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/WfcObjGroup.h"
 
 #pragma thumb off
 
-struct Unk_ov001_02224670_Entry {
-    u32 attr01;
-    u16 attr2;
-    u16 unk_06;
-};
 
-struct WfcObjGroup {
-    WfcObjGroup *prev;
-    WfcObjGroup *next;
-    Unk_ov001_02224670_Entry *oams;
-    u8 numOams;
-};
 
 struct Unk_ov001_02224b9c_T {
     u16 unk_00;

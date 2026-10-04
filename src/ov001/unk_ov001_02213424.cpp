@@ -1,19 +1,8 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/Unk_ov001_0222de78.h"
 
-struct Unk_ov001_0222de78_Hw {
-    u32 flags;
-    u16 attr2;
-};
 
-struct Unk_ov001_0222de78 {
-    void *textCanvas;
-    Unk_ov001_0222de78_Hw *caretOam;
-    u8 text[0x20];
-    u8 unk_28;
-    u8 textLen;
-    u8 result;
-};
 
 static inline void Unk_ov001_0221381c_Clr(volatile u16 *p) {
     p[0] = 0;

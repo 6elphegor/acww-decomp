@@ -5,6 +5,7 @@
 #include "game/Unk_ov003_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "talk/TalkWindowState.h"
+#include "gfx/Unk_ov009_0225bc88_Blk.h"
 
 class ProcBase {
 public:
@@ -143,9 +144,6 @@ public:
     u8 pad_41[3];
 };
 
-struct Unk_ov009_0225bc88_Blk {
-    s64 v[6];
-};
 
 
 class Unk_020b1ddc;

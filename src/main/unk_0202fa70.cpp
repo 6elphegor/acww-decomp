@@ -3,6 +3,7 @@
 #include "game/Unk_0203389c_Vec.h"
 #include "game/GroundInfoBase.h"
 #include "game/UnitShapeQueryX.h"
+#include "game/Unk_02031e10_Vec.h"
 
 struct Unk_0202ff44_V3;
 struct CollisionVisitor;
@@ -340,9 +341,6 @@ struct BoxColliderX {
     ~BoxColliderX();
     void setupBox(s32 a, s32 b, s32 c, Unk_02031b90_Vec* p, s16 s, Unk_02031b90_Vec* q);
     void resetBox();
-};
-struct Unk_02031e10_Vec {
-    s32 x, y, z;
 };
 extern "C" s64 func_01ffd028(void* v, void* p);
 extern "C" void Collision_CalcTriangleNormal(void* out, Unk_02031e10_Vec* a, Unk_02031e10_Vec* b, Unk_02031e10_Vec* c);

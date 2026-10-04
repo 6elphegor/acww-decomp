@@ -4,6 +4,8 @@
 #include "talk/MsgStringAttr.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "talk/BmgReader.h"
+#include "talk/BmgMsgAttr.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files
@@ -24,21 +26,6 @@ public:
     /* 0x08 */ MsgStringAttr attr;
 };
 
-// 0xc-byte record, see unk_020a6914.cpp (whose ctor BmgMsgAttr_Init and dtor BmgMsgAttr_Fini are still C functions there)
-struct BmgMsgAttr {
-    BmgMsgAttr();
-    ~BmgMsgAttr();
-
-    /* 0x00 */ u32 textOffset;
-    /* 0x04 */ u8 unk_04;
-    /* 0x05 */ u8 unk_05;
-    /* 0x06 */ u8 unk_06;
-    /* 0x07 */ u8 unk_07;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
-    /* 0x0a */ u8 unk_0a;
-    /* 0x0b */ u8 unk_0b;
-};
 
 // 0x33-byte buffer; unk_020a6914.cpp calls this class Unk_020aa8e0 (its constructor)
 class ChoiceString : public MsgString {
@@ -64,27 +51,6 @@ public:
     /* 0x14 */ u8 unk_14[8];
 };
 
-// BMG message file reader, see unk_020a6914.cpp
-class BmgReader {
-public:
-    BmgReader(u8 arg1);
-    virtual ~BmgReader();
-    virtual u32 getBuffer() = 0;
-    virtual u32 getBufferSize() = 0;
-
-    BOOL loadMessage(u8 *arg1);
-    void close();
-    u8 open(const char *path);
-
-    /* 0x04 */ u8 hasAttributes;
-    /* 0x05 */ u8 filePath[0x3f];
-    /* 0x44 */ u8 file[0x48];
-    /* 0x8c */ u8 isOpen;
-    /* 0x8d */ u8 msgIndex;
-    /* 0x90 */ u32 entry[3];
-    /* 0x9c */ u32 textOffset;
-    /* 0xa0 */ u32 textSize;
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Widget classes defined elsewhere

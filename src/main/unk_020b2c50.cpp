@@ -3,6 +3,8 @@
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "talk/MsgTag.h"
+#include "talk/BmgReader.h"
+#include "talk/MsgParser.h"
 
 extern "C" {
 u32 Text_ToUpper(u32 key);
@@ -58,38 +60,8 @@ public:
     /* 0x1e */ u8 msgIndex;
 };
 
-class BmgReader {
-public:
-    BmgReader(u8 arg1);
-    virtual ~BmgReader();
-    virtual u32 getBuffer() = 0;
-    virtual u32 getBufferSize() = 0;
-
-    BOOL loadMessage(u8 *arg1);
-    void close();
-    u8 open(const char *path);
-
-    /* 0x04 */ u8 unk_04[0xa0];
-};
 
 
-class MsgParser {
-public:
-    MsgParser();
-    virtual ~MsgParser();
-    virtual void onBegin();
-    virtual void onEnd();
-    virtual void onChar(u32 c);
-    virtual void onTag(u8 *p);
-
-    void pushText(u8 *p);
-    void begin(u8 *p);
-    void skip(s32 n);
-    void reset();
-
-    /* 0x04 */ u8 *cursor;
-    /* 0x08 */ u8 callStack[0x1c];
-};
 
 class MsgWalker : public MsgParser {
 public:

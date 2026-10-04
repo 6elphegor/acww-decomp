@@ -2,14 +2,11 @@
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "ui/UiWidget.h"
+#include "talk/EncodedStringBase.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Declarations from other files
 
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase() {}
-};
 
 
 

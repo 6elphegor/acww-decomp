@@ -5,6 +5,7 @@
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "ui/LetterLayout.h"
+#include "talk/EncodedStringBase.h"
 
 extern "C" {
 s32 Text_GetLength(void *p, s32 n);
@@ -25,10 +26,6 @@ void Letter_GetRecipientNameBytes(void *dst, void *src);
 s32 Text_MeasureWidth(void *p, s32 n);
 }
 
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase();
-};
 
 
 

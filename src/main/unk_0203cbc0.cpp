@@ -1,6 +1,9 @@
 #include "types.h"
 #include "game/Unk_0203ce24_Elem.h"
 #include "talk/MsgTag.h"
+#include "talk/BmgReader.h"
+#include "talk/MsgParser.h"
+#include "talk/MailTextBuilder.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of other units
@@ -17,24 +20,6 @@ public:
     /* 0x1e */ u8 msgIndex;
 };
 
-// Script interpreter root
-class MsgParser {
-public:
-    MsgParser();
-    virtual ~MsgParser();
-    virtual void onBegin();
-    virtual void onEnd();
-    virtual void onChar(u32 c);
-    virtual void onTag(u8 *p);
-
-    void popText();
-    void pushText(u8 *p);
-    void begin(u8 *p);
-    void reset();
-
-    /* 0x04 */ u8 *cursor;
-    /* 0x08 */ u8 callStack[0x1c];
-};
 
 class MsgWalker : public MsgParser {
 public:
@@ -44,19 +29,6 @@ public:
     u8 *run(BOOL arg);
 };
 
-// BMG message file reader
-class BmgReader {
-public:
-    BmgReader(u8 arg1);
-    virtual ~BmgReader();
-    virtual u32 getBuffer() = 0;
-    virtual u32 getBufferSize() = 0;
-    BOOL open(const char *name);
-    BOOL loadMessage(u8 *p);
-    void close();
-
-    /* 0x04 */ u8 unk_04[0xa0];
-};
 
 class MsgString {
 public:
@@ -210,19 +182,6 @@ public:
 
 
 // ---- container singleton at 0x021c3280 (a MailTextExpander at +0, a BmgReader512 at +0x5c)
-class MailTextBuilder {
-public:
-    MailTextBuilder();
-    ~MailTextBuilder();
-    BOOL load(MailMsgRequest *p);
-    void reset();
-
-    /* 0x000 */ u8 expander[0x5c];
-    /* 0x05c */ u8 reader[0x2a4];
-    /* 0x300 */ u8 output[0x200];
-    /* 0x500 */ s32 namePos;
-    /* 0x504 */ Unk_0203ce24_Elem slots[11];
-};
 
 extern MailTextBuilder gMailTextBuilder;
 

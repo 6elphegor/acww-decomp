@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/Unk_ov001_02221734_B.h"
 
 #pragma thumb off
 
@@ -12,24 +13,8 @@ struct Unk_ov001_02220ad8_S {
 };
 struct Unk_ov001_02220ad8_Z { u8 pad[0x1b140]; s32 mbWork; s32 segmentBuffer; };
 
-struct Unk_ov001_02221734_Z { u16 v[7]; };
 
-struct Unk_ov001_02221734_D {
-    u8 lo : 4;
-    u8 hi : 4;
-    u8 b1;
-    u8 data[0x14];
-    Unk_ov001_02221734_Z z;
-};
 
-struct Unk_ov001_02221734_B {
-    u8 pad_00[1];
-    u8 favoriteColor;
-    u8 pad_02[2];
-    u8 nickName[0x14];
-    u16 nickNameLength;
-    u8 pad_1a[0x54 - 0x1a];
-};
 
 extern "C" Unk_ov001_02220ad8_S *sWfcMoveMb;
 extern "C" u16 *sWfcMoveMbMaskPtrs[6];

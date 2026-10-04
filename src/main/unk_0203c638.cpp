@@ -3,6 +3,8 @@
 #include "game/Unk_0203ce24_Elem.h"
 #include "player/PlayerOptions.h"
 #include "item/ItemId.h"
+#include "talk/BmgReader.h"
+#include "talk/MailTextBuilder.h"
 
 // ---- 0x020d94b8 base (MsgRequest at 0x020e2a30)
 class MsgRequest {
@@ -16,13 +18,6 @@ public:
     /* 0x1e */ u8 msgIndex;
 };
 
-class BmgReader {
-public:
-    BOOL open(const char *name);
-    BOOL loadMessage(u8 *p);
-    void close();
-    u8 unk_00[0x2a4];
-};
 
 class MsgString {
 public:
@@ -128,20 +123,6 @@ public:
 };
 
 // ---- container singleton at 0x021c3280
-class MailTextBuilder {
-public:
-    BOOL load(MailMsgRequest *p);
-    void reset();
-    MailTextBuilder *func_0203cd98();
-    MailTextBuilder *func_0203cdc8();
-    BOOL func_0203d36c(BOOL b);
-
-    /* 0x000 */ u8 expander[0x5c];
-    /* 0x05c */ BmgReader reader;
-    /* 0x300 */ u8 output[0x200];
-    /* 0x500 */ s32 namePos;
-    /* 0x504 */ u8 slots[11 * 0x34];
-};
 
 // ---- free functions on the 0x34-byte entries at 0x021c3784
 extern "C" Unk_0203ce24_Elem data_021c3784[];

@@ -1,6 +1,7 @@
 // mwcc-flags: -O3,p
 #include "types.h"
 #include "ui/Unk_ov001_0220a7f0.h"
+#include "net/Unk_ov001_0222dddc.h"
 
 #pragma thumb off
 
@@ -144,19 +145,6 @@ namespace N_08b4c {
 struct Unk_ov001_02208b4c_Reg { u32 w0; u16 h4; };
 struct Unk_ov001_02208b4c_Obj { Unk_ov001_02208b4c_Reg *reg; u32 task; s8 iconSet; };
 
-struct Unk_ov001_0222dddc {
-    void *rowCanvases[3][4];
-    void *charKeyOams[0x2f];
-    void *funcKeyOams[4];
-    void *bottomButtons[2];
-    void *rowTextObjs[4];
-    void *cursorObj;
-    u8 pad_118[5];
-    u8 caseMode;
-    u8 pad_11e[2];
-    s8 prevCursorKey;
-    s8 cursorKey;
-};
 
 struct Unk_ov001_0220943c_Pair { u16 a; u16 b; };
 
@@ -270,27 +258,6 @@ extern "C" {
 
 namespace N_09e1c {
 
-struct Unk_ov001_0222dddc {
-    u8 pad_00[0x30];
-    u32 *charKeyOams;
-    u8 pad_34[0x2c];
-    u32 *unk_60;
-    u8 pad_64[0x2c];
-    u32 *unk_90;
-    u8 pad_94[0x2c];
-    u32 *unk_c0;
-    u8 pad_c4[0x38];
-    void *bottomButtons;
-    u8 pad_100[0x1c];
-    u8 inputKey;
-    u8 caseMode;
-    s8 touchKey;
-    u8 pad_11f[2];
-    u8 cursorKey;
-    u8 pad_122;
-    u8 deleteEnabled;
-    u8 insertEnabled;
-};
 
 extern "C" {
 extern Unk_ov001_0222dddc *sWfcTextKb;
@@ -342,34 +309,7 @@ namespace N_0a758 {
 
 
 
-struct Unk_ov001_0222dddc {
-    void *rowCanvases[3][4];
-    Unk_ov001_0220a7f0_Reg *charKeyOams[0x2f];
-    Unk_ov001_0220a7f0_Reg *funcKeyOams[4];
-    void *bottomButtons[2];
-    void *rowTextObjs[4];
-    void *cursorObj;
-    void *task;
-    u8 inputKey;
-    u8 caseMode;
-    u8 pad_11e[3];
-    u8 cursorKey;
-    u8 pad_122;
-    u8 deleteEnabled;
-    u8 insertEnabled;
-};
 
-struct Unk_ov001_0222dde0 {
-    void *rowCanvases[4];
-    Unk_ov001_0220a7f0_Reg *digitKeyOams[10];
-    void *funcKeyOams[2];
-    void *bottomButtons[2];
-    void *rowTextObjs[4];
-    void *cursorObj;
-    u8 pad_05c[7];
-    s8 cursorKey;
-    s8 prevCursorKey;
-};
 
 extern "C" {
 extern Unk_ov001_0222dddc *sWfcTextKb;
@@ -589,7 +529,7 @@ namespace N_09e1c {
 extern "C" {
 void WfcTextKb_SlideInStep0(void *self) {
     volatile s32 a, b;
-    volatile u32 *ip = sWfcTextKb->charKeyOams;
+    volatile u32 *ip = (volatile u32 *)sWfcTextKb->charKeyOams[0];
     a = (*ip & 0x1ff0000) >> 16;
     s32 t = *ip & 0xff;
     b = t;
@@ -611,7 +551,7 @@ namespace N_09e1c {
 extern "C" {
 void WfcTextKb_SlideInStep1(void *self) {
     volatile s32 a, b;
-    volatile u32 *ip = sWfcTextKb->unk_60;
+    volatile u32 *ip = (volatile u32 *)sWfcTextKb->charKeyOams[12];
     a = (*ip & 0x1ff0000) >> 16;
     s32 t = *ip & 0xff;
     b = t;
@@ -633,7 +573,7 @@ namespace N_09e1c {
 extern "C" {
 void WfcTextKb_SlideInStep2(void *self) {
     volatile s32 a, b;
-    volatile u32 *ip = sWfcTextKb->unk_90;
+    volatile u32 *ip = (volatile u32 *)sWfcTextKb->charKeyOams[24];
     a = (*ip & 0x1ff0000) >> 16;
     s32 t = *ip & 0xff;
     b = t;
@@ -655,7 +595,7 @@ namespace N_09e1c {
 extern "C" {
 void WfcTextKb_SlideInStep3(void *self) {
     volatile s32 a, b;
-    volatile u32 *ip = sWfcTextKb->unk_c0;
+    volatile u32 *ip = (volatile u32 *)sWfcTextKb->charKeyOams[36];
     a = (*ip & 0x1ff0000) >> 16;
     s32 t = *ip & 0xff;
     b = t;
@@ -677,7 +617,7 @@ namespace N_09e1c {
 extern "C" {
 void WfcTextKb_SlideInStep4(void *self) {
     s32 a, b;
-    WfcObj_GetPos(sWfcTextKb->bottomButtons, 0, &a, &b);
+    WfcObj_GetPos(sWfcTextKb->bottomButtons[0], 0, &a, &b);
     b -= 12;
     if (b > (s32)((u16 *)data_ov001_02229c00)[1]) {
         WfcTextKb_SetRowY(sWfcTextKb->caseMode, 4, b);

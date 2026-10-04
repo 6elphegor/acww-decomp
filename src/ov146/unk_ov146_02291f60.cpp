@@ -5,6 +5,7 @@
 #include "Unk_020d8c7c.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "talk/EncodedStringBase.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -51,10 +52,6 @@ struct Unk_ov146_SceneEntry {
 
 // ---- main-module classes (copied from src/main/unk_0206f53c.cpp / unk_02062fd4.cpp) ----
 
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase() {}
-};
 
 
 class MsgString;

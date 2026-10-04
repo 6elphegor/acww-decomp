@@ -6,6 +6,7 @@
 #include "talk/MsgStringAttr.h"
 #include "npc/VillagerId.h"
 #include "npc/VillagerDataItemView.h"
+#include "talk/EncodedStringBase.h"
 
 
 
@@ -173,10 +174,6 @@ struct VillagerData {
     VillagerData();
 };
 
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase() {}
-};
 
 
 

@@ -1,5 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/WfcObjGroup.h"
+#include "net/WfcPool.h"
 
 #pragma thumb off
 
@@ -16,25 +18,8 @@ struct Unk_ov001_0222449c {
     u8 numOams;
 };
 
-struct Unk_ov001_02224670_Entry {
-    u32 attr01;
-    u16 attr2;
-    u16 unk_06;
-};
 
-struct WfcObjGroup {
-    WfcObjGroup *prev;
-    WfcObjGroup *next;
-    Unk_ov001_02224670_Entry *oams;
-    u8 numOams;
-};
 
-struct WfcPool {
-    u16 capacity;
-    u8 head;
-    u8 top;
-    void *entries[1];
-};
 
 struct Unk_ov001_0222df34 {
     u8 pad_000[0x200];

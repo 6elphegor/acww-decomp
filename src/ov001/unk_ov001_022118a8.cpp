@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/Unk_ov001_0222de74.h"
 
 #pragma thumb off
 
@@ -10,27 +11,6 @@ u8 sWfcAossDoneTimer;
 
 namespace F0221197c {
 
-struct Unk_ov001_0222de74 {
-    u8 *apEntries;
-    u32 bgMapFile;
-    void *paletteFile;
-    void *textCanvas;
-    u32 *securityIcons[5];
-    u32 *signalIcons[5];
-    void *scrollTask;
-    u32 bgScrollTask;
-    u16 maxScroll;
-    u16 securityIconTiles[3];
-    u16 signalIconTiles[3];
-    u8 pad_4e[3];
-    u8 apCount;
-    u8 pad_52;
-    u8 scrollBarRange;
-    u8 pad_54[2];
-    u8 bgScrollPending;
-    u8 pad_57[2];
-    u8 errorSoundPlayed;
-};
 
 extern "C" {
 extern u8 data_ov001_0222ae94[];

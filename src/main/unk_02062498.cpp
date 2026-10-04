@@ -2,6 +2,7 @@
 #include "game/Unk_020dd30c_Buf.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "talk/EncodedStringBase.h"
 
 extern "C" {
 extern u8 gItemInfo[];
@@ -329,10 +330,6 @@ extern "C" void *func_0206243c(void *o);
 // Buffer classes
 
 
-class EncodedStringBase {
-public:
-    virtual ~EncodedStringBase() {}
-};
 
 
 class MsgString;

@@ -1,5 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/Unk_ov001_0222de74.h"
+#include "net/Unk_ov001_0222de78.h"
 
 #pragma thumb off
 
@@ -24,32 +26,8 @@ void *sWfcApList;
 namespace F02212e84 {
 
 
-struct Unk_ov001_02212f98_Reg { u16 h0; u16 h2; u16 h4; };
 
-struct Unk_ov001_0222de74 {
-    u8 *apEntries;
-    u32 *bgMapFile;
-    u32 *paletteFile;
-    void *textCanvas;
-    Unk_ov001_02212f98_Reg *securityIcons[5];
-    Unk_ov001_02212f98_Reg *signalIcons[5];
-    void *scrollTask;
-    void *bgScrollTask;
-    u16 maxScroll;
-    u16 securityIconTiles[3];
-    u16 signalIconTiles[4];
-    u8 pad_50;
-    u8 apCount;
-    u8 selectedAp;
-    u8 scrollBarRange;
-};
 
-struct Unk_ov001_0222de78 {
-    u32 textCanvas;
-    u32 *caretOam;
-    u8 text[0x22];
-    u8 result;
-};
 
 struct Unk_ov001_02213124_S25 { u8 b[25]; };
 struct Unk_ov001_02213124_S22 { u8 b[22]; };
@@ -244,34 +222,7 @@ void WfcApList_Update() {
 namespace F022123e4 {
 
 
-struct Unk_ov001_0222de74_Rec {
-    u8 pad_00[0x28];
-    u8 security;
-    u8 pad_29;
-};
 
-struct Unk_ov001_0222de74 {
-    Unk_ov001_0222de74_Rec *apEntries;
-    void *bgMapFile;
-    void *paletteFile;
-    void *textCanvas;
-    void *securityIcons[5];
-    void *signalIcons[5];
-    void *scrollTask;
-    u32 bgScrollTask;
-    u16 maxScroll;
-    u8 pad_42[0xe];
-    s8 touchRow;
-    u8 apCount;
-    u8 selectedAp;
-    u8 scrollBarRange;
-    u8 isConfirmed;
-    u8 dragRedrawDelay;
-    u8 bgScrollPending;
-    u8 isDragging;
-    u8 scrollEndSoundPlayed;
-    u8 errorSoundPlayed;
-};
 
 extern "C" {
 extern Unk_ov001_0222de74 *sWfcApList;
@@ -601,27 +552,6 @@ void WfcApList_Redraw() {
 
 namespace F0221197c {
 
-struct Unk_ov001_0222de74 {
-    u8 *apEntries;
-    u32 bgMapFile;
-    void *paletteFile;
-    void *textCanvas;
-    u32 *securityIcons[5];
-    u32 *signalIcons[5];
-    void *scrollTask;
-    u32 bgScrollTask;
-    u16 maxScroll;
-    u16 securityIconTiles[3];
-    u16 signalIconTiles[3];
-    u8 pad_4e[3];
-    u8 apCount;
-    u8 pad_52;
-    u8 scrollBarRange;
-    u8 pad_54[2];
-    u8 bgScrollPending;
-    u8 pad_57[2];
-    u8 errorSoundPlayed;
-};
 
 extern "C" {
 extern u8 data_ov001_0222ae94[];
@@ -691,19 +621,19 @@ void WfcApList_DrawSsid(s32 a, s32 b);
 void WfcApList_DrawSsid(s32 a, s32 b) {
     u16 buf[17];
     u32 r4 = a * 0x2a;
-    s32 n = WfcUtil_StrNLen(sWfcApList->apEntries + r4, 0x20);
+    s32 n = WfcUtil_StrNLen((u8 *)sWfcApList->apEntries + r4, 0x20);
     u32 r5 = b * 0x1c;
     s32 i;
     if (a >= sWfcApList->apCount) return;
     if (n <= 0x10) r5 += 6;
     MI_CpuFill8(buf, 0, 0x22);
     s32 cnt = n <= 0x10 ? n : 0x10;
-    for (i = 0; i < cnt; i++) buf[i] = (sWfcApList->apEntries + r4)[i];
+    for (i = 0; i < cnt; i++) buf[i] = ((u8 *)sWfcApList->apEntries + r4)[i];
     WfcText_DrawMonospace(sWfcApList->textCanvas, 0xa, r5, 2, 0xa, buf, 1);
     if (n > 0x10) {
         MI_CpuFill8(buf, 0, 0x22);
         cnt = n - 0x10;
-        for (i = 0; i < cnt; i++) buf[i] = (sWfcApList->apEntries + r4)[i + 0x10];
+        for (i = 0; i < cnt; i++) buf[i] = ((u8 *)sWfcApList->apEntries + r4)[i + 0x10];
         WfcText_DrawMonospace(sWfcApList->textCanvas, 0xa, r5 + 0xc, 2, 0xa, buf, 1);
     }
 }
@@ -711,11 +641,11 @@ void WfcApList_DrawSsid(s32 a, s32 b) {
 void WfcApList_SetRowIcons(s32 a, s32 b) {
     Unk_ov001_0222de74 *o = sWfcApList;
     if (a >= o->apCount) return;
-    u8 *rec = o->apEntries + a * 0x2a;
+    u8 *rec = (u8 *)o->apEntries + a * 0x2a;
     u16 *p = (u16 *)o->securityIcons[b];
     p[2] = (p[2] & ~0x3ff) | o->securityIconTiles[rec[0x28]];
     o = sWfcApList;
-    rec = o->apEntries + a * 0x2a;
+    rec = (u8 *)o->apEntries + a * 0x2a;
     u16 *q = (u16 *)o->signalIcons[b];
     q[2] = (q[2] & ~0x3ff) | o->signalIconTiles[*(u16 *)(rec + 0x26)];
 }
@@ -727,9 +657,9 @@ void WfcApList_LayoutRows() {
     s32 i;
     if (cnt > 5) cnt = 5;
     for (i = 0; i < cnt; i++) {
-        u32 *p = sWfcApList->securityIcons[i];
+        u32 *p = (u32 *)sWfcApList->securityIcons[i];
         *p = (*p & 0xfe00ff00) | (u8)(y - 2) | 0xb30000;
-        u32 *q = sWfcApList->signalIcons[i];
+        u32 *q = (u32 *)sWfcApList->signalIcons[i];
         *q = (*q & 0xfe00ff00) | (u8)(y + 1) | 0xd20000;
         y += 0x1c;
     }
