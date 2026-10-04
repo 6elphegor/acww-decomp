@@ -21,6 +21,8 @@
 #include "npc/NpcResHandleView.h"
 #include "talk/EncodedString.h"
 #include "npc/Unk_02014254.h"
+#include "talk/VillagerTalkKaraokeTopics.h"
+#include "npc/Unk_0201a13c.h"
 
 
 class VillagerTalk;
@@ -1212,7 +1214,6 @@ MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 MEMBER(ActorFollowCollider, 0x514 - 0x4cc);
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
@@ -1787,46 +1788,6 @@ public:
     void *memory;
 };
 
-class VillagerTalkKaraokeTopics {
-public:
-    void openEvAdmireChoice();
-    void selectEvAdmireMsg7(Unk_0201f7d0_Out *out);
-    void selectEvAdmireMsg2(Unk_0201f7d0_Out *out);
-    void onEvAdmireWordEntered();
-    void saveEnteredCompliment();
-    void openEvAdmireWordEntry();
-    void selectEvAdmire(Unk_0201f7d0_Out *out);
-    void selectEvAdmireTalk(Unk_0201f7d0_Out *out);
-    void endEvFirework();
-    void selectEvFirework(Unk_0201f7d0_Out *out);
-    void openSmallTalkChoice();
-    void selectEvKaraokeMsg17(Unk_0201f7d0_Out *out);
-    void selectEvKaraokeMsg14(Unk_0201f7d0_Out *out);
-    void selectEvKaraokeMsg12(Unk_0201f7d0_Out *out);
-    void selectEvKaraokeMsg10(Unk_0201f7d0_Out *out);
-    void endEvKaraokeMsg8();
-    void selectEvKaraokeMsg8(Unk_0201f7d0_Out *out);
-    void openEvKaraokeMsg6Choice();
-    void selectEvKaraokeMsg6(Unk_0201f7d0_Out *out);
-    void continueEvKaraokeAction();
-    void waitEvKaraokeAction();
-    void startEvKaraokeAction();
-    void continueEvKaraokeMsg20();
-    void selectEvKaraokeMsg20(Unk_0201f7d0_Out *out);
-    u8 pad_00[0x3c];
-    void *window;
-    u8 pad_40[0xac - 0x40];
-    Unk_0201f7d0_OutFn selectFn;
-    u8 pad_b4[0xc4 - 0xb4];
-    Unk_0201f7d0_Fn onEndFn;
-    u8 pad_cc[0xfc - 0xcc];
-    Unk_0201f7d0_Parent *actor;
-    u8 topicFile[0x11e - 0x100];
-    u8 topicIndex;
-    u8 pad_11f[0x124 - 0x11f];
-    u32 memoryIndex;
-    u32 memory;
-};
 
 class MsgString : public MsgStringBase {
 public:
@@ -12556,7 +12517,7 @@ void VillagerTalkKaraokeTopics::selectEvKaraokeMsg20(Unk_0201f7d0_Out *out) {
 
 void VillagerTalkKaraokeTopics::continueEvKaraokeMsg20() {
     u8 b;
-    Unk_0201f7d0_Out out;
+    Unk_020238b0_Out out;
     ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sEvKaraokeTopicTable[2]));
     if (selectFn) {
         (this->*selectFn)(&out);
@@ -12577,7 +12538,7 @@ void VillagerTalkKaraokeTopics::waitEvKaraokeAction() {
 
 void VillagerTalkKaraokeTopics::continueEvKaraokeAction() {
     u8 b;
-    Unk_0201f7d0_Out out;
+    Unk_020238b0_Out out;
     ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sEvKaraokeTopicTable[3]));
     if (selectFn) {
         (this->*selectFn)(&out);
@@ -12609,7 +12570,7 @@ void VillagerTalkKaraokeTopics::selectEvKaraokeMsg8(Unk_0201f7d0_Out *out) {
     Talk_SelectTopicMessage(this, &topicFile, &topicIndex, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(actor->villagerData)), sTalkTopicEvKaraoke.key, 1, 8, 2);
     out->fileName = (u32)&topicFile;
     out->msgIndex = topicIndex;
-    onEndFn = data_020d7d40;
+    onEndFn = static_cast<Unk_020238b0_Fn>(data_020d7d40);
 }
 
 void VillagerTalkKaraokeTopics::endEvKaraokeMsg8() {
@@ -12688,7 +12649,7 @@ void VillagerTalkKaraokeTopics::selectEvFirework(Unk_0201f7d0_Out *out) {
         out->fileName = (u32)&topicFile;
         out->msgIndex = topicIndex;
     }
-    onEndFn = data_020d79c8;
+    onEndFn = static_cast<Unk_020238b0_Fn>(data_020d79c8);
 }
 
 void VillagerTalkKaraokeTopics::endEvFirework() {
@@ -12708,7 +12669,7 @@ void VillagerTalkKaraokeTopics::selectEvAdmireTalk(Unk_0201f7d0_Out *out) {
         }
         VillagerTalk_EnsureMemory((u8 *)this, (s32 *)(&memory), (s32 *)(&memoryIndex), (s32)actor->villagerData, 0);
         if (selectFn) {
-            (this->*selectFn)(out);
+            (this->*selectFn)((Unk_020238b0_Out *)out);
         }
     }
 }
@@ -12731,7 +12692,7 @@ void VillagerTalkKaraokeTopics::saveEnteredCompliment() {
     if (MenuCtrl_IsResultOk() != 0) {
         r4 = actor->villagerData;
         if (memory != 0) {
-            _ZN14VillagerMemory13setComplimentEPvi(memory, MenuCtrl_GetText(), 16);
+            _ZN14VillagerMemory13setComplimentEPvi((u32)memory, MenuCtrl_GetText(), 16);
         } else {
             u32 r = MenuCtrl_GetText();
             _ZN20VillagerDataItemView16setComplimentForEPviS0_(r4, r, 16, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
@@ -12741,7 +12702,7 @@ void VillagerTalkKaraokeTopics::saveEnteredCompliment() {
 
 void VillagerTalkKaraokeTopics::onEvAdmireWordEntered() {
     u8 b;
-    Unk_0201f7d0_Out out;
+    Unk_020238b0_Out out;
     saveEnteredCompliment();
     ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sEvAdmireTopicTable[1]));
     if (selectFn) {

@@ -8,6 +8,7 @@
 #include "npc/Unk_020135e4.h"
 #include "sys/ProcBase.h"
 #include "npc/Unk_02014254.h"
+#include "npc/Unk_0201a13c.h"
 
 
 extern "C" {
@@ -42,7 +43,6 @@ MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 MEMBER(ActorFollowCollider, 0x514 - 0x4cc);
 MEMBER(NpcActionCtrl, 0x618 - 0x564);

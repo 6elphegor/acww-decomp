@@ -7,6 +7,7 @@
 #include "npc/SpNpcAnimHeapRefSlot.h"
 #include "npc/VillagerAnimHeapRefSlot.h"
 #include "npc/NpcBodyAnimSlot.h"
+#include "npc/VillagerAnimHeapRefPool.h"
 
 
 
@@ -58,14 +59,6 @@ extern "C" NpcFaceAnimPool *NpcFaceAnimPool_Get();
 
 // ---- 0x020e0798
 
-struct VillagerAnimHeapRefPool : NpcResPool {
-    VillagerAnimHeapRefSlot slots[8];
-    VillagerAnimHeapRefPool();
-    virtual ~VillagerAnimHeapRefPool();
-    virtual void occupySlot(u32 i);
-    virtual VillagerAnimHeapRefSlot *getSlot(u32 i);
-    VillagerAnimHeapRef *getHeapRef(u32 i);
-};
 
 extern VillagerAnimHeapRefPool sVillagerAnimHeapRefPool;
 extern "C" VillagerAnimHeapRefPool *VillagerAnimHeapRefPool_Get();

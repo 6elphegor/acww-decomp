@@ -10,6 +10,7 @@
 #include "sys/ProcBase.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
+#include "npc/Unk_0201a13c.h"
 
 
 struct Unk_0201bc1c;
@@ -500,7 +501,6 @@ struct ThreeLayerAnimModel {
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 

@@ -6,6 +6,7 @@
 #include "npc/SpNpcAnimHeapRefSlot.h"
 #include "npc/VillagerAnimHeapRefSlot.h"
 #include "npc/NpcBodyAnimSlot.h"
+#include "npc/VillagerAnimHeapRefPool.h"
 
 // Element payload types (defined elsewhere)
 struct Unk_020829b0_Y {
@@ -26,16 +27,6 @@ struct Unk_020829b0_Y_dummy;
 
 
 
-class VillagerAnimHeapRefPool : public NpcResPool {
-public:
-    VillagerAnimHeapRefPool();
-    virtual ~VillagerAnimHeapRefPool();
-    virtual void occupySlot(u32 i);
-    virtual VillagerAnimHeapRefSlot *getSlot(u32 i);
-    Unk_02082af0_X *getHeapRef(u32 i);
-
-    /* 0x08 */ VillagerAnimHeapRefSlot slots[8];
-};
 
 class NpcBodyAnimPool : public NpcResPool {
 public:

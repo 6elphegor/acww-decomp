@@ -5,6 +5,7 @@
 #include "gfx/ModelSlotPool.h"
 #include "gfx/ModelAnim.h"
 #include "game/GroundInfo.h"
+#include "field/Unk_ov003_02224bc4_Actor.h"
 
 // TU23 of ov003 (fish actors, scene classes 0223498c / 02234a94): 0x0221ffb8-0x02224e68, static initialiser 0x354 bytes.
 // Merged from ten unit files; every view of the shared objects (sFishShadows etc.) is reached through casts.
@@ -780,21 +781,6 @@ struct Unk_ov003_02224ae0_StMp {
 
 typedef Unk_ov003_02224ba4_V3 V3_f10;
 
-// polymorphic actor returned by PlayerActor_GetCharacter (only the slots used here)
-class Unk_ov003_02224bc4_Actor : public GameProc {
-public:
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual void *vfunc_50();
-    virtual BOOL vfunc_54(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c(V3_f10 *out);
-
-    /* 0x50 */ u8 pad_50[0xc];
-    /* 0x5c */ V3_f10 position;
-    /* 0x68 */ u8 pad_68[0xb0 - 0x68];
-    /* 0xb0 */ u32 actorFlags;
-};
 
 static inline BOOL Unk_ov003_02224bc4_Bit(u32 f, u32 m)
 {

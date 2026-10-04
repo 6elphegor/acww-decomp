@@ -47,6 +47,7 @@
 #include "player/Unk_02008100_Msg.h"
 #include "player/Unk_02008190_Ptr.h"
 #include "player/Unk_02008858_Blk.h"
+#include "player/Unk_020093f4_Msg.h"
 #include "gfx/MatTexPatAnim.h"
 #include "sys/ProcBase.h"
 #include "player/Unk_02007694.h"
@@ -1521,13 +1522,6 @@ static inline BOOL Unk_02008858_IsZero(u8 v) {
 namespace nG {
 extern "C" {
 
-struct Unk_020093f4_Msg {
-    u32 action;
-    u32 priority;
-    u32 netSeq;
-    Unk_0200944c args;
-    u8 pad_1c[4];
-};
 struct Unk_02006d14_7d0 {
     union {
         struct { s16 unk_00; u8 unk_02, unk_03, unk_04, unk_05, unk_06; };

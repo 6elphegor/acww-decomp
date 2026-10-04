@@ -5,25 +5,11 @@
 #include "field/BottleThrow.h"
 #include "field/Unk_ov003_02224ba4_V3.h"
 #include "field/Unk_ov003_02225238_Grid.h"
+#include "field/Unk_ov003_02224bc4_Actor.h"
 
 typedef Unk_ov003_02224ba4_V3 V3;
 
 
-// polymorphic actor returned by PlayerActor_GetCharacter (only the slots used here)
-class Unk_ov003_02224bc4_Actor : public GameProc {
-public:
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual void *vfunc_50();
-    virtual BOOL vfunc_54(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c(V3 *out);
-
-    /* 0x50 */ u8 pad_50[0xc];
-    /* 0x5c */ V3 position;
-    /* 0x68 */ u8 pad_68[0xb0 - 0x68];
-    /* 0xb0 */ u32 actorFlags;
-};
 
 static inline BOOL Unk_ov003_02224bc4_Bit(u32 f, u32 m)
 {

@@ -12,6 +12,7 @@
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
 #include "npc/NpcActionCtrl.h"
+#include "npc/Unk_0201a13c.h"
 
 extern "C" {
 void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
@@ -169,7 +170,6 @@ public:
 MEMBER(ThreeLayerAnimModel, 0x2a0 - 0xec);
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
-MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 struct ActorFollowCollider {
     u8 unk_00[0x514 - 0x4cc - 4];
