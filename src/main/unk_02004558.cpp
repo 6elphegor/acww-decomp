@@ -41,6 +41,27 @@
 #include "player/Unk_0200f070_V3.h"
 #include "player/Unk_0200ff08_Obj.h"
 #include "player/Unk_020102ec.h"
+#include "player/Unk_02007ebc_Vec.h"
+#include "player/Unk_02008074_Vec.h"
+#include "player/Unk_020080e8.h"
+#include "player/Unk_02008100_Msg.h"
+#include "player/Unk_02008190_Ptr.h"
+#include "player/Unk_02008858_Blk.h"
+#include "player/Unk_0200c2fc.h"
+#include "player/Unk_0200bff8_Vec.h"
+#include "player/Unk_0200bda0.h"
+#include "player/Unk_0200bc78_Obj.h"
+#include "player/Unk_0200b908_Obj.h"
+#include "player/Unk_0200b868_Msg.h"
+#include "player/Unk_0200b750.h"
+#include "player/Unk_0200b144_Src.h"
+#include "player/Unk_02009f68_Bytes.h"
+#include "player/Unk_02009d5c_Sub.h"
+#include "player/Unk_02009a78_Locals.h"
+#include "player/Unk_02009624_Pair.h"
+#include "player/Unk_020092c8_Loc.h"
+#include "player/Unk_02008f5c.h"
+#include "player/Unk_02008e48.h"
 
 class Unk_02006d14;
 class Unk_02007694;
@@ -401,28 +422,9 @@ public:
     void func_02007cac(s32 idx);
     void func_02007c9c(s32 idx);};
 
-class Unk_020080e8 {
-public:
-    void readU16(u16 *out);
-    void writeU16(u16 v);
-    void readS16(s16 *out);
-    void writeS16(s16 v);
-    u8 unk_00[0x10];
-};
 
-struct Unk_02008074_Vec {
-    s32 x, y, z;
-};
 
-struct Unk_02008858_Blk {
-    u32 w[12];
-};
 
-struct Unk_02008190_Ptr {
-    u32 unk_00;
-    s32 state;
-    s32 nextState;
-};
 
 class Unk_02008040_Base {
 public:
@@ -495,15 +497,8 @@ public:
 };
 
 
-struct Unk_02008e48 {
-    u8 unk_00, unk_01, unk_02;
-    void readAct76Net(u8 *a, u8 *b, u8 *c);
-    void writeAct76Net(u8 a, u8 b, u8 c);
-};
 
-struct Unk_02008f5c { s16 targetAngle; void initTurnTo(s16 v); };
 
-struct Unk_02008fa0 { s16 targetAngle; void setTurnToArgs(s16 v); };
 
 struct Unk_020093d4 {
     Unk_02006d14_Vec targetPos;
@@ -520,60 +515,13 @@ struct Unk_0200944c {
 };
 
 
-struct Unk_0200b144_Pos { s32 x; s32 y; };
 
-struct Unk_0200b750_Pair { u32 unitX; u32 unitZ; Unk_0200b750_Pair(u32 a, u32 b) : unitX(a), unitZ(b) {} Unk_0200b750_Pair(const Unk_0200b750_Pair &o) : unitX(o.unitX), unitZ(o.unitZ) {} };
 
-struct Unk_0200b750 {
-    u8 unk_00, unk_01;
-    u8 pad_02[2];
-    s32 ftrActorIndex;
-    void readPickUpReachNet(Unk_0200b750_Pair *pr, s32 *out);
-    void writePickUpReachNet(Unk_0200b750_Pair pr, s32 v);
-    void readEmotionNet(u8 *a, u8 *b);
-    void writeEmotionNet(u8 a, u8 b);
-};
 
-struct Unk_0200b7bc {
-    u32 ftrActorIndex;
-    u8 unitX, unitZ;
-    void setPickUpReachArgs(Unk_0200b750_Pair pr, u32 v);
-};
 
-struct Unk_0200bda0 {
-    s16 unk_00;
-    void setAct10Args(s16 v);
-};
 
-struct Unk_0200c2fc {
-    u16 unk_00;
-    s32 changeKind;
-    s32 wearStyle;
-    s32 unk_0c;
-    void setChangeClothesArgs(u16 a, s32 b, s32 c);
-    void setAct05Args(u16 a);
-    void setSkidTurnArgs(u16 a);
-};
 
-struct Unk_0200c288 {
-    u16 unk_00;
-    s16 skidEffectAngle;
-    s32 changeKind;
-    s32 wearStyle;
-    u8 isApplied;
-    s16 spinStep;
-    u8 unk_10[0x1c - 0x10];
-    void initChangeClothes(u16 a, s32 b, s32 c, s16 d);
-    void initSkidTurn(s16 a);
-};
 
-struct Unk_0200c24c {
-    u16 unk_00;
-    u8 changeKind;
-    u8 wearStyle;
-    void readChangeClothesNet(u16 *a, u8 *b, u8 *c);
-    void writeChangeClothesNet(u16 a, u8 b, u8 c);
-};
 
 struct Unk_020d6df4_7d0 {
     s32 walkSpeed;
@@ -1660,9 +1608,6 @@ extern PM_02006d14 data_020d673c;
 namespace nE {
 extern "C" {
 
-struct Unk_02007ebc_Vec {
-    s32 x, y, z;
-};
 class Unk_02007694;
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void _ZN14CollisionState9beginStepEv(void *p);
@@ -1900,28 +1845,6 @@ extern PM_020076f0 data_020d6bf4;
 namespace nF {
 extern "C" {
 
-struct Unk_02008100_Msg {
-    u32 action;
-    u32 priority;
-    u16 netSeq;
-    u16 unk_0a;
-    u16 args;
-    u8 unk_0e[0x0e];
-};
-struct Unk_020082e4_Msg {
-    u32 action;
-    u32 priority;
-    u16 netSeq;
-    u16 unk_0a;
-    u8 args;
-    u8 unk_0d[0x0f];
-};
-struct Unk_02008404_Msg {
-    u32 action;
-    u32 priority;
-    u16 netSeq;
-    u8 unk_0a[0x12];
-};
 extern void *gCommManager;
 extern char sPlayerActorErrorMsgFile[];
 extern char sPlayerActorMsgFile[];
@@ -1983,12 +1906,6 @@ void SndMgr_PlaySe(void *, u32);
 void Effect_Create(u32, void *, u32, u32);
 void PlayerActor_ApproachAngle(void *, s32, u32, u32, u32);
 void _ZN12Unk_020102ec9setAngleYEPs(Unk_02008040 *, void *);
-struct Unk_02008858_S16x2 {
-    s16 unk_00, unk_02;
-};
-struct Unk_02008858_S16x3 {
-    s16 unk_00, unk_02, unk_04;
-};
 static inline BOOL Unk_02008858_IsZero(u8 v) {
     return v == 0 ? TRUE : FALSE;
 }
@@ -1999,11 +1916,6 @@ static inline BOOL Unk_02008858_IsZero(u8 v) {
 namespace nG {
 extern "C" {
 
-struct Unk_02008e50_Pay {
-    u8 unk_00, unk_01, unk_02;
-    u8 pad_03[0xd];
-    void set(u8 a, u8 b, u8 c) { unk_00 = a; unk_01 = b; unk_02 = c; }
-};
 struct Unk_02008e50_Msg {
     u32 action;
     u32 priority;
@@ -2032,11 +1944,6 @@ struct Unk_02006d14_7d0 {
     };
     void set_h2(s16 v) { h2 = v; }
 };
-struct Unk_02008ee4_Sub { s16 unk_00; s16 unk_02; void set(s16 v) { unk_02 = v; } };
-struct Unk_020092c8_Flags { u8 f0 : 1; u8 f1 : 2; u8 f3 : 5; };
-struct Unk_020092c8_Date { union { struct { u32 w0, w1; }; u8 b[8]; }; };
-struct Unk_020092c8_Bits { u16 y : 7; u16 m : 4; u16 d : 5; };
-struct Unk_020092c8_Loc { Unk_020092c8_Bits bits; u16 pad; Unk_020092c8_Date date; };
 inline s32 Unk_0200905c_abs(s32 x) { return x < 0 ? -x : x; }
 class Unk_02006d14 {
 public:
@@ -2170,10 +2077,7 @@ s32 _ZN12Unk_0200769421getActionDonePriorityEj(void *, s32 v);
 namespace nH {
 extern "C" {
 
-struct Unk_02009d5c_Sub { u32 kind; u8 nextMode; u32 variant; u32 partner; };
 struct Unk_0200e2e0 { u8 pad_00[0xc]; Unk_02009d5c_Sub args; };
-struct Unk_02009a78_Vec { s32 x, y, z; };
-struct Unk_02009624_Pair { u32 unk_00; u16 item; u8 fromAct10; };
 extern u8 gFieldSceneKind;
 extern Unk_02006d14_Data* gCommManager;
 extern s16 data_02135f44[];
@@ -2316,7 +2220,6 @@ static inline BOOL Unk_02009624_Check()
     }
     return FALSE;
 }
-struct Unk_02009a78_Locals { Unk_02009a78_Vec cur; Unk_02009a78_Vec pos; Unk_02009a78_Vec diff; };
 void* PlayerActor_GetPlayerData(void *);
 s32 _ZN12Unk_020102ec13startAnimOnceEijt(void *, u32 a, u32 b, u32 c);
 void _ZN12Unk_02006d146playSeEj(void *, u32 a);
@@ -2342,12 +2245,6 @@ void _ZN12Unk_02006d1418updateShownItemPosEjz(void *, u32 a);
 namespace nI {
 extern "C" {
 
-struct Unk_02009f68_Bytes { u8 unk_0; u8 unitX; u8 unitZ; };
-struct Unk_0200a0a0_Bytes { u8 unk_0; u8 unitX; u8 unitZ; u8 pad_3[13]; };
-struct Unk_0200a63c_St { u8 unk_0; u8 unk_1[2]; u8 unitX; u8 unitZ; };
-struct Unk_0200a728_St { u16 item; u8 unitX; u8 unitZ; u8 unk_4; u8 pad_5[15]; };
-struct Unk_0200a6d4_St { u8 pad[16]; };
-struct Unk_0200a050_Obj { u8 pad[12]; };
 struct Unk_02006d14_Base0 {
     u8 pad_000[0xc4];
     Unk_02006d14_Trip unk_c4;
@@ -2510,8 +2407,6 @@ void _ZN11PlayerActor11requestWaitEjjj(void *, u32 a, u32 b, s32 c);
 namespace nJ {
 extern "C" {
 
-struct Unk_0200b244_Out { u16 item; u16 pad_02; s32 ftrActorIndex; u8 unitX; u8 unitZ; u8 unk_0a; };
-struct Unk_0200b144_Src { u8 unk_00; u8 unk_01; u8 unk_02; s8 ftrActorIndex; u8 unitX; u8 unitZ; };
 struct Unk_0203d820_Ptr { u32 index; u32 state; u32 nextState; };
 struct Unk_02006d14_A {
     virtual void vfunc_00();
@@ -2654,10 +2549,6 @@ struct Unk_0200b76c_Msg {
     Unk_0200b7bc args;
     u8 pad_14[8];
 };
-struct Unk_0200b868_Msg {
-    u32 action, priority, netSeq;
-    u8 pad_0c[0x14];
-};
 struct Unk_0200ba8c_Msg {
     u32 action, priority, netSeq;
     Unk_0200b750 args;
@@ -2673,40 +2564,12 @@ static inline void func_0200bc78_sub(Unk_02006d14_Vec *o, Unk_02006d14_Vec *a, U
     o->z = a->z - b->z;
 }
 struct Unk_0200bc78_Vec : Unk_02006d14_Vec { Unk_0200bc78_Vec() {} };
-class Unk_0200bc78_Obj {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual Unk_02006d14_Vec *vfunc_50();
-};
-struct Unk_0200bc08_Obj {
-    u32 unk_00, unk_04, param;
-};
 struct Unk_02006d14_7d0 {
     union {
         struct { s32 w0; u8 b4, b5, b6; };
         struct { u8 c0, c1; };
     };
 };
-struct Unk_0200b908_Obj { u32 animId; u8 pad_04[8]; volatile u32 nextAnimId; u8 pad_10[8]; u8 animPlayMode; };
 class Unk_02006d14 {
 public:
       u8 pad_000[0x5c];
@@ -2859,9 +2722,6 @@ void _ZN12Unk_0200769417changeClothesSpinEv(void *);
 namespace nL {
 extern "C" {
 
-struct Unk_0200bff8_Vec {
-    s32 x, y, z;
-};
 class Unk_02007694;
 u16 NetBuf_ReadU16(void *p);
 void NetBuf_WriteU16(void *p, u32 a);
