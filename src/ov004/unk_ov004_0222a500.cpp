@@ -10,6 +10,11 @@
 #include "gfx/ModelAnim.h"
 #include "sys/ProcProfile.h"
 #include "gfx/Rgb555.h"
+#include "gfx/Mtx43.h"
+#include "gfx/NNSG3dRS.h"
+#include "gfx/NNSG3dResMatData.h"
+#include "gfx/BgModelCache.h"
+#include "town/Unk_0204e858_Grid.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 // (called as free functions with the object as first argument; the mangled name is the symbols.txt name)
@@ -60,16 +65,16 @@ void CarpetTex_Init(void *o);
 void WallpaperTexBuf_Init(void *o);
 }
 
-struct Unk_0203c2cc {
+struct CarpetTexBuf {
     u8 pad[0x20f0 - 0x2c];
-    Unk_0203c2cc() {
+    CarpetTexBuf() {
         CarpetTex_Init(this);
     }
 };
 
-struct Unk_020b8d98 {
+struct WallpaperTexBuf {
     u8 pad[0x10f0 - 0x2c];
-    Unk_020b8d98() {
+    WallpaperTexBuf() {
         WallpaperTexBuf_Init(this);
     }
 };
@@ -90,82 +95,16 @@ void _ZN16RoomScene22ShapeD1Ev(void *self);
 
 
 // ---------------------------------------------------------------- shared helper types
-struct Unk_ov004_0222a994_Ctx {
-    u8 pad[0xb4];
-    s32 *jntAnmResult;
-};
-
 struct Unk_ov004_0222a994_Vec {
     s32 x, y, z;
 };
 
-struct Unk_ov004_0222a994_Pad {
+struct RoomShellStackPad {
     s32 v[2];
-    Unk_ov004_0222a994_Pad() {}
-    ~Unk_ov004_0222a994_Pad() {}
+    RoomShellStackPad() {}
+    ~RoomShellStackPad() {}
 };
 
-
-struct Unk_ov004_0222a6c0_Fx {
-    /* 0x00 */ u32 flag;
-    /* 0x04 */ u8 pad_04[0x0c];
-    /* 0x10 */ u32 prmTexImage;
-    /* 0x14 */ u8 pad_14[4];
-    /* 0x18 */ s32 scaleS;
-    /* 0x1c */ s32 scaleT;
-    /* 0x20 */ u8 pad_20[0x0c];
-    /* 0x2c */ u16 origWidth;
-    /* 0x2e */ u16 origHeight;
-    /* 0x30 */ s32 magW;
-    /* 0x34 */ s32 magH;
-};
-
-struct Unk_ov004_0222a6c0_Obj {
-    /* 0x00 */ u8 pad_00[8];
-    /* 0x08 */ u32 flag;
-    /* 0x0c */ u8 pad_0c[0xb0 - 0x0c];
-    /* 0xb0 */ Unk_ov004_0222a6c0_Fx *matAnmResult;
-    /* 0xb4 */ u8 pad_b4[0xd8 - 0xb4];
-    /* 0xd8 */ u8 *resMat;
-};
-
-struct Unk_ov004_0222a6c0_Rec {
-    u8 pad_00[0x20];
-    u16 origWidth;
-    u16 origHeight;
-    s32 magW;
-    s32 magH;
-};
-
-struct Unk_ov004_0222b510_Grid {
-    u8 *blocks;
-    u8 *width;
-    u8 *height;
-};
-
-struct Unk_ov004_0222b45c_Cell {
-    u8 pad_00[0x20];
-    u8 *bgModel;
-};
-
-struct Unk_ov004_0222b45c_Res {
-    u8 pad_00[8];
-    u32 resMdl;
-    u8 pad_0c[8];
-    u32 resJntAnm;
-    u32 unk_18;
-    u32 resMatAnm;
-    u32 resTex;
-};
-
-struct Unk_ov004_0222b3e8_Ent {
-    u8 pad[0xc];
-    u32 flags;
-};
-
-struct Unk_ov004_0222b430_Mtx {
-    s32 v[12];
-};
 
 struct Unk_ov004_0222b954_Pair {
     volatile u16 a;
@@ -200,7 +139,7 @@ public:
     /* 0x0000 */ u16 prevItem;
     /* 0x0002 */ u16 item;
     /* 0x0004 */ MatTexVramTask texTask;
-    /* 0x002c */ Unk_0203c2cc texBuf;
+    /* 0x002c */ CarpetTexBuf texBuf;
     /* 0x20f0 */ s32 designKey;
     /* 0x20f4 */ MatTexBinder matBinder;
     /* 0x20fc */ u8 *texRes;
@@ -221,18 +160,15 @@ public:
     /* 0x0000 */ u16 prevItem;
     /* 0x0002 */ u16 item;
     /* 0x0004 */ MatTexVramTask texTask;
-    /* 0x002c */ Unk_020b8d98 texBuf;
+    /* 0x002c */ WallpaperTexBuf texBuf;
     /* 0x10f0 */ s32 designKey;
     /* 0x10f4 */ MatTexBinder matBinder;
     /* 0x10fc */ u8 *texRes;
-};
-
-// the symbols file names two methods of the wall object after a second class
-class Unk_ov004_0222b15c : public RoomWallpaper {
 public:
     void release();
     BOOL setWallpaper(u16 *q, G3dResAccess *a, s32 key);
 };
+
 
 // class Y (billboard/effect handle, base TouchPickCylinder)
 class RoomScene22Shape : public TouchPickCylinder {
@@ -267,8 +203,8 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~RoomShell();
-    virtual void onNodeDescCallback(s32 a, Unk_ov004_0222a994_Ctx *b);
-    virtual void onMatCallback(s32 idx, Unk_ov004_0222a6c0_Obj *o);
+    virtual void onNodeDescCallback(s32 a, NNSG3dRS *b);
+    virtual void onMatCallback(s32 idx, NNSG3dRS *o);
 
     void setMatLightFlags(u8 *p);
     void storeBaseMtx();
@@ -383,7 +319,7 @@ extern u8 gSaveVillagers[];
 extern u8 data_021f47e0[];
 extern u8 data_0213b91c[];
 extern u32 data_020c8cc0;
-extern Unk_ov004_0222b510_Grid *gSceneBlockMap;
+extern Unk_0204e858_Grid *gSceneBlockMap;
 extern u32 gBgHeap;
 extern u32 data_021ce63c;
 
@@ -393,17 +329,12 @@ void RoomShell_NodeDescCallback(void *self);
 void RoomShell_MatCallback(void *self);
 s16 RoomShell_CalcWdColor(void *self);
 void RoomShell_SpawnBoardSigns(void *self);
-BOOL func_ov004_0222ae18();
+BOOL RoomEntranceColliders_InHouseScene();
 void RoomWallpaper_SaveToHouseRoom(void *self, u16 *a, u32 b);
 void RoomShell_GetSceneWallFloor(void *self, u16 *a, s32 *b, u16 *c, s32 *d);
 }
 
-struct Unk_ov004_0222ae7c_Obj {
-    u8 pad[0x18];
-    u32 anmObj;
-};
-
-extern "C" u32 func_ov004_0222ae7c(Unk_ov004_0222ae7c_Obj *o);
+extern "C" u32 RoomShellMatAnim_GetAnmObj(ModelAnim *o);
 
 // ---------------------------------------------------------------- data
 extern "C" RoomShell *sRoomShell;
@@ -464,7 +395,7 @@ BOOL RoomShell::onExecute() {
         AnimModel_stepAnim(&model);
     }
     RoomShellMatAnim *e = matAnim;
-    if (func_ov004_0222ae7c((Unk_ov004_0222ae7c_Obj *)e)) {
+    if (RoomShellMatAnim_GetAnmObj(e)) {
         AnimFrameCtrl_step(e);
         *(u32 *)matAnim[0].anmObj = matAnim[0].curFrame;
     }
@@ -495,7 +426,7 @@ BOOL RoomShell::onDraw() {
 }
 
 BOOL RoomShell::onDelete() {
-    ((Unk_ov004_0222b15c *)&wallpaper)->release();
+    ((RoomWallpaper *)&wallpaper)->release();
     ((RoomScene22Shape *)scene22Shape)->release();
     ((RoomEntranceColliders *)&scene0ACollider)->releaseScene0A();
     carpet.release();
@@ -519,10 +450,6 @@ void RoomShell::calcRoomSize() {
     }
     roomSize = cnt;
 }
-
-struct Unk_ov004_0222b610_Ent {
-    u16 v;
-};
 
 static inline BOOL Unk_ov004_0222b610_InA(u16 *p) {
     BOOL r = FALSE;
@@ -594,16 +521,16 @@ static inline BOOL Unk_ov004_0222b510_Range(volatile u16 *p) {
 }
 
 void RoomShell::initWallAndFloor() {
-    Unk_ov004_0222b510_Grid *g = gSceneBlockMap;
-    Unk_ov004_0222b45c_Cell *c;
-    if (g->width > (u8 *)0 && g->height > (u8 *)0 && g->blocks != NULL) {
-        c = (Unk_ov004_0222b45c_Cell *)g->blocks;
+    Unk_0204e858_Grid *g = gSceneBlockMap;
+    TownBlockCell *c;
+    if ((u8 *)g->width > (u8 *)0 && (u8 *)g->height > (u8 *)0 && g->blocks != NULL) {
+        c = g->blocks;
     } else {
         c = NULL;
     }
-    Unk_ov004_0222b45c_Res *r = (Unk_ov004_0222b45c_Res *)c->bgModel;
-    wallpaper.bindMaterial((u8 *)model.resMdl, r->resTex);
-    carpet.bindMaterial((u8 *)model.resMdl, (u8 *)r->resTex);
+    BgAcreModel *r = c->bgModel;
+    wallpaper.bindMaterial((u8 *)model.resMdl, (u32)r->tex);
+    carpet.bindMaterial((u8 *)model.resMdl, (u8 *)r->tex);
     volatile u16 h[2];
     s32 w8;
     s32 w12;
@@ -616,29 +543,29 @@ void RoomShell::initWallAndFloor() {
     if (Unk_ov004_0222b510_Range(&h[1])) {
         carpet.applyDefault(0x1182, (G3dResAccess *)model.resMdl, w12);
     }
-    ((Unk_ov004_0222b15c *)&wallpaper)->setWallpaper((u16 *)&h[0], (G3dResAccess *)model.resMdl, w8);
+    ((RoomWallpaper *)&wallpaper)->setWallpaper((u16 *)&h[0], (G3dResAccess *)model.resMdl, w8);
     carpet.setCarpet((u16 *)&h[1], (G3dResAccess *)model.resMdl, w12);
 }
 
 void RoomShell::initAnims() {
-    Unk_ov004_0222b510_Grid *g = gSceneBlockMap;
-    Unk_ov004_0222b45c_Cell *c;
-    if (g->width > (u8 *)0 && g->height > (u8 *)0 && g->blocks != NULL) {
-        c = (Unk_ov004_0222b45c_Cell *)g->blocks;
+    Unk_0204e858_Grid *g = gSceneBlockMap;
+    TownBlockCell *c;
+    if ((u8 *)g->width > (u8 *)0 && (u8 *)g->height > (u8 *)0 && g->blocks != NULL) {
+        c = g->blocks;
     } else {
         c = NULL;
     }
-    Unk_ov004_0222b45c_Res *r = (Unk_ov004_0222b45c_Res *)c->bgModel;
-    Model_setResourceAndBind(&model, r->resMdl, r->resTex);
-    if (r->resJntAnm != 0) {
+    BgAcreModel *r = c->bgModel;
+    Model_setResourceAndBind(&model, (u32)r->mdl, (u32)r->tex);
+    if (r->jntAnm != 0) {
         if (AnimModel_allocAnmObj(&model, gBgHeap)) {
-            BlendAnimModel_initAnim(&model, r->resJntAnm, 0, 0x1000, 0, 0);
+            BlendAnimModel_initAnim(&model, (u32)r->jntAnm, 0, 0x1000, 0, 0);
             AnimModel_attachAnim(&model);
         }
     }
-    if (r->resMatAnm != 0) {
+    if (r->texSrtAnm != 0) {
         if (ModelAnim_allocMatAnm(matAnim, (u8 *)model.resMdl, gBgHeap)) {
-            ModelAnim_init(matAnim, r->resMatAnm, 0, 0x1000, 0);
+            ModelAnim_init(matAnim, (u32)r->texSrtAnm, 0, 0x1000, 0);
             ModelAnim_addToRenderObj(matAnim, Model_getRenderObj(&model));
         }
     }
@@ -646,7 +573,7 @@ void RoomShell::initAnims() {
 
 void RoomShell::storeBaseMtx() {
     Mtx43_SetTranslate(data_021f47e0, 0, 0, 0);
-    *(Unk_ov004_0222b430_Mtx *)&model.mtx = *(Unk_ov004_0222b430_Mtx *)data_021f47e0;
+    *(Mtx43 *)&model.mtx = *(Mtx43 *)data_021f47e0;
 }
 
 void RoomShell::setMatLightFlags(u8 *p) {
@@ -659,10 +586,10 @@ void RoomShell::setMatLightFlags(u8 *p) {
         u8 *t = a + off;
         u32 stride = *(u16 *)t;
         u8 *e = q + *(u32 *)(t + stride * i + 4);
-        Unk_ov004_0222b3e8_Ent *en = (Unk_ov004_0222b3e8_Ent *)e;
-        if ((en->flags & 0xf) != 0) {
-            en->flags &= ~0xf;
-            en->flags |= SceneLights_GetMatLightMask2();
+        NNSG3dResMatData *en = (NNSG3dResMatData *)e;
+        if ((en->polyAttr & 0xf) != 0) {
+            en->polyAttr &= ~0xf;
+            en->polyAttr |= SceneLights_GetMatLightMask2();
         }
     }
 }
@@ -700,7 +627,7 @@ BOOL RoomWallpaper::bindMaterial(u8 *a, u32 b) {
 
 void RoomWallpaper::applyDefault(u16 v, void *a, s32 b) {
     u16 t = v;
-    ((Unk_ov004_0222b15c *)this)->setWallpaper(&t, (G3dResAccess *)a, b);
+    ((RoomWallpaper *)this)->setWallpaper(&t, (G3dResAccess *)a, b);
 }
 
 extern "C" void RoomWallpaper_SaveToHouseRoom(void *self, u16 *a, u32 b) {
@@ -712,7 +639,7 @@ extern "C" void RoomWallpaper_SaveToHouseRoom(void *self, u16 *a, u32 b) {
     }
 }
 
-BOOL Unk_ov004_0222b15c::setWallpaper(u16 *q, G3dResAccess *a, s32 key) {
+BOOL RoomWallpaper::setWallpaper(u16 *q, G3dResAccess *a, s32 key) {
     BOOL same;
     if (G3dResAccess_findMatIdx(a, sRoomWallpaperMatName) == -1) return FALSE;
     if (Item_IsFurniture(&item) != 0) {
@@ -768,7 +695,7 @@ done:
     return TRUE;
 }
 
-void Unk_ov004_0222b15c::release() {
+void RoomWallpaper::release() {
     MatTexVramTask_cancel(&texTask);
 }
 
@@ -885,7 +812,7 @@ RoomShellMatAnim::RoomShellMatAnim() {
 RoomShellMatAnim::~RoomShellMatAnim() {
 }
 
-extern "C" u32 func_ov004_0222ae7c(Unk_ov004_0222ae7c_Obj *o) {
+extern "C" u32 RoomShellMatAnim_GetAnmObj(ModelAnim *o) {
     return o->anmObj;
 }
 
@@ -898,7 +825,7 @@ RoomEntranceColliders::~RoomEntranceColliders() {
     __cxa_vec_cleanup(colliders, 2, 0x9c, (void *)_ZN11BoxColliderD2Ev);
 }
 
-extern "C" BOOL func_ov004_0222ae18() {
+extern "C" BOOL RoomEntranceColliders_InHouseScene() {
     if (Scene_InHouseRoom() != 0 || Scene_InUnk6To8() != 0) return TRUE;
     return FALSE;
 }
@@ -908,7 +835,7 @@ struct Unk_ov004_0222ad9c_V {
 };
 
 BOOL RoomEntranceColliders::init() {
-    if (func_ov004_0222ae18() != 0) {
+    if (RoomEntranceColliders_InHouseScene() != 0) {
         Unk_ov004_0222ad9c_V a;
         Unk_ov004_0222ad9c_V b;
         a.x = 0xd000;
@@ -926,7 +853,7 @@ BOOL RoomEntranceColliders::init() {
 }
 
 BOOL RoomEntranceColliders::release() {
-    if (func_ov004_0222ae18() != 0) {
+    if (RoomEntranceColliders_InHouseScene() != 0) {
         BoxCollider_Unregister(&colliders[0]);
         BoxCollider_Unregister(&colliders[1]);
     }
@@ -1000,7 +927,7 @@ extern "C" u16 *RoomShell_SetWallpaper(u16 *p, s32 key, u32 flag) {
     if (r != FALSE || (*p >= 0x1188 && *p <= 0x11a7)) {
         RoomShell *g = sRoomShell;
         if (g != 0) {
-            if (((Unk_ov004_0222b15c *)&g->wallpaper)->setWallpaper(p, (G3dResAccess *)g->model.resMdl, key) != 0) {
+            if (((RoomWallpaper *)&g->wallpaper)->setWallpaper(p, (G3dResAccess *)g->model.resMdl, key) != 0) {
                 if (flag != 0) {
                     if (Scene_InNookShop() != 0) Snd_PlaySe(0x50);
                 }
@@ -1063,11 +990,11 @@ extern "C" u16 *RoomShell_GetPrevWallpaper() {
     return (u16 *)&sRoomNoItem;
 }
 
-void RoomShell::onNodeDescCallback(s32 a, Unk_ov004_0222a994_Ctx *b) {
-    Unk_ov004_0222a994_Pad pad;
+void RoomShell::onNodeDescCallback(s32 a, NNSG3dRS *b) {
+    RoomShellStackPad pad;
     if (hourHandNode == a) {
         Unk_020b1ddc_rotateHourHand(b);
-        Unk_ov004_0222a994_Vec *pv = (Unk_ov004_0222a994_Vec *)(b->jntAnmResult + 0x13);
+        Unk_ov004_0222a994_Vec *pv = (Unk_ov004_0222a994_Vec *)&b->pJntAnmResult->trans;
         Unk_ov004_0222a994_Vec v;
         v.y = pv->y;
         v.z = pv->z;
@@ -1079,9 +1006,9 @@ void RoomShell::onNodeDescCallback(s32 a, Unk_ov004_0222a994_Ctx *b) {
         Unk_020b1ddc_rotateMinuteHand(b);
     } else if (hasuNode == a) {
         if (b != 0) {
-            s32 *p = b->jntAnmResult;
-            s32 z = p[0x15];
-            s32 x = p[0x13];
+            NNSG3dJntAnmResult *p = b->pJntAnmResult;
+            s32 z = p->trans.z;
+            s32 x = p->trans.x;
             sRoomHasuPos.x = x;
             sRoomHasuPos.y = 0x3700;
             sRoomHasuPos.z = z;
@@ -1098,12 +1025,12 @@ static inline BOOL Unk_ov004_0222a6c0_Rng(u16 *p) {
     return r;
 }
 
-void RoomShell::onMatCallback(s32 idx, Unk_ov004_0222a6c0_Obj *o) {
-    u8 *h = o->resMat;
+void RoomShell::onMatCallback(s32 idx, NNSG3dRS *o) {
+    u8 *h = o->pResMat;
     u8 *t = h + 4;
     u32 off = *(u16 *)(h + 0xa);
     u32 stride = *(u16 *)(t + off);
-    Unk_ov004_0222a6c0_Rec *rec = (Unk_ov004_0222a6c0_Rec *)(h + *(u32 *)(t + off + stride * idx + 4));
+    NNSG3dResMatData *rec = (NNSG3dResMatData *)(h + *(u32 *)(t + off + stride * idx + 4));
     BOOL a;
     BOOL b;
     s32 v8, vc, v10;
@@ -1122,31 +1049,31 @@ void RoomShell::onMatCallback(s32 idx, Unk_ov004_0222a6c0_Obj *o) {
     } else {
         return;
     }
-    o->matAnmResult->prmTexImage &= 0x3fffffff;
-    o->matAnmResult->prmTexImage &= 0xfffbffff;
-    o->matAnmResult->prmTexImage &= 0xfff7ffff;
-    o->matAnmResult->prmTexImage &= 0xfffeffff;
-    o->matAnmResult->prmTexImage &= 0xfffdffff;
-    o->matAnmResult->prmTexImage |= 0x40000000;
+    o->pMatAnmResult->prmTexImage &= 0x3fffffff;
+    o->pMatAnmResult->prmTexImage &= 0xfffbffff;
+    o->pMatAnmResult->prmTexImage &= 0xfff7ffff;
+    o->pMatAnmResult->prmTexImage &= 0xfffeffff;
+    o->pMatAnmResult->prmTexImage &= 0xfffdffff;
+    o->pMatAnmResult->prmTexImage |= 0x40000000;
     s32 k;
     if (a) {
         k = wallpaper.getDesignKey();
     } else {
         k = carpet.getDesignKey();
     }
-    o->matAnmResult->prmTexImage |= 0x10000;
-    o->matAnmResult->prmTexImage |= 0x20000;
+    o->pMatAnmResult->prmTexImage |= 0x10000;
+    o->pMatAnmResult->prmTexImage |= 0x20000;
     if (k == 1) {
-        o->matAnmResult->prmTexImage |= 0x40000;
-        o->matAnmResult->prmTexImage |= 0x80000;
+        o->pMatAnmResult->prmTexImage |= 0x40000;
+        o->pMatAnmResult->prmTexImage |= 0x80000;
     }
-    o->matAnmResult->flag |= 8;
-    o->matAnmResult->origWidth = rec->origWidth;
-    o->matAnmResult->origHeight = rec->origHeight;
-    o->matAnmResult->magW = rec->magW;
-    o->matAnmResult->magH = rec->magH;
-    o->matAnmResult->flag &= ~1;
-    o->matAnmResult->flag |= 6;
+    o->pMatAnmResult->flag |= 8;
+    o->pMatAnmResult->origWidth = rec->origWidth;
+    o->pMatAnmResult->origHeight = rec->origHeight;
+    o->pMatAnmResult->magW = rec->magW;
+    o->pMatAnmResult->magH = rec->magH;
+    o->pMatAnmResult->flag &= ~1;
+    o->pMatAnmResult->flag |= 6;
     if (a) {
         switch (roomSize) {
         case 4:
@@ -1162,8 +1089,8 @@ void RoomShell::onMatCallback(s32 idx, Unk_ov004_0222a6c0_Obj *o) {
             vc = FX_Div(0, 0x64000) + 0x4000;
             break;
         }
-        o->matAnmResult->scaleS = v8;
-        o->matAnmResult->scaleT = vc;
+        o->pMatAnmResult->scaleS = v8;
+        o->pMatAnmResult->scaleT = vc;
     } else {
         switch (roomSize) {
         case 4:
@@ -1176,36 +1103,19 @@ void RoomShell::onMatCallback(s32 idx, Unk_ov004_0222a6c0_Obj *o) {
             v10 = FX_Div(0, 0x64000) + 0x4000;
             break;
         }
-        o->matAnmResult->scaleS = v10;
-        o->matAnmResult->scaleT = v10;
+        o->pMatAnmResult->scaleS = v10;
+        o->pMatAnmResult->scaleT = v10;
     }
     o->flag &= 0xfffffeff;
 }
 
-struct Unk_ov004_0222a644_Rec {
+struct RoomBoardSignDef {
     s16 posX;
     s16 posY;
     s16 posZ;
     s16 radius;
     u8 dir;
     u8 msgIndex;
-};
-
-struct Unk_ov004_0222a644_Owner {
-    u8 pad_00[0x28];
-    Unk_ov004_0222a644_Rec *boardSigns;
-    u32 numBoardSigns;
-};
-
-struct Unk_ov004_0222a644_Cell {
-    u8 pad_00[0x20];
-    Unk_ov004_0222a644_Owner *bgModel;
-};
-
-struct Unk_ov004_0222a644_Grid {
-    Unk_ov004_0222a644_Cell *blocks;
-    u32 width;
-    u32 height;
 };
 
 struct Unk_ov004_0222a644_V3 {
@@ -1218,20 +1128,20 @@ struct Unk_ov004_0222a644_V3 {
 };
 
 extern "C" void RoomShell_SpawnBoardSigns(void *self) {
-    Unk_ov004_0222a644_Grid *g = (Unk_ov004_0222a644_Grid *)gSceneBlockMap;
-    Unk_ov004_0222a644_Cell *c;
+    Unk_0204e858_Grid *g = gSceneBlockMap;
+    TownBlockCell *c;
     if ((u8 *)g->width > (u8 *)0 && (u8 *)g->height > (u8 *)0 && g->blocks != 0) {
         c = g->blocks;
     } else {
         c = 0;
     }
-    Unk_ov004_0222a644_Owner *o = c->bgModel;
+    BgAcreModel *o = c->bgModel;
     if (o != 0) {
-        Unk_ov004_0222a644_Rec *e = o->boardSigns;
+        RoomBoardSignDef *e = (RoomBoardSignDef *)o->mgt;
         if (e != 0) {
-            if (o->numBoardSigns != 0) {
+            if ((u32)o->mgtCount != 0) {
                 u32 i;
-                for (i = 0; i < o->numBoardSigns; e++, i++) {
+                for (i = 0; i < (u32)o->mgtCount; e++, i++) {
                     Unk_ov004_0222a644_V3 v((e->posX << 12) >> 4, (e->posY << 12) >> 4, (e->posZ << 12) >> 4);
                     RoomBoardSign_Spawn(&v, (e->radius << 12) >> 4, ((s32)(e->dir << 30)) >> 16, e->msgIndex);
                 }
@@ -1276,73 +1186,26 @@ extern "C" s16 RoomShell_CalcWdColor(void *self) {
 }
 
 // ---------------------------------------------------------------- callbacks
-struct Unk_ov004_0222a500_Hdr {
-    u8 unk_00;
-    u8 operand;
-};
-
-class Unk_ov004_0222a500_Tgt {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void onNodeDescCallback(u32 a, void *b);
-    virtual void onMatCallback(u32 a, void *b);
-};
-
-struct Unk_ov004_0222a500_Own {
-    u8 pad_00[0x2c];
-    /* 0x2c */ Unk_ov004_0222a500_Tgt *userPtr;
-};
-
-struct Unk_ov004_0222a500 {
-    /* 0x00 */ Unk_ov004_0222a500_Hdr *sbcCmd;
-    /* 0x04 */ Unk_ov004_0222a500_Own *renderObj;
-    /* 0x08 */ u8 pad_08[0x1c - 0x08];
-    /* 0x1c */ void (*matCallback)(Unk_ov004_0222a500 *);
-    /* 0x20 */ u8 pad_20[4];
-    /* 0x24 */ void (*nodeDescCallback)(Unk_ov004_0222a500 *);
-    /* 0x28 */ u8 pad_28[0x90 - 0x28];
-    /* 0x90 */ u8 matCallbackTiming;
-    /* 0x91 */ u8 pad_91;
-    /* 0x92 */ u8 nodeDescCallbackTiming;
-};
-
 extern "C" void RoomShell_MatCallback(void *p) {
-    Unk_ov004_0222a500 *self = (Unk_ov004_0222a500 *)p;
-    Unk_ov004_0222a500_Tgt *t = self->renderObj->userPtr;
+    NNSG3dRS *self = (NNSG3dRS *)p;
+    RoomShell *t = (RoomShell *)self->pRenderObj->ptrUser;
     if (t != 0) {
-        t->onMatCallback(self->sbcCmd->operand, self);
+        t->onMatCallback(self->c[1], self);
     }
 }
 
 extern "C" void RoomShell_NodeDescCallback(void *p) {
-    Unk_ov004_0222a500 *self = (Unk_ov004_0222a500 *)p;
-    Unk_ov004_0222a500_Tgt *t = self->renderObj->userPtr;
+    NNSG3dRS *self = (NNSG3dRS *)p;
+    RoomShell *t = (RoomShell *)self->pRenderObj->ptrUser;
     if (t != 0) {
-        t->onNodeDescCallback(self->sbcCmd->operand, self);
+        t->onNodeDescCallback(self->c[1], self);
     }
 }
 
 extern "C" void RoomShell_InitRenderObj(void *p) {
-    Unk_ov004_0222a500 *self = (Unk_ov004_0222a500 *)p;
-    self->matCallback = (void (*)(Unk_ov004_0222a500 *))RoomShell_MatCallback;
-    self->matCallbackTiming = 2;
-    self->nodeDescCallback = (void (*)(Unk_ov004_0222a500 *))RoomShell_NodeDescCallback;
-    self->nodeDescCallbackTiming = 2;
+    NNSG3dRS *self = (NNSG3dRS *)p;
+    self->cbVecFunc[4] = (void *)RoomShell_MatCallback;
+    self->cbVecTiming[4] = 2;
+    self->cbVecFunc[6] = (void *)RoomShell_NodeDescCallback;
+    self->cbVecTiming[6] = 2;
 }

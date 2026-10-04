@@ -48,9 +48,10 @@ struct Unk_ov004_0223e10c_Pair {
     s32 a, b;
 };
 
-struct Unk_ov004_0223e2f4_Pad {
-    u16 unk_00;
-    u16 pressed;
+// gPad (the same PadState as autoload_2 unk_020e7500.cpp; only cur/trig are declared here)
+struct PadState {
+    u16 cur;
+    u16 trig;
 };
 
 extern "C" {
@@ -61,7 +62,7 @@ extern u8 gTouchPrevHeld;
 extern u8 gTouchPrevChanged;
 extern u8 gSaveData[];
 extern u8 gSavePlayers[];
-extern Unk_ov004_0223e2f4_Pad gPad;
+extern PadState gPad;
 extern CommManager *gCommManager;
 extern const Unk_ov004_0223e10c_Pair sResidentLabelOffsets[];
 extern const Unk_ov004_0223e10c_Pair sResidentExtraLabelPos;
@@ -114,11 +115,11 @@ void RoomCamera_StartBlendToPlayer(void *self);
 
 class ResidentSelect;
 typedef void (ResidentSelect::*Unk_ov004_0224f20c_Fn)();
-struct Unk_ov004_0223e6bc_Ent {
+struct ResidentSelectStateEntry {
     Unk_ov004_0224f20c_Fn enter;
     Unk_ov004_0224f20c_Fn exit;
 };
-extern Unk_ov004_0223e6bc_Ent sResidentSelectStates[];
+extern ResidentSelectStateEntry sResidentSelectStates[];
 
 extern "C" void ResidentSelect_UpdateCursor(ResidentSelect *o);
 
@@ -174,7 +175,7 @@ extern "C" ResidentSelect *ResidentSelect_Create();
 ProcProfile sResidentSelectProfile = {(void *(*)())ResidentSelect_Create, 0xd3, 0xce};
 
 // state table (enter, exit) filled by __sinit from the 14 member-function-pointer constants
-Unk_ov004_0223e6bc_Ent sResidentSelectStates[7] = {
+ResidentSelectStateEntry sResidentSelectStates[7] = {
     {&ResidentSelect::enterWait, &ResidentSelect::updateWait}, {&ResidentSelect::enterTouchSelect, &ResidentSelect::updateTouchSelect}, {&ResidentSelect::enterPadSelect, &ResidentSelect::updatePadSelect}, {&ResidentSelect::enterDecided, &ResidentSelect::updateDecided},
     {&ResidentSelect::enterCameraMove, &ResidentSelect::updateCameraMove}, {&ResidentSelect::enterSave, &ResidentSelect::updateSave}, {&ResidentSelect::enterLeave, &ResidentSelect::updateLeave},
 };
@@ -324,7 +325,7 @@ void ResidentSelect::updateTouchSelect() {
     }
     if (RoomTelephone_IsTalking()) {
         changeState(0);
-    } else if (gPad.pressed & 0xff3) {
+    } else if (gPad.trig & 0xff3) {
         InputMode_SetButtons();
         changeState(2);
     }
@@ -359,7 +360,7 @@ void ResidentSelect::updatePadSelect() {
         return;
     }
     if (isPhoneSelected != 0) {
-        u16 k = gPad.pressed;
+        u16 k = gPad.trig;
         if (k & 0x80) {
             isPhoneSelected = 0;
             goto L500;
@@ -386,7 +387,7 @@ void ResidentSelect::updatePadSelect() {
     st = selectedResident;
     switch (st) {
     case 0: {
-        u16 k = gPad.pressed;
+        u16 k = gPad.trig;
         if (k & 0x10) {
             st = st + 1;
         } else if (k & 0x80) {
@@ -400,7 +401,7 @@ void ResidentSelect::updatePadSelect() {
         break;
     }
     case 1: {
-        u16 k = gPad.pressed;
+        u16 k = gPad.trig;
         if (k & 0x20) {
             st = st - 1;
         } else if (k & 0x80) {
@@ -414,7 +415,7 @@ void ResidentSelect::updatePadSelect() {
         break;
     }
     case 2: {
-        u16 k = gPad.pressed;
+        u16 k = gPad.trig;
         if (k & 0x10) {
             st = st + 1;
         } else if (k & 0x40) {
@@ -429,7 +430,7 @@ void ResidentSelect::updatePadSelect() {
         break;
     }
     case 3: {
-        u16 k = gPad.pressed;
+        u16 k = gPad.trig;
         if (k & 0x20) {
             st = st - 1;
         } else if (k & 0x40) {
@@ -449,7 +450,7 @@ void ResidentSelect::updatePadSelect() {
     }
 L500:
     {
-        u16 k = gPad.pressed;
+        u16 k = gPad.trig;
         if ((k & 8) || (k & 1)) {
             if (isPhoneSelected != 0) {
                 RoomTelephone_StartAct0A();

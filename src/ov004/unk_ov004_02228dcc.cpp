@@ -13,6 +13,7 @@
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
+#include "room/FtrActorParts.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -91,19 +92,6 @@ struct Unk_ov004_0224e034_T1 {
     u8 pad_00[0xa4];
 };
 
-struct Unk_ov004_0224e034_T2 {
-    u32 unk_00;
-};
-
-struct Unk_ov004_0224e034_E {
-    u32 pad_00[2];
-    u32 curFrame;
-    u32 pad_0c;
-    u32 frameStep;
-    u32 pad_14;
-    u32 *anmObj;
-    u8 pad_1c[0x20 - 0x1c];
-};
 
 
 class TarotProps : public RoomObjActor {
@@ -131,10 +119,10 @@ public:
 
     /* 0x290 */ Unk_ov004_0224e034_M partModels[3];
     /* 0x4b8 */ Unk_ov004_0224e034_T1 partRes[3];
-    /* 0x6a4 */ Unk_ov004_0224e034_T2 partTex[3];
+    /* 0x6a4 */ u32 partTex[3]; // RoomObjTex slots (construct/destruct by hand)
     /* 0x6b0 */ u8 partVisible[3];
     /* 0x6b3 */ u8 pad_6b3;
-    /* 0x6b4 */ Unk_ov004_0224e034_E part1MatAnim;
+    /* 0x6b4 */ FtrModelAnimView part1MatAnim; // a ModelAnim (C1/D1 by hand)
     /* 0x6d4 */ u8 modelVisible;
     /* 0x6d5 */ u8 pad_6d5[3];
     /* 0x6d8 */ s32 act;
@@ -393,7 +381,7 @@ extern "C" void TarotProps_Draw() {
 void TarotProps::loadPart(s32 i, void *a, void *b) {
     Unk_ov004_0224e034_T1 *t1 = &partRes[i];
     RoomObjRes_Load(t1, (const char *)a);
-    Unk_ov004_0224e034_T2 *t2 = &partTex[i];
+    u32 *t2 = &partTex[i];
     RoomObjTex_Load(t2, (const char *)b);
     _ZN5Model11setResourceEP12NNSG3dResMdlj(&partModels[i], RoomObjRes_GetModel(t1), 0);
     {

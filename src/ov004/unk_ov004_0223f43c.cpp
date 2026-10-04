@@ -38,20 +38,20 @@ struct CameraSetup {
 };
 
 // 4-byte static object (four bytes set by __sinit)
-struct Unk_0223f44c_Mode {
-    s16 v0, v2, v4, v6, v8, va, vc;
+struct CameraKkShowState {
+    s16 yawOffset, shotIndex, shotState, recentShot0, recentShot1, recentSlot, numChoices;
     u8 b0 : 1;
     u8 b1 : 1;
 };
 
-struct Unk_0223f534_Ent {
-    s32 w0, w1, w2, w3, w4, w5, w6;
-    s16 h1c, h1e, h20;
+struct CameraKkShowShot {
+    s32 focusX, focusY, focusZ, orbitX, orbitZ, distance, distanceStep;
+    s16 yaw, pitch, yawStep;
     s16 pad;
 };
 
 
-struct Unk_ov004_0223fe00_Sub {
+struct CameraTargetView {
     s16 yaw;
     u8 pad_02[0x12];
     s32 focus;
@@ -70,7 +70,7 @@ extern CameraSetup sCameraKkShowWideSetup;
 extern u32 data_ov004_0224f31c[];
 extern u32 data_ov004_0224f32c[];
 extern u32 data_ov004_0224f33c[];
-extern Unk_0223f534_Ent sCameraKkShowShots[];
+extern CameraKkShowShot sCameraKkShowShots[];
 extern const Unk_0223f44c_Vec data_ov004_02246838;
 extern const Unk_0223f44c_Vec data_ov004_0224682c;
 // linker-provided absolute symbol (overlay id 2 == the value 2): the original loads this constant from the literal pool
@@ -134,7 +134,7 @@ void Camera_KkShowWideShot(Camera *o);
 
 extern "C" {
 
-void Camera_UpdateRoomFocus(Camera *self, Unk_ov004_0223fe00_Sub *a) {
+void Camera_UpdateRoomFocus(Camera *self, CameraTargetView *a) {
     Unk_0223f44c_Vec *p;
     s32 lim;
     s32 sp4;
@@ -146,7 +146,7 @@ void Camera_UpdateRoomFocus(Camera *self, Unk_ov004_0223fe00_Sub *a) {
     s32 ang, r7;
     s32 t;
     if (a == 0) {
-        a = (Unk_ov004_0223fe00_Sub *)&self->target.h0;
+        a = (CameraTargetView *)&self->target.h0;
     }
     p = PlayerActor_GetBodyPos(4);
     t = Camera_CalcPointSpan(p, &self->focusPointA, &self->targetFocus.x, &dy);
@@ -419,14 +419,14 @@ void RoomCamera_KkShowResetShot(void) {
     o->targetFocus.z = t.q.z
 
 BOOL Camera_InitMode18(Camera *o) {
-    Unk_0223f44c_Mode *m = (Unk_0223f44c_Mode *)&o->modeParam;
-    m->v0 = 0;
-    m->v2 = -1;
-    m->v4 = 0;
-    m->v6 = -1;
-    m->v8 = -1;
-    m->va = 0;
-    m->vc = 0xe;
+    CameraKkShowState *m = (CameraKkShowState *)&o->modeParam;
+    m->yawOffset = 0;
+    m->shotIndex = -1;
+    m->shotState = 0;
+    m->recentShot0 = -1;
+    m->recentShot1 = -1;
+    m->recentSlot = 0;
+    m->numChoices = 0xe;
     m->b0 = 0;
     m->b1 = 0;
     COPY_TBL(o, sCameraKkShowSetup);
@@ -436,23 +436,23 @@ BOOL Camera_InitMode18(Camera *o) {
 }
 
 void Camera_UpdateMode18(Camera *o) {
-    Unk_0223f44c_Mode *m = (Unk_0223f44c_Mode *)&o->modeParam;
-    Unk_0223f534_Ent *e;
-    if (m->v4 == 1) {
-        e = &sCameraKkShowShots[m->v2];
-        o->targetFocus.x = e->w0;
-        o->targetFocus.y = e->w1;
-        o->targetFocus.z = e->w2;
+    CameraKkShowState *m = (CameraKkShowState *)&o->modeParam;
+    CameraKkShowShot *e;
+    if (m->shotState == 1) {
+        e = &sCameraKkShowShots[m->shotIndex];
+        o->targetFocus.x = e->focusX;
+        o->targetFocus.y = e->focusY;
+        o->targetFocus.z = e->focusZ;
         VEC_Subtract(&o->targetFocus.x, &o->target.x, &o->targetFocus.x);
         if (Camera_getDistance(o) > 0x1400) {
-            o->target.w0 = o->target.w0 + e->w6;
+            o->target.w0 = o->target.w0 + e->distanceStep;
         }
-        o->target.h0 = o->target.h0 + e->h20;
-        m->v0 = m->v0 + e->h20;
+        o->target.h0 = o->target.h0 + e->yawStep;
+        m->yawOffset = m->yawOffset + e->yawStep;
         {
-            Unk_0223f6bc_V3 t(e->w3, 0, e->w4);
+            Unk_0223f6bc_V3 t(e->orbitX, 0, e->orbitZ);
             VEC_Add(&o->targetFocus.x, &t, &o->targetFocus.x);
-            Vec_RotateY(&t, m->v0);
+            Vec_RotateY(&t, m->yawOffset);
             VEC_Subtract(&o->targetFocus.x, &t, &o->targetFocus.x);
         }
     }
@@ -466,19 +466,19 @@ void Camera_KkShowWideShot(Camera *o) {
 }
 
 void Camera_KkShowPickShot(Camera *o) {
-    Unk_0223f44c_Mode *m = (Unk_0223f44c_Mode *)&o->modeParam;
-    Unk_0223f534_Ent *e;
+    CameraKkShowState *m = (CameraKkShowState *)&o->modeParam;
+    CameraKkShowShot *e;
     s32 lim[2];
     s32 i;
-    m->v0 = 0;
+    m->yawOffset = 0;
     if (Random_GlobalBelow(2) == 1) {
-        m->v2 = Random_GlobalBelow(m->vc - 2);
+        m->shotIndex = Random_GlobalBelow(m->numChoices - 2);
     } else {
-        m->v2 = Random_GlobalBelow(m->vc);
+        m->shotIndex = Random_GlobalBelow(m->numChoices);
     }
     {
-        s32 b = m->v8;
-        s32 a = m->v6;
+        s32 b = m->recentShot1;
+        s32 a = m->recentShot0;
         if (a > b) {
             lim[0] = b;
             lim[1] = a;
@@ -489,35 +489,35 @@ void Camera_KkShowPickShot(Camera *o) {
     }
     for (i = 0; i < 2; i++) {
         s32 l = lim[i];
-        if (l != -1 && m->v2 >> 1 >= l >> 1) {
-            m->v2 += 2;
+        if (l != -1 && m->shotIndex >> 1 >= l >> 1) {
+            m->shotIndex += 2;
         }
     }
-    if ((&m->v6)[m->va] == -1) {
-        m->vc = m->vc - 2;
+    if ((&m->recentShot0)[m->recentSlot] == -1) {
+        m->numChoices = m->numChoices - 2;
     }
-    (&m->v6)[m->va] = m->v2;
-    m->va = m->va ^ 1;
-    m->v4 = 1;
-    e = &sCameraKkShowShots[m->v2];
-    o->targetFocus.x = e->w0;
-    o->targetFocus.y = e->w1;
-    o->targetFocus.z = e->w2;
+    (&m->recentShot0)[m->recentSlot] = m->shotIndex;
+    m->recentSlot = m->recentSlot ^ 1;
+    m->shotState = 1;
+    e = &sCameraKkShowShots[m->shotIndex];
+    o->targetFocus.x = e->focusX;
+    o->targetFocus.y = e->focusY;
+    o->targetFocus.z = e->focusZ;
     {
         void *p = &o->targetFocus.x;
         VEC_Subtract(p, &o->target.x, p);
     }
-    o->target.h1 = e->h1e;
-    o->target.h0 = e->h1c;
-    o->target.w0 = e->w5;
+    o->target.h1 = e->pitch;
+    o->target.h0 = e->yaw;
+    o->target.w0 = e->distance;
     Camera_FinishBlend();
 }
 
 void Camera_KkShowResetShot(Camera *o) {
-    Unk_0223f44c_Mode *m = (Unk_0223f44c_Mode *)&o->modeParam;
-    m->v0 = 0;
-    m->v2 = 0;
-    m->v4 = 2;
+    CameraKkShowState *m = (CameraKkShowState *)&o->modeParam;
+    m->yawOffset = 0;
+    m->shotIndex = 0;
+    m->shotState = 2;
     COPY_TBL(o, sCameraKkShowSetup);
     o->current = sCameraKkShowPrevSetup.a;
     o->currentPitch = sCameraKkShowPrevSetup.b;
@@ -553,7 +553,7 @@ CameraSetup sCameraKkShowSetup = {0, 0x1100, 0x14100, Unk_ov004_0223f44c_V3D(0, 
 u32 data_ov004_0224f31c[4] = {0, 0x438000, 0, 0x384000};
 u32 data_ov004_0224f33c[4] = {0, 0x7d0000, 0x7d0000, 0};
 CameraSetup sCameraKkShowWideSetup = {0, -0x200, 0x6a00, Unk_ov004_0223f44c_V3D(0, 0x1e14, 0xf0a), Unk_ov004_0223f44c_V3D(0x10400, 0x200, 0x12b00)};
-Unk_0223f534_Ent sCameraKkShowShots[14] = {
+CameraKkShowShot sCameraKkShowShots[14] = {
     {0xf9fc, 0x2000, 0x157c2, -2009, -8523, 0xe700, 0x0, -12544, 3328, 40, 0},
     {0xf623, 0x1b00, 0x11405, -1571, 0x1bfb, 0xb000, 0x20, 15104, 1280, -48, 0},
     {0x10fba, 0x2000, 0x14874, -9072, -4623, 0x8d00, 0x0, -17408, -256, 48, 0},

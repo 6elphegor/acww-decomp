@@ -44,8 +44,8 @@ u8 *ShopStock_GetLayout();
 s32 ShopStock_GetItemCode(u16 *p);
 u16 *ShopStock_GetItemAt(s32 x, s32 y);
 u16 *ReddShop_GetItem(void *p, u32 a, void *b);
-void _ZN18Unk_ov004_0223e9bc11setupNoShopEv();
-void _ZN18Unk_ov004_0223e9bc16setupScene15ShopEv();
+void _ZN15ShopStockPlacer11setupNoShopEv();
+void _ZN15ShopStockPlacer16setupScene15ShopEv();
 void _ZN15ShopStockPlacer13setupNookShopEv();
 void _ZN15ShopStockPlacer16setupScene10ShopEv();
 extern void *data_ov004_0224f254[2];
@@ -54,14 +54,6 @@ extern void *data_ov004_0224f264[2];
 extern void *data_ov004_0224f274[2];
 BOOL ShopStock_IsForSale(u16 *p);
 }
-
-class Unk_ov004_0223e9bc {
-public:
-    BOOL setupNoShop();
-    u16 *callGetItemAt();
-    BOOL setupScene15Shop();
-    void placeScene15Stock();
-};
 
 class ShopStockPlacer : public GameProc {
 public:
@@ -79,6 +71,10 @@ public:
     void placeScene10Stock();
     void placeNookStock();
     BOOL placeItem(u16 *item, s32 code);
+    BOOL setupNoShop();
+    u16 *callGetItemAt();
+    BOOL setupScene15Shop();
+    void placeScene15Stock();
 
     /* 0x50 */ s32 nookShop;
     /* 0x54 */ s32 shopKind;
@@ -283,9 +279,9 @@ void *data_ov004_0224f254[2] = {(void *)_ZN15ShopStockPlacer13setupNookShopEv, 0
 
 void *data_ov004_0224f25c[2] = {(void *)_ZN15ShopStockPlacer16setupScene10ShopEv, 0};
 
-void *data_ov004_0224f274[2] = {(void *)_ZN18Unk_ov004_0223e9bc16setupScene15ShopEv, 0};
+void *data_ov004_0224f274[2] = {(void *)_ZN15ShopStockPlacer16setupScene15ShopEv, 0};
 
-void *data_ov004_0224f264[2] = {(void *)_ZN18Unk_ov004_0223e9bc11setupNoShopEv, 0};
+void *data_ov004_0224f264[2] = {(void *)_ZN15ShopStockPlacer11setupNoShopEv, 0};
 
 BOOL ShopStockPlacer::onCreate() {
     nookShop = Scene_GetNookShop();
@@ -573,7 +569,7 @@ BOOL ShopStockPlacer::setupScene10Shop() {
 
 extern "C" u16 *ShopStock_GetItemAtTile(s32 x, s32 y) { return ShopStock_GetItemAt(x, y); }
 
-void Unk_ov004_0223e9bc::placeScene15Stock() {
+void ShopStockPlacer::placeScene15Stock() {
     u32 i = 0;
     s32 z1 = 0, z2 = 0, z3 = 0, z4 = 0;
     u16 buf[3];
@@ -602,22 +598,22 @@ void Unk_ov004_0223e9bc::placeScene15Stock() {
                 f = (buf[0] == 0xfff1) ? 1 : z4;
             }
             if (!f) {
-                ((ShopStockPlacer *)this)->placeItem(r4, ShopStock_GetItemCode(buf));
+                placeItem(r4, ShopStock_GetItemCode(buf));
             }
         }
     }
 }
 
-BOOL Unk_ov004_0223e9bc::setupScene15Shop() {
+BOOL ShopStockPlacer::setupScene15Shop() {
     placeScene15Stock();
     return TRUE;
 }
 
-u16 *Unk_ov004_0223e9bc::callGetItemAt() {
+u16 *ShopStockPlacer::callGetItemAt() {
     return ((u16 *(*)())ShopStock_GetItemAt)();
 }
 
-BOOL Unk_ov004_0223e9bc::setupNoShop() {
+BOOL ShopStockPlacer::setupNoShop() {
     return TRUE;
 }
 

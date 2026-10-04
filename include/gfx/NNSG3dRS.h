@@ -22,13 +22,14 @@ struct NNSG3dRS {
     /* 0xad */ u8 currentMat;
     /* 0xae */ u8 currentNodeDesc;
     /* 0xaf */ u8 dummy_;
-    /* 0xb0 */ void *pMatAnmResult;
+    /* 0xb0 */ NNSG3dMatAnmResult *pMatAnmResult;
     /* 0xb4 */ NNSG3dJntAnmResult *pJntAnmResult;
     /* 0xb8 */ void *pVisAnmResult;
     /* 0xbc */ u32 isMatCached[2];
     /* 0xc4 */ u32 isScaleCacheOne[2];
     /* 0xcc */ u32 isEnvCached[2];
     /* 0xd4 */ u8 *pResNodeInfo; // NNSG3dResNodeInfo (node dictionary; JointCb_UseRestTranslation reads the rest pose)
+    /* 0xd8 */ u8 *pResMat; // NNSG3dResMat (material dictionary; RoomShell::onMatCallback reads the material data)
 };
 
 #endif

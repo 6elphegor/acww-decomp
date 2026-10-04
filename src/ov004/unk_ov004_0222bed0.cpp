@@ -73,7 +73,7 @@ struct Unk_ov004_0222bff4_Entry {
     /* 0x8d */ u8 frameCount;
     /* 0x8e */ u8 unk_8e;
     /* 0x8f */ u8 needsSettle;
-    /* 0x90 */ u8 unk_90;
+    /* 0x90 */ u8 onFtrSurface;
     /* 0x91 */ u8 pad_91[3];
 };
 
@@ -383,7 +383,7 @@ extern "C" void ItemDrop_Settle(Unk_ov004_0222bff4_Entry *e) {
         Unk_ov004_0222bf34_P2 v;
         v.a = e->unit.a;
         v.b = e->unit.b;
-        PendingUnit_ApplyAt(&v, e->unk_90);
+        PendingUnit_ApplyAt(&v, e->onFtrSurface);
     }
 }
 
@@ -400,7 +400,7 @@ extern "C" void ItemDrop_Init(Unk_ov004_0222bff4_Entry *e, s32 idx, Unk_ov004_02
     e->unk_4a = 0;
     e->unk_8e = 1;
     e->needsSettle = 1;
-    e->unk_90 = *(u8 *)&u8v;
+    e->onFtrSurface = *(u8 *)&u8v;
     e->frameCount = 0;
     e->bounceCount = 0;
     if (flag == 0) {

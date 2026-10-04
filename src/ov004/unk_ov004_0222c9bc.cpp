@@ -72,7 +72,7 @@ struct Bits {
 };
 
 // one 0x11-byte record of the actor table (sAquariumFishParams[56])
-struct Rec {
+struct AquariumFishParams {
     u8 rank;
     u8 numAnims;
     u8 hitHeight;
@@ -89,7 +89,7 @@ struct Rec {
     u8 verticalSpeed;
     u8 maxY;
     u8 minY;
-    u8 unk_10;
+    u8 bodyLength;
 };
 
 
@@ -110,7 +110,7 @@ public:
     virtual void update();
     virtual ~AquariumFish();
 
-    /* 0x004 */ u8 unk_04[0x13 - 4];
+    /* 0x004 */ u8 hitBox[0x13 - 4];
     /* 0x013 */ u8 hitOtherId;
     /* 0x014 */ s32 hitPushX;
     /* 0x018 */ u8 pad_18[4];
@@ -215,7 +215,7 @@ public:
         /* 0x256 */ u8 unk_256;
         s8 unk_256s;
     };
-    /* 0x257 */ u8 unk_257;
+    /* 0x257 */ u8 auxState;
 };
 
 class AquariumBigFish : public AquariumSwimFish {
@@ -454,10 +454,6 @@ public:
 
 
 
-// 0x94-byte element of the TU30 array (its ctor/dtor are referenced by TU30's static initialiser)
-struct Unk_020f440c_Obj {
-    u8 pad[0x48];
-};
 
 
 typedef AquariumFish R;
@@ -496,11 +492,6 @@ struct Unk_ov004_0222ef04_Cb {
 };
 
 typedef Unk_ov004_0222ef04_Cb Cb;
-
-struct Unk_ov004_0222fd7c_W {
-    u8 pad[0x258];
-    s32 w[6];
-};
 
 struct Unk_ov004_022303b4_P {
     u8 pad_00[0x5c];
@@ -854,7 +845,7 @@ extern "C" void MuseumAquarium_ConfineFish(void *self, R **ctx, s32 type);
 extern "C" void Aquarium_ApplyCorrection(void *self, s32 *p, s32 a, s32 b, s32 c, s32 d);
 
 extern "C" {
-extern const Rec sAquariumFishParams[56];
+extern const AquariumFishParams sAquariumFishParams[56];
 extern u8 sAquariumEndFish;
 extern u8 sAquariumObstacleCount;
 extern void *data_ov004_0224e5f8[2];
@@ -906,7 +897,7 @@ extern "C" {
 void *data_ov004_0224e638[2] = {(void *)MuseumAquarium_FishStateNone, 0};
 FxVec3 sAquariumTankCenterA(0x11000, 0, 0x15000);
 void *data_ov004_0224e600[2] = {(void *)AquariumSwimFish_SetupSea, 0};
-const Rec sAquariumFishParams[56] = {
+const AquariumFishParams sAquariumFishParams[56] = {
     {0x00, 0x01, 0x38, 0x28, 0xd8, 0x14, 0x19, 0x3d, 0x0a, 0x03, 0x1e, 0x05, 0x78, 0x1a, 0x7c, 0x98, 0x0c},
     {0x00, 0x01, 0x24, 0x28, 0xe0, 0x19, 0x21, 0x3d, 0x14, 0x03, 0x1e, 0x05, 0x78, 0x14, 0x7a, 0xc0, 0x0c},
     {0x01, 0x01, 0x48, 0x38, 0xc8, 0x0c, 0x08, 0x48, 0x28, 0x0a, 0x78, 0x14, 0x78, 0x14, 0x6e, 0xb5, 0x14},
@@ -979,7 +970,7 @@ extern "C" void MuseumAquarium_Create() {
 }
 
 AquariumFish::AquariumFish() {
-    func_ov004_02232608(unk_04);
+    func_ov004_02232608(hitBox);
     func_02054514(model);
     ModelSlotHandle_Init((u16 *)modelSlot);
     func_0209c140(pooledModel);
@@ -999,7 +990,7 @@ AquariumFish::~AquariumFish() {
     func_0209c128(pooledModel);
     ModelSlotHandle_Destroy((u16 *)modelSlot);
     func_020544d8(model);
-    func_ov004_022325f0(unk_04);
+    func_ov004_022325f0(hitBox);
 }
 
 AquariumSwimFish::AquariumSwimFish() {
@@ -1094,7 +1085,7 @@ extern "C" AquariumPufferFish::~AquariumPufferFish() {
 
 extern "C" AquariumPiranha::AquariumPiranha() {
     subState = 0;
-    unk_257 = 0;
+    auxState = 0;
     nearPlayerTimer = 0;
 }
 
@@ -1103,7 +1094,7 @@ extern "C" AquariumPiranha::~AquariumPiranha() {
 
 extern "C" AquariumSurfacingFish::AquariumSurfacingFish() {
     surfaceState = 0;
-    unk_257 = 0;
+    auxState = 0;
     subState = 0;
     unk_256 = 1;
     hasSurfaced = 0;
@@ -2192,7 +2183,7 @@ extern "C" void _ZN18AquariumPufferFish6updateEv(E78c *e) {
         break;
     case 1:
         if (AnimFrameCtrl_hasPassedFrame(&e->animFrameCtrl, v)) {
-            e->unk_257 = Aquarium_RandRange(0x3c, 0x50);
+            e->auxState = Aquarium_RandRange(0x3c, 0x50);
             e->puffTimer = 0;
             e->unk_256 = 2;
             AquariumFish_PlayAnim(e, 2);
@@ -2200,7 +2191,7 @@ extern "C" void _ZN18AquariumPufferFish6updateEv(E78c *e) {
         break;
     case 2: {
         u32 b = e->puffTimer;
-        if (b > e->unk_257) {
+        if (b > e->auxState) {
             if (AnimFrameCtrl_hasPassedFrame(&e->animFrameCtrl, v)) {
                 e->unk_256 = 3;
                 e->maxSpeed = e->maxSpeed >> 1;
@@ -2248,8 +2239,8 @@ extern "C" void _ZN15AquariumPiranha6updateEv(E75c *o) {
     s32 t = (sAquariumFishParams[30].hitRadius << 12) >> 7;
     o->unk_256 = Collision_ClampToRect(&o->pos, t, &sAquariumTankCenterB, 0x11c00, 0x5c00);
     s32 g = func_02133150(o->rank << 12, 10);
-    StaticCollider_setupAtPos(o->unk_04, &o->pos, t, (sAquariumFishParams[30].hitHeight << 12) >> 7, 0x100, 0x140, 0, 0xff, g);
-    ActorCollider_submit(o->unk_04);
+    StaticCollider_setupAtPos(o->hitBox, &o->pos, t, (sAquariumFishParams[30].hitHeight << 12) >> 7, 0x100, 0x140, 0, 0xff, g);
+    ActorCollider_submit(o->hitBox);
     o->prevPos.x = o->pos.x;
     o->prevPos.y = o->pos.y;
     o->prevPos.z = o->pos.z;
@@ -2336,7 +2327,7 @@ extern "C" void AquariumPiranha_StateBite(E75c *o) {
     }
     if (o->pitch != 0) Math_StepS16(&o->pitch, 0, 0x16c);
     if (o->pos.y != 0x199a) Math_StepS32Alt(&o->pos.y, 0x199a, o->verticalSpeed);
-    switch (o->unk_257) {
+    switch (o->auxState) {
     case 1:
         AquariumPiranha_BiteLunge(o);
         break;
@@ -2373,7 +2364,7 @@ extern "C" void AquariumPiranha_BobDepth(E75c *o) {
 
 extern "C" void AquariumPiranha_BiteIdle(E75c *o) {
     if (Aquarium_RandRange(0, 100) < 15) {
-        o->unk_257 = 1;
+        o->auxState = 1;
         o->biteTime = Aquarium_RandRange(8, 0xd);
         o->stateTimer = 0;
     }
@@ -2383,13 +2374,13 @@ extern "C" void AquariumPiranha_BiteLunge(E75c *o) {
     Aquarium_StepXZ(&o->pos, 0x266, o->unk_1c0);
     s16 t = Aquarium_RandAngle(0x168, 0);
     Aquarium_StepXZ(&o->pos, 0x52, t);
-    o->unk_257 = 2;
+    o->auxState = 2;
 }
 
 extern "C" void AquariumPiranha_BiteRecoil(E75c *o) {
     Aquarium_StepXZ(&o->pos, 0xcd, -o->unk_1c0);
-    if (o->stateTimer % 4 == 1) o->unk_257 = 1;
-    if (o->stateTimer >= o->biteTime) o->unk_257 = 0;
+    if (o->stateTimer % 4 == 1) o->auxState = 1;
+    if (o->stateTimer >= o->biteTime) o->auxState = 0;
 }
 
 extern "C" void _ZN21AquariumSurfacingFish5setupEv(E714 *o) {
@@ -2478,11 +2469,11 @@ extern "C" void AquariumSurfacingFish_UpdateSurface(E714 *o) {
     case 0:
         if (o->pos.y > 0x299a) {
             if (o->state == 4) {
-                o->unk_257++;
-                if (o->unk_257 >= 0x14) {
+                o->auxState++;
+                if (o->auxState >= 0x14) {
                     o->state = 5;
                     o->surfaceState = 1;
-                    o->unk_257 = 0;
+                    o->auxState = 0;
                 }
             }
         }
@@ -2525,18 +2516,17 @@ extern "C" void _ZN18AquariumHidingFish5setupEv(E6fc *o) {
     s32 *p = &o->fishIndex;
     o->contactFish = *p;
     o->avoidedFish = *p;
-    Unk_ov004_0222fd7c_W *w = (Unk_ov004_0222fd7c_W *)o;
     if (*p == 0x26) {
-        w->w[0] = 0x9e00;
-        w->w[1] = 0x1000;
-        w->w[2] = 0x14700;
-        w->w[3] = 0xa100;
-        w->w[4] = 0xb00;
-        w->w[5] = 0x14a00;
+        o->homePos[0] = 0x9e00;
+        o->homePos[1] = 0x1000;
+        o->homePos[2] = 0x14700;
+        o->hideoutX = 0xa100;
+        o->hideoutY = 0xb00;
+        o->hideoutZ = 0x14a00;
     } else if (*p == 0xc) {
-        w->w[0] = 0x15900;
-        w->w[1] = 0x1000;
-        w->w[2] = 0x13900;
+        o->homePos[0] = 0x15900;
+        o->homePos[1] = 0x1000;
+        o->homePos[2] = 0x13900;
     }
     AquariumFish_LoadParams(o);
 }
@@ -3592,7 +3582,7 @@ extern "C" void AquariumFish_SteerFromWall(E864 *self)
 
 extern "C" void AquariumFish_LoadParams(E864 *self)
 {
-    const Rec *t = sAquariumFishParams;
+    const AquariumFishParams *t = sAquariumFishParams;
     s32 *pi = &self->fishIndex;
     self->maxSpeed = (s32)(t[*pi].maxSpeed << 12) >> 10;
     self->accel = (s32)(t[*pi].accel << 12) >> 12;
@@ -4212,26 +4202,26 @@ extern "C" void MuseumAquarium_ConfineFish(void *self, R **ctx, s32 type) {
     }
     s32 h = (sAquariumFishParams[type].hitHeight << 12) >> 7;
     if (sAquariumRoom == 0) {
-        StaticCollider_setupAtPos(&o1->unk_04, v, w, h, 0x100, 0x140, 0x14, type, (c164 << 12) >> 3);
+        StaticCollider_setupAtPos(&o1->hitBox, v, w, h, 0x100, 0x140, 0x14, type, (c164 << 12) >> 3);
     } else if (sAquariumRoom == 1) {
         if (type == 0x24) {
             u8 *g = (u8 *)sAquariumJellyfish;
             if (g != NULL) {
-                StaticCollider_setupAtPos(&o1->unk_04, g + 0x26c, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
+                StaticCollider_setupAtPos(&o1->hitBox, g + 0x26c, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
             }
         } else if (type == 0x23) {
             u8 *g = (u8 *)sAquariumSeaButterfly;
             if (g != NULL) {
-                StaticCollider_setupAtPos(&o1->unk_04, g + 0x264, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
+                StaticCollider_setupAtPos(&o1->hitBox, g + 0x264, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
             }
         } else if (type == 0x26) {
-            StaticCollider_setupAtPos(&o1->unk_04, v, w, h, 0x100, 0x140, 0x14, type, (c164 << 12) >> 3);
+            StaticCollider_setupAtPos(&o1->hitBox, v, w, h, 0x100, 0x140, 0x14, type, (c164 << 12) >> 3);
         } else {
-            StaticCollider_setupAtPos(&o1->unk_04, v, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
+            StaticCollider_setupAtPos(&o1->hitBox, v, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
         }
     }
-    ActorCollider_submit(&(*ctx)->unk_04);
-    len = (sAquariumFishParams[type].unk_10 << 12) >> 7;
+    ActorCollider_submit(&(*ctx)->hitBox);
+    len = (sAquariumFishParams[type].bodyLength << 12) >> 7;
     base = w - (len >> 1);
     s32 k;
     k = 0;

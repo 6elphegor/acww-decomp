@@ -78,17 +78,11 @@ void RoomObj_ActivateSe(void *self);
 
 // ---------------------------------------------------------------- secondary base at +0x290 (see tu01 / tu18)
 
-struct Unk_ov004_0224dd98_Rec {
-    u32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-};
 
-
-struct Unk_ov004_02227fb8_Pad {
+struct RecycleBoxStackPad {
     s32 v[2];
-    Unk_ov004_02227fb8_Pad() {}
-    ~Unk_ov004_02227fb8_Pad() {}
+    RecycleBoxStackPad() {}
+    ~RecycleBoxStackPad() {}
 };
 
 
@@ -400,7 +394,7 @@ BOOL RecycleBox::enterAct00() {
 void RecycleBox::execAct00() {}
 
 BOOL RecycleBox::enterAct01() {
-    Unk_ov004_02227fb8_Pad pad;
+    RecycleBoxStackPad pad;
     _ZN9Character17attachTalkRequestEi(this, (TalkMsgRequest *)this);
     MsgRequest::setFileName(sRecycleBoxMsgFilePtr);
     MsgRequest::msgIndex = 0;

@@ -8,6 +8,7 @@
 #include "room/HouseData.h"
 #include "actor/ActorProfile.h"
 #include "sys/ProcProfile.h"
+#include "game/CollisionState.h"
 
 // main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -63,11 +64,9 @@ struct Unk_ov004_02236320_Ent {
 };
 
 
-struct Unk_ov004_02236320_O1 {
-    u32 a[4];
-    u8 f;
-    u8 pad[3];
-    u32 b[7];
+// a CollisionState built and destroyed by hand (C1/D1); a real CollisionState local would add implicit calls
+struct CollisionStateStorage {
+    u32 v[0x30 / 4];
 };
 
 struct Unk_ov004_0223717c_Grid {
@@ -783,7 +782,7 @@ void HouseRoach::playSe(u32 sel) {
 u8 HouseRoach::probeWalls() {
     u8 r6 = 0;
     Unk_ov004_02236320_V3 *r4r = &probePoints[0];
-    Unk_ov004_02236320_O1 o1;
+    CollisionStateStorage o1;
     u32 o2[16];
     u32 o3[16];
     volatile s32 t1;
@@ -799,7 +798,7 @@ u8 HouseRoach::probeWalls() {
         probePrevPoints[0].z = probePoints[0].z;
     }
     Collision_Move(&o1, r4r, &probePrevPoints[0], ang, 0x19a, this, 0xf);
-    t1 = (s16)(u16)((Unk_ov004_02236320_O1 *)(u32)&o1)->f;
+    t1 = (s16)(u16)((CollisionState *)(u32)&o1)->contacts.numContacts;
     if (GroundInfoBase_getHeight(o2, 1) > 0x200 || r4r->y > 0x1000 || t1 > 0) {
         r6++;
     }
@@ -810,7 +809,7 @@ u8 HouseRoach::probeWalls() {
         probePrevPoints[1].z = probePoints[1].z;
     }
     Collision_Move(&o1, r4r + 1, &probePrevPoints[1], ang, 0x19a, this, 0xf);
-    t2 = (s16)(u16)((Unk_ov004_02236320_O1 *)(u32)&o1)->f;
+    t2 = (s16)(u16)((CollisionState *)(u32)&o1)->contacts.numContacts;
     if (GroundInfoBase_getHeight(o3, 1) > 0x200 || r4r[1].y > 0x1000 || t2 > 0) {
         r6 += 2;
     }

@@ -3970,8 +3970,8 @@ void NetBuf_PackPair20(void *a, s32 b, s32 c);
 u16 NetBuf_ReadS16B(void *a);
 void NetBuf_WriteS16B(void *a, s32 b);
 
-void func_ov004_02233d00(V3 *p, s32 a);
-void func_ov004_02233d04(V3 *p, s32 a);
+void FtrMgr_OnRemoteStorageHold(V3 *p, s32 a);
+void FtrMgr_OnRemoteStorageOpen(V3 *p, s32 a);
 void FtrMgr_PlaySeatSound2At(V3 *p);
 void FtrMgr_PlaySeatSound0At(V3 *p);
 s32 PlayerActor_RequestSit(Obj *o, s32 a, s32 b, s32 c);
@@ -4328,7 +4328,7 @@ extern "C" void PlayerActor_StorageOpenStartAnim(Obj *o) {
             }
             _ZN11PlayerActor13startAnimOnceEijt(o, k, 3, 0);
             if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot) == 0) {
-                func_ov004_02233d04(&o->position, o->rotY);
+                FtrMgr_OnRemoteStorageOpen(&o->position, o->rotY);
             }
         }
     }
@@ -4394,7 +4394,7 @@ extern "C" void PlayerActor_SetupStorageHold(Obj *o, Msg *m) {
     }
     _ZN11PlayerActor9startAnimEijt(o, k, 3, 0);
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot) == 0) {
-        func_ov004_02233d00(&o->position, o->rotY);
+        FtrMgr_OnRemoteStorageHold(&o->position, o->rotY);
     }
 }
 
@@ -4585,7 +4585,7 @@ void _ZN14CollisionStateC1Ev(void *p);
 void _ZN14CollisionStateD1Ev(void *p);
 void Collision_Move(void *a, V3 *b, V3 *c, s32 d, u32 e, Obj *f, u32 g);
 s32 Ground_GetDefaultY(u32 a);
-void func_ov004_02233cfc(V3 *p, s32 a);
+void FtrMgr_OnRemoteStorageClose(V3 *p, s32 a);
 void PlayerActor_StepAlpha(Obj *o, u32 a, u32 b);
 void PlayerActor_RequestAct42(Obj *o, s32 a, s32 b);
 void PlayerActor_StorageCloseGetNetData(void *p, u8 *o);
@@ -4644,7 +4644,7 @@ extern "C" void PlayerActor_SetupStorageClose(Obj *o, PlayerActionRequest *m) {
     u32 mid = ((Bits *)&o->bodyAnimNumFrames)->mid;
     _ZN13AnimFrameCtrl5setupEihit(&o->bodyAnimCtrl, mid, 3, 0x1000, (u16)(mid - 1));
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot) == 0) {
-        func_ov004_02233cfc(&o->position, o->rotY);
+        FtrMgr_OnRemoteStorageClose(&o->position, o->rotY);
     }
 }
 

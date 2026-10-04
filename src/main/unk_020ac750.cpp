@@ -2623,7 +2623,7 @@ extern "C" {
 u32 Shop_IsPurchaseSynced(void);
 }
 extern "C" {
-u32 _ZN18Unk_ov004_0223e9bc13callGetItemAtEv(u32 a, u32 b);
+u32 _ZN15ShopStockPlacer13callGetItemAtEv(u32 a, u32 b);
 }
 extern "C" {
 u16 *ShopStock_GetItemAtTile(u32 a, u32 b);
@@ -3105,7 +3105,7 @@ extern "C" void ReddShop_RecordPurchase(u32 a, u32 b, u8 c, u32 d) {
 }
 
 extern "C" void ReddShop_BuyAt(u32 a, u32 b, u32 c) {
-    u32 r = ReddShop_FindItem(data_021ed2c0, _ZN18Unk_ov004_0223e9bc13callGetItemAtEv(a, b));
+    u32 r = ReddShop_FindItem(data_021ed2c0, _ZN15ShopStockPlacer13callGetItemAtEv(a, b));
     if (r != (u32)-1) {
         ShopAckCounter_Start(sShopAckCounter);
         ReddShop_RecordPurchase(r, c, 1, 0);

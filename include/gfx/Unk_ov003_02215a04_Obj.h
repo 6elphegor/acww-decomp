@@ -11,11 +11,6 @@ struct Unk_ov003_02215a04_Ctx {
     /* 0x02 */ u8 pad_02[2];
 };
 
-struct NNSG3dMatAnmResult {
-    /* 0x00 */ u8 pad_00[0xc];
-    /* 0x0c */ u32 prmPolygonAttr;
-};
-
 struct Unk_ov003_02215a04_Obj {
     /* 0x00 */ Unk_ov003_02215a04_Ctx *c;
     /* 0x04 */ NNSG3dRenderObj *pRenderObj;

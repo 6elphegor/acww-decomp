@@ -1,34 +1,8 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "game/Unk_ov004_Vec3.h"
+#include "game/SceneWarp.h"
 
-// Static tile entries built by __sinit (ctor = main SceneWarp_Init, dtor = main SceneWarp::~SceneWarp).
-
-extern "C" void SceneWarp_Init(void *e, u8 id, Unk_ov004_Vec3 *v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t);
-
-struct Unk_020b4fc0 {
-    u8 type;
-    u8 flag;
-    s16 angle;
-    Unk_ov004_Vec3 pos;
-    u32 spawnParam;
-    u8 fadeOut;
-    u8 fadeIn;
-    s16 unk_16;
-    u8 unk_18;
-    Unk_020b4fc0(u8 id, const Unk_ov004_Vec3 &v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t) {
-        SceneWarp_Init(this, id, (Unk_ov004_Vec3 *)&v, w, s, p, q, r, t);
-    }
-    ~Unk_020b4fc0();
-};
-
-struct Unk_ov004_Vec3C : Unk_ov004_Vec3 {
-    Unk_ov004_Vec3C(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-};
+// Static warp entries built by __sinit (ctor = main SceneWarp_Init, dtor = main SceneWarp::~SceneWarp).
 
 extern "C" {
 extern void *gMenuHeap;
@@ -118,16 +92,16 @@ s32 KkShowFx_GetState() {
 }
 
 // file-scope objects (the static initialiser); the definition order sets the data/bss order
-extern Unk_020b4fc0 data_ov004_0225893c;
+extern SceneWarp data_ov004_0225893c;
 
 u8 sKkShowFxActive;
 void *sKkShowFx;
 // {pointer to the first static entry, count}
-Unk_020b4fc0 *sRoomSceneEntryList = &data_ov004_0225893c;
+SceneWarp *sRoomSceneEntryList = &data_ov004_0225893c;
 extern "C" u32 data_ov004_0224f2d0 = 3;  // unreferenced: kept by its symbols.txt name
-Unk_020b4fc0 data_ov004_0225893c(1, Unk_ov004_Vec3C(0xf000, 0x200, 0x1d000), 0x11000000, 0x4000, 2, 2, -0x4000, 2);
+SceneWarp data_ov004_0225893c(1, Unk_020b4f8c_Vec(0xf000, 0x200, 0x1d000), 0x11000000, 0x4000, 2, 2, -0x4000, 2);
 u32 sRoomCommonProfileCount = 0x11;
-Unk_020b4fc0 data_ov004_02258958(5, Unk_ov004_Vec3C(0x11000, 0x200, 0x1d000), 0x11000000, -0x4000, 2, 2, 0x4000, 2);
-Unk_020b4fc0 data_ov004_02258974(0x3e, Unk_ov004_Vec3C(0, 0, 0), 0x800000, 0, 2, 2, 0, 0);
+SceneWarp data_ov004_02258958(5, Unk_020b4f8c_Vec(0x11000, 0x200, 0x1d000), 0x11000000, -0x4000, 2, 2, 0x4000, 2);
+SceneWarp data_ov004_02258974(0x3e, Unk_020b4f8c_Vec(0, 0, 0), 0x800000, 0, 2, 2, 0, 0);
 // list of 17 ids
 u32 sRoomCommonProfiles[17] = {0xc9, 0xca, 0xe, 0x7, 0x8c, 0x8e, 0xc6, 0x8b, 0xd6, 0xc5, 0x89, 0xd5, 0xbf, 0xd1, 0xd2, 0x8d, 0x2a};

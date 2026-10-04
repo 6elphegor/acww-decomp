@@ -13,6 +13,11 @@
 #include "game/GroundInfo.h"
 #include "room/FtrActor.h"
 #include "sys/ProcProfile.h"
+#include "game/WeatherRecord.h"
+#include "sys/ClockDate.h"
+#include "gfx/Mtx43.h"
+#include "gfx/NNSG3dRS.h"
+#include "town/Unk_0204e858_Grid.h"
 
 // other modules' symbols by their real names
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
@@ -98,25 +103,22 @@ struct TvScheduleDay {
     s32 numEntries;
 };
 
-struct Unk_ov004_02233330_Time {
+struct TvScheduleTime {
     u16 hourMinute;
     u8 minute;
     u8 hour;
     u32 unk_04;
 };
 
-struct Unk_ov004_02233244_Src {
-    u8 pad_00[0xb];
-    u8 unk_0b;
+struct TvWeatherSrcView {
+    u8 pad_00[6];
+    WeatherRecord weather;
 };
 
-struct Unk_ov004_022332b8_Buf {
-    u32 unk_00;
-    u32 unk_04;
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0a;
-    u8 unk_0b;
+struct TvClockDateBuf {
+    u32 dateTimeLo;
+    u32 dateTimeHi;
+    ClockDate date;
 };
 
 // P: 0xa8-byte TV/ftr resource slot (member sub-object TexPatVramAnim at +0x10)
@@ -144,10 +146,6 @@ struct Unk_ov004_02233b3c_V3 {
     s32 x, y, z;
 };
 
-struct Unk_ov004_02233b3c_Mat {
-    s32 v[12];
-};
-
 // R: furniture model wrapper (AnimModel at +0x2c)
 struct FtrMoveAnim {
     u8 isPlaying;
@@ -162,34 +160,12 @@ struct FtrMoveAnim {
     void *modelArc;
     u32 resMdl;
     u8 model[0x64];
-    Unk_ov004_02233b3c_Mat modelMtx;
+    Mtx43 modelMtx;
     u8 unk_c0[8];
     u8 animFrameCtrl[0x1c];
 };
 
-struct Unk_ov004_02233b90_In {
-    u8 pad_00[0x4c];
-    Unk_ov004_02233b3c_V3 trans;
-};
-
-struct Unk_ov004_02233b90_Vt {
-    u8 command;
-    u8 nodeId;
-};
-
-struct Unk_ov004_02233b90_Sub {
-    u8 pad_00[0x2c];
-    FtrMoveAnim *ptrUser;
-};
-
-struct Unk_ov004_02233b90_Obj {
-    Unk_ov004_02233b90_Vt *c;
-    Unk_ov004_02233b90_Sub *pRenderObj;
-    u8 pad_08[0xb4 - 0x8];
-    Unk_ov004_02233b90_In *pJntAnmResult;
-};
-
-struct Unk_ov004_022337d4_Path {
+struct FtrModelPath {
     u16 item;
     char path[0x2a];
 };
@@ -208,13 +184,8 @@ struct Unk_ov004_02233f3c_P {
     Unk_ov004_02233f3c_P(s16 a, s16 b) : x(a), y(b) {}
 };
 
-struct Unk_ov004_022341c0_Buf {
-    u32 unk_00, unk_04;
-};
-
-struct Unk_ov004_02233f3c_World {
-    void *cells;
-    u32 w, h;
+struct FtrFootprint {
+    u32 shapeIndex, direction;
 };
 
 struct Unk_ov004_02233f3c_V3 {
@@ -332,17 +303,6 @@ public:
     void play(u32 a, u32 b);
     void release();
     void attach();
-};
-
-// ---- classes of unk_02235984
-
-
-// object with a byte flag at +0x1c
-class Unk_ov004_02235984 {
-public:
-    /* 0x00 */ u8 posNode[0x1c];
-    /* 0x1c */ u8 isAttached;
-
     void resetAttached();
 };
 
@@ -393,11 +353,11 @@ extern "C" {
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
 void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, s32));
 extern s16 data_02135f44[];
-extern Unk_ov004_02233f3c_World *gSceneBlockMap;
+extern Unk_0204e858_Grid *gSceneBlockMap;
 extern u8 gBackup[];
 extern void *gBgHeap;
 extern u8 gSavePlayers[];
-extern Unk_ov004_02233244_Src data_021ed2b0;
+extern TvWeatherSrcView data_021ed2b0;
 extern s32 data_021f47e0[];
 extern void *gCurrentHeap;
 extern Unk_ov004_Vec3 gVec3Zero;
@@ -454,17 +414,17 @@ s32 Item_GetFurnitureDirection(void *);
 s32 Item_IsFurniture(void *p);
 s32 Item_IsNormalItem(u16 *p);
 u32 Item_GetPaperIndex(u16 *p);
-u16 *BlockMap_GetItemPtrAtPos(Unk_ov004_02233f3c_World *w, void *q, u32 z);
-u16 *BlockMap_GetItemPtr(Unk_ov004_02233f3c_World *w, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+u16 *BlockMap_GetItemPtrAtPos(Unk_0204e858_Grid *w, void *q, u32 z);
+u16 *BlockMap_GetItemPtr(Unk_0204e858_Grid *w, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void FieldPos_FromUnitCenter(Unk_ov004_Vec3 *out, s32 x, s32 z);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 s32 Backup_GetStatus(void *p);
 s32 FtrSync_RequestToggleGyroid(s32, void *, s32);
 s32 FtrSync_ChangeAct(void *, s32, s32, s32);
-s16 *FtrFootprint_GetTileOffset(Unk_ov004_022341c0_Buf *b, u32 i);
-u32 FtrFootprint_GetTileCount(Unk_ov004_022341c0_Buf *b);
-void FtrFootprint_Destruct(Unk_ov004_022341c0_Buf *b);
-void FtrFootprint_Init(Unk_ov004_022341c0_Buf *b, void *cell);
+s16 *FtrFootprint_GetTileOffset(FtrFootprint *b, u32 i);
+u32 FtrFootprint_GetTileCount(FtrFootprint *b);
+void FtrFootprint_Destruct(FtrFootprint *b);
+void FtrFootprint_Init(FtrFootprint *b, void *cell);
 s32 FtrInfo_TestIndoorFlag2(s32 a);
 s32 FtrInfo_GetDmaUnk04(s32 a);
 s32 FtrInfo_TestAlwaysFlag4(s32);
@@ -613,7 +573,7 @@ extern "C" u16 FtrMgr_GetCycleCounter();
 extern "C" s32 FtrMgr_PickFurnitureComment(u32 key);
 extern "C" u32 FtrMgr_GetMaxFurniture();
 extern "C" BOOL FtrMgr_IsShopScene();
-extern "C" void func_ov004_02234ad0(void *);
+extern "C" void FtrMgr_CreateHook(void *);
 extern "C" void FtrMgr_SpawnAllFromMap(void *);
 extern "C" void FtrMgr_NotifyNearestCabinClock(void *);
 extern "C" void FtrMgr_NotifyNearestSoundingClock(void *);
@@ -640,9 +600,9 @@ extern "C" s32 FtrMgr_TakeDisplayedWearable(void *o0);
 extern "C" s32 FtrMgr_TakeDisplayedWearableAt(s32 a, s32 b);
 extern "C" s32 FtrMgr_RestoreDisplayedWearable(void *o0);
 extern "C" s32 FtrMgr_RestoreDisplayedWearableAt(s32 a, s32 b);
-extern "C" BOOL func_ov004_02233d04(void);
-extern "C" BOOL func_ov004_02233d00(void);
-extern "C" BOOL func_ov004_02233cfc(void);
+extern "C" BOOL FtrMgr_OnRemoteStorageOpen(void);
+extern "C" BOOL FtrMgr_OnRemoteStorageHold(void);
+extern "C" BOOL FtrMgr_OnRemoteStorageClose(void);
 extern "C" s32 FurnitureManager_GetTvTex(void);
 extern "C" s32 FurnitureManager_GetTvProgram(void);
 extern "C" TvSound *FurnitureManager_GetTvSound(void);
@@ -653,8 +613,8 @@ extern "C" u8 FurnitureManager_IsTvProgramChanged(void);
 extern "C" void FtrMoveFlag_Init(u8 *p);
 extern "C" void FtrMoveFlag_Destroy(u8 *p);
 extern "C" void *FurnitureManager_GetMoveAnim(void);
-extern "C" void FtrMoveAnim_NodeCallback(Unk_ov004_02233b90_Obj *o);
-extern "C" void FtrMoveAnim_InstallCallback(FtrMoveAnim *r);
+extern "C" void FtrMoveAnim_NodeCallback(NNSG3dRS *o);
+extern "C" void FtrMoveAnim_InstallCallback(NNSG3dRS *o);
 extern "C" void *FtrMoveAnim_Construct(FtrMoveAnim *r);
 extern "C" void *FtrMoveAnim_Destruct(FtrMoveAnim *r);
 extern "C" void FtrMoveAnim_Load(FtrMoveAnim *r);
@@ -813,7 +773,7 @@ BOOL FurnitureManager::onCreate() {
     }
     ModelSlotPool_init(&sFtrMgrPool, FtrMgr_GetMaxFurniture(), 0x2000, 0x80, flags, (void *)FurnitureHeap_Create,
                   (void *)FurnitureHeap_Destroy, (void *)"\x89\xc6\x8b\xef\x83\x7d\x83\x6c\x81\x5b\x83\x57\x83\x83\x81\x5b");
-    func_ov004_02234ad0(this);
+    FtrMgr_CreateHook(this);
     if (FtrMgr_GetMaxFurniture() > 1) {
         TvScreen_Load(&tvScreen);
     }
@@ -1107,7 +1067,7 @@ u32 FtrSoundList::isInitialized() {
 }
 
 // @0x2235984 unk_02235984.cpp
-void Unk_ov004_02235984::resetAttached() {
+void FtrSoundEmitter::resetAttached() {
     isAttached = 0;
 }
 
@@ -3744,15 +3704,15 @@ extern "C" BOOL FtrMgr_IsShopScene() {
 }
 
 // @0x2234ad0 unk_02234774.cpp
-extern "C" void func_ov004_02234ad0(void *) {
+extern "C" void FtrMgr_CreateHook(void *) {
 }
 
 // @0x2234a48 unk_02234774.cpp
 extern "C" void FtrMgr_SpawnAllFromMap(void *) {
-    Unk_ov004_02233f3c_World *g = gSceneBlockMap;
+    Unk_0204e858_Grid *g = gSceneBlockMap;
     void *cells;
-    if ((u8 *)g->w > (u8 *)0 && (u8 *)g->h > (u8 *)0 && g->cells != NULL) {
-        cells = g->cells;
+    if ((u8 *)g->width > (u8 *)0 && (u8 *)g->height > (u8 *)0 && g->blocks != NULL) {
+        cells = g->blocks;
     } else {
         cells = NULL;
     }
@@ -3924,7 +3884,7 @@ extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
 // @0x22345c4 unk_02233dc0.cpp
 extern "C" s32 FtrMgr_FindFacingFurniture(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos, s32 ang, u16 *p1, u16 *p2) {
     s32 i;
-    Unk_ov004_02233f3c_World *w;
+    Unk_0204e858_Grid *w;
     s32 b24, b28;
     s32 c2c, c30;
     s32 layer;
@@ -4113,10 +4073,10 @@ extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 l
     s32 z2, z;
     s32 py, px;
     u16 s34;
-    Unk_ov004_022341c0_Buf b;
+    FtrFootprint b;
     s34 = Item_MakeFurniture(pl, dir);
     FtrFootprint_Init(&b, &s34);
-    Unk_ov004_02233f3c_World *w = gSceneBlockMap;
+    Unk_0204e858_Grid *w = gSceneBlockMap;
     BOOL ok = TRUE;
     u32 i = 0;
     z2 = i;
@@ -4187,7 +4147,7 @@ extern "C" s32 FtrMgr_FindPlacement(void *out, u16 *tile, Unk_ov004_Vec3 *pos, s
     s32 px, py, dr, z, q3c, r7, y3c;
     u16 s48;
     s32 c54, c58;
-    Unk_ov004_022341c0_Buf buf;
+    FtrFootprint buf;
     Unk_ov004_02233f3c_V3 v64, v70, v7c, v88;
     if (Item_IsFurniture(tile) == 0) {
         return 0;
@@ -4359,17 +4319,17 @@ extern "C" s32 FtrMgr_RestoreDisplayedWearableAt(s32 a, s32 b) {
 }
 
 // @0x2233d04 unk_0223349c.cpp
-extern "C" BOOL func_ov004_02233d04(void) {
+extern "C" BOOL FtrMgr_OnRemoteStorageOpen(void) {
     return TRUE;
 }
 
 // @0x2233d00 unk_0223349c.cpp
-extern "C" BOOL func_ov004_02233d00(void) {
+extern "C" BOOL FtrMgr_OnRemoteStorageHold(void) {
     return TRUE;
 }
 
 // @0x2233cfc unk_0223349c.cpp
-extern "C" BOOL func_ov004_02233cfc(void) {
+extern "C" BOOL FtrMgr_OnRemoteStorageClose(void) {
     return TRUE;
 }
 
@@ -4455,18 +4415,18 @@ extern "C" void *FurnitureManager_GetMoveAnim(void) {
 }
 
 // @0x2233b90 unk_0223349c.cpp
-extern "C" void FtrMoveAnim_NodeCallback(Unk_ov004_02233b90_Obj *o) {
+extern "C" void FtrMoveAnim_NodeCallback(NNSG3dRS *o) {
     Unk_ov004_02233b3c_V3 v;
     Unk_ov004_02233b3c_V3 out;
     FtrMoveAnim *r;
-    if (o != 0 && o->c->nodeId == 0) {
-        Unk_ov004_02233b3c_V3 *pv = &o->pJntAnmResult->trans;
+    if (o != 0 && o->c[1] == 0) {
+        Unk_ov004_02233b3c_V3 *pv = (Unk_ov004_02233b3c_V3 *)&o->pJntAnmResult->trans;
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;
-        r = o->pRenderObj->ptrUser;
+        r = (FtrMoveAnim *)o->pRenderObj->ptrUser;
         if (r != 0) {
-            *(Unk_ov004_02233b3c_Mat *)data_021f47e0 = *(Unk_ov004_02233b3c_Mat *)FtrMoveAnim_GetMtx(r);
+            *(Mtx43 *)data_021f47e0 = *(Mtx43 *)FtrMoveAnim_GetMtx(r);
             MTX_MultVec43(&v, data_021f47e0, &out);
             FtrMoveAnim_SetPos(r, &out);
         }
@@ -4474,9 +4434,9 @@ extern "C" void FtrMoveAnim_NodeCallback(Unk_ov004_02233b90_Obj *o) {
 }
 
 // @0x2233b80 unk_0223349c.cpp
-extern "C" void FtrMoveAnim_InstallCallback(FtrMoveAnim *r) {
-    r->modelArc = (void *)FtrMoveAnim_NodeCallback;
-    ((u8 *)&r->modelMtx)[2] = 2;
+extern "C" void FtrMoveAnim_InstallCallback(NNSG3dRS *o) {
+    o->cbVecFunc[6] = (void *)FtrMoveAnim_NodeCallback;
+    o->cbVecTiming[6] = 2;
 }
 
 // @0x2233b54 unk_0223349c.cpp
@@ -4540,7 +4500,7 @@ extern "C" BOOL FtrMoveAnim_Start(FtrMoveAnim *r, s32 x, volatile u8 *flag, Unk_
         r->posZ = pos->z;
         Mtx43_SetTranslate(data_021f47e0, pos->x, pos->y, pos->z);
         Mtx43_RotateY(data_021f47e0, *(s16 *)&e);
-        r->modelMtx = *(Unk_ov004_02233b3c_Mat *)data_021f47e0;
+        r->modelMtx = *(Mtx43 *)data_021f47e0;
         return TRUE;
     }
     return FALSE;
@@ -4634,7 +4594,7 @@ extern "C" BOOL FtrMoveAnim_ClearAnims(FtrMoveAnim *r) {
 
 // @0x22337d4 unk_0223349c.cpp
 extern "C" BOOL FtrMoveAnim_LoadModel(FtrMoveAnim *r) {
-    Unk_ov004_022337d4_Path path;
+    FtrModelPath path;
     Unk_ov004_022337d4_Arc arc;
     if (r->heap == 0) {
         return FALSE;
@@ -4895,7 +4855,7 @@ extern "C" void TvScreen_Update(TvScreen *o) {
 // @0x2233330 unk_02232b1c.cpp
 extern "C" u8 TvSchedule_GetCurrentProgram(void *) {
     const TvScheduleDay *t = &sTvScheduleByWeekday[Clock_GetWeekday()];
-    Unk_ov004_02233330_Time l;
+    TvScheduleTime l;
     s32 i;
     u16 y;
     Clock_GetMinuteHour(&l);
@@ -4912,19 +4872,19 @@ extern "C" u8 TvSchedule_GetCurrentProgram(void *) {
 
 // @0x22332b8 unk_02232b1c.cpp
 extern "C" s32 TvWeather_IsUnkPeriod() {
-    Unk_ov004_022332b8_Buf l;
+    TvClockDateBuf l;
     s32 r;
-    l.unk_00 = 0;
-    l.unk_04 = 0;
+    l.dateTimeLo = 0;
+    l.dateTimeHi = 0;
     Clock_GetDateTime(&l);
-    l.unk_08 = 1;
-    l.unk_09 = 1;
-    l.unk_0a = 0;
-    l.unk_0b = 0;
-    l.unk_0a = ((u8 *)&l)[5];
-    l.unk_09 = ((u8 *)&l)[4];
-    l.unk_08 = ((u8 *)&l)[3];
-    r = Date_GetWeatherPeriod(&l.unk_08);
+    l.date.day = 1;
+    l.date.month = 1;
+    l.date.year = 0;
+    l.date.pad_03 = 0;
+    l.date.year = ((u8 *)&l)[5];
+    l.date.month = ((u8 *)&l)[4];
+    l.date.day = ((u8 *)&l)[3];
+    r = Date_GetWeatherPeriod(&l.date);
     switch (r) {
     case 0:
     case 1:
@@ -4941,7 +4901,7 @@ extern "C" s32 TvWeather_IsUnkPeriod() {
 
 // @0x2233244 unk_02232b1c.cpp
 extern "C" s32 TvWeather_GetForecastIndex(void *) {
-    s32 t = data_021ed2b0.unk_0b & 0x1f;
+    s32 t = data_021ed2b0.weather.tomorrowPattern & 0x1f;
     if (t <= 6) return 0;
     if (t <= 9) return 1;
     if (t <= 15) {

@@ -9,7 +9,7 @@
 
 
 // Spawn-definition record (0x1c bytes).
-struct Unk_ov004_0223df58_Rec {
+struct MuseumInfoPointData {
     /* 0x00 */ Unk_ov004_0223d800_Vec pos;
     /* 0x0c */ s32 arc;
     /* 0x10 */ s16 angle;
@@ -32,12 +32,12 @@ struct MuseumInfoPointDef {
 
 struct MuseumInfoPointSet {
     u8 scene;
-    Unk_ov004_0223df58_Rec *points;
+    MuseumInfoPointData *points;
     u32 numPoints;
 };
 
 typedef Unk_ov004_0223d800_Vec V3;
-typedef Unk_ov004_0223df58_Rec Rec;
+typedef MuseumInfoPointData Rec;
 
 struct Unk_ov004_0223df20_V : V3 {
     Unk_ov004_0223df20_V(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }

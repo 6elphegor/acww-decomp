@@ -13,6 +13,7 @@
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
+#include "gfx/NNSG3dRS.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -73,8 +74,8 @@ void RoomObj_ActivateSe(void *self);
 
 // a 4-byte colour record whose constructor is inline (the __sinit of this unit initialises six of them)
 
-struct Unk_ov004_02227728_Rec {
-    u16 (*unk_00)(u32);
+struct MuseumDisplayKind {
+    u16 (*getItemId)(u32);
     u32 numItems;
     const char *arcPath;
     const char *texPath;
@@ -96,31 +97,6 @@ public:
     s8 *shownNodes;
 };
 
-struct Unk_ov004_02227bfc_Out {
-    u8 pad_00[0xb8];
-    s32 *visAnmResult;
-};
-
-struct Unk_ov004_02227cbc_Obj {
-    u8 pad_00[0x14];
-    void (*nodeCallback)(void *);
-    u8 pad_18[0x8e - 0x14 - 4];
-    u8 nodeCallbackTiming;
-};
-
-struct Unk_ov004_02227ccc_Sub {
-    u8 pad_00[0x2c];
-    MuseumDisplay *userPtr;
-};
-struct Unk_ov004_02227ccc_Ctx {
-    u8 unk_00;
-    u8 operand;
-};
-struct Unk_ov004_02227ccc_Obj {
-    Unk_ov004_02227ccc_Ctx *sbcCmd;
-    Unk_ov004_02227ccc_Sub *renderObj;
-};
-
 extern "C" {
 extern void *gBgHeap;
 extern u8 data_021ed0a0[];
@@ -132,8 +108,8 @@ s32 _ZN12G3dResAccess11findNodeIdxEi(void *p, char *name);
 s32 _ZN9AnimModel12drawAnimatedEPv(void *p, u32 a);
 s32 _ZN5Model15setInitCallbackEii(void *p, void *fn, void *self);
 void MuseumDisplay_InitRenderObj(void *p);
-void MuseumDisplay_NodeCallback(Unk_ov004_02227ccc_Obj *o);
-const Unk_ov004_02227728_Rec *MuseumDisplay_GetKindInfo(u32 i);
+void MuseumDisplay_NodeCallback(NNSG3dRS *o);
+const MuseumDisplayKind *MuseumDisplay_GetKindInfo(u32 i);
 u16 MuseumDisplay_GetPaintingItem(u32 i);
 MuseumDisplay *MuseumDisplay_Create();
 void Item_MakeInsect();
@@ -150,7 +126,7 @@ extern "C" { extern char sMuseumInsectTexPath[0x20]; }
 extern "C" { extern char sMuseumInsectArcPath[0x1c]; }
 extern "C" { extern DebugColor data_ov004_02250e1c; }
 extern "C" { extern DebugColor data_ov004_02250e10; }
-extern "C" { extern const Unk_ov004_02227728_Rec sMuseumDisplayKinds[2]; }
+extern "C" { extern const MuseumDisplayKind sMuseumDisplayKinds[2]; }
 extern "C" { extern DebugColor data_ov004_02250e0c; }
 extern "C" { extern char sMuseumPictureArcPath[0x1c]; }
 extern "C" { extern ActorProfile sMuseumDisplayProfile; }
@@ -173,7 +149,7 @@ extern "C" DebugColor data_ov004_02250e1c(20, 31, 20, 31);
 
 extern "C" DebugColor data_ov004_02250e10(20, 31, 31, 31);
 
-extern "C" const Unk_ov004_02227728_Rec sMuseumDisplayKinds[2] = {
+extern "C" const MuseumDisplayKind sMuseumDisplayKinds[2] = {
     {MuseumDisplay_GetPaintingItem, 0x14, sMuseumPictureArcPath, sMuseumPictureTexPath},
     {(u16 (*)(u32))Item_MakeInsect, 0x38, sMuseumInsectArcPath, sMuseumInsectTexPath},
 };
@@ -193,24 +169,24 @@ extern "C" u16 MuseumDisplay_GetPaintingItem(u32 i) {
     return i < 0x14 ? i * 4 + 0x3894 : 0x3894;
 }
 
-extern "C" const Unk_ov004_02227728_Rec *MuseumDisplay_GetKindInfo(u32 i) {
+extern "C" const MuseumDisplayKind *MuseumDisplay_GetKindInfo(u32 i) {
     if (i < 2) {
         return &sMuseumDisplayKinds[i];
     }
     return &sMuseumDisplayKinds[0];
 }
 
-extern "C" void MuseumDisplay_NodeCallback(Unk_ov004_02227ccc_Obj *o) {
-    MuseumDisplay *b = o->renderObj->userPtr;
+extern "C" void MuseumDisplay_NodeCallback(NNSG3dRS *o) {
+    MuseumDisplay *b = (MuseumDisplay *)o->pRenderObj->ptrUser;
     if (b != 0) {
-        b->setNodeVisibility(o->sbcCmd->operand, o);
+        b->setNodeVisibility(o->c[1], o);
     }
 }
 
 extern "C" void MuseumDisplay_InitRenderObj(void *p) {
-    Unk_ov004_02227cbc_Obj *o = (Unk_ov004_02227cbc_Obj *)p;
-    o->nodeCallback = (void (*)(void *))MuseumDisplay_NodeCallback;
-    o->nodeCallbackTiming = 2;
+    NNSG3dRS *o = (NNSG3dRS *)p;
+    o->cbVecFunc[2] = (void *)MuseumDisplay_NodeCallback;
+    o->cbVecTiming[2] = 2;
 }
 
 MuseumDisplay::MuseumDisplay() {}
@@ -218,7 +194,7 @@ MuseumDisplay::MuseumDisplay() {}
 MuseumDisplay::~MuseumDisplay() {}
 
 BOOL MuseumDisplay::onCreate() {
-    const Unk_ov004_02227728_Rec *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
+    const MuseumDisplayKind *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
     loadResources((char *)r->arcPath, (char *)r->texPath);
     _ZN5Model15setInitCallbackEii((u8 *)this + 0xec, (void *)MuseumDisplay_InitRenderObj, this);
     selectNodes();
@@ -240,16 +216,16 @@ BOOL MuseumDisplay::onDelete() {
 }
 
 void MuseumDisplay::setNodeVisibility(s32 c, void *o) {
-    *((Unk_ov004_02227bfc_Out *)o)->visAnmResult = isShownNode(c);
+    *(s32 *)((NNSG3dRS *)o)->pVisAnmResult = isShownNode(c);
 }
 
 void MuseumDisplay::selectNodes() {
-    const Unk_ov004_02227728_Rec *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
+    const MuseumDisplayKind *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
     shownNodes = (s8 *)Heap_Alloc(gBgHeap, r->numItems);
     u32 z = 0;
     u32 i;
     for (i = 0; i < r->numItems; i++) {
-        u16 v = r->unk_00(i);
+        u16 v = r->getItemId(i);
         u32 f = z;
         if (_ZN10MuseumData9isDonatedEPt(data_021ed0a0, &v) != 0) {
             f = 1;
@@ -260,7 +236,7 @@ void MuseumDisplay::selectNodes() {
 }
 
 BOOL MuseumDisplay::isShownNode(s32 c) {
-    const Unk_ov004_02227728_Rec *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
+    const MuseumDisplayKind *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
     u32 i = 0;
     u32 n = r->numItems;
     for (; i < n; i++) {

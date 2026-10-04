@@ -369,7 +369,7 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 #define FtrSoundEmitter_play _ZN15FtrSoundEmitter4playEjj   // ov004
 #define FtrSoundEmitter_release _ZN15FtrSoundEmitter7releaseEv   // ov004
 #define FtrSoundEmitter_attach _ZN15FtrSoundEmitter6attachEv   // ov004
-#define Unk_ov004_02235984_resetAttached _ZN18Unk_ov004_0223598413resetAttachedEv   // ov004
+#define FtrSoundEmitter_resetAttached _ZN15FtrSoundEmitter13resetAttachedEv   // ov004
 
 // ================================================================ externs
 extern "C" {
@@ -575,7 +575,7 @@ void func_ov004_02206e38(void *);
 void func_ov004_02205d50(void *);
 void func_ov004_02205d7c(void *);
 void func_ov004_02205c2c(void *);
-void Unk_ov004_02235984_resetAttached(void *);
+void FtrSoundEmitter_resetAttached(void *);
 void FtrActorTable_add(void *, void *);
 BOOL Character_getCharId(void *);
 void Character_setCharId(void *, u32);
@@ -1081,7 +1081,7 @@ FtrActor::FtrActor() {
     _ZN13FtrClockHands5clearEv(&clockHands);
     _ZN10FtrGlowMatC1Ev(lampMat);
     FtrVisNodes_Construct(visNodes);
-    Unk_ov004_02235984_resetAttached(soundEmitter);
+    FtrSoundEmitter_resetAttached(soundEmitter);
     __cxa_vec_ctor(anims, 4, 0x20, _ZN12FtrModelAnimC1Ev, _ZN12FtrModelAnimD1Ev);
 }
 
