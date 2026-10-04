@@ -1,5 +1,6 @@
 #include "types.h"
 #include "net/CommManager.h"
+#include "net/Unk_020a647c_Buf.h"
 
 
 extern "C" {
@@ -71,11 +72,6 @@ struct NetPendingStatus {
 };
 
 extern "C" {
-struct Unk_020a647c_Buf {
-    u16 total;
-    u16 len;
-    u8 id;
-};
 }
 
 extern "C" {

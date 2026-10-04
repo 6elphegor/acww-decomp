@@ -1,4 +1,5 @@
 #include "types.h"
+#include "item/Unk_02098f30_Out.h"
 
 // Entry of the const table at 0x020d0604 (8 bytes): name, random range
 struct Unk_0209b570_Ent {
@@ -2688,10 +2689,6 @@ public:
     void *getInventory();
 };
 namespace n1 {
-struct Unk_02098f30_Out {
-    u16 flags;
-    u8 count;
-};
 extern "C" {
 PlayerData *PlayerData_GetCurrent();
 s32 PlayerErrands_GetDeliveryRecipientName(void *, void *, void *);

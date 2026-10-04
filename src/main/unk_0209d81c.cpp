@@ -1,4 +1,5 @@
 #include "types.h"
+#include "save/Unk_0209da44_E98c.h"
 
 extern "C" {
 void SaveData_SyncClockOffset(void *);
@@ -84,8 +85,6 @@ extern u32 sSndOutputModeTable[];
 
 u8 sFallbackTownName[8] = {0x13, 0x1b, 0x30, 0x1b, 0x0e, 0x29, 0x28, 0x1f};
 
-struct Unk_0209da44_E98c { u8 b[0x98c]; };
-struct Unk_0209da44_Eb4 { u8 b[0xb4]; };
 
 struct SaveData {
     u8 marker;

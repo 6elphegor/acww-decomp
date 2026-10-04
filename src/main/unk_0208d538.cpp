@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/Unk_02089240_Rec.h"
 
 extern "C" {
 void Snd_SetPanIfChanged(u8 v);
@@ -10,10 +11,6 @@ extern const u8 sHandCursorAnimHasLayer2[0x14];
 extern const u8 sHandCursorAnimLoops[0x14];
 extern const s32 sHandCursorAnimSeqIds[0x13];
 
-struct Unk_02089240_Rec {
-    /* 0x00 */ s32 frames;
-    /* 0x04 */ s32 frameCount;
-};
 
 struct SpriteAnimSeq;
 

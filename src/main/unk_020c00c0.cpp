@@ -4,6 +4,7 @@
 #include "gfx/Unk_020bfe30_Vec.h"
 #include "game/Unk_020c010c_Ent.h"
 #include "npc/Unk_020c0538_Out.h"
+#include "player/Unk_02097ff4.h"
 
 
 static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
@@ -16,10 +17,6 @@ static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
 
 
 
-class Unk_02097ff4 {
-public:
-    BOOL testFlag(u32 a);
-};
 
 class SpNpcKatie;
 

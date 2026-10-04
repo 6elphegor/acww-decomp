@@ -1,4 +1,5 @@
 #include "types.h"
+#include "room/Unk_0209c41c_Actor.h"
 
 // TU184: 0x0209c390-0x0209c3e0. Two state bytes in .bss (autoload_3 0x021d726c-0x021d7274).
 
@@ -8,10 +9,6 @@ extern u8 data_021f47d0;
 BOOL RoomObjSync_SetState(u32 idx, u8 v);
 }
 
-struct Unk_0209c3cc_Nib {
-    u8 lo : 4;
-    u8 hi : 4;
-};
 
 u8 gSoftResetRequested;
 u8 sSoftResetHeld;

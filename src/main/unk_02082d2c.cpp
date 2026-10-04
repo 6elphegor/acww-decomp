@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "npc/NpcResPool.h"
+#include "town/Unk_02082e80_Grid.h"
 
 // Element payload types (defined elsewhere)
 struct Unk_020829b0_Y {
@@ -91,15 +92,6 @@ public:
 };
 
 
-struct Unk_02082e80_Cell { u8 pad_00[0x28]; };
-struct Unk_02082e80_Grid {
-    Unk_02082e80_Cell *blocks;
-    u32 size[2];
-};
-struct Unk_02082e80_Pos {
-    s32 x, y;
-    Unk_02082e80_Pos() { x = 0; y = 0; }
-};
 
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -282,7 +274,6 @@ NpcResPool::NpcResPool(s32 n) { numSlots = n; }
 
 NpcResPool::~NpcResPool() {}
 
-struct Unk_02082dd0_V { s32 x, y, z; };
 
 extern "C" {
 BOOL Visitor_FindBlanca(BOOL flag);

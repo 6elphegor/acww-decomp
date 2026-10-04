@@ -1,5 +1,6 @@
 #include "types.h"
 #include "net/CommManager.h"
+#include "net/Unk_020a647c_Buf.h"
 
 
 extern "C" {
@@ -17,11 +18,6 @@ extern void (*const sNetStateBReaders[1])(u8 *, u32);
 void (*const sNetStateBWriters[1])(s32) = {(void (*)(s32))NetArea_WriteStateBPart0};
 void (*const sNetStateBReaders[1])(u8 *, u32) = {(void (*)(u8 *, u32))NetArea_ReadStateBPart0};
 
-struct Unk_020a647c_Buf {
-    u16 total;
-    u16 len;
-    u8 id;
-};
 
 extern "C" void NetArea_WriteStateBPart0() {}
 

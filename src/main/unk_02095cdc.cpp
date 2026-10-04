@@ -1,25 +1,11 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "game/Unk_02095774_Ent.h"
 
 
-struct Unk_02095774_Ent {
-    u8 pad_00[0x5c];
-    s32 position[3];
-    u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
-};
 
-struct Unk_0209579c_Rec {
-    u8 pad_00[0xe];
-    u8 state;
-};
 
-struct Unk_02095dcc_Grid {
-    u8 pad_00[0xc];
-    s32 unitsX;
-    s32 unitsZ;
-};
 
 struct ItemPickSpec {
     void set(s32 a, s32 b);
@@ -27,21 +13,7 @@ struct ItemPickSpec {
     s32 itemClass;
 };
 
-struct Unk_0209579c_Pos {
-    s32 x, y, z;
-    Unk_0209579c_Pos() {}
-};
 
-struct Unk_0209579c_L {
-    u8 a, b;
-    s16 c;
-    s16 r1[3];
-    s16 pad;
-    s32 v1, x1, y1;
-    s16 r2[3];
-    s16 r3[3];
-    s32 v2, x2, y2;
-};
 
 struct Unk_02096354_Arg {
     u32 year;
@@ -161,10 +133,6 @@ public:
     /* 0x000 */ Letter letters[75];
 };
 
-struct Unk_02095f38_G {
-    u8 pad_00[0x58];
-    u32 unk_58;
-};
 
 inline BOOL Unk_0209579c_IsTwo(u8 v) {
     if (v == 2) return TRUE;

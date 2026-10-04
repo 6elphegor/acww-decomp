@@ -1,5 +1,7 @@
 #include "types.h"
 #include "save/PatternOrder.h"
+#include "game/Unk_020702ec_Date.h"
+#include "net/Unk_020720f8_Data.h"
 
 // U125: design (pattern) storage and display helpers, 0x02070560-0x020720f8
 
@@ -22,16 +24,6 @@ struct Unk_02070248_Big {
     Unk_02070248_Big();
     ~Unk_02070248_Big();
     u8 d[0xf4];
-};
-struct Unk_020702ec_Date {
-    u8 b0, b1, b2, b3, b4, b5, b6, b7;
-};
-struct Unk_0206fe80_Bits {
-    u32 a : 4;
-    u32 b : 10;
-    u32 c : 4;
-    u32 d : 10;
-    u32 e : 1;
 };
 class MuseumData {
 public:
@@ -158,12 +150,6 @@ struct Unk_020719b0 {
 };
 
 // ======== types of unk_02071ae0.cpp ========
-struct Unk_02071b10_Id16 {
-    u8 b[16];
-};
-struct Unk_02071fa4_Id8 {
-    u8 b[8];
-};
 class Unk_020942c8 {
 public:
     Unk_020942c8();
@@ -254,10 +240,6 @@ public:
     Pattern *getPattern(u8 i);
     void replaceAuthorTown(Unk_020942c8 *a, Unk_020942c8 *b);
     void initDefaultPatterns(Unk_020942c8 *a);
-};
-struct Unk_020720f8_Data {
-    u32 v;
-    u8 f;
 };
 enum Unk_020720f8_Id { Unk_020720f8_Id_0 = 0 };
 

@@ -1,7 +1,6 @@
 #include "types.h"
+#include "save/Unk_0209da44_E98c.h"
 
-struct Unk_0209da44_E98c { u8 b[0x98c]; };
-struct Unk_0209da44_Eb4 { u8 b[0xb4]; };
 
 extern "C" {
 void SaveData_SyncClockOffset(void *);

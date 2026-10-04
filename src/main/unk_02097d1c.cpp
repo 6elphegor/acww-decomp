@@ -1,4 +1,5 @@
 #include "types.h"
+#include "player/Unk_02097ff4.h"
 
 class PlayerInventory;
 class Unk_02097ff4;
@@ -270,54 +271,6 @@ public:
     void *getPlayerId();
 };
 
-class Unk_02097ff4 {
-public:
-    u8 unk_00[0x21e4];
-    u8 bank[8];
-    u8 emotions[0x10];
-    u32 flags[2];
-    u8 dayUpdateDate[0x10];
-    u16 inventoryBackground;
-    u8 unk_2216[2];
-    u8 birthday;
-    u8 unk_2219;
-    u8 unk_221a[0x37];
-    u8 arbeitTalkCount;
-    u8 skyShotHits;
-    u8 birthdayTalkYear;
-    u8 unk_2254[8];
-    u8 foreignVillagerRecord[10];
-    u8 unk_2266[12];
-    u16 unk_2272;
-
-    void clearFlag(u32 bit);
-    void setFlag(u32 bit);
-    BOOL testFlag(u32 bit);
-    void sendForeignVillagerLetter();
-    void *getForeignVillagerRecord();
-    void func_02098188(u32 idx, u32 v);
-    u32 func_02098198(u32 idx);
-    void setSkyShotHits(u32 v);
-    u32 getSkyShotHits();
-    void advanceArbeitTalkCount();
-    u32 getArbeitTalkCount();
-    u32 getBirthdayTalkYear();
-    void setBirthdayTalkYear(u32 v);
-    void clearBirthday();
-    void setBirthday(u32 a, u32 b);
-    void *getBirthday();
-    void *getEmotions();
-    void *getBankAccount();
-    u8 *getDayUpdateDate();
-    s32 findUnusedSlot(s32 n);
-    BOOL getOtherResidentName(void *p);
-    s32 pickOtherResident();
-    void func_020983c0(u16 *p);
-    void *func_020983cc();
-    void resetForNewTown();
-    void func_020984a8();
-
-    };
 
 extern "C" {
 BOOL Letter_IsValidIndex(s32 i);

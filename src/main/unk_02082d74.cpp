@@ -3,6 +3,7 @@
 #include "net/CommManager.h"
 #include "game/Unk_0203389c_Vec.h"
 #include "net/Unk_020cbb18_Data.h"
+#include "town/Unk_02082e80_Grid.h"
 
 typedef Unk_0203389c_Vec Unk_02083c28_Vec;
 struct VisitorSpawner;
@@ -85,16 +86,6 @@ struct EventVisitorEntry {
     u16 c;
 };
 
-struct Unk_02082dd0_V { s32 x, y, z; };
-struct Unk_02082e80_Cell { u8 pad_00[0x28]; };
-struct Unk_02082e80_Grid {
-    Unk_02082e80_Cell *blocks;
-    u32 size[2];
-};
-struct Unk_02082e80_Pos {
-    s32 x, y;
-    Unk_02082e80_Pos() { x = 0; y = 0; }
-};
 
 struct Unk_02084ae4_Vec { s32 x, y, z; };
 struct Unk_020847b0_P0 { u8 pad[0x88]; };

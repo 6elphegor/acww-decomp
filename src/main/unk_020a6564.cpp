@@ -1,5 +1,6 @@
 #include "types.h"
 #include "net/CommManager.h"
+#include "net/Unk_020a647c_Buf.h"
 
 // TU198: 0x020a6564-0x020a65fc. Dispatches received records to two handlers through a table in .rodata
 // (0x020d07a8-0x020d07b0).
@@ -13,11 +14,6 @@ void NpcNetRecord_ResetTalkSlots();
 
 extern CommManager *gCommManager;
 
-struct Unk_020a647c_Buf {
-    u16 total;
-    u16 len;
-    u8 id;
-};
 
 typedef void (*Unk_020a6564_Fn)(u8 *, u32);
 

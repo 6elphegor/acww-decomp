@@ -4,6 +4,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "player/Unk_02097ff4.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -153,10 +154,6 @@ public:
 class PlayerData {
 public:
     void *getPlayerId();
-};
-class Unk_02097ff4 {
-public:
-    BOOL testFlag(u32 a);
 };
 
 struct Unk_0206d1d4_Src;

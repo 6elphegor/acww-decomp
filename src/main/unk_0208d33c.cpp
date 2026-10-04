@@ -1,4 +1,6 @@
 #include "types.h"
+#include "gfx/Unk_02089240_Rec.h"
+#include "gfx/Unk_0208d154_Sub.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -22,10 +24,6 @@ extern s32 sScrollKnobPlayOnce[];
 extern u8 data_020d5b0c[];
 extern u8 data_020d467c[];
 
-struct Unk_02089240_Rec {
-    /* 0x00 */ s32 frames;
-    /* 0x04 */ s32 frameCount;
-};
 
 // Sub-object (ctor 0x02089270, dtor 0x0208926c)
 class SpriteAnim {
@@ -72,16 +70,6 @@ public:
     /* 0x08 */ s32 originY;
 };
 
-class Unk_0208d154_Sub {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual s32 vfunc_0c();
-
-    /* 0x04 */ u8 unk_04[0x2c];
-    /* 0x30 */ s32 xOffset;
-};
 
 class NameLabelBalloon : public UiWidget {
 public:

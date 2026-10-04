@@ -1,5 +1,7 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
+#include "gfx/Unk_0206fd10_Mtx.h"
+#include "game/Unk_0206f6fc_Pos.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files (see unk_020a6914.cpp)
@@ -93,28 +95,9 @@ public:
     /* 0x3c */ TextLabel *label;
 };
 
-struct Unk_0206fd10_Mtx {
-    s32 m[9];
-    s32 x;
-    s32 y;
-    s32 z;
-};
 
-struct Unk_0206fde4_Mtx {
-    s32 v[12];
-};
 
-struct Unk_0206f6fc_Pos {
-    s32 x;
-    s32 y;
-    s32 z;
-};
 
-struct Unk_0206fd10_Vec {
-    s32 x;
-    s32 y;
-    s32 z;
-};
 
 extern "C" {
 extern u8 sCommSubPostReply;

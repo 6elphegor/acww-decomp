@@ -1,15 +1,7 @@
 #include "types.h"
+#include "gfx/Unk_0206fd10_Mtx.h"
 
-struct Unk_0206fd10_Mtx {
-    s32 m[9];
-    s32 x;
-    s32 y;
-    s32 z;
-};
 
-struct Unk_0206fde4_Mtx {
-    s32 v[12];
-};
 
 class MuseumData {
 public:

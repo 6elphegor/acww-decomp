@@ -3,6 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "player/Unk_02097ff4.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -70,9 +71,6 @@ s32 PocketMenu_ReturnToIdle(PocketMenu *self);
 struct TownExchangeRecord {
     void resetCounter();
     void setUnkFlag(u32 v);
-};
-struct Unk_02097ff4 {
-    s32 testFlag(u32 v);
 };
 struct PlayerData {
     u16 *getHeldItem();

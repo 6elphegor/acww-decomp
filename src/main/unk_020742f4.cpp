@@ -1,5 +1,6 @@
 #include "types.h"
 #include "net/CommManager.h"
+#include "npc/Unk_020781ec_Elem.h"
 
 // ======== types of unk_020742f4.cpp ========
 
@@ -173,11 +174,6 @@ public:
 // ======== types of unk_02077a54.cpp ========
 
 
-struct Unk_020781ec_Elem {
-    u8 pad_00[0x1d];
-    u8 flags;
-    u8 pad_1e[0x2c - 0x1e];
-};
 
 struct Unk_020781ec_Data {
     Unk_020781ec_Elem entries[8];

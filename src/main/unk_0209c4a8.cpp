@@ -1,16 +1,12 @@
 #include "types.h"
 #include "net/CommManager.h"
+#include "room/Unk_0209c41c_Actor.h"
 
 struct Unk_0209c82c_V {
     s32 x, y, z;
 };
 typedef Unk_0209c82c_V Unk_0209c614_Vec;
 
-struct Unk_0209c614_S {
-    u8 a, b, c, d;
-    u16 e;
-    s16 f;
-};
 
 struct Unk_0209c7a4_T {
     u8 scene, unk_01, unk_02, unk_03;

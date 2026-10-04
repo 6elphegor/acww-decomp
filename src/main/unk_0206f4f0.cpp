@@ -1,12 +1,8 @@
 #include "types.h"
+#include "game/Unk_0206f6fc_Pos.h"
 
 // U119: network message handlers 0x0206f4f0-0x0206f804 (the handler table sCommSubHandlers is in the next unit)
 
-struct Unk_0206f6fc_Pos {
-    s32 x;
-    s32 y;
-    s32 z;
-};
 
 extern "C" {
 extern u32 gMelodyEditPattern[];

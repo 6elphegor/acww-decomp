@@ -1,4 +1,6 @@
 #include "types.h"
+#include "gfx/Unk_02089240_Rec.h"
+#include "gfx/Unk_0208d154_Sub.h"
 
 extern "C" {
 void GX_LoadOBJPltt(void *a, u32 b, u32 c);
@@ -10,10 +12,6 @@ extern u8 data_020d467c[];
 
 struct SpriteAnimSeq;
 
-struct Unk_02089240_Rec {
-    /* 0x00 */ s32 frames;
-    /* 0x04 */ s32 frameCount;
-};
 
 // Sub-object (ctor 0x02089270, dtor 0x0208926c)
 class SpriteAnim {
@@ -66,16 +64,6 @@ public:
     void createLabel();
 };
 
-class Unk_0208d154_Sub {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual s32 vfunc_0c();
-
-    /* 0x04 */ u8 unk_04[0x2c];
-    /* 0x30 */ s32 xOffset;
-};
 
 class NameLabelBalloon : public UiWidget {
 public:

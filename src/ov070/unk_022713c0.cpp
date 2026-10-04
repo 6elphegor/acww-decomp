@@ -1,5 +1,6 @@
 #include "types.h"
 #include "player/PlayerSpNpcRecord.h"
+#include "item/Unk_02098f30_Out.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -61,10 +62,6 @@ struct Unk_ov070_02271524_Out {
     u16 paperItem;
 };
 
-struct Unk_02098f30_Out {
-    u16 flags;
-    u8 count;
-};
 
 struct Unk_ov070_022717f0_Ent {
     u16 items[3];

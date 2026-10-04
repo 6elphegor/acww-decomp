@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "net/CommManager.h"
+#include "npc/Unk_020781ec_Elem.h"
 
 
 class VillagerId {
@@ -361,11 +362,6 @@ namespace nA {
 extern "C" {
 
 typedef u32 Unk_02077a54_Fn;
-struct Unk_020781ec_Elem {
-    u8 pad_00[0x1d];
-    u8 flags;
-    u8 pad_1e[0x2c - 0x1e];
-};
 struct Unk_020781ec_Data {
     Unk_020781ec_Elem entries[8];
     s8 fleaVillager;

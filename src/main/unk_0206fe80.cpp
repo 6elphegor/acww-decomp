@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/Unk_020702ec_Date.h"
 
 struct MsgString9C {
     MsgString9C();
@@ -64,16 +65,6 @@ s32 func_020b23a0(void *p);
 void TownFlag_GetPattern(s32 p);
 }
 
-struct Unk_020702ec_Date {
-    u8 b0, b1, b2, b3, b4, b5, b6, b7;
-};
-struct Unk_0206fe80_Bits {
-    u32 a : 4;
-    u32 b : 10;
-    u32 c : 4;
-    u32 d : 10;
-    u32 e : 1;
-};
 
 class MuseumData {
 public:

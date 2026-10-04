@@ -1,6 +1,7 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "sys/Unk_020b83b0.h"
+#include "room/Unk_0209c41c_Actor.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -38,11 +39,6 @@ struct Unk_0209c614_Vec {
 }
 
 extern "C" {
-struct Unk_0209c614_S {
-    u8 a, b, c, d;
-    u16 e;
-    s16 f;
-};
 }
 
 // ---- CommManager (comm state; only the methods used here)
@@ -416,44 +412,8 @@ extern "C" u32 Scene_GetSavedFadeIn() {
     return sSavedFadeIn.fadeIn;
 }
 
-struct Unk_0209c3cc_Nib {
-    u8 lo : 4;
-    u8 hi : 4;
-};
 
-class Unk_0209c41c_Actor {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual BOOL vfunc_60(u32 v);
-};
 
-struct Unk_0209c41c_Pack {
-    u8 lo : 4;
-    u8 hi : 4;
-};
 
 struct Unk_0209c614_Actor {
     u8 pad_00[0x5c];
