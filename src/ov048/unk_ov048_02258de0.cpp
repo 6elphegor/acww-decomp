@@ -202,13 +202,13 @@ void _ZN10MsgRequest11setFileNameEPKc(void *, const char *);
 void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(void *, void *);
 void * _ZN10PlayerData11getPlayerIdEv(...);
 void _ZN8PlayerId13getNameStringEP9MsgString(void *, void *);
-s32 func_020a03c4();
+s32 SaveManager_IsSessionJoined();
 void FieldInfoBalloon_ShowPleaseWait();
 s32 Net_GetJoiningAid();
 s32 PlayerActor_SetNetFollowPaused(s32, s32);
 void PlayerActor_SetNoFaceTalkTarget(s32, s32);
 void _ZN11NpcMoveCtrl14setTargetAngleEs(void *, s32);
-s32 func_020a03e4();
+s32 SaveManager_SetGatePassed();
 s32 LostChild_IsKatieDue();
 void * _ZN10PlayerData18getLostChildRecordEv(void *);
 void * _ZN15LostChildRecord9getTownIdEv(void *);
@@ -1071,7 +1071,7 @@ extern "C" BOOL SpNpcCopper_CheckKatieEscort() {
 BOOL SpNpcCopper::act08Step5() {
     if (unk_654 == 8) {
         if (Unk_ov048_0225b854_Is0()) {
-            func_020a03e4();
+            SaveManager_SetGatePassed();
         } else {
             return FALSE;
         }
@@ -1407,7 +1407,7 @@ BOOL SpNpcCopper::act09Step1() {
 BOOL SpNpcCopper::act09Step2() {
     void *o = TalkWindow_Get(0);
     if (*(s32 *)((u8 *)o + 4) == 0) {
-        if (func_020a03c4() == 0) {
+        if (SaveManager_IsSessionJoined() == 0) {
             FieldInfoBalloon_ShowPleaseWait();
             return FALSE;
         }

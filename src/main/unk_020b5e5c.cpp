@@ -45,11 +45,11 @@ extern "C" s32 TouchTarget_ResolveBoardSign(s32 a);
 extern "C" s32 TouchTarget_ResolveSnowball(s32 a);
 extern "C" s32 TouchTarget_Resolve(s32 idx, s32 arg);
 
-typedef s32 (*Unk_020e4470_Fn)(s32);
-#define FN(f) ((Unk_020e4470_Fn)(f))
+typedef s32 (*TouchTargetResolver)(s32);
+#define FN(f) ((TouchTargetResolver)(f))
 
-extern "C" Unk_020e4470_Fn sTouchTargetResolvers[23];
-extern "C" Unk_020e4470_Fn sTouchTargetResolvers[23] = {
+extern "C" TouchTargetResolver sTouchTargetResolvers[23];
+extern "C" TouchTargetResolver sTouchTargetResolvers[23] = {
     FN(TouchTarget_ResolveNone), FN(TouchTarget_ResolvePlayer), FN(TouchTarget_ResolveVillager), FN(TouchTarget_ResolveSpNpc),
     FN(TouchTarget_ResolveNone), FN(TouchTarget_ResolveNone), FN(TouchTarget_ResolveBuildingAlt), FN(TouchTarget_ResolveBuilding),
     FN(TouchTarget_ResolveFurniture), FN(TouchTarget_ResolveVillagerBoard), FN(TouchTarget_ResolveNone), FN(TouchTarget_ResolveAtm),

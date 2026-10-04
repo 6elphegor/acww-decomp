@@ -6,6 +6,7 @@
 #include "sys/ProcBase.h"
 #include "sys/SceneBase.h"
 #include "save/TownId.h"
+#include "sys/ProcProfile.h"
 
 
 
@@ -28,24 +29,24 @@ void *NetStatusMsg_Init(void *);
 void *NetStatusMsg_Fini(void *);
 }
 
-struct Unk_020a67bc {
+struct NetStatusUpdateMsg {
     u32 unk_00[2];
-    Unk_020a67bc() { NetStatusUpdateMsg_Init(this); }
-    ~Unk_020a67bc() { NetStatusUpdateMsg_Fini(this); }
+    NetStatusUpdateMsg() { NetStatusUpdateMsg_Init(this); }
+    ~NetStatusUpdateMsg() { NetStatusUpdateMsg_Fini(this); }
     void NetStatusUpdateMsg_Pack(u32 a, u32 b, u32 c, u32 d) { ::NetStatusUpdateMsg_Pack(this, a, b, c, d); }
 };
 
-struct Unk_020a6968 {
+struct NetSceneMsg {
     u32 unk_00[2];
-    Unk_020a6968() { NetSceneMsg_Init(this); }
-    ~Unk_020a6968() { NetSceneMsg_Fini(this); }
+    NetSceneMsg() { NetSceneMsg_Init(this); }
+    ~NetSceneMsg() { NetSceneMsg_Fini(this); }
     void NetSceneMsg_Set(u32 a) { ::NetSceneMsg_Set(this, a); }
 };
 
-struct Unk_020a56c4_Buf {
+struct NetStatusMsg {
     u8 v[5];
-    Unk_020a56c4_Buf() { NetStatusMsg_Init(this); }
-    ~Unk_020a56c4_Buf() { NetStatusMsg_Fini(this); }
+    NetStatusMsg() { NetStatusMsg_Init(this); }
+    ~NetStatusMsg() { NetStatusMsg_Fini(this); }
 };
 
 // The singleton, composite view (constructor and destructor live here)
@@ -100,16 +101,10 @@ public:
     void resetSlot(s32 idx);
 };
 
-struct Unk_020a512c_Ent {
-    u32 a;
-    u8 b;
-    u8 pad[3];
-};
-
 // The singleton, second view (methods of the 0x020a512c class); same memory as NetSessionState
 struct NetSessionAreaView {
     u8 slotStatus[12];
-    Unk_020a512c_Ent moveQueue[4];
+    NetMoveRequest moveQueue[4];
     u32 moveReady[4];
     u8 pendingStatus[4][8];
     u8 becomesOwner;
@@ -208,7 +203,7 @@ s32 PlayerData_IsUsedByIndex(s32 a);
 s32 PlayerData_Get(s32 a);
 LostChildRecord *_ZN10PlayerData18getLostChildRecordEv(s32 a);
 void SoftReset_ClearSystems(void);
-void func_0209f230(s32 a);
+void SaveManager_SetEndSessionSave(s32 a);
 void Net_SetJoiningAid(s32 a);
 void SaveManager_RequestAct1B(void);
 void SaveManager_RequestAct19(void);
@@ -269,14 +264,9 @@ extern NetSessionState gNetSessionState;
 static inline NetSessionState &V2() { return gNetSessionState; }
 static inline NetSessionAreaView &V3() { return *(NetSessionAreaView *)&gNetSessionState; }
 
-struct Unk_020e2978_Rec {
-    void *create;
-    s16 executePriority;
-    s16 drawPriority;
-};
 extern u8 sSceneExists;
 extern u16 gNextSceneProfile;
-extern Unk_020e2978_Rec sSceneBaseProfile;
+extern ProcProfile sSceneBaseProfile;
 extern u8 data_021eda50;
 extern volatile u8 sSceneFadeInDelay;
 extern u8 data_021eda58;
@@ -522,7 +512,7 @@ extern "C" void NetArea_SendMoveTarget() {
         s32 r4 = o->myAid;
         NetArea_QueueMoveRequest(r4, Scene_GetRequestedScene());
     } else {
-        Unk_020a6968 tmp;
+        NetSceneMsg tmp;
         tmp.NetSceneMsg_Set(Scene_GetRequestedScene());
         o = gCommManager;
         o->beginRecord();
@@ -614,7 +604,7 @@ extern "C" void NetArea_OnStateAReceived() {
             NetArea_SetSlotStatus(r5, 0x3f, 1, 0, 2);
             if (o->isOnline()) {
                 if (r5 != 0) {
-                    Unk_020a67bc tmp;
+                    NetStatusUpdateMsg tmp;
                     tmp.NetStatusUpdateMsg_Pack(0x3f, 1, 0, 2);
                     o = gCommManager;
                     o->beginRecord();
@@ -792,7 +782,7 @@ void NetSessionAreaView::reset() {
 u8 sSceneFadeInType;
 u8 data_021eda58;
 NetSessionState gNetSessionState;
-Unk_020e2978_Rec sSceneBaseProfile = {(void *)SceneBase_Create, 2, 1};
+ProcProfile sSceneBaseProfile = {(void *(*)())SceneBase_Create, 2, 1};
 
 void NetSessionAreaView::updateMoveQueue() {
     struct {
@@ -1597,10 +1587,10 @@ void NetSessionState::updateSyncClient() {
                 SaveManager_RequestAct19();
             } else if (md == 2) {
                 SaveManager_RequestAct1B();
-                func_0209f230(0);
+                SaveManager_SetEndSessionSave(0);
             } else {
                 SaveManager_RequestAct1B();
-                func_0209f230(1);
+                SaveManager_SetEndSessionSave(1);
             }
         }
         if (st2 != 0) {

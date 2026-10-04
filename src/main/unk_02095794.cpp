@@ -100,7 +100,7 @@ BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx);
 }
 
 extern "C" {
-s32 func_020a03f0();
+s32 SaveManager_IsGatePassed();
 }
 
 extern "C" {
@@ -330,7 +330,7 @@ BOOL RemotePlayerSpawner::onExecute() {
     s32 j;
     if (Scene_GetCurrent() == 0x2e) goto ret1;
     if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f || Scene_GetCurrent() == 0xe) {
-        if (func_020a03f0()) return TRUE;
+        if (SaveManager_IsGatePassed()) return TRUE;
         ProcBase *rec = _ZN5Actor13findByProfileEjPS_(0x72, 0);
         if (rec == NULL) goto ret1;
         if (Unk_0209579c_IsTwo(rec->state)) goto ret1;

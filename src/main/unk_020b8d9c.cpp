@@ -1532,7 +1532,7 @@ extern "C" {
 void _Z13func_020c22e0v(void);
 }
 extern "C" {
-BOOL func_020a03c4(void);
+BOOL SaveManager_IsSessionJoined(void);
 }
 extern "C" {
 void FieldInfoBalloon_ShowPleaseWait(void);

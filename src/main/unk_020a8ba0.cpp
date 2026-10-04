@@ -393,16 +393,6 @@ class MsgString;
 
 
 
-// Buffer defined in another file (ctor func_020aa8e0, dtor func_020aa8c8), 0x34 bytes
-class Unk_020aa8e0 : public MsgString {
-public:
-    Unk_020aa8e0();
-    virtual ~Unk_020aa8e0();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x12 */ u8 unk_14[0x20];
-};
 
 
 

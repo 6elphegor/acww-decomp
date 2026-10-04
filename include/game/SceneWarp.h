@@ -21,8 +21,8 @@ struct SceneWarp {
     /* 0x10 */ u32 spawnParam;
     /* 0x14 */ u8 fadeOut;
     /* 0x15 */ u8 fadeIn;
-    /* 0x16 */ s16 unk_16;
-    /* 0x18 */ u8 unk_18;
+    /* 0x16 */ s16 exitAngle;
+    /* 0x18 */ u8 exitKind;
 };
 
 #endif

@@ -148,10 +148,10 @@ inline BOOL InRange32(const u32 &v)
     return r;
 }
 
-struct Unk_020b1d3c_Pad {
+struct BuildingStateStackPad {
     s32 v[2];
-    Unk_020b1d3c_Pad() {}
-    ~Unk_020b1d3c_Pad() {}
+    BuildingStateStackPad() {}
+    ~BuildingStateStackPad() {}
 };
 
 
@@ -214,10 +214,15 @@ public:
     void getHouseStyles();
 };
 
-class Unk_020b246c_Sub {
+class TownFlag {
 public:
-    Unk_020b246c_Sub();
-    ~Unk_020b246c_Sub();
+    TownFlag();
+    ~TownFlag();
+    void getGateDesign();
+    TownFlag *initDefault();
+
+    /* 0x000 */ u8 pattern[0x228];
+    /* 0x228 */ u8 gateDesign;
 };
 
 class TownStyleRecord {
@@ -226,17 +231,9 @@ public:
     ~TownStyleRecord();
 
     /* 0x00 */ u32 houseStyles;
-    /* 0x04 */ Unk_020b246c_Sub townFlag;
+    /* 0x04 */ TownFlag townFlag;
 };
 
-class TownFlag {
-public:
-    void getGateDesign();
-    TownFlag *initDefault();
-
-    /* 0x000 */ u8 pattern[0x228];
-    /* 0x228 */ u8 gateDesign;
-};
 
 
 
@@ -349,8 +346,8 @@ u32 StrBSize_Get(u16 *p);
 BOOL FieldStructureMgr_Register(u32 v);
 BOOL FieldStructureMgr_Unregister(void);
 u32 FieldStructureMgr_Get(void);
-void func_020b260c(void *p);
-void func_020b2608(void *p);
+void TownStyleRecord_DestructStub(void *p);
+void TownStyleRecord_ConstructStub(void *p);
 void TownStyle_RollVillagerHouseStyles(u8 *out);
 u32 TownStyle_GetVillagerHouseStyle(u8 *p, u32 idx);
 void TownFlag_SetPattern(void *p);
@@ -382,7 +379,7 @@ u16 BuildingInfo_GetProfile(BuildingInfo *i);
 u8 BuildingInfo_GetEntranceType(BuildingInfo *i);
 u8 BuildingInfo_GetKind(BuildingInfo *i);
 s8 BuildingInfo_GetInteriorScene(BuildingInfo *i);
-u8 BuildingInfo_GetUnk05(BuildingInfo *i);
+u8 BuildingInfo_GetFlickeringLights(BuildingInfo *i);
 u8 BuildingInfo_GetViewRangeX(BuildingInfo *i);
 u8 BuildingInfo_GetViewRangeFront(BuildingInfo *i);
 u8 BuildingInfo_GetViewRangeBack(BuildingInfo *i);
@@ -737,9 +734,9 @@ BOOL TownUnitShapeQuery::getUnitShape(s32 *a, s32 *b, s32 *c, volatile s32 x, vo
     return FALSE;
 }
 
-extern "C" void func_020b260c(void *p) {}
+extern "C" void TownStyleRecord_DestructStub(void *p) {}
 
-extern "C" void func_020b2608(void *p) {}
+extern "C" void TownStyleRecord_ConstructStub(void *p) {}
 
 extern "C" void TownStyle_RollVillagerHouseStyles(u8 *out) {
     s32 a = Random_GlobalBelow(5);
@@ -801,11 +798,11 @@ extern "C" u32 TownStyle_GetVillagerHouseStyle(u8 *p, u32 idx) {
     return v;
 }
 
-Unk_020b246c_Sub::~Unk_020b246c_Sub() {
+TownFlag::~TownFlag() {
     _ZN15TownFlagPatternC1Ev(this);
 }
 
-Unk_020b246c_Sub::Unk_020b246c_Sub() {
+TownFlag::TownFlag() {
     _ZN15TownFlagPatternD1Ev(this);
 }
 
@@ -826,11 +823,11 @@ extern "C" void TownFlag_SetPattern(void *p) { Pattern_CopyFields(p); }
 extern "C" void TownFlag_GetPattern(void *p) { TownFlagPattern_GetPattern(p); }
 
 TownStyleRecord::~TownStyleRecord() {
-    func_020b260c(this);
+    TownStyleRecord_DestructStub(this);
 }
 
 TownStyleRecord::TownStyleRecord() {
-    func_020b2608(this);
+    TownStyleRecord_ConstructStub(this);
 }
 
 extern "C" void TownStyleRecord_InitNew(u8 *self)
@@ -1107,7 +1104,7 @@ extern "C" void BuildingStates_Reset(void)
 
 extern "C" u8 BuildingState_Get(u32 id)
 {
-    Unk_020b1d3c_Pad pad;
+    BuildingStateStackPad pad;
     if (InRange32(id)) {
         u32 idx;
         if (InRange32(id)) {
@@ -1124,7 +1121,7 @@ extern "C" u8 BuildingState_Get(u32 id)
 
 extern "C" BOOL BuildingState_Set(u32 id, u8 val)
 {
-    Unk_020b1d3c_Pad pad;
+    BuildingStateStackPad pad;
     if (InRange32(id)) {
         u32 idx;
         if (InRange32(id)) {
@@ -1387,7 +1384,7 @@ extern "C" void BuildingInfo_Copy(BuildingInfo *dst, BuildingInfo *src) {
     dst->entranceType = src->entranceType;
     dst->kind = src->kind;
     dst->interiorScene = src->interiorScene;
-    dst->unk_05 = src->unk_05;
+    dst->flickeringLights = src->flickeringLights;
     dst->viewRangeX = src->viewRangeX;
     dst->viewRangeFront = src->viewRangeFront;
     dst->viewRangeBack = src->viewRangeBack;
@@ -1404,7 +1401,7 @@ extern "C" u8 BuildingInfo_GetKind(BuildingInfo *i) { return i->kind; }
 
 extern "C" s8 BuildingInfo_GetInteriorScene(BuildingInfo *i) { return i->interiorScene; }
 
-extern "C" u8 BuildingInfo_GetUnk05(BuildingInfo *i) { return i->unk_05; }
+extern "C" u8 BuildingInfo_GetFlickeringLights(BuildingInfo *i) { return i->flickeringLights; }
 
 extern "C" u8 BuildingInfo_GetViewRangeX(BuildingInfo *i) { return i->viewRangeX; }
 

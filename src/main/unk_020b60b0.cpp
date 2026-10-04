@@ -10,6 +10,7 @@
 #include "game/TouchPickCylinder.h"
 #include "game/TouchPickTriangle.h"
 #include "gfx/DebugColor.h"
+#include "game/SceneInfo.h"
 
 
 
@@ -18,16 +19,6 @@ struct Plane {
     s32 v[4];
 };
 
-// object of size 0x44 (vtable data_020e44d4)
-struct Unk_0202f64c {
-    Unk_0202f64c();
-    ~Unk_0202f64c();
-    virtual void pushOutFace();
-    virtual void pushBackCrossing();
-    virtual void pushOutEdges();
-    virtual void collide();
-    u8 pad[0x34];
-};
 
 
 struct Unk_0202f660_V3;
@@ -71,10 +62,10 @@ s32 Collision_CalcTriangleNormal(Plane *p);
 BOOL _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(TouchPickTriangle *t, Vec3 *a, Vec3 *b, Vec3 *c, Plane *p);
 }
 
-struct Unk_020b69e0_Pad {
+struct TouchPickCylinderStackPad {
     s32 v[4];
-    Unk_020b69e0_Pad() {}
-    ~Unk_020b69e0_Pad() {}
+    TouchPickCylinderStackPad() {}
+    ~TouchPickCylinderStackPad() {}
 };
 
 BOOL TouchPickTriangle::setup(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
@@ -127,7 +118,7 @@ TouchPickCylinder::~TouchPickCylinder() {
 }
 
 BOOL TouchPickCylinder::setup(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
-    Unk_020b69e0_Pad pad;
+    TouchPickCylinderStackPad pad;
     kind = d;
     index = e;
     setCylinder((Unk_0202f660_V3 *)a, (s32)b, (s32)c);
@@ -247,17 +238,12 @@ DebugColor sColorGreyCyan(20, 24, 24, 31);
 
 namespace Unk_020b60dc_NS {
 
-struct Unk_020b60dc_Cfg {
-    u32 unk_00;
-    u8 unk_04;
-};
-
 // Triangle / plane test object (0x38 bytes)
-struct Unk_020b60dc_Tri {
+struct CollisionTriangleStorage {
     u32 pad[0x38 / 4];
 };
 
-struct Unk_020b60dc_Line {
+struct CollisionSegmentStorage {
     u32 pad[0x24 / 4];
 };
 
@@ -268,14 +254,6 @@ struct Unk_020b60dc_Cell {
 };
 
 
-struct Unk_020b60dc_Rec {
-    Vec3 center;
-    s32 circleRadius;
-    s32 cylinderHeight;
-    s32 kind;
-    u8 index;
-    Unk_020b60dc_Rec *next;
-};
 
 extern "C" {
 void _ZN17CollisionTriangleC1EP15Unk_0202f660_V3S1_S1_S1_(void *t, Vec3 *a, Vec3 *b, Vec3 *c, Vec3 *d);
@@ -288,9 +266,9 @@ void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(Unk_020b60dc_Cell *x, Vec3 
 void _ZN10GroundInfo10initAtUnitEiiii(Unk_020b60dc_Cell *x, s32 a, s32 b, s32 c, s32 d);
 void GroundInfo_Destruct(Unk_020b60dc_Cell *x);
 s32 _ZN14GroundInfoBase9getHeightEi(Unk_020b60dc_Cell *x, s32 k);
-void _ZN16CollisionSegmentC1EP15Unk_0202f660_V3S1_(Unk_020b60dc_Line *l, Vec3 *a, Vec3 *b);
-void _ZN16CollisionSegmentD1Ev(Unk_020b60dc_Line *l);
-BOOL _ZN9HitSphere16intersectSegmentEP17Unk_0202e918_Vec3P16CollisionSegment(void *n, Vec3 *out, Unk_020b60dc_Line *l);
+void _ZN16CollisionSegmentC1EP15Unk_0202f660_V3S1_(CollisionSegmentStorage *l, Vec3 *a, Vec3 *b);
+void _ZN16CollisionSegmentD1Ev(CollisionSegmentStorage *l);
+BOOL _ZN9HitSphere16intersectSegmentEP17Unk_0202e918_Vec3P16CollisionSegment(void *n, Vec3 *out, CollisionSegmentStorage *l);
 void TouchPick_CalcRay(Basis *out, s32 a, s32 b);
 BOOL TouchPick_HitCylinder(Vec3 *out, Vec3 *in, void *node, s32 a, s32 b);
 BOOL TouchPick_HitWorldDrum(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d);
@@ -309,7 +287,7 @@ s32 BuildingList_FindByGrid(s32 a, s32 b);
 s32 BuildingList_IndexOf(s32 a);
 
 extern s32 gGfxMainOnTop;
-extern Unk_020b60dc_Cfg *gCurSceneInfo;
+extern SceneInfo *gCurSceneInfo;
 extern s32 data_020c8cbc;
 extern s32 data_020c8cb8;
 extern s32 data_020c7c1c;
@@ -338,7 +316,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
     p0 = t[0];
     Vec3 *pb = &t[1];
     p1 = *pb;
-    if (gCurSceneInfo->unk_04 == 1) {
+    if (gCurSceneInfo->isOutdoor == 1) {
         static s32 k1 = data_020c8cbc * 6;
         static s32 k2 = data_020c7c1c + WorldCurve_GetRadius();
         s32 kk = k1;
@@ -402,10 +380,10 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
                 MTX_MultVec43(&q[3], &m, &rr[3]);
                 Vec3 pl;
                 Collision_CalcTriangleNormal(&pl, &rr[0], &rr[1], &rr[2]);
-                Unk_020b60dc_Tri tri[2];
+                CollisionTriangleStorage tri[2];
                 _ZN17CollisionTriangleC1EP15Unk_0202f660_V3S1_S1_S1_(&tri[0], &rr[0], &rr[1], &rr[2], &pl);
                 _ZN17CollisionTriangleC1EP15Unk_0202f660_V3S1_S1_S1_(&tri[1], &rr[0], &rr[2], &rr[3], &pl);
-                Unk_020b60dc_Tri *tp = &tri[0];
+                CollisionTriangleStorage *tp = &tri[0];
                 for (u32 i = 0; i < 2; tp++, i++) {
                     if (_ZN17CollisionTriangle10distanceToEP15Unk_0202f2ac_V3(tp, &p0) >= 0) {
                         BOOL in;
@@ -474,12 +452,12 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
                     s[4].x = cx + 0x1000; s[4].y = h; s[4].z = cz - 0x1000;
                     Vec3 n;
                     n.x = 0; n.y = 0x1000; n.z = 0;
-                    Unk_020b60dc_Tri ua[2];
+                    CollisionTriangleStorage ua[2];
                     _ZN17CollisionTriangleC1Ev(&ua[0]);
                     _ZN17CollisionTriangleC1Ev(&ua[1]);
                     _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(&ua[0], &s[1], &s[2], &s[4], &n);
                     _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(&ua[1], &s[2], &s[3], &s[4], &n);
-                    Unk_020b60dc_Tri *up = &ua[0];
+                    CollisionTriangleStorage *up = &ua[0];
                     for (u32 i = 0; i < 2; up++, i++) {
                         if (_ZN17CollisionTriangle10distanceToEP15Unk_0202f2ac_V3(up, &p0) >= 0) {
                             BOOL in;
@@ -530,7 +508,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
         }
     }
 
-    for (Unk_020b60dc_Rec *n = (Unk_020b60dc_Rec *)self->cylinders; n != 0; n = n->next) {
+    for (TouchPickCylinder *n = self->cylinders; n != 0; n = n->next) {
         if (TouchPick_HitCylinder(&p1, &p0, n, n->circleRadius, n->cylinderHeight)) {
             self->targetX = n->center.x;
             self->targetY = n->center.y;
@@ -632,7 +610,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
     }
     TouchPickSphere *n = self->spheres;
     while (n != 0) {
-        Unk_020b60dc_Line l;
+        CollisionSegmentStorage l;
         _ZN16CollisionSegmentC1EP15Unk_0202f660_V3S1_(&l, &p0, &p1);
         if (_ZN9HitSphere16intersectSegmentEP17Unk_0202e918_Vec3P16CollisionSegment(n, &ip, &l)) {
             Vec3 m2;

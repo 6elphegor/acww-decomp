@@ -12,10 +12,10 @@ extern s16 data_02136f44[];
 extern s16 data_02138f44[];
 }
 
-struct Unk_020b7074_Pad {
+struct TouchPickDrumStackPad {
     s32 v[3];
-    Unk_020b7074_Pad() {}
-    ~Unk_020b7074_Pad() {}
+    TouchPickDrumStackPad() {}
+    ~TouchPickDrumStackPad() {}
 };
 
 extern const u8 sTouchPickKindHasTarget[];
@@ -29,7 +29,7 @@ extern "C" BOOL TouchPick_HitWorldDrum(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d
     zero.y = 0;
     zero.z = 0;
     CollisionCylinderX o(&zero, c, d);
-    Unk_020b7074_Pad pad;
+    TouchPickDrumStackPad pad;
     s32 az = a->z, ay = a->y, ax = a->x;
     v24.x = ax;
     v24.y = ay;

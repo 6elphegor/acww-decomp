@@ -244,7 +244,7 @@ u32 Date_GetNthWeekdayDay(u32, u32, u32, u32);
 void DateTime_AddDays(void *, s32);
 s32 DateTime_Compare(void *, void *, u32);
 void Clock_GetDateTime(void *);
-s32 func_020a03f0();
+s32 SaveManager_IsGatePassed();
 s32 Net_GetJoiningAid();
 s32 NetSession_GetLastSyncSlot();
 u8 NetArea_GetSlotScene(s32 idx);

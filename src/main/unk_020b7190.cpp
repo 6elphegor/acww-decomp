@@ -260,7 +260,7 @@ extern "C" void FieldInfoBalloon_ShowTimerMsg(u32 arg) {
     }
 }
 
-extern "C" void func_020b7870() { Comm_SetShutdownErrorFlag(); }
+extern "C" void Comm_ReportShutdownError() { Comm_SetShutdownErrorFlag(); }
 
 FieldInfoBalloon::FieldInfoBalloon() : state(0) {
     facingItem = 0;

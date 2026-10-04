@@ -95,7 +95,7 @@ BOOL PlayerActor_SetNetFollowPaused(s32 a, s32 b);
 BOOL PlayerActor_IsScriptedWalking(s32 a);
 s32 Net_GetJoiningAid(void);
 s32 PlayerData_GetBySessionSlot(s32 a);
-BOOL func_020a03c4(void);
+BOOL SaveManager_IsSessionJoined(void);
 void FieldInfoBalloon_ShowPleaseWait(void);
 BOOL _ZN11CommManager7isMyAidEj(CommManager *p, s32 a);
 s32 _ZN15LostChildRecord13isKaitlinRoleEv(void);
@@ -611,7 +611,7 @@ BOOL SpNpcKatie::mainAct08() {
         break;
     case 9:
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            if (r5 != r6 && !func_020a03c4()) {
+            if (r5 != r6 && !SaveManager_IsSessionJoined()) {
                 FieldInfoBalloon_ShowPleaseWait();
                 break;
             }

@@ -13,6 +13,8 @@ struct ListNode {
 struct List {
     /* 0x0 */ ListNode *head;
     /* 0x4 */ ListNode *tail;
+
+    List() : head(0), tail(0) {} // zeroes the file-scope heads (sVramQueueTex / sVramQueue2d) in __sinit
 };
 
 #endif

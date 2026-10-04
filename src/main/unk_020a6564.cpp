@@ -15,17 +15,17 @@ void NpcNetRecord_ResetTalkSlots();
 extern CommManager *gCommManager;
 
 
-typedef void (*Unk_020a6564_Fn)(u8 *, u32);
+typedef void (*NetStateAReader)(u8 *, u32);
 
 extern "C" {
 void NetArea_ReadStateANpcTalk(u8 *p);
 void NetArea_ReadStateAPart0();
-extern const Unk_020a6564_Fn sNetStateAReaders[2];
+extern const NetStateAReader sNetStateAReaders[2];
 }
 
-extern "C" const Unk_020a6564_Fn sNetStateAReaders[2] = {
-    (Unk_020a6564_Fn)NetArea_ReadStateAPart0,
-    (Unk_020a6564_Fn)NetArea_ReadStateANpcTalk,
+extern "C" const NetStateAReader sNetStateAReaders[2] = {
+    (NetStateAReader)NetArea_ReadStateAPart0,
+    (NetStateAReader)NetArea_ReadStateANpcTalk,
 };
 
 extern "C" void NetArea_ReadStateAPart0() {}

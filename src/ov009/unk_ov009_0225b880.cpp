@@ -148,7 +148,7 @@ void BuildingInfo_Destroy(void *self);
 s32 BuildingInfo_GetViewRangeBack(void *self);
 s32 BuildingInfo_GetViewRangeFront(void *self);
 s32 BuildingInfo_GetViewRangeX(void *self);
-s32 BuildingInfo_GetUnk05(void *self);
+s32 BuildingInfo_GetFlickeringLights(void *self);
 s32 BuildingInfo_GetInteriorScene(void *self);
 s32 BuildingInfo_GetEntranceType(void *self);
 
@@ -1728,7 +1728,7 @@ s32 BuildingActor::hasFlickeringLights(){
     }
     BuildingInfo t;
     BuildingInfo_Copy(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
-    s32 r = BuildingInfo_GetUnk05(&t);
+    s32 r = BuildingInfo_GetFlickeringLights(&t);
     BuildingInfo_Destroy(&t);
     return r;
 }

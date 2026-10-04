@@ -545,7 +545,7 @@ s32 NookShop_GetLevel(void *g);
 BOOL NookShop_IsClosedTomorrow(void *g);
 u32 NookShop_GetClosedDate(void *g);
 void *NookShop_GetRenovation(void *g);
-BOOL func_020aeac8(void *g);
+BOOL NookShop_HasClass4Furniture(void *g);
 BOOL NookShop_IsPointSpecialToday(void *g);
 BOOL NookShop_IsSaleTime(void *g);
 s32 Scene_GetWarpRequest();
@@ -2919,7 +2919,7 @@ void SpNpcNookShopTalk::start(TalkStartMsg *out_) {
                 } else {
                     setTopic(0x1b);
                 }
-            } else if (func_020aeac8(data_021ed104)) {
+            } else if (NookShop_HasClass4Furniture(data_021ed104)) {
                 if (topic == 0) {
                     setTopic(4);
                 } else {

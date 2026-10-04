@@ -26,7 +26,7 @@ void SaveData_Apply(void *p);
 void SaveData_Setup(void *p, u32 x);
 void _ZN8SaveData5resetEv(void *p);
 BOOL _ZN11SaveRecord412isStateUnsetEv(void *p);
-void func_0209f224(u32 x);
+void SaveManager_SetSaveCorrupted(u32 x);
 void Save_InvalidateLetterStorage(void);
 u32 Save_SlotStampsMatch(void);
 u32 Save_ReadSlotAsyncStep(u32 a, void *p);
@@ -209,7 +209,7 @@ void BootLogoScene::applyLoadedSave() {
     BgHeap_Create(0x5000, 0);
     if (loadResult == 4 || loadResult == 1) {
         if (loadResult == 4) {
-            if (!_ZN11SaveRecord412isStateUnsetEv(&gSaveFooter)) func_0209f224(1);
+            if (!_ZN11SaveRecord412isStateUnsetEv(&gSaveFooter)) SaveManager_SetSaveCorrupted(1);
         }
         if (loadResult == 4) Save_InvalidateLetterStorage();
         _ZN8SaveData5resetEv(&gSaveData);

@@ -1,5 +1,6 @@
 #include "types.h"
 #include "sys/PrioListNode.h"
+#include "sys/ListNode.h"
 #include "gfx/BgTransfer.h"
 #include "gfx/TexTransfer.h"
 #include "gfx/VramTask.h"
@@ -11,17 +12,9 @@ BOOL PrioList_Insert(void *list, void *node);
 void PrioList_Init(void *list);
 }
 
-// Two-word list head, cleared by __sinit (inline constructor).
-class Unk_021ef630 {
-public:
-    void *head;
-    void *tail;
 
-    Unk_021ef630() : head(0), tail(0) {}
-};
-
-extern Unk_021ef630 sVramQueue2d;
-extern Unk_021ef630 sVramQueueTex;
+extern List sVramQueue2d;
+extern List sVramQueueTex;
 
 
 
@@ -148,5 +141,5 @@ extern "C" void VramQueue2d_Run(void) {
     }
 }
 
-Unk_021ef630 sVramQueueTex;
-Unk_021ef630 sVramQueue2d;
+List sVramQueueTex;
+List sVramQueue2d;

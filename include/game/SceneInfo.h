@@ -11,8 +11,20 @@ struct SceneWarp;
 // current one. The spawn list is run by SceneInfo::runSpawnList (src/main/unk_020af514.cpp).
 
 // 20-byte record of a spawn group: kind 0 = actor spawn, kind 1 = player spawn (ScenePlayerSpawn, unk_020af514.cpp).
+// The data is written as five words (w); kind-0 groups read it as an actor spawn (SceneSpawnGroup_SpawnActors:
+// Actor::spawn(profile, spawnParam, pos, rot), pos = x/y/z << 8).
 struct SceneSpawnRecord {
-    /* 0x00 */ u32 w[5];
+    union {
+        /* 0x00 */ u32 w[5];
+        struct {
+            /* 0x00 */ u16 profile;
+            /* 0x02 */ s16 x;
+            /* 0x04 */ s16 y;
+            /* 0x06 */ s16 z;
+            /* 0x08 */ u8 rot[8];
+            /* 0x10 */ u32 spawnParam;
+        } actor;
+    };
 };
 
 // One group of a scene's spawn list; kind indexes sSceneSpawnGroupHandlers: 0 = actors (SceneSpawnGroup_SpawnActors,
@@ -41,7 +53,7 @@ public:
 // Static map objects (warps / doors) of the scene.
 struct SceneWarpList {
     /* 0x00 */ SceneWarp *warps;
-    /* 0x04 */ u32 count;
+    /* 0x04 */ u8 count; // read as a byte (SceneExit_* in unk_020b4828.cpp)
 };
 
 class SceneInfo {
@@ -50,7 +62,7 @@ public:
     void createSceneMapModule();
 
     /* 0x00 */ SceneSpawnList *spawnList;
-    /* 0x04 */ s32 isOutdoor;
+    /* 0x04 */ u8 isOutdoor; // every reader loads a byte
     /* 0x08 */ SceneMapInfo *mapInfo;
     /* 0x0c */ SceneWarpList *warps;
     /* 0x10 */ s32 infoOverlayA;   // overlays acquired by FieldScene_AcquireInfoOverlays (-1 = none)

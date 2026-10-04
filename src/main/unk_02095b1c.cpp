@@ -100,7 +100,7 @@ BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx);
 }
 
 extern "C" {
-s32 func_020a03f0();
+s32 SaveManager_IsGatePassed();
 }
 
 extern "C" {

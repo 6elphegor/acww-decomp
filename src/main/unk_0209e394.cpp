@@ -120,7 +120,7 @@ void NetSession_SetActiveSyncKind();
 }
 
 extern "C" {
-void func_0209f230(s32 v);
+void SaveManager_SetEndSessionSave(s32 v);
 }
 
 extern "C" {
@@ -535,7 +535,7 @@ void SaveMenu::updateSaveA() {
             NetSession_GetSyncKind();
             NetSession_SetActiveSyncKind();
             o->setNextMessage(gTalkMsgIndexEnd, 0);
-            func_0209f230(0);
+            SaveManager_SetEndSessionSave(0);
             setState(3);
         } else {
             u8 b = 5;
@@ -564,7 +564,7 @@ void SaveMenu::updateSaveB() {
             NetSession_GetSyncKind();
             NetSession_SetActiveSyncKind();
             o->setNextMessage(gTalkMsgIndexEnd, 0);
-            func_0209f230(1);
+            SaveManager_SetEndSessionSave(1);
             setState(3);
         } else {
             u8 b = 5;

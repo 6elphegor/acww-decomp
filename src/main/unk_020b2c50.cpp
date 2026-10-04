@@ -194,8 +194,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x14 */ u32 unk_14;
-    /* 0x18 */ u32 unk_18;
+    /* 0x12 */ u8 text[10]; // data() / capacity()
     /* 0x1c */ u8 isLoaded;
 };
 

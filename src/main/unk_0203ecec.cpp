@@ -1,7 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "talk/TalkRequestList.h"
-#include "game/Unk_0203ecec_Global.h"
+#include "game/SceneInfo.h"
 #include "game/Unk_0203f218_Slot.h"
 #include "game/Unk_0203f3a0_L.h"
 #include "game/EventDayEntry.h"
@@ -40,7 +40,7 @@ extern s32 gCamera;
 }
 
 extern "C" {
-extern Unk_0203ecec_Global *gCurSceneInfo;
+extern SceneInfo *gCurSceneInfo;
 }
 
 extern "C" {
@@ -329,7 +329,7 @@ extern "C" u32 WorldCurve_AngleToDistance(u32 x) {
 #pragma thumb on
 
 extern "C" s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in) {
-    if (IsOne(gCurSceneInfo->unk_04)) {
+    if (IsOne(gCurSceneInfo->isOutdoor)) {
         s32 base = in->y + 0x1f576;
         if (in->z <= (*(volatile s32 *)&gWorldCurve.z) - gWorldCurve.flatDistance) {
             s32 t = in->z - ((*(volatile s32 *)&gWorldCurve.z) - gWorldCurve.flatDistance);
@@ -352,7 +352,7 @@ extern "C" s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in) {
 }
 
 extern "C" s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in) {
-    if (IsOne(gCurSceneInfo->unk_04)) {
+    if (IsOne(gCurSceneInfo->isOutdoor)) {
         s32 base = in->y + 0x1f576;
         s32 ang = (FX_Div(in->z, sWorldCurveZScale) * 0x2999) << 4 >> 16;
         out->x = in->x;
@@ -368,7 +368,7 @@ extern "C" s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in) {
 }
 
 extern "C" s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in) {
-    if (IsOne(gCurSceneInfo->unk_04)) {
+    if (IsOne(gCurSceneInfo->isOutdoor)) {
         s32 ang = Math_Atan2(in->z, in->y);
         out->x = in->x;
         s32 a = func_01ffcb0c(in->z, in->z);
@@ -384,7 +384,7 @@ extern "C" s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in) {
 }
 
 extern "C" s16 WorldCurve_GetHorizonAngle(WorldCurve *o) {
-    if (IsOne(gCurSceneInfo->unk_04)) {
+    if (IsOne(gCurSceneInfo->isOutdoor)) {
         s32 a = func_01ffcb0c(o->z, o->z);
         s32 b = func_01ffcb0c(o->y, o->y);
         s32 c = func_01ffcb0c(0x1f576, 0x1f576);
@@ -424,7 +424,7 @@ extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in) {
         }
         o->flatDistance = func_01ffcb0c(-0x2c00, FX_Div((v - 0x27f7) << 12, (s32)0xffa06000)) + 0xe000;
     }
-    if (IsOne(gCurSceneInfo->unk_04)) {
+    if (IsOne(gCurSceneInfo->isOutdoor)) {
         o->centerAngle = (FX_Div(o->z, sWorldCurveZScale) * 0x2999) >> 12;
     } else {
         o->centerAngle = 0;

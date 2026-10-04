@@ -1,5 +1,6 @@
 #include "types.h"
 #include "game/Vec3.h"
+#include "game/SceneInfo.h"
 
 // TU210: 0x020afeb4-0x020b0774. Owns sConstellationColumns (.bss, autoload_3 0x021ee27c-0x021ee284).
 
@@ -21,19 +22,6 @@ struct B8 {
 };
 
 
-struct Node {
-    u16 unk_00;
-    s16 x;
-    s16 y;
-    s16 z;
-    u8 pad_08[8];
-    u32 unk_10;
-};
-
-struct List {
-    u32 unk_00;
-    Node *nodes;
-};
 
 extern "C" {
 extern Base data_021ec31c;
@@ -537,27 +525,27 @@ void Constellation_MaskSkyScreen(u16 *p) {
     }
 }
 
-BOOL SceneSpawnGroup_SpawnActors(List *self, u8 *idxp, u64 start) {
+BOOL SceneSpawnGroup_SpawnActors(SceneSpawnGroup *self, u8 *idxp, u64 start) {
     s32 i;
     BOOL result;
-    Node *n;
+    SceneSpawnRecord *n;
     if (idxp != NULL) {
         i = *idxp;
     } else {
         i = 0;
     }
-    n = &self->nodes[i];
+    n = &((SceneSpawnRecord *)self->list)[i];
     result = TRUE;
     while (TRUE) {
         Vec3 v;
-        setv(&v, (n->x << 12) >> 4, (n->y << 12) >> 4, (n->z << 12) >> 4);
-        _ZN5Actor5spawnEPvS0_S0_S0_S0_(n->unk_00, n->unk_10, &v, &n->pad_08[0], 0);
+        setv(&v, (n->actor.x << 12) >> 4, (n->actor.y << 12) >> 4, (n->actor.z << 12) >> 4);
+        _ZN5Actor5spawnEPvS0_S0_S0_S0_(n->actor.profile, n->actor.spawnParam, &v, &n->actor.rot[0], 0);
         n++;
         i++;
         if (idxp != NULL) {
             (*idxp)++;
         }
-        if (i >= ((u8 *)self)[1]) {
+        if (i >= self->count) {
             goto end;
         }
         if (idxp != NULL) {

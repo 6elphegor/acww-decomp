@@ -9,6 +9,7 @@
 #include "gfx/FxMtx43.h"
 #include "sys/CameraBase.h"
 #include "gfx/Camera.h"
+#include "game/SceneInfo.h"
 #include "sys/ProcProfile.h"
 #include "gfx/Unk_ov068_0226647c_Cam.h"
 
@@ -28,11 +29,6 @@ struct MtxFx43 {
 
 
 
-
-struct SceneInfoView {
-    u8 pad[4];
-    u8 isOutdoor;
-};
 
 struct CameraPoseGridRow {
     s32 v[3];
@@ -109,7 +105,7 @@ extern s32 sCameraSpanDepthScale;
 extern s32 sCameraFollowVillagerIdx;
 extern s16 data_02135f44[];
 extern Unk_0203a9b8_Vec gVec3Zero;
-extern SceneInfoView *gCurSceneInfo;
+extern SceneInfo *gCurSceneInfo;
 extern const CameraPoseGridRow sCameraPoseGrid[3];
 extern s32 data_020c8cb8;
 extern Unk_021c47c4 *gSceneBlockMap;

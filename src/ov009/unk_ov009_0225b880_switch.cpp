@@ -146,7 +146,7 @@ void BuildingInfo_Destroy(void *self);
 s32 BuildingInfo_GetViewRangeBack(void *self);
 s32 BuildingInfo_GetViewRangeFront(void *self);
 s32 BuildingInfo_GetViewRangeX(void *self);
-s32 BuildingInfo_GetUnk05(void *self);
+s32 BuildingInfo_GetFlickeringLights(void *self);
 s32 BuildingInfo_GetInteriorScene(void *self);
 s32 BuildingInfo_GetEntranceType(void *self);
 

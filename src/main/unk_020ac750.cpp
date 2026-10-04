@@ -844,7 +844,7 @@ extern "C" int NookShop_IsPointSpecialToday(Obj* self) {
     Clock_GetDateTime(&d);
     return NookShop_IsPointSpecialDay(self, &d);
 }
-extern "C" BOOL func_020aeac8(Obj* self) {
+extern "C" BOOL NookShop_HasClass4Furniture(Obj* self) {
     int z = 0;
     u32 i;
     for (i = 0; i < 0x25; i++) {

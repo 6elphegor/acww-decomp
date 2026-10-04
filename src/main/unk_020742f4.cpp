@@ -2270,13 +2270,13 @@ extern "C" {
 void *SaveManager_Get();
 }
 extern "C" {
-s32 func_020a028c(void *, s32, s32);
+s32 SaveManager_SetRecvAct04(void *, s32, s32);
 }
 extern "C" {
-s32 func_020a0254(s32);
+s32 SaveManager_SetRecvAct03(s32);
 }
 extern "C" {
-s32 func_020a0284(void *, s32, s32);
+s32 SaveManager_SetRecvAct02(void *, s32, s32);
 }
 extern "C" {
 s32 NetSession_SetSyncState(void *, u32);
@@ -2868,7 +2868,7 @@ extern "C" void CommRecv_OwnNetState() {
 extern "C" void CommRecv_Act02(s32 a, s32 b, s32 c, s32 d) {
     if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
-            func_020a0284(SaveManager_Get(), d, 1);
+            SaveManager_SetRecvAct02(SaveManager_Get(), d, 1);
         }
     }
 }
@@ -2877,7 +2877,7 @@ extern "C" void CommRecv_Act03() {
     if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
             SaveManager_Get();
-            func_020a0254(1);
+            SaveManager_SetRecvAct03(1);
         }
     }
 }
@@ -2885,7 +2885,7 @@ extern "C" void CommRecv_Act03() {
 extern "C" void CommRecv_Act04(s32 a, s32 b, s32 c, s32 d) {
     if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
-            func_020a028c(SaveManager_Get(), d, 1);
+            SaveManager_SetRecvAct04(SaveManager_Get(), d, 1);
         }
     }
 }}
@@ -3061,10 +3061,10 @@ extern "C" {
 u32 SaveManager_Get();
 }
 extern "C" {
-void func_020a02a8(u32, u32);
+void SaveManager_SetRecvAct07(u32, u32);
 }
 extern "C" {
-void func_020a024c(u32, u32, u32);
+void SaveManager_SetRecvAct06(u32, u32, u32);
 }
 extern "C" {
 void Comm_RemoveMember(u32);
@@ -3082,14 +3082,14 @@ extern "C" void CommRecv_PlayerLeft() {
 extern "C" void CommRecv_Act06(u32 a, u32 b, u32 c, u32 d) {
     if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get()) {
-            func_020a024c(SaveManager_Get(), d, 1);
+            SaveManager_SetRecvAct06(SaveManager_Get(), d, 1);
         }
     }
 }
 extern "C" void CommRecv_Act07() {
     if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get()) {
-            func_020a02a8(SaveManager_Get(), 1);
+            SaveManager_SetRecvAct07(SaveManager_Get(), 1);
         }
     }
 }
@@ -3381,34 +3381,34 @@ extern "C" {
 s32 SaveManager_Get();
 }
 extern "C" {
-s32 func_020a0208(s32, s32);
+s32 SaveManager_SetCtrlAct17(s32, s32);
 }
 extern "C" {
-s32 func_020a0228(s32);
+s32 SaveManager_SetCtrlAct14Aid(s32);
 }
 extern "C" {
-s32 func_020a024c(s32, s32, s32);
+s32 SaveManager_SetRecvAct06(s32, s32, s32);
 }
 extern "C" {
-s32 func_020a02b0(s32, s32);
+s32 SaveManager_SetCtrlAct12(s32, s32);
 }
 extern "C" {
-s32 func_020a023c(s32, s32, s32);
+s32 SaveManager_SetCtrlAct11(s32, s32, s32);
 }
 extern "C" {
-s32 func_020a0244(s32, s32, s32);
+s32 SaveManager_SetCtrlAct10(s32, s32, s32);
 }
 extern "C" {
-s32 func_020a02b8(s32, s32);
+s32 SaveManager_SetJoinDone(s32, s32);
 }
 extern "C" {
-s32 func_020a0294(s32);
+s32 SaveManager_GetHostDateTime(s32);
 }
 extern "C" {
-s32 func_020a0298(s32, s32);
+s32 SaveManager_SetDateTimeReceived(s32, s32);
 }
 extern "C" {
-s32 func_020a02a0(s32, s32);
+s32 SaveManager_SetJoinReady(s32, s32);
 }
 extern "C" {
 void MI_CpuCopy8(void *, void *, u32);
@@ -3444,7 +3444,7 @@ extern "C" {
 u32 Net_GetMyAid();
 }
 extern "C" {
-s32 func_020a027c(s32, s32, s32);
+s32 SaveManager_SetCtrlAct0E(s32, s32, s32);
 }
 extern "C" {
 void CommBlock_ParseAll(void *, s32, s32);
@@ -3492,10 +3492,10 @@ extern "C" {
 s32 SaveManager_GetTownCompressThread();
 }
 extern "C" {
-s32 func_020a02c8(s32, u16);
+s32 SaveManager_SetHostMemberMask(s32, u16);
 }
 extern "C" {
-s32 func_020a02c0(s32, u8);
+s32 SaveManager_SetHostDataIndex(s32, u8);
 }
 extern "C" {
 void _Z20NetOverlay_AssertAnyv();
@@ -3664,8 +3664,8 @@ extern "C" void CommCtrl_RecvMemberInfo(u8 *a) {
     if (Scene_GetCurrent() == 0xc) {
         if (SaveManager_Get() != 0) {
             s32 v = *a;
-            func_020a02c8(SaveManager_Get(), v & 0xf);
-            func_020a02c0(SaveManager_Get(), (v >> 6) & 3);
+            SaveManager_SetHostMemberMask(SaveManager_Get(), v & 0xf);
+            SaveManager_SetHostDataIndex(SaveManager_Get(), (v >> 6) & 3);
         }
     }
 }
@@ -3744,22 +3744,22 @@ extern "C" void CommCtrl_Act08(u8 *a) {
 extern "C" void CommCtrl_RecvJoinReady() {
     if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f) {
         if (SaveManager_Get() != 0) {
-            func_020a02a0(SaveManager_Get(), 1);
+            SaveManager_SetJoinReady(SaveManager_Get(), 1);
         }
     }
 }
 extern "C" void CommCtrl_RecvDateTime(void *a) {
     if (Scene_GetCurrent() == 0xc) {
         if (SaveManager_Get() != 0) {
-            MI_CpuCopy8(a, (void *)func_020a0294(SaveManager_Get()), 8);
-            func_020a0298(SaveManager_Get(), 1);
+            MI_CpuCopy8(a, (void *)SaveManager_GetHostDateTime(SaveManager_Get()), 8);
+            SaveManager_SetDateTimeReceived(SaveManager_Get(), 1);
         }
     }
 }
 extern "C" void CommCtrl_RecvJoinDone() {
     if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f) {
         if (SaveManager_Get() != 0) {
-            func_020a02b8(SaveManager_Get(), 1);
+            SaveManager_SetJoinDone(SaveManager_Get(), 1);
         }
     }
 }
@@ -3777,9 +3777,9 @@ extern "C" void CommCtrl_Act0E(u8 *a, s32 b, s32 c) {
         s32 p = SaveManager_Get();
         if (p != 0) {
             if (Net_GetMyAid() == 0) {
-                func_020a027c(p, c, *a);
+                SaveManager_SetCtrlAct0E(p, c, *a);
             } else {
-                func_020a027c(p, 0, *a);
+                SaveManager_SetCtrlAct0E(p, 0, *a);
             }
         }
     }
@@ -3803,33 +3803,33 @@ extern "C" void CommCtrl_RecvSlotStatusAll(u8 *a) {
 extern "C" void CommCtrl_Act10(void *a, s32 b, s32 c) {
     if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
-            func_020a0244(SaveManager_Get(), c, 1);
+            SaveManager_SetCtrlAct10(SaveManager_Get(), c, 1);
         }
     }
 }
 extern "C" void CommCtrl_Act11(void *a, s32 b, s32 c) {
     if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
-            func_020a023c(SaveManager_Get(), c, 1);
+            SaveManager_SetCtrlAct11(SaveManager_Get(), c, 1);
         }
     }
 }
 extern "C" void CommCtrl_Act12() {
     if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
-            func_020a02b0(SaveManager_Get(), 1);
+            SaveManager_SetCtrlAct12(SaveManager_Get(), 1);
         }
     }
 }
 extern "C" void CommCtrl_Act13(void *a, s32 b, s32 c) {
     if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
-            func_020a024c(SaveManager_Get(), c, 1);
+            SaveManager_SetRecvAct06(SaveManager_Get(), c, 1);
         }
     }
 }
 extern "C" void CommCtrl_Act14(void *a, s32 b, s32 c) {
-    func_020a0228(c);
+    SaveManager_SetCtrlAct14Aid(c);
 }
 extern "C" void CommCtrl_RecvPlayerDataToHost(u8 *a, s32 b) {
     u32 n;
@@ -3854,7 +3854,7 @@ extern "C" void CommCtrl_RecvLetterStorageToHost(u8 *a, s32 b) {
 extern "C" void CommCtrl_Act17() {
     if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
-            func_020a0208(SaveManager_Get(), 1);
+            SaveManager_SetCtrlAct17(SaveManager_Get(), 1);
         }
     }
 }

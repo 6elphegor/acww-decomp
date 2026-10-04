@@ -10,7 +10,7 @@ struct BuildingInfo {
     /* 0x2 */ u8 entranceType;
     /* 0x3 */ u8 kind;
     /* 0x4 */ s8 interiorScene;
-    /* 0x5 */ u8 unk_05;
+    /* 0x5 */ u8 flickeringLights;
     /* 0x6 */ u8 viewRangeX;
     /* 0x7 */ u8 viewRangeFront;
     /* 0x8 */ u8 viewRangeBack;

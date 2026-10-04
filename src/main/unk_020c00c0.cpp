@@ -285,7 +285,7 @@ void SpNpcKaitlin_ChangeAct06(void);
 }
 
 extern "C" {
-BOOL func_020a03c4(void);
+BOOL SaveManager_IsSessionJoined(void);
 }
 
 extern "C" {

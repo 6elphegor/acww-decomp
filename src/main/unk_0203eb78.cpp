@@ -1,7 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "talk/TalkRequestList.h"
-#include "game/Unk_0203ecec_Global.h"
+#include "game/SceneInfo.h"
 #include "game/Unk_0203f218_Slot.h"
 #include "game/EventDayEntry.h"
 #include "talk/TalkRequestEntry.h"
@@ -33,7 +33,7 @@ extern s32 gCamera;
 }
 
 extern "C" {
-extern Unk_0203ecec_Global *gCurSceneInfo;
+extern SceneInfo *gCurSceneInfo;
 }
 
 extern "C" {

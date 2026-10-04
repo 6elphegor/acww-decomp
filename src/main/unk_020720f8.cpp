@@ -77,7 +77,7 @@ extern "C" {
 s32 Net_Shutdown();
 }
 extern "C" {
-void func_020b7870();
+void Comm_ReportShutdownError();
 }
 extern "C" {
 void _ZN11CommManager5resetEv(CommManager *);
@@ -657,7 +657,7 @@ extern "C" s32 Comm_End() {
         Heap_setFlags(r4, r6 | 0x2000);
         _Z20NetOverlay_AssertAnyv();
         if (Net_Shutdown() == 0) {
-            func_020b7870();
+            Comm_ReportShutdownError();
             r5 = 0;
         }
         Heap_setFlags(r4, r6);
@@ -696,7 +696,7 @@ extern "C" void Comm_EndOv067Mode() {
         Heap_setFlags(r5, r4 | 0x2000);
         _Z20NetOverlay_AssertAnyv();
         if (Net_Shutdown() == 0) {
-            func_020b7870();
+            Comm_ReportShutdownError();
         }
         Heap_setFlags(r5, r4);
         CommManager *o = gCommManager;

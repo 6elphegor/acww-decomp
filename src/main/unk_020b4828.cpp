@@ -7,6 +7,7 @@
 #include "game/TouchPicker.h"
 #include "sys/SceneBase.h"
 #include "game/SceneWarp.h"
+#include "game/SceneInfo.h"
 #include "sys/ProcProfile.h"
 
 #define reg_4000358 (*(u32 *)0x4000358)
@@ -46,19 +47,6 @@ struct ScenePos {
     s8 unitZ;    // 0x14
 };
 
-struct TileTable {
-    SceneWarp* entries;
-    u8 count;
-};
-
-struct TileData {
-    u32 unk_00;
-    u8 f4;
-    u8 pad[3];
-    u32 f8;
-    TileTable* table;
-};
-
 struct S2f0 { u32 f0; u8 f4; u8 pad[3]; u32 f8; u16 fc; };
 
 // 0x28-byte block: 0x20 bytes copied from a table, then three members
@@ -78,7 +66,7 @@ struct Unk_020cbb18_t {
     u32 f68;
 };
 
-struct Unk_020d0d28_Ent {
+struct GroundSeasonDate {
     u8 month;
     u8 day;
     u8 unk_02[2];
@@ -358,7 +346,7 @@ extern const u8 sSceneMaxPlayers[0x34];
 extern const u8 sSceneSkyKinds[0x34];
 extern const u8 sSceneMaxCharacters[0x34];
 extern const u8 sSceneMaxSpNpcs[0x34];
-extern const Unk_020d0d28_Ent sGroundSeasonDates[13];
+extern const GroundSeasonDate sGroundSeasonDates[13];
 extern u8 sDefaultFogTable[0x20];
 extern u8 sSceneFieldKinds[0x34];
 extern s32 sSceneOverlayIds[51];
@@ -370,8 +358,8 @@ extern s32 sFieldOverlay;
 extern s32 sInfoOverlayB;
 extern s32 sSceneOverlay;
 extern u32 sFieldOverlayIds[2];
-extern TileData *sSceneInfoTable[51];
-extern TileData *gCurSceneInfo;
+extern SceneInfo *sSceneInfoTable[51];
+extern SceneInfo *gCurSceneInfo;
 extern u8 data_021ef2d4;
 extern GfxFrameHooks sFieldGfxFrameHooks;
 extern u32 sOverlaySceneId;
@@ -421,58 +409,58 @@ GfxFrameHooks sFieldGfxFrameHooks;
 
 ViewFrustum gViewFrustum;
 
-TileData *sSceneInfoTable[51] = {
-    (TileData *)data_ov006_0225b7b4,
-    (TileData *)(sFishShadows + 0xb08),
-    (TileData *)(sFishShadows + 0x968),
-    (TileData *)(sFishShadows + 0x968),
-    (TileData *)(sFishShadows + 0x968),
-    (TileData *)(sFishShadows + 0x9a8),
-    (TileData *)(sFishShadows + 0x908),
-    (TileData *)(sFishShadows + 0x900),
-    (TileData *)(sFishShadows + 0x914),
-    (TileData *)(sFishShadows + 0x94c),
-    (TileData *)(sFishShadows + 0x95c),
-    (TileData *)(sFishShadows + 0x9cc),
-    (TileData *)(sFishShadows + 0x9cc),
-    (TileData *)(sFishShadows + 0x9cc),
-    (TileData *)(sFishShadows + 0x9cc),
-    (TileData *)(sFishShadows + 0x958),
-    (TileData *)(sFishShadows + 0x95c),
-    (TileData *)(sFishShadows + 0xaa4),
-    (TileData *)(sFishShadows + 0xaa4),
-    (TileData *)(sFishShadows + 0xaa4),
-    (TileData *)(sFishShadows + 0xaa4),
-    (TileData *)(sFishShadows + 0xaa4),
-    (TileData *)(sFishShadows + 0xaa4),
-    (TileData *)(sFishShadows + 0xaa4),
-    (TileData *)(sFishShadows + 0xaa4),
-    (TileData *)(sFishShadows + 0xaa4),
-    (TileData *)(sFishShadows + 0x95c),
-    (TileData *)(sFishShadows + 0x95c),
-    (TileData *)(sFishShadows + 0x95c),
-    (TileData *)(sFishShadows + 0x9e4),
-    (TileData *)(sFishShadows + 0x9a4),
-    (TileData *)(sFishShadows + 0x97c),
-    (TileData *)(sFishShadows + 0xb20),
-    (TileData *)(sFishShadows + 0x97c),
-    (TileData *)(sFishShadows + 0x978),
-    (TileData *)(sFishShadows + 0x9ec),
-    (TileData *)(sFishShadows + 0x9ac),
-    (TileData *)(sFishShadows + 0x9c8),
-    (TileData *)(sFishShadows + 0x968),
-    (TileData *)(sFishShadows + 0x9f0),
-    (TileData *)(sFishShadows + 0x9ac),
-    (TileData *)(sFishShadows + 0x97c),
-    (TileData *)data_ov054_0225b7a8,
-    (TileData *)data_ov005_0225b79c,
-    (TileData *)data_ov005_0225b79c,
-    (TileData *)(sFishShadows + 0x95c),
-    (TileData *)(sFishShadows + 0x9a8),
-    (TileData *)(sFishShadows + 0x988),
-    (TileData *)(sFishShadows + 0x918),
-    (TileData *)data_ov006_0225b7b4,
-    (TileData *)(sFishShadows + 0x9a0),
+SceneInfo *sSceneInfoTable[51] = {
+    (SceneInfo *)data_ov006_0225b7b4,
+    (SceneInfo *)(sFishShadows + 0xb08),
+    (SceneInfo *)(sFishShadows + 0x968),
+    (SceneInfo *)(sFishShadows + 0x968),
+    (SceneInfo *)(sFishShadows + 0x968),
+    (SceneInfo *)(sFishShadows + 0x9a8),
+    (SceneInfo *)(sFishShadows + 0x908),
+    (SceneInfo *)(sFishShadows + 0x900),
+    (SceneInfo *)(sFishShadows + 0x914),
+    (SceneInfo *)(sFishShadows + 0x94c),
+    (SceneInfo *)(sFishShadows + 0x95c),
+    (SceneInfo *)(sFishShadows + 0x9cc),
+    (SceneInfo *)(sFishShadows + 0x9cc),
+    (SceneInfo *)(sFishShadows + 0x9cc),
+    (SceneInfo *)(sFishShadows + 0x9cc),
+    (SceneInfo *)(sFishShadows + 0x958),
+    (SceneInfo *)(sFishShadows + 0x95c),
+    (SceneInfo *)(sFishShadows + 0xaa4),
+    (SceneInfo *)(sFishShadows + 0xaa4),
+    (SceneInfo *)(sFishShadows + 0xaa4),
+    (SceneInfo *)(sFishShadows + 0xaa4),
+    (SceneInfo *)(sFishShadows + 0xaa4),
+    (SceneInfo *)(sFishShadows + 0xaa4),
+    (SceneInfo *)(sFishShadows + 0xaa4),
+    (SceneInfo *)(sFishShadows + 0xaa4),
+    (SceneInfo *)(sFishShadows + 0xaa4),
+    (SceneInfo *)(sFishShadows + 0x95c),
+    (SceneInfo *)(sFishShadows + 0x95c),
+    (SceneInfo *)(sFishShadows + 0x95c),
+    (SceneInfo *)(sFishShadows + 0x9e4),
+    (SceneInfo *)(sFishShadows + 0x9a4),
+    (SceneInfo *)(sFishShadows + 0x97c),
+    (SceneInfo *)(sFishShadows + 0xb20),
+    (SceneInfo *)(sFishShadows + 0x97c),
+    (SceneInfo *)(sFishShadows + 0x978),
+    (SceneInfo *)(sFishShadows + 0x9ec),
+    (SceneInfo *)(sFishShadows + 0x9ac),
+    (SceneInfo *)(sFishShadows + 0x9c8),
+    (SceneInfo *)(sFishShadows + 0x968),
+    (SceneInfo *)(sFishShadows + 0x9f0),
+    (SceneInfo *)(sFishShadows + 0x9ac),
+    (SceneInfo *)(sFishShadows + 0x97c),
+    (SceneInfo *)data_ov054_0225b7a8,
+    (SceneInfo *)data_ov005_0225b79c,
+    (SceneInfo *)data_ov005_0225b79c,
+    (SceneInfo *)(sFishShadows + 0x95c),
+    (SceneInfo *)(sFishShadows + 0x9a8),
+    (SceneInfo *)(sFishShadows + 0x988),
+    (SceneInfo *)(sFishShadows + 0x918),
+    (SceneInfo *)data_ov006_0225b7b4,
+    (SceneInfo *)(sFishShadows + 0x9a0),
 };
 
 s32 sSceneOverlayIds[51] = {
@@ -487,7 +475,7 @@ s32 sSceneOverlayIds[51] = {
 
 TouchPicker sTouchPicker;
 
-TileData *gCurSceneInfo;
+SceneInfo *gCurSceneInfo;
 
 SceneWarp sSceneWarpRequest;
 
@@ -566,7 +554,7 @@ u8 gFieldSceneKind = 2;
 
 s32 sInfoOverlayA = -1;
 
-const Unk_020d0d28_Ent sGroundSeasonDates[13] = {
+const GroundSeasonDate sGroundSeasonDates[13] = {
     {2, 0x03, {0, 0}, 9}, {2, 0x11, {0, 0}, 0xa}, {2, 0x18, {0, 0}, 0xb}, {3, 0x1f, {0, 0}, 0},
     {7, 0x16, {0, 0}, 1}, {9, 0x0f, {0, 0}, 2}, {9, 0x1e, {0, 0}, 3}, {0xa, 0x10, {0, 0}, 4},
     {0xa, 0x1e, {0, 0}, 5}, {0xb, 0x0d, {0, 0}, 6}, {0xb, 0x19, {0, 0}, 7}, {0xc, 0x0a, {0, 0}, 8},
@@ -717,9 +705,9 @@ BOOL FieldSceneSteps::stepSetupSystems(u32, u32) {
 
 BOOL FieldSceneSteps::stepLoadResources(u32, u32) {
     s32 t = BgModelCache_Get();
-    _ZN15BgModelCacheObj5setupEj(t, gCurSceneInfo->f4 == 1 ? TRUE : FALSE);
-    FtrInfo_LoadIndoor(gCurSceneInfo->f4 == 1 ? TRUE : FALSE);
-    ItemInfo_LoadIndoor(gCurSceneInfo->f4 == 1 ? TRUE : FALSE);
+    _ZN15BgModelCacheObj5setupEj(t, gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
+    FtrInfo_LoadIndoor(gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
+    ItemInfo_LoadIndoor(gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
     PatternTexCache_Get();
     _ZN15PatternTexCache4loadEv();
     CharaAnimCache_Create(gCurrentHeap);
@@ -734,7 +722,7 @@ BOOL FieldSceneSteps::stepLoadResources(u32, u32) {
     PlayerGlassesModelPool_Create(gCurrentHeap);
     HeldItemModels_Init(gCurrentHeap);
     FishBobberPool_Create(gCurrentHeap);
-    ObjShadow_Init(gCurSceneInfo->f4 == 1 ? TRUE : FALSE);
+    ObjShadow_Init(gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
     CharaShadow_Load();
     NpcHeapPools_CreateAll();
     NpcResPools_ClearOnSceneCreate();
@@ -978,7 +966,7 @@ extern "C" u8 Scene_GetSkyKind(BOOL a) {
 
 extern "C" u32 Scene_GetMapInfo(void) {
     u32 r = 0;
-    if (gCurSceneInfo != NULL) r = gCurSceneInfo->f8;
+    if (gCurSceneInfo != NULL) r = (u32)gCurSceneInfo->mapInfo;
     return r;
 }
 
@@ -1145,8 +1133,8 @@ SceneWarp::SceneWarp() {
     flag = 1;
     fadeOut = 2;
     fadeIn = 2;
-    unk_16 = 0;
-    unk_18 = 0;
+    exitAngle = 0;
+    exitKind = 0;
 }
 
 SceneWarp::~SceneWarp() {}
@@ -1160,8 +1148,8 @@ extern "C" void SceneWarp_Init(SceneWarp* e, u8 id, Vec3* v, u32 w, s16 s, u8 p,
     e->angle = s;
     e->fadeOut = p;
     e->fadeIn = q;
-    e->unk_16 = r;
-    e->unk_18 = t;
+    e->exitAngle = r;
+    e->exitKind = t;
 }
 
 extern "C" BOOL SceneWarp_RequestScene(SceneWarp* e, u8 id) {
@@ -1202,11 +1190,11 @@ extern "C" BOOL SceneWarp_RequestAt(SceneWarp* e, u8 id, Vec3* v, u32 w, s16 s, 
 
 extern "C" s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, Vec3* pos, u32* w, s16* s, s32* x, s32* y, u8* p, u8* q) {
     if (id != -1) {
-        TileData* d = gCurSceneInfo;
+        SceneInfo* d = gCurSceneInfo;
         if (d) {
-            TileTable* t = d->table;
+            SceneWarpList* t = d->warps;
             if (t) {
-                SceneWarp* entries = t->entries;
+                SceneWarp* entries = t->warps;
                 if (entries) {
                     u8 n = t->count;
                     if (id >= 0 && id < n) {
@@ -1293,11 +1281,11 @@ extern "C" s32 SceneExit_Resolve(s32 a, s32 id, u8* type, Vec3* pos, u32* w, s16
     if (oy) *oy = y;
     if (r == 1) {
         if (id != -1) {
-            TileData* d = gCurSceneInfo;
+            SceneInfo* d = gCurSceneInfo;
             if (d) {
-                TileTable* t = d->table;
+                SceneWarpList* t = d->warps;
                 if (t) {
-                    SceneWarp* entries = t->entries;
+                    SceneWarp* entries = t->warps;
                     if (entries) {
                         u8 n = t->count;
                         if (id >= 0 && id < n) {
@@ -1349,17 +1337,17 @@ extern "C" BOOL SceneExit_GetDoor(s32 unused, s32 id, u32* type, s16* s) {
     *type = 0;
     *s = 0;
     if (id != -1) {
-        TileData* d = gCurSceneInfo;
+        SceneInfo* d = gCurSceneInfo;
         if (d) {
-            TileTable* t = d->table;
+            SceneWarpList* t = d->warps;
             if (t) {
-                SceneWarp* e = t->entries;
+                SceneWarp* e = t->warps;
                 if (e) {
                     u8 n = t->count;
                     if (id >= 0 && id < n) {
                         SceneWarp* p = &e[id];
-                        if (type) *type = p->unk_18;
-                        if (s) *s = p->unk_16;
+                        if (type) *type = p->exitKind;
+                        if (s) *s = p->exitAngle;
                         return TRUE;
                     }
                 }
