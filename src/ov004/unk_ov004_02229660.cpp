@@ -13,6 +13,7 @@
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
 #include "talk/TalkWindowState.h"
+#include "room/PhoneChoiceSet.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -242,10 +243,6 @@ public:
 
 
 
-struct PhoneChoiceSet {
-    const u8 *choiceMsgs;
-    u8 numChoices;
-};
 
 
 class TouchPicker;

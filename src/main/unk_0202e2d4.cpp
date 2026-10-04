@@ -2,6 +2,7 @@
 #include "game/Unk_020d77a4_Vec3.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
+#include "npc/NpcResHandleView.h"
 
 // Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here: the slot is shared with
 // NpcActor::postCreate(int).
@@ -70,7 +71,6 @@ MEMBER(ActorFollowCollider, 0x514 - 0x4cc);
 struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); ~Unk_020135e4(); };
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 MEMBER(Unk_02014254, 0x28);
-struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); ~SpNpcAnimHeapHandle(); };
 
 extern "C" void func_020f43c8(void *p);
 

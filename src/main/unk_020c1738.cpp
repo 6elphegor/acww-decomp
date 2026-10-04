@@ -3,6 +3,7 @@
 #include "npc/NpcTalkCtrl.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
+#include "npc/NpcResHandleView.h"
 
 extern "C" {
 void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
@@ -212,7 +213,6 @@ struct NpcActionCtrl {
 struct Unk_02014254 : NpcTalkCtrl {
     Unk_02014254();
 };
-struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];

@@ -1,53 +1,14 @@
 #include "types.h"
+#include "room/RoomFtrState.h"
 
 extern "C" {
 void *__cxa_vec_ctor(void *p, u32 n, u32 sz, void *ctor, void *dtor);
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void *dtor);
 }
 
-// 16 x u16 bit matrix
-class FtrSwitchGrid {
-public:
-    u16 rows[16];
-    FtrSwitchGrid();
-    ~FtrSwitchGrid();
-    void set(u32 x, u32 y, u32 set);
-    BOOL test(u32 x, u32 y);
-    void reset();
-};
 
-// small 4-slot table
-struct Unk_0205276c_Slot {
-    u8 lo : 4;
-    u8 hi : 4;
-};
 
-class GyroidBeatTable {
-public:
-    Unk_0205276c_Slot positions[4];
-    u8 usedMask[1];
-    u8 beats[2];
-    GyroidBeatTable();
-    ~GyroidBeatTable();
-    BOOL set(u32 x, u32 y, u32 val);
-    BOOL remove(u32 x, u32 y);
-    s32 get(u32 x, u32 y);
-    void clear();
-};
 
-class RoomFtrState {
-public:
-    FtrSwitchGrid switchGrids[2];
-    GyroidBeatTable gyroidBeats;
-    RoomFtrState();
-    ~RoomFtrState();
-    BOOL removeGyroidBeat(u32 a, u32 b);
-    BOOL setGyroidBeat(u32 a, u32 b, u32 c);
-    s32 getGyroidBeat(u32 a, u32 b);
-    void setSwitch(u32 x, u32 y, u32 idx, u8 v);
-    BOOL getSwitch(u32 x, u32 y, u32 idx);
-    void reset();
-};
 
 struct Unk_02052ab4_Vec {
     s32 x, y, z;

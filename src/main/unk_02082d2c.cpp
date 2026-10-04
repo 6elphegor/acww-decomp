@@ -3,6 +3,7 @@
 #include "net/CommManager.h"
 #include "npc/NpcResPool.h"
 #include "town/Unk_02082e80_Grid.h"
+#include "npc/SpNpcAnimHeapRefSlot.h"
 
 // Element payload types (defined elsewhere)
 struct Unk_020829b0_Y {
@@ -25,12 +26,6 @@ struct Unk_02082c54_Z {
 
 
 struct Unk_020829b0_Y_dummy;
-struct SpNpcAnimHeapRefSlot : public NpcResSlot {
-    Unk_020829b0_Y heapRef;
-    SpNpcAnimHeapRefSlot();
-    ~SpNpcAnimHeapRefSlot();
-    void assign();
-};
 
 struct VillagerAnimHeapRefSlot : public NpcResSlot {
     Unk_02082af0_X heapRef;

@@ -2,6 +2,7 @@
 // G015b: autoload_2 0x020fe5c0-0x020fe848 (1 function). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL: plain func_ name, nothing defined but the function.
 // WVR_StartUpAsync: acquire VRAM banks C/D (0x04000242/0x04000243 VRAMCNT) for the ARM7 under a lock id, with a completion callback (func_020fe4b4 is the PXI receive callback).
 #include "types.h"
+#include "gfx/SplPtclTypes.h"
 
 struct VecFx32 { s32 x, y, z; };
 struct VecFx16 { s16 x, y, z; };
@@ -9,10 +10,6 @@ struct V3Arr { s32 v[3]; };
 struct MtxFx33 { s32 m[9]; };
 
 struct P;
-struct PList {
-    P *head;
-    s32 count;
-};
 
 struct Fl2e {
     u16 col : 5;
@@ -164,10 +161,6 @@ struct AlphaRec {
     u8 t1, t2;
 };
 
-struct SclRec {
-    u8 p0[4];
-    s16 sc;
-};
 
 struct Ctx {
     Hdr *hdr;
@@ -179,9 +172,7 @@ struct Ctx {
 };
 
 struct GravF { s16 x, y, z; };
-struct RandF { s16 x, y, z; u16 intv; };
 struct MagF { s32 x, y, z; s16 force; };
-struct SpinF { u16 angle; u16 axis; };
 struct CollF { s32 y; s16 coef; u16 type : 2; u16 rest : 14; };
 struct ConvF { s32 x, y, z; s16 coef; };
 

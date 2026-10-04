@@ -47,6 +47,8 @@
 #include "player/Unk_02008100_Msg.h"
 #include "player/Unk_02008190_Ptr.h"
 #include "player/Unk_02008858_Blk.h"
+#include "player/PlayerActionRequest.h"
+#include "player/PMRaw.h"
 #include "snd/SndSeEmitter.h"
 #include "actor/BlinkTimer.h"
 #include "player/PlayerGlassesModelRef.h"
@@ -96,10 +98,6 @@ struct Unk_020107c8_Blk;
 
 
 // ---- member-function-pointer constants as named objects (see notes.txt)
-struct PMRaw {
-    void (*f)();
-    s32 d;
-};
 typedef void (*PMF)();
 
 // ---- library base class chain of the object (declarations only; vtables and code are in other units)
@@ -528,23 +526,6 @@ struct Unk_0200944c {
 
 
 
-class PlayerActionRequest : public Unk_0200e2c8 {
-public:
-    PlayerActionRequest();
-    ~PlayerActionRequest();
-    void assign(s32 a, s32 b, s16 c);
-
-    s32 action;
-    s32 priority;
-    s16 netSeq;
-    union {
-        Unk_0200e248_Blob unk_0c;
-        u16 unk_0c_h;
-        Unk_0200c2fc unk_0c_c2fc;
-        u8 unk_0c_b[0x10];
-        Unk_0200d5b4 unk_0c_d5b4;
-    };
-};
 
 
 

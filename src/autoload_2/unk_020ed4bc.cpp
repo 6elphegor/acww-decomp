@@ -15,6 +15,7 @@
 // 0x020ed7e4 / 0x020ed81c / 0x020ed8cc are the command-sequence object (Unk_Seq), one class whose last method lies in the next
 // unit (unk_020ed8cc.cpp); whether Unk_Seq ends this file or starts the next one is not decided by any data, so it is left out.
 #include "types.h"
+#include "sys/PrioNode.h"
 
 // library base class (include/GameProc.h) plus the five task callbacks (non-virtual members, not in the header yet)
 class ProcBase {
@@ -73,12 +74,6 @@ struct InfoList {
     InfoNode *head;
 };
 
-struct PrioNode {
-    PrioNode *unk_00;
-    PrioNode *unk_04;
-    void *unk_08;
-    u16 unk_0c;
-};
 // second view of a priority node (the inserted node's key is read through it inside the loop)
 struct PrioNodeB { void *a, *b, *c; u16 priority; };
 

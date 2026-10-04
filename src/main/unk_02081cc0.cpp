@@ -1,5 +1,6 @@
 #include "types.h"
 #include "npc/NpcResPool.h"
+#include "npc/NpcResHandleView.h"
 
 extern "C" {
 s32 NpcBodyAnimPool_Get();
@@ -25,36 +26,9 @@ void NpcResPools_ClearAll();
 }
 
 
-// Same object as NpcResHandle (symbols.txt names two of its methods after the class NpcResHandleView); declaration only.
-struct NpcResHandleView {
-    s8 slot;
-    NpcResHandleView();
-    virtual ~NpcResHandleView();
-    virtual NpcResPool *getPool() = 0;
-    void *getHeldItemModel();
-    void *loadHeldItem(s32 a);
-};
 
-struct NpcTexPatBufRefHandle : NpcResHandleView {
-    NpcTexPatBufRefHandle();
-    virtual ~NpcTexPatBufRefHandle();
-    virtual NpcResPool *getPool();
-    void *getClothTex();
-};
 
-struct NpcTexPatHeapHandle : NpcResHandleView {
-    NpcTexPatHeapHandle();
-    virtual ~NpcTexPatHeapHandle();
-    virtual NpcResPool *getPool();
-    void *getFaceAnim();
-};
 
-struct SpNpcAnimHeapHandle : NpcResHandleView {
-    SpNpcAnimHeapHandle();
-    virtual ~SpNpcAnimHeapHandle();
-    virtual NpcResPool *getPool();
-    void *getVillagerAnimHeapRef();
-};
 
 struct VillagerAnimHeapHandle : NpcResHandleView {
     VillagerAnimHeapHandle();

@@ -5,6 +5,7 @@
 #include "field/Unk_ov003_Flags.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
+#include "player/PlayerActionRequest.h"
 
 struct Unk_ov068_0226acf8_Vec {
     s32 x, y, z;
@@ -329,12 +330,6 @@ public:
     u8 pad_04[0x1c];
 };
 
-class PlayerActionRequest {
-public:
-    PlayerActionRequest();
-    ~PlayerActionRequest();
-    u8 pad_00[0x20];
-};
 
 class PlayerActTaxiGetIn {
 public:

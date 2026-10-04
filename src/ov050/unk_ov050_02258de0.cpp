@@ -3,6 +3,7 @@
 #include "actor/Unk_02088d00.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
+#include "npc/NpcResHandleView.h"
 
 #define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
 #define VillagerId_getName _ZN10VillagerId7getNameEj
@@ -292,7 +293,6 @@ struct Unk_020135e4 {
 };
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 MEMBER(Unk_02014254, 0x28);
-struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];

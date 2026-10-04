@@ -4,6 +4,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "player/PlayerId.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -113,10 +114,6 @@ public:
     void *getPlayerId();
 };
 
-class PlayerId {
-public:
-    s32 getGender();
-};
 
 class MenuTabBar {
 public:

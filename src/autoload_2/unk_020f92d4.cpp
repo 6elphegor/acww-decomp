@@ -4,6 +4,8 @@
 // file-read callbacks (f9620/f9658), emitter draw dispatch (f969c, f9714, f97d0) and the per-emitter simulation step (spl_calc).
 #include "types.h"
 #include "game/Vec3.h"
+#include "gfx/SplManager.h"
+#include "gfx/SplRes.h"
 
 // SPL-style particle manager (continued from G011b): resource header word, bits 24-29 = field types
 struct HdrBits {
@@ -41,13 +43,6 @@ struct Hdr20 {
     u32 w1c;
 };
 
-struct Pm {
-    void *(*alloc)(u32);
-    u8 p4[0x1c];
-    TexEnt *tex;
-    u16 h24;
-    u16 h26;
-};
 
 // resource header (first word flags)
 struct HdrW {
@@ -121,66 +116,8 @@ struct H2 {
     u16 b;
 };
 
-// resource header (first part of a resource block)
-struct Rh {
-    u32 pad0 : 16;
-    u32 b16 : 1;
-    u32 k17 : 2;
-    u32 k19 : 1;
-    u32 pad20 : 3;
-    u32 b23 : 1;
-    u32 pad24 : 8;
-    s32 w4;
-    s32 w8;
-    s32 w12;
-    u32 w16;
-    u32 w20;
-    u32 w24;
-    u16 h28;
-    u16 h30;
-    u16 h32;
-    u16 pad34;
-    u32 w36;
-    u32 w40;
-    u32 w44;
-    s16 s48;
-    u8 p4a[8];
-    u16 h58;
-    u8 p5c[4];
-    u8 c64;
-    u8 c65;
-    u8 p66[2];
-    u32 pad68a : 24;
-    u32 s24 : 2;
-    u32 s26 : 2;
-    u32 mode : 3;
-    u32 pad68b : 1;
-    u32 flip0 : 1;
-    u32 flip1 : 1;
-    u32 pad72 : 30;
-    s16 s76;
-    s16 s78;
-    u8 c80;
-};
 
-struct Rb14 {
-    u16 pad0 : 9;
-    u16 k9 : 2;
-    u16 k11 : 1;
-    u16 pad12 : 4;
-    u8 p2[14];
-    u32 s0 : 2;
-    u32 s2 : 2;
-    u32 fx : 1;
-    u32 fy : 1;
-    u32 pad : 26;
-};
 
-struct ResB {
-    Rh *p0;
-    u8 p4[0x10];
-    Rb14 *p14;
-};
 
 struct EmI {
     s32 w0;
@@ -285,27 +222,6 @@ void func_020fa488(Mg2 *m, Nd *p, PosCb cb);
 void func_020fa858(Mg2 *m, Nd *p, PosCb cb);
 }
 
-struct PmNew {
-    void *(*alloc)(u32);
-    u32 w4;
-    u32 w8;
-    u32 w12;
-    u32 w16;
-    u32 w20;
-    u32 w24;
-    u32 w28;
-    u32 w32;
-    u16 h36;
-    u16 h38;
-    u16 h40;
-    u16 h42;
-    u32 b0 : 6;
-    u32 b6 : 6;
-    u32 b12 : 6;
-    u32 b18 : 6;
-    u32 pad24 : 8;
-    u32 w48;
-};
 
 extern "C" {
 extern u32 (*data_0213bc18)(u32, u32, u32);
@@ -420,16 +336,6 @@ struct ItemU {
     void *p4;
 };
 
-struct RU {
-    HdrP *p0;
-    B4 *p4;
-    B8 *p8;
-    B12 *pc;
-    B10 *p10;
-    B14 *p14;
-    ItemU *p18;
-    u16 h1c;
-};
 
 struct EFlags {
     u32 b0 : 1;

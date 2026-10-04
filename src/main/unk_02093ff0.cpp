@@ -5,6 +5,7 @@
 #include "talk/MsgStringAttr.h"
 #include "save/TownId.h"
 #include "talk/EncodedStringBase.h"
+#include "player/PlayerId.h"
 
 
 
@@ -199,33 +200,6 @@ public:
 // Record with a 10-byte header (id + 8 bytes), a u16 at +0xa, 8 bytes at +0xc and an s8 at +0x14
 
 
-class PlayerId : public TownId {
-public:
-    PlayerId();
-    PlayerId(void *o);
-    PlayerId(const PlayerId &o);
-    // the base class TownId has no declared constructor: its two are called through their symbols
-
-    void setNameString(MsgString *x);
-    void getNameString(MsgString *x);
-    u8 *getName();
-    void setName(void *src);
-    s8 getGender();
-    void setGender(u8 v);
-    void setId(u16 v);
-    u16 getId();
-    void set(void *src, u16 a, s8 b, TownId *p);
-    BOOL equals(PlayerId *o);
-    BOOL isValid();
-    void copyTo(PlayerId *o);
-    void copyFrom(PlayerId *o);
-    void clear();
-    void setRaw(void *src);
-
-    /* 0x0a */ u16 playerId;
-    /* 0x0c */ u8 playerName[8];
-    /* 0x14 */ s8 gender;
-};
 
 extern "C" {
 extern TownId gSaveTownId;

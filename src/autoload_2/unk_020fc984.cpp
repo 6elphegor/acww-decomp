@@ -4,6 +4,7 @@
 // animation callbacks (alpha/scale/texture frame/colour over life), 020fdee8..020fe2bc the six field handlers (convergence, collision, spin, magnet, random, gravity),
 // 020fe2f0/020fe35c/020fe3a0 list helpers, 020fe3ec/020fe448 random unit vectors.
 #include "types.h"
+#include "gfx/SplPtclTypes.h"
 
 struct VecFx32 { s32 x, y, z; };
 struct VecFx16 { s16 x, y, z; };
@@ -11,10 +12,6 @@ struct V3Arr { s32 v[3]; };
 struct MtxFx33 { s32 m[9]; };
 
 struct P;
-struct PList {
-    P *head;
-    s32 count;
-};
 
 struct Fl2e {
     u16 col : 5;
@@ -166,10 +163,6 @@ struct AlphaRec {
     u8 t1, t2;
 };
 
-struct SclRec {
-    u8 p0[4];
-    s16 sc;
-};
 
 struct Ctx {
     Hdr *hdr;
@@ -181,9 +174,7 @@ struct Ctx {
 };
 
 struct GravF { s16 x, y, z; };
-struct RandF { s16 x, y, z; u16 intv; };
 struct MagF { s32 x, y, z; s16 force; };
-struct SpinF { u16 angle; u16 axis; };
 struct CollF { s32 y; s16 coef; u16 type : 2; u16 rest : 14; };
 struct ConvF { s32 x, y, z; s16 coef; };
 

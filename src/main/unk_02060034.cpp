@@ -1,5 +1,6 @@
 #include "types.h"
 #include "town/MapBlockEntry.h"
+#include "room/RoomFtrState.h"
 
 inline void *operator new(unsigned long, void *p) {
     return p;
@@ -14,13 +15,6 @@ public:
     void clear();
 };
 
-class RoomFtrState {
-public:
-    u8 switchGrids[0x48];
-    RoomFtrState();
-    ~RoomFtrState();
-    void reset();
-};
 
 
 class SongSet {

@@ -4,6 +4,7 @@
 #include "actor/CharaClothTexRef.h"
 #include "actor/CharaFaceAnimRef.h"
 #include "actor/CharaFaceAnimWorkRef.h"
+#include "npc/SpNpcAnimHeapRefSlot.h"
 
 
 
@@ -31,11 +32,6 @@ struct NpcTexPatBufRef {
     u32 pad;
     NpcTexPatBufRef();
     ~NpcTexPatBufRef();
-};
-struct SpNpcAnimHeapRef {
-    u32 slot;
-    SpNpcAnimHeapRef();
-    ~SpNpcAnimHeapRef();
 };
 struct VillagerAnimHeapRef {
     u32 slot;
@@ -149,12 +145,6 @@ extern NpcHeldItemModelPool sNpcHeldItemModelPool;
 extern "C" NpcHeldItemModelPool *NpcHeldItemModelPool_Get();
 
 // ---- 0x020e0808
-struct SpNpcAnimHeapRefSlot : NpcResSlot {
-    SpNpcAnimHeapRef heapRef;
-    void assign();
-    SpNpcAnimHeapRefSlot();
-    ~SpNpcAnimHeapRefSlot();
-};
 
 struct SpNpcAnimHeapRefPool : NpcResPool {
     SpNpcAnimHeapRefSlot slots[4];

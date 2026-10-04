@@ -1,3 +1,4 @@
+#include "sys/PMCbInfo.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK TP (touch panel) / PM (power management) / RTC, ARM9 side: autoload_2 0x0211cbe8-0x0211cc7c. mwcc 1.2/base.
 typedef unsigned char u8;
@@ -82,11 +83,6 @@ typedef struct {
 } PMDest;
 
 typedef struct PMCbInfo PMCbInfo;
-struct PMCbInfo {
-    u32 a;
-    u32 b;
-    PMCbInfo *next;
-};
 
 typedef void (*PMCallback)(u32 result, void *arg);
 

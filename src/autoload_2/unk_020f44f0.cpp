@@ -6,15 +6,9 @@
 // PARTIAL until that file is reconstructed whole (it continues with G012b 0x020f4a5c-0x020f5b9c and needs func_020f4904).
 #include "types.h"
 #include "game/Vec3.h"
+#include "snd/PlayCtx.h"
 
 
-struct PlayCtx {
-    s32 w0;
-    Vec3 *pos;
-    s32 w8;
-    s32 wc;
-    s32 w10;
-};
 
 struct Ramp {
     s32 w0, w4, w8, wc, w10, w14, w18;
@@ -42,9 +36,9 @@ static inline s32 FX_Mul(s32 a, s32 b) {
     return (s32)(((s64)a * b + 0x800) >> 12);
 }
 
-// listener callback: distance of the listener at p->pos (mode 0)
+// listener callback: distance of the listener at p->source (mode 0)
 extern "C" s32 Snd_ListenerDistanceCallback(PlayCtx *p) {
-    return func_020f4904(p->pos, 0);
+    return func_020f4904((Vec3 *)p->source, 0);
 }
 
 // volume of the pan curve at x
@@ -54,7 +48,7 @@ extern "C" s32 Snd_DistanceToVolume(s32 x) {
 
 // listener callback: volume from the distance w10
 extern "C" s32 Snd_ListenerVolumeCallback(PlayCtx *p) {
-    return Snd_DistanceToVolume(p->w10);
+    return Snd_DistanceToVolume(p->distance);
 }
 
 // left / right volume (0..127) from the depth z
@@ -120,9 +114,9 @@ extern "C" s32 Snd_CalcPan(Vec3 *p, s32 m) {
     return r;
 }
 
-// listener callback: pan of the listener at p->pos (mode 0)
+// listener callback: pan of the listener at p->source (mode 0)
 extern "C" s32 Snd_ListenerPanCallback(PlayCtx *p) {
-    return Snd_CalcPan(p->pos, 0);
+    return Snd_CalcPan((Vec3 *)p->source, 0);
 }
 
 // clear the Ramp

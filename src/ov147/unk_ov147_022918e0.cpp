@@ -4,6 +4,7 @@
 #include "save/SaveData.h"
 #include "save/TownExchangeRecord.h"
 #include "talk/TalkWindowState.h"
+#include "player/PlayerId.h"
 
 struct TitleChoiceSet {
     u8 *msgIds;
@@ -62,10 +63,6 @@ public:
     u8 copy(MsgString *other);
 };
 
-class PlayerId {
-public:
-    void getNameString(MsgString *p);
-};
 
 class MsgString9B {
 public:

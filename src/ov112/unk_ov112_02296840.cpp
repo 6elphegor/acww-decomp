@@ -4,6 +4,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "player/PlayerId.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -122,10 +123,6 @@ public:
 
 // comm/session singleton (gCommManager)
 
-class PlayerId {
-public:
-    void getNameString(MsgString *p);
-};
 
 class PlayerData {
 public:

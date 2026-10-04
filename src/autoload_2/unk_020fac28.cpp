@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 #include "types.h"
+#include "gfx/SplRes.h"
 
 static inline s32 FX_Mul(s32 a, s32 b) {
     return (s32)(((s64)a * b + 0x800) >> 12);
@@ -59,32 +60,6 @@ struct Part {
     Vec3 v56;
 };
 
-struct RhBits {
-    u32 pad0 : 23;
-    u32 local : 1;
-    u32 pad24 : 8;
-};
-
-struct RhW68 {
-    u32 pad0 : 8;
-    u32 k : 16;
-    u32 pad24 : 4;
-    u32 mode : 3;
-    u32 pad31 : 1;
-};
-
-struct Rh {
-    RhBits f0;
-    Vec3 org;
-    u8 p16[32];
-    s16 h48;
-    u8 p50[18];
-    RhW68 w68;
-    u8 p72[4];
-    s16 h76;
-    s16 h78;
-    u8 c80;
-};
 
 struct Res {
     Rh *p0;
@@ -270,9 +245,9 @@ extern "C" void rotTypeY(s32 a, s32 b, s32 *m) {
 extern "C" void func_020fbf94(Mg *self, Part *p, DrawCb fp) {
     s32 sx;
     s32 sy;
-    u8 mode = self->cur->res->p0->w68.mode;
+    u8 mode = self->cur->res->p0->mode;
     s32 *mtx = self->mtx;
-    s32 sc = self->cur->res->p0->h48;
+    s32 sc = self->cur->res->p0->s48;
     s32 h52 = p->h52;
     u16 c1 = p->h54;
     u16 c2 = self->cur->h90;
@@ -297,7 +272,7 @@ extern "C" void func_020fbf94(Mg *self, Part *p, DrawCb fp) {
     } else {
         sy = FX_Mul(sy, h52);
     }
-    if (!self->cur->res->p0->f0.local) {
+    if (!self->cur->res->p0->b23) {
         v.v[0] = p->pos.v[0] + p->v56.v[0];
         v.v[1] = p->pos.v[1] + p->v56.v[1];
         v.v[2] = p->pos.v[2] + p->v56.v[2];
@@ -319,9 +294,9 @@ extern "C" void func_020fbf94(Mg *self, Part *p, DrawCb fp) {
         m[11] = 0;
         *(vu32 *)0x04000454 = 0;
     } else {
-        v.v[0] = p->pos.v[0] + p->v56.v[0] - self->cur->res->p0->org.v[0];
-        v.v[1] = p->pos.v[1] + p->v56.v[1] - self->cur->res->p0->org.v[1];
-        v.v[2] = p->pos.v[2] + p->v56.v[2] - self->cur->res->p0->org.v[2];
+        v.v[0] = p->pos.v[0] + p->v56.v[0] - self->cur->res->p0->w4;
+        v.v[1] = p->pos.v[1] + p->v56.v[1] - self->cur->res->p0->w8;
+        v.v[2] = p->pos.v[2] + p->v56.v[2] - self->cur->res->p0->w12;
         ang = fp(&v, v);
         MTX_MultVec43(&v, mtx, &v);
         sn = data_02135f44[(p->h32 >> 4) * 2];
@@ -339,7 +314,7 @@ extern "C" void func_020fbf94(Mg *self, Part *p, DrawCb fp) {
         m[10] = 0;
         m[11] = 0;
         *(vu32 *)0x04000454 = 0;
-        Trans(self->cur->res->p0->org.v[0], self->cur->res->p0->org.v[1], self->cur->res->p0->org.v[2]);
+        Trans(self->cur->res->p0->w4, self->cur->res->p0->w8, self->cur->res->p0->w12);
     }
     Trans(v.v[0], v.v[1], v.v[2]);
     if (self->cur->res->p0->c80 & 0x10) {
@@ -350,13 +325,13 @@ extern "C" void func_020fbf94(Mg *self, Part *p, DrawCb fp) {
     {
         *(vu32 *)0x04000480 = (u16)((((c1 & 31) * (c2 & 31)) >> 5) | (((((c1 & 0x3e0) * (c2 & 0x3e0)) >> 15)) << 5) | ((((c1 & 0x7c00) * (c2 & 0x7c00)) >> 25) << 10));
     }
-    drawXYPlane(self->cur->h96, self->cur->h98, self->cur->res->p0->h76, self->cur->res->p0->h78);
+    drawXYPlane(self->cur->h96, self->cur->h98, self->cur->res->p0->s76, self->cur->res->p0->s78);
 }
 
 // Particle draw: plain screen-facing billboard (rotation about the view axis by the particle angle h32, scaled).
 extern "C" void func_020fbad0(Mg *self, Part *p, DrawCb fp) {
     s32 *mtx = self->mtx;
-    s32 sc = self->cur->res->p0->h48;
+    s32 sc = self->cur->res->p0->s48;
     Vec3 v;
     s32 m[12];
     s32 rot[12];
@@ -372,7 +347,7 @@ extern "C" void func_020fbad0(Mg *self, Part *p, DrawCb fp) {
     if (alpha == 0) return;
     sy = p->w48;
     sx = FX_Mul(sy, sc);
-    switch (self->cur->res->p0->w68.mode) {
+    switch (self->cur->res->p0->mode) {
     case 0:
         sx = FX_Mul(sx, p->h52);
         sy = FX_Mul(sy, p->h52);
@@ -384,7 +359,7 @@ extern "C" void func_020fbad0(Mg *self, Part *p, DrawCb fp) {
         sy = FX_Mul(sy, p->h52);
         break;
     }
-    if (!self->cur->res->p0->f0.local) {
+    if (!self->cur->res->p0->b23) {
         v.v[0] = p->pos.v[0] + p->v56.v[0];
         v.v[1] = p->pos.v[1] + p->v56.v[1];
         v.v[2] = p->pos.v[2] + p->v56.v[2];
@@ -406,9 +381,9 @@ extern "C" void func_020fbad0(Mg *self, Part *p, DrawCb fp) {
         m[11] = 0;
         *(vu32 *)0x04000454 = 0;
     } else {
-        v.v[0] = p->pos.v[0] + p->v56.v[0] - self->cur->res->p0->org.v[0];
-        v.v[1] = p->pos.v[1] + p->v56.v[1] - self->cur->res->p0->org.v[1];
-        v.v[2] = p->pos.v[2] + p->v56.v[2] - self->cur->res->p0->org.v[2];
+        v.v[0] = p->pos.v[0] + p->v56.v[0] - self->cur->res->p0->w4;
+        v.v[1] = p->pos.v[1] + p->v56.v[1] - self->cur->res->p0->w8;
+        v.v[2] = p->pos.v[2] + p->v56.v[2] - self->cur->res->p0->w12;
         ang = fp(&v, v);
         MTX_MultVec43(&v, mtx, &v);
         sn = data_02135f44[(p->h32 >> 4) * 2];
@@ -426,7 +401,7 @@ extern "C" void func_020fbad0(Mg *self, Part *p, DrawCb fp) {
         m[10] = 0;
         m[11] = 0;
         *(vu32 *)0x04000454 = 0;
-        Trans(self->cur->res->p0->org.v[0], self->cur->res->p0->org.v[1], self->cur->res->p0->org.v[2]);
+        Trans(self->cur->res->p0->w4, self->cur->res->p0->w8, self->cur->res->p0->w12);
     }
     Trans(v.v[0], v.v[1], v.v[2]);
     if (self->cur->res->p0->c80 & 0x10) {
@@ -445,7 +420,7 @@ extern "C" void func_020fbad0(Mg *self, Part *p, DrawCb fp) {
 // Same as func_020fac28; only the final quad differs (texture coordinates / size taken from the emitter and the resource).
 extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
     s32 *mtx = self->mtx;
-    s32 sc = self->cur->res->p0->h48;
+    s32 sc = self->cur->res->p0->s48;
     Vec3 e;
     Vec3 v;
     Vec3 d;
@@ -464,7 +439,7 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
     if (alpha == 0) return;
     sy = p->w48;
     sx = FX_Mul(sy, sc);
-    switch (self->cur->res->p0->w68.mode) {
+    switch (self->cur->res->p0->mode) {
     case 0:
         sx = FX_Mul(sx, p->h52);
         sy = FX_Mul(sy, p->h52);
@@ -476,7 +451,7 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
         sy = FX_Mul(sy, p->h52);
         break;
     }
-    if (!self->cur->res->p0->f0.local) {
+    if (!self->cur->res->p0->b23) {
         v.v[0] = p->pos.v[0] + p->v56.v[0];
         v.v[1] = p->pos.v[1] + p->v56.v[1];
         v.v[2] = p->pos.v[2] + p->v56.v[2];
@@ -495,7 +470,7 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
         VEC_Normalize(&e, &e);
         dot = FX_Mul(e.v[2], -mtx[8]) + (FX_Mul(e.v[0], -mtx[2]) + FX_Mul(e.v[1], -mtx[5]));
         if (dot < 0) dot = -dot;
-        t = FX_Mul(0x1000 - dot, self->cur->res->p0->w68.k) + 0x1000;
+        t = FX_Mul(0x1000 - dot, self->cur->res->p0->k) + 0x1000;
         sy = FX_Mul(sy, t);
         m[0] = FX_Mul(d.v[0], sx);
         m[3] = FX_Mul(-d.v[1], sy);
@@ -512,9 +487,9 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
         *(vu32 *)0x04000454 = 0;
         G3_MultMtx43(m);
     } else {
-        v.v[0] = p->pos.v[0] + p->v56.v[0] - self->cur->res->p0->org.v[0];
-        v.v[1] = p->pos.v[1] + p->v56.v[1] - self->cur->res->p0->org.v[1];
-        v.v[2] = p->pos.v[2] + p->v56.v[2] - self->cur->res->p0->org.v[2];
+        v.v[0] = p->pos.v[0] + p->v56.v[0] - self->cur->res->p0->w4;
+        v.v[1] = p->pos.v[1] + p->v56.v[1] - self->cur->res->p0->w8;
+        v.v[2] = p->pos.v[2] + p->v56.v[2] - self->cur->res->p0->w12;
         ang = fp(&v, v);
         d = p->vel;
         cam.v[0] = mtx[2];
@@ -530,7 +505,7 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
         VEC_Normalize(&e, &e);
         dot = FX_Mul(e.v[2], -mtx[8]) + (FX_Mul(e.v[0], -mtx[2]) + FX_Mul(e.v[1], -mtx[5]));
         if (dot < 0) dot = -dot;
-        t = FX_Mul(0x1000 - dot, self->cur->res->p0->w68.k) + 0x1000;
+        t = FX_Mul(0x1000 - dot, self->cur->res->p0->k) + 0x1000;
         sy = FX_Mul(sy, t);
         m[0] = FX_Mul(d.v[0], sx);
         m[3] = FX_Mul(-d.v[1], sy);
@@ -545,7 +520,7 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
         m[8] = 0x1000;
         m[11] = v.v[2];
         *(vu32 *)0x04000454 = 0;
-        Trans(self->cur->res->p0->org.v[0], self->cur->res->p0->org.v[1], self->cur->res->p0->org.v[2]);
+        Trans(self->cur->res->p0->w4, self->cur->res->p0->w8, self->cur->res->p0->w12);
         G3_MultMtx43(m);
     }
     if (self->cur->res->p0->c80 & 0x10) {
@@ -557,7 +532,7 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
         u16 c2 = self->cur->h90;
         *(vu32 *)0x04000480 = (u16)((((c1 & 31) * (c2 & 31)) >> 5) | (((((c1 & 0x3e0) * (c2 & 0x3e0)) >> 15)) << 5) | ((((c1 & 0x7c00) * (c2 & 0x7c00)) >> 25) << 10));
     }
-    drawXYPlane(self->cur->h96, self->cur->h98, self->cur->res->p0->h76, self->cur->res->p0->h78);
+    drawXYPlane(self->cur->h96, self->cur->h98, self->cur->res->p0->s76, self->cur->res->p0->s78);
 }
 
 // Particle draw (SPL-style): camera-facing billboard whose long axis follows the particle velocity (cross product with the
@@ -566,7 +541,7 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
 // Writes POLYGON_ATTR (0x040004a4), MTX_IDENTITY (0x04000454), MTX_TRANS (0x04000470), COLOR (0x04000480).
 extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
     s32 *mtx = self->mtx;
-    s32 sc = self->cur->res->p0->h48;
+    s32 sc = self->cur->res->p0->s48;
     Vec3 e;
     Vec3 v;
     Vec3 d;
@@ -585,7 +560,7 @@ extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
     if (alpha == 0) return;
     sy = p->w48;
     sx = FX_Mul(sy, sc);
-    switch (self->cur->res->p0->w68.mode) {
+    switch (self->cur->res->p0->mode) {
     case 0:
         sx = FX_Mul(sx, p->h52);
         sy = FX_Mul(sy, p->h52);
@@ -597,7 +572,7 @@ extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
         sy = FX_Mul(sy, p->h52);
         break;
     }
-    if (!self->cur->res->p0->f0.local) {
+    if (!self->cur->res->p0->b23) {
         v.v[0] = p->pos.v[0] + p->v56.v[0];
         v.v[1] = p->pos.v[1] + p->v56.v[1];
         v.v[2] = p->pos.v[2] + p->v56.v[2];
@@ -616,7 +591,7 @@ extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
         VEC_Normalize(&e, &e);
         dot = FX_Mul(e.v[2], -mtx[8]) + (FX_Mul(e.v[0], -mtx[2]) + FX_Mul(e.v[1], -mtx[5]));
         if (dot < 0) dot = -dot;
-        t = FX_Mul(0x1000 - dot, self->cur->res->p0->w68.k) + 0x1000;
+        t = FX_Mul(0x1000 - dot, self->cur->res->p0->k) + 0x1000;
         sy = FX_Mul(sy, t);
         m[0] = FX_Mul(d.v[0], sx);
         m[3] = FX_Mul(-d.v[1], sy);
@@ -633,9 +608,9 @@ extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
         *(vu32 *)0x04000454 = 0;
         G3_MultMtx43(m);
     } else {
-        v.v[0] = p->pos.v[0] + p->v56.v[0] - self->cur->res->p0->org.v[0];
-        v.v[1] = p->pos.v[1] + p->v56.v[1] - self->cur->res->p0->org.v[1];
-        v.v[2] = p->pos.v[2] + p->v56.v[2] - self->cur->res->p0->org.v[2];
+        v.v[0] = p->pos.v[0] + p->v56.v[0] - self->cur->res->p0->w4;
+        v.v[1] = p->pos.v[1] + p->v56.v[1] - self->cur->res->p0->w8;
+        v.v[2] = p->pos.v[2] + p->v56.v[2] - self->cur->res->p0->w12;
         ang = fp(&v, v);
         d = p->vel;
         cam.v[0] = mtx[2];
@@ -651,7 +626,7 @@ extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
         VEC_Normalize(&e, &e);
         dot = FX_Mul(e.v[2], -mtx[8]) + (FX_Mul(e.v[0], -mtx[2]) + FX_Mul(e.v[1], -mtx[5]));
         if (dot < 0) dot = -dot;
-        t = FX_Mul(0x1000 - dot, self->cur->res->p0->w68.k) + 0x1000;
+        t = FX_Mul(0x1000 - dot, self->cur->res->p0->k) + 0x1000;
         sy = FX_Mul(sy, t);
         m[0] = FX_Mul(d.v[0], sx);
         m[3] = FX_Mul(-d.v[1], sy);
@@ -666,7 +641,7 @@ extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
         m[8] = 0x1000;
         m[11] = v.v[2];
         *(vu32 *)0x04000454 = 0;
-        Trans(self->cur->res->p0->org.v[0], self->cur->res->p0->org.v[1], self->cur->res->p0->org.v[2]);
+        Trans(self->cur->res->p0->w4, self->cur->res->p0->w8, self->cur->res->p0->w12);
         G3_MultMtx43(m);
     }
     if (self->cur->res->p0->c80 & 0x10) {

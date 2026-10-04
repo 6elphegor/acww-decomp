@@ -3,6 +3,7 @@
 // autoload_2 0x020f8b44-0x020f92d4 (10 functions), PARTIAL, code unchanged from G011b: particle manager (emit, update);
 // 0x020f8e70-0x020f9018: resource table loaders (callbacks) and resource layout builder (SPL_Load).
 #include "types.h"
+#include "snd/SndBgmViews.h"
 
 // BGM descriptor: u16 id at +0x38 (240 = a special track whose values are halved)
 struct Hd {
@@ -10,13 +11,6 @@ struct Hd {
     u16 id;
 };
 
-// gSndBgmHandle: BGM info handle, first word = pointer to Hd, queried with func_0210a024(&handle, selector, &out)
-struct Q {
-    u8 pad[0x16];
-    s16 s16v;
-    u8 p18[2];
-    s16 s1a;
-};
 
 struct Fo;
 // view of gSndMgr (sound manager of G006): +0 current object, +0x2c Q*, +0x3c Hd* (same word as gSndBgmHandle)
@@ -50,21 +44,6 @@ struct Fo {
     u8 c2e;
 };
 
-// base object (vtable 0x0213bb90), view A (+4 is an fx32 value)
-struct Rb {
-    u32 w0;
-    u16 h4;
-    u16 h6;
-    u8 c8;
-    s8 c9;
-    s8 c10;
-    s8 c11;
-    s8 c12;
-    s8 c13;
-    s8 c14;
-    u8 c15;
-    u8 c16;
-};
 
 // SPL-style particle manager: ResInfo = emitter resource header, Entry = live emitter, Mgr = manager
 struct ResInfo {

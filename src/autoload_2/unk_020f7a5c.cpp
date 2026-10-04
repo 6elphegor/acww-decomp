@@ -16,6 +16,7 @@
 // The scene class file (unk_020f0fb4.cpp) and main call the constructors / destructors by their func_ names (aliases keep them).
 #include "types.h"
 #include "snd/BgmBeatPhase.h"
+#include "snd/SndBgmViews.h"
 
 // BGM descriptor: u16 id at +0x38 (240 = a special track whose values are halved)
 struct Hd {
@@ -28,12 +29,6 @@ struct Hr {
     Hd *p;
 };
 
-struct Q {
-    u8 pad[0x16];
-    s16 s16v;
-    u8 p18[2];
-    s16 s1a;
-};
 
 class BgmBeatSync;
 // view of gSndMgr (the sound manager SndMgr, unk_020f0dec.cpp): +0 current animation object, +0x2c Q*, +0x3c Hd* (= gSndBgmHandle)
@@ -87,21 +82,6 @@ public:
     /* 0x2e */ u8 c2e;
 };
 
-// state machine of a BGM-synchronised sound (main's objects; plain functions, called by name from main)
-struct Rb {
-    u32 w0;
-    u16 h4;
-    u16 h6;
-    u8 c8;
-    s8 c9;
-    s8 c10;
-    s8 c11;
-    s8 c12;
-    s8 c13;
-    s8 c14;
-    u8 c15;
-    u8 c16;
-};
 
 extern "C" {
 extern Mg gSndMgr;

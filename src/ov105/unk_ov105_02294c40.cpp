@@ -8,6 +8,7 @@
 #include "ui/CursorMotion.h"
 #include "talk/TalkWindowState.h"
 #include "item/Letter.h"
+#include "player/PlayerId.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -139,10 +140,6 @@ public:
     MsgString9B();
     virtual ~MsgString9B();
     u32 unk_04[7];
-};
-class PlayerId {
-public:
-    void getNameString(MsgString *p);
 };
 class PlayerData {
 public:

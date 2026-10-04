@@ -4,6 +4,8 @@
 #include "types.h"
 #include "sys/Unk_Task.h"
 #include "sys/Unk_Seq.h"
+#include "snd/PlayCtx.h"
+#include "sys/PrioNode.h"
 
 struct ListNode {
     ListNode *prev;
@@ -24,12 +26,6 @@ struct InfoNode {
     InfoNode *unk_00;
     InfoNode *unk_04;
     NodeInfo *unk_08;
-};
-struct PrioNode {
-    PrioNode *unk_00;
-    PrioNode *unk_04;
-    void *unk_08;
-    u16 unk_0c;
 };
 struct InfoList {
     InfoNode *head;
@@ -83,16 +79,6 @@ struct FndList {
     void *tail;
     u16 num;
     u16 offset;
-};
-struct PlayCtx {
-    /* 0x00 */ Group *group;
-    /* 0x04 */ void *source;
-    /* 0x08 */ u8 pad[8];
-    /* 0x10 */ s32 distance;
-    /* 0x14 */ s32 volume;
-    /* 0x18 */ s32 pan;
-    /* 0x1c */ s32 baseVolume;
-    /* 0x20 */ s32 unk_20;
 };
 struct InfoB {
     u8 pad[4];

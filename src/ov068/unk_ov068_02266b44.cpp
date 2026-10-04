@@ -5,6 +5,7 @@
 #include "game/Unk_ov068_Vec.h"
 #include "actor/Unk_ov068_SceneEntry.h"
 #include "item/ItemId.h"
+#include "npc/NpcResHandleView.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -143,7 +144,6 @@ struct Unk_020f4080 { Unk_020f4080(); u32 pad[0x44 / 4]; };
 struct Unk_020135e4 { Unk_020135e4(); u8 pad[0xb]; u8 unk_0b; };
 struct NpcActionCtrl { NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); u32 pad[0x28 / 4]; };
-struct SpNpcAnimHeapHandle { SpNpcAnimHeapHandle(); u32 pad[0x14 / 4]; };
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Scene object (vtable 0x0226ff34). The class chain declares every slot after the class that names it in the vtable symbols.
@@ -238,7 +238,8 @@ public:
     virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual BOOL getWalkAnimSpeedScale();
-    SpNpcAnimHeapHandle animHeapHandle;
+    /* 0x640 */ SpNpcAnimHeapHandle animHeapHandle;
+    /* 0x648 */ u8 pad_648[0xc];
     u32 unk_654;
 };
 

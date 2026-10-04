@@ -4,6 +4,7 @@
 // three sound handles (Ent, 12 bytes each: handle word, pan/volume/flag members): allocate, update (0x020ee1b0, the
 // per-frame mixer with volume/pan clamping), init, flag helpers, and the list wrappers (NNS_Fnd list functions).
 #include "types.h"
+#include "snd/PlayCtx.h"
 
 struct Ent {
     /* 0x00 */ void *handle;
@@ -31,16 +32,6 @@ struct FndList {
     void *tail;
     u16 num;
     u16 offset;
-};
-struct PlayCtx {
-    /* 0x00 */ Group *group;
-    /* 0x04 */ void *source;
-    /* 0x08 */ u8 pad[8];
-    /* 0x10 */ s32 distance;
-    /* 0x14 */ s32 volume;
-    /* 0x18 */ s32 pan;
-    /* 0x1c */ s32 baseVolume;
-    /* 0x20 */ s32 unk_20;
 };
 struct InfoB {
     u8 pad[4];

@@ -6,6 +6,7 @@
 #include "gfx/Unk_020d094c.h"
 #include "gfx/Unk_021ede90.h"
 #include "game/Vec3.h"
+#include "gfx/ObjShadowBits.h"
 
 
 struct Vec3Z2 {
@@ -33,12 +34,6 @@ struct Col {
     u16 v;
 };
 
-struct RGB {
-    u16 r : 5;
-    u16 g : 5;
-    u16 b : 5;
-    u16 a : 1;
-};
 
 
 
@@ -68,12 +63,6 @@ public:
     /* 0x30 */ Unk_020ac0c4_Entry *texture;
 };
 
-struct Pack {
-    u32 a : 6;
-    u32 b : 19;
-    u32 c : 1;
-    u32 d : 6;
-};
 
 struct Bits {
     u32 a : 6;
